@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Ground
+  - Obstacle
+  - Marker
+  - Enemies
+  - Allies
+  - Debaff
+  - Baff
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - Markers
+  - Obstecls
+  - Player
+  - OtherPlayers
+  - InvisiblePlayer
+  - ControlledObjects
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: BG
+    uniqueID: 2232026139
+    locked: 0
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Jump
+    uniqueID: 1854886373
+    locked: 0
+  - name: Health&Mana
+    uniqueID: 2874345073
+    locked: 0
+  - name: Markers
+    uniqueID: 3063889509
+    locked: 0
+  - name: Canvas
+    uniqueID: 1474234247
+    locked: 0
