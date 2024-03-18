@@ -447,6 +447,7 @@ public abstract class AbilityBase : MonoBehaviour
             {
                 TargetParent = hit.collider.gameObject;
                 ChangeBoolAndValues();
+                
             }
         }
     }
@@ -516,7 +517,8 @@ public abstract class AbilityBase : MonoBehaviour
                     IsActiveAbility = true;
 
                     HandleDealDamageOrHeal();
-
+                    Debug.Log("Работаю");
+                    //Включение корутины мерцания красного.
                     if (_isLastAbility == false && lastAbility != null)
                     {
                         lastAbility.AddLastAbility(this);
@@ -528,7 +530,7 @@ public abstract class AbilityBase : MonoBehaviour
         else
         {
             IsActiveAbility = false;
-
+            Debug.Log("Вне радиуса атаки.");
             if (_targetCircle == null)
             {
                 _targetCircle = TargetParent.GetComponent<PlayerMove>().CircleSelect;
@@ -537,6 +539,12 @@ public abstract class AbilityBase : MonoBehaviour
             if (_targetCircle.activeSelf && TargetParent != Select.GetComponent<SelectObject>().SelectedObject)
             {
                 _targetCircle.SetActive(false);
+            }
+            TargetParent.transform.GetChild(0).gameObject.SetActive(true);
+            SpriteRenderer targetSpriteRenderer = TargetParent.transform.GetChild(0).GetComponent<SpriteRenderer>();
+            if (targetSpriteRenderer != null)
+            {
+                targetSpriteRenderer.color = Color.red;
             }
         }
     }

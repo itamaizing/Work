@@ -5,6 +5,7 @@ namespace Players.CircleBackgroundColor
     public class ControllerCircleBackgroundColor : MonoBehaviour
     {
         [SerializeField] private SoCircleColorBackgroundSettings _soCircleColorBackgroundSettings;
+        [SerializeField] private SoCircleColorBackgroundSettings _soCircleColorBackgroundAttackSettings;
 
         public void SetColorCircleBackgroundPlayer(Collider2D collider)
         {
@@ -19,6 +20,8 @@ namespace Players.CircleBackgroundColor
             }
         }
 
+        
+        
         public void DisableCircleBackgroundPlayer()
         {
             GetComponent<Collider>().transform.GetChild(0).gameObject.SetActive(false);

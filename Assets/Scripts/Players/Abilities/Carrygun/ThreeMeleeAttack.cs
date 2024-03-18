@@ -147,6 +147,8 @@ public class ThreeMeleeAttack : AbilityBase
             {
                 Destroy(NewAbilityPrefab);
             }
+
+            Debug.Log("Помечен");
         }
     }
 
@@ -185,6 +187,7 @@ public class ThreeMeleeAttack : AbilityBase
         {
             ToggleAbility.enabled = false;
             _player.GetComponent<PlayerMove>().CanMove = false;
+
 
             if (!_isInitialized)
             {
