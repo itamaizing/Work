@@ -171,7 +171,7 @@ public abstract class AbilityBase : MonoBehaviour
                 ToggleAbility.isOn = false;
                 return;
             }
-
+            
             DrawCircle.Clear();
             CanDrawCircle = true;
         }
@@ -243,13 +243,14 @@ public abstract class AbilityBase : MonoBehaviour
             {
                 _enemies = new List<GameObject>();
             }
-
+            //DrawCircle.lineColor = Color.red;
             _enemies.Clear();
 
             foreach (Collider2D collider in colliders)
             {
                 if (collider.CompareTag(targetTag) && collider.GetComponent<PlayerMove>())
                 {
+                    //DrawCircle.lineColor = Color.green;
                     collider.GetComponent<PlayerMove>().CircleSelect.SetActive(true);
                     _enemies.Add(collider.gameObject);
 
@@ -270,6 +271,7 @@ public abstract class AbilityBase : MonoBehaviour
                 if (distanceToCollider > Distance)
                 {
                     enemiesToRemove.Add(enemy);
+                    
                 }
             }
 
@@ -280,10 +282,12 @@ public abstract class AbilityBase : MonoBehaviour
                 enemyToRemove.GetComponent<PlayerMove>().CircleSelect.SetActive(false);
                 _enemies.Remove(enemyToRemove);
             }
+            DrawCircle.lineColor=Color.red;
         }
 
         if (TargetParent != null)
         {
+            DrawCircle.lineColor = Color.green;
             AddPsionicsForMoving();
 
             if (AttackType == AttackType.Autoattack)
@@ -328,6 +332,7 @@ public abstract class AbilityBase : MonoBehaviour
 
         if (_targetCircle != null && TargetParent != Select.GetComponent<SelectObject>().SelectedObject)
         {
+            _targetCircle.GetComponent<SpriteRenderer>().color=Color.green;
             _targetCircle.SetActive(false);
         }
 
@@ -447,7 +452,6 @@ public abstract class AbilityBase : MonoBehaviour
             {
                 TargetParent = hit.collider.gameObject;
                 ChangeBoolAndValues();
-                
             }
         }
     }
@@ -501,6 +505,11 @@ public abstract class AbilityBase : MonoBehaviour
                 if (!_targetCircle.activeSelf && _player == Select.GetComponent<SelectObject>().SelectedObject)
                 {
                     _targetCircle.SetActive(true);
+                    //_targetCircle.GetComponent<SpriteRenderer>().color=Color.green;
+                    _targetCircle.GetComponent<SpriteRenderer>().color = TargetParent.transform.GetChild(0)
+                        .GetComponent<ControllerCircleBackgroundColor>().soCircleColorBackgroundSettings.SpriteColor;
+                    // TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
+                    //     .SetColorCircleBackgroundPlayer(TargetParent);
                 }
 
                 if (_player != Select.GetComponent<SelectObject>().SelectedObject && _targetCircle.activeSelf &&
@@ -530,7 +539,7 @@ public abstract class AbilityBase : MonoBehaviour
         else
         {
             IsActiveAbility = false;
-            Debug.Log("Вне радиуса атаки.");
+
             if (_targetCircle == null)
             {
                 _targetCircle = TargetParent.GetComponent<PlayerMove>().CircleSelect;
@@ -538,14 +547,14 @@ public abstract class AbilityBase : MonoBehaviour
 
             if (_targetCircle.activeSelf && TargetParent != Select.GetComponent<SelectObject>().SelectedObject)
             {
-                _targetCircle.SetActive(false);
+               _targetCircle.SetActive(false);
             }
-            TargetParent.transform.GetChild(0).gameObject.SetActive(true);
-            SpriteRenderer targetSpriteRenderer = TargetParent.transform.GetChild(0).GetComponent<SpriteRenderer>();
-            if (targetSpriteRenderer != null)
-            {
-                targetSpriteRenderer.color = Color.red;
-            }
+
+            _targetCircle.SetActive(true);
+            _targetCircle.GetComponent<SpriteRenderer>().color = TargetParent.transform.GetChild(0)
+                .GetComponent<ControllerCircleBackgroundColor>().soCircleColorBackgroundAttackSettings.SpriteColor;
+            TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
+                .SetColorCircleBackgroundAttack(TargetParent); // Помечаем цель вне радиуса атаки.
         }
     }
 

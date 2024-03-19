@@ -148,7 +148,7 @@ public class ThreeMeleeAttack : AbilityBase
                 Destroy(NewAbilityPrefab);
             }
 
-            Debug.Log("Помечен");
+            //Debug.Log("Помечен");
         }
     }
 
@@ -360,7 +360,7 @@ public class ThreeMeleeAttack : AbilityBase
         ToggleAbility.isOn = false;
         ToggleAbility.enabled = true;
         _canJump = false;
-
+        Debug.Log("Конец атаки");
         yield break;
     }
 }
