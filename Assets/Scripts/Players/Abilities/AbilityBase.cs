@@ -164,6 +164,7 @@ public abstract class AbilityBase : MonoBehaviour
     protected virtual void HandleToggleAbilityOn()
     {
         // Включенный ToggleAbility
+
         if (_player.GetComponent<PlayerMove>().IsSelect == false)
         {
             if (TargetParent == null)
@@ -171,7 +172,7 @@ public abstract class AbilityBase : MonoBehaviour
                 ToggleAbility.isOn = false;
                 return;
             }
-            
+
             DrawCircle.Clear();
             CanDrawCircle = true;
         }
@@ -243,18 +244,17 @@ public abstract class AbilityBase : MonoBehaviour
             {
                 _enemies = new List<GameObject>();
             }
-            //DrawCircle.lineColor = Color.red;
+
             _enemies.Clear();
 
             foreach (Collider2D collider in colliders)
             {
                 if (collider.CompareTag(targetTag) && collider.GetComponent<PlayerMove>())
                 {
-                    Debug.Log("Противник в зоне поражения");
                     //DrawCircle.lineColor = Color.green;
                     collider.GetComponent<PlayerMove>().CircleSelect.SetActive(true);
                     _enemies.Add(collider.gameObject);
-
+                    //Debug.Log($"Противник в зоне поражения: {collider.name}");
                     collider.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
                         .SetColorCircleBackgroundPlayer(collider);
                 }
@@ -272,7 +272,6 @@ public abstract class AbilityBase : MonoBehaviour
                 if (distanceToCollider > Distance)
                 {
                     enemiesToRemove.Add(enemy);
-                    
                 }
             }
 
@@ -283,12 +282,19 @@ public abstract class AbilityBase : MonoBehaviour
                 enemyToRemove.GetComponent<PlayerMove>().CircleSelect.SetActive(false);
                 _enemies.Remove(enemyToRemove);
             }
-            DrawCircle.lineColor=Color.red;
+
+            if (_enemies.Count == 0)
+            {
+                DrawCircle.lineColor = Color.red;
+            }
+            else if (_enemies.Count > 0)
+            {
+                DrawCircle.lineColor = Color.green;
+            }
         }
 
         if (TargetParent != null)
         {
-            DrawCircle.lineColor = Color.green;
             AddPsionicsForMoving();
 
             if (AttackType == AttackType.Autoattack)
@@ -333,8 +339,9 @@ public abstract class AbilityBase : MonoBehaviour
 
         if (_targetCircle != null && TargetParent != Select.GetComponent<SelectObject>().SelectedObject)
         {
-            _targetCircle.GetComponent<SpriteRenderer>().color=Color.green;
-            _targetCircle.transform.parent.GetChild(0).gameObject.GetComponent<BackgroundColorSwitcherDisabledEnabled>().StopSwitching();
+            _targetCircle.GetComponent<SpriteRenderer>().color = Color.green;
+            _targetCircle.transform.parent.GetChild(0).gameObject.GetComponent<BackgroundColorSwitcherDisabledEnabled>()
+                .StopSwitching();
             _targetCircle.transform.parent.GetChild(0).gameObject.SetActive(false);
             _targetCircle.SetActive(false);
         }
@@ -376,6 +383,7 @@ public abstract class AbilityBase : MonoBehaviour
         {
             DrawCircle.Clear();
         }
+
 
         _targetCircle = null;
         CanDrawCircle = true;
@@ -526,9 +534,11 @@ public abstract class AbilityBase : MonoBehaviour
                     IsActiveAbility = true;
 
                     HandleDealDamageOrHeal();
-                    Debug.Log("Работаю");
-                    TargetParent.transform.GetChild(0).GetComponent<BackgroundColorSwitcherDisabledEnabled>().StartSwitching();
+
                     //Включение корутины мерцания красного.
+                    TargetParent.transform.GetChild(0).GetComponent<BackgroundColorSwitcherDisabledEnabled>()
+                        .StartSwitching();
+
                     if (_isLastAbility == false && lastAbility != null)
                     {
                         lastAbility.AddLastAbility(this);
@@ -548,7 +558,7 @@ public abstract class AbilityBase : MonoBehaviour
 
             if (_targetCircle.activeSelf && TargetParent != Select.GetComponent<SelectObject>().SelectedObject)
             {
-               _targetCircle.SetActive(false);
+                _targetCircle.SetActive(false);
             }
 
             _targetCircle.SetActive(true);
