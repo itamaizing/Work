@@ -250,6 +250,7 @@ public abstract class AbilityBase : MonoBehaviour
             {
                 if (collider.CompareTag(targetTag) && collider.GetComponent<PlayerMove>())
                 {
+                    Debug.Log("Противник в зоне поражения");
                     //DrawCircle.lineColor = Color.green;
                     collider.GetComponent<PlayerMove>().CircleSelect.SetActive(true);
                     _enemies.Add(collider.gameObject);
@@ -333,6 +334,7 @@ public abstract class AbilityBase : MonoBehaviour
         if (_targetCircle != null && TargetParent != Select.GetComponent<SelectObject>().SelectedObject)
         {
             _targetCircle.GetComponent<SpriteRenderer>().color=Color.green;
+            _targetCircle.transform.parent.GetChild(0).gameObject.GetComponent<BackgroundColorSwitcherDisabledEnabled>().StopSwitching();
             _targetCircle.transform.parent.GetChild(0).gameObject.SetActive(false);
             _targetCircle.SetActive(false);
         }
@@ -506,11 +508,8 @@ public abstract class AbilityBase : MonoBehaviour
                 if (!_targetCircle.activeSelf && _player == Select.GetComponent<SelectObject>().SelectedObject)
                 {
                     _targetCircle.SetActive(true);
-                    //_targetCircle.GetComponent<SpriteRenderer>().color=Color.green;
                     _targetCircle.GetComponent<SpriteRenderer>().color = TargetParent.transform.GetChild(0)
                         .GetComponent<ControllerCircleBackgroundColor>().soCircleColorBackgroundSettings.SpriteColor;
-                    // TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
-                    //     .SetColorCircleBackgroundPlayer(TargetParent);
                 }
 
                 if (_player != Select.GetComponent<SelectObject>().SelectedObject && _targetCircle.activeSelf &&
@@ -528,6 +527,7 @@ public abstract class AbilityBase : MonoBehaviour
 
                     HandleDealDamageOrHeal();
                     Debug.Log("Работаю");
+                    TargetParent.transform.GetChild(0).GetComponent<BackgroundColorSwitcherDisabledEnabled>().StartSwitching();
                     //Включение корутины мерцания красного.
                     if (_isLastAbility == false && lastAbility != null)
                     {

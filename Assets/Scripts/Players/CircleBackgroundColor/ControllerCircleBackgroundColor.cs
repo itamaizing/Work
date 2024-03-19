@@ -52,7 +52,6 @@ namespace Players.CircleBackgroundColor
             }
         }
 
-
         public void DisableCircleBackground()
         {
             GetComponent<Collider>().transform.GetChild(0).gameObject.SetActive(false);

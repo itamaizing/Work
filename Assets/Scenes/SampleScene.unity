@@ -2117,6 +2117,7 @@ GameObject:
   - component: {fileID: 652724092}
   - component: {fileID: 652724093}
   - component: {fileID: 652724094}
+  - component: {fileID: 652724095}
   m_Layer: 9
   m_Name: Circle_Color_Background
   m_TagString: Untagged
@@ -2205,6 +2206,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _soCircleColorBackgroundSettings: {fileID: 11400000, guid: 70cb33aa322f5be4180466de03f5b8e0, type: 2}
   _soCircleColorBackgroundAttackSettings: {fileID: 11400000, guid: f5c5c6754ec0b494fb7d31492db86e98, type: 2}
+--- !u!114 &652724095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 652724091}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c5cb30039274953b099c7eb2c94e365, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soSwitcher: {fileID: 11400000, guid: 82b27e3efc3097e4dafe016e60f5c4f0, type: 2}
 --- !u!1 &675028441 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4371443321967966874, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
@@ -2921,6 +2935,7 @@ GameObject:
   - component: {fileID: 870172338}
   - component: {fileID: 870172339}
   - component: {fileID: 870172340}
+  - component: {fileID: 870172341}
   m_Layer: 9
   m_Name: Circle_Color_Background
   m_TagString: Untagged
@@ -3009,6 +3024,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _soCircleColorBackgroundSettings: {fileID: 11400000, guid: 70cb33aa322f5be4180466de03f5b8e0, type: 2}
   _soCircleColorBackgroundAttackSettings: {fileID: 11400000, guid: f5c5c6754ec0b494fb7d31492db86e98, type: 2}
+--- !u!114 &870172341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 870172337}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c5cb30039274953b099c7eb2c94e365, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soSwitcher: {fileID: 11400000, guid: 82b27e3efc3097e4dafe016e60f5c4f0, type: 2}
 --- !u!1 &883301897
 GameObject:
   m_ObjectHideFlags: 0
@@ -8648,6 +8676,7 @@ GameObject:
   - component: {fileID: 2124706500}
   - component: {fileID: 2124706501}
   - component: {fileID: 2124706502}
+  - component: {fileID: 2124706503}
   m_Layer: 9
   m_Name: Circle_Color_Background
   m_TagString: Untagged
@@ -8736,6 +8765,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _soCircleColorBackgroundSettings: {fileID: 11400000, guid: 70cb33aa322f5be4180466de03f5b8e0, type: 2}
   _soCircleColorBackgroundAttackSettings: {fileID: 11400000, guid: f5c5c6754ec0b494fb7d31492db86e98, type: 2}
+--- !u!114 &2124706503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2124706499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c5cb30039274953b099c7eb2c94e365, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soSwitcher: {fileID: 11400000, guid: 82b27e3efc3097e4dafe016e60f5c4f0, type: 2}
 --- !u!1 &2134142645
 GameObject:
   m_ObjectHideFlags: 0
