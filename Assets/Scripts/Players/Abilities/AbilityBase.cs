@@ -333,6 +333,7 @@ public abstract class AbilityBase : MonoBehaviour
         if (_targetCircle != null && TargetParent != Select.GetComponent<SelectObject>().SelectedObject)
         {
             _targetCircle.GetComponent<SpriteRenderer>().color=Color.green;
+            _targetCircle.transform.parent.GetChild(0).gameObject.SetActive(false);
             _targetCircle.SetActive(false);
         }
 
