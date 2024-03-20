@@ -9,7 +9,8 @@ namespace Players.CircleBackgroundColor
         [SerializeField] private float delayBetweenFades = 0;
 
         private SpriteRenderer _spriteRenderer;
-
+        private Coroutine _fadeCoroutine;
+        
         private void Awake()
         {
             _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -17,12 +18,21 @@ namespace Players.CircleBackgroundColor
 
         public void StartFadeSprite()
         {
-            StartCoroutine(FadeSprite());
+            // Проверяем, запущена ли уже корутина
+            if (_fadeCoroutine == null)
+            {
+                _fadeCoroutine = StartCoroutine(FadeSprite());
+            }
         }
 
         public void StopFadeSprite()
         {
-            StopCoroutine(FadeSprite());
+            // Останавливаем корутину, если она была запущена
+            if (_fadeCoroutine != null)
+            {
+                StopCoroutine(_fadeCoroutine);
+                _fadeCoroutine = null;
+            }
         }
 
         private IEnumerator FadeSprite()

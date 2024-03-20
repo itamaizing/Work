@@ -514,18 +514,31 @@ public abstract class AbilityBase : MonoBehaviour
             if (_distanceToTarget > Distance)
             {
                 TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>().SetColorCircleBackgroundAttack(TargetParent);
+                
+                _targetCircle.GetComponent<SpriteRenderer>().color =
+                    TargetParent.transform.GetChild(0).GetComponent<SpriteRenderer>().color;
+                
+                TargetParent.transform.GetChild(0).GetComponent<BackgroundColorFader>().StartFadeSprite();
+                
                 DrawCircle.lineColor = Color.red;
             }
             else if (_distanceToTarget <= Distance)
             {
                 TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>().SetColorCircleBackgroundPlayer(TargetParent);
+                
+                _targetCircle.GetComponent<SpriteRenderer>().color =
+                    TargetParent.transform.GetChild(0).GetComponent<SpriteRenderer>().color;
+                
+                TargetParent.transform.GetChild(0).GetComponent<BackgroundColorFader>().StartFadeSprite();
+                
                 DrawCircle.lineColor = Color.green;
             }
 
             if (_distanceToTarget <= Distance && AttackType == AttackType.Autoattack && CanDealDamageOrHeal ||
                 _distanceToTarget <= Distance && AttackType == AttackType.OneAttack)
             {
-                TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>().SetColorCircleBackgroundPlayer(TargetParent);
+                //TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>().SetColorCircleBackgroundPlayer(TargetParent);
+                
                 if (_targetCircle == null)
                 {
                     _targetCircle = TargetParent.GetComponent<PlayerMove>().CircleSelect;
