@@ -301,6 +301,8 @@ public abstract class AbilityBase : MonoBehaviour
             {
                 if (_blinkCoroutine == null)
                 {
+                    TargetParent.transform.GetChild(0).gameObject.SetActive(true);
+                    TargetParent.transform.GetChild(0).gameObject.GetComponent<BackgroundColorFader>().StartFadeSprite();
                     _blinkCoroutine = StartCoroutine(Blink());
                 }
 
@@ -340,8 +342,8 @@ public abstract class AbilityBase : MonoBehaviour
         if (_targetCircle != null && TargetParent != Select.GetComponent<SelectObject>().SelectedObject)
         {
             _targetCircle.GetComponent<SpriteRenderer>().color = Color.green;
-            _targetCircle.transform.parent.GetChild(0).gameObject.GetComponent<BackgroundColorSwitcherDisabledEnabled>()
-                .StopSwitching();
+            // _targetCircle.transform.parent.GetChild(0).gameObject.GetComponent<BackgroundColorSwitcherDisabledEnabled>()
+            //     .StopSwitching();
             _targetCircle.transform.parent.GetChild(0).gameObject.SetActive(false);
             _targetCircle.SetActive(false);
         }
@@ -365,6 +367,7 @@ public abstract class AbilityBase : MonoBehaviour
         {
             foreach (GameObject enemy in _enemies)
             {
+                enemy.transform.GetChild(0).gameObject.GetComponent<BackgroundColorFader>().StopFadeSprite();
                 enemy.transform.GetChild(0).gameObject.SetActive(false);
                 enemy.GetComponent<PlayerMove>().CircleSelect.SetActive(false);
             }
@@ -534,10 +537,10 @@ public abstract class AbilityBase : MonoBehaviour
                     IsActiveAbility = true;
 
                     HandleDealDamageOrHeal();
-
+Debug.Log("Включение мерцания красного");
                     //Включение корутины мерцания красного.
-                    TargetParent.transform.GetChild(0).GetComponent<BackgroundColorSwitcherDisabledEnabled>()
-                        .StartSwitching();
+                    // TargetParent.transform.GetChild(0).GetComponent<BackgroundColorSwitcherDisabledEnabled>()
+                    //     .StartSwitching();
 
                     if (_isLastAbility == false && lastAbility != null)
                     {
@@ -718,7 +721,6 @@ public abstract class AbilityBase : MonoBehaviour
                     DrawCircle.lineColor.b, alpha);
                 DrawCircle.lineRenderer.endColor = new Color(DrawCircle.lineColor.r, DrawCircle.lineColor.g,
                     DrawCircle.lineColor.b, alpha);
-
                 yield return null;
             }
 
@@ -744,7 +746,6 @@ public abstract class AbilityBase : MonoBehaviour
                     DrawCircle.lineColor.b, alpha);
                 DrawCircle.lineRenderer.endColor = new Color(DrawCircle.lineColor.r, DrawCircle.lineColor.g,
                     DrawCircle.lineColor.b, alpha);
-
                 yield return null;
             }
         }
