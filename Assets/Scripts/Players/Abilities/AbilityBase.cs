@@ -141,6 +141,7 @@ public abstract class AbilityBase : MonoBehaviour
             Color newSelectColor = CircleSelect.GetComponent<SpriteRenderer>().color;
             newSelectColor.a = 0.7f;
             CircleSelect.GetComponent<SpriteRenderer>().color = newSelectColor;
+            //DrawCircle.lineColor = Color.black;
         }
 
         if (Input.GetKeyDown(ActivationKey) && ToggleAbility.gameObject.activeSelf && Abilities.gameObject.activeSelf &&
@@ -252,10 +253,8 @@ public abstract class AbilityBase : MonoBehaviour
             {
                 if (collider.CompareTag(targetTag) && collider.GetComponent<PlayerMove>())
                 {
-                    //DrawCircle.lineColor = Color.green;
                     collider.GetComponent<PlayerMove>().CircleSelect.SetActive(true);
                     _enemies.Add(collider.gameObject);
-                    //Debug.Log($"Противник в зоне поражения: {collider.name}");
                     collider.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
                         .SetColorCircleBackgroundPlayer(collider);
                 }
@@ -302,11 +301,6 @@ public abstract class AbilityBase : MonoBehaviour
 
             if (AttackType == AttackType.Autoattack)
             {
-                // if (_IsEnemyDetected)
-                // {
-                //     Debug.Log("Enemy Detected");
-                //     DrawCircle.lineColor = Color.green;
-                // }
                 if (_blinkCoroutine == null)
                 {
                     TargetParent.transform.GetChild(0).gameObject.SetActive(true);
@@ -364,11 +358,6 @@ public abstract class AbilityBase : MonoBehaviour
 
         if (AttackType == AttackType.Autoattack)
         {
-            // if (!_IsEnemyDetected)
-            // {
-            //     Debug.Log("Not Enemy");
-            //     DrawCircle.lineColor = Color.red;
-            // }
             IconAbilityAutoattack.SetActive(false);
             if (_blinkCoroutine != null)
             {
@@ -522,12 +511,21 @@ public abstract class AbilityBase : MonoBehaviour
         {
             _distanceToTarget = (TargetParent.transform.position - _player.transform.position).magnitude;
 
+            if (_distanceToTarget > Distance)
+            {
+                TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>().SetColorCircleBackgroundAttack(TargetParent);
+                DrawCircle.lineColor = Color.red;
+            }
+            else if (_distanceToTarget <= Distance)
+            {
+                TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>().SetColorCircleBackgroundPlayer(TargetParent);
+                DrawCircle.lineColor = Color.green;
+            }
+
             if (_distanceToTarget <= Distance && AttackType == AttackType.Autoattack && CanDealDamageOrHeal ||
                 _distanceToTarget <= Distance && AttackType == AttackType.OneAttack)
             {
-                // _targetCircle.transform.parent.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
-                //     .SetColorCircleBackgroundPlayer(TargetParent); //Заглушка на зелёный цвет.
-
+                TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>().SetColorCircleBackgroundPlayer(TargetParent);
                 if (_targetCircle == null)
                 {
                     _targetCircle = TargetParent.GetComponent<PlayerMove>().CircleSelect;
