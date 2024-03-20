@@ -27,6 +27,7 @@ namespace Players.CircleBackgroundColor
 
         public void SetColorCircleBackgroundPlayer(GameObject targetParent)
         {
+            Debug.Log("Меняем на зелёный");
             targetParent.transform.GetChild(0).gameObject.SetActive(true);
             SpriteRenderer spriteRenderer = targetParent.transform.GetChild(0).GetComponent<SpriteRenderer>();
 

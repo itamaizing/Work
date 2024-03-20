@@ -61,6 +61,7 @@ public abstract class AbilityBase : MonoBehaviour
 
     protected abstract KeyCode ActivationKey { get; }
 
+    private bool _IsEnemyDetected;
     protected bool _isPrefab;
     protected bool _isSelect = true;
     protected bool _cursorIsActive = true;
@@ -285,10 +286,12 @@ public abstract class AbilityBase : MonoBehaviour
 
             if (_enemies.Count == 0)
             {
+                //_IsEnemyDetected = false;
                 DrawCircle.lineColor = Color.red;
             }
             else if (_enemies.Count > 0)
             {
+                //_IsEnemyDetected = true;
                 DrawCircle.lineColor = Color.green;
             }
         }
@@ -299,10 +302,16 @@ public abstract class AbilityBase : MonoBehaviour
 
             if (AttackType == AttackType.Autoattack)
             {
+                // if (_IsEnemyDetected)
+                // {
+                //     Debug.Log("Enemy Detected");
+                //     DrawCircle.lineColor = Color.green;
+                // }
                 if (_blinkCoroutine == null)
                 {
                     TargetParent.transform.GetChild(0).gameObject.SetActive(true);
-                    TargetParent.transform.GetChild(0).gameObject.GetComponent<BackgroundColorFader>().StartFadeSprite();
+                    TargetParent.transform.GetChild(0).gameObject.GetComponent<BackgroundColorFader>()
+                        .StartFadeSprite();
                     _blinkCoroutine = StartCoroutine(Blink());
                 }
 
@@ -355,6 +364,11 @@ public abstract class AbilityBase : MonoBehaviour
 
         if (AttackType == AttackType.Autoattack)
         {
+            // if (!_IsEnemyDetected)
+            // {
+            //     Debug.Log("Not Enemy");
+            //     DrawCircle.lineColor = Color.red;
+            // }
             IconAbilityAutoattack.SetActive(false);
             if (_blinkCoroutine != null)
             {
@@ -511,6 +525,9 @@ public abstract class AbilityBase : MonoBehaviour
             if (_distanceToTarget <= Distance && AttackType == AttackType.Autoattack && CanDealDamageOrHeal ||
                 _distanceToTarget <= Distance && AttackType == AttackType.OneAttack)
             {
+                // _targetCircle.transform.parent.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
+                //     .SetColorCircleBackgroundPlayer(TargetParent); //Заглушка на зелёный цвет.
+
                 if (_targetCircle == null)
                 {
                     _targetCircle = TargetParent.GetComponent<PlayerMove>().CircleSelect;
@@ -537,7 +554,7 @@ public abstract class AbilityBase : MonoBehaviour
                     IsActiveAbility = true;
 
                     HandleDealDamageOrHeal();
-Debug.Log("Включение мерцания красного");
+                    Debug.Log("Включение мерцания красного");
                     //Включение корутины мерцания красного.
                     // TargetParent.transform.GetChild(0).GetComponent<BackgroundColorSwitcherDisabledEnabled>()
                     //     .StartSwitching();
