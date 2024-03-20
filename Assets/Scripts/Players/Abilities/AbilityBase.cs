@@ -303,9 +303,9 @@ public abstract class AbilityBase : MonoBehaviour
             {
                 if (_blinkCoroutine == null)
                 {
-                    TargetParent.transform.GetChild(0).gameObject.SetActive(true);
-                    TargetParent.transform.GetChild(0).gameObject.GetComponent<BackgroundColorFader>()
-                        .StartFadeSprite();
+                    // TargetParent.transform.GetChild(0).gameObject.SetActive(true);
+                    // TargetParent.transform.GetChild(0).gameObject.GetComponent<BackgroundColorFader>()
+                    //     .StartFadeSprite();
                     _blinkCoroutine = StartCoroutine(Blink());
                 }
 
