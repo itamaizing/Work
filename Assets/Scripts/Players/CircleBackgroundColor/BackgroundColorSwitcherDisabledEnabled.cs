@@ -8,6 +8,7 @@ namespace Players.CircleBackgroundColor
     {
         [SerializeField] private SoBackgroundColorSwitcherDisabledEnabledData _soSwitcher;
         
+        
         private bool isObjectActive = true;
         private bool isSwitching = true;
         private bool isRunning = false;
@@ -34,6 +35,7 @@ namespace Players.CircleBackgroundColor
                 isSwitching = true;
                 isRunning = true;
                 InvokeRepeating("SwitchObject", 0, _soSwitcher.SwitchInterval);
+                Debug.Log("Репитинг работает");
             }
         }
 
@@ -43,6 +45,7 @@ namespace Players.CircleBackgroundColor
             isSwitching = false;
             isRunning = false;
             CancelInvoke("SwitchObject");
+            Debug.Log("Репитинг не работает");
         }
     }
 }

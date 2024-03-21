@@ -1,4 +1,5 @@
 ﻿using System;
+using GlobalEvents;
 using UnityEngine;
 
 namespace Players.CircleBackgroundColor
@@ -9,6 +10,7 @@ namespace Players.CircleBackgroundColor
         [SerializeField] private SoCircleColorBackgroundSettings _soCircleColorBackgroundAttackSettings;
         [SerializeField] private SoCircleColorBackgroundSettings _soCircleSelect;
         [SerializeField] private SoCircleColorBackgroundSettings _soCircleSelectAttack;
+
 
         private bool colorBackgroundPlayerChanged = false;
         private bool colorBackgroundAttackChanged = false;
@@ -22,22 +24,25 @@ namespace Players.CircleBackgroundColor
 
         public SoCircleColorBackgroundSettings soCircleSelectAttack => _soCircleSelectAttack;
 
+        public void ResetColor()
+        {
+            colorBackgroundPlayerChanged = false;
+            colorBackgroundAttackChanged = false;
+        }
+
         public void SetColorCircleBackgroundPlayer(Collider2D collider)
         {
-            if (!colorBackgroundPlayerChanged)
+            collider.transform.GetChild(0).gameObject.SetActive(true);
+            SpriteRenderer spriteRenderer = collider.transform.GetChild(0).GetComponent<SpriteRenderer>();
+
+            if (spriteRenderer != null)
             {
-                collider.transform.GetChild(0).gameObject.SetActive(true);
-                SpriteRenderer spriteRenderer = collider.transform.GetChild(0).GetComponent<SpriteRenderer>();
-
-                if (spriteRenderer != null)
-                {
-                    Color newColor = soCircleColorBackgroundSettings.SpriteColor;
-                    newColor.a = soCircleColorBackgroundSettings.Alpha;
-                    spriteRenderer.color = newColor;
-                }
-
-                colorBackgroundPlayerChanged = true;
+                Color newColor = soCircleColorBackgroundSettings.SpriteColor;
+                newColor.a = soCircleColorBackgroundSettings.Alpha;
+                spriteRenderer.color = newColor;
             }
+
+            //colorBackgroundPlayerChanged = true;
         }
 
         public void SetColorCircleBackgroundPlayer(GameObject targetParent)
@@ -76,11 +81,6 @@ namespace Players.CircleBackgroundColor
 
                 colorBackgroundAttackChanged = true;
             }
-        }
-
-        public void DisableCircleBackground()
-        {
-            GetComponent<Collider>().transform.GetChild(0).gameObject.SetActive(false);
         }
     }
 }

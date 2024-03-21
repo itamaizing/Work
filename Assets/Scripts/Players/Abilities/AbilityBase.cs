@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using GlobalEvents;
 using Players.CircleBackgroundColor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -61,8 +62,7 @@ public abstract class AbilityBase : MonoBehaviour
 
     protected abstract KeyCode ActivationKey { get; }
 
-    private bool isAttacking = false;
-    private bool isDefending = false;
+
     private bool _IsEnemyDetected;
     protected bool _isPrefab;
     protected bool _isSelect = true;
@@ -189,6 +189,8 @@ public abstract class AbilityBase : MonoBehaviour
 
         if (_player.GetComponent<PlayerMove>().IsSelect && Input.GetMouseButtonDown(1) && _cast == false)
         {
+            StopBackgroundSwitcherEvent.SendStartStopBackgroundSwitcher();
+            
             Vector2 cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(cursorPosition, Vector2.zero);
 
@@ -305,9 +307,6 @@ public abstract class AbilityBase : MonoBehaviour
             {
                 if (_blinkCoroutine == null)
                 {
-                    // TargetParent.transform.GetChild(0).gameObject.SetActive(true);
-                    // TargetParent.transform.GetChild(0).gameObject.GetComponent<BackgroundColorFader>()
-                    //     .StartFadeSprite();
                     _blinkCoroutine = StartCoroutine(Blink());
                 }
 
@@ -372,7 +371,7 @@ public abstract class AbilityBase : MonoBehaviour
         {
             foreach (GameObject enemy in _enemies)
             {
-                enemy.transform.GetChild(0).gameObject.GetComponent<BackgroundColorFader>().StopFadeSprite();
+                //enemy.transform.GetChild(0).gameObject.GetComponent<BackgroundColorFader>().StopFadeSprite();
                 enemy.transform.GetChild(0).gameObject.SetActive(false);
                 enemy.GetComponent<PlayerMove>().CircleSelect.SetActive(false);
             }

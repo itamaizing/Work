@@ -314,7 +314,8 @@ public class ThreeMeleeAttack : AbilityBase
     private IEnumerator CastJump()
     {
         _player.GetComponent<PlayerMove>().CanMove = false;
-
+        
+        
         if (Abilities.GetComponent<GlobalCooldown>())
         {
             Abilities.GetComponent<GlobalCooldown>().StartGlobalCooldown();
