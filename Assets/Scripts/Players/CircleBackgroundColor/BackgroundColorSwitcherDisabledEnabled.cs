@@ -1,14 +1,21 @@
-﻿using UnityEngine;
+﻿using System;
+using GlobalEvents;
+using UnityEngine;
 
 namespace Players.CircleBackgroundColor
 {
     public class BackgroundColorSwitcherDisabledEnabled : MonoBehaviour
     {
         [SerializeField] private SoBackgroundColorSwitcherDisabledEnabledData _soSwitcher;
-
+        
         private bool isObjectActive = true;
         private bool isSwitching = true;
         private bool isRunning = false;
+
+        private void Awake()
+        {
+            StopBackgroundSwitcherEvent.OnStartStopBackgroundSwitcher.AddListener(StopSwitching);
+        }
 
         private void SwitchObject()
         {
@@ -22,7 +29,7 @@ namespace Players.CircleBackgroundColor
         //Запуск включения и выключения компонента с красным фоном на объекте.
         public void StartSwitching()
         {
-            if (!isRunning)
+            if (!isRunning&& isSwitching)
             {
                 isSwitching = true;
                 isRunning = true;

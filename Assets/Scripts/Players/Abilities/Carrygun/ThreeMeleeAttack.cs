@@ -1,4 +1,5 @@
 using System.Collections;
+using GlobalEvents;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -360,6 +361,7 @@ public class ThreeMeleeAttack : AbilityBase
         ToggleAbility.isOn = false;
         ToggleAbility.enabled = true;
         _canJump = false;
+        StopBackgroundSwitcherEvent.SendStartStopBackgroundSwitcher();
         Debug.Log("Конец атаки");
         yield break;
     }

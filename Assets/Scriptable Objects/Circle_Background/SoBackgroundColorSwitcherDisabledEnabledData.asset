@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98cbbb4d717d4e8e84806b728733c280, type: 3}
   m_Name: SoBackgroundColorSwitcherDisabledEnabledData
   m_EditorClassIdentifier: 
-  _switchInterval: 0.1
+  _switchInterval: 1

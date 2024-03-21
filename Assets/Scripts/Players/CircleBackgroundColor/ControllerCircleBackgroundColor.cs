@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Players.CircleBackgroundColor
 {
@@ -8,6 +9,9 @@ namespace Players.CircleBackgroundColor
         [SerializeField] private SoCircleColorBackgroundSettings _soCircleColorBackgroundAttackSettings;
         [SerializeField] private SoCircleColorBackgroundSettings _soCircleSelect;
         [SerializeField] private SoCircleColorBackgroundSettings _soCircleSelectAttack;
+
+        private bool colorBackgroundPlayerChanged = false;
+        private bool colorBackgroundAttackChanged = false;
 
         public SoCircleColorBackgroundSettings soCircleColorBackgroundAttackSettings =>
             _soCircleColorBackgroundAttackSettings;
@@ -20,42 +24,57 @@ namespace Players.CircleBackgroundColor
 
         public void SetColorCircleBackgroundPlayer(Collider2D collider)
         {
-            collider.transform.GetChild(0).gameObject.SetActive(true);
-            SpriteRenderer spriteRenderer = collider.transform.GetChild(0).GetComponent<SpriteRenderer>();
-
-            if (spriteRenderer != null)
+            if (!colorBackgroundPlayerChanged)
             {
-                Color newColor = soCircleColorBackgroundSettings.SpriteColor;
-                newColor.a = soCircleColorBackgroundSettings.Alpha;
-                spriteRenderer.color = newColor;
+                collider.transform.GetChild(0).gameObject.SetActive(true);
+                SpriteRenderer spriteRenderer = collider.transform.GetChild(0).GetComponent<SpriteRenderer>();
+
+                if (spriteRenderer != null)
+                {
+                    Color newColor = soCircleColorBackgroundSettings.SpriteColor;
+                    newColor.a = soCircleColorBackgroundSettings.Alpha;
+                    spriteRenderer.color = newColor;
+                }
+
+                colorBackgroundPlayerChanged = true;
             }
         }
 
         public void SetColorCircleBackgroundPlayer(GameObject targetParent)
         {
-            Debug.Log("Меняем на зелёный");
-            targetParent.transform.GetChild(0).gameObject.SetActive(true);
-            SpriteRenderer spriteRenderer = targetParent.transform.GetChild(0).GetComponent<SpriteRenderer>();
-
-            if (spriteRenderer != null)
+            if (!colorBackgroundPlayerChanged)
             {
-                Color newColor = soCircleColorBackgroundSettings.SpriteColor;
-                newColor.a = soCircleColorBackgroundSettings.Alpha;
-                spriteRenderer.color = newColor;
+                Debug.Log("Меняем на зелёный");
+                targetParent.transform.GetChild(0).gameObject.SetActive(true);
+                SpriteRenderer spriteRenderer = targetParent.transform.GetChild(0).GetComponent<SpriteRenderer>();
+
+                if (spriteRenderer != null)
+                {
+                    Color newColor = soCircleColorBackgroundSettings.SpriteColor;
+                    newColor.a = soCircleColorBackgroundSettings.Alpha;
+                    spriteRenderer.color = newColor;
+                }
+
+                colorBackgroundPlayerChanged = true;
             }
         }
 
         public void SetColorCircleBackgroundAttack(GameObject targetParent)
         {
-            Debug.Log("Меняем цвет");
-            targetParent.transform.GetChild(0).gameObject.SetActive(true);
-            SpriteRenderer targetSpriteRenderer = targetParent.transform.GetChild(0).GetComponent<SpriteRenderer>();
-
-            if (targetSpriteRenderer != null)
+            if (!colorBackgroundAttackChanged)
             {
-                Color newColor = soCircleColorBackgroundAttackSettings.SpriteColor;
-                newColor.a = soCircleColorBackgroundAttackSettings.Alpha;
-                targetSpriteRenderer.color = newColor;
+                Debug.Log("Меняем цвет");
+                targetParent.transform.GetChild(0).gameObject.SetActive(true);
+                SpriteRenderer targetSpriteRenderer = targetParent.transform.GetChild(0).GetComponent<SpriteRenderer>();
+
+                if (targetSpriteRenderer != null)
+                {
+                    Color newColor = soCircleColorBackgroundAttackSettings.SpriteColor;
+                    newColor.a = soCircleColorBackgroundAttackSettings.Alpha;
+                    targetSpriteRenderer.color = newColor;
+                }
+
+                colorBackgroundAttackChanged = true;
             }
         }
 
