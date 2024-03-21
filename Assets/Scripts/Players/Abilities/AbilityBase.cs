@@ -513,27 +513,30 @@ public abstract class AbilityBase : MonoBehaviour
 
             if (_distanceToTarget > Distance)
             {
-                TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>().SetColorCircleBackgroundAttack(TargetParent);
-                
+                //TargetParent.transform.GetChild(0).GetComponent<BackgroundColorFader>().StopFadeSprite();
+                TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
+                    .SetColorCircleBackgroundAttack(TargetParent);
+
                 _targetCircle.GetComponent<SpriteRenderer>().color =
                     TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
                         .soCircleSelectAttack.SpriteColor;
-                
-                TargetParent.transform.GetChild(0).GetComponent<BackgroundColorFader>().StartFadeSprite();
-                
+
+                //TargetParent.transform.GetChild(0).GetComponent<BackgroundColorFader>().StartFadeSprite();
+
                 DrawCircle.lineColor = Color.red;
             }
             else if (_distanceToTarget <= Distance)
             {
+                //TargetParent.transform.GetChild(0).GetComponent<BackgroundColorFader>().StopFadeSprite();
+
                 TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>().SetColorCircleBackgroundPlayer(TargetParent);
-                
 
                 _targetCircle.GetComponent<SpriteRenderer>().color =
                     TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
                         .soCircleSelect.SpriteColor;
-                
-                TargetParent.transform.GetChild(0).GetComponent<BackgroundColorFader>().StartFadeSprite();
-                
+
+                //TargetParent.transform.GetChild(0).GetComponent<BackgroundColorFader>().StartFadeSprite();
+
                 DrawCircle.lineColor = Color.green;
             }
 
@@ -541,7 +544,7 @@ public abstract class AbilityBase : MonoBehaviour
                 _distanceToTarget <= Distance && AttackType == AttackType.OneAttack)
             {
                 //TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>().SetColorCircleBackgroundPlayer(TargetParent);
-                
+
                 if (_targetCircle == null)
                 {
                     _targetCircle = TargetParent.GetComponent<PlayerMove>().CircleSelect;
@@ -569,6 +572,7 @@ public abstract class AbilityBase : MonoBehaviour
 
                     HandleDealDamageOrHeal();
                     Debug.Log("Включение мерцания красного");
+
                     //Включение корутины мерцания красного.
                     // TargetParent.transform.GetChild(0).GetComponent<BackgroundColorSwitcherDisabledEnabled>()
                     //     .StartSwitching();
@@ -600,6 +604,7 @@ public abstract class AbilityBase : MonoBehaviour
                 .GetComponent<ControllerCircleBackgroundColor>().soCircleColorBackgroundAttackSettings.SpriteColor;
             TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
                 .SetColorCircleBackgroundAttack(TargetParent); // Помечаем цель вне радиуса атаки.
+            TargetParent.transform.GetChild(0).GetComponent<BackgroundColorFader>().StartFadeSprite();
         }
     }
 
