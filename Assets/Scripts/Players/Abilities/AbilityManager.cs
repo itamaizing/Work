@@ -34,7 +34,6 @@ public class AbilityManager : MonoBehaviour
 
         if (abilityQueue.Count == 1 || abilityQueueAutoattack.Count == 1) // Если это первая способность в очереди, начните ее выполнение
         {
-
             ExecuteNextAbility();
         }
     }

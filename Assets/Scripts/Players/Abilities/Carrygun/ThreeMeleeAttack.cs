@@ -1,4 +1,5 @@
 using System.Collections;
+using GlobalEvents;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -147,6 +148,8 @@ public class ThreeMeleeAttack : AbilityBase
             {
                 Destroy(NewAbilityPrefab);
             }
+
+            //Debug.Log("Помечен");
         }
     }
 
@@ -185,6 +188,7 @@ public class ThreeMeleeAttack : AbilityBase
         {
             ToggleAbility.enabled = false;
             _player.GetComponent<PlayerMove>().CanMove = false;
+
 
             if (!_isInitialized)
             {
@@ -310,7 +314,8 @@ public class ThreeMeleeAttack : AbilityBase
     private IEnumerator CastJump()
     {
         _player.GetComponent<PlayerMove>().CanMove = false;
-
+        
+        
         if (Abilities.GetComponent<GlobalCooldown>())
         {
             Abilities.GetComponent<GlobalCooldown>().StartGlobalCooldown();
@@ -357,7 +362,8 @@ public class ThreeMeleeAttack : AbilityBase
         ToggleAbility.isOn = false;
         ToggleAbility.enabled = true;
         _canJump = false;
-
+        StopBackgroundSwitcherEvent.SendStartStopBackgroundSwitcher();
+        Debug.Log("Конец атаки");
         yield break;
     }
 }

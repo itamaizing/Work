@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using GlobalEvents;
 using Players.CircleBackgroundColor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -61,6 +62,8 @@ public abstract class AbilityBase : MonoBehaviour
 
     protected abstract KeyCode ActivationKey { get; }
 
+
+    private bool _IsEnemyDetected;
     protected bool _isPrefab;
     protected bool _isSelect = true;
     protected bool _cursorIsActive = true;
@@ -140,6 +143,7 @@ public abstract class AbilityBase : MonoBehaviour
             Color newSelectColor = CircleSelect.GetComponent<SpriteRenderer>().color;
             newSelectColor.a = 0.7f;
             CircleSelect.GetComponent<SpriteRenderer>().color = newSelectColor;
+            //DrawCircle.lineColor = Color.black;
         }
 
         if (Input.GetKeyDown(ActivationKey) && ToggleAbility.gameObject.activeSelf && Abilities.gameObject.activeSelf &&
@@ -164,6 +168,7 @@ public abstract class AbilityBase : MonoBehaviour
     protected virtual void HandleToggleAbilityOn()
     {
         // Включенный ToggleAbility
+
         if (_player.GetComponent<PlayerMove>().IsSelect == false)
         {
             if (TargetParent == null)
@@ -184,6 +189,8 @@ public abstract class AbilityBase : MonoBehaviour
 
         if (_player.GetComponent<PlayerMove>().IsSelect && Input.GetMouseButtonDown(1) && _cast == false)
         {
+            StopBackgroundSwitcherEvent.SendStartStopBackgroundSwitcher();
+
             Vector2 cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(cursorPosition, Vector2.zero);
 
@@ -252,7 +259,6 @@ public abstract class AbilityBase : MonoBehaviour
                 {
                     collider.GetComponent<PlayerMove>().CircleSelect.SetActive(true);
                     _enemies.Add(collider.gameObject);
-
                     collider.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
                         .SetColorCircleBackgroundPlayer(collider);
                 }
@@ -279,6 +285,17 @@ public abstract class AbilityBase : MonoBehaviour
                 enemyToRemove.transform.GetChild(0).gameObject.SetActive(false);
                 enemyToRemove.GetComponent<PlayerMove>().CircleSelect.SetActive(false);
                 _enemies.Remove(enemyToRemove);
+            }
+
+            if (_enemies.Count == 0)
+            {
+                //_IsEnemyDetected = false;
+                DrawCircle.lineColor = Color.red;
+            }
+            else if (_enemies.Count > 0)
+            {
+                //_IsEnemyDetected = true;
+                DrawCircle.lineColor = Color.green;
             }
         }
 
@@ -328,6 +345,10 @@ public abstract class AbilityBase : MonoBehaviour
 
         if (_targetCircle != null && TargetParent != Select.GetComponent<SelectObject>().SelectedObject)
         {
+            _targetCircle.GetComponent<SpriteRenderer>().color = Color.green;
+            // _targetCircle.transform.parent.GetChild(0).gameObject.GetComponent<BackgroundColorSwitcherDisabledEnabled>()
+            //     .StopSwitching();
+            _targetCircle.transform.parent.GetChild(0).gameObject.SetActive(false);
             _targetCircle.SetActive(false);
         }
 
@@ -350,6 +371,7 @@ public abstract class AbilityBase : MonoBehaviour
         {
             foreach (GameObject enemy in _enemies)
             {
+                //enemy.transform.GetChild(0).gameObject.GetComponent<BackgroundColorFader>().StopFadeSprite();
                 enemy.transform.GetChild(0).gameObject.SetActive(false);
                 enemy.GetComponent<PlayerMove>().CircleSelect.SetActive(false);
             }
@@ -368,6 +390,7 @@ public abstract class AbilityBase : MonoBehaviour
         {
             DrawCircle.Clear();
         }
+
 
         _targetCircle = null;
         CanDrawCircle = true;
@@ -489,9 +512,41 @@ public abstract class AbilityBase : MonoBehaviour
         {
             _distanceToTarget = (TargetParent.transform.position - _player.transform.position).magnitude;
 
+            if (_distanceToTarget > Distance)
+            {
+                TargetParent.transform.GetChild(0).GetComponent<BackgroundColorSwitcherDisabledEnabled>()
+                    .StartSwitching();
+
+                TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
+                    .SetColorCircleBackgroundAttack(TargetParent);
+
+                _targetCircle.GetComponent<SpriteRenderer>().color =
+                    TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
+                        .soCircleSelectAttack.SpriteColor;
+
+
+                DrawCircle.lineColor = Color.red;
+            }
+            else if (_distanceToTarget <= Distance)
+            {
+                TargetParent.transform.GetChild(0).GetComponent<BackgroundColorSwitcherDisabledEnabled>()
+                    .StartSwitching();
+
+                TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
+                    .SetColorCircleBackgroundPlayer(TargetParent);
+
+                _targetCircle.GetComponent<SpriteRenderer>().color =
+                    TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
+                        .soCircleSelect.SpriteColor;
+
+                DrawCircle.lineColor = Color.green;
+            }
+
             if (_distanceToTarget <= Distance && AttackType == AttackType.Autoattack && CanDealDamageOrHeal ||
                 _distanceToTarget <= Distance && AttackType == AttackType.OneAttack)
             {
+                //TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>().SetColorCircleBackgroundPlayer(TargetParent);
+
                 if (_targetCircle == null)
                 {
                     _targetCircle = TargetParent.GetComponent<PlayerMove>().CircleSelect;
@@ -500,6 +555,8 @@ public abstract class AbilityBase : MonoBehaviour
                 if (!_targetCircle.activeSelf && _player == Select.GetComponent<SelectObject>().SelectedObject)
                 {
                     _targetCircle.SetActive(true);
+                    _targetCircle.GetComponent<SpriteRenderer>().color = TargetParent.transform.GetChild(0)
+                        .GetComponent<ControllerCircleBackgroundColor>().soCircleSelect.SpriteColor;
                 }
 
                 if (_player != Select.GetComponent<SelectObject>().SelectedObject && _targetCircle.activeSelf &&
@@ -516,6 +573,11 @@ public abstract class AbilityBase : MonoBehaviour
                     IsActiveAbility = true;
 
                     HandleDealDamageOrHeal();
+                    Debug.Log("Включение мерцания красного");
+
+                    //Включение корутины мерцания красного.
+                    // TargetParent.transform.GetChild(0).GetComponent<BackgroundColorSwitcherDisabledEnabled>()
+                    //     .StartSwitching();
 
                     if (_isLastAbility == false && lastAbility != null)
                     {
@@ -538,6 +600,14 @@ public abstract class AbilityBase : MonoBehaviour
             {
                 _targetCircle.SetActive(false);
             }
+
+            _targetCircle.SetActive(true);
+            _targetCircle.GetComponent<SpriteRenderer>().color = TargetParent.transform.GetChild(0)
+                .GetComponent<ControllerCircleBackgroundColor>().soCircleColorBackgroundAttackSettings.SpriteColor;
+            TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
+                .SetColorCircleBackgroundAttack(TargetParent); // Помечаем цель вне радиуса атаки.
+            //TargetParent.transform.GetChild(0).GetComponent<BackgroundColorFader>().StartFadeSprite();
+            TargetParent.transform.GetChild(0).GetComponent<BackgroundColorSwitcherDisabledEnabled>().StartSwitching();
         }
     }
 
@@ -690,7 +760,6 @@ public abstract class AbilityBase : MonoBehaviour
                     DrawCircle.lineColor.b, alpha);
                 DrawCircle.lineRenderer.endColor = new Color(DrawCircle.lineColor.r, DrawCircle.lineColor.g,
                     DrawCircle.lineColor.b, alpha);
-
                 yield return null;
             }
 
@@ -716,7 +785,6 @@ public abstract class AbilityBase : MonoBehaviour
                     DrawCircle.lineColor.b, alpha);
                 DrawCircle.lineRenderer.endColor = new Color(DrawCircle.lineColor.r, DrawCircle.lineColor.g,
                     DrawCircle.lineColor.b, alpha);
-
                 yield return null;
             }
         }

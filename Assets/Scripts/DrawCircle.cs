@@ -12,6 +12,8 @@ public class DrawCircle : MonoBehaviour
     private void Update()
     {
         transform.localPosition = Vector3.zero;
+        lineRenderer.startColor = lineColor;
+        lineRenderer.endColor = lineColor;
     }
 
     public void Draw(float radius)
