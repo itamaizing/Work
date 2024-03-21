@@ -6,11 +6,17 @@ namespace Players.CircleBackgroundColor
     {
         [SerializeField] private SoCircleColorBackgroundSettings _soCircleColorBackgroundSettings;
         [SerializeField] private SoCircleColorBackgroundSettings _soCircleColorBackgroundAttackSettings;
+        [SerializeField] private SoCircleColorBackgroundSettings _soCircleSelect;
+        [SerializeField] private SoCircleColorBackgroundSettings _soCircleSelectAttack;
 
         public SoCircleColorBackgroundSettings soCircleColorBackgroundAttackSettings =>
             _soCircleColorBackgroundAttackSettings;
 
         public SoCircleColorBackgroundSettings soCircleColorBackgroundSettings => _soCircleColorBackgroundSettings;
+
+        public SoCircleColorBackgroundSettings soCircleSelect => _soCircleSelect;
+
+        public SoCircleColorBackgroundSettings soCircleSelectAttack => _soCircleSelectAttack;
 
         public void SetColorCircleBackgroundPlayer(Collider2D collider)
         {

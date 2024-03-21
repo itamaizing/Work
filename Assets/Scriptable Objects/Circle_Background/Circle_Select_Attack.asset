@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 990c5dcbf0ef4feeac890e9eb7fe6e53, type: 3}
-  m_Name: Circle Color Background Settings
+  m_Name: Circle_Select_Attack
   m_EditorClassIdentifier: 
-  _spriteColor: {r: 0, g: 1, b: 0.024377823, a: 1}
-  _alpha: 0.368
+  _spriteColor: {r: 1, g: 0, b: 0.047058824, a: 0.6666667}
+  _alpha: 1
   _flickerColorSpeed: 0.3

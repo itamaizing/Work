@@ -516,7 +516,8 @@ public abstract class AbilityBase : MonoBehaviour
                 TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>().SetColorCircleBackgroundAttack(TargetParent);
                 
                 _targetCircle.GetComponent<SpriteRenderer>().color =
-                    TargetParent.transform.GetChild(0).GetComponent<SpriteRenderer>().color;
+                    TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
+                        .soCircleSelectAttack.SpriteColor;
                 
                 TargetParent.transform.GetChild(0).GetComponent<BackgroundColorFader>().StartFadeSprite();
                 
@@ -526,8 +527,10 @@ public abstract class AbilityBase : MonoBehaviour
             {
                 TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>().SetColorCircleBackgroundPlayer(TargetParent);
                 
+
                 _targetCircle.GetComponent<SpriteRenderer>().color =
-                    TargetParent.transform.GetChild(0).GetComponent<SpriteRenderer>().color;
+                    TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
+                        .soCircleSelect.SpriteColor;
                 
                 TargetParent.transform.GetChild(0).GetComponent<BackgroundColorFader>().StartFadeSprite();
                 
@@ -548,7 +551,7 @@ public abstract class AbilityBase : MonoBehaviour
                 {
                     _targetCircle.SetActive(true);
                     _targetCircle.GetComponent<SpriteRenderer>().color = TargetParent.transform.GetChild(0)
-                        .GetComponent<ControllerCircleBackgroundColor>().soCircleColorBackgroundSettings.SpriteColor;
+                        .GetComponent<ControllerCircleBackgroundColor>().soCircleSelect.SpriteColor;
                 }
 
                 if (_player != Select.GetComponent<SelectObject>().SelectedObject && _targetCircle.activeSelf &&
