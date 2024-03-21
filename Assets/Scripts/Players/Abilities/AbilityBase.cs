@@ -190,7 +190,7 @@ public abstract class AbilityBase : MonoBehaviour
         if (_player.GetComponent<PlayerMove>().IsSelect && Input.GetMouseButtonDown(1) && _cast == false)
         {
             StopBackgroundSwitcherEvent.SendStartStopBackgroundSwitcher();
-            
+
             Vector2 cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(cursorPosition, Vector2.zero);
 

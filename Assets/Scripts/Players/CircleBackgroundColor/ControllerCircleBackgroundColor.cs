@@ -1,6 +1,4 @@
-﻿using System;
-using GlobalEvents;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Players.CircleBackgroundColor
 {
@@ -60,6 +58,7 @@ namespace Players.CircleBackgroundColor
                     spriteRenderer.color = newColor;
                 }
 
+                colorBackgroundAttackChanged = false;
                 colorBackgroundPlayerChanged = true;
             }
         }
@@ -79,6 +78,7 @@ namespace Players.CircleBackgroundColor
                     targetSpriteRenderer.color = newColor;
                 }
 
+                colorBackgroundPlayerChanged = false;
                 colorBackgroundAttackChanged = true;
             }
         }
