@@ -118,6 +118,7 @@ public class FourMeleeAttack : AbilityBase
         if (Input.GetMouseButtonDown(0) && _player.GetComponent<PlayerMove>().IsSelect &&
             Abilities.gameObject.activeSelf && ToggleAbility.enabled == true)
         {
+            Debug.Log("Тыкнули в землю");
             HandleLeftMouseButtonToggle();
         }
 
