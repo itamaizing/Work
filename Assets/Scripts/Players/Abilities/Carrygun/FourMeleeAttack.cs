@@ -25,6 +25,7 @@ public class FourMeleeAttack : AbilityBase
 
     public event FourthAbilityHandler FourthAbilityEvent;
 
+    private string _tentaclePrefabTag = "TentaclePrefab";
     private float moveSpeed = 0.095f;
     private float acceleration = 0.095f;
     private float _distancePlayer;
@@ -61,6 +62,7 @@ public class FourMeleeAttack : AbilityBase
 
         healthOriginal = transform.parent.GetComponent<HealthPlayer>().MaxHealth;
         speedOriginal = transform.parent.GetComponent<PlayerMove>().MoveSpeed;
+        
     }
 
     private void Update()
@@ -201,6 +203,7 @@ public class FourMeleeAttack : AbilityBase
 
                 if (CheckObstacleBetween(TargetParent.transform.position, NewAbilityPrefab.transform.position))
                 {
+                    StopBackgroundSwitcherEvent.SendStartStopBackgroundSwitcher();
                     ToggleAbility.isOn = false;
                     Destroy(NewAbilityPrefab);
                     return;
@@ -232,7 +235,28 @@ public class FourMeleeAttack : AbilityBase
         }
     }
 
+    private void FindTentaclePrefab(float _radiusCircle)
+    {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _radiusCircle);
+        bool tentacleFound = false;
 
+        foreach (Collider2D collider in colliders)
+        {
+            if (collider.CompareTag(_tentaclePrefabTag))
+            {
+                DrawCircle.lineColor = Color.green;
+                tentacleFound = true;
+                Debug.Log("в зоне");
+                break;
+            }
+        }
+
+        if (!tentacleFound)
+        {
+            Debug.Log("нет в зоне");
+            DrawCircle.lineColor = Color.red;
+        }
+    }
     protected override void HandleToggleAbilityOn()
     {
         // Включенный ToggleAbility
@@ -242,6 +266,7 @@ public class FourMeleeAttack : AbilityBase
         if (FixPrefab == true && _cursorIsActive == false && _newCoursorPrefab == null)
         {
             Debug.Log("Момент клика, куда будет двигаться противник");
+            FindTentaclePrefab(Distance);
             Cursor.visible = true;
         }
 
