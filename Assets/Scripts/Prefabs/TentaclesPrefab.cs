@@ -13,21 +13,21 @@ public class TentaclesPrefab : MonoBehaviour
     private float _radiusCircle = 3f * 1.9f - 1.9f / 2f;
     private List<GameObject> _enemies = new List<GameObject>();
 
-    void Start()
-    {
-        drawCircle.Draw(_radiusCircle);
-        
-    }
-
-    public void Clear()
-    {
-        drawCircle.Clear();
-    }
-
-    private void Update()
-    {
-        FindEnemy();
-    }
+    // void Start()
+    // {
+    //     drawCircle.Draw(_radiusCircle);
+    //     
+    // }
+    //
+    // public void Clear()
+    // {
+    //     drawCircle.Clear();
+    // }
+    //
+    // private void Update()
+    // {
+    //     FindEnemy();
+    // }
 
     private void FindEnemy()
     {
