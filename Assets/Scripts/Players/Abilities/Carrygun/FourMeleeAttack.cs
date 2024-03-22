@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using GlobalEvents;
 using Players.Abilities.Carrygun;
 using TMPro;
 using Unity.Burst.CompilerServices;
@@ -161,7 +162,8 @@ public class FourMeleeAttack : AbilityBase
                         _distancePrefab = Instantiate(CircleDistancePrefab);
                         _distancePrefab.transform.SetParent(TargetParent.transform);
                         _distancePrefab.GetComponent<DrawCircle>().Draw(Distance - 1.9f / 4.5f);
-                        _distancePrefab.GetComponent<FindTentaclePrefabInRadius>().SetRadiusCircle=(Distance - 1.9f / 4.5f);
+                        _distancePrefab.GetComponent<FindTentaclePrefabInRadius>().SetRadiusCircle =
+                            (Distance - 1.9f / 4.5f);
                         _canDrawDistancePrefab = false;
                     }
                 }
@@ -182,7 +184,6 @@ public class FourMeleeAttack : AbilityBase
                     NewAbilityPrefab.transform.position = TargetParent.transform.position;
                     NewAbilityPrefab.transform.SetParent(TargetParent.transform);
                     _groundOrEnemy = true;
-
                     Debug.Log("Противник дошёл до указанной точки с щупалец");
                 }
             }
@@ -254,19 +255,19 @@ public class FourMeleeAttack : AbilityBase
                     childSpriteRenderer.color.b, 0.7f);
                 NewAbilityPrefab.transform.position = _targetPosition;
             }
-            
+
             if (_player.GetComponent<PlayerMove>().IsSelect && Input.GetMouseButtonDown(0) &&
                 !EventSystem.current.IsPointerOverGameObject())
             {
                 _targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 float playerToTarget = (_targetPosition - (Vector2) _player.transform.position).magnitude;
-            
-            
+
+
                 if (TargetParent != null)
                 {
                     float prefabToTarget = (TargetParent.transform.position - NewAbilityPrefab.transform.position)
                         .magnitude;
-            
+
                     if (prefabToTarget < Distance - 1.9f / 2f)
                     {
                         FixPrefab = true;
@@ -275,7 +276,7 @@ public class FourMeleeAttack : AbilityBase
                     {
                         Collider2D[] colliders =
                             Physics2D.OverlapCircleAll(NewAbilityPrefab.transform.position, Distance);
-            
+
                         if (colliders != null)
                         {
                             foreach (Collider2D collider in colliders)
@@ -289,20 +290,21 @@ public class FourMeleeAttack : AbilityBase
                                         Destroy(_distancePrefab);
                                         _canDrawDistancePrefab = true;
                                     }
-            
+
                                     if (_canDrawDistancePrefab)
                                     {
                                         _distancePrefab = Instantiate(CircleDistancePrefab);
                                         _distancePrefab.transform.SetParent(TargetParent.transform);
                                         _distancePrefab.GetComponent<DrawCircle>().Draw(Distance - 1.9f / 4.5f);
-                                        _distancePrefab.GetComponent<FindTentaclePrefabInRadius>().SetRadiusCircle=(Distance - 1.9f / 4.5f);
+                                        _distancePrefab.GetComponent<FindTentaclePrefabInRadius>().SetRadiusCircle =
+                                            (Distance - 1.9f / 4.5f);
                                         _canDrawDistancePrefab = false;
                                     }
-            
+
                                     _targetCircle.SetActive(false);
                                     _targetCircle = TargetParent.GetComponent<PlayerMove>().CircleSelect;
                                     _targetCircle.SetActive(true);
-            
+
                                     break;
                                 }
                             }
@@ -319,7 +321,7 @@ public class FourMeleeAttack : AbilityBase
                     {
                         Collider2D[] colliders =
                             Physics2D.OverlapCircleAll(NewAbilityPrefab.transform.position, _distancePlayer);
-            
+
                         if (colliders != null)
                         {
                             foreach (Collider2D collider in colliders)
@@ -333,10 +335,11 @@ public class FourMeleeAttack : AbilityBase
                                         _distancePrefab = Instantiate(CircleDistancePrefab);
                                         _distancePrefab.transform.SetParent(TargetParent.transform);
                                         _distancePrefab.GetComponent<DrawCircle>().Draw(Distance - 1.9f / 4.5f);
-                                        _distancePrefab.GetComponent<FindTentaclePrefabInRadius>().SetRadiusCircle=(Distance - 1.9f / 4.5f);
+                                        _distancePrefab.GetComponent<FindTentaclePrefabInRadius>().SetRadiusCircle =
+                                            (Distance - 1.9f / 4.5f);
                                         _canDrawDistancePrefab = false;
                                     }
-            
+
                                     break;
                                 }
                             }
@@ -344,10 +347,10 @@ public class FourMeleeAttack : AbilityBase
                     }
                 }
             }
-            
+
             _targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(_targetPosition, Vector2.zero);
-            
+
             if (TargetParent == null && hit.collider != null && hit.collider.CompareTag("Enemies") &&
                 hit.collider.gameObject != gameObject)
             {
@@ -360,7 +363,8 @@ public class FourMeleeAttack : AbilityBase
                         _distancePrefab = Instantiate(CircleDistancePrefab);
                         _distancePrefab.transform.SetParent(TargetParent.transform);
                         _distancePrefab.GetComponent<DrawCircle>().Draw(Distance - 1.9f / 4.5f);
-                        _distancePrefab.GetComponent<FindTentaclePrefabInRadius>().SetRadiusCircle=(Distance - 1.9f / 4.5f);
+                        _distancePrefab.GetComponent<FindTentaclePrefabInRadius>().SetRadiusCircle =
+                            (Distance - 1.9f / 4.5f);
                         _canDrawDistancePrefab = false;
                     }
                 }
@@ -704,7 +708,7 @@ public class FourMeleeAttack : AbilityBase
 
         Destroy(NewAbilityPrefab);
         Recharge();
-
+        StopBackgroundSwitcherEvent.SendStartStopBackgroundSwitcher();
         ToggleAbility.enabled = true;
     }
 
