@@ -158,7 +158,6 @@ public class FourMeleeAttack : AbilityBase
                             _distancePrefab = Instantiate(CircleDistancePrefab);
                             _distancePrefab.transform.SetParent(TargetParent.transform);
                             _distancePrefab.GetComponent<DrawCircle>().Draw(Distance - 1.9f / 4.5f);
-
                             _canDrawDistancePrefab = false;
                         }
                     
@@ -231,6 +230,7 @@ public class FourMeleeAttack : AbilityBase
 
         if (FixPrefab == true && _cursorIsActive == false && _newCoursorPrefab == null)
         {
+            Debug.Log("ћомент клика, куда будет двигатьс€ противник");
             Cursor.visible = true;
         }
 
@@ -359,6 +359,7 @@ public class FourMeleeAttack : AbilityBase
         }
         else if(_newCoursorPrefab == null && TargetParent == null)
         {
+           
             Vector3 coursorPrefabPosition = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, 0);
             _newCoursorPrefab = Instantiate(AbilityPrefab, coursorPrefabPosition, Quaternion.identity);   
         }
