@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Players.Abilities.Genjalf
@@ -12,12 +13,19 @@ namespace Players.Abilities.Genjalf
         [SerializeField] private GameObject _castPrefab;
         [SerializeField] private GameObject _manaCost;
 
+        private int _currentCharge;
         private bool _canCast = true;
         private bool _isGlobalCooldown;
+        private bool isShieldActive = false;
         private GameObject _newCastPrefab;
         private bool _isEnabled = false;
         private Coroutine _coroutine;
 
+
+        private void Start()
+        {
+            //throw new NotImplementedException();
+        }
 
         private void Update()
         {
@@ -46,7 +54,7 @@ namespace Players.Abilities.Genjalf
                 _iconAbility.GetComponent<SpriteRenderer>().enabled = true;
                 if (_canCast)
                 {
-                    //_coroutine = StartCoroutine(Cast(1.5f));
+                    _coroutine = StartCoroutine(ActivateShield(_soShieldData.DurationShield));
                 }
                 else if (_canCast)
                 {
@@ -62,7 +70,21 @@ namespace Players.Abilities.Genjalf
             if (_coroutine != null)
             {
                 _toggleAbility.enabled = false;
-            } 
+            }
         }
+
+        private IEnumerator ActivateShield(float durationShield)
+        {
+            _canCast = false;
+            transform.parent.GetComponent<PlayerMove>().CanMove = false;
+            
+            Debug.Log($"Кастую щит");
+            yield return new WaitForSeconds(durationShield);
+            
+            transform.parent.GetComponent<PlayerMove>().CanMove = true;
+            _toggleAbility.enabled = false;
+            Debug.Log("Конец каста щита");
+        }
+        
     }
 }

@@ -12,5 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c16547dc16f4188b68247aac4a07e10, type: 3}
   m_Name: Shield Data
   m_EditorClassIdentifier: 
-  _shieldCharges: 010000000100000001000000
-  _manaForCasting: 20
+  _shieldCharges: 3
+  _cooldownCharge: 2
+  _manaCost: 20
+  _absorptionAmount: 30
+  _durationShield: 2
