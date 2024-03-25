@@ -689,9 +689,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23034dbb7dbba1248a46aa8b64b9db30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _healthText: {fileID: 1246615867}
-  damage: 10
-  health: 20
+  damage: 17
 --- !u!114 &1526188390
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -707,6 +705,8 @@ MonoBehaviour:
   _soShieldData: {fileID: 11400000, guid: d91950150fc1b604098a40a58851501d, type: 2}
   _textShield: {fileID: 100736520}
   _textShieldCharges: {fileID: 1778284078}
+  _healthText: {fileID: 1246615867}
+  health: 20
 --- !u!212 &1526188391
 SpriteRenderer:
   m_ObjectHideFlags: 0

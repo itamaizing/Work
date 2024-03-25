@@ -9,14 +9,22 @@ namespace Players.Abilities.Genjalf.Test_Shield
         [SerializeField] private SoShieldData _soShieldData;
         [SerializeField] private TextMeshProUGUI _textShield;
         [SerializeField] private TextMeshProUGUI _textShieldCharges;
+        [SerializeField] private TextMeshProUGUI _healthText;
+
+        public float health = 20f;
+
+        private float _currentHealth;
 
         private Coroutine _coroutineActiveShield;
         private Coroutine _resetCoroutine;
         private int _currentShieldCharge;
+        private float _currentAbAmount;
         private bool _isResetCoroutineRunning = false;
 
         private void Start()
         {
+            _currentHealth = health;
+            _healthText.text = "Health: " + _currentHealth.ToString();
             _currentShieldCharge = _soShieldData.ShieldCharges;
             _textShieldCharges.text = "Charges Shield: " + _currentShieldCharge.ToString();
         }
@@ -26,6 +34,7 @@ namespace Players.Abilities.Genjalf.Test_Shield
             CheckChargeOnStartReset();
 
             _textShieldCharges.text = "Charges Shield: " + _currentShieldCharge.ToString();
+            _textShield.text = "Shield: " + _currentAbAmount.ToString();
 
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
@@ -57,7 +66,8 @@ namespace Players.Abilities.Genjalf.Test_Shield
             yield return new WaitForSeconds(durationCast);
             _currentShieldCharge--;
             gameObject.GetComponent<SpriteRenderer>().color = Color.cyan;
-            _textShield.text = "Shield: " + _soShieldData.AbsorptionAmount.ToString();
+            _textShield.text = "Shield: " + _currentAbAmount.ToString();
+            _currentAbAmount = _soShieldData.AbsorptionAmount;
         }
 
         private void CheckChargeOnStartReset()
@@ -73,6 +83,32 @@ namespace Players.Abilities.Genjalf.Test_Shield
             yield return new WaitForSeconds(resetTime);
             _currentShieldCharge++;
             _isResetCoroutineRunning = false;
+        }
+
+        public void DamageInShield(float incomingDamage)
+        {
+            float remainingDamage = _currentAbAmount - incomingDamage;
+
+            if (remainingDamage <= 0)
+            {
+                DamageHealth(Mathf.Abs(remainingDamage));
+                _currentAbAmount = 0;
+            }
+            else
+            {
+                _currentAbAmount = remainingDamage;
+            }
+        }
+
+        private void DamageHealth(float remainingDamage)
+        {
+            _currentHealth -= remainingDamage;
+            _healthText.text = "Health: " + _currentHealth.ToString();
+            if (_currentHealth <= 0)
+            {
+                gameObject.GetComponent<SpriteRenderer>().color = Color.red;
+                //GameOver
+            }
         }
     }
 }
