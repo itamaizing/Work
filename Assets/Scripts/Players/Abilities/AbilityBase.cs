@@ -62,7 +62,8 @@ public abstract class AbilityBase : MonoBehaviour
 
     protected abstract KeyCode ActivationKey { get; }
 
-
+    private float previousDistanceToTarget = float.MaxValue;
+    private int previousEnemyCount = 0;
     private bool _IsEnemyDetected;
     protected bool _isPrefab;
     protected bool _isSelect = true;
@@ -287,16 +288,32 @@ public abstract class AbilityBase : MonoBehaviour
                 _enemies.Remove(enemyToRemove);
             }
 
-            if (_enemies.Count == 0)
+            if (_enemies.Count != previousEnemyCount)
             {
-                //_IsEnemyDetected = false;
-                DrawCircle.lineColor = Color.red;
+                previousEnemyCount = _enemies.Count;
+
+                if (previousEnemyCount == 0)
+                {
+                    //_IsEnemyDetected = false;
+                    DrawCircle.lineColor = Color.red;
+                }
+                else
+                {
+                    //_IsEnemyDetected = true;
+                    DrawCircle.lineColor = Color.green;
+                }
             }
-            else if (_enemies.Count > 0)
-            {
-                //_IsEnemyDetected = true;
-                DrawCircle.lineColor = Color.green;
-            }
+
+            // if (_enemies.Count == 0)
+            // {
+            //     //_IsEnemyDetected = false;
+            //     DrawCircle.lineColor = Color.red;
+            // }
+            // else if (_enemies.Count > 0)
+            // {
+            //     //_IsEnemyDetected = true;
+            //     DrawCircle.lineColor = Color.green;
+            // }
         }
 
         if (TargetParent != null)

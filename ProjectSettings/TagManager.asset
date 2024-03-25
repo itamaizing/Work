@@ -11,6 +11,7 @@ TagManager:
   - Allies
   - Debaff
   - Baff
+  - TentaclePrefab
   layers:
   - Default
   - TransparentFX
