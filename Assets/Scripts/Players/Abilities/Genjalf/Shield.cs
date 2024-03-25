@@ -13,7 +13,16 @@ namespace Players.Abilities.Genjalf
         [SerializeField] private GameObject _castPrefab;
         [SerializeField] private GameObject _manaCost;
 
-        private int _currentCharge;
+
+        private float _currentHealth;
+        private float _currentMana;
+
+        private Coroutine _coroutineActiveShield;
+        private Coroutine _resetCoroutine;
+        private int _currentShieldCharge;
+        private float _currentAbAmount;
+        private bool _isResetCoroutineRunning = false;
+
         private bool _canCast = true;
         private bool _isGlobalCooldown;
         private bool isShieldActive = false;
@@ -24,11 +33,14 @@ namespace Players.Abilities.Genjalf
 
         private void Start()
         {
-            //throw new NotImplementedException();
+            _currentHealth = gameObject.transform.parent.GetComponent<HealthPlayer>().MaxHealth;
+            _currentMana = gameObject.transform.parent.GetComponent<ManaPlayer>().Mana;
+            _currentShieldCharge = _soShieldData.ShieldCharges;
         }
 
         private void Update()
         {
+            CheckChargeOnStartReset();
             ActivatedAbility();
         }
 
@@ -37,54 +49,119 @@ namespace Players.Abilities.Genjalf
             if (_toggleAbility.gameObject.activeSelf && Input.GetKeyDown(KeyCode.Alpha1) &&
                 transform.parent.GetComponent<PlayerMove>().IsSelect && _toggleAbility.enabled)
             {
-                if (_toggleAbility.isOn)
+                if (_resetCoroutine != null)
                 {
-                    _toggleAbility.isOn = false;
+                    StopCoroutine(_resetCoroutine);
+                    _isResetCoroutineRunning = false;
                 }
-                else
-                {
-                    _toggleAbility.isOn = true;
-                }
+
+                _coroutineActiveShield = StartCoroutine(ActiveShield(_soShieldData.DurationShield));
             }
+            // if (_toggleAbility.gameObject.activeSelf && Input.GetKeyDown(KeyCode.Alpha1) &&
+            //     transform.parent.GetComponent<PlayerMove>().IsSelect && _toggleAbility.enabled)
+            // {
+            //     if (_toggleAbility.isOn)
+            //     {
+            //         _toggleAbility.isOn = false;
+            //     }
+            //     else
+            //     {
+            //         _toggleAbility.isOn = true;
+            //     }
+            // }
+            //
+            // if (_toggleAbility.isOn == true)
+            // {
+            //     if (_resetCoroutine != null)
+            //     {
+            //         StopCoroutine(_resetCoroutine);
+            //         _isResetCoroutineRunning = false;
+            //     }
+            //
+            //     _coroutineActiveShield = StartCoroutine(ActiveShield(_soShieldData.DurationShield));
+            // }
+            // else
+            // {
+            //     _iconAbility.GetComponent<SpriteRenderer>().enabled = false;
+            // }
+            //
+            // if (_coroutine != null)
+            // {
+            //     _toggleAbility.enabled = false;
+            // }
+        }
 
-            if (_toggleAbility.isOn == true)
+        public void StartResetTime()
+        {
+            StartCoroutine(ResetTimeForCharging(_soShieldData.CooldownCharge));
+            _isResetCoroutineRunning = true;
+        }
+
+
+        //Включаем щит.
+        private IEnumerator ActiveShield(float durationCast)
+        {
+            if (_resetCoroutine != null)
             {
-                _isEnabled = false;
+                StopCoroutine(_resetCoroutine);
+                _isResetCoroutineRunning = false;
+            }
+            transform.parent.GetComponent<PlayerMove>().CanMove = false;
+            _manaCost.SetActive(true);
+            _manaCost.GetComponent<VisualManaCost>().CheckManaCost();
+            _manaCost.transform.localScale = new Vector2(2f, _manaCost.gameObject.transform.localScale.y);
 
-                _iconAbility.GetComponent<SpriteRenderer>().enabled = true;
-                if (_canCast)
-                {
-                    _coroutine = StartCoroutine(ActivateShield(_soShieldData.DurationShield));
-                }
-                else if (_canCast)
-                {
-                    //StartDarkBeginning(0);
-                }
+            Debug.Log($"Кастую щит");
+            yield return new WaitForSeconds(durationCast);
+
+            _currentShieldCharge--;
+            Debug.Log("Конец каста щита");
+            transform.parent.GetComponent<PlayerMove>().CanMove = true;
+            _manaCost.SetActive(false);
+            transform.parent.GetComponent<ManaPlayer>().UseMana(_soShieldData.ManaCost);
+            _currentMana = gameObject.transform.parent.GetComponent<ManaPlayer>().Mana;
+            Debug.Log($"Mana Genjalf: {_currentMana}");
+            _currentAbAmount = _soShieldData.AbsorptionAmount;
+        }
+
+        private void CheckChargeOnStartReset()
+        {
+            if (_currentShieldCharge < _soShieldData.ShieldCharges && !_isResetCoroutineRunning)
+            {
+                StartResetTime();
+            }
+        }
+
+        private IEnumerator ResetTimeForCharging(float resetTime)
+        {
+            yield return new WaitForSeconds(resetTime);
+            _currentShieldCharge++;
+            _isResetCoroutineRunning = false;
+        }
+
+        public void DamageInShield(float incomingDamage)
+        {
+            float remainingDamage = _currentAbAmount - incomingDamage;
+
+            if (remainingDamage <= 0)
+            {
+                DamageHealth(Mathf.Abs(remainingDamage));
+                _currentAbAmount = 0;
             }
             else
             {
-                _canCast = true;
-                _iconAbility.GetComponent<SpriteRenderer>().enabled = false;
-            }
-
-            if (_coroutine != null)
-            {
-                _toggleAbility.enabled = false;
+                _currentAbAmount = remainingDamage;
             }
         }
 
-        private IEnumerator ActivateShield(float durationShield)
+        private void DamageHealth(float remainingDamage)
         {
-            _canCast = false;
-            transform.parent.GetComponent<PlayerMove>().CanMove = false;
-            
-            Debug.Log($"Кастую щит");
-            yield return new WaitForSeconds(durationShield);
-            
-            transform.parent.GetComponent<PlayerMove>().CanMove = true;
-            _toggleAbility.enabled = false;
-            Debug.Log("Конец каста щита");
+            _currentHealth -= remainingDamage;
+            //_healthText.text = "Health: " + _currentHealth.ToString();
+            if (_currentHealth <= 0)
+            {
+                //GameOver
+            }
         }
-        
     }
 }
