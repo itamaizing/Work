@@ -34,6 +34,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 4106513984110700214}
   - {fileID: 4372505675187719250}
   - {fileID: 5695348324165294111}
   - {fileID: 3949576892243209319}
@@ -45,7 +46,7 @@ Transform:
   - {fileID: 5287686256838225055}
   - {fileID: 5590142317354752112}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1935025463078411595
 Rigidbody2D:
@@ -187,6 +188,15 @@ MonoBehaviour:
   CircleSelect: {fileID: 7277157472421124586}
   MarkersSelect: {fileID: 2009799302226646479}
   AbilityPanel: {fileID: 0}
+  AbilitiesOnTargetToggles:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &7601164126198867055
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -234,6 +244,136 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Select: {fileID: 0}
+--- !u!1 &1255810373264063487
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4106513984110700214}
+  - component: {fileID: 7331877602388748497}
+  - component: {fileID: 687942382318729826}
+  - component: {fileID: 5282782359899004874}
+  - component: {fileID: 5395523192457348309}
+  m_Layer: 9
+  m_Name: Circle_Color_Background
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &4106513984110700214
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1255810373264063487}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.004, y: 0.0396, z: 0}
+  m_LocalScale: {x: 1.9344362, y: 1.9344362, z: 1.9344362}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6627882834926959264}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &7331877602388748497
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1255810373264063487}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 1
+  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!114 &687942382318729826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1255810373264063487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61a28c66e1d443419e37d7c5aad557ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soCircleColorBackgroundSettings: {fileID: 11400000, guid: 70cb33aa322f5be4180466de03f5b8e0, type: 2}
+  _soCircleColorBackgroundAttackSettings: {fileID: 11400000, guid: f5c5c6754ec0b494fb7d31492db86e98, type: 2}
+  _soCircleSelect: {fileID: 11400000, guid: 94faeed860208934384c3a5cb867821e, type: 2}
+  _soCircleSelectAttack: {fileID: 11400000, guid: 2c732f294facc8543947fef6178822fa, type: 2}
+--- !u!114 &5282782359899004874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1255810373264063487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ca3b697aef44c67bf70afc763281af1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fadeDuration: 1
+  delayBetweenFades: 0
+--- !u!114 &5395523192457348309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1255810373264063487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c5cb30039274953b099c7eb2c94e365, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soSwitcher: {fileID: 11400000, guid: 82b27e3efc3097e4dafe016e60f5c4f0, type: 2}
 --- !u!1 &1776445061967799019
 GameObject:
   m_ObjectHideFlags: 0
@@ -818,6 +958,7 @@ MonoBehaviour:
   LastUseAbility: {fileID: 0}
   OneClick: 0
   TwoClick: 0
+  IsCanUseLastAbility: 1
 --- !u!1 &5002266305278314167
 GameObject:
   m_ObjectHideFlags: 0
@@ -1566,6 +1707,7 @@ MonoBehaviour:
   CircleSelect: {fileID: 7277157472421124586}
   AttackType: 0
   AbilityType: 0
+  AttackRangeType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1607,6 +1749,7 @@ MonoBehaviour:
   CircleSelect: {fileID: 0}
   AttackType: 0
   AbilityType: 0
+  AttackRangeType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1647,6 +1790,7 @@ MonoBehaviour:
   CircleSelect: {fileID: 0}
   AttackType: 0
   AbilityType: 0
+  AttackRangeType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1685,6 +1829,7 @@ MonoBehaviour:
   CircleSelect: {fileID: 0}
   AttackType: 0
   AbilityType: 0
+  AttackRangeType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1747,6 +1892,7 @@ MonoBehaviour:
   CircleSelect: {fileID: 7277157472421124586}
   AttackType: 0
   AbilityType: 0
+  AttackRangeType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1788,6 +1934,7 @@ MonoBehaviour:
   CircleSelect: {fileID: 0}
   AttackType: 0
   AbilityType: 0
+  AttackRangeType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1828,6 +1975,7 @@ MonoBehaviour:
   CircleSelect: {fileID: 0}
   AttackType: 0
   AbilityType: 0
+  AttackRangeType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1866,6 +2014,7 @@ MonoBehaviour:
   CircleSelect: {fileID: 0}
   AttackType: 0
   AbilityType: 0
+  AttackRangeType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0

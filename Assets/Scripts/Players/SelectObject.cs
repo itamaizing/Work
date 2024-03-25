@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using Unity.Burst.CompilerServices;
 using UnityEngine;
 
 public class SelectObject : MonoBehaviour
@@ -10,6 +8,7 @@ public class SelectObject : MonoBehaviour
     public GameObject FirstPlayer;
     public GameObject SecondPlayer;
     public GameObject ThirstPlayer;
+    public GameObject FourthPlayer;
     public List<GameObject> ControlledObjects = new List<GameObject>();
 
     private void Start()
@@ -52,6 +51,17 @@ public class SelectObject : MonoBehaviour
                 }
 
                 SelectedObject = ThirstPlayer;
+                SelectedObject.layer = LayerMask.NameToLayer("Player");
+
+            }
+            if (Input.GetKeyDown(KeyCode.F4))
+            {
+                if (SelectedObject != null)
+                {
+                    SelectedObject.layer = LayerMask.NameToLayer("OtherPlayers");
+                }
+
+                SelectedObject = FourthPlayer;
                 SelectedObject.layer = LayerMask.NameToLayer("Player");
 
             }

@@ -43,13 +43,14 @@ GameObject:
   - component: {fileID: 1170573783195033357}
   - component: {fileID: 4916063337568309990}
   - component: {fileID: 1828929316732520377}
+  - component: {fileID: 186613196644147448}
   m_Layer: 9
   m_Name: Circle_Color_Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3828942755985473617
 Transform:
   m_ObjectHideFlags: 0
@@ -105,7 +106,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -131,6 +132,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _soCircleColorBackgroundSettings: {fileID: 11400000, guid: 70cb33aa322f5be4180466de03f5b8e0, type: 2}
   _soCircleColorBackgroundAttackSettings: {fileID: 11400000, guid: f5c5c6754ec0b494fb7d31492db86e98, type: 2}
+  _soCircleSelect: {fileID: 11400000, guid: 94faeed860208934384c3a5cb867821e, type: 2}
+  _soCircleSelectAttack: {fileID: 11400000, guid: 2c732f294facc8543947fef6178822fa, type: 2}
 --- !u!114 &1828929316732520377
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -145,6 +148,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fadeDuration: 1
   delayBetweenFades: 0
+--- !u!114 &186613196644147448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 400287245909655126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c5cb30039274953b099c7eb2c94e365, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soSwitcher: {fileID: 11400000, guid: 82b27e3efc3097e4dafe016e60f5c4f0, type: 2}
 --- !u!1 &474754218617308991
 GameObject:
   m_ObjectHideFlags: 0
@@ -249,6 +265,8 @@ GameObject:
   - component: {fileID: 5743661199525481882}
   - component: {fileID: 8035327276404703013}
   - component: {fileID: 6823704979584182385}
+  - component: {fileID: 160970298897504573}
+  - component: {fileID: 1897189131028832084}
   m_Layer: 0
   m_Name: Talents
   m_TagString: Allies
@@ -457,8 +475,43 @@ MonoBehaviour:
   _toggleTalent: {fileID: 0}
   _toggleAbility: {fileID: 0}
   _toggleSkillsOfPredator: {fileID: 0}
-  _typesPsionicTalents: []
+  _typesPsionicTalents:
+  - {fileID: 1481341952338975160}
+  - {fileID: 3829028655816966178}
+  - {fileID: 5743661199525481882}
+  - {fileID: 8035327276404703013}
+  - {fileID: 6823704979584182385}
   _shieldEffect: {fileID: 3148082365468222169, guid: 2ec438c8904509549bf04ad0f8e32842, type: 3}
+--- !u!114 &160970298897504573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 476595235150270307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89ea010eed32ec344b1c5689d0f41524, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _toggleTalent: {fileID: 0}
+  _embryoDebaffPrefab: {fileID: 7998523116067423365, guid: 1c3848d1955bbdc4e83970f0455fcb36, type: 3}
+  controlledObjects: []
+  _embryoCharge: 0
+--- !u!114 &1897189131028832084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 476595235150270307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c93752b89a7f777498f41ae0ba7bc062, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Toggle: {fileID: 0}
+  UterusCoconPrefab: {fileID: 4371443321967966874, guid: a79366755ff1599429f6d57fd0be0061, type: 3}
 --- !u!1 &556628893659530890
 GameObject:
   m_ObjectHideFlags: 0
@@ -984,6 +1037,7 @@ GameObject:
   - component: {fileID: 4953803910209164375}
   - component: {fileID: 8337789449907410738}
   - component: {fileID: 6781447661361553961}
+  - component: {fileID: 3822505477590611879}
   m_Layer: 0
   m_Name: Abilities
   m_TagString: Untagged
@@ -1239,6 +1293,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BleedEffectPrefab: {fileID: 7998523116067423365, guid: 95b89901d77ef864aa52d39e9a054258, type: 3}
+--- !u!114 &3822505477590611879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2511167977629979197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79677e58a39eb6542a9c8e6a083ee429, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Toggle: {fileID: 0}
+  IconAbility: {fileID: 0}
+  PointPrefab: {fileID: 3400974099780308054, guid: 3f023824153c0914a966a896b0b1b1f8, type: 3}
+  TargetPosition: {x: 0, y: 0}
+  IsTargetSelect: 0
+  TargetObject: {fileID: 0}
+  NewPrefabPoint: {fileID: 0}
 --- !u!1 &2515254583502572982
 GameObject:
   m_ObjectHideFlags: 0
@@ -1999,7 +2072,7 @@ GameObject:
   - component: {fileID: 3504477266362453533}
   - component: {fileID: 6459936798868481736}
   - component: {fileID: 2426202598644949584}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: CarrygunPlayer
   m_TagString: Allies
   m_Icon: {fileID: 0}
@@ -2030,7 +2103,7 @@ Transform:
   - {fileID: 5565613549700228518}
   - {fileID: 3633434942918823971}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &4894628429328255368
 Rigidbody2D:
