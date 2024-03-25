@@ -10,6 +10,7 @@ namespace Players.Abilities.Genjalf.Test_Shield
         [SerializeField] private TextMeshProUGUI _textShield;
         [SerializeField] private TextMeshProUGUI _textShieldCharges;
         [SerializeField] private TextMeshProUGUI _healthText;
+        [SerializeField] private GameObject _enableShield;
 
         public float health = 20f;
 
@@ -23,6 +24,7 @@ namespace Players.Abilities.Genjalf.Test_Shield
 
         private void Start()
         {
+            _enableShield.SetActive(false);
             _currentHealth = health;
             _healthText.text = "Health: " + _currentHealth.ToString();
             _currentShieldCharge = _soShieldData.ShieldCharges;
@@ -63,11 +65,13 @@ namespace Players.Abilities.Genjalf.Test_Shield
                 _isResetCoroutineRunning = false;
             }
 
+            _enableShield.SetActive(true);
             yield return new WaitForSeconds(durationCast);
             _currentShieldCharge--;
             gameObject.GetComponent<SpriteRenderer>().color = Color.cyan;
             _textShield.text = "Shield: " + _currentAbAmount.ToString();
             _currentAbAmount = _soShieldData.AbsorptionAmount;
+            _enableShield.SetActive(false);
         }
 
         private void CheckChargeOnStartReset()
