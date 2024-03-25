@@ -707,6 +707,7 @@ MonoBehaviour:
   _textShield: {fileID: 100736520}
   _textShieldCharges: {fileID: 1778284078}
   _healthText: {fileID: 1246615867}
+  _enableShield: {fileID: 2028516251}
   health: 20
 --- !u!212 &1526188391
 SpriteRenderer:
