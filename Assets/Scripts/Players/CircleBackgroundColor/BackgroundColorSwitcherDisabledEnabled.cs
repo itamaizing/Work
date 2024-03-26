@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using GlobalEvents;
 using UnityEngine;
 
@@ -13,9 +14,13 @@ namespace Players.CircleBackgroundColor
         private bool isSwitching = true;
         private bool isRunning = false;
 
-        private void Awake()
+        private SpriteRenderer _spriteRenderer;
+        private Coroutine _coroutine;
+
+		private void Awake()
         {
-            StopBackgroundSwitcherEvent.OnStartStopBackgroundSwitcher.AddListener(StopSwitching);
+			_spriteRenderer=GetComponent<SpriteRenderer>();
+			StopBackgroundSwitcherEvent.OnStartStopBackgroundSwitcher.AddListener(StopSwitching);
         }
 
         private void SwitchObject()
@@ -34,18 +39,57 @@ namespace Players.CircleBackgroundColor
             {
                 isSwitching = true;
                 isRunning = true;
-                InvokeRepeating("SwitchObject", 0, _soSwitcher.SwitchInterval);
+
+                //InvokeRepeating("SwitchObject", 0, _soSwitcher.SwitchInterval);
                 Debug.Log("Репитинг работает");
             }
-        }
+			gameObject.SetActive(true);
+			StartCoroutine(FadeSprite());
+		}
 
-        //Остановка включения и выключения компонента с красным фоном на объекте.
-        public void StopSwitching()
+		//Остановка включения и выключения компонента с красным фоном на объекте.
+		public void StopSwitching()
         {
             isSwitching = false;
             isRunning = false;
-            CancelInvoke("SwitchObject");
+			gameObject.SetActive(false);
+			StopCoroutine(FadeSprite());
+            //CancelInvoke("SwitchObject");
             Debug.Log("Репитинг не работает");
         }
-    }
+
+		private IEnumerator FadeSprite()
+		{
+			//yield return new WaitForSeconds(0.15f);
+
+			Debug.Log("Start Coroutine");
+			while (true)
+			{
+				Debug.Log("Working");
+				for (float t = 0f; t < 1; t += Time.deltaTime)
+				{
+					float normalizedTime = t / 1;
+					float alpha = Mathf.Lerp(0.4f, 0f, normalizedTime);
+
+					Color newColor = _spriteRenderer.color;
+					newColor.a = alpha;
+					_spriteRenderer.color = newColor;
+
+					yield return null;
+				}
+
+				for (float t = 0f; t < 1; t += Time.deltaTime)
+				{
+					float normalizedTime = t / 1;
+					float alpha = Mathf.Lerp(0f, 0.4f, normalizedTime);
+
+					Color newColor = _spriteRenderer.color;
+					newColor.a = alpha;
+					_spriteRenderer.color = newColor;
+
+					yield return null;
+				}
+			}
+		}
+	}
 }
