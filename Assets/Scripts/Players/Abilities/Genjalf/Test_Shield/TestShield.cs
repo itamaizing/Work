@@ -59,6 +59,8 @@ namespace Players.Abilities.Genjalf.Test_Shield
         //Включаем щит.
         private IEnumerator ActiveShield(float durationCast)
         {
+            if (_currentShieldCharge == 0)
+                yield break;
             if (_resetCoroutine != null)
             {
                 StopCoroutine(_resetCoroutine);

@@ -70,6 +70,9 @@ namespace Players.Abilities.Genjalf
         //Включаем щит.
         private IEnumerator ActiveShield(float durationCast)
         {
+            if (_currentShieldCharge == 0)
+                yield break;
+
             if (_resetCoroutine != null)
             {
                 StopCoroutine(_resetCoroutine);
@@ -88,7 +91,7 @@ namespace Players.Abilities.Genjalf
             _manaCost.SetActive(true);
             _manaCost.GetComponent<VisualManaCost>().CheckManaCost();
             _manaCost.transform.localScale = new Vector2(2f, _manaCost.gameObject.transform.localScale.y);
-            
+
             yield return new WaitForSeconds(durationCast);
 
             _currentShieldCharge--;
