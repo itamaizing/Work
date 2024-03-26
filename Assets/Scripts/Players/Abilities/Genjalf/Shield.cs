@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -162,21 +161,13 @@ namespace Players.Abilities.Genjalf
 
         private void DamageHealth(float remainingDamage)
         {
-            SetHealthBar(remainingDamage);
-
+            _uiShield.SetterHealthUI(remainingDamage, _currentHealth);
+            
             if (_currentHealth <= 0)
             {
                 Destroy(gameObject.transform.parent);
             }
         }
 
-        private void SetHealthBar(float value)
-        {
-            gameObject.transform.parent.GetComponent<HealthPlayer>().Health -= value;
-            gameObject.transform.parent.GetComponent<HealthPlayer>().UpdateHealthBar();
-            gameObject.transform.parent.GetComponent<HealthPlayer>().HealthBarText.text =
-                gameObject.transform.parent.GetComponent<HealthPlayer>().Health.ToString("F0");
-            _currentHealth = gameObject.transform.parent.GetComponent<HealthPlayer>().Health;
-        }
     }
 }
