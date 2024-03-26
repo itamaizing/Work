@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,13 +15,15 @@ namespace Players.Abilities.Genjalf
         [SerializeField] private GameObject _manaCost;
         [SerializeField] private ShieldBar _shieldBar;
 
+        private UIShield _uiShield;
         private float _currentHealth;
         private float _currentMana;
+        private float _currentTimeReset;
 
         private Coroutine _coroutineActiveShield;
         private Coroutine _resetCoroutine;
         private int _currentShieldCharge;
-        [SerializeField] private float _currentAbAmount;
+        private float _currentAbAmount;
         private bool _isResetCoroutineRunning = false;
 
         private bool _canCast = true;
@@ -33,6 +36,8 @@ namespace Players.Abilities.Genjalf
 
         private void Start()
         {
+            _uiShield = GetComponent<UIShield>();
+
             _currentHealth = gameObject.transform.parent.GetComponent<HealthPlayer>().Health;
             gameObject.transform.parent.GetComponent<HealthPlayer>().HealthBarText.text = _currentHealth.ToString("F0");
             _currentMana = gameObject.transform.parent.GetComponent<ManaPlayer>().Mana;
@@ -46,6 +51,7 @@ namespace Players.Abilities.Genjalf
                 _shieldBar.SetShieldValue(_currentAbAmount);
             }
 
+            _uiShield.SetTextCharge(_currentShieldCharge);
             CheckChargeOnStartReset();
             ActivatedAbility();
         }
@@ -100,12 +106,12 @@ namespace Players.Abilities.Genjalf
             yield return new WaitForSeconds(durationCast);
 
             _currentShieldCharge--;
-            
+
             transform.parent.GetComponent<PlayerMove>().CanMove = true;
             _manaCost.SetActive(false);
             transform.parent.GetComponent<ManaPlayer>().UseMana(_soShieldData.ManaCost);
             _currentMana = gameObject.transform.parent.GetComponent<ManaPlayer>().Mana;
-            
+
             _currentAbAmount = _soShieldData.AbsorptionAmount;
             _shieldBar.transform.gameObject.SetActive(true);
             _shieldBar.SetMaxValueShield(_soShieldData.AbsorptionAmount);
@@ -124,7 +130,15 @@ namespace Players.Abilities.Genjalf
 
         private IEnumerator ResetTimeForCharging(float resetTime)
         {
-            yield return new WaitForSeconds(resetTime);
+            float timer = 0f;
+
+            while (timer < resetTime)
+            {
+                timer += Time.deltaTime;
+                _uiShield.SetTextResetTime(resetTime - timer);
+                yield return null;
+            }
+
             _currentShieldCharge++;
             _isResetCoroutineRunning = false;
         }
@@ -148,7 +162,7 @@ namespace Players.Abilities.Genjalf
 
         private void DamageHealth(float remainingDamage)
         {
-            SetHealth(remainingDamage);
+            SetHealthBar(remainingDamage);
 
             if (_currentHealth <= 0)
             {
@@ -156,7 +170,7 @@ namespace Players.Abilities.Genjalf
             }
         }
 
-        private void SetHealth(float value)
+        private void SetHealthBar(float value)
         {
             gameObject.transform.parent.GetComponent<HealthPlayer>().Health -= value;
             gameObject.transform.parent.GetComponent<HealthPlayer>().UpdateHealthBar();
