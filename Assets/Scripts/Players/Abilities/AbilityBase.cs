@@ -537,12 +537,14 @@ public abstract class AbilityBase : MonoBehaviour
                 TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
                     .SetColorCircleBackgroundAttack(TargetParent);
 
-                _targetCircle.GetComponent<SpriteRenderer>().color =
-                    TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
-                        .soCircleSelectAttack.SpriteColor;
+                if(_targetCircle != null)
+                {
+					_targetCircle.GetComponent<SpriteRenderer>().color =
+				   TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
+					   .soCircleSelectAttack.SpriteColor;
+				}
 
-
-                DrawCircle.lineColor = Color.red;
+				DrawCircle.lineColor = Color.red;
             }
             else if (_distanceToTarget <= Distance)
             {
@@ -552,9 +554,12 @@ public abstract class AbilityBase : MonoBehaviour
                 TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
                     .SetColorCircleBackgroundPlayer(TargetParent);
 
-                _targetCircle.GetComponent<SpriteRenderer>().color =
-                    TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
-                        .soCircleSelect.SpriteColor;
+                if(_targetCircle != null)
+                {
+					_targetCircle.GetComponent<SpriteRenderer>().color =
+					TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
+						.soCircleSelect.SpriteColor;
+				}
 
                 DrawCircle.lineColor = Color.green;
             }
