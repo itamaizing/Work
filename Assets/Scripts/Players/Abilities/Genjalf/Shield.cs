@@ -57,7 +57,6 @@ namespace Players.Abilities.Genjalf
 
                 _coroutineActiveShield = StartCoroutine(ActiveShield(_soShieldData.DurationShield));
             }
-
         }
 
         public void StartResetTime()
@@ -75,15 +74,16 @@ namespace Players.Abilities.Genjalf
                 StopCoroutine(_resetCoroutine);
                 _isResetCoroutineRunning = false;
             }
+
             transform.parent.GetComponent<PlayerMove>().CanMove = false;
-            
+
             if (!_isGlobalCooldown)
             {
                 _abilitiesPanel.GetComponent<GlobalCooldown>().StartGlobalCooldown();
                 _isGlobalCooldown = true;
             }
 
-            
+            _iconAbility.GetComponent<SpriteRenderer>().enabled = true;
             _manaCost.SetActive(true);
             _manaCost.GetComponent<VisualManaCost>().CheckManaCost();
             _manaCost.transform.localScale = new Vector2(2f, _manaCost.gameObject.transform.localScale.y);
@@ -99,6 +99,7 @@ namespace Players.Abilities.Genjalf
             _currentMana = gameObject.transform.parent.GetComponent<ManaPlayer>().Mana;
             Debug.Log($"Mana Genjalf: {_currentMana}");
             _currentAbAmount = _soShieldData.AbsorptionAmount;
+            _iconAbility.GetComponent<SpriteRenderer>().enabled = false;
             _isGlobalCooldown = false;
         }
 
@@ -138,7 +139,7 @@ namespace Players.Abilities.Genjalf
             //_healthText.text = "Health: " + _currentHealth.ToString();
             if (_currentHealth <= 0)
             {
-                //GameOver
+                Destroy(gameObject.transform.parent);
             }
         }
     }
