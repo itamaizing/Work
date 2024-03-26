@@ -33,13 +33,14 @@ namespace Players.Abilities.Genjalf
 
         private void Start()
         {
-            _currentHealth = gameObject.transform.parent.GetComponent<HealthPlayer>().MaxHealth;
+            _currentHealth = gameObject.transform.parent.GetComponent<HealthPlayer>().Health;
             _currentMana = gameObject.transform.parent.GetComponent<ManaPlayer>().Mana;
             _currentShieldCharge = _soShieldData.ShieldCharges;
         }
 
         private void Update()
         {
+            Debug.Log(_currentAbAmount);
             CheckChargeOnStartReset();
             ActivatedAbility();
         }
@@ -87,17 +88,14 @@ namespace Players.Abilities.Genjalf
             _manaCost.SetActive(true);
             _manaCost.GetComponent<VisualManaCost>().CheckManaCost();
             _manaCost.transform.localScale = new Vector2(2f, _manaCost.gameObject.transform.localScale.y);
-
-            Debug.Log($"Кастую щит");
+            
             yield return new WaitForSeconds(durationCast);
 
             _currentShieldCharge--;
-            Debug.Log("Конец каста щита");
             transform.parent.GetComponent<PlayerMove>().CanMove = true;
             _manaCost.SetActive(false);
             transform.parent.GetComponent<ManaPlayer>().UseMana(_soShieldData.ManaCost);
             _currentMana = gameObject.transform.parent.GetComponent<ManaPlayer>().Mana;
-            Debug.Log($"Mana Genjalf: {_currentMana}");
             _currentAbAmount = _soShieldData.AbsorptionAmount;
             _iconAbility.GetComponent<SpriteRenderer>().enabled = false;
             _isGlobalCooldown = false;
@@ -135,8 +133,7 @@ namespace Players.Abilities.Genjalf
 
         private void DamageHealth(float remainingDamage)
         {
-            _currentHealth -= remainingDamage;
-            //_healthText.text = "Health: " + _currentHealth.ToString();
+            gameObject.transform.parent.GetComponent<HealthPlayer>().Health -= remainingDamage;
             if (_currentHealth <= 0)
             {
                 Destroy(gameObject.transform.parent);
