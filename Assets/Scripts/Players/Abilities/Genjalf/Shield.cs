@@ -57,38 +57,7 @@ namespace Players.Abilities.Genjalf
 
                 _coroutineActiveShield = StartCoroutine(ActiveShield(_soShieldData.DurationShield));
             }
-            // if (_toggleAbility.gameObject.activeSelf && Input.GetKeyDown(KeyCode.Alpha1) &&
-            //     transform.parent.GetComponent<PlayerMove>().IsSelect && _toggleAbility.enabled)
-            // {
-            //     if (_toggleAbility.isOn)
-            //     {
-            //         _toggleAbility.isOn = false;
-            //     }
-            //     else
-            //     {
-            //         _toggleAbility.isOn = true;
-            //     }
-            // }
-            //
-            // if (_toggleAbility.isOn == true)
-            // {
-            //     if (_resetCoroutine != null)
-            //     {
-            //         StopCoroutine(_resetCoroutine);
-            //         _isResetCoroutineRunning = false;
-            //     }
-            //
-            //     _coroutineActiveShield = StartCoroutine(ActiveShield(_soShieldData.DurationShield));
-            // }
-            // else
-            // {
-            //     _iconAbility.GetComponent<SpriteRenderer>().enabled = false;
-            // }
-            //
-            // if (_coroutine != null)
-            // {
-            //     _toggleAbility.enabled = false;
-            // }
+
         }
 
         public void StartResetTime()
@@ -107,6 +76,14 @@ namespace Players.Abilities.Genjalf
                 _isResetCoroutineRunning = false;
             }
             transform.parent.GetComponent<PlayerMove>().CanMove = false;
+            
+            if (!_isGlobalCooldown)
+            {
+                _abilitiesPanel.GetComponent<GlobalCooldown>().StartGlobalCooldown();
+                _isGlobalCooldown = true;
+            }
+
+            
             _manaCost.SetActive(true);
             _manaCost.GetComponent<VisualManaCost>().CheckManaCost();
             _manaCost.transform.localScale = new Vector2(2f, _manaCost.gameObject.transform.localScale.y);
@@ -122,6 +99,7 @@ namespace Players.Abilities.Genjalf
             _currentMana = gameObject.transform.parent.GetComponent<ManaPlayer>().Mana;
             Debug.Log($"Mana Genjalf: {_currentMana}");
             _currentAbAmount = _soShieldData.AbsorptionAmount;
+            _isGlobalCooldown = false;
         }
 
         private void CheckChargeOnStartReset()
