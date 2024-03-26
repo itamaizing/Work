@@ -12,7 +12,7 @@ namespace Players.Abilities.Genjalf
         [SerializeField] private GameObject _abilitiesPanel;
         [SerializeField] private GameObject _castPrefab;
         [SerializeField] private GameObject _manaCost;
-
+        [SerializeField] private ShieldBar _shieldBar;
 
         private float _currentHealth;
         private float _currentMana;
@@ -20,7 +20,7 @@ namespace Players.Abilities.Genjalf
         private Coroutine _coroutineActiveShield;
         private Coroutine _resetCoroutine;
         private int _currentShieldCharge;
-        private float _currentAbAmount;
+        [SerializeField] private float _currentAbAmount;
         private bool _isResetCoroutineRunning = false;
 
         private bool _canCast = true;
@@ -34,13 +34,18 @@ namespace Players.Abilities.Genjalf
         private void Start()
         {
             _currentHealth = gameObject.transform.parent.GetComponent<HealthPlayer>().Health;
+            gameObject.transform.parent.GetComponent<HealthPlayer>().HealthBarText.text = _currentHealth.ToString("F0");
             _currentMana = gameObject.transform.parent.GetComponent<ManaPlayer>().Mana;
             _currentShieldCharge = _soShieldData.ShieldCharges;
         }
 
         private void Update()
         {
-            Debug.Log(_currentAbAmount);
+            if (_shieldBar.transform.gameObject.activeSelf)
+            {
+                _shieldBar.SetShieldValue(_currentAbAmount);
+            }
+
             CheckChargeOnStartReset();
             ActivatedAbility();
         }
@@ -95,11 +100,16 @@ namespace Players.Abilities.Genjalf
             yield return new WaitForSeconds(durationCast);
 
             _currentShieldCharge--;
+            
             transform.parent.GetComponent<PlayerMove>().CanMove = true;
             _manaCost.SetActive(false);
             transform.parent.GetComponent<ManaPlayer>().UseMana(_soShieldData.ManaCost);
             _currentMana = gameObject.transform.parent.GetComponent<ManaPlayer>().Mana;
+            
             _currentAbAmount = _soShieldData.AbsorptionAmount;
+            _shieldBar.transform.gameObject.SetActive(true);
+            _shieldBar.SetMaxValueShield(_soShieldData.AbsorptionAmount);
+
             _iconAbility.GetComponent<SpriteRenderer>().enabled = false;
             _isGlobalCooldown = false;
         }
@@ -123,8 +133,10 @@ namespace Players.Abilities.Genjalf
         {
             float remainingDamage = _currentAbAmount - incomingDamage;
 
+
             if (remainingDamage <= 0)
             {
+                _shieldBar.transform.gameObject.SetActive(false);
                 DamageHealth(Mathf.Abs(remainingDamage));
                 _currentAbAmount = 0;
             }
@@ -136,11 +148,21 @@ namespace Players.Abilities.Genjalf
 
         private void DamageHealth(float remainingDamage)
         {
-            gameObject.transform.parent.GetComponent<HealthPlayer>().Health -= remainingDamage;
+            SetHealth(remainingDamage);
+
             if (_currentHealth <= 0)
             {
                 Destroy(gameObject.transform.parent);
             }
+        }
+
+        private void SetHealth(float value)
+        {
+            gameObject.transform.parent.GetComponent<HealthPlayer>().Health -= value;
+            gameObject.transform.parent.GetComponent<HealthPlayer>().UpdateHealthBar();
+            gameObject.transform.parent.GetComponent<HealthPlayer>().HealthBarText.text =
+                gameObject.transform.parent.GetComponent<HealthPlayer>().Health.ToString("F0");
+            _currentHealth = gameObject.transform.parent.GetComponent<HealthPlayer>().Health;
         }
     }
 }

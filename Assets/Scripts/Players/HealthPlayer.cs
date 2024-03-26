@@ -199,7 +199,7 @@ public class HealthPlayer : MonoBehaviour
         newPrefab.transform.SetParent(transform);
     }
 
-    private void UpdateHealthBar()
+    public void UpdateHealthBar()
     {
         float newScaleX = Health / MaxHealth;
         HealthBar.transform.localScale = new Vector3(newScaleX, 1.0f, 1.0f);
