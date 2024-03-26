@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using GlobalEvents;
+using Players.Abilities.Genjalf;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class OneMeleeAttack : AbilityBase
 {
     public delegate void FirstAbilityHandler(float value);
+
     public event FirstAbilityHandler FirstAbilityEvent;
 
     [HideInInspector] public GameObject Target;
@@ -41,7 +44,7 @@ public class OneMeleeAttack : AbilityBase
     {
         base.HandleToggleAbility();
         // Текущий код в методе Update
-        if (_toggleSecondAbility != null &&!_toggleSecondAbility.isOn && !ToggleAbility.isOn)
+        if (_toggleSecondAbility != null && !_toggleSecondAbility.isOn && !ToggleAbility.isOn)
         {
             TargetParent = null;
             _isOneChange = false;
@@ -52,7 +55,8 @@ public class OneMeleeAttack : AbilityBase
             _isOneChange = false;
         }
 
-        if (Input.GetMouseButtonDown(0) && _player.GetComponent<PlayerMove>().IsSelect && Abilities.gameObject.activeSelf)
+        if (Input.GetMouseButtonDown(0) && _player.GetComponent<PlayerMove>().IsSelect &&
+            Abilities.gameObject.activeSelf)
         {
             HandleLeftMouseButtonToggle();
             if (AbilityTypeManager.ActiveAbilityType == 1 && _toggleSecondAbility.isOn == false)
@@ -100,7 +104,7 @@ public class OneMeleeAttack : AbilityBase
     {
         // Выключенный ToggleAbility
         base.HandleToggleAbilityOff();
-
+        StopBackgroundSwitcherEvent.SendStartStopBackgroundSwitcher();
         CanDealDamageOrHeal = false;
         CanMakeDamage = false;
     }
@@ -111,7 +115,8 @@ public class OneMeleeAttack : AbilityBase
         {
             StartCoroutine(ToggleDoubleClick());
         }
-        else if (AbilityTypeManager.ActiveAbilityType == 1 && _player.GetComponent<PlayerMove>().IsSelect && Abilities.gameObject.activeSelf)
+        else if (AbilityTypeManager.ActiveAbilityType == 1 && _player.GetComponent<PlayerMove>().IsSelect &&
+                 Abilities.gameObject.activeSelf)
         {
             StartCoroutine(DoNotDoubleClickAtTarget());
         }
@@ -160,6 +165,7 @@ public class OneMeleeAttack : AbilityBase
             {
                 Abilities.GetComponent<GlobalCooldown>().StartGlobalCooldown();
             }
+
             FirstAbilityEvent?.Invoke(_damageValue);
             _castCoroutine = StartCoroutine(Damage(DamageRate));
         }
@@ -207,6 +213,7 @@ public class OneMeleeAttack : AbilityBase
                     }
                 }
             }
+
             StartCoroutine(DamageCooldown(activePsionica));
             _playerAbility.GetComponent<FiveConversion>().UseActivePsionica(activePsionica, Target);
         }
@@ -244,15 +251,31 @@ public class OneMeleeAttack : AbilityBase
 
         yield return new WaitForSeconds(damageRate / 2);
 
-        _targetHealth.TakePhisicDamage(_damageValue);
-        _player.GetComponent<PsionicaMelee>().MakePsionica(_damageValue);
-        HandleActivePsionica();
-        CanMakeDamage = false;
+        Shield _shield = TargetParent.GetComponentInChildren<Shield>();
 
-        yield return new WaitForSeconds(damageRate / 2);
+        if (_shield != null)
+        {
+            _shield.DamageInShield(_damageValue);
+            HandleActivePsionica();
+            CanMakeDamage = false;
 
-        _castCoroutine = null;
-        CanMakeDamage = true;
+            yield return new WaitForSeconds(damageRate / 2);
+
+            _castCoroutine = null;
+            CanMakeDamage = true;
+        }
+        else
+        {
+            _targetHealth.TakePhisicDamage(_damageValue);
+            _player.GetComponent<PsionicaMelee>().MakePsionica(_damageValue);
+            HandleActivePsionica();
+            CanMakeDamage = false;
+
+            yield return new WaitForSeconds(damageRate / 2);
+
+            _castCoroutine = null;
+            CanMakeDamage = true;
+        }
     }
 
     private IEnumerator DamageCooldown(float activePsionica)
@@ -261,5 +284,3 @@ public class OneMeleeAttack : AbilityBase
         _targetHealth.TakeMagicDamage(activePsionica);
     }
 }
-
-
