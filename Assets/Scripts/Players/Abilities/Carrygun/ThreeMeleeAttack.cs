@@ -299,6 +299,8 @@ public class ThreeMeleeAttack : AbilityBase
                 {
                     float numberOfBody = distanceToTarget / 1.9f;
                     _shield.DamageInShield(damage + (damage * 0.005f * (numberOfBody / 0.1f)));
+                    _player.GetComponent<PsionicaMelee>()
+                        .MakePsionica(damage + (damage * 0.005f * (numberOfBody / 0.1f)));
                     _damageDealt = true;
                     ThirdAbilityEvent?.Invoke(damage + (damage * 0.005f * (numberOfBody / 0.1f)));
                 }
