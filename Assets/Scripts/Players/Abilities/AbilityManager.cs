@@ -89,30 +89,33 @@ public class AbilityManager : MonoBehaviour
 	{
 		List<AbilityBase> abilitiesToRemove = new List<AbilityBase>();
 
-		if (nextAbility != null && nextAbility.ToggleAbility.isOn == false && abilityQueue.Count > 0)
-		{
-			abilitiesToRemove.Add(abilityQueue[0]);
-		}
-		else if (nextAbility != null && nextAbility.ToggleAbility.isOn == false && abilityQueue.Count <= 0 && abilityQueueAutoattack.Count > 0)
-		{
-			abilitiesToRemove.Add(abilityQueueAutoattack[0]);
-		}
+		abilityQueue.RemoveAll(item => item.ToggleAbility.isOn == false);
+		abilityQueueAutoattack.RemoveAll(item => item.ToggleAbility.isOn == false);
+		
+		//if (nextAbility != null && nextAbility.ToggleAbility.isOn == false && abilityQueue.Count > 0)
+		//{
+		//	abilitiesToRemove.Add(abilityQueue[0]);
+		//}
+		//else if (nextAbility != null && nextAbility.ToggleAbility.isOn == false && abilityQueue.Count <= 0 && abilityQueueAutoattack.Count > 0)
+		//{
+		//	abilitiesToRemove.Add(abilityQueueAutoattack[0]);
+		//}
 
-		foreach (var abilityToRemove in abilitiesToRemove)
-		{
-			if (abilityQueue.Contains(abilityToRemove))
-			{
-				abilityQueue.Remove(abilityToRemove);
-			}
-			else if (abilityQueueAutoattack.Contains(abilityToRemove))
-			{
-				abilityQueueAutoattack.Remove(abilityToRemove);
-			}
+		//foreach (var abilityToRemove in abilitiesToRemove)
+		//{
+		//	if (abilityQueue.Contains(abilityToRemove))
+		//	{
+		//		abilityQueue.Remove(abilityToRemove);
+		//	}
+		//	else if (abilityQueueAutoattack.Contains(abilityToRemove))
+		//	{
+		//		abilityQueueAutoattack.Remove(abilityToRemove);
+		//	}
 
-			abilityToRemove.DrawCircle.Clear();
-		}
+		//	abilityToRemove.DrawCircle.Clear();
+		//}
 
-		abilitiesToRemove.Clear();
+		//abilitiesToRemove.Clear();
 
 		if (abilityQueue.Count > 0 || abilityQueueAutoattack.Count > 0)
 		{

@@ -42,8 +42,8 @@ namespace Players.CircleBackgroundColor
 				isRunning = true;
 
 				//InvokeRepeating("SwitchObject", 0, _soSwitcher.SwitchInterval);
-				Debug.Log("Репитинг работает");
 			}
+
 			gameObject.SetActive(true);
 			StartCoroutine(FadeSprite());
 		}
@@ -56,17 +56,12 @@ namespace Players.CircleBackgroundColor
 			gameObject.SetActive(false);
 			StopCoroutine(FadeSprite());
 			//CancelInvoke("SwitchObject");
-			Debug.Log("Репитинг не работает");
 		}
 
 		private IEnumerator FadeSprite()
 		{
-			//yield return new WaitForSeconds(0.15f);
-
-			Debug.Log("Start Coroutine");
 			while (true)
 			{
-				Debug.Log("Working");
 				for (float t = 0f; t < 1; t += Time.deltaTime)
 				{
 					float normalizedTime = t / 1;
