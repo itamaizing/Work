@@ -1,5 +1,6 @@
 using System.Collections;
 using GlobalEvents;
+using Players.Abilities.Genjalf;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -274,19 +275,45 @@ public class ThreeMeleeAttack : AbilityBase
 
             if (distanceToTarget >= maxDistance && TargetParent != null)
             {
-                TargetParent.GetComponent<HealthPlayer>().TakePhisicDamage(damage + (damage * 0.2f));
-                _player.GetComponent<PsionicaMelee>().MakePsionica(damage + (damage * 0.2f));
-                _damageDealt = true;
-                ThirdAbilityEvent?.Invoke(damage + (damage * 0.2f));
+                Shield _shield = TargetParent.GetComponentInChildren<Shield>();
+
+                if (_shield != null)
+                {
+                    _shield.DamageInShield(damage + (damage * 0.2f));
+                    _damageDealt = true;
+                    ThirdAbilityEvent?.Invoke(damage + (damage * 0.2f));
+                }
+                else
+                {
+                    TargetParent.GetComponent<HealthPlayer>().TakePhisicDamage(damage + (damage * 0.2f));
+                    _player.GetComponent<PsionicaMelee>().MakePsionica(damage + (damage * 0.2f));
+                    _damageDealt = true;
+                    ThirdAbilityEvent?.Invoke(damage + (damage * 0.2f));
+                }
             }
             else if (distanceToTarget < maxDistance && TargetParent != null)
             {
-                float numberOfBody = distanceToTarget / 1.9f;
-                TargetParent.GetComponent<HealthPlayer>()
-                    .TakePhisicDamage(damage + (damage * 0.005f * (numberOfBody / 0.1f)));
-                _player.GetComponent<PsionicaMelee>().MakePsionica(damage + (damage * 0.005f * (numberOfBody / 0.1f)));
-                _damageDealt = true;
-                ThirdAbilityEvent?.Invoke(damage + (damage * 0.005f * (numberOfBody / 0.1f)));
+                Shield _shield = TargetParent.GetComponentInChildren<Shield>();
+
+                if (_shield != null)
+                {
+                    float numberOfBody = distanceToTarget / 1.9f;
+                    _shield.DamageInShield(damage + (damage * 0.005f * (numberOfBody / 0.1f)));
+                    _player.GetComponent<PsionicaMelee>()
+                        .MakePsionica(damage + (damage * 0.005f * (numberOfBody / 0.1f)));
+                    _damageDealt = true;
+                    ThirdAbilityEvent?.Invoke(damage + (damage * 0.005f * (numberOfBody / 0.1f)));
+                }
+                else
+                {
+                    float numberOfBody = distanceToTarget / 1.9f;
+                    TargetParent.GetComponent<HealthPlayer>()
+                        .TakePhisicDamage(damage + (damage * 0.005f * (numberOfBody / 0.1f)));
+                    _player.GetComponent<PsionicaMelee>()
+                        .MakePsionica(damage + (damage * 0.005f * (numberOfBody / 0.1f)));
+                    _damageDealt = true;
+                    ThirdAbilityEvent?.Invoke(damage + (damage * 0.005f * (numberOfBody / 0.1f)));
+                }
             }
         }
         else
@@ -300,10 +327,21 @@ public class ThreeMeleeAttack : AbilityBase
         if (!_damageDealt && TargetParent != null && _distanceToEnemy < 2.1f)
         {
             float damage = UnityEngine.Random.Range(11, 13);
-            TargetParent.GetComponent<HealthPlayer>().TakePhisicDamage(damage + (damage * 0.1f));
-            _player.GetComponent<PsionicaMelee>().MakePsionica(damage + (damage * 0.1f));
-            _damageDealt = true;
-            ThirdAbilityEvent?.Invoke(damage + (damage * 0.1f));
+            Shield _shield = TargetParent.GetComponentInChildren<Shield>();
+
+            if (_shield != null)
+            {
+                _shield.DamageInShield(damage + (damage * 0.1f));
+                _damageDealt = true;
+                ThirdAbilityEvent?.Invoke(damage + (damage * 0.1f));
+            }
+            else
+            {
+                TargetParent.GetComponent<HealthPlayer>().TakePhisicDamage(damage + (damage * 0.1f));
+                _player.GetComponent<PsionicaMelee>().MakePsionica(damage + (damage * 0.1f));
+                _damageDealt = true;
+                ThirdAbilityEvent?.Invoke(damage + (damage * 0.1f));
+            }
         }
         else
         {
@@ -314,8 +352,8 @@ public class ThreeMeleeAttack : AbilityBase
     private IEnumerator CastJump()
     {
         _player.GetComponent<PlayerMove>().CanMove = false;
-        
-        
+
+
         if (Abilities.GetComponent<GlobalCooldown>())
         {
             Abilities.GetComponent<GlobalCooldown>().StartGlobalCooldown();
