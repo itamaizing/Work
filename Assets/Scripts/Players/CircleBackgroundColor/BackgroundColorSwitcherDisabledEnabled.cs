@@ -5,58 +5,59 @@ using UnityEngine;
 
 namespace Players.CircleBackgroundColor
 {
-    public class BackgroundColorSwitcherDisabledEnabled : MonoBehaviour
-    {
-        [SerializeField] private SoBackgroundColorSwitcherDisabledEnabledData _soSwitcher;
-        
-        
-        private bool isObjectActive = true;
-        private bool isSwitching = true;
-        private bool isRunning = false;
+	public class BackgroundColorSwitcherDisabledEnabled : MonoBehaviour
+	{
+		[SerializeField] private SoBackgroundColorSwitcherDisabledEnabledData _soSwitcher;
 
-        private SpriteRenderer _spriteRenderer;
-        private Coroutine _coroutine;
+
+		private bool isObjectActive = true;
+		private bool isSwitching = true;
+		private bool isRunning = false;
+
+		private SpriteRenderer _spriteRenderer;
+		private Coroutine _coroutine;
 
 		private void Awake()
-        {
-			_spriteRenderer=GetComponent<SpriteRenderer>();
-			StopBackgroundSwitcherEvent.OnStartStopBackgroundSwitcher.AddListener(StopSwitching);
-        }
+		{
+			_spriteRenderer = GetComponent<SpriteRenderer>();
+			//StopBackgroundSwitcherEvent.OnStartStopBackgroundSwitcher.AddListener(StopSwitching);
+			StopSwitching();
+		}
 
-        private void SwitchObject()
-        {
-            if (isSwitching)
-            {
-                isObjectActive = !isObjectActive;
-                gameObject.SetActive(isObjectActive);
-            }
-        }
+		private void SwitchObject()
+		{
+			if (isSwitching)
+			{
+				isObjectActive = !isObjectActive;
+				gameObject.SetActive(isObjectActive);
+			}
+		}
 
-        //Запуск включения и выключения компонента с красным фоном на объекте.
-        public void StartSwitching()
-        {
-            if (!isRunning&& isSwitching)
-            {
-                isSwitching = true;
-                isRunning = true;
+		//Запуск включения и выключения компонента с красным фоном на объекте.
+		public void StartSwitching()
+		{
+			if (!isRunning && isSwitching)
+			{
+				isSwitching = true;
+				isRunning = true;
 
-                //InvokeRepeating("SwitchObject", 0, _soSwitcher.SwitchInterval);
-                Debug.Log("Репитинг работает");
-            }
+				//InvokeRepeating("SwitchObject", 0, _soSwitcher.SwitchInterval);
+				Debug.Log("Репитинг работает");
+			}
 			gameObject.SetActive(true);
 			StartCoroutine(FadeSprite());
 		}
 
 		//Остановка включения и выключения компонента с красным фоном на объекте.
 		public void StopSwitching()
-        {
-            isSwitching = false;
-            isRunning = false;
+		{
+			isSwitching = false;
+			isRunning = false;
 			gameObject.SetActive(false);
 			StopCoroutine(FadeSprite());
-            //CancelInvoke("SwitchObject");
-            Debug.Log("Репитинг не работает");
-        }
+			//CancelInvoke("SwitchObject");
+			Debug.Log("Репитинг не работает");
+		}
 
 		private IEnumerator FadeSprite()
 		{
