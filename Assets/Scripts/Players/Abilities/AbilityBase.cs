@@ -51,7 +51,10 @@ public abstract class AbilityBase : MonoBehaviour
     [HideInInspector] public GameObject NewAbilityPrefab;
     [HideInInspector] public bool CanDoAbility;
     [HideInInspector] public bool CanDrawCircle = true;
+    [Header("Дистанция в клетках")]
     [HideInInspector] public float Distance;
+    [SerializeField] public float CellDistance = 1f;
+    [SerializeField] protected float _cellSize = 1.9f;
     [HideInInspector] public LastAbility lastAbility;
     [HideInInspector] public bool IsActiveAbility;
 
@@ -184,8 +187,8 @@ public abstract class AbilityBase : MonoBehaviour
 
         if (CanDrawCircle && _player.GetComponent<PlayerMove>().IsSelect)
         {
-            DrawCircle.Draw(Distance - (1.9f / 2f));
-            CanDrawCircle = false;
+			DrawCircle.Draw(Distance);
+			CanDrawCircle = false;
         }
 
         if (_player.GetComponent<PlayerMove>().IsSelect && Input.GetMouseButtonDown(1) && _cast == false)

@@ -20,6 +20,9 @@ public class FourMeleeAttack : AbilityBase
 	[HideInInspector] public GameObject Target;
 	[HideInInspector] public float AbilityCooldownTime = 7f;
 
+	[Header("Длина щуполец в клетках")]
+	[SerializeField] private float _tentaclesCellDistance = 3;
+
 	public delegate void FourthAbilityHandler(float value);
 
 	public event FourthAbilityHandler FourthAbilityEvent;
@@ -54,8 +57,8 @@ public class FourMeleeAttack : AbilityBase
 
 	private void Start()
 	{
-		Distance = 3f * 1.94f + 1.94f * 0.5f; // дистанция щупалец
-		_distancePlayer = 4f * 1.94f + 1.94f * 0.5f; //от кэрриган до щупалец
+		Distance = _tentaclesCellDistance * _cellSize; // дистанция щупалец
+		_distancePlayer = _cellSize * CellDistance; //от кэрриган до щупалец
 		AttackType = AttackType.OneAttack;
 		AbilityType = AbilityType.DamageAbility;
 
@@ -162,7 +165,7 @@ public class FourMeleeAttack : AbilityBase
 					{
 						_distancePrefab = Instantiate(CircleDistancePrefab);
 						_distancePrefab.transform.SetParent(TargetParent.transform);
-						_distancePrefab.GetComponent<DrawCircle>().Draw(Distance - 1.9f / 4.5f);
+						_distancePrefab.GetComponent<DrawCircle>().Draw(Distance);
 						_distancePrefab.GetComponent<FindTentaclePrefabInRadius>().SetRadiusCircle =
 							(Distance - 1.9f / 4.5f);
 						_canDrawDistancePrefab = false;
@@ -320,7 +323,7 @@ public class FourMeleeAttack : AbilityBase
 									{
 										_distancePrefab = Instantiate(CircleDistancePrefab);
 										_distancePrefab.transform.SetParent(TargetParent.transform);
-										_distancePrefab.GetComponent<DrawCircle>().Draw(Distance - 1.9f / 4.5f);
+										_distancePrefab.GetComponent<DrawCircle>().Draw(Distance);
 										_distancePrefab.GetComponent<FindTentaclePrefabInRadius>().SetRadiusCircle =
 											(Distance - 1.9f / 4.5f);
 										_canDrawDistancePrefab = false;
@@ -359,7 +362,7 @@ public class FourMeleeAttack : AbilityBase
 									{
 										_distancePrefab = Instantiate(CircleDistancePrefab);
 										_distancePrefab.transform.SetParent(TargetParent.transform);
-										_distancePrefab.GetComponent<DrawCircle>().Draw(Distance - 1.9f / 4.5f);
+										_distancePrefab.GetComponent<DrawCircle>().Draw(Distance);
 										_distancePrefab.GetComponent<FindTentaclePrefabInRadius>().SetRadiusCircle =
 											(Distance - 1.9f / 4.5f);
 										_canDrawDistancePrefab = false;
@@ -387,7 +390,7 @@ public class FourMeleeAttack : AbilityBase
 					{
 						_distancePrefab = Instantiate(CircleDistancePrefab);
 						_distancePrefab.transform.SetParent(TargetParent.transform);
-						_distancePrefab.GetComponent<DrawCircle>().Draw(Distance - 1.9f / 4.5f);
+						_distancePrefab.GetComponent<DrawCircle>().Draw(Distance);
 						_distancePrefab.GetComponent<FindTentaclePrefabInRadius>().SetRadiusCircle =
 							(Distance - 1.9f / 4.5f);
 						_canDrawDistancePrefab = false;

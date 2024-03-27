@@ -20,7 +20,7 @@ public class OneMeleeAttack : AbilityBase
 
     private void Start()
     {
-        Distance = 1.94f;
+        Distance = _cellSize * CellDistance;
         AttackType = AttackType.Autoattack;
         AbilityType = AbilityType.DamageAbility;
         AttackRangeType = AttackRangeType.MeleeAttack;

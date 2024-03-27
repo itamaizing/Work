@@ -13168,9 +13168,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2216866060756685130}
     - target: {fileID: 329099905411920203, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
+      propertyPath: _cellSize
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 329099905411920203, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: IconAbility
       value: 
       objectReference: {fileID: 8800548450927080243}
+    - target: {fileID: 329099905411920203, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
+      propertyPath: CellDistance
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 329099905411920203, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: ToggleAbility
       value: 
@@ -13192,9 +13200,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2216866060756685130}
     - target: {fileID: 1144411358906767094, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
+      propertyPath: _cellSize
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1144411358906767094, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: IconAbility
       value: 
       objectReference: {fileID: 2995639241185256651}
+    - target: {fileID: 1144411358906767094, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
+      propertyPath: CellDistance
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 1144411358906767094, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: ToggleAbility
       value: 
@@ -13203,6 +13219,10 @@ PrefabInstance:
       propertyPath: CooldownButton
       value: 
       objectReference: {fileID: 3037742879687122053}
+    - target: {fileID: 1144411358906767094, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
+      propertyPath: _tentaclesCellDistance
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 1170573783195033357, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: m_Color.a
       value: 1
@@ -13267,6 +13287,10 @@ PrefabInstance:
       propertyPath: Abilities
       value: 
       objectReference: {fileID: 2216866060756685130}
+    - target: {fileID: 3068153775734330090, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
+      propertyPath: _cellSize
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 3068153775734330090, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: IconAbility
       value: 
@@ -13348,13 +13372,25 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1138358088594896431}
     - target: {fileID: 4461800688482813493, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
+      propertyPath: Distance
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4461800688482813493, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: Abilities
       value: 
       objectReference: {fileID: 2216866060756685130}
     - target: {fileID: 4461800688482813493, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
+      propertyPath: _cellSize
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4461800688482813493, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: IconAbility
       value: 
       objectReference: {fileID: 7288820380892326329}
+    - target: {fileID: 4461800688482813493, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
+      propertyPath: CellDistance
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4461800688482813493, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: ToggleAbility
       value: 
