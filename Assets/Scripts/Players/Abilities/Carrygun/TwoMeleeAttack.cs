@@ -26,7 +26,7 @@ public class TwoMeleeAttack : AbilityBase
 
     private void Start()
     {
-        Distance = 1.9f * 1.8f;
+        Distance = _cellSize * CellDistance;
         AttackType = AttackType.Autoattack;
         AbilityType = AbilityType.DamageAbility;
         AttackRangeType = AttackRangeType.MeleeAttack;
@@ -109,11 +109,11 @@ public class TwoMeleeAttack : AbilityBase
 
         if (_darts > 0)
         {
-            Distance = 1.94f * 6;
+            Distance = _cellSize * 6;
         }
         else
         {
-            Distance = 1.9f * 1.8f;
+            Distance = _cellSize * CellDistance;
         }
 
         if (TargetParent == null)
@@ -316,7 +316,7 @@ public class TwoMeleeAttack : AbilityBase
 
     void MoveTowardsEnemy(GameObject Target)
     {
-        float distanceFromPlayer = 1.94f;
+        float distanceFromPlayer = _cellSize;
         float moveSpeed = 15f;
 
         Vector3 directionToPlayer = _player.transform.position - Target.transform.position;

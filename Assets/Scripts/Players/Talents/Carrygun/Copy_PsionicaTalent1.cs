@@ -107,7 +107,7 @@ public class Copy_PsionicaTalent1 : MonoBehaviour
     {
         if (_canDrawCircle && _player.GetComponent<PlayerMove>().IsSelect)
         {
-            _drawCircle.Draw(_distance - (1.94f / 2f));
+            _drawCircle.Draw(_distance);
             _canDrawCircle = false;
         }
 

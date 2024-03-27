@@ -25,7 +25,6 @@ public class DrawCircle : MonoBehaviour
         lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
         lineRenderer.startColor = lineColor;
         lineRenderer.endColor = lineColor;
-
         lineRenderer.positionCount = segments + 1;
 
         float angle = 0f;
@@ -49,4 +48,9 @@ public class DrawCircle : MonoBehaviour
             lineRenderer.positionCount = 0;
         }
     }
+
+    public void SetColor(Color newColor)
+    {
+		lineColor = newColor;
+	}
 }
