@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Players.Abilities.Genjalf
+namespace Players.Abilities.Genjalf.Shield_Ability
 {
     public class Shield : MonoBehaviour
     {

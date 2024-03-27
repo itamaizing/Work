@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Players.Abilities.Genjalf
+namespace Players.Abilities.Genjalf.Shield_Ability
 {
     [CreateAssetMenu(menuName = "Create Shield Data", fileName = "Shield Data")]
     public class SoShieldData : ScriptableObject

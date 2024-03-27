@@ -1,7 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 
-namespace Players.Abilities.Genjalf
+namespace Players.Abilities.Genjalf.Shield_Ability
 {
     public class UIShield : MonoBehaviour
     {
