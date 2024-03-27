@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f53a0ab2c3b438785957ce2515bc218, type: 3}
   m_Name: Fireworks Data
   m_EditorClassIdentifier: 
-  _scaleX: 2
+  _scaleX: 10
+  _scaleY: 2

@@ -13,7 +13,8 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability
 
         private void StartSetScaleFireworks()
         {
-            transform.localScale = new Vector3(_soFireworksData.ScaleX, transform.localScale.y, transform.localScale.z);
+            transform.localScale =
+                new Vector3(_soFireworksData.ScaleX, _soFireworksData.ScaleY, transform.localScale.z);
         }
     }
 }
