@@ -6,7 +6,6 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability
     public class FoundEnemyTriggerAndDamage : MonoBehaviour
     {
         [SerializeField] private Fireworks _fireworks;
-        [SerializeField] private float _mana = 1000f;
 
         private Coroutine _damageCoroutine;
         
@@ -32,7 +31,7 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability
 
         private IEnumerator DamageOverTime(GameObject enemy)
         {
-            while (_mana > 0)
+            while (true)
             {
                 float damage = Random.Range(_fireworks.soFireworksData.DamageFireworksMin,
                     _fireworks.soFireworksData.DamageFireworksMax);
@@ -44,9 +43,7 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability
                     healthComponent.TakeDamage(damage);
                     Debug.Log($"Урон врагу {enemy.name}: {damage}");
                 }
-                
-                _mana -= 3f;
-                
+
                 yield return new WaitForSeconds(0.1f);
             }
         }

@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using GlobalEvents;
 using UnityEngine;
 
 namespace Players.Abilities.Genjalf.Fireworks_Ability
@@ -42,8 +43,9 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability
         //Время закинания.
         private IEnumerator TimeDoEndFireworks()
         {
+            StartFireworksEvent.SendStartFireworksEvent();
             yield return new WaitForSeconds(soFireworksData.TimeToDie);
-
+            StopFireworksEvent.SendStopFireworksEvent();
             Destroy(gameObject);
         }
     }
