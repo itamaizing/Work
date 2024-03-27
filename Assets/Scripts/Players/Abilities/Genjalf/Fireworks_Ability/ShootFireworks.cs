@@ -6,6 +6,7 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability
     {
         [SerializeField] private GameObject _prefabFireworks;
         [SerializeField] private Transform _startPosShoot;
+        [SerializeField] private float _mana = 1000f;
 
         private void Update()
         {
@@ -19,5 +20,7 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability
                 Instantiate(_prefabFireworks, _startPosShoot.position, _startPosShoot.rotation);
             }
         }
+        
+        
     }
 }

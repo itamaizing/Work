@@ -14,3 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scaleX: 10
   _scaleY: 2
+  _timeToDie: 1.6
+  _damageFireworksMin: 3
+  _damageFireworksMax: 6
