@@ -137,14 +137,14 @@ public class FiveReversPolarity : MonoBehaviour
         ManaCost.SetActive(true);
         ManaCost.GetComponent<VisualManaCost>().CheckManaCost();
         ManaCost.transform.localScale = new Vector2(2f, ManaCost.gameObject.transform.localScale.y);
-
+Debug.Log("Кастую");
         yield return new WaitForSeconds(castTime);
 
         ManaCost.SetActive(false);
        transform.parent.GetComponent<PlayerMove>().CanMove = true;
 
         ToggleAbility.enabled = true;
-
+        Debug.Log("Не кастую");
         StartDarkBeginning(20);
     }
     private void CreateCastPrefab(float time)

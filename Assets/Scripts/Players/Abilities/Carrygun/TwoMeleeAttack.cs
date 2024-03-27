@@ -1,15 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using Players.Abilities.Genjalf;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class TwoMeleeAttack : AbilityBase
 {
-    [Header("Ability properties")]
-    [HideInInspector] public GameObject Target;
+    [Header("Ability properties")] [HideInInspector]
+    public GameObject Target;
 
     public delegate void SecondAbilityHandler(float value);
+
     public event SecondAbilityHandler SecondAbilityEvent;
 
     private bool _isOneChange;
@@ -57,21 +59,25 @@ public class TwoMeleeAttack : AbilityBase
             TargetParent = null;
             _isOneChange = false;
         }
+
         if (_toggleFirstAbility != null && _toggleFirstAbility.isOn)
         {
             _isOneChange = false;
         }
 
-        if (Input.GetMouseButtonDown(0) && _player.GetComponent<PlayerMove>().IsSelect && Abilities.gameObject.activeSelf && ToggleAbility.enabled)
+        if (Input.GetMouseButtonDown(0) && _player.GetComponent<PlayerMove>().IsSelect &&
+            Abilities.gameObject.activeSelf && ToggleAbility.enabled)
         {
             HandleLeftMouseButtonToggle();
         }
 
-        if (Input.GetMouseButtonDown(1) && _player.GetComponent<PlayerMove>().IsSelect && Abilities.gameObject.activeSelf)
+        if (Input.GetMouseButtonDown(1) && _player.GetComponent<PlayerMove>().IsSelect &&
+            Abilities.gameObject.activeSelf)
         {
             HandleRightMouseButtonToggle();
 
-            if (AbilityTypeManager.ActiveAbilityType == 1 && _playerAbility.GetComponent<FourMeleeAttack>().ToggleAbility.isOn == false && ToggleAbility.enabled)
+            if (AbilityTypeManager.ActiveAbilityType == 1 &&
+                _playerAbility.GetComponent<FourMeleeAttack>().ToggleAbility.isOn == false && ToggleAbility.enabled)
             {
                 if (_castCoroutine != null)
                 {
@@ -94,14 +100,14 @@ public class TwoMeleeAttack : AbilityBase
         if (_playerAbility.GetComponent<OneMeleeAttack>().TargetParent != null)
         {
             TargetParent = _playerAbility.GetComponent<OneMeleeAttack>().TargetParent;
-            
+
             if (_isOneChange == false)
             {
                 ChangeBoolAndValues();
             }
         }
 
-        if(_darts > 0)
+        if (_darts > 0)
         {
             Distance = _cellSize * 6;
         }
@@ -129,7 +135,6 @@ public class TwoMeleeAttack : AbilityBase
 
         CanDealDamageOrHeal = false;
         CanMakeDamage = false;
-
     }
 
     public override void OnLeftDoubleClick()
@@ -160,7 +165,8 @@ public class TwoMeleeAttack : AbilityBase
         _targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(_targetPosition, Vector2.zero);
 
-        if (hit.collider != null && hit.collider.CompareTag("Enemies") && hit.collider.gameObject != gameObject && hit.collider.GetComponent<Uterus>() == null)
+        if (hit.collider != null && hit.collider.CompareTag("Enemies") && hit.collider.gameObject != gameObject &&
+            hit.collider.GetComponent<Uterus>() == null)
         {
             TargetParent = hit.collider.gameObject;
             ChangeBoolAndValues();
@@ -188,7 +194,7 @@ public class TwoMeleeAttack : AbilityBase
                 _damageValue *= 1.6f;
             }
 
-            if(_darts > 0)
+            if (_darts > 0)
             {
                 _damageValue *= 0.7f;
                 _talents.GetComponent<DeepWounds>().UseDarts();
@@ -199,21 +205,46 @@ public class TwoMeleeAttack : AbilityBase
                 SecondAbilityEvent?.Invoke(_damageValue);
             }
 
-            _targetHealth.TakePhisicDamage(_damageValue);
-            _player.GetComponent<PsionicaMelee>().MakePsionica(_damageValue);
-
-            float activePsionica = _playerAbility.GetComponent<FiveConversion>().PsionicaActive;
-
-            if (activePsionica > 0)
+            Shield _shield = TargetParent.GetComponentInChildren<Shield>();
+            
+            if (_shield != null)
             {
-                HandleActivePsionica(_damageValue, activePsionica);
-            }
+                _shield.DamageInShield(_damageValue);
+                _player.GetComponent<PsionicaMelee>().MakePsionica(_damageValue);
 
-            if (Random.value <= _bleedChance && _playerAbility != null)
-            {
-               _playerAbility.GetComponent<Bleeding>().StartBleed(Target, this);
+                float activePsionica = _playerAbility.GetComponent<FiveConversion>().PsionicaActive;
+
+                if (activePsionica > 0)
+                {
+                    HandleActivePsionica(_damageValue, activePsionica);
+                }
+
+                if (Random.value <= _bleedChance && _playerAbility != null)
+                {
+                    _playerAbility.GetComponent<Bleeding>().StartBleed(Target, this);
+                }
+
+                _castCoroutine = StartCoroutine(DamageCooldown());
             }
-            _castCoroutine = StartCoroutine(DamageCooldown());
+            else
+            {
+                _targetHealth.TakePhisicDamage(_damageValue);
+                _player.GetComponent<PsionicaMelee>().MakePsionica(_damageValue);
+
+                float activePsionica = _playerAbility.GetComponent<FiveConversion>().PsionicaActive;
+
+                if (activePsionica > 0)
+                {
+                    HandleActivePsionica(_damageValue, activePsionica);
+                }
+
+                if (Random.value <= _bleedChance && _playerAbility != null)
+                {
+                    _playerAbility.GetComponent<Bleeding>().StartBleed(Target, this);
+                }
+
+                _castCoroutine = StartCoroutine(DamageCooldown());
+            }
         }
     }
 
@@ -224,7 +255,7 @@ public class TwoMeleeAttack : AbilityBase
         HandleEffectsOnTarget(activePsionica, TargetParent);
         HandleEffectsOnNearbyEnemies(activePsionica, damageValue);
 
-        GetComponent<FiveConversion>().UseActivePsionica(activePsionica,Target);
+        GetComponent<FiveConversion>().UseActivePsionica(activePsionica, Target);
     }
 
     private void HandleEffectsOnTarget(float activePsionica, GameObject target)
@@ -267,7 +298,8 @@ public class TwoMeleeAttack : AbilityBase
 
         foreach (Collider2D collider in colliders)
         {
-            if (collider.CompareTag("Enemies") && collider.gameObject != gameObject && collider.gameObject != TargetParent)
+            if (collider.CompareTag("Enemies") && collider.gameObject != gameObject &&
+                collider.gameObject != TargetParent)
             {
                 StartCoroutine(DamageEnemiesCooldown(activePsionica, collider));
                 // Обработка эффектов на других врагах
@@ -281,6 +313,7 @@ public class TwoMeleeAttack : AbilityBase
             }
         }
     }
+
     void MoveTowardsEnemy(GameObject Target)
     {
         float distanceFromPlayer = _cellSize;
@@ -315,8 +348,8 @@ public class TwoMeleeAttack : AbilityBase
         yield return new WaitForSeconds(0.1f);
         // Нанесение урона основной цели
         _targetHealth.TakeMagicDamage(activePsionica * 0.3f);
-
     }
+
     private IEnumerator DamageEnemiesCooldown(float activePsionica, Collider2D collider)
     {
         yield return new WaitForSeconds(0.1f);
@@ -332,10 +365,11 @@ public class TwoMeleeAttack : AbilityBase
         while (Time.time - startTime < 0.5f)
         {
             rb.isKinematic = false;
-            rb.MovePosition(Vector2.MoveTowards(target.transform.position, targetPosition, moveSpeed * Time.fixedDeltaTime));
+            rb.MovePosition(Vector2.MoveTowards(target.transform.position, targetPosition,
+                moveSpeed * Time.fixedDeltaTime));
             yield return new WaitForFixedUpdate();
         }
 
-        rb.isKinematic = true; 
+        rb.isKinematic = true;
     }
 }
