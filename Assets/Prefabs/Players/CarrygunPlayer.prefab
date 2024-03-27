@@ -131,6 +131,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _soCircleColorBackgroundSettings: {fileID: 11400000, guid: 70cb33aa322f5be4180466de03f5b8e0, type: 2}
   _soCircleColorBackgroundAttackSettings: {fileID: 11400000, guid: f5c5c6754ec0b494fb7d31492db86e98, type: 2}
+  _soCircleSelect: {fileID: 0}
+  _soCircleSelectAttack: {fileID: 0}
 --- !u!114 &1828929316732520377
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1070,6 +1072,8 @@ MonoBehaviour:
   CanDoAbility: 0
   CanDrawCircle: 1
   Distance: 0
+  CellDistance: 1
+  _cellSize: 1.9
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
   Target: {fileID: 0}
@@ -1111,6 +1115,8 @@ MonoBehaviour:
   CanDoAbility: 0
   CanDrawCircle: 1
   Distance: 0
+  CellDistance: 1
+  _cellSize: 1.9
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
   Target: {fileID: 0}
@@ -1149,6 +1155,8 @@ MonoBehaviour:
   CanDoAbility: 0
   CanDrawCircle: 1
   Distance: 0
+  CellDistance: 1
+  _cellSize: 1.9
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
   _renderers: []
@@ -1188,6 +1196,8 @@ MonoBehaviour:
   CanDoAbility: 0
   CanDrawCircle: 1
   Distance: 0
+  CellDistance: 1
+  _cellSize: 1.9
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
   CooldownButton: {fileID: 0}
@@ -1195,6 +1205,7 @@ MonoBehaviour:
   CircleDistancePrefab: {fileID: 1114988162823384185, guid: 5ed03037701dc5045a0fa0530f020b05, type: 3}
   Target: {fileID: 0}
   AbilityCooldownTime: 7
+  _tentaclesCellDistance: 0
   FixPrefab: 0
 --- !u!114 &4953803910209164375
 MonoBehaviour:

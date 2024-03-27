@@ -30,7 +30,7 @@ public class FourMeleeAttack : AbilityBase
 	private string _tentaclePrefabTag = "TentaclePrefab";
 	private float moveSpeed = 0.095f;
 	private float acceleration = 0.095f;
-	private float _distancePlayer;
+	private float _distanceTentacles;
 	private SpriteRenderer childSpriteRenderer;
 	private Vector2 end;
 	private Vector2 _coursorPrefabPosition;
@@ -44,6 +44,7 @@ public class FourMeleeAttack : AbilityBase
 	private bool _canDoAbility;
 	private GameObject _distancePrefab;
 	private GameObject _newCoursorPrefab;
+	private Camera _camera;
 
 	private float healthOriginal;
 	private float speedOriginal;
@@ -57,14 +58,14 @@ public class FourMeleeAttack : AbilityBase
 
 	private void Start()
 	{
-		Distance = _tentaclesCellDistance * _cellSize; // дистанция щупалец
-		_distancePlayer = _cellSize * CellDistance; //от кэрриган до щупалец
+		_camera = Camera.main;
+		Distance = _tentaclesCellDistance * _cellSize; // дистанция от кастующего игрока до щупалец
+		_distanceTentacles = _cellSize * CellDistance; //от щуполец до земли
 		AttackType = AttackType.OneAttack;
 		AbilityType = AbilityType.DamageAbility;
 
 		healthOriginal = transform.parent.GetComponent<HealthPlayer>().MaxHealth;
 		speedOriginal = transform.parent.GetComponent<PlayerMove>().MoveSpeed;
-
 	}
 
 	private void Update()
@@ -161,35 +162,29 @@ public class FourMeleeAttack : AbilityBase
 					hit.collider.gameObject != gameObject)
 				{
 					TargetParent = hit.collider.gameObject;
+
 					if (_canDrawDistancePrefab)
 					{
 						_distancePrefab = Instantiate(CircleDistancePrefab);
 						_distancePrefab.transform.SetParent(TargetParent.transform);
 						_distancePrefab.GetComponent<DrawCircle>().Draw(Distance);
 						_distancePrefab.GetComponent<FindTentaclePrefabInRadius>().SetRadiusCircle =
-							(Distance - 1.9f / 4.5f);
+							(Distance);
 						_canDrawDistancePrefab = false;
 					}
 				}
 			}
 
-			//if (hit.collider == null && !_groundOrEnemy)
-			//{
-			//    NewAbilityPrefab.transform.position = _targetPosition;
-			//    _groundOrEnemy = true;
-			//}
-			//else
 			if (hit.collider != null && hit.collider.CompareTag("Enemies") &&
 			hit.collider.gameObject != gameObject && !_groundOrEnemy)
-            {
+			{
 				if ((NewAbilityPrefab.transform.position - hit.collider.transform.position).magnitude <
-					Distance - 1.9f / 2f)
+					Distance)
 				{
 					TargetParent = hit.collider.gameObject;
 					NewAbilityPrefab.transform.position = TargetParent.transform.position;
 					NewAbilityPrefab.transform.SetParent(TargetParent.transform);
 					_groundOrEnemy = true;
-					Debug.Log("Противник дошёл до указанной точки с щупалец");
 				}
 			}
 
@@ -197,9 +192,9 @@ public class FourMeleeAttack : AbilityBase
 			{
 				float playerToTarget = (NewAbilityPrefab.transform.position - _player.transform.position).magnitude;
 
-				if (_castCoroutine == null && playerToTarget < _distancePlayer - 1.9f / 2f &&
+				if (_castCoroutine == null && playerToTarget < Distance &&
 					(NewAbilityPrefab.transform.position - TargetParent.transform.position).magnitude <
-					Distance - 1.9f / 2f)
+					Distance)
 				{
 					_castCoroutine = StartCoroutine(CastTentacles());
 				}
@@ -238,6 +233,36 @@ public class FourMeleeAttack : AbilityBase
 		}
 	}
 
+	protected override void SetNewRadiusCircleColor()
+	{
+		DrawCircle.Draw(Distance);
+
+		if (Vector2.Distance(gameObject.transform.position, _camera.ScreenToWorldPoint(Input.mousePosition)) <= Distance)
+		{
+			DrawCircle.SetColor(Color.green);
+		}
+		else
+		{
+			DrawCircle.SetColor(Color.red);
+		}
+
+		if (!_distancePrefab)
+			return;
+
+		if (Vector2.Distance(Target.transform.position, _camera.ScreenToWorldPoint(Input.mousePosition)) <= _distanceTentacles)
+		{
+			var circle = _distancePrefab.GetComponent<DrawCircle>();
+			circle.Draw(_distanceTentacles);
+			circle.SetColor(Color.green);
+		}
+		else
+		{
+			var circle = _distancePrefab.GetComponent<DrawCircle>();
+			circle.Draw(_distanceTentacles);
+			circle.SetColor(Color.red);
+		}
+	}
+
 	private void FindTentaclePrefab(float _radiusCircle)
 	{
 		Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _radiusCircle);
@@ -247,7 +272,7 @@ public class FourMeleeAttack : AbilityBase
 		{
 			if (collider.CompareTag(_tentaclePrefabTag))
 			{
-				DrawCircle.lineColor = Color.green;
+				DrawCircle.SetColor(Color.green);
 				tentacleFound = true;
 				Debug.Log("в зоне");
 				break;
@@ -257,9 +282,10 @@ public class FourMeleeAttack : AbilityBase
 		if (!tentacleFound)
 		{
 			Debug.Log("нет в зоне");
-			DrawCircle.lineColor = Color.red;
+			DrawCircle.SetColor(Color.red);
 		}
 	}
+
 	protected override void HandleToggleAbilityOn()
 	{
 		// Включенный ToggleAbility
@@ -269,7 +295,7 @@ public class FourMeleeAttack : AbilityBase
 		if (FixPrefab == true && _cursorIsActive == false && _newCoursorPrefab == null)
 		{
 			Debug.Log("Момент клика, куда будет двигаться противник");
-			FindTentaclePrefab(Distance);
+			//FindTentaclePrefab(Distance);
 			Cursor.visible = true;
 		}
 
@@ -296,14 +322,14 @@ public class FourMeleeAttack : AbilityBase
 					float prefabToTarget = (TargetParent.transform.position - NewAbilityPrefab.transform.position)
 						.magnitude;
 
-					if (prefabToTarget < Distance - 1.9f / 2f)
+					if (prefabToTarget < Distance)
 					{
 						FixPrefab = true;
 					}
 					else
 					{
 						Collider2D[] colliders =
-							Physics2D.OverlapCircleAll(NewAbilityPrefab.transform.position, Distance);
+							Physics2D.OverlapCircleAll(NewAbilityPrefab.transform.position, _distanceTentacles);
 
 						if (colliders != null)
 						{
@@ -323,9 +349,9 @@ public class FourMeleeAttack : AbilityBase
 									{
 										_distancePrefab = Instantiate(CircleDistancePrefab);
 										_distancePrefab.transform.SetParent(TargetParent.transform);
-										_distancePrefab.GetComponent<DrawCircle>().Draw(Distance);
+										_distancePrefab.GetComponent<DrawCircle>().Draw(_distanceTentacles);
 										_distancePrefab.GetComponent<FindTentaclePrefabInRadius>().SetRadiusCircle =
-											(Distance - 1.9f / 4.5f);
+											(_distanceTentacles);
 										_canDrawDistancePrefab = false;
 									}
 
@@ -341,14 +367,14 @@ public class FourMeleeAttack : AbilityBase
 				}
 				else
 				{
-					if (playerToTarget < _distancePlayer - 1.9f / 2f)
+					if (playerToTarget < Distance)
 					{
 						FixPrefab = true;
 					}
 					else
 					{
 						Collider2D[] colliders =
-							Physics2D.OverlapCircleAll(NewAbilityPrefab.transform.position, _distancePlayer);
+							Physics2D.OverlapCircleAll(NewAbilityPrefab.transform.position, Distance);
 
 						if (colliders != null)
 						{
@@ -364,7 +390,7 @@ public class FourMeleeAttack : AbilityBase
 										_distancePrefab.transform.SetParent(TargetParent.transform);
 										_distancePrefab.GetComponent<DrawCircle>().Draw(Distance);
 										_distancePrefab.GetComponent<FindTentaclePrefabInRadius>().SetRadiusCircle =
-											(Distance - 1.9f / 4.5f);
+											(Distance);
 										_canDrawDistancePrefab = false;
 									}
 
@@ -383,7 +409,7 @@ public class FourMeleeAttack : AbilityBase
 				hit.collider.gameObject != gameObject)
 			{
 				if ((NewAbilityPrefab.transform.position - hit.collider.transform.position).magnitude <
-					Distance - 1.9f / 2f)
+					Distance)
 				{
 					TargetParent = hit.collider.gameObject;
 					if (_canDrawDistancePrefab)
@@ -392,7 +418,7 @@ public class FourMeleeAttack : AbilityBase
 						_distancePrefab.transform.SetParent(TargetParent.transform);
 						_distancePrefab.GetComponent<DrawCircle>().Draw(Distance);
 						_distancePrefab.GetComponent<FindTentaclePrefabInRadius>().SetRadiusCircle =
-							(Distance - 1.9f / 4.5f);
+							(Distance);
 						_canDrawDistancePrefab = false;
 					}
 				}
