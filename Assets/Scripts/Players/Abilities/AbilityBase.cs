@@ -94,7 +94,7 @@ public abstract class AbilityBase : MonoBehaviour
 	protected HealthPlayer _targetHealth;
 	protected Coroutine _castCoroutine;
 	protected Coroutine _blinkCoroutine;
-	private AbilityManager abilityManager;
+	protected AbilityManager abilityManager;
 	protected GameObject _targetCircle;
 	protected GameObject _player;
 	protected GameObject _playerAbility;
@@ -200,35 +200,35 @@ public abstract class AbilityBase : MonoBehaviour
 
 			Vector2 cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			RaycastHit2D hit = Physics2D.Raycast(cursorPosition, Vector2.zero);
+			//CancelAbilityOnClick();
+			//if (AbilityTypeManager.ActiveAbilityType == 1 && hit.collider != null &&
+			//	!hit.collider.CompareTag("Enemies") ||
+			//	AbilityTypeManager.ActiveAbilityType == 1 && hit.collider == null ||
+			//	AbilityTypeManager.ActiveAbilityType == 0)
+			//{
+			//	AbilityBase[] abilities = _playerAbility.GetComponentsInChildren<AbilityBase>();
+			//	List<AbilityBase> abilitiesCancel = new List<AbilityBase>();
 
-			if (AbilityTypeManager.ActiveAbilityType == 1 && hit.collider != null &&
-				!hit.collider.CompareTag("Enemies") ||
-				AbilityTypeManager.ActiveAbilityType == 1 && hit.collider == null ||
-				AbilityTypeManager.ActiveAbilityType == 0)
-			{
-				AbilityBase[] abilities = _playerAbility.GetComponentsInChildren<AbilityBase>();
-				List<AbilityBase> abilitiesCancel = new List<AbilityBase>();
+			//	foreach (AbilityBase ability in abilities)
+			//	{
+			//		if (ability.ToggleAbility.isOn && ability.TargetParent == null)
+			//		{
+			//			abilitiesCancel.Add(ability);
+			//		}
+			//	}
 
-				foreach (AbilityBase ability in abilities)
-				{
-					if (ability.ToggleAbility.isOn && ability.TargetParent == null)
-					{
-						abilitiesCancel.Add(ability);
-					}
-				}
-
-				if (abilitiesCancel.Count > 0)
-				{
-					for (int i = 0; i < abilitiesCancel.Count; i++)
-					{
-						abilitiesCancel[i].CancelAbilityOnClick();
-					}
-				}
-				else
-				{
-					CancelAbilityOnClick();
-				}
-			}
+			//	if (abilitiesCancel.Count > 0)
+			//	{
+			//		for (int i = 0; i < abilitiesCancel.Count; i++)
+			//		{
+			//			abilitiesCancel[i].CancelAbilityOnClick();
+			//		}
+			//	}
+			//	else
+			//	{
+			//		CancelAbilityOnClick();
+			//	}
+			//}
 		}
 
 		if (AttackType == AttackType.Autoattack && !CircleSelect.activeSelf && _blinkCoroutine != null)
@@ -542,7 +542,7 @@ public abstract class AbilityBase : MonoBehaviour
 					   .soCircleSelectAttack.SpriteColor;
 				}
 
-				//DrawCircle.SetColor(Color.red);
+				DrawCircle.SetColor(Color.red);
 			}
 			else if (_distanceToTarget <= Distance)
 			{
@@ -559,7 +559,7 @@ public abstract class AbilityBase : MonoBehaviour
 						.soCircleSelect.SpriteColor;
 				}
 
-				//DrawCircle.SetColor(Color.green);
+				DrawCircle.SetColor(Color.green);
 			}
 
 			if (_distanceToTarget <= Distance && AttackType == AttackType.Autoattack && CanDealDamageOrHeal ||

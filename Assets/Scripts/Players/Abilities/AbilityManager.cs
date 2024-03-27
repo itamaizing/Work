@@ -4,103 +4,162 @@ using UnityEngine;
 
 public class AbilityManager : MonoBehaviour
 {
-    public List<AbilityBase> abilityQueue = new List<AbilityBase>();
-    public List<AbilityBase> abilityQueueAutoattack = new List<AbilityBase>();
+	public List<AbilityBase> abilityQueue = new List<AbilityBase>();
+	public List<AbilityBase> abilityQueueAutoattack = new List<AbilityBase>();
 
-    private AbilityBase nextAbility;
+	private AbilityBase nextAbility;
+	private PlayerMove _playerMove;
 
-    public void AddAbilityToQueue(AbilityBase ability)
-    {
-        if (ability.AttackType == AttackType.Autoattack)
-        {
-            abilityQueueAutoattack.Add(ability);
-        }
-        else
-        {
-            if (nextAbility != null && abilityQueue.Count == 0 && abilityQueueAutoattack.Count > 0)
-            {
-                if (nextAbility.NewAbilityPrefab != null)
-                {
-                    nextAbility.NewAbilityPrefab.SetActive(false);
-                    nextAbility.DrawCircle.Clear();
-                }
+	private void Awake()
+	{
+		_playerMove = GetComponentInParent<PlayerMove>();
+	}
 
-                nextAbility.CanDoAbility = false;
-                nextAbility = null;
-            }
+	private void OnEnable()
+	{
+		InputHandler.OnAltClick += CancelSpellCast;
+	}
 
-            abilityQueue.Add(ability);
-        }
+	private void OnDisable()
+	{
+		InputHandler.OnAltClick -= CancelSpellCast;
+	}
 
-        if (abilityQueue.Count == 1 || abilityQueueAutoattack.Count == 1) // Если это первая способность в очереди, начните ее выполнение
-        {
-            ExecuteNextAbility();
-        }
-    }
+	public void AddAbilityToQueue(AbilityBase ability)
+	{
+		// если способность - автоатака, то добавить в очередь автоатак
+		if (ability.AttackType == AttackType.Autoattack)
+		{
+			abilityQueueAutoattack.Add(ability);
+		}
+		else // если способность не автоатака, то добавить в очередь обычных способностей
+		{
+			// если есть текущая способность и число абилок в очереди = 0 и есть абилка-автоатака 
+			if (nextAbility != null && abilityQueue.Count == 0 && abilityQueueAutoattack.Count > 0)
+			{
+				// если есть префаб абилки
+				DeleteCurrentAbility();
+			}
 
-    private void ExecuteNextAbility()
-    {
-        if (abilityQueue.Count > 0 && abilityQueue[0] != null)
-        {
-            nextAbility = abilityQueue[0];
-            nextAbility.CanDoAbility = true;
-        }
-        else if (abilityQueue.Count <= 0 && abilityQueueAutoattack.Count > 0 && abilityQueueAutoattack[0] != null)
-        {
-            nextAbility = abilityQueueAutoattack[0];
-            nextAbility.CanDoAbility = true;
-            nextAbility.CanDrawCircle = true;
+			abilityQueue.Add(ability);
+		}
 
-            if (nextAbility.NewAbilityPrefab != null)
-            {
-                nextAbility.NewAbilityPrefab.SetActive(true);
-            }
-        }
-    }
+		if (abilityQueue.Count == 1 || abilityQueueAutoattack.Count == 1) // Если это первая способность в очереди, начните ее выполнение
+		{
+			ExecuteNextAbility();
+		}
+	}
 
-    private void Update()
-    {
-        List<AbilityBase> abilitiesToRemove = new List<AbilityBase>();
+	private void DeleteCurrentAbility()
+	{
+		if (nextAbility.NewAbilityPrefab != null)
+		{
+			// выключить префаб, очистить круг радиуса атаки
+			nextAbility.NewAbilityPrefab.SetActive(false);
+			nextAbility.DrawCircle.Clear();
+		}
 
-        if (nextAbility != null && nextAbility.ToggleAbility.isOn == false && abilityQueue.Count > 0)
-        {
-            abilitiesToRemove.Add(abilityQueue[0]);
-        }
-        else if (nextAbility != null && nextAbility.ToggleAbility.isOn == false && abilityQueue.Count <= 0 && abilityQueueAutoattack.Count > 0)
-        {
-            abilitiesToRemove.Add(abilityQueueAutoattack[0]);
-        }
+		// удаляем текущую абилку
+		nextAbility.CanDoAbility = false;
+		nextAbility.CancelAbilityOnClick();
+		nextAbility = null;
+	}
 
-        foreach (var abilityToRemove in abilitiesToRemove)
-        {
-            if (abilityQueue.Contains(abilityToRemove))
-            {
-                abilityQueue.Remove(abilityToRemove);
-            }
-            else if (abilityQueueAutoattack.Contains(abilityToRemove))
-            {
-                abilityQueueAutoattack.Remove(abilityToRemove);
-            }
+	private void ExecuteNextAbility()
+	{
+		if (abilityQueue.Count > 0 && abilityQueue[0] != null)
+		{
+			nextAbility = abilityQueue[0];
+			nextAbility.CanDoAbility = true;
+		}
+		else if (abilityQueue.Count <= 0 && abilityQueueAutoattack.Count > 0 && abilityQueueAutoattack[0] != null)
+		{
+			nextAbility = abilityQueueAutoattack[0];
+			nextAbility.CanDoAbility = true;
+			nextAbility.CanDrawCircle = true;
 
-            abilityToRemove.DrawCircle.Clear();
-        }
+			if (nextAbility.NewAbilityPrefab != null)
+			{
+				nextAbility.NewAbilityPrefab.SetActive(true);
+			}
+		}
+	}
 
-        abilitiesToRemove.Clear();
+	private void Update()
+	{
+		List<AbilityBase> abilitiesToRemove = new List<AbilityBase>();
 
-        if (abilityQueue.Count > 0 || abilityQueueAutoattack.Count > 0)
-        {
-            ExecuteNextAbility();
-        }
+		if (nextAbility != null && nextAbility.ToggleAbility.isOn == false && abilityQueue.Count > 0)
+		{
+			abilitiesToRemove.Add(abilityQueue[0]);
+		}
+		else if (nextAbility != null && nextAbility.ToggleAbility.isOn == false && abilityQueue.Count <= 0 && abilityQueueAutoattack.Count > 0)
+		{
+			abilitiesToRemove.Add(abilityQueueAutoattack[0]);
+		}
 
-        if (abilityQueue.Count <= 0 && abilityQueueAutoattack.Count <= 0)
-        {
-            nextAbility = null;
-        }
-    }
+		foreach (var abilityToRemove in abilitiesToRemove)
+		{
+			if (abilityQueue.Contains(abilityToRemove))
+			{
+				abilityQueue.Remove(abilityToRemove);
+			}
+			else if (abilityQueueAutoattack.Contains(abilityToRemove))
+			{
+				abilityQueueAutoattack.Remove(abilityToRemove);
+			}
 
-    // отмена текущего заклинания
-    public void CancelSpellCast()
-    {
+			abilityToRemove.DrawCircle.Clear();
+		}
 
-    }
+		abilitiesToRemove.Clear();
+
+		if (abilityQueue.Count > 0 || abilityQueueAutoattack.Count > 0)
+		{
+			ExecuteNextAbility();
+		}
+
+		if (abilityQueue.Count <= 0 && abilityQueueAutoattack.Count <= 0)
+		{
+			nextAbility = null;
+		}
+	}
+
+	// отмена текущего заклинания
+	public void CancelSpellCast()
+	{
+		if (!_playerMove.IsSelect)
+			return;
+
+		Debug.Log("Cancel");
+
+		if (nextAbility != null)
+		{
+			DeleteCurrentAbility();
+			Debug.Log("removed next");
+			return;
+		}
+
+		if (abilityQueueAutoattack.Count > 0)
+		{
+			abilityQueueAutoattack[0].DrawCircle.Clear();
+			abilityQueueAutoattack[0].CancelAbilityOnClick();
+			abilityQueueAutoattack.RemoveAt(0);
+
+			Debug.Log("Removed autoattack");
+
+			return;
+		}
+
+		if (abilityQueue.Count > 0)
+		{
+			abilityQueue[0].DrawCircle.Clear();
+			abilityQueue[0].CancelAbilityOnClick();
+			abilityQueue.RemoveAt(0);
+
+			Debug.Log("Removed ability");
+
+			return;
+		}
+	}
 }

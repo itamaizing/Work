@@ -153,7 +153,6 @@ public class OneMeleeAttack : AbilityBase
         }
     }
 
-
     public override void HandleDealDamageOrHeal()
     {
         // Нанесение урона
@@ -251,9 +250,14 @@ public class OneMeleeAttack : AbilityBase
 
         yield return new WaitForSeconds(damageRate / 2);
 
-        Shield _shield = TargetParent.GetComponentInChildren<Shield>();
+        Shield _shield = null;
 
-        if (_shield != null)
+		if (TargetParent != null)
+        {
+			_shield = TargetParent.GetComponentInChildren<Shield>();
+		}
+
+		if (_shield != null)
         {
             _shield.DamageInShield(_damageValue);
             _player.GetComponent<PsionicaMelee>().MakePsionica(_damageValue);

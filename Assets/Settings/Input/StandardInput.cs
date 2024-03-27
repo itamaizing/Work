@@ -35,6 +35,78 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Spell1"",
+                    ""type"": ""Button"",
+                    ""id"": ""5829ae3a-0eec-44bc-84e4-68e736b86d0d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Spell2"",
+                    ""type"": ""Button"",
+                    ""id"": ""8ff526d7-9c9b-4ce8-a46e-e372309f5af5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Spell3"",
+                    ""type"": ""Button"",
+                    ""id"": ""f5872b1a-35d7-42d8-88ea-92ef1ad8a4c7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Spell4"",
+                    ""type"": ""Button"",
+                    ""id"": ""b4afbaec-2bf2-47dc-bea6-d6983bf8883c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Spell5"",
+                    ""type"": ""Button"",
+                    ""id"": ""33ea8082-53de-40a9-a3d3-14092ed3245a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Click"",
+                    ""type"": ""Button"",
+                    ""id"": ""44516835-b257-46c8-abad-39ef22ace919"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""AltClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""bf412cd3-b50b-471d-b533-fea7edb37f24"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Tap"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""AltDoubleClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""3f34b3c5-d9ec-4e7c-8fc8-3d66d3d00f20"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""MultiTap"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -92,6 +164,94 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""eda4cdab-6259-416c-91ff-dde9fd2b0cdb"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Spell1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4ce7edfa-1ea3-44b8-874d-84244bba45ae"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Spell2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""518ff43c-f6e8-422a-a911-eeec2d0c3777"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Spell3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5de434c9-0417-48c5-a0d3-5717c628ae97"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Spell4"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7ced5113-28cb-4bdb-8c20-01686d1cb8ee"",
+                    ""path"": ""<Keyboard>/5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Spell5"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""984c70d2-c9c4-413a-b26f-42a5d5de2e86"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Click"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""141e7693-f065-43c1-8a16-aa54d8c19def"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AltClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""eac2a2b7-4104-4f0f-99ef-5bf36abdf2d0"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AltDoubleClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -101,6 +261,14 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
         // GameplayMap
         m_GameplayMap = asset.FindActionMap("GameplayMap", throwIfNotFound: true);
         m_GameplayMap_Move = m_GameplayMap.FindAction("Move", throwIfNotFound: true);
+        m_GameplayMap_Spell1 = m_GameplayMap.FindAction("Spell1", throwIfNotFound: true);
+        m_GameplayMap_Spell2 = m_GameplayMap.FindAction("Spell2", throwIfNotFound: true);
+        m_GameplayMap_Spell3 = m_GameplayMap.FindAction("Spell3", throwIfNotFound: true);
+        m_GameplayMap_Spell4 = m_GameplayMap.FindAction("Spell4", throwIfNotFound: true);
+        m_GameplayMap_Spell5 = m_GameplayMap.FindAction("Spell5", throwIfNotFound: true);
+        m_GameplayMap_Click = m_GameplayMap.FindAction("Click", throwIfNotFound: true);
+        m_GameplayMap_AltClick = m_GameplayMap.FindAction("AltClick", throwIfNotFound: true);
+        m_GameplayMap_AltDoubleClick = m_GameplayMap.FindAction("AltDoubleClick", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -163,11 +331,27 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_GameplayMap;
     private List<IGameplayMapActions> m_GameplayMapActionsCallbackInterfaces = new List<IGameplayMapActions>();
     private readonly InputAction m_GameplayMap_Move;
+    private readonly InputAction m_GameplayMap_Spell1;
+    private readonly InputAction m_GameplayMap_Spell2;
+    private readonly InputAction m_GameplayMap_Spell3;
+    private readonly InputAction m_GameplayMap_Spell4;
+    private readonly InputAction m_GameplayMap_Spell5;
+    private readonly InputAction m_GameplayMap_Click;
+    private readonly InputAction m_GameplayMap_AltClick;
+    private readonly InputAction m_GameplayMap_AltDoubleClick;
     public struct GameplayMapActions
     {
         private @StandardInput m_Wrapper;
         public GameplayMapActions(@StandardInput wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_GameplayMap_Move;
+        public InputAction @Spell1 => m_Wrapper.m_GameplayMap_Spell1;
+        public InputAction @Spell2 => m_Wrapper.m_GameplayMap_Spell2;
+        public InputAction @Spell3 => m_Wrapper.m_GameplayMap_Spell3;
+        public InputAction @Spell4 => m_Wrapper.m_GameplayMap_Spell4;
+        public InputAction @Spell5 => m_Wrapper.m_GameplayMap_Spell5;
+        public InputAction @Click => m_Wrapper.m_GameplayMap_Click;
+        public InputAction @AltClick => m_Wrapper.m_GameplayMap_AltClick;
+        public InputAction @AltDoubleClick => m_Wrapper.m_GameplayMap_AltDoubleClick;
         public InputActionMap Get() { return m_Wrapper.m_GameplayMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -180,6 +364,30 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
             @Move.started += instance.OnMove;
             @Move.performed += instance.OnMove;
             @Move.canceled += instance.OnMove;
+            @Spell1.started += instance.OnSpell1;
+            @Spell1.performed += instance.OnSpell1;
+            @Spell1.canceled += instance.OnSpell1;
+            @Spell2.started += instance.OnSpell2;
+            @Spell2.performed += instance.OnSpell2;
+            @Spell2.canceled += instance.OnSpell2;
+            @Spell3.started += instance.OnSpell3;
+            @Spell3.performed += instance.OnSpell3;
+            @Spell3.canceled += instance.OnSpell3;
+            @Spell4.started += instance.OnSpell4;
+            @Spell4.performed += instance.OnSpell4;
+            @Spell4.canceled += instance.OnSpell4;
+            @Spell5.started += instance.OnSpell5;
+            @Spell5.performed += instance.OnSpell5;
+            @Spell5.canceled += instance.OnSpell5;
+            @Click.started += instance.OnClick;
+            @Click.performed += instance.OnClick;
+            @Click.canceled += instance.OnClick;
+            @AltClick.started += instance.OnAltClick;
+            @AltClick.performed += instance.OnAltClick;
+            @AltClick.canceled += instance.OnAltClick;
+            @AltDoubleClick.started += instance.OnAltDoubleClick;
+            @AltDoubleClick.performed += instance.OnAltDoubleClick;
+            @AltDoubleClick.canceled += instance.OnAltDoubleClick;
         }
 
         private void UnregisterCallbacks(IGameplayMapActions instance)
@@ -187,6 +395,30 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
             @Move.started -= instance.OnMove;
             @Move.performed -= instance.OnMove;
             @Move.canceled -= instance.OnMove;
+            @Spell1.started -= instance.OnSpell1;
+            @Spell1.performed -= instance.OnSpell1;
+            @Spell1.canceled -= instance.OnSpell1;
+            @Spell2.started -= instance.OnSpell2;
+            @Spell2.performed -= instance.OnSpell2;
+            @Spell2.canceled -= instance.OnSpell2;
+            @Spell3.started -= instance.OnSpell3;
+            @Spell3.performed -= instance.OnSpell3;
+            @Spell3.canceled -= instance.OnSpell3;
+            @Spell4.started -= instance.OnSpell4;
+            @Spell4.performed -= instance.OnSpell4;
+            @Spell4.canceled -= instance.OnSpell4;
+            @Spell5.started -= instance.OnSpell5;
+            @Spell5.performed -= instance.OnSpell5;
+            @Spell5.canceled -= instance.OnSpell5;
+            @Click.started -= instance.OnClick;
+            @Click.performed -= instance.OnClick;
+            @Click.canceled -= instance.OnClick;
+            @AltClick.started -= instance.OnAltClick;
+            @AltClick.performed -= instance.OnAltClick;
+            @AltClick.canceled -= instance.OnAltClick;
+            @AltDoubleClick.started -= instance.OnAltDoubleClick;
+            @AltDoubleClick.performed -= instance.OnAltDoubleClick;
+            @AltDoubleClick.canceled -= instance.OnAltDoubleClick;
         }
 
         public void RemoveCallbacks(IGameplayMapActions instance)
@@ -207,5 +439,13 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
     public interface IGameplayMapActions
     {
         void OnMove(InputAction.CallbackContext context);
+        void OnSpell1(InputAction.CallbackContext context);
+        void OnSpell2(InputAction.CallbackContext context);
+        void OnSpell3(InputAction.CallbackContext context);
+        void OnSpell4(InputAction.CallbackContext context);
+        void OnSpell5(InputAction.CallbackContext context);
+        void OnClick(InputAction.CallbackContext context);
+        void OnAltClick(InputAction.CallbackContext context);
+        void OnAltDoubleClick(InputAction.CallbackContext context);
     }
 }
