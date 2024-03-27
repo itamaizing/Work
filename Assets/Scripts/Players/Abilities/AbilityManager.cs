@@ -97,4 +97,10 @@ public class AbilityManager : MonoBehaviour
             nextAbility = null;
         }
     }
+
+    // отмена текущего заклинания
+    public void CancelSpellCast()
+    {
+
+    }
 }
