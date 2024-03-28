@@ -30,7 +30,7 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
             if (other.CompareTag("Enemies"))
             {
                 _enemies.Remove(other.gameObject); // Удаляем противника из списка
-                if (_enemies.Count == 0)
+                if (_enemies.Count == 0 && _damageCoroutine != null)
                 {
                     StopCoroutine(_damageCoroutine);
                     _damageCoroutine = null;
@@ -42,25 +42,34 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
         {
             while (_shootV2.Mana > 0 && _enemies.Count > 0)
             {
-                GameObject currentEnemy = _enemies[_currentEnemyIndex];
-
-                float damageMultiplier = GetDamageMultiplier(_currentEnemyIndex);
-
-                float damage = Random.Range(_fireworks.soFireworksData.DamageFireworksMin,
-                    _fireworks.soFireworksData.DamageFireworksMax) * damageMultiplier;
-
-                TestHealthEnemy healthComponent = currentEnemy.GetComponent<TestHealthEnemy>();
-
-                if (healthComponent != null)
+                if (_currentEnemyIndex < _enemies.Count)
                 {
-                    healthComponent.TakeDamage(damage);
-                    Debug.Log($"Урон врагу {currentEnemy.name}: {damage}. Процент урона: {damageMultiplier * 100}%");
+                    GameObject currentEnemy = _enemies[_currentEnemyIndex];
+
+                    float damageMultiplier = GetDamageMultiplier(_currentEnemyIndex);
+
+                    float damage = Random.Range(_fireworks.soFireworksData.DamageFireworksMin,
+                        _fireworks.soFireworksData.DamageFireworksMax) * damageMultiplier;
+
+                    TestHealthEnemy healthComponent = currentEnemy.GetComponent<TestHealthEnemy>();
+
+                    if (healthComponent != null)
+                    {
+                        healthComponent.TakeDamage(damage);
+                        Debug.Log(
+                            $"Урон врагу {currentEnemy.name}: {damage}. Процент урона: {damageMultiplier * 100}%");
+                    }
+
+                    _shootV2.Mana -= 3f;
+
+                    // Переход к следующему противнику
+                    _currentEnemyIndex = (_currentEnemyIndex + 1) % _enemies.Count;
                 }
 
-                _shootV2.Mana -= 3f;
-
-                // Переход к следующему противнику
-                _currentEnemyIndex = (_currentEnemyIndex + 1) % _enemies.Count;
+                else
+                {
+                    Debug.LogWarning("Индекс противника выходит за пределы списка");
+                }
 
                 yield return new WaitForSeconds(0.1f);
             }

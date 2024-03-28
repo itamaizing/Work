@@ -566,7 +566,7 @@ GameObject:
   - component: {fileID: 1041093804}
   - component: {fileID: 1041093808}
   m_Layer: 0
-  m_Name: Enemy (2)
+  m_Name: Enemy_Center
   m_TagString: Enemies
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -695,7 +695,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1041093808
 Rigidbody2D:
@@ -769,7 +769,7 @@ GameObject:
   - component: {fileID: 1266640971}
   - component: {fileID: 1266640975}
   m_Layer: 0
-  m_Name: Enemy (1)
+  m_Name: Enemy_Right
   m_TagString: Enemies
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -898,7 +898,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1266640975
 Rigidbody2D:
@@ -1042,7 +1042,7 @@ GameObject:
   - component: {fileID: 1522902982}
   - component: {fileID: 1522902986}
   m_Layer: 0
-  m_Name: Enemy
+  m_Name: Enemy_Left
   m_TagString: Enemies
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
