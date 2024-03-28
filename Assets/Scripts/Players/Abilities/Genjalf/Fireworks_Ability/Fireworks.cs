@@ -11,9 +11,21 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability
 
         public SoFireworksData soFireworksData => _soFireworksData;
 
+      
         private void Start()
         {
-            StartSetScaleFireworks();
+            //StartTimeToEndFireworks();
+           // StartSetScaleFireworks(); //Использовать, если спвним объект, а не, если он находится внутри префаба деда.
+        }
+
+        public void StopTimeToEndFireworks()
+        {
+            StopCoroutine(nameof(TimeDoEndFireworks));
+        }
+        
+        public void StartTimeToEndFireworks()
+        {
+            StartCoroutine(TimeDoEndFireworks());
         }
 
         private void StartSetScaleFireworks()
@@ -43,10 +55,12 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability
         //Время закинания.
         private IEnumerator TimeDoEndFireworks()
         {
-            StartFireworksEvent.SendStartFireworksEvent();
+            //StartFireworksEvent.SendStartFireworksEvent(); //Использовать при спавне.
             yield return new WaitForSeconds(soFireworksData.TimeToDie);
             StopFireworksEvent.SendStopFireworksEvent();
-            Destroy(gameObject);
+            //Destroy(gameObject); // Использовать, если спавним объект.
         }
+
+        
     }
 }
