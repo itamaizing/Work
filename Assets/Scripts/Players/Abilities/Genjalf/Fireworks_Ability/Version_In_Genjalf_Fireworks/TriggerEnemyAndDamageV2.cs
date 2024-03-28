@@ -18,6 +18,7 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
             if (col.CompareTag("Enemies"))
             {
                 _enemies.Add(col.gameObject); // Добавляем противника в список
+                Debug.Log($"Противник найден: {col.gameObject}");
                 if (_damageCoroutine == null)
                 {
                     _damageCoroutine = StartCoroutine(DamageOverTime());
@@ -51,14 +52,23 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
                     float damage = Random.Range(_fireworks.soFireworksData.DamageFireworksMin,
                         _fireworks.soFireworksData.DamageFireworksMax) * damageMultiplier;
 
-                    TestHealthEnemy healthComponent = currentEnemy.GetComponent<TestHealthEnemy>();
-
-                    if (healthComponent != null)
+                    // TestHealthEnemy healthComponent = currentEnemy.GetComponent<TestHealthEnemy>();
+                    //
+                    // if (healthComponent != null)
+                    // {
+                    //     healthComponent.TakeDamage(damage);
+                    //     Debug.Log(
+                    //         $"Урон врагу {currentEnemy.name}: {damage}. Процент урона: {damageMultiplier * 100}%");
+                    // }
+                    
+                    HealthPlayer healthPlayer = currentEnemy.GetComponent<HealthPlayer>();
+                    if (healthPlayer != null)
                     {
-                        healthComponent.TakeDamage(damage);
+                        healthPlayer.TakeMagicDamage(damage);
                         Debug.Log(
                             $"Урон врагу {currentEnemy.name}: {damage}. Процент урона: {damageMultiplier * 100}%");
                     }
+
 
                     shootFireworks.Mana -= 3f;
 
