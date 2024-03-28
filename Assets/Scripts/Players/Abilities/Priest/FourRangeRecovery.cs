@@ -5,228 +5,235 @@ using UnityEngine.UI;
 
 public class FourRangeRecovery : AbilityBase
 {
-    [Header("Ability properties")]
-    [SerializeField] private GameObject RecoveryBaffPrefab;
-    [SerializeField] private GameObject ManaCost;
+	[Header("Ability properties")]
+	[SerializeField] private GameObject RecoveryBaffPrefab;
+	[SerializeField] private GameObject ManaCost;
 
-    [HideInInspector] public GameObject Target;
+	[HideInInspector] public GameObject Target;
 
-    public delegate void FourthAbilityHandler(float value);
-    public event FourthAbilityHandler FourthAbilityEvent;
+	public delegate void FourthAbilityHandler(float value);
+	public event FourthAbilityHandler FourthAbilityEvent;
 
-    private GameObject _newPrefab;
+	private GameObject _newPrefab;
 
-    protected override KeyCode ActivationKey => KeyCode.Alpha4;
+	public bool canCast = true;
 
-    private void Start()
-    {
-        Distance = _cellSize * CellDistance;
-        AttackType = AttackType.OneAttack;
-        AbilityType = AbilityType.HealAbility;
-    }
+	protected override KeyCode ActivationKey => KeyCode.Alpha4;
 
-    void Update()
-    {
-        HandleToggleAbility();
-        Target = TargetParent;
-    }
+	private void Start()
+	{
+		Distance = _cellSize * CellDistance;
+		AttackType = AttackType.OneAttack;
+		AbilityType = AbilityType.HealAbility;
+	}
 
-    protected override void HandleToggleAbility()
-    {
-        base.HandleToggleAbility();
-        // Текущий код в методе Update
+	void Update()
+	{
+		HandleToggleAbility();
+		Target = TargetParent;
+	}
 
-        if (Input.GetMouseButtonDown(0) && _player.GetComponent<PlayerMove>().IsSelect && ToggleAbility.gameObject.activeSelf && ToggleAbility.enabled == true)
-        {
-            HandleLeftMouseButtonToggle();
-        }
+	protected override void HandleToggleAbility()
+	{
+		base.HandleToggleAbility();
+		// Текущий код в методе Update
 
-        if (Input.GetMouseButtonDown(1) && _player.GetComponent<PlayerMove>().IsSelect && ToggleAbility.gameObject.activeSelf && ToggleAbility.enabled == true)
-        {
-            Vector2 cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D hit = Physics2D.Raycast(cursorPosition, Vector2.zero);
+		if (Input.GetMouseButtonDown(0) && _player.GetComponent<PlayerMove>().IsSelect && ToggleAbility.gameObject.activeSelf && ToggleAbility.enabled == true)
+		{
+			HandleLeftMouseButtonToggle();
+		}
 
-            if (hit.collider != null && hit.collider.CompareTag("Allies") && hit.collider.gameObject != gameObject)
-            {
-                HandleRightMouseButtonToggle();
-            }
-        }
-    }
+		if (Input.GetMouseButtonDown(1) && _player.GetComponent<PlayerMove>().IsSelect && ToggleAbility.gameObject.activeSelf && ToggleAbility.enabled == true)
+		{
+			Vector2 cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			RaycastHit2D hit = Physics2D.Raycast(cursorPosition, Vector2.zero);
 
-    protected override void HandleToggleAbilityOn()
-    {
-        // Включенный ToggleAbility
-        base.HandleToggleAbilityOn();
+			if (hit.collider != null && hit.collider.CompareTag("Allies") && hit.collider.gameObject != gameObject)
+			{
+				HandleRightMouseButtonToggle();
+			}
+		}
+	}
 
-        if (TargetParent == null)
-        {
-            if (ManaCost != null)
-            {
-                ManaCost.SetActive(true);
-                ManaCost.GetComponent<VisualManaCost>().CheckManaCost();
-                ManaCost.transform.localScale = new Vector2(0.4f, ManaCost.gameObject.transform.localScale.y);
-            }
+	protected override void HandleToggleAbilityOn()
+	{
+		// Включенный ToggleAbility
+		base.HandleToggleAbilityOn();
 
-            HandlePrefabVisibility();
-            HandleTargetSelection();
-        }
+		if (TargetParent == null)
+		{
+			if (ManaCost != null)
+			{
+				ManaCost.SetActive(true);
+				ManaCost.GetComponent<VisualManaCost>().CheckManaCost();
+				ManaCost.transform.localScale = new Vector2(0.4f, ManaCost.gameObject.transform.localScale.y);
+			}
 
-        if (TargetParent != null)
-        {
-            if (ManaCost != null)
-            {
-                ManaCost.gameObject.SetActive(false);
-            }
+			HandlePrefabVisibility();
+			HandleTargetSelection();
+		}
 
-            HandleDistanceToTarget();
-        }
-    }
+		if (TargetParent != null)
+		{
+			if (ManaCost != null)
+			{
+				ManaCost.gameObject.SetActive(false);
+			}
 
-    protected override void HandleToggleAbilityOff()
-    {
-        // Выключенный ToggleAbility
-        base.HandleToggleAbilityOff();
+			HandleDistanceToTarget();
+		}
+	}
 
-        if (_isSelect == false)
-        {
-            ManaCost.gameObject.SetActive(false);
-        }
+	protected override void HandleToggleAbilityOff()
+	{
+		// Выключенный ToggleAbility
+		base.HandleToggleAbilityOff();
 
-        TargetParent = null;
-        return;
-    }
+		if (_isSelect == false)
+		{
+			ManaCost.gameObject.SetActive(false);
+		}
 
-    public override void OnLeftDoubleClick()
-    {
-        if (ShouldUseToggleTarget() || _isInputDoubleClick)
-        {
-            StartCoroutine(ToggleDoubleClick());
-        }
-    }
+		TargetParent = null;
+		return;
+	}
 
-    public override void OnRightDoubleClick()
-    {
-        if (AbilityTypeManager.ActiveAbilityType == 1 && _player.GetComponent<PlayerMove>().IsSelect && Abilities.gameObject.activeSelf)
-        {
-            if (_castCoroutine != null)
-            {
-                ToggleAbility.isOn = false;
-                return;
-            }
-            else
-            {
-                StartCoroutine(EnemiesDoubleClick());
-            }
-        }
-    }
+	public override void OnLeftDoubleClick()
+	{
+		if (ShouldUseToggleTarget() || _isInputDoubleClick)
+		{
+			StartCoroutine(ToggleDoubleClick());
+		}
+	}
 
-    public override void ChangeBoolAndValues()
-    {
-        Destroy(NewAbilityPrefab);
-    }
+	public override void OnRightDoubleClick()
+	{
+		if (AbilityTypeManager.ActiveAbilityType == 1 && _player.GetComponent<PlayerMove>().IsSelect && Abilities.gameObject.activeSelf)
+		{
+			if (_castCoroutine != null)
+			{
+				ToggleAbility.isOn = false;
+				return;
+			}
+			else
+			{
+				StartCoroutine(EnemiesDoubleClick());
+			}
+		}
+	}
 
-    private void HandleTargetSelection()
-    {
-        // Выбор врага
-        _targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        RaycastHit2D hit = Physics2D.Raycast(_targetPosition, Vector2.zero);
+	public override void ChangeBoolAndValues()
+	{
+		Destroy(NewAbilityPrefab);
+	}
 
-        if (hit.collider != null && hit.collider.CompareTag("Allies") && hit.collider.gameObject != gameObject)
-        {
-            TargetParent = hit.collider.gameObject;
+	private void HandleTargetSelection()
+	{
+		// Выбор врага
+		_targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		RaycastHit2D hit = Physics2D.Raycast(_targetPosition, Vector2.zero);
 
-            if (NewAbilityPrefab != null)
-            {
-                Destroy(NewAbilityPrefab);
-            }
-            DrawCircle.Clear();
-        }
-        else if (hit.collider != null && hit.collider.CompareTag("Allies") && hit.collider.gameObject == gameObject)
-        {
-            TargetParent = gameObject;
+		if (hit.collider != null && hit.collider.CompareTag("Allies") && hit.collider.gameObject != gameObject)
+		{
+			TargetParent = hit.collider.gameObject;
 
-            if (NewAbilityPrefab != null)
-            {
-                Destroy(NewAbilityPrefab);
-            }
-            DrawCircle.Clear();
-        }
-    }
+			if (NewAbilityPrefab != null)
+			{
+				Destroy(NewAbilityPrefab);
+			}
+			DrawCircle.Clear();
+		}
+		else if (hit.collider != null && hit.collider.CompareTag("Allies") && hit.collider.gameObject == gameObject)
+		{
+			TargetParent = gameObject;
 
-    public override void HandleDealDamageOrHeal()
-    {
-        if (_castCoroutine == null)
-        {
-            _castCoroutine = StartCoroutine(CastProtect(1.2f));
-        }
-    }
+			if (NewAbilityPrefab != null)
+			{
+				Destroy(NewAbilityPrefab);
+			}
+			DrawCircle.Clear();
+		}
+	}
 
-    private void Heal()
-    {
-        if (TargetParent != null && TargetParent.GetComponent<HealthRecovery>() != null)
-        {
-            TargetParent.GetComponent<HealthRecovery>().Timer = Time.time;
-            _newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
-        }
-        else if (TargetParent != null)
-        {
-            _newPrefab = Instantiate(RecoveryBaffPrefab);
-            _newPrefab.transform.SetParent(TargetParent.transform);
-            _newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
-            _newPrefab.GetComponent<HealthRecovery>().CastRecovery(12f, 6f, 4f);
-        }
-        _player.GetComponent<ManaPlayer>().UseMana(4f);
+	public override void HandleDealDamageOrHeal()
+	{
+		if (!canCast)
+			return;
 
-        FourthAbilityEvent?.Invoke(0f);
-        Recharge();
-    }
+		if (_castCoroutine == null)
+		{
+			_castCoroutine = StartCoroutine(CastProtect(1.2f));
+		}
+	}
 
-    private IEnumerator CastProtect(float castTime)
-    {
-        for (int i = 0; i < Abilities.transform.childCount; i++)
-        {
-            GameObject childObject = Abilities.transform.GetChild(i).gameObject;
+	private void Heal()
+	{
+		canCast = false;
 
-            Toggle toggle = childObject.GetComponent<Toggle>();
+		if (TargetParent != null && TargetParent.GetComponent<HealthRecovery>() != null)
+		{
+			TargetParent.GetComponent<HealthRecovery>().Timer = Time.time;
+			_newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
+		}
+		else if (TargetParent != null)
+		{
+			_newPrefab = Instantiate(RecoveryBaffPrefab);
+			_newPrefab.transform.SetParent(TargetParent.transform);
+			_newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
+			_newPrefab.GetComponent<HealthRecovery>().CastRecovery(12f, 6f, 4f);
+		}
+		_player.GetComponent<ManaPlayer>().UseMana(4f);
 
-            if (toggle != null)
-            {
-                toggle.enabled = false;
-            }
-        }
-        _player.GetComponent<PlayerMove>().CanMove = false;
-        CreateCastPrefab(castTime);
+		FourthAbilityEvent?.Invoke(0f);
+		Recharge();
+	}
 
-        yield return new WaitForSeconds(castTime);
-        _castCoroutine = null;
-        _player.GetComponent<PlayerMove>().CanMove = true;
-        Heal();
-    }
+	private IEnumerator CastProtect(float castTime)
+	{
+		for (int i = 0; i < Abilities.transform.childCount; i++)
+		{
+			GameObject childObject = Abilities.transform.GetChild(i).gameObject;
 
-    private IEnumerator EnemiesDoubleClick()
-    {
-        yield return new WaitForSeconds(0.1f);
+			Toggle toggle = childObject.GetComponent<Toggle>();
 
-        ToggleAbility.isOn = true;
-        HandleAbilityType();
-    }
+			if (toggle != null)
+			{
+				toggle.enabled = false;
+			}
+		}
+		_player.GetComponent<PlayerMove>().CanMove = false;
+		CreateCastPrefab(castTime);
 
-    private void Recharge()
-    {
-        for (int i = 0; i < Abilities.transform.childCount; i++)
-        {
-            GameObject childObject = Abilities.transform.GetChild(i).gameObject;
+		yield return new WaitForSeconds(castTime);
+		_castCoroutine = null;
+		_player.GetComponent<PlayerMove>().CanMove = true;
+		Heal();
+	}
 
-            Toggle toggle = childObject.GetComponent<Toggle>();
+	private IEnumerator EnemiesDoubleClick()
+	{
+		yield return new WaitForSeconds(0.1f);
 
-            if (toggle != null)
-            {
-                toggle.enabled = true;
-            }
-        }
-        Select.GetComponent<SelectObject>().CanSelect = true;
-        ToggleAbility.isOn = false;
-        TargetParent = null;
-        return;
-    }
+		ToggleAbility.isOn = true;
+		HandleAbilityType();
+	}
+
+	private void Recharge()
+	{
+		for (int i = 0; i < Abilities.transform.childCount; i++)
+		{
+			GameObject childObject = Abilities.transform.GetChild(i).gameObject;
+
+			Toggle toggle = childObject.GetComponent<Toggle>();
+
+			if (toggle != null)
+			{
+				toggle.enabled = true;
+			}
+		}
+		Select.GetComponent<SelectObject>().CanSelect = true;
+		ToggleAbility.isOn = false;
+		TargetParent = null;
+		return;
+	}
 }

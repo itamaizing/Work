@@ -205,7 +205,9 @@ public class TwoRangeProtection : AbilityBase
         _player.GetComponent<PlayerMove>().CanMove = true;
         _castCoroutine = null;
 
-        Protect();
+		this.transform.root.GetComponentInChildren<FourRangeRecovery>().canCast = true;
+
+		Protect();
     }
 
 

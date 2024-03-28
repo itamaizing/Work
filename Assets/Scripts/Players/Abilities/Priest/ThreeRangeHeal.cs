@@ -197,7 +197,9 @@ public class ThreeRangeHeal : AbilityBase
         _player.GetComponent<PlayerMove>().CanMove = true;
         Select.GetComponent<SelectObject>().CanSelect = true;
 
-        Heal();
+		this.transform.root.GetComponentInChildren<FourRangeRecovery>().canCast = true;
+
+		Heal();
     }
 
     private IEnumerator EnemiesDoubleClick()

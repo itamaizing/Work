@@ -224,6 +224,8 @@ public class OneRangeAttack : AbilityBase
 
 		Healing();
 
+		this.transform.root.GetComponentInChildren<FourRangeRecovery>().canCast = true;
+
 		_castCoroutine = null;
 		yield break;
 	}
