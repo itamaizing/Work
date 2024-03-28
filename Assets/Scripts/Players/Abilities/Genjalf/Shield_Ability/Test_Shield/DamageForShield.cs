@@ -1,7 +1,6 @@
-using TMPro;
 using UnityEngine;
 
-namespace Players.Abilities.Genjalf.Test_Shield
+namespace Players.Abilities.Genjalf.Shield_Ability.Test_Shield
 {
     public class DamageForShield : MonoBehaviour
     {

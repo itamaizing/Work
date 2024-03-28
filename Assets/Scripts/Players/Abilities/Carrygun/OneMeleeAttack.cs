@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using GlobalEvents;
 using Players.Abilities.Genjalf;
+using Players.Abilities.Genjalf.Shield_Ability;
 using UnityEngine;
 using UnityEngine.UI;
 
