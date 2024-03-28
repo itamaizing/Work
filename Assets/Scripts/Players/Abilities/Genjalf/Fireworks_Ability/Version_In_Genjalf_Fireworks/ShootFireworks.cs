@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Fireworks
 {
-    public class ShootV2 : MonoBehaviour
+    public class ShootFireworks : MonoBehaviour
     {
         [SerializeField] private float _mana = 1000f;
         [SerializeField] private GameObject _fireWorks;

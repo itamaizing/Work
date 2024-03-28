@@ -7,7 +7,7 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
     public class TriggerFireworksLeft : MonoBehaviour
     {
         [SerializeField] private Fireworks _fireworks;
-        [SerializeField] private ShootV2 _shootV2;
+        [SerializeField] private ShootFireworks shootFireworks;
 
         private Coroutine _damageCoroutine;
         private List<GameObject> _enemies = new List<GameObject>(); // Список противников
@@ -40,7 +40,7 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
 
         private IEnumerator DamageOverTime()
         {
-            while (_shootV2.Mana > 0 && _enemies.Count > 0)
+            while (shootFireworks.Mana > 0 && _enemies.Count > 0)
             {
                 if (_currentEnemyIndex < _enemies.Count)
                 {
@@ -60,7 +60,7 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
                             $"Урон врагу {currentEnemy.name}: {damage}. Процент урона: {damageMultiplier * 100}%");
                     }
 
-                    _shootV2.Mana -= 3f;
+                    shootFireworks.Mana -= 3f;
 
                     // Переход к следующему противнику
                     _currentEnemyIndex = (_currentEnemyIndex + 1) % _enemies.Count;
