@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Fireworks
 {
-    public class TriggerEnemyAndDamageV2 : MonoBehaviour
+    public class TriggerFireworksLeft : MonoBehaviour
     {
         [SerializeField] private Fireworks _fireworks;
         [SerializeField] private ShootV2 _shootV2;
@@ -12,7 +12,7 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
         private Coroutine _damageCoroutine;
         private List<GameObject> _enemies = new List<GameObject>(); // Список противников
         private int _currentEnemyIndex = 0; // Индекс текущего противника
-        
+
         private void OnTriggerEnter2D(Collider2D col)
         {
             if (col.CompareTag("Enemies"))
@@ -27,7 +27,6 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
 
         private void OnTriggerExit2D(Collider2D other)
         {
-           
             if (other.CompareTag("Enemies"))
             {
                 _enemies.Remove(other.gameObject); // Удаляем противника из списка
