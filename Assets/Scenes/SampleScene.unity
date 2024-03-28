@@ -7318,6 +7318,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 631272241556734278, guid: f142e53b73ad57d43af49f2ff795980c, type: 3}
+      propertyPath: shootFireworks
+      value: 
+      objectReference: {fileID: 1819895382}
     - target: {fileID: 1385583299548709292, guid: f142e53b73ad57d43af49f2ff795980c, type: 3}
       propertyPath: m_Name
       value: Player_With_Object_Fireworks
@@ -7326,6 +7330,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5246863954495232328, guid: f142e53b73ad57d43af49f2ff795980c, type: 3}
+      propertyPath: shootFireworks
+      value: 
+      objectReference: {fileID: 1819895382}
     - target: {fileID: 7081192065382317012, guid: f142e53b73ad57d43af49f2ff795980c, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -7374,6 +7382,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8780579635354774127, guid: f142e53b73ad57d43af49f2ff795980c, type: 3}
+      propertyPath: shootFireworks
+      value: 
+      objectReference: {fileID: 1819895382}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8028,6 +8040,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4965417847667565999, guid: eca3bd46d2933ef41855062b9afbfe29, type: 3}
   m_PrefabInstance: {fileID: 5909131558675854060}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1819895382 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2386114280604513151, guid: f142e53b73ad57d43af49f2ff795980c, type: 3}
+  m_PrefabInstance: {fileID: 1660024991}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f48d90d77134e1a88a9b5b51bcc5e13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1822466784 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5658602071960571279, guid: eca3bd46d2933ef41855062b9afbfe29, type: 3}
@@ -19818,7 +19841,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 895411072153759364}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7f48d90d77134e1a88a9b5b51bcc5e13, type: 3}
   m_Name: 
