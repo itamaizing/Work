@@ -13,7 +13,7 @@ public class EnergyOfSpirit : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(CountdownRoutine(5));
+        StartCoroutine(CountdownRoutine(9));
 
         _allies = GameObject.FindGameObjectsWithTag("Allies");
 
@@ -51,7 +51,7 @@ public class EnergyOfSpirit : MonoBehaviour
         if(value > 0 && _priest != null)
         {
             _priest.GetComponent<ManaPlayer>().AddMana(value * 0.05f);
-        }
+		}
     }
 
     private void OnDisable()

@@ -209,9 +209,9 @@ public class DarkOneRangeAttack : AbilityBase
 
     private IEnumerator CastMove()
     {
-        GetComponent<PlayerMove>().CanMove = false;
+		GetComponentInParent<PlayerMove>().CanMove = false;
         yield return new WaitForSeconds(0.4f);
-        GetComponent<PlayerMove>().CanMove = true;
+		GetComponentInParent<PlayerMove>().CanMove = true;
     }
 }
 

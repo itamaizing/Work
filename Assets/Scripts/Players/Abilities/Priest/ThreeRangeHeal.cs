@@ -16,7 +16,7 @@ public class ThreeRangeHeal : AbilityBase
 
     private void Start()
     {
-        Distance = 6f * 1.9f;
+        Distance = _cellSize * CellDistance;
         AttackType = AttackType.OneAttack;
         AbilityType = AbilityType.HealAbility;
     }

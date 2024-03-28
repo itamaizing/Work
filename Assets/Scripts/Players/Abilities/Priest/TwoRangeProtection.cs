@@ -21,18 +21,18 @@ public class TwoRangeProtection : AbilityBase
 
     private void Start()
     {
-        Distance = 6f * 1.9f;
+        Distance = _cellSize * CellDistance;
         AttackType = AttackType.OneAttack;
         AbilityType = AbilityType.HealAbility;
     }
 
     void Update()
     {
-        HandleToggleAbility();
         Target = TargetParent;
-    }
+		HandleToggleAbility();
+	}
 
-    protected override void HandleToggleAbility()
+	protected override void HandleToggleAbility()
     {
         base.HandleToggleAbility();
         // Текущий код в методе Update
@@ -171,7 +171,7 @@ public class TwoRangeProtection : AbilityBase
             _player.GetComponent<ManaPlayer>().UseMana(6f);
 
             TargetParent.AddComponent<DebaffProtect>();
-            TargetParent.GetComponent<DebaffProtect>().CastDebaff(8f);
+            TargetParent.GetComponent<DebaffProtect>().CastDebaff(12f);
 
 
             if (_newPrefab != null)
@@ -181,7 +181,7 @@ public class TwoRangeProtection : AbilityBase
 
             _newPrefab = Instantiate(ProtectBaff);
             _newPrefab.transform.SetParent(TargetParent.transform);
-            _newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
+            _newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(18);
 
             SecondAbilityEvent?.Invoke(0f);
             StartCoroutine(Recharge());

@@ -20,7 +20,7 @@ public class FourRangeRecovery : AbilityBase
 
     private void Start()
     {
-        Distance = 6f * 1.9f;
+        Distance = _cellSize * CellDistance;
         AttackType = AttackType.OneAttack;
         AbilityType = AbilityType.HealAbility;
     }
@@ -173,9 +173,7 @@ public class FourRangeRecovery : AbilityBase
             _newPrefab = Instantiate(RecoveryBaffPrefab);
             _newPrefab.transform.SetParent(TargetParent.transform);
             _newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
-            _newPrefab.GetComponent<HealthRecovery>().CastRecovery(12f, 6f, 3f);
-
-
+            _newPrefab.GetComponent<HealthRecovery>().CastRecovery(12f, 6f, 4f);
         }
         _player.GetComponent<ManaPlayer>().UseMana(4f);
 

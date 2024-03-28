@@ -38,5 +38,10 @@ public class DamageAbsorption : BaseEffect
         yield return new WaitForSeconds(time);
         Destroy(this);
     }
+
+    public void AddMaxAbsorbtion(float value)
+    {
+		MaxAbsorption += value;
+	}
 }
 

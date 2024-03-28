@@ -46,7 +46,7 @@ Transform:
   - {fileID: 5287686256838225055}
   - {fileID: 5590142317354752112}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1935025463078411595
 Rigidbody2D:
@@ -179,11 +179,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 279100e0cb4b40f42b64a3ac1d1502fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MoveSpeed: 3
   CanMove: 1
   IsMoving: 0
   IsSelect: 0
   DirectionOfMovement: {x: 0, y: 0}
-  MoveSpeed: 3
   SelectObject: {fileID: 0}
   CircleSelect: {fileID: 7277157472421124586}
   MarkersSelect: {fileID: 2009799302226646479}
@@ -209,8 +209,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b5add863fba6af449bc9b5c95b8199e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Health: 1000
-  MaxHealth: 1000
+  Health: 333
+  MaxHealth: 333
   HealthBar: {fileID: 3871001752529958990}
   HealthBarText: {fileID: 2549404566520559099}
   DamageSpawn: {fileID: 8933781320356208631}
@@ -227,7 +227,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 538268384e2d5f64f8ee01630137a16d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Mana: 1000
+  Mana: 1666
   ManaBar: {fileID: 5680468377122292335}
   DamageSpawn: {fileID: 8933781320356208631}
   PrefabText: {fileID: 97509558472111251, guid: b8ec9c7fb2a215a418a41efc3aec9187, type: 3}
@@ -1716,6 +1716,8 @@ MonoBehaviour:
   CanDoAbility: 0
   CanDrawCircle: 1
   Distance: 0
+  CellDistance: 4
+  _cellSize: 3
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
   Heal: 2
@@ -1758,6 +1760,8 @@ MonoBehaviour:
   CanDoAbility: 0
   CanDrawCircle: 1
   Distance: 0
+  CellDistance: 6
+  _cellSize: 3
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
   ProtectBaff: {fileID: 3148082365468222169, guid: 09697a2918d23a44dba336a4e9eb7e8f, type: 3}
@@ -1799,6 +1803,8 @@ MonoBehaviour:
   CanDoAbility: 0
   CanDrawCircle: 1
   Distance: 0
+  CellDistance: 4
+  _cellSize: 3
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
   ManaCost: {fileID: 5002266305278314167}
@@ -1838,6 +1844,8 @@ MonoBehaviour:
   CanDoAbility: 0
   CanDrawCircle: 1
   Distance: 0
+  CellDistance: 4
+  _cellSize: 3
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
   RecoveryBaffPrefab: {fileID: 8887987041764017493, guid: 70e3d37fc4fe10e4e852b0b918d0776d, type: 3}
@@ -1901,6 +1909,8 @@ MonoBehaviour:
   CanDoAbility: 0
   CanDrawCircle: 1
   Distance: 0
+  CellDistance: 1
+  _cellSize: 1.9
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
   Heal: 2
@@ -1943,6 +1953,8 @@ MonoBehaviour:
   CanDoAbility: 0
   CanDrawCircle: 1
   Distance: 0
+  CellDistance: 1
+  _cellSize: 1.9
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
   DarkProtectDebaff: {fileID: 1124552450548681639, guid: 018e5683892c12f4ea1bc59608b6eb97, type: 3}
@@ -1984,6 +1996,8 @@ MonoBehaviour:
   CanDoAbility: 0
   CanDrawCircle: 1
   Distance: 0
+  CellDistance: 1
+  _cellSize: 1.9
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
   ManaCost: {fileID: 5002266305278314167}
@@ -2023,6 +2037,8 @@ MonoBehaviour:
   CanDoAbility: 0
   CanDrawCircle: 1
   Distance: 0
+  CellDistance: 1
+  _cellSize: 1.9
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
   DamageDebaffPrefab: {fileID: 3161902913369863076, guid: 92b3843eb2376b743845974a02d0f69e, type: 3}

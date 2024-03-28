@@ -9,6 +9,7 @@ public class MakeChildBaffAndDebaff : MonoBehaviour
     private Component _scriptObject;
     private Transform _effectsObject;
     private Transform _childObject;
+
     void Start()
     {
         allScripts = GetComponents<MonoBehaviour>();

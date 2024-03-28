@@ -92,10 +92,10 @@ public abstract class AbilityBase : MonoBehaviour
 	protected Vector3 previousPosition = Vector3.zero;
 	protected GameObject _newCastPrefab;
 	protected HealthPlayer _targetHealth;
-	protected Coroutine _castCoroutine;
+	protected Coroutine _castCoroutine = null;
 	protected Coroutine _blinkCoroutine;
 	protected AbilityManager abilityManager;
-	protected GameObject _targetCircle;
+	[SerializeField] protected GameObject _targetCircle;
 	protected GameObject _player;
 	protected GameObject _playerAbility;
 	protected List<GameObject> _enemies = new List<GameObject>();
@@ -501,6 +501,9 @@ public abstract class AbilityBase : MonoBehaviour
 	{
 		Destroy(NewAbilityPrefab);
 		ToggleAbility.isOn = false;
+		HandleToggleAbilityOff();
+		DrawCircle.Clear();
+
 		return;
 	}
 
@@ -552,10 +555,11 @@ public abstract class AbilityBase : MonoBehaviour
 				TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
 					.SetColorCircleBackgroundPlayer(TargetParent);
 
-				if (_targetCircle != null)
+				if (_targetCircle != null && TargetParent != null)
 				{
+					_targetCircle.SetActive(true);
 					_targetCircle.GetComponent<SpriteRenderer>().color =
-					TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
+					TargetParent.transform.root.GetComponentInChildren<ControllerCircleBackgroundColor>()
 						.soCircleSelect.SpriteColor;
 				}
 
