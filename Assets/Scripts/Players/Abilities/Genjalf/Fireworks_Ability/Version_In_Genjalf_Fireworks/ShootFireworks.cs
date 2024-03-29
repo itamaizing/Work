@@ -6,7 +6,6 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
 {
     public class ShootFireworks : MonoBehaviour
     {
-        [SerializeField] private float _mana = 1000f;
         [SerializeField] private GameObject _fireWorks;
         [SerializeField] private GameObject _iconAbility;
         [SerializeField] private Toggle _toggleAbility;
@@ -16,12 +15,7 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
 
         private float _currentMana;
         private float _startSpeedPlayer;
-
-        public float Mana
-        {
-            get => _mana;
-            set => _mana = value;
-        }
+        private bool _isGlobalCooldown;
 
 
         private void Awake()
@@ -56,11 +50,22 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
         private void ActivatedFireworks()
         {
             gameObject.transform.parent.GetComponent<PlayerMove>().MoveSpeed = 0;
-            
-            if (_mana > 0)
+
+            if (_currentMana > 0)
             {
+                if (!_isGlobalCooldown)
+                {
+                    _abilitiesPanel.GetComponent<GlobalCooldown>().StartGlobalCooldown();
+                    _isGlobalCooldown = true;
+                }
+
                 _fireWorks.SetActive(true);
                 StartFireworksEvent.SendStartFireworksEvent();
+
+                _iconAbility.GetComponent<SpriteRenderer>().enabled = true;
+                _manaCost.SetActive(true);
+                _manaCost.GetComponent<VisualManaCost>().CheckManaCost();
+                _manaCost.transform.localScale = new Vector2(2f, _manaCost.gameObject.transform.localScale.y);
             }
         }
 
@@ -68,7 +73,10 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
         {
             _fireWorks.GetComponent<Fireworks>().StopTimeToEndFireworks();
             _fireWorks.SetActive(false);
+            _iconAbility.GetComponent<SpriteRenderer>().enabled = false;
+            _manaCost.SetActive(false);
             transform.parent.GetComponent<PlayerMove>().MoveSpeed = _startSpeedPlayer;
+            _isGlobalCooldown = false;
         }
     }
 }

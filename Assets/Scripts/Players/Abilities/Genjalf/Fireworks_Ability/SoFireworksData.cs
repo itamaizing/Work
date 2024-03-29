@@ -10,6 +10,7 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability
         [SerializeField] private float _timeToDie = 1.6f; //Время до окончания заклинания
         [SerializeField] private float _damageFireworksMin = 3f; //Минимальный урон
         [SerializeField] private float _damageFireworksMax = 6f; //Максимальынй урон
+        [SerializeField] private float _manaCost = 3f; //Затраты маны
 
         [Header("Percentage of Damage")] 
         [SerializeField] private float _percentageTargetOne = 1f;       // 100% урона в первую цель
@@ -39,5 +40,7 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability
         public float PercentageTargetTwo => _percentageTargetTwo;
 
         public float PercentageTargetThree => _percentageTargetThree;
+
+        public float ManaCost => _manaCost;
     }
 }

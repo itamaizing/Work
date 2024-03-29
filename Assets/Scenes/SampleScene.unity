@@ -5993,6 +5993,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 735089512}
     m_Modifications:
+    - target: {fileID: 306762270735613408, guid: badc00e91843e5f41a1b8cf804468ff6, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 648390845231240809, guid: badc00e91843e5f41a1b8cf804468ff6, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 648390845231240809, guid: badc00e91843e5f41a1b8cf804468ff6, type: 3}
+      propertyPath: m_SortingOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1938361206567571640, guid: badc00e91843e5f41a1b8cf804468ff6, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2923381398589063547, guid: badc00e91843e5f41a1b8cf804468ff6, type: 3}
       propertyPath: _shootV2
       value: 
@@ -6001,6 +6017,10 @@ PrefabInstance:
       propertyPath: shootFireworks
       value: 
       objectReference: {fileID: 8245075908105421602}
+    - target: {fileID: 4188523998890498323, guid: badc00e91843e5f41a1b8cf804468ff6, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4762037140722973673, guid: badc00e91843e5f41a1b8cf804468ff6, type: 3}
       propertyPath: m_Name
       value: Fireworks_Prefab_V3_InPrefab_Genjalf (1)
@@ -6011,6 +6031,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5289527666316027630, guid: badc00e91843e5f41a1b8cf804468ff6, type: 3}
       propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5584544116780102428, guid: badc00e91843e5f41a1b8cf804468ff6, type: 3}
+      propertyPath: m_Color.a
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6398867345757733944, guid: badc00e91843e5f41a1b8cf804468ff6, type: 3}
@@ -8082,6 +8106,11 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 0
+--- !u!1 &1793591333 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2405163858050461310, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+  m_PrefabInstance: {fileID: 4250683343807493164}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1800150880 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4965417847667565999, guid: eca3bd46d2933ef41855062b9afbfe29, type: 3}
@@ -19898,8 +19927,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f48d90d77134e1a88a9b5b51bcc5e13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mana: 1000
   _fireWorks: {fileID: 1121346213}
+  _iconAbility: {fileID: 1793591333}
+  _toggleAbility: {fileID: 4009593148795331660}
+  _abilitiesPanel: {fileID: 5791756827293547305}
+  _castPrefab: {fileID: 0}
+  _manaCost: {fileID: 3414461709136742581}
 --- !u!222 &8262142497621014030
 CanvasRenderer:
   m_ObjectHideFlags: 0
