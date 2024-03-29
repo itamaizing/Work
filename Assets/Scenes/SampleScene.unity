@@ -1546,6 +1546,11 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &473813854 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4453880770094817634, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+  m_PrefabInstance: {fileID: 4250683343807493164}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &475946117
 GameObject:
   m_ObjectHideFlags: 0
@@ -13907,7 +13912,7 @@ PrefabInstance:
     - target: {fileID: 881524159458613497, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
       propertyPath: Player
       value: 
-      objectReference: {fileID: 2616800609981958214}
+      objectReference: {fileID: 3599497829262505122}
     - target: {fileID: 1065020323213636307, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0.000009536743
@@ -13960,6 +13965,14 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4453880770094817634, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+      propertyPath: m_Name
+      value: Cooldown_Ability
+      objectReference: {fileID: 0}
+    - target: {fileID: 4453880770094817634, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4495527048498989729, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -13991,6 +14004,30 @@ PrefabInstance:
     - target: {fileID: 6503779482359532348, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: -0.00039100647
+      objectReference: {fileID: 0}
+    - target: {fileID: 6912954710770998031, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -52.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7097415973781838717, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+      propertyPath: m_text
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 7097415973781838717, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+      propertyPath: m_fontSize
+      value: 22.04
+      objectReference: {fileID: 0}
+    - target: {fileID: 7097415973781838717, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 22.04
+      objectReference: {fileID: 0}
+    - target: {fileID: 8951034211280722041, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8951034211280722041, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+      propertyPath: m_FillAmount
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9044049274722927145, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
       propertyPath: m_IsActive
@@ -20279,6 +20316,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f6d1e68494646ea91633b5051f935d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _cooldownButton: {fileID: 473813854}
   _soShieldData: {fileID: 11400000, guid: d91950150fc1b604098a40a58851501d, type: 2}
   _iconAbility: {fileID: 7376047621658549022}
   _toggleAbility: {fileID: 1079730889850050543}

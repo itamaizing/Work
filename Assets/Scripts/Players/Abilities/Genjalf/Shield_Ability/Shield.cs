@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,6 +7,7 @@ namespace Players.Abilities.Genjalf.Shield_Ability
 {
     public class Shield : MonoBehaviour
     {
+        [SerializeField] public GameObject _cooldownButton;
         [SerializeField] private SoShieldData _soShieldData;
         [SerializeField] private GameObject _iconAbility;
         [SerializeField] private Toggle _toggleAbility;
@@ -75,6 +77,7 @@ namespace Players.Abilities.Genjalf.Shield_Ability
         public void StartResetTime()
         {
             StartCoroutine(ResetTimeForCharging(_soShieldData.CooldownCharge));
+            StartCoroutine(Recharge());
             _isResetCoroutineRunning = true;
         }
 
@@ -168,6 +171,35 @@ namespace Players.Abilities.Genjalf.Shield_Ability
             if (_currentHealth <= 0)
             {
                 Destroy(gameObject.transform.parent);
+            }
+        }
+        private IEnumerator Recharge()
+        {
+
+            // ToggleAbility.isOn = false;
+            // ToggleAbility.enabled = false;
+
+
+            _cooldownButton.gameObject.SetActive(true);
+            StartCoroutine(CountdownRoutine((int)_soShieldData.CooldownCharge));
+
+            yield return new WaitForSeconds(_soShieldData.CooldownCharge);
+
+            _cooldownButton.gameObject.SetActive(false);
+
+            yield break;
+
+        }
+
+        public IEnumerator CountdownRoutine(int time)
+        {
+            _cooldownButton.GetComponent<ClickButtonCooldown>().TimeCooldown = time;
+
+            while (time > 0)
+            {
+                _cooldownButton.GetComponentInChildren<TextMeshPro>().text = time.ToString();
+                yield return new WaitForSeconds(1f);
+                time--;
             }
         }
 
