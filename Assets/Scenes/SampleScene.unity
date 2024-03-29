@@ -10139,7 +10139,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!222 &761096003887173358
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -13954,6 +13954,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3654406430031878889, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4235017393170918963, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4495527048498989729, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
@@ -20310,11 +20314,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _fireWorks: {fileID: 1121346213}
-  _fireWorksPreAblity: {fileID: 0}
+  _fireWorksPreAblity: {fileID: 721120817781295240}
   _iconAbility: {fileID: 1793591333}
   _toggleAbility: {fileID: 4009593148795331660}
   _abilitiesPanel: {fileID: 5791756827293547305}
-  _castPrefab: {fileID: 0}
   _manaCost: {fileID: 3414461709136742581}
 --- !u!222 &8262142497621014030
 CanvasRenderer:

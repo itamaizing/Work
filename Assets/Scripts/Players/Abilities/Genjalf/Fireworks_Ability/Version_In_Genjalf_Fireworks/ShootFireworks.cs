@@ -1,4 +1,5 @@
-﻿using GlobalEvents;
+﻿using System.Collections;
+using GlobalEvents;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,6 +18,8 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
         private float _startSpeedPlayer;
         private bool _isGlobalCooldown;
         private bool _abilityActivated = false;
+        private Coroutine _blinkCoroutine;
+        private SpriteRenderer _startIconAbility;
 
 
         private void Awake()
@@ -77,9 +80,14 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
                     _isGlobalCooldown = true;
                 }
 
+                if (_blinkCoroutine == null)
+                {
+                    _blinkCoroutine = StartCoroutine(Blink());
+                }
+
                 _fireWorks.SetActive(true);
                 StartFireworksEvent.SendStartFireworksEvent();
-                
+
                 _manaCost.SetActive(true);
                 _manaCost.GetComponent<VisualManaCost>().CheckManaCost();
                 _manaCost.transform.localScale = new Vector2(2f, _manaCost.gameObject.transform.localScale.y);
@@ -91,11 +99,69 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
         {
             _fireWorks.GetComponent<Fireworks>().StopTimeToEndFireworks();
             _fireWorks.SetActive(false);
+
+            if (_blinkCoroutine != null)
+            {
+                StopCoroutine(_blinkCoroutine);
+                _blinkCoroutine = null;
+            }
+
+            SetAlphaIconAbility();
             _iconAbility.GetComponent<SpriteRenderer>().enabled = false;
+
+
             _manaCost.SetActive(false);
             transform.parent.GetComponent<PlayerMove>().MoveSpeed = _startSpeedPlayer;
             _isGlobalCooldown = false;
             _abilityActivated = false;
+        }
+
+        private void SetAlphaIconAbility()
+        {
+            SpriteRenderer spriteRenderer = _iconAbility.GetComponent<SpriteRenderer>();
+            Color color = spriteRenderer.color;
+            color.a = 1f;
+            spriteRenderer.color = color;
+        }
+
+        private IEnumerator Blink()
+        {
+            while (true)
+            {
+                // Затухание
+                for (float t = 0f; t < 1; t += Time.deltaTime)
+                {
+                    float normalizedTime = t / 1;
+                    float alpha = Mathf.Lerp(1f, 0f, normalizedTime);
+
+                    Color newColor = _iconAbility.GetComponent<SpriteRenderer>().color;
+                    newColor.a = alpha;
+                    _iconAbility.GetComponent<SpriteRenderer>().color = newColor;
+
+                    Color newAutoattackColor = _iconAbility.GetComponent<SpriteRenderer>().color;
+                    newAutoattackColor.a = alpha;
+                    _iconAbility.GetComponent<SpriteRenderer>().color = newAutoattackColor;
+
+                    yield return null;
+                }
+
+                // Появление
+                for (float t = 0f; t < 1; t += Time.deltaTime)
+                {
+                    float normalizedTime = t / 1;
+                    float alpha = Mathf.Lerp(0f, 1f, normalizedTime);
+
+                    Color newColor = _iconAbility.GetComponent<SpriteRenderer>().color;
+                    newColor.a = alpha;
+                    _iconAbility.GetComponent<SpriteRenderer>().color = newColor;
+
+                    Color newAutoattackColor = _iconAbility.GetComponent<SpriteRenderer>().color;
+                    newAutoattackColor.a = alpha;
+                    _iconAbility.GetComponent<SpriteRenderer>().color = newAutoattackColor;
+
+                    yield return null;
+                }
+            }
         }
     }
 }
