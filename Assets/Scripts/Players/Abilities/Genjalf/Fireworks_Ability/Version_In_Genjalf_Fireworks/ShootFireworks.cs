@@ -7,15 +7,16 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
     public class ShootFireworks : MonoBehaviour
     {
         [SerializeField] private GameObject _fireWorks;
+        [SerializeField] private GameObject _fireWorksPreAblity;
         [SerializeField] private GameObject _iconAbility;
         [SerializeField] private Toggle _toggleAbility;
         [SerializeField] private GameObject _abilitiesPanel;
-        [SerializeField] private GameObject _castPrefab;
         [SerializeField] private GameObject _manaCost;
 
         private float _currentMana;
         private float _startSpeedPlayer;
         private bool _isGlobalCooldown;
+        private bool _abilityActivated = false;
 
 
         private void Awake()
@@ -37,18 +38,35 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
             ActivatedAbility();
         }
 
+        private void PreGuidingAbility()
+        {
+            _fireWorksPreAblity.SetActive(true);
+            _iconAbility.GetComponent<SpriteRenderer>().enabled = true;
+        }
+
+        //Активация наведения способности по нажатию клавиши, при повторном нажатии, вкелючается способность.
         private void ActivatedAbility()
         {
             if (_toggleAbility.gameObject.activeSelf && Input.GetKeyDown(KeyCode.Alpha2) &&
                 transform.parent.GetComponent<PlayerMove>().IsSelect && _toggleAbility.enabled)
             {
-                ActivatedFireworks();
+                if (!_abilityActivated)
+                {
+                    PreGuidingAbility();
+                    if (_currentMana > 0)
+                        _abilityActivated = true;
+                }
+                else
+                {
+                    ActivatedFireworks();
+                }
             }
         }
 
-
+        //Включаем способность
         private void ActivatedFireworks()
         {
+            _fireWorksPreAblity.SetActive(false);
             gameObject.transform.parent.GetComponent<PlayerMove>().MoveSpeed = 0;
 
             if (_currentMana > 0)
@@ -61,14 +79,14 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
 
                 _fireWorks.SetActive(true);
                 StartFireworksEvent.SendStartFireworksEvent();
-
-                _iconAbility.GetComponent<SpriteRenderer>().enabled = true;
+                
                 _manaCost.SetActive(true);
                 _manaCost.GetComponent<VisualManaCost>().CheckManaCost();
                 _manaCost.transform.localScale = new Vector2(2f, _manaCost.gameObject.transform.localScale.y);
             }
         }
 
+        // Отключаем способность
         private void DisableFireworks()
         {
             _fireWorks.GetComponent<Fireworks>().StopTimeToEndFireworks();
@@ -77,6 +95,7 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
             _manaCost.SetActive(false);
             transform.parent.GetComponent<PlayerMove>().MoveSpeed = _startSpeedPlayer;
             _isGlobalCooldown = false;
+            _abilityActivated = false;
         }
     }
 }
