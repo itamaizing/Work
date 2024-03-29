@@ -38,7 +38,18 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
 
         private void Update()
         {
+            CanselPreGuidingAbility();
             ActivatedAbility();
+        }
+
+        private void CanselPreGuidingAbility()
+        {
+            if (Input.GetMouseButtonDown(1))
+            {
+                _fireWorksPreAblity.SetActive(false);
+                _iconAbility.GetComponent<SpriteRenderer>().enabled = false;
+                _abilityActivated = false;
+            }
         }
 
         private void PreGuidingAbility()
