@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,6 +7,7 @@ namespace Players.Abilities.Genjalf.Shield_Ability
 {
     public class Shield : MonoBehaviour
     {
+        [SerializeField] public GameObject _cooldownButton;
         [SerializeField] private SoShieldData _soShieldData;
         [SerializeField] private GameObject _iconAbility;
         [SerializeField] private Toggle _toggleAbility;
@@ -18,7 +20,8 @@ namespace Players.Abilities.Genjalf.Shield_Ability
         private float _currentHealth;
         private float _currentMana;
         private float _currentTimeReset;
-
+        private float _startSpeedPlayer;
+        
         private Coroutine _coroutineActiveShield;
         private Coroutine _resetCoroutine;
         private int _currentShieldCharge;
@@ -36,7 +39,8 @@ namespace Players.Abilities.Genjalf.Shield_Ability
         private void Start()
         {
             _uiShield = GetComponent<UIShield>();
-
+            
+            _startSpeedPlayer = gameObject.transform.parent.GetComponent<PlayerMove>().MoveSpeed;
             _currentHealth = gameObject.transform.parent.GetComponent<HealthPlayer>().Health;
             gameObject.transform.parent.GetComponent<HealthPlayer>().HealthBarText.text = _currentHealth.ToString("F0");
             _currentMana = gameObject.transform.parent.GetComponent<ManaPlayer>().Mana;
@@ -73,6 +77,7 @@ namespace Players.Abilities.Genjalf.Shield_Ability
         public void StartResetTime()
         {
             StartCoroutine(ResetTimeForCharging(_soShieldData.CooldownCharge));
+            StartCoroutine(Recharge());
             _isResetCoroutineRunning = true;
         }
 
@@ -89,7 +94,7 @@ namespace Players.Abilities.Genjalf.Shield_Ability
                 _isResetCoroutineRunning = false;
             }
 
-            transform.parent.GetComponent<PlayerMove>().CanMove = false;
+            gameObject.transform.parent.GetComponent<PlayerMove>().MoveSpeed = 0;
 
             if (!_isGlobalCooldown)
             {
@@ -106,7 +111,7 @@ namespace Players.Abilities.Genjalf.Shield_Ability
 
             _currentShieldCharge--;
 
-            transform.parent.GetComponent<PlayerMove>().CanMove = true;
+            transform.parent.GetComponent<PlayerMove>().MoveSpeed = _startSpeedPlayer;
             _manaCost.SetActive(false);
             transform.parent.GetComponent<ManaPlayer>().UseMana(_soShieldData.ManaCost);
             _currentMana = gameObject.transform.parent.GetComponent<ManaPlayer>().Mana;
@@ -166,6 +171,35 @@ namespace Players.Abilities.Genjalf.Shield_Ability
             if (_currentHealth <= 0)
             {
                 Destroy(gameObject.transform.parent);
+            }
+        }
+        private IEnumerator Recharge()
+        {
+
+            // ToggleAbility.isOn = false;
+            // ToggleAbility.enabled = false;
+
+
+            _cooldownButton.gameObject.SetActive(true);
+            StartCoroutine(CountdownRoutine((int)_soShieldData.CooldownCharge));
+
+            yield return new WaitForSeconds(_soShieldData.CooldownCharge);
+
+            _cooldownButton.gameObject.SetActive(false);
+
+            yield break;
+
+        }
+
+        public IEnumerator CountdownRoutine(int time)
+        {
+            _cooldownButton.GetComponent<ClickButtonCooldown>().TimeCooldown = time;
+
+            while (time > 0)
+            {
+                _cooldownButton.GetComponentInChildren<TextMeshPro>().text = time.ToString();
+                yield return new WaitForSeconds(1f);
+                time--;
             }
         }
 
