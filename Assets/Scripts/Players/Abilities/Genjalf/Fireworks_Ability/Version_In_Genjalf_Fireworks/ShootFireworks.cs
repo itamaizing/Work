@@ -1,5 +1,6 @@
 ﻿using GlobalEvents;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Fireworks
 {
@@ -7,13 +8,14 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
     {
         [SerializeField] private float _mana = 1000f;
         [SerializeField] private GameObject _fireWorks;
+        [SerializeField] private GameObject _iconAbility;
+        [SerializeField] private Toggle _toggleAbility;
+        [SerializeField] private GameObject _abilitiesPanel;
+        [SerializeField] private GameObject _castPrefab;
+        [SerializeField] private GameObject _manaCost;
 
-        private void Awake()
-        {
-            StartFireworksEvent.OnStartFireworksEvent.AddListener(_fireWorks.GetComponent<Fireworks>().StartTimeToEndFireworks);
-
-                StopFireworksEvent.OnStopFireworksEvent.AddListener(DisableFireworks);
-        }
+        private float _currentMana;
+        private float _startSpeedPlayer;
 
         public float Mana
         {
@@ -21,20 +23,44 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
             set => _mana = value;
         }
 
-        private void Update()
+
+        private void Awake()
         {
-            Shoot();
+            StartFireworksEvent.OnStartFireworksEvent.AddListener(_fireWorks.GetComponent<Fireworks>()
+                .StartTimeToEndFireworks);
+
+            StopFireworksEvent.OnStopFireworksEvent.AddListener(DisableFireworks);
         }
 
-        private void Shoot()
+        private void Start()
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            _startSpeedPlayer = gameObject.transform.parent.GetComponent<PlayerMove>().MoveSpeed;
+            _currentMana = gameObject.transform.parent.GetComponent<ManaPlayer>().Mana;
+        }
+
+        private void Update()
+        {
+            ActivatedAbility();
+        }
+
+        private void ActivatedAbility()
+        {
+            if (_toggleAbility.gameObject.activeSelf && Input.GetKeyDown(KeyCode.Alpha2) &&
+                transform.parent.GetComponent<PlayerMove>().IsSelect && _toggleAbility.enabled)
             {
-                if (_mana > 0)
-                {
-                    _fireWorks.SetActive(true);
-                    StartFireworksEvent.SendStartFireworksEvent();
-                }
+                ActivatedFireworks();
+            }
+        }
+
+
+        private void ActivatedFireworks()
+        {
+            gameObject.transform.parent.GetComponent<PlayerMove>().MoveSpeed = 0;
+            
+            if (_mana > 0)
+            {
+                _fireWorks.SetActive(true);
+                StartFireworksEvent.SendStartFireworksEvent();
             }
         }
 
@@ -42,6 +68,7 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
         {
             _fireWorks.GetComponent<Fireworks>().StopTimeToEndFireworks();
             _fireWorks.SetActive(false);
+            transform.parent.GetComponent<PlayerMove>().MoveSpeed = _startSpeedPlayer;
         }
     }
 }

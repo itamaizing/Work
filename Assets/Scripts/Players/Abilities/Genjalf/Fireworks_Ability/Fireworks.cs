@@ -8,7 +8,7 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability
     {
         [SerializeField] private SoFireworksData _soFireworksData;
         [SerializeField] private float _scaleChangeSpeed = 1.0f;
-
+        
         public SoFireworksData soFireworksData => _soFireworksData;
 
       
