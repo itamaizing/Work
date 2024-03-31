@@ -10,6 +10,7 @@ public class AbilityManager : MonoBehaviour
 	private AbilityBase nextAbility;
 	private PlayerMove _playerMove;
 
+
 	private void Awake()
 	{
 		_playerMove = GetComponentInParent<PlayerMove>();
@@ -37,9 +38,10 @@ public class AbilityManager : MonoBehaviour
 			// если есть текуща€ способность и число абилок в очереди = 0 и есть абилка-автоатака 
 			if (nextAbility != null && abilityQueue.Count == 0 && abilityQueueAutoattack.Count > 0)
 			{
-				// если есть префаб абилки
-				DeleteCurrentAbility();
-			}
+                // если есть префаб абилки
+                Debug.LogWarning("AutoAttack Paused dealing damage");
+				ChangeAutoAttackState(); // выключаем, но не удал€ем автоатаку
+            }
 
 			abilityQueue.Add(ability);
 		}
@@ -59,6 +61,11 @@ public class AbilityManager : MonoBehaviour
 			nextAbility.DrawCircle.Clear();
 		}
 
+		if(abilityQueue.Count == 1) // если удал€етс€ последн€€ способность - включаем автоатаку
+        {
+			ChangeAutoAttackState();
+
+        }
 		// удал€ем текущую абилку
 		nextAbility.CanDoAbility = false;
 		nextAbility.CancelAbilityOnClick();
@@ -91,7 +98,7 @@ public class AbilityManager : MonoBehaviour
 
 		abilityQueue.RemoveAll(item => item.ToggleAbility.isOn == false);
 		abilityQueueAutoattack.RemoveAll(item => item.ToggleAbility.isOn == false);
-		
+
 		//if (nextAbility != null && nextAbility.ToggleAbility.isOn == false && abilityQueue.Count > 0)
 		//{
 		//	abilitiesToRemove.Add(abilityQueue[0]);
@@ -156,6 +163,8 @@ public class AbilityManager : MonoBehaviour
 
 		if (abilityQueue.Count > 0)
 		{
+			ChangeAutoAttackState(); //при прерывании способности включаем автоатаку
+
 			abilityQueue[0].DrawCircle.Clear();
 			abilityQueue[0].CancelAbilityOnClick();
 			abilityQueue.RemoveAt(0);
@@ -165,4 +174,15 @@ public class AbilityManager : MonoBehaviour
 			return;
 		}
 	}
+
+
+    private void ChangeAutoAttackState()
+    {
+        if (abilityQueueAutoattack.Count > 0 && abilityQueueAutoattack[0] != null)
+        {
+            abilityQueueAutoattack[0].CanDoAbility = !abilityQueueAutoattack[0].CanDoAbility;
+        }
+
+    }
+
 }

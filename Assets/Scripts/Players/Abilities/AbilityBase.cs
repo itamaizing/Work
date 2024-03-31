@@ -101,7 +101,7 @@ public abstract class AbilityBase : MonoBehaviour
 	protected List<GameObject> _enemies = new List<GameObject>();
 	protected List<GameObject> enemiesToRemove = new List<GameObject>();
 
-	protected virtual void HandleToggleAbility()
+    protected virtual void HandleToggleAbility()
 	{
 		// Текущий код в методе Update
 		if (_player == null)
@@ -116,7 +116,7 @@ public abstract class AbilityBase : MonoBehaviour
 
 		if (ToggleAbility.isOn == true)
 		{
-			if (TargetParent != null && _addAbilityManager == false)
+			if (/*TargetParent != null &&*/ _addAbilityManager == false)
 			{
 				abilityManager.AddAbilityToQueue(this);
 				_addAbilityManager = true;
@@ -706,7 +706,7 @@ public abstract class AbilityBase : MonoBehaviour
 		return false;
 	}
 
-	private IEnumerator AbilityCooldown()
+    private IEnumerator AbilityCooldown()
 	{
 		_isInputClick = true;
 		yield return new WaitForSeconds(_abilityCooldownTime);

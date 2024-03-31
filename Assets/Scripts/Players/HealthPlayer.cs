@@ -1,10 +1,15 @@
 using System;
+using System.Collections;
 using System.Diagnostics;
 using TMPro;
 using UnityEngine;
 
 public class HealthPlayer : MonoBehaviour
 {
+    [SerializeField][Range(0, 100)] private float _hpRegenerationValue = 10;
+    [SerializeField][Range(0, 100)] private float _hpRegenerationDelay = 3;
+    private WaitForSeconds _waitForRegenHp;
+
     public float Health;
     public float MaxHealth;
     public GameObject HealthBar;
@@ -36,6 +41,8 @@ public class HealthPlayer : MonoBehaviour
     private void Start()
     {
         UpdateHealthBar();
+        _waitForRegenHp = new WaitForSeconds(_hpRegenerationDelay);
+        StartCoroutine(RegenirateHP());
     }
 
     public void TakePhisicDamage(float damageValue)
@@ -212,5 +219,14 @@ public class HealthPlayer : MonoBehaviour
     private void Die()
     {
        
+    }
+
+    private IEnumerator RegenirateHP()
+    {
+        while (true)
+        {
+            yield return _waitForRegenHp;
+            this.AddHeal(_hpRegenerationValue);
+        }
     }
 }

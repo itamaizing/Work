@@ -7379,6 +7379,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3504477266362453533, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
+      propertyPath: _hpRegenerationDelay
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3504477266362453533, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
+      propertyPath: _hpRegenerationValue
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 3829028655816966178, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -13519,7 +13527,7 @@ PrefabInstance:
       objectReference: {fileID: 2216866060756685130}
     - target: {fileID: 1144411358906767094, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: _cellSize
-      value: 3
+      value: 1.9
       objectReference: {fileID: 0}
     - target: {fileID: 1144411358906767094, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: IconAbility
@@ -13664,6 +13672,14 @@ PrefabInstance:
     - target: {fileID: 3309320763842641188, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3504477266362453533, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
+      propertyPath: _hpRegenerationDelay
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3504477266362453533, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
+      propertyPath: _hpRegenerationValue
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3822505477590611879, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: Toggle
@@ -13829,6 +13845,10 @@ PrefabInstance:
       propertyPath: _cooldownButton
       value: 
       objectReference: {fileID: 3400928684162816447}
+    - target: {fileID: 8337789449907410738, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8654612399189202627, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: Select
       value: 
@@ -13855,6 +13875,7 @@ PrefabInstance:
       objectReference: {fileID: 1298239714}
     m_RemovedComponents:
     - {fileID: 6729119801718723462, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
+    - {fileID: 8337789449907410738, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:

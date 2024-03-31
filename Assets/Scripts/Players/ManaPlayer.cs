@@ -5,11 +5,20 @@ using UnityEngine;
 
 public class ManaPlayer : MonoBehaviour
 {
+    [SerializeField][Range(0,100)] private float _manaRegenerationValue = 10;
+    [SerializeField][Range(0, 100)] private float _manaRegenerationDelay = 3;
+    private WaitForSeconds _waitForRegenMana;
+
     public float Mana = 1000;
     public GameObject ManaBar;
     public Transform DamageSpawn;
     public TextMeshPro PrefabText;
+    private void Start()
+    {
 
+        _waitForRegenMana = new WaitForSeconds(_manaRegenerationDelay);
+        StartCoroutine(RegenirateMana());
+    }
     public void AddMana(float manaValue)
     {
         Mana += manaValue;
@@ -53,6 +62,15 @@ public class ManaPlayer : MonoBehaviour
         if (Mana >= 1000)
         {
             Mana = 1000;
+        }
+    }
+
+    private IEnumerator RegenirateMana()
+    {
+        while (true)
+        {
+            yield return _waitForRegenMana;
+            this.AddMana(_manaRegenerationValue);
         }
     }
 }
