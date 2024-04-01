@@ -3,21 +3,28 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class ManaPlayer : PlayerStamina
+public class ManaPlayer : MonoBehaviour
 {
+    [SerializeField][Range(0,100)] private float _manaRegenerationValue = 10;
+    [SerializeField][Range(0, 100)] private float _manaRegenerationDelay = 3;
+    [SerializeField] private float MaxMana;
     private WaitForSeconds _waitForRegenMana;
 
+    public float Mana = 1000;
+    public GameObject ManaBar;
+    public Transform DamageSpawn;
+    public TextMeshPro PrefabText;
     private void Start()
     {
-        _waitForRegenMana = new WaitForSeconds(_regenerationDelay);
-        StartCoroutine(CoroutineRegenirateMana());
+        _waitForRegenMana = new WaitForSeconds(_manaRegenerationDelay);
+        StartCoroutine(RegenirateMana());
     }
-    public override void Add(float manaValue)
+    public void AddMana(float manaValue)
     {
-        _value += manaValue;
+        Mana += manaValue;
 
-        float newScaleX = _value / 1000.0f;
-        Bar.transform.localScale = new Vector3(newScaleX, 1.0f, 1.0f);
+        float newScaleX = Mana / MaxMana;
+        ManaBar.transform.localScale = new Vector3(newScaleX, 1.0f, 1.0f);
 
         if (manaValue > 0 && manaValue < 1)
         {
@@ -29,72 +36,41 @@ public class ManaPlayer : PlayerStamina
         PrefabText.GetComponent<DamagePrefab>().StartColor = new Color(0, 0, 1, 1);
         PrefabText.GetComponent<DamagePrefab>().EndColor = new Color(0, 0, 1, 0.5f);
         TextMeshPro newPrefab = Instantiate(PrefabText, DamageSpawn.position, Quaternion.identity);
-        newPrefab.transform.parent = transform;
+        newPrefab.transform.SetParent(transform);
 
-        if (_value <= 0)
+        if (Mana <= 0)
         {
-            _value = 0;
+            Mana = 0;
         }
 
-        if (_value >= _maxValue)
+        if (Mana >= MaxMana)
         {
-            _value = 1000;
+            Mana = MaxMana;
         }
     }
-
-    public void RegenMana(float manaValue) // для регена, тот же самый AddMana, но без префаба значения
+    public void UseMana(float manaValue)
     {
-        _value += manaValue;
+        Mana -= manaValue;
 
-        float newScaleX = _value / 1000.0f;
-        Bar.transform.localScale = new Vector3(newScaleX, 1.0f, 1.0f);
+        float newScaleX = Mana / MaxMana;
+        ManaBar.transform.localScale = new Vector3(newScaleX, 1.0f, 1.0f);
 
-        if (manaValue > 0 && manaValue < 1)
+        if (Mana <= 0)
         {
-            manaValue = 1;
+            Mana = 0;
         }
-
-        manaValue = (int)manaValue;
-        PrefabText.text = "+" + manaValue.ToString();
-        PrefabText.GetComponent<DamagePrefab>().StartColor = new Color(0, 0, 1, 1);
-        PrefabText.GetComponent<DamagePrefab>().EndColor = new Color(0, 0, 1, 0.5f);
-
-        if (_value <= 0)
+        if (Mana >= MaxMana)
         {
-            _value = 0;
-        }
-
-        if (_value >= _maxValue)
-        {
-            _value = _maxValue;
+            Mana = MaxMana;
         }
     }
 
-	public override bool Use(float manaValue)
-    {
-		if (manaValue > _value)
-		{
-			return false;
-		}
-		_value -= manaValue;
-
-        float newScaleX = _value / _maxValue;
-        Bar.transform.localScale = new Vector3(newScaleX, 1.0f, 1.0f);
-
-        if (_value >= _maxValue)
-        {
-			_value = _maxValue;
-        }
-
-        return true;
-    }
-
-    private IEnumerator CoroutineRegenirateMana()
+    private IEnumerator RegenirateMana()
     {
         while (true)
         {
             yield return _waitForRegenMana;
-            this.RegenMana(_regenerationValue);
+            this.AddMana(_manaRegenerationValue);
         }
     }
 }
