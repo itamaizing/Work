@@ -241,10 +241,72 @@ public class BlindnessState : ICharacterState
     }
 }
 
+// Cостояние заморозки
+public class FrozenState : ICharacterState
+{
+	private HealthPlayer _playerHP;
+    private float _duration;
+    private float _sumDamageTaken;
+
+    //узнать кто стрелял, добавить новую переменную? вытащить из selected Obj
+
+	public void EnterState(CharacterState character)
+	{
+		Debug.Log("Entering Frozen State");
+
+		List<Toggle> toggles = character.gameObject.GetComponent<PlayerMove>().AbilitiesOnTargetToggles;
+
+		foreach (Toggle toggle in toggles)
+		{
+			toggle.enabled = false;
+        }
+        //turn off abilities
+
+        if (character.gameObject.TryGetComponent<HealthPlayer>(out _playerHP))
+        {
+			//Какой дамаг получаем? физический или магический
+			//duration = 1 + energy/20
+			//_playerHP.TakePhisicDamage(10 + energy/2)
+            //Get energy of player that shots
+		}
+		else
+        {
+            //error
+        }
+        //take damage
+    }
+
+    public void UpdateState(CharacterState character)
+	{
+		Debug.Log("Updating Frozen State");
+		//take regular damage
+        //_sumDamageTaken + 
+
+        if(_sumDamageTaken >= 30)
+        {
+            ExitState(character);
+        }
+
+	}
+
+	public void ExitState(CharacterState character)
+	{
+		Debug.Log("Exiting Frozen State");
+
+		List<Toggle> toggles = character.gameObject.GetComponent<PlayerMove>().AbilitiesOnTargetToggles;
+
+		foreach (Toggle toggle in toggles)
+		{
+			toggle.enabled = true;
+		}
+	}
+}
+
 // Класс персонажа, использующий состояния
 public class CharacterState : MonoBehaviour
 {
     [SerializeField] private ICharacterState currentState;
+
     public SelectObject Select;
 
     private void Start()
