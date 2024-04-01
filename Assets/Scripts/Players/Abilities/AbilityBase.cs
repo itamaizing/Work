@@ -20,14 +20,7 @@ public enum AbilityType
 public enum AttackRangeType
 {
 	MeleeAttack,
-	RangeAttack,
-	Inner
-}
-
-public enum DamageType
-{
-	Magical,
-	Physical
+	RangeAttack
 }
 
 public abstract class AbilityBase : MonoBehaviour
@@ -53,7 +46,6 @@ public abstract class AbilityBase : MonoBehaviour
 	[HideInInspector] public AttackType AttackType;
 	[HideInInspector] public AbilityType AbilityType;
 	[HideInInspector] public AttackRangeType AttackRangeType;
-	[HideInInspector] public DamageType DamageType;
 	[HideInInspector] public GameObject TargetParent;
 	[HideInInspector] public bool CanMakeDamage = false;
 	[HideInInspector] public bool CanDealDamageOrHeal = false;
@@ -68,10 +60,7 @@ public abstract class AbilityBase : MonoBehaviour
 	[HideInInspector] public LastAbility lastAbility;
 	[HideInInspector] public bool IsActiveAbility;
 
-	public bool isInRadius { get; private set; }
-
-
-    public abstract void ChangeBoolAndValues();
+	public abstract void ChangeBoolAndValues();
 	public abstract void OnLeftDoubleClick();
 	public abstract void OnRightDoubleClick();
 	public abstract void HandleDealDamageOrHeal();
@@ -139,13 +128,7 @@ public abstract class AbilityBase : MonoBehaviour
 			IconAbility.GetComponent<SpriteRenderer>().color = newColor;
 
 			HandleToggleAbilityOn();
-
-            if (_isLastAbility == false && lastAbility != null)
-            {
-                lastAbility.AddLastAbility(this);
-                _isLastAbility = true;
-            }
-        }
+		}
 		else if (ToggleAbility.isOn == false)
 		{
 			HandleToggleAbilityOff();
@@ -191,7 +174,7 @@ public abstract class AbilityBase : MonoBehaviour
 	protected virtual void HandleToggleAbilityOn()
 	{
 		// Включенный ToggleAbility
-		//SetNewRadiusCircleColor();
+		SetNewRadiusCircleColor();
 
 		if (_player.GetComponent<PlayerMove>().IsSelect == false)
 		{
@@ -358,7 +341,6 @@ public abstract class AbilityBase : MonoBehaviour
 
 		if (previousEnemyCount == 0)
 		{
-			Debug.Log($"Enemies count:{_enemies.Count}");
 			//_IsEnemyDetected = false;
 			DrawCircle.SetColor(Color.red);
 		}
@@ -424,7 +406,7 @@ public abstract class AbilityBase : MonoBehaviour
 		}
 
 
-        _targetCircle = null;
+		_targetCircle = null;
 		CanDrawCircle = true;
 		IconAbility.GetComponent<SpriteRenderer>().enabled = false;
 		_addAbilityManager = false;
@@ -514,11 +496,10 @@ public abstract class AbilityBase : MonoBehaviour
 		return RectTransformUtility.RectangleContainsScreenPoint(rectTransform, Input.mousePosition, Camera.main);
 	}
 
-	public virtual void CancelAbilityOnClick()
+	public void CancelAbilityOnClick()
 	{
 		Destroy(NewAbilityPrefab);
 		ToggleAbility.isOn = false;
-		Debug.LogWarning("Cansel Ability on Click");
 		HandleToggleAbilityOff();
 		DrawCircle.Clear();
 
@@ -541,7 +522,7 @@ public abstract class AbilityBase : MonoBehaviour
 		}
 	}
 
-	public virtual void HandleDistanceToTarget()
+	public void HandleDistanceToTarget()
 	{
 		// Проверка дистанции
 		if (CanDoAbility)
@@ -564,8 +545,7 @@ public abstract class AbilityBase : MonoBehaviour
 				}
 
 				DrawCircle.SetColor(Color.red);
-                isInRadius = false;
-            }
+			}
 			else if (_distanceToTarget <= Distance)
 			{
 				TargetParent.transform.GetChild(0).GetComponent<BackgroundColorSwitcherDisabledEnabled>()
@@ -583,7 +563,6 @@ public abstract class AbilityBase : MonoBehaviour
 				}
 
 				DrawCircle.SetColor(Color.green);
-				isInRadius = true;
 			}
 
 			if (_distanceToTarget <= Distance && AttackType == AttackType.Autoattack && CanDealDamageOrHeal ||
@@ -617,7 +596,7 @@ public abstract class AbilityBase : MonoBehaviour
 					IsActiveAbility = true;
 
 					HandleDealDamageOrHeal();
-					Debug.Log("Включение мерцания красного");
+					//Debug.Log("Включение мерцания красного");
 
 					//Включение корутины мерцания красного.
 					// TargetParent.transform.GetChild(0).GetComponent<BackgroundColorSwitcherDisabledEnabled>()
@@ -628,7 +607,6 @@ public abstract class AbilityBase : MonoBehaviour
 						lastAbility.AddLastAbility(this);
 						_isLastAbility = true;
 					}
-
 				}
 			}
 		}

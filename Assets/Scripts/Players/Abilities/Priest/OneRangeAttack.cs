@@ -11,8 +11,9 @@ public class OneRangeAttack : AbilityBase
 	[Header("Ability properties")]
 	[SerializeField] private GameObject EnergySpiritEffect;
 	[SerializeField] private GameObject ManaCost;
-
-	public delegate void FirstAbilityHandler(float value);
+	[SerializeField] private float CastTime;
+    [SerializeField] private float _countdownForEnergyOfSpirit;
+    public delegate void FirstAbilityHandler(float value);
 	public event FirstAbilityHandler FirstAbilityEvent;
 	public event System.Action<EnergyOfSpirit> ScriptInstanceDestroyed;
 
@@ -21,19 +22,18 @@ public class OneRangeAttack : AbilityBase
 	private bool _canCast;
 	protected float shieldBuff;
 
-	protected override KeyCode ActivationKey => KeyCode.Alpha1;
+    protected override KeyCode ActivationKey => KeyCode.Alpha1;
 
 
 	private void Start()
 	{
-		Distance = _cellSize * CellDistance;
+		Distance = CellDistance *_cellSize;
 		AttackType = AttackType.Autoattack;
 		AbilityType = AbilityType.HealAbility;
 	}
 
 	void Update()
 	{
-		Target = TargetParent;
 		HandleToggleAbility();
 	}
 
@@ -98,7 +98,7 @@ public class OneRangeAttack : AbilityBase
 		{
 			ManaCost.gameObject.SetActive(false);
 		}
-		TargetParent = null;
+        TargetParent = null;
 		_canCast = false;
 		CanDealDamageOrHeal = false;
 	}
@@ -136,6 +136,7 @@ public class OneRangeAttack : AbilityBase
 		if (hit.collider != null && hit.collider.CompareTag("Allies") && hit.collider.gameObject != gameObject)
 		{
 			TargetParent = hit.collider.gameObject;
+			Target = TargetParent;
 
 			CanDealDamageOrHeal = true;
 			_canCast = true;
@@ -153,32 +154,17 @@ public class OneRangeAttack : AbilityBase
 		if (_canCast && _castCoroutine == null)
 		{
 			_castCoroutine = StartCoroutine(Cast());
-			CreateCastPrefab(0.8f);
+			CreateCastPrefab(CastTime);
 			_canCast = false;
 		}
 	}
 
 	private void Healing()
 	{
-		if (ScriptInstanceCount == 1)
-		{
-			Heal = 4f;
-			shieldBuff = 5;
-		}
-		else if (ScriptInstanceCount == 2)
-		{
-			Heal = 8f;
-		}
-		else if (ScriptInstanceCount == 0)
-		{
-			Heal = 2f;
-			shieldBuff = 10;
-		}
-
 		if (TargetParent != null)
 		{
 			TargetParent.GetComponent<HealthPlayer>().AddHeal(Heal);
-			_player.GetComponent<ManaPlayer>().Use(1f);
+			_player.GetComponent<ManaPlayer>().UseMana(1f); // ToDo вынести ману в атрибуты
 			FirstAbilityEvent?.Invoke(Heal);
 
 			if (TargetParent.GetComponentInChildren<DamageAbsorption>())
@@ -200,19 +186,40 @@ public class OneRangeAttack : AbilityBase
 			newScript.Destroyed += OnScriptInstanceDestroyed;
 
 			_newPrefab.transform.SetParent(TargetParent.transform);
-			_newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(9);
+			_newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(_countdownForEnergyOfSpirit);
 			ScriptInstanceCount++;
-		}
-	}
+			newScript.SetPriestAbilityManaReduce(ScriptInstanceCount / 10);
+            ShieldBuff();
+            TargetParent.GetComponent<HealthPlayer>().AddBuff(ScriptInstanceCount);
+        }
+    }
 
-	private void OnScriptInstanceDestroyed(EnergyOfSpirit destroyedScript)
+	private void ShieldBuff()
+	{
+        switch (ScriptInstanceCount)
+        {
+            case 1:
+                shieldBuff = 10;
+                break;
+            case 2:
+                shieldBuff = 5;
+                break;
+            default:
+                break;
+        }
+
+    }
+	private void OnScriptInstanceDestroyed(EnergyOfSpirit destroyedScript )
 	{
 		ScriptInstanceDestroyed?.Invoke(destroyedScript);
-		ScriptInstanceCount--;
+        Target.GetComponent<HealthPlayer>().RemoveBuff(1); // toDo
+        ScriptInstanceCount--;
 	}
 
 	private IEnumerator Cast()
 	{
+		_canCast = false;
+
 		if (Abilities.activeSelf && Abilities.GetComponent<GlobalCooldown>())
 		{
 			Abilities.GetComponent<GlobalCooldown>().StartGlobalCooldown();
@@ -220,8 +227,7 @@ public class OneRangeAttack : AbilityBase
 
 		StartCoroutine(CastMove());
 
-		yield return new WaitForSeconds(0.8f);
-
+		yield return new WaitForSeconds(CastTime);
 		Healing();
 
 		this.transform.root.GetComponentInChildren<FourRangeRecovery>().canCast = true;
@@ -233,7 +239,7 @@ public class OneRangeAttack : AbilityBase
 	private IEnumerator CastMove()
 	{
 		GetComponentInParent<PlayerMove>().CanMove = false;
-		yield return new WaitForSeconds(0.4f);
+		yield return new WaitForSeconds(CastTime/2);
 		GetComponentInParent<PlayerMove>().CanMove = true;
 
 	}

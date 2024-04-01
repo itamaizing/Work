@@ -9,14 +9,13 @@ public class EnergyOfSpirit : MonoBehaviour
     private GameObject[] _allies;
     private GameObject _priest;
     private PriestAbilityEvents _priestAbilityEvents;
+    private float _priestManaReducedPercent;
     private ICharacterEvents[] _characters;
 
     private void Start()
     {
         StartCoroutine(CountdownRoutine(9));
-
         _allies = GameObject.FindGameObjectsWithTag("Allies");
-
         foreach (GameObject ally in _allies)
         {
             _priestAbilityEvents = ally.GetComponent<PriestAbilityEvents>();
@@ -37,12 +36,15 @@ public class EnergyOfSpirit : MonoBehaviour
             }
         }
     }
-
+    public void SetPriestAbilityManaReduce(float value)
+    {
+        _priestManaReducedPercent = value;
+    }
     private void PriestHandleEvent(float value)
     {
         if(value > 0 && _priest != null)
         {
-            _priest.GetComponent<ManaPlayer>().Add(value * 0.09f);
+            _priest.transform.parent.GetComponent<ManaPlayer>().AddMana(value * _priestManaReducedPercent);
         }
     }
 
@@ -50,7 +52,7 @@ public class EnergyOfSpirit : MonoBehaviour
     {
         if(value > 0 && _priest != null)
         {
-            _priest.GetComponent<ManaPlayer>().Add(value * 0.05f);
+            _priest.GetComponent<ManaPlayer>().AddMana(value * 0.05f);
 		}
     }
 
