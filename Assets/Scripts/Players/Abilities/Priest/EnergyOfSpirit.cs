@@ -45,6 +45,7 @@ public class EnergyOfSpirit : MonoBehaviour
         if(value > 0 && _priest != null)
         {
             _priest.transform.parent.GetComponent<ManaPlayer>().AddMana(value * _priestManaReducedPercent);
+            Debug.Log(value * _priestManaReducedPercent);
         }
     }
 

@@ -166,7 +166,7 @@ public class HealthPlayer : MonoBehaviour
     }
     public void AddBuff(float value)
     {
-        _healBuffValue = value;
+        _healBuffValue += value;
     }
     public void RemoveBuff(float value)
     {

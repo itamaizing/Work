@@ -169,7 +169,7 @@ public class OneRangeAttack : AbilityBase
 
 			if (TargetParent.GetComponentInChildren<DamageAbsorption>())
 			{
-				TargetParent.GetComponentInChildren<DamageAbsorption>().AddMaxAbsorbtion(shieldBuff / 100);
+				TargetParent.GetComponentInChildren<DamageAbsorption>().AddMaxAbsorbtion(shieldBuff*0.01f);
 			}
 
 			AddBaffEnergyOfSpirit();
@@ -188,9 +188,10 @@ public class OneRangeAttack : AbilityBase
 			_newPrefab.transform.SetParent(TargetParent.transform);
 			_newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(_countdownForEnergyOfSpirit);
 			ScriptInstanceCount++;
-			newScript.SetPriestAbilityManaReduce(ScriptInstanceCount / 10);
+			float manaBuffPercent = ScriptInstanceCount*0.1f;
+            newScript.SetPriestAbilityManaReduce(manaBuffPercent);
             ShieldBuff();
-            TargetParent.GetComponent<HealthPlayer>().AddBuff(ScriptInstanceCount);
+            TargetParent.GetComponent<HealthPlayer>().AddBuff(1);
         }
     }
 
