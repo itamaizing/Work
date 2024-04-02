@@ -308,6 +308,8 @@ public class CharacterState : MonoBehaviour
     [SerializeField] private ICharacterState currentState;
 
     public SelectObject Select;
+    //person who shoted
+    public GameObject player;
 
     private void Start()
     {
