@@ -7,13 +7,16 @@ public class Icecloud : AbilityBase
 {
 	[Header("Ability properties")]
 	[SerializeField] private GameObject ManaCost;
+	[SerializeField] private Rigidbody2D _rb;
 
 	[HideInInspector] public GameObject Target;
 
 	public delegate void IceCloudAbilityHandler(float value);
 	public event IceCloudAbilityHandler IceCloudAbilityEvent;
 
-	protected override KeyCode ActivationKey => KeyCode.Alpha3;
+	protected override KeyCode ActivationKey => KeyCode.Alpha2;
+
+	private Vector2 _mousePos;
 
 	private void Start()
 	{
@@ -37,7 +40,12 @@ public class Icecloud : AbilityBase
 
 		if (Input.GetMouseButtonDown(0) && Abilities.gameObject.activeSelf && ToggleAbility.enabled && _player.GetComponent<PlayerMove>().IsSelect)
 		{
-			HandleLeftMouseButtonToggle();
+			_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			Vector2 lookDir = _mousePos - _rb.position;
+			Debug.Log(lookDir + " Mouse pos vector is");
+			//Instantiate()
+			//float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
+			//HandleLeftMouseButtonToggle();
 		}
 	}
 
