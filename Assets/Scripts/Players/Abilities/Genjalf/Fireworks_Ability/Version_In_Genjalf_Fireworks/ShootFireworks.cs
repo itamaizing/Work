@@ -80,29 +80,31 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
         //Включаем способность
         private void ActivatedFireworks()
         {
+            if (_currentMana <= 0)
+                return;
+
             _fireWorksPreAblity.SetActive(false);
             gameObject.transform.parent.GetComponent<PlayerMove>().MoveSpeed = 0;
 
-            if (_currentMana > 0)
+
+            if (!_isGlobalCooldown)
             {
-                if (!_isGlobalCooldown)
-                {
-                    _abilitiesPanel.GetComponent<GlobalCooldown>().StartGlobalCooldown();
-                    _isGlobalCooldown = true;
-                }
-
-                if (_blinkCoroutine == null)
-                {
-                    _blinkCoroutine = StartCoroutine(Blink());
-                }
-
-                _fireWorks.SetActive(true);
-                StartFireworksEvent.SendStartFireworksEvent();
-
-                _manaCost.SetActive(true);
-                _manaCost.GetComponent<VisualManaCost>().CheckManaCost();
-                _manaCost.transform.localScale = new Vector2(2f, _manaCost.gameObject.transform.localScale.y);
+                _abilitiesPanel.GetComponent<GlobalCooldown>().StartGlobalCooldown();
+                _isGlobalCooldown = true;
             }
+
+            if (_blinkCoroutine == null)
+            {
+                _blinkCoroutine = StartCoroutine(Blink());
+            }
+
+            _fireWorks.SetActive(true);
+            StartFireworksEvent.SendStartFireworksEvent();
+
+            _manaCost.SetActive(true);
+            _manaCost.GetComponent<VisualManaCost>().CheckManaCost();
+            _manaCost.transform.localScale = new Vector2(2f, _manaCost.gameObject.transform.localScale.y);
+
         }
 
         // Отключаем способность

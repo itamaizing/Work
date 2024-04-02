@@ -23,6 +23,7 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
                 {
                     _damageCoroutine = StartCoroutine(DamageOverTime());
                 }
+                SortEnemiesByDistance();
             }
         }
 
@@ -36,51 +37,43 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
                     StopCoroutine(_damageCoroutine);
                     _damageCoroutine = null;
                 }
+                SortEnemiesByDistance();
             }
+        }
+
+        private void SortEnemiesByDistance()
+        {
+            _enemies.Sort(CompareDistanceToMe);
+        }
+
+        private int CompareDistanceToMe(GameObject b, GameObject a)
+        {
+            float squaredRangeA = (a.transform.position - transform.position).sqrMagnitude;
+            float squaredRangeB = (b.transform.position - transform.position).sqrMagnitude;
+            return squaredRangeA.CompareTo(squaredRangeB);
         }
 
         private IEnumerator DamageOverTime()
         {
             while (shootFireworks.gameObject.transform.parent.GetComponent<ManaPlayer>().Mana > 0 && _enemies.Count > 0)
             {
-                if (_currentEnemyIndex < _enemies.Count)
+                shootFireworks.gameObject.transform.parent.GetComponent<ManaPlayer>().UseMana(_fireworks.soFireworksData.ManaCost);
+
+                for (int i = 0; i < _enemies.Count; i++)
                 {
-                    GameObject currentEnemy = _enemies[_currentEnemyIndex];
-
-                    float damageMultiplier = GetDamageMultiplier(_currentEnemyIndex);
-
+                    GameObject currentEnemy = _enemies[i];
+                    float damageMultiplier = GetDamageMultiplier(i);
                     float damage = Random.Range(_fireworks.soFireworksData.DamageFireworksMin,
-                        _fireworks.soFireworksData.DamageFireworksMax) * damageMultiplier;
-
-                    // TestHealthEnemy healthComponent = currentEnemy.GetComponent<TestHealthEnemy>();
-                    //
-                    // if (healthComponent != null)
-                    // {
-                    //     healthComponent.TakeDamage(damage);
-                    //     Debug.Log(
-                    //         $"Урон врагу {currentEnemy.name}: {damage}. Процент урона: {damageMultiplier * 100}%");
-                    // }
-                    
+                            _fireworks.soFireworksData.DamageFireworksMax) * damageMultiplier;
                     HealthPlayer healthPlayer = currentEnemy.GetComponent<HealthPlayer>();
-                    
+
                     if (healthPlayer != null)
                     {
                         healthPlayer.TakeMagicDamage(damage);
                         Debug.Log(
                             $"Урон врагу {currentEnemy.name}: {damage}. Процент урона: {damageMultiplier * 100}%");
                     }
-
-                    shootFireworks.gameObject.transform.parent.GetComponent<ManaPlayer>().UseMana(_fireworks.soFireworksData.ManaCost);
-                    
-                    // Переход к следующему противнику
-                    _currentEnemyIndex = (_currentEnemyIndex + 1) % _enemies.Count;
                 }
-
-                else
-                {
-                    Debug.LogWarning("Индекс противника выходит за пределы списка");
-                }
-
                 yield return new WaitForSeconds(0.1f);
             }
         }
