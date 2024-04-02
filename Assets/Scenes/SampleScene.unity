@@ -16790,6 +16790,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 54431320}
     - target: {fileID: 6111745567471085271, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+      propertyPath: ProtectDebaff
+      value: 
+      objectReference: {fileID: 8908686081191195120, guid: bc6789e500ac32940bc1f7779553b1cc, type: 3}
+    - target: {fileID: 6111745567471085271, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: ToggleAbility
       value: 
       objectReference: {fileID: 1451537328}
@@ -16943,7 +16947,7 @@ PrefabInstance:
       objectReference: {fileID: 500242583}
     - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: _cellSize
-      value: 1.9
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: IconAbility

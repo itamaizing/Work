@@ -7,6 +7,7 @@ public class TwoRangeProtection : AbilityBase
 {
     [Header("Ability properties")]
     [SerializeField] private GameObject ProtectBaff;
+    [SerializeField] private GameObject ProtectDebaff;
     [SerializeField] private GameObject CooldownButton;
     [SerializeField] private GameObject ManaCost;
 
@@ -15,8 +16,8 @@ public class TwoRangeProtection : AbilityBase
     public delegate void SecondAbilityHandler(float value);
     public event SecondAbilityHandler SecondAbilityEvent;
 
-    private GameObject _newPrefab;
-
+    private GameObject _protectBaffPrefab;
+    private GameObject _protectDebaffPrefab;
     private float _absorbtionBuff;
 
     protected override KeyCode ActivationKey => KeyCode.Alpha2;
@@ -168,27 +169,35 @@ public class TwoRangeProtection : AbilityBase
 
     private void Protect()
     {
-        if (TargetParent != null)
+
+        if (TargetParent != null&&TargetParent.GetComponentInChildren<DebaffProtect>()==null)
         {
             _player.GetComponent<ManaPlayer>().Use(6f);
 
-            TargetParent.AddComponent<DebaffProtect>();
-            TargetParent.GetComponent<DebaffProtect>().CastDebaff(12f);
-
-
-            if (_newPrefab != null)
-            {
-                Destroy(_newPrefab);
-            }
-
-            _newPrefab = Instantiate(ProtectBaff);
-            _newPrefab.GetComponent<DamageAbsorption>().AddBuffAbsorbtion(_absorbtionBuff);
-            _newPrefab.transform.SetParent(TargetParent.transform);
-            _newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(18);
+            SetProtectBuff();
+            SetProtectDebaff();
 
             SecondAbilityEvent?.Invoke(0f);
             StartCoroutine(Recharge());
         }
+    }
+
+    private void SetProtectBuff()
+    {
+        DamageAbsorption shield = TargetParent.GetComponentInChildren<DamageAbsorption>();
+        if (shield!=null) Destroy(shield);
+            _protectBaffPrefab = Instantiate(ProtectBaff);
+            _protectBaffPrefab.transform.SetParent(TargetParent.transform);
+            _protectBaffPrefab.GetComponent<DamageAbsorption>().AddBuffAbsorbtion(_absorbtionBuff);
+            float absorbtionTime = _protectBaffPrefab.GetComponent<DamageAbsorption>().Duration;
+            _protectBaffPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(absorbtionTime);
+    }
+    private void SetProtectDebaff()
+    {
+            _protectDebaffPrefab = Instantiate(ProtectDebaff);
+            _protectDebaffPrefab.transform.SetParent(TargetParent.transform);
+            _protectDebaffPrefab.GetComponent<DebaffProtect>().CastDebaff(12f);
+            _protectDebaffPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
     }
 
     public void AddShieldBuff(float value)
@@ -197,7 +206,7 @@ public class TwoRangeProtection : AbilityBase
     }
 
     private IEnumerator CastProtect(float castTime)
-    {
+    { 
         if (Abilities.GetComponent<GlobalCooldown>())
         {
             Abilities.GetComponent<GlobalCooldown>().StartGlobalCooldown();
@@ -221,7 +230,6 @@ public class TwoRangeProtection : AbilityBase
 
     private IEnumerator Recharge()
     {
-
         ToggleAbility.isOn = false;
         ToggleAbility.enabled = false;
         _playerAbility.GetComponent<DarkTwoRangeProtection>().enabled = false;

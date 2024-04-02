@@ -2,10 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DebaffProtect : MonoBehaviour
+public class DebaffProtect : BaseEffect
 {
     public bool IsProtectDebaff;
 
+    private void Start()
+    {
+        Type = EffectType.Debuff;
+    }
     public void CastDebaff(float TimeDebaff)
     {
         StartCoroutine(StartDebaff(TimeDebaff));
