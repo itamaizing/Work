@@ -47,7 +47,7 @@ namespace Players.CircleBackgroundColor
         {
             if (!colorBackgroundPlayerChanged)
             {
-                Debug.Log("Меняем на зелёный");
+                //Debug.Log("Меняем на зелёный");
                 targetParent.transform.GetChild(0).gameObject.SetActive(true);
                 SpriteRenderer spriteRenderer = targetParent.transform.GetChild(0).GetComponent<SpriteRenderer>();
 
@@ -67,7 +67,7 @@ namespace Players.CircleBackgroundColor
         {
             if (!colorBackgroundAttackChanged)
             {
-                Debug.Log("Меняем цвет");
+                //Debug.Log("Меняем цвет");
                 targetParent.transform.GetChild(0).gameObject.SetActive(true);
                 SpriteRenderer targetSpriteRenderer = targetParent.transform.GetChild(0).GetComponent<SpriteRenderer>();
 

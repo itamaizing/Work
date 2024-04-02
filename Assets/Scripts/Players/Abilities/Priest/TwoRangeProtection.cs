@@ -17,6 +17,8 @@ public class TwoRangeProtection : AbilityBase
 
     private GameObject _newPrefab;
 
+    private float _absorbtionBuff;
+
     protected override KeyCode ActivationKey => KeyCode.Alpha2;
 
     private void Start()
@@ -180,12 +182,18 @@ public class TwoRangeProtection : AbilityBase
             }
 
             _newPrefab = Instantiate(ProtectBaff);
+            _newPrefab.GetComponent<DamageAbsorption>().AddBuffAbsorbtion(_absorbtionBuff);
             _newPrefab.transform.SetParent(TargetParent.transform);
             _newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(18);
 
             SecondAbilityEvent?.Invoke(0f);
             StartCoroutine(Recharge());
         }
+    }
+
+    public void AddShieldBuff(float value)
+    {
+        _absorbtionBuff = value;
     }
 
     private IEnumerator CastProtect(float castTime)
@@ -218,6 +226,7 @@ public class TwoRangeProtection : AbilityBase
         ToggleAbility.enabled = false;
         _playerAbility.GetComponent<DarkTwoRangeProtection>().enabled = false;
         TargetParent = null;
+        _absorbtionBuff = 0;
 
         CooldownButton.gameObject.SetActive(true);
         StartCoroutine(CountdownRoutine(4));

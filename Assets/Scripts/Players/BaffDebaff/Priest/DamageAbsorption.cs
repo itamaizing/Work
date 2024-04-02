@@ -41,7 +41,16 @@ public class DamageAbsorption : BaseEffect
 
     public void AddMaxAbsorbtion(float value)
     {
+        Debug.Log("Do- " + MaxAbsorption);
 		MaxAbsorption += value;
-	}
+        Debug.Log("Posle- " + MaxAbsorption);
+    }
+
+    public void AddBuffAbsorbtion(float value)
+    {
+        Debug.Log("Do- " + MaxAbsorption);
+        MaxAbsorption +=MaxAbsorption*value;
+        Debug.Log("Posle- " + MaxAbsorption);
+    }
 }
 

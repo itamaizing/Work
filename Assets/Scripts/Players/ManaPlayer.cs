@@ -26,12 +26,11 @@ public class ManaPlayer : MonoBehaviour
         float newScaleX = Mana / MaxMana;
         ManaBar.transform.localScale = new Vector3(newScaleX, 1.0f, 1.0f);
 
-        if (manaValue > 0 && manaValue < 1)
+        /*if (manaValue > 0 && manaValue < 1)
         {
             manaValue = 1;
         }
-
-        manaValue = (int)manaValue;
+        */
         PrefabText.text = "+" + manaValue.ToString();
         PrefabText.GetComponent<DamagePrefab>().StartColor = new Color(0, 0, 1, 1);
         PrefabText.GetComponent<DamagePrefab>().EndColor = new Color(0, 0, 1, 0.5f);

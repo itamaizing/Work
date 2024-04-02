@@ -1,8 +1,10 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class OneRangeAttack : AbilityBase
 {
+	// "Искра Света" - Лечение и бафф союзника , урон по врагу. 
 	[HideInInspector] public static int NumberOfInstances = 0;
 	[HideInInspector] public float Heal = 2f;
 	[HideInInspector] public int ScriptInstanceCount = 0;
@@ -19,8 +21,11 @@ public class OneRangeAttack : AbilityBase
 
 	private int maxScriptInstances = 2;
 	private GameObject _newPrefab;
+	private EnergyOfSpirit _energyOfSpiritPrefab;
 	private bool _canCast;
 	protected float shieldBuff;
+	private float shieldAbsorbtion;
+	private float manaBuff;
 
     protected override KeyCode ActivationKey => KeyCode.Alpha1;
 
@@ -167,60 +172,69 @@ public class OneRangeAttack : AbilityBase
 			_player.GetComponent<ManaPlayer>().UseMana(1f); // ToDo вынести ману в атрибуты
 			FirstAbilityEvent?.Invoke(Heal);
 
-			if (TargetParent.GetComponentInChildren<DamageAbsorption>())
-			{
-				TargetParent.GetComponentInChildren<DamageAbsorption>().AddMaxAbsorbtion(shieldBuff*0.01f);
-			}
-
 			AddBaffEnergyOfSpirit();
 		}
-		_canCast = true;
 	}
 
 	private void AddBaffEnergyOfSpirit()
 	{
-		if (ScriptInstanceCount < maxScriptInstances)
+        if (ScriptInstanceCount < maxScriptInstances)
 		{
+			_canCast = true;
 			_newPrefab = Instantiate(EnergySpiritEffect);
-			EnergyOfSpirit newScript = _newPrefab.GetComponent<EnergyOfSpirit>();
-			newScript.Destroyed += OnScriptInstanceDestroyed;
+			_energyOfSpiritPrefab = _newPrefab.GetComponent<EnergyOfSpirit>();
+            _energyOfSpiritPrefab.Destroyed += OnScriptInstanceDestroyed;
 
 			_newPrefab.transform.SetParent(TargetParent.transform);
 			_newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(_countdownForEnergyOfSpirit);
 			ScriptInstanceCount++;
-			float manaBuffPercent = ScriptInstanceCount*0.1f;
-            newScript.SetPriestAbilityManaReduce(manaBuffPercent);
-            ShieldBuff();
-            TargetParent.GetComponent<HealthPlayer>().AddBuff(1);
+            EnergyOfSpiritBuffs();
         }
+		else
+		{
+			_canCast = false;
+		}
     }
 
-	private void ShieldBuff()
+	private void EnergyOfSpiritBuffs()
 	{
+        Debug.Log("spirit buffs");
         switch (ScriptInstanceCount)
         {
+			case 0:
+                shieldBuff = 0;
+                manaBuff = 0;
+				break;
             case 1:
                 shieldBuff = 10;
+				manaBuff = 0.1f;
                 break;
             case 2:
-                shieldBuff = 5;
+                shieldBuff = 15;
+				manaBuff = 0.2f;
                 break;
             default:
                 break;
         }
-
+		// Коэфицент восстановления маны за стак
+        _energyOfSpiritPrefab.UpdateBuffValue(manaBuff);
+		// Бафф всего входящего восстановления на 1
+        TargetParent.GetComponent<HealthPlayer>().AddBuff(1);
+        // Увеличение прочности накладываемого щита
+		transform.GetComponent<TwoRangeProtection>().AddShieldBuff(shieldBuff*0.01f);
     }
 	private void OnScriptInstanceDestroyed(EnergyOfSpirit destroyedScript )
 	{
 		ScriptInstanceDestroyed?.Invoke(destroyedScript);
-        Target.GetComponent<HealthPlayer>().RemoveBuff(1); // toDo
+		if (Target != null)
+		{
+            Target.GetComponent<HealthPlayer>().RemoveBuff(1); // toDo
+		}
         ScriptInstanceCount--;
 	}
 
 	private IEnumerator Cast()
 	{
-		_canCast = false;
-
 		if (Abilities.activeSelf && Abilities.GetComponent<GlobalCooldown>())
 		{
 			Abilities.GetComponent<GlobalCooldown>().StartGlobalCooldown();
@@ -228,10 +242,10 @@ public class OneRangeAttack : AbilityBase
 
 		StartCoroutine(CastMove());
 
-		yield return new WaitForSeconds(CastTime);
-		Healing();
+        yield return new WaitForSeconds(CastTime);
+        Healing();
 
-		this.transform.root.GetComponentInChildren<FourRangeRecovery>().canCast = true;
+        this.transform.root.GetComponentInChildren<FourRangeRecovery>().canCast = true;
 
 		_castCoroutine = null;
 		yield break;

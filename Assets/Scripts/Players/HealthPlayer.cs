@@ -145,22 +145,20 @@ public class HealthPlayer : MonoBehaviour
     public void AddHeal(float healValue)
     {
         HealInfo healthInfo;
-        healthInfo.OriginalHeal = healValue;
 
-        healthInfo.ModifiedHeal = healthInfo.OriginalHeal;
+        healthInfo.OriginalHeal = healValue;
+        healthInfo.ModifiedHeal = healthInfo.OriginalHeal + _healBuffValue;
         if (AddHealth != null)
         {
             healthInfo = AddHealth(healthInfo);
         }
 
-        float modifiedHeal = healthInfo.ModifiedHeal + _healBuffValue;
-
-        Health += modifiedHeal;
+        Health += healthInfo.ModifiedHeal;
         if (Health >= MaxHealth)
         {
             Health = MaxHealth;
         }
-            ShowDamagePrefab(modifiedHeal, new Color(0, 0.8f, 0, 1), new Color(0, 0.8f, 0, 0.5f));
+            ShowDamagePrefab(healthInfo.ModifiedHeal, new Color(0, 0.8f, 0, 1), new Color(0, 0.8f, 0, 0.5f));
             UpdateHealthBar();
             UpdateHealthBarText();
     }
@@ -232,7 +230,7 @@ public class HealthPlayer : MonoBehaviour
         while (true)
         {
             yield return _waitForRegenHp;
-            this.AddHeal(_hpRegenerationValue);
+            this.AddHeal(_hpRegenerationValue - _healBuffValue);
         }
     }
 }

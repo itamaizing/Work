@@ -36,16 +36,16 @@ public class EnergyOfSpirit : MonoBehaviour
             }
         }
     }
-    public void SetPriestAbilityManaReduce(float value)
+    public void UpdateBuffValue(float value)
     {
         _priestManaReducedPercent = value;
+        Debug.Log(value);
     }
     private void PriestHandleEvent(float value)
     {
         if(value > 0 && _priest != null)
         {
             _priest.transform.parent.GetComponent<ManaPlayer>().AddMana(value * _priestManaReducedPercent);
-            Debug.Log(value * _priestManaReducedPercent);
         }
     }
 
@@ -61,6 +61,7 @@ public class EnergyOfSpirit : MonoBehaviour
     {
         if (_priestAbilityEvents != null)
         {
+            _priestManaReducedPercent = 0;
             _priestAbilityEvents.PriestAbilitiesEvent -= PriestHandleEvent;
         }
         if(_characters != null)
