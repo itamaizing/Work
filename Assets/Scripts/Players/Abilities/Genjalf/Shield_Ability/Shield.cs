@@ -54,13 +54,16 @@ namespace Players.Abilities.Genjalf.Shield_Ability
                 _shieldBar.SetShieldValue(_currentAbAmount);
             }
 
-            _uiShield.SetTextCharge(_currentShieldCharge);
+            UpdateTextCharge();
             CheckChargeOnStartReset();
             ActivatedAbility();
         }
 
         private void ActivatedAbility()
         {
+            if (_currentShieldCharge <= 0)
+                return;
+
             if (_toggleAbility.gameObject.activeSelf && Input.GetKeyDown(KeyCode.Alpha1) &&
                 transform.parent.GetComponent<PlayerMove>().IsSelect && _toggleAbility.enabled)
             {
@@ -81,9 +84,22 @@ namespace Players.Abilities.Genjalf.Shield_Ability
             _isResetCoroutineRunning = true;
         }
 
+        private void UpdateTextCharge()
+        {
+            _uiShield.SetTextCharge(_currentShieldCharge);
+            if(_currentShieldCharge > 0)
+            {
+                _uiShield.SetTextColor(Color.green);
+            }
+            else
+            {
+                _uiShield.SetTextColor(Color.red);
+            }
+
+        }
 
         //Включаем щит.
-        private IEnumerator ActiveShield(float durationCast)
+        private IEnumerator ActiveShield(float duration)
         {
             if (_currentShieldCharge == 0)
                 yield break;
@@ -107,8 +123,6 @@ namespace Players.Abilities.Genjalf.Shield_Ability
             _manaCost.GetComponent<VisualManaCost>().CheckManaCost();
             _manaCost.transform.localScale = new Vector2(2f, _manaCost.gameObject.transform.localScale.y);
 
-            yield return new WaitForSeconds(durationCast);
-
             _currentShieldCharge--;
 
             transform.parent.GetComponent<PlayerMove>().MoveSpeed = _startSpeedPlayer;
@@ -122,6 +136,12 @@ namespace Players.Abilities.Genjalf.Shield_Ability
 
             _iconAbility.GetComponent<SpriteRenderer>().enabled = false;
             _isGlobalCooldown = false;
+
+            yield return new WaitForSeconds(duration);
+
+            _currentAbAmount = 0;
+            _shieldBar.transform.gameObject.SetActive(false);
+
         }
 
         private void CheckChargeOnStartReset()
