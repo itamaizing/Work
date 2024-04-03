@@ -17,7 +17,7 @@ public class ManaPlayer : MonoBehaviour
     {
 
         _waitForRegenMana = new WaitForSeconds(_manaRegenerationDelay);
-        StartCoroutine(RegenirateMana());
+        StartCoroutine(CoroutineRegenirateMana());
     }
     public void AddMana(float manaValue)
     {
@@ -48,6 +48,35 @@ public class ManaPlayer : MonoBehaviour
             Mana = 1000;
         }
     }
+
+    public void RegenMana(float manaValue) // для регена, тот же самый AddMana, но без префаба значения
+    {
+        Mana += manaValue;
+
+        float newScaleX = Mana / 1000.0f;
+        ManaBar.transform.localScale = new Vector3(newScaleX, 1.0f, 1.0f);
+
+        if (manaValue > 0 && manaValue < 1)
+        {
+            manaValue = 1;
+        }
+
+        manaValue = (int)manaValue;
+        PrefabText.text = "+" + manaValue.ToString();
+        PrefabText.GetComponent<DamagePrefab>().StartColor = new Color(0, 0, 1, 1);
+        PrefabText.GetComponent<DamagePrefab>().EndColor = new Color(0, 0, 1, 0.5f);
+
+        if (Mana <= 0)
+        {
+            Mana = 0;
+        }
+
+        if (Mana >= 1000)
+        {
+            Mana = 1000;
+        }
+    }
+
     public void UseMana(float manaValue)
     {
         Mana -= manaValue;
@@ -65,12 +94,12 @@ public class ManaPlayer : MonoBehaviour
         }
     }
 
-    private IEnumerator RegenirateMana()
+    private IEnumerator CoroutineRegenirateMana()
     {
         while (true)
         {
             yield return _waitForRegenMana;
-            this.AddMana(_manaRegenerationValue);
+            this.RegenMana(_manaRegenerationValue);
         }
     }
 }

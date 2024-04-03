@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GlobalEvents;
 using Players.Abilities.Carrygun;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -243,14 +244,16 @@ public class FourMeleeAttack : AbilityBase
 		}
 		else
 		{
-			DrawCircle.SetColor(Color.red);
-		}
+            DrawCircle.SetColor(Color.red);
+        }
 
 		if (!_distancePrefab)
 			return;
 
-		if (Vector2.Distance(Target.transform.position, _camera.ScreenToWorldPoint(Input.mousePosition)) <= _distanceTentacles)
-		{
+		if ((Vector2.Distance(Target.transform.position, _camera.ScreenToWorldPoint(Input.mousePosition)) <= _distanceTentacles) 
+			&& (Vector2.Distance(gameObject.transform.position, _camera.ScreenToWorldPoint(Input.mousePosition)) <= Distance))
+
+        {
 			var circle = _distancePrefab.GetComponent<DrawCircle>();
 			circle.Draw(_distanceTentacles);
 			circle.SetColor(Color.green);

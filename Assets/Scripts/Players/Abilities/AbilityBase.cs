@@ -128,7 +128,13 @@ public abstract class AbilityBase : MonoBehaviour
 			IconAbility.GetComponent<SpriteRenderer>().color = newColor;
 
 			HandleToggleAbilityOn();
-		}
+
+            if (_isLastAbility == false && lastAbility != null)
+            {
+                lastAbility.AddLastAbility(this);
+                _isLastAbility = true;
+            }
+        }
 		else if (ToggleAbility.isOn == false)
 		{
 			HandleToggleAbilityOff();
@@ -407,7 +413,7 @@ public abstract class AbilityBase : MonoBehaviour
 		}
 
 
-		_targetCircle = null;
+        _targetCircle = null;
 		CanDrawCircle = true;
 		IconAbility.GetComponent<SpriteRenderer>().enabled = false;
 		_addAbilityManager = false;
@@ -501,6 +507,7 @@ public abstract class AbilityBase : MonoBehaviour
 	{
 		Destroy(NewAbilityPrefab);
 		ToggleAbility.isOn = false;
+		Debug.LogWarning("Cansel Ability on Click");
 		HandleToggleAbilityOff();
 		DrawCircle.Clear();
 
@@ -608,6 +615,7 @@ public abstract class AbilityBase : MonoBehaviour
 						lastAbility.AddLastAbility(this);
 						_isLastAbility = true;
 					}
+
 				}
 			}
 		}

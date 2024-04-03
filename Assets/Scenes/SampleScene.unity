@@ -13485,6 +13485,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 93359973375825367, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 160970298897504573, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: _toggleTalent
       value: 
@@ -13845,6 +13849,10 @@ PrefabInstance:
       propertyPath: _cooldownButton
       value: 
       objectReference: {fileID: 3400928684162816447}
+    - target: {fileID: 8128395619088257888, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8337789449907410738, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: m_Enabled
       value: 0

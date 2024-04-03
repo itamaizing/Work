@@ -5,7 +5,7 @@ public class LastAbility : MonoBehaviour
 {
     public SelectObject Select;
     public Collider2D[] colliders;
-    [HideInInspector] public AbilityBase LastUseAbility;
+    /*[HideInInspector]*/ public AbilityBase LastUseAbility;
     [HideInInspector] public bool OneClick;
     [HideInInspector] public bool TwoClick;
     private Vector2 _clickPosition;
@@ -16,6 +16,14 @@ public class LastAbility : MonoBehaviour
         LastUseAbility = ability;
         OneClick = false;
         TwoClick = false;
+    }
+
+    public void ClearLastAbility()
+    { 
+        LastUseAbility = null;
+        OneClick = false;
+        TwoClick = false;
+        Debug.LogWarningFormat("LastAbility Cleared");
     }
 
     private void Update()

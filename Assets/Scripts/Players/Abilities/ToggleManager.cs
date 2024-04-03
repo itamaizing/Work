@@ -42,11 +42,11 @@ public class ToggleManager : MonoBehaviour
                 lastAbility = ability;
                 return;
             }
-            else if (lastAbility != null && lastAbility.TargetParent == null)
-            {
-                lastAbility.ToggleAbility.isOn = false;
-                lastAbility = ability;
-            }
+            //else if (lastAbility != null && lastAbility.TargetParent == null)
+            //{
+            //    lastAbility.ToggleAbility.isOn = false;
+            //    lastAbility = ability;
+            //}
             else if (lastAbility != null && lastAbility.TargetParent != null)
             {
                 lastAbility = ability;

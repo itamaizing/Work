@@ -42,7 +42,7 @@ public class HealthPlayer : MonoBehaviour
     {
         UpdateHealthBar();
         _waitForRegenHp = new WaitForSeconds(_hpRegenerationDelay);
-        StartCoroutine(RegenirateHP());
+        StartCoroutine(CoroutineRegenirateHP());
     }
 
     public void TakePhisicDamage(float damageValue)
@@ -166,6 +166,29 @@ public class HealthPlayer : MonoBehaviour
 
     }
 
+    public void RegenHP(float healValue) // для регена, тот же самый AddHeal, но без префаба значения
+    {
+        HealInfo healthInfo;
+        healthInfo.OriginalHeal = healValue;
+
+        healthInfo.ModifiedHeal = healthInfo.OriginalHeal;
+        if (AddHealth != null)
+        {
+            healthInfo = AddHealth(healthInfo);
+        }
+
+        float modifiedHeal = healthInfo.ModifiedHeal;
+
+        Health += modifiedHeal;
+        if (Health >= MaxHealth)
+        {
+            Health = MaxHealth;
+        }
+        UpdateHealthBar();
+        UpdateHealthBarText();
+
+    }
+
     private void HandleAbsorptionOrRepeat(ref float modifiedValue)
     {
         for (int i = 0; i < transform.childCount; i++)
@@ -221,12 +244,12 @@ public class HealthPlayer : MonoBehaviour
        
     }
 
-    private IEnumerator RegenirateHP()
+    private IEnumerator CoroutineRegenirateHP()
     {
         while (true)
         {
             yield return _waitForRegenHp;
-            this.AddHeal(_hpRegenerationValue);
+            this.RegenHP(_hpRegenerationValue);
         }
     }
 }
