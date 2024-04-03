@@ -264,25 +264,22 @@ public class FrozenState : ICharacterState
 
         if (character.gameObject.TryGetComponent<HealthPlayer>(out _playerHP))
         {
-			// акой дамаг получаем? физический или магический
-			//duration = 1 + energy/20
-			//_playerHP.TakePhisicDamage(10 + energy/2)
+            // акой дамаг получаем? физический или магический
+            _playerHP.TakePhisicDamage(10 + character.energy.Mana / 2);
+            _duration = 1 + character.energy.Mana / 20;
             //Get energy of player that shots
 		}
 		else
         {
             //error
         }
-        //take damage
     }
 
     public void UpdateState(CharacterState character)
 	{
 		Debug.Log("Updating Frozen State");
-		//take regular damage
-        //_sumDamageTaken + 
 
-        if(_sumDamageTaken >= 30)
+		if (_sumDamageTaken >= 30 || _duration < 0)
         {
             ExitState(character);
         }
@@ -309,7 +306,7 @@ public class CharacterState : MonoBehaviour
 
     public SelectObject Select;
     //person who shoted
-    public GameObject player;
+    public ManaPlayer energy;
 
     private void Start()
     {

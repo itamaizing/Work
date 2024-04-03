@@ -39,13 +39,8 @@ public class Icecloud : AbilityBase
 		// Текущий код в методе Update
 
 		if (Input.GetMouseButtonDown(0) && Abilities.gameObject.activeSelf && ToggleAbility.enabled && _player.GetComponent<PlayerMove>().IsSelect)
-		{
-			_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			Vector2 lookDir = _mousePos - _rb.position;
-			Debug.Log(lookDir + " Mouse pos vector is");
-			//Instantiate()
-			//float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
-			//HandleLeftMouseButtonToggle();
+		{			
+			HandleLeftMouseButtonToggle();
 		}
 	}
 
@@ -53,6 +48,12 @@ public class Icecloud : AbilityBase
 	{
 		// Включенный ToggleAbility
 		base.HandleToggleAbilityOn();
+
+		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		Vector2 lookDir = _mousePos - _rb.position;
+		Debug.Log(lookDir + " Mouse pos vector is");
+		//Instantiate()
+		//float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
 
 		if (TargetParent == null)
 		{
