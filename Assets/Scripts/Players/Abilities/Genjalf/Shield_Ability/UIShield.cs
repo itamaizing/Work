@@ -12,7 +12,8 @@ namespace Players.Abilities.Genjalf.Shield_Ability
 
         public void SetTextCharge(int charge)
         {
-            _currentShieldChargeText.text = "= " + charge;
+            //_currentShieldChargeText.text = "= " + charge;
+            _currentShieldChargeText.text = charge.ToString();
         }
         
         public void SetTextColor(Color color)

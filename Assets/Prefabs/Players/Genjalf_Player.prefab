@@ -383,12 +383,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0aacaea9672e6b44c92b4c0a2448fa86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _activationButton: 51
+  _activationButton: 53
   _iconAbility: {fileID: 0}
   _toggleAbility: {fileID: 0}
   _abilitiesPanel: {fileID: 0}
+  _currentChargeText: {fileID: 0}
   _castPrefab: {fileID: 4634252779898100178, guid: cfcb93924b6dc204090e954474c731de, type: 3}
+  _maxCharges: 3
+  _chargeCooldown: 15
   _manaCost: 0
+  _damage: 10
   _radius: 4
   _pushDistance: 4
   _duration: 0.35
