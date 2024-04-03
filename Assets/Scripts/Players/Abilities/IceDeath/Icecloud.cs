@@ -52,14 +52,12 @@ public class Icecloud : AbilityBase
 		base.HandleToggleAbilityOn();		
 		if(Input.GetMouseButtonDown(0)) 
 		{
-			Debug.Log("input");
 			if (ManaCost != null)
 			{
 				ManaCost.SetActive(true);
 				ManaCost.GetComponent<VisualManaCost>().CheckManaCost();
 				ManaCost.transform.localScale = new Vector2(3f, ManaCost.gameObject.transform.localScale.y);
 			}
-			Debug.Log("try cast");
 			HandleDealDamageOrHeal();
 		}
 		/*if (TargetParent == null)
@@ -151,7 +149,6 @@ public class Icecloud : AbilityBase
 	{
 		if (_castCoroutine == null)
 		{
-			Debug.Log("start cast");
 			_castCoroutine = StartCoroutine(CastProtect(0));
 		}
 	}
