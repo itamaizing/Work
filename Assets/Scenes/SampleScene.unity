@@ -2512,6 +2512,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &747447044 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5444449414406611308, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+  m_PrefabInstance: {fileID: 4250683343807493164}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &750128065 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1831490083318087586, guid: 38c8b99c44505824ea1bb0da4296ac38, type: 3}
@@ -4084,6 +4095,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textMeshPro: {fileID: 918054619}
+--- !u!1 &1098296485 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4344385595992414593, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+  m_PrefabInstance: {fileID: 4250683343807493164}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1100666918
 GameObject:
   m_ObjectHideFlags: 0
@@ -12447,6 +12463,18 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4453880770094817634, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4922445121022473045, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6448359761914888655, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8272217619263896250, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -12454,6 +12482,10 @@ PrefabInstance:
     - target: {fileID: 8272217619263896250, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8285091621866642431, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -17587,18 +17619,10 @@ PrefabInstance:
       propertyPath: Select
       value: 
       objectReference: {fileID: 2182717424319947106}
-    - target: {fileID: 3676589508189792738, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
-      propertyPath: Abilities.Array.size
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4078259535836011217, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
       propertyPath: Select
       value: 
       objectReference: {fileID: 2182717424319947106}
-    - target: {fileID: 4540537009910052003, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4540537009910052003, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
       propertyPath: _iconAbility
       value: 
@@ -17615,10 +17639,6 @@ PrefabInstance:
       propertyPath: _cooldownButton
       value: 
       objectReference: {fileID: 473813854}
-    - target: {fileID: 4784578208225315584, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4800092477462556513, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
       propertyPath: _iconAbility
       value: 
@@ -17643,14 +17663,22 @@ PrefabInstance:
       propertyPath: _currentShieldChargeText
       value: 
       objectReference: {fileID: 1199823861}
-    - target: {fileID: 7516580298561063994, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
+    - target: {fileID: 6157595509824915994, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
+      propertyPath: _iconAbility
+      value: 
+      objectReference: {fileID: 1098296485}
+    - target: {fileID: 6157595509824915994, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
+      propertyPath: _pushDistance
+      value: 4
       objectReference: {fileID: 0}
-    - target: {fileID: 7516580298561063994, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
+    - target: {fileID: 6157595509824915994, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
+      propertyPath: _toggleAbility
+      value: 
+      objectReference: {fileID: 747447044}
+    - target: {fileID: 6157595509824915994, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
+      propertyPath: _abilitiesPanel
+      value: 
+      objectReference: {fileID: 5791756827293547305}
     - target: {fileID: 7682162387749688049, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
       propertyPath: AbilityPanel
       value: 
@@ -17667,6 +17695,10 @@ PrefabInstance:
       propertyPath: AbilitiesOnTargetToggles.Array.data[1]
       value: 
       objectReference: {fileID: 4009593148795331660}
+    - target: {fileID: 8128954214824010103, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

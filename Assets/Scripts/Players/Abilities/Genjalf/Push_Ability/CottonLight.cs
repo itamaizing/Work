@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Players.Abilities.Genjalf.Push_Ability
 {
-    public class Push : MonoBehaviour
+    public class CottonLight : MonoBehaviour
     {
         [SerializeField] private KeyCode _activationButton = KeyCode.Alpha3;
         [Header("Abilities panel")]
@@ -14,7 +14,13 @@ namespace Players.Abilities.Genjalf.Push_Ability
         [SerializeField] private GameObject _abilitiesPanel;
         [Header("Ability settings")]
         [SerializeField] private ParticleSystem _castPrefab; // затычка для визуализации
+        [Space(5)]
+        [SerializeField] private int _charges = 3;
+        [SerializeField] private float _chargeCooldown = 15;
+        [Space(5)]
         [SerializeField] private float _manaCost = 0f;
+        [SerializeField] private float _damage = 10f;
+        [Space(5)]
         [SerializeField] private float _radius = 4f;
         [SerializeField] private float _pushDistance = 4f;
         [SerializeField] private float _duration = 0.5f;
@@ -58,6 +64,7 @@ namespace Players.Abilities.Genjalf.Push_Ability
                     dir += item.transform.position;
 
                     _enemies.Add(item.transform.gameObject, dir);
+                    item.transform.GetComponent<HealthPlayer>().TakeMagicDamage(_damage);
                 }
             }
             _pushJob = StartCoroutine(PushCoroutine());
