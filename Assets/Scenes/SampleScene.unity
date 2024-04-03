@@ -3933,6 +3933,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1138358088594896431}
     - target: {fileID: 7915244162019678924, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: Select
+      value: 
+      objectReference: {fileID: 1138358088594896431}
+    - target: {fileID: 7915244162019678924, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: Abilities
       value: 
       objectReference: {fileID: 150802219}

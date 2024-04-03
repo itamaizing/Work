@@ -249,7 +249,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Select: {fileID: 0}
-  player: {fileID: 0}
+  energy: {fileID: 1105992124525835189}
 --- !u!114 &5793172127680476127
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1712,7 +1712,7 @@ MonoBehaviour:
   _targetCircle: {fileID: 0}
   ManaCost: {fileID: 0}
   _rb: {fileID: 1935025463078411595}
-  Target: {fileID: 0}
+  _projectile: {fileID: 748218918613675416, guid: f44e1a220c732a64f9af10c37bf5aed0, type: 3}
 --- !u!1 &7761970869757356538
 GameObject:
   m_ObjectHideFlags: 0

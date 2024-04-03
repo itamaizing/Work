@@ -8,6 +8,8 @@ public class IceCloudProjectile : MonoBehaviour
 	[SerializeField] GameObject _hitEffect;
 	[SerializeField] private float force;
 
+	[HideInInspector]public GameObject dad;
+
 	private void Awake()
 	{
 		_rb.AddForce(transform.up * force, ForceMode2D.Impulse);
@@ -15,11 +17,20 @@ public class IceCloudProjectile : MonoBehaviour
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
+		if (collision.gameObject == dad)
+			return;
 		//damage, freez etc
+		if(collision.TryGetComponent<CharacterState>(out var target))
+		{
+			target.energy = dad.GetComponent<ManaPlayer>();
+			target.ChangeState(new FrozenState());
+		}
 
-
-		GameObject hitEffect = Instantiate(_hitEffect, transform.position, Quaternion.identity);
-		Destroy(hitEffect, 5f);
+		if(_hitEffect != null)
+		{
+			GameObject hitEffect = Instantiate(_hitEffect, transform.position, Quaternion.identity);
+			Destroy(hitEffect, 5f);
+		}		
 		Destroy(gameObject);
 	}
 }

@@ -8,8 +8,10 @@ public class Icecloud : AbilityBase
 	[Header("Ability properties")]
 	[SerializeField] private GameObject ManaCost;
 	[SerializeField] private Rigidbody2D _rb;
+	[SerializeField] private IceCloudProjectile _projectile;
+	//[HideInInspector] public GameObject Target;
 
-	[HideInInspector] public GameObject Target;
+	[SerializeField] private Collider2D _collider;
 
 	public delegate void IceCloudAbilityHandler(float value);
 	public event IceCloudAbilityHandler IceCloudAbilityEvent;
@@ -20,7 +22,7 @@ public class Icecloud : AbilityBase
 
 	private void Start()
 	{
-		Distance = 6f * 1.9f;
+		//Distance = 6f * 1.9f;
 		AttackType = AttackType.OneAttack;
 		AbilityType = AbilityType.DamageAbility;
 		AttackRangeType = AttackRangeType.RangeAttack;
@@ -29,7 +31,7 @@ public class Icecloud : AbilityBase
 	void Update()
 	{
 		HandleToggleAbility();
-		Target = TargetParent;
+		//Target = TargetParent;
 	}
 
 
@@ -47,15 +49,20 @@ public class Icecloud : AbilityBase
 	protected override void HandleToggleAbilityOn()
 	{
 		// ¬ключенный ToggleAbility
-		base.HandleToggleAbilityOn();
-
-		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		Vector2 lookDir = _mousePos - _rb.position;
-		Debug.Log(lookDir + " Mouse pos vector is");
-		//Instantiate()
-		//float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
-
-		if (TargetParent == null)
+		base.HandleToggleAbilityOn();		
+		if(Input.GetMouseButtonDown(0)) 
+		{
+			Debug.Log("input");
+			if (ManaCost != null)
+			{
+				ManaCost.SetActive(true);
+				ManaCost.GetComponent<VisualManaCost>().CheckManaCost();
+				ManaCost.transform.localScale = new Vector2(3f, ManaCost.gameObject.transform.localScale.y);
+			}
+			Debug.Log("try cast");
+			HandleDealDamageOrHeal();
+		}
+		/*if (TargetParent == null)
 		{
 			if (ManaCost != null)
 			{
@@ -69,13 +76,14 @@ public class Icecloud : AbilityBase
 
 		if (TargetParent != null)
 		{
+			Debug.Log("Target");
 			if (ManaCost != null)
 			{
 				ManaCost.gameObject.SetActive(false);
 			}
 
 			HandleDistanceToTarget();
-		}
+		}*/
 	}
 
 	protected override void HandleToggleAbilityOff()
@@ -143,16 +151,19 @@ public class Icecloud : AbilityBase
 	{
 		if (_castCoroutine == null)
 		{
-			_castCoroutine = StartCoroutine(CastProtect(1.8f));
+			Debug.Log("start cast");
+			_castCoroutine = StartCoroutine(CastProtect(0));
 		}
 	}
 
 	private void Damage()
 	{
+		//to projectile
+
 		if (TargetParent != null)
 		{
 			TargetParent.GetComponent<HealthPlayer>().TakeMagicDamage(35f);
-			_player.GetComponent<ManaPlayer>().UseMana(30f);
+			//_player.GetComponent<ManaPlayer>().UseMana(30f);
 
 
 			//freeze
@@ -185,11 +196,21 @@ public class Icecloud : AbilityBase
 
 		yield return new WaitForSeconds(castTime);
 
+		_player.GetComponent<ManaPlayer>().UseMana(30f);
+
+		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		Vector2 lookDir = _mousePos - _rb.position;
+		Debug.Log(lookDir + " Mouse pos vector is");
+		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
+		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
+		projectile.dad = _rb.gameObject;
+
 		_castCoroutine = null;
 		_player.GetComponent<PlayerMove>().CanMove = true;
 		Select.GetComponent<SelectObject>().CanSelect = true;
 
-		Damage();
+		IceCloudAbilityEvent?.Invoke(35f);
+		Recharge();
 	}
 
 	private IEnumerator EnemiesDoubleClick()

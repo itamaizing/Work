@@ -267,9 +267,8 @@ public class FrozenState : ICharacterState
             // акой дамаг получаем? физический или магический
             _playerHP.TakePhisicDamage(10 + character.energy.Mana / 2);
             _duration = 1 + character.energy.Mana / 20;
-            //Get energy of player that shots
-		}
-		else
+        }
+        else
         {
             //error
         }
