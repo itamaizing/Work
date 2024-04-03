@@ -66,6 +66,9 @@ namespace Players.Abilities.Genjalf.Push_Ability
 
             foreach (var item in hits)
             {
+                if (item.transform == transform.parent)
+                    return;
+
                 if (item.transform.CompareTag("Enemies"))
                 {
                     Vector3 dir = (item.transform.position - transform.position).normalized * _pushDistance;
