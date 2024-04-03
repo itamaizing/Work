@@ -131,7 +131,7 @@ public class TwoRangeProtection : AbilityBase
         RaycastHit2D hit = Physics2D.Raycast(_targetPosition, Vector2.zero);
 
         if (hit.collider != null && hit.collider.CompareTag("Allies") && hit.collider.gameObject != gameObject &&
-                hit.collider.gameObject.GetComponent<DebaffProtect>() == false)
+                hit.collider.gameObject.GetComponentInChildren<DebaffProtect>() == null)
         {
             TargetParent = hit.collider.gameObject;
 

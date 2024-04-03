@@ -6,6 +6,7 @@ public class ThreeRangeHeal : AbilityBase
 {
     [Header("Ability properties")]
     [SerializeField] private GameObject ManaCost;
+    [SerializeField] private float _castTime = 1.8f;
 
     [HideInInspector] public GameObject Target;
 
@@ -142,7 +143,7 @@ public class ThreeRangeHeal : AbilityBase
     {
         if(_castCoroutine == null)
         {
-            _castCoroutine = StartCoroutine(CastProtect(1.8f));
+            _castCoroutine = StartCoroutine(CastProtect(_castTime));
         }
     }
 

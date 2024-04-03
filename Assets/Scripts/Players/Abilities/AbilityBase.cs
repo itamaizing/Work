@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using GlobalEvents;
 using Players.CircleBackgroundColor;
 using UnityEngine;
@@ -52,6 +53,7 @@ public abstract class AbilityBase : MonoBehaviour
 	[HideInInspector] public bool CanUseAbility = true;
 	[HideInInspector] public GameObject NewAbilityPrefab;
 	[HideInInspector] public bool CanDoAbility;
+	[HideInInspector] public bool CanDoAbilityOnMyself = true;
 	[HideInInspector] public bool CanDrawCircle = true;
 	[Header("Дистанция в клетках")]
 	[HideInInspector] public float Distance;
@@ -252,22 +254,26 @@ public abstract class AbilityBase : MonoBehaviour
 		{
 			Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, Distance);
 			string targetTag = (AbilityType == AbilityType.DamageAbility) ? "Enemies" : "Allies";
+			List<Collider2D> colList = colliders.ToList();
 
-			if (_enemies == null)
+                if (_enemies == null)
 			{
 				_enemies = new List<GameObject>();
 			}
 
 			_enemies.Clear();
 
-			foreach (Collider2D collider in colliders)
+
+			foreach (Collider2D collider in colList)
 			{
 				if (collider.CompareTag(targetTag) && collider.GetComponent<PlayerMove>())
 				{
-					collider.GetComponent<PlayerMove>().CircleSelect.SetActive(true);
-					_enemies.Add(collider.gameObject);
-					collider.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
-						.SetColorCircleBackgroundPlayer(collider);
+					if (collider.gameObject == transform.parent.gameObject && CanDoAbilityOnMyself == false) continue;
+					
+						collider.GetComponent<PlayerMove>().CircleSelect.SetActive(true);
+						_enemies.Add(collider.gameObject);
+						collider.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
+							.SetColorCircleBackgroundPlayer(collider);					
 				}
 			}
 

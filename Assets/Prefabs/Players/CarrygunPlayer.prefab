@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 417943302763761069}
   m_Layer: 0
   m_Name: DamageSpawn
-  m_TagString: Allies
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -43,6 +43,7 @@ GameObject:
   - component: {fileID: 1170573783195033357}
   - component: {fileID: 4916063337568309990}
   - component: {fileID: 1828929316732520377}
+  - component: {fileID: 7836875774181703405}
   m_Layer: 9
   m_Name: Circle_Color_Background
   m_TagString: Untagged
@@ -105,7 +106,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -131,8 +132,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _soCircleColorBackgroundSettings: {fileID: 11400000, guid: 70cb33aa322f5be4180466de03f5b8e0, type: 2}
   _soCircleColorBackgroundAttackSettings: {fileID: 11400000, guid: f5c5c6754ec0b494fb7d31492db86e98, type: 2}
-  _soCircleSelect: {fileID: 0}
-  _soCircleSelectAttack: {fileID: 0}
+  _soCircleSelect: {fileID: 11400000, guid: 94faeed860208934384c3a5cb867821e, type: 2}
+  _soCircleSelectAttack: {fileID: 11400000, guid: 2c732f294facc8543947fef6178822fa, type: 2}
 --- !u!114 &1828929316732520377
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -147,6 +148,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fadeDuration: 1
   delayBetweenFades: 0
+--- !u!114 &7836875774181703405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 400287245909655126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c5cb30039274953b099c7eb2c94e365, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soSwitcher: {fileID: 11400000, guid: 82b27e3efc3097e4dafe016e60f5c4f0, type: 2}
 --- !u!1 &474754218617308991
 GameObject:
   m_ObjectHideFlags: 0
@@ -253,7 +267,7 @@ GameObject:
   - component: {fileID: 6823704979584182385}
   m_Layer: 0
   m_Name: Talents
-  m_TagString: Allies
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -642,7 +656,7 @@ GameObject:
   - component: {fileID: 5205453177495441303}
   m_Layer: 0
   m_Name: HealthBar
-  m_TagString: Allies
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -728,7 +742,7 @@ GameObject:
   - component: {fileID: 3877697192083410955}
   m_Layer: 0
   m_Name: CircleSelect
-  m_TagString: Allies
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -984,7 +998,6 @@ GameObject:
   - component: {fileID: 3068153775734330090}
   - component: {fileID: 1144411358906767094}
   - component: {fileID: 4953803910209164375}
-  - component: {fileID: 8337789449907410738}
   - component: {fileID: 6781447661361553961}
   m_Layer: 0
   m_Name: Abilities
@@ -1073,9 +1086,10 @@ MonoBehaviour:
   CanDrawCircle: 1
   Distance: 0
   CellDistance: 1
-  _cellSize: 1.9
+  _cellSize: 3
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
+  _targetCircle: {fileID: 0}
   Target: {fileID: 0}
   DamageRate: 1.2
   IsGlobalCooldown: 1
@@ -1114,11 +1128,12 @@ MonoBehaviour:
   NewAbilityPrefab: {fileID: 0}
   CanDoAbility: 0
   CanDrawCircle: 1
-  Distance: 0
+  Distance: 4
   CellDistance: 1
-  _cellSize: 1.9
+  _cellSize: 3
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
+  _targetCircle: {fileID: 0}
   Target: {fileID: 0}
 --- !u!114 &3068153775734330090
 MonoBehaviour:
@@ -1156,9 +1171,10 @@ MonoBehaviour:
   CanDrawCircle: 1
   Distance: 0
   CellDistance: 1
-  _cellSize: 1.9
+  _cellSize: 3
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
+  _targetCircle: {fileID: 0}
   _renderers: []
   Target: {fileID: 0}
 --- !u!114 &1144411358906767094
@@ -1196,16 +1212,17 @@ MonoBehaviour:
   CanDoAbility: 0
   CanDrawCircle: 1
   Distance: 0
-  CellDistance: 1
+  CellDistance: 3
   _cellSize: 1.9
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
+  _targetCircle: {fileID: 0}
   CooldownButton: {fileID: 0}
   HealthAbsorptionDebaff: {fileID: 3148082365468222169, guid: 3c0e789662dd0c347b17752401f283e1, type: 3}
   CircleDistancePrefab: {fileID: 1114988162823384185, guid: 5ed03037701dc5045a0fa0530f020b05, type: 3}
   Target: {fileID: 0}
   AbilityCooldownTime: 7
-  _tentaclesCellDistance: 0
+  _tentaclesCellDistance: 4
   FixPrefab: 0
 --- !u!114 &4953803910209164375
 MonoBehaviour:
@@ -1225,18 +1242,6 @@ MonoBehaviour:
   ButtonAbility: {fileID: 0}
   PsionicaActive: 0
   text: {fileID: 0}
---- !u!114 &8337789449907410738
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2511167977629979197}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48a35628bd0ff304da80ca8c3c4bbd5a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &6781447661361553961
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1432,7 +1437,7 @@ GameObject:
   - component: {fileID: 6929134037299857148}
   m_Layer: 0
   m_Name: PsionicaBar
-  m_TagString: Allies
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2005,11 +2010,11 @@ GameObject:
   m_Component:
   - component: {fileID: 3309320763842641188}
   - component: {fileID: 4894628429328255368}
-  - component: {fileID: 6729119801718723462}
   - component: {fileID: 6182276717380519424}
   - component: {fileID: 3504477266362453533}
   - component: {fileID: 6459936798868481736}
   - component: {fileID: 2426202598644949584}
+  - component: {fileID: 6798132467937154279}
   m_Layer: 8
   m_Name: CarrygunPlayer
   m_TagString: Allies
@@ -2041,7 +2046,7 @@ Transform:
   - {fileID: 5565613549700228518}
   - {fileID: 3633434942918823971}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &4894628429328255368
 Rigidbody2D:
@@ -2070,118 +2075,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!60 &6729119801718723462
-PolygonCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4371443321967966874}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 0.877423, y: 0.41678858}
-      - {x: 0.79354715, y: 0.5567491}
-      - {x: 0.73814315, y: 0.6335423}
-      - {x: 0.67232895, y: 0.7073198}
-      - {x: 0.61850893, y: 0.7523683}
-      - {x: 0.56670713, y: 0.790161}
-      - {x: 0.5035491, y: 0.83614874}
-      - {x: 0.44385982, y: 0.8685802}
-      - {x: 0.24204254, y: 0.9370673}
-      - {x: 0.1914134, y: 0.94944924}
-      - {x: 0.12737143, y: 0.9580837}
-      - {x: 0.064367294, y: 0.9671014}
-      - {x: 0.00000011920929, y: 0.9721841}
-      - {x: -0.06180191, y: 0.96900266}
-      - {x: -0.12592602, y: 0.95923835}
-      - {x: -0.19011867, y: 0.95240563}
-      - {x: -0.22184324, y: 0.9426347}
-      - {x: -0.24476647, y: 0.9377746}
-      - {x: -0.2683028, y: 0.93349546}
-      - {x: -0.34491563, y: 0.9129403}
-      - {x: -0.43806148, y: 0.86990476}
-      - {x: -0.58125734, y: 0.7710069}
-      - {x: -0.61328053, y: 0.752861}
-      - {x: -0.6415765, y: 0.72257566}
-      - {x: -0.6876817, y: 0.682641}
-      - {x: -0.74651074, y: 0.6264736}
-      - {x: -0.765136, y: 0.607265}
-      - {x: -0.7982867, y: 0.5662456}
-      - {x: -0.8215487, y: 0.531132}
-      - {x: -0.8467543, y: 0.4903497}
-      - {x: -0.8825047, y: 0.42567623}
-      - {x: -0.90880656, y: 0.36210805}
-      - {x: -0.92846495, y: 0.2864249}
-      - {x: -0.9409454, y: 0.23798984}
-      - {x: -0.9452219, y: 0.16559875}
-      - {x: -0.9481492, y: 0.048218727}
-      - {x: -0.9466963, y: -0.06083467}
-      - {x: -0.9416108, y: -0.11396793}
-      - {x: -0.9330144, y: -0.16145039}
-      - {x: -0.8856137, y: -0.33326137}
-      - {x: -0.80444264, y: -0.49954605}
-      - {x: -0.7224493, y: -0.6142768}
-      - {x: -0.70800805, y: -0.6242309}
-      - {x: -0.5674724, y: -0.75877976}
-      - {x: -0.44792366, y: -0.8305154}
-      - {x: -0.31477094, y: -0.8893223}
-      - {x: -0.16297662, y: -0.92198247}
-      - {x: -0.014075875, y: -0.9368665}
-      - {x: 0.15512061, y: -0.93693393}
-      - {x: 0.32588494, y: -0.90278697}
-      - {x: 0.4455067, y: -0.8469936}
-      - {x: 0.5812123, y: -0.7661127}
-      - {x: 0.6811292, y: -0.6868713}
-      - {x: 0.74884474, y: -0.61013615}
-      - {x: 0.8599888, y: -0.45619604}
-      - {x: 0.92529356, y: -0.3068717}
-      - {x: 0.92952156, y: -0.2957119}
-      - {x: 0.9536378, y: -0.19870394}
-      - {x: 0.9584555, y: -0.19549215}
-      - {x: 0.9583213, y: -0.18764308}
-      - {x: 0.9668899, y: -0.11195682}
-      - {x: 0.9711696, y: -0.063343845}
-      - {x: 0.97345996, y: -0.024305582}
-      - {x: 0.96694535, y: 0.05324936}
-      - {x: 0.95858085, y: 0.14920181}
-      - {x: 0.950922, y: 0.18606138}
-      - {x: 0.9319734, y: 0.2955816}
-  m_UseDelaunayMesh: 0
 --- !u!114 &6182276717380519424
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2194,11 +2087,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 279100e0cb4b40f42b64a3ac1d1502fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MoveSpeed: 300
   CanMove: 1
   IsMoving: 0
   IsSelect: 0
   DirectionOfMovement: {x: 0, y: 0}
-  MoveSpeed: 3
   SelectObject: {fileID: 0}
   CircleSelect: {fileID: 977311239297086155}
   MarkersSelect: {fileID: 474754218617308991}
@@ -2221,6 +2114,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b5add863fba6af449bc9b5c95b8199e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _hpRegenerationValue: 10
+  _hpRegenerationDelay: 3
   Health: 555
   MaxHealth: 555
   HealthBar: {fileID: 3902827016351320800}
@@ -2257,6 +2152,41 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Select: {fileID: 0}
+--- !u!58 &6798132467937154279
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4371443321967966874}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 1.1
 --- !u!1 &4478322799016892986
 GameObject:
   m_ObjectHideFlags: 0
@@ -3143,7 +3073,7 @@ GameObject:
   - component: {fileID: 3757946295319748524}
   m_Layer: 0
   m_Name: Effects
-  m_TagString: Allies
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3206,7 +3136,7 @@ GameObject:
   - component: {fileID: 7440690390320224240}
   m_Layer: 0
   m_Name: Circle
-  m_TagString: Allies
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

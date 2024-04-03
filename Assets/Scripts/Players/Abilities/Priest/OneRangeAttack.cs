@@ -24,7 +24,6 @@ public class OneRangeAttack : AbilityBase
 	private EnergyOfSpirit _energyOfSpiritPrefab;
 	private bool _canCast;
 	protected float shieldBuff;
-	private float shieldAbsorbtion;
 	private float manaBuff;
 
     protected override KeyCode ActivationKey => KeyCode.Alpha1;
@@ -35,6 +34,7 @@ public class OneRangeAttack : AbilityBase
 		Distance = CellDistance *_cellSize;
 		AttackType = AttackType.Autoattack;
 		AbilityType = AbilityType.HealAbility;
+		CanDoAbilityOnMyself = false;
 	}
 
 	void Update()
@@ -110,15 +110,15 @@ public class OneRangeAttack : AbilityBase
 
 	public override void OnLeftDoubleClick()
 	{
-		if (ShouldUseToggleTarget() || _isInputDoubleClick)
-		{
-			StartCoroutine(ToggleDoubleClick());
-		}
-		else if (AbilityTypeManager.ActiveAbilityType == 1 && _player.GetComponent<PlayerMove>().IsSelect && Abilities.gameObject.activeSelf)
-		{
-			StartCoroutine(DoNotDoubleClickAtTarget());
-		}
-	}
+        /*if (ShouldUseToggleTarget() || _isInputDoubleClick)
+        {
+            StartCoroutine(ToggleDoubleClick());
+        }
+        else if (AbilityTypeManager.ActiveAbilityType == 1 && _player.GetComponent<PlayerMove>().IsSelect && Abilities.gameObject.activeSelf)
+        {
+            StartCoroutine(DoNotDoubleClickAtTarget());
+        }*/
+    }
 
 	public override void OnRightDoubleClick()
 	{
@@ -138,7 +138,7 @@ public class OneRangeAttack : AbilityBase
 		_targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		RaycastHit2D hit = Physics2D.Raycast(_targetPosition, Vector2.zero);
 
-		if (hit.collider != null && hit.collider.CompareTag("Allies") && hit.collider.gameObject != gameObject)
+		if (hit.collider != null && hit.collider.CompareTag("Allies") && hit.collider.gameObject != transform.parent.gameObject)
 		{
 			TargetParent = hit.collider.gameObject;
 			Target = TargetParent;

@@ -2288,59 +2288,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3309320763842641188, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
   m_PrefabInstance: {fileID: 5339474253609394410}
   m_PrefabAsset: {fileID: 0}
---- !u!58 &635034405
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 635034384}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 1.1
---- !u!1 &652724091 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 400287245909655126, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-  m_PrefabInstance: {fileID: 5339474253609394410}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &652724096
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 652724091}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c5cb30039274953b099c7eb2c94e365, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _soSwitcher: {fileID: 11400000, guid: 82b27e3efc3097e4dafe016e60f5c4f0, type: 2}
 --- !u!1 &675028441 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4371443321967966874, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
@@ -3100,7 +3047,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &870172338
 Transform:
   m_ObjectHideFlags: 0
@@ -7147,25 +7094,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 631272241556734278, guid: f142e53b73ad57d43af49f2ff795980c, type: 3}
-      propertyPath: shootFireworks
-      value: 
-      objectReference: {fileID: 1819895382}
     - target: {fileID: 1385583299548709292, guid: f142e53b73ad57d43af49f2ff795980c, type: 3}
       propertyPath: m_Name
       value: Player_With_Object_Fireworks
-      objectReference: {fileID: 0}
-    - target: {fileID: 1385583299548709292, guid: f142e53b73ad57d43af49f2ff795980c, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5246863954495232328, guid: f142e53b73ad57d43af49f2ff795980c, type: 3}
-      propertyPath: shootFireworks
-      value: 
-      objectReference: {fileID: 1819895382}
-    - target: {fileID: 7081192065382317012, guid: f142e53b73ad57d43af49f2ff795980c, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8346929583074586917, guid: f142e53b73ad57d43af49f2ff795980c, type: 3}
       propertyPath: m_RootOrder
@@ -7211,10 +7142,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8780579635354774127, guid: f142e53b73ad57d43af49f2ff795980c, type: 3}
-      propertyPath: shootFireworks
-      value: 
-      objectReference: {fileID: 1819895382}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7910,17 +7837,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4965417847667565999, guid: eca3bd46d2933ef41855062b9afbfe29, type: 3}
   m_PrefabInstance: {fileID: 5909131558675854060}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1819895382 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2386114280604513151, guid: f142e53b73ad57d43af49f2ff795980c, type: 3}
-  m_PrefabInstance: {fileID: 1660024991}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f48d90d77134e1a88a9b5b51bcc5e13, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1822466784 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5658602071960571279, guid: eca3bd46d2933ef41855062b9afbfe29, type: 3}
@@ -7937,17 +7853,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7335569941358741372, guid: eca3bd46d2933ef41855062b9afbfe29, type: 3}
   m_PrefabInstance: {fileID: 5909131558675854060}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1843226580 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3161947189739331121, guid: eca3bd46d2933ef41855062b9afbfe29, type: 3}
-  m_PrefabInstance: {fileID: 5909131558675854060}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1848978647 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2396587097626469638, guid: eca3bd46d2933ef41855062b9afbfe29, type: 3}
@@ -11720,41 +11625,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1089694967083977132, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
   m_PrefabInstance: {fileID: 6974731470836066952}
   m_PrefabAsset: {fileID: 0}
---- !u!58 &3607234402106029126
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3607234402106029119}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 1.1
 --- !u!1 &3712715214652937578
 GameObject:
   m_ObjectHideFlags: 0
@@ -13517,14 +13387,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 93359973375825367, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: m_TagString
-      value: Untagged
-      objectReference: {fileID: 0}
-    - target: {fileID: 160970298897504573, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: _toggleTalent
-      value: 
-      objectReference: {fileID: 1843226580}
     - target: {fileID: 329099905411920203, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: Select
       value: 
@@ -13534,17 +13396,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2216866060756685130}
     - target: {fileID: 329099905411920203, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: _cellSize
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 329099905411920203, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: IconAbility
       value: 
       objectReference: {fileID: 8800548450927080243}
-    - target: {fileID: 329099905411920203, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: CellDistance
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 329099905411920203, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: ToggleAbility
       value: 
@@ -13553,18 +13407,6 @@ PrefabInstance:
       propertyPath: IconAbilityAutoattack
       value: 
       objectReference: {fileID: 9066630927032013518}
-    - target: {fileID: 476595235150270307, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: m_TagString
-      value: Untagged
-      objectReference: {fileID: 0}
-    - target: {fileID: 929573537286966478, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: m_TagString
-      value: Untagged
-      objectReference: {fileID: 0}
-    - target: {fileID: 977311239297086155, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: m_TagString
-      value: Untagged
-      objectReference: {fileID: 0}
     - target: {fileID: 1144411358906767094, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: Select
       value: 
@@ -13574,17 +13416,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2216866060756685130}
     - target: {fileID: 1144411358906767094, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: _cellSize
-      value: 1.9
-      objectReference: {fileID: 0}
-    - target: {fileID: 1144411358906767094, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: IconAbility
       value: 
       objectReference: {fileID: 2995639241185256651}
-    - target: {fileID: 1144411358906767094, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: CellDistance
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 1144411358906767094, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: ToggleAbility
       value: 
@@ -13593,18 +13427,6 @@ PrefabInstance:
       propertyPath: CooldownButton
       value: 
       objectReference: {fileID: 3037742879687122053}
-    - target: {fileID: 1144411358906767094, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: _tentaclesCellDistance
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1170573783195033357, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: m_Color.a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1170573783195033357, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: m_SortingOrder
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 1336854574925557056, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: _iconAbility
       value: 
@@ -13649,18 +13471,10 @@ PrefabInstance:
       propertyPath: _toggleTalentInvis
       value: 
       objectReference: {fileID: 787184047}
-    - target: {fileID: 1897189131028832084, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: Toggle
-      value: 
-      objectReference: {fileID: 5909131558675854069}
     - target: {fileID: 2426202598644949584, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: Select
       value: 
       objectReference: {fileID: 2182717424319947106}
-    - target: {fileID: 2542540105833299361, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: m_TagString
-      value: Untagged
-      objectReference: {fileID: 0}
     - target: {fileID: 3068153775734330090, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: Select
       value: 
@@ -13669,10 +13483,6 @@ PrefabInstance:
       propertyPath: Abilities
       value: 
       objectReference: {fileID: 2216866060756685130}
-    - target: {fileID: 3068153775734330090, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: _cellSize
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 3068153775734330090, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: IconAbility
       value: 
@@ -13725,22 +13535,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3504477266362453533, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: _hpRegenerationDelay
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 3504477266362453533, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: _hpRegenerationValue
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 3822505477590611879, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: Toggle
-      value: 
-      objectReference: {fileID: 2042953288}
-    - target: {fileID: 3822505477590611879, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: IconAbility
-      value: 
-      objectReference: {fileID: 1600947601}
     - target: {fileID: 3829028655816966178, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: _toggleTalent
       value: 
@@ -13757,34 +13551,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player 1 Ally
       objectReference: {fileID: 0}
-    - target: {fileID: 4371443321967966874, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4461800688482813493, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: Select
       value: 
       objectReference: {fileID: 1138358088594896431}
     - target: {fileID: 4461800688482813493, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: Distance
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 4461800688482813493, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: Abilities
       value: 
       objectReference: {fileID: 2216866060756685130}
     - target: {fileID: 4461800688482813493, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: _cellSize
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4461800688482813493, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: IconAbility
       value: 
       objectReference: {fileID: 7288820380892326329}
-    - target: {fileID: 4461800688482813493, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: CellDistance
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4461800688482813493, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: ToggleAbility
       value: 
@@ -13793,14 +13571,6 @@ PrefabInstance:
       propertyPath: IconAbilityAutoattack
       value: 
       objectReference: {fileID: 5127592508111431966}
-    - target: {fileID: 4916063337568309990, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: _soCircleSelect
-      value: 
-      objectReference: {fileID: 11400000, guid: 94faeed860208934384c3a5cb867821e, type: 2}
-    - target: {fileID: 4916063337568309990, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: _soCircleSelectAttack
-      value: 
-      objectReference: {fileID: 11400000, guid: 2c732f294facc8543947fef6178822fa, type: 2}
     - target: {fileID: 4953803910209164375, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: text
       value: 
@@ -13825,10 +13595,6 @@ PrefabInstance:
       propertyPath: _toggleTalent
       value: 
       objectReference: {fileID: 236377674}
-    - target: {fileID: 6182276717380519424, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: MoveSpeed
-      value: 300
-      objectReference: {fileID: 0}
     - target: {fileID: 6182276717380519424, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: AbilityPanel
       value: 
@@ -13877,10 +13643,6 @@ PrefabInstance:
       propertyPath: _toggleSkillsOfPredator
       value: 
       objectReference: {fileID: 343532478}
-    - target: {fileID: 7897182318131641843, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: m_TagString
-      value: Untagged
-      objectReference: {fileID: 0}
     - target: {fileID: 8035327276404703013, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: _iconAbility
       value: 
@@ -13901,14 +13663,6 @@ PrefabInstance:
       propertyPath: _cooldownButton
       value: 
       objectReference: {fileID: 3400928684162816447}
-    - target: {fileID: 8128395619088257888, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: m_TagString
-      value: Untagged
-      objectReference: {fileID: 0}
-    - target: {fileID: 8337789449907410738, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8654612399189202627, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: Select
       value: 
@@ -13933,18 +13687,10 @@ PrefabInstance:
       propertyPath: _toggleTalent
       value: 
       objectReference: {fileID: 1298239714}
-    m_RemovedComponents:
-    - {fileID: 6729119801718723462, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-    - {fileID: 8337789449907410738, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4371443321967966874, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 635034405}
-    - targetCorrespondingSourceObject: {fileID: 400287245909655126, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 652724096}
     - targetCorrespondingSourceObject: {fileID: 3231338234208823801, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       insertIndex: -1
       addedObject: {fileID: 0}
@@ -15905,17 +15651,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &5909131558675854069 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 497679007116892077, guid: eca3bd46d2933ef41855062b9afbfe29, type: 3}
-  m_PrefabInstance: {fileID: 5909131558675854060}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &5909131558675854071 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7481535835765136222, guid: eca3bd46d2933ef41855062b9afbfe29, type: 3}
@@ -16645,22 +16380,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player 2 Ally
       objectReference: {fileID: 0}
-    - target: {fileID: 1089694967083977132, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1089694967083977132, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
-      propertyPath: m_TagString
-      value: Allies
-      objectReference: {fileID: 0}
-    - target: {fileID: 1105992124525835189, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
-      propertyPath: MaxMana
-      value: 1666
-      objectReference: {fileID: 0}
-    - target: {fileID: 1255810373264063487, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 1384084314023187958, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: Select
       value: 
@@ -16677,10 +16396,6 @@ PrefabInstance:
       propertyPath: ToggleAbility
       value: 
       objectReference: {fileID: 1856822849}
-    - target: {fileID: 1776445061967799019, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
-      propertyPath: m_TagString
-      value: Untagged
-      objectReference: {fileID: 0}
     - target: {fileID: 2370985466686808120, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: Select
       value: 
@@ -16697,10 +16412,6 @@ PrefabInstance:
       propertyPath: ToggleAbility
       value: 
       objectReference: {fileID: 750128066}
-    - target: {fileID: 3007938388833608333, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
-      propertyPath: m_TagString
-      value: Untagged
-      objectReference: {fileID: 0}
     - target: {fileID: 3225423710026260197, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: Select
       value: 
@@ -16753,9 +16464,9 @@ PrefabInstance:
       propertyPath: Select
       value: 
       objectReference: {fileID: 2182717424319947106}
-    - target: {fileID: 5341339078388472611, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
-      propertyPath: m_TagString
-      value: Untagged
+    - target: {fileID: 5002266305278314167, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5828944524669050820, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: Select
@@ -16789,10 +16500,6 @@ PrefabInstance:
       propertyPath: IconAbility
       value: 
       objectReference: {fileID: 54431320}
-    - target: {fileID: 6111745567471085271, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
-      propertyPath: ProtectDebaff
-      value: 
-      objectReference: {fileID: 8908686081191195120, guid: bc6789e500ac32940bc1f7779553b1cc, type: 3}
     - target: {fileID: 6111745567471085271, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: ToggleAbility
       value: 
@@ -16861,38 +16568,10 @@ PrefabInstance:
       propertyPath: ToggleAbility
       value: 
       objectReference: {fileID: 1758580924}
-    - target: {fileID: 6959231042134063169, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
-      propertyPath: m_TagString
-      value: Untagged
-      objectReference: {fileID: 0}
-    - target: {fileID: 7000598900414097129, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
-      propertyPath: m_TagString
-      value: Untagged
-      objectReference: {fileID: 0}
-    - target: {fileID: 7277157472421124586, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7277157472421124586, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
-      propertyPath: m_TagString
-      value: Untagged
-      objectReference: {fileID: 0}
     - target: {fileID: 7356665408746067551, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: Select
       value: 
       objectReference: {fileID: 2182717424319947106}
-    - target: {fileID: 7378065823814705286, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
-      propertyPath: m_TagString
-      value: Allies
-      objectReference: {fileID: 0}
-    - target: {fileID: 7601164126198867055, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
-      propertyPath: Health
-      value: 333
-      objectReference: {fileID: 0}
-    - target: {fileID: 8264867649627807809, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
-      propertyPath: MoveSpeed
-      value: 300
-      objectReference: {fileID: 0}
     - target: {fileID: 8264867649627807809, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: AbilityPanel
       value: 
@@ -16938,25 +16617,13 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1138358088594896431}
     - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
-      propertyPath: CastTime
-      value: 0.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: Abilities
       value: 
       objectReference: {fileID: 500242583}
     - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
-      propertyPath: _cellSize
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: IconAbility
       value: 
       objectReference: {fileID: 1673173341}
-    - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
-      propertyPath: CellDistance
-      value: 4
-      objectReference: {fileID: 0}
     - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: ToggleAbility
       value: 
@@ -16965,18 +16632,10 @@ PrefabInstance:
       propertyPath: IconAbilityAutoattack
       value: 
       objectReference: {fileID: 1907869315}
-    - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
-      propertyPath: _countdownForEnergyOfSpirit
-      value: 9
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 4749801897734170438, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1089694967083977132, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3607234402106029126}
     - targetCorrespondingSourceObject: {fileID: 2319466786080694053, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       insertIndex: -1
       addedObject: {fileID: 0}

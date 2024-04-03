@@ -10,14 +10,14 @@ GameObject:
   m_Component:
   - component: {fileID: 6627882834926959264}
   - component: {fileID: 1935025463078411595}
-  - component: {fileID: 4749801897734170438}
   - component: {fileID: 8264867649627807809}
   - component: {fileID: 7601164126198867055}
   - component: {fileID: 1105992124525835189}
   - component: {fileID: 7356665408746067551}
+  - component: {fileID: 94600116724242619}
   m_Layer: 9
   m_Name: PriestPlayer
-  m_TagString: Enemies
+  m_TagString: Allies
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -46,7 +46,7 @@ Transform:
   - {fileID: 5287686256838225055}
   - {fileID: 5590142317354752112}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1935025463078411595
 Rigidbody2D:
@@ -75,98 +75,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!60 &4749801897734170438
-PolygonCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1089694967083977132}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 0.9292388, y: 0.31377006}
-      - {x: 0.90115714, y: 0.39198112}
-      - {x: 0.8687887, y: 0.47082424}
-      - {x: 0.8254719, y: 0.5445409}
-      - {x: 0.77398324, y: 0.618525}
-      - {x: 0.6626694, y: 0.7468207}
-      - {x: 0.57096124, y: 0.81851673}
-      - {x: 0.453923, y: 0.89686775}
-      - {x: 0.40948057, y: 0.919322}
-      - {x: 0.29798508, y: 0.96103764}
-      - {x: 0.27127934, y: 0.9650116}
-      - {x: 0.2638855, y: 0.96387863}
-      - {x: 0.2559651, y: 0.9685092}
-      - {x: 0.24680996, y: 0.968956}
-      - {x: 0.09592414, y: 0.99980927}
-      - {x: -0.01420784, y: 1.002842}
-      - {x: -0.19942856, y: 0.9860287}
-      - {x: -0.41405535, y: 0.9033408}
-      - {x: -0.5225272, y: 0.8445263}
-      - {x: -0.6706431, y: 0.7099581}
-      - {x: -0.7778764, y: 0.59356785}
-      - {x: -0.8744148, y: 0.43912005}
-      - {x: -0.94551295, y: 0.19985726}
-      - {x: -0.9398437, y: -0.08968043}
-      - {x: -0.8750254, y: -0.31005812}
-      - {x: -0.78273785, y: -0.48810744}
-      - {x: -0.6209721, y: -0.67518175}
-      - {x: -0.51985866, y: -0.7515223}
-      - {x: -0.40402818, y: -0.81607676}
-      - {x: -0.28775835, y: -0.85267854}
-      - {x: -0.13684392, y: -0.8925965}
-      - {x: -0.00958395, y: -0.9045596}
-      - {x: 0.059800625, y: -0.90308297}
-      - {x: 0.15823197, y: -0.887836}
-      - {x: 0.3568406, y: -0.83090365}
-      - {x: 0.51616204, y: -0.75056887}
-      - {x: 0.6136639, y: -0.6869781}
-      - {x: 0.68993807, y: -0.6179414}
-      - {x: 0.74366903, y: -0.55626774}
-      - {x: 0.77598596, y: -0.5158725}
-      - {x: 0.8157706, y: -0.44256067}
-      - {x: 0.8678336, y: -0.3410673}
-      - {x: 0.90957713, y: -0.2548871}
-      - {x: 0.9536052, y: -0.11074948}
-      - {x: 0.9578724, y: 0.004000187}
-      - {x: 0.9647796, y: 0.10394621}
-      - {x: 0.9522507, y: 0.22097534}
-  m_UseDelaunayMesh: 0
 --- !u!114 &8264867649627807809
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -179,7 +87,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 279100e0cb4b40f42b64a3ac1d1502fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 3
+  MoveSpeed: 300
   CanMove: 1
   IsMoving: 0
   IsSelect: 0
@@ -231,6 +139,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _manaRegenerationValue: 10
   _manaRegenerationDelay: 3
+  MaxMana: 1666
   Mana: 1666
   ManaBar: {fileID: 5680468377122292335}
   DamageSpawn: {fileID: 8933781320356208631}
@@ -248,7 +157,41 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Select: {fileID: 0}
-  player: {fileID: 0}
+--- !u!58 &94600116724242619
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089694967083977132}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 1.1
 --- !u!1 &1255810373264063487
 GameObject:
   m_ObjectHideFlags: 0
@@ -268,7 +211,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4106513984110700214
 Transform:
   m_ObjectHideFlags: 0
@@ -391,7 +334,7 @@ GameObject:
   - component: {fileID: 3778858940104084021}
   m_Layer: 0
   m_Name: HealthBarBound
-  m_TagString: Allies
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -816,7 +759,7 @@ GameObject:
   - component: {fileID: 8933781320356208631}
   m_Layer: 0
   m_Name: DamageSpawn
-  m_TagString: Allies
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1022,7 +965,7 @@ GameObject:
   - component: {fileID: 5838937017232826044}
   m_Layer: 0
   m_Name: Circle
-  m_TagString: Allies
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1292,7 +1235,7 @@ GameObject:
   - component: {fileID: 829342442591458184}
   m_Layer: 0
   m_Name: Effects
-  m_TagString: Allies
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1439,7 +1382,7 @@ GameObject:
   - component: {fileID: 3884331135583711654}
   m_Layer: 0
   m_Name: ManaBarBound
-  m_TagString: Allies
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1525,7 +1468,7 @@ GameObject:
   - component: {fileID: 1987023120012612249}
   m_Layer: 0
   m_Name: CircleSelect
-  m_TagString: Allies
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1620,7 +1563,7 @@ GameObject:
   - component: {fileID: 3225423710026260197}
   m_Layer: 0
   m_Name: Abilities
-  m_TagString: Untagged
+  m_TagString: Allies
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1731,6 +1674,8 @@ MonoBehaviour:
   Target: {fileID: 0}
   EnergySpiritEffect: {fileID: 3205664352808204184, guid: 9d037fb657192bd4a8d0a15b2ad680d2, type: 3}
   ManaCost: {fileID: 5002266305278314167}
+  CastTime: 0.8
+  _countdownForEnergyOfSpirit: 9
 --- !u!114 &6111745567471085271
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1772,6 +1717,7 @@ MonoBehaviour:
   IsActiveAbility: 0
   _targetCircle: {fileID: 0}
   ProtectBaff: {fileID: 3148082365468222169, guid: 09697a2918d23a44dba336a4e9eb7e8f, type: 3}
+  ProtectDebaff: {fileID: 8908686081191195120, guid: bc6789e500ac32940bc1f7779553b1cc, type: 3}
   CooldownButton: {fileID: 0}
   ManaCost: {fileID: 5002266305278314167}
   Target: {fileID: 0}

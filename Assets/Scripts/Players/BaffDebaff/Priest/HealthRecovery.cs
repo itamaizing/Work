@@ -19,8 +19,8 @@ public class HealthRecovery : BaseEffect
         _recDuration = duration;
         _recCooldown = cooldown;
         _recHealth = heal;
-
     }
+
     private void Start()
     {
         Timer = Time.time;
@@ -33,7 +33,7 @@ public class HealthRecovery : BaseEffect
         {
             transform.parent.GetComponent<HealthPlayer>().AddHeal(_recHealth);
             FourthBaffEvent?.Invoke(_recHealth);
-            if(transform.parent.GetComponent<HealthPlayer>().Health < 1000)
+            if(transform.parent.GetComponent<HealthPlayer>().Health < transform.parent.GetComponent<HealthPlayer>().MaxHealth)
             {
                 _recHealth += _recHealth * 0.1f / 4f;
                 _recHealth = float.Parse(_recHealth.ToString("F2"));

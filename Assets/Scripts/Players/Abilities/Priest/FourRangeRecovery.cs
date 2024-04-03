@@ -8,6 +8,7 @@ public class FourRangeRecovery : AbilityBase
 	[Header("Ability properties")]
 	[SerializeField] private GameObject RecoveryBaffPrefab;
 	[SerializeField] private GameObject ManaCost;
+	[SerializeField] private float _castTime=1.2f;
 
 	[HideInInspector] public GameObject Target;
 
@@ -35,6 +36,7 @@ public class FourRangeRecovery : AbilityBase
 
 	protected override void HandleToggleAbility()
 	{
+		if (!canCast) return;
 		base.HandleToggleAbility();
 		// Текущий код в методе Update
 
@@ -57,8 +59,9 @@ public class FourRangeRecovery : AbilityBase
 
 	protected override void HandleToggleAbilityOn()
 	{
-		// Включенный ToggleAbility
-		base.HandleToggleAbilityOn();
+        if (!canCast) return;
+        // Включенный ToggleAbility
+        base.HandleToggleAbilityOn();
 
 		if (TargetParent == null)
 		{
@@ -100,7 +103,8 @@ public class FourRangeRecovery : AbilityBase
 
 	public override void OnLeftDoubleClick()
 	{
-		if (ShouldUseToggleTarget() || _isInputDoubleClick)
+        if (!canCast) return;
+        if (ShouldUseToggleTarget() || _isInputDoubleClick)
 		{
 			StartCoroutine(ToggleDoubleClick());
 		}
@@ -145,7 +149,7 @@ public class FourRangeRecovery : AbilityBase
 		}
 		else if (hit.collider != null && hit.collider.CompareTag("Allies") && hit.collider.gameObject == gameObject)
 		{
-			TargetParent = gameObject;
+			TargetParent = transform.parent.gameObject;
 
 			if (NewAbilityPrefab != null)
 			{
@@ -157,33 +161,28 @@ public class FourRangeRecovery : AbilityBase
 
 	public override void HandleDealDamageOrHeal()
 	{
-		if (!canCast)
-			return;
-
 		if (_castCoroutine == null)
 		{
-			_castCoroutine = StartCoroutine(CastProtect(1.2f));
+			_castCoroutine = StartCoroutine(CastProtect(_castTime));
 		}
 	}
 
 	private void Heal()
 	{
-		canCast = false;
-
-		if (TargetParent != null && TargetParent.GetComponent<HealthRecovery>() != null)
+        if (_newPrefab != null && TargetParent.GetComponentInChildren<HealthRecovery>() != null)
 		{
-			TargetParent.GetComponent<HealthRecovery>().Timer = Time.time;
-			_newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
+            TargetParent.GetComponentInChildren<HealthRecovery>().Timer = Time.time;
+			TargetParent.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
 		}
 		else if (TargetParent != null)
 		{
-			_newPrefab = Instantiate(RecoveryBaffPrefab);
+			_newPrefab = null;
+            _newPrefab = Instantiate(RecoveryBaffPrefab);
 			_newPrefab.transform.SetParent(TargetParent.transform);
 			_newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
 			_newPrefab.GetComponent<HealthRecovery>().CastRecovery(12f, 6f, 4f);
 		}
-		_player.GetComponent<ManaPlayer>().Use(4f);
-
+		_player.GetComponent<ManaPlayer>().UseMana(4f);
 		FourthAbilityEvent?.Invoke(0f);
 		Recharge();
 	}
@@ -208,6 +207,12 @@ public class FourRangeRecovery : AbilityBase
 		_castCoroutine = null;
 		_player.GetComponent<PlayerMove>().CanMove = true;
 		Heal();
+    }
+	private IEnumerator Cooldown(float time)
+	{
+		canCast = false;
+		yield return new WaitForSeconds(time);
+		canCast = true;
 	}
 
 	private IEnumerator EnemiesDoubleClick()
@@ -233,7 +238,6 @@ public class FourRangeRecovery : AbilityBase
 		}
 		Select.GetComponent<SelectObject>().CanSelect = true;
 		ToggleAbility.isOn = false;
-		TargetParent = null;
-		return;
-	}
+        StartCoroutine(Cooldown(4f));
+    }
 }
