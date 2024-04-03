@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0aacaea9672e6b44c92b4c0a2448fa86
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - _iconAbility: {instanceID: 0}
+  - _toggleAbility: {instanceID: 0}
+  - _abilitiesPanel: {instanceID: 0}
+  - _castPrefab: {fileID: 4634252779898100178, guid: cfcb93924b6dc204090e954474c731de, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

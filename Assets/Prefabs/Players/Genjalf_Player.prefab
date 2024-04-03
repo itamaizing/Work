@@ -282,6 +282,7 @@ GameObject:
   - component: {fileID: 4540537009910052003}
   - component: {fileID: 4937364771760706162}
   - component: {fileID: 4800092477462556513}
+  - component: {fileID: 6157595509824915994}
   m_Layer: 0
   m_Name: Abilities
   m_TagString: Untagged
@@ -370,6 +371,27 @@ MonoBehaviour:
   _toggleAbility: {fileID: 0}
   _abilitiesPanel: {fileID: 0}
   _manaCost: {fileID: 7086426748638987796}
+--- !u!114 &6157595509824915994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1675032641069307089}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aacaea9672e6b44c92b4c0a2448fa86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _activationButton: 51
+  _iconAbility: {fileID: 0}
+  _toggleAbility: {fileID: 0}
+  _abilitiesPanel: {fileID: 0}
+  _castPrefab: {fileID: 4634252779898100178, guid: cfcb93924b6dc204090e954474c731de, type: 3}
+  _manaCost: 0
+  _radius: 4
+  _pushDistance: 4
+  _duration: 0.35
 --- !u!1 &1740845397034949897
 GameObject:
   m_ObjectHideFlags: 0
@@ -399,7 +421,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1740845397034949897}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 3.51, y: -6.31, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -576,6 +598,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b5add863fba6af449bc9b5c95b8199e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _hpRegenerationValue: 10
+  _hpRegenerationDelay: 3
   Health: 888
   MaxHealth: 888
   HealthBar: {fileID: 3938253269705692174}
@@ -594,6 +618,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 538268384e2d5f64f8ee01630137a16d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _manaRegenerationValue: 10
+  _manaRegenerationDelay: 3
   Mana: 888
   ManaBar: {fileID: 5181516657837585612}
   DamageSpawn: {fileID: 9077626058765136094}
@@ -2687,11 +2713,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3581124514238184709, guid: b97cefac1663fbc4386af91b6afc6ff2, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3581124514238184709, guid: b97cefac1663fbc4386af91b6afc6ff2, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7471001139823045862, guid: b97cefac1663fbc4386af91b6afc6ff2, type: 3}
       propertyPath: m_Pivot.x
