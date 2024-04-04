@@ -6,6 +6,7 @@ public class RunePlayer : MonoBehaviour
 {
 	[SerializeField] private float _runeRegenerationDelay = 1;
 	[SerializeField] private float _runeRegenerationValue = 10;
+	[SerializeField] private float _maxRuneCount = 10;
 	//[SerializeField] private Image _runeBar;
 	private WaitForSeconds _waitForRegenRune;
 	[SerializeField] private float _runeValue;
@@ -26,6 +27,10 @@ public class RunePlayer : MonoBehaviour
 	public void AddRune(float runeValue)
 	{
 		_runeValue += runeValue;
+		if(_runeValue > _maxRuneCount)
+		{
+			_runeValue = _maxRuneCount;
+		}
 	}
 
 	public bool RemoveRune(float runeValue) 
@@ -42,6 +47,7 @@ public class RunePlayer : MonoBehaviour
 	}
 	private IEnumerator RegenirateRune()
 	{
+		if(_runeValue < _maxRuneCount)
 		while (true)
 		{
 			yield return _waitForRegenRune;

@@ -246,9 +246,7 @@ public class FrozenState : ICharacterState
 {
 	private HealthPlayer _playerHP;
     private float _duration;
-    private float _sumDamageTaken;
-
-    //узнать кто стрелял, добавить новую переменную? вытащить из selected Obj
+    //remember how much hp, check incoming damage to unfreeze
 
 	public void EnterState(CharacterState character)
 	{
@@ -264,9 +262,11 @@ public class FrozenState : ICharacterState
 
         if (character.gameObject.TryGetComponent<HealthPlayer>(out _playerHP))
         {
+            _playerHP.sumDamageTaken = 0;
+            Debug.Log("Damage is " + (10 + character.energy.Mana / 2));
             //Какой дамаг получаем? физический или магический
             _playerHP.TakePhisicDamage(10 + character.energy.Mana / 2);
-            _duration = 1 + character.energy.Mana / 20;
+            _duration = 1 + character.energy.Mana / 20; //тут мана того кто стрелял
         }
         else
         {
@@ -276,9 +276,9 @@ public class FrozenState : ICharacterState
 
     public void UpdateState(CharacterState character)
 	{
-		Debug.Log("Updating Frozen State");
-
-		if (_sumDamageTaken >= 30 || _duration < 0)
+		Debug.Log("SumDamageTaken " + _playerHP.sumDamageTaken);
+		_duration -=Time.deltaTime;
+		if (_playerHP.sumDamageTaken >= 30 || _duration < 0)
         {
             ExitState(character);
         }
@@ -295,6 +295,8 @@ public class FrozenState : ICharacterState
 		{
 			toggle.enabled = true;
 		}
+
+        //turn on abilities
 	}
 }
 

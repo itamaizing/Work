@@ -16,7 +16,7 @@ public class HealthPlayer : MonoBehaviour
     public TextMeshPro HealthBarText;
     public Transform DamageSpawn;
     public TextMeshPro PrefabText;
-
+    public float sumDamageTaken = 0;
     public struct DamageInfo
     {
         public float OriginalDamage;
@@ -66,6 +66,7 @@ public class HealthPlayer : MonoBehaviour
 
             float modifiedDamage = damageInfo.ModifiedDamage;
             Health -= modifiedDamage;
+            sumDamageTaken += modifiedDamage;
             if (Health <= 0)
             {
                 Health = 0;
@@ -95,6 +96,7 @@ public class HealthPlayer : MonoBehaviour
 
             float modifiedDamage = damageInfo.ModifiedDamage;
             Health -= modifiedDamage;
+            sumDamageTaken += modifiedDamage;
             if (Health <= 0)
             {
                 Health = 0;
