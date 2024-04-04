@@ -11,7 +11,9 @@ public class DarkOneRangeAttack : AbilityBase
     [Header("Ability properties")]
     [SerializeField] private GameObject HealthSpiritDebaff;
     [SerializeField] private GameObject ManaCost;
-
+    [SerializeField] private float _castTime = 1.4f;
+    [SerializeField] private float _manaCost = 1;
+    [SerializeField] private float _damage = 2;
     public delegate void DarkFirstAbilityHandler(float value);
     public event DarkFirstAbilityHandler DarkFirstAbilityEvent;
     public event System.Action<HealthOfSpirit> ScriptInstanceDestroyed;
@@ -20,11 +22,12 @@ public class DarkOneRangeAttack : AbilityBase
     private bool _canCast;
     private GameObject _newPrefab;
 
+
     protected override KeyCode ActivationKey => KeyCode.Alpha1;
 
     private void Start()
     {
-        Distance = 6f * 1.9f;
+        Distance = _cellSize*CellDistance;
         AttackType = AttackType.Autoattack;
         AbilityType = AbilityType.DamageAbility;
     }
@@ -32,10 +35,6 @@ public class DarkOneRangeAttack : AbilityBase
     void Update()
     {
         HandleToggleAbility();
-        Target = TargetParent;
-
-        AttackRangeType = AttackRangeType.RangeAttack;
-
     }
 
     protected override void HandleToggleAbility()
@@ -102,19 +101,18 @@ public class DarkOneRangeAttack : AbilityBase
         TargetParent = null;
         _canCast = false;
         CanDealDamageOrHeal = false;
-        CanMakeDamage = false;
     }
 
     public override void OnLeftDoubleClick()
     {
-        if (ShouldUseToggleTarget() || _isInputDoubleClick)
+        /*if (ShouldUseToggleTarget() || _isInputDoubleClick)
         {
             StartCoroutine(ToggleDoubleClick());
         }
         else if (AbilityTypeManager.ActiveAbilityType == 1 && _player.GetComponent<PlayerMove>().IsSelect && Abilities.gameObject.activeSelf)
         {
             StartCoroutine(DoNotDoubleClickAtTarget());
-        }
+        }*/
     }
 
     public override void OnRightDoubleClick()
@@ -155,23 +153,18 @@ public class DarkOneRangeAttack : AbilityBase
         if (_canCast && _castCoroutine == null)
         {
             _castCoroutine = StartCoroutine(Cast());
-            CreateCastPrefab(0.8f);
-            _canCast = false;
+            CreateCastPrefab(_castTime);
         }
     }
 
     private void Damage()
     {
-        if (TargetParent != null)
-        {
-            TargetParent.GetComponent<HealthPlayer>().TakeMagicDamage(2f);
-            _player.GetComponent<ManaPlayer>().Use(2f);
-            DarkFirstAbilityEvent?.Invoke(2f);
-
-            AddBaffEnergyOfSpirit();
-        }
-
-        _canCast = true;
+        if (TargetParent == null) return;
+        AddBaffEnergyOfSpirit();
+        TargetParent.GetComponent<HealthPlayer>().TakeMagicDamage(_damage);
+        _player.GetComponent<ManaPlayer>().UseMana(_manaCost);
+        DarkFirstAbilityEvent?.Invoke(2f);
+        
     }
 
     private void AddBaffEnergyOfSpirit()
@@ -182,7 +175,7 @@ public class DarkOneRangeAttack : AbilityBase
             HealthOfSpirit newScript = _newPrefab.GetComponent<HealthOfSpirit>();
             newScript.Destroyed += OnScriptInstanceDestroyed;
             _newPrefab.transform.SetParent(TargetParent.transform);
-            _newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(5);
+            _newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(9);
             ScriptInstanceCount++;
         }
     }

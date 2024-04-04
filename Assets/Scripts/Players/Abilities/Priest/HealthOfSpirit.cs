@@ -11,7 +11,7 @@ public class HealthOfSpirit : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(CountdownRoutine(5));
+        StartCoroutine(CountdownRoutine(9));
 
         _allies = GameObject.FindGameObjectsWithTag("Allies");
 
@@ -31,7 +31,7 @@ public class HealthOfSpirit : MonoBehaviour
     {
         if(value > 0 && _priest != null) 
         {
-            _priest.GetComponent<HealthPlayer>().AddHeal(value * 0.09f);
+            _priest.transform.parent.GetComponent<HealthPlayer>().AddHeal(value * 0.09f);
 
         }
     }

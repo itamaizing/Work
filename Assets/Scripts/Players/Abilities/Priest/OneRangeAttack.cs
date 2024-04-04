@@ -152,7 +152,6 @@ public class OneRangeAttack : AbilityBase
 		if (hit.collider != null && hit.collider.CompareTag("Allies") && hit.collider.gameObject != transform.parent.gameObject)
 		{
 			TargetParent = hit.collider.gameObject;
-			Target = TargetParent;
 
 			CanDealDamageOrHeal = true;
 			_canCast = true;

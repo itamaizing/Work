@@ -16373,6 +16373,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 399262048}
     - target: {fileID: 174446197202522426, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+      propertyPath: CellDistance
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 174446197202522426, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: ToggleAbility
       value: 
       objectReference: {fileID: 1700828759}
@@ -16936,6 +16940,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4103298379941871777, guid: 38c8b99c44505824ea1bb0da4296ac38, type: 3}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5164834073429202931, guid: 38c8b99c44505824ea1bb0da4296ac38, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7908725669627598490, guid: 38c8b99c44505824ea1bb0da4296ac38, type: 3}
