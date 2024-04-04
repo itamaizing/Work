@@ -3,7 +3,13 @@ guid: 684d2f0ab696d7f4ea7978d8690bf832
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - _iconAbility: {instanceID: 0}
+  - _toggleAbility: {instanceID: 0}
+  - _abilitiesPanel: {instanceID: 0}
+  - _mana: {instanceID: 0}
+  - _currentChargeText: {instanceID: 0}
+  - _fisuraTilePrefab: {fileID: 626463425188756188, guid: 1222da39dc4bf1041891e04a5f0a7b41, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

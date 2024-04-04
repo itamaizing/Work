@@ -23,10 +23,11 @@ public abstract class Ability : MonoBehaviour
     private int _currentChargers;
     private Coroutine _rechargeJob;
 
-    
+    private bool _isReady = true;
 
     public int Chargers => _currentChargers;
     public bool IsHaveCharge { get => (_currentChargers > 0); private set { } }
+    public bool IsReady { get => _isReady; set => _isReady = value; }
 
     protected virtual void Start()
     {
@@ -41,9 +42,9 @@ public abstract class Ability : MonoBehaviour
 
     protected virtual void TryActivatedAbility()
     {
-        if ((_toggleAbility.gameObject.activeSelf &&
+        if ((_toggleAbility.gameObject.activeSelf && Input.GetKeyDown(_activationButton) && 
             transform.parent.GetComponent<PlayerMove>().IsSelect && _toggleAbility.enabled &&
-            _mana.Mana >= _manaCost) == false || Input.GetKeyDown(_activationButton) == false)
+            _mana.Mana >= _manaCost && IsReady) == false)
             return;
 
         if (_isUseCharges)
