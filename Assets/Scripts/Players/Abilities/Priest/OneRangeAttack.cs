@@ -188,7 +188,7 @@ public class OneRangeAttack : AbilityBase
 				if (heal > 0)
 				{
 					TargetParent.GetComponent<HealthPlayer>().AddHeal(heal);
-                    _player.GetComponent<ManaPlayer>().AddMana(heal*0.1f);
+                    _player.GetComponent<ManaPlayer>().AddMana(heal *0.1f);
                 }
             _player.GetComponent<ManaPlayer>().UseMana(1f); // ToDo вынести ману в атрибуты
 			FirstAbilityEvent?.Invoke(Heal);

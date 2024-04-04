@@ -96,6 +96,9 @@ public class HealthRecovery : BaseEffect
         {
             _recHealth += _recHealth * 0.1f;
         }
+
+        if (_ticksCount > 0)
+        Player.GetComponent<ManaPlayer>().AddMana(_recHealth * _ticksCount * 0.1f);
         Debug.Log(_recHealth);
     }
     private void DestroyThis()
