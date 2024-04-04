@@ -7,7 +7,7 @@ public class OneRangeAttack : AbilityBase
 	// "Искра Света" - Лечение и бафф союзника , урон по врагу. 
 	[HideInInspector] public static int NumberOfInstances = 0;
 	[HideInInspector] public float Heal = 2f;
-	[HideInInspector] public int ScriptInstanceCount = 0;
+	[HideInInspector] public int ScriptInstanceCount = 1;
 	[HideInInspector] public GameObject Target;
 
 	[Header("Ability properties")]
@@ -176,11 +176,10 @@ public class OneRangeAttack : AbilityBase
 
 	private void Healing()
 	{
-        AddBaffEnergyOfSpirit();
-
         float heal = Heal+ScriptInstanceCount;
         if (TargetParent != null)
 		{
+            AddBaffEnergyOfSpirit();
             float realHeal = TargetParent.GetComponent<HealthPlayer>().MaxHealth - TargetParent.GetComponent<HealthPlayer>().Health;
             if (realHeal <= heal)
             {
@@ -214,7 +213,6 @@ public class OneRangeAttack : AbilityBase
 
 	private void EnergyOfSpiritBuffs()
 	{
-        Debug.Log("spirit buffs");
         switch (ScriptInstanceCount)
         {
 			case 0:
@@ -243,16 +241,14 @@ public class OneRangeAttack : AbilityBase
 
 	private IEnumerator Cast()
 	{
-		if (Abilities.activeSelf && Abilities.GetComponent<GlobalCooldown>())
+        if (Abilities.activeSelf && Abilities.GetComponent<GlobalCooldown>())
 		{
 			Abilities.GetComponent<GlobalCooldown>().StartGlobalCooldown();
 		}
 		StartCoroutine(CastMove());
         yield return new WaitForSeconds(CastTime);
         Healing();
-
         this.transform.root.GetComponentInChildren<FourRangeRecovery>().canCast = true;
-
 		_castCoroutine = null;
 		yield break;
 	}
