@@ -17847,10 +17847,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 5791756827293547305}
     - target: {fileID: 6157595509824915994, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
-      propertyPath: _chargeCooldown
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 6157595509824915994, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
       propertyPath: _currentChargeText
       value: 
       objectReference: {fileID: 1885982871}

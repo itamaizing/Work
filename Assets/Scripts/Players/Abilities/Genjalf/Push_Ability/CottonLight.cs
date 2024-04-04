@@ -6,55 +6,20 @@ using UnityEngine.UI;
 
 namespace Players.Abilities.Genjalf.Push_Ability
 {
-    public class CottonLight : MonoBehaviour
+    public class CottonLight : Ability
     {
-        [SerializeField] private KeyCode _activationButton = KeyCode.Alpha5;
-        [Header("Abilities panel")]
-        [SerializeField] private GameObject _iconAbility;
-        [SerializeField] private Toggle _toggleAbility;
-        [SerializeField] private GameObject _abilitiesPanel;
-        [SerializeField] private TextMeshProUGUI _currentChargeText;
         [Header("Ability settings")]
         [SerializeField] private ParticleSystem _castPrefab; // затычка для визуализации
-        [Space(5)]
-        [SerializeField] private int _maxCharges = 3;
-        [SerializeField] private float _chargeCooldown = 15;
-        [Space(5)]
-        [SerializeField] private float _manaCost = 0f;
         [SerializeField] private float _damage = 10f;
-        [Space(5)]
         [SerializeField] private float _radius = 4f;
         [SerializeField] private float _pushDistance = 4f;
         [SerializeField] private float _duration = 0.5f;
 
-        private Charges _charges;
         private Coroutine _pushJob;
         private Dictionary<GameObject, Vector2> _enemies = new Dictionary<GameObject, Vector2>();
-        private ManaPlayer _mana;
 
-        private void Start()
+        public override void Use()
         {
-            _mana = GetComponentInParent<ManaPlayer>();
-
-            _charges = gameObject.AddComponent<Charges>();
-            _charges.Init(_maxCharges, _chargeCooldown, _currentChargeText);
-        }
-
-        private void Update()
-        {
-            TryActivatedAbility();
-        }
-
-        private void TryActivatedAbility()
-        {
-            if ((_toggleAbility.gameObject.activeSelf && Input.GetKeyDown(_activationButton) &&
-                transform.parent.GetComponent<PlayerMove>().IsSelect && _toggleAbility.enabled &&
-                _mana.Mana > _manaCost && _charges.TryUseCharge()) == false)
-                return;
-
-            _mana.UseMana(_manaCost);
-
-
             PlayCost(); // затычка для визуализации
 
             RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, _radius, Vector2.zero);
@@ -67,7 +32,7 @@ namespace Players.Abilities.Genjalf.Push_Ability
             foreach (var item in hits)
             {
                 if (item.transform == transform.parent)
-                    return;
+                    continue;
 
                 if (item.transform.CompareTag("Enemies"))
                 {

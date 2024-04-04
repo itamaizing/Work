@@ -282,7 +282,7 @@ GameObject:
   - component: {fileID: 4540537009910052003}
   - component: {fileID: 4937364771760706162}
   - component: {fileID: 4800092477462556513}
-  - component: {fileID: 6157595509824915994}
+  - component: {fileID: 3843699627799185963}
   m_Layer: 0
   m_Name: Abilities
   m_TagString: Untagged
@@ -371,7 +371,7 @@ MonoBehaviour:
   _toggleAbility: {fileID: 0}
   _abilitiesPanel: {fileID: 0}
   _manaCost: {fileID: 7086426748638987796}
---- !u!114 &6157595509824915994
+--- !u!114 &3843699627799185963
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -387,15 +387,17 @@ MonoBehaviour:
   _iconAbility: {fileID: 0}
   _toggleAbility: {fileID: 0}
   _abilitiesPanel: {fileID: 0}
+  _mana: {fileID: 7194231038919683107}
+  _manaCost: 0
+  _isUseCharges: 1
   _currentChargeText: {fileID: 0}
-  _castPrefab: {fileID: 4634252779898100178, guid: cfcb93924b6dc204090e954474c731de, type: 3}
   _maxCharges: 3
   _chargeCooldown: 15
-  _manaCost: 0
+  _castPrefab: {fileID: 4634252779898100178, guid: cfcb93924b6dc204090e954474c731de, type: 3}
   _damage: 10
   _radius: 4
   _pushDistance: 4
-  _duration: 0.35
+  _duration: 0.3
 --- !u!1 &1740845397034949897
 GameObject:
   m_ObjectHideFlags: 0
