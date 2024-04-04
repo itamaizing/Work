@@ -127,7 +127,7 @@ public class Icecloud : AbilityBase
 		Destroy(NewAbilityPrefab);
 	}
 
-	private void HandleTargetSelection()
+	/*private void HandleTargetSelection()
 	{
 		// Выбор врага
 		_targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -143,7 +143,7 @@ public class Icecloud : AbilityBase
 			}
 			DrawCircle.Clear();
 		}
-	}
+	}*/
 
 	public override void HandleDealDamageOrHeal()
 	{
@@ -172,11 +172,14 @@ public class Icecloud : AbilityBase
 
 	private IEnumerator CastProtect(float castTime)
 	{
+		if (!_player.GetComponent<RunePlayer>().RemoveRune(1))
+		{
+			yield break;
+		}
 		if (Abilities.GetComponent<GlobalCooldown>())
 		{
 			Abilities.GetComponent<GlobalCooldown>().StartGlobalCooldown();
-		}
-
+		}		
 		for (int i = 0; i < Abilities.transform.childCount; i++)
 		{
 			GameObject childObject = Abilities.transform.GetChild(i).gameObject;
@@ -192,8 +195,6 @@ public class Icecloud : AbilityBase
 		CreateCastPrefab(castTime);
 
 		yield return new WaitForSeconds(castTime);
-
-		_player.GetComponent<ManaPlayer>().UseMana(30f);
 
 		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		Vector2 lookDir = _mousePos - _rb.position;
