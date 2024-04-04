@@ -159,6 +159,7 @@ public class ThreeRangeHeal : AbilityBase
             {
                 heal = realHeal;
             }
+            TargetParent.GetComponent<HealthPlayer>().AddHeal(heal);
             if (eneryOfSpiritStacks > 0)
             {
                 heal = heal * _player.GetComponentInChildren<OneRangeAttack>().ManaBaff;
@@ -168,7 +169,6 @@ public class ThreeRangeHeal : AbilityBase
                     _player.GetComponent<ManaPlayer>().AddMana(heal);
                 }
             }
-            TargetParent.GetComponent<HealthPlayer>().AddHeal(heal);
         }
         _player.GetComponent<ManaPlayer>().UseMana(30f);
 

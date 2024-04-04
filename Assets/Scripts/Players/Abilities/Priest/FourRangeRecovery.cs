@@ -9,6 +9,7 @@ public class FourRangeRecovery : AbilityBase
 	[SerializeField] private GameObject RecoveryBaffPrefab;
 	[SerializeField] private GameObject ManaCost;
 	[SerializeField] private float _castTime=1.2f;
+	[SerializeField] private float _heal = 6f;
 
 	[HideInInspector] public GameObject Target;
 
@@ -16,7 +17,8 @@ public class FourRangeRecovery : AbilityBase
 	public event FourthAbilityHandler FourthAbilityEvent;
 
 	private GameObject _newPrefab;
-
+	private float _trueHeal;
+	private int _healTickCount = 0;
 	public bool canCast = true;
 
 	protected override KeyCode ActivationKey => KeyCode.Alpha4;
@@ -97,7 +99,6 @@ public class FourRangeRecovery : AbilityBase
 			ManaCost.gameObject.SetActive(false);
 		}
 
-		TargetParent = null;
 		return;
 	}
 
@@ -169,24 +170,30 @@ public class FourRangeRecovery : AbilityBase
 
 	private void Heal()
 	{
-        if (_newPrefab != null && TargetParent.GetComponentInChildren<HealthRecovery>() != null)
+		if (_newPrefab != null && TargetParent.GetComponentInChildren<HealthRecovery>() != null) // обновление спелла
 		{
-            TargetParent.GetComponentInChildren<HealthRecovery>().Timer = Time.time;
+			TargetParent.GetComponentInChildren<HealthRecovery>().Timer = Time.time;
             TargetParent.GetComponentInChildren<HealthRecovery>().isRecovery = false;
-            TargetParent.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
+			TargetParent.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
 		}
-		else if (TargetParent != null)
+		else if (TargetParent != null) // если на цели нет бафа
 		{
-			_newPrefab = null;
-            _newPrefab = Instantiate(RecoveryBaffPrefab);
+            _newPrefab = null;
+			_newPrefab = Instantiate(RecoveryBaffPrefab);
 			_newPrefab.transform.SetParent(TargetParent.transform);
 			_newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
-			_newPrefab.GetComponent<HealthRecovery>().CastRecovery(12f, 6f, 4f);
+			_newPrefab.GetComponent<HealthRecovery>().CastRecovery(12f, _heal, 4f,_player);
 		}
 		_player.GetComponent<ManaPlayer>().UseMana(4f);
 		FourthAbilityEvent?.Invoke(0f);
 		Recharge();
 	}
+	public int CheckEneryOfSpriritBaffs()
+	{
+        int stacks = _player.GetComponentInChildren<OneRangeAttack>().ScriptInstanceCount;
+
+		return stacks;
+    }
 
 	private IEnumerator CastProtect(float castTime)
 	{

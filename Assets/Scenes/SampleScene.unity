@@ -16386,7 +16386,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1105992124525835189, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: Mana
-      value: 1666
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 1384084314023187958, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: Select

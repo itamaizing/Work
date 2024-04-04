@@ -7,7 +7,7 @@ public class OneRangeAttack : AbilityBase
 	// "Искра Света" - Лечение и бафф союзника , урон по врагу. 
 	[HideInInspector] public static int NumberOfInstances = 0;
 	[HideInInspector] public float Heal = 2f;
-	[HideInInspector] public int ScriptInstanceCount = 1;
+	[HideInInspector] public int ScriptInstanceCount = 0;
 	[HideInInspector] public GameObject Target;
 
 	[Header("Ability properties")]
@@ -176,10 +176,10 @@ public class OneRangeAttack : AbilityBase
 
 	private void Healing()
 	{
-        float heal = Heal+ScriptInstanceCount;
-        if (TargetParent != null)
-		{
+		if (TargetParent == null) return;
+		
             AddBaffEnergyOfSpirit();
+            float heal = Heal + ScriptInstanceCount;
             float realHeal = TargetParent.GetComponent<HealthPlayer>().MaxHealth - TargetParent.GetComponent<HealthPlayer>().Health;
             if (realHeal <= heal)
             {
@@ -192,13 +192,12 @@ public class OneRangeAttack : AbilityBase
                 }
             _player.GetComponent<ManaPlayer>().UseMana(1f); // ToDo вынести ману в атрибуты
 			FirstAbilityEvent?.Invoke(Heal);
-		}
+		
     }
 
 	private void AddBaffEnergyOfSpirit()
 	{
-        if (ScriptInstanceCount < maxScriptInstances)
-		{
+		if (ScriptInstanceCount >= maxScriptInstances) return;	
 			_canCast = true;
 			_newPrefab = Instantiate(EnergySpiritEffect);
 			_energyOfSpiritPrefab = _newPrefab.GetComponent<EnergyOfSpirit>();
@@ -207,8 +206,7 @@ public class OneRangeAttack : AbilityBase
 			_newPrefab.transform.SetParent(TargetParent.transform);
 			_newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(_countdownForEnergyOfSpirit);
 			ScriptInstanceCount++;
-            EnergyOfSpiritBuffs();
-        }
+            EnergyOfSpiritBuffs();       
     }
 
 	private void EnergyOfSpiritBuffs()
