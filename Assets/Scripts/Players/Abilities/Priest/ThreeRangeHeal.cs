@@ -150,22 +150,28 @@ public class ThreeRangeHeal : AbilityBase
         private void Heal()
     {
         float heal = 35f;
+        if (TargetParent != null)
+        {
+            float realHeal = TargetParent.GetComponent<HealthPlayer>().MaxHealth - TargetParent.GetComponent<HealthPlayer>().Health;
+            float eneryOfSpiritStacks = _player.GetComponentInChildren<OneRangeAttack>().ScriptInstanceCount;
+            heal = heal + eneryOfSpiritStacks;
+            if (realHeal <= heal)
+            {
+                heal = realHeal;
+            }
+            if (eneryOfSpiritStacks > 0)
+            {
+                heal = heal * _player.GetComponentInChildren<OneRangeAttack>().ManaBaff;
 
-        if(_playerAbility.GetComponent<OneRangeAttack>().ScriptInstanceCount == 1)
-        {
-            heal = 37f;
-        }
-        else if (_playerAbility.GetComponent<OneRangeAttack>().ScriptInstanceCount == 2)
-        {
-            heal = 41f;
-        }
-
-        if(TargetParent != null)
-        {
+                if (heal > 0)
+                {
+                    _player.GetComponent<ManaPlayer>().AddMana(heal);
+                }
+            }
             TargetParent.GetComponent<HealthPlayer>().AddHeal(heal);
         }
+        _player.GetComponent<ManaPlayer>().UseMana(30f);
 
-        _player.GetComponent<ManaPlayer>().Use(30f);
 
         ThirdAbilityEvent?.Invoke(heal);
         Recharge();

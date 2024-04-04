@@ -38,14 +38,17 @@ public class HealthRecovery : BaseEffect
                 _recHealth += _recHealth * 0.1f / 4f;
                 _recHealth = float.Parse(_recHealth.ToString("F2"));
             }
-
             StartCoroutine(Cooldown());
         }
         else if (Time.time >= _recDuration + Timer)
         {
             isRecovery = false;
-            Destroy(this);
+            Invoke("DestroyThis", 0.1f);
         }
+    }
+    private void DestroyThis()
+    {
+        Destroy(this);
     }
     private IEnumerator Cooldown()
     {

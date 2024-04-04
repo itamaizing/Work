@@ -158,7 +158,7 @@ public class TwoRangeProtection : AbilityBase
         {
             if (TargetParent == gameObject)
             {
-                _castCoroutine = StartCoroutine(CastProtect(0.6f));
+                _castCoroutine = StartCoroutine(CastProtect(0f));
             }
             else
             {

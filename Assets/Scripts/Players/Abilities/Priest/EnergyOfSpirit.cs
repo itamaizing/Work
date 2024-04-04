@@ -8,8 +8,6 @@ public class EnergyOfSpirit : MonoBehaviour
     public event Action<EnergyOfSpirit> Destroyed;
     private GameObject[] _allies;
     private GameObject _priest;
-    private PriestAbilityEvents _priestAbilityEvents;
-    private float _priestManaReducedPercent;
     private ICharacterEvents[] _characters;
 
     private void Start()
@@ -18,13 +16,6 @@ public class EnergyOfSpirit : MonoBehaviour
         _allies = GameObject.FindGameObjectsWithTag("Allies");
         foreach (GameObject ally in _allies)
         {
-            _priestAbilityEvents = ally.GetComponent<PriestAbilityEvents>();
-
-            if (_priestAbilityEvents != null)
-            {
-                _priest = _priestAbilityEvents.gameObject;
-                _priestAbilityEvents.PriestAbilitiesEvent += PriestHandleEvent;
-            }
             if (ally.GetComponent<EnergyOfSpirit>() != null)
             {
                 _characters = FindObjectsOfType<MonoBehaviour>().OfType<ICharacterEvents>().ToArray();
@@ -34,18 +25,6 @@ public class EnergyOfSpirit : MonoBehaviour
                     character.AbilitiesEvent += AlliesHandleEvent;
                 }
             }
-        }
-    }
-    public void UpdateBuffValue(float value)
-    {
-        _priestManaReducedPercent = value;
-        Debug.Log(value);
-    }
-    private void PriestHandleEvent(float value)
-    {
-        if(value > 0 && _priest != null)
-        {
-            _priest.transform.parent.GetComponent<ManaPlayer>().AddMana(value * _priestManaReducedPercent);
         }
     }
 
@@ -59,11 +38,6 @@ public class EnergyOfSpirit : MonoBehaviour
 
     private void OnDisable()
     {
-        if (_priestAbilityEvents != null)
-        {
-            _priestManaReducedPercent = 0;
-            _priestAbilityEvents.PriestAbilitiesEvent -= PriestHandleEvent;
-        }
         if(_characters != null)
         {
             foreach (ICharacterEvents character in _characters)
@@ -86,7 +60,6 @@ public class EnergyOfSpirit : MonoBehaviour
     {
         _allies = null;
         _priest = null;
-        _priestAbilityEvents = null;
         _characters = null;
         Destroyed?.Invoke(this);
     }

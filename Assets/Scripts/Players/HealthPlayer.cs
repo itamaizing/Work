@@ -16,7 +16,6 @@ public class HealthPlayer : MonoBehaviour
     public Transform DamageSpawn;
     public TextMeshPro PrefabText;
 
-    private float _healBuffValue = 0;
     public struct DamageInfo
     {
         public float OriginalDamage;
@@ -147,7 +146,7 @@ public class HealthPlayer : MonoBehaviour
         HealInfo healthInfo;
 
         healthInfo.OriginalHeal = healValue;
-        healthInfo.ModifiedHeal = healthInfo.OriginalHeal + _healBuffValue;
+        healthInfo.ModifiedHeal = healthInfo.OriginalHeal;
         if (AddHealth != null)
         {
             healthInfo = AddHealth(healthInfo);
@@ -162,14 +161,7 @@ public class HealthPlayer : MonoBehaviour
             UpdateHealthBar();
             UpdateHealthBarText();
     }
-    public void AddBuff(float value)
-    {
-        _healBuffValue += value;
-    }
-    public void RemoveBuff(float value)
-    {
-        _healBuffValue -= value;
-    }
+
     private void HandleAbsorptionOrRepeat(ref float modifiedValue)
     {
         for (int i = 0; i < transform.childCount; i++)
@@ -230,7 +222,7 @@ public class HealthPlayer : MonoBehaviour
         while (true)
         {
             yield return _waitForRegenHp;
-            this.AddHeal(_hpRegenerationValue - _healBuffValue);
+            this.AddHeal(_hpRegenerationValue);
         }
     }
 }

@@ -172,7 +172,8 @@ public class FourRangeRecovery : AbilityBase
         if (_newPrefab != null && TargetParent.GetComponentInChildren<HealthRecovery>() != null)
 		{
             TargetParent.GetComponentInChildren<HealthRecovery>().Timer = Time.time;
-			TargetParent.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
+            TargetParent.GetComponentInChildren<HealthRecovery>().isRecovery = false;
+            TargetParent.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
 		}
 		else if (TargetParent != null)
 		{

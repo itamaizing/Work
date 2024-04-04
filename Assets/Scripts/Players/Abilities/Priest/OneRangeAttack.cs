@@ -25,6 +25,17 @@ public class OneRangeAttack : AbilityBase
 	private bool _canCast;
 	protected float shieldBuff;
 	private float manaBuff;
+	public float ManaBaff
+	{
+		get
+		{
+			return manaBuff;
+		}
+		set 
+		{ 
+			manaBuff = value; 
+		}
+	}
 
     protected override KeyCode ActivationKey => KeyCode.Alpha1;
 
@@ -99,7 +110,7 @@ public class OneRangeAttack : AbilityBase
 		// Выключенный ToggleAbility
 		base.HandleToggleAbilityOff();
 
-		if (_isSelect == false)
+		if (_isSelect == false	)
 		{
 			ManaCost.gameObject.SetActive(false);
 		}
@@ -160,21 +171,30 @@ public class OneRangeAttack : AbilityBase
 		{
 			_castCoroutine = StartCoroutine(Cast());
 			CreateCastPrefab(CastTime);
-			_canCast = false;
 		}
 	}
 
 	private void Healing()
 	{
-		if (TargetParent != null)
-		{
-			TargetParent.GetComponent<HealthPlayer>().AddHeal(Heal);
-			_player.GetComponent<ManaPlayer>().UseMana(1f); // ToDo вынести ману в атрибуты
-			FirstAbilityEvent?.Invoke(Heal);
+        AddBaffEnergyOfSpirit();
 
-			AddBaffEnergyOfSpirit();
+        float heal = Heal+ScriptInstanceCount;
+        if (TargetParent != null)
+		{
+            float realHeal = TargetParent.GetComponent<HealthPlayer>().MaxHealth - TargetParent.GetComponent<HealthPlayer>().Health;
+            if (realHeal <= heal)
+            {
+                heal = realHeal;
+            }
+				if (heal > 0)
+				{
+					TargetParent.GetComponent<HealthPlayer>().AddHeal(heal);
+                    _player.GetComponent<ManaPlayer>().AddMana(heal*0.1f);
+                }
+            _player.GetComponent<ManaPlayer>().UseMana(1f); // ToDo вынести ману в атрибуты
+			FirstAbilityEvent?.Invoke(Heal);
 		}
-	}
+    }
 
 	private void AddBaffEnergyOfSpirit()
 	{
@@ -190,10 +210,6 @@ public class OneRangeAttack : AbilityBase
 			ScriptInstanceCount++;
             EnergyOfSpiritBuffs();
         }
-		else
-		{
-			_canCast = false;
-		}
     }
 
 	private void EnergyOfSpiritBuffs()
@@ -216,20 +232,12 @@ public class OneRangeAttack : AbilityBase
             default:
                 break;
         }
-		// Коэфицент восстановления маны за стак
-        _energyOfSpiritPrefab.UpdateBuffValue(manaBuff);
-		// Бафф всего входящего восстановления на 1
-        TargetParent.GetComponent<HealthPlayer>().AddBuff(1);
         // Увеличение прочности накладываемого щита
 		transform.GetComponent<TwoRangeProtection>().AddShieldBuff(shieldBuff*0.01f);
     }
 	private void OnScriptInstanceDestroyed(EnergyOfSpirit destroyedScript )
 	{
 		ScriptInstanceDestroyed?.Invoke(destroyedScript);
-		if (Target != null)
-		{
-            Target.GetComponent<HealthPlayer>().RemoveBuff(1); // toDo
-		}
         ScriptInstanceCount--;
 	}
 
@@ -239,9 +247,7 @@ public class OneRangeAttack : AbilityBase
 		{
 			Abilities.GetComponent<GlobalCooldown>().StartGlobalCooldown();
 		}
-
 		StartCoroutine(CastMove());
-
         yield return new WaitForSeconds(CastTime);
         Healing();
 

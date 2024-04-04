@@ -1662,10 +1662,11 @@ MonoBehaviour:
   CanUseAbility: 1
   NewAbilityPrefab: {fileID: 0}
   CanDoAbility: 0
+  CanDoAbilityOnMyself: 1
   CanDrawCircle: 1
   Distance: 0
   CellDistance: 4
-  _cellSize: 3
+  _cellSize: 1.9
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
   _targetCircle: {fileID: 0}
@@ -1674,7 +1675,7 @@ MonoBehaviour:
   Target: {fileID: 0}
   EnergySpiritEffect: {fileID: 3205664352808204184, guid: 9d037fb657192bd4a8d0a15b2ad680d2, type: 3}
   ManaCost: {fileID: 5002266305278314167}
-  CastTime: 0.8
+  CastTime: 1.4
   _countdownForEnergyOfSpirit: 9
 --- !u!114 &6111745567471085271
 MonoBehaviour:
@@ -1709,10 +1710,11 @@ MonoBehaviour:
   CanUseAbility: 1
   NewAbilityPrefab: {fileID: 0}
   CanDoAbility: 0
+  CanDoAbilityOnMyself: 1
   CanDrawCircle: 1
   Distance: 0
   CellDistance: 6
-  _cellSize: 3
+  _cellSize: 1.9
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
   _targetCircle: {fileID: 0}
@@ -1754,14 +1756,16 @@ MonoBehaviour:
   CanUseAbility: 1
   NewAbilityPrefab: {fileID: 0}
   CanDoAbility: 0
+  CanDoAbilityOnMyself: 1
   CanDrawCircle: 1
   Distance: 0
   CellDistance: 4
-  _cellSize: 3
+  _cellSize: 1.9
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
   _targetCircle: {fileID: 0}
   ManaCost: {fileID: 5002266305278314167}
+  _castTime: 1.8
   Target: {fileID: 0}
 --- !u!114 &1384084314023187958
 MonoBehaviour:
@@ -1796,15 +1800,17 @@ MonoBehaviour:
   CanUseAbility: 1
   NewAbilityPrefab: {fileID: 0}
   CanDoAbility: 0
+  CanDoAbilityOnMyself: 1
   CanDrawCircle: 1
   Distance: 0
   CellDistance: 4
-  _cellSize: 3
+  _cellSize: 1.9
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
   _targetCircle: {fileID: 0}
   RecoveryBaffPrefab: {fileID: 8887987041764017493, guid: 70e3d37fc4fe10e4e852b0b918d0776d, type: 3}
   ManaCost: {fileID: 5002266305278314167}
+  _castTime: 1.2
   Target: {fileID: 0}
   canCast: 1
 --- !u!114 &3423861005672603737
@@ -1863,6 +1869,7 @@ MonoBehaviour:
   CanUseAbility: 1
   NewAbilityPrefab: {fileID: 0}
   CanDoAbility: 0
+  CanDoAbilityOnMyself: 1
   CanDrawCircle: 1
   Distance: 0
   CellDistance: 1
@@ -1908,6 +1915,7 @@ MonoBehaviour:
   CanUseAbility: 1
   NewAbilityPrefab: {fileID: 0}
   CanDoAbility: 0
+  CanDoAbilityOnMyself: 1
   CanDrawCircle: 1
   Distance: 0
   CellDistance: 1
@@ -1952,6 +1960,7 @@ MonoBehaviour:
   CanUseAbility: 1
   NewAbilityPrefab: {fileID: 0}
   CanDoAbility: 0
+  CanDoAbilityOnMyself: 1
   CanDrawCircle: 1
   Distance: 0
   CellDistance: 1
@@ -1994,6 +2003,7 @@ MonoBehaviour:
   CanUseAbility: 1
   NewAbilityPrefab: {fileID: 0}
   CanDoAbility: 0
+  CanDoAbilityOnMyself: 1
   CanDrawCircle: 1
   Distance: 0
   CellDistance: 1

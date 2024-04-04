@@ -13535,6 +13535,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3504477266362453533, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
+      propertyPath: Health
+      value: 300
+      objectReference: {fileID: 0}
     - target: {fileID: 3829028655816966178, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: _toggleTalent
       value: 
@@ -16380,6 +16384,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player 2 Ally
       objectReference: {fileID: 0}
+    - target: {fileID: 1105992124525835189, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+      propertyPath: Mana
+      value: 1666
+      objectReference: {fileID: 0}
     - target: {fileID: 1384084314023187958, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: Select
       value: 
@@ -16464,10 +16472,6 @@ PrefabInstance:
       propertyPath: Select
       value: 
       objectReference: {fileID: 2182717424319947106}
-    - target: {fileID: 5002266305278314167, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5828944524669050820, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: Select
       value: 
@@ -16616,6 +16620,10 @@ PrefabInstance:
       propertyPath: Select
       value: 
       objectReference: {fileID: 1138358088594896431}
+    - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+      propertyPath: CastTime
+      value: 1.4
+      objectReference: {fileID: 0}
     - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: Abilities
       value: 
