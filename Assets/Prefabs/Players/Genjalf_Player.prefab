@@ -393,12 +393,13 @@ MonoBehaviour:
   _isUseCharges: 1
   _currentChargeText: {fileID: 0}
   _maxCharges: 3
-  _chargeCooldown: 15
+  _chargeCooldown: 1
   _castPrefab: {fileID: 4634252779898100178, guid: cfcb93924b6dc204090e954474c731de, type: 3}
   _damage: 10
-  _radius: 4
-  _pushDistance: 4
-  _duration: 0.3
+  _radius: 1.3
+  _pushDistance: 2
+  _pushDuration: 0.4
+  _pushSpeed: 5
 --- !u!114 &3939070588996056051
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -417,15 +418,16 @@ MonoBehaviour:
   _abilitiesPanel: {fileID: 0}
   _mana: {fileID: 7194231038919683107}
   _manaCost: 0
-  _isUseCharges: 0
+  _isUseCharges: 1
   _currentChargeText: {fileID: 0}
-  _maxCharges: 0
-  _chargeCooldown: 0
-  _radius: 10
+  _maxCharges: 2
+  _chargeCooldown: 15
+  _radius: 7
   _drawCircle: {fileID: 2062510225715713123}
   _fisuraTilePrefab: {fileID: 626463425188756188, guid: 1222da39dc4bf1041891e04a5f0a7b41, type: 3}
-  _width: 1
-  _length: 5
+  _width: 0.5
+  _length: 4
+  _liveTime: 3
 --- !u!1 &1740845397034949897
 GameObject:
   m_ObjectHideFlags: 0

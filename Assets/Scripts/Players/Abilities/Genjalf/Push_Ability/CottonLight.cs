@@ -12,11 +12,24 @@ namespace Players.Abilities.Genjalf.Push_Ability
         [SerializeField] private ParticleSystem _castPrefab; // затычка для визуализации
         [SerializeField] private float _damage = 10f;
         [SerializeField] private float _radius = 4f;
-        [SerializeField] private float _pushDistance = 4f;
-        [SerializeField] private float _duration = 0.5f;
+        [SerializeField] private float _pushDistance;
+        [SerializeField] private float _pushDuration;
+        [SerializeField] private float _pushSpeed;
 
         private Coroutine _pushJob;
         private Dictionary<GameObject, Vector2> _enemies = new Dictionary<GameObject, Vector2>();
+
+        private void OnValidate()
+        {
+            if (_pushSpeed > 0)
+            {
+                _pushDuration = _pushDistance / _pushSpeed;
+            }
+            if(_pushDuration > 0)
+            {
+                _pushSpeed = _pushDistance / _pushDuration;
+            }
+        }
 
         public override void Use()
         {
@@ -57,11 +70,11 @@ namespace Players.Abilities.Genjalf.Push_Ability
         {
             float time = 0;
 
-            while(_duration > time)
+            while(_pushDuration > time)
             {
                 foreach (var item in _enemies)
                 {
-                    item.Key.transform.position = Vector2.MoveTowards(item.Key.transform.position, item.Value, (_pushDistance * Time.deltaTime) / _duration);
+                    item.Key.transform.position = Vector2.MoveTowards(item.Key.transform.position, item.Value, (_pushDistance * Time.deltaTime) / _pushDuration);
                 }
                 time += Time.deltaTime;
 
