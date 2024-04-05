@@ -141,9 +141,9 @@ public class TwoRangeProtection : AbilityBase
             }
             DrawCircle.Clear();
         }
-        else if (hit.collider != null && hit.collider.CompareTag("Allies") && hit.collider.gameObject == gameObject)
+        else if (hit.collider != null && hit.collider.CompareTag("Allies") && hit.collider.gameObject == transform.parent.gameObject)
         {
-            TargetParent = gameObject;
+            TargetParent = transform.parent.gameObject;
             if (NewAbilityPrefab != null)
             {
                 Destroy(NewAbilityPrefab);
@@ -154,9 +154,10 @@ public class TwoRangeProtection : AbilityBase
 
     public override void HandleDealDamageOrHeal()
     {
-        if (_castCoroutine == null)
-        {
-            if (TargetParent == gameObject)
+        if (_castCoroutine != null) return;
+        if (TargetParent == null || TargetParent.GetComponentInChildren<DebaffProtect>() != null) return;
+       
+            if (TargetParent == transform.parent.gameObject)
             {
                 _castCoroutine = StartCoroutine(CastProtect(0f));
             }
@@ -164,22 +165,18 @@ public class TwoRangeProtection : AbilityBase
             {
                 _castCoroutine = StartCoroutine(CastProtect(1.2f));
             }
-        }
+        
     }
 
     private void Protect()
     {
-
-        if (TargetParent != null&&TargetParent.GetComponentInChildren<DebaffProtect>()==null)
-        {
-            _player.GetComponent<ManaPlayer>().Use(6f);
+            _player.GetComponent<ManaPlayer>().UseMana(6f);
 
             SetProtectBuff();
             SetProtectDebaff();
 
             SecondAbilityEvent?.Invoke(0f);
             StartCoroutine(Recharge());
-        }
     }
 
     private void SetProtectBuff()

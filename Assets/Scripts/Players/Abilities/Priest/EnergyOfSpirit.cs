@@ -10,9 +10,10 @@ public class EnergyOfSpirit : MonoBehaviour
     private GameObject _priest;
     private ICharacterEvents[] _characters;
 
+    private Coroutine _coroutine;
+
     private void Start()
     {
-        StartCoroutine(CountdownRoutine(9));
         _allies = GameObject.FindGameObjectsWithTag("Allies");
         foreach (GameObject ally in _allies)
         {
@@ -26,6 +27,14 @@ public class EnergyOfSpirit : MonoBehaviour
                 }
             }
         }
+    }
+    public void StartCountdownCoroutine(float time)
+    {
+        if(_coroutine!=null)
+        {
+            StopCoroutine(_coroutine);
+        }
+        _coroutine = StartCoroutine(CountdownRoutine(time));
     }
 
     private void AlliesHandleEvent(float value)
@@ -47,7 +56,7 @@ public class EnergyOfSpirit : MonoBehaviour
         }
     }
 
-    public IEnumerator CountdownRoutine(int time)
+    public IEnumerator CountdownRoutine(float time)
     {
         while (time > 0)
         {

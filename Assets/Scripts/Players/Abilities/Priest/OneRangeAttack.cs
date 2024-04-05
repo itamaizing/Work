@@ -196,10 +196,16 @@ public class OneRangeAttack : AbilityBase
 
 	private void AddBaffEnergyOfSpirit()
 	{
-		if (ScriptInstanceCount >= maxScriptInstances) return;	
-			_canCast = true;
+		if (ScriptInstanceCount >= maxScriptInstances) return;
+		if (ScriptInstanceCount==1)
+		{
+			TargetParent.GetComponentInChildren<EnergyOfSpirit>().StartCountdownCoroutine(_countdownForEnergyOfSpirit);
+			TargetParent.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(_countdownForEnergyOfSpirit);
+		}
+             _canCast = true;
 			_newPrefab = Instantiate(EnergySpiritEffect);
 			_energyOfSpiritPrefab = _newPrefab.GetComponent<EnergyOfSpirit>();
+		    _energyOfSpiritPrefab.StartCountdownCoroutine(_countdownForEnergyOfSpirit);
             _energyOfSpiritPrefab.Destroyed += OnScriptInstanceDestroyed;
 
 			_newPrefab.transform.SetParent(TargetParent.transform);

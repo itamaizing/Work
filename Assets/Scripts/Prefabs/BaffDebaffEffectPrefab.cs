@@ -26,13 +26,12 @@ public class BaffDebaffEffectPrefab : MonoBehaviour
 
             Timer -= Time.deltaTime;
 
-            if (Timer <= 0)
-            {
-                Timer = 0;
-                Destroy(gameObject);
-            }
-
             GetComponent<TextMeshPro>().text = ((int)Timer + 1).ToString();
+        }
+        if (Timer <= 0)
+        {
+            Timer = 0;
+            Destroy(gameObject);
         }
 
         if (effectParent != null)
