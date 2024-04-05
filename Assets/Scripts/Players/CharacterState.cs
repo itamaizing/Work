@@ -259,7 +259,7 @@ public class FrozenState : ICharacterState
 			toggle.enabled = false;
         }
         //turn off abilities
-        character.abilityManager.ToggleAbility(false);
+        character.GetAbilityManager().ToggleAbility(false);
         if (character.gameObject.TryGetComponent<HealthPlayer>(out _playerHP))
         {
             _playerHP.sumDamageTaken = 0;
@@ -289,7 +289,7 @@ public class FrozenState : ICharacterState
 	{
 		Debug.Log("Exiting Frozen State");
 
-		character.abilityManager.ToggleAbility(true);
+		character.GetAbilityManager().ToggleAbility(true);
 		List<Toggle> toggles = character.gameObject.GetComponent<PlayerMove>().AbilitiesOnTargetToggles;
 
 		foreach (Toggle toggle in toggles)
@@ -305,7 +305,7 @@ public class FrozenState : ICharacterState
 public class CharacterState : MonoBehaviour
 {
     [SerializeField] private ICharacterState currentState;
-    public AbilityManager abilityManager;
+    [SerializeField] private AbilityManager _abilityManager;
     public SelectObject Select;
     
     //person who shoted
@@ -342,5 +342,10 @@ public class CharacterState : MonoBehaviour
     public ICharacterState CheckState()
     {
         return currentState;
+    }
+
+    public AbilityManager GetAbilityManager()
+    {
+        return _abilityManager;
     }
 }
