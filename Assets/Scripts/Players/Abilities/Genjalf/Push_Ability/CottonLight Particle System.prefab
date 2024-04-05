@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4634252779898100178}
   - component: {fileID: 1757694601474146064}
   m_Layer: 0
-  m_Name: Particle System
+  m_Name: CottonLight Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

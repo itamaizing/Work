@@ -11,6 +11,8 @@ namespace Players.Abilities.Genjalf.Push_Ability
         [Header("Ability settings")]
         [SerializeField] private ParticleSystem _castPrefab; // затычка для визуализации
         [SerializeField] private float _damage = 10f;
+        [SerializeField] private BlindDebuff _blindPref;
+        [SerializeField] private float _blindDuration = 1f;
         [SerializeField] private float _radius = 4f;
         [SerializeField] private float _pushDistance;
         [SerializeField] private float _pushDuration;
@@ -54,6 +56,7 @@ namespace Players.Abilities.Genjalf.Push_Ability
 
                     _enemies.Add(item.transform.gameObject, dir);
                     item.transform.GetComponent<HealthPlayer>().TakeMagicDamage(_damage);
+                    Instantiate(_blindPref, item.transform).Init(item.transform.gameObject, _blindDuration);
                 }
             }
             _pushJob = StartCoroutine(PushCoroutine());

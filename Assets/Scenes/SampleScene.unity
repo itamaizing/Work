@@ -17966,33 +17966,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1885982871}
     - target: {fileID: 3939070588996056051, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
-      propertyPath: _width
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3939070588996056051, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
-      propertyPath: _length
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 3939070588996056051, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
-      propertyPath: _radius
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 3939070588996056051, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
-      propertyPath: _liveTime
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 3939070588996056051, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
-      propertyPath: _maxCharges
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3939070588996056051, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
       propertyPath: _iconAbility
       value: 
       objectReference: {fileID: 218233809}
-    - target: {fileID: 3939070588996056051, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
-      propertyPath: _isUseCharges
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3939070588996056051, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
       propertyPath: _toggleAbility
       value: 
@@ -18001,10 +17977,6 @@ PrefabInstance:
       propertyPath: _abilitiesPanel
       value: 
       objectReference: {fileID: 5791756827293547305}
-    - target: {fileID: 3939070588996056051, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
-      propertyPath: _chargeCooldown
-      value: 15
-      objectReference: {fileID: 0}
     - target: {fileID: 3939070588996056051, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
       propertyPath: _currentChargeText
       value: 
