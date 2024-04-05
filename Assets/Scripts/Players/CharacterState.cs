@@ -346,6 +346,11 @@ public class CharacterState : MonoBehaviour
 
     public AbilityManager GetAbilityManager()
     {
+        if( _abilityManager == null ) 
+        {
+            Debug.LogError("No ability manager!");
+            return null;
+        }
         return _abilityManager;
     }
 }
