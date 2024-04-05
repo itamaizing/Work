@@ -14,7 +14,9 @@ public class FiveReversPolarity : MonoBehaviour
 	public GameObject[] Toggles;
 	public GameObject CastPrefab;
 	public GameObject ManaCost;
+	public GameObject BaffPrefab;
 
+	public GameObject _baffPrefab;
 	private bool _canCast = true;
 	private bool _isHealing = false;
 	private bool _isGlobalCooldown;
@@ -101,9 +103,14 @@ public class FiveReversPolarity : MonoBehaviour
 				}
 				_isEnabled = true;
 			}
-			CurrentAbilitiesPanel.SetActive(false);
+			if (_baffPrefab != null)
+			{
+				Destroy(_baffPrefab);
+			}
+            CurrentAbilitiesPanel.SetActive(false);
 			_canCast = true;
 			IconAbility.GetComponent<SpriteRenderer>().enabled = false;
+
 		}
 
 		if (_coroutine != null)
@@ -139,12 +146,13 @@ public class FiveReversPolarity : MonoBehaviour
 		ManaCost.transform.localScale = new Vector2(2f, ManaCost.gameObject.transform.localScale.y);
 		Debug.Log("Кастую");
 		yield return new WaitForSeconds(castTime);
-
+		CreateBaffPrefab();
 		ManaCost.SetActive(false);
+
 		transform.parent.GetComponent<PlayerMove>().CanMove = true;
 
 		ToggleAbility.enabled = true;
-		Debug.Log("Не кастую");
+
 		StartDarkBeginning(20);
 	}
 	private void CreateCastPrefab(float time)
@@ -159,6 +167,13 @@ public class FiveReversPolarity : MonoBehaviour
 			StartCoroutine(ScaleObjectOverTime(childObject, 1f, time));
 		}
 	}
+	private void CreateBaffPrefab()
+	{
+		if(_baffPrefab==null)
+		{
+            _baffPrefab = Instantiate(BaffPrefab,transform.parent.GetChild(9));
+        }
+    }
 	private IEnumerator ScaleObjectOverTime(Transform targetTransform, float targetScaleX, float duration)
 	{
 		float elapsedTime = 0f;
@@ -176,7 +191,7 @@ public class FiveReversPolarity : MonoBehaviour
 	}
 	private void StartDarkBeginning(int manaValue)
 	{
-		_coroutine = null;
+        _coroutine = null;
 		ToggleAbility.enabled = true;
 		_canCast = false;
 		transform.parent.GetComponent<ManaPlayer>().Use(manaValue);

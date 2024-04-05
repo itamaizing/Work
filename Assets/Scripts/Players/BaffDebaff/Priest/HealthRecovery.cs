@@ -69,10 +69,10 @@ public class HealthRecovery : BaseEffect
     {
         if (isRecovery)
         {
+            StartCoroutine(Cooldown());
             AddTick();
             transform.parent.GetComponent<HealthPlayer>().AddHeal(_recHealth);
             FourthBaffEvent?.Invoke(_recHealth);
-            StartCoroutine(Cooldown());
         }
         else if (Time.time >= _recDuration + Timer)
         {
@@ -82,24 +82,28 @@ public class HealthRecovery : BaseEffect
     }
     private void AddTick()
     {
+        Debug.Log("Heal Before baffs - " + _recHealth);
         _ticksCount = Player.GetComponentInChildren<FourRangeRecovery>().CheckEneryOfSpriritBaffs();
-        _recHealth = _recHealth + _ticksCount;
-
         HealthPlayer hp = transform.parent.GetComponent<HealthPlayer>();
+
+        if (transform.parent.GetComponentInChildren<DamageAbsorption>() != null)
+        {
+            _recHealth += _defaultHealth * 0.1f;
+            Debug.Log("Shield Baff - "+ _defaultHealth * 0.1f +" Heal - " + _recHealth);
+        }
+
+        _defaultHealth = _recHealth;
+        _recHealth += _ticksCount;
+        Debug.Log("Iscra Baff - " + _ticksCount + "Heal -  " + _recHealth);
+
         float realHeal = hp.MaxHealth - hp.Health;
         if (realHeal <= _recHealth)
         {
             _recHealth = realHeal;
         }
-
-        if (transform.parent.GetComponentInChildren<DamageAbsorption>() != null)
-        {
-            _recHealth += _recHealth * 0.1f;
-        }
-
+        Debug.Log("Real Heal - " + _recHealth);
         if (_ticksCount > 0)
         Player.GetComponent<ManaPlayer>().AddMana(_recHealth * _ticksCount * 0.1f);
-        Debug.Log(_recHealth);
     }
     private void DestroyThis()
     {

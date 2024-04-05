@@ -21,7 +21,7 @@ public class ManaPlayer : MonoBehaviour
     }
     public void AddMana(float manaValue)
     {
-        Mana += (int)manaValue;
+        Mana += manaValue;
 
         float newScaleX = Mana / MaxMana;
         ManaBar.transform.localScale = new Vector3(newScaleX, 1.0f, 1.0f);
@@ -37,15 +37,8 @@ public class ManaPlayer : MonoBehaviour
         TextMeshPro newPrefab = Instantiate(PrefabText, DamageSpawn.position, Quaternion.identity);
         newPrefab.transform.SetParent(transform);
 
-        if (Mana <= 0)
-        {
-            Mana = 0;
-        }
+        Mana = Mathf.Clamp(Mana, 0, MaxMana);
 
-        if (Mana >= MaxMana)
-        {
-            Mana = MaxMana;
-        }
     }
     public void UseMana(float manaValue)
     {
@@ -54,14 +47,7 @@ public class ManaPlayer : MonoBehaviour
         float newScaleX = Mana / MaxMana;
         ManaBar.transform.localScale = new Vector3(newScaleX, 1.0f, 1.0f);
 
-        if (Mana <= 0)
-        {
-            Mana = 0;
-        }
-        if (Mana >= MaxMana)
-        {
-            Mana = MaxMana;
-        }
+        Mana = Mathf.Clamp(Mana, 0, MaxMana);
     }
 
     private IEnumerator RegenirateMana()

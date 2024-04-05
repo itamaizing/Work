@@ -164,7 +164,14 @@ public class FourRangeRecovery : AbilityBase
 	{
 		if (_castCoroutine == null)
 		{
-			_castCoroutine = StartCoroutine(CastProtect(_castTime));
+			if(TargetParent == transform.parent.gameObject)
+			{
+				_castCoroutine = StartCoroutine(CastProtect(0f));
+			}
+			else
+			{
+                _castCoroutine = StartCoroutine(CastProtect(_castTime));
+            }
 		}
 	}
 
@@ -216,12 +223,6 @@ public class FourRangeRecovery : AbilityBase
 		_player.GetComponent<PlayerMove>().CanMove = true;
 		Heal();
     }
-	private IEnumerator Cooldown(float time)
-	{
-		canCast = false;
-		yield return new WaitForSeconds(time);
-		canCast = true;
-	}
 
 	private IEnumerator EnemiesDoubleClick()
 	{
@@ -246,6 +247,6 @@ public class FourRangeRecovery : AbilityBase
 		}
 		Select.GetComponent<SelectObject>().CanSelect = true;
 		ToggleAbility.isOn = false;
-        StartCoroutine(Cooldown(4f));
+		TargetParent = null;
     }
 }

@@ -154,7 +154,7 @@ public class DarkTwoRangeProtection : AbilityBase
     {
         if (TargetParent != null)
         {
-            GetComponent<ManaPlayer>().Use(20f);
+            transform.parent.GetComponent<ManaPlayer>().UseMana(20f);
 
             TargetParent.AddComponent<DebaffRepeatedDamage>();
             TargetParent.GetComponent<DebaffRepeatedDamage>().CastDebaff(8f);

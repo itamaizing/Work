@@ -16445,6 +16445,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 500242583}
     - target: {fileID: 3423861005672603737, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+      propertyPath: BaffPrefab
+      value: 
+      objectReference: {fileID: 2293309150977156935, guid: 0c10688185a29ff42be502b27d9fee5e, type: 3}
+    - target: {fileID: 3423861005672603737, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: IconAbility
       value: 
       objectReference: {fileID: 1393632188}
