@@ -22,8 +22,9 @@ public class IceCloudProjectile : MonoBehaviour
 		//damage, freez etc
 		if(collision.TryGetComponent<CharacterState>(out var target))
 		{
-			target.energy = dad.GetComponent<ManaPlayer>();
+			target.energy = dad.GetComponent<EnergyPlayer>();
 			target.ChangeState(new FrozenState());
+			GetComponent<Collider2D>().enabled = false;
 		}
 
 		if(_hitEffect != null)

@@ -10,6 +10,7 @@ public class AbilityManager : MonoBehaviour
 	private AbilityBase nextAbility;
 	private PlayerMove _playerMove;
 
+	private bool _canUse = true;
 
 	private void Awake()
 	{
@@ -46,7 +47,7 @@ public class AbilityManager : MonoBehaviour
 			abilityQueue.Add(ability);
 		}
 
-		if (abilityQueue.Count == 1 || abilityQueueAutoattack.Count == 1) // Если это первая способность в очереди, начните ее выполнение
+		if (abilityQueue.Count == 1 || abilityQueueAutoattack.Count == 1 && _canUse) // Если это первая способность в очереди, начните ее выполнение
 		{
 			ExecuteNextAbility();
 		}
@@ -74,12 +75,12 @@ public class AbilityManager : MonoBehaviour
 
 	private void ExecuteNextAbility()
 	{
-		if (abilityQueue.Count > 0 && abilityQueue[0] != null)
+		if (abilityQueue.Count > 0 && abilityQueue[0] != null && _canUse)
 		{
 			nextAbility = abilityQueue[0];
 			nextAbility.CanDoAbility = true;
 		}
-		else if (abilityQueue.Count <= 0 && abilityQueueAutoattack.Count > 0 && abilityQueueAutoattack[0] != null)
+		else if (abilityQueue.Count <= 0 && abilityQueueAutoattack.Count > 0 && abilityQueueAutoattack[0] != null && _canUse)
 		{
 			nextAbility = abilityQueueAutoattack[0];
 			nextAbility.CanDoAbility = true;
@@ -185,4 +186,9 @@ public class AbilityManager : MonoBehaviour
 
     }
 
+	//Turn on and off abilities for player
+	public void ToggleAbility(bool canUse)
+	{
+		_canUse = canUse;
+	}
 }

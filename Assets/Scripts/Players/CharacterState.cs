@@ -259,14 +259,14 @@ public class FrozenState : ICharacterState
 			toggle.enabled = false;
         }
         //turn off abilities
-
+        character.abilityManager.ToggleAbility(false);
         if (character.gameObject.TryGetComponent<HealthPlayer>(out _playerHP))
         {
             _playerHP.sumDamageTaken = 0;
-            Debug.Log("Damage is " + (10 + character.energy.Mana / 2));
             //Какой дамаг получаем? физический или магический
-            _playerHP.TakePhisicDamage(10 + character.energy.Mana / 2);
-            _duration = 1 + character.energy.Mana / 20; //тут мана того кто стрелял
+            _playerHP.TakePhisicDamage(10 + character.energy.Energy / 2);
+            _duration = 1 + character.energy.Energy / 20; //тут мана того кто стрелял
+            //character.energy.UseEnergy(5);
         }
         else
         {
@@ -276,7 +276,7 @@ public class FrozenState : ICharacterState
 
     public void UpdateState(CharacterState character)
 	{
-		Debug.Log("SumDamageTaken " + _playerHP.sumDamageTaken);
+		//Debug.Log("SumDamageTaken " + _playerHP.sumDamageTaken);
 		_duration -=Time.deltaTime;
 		if (_playerHP.sumDamageTaken >= 30 || _duration < 0)
         {
@@ -289,6 +289,7 @@ public class FrozenState : ICharacterState
 	{
 		Debug.Log("Exiting Frozen State");
 
+		character.abilityManager.ToggleAbility(true);
 		List<Toggle> toggles = character.gameObject.GetComponent<PlayerMove>().AbilitiesOnTargetToggles;
 
 		foreach (Toggle toggle in toggles)
@@ -304,10 +305,11 @@ public class FrozenState : ICharacterState
 public class CharacterState : MonoBehaviour
 {
     [SerializeField] private ICharacterState currentState;
-
+    public AbilityManager abilityManager;
     public SelectObject Select;
+    
     //person who shoted
-    public ManaPlayer energy;
+    [HideInInspector]public EnergyPlayer energy;
 
     private void Start()
     {

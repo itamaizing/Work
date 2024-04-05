@@ -198,7 +198,6 @@ public class Icecloud : AbilityBase
 
 		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		Vector2 lookDir = _mousePos - _rb.position;
-		Debug.Log(lookDir + " Mouse pos vector is");
 		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
 		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
 		projectile.dad = _rb.gameObject;
