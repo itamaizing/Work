@@ -31,8 +31,11 @@ public abstract class Ability : MonoBehaviour
 
     protected virtual void Start()
     {
-        _currentChargers = _maxCharges;
-        SetCurrentChargeText(_currentChargers);
+        if (_isUseCharges)
+        {
+            _currentChargers = _maxCharges;
+            SetCurrentChargeText(_currentChargers);
+        }
     }
 
     protected virtual void Update()

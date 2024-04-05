@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 7f48d90d77134e1a88a9b5b51bcc5e13
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - _iconAbility: {instanceID: 0}
+  - _toggleAbility: {instanceID: 0}
+  - _abilitiesPanel: {instanceID: 0}
+  - _mana: {instanceID: 0}
+  - _currentChargeText: {instanceID: 0}
+  - _fireworksPref: {fileID: 5320143867127242726, guid: 95af11e504f859f40a21a8e8a3a90f83, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
