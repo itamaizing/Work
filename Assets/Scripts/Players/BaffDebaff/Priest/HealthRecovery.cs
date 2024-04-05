@@ -70,9 +70,6 @@ public class HealthRecovery : BaseEffect
         if (isRecovery)
         {
             StartCoroutine(Cooldown());
-            AddTick();
-            transform.parent.GetComponent<HealthPlayer>().AddHeal(_recHealth);
-            FourthBaffEvent?.Invoke(_recHealth);
         }
         else if (Time.time >= _recDuration + Timer)
         {
@@ -113,6 +110,9 @@ public class HealthRecovery : BaseEffect
     {
         isRecovery = false;
         yield return new WaitForSeconds(_recCooldown);
+        AddTick();
+        transform.parent.GetComponent<HealthPlayer>().AddHeal(_recHealth);
+        FourthBaffEvent?.Invoke(_recHealth);
         isRecovery = true;
 
     }
