@@ -56,7 +56,8 @@ namespace Players.Abilities.Genjalf.Push_Ability
 
                     _enemies.Add(item.transform.gameObject, dir);
                     item.transform.GetComponent<HealthPlayer>().TakeMagicDamage(_damage);
-                    Instantiate(_blindPref, item.transform).Init(item.transform.gameObject, _blindDuration);
+
+                    ApplyDebuffOnTarget(item.transform.gameObject);
                 }
             }
             _pushJob = StartCoroutine(PushCoroutine());
@@ -67,6 +68,11 @@ namespace Players.Abilities.Genjalf.Push_Ability
             var particle = Instantiate(_castPrefab, transform.position, Quaternion.identity, null);
             ParticleSystem.ShapeModule shape = particle.shape;
             shape.radius = _radius;
+        }
+
+        private void ApplyDebuffOnTarget(GameObject target)
+        {
+            Instantiate(_blindPref, target.transform).Init(target.transform.gameObject, _blindDuration);
         }
 
         private IEnumerator PushCoroutine()
