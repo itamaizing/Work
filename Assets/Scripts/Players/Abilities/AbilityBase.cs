@@ -503,7 +503,7 @@ public abstract class AbilityBase : MonoBehaviour
 		return RectTransformUtility.RectangleContainsScreenPoint(rectTransform, Input.mousePosition, Camera.main);
 	}
 
-	public void CancelAbilityOnClick()
+	public virtual void CancelAbilityOnClick()
 	{
 		Destroy(NewAbilityPrefab);
 		ToggleAbility.isOn = false;

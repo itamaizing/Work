@@ -67,6 +67,11 @@ public class ThreeMeleeAttack : AbilityBase
         }
     }
 
+    public override void CancelAbilityOnClick()
+    {
+        StartCoroutine(Stop());
+        base.CancelAbilityOnClick();
+    }
     protected override void HandleToggleAbilityOn()
     {
         // ¬ключенный ToggleAbility
