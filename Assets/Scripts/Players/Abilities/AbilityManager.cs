@@ -11,12 +11,9 @@ public class AbilityManager : MonoBehaviour
 	private AbilityBase nextAbility;
 	private PlayerMove _playerMove;
 
-	private LastAbility _lastAbility;
-
     private void Awake()
 	{
 		_playerMove = GetComponentInParent<PlayerMove>();
-		_lastAbility = GetComponent<LastAbility>();
 	}
 
 	private void OnEnable()
@@ -178,17 +175,6 @@ public class AbilityManager : MonoBehaviour
 		}
 	}
 
-
-    private void ChangeAutoAttackState()
-    {
-        if (abilityQueueAutoattack.Count > 0 && abilityQueueAutoattack[0] != null)
-        {
-            //abilityQueueAutoattack[0].CanDoAbility = !abilityQueueAutoattack[0].CanDoAbility;
-            abilityQueueAutoattack[0].CanDealDamageOrHeal = !abilityQueueAutoattack[0].CanDealDamageOrHeal;
-        }
-
-    }
-
     private void ChangeAutoAttackStateToTrue()
     {
         if (abilityQueueAutoattack.Count > 0 && abilityQueueAutoattack[0] != null && abilityQueueAutoattack[0].CanDealDamageOrHeal == false )
@@ -196,7 +182,6 @@ public class AbilityManager : MonoBehaviour
 			//abilityQueueAutoattack[0].CanDoAbility = !abilityQueueAutoattack[0].CanDoAbility;
 			abilityQueueAutoattack[0].CanDealDamageOrHeal = true;
             Debug.LogWarningFormat("ChangeAutoAttackStateToTrue");
-			//_lastAbility.AddLastAbility(abilityQueueAutoattack[0]);
         }
 
     }
@@ -211,30 +196,4 @@ public class AbilityManager : MonoBehaviour
         }
 
     }
-
-    [ContextMenu("Show Abilities Queue Info")]
-	private void ShowAbilitiesQueue()
-	{
-		//Debug.LogWarningFormat("Show Ability queue");
-		//foreach (AbilityBase item in abilityQueue)
-		//{
-		//	Debug.LogWarning(abilityQueue.IndexOf(item));
-		//	Debug.LogWarning(abilityQueue[abilityQueue.IndexOf(item)].CanDoAbility);
-
-  //      }
-
-  //      Debug.LogWarningFormat("Show AutoAttack queue");
-  //      Debug.LogWarning(abilityQueueAutoattack.Count);
-  //      Debug.LogWarningFormat($"{abilityQueueAutoattack[0].CanDealDamageOrHeal}");
-
-  //      Debug.LogWarningFormat($"NextAbility: {nextAbility}");
-
-        Debug.LogWarningFormat("Last ability info");
-        Debug.LogWarning($"CanDoAbility:{_lastAbility.LastUseAbility.CanDoAbility}");
-        Debug.LogWarning($"CanDealDamageOrHeal: {_lastAbility.LastUseAbility.CanDealDamageOrHeal}");
-		Debug.LogWarning($"CanDrawCircle: {_lastAbility.LastUseAbility.CanDrawCircle}");
-        Debug.LogWarning($"CanUseAbility: {_lastAbility.LastUseAbility.CanUseAbility}");
-        Debug.LogWarning($"IsActiveAbility: {_lastAbility.LastUseAbility.IsActiveAbility}");
-    }
-
 }

@@ -18,14 +18,6 @@ public class LastAbility : MonoBehaviour
         TwoClick = false;
     }
 
-    public void ClearLastAbility()
-    { 
-        LastUseAbility = null;
-        OneClick = false;
-        TwoClick = false;
-        Debug.LogWarningFormat("LastAbility Cleared");
-    }
-
     private void Update()
     {
         if(IsCanUseLastAbility && LastUseAbility != null && Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
