@@ -12,7 +12,7 @@ public class Fireworks : MonoBehaviour
     private Transform _target;
     private List<Collider2D> _collisions = new List<Collider2D>();
 
-    public List<Collider2D> Collisions => _collisions;
+    public List<Collider2D> Collisions { get => _collisions; set => _collisions = value; }
 
     private void Start()
     {

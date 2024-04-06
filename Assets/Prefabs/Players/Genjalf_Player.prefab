@@ -366,12 +366,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f48d90d77134e1a88a9b5b51bcc5e13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _fireWorks: {fileID: 6121524374494825899}
-  _fireWorksPreAblity: {fileID: 8128954214824010103}
+  _activationButton: 50
   _iconAbility: {fileID: 0}
   _toggleAbility: {fileID: 0}
   _abilitiesPanel: {fileID: 0}
-  _manaCost: {fileID: 7086426748638987796}
+  _mana: {fileID: 7194231038919683107}
+  _manaCost: 0
+  _isUseCharges: 0
+  _currentChargeText: {fileID: 0}
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _fireworksPref: {fileID: 5320143867127242726, guid: 95af11e504f859f40a21a8e8a3a90f83, type: 3}
+  _manaCostPerTick: 3
+  _duration: 1.3
+  _length: 5
+  _width: 0.8
+  _extraWidth: 3
+  _positionForExtraWidth: 4
+  _damageRate: 0.1
+  _minDamagePerTick: 3
+  _maxDamagePerTick: 6
+  _percentFirstTarget: 1
+  _percentSecondTarget: 0.7
+  _percentThirdTarget: 0.3
+  _percentOtherTarget: 0
 --- !u!114 &3843699627799185963
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2770,7 +2788,7 @@ PrefabInstance:
     - target: {fileID: 2923381398589063547, guid: badc00e91843e5f41a1b8cf804468ff6, type: 3}
       propertyPath: shootFireworks
       value: 
-      objectReference: {fileID: 4800092477462556513}
+      objectReference: {fileID: 0}
     - target: {fileID: 4188523998890498323, guid: badc00e91843e5f41a1b8cf804468ff6, type: 3}
       propertyPath: m_SortingOrder
       value: 1
@@ -2854,7 +2872,7 @@ PrefabInstance:
     - target: {fileID: 6451889765325646418, guid: badc00e91843e5f41a1b8cf804468ff6, type: 3}
       propertyPath: shootFireworks
       value: 
-      objectReference: {fileID: 4800092477462556513}
+      objectReference: {fileID: 0}
     - target: {fileID: 7531091499775318389, guid: badc00e91843e5f41a1b8cf804468ff6, type: 3}
       propertyPath: _shootV2
       value: 
@@ -2862,7 +2880,7 @@ PrefabInstance:
     - target: {fileID: 7531091499775318389, guid: badc00e91843e5f41a1b8cf804468ff6, type: 3}
       propertyPath: shootFireworks
       value: 
-      objectReference: {fileID: 4800092477462556513}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2871,11 +2889,6 @@ PrefabInstance:
 --- !u!4 &5633850860356645498 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6398867345757733944, guid: badc00e91843e5f41a1b8cf804468ff6, type: 3}
-  m_PrefabInstance: {fileID: 1648918281587439170}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &6121524374494825899 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4762037140722973673, guid: badc00e91843e5f41a1b8cf804468ff6, type: 3}
   m_PrefabInstance: {fileID: 1648918281587439170}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6477007706928623935
