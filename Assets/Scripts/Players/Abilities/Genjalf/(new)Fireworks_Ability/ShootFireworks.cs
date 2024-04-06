@@ -56,13 +56,41 @@ public class ShootFireworks : Ability
         return squaredRangeA.CompareTo(squaredRangeB);
     }
 
-    private IEnumerator UseCoroutine()
+    private void CreateFireworks()
     {
         _fireworks = Instantiate(_fireworksPref, transform);
         _fireworks.SetLength(_length);
         _fireworks.SetWidth(_width);
         _fireworks.SetPositionForExtraWidth(_positionForExtraWidth * 2);
         _fireworks.SetExtraWidth(_extraWidth);
+    }
+
+    private void DoDamage()
+    {
+        for (int i = 0; i < _enemies.Count; i++)
+        {
+            float currentDamage = Random.Range(_minDamagePerTick, _maxDamagePerTick + 1);
+            switch (i)
+            {
+                case 0:
+                    _enemies[i].TakeMagicDamage(currentDamage * _percentFirstTarget);
+                    break;
+                case 1:
+                    _enemies[i].TakeMagicDamage(currentDamage * _percentSecondTarget);
+                    break;
+                case 2:
+                    _enemies[i].TakeMagicDamage(currentDamage * _percentThirdTarget);
+                    break;
+                default:
+                    _enemies[i].TakeMagicDamage(currentDamage * _percentOtherTarget);
+                    break;
+            }
+        }
+    }
+
+    private IEnumerator UseCoroutine()
+    {
+        CreateFireworks();
 
         while (Input.GetMouseButtonDown(0) == false)
         {
@@ -73,27 +101,21 @@ public class ShootFireworks : Ability
 
         RaycastHit2D[] rayHit = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
         if (rayHit.Length > 0 && rayHit[0].transform.CompareTag("Enemies"))
-        {
             _fireworks.SetTarget(rayHit[0].transform);
-        }
-        float time = 0;
+
+        float time = 0 + _damageRate * 2;
         float damageTime = 0;
 
-        while (time < _duration)
+        while (time < _duration && Mana.Mana >= _manaCostPerTick)
         {
             time += Time.deltaTime;
             damageTime += Time.deltaTime;
-
-            Mana.UseMana(_manaCostPerTick);
-
-            SortEnemiesByDistance();
 
             if (damageTime < _damageRate)
             {
                 yield return null;
                 continue;
             }
-
             _enemies.Clear();
 
             foreach (var item in _fireworks.Collisions)
@@ -103,26 +125,9 @@ public class ShootFireworks : Ability
                     _enemies.Add(enemy);
                 }
             }
-
-            for (int i = 0; i < _enemies.Count; i++)
-            {
-                float currentDamage = Random.Range(_minDamagePerTick, _maxDamagePerTick + 1);
-                switch (i)
-                {
-                    case 0:
-                        _enemies[i].TakeMagicDamage(currentDamage * _percentFirstTarget);
-                        break;
-                    case 1:
-                        _enemies[i].TakeMagicDamage(currentDamage * _percentSecondTarget);
-                        break;
-                    case 2:
-                        _enemies[i].TakeMagicDamage(currentDamage * _percentThirdTarget);
-                        break;
-                    default:
-                        _enemies[i].TakeMagicDamage(currentDamage * _percentOtherTarget);
-                        break;
-                }
-            }
+            SortEnemiesByDistance();
+            Mana.UseMana(_manaCostPerTick);
+            DoDamage();
             damageTime = 0;
             yield return null;
         }

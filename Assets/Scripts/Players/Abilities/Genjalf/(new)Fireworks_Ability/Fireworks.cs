@@ -9,6 +9,7 @@ public class Fireworks : MonoBehaviour
     [SerializeField] private BoxCollider2D _colliderVerical;
     [SerializeField] private BoxCollider2D _colliderHorizontal;
 
+    private float _inactiveTransparency = 0.35f;
     private Transform _target;
     private List<Collider2D> _collisions = new List<Collider2D>();
 
@@ -16,16 +17,7 @@ public class Fireworks : MonoBehaviour
 
     private void Start()
     {
-        _colliderVerical.enabled = false;
-        _colliderHorizontal.enabled = false;
-
-        _spriteRendererVerical.color = new Color
-            (
-            _spriteRendererVerical.color.r,
-            _spriteRendererVerical.color.g,
-            _spriteRendererVerical.color.b,
-            .4f
-            );
+        SetInactive();
     }
 
     private void Update()
@@ -47,6 +39,34 @@ public class Fireworks : MonoBehaviour
             _spriteRendererVerical.color.g,
             _spriteRendererVerical.color.b,
             1
+            );
+        _spriteRendererHorizontal.color = new Color
+            (
+            _spriteRendererHorizontal.color.r,
+            _spriteRendererHorizontal.color.g,
+            _spriteRendererHorizontal.color.b,
+            1
+            );
+    }
+
+    public void SetInactive()
+    {
+        _colliderVerical.enabled = false;
+        _colliderHorizontal.enabled = false;
+
+        _spriteRendererVerical.color = new Color
+            (
+            _spriteRendererVerical.color.r,
+            _spriteRendererVerical.color.g,
+            _spriteRendererVerical.color.b,
+            _inactiveTransparency
+            );
+        _spriteRendererHorizontal.color = new Color
+            (
+            _spriteRendererHorizontal.color.r,
+            _spriteRendererHorizontal.color.g,
+            _spriteRendererHorizontal.color.b,
+            _inactiveTransparency
             );
     }
 
