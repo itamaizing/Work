@@ -16797,6 +16797,10 @@ PrefabInstance:
       propertyPath: Health
       value: 333
       objectReference: {fileID: 0}
+    - target: {fileID: 7601164126198867055, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+      propertyPath: evamel
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 8264867649627807809, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: MoveSpeed
       value: 300

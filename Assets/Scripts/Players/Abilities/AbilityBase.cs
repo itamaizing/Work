@@ -20,7 +20,14 @@ public enum AbilityType
 public enum AttackRangeType
 {
 	MeleeAttack,
-	RangeAttack
+	RangeAttack,
+	Inner
+}
+
+public enum DamageType
+{
+	Magical,
+	Physical
 }
 
 public abstract class AbilityBase : MonoBehaviour
@@ -46,6 +53,7 @@ public abstract class AbilityBase : MonoBehaviour
 	[HideInInspector] public AttackType AttackType;
 	[HideInInspector] public AbilityType AbilityType;
 	[HideInInspector] public AttackRangeType AttackRangeType;
+	[HideInInspector] public DamageType DamageType;
 	[HideInInspector] public GameObject TargetParent;
 	[HideInInspector] public bool CanMakeDamage = false;
 	[HideInInspector] public bool CanDealDamageOrHeal = false;
@@ -530,7 +538,7 @@ public abstract class AbilityBase : MonoBehaviour
 		}
 	}
 
-	public void HandleDistanceToTarget()
+	public virtual void HandleDistanceToTarget()
 	{
 		// Проверка дистанции
 		if (CanDoAbility)

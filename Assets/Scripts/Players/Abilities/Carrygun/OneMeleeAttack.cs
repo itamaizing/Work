@@ -28,6 +28,7 @@ public class OneMeleeAttack : AbilityBase
         AttackType = AttackType.Autoattack;
         AbilityType = AbilityType.DamageAbility;
         AttackRangeType = AttackRangeType.MeleeAttack;
+        DamageType = DamageType.Physical;
     }
 
     private void Update()
@@ -272,7 +273,7 @@ public class OneMeleeAttack : AbilityBase
         }
         else
         {
-            _targetHealth.TakePhisicDamage(_damageValue);
+            _targetHealth.TakeDamage(_damageValue, DamageType, AttackRangeType);
             _player.GetComponent<PsionicaMelee>().MakePsionica(_damageValue);
             HandleActivePsionica();
             CanMakeDamage = false;
@@ -287,6 +288,6 @@ public class OneMeleeAttack : AbilityBase
     private IEnumerator DamageCooldown(float activePsionica)
     {
         yield return new WaitForSeconds(0.1f);
-        _targetHealth.TakeMagicDamage(activePsionica);
+        _targetHealth.TakeDamage(activePsionica, DamageType.Magical, AttackRangeType);
     }
 }

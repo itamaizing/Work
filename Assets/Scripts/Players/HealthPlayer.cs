@@ -10,6 +10,15 @@ public class HealthPlayer : MonoBehaviour
     [SerializeField][Range(0, 100)] private float _hpRegenerationDelay = 3;
     private WaitForSeconds _waitForRegenHp;
 
+    [Header("Def Stats")]
+    [SerializeField] private float defPh = 10f;
+    [SerializeField] private float defMag = 10f;
+    [SerializeField] private int evamel = 10;
+    [SerializeField] private int evaran = 10;
+    [Space]
+    [SerializeField] private float absPh = 0f;
+    [SerializeField] private float absMag = 0f;
+
     public float Health;
     public float MaxHealth;
     public GameObject HealthBar;
@@ -49,7 +58,6 @@ public class HealthPlayer : MonoBehaviour
     {
 
         HandleAbsorptionOrRepeat(ref damageValue);
-
         if (damageValue > 0)
         {
             StackTrace stackTrace = new StackTrace();
@@ -72,6 +80,120 @@ public class HealthPlayer : MonoBehaviour
                 Die();
             }
             ShowDamagePrefab(-modifiedDamage, new Color(1, 0, 0, 1), new Color(1, 0, 0, 0.5f));
+            UpdateHealthBar();
+            UpdateHealthBarText();
+        }
+    }
+
+    private float CalculateDamageWithStats(float damageValue, DamageType damageType, AttackRangeType attackRangeType)
+    {
+        if (damageType == DamageType.Magical)
+        {
+            return damageValue - (damageValue * defMag / 100);
+        }
+
+        else if (damageType == DamageType.Physical)
+        {
+            switch (attackRangeType)
+            {
+                case AttackRangeType.MeleeAttack:
+                    if (UnityEngine.Random.Range(0, 100) <= evamel)
+                    {
+                        ShowDamagePrefab(new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f), "miss");
+                        return 0;
+                    }
+                    return damageValue - (damageValue * defPh / 100);
+
+                case AttackRangeType.RangeAttack:
+                    if (UnityEngine.Random.Range(0, 100) <= evaran)
+                    {
+                        ShowDamagePrefab(new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f), "miss");
+                        return 0;
+                    }
+                    return damageValue - (damageValue * defPh / 100);
+
+                case AttackRangeType.Inner:
+                    return damageValue;
+
+                default:
+                    return 0; // не указали AttackRangeType
+
+            }
+        }
+        return 0; // не указали DamageType
+    }
+
+    private float CalculateDamageForShields(float damageValue, DamageType damageType)
+    {
+        if (absPh > 0 && damageValue > 0 && damageType == DamageType.Physical)
+        {
+            float difference = absPh - damageValue;
+            if (difference > 0)
+            {
+                absPh -= damageValue;
+                damageValue = 0;
+                return damageValue;
+            }
+            else if (difference < 0)
+            {
+                damageValue = Mathf.Abs(difference);
+                absPh = 0;
+                return damageValue;
+            }
+            else
+            {
+                absPh = 0;
+                damageValue = 0;
+                return damageValue;
+            }
+        }
+        else if (absMag > 0 && damageValue > 0 && damageType == DamageType.Magical)
+        {
+            float difference = absMag - damageValue;
+            if (difference > 0)
+            {
+                absMag -= damageValue;
+                damageValue = 0;
+                return damageValue;
+            }
+            else if (difference < 0)
+            {
+                damageValue = Mathf.Abs(difference);
+                absMag = 0;
+                return damageValue;
+            }
+            else
+            {
+                absMag = 0;
+                damageValue = 0;
+                return damageValue;
+            }
+        }
+        return damageValue;
+    }
+    public void TakeDamage(float damageValue, DamageType damageType, AttackRangeType attackRangeType)
+    {
+        UnityEngine.Debug.LogWarning($"baseDamage: {damageValue}");
+
+        damageValue = CalculateDamageWithStats(damageValue, damageType, attackRangeType);
+
+        DisplayTakenDamage(damageValue, damageType);
+        
+        damageValue = CalculateDamageForShields(damageValue, damageType);
+
+        HandleAbsorptionOrRepeat(ref damageValue);
+
+        if (damageValue > 0)
+        {
+            
+            Health -= damageValue;
+            if (Health <= 0)
+            {
+                Health = 0;
+                Die();
+            }
+            
+            //ShowDamagePrefab(-modifiedDamage, new Color(1, 0, 0, 1), new Color(1, 0, 0, 0.5f));
             UpdateHealthBar();
             UpdateHealthBarText();
         }
@@ -104,6 +226,11 @@ public class HealthPlayer : MonoBehaviour
             UpdateHealthBar();
             UpdateHealthBarText();
         }
+    }
+
+    private void AddShileds(float shiledsAmount, float shiledsTimeDuration)
+    {
+
     }
 
     public void MakePhisicDamage(float damageValue, GameObject target)
@@ -214,7 +341,17 @@ public class HealthPlayer : MonoBehaviour
 
         }
     }
-
+    private void DisplayTakenDamage(float damageValue, DamageType damageType)
+    {
+        if (damageType == DamageType.Physical)
+        {
+            ShowDamagePrefab(-damageValue, new Color(1, 0, 0, 1), new Color(1, 0, 0, 0.5f));
+        }
+        if (damageType == DamageType.Magical)
+        {
+            ShowDamagePrefab(-damageValue, new Color(140, 0, 255, 1), new Color(140, 0, 255, 0.5f));
+        }
+    }
     private void ShowDamagePrefab(float value, Color startColor, Color endColor)
     {
         if(value > 0 && value < 1)
@@ -223,6 +360,15 @@ public class HealthPlayer : MonoBehaviour
         }
         value = (int)value;
         PrefabText.text = (value > 0 ? "+" : "") + value.ToString();
+        PrefabText.GetComponent<DamagePrefab>().StartColor = startColor;
+        PrefabText.GetComponent<DamagePrefab>().EndColor = endColor;
+        TextMeshPro newPrefab = Instantiate(PrefabText, DamageSpawn.position, Quaternion.identity);
+        newPrefab.transform.SetParent(transform);
+    }
+
+    private void ShowDamagePrefab(Color startColor, Color endColor, string text)
+    {
+        PrefabText.text = text;
         PrefabText.GetComponent<DamagePrefab>().StartColor = startColor;
         PrefabText.GetComponent<DamagePrefab>().EndColor = endColor;
         TextMeshPro newPrefab = Instantiate(PrefabText, DamageSpawn.position, Quaternion.identity);
@@ -251,5 +397,14 @@ public class HealthPlayer : MonoBehaviour
             yield return _waitForRegenHp;
             this.RegenHP(_hpRegenerationValue);
         }
+    }
+
+    private IEnumerator CoroutineAddShield(float shieldsDuration) 
+    {
+
+        
+        yield return new WaitForSeconds(shieldsDuration);
+
+
     }
 }
