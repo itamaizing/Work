@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using TMPro;
 using UnityEngine;
@@ -15,9 +16,11 @@ public class HealthPlayer : MonoBehaviour
     [SerializeField] private float defMag = 10f;
     [SerializeField] private int evamel = 10;
     [SerializeField] private int evaran = 10;
+
+    [Header("Shields")]
+    public List<Shielding> shields_Physic = new List<Shielding>();
+    public List<Shielding> shields_Magic = new List<Shielding>();
     [Space]
-    [SerializeField] private float absPh = 0f;
-    [SerializeField] private float absMag = 0f;
 
     public float Health;
     public float MaxHealth;
@@ -122,54 +125,99 @@ public class HealthPlayer : MonoBehaviour
         }
         return 0; // не указали DamageType
     }
+    private float SummShields(DamageType damageType)
+    {
+        float value = 0;
+
+        if (damageType == DamageType.Physical)
+        {
+            for (int i = 0; i < shields_Physic.Count; i++)
+            {
+                if (shields_Physic[i].DamageType == damageType)
+                {
+                    value += shields_Physic[i].shieldAmount;
+                }
+            }
+        }
+
+        if (damageType == DamageType.Magical)
+        {
+            for (int i = 0; i < shields_Magic.Count; i++)
+            {
+                if (shields_Magic[i].DamageType == damageType)
+                {
+                    value += shields_Magic[i].shieldAmount;
+                }
+            }
+        }
+
+        return value;
+    }
 
     private float CalculateDamageForShields(float damageValue, DamageType damageType)
     {
-        if (absPh > 0 && damageValue > 0 && damageType == DamageType.Physical)
+        if (damageType == DamageType.Physical)
         {
-            float difference = absPh - damageValue;
-            if (difference > 0)
+            if (SummShields(damageType) > damageValue)
             {
-                absPh -= damageValue;
-                damageValue = 0;
-                return damageValue;
+                for (int i = shields_Physic.Count - 1; i >= 0; i--)
+                {
+                    Shielding shield = shields_Physic[i];
+                    if (damageValue >= shield.shieldAmount)
+                    {
+                        damageValue -= shield.shieldAmount;
+                        shield.shieldAmount = 0;
+                        shields_Physic.Remove(shield);
+                    }
+                    else
+                    {
+                        shield.shieldAmount -= damageValue;
+                        return 0;
+                    }
+                }
             }
-            else if (difference < 0)
+
+            else if (SummShields(damageType) <= damageValue && SummShields(damageType) > 0)
             {
-                damageValue = Mathf.Abs(difference);
-                absPh = 0;
-                return damageValue;
+                float value = damageValue - SummShields(damageType);
+                shields_Physic.Clear();
+                return value;
             }
-            else
-            {
-                absPh = 0;
-                damageValue = 0;
-                return damageValue;
-            }
+
+            return damageValue; // если щиты <= 0
         }
-        else if (absMag > 0 && damageValue > 0 && damageType == DamageType.Magical)
+
+        else if (damageType == DamageType.Magical)
         {
-            float difference = absMag - damageValue;
-            if (difference > 0)
+            if (SummShields(damageType) > damageValue)
             {
-                absMag -= damageValue;
-                damageValue = 0;
-                return damageValue;
+                for (int i = shields_Magic.Count - 1; i >= 0; i--)
+                {
+                    Shielding shield = shields_Magic[i];
+                    if (damageValue >= shield.shieldAmount)
+                    {
+                        damageValue -= shield.shieldAmount;
+                        shield.shieldAmount = 0;
+                        shields_Magic.Remove(shield);
+                    }
+                    else
+                    {
+                        shield.shieldAmount -= damageValue;
+                        return 0;
+                    }
+                }
             }
-            else if (difference < 0)
+
+            else if (SummShields(damageType) <= damageValue && SummShields(damageType) > 0)
             {
-                damageValue = Mathf.Abs(difference);
-                absMag = 0;
-                return damageValue;
+                float value = damageValue - SummShields(damageType);
+                shields_Magic.Clear();
+                return value;
             }
-            else
-            {
-                absMag = 0;
-                damageValue = 0;
-                return damageValue;
-            }
+
+            return damageValue; // если щиты <= 0
         }
-        return damageValue;
+        return damageValue; // не указали тип урона
     }
     public void TakeDamage(float damageValue, DamageType damageType, AttackRangeType attackRangeType)
     {
@@ -228,9 +276,51 @@ public class HealthPlayer : MonoBehaviour
         }
     }
 
-    private void AddShileds(float shiledsAmount, float shiledsTimeDuration)
+    [ContextMenu ("Add Magic Shield")]
+    public void AddShields()
     {
+        DamageType dmgtype = DamageType.Magical;
+        Shielding shield = new Shielding(this, 50, dmgtype);
 
+    }
+
+    [ContextMenu("Add Physic Shield")]
+    public void AddPhysShields()
+    {
+        DamageType dmgtype = DamageType.Physical;
+        Shielding shield = new Shielding(this, 50, dmgtype);
+
+    }
+
+    [ContextMenu("Add Temporary Shield")]
+    public void AddtemporaryShield()
+    {
+        DamageType dmgtype = DamageType.Physical;
+
+        StartCoroutine(CoroutineAddShield(50, dmgtype, 5f));
+
+    }
+    
+    public void AddShieldBehavior(Shielding shielding, DamageType damageType) // вызывается в конструкторе самих щитов
+    {
+        if(damageType == DamageType.Physical)
+        {
+            shields_Physic.Add(shielding);
+        }
+        else if (damageType == DamageType.Magical)
+        {
+            shields_Magic.Add(shielding);
+        }
+    }
+
+    public void AddShield(float shieldValue, DamageType damageType)
+    {
+        Shielding shield = new Shielding(this, shieldValue, damageType);
+    }
+
+    public void AddShield(float shieldValue, DamageType damageType, float durationTime) // перегрузка для временных щитов
+    {
+        StartCoroutine(CoroutineAddShield(shieldValue, damageType, durationTime));
     }
 
     public void MakePhisicDamage(float damageValue, GameObject target)
@@ -366,7 +456,7 @@ public class HealthPlayer : MonoBehaviour
         newPrefab.transform.SetParent(transform);
     }
 
-    private void ShowDamagePrefab(Color startColor, Color endColor, string text)
+    private void ShowDamagePrefab(Color startColor, Color endColor, string text) //используется при промахе
     {
         PrefabText.text = text;
         PrefabText.GetComponent<DamagePrefab>().StartColor = startColor;
@@ -399,12 +489,30 @@ public class HealthPlayer : MonoBehaviour
         }
     }
 
-    private IEnumerator CoroutineAddShield(float shieldsDuration) 
+    private IEnumerator CoroutineAddShield(float shieldValue, DamageType damageType,float shieldsDuration) 
     {
+        Shielding shield = new TemporaryShielding(this, shieldValue, damageType, shieldsDuration);
 
-        
         yield return new WaitForSeconds(shieldsDuration);
 
+        if(damageType == DamageType.Physical)
+        {
+            if (shield != null)
+            {
+                shield.shieldAmount = 0;
+                shields_Physic.Remove(shield);
+                UnityEngine.Debug.LogWarning("Im expired");
+            }
+        }
 
+        if (damageType == DamageType.Magical)
+        {
+            if (shield != null)
+            {
+                shield.shieldAmount = 0;
+                shields_Magic.Remove(shield);
+                UnityEngine.Debug.LogWarning("Im expired");
+            }
+        }
     }
 }
