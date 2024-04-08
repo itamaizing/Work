@@ -10,9 +10,12 @@ public class Fisura : Ability
     [SerializeField] private FisuraTail _fisuraTilePrefab;
     [SerializeField] private float _width;
     [SerializeField] private float _length;
+    [SerializeField] private float _angelTileLength;
     [SerializeField] private float _liveTime;
 
     private FisuraTail _fisuraTile;
+    private FisuraTail _fisuraTileRight;
+    private FisuraTail _fisuraTileLeft;
     private Coroutine _useJob;
 
     public override void Use()
@@ -37,8 +40,8 @@ public class Fisura : Ability
 
     private IEnumerator UseCoroutine()
     {
-        Vector2 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        _fisuraTile = Instantiate(_fisuraTilePrefab, worldPosition, Quaternion.identity, null);
+        Vector2 mouseStartPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        _fisuraTile = Instantiate(_fisuraTilePrefab, mouseStartPosition, Quaternion.identity, null);
 
         while (Input.GetMouseButtonDown(0) == false)
         {
@@ -77,7 +80,18 @@ public class Fisura : Ability
             }
             yield return null;
         }
+        _fisuraTileLeft = Instantiate(_fisuraTilePrefab, _fisuraTile.transform.position, _fisuraTile.transform.rotation, _fisuraTile.transform);
+        _fisuraTileLeft.SetSize(new Vector2(_width, _angelTileLength));
+        _fisuraTileLeft.transform.Translate(new Vector3(_fisuraTile.Size.x * 2, 0, 0));
+
+        _fisuraTileRight = Instantiate(_fisuraTilePrefab, _fisuraTile.transform.position, _fisuraTile.transform.rotation, _fisuraTile.transform);
+        _fisuraTileRight.SetSize(new Vector2(_width, _angelTileLength));
+        _fisuraTileRight.transform.Translate(new Vector3(_fisuraTile.Size.x * 2, _fisuraTile.Size.y * 2 - _fisuraTileRight.Size.y * 2, 0));
+
         _fisuraTile.Activate(_liveTime);
+        _fisuraTileRight.Activate(_liveTime);
+        _fisuraTileLeft.Activate(_liveTime);
+
         _drawCircle.Clear();
         IsReady = true;
     }

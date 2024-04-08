@@ -8,6 +8,8 @@ public class FisuraTail : MonoBehaviour
     [SerializeField] private BoxCollider2D _collider;
     [SerializeField] private BoxCollider2D _trigger;
 
+    public Vector2 Size { get => _spriteRenderer.size; }
+
     private void Awake()
     {
         _collider.enabled = false;
