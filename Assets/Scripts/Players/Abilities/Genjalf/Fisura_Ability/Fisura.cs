@@ -13,6 +13,7 @@ public class Fisura : Ability
     [SerializeField] private float _length;
     [SerializeField] private float _angelTileLength;
     [SerializeField] private float _liveTime;
+    [SerializeField] private float _castDeley;
 
     private FisuraTail _fisuraTile;
     private FisuraTail _fisuraTileRight;
@@ -71,6 +72,16 @@ public class Fisura : Ability
         }
     }
 
+    private IEnumerator CastDeley()
+    {
+        float time = 0;
+        while(time < _castDeley)
+        {
+            time += Time.deltaTime;
+            yield return null;
+        }
+    }
+
     private IEnumerator UseCoroutine()
     {
         Vector2 mouseStartPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -89,6 +100,7 @@ public class Fisura : Ability
         RaycastHit2D[] rayHit = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
         if (rayHit.Length > 0 && rayHit[0].transform == transform.parent)
         {
+            yield return StartCoroutine(CastDeley());
             _fisuraTile.Rotate(_playerMove.DirectionOfMovement);
             _fisuraTile.transform.Translate(Vector2.right * 2);
             _fisuraTile.SetSizeWithoutOffset(new Vector2(_width, _length));
@@ -127,6 +139,7 @@ public class Fisura : Ability
             }
             yield return null;
         }
+        yield return StartCoroutine(CastDeley());
         AddAngleTile();
         FisuraActivate();
 

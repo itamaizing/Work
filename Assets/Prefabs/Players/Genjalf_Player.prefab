@@ -437,19 +437,20 @@ MonoBehaviour:
   _toggleAbility: {fileID: 0}
   _abilitiesPanel: {fileID: 0}
   _mana: {fileID: 7194231038919683107}
-  _manaCost: 0
+  _manaCost: 30
   _isUseCharges: 1
   _currentChargeText: {fileID: 0}
   _maxCharges: 2
-  _chargeCooldown: 15
+  _chargeCooldown: 16
   _playerMove: {fileID: 7682162387749688049}
-  _radius: 7
+  _radius: 5
   _drawCircle: {fileID: 2062510225715713123}
   _fisuraTilePrefab: {fileID: 626463425188756188, guid: 1222da39dc4bf1041891e04a5f0a7b41, type: 3}
-  _width: 0.6
-  _length: 6
-  _angelTileLength: 0.4
+  _width: 0.3
+  _length: 3
+  _angelTileLength: 0.2
   _liveTime: 4
+  _castDeley: 1.6
 --- !u!1 &1740845397034949897
 GameObject:
   m_ObjectHideFlags: 0
