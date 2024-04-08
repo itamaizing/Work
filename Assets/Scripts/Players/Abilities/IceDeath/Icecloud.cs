@@ -26,6 +26,16 @@ public class Icecloud : AbilityBase
 		AttackType = AttackType.OneAttack;
 		AbilityType = AbilityType.DamageAbility;
 		AttackRangeType = AttackRangeType.RangeAttack;
+
+
+		/*if (_player.TryGetComponent<PlayerMove>(out _playerMove))
+		{
+			Debug.Log("not null");
+		}
+		else
+		{
+			Debug.LogError("NO PLAYER");
+		}*/
 	}
 
 	void Update()
@@ -40,15 +50,10 @@ public class Icecloud : AbilityBase
 		base.HandleToggleAbility();
 		// Текущий код в методе Update
 
-		if (Input.GetMouseButtonDown(0) && Abilities.gameObject.activeSelf && ToggleAbility.enabled)
+		if (Input.GetMouseButtonDown(0) && Abilities.gameObject.activeSelf && ToggleAbility.enabled && _playerMove.IsSelect)
 		{
-			if(_player.TryGetComponent<PlayerMove>(out _playerMove))
-			{
-				if(_playerMove.IsSelect)
-				{
-					HandleLeftMouseButtonToggle();
-				}
-			}
+			HandleLeftMouseButtonToggle();
+			
 			
 		}
 	}
@@ -160,25 +165,11 @@ public class Icecloud : AbilityBase
 		}
 	}
 
-	private void Damage()
-	{
-		//to projectile
-
-		if (TargetParent != null)
-		{
-			TargetParent.GetComponent<HealthPlayer>().TakeMagicDamage(35f);
-			//_player.GetComponent<ManaPlayer>().UseMana(30f);
-
-
-			//freeze
-
-			IceCloudAbilityEvent?.Invoke(35f);
-			Recharge();
-		}
-	}
-
 	private IEnumerator CastProtect(float castTime)
 	{
+		if (!_player.TryGetComponent<PlayerMove>(out _playerMove))
+			yield break;
+
 		if (!_player.GetComponent<RunePlayer>().RemoveRune(1))
 		{
 			yield break;
@@ -192,7 +183,6 @@ public class Icecloud : AbilityBase
 			GameObject childObject = Abilities.transform.GetChild(i).gameObject;
 
 			Toggle toggle = childObject.GetComponent<Toggle>();
-
 			if (toggle != null)
 			{
 				toggle.enabled = false;
