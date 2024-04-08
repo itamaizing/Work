@@ -6,15 +6,18 @@ public class FisuraTail : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer _spriteRenderer;
     [SerializeField] private BoxCollider2D _collider;
+    [SerializeField] private BoxCollider2D _trigger;
 
     private void Awake()
     {
         _collider.enabled = false;
+        _trigger.enabled = false;
     }
 
     public void Activate(float livetime)
     {
         _collider.enabled = true;
+        _trigger.enabled = true;
         Destroy(gameObject, livetime);
     }
 
@@ -29,8 +32,10 @@ public class FisuraTail : MonoBehaviour
     {
         _spriteRenderer.size = vector2;
         _collider.size = vector2;
+        _trigger.size = vector2;
 
         _spriteRenderer.transform.Translate(new Vector3(0, vector2.y, 0));
+        _collider.transform.Translate(new Vector3(0, vector2.y, 0));
     }
 
     public void AddLength(float value)
@@ -38,7 +43,25 @@ public class FisuraTail : MonoBehaviour
         Vector2 newSize = new Vector2(_spriteRenderer.size.x, _spriteRenderer.size.y + value);
         _spriteRenderer.size = newSize;
         _collider.size = newSize;
+        _trigger.size = newSize;
 
         _spriteRenderer.transform.Translate(new Vector3(0, value, 0));
+        _collider.transform.Translate(new Vector3(0, value, 0));
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.TryGetComponent<PlayerMove>(out PlayerMove player))
+        {
+            player.GetComponent<Rigidbody2D>().isKinematic = true;
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.TryGetComponent<PlayerMove>(out PlayerMove player))
+        {
+            player.GetComponent<Rigidbody2D>().isKinematic = false;
+        }
     }
 }

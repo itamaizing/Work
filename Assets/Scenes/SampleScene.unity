@@ -17702,6 +17702,10 @@ PrefabInstance:
       propertyPath: _currentShieldChargeText
       value: 
       objectReference: {fileID: 1199823861}
+    - target: {fileID: 6121524374494825899, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7682162387749688049, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
       propertyPath: AbilityPanel
       value: 
