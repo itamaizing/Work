@@ -262,9 +262,9 @@ public class FrozenState : ICharacterState
         character.GetAbilityManager().ToggleAbility(false);
         if (character.gameObject.TryGetComponent<HealthPlayer>(out _playerHP))
         {
-            _playerHP.sumDamageTaken = 0;
             //Какой дамаг получаем? физический или магический
             _playerHP.TakePhisicDamage(10 + character.energy.Energy / 2);
+            _playerHP.sumDamageTaken = 0;
             _duration = 1 + character.energy.Energy / 20; //тут мана того кто стрелял
             //character.energy.UseEnergy(5);
         }
