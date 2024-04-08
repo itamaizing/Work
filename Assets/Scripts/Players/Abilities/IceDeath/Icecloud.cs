@@ -10,7 +10,6 @@ public class Icecloud : AbilityBase
 	[SerializeField] private Rigidbody2D _rb;
 	[SerializeField] private IceCloudProjectile _projectile;
 	//[HideInInspector] public GameObject Target;
-
 	[SerializeField] private Collider2D _collider;
 
 	public delegate void IceCloudAbilityHandler(float value);
@@ -19,6 +18,7 @@ public class Icecloud : AbilityBase
 	protected override KeyCode ActivationKey => KeyCode.Alpha2;
 
 	private Vector2 _mousePos;
+	private PlayerMove _playerMove;
 
 	private void Start()
 	{
@@ -40,9 +40,16 @@ public class Icecloud : AbilityBase
 		base.HandleToggleAbility();
 		// Текущий код в методе Update
 
-		if (Input.GetMouseButtonDown(0) && Abilities.gameObject.activeSelf && ToggleAbility.enabled && _player.GetComponent<PlayerMove>().IsSelect)
-		{			
-			HandleLeftMouseButtonToggle();
+		if (Input.GetMouseButtonDown(0) && Abilities.gameObject.activeSelf && ToggleAbility.enabled)
+		{
+			if(_player.TryGetComponent<PlayerMove>(out _playerMove))
+			{
+				if(_playerMove.IsSelect)
+				{
+					HandleLeftMouseButtonToggle();
+				}
+			}
+			
 		}
 	}
 
@@ -104,7 +111,7 @@ public class Icecloud : AbilityBase
 			StartCoroutine(ToggleDoubleClick());
 		}
 
-		else if (AbilityTypeManager.ActiveAbilityType == 1 && _player.GetComponent<PlayerMove>().IsSelect && Abilities.gameObject.activeSelf)
+		else if (AbilityTypeManager.ActiveAbilityType == 1 && _playerMove.IsSelect && Abilities.gameObject.activeSelf)
 		{
 			if (_castCoroutine != null)
 			{
@@ -191,7 +198,7 @@ public class Icecloud : AbilityBase
 				toggle.enabled = false;
 			}
 		}
-		_player.GetComponent<PlayerMove>().CanMove = false;
+		_playerMove.CanMove = false;
 		CreateCastPrefab(castTime);
 
 		yield return new WaitForSeconds(castTime);
@@ -203,7 +210,7 @@ public class Icecloud : AbilityBase
 		projectile.dad = _rb.gameObject;
 
 		_castCoroutine = null;
-		_player.GetComponent<PlayerMove>().CanMove = true;
+		_playerMove.CanMove = true;
 		Select.GetComponent<SelectObject>().CanSelect = true;
 
 		IceCloudAbilityEvent?.Invoke(35f);
