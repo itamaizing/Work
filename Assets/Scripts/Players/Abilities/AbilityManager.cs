@@ -11,6 +11,7 @@ public class AbilityManager : MonoBehaviour
 	private AbilityBase nextAbility;
 	private PlayerMove _playerMove;
 
+	private bool _canUse = true;
     private void Awake()
 	{
 		_playerMove = GetComponentInParent<PlayerMove>();
@@ -68,7 +69,7 @@ public class AbilityManager : MonoBehaviour
 
 	private void ExecuteNextAbility()
 	{
-		if (abilityQueue.Count > 0 && abilityQueue[0] != null)
+		if (abilityQueue.Count > 0 && abilityQueue[0] != null && _canUse)
 		{
 			if (abilityQueue[0].TargetParent != null) // если выбрали цель для способности, и есть автоатака, останавливаем атаку
 			{
@@ -78,7 +79,7 @@ public class AbilityManager : MonoBehaviour
             nextAbility = abilityQueue[0];
 			nextAbility.CanDoAbility = true;
         }
-		else if (abilityQueue.Count <= 0 && abilityQueueAutoattack.Count > 0 && abilityQueueAutoattack[0] != null)
+		else if (abilityQueue.Count <= 0 && abilityQueueAutoattack.Count > 0 && abilityQueueAutoattack[0] != null && _canUse)
 		{
             ChangeAutoAttackStateToTrue();
             nextAbility = abilityQueueAutoattack[0];
@@ -196,4 +197,9 @@ public class AbilityManager : MonoBehaviour
         }
 
     }
+
+	public void ToggleAbility(bool canUse)
+	{
+		_canUse = canUse;
+	}
 }

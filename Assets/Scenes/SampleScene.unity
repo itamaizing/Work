@@ -3906,7 +3906,7 @@ PrefabInstance:
       propertyPath: m_Name
       value: IceDeath
       objectReference: {fileID: 0}
-    - target: {fileID: 1105992124525835189, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+    - target: {fileID: 0}
       propertyPath: Mana
       value: 70
       objectReference: {fileID: 0}
@@ -4020,13 +4020,10 @@ PrefabInstance:
       objectReference: {fileID: 925241075}
     m_RemovedComponents:
     - {fileID: 8733775549418614246, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
-    - {fileID: 1105992124525835189, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+    - {fileID: 0}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1089694967083977132, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1543066678}
     - targetCorrespondingSourceObject: {fileID: 2319466786080694053, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 0}
@@ -6158,11 +6155,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &1470467566 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8933781320356208631, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
-  m_PrefabInstance: {fileID: 1000777840}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1478253782
 GameObject:
   m_ObjectHideFlags: 0
@@ -6758,25 +6750,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1089694967083977132, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
   m_PrefabInstance: {fileID: 1000777840}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1543066678
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1543066677}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30e849fb64ec77e4b94f9f568f688e22, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _regenerationValue: 10
-  _regenerationDelay: 3
-  _maxValue: 70
-  Energy: 70
-  EnergyBar: {fileID: 1900174103}
-  DamageSpawn: {fileID: 1470467566}
-  PrefabText: {fileID: 97509558472111251, guid: b8ec9c7fb2a215a418a41efc3aec9187, type: 3}
 --- !u!1 &1548638090
 GameObject:
   m_ObjectHideFlags: 0
@@ -8432,11 +8405,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1883004308}
   m_CullTransparentMesh: 1
---- !u!1 &1900174103 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5680468377122292335, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
-  m_PrefabInstance: {fileID: 1000777840}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1900621599
 GameObject:
   m_ObjectHideFlags: 0

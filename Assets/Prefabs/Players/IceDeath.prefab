@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 4749801897734170438}
   - component: {fileID: 8264867649627807809}
   - component: {fileID: 7601164126198867055}
-  - component: {fileID: 1105992124525835189}
   - component: {fileID: 7356665408746067551}
   - component: {fileID: 5793172127680476127}
+  - component: {fileID: 8934230934356217642}
   m_Layer: 9
   m_Name: IceDeath
   m_TagString: Enemies
@@ -212,30 +212,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _hpRegenerationValue: 10
   _hpRegenerationDelay: 3
+  defPh: 10
+  defMag: 10
+  evamel: 10
+  evaran: 10
+  shields_Physic: []
+  shields_Magic: []
   Health: 1111
   MaxHealth: 333
   HealthBar: {fileID: 3871001752529958990}
   HealthBarText: {fileID: 2549404566520559099}
   DamageSpawn: {fileID: 8933781320356208631}
   PrefabText: {fileID: 97509558472111251, guid: b8ec9c7fb2a215a418a41efc3aec9187, type: 3}
---- !u!114 &1105992124525835189
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1089694967083977132}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 538268384e2d5f64f8ee01630137a16d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _manaRegenerationValue: 10
-  _manaRegenerationDelay: 3
-  Mana: 1666
-  ManaBar: {fileID: 5680468377122292335}
-  DamageSpawn: {fileID: 8933781320356208631}
-  PrefabText: {fileID: 97509558472111251, guid: b8ec9c7fb2a215a418a41efc3aec9187, type: 3}
+  sumDamageTaken: 0
 --- !u!114 &7356665408746067551
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -248,8 +237,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7f243771c2613d40a4aecc719336ae4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _abilityManager: {fileID: 0}
   Select: {fileID: 0}
-  energy: {fileID: 1105992124525835189}
+  energy: {fileID: 0}
 --- !u!114 &5793172127680476127
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -262,6 +252,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bd22fe231e3f2e41b5e309172c34d13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _runeRegenerationDelay: 1
+  _runeRegenerationValue: 10
+  _maxRuneCount: 10
+  _runeValue: 0
+  regen: 0
+--- !u!114 &8934230934356217642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089694967083977132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30e849fb64ec77e4b94f9f568f688e22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _regenerationValue: 10
+  _regenerationDelay: 3
+  _maxValue: 70
+  Energy: 70
+  EnergyBar: {fileID: 5680468377122292335}
+  DamageSpawn: {fileID: 8933781320356208631}
+  PrefabText: {fileID: 97509558472111251, guid: b8ec9c7fb2a215a418a41efc3aec9187, type: 3}
 --- !u!1 &1255810373264063487
 GameObject:
   m_ObjectHideFlags: 0
@@ -1697,6 +1711,7 @@ MonoBehaviour:
   AttackType: 0
   AbilityType: 0
   AttackRangeType: 0
+  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1713,6 +1728,7 @@ MonoBehaviour:
   ManaCost: {fileID: 0}
   _rb: {fileID: 1935025463078411595}
   _projectile: {fileID: 748218918613675416, guid: f44e1a220c732a64f9af10c37bf5aed0, type: 3}
+  _collider: {fileID: 0}
 --- !u!1 &7761970869757356538
 GameObject:
   m_ObjectHideFlags: 0
