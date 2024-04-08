@@ -447,7 +447,7 @@ MonoBehaviour:
   _fisuraTilePrefab: {fileID: 626463425188756188, guid: 1222da39dc4bf1041891e04a5f0a7b41, type: 3}
   _width: 0.6
   _length: 6
-  _angelTileLength: 0
+  _angelTileLength: 0.4
   _liveTime: 4
 --- !u!1 &1740845397034949897
 GameObject:
