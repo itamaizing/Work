@@ -35,7 +35,8 @@ namespace Players.Abilities.Genjalf.Push_Ability
 
         public override void Use()
         {
-            PlayCost(); // затычка для визуализации
+            PlayCast(); // затычка для визуализации
+            PayCost();
 
             RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, _radius, Vector2.zero);
 
@@ -63,7 +64,12 @@ namespace Players.Abilities.Genjalf.Push_Ability
             _pushJob = StartCoroutine(PushCoroutine());
         }
 
-        private void PlayCost() // затычка для визуализации
+        public override void Cancel()
+        {
+            
+        }
+
+        private void PlayCast() // затычка для визуализации
         {
             var particle = Instantiate(_castPrefab, transform.position, Quaternion.identity, null);
             ParticleSystem.ShapeModule shape = particle.shape;

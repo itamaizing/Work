@@ -22,12 +22,15 @@ public class Fisura : Ability
 
     public override void Use()
     {
-        if (IsReady)
-        {
-            IsReady = false;
-            _drawCircle.Draw(_radius);
-            _useJob = StartCoroutine(UseCoroutine());
-        }
+        _drawCircle.Draw(_radius);
+        _useJob = StartCoroutine(UseCoroutine());
+    }
+
+    public override void Cancel()
+    {
+        StopCoroutine(_useJob);
+        Destroy(_fisuraTile.gameObject);
+        _drawCircle.Clear();
     }
 
     private bool IsMouseInRadius()
@@ -108,7 +111,7 @@ public class Fisura : Ability
             FisuraActivate();
 
             _drawCircle.Clear();
-            IsReady = true;
+            PayCost();
             yield break;
         }
 
@@ -144,6 +147,6 @@ public class Fisura : Ability
         FisuraActivate();
 
         _drawCircle.Clear();
-        IsReady = true;
+        PayCost();
     }
 }

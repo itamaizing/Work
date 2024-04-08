@@ -37,11 +37,13 @@ public class ShootFireworks : Ability
 
     public override void Use()
     {
-        if (IsReady)
-        {
-            IsReady = false;
-            _useJob = StartCoroutine(UseCoroutine());
-        }
+         _useJob = StartCoroutine(UseCoroutine());
+    }
+
+    public override void Cancel()
+    {
+        StopCoroutine(_useJob);
+        Destroy(_fireworks.gameObject);
     }
 
     private void SortEnemiesByDistance()
@@ -131,7 +133,7 @@ public class ShootFireworks : Ability
             damageTime = 0;
             yield return null;
         }
-        IsReady = true;
+        PayCost();
         Destroy(_fireworks.gameObject);
     }
 }

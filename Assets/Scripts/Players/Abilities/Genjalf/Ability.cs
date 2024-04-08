@@ -42,6 +42,26 @@ public abstract class Ability : MonoBehaviour
     protected virtual void Update()
     {
         TryActivatedAbility();
+        TryDeactivateAbility();
+    }
+
+    public abstract void Use();
+    public abstract void Cancel();
+
+    protected virtual void PayCost()
+    {
+        TryUseCharge();
+        _mana.UseMana(_manaCost);
+        _isReady = true;
+    }
+
+    protected virtual void TryDeactivateAbility()
+    {
+        if(_isReady == false && Input.GetMouseButtonDown(1) == true)
+        {
+            Cancel();
+            _isReady = true;
+        }
     }
 
     protected virtual void TryActivatedAbility()
@@ -53,15 +73,12 @@ public abstract class Ability : MonoBehaviour
 
         if (_isUseCharges)
         {
-            if (TryUseCharge() == false)
+            if (IsHaveCharge == false)
                 return;
         }
-        _mana.UseMana(_manaCost);
-
+        _isReady = false;
         Use();
     }
-
-    public abstract void Use();
 
     protected bool TryUseCharge()
     {
