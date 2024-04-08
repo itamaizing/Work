@@ -379,6 +379,7 @@ MonoBehaviour:
   _fireworksPref: {fileID: 5320143867127242726, guid: 95af11e504f859f40a21a8e8a3a90f83, type: 3}
   _manaCostPerTick: 3
   _duration: 1.3
+  _playerMove: {fileID: 7682162387749688049}
   _length: 5
   _width: 0.8
   _extraWidth: 3

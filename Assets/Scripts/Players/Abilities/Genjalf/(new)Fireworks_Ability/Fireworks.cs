@@ -24,7 +24,7 @@ public class Fireworks : MonoBehaviour
     {
         if(_target != null)
         {
-            RotateAtTarget();
+            RotateAtTarget(_target);
         }
     }
 
@@ -114,9 +114,9 @@ public class Fireworks : MonoBehaviour
         _colliderHorizontal.size = newSize;
     }
 
-    public void RotateAtTarget()
+    public void RotateAtTarget(Transform target)
     {
-        Vector3 dir = _target.position - transform.position;
+        Vector3 dir = target.position - transform.position;
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, 0, angle - 90);
     }

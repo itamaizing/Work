@@ -12462,9 +12462,17 @@ PrefabInstance:
       propertyPath: Player
       value: 
       objectReference: {fileID: 3599497829262505122}
+    - target: {fileID: 881524159458613497, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+      propertyPath: TimeCooldown
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 1378075408245915296, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
       propertyPath: m_Name
       value: GenjalfAbilitiesPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 3020127588148978686, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3654406430031878889, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
       propertyPath: m_AnchorMax.y
@@ -12490,14 +12498,34 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4113214533579725486, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+      propertyPath: m_FillAmount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4453880770094817634, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5389019125400255314, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6802063709928349458, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: f5579b5d10247654cae4bdc55ae23486, type: 3}
+    - target: {fileID: 8100305418461100218, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8272217619263896250, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 165762043}
+    - target: {fileID: 8513060982450728405, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
