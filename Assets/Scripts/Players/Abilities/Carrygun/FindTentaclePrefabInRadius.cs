@@ -41,8 +41,8 @@ namespace Players.Abilities.Carrygun
 
 			if (!tentacleFound)
 			{
-				_drawCircle.SetColor(Color.red);
-			}
+                _drawCircle.SetColor(Color.red);
+            }
 		}
 	}
 }

@@ -13811,6 +13811,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 93359973375825367, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 160970298897504573, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: _toggleTalent
       value: 
@@ -14035,6 +14039,10 @@ PrefabInstance:
       propertyPath: _cooldownButton
       value: 
       objectReference: {fileID: 1951432187}
+    - target: {fileID: 3902827016351320800, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4371443321967966874, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: m_Name
       value: Player 1 Ally
@@ -14075,6 +14083,14 @@ PrefabInstance:
       propertyPath: IconAbilityAutoattack
       value: 
       objectReference: {fileID: 5127592508111431966}
+    - target: {fileID: 4478322799016892986, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4674619588261286972, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 4916063337568309990, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: _soCircleSelect
       value: 
@@ -14159,6 +14175,18 @@ PrefabInstance:
       propertyPath: _toggleSkillsOfPredator
       value: 
       objectReference: {fileID: 343532478}
+    - target: {fileID: 7726555042889023231, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 7726555042889023231, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 7726555042889023231, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8035327276404703013, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: _iconAbility
       value: 
@@ -14179,6 +14207,10 @@ PrefabInstance:
       propertyPath: _cooldownButton
       value: 
       objectReference: {fileID: 3400928684162816447}
+    - target: {fileID: 8128395619088257888, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8337789449907410738, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -17140,8 +17172,28 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1267209661}
     - target: {fileID: 7601164126198867055, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+      propertyPath: absPh
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7601164126198867055, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+      propertyPath: defPh
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7601164126198867055, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: Health
       value: 333
+      objectReference: {fileID: 0}
+    - target: {fileID: 7601164126198867055, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+      propertyPath: defMag
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7601164126198867055, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+      propertyPath: evamel
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7601164126198867055, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+      propertyPath: evaran
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8264867649627807809, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: MoveSpeed

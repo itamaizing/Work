@@ -11,8 +11,13 @@ public class BleedingDebaff : BaseEffect
     private TwoMeleeAttack twoMeleeAttackComponent;
     [HideInInspector] public float Timer;
 
+    private AttackRangeType AttackRangeType;
+    private DamageType DamageType;
+
     void Start()
     {
+        DamageType = DamageType.Physical;
+        AttackRangeType = AttackRangeType.Inner;
         Timer = Time.time;
         Type = EffectType.Debuff;
         twoMeleeAttackComponent = FindObjectOfType<TwoMeleeAttack>();
@@ -23,7 +28,7 @@ public class BleedingDebaff : BaseEffect
     {
         if (_canMakeBleeding)
         {
-            transform.parent.GetComponent<HealthPlayer>().TakePhisicDamage(_damageValue);
+            transform.parent.GetComponent<HealthPlayer>().TakeDamage(_damageValue, DamageType, AttackRangeType);
 
             if (twoMeleeAttackComponent != null && twoMeleeAttackComponent.gameObject != transform.parent.gameObject)
             {

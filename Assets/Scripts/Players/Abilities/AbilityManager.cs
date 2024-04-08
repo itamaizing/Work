@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+//using static UnityEditor.Progress;
 
 public class AbilityManager : MonoBehaviour
 {
@@ -10,9 +11,7 @@ public class AbilityManager : MonoBehaviour
 	private AbilityBase nextAbility;
 	private PlayerMove _playerMove;
 
-	private bool _canUse = true;
-
-	private void Awake()
+    private void Awake()
 	{
 		_playerMove = GetComponentInParent<PlayerMove>();
 	}
@@ -39,15 +38,14 @@ public class AbilityManager : MonoBehaviour
 			// если есть текущая способность и число абилок в очереди = 0 и есть абилка-автоатака 
 			if (nextAbility != null && abilityQueue.Count == 0 && abilityQueueAutoattack.Count > 0)
 			{
-                // если есть префаб абилки
-                Debug.LogWarning("AutoAttack Paused dealing damage");
-				ChangeAutoAttackState(); // выключаем, но не удаляем автоатаку
+				// если есть префаб абилки
+				//DeleteCurrentAbility();
             }
 
 			abilityQueue.Add(ability);
 		}
 
-		if (abilityQueue.Count == 1 || abilityQueueAutoattack.Count == 1 && _canUse) // Если это первая способность в очереди, начните ее выполнение
+		if (abilityQueue.Count == 1 || abilityQueueAutoattack.Count == 1) // Если это первая способность в очереди, начните ее выполнение
 		{
 			ExecuteNextAbility();
 		}
@@ -62,40 +60,42 @@ public class AbilityManager : MonoBehaviour
 			nextAbility.DrawCircle.Clear();
 		}
 
-		if(abilityQueue.Count == 1) // если удаляется последняя способность - включаем автоатаку
-        {
-			ChangeAutoAttackState();
-
-        }
 		// удаляем текущую абилку
 		nextAbility.CanDoAbility = false;
 		nextAbility.CancelAbilityOnClick();
 		nextAbility = null;
-	}
+    }
 
 	private void ExecuteNextAbility()
 	{
-		if (abilityQueue.Count > 0 && abilityQueue[0] != null && _canUse)
+		if (abilityQueue.Count > 0 && abilityQueue[0] != null)
 		{
-			nextAbility = abilityQueue[0];
+			if (abilityQueue[0].TargetParent != null) // если выбрали цель для способности, и есть автоатака, останавливаем атаку
+			{
+                ChangeAutoAttackStateToFalse();
+            }
+
+            nextAbility = abilityQueue[0];
 			nextAbility.CanDoAbility = true;
-		}
-		else if (abilityQueue.Count <= 0 && abilityQueueAutoattack.Count > 0 && abilityQueueAutoattack[0] != null && _canUse)
+        }
+		else if (abilityQueue.Count <= 0 && abilityQueueAutoattack.Count > 0 && abilityQueueAutoattack[0] != null)
 		{
-			nextAbility = abilityQueueAutoattack[0];
-			nextAbility.CanDoAbility = true;
+            ChangeAutoAttackStateToTrue();
+            nextAbility = abilityQueueAutoattack[0];
+            nextAbility.CanDoAbility = true;
 			nextAbility.CanDrawCircle = true;
 
 			if (nextAbility.NewAbilityPrefab != null)
 			{
-				nextAbility.NewAbilityPrefab.SetActive(true);
+                nextAbility.NewAbilityPrefab.SetActive(true);
 			}
 		}
-	}
+    }
 
 	private void Update()
 	{
-		List<AbilityBase> abilitiesToRemove = new List<AbilityBase>();
+        
+        List<AbilityBase> abilitiesToRemove = new List<AbilityBase>();
 
 		abilityQueue.RemoveAll(item => item.ToggleAbility.isOn == false);
 		abilityQueueAutoattack.RemoveAll(item => item.ToggleAbility.isOn == false);
@@ -164,31 +164,36 @@ public class AbilityManager : MonoBehaviour
 
 		if (abilityQueue.Count > 0)
 		{
-			ChangeAutoAttackState(); //при прерывании способности включаем автоатаку
-
+			ChangeAutoAttackStateToTrue(); //при прерывании способности включаем автоатаку
 			abilityQueue[0].DrawCircle.Clear();
 			abilityQueue[0].CancelAbilityOnClick();
 			abilityQueue.RemoveAt(0);
 
-			Debug.Log("Removed ability");
+            Debug.Log("Removed ability");
 
 			return;
 		}
 	}
 
-
-    private void ChangeAutoAttackState()
+    private void ChangeAutoAttackStateToTrue()
     {
-        if (abilityQueueAutoattack.Count > 0 && abilityQueueAutoattack[0] != null)
+        if (abilityQueueAutoattack.Count > 0 && abilityQueueAutoattack[0] != null && abilityQueueAutoattack[0].CanDealDamageOrHeal == false )
         {
-            abilityQueueAutoattack[0].CanDoAbility = !abilityQueueAutoattack[0].CanDoAbility;
+			//abilityQueueAutoattack[0].CanDoAbility = !abilityQueueAutoattack[0].CanDoAbility;
+			abilityQueueAutoattack[0].CanDealDamageOrHeal = true;
+            Debug.LogWarningFormat("ChangeAutoAttackStateToTrue");
         }
 
     }
 
-	//Turn on and off abilities for player
-	public void ToggleAbility(bool canUse)
-	{
-		_canUse = canUse;
-	}
+    private void ChangeAutoAttackStateToFalse()
+    {
+        if (abilityQueueAutoattack.Count > 0 && abilityQueueAutoattack[0] != null && abilityQueueAutoattack[0].CanDealDamageOrHeal == true)
+        {
+			//abilityQueueAutoattack[0].CanDoAbility = !abilityQueueAutoattack[0].CanDoAbility;
+			abilityQueueAutoattack[0].CanDealDamageOrHeal = false;
+            Debug.LogWarningFormat("ChangeAutoAttackStateToFalse");
+        }
+
+    }
 }

@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using GlobalEvents;
 using Players.Abilities.Carrygun;
+using Players.CircleBackgroundColor;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -237,30 +239,32 @@ public class FourMeleeAttack : AbilityBase
 	{
 		DrawCircle.Draw(Distance);
 
-		if (Vector2.Distance(gameObject.transform.position, _camera.ScreenToWorldPoint(Input.mousePosition)) <= Distance)
-		{
-			DrawCircle.SetColor(Color.green);
-		}
-		else
-		{
-			DrawCircle.SetColor(Color.red);
-		}
+		//if (Vector2.Distance(gameObject.transform.position, _camera.ScreenToWorldPoint(Input.mousePosition)) <= Distance)
+		//{
+		//	DrawCircle.SetColor(Color.green);
+		//}
+		//else
+		//{
+  //          DrawCircle.SetColor(Color.red);
+  //      }
 
 		if (!_distancePrefab)
 			return;
 
-		if (Vector2.Distance(Target.transform.position, _camera.ScreenToWorldPoint(Input.mousePosition)) <= _distanceTentacles)
-		{
+		if ((Vector2.Distance(Target.transform.position, _camera.ScreenToWorldPoint(Input.mousePosition)) <= _distanceTentacles) 
+			&& (Vector2.Distance(gameObject.transform.position, _camera.ScreenToWorldPoint(Input.mousePosition)) <= Distance))
+
+        {
 			var circle = _distancePrefab.GetComponent<DrawCircle>();
 			circle.Draw(_distanceTentacles);
 			circle.SetColor(Color.green);
-		}
+        }
 		else
 		{
 			var circle = _distancePrefab.GetComponent<DrawCircle>();
 			circle.Draw(_distanceTentacles);
 			circle.SetColor(Color.red);
-		}
+        }
 	}
 
 	private void FindTentaclePrefab(float _radiusCircle)
@@ -484,7 +488,7 @@ public class FourMeleeAttack : AbilityBase
 		return;
 	}
 
-	public override void OnLeftDoubleClick()
+    public override void OnLeftDoubleClick()
 	{
 		if (ShouldUseToggleTarget() || _isInputDoubleClick)
 		{
@@ -769,7 +773,7 @@ public class FourMeleeAttack : AbilityBase
 	private IEnumerator DamageCooldown(float activePsionica)
 	{
 		yield return new WaitForSeconds(0.1f);
-		TargetParent.GetComponent<HealthPlayer>().TakeMagicDamage(activePsionica * 0.5f);
+		TargetParent.GetComponent<HealthPlayer>().TakeDamage(activePsionica * 0.5f, DamageType.Magical, AttackRangeType.RangeAttack);
 	}
 
 	public void Recharge()

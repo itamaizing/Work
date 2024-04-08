@@ -83,6 +83,6 @@ public class TentaclesPrefab : MonoBehaviour
 		else if (_enemies.Count > 0)
 		{
 			drawCircle.SetColor(Color.green);
-		}
+        }
 	}
 }
