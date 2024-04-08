@@ -40,7 +40,7 @@ public class FisuraTail : MonoBehaviour
     {
         _spriteRenderer.size = vector2;
         _collider.size = vector2;
-        _trigger.size = vector2;
+        _trigger.size = vector2 * .95f;
 
         _spriteRenderer.transform.Translate(new Vector3(0, vector2.y, 0));
         _collider.transform.Translate(new Vector3(0, vector2.y, 0));
@@ -50,7 +50,7 @@ public class FisuraTail : MonoBehaviour
     {
         _spriteRenderer.size = vector2;
         _collider.size = vector2;
-        _trigger.size = vector2;
+        _trigger.size = vector2 * .95f;
     }
 
     public void AddLength(float value)
@@ -58,7 +58,7 @@ public class FisuraTail : MonoBehaviour
         Vector2 newSize = new Vector2(_spriteRenderer.size.x, _spriteRenderer.size.y + value);
         _spriteRenderer.size = newSize;
         _collider.size = newSize;
-        _trigger.size = newSize;
+        _trigger.size = newSize * .95f;
 
         _spriteRenderer.transform.Translate(new Vector3(0, value, 0));
         _collider.transform.Translate(new Vector3(0, value, 0));
@@ -68,6 +68,7 @@ public class FisuraTail : MonoBehaviour
     {
         if (collision.TryGetComponent<PlayerMove>(out PlayerMove player))
         {
+            Debug.Log(1);
             player.GetComponent<Rigidbody2D>().isKinematic = true;
         }
     }

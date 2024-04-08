@@ -125,8 +125,8 @@ public class Fisura : Ability
 
         while (Input.GetMouseButtonDown(0) == false)
         {
-            if (IsMouseInRadius())
-            {
+            //if (IsMouseInRadius()) //код был нужен, чтобы нельзя было сделать фисуру дальше радиуса
+            //{
                 _fisuraTile.Rotate();
 
                 targetPosition = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, 0);
@@ -139,7 +139,7 @@ public class Fisura : Ability
 
                     _fisuraTile.AddLength(deltaDistance / 2);
                 }
-            }
+            //}
             yield return null;
         }
         yield return StartCoroutine(CastDeley());
