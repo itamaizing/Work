@@ -442,6 +442,7 @@ MonoBehaviour:
   _currentChargeText: {fileID: 0}
   _maxCharges: 2
   _chargeCooldown: 15
+  _playerMove: {fileID: 7682162387749688049}
   _radius: 7
   _drawCircle: {fileID: 2062510225715713123}
   _fisuraTilePrefab: {fileID: 626463425188756188, guid: 1222da39dc4bf1041891e04a5f0a7b41, type: 3}

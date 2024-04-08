@@ -30,6 +30,12 @@ public class FisuraTail : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, 0, angle - 90);
     }
 
+    public void Rotate(Vector3 dir)
+    {
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0, 0, angle);
+    }
+
     public void SetSize(Vector2 vector2)
     {
         _spriteRenderer.size = vector2;
@@ -38,6 +44,13 @@ public class FisuraTail : MonoBehaviour
 
         _spriteRenderer.transform.Translate(new Vector3(0, vector2.y, 0));
         _collider.transform.Translate(new Vector3(0, vector2.y, 0));
+    }
+
+    public void SetSizeWithoutOffset(Vector2 vector2)
+    {
+        _spriteRenderer.size = vector2;
+        _collider.size = vector2;
+        _trigger.size = vector2;
     }
 
     public void AddLength(float value)

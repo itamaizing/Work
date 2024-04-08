@@ -5,6 +5,7 @@ using UnityEngine;
 public class Fisura : Ability
 {
     [Header("Ability settings")]
+    [SerializeField] private PlayerMove _playerMove;
     [SerializeField] private float _radius;
     [SerializeField] private DrawCircle _drawCircle;
     [SerializeField] private FisuraTail _fisuraTilePrefab;
@@ -38,6 +39,38 @@ public class Fisura : Ability
         return distance <= _radius;
     }
 
+    private void AddAngleTile()
+    {
+        _fisuraTileLeft = Instantiate(_fisuraTilePrefab, _fisuraTile.transform.position, _fisuraTile.transform.rotation, _fisuraTile.transform);
+        _fisuraTileLeft.SetSize(new Vector2(_width, _angelTileLength));
+        _fisuraTileLeft.transform.Translate(new Vector3(_fisuraTile.Size.x * 2, 0, 0));
+
+        _fisuraTileRight = Instantiate(_fisuraTilePrefab, _fisuraTile.transform.position, _fisuraTile.transform.rotation, _fisuraTile.transform);
+        _fisuraTileRight.SetSize(new Vector2(_width, _angelTileLength));
+        _fisuraTileRight.transform.Translate(new Vector3(_fisuraTile.Size.x * 2, _fisuraTile.Size.y * 2 - _fisuraTileRight.Size.y * 2, 0));
+    }
+
+    private void AddAngleTileWithoutOffset()
+    {
+        _fisuraTileLeft = Instantiate(_fisuraTilePrefab, _fisuraTile.transform.position, _fisuraTile.transform.rotation, _fisuraTile.transform);
+        _fisuraTileLeft.SetSize(new Vector2(_width, _angelTileLength));
+        _fisuraTileLeft.transform.Translate(new Vector3(-_fisuraTile.Size.x * 2, -_fisuraTile.Size.y, 0));
+
+        _fisuraTileRight = Instantiate(_fisuraTilePrefab, _fisuraTile.transform.position, _fisuraTile.transform.rotation, _fisuraTile.transform);
+        _fisuraTileRight.SetSize(new Vector2(_width, _angelTileLength));
+        _fisuraTileRight.transform.Translate(new Vector3(-_fisuraTile.Size.x * 2, _fisuraTile.Size.y - _fisuraTileRight.Size.y * 2, 0));
+    }
+
+    private void FisuraActivate()
+    {
+        _fisuraTile.Activate(_liveTime);
+        if(_fisuraTileRight != null && _fisuraTileLeft != null)
+        {
+            _fisuraTileRight.Activate(_liveTime);
+            _fisuraTileLeft.Activate(_liveTime);
+        }
+    }
+
     private IEnumerator UseCoroutine()
     {
         Vector2 mouseStartPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -52,6 +85,20 @@ public class Fisura : Ability
             yield return null;
         }
         yield return null;
+
+        RaycastHit2D[] rayHit = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+        if (rayHit.Length > 0 && rayHit[0].transform == transform.parent)
+        {
+            _fisuraTile.Rotate(_playerMove.DirectionOfMovement);
+            _fisuraTile.transform.Translate(Vector2.right * 2);
+            _fisuraTile.SetSizeWithoutOffset(new Vector2(_width, _length));
+            AddAngleTileWithoutOffset();
+            FisuraActivate();
+
+            _drawCircle.Clear();
+            IsReady = true;
+            yield break;
+        }
 
         _fisuraTile.SetSize(new Vector2(_width, 0));
 
@@ -80,17 +127,8 @@ public class Fisura : Ability
             }
             yield return null;
         }
-        _fisuraTileLeft = Instantiate(_fisuraTilePrefab, _fisuraTile.transform.position, _fisuraTile.transform.rotation, _fisuraTile.transform);
-        _fisuraTileLeft.SetSize(new Vector2(_width, _angelTileLength));
-        _fisuraTileLeft.transform.Translate(new Vector3(_fisuraTile.Size.x * 2, 0, 0));
-
-        _fisuraTileRight = Instantiate(_fisuraTilePrefab, _fisuraTile.transform.position, _fisuraTile.transform.rotation, _fisuraTile.transform);
-        _fisuraTileRight.SetSize(new Vector2(_width, _angelTileLength));
-        _fisuraTileRight.transform.Translate(new Vector3(_fisuraTile.Size.x * 2, _fisuraTile.Size.y * 2 - _fisuraTileRight.Size.y * 2, 0));
-
-        _fisuraTile.Activate(_liveTime);
-        _fisuraTileRight.Activate(_liveTime);
-        _fisuraTileLeft.Activate(_liveTime);
+        AddAngleTile();
+        FisuraActivate();
 
         _drawCircle.Clear();
         IsReady = true;
