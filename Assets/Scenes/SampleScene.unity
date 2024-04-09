@@ -4755,6 +4755,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1312304230 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5002266305278314167, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+  m_PrefabInstance: {fileID: 6974731470836066952}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1313709219 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1840693606073392546, guid: eca3bd46d2933ef41855062b9afbfe29, type: 3}
@@ -16445,6 +16450,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 500242583}
     - target: {fileID: 3423861005672603737, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3423861005672603737, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: BaffPrefab
       value: 
       objectReference: {fileID: 2293309150977156935, guid: 0c10688185a29ff42be502b27d9fee5e, type: 3}
@@ -16625,9 +16634,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1402309478}
     - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+      propertyPath: _heal
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: Select
       value: 
       objectReference: {fileID: 1138358088594896431}
+    - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+      propertyPath: _damage
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: CastTime
       value: 1.4
@@ -16637,17 +16654,61 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 500242583}
     - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+      propertyPath: _manaCost
+      value: 
+      objectReference: {fileID: 1312304230}
+    - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+      propertyPath: _eosEffect
+      value: 
+      objectReference: {fileID: 3205664352808204184, guid: 9d037fb657192bd4a8d0a15b2ad680d2, type: 3}
+    - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: IconAbility
       value: 
       objectReference: {fileID: 1673173341}
+    - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+      propertyPath: _baffEffect
+      value: 
+      objectReference: {fileID: 3205664352808204184, guid: 9d037fb657192bd4a8d0a15b2ad680d2, type: 3}
+    - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+      propertyPath: isLightSide
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+      propertyPath: _manaForHeal
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: ToggleAbility
       value: 
       objectReference: {fileID: 711374990}
     - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+      propertyPath: _darkCastTime
+      value: 1.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+      propertyPath: _debaffEffect
+      value: 
+      objectReference: {fileID: 4685365934782879991, guid: 80231fe43a07b6048b33b9863d3d1f57, type: 3}
+    - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+      propertyPath: _lightCastTime
+      value: 1.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+      propertyPath: _manaForDamage
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+      propertyPath: _countdownSpiritBaff
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: IconAbilityAutoattack
       value: 
       objectReference: {fileID: 1907869315}
+    - target: {fileID: 8768896892171752375, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+      propertyPath: _countdownSpiritDebaff
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -16930,9 +16991,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1831490083318087586, guid: 38c8b99c44505824ea1bb0da4296ac38, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2168967358319041611, guid: 38c8b99c44505824ea1bb0da4296ac38, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3056181380745280644, guid: 38c8b99c44505824ea1bb0da4296ac38, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3245648477723873758, guid: 38c8b99c44505824ea1bb0da4296ac38, type: 3}
       propertyPath: m_Enabled
@@ -16949,6 +17018,14 @@ PrefabInstance:
     - target: {fileID: 5164834073429202931, guid: 38c8b99c44505824ea1bb0da4296ac38, type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6124006318483224019, guid: 38c8b99c44505824ea1bb0da4296ac38, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6462974465633522435, guid: 38c8b99c44505824ea1bb0da4296ac38, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7908725669627598490, guid: 38c8b99c44505824ea1bb0da4296ac38, type: 3}
       propertyPath: m_IsActive

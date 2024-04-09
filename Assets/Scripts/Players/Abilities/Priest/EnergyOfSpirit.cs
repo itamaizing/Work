@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 public class EnergyOfSpirit : MonoBehaviour
-{
+{ 
     public event Action<EnergyOfSpirit> Destroyed;
     private GameObject[] _allies;
     private GameObject _priest;

@@ -1,28 +1,35 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class OneRangeAttack : AbilityBase
 {
 	// "Искра Света" - Лечение и бафф союзника , урон по врагу. 
-	[HideInInspector] public static int NumberOfInstances = 0;
 	[HideInInspector] public float Heal = 2f;
-	[HideInInspector] public int ScriptInstanceCount = 0;
-	[HideInInspector] public GameObject Target;
+	[HideInInspector] public int SpiritDebaffCount = 0;
+    [HideInInspector] public int SpiritBaffCount = 0;
+    [HideInInspector] public GameObject Target;
+    [SerializeField] private GameObject _manaCost;
 
-	[Header("Ability properties")]
-	[SerializeField] private GameObject EnergySpiritEffect;
-	[SerializeField] private GameObject ManaCost;
-	[SerializeField] private float CastTime;
-    [SerializeField] private float _countdownForEnergyOfSpirit;
-    public delegate void FirstAbilityHandler(float value);
-	public event FirstAbilityHandler FirstAbilityEvent;
-	public event System.Action<EnergyOfSpirit> ScriptInstanceDestroyed;
+    [Header("Light Ability properties")]
+	[SerializeField] private GameObject _baffEffect;
+	[SerializeField] private float _lightCastTime;
+    [SerializeField] private float _countdownSpiritBaff;
+    [SerializeField] private int _maxBaffCount = 2;
+    [SerializeField] private float _heal;
+    [SerializeField] private float _manaForHeal;
+    [Header("Dark Ability properties")]
+    [SerializeField] private GameObject _debaffEffect;
+    [SerializeField] private float _darkCastTime;
+    [SerializeField] private float _countdownSpiritDebaff;
+    [SerializeField] private float _damage;
+    [SerializeField] private int _maxDebaffCount = 2;
+    [SerializeField] private float _manaForDamage;
 
-	private int maxScriptInstances = 2;
-	private GameObject _newPrefab;
-	private EnergyOfSpirit _energyOfSpiritPrefab;
-	private bool _canCast;
+    private GameObject _baffPrefab;
+	private EnergyOfSpirit _baffEffectPrefab;
+    private GameObject _debaffPrefab;
+    private HealthOfSpirit _debaffEffectPrefab;
+    private bool _canCast;
 	protected float shieldBuff;
 	private float manaBuff;
 	public float ManaBaff
@@ -36,6 +43,22 @@ public class OneRangeAttack : AbilityBase
 			manaBuff = value; 
 		}
 	}
+	private float healBuff;
+	public float HealBuff
+	{
+		get { return healBuff;}
+		set { healBuff = value; }
+	}
+
+	public bool isLightSide = true;
+
+    public delegate void FirstAbilityHandler(float value);
+    public event FirstAbilityHandler FirstAbilityEvent;
+    public event System.Action<EnergyOfSpirit> BaffPrefabDestroyed;
+
+    public delegate void DarkFirstAbilityHandler(float value);
+    public event DarkFirstAbilityHandler DarkFirstAbilityEvent;
+    public event System.Action<HealthOfSpirit> DebaffPrefabDestroyed;
 
     protected override KeyCode ActivationKey => KeyCode.Alpha1;
 
@@ -83,11 +106,11 @@ public class OneRangeAttack : AbilityBase
 
 		if (TargetParent == null)
 		{
-			if (ManaCost != null)
+			if (_manaCost != null)
 			{
-				ManaCost.SetActive(true);
-				ManaCost.GetComponent<VisualManaCost>().CheckManaCost();
-				ManaCost.transform.localScale = new Vector2(0.1f, ManaCost.gameObject.transform.localScale.y);
+				_manaCost.SetActive(true);
+				_manaCost.GetComponent<VisualManaCost>().CheckManaCost();
+				_manaCost.transform.localScale = new Vector2(0.1f, _manaCost.gameObject.transform.localScale.y);
 			}
 
 			HandlePrefabVisibility();
@@ -96,9 +119,9 @@ public class OneRangeAttack : AbilityBase
 
 		if (TargetParent != null)
 		{
-			if (ManaCost != null)
+			if (_manaCost != null)
 			{
-				ManaCost.gameObject.SetActive(false);
+				_manaCost.gameObject.SetActive(false);
 			}
 
 			HandleDistanceToTarget();
@@ -112,7 +135,7 @@ public class OneRangeAttack : AbilityBase
 
 		if (_isSelect == false	)
 		{
-			ManaCost.gameObject.SetActive(false);
+			_manaCost.gameObject.SetActive(false);
 		}
         TargetParent = null;
 		_canCast = false;
@@ -149,7 +172,7 @@ public class OneRangeAttack : AbilityBase
 		_targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		RaycastHit2D hit = Physics2D.Raycast(_targetPosition, Vector2.zero);
 
-		if (hit.collider != null && hit.collider.CompareTag("Allies") && hit.collider.gameObject != transform.parent.gameObject)
+		if (isLightSide && hit.collider != null && hit.collider.CompareTag("Allies") && hit.collider.gameObject != transform.parent.gameObject)
 		{
 			TargetParent = hit.collider.gameObject;
 
@@ -161,62 +184,112 @@ public class OneRangeAttack : AbilityBase
 				Destroy(NewAbilityPrefab);
 			}
 		}
-	}
+
+        if (!isLightSide && hit.collider != null && hit.collider.CompareTag("Enemies"))
+        {
+            TargetParent = hit.collider.gameObject;
+
+            CanDealDamageOrHeal = true;
+            _canCast = true;
+
+            if (NewAbilityPrefab != null)
+            {
+                Destroy(NewAbilityPrefab);
+            }
+        }
+    }
 
 	public override void HandleDealDamageOrHeal()
 	{
 		// Лечение
 		if (_canCast && _castCoroutine == null)
 		{
-			_castCoroutine = StartCoroutine(Cast());
-			CreateCastPrefab(CastTime);
+			if (isLightSide)
+			{
+				_castCoroutine = StartCoroutine(Cast(_lightCastTime,true));
+				CreateCastPrefab(_lightCastTime);
+			}
+			else
+			{
+                _castCoroutine = StartCoroutine(Cast(_darkCastTime,false));
+                CreateCastPrefab(_darkCastTime);
+            }
 		}
 	}
+    private void ResetAllEffects(EffectsType type)
+    {
+        EnergyOfSpirit[] baffs = TargetParent.GetComponentsInChildren<EnergyOfSpirit>();
+		HealthOfSpirit[] debaffs = TargetParent.GetComponentsInChildren<HealthOfSpirit>();
+        BaffDebaffEffectPrefab[] baffEffects = TargetParent.GetComponentsInChildren<BaffDebaffEffectPrefab>();
 
-	private void Healing()
+        foreach (var baff in baffs)
+        {
+            baff.StartCountdownCoroutine(_countdownSpiritBaff);
+        }
+		foreach(var debaff in debaffs)
+		{
+			debaff.StartCountdownCoroutine(_countdownSpiritDebaff);
+		}
+        foreach (var baff in baffEffects)
+        {
+			if(baff.BaffType==type)
+            baff.StartCountdown(_countdownSpiritDebaff);
+        }
+    }
+	public void ReverseAbility(bool isLight)
+	{
+		ToggleAbility.isOn = false;
+        isLightSide = isLight;
+		_castCoroutine= null;
+		if(isLightSide)
+		{
+            AbilityType = AbilityType.HealAbility;
+        }
+		else
+		{
+            AbilityType = AbilityType.DamageAbility;
+        }
+	}
+
+    private void Healing()
 	{
 		if (TargetParent == null) return;
 		
             AddBaffEnergyOfSpirit();
-            float heal = Heal + ScriptInstanceCount;
+            float heal = Heal + SpiritBaffCount;
             float realHeal = TargetParent.GetComponent<HealthPlayer>().MaxHealth - TargetParent.GetComponent<HealthPlayer>().Health;
             if (realHeal <= heal)
             {
                 heal = realHeal;
             }
-				if (heal > 0)
-				{
-					TargetParent.GetComponent<HealthPlayer>().AddHeal(heal);
-                    _player.GetComponent<ManaPlayer>().AddMana(heal *0.1f);
-                }
-            _player.GetComponent<ManaPlayer>().UseMana(1f); // ToDo вынести ману в атрибуты
-			FirstAbilityEvent?.Invoke(Heal);
+			if (heal > 0)
+			{
+			TargetParent.GetComponent<HealthPlayer>().AddHeal(heal);
+            _player.GetComponent<ManaPlayer>().AddMana(heal *0.1f);
+            }
+            _player.GetComponent<ManaPlayer>().UseMana(_manaForHeal);
+			FirstAbilityEvent?.Invoke(heal);
 		
     }
-
 	private void AddBaffEnergyOfSpirit()
 	{
-		if (ScriptInstanceCount >= maxScriptInstances) return;
-		if (ScriptInstanceCount==1)
+		Debug.Log(SpiritBaffCount);
+		if (SpiritBaffCount >= _maxBaffCount)
 		{
-			TargetParent.GetComponentInChildren<EnergyOfSpirit>().StartCountdownCoroutine(_countdownForEnergyOfSpirit);
-			TargetParent.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(_countdownForEnergyOfSpirit);
+			ResetAllEffects(EffectsType.EnergyOfSpirit);
+			return;
 		}
-             _canCast = true;
-			_newPrefab = Instantiate(EnergySpiritEffect);
-			_energyOfSpiritPrefab = _newPrefab.GetComponent<EnergyOfSpirit>();
-		    _energyOfSpiritPrefab.StartCountdownCoroutine(_countdownForEnergyOfSpirit);
-            _energyOfSpiritPrefab.Destroyed += OnScriptInstanceDestroyed;
-
-			_newPrefab.transform.SetParent(TargetParent.transform);
-			_newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(_countdownForEnergyOfSpirit);
-			ScriptInstanceCount++;
-            EnergyOfSpiritBuffs();       
-    }
-
-	private void EnergyOfSpiritBuffs()
+		_canCast = true;
+		_baffPrefab = Instantiate(_baffEffect);
+		_baffPrefab.transform.SetParent(TargetParent.transform);
+		_baffEffectPrefab = _baffPrefab.GetComponent<EnergyOfSpirit>();
+		_baffEffectPrefab.Destroyed += OnBaffPrefabDestroyed;
+		EnergyOfSpiritBaffs();
+	}
+	private void EnergyOfSpiritBaffs()
 	{
-        switch (ScriptInstanceCount)
+        SpiritBaffCount++;
+        switch (SpiritBaffCount)
         {
 			case 0:
                 shieldBuff = 0;
@@ -235,22 +308,70 @@ public class OneRangeAttack : AbilityBase
         }
         // Увеличение прочности накладываемого щита
 		transform.GetComponent<TwoRangeProtection>().AddShieldBuff(shieldBuff*0.01f);
+		ResetAllEffects(EffectsType.EnergyOfSpirit);
     }
-	private void OnScriptInstanceDestroyed(EnergyOfSpirit destroyedScript )
-	{
-		ScriptInstanceDestroyed?.Invoke(destroyedScript);
-        ScriptInstanceCount--;
-	}
 
-	private IEnumerator Cast()
+	private void Damage()
+	{
+        if (TargetParent == null) return;
+        AddDebaff();
+        TargetParent.GetComponent<HealthPlayer>().TakeMagicDamage(_damage);
+        _player.GetComponent<ManaPlayer>().UseMana(_manaForDamage);
+        DarkFirstAbilityEvent?.Invoke(_damage);
+    }
+
+	private void AddDebaff()
+	{
+		Debug.Log(SpiritDebaffCount);
+        if (SpiritDebaffCount >= _maxDebaffCount)
+        {
+            ResetAllEffects(EffectsType.HealthOfSpirit);
+            return;
+        }
+        _canCast = true;
+        _debaffPrefab = Instantiate(_debaffEffect);
+        _debaffPrefab.transform.SetParent(TargetParent.transform);
+        _debaffEffectPrefab = _debaffEffect.GetComponent<HealthOfSpirit>();
+        _debaffEffectPrefab.Destroyed += OnDebaffPrefabDestroyed;
+        Debaffs();
+    }
+
+	private void Debaffs()
+	{
+		SpiritDebaffCount++;
+        switch (SpiritBaffCount)
+        {
+            case 0:
+                healBuff = 0;
+                break;
+            case 1:
+                healBuff = 0.1f;
+                break;
+            case 2:
+                healBuff = 0.15f;
+                break;
+            default:
+                break;
+        }
+        ResetAllEffects(EffectsType.HealthOfSpirit);
+
+    }
+	private IEnumerator Cast(float time,bool isLight)
 	{
         if (Abilities.activeSelf && Abilities.GetComponent<GlobalCooldown>())
 		{
 			Abilities.GetComponent<GlobalCooldown>().StartGlobalCooldown();
 		}
 		StartCoroutine(CastMove());
-        yield return new WaitForSeconds(CastTime);
-        Healing();
+        yield return new WaitForSeconds(time);
+		if(isLight)
+		{
+            Healing();
+        }
+		else
+		{
+			Damage();
+		}
         this.transform.root.GetComponentInChildren<FourRangeRecovery>().canCast = true;
 		_castCoroutine = null;
 		yield break;
@@ -259,8 +380,22 @@ public class OneRangeAttack : AbilityBase
 	private IEnumerator CastMove()
 	{
 		GetComponentInParent<PlayerMove>().CanMove = false;
-		yield return new WaitForSeconds(CastTime/2);
+		yield return new WaitForSeconds(0.2f);
 		GetComponentInParent<PlayerMove>().CanMove = true;
 
 	}
+
+
+    private void OnBaffPrefabDestroyed(EnergyOfSpirit destroyedScript)
+    {
+        Debug.Log("baff");
+        BaffPrefabDestroyed?.Invoke(destroyedScript);
+        SpiritBaffCount--;
+    }
+    private void OnDebaffPrefabDestroyed(HealthOfSpirit destroyedScript)
+    {
+		Debug.Log("debaff");
+        DebaffPrefabDestroyed?.Invoke(destroyedScript);
+        SpiritDebaffCount--;
+    }
 }

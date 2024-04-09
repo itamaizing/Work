@@ -1,50 +1,23 @@
 using System;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 public class HealthOfSpirit : MonoBehaviour
 {
     public event Action<HealthOfSpirit> Destroyed;
-    private GameObject[] _allies;
-    private GameObject _priest;
-    private PriestAbilityEvents _priestAbilityEvents;
+    private Coroutine _coroutine;
 
-    private void Start()
+    public void StartCountdownCoroutine(float time)
     {
-        StartCoroutine(CountdownRoutine(9));
-
-        _allies = GameObject.FindGameObjectsWithTag("Allies");
-
-        foreach (GameObject ally in _allies)
+        if (_coroutine != null)
         {
-            _priestAbilityEvents = ally.GetComponent<PriestAbilityEvents>();
-
-            if (_priestAbilityEvents != null)
-            {
-                _priest = _priestAbilityEvents.gameObject;
-                _priestAbilityEvents.PriestAbilitiesEvent += PriestHandleEvent;
-            }
+            StopCoroutine(_coroutine);
         }
+        _coroutine = StartCoroutine(CountdownRoutine(time));
     }
 
-    private void PriestHandleEvent(float value)
-    {
-        if(value > 0 && _priest != null) 
-        {
-            _priest.transform.parent.GetComponent<HealthPlayer>().AddHeal(value * 0.09f);
-
-        }
-    }
-
-    private void OnDisable()
-    {
-        if (_priestAbilityEvents != null)
-        {
-            _priestAbilityEvents.PriestAbilitiesEvent -= PriestHandleEvent;
-        }
-    }
-
-    public IEnumerator CountdownRoutine(int time)
+    public IEnumerator CountdownRoutine(float time)
     {
         while (time > 0)
         {
@@ -53,11 +26,9 @@ public class HealthOfSpirit : MonoBehaviour
         }
         Destroy(this);
     }
+
     private void OnDestroy()
     {
-        _allies = null;
-        _priest = null;
-        _priestAbilityEvents = null;
         Destroyed?.Invoke(this);
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
 
 public class ManaPlayer : MonoBehaviour
 {
@@ -31,7 +32,7 @@ public class ManaPlayer : MonoBehaviour
             manaValue = 1;
         }
         
-        PrefabText.text = "+" + manaValue.ToString();
+        PrefabText.text = "+" + manaValue.ToString("0.0");
         PrefabText.GetComponent<DamagePrefab>().StartColor = new Color(0, 0, 1, 1);
         PrefabText.GetComponent<DamagePrefab>().EndColor = new Color(0, 0, 1, 0.5f);
         TextMeshPro newPrefab = Instantiate(PrefabText, DamageSpawn.position, Quaternion.identity);

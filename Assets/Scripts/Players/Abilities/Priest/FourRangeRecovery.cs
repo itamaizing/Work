@@ -197,7 +197,7 @@ public class FourRangeRecovery : AbilityBase
 	}
 	public int CheckEneryOfSpriritBaffs()
 	{
-        int stacks = _player.GetComponentInChildren<OneRangeAttack>().ScriptInstanceCount;
+        int stacks = _player.GetComponentInChildren<OneRangeAttack>().SpiritBaffCount;
 
 		return stacks;
     }

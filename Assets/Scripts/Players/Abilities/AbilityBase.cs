@@ -202,35 +202,6 @@ public abstract class AbilityBase : MonoBehaviour
 
 			Vector2 cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			RaycastHit2D hit = Physics2D.Raycast(cursorPosition, Vector2.zero);
-			//CancelAbilityOnClick();
-			//if (AbilityTypeManager.ActiveAbilityType == 1 && hit.collider != null &&
-			//	!hit.collider.CompareTag("Enemies") ||
-			//	AbilityTypeManager.ActiveAbilityType == 1 && hit.collider == null ||
-			//	AbilityTypeManager.ActiveAbilityType == 0)
-			//{
-			//	AbilityBase[] abilities = _playerAbility.GetComponentsInChildren<AbilityBase>();
-			//	List<AbilityBase> abilitiesCancel = new List<AbilityBase>();
-
-			//	foreach (AbilityBase ability in abilities)
-			//	{
-			//		if (ability.ToggleAbility.isOn && ability.TargetParent == null)
-			//		{
-			//			abilitiesCancel.Add(ability);
-			//		}
-			//	}
-
-			//	if (abilitiesCancel.Count > 0)
-			//	{
-			//		for (int i = 0; i < abilitiesCancel.Count; i++)
-			//		{
-			//			abilitiesCancel[i].CancelAbilityOnClick();
-			//		}
-			//	}
-			//	else
-			//	{
-			//		CancelAbilityOnClick();
-			//	}
-			//}
 		}
 
 		if (AttackType == AttackType.Autoattack && !CircleSelect.activeSelf && _blinkCoroutine != null)

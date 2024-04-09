@@ -157,7 +157,7 @@ public class HealthPlayer : MonoBehaviour
         {
             Health = MaxHealth;
         }
-            ShowDamagePrefab((int)healthInfo.ModifiedHeal, new Color(0, 0.8f, 0, 1), new Color(0, 0.8f, 0, 0.5f));
+            ShowDamagePrefab(healthInfo.ModifiedHeal, new Color(0, 0.8f, 0, 1), new Color(0, 0.8f, 0, 0.5f));
             UpdateHealthBar();
             UpdateHealthBarText();
     }
@@ -194,8 +194,7 @@ public class HealthPlayer : MonoBehaviour
         {
             value = 1;
         }
-        value = (int)value;
-        PrefabText.text = (value > 0 ? "+" : "") + value.ToString();
+        PrefabText.text = (value > 0 ? "+" : "") + value.ToString("0.0");
         PrefabText.GetComponent<DamagePrefab>().StartColor = startColor;
         PrefabText.GetComponent<DamagePrefab>().EndColor = endColor;
         TextMeshPro newPrefab = Instantiate(PrefabText, DamageSpawn.position, Quaternion.identity);
@@ -209,7 +208,7 @@ public class HealthPlayer : MonoBehaviour
     }
     private void UpdateHealthBarText()
     {
-        float healthValue = (int)Health;
+        float healthValue = Mathf.RoundToInt(Health);
         HealthBarText.text = healthValue.ToString();
     }
     private void Die()

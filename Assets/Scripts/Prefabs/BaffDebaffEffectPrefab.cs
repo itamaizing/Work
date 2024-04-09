@@ -1,12 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
+using Microsoft.Unity.VisualStudio.Editor;
 using TMPro;
 using UnityEngine;
 
 public class BaffDebaffEffectPrefab : MonoBehaviour
 {
+    [SerializeField] private TextMeshPro _tmp;
+    [SerializeField] private Image _tmpImage;
     public float Timer = 0f;
-
+    public EffectsType BaffType;
     private Transform parentTransform;
     private Transform effectParent;
     private string parentTag;
@@ -15,7 +16,6 @@ public class BaffDebaffEffectPrefab : MonoBehaviour
     {
         Timer = time;
     }
-
 
     private void Update()
     {
@@ -66,4 +66,16 @@ public class BaffDebaffEffectPrefab : MonoBehaviour
             }
         }
     }
+}
+
+public enum EffectsType
+{
+    EnergyOfSpirit,
+    HealthOfSpirit,
+    ProtectBaff,
+    ProtectDebaff,
+    ReversePolarity,
+    HealthRecovery,
+    DamageDebaff,
+    DarkProtectionDebaff
 }

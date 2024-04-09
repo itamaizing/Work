@@ -153,7 +153,7 @@ public class ThreeRangeHeal : AbilityBase
         if (TargetParent != null)
         {
             float realHeal = TargetParent.GetComponent<HealthPlayer>().MaxHealth - TargetParent.GetComponent<HealthPlayer>().Health;
-            float eneryOfSpiritStacks = _player.GetComponentInChildren<OneRangeAttack>().ScriptInstanceCount;
+            float eneryOfSpiritStacks = _player.GetComponentInChildren<OneRangeAttack>().SpiritBaffCount;
             heal = heal + eneryOfSpiritStacks;
             if (realHeal <= heal)
             {
