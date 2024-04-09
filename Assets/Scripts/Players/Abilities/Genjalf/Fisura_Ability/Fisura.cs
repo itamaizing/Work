@@ -5,6 +5,7 @@ using UnityEngine;
 public class Fisura : Ability
 {
     [Header("Ability settings")]
+    [SerializeField] private FillAmountOverTime _cooldown;
     [SerializeField] private FillAmountOverTime _castLine;
     [SerializeField] private PlayerMove _playerMove;
     [SerializeField] private float _radius;
@@ -150,6 +151,7 @@ public class Fisura : Ability
         FisuraActivate();
 
         _drawCircle.Clear();
+        _cooldown.StartFill(ChargeCooldown);
         PayCost();
     }
 }

@@ -1209,6 +1209,7 @@ GameObject:
   - component: {fileID: 2959533832653847270}
   - component: {fileID: 5031150180599698774}
   - component: {fileID: 5879313835396092816}
+  - component: {fileID: 4124806759000202448}
   m_Layer: 5
   m_Name: GlobalCooldown4
   m_TagString: Untagged
@@ -1274,6 +1275,19 @@ MonoBehaviour:
   m_FillOrigin: 2
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &4124806759000202448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1312474056626063591}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72bf72b442d07794fb7eff7b0823c831, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _image: {fileID: 5879313835396092816}
 --- !u!1 &1378075408245915296
 GameObject:
   m_ObjectHideFlags: 0
