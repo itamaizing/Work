@@ -9,6 +9,7 @@ namespace Players.Abilities.Genjalf.Push_Ability
     public class CottonLight : Ability
     {
         [Header("Ability settings")]
+        [SerializeField] private FillAmountOverTime _castLine;
         [SerializeField] private ParticleSystem _castPrefab; // затычка для визуализации
         [SerializeField] private float _damage = 10f;
         [SerializeField] private BlindDebuff _blindPref;
@@ -37,6 +38,7 @@ namespace Players.Abilities.Genjalf.Push_Ability
         {
             PlayCast(); // затычка для визуализации
             PayCost();
+            _castLine.StartFill(ChargeCooldown);
 
             RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, _radius, Vector2.zero);
 

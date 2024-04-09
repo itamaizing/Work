@@ -111,7 +111,7 @@ public class ShootFireworks : Ability
         float time = 0 + _damageRate * 2;
         float damageTime = 0;
 
-        _castLine.StartFill(_duration, true, 1, 0);
+        _castLine.StartFill(_duration, 1, 0);
 
         while (time < _duration && Mana.Mana >= _manaCostPerTick)
         {

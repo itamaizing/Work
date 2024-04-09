@@ -7,16 +7,25 @@ public class FillAmountOverTime : MonoBehaviour
 {
     [SerializeField] private Image _image;
 
-    public void StartFill(float duration, bool isReverse = false, float startValue = 0, float endValue = 1, float curretTime = 0)
+    private float _currentTime;
+    private float _duration;
+    private Coroutine _fillJob;
+
+    public void StartFill(float duration, float startValue = 0, float endValue = 1, float curretTime = 0)
     {
         gameObject.SetActive(true);
 
-        if (isReverse)
-            _image.fillOrigin = 1;
+        if(_fillJob != null)
+        {
+            _duration += -_currentTime + duration;
+            StopCoroutine(_fillJob);
+            _fillJob = StartCoroutine(ChangeFillAmountOverTimeCoroutine(_duration, curretTime, startValue, endValue));
+        }
         else
-            _image.fillOrigin = 0;
-
-        StartCoroutine(ChangeFillAmountOverTimeCoroutine(duration, curretTime, startValue, endValue));
+        {
+            _duration = duration;
+            _fillJob = StartCoroutine(ChangeFillAmountOverTimeCoroutine(_duration, curretTime, startValue, endValue));
+        }
     }
 
     IEnumerator ChangeFillAmountOverTimeCoroutine(float duration, float curretTime = 0, float startValue = 0, float endValue = 1)
@@ -25,8 +34,10 @@ public class FillAmountOverTime : MonoBehaviour
         {
             _image.fillAmount = Mathf.Lerp(startValue, endValue, curretTime / duration);
             curretTime += Time.deltaTime;
+            _currentTime = curretTime;
             yield return null;
         }
+        _fillJob = null;
         _image.fillAmount = endValue;
         gameObject.SetActive(false);
     }

@@ -29,6 +29,7 @@ public abstract class Ability : MonoBehaviour
     public bool IsHaveCharge { get => (_currentChargers > 0); private set { } }
     public bool IsReady { get => _isReady; set => _isReady = value; }
     public ManaPlayer Mana { get => _mana; set => _mana = value; }
+    public float ChargeCooldown { get => _chargeCooldown; }
 
     protected virtual void Start()
     {
