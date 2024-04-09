@@ -7,7 +7,8 @@ using UnityEngine.UI;
 public class ShootFireworks : Ability
 {
     [Header("Ability settings")]
-    [SerializeField] Fireworks _fireworksPref;
+    [SerializeField] private FillAmountOverTime _castLine;
+    [SerializeField] private Fireworks _fireworksPref;
     [SerializeField] private float _manaCostPerTick;
     [SerializeField] private float _duration;
     [SerializeField] private PlayerMove _playerMove;
@@ -109,6 +110,8 @@ public class ShootFireworks : Ability
 
         float time = 0 + _damageRate * 2;
         float damageTime = 0;
+
+        _castLine.StartFill(_duration, true, 1, 0);
 
         while (time < _duration && Mana.Mana >= _manaCostPerTick)
         {
