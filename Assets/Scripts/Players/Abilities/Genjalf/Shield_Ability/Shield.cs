@@ -55,7 +55,6 @@ namespace Players.Abilities.Genjalf.Shield_Ability
             }
 
             UpdateTextCharge();
-            CheckChargeOnStartReset();
             ActivatedAbility();
         }
 
@@ -74,6 +73,7 @@ namespace Players.Abilities.Genjalf.Shield_Ability
                 }
 
                 _coroutineActiveShield = StartCoroutine(ActiveShield(_soShieldData.DurationShield));
+                CheckChargeOnStartReset();
             }
         }
 
@@ -146,7 +146,7 @@ namespace Players.Abilities.Genjalf.Shield_Ability
 
         private void CheckChargeOnStartReset()
         {
-            if (_currentShieldCharge < _soShieldData.ShieldCharges && !_isResetCoroutineRunning)
+            if (_currentShieldCharge < _soShieldData.ShieldCharges)
             {
                 StartResetTime();
             }
@@ -217,7 +217,7 @@ namespace Players.Abilities.Genjalf.Shield_Ability
 
             while (time > 0)
             {
-                _cooldownButton.GetComponentInChildren<TextMeshPro>().text = time.ToString();
+                //_cooldownButton.GetComponentInChildren<TextMeshPro>().text = time.ToString();
                 yield return new WaitForSeconds(1f);
                 time--;
             }
