@@ -112,6 +112,7 @@ public class ShootFireworks : Ability
         float damageTime = 0;
 
         _castLine.StartFill(_duration, 1, 0);
+        IsCanCancle = false;
 
         while (time < _duration && Mana.Mana >= _manaCostPerTick)
         {

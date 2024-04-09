@@ -7,15 +7,39 @@ public class FillAmountOverTime : MonoBehaviour
 {
     [SerializeField] private Image _image;
 
+    private int _defaultFillOrigin;
     private float _currentTime;
     private float _duration;
     private Coroutine _fillJob;
 
-    public void StartFill(float duration, float startValue = 0, float endValue = 1, float curretTime = 0)
+    private void Awake()
+    {
+        _defaultFillOrigin = _image.fillOrigin;
+    }
+
+    public void Stop()
+    {
+        if(_fillJob != null)
+        {
+            StopCoroutine(_fillJob);
+            gameObject.SetActive(false);
+        }
+    }
+
+    public void StartFill(float duration, float startValue = 0, float endValue = 1, float curretTime = 0, int type = -1)
     {
         gameObject.SetActive(true);
 
-        if(_fillJob != null)
+        if (type >= 0)
+        {
+            _image.fillOrigin = type;
+        }
+        else
+        {
+            _image.fillOrigin = _defaultFillOrigin;
+        }
+
+        if (_fillJob != null)
         {
             _duration += -_currentTime + duration;
             StopCoroutine(_fillJob);

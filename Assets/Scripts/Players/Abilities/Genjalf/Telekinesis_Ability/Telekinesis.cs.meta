@@ -3,7 +3,17 @@ guid: f558779797c92a24187c288a41378c31
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - _iconAbility: {instanceID: 0}
+  - _toggleAbility: {instanceID: 0}
+  - _abilitiesPanel: {instanceID: 0}
+  - _mana: {instanceID: 0}
+  - _currentChargeText: {instanceID: 0}
+  - _cooldown: {instanceID: 0}
+  - _castLine: {instanceID: 0}
+  - _drawCircleSelf: {instanceID: 0}
+  - _drawCirclePref: {fileID: 896857229047290416, guid: e7d74dbf4338ab645b321ea6ba6b8147, type: 3}
+  - _playerMove: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

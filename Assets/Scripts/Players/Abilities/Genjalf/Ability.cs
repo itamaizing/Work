@@ -24,12 +24,14 @@ public abstract class Ability : MonoBehaviour
     private Coroutine _rechargeJob;
 
     private bool _isReady = true;
+    private bool _isCanCancle = true;
 
     public int Chargers => _currentChargers;
     public bool IsHaveCharge { get => (_currentChargers > 0); private set { } }
     public bool IsReady { get => _isReady; set => _isReady = value; }
     public ManaPlayer Mana { get => _mana; set => _mana = value; }
     public float ChargeCooldown { get => _chargeCooldown; }
+    public bool IsCanCancle { get => _isCanCancle; set => _isCanCancle = value; }
 
     protected virtual void Start()
     {
@@ -58,7 +60,7 @@ public abstract class Ability : MonoBehaviour
 
     protected virtual void TryDeactivateAbility()
     {
-        if(_isReady == false && Input.GetMouseButtonDown(1) == true)
+        if(_isReady == false && Input.GetMouseButtonDown(1) == true && _isCanCancle)
         {
             Cancel();
             _isReady = true;
@@ -78,6 +80,7 @@ public abstract class Ability : MonoBehaviour
                 return;
         }
         _isReady = false;
+        _isCanCancle = true;
         Use();
     }
 
