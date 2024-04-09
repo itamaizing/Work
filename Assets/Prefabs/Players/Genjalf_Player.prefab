@@ -376,6 +376,7 @@ MonoBehaviour:
   _currentChargeText: {fileID: 0}
   _maxCharges: 0
   _chargeCooldown: 0
+  _castLine: {fileID: 0}
   _fireworksPref: {fileID: 5320143867127242726, guid: 95af11e504f859f40a21a8e8a3a90f83, type: 3}
   _manaCostPerTick: 3
   _duration: 1.3
@@ -443,14 +444,15 @@ MonoBehaviour:
   _currentChargeText: {fileID: 0}
   _maxCharges: 2
   _chargeCooldown: 16
+  _castLine: {fileID: 0}
   _playerMove: {fileID: 7682162387749688049}
-  _radius: 5
+  _radius: 10
   _drawCircle: {fileID: 2062510225715713123}
   _fisuraTilePrefab: {fileID: 626463425188756188, guid: 1222da39dc4bf1041891e04a5f0a7b41, type: 3}
   _width: 0.3
   _length: 3
   _angelTileLength: 0.2
-  _liveTime: 4
+  _liveTime: 6
   _castDeley: 1.6
 --- !u!1 &1740845397034949897
 GameObject:

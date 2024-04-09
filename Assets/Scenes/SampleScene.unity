@@ -17823,6 +17823,18 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1885982871}
     - target: {fileID: 3939070588996056051, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
+      propertyPath: _radius
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3939070588996056051, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
+      propertyPath: _castLine
+      value: 
+      objectReference: {fileID: 59612399}
+    - target: {fileID: 3939070588996056051, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
+      propertyPath: _liveTime
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3939070588996056051, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
       propertyPath: _iconAbility
       value: 
       objectReference: {fileID: 218233809}

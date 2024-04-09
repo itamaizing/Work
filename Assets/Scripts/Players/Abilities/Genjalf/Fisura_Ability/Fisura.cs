@@ -5,6 +5,7 @@ using UnityEngine;
 public class Fisura : Ability
 {
     [Header("Ability settings")]
+    [SerializeField] private FillAmountOverTime _castLine;
     [SerializeField] private PlayerMove _playerMove;
     [SerializeField] private float _radius;
     [SerializeField] private DrawCircle _drawCircle;
@@ -77,6 +78,8 @@ public class Fisura : Ability
 
     private IEnumerator CastDeley()
     {
+        _castLine.StartFill(_castDeley);
+
         float time = 0;
         while(time < _castDeley)
         {
