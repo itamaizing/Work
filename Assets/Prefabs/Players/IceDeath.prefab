@@ -1635,6 +1635,7 @@ GameObject:
   - component: {fileID: 8923380669055877266}
   - component: {fileID: 4769007552343539603}
   - component: {fileID: 5859741811348402333}
+  - component: {fileID: 1156122406318860820}
   - component: {fileID: 7915244162019678924}
   m_Layer: 0
   m_Name: Abilities
@@ -1671,6 +1672,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Abilities:
+  - {fileID: 1156122406318860820}
   - {fileID: 7915244162019678924}
 --- !u!114 &5859741811348402333
 MonoBehaviour:
@@ -1684,6 +1686,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fb1b315041f7a542a81aebdaddd439c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1156122406318860820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7378065823814705286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0472c7c6c6b721418ebe181869af7fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IconAbility: {fileID: 0}
+  AbilityPrefab: {fileID: 6736161171206798187, guid: 34bd67790f788d949b447b7f2ff16379, type: 3}
+  Select: {fileID: 0}
+  Abilities: {fileID: 0}
+  ObstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  CastPrefab: {fileID: 0}
+  ToggleAbility: {fileID: 0}
+  DrawCircle: {fileID: 2084701706370063657}
+  IconAbilityAutoattack: {fileID: 0}
+  CircleSelect: {fileID: 0}
+  AttackType: 0
+  AbilityType: 0
+  AttackRangeType: 0
+  DamageType: 0
+  TargetParent: {fileID: 0}
+  CanMakeDamage: 0
+  CanDealDamageOrHeal: 0
+  CanUseAbility: 1
+  NewAbilityPrefab: {fileID: 0}
+  CanDoAbility: 0
+  CanDrawCircle: 1
+  Distance: 0
+  CellDistance: 1
+  _cellSize: 1.9
+  lastAbility: {fileID: 0}
+  IsActiveAbility: 0
+  _targetCircle: {fileID: 0}
+  Target: {fileID: 0}
+  DamageRate: 1.2
+  IsGlobalCooldown: 1
+  TargetCanAvoidance: 1
 --- !u!114 &7915244162019678924
 MonoBehaviour:
   m_ObjectHideFlags: 0

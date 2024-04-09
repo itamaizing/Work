@@ -133,7 +133,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rb: {fileID: -53743584304020754}
   _hitEffect: {fileID: 0}
-  force: 10
+  _force: 30
+  _distance: 5
+  dad: {fileID: 0}
 --- !u!58 &-4999684937418030614
 CircleCollider2D:
   m_ObjectHideFlags: 0

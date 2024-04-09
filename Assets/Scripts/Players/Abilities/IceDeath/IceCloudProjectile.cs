@@ -6,13 +6,26 @@ public class IceCloudProjectile : MonoBehaviour
 {
 	[SerializeField] private Rigidbody2D _rb;
 	[SerializeField] GameObject _hitEffect;
-	[SerializeField] private float force;
+	[SerializeField] private float _force;
+	[SerializeField] private float _distance = 5;
 
 	[HideInInspector]public GameObject dad;
 
+	private Vector2 startPos;
+
 	private void Awake()
 	{
-		_rb.AddForce(transform.up * force, ForceMode2D.Impulse);
+		startPos = transform.position;
+		
+		_rb.AddForce(transform.up * _force, ForceMode2D.Impulse);
+	}
+
+	private void Update()
+	{
+		if(Vector2.Distance(transform.position, startPos) > _distance * GlobalVariable.cellSize)
+		{
+			Explode();
+		}
 	}
 
 	private void OnTriggerEnter2D(Collider2D collision)
@@ -26,12 +39,16 @@ public class IceCloudProjectile : MonoBehaviour
 			target.ChangeState(new FrozenState());
 			GetComponent<Collider2D>().enabled = false;
 		}
+		Explode();
+	}
 
-		if(_hitEffect != null)
+	private void Explode()
+	{
+		if (_hitEffect != null)
 		{
 			GameObject hitEffect = Instantiate(_hitEffect, transform.position, Quaternion.identity);
 			Destroy(hitEffect, 5f);
-		}		
+		}
 		Destroy(gameObject);
 	}
 }

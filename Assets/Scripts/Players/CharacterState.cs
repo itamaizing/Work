@@ -245,22 +245,23 @@ public class BlindnessState : ICharacterState
 public class FrozenState : ICharacterState
 {
 	private HealthPlayer _playerHP;
+    private PlayerMove _playerMove;
     private float _duration;
     //remember how much hp, check incoming damage to unfreeze
 
 	public void EnterState(CharacterState character)
 	{
 		Debug.Log("Entering Frozen State");
-
-		List<Toggle> toggles = character.gameObject.GetComponent<PlayerMove>().AbilitiesOnTargetToggles;
-
+		_playerMove = character.gameObject.GetComponent<PlayerMove>();
+		List<Toggle> toggles = _playerMove.AbilitiesOnTargetToggles;
 		foreach (Toggle toggle in toggles)
 		{
 			toggle.enabled = false;
         }
-        //turn off abilities
-        character.GetAbilityManager().ToggleAbility(false);
-        if (character.gameObject.TryGetComponent<HealthPlayer>(out _playerHP))
+		_playerMove.CanMove = false;
+        character.GetAbilityManager().ToggleAbility(false);//turn off abilities
+
+		if (character.gameObject.TryGetComponent<HealthPlayer>(out _playerHP))
         {
             // акой дамаг получаем? физический или магический
             _playerHP.TakePhisicDamage(10 + character.energy.Energy / 2);
@@ -288,16 +289,15 @@ public class FrozenState : ICharacterState
 	public void ExitState(CharacterState character)
 	{
 		Debug.Log("Exiting Frozen State");
-
-		character.GetAbilityManager().ToggleAbility(true);
-		List<Toggle> toggles = character.gameObject.GetComponent<PlayerMove>().AbilitiesOnTargetToggles;
+		List<Toggle> toggles = _playerMove.AbilitiesOnTargetToggles;
 
 		foreach (Toggle toggle in toggles)
 		{
 			toggle.enabled = true;
 		}
 
-        //turn on abilities
+		character.GetAbilityManager().ToggleAbility(true);//turn on abilities
+        _playerMove.CanMove = true;
 	}
 }
 

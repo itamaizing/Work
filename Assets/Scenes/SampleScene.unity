@@ -3906,10 +3906,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: IceDeath
       objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: Mana
-      value: 70
-      objectReference: {fileID: 0}
+    - target: {fileID: 1156122406318860820, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: Select
+      value: 
+      objectReference: {fileID: 1138358088594896431}
+    - target: {fileID: 1156122406318860820, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: Abilities
+      value: 
+      objectReference: {fileID: 150802219}
+    - target: {fileID: 1156122406318860820, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: CastPrefab
+      value: 
+      objectReference: {fileID: 5074480402368706878, guid: 8fb008b85f2e29b48b39b1cd92d851a0, type: 3}
+    - target: {fileID: 1156122406318860820, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: IconAbility
+      value: 
+      objectReference: {fileID: 1942566467}
+    - target: {fileID: 1156122406318860820, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: ToggleAbility
+      value: 
+      objectReference: {fileID: 1709924823}
+    - target: {fileID: 4556989451195136894, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: Select
+      value: 
+      objectReference: {fileID: 2182717424319947106}
     - target: {fileID: 5793172127680476127, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _runeValue
       value: 10
@@ -7600,6 +7620,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1709924823 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8272217619263896250, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+  m_PrefabInstance: {fileID: 549229998}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &1710151854 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 538029851260793783, guid: eca3bd46d2933ef41855062b9afbfe29, type: 3}
@@ -8568,6 +8599,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1931445465}
   m_CullTransparentMesh: 1
+--- !u!1 &1942566467 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7155408899243586250, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+  m_PrefabInstance: {fileID: 549229998}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1951432187 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4596189173247542091, guid: d3106a1092b32564782e9e280cf42222, type: 3}
