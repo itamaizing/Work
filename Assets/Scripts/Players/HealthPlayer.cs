@@ -488,7 +488,7 @@ public class HealthPlayer : MonoBehaviour
         {
             yield return _waitForRegenHp;
             if(Health < MaxHealth)
-            this.RegenHP(_hpRegenerationValue);
+                this.RegenHP(_hpRegenerationValue);
         }
     }
 

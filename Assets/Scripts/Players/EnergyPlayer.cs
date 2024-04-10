@@ -27,24 +27,16 @@ public class EnergyPlayer : MonoBehaviour
 	{
 		if (_canRegen) return;
 
-		Debug.Log("timer start");
 		_timer += Time.deltaTime;
 		if(_timer > _regenDelay)
 		{
 			_timer = 0;
 			_canRegen = true;
-
-			Debug.Log("timer stop");
 		}
 	}
 	public void AddEnergy(float EnergyValue)
 	{
 		Energy += EnergyValue;
-		if (Energy <= 0)
-		{
-			Energy = 0;
-		}
-
 		if (Energy >= _maxValue)
 		{
 			Energy = _maxValue;
@@ -79,10 +71,6 @@ public class EnergyPlayer : MonoBehaviour
 		if (Energy <= 0)
 		{
 			Energy = 0;
-		}
-		if (Energy >= _maxValue)
-		{
-			Energy = _maxValue;
 		}
 	}
 
