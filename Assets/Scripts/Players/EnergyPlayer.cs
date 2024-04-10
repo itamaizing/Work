@@ -40,7 +40,15 @@ public class EnergyPlayer : MonoBehaviour
 	public void AddEnergy(float EnergyValue)
 	{
 		Energy += EnergyValue;
+		if (Energy <= 0)
+		{
+			Energy = 0;
+		}
 
+		if (Energy >= _maxValue)
+		{
+			Energy = _maxValue;
+		}
 		float newScaleX = Energy / _maxValue;
 		EnergyBar.transform.localScale = new Vector3(newScaleX, 1.0f, 1.0f);
 
@@ -56,15 +64,7 @@ public class EnergyPlayer : MonoBehaviour
 		TextMeshPro newPrefab = Instantiate(PrefabText, DamageSpawn.position, Quaternion.identity);
 		newPrefab.transform.parent = transform;
 
-		if (Energy <= 0)
-		{
-			Energy = 0;
-		}
-
-		if (Energy >= _maxValue)
-		{
-			Energy = _maxValue;
-		}
+		
 	}
 	public void UseEnergy(float EnergyValue)
 	{
@@ -88,10 +88,13 @@ public class EnergyPlayer : MonoBehaviour
 
 	private IEnumerator RegenirateEnergy()
 	{
-		while (_canRegen)
+		while (true)
 		{
 			yield return _waitForRegen;
-			this.AddEnergy(_regenerationValue);
+			if (_canRegen && Energy < _maxValue)
+			{
+				this.AddEnergy(_regenerationValue);
+			}
 		}
 	}
 }

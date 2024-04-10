@@ -444,6 +444,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 64899636}
   m_CullTransparentMesh: 1
+--- !u!1 &71163013 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7277157472421124586, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+  m_PrefabInstance: {fileID: 1000777840}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &94229513
 GameObject:
   m_ObjectHideFlags: 0
@@ -3915,6 +3920,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 150802219}
     - target: {fileID: 1156122406318860820, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1156122406318860820, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: CastPrefab
       value: 
       objectReference: {fileID: 5074480402368706878, guid: 8fb008b85f2e29b48b39b1cd92d851a0, type: 3}
@@ -3923,9 +3932,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1942566467}
     - target: {fileID: 1156122406318860820, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: CircleSelect
+      value: 
+      objectReference: {fileID: 71163013}
+    - target: {fileID: 1156122406318860820, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: ToggleAbility
       value: 
       objectReference: {fileID: 1709924823}
+    - target: {fileID: 1156122406318860820, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: IconAbilityAutoattack
+      value: 
+      objectReference: {fileID: 1319096064}
     - target: {fileID: 4556989451195136894, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: Select
       value: 
@@ -4006,6 +4023,10 @@ PrefabInstance:
       propertyPath: _abilityManager
       value: 
       objectReference: {fileID: 795039029}
+    - target: {fileID: 7601164126198867055, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: MaxHealth
+      value: 1111
+      objectReference: {fileID: 0}
     - target: {fileID: 7915244162019678924, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: Select
       value: 
@@ -4019,9 +4040,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 932086588}
     - target: {fileID: 7915244162019678924, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: CircleSelect
+      value: 
+      objectReference: {fileID: 71163013}
+    - target: {fileID: 7915244162019678924, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: ToggleAbility
       value: 
       objectReference: {fileID: 925241075}
+    - target: {fileID: 7915244162019678924, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: IconAbilityAutoattack
+      value: 
+      objectReference: {fileID: 1319096064}
     - target: {fileID: 8264867649627807809, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: MoveSpeed
       value: 300
@@ -5189,6 +5218,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textMeshPro: {fileID: 1822466784}
+--- !u!1 &1319096064 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8608731102412231525, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+  m_PrefabInstance: {fileID: 549229998}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1323989811 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6853216584001952286, guid: eca3bd46d2933ef41855062b9afbfe29, type: 3}

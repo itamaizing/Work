@@ -10,26 +10,29 @@ public class RunePlayer : MonoBehaviour
 	//[SerializeField] private Image _runeBar;
 	private WaitForSeconds _waitForRegenRune;
 	[SerializeField] private float _runeValue;
+	[SerializeField] private SpriteRenderer _runeSprite;
 
-    public float regen;
+	private float _runeSpriteWidth = 3.7f;
+
+    //public float regen;
 
 	private void Start()
 	{
-		UpdateRuneBar();
 		_waitForRegenRune = new WaitForSeconds(_runeRegenerationDelay);
 		StartCoroutine(RegenirateRune());
 	}
 
-	public void UpdateRuneBar()
-	{
-		
-	}
 	public void AddRune(float runeValue)
 	{
 		_runeValue += runeValue;
-		if(_runeValue > _maxRuneCount)
+		if (_runeValue > _maxRuneCount)
 		{
 			_runeValue = _maxRuneCount;
+		}
+		_runeSprite.size = new Vector2(_runeSprite.size.x + _runeRegenerationValue / _maxRuneCount * _runeSpriteWidth, _runeSprite.size.y);
+		if(_runeSprite.size.x > _runeSpriteWidth) 
+		{
+			_runeSprite.size = new Vector2(_runeSpriteWidth, _runeSprite.size.y);
 		}
 	}
 
@@ -38,6 +41,7 @@ public class RunePlayer : MonoBehaviour
 		if(_runeValue >= runeValue)
 		{
 			_runeValue -= runeValue;
+			_runeSprite.size = new Vector2(_runeSprite.size.x - runeValue / _maxRuneCount * _runeSpriteWidth, _runeSprite.size.y);
 			return true;
 		}
 		else
@@ -47,11 +51,13 @@ public class RunePlayer : MonoBehaviour
 	}
 	private IEnumerator RegenirateRune()
 	{
-		if(_runeValue < _maxRuneCount)
 		while (true)
 		{
 			yield return _waitForRegenRune;
-			this.AddRune(_runeRegenerationValue);
+			if (_runeValue < _maxRuneCount)
+			{
+				AddRune(_runeRegenerationValue);
+			}
 		}
 	}
 }

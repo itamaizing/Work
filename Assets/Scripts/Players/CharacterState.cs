@@ -264,7 +264,8 @@ public class FrozenState : ICharacterState
 		if (character.gameObject.TryGetComponent<HealthPlayer>(out _playerHP))
         {
             //Какой дамаг получаем? физический или магический
-            _playerHP.TakePhisicDamage(10 + character.energy.Energy / 2);
+            _playerHP.TakePhisicDamage(10 + character.energy.Energy / 4);
+            character.energy.UseEnergy(character.energy.Energy);
             _playerHP.sumDamageTaken = 0;
             _duration = 1 + character.energy.Energy / 20; //тут мана того кто стрелял
             //character.energy.UseEnergy(5);
@@ -281,8 +282,9 @@ public class FrozenState : ICharacterState
 		_duration -=Time.deltaTime;
 		if (_playerHP.sumDamageTaken >= 30 || _duration < 0)
         {
-            ExitState(character);
-        }
+			character.ChangeState(new DefaultState());
+            //ExitState(character);
+		}
 
 	}
 
@@ -298,6 +300,7 @@ public class FrozenState : ICharacterState
 
 		character.GetAbilityManager().ToggleAbility(true);//turn on abilities
         _playerMove.CanMove = true;
+        //character.ChangeState(null);
 	}
 }
 
