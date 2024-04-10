@@ -121,7 +121,7 @@ public class Telekinesis : Ability
 
         while (_position == Vector3.zero) //выбираем точку перемещения
         {
-            if (Input.GetMouseButtonDown(0) && IsMouseInRange())
+            if (Input.GetMouseButtonDown(0))
             {
                 _position = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, 0);
             }
@@ -142,7 +142,7 @@ public class Telekinesis : Ability
         {
             time += Time.deltaTime;
 
-            _target.transform.position = Vector2.MoveTowards(_target.transform.position, _position, _range * Time.deltaTime);
+            _target.transform.position = Vector2.MoveTowards(_target.transform.position, _position, _range * Time.deltaTime / _duration);
             yield return null;
         }
         ResetValue();
