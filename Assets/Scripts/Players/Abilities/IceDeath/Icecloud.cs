@@ -170,7 +170,7 @@ public class Icecloud : AbilityBase
 		if (!_player.TryGetComponent<PlayerMove>(out _playerMove))
 			yield break;
 
-		if (!_player.GetComponent<RunePlayer>().RemoveRune(1))
+		if (!_player.GetComponent<RunePlayer>().RemoveRune(1, this))
 		{
 			yield break;
 		}
