@@ -40,6 +40,8 @@ public class Icecloud : AbilityBase
 
 	void Update()
 	{
+		//если выбрана эта абилка
+
 		HandleToggleAbility();
 		//Target = TargetParent;
 	}
@@ -49,8 +51,8 @@ public class Icecloud : AbilityBase
 	{
 		base.HandleToggleAbility();
 		// “екущий код в методе Update
-
-		if (Input.GetMouseButtonDown(0) && Abilities.gameObject.activeSelf && ToggleAbility.enabled && _playerMove.IsSelect)
+		if (ToggleAbility.isOn == true)
+			if (Input.GetMouseButtonDown(0) && Abilities.gameObject.activeSelf && ToggleAbility.enabled && _playerMove.IsSelect)
 		{
 			HandleLeftMouseButtonToggle();
 			

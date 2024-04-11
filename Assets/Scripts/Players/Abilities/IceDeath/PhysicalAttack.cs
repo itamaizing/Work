@@ -18,7 +18,6 @@ public class PhysicalAttack : AbilityBase
 	[HideInInspector] public bool TargetCanAvoidance = true;
 
 	private Toggle _toggleSecondAbility;
-	private bool _isOneChange;
 
 	protected override KeyCode ActivationKey => KeyCode.Alpha1;
 
@@ -49,12 +48,6 @@ public class PhysicalAttack : AbilityBase
 		if (_toggleSecondAbility != null && !_toggleSecondAbility.isOn && !ToggleAbility.isOn)
 		{
 			TargetParent = null;
-			_isOneChange = false;
-		}
-
-		if (_toggleSecondAbility != null && _toggleSecondAbility.isOn)
-		{
-			_isOneChange = false;
 		}
 
 		if (Input.GetMouseButtonDown(0) && _player.GetComponent<PlayerMove>().IsSelect &&
@@ -79,9 +72,9 @@ public class PhysicalAttack : AbilityBase
 	protected override void HandleToggleAbilityOn()
 	{
 		// ¬ключенный ToggleAbility
-		/*base.HandleToggleAbilityOn();
-
-		if (_playerAbility.GetComponent<TwoMeleeAttack>().Target != null)
+		base.HandleToggleAbilityOn();
+		ChangeBoolAndValues();
+		/*if (_playerAbility.GetComponent<TwoMeleeAttack>().Target != null)
 		{
 			TargetParent = _playerAbility.GetComponent<TwoMeleeAttack>().Target;
 			if (_isOneChange == false)
@@ -133,7 +126,6 @@ public class PhysicalAttack : AbilityBase
 		_targetHealth = TargetParent.GetComponent<HealthPlayer>();
 		CanMakeDamage = true;
 		CanDealDamageOrHeal = true;
-		_isOneChange = true;
 		Destroy(NewAbilityPrefab);
 	}
 
@@ -195,7 +187,7 @@ public class PhysicalAttack : AbilityBase
 			previousPosition = currentPosition;
 		}
 	}
-
+	//щиты перенести игроку в хп
 	private IEnumerator Damage(float damageRate)
 	{ 
 
