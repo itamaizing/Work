@@ -13,8 +13,10 @@ public class PhysicalAttack : AbilityBase
 
 	public event PhysicalAttackHandler PhysicalAttackEvent;
 
+	[SerializeField] private float _damage = 0;
 	private GameObject Target;
 	private bool _isOneChange;
+	private int _hitCount = 0;
 	//private float _chanceCriticalAttack = 0.05f;
 	private Toggle _toggleFirstAbility;
 	private bool _isDamageCooldownRunning = false;
@@ -46,6 +48,11 @@ public class PhysicalAttack : AbilityBase
 	{
 		base.HandleToggleAbility();
 
+        if (ToggleAbility.isOn)
+        {
+			Debug.Log("first ability on");
+		}
+        
 		// Текущий код в методе Update
 		if (_toggleFirstAbility != null && !_toggleFirstAbility.isOn && !ToggleAbility.isOn)
 		{
@@ -118,6 +125,8 @@ public class PhysicalAttack : AbilityBase
 		// Выключенный ToggleAbility
 		base.HandleToggleAbilityOff();
 
+		Debug.Log("first ability off");
+
 		CanDealDamageOrHeal = false;
 		CanMakeDamage = false;
 	}
@@ -185,106 +194,15 @@ public class PhysicalAttack : AbilityBase
 			if (_shield != null)
 			{
 				_shield.DamageInShield(_damageValue);
-				_player.GetComponent<PsionicaMelee>().MakePsionica(_damageValue);
-
-				float activePsionica = _playerAbility.GetComponent<FiveConversion>().PsionicaActive;
-
-				if (activePsionica > 0)
-				{
-					HandleActivePsionica(_damageValue, activePsionica);
-				}
 				_castCoroutine = StartCoroutine(DamageCooldown());
 			}
 			else
 			{
 				_targetHealth.TakeDamage(_damageValue, DamageType, AttackRangeType);
-//переделать
-				float activePsionica = _playerAbility.GetComponent<FiveConversion>().PsionicaActive;
-
-				if (activePsionica > 0)
-				{
-					HandleActivePsionica(_damageValue, activePsionica);
-				}
-//
-
 				_castCoroutine = StartCoroutine(DamageCooldown());
 			}
 		}
 	}
-
-	private void HandleActivePsionica(float damageValue, float activePsionica)
-	{
-		//возможно можно убрать
-		StartCoroutine(DamageEnemyCooldown(activePsionica));
-
-		//HandleEffectsOnTarget(activePsionica, TargetParent);
-		HandleEffectsOnNearbyEnemies(activePsionica, damageValue);
-
-		//GetComponent<FiveConversion>().UseActivePsionica(activePsionica, Target);
-	}
-
-	/*private void HandleEffectsOnTarget(float activePsionica, GameObject target)
-	{
-		// Обработка эффектов на основной цели
-		if (activePsionica >= 10 && activePsionica < 20)
-		{
-			List<BaseEffect> buffEffects = new List<BaseEffect>();
-			Component[] allEffects = target.GetComponents<Component>();
-
-			foreach (Component effectComponent in allEffects)
-			{
-				if (effectComponent is BaseEffect effect && effect.Type == EffectType.Buff)
-				{
-					buffEffects.Add(effect);
-				}
-			}
-
-			if (buffEffects.Count > 0)
-			{
-				for (int i = 0; i < 1; i++)
-				{
-					Destroy(buffEffects[i]);
-				}
-			}
-		}
-
-		// Перемещение к цели, если активная псионика больше или равна 30
-		if (activePsionica >= 30)
-		{
-			MoveTowardsEnemy(target);
-		}
-	}*/
-
-	private void HandleEffectsOnNearbyEnemies(float activePsionica, float damageValue)
-	{
-		// Обработка эффектов на других врагах в радиусе
-
-		Collider2D[] colliders = Physics2D.OverlapCircleAll(_player.transform.position, radius);
-
-		foreach (Collider2D collider in colliders)
-		{
-			if (collider.CompareTag("Enemies") && collider.gameObject != gameObject &&
-				collider.gameObject != TargetParent)
-			{
-				StartCoroutine(DamageEnemiesCooldown(activePsionica, collider));
-				// Обработка эффектов на других врагах
-				//HandleEffectsOnTarget(activePsionica, collider.gameObject);
-
-			}
-		}
-	}
-
-	/*void MoveTowardsEnemy(GameObject Target)
-	{
-		float distanceFromPlayer = _cellSize;
-		float moveSpeed = 15f;
-
-		Vector3 directionToPlayer = _player.transform.position - Target.transform.position;
-		Vector3 normalizedDirection = directionToPlayer.normalized;
-		Vector3 targetPosition = Target.transform.position - normalizedDirection * distanceFromPlayer;
-
-		StartCoroutine(MoveTowardsCoroutine(Target, targetPosition, moveSpeed));
-	}*/
 
 	private IEnumerator DamageCooldown()
 	{
@@ -303,17 +221,4 @@ public class PhysicalAttack : AbilityBase
 		_isDamageCooldownRunning = false;
 	}
 
-	private IEnumerator DamageEnemyCooldown(float activePsionica)
-	{
-		yield return new WaitForSeconds(0.1f);
-		// Нанесение урона основной цели
-		_targetHealth.TakeDamage(activePsionica * 0.3f, DamageType.Magical, AttackRangeType.Inner);
-	}
-
-	private IEnumerator DamageEnemiesCooldown(float activePsionica, Collider2D collider)
-	{
-		yield return new WaitForSeconds(0.1f);
-		// Нанесение урона врагам в радиусе
-		collider.GetComponent<HealthPlayer>().TakeMagicDamage(activePsionica * 0.5f);
-	}
 }

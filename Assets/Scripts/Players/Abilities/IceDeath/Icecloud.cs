@@ -52,11 +52,14 @@ public class Icecloud : AbilityBase
 		base.HandleToggleAbility();
 		// Текущий код в методе Update
 		if (ToggleAbility.isOn == true)
-			if (Input.GetMouseButtonDown(0) && Abilities.gameObject.activeSelf && ToggleAbility.enabled && _playerMove.IsSelect)
 		{
-			HandleLeftMouseButtonToggle();
-			
-			
+			Debug.Log("second ability on");
+			if (Input.GetMouseButtonDown(0) && Abilities.gameObject.activeSelf && ToggleAbility.enabled && _playerMove.IsSelect)
+			{
+				HandleLeftMouseButtonToggle();
+
+
+			}
 		}
 	}
 
@@ -102,6 +105,8 @@ public class Icecloud : AbilityBase
 	{
 		// Выключенный ToggleAbility
 		base.HandleToggleAbilityOff();
+
+		Debug.Log("second ability off");
 
 		if (_isSelect == false)
 		{
