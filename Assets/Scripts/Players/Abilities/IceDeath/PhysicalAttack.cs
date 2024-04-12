@@ -16,7 +16,8 @@ public class PhysicalAttack : AbilityBase
 	[SerializeField] private float _damage = 0;
 	private GameObject Target;
 	private bool _isOneChange;
-	private int _hitCount = 0;
+	private int _hitInARow = 0;
+	private bool _isInTheRow = false;
 	//private float _chanceCriticalAttack = 0.05f;
 	private Toggle _toggleFirstAbility;
 	private bool _isDamageCooldownRunning = false;
@@ -25,6 +26,7 @@ public class PhysicalAttack : AbilityBase
 
 	private void Start()
 	{
+		_damageValue = _damage;
 		Distance = _cellSize * CellDistance;
 		AttackType = AttackType.Autoattack;
 		AbilityType = AbilityType.DamageAbility;
@@ -70,14 +72,14 @@ public class PhysicalAttack : AbilityBase
 		{
 			HandleLeftMouseButtonToggle();
 		}
-
+		//это типо отмены???
 		if (Input.GetMouseButtonDown(1) && _player.GetComponent<PlayerMove>().IsSelect &&
 			Abilities.gameObject.activeSelf)
 		{
 			HandleRightMouseButtonToggle();
 
 			if (AbilityTypeManager.ActiveAbilityType == 1 &&
-				_playerAbility.GetComponent<FourMeleeAttack>().ToggleAbility.isOn == false && ToggleAbility.enabled)
+				!_playerAbility.GetComponent<FourMeleeAttack>().ToggleAbility.isOn && ToggleAbility.enabled)
 			{
 				if (_castCoroutine != null)
 				{
@@ -174,7 +176,7 @@ public class PhysicalAttack : AbilityBase
 	public override void HandleDealDamageOrHeal()
 	{
 		// Нанесение урона переделать
-		_damageValue = Random.Range(11, 14);
+		//hit in the row...
 
 		if (CanMakeDamage && _castCoroutine == null && CanUseAbility)
 		{
@@ -213,6 +215,8 @@ public class PhysicalAttack : AbilityBase
 
 		_isDamageCooldownRunning = true;
 		CanMakeDamage = false;
+		_hitInARow++;
+		_isInTheRow = true;
 
 		yield return new WaitForSeconds(1.4f);
 
