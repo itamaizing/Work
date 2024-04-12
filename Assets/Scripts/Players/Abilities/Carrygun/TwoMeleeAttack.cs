@@ -374,4 +374,5 @@ public class TwoMeleeAttack : AbilityBase
 
         rb.isKinematic = true;
     }
+
 }

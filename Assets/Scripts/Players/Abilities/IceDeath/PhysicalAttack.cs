@@ -5,6 +5,7 @@ using Players.Abilities.Genjalf;
 using Players.Abilities.Genjalf.Shield_Ability;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.GraphicsBuffer;
 
 public class PhysicalAttack : AbilityBase
 {
@@ -12,12 +13,11 @@ public class PhysicalAttack : AbilityBase
 
 	public event PhysicalAttackHandler PhysicalAttackEvent;
 
-	[HideInInspector] public GameObject Target;
-	[HideInInspector] public float DamageRate = 1.2f;
-	[HideInInspector] public bool IsGlobalCooldown = true;
-	[HideInInspector] public bool TargetCanAvoidance = true;
-
-	private Toggle _toggleSecondAbility;
+	private GameObject Target;
+	private bool _isOneChange;
+	//private float _chanceCriticalAttack = 0.05f;
+	private Toggle _toggleFirstAbility;
+	private bool _isDamageCooldownRunning = false;
 
 	protected override KeyCode ActivationKey => KeyCode.Alpha1;
 
@@ -32,29 +32,45 @@ public class PhysicalAttack : AbilityBase
 
 	private void Update()
 	{
-		HandleToggleAbility();
 		Target = TargetParent;
-
-		/*if (_toggleSecondAbility == null && _playerAbility != null)
+	
+		/*if (_toggleFirstAbility == null && _playerAbility != null)
 		{
-			_toggleSecondAbility = _playerAbility.GetComponent<TwoMeleeAttack>().ToggleAbility;
+			_toggleFirstAbility = _playerAbility.GetComponent<OneMeleeAttack>().ToggleAbility;
 		}*/
+
+		HandleToggleAbility();
 	}
 
 	protected override void HandleToggleAbility()
 	{
 		base.HandleToggleAbility();
+
 		// Текущий код в методе Update
-		if (_toggleSecondAbility != null && !_toggleSecondAbility.isOn && !ToggleAbility.isOn)
+		if (_toggleFirstAbility != null && !_toggleFirstAbility.isOn && !ToggleAbility.isOn)
 		{
 			TargetParent = null;
+			_isOneChange = false;
+		}
+
+		if (_toggleFirstAbility != null && _toggleFirstAbility.isOn)
+		{
+			_isOneChange = false;
 		}
 
 		if (Input.GetMouseButtonDown(0) && _player.GetComponent<PlayerMove>().IsSelect &&
-			Abilities.gameObject.activeSelf)
+			Abilities.gameObject.activeSelf && ToggleAbility.enabled)
 		{
 			HandleLeftMouseButtonToggle();
-			if (AbilityTypeManager.ActiveAbilityType == 1 && _toggleSecondAbility.isOn == false)
+		}
+
+		if (Input.GetMouseButtonDown(1) && _player.GetComponent<PlayerMove>().IsSelect &&
+			Abilities.gameObject.activeSelf)
+		{
+			HandleRightMouseButtonToggle();
+
+			if (AbilityTypeManager.ActiveAbilityType == 1 &&
+				_playerAbility.GetComponent<FourMeleeAttack>().ToggleAbility.isOn == false && ToggleAbility.enabled)
 			{
 				if (_castCoroutine != null)
 				{
@@ -73,15 +89,16 @@ public class PhysicalAttack : AbilityBase
 	{
 		// Включенный ToggleAbility
 		base.HandleToggleAbilityOn();
-		ChangeBoolAndValues();
-		/*if (_playerAbility.GetComponent<TwoMeleeAttack>().Target != null)
+
+		/*if (_playerAbility.GetComponent<OneMeleeAttack>().TargetParent != null)
 		{
-			TargetParent = _playerAbility.GetComponent<TwoMeleeAttack>().Target;
+			TargetParent = _playerAbility.GetComponent<OneMeleeAttack>().TargetParent;
+
 			if (_isOneChange == false)
 			{
 				ChangeBoolAndValues();
 			}
-		}*/ // Это мне нужно???
+		}*/
 
 		if (TargetParent == null)
 		{
@@ -93,13 +110,14 @@ public class PhysicalAttack : AbilityBase
 		{
 			HandleDistanceToTarget();
 		}
+		Distance = _cellSize * CellDistance;
 	}
 
 	protected override void HandleToggleAbilityOff()
 	{
 		// Выключенный ToggleAbility
 		base.HandleToggleAbilityOff();
-		StopBackgroundSwitcherEvent.SendStartStopBackgroundSwitcher();
+
 		CanDealDamageOrHeal = false;
 		CanMakeDamage = false;
 	}
@@ -110,15 +128,11 @@ public class PhysicalAttack : AbilityBase
 		{
 			StartCoroutine(ToggleDoubleClick());
 		}
-		else if (AbilityTypeManager.ActiveAbilityType == 1 && _player.GetComponent<PlayerMove>().IsSelect &&
-				 Abilities.gameObject.activeSelf)
-		{
-			StartCoroutine(DoNotDoubleClickAtTarget());
-		}
 	}
 
 	public override void OnRightDoubleClick()
 	{
+		StartCoroutine(DoNotDoubleClickAtTarget());
 	}
 
 	public override void ChangeBoolAndValues()
@@ -126,20 +140,21 @@ public class PhysicalAttack : AbilityBase
 		_targetHealth = TargetParent.GetComponent<HealthPlayer>();
 		CanMakeDamage = true;
 		CanDealDamageOrHeal = true;
+		_isOneChange = true;
 		Destroy(NewAbilityPrefab);
 	}
 
 	private void HandleTargetSelection()
 	{
 		// Выбор врага
-
 		_targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		RaycastHit2D hit = Physics2D.Raycast(_targetPosition, Vector2.zero);
-		if (hit.collider != null && hit.collider.CompareTag("Enemies") && hit.collider.gameObject != gameObject)
+
+		if (hit.collider != null && hit.collider.CompareTag("Enemies") && hit.collider.gameObject != gameObject &&
+			hit.collider.GetComponent<Uterus>() == null)
 		{
 			TargetParent = hit.collider.gameObject;
 			ChangeBoolAndValues();
-
 			if (NewAbilityPrefab != null)
 			{
 				Destroy(NewAbilityPrefab);
@@ -149,81 +164,156 @@ public class PhysicalAttack : AbilityBase
 
 	public override void HandleDealDamageOrHeal()
 	{
-		// Нанесение урона
-		_damageValue = 12;
+		// Нанесение урона переделать
+		_damageValue = Random.Range(11, 14);
 
 		if (CanMakeDamage && _castCoroutine == null && CanUseAbility)
 		{
-			if (Abilities.GetComponent<GlobalCooldown>() && IsGlobalCooldown)
+			if (Abilities.GetComponent<GlobalCooldown>())
 			{
 				Abilities.GetComponent<GlobalCooldown>().StartGlobalCooldown();
 			}
 
+			/*if (Random.value < _chanceCriticalAttack)
+			{
+				_damageValue *= 1.6f;
+			}*/
 			PhysicalAttackEvent?.Invoke(_damageValue);
-			_castCoroutine = StartCoroutine(Damage(DamageRate));
+			
+			Shield _shield = TargetParent.GetComponentInChildren<Shield>();
+
+			if (_shield != null)
+			{
+				_shield.DamageInShield(_damageValue);
+				_player.GetComponent<PsionicaMelee>().MakePsionica(_damageValue);
+
+				float activePsionica = _playerAbility.GetComponent<FiveConversion>().PsionicaActive;
+
+				if (activePsionica > 0)
+				{
+					HandleActivePsionica(_damageValue, activePsionica);
+				}
+				_castCoroutine = StartCoroutine(DamageCooldown());
+			}
+			else
+			{
+				_targetHealth.TakeDamage(_damageValue, DamageType, AttackRangeType);
+//переделать
+				float activePsionica = _playerAbility.GetComponent<FiveConversion>().PsionicaActive;
+
+				if (activePsionica > 0)
+				{
+					HandleActivePsionica(_damageValue, activePsionica);
+				}
+//
+
+				_castCoroutine = StartCoroutine(DamageCooldown());
+			}
 		}
 	}
 
-
-	private void MissAtDistance()
+	private void HandleActivePsionica(float damageValue, float activePsionica)
 	{
-		// Промах при отдаление более чем на 10% от корпуса
-		if (previousPosition == Vector3.zero)
-		{
-			previousPosition = TargetParent.transform.position;
-		}
+		//возможно можно убрать
+		StartCoroutine(DamageEnemyCooldown(activePsionica));
 
-		float time = 0;
-		time += Time.deltaTime;
-		if (time < 0.6f)
-		{
-			Vector3 currentPosition = TargetParent.transform.position;
+		//HandleEffectsOnTarget(activePsionica, TargetParent);
+		HandleEffectsOnNearbyEnemies(activePsionica, damageValue);
 
-			if (Vector3.Distance(previousPosition, currentPosition) >= 0.19f)
+		//GetComponent<FiveConversion>().UseActivePsionica(activePsionica, Target);
+	}
+
+	/*private void HandleEffectsOnTarget(float activePsionica, GameObject target)
+	{
+		// Обработка эффектов на основной цели
+		if (activePsionica >= 10 && activePsionica < 20)
+		{
+			List<BaseEffect> buffEffects = new List<BaseEffect>();
+			Component[] allEffects = target.GetComponents<Component>();
+
+			foreach (Component effectComponent in allEffects)
 			{
-				_damageValue = 0;
+				if (effectComponent is BaseEffect effect && effect.Type == EffectType.Buff)
+				{
+					buffEffects.Add(effect);
+				}
 			}
 
-			previousPosition = currentPosition;
+			if (buffEffects.Count > 0)
+			{
+				for (int i = 0; i < 1; i++)
+				{
+					Destroy(buffEffects[i]);
+				}
+			}
+		}
+
+		// Перемещение к цели, если активная псионика больше или равна 30
+		if (activePsionica >= 30)
+		{
+			MoveTowardsEnemy(target);
+		}
+	}*/
+
+	private void HandleEffectsOnNearbyEnemies(float activePsionica, float damageValue)
+	{
+		// Обработка эффектов на других врагах в радиусе
+
+		Collider2D[] colliders = Physics2D.OverlapCircleAll(_player.transform.position, radius);
+
+		foreach (Collider2D collider in colliders)
+		{
+			if (collider.CompareTag("Enemies") && collider.gameObject != gameObject &&
+				collider.gameObject != TargetParent)
+			{
+				StartCoroutine(DamageEnemiesCooldown(activePsionica, collider));
+				// Обработка эффектов на других врагах
+				//HandleEffectsOnTarget(activePsionica, collider.gameObject);
+
+			}
 		}
 	}
-	//щиты перенести игроку в хп
-	private IEnumerator Damage(float damageRate)
-	{ 
 
-		if (TargetCanAvoidance)
+	/*void MoveTowardsEnemy(GameObject Target)
+	{
+		float distanceFromPlayer = _cellSize;
+		float moveSpeed = 15f;
+
+		Vector3 directionToPlayer = _player.transform.position - Target.transform.position;
+		Vector3 normalizedDirection = directionToPlayer.normalized;
+		Vector3 targetPosition = Target.transform.position - normalizedDirection * distanceFromPlayer;
+
+		StartCoroutine(MoveTowardsCoroutine(Target, targetPosition, moveSpeed));
+	}*/
+
+	private IEnumerator DamageCooldown()
+	{
+		if (_isDamageCooldownRunning)
 		{
-			MissAtDistance();
+			yield break; // Если корутина уже выполняется, просто выходим
 		}
 
-		yield return new WaitForSeconds(damageRate / 2);
+		_isDamageCooldownRunning = true;
+		CanMakeDamage = false;
 
-		Shield _shield = null;
+		yield return new WaitForSeconds(1.4f);
 
-		if (TargetParent != null)
-		{
-			_shield = TargetParent.GetComponentInChildren<Shield>();
-		}
+		CanMakeDamage = true;
+		_castCoroutine = null;
+		_isDamageCooldownRunning = false;
+	}
 
-		if (_shield != null)
-		{
-			_shield.DamageInShield(_damageValue);
-			CanMakeDamage = false;
+	private IEnumerator DamageEnemyCooldown(float activePsionica)
+	{
+		yield return new WaitForSeconds(0.1f);
+		// Нанесение урона основной цели
+		_targetHealth.TakeDamage(activePsionica * 0.3f, DamageType.Magical, AttackRangeType.Inner);
+	}
 
-			yield return new WaitForSeconds(damageRate / 2);
-
-			_castCoroutine = null;
-			CanMakeDamage = true;
-		}
-		else
-		{
-			_targetHealth.TakeDamage(_damageValue, DamageType, AttackRangeType);
-			CanMakeDamage = false;
-
-			yield return new WaitForSeconds(damageRate / 2);
-
-			_castCoroutine = null;
-			CanMakeDamage = true;
-		}
+	private IEnumerator DamageEnemiesCooldown(float activePsionica, Collider2D collider)
+	{
+		yield return new WaitForSeconds(0.1f);
+		// Нанесение урона врагам в радиусе
+		collider.GetComponent<HealthPlayer>().TakeMagicDamage(activePsionica * 0.5f);
 	}
 }
