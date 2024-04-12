@@ -11,40 +11,47 @@ public class PriestAbilityEvents : MonoBehaviour, ICharacterEvents
     private void OnEnable()
     {
         GetComponent<OneRangeAttack>().FirstAbilityEvent += HandleEvent;
+        GetComponent<OneRangeAttack>().DarkFirstAbilityEvent += HandleEvent;
+
         GetComponent<TwoRangeProtection>().SecondAbilityEvent += HandleEvent;
+        GetComponent<TwoRangeProtection>().SecondDarkAbilityEvent += HandleEvent;
+
         GetComponent<ThreeRangeHeal>().ThirdAbilityEvent += HandleEvent;
+        GetComponent<ThreeRangeHeal>().DarkThirdAbilityEvent += HandleEvent;
+
         GetComponent<FourRangeRecovery>().FourthAbilityEvent += HandleEvent;
-        if(GetComponent<FourRangeRecovery>().Target && GetComponent<FourRangeRecovery>().Target.GetComponent<HealthRecovery>())
+        GetComponent<FourRangeRecovery>().DarkFourthAbilityEvent += HandleEvent;
+
+        if (GetComponent<FourRangeRecovery>().TargetParent && GetComponent<FourRangeRecovery>().TargetParent.GetComponent<HealthRecovery>())
         {
-            GetComponent<FourRangeRecovery>().Target.GetComponent<HealthRecovery>().FourthBaffEvent += HandleEvent;
+            GetComponent<FourRangeRecovery>().TargetParent.GetComponent<HealthRecovery>().FourthBaffEvent += HandleEvent;
         }
-        GetComponent<DarkOneRangeAttack>().DarkFirstAbilityEvent += HandleEvent;
-        GetComponent<DarkTwoRangeProtection>().SecondDarkAbilityEvent += HandleEvent;
-        GetComponent<DarkThreeRangeHeal>().DarkThirdAbilityEvent += HandleEvent;
-        GetComponent<DarkFourRangeRecovery>().DarkFourthAbilityEvent += HandleEvent;
-        if(GetComponent<DarkFourRangeRecovery>().Target && GetComponent<DarkFourRangeRecovery>().Target.GetComponent<Damage>())
+        if(GetComponent<FourRangeRecovery>().TargetParent && GetComponent<FourRangeRecovery>().TargetParent.GetComponent<Damage>())
         {
-            GetComponent<DarkFourRangeRecovery>().Target.GetComponent<Damage>().DarkFourthBaffEvent += HandleEvent;
+            GetComponent<FourRangeRecovery>().TargetParent.GetComponent<Damage>().DarkFourthBaffEvent += HandleEvent;
         }
     }
 
     private void OnDisable()
     {
         GetComponent<OneRangeAttack>().FirstAbilityEvent -= HandleEvent;
+        GetComponent<OneRangeAttack>().DarkFirstAbilityEvent -= HandleEvent;
+
         GetComponent<TwoRangeProtection>().SecondAbilityEvent -= HandleEvent;
+        GetComponent<TwoRangeProtection>().SecondDarkAbilityEvent -= HandleEvent;
+
         GetComponent<ThreeRangeHeal>().ThirdAbilityEvent -= HandleEvent;
+        GetComponent<ThreeRangeHeal>().DarkThirdAbilityEvent -= HandleEvent;
+
         GetComponent<FourRangeRecovery>().FourthAbilityEvent -= HandleEvent;
-        if (GetComponent<FourRangeRecovery>().Target && GetComponent<FourRangeRecovery>().Target.GetComponent<HealthRecovery>())
+        GetComponent<FourRangeRecovery>().DarkFourthAbilityEvent -= HandleEvent;
+        if (GetComponent<FourRangeRecovery>().TargetParent && GetComponent<FourRangeRecovery>().TargetParent.GetComponent<HealthRecovery>())
         {
-            GetComponent<FourRangeRecovery>().Target.GetComponent<HealthRecovery>().FourthBaffEvent -= HandleEvent;
+            GetComponent<FourRangeRecovery>().TargetParent.GetComponent<HealthRecovery>().FourthBaffEvent -= HandleEvent;
         }
-        GetComponent<DarkOneRangeAttack>().DarkFirstAbilityEvent -= HandleEvent;
-        GetComponent<DarkTwoRangeProtection>().SecondDarkAbilityEvent -= HandleEvent;
-        GetComponent<DarkThreeRangeHeal>().DarkThirdAbilityEvent -= HandleEvent;
-        GetComponent<DarkFourRangeRecovery>().DarkFourthAbilityEvent -= HandleEvent;
-        if (GetComponent<DarkFourRangeRecovery>().Target && GetComponent<DarkFourRangeRecovery>().Target.GetComponent<Damage>())
+        if (GetComponent<FourRangeRecovery>().TargetParent && GetComponent<FourRangeRecovery>().TargetParent.GetComponent<Damage>())
         {
-            GetComponent<DarkFourRangeRecovery>().Target.GetComponent<Damage>().DarkFourthBaffEvent -= HandleEvent;
+            GetComponent<FourRangeRecovery>().TargetParent.GetComponent<Damage>().DarkFourthBaffEvent -= HandleEvent;
         }
     }
 

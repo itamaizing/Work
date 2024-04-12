@@ -4,21 +4,28 @@ using UnityEngine;
 
 
 public class TwoRangeProtection : AbilityBase
-{
+{ 
     [Header("Ability properties")]
     [SerializeField] private GameObject ProtectBaff;
     [SerializeField] private GameObject ProtectDebaff;
     [SerializeField] private GameObject CooldownButton;
     [SerializeField] private GameObject ManaCost;
 
-    [HideInInspector] public GameObject Target;
+    [SerializeField] private GameObject DarkProtectDebaff;
 
     public delegate void SecondAbilityHandler(float value);
     public event SecondAbilityHandler SecondAbilityEvent;
 
+    public delegate void SecondDarkAbilityHandler(float value);
+    public event SecondDarkAbilityHandler SecondDarkAbilityEvent;
+
     private GameObject _protectBaffPrefab;
     private GameObject _protectDebaffPrefab;
+    private GameObject _darkProtectDebaff;
+
     private float _absorbtionBuff;
+
+    private bool isLightSide=true;
 
     protected override KeyCode ActivationKey => KeyCode.Alpha2;
 
@@ -31,7 +38,6 @@ public class TwoRangeProtection : AbilityBase
 
     void Update()
     {
-        Target = TargetParent;
 		HandleToggleAbility();
 	}
 
@@ -130,7 +136,7 @@ public class TwoRangeProtection : AbilityBase
         _targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(_targetPosition, Vector2.zero);
 
-        if (hit.collider != null && hit.collider.CompareTag("Allies") && hit.collider.gameObject != gameObject &&
+        if (isLightSide && hit.collider != null && hit.collider.CompareTag("Allies") && hit.collider.gameObject != gameObject &&
                 hit.collider.gameObject.GetComponentInChildren<DebaffProtect>() == null)
         {
             TargetParent = hit.collider.gameObject;
@@ -141,9 +147,21 @@ public class TwoRangeProtection : AbilityBase
             }
             DrawCircle.Clear();
         }
-        else if (hit.collider != null && hit.collider.CompareTag("Allies") && hit.collider.gameObject == transform.parent.gameObject)
+        else if (isLightSide && hit.collider != null && hit.collider.CompareTag("Allies") && hit.collider.gameObject == transform.parent.gameObject)
         {
             TargetParent = transform.parent.gameObject;
+            if (NewAbilityPrefab != null)
+            {
+                Destroy(NewAbilityPrefab);
+            }
+            DrawCircle.Clear();
+        }
+        else if (!isLightSide && hit.collider != null && hit.collider.CompareTag("Enemies") 
+              && hit.collider.gameObject != gameObject
+              && hit.collider.GetComponent<DebaffRepeatedDamage>()==null)
+        {
+            TargetParent = hit.collider.gameObject;
+
             if (NewAbilityPrefab != null)
             {
                 Destroy(NewAbilityPrefab);
@@ -155,27 +173,53 @@ public class TwoRangeProtection : AbilityBase
     public override void HandleDealDamageOrHeal()
     {
         if (_castCoroutine != null) return;
-        if (TargetParent == null || TargetParent.GetComponentInChildren<DebaffProtect>() != null) return;
+        //if (TargetParent == null || TargetParent.GetComponentInChildren<DebaffProtect>() != null) return;
        
-            if (TargetParent == transform.parent.gameObject)
+            if (TargetParent == transform.parent.gameObject&&isLightSide)
             {
                 _castCoroutine = StartCoroutine(CastProtect(0f));
             }
-            else
+            else if(TargetParent!=transform.parent.gameObject&&isLightSide)
             {
                 _castCoroutine = StartCoroutine(CastProtect(1.2f));
             }
+            else if(TargetParent!=transform.parent.gameObject&&!isLightSide)
+        {
+                 _castCoroutine = StartCoroutine(CastProtect(1.2f));
+        }
         
+    }
+
+    public void ReverseAbility(bool isLight)
+    {
+        ToggleAbility.isOn = false;
+        isLightSide = isLight;
+        _castCoroutine = null;
+        if (isLightSide)
+        {
+            AbilityType = AbilityType.HealAbility;
+        }
+        else
+        {
+            AbilityType = AbilityType.DamageAbility;
+        }
     }
 
     private void Protect()
     {
+        if(isLightSide)
+        {
             _player.GetComponent<ManaPlayer>().UseMana(6f);
-
             SetProtectBuff();
             SetProtectDebaff();
-
             SecondAbilityEvent?.Invoke(0f);
+        }
+        else
+        {
+            _player.GetComponent<ManaPlayer>().UseMana(20f);
+            SetDarkProtectionDebaff();
+            SecondDarkAbilityEvent?.Invoke(0f);
+        }
             StartCoroutine(Recharge());
     }
 
@@ -195,6 +239,16 @@ public class TwoRangeProtection : AbilityBase
             _protectDebaffPrefab.transform.SetParent(TargetParent.transform);
             _protectDebaffPrefab.GetComponent<DebaffProtect>().CastDebaff(12f);
             _protectDebaffPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
+    }
+
+    private void SetDarkProtectionDebaff()
+    {
+        _darkProtectDebaff = Instantiate(DarkProtectDebaff);
+        _darkProtectDebaff.transform.SetParent(TargetParent.transform);
+        _darkProtectDebaff.AddComponent<DebaffRepeatedDamage>();
+        _darkProtectDebaff.GetComponent<DebaffRepeatedDamage>().CastDebaff(8f) ;
+        _darkProtectDebaff.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
+
     }
 
     public void AddShieldBuff(float value)
@@ -229,7 +283,14 @@ public class TwoRangeProtection : AbilityBase
     {
         ToggleAbility.isOn = false;
         ToggleAbility.enabled = false;
-        _playerAbility.GetComponent<DarkTwoRangeProtection>().enabled = false;
+        if(isLightSide)
+        {
+            _playerAbility.GetComponent<DarkTwoRangeProtection>().enabled = false;
+        }
+        else
+        {
+            _playerAbility.GetComponent<TwoRangeProtection>().enabled = false;
+        }
         TargetParent = null;
         _absorbtionBuff = 0;
 
@@ -240,7 +301,14 @@ public class TwoRangeProtection : AbilityBase
 
         CooldownButton.gameObject.SetActive(false);
         ToggleAbility.enabled = true;
-        _playerAbility.GetComponent<DarkTwoRangeProtection>().enabled = true;
+        if (isLightSide)
+        {
+            _playerAbility.GetComponent<DarkTwoRangeProtection>().enabled = true;
+        }
+        else
+        {
+            _playerAbility.GetComponent<TwoRangeProtection>().enabled = true;
+        }
         yield break;
 
     }

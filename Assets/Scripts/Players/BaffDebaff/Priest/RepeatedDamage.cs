@@ -56,6 +56,7 @@ public class RepeatedDamage : BaseEffect
 
     public IEnumerator TimeRepeat(float time)
     {
+
         yield return new WaitForSeconds(time);
         IsRepeat = false;
         Destroy(this);

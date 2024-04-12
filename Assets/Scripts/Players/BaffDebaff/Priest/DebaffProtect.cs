@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class DebaffProtect : BaseEffect
-{
+{ 
     public bool IsProtectDebaff;
 
     private void Start()

@@ -2,21 +2,26 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static UnityEngine.GraphicsBuffer;
 
 public class FourRangeRecovery : AbilityBase
-{
+{ 
 	[Header("Ability properties")]
 	[SerializeField] private GameObject RecoveryBaffPrefab;
-	[SerializeField] private GameObject ManaCost;
+    [SerializeField] private GameObject DamageDebaffPrefab;
+    [SerializeField] private GameObject ManaCost;
 	[SerializeField] private float _castTime=1.2f;
 	[SerializeField] private float _heal = 6f;
-
-	[HideInInspector] public GameObject Target;
 
 	public delegate void FourthAbilityHandler(float value);
 	public event FourthAbilityHandler FourthAbilityEvent;
 
-	private GameObject _newPrefab;
+    public delegate void DarkFourthAbilityHandler(float value);
+    public event DarkFourthAbilityHandler DarkFourthAbilityEvent;
+
+    private bool isLightSide = true;
+
+    private GameObject _newPrefab;
 	private float _trueHeal;
 	private int _healTickCount = 0;
 	public bool canCast = true;
@@ -33,7 +38,6 @@ public class FourRangeRecovery : AbilityBase
 	void Update()
 	{
 		HandleToggleAbility();
-		Target = TargetParent;
 	}
 
 	protected override void HandleToggleAbility()
@@ -138,7 +142,7 @@ public class FourRangeRecovery : AbilityBase
 		_targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		RaycastHit2D hit = Physics2D.Raycast(_targetPosition, Vector2.zero);
 
-		if (hit.collider != null && hit.collider.CompareTag("Allies") && hit.collider.gameObject != gameObject)
+		if (isLightSide && hit.collider != null && hit.collider.CompareTag("Allies") && hit.collider.gameObject != gameObject)
 		{
 			TargetParent = hit.collider.gameObject;
 
@@ -148,7 +152,7 @@ public class FourRangeRecovery : AbilityBase
 			}
 			DrawCircle.Clear();
 		}
-		else if (hit.collider != null && hit.collider.CompareTag("Allies") && hit.collider.gameObject == gameObject)
+		else if (isLightSide && hit.collider != null && hit.collider.CompareTag("Allies") && hit.collider.gameObject == gameObject)
 		{
 			TargetParent = transform.parent.gameObject;
 
@@ -158,24 +162,53 @@ public class FourRangeRecovery : AbilityBase
 			}
 			DrawCircle.Clear();
 		}
-	}
+        else if (!isLightSide && hit.collider != null && hit.collider.CompareTag("Enemies") && hit.collider.gameObject != gameObject)
+        {
+            TargetParent = hit.collider.gameObject;
+
+            if (NewAbilityPrefab != null)
+            {
+                Destroy(NewAbilityPrefab);
+            }
+            DrawCircle.Clear();
+        }
+    }
 
 	public override void HandleDealDamageOrHeal()
 	{
 		if (_castCoroutine == null)
 		{
-			if(TargetParent == transform.parent.gameObject)
+			if(isLightSide && TargetParent == transform.parent.gameObject)
 			{
 				_castCoroutine = StartCoroutine(CastProtect(0f));
 			}
-			else
+			else if(isLightSide && TargetParent != transform.parent.gameObject)
 			{
                 _castCoroutine = StartCoroutine(CastProtect(_castTime));
             }
+			else
+			{
+				_castCoroutine = StartCoroutine(CastProtect(_castTime));
+			}
 		}
 	}
 
-	private void Heal()
+    public void ReverseAbility(bool isLight)
+    {
+        ToggleAbility.isOn = false;
+        isLightSide = isLight;
+        _castCoroutine = null;
+        if (isLightSide)
+        {
+            AbilityType = AbilityType.HealAbility;
+        }
+        else
+        {
+            AbilityType = AbilityType.DamageAbility;
+        }
+    }
+
+    private void Heal()
 	{
 		if (_newPrefab != null && TargetParent.GetComponentInChildren<HealthRecovery>() != null) // обновление спелла
 		{
@@ -195,7 +228,29 @@ public class FourRangeRecovery : AbilityBase
 		FourthAbilityEvent?.Invoke(0f);
 		Recharge();
 	}
-	public int CheckEneryOfSpriritBaffs()
+
+    private void Damage()
+    {
+        if (_newPrefab != null && TargetParent.GetComponentInChildren<Damage>()!=null)
+        {
+            TargetParent.GetComponent<Damage>().Timer = Time.time;
+            TargetParent.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
+        }
+        else if(TargetParent!=null)
+        {
+			_newPrefab = null;
+            _newPrefab = Instantiate(DamageDebaffPrefab);
+            _newPrefab.transform.SetParent(TargetParent.transform);
+            _newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
+            _newPrefab.GetComponent<Damage>().CastRecovery(12f, 6f, 3f);
+        }
+        _player.GetComponent<ManaPlayer>().UseMana(4f);
+
+        DarkFourthAbilityEvent?.Invoke(0f);
+        Recharge();
+    }
+
+    public int CheckEneryOfSpriritBaffs()
 	{
         int stacks = _player.GetComponentInChildren<OneRangeAttack>().SpiritBaffCount;
 
@@ -221,7 +276,14 @@ public class FourRangeRecovery : AbilityBase
 		yield return new WaitForSeconds(castTime);
 		_castCoroutine = null;
 		_player.GetComponent<PlayerMove>().CanMove = true;
-		Heal();
+		if(isLightSide)
+		{
+            Heal();
+        }
+		else
+		{
+			Damage();
+		}
     }
 
 	private IEnumerator EnemiesDoubleClick()

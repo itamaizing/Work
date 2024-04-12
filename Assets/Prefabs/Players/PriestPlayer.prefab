@@ -140,7 +140,7 @@ MonoBehaviour:
   _manaRegenerationValue: 10
   _manaRegenerationDelay: 3
   MaxMana: 1666
-  Mana: 1666
+  Mana: 1000
   ManaBar: {fileID: 5680468377122292335}
   DamageSpawn: {fileID: 8933781320356208631}
   PrefabText: {fileID: 97509558472111251, guid: b8ec9c7fb2a215a418a41efc3aec9187, type: 3}
@@ -1550,17 +1550,12 @@ GameObject:
   m_Component:
   - component: {fileID: 8923380669055877266}
   - component: {fileID: 4769007552343539603}
-  - component: {fileID: 1757917591310994716}
   - component: {fileID: 8733775549418614246}
   - component: {fileID: 8768896892171752375}
   - component: {fileID: 6111745567471085271}
   - component: {fileID: 2370985466686808120}
   - component: {fileID: 1384084314023187958}
   - component: {fileID: 3423861005672603737}
-  - component: {fileID: 174446197202522426}
-  - component: {fileID: 5828944524669050820}
-  - component: {fileID: 6693416441624044845}
-  - component: {fileID: 3225423710026260197}
   m_Layer: 0
   m_Name: Abilities
   m_TagString: Allies
@@ -1600,23 +1595,6 @@ MonoBehaviour:
   - {fileID: 6111745567471085271}
   - {fileID: 2370985466686808120}
   - {fileID: 1384084314023187958}
---- !u!114 &1757917591310994716
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7378065823814705286}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7a1f269fd1a47e4aaed1dc6e45fae1b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Abilities:
-  - {fileID: 174446197202522426}
-  - {fileID: 5828944524669050820}
-  - {fileID: 6693416441624044845}
-  - {fileID: 3225423710026260197}
 --- !u!114 &8733775549418614246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1671,12 +1649,23 @@ MonoBehaviour:
   IsActiveAbility: 0
   _targetCircle: {fileID: 0}
   Heal: 2
-  ScriptInstanceCount: 0
+  SpiritDebaffCount: 0
+  SpiritBaffCount: 0
   Target: {fileID: 0}
-  EnergySpiritEffect: {fileID: 3205664352808204184, guid: 9d037fb657192bd4a8d0a15b2ad680d2, type: 3}
-  ManaCost: {fileID: 5002266305278314167}
-  CastTime: 1.4
-  _countdownForEnergyOfSpirit: 9
+  _manaCost: {fileID: 5002266305278314167}
+  _baffEffect: {fileID: 3205664352808204184, guid: 9d037fb657192bd4a8d0a15b2ad680d2, type: 3}
+  _lightCastTime: 1.4
+  _countdownSpiritBaff: 9
+  _maxBaffCount: 2
+  _heal: 2
+  _manaForHeal: 1
+  _debaffEffect: {fileID: 4685365934782879991, guid: 80231fe43a07b6048b33b9863d3d1f57, type: 3}
+  _darkCastTime: 1.4
+  _countdownSpiritDebaff: 9
+  _damage: 2
+  _maxDebaffCount: 2
+  _manaForDamage: 1
+  isLightSide: 1
 --- !u!114 &6111745567471085271
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1722,7 +1711,7 @@ MonoBehaviour:
   ProtectDebaff: {fileID: 8908686081191195120, guid: bc6789e500ac32940bc1f7779553b1cc, type: 3}
   CooldownButton: {fileID: 0}
   ManaCost: {fileID: 5002266305278314167}
-  Target: {fileID: 0}
+  DarkProtectDebaff: {fileID: 1124552450548681639, guid: 018e5683892c12f4ea1bc59608b6eb97, type: 3}
 --- !u!114 &2370985466686808120
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1766,7 +1755,7 @@ MonoBehaviour:
   _targetCircle: {fileID: 0}
   ManaCost: {fileID: 5002266305278314167}
   _castTime: 1.8
-  Target: {fileID: 0}
+  _darkCastTime: 1.8
 --- !u!114 &1384084314023187958
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1809,9 +1798,10 @@ MonoBehaviour:
   IsActiveAbility: 0
   _targetCircle: {fileID: 0}
   RecoveryBaffPrefab: {fileID: 8887987041764017493, guid: 70e3d37fc4fe10e4e852b0b918d0776d, type: 3}
+  DamageDebaffPrefab: {fileID: 3161902913369863076, guid: 92b3843eb2376b743845974a02d0f69e, type: 3}
   ManaCost: {fileID: 5002266305278314167}
   _castTime: 1.2
-  Target: {fileID: 0}
+  _heal: 6
   canCast: 1
 --- !u!114 &3423861005672603737
 MonoBehaviour:
@@ -1836,184 +1826,8 @@ MonoBehaviour:
   - {fileID: 0}
   CastPrefab: {fileID: 5074480402368706878, guid: 8fb008b85f2e29b48b39b1cd92d851a0, type: 3}
   ManaCost: {fileID: 5002266305278314167}
---- !u!114 &174446197202522426
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7378065823814705286}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb675895bcd71fe4f91a69d3f9eb951a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  IconAbility: {fileID: 0}
-  AbilityPrefab: {fileID: 7950451802439155728, guid: 3a4fd115c2034d54692f1037f75870e9, type: 3}
-  Select: {fileID: 0}
-  Abilities: {fileID: 0}
-  ObstacleLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
-  CastPrefab: {fileID: 5074480402368706878, guid: 8fb008b85f2e29b48b39b1cd92d851a0, type: 3}
-  ToggleAbility: {fileID: 0}
-  DrawCircle: {fileID: 2084701706370063657}
-  IconAbilityAutoattack: {fileID: 0}
-  CircleSelect: {fileID: 7277157472421124586}
-  AttackType: 0
-  AbilityType: 0
-  AttackRangeType: 0
-  TargetParent: {fileID: 0}
-  CanMakeDamage: 0
-  CanDealDamageOrHeal: 0
-  CanUseAbility: 1
-  NewAbilityPrefab: {fileID: 0}
-  CanDoAbility: 0
-  CanDoAbilityOnMyself: 1
-  CanDrawCircle: 1
-  Distance: 0
-  CellDistance: 1
-  _cellSize: 1.9
-  lastAbility: {fileID: 0}
-  IsActiveAbility: 0
-  _targetCircle: {fileID: 0}
-  Heal: 2
-  ScriptInstanceCount: 0
-  Target: {fileID: 0}
-  HealthSpiritDebaff: {fileID: 4685365934782879991, guid: 80231fe43a07b6048b33b9863d3d1f57, type: 3}
-  ManaCost: {fileID: 5002266305278314167}
---- !u!114 &5828944524669050820
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7378065823814705286}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41f79ae2fcedcc54c8a54513bbdc8209, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  IconAbility: {fileID: 0}
-  AbilityPrefab: {fileID: 3381329992867828392, guid: aca45d857b079e2449ab3d01717d8028, type: 3}
-  Select: {fileID: 0}
-  Abilities: {fileID: 0}
-  ObstacleLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
-  CastPrefab: {fileID: 5074480402368706878, guid: 8fb008b85f2e29b48b39b1cd92d851a0, type: 3}
-  ToggleAbility: {fileID: 0}
-  DrawCircle: {fileID: 8128605320138084665}
-  IconAbilityAutoattack: {fileID: 0}
-  CircleSelect: {fileID: 0}
-  AttackType: 0
-  AbilityType: 0
-  AttackRangeType: 0
-  TargetParent: {fileID: 0}
-  CanMakeDamage: 0
-  CanDealDamageOrHeal: 0
-  CanUseAbility: 1
-  NewAbilityPrefab: {fileID: 0}
-  CanDoAbility: 0
-  CanDoAbilityOnMyself: 1
-  CanDrawCircle: 1
-  Distance: 0
-  CellDistance: 1
-  _cellSize: 1.9
-  lastAbility: {fileID: 0}
-  IsActiveAbility: 0
-  _targetCircle: {fileID: 0}
-  DarkProtectDebaff: {fileID: 1124552450548681639, guid: 018e5683892c12f4ea1bc59608b6eb97, type: 3}
-  CooldownButton: {fileID: 0}
-  ManaCost: {fileID: 5002266305278314167}
-  Target: {fileID: 0}
---- !u!114 &6693416441624044845
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7378065823814705286}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4204394d212d04a459ee7f1b30a46471, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  IconAbility: {fileID: 0}
-  AbilityPrefab: {fileID: 6736161171206798187, guid: cafc1c68ee870b94c89eda855037a167, type: 3}
-  Select: {fileID: 0}
-  Abilities: {fileID: 0}
-  ObstacleLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
-  CastPrefab: {fileID: 5074480402368706878, guid: 8fb008b85f2e29b48b39b1cd92d851a0, type: 3}
-  ToggleAbility: {fileID: 0}
-  DrawCircle: {fileID: 8128605320138084665}
-  IconAbilityAutoattack: {fileID: 0}
-  CircleSelect: {fileID: 0}
-  AttackType: 0
-  AbilityType: 0
-  AttackRangeType: 0
-  TargetParent: {fileID: 0}
-  CanMakeDamage: 0
-  CanDealDamageOrHeal: 0
-  CanUseAbility: 1
-  NewAbilityPrefab: {fileID: 0}
-  CanDoAbility: 0
-  CanDoAbilityOnMyself: 1
-  CanDrawCircle: 1
-  Distance: 0
-  CellDistance: 1
-  _cellSize: 1.9
-  lastAbility: {fileID: 0}
-  IsActiveAbility: 0
-  _targetCircle: {fileID: 0}
-  ManaCost: {fileID: 5002266305278314167}
-  Target: {fileID: 0}
---- !u!114 &3225423710026260197
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7378065823814705286}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d258ab3722d0884a8348c21813e7954, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  IconAbility: {fileID: 0}
-  AbilityPrefab: {fileID: 665976976991954203, guid: 159ed820f3d14294dbd1c58d73065a6f, type: 3}
-  Select: {fileID: 0}
-  Abilities: {fileID: 0}
-  ObstacleLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
-  CastPrefab: {fileID: 5074480402368706878, guid: 8fb008b85f2e29b48b39b1cd92d851a0, type: 3}
-  ToggleAbility: {fileID: 0}
-  DrawCircle: {fileID: 8128605320138084665}
-  IconAbilityAutoattack: {fileID: 0}
-  CircleSelect: {fileID: 0}
-  AttackType: 0
-  AbilityType: 0
-  AttackRangeType: 0
-  TargetParent: {fileID: 0}
-  CanMakeDamage: 0
-  CanDealDamageOrHeal: 0
-  CanUseAbility: 1
-  NewAbilityPrefab: {fileID: 0}
-  CanDoAbility: 0
-  CanDoAbilityOnMyself: 1
-  CanDrawCircle: 1
-  Distance: 0
-  CellDistance: 1
-  _cellSize: 1.9
-  lastAbility: {fileID: 0}
-  IsActiveAbility: 0
-  _targetCircle: {fileID: 0}
-  DamageDebaffPrefab: {fileID: 3161902913369863076, guid: 92b3843eb2376b743845974a02d0f69e, type: 3}
-  ManaCost: {fileID: 5002266305278314167}
-  Target: {fileID: 0}
+  BaffPrefab: {fileID: 2293309150977156935, guid: 0c10688185a29ff42be502b27d9fee5e, type: 3}
+  _canCast: 1
 --- !u!1 &7761970869757356538
 GameObject:
   m_ObjectHideFlags: 0

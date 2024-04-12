@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using static UnityEngine.GraphicsBuffer;
 
 public class DarkTwoRangeProtection : AbilityBase
-{
+{ 
     [Header("Ability properties")]
     [SerializeField] private GameObject DarkProtectDebaff;
     [SerializeField] private GameObject CooldownButton;

@@ -50,9 +50,14 @@ public class FiveReversPolarity : MonoBehaviour
 		ManaCost.SetActive(true);
 		ManaCost.GetComponent<VisualManaCost>().CheckManaCost();
 		ManaCost.transform.localScale = new Vector2(2f, ManaCost.gameObject.transform.localScale.y);
-        GetComponent<OneRangeAttack>().ReverseAbility(isLight);
-        isLight = !isLight;
         yield return new WaitForSeconds(castTime);
+
+        GetComponent<OneRangeAttack>().ReverseAbility(isLight);
+		GetComponent<TwoRangeProtection>().ReverseAbility(isLight);
+		GetComponent<ThreeRangeHeal>().ReverseAbility(isLight);
+		GetComponent<FourRangeRecovery>().ReverseAbility(isLight);
+        isLight = !isLight;
+
         CreateBaffPrefab();
 
         transform.parent.GetComponent<ManaPlayer>().UseMana(20);

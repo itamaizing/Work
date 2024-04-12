@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DebaffRepeatedDamage : MonoBehaviour
+public class DebaffRepeatedDamage : BaseEffect
 {
-    public bool IsRepeateDamage;
-
+    private void Start()
+    {
+        Type = EffectType.Debuff;
+    }
     public void CastDebaff(float TimeDebaff)
     {
         StartCoroutine(StartDebaff(TimeDebaff));
@@ -13,9 +15,8 @@ public class DebaffRepeatedDamage : MonoBehaviour
 
     private IEnumerator StartDebaff(float time)
     {
-        IsRepeateDamage = true;
+
         yield return new WaitForSeconds(time);
-        IsRepeateDamage = false;
 
         Destroy(this);
     }

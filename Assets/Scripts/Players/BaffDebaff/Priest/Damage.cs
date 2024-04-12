@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Damage : BaseEffect
 {
+
+
+
     public bool isDamage;
     private float _damageDuration;
     private float _damageCooldown;

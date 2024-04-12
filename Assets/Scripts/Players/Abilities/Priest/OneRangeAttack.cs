@@ -55,7 +55,7 @@ public class OneRangeAttack : AbilityBase
     public delegate void FirstAbilityHandler(float value);
     public event FirstAbilityHandler FirstAbilityEvent;
     public event System.Action<EnergyOfSpirit> BaffPrefabDestroyed;
-
+	
     public delegate void DarkFirstAbilityHandler(float value);
     public event DarkFirstAbilityHandler DarkFirstAbilityEvent;
     public event System.Action<HealthOfSpirit> DebaffPrefabDestroyed;
@@ -331,7 +331,7 @@ public class OneRangeAttack : AbilityBase
         _canCast = true;
         _debaffPrefab = Instantiate(_debaffEffect);
         _debaffPrefab.transform.SetParent(TargetParent.transform);
-        _debaffEffectPrefab = _debaffEffect.GetComponent<HealthOfSpirit>();
+        _debaffEffectPrefab = _debaffPrefab.GetComponent<HealthOfSpirit>();
         _debaffEffectPrefab.Destroyed += OnDebaffPrefabDestroyed;
         Debaffs();
     }

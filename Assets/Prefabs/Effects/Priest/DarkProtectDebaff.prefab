@@ -60,10 +60,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08efa7576a447c54e810fb5d30b1d8e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Type: 0
+  Type: 1
   MaxDamage: 20
   Duration: 12
-  IsRepeat: 0
+  IsRepeat: 1
 --- !u!114 &5955907241448168478
 MonoBehaviour:
   m_ObjectHideFlags: 0

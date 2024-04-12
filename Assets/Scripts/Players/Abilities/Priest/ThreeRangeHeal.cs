@@ -7,13 +7,17 @@ public class ThreeRangeHeal : AbilityBase
     [Header("Ability properties")]
     [SerializeField] private GameObject ManaCost;
     [SerializeField] private float _castTime = 1.8f;
-
-    [HideInInspector] public GameObject Target;
+    [SerializeField] private float _darkCastTime = 1.8f;
 
     public delegate void ThirdAbilityHandler(float value);
     public event ThirdAbilityHandler ThirdAbilityEvent;
 
+    public delegate void DarkThirdAbilityHandler(float value);
+    public event DarkThirdAbilityHandler DarkThirdAbilityEvent;
+
     protected override KeyCode ActivationKey => KeyCode.Alpha3;
+
+    private bool isLightSide = true;
 
     private void Start()
     {
@@ -25,7 +29,6 @@ public class ThreeRangeHeal : AbilityBase
     void Update()
     {
         HandleToggleAbility();
-        Target = TargetParent;
     }
 
 
@@ -117,7 +120,7 @@ public class ThreeRangeHeal : AbilityBase
         _targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(_targetPosition, Vector2.zero);
 
-        if (hit.collider != null && hit.collider.CompareTag("Allies") && hit.collider.gameObject != gameObject)
+        if (isLightSide && hit.collider != null && hit.collider.CompareTag("Allies") && hit.collider.gameObject != gameObject)
         {
             TargetParent = hit.collider.gameObject;
 
@@ -127,9 +130,19 @@ public class ThreeRangeHeal : AbilityBase
             }
             DrawCircle.Clear();
         }
-        else if (hit.collider != null && hit.collider.CompareTag("Allies") && hit.collider.gameObject == gameObject)
+        else if (isLightSide && hit.collider != null && hit.collider.CompareTag("Allies") && hit.collider.gameObject == gameObject)
         {
             TargetParent = gameObject;
+
+            if (NewAbilityPrefab != null)
+            {
+                Destroy(NewAbilityPrefab);
+            }
+            DrawCircle.Clear();
+        }
+        else if (!isLightSide && hit.collider != null && hit.collider.CompareTag("Enemies") && hit.collider.gameObject != gameObject)
+        {
+            TargetParent = hit.collider.gameObject;
 
             if (NewAbilityPrefab != null)
             {
@@ -143,11 +156,31 @@ public class ThreeRangeHeal : AbilityBase
     {
         if(_castCoroutine == null)
         {
+            if(isLightSide)
             _castCoroutine = StartCoroutine(CastProtect(_castTime));
+            else
+            {
+            _castCoroutine = StartCoroutine(CastProtect(_darkCastTime));
+            }
         }
     }
 
-        private void Heal()
+    public void ReverseAbility(bool isLight)
+    {
+        ToggleAbility.isOn = false;
+        isLightSide = isLight;
+        _castCoroutine = null;
+        if (isLightSide)
+        {
+            AbilityType = AbilityType.HealAbility;
+        }
+        else
+        {
+            AbilityType = AbilityType.DamageAbility;
+        }
+    }
+
+    private void Heal()
     {
         float heal = 35f;
         if (TargetParent != null)
@@ -175,6 +208,18 @@ public class ThreeRangeHeal : AbilityBase
 
         ThirdAbilityEvent?.Invoke(heal);
         Recharge();
+    }
+
+    private void Damage()
+    {
+        if (TargetParent != null)
+        {
+            TargetParent.GetComponent<HealthPlayer>().TakeMagicDamage(35f);
+            _player.GetComponent<ManaPlayer>().UseMana(30f);
+
+            DarkThirdAbilityEvent?.Invoke(35f);
+            Recharge();
+        }
     }
 
     private IEnumerator CastProtect(float castTime)
@@ -205,8 +250,14 @@ public class ThreeRangeHeal : AbilityBase
         Select.GetComponent<SelectObject>().CanSelect = true;
 
 		this.transform.root.GetComponentInChildren<FourRangeRecovery>().canCast = true;
-
-		Heal();
+        if(isLightSide)
+        {
+            Heal();
+        }
+        else
+        {
+            Damage();
+        }
     }
 
     private IEnumerator EnemiesDoubleClick()
