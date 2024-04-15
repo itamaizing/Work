@@ -163,7 +163,7 @@ public class DarkFourRangeRecovery : AbilityBase
             _newPrefab = Instantiate(DamageDebaffPrefab);
             _newPrefab.transform.SetParent(Target.transform);
             _newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
-            _newPrefab.GetComponent<Damage>().CastRecovery(12f, 6f, 3f);
+            //_newPrefab.GetComponent<Damage>().CastRecovery(12f, 6f, 3f);
 
         }
         _player.GetComponent<ManaPlayer>().Use(4f);

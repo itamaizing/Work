@@ -29,7 +29,6 @@ public class HealthOfSpirit : MonoBehaviour
 
     private void OnDestroy()
     {
-        Debug.Log("ondestroy");
         Destroyed?.Invoke(this);
     }
 }

@@ -315,7 +315,7 @@ public class OneRangeAttack : AbilityBase
 	{
         if (TargetParent == null) return;
         AddDebaff();
-        TargetParent.GetComponent<HealthPlayer>().TakeMagicDamage(_damage);
+        TargetParent.GetComponent<HealthPlayer>().TakeMagicDamage(_damage+SpiritDebaffCount);
         _player.GetComponent<ManaPlayer>().UseMana(_manaForDamage);
         DarkFirstAbilityEvent?.Invoke(_damage);
     }
@@ -372,6 +372,7 @@ public class OneRangeAttack : AbilityBase
 		{
 			Damage();
 		}
+		lastAbility.AddLastAbility(this);
         this.transform.root.GetComponentInChildren<FourRangeRecovery>().canCast = true;
 		_castCoroutine = null;
 		yield break;
@@ -388,13 +389,11 @@ public class OneRangeAttack : AbilityBase
 
     private void OnBaffPrefabDestroyed(EnergyOfSpirit destroyedScript)
     {
-        Debug.Log("baff");
         BaffPrefabDestroyed?.Invoke(destroyedScript);
         SpiritBaffCount--;
     }
     private void OnDebaffPrefabDestroyed(HealthOfSpirit destroyedScript)
     {
-		Debug.Log("debaff");
         DebaffPrefabDestroyed?.Invoke(destroyedScript);
         SpiritDebaffCount--;
     }

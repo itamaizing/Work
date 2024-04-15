@@ -177,15 +177,15 @@ public class TwoRangeProtection : AbilityBase
        
             if (TargetParent == transform.parent.gameObject&&isLightSide)
             {
-                _castCoroutine = StartCoroutine(CastProtect(0f));
+                _castCoroutine = StartCoroutine(CastCoroutine(0f));
             }
             else if(TargetParent!=transform.parent.gameObject&&isLightSide)
             {
-                _castCoroutine = StartCoroutine(CastProtect(1.2f));
+                _castCoroutine = StartCoroutine(CastCoroutine(1.2f));
             }
             else if(TargetParent!=transform.parent.gameObject&&!isLightSide)
         {
-                 _castCoroutine = StartCoroutine(CastProtect(1.2f));
+                 _castCoroutine = StartCoroutine(CastCoroutine(1.2f));
         }
         
     }
@@ -205,7 +205,7 @@ public class TwoRangeProtection : AbilityBase
         }
     }
 
-    private void Protect()
+    private void Cast()
     {
         if(isLightSide)
         {
@@ -218,6 +218,7 @@ public class TwoRangeProtection : AbilityBase
         {
             _player.GetComponent<ManaPlayer>().UseMana(20f);
             SetDarkProtectionDebaff();
+            SetProtectDebaff();
             SecondDarkAbilityEvent?.Invoke(0f);
         }
             StartCoroutine(Recharge());
@@ -249,6 +250,7 @@ public class TwoRangeProtection : AbilityBase
         _darkProtectDebaff.GetComponent<DebaffRepeatedDamage>().CastDebaff(8f) ;
         _darkProtectDebaff.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
 
+        GetComponent<FiveReversPolarity>().UseReversePolarity(0f);
     }
 
     public void AddShieldBuff(float value)
@@ -256,7 +258,7 @@ public class TwoRangeProtection : AbilityBase
         _absorbtionBuff = value;
     }
 
-    private IEnumerator CastProtect(float castTime)
+    private IEnumerator CastCoroutine(float castTime)
     { 
         if (Abilities.GetComponent<GlobalCooldown>())
         {
@@ -275,7 +277,8 @@ public class TwoRangeProtection : AbilityBase
 
 		this.transform.root.GetComponentInChildren<FourRangeRecovery>().canCast = true;
 
-		Protect();
+		Cast();
+        lastAbility.AddLastAbility(this);
     }
 
 
@@ -283,14 +286,8 @@ public class TwoRangeProtection : AbilityBase
     {
         ToggleAbility.isOn = false;
         ToggleAbility.enabled = false;
-        if(isLightSide)
-        {
-            _playerAbility.GetComponent<DarkTwoRangeProtection>().enabled = false;
-        }
-        else
-        {
-            _playerAbility.GetComponent<TwoRangeProtection>().enabled = false;
-        }
+        _playerAbility.GetComponent<TwoRangeProtection>().enabled = false;
+
         TargetParent = null;
         _absorbtionBuff = 0;
 
@@ -301,14 +298,7 @@ public class TwoRangeProtection : AbilityBase
 
         CooldownButton.gameObject.SetActive(false);
         ToggleAbility.enabled = true;
-        if (isLightSide)
-        {
-            _playerAbility.GetComponent<DarkTwoRangeProtection>().enabled = true;
-        }
-        else
-        {
-            _playerAbility.GetComponent<TwoRangeProtection>().enabled = true;
-        }
+        _playerAbility.GetComponent<TwoRangeProtection>().enabled = true;
         yield break;
 
     }

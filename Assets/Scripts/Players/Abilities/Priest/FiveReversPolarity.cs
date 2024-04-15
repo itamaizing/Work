@@ -4,19 +4,15 @@ using UnityEngine.UI;
 
 public class FiveReversPolarity : MonoBehaviour
 {
+	public LastAbility _lastAbility;
 	public GameObject IconAbility;
 	public Toggle ToggleAbility;
-	public GameObject CurrentAbilitiesPanel;
-	public GameObject Abilities;
-	public GameObject[] Toggles;
-	public GameObject CastPrefab;
 	public GameObject ManaCost;
 	public GameObject BaffPrefab;
 
 	private GameObject _baffPrefab;
-	public bool _canCast = true;
 	private Coroutine _coroutine;
-	private bool isLight = false;
+	private bool isDarkSide = false;
 
 
 	void Update()
@@ -38,13 +34,26 @@ public class FiveReversPolarity : MonoBehaviour
                 IconAbility.GetComponent<SpriteRenderer>().enabled = true;
             }
 
-                _coroutine = StartCoroutine(Cast(1.5f));
+			if(_lastAbility.LastUseAbility is ThreeRangeHeal||isDarkSide)
+			{
+				UseReversePolarity(0f);
+
+            }
+			else if(!isDarkSide)
+			{
+				UseReversePolarity(1.5f);
+            }
         }
 
     }
+
+	public void UseReversePolarity(float time)
+	{
+		_coroutine = StartCoroutine(Cast(time));
+    }
+
     private IEnumerator Cast(float castTime)
 	{
-		_canCast = false;
 		transform.parent.GetComponent<PlayerMove>().CanMove = false;
 
 		ManaCost.SetActive(true);
@@ -52,11 +61,11 @@ public class FiveReversPolarity : MonoBehaviour
 		ManaCost.transform.localScale = new Vector2(2f, ManaCost.gameObject.transform.localScale.y);
         yield return new WaitForSeconds(castTime);
 
-        GetComponent<OneRangeAttack>().ReverseAbility(isLight);
-		GetComponent<TwoRangeProtection>().ReverseAbility(isLight);
-		GetComponent<ThreeRangeHeal>().ReverseAbility(isLight);
-		GetComponent<FourRangeRecovery>().ReverseAbility(isLight);
-        isLight = !isLight;
+        GetComponent<OneRangeAttack>().ReverseAbility(isDarkSide);
+		GetComponent<TwoRangeProtection>().ReverseAbility(isDarkSide);
+		GetComponent<ThreeRangeHeal>().ReverseAbility(isDarkSide);
+		GetComponent<FourRangeRecovery>().ReverseAbility(isDarkSide);
+        isDarkSide = !isDarkSide;
 
         CreateBaffPrefab();
 
@@ -64,7 +73,6 @@ public class FiveReversPolarity : MonoBehaviour
         ManaCost.SetActive(false);
 		transform.parent.GetComponent<PlayerMove>().CanMove = true;
 		ToggleAbility.enabled = true;
-		_canCast= true;
 	}
 
 	private void CreateBaffPrefab()

@@ -74,38 +74,31 @@ public class HealthRecovery : BaseEffect
         else if (Time.time >= _recDuration + Timer)
         {
             isRecovery = false;
-            Invoke("DestroyThis", 0.1f);
+            Destroy(this, 0.1f);
         }
     }
     private void AddTick()
     {
-        Debug.Log("Heal Before baffs - " + _recHealth);
-        _ticksCount = Player.GetComponentInChildren<FourRangeRecovery>().CheckEneryOfSpriritBaffs();
+        _ticksCount = Player.GetComponentInChildren<FourRangeRecovery>().CheckSpriritStacks(true);
         HealthPlayer hp = transform.parent.GetComponent<HealthPlayer>();
 
         if (transform.parent.GetComponentInChildren<DamageAbsorption>() != null)
         {
             _recHealth += _defaultHealth * 0.1f;
-            Debug.Log("Shield Baff - "+ _defaultHealth * 0.1f +" Heal - " + _recHealth);
         }
 
         _defaultHealth = _recHealth;
         _recHealth += _ticksCount;
-        Debug.Log("Iscra Baff - " + _ticksCount + "Heal -  " + _recHealth);
 
         float realHeal = hp.MaxHealth - hp.Health;
         if (realHeal <= _recHealth)
         {
             _recHealth = realHeal;
         }
-        Debug.Log("Real Heal - " + _recHealth);
         if (_ticksCount > 0)
         Player.GetComponent<ManaPlayer>().AddMana(_recHealth * _ticksCount * 0.1f);
     }
-    private void DestroyThis()
-    {
-        Destroy(this);
-    }
+
     private IEnumerator Cooldown()
     {
         isRecovery = false;

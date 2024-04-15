@@ -8,6 +8,10 @@ public class ThreeRangeHeal : AbilityBase
     [SerializeField] private GameObject ManaCost;
     [SerializeField] private float _castTime = 1.8f;
     [SerializeField] private float _darkCastTime = 1.8f;
+    [SerializeField] private float _heal = 35f;
+    [SerializeField] private float _damage = 35f;
+    [SerializeField] private float _manaForCast = 30f;
+    [SerializeField] private float _manaForDarkCast = 30f;
 
     public delegate void ThirdAbilityHandler(float value);
     public event ThirdAbilityHandler ThirdAbilityEvent;
@@ -182,7 +186,7 @@ public class ThreeRangeHeal : AbilityBase
 
     private void Heal()
     {
-        float heal = 35f;
+        float heal = _heal;
         if (TargetParent != null)
         {
             float realHeal = TargetParent.GetComponent<HealthPlayer>().MaxHealth - TargetParent.GetComponent<HealthPlayer>().Health;
@@ -203,7 +207,7 @@ public class ThreeRangeHeal : AbilityBase
                 }
             }
         }
-        _player.GetComponent<ManaPlayer>().UseMana(30f);
+        _player.GetComponent<ManaPlayer>().UseMana(_manaForCast);
 
 
         ThirdAbilityEvent?.Invoke(heal);
@@ -214,10 +218,12 @@ public class ThreeRangeHeal : AbilityBase
     {
         if (TargetParent != null)
         {
-            TargetParent.GetComponent<HealthPlayer>().TakeMagicDamage(35f);
-            _player.GetComponent<ManaPlayer>().UseMana(30f);
+            float eneryOfSpiritStacks = _player.GetComponentInChildren<OneRangeAttack>().SpiritDebaffCount;
+            float damage = _damage + eneryOfSpiritStacks;
+            TargetParent.GetComponent<HealthPlayer>().TakeMagicDamage(damage);
+            _player.GetComponent<ManaPlayer>().UseMana(_manaForDarkCast);
 
-            DarkThirdAbilityEvent?.Invoke(35f);
+            DarkThirdAbilityEvent?.Invoke(damage);
             Recharge();
         }
     }
@@ -257,7 +263,9 @@ public class ThreeRangeHeal : AbilityBase
         else
         {
             Damage();
+            GetComponent<FiveReversPolarity>().UseReversePolarity(0f);
         }
+        lastAbility.AddLastAbility(this);
     }
 
     private IEnumerator EnemiesDoubleClick()

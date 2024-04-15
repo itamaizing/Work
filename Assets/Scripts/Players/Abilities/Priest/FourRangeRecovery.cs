@@ -234,6 +234,7 @@ public class FourRangeRecovery : AbilityBase
         if (_newPrefab != null && TargetParent.GetComponentInChildren<Damage>()!=null)
         {
             TargetParent.GetComponent<Damage>().Timer = Time.time;
+			TargetParent.GetComponentInChildren<Damage>().isDamage = false;
             TargetParent.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
         }
         else if(TargetParent!=null)
@@ -242,7 +243,7 @@ public class FourRangeRecovery : AbilityBase
             _newPrefab = Instantiate(DamageDebaffPrefab);
             _newPrefab.transform.SetParent(TargetParent.transform);
             _newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
-            _newPrefab.GetComponent<Damage>().CastRecovery(12f, 6f, 3f);
+            _newPrefab.GetComponent<Damage>().CastRecovery(12f, 6f, 3f , _player);
         }
         _player.GetComponent<ManaPlayer>().UseMana(4f);
 
@@ -250,9 +251,17 @@ public class FourRangeRecovery : AbilityBase
         Recharge();
     }
 
-    public int CheckEneryOfSpriritBaffs()
+    public int CheckSpriritStacks(bool isLight)
 	{
-        int stacks = _player.GetComponentInChildren<OneRangeAttack>().SpiritBaffCount;
+		int stacks = 0;
+		if (isLight)
+		{
+			stacks = _player.GetComponentInChildren<OneRangeAttack>().SpiritBaffCount;
+		}
+		else
+		{
+            stacks = _player.GetComponentInChildren<OneRangeAttack>().SpiritDebaffCount;
+        }
 
 		return stacks;
     }
@@ -283,7 +292,9 @@ public class FourRangeRecovery : AbilityBase
 		else
 		{
 			Damage();
-		}
+            GetComponent<FiveReversPolarity>().UseReversePolarity(0f);
+        }
+        lastAbility.AddLastAbility(this);
     }
 
 	private IEnumerator EnemiesDoubleClick()

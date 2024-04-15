@@ -522,6 +522,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &137852435 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4556989451195136894, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+  m_PrefabInstance: {fileID: 6974731470836066952}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f35d4e4114bcee45b98895c2e125b5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &170306609 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4953803910209164375, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
@@ -16379,6 +16390,10 @@ PrefabInstance:
       propertyPath: IconAbility
       value: 
       objectReference: {fileID: 1393632188}
+    - target: {fileID: 3423861005672603737, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
+      propertyPath: _lastAbility
+      value: 
+      objectReference: {fileID: 137852435}
     - target: {fileID: 3423861005672603737, guid: 7914068e8dce05141baa8d16ff6367ce, type: 3}
       propertyPath: ToggleAbility
       value: 

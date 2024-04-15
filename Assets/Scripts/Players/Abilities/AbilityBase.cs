@@ -578,12 +578,6 @@ public abstract class AbilityBase : MonoBehaviour
 					//Включение корутины мерцания красного.
 					// TargetParent.transform.GetChild(0).GetComponent<BackgroundColorSwitcherDisabledEnabled>()
 					//     .StartSwitching();
-
-					if (_isLastAbility == false && lastAbility != null)
-					{
-						lastAbility.AddLastAbility(this);
-						_isLastAbility = true;
-					}
 				}
 			}
 		}
@@ -644,6 +638,7 @@ public abstract class AbilityBase : MonoBehaviour
 		{
 			StartCoroutine(ScaleObjectOverTime(childObject, 1f, time));
 		}
+
 	}
 
 	private IEnumerator ScaleObjectOverTime(Transform targetTransform, float targetScaleX, float duration)
