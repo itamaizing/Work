@@ -13,9 +13,10 @@ public class PhysicalAttack : AbilityBase
 
 	public event PhysicalAttackHandler PhysicalAttackEvent;
 
-	[SerializeField] private float _damage = 0;
-	private GameObject Target;
-	private bool _isOneChange;
+	[SerializeField] private float _damage = 1f;
+	[SerializeField] private float _abilityCooldown = 1f;
+	//private GameObject Target;
+	//private bool _isOneChange;
 	private int _hitInARow = 0;
 	private bool _isInTheRow = false;
 	//private float _chanceCriticalAttack = 0.05f;
@@ -27,6 +28,7 @@ public class PhysicalAttack : AbilityBase
 	private void Start()
 	{
 		_damageValue = _damage;
+		_abilityCooldownTime = _abilityCooldown;
 		Distance = _cellSize * CellDistance;
 		AttackType = AttackType.Autoattack;
 		AbilityType = AbilityType.DamageAbility;
@@ -36,14 +38,24 @@ public class PhysicalAttack : AbilityBase
 
 	private void Update()
 	{
-		Target = TargetParent;
-	
-		/*if (_toggleFirstAbility == null && _playerAbility != null)
+        //Target = TargetParent;
+
+        /*if (_toggleFirstAbility == null && _playerAbility != null)
 		{
 			_toggleFirstAbility = _playerAbility.GetComponent<OneMeleeAttack>().ToggleAbility;
 		}*/
 
-		HandleToggleAbility();
+        HandleToggleAbility();
+
+		if (!_isInTheRow) return;
+
+		_timer += Time.deltaTime;
+		if (_timer > _abilityCooldownTime + 0.5f)
+		{
+			_timer = 0;
+			_isInTheRow = false;
+			_hitInARow = 0;
+		}
 	}
 
 	protected override void HandleToggleAbility()
@@ -56,16 +68,16 @@ public class PhysicalAttack : AbilityBase
 		}
         
 		// Текущий код в методе Update
-		if (_toggleFirstAbility != null && !_toggleFirstAbility.isOn && !ToggleAbility.isOn)
+		/*if (_toggleFirstAbility != null && !_toggleFirstAbility.isOn && !ToggleAbility.isOn)
 		{
 			TargetParent = null;
-			_isOneChange = false;
+			//_isOneChange = false;
 		}
 
 		if (_toggleFirstAbility != null && _toggleFirstAbility.isOn)
 		{
 			_isOneChange = false;
-		}
+		}*/
 
 		if (Input.GetMouseButtonDown(0) && _player.GetComponent<PlayerMove>().IsSelect &&
 			Abilities.gameObject.activeSelf && ToggleAbility.enabled)
@@ -151,7 +163,7 @@ public class PhysicalAttack : AbilityBase
 		_targetHealth = TargetParent.GetComponent<HealthPlayer>();
 		CanMakeDamage = true;
 		CanDealDamageOrHeal = true;
-		_isOneChange = true;
+		//_isOneChange = true;
 		Destroy(NewAbilityPrefab);
 	}
 
@@ -217,12 +229,15 @@ public class PhysicalAttack : AbilityBase
 		CanMakeDamage = false;
 		_hitInARow++;
 		_isInTheRow = true;
+		_timer = 0;
 
-		yield return new WaitForSeconds(1.4f);
+		yield return new WaitForSeconds(_abilityCooldownTime - _abilityCooldownTime *0.05f * _hitInARow); //delay between hits
 
 		CanMakeDamage = true;
 		_castCoroutine = null;
 		_isDamageCooldownRunning = false;
+
+		//if hitInrow == 6, to zero etc...
 	}
 
 }
