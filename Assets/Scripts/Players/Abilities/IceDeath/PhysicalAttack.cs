@@ -20,7 +20,7 @@ public class PhysicalAttack : AbilityBase
 	private int _hitInARow = 0;
 	private bool _isInTheRow = false;
 	//private float _chanceCriticalAttack = 0.05f;
-	private Toggle _toggleFirstAbility;
+	//private Toggle _toggleFirstAbility;
 	private bool _isDamageCooldownRunning = false;
 
 	protected override KeyCode ActivationKey => KeyCode.Alpha1;
@@ -192,6 +192,9 @@ public class PhysicalAttack : AbilityBase
 
 		if (CanMakeDamage && _castCoroutine == null && CanUseAbility)
 		{
+			_hitInARow++;
+			_isInTheRow = true;
+			_timer = 0;
 			if (Abilities.GetComponent<GlobalCooldown>())
 			{
 				Abilities.GetComponent<GlobalCooldown>().StartGlobalCooldown();
@@ -204,6 +207,9 @@ public class PhysicalAttack : AbilityBase
 			PhysicalAttackEvent?.Invoke(_damageValue);
 			
 			Shield _shield = TargetParent.GetComponentInChildren<Shield>();
+			/*
+			 * if player dont have 5 energy _hitInARow = 0; _isInTheRow = false;
+			 * */
 
 			if (_shield != null)
 			{
@@ -214,6 +220,10 @@ public class PhysicalAttack : AbilityBase
 			{
 				_targetHealth.TakeDamage(_damageValue, DamageType, AttackRangeType);
 				_castCoroutine = StartCoroutine(DamageCooldown());
+			}
+			if(_hitInARow == 6)
+			{
+				LastHit();
 			}
 		}
 	}
@@ -227,17 +237,24 @@ public class PhysicalAttack : AbilityBase
 
 		_isDamageCooldownRunning = true;
 		CanMakeDamage = false;
-		_hitInARow++;
-		_isInTheRow = true;
-		_timer = 0;
 
 		yield return new WaitForSeconds(_abilityCooldownTime - _abilityCooldownTime *0.05f * _hitInARow); //delay between hits
 
 		CanMakeDamage = true;
 		_castCoroutine = null;
 		_isDamageCooldownRunning = false;
-
-		//if hitInrow == 6, to zero etc...
 	}
 
+	private void LastHit()
+	{
+		//if player have 5 energy
+		{
+			_targetHealth.TakeDamage(_damageValue * .5f, DamageType, AttackRangeType);
+			//отбрасывание и стан
+			
+		}
+		//regen 40 energy
+		_hitInARow = 0;
+		_isInTheRow = false;
+	}
 }
