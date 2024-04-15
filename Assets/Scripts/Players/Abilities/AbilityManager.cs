@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEditor.Playables;
 using UnityEngine;
 //using static UnityEditor.Progress;
 
@@ -11,6 +13,17 @@ public class AbilityManager : MonoBehaviour
 	private AbilityBase nextAbility;
 	private PlayerMove _playerMove;
 
+    private void FixedUpdate()
+    {
+        if(Input.GetKeyDown(KeyCode.L))
+		{
+			if(abilityQueueAutoattack.Count > 0 )
+			{
+				SwapAutoattacks();
+                abilityQueueAutoattack[0].CanDoAbility = !abilityQueueAutoattack[0].CanDoAbility;
+            }
+		}
+    }
     private void Awake()
 	{
 		_playerMove = GetComponentInParent<PlayerMove>();
@@ -32,6 +45,7 @@ public class AbilityManager : MonoBehaviour
 		if (ability.AttackType == AttackType.Autoattack)
 		{
 			abilityQueueAutoattack.Add(ability);
+
 		}
 		else // если способность не автоатака, то добавить в очередь обычных способностей
 		{
@@ -51,7 +65,58 @@ public class AbilityManager : MonoBehaviour
 		}
 	}
 
-	private void DeleteCurrentAbility()
+	private void SwapAutoattacks()
+	{
+		if (abilityQueueAutoattack.Count > 1)
+		{
+			if (abilityQueueAutoattack[0].TargetParent == abilityQueueAutoattack[1].TargetParent)
+			{
+				if (abilityQueueAutoattack[0].isInRadius) // первая автоатака дотягивается
+				{
+                    abilityQueueAutoattack[0].CanDealDamageOrHeal = true;
+                    abilityQueueAutoattack[1].CanDealDamageOrHeal = false;
+                    nextAbility = abilityQueueAutoattack[0];
+                }
+				else if (abilityQueueAutoattack[0].Distance < abilityQueueAutoattack[1].Distance) // первая автоатака не дотягивается и ее дальность < второй
+				{
+                    abilityQueueAutoattack[0].CanDealDamageOrHeal = false;
+                    abilityQueueAutoattack[1].CanDealDamageOrHeal = true;
+                    nextAbility = abilityQueueAutoattack[1];
+                }
+			}
+
+			else if (abilityQueueAutoattack[1].TargetParent != null) // разные цели и у второй атаки выбрана цель
+			{
+				abilityQueueAutoattack[0].CanDoAbility = true;
+				abilityQueueAutoattack[1].CanDoAbility = true;
+			}
+		}
+		else if (abilityQueueAutoattack.Count == 1)
+		{
+			nextAbility = abilityQueueAutoattack[0];
+		}
+	}
+
+	private void SwapAutoattacksVisualisation() // костыль - отображение круга, отдельно чтобы можно было менять во время паузы (когда есть способность и выбрана цель)
+	{
+		if (abilityQueueAutoattack.Count > 1)
+		{
+			if (abilityQueueAutoattack[0].TargetParent == abilityQueueAutoattack[1].TargetParent)
+			{
+				if (abilityQueueAutoattack[0].isInRadius)
+				{
+					abilityQueueAutoattack[0].CanDrawCircle = true;
+					abilityQueueAutoattack[1].CanDrawCircle = false;
+				}
+				else if (abilityQueueAutoattack[0].Distance < abilityQueueAutoattack[1].Distance)
+				{
+					abilityQueueAutoattack[0].CanDrawCircle = false;
+					abilityQueueAutoattack[1].CanDrawCircle = true;
+				}
+			}
+		}
+	}
+    private void DeleteCurrentAbility()
 	{
 		if (nextAbility.NewAbilityPrefab != null)
 		{
@@ -64,6 +129,7 @@ public class AbilityManager : MonoBehaviour
 		nextAbility.CanDoAbility = false;
 		nextAbility.CancelAbilityOnClick();
 		nextAbility = null;
+
     }
 
 	private void ExecuteNextAbility()
@@ -80,17 +146,25 @@ public class AbilityManager : MonoBehaviour
         }
 		else if (abilityQueue.Count <= 0 && abilityQueueAutoattack.Count > 0 && abilityQueueAutoattack[0] != null)
 		{
-            ChangeAutoAttackStateToTrue();
-            nextAbility = abilityQueueAutoattack[0];
-            nextAbility.CanDoAbility = true;
+			ChangeAutoAttackStateToTrue();
+			SwapAutoattacks();
+
+			//nextAbility = abilityQueueAutoattack[0];
+			nextAbility.CanDoAbility = true;
 			nextAbility.CanDrawCircle = true;
 
 			if (nextAbility.NewAbilityPrefab != null)
 			{
-                nextAbility.NewAbilityPrefab.SetActive(true);
+				nextAbility.NewAbilityPrefab.SetActive(true);
 			}
 		}
-    }
+		
+		if(abilityQueueAutoattack.Count > 0 && abilityQueueAutoattack[0] != null)
+		{
+            SwapAutoattacksVisualisation();
+		}	
+
+	}
 
 	private void Update()
 	{
@@ -173,26 +247,32 @@ public class AbilityManager : MonoBehaviour
 
 			return;
 		}
-	}
+    }
 
     private void ChangeAutoAttackStateToTrue()
     {
-        if (abilityQueueAutoattack.Count > 0 && abilityQueueAutoattack[0] != null && abilityQueueAutoattack[0].CanDealDamageOrHeal == false )
+        if (abilityQueueAutoattack.Count > 0 && abilityQueueAutoattack[0] != null)
         {
-			//abilityQueueAutoattack[0].CanDoAbility = !abilityQueueAutoattack[0].CanDoAbility;
-			abilityQueueAutoattack[0].CanDealDamageOrHeal = true;
-            Debug.LogWarningFormat("ChangeAutoAttackStateToTrue");
+			for(int i = 0; i < abilityQueueAutoattack.Count; i++)
+			{
+				abilityQueueAutoattack[i].CanDealDamageOrHeal = true;
+			}
+
+            //Debug.LogWarningFormat("ChangeAutoAttackStateToTrue");
         }
 
     }
 
     private void ChangeAutoAttackStateToFalse()
     {
-        if (abilityQueueAutoattack.Count > 0 && abilityQueueAutoattack[0] != null && abilityQueueAutoattack[0].CanDealDamageOrHeal == true)
+        if (abilityQueueAutoattack.Count > 0 && abilityQueueAutoattack[0] != null)
         {
-			//abilityQueueAutoattack[0].CanDoAbility = !abilityQueueAutoattack[0].CanDoAbility;
-			abilityQueueAutoattack[0].CanDealDamageOrHeal = false;
-            Debug.LogWarningFormat("ChangeAutoAttackStateToFalse");
+            for (int i = 0; i < abilityQueueAutoattack.Count; i++)
+            {
+                abilityQueueAutoattack[i].CanDealDamageOrHeal = false;
+            }
+
+            //Debug.LogWarningFormat("ChangeAutoAttackStateToFalse");
         }
 
     }

@@ -292,9 +292,10 @@ public class FourMeleeAttack : AbilityBase
 
 	protected override void HandleToggleAbilityOn()
 	{
-		// ¬ключенный ToggleAbility
+        // ¬ключенный ToggleAbility
+        SetNewRadiusCircleColor();
 
-		base.HandleToggleAbilityOn();
+        base.HandleToggleAbilityOn();
 
 		if (FixPrefab == true && _cursorIsActive == false && _newCoursorPrefab == null)
 		{
@@ -619,7 +620,7 @@ public class FourMeleeAttack : AbilityBase
 
 		ToggleAbility.enabled = false;
 
-		_player.GetComponent<PlayerMove>().CanMove = true;
+		//_player.GetComponent<PlayerMove>().CanMove = true; //дл€ фикса (раньше могли ходить когда начинаем прит€гивать)
 		if (NewAbilityPrefab != null)
 		{
 			childSpriteRenderer.color = new Color(childSpriteRenderer.color.r, childSpriteRenderer.color.g,
@@ -768,6 +769,9 @@ public class FourMeleeAttack : AbilityBase
 		Recharge();
 		StopBackgroundSwitcherEvent.SendStartStopBackgroundSwitcher();
 		ToggleAbility.enabled = true;
+
+		//фикс
+		_player.GetComponent<PlayerMove>().CanMove = true;
 	}
 
 	private IEnumerator DamageCooldown(float activePsionica)

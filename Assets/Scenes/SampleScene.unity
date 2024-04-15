@@ -13739,7 +13739,7 @@ PrefabInstance:
       objectReference: {fileID: 7288820380892326329}
     - target: {fileID: 4461800688482813493, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: CellDistance
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4461800688482813493, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: ToggleAbility

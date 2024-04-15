@@ -28,7 +28,7 @@ public class OneMeleeAttack : AbilityBase
         AttackType = AttackType.Autoattack;
         AbilityType = AbilityType.DamageAbility;
         AttackRangeType = AttackRangeType.MeleeAttack;
-        DamageType = DamageType.Physical;
+        DamageType = DamageType.Magical;
     }
 
     private void Update()
@@ -61,7 +61,7 @@ public class OneMeleeAttack : AbilityBase
             Abilities.gameObject.activeSelf)
         {
             HandleLeftMouseButtonToggle();
-            if (AbilityTypeManager.ActiveAbilityType == 1 && _toggleSecondAbility.isOn == false)
+            if (AbilityTypeManager.ActiveAbilityType == 1 /*&& _toggleSecondAbility.isOn == false*/)
             {
                 if (_castCoroutine != null)
                 {
@@ -81,14 +81,14 @@ public class OneMeleeAttack : AbilityBase
         // ¬ключенный ToggleAbility
         base.HandleToggleAbilityOn();
 
-        if (_playerAbility.GetComponent<TwoMeleeAttack>().Target != null)
-        {
-            TargetParent = _playerAbility.GetComponent<TwoMeleeAttack>().Target;
-            if (_isOneChange == false)
-            {
-                ChangeBoolAndValues();
-            }
-        }
+        //if (_playerAbility.GetComponent<TwoMeleeAttack>().Target != null)
+        //{
+        //    TargetParent = _playerAbility.GetComponent<TwoMeleeAttack>().Target;
+        //    if (_isOneChange == false)
+        //    {
+        //        ChangeBoolAndValues();
+        //    }
+        //}
 
         if (TargetParent == null)
         {
