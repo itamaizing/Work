@@ -1756,6 +1756,10 @@ MonoBehaviour:
   ManaCost: {fileID: 5002266305278314167}
   _castTime: 1.8
   _darkCastTime: 1.8
+  _heal: 35
+  _damage: 35
+  _manaForCast: 30
+  _manaForDarkCast: 30
 --- !u!114 &1384084314023187958
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1815,19 +1819,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0a38722623d8ac48be8dbf6ebd4e047, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _lastAbility: {fileID: 4556989451195136894}
   IconAbility: {fileID: 0}
   ToggleAbility: {fileID: 0}
-  CurrentAbilitiesPanel: {fileID: 0}
-  Abilities: {fileID: 0}
-  Toggles:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  CastPrefab: {fileID: 5074480402368706878, guid: 8fb008b85f2e29b48b39b1cd92d851a0, type: 3}
   ManaCost: {fileID: 5002266305278314167}
   BaffPrefab: {fileID: 2293309150977156935, guid: 0c10688185a29ff42be502b27d9fee5e, type: 3}
-  _canCast: 1
 --- !u!1 &7761970869757356538
 GameObject:
   m_ObjectHideFlags: 0
