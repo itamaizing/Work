@@ -246,7 +246,7 @@ public class FrozenState : ICharacterState
 {
 	private HealthPlayer _playerHP;
     private PlayerMove _playerMove;
-    private float _duration;
+    private float _duration; //переделать под разные спелы
     //remember how much hp, check incoming damage to unfreeze
 
 	public void EnterState(CharacterState character)
@@ -266,9 +266,9 @@ public class FrozenState : ICharacterState
             //Какой дамаг получаем? физический или магический
             _playerHP.TakePhisicDamage(10 + character.energy.Energy / 4);
             _playerHP.sumDamageTaken = 0;
-            _duration = 1 + character.energy.Energy / 20; //тут мана того кто стрелял
+            _duration = 2 + character.energy.Energy / 20; //тут мана того кто стрелял
 
-            character.energy.UseEnergy(character.energy.Energy); //???? Для заморозки не остается энергии тогда!!!
+            character.energy.UseEnergy(character.energy.Energy); 
         }
         else
         {

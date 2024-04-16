@@ -10,7 +10,7 @@ public class Icecloud : AbilityBase
 	[SerializeField] private Rigidbody2D _rb;
 	[SerializeField] private IceCloudProjectile _projectile;
 	//[HideInInspector] public GameObject Target;
-	[SerializeField] private Collider2D _collider;
+	//[SerializeField] private Collider2D _collider;
 
 	public delegate void IceCloudAbilityHandler(float value);
 	public event IceCloudAbilityHandler IceCloudAbilityEvent;

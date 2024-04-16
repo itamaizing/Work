@@ -254,11 +254,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _runeRegenerationDelay: 1
+  _runeResetDelay: 6
   _runeRegenerationValue: 10
   _maxRuneCount: 10
   _runeValue: 0
   _runeSprite: {fileID: 5269347689244837285}
-  regen: 0
 --- !u!114 &8934230934356217642
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1971,6 +1971,7 @@ GameObject:
   - component: {fileID: 5859741811348402333}
   - component: {fileID: 1156122406318860820}
   - component: {fileID: 7915244162019678924}
+  - component: {fileID: 1671752607338581685}
   m_Layer: 0
   m_Name: Abilities
   m_TagString: Untagged
@@ -2008,6 +2009,7 @@ MonoBehaviour:
   Abilities:
   - {fileID: 1156122406318860820}
   - {fileID: 7915244162019678924}
+  - {fileID: 1671752607338581685}
 --- !u!114 &5859741811348402333
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2061,10 +2063,8 @@ MonoBehaviour:
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
   _targetCircle: {fileID: 0}
-  Target: {fileID: 0}
-  DamageRate: 1.2
-  IsGlobalCooldown: 1
-  TargetCanAvoidance: 1
+  _damage: 1
+  _abilityCooldown: 1
 --- !u!114 &7915244162019678924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2109,7 +2109,51 @@ MonoBehaviour:
   ManaCost: {fileID: 0}
   _rb: {fileID: 1935025463078411595}
   _projectile: {fileID: 748218918613675416, guid: f44e1a220c732a64f9af10c37bf5aed0, type: 3}
-  _collider: {fileID: 0}
+--- !u!114 &1671752607338581685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7378065823814705286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4ad3c38086e96b4197ca42e65e25bcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IconAbility: {fileID: 0}
+  AbilityPrefab: {fileID: 6736161171206798187, guid: a5652c36d4c4c7d4eaa49120e18f6462, type: 3}
+  Select: {fileID: 0}
+  Abilities: {fileID: 0}
+  ObstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  CastPrefab: {fileID: 5074480402368706878, guid: 8fb008b85f2e29b48b39b1cd92d851a0, type: 3}
+  ToggleAbility: {fileID: 0}
+  DrawCircle: {fileID: 8128605320138084665}
+  IconAbilityAutoattack: {fileID: 0}
+  CircleSelect: {fileID: 0}
+  AttackType: 0
+  AbilityType: 0
+  AttackRangeType: 0
+  DamageType: 0
+  TargetParent: {fileID: 0}
+  CanMakeDamage: 0
+  CanDealDamageOrHeal: 0
+  CanUseAbility: 1
+  NewAbilityPrefab: {fileID: 0}
+  CanDoAbility: 0
+  CanDrawCircle: 1
+  Distance: 0
+  CellDistance: 1
+  _cellSize: 1.9
+  lastAbility: {fileID: 0}
+  IsActiveAbility: 0
+  _targetCircle: {fileID: 0}
+  ManaCost: {fileID: 0}
+  _rb: {fileID: 0}
+  _energyPlayer: {fileID: 8934230934356217642}
+  _shadow: {fileID: 7237307863484890914, guid: 8dea5af4c60165d45af4522b1a596998, type: 3}
 --- !u!1 &7761970869757356538
 GameObject:
   m_ObjectHideFlags: 0

@@ -1944,11 +1944,31 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8285091621866642431, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+--- !u!1 &549229999 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4344385595992414593, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+  m_PrefabInstance: {fileID: 549229998}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &549230000 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5444449414406611308, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+  m_PrefabInstance: {fileID: 549229998}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &590538239
 GameObject:
   m_ObjectHideFlags: 0
@@ -3947,6 +3967,30 @@ PrefabInstance:
       propertyPath: IconAbilityAutoattack
       value: 
       objectReference: {fileID: 1319096064}
+    - target: {fileID: 1671752607338581685, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: _rb
+      value: 
+      objectReference: {fileID: 1000777841}
+    - target: {fileID: 1671752607338581685, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: Select
+      value: 
+      objectReference: {fileID: 1138358088594896431}
+    - target: {fileID: 1671752607338581685, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: Abilities
+      value: 
+      objectReference: {fileID: 150802219}
+    - target: {fileID: 1671752607338581685, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: IconAbility
+      value: 
+      objectReference: {fileID: 549229999}
+    - target: {fileID: 1671752607338581685, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: ToggleAbility
+      value: 
+      objectReference: {fileID: 549230000}
+    - target: {fileID: 1671752607338581685, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: ObstacleLayerMask.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
     - target: {fileID: 4556989451195136894, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: Select
       value: 
@@ -4081,6 +4125,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+--- !u!50 &1000777841 stripped
+Rigidbody2D:
+  m_CorrespondingSourceObject: {fileID: 1935025463078411595, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+  m_PrefabInstance: {fileID: 1000777840}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1011711403
 GameObject:
   m_ObjectHideFlags: 0

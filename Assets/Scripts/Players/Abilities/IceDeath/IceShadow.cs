@@ -7,8 +7,9 @@ public class IceShadow : AbilityBase
 {
 	[Header("Ability properties")]
 	[SerializeField] private GameObject ManaCost;
-	//[SerializeField] private Rigidbody2D _rb;
-	[SerializeField] private IceCloudProjectile _shadow;
+	[SerializeField] private Rigidbody2D _rb;
+	[SerializeField] private EnergyPlayer _energyPlayer;
+	[SerializeField] private IceShadowObject _shadow;
 	//[HideInInspector] public GameObject Target;
 	//[SerializeField] private Collider2D _collider;
 
@@ -198,11 +199,12 @@ public class IceShadow : AbilityBase
 
 		yield return new WaitForSeconds(castTime);
 
-		/*_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		Vector2 lookDir = _mousePos - _rb.position;
-		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
-		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
-		projectile.dad = _rb.gameObject;*/
+		//_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		//Vector2 lookDir = _mousePos - _rb.position;
+		//float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
+		IceShadowObject projectile = Instantiate(_shadow, gameObject.transform.position, Quaternion.identity);
+		projectile.dad = _rb.gameObject;
+		projectile.energyPlayer = _energyPlayer;
 
 		_castCoroutine = null;
 		_playerMove.CanMove = true;
