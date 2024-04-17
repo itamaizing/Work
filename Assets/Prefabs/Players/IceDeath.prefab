@@ -1972,6 +1972,7 @@ GameObject:
   - component: {fileID: 1156122406318860820}
   - component: {fileID: 7915244162019678924}
   - component: {fileID: 1671752607338581685}
+  - component: {fileID: 3699271698567802279}
   m_Layer: 0
   m_Name: Abilities
   m_TagString: Untagged
@@ -2010,6 +2011,7 @@ MonoBehaviour:
   - {fileID: 1156122406318860820}
   - {fileID: 7915244162019678924}
   - {fileID: 1671752607338581685}
+  - {fileID: 3699271698567802279}
 --- !u!114 &5859741811348402333
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2154,6 +2156,51 @@ MonoBehaviour:
   _rb: {fileID: 0}
   _energyPlayer: {fileID: 8934230934356217642}
   _shadow: {fileID: 7237307863484890914, guid: 8dea5af4c60165d45af4522b1a596998, type: 3}
+--- !u!114 &3699271698567802279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7378065823814705286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24f65756b4c9ac842be66740c2640b10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IconAbility: {fileID: 0}
+  AbilityPrefab: {fileID: 6736161171206798187, guid: 19c99062d7730ec4b8f92463fe5eb66b, type: 3}
+  Select: {fileID: 0}
+  Abilities: {fileID: 0}
+  ObstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  CastPrefab: {fileID: 5074480402368706878, guid: 8fb008b85f2e29b48b39b1cd92d851a0, type: 3}
+  ToggleAbility: {fileID: 0}
+  DrawCircle: {fileID: 8128605320138084665}
+  IconAbilityAutoattack: {fileID: 0}
+  CircleSelect: {fileID: 0}
+  AttackType: 0
+  AbilityType: 0
+  AttackRangeType: 0
+  DamageType: 0
+  TargetParent: {fileID: 0}
+  CanMakeDamage: 0
+  CanDealDamageOrHeal: 0
+  CanUseAbility: 1
+  NewAbilityPrefab: {fileID: 0}
+  CanDoAbility: 0
+  CanDrawCircle: 1
+  Distance: 0
+  CellDistance: 1
+  _cellSize: 1.9
+  lastAbility: {fileID: 0}
+  IsActiveAbility: 0
+  _targetCircle: {fileID: 0}
+  ManaCost: {fileID: 0}
+  _rb: {fileID: 0}
+  _energyPlayer: {fileID: 8934230934356217642}
+  _puddle: {fileID: -3743295544946794120, guid: 5ec9f65c10b0b374fb16da9ebcfd5695, type: 3}
 --- !u!1 &7761970869757356538
 GameObject:
   m_ObjectHideFlags: 0

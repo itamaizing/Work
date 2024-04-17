@@ -3,19 +3,20 @@ using UnityEngine;
 using UnityEngine.UI;
 using static UnityEngine.GraphicsBuffer;
 
-public class Icecloud : AbilityBase
+public class IcePuddle : AbilityBase
 {
 	[Header("Ability properties")]
 	[SerializeField] private GameObject ManaCost;
 	[SerializeField] private Rigidbody2D _rb;
-	[SerializeField] private IceCloudProjectile _projectile;
+	[SerializeField] private EnergyPlayer _energyPlayer;
+	[SerializeField] private IcePuddleObject _puddle;
 	//[HideInInspector] public GameObject Target;
 	//[SerializeField] private Collider2D _collider;
 
-	public delegate void IceCloudAbilityHandler(float value);
-	public event IceCloudAbilityHandler IceCloudAbilityEvent;
+	public delegate void IcePuddleAbilityHandler(float value);
+	public event IcePuddleAbilityHandler IcePuddleAbilityEvent;
 
-	protected override KeyCode ActivationKey => KeyCode.Alpha2;
+	protected override KeyCode ActivationKey => KeyCode.Alpha4;
 
 	private Vector2 _mousePos;
 	private PlayerMove _playerMove;
@@ -25,23 +26,12 @@ public class Icecloud : AbilityBase
 		//Distance = 6f * 1.9f;
 		AttackType = AttackType.OneAttack;
 		AbilityType = AbilityType.DamageAbility;
-		AttackRangeType = AttackRangeType.RangeAttack;
-
-
-		/*if (_player.TryGetComponent<PlayerMove>(out _playerMove))
-		{
-			Debug.Log("not null");
-		}
-		else
-		{
-			Debug.LogError("NO PLAYER");
-		}*/
+		AttackRangeType = AttackRangeType.MeleeAttack;
 	}
 
 	void Update()
 	{
 		//если выбрана эта абилка
-
 		HandleToggleAbility();
 		//Target = TargetParent;
 	}
@@ -53,7 +43,7 @@ public class Icecloud : AbilityBase
 		// Текущий код в методе Update
 		if (ToggleAbility.isOn == true)
 		{
-			Debug.Log("third ability on");
+			Debug.Log("fourth ability on");
 			if (Input.GetMouseButtonDown(0) && Abilities.gameObject.activeSelf && ToggleAbility.enabled && _playerMove.IsSelect)
 			{
 				HandleLeftMouseButtonToggle();
@@ -64,8 +54,8 @@ public class Icecloud : AbilityBase
 	protected override void HandleToggleAbilityOn()
 	{
 		// Включенный ToggleAbility
-		base.HandleToggleAbilityOn();		
-		if(Input.GetMouseButtonDown(0)) 
+		base.HandleToggleAbilityOn();
+		if (Input.GetMouseButtonDown(0))
 		{
 			if (ManaCost != null)
 			{
@@ -75,28 +65,6 @@ public class Icecloud : AbilityBase
 			}
 			HandleDealDamageOrHeal();
 		}
-		/*if (TargetParent == null)
-		{
-			if (ManaCost != null)
-			{
-				ManaCost.SetActive(true);
-				ManaCost.GetComponent<VisualManaCost>().CheckManaCost();
-				ManaCost.transform.localScale = new Vector2(3f, ManaCost.gameObject.transform.localScale.y);
-			}
-			HandlePrefabVisibility();
-			HandleTargetSelection();
-		}
-
-		if (TargetParent != null)
-		{
-			Debug.Log("Target");
-			if (ManaCost != null)
-			{
-				ManaCost.gameObject.SetActive(false);
-			}
-
-			HandleDistanceToTarget();
-		}*/
 	}
 
 	protected override void HandleToggleAbilityOff()
@@ -104,7 +72,7 @@ public class Icecloud : AbilityBase
 		// Выключенный ToggleAbility
 		base.HandleToggleAbilityOff();
 
-		Debug.Log("third ability off");
+		Debug.Log("fourth ability off");
 
 		if (_isSelect == false)
 		{
@@ -144,24 +112,6 @@ public class Icecloud : AbilityBase
 		Destroy(NewAbilityPrefab);
 	}
 
-	/*private void HandleTargetSelection()
-	{
-		// Выбор врага
-		_targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		RaycastHit2D hit = Physics2D.Raycast(_targetPosition, Vector2.zero);
-
-		if (hit.collider != null && hit.collider.CompareTag("Enemies") && hit.collider.gameObject != gameObject)
-		{
-			TargetParent = hit.collider.gameObject;
-
-			if (NewAbilityPrefab != null)
-			{
-				Destroy(NewAbilityPrefab);
-			}
-			DrawCircle.Clear();
-		}
-	}*/
-
 	public override void HandleDealDamageOrHeal()
 	{
 		if (_castCoroutine == null)
@@ -175,14 +125,14 @@ public class Icecloud : AbilityBase
 		if (!_player.TryGetComponent<PlayerMove>(out _playerMove))
 			yield break;
 
-		if (!_player.GetComponent<RunePlayer>().RemoveRune(1, this))
+		/*if (!_player.GetComponent<RunePlayer>().RemoveRune(1, this))
 		{
 			yield break;
-		}
+		}*/
 		if (Abilities.GetComponent<GlobalCooldown>())
 		{
 			Abilities.GetComponent<GlobalCooldown>().StartGlobalCooldown();
-		}		
+		}
 		for (int i = 0; i < Abilities.transform.childCount; i++)
 		{
 			GameObject childObject = Abilities.transform.GetChild(i).gameObject;
@@ -198,17 +148,18 @@ public class Icecloud : AbilityBase
 
 		yield return new WaitForSeconds(castTime);
 
-		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		Vector2 lookDir = _mousePos - _rb.position;
-		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
-		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
-		projectile.dad = _rb.gameObject;
+		//_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		//Vector2 lookDir = _mousePos - _rb.position;
+		//float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
+		IcePuddleObject puddle = Instantiate(_puddle, gameObject.transform.position, Quaternion.identity);
+		puddle.dad = _rb.gameObject;
+		puddle.energyPlayer = _energyPlayer;
 
 		_castCoroutine = null;
 		_playerMove.CanMove = true;
 		Select.GetComponent<SelectObject>().CanSelect = true;
 
-		IceCloudAbilityEvent?.Invoke(35f);
+		IcePuddleAbilityEvent?.Invoke(35f);
 		Recharge();
 	}
 
