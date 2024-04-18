@@ -2155,6 +2155,7 @@ MonoBehaviour:
   ManaCost: {fileID: 0}
   _rb: {fileID: 0}
   _energyPlayer: {fileID: 8934230934356217642}
+  _healthPlayer: {fileID: 7601164126198867055}
   _shadow: {fileID: 7237307863484890914, guid: 8dea5af4c60165d45af4522b1a596998, type: 3}
 --- !u!114 &3699271698567802279
 MonoBehaviour:
@@ -2200,6 +2201,7 @@ MonoBehaviour:
   ManaCost: {fileID: 0}
   _rb: {fileID: 0}
   _energyPlayer: {fileID: 8934230934356217642}
+  _healthPlayer: {fileID: 7601164126198867055}
   _puddle: {fileID: -3743295544946794120, guid: 5ec9f65c10b0b374fb16da9ebcfd5695, type: 3}
 --- !u!1 &7761970869757356538
 GameObject:

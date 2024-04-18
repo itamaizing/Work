@@ -9,6 +9,7 @@ public class IceShadowObject : MonoBehaviour
 
 	[HideInInspector] public GameObject dad;
 	[HideInInspector] public EnergyPlayer energyPlayer;
+	[HideInInspector] public HealthPlayer healthPlayer;
 	[HideInInspector] public float timeToDestroy = 2;
 	/*
 	 * timer to destroy
@@ -16,23 +17,28 @@ public class IceShadowObject : MonoBehaviour
 	 * */
 	private void Start()
 	{
-		timeToDestroy += energyPlayer.Energy/20;
+		int timeToAdd = (int)energyPlayer.Energy / 20;
+		timeToDestroy += timeToAdd;
+		energyPlayer.UseEnergy(timeToAdd*20);
 		StartCoroutine(DestroyShadow());
 	}
 
-	private void OnTriggerStay2D(Collider2D collision)
+	private void OnTriggerExit2D(Collider2D collision)
 	{
-		if (collision.gameObject == dad && energyPlayer != null)
+		if (collision.gameObject == dad && healthPlayer != null)
 		{
-			//energy recharge
+			healthPlayer.SetBoostRegen(0);
+			return;
 		}
 	}
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		if (collision.gameObject == dad)
-			return;
+		{
+			healthPlayer.SetBoostRegen(0.01f);
+		}
 		//damage, freez etc
-		if (collision.TryGetComponent<CharacterState>(out var target))
+		if (collision.TryGetComponent<CharacterState>(out var target) && energyPlayer != null)
 		{
 			target.energy = dad.GetComponent<EnergyPlayer>();
 			target.ChangeState(new FrozenState());
@@ -48,6 +54,7 @@ public class IceShadowObject : MonoBehaviour
 			GameObject hitEffect = Instantiate(_hitEffect, transform.position, Quaternion.identity);
 			Destroy(hitEffect, 5f);
 		}
+		healthPlayer.SetBoostRegen(0);
 		Destroy(gameObject);
 	}
 

@@ -53,7 +53,7 @@ public class Icecloud : AbilityBase
 		// Текущий код в методе Update
 		if (ToggleAbility.isOn == true)
 		{
-			Debug.Log("third ability on");
+			Debug.Log("second ability on");
 			if (Input.GetMouseButtonDown(0) && Abilities.gameObject.activeSelf && ToggleAbility.enabled && _playerMove.IsSelect)
 			{
 				HandleLeftMouseButtonToggle();
@@ -75,28 +75,6 @@ public class Icecloud : AbilityBase
 			}
 			HandleDealDamageOrHeal();
 		}
-		/*if (TargetParent == null)
-		{
-			if (ManaCost != null)
-			{
-				ManaCost.SetActive(true);
-				ManaCost.GetComponent<VisualManaCost>().CheckManaCost();
-				ManaCost.transform.localScale = new Vector2(3f, ManaCost.gameObject.transform.localScale.y);
-			}
-			HandlePrefabVisibility();
-			HandleTargetSelection();
-		}
-
-		if (TargetParent != null)
-		{
-			Debug.Log("Target");
-			if (ManaCost != null)
-			{
-				ManaCost.gameObject.SetActive(false);
-			}
-
-			HandleDistanceToTarget();
-		}*/
 	}
 
 	protected override void HandleToggleAbilityOff()
@@ -104,7 +82,7 @@ public class Icecloud : AbilityBase
 		// Выключенный ToggleAbility
 		base.HandleToggleAbilityOff();
 
-		Debug.Log("third ability off");
+		Debug.Log("second ability off");
 
 		if (_isSelect == false)
 		{

@@ -9,6 +9,7 @@ public class IceShadow : AbilityBase
 	[SerializeField] private GameObject ManaCost;
 	[SerializeField] private Rigidbody2D _rb;
 	[SerializeField] private EnergyPlayer _energyPlayer;
+	[SerializeField] private HealthPlayer _healthPlayer;
 	[SerializeField] private IceShadowObject _shadow;
 	//[HideInInspector] public GameObject Target;
 	//[SerializeField] private Collider2D _collider;
@@ -28,15 +29,6 @@ public class IceShadow : AbilityBase
 		AbilityType = AbilityType.DamageAbility;
 		AttackRangeType = AttackRangeType.MeleeAttack;
 
-
-		/*if (_player.TryGetComponent<PlayerMove>(out _playerMove))
-		{
-			Debug.Log("not null");
-		}
-		else
-		{
-			Debug.LogError("NO PLAYER");
-		}*/
 	}
 
 	void Update()
@@ -105,7 +97,7 @@ public class IceShadow : AbilityBase
 		// Выключенный ToggleAbility
 		base.HandleToggleAbilityOff();
 
-		Debug.Log("second ability off");
+		Debug.Log("third ability off");
 
 		if (_isSelect == false)
 		{
@@ -205,6 +197,7 @@ public class IceShadow : AbilityBase
 		IceShadowObject projectile = Instantiate(_shadow, gameObject.transform.position, Quaternion.identity);
 		projectile.dad = _rb.gameObject;
 		projectile.energyPlayer = _energyPlayer;
+		projectile.healthPlayer = _healthPlayer;
 
 		_castCoroutine = null;
 		_playerMove.CanMove = true;

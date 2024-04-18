@@ -9,6 +9,7 @@ public class IcePuddle : AbilityBase
 	[SerializeField] private GameObject ManaCost;
 	[SerializeField] private Rigidbody2D _rb;
 	[SerializeField] private EnergyPlayer _energyPlayer;
+	[SerializeField] private HealthPlayer _healthPlayer;
 	[SerializeField] private IcePuddleObject _puddle;
 	//[HideInInspector] public GameObject Target;
 	//[SerializeField] private Collider2D _collider;
@@ -125,10 +126,10 @@ public class IcePuddle : AbilityBase
 		if (!_player.TryGetComponent<PlayerMove>(out _playerMove))
 			yield break;
 
-		/*if (!_player.GetComponent<RunePlayer>().RemoveRune(1, this))
+		if (!_player.GetComponent<RunePlayer>().RemoveRune(1, this))
 		{
 			yield break;
-		}*/
+		}
 		if (Abilities.GetComponent<GlobalCooldown>())
 		{
 			Abilities.GetComponent<GlobalCooldown>().StartGlobalCooldown();
@@ -154,6 +155,7 @@ public class IcePuddle : AbilityBase
 		IcePuddleObject puddle = Instantiate(_puddle, gameObject.transform.position, Quaternion.identity);
 		puddle.dad = _rb.gameObject;
 		puddle.energyPlayer = _energyPlayer;
+		puddle.healthPlayer = _healthPlayer;
 
 		_castCoroutine = null;
 		_playerMove.CanMove = true;
