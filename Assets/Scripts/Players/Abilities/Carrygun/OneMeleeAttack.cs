@@ -28,7 +28,7 @@ public class OneMeleeAttack : AbilityBase
         AttackType = AttackType.Autoattack;
         AbilityType = AbilityType.DamageAbility;
         AttackRangeType = AttackRangeType.MeleeAttack;
-        DamageType = DamageType.Magical;
+        DamageType = DamageType.Physical;
     }
 
     private void Update()
@@ -109,6 +109,10 @@ public class OneMeleeAttack : AbilityBase
         StopBackgroundSwitcherEvent.SendStartStopBackgroundSwitcher();
         CanDealDamageOrHeal = false;
         CanMakeDamage = false;
+        if(_targetHealth != null)
+        {
+            _targetHealth.onDamagePassed -= Attackpassed;
+        }
     }
 
     public override void OnLeftDoubleClick()
@@ -131,12 +135,23 @@ public class OneMeleeAttack : AbilityBase
     public override void ChangeBoolAndValues()
     {
         _targetHealth = TargetParent.GetComponent<HealthPlayer>();
+        _targetHealth.onDamagePassed += Attackpassed;
         CanMakeDamage = true;
         CanDealDamageOrHeal = true;
         _isOneChange = true;
         Destroy(NewAbilityPrefab);
     }
 
+    private void Attackpassed(bool isAttackPassed) // не промахнулись атакой
+    {
+        Debug.LogWarning(isAttackPassed);
+        if (isAttackPassed == true)
+        {
+            float activePsionica = _playerAbility.GetComponent<FiveConversion>().PsionicaActive;
+            HandleActivePsionica();
+
+        }
+    }
     private void HandleTargetSelection()
     {
         // Выбор врага
@@ -156,7 +171,7 @@ public class OneMeleeAttack : AbilityBase
     }
 
     public override void HandleDealDamageOrHeal()
-    {
+    { 
         // Нанесение урона
         _damageValue = 12;
 
@@ -217,6 +232,7 @@ public class OneMeleeAttack : AbilityBase
 
             StartCoroutine(DamageCooldown(activePsionica));
             _playerAbility.GetComponent<FiveConversion>().UseActivePsionica(activePsionica, Target);
+            Debug.LogWarning("hadlePsionica");
         }
     }
 
@@ -274,8 +290,10 @@ public class OneMeleeAttack : AbilityBase
         else
         {
             _targetHealth.TakeDamage(_damageValue, DamageType, AttackRangeType);
+            //_targetHealth.onDamagePassed += HandleMiss;
             _player.GetComponent<PsionicaMelee>().MakePsionica(_damageValue);
-            HandleActivePsionica();
+            //_targetHealth.onDamagePassed -= HandleMiss;
+            //HandleActivePsionica();
             CanMakeDamage = false;
 
             yield return new WaitForSeconds(damageRate / 2);

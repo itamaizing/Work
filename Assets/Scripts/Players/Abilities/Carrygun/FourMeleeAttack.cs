@@ -194,12 +194,12 @@ public class FourMeleeAttack : AbilityBase
 			{
 				float playerToTarget = (NewAbilityPrefab.transform.position - _player.transform.position).magnitude;
 
-				if (_castCoroutine == null && playerToTarget < Distance &&
+                if (_castCoroutine == null && playerToTarget < Distance &&
 					(NewAbilityPrefab.transform.position - TargetParent.transform.position).magnitude <
 					Distance)
 				{
 					_castCoroutine = StartCoroutine(CastTentacles());
-				}
+                }
 
 				if (CheckObstacleBetween(TargetParent.transform.position, NewAbilityPrefab.transform.position))
 				{
@@ -581,7 +581,7 @@ public class FourMeleeAttack : AbilityBase
 
 	private IEnumerator CastTentacles()
 	{
-		for (int i = 0; i < Abilities.transform.childCount; i++)
+        for (int i = 0; i < Abilities.transform.childCount; i++)
 		{
 			GameObject childObject = Abilities.transform.GetChild(i).gameObject;
 
@@ -631,7 +631,7 @@ public class FourMeleeAttack : AbilityBase
 
 		_canPull = true;
 		StartCoroutine(DestroyPrefab());
-	}
+    }
 
 	private void HandleActivePsionica(float activePsionica)
 	{

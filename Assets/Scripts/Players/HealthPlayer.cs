@@ -16,6 +16,7 @@ public class HealthPlayer : MonoBehaviour
     [SerializeField] private float defMag = 10f;
     [SerializeField] private int evamel = 10;
     [SerializeField] private int evaran = 10;
+    [SerializeField] private int evaMag = 10;
 
     [Header("Shields")]
     public List<Shielding> shields_Physic = new List<Shielding>();
@@ -42,6 +43,7 @@ public class HealthPlayer : MonoBehaviour
     public Action<DamageInfo> MakePhisicDamageEvent;
     public Action<DamageInfo> MakeMagicDamageEvent;
 
+    public Action<bool> onDamagePassed;
     public struct HealInfo
     {
         public float OriginalHeal;
@@ -92,6 +94,13 @@ public class HealthPlayer : MonoBehaviour
     {
         if (damageType == DamageType.Magical)
         {
+            if (UnityEngine.Random.Range(0, 100) <= evaMag)
+            {
+                ShowDamagePrefab(new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f), "miss");
+                onDamagePassed?.Invoke(false);
+                return 0;
+            }
+            onDamagePassed?.Invoke(true);
             return damageValue - (damageValue * defMag / 100);
         }
 
@@ -103,19 +112,24 @@ public class HealthPlayer : MonoBehaviour
                     if (UnityEngine.Random.Range(0, 100) <= evamel)
                     {
                         ShowDamagePrefab(new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f), "miss");
+                        onDamagePassed?.Invoke(false);
                         return 0;
                     }
+                    onDamagePassed?.Invoke(true);
                     return damageValue - (damageValue * defPh / 100);
 
                 case AttackRangeType.RangeAttack:
                     if (UnityEngine.Random.Range(0, 100) <= evaran)
                     {
                         ShowDamagePrefab(new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f), "miss");
+                        onDamagePassed?.Invoke(false);
                         return 0;
                     }
+                    onDamagePassed?.Invoke(true);
                     return damageValue - (damageValue * defPh / 100);
 
                 case AttackRangeType.Inner:
+                    onDamagePassed?.Invoke(true);
                     return damageValue;
 
                 default:
@@ -225,7 +239,7 @@ public class HealthPlayer : MonoBehaviour
 
         damageValue = CalculateDamageWithStats(damageValue, damageType, attackRangeType);
 
-        DisplayTakenDamage(damageValue, damageType);
+        if (damageValue > 0) DisplayTakenDamage(damageValue, damageType);
         
         damageValue = CalculateDamageForShields(damageValue, damageType);
 
@@ -241,7 +255,6 @@ public class HealthPlayer : MonoBehaviour
                 Die();
             }
             
-            //ShowDamagePrefab(-modifiedDamage, new Color(1, 0, 0, 1), new Color(1, 0, 0, 0.5f));
             UpdateHealthBar();
             UpdateHealthBarText();
         }
