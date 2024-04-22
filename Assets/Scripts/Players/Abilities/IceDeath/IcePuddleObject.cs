@@ -1,16 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class IcePuddleObject : MonoBehaviour
 {
-	[SerializeField] private Rigidbody2D _rb;
-	[SerializeField] GameObject _hitEffect;
-
 	[HideInInspector] public GameObject dad;
 	[HideInInspector] public EnergyPlayer energyPlayer;
 	[HideInInspector] public HealthPlayer healthPlayer;
 	[HideInInspector] public float timeToDestroy = 3;
+
+	[SerializeField] private Rigidbody2D _rb;
+	[SerializeField] GameObject _hitEffect;
+
+	private List<CharacterState> _enemies;
+
 	/*
 	 * timer to destroy
 	 * buff player
@@ -32,7 +36,7 @@ public class IcePuddleObject : MonoBehaviour
 		{
 			healthPlayer.SetBoostRegen2(0);
 			return;
-		}
+		}		
 	}
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
@@ -44,13 +48,12 @@ public class IcePuddleObject : MonoBehaviour
 		//damage, freez etc
 		if (collision.TryGetComponent<CharacterState>(out var target) && energyPlayer != null)
 		{
-			target.energy = dad.GetComponent<EnergyPlayer>();
-			target.ChangeState(new FrozenState());
-			GetComponent<Collider2D>().enabled = false;
+			target.ChangeState(new FrostingState());
+			_enemies.Add(target);
+			//GetComponent<Collider2D>().enabled = false;
 		}
 		//Explode();
 	}
-
 	private void Explode()
 	{
 		if (_hitEffect != null)
@@ -59,6 +62,11 @@ public class IcePuddleObject : MonoBehaviour
 			Destroy(hitEffect, 5f);
 		}
 		healthPlayer.SetBoostRegen2(0);
+		foreach (var target in _enemies)
+		{
+			target.ChangeState(new DefaultState());
+			_enemies.Remove(target);
+		}
 		Destroy(gameObject);
 	}
 

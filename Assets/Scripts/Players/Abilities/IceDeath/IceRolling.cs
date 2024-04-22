@@ -11,7 +11,7 @@ public class IceRolling : AbilityBase
 	[SerializeField]
 	private Renderer[] _renderers;
 
-	[HideInInspector] public GameObject Target;
+	//[HideInInspector] public GameObject Target;
 
 	public delegate void ThirdAbilityHandler(float value);
 
@@ -19,7 +19,7 @@ public class IceRolling : AbilityBase
 
 	private bool _isInitialized = false;
 	private bool _canJump = false;
-	private bool _damageDealt = false;
+	//private bool _damageDealt = false;
 	private bool _castPrefab;
 	private Vector2 _playerPosition;
 	private Vector2 _enemyPosition;
@@ -30,7 +30,7 @@ public class IceRolling : AbilityBase
 	private float _durationJump = 0.4f;
 	private float _amplitude = 1.5f;
 	private Collider2D[] _colliders;
-
+	[SerializeField] private Rigidbody2D _rb;
 	protected override KeyCode ActivationKey => KeyCode.Alpha5;
 
 	private void Start()
@@ -45,7 +45,7 @@ public class IceRolling : AbilityBase
 	private void Update()
 	{
 		HandleToggleAbility();
-		Target = TargetParent;
+		//Target = TargetParent;
 	}
 
 	protected override void HandleToggleAbility()
@@ -93,7 +93,6 @@ public class IceRolling : AbilityBase
 		TargetParent = null;
 		_isInitialized = false;
 		_canJump = false;
-		_damageDealt = false;
 	}
 
 	public override void OnLeftDoubleClick()
@@ -125,9 +124,6 @@ public class IceRolling : AbilityBase
 	public override void ChangeBoolAndValues()
 	{
 		_isInitialized = false;
-		_damageDealt = false;
-		_initialPosition = Vector2.zero;
-		_target = Vector2.zero;
 
 		if (NewAbilityPrefab != null)
 		{
@@ -191,51 +187,19 @@ public class IceRolling : AbilityBase
 			_player.GetComponent<PlayerMove>().CanMove = false;
 
 
-			if (!_isInitialized)
-			{
-				_initialPosition = transform.position;
-				_startTime = Time.time;
+			/*_colliders = Physics2D.OverlapCircleAll(testPoint, 1f);
 
-				Vector2 vectorToEnemy = _enemyPosition - _initialPosition;
-				Vector2 Vector = vectorToEnemy.normalized * (vectorToEnemy.magnitude - 2f);
-				_target = _initialPosition + Vector;
-
-				Vector2 closestPoint = Vector2.zero;
-				float closestDistance = float.MaxValue;
-
-				for (float angle = 0f; angle < 360f; angle += 1f)
+				foreach (Collider2D collider in _colliders)
 				{
-					float x = _enemyPosition.x + 2f * Mathf.Cos(angle * Mathf.Deg2Rad);
-					float y = _enemyPosition.y + 2f * Mathf.Sin(angle * Mathf.Deg2Rad);
-					Vector2 testPoint = new Vector2(x, y);
-
-					bool isObstacleNearby = false;
-
-					_colliders = Physics2D.OverlapCircleAll(testPoint, 1f);
-
-					foreach (Collider2D collider in _colliders)
+					if (collider.CompareTag("Obstacle"))
 					{
-						if (collider.CompareTag("Obstacle"))
-						{
-							break;
-						}
+						break;
 					}
+				}*/
+			Vector2 _mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			Vector2 lookDir = _mousePos - _rb.position;
+			float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
 
-					if (!isObstacleNearby)
-					{
-						float distanceToInitial = Vector2.Distance(testPoint, _initialPosition);
-						if (distanceToInitial < closestDistance)
-						{
-							closestPoint = testPoint;
-							closestDistance = distanceToInitial;
-						}
-					}
-				}
-
-				_target = closestPoint;
-
-				_isInitialized = true;
-			}
 
 			float targetToEnemy = (_enemyPosition - _target).magnitude;
 			float initialPositionToEnemy = (_enemyPosition - _initialPosition).magnitude;
@@ -251,10 +215,7 @@ public class IceRolling : AbilityBase
 
 				_player.transform.position = newPosition;
 
-				if (_playerPosition == _target)
-				{
-					//MakeDamageWithJump();
-				}
+				
 			}
 			else
 			{
@@ -262,92 +223,6 @@ public class IceRolling : AbilityBase
 			}
 		}
 	}
-
-	/*private void MakeDamageWithJump()
-	{
-		if (!_damageDealt && _distanceToEnemy < 2.1f)
-		{
-			float damage = UnityEngine.Random.Range(11, 14);
-
-			float maxDistance = Distance - 2f;
-			float distanceToTarget = (_target - _initialPosition).magnitude;
-
-
-			if (distanceToTarget >= maxDistance && TargetParent != null)
-			{
-				Shield _shield = TargetParent.GetComponentInChildren<Shield>();
-
-				if (_shield != null)
-				{
-					_shield.DamageInShield(damage + (damage * 0.2f));
-					_damageDealt = true;
-					ThirdAbilityEvent?.Invoke(damage + (damage * 0.2f));
-				}
-				else
-				{
-					TargetParent.GetComponent<HealthPlayer>().TakeDamage(damage + (damage * 0.2f), DamageType, AttackRangeType);
-					_player.GetComponent<PsionicaMelee>().MakePsionica(damage + (damage * 0.2f));
-					_damageDealt = true;
-					ThirdAbilityEvent?.Invoke(damage + (damage * 0.2f));
-				}
-			}
-			else if (distanceToTarget < maxDistance && TargetParent != null)
-			{
-				Shield _shield = TargetParent.GetComponentInChildren<Shield>();
-
-				if (_shield != null)
-				{
-					float numberOfBody = distanceToTarget / 1.9f;
-					_shield.DamageInShield(damage + (damage * 0.005f * (numberOfBody / 0.1f)));
-					_player.GetComponent<PsionicaMelee>()
-						.MakePsionica(damage + (damage * 0.005f * (numberOfBody / 0.1f)));
-					_damageDealt = true;
-					ThirdAbilityEvent?.Invoke(damage + (damage * 0.005f * (numberOfBody / 0.1f)));
-				}
-				else
-				{
-					float numberOfBody = distanceToTarget / 1.9f;
-					TargetParent.GetComponent<HealthPlayer>()
-						.TakeDamage(damage + (damage * 0.005f * (numberOfBody / 0.1f)), DamageType, AttackRangeType);
-					_player.GetComponent<PsionicaMelee>()
-						.MakePsionica(damage + (damage * 0.005f * (numberOfBody / 0.1f)));
-					_damageDealt = true;
-					ThirdAbilityEvent?.Invoke(damage + (damage * 0.005f * (numberOfBody / 0.1f)));
-				}
-			}
-		}
-		else
-		{
-			StartCoroutine(Stop());
-		}
-	}*/
-
-	/*private void MakeDamageWithoutJump()
-	{
-		if (!_damageDealt && TargetParent != null && _distanceToEnemy < 2.1f)
-		{
-			float damage = UnityEngine.Random.Range(11, 13);
-			Shield _shield = TargetParent.GetComponentInChildren<Shield>();
-
-			if (_shield != null)
-			{
-				_shield.DamageInShield(damage + (damage * 0.1f));
-				_damageDealt = true;
-				ThirdAbilityEvent?.Invoke(damage + (damage * 0.1f));
-			}
-			else
-			{
-				TargetParent.GetComponent<HealthPlayer>().TakeDamage(damage + (damage * 0.1f), DamageType, AttackRangeType);
-				_player.GetComponent<PsionicaMelee>().MakePsionica(damage + (damage * 0.1f));
-				_damageDealt = true;
-				ThirdAbilityEvent?.Invoke(damage + (damage * 0.1f));
-			}
-		}
-		else
-		{
-			StartCoroutine(Stop());
-		}
-	}*/
 
 	private IEnumerator CastJump()
 	{

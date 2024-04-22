@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class IceCloudProjectile : MonoBehaviour
 {
+	[HideInInspector]public GameObject dad;
+
 	[SerializeField] private Rigidbody2D _rb;
 	[SerializeField] GameObject _hitEffect;
 	[SerializeField] private float _force;
 	[SerializeField] private float _distance = 5;
-
-	[HideInInspector]public GameObject dad;
 
 	private Vector2 startPos;
 

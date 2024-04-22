@@ -301,6 +301,53 @@ public class FrozenState : ICharacterState
 	}
 }
 
+
+public class FrostingState : ICharacterState
+{
+	private HealthPlayer _playerHP;
+	private PlayerMove _playerMove;
+	private float _duration; //переделать под разные спелы
+
+	public void EnterState(CharacterState character)
+	{
+		Debug.Log("Entering Frosting State");
+		_playerMove = character.gameObject.GetComponent<PlayerMove>();
+
+		_playerMove.CanMove = false;
+        //decrease speed of attact
+		if (character.gameObject.TryGetComponent<HealthPlayer>(out _playerHP))
+		{
+			//Какой дамаг получаем? физический или магический
+			_playerHP.TakePhisicDamage(10 + character.energy.Energy / 4);
+			_playerHP.sumDamageTaken = 0;
+            _duration = character.duration;
+
+			character.energy.UseEnergy(character.energy.Energy);
+		}
+		else
+		{
+			//error
+		}
+	}
+
+	public void UpdateState(CharacterState character)
+	{
+		_duration -= Time.deltaTime;
+		if (_playerHP.sumDamageTaken >= 30 || _duration < 0)
+		{
+			character.ChangeState(new DefaultState());
+		}
+
+	}
+
+	public void ExitState(CharacterState character)
+	{
+		Debug.Log("Exiting Frozen State");
+		_playerMove.CanMove = true;
+        //return speed of attact
+	}
+}
+
 // Класс персонажа, использующий состояния
 public class CharacterState : MonoBehaviour
 {
@@ -308,8 +355,9 @@ public class CharacterState : MonoBehaviour
     [SerializeField] private AbilityManager _abilityManager;
     public SelectObject Select;
     
-    //person who shoted
-    [HideInInspector]public EnergyPlayer energy;
+    
+    [HideInInspector] public EnergyPlayer energy;//person who shoted
+	[HideInInspector] public float duration;//duration of state
 
     private void Start()
     {

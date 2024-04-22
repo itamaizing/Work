@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class IceShadowObject : MonoBehaviour
 {
-	[SerializeField] private Rigidbody2D _rb;
-	[SerializeField] GameObject _hitEffect;
-
 	[HideInInspector] public GameObject dad;
 	[HideInInspector] public EnergyPlayer energyPlayer;
 	[HideInInspector] public HealthPlayer healthPlayer;
 	[HideInInspector] public float timeToDestroy = 2;
+
+	[SerializeField] private Rigidbody2D _rb;
+	[SerializeField] GameObject _hitEffect;
+
 	/*
 	 * timer to destroy
 	 * buff player
