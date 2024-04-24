@@ -4112,7 +4112,7 @@ PrefabInstance:
       objectReference: {fileID: 525622191}
     - target: {fileID: 5862965717272100732, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: ObstacleLayerMask.m_Bits
-      value: 640
+      value: 128
       objectReference: {fileID: 0}
     - target: {fileID: 6627882834926959264, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: m_RootOrder
