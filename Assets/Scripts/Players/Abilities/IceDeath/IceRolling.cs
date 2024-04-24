@@ -18,22 +18,12 @@ public class IceRolling : AbilityBase
 
 	public event ThirdAbilityHandler ThirdAbilityEvent;
 
-	//private bool _isInitialized = false;
-	private bool _canJump = true;
-	//private bool _damageDealt = false;
-	/*private bool _castPrefab;
-	private Vector2 _playerPosition;
-	private Vector2 _enemyPosition;
-	private Vector2 _initialPosition;
-	private Vector2 _target;
-	private float _distanceToEnemy;
-	private float _startTime;
-	private float _durationJump = 0.4f;
-	private float _amplitude = 1.5f;
-	private Collider2D[] _colliders;*/
 	[SerializeField] private Rigidbody2D _rb;
 	[SerializeField] private EnergyPlayer _energy;
 	[SerializeField] private float _jumprange = 2f;
+
+	private Vector2 _jumpPos;
+	private bool _canJump = true;
 	protected override KeyCode ActivationKey => KeyCode.Alpha5;
 
 	private void Start()
@@ -154,11 +144,12 @@ public class IceRolling : AbilityBase
 				actualJumpRange += 1;
 			}	
 			
-			Vector3 jumpPos = (Vector3)lookDir * actualJumpRange + _player.transform.position;
+			Vector2 jumpPos = lookDir * actualJumpRange + (Vector2)_player.transform.position;
 			if(CheckObstacleBetween(_rb.position, jumpPos))
 			{
 				Debug.Log("Обнаружено препятствие:");
 				//прыгать до препятствия
+				_rb.DOMove(_jumpPos, 0.3f * actualJumpRange);
 			}
 			else
 			{
@@ -198,6 +189,7 @@ public class IceRolling : AbilityBase
 
 		foreach (RaycastHit2D hit in hits)
 		{
+			_jumpPos = hits[0].point - direction;
 			return true;
 		}
 
