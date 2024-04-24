@@ -1807,6 +1807,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 505198380}
   m_CullTransparentMesh: 1
+--- !u!114 &525622191 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3571007594203897309, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+  m_PrefabInstance: {fileID: 549229998}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &536790752 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6492166351119360506, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
@@ -1953,6 +1964,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 680d27ceee8f74048b436184fe24db69, type: 3}
     - target: {fileID: 4922445121022473045, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6448359761914888655, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -4063,6 +4078,30 @@ PrefabInstance:
       propertyPath: _runeRegenerationValue
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5862965717272100732, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: _rb
+      value: 
+      objectReference: {fileID: 1000777841}
+    - target: {fileID: 5862965717272100732, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: Select
+      value: 
+      objectReference: {fileID: 1138358088594896431}
+    - target: {fileID: 5862965717272100732, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: Abilities
+      value: 
+      objectReference: {fileID: 150802219}
+    - target: {fileID: 5862965717272100732, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: CastPrefab
+      value: 
+      objectReference: {fileID: 5074480402368706878, guid: 8fb008b85f2e29b48b39b1cd92d851a0, type: 3}
+    - target: {fileID: 5862965717272100732, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: IconAbility
+      value: 
+      objectReference: {fileID: 2104947629}
+    - target: {fileID: 5862965717272100732, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: ToggleAbility
+      value: 
+      objectReference: {fileID: 525622191}
     - target: {fileID: 6627882834926959264, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: m_RootOrder
       value: 8
@@ -9537,6 +9576,11 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &2104947629 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7604989378525371937, guid: 8b3b538457a4d9247a2cef02b3b18b9a, type: 3}
+  m_PrefabInstance: {fileID: 549229998}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2134142645
 GameObject:
   m_ObjectHideFlags: 0

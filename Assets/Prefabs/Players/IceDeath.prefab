@@ -241,6 +241,7 @@ MonoBehaviour:
   _abilityManager: {fileID: 0}
   Select: {fileID: 0}
   energy: {fileID: 0}
+  duration: 0
 --- !u!114 &5793172127680476127
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1973,6 +1974,7 @@ GameObject:
   - component: {fileID: 7915244162019678924}
   - component: {fileID: 1671752607338581685}
   - component: {fileID: 3699271698567802279}
+  - component: {fileID: 5862965717272100732}
   m_Layer: 0
   m_Name: Abilities
   m_TagString: Untagged
@@ -2129,7 +2131,7 @@ MonoBehaviour:
   Abilities: {fileID: 0}
   ObstacleLayerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   CastPrefab: {fileID: 5074480402368706878, guid: 8fb008b85f2e29b48b39b1cd92d851a0, type: 3}
   ToggleAbility: {fileID: 0}
   DrawCircle: {fileID: 8128605320138084665}
@@ -2153,7 +2155,7 @@ MonoBehaviour:
   IsActiveAbility: 0
   _targetCircle: {fileID: 0}
   ManaCost: {fileID: 0}
-  _rb: {fileID: 0}
+  _rb: {fileID: 1935025463078411595}
   _energyPlayer: {fileID: 8934230934356217642}
   _healthPlayer: {fileID: 7601164126198867055}
   _shadow: {fileID: 7237307863484890914, guid: 8dea5af4c60165d45af4522b1a596998, type: 3}
@@ -2175,7 +2177,7 @@ MonoBehaviour:
   Abilities: {fileID: 0}
   ObstacleLayerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   CastPrefab: {fileID: 5074480402368706878, guid: 8fb008b85f2e29b48b39b1cd92d851a0, type: 3}
   ToggleAbility: {fileID: 0}
   DrawCircle: {fileID: 8128605320138084665}
@@ -2199,10 +2201,55 @@ MonoBehaviour:
   IsActiveAbility: 0
   _targetCircle: {fileID: 0}
   ManaCost: {fileID: 0}
-  _rb: {fileID: 0}
+  _rb: {fileID: 1935025463078411595}
   _energyPlayer: {fileID: 8934230934356217642}
   _healthPlayer: {fileID: 7601164126198867055}
   _puddle: {fileID: -3743295544946794120, guid: 5ec9f65c10b0b374fb16da9ebcfd5695, type: 3}
+--- !u!114 &5862965717272100732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7378065823814705286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 924d76d3d13ffb24e84fa30e89ae4eb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IconAbility: {fileID: 0}
+  AbilityPrefab: {fileID: 6736161171206798187, guid: f47d4d5af439d27409c072f12159543f, type: 3}
+  Select: {fileID: 0}
+  Abilities: {fileID: 0}
+  ObstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  CastPrefab: {fileID: 0}
+  ToggleAbility: {fileID: 0}
+  DrawCircle: {fileID: 8128605320138084665}
+  IconAbilityAutoattack: {fileID: 0}
+  CircleSelect: {fileID: 0}
+  AttackType: 0
+  AbilityType: 0
+  AttackRangeType: 0
+  DamageType: 0
+  TargetParent: {fileID: 0}
+  CanMakeDamage: 0
+  CanDealDamageOrHeal: 0
+  CanUseAbility: 1
+  NewAbilityPrefab: {fileID: 0}
+  CanDoAbility: 0
+  CanDrawCircle: 1
+  Distance: 0
+  CellDistance: 1
+  _cellSize: 1.9
+  lastAbility: {fileID: 0}
+  IsActiveAbility: 0
+  _targetCircle: {fileID: 0}
+  _renderers: []
+  _rb: {fileID: 1935025463078411595}
+  _energy: {fileID: 8934230934356217642}
+  _jumprange: 2
 --- !u!1 &7761970869757356538
 GameObject:
   m_ObjectHideFlags: 0

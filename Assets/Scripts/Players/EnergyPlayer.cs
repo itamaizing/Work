@@ -58,8 +58,12 @@ public class EnergyPlayer : MonoBehaviour
 
 		
 	}
-	public void UseEnergy(float EnergyValue)
+	public bool UseEnergy(float EnergyValue)
 	{
+		if(EnergyValue > Energy) 
+		{
+			return false;
+		}
 		_canRegen = false;
 		_timer = 0;
 
@@ -72,6 +76,7 @@ public class EnergyPlayer : MonoBehaviour
 		{
 			Energy = 0;
 		}
+		return true;
 	}
 
 	private IEnumerator RegenirateEnergy()

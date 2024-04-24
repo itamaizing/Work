@@ -4,6 +4,7 @@ using Players.Abilities.Genjalf;
 using Players.Abilities.Genjalf.Shield_Ability;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class IceRolling : AbilityBase
 {
@@ -17,10 +18,10 @@ public class IceRolling : AbilityBase
 
 	public event ThirdAbilityHandler ThirdAbilityEvent;
 
-	private bool _isInitialized = false;
-	private bool _canJump = false;
+	//private bool _isInitialized = false;
+	private bool _canJump = true;
 	//private bool _damageDealt = false;
-	private bool _castPrefab;
+	/*private bool _castPrefab;
 	private Vector2 _playerPosition;
 	private Vector2 _enemyPosition;
 	private Vector2 _initialPosition;
@@ -29,8 +30,10 @@ public class IceRolling : AbilityBase
 	private float _startTime;
 	private float _durationJump = 0.4f;
 	private float _amplitude = 1.5f;
-	private Collider2D[] _colliders;
+	private Collider2D[] _colliders;*/
 	[SerializeField] private Rigidbody2D _rb;
+	[SerializeField] private EnergyPlayer _energy;
+	[SerializeField] private float _jumprange = 2f;
 	protected override KeyCode ActivationKey => KeyCode.Alpha5;
 
 	private void Start()
@@ -76,11 +79,12 @@ public class IceRolling : AbilityBase
 	}
 	protected override void HandleToggleAbilityOn()
 	{
-		// Включенный ToggleAbility
-		base.HandleToggleAbilityOn();
-
-		//jumP
-
+		if(Input.GetMouseButtonDown(0)) 
+		{
+			//переделать круг
+			base.HandleToggleAbilityOn();
+			HandleCastJump();
+		}
 	}
 
 	protected override void HandleToggleAbilityOff()
@@ -88,10 +92,10 @@ public class IceRolling : AbilityBase
 		// Выключенный ToggleAbility
 		base.HandleToggleAbilityOff();
 
-		_castPrefab = false;
+		//_castPrefab = false;
 		_castCoroutine = null;
 		TargetParent = null;
-		_isInitialized = false;
+		//_isInitialized = false;
 		_canJump = false;
 	}
 
@@ -123,32 +127,13 @@ public class IceRolling : AbilityBase
 
 	public override void ChangeBoolAndValues()
 	{
-		_isInitialized = false;
+		//_isInitialized = false;
 
 		if (NewAbilityPrefab != null)
 		{
 			Destroy(NewAbilityPrefab);
 		}
 	}
-
-	/*private void HandleTargetSelection()
-	{
-		// Выбор врага
-		_targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		RaycastHit2D hit = Physics2D.Raycast(_targetPosition, Vector2.zero);
-
-		if (hit.collider != null && hit.collider.CompareTag("Enemies") && hit.collider.gameObject != gameObject)
-		{
-			TargetParent = hit.collider.gameObject;
-			ChangeBoolAndValues();
-			if (NewAbilityPrefab != null)
-			{
-				Destroy(NewAbilityPrefab);
-			}
-
-			//Debug.Log("Помечен");
-		}
-	}*/
 
 	public override void HandleDealDamageOrHeal()
 	{
@@ -158,10 +143,12 @@ public class IceRolling : AbilityBase
 
 	private void HandleCastJump()
 	{
-		// Проверка дистанции и каст
+		_castCoroutine = StartCoroutine(CastJump());
+		/*// Проверка дистанции и каст
 		_playerPosition = _player.transform.position;
 		_enemyPosition = TargetParent.transform.position;
 		_distanceToEnemy = (_enemyPosition - _playerPosition).magnitude;
+
 
 		if (_distanceToEnemy <= Distance)
 		{
@@ -176,51 +163,36 @@ public class IceRolling : AbilityBase
 					_castPrefab = true;
 				}
 			}
-		}
+		}*/
 	}
 
 	private void Jump()
 	{
 		if (_canJump && ToggleAbility.isOn == true)
 		{
+			_canJump = false;
 			ToggleAbility.enabled = false;
-			_player.GetComponent<PlayerMove>().CanMove = false;
+			int additionalJumpDist = 0;
 
-
-			/*_colliders = Physics2D.OverlapCircleAll(testPoint, 1f);
-
-				foreach (Collider2D collider in _colliders)
-				{
-					if (collider.CompareTag("Obstacle"))
-					{
-						break;
-					}
-				}*/
 			Vector2 _mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			Vector2 lookDir = _mousePos - _rb.position;
-			float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
-
-
-			float targetToEnemy = (_enemyPosition - _target).magnitude;
-			float initialPositionToEnemy = (_enemyPosition - _initialPosition).magnitude;
-
-			if (initialPositionToEnemy > targetToEnemy)
+			Vector2 lookDir = (_mousePos - _rb.position).normalized;
+			
+			if(_energy.Energy >= 10)
 			{
-				float timePassed = Time.time - _startTime;
-				float t = Mathf.Clamp01(timePassed / _durationJump);
-
-				float yOffset = _amplitude * Mathf.Sin(1 * Mathf.PI * t);
-				Vector3 newPosition = Vector3.Lerp(_initialPosition, _target, t);
-				newPosition.y += yOffset;
-
-				_player.transform.position = newPosition;
-
-				
+				additionalJumpDist = 2;
 			}
-			else
+			else if(_energy.Energy < 10 && _energy.Energy >=5)
 			{
-				//MakeDamageWithoutJump();
+				additionalJumpDist = 1;
 			}
+			_energy.UseEnergy(additionalJumpDist * 5);
+			Debug.Log("jump dist: " + (additionalJumpDist+_jumprange));
+
+			//проверка на столкновения!!!!
+
+			Vector3 jumpPos = (Vector3)lookDir * (_jumprange + additionalJumpDist) + _player.transform.position;
+			_player.transform.DOMove(jumpPos, 0.3f * (additionalJumpDist + _jumprange));
+			HandleToggleAbilityOff();
 		}
 	}
 
