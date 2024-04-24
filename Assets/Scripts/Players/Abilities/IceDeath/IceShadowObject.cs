@@ -39,7 +39,7 @@ public class IceShadowObject : MonoBehaviour
 			healthPlayer.SetBoostRegen(0.01f);
 		}
 		//damage, freez etc
-		if (collision.TryGetComponent<CharacterState>(out var target) && energyPlayer != null)
+		if (collision.TryGetComponent<CharacterState>(out var target) && energyPlayer != null && collision.gameObject !=dad)
 		{
 			target.energy = dad.GetComponent<EnergyPlayer>();
 			target.ChangeState(new FrozenState());

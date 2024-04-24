@@ -168,10 +168,10 @@ public class IceShadow : AbilityBase
 		if (!_player.TryGetComponent<PlayerMove>(out _playerMove))
 			yield break;
 
-		/*if (!_player.GetComponent<RunePlayer>().RemoveRune(1, this))
+		if (!_player.GetComponent<RunePlayer>().RemoveRune(1, this))
 		{
 			yield break;
-		}*/
+		}
 		if (Abilities.GetComponent<GlobalCooldown>())
 		{
 			Abilities.GetComponent<GlobalCooldown>().StartGlobalCooldown();
@@ -180,13 +180,13 @@ public class IceShadow : AbilityBase
 		{
 			GameObject childObject = Abilities.transform.GetChild(i).gameObject;
 
-			Toggle toggle = childObject.GetComponent<Toggle>();
+			/*Toggle toggle = childObject.GetComponent<Toggle>();
 			if (toggle != null)
 			{
 				toggle.enabled = false;
-			}
+			}*/
 		}
-		_playerMove.CanMove = false;
+		//_playerMove.CanMove = false;
 		CreateCastPrefab(castTime);
 
 		yield return new WaitForSeconds(castTime);
@@ -200,7 +200,7 @@ public class IceShadow : AbilityBase
 		projectile.healthPlayer = _healthPlayer;
 
 		_castCoroutine = null;
-		_playerMove.CanMove = true;
+		//_playerMove.CanMove = true;
 		Select.GetComponent<SelectObject>().CanSelect = true;
 
 		IceShadowAbilityEvent?.Invoke(35f);

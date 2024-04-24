@@ -46,7 +46,7 @@ public class IcePuddleObject : MonoBehaviour
 			return;
 		}
 		//damage, freez etc
-		if (collision.TryGetComponent<CharacterState>(out var target) && energyPlayer != null)
+		if (collision.TryGetComponent<CharacterState>(out var target) && energyPlayer != null && collision.gameObject != dad)
 		{
 			target.ChangeState(new FrostingState());
 			_enemies.Add(target);
