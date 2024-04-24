@@ -124,6 +124,12 @@ public class IceRolling : AbilityBase
 	{
 		if (_canJump && ToggleAbility.isOn == true)
 		{
+			if (!_player.GetComponent<RunePlayer>().RemoveRune(0.25f, this))
+			{
+				Debug.Log("no rune");
+				return;
+			}
+
 			_canJump = false;
 			ToggleAbility.enabled = false;
 			float actualJumpRange = _jumprange;
