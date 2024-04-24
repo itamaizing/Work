@@ -62,14 +62,6 @@ public class IceRolling : AbilityBase
 		{
 			HandleLeftMouseButtonToggle();
 		}
-
-		if (_canJump)
-		{
-			foreach (var item in _renderers)
-			{
-				item.sortingLayerID = SortingLayer.NameToID("Jump");
-			}
-		}
 	}
 
 	public override void CancelAbilityOnClick()
@@ -91,11 +83,7 @@ public class IceRolling : AbilityBase
 	{
 		// Выключенный ToggleAbility
 		base.HandleToggleAbilityOff();
-
-		//_castPrefab = false;
 		_castCoroutine = null;
-		TargetParent = null;
-		//_isInitialized = false;
 		_canJump = false;
 	}
 
@@ -143,27 +131,7 @@ public class IceRolling : AbilityBase
 
 	private void HandleCastJump()
 	{
-		_castCoroutine = StartCoroutine(CastJump());
-		/*// Проверка дистанции и каст
-		_playerPosition = _player.transform.position;
-		_enemyPosition = TargetParent.transform.position;
-		_distanceToEnemy = (_enemyPosition - _playerPosition).magnitude;
-
-
-		if (_distanceToEnemy <= Distance)
-		{
-			if (!CheckObstacleBetween(_player.transform.position, TargetParent.transform.position))
-			{
-				DrawCircle.Clear();
-
-				_castCoroutine = StartCoroutine(CastJump());
-				if (_castPrefab == false)
-				{
-					CreateCastPrefab(0.3f);
-					_castPrefab = true;
-				}
-			}
-		}*/
+		_castCoroutine = StartCoroutine(CastJump());		
 	}
 
 	private void Jump()
@@ -172,26 +140,31 @@ public class IceRolling : AbilityBase
 		{
 			_canJump = false;
 			ToggleAbility.enabled = false;
-			int additionalJumpDist = 0;
+			float actualJumpRange = _jumprange;
 
 			Vector2 _mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			Vector2 lookDir = (_mousePos - _rb.position).normalized;
 			
 			if(_energy.Energy >= 10)
 			{
-				additionalJumpDist = 2;
+				actualJumpRange += 2;
 			}
 			else if(_energy.Energy < 10 && _energy.Energy >=5)
 			{
-				additionalJumpDist = 1;
+				actualJumpRange += 1;
+			}	
+			
+			Vector3 jumpPos = (Vector3)lookDir * actualJumpRange + _player.transform.position;
+			if(CheckObstacleBetween(_rb.position, jumpPos))
+			{
+				Debug.Log("Обнаружено препятствие:");
+				//прыгать до препятствия
 			}
-			_energy.UseEnergy(additionalJumpDist * 5);
-			Debug.Log("jump dist: " + (additionalJumpDist+_jumprange));
-
-			//проверка на столкновения!!!!
-
-			Vector3 jumpPos = (Vector3)lookDir * (_jumprange + additionalJumpDist) + _player.transform.position;
-			_player.transform.DOMove(jumpPos, 0.3f * (additionalJumpDist + _jumprange));
+			else
+			{
+				_energy.UseEnergy((actualJumpRange - _jumprange) * 5);
+				_rb.DOMove(jumpPos, 0.3f * actualJumpRange);
+			}
 			HandleToggleAbilityOff();
 		}
 	}

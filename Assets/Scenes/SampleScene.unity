@@ -4026,6 +4026,14 @@ PrefabInstance:
       propertyPath: ObstacleLayerMask.m_Bits
       value: 128
       objectReference: {fileID: 0}
+    - target: {fileID: 1935025463078411595, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: m_BodyType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935025463078411595, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: m_Simulated
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3699271698567802279, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: Select
       value: 
@@ -4102,6 +4110,10 @@ PrefabInstance:
       propertyPath: ToggleAbility
       value: 
       objectReference: {fileID: 525622191}
+    - target: {fileID: 5862965717272100732, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: ObstacleLayerMask.m_Bits
+      value: 640
+      objectReference: {fileID: 0}
     - target: {fileID: 6627882834926959264, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: m_RootOrder
       value: 8
