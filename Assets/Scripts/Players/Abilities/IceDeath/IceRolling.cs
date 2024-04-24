@@ -98,6 +98,7 @@ public class IceRolling : AbilityBase
 
 	public override void OnRightDoubleClick()
 	{
+
 	}
 
 	public override void ChangeBoolAndValues()
