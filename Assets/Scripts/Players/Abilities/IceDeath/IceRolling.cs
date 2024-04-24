@@ -38,14 +38,11 @@ public class IceRolling : AbilityBase
 	private void Update()
 	{
 		HandleToggleAbility();
-		//Target = TargetParent;
 	}
 
 	protected override void HandleToggleAbility()
 	{
 		base.HandleToggleAbility();
-
-		// Текущий код в методе Update
 
 		if (Input.GetMouseButtonDown(0) && ToggleAbility.gameObject.activeSelf && ToggleAbility.enabled &&
 			_player.GetComponent<PlayerMove>().IsSelect)
@@ -105,8 +102,6 @@ public class IceRolling : AbilityBase
 
 	public override void ChangeBoolAndValues()
 	{
-		//_isInitialized = false;
-
 		if (NewAbilityPrefab != null)
 		{
 			Destroy(NewAbilityPrefab);
