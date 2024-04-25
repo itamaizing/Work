@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 0aacaea9672e6b44c92b4c0a2448fa86
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - _abilityInfo: {fileID: 11400000, guid: 1f2a5a037601fdd438b17c4c4917caaa, type: 2}
+  - _mana: {instanceID: 0}
+  - _currentChargeText: {instanceID: 0}
+  - _cooldown: {instanceID: 0}
+  - _castPrefab: {fileID: 4634252779898100178, guid: cfcb93924b6dc204090e954474c731de, type: 3}
+  - _blindPref: {fileID: 3575522236083078964, guid: a5acdd4bde54e0845a18e7e79f38054c, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

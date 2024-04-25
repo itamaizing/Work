@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Shield Data
   m_EditorClassIdentifier: 
   _shieldCharges: 3
-  _cooldownCharge: 17
+  _cooldownCharge: 24
   _manaCost: 20
-  _absorptionAmount: 30
+  _absorptionAmount: 40
   _durationShield: 2
