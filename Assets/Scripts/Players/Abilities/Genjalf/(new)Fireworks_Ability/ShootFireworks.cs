@@ -7,11 +7,7 @@ using UnityEngine.UI;
 public class ShootFireworks : Ability
 {
     [Header("Ability settings")]
-    [SerializeField] private FillAmountOverTime _castLine;
     [SerializeField] private Fireworks _fireworksPref;
-    [SerializeField] private float _manaCostPerTick;
-    [SerializeField] private float _duration;
-    [SerializeField] private PlayerMove _playerMove;
     [Header("Size")]
     [SerializeField] private float _length;
     [SerializeField] private float _width;
@@ -37,15 +33,17 @@ public class ShootFireworks : Ability
             _positionForExtraWidth = _length;
     }
 
-    public override void Use()
+    protected override void Cast()
     {
          _useJob = StartCoroutine(UseCoroutine());
     }
 
-    public override void Cancel()
+    protected override void Cancel()
     {
         StopCoroutine(_useJob);
-        Destroy(_fireworks.gameObject);
+
+        if(_fireworks != null)
+            Destroy(_fireworks.gameObject);
     }
 
     private void SortEnemiesByDistance()
@@ -102,7 +100,7 @@ public class ShootFireworks : Ability
             yield return null;
         }
         _fireworks.Activate();
-        _playerMove.CanMove = false;
+        PlayerMove.CanMove = false;
 
         RaycastHit2D[] rayHit = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
         if (rayHit.Length > 0 && rayHit[0].transform.CompareTag("Enemies"))
@@ -111,10 +109,10 @@ public class ShootFireworks : Ability
         float time = 0 + _damageRate * 2;
         float damageTime = 0;
 
-        _castLine.StartFill(_duration, 1, 0);
         IsCanCancle = false;
+        PayCost();
 
-        while (time < _duration && Mana.Mana >= _manaCostPerTick)
+        while (time < StreamingDuration)
         {
             time += Time.deltaTime;
             damageTime += Time.deltaTime;
@@ -134,13 +132,11 @@ public class ShootFireworks : Ability
                 }
             }
             SortEnemiesByDistance();
-            Mana.UseMana(_manaCostPerTick);
             DoDamage();
             damageTime = 0;
             yield return null;
         }
-        _playerMove.CanMove = true;
-        PayCost();
+        PlayerMove.CanMove = true;
         Destroy(_fireworks.gameObject);
     }
 }

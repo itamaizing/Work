@@ -5,31 +5,19 @@ using UnityEngine;
 public class Telekinesis : Ability
 {
     [Header("Ability settings")]
-    [SerializeField] private FillAmountOverTime _cooldown;
-    [SerializeField] private FillAmountOverTime _castLine;
     [SerializeField] private DrawCircle _drawCircleSelf;
     [SerializeField] private DrawCircle _drawCirclePref;
-    [SerializeField] private PlayerMove _playerMove;
-    [SerializeField] private float _duration;
-    [SerializeField] private float _castDeley;
-    [SerializeField] private float _manaCostRate;
-    [SerializeField] private float _manaCostPerTick;
-    [SerializeField] private float _radius;
     [SerializeField] private float _range;
     
     private DrawCircle _circleTarget;
     private PlayerMove _target;
     private Vector3 _position;
     private Coroutine _useJob;
-    private Coroutine _manaCostJob;
 
-    public override void Cancel()
+    protected override void Cancel()
     {
         if(_useJob != null)
             StopCoroutine(_useJob);
-
-        if (_manaCostJob != null)
-            StopCoroutine(_manaCostJob);
 
         ResetValue();
 
@@ -37,7 +25,7 @@ public class Telekinesis : Ability
             Destroy(_circleTarget.gameObject);
     }
 
-    public override void Use()
+    protected override void Cast()
     {
         _useJob = StartCoroutine(UseCoroutine());
     }
@@ -48,10 +36,9 @@ public class Telekinesis : Ability
             _target.CanMove = true;
 
         _drawCircleSelf.Clear();
-        _playerMove.CanMove = true;
+        PlayerMove.CanMove = true;
         _target = null;
         _position = Vector3.zero;
-        _castLine.Stop();
     }
 
     private bool IsMouseInRadius()
@@ -61,7 +48,7 @@ public class Telekinesis : Ability
             transform.position
             );
 
-        return distance <= _radius;
+        return distance <= Radius;
     }
 
     private bool IsMouseInRange()
@@ -74,34 +61,9 @@ public class Telekinesis : Ability
         return distance <= _range;
     }
 
-    private IEnumerator CastDeleyCoroutine()
-    {
-        _castLine.StartFill(_castDeley);
-
-        float time = 0;
-        while (time < _castDeley)
-        {
-            time += Time.deltaTime;
-            yield return null;
-        }
-    }
-
-    private IEnumerator ManaCostPerTickCorutine()
-    {
-        float time = 0;
-        while (time < _duration + _manaCostRate)
-        {
-            Mana.UseMana(_manaCostPerTick);
-            time += _manaCostRate;
-            yield return new WaitForSeconds(_manaCostRate);
-        }
-        IsCanCancle = true;
-        Cancel();
-    }
-
     private IEnumerator UseCoroutine()
     {
-        _drawCircleSelf.Draw(_radius);
+        _drawCircleSelf.Draw(Radius);
 
         while (_target == null) //выбираем цель
         {
@@ -128,24 +90,22 @@ public class Telekinesis : Ability
             yield return null;
         }
         IsCanCancle = false;
-        _playerMove.CanMove = false;
+        PlayerMove.CanMove = false;
         _target.CanMove = false;
         Destroy(_circleTarget.gameObject);
-        yield return StartCoroutine(CastDeleyCoroutine());
+        yield return GetCastDeleyCoroutine();
 
         float time = 0;
-        _manaCostJob = StartCoroutine(ManaCostPerTickCorutine());
         IsCanCancle = true;
-        _castLine.StartFill(_duration, 1, 0);
+        PayCost();
 
-        while (time < _duration)
+        while (time < StreamingDuration) // действие 
         {
             time += Time.deltaTime;
 
-            _target.transform.position = Vector2.MoveTowards(_target.transform.position, _position, _range * Time.deltaTime / _duration);
+            _target.transform.position = Vector2.MoveTowards(_target.transform.position, _position, _range * Time.deltaTime / StreamingDuration);
             yield return null;
         }
         ResetValue();
-        PayCost();
     }
 }

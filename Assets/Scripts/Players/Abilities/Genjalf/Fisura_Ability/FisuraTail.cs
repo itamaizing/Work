@@ -68,7 +68,6 @@ public class FisuraTail : MonoBehaviour
     {
         if (collision.TryGetComponent<PlayerMove>(out PlayerMove player))
         {
-            Debug.Log(1);
             player.GetComponent<Rigidbody2D>().isKinematic = true;
         }
     }

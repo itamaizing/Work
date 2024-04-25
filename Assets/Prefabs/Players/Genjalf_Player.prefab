@@ -278,7 +278,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8274357691436833283}
-  - component: {fileID: 3676589508189792738}
+  - component: {fileID: 8480034257406857709}
   - component: {fileID: 4540537009910052003}
   - component: {fileID: 4937364771760706162}
   - component: {fileID: 4800092477462556513}
@@ -307,7 +307,7 @@ Transform:
   m_Father: {fileID: 916424372445495949}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3676589508189792738
+--- !u!114 &8480034257406857709
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -316,10 +316,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 1675032641069307089}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7a1f269fd1a47e4aaed1dc6e45fae1b, type: 3}
+  m_Script: {fileID: 11500000, guid: 4b927948ae40d644492381b2c058cf47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Abilities: []
+  _playerMove: {fileID: 7682162387749688049}
+  _mana: {fileID: 7194231038919683107}
+  _health: {fileID: 8017403384711168740}
+  _abilities:
+  - {fileID: 4800092477462556513}
+  - {fileID: 3939070588996056051}
+  - {fileID: 6257083150982270341}
+  - {fileID: 3843699627799185963}
 --- !u!114 &4540537009910052003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -367,21 +374,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f48d90d77134e1a88a9b5b51bcc5e13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _activationButton: 50
-  _iconAbility: {fileID: 0}
-  _toggleAbility: {fileID: 0}
-  _abilitiesPanel: {fileID: 0}
-  _mana: {fileID: 7194231038919683107}
+  _abilityInfo: {fileID: 11400000, guid: 83e21c29a8358a84c98e9e3409e72dce, type: 2}
+  _isAutoAttack: 0
+  _radius: 0
+  _area: 0
   _manaCost: 0
+  _castDeley: 0
+  _cooldown: 0
   _isUseCharges: 0
-  _currentChargeText: {fileID: 0}
+  _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _castLine: {fileID: 0}
+  _isStreaming: 1
+  _streamingDuration: 2
+  _manaCostRate: 0.1
+  _manaCostPerTick: 30
   _fireworksPref: {fileID: 5320143867127242726, guid: 95af11e504f859f40a21a8e8a3a90f83, type: 3}
-  _manaCostPerTick: 3
-  _duration: 1.3
-  _playerMove: {fileID: 7682162387749688049}
   _length: 5
   _width: 0.8
   _extraWidth: 3
@@ -405,22 +413,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0aacaea9672e6b44c92b4c0a2448fa86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _activationButton: 53
-  _iconAbility: {fileID: 0}
-  _toggleAbility: {fileID: 0}
-  _abilitiesPanel: {fileID: 0}
-  _mana: {fileID: 7194231038919683107}
+  _abilityInfo: {fileID: 11400000, guid: 1f2a5a037601fdd438b17c4c4917caaa, type: 2}
+  _isAutoAttack: 0
+  _radius: 1.3
+  _area: 0
   _manaCost: 0
+  _castDeley: 0
+  _cooldown: 0
   _isUseCharges: 1
-  _currentChargeText: {fileID: 0}
+  _chargesHaveSeparateCooldown: 0
   _maxCharges: 3
   _chargeCooldown: 15
-  _cooldown: {fileID: 0}
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
   _castPrefab: {fileID: 4634252779898100178, guid: cfcb93924b6dc204090e954474c731de, type: 3}
   _damage: 10
   _blindPref: {fileID: 3575522236083078964, guid: a5acdd4bde54e0845a18e7e79f38054c, type: 3}
   _blindDuration: 1
-  _radius: 1.3
   _pushDistance: 2
   _pushDuration: 0.4
   _pushSpeed: 5
@@ -436,27 +447,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 684d2f0ab696d7f4ea7978d8690bf832, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _activationButton: 52
-  _iconAbility: {fileID: 0}
-  _toggleAbility: {fileID: 0}
-  _abilitiesPanel: {fileID: 0}
-  _mana: {fileID: 7194231038919683107}
+  _abilityInfo: {fileID: 11400000, guid: d225c810085a24647a426dd4b47a9983, type: 2}
+  _isAutoAttack: 0
+  _radius: 10
+  _area: 0
   _manaCost: 30
+  _castDeley: 1.6
+  _cooldown: 0
   _isUseCharges: 1
-  _currentChargeText: {fileID: 0}
+  _chargesHaveSeparateCooldown: 0
   _maxCharges: 2
   _chargeCooldown: 16
-  _cooldown: {fileID: 0}
-  _castLine: {fileID: 0}
-  _playerMove: {fileID: 7682162387749688049}
-  _radius: 10
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
   _drawCircle: {fileID: 2062510225715713123}
   _fisuraTilePrefab: {fileID: 626463425188756188, guid: 1222da39dc4bf1041891e04a5f0a7b41, type: 3}
   _width: 0.3
   _length: 3
   _angelTileLength: 0.2
   _liveTime: 6
-  _castDeley: 1.6
 --- !u!114 &6257083150982270341
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -469,26 +480,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f558779797c92a24187c288a41378c31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _activationButton: 51
-  _iconAbility: {fileID: 0}
-  _toggleAbility: {fileID: 0}
-  _abilitiesPanel: {fileID: 0}
-  _mana: {fileID: 7194231038919683107}
+  _abilityInfo: {fileID: 11400000, guid: 44ef9f5c61bd03a4a9d02045a6dfb776, type: 2}
+  _isAutoAttack: 0
+  _radius: 8
+  _area: 0
   _manaCost: 0
+  _castDeley: 0.5
+  _cooldown: 0
   _isUseCharges: 1
-  _currentChargeText: {fileID: 0}
+  _chargesHaveSeparateCooldown: 0
   _maxCharges: 2
   _chargeCooldown: 18
-  _cooldown: {fileID: 0}
-  _castLine: {fileID: 0}
-  _drawCircleSelf: {fileID: 2062510225715713123}
-  _drawCirclePref: {fileID: 896857229047290416, guid: e7d74dbf4338ab645b321ea6ba6b8147, type: 3}
-  _playerMove: {fileID: 7682162387749688049}
-  _duration: 1.6
-  _castDeley: 0.5
+  _isStreaming: 1
+  _streamingDuration: 1.5
   _manaCostRate: 0.1
   _manaCostPerTick: 3
-  _radius: 8
+  _drawCircleSelf: {fileID: 2062510225715713123}
+  _drawCirclePref: {fileID: 896857229047290416, guid: e7d74dbf4338ab645b321ea6ba6b8147, type: 3}
   _range: 8
 --- !u!1 &1740845397034949897
 GameObject:
@@ -1843,7 +1851,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8571648767939960694
 Transform:
   m_ObjectHideFlags: 0

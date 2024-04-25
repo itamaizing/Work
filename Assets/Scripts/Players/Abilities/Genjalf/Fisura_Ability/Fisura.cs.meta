@@ -4,11 +4,13 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - _iconAbility: {instanceID: 0}
-  - _toggleAbility: {instanceID: 0}
-  - _abilitiesPanel: {instanceID: 0}
+  - _abilityInfo: {fileID: 11400000, guid: d225c810085a24647a426dd4b47a9983, type: 2}
   - _mana: {instanceID: 0}
   - _currentChargeText: {instanceID: 0}
+  - _cooldown: {instanceID: 0}
+  - _castLine: {instanceID: 0}
+  - _playerMove: {instanceID: 0}
+  - _drawCircle: {instanceID: 0}
   - _fisuraTilePrefab: {fileID: 626463425188756188, guid: 1222da39dc4bf1041891e04a5f0a7b41, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}

@@ -22,6 +22,7 @@ public class FillAmountOverTime : MonoBehaviour
         if(_fillJob != null)
         {
             StopCoroutine(_fillJob);
+            _fillJob = null;
             gameObject.SetActive(false);
         }
     }

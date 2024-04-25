@@ -4,12 +4,12 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - _iconAbility: {instanceID: 0}
-  - _toggleAbility: {instanceID: 0}
-  - _abilitiesPanel: {instanceID: 0}
+  - _abilityInfo: {fileID: 11400000, guid: 83e21c29a8358a84c98e9e3409e72dce, type: 2}
   - _mana: {instanceID: 0}
   - _currentChargeText: {instanceID: 0}
+  - _castLine: {instanceID: 0}
   - _fireworksPref: {fileID: 5320143867127242726, guid: 95af11e504f859f40a21a8e8a3a90f83, type: 3}
+  - _playerMove: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

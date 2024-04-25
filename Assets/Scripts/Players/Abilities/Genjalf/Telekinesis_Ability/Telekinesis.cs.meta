@@ -4,9 +4,7 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - _iconAbility: {instanceID: 0}
-  - _toggleAbility: {instanceID: 0}
-  - _abilitiesPanel: {instanceID: 0}
+  - _abilityInfo: {fileID: 11400000, guid: 44ef9f5c61bd03a4a9d02045a6dfb776, type: 2}
   - _mana: {instanceID: 0}
   - _currentChargeText: {instanceID: 0}
   - _cooldown: {instanceID: 0}

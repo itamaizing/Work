@@ -24,6 +24,12 @@ public class InputHandler : MonoBehaviour
 	public static UnityAction OnThirdAbility = delegate { };
 	public static UnityAction OnFourthAbility = delegate { };
 	public static UnityAction OnFifthAbility = delegate { };
+
+	public static UnityAction<int> OnFirstCast = delegate { };
+	public static UnityAction<int> OnSecondCast = delegate { };
+	public static UnityAction<int> OnThirdCast = delegate { };
+	public static UnityAction<int> OnFourthCast = delegate { };
+	public static UnityAction<int> OnFifthCast = delegate { };
 	#endregion
 
 	private void Awake()
@@ -48,6 +54,12 @@ public class InputHandler : MonoBehaviour
 		_inputActions.GameplayMap.Spell3.performed += i => OnThirdAbility?.Invoke();
 		_inputActions.GameplayMap.Spell4.performed += i => OnFourthAbility?.Invoke();
 		_inputActions.GameplayMap.Spell5.performed += i=> OnFifthAbility?.Invoke();
+
+		_inputActions.GameplayMap.Spell1.performed += i => OnFirstCast?.Invoke(0);
+		_inputActions.GameplayMap.Spell2.performed += i => OnSecondCast?.Invoke(1);
+		_inputActions.GameplayMap.Spell3.performed += i => OnThirdCast?.Invoke(2);
+		_inputActions.GameplayMap.Spell4.performed += i => OnFourthCast?.Invoke(3);
+		_inputActions.GameplayMap.Spell5.performed += i => OnFifthCast?.Invoke(4);
 
 		#endregion
 

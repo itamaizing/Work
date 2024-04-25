@@ -5,30 +5,25 @@ using UnityEngine;
 public class Fisura : Ability
 {
     [Header("Ability settings")]
-    [SerializeField] private FillAmountOverTime _cooldown;
-    [SerializeField] private FillAmountOverTime _castLine;
-    [SerializeField] private PlayerMove _playerMove;
-    [SerializeField] private float _radius;
     [SerializeField] private DrawCircle _drawCircle;
     [SerializeField] private FisuraTail _fisuraTilePrefab;
     [SerializeField] private float _width;
     [SerializeField] private float _length;
     [SerializeField] private float _angelTileLength;
     [SerializeField] private float _liveTime;
-    [SerializeField] private float _castDeley;
 
     private FisuraTail _fisuraTile;
     private FisuraTail _fisuraTileRight;
     private FisuraTail _fisuraTileLeft;
     private Coroutine _useJob;
 
-    public override void Use()
+    protected override void Cast()
     {
-        _drawCircle.Draw(_radius);
+        _drawCircle.Draw(Radius);
         _useJob = StartCoroutine(UseCoroutine());
     }
 
-    public override void Cancel()
+    protected override void Cancel()
     {
         StopCoroutine(_useJob);
         Destroy(_fisuraTile.gameObject);
@@ -42,7 +37,7 @@ public class Fisura : Ability
             transform.position
             );
 
-        return distance <= _radius;
+        return distance <= Radius;
     }
 
     private void AddAngleTile()
@@ -77,18 +72,6 @@ public class Fisura : Ability
         }
     }
 
-    private IEnumerator CastDeley()
-    {
-        _castLine.StartFill(_castDeley);
-
-        float time = 0;
-        while(time < _castDeley)
-        {
-            time += Time.deltaTime;
-            yield return null;
-        }
-    }
-
     private IEnumerator UseCoroutine()
     {
         Vector2 mouseStartPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -107,8 +90,8 @@ public class Fisura : Ability
         RaycastHit2D[] rayHit = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
         if (rayHit.Length > 0 && rayHit[0].transform == transform.parent)
         {
-            yield return StartCoroutine(CastDeley());
-            _fisuraTile.Rotate(_playerMove.DirectionOfMovement);
+            yield return GetCastDeleyCoroutine();
+            _fisuraTile.Rotate(PlayerMove.DirectionOfMovement);
             _fisuraTile.transform.Translate(Vector2.right * 2);
             _fisuraTile.SetSizeWithoutOffset(new Vector2(_width, _length));
             AddAngleTileWithoutOffset();
@@ -146,12 +129,11 @@ public class Fisura : Ability
             //}
             yield return null;
         }
-        yield return StartCoroutine(CastDeley());
+        yield return GetCastDeleyCoroutine();
         AddAngleTile();
         FisuraActivate();
 
         _drawCircle.Clear();
-        _cooldown.StartFill(ChargeCooldown);
         PayCost();
     }
 }

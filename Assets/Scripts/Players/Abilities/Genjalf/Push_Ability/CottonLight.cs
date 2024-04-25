@@ -9,12 +9,10 @@ namespace Players.Abilities.Genjalf.Push_Ability
     public class CottonLight : Ability
     {
         [Header("Ability settings")]
-        [SerializeField] private FillAmountOverTime _cooldown;
         [SerializeField] private ParticleSystem _castPrefab; // затычка для визуализации
         [SerializeField] private float _damage = 10f;
         [SerializeField] private BlindDebuff _blindPref;
         [SerializeField] private float _blindDuration = 1f;
-        [SerializeField] private float _radius = 4f;
         [SerializeField] private float _pushDistance;
         [SerializeField] private float _pushDuration;
         [SerializeField] private float _pushSpeed;
@@ -34,13 +32,12 @@ namespace Players.Abilities.Genjalf.Push_Ability
             }
         }
 
-        public override void Use()
+        protected override void Cast()
         {
             PlayCast(); // затычка для визуализации
             PayCost();
-            _cooldown.StartFill(ChargeCooldown);
 
-            RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, _radius, Vector2.zero);
+            RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, Radius, Vector2.zero);
 
             if (_pushJob != null)
                 StopCoroutine(PushCoroutine());
@@ -66,7 +63,7 @@ namespace Players.Abilities.Genjalf.Push_Ability
             _pushJob = StartCoroutine(PushCoroutine());
         }
 
-        public override void Cancel()
+        protected override void Cancel()
         {
             
         }
@@ -75,7 +72,7 @@ namespace Players.Abilities.Genjalf.Push_Ability
         {
             var particle = Instantiate(_castPrefab, transform.position, Quaternion.identity, null);
             ParticleSystem.ShapeModule shape = particle.shape;
-            shape.radius = _radius;
+            shape.radius = Radius;
         }
 
         private void ApplyDebuffOnTarget(GameObject target)
