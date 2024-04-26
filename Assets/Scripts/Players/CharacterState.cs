@@ -165,7 +165,7 @@ public class InvisibleState : ICharacterState
             {
                 if(Random.value <= chanceToBeSeen)
                 {
-                    _player.GetComponent<CharacterState>().ChangeState(new DefaultState());
+                    _player.GetComponent<CharacterState>().AddState(new DefaultState());
                 }
             }
         }
@@ -281,7 +281,7 @@ public class FrozenState : ICharacterState
 		_duration -=Time.deltaTime;
 		if (_playerHP.sumDamageTaken >= 30 || _duration < 0)
         {
-			character.ChangeState(new DefaultState());
+			character.AddState(new DefaultState());
 		}
 
 	}
@@ -335,7 +335,7 @@ public class FrostingState : ICharacterState
 		_duration -= Time.deltaTime;
 		if (_playerHP.sumDamageTaken >= 30 || _duration < 0)
 		{
-			character.ChangeState(new DefaultState());
+			character.AddState(new DefaultState());
 		}
 
 	}
@@ -351,7 +351,7 @@ public class FrostingState : ICharacterState
 //  ласс персонажа, использующий состо€ни€
 public class CharacterState : MonoBehaviour
 {
-    [SerializeField] private ICharacterState currentState;
+    [SerializeField] private List<ICharacterState> currentStates;
     [SerializeField] private AbilityManager _abilityManager;
     public SelectObject Select;
     
@@ -359,37 +359,40 @@ public class CharacterState : MonoBehaviour
     [HideInInspector] public EnergyPlayer energy;//person who shoted
 	[HideInInspector] public float duration;//duration of state
 
-    private void Start()
-    {
-        currentState = new DefaultState();
-        currentState.EnterState(this);
-    }
+
     private void Update()
     {
         // ќбновление текущего состо€ни€
-        if (currentState != null)
+        if (currentStates.Count > 0)
         {
-            currentState.UpdateState(this);
+            for (int i = 0; i < currentStates.Count; i++) 
+            {
+                currentStates[i].UpdateState(this);
+            }
         }
     }
 
-    public void ChangeState(ICharacterState newState)
+    public void AddState(ICharacterState newState)
     {
-        // ¬ыход из текущего состо€ни€
-        if (currentState != null)
-        {
-            currentState.ExitState(this);
-        }
-
         // ¬ход в новое состо€ние
+        currentStates.Add(newState);
         newState.EnterState(this);
-        currentState = newState;
     }
 
-    //проверка текущего состо€ни€
-    public ICharacterState CheckState()
+    public bool IfHasState(ICharacterState newState) 
     {
-        return currentState;
+        if(currentStates.Contains(newState))
+        {
+            return true;
+        }
+        else return false;
+
+    }
+
+	public void RemoveState(ICharacterState newState) 
+    {
+        newState.ExitState(this);
+        currentStates.Remove(newState);
     }
 
     public AbilityManager GetAbilityManager()

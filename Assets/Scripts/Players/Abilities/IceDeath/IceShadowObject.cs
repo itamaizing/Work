@@ -42,7 +42,7 @@ public class IceShadowObject : MonoBehaviour
 		if (collision.TryGetComponent<CharacterState>(out var target) && energyPlayer != null && collision.gameObject !=dad)
 		{
 			target.energy = dad.GetComponent<EnergyPlayer>();
-			target.ChangeState(new FrozenState());
+			target.AddState(new FrozenState());
 			GetComponent<Collider2D>().enabled = false;
 		}
 		//Explode();

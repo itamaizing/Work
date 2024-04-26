@@ -48,7 +48,7 @@ public class IcePuddleObject : MonoBehaviour
 		//damage, freez etc
 		if (collision.TryGetComponent<CharacterState>(out var target) && energyPlayer != null && collision.gameObject != dad)
 		{
-			target.ChangeState(new FrostingState());
+			target.AddState(new FrostingState());
 			_enemies.Add(target);
 			//GetComponent<Collider2D>().enabled = false;
 		}
@@ -64,7 +64,7 @@ public class IcePuddleObject : MonoBehaviour
 		healthPlayer.SetBoostRegen2(0);
 		foreach (var target in _enemies)
 		{
-			target.ChangeState(new DefaultState());
+			target.AddState(new DefaultState());
 			_enemies.Remove(target);
 		}
 		Destroy(gameObject);

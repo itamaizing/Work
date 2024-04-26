@@ -36,7 +36,7 @@ public class IceCloudProjectile : MonoBehaviour
 		if(collision.TryGetComponent<CharacterState>(out var target))
 		{
 			target.energy = dad.GetComponent<EnergyPlayer>();
-			target.ChangeState(new FrozenState());
+			target.AddState(new FrozenState());
 			GetComponent<Collider2D>().enabled = false;
 		}
 		Explode();
