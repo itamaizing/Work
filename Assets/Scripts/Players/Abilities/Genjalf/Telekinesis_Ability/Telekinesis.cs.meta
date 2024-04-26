@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: f558779797c92a24187c288a41378c31
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - _abilityInfo: {fileID: 11400000, guid: 44ef9f5c61bd03a4a9d02045a6dfb776, type: 2}
+  - _mana: {instanceID: 0}
+  - _currentChargeText: {instanceID: 0}
+  - _cooldown: {instanceID: 0}
+  - _castLine: {instanceID: 0}
+  - _drawCircleSelf: {instanceID: 0}
+  - _drawCirclePref: {fileID: 896857229047290416, guid: e7d74dbf4338ab645b321ea6ba6b8147, type: 3}
+  - _playerMove: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
