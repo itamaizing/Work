@@ -353,7 +353,7 @@ public class FrostingState : ICharacterState
 // Класс персонажа, использующий состояния
 public class CharacterState : MonoBehaviour
 {
-    [SerializeField] private List<ICharacterState> currentStates;
+    [SerializeField] private List<ICharacterState> currentStates = new List<ICharacterState>();
     [SerializeField] private AbilityManager _abilityManager;
     public SelectObject Select;
     
@@ -376,9 +376,11 @@ public class CharacterState : MonoBehaviour
 
     public void AddState(ICharacterState newState)
     {
+        // переделать под лист
+
         // Вход в новое состояние
         currentStates.Add(newState);
-        newState.EnterState(this);
+        currentStates[currentStates.Count - 1].EnterState(this);
     }
 
     public bool IfHasState(ICharacterState newState) 
