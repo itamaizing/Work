@@ -281,7 +281,7 @@ public class FrozenState : ICharacterState
 		_duration -=Time.deltaTime;
 		if (_playerHP.sumDamageTaken >= 30 || _duration < 0)
         {
-			character.AddState(new DefaultState());
+			ExitState(character);
 		}
 
 	}
@@ -298,6 +298,7 @@ public class FrozenState : ICharacterState
 
 		character.GetAbilityManager().ToggleAbility(true);//turn on abilities
         _playerMove.CanMove = true;
+		character.RemoveState(this);
 	}
 }
 
@@ -335,7 +336,7 @@ public class FrostingState : ICharacterState
 		_duration -= Time.deltaTime;
 		if (_playerHP.sumDamageTaken >= 30 || _duration < 0)
 		{
-			character.AddState(new DefaultState());
+			ExitState(character);
 		}
 
 	}
@@ -345,6 +346,7 @@ public class FrostingState : ICharacterState
 		Debug.Log("Exiting Frozen State");
 		_playerMove.CanMove = true;
         //return speed of attact
+		character.RemoveState(this);
 	}
 }
 
@@ -391,7 +393,7 @@ public class CharacterState : MonoBehaviour
 
 	public void RemoveState(ICharacterState newState) 
     {
-        newState.ExitState(this);
+        //newState.ExitState(this);
         currentStates.Remove(newState);
     }
 
