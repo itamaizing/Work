@@ -68,7 +68,10 @@ public abstract class AbilityBase : MonoBehaviour
 	[HideInInspector] public LastAbility lastAbility;
 	[HideInInspector] public bool IsActiveAbility;
 
-	public abstract void ChangeBoolAndValues();
+	public bool isInRadius { get; private set; }
+
+
+    public abstract void ChangeBoolAndValues();
 	public abstract void OnLeftDoubleClick();
 	public abstract void OnRightDoubleClick();
 	public abstract void HandleDealDamageOrHeal();
@@ -188,7 +191,7 @@ public abstract class AbilityBase : MonoBehaviour
 	protected virtual void HandleToggleAbilityOn()
 	{
 		// ¬ключенный ToggleAbility
-		SetNewRadiusCircleColor();
+		//SetNewRadiusCircleColor();
 
 		if (_player.GetComponent<PlayerMove>().IsSelect == false)
 		{
@@ -355,7 +358,7 @@ public abstract class AbilityBase : MonoBehaviour
 
 		if (previousEnemyCount == 0)
 		{
-			Debug.Log("0 enemies");
+			Debug.Log($"Enemies count:{_enemies.Count}");
 			//_IsEnemyDetected = false;
 			DrawCircle.SetColor(Color.red);
 		}
@@ -561,7 +564,8 @@ public abstract class AbilityBase : MonoBehaviour
 				}
 
 				DrawCircle.SetColor(Color.red);
-			}
+                isInRadius = false;
+            }
 			else if (_distanceToTarget <= Distance)
 			{
 				TargetParent.transform.GetChild(0).GetComponent<BackgroundColorSwitcherDisabledEnabled>()
@@ -579,6 +583,7 @@ public abstract class AbilityBase : MonoBehaviour
 				}
 
 				DrawCircle.SetColor(Color.green);
+				isInRadius = true;
 			}
 
 			if (_distanceToTarget <= Distance && AttackType == AttackType.Autoattack && CanDealDamageOrHeal ||

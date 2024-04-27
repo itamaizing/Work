@@ -224,7 +224,7 @@ public class HealthPlayer : MonoBehaviour
     }
     public void TakeDamage(float damageValue, DamageType damageType, AttackRangeType attackRangeType)
     {
-        UnityEngine.Debug.LogWarning($"baseDamage: {damageValue}");
+        //UnityEngine.Debug.LogWarning($"baseDamage: {damageValue}");
 
         damageValue = CalculateDamageWithStats(damageValue, damageType, attackRangeType);
 
@@ -280,24 +280,24 @@ public class HealthPlayer : MonoBehaviour
         }
     }
 
-    [ContextMenu ("Add Magic Shield")]
-    public void AddShields()
+    [ContextMenu ("Add Magic Shield")] //для теста в инспекторе
+    private void AddShields()
     {
         DamageType dmgtype = DamageType.Magical;
         Shielding shield = new Shielding(this, 50, dmgtype);
 
     }
 
-    [ContextMenu("Add Physic Shield")]
-    public void AddPhysShields()
+    [ContextMenu("Add Physic Shield")] //для теста в инспекторе
+    private void AddPhysShields()
     {
         DamageType dmgtype = DamageType.Physical;
         Shielding shield = new Shielding(this, 50, dmgtype);
 
     }
 
-    [ContextMenu("Add Temporary Shield")]
-    public void AddtemporaryShield()
+    [ContextMenu("Add Temporary Shield")] //для теста в инспекторе
+    private void AddtemporaryShield()
     {
         DamageType dmgtype = DamageType.Physical;
 
@@ -317,7 +317,7 @@ public class HealthPlayer : MonoBehaviour
         }
     }
 
-    public void AddShield(float shieldValue, DamageType damageType)
+    public void AddShield(float shieldValue, DamageType damageType) // использовать в способностях
     {
         Shielding shield = new Shielding(this, shieldValue, damageType);
     }

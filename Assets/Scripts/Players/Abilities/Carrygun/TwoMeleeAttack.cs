@@ -99,15 +99,15 @@ public class TwoMeleeAttack : AbilityBase
         // ¬ключенный ToggleAbility
         base.HandleToggleAbilityOn();
 
-        if (_playerAbility.GetComponent<OneMeleeAttack>().TargetParent != null)
-        {
-            TargetParent = _playerAbility.GetComponent<OneMeleeAttack>().TargetParent;
+        //if (_playerAbility.GetComponent<OneMeleeAttack>().TargetParent != null)
+        //{
+        //    TargetParent = _playerAbility.GetComponent<OneMeleeAttack>().TargetParent;
 
-            if (_isOneChange == false)
-            {
-                ChangeBoolAndValues();
-            }
-        }
+        //    if (_isOneChange == false)
+        //    {
+        //        ChangeBoolAndValues();
+        //    }
+        //}
 
         if (_darts > 0)
         {

@@ -17,3 +17,7 @@ MonoBehaviour:
   _timeToDie: 1.6
   _damageFireworksMin: 3
   _damageFireworksMax: 6
+  _manaCost: 3
+  _percentageTargetOne: 1
+  _percentageTargetTwo: 0.7
+  _percentageTargetThree: 0.3
