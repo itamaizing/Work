@@ -192,8 +192,10 @@ public class InvisibleState : ICharacterState
 // Cостояние оглушение
 public class StunnedState : ICharacterState
 {
-    public void EnterState(CharacterState character)
+	private PlayerMove _playerMove;
+	public void EnterState(CharacterState character)
     {
+        _playerMove.CanMove = false;
         Debug.Log("Entering Stunned State");
     }
 
@@ -204,7 +206,8 @@ public class StunnedState : ICharacterState
 
     public void ExitState(CharacterState character)
     {
-        Debug.Log("Exiting Stunned State");
+		_playerMove.CanMove = true;
+		Debug.Log("Exiting Stunned State");
     }
 }
 
