@@ -262,7 +262,7 @@ public class FrozenState : ICharacterState
 			toggle.enabled = false;
         }
 		_playerMove.CanMove = false;
-        character.GetAbilityManager().ToggleAbility(false);//turn off abilities
+        //character.GetAbilityManager().ToggleAbility(false);//turn off abilities
 
 		if (character.gameObject.TryGetComponent<HealthPlayer>(out _playerHP))
         {
@@ -299,7 +299,7 @@ public class FrozenState : ICharacterState
 			toggle.enabled = true;
 		}
 
-		character.GetAbilityManager().ToggleAbility(true);//turn on abilities
+		//character.GetAbilityManager().ToggleAbility(true);//turn on abilities
         _playerMove.CanMove = true;
 		character.RemoveState(this);
 	}
