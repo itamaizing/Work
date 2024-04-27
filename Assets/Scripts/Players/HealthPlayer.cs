@@ -239,7 +239,7 @@ public class HealthPlayer : MonoBehaviour
 
         damageValue = CalculateDamageWithStats(damageValue, damageType, attackRangeType);
 
-        if (damageValue > 0) DisplayTakenDamage(damageValue, damageType);
+        /*if (damageValue > 0)*/ DisplayTakenDamage(damageValue, damageType);
         
         damageValue = CalculateDamageForShields(damageValue, damageType);
 

@@ -20,6 +20,7 @@ public class OneMeleeAttack : AbilityBase
     private Toggle _toggleSecondAbility;
     private bool _isOneChange;
 
+
     protected override KeyCode ActivationKey => KeyCode.Alpha1;
 
     private void Start()
@@ -236,37 +237,24 @@ public class OneMeleeAttack : AbilityBase
         }
     }
 
-    private void MissAtDistance()
-    {
-        // Промах при отдаление более чем на 10% от корпуса
-        if (previousPosition == Vector3.zero)
-        {
-            previousPosition = TargetParent.transform.position;
-        }
-
-        float time = 0;
-        time += Time.deltaTime;
-        if (time < 0.6f)
-        {
-            Vector3 currentPosition = TargetParent.transform.position;
-
-            if (Vector3.Distance(previousPosition, currentPosition) >= 0.19f)
-            {
-                _damageValue = 0;
-            }
-
-            previousPosition = currentPosition;
-        }
-    }
 
     private IEnumerator Damage(float damageRate)
     {
-        if (TargetCanAvoidance)
-        {
-            MissAtDistance();
-        }
+        Debug.LogWarning("CheckMiss");
+        previousPosition = TargetParent.transform.position;
 
         yield return new WaitForSeconds(damageRate / 2);
+
+        Vector3 currentPosition = TargetParent.transform.position;
+
+        if (Vector3.Distance(previousPosition, currentPosition) >= 0.19f)
+        {
+            _damageValue = 0;
+            _targetHealth.onDamagePassed.Invoke(false);
+            Debug.LogWarning("MissAtDistance");
+        }
+        Debug.LogWarning(Vector3.Distance(previousPosition, currentPosition));
+
 
         Shield _shield = null;
 
@@ -290,9 +278,7 @@ public class OneMeleeAttack : AbilityBase
         else
         {
             _targetHealth.TakeDamage(_damageValue, DamageType, AttackRangeType);
-            //_targetHealth.onDamagePassed += HandleMiss;
             _player.GetComponent<PsionicaMelee>().MakePsionica(_damageValue);
-            //_targetHealth.onDamagePassed -= HandleMiss;
             //HandleActivePsionica();
             CanMakeDamage = false;
 
