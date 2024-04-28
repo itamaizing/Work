@@ -209,6 +209,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b5add863fba6af449bc9b5c95b8199e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _hpRegenerationValue: 10
+  _hpRegenerationDelay: 3
+  defPh: 10
+  defMag: 10
+  evamel: 10
+  evaran: 10
+  shields_Physic: []
+  shields_Magic: []
   Health: 333
   MaxHealth: 333
   HealthBar: {fileID: 3871001752529958990}
@@ -227,6 +235,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 538268384e2d5f64f8ee01630137a16d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _manaRegenerationValue: 10
+  _manaRegenerationDelay: 3
   Mana: 1666
   ManaBar: {fileID: 5680468377122292335}
   DamageSpawn: {fileID: 8933781320356208631}
@@ -1708,6 +1718,7 @@ MonoBehaviour:
   AttackType: 0
   AbilityType: 0
   AttackRangeType: 0
+  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1720,6 +1731,7 @@ MonoBehaviour:
   _cellSize: 3
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
+  _targetCircle: {fileID: 0}
   Heal: 2
   ScriptInstanceCount: 0
   Target: {fileID: 0}
@@ -1752,6 +1764,7 @@ MonoBehaviour:
   AttackType: 0
   AbilityType: 0
   AttackRangeType: 0
+  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1764,6 +1777,7 @@ MonoBehaviour:
   _cellSize: 3
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
+  _targetCircle: {fileID: 0}
   ProtectBaff: {fileID: 3148082365468222169, guid: 09697a2918d23a44dba336a4e9eb7e8f, type: 3}
   CooldownButton: {fileID: 0}
   ManaCost: {fileID: 5002266305278314167}
@@ -1795,6 +1809,7 @@ MonoBehaviour:
   AttackType: 0
   AbilityType: 0
   AttackRangeType: 0
+  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1807,6 +1822,7 @@ MonoBehaviour:
   _cellSize: 3
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
+  _targetCircle: {fileID: 0}
   ManaCost: {fileID: 5002266305278314167}
   Target: {fileID: 0}
 --- !u!114 &1384084314023187958
@@ -1836,6 +1852,7 @@ MonoBehaviour:
   AttackType: 0
   AbilityType: 0
   AttackRangeType: 0
+  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1848,9 +1865,11 @@ MonoBehaviour:
   _cellSize: 3
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
+  _targetCircle: {fileID: 0}
   RecoveryBaffPrefab: {fileID: 8887987041764017493, guid: 70e3d37fc4fe10e4e852b0b918d0776d, type: 3}
   ManaCost: {fileID: 5002266305278314167}
   Target: {fileID: 0}
+  canCast: 1
 --- !u!114 &3423861005672603737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1901,6 +1920,7 @@ MonoBehaviour:
   AttackType: 0
   AbilityType: 0
   AttackRangeType: 0
+  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1913,6 +1933,7 @@ MonoBehaviour:
   _cellSize: 1.9
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
+  _targetCircle: {fileID: 0}
   Heal: 2
   ScriptInstanceCount: 0
   Target: {fileID: 0}
@@ -1945,6 +1966,7 @@ MonoBehaviour:
   AttackType: 0
   AbilityType: 0
   AttackRangeType: 0
+  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1957,6 +1979,7 @@ MonoBehaviour:
   _cellSize: 1.9
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
+  _targetCircle: {fileID: 0}
   DarkProtectDebaff: {fileID: 1124552450548681639, guid: 018e5683892c12f4ea1bc59608b6eb97, type: 3}
   CooldownButton: {fileID: 0}
   ManaCost: {fileID: 5002266305278314167}
@@ -1988,6 +2011,7 @@ MonoBehaviour:
   AttackType: 0
   AbilityType: 0
   AttackRangeType: 0
+  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -2000,6 +2024,7 @@ MonoBehaviour:
   _cellSize: 1.9
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
+  _targetCircle: {fileID: 0}
   ManaCost: {fileID: 5002266305278314167}
   Target: {fileID: 0}
 --- !u!114 &3225423710026260197
@@ -2029,6 +2054,7 @@ MonoBehaviour:
   AttackType: 0
   AbilityType: 0
   AttackRangeType: 0
+  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -2041,6 +2067,7 @@ MonoBehaviour:
   _cellSize: 1.9
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
+  _targetCircle: {fileID: 0}
   DamageDebaffPrefab: {fileID: 3161902913369863076, guid: 92b3843eb2376b743845974a02d0f69e, type: 3}
   ManaCost: {fileID: 5002266305278314167}
   Target: {fileID: 0}
