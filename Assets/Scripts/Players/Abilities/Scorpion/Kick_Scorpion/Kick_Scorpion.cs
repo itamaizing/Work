@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Punch_Scorpion : Ability
+public class Kick_Scorpion : Ability
 {
     [Header("Ability settings")]
     [SerializeField] private DrawCircle _drawCircleSelf;
@@ -71,7 +71,7 @@ public class Punch_Scorpion : Ability
         IsCanCancle = true;
         PayCost();
 
-        if(_newprefab == null)
+        if (_newprefab == null)
         {
             _newprefab = Instantiate(_comboCounterPrefab, PlayerMove.transform);
         }

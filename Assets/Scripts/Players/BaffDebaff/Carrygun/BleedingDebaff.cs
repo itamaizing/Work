@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 
 public class BleedingDebaff : BaseEffect
-{
+{ 
     private bool _canMakeBleeding = false;
     public float BleedingDuration = 3;
     private float _valueCooldown = 1;
