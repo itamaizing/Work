@@ -168,7 +168,7 @@ public class TwoRangeProtection : AbilityBase
     {
         if (TargetParent != null)
         {
-            _player.GetComponent<ManaPlayer>().UseMana(6f);
+            _player.GetComponent<ManaPlayer>().Use(6f);
 
             TargetParent.AddComponent<DebaffProtect>();
             TargetParent.GetComponent<DebaffProtect>().CastDebaff(12f);

@@ -42,7 +42,7 @@ public class EnergyOfSpirit : MonoBehaviour
     {
         if(value > 0 && _priest != null)
         {
-            _priest.GetComponent<ManaPlayer>().AddMana(value * 0.09f);
+            _priest.GetComponent<ManaPlayer>().Add(value * 0.09f);
         }
     }
 
@@ -50,7 +50,7 @@ public class EnergyOfSpirit : MonoBehaviour
     {
         if(value > 0 && _priest != null)
         {
-            _priest.GetComponent<ManaPlayer>().AddMana(value * 0.05f);
+            _priest.GetComponent<ManaPlayer>().Add(value * 0.05f);
 		}
     }
 

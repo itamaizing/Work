@@ -180,16 +180,16 @@ public class PsionicCharge_PsionicaTalent1 : MonoBehaviour
         {
             if (_target != null && _target.GetComponent<ManaPlayer>())
             {
-                float mana = _target.GetComponent<ManaPlayer>().Mana;
+                float mana = _target.GetComponent<ManaPlayer>().Value;
 
                 if(mana < value)
                 {
-                    _target.GetComponent<ManaPlayer>().UseMana(mana);
+                    _target.GetComponent<ManaPlayer>().Use(mana);
                     _player.GetComponent<PsionicaMelee>().MakePsionica(mana);
                 }
                 else
                 {
-                    _target.GetComponent<ManaPlayer>().UseMana(value);
+                    _target.GetComponent<ManaPlayer>().Use(value);
                     _player.GetComponent<PsionicaMelee>().MakePsionica(value);
                 }
             }

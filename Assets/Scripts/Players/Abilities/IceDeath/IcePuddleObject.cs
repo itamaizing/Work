@@ -21,12 +21,12 @@ public class IcePuddleObject : MonoBehaviour
 	 * */
 	private void Start()
 	{
-		int timeToAdd = (int)energyPlayer.Energy / 5;
+		int timeToAdd = (int)energyPlayer.Value / 5;
 		if (timeToAdd > 4)
 			timeToAdd = 4;
 
 		timeToDestroy += timeToAdd;
-		energyPlayer.UseEnergy(timeToAdd * 5) ;
+		energyPlayer.Use(timeToAdd * 5) ;
 		StartCoroutine(DestroyShadow());
 	}
 

@@ -137,11 +137,11 @@ public class IceRolling : AbilityBase
 			Vector2 _mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			Vector2 lookDir = (_mousePos - _rb.position).normalized;
 			
-			if(_energy.Energy >= 10)
+			if(_energy.Value >= 10)
 			{
 				actualJumpRange += 2;
 			}
-			else if(_energy.Energy < 10 && _energy.Energy >=5)
+			else if(_energy.Value < 10 && _energy.Value >=5)
 			{
 				actualJumpRange += 1;
 			}	
@@ -155,7 +155,7 @@ public class IceRolling : AbilityBase
 			}
 			else
 			{
-				_energy.UseEnergy((actualJumpRange - _jumprange) * 5);
+				_energy.Use((actualJumpRange - _jumprange) * 5);
 				_rb.DOMove(jumpPos, 0.3f * actualJumpRange);
 			}
 			HandleToggleAbilityOff();

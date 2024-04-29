@@ -3,20 +3,13 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class EnergyPlayer : MonoBehaviour
+public class EnergyPlayer : PlayerStamina
 {
-	[SerializeField][Range(0, 100)] private float _regenerationValue = 10;
-	[SerializeField][Range(0, 100)] private float _regenerationDelay = 3;
-	[SerializeField] private float _maxValue;
 	private WaitForSeconds _waitForRegen;
 	private float _regenDelay = 3;
 	private float _timer = 0;
 	private bool _canRegen = true;
 
-	public float Energy;
-	public GameObject EnergyBar;
-	public Transform DamageSpawn;
-	public TextMeshPro PrefabText;
 	private void Start()
 	{
 		_waitForRegen = new WaitForSeconds(_regenerationDelay);
@@ -34,15 +27,15 @@ public class EnergyPlayer : MonoBehaviour
 			_canRegen = true;
 		}
 	}
-	public void AddEnergy(float EnergyValue)
+	public override void Add(float EnergyValue)
 	{
-		Energy += EnergyValue;
-		if (Energy >= _maxValue)
+		_value += EnergyValue;
+		if (_value >= _maxValue)
 		{
-			Energy = _maxValue;
+			_value = _maxValue;
 		}
-		float newScaleX = Energy / _maxValue;
-		EnergyBar.transform.localScale = new Vector3(newScaleX, 1.0f, 1.0f);
+		float newScaleX = _value / _maxValue;
+		Bar.transform.localScale = new Vector3(newScaleX, 1.0f, 1.0f);
 
 		if (EnergyValue > 0 && EnergyValue < 1)
 		{
@@ -58,23 +51,23 @@ public class EnergyPlayer : MonoBehaviour
 
 		
 	}
-	public bool UseEnergy(float EnergyValue)
+	public override bool Use(float EnergyValue)
 	{
-		if(EnergyValue > Energy) 
+		if(EnergyValue > _value) 
 		{
 			return false;
 		}
 		_canRegen = false;
 		_timer = 0;
 
-		Energy -= EnergyValue;
+		_value -= EnergyValue;
 
-		float newScaleX = Energy / _maxValue;
-		EnergyBar.transform.localScale = new Vector3(newScaleX, 1.0f, 1.0f);
+		float newScaleX = _value / _maxValue;
+		Bar.transform.localScale = new Vector3(newScaleX, 1.0f, 1.0f);
 
-		if (Energy <= 0)
+		if (_value <= 0)
 		{
-			Energy = 0;
+			_value = 0;
 		}
 		return true;
 	}
@@ -84,9 +77,9 @@ public class EnergyPlayer : MonoBehaviour
 		while (true)
 		{
 			yield return _waitForRegen;
-			if (_canRegen && Energy < _maxValue)
+			if (_canRegen && _value < _maxValue)
 			{
-				this.AddEnergy(_regenerationValue);
+				this.Add(_regenerationValue);
 			}
 		}
 	}

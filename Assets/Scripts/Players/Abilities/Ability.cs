@@ -133,9 +133,9 @@ public abstract class Ability : MonoBehaviour
 
     protected virtual void PayCost()
     {
-        if (TryUseCharge() && _mana.Mana >= _manaCost && _isReady)
+        if (TryUseCharge() && _mana.Value >= _manaCost && _isReady)
         {
-            _mana.UseMana(_manaCost);
+            _mana.Use(_manaCost);
         }
         else
         {
@@ -223,7 +223,7 @@ public abstract class Ability : MonoBehaviour
         float time = 0;
         while (time < _streamingDuration + _manaCostRate)
         {
-            Mana.UseMana(_manaCostPerTick);
+            Mana.Use(_manaCostPerTick);
             time += _manaCostRate;
             yield return new WaitForSeconds(_manaCostRate);
         }

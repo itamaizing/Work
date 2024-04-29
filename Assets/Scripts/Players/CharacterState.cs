@@ -267,11 +267,11 @@ public class FrozenState : ICharacterState
 		if (character.gameObject.TryGetComponent<HealthPlayer>(out _playerHP))
         {
             //Какой дамаг получаем? физический или магический
-            _playerHP.TakePhisicDamage(10 + character.energy.Energy / 4);
+            _playerHP.TakePhisicDamage(10 + character.energy.Value / 4);
             _playerHP.sumDamageTaken = 0;
-            _duration = 2 + character.energy.Energy / 20; //тут мана того кто стрелял
+            _duration = 2 + character.energy.Value / 20; //тут мана того кто стрелял
 
-            character.energy.UseEnergy(character.energy.Energy); 
+            character.energy.Use(character.energy.Value); 
         }
         else
         {
@@ -322,11 +322,11 @@ public class FrostingState : ICharacterState
 		if (character.gameObject.TryGetComponent<HealthPlayer>(out _playerHP))
 		{
 			//Какой дамаг получаем? физический или магический
-			_playerHP.TakePhisicDamage(10 + character.energy.Energy / 4);
+			_playerHP.TakePhisicDamage(10 + character.energy.Value / 4);
 			_playerHP.sumDamageTaken = 0;
             _duration = character.duration;
 
-			character.energy.UseEnergy(character.energy.Energy);
+			character.energy.Use(character.energy.Value);
 		}
 		else
 		{

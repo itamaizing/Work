@@ -179,7 +179,7 @@ public class FiveReversPolarity : MonoBehaviour
 		_coroutine = null;
 		ToggleAbility.enabled = true;
 		_canCast = false;
-		transform.parent.GetComponent<ManaPlayer>().UseMana(manaValue);
+		transform.parent.GetComponent<ManaPlayer>().Use(manaValue);
 		CurrentAbilitiesPanel.SetActive(true);
 		for (int i = 0; i < Toggles.Length; i++)
 		{
