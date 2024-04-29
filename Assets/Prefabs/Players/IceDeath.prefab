@@ -272,13 +272,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30e849fb64ec77e4b94f9f568f688e22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _value: 0
+  _maxValue: 70
   _regenerationValue: 10
   _regenerationDelay: 3
-  _maxValue: 70
-  Energy: 70
-  EnergyBar: {fileID: 5680468377122292335}
-  DamageSpawn: {fileID: 8933781320356208631}
-  PrefabText: {fileID: 97509558472111251, guid: b8ec9c7fb2a215a418a41efc3aec9187, type: 3}
 --- !u!1 &1255810373264063487
 GameObject:
   m_ObjectHideFlags: 0
@@ -1968,8 +1965,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8923380669055877266}
-  - component: {fileID: 4769007552343539603}
-  - component: {fileID: 5859741811348402333}
+  - component: {fileID: 6629263405178576375}
   - component: {fileID: 1156122406318860820}
   - component: {fileID: 7915244162019678924}
   - component: {fileID: 1671752607338581685}
@@ -1997,7 +1993,7 @@ Transform:
   m_Father: {fileID: 6627882834926959264}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4769007552343539603
+--- !u!114 &6629263405178576375
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2006,26 +2002,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 7378065823814705286}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7a1f269fd1a47e4aaed1dc6e45fae1b, type: 3}
+  m_Script: {fileID: 11500000, guid: 4b927948ae40d644492381b2c058cf47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Abilities:
-  - {fileID: 1156122406318860820}
-  - {fileID: 7915244162019678924}
-  - {fileID: 1671752607338581685}
-  - {fileID: 3699271698567802279}
---- !u!114 &5859741811348402333
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7378065823814705286}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3fb1b315041f7a542a81aebdaddd439c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  _playerMove: {fileID: 8264867649627807809}
+  _mana: {fileID: 0}
+  _health: {fileID: 7601164126198867055}
+  _abilities: []
 --- !u!114 &1156122406318860820
 MonoBehaviour:
   m_ObjectHideFlags: 0

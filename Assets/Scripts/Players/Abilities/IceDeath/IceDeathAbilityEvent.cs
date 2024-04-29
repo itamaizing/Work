@@ -12,7 +12,7 @@ public class IceDeathAbilityEvent : MonoBehaviour, ICharacterEvents
 
 	private void OnEnable()
 	{
-		GetComponent<Icecloud>().IceCloudAbilityEvent += HandleEvent;
+		//GetComponent<Icecloud>().IceCloudAbilityEvent += HandleEvent;
 		/*GetComponent<TwoMeleeAttack>().SecondAbilityEvent += HandleEvent;
 		GetComponent<ThreeMeleeAttack>().ThirdAbilityEvent += HandleEvent;
 		GetComponent<FourMeleeAttack>().FourthAbilityEvent += HandleEvent;*/
@@ -20,7 +20,7 @@ public class IceDeathAbilityEvent : MonoBehaviour, ICharacterEvents
 
 	private void OnDisable()
 	{
-		GetComponent<Icecloud>().IceCloudAbilityEvent -= HandleEvent;
+		//GetComponent<Icecloud>().IceCloudAbilityEvent -= HandleEvent;
 		/*GetComponent<TwoMeleeAttack>().SecondAbilityEvent -= HandleEvent;
 		GetComponent<ThreeMeleeAttack>().ThirdAbilityEvent -= HandleEvent;
 		GetComponent<FourMeleeAttack>().FourthAbilityEvent -= HandleEvent;*/
