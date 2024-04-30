@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerAbilities : MonoBehaviour
 {
     [SerializeField] private PlayerMove _playerMove;
-    [SerializeField] private ManaPlayer _mana;
+    [SerializeField] private PlayerStamina _mana;
     [SerializeField] private HealthPlayer _health;
     [SerializeField] private List<Ability> _abilities;
 

@@ -43,7 +43,6 @@ Transform:
   - {fileID: 1631869965992536790}
   - {fileID: 6829308550464763067}
   - {fileID: 8933781320356208631}
-  - {fileID: 5129515759344203890}
   - {fileID: 8923380669055877266}
   - {fileID: 5287686256838225055}
   - {fileID: 5590142317354752112}
@@ -1044,71 +1043,6 @@ Transform:
   m_Father: {fileID: 6829308550464763067}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &3944390380659920470
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5129515759344203890}
-  - component: {fileID: 4416406192859087497}
-  - component: {fileID: 4556989451195136894}
-  m_Layer: 0
-  m_Name: AbilityManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5129515759344203890
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3944390380659920470}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.96, y: 0.77, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6627882834926959264}
-  m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4416406192859087497
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3944390380659920470}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a712b40bdf13504a9500c0324a64a53, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  abilityQueue: []
-  abilityQueueAutoattack: []
---- !u!114 &4556989451195136894
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3944390380659920470}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f35d4e4114bcee45b98895c2e125b5b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Select: {fileID: 0}
-  colliders: []
-  LastUseAbility: {fileID: 0}
-  OneClick: 0
-  TwoClick: 0
-  IsCanUseLastAbility: 1
 --- !u!1 &5002266305278314167
 GameObject:
   m_ObjectHideFlags: 0
@@ -2006,7 +1940,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerMove: {fileID: 8264867649627807809}
-  _mana: {fileID: 0}
+  _mana: {fileID: 8934230934356217642}
   _health: {fileID: 7601164126198867055}
   _abilities: []
 --- !u!114 &1156122406318860820
@@ -2064,38 +1998,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d29bd518fc6a043439d0db6b7aae013c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IconAbility: {fileID: 0}
-  AbilityPrefab: {fileID: 6736161171206798187, guid: 312e10edf75315b42b78abd5e14d6b0d, type: 3}
-  Select: {fileID: 0}
-  Abilities: {fileID: 0}
-  ObstacleLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
-  CastPrefab: {fileID: 5074480402368706878, guid: 8fb008b85f2e29b48b39b1cd92d851a0, type: 3}
-  ToggleAbility: {fileID: 0}
-  DrawCircle: {fileID: 8128605320138084665}
-  IconAbilityAutoattack: {fileID: 0}
-  CircleSelect: {fileID: 0}
-  AttackType: 0
-  AbilityType: 0
-  AttackRangeType: 0
-  DamageType: 0
-  TargetParent: {fileID: 0}
-  CanMakeDamage: 0
-  CanDealDamageOrHeal: 0
-  CanUseAbility: 1
-  NewAbilityPrefab: {fileID: 0}
-  CanDoAbility: 0
-  CanDrawCircle: 1
-  Distance: 0
-  CellDistance: 1
-  _cellSize: 1.9
-  lastAbility: {fileID: 0}
-  IsActiveAbility: 0
-  _targetCircle: {fileID: 0}
-  ManaCost: {fileID: 0}
-  _rb: {fileID: 1935025463078411595}
+  _abilityInfo: {fileID: 0}
+  _isAutoAttack: 0
+  _radius: 0
+  _area: 0
+  _manaCost: 0
+  _castDeley: 0
+  _cooldown: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
   _projectile: {fileID: 748218918613675416, guid: f44e1a220c732a64f9af10c37bf5aed0, type: 3}
+  _rune: {fileID: 5793172127680476127}
+  _rb: {fileID: 1935025463078411595}
 --- !u!114 &1671752607338581685
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2108,40 +2028,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4ad3c38086e96b4197ca42e65e25bcf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IconAbility: {fileID: 0}
-  AbilityPrefab: {fileID: 6736161171206798187, guid: a5652c36d4c4c7d4eaa49120e18f6462, type: 3}
-  Select: {fileID: 0}
-  Abilities: {fileID: 0}
-  ObstacleLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
-  CastPrefab: {fileID: 5074480402368706878, guid: 8fb008b85f2e29b48b39b1cd92d851a0, type: 3}
-  ToggleAbility: {fileID: 0}
-  DrawCircle: {fileID: 8128605320138084665}
-  IconAbilityAutoattack: {fileID: 0}
-  CircleSelect: {fileID: 0}
-  AttackType: 0
-  AbilityType: 0
-  AttackRangeType: 0
-  DamageType: 0
-  TargetParent: {fileID: 0}
-  CanMakeDamage: 0
-  CanDealDamageOrHeal: 0
-  CanUseAbility: 1
-  NewAbilityPrefab: {fileID: 0}
-  CanDoAbility: 0
-  CanDrawCircle: 1
-  Distance: 0
-  CellDistance: 1
-  _cellSize: 1.9
-  lastAbility: {fileID: 0}
-  IsActiveAbility: 0
-  _targetCircle: {fileID: 0}
-  ManaCost: {fileID: 0}
+  _abilityInfo: {fileID: 0}
+  _isAutoAttack: 0
+  _radius: 0
+  _area: 0
+  _manaCost: 0
+  _castDeley: 0
+  _cooldown: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
   _rb: {fileID: 1935025463078411595}
-  _energyPlayer: {fileID: 8934230934356217642}
   _healthPlayer: {fileID: 7601164126198867055}
   _shadow: {fileID: 7237307863484890914, guid: 8dea5af4c60165d45af4522b1a596998, type: 3}
+  _rune: {fileID: 5793172127680476127}
 --- !u!114 &3699271698567802279
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2154,40 +2059,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24f65756b4c9ac842be66740c2640b10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IconAbility: {fileID: 0}
-  AbilityPrefab: {fileID: 6736161171206798187, guid: 19c99062d7730ec4b8f92463fe5eb66b, type: 3}
-  Select: {fileID: 0}
-  Abilities: {fileID: 0}
-  ObstacleLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
-  CastPrefab: {fileID: 5074480402368706878, guid: 8fb008b85f2e29b48b39b1cd92d851a0, type: 3}
-  ToggleAbility: {fileID: 0}
-  DrawCircle: {fileID: 8128605320138084665}
-  IconAbilityAutoattack: {fileID: 0}
-  CircleSelect: {fileID: 0}
-  AttackType: 0
-  AbilityType: 0
-  AttackRangeType: 0
-  DamageType: 0
-  TargetParent: {fileID: 0}
-  CanMakeDamage: 0
-  CanDealDamageOrHeal: 0
-  CanUseAbility: 1
-  NewAbilityPrefab: {fileID: 0}
-  CanDoAbility: 0
-  CanDrawCircle: 1
-  Distance: 0
-  CellDistance: 1
-  _cellSize: 1.9
-  lastAbility: {fileID: 0}
-  IsActiveAbility: 0
-  _targetCircle: {fileID: 0}
-  ManaCost: {fileID: 0}
+  _abilityInfo: {fileID: 0}
+  _isAutoAttack: 0
+  _radius: 0
+  _area: 0
+  _manaCost: 0
+  _castDeley: 0
+  _cooldown: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
   _rb: {fileID: 1935025463078411595}
-  _energyPlayer: {fileID: 8934230934356217642}
   _healthPlayer: {fileID: 7601164126198867055}
   _puddle: {fileID: -3743295544946794120, guid: 5ec9f65c10b0b374fb16da9ebcfd5695, type: 3}
+  _rune: {fileID: 5793172127680476127}
 --- !u!114 &5862965717272100732
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2200,39 +2090,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 924d76d3d13ffb24e84fa30e89ae4eb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IconAbility: {fileID: 0}
-  AbilityPrefab: {fileID: 6736161171206798187, guid: f47d4d5af439d27409c072f12159543f, type: 3}
-  Select: {fileID: 0}
-  Abilities: {fileID: 0}
+  _abilityInfo: {fileID: 0}
+  _isAutoAttack: 0
+  _radius: 0
+  _area: 0
+  _manaCost: 0
+  _castDeley: 0
+  _cooldown: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _rb: {fileID: 1935025463078411595}
+  _rune: {fileID: 5793172127680476127}
+  _jumprange: 2
   ObstacleLayerMask:
     serializedVersion: 2
     m_Bits: 128
-  CastPrefab: {fileID: 0}
-  ToggleAbility: {fileID: 0}
-  DrawCircle: {fileID: 8128605320138084665}
-  IconAbilityAutoattack: {fileID: 0}
-  CircleSelect: {fileID: 0}
-  AttackType: 0
-  AbilityType: 0
-  AttackRangeType: 0
-  DamageType: 0
-  TargetParent: {fileID: 0}
-  CanMakeDamage: 0
-  CanDealDamageOrHeal: 0
-  CanUseAbility: 1
-  NewAbilityPrefab: {fileID: 0}
-  CanDoAbility: 0
-  CanDrawCircle: 1
-  Distance: 0
-  CellDistance: 1
-  _cellSize: 1.9
-  lastAbility: {fileID: 0}
-  IsActiveAbility: 0
-  _targetCircle: {fileID: 0}
-  _renderers: []
-  _rb: {fileID: 1935025463078411595}
-  _energy: {fileID: 8934230934356217642}
-  _jumprange: 2
 --- !u!1 &7761970869757356538
 GameObject:
   m_ObjectHideFlags: 0

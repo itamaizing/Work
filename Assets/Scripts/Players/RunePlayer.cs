@@ -13,7 +13,7 @@ public class RunePlayer : MonoBehaviour
 	[SerializeField] private SpriteRenderer _runeSprite;
 
 	private WaitForSeconds _waitForRegenRune;
-	private AbilityBase _lastUsedAbility = null;
+	private Ability _lastUsedAbility = null;
 	private float _runeSpriteWidth = 3.7f;
 	private int _multiplier = 1;
 	private float _timer = 0;
@@ -53,7 +53,7 @@ public class RunePlayer : MonoBehaviour
 	}
 	//≈сли используетс€ одна и та же способность подр€т, увеличиваетс€ потребление рун в два раза,
 	//а так же запускаетс€ таймер, на сброс, через _runeResetDelay сек все сброситс€.
-	public bool RemoveRune(float runeValue, AbilityBase usedAbility) 
+	public bool RemoveRune(float runeValue, Ability usedAbility) 
 	{
 		if(_lastUsedAbility == usedAbility && _runeValue >= runeValue*_multiplier * 2)
 		{

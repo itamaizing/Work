@@ -357,7 +357,7 @@ public class FrostingState : ICharacterState
 public class CharacterState : MonoBehaviour
 {
     [SerializeField] private List<ICharacterState> currentStates = new List<ICharacterState>();
-    [SerializeField] private AbilityManager _abilityManager;
+    //[SerializeField] private AbilityManager _abilityManager;
     public SelectObject Select;
     
     
@@ -402,7 +402,7 @@ public class CharacterState : MonoBehaviour
         currentStates.Remove(newState);
     }
 
-    public AbilityManager GetAbilityManager()
+   /* public AbilityManager GetAbilityManager()
     {
         if( _abilityManager == null ) 
         {
@@ -410,5 +410,5 @@ public class CharacterState : MonoBehaviour
             return null;
         }
         return _abilityManager;
-    }
+    }*/
 }

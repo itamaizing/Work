@@ -3,192 +3,31 @@ using UnityEngine;
 using UnityEngine.UI;
 using static UnityEngine.GraphicsBuffer;
 
-public class IcePuddle : AbilityBase
+public class IcePuddle : Ability
 {
-	[Header("Ability properties")]
-	[SerializeField] private GameObject ManaCost;
 	[SerializeField] private Rigidbody2D _rb;
-	[SerializeField] private EnergyPlayer _energyPlayer;
 	[SerializeField] private HealthPlayer _healthPlayer;
 	[SerializeField] private IcePuddleObject _puddle;
-	//[HideInInspector] public GameObject Target;
-	//[SerializeField] private Collider2D _collider;
+	[SerializeField] private RunePlayer _rune;
 
-	public delegate void IcePuddleAbilityHandler(float value);
-	public event IcePuddleAbilityHandler IcePuddleAbilityEvent;
-
-	protected override KeyCode ActivationKey => KeyCode.Alpha4;
-
-	private Vector2 _mousePos;
-	private PlayerMove _playerMove;
-
-	private void Start()
+	protected override void Cast()
 	{
-		//Distance = 6f * 1.9f;
-		AttackType = AttackType.OneAttack;
-		AbilityType = AbilityType.DamageAbility;
-		AttackRangeType = AttackRangeType.MeleeAttack;
-	}
-
-	void Update()
-	{
-		//если выбрана эта абилка
-		HandleToggleAbility();
-		//Target = TargetParent;
-	}
-
-
-	protected override void HandleToggleAbility()
-	{
-		base.HandleToggleAbility();
-		// Текущий код в методе Update
-		if (ToggleAbility.isOn == true)
+		PayCost();
+		if (_rune.RemoveRune(1, this))
 		{
-			Debug.Log("fourth ability on");
-			if (Input.GetMouseButtonDown(0) && Abilities.gameObject.activeSelf && ToggleAbility.enabled && _playerMove.IsSelect)
-			{
-				HandleLeftMouseButtonToggle();
-			}
+			Shoot();
 		}
 	}
 
-	protected override void HandleToggleAbilityOn()
+	protected override void Cancel()
 	{
-		// Включенный ToggleAbility
-		base.HandleToggleAbilityOn();
-		if (Input.GetMouseButtonDown(0))
-		{
-			if (ManaCost != null)
-			{
-				ManaCost.SetActive(true);
-				ManaCost.GetComponent<VisualManaCost>().CheckManaCost();
-				ManaCost.transform.localScale = new Vector2(3f, ManaCost.gameObject.transform.localScale.y);
-			}
-			HandleDealDamageOrHeal();
-		}
+		//вроде не было нужды для отмены каста, пока что....
 	}
-
-	protected override void HandleToggleAbilityOff()
+	private void Shoot()
 	{
-		// Выключенный ToggleAbility
-		base.HandleToggleAbilityOff();
-
-		Debug.Log("fourth ability off");
-
-		if (_isSelect == false)
-		{
-			ManaCost.gameObject.SetActive(false);
-		}
-		TargetParent = null;
-		return;
-	}
-
-	public override void OnLeftDoubleClick()
-	{
-		if (ShouldUseToggleTarget() || _isInputDoubleClick)
-		{
-			StartCoroutine(ToggleDoubleClick());
-		}
-
-		else if (AbilityTypeManager.ActiveAbilityType == 1 && _playerMove.IsSelect && Abilities.gameObject.activeSelf)
-		{
-			if (_castCoroutine != null)
-			{
-				ToggleAbility.isOn = false;
-				return;
-			}
-			else
-			{
-				StartCoroutine(EnemiesDoubleClick());
-			}
-		}
-	}
-
-	public override void OnRightDoubleClick()
-	{
-	}
-
-	public override void ChangeBoolAndValues()
-	{
-		Destroy(NewAbilityPrefab);
-	}
-
-	public override void HandleDealDamageOrHeal()
-	{
-		if (_castCoroutine == null)
-		{
-			_castCoroutine = StartCoroutine(CastProtect(0));
-		}
-	}
-
-	private IEnumerator CastProtect(float castTime)
-	{
-		if (!_player.TryGetComponent<PlayerMove>(out _playerMove))
-			yield break;
-
-		if (!_player.GetComponent<RunePlayer>().RemoveRune(1, this))
-		{
-			yield break;
-		}
-		if (Abilities.GetComponent<GlobalCooldown>())
-		{
-			Abilities.GetComponent<GlobalCooldown>().StartGlobalCooldown();
-		}
-		for (int i = 0; i < Abilities.transform.childCount; i++)
-		{
-			GameObject childObject = Abilities.transform.GetChild(i).gameObject;
-
-			Toggle toggle = childObject.GetComponent<Toggle>();
-			if (toggle != null)
-			{
-				toggle.enabled = false;
-			}
-		}
-		_playerMove.CanMove = false;
-		CreateCastPrefab(castTime);
-
-		yield return new WaitForSeconds(castTime);
-
-		//_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		//Vector2 lookDir = _mousePos - _rb.position;
-		//float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
 		IcePuddleObject puddle = Instantiate(_puddle, gameObject.transform.position, Quaternion.identity);
 		puddle.dad = _rb.gameObject;
-		puddle.energyPlayer = _energyPlayer;
+		puddle.energyPlayer = (EnergyPlayer)Mana;
 		puddle.healthPlayer = _healthPlayer;
-
-		_castCoroutine = null;
-		_playerMove.CanMove = true;
-		Select.GetComponent<SelectObject>().CanSelect = true;
-
-		IcePuddleAbilityEvent?.Invoke(35f);
-		Recharge();
-	}
-
-	private IEnumerator EnemiesDoubleClick()
-	{
-		yield return new WaitForSeconds(0.1f);
-
-		ToggleAbility.isOn = true;
-		HandleAbilityType();
-	}
-
-
-	private void Recharge()
-	{
-		for (int i = 0; i < Abilities.transform.childCount; i++)
-		{
-			GameObject childObject = Abilities.transform.GetChild(i).gameObject;
-
-			Toggle toggle = childObject.GetComponent<Toggle>();
-
-			if (toggle != null)
-			{
-				toggle.enabled = true;
-			}
-		}
-		ToggleAbility.isOn = false;
-		TargetParent = null;
-		return;
 	}
 }

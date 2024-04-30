@@ -21,6 +21,7 @@ public class IcePuddleObject : MonoBehaviour
 	 * */
 	private void Start()
 	{
+		energyPlayer.test();
 		int timeToAdd = (int)energyPlayer.Value / 5;
 		if (timeToAdd > 4)
 			timeToAdd = 4;

@@ -83,4 +83,9 @@ public class EnergyPlayer : PlayerStamina
 			}
 		}
 	}
+
+	public void test()
+	{
+		Debug.Log("test");
+	}
 }

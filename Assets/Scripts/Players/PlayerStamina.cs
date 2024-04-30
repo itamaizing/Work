@@ -13,9 +13,9 @@ public abstract class PlayerStamina : MonoBehaviour
 	[SerializeField] protected float _regenerationValue = 10;
 	[SerializeField] protected float _regenerationDelay = 3;
 
-	protected GameObject Bar;
-	protected Transform DamageSpawn;
-	protected TextMeshPro PrefabText;
+	[SerializeField] protected GameObject Bar;
+	[SerializeField] protected Transform DamageSpawn;
+	[SerializeField] protected TextMeshPro PrefabText;
 
 	public abstract void Add(float value);
 	public abstract bool Use(float value);

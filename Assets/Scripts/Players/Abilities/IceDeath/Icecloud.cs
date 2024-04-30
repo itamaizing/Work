@@ -13,12 +13,15 @@ public class Icecloud : Ability
 	protected override void Cast()
 	{
 		PayCost();
-		Shoot();
+		if(_rune.RemoveRune(1, this)) 
+		{
+			Shoot();
+		}
 	}
 
 	protected override void Cancel()
 	{
-
+		//вроде не было нужды для отмены каста, пока что....
 	}
 
 	private void Shoot()
@@ -29,6 +32,6 @@ public class Icecloud : Ability
 		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
 		projectile.dad = _rb.gameObject;
 	}
-
 	//переделать paycost под руны или еще один метод на проверку рун сделать
+
 }
