@@ -35,6 +35,7 @@ public class Kick_Scorpion : Ability
     {
         _drawCircleSelf.Clear();
         _target = null;
+        PlayerMove.CanMove = true;
     }
 
     private bool IsMouseInRadius()
@@ -65,6 +66,7 @@ public class Kick_Scorpion : Ability
         }
         _drawCircleSelf.Clear();
 
+        PlayerMove.CanMove = false;
         IsCanCancle = false;
 
         yield return GetCastDeleyCoroutine();
@@ -85,8 +87,6 @@ public class Kick_Scorpion : Ability
             _newprefab.AddStack();
         }
         _target.GetComponent<HealthPlayer>().TakeDamage(9, DamageType.Physical, AttackRangeType.MeleeAttack);
-
-        //Instantiate(_pool, _target.transform.position, Quaternion.identity).Init();
 
         Debug.LogWarning(_newprefab.CurrentStacks);
         ResetValue();

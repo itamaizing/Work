@@ -8825,8 +8825,10 @@ MonoBehaviour:
   _streamingDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: 0
+  _castlinePrefab: {fileID: -5125894926510868867, guid: 7b17554127b55bd4cb61f7e50a48ee96, type: 3}
   _drawCircleSelf: {fileID: 204182588}
   _range: 0
+  _chainPrefab: {fileID: -8245340431016603970, guid: 94a92e558dfff4041911d68c42de01f8, type: 3}
   _bladePrefab: {fileID: 1666600371225914020, guid: 28ef98e9889bc1341b5563f27b42fa81, type: 3}
 --- !u!1 &1986271679
 GameObject:
@@ -9722,7 +9724,7 @@ Transform:
   m_Children:
   - {fileID: 472336597}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2137047478
 MonoBehaviour:
@@ -14289,7 +14291,7 @@ PrefabInstance:
       objectReference: {fileID: 6942507207305734881}
     - target: {fileID: 3309320763842641188, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 3309320763842641188, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
       propertyPath: m_LocalPosition.x
