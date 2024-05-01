@@ -7,6 +7,7 @@ public class Kick_Scorpion : Ability
     [Header("Ability settings")]
     [SerializeField] private DrawCircle _drawCircleSelf;
     [SerializeField] private float _range;
+    [SerializeField] private Sub_LavaPool_Scorpion _pool;
     [SerializeField] private Counter_ScorchedSoul_Baff _comboCounterPrefab;
     private Counter_ScorchedSoul_Baff _newprefab;
 
@@ -71,15 +72,21 @@ public class Kick_Scorpion : Ability
         IsCanCancle = true;
         PayCost();
 
-        if (_newprefab == null)
+        if (_newprefab == null) // заглушка, жду новую базу под бафы
         {
             _newprefab = Instantiate(_comboCounterPrefab, PlayerMove.transform);
         }
         else
         {
+            if(_newprefab.CurrentStacks == 2)
+            {
+                Instantiate(_pool, _target.transform.position, Quaternion.identity).Init();
+            }
             _newprefab.AddStack();
         }
         _target.GetComponent<HealthPlayer>().TakeDamage(9, DamageType.Physical, AttackRangeType.MeleeAttack);
+
+        //Instantiate(_pool, _target.transform.position, Quaternion.identity).Init();
 
         Debug.LogWarning(_newprefab.CurrentStacks);
         ResetValue();

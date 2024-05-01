@@ -71,7 +71,7 @@ public class Punch_Scorpion : Ability
         IsCanCancle = true;
         PayCost();
 
-        if(_newprefab == null)
+        if(_newprefab == null) // заглушка, жду новую базу под бафы
         {
             _newprefab = Instantiate(_comboCounterPrefab, PlayerMove.transform);
         }

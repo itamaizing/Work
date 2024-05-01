@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ScorchedSoul_Debaff : BaseEffect
 {
-    private int _currentStacks;
+    private int _currentStacks = 1;
     private int _maxStacks;
     private float _stackDuration;
     private float _ReduseCastSpeedPerStack;
@@ -13,10 +13,6 @@ public class ScorchedSoul_Debaff : BaseEffect
     private DamageType _damageType = DamageType.Magical;
     private AttackRangeType _attackRangeType = AttackRangeType.Inner;
 
-    private void Start()
-    {
-        _currentStacks = 1;
-    }
     private void AddStack()
     {
         _currentStacks++;
