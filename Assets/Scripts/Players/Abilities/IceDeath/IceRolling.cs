@@ -34,6 +34,7 @@ public class IceRolling : Ability
 	{
 		if (_canJump )
 		{
+			PlayerMove.CanMove = false;
 			_canJump = false;
 			float actualJumpRange = _jumprange;
 
@@ -54,27 +55,20 @@ public class IceRolling : Ability
 			{
 				Debug.Log("Обнаружено препятствие:");
 				//прыгать до препятствия
-				_rb.DOMove(_jumpPos, 0.3f * actualJumpRange);
+				_rb.DOMove(_jumpPos, 0.3f * actualJumpRange).OnComplete(AfterJump);
 			}
 			else
 			{
 				Mana.Use((actualJumpRange - _jumprange) * 5);
-				_rb.DOMove(jumpPos, 0.3f * actualJumpRange);
+				_rb.DOMove(jumpPos, 0.3f * actualJumpRange).OnComplete(AfterJump);
 			}
 		}
 	}
 
-	private IEnumerator CastJump()
+	private void AfterJump()
 	{
-		PlayerMove.CanMove = false;
-
-
-		yield return new WaitForSeconds(0.3f);
-
 		PlayerMove.CanMove = true;
 		_canJump = true;
-
-		Jump();
 	}
 
 	private bool CheckObstacleBetween(Vector3 start, Vector3 end)

@@ -18,8 +18,11 @@ public class EnergyPlayer : PlayerStamina
 
 	private void Update()
 	{
-		if (_canRegen) return;
-
+		if (_canRegen)
+		{
+			Regen();
+			return;
+		}
 		_timer += Time.deltaTime;
 		if(_timer > _regenDelay)
 		{
@@ -58,6 +61,7 @@ public class EnergyPlayer : PlayerStamina
 			return false;
 		}
 		_canRegen = false;
+		_timerDelay = 0;
 		_timer = 0;
 
 		_value -= EnergyValue;
@@ -82,10 +86,5 @@ public class EnergyPlayer : PlayerStamina
 				this.Add(_regenerationValue);
 			}
 		}
-	}
-
-	public void test()
-	{
-		Debug.Log("test");
 	}
 }
