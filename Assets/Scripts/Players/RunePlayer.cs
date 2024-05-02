@@ -4,26 +4,15 @@ using UnityEngine;
 
 public class RunePlayer : PlayerStamina
 {
-	//[SerializeField] private float _runeRegenerationDelay = 1;
-	//[SerializeField] private float _runeRegenerationValue = 10;
-	//[SerializeField] private float _maxRuneCount = 10;
-	//[SerializeField] private Image _runeBar;
-	//[SerializeField] private float _runeValue;
 	[SerializeField] private float _runeResetDelay = 6;
 	[SerializeField] private SpriteRenderer _runeSprite;
 
-	//private WaitForSeconds _waitForRegenRune;
 	private Ability _lastUsedAbility = null;
 	private float _runeSpriteWidth = 3.7f;
 	private int _multiplier = 1;
 	private float _timer = 0;
 	private bool _multiplyCost = false; // при повторном использовании одних и тех же абилок за определенное время, цена возрастает, это проверка на это
 
-	private void Start()
-	{
-		//_waitForRegenRune = new WaitForSeconds(_runeRegenerationDelay);
-		//StartCoroutine(RegenirateRune());
-	}
 	private void Update()
 	{
 		Regen();
@@ -75,18 +64,7 @@ public class RunePlayer : PlayerStamina
 			return false;
 		}
 	}
-	/*private IEnumerator RegenirateRune()
-	{
-		while (true)
-		{
-			yield return _waitForRegenRune;
-			if (_runeValue < _maxRuneCount)
-			{
-				AddRune(_runeRegenerationValue);
-			}
-		}
-	}
-	*/
+
 	public override bool Use(float EnergyValue)
 	{
 		return false;
