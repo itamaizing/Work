@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using UnityEditor.UIElements;
 using UnityEngine;
 
 public class IceCloudProjectile : MonoBehaviour
@@ -30,7 +32,7 @@ public class IceCloudProjectile : MonoBehaviour
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		if (collision.gameObject == dad)
+		if (collision.gameObject == dad || collision.CompareTag("Ability"))
 			return;
 		//damage, freez etc
 		if(collision.TryGetComponent<CharacterState>(out var target))
