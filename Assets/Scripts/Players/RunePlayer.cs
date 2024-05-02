@@ -2,30 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RunePlayer : MonoBehaviour
+public class RunePlayer : PlayerStamina
 {
-	[SerializeField] private float _runeRegenerationDelay = 1;
-	[SerializeField] private float _runeResetDelay = 6;
-	[SerializeField] private float _runeRegenerationValue = 10;
-	[SerializeField] private float _maxRuneCount = 10;
+	//[SerializeField] private float _runeRegenerationDelay = 1;
+	//[SerializeField] private float _runeRegenerationValue = 10;
+	//[SerializeField] private float _maxRuneCount = 10;
 	//[SerializeField] private Image _runeBar;
-	[SerializeField] private float _runeValue;
+	//[SerializeField] private float _runeValue;
+	[SerializeField] private float _runeResetDelay = 6;
 	[SerializeField] private SpriteRenderer _runeSprite;
 
-	private WaitForSeconds _waitForRegenRune;
+	//private WaitForSeconds _waitForRegenRune;
 	private Ability _lastUsedAbility = null;
 	private float _runeSpriteWidth = 3.7f;
 	private int _multiplier = 1;
 	private float _timer = 0;
-	private bool _multiplyCost = false;
+	private bool _multiplyCost = false; // при повторном использовании одних и тех же абилок за определенное время, цена возрастает, это проверка на это
 
 	private void Start()
 	{
-		_waitForRegenRune = new WaitForSeconds(_runeRegenerationDelay);
-		StartCoroutine(RegenirateRune());
+		//_waitForRegenRune = new WaitForSeconds(_runeRegenerationDelay);
+		//StartCoroutine(RegenirateRune());
 	}
 	private void Update()
 	{
+		Regen();
 		if (!_multiplyCost) return;
 
 		_timer += Time.deltaTime;
@@ -38,14 +39,14 @@ public class RunePlayer : MonoBehaviour
 		}
 	}
 
-	public void AddRune(float runeValue)
+	public override void Add(float runeValue)
 	{
-		_runeValue += runeValue;
-		if (_runeValue > _maxRuneCount)
+		_value += runeValue;
+		if (_value > _maxValue)
 		{
-			_runeValue = _maxRuneCount;
+			_value = _maxValue;
 		}
-		_runeSprite.size = new Vector2(_runeSprite.size.x + _runeRegenerationValue / _maxRuneCount * _runeSpriteWidth, _runeSprite.size.y);
+		_runeSprite.size = new Vector2(_runeSprite.size.x + _regenerationValue / _maxValue * _runeSpriteWidth, _runeSprite.size.y);
 		if(_runeSprite.size.x > _runeSpriteWidth) 
 		{
 			_runeSprite.size = new Vector2(_runeSpriteWidth, _runeSprite.size.y);
@@ -55,16 +56,16 @@ public class RunePlayer : MonoBehaviour
 	//а так же запускается таймер, на сброс, через _runeResetDelay сек все сбросится.
 	public bool RemoveRune(float runeValue, Ability usedAbility) 
 	{
-		if(_lastUsedAbility == usedAbility && _runeValue >= runeValue*_multiplier * 2)
+		if(_lastUsedAbility == usedAbility && _value >= runeValue*_multiplier * 2)
 		{
 			_multiplier *= 2;
 		}
 		runeValue *= _multiplier;
-		if(_runeValue >= runeValue)
+		if(_value >= runeValue)
 		{
 			_lastUsedAbility = usedAbility;
-			_runeValue -= runeValue;
-			_runeSprite.size = new Vector2(_runeSprite.size.x - runeValue / _maxRuneCount * _runeSpriteWidth, _runeSprite.size.y);
+			_value -= runeValue;
+			_runeSprite.size = new Vector2(_runeSprite.size.x - runeValue / _maxValue * _runeSpriteWidth, _runeSprite.size.y);
 			_multiplyCost = true;
 			_timer = 0;
 			return true;
@@ -74,7 +75,7 @@ public class RunePlayer : MonoBehaviour
 			return false;
 		}
 	}
-	private IEnumerator RegenirateRune()
+	/*private IEnumerator RegenirateRune()
 	{
 		while (true)
 		{
@@ -85,5 +86,9 @@ public class RunePlayer : MonoBehaviour
 			}
 		}
 	}
-
+	*/
+	public override bool Use(float EnergyValue)
+	{
+		return false;
+	}
 }

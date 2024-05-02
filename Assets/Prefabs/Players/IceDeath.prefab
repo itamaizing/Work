@@ -237,7 +237,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7f243771c2613d40a4aecc719336ae4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _abilityManager: {fileID: 0}
   Select: {fileID: 0}
   energy: {fileID: 0}
   duration: 0
@@ -259,6 +258,8 @@ MonoBehaviour:
   _maxRuneCount: 10
   _runeValue: 0
   _runeSprite: {fileID: 5269347689244837285}
+  _multiplier: 1
+  _timer: 0
 --- !u!114 &8934230934356217642
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -275,6 +276,9 @@ MonoBehaviour:
   _maxValue: 70
   _regenerationValue: 10
   _regenerationDelay: 3
+  Bar: {fileID: 5680468377122292335}
+  DamageSpawn: {fileID: 8933781320356208631}
+  PrefabText: {fileID: 97509558472111251, guid: b8ec9c7fb2a215a418a41efc3aec9187, type: 3}
 --- !u!1 &1255810373264063487
 GameObject:
   m_ObjectHideFlags: 0

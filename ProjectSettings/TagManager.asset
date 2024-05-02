@@ -12,6 +12,7 @@ TagManager:
   - Debaff
   - Baff
   - TentaclePrefab
+  - Ability
   layers:
   - Default
   - TransparentFX
