@@ -12,11 +12,12 @@ public abstract class PlayerStamina : MonoBehaviour
 
 	[SerializeField] protected float _regenerationValue = 10;
 	[SerializeField] protected float _regenerationDelay = 3;
-	[SerializeField] protected float _timerDelay = 0;
 
 	[SerializeField] protected GameObject Bar;
 	[SerializeField] protected Transform DamageSpawn;
 	[SerializeField] protected TextMeshPro PrefabText;
+
+	protected float _timerDelay = 0;
 
 	public abstract void Add(float value);
 	public abstract bool Use(float value);
