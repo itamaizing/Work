@@ -360,7 +360,7 @@ public class CharacterState : MonoBehaviour
 
     [HideInInspector] public PlayerStamina energy;//person who shoted
 	[HideInInspector] public float durationToExit;//duration of state
-    [HideInInspector] public float damageToExit;
+    [HideInInspector] public float damageToExit; // damaege needed to exit
 
     [SerializeField] private List<ICharacterState> currentStates = new List<ICharacterState>();
 
