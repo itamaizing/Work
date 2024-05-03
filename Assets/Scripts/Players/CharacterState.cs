@@ -278,7 +278,6 @@ public class FrozenState : ICharacterState
         //character.GetAbilityManager().ToggleAbility(false);//turn off abilities
 
         _playerHP = _characterState.PlayerHp;
-        // акой дамаг получаем? физический или магический
         _playerHP.TakePhisicDamage(10 + _characterState.energy.Value / 4);
         _playerHP.sumDamageTaken = 0;
         //_duration = character.durationToExit;
