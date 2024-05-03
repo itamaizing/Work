@@ -387,6 +387,7 @@ public class CharacterState : MonoBehaviour
     public void AddState(ICharacterState newState)
     {
         // переделать под лист
+        //if already has, reset???
 
         // ¬ход в новое состо€ние
         currentStates.Add(newState);
