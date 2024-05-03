@@ -238,8 +238,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Select: {fileID: 0}
+  PlayerHp: {fileID: 7601164126198867055}
+  PlayerMove: {fileID: 8264867649627807809}
   energy: {fileID: 0}
-  duration: 0
+  durationToExit: 0
+  damageToExit: 0
 --- !u!114 &5793172127680476127
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -252,14 +255,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bd22fe231e3f2e41b5e309172c34d13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _runeRegenerationDelay: 1
+  _value: 0
+  _maxValue: 0
+  _regenerationValue: 10
+  _regenerationDelay: 3
+  Bar: {fileID: 0}
+  DamageSpawn: {fileID: 0}
+  PrefabText: {fileID: 0}
   _runeResetDelay: 6
-  _runeRegenerationValue: 10
-  _maxRuneCount: 10
-  _runeValue: 0
   _runeSprite: {fileID: 5269347689244837285}
-  _multiplier: 1
-  _timer: 0
 --- !u!114 &8934230934356217642
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1959,35 +1963,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0472c7c6c6b721418ebe181869af7fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IconAbility: {fileID: 0}
-  AbilityPrefab: {fileID: 6736161171206798187, guid: 34bd67790f788d949b447b7f2ff16379, type: 3}
-  Select: {fileID: 0}
-  Abilities: {fileID: 0}
-  ObstacleLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
-  CastPrefab: {fileID: 0}
-  ToggleAbility: {fileID: 0}
-  DrawCircle: {fileID: 2084701706370063657}
-  IconAbilityAutoattack: {fileID: 0}
-  CircleSelect: {fileID: 0}
-  AttackType: 0
-  AbilityType: 0
-  AttackRangeType: 0
-  DamageType: 0
-  TargetParent: {fileID: 0}
-  CanMakeDamage: 0
-  CanDealDamageOrHeal: 0
-  CanUseAbility: 1
-  NewAbilityPrefab: {fileID: 0}
-  CanDoAbility: 0
-  CanDrawCircle: 1
-  Distance: 0
-  CellDistance: 1
-  _cellSize: 1.9
-  lastAbility: {fileID: 0}
-  IsActiveAbility: 0
-  _targetCircle: {fileID: 0}
+  _abilityInfo: {fileID: 0}
+  _isAutoAttack: 0
+  _radius: 0
+  _area: 0
+  _manaCost: 0
+  _castDeley: 0
+  _cooldown: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
   _damage: 1
   _abilityCooldown: 1
 --- !u!114 &7915244162019678924
