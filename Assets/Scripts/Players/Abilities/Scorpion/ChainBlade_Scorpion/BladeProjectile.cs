@@ -25,7 +25,7 @@ public class BladeProjectile : MonoBehaviour
     {
         if(collision.gameObject.layer == 9 && collision.TryGetComponent<HealthPlayer>(out HealthPlayer enemyhealth))
         {
-            enemyhealth.TakeDamage(10, DamageType.Physical, AttackRangeType.RangeAttack);
+            enemyhealth.TryTakeDamage(10, DamageType.Physical, AttackRangeType.RangeAttack);
             SendMessage(collision.gameObject);
             HitPerfomed();
         }

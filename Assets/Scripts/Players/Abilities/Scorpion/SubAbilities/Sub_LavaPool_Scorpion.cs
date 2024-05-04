@@ -48,7 +48,7 @@ public class Sub_LavaPool_Scorpion : MonoBehaviour
             _damageValue = Random.Range(_minDamagePerTick, _maxDamagePerTick);
             foreach (var item in _enemies)
             {
-                item.TakeDamage(_damageValue, _damageType, _attackRangeType);
+                item.TryTakeDamage(_damageValue, _damageType, _attackRangeType);
             }
 
             yield return new WaitForSeconds(_timeInterval);

@@ -110,7 +110,7 @@ public class NewFourMeleeAttack : Ability
             _target.transform.position = Vector2.MoveTowards(_target.transform.position, _position, _range * Time.deltaTime /*/ StreamingDuration*/);
             yield return null;
         }
-        _target.GetComponent<HealthPlayer>().TakeDamage(10, _damageType, AttackRangeType.MeleeAttack);
+        _target.GetComponent<HealthPlayer>().TryTakeDamage(10, _damageType, AttackRangeType.MeleeAttack);
         ResetValue();
     }
 }

@@ -149,13 +149,13 @@ public class NewThreeMeleeAttack : Ability
             if (_playerPosition == _targetPosition)
             {
                 Debug.LogWarning("Test1");
-                _target.GetComponent<HealthPlayer>().TakeDamage(_damageValue, DamageType.Magical, AttackRangeType.MeleeAttack);
+                _target.GetComponent<HealthPlayer>().TryTakeDamage(_damageValue, DamageType.Magical, AttackRangeType.MeleeAttack);
             }
         }
         else
         {
             Debug.LogWarning("Test2");
-            _target.GetComponent<HealthPlayer>().TakeDamage(_damageValue, DamageType.Magical, AttackRangeType.MeleeAttack);
+            _target.GetComponent<HealthPlayer>().TryTakeDamage(_damageValue, DamageType.Magical, AttackRangeType.MeleeAttack);
         }
     }
     private IEnumerator UseCoroutine()

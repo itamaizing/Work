@@ -28,7 +28,7 @@ public class BleedingDebaff : BaseEffect
     {
         if (_canMakeBleeding)
         {
-            transform.parent.GetComponent<HealthPlayer>().TakeDamage(_damageValue, DamageType, AttackRangeType);
+            transform.parent.GetComponent<HealthPlayer>().TryTakeDamage(_damageValue, DamageType, AttackRangeType);
 
             if (twoMeleeAttackComponent != null && twoMeleeAttackComponent.gameObject != transform.parent.gameObject)
             {

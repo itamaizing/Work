@@ -2,18 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Punch_Scorpion : Ability
+public class CleavingBlade_Scorpion : Ability
 {
     [Header("Ability settings")]
     [SerializeField] private DrawCircle _drawCircleSelf;
-    [SerializeField] private float _range;
-    [SerializeField] private Counter_ScorchedSoul_Baff _comboCounterPrefab;
-    private Counter_ScorchedSoul_Baff _comboCounterBaff;
+    [SerializeField] private float _damageValue;
 
     private DrawCircle _circleTarget;
     private HealthPlayer _target;
     private Coroutine _useJob;
-
+    private int _counter = 1; // временно вместо бафа
     protected override void Cancel()
     {
         if (_useJob != null)
@@ -46,30 +44,6 @@ public class Punch_Scorpion : Ability
         return distance <= Radius;
     }
 
-    private void AttackPassed(bool isAttackPassed)
-    {
-        if (isAttackPassed) 
-        {
-            Debug.LogWarning("Попал");
-
-            if (_comboCounterBaff == null) // заглушка, жду новую базу под бафы
-            {
-                _comboCounterBaff = Instantiate(_comboCounterPrefab, PlayerMove.transform);
-                Debug.LogWarning(_comboCounterBaff.CurrentStacks);
-            }
-            else
-            {
-                _comboCounterBaff.AddStack();
-                Debug.LogWarning(_comboCounterBaff.CurrentStacks);
-            }
-        }
-        else
-        {
-            Debug.LogWarning("Не попал");
-        }
-    }
-
-
     private IEnumerator UseCoroutine()
     {
         _drawCircleSelf.Draw(Radius);
@@ -82,6 +56,7 @@ public class Punch_Scorpion : Ability
                 if (rayHit.Length > 0 && rayHit[0].transform.TryGetComponent<HealthPlayer>(out HealthPlayer enemyHealth))
                 {
                     _target = enemyHealth;
+                    Debug.LogWarning(_target.name);
                 }
             }
             yield return null;
@@ -89,23 +64,38 @@ public class Punch_Scorpion : Ability
         _drawCircleSelf.Clear();
 
         IsCanCancle = false;
+        float initialCastDelay = CastDeley;
+        if (_counter == 2) CastDeley *= 0.8f;
 
         yield return GetCastDeleyCoroutine();
 
+        CastDeley = initialCastDelay;
+
         IsCanCancle = true;
         PayCost();
-        bool hit;
-        if (Vector2.Distance(transform.position, _target.transform.position) >= 1.9f + 0.1f + 0.19f)
+
+        if (_target != null && Vector2.Distance(transform.position, _target.transform.position) >= 1.9f + 0.1f + 0.19f)
         {
-            hit = false;
+            
         }
         else
         {
-            hit = _target.TryTakeDamage(9, DamageType.Physical, AttackRangeType.MeleeAttack);
-
+            Attack();
+            //_target.TakeDamage(_damageValue, DamageType.Physical, AttackRangeType.MeleeAttack);
         }
-        Debug.LogWarning(hit);
+        if (_counter == 3) _counter = 1;
+        else _counter++;
 
         ResetValue();
+    }
+
+    private void Attack()
+    {
+        float damage = _damageValue;
+        if (_counter == 3)
+        {
+            damage *= 2;
+        }
+        _target.TryTakeDamage(damage, DamageType.Physical, AttackRangeType.MeleeAttack);
     }
 }

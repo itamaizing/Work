@@ -777,7 +777,7 @@ public class FourMeleeAttack : AbilityBase
 	private IEnumerator DamageCooldown(float activePsionica)
 	{
 		yield return new WaitForSeconds(0.1f);
-		TargetParent.GetComponent<HealthPlayer>().TakeDamage(activePsionica * 0.5f, DamageType.Magical, AttackRangeType.RangeAttack);
+		TargetParent.GetComponent<HealthPlayer>().TryTakeDamage(activePsionica * 0.5f, DamageType.Magical, AttackRangeType.RangeAttack);
 	}
 
 	public void Recharge()

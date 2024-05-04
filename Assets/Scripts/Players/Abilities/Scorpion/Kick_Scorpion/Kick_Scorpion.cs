@@ -86,7 +86,7 @@ public class Kick_Scorpion : Ability
             }
             _newprefab.AddStack();
         }
-        _target.GetComponent<HealthPlayer>().TakeDamage(9, DamageType.Physical, AttackRangeType.MeleeAttack);
+        _target.GetComponent<HealthPlayer>().TryTakeDamage(9, DamageType.Physical, AttackRangeType.MeleeAttack);
 
         Debug.LogWarning(_newprefab.CurrentStacks);
         ResetValue();

@@ -230,7 +230,7 @@ public class TwoMeleeAttack : AbilityBase
             }
             else
             {
-                _targetHealth.TakeDamage(_damageValue, DamageType, AttackRangeType);
+                _targetHealth.TryTakeDamage(_damageValue, DamageType, AttackRangeType);
                 _player.GetComponent<PsionicaMelee>().MakePsionica(_damageValue);
 
                 float activePsionica = _playerAbility.GetComponent<FiveConversion>().PsionicaActive;
@@ -349,7 +349,7 @@ public class TwoMeleeAttack : AbilityBase
     {
         yield return new WaitForSeconds(0.1f);
         // Нанесение урона основной цели
-        _targetHealth.TakeDamage(activePsionica * 0.3f, DamageType.Magical, AttackRangeType.Inner);
+        _targetHealth.TryTakeDamage(activePsionica * 0.3f, DamageType.Magical, AttackRangeType.Inner);
     }
 
     private IEnumerator DamageEnemiesCooldown(float activePsionica, Collider2D collider)

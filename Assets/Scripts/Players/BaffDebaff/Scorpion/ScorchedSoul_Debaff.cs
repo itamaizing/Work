@@ -30,7 +30,7 @@ public class ScorchedSoul_Debaff : BaseEffect
 
     public void DealDamage(HealthPlayer targetHealth)
     {
-        targetHealth.TakeDamage(_damageValue, _damageType, _attackRangeType);
+        targetHealth.TryTakeDamage(_damageValue, _damageType, _attackRangeType);
     }
 
     private void ResetTimer()
