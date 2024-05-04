@@ -43,7 +43,17 @@ public class CleavingBlade_Scorpion : Ability
 
         return distance <= Radius;
     }
-
+    private void AttackPassed()
+    {
+        if(_counter == 3)
+        {
+            _counter = 1;
+        }
+        else
+        {
+            _counter++;
+        }
+    }
     private IEnumerator UseCoroutine()
     {
         _drawCircleSelf.Draw(Radius);
@@ -74,28 +84,19 @@ public class CleavingBlade_Scorpion : Ability
         IsCanCancle = true;
         PayCost();
 
-        if (_target != null && Vector2.Distance(transform.position, _target.transform.position) >= 1.9f + 0.1f + 0.19f)
+        if (_target != null && Vector2.Distance(transform.position, _target.transform.position) <= 2f + 0.19f)
         {
-            
+            float damage = _damageValue;
+            if (_counter == 3)
+            {
+                damage = _damageValue * 2;
+            }
+            if(_target.TryTakeDamage(damage, DamageType.Physical, AttackRangeType.MeleeAttack))
+            {
+                AttackPassed();
+            }
         }
-        else
-        {
-            Attack();
-            //_target.TakeDamage(_damageValue, DamageType.Physical, AttackRangeType.MeleeAttack);
-        }
-        if (_counter == 3) _counter = 1;
-        else _counter++;
 
         ResetValue();
-    }
-
-    private void Attack()
-    {
-        float damage = _damageValue;
-        if (_counter == 3)
-        {
-            damage *= 2;
-        }
-        _target.TryTakeDamage(damage, DamageType.Physical, AttackRangeType.MeleeAttack);
     }
 }

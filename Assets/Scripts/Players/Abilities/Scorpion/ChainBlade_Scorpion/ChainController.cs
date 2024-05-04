@@ -22,7 +22,7 @@ public class ChainController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         lineRenderer.SetPosition(0, _startTarget.position);
         lineRenderer.SetPosition(1, target.position);

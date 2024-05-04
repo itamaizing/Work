@@ -6,13 +6,13 @@ public class Kick_Scorpion : Ability
 {
     [Header("Ability settings")]
     [SerializeField] private DrawCircle _drawCircleSelf;
-    [SerializeField] private float _range;
     [SerializeField] private Sub_LavaPool_Scorpion _pool;
     [SerializeField] private Counter_ScorchedSoul_Baff _comboCounterPrefab;
+    [SerializeField] private float _damageValue = 15f; // потом сделать разброс 10-15
     private Counter_ScorchedSoul_Baff _newprefab;
 
     private DrawCircle _circleTarget;
-    private PlayerMove _target;
+    private HealthPlayer _target;
     private Coroutine _useJob;
 
     protected override void Cancel()
@@ -25,7 +25,22 @@ public class Kick_Scorpion : Ability
         if (_circleTarget != null)
             Destroy(_circleTarget.gameObject);
     }
-
+    private void AttackPassed()
+    {
+        if (_newprefab == null) // заглушка, жду новую базу под бафы
+        {
+            _newprefab = Instantiate(_comboCounterPrefab, PlayerMove.transform);
+        }
+        else
+        {
+            if (_newprefab.CurrentStacks == 2)
+            {
+                Instantiate(_pool, _target.transform.position, Quaternion.identity).Init();
+            }
+            _newprefab.AddStack();
+        }
+        Debug.LogWarning(_newprefab.CurrentStacks);
+    }
     protected override void Cast()
     {
         _useJob = StartCoroutine(UseCoroutine());
@@ -57,9 +72,9 @@ public class Kick_Scorpion : Ability
             if (Input.GetMouseButtonDown(0) && IsMouseInRadius())
             {
                 RaycastHit2D[] rayHit = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-                if (rayHit.Length > 0 && rayHit[0].transform.TryGetComponent<PlayerMove>(out PlayerMove enemyMover))
+                if (rayHit.Length > 0 && rayHit[0].transform.TryGetComponent<HealthPlayer>(out HealthPlayer enemyHealth))
                 {
-                    _target = enemyMover;
+                    _target = enemyHealth;
                 }
             }
             yield return null;
@@ -74,21 +89,13 @@ public class Kick_Scorpion : Ability
         IsCanCancle = true;
         PayCost();
 
-        if (_newprefab == null) // заглушка, жду новую базу под бафы
+        if (Vector2.Distance(transform.position, _target.transform.position) <= 2f + 0.19f)
         {
-            _newprefab = Instantiate(_comboCounterPrefab, PlayerMove.transform);
-        }
-        else
-        {
-            if(_newprefab.CurrentStacks == 2)
+            if (_target.TryTakeDamage(_damageValue, DamageType.Physical, AttackRangeType.MeleeAttack))
             {
-                Instantiate(_pool, _target.transform.position, Quaternion.identity).Init();
+                AttackPassed();
             }
-            _newprefab.AddStack();
         }
-        _target.GetComponent<HealthPlayer>().TryTakeDamage(9, DamageType.Physical, AttackRangeType.MeleeAttack);
-
-        Debug.LogWarning(_newprefab.CurrentStacks);
         ResetValue();
     }
 }

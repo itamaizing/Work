@@ -6,8 +6,8 @@ public class Punch_Scorpion : Ability
 {
     [Header("Ability settings")]
     [SerializeField] private DrawCircle _drawCircleSelf;
-    [SerializeField] private float _range;
     [SerializeField] private Counter_ScorchedSoul_Baff _comboCounterPrefab;
+    [SerializeField] private float _damageValue = 9f;
     private Counter_ScorchedSoul_Baff _comboCounterBaff;
 
     private DrawCircle _circleTarget;
@@ -46,26 +46,19 @@ public class Punch_Scorpion : Ability
         return distance <= Radius;
     }
 
-    private void AttackPassed(bool isAttackPassed)
+    private void AttackPassed()
     {
-        if (isAttackPassed) 
-        {
-            Debug.LogWarning("Попал");
+        Debug.LogWarning("Попал");
 
-            if (_comboCounterBaff == null) // заглушка, жду новую базу под бафы
-            {
-                _comboCounterBaff = Instantiate(_comboCounterPrefab, PlayerMove.transform);
-                Debug.LogWarning(_comboCounterBaff.CurrentStacks);
-            }
-            else
-            {
-                _comboCounterBaff.AddStack();
-                Debug.LogWarning(_comboCounterBaff.CurrentStacks);
-            }
+        if (_comboCounterBaff == null) // заглушка, жду новую базу под бафы
+        {
+            _comboCounterBaff = Instantiate(_comboCounterPrefab, PlayerMove.transform);
+            Debug.LogWarning(_comboCounterBaff.CurrentStacks);
         }
         else
         {
-            Debug.LogWarning("Не попал");
+            _comboCounterBaff.AddStack();
+            Debug.LogWarning(_comboCounterBaff.CurrentStacks);
         }
     }
 
@@ -94,17 +87,14 @@ public class Punch_Scorpion : Ability
 
         IsCanCancle = true;
         PayCost();
-        bool hit;
-        if (Vector2.Distance(transform.position, _target.transform.position) >= 1.9f + 0.1f + 0.19f)
-        {
-            hit = false;
-        }
-        else
-        {
-            hit = _target.TryTakeDamage(9, DamageType.Physical, AttackRangeType.MeleeAttack);
 
-        }
-        Debug.LogWarning(hit);
+        if (Vector2.Distance(transform.position, _target.transform.position) <= 2f + 0.19f)
+        {
+            if (_target.TryTakeDamage(_damageValue, DamageType.Physical, AttackRangeType.MeleeAttack))
+            {
+                AttackPassed();
+            }
+        }    
 
         ResetValue();
     }

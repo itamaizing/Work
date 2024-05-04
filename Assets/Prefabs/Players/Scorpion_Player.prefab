@@ -281,6 +281,8 @@ GameObject:
   - component: {fileID: 8480034257406857709}
   - component: {fileID: 3872907724992027390}
   - component: {fileID: 4248034767522565474}
+  - component: {fileID: 8510656036757050977}
+  - component: {fileID: 3102830003482922377}
   m_Layer: 0
   m_Name: Abilities
   m_TagString: Untagged
@@ -321,6 +323,8 @@ MonoBehaviour:
   _abilities:
   - {fileID: 3872907724992027390}
   - {fileID: 4248034767522565474}
+  - {fileID: 8510656036757050977}
+  - {fileID: 3102830003482922377}
 --- !u!114 &3872907724992027390
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -380,7 +384,69 @@ MonoBehaviour:
   _manaCostPerTick: 0
   _drawCircleSelf: {fileID: 2062510225715713123}
   _range: 0
+  _pool: {fileID: 2243568547910431239, guid: 1added7877e17a641bffaa74f76fc1e4, type: 3}
   _comboCounterPrefab: {fileID: 3298597663665401379, guid: dde55efe0185e4c4aa1fe8ff220cf6de, type: 3}
+--- !u!114 &8510656036757050977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1675032641069307089}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bcc26ec105616c40b78e0515b385bed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _abilityInfo: {fileID: 11400000, guid: f954632b892f43143bbee3c9ddaa45aa, type: 2}
+  _isAutoAttack: 0
+  _radius: 8
+  _area: 0
+  _manaCost: 10
+  _castDeley: 0.5
+  _cooldown: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _castlinePrefab: {fileID: -5125894926510868867, guid: 7b17554127b55bd4cb61f7e50a48ee96, type: 3}
+  _drawCircleSelf: {fileID: 2062510225715713123}
+  _range: 0
+  _chainPrefab: {fileID: -8245340431016603970, guid: 94a92e558dfff4041911d68c42de01f8, type: 3}
+  _bladePrefab: {fileID: 1666600371225914020, guid: 28ef98e9889bc1341b5563f27b42fa81, type: 3}
+--- !u!114 &3102830003482922377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1675032641069307089}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70e54b3b201230e4e9e91bfb7f4c3164, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _abilityInfo: {fileID: 11400000, guid: 674d1ee282701154a88a87e00fa5f772, type: 2}
+  _isAutoAttack: 0
+  _radius: 2
+  _area: 0
+  _manaCost: 20
+  _castDeley: 1.2
+  _cooldown: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _drawCircleSelf: {fileID: 2062510225715713123}
+  _damageValue: 23
 --- !u!1 &1740845397034949897
 GameObject:
   m_ObjectHideFlags: 0
@@ -587,13 +653,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b5add863fba6af449bc9b5c95b8199e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hpRegenerationValue: 10
+  _hpRegenerationValue: 4.8
   _hpRegenerationDelay: 3
-  defPh: 4
-  defMag: 2
-  evamel: 4
-  evaran: 2
-  evaMag: 1
+  _defPhysDamage: 4
+  _defMagDamage: 2
+  _evadeMeleeDamage: 4
+  _evadeRangeDamage: 2
+  _evadeMagDamage: 1
   shields_Physic: []
   shields_Magic: []
   Health: 999

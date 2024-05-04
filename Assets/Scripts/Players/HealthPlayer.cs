@@ -12,12 +12,18 @@ public class HealthPlayer : MonoBehaviour
     [SerializeField][Range(0, 100)] private float _hpRegenerationDelay = 3;
     private WaitForSeconds _waitForRegenHp;
 
-    [Header("Def Stats")]
+    [Header("Def Stats")] // в идеале вынести отдельно
+    // процентные резисты
     [SerializeField] private float _defPhysDamage = 10f;
     [SerializeField] private float _defMagDamage = 10f;
+    // процентный шанс уклониться 
     [SerializeField] private int _evadeMeleeDamage = 10;
     [SerializeField] private int _evadeRangeDamage = 10;
     [SerializeField] private int _evadeMagDamage = 10;
+    // уменьшение на N урона
+    [SerializeField] private int _absorbPhysDamage = 0;
+    [SerializeField] private int _absorbMagDamage = 0;
+    
 
     [Header("Shields")]
     public List<Shielding> shields_Physic = new List<Shielding>();
@@ -99,7 +105,7 @@ public class HealthPlayer : MonoBehaviour
             UpdateHealthBarText();
         }
     }
-    private float CalculateDamageWithStats(float damageValue, DamageType damageType, AttackRangeType attackRangeType, out bool hitSuccessed)
+    private float CalculateDamageWithStats(float damageValue, DamageType damageType, AttackRangeType attackRangeType, out bool hitSuccessed) // вызывается в tryTakeDamage до нанесения урона
     {
         if (damageType == DamageType.Magical)
         {
@@ -110,7 +116,9 @@ public class HealthPlayer : MonoBehaviour
                 return 0;
             }
             hitSuccessed = true;
-            return damageValue - (damageValue * _defMagDamage / 100);
+            
+            damageValue -= (damageValue * _defMagDamage / 100);
+            return damageValue - _absorbMagDamage;
         }
 
         else if (damageType == DamageType.Physical)
@@ -125,7 +133,8 @@ public class HealthPlayer : MonoBehaviour
                         return 0;
                     }
                     hitSuccessed = true;
-                    return damageValue - (damageValue * _defPhysDamage / 100);
+                    damageValue -= (damageValue * _defPhysDamage / 100);
+                    return damageValue - _absorbPhysDamage;
 
                 case AttackRangeType.RangeAttack:
                     if (UnityEngine.Random.Range(0, 100) <= _evadeRangeDamage)
@@ -135,11 +144,12 @@ public class HealthPlayer : MonoBehaviour
                         return 0;
                     }
                     hitSuccessed = true;
-                    return damageValue - (damageValue * _defPhysDamage / 100);
+                    damageValue -= (damageValue * _defPhysDamage / 100);
+                    return damageValue - _absorbPhysDamage;
 
                 case AttackRangeType.Inner:
                     hitSuccessed = true;
-                    return damageValue;
+                    return damageValue - _absorbPhysDamage;
 
                 default:
                     hitSuccessed = false;
@@ -150,7 +160,7 @@ public class HealthPlayer : MonoBehaviour
         hitSuccessed = false;
         return 0; // не указали DamageType
     }
-    private float SummShields(DamageType damageType)
+    private float SummShields(DamageType damageType) // используется для рассчета щитов
     {
         float value = 0;
 
@@ -179,7 +189,7 @@ public class HealthPlayer : MonoBehaviour
         return value;
     }
 
-    private float CalculateDamageForShields(float damageValue, DamageType damageType)
+    private float CalculateDamageForShields(float damageValue, DamageType damageType) // вызывается в takeDamage во время получения урона
     {
         if (damageType == DamageType.Physical)
         {
