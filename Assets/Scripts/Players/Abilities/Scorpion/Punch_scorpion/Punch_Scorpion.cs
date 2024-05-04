@@ -8,10 +8,10 @@ public class Punch_Scorpion : Ability
     [SerializeField] private DrawCircle _drawCircleSelf;
     [SerializeField] private float _range;
     [SerializeField] private Counter_ScorchedSoul_Baff _comboCounterPrefab;
-    private Counter_ScorchedSoul_Baff _newprefab;
+    private Counter_ScorchedSoul_Baff _comboCounterBaff;
 
     private DrawCircle _circleTarget;
-    private PlayerMove _target;
+    private HealthPlayer _target;
     private Coroutine _useJob;
 
     protected override void Cancel()
@@ -33,6 +33,7 @@ public class Punch_Scorpion : Ability
     private void ResetValue()
     {
         _drawCircleSelf.Clear();
+        _target.onDamagePassed -= AttackPassed;
         _target = null;
     }
 
@@ -46,6 +47,30 @@ public class Punch_Scorpion : Ability
         return distance <= Radius;
     }
 
+    private void AttackPassed(bool isAttackPassed)
+    {
+        if (isAttackPassed) 
+        {
+            Debug.LogWarning("Попал");
+
+            if (_comboCounterBaff == null) // заглушка, жду новую базу под бафы
+            {
+                _comboCounterBaff = Instantiate(_comboCounterPrefab, PlayerMove.transform);
+                Debug.LogWarning(_comboCounterBaff.CurrentStacks);
+            }
+            else
+            {
+                _comboCounterBaff.AddStack();
+                Debug.LogWarning(_comboCounterBaff.CurrentStacks);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Не попал");
+        }
+    }
+
+
     private IEnumerator UseCoroutine()
     {
         _drawCircleSelf.Draw(Radius);
@@ -55,9 +80,10 @@ public class Punch_Scorpion : Ability
             if (Input.GetMouseButtonDown(0) && IsMouseInRadius())
             {
                 RaycastHit2D[] rayHit = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-                if (rayHit.Length > 0 && rayHit[0].transform.TryGetComponent<PlayerMove>(out PlayerMove enemyMover))
+                if (rayHit.Length > 0 && rayHit[0].transform.TryGetComponent<HealthPlayer>(out HealthPlayer enemyHealth))
                 {
-                    _target = enemyMover;
+                    _target = enemyHealth;
+                    _target.onDamagePassed += AttackPassed;
                 }
             }
             yield return null;
@@ -71,17 +97,15 @@ public class Punch_Scorpion : Ability
         IsCanCancle = true;
         PayCost();
 
-        if(_newprefab == null) // заглушка, жду новую базу под бафы
+        if (Vector2.Distance(transform.position, _target.transform.position) >= 1.9f + 0.1f + 0.19f)
         {
-            _newprefab = Instantiate(_comboCounterPrefab, PlayerMove.transform);
+            _target.SendAttackPassed(false);
         }
         else
         {
-            _newprefab.AddStack();
+            _target.TakeDamage(9, DamageType.Physical, AttackRangeType.MeleeAttack);
         }
-        _target.GetComponent<HealthPlayer>().TakeDamage(9, DamageType.Physical, AttackRangeType.MeleeAttack);
 
-        Debug.LogWarning(_newprefab.CurrentStacks);
         ResetValue();
     }
 }

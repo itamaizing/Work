@@ -250,7 +250,7 @@ public class OneMeleeAttack : AbilityBase
         if (Vector3.Distance(previousPosition, currentPosition) >= 0.19f)
         {
             _damageValue = 0;
-            _targetHealth.onDamagePassed.Invoke(false);
+            _targetHealth.SendAttackPassed(false);
             Debug.LogWarning("MissAtDistance");
         }
         Debug.LogWarning(Vector3.Distance(previousPosition, currentPosition));

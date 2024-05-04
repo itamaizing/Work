@@ -43,7 +43,7 @@ public class HealthPlayer : MonoBehaviour
     public Action<DamageInfo> MakePhisicDamageEvent;
     public Action<DamageInfo> MakeMagicDamageEvent;
 
-    public Action<bool> onDamagePassed;
+    public event Action<bool> onDamagePassed;
     public struct HealInfo
     {
         public float OriginalHeal;
@@ -59,7 +59,7 @@ public class HealthPlayer : MonoBehaviour
         StartCoroutine(CoroutineRegenirateHP());
     }
 
-    public void TakePhisicDamage(float damageValue)
+    public void TakePhisicDamage(float damageValue) //устаревший метод
     {
 
         HandleAbsorptionOrRepeat(ref damageValue);
@@ -89,7 +89,10 @@ public class HealthPlayer : MonoBehaviour
             UpdateHealthBarText();
         }
     }
-
+    public void SendAttackPassed(bool isAttackPassed)
+    {
+        onDamagePassed?.Invoke(isAttackPassed);
+    }
     private float CalculateDamageWithStats(float damageValue, DamageType damageType, AttackRangeType attackRangeType)
     {
         if (damageType == DamageType.Magical)
@@ -97,10 +100,10 @@ public class HealthPlayer : MonoBehaviour
             if (UnityEngine.Random.Range(0, 100) <= evaMag)
             {
                 ShowDamagePrefab(new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f), "miss");
-                onDamagePassed?.Invoke(false);
+                SendAttackPassed(false);
                 return 0;
             }
-            onDamagePassed?.Invoke(true);
+            SendAttackPassed(true);
             return damageValue - (damageValue * defMag / 100);
         }
 
@@ -112,24 +115,24 @@ public class HealthPlayer : MonoBehaviour
                     if (UnityEngine.Random.Range(0, 100) <= evamel)
                     {
                         ShowDamagePrefab(new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f), "miss");
-                        onDamagePassed?.Invoke(false);
+                        SendAttackPassed(false);
                         return 0;
                     }
-                    onDamagePassed?.Invoke(true);
+                    SendAttackPassed(true);
                     return damageValue - (damageValue * defPh / 100);
 
                 case AttackRangeType.RangeAttack:
                     if (UnityEngine.Random.Range(0, 100) <= evaran)
                     {
                         ShowDamagePrefab(new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f), "miss");
-                        onDamagePassed?.Invoke(false);
+                        SendAttackPassed(false);
                         return 0;
                     }
-                    onDamagePassed?.Invoke(true);
+                    SendAttackPassed(true);
                     return damageValue - (damageValue * defPh / 100);
 
                 case AttackRangeType.Inner:
-                    onDamagePassed?.Invoke(true);
+                    SendAttackPassed(true);
                     return damageValue;
 
                 default:
@@ -260,7 +263,7 @@ public class HealthPlayer : MonoBehaviour
         }
     }
 
-    public void TakeMagicDamage(float damageValue)
+    public void TakeMagicDamage(float damageValue) //устаревший метод
     {
         HandleAbsorptionOrRepeat(ref damageValue);
         if (damageValue > 0)
