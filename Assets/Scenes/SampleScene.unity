@@ -3952,7 +3952,7 @@ PrefabInstance:
       objectReference: {fileID: 1496889383}
     - target: {fileID: 6629263405178576375, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _abilities.Array.size
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6629263405178576375, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _abilities.Array.data[0]
@@ -3970,6 +3970,10 @@ PrefabInstance:
       propertyPath: _abilities.Array.data[3]
       value: 
       objectReference: {fileID: 1783773958}
+    - target: {fileID: 6629263405178576375, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: _abilities.Array.data[4]
+      value: 
+      objectReference: {fileID: 1783773963}
     - target: {fileID: 7356665408746067551, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: Select
       value: 
@@ -3990,6 +3994,10 @@ PrefabInstance:
       propertyPath: Health
       value: 333
       objectReference: {fileID: 0}
+    - target: {fileID: 7907910968683187086, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: _basePlayer
+      value: 
+      objectReference: {fileID: 1496889382}
     - target: {fileID: 8264867649627807809, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: AbilityPanel
       value: 
@@ -8171,6 +8179,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d29bd518fc6a043439d0db6b7aae013c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1783773963 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7907910968683187086, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+  m_PrefabInstance: {fileID: 1055555505}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e55116f00838d7489e8c4649c0d5cfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1784568745

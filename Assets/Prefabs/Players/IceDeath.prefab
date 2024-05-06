@@ -1913,6 +1913,7 @@ GameObject:
   - component: {fileID: 1671752607338581685}
   - component: {fileID: 3699271698567802279}
   - component: {fileID: 5862965717272100732}
+  - component: {fileID: 7907910968683187086}
   m_Layer: 0
   m_Name: Abilities
   m_TagString: Untagged
@@ -1964,7 +1965,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _abilityInfo: {fileID: 0}
-  _isAutoAttack: 0
+  _isAutoAttack: 1
   _radius: 0
   _area: 0
   _manaCost: 0
@@ -2105,6 +2106,34 @@ MonoBehaviour:
   ObstacleLayerMask:
     serializedVersion: 2
     m_Bits: 128
+--- !u!114 &7907910968683187086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7378065823814705286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e55116f00838d7489e8c4649c0d5cfe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _abilityInfo: {fileID: 0}
+  _isAutoAttack: 0
+  _radius: 1.9
+  _area: 0
+  _manaCost: 10
+  _castDeley: 1.4
+  _cooldown: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _damage: 15
 --- !u!1 &7761970869757356538
 GameObject:
   m_ObjectHideFlags: 0
