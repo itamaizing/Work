@@ -91,11 +91,13 @@ public class CleavingBlade_Scorpion : Ability
             {
                 damage = _damageValue * 2;
             }
-            if(_target.TryTakeDamage(damage, DamageType.Physical, AttackRangeType.MeleeAttack))
+            if (_target.TryTakeDamage(damage, DamageType.Physical, AttackRangeType.MeleeAttack))
             {
                 AttackPassed();
             }
+            else _counter = 1;
         }
+        Debug.LogWarning(_counter);
 
         ResetValue();
     }

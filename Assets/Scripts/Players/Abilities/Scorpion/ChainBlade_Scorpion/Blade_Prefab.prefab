@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -1963574941276317736}
   - component: {fileID: 1666600371225914020}
   m_Layer: 0
-  m_Name: Blade
+  m_Name: Blade_Prefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

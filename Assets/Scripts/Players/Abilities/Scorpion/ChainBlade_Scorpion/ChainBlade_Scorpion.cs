@@ -48,6 +48,10 @@ public class ChainBlade_Scorpion : Ability
     {
         _drawCircleSelf.Clear();
         _target = null;
+        if(_castLine != null)
+        {
+            Destroy(_castLine.gameObject);
+        }
     }
 
     private bool IsMouseInRadius()
@@ -112,7 +116,7 @@ public class ChainBlade_Scorpion : Ability
                 if (target != null) isAlternativeCast = true;
                 if (target == null) Destroy(_chain.gameObject); 
                 else _chain.AssignTarget(transform, enemy.transform); 
-            }); // подписка на метод, получаем цель в которую попули. Отписка автоматическая при уничтожении префаба будет
+            }); // подписка на метод, получаем цель в которую попали. Отписка автоматическая при уничтожении префаба будет
 
             IsCanCancle = true;
             PayCost();
@@ -130,6 +134,7 @@ public class ChainBlade_Scorpion : Ability
             //yield return GetCastDeleyCoroutine();
 
             float distance = Vector2.Distance(transform.position, enemy.transform.position);
+            enemy.GetComponent<PlayerMove>().CanMove = false;
 
             while (distance >= 2f)
             {
@@ -138,6 +143,7 @@ public class ChainBlade_Scorpion : Ability
                 yield return null;
 
             }
+            enemy.GetComponent<PlayerMove>().CanMove = true;
             Destroy(_chain.gameObject);
             isAlternativeCast = false;
             PlayerMove.CanMove = true;
