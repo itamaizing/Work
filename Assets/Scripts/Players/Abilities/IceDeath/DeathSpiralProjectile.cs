@@ -33,7 +33,7 @@ public class DeathSpiralProjectile : MonoBehaviour
 		if (collision.gameObject == dad || collision.CompareTag("Ability"))
 			return;
 		//damage, freez etc
-		if (collision.TryGetComponent<HealthPlayer>(out var target))
+		if (collision.TryGetComponent<PlayerLinks>(out var target))
 		{
 			//damage
 		}

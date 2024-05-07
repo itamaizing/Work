@@ -302,6 +302,7 @@ MonoBehaviour:
   _playerStamina: {fileID: 5793172127680476127}
   _runePlayer: {fileID: 5793172127680476127}
   _abilities: {fileID: 6629263405178576375}
+  _characterState: {fileID: 7356665408746067551}
 --- !u!1 &1255810373264063487
 GameObject:
   m_ObjectHideFlags: 0

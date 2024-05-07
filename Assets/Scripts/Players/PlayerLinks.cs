@@ -10,6 +10,7 @@ public class PlayerLinks : MonoBehaviour
 	[SerializeField] private PlayerStamina _playerStamina;
 	[SerializeField] private RunePlayer _runePlayer;
 	[SerializeField] private PlayerAbilities _abilities;
+	[SerializeField] private CharacterState _characterState;
 
 	public Rigidbody2D Rb => _rb;
 	public HealthPlayer HealthPlayer => _healthPlayer;
@@ -17,4 +18,5 @@ public class PlayerLinks : MonoBehaviour
 	public PlayerStamina Stamina => _playerStamina;
 	public RunePlayer RunePlayer => _runePlayer;
 	public PlayerAbilities Abilities => _abilities;
+	public CharacterState CharacterState => _characterState;
 }
