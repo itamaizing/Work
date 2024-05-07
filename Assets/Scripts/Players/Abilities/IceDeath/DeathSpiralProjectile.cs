@@ -1,12 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using UnityEditor.UIElements;
 using UnityEngine;
 
-public class IceCloudProjectile : MonoBehaviour
+public class DeathSpiralProjectile : MonoBehaviour
 {
-	[HideInInspector]public GameObject dad;
+	[HideInInspector] public GameObject dad;
 
 	[SerializeField] private Rigidbody2D _rb;
 	[SerializeField] GameObject _hitEffect;
@@ -18,13 +16,13 @@ public class IceCloudProjectile : MonoBehaviour
 	private void Awake()
 	{
 		startPos = transform.position;
-		
+
 		_rb.AddForce(transform.up * _force, ForceMode2D.Impulse);
 	}
 
 	private void Update()
 	{
-		if(Vector2.Distance(transform.position, startPos) > _distance * GlobalVariable.cellSize)
+		if (Vector2.Distance(transform.position, startPos) > _distance * GlobalVariable.cellSize)
 		{
 			Explode();
 		}
@@ -35,12 +33,12 @@ public class IceCloudProjectile : MonoBehaviour
 		if (collision.gameObject == dad || collision.CompareTag("Ability"))
 			return;
 		//damage, freez etc
-		if(collision.TryGetComponent<CharacterState>(out var target))
+		if (collision.TryGetComponent<HealthPlayer>(out var target))
 		{
-			target.energy = dad.GetComponent<EnergyPlayer>();
-			target.AddState(new FrozenState());
-			GetComponent<Collider2D>().enabled = false;
+			//damage
 		}
+
+		//if collision == ice puddle or ice shadow
 		Explode();
 	}
 

@@ -5,15 +5,16 @@ using static UnityEngine.GraphicsBuffer;
 
 public class IcePuddle : Ability
 {
-	[SerializeField] private Rigidbody2D _rb;
-	[SerializeField] private HealthPlayer _healthPlayer;
 	[SerializeField] private IcePuddleObject _puddle;
-	[SerializeField] private RunePlayer _rune;
+	[SerializeField] private PlayerLinks _playerLinks;
+	//[SerializeField] private Rigidbody2D _rb;
+	//[SerializeField] private HealthPlayer _healthPlayer;
+	//[SerializeField] private RunePlayer _rune;
 
 	protected override void Cast()
 	{
 		PayCost();
-		if (_rune.RemoveRune(1, this))
+		if (_playerLinks.RunePlayer.RemoveRune(1, this))
 		{
 			Shoot();
 		}
@@ -26,8 +27,8 @@ public class IcePuddle : Ability
 	private void Shoot()
 	{
 		IcePuddleObject puddle = Instantiate(_puddle, gameObject.transform.position, Quaternion.identity);
-		puddle.dad = _rb.gameObject;
+		puddle.dad = _playerLinks.gameObject;
 		puddle.energyPlayer = (EnergyPlayer)Mana;
-		puddle.healthPlayer = _healthPlayer;
+		puddle.healthPlayer = _playerLinks.HealthPlayer;
 	}
 }

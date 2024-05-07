@@ -10,33 +10,33 @@ public abstract class Ability : MonoBehaviour
     [SerializeField] private AbilityInfo _abilityInfo;
     [Header("Settings")]
     [SerializeField] private bool _isAutoAttack;
-    [SerializeField] private float _radius = 0f;
-    [SerializeField] private float _area = 0f;
-    [SerializeField] private float _manaCost = 0f;
+    [SerializeField] protected float _radius = 0f;
+    [SerializeField] protected float _area = 0f;
+    [SerializeField] protected float _manaCost = 0f;
     [SerializeField] private float _castDeley = 0f;
     [SerializeField] private float _cooldown = 0f;
     [Header("Charge settings")]
-    [SerializeField] private bool _isUseCharges;
+    [SerializeField] protected bool _isUseCharges;
     [SerializeField] private bool _chargesHaveSeparateCooldown;
-    [SerializeField] private int _maxCharges;
-    [SerializeField] private float _chargeCooldown;
+    [SerializeField] protected int _maxCharges;
+    [SerializeField] protected float _chargeCooldown;
     [Header("Streaming settings")]
     [SerializeField] private bool _isStreaming;
     [SerializeField] private float _streamingDuration;
     [SerializeField] private float _manaCostRate;
     [SerializeField] private float _manaCostPerTick;
 
-    private PlayerStamina _mana;
-    private PlayerMove _playerMove;
-    private HealthPlayer _health;
-    private bool _isUsed = false;
-    private bool _isCanCancle = true;
-    private bool _isReady = true;
-    private int _currentChargers;
-    private Coroutine _rechargeJob;
-    private Coroutine _streamingJob;
-    private Coroutine _castDeleyJob;
-    private Coroutine _cooldownJob;
+	protected PlayerStamina _mana;
+	protected PlayerMove _playerMove;
+	protected HealthPlayer _health;
+	protected bool _isUsed = false;
+	protected bool _isCanCancle = true;
+	protected bool _isReady = true;
+    protected int _currentChargers;
+	protected Coroutine _rechargeJob;
+	protected Coroutine _streamingJob;
+	protected Coroutine _castDeleyJob;
+	protected Coroutine _cooldownJob;
 
     public PlayerMove PlayerMove => _playerMove;
     public PlayerStamina Mana => _mana;

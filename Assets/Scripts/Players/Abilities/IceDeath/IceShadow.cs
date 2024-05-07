@@ -6,15 +6,16 @@ using static UnityEngine.GraphicsBuffer;
 public class IceShadow : Ability
 {
 	[Header("Ability properties")]
-	[SerializeField] private Rigidbody2D _rb;
-	[SerializeField] private HealthPlayer _healthPlayer;
 	[SerializeField] private IceShadowObject _shadow;
-	[SerializeField] private RunePlayer _rune;
+	[SerializeField] private PlayerLinks _playerLinks;
+	//[SerializeField] private Rigidbody2D _rb;
+	//[SerializeField] private HealthPlayer _healthPlayer;
+	//[SerializeField] private RunePlayer _rune;
 
 	protected override void Cast()
 	{
 		PayCost();
-		if (_rune.RemoveRune(1, this))
+		if (_playerLinks.RunePlayer.RemoveRune(1, this))
 		{
 			Shoot();
 		}
@@ -27,8 +28,8 @@ public class IceShadow : Ability
 	private void Shoot()
 	{
 		IceShadowObject projectile = Instantiate(_shadow, gameObject.transform.position, Quaternion.identity);
-		projectile.dad = _rb.gameObject;
+		projectile.dad = _playerLinks.gameObject;
 		projectile.energyPlayer = (EnergyPlayer)Mana;
-		projectile.healthPlayer = _healthPlayer;
+		projectile.healthPlayer = _playerLinks.HealthPlayer;
 	}
 }

@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 7356665408746067551}
   - component: {fileID: 5793172127680476127}
   - component: {fileID: 8934230934356217642}
+  - component: {fileID: 887328702008159573}
   m_Layer: 9
   m_Name: IceDeath
   m_TagString: Enemies
@@ -238,8 +239,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Select: {fileID: 0}
+  PlayerHp: {fileID: 7601164126198867055}
+  PlayerMove: {fileID: 8264867649627807809}
   energy: {fileID: 0}
-  duration: 0
+  durationToExit: 0
+  damageToExit: 0
 --- !u!114 &5793172127680476127
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -252,14 +256,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bd22fe231e3f2e41b5e309172c34d13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _runeRegenerationDelay: 1
+  _value: 0
+  _maxValue: 0
+  _regenerationValue: 10
+  _regenerationDelay: 3
+  Bar: {fileID: 0}
+  DamageSpawn: {fileID: 0}
+  PrefabText: {fileID: 0}
   _runeResetDelay: 6
-  _runeRegenerationValue: 10
-  _maxRuneCount: 10
-  _runeValue: 0
   _runeSprite: {fileID: 5269347689244837285}
-  _multiplier: 1
-  _timer: 0
 --- !u!114 &8934230934356217642
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -279,6 +284,24 @@ MonoBehaviour:
   Bar: {fileID: 5680468377122292335}
   DamageSpawn: {fileID: 8933781320356208631}
   PrefabText: {fileID: 97509558472111251, guid: b8ec9c7fb2a215a418a41efc3aec9187, type: 3}
+--- !u!114 &887328702008159573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089694967083977132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b179d0193440ba4a8c6e7355ae6f722, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rb: {fileID: 1935025463078411595}
+  _healthPlayer: {fileID: 7601164126198867055}
+  _playerMove: {fileID: 8264867649627807809}
+  _playerStamina: {fileID: 5793172127680476127}
+  _runePlayer: {fileID: 5793172127680476127}
+  _abilities: {fileID: 6629263405178576375}
 --- !u!1 &1255810373264063487
 GameObject:
   m_ObjectHideFlags: 0
@@ -1909,6 +1932,8 @@ GameObject:
   - component: {fileID: 1671752607338581685}
   - component: {fileID: 3699271698567802279}
   - component: {fileID: 5862965717272100732}
+  - component: {fileID: 7907910968683187086}
+  - component: {fileID: 4978467543216721885}
   m_Layer: 0
   m_Name: Abilities
   m_TagString: Untagged
@@ -1959,35 +1984,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0472c7c6c6b721418ebe181869af7fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IconAbility: {fileID: 0}
-  AbilityPrefab: {fileID: 6736161171206798187, guid: 34bd67790f788d949b447b7f2ff16379, type: 3}
-  Select: {fileID: 0}
-  Abilities: {fileID: 0}
-  ObstacleLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
-  CastPrefab: {fileID: 0}
-  ToggleAbility: {fileID: 0}
-  DrawCircle: {fileID: 2084701706370063657}
-  IconAbilityAutoattack: {fileID: 0}
-  CircleSelect: {fileID: 0}
-  AttackType: 0
-  AbilityType: 0
-  AttackRangeType: 0
-  DamageType: 0
-  TargetParent: {fileID: 0}
-  CanMakeDamage: 0
-  CanDealDamageOrHeal: 0
-  CanUseAbility: 1
-  NewAbilityPrefab: {fileID: 0}
-  CanDoAbility: 0
-  CanDrawCircle: 1
-  Distance: 0
-  CellDistance: 1
-  _cellSize: 1.9
-  lastAbility: {fileID: 0}
-  IsActiveAbility: 0
-  _targetCircle: {fileID: 0}
+  _abilityInfo: {fileID: 0}
+  _isAutoAttack: 1
+  _radius: 0
+  _area: 0
+  _manaCost: 0
+  _castDeley: 0
+  _cooldown: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
   _damage: 1
   _abilityCooldown: 1
 --- !u!114 &7915244162019678924
@@ -2018,8 +2029,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: 0
   _projectile: {fileID: 748218918613675416, guid: f44e1a220c732a64f9af10c37bf5aed0, type: 3}
-  _rune: {fileID: 5793172127680476127}
-  _rb: {fileID: 1935025463078411595}
+  _playerLinks: {fileID: 887328702008159573}
 --- !u!114 &1671752607338581685
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2047,10 +2057,8 @@ MonoBehaviour:
   _streamingDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: 0
-  _rb: {fileID: 1935025463078411595}
-  _healthPlayer: {fileID: 7601164126198867055}
   _shadow: {fileID: 7237307863484890914, guid: 8dea5af4c60165d45af4522b1a596998, type: 3}
-  _rune: {fileID: 5793172127680476127}
+  _playerLinks: {fileID: 887328702008159573}
 --- !u!114 &3699271698567802279
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2078,10 +2086,8 @@ MonoBehaviour:
   _streamingDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: 0
-  _rb: {fileID: 1935025463078411595}
-  _healthPlayer: {fileID: 7601164126198867055}
   _puddle: {fileID: -3743295544946794120, guid: 5ec9f65c10b0b374fb16da9ebcfd5695, type: 3}
-  _rune: {fileID: 5793172127680476127}
+  _playerLinks: {fileID: 887328702008159573}
 --- !u!114 &5862965717272100732
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2109,12 +2115,70 @@ MonoBehaviour:
   _streamingDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: 0
-  _rb: {fileID: 1935025463078411595}
-  _rune: {fileID: 5793172127680476127}
+  _playerLinks: {fileID: 887328702008159573}
   _jumprange: 2
   ObstacleLayerMask:
     serializedVersion: 2
     m_Bits: 128
+--- !u!114 &7907910968683187086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7378065823814705286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e55116f00838d7489e8c4649c0d5cfe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _abilityInfo: {fileID: 0}
+  _isAutoAttack: 0
+  _radius: 1.9
+  _area: 0
+  _manaCost: 10
+  _castDeley: 1.4
+  _cooldown: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _damage: 15
+  _playerLinks: {fileID: 887328702008159573}
+  _deathSpiral: {fileID: 4978467543216721885}
+--- !u!114 &4978467543216721885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7378065823814705286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 414d375212949f842a89a5fb8463c471, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _abilityInfo: {fileID: 0}
+  _isAutoAttack: 0
+  _radius: 0
+  _area: 0
+  _manaCost: 0
+  _castDeley: 0
+  _cooldown: 0
+  _isUseCharges: 1
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _projectile: {fileID: 5633596165386628248, guid: 13d29f15dbe0e9c40bac53fe5ff49f89, type: 3}
+  _playerLinks: {fileID: 887328702008159573}
 --- !u!1 &7761970869757356538
 GameObject:
   m_ObjectHideFlags: 0
