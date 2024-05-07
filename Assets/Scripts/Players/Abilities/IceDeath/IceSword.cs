@@ -6,9 +6,12 @@ using static UnityEditor.Experimental.GraphView.GraphView;
 public class IceSword : Ability
 {
 	[SerializeField] private float _damage = 15f;
-	[SerializeField] private GameObject _basePlayer;
-	private Vector2 _targetPosition;
+	//[SerializeField] private GameObject _basePlayer;
+	[SerializeField] private PlayerLinks _playerLinks;
+	[SerializeField] private DeathSpiral _deathSpiral;
+	//private Vector2 _targetPosition;
 	private HealthPlayer _target;
+	private int _hitInARow = 0;
 
 	protected override void Cancel()
 	{
@@ -21,15 +24,30 @@ public class IceSword : Ability
 
 		foreach (Collider2D collider in colliders)
 		{
-			if (collider.TryGetComponent<HealthPlayer>(out var enemy) && collider.gameObject != _basePlayer)
+			if (collider.TryGetComponent<HealthPlayer>(out var enemy) && collider.gameObject != _playerLinks.gameObject)
 			{
 				Debug.Log(collider.name);
 				//enemy.
 				//check closest and then damage
-				_target = enemy;
+				if (_target == null || _target == enemy)
+				{
+					_target = enemy;
+					_hitInARow++;
+				}
+				else
+				{
+					_hitInARow = 0;
+					_target = enemy;
+				}
 			}
 		}
 		_target.TakePhisicDamage(_damage + Random.Range(0, 10));
+
+		if( _hitInARow > 2 ) 
+		{
+			_deathSpiral.AddCharge();
+			_hitInARow = 0;
+		}
 	}
 
 	/*protected override void PayCost()

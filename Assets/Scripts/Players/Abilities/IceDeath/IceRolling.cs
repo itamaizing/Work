@@ -9,8 +9,9 @@ using DG.Tweening;
 public class IceRolling : Ability
 {
 	[Header("Ability properties")]
-	[SerializeField] private Rigidbody2D _rb;
-	[SerializeField] private RunePlayer _rune;
+	//[SerializeField] private Rigidbody2D _rb;
+	//[SerializeField] private RunePlayer _rune;
+	[SerializeField] private PlayerLinks _playerLinks;
 	[SerializeField] private float _jumprange = 2f;
 	[SerializeField] private LayerMask ObstacleLayerMask;
 	private Vector2 _jumpPos;
@@ -19,7 +20,7 @@ public class IceRolling : Ability
 	protected override void Cast()
 	{
 		PayCost();
-		if (_rune.RemoveRune(0.25f, this))
+		if (_playerLinks.RunePlayer.RemoveRune(0.25f, this))
 		{
 			Jump();
 		}
@@ -39,7 +40,7 @@ public class IceRolling : Ability
 			float actualJumpRange = _jumprange;
 
 			Vector2 _mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			Vector2 lookDir = (_mousePos - _rb.position).normalized;
+			Vector2 lookDir = (_mousePos - _playerLinks.Rb.position).normalized;
 			
 			if(Mana.Value >= 10)
 			{
@@ -51,16 +52,16 @@ public class IceRolling : Ability
 			}	
 			
 			Vector2 jumpPos = lookDir * actualJumpRange + (Vector2)PlayerMove.transform.position;
-			if(CheckObstacleBetween(_rb.position, jumpPos))
+			if(CheckObstacleBetween(_playerLinks.Rb.position, jumpPos))
 			{
 				Debug.Log("Обнаружено препятствие:");
 				//прыгать до препятствия
-				_rb.DOMove(_jumpPos, 0.3f * actualJumpRange).OnComplete(AfterJump);
+				_playerLinks.Rb.DOMove(_jumpPos, 0.3f * actualJumpRange).OnComplete(AfterJump);
 			}
 			else
 			{
 				Mana.Use((actualJumpRange - _jumprange) * 5);
-				_rb.DOMove(jumpPos, 0.3f * actualJumpRange).OnComplete(AfterJump);
+				_playerLinks.Rb.DOMove(jumpPos, 0.3f * actualJumpRange).OnComplete(AfterJump);
 			}
 		}
 	}

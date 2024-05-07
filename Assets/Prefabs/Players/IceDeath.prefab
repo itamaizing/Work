@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 7356665408746067551}
   - component: {fileID: 5793172127680476127}
   - component: {fileID: 8934230934356217642}
+  - component: {fileID: 887328702008159573}
   m_Layer: 9
   m_Name: IceDeath
   m_TagString: Enemies
@@ -283,6 +284,24 @@ MonoBehaviour:
   Bar: {fileID: 5680468377122292335}
   DamageSpawn: {fileID: 8933781320356208631}
   PrefabText: {fileID: 97509558472111251, guid: b8ec9c7fb2a215a418a41efc3aec9187, type: 3}
+--- !u!114 &887328702008159573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089694967083977132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b179d0193440ba4a8c6e7355ae6f722, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rb: {fileID: 1935025463078411595}
+  _healthPlayer: {fileID: 7601164126198867055}
+  _playerMove: {fileID: 8264867649627807809}
+  _playerStamina: {fileID: 5793172127680476127}
+  _runePlayer: {fileID: 5793172127680476127}
+  _abilities: {fileID: 6629263405178576375}
 --- !u!1 &1255810373264063487
 GameObject:
   m_ObjectHideFlags: 0
@@ -1914,6 +1933,7 @@ GameObject:
   - component: {fileID: 3699271698567802279}
   - component: {fileID: 5862965717272100732}
   - component: {fileID: 7907910968683187086}
+  - component: {fileID: 4978467543216721885}
   m_Layer: 0
   m_Name: Abilities
   m_TagString: Untagged
@@ -2009,8 +2029,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: 0
   _projectile: {fileID: 748218918613675416, guid: f44e1a220c732a64f9af10c37bf5aed0, type: 3}
-  _rune: {fileID: 5793172127680476127}
-  _rb: {fileID: 1935025463078411595}
+  _playerLinks: {fileID: 887328702008159573}
 --- !u!114 &1671752607338581685
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2038,10 +2057,8 @@ MonoBehaviour:
   _streamingDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: 0
-  _rb: {fileID: 1935025463078411595}
-  _healthPlayer: {fileID: 7601164126198867055}
   _shadow: {fileID: 7237307863484890914, guid: 8dea5af4c60165d45af4522b1a596998, type: 3}
-  _rune: {fileID: 5793172127680476127}
+  _playerLinks: {fileID: 887328702008159573}
 --- !u!114 &3699271698567802279
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2069,10 +2086,8 @@ MonoBehaviour:
   _streamingDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: 0
-  _rb: {fileID: 1935025463078411595}
-  _healthPlayer: {fileID: 7601164126198867055}
   _puddle: {fileID: -3743295544946794120, guid: 5ec9f65c10b0b374fb16da9ebcfd5695, type: 3}
-  _rune: {fileID: 5793172127680476127}
+  _playerLinks: {fileID: 887328702008159573}
 --- !u!114 &5862965717272100732
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2100,8 +2115,7 @@ MonoBehaviour:
   _streamingDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: 0
-  _rb: {fileID: 1935025463078411595}
-  _rune: {fileID: 5793172127680476127}
+  _playerLinks: {fileID: 887328702008159573}
   _jumprange: 2
   ObstacleLayerMask:
     serializedVersion: 2
@@ -2134,6 +2148,37 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: 0
   _damage: 15
+  _playerLinks: {fileID: 887328702008159573}
+  _deathSpiral: {fileID: 4978467543216721885}
+--- !u!114 &4978467543216721885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7378065823814705286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 414d375212949f842a89a5fb8463c471, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _abilityInfo: {fileID: 0}
+  _isAutoAttack: 0
+  _radius: 0
+  _area: 0
+  _manaCost: 0
+  _castDeley: 0
+  _cooldown: 0
+  _isUseCharges: 1
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _projectile: {fileID: 5633596165386628248, guid: 13d29f15dbe0e9c40bac53fe5ff49f89, type: 3}
+  _playerLinks: {fileID: 887328702008159573}
 --- !u!1 &7761970869757356538
 GameObject:
   m_ObjectHideFlags: 0
