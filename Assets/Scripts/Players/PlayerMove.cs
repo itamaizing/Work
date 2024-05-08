@@ -49,7 +49,8 @@ public class PlayerMove : MonoBehaviour
 	{
 		if (!IsSelect || !CanMove)
 		{
-			return;
+            _rigidbody.velocity = Vector2.zero;
+            return;
 		}
 
 		if (InputHandler.Instance.MovementVector != Vector2.zero)

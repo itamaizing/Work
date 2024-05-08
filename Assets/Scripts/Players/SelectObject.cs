@@ -9,6 +9,7 @@ public class SelectObject : MonoBehaviour
     public GameObject SecondPlayer;
     public GameObject ThirstPlayer;
     public GameObject FourthPlayer;
+    public GameObject FifthPlayer;
     public List<GameObject> ControlledObjects = new List<GameObject>();
 
     private void Start()
@@ -62,6 +63,17 @@ public class SelectObject : MonoBehaviour
                 }
 
                 SelectedObject = FourthPlayer;
+                SelectedObject.layer = LayerMask.NameToLayer("Player");
+
+            }
+            if (Input.GetKeyDown(KeyCode.F5))
+            {
+                if (SelectedObject != null)
+                {
+                    SelectedObject.layer = LayerMask.NameToLayer("OtherPlayers");
+                }
+
+                SelectedObject = FifthPlayer;
                 SelectedObject.layer = LayerMask.NameToLayer("Player");
 
             }
