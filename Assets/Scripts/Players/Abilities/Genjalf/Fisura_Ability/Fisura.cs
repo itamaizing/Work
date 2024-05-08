@@ -76,6 +76,7 @@ public class Fisura : Ability
     {
         Vector2 mouseStartPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         _fisuraTile = Instantiate(_fisuraTilePrefab, mouseStartPosition, Quaternion.identity, null);
+        _fisuraTile.SetSize(new Vector2(0, 0));
 
         while (Input.GetMouseButtonDown(0) == false)
         {

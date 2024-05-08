@@ -9,13 +9,18 @@ public class PlayerAbilities : MonoBehaviour
     [SerializeField] private PlayerStamina _mana;
     [SerializeField] private HealthPlayer _health;
     [SerializeField] private List<Ability> _abilities;
+    [SerializeField] private AbilityRender _abilityRender;
 
     private Ability _currentAbility;
+    private bool _isAbilitiesDisabled = false;
 
     public List<Ability> Abilities => _abilities;
 
     private void Start()
     {
+        _playerMove.Selected += OnSelected;
+        _playerMove.Deselected += OnDeselected;
+
         if(_abilities.Count > 0)
         {
             _currentAbility = _abilities[0];
@@ -30,39 +35,70 @@ public class PlayerAbilities : MonoBehaviour
 	{
 		InputHandler.OnAltClick += CancelSpellCast;
 
-        InputHandler.OnFirstCast += TryUseAbility;
-        InputHandler.OnSecondCast += TryUseAbility;
-        InputHandler.OnThirdCast += TryUseAbility;
-        InputHandler.OnFourthCast += TryUseAbility;
-        InputHandler.OnFifthCast += TryUseAbility;
+        InputHandler.OnFirstCast += SetCurrentAbility;
+        InputHandler.OnSecondCast += SetCurrentAbility;
+        InputHandler.OnThirdCast += SetCurrentAbility;
+        InputHandler.OnFourthCast += SetCurrentAbility;
+        InputHandler.OnFifthCast += SetCurrentAbility;
     }
 
     private void OnDisable()
 	{
 		InputHandler.OnAltClick -= CancelSpellCast;
 
-        InputHandler.OnFirstCast -= TryUseAbility;
-        InputHandler.OnSecondCast -= TryUseAbility;
-        InputHandler.OnThirdCast -= TryUseAbility;
-        InputHandler.OnFourthCast -= TryUseAbility;
-        InputHandler.OnFifthCast -= TryUseAbility;
+        InputHandler.OnFirstCast -= SetCurrentAbility;
+        InputHandler.OnSecondCast -= SetCurrentAbility;
+        InputHandler.OnThirdCast -= SetCurrentAbility;
+        InputHandler.OnFourthCast -= SetCurrentAbility;
+        InputHandler.OnFifthCast -= SetCurrentAbility;
     }
 
-    private void TryUseAbility(int index)
+    public void SetAbilitiesDisabled()
     {
-        if (index >= _abilities.Count)
-            return;
+        _isAbilitiesDisabled = true;
+    }
 
-        if(_currentAbility.IsUsed == false && _playerMove.IsSelect)
+    public void SetAbilitiesEnabled()
+    {
+        _isAbilitiesDisabled = false;
+    }
+
+    private void OnDeselected()
+    {
+        this.enabled = false;
+    }
+
+    private void OnSelected()
+    {
+        this.enabled = true;
+    }
+
+    private void SetCurrentAbility(int index)
+    {
+        if (index >= _abilities.Count || _isAbilitiesDisabled == true)
+            return;
+        
+        if(_currentAbility.IsUsed == false && _isAbilitiesDisabled == false)
         {
+            _currentAbility.PreparingEnded -= _abilityRender.StopDraw;
             _currentAbility = _abilities[index];
+            _abilityRender.Drawn(_currentAbility);
+            _currentAbility.PreparingEnded += _abilityRender.StopDraw;
             _currentAbility.TryUse();
         }
+    }
+
+    private void TryUseAbility()
+    {
+
     }
 
     private void CancelSpellCast()
     {
         if (_currentAbility != null)
+        {
             _currentAbility.TryCancel();
+            _abilityRender.StopDraw();
+        }
     }
 }

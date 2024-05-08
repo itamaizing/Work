@@ -44,6 +44,8 @@ public class ShootFireworks : Ability
 
         if(_fireworks != null)
             Destroy(_fireworks.gameObject);
+
+        PlayerMove.CanMove = true;
     }
 
     private void SortEnemiesByDistance()

@@ -9,22 +9,24 @@ public abstract class Ability : MonoBehaviour
     [Header("AbilitieInfo")]
     [SerializeField] private AbilityInfo _abilityInfo;
     [Header("Settings")]
-    [SerializeField] private bool _isAutoAttack;
+    [SerializeField] protected bool _isAutoAttack;
     [SerializeField] protected float _radius = 0f;
     [SerializeField] protected float _area = 0f;
+    [SerializeField] protected float _castLength = 0f;
+    [SerializeField] protected float _castWidth = 0f;
     [SerializeField] protected float _manaCost = 0f;
-    [SerializeField] private float _castDeley = 0f;
-    [SerializeField] private float _cooldown = 0f;
+    [SerializeField] protected float _castDeley = 0f;
+    [SerializeField] protected float _cooldown = 0f;
     [Header("Charge settings")]
     [SerializeField] protected bool _isUseCharges;
-    [SerializeField] private bool _chargesHaveSeparateCooldown;
+    [SerializeField] protected bool _chargesHaveSeparateCooldown;
     [SerializeField] protected int _maxCharges;
     [SerializeField] protected float _chargeCooldown;
     [Header("Streaming settings")]
-    [SerializeField] private bool _isStreaming;
-    [SerializeField] private float _streamingDuration;
-    [SerializeField] private float _manaCostRate;
-    [SerializeField] private float _manaCostPerTick;
+    [SerializeField] protected bool _isStreaming;
+    [SerializeField] protected float _streamingDuration;
+    [SerializeField] protected float _manaCostRate;
+    [SerializeField] protected float _manaCostPerTick;
 
 	protected PlayerStamina _mana;
 	protected PlayerMove _playerMove;
@@ -54,11 +56,12 @@ public abstract class Ability : MonoBehaviour
     public float CastDeley { get => _castDeley; protected set => _castDeley = value; }
     public float Radius { get => _radius; protected set => _radius = value; }
     public float Area { get => _area; protected set => _area = value; }
+    public float CastLength { get => _castLength; protected set => _castLength = value; }
+    public float CastWidth { get => _castWidth; protected set => _castWidth = value; }
     public bool IsAutoAttack { get => _isAutoAttack; protected set => _isAutoAttack = value; }
     public bool IsUsed { get => _isUsed; protected set => _isUsed = value; }
     public bool IsCanCancle { get => _isCanCancle; protected set => _isCanCancle = value; }
     public bool IsReady { get => _isReady; set => _isReady = value; }
-
 
     public event UnityAction<int> CurrentChargeChange;
     public event UnityAction<float> StartStreaming;
@@ -66,6 +69,8 @@ public abstract class Ability : MonoBehaviour
     public event UnityAction<float> StartCastDeley;
     public event UnityAction StopCastDeley;
     public event UnityAction<Ability> Cancled;
+    public event UnityAction PreparingEnded;
+    public event UnityAction CastEnded;
 
     protected abstract void Cast();
     protected abstract void Cancel();
@@ -75,6 +80,7 @@ public abstract class Ability : MonoBehaviour
         if (_isUseCharges)
         {
             _currentChargers = _maxCharges;
+            CurrentChargeChange?.Invoke(_currentChargers);
         }
     }
 
@@ -110,13 +116,18 @@ public abstract class Ability : MonoBehaviour
 
     public virtual bool TryUse()
     {
-        if (_isUsed)
+        if (_isUsed && (_mana.Value >= _manaCost && _isReady) == false)
+        {
+            PreparingEnded?.Invoke();
             return false;
-
+        }
         if (_isUseCharges)
         {
             if (IsHaveCharge == false)
+            {
+                PreparingEnded?.Invoke();
                 return false;
+            }    
         }
         _isUsed = true;
         _isCanCancle = true;
@@ -144,6 +155,7 @@ public abstract class Ability : MonoBehaviour
         }
         _isReady = false;
         _cooldownJob = StartCoroutine(CooldownCoroutine());
+        PreparingEnded?.Invoke();
 
         if (_isStreaming)
         {
@@ -153,9 +165,9 @@ public abstract class Ability : MonoBehaviour
                 _streamingJob = null;
             }
             _streamingJob = StartCoroutine(ManaCostPerTickCorutine());
-            StartStreaming?.Invoke(_streamingDuration);
             return;
         }
+        CastEnded?.Invoke();
         _isUsed = false;
     }
 
@@ -193,7 +205,9 @@ public abstract class Ability : MonoBehaviour
 
     private IEnumerator CastDeleyCoroutine()
     {
+        PreparingEnded?.Invoke();
         float time = 0;
+
         while (time < _castDeley)
         {
             time += Time.deltaTime;
@@ -220,15 +234,18 @@ public abstract class Ability : MonoBehaviour
 
     private IEnumerator ManaCostPerTickCorutine()
     {
+        StartStreaming?.Invoke(_streamingDuration);
         float time = 0;
-        while (time < _streamingDuration + _manaCostRate)
+        while (time < _streamingDuration + _manaCostRate && _mana.Value >= _manaCostPerTick)
         {
             Mana.Use(_manaCostPerTick);
             time += _manaCostRate;
             yield return new WaitForSeconds(_manaCostRate);
         }
+        StopStreaming?.Invoke();
         _isCanCancle = true;
         TryCancel();
+        CastEnded?.Invoke();
         _streamingJob = null;
     }
 }
