@@ -55,10 +55,11 @@ public class Teleportation_Scorpion : Ability
     }
     private int CalculateCurrentScale()
     {
-        if(Mana.Mana >= 20)
+        if(_mana.Value >= 20)
         {
-            return (int)((Mana.Mana - 20) / 1);
+            return (int)((_mana.Value - 20) / 1);
         }
+
         return 0;
     }
 
