@@ -22,8 +22,12 @@ public class LastAbility : MonoBehaviour
     {
         if(IsCanUseLastAbility && LastUseAbility != null && Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
         {
-            if (Select.SelectedObject != null && Select.SelectedObject.transform.Find("Abilities") != null && Select.SelectedObject.transform.Find("Abilities").GetComponent<FourMeleeAttack>() && Select.SelectedObject.transform.Find("Abilities").GetComponent<FourMeleeAttack>().ToggleAbility.isOn &&
-                Select.SelectedObject.transform.Find("Abilities").GetComponent<FourMeleeAttack>().TargetParent == null && OneClick == false)
+            var select = Select.SelectedObject.transform.Find("Abilities");
+
+            if (select != null && select.TryGetComponent<FourMeleeAttack>(out var meleeAttack))
+                if (meleeAttack.ToggleAbility.isOn && meleeAttack.TargetParent == null && OneClick == false)
+           /* if (Select.SelectedObject != null && Select.SelectedObject.transform.Find("Abilities") != null && Select.SelectedObject.transform.Find("Abilities").GetComponent<FourMeleeAttack>() && Select.SelectedObject.transform.Find("Abilities").GetComponent<FourMeleeAttack>().ToggleAbility.isOn &&
+                Select.SelectedObject.transform.Find("Abilities").GetComponent<FourMeleeAttack>().TargetParent == null && OneClick == false)*/
             {
                 return;
             }

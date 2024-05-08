@@ -56,7 +56,7 @@ public class AbilityIcon : MonoBehaviour
     private void OnStartStreaming(float time)
     {
         _castLine.gameObject.SetActive(true);
-        _castLine.StartFill(time);
+        _castLine.StartFill(time, 1, 0);
     }
 
     private void OnStopStreaming()
@@ -68,7 +68,7 @@ public class AbilityIcon : MonoBehaviour
     private void OnStartCastDeley(float time)
     {
         _castLine.gameObject.SetActive(true);
-        _castLine.StartFill(time, 1, 0);
+        _castLine.StartFill(time);
     }
 
     private void OnStopCastDeley()

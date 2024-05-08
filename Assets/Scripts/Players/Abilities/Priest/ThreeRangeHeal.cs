@@ -164,7 +164,7 @@ public class ThreeRangeHeal : AbilityBase
             TargetParent.GetComponent<HealthPlayer>().AddHeal(heal);
         }
 
-        _player.GetComponent<ManaPlayer>().UseMana(30f);
+        _player.GetComponent<ManaPlayer>().Use(30f);
 
         ThirdAbilityEvent?.Invoke(heal);
         Recharge();

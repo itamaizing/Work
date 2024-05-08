@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,8 +10,8 @@ using static UnityEngine.RuleTile.TilingRuleOutput;
 public interface ICharacterState
 {
     void EnterState(CharacterState character);
-    void UpdateState(CharacterState character);
-    void ExitState(CharacterState character);
+    void UpdateState();
+    void ExitState();
 }
 
 
@@ -20,11 +21,11 @@ public class DefaultState : ICharacterState
     {
     }
 
-    public void UpdateState(CharacterState character)
+    public void UpdateState()
     {
     }
 
-    public void ExitState(CharacterState character)
+    public void ExitState()
     {
     }
 }
@@ -33,7 +34,8 @@ public class DefaultState : ICharacterState
 // Cосто€ние невидимость
 public class InvisibleState : ICharacterState
 {
-    private Renderer[] childRenderers;
+	private CharacterState _characterState;
+	private Renderer[] childRenderers;
     private SelectObject _select;
     private GameObject _player;
 
@@ -45,19 +47,19 @@ public class InvisibleState : ICharacterState
     public void EnterState(CharacterState character)
     {
         Debug.Log("Entering Invisible State");
-
+        _characterState = character;
         _select = character.Select;
         _player = character.gameObject;
     }
 
-    public void UpdateState(CharacterState character)
+    public void UpdateState()
     {
         Debug.Log("Updating Invisible State");
 
-        childRenderers = character.GetComponentsInChildren<Renderer>();
+        childRenderers = _characterState.GetComponentsInChildren<Renderer>();
         
-        if (_select.SelectedObject.CompareTag("Enemies") && character.gameObject.CompareTag("Allies") ||
-            _select.SelectedObject.CompareTag("Allies") && character.gameObject.CompareTag("Enemies"))
+        if (_select.SelectedObject.CompareTag("Enemies") && _characterState.gameObject.CompareTag("Allies") ||
+            _select.SelectedObject.CompareTag("Allies") && _characterState.gameObject.CompareTag("Enemies"))
         {
 
             // ¬ыключаем видимость каждого дочернего Renderer
@@ -165,13 +167,13 @@ public class InvisibleState : ICharacterState
             {
                 if(Random.value <= chanceToBeSeen)
                 {
-                    _player.GetComponent<CharacterState>().ChangeState(new DefaultState());
+                    _player.GetComponent<CharacterState>().AddState(new DefaultState());
                 }
             }
         }
     }
 
-    public void ExitState(CharacterState character)
+    public void ExitState()
     {
         Debug.Log("Exiting Invisible State");
         // ѕри выходе из состо€ни€ возвращаем видимость дочерним Renderer
@@ -192,91 +194,229 @@ public class InvisibleState : ICharacterState
 // Cосто€ние оглушение
 public class StunnedState : ICharacterState
 {
+    public bool turnOff = false;
+
+    private CharacterState _characterState;
+    public PlayerMove _playerMove;
+    private float _duration;
     public void EnterState(CharacterState character)
     {
         Debug.Log("Entering Stunned State");
+        _characterState = character;
+        _playerMove.CanMove = false;
+        _duration = character.durationToExit;
+        //ability off
     }
 
-    public void UpdateState(CharacterState character)
+    public void UpdateState()
     {
         Debug.Log("Updating Stunned State");
+        _duration -= Time.deltaTime;
+        if (_duration < 0 || turnOff)
+        {
+            ExitState();
+        }
     }
 
-    public void ExitState(CharacterState character)
+    public void ExitState()
     {
         Debug.Log("Exiting Stunned State");
-    }
+        _playerMove.CanMove = true;
+		//ability on
+		_characterState.RemoveState(this);
+	}
 }
 
 // Cосто€ние ослепление
 public class BlindnessState : ICharacterState
 {
-    public void EnterState(CharacterState character)
+    public bool turnOff = false;
+
+	private CharacterState _characterState;
+	private float _duration;
+
+	public void EnterState(CharacterState character)
     {
         Debug.Log("Entering Stunned State");
+        _characterState = character;
+		//ability off
+	}
 
-        List<Toggle> toggles = character.gameObject.GetComponent<PlayerMove>().AbilitiesOnTargetToggles;
-
-        foreach (Toggle toggle in toggles)
-        {
-            toggle.enabled = false;
-        }
-    }
-
-    public void UpdateState(CharacterState character)
+	public void UpdateState()
     {
         Debug.Log("Updating Stunned State");
-    }
+		_duration -= Time.deltaTime;
+		if (_duration < 0 || turnOff)
+		{
+			ExitState();
+		}
+	}
 
-    public void ExitState(CharacterState character)
+    public void ExitState()
     {
         Debug.Log("Exiting Stunned State");
+        _characterState.RemoveState(this);
+		//ability on
+	}
+}
 
-        List<Toggle> toggles = character.gameObject.GetComponent<PlayerMove>().AbilitiesOnTargetToggles;
+// Cосто€ние заморозки
+public class FrozenState : ICharacterState
+{
+	public bool turnOff = false;
 
-        foreach (Toggle toggle in toggles)
-        {
-            toggle.enabled = true;
-        }
+	private CharacterState _characterState;
+	private HealthPlayer _playerHP;
+    private PlayerMove _playerMove;
+    private float _duration;
+	public void EnterState(CharacterState character)
+    {
+        Debug.Log("Entering Frozen State");
+        _characterState = character;
+        _playerMove = _characterState.PlayerMove;
+        _playerMove.CanMove = false;
+        //character.GetAbilityManager().ToggleAbility(false);//turn off abilities
+
+        _playerHP = _characterState.PlayerHp;
+        _playerHP.TakePhisicDamage(10 + _characterState.energy.Value / 4);
+        _playerHP.sumDamageTaken = 0;
+        //_duration = character.durationToExit;
+        _duration = 2 + _characterState.energy.Value / 20; //тут мана того кто стрел€л
+
+		_characterState.energy.Use(_characterState.energy.Value);
+
     }
+
+    public void UpdateState()
+	{
+		_duration -= Time.deltaTime;
+		if (_playerHP.sumDamageTaken >= 30 || _duration < 0 || turnOff)
+        {
+			ExitState();
+		}
+
+	}
+
+	public void ExitState()
+	{
+		Debug.Log("Exiting Frozen State");
+
+		//character.GetAbilityManager().ToggleAbility(true);//turn on abilities
+        _playerMove.CanMove = true;
+		_characterState.RemoveState(this);
+	}
+}
+
+
+public class FrostingState : ICharacterState
+{
+	public bool turnOff = false;
+
+	private CharacterState _characterState;
+	private HealthPlayer _playerHP;
+	private PlayerMove _targetMove;
+	private float _duration; //переделать под разные спелы
+	public void EnterState(CharacterState character)
+    {
+        Debug.Log("Entering Frosting State");
+        _characterState = character;
+        _targetMove = _characterState.PlayerMove;
+
+        _targetMove.CanMove = false;
+        //decrease speed of attact
+        _playerHP = _characterState.PlayerHp;
+        // акой дамаг получаем? физический или магический
+        _playerHP.TakePhisicDamage(10 + _characterState.energy.Value / 4);
+        _playerHP.sumDamageTaken = 0;
+        _duration = _characterState.durationToExit;
+
+		_characterState.energy.Use(_characterState.energy.Value);
+    }
+
+	public void UpdateState()
+	{
+		_duration -= Time.deltaTime;
+		if (_playerHP.sumDamageTaken >= 30 || _duration < 0 || turnOff)
+		{
+			ExitState();
+		}
+	}
+
+	public void ExitState()
+	{
+		Debug.Log("Exiting Frozen State");
+		_targetMove.CanMove = true;
+        //return speed of attact
+		_characterState.RemoveState(this);
+	}
 }
 
 //  ласс персонажа, использующий состо€ни€
 public class CharacterState : MonoBehaviour
 {
-    [SerializeField] private ICharacterState currentState;
-    public SelectObject Select;
+    public SelectObject Select;    
+    public HealthPlayer PlayerHp;
+    public PlayerMove PlayerMove;
 
-    private void Start()
-    {
-        currentState = new DefaultState();
-        currentState.EnterState(this);
-    }
-    private void Update()
+    [HideInInspector] public PlayerStamina energy;//person who shoted
+	[HideInInspector] public float durationToExit;//duration of state
+    [HideInInspector] public float damageToExit; // damaege needed to exit
+
+    [SerializeField] private List<ICharacterState> currentStates = new List<ICharacterState>();
+
+	private void Start()
+	{
+        if (Select == null || PlayerHp == null || PlayerMove == null)
+        {
+            Debug.LogError("No required component in " + gameObject.name);
+        }
+	}
+
+	private void Update()
     {
         // ќбновление текущего состо€ни€
-        if (currentState != null)
+        if (currentStates.Count > 0)
         {
-            currentState.UpdateState(this);
+            for (int i = 0; i < currentStates.Count; i++) 
+            {
+                currentStates[i].UpdateState();
+            }
         }
     }
 
-    public void ChangeState(ICharacterState newState)
+    public void AddState(ICharacterState newState)
     {
-        // ¬ыход из текущего состо€ни€
-        if (currentState != null)
-        {
-            currentState.ExitState(this);
-        }
+        // переделать под лист
+        //if already has, reset???
 
         // ¬ход в новое состо€ние
-        newState.EnterState(this);
-        currentState = newState;
+        currentStates.Add(newState);
+        currentStates[currentStates.Count - 1].EnterState(this);
     }
 
-    //проверка текущего состо€ни€
-    public ICharacterState CheckState()
+    public bool IfHasState(ICharacterState newState) 
     {
-        return currentState;
+        if(currentStates.Contains(newState))
+        {
+            return true;
+        }
+        else return false;
+
     }
+
+	public void RemoveState(ICharacterState newState) 
+    {
+        //newState.ExitState(this);
+        currentStates.Remove(newState);
+    }
+
+   /* public AbilityManager GetAbilityManager()
+    {
+        if( _abilityManager == null ) 
+        {
+            Debug.LogError("No ability manager!");
+            return null;
+        }
+        return _abilityManager;
+    }*/
 }

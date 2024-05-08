@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 53472a99ea59ab74597e0875f6303fb9
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - _circle: {instanceID: 0}
+  - _iconPref: {fileID: 7803743787710783319, guid: 793e4727b7b14be43a8a702db9da8643, type: 3}
+  - _areaPref: {fileID: 5003167106728792541, guid: 790fb3857b30c2b4fad4375343a84fad, type: 3}
+  - _squareAreaPref: {fileID: 5003167106728792541, guid: 613fcf3671552f04eb117ca2af2820f6, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

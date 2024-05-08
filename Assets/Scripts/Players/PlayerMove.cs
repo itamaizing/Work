@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class PlayerMove : MonoBehaviour
@@ -19,6 +20,9 @@ public class PlayerMove : MonoBehaviour
 	public GameObject MarkersSelect;
 	public GameObject AbilityPanel;
 	public List<Toggle> AbilitiesOnTargetToggles;
+
+	public event UnityAction Selected;
+	public event UnityAction Deselected;
 
 	private void Start()
 	{
@@ -69,6 +73,8 @@ public class PlayerMove : MonoBehaviour
 		CircleSelect.SetActive(true);
 		AbilityPanel.SetActive(true);
 		MarkersSelect.SetActive(true);
+
+		Selected?.Invoke();
 	}
 
 	private void Deselect()
@@ -77,8 +83,7 @@ public class PlayerMove : MonoBehaviour
 		CircleSelect.SetActive(false);
 		AbilityPanel.SetActive(false);
 		MarkersSelect.SetActive(false);
+
+		Deselected?.Invoke();
 	}
 }
-
-
-

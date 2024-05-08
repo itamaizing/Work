@@ -193,7 +193,7 @@ public class Obscurity : MonoBehaviour
 
     private void ActivateInvisibility()
     {
-        _player.GetComponent<CharacterState>().ChangeState(new InvisibleState());
+        _player.GetComponent<CharacterState>().AddState(new InvisibleState());
 
         _player.GetComponent<PlayerMove>().MoveSpeed = _originalSpeed - _originalSpeed * _persentageOfSpeedReduction;
 
@@ -209,9 +209,9 @@ public class Obscurity : MonoBehaviour
     private void DisactivateInvisibility()
     {
         _player.GetComponent<PlayerMove>().MoveSpeed = _originalSpeed;
-        if (_player.GetComponent<CharacterState>().CheckState() is InvisibleState)
+        if (_player.GetComponent<CharacterState>().IfHasState(new InvisibleState()))
         {
-            _player.GetComponent<CharacterState>().ChangeState(new DefaultState());
+            _player.GetComponent<CharacterState>().AddState(new DefaultState());
         }
 
         Destroy(_newEffectPrefab);
@@ -296,7 +296,7 @@ public class Obscurity : MonoBehaviour
     {
         if(_toggleTalent.isOn)
         {
-            if(target.GetComponent<CharacterState>().CheckState() is StunnedState)
+            if(target.GetComponent<CharacterState>().IfHasState(new StunnedState()))
             {
                 float bleedingChance = 0.9f;
 

@@ -178,7 +178,7 @@ public class OneRangeAttack : AbilityBase
 		if (TargetParent != null)
 		{
 			TargetParent.GetComponent<HealthPlayer>().AddHeal(Heal);
-			_player.GetComponent<ManaPlayer>().UseMana(1f);
+			_player.GetComponent<ManaPlayer>().Use(1f);
 			FirstAbilityEvent?.Invoke(Heal);
 
 			if (TargetParent.GetComponentInChildren<DamageAbsorption>())

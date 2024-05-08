@@ -211,12 +211,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _hpRegenerationValue: 10
   _hpRegenerationDelay: 3
-  defPh: 10
-  defMag: 10
-  evamel: 10
-  evaran: 10
-  shields_Physic: []
-  shields_Magic: []
   Health: 333
   MaxHealth: 333
   HealthBar: {fileID: 3871001752529958990}
@@ -254,6 +248,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Select: {fileID: 0}
+  player: {fileID: 0}
 --- !u!1 &1255810373264063487
 GameObject:
   m_ObjectHideFlags: 0
@@ -1718,7 +1713,6 @@ MonoBehaviour:
   AttackType: 0
   AbilityType: 0
   AttackRangeType: 0
-  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1764,7 +1758,6 @@ MonoBehaviour:
   AttackType: 0
   AbilityType: 0
   AttackRangeType: 0
-  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1809,7 +1802,6 @@ MonoBehaviour:
   AttackType: 0
   AbilityType: 0
   AttackRangeType: 0
-  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1852,7 +1844,6 @@ MonoBehaviour:
   AttackType: 0
   AbilityType: 0
   AttackRangeType: 0
-  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1920,7 +1911,6 @@ MonoBehaviour:
   AttackType: 0
   AbilityType: 0
   AttackRangeType: 0
-  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1966,7 +1956,6 @@ MonoBehaviour:
   AttackType: 0
   AbilityType: 0
   AttackRangeType: 0
-  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -2011,7 +2000,6 @@ MonoBehaviour:
   AttackType: 0
   AbilityType: 0
   AttackRangeType: 0
-  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -2054,7 +2042,6 @@ MonoBehaviour:
   AttackType: 0
   AbilityType: 0
   AttackRangeType: 0
-  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0

@@ -11,6 +11,8 @@ public class HealthPlayer : MonoBehaviour
     [SerializeField][Range(0, 100)] private float _hpRegenerationValue = 10;
     [SerializeField][Range(0, 100)] private float _hpRegenerationDelay = 3;
     private WaitForSeconds _waitForRegenHp;
+    private float _boostRegen = 0;
+    private float _boostRegen2 = 0;
 
     [Header("Def Stats")] // в идеале вынести отдельно
     // процентные резисты
@@ -36,7 +38,7 @@ public class HealthPlayer : MonoBehaviour
     public TextMeshPro HealthBarText;
     public Transform DamageSpawn;
     public TextMeshPro PrefabText;
-
+    public float sumDamageTaken = 0;
     public struct DamageInfo
     {
         public float OriginalDamage;
@@ -95,6 +97,7 @@ public class HealthPlayer : MonoBehaviour
 
             float modifiedDamage = damageInfo.ModifiedDamage;
             Health -= modifiedDamage;
+            sumDamageTaken += modifiedDamage;
             if (Health <= 0)
             {
                 Health = 0;
@@ -297,6 +300,7 @@ public class HealthPlayer : MonoBehaviour
 
             float modifiedDamage = damageInfo.ModifiedDamage;
             Health -= modifiedDamage;
+            sumDamageTaken += modifiedDamage;
             if (Health <= 0)
             {
                 Health = 0;
@@ -517,7 +521,10 @@ public class HealthPlayer : MonoBehaviour
         while (true)
         {
             yield return _waitForRegenHp;
-            this.RegenHP(_hpRegenerationValue);
+            if(Health < MaxHealth)
+            {
+                this.RegenHP(_hpRegenerationValue + _hpRegenerationValue * _boostRegen + +_hpRegenerationValue * _boostRegen2);
+            }
         }
     }
 
@@ -547,4 +554,14 @@ public class HealthPlayer : MonoBehaviour
             }
         }
     }
+
+    //да, это тупо, переделаю позже.... плюс нет удвоения при одновременном бусте
+    public void SetBoostRegen(float boostRegen) 
+    {
+        _boostRegen = boostRegen;
+	}
+	public void SetBoostRegen2(float boostRegen)
+	{
+		_boostRegen2 = boostRegen;
+	}
 }

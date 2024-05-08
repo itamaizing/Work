@@ -1,0 +1,56 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using UnityEditor.UIElements;
+using UnityEngine;
+
+public class IceCloudProjectile : MonoBehaviour
+{
+	[HideInInspector]public GameObject dad;
+
+	[SerializeField] private Rigidbody2D _rb;
+	[SerializeField] GameObject _hitEffect;
+	[SerializeField] private float _force;
+	[SerializeField] private float _distance = 5;
+
+	private Vector2 startPos;
+
+	private void Awake()
+	{
+		startPos = transform.position;
+		
+		_rb.AddForce(transform.up * _force, ForceMode2D.Impulse);
+	}
+
+	private void Update()
+	{
+		if(Vector2.Distance(transform.position, startPos) > _distance * GlobalVariable.cellSize)
+		{
+			Explode();
+		}
+	}
+
+	private void OnTriggerEnter2D(Collider2D collision)
+	{
+		if (collision.gameObject == dad || collision.CompareTag("Ability"))
+			return;
+		//damage, freez etc
+		if(collision.TryGetComponent<CharacterState>(out var target))
+		{
+			target.energy = dad.GetComponent<EnergyPlayer>();
+			target.AddState(new FrozenState());
+			GetComponent<Collider2D>().enabled = false;
+		}
+		Explode();
+	}
+
+	private void Explode()
+	{
+		if (_hitEffect != null)
+		{
+			GameObject hitEffect = Instantiate(_hitEffect, transform.position, Quaternion.identity);
+			Destroy(hitEffect, 5f);
+		}
+		Destroy(gameObject);
+	}
+}
