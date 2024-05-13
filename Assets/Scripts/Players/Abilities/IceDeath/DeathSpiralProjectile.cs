@@ -30,12 +30,18 @@ public class DeathSpiralProjectile : MonoBehaviour
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		if (collision.gameObject == dad || collision.CompareTag("Ability"))
+		if (collision.gameObject == dad)
 			return;
 		//damage, freez etc
 		if (collision.TryGetComponent<PlayerLinks>(out var target))
 		{
+			target.HealthPlayer.TakePhisicDamage(20);
 			//damage
+		}
+		if(collision.TryGetComponent<IceShadowObject>(out var shadow))
+		{
+			shadow.SetAlive();
+			Debug.Log(shadow.name + " become alive");
 		}
 
 		//if collision == ice puddle or ice shadow

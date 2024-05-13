@@ -1972,7 +1972,14 @@ MonoBehaviour:
   _playerMove: {fileID: 8264867649627807809}
   _mana: {fileID: 8934230934356217642}
   _health: {fileID: 7601164126198867055}
-  _abilities: []
+  _abilities:
+  - {fileID: 0}
+  - {fileID: 7915244162019678924}
+  - {fileID: 1671752607338581685}
+  - {fileID: 3699271698567802279}
+  - {fileID: 5862965717272100732}
+  - {fileID: 7907910968683187086}
+  - {fileID: 4978467543216721885}
 --- !u!114 &1156122406318860820
 MonoBehaviour:
   m_ObjectHideFlags: 0
