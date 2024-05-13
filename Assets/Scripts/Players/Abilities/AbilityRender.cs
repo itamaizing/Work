@@ -71,7 +71,7 @@ public class AbilityRender : MonoBehaviour
 
     private IEnumerator DrawCoroutine()
     {
-        while (Input.GetMouseButtonDown(0) == false)
+        while (true)
         {
             Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, 0);
             _icon.transform.position = mouse;
@@ -85,6 +85,5 @@ public class AbilityRender : MonoBehaviour
 
             yield return null;
         }
-        StopDraw();
     }
 }
