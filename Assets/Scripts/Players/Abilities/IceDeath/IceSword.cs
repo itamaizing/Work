@@ -40,7 +40,10 @@ public class IceSword : Ability
 				}
 			}
 		}
-		_target.TakePhisicDamage(_damage + Random.Range(0, 10));
+		if (_target != null)
+		{
+			_target.TakePhisicDamage(_damage + Random.Range(0, 10));
+		}
 
 		if( _hitInARow > 2 ) 
 		{
