@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 
 public class BleedingDebaff : BaseEffect
-{
+{ 
     private bool _canMakeBleeding = false;
     public float BleedingDuration = 3;
     private float _valueCooldown = 1;
@@ -28,7 +28,7 @@ public class BleedingDebaff : BaseEffect
     {
         if (_canMakeBleeding)
         {
-            transform.parent.GetComponent<HealthPlayer>().TakeDamage(_damageValue, DamageType, AttackRangeType);
+            transform.parent.GetComponent<HealthPlayer>().TryTakeDamage(_damageValue, DamageType, AttackRangeType);
 
             if (twoMeleeAttackComponent != null && twoMeleeAttackComponent.gameObject != transform.parent.gameObject)
             {

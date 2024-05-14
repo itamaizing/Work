@@ -20,6 +20,7 @@ public class OneMeleeAttack : AbilityBase
     private Toggle _toggleSecondAbility;
     private bool _isOneChange;
 
+
     protected override KeyCode ActivationKey => KeyCode.Alpha1;
 
     private void Start()
@@ -28,7 +29,7 @@ public class OneMeleeAttack : AbilityBase
         AttackType = AttackType.Autoattack;
         AbilityType = AbilityType.DamageAbility;
         AttackRangeType = AttackRangeType.MeleeAttack;
-        DamageType = DamageType.Magical;
+        DamageType = DamageType.Physical;
     }
 
     private void Update()
@@ -136,7 +137,6 @@ public class OneMeleeAttack : AbilityBase
         _isOneChange = true;
         Destroy(NewAbilityPrefab);
     }
-
     private void HandleTargetSelection()
     {
         // Выбор врага
@@ -156,7 +156,7 @@ public class OneMeleeAttack : AbilityBase
     }
 
     public override void HandleDealDamageOrHeal()
-    {
+    { 
         // Нанесение урона
         _damageValue = 12;
 
@@ -217,40 +217,15 @@ public class OneMeleeAttack : AbilityBase
 
             StartCoroutine(DamageCooldown(activePsionica));
             _playerAbility.GetComponent<FiveConversion>().UseActivePsionica(activePsionica, Target);
+            Debug.LogWarning("hadlePsionica");
         }
     }
 
-    private void MissAtDistance()
-    {
-        // Промах при отдаление более чем на 10% от корпуса
-        if (previousPosition == Vector3.zero)
-        {
-            previousPosition = TargetParent.transform.position;
-        }
-
-        float time = 0;
-        time += Time.deltaTime;
-        if (time < 0.6f)
-        {
-            Vector3 currentPosition = TargetParent.transform.position;
-
-            if (Vector3.Distance(previousPosition, currentPosition) >= 0.19f)
-            {
-                _damageValue = 0;
-            }
-
-            previousPosition = currentPosition;
-        }
-    }
 
     private IEnumerator Damage(float damageRate)
     {
-        if (TargetCanAvoidance)
-        {
-            MissAtDistance();
-        }
-
         yield return new WaitForSeconds(damageRate / 2);
+
 
         Shield _shield = null;
 
@@ -273,9 +248,9 @@ public class OneMeleeAttack : AbilityBase
         }
         else
         {
-            _targetHealth.TakeDamage(_damageValue, DamageType, AttackRangeType);
+            _targetHealth.TryTakeDamage(_damageValue, DamageType, AttackRangeType);
             _player.GetComponent<PsionicaMelee>().MakePsionica(_damageValue);
-            HandleActivePsionica();
+            //HandleActivePsionica();
             CanMakeDamage = false;
 
             yield return new WaitForSeconds(damageRate / 2);
@@ -288,6 +263,6 @@ public class OneMeleeAttack : AbilityBase
     private IEnumerator DamageCooldown(float activePsionica)
     {
         yield return new WaitForSeconds(0.1f);
-        _targetHealth.TakeDamage(activePsionica, DamageType.Magical, AttackRangeType);
+        _targetHealth.TryTakeDamage(activePsionica, DamageType.Magical, AttackRangeType);
     }
 }
