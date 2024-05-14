@@ -1,7 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.DeviceSimulation;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class Teleportation_Scorpion : Ability
