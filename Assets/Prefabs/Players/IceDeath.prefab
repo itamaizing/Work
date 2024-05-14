@@ -48,7 +48,7 @@ Transform:
   - {fileID: 5287686256838225055}
   - {fileID: 5590142317354752112}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1935025463078411595
 Rigidbody2D:
@@ -198,7 +198,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 0}
 --- !u!114 &7601164126198867055
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -213,13 +212,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _hpRegenerationValue: 10
   _hpRegenerationDelay: 3
-  defPh: 10
-  defMag: 10
-  evamel: 10
-  evaran: 10
+  _defPhysDamage: 10
+  _defMagDamage: 10
+  _evadeMeleeDamage: 10
+  _evadeRangeDamage: 10
+  _evadeMagDamage: 10
+  _absorbPhysDamage: 0
+  _absorbMagDamage: 0
   shields_Physic: []
   shields_Magic: []
-  Health: 1111
+  Health: 333
   MaxHealth: 333
   HealthBar: {fileID: 3871001752529958990}
   HealthBarText: {fileID: 2549404566520559099}
@@ -256,13 +258,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bd22fe231e3f2e41b5e309172c34d13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _value: 0
-  _maxValue: 0
+  _value: 10
+  _maxValue: 10
   _regenerationValue: 10
   _regenerationDelay: 3
-  Bar: {fileID: 0}
-  DamageSpawn: {fileID: 0}
-  PrefabText: {fileID: 0}
+  Bar: {fileID: 3940982052316368010}
+  DamageSpawn: {fileID: 8933781320356208631}
+  PrefabText: {fileID: 97509558472111251, guid: b8ec9c7fb2a215a418a41efc3aec9187, type: 3}
   _runeResetDelay: 6
   _runeSprite: {fileID: 5269347689244837285}
 --- !u!114 &8934230934356217642
@@ -277,7 +279,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30e849fb64ec77e4b94f9f568f688e22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _value: 0
+  _value: 70
   _maxValue: 70
   _regenerationValue: 10
   _regenerationDelay: 3
@@ -1928,6 +1930,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8923380669055877266}
   - component: {fileID: 6629263405178576375}
+  - component: {fileID: 2109578286988862312}
   - component: {fileID: 1156122406318860820}
   - component: {fileID: 7915244162019678924}
   - component: {fileID: 1671752607338581685}
@@ -1973,14 +1976,15 @@ MonoBehaviour:
   _mana: {fileID: 8934230934356217642}
   _health: {fileID: 7601164126198867055}
   _abilities:
-  - {fileID: 0}
+  - {fileID: 1156122406318860820}
   - {fileID: 7915244162019678924}
   - {fileID: 1671752607338581685}
   - {fileID: 3699271698567802279}
   - {fileID: 5862965717272100732}
   - {fileID: 7907910968683187086}
   - {fileID: 4978467543216721885}
---- !u!114 &1156122406318860820
+  _abilityRender: {fileID: 2109578286988862312}
+--- !u!114 &2109578286988862312
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1989,13 +1993,31 @@ MonoBehaviour:
   m_GameObject: {fileID: 7378065823814705286}
   m_Enabled: 1
   m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53472a99ea59ab74597e0875f6303fb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _circle: {fileID: 8128605320138084665}
+  _iconPref: {fileID: 7803743787710783319, guid: 793e4727b7b14be43a8a702db9da8643, type: 3}
+  _areaPref: {fileID: 5003167106728792541, guid: 790fb3857b30c2b4fad4375343a84fad, type: 3}
+  _squareAreaPref: {fileID: 5003167106728792541, guid: 613fcf3671552f04eb117ca2af2820f6, type: 3}
+--- !u!114 &1156122406318860820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7378065823814705286}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e0472c7c6c6b721418ebe181869af7fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _abilityInfo: {fileID: 0}
+  _abilityInfo: {fileID: 11400000, guid: f6b63db1fe9a8db4b86632917e246e69, type: 2}
   _isAutoAttack: 1
   _radius: 0
   _area: 0
+  _castLength: 0
+  _castWidth: 0
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
@@ -2021,10 +2043,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d29bd518fc6a043439d0db6b7aae013c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _abilityInfo: {fileID: 0}
+  _abilityInfo: {fileID: 11400000, guid: 4149308b91515334c801b1f26c6c99ba, type: 2}
   _isAutoAttack: 0
   _radius: 0
   _area: 0
+  _castLength: 0
+  _castWidth: 0
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
@@ -2050,10 +2074,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4ad3c38086e96b4197ca42e65e25bcf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _abilityInfo: {fileID: 0}
+  _abilityInfo: {fileID: 11400000, guid: e43281df2f36f8847a019f5d98c83495, type: 2}
   _isAutoAttack: 0
   _radius: 0
   _area: 0
+  _castLength: 0
+  _castWidth: 0
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
@@ -2079,10 +2105,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24f65756b4c9ac842be66740c2640b10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _abilityInfo: {fileID: 0}
+  _abilityInfo: {fileID: 11400000, guid: f0fbbbbe7ed419f45a1c3c375281ecf1, type: 2}
   _isAutoAttack: 0
   _radius: 0
   _area: 0
+  _castLength: 0
+  _castWidth: 0
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
@@ -2108,10 +2136,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 924d76d3d13ffb24e84fa30e89ae4eb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _abilityInfo: {fileID: 0}
+  _abilityInfo: {fileID: 11400000, guid: 6e603452e81f85842b595b2c7f0d472d, type: 2}
   _isAutoAttack: 0
   _radius: 0
   _area: 0
+  _castLength: 0
+  _castWidth: 0
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
@@ -2140,10 +2170,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e55116f00838d7489e8c4649c0d5cfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _abilityInfo: {fileID: 0}
+  _abilityInfo: {fileID: 11400000, guid: 735131f592de46b408a7ae44e2bfe1c6, type: 2}
   _isAutoAttack: 0
   _radius: 1.9
   _area: 0
+  _castLength: 0
+  _castWidth: 0
   _manaCost: 10
   _castDeley: 1.4
   _cooldown: 0
@@ -2170,10 +2202,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 414d375212949f842a89a5fb8463c471, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _abilityInfo: {fileID: 0}
+  _abilityInfo: {fileID: 11400000, guid: a872290825a5a324e90a34f29c4bf3d2, type: 2}
   _isAutoAttack: 0
   _radius: 0
   _area: 0
+  _castLength: 0
+  _castWidth: 0
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
