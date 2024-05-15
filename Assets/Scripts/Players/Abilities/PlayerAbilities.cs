@@ -33,7 +33,8 @@ public class PlayerAbilities : MonoBehaviour
 
     private void OnEnable()
 	{
-		InputHandler.OnAltClick += CancelSpellCast;
+        InputHandler.OnClick += TryUseAbility;
+        InputHandler.OnAltClick += CancelSpellCast;
 
         InputHandler.OnFirstCast += SetCurrentAbility;
         InputHandler.OnSecondCast += SetCurrentAbility;
@@ -44,7 +45,8 @@ public class PlayerAbilities : MonoBehaviour
 
     private void OnDisable()
 	{
-		InputHandler.OnAltClick -= CancelSpellCast;
+        InputHandler.OnClick -= TryUseAbility;
+        InputHandler.OnAltClick -= CancelSpellCast;
 
         InputHandler.OnFirstCast -= SetCurrentAbility;
         InputHandler.OnSecondCast -= SetCurrentAbility;
@@ -63,34 +65,27 @@ public class PlayerAbilities : MonoBehaviour
         _isAbilitiesDisabled = false;
     }
 
-    private void OnDeselected()
-    {
-        this.enabled = false;
-    }
-
-    private void OnSelected()
-    {
-        this.enabled = true;
-    }
-
     private void SetCurrentAbility(int index)
     {
-        if (index >= _abilities.Count || _isAbilitiesDisabled == true)
+        if (index >= _abilities.Count)
             return;
         
-        if(_currentAbility.IsUsed == false && _isAbilitiesDisabled == false)
+        if(_currentAbility.IsUsed == false)
         {
             _currentAbility.PreparingEnded -= _abilityRender.StopDraw;
             _currentAbility = _abilities[index];
-            _abilityRender.Drawn(_currentAbility);
             _currentAbility.PreparingEnded += _abilityRender.StopDraw;
-            _currentAbility.TryUse();
+            TryUseAbility();
         }
     }
 
     private void TryUseAbility()
     {
+        if (_isAbilitiesDisabled == true || _currentAbility.IsUsed == true)
+            return;
 
+        _abilityRender.Drawn(_currentAbility);
+        _currentAbility.TryUse();
     }
 
     private void CancelSpellCast()
@@ -100,5 +95,15 @@ public class PlayerAbilities : MonoBehaviour
             _currentAbility.TryCancel();
             _abilityRender.StopDraw();
         }
+    }
+
+    private void OnDeselected()
+    {
+        this.enabled = false;
+    }
+
+    private void OnSelected()
+    {
+        this.enabled = true;
     }
 }
