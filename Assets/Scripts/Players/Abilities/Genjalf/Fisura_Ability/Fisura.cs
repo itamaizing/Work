@@ -5,7 +5,6 @@ using UnityEngine;
 public class Fisura : Ability
 {
     [Header("Ability settings")]
-    [SerializeField] private DrawCircle _drawCircle;
     [SerializeField] private FisuraTail _fisuraTilePrefab;
     [SerializeField] private float _width;
     [SerializeField] private float _length;
@@ -19,7 +18,6 @@ public class Fisura : Ability
 
     protected override void Cast()
     {
-        _drawCircle.Draw(Radius);
         _useJob = StartCoroutine(UseCoroutine());
     }
 
@@ -27,7 +25,6 @@ public class Fisura : Ability
     {
         StopCoroutine(_useJob);
         Destroy(_fisuraTile.gameObject);
-        _drawCircle.Clear();
     }
 
     private bool IsMouseInRadius()
@@ -98,7 +95,6 @@ public class Fisura : Ability
             AddAngleTileWithoutOffset();
             FisuraActivate();
 
-            _drawCircle.Clear();
             PayCost();
             yield break;
         }
@@ -134,7 +130,6 @@ public class Fisura : Ability
         AddAngleTile();
         FisuraActivate();
 
-        _drawCircle.Clear();
         PayCost();
     }
 }

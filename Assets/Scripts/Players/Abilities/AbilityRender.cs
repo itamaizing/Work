@@ -6,13 +6,13 @@ public class AbilityRender : MonoBehaviour
 {
     [SerializeField] private DrawCircle _circle;
     [SerializeField] private SpriteRenderer _iconPref;
-    [SerializeField] private SpriteRenderer _areaPref;
-    [SerializeField] private SpriteRenderer _squareAreaPref;
+    [SerializeField] private CircleArea _areaPref;
+    [SerializeField] private BoxArea _squareAreaPref;
 
     private float _radius;
     private SpriteRenderer _icon;
-    private SpriteRenderer _area;
-    private SpriteRenderer _squareArea;
+    private CircleArea _area;
+    private BoxArea _squareArea;
     private Coroutine _drawCursorAbilityIconJob;
     public void Drawn(Ability ability)
     {
@@ -21,15 +21,18 @@ public class AbilityRender : MonoBehaviour
         _icon = Instantiate(_iconPref);
         _icon.sprite = ability.Icon;
 
-        _area = Instantiate(_areaPref);
-        _area.size = new Vector2(ability.Area, ability.Area);
+        _area = Instantiate(_areaPref, transform);
+        _area.SetSize(ability.Area);
 
         _squareArea = Instantiate(_squareAreaPref, transform);
-        _squareArea.size = new Vector2(ability.CastWidth, ability.CastLength);
+        _squareArea.SetSize(ability.CastWidth, ability.CastLength);
 
         _radius = ability.Radius;
-        _circle.Draw(_radius);
 
+        if (ability.CastLength <= 0)
+        {
+            _circle.Draw(_radius);
+        }
         _drawCursorAbilityIconJob = StartCoroutine(DrawCoroutine());
     }
 
@@ -43,7 +46,7 @@ public class AbilityRender : MonoBehaviour
 
         Destroy(_icon.gameObject);
         Destroy(_area.gameObject);
-        Destroy(_squareArea);
+        Destroy(_squareArea.gameObject);
         _circle.Clear();
 
         _icon = null;
@@ -79,10 +82,23 @@ public class AbilityRender : MonoBehaviour
             RotateAtMouse(_squareArea.transform);
 
             if (IsMouseInRadius(_radius))
+            {
                 _circle.SetColor(Color.green);
+                _area.SetColor(Color.green);
+            }
             else
+            {
                 _circle.SetColor(Color.red);
-
+                _area.SetColor(Color.red);
+            }
+            if (_squareArea.IsConcernsEnemy)
+            {
+                _squareArea.SetColor(Color.green);
+            }
+            else
+            {
+                _squareArea.SetColor(Color.red);
+            }
             yield return null;
         }
     }
