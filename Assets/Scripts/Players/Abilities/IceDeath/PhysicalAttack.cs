@@ -45,7 +45,7 @@ public class PhysicalAttack : Ability
 
 	private void Hit(HealthPlayer enemy)
 	{
-		if(_target == enemy)
+		if(_target == enemy && _dad.Stamina.Use(5))
 		{
 			_hitInARow++;
 			enemy.TakeDamage(_damage, DamageType.Physical);
@@ -73,11 +73,13 @@ public class PhysicalAttack : Ability
 		_dad.Stamina.Add(_dad.Stamina.MaxValue*0.4f);
 		//regen 40 energy
 		_hitInARow = 0;
+		_target = null;
 	}
 
 	private void Timer()
 	{
 		//if timer <0
 		//hit in a row = 0;
+		//_target = null;
 	}
 }
