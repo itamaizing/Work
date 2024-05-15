@@ -15,7 +15,15 @@ public class PhysicalAttack : Ability
 	private int _hitInARow = 0;
 	private float _multiplySpeed = .05f;
 	private HealthPlayer _target;
+	private float _timer = 1f;
+	private float _baseTimer = 1f;
+	private bool _isInTheRow = false;
 
+
+	private void Update()
+	{
+		Timer();
+	}
 	protected override void Cancel()
 	{
 		//turn off targets and etc		
@@ -48,6 +56,7 @@ public class PhysicalAttack : Ability
 		if(_target == enemy && _dad.Stamina.Use(5))
 		{
 			_hitInARow++;
+			_timer = _baseTimer;
 			enemy.TakeDamage(_damage + Random.Range(0, 2), DamageType.Physical);
 			if (_hitInARow >= 6)
 			{
@@ -57,6 +66,8 @@ public class PhysicalAttack : Ability
 		else
 		{
 			_target = enemy;
+			_isInTheRow = true;
+			_timer = _baseTimer;
 			_hitInARow = 0;
 			_multiplySpeed = .05f;
 			enemy.TakeDamage(_damage + Random.Range(0, 2), DamageType.Physical);
@@ -74,12 +85,20 @@ public class PhysicalAttack : Ability
 		//regen 40 energy
 		_hitInARow = 0;
 		_target = null;
+		_isInTheRow= false;
+		_timer = _baseTimer;
 	}
 
 	private void Timer()
 	{
-		//if timer <0
-		//hit in a row = 0;
-		//_target = null;
+		if (_isInTheRow)
+		{
+			_timer -= Time.deltaTime;
+			if (_timer <= 0)
+			{
+				_timer = _baseTimer;
+				_isInTheRow = false;
+			}
+		}
 	}
 }
