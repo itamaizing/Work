@@ -15,14 +15,17 @@ public class DefaultState : ICharacterState
 {
     public void EnterState(CharacterState character)
     {
+
     }
 
     public void UpdateState()
     {
+
     }
 
     public void ExitState()
     {
+
     }
 }
 
