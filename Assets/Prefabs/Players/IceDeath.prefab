@@ -48,7 +48,7 @@ Transform:
   - {fileID: 5287686256838225055}
   - {fileID: 5590142317354752112}
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1935025463078411595
 Rigidbody2D:
@@ -2007,14 +2007,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7378065823814705286}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e0472c7c6c6b721418ebe181869af7fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _abilityInfo: {fileID: 11400000, guid: f6b63db1fe9a8db4b86632917e246e69, type: 2}
   _isAutoAttack: 1
-  _radius: 0
+  _radius: 2
   _area: 0
   _castLength: 0
   _castWidth: 0
