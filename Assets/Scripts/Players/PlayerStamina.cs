@@ -6,6 +6,7 @@ using UnityEngine;
 public abstract class PlayerStamina : MonoBehaviour
 {
 	public float Value { get { return _value; } }
+	public float MaxValue { get { return _maxValue; } }
 
 	[SerializeField] protected float _value;
 	[SerializeField] protected float _maxValue;

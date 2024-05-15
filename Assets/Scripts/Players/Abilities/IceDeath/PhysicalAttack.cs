@@ -11,9 +11,9 @@ public class PhysicalAttack : Ability
 {
 	[SerializeField] private float _damage = 1f;
 	[SerializeField] private float _abilityCooldown = 1f;
-	[SerializeField] private GameObject _dad;
+	[SerializeField] private PlayerLinks _dad;
 	private int _hitInARow = 0;
-	private bool _isInTheRow = false;
+	private float _multiplySpeed = .05f;
 	private HealthPlayer _target;
 
 	protected override void Cancel()
@@ -34,20 +34,50 @@ public class PhysicalAttack : Ability
 		{
 			if (col.gameObject == _dad)
 				continue;
-			Debug.Log("Enemy detected: " + col.gameObject.name);
+			if(TryGetComponent<PlayerLinks>(out var enemy))
+			{
+				Debug.Log("Enemy detected: " + col.gameObject.name);
+				Hit(enemy.HealthPlayer);
+				break;
+			}			
 		}
 	}
 
-	/*private void LastHit()
+	private void Hit(HealthPlayer enemy)
 	{
-		//if player have 5 energy
+		if(_target == enemy)
 		{
-			_targetHealth.TakeDamage(_damageValue * .5f, DamageType, AttackRangeType);
+			_hitInARow++;
+			enemy.TakeDamage(_damage, DamageType.Physical);
+			if (_hitInARow >= 6)
+			{
+				LastHit();
+			}
+		}
+		else
+		{
+			_target = enemy;
+			_hitInARow = 0;
+			_multiplySpeed = .05f;
+			enemy.TakeDamage(_damage, DamageType.Physical);
+		}
+	}
+	private void LastHit()
+	{
+		if (_dad.Stamina.Use(10))
+		{
+			_target.TakeDamage(_damage * .5f, DamageType.Physical);
 			//отбрасывание и стан
 			
 		}
+		_dad.Stamina.Add(_dad.Stamina.MaxValue*0.4f);
 		//regen 40 energy
 		_hitInARow = 0;
-		_isInTheRow = false;
-	}*/
+	}
+
+	private void Timer()
+	{
+		//if timer <0
+		//hit in a row = 0;
+	}
 }
