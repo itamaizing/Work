@@ -9,7 +9,7 @@ using static UnityEngine.GraphicsBuffer;
 
 public class PhysicalAttack : Ability
 {
-	[SerializeField] private float _damage = 1f;
+	[SerializeField] private float _damage = 8f;
 	[SerializeField] private float _abilityCooldown = 1f;
 	[SerializeField] private PlayerLinks _dad;
 	private int _hitInARow = 0;
@@ -48,7 +48,7 @@ public class PhysicalAttack : Ability
 		if(_target == enemy && _dad.Stamina.Use(5))
 		{
 			_hitInARow++;
-			enemy.TakeDamage(_damage, DamageType.Physical);
+			enemy.TakeDamage(_damage + Random.Range(0, 2), DamageType.Physical);
 			if (_hitInARow >= 6)
 			{
 				LastHit();
@@ -59,7 +59,7 @@ public class PhysicalAttack : Ability
 			_target = enemy;
 			_hitInARow = 0;
 			_multiplySpeed = .05f;
-			enemy.TakeDamage(_damage, DamageType.Physical);
+			enemy.TakeDamage(_damage + Random.Range(0, 2), DamageType.Physical);
 		}
 	}
 	private void LastHit()
