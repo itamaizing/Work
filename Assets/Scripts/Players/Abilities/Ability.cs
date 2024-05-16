@@ -97,6 +97,7 @@ public abstract class Ability : MonoBehaviour
         {
             Cancel();
             _isUsed = false;
+            _playerMove.CanMove = true;
 
             if (_streamingJob != null)
             {
@@ -205,6 +206,8 @@ public abstract class Ability : MonoBehaviour
 
     private IEnumerator CastDeleyCoroutine()
     {
+        _playerMove.CanMove = false;
+
         PreparingEnded?.Invoke();
         float time = 0;
 
@@ -213,6 +216,7 @@ public abstract class Ability : MonoBehaviour
             time += Time.deltaTime;
             yield return null;
         }
+        _playerMove.CanMove = true;
         _castDeleyJob = null;
     }
 
@@ -234,8 +238,10 @@ public abstract class Ability : MonoBehaviour
 
     private IEnumerator ManaCostPerTickCorutine()
     {
+        _playerMove.CanMove = false;
         StartStreaming?.Invoke(_streamingDuration);
         float time = 0;
+
         while (time < _streamingDuration + _manaCostRate && _mana.Value >= _manaCostPerTick)
         {
             Mana.Use(_manaCostPerTick);
@@ -243,6 +249,7 @@ public abstract class Ability : MonoBehaviour
             yield return new WaitForSeconds(_manaCostRate);
         }
         StopStreaming?.Invoke();
+        _playerMove.CanMove = true;
         _isCanCancle = true;
         TryCancel();
         CastEnded?.Invoke();
