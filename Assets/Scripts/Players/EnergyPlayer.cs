@@ -87,4 +87,11 @@ public class EnergyPlayer : PlayerStamina
 			}
 		}
 	}
+
+	public float UseAllEnergy()
+	{
+		float usedEnergy = _value;
+		_value -= usedEnergy;
+		return usedEnergy;
+	}
 }

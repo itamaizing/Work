@@ -22,9 +22,9 @@ public class IceShadowObject : MonoBehaviour
 	 * */
 	private void Start()
 	{
-		int timeToAdd = (int)energyPlayer.Value / 20;
+		float timeToAdd = energyPlayer.Value / 20;
 		timeToDestroy += timeToAdd;
-		energyPlayer.Use(timeToAdd*20);
+		energyPlayer.UseAllEnergy();
 		_destroyObj = StartCoroutine(DestroyShadow());
 	}
 
