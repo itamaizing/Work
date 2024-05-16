@@ -5,7 +5,7 @@ using UnityEngine;
 // »нтерфейс состо€ни€
 public interface ICharacterState
 {
-    void EnterState(CharacterState character);
+    void EnterState(CharacterState character, float durationToExit, float damageToExit);
     void UpdateState();
     void ExitState();
 }
@@ -13,7 +13,7 @@ public interface ICharacterState
 
 public class DefaultState : ICharacterState
 {
-    public void EnterState(CharacterState character)
+    public void EnterState(CharacterState character, float durationToExit, float damageToExit)
     {
 
     }
@@ -43,7 +43,7 @@ public class InvisibleState : ICharacterState
     private float lastCheckTime;
     private float checkInterval = 1f;
 
-    public void EnterState(CharacterState character)
+    public void EnterState(CharacterState character, float durationToExit, float damageToExit)
     {
         Debug.Log("Entering Invisible State");
         _characterState = character;
@@ -198,12 +198,12 @@ public class StunnedState : ICharacterState
     private CharacterState _characterState;
     public PlayerMove _playerMove;
     private float _duration;
-    public void EnterState(CharacterState character)
+    public void EnterState(CharacterState character, float durationToExit, float damageToExit)
     {
         Debug.Log("Entering Stunned State");
         _characterState = character;
         _playerMove.CanMove = false;
-        _duration = character.durationToExit;
+        //_duration = character.durationToExit;
         //ability off
     }
 
@@ -234,9 +234,10 @@ public class BlindnessState : ICharacterState
 	private CharacterState _characterState;
 	private float _duration;
 
-	public void EnterState(CharacterState character)
+	public void EnterState(CharacterState character, float durationToExit, float damageToExit)
     {
         Debug.Log("Entering Stunned State");
+        _duration = durationToExit;
         _characterState = character;
 		//ability off
 	}
@@ -268,28 +269,40 @@ public class FrozenState : ICharacterState
 	private HealthPlayer _playerHP;
     private PlayerMove _playerMove;
     private float _duration;
-	public void EnterState(CharacterState character)
+    private float _damageToExit;
+
+	public void EnterState(CharacterState character, float durationToExit, float damageToExit)
     {
         Debug.Log("Entering Frozen State");
         _characterState = character;
+        _duration = durationToExit;
+        if (damageToExit == 0)
+        {
+            _damageToExit = 10000;
+        }
+        else
+        {
+            _damageToExit = damageToExit;
+        }
+        _playerHP = _characterState.PlayerHp;
+
         _playerMove = _characterState.PlayerMove;
         _playerMove.CanMove = false;
         //character.GetAbilityManager().ToggleAbility(false);//turn off abilities
 
-        _playerHP = _characterState.PlayerHp;
-        _playerHP.TakePhisicDamage(10 + _characterState.energy.Value / 4);
+        //_playerHP.TakePhisicDamage(10 + _characterState.energy.Value / 4);
+        //_playerHP.TakeDamage(10 + _characterState.energy.Value / 4, DamageType.Physical);
         _playerHP.sumDamageTaken = 0;
-        //_duration = character.durationToExit;
-        _duration = 2 + _characterState.energy.Value / 20; //тут мана того кто стрел€л
+        //_duration = 2 + _characterState.energy.Value / 20; //тут мана того кто стрел€л
 
-		_characterState.energy.Use(_characterState.energy.Value);
+		//_characterState.energy.Use(_characterState.energy.Value);
 
     }
 
     public void UpdateState()
 	{
 		_duration -= Time.deltaTime;
-		if (_playerHP.sumDamageTaken >= 30 || _duration < 0 || turnOff)
+		if (_playerHP.sumDamageTaken >= _damageToExit || _duration < 0 || turnOff)
         {
 			ExitState();
 		}
@@ -314,28 +327,36 @@ public class FrostingState : ICharacterState
 	private CharacterState _characterState;
 	private HealthPlayer _playerHP;
 	private PlayerMove _targetMove;
-	private float _duration; //переделать под разные спелы
-	public void EnterState(CharacterState character)
+	private float _duration; 
+	private float _damageToExit;
+	public void EnterState(CharacterState character, float durationToExit, float damageToExit)
     {
         Debug.Log("Entering Frosting State");
         _characterState = character;
         _targetMove = _characterState.PlayerMove;
+		if (damageToExit == 0)
+		{
+			_damageToExit = 10000;
+		}
+		else
+		{
+			_damageToExit = damageToExit;
+		}
+		_playerHP = _characterState.PlayerHp;
 
         _targetMove.CanMove = false;
         //decrease speed of attact
-        _playerHP = _characterState.PlayerHp;
-        // акой дамаг получаем? физический или магический
-        _playerHP.TakePhisicDamage(10 + _characterState.energy.Value / 4);
+        //_playerHP.TakePhisicDamage(10 + _characterState.energy.Value / 4);
+        //_playerHP.TakeDamage(10 + _characterState.energy.Value / 4, DamageType.Physical);
         _playerHP.sumDamageTaken = 0;
-        _duration = _characterState.durationToExit;
 
-		_characterState.energy.Use(_characterState.energy.Value);
+		//_characterState.energy.Use(_characterState.energy.Value);
     }
 
 	public void UpdateState()
 	{
 		_duration -= Time.deltaTime;
-		if (_playerHP.sumDamageTaken >= 30 || _duration < 0 || turnOff)
+		if (_playerHP.sumDamageTaken >= _damageToExit || _duration < 0 || turnOff)
 		{
 			ExitState();
 		}
@@ -343,7 +364,7 @@ public class FrostingState : ICharacterState
 
 	public void ExitState()
 	{
-		Debug.Log("Exiting Frozen State");
+		Debug.Log("Exiting Frosting State");
 		_targetMove.CanMove = true;
         //return speed of attact
 		_characterState.RemoveState(this);
@@ -357,9 +378,7 @@ public class CharacterState : MonoBehaviour
     public HealthPlayer PlayerHp;
     public PlayerMove PlayerMove;
 
-    [HideInInspector] public PlayerStamina energy;//person who shoted
-	[HideInInspector] public float durationToExit;//duration of state
-    [HideInInspector] public float damageToExit; // damaege needed to exit
+    //[HideInInspector] public PlayerStamina energy;//person who shoted
 
     [SerializeField] private List<ICharacterState> currentStates = new List<ICharacterState>();
 
@@ -390,9 +409,15 @@ public class CharacterState : MonoBehaviour
 
         // ¬ход в новое состо€ние
         currentStates.Add(newState);
-        currentStates[currentStates.Count - 1].EnterState(this);
+        currentStates[currentStates.Count - 1].EnterState(this, 0, 0);
     }
+    public void AddState(ICharacterState newState, float duration, float damageToExit)
+    {
+		currentStates.Add(newState);
+		//currentStates[currentStates.Count - 1].
+		currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
 
+	}
     public bool IfHasState(ICharacterState newState) 
     {
         if(currentStates.Contains(newState))

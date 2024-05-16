@@ -3942,9 +3942,21 @@ PrefabInstance:
       propertyPath: _isAutoAttack
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2109578286988862312, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: _areaPref
+      value: 
+      objectReference: {fileID: 1574982521674352815, guid: 790fb3857b30c2b4fad4375343a84fad, type: 3}
+    - target: {fileID: 2109578286988862312, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: _squareAreaPref
+      value: 
+      objectReference: {fileID: 6069098087972325736, guid: 613fcf3671552f04eb117ca2af2820f6, type: 3}
+    - target: {fileID: 3699271698567802279, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: _area
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3699271698567802279, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _radius
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5793172127680476127, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _regenerationValue
@@ -3998,6 +4010,14 @@ PrefabInstance:
       propertyPath: Select
       value: 
       objectReference: {fileID: 2182717424319947106}
+    - target: {fileID: 7915244162019678924, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: _area
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7915244162019678924, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: _radius
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 8264867649627807809, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: AbilityPanel
       value: 

@@ -13,7 +13,7 @@ public class IcePuddleObject : MonoBehaviour
 	[SerializeField] private Rigidbody2D _rb;
 	[SerializeField] GameObject _hitEffect;
 
-	private List<CharacterState> _enemies;
+	private List<CharacterState> _enemies = new List<CharacterState>();
 
 	/*
 	 * timer to destroy
@@ -46,12 +46,22 @@ public class IcePuddleObject : MonoBehaviour
 			healthPlayer.SetBoostRegen2(0.01f);
 			return;
 		}
-		//damage, freez etc
-		if (collision.TryGetComponent<CharacterState>(out var target) && energyPlayer != null && collision.gameObject != dad)
+		if (collision.TryGetComponent<PlayerLinks>(out var target) && energyPlayer != null && collision.gameObject != dad)
 		{
-			target.AddState(new FrostingState());
-			_enemies.Add(target);
-			//GetComponent<Collider2D>().enabled = false;
+			float duration = 3;
+			//target.CharacterState.energy = energyPlayer;
+			if(energyPlayer.Value/5 > 4) 
+			{
+				duration += 4;
+				energyPlayer.Use(20);
+			}
+			else
+			{
+				duration += energyPlayer.Value / 5;
+				energyPlayer.UseAllEnergy();
+			}
+			target.CharacterState.AddState(new FrostingState(), duration, 30);
+			_enemies.Add(target.CharacterState);
 		}
 		//Explode();
 	}

@@ -66,7 +66,7 @@ public class Icecloud : Ability
 		//Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
 		//float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
 		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, _angle));
-		projectile.dad = _playerLinks.gameObject;
+		projectile.dad = _playerLinks;
 		Cancel();
 	}
 

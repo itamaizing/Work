@@ -42,12 +42,16 @@ public class IceShadowObject : MonoBehaviour
 		{
 			healthPlayer.SetBoostRegen(0.01f);
 		}
-		//damage, freez etc
-		if (collision.TryGetComponent<CharacterState>(out var target) && energyPlayer != null && collision.gameObject !=dad)
+		if (collision.TryGetComponent<PlayerLinks>(out var target) && energyPlayer != null && collision.gameObject !=dad)
 		{
-			target.energy = dad.GetComponent<EnergyPlayer>();
-			target.AddState(new FrozenState());
+			float duration = 2 + energyPlayer.Value / 20;
+			//target.CharacterState.energy = energyPlayer;
+			energyPlayer.UseAllEnergy();
+
+			target.CharacterState.AddState(new FrozenState(), duration, 0);
+			energyPlayer.Use(energyPlayer.Value);
 			GetComponent<Collider2D>().enabled = false;
+			Destroy(gameObject);
 		}
 		//Explode();
 	}
