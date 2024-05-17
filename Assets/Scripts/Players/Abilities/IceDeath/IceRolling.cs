@@ -101,6 +101,7 @@ public class IceRolling : Ability
 	{
 		PlayerMove.CanMove = true;
 		_canJump = true;
+		_isReady = false;
 	}
 
 	private bool CheckObstacleBetween(Vector3 start, Vector3 end)

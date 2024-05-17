@@ -62,6 +62,7 @@ public class IcePuddle : Ability
 		puddle.dad = _playerLinks.gameObject;
 		puddle.energyPlayer = (EnergyPlayer)Mana;
 		puddle.healthPlayer = _playerLinks.HealthPlayer;
+		_isReady = false;
 	}
 
 	private Vector3 InstantiatePoint()
