@@ -47,18 +47,11 @@ public class IceRolling : Ability
 	protected override void Cast()
 	{
 		_isReady = true;
-		/*PayCost();
-		if (_playerLinks.RunePlayer.RemoveRune(0.25f, this))
-		{
-			Jump();
-		}*/
 	}
 
 	protected override void Cancel()
 	{
 		_isReady = false;
-
-		//вроде не было нужды для отмены каста, пока что....
 	}
 
 	private void Jump()

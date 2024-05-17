@@ -14,7 +14,7 @@ public class Icecloud : Ability
 	private Vector2 _mousePos;
 	private float _angle;
 
-	private void Start()
+	private void Awake()
 	{
 		_croosFire.SetActive(false);
 		_isReady = false;

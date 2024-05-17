@@ -12,7 +12,7 @@ public class IcePuddle : Ability
 	private Vector2 _mousePos;
 	private float _angle;
 
-	private void Start()
+	private void Awake()
 	{
 		_isReady = false;
 	}
@@ -44,11 +44,6 @@ public class IcePuddle : Ability
 	{
 		_isReady = true;
 		_croosFire.SetActive(true);
-		/*PayCost();
-		if (_playerLinks.RunePlayer.RemoveRune(1, this))
-		{
-			Shoot();
-		}*/
 	}
 
 	protected override void Cancel()
@@ -68,16 +63,13 @@ public class IcePuddle : Ability
 	private Vector3 InstantiatePoint()
 	{
 		Vector3 mousePosition = Input.mousePosition;
-		//mousePosition.z = 10f; // Set this to the distance from the camera to the object
 		Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
 		worldPosition.z = 1;
 		float distance = Vector2.Distance(gameObject.transform.position, worldPosition);
 		Debug.Log(distance);
-		//Vector3 spawnPos;
 		if (distance <= _radius)
 		{
 			Debug.Log("alright");
-			//worldPosition.z = 1;
 			return worldPosition;
 		}
 		else
@@ -85,7 +77,6 @@ public class IcePuddle : Ability
 			Debug.Log("max pos, downgrading");
 			Vector3 direction = (worldPosition - gameObject.transform.position).normalized;
 			Vector3 spawnPosition = gameObject.transform.position + direction * _radius;
-			//worldPosition.z = 1;
 			return spawnPosition;
 		}
 
