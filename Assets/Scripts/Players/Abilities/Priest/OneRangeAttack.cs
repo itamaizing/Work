@@ -70,14 +70,14 @@ public class OneRangeAttack : AbilityBase
 		AbilityType = AbilityType.HealAbility;
 		CanDoAbilityOnMyself = false;
 	}
-
+	 
 	void Update()
 	{
 		HandleToggleAbility();
 	}
 
 	protected override void HandleToggleAbility()
-	{
+	{ 
 		base.HandleToggleAbility();
 		// Текущий код в методе Update
 

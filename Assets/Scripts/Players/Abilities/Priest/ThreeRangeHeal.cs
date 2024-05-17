@@ -12,7 +12,7 @@ public class ThreeRangeHeal : AbilityBase
     [SerializeField] private float _damage = 35f;
     [SerializeField] private float _manaForCast = 30f;
     [SerializeField] private float _manaForDarkCast = 30f;
-
+     
     public delegate void ThirdAbilityHandler(float value);
     public event ThirdAbilityHandler ThirdAbilityEvent;
 
@@ -85,7 +85,6 @@ public class ThreeRangeHeal : AbilityBase
             ManaCost.gameObject.SetActive(false);
         }
         TargetParent = null;
-        return;
     }
 
     public override void OnLeftDoubleClick()

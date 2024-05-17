@@ -140,7 +140,6 @@ public class OneMeleeAttack : AbilityBase
     private void HandleTargetSelection()
     {
         // Выбор врага
-
         _targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(_targetPosition, Vector2.zero);
         if (hit.collider != null && hit.collider.CompareTag("Enemies") && hit.collider.gameObject != gameObject)
