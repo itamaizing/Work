@@ -202,11 +202,11 @@ public class ThreeRangeHeal : AbilityBase
 
                 if (heal > 0)
                 {
-                    _player.GetComponent<ManaPlayer>().AddMana(heal);
+                    _player.GetComponent<ManaPlayer>().Add(heal);
                 }
             }
         }
-        _player.GetComponent<ManaPlayer>().UseMana(_manaForCast);
+        _player.GetComponent<ManaPlayer>().Use(_manaForCast);
 
 
         ThirdAbilityEvent?.Invoke(heal);
@@ -220,7 +220,7 @@ public class ThreeRangeHeal : AbilityBase
             float eneryOfSpiritStacks = _player.GetComponentInChildren<OneRangeAttack>().SpiritDebaffCount;
             float damage = _damage + eneryOfSpiritStacks;
             TargetParent.GetComponent<HealthPlayer>().TakeMagicDamage(damage);
-            _player.GetComponent<ManaPlayer>().UseMana(_manaForDarkCast);
+            _player.GetComponent<ManaPlayer>().Use(_manaForDarkCast);
 
             DarkThirdAbilityEvent?.Invoke(damage);
             Recharge();

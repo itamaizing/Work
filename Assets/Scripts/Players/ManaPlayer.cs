@@ -8,7 +8,9 @@ public class ManaPlayer : MonoBehaviour
 {
     [SerializeField][Range(0,100)] private float _manaRegenerationValue = 10;
     [SerializeField][Range(0, 100)] private float _manaRegenerationDelay = 3;
+    [SerializeField] private float Mana;
     [SerializeField] private float MaxMana;
+    [SerializeField] private GameObject ManaBar;
     private WaitForSeconds _waitForRegenMana;
 
     public float Mana = 1000;
@@ -18,7 +20,7 @@ public class ManaPlayer : MonoBehaviour
     private void Start()
     {
         _waitForRegenMana = new WaitForSeconds(_manaRegenerationDelay);
-        StartCoroutine(RegenirateMana());
+        StartCoroutine(CoroutineRegenirateMana());
     }
     public void AddMana(float manaValue)
     {

@@ -265,9 +265,9 @@ public class OneRangeAttack : AbilityBase
 			if (heal > 0)
 			{
 			TargetParent.GetComponent<HealthPlayer>().AddHeal(heal);
-            _player.GetComponent<ManaPlayer>().AddMana(heal *0.1f);
+            _player.GetComponent<ManaPlayer>().Add(heal *0.1f);
             }
-            _player.GetComponent<ManaPlayer>().UseMana(_manaForHeal);
+            _player.GetComponent<ManaPlayer>().Use(_manaForHeal);
 			FirstAbilityEvent?.Invoke(heal);
 		
     }
@@ -316,7 +316,7 @@ public class OneRangeAttack : AbilityBase
         if (TargetParent == null) return;
         AddDebaff();
         TargetParent.GetComponent<HealthPlayer>().TakeMagicDamage(_damage+SpiritDebaffCount);
-        _player.GetComponent<ManaPlayer>().UseMana(_manaForDamage);
+        _player.GetComponent<ManaPlayer>().Use(_manaForDamage);
         DarkFirstAbilityEvent?.Invoke(_damage);
     }
 

@@ -162,7 +162,7 @@ public class DarkOneRangeAttack : AbilityBase
         if (TargetParent == null) return;
         AddBaffEnergyOfSpirit();
         TargetParent.GetComponent<HealthPlayer>().TakeMagicDamage(_damage);
-        _player.GetComponent<ManaPlayer>().UseMana(_manaCost);
+        _player.GetComponent<ManaPlayer>().Use(_manaCost);
         DarkFirstAbilityEvent?.Invoke(2f);
         
     }
