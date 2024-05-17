@@ -21,7 +21,10 @@ public class IceRolling : Ability
 	private Vector2 _jumpPos;
 	private float _angle;
 	private bool _canJump = true;
-
+	private void Awake()
+	{
+		_isReady = false;
+	}
 	private void Update()
 	{
 		if(!_isReady) return;

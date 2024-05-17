@@ -8,10 +8,14 @@ public class IceShadow : Ability
 	[Header("Ability properties")]
 	[SerializeField] private IceShadowObject _shadow;
 	[SerializeField] private PlayerLinks _playerLinks;
-	
+
 	//[SerializeField] private Rigidbody2D _rb;
 	//[SerializeField] private HealthPlayer _healthPlayer;
 	//[SerializeField] private RunePlayer _rune;
+	private void Awake()
+	{
+		_isReady = false;
+	}
 
 	protected override void Cast()
 	{
@@ -24,7 +28,7 @@ public class IceShadow : Ability
 
 	protected override void Cancel()
 	{
-		//вроде не было нужды для отмены каста, пока что....
+		_isReady = false;
 	}
 	private void Shoot()
 	{
@@ -32,6 +36,7 @@ public class IceShadow : Ability
 		projectile.dad = _playerLinks.gameObject;
 		projectile.energyPlayer = (EnergyPlayer)Mana;
 		projectile.healthPlayer = _playerLinks.HealthPlayer;
+		_isReady = false;
 	}
 
 	/*private Vector3 InstantiatePoint()
