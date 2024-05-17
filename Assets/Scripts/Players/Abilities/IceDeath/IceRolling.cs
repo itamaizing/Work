@@ -13,21 +13,51 @@ public class IceRolling : Ability
 	//[SerializeField] private RunePlayer _rune;
 	[SerializeField] private PlayerLinks _playerLinks;
 	[SerializeField] private float _jumprange = 2f;
+	[SerializeField] private float _durationOfJump = 0.3f;
 	[SerializeField] private LayerMask ObstacleLayerMask;
+	//[SerializeField] private GameObject _croosFire;
+
+	private Vector2 _mousePos;
 	private Vector2 _jumpPos;
+	private float _angle;
 	private bool _canJump = true;
-	
+
+	private void Update()
+	{
+		if(!_isReady) return;
+
+		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
+		_angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
+		//_croosFire.transform.rotation = Quaternion.Euler(_croosFire.transform.rotation.x, _croosFire.transform.rotation.y, _angle);
+
+		if (Input.GetMouseButtonDown(0))
+		{
+			PayCost();
+			if (_playerLinks.RunePlayer.RemoveRune(0.25f, this))
+			{
+				Jump();
+			}
+		}
+		if (Input.GetMouseButtonDown(1))
+		{
+			Cancel();
+		}
+	}
 	protected override void Cast()
 	{
-		PayCost();
+		_isReady = true;
+		/*PayCost();
 		if (_playerLinks.RunePlayer.RemoveRune(0.25f, this))
 		{
 			Jump();
-		}
+		}*/
 	}
 
 	protected override void Cancel()
 	{
+		_isReady = false;
+
 		//вроде не было нужды для отмены каста, пока что....
 	}
 
@@ -49,22 +79,23 @@ public class IceRolling : Ability
 			else if(Mana.Value < 10 && Mana.Value >=5)
 			{
 				actualJumpRange += 1;
-			}	
-			
+			}
+			actualJumpRange *= GlobalVariable.cellSize;
 			Vector2 jumpPos = lookDir * actualJumpRange + (Vector2)PlayerMove.transform.position;
 			if(CheckObstacleBetween(_playerLinks.Rb.position, jumpPos))
 			{
 				Debug.Log("Обнаружено препятствие:");
 				//прыгать до препятствия
-				_playerLinks.Rb.DOMove(_jumpPos, 0.3f * actualJumpRange).OnComplete(AfterJump);
+				_playerLinks.Rb.DOMove(_jumpPos, _durationOfJump * actualJumpRange / GlobalVariable.cellSize).OnComplete(AfterJump);
 			}
 			else
 			{
 				Mana.Use((actualJumpRange - _jumprange) * 5);
-				_playerLinks.Rb.DOMove(jumpPos, 0.3f * actualJumpRange).OnComplete(AfterJump);
+				_playerLinks.Rb.DOMove(jumpPos, _durationOfJump * actualJumpRange / GlobalVariable.cellSize).OnComplete(AfterJump);
 			}
 		}
 	}
+	//делим на cell size что бы считалось время не за одну единицу юнити, а за наши, клетки
 
 	private void AfterJump()
 	{

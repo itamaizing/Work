@@ -33,7 +33,7 @@ public abstract class Ability : MonoBehaviour
 	protected HealthPlayer _health;
 	protected bool _isUsed = false;
 	protected bool _isCanCancle = true;
-	protected bool _isReady = true;
+	protected bool _isReady = false;
     protected int _currentChargers;
 	protected Coroutine _rechargeJob;
 	protected Coroutine _streamingJob;

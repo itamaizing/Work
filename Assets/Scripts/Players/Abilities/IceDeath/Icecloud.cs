@@ -17,6 +17,7 @@ public class Icecloud : Ability
 	private void Start()
 	{
 		_croosFire.SetActive(false);
+		_isReady = false;
 
 	}
 

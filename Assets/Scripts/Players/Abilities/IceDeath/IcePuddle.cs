@@ -7,22 +7,54 @@ public class IcePuddle : Ability
 {
 	[SerializeField] private IcePuddleObject _puddle;
 	[SerializeField] private PlayerLinks _playerLinks;
-	//[SerializeField] private Rigidbody2D _rb;
-	//[SerializeField] private HealthPlayer _healthPlayer;
-	//[SerializeField] private RunePlayer _rune;
+	[SerializeField] private GameObject _croosFire;
+
+	private Vector2 _mousePos;
+	private float _angle;
+
+	private void Start()
+	{
+		_isReady = false;
+	}
+
+	private void Update()
+	{
+		if (!_isReady) return;
+
+		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
+		_angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
+		_croosFire.transform.rotation = Quaternion.Euler(_croosFire.transform.rotation.x, _croosFire.transform.rotation.y, _angle);
+
+		if (Input.GetMouseButtonDown(0))
+		{
+			PayCost();
+			if (_playerLinks.RunePlayer.RemoveRune(1, this))
+			{
+				Shoot();
+			}
+		}
+		if (Input.GetMouseButtonDown(1))
+		{
+			Cancel();
+		}
+	}
 
 	protected override void Cast()
 	{
-		PayCost();
+		_isReady = true;
+		_croosFire.SetActive(true);
+		/*PayCost();
 		if (_playerLinks.RunePlayer.RemoveRune(1, this))
 		{
 			Shoot();
-		}
+		}*/
 	}
 
 	protected override void Cancel()
 	{
-		//вроде не было нужды для отмены каста, пока что....
+		_isReady = false;
+		_croosFire.SetActive(false);
 	}
 	private void Shoot()
 	{
@@ -37,16 +69,22 @@ public class IcePuddle : Ability
 		Vector3 mousePosition = Input.mousePosition;
 		//mousePosition.z = 10f; // Set this to the distance from the camera to the object
 		Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
-		float distance = Vector3.Distance(gameObject.transform.position, worldPosition);
+		worldPosition.z = 1;
+		float distance = Vector2.Distance(gameObject.transform.position, worldPosition);
+		Debug.Log(distance);
 		//Vector3 spawnPos;
 		if (distance <= _radius)
 		{
+			Debug.Log("alright");
+			//worldPosition.z = 1;
 			return worldPosition;
 		}
 		else
 		{
+			Debug.Log("max pos, downgrading");
 			Vector3 direction = (worldPosition - gameObject.transform.position).normalized;
 			Vector3 spawnPosition = gameObject.transform.position + direction * _radius;
+			//worldPosition.z = 1;
 			return spawnPosition;
 		}
 
