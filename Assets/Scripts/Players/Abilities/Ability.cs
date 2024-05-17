@@ -71,6 +71,7 @@ public abstract class Ability : MonoBehaviour
     public event UnityAction<Ability> Cancled;
     public event UnityAction PreparingEnded;
     public event UnityAction CastEnded;
+    public event UnityAction AreaOffed;
 
     protected abstract void Cast();
     protected abstract void Cancel();
@@ -190,6 +191,11 @@ public abstract class Ability : MonoBehaviour
         {
             return false;
         }
+    }
+
+    protected void AreaOff()
+    {
+        AreaOffed?.Invoke();
     }
 
     private IEnumerator CooldownCoroutine()

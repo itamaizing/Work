@@ -20,6 +20,9 @@ public class AbilityPanel : MonoBehaviour
             _abilities.Add(item);
         }
         UpdateAbilityList();
+
+        _playerAbilities.AbilitySelected += OnAbilitySelected;
+        _playerAbilities.AbilityDeselected += OnAbilityDeselected;
     }
 
     public void UpdateAbilityList(List<Ability> abilities)
@@ -42,5 +45,15 @@ public class AbilityPanel : MonoBehaviour
             abilityIcon.Init(item, _castLine);
             _abilityIcons.Add(abilityIcon);
         }
+    }
+
+    private void OnAbilitySelected(int index)
+    {
+        _abilityIcons[index].Selected();
+    }
+
+    private void OnAbilityDeselected(int index)
+    {
+        _abilityIcons[index].Deselected();
     }
 }

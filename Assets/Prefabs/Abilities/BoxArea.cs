@@ -6,7 +6,7 @@ public class BoxArea : MonoBehaviour
 {
     [SerializeField] BoxCollider2D _colider;
     [SerializeField] SpriteRenderer _sprite;
-    [SerializeField] LayerMask _layer;
+
 
     private List<PlayerMove> _enemies = new List<PlayerMove>();
     private bool _isConcernsEnemy;
