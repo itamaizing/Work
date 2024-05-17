@@ -244,9 +244,6 @@ MonoBehaviour:
   Select: {fileID: 0}
   PlayerHp: {fileID: 7601164126198867055}
   PlayerMove: {fileID: 8264867649627807809}
-  energy: {fileID: 0}
-  durationToExit: 0
-  damageToExit: 0
 --- !u!114 &5793172127680476127
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -282,8 +279,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _value: 70
   _maxValue: 70
-  _regenerationValue: 10
-  _regenerationDelay: 3
+  _regenerationValue: 1
+  _regenerationDelay: 0.3
   Bar: {fileID: 5680468377122292335}
   DamageSpawn: {fileID: 8933781320356208631}
   PrefabText: {fileID: 97509558472111251, guid: b8ec9c7fb2a215a418a41efc3aec9187, type: 3}
@@ -2243,6 +2240,7 @@ MonoBehaviour:
   _manaCostPerTick: 0
   _puddle: {fileID: -3743295544946794120, guid: 5ec9f65c10b0b374fb16da9ebcfd5695, type: 3}
   _playerLinks: {fileID: 887328702008159573}
+  _croosFire: {fileID: 0}
 --- !u!114 &5862965717272100732
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2274,6 +2272,7 @@ MonoBehaviour:
   _manaCostPerTick: 0
   _playerLinks: {fileID: 887328702008159573}
   _jumprange: 2
+  _durationOfJump: 0.3
   ObstacleLayerMask:
     serializedVersion: 2
     m_Bits: 128
