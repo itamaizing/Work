@@ -82,6 +82,33 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""Spell6"",
+                    ""type"": ""Button"",
+                    ""id"": ""58ed0b06-66b9-4011-8314-d6860802f4ee"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Spell7"",
+                    ""type"": ""Button"",
+                    ""id"": ""4ac86a5d-7bf7-4640-a2aa-f06e8a078384"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Spell8"",
+                    ""type"": ""Button"",
+                    ""id"": ""35cf17bf-c238-4001-a66f-06f2c7e2c93f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""Click"",
                     ""type"": ""Button"",
                     ""id"": ""44516835-b257-46c8-abad-39ef22ace919"",
@@ -252,6 +279,39 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
                     ""action"": ""AltDoubleClick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7c4f201f-0ec4-42b2-98ee-a58a8f3bcaae"",
+                    ""path"": ""<Keyboard>/6"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Spell6"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d35cb6df-5596-4f1b-a8c5-a4e8a556d07b"",
+                    ""path"": ""<Keyboard>/7"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Spell7"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""64fa2808-d8d4-43d3-9816-8474de2d1239"",
+                    ""path"": ""<Keyboard>/8"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Spell8"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -266,6 +326,9 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
         m_GameplayMap_Spell3 = m_GameplayMap.FindAction("Spell3", throwIfNotFound: true);
         m_GameplayMap_Spell4 = m_GameplayMap.FindAction("Spell4", throwIfNotFound: true);
         m_GameplayMap_Spell5 = m_GameplayMap.FindAction("Spell5", throwIfNotFound: true);
+        m_GameplayMap_Spell6 = m_GameplayMap.FindAction("Spell6", throwIfNotFound: true);
+        m_GameplayMap_Spell7 = m_GameplayMap.FindAction("Spell7", throwIfNotFound: true);
+        m_GameplayMap_Spell8 = m_GameplayMap.FindAction("Spell8", throwIfNotFound: true);
         m_GameplayMap_Click = m_GameplayMap.FindAction("Click", throwIfNotFound: true);
         m_GameplayMap_AltClick = m_GameplayMap.FindAction("AltClick", throwIfNotFound: true);
         m_GameplayMap_AltDoubleClick = m_GameplayMap.FindAction("AltDoubleClick", throwIfNotFound: true);
@@ -336,6 +399,9 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_GameplayMap_Spell3;
     private readonly InputAction m_GameplayMap_Spell4;
     private readonly InputAction m_GameplayMap_Spell5;
+    private readonly InputAction m_GameplayMap_Spell6;
+    private readonly InputAction m_GameplayMap_Spell7;
+    private readonly InputAction m_GameplayMap_Spell8;
     private readonly InputAction m_GameplayMap_Click;
     private readonly InputAction m_GameplayMap_AltClick;
     private readonly InputAction m_GameplayMap_AltDoubleClick;
@@ -349,6 +415,9 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
         public InputAction @Spell3 => m_Wrapper.m_GameplayMap_Spell3;
         public InputAction @Spell4 => m_Wrapper.m_GameplayMap_Spell4;
         public InputAction @Spell5 => m_Wrapper.m_GameplayMap_Spell5;
+        public InputAction @Spell6 => m_Wrapper.m_GameplayMap_Spell6;
+        public InputAction @Spell7 => m_Wrapper.m_GameplayMap_Spell7;
+        public InputAction @Spell8 => m_Wrapper.m_GameplayMap_Spell8;
         public InputAction @Click => m_Wrapper.m_GameplayMap_Click;
         public InputAction @AltClick => m_Wrapper.m_GameplayMap_AltClick;
         public InputAction @AltDoubleClick => m_Wrapper.m_GameplayMap_AltDoubleClick;
@@ -379,6 +448,15 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
             @Spell5.started += instance.OnSpell5;
             @Spell5.performed += instance.OnSpell5;
             @Spell5.canceled += instance.OnSpell5;
+            @Spell6.started += instance.OnSpell6;
+            @Spell6.performed += instance.OnSpell6;
+            @Spell6.canceled += instance.OnSpell6;
+            @Spell7.started += instance.OnSpell7;
+            @Spell7.performed += instance.OnSpell7;
+            @Spell7.canceled += instance.OnSpell7;
+            @Spell8.started += instance.OnSpell8;
+            @Spell8.performed += instance.OnSpell8;
+            @Spell8.canceled += instance.OnSpell8;
             @Click.started += instance.OnClick;
             @Click.performed += instance.OnClick;
             @Click.canceled += instance.OnClick;
@@ -410,6 +488,15 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
             @Spell5.started -= instance.OnSpell5;
             @Spell5.performed -= instance.OnSpell5;
             @Spell5.canceled -= instance.OnSpell5;
+            @Spell6.started -= instance.OnSpell6;
+            @Spell6.performed -= instance.OnSpell6;
+            @Spell6.canceled -= instance.OnSpell6;
+            @Spell7.started -= instance.OnSpell7;
+            @Spell7.performed -= instance.OnSpell7;
+            @Spell7.canceled -= instance.OnSpell7;
+            @Spell8.started -= instance.OnSpell8;
+            @Spell8.performed -= instance.OnSpell8;
+            @Spell8.canceled -= instance.OnSpell8;
             @Click.started -= instance.OnClick;
             @Click.performed -= instance.OnClick;
             @Click.canceled -= instance.OnClick;
@@ -444,6 +531,9 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
         void OnSpell3(InputAction.CallbackContext context);
         void OnSpell4(InputAction.CallbackContext context);
         void OnSpell5(InputAction.CallbackContext context);
+        void OnSpell6(InputAction.CallbackContext context);
+        void OnSpell7(InputAction.CallbackContext context);
+        void OnSpell8(InputAction.CallbackContext context);
         void OnClick(InputAction.CallbackContext context);
         void OnAltClick(InputAction.CallbackContext context);
         void OnAltDoubleClick(InputAction.CallbackContext context);

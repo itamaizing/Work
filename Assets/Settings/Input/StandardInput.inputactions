@@ -60,6 +60,33 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Spell6",
+                    "type": "Button",
+                    "id": "58ed0b06-66b9-4011-8314-d6860802f4ee",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Spell7",
+                    "type": "Button",
+                    "id": "4ac86a5d-7bf7-4640-a2aa-f06e8a078384",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Spell8",
+                    "type": "Button",
+                    "id": "35cf17bf-c238-4001-a66f-06f2c7e2c93f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Click",
                     "type": "Button",
                     "id": "44516835-b257-46c8-abad-39ef22ace919",
@@ -228,6 +255,39 @@
                     "processors": "",
                     "groups": "",
                     "action": "AltDoubleClick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7c4f201f-0ec4-42b2-98ee-a58a8f3bcaae",
+                    "path": "<Keyboard>/6",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Spell6",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d35cb6df-5596-4f1b-a8c5-a4e8a556d07b",
+                    "path": "<Keyboard>/7",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Spell7",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "64fa2808-d8d4-43d3-9816-8474de2d1239",
+                    "path": "<Keyboard>/8",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Spell8",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
