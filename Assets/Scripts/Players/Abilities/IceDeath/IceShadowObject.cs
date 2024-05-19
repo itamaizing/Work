@@ -8,10 +8,14 @@ public class IceShadowObject : MonoBehaviour
 	[HideInInspector] public EnergyPlayer energyPlayer;
 	[HideInInspector] public HealthPlayer healthPlayer;
 	[HideInInspector] public float timeToDestroy = 2;
+	[HideInInspector] public float timeToDestroyAlive = 10;
 
 	[SerializeField] private Rigidbody2D _rb;
 	[SerializeField] GameObject _hitEffect;
 
+	private Coroutine _destroyObj;
+	private float _hp = 10;
+	private bool _isAlive = false;
 	/*
 	 * timer to destroy
 	 * buff player
@@ -21,7 +25,7 @@ public class IceShadowObject : MonoBehaviour
 		int timeToAdd = (int)energyPlayer.Value / 20;
 		timeToDestroy += timeToAdd;
 		energyPlayer.Use(timeToAdd*20);
-		StartCoroutine(DestroyShadow());
+		_destroyObj = StartCoroutine(DestroyShadow());
 	}
 
 	private void OnTriggerExit2D(Collider2D collision)
@@ -62,10 +66,23 @@ public class IceShadowObject : MonoBehaviour
 	private IEnumerator DestroyShadow()
 	{
 		yield return new WaitForSeconds(timeToDestroy);
-		Destroy(gameObject);
+		if(!_isAlive)
+			Destroy(gameObject);
 		//turn off energy boost
-		//destroy
-			
+		//destroy	
+	}
+	private IEnumerator DestroyAliveShadow()
+	{
+		yield return new WaitForSeconds(timeToDestroyAlive);
+			Destroy(gameObject);
+		//turn off energy boost
+		//destroy	
+	}
 
+	public void SetAlive()
+	{
+		_isAlive = true;
+		StartCoroutine(DestroyAliveShadow());
+		//_destroyObj.
 	}
 }

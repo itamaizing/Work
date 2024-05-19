@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using TMPro;
+using UnityEditor.Experimental;
 using UnityEngine;
 
 public class HealthPlayer : MonoBehaviour
@@ -13,11 +14,18 @@ public class HealthPlayer : MonoBehaviour
     private float _boostRegen = 0;
     private float _boostRegen2 = 0;
 
-    [Header("Def Stats")]
-    [SerializeField] private float defPh = 10f;
-    [SerializeField] private float defMag = 10f;
-    [SerializeField] private int evamel = 10;
-    [SerializeField] private int evaran = 10;
+    [Header("Def Stats")] // в идеале вынести отдельно
+    // процентные резисты
+    [SerializeField] private float _defPhysDamage = 10f;
+    [SerializeField] private float _defMagDamage = 10f;
+    // процентный шанс уклонитьс€ 
+    [SerializeField] private int _evadeMeleeDamage = 10;
+    [SerializeField] private int _evadeRangeDamage = 10;
+    [SerializeField] private int _evadeMagDamage = 10;
+    // уменьшение на N урона
+    [SerializeField] private int _absorbPhysDamage = 0;
+    [SerializeField] private int _absorbMagDamage = 0;
+    
 
     [Header("Shields")]
     public List<Shielding> shields_Physic = new List<Shielding>();
@@ -43,7 +51,6 @@ public class HealthPlayer : MonoBehaviour
 
     public Action<DamageInfo> MakePhisicDamageEvent;
     public Action<DamageInfo> MakeMagicDamageEvent;
-
     public struct HealInfo
     {
         public float OriginalHeal;
@@ -58,8 +65,19 @@ public class HealthPlayer : MonoBehaviour
         _waitForRegenHp = new WaitForSeconds(_hpRegenerationDelay);
         StartCoroutine(CoroutineRegenirateHP());
     }
+    public bool TryTakeDamage(float damageValue, DamageType damageType, AttackRangeType attackRangeType)
+    {
+        float modifiedDamage = CalculateDamageWithStats(damageValue, damageType, attackRangeType, out bool hit);
 
-    public void TakePhisicDamage(float damageValue)
+        if (hit)
+        {
+            TakeDamage(modifiedDamage, damageType);
+        }
+
+        return hit;
+    }
+
+    public void TakePhisicDamage(float damageValue) //устаревший метод
     {
 
         HandleAbsorptionOrRepeat(ref damageValue);
@@ -90,12 +108,20 @@ public class HealthPlayer : MonoBehaviour
             UpdateHealthBarText();
         }
     }
-
-    private float CalculateDamageWithStats(float damageValue, DamageType damageType, AttackRangeType attackRangeType)
+    private float CalculateDamageWithStats(float damageValue, DamageType damageType, AttackRangeType attackRangeType, out bool hitSuccessed) // вызываетс€ в tryTakeDamage до нанесени€ урона
     {
         if (damageType == DamageType.Magical)
         {
-            return damageValue - (damageValue * defMag / 100);
+            if (UnityEngine.Random.Range(0, 100) <= _evadeMagDamage)
+            {
+                ShowDamagePrefab(new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f), "miss");
+                hitSuccessed = false;
+                return 0;
+            }
+            hitSuccessed = true;
+            
+            damageValue -= (damageValue * _defMagDamage / 100);
+            return damageValue - _absorbMagDamage;
         }
 
         else if (damageType == DamageType.Physical)
@@ -103,32 +129,41 @@ public class HealthPlayer : MonoBehaviour
             switch (attackRangeType)
             {
                 case AttackRangeType.MeleeAttack:
-                    if (UnityEngine.Random.Range(0, 100) <= evamel)
+                    if (UnityEngine.Random.Range(0, 100) <= _evadeMeleeDamage)
                     {
                         ShowDamagePrefab(new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f), "miss");
+                        hitSuccessed = false;
                         return 0;
                     }
-                    return damageValue - (damageValue * defPh / 100);
+                    hitSuccessed = true;
+                    damageValue -= (damageValue * _defPhysDamage / 100);
+                    return damageValue - _absorbPhysDamage;
 
                 case AttackRangeType.RangeAttack:
-                    if (UnityEngine.Random.Range(0, 100) <= evaran)
+                    if (UnityEngine.Random.Range(0, 100) <= _evadeRangeDamage)
                     {
                         ShowDamagePrefab(new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f), "miss");
+                        hitSuccessed = false;
                         return 0;
                     }
-                    return damageValue - (damageValue * defPh / 100);
+                    hitSuccessed = true;
+                    damageValue -= (damageValue * _defPhysDamage / 100);
+                    return damageValue - _absorbPhysDamage;
 
                 case AttackRangeType.Inner:
-                    return damageValue;
+                    hitSuccessed = true;
+                    return damageValue - _absorbPhysDamage;
 
                 default:
+                    hitSuccessed = false;
                     return 0; // не указали AttackRangeType
 
             }
         }
+        hitSuccessed = false;
         return 0; // не указали DamageType
     }
-    private float SummShields(DamageType damageType)
+    private float SummShields(DamageType damageType) // используетс€ дл€ рассчета щитов
     {
         float value = 0;
 
@@ -157,7 +192,7 @@ public class HealthPlayer : MonoBehaviour
         return value;
     }
 
-    private float CalculateDamageForShields(float damageValue, DamageType damageType)
+    private float CalculateDamageForShields(float damageValue, DamageType damageType) // вызываетс€ в takeDamage во врем€ получени€ урона
     {
         if (damageType == DamageType.Physical)
         {
@@ -222,15 +257,13 @@ public class HealthPlayer : MonoBehaviour
         }
         return damageValue; // не указали тип урона
     }
-    public void TakeDamage(float damageValue, DamageType damageType, AttackRangeType attackRangeType)
+    public void TakeDamage(float damageValue, DamageType damageType)
     {
-        //UnityEngine.Debug.LogWarning($"baseDamage: {damageValue}");
-
-        damageValue = CalculateDamageWithStats(damageValue, damageType, attackRangeType);
-
+        
         DisplayTakenDamage(damageValue, damageType);
         
         damageValue = CalculateDamageForShields(damageValue, damageType);
+
 
         HandleAbsorptionOrRepeat(ref damageValue);
 
@@ -244,13 +277,12 @@ public class HealthPlayer : MonoBehaviour
                 Die();
             }
             
-            //ShowDamagePrefab(-modifiedDamage, new Color(1, 0, 0, 1), new Color(1, 0, 0, 0.5f));
             UpdateHealthBar();
             UpdateHealthBarText();
         }
     }
 
-    public void TakeMagicDamage(float damageValue)
+    public void TakeMagicDamage(float damageValue) //устаревший метод
     {
         HandleAbsorptionOrRepeat(ref damageValue);
         if (damageValue > 0)

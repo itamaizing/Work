@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class IceSword : Ability
 {
@@ -41,7 +40,10 @@ public class IceSword : Ability
 				}
 			}
 		}
-		_target.TakePhisicDamage(_damage + Random.Range(0, 10));
+		if (_target != null)
+		{
+			_target.TakePhisicDamage(_damage + Random.Range(0, 10));
+		}
 
 		if( _hitInARow > 2 ) 
 		{
