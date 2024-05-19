@@ -46,6 +46,9 @@ public class PlayerAbilities : MonoBehaviour
         InputHandler.OnThirdCast += SetCurrentAbility;
         InputHandler.OnFourthCast += SetCurrentAbility;
         InputHandler.OnFifthCast += SetCurrentAbility;
+        InputHandler.OnSixthCast += SetCurrentAbility;
+        InputHandler.OnSeventhCast += SetCurrentAbility;
+        InputHandler.OnEighthCast += SetCurrentAbility;
     }
 
     private void OnDisable()
@@ -58,6 +61,9 @@ public class PlayerAbilities : MonoBehaviour
         InputHandler.OnThirdCast -= SetCurrentAbility;
         InputHandler.OnFourthCast -= SetCurrentAbility;
         InputHandler.OnFifthCast -= SetCurrentAbility;
+        InputHandler.OnSixthCast -= SetCurrentAbility;
+        InputHandler.OnSeventhCast -= SetCurrentAbility;
+        InputHandler.OnEighthCast -= SetCurrentAbility;
     }
 
     public void SetAbilitiesDisabled()
