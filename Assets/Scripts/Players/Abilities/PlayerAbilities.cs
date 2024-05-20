@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerAbilities : MonoBehaviour
 {
@@ -12,9 +13,13 @@ public class PlayerAbilities : MonoBehaviour
     [SerializeField] private AbilityRender _abilityRender;
 
     private Ability _currentAbility;
+    private int _currentAbilityIndex;
     private bool _isAbilitiesDisabled = false;
 
     public List<Ability> Abilities => _abilities;
+
+    public event UnityAction<int> AbilitySelected;
+    public event UnityAction<int> AbilityDeselected;
 
     private void Start()
     {
@@ -23,7 +28,7 @@ public class PlayerAbilities : MonoBehaviour
 
         if(_abilities.Count > 0)
         {
-            _currentAbility = _abilities[0];
+            _currentAbility = null;
         }
         foreach (var item in _abilities)
         {
@@ -41,6 +46,9 @@ public class PlayerAbilities : MonoBehaviour
         InputHandler.OnThirdCast += SetCurrentAbility;
         InputHandler.OnFourthCast += SetCurrentAbility;
         InputHandler.OnFifthCast += SetCurrentAbility;
+        InputHandler.OnSixthCast += SetCurrentAbility;
+        InputHandler.OnSeventhCast += SetCurrentAbility;
+        InputHandler.OnEighthCast += SetCurrentAbility;
     }
 
     private void OnDisable()
@@ -53,6 +61,9 @@ public class PlayerAbilities : MonoBehaviour
         InputHandler.OnThirdCast -= SetCurrentAbility;
         InputHandler.OnFourthCast -= SetCurrentAbility;
         InputHandler.OnFifthCast -= SetCurrentAbility;
+        InputHandler.OnSixthCast -= SetCurrentAbility;
+        InputHandler.OnSeventhCast -= SetCurrentAbility;
+        InputHandler.OnEighthCast -= SetCurrentAbility;
     }
 
     public void SetAbilitiesDisabled()
@@ -69,19 +80,40 @@ public class PlayerAbilities : MonoBehaviour
     {
         if (index >= _abilities.Count)
             return;
-        
-        if(_currentAbility.IsUsed == false)
+
+        if (_currentAbility == null)
         {
-            _currentAbility.PreparingEnded -= _abilityRender.StopDraw;
+            _currentAbilityIndex = index;
+            AbilitySelected?.Invoke(index);
+
             _currentAbility = _abilities[index];
             _currentAbility.PreparingEnded += _abilityRender.StopDraw;
+            _currentAbility.Cancled += _abilityRender.StopDraw;
+            _currentAbility.AreaOffed += _abilityRender.StopAreaDraw;
+
+            TryUseAbility();
+        }
+        else if (_currentAbility.IsUsed == false)
+        {
+            AbilityDeselected?.Invoke(_currentAbilityIndex);
+            _currentAbilityIndex = index;
+            AbilitySelected?.Invoke(index);
+
+            _currentAbility.PreparingEnded -= _abilityRender.StopDraw;
+            _currentAbility.Cancled -= _abilityRender.StopDraw;
+            _currentAbility.AreaOffed -= _abilityRender.StopAreaDraw;
+            _currentAbility = _abilities[index];
+            _currentAbility.PreparingEnded += _abilityRender.StopDraw;
+            _currentAbility.Cancled += _abilityRender.StopDraw;
+            _currentAbility.AreaOffed += _abilityRender.StopAreaDraw;
+
             TryUseAbility();
         }
     }
 
     private void TryUseAbility()
     {
-        if (_isAbilitiesDisabled == true || _currentAbility.IsUsed == true)
+        if (_currentAbility == null || _isAbilitiesDisabled == true || _currentAbility.IsUsed == true)
             return;
 
         _abilityRender.Drawn(_currentAbility);
@@ -92,8 +124,15 @@ public class PlayerAbilities : MonoBehaviour
     {
         if (_currentAbility != null)
         {
-            _currentAbility.TryCancel();
-            _abilityRender.StopDraw();
+            if(_currentAbility.IsUsed == true)
+            {
+                _currentAbility.TryCancel();
+            }
+            else
+            {
+                _currentAbility = null;
+                AbilityDeselected?.Invoke(_currentAbilityIndex);
+            }
         }
     }
 

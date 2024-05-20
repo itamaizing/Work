@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class AbilityIcon : MonoBehaviour
 {
     [SerializeField] private Image _abilityIcon;
+    [SerializeField] private Image _boxFrame;
     [SerializeField] private FillAmountOverTime _cooldown;
     [SerializeField] private TextMeshProUGUI _chargeCounter;
     [SerializeField] private GameObject _abilityNameBox;
@@ -15,9 +16,11 @@ public class AbilityIcon : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _description;
 
     private FillAmountOverTime _castLine;
+    private Ability _ability;
 
     public void Init(Ability ability, FillAmountOverTime castLine)
     {
+        _ability = ability;
         _abilityIcon.sprite = ability.Icon;
         _name.text = ability.Name;
         _description.text = ability.Description;
@@ -53,10 +56,21 @@ public class AbilityIcon : MonoBehaviour
         _cooldown.StartFill(dutarion);
     }
 
+    public void Selected()
+    {
+        _boxFrame.color = Color.green;
+    }
+
+    public void Deselected()
+    {
+        _boxFrame.color = Color.white;
+    }
+
     private void OnStartStreaming(float time)
     {
         _castLine.gameObject.SetActive(true);
         _castLine.StartFill(time, 1, 0);
+        StartCoroutine(CastLineCoroutine());
     }
 
     private void OnStopStreaming()
@@ -69,6 +83,7 @@ public class AbilityIcon : MonoBehaviour
     {
         _castLine.gameObject.SetActive(true);
         _castLine.StartFill(time);
+        StartCoroutine(CastLineCoroutine());
     }
 
     private void OnStopCastDeley()
@@ -85,5 +100,15 @@ public class AbilityIcon : MonoBehaviour
     private void OnMouseExit()
     {
         _abilityNameBox.SetActive(false);
+    }
+
+    private IEnumerator CastLineCoroutine()
+    {
+        while (_castLine.enabled)
+        {
+            _castLine.transform.position = _ability.transform.position + new Vector3(0, -1.7f, 0);
+
+            yield return null;
+        }
     }
 }

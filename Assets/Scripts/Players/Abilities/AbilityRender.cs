@@ -14,6 +14,7 @@ public class AbilityRender : MonoBehaviour
     private CircleArea _area;
     private BoxArea _squareArea;
     private Coroutine _drawCursorAbilityIconJob;
+    private Coroutine _drawAreaAbilityIconJob;
     public void Drawn(Ability ability)
     {
         Cursor.visible = false;
@@ -33,7 +34,8 @@ public class AbilityRender : MonoBehaviour
         {
             _circle.Draw(_radius);
         }
-        _drawCursorAbilityIconJob = StartCoroutine(DrawCoroutine());
+        _drawAreaAbilityIconJob = StartCoroutine(DrawAreaCoroutine());
+        _drawCursorAbilityIconJob = StartCoroutine(DrawCursorCoroutine());
     }
 
     public void StopDraw()
@@ -43,16 +45,39 @@ public class AbilityRender : MonoBehaviour
 
         Cursor.visible = true;
         StopCoroutine(_drawCursorAbilityIconJob);
-
         Destroy(_icon.gameObject);
+        _icon = null;
+        StopAreaDraw();
+    }
+
+    public void StopDraw(Ability ability)
+    {
+        StopDraw();
+    }
+
+    public void StopAreaDraw()
+    {
+        if (_area == null)
+            return;
+
+        StopCoroutine(_drawAreaAbilityIconJob);
+
         Destroy(_area.gameObject);
         Destroy(_squareArea.gameObject);
+
         _circle.Clear();
 
-        _icon = null;
         _area = null;
         _squareArea = null;
         _radius = 0;
+    }
+
+    public void StopAreaMove()
+    {
+        if (_icon == null)
+            return;
+
+        StopCoroutine(_drawAreaAbilityIconJob);
     }
 
     private bool IsMouseInRadius(float radius)
@@ -72,12 +97,22 @@ public class AbilityRender : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, 0, angle - 90);
     }
 
-    private IEnumerator DrawCoroutine()
+    private IEnumerator DrawCursorCoroutine()
     {
         while (true)
         {
             Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, 0);
             _icon.transform.position = mouse;
+
+            yield return null;
+        }
+    }
+
+    private IEnumerator DrawAreaCoroutine()
+    {
+        while (true)
+        {
+            Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, 0);
             _area.transform.position = mouse;
             RotateAtMouse(_squareArea.transform);
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Telekinesis : Ability
 {
@@ -77,6 +78,7 @@ public class Telekinesis : Ability
             }
             yield return null;
         }
+        AreaOff();
         _circleTarget = Instantiate(_drawCirclePref, _target.transform);
         _circleTarget.Draw(_range);
         _drawCircleSelf.Clear();
