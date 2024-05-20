@@ -13,22 +13,25 @@ public class Icecloud : Ability
 
 	private Vector2 _mousePos;
 	private float _angle;
+	[SerializeField]private bool _enabled = false;
 
 	private void Awake()
 	{
 		_croosFire.SetActive(false);
-		_isReady = false;
+		//_isReady = false;
 
 	}
 
 	private void Update()
 	{
-		if (!_isReady) return;
+		if (!_enabled) return;
 
 		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
 		_angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
 		_croosFire.transform.rotation = Quaternion.Euler(_croosFire.transform.rotation.x, _croosFire.transform.rotation.y, _angle);
+
+		//Debug.Log("active");
 
 		if (Input.GetMouseButtonDown(0))
 		{
@@ -36,6 +39,10 @@ public class Icecloud : Ability
 			if (_playerLinks.RunePlayer.RemoveRune(1, this))
 			{
 				Shoot();
+			}
+			else
+			{
+				Cancel();
 			}
 		}
 		if(Input.GetMouseButtonDown(1)) 
@@ -46,7 +53,8 @@ public class Icecloud : Ability
 
 	protected override void Cast()
 	{
-		_isReady = true;
+		//_isUsed = false;
+		_enabled = true;
 		_croosFire.SetActive(true);
 		//if(Input.GetMouseButtonDown(0))
 		/*if(_playerLinks.RunePlayer.RemoveRune(1, this)) 
@@ -57,7 +65,8 @@ public class Icecloud : Ability
 
 	protected override void Cancel()
 	{
-		_isReady = false;
+		_enabled = false;
+		//_isUsed = true;
 		_croosFire.SetActive(false);
 	}
 

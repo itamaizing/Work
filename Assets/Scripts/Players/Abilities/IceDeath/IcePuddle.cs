@@ -33,6 +33,10 @@ public class IcePuddle : Ability
 			{
 				Shoot();
 			}
+			else
+			{
+				Cancel();
+			}
 		}
 		if (Input.GetMouseButtonDown(1))
 		{

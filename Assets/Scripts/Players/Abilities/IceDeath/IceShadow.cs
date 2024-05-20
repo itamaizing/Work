@@ -9,12 +9,14 @@ public class IceShadow : Ability
 	[SerializeField] private IceShadowObject _shadow;
 	[SerializeField] private PlayerLinks _playerLinks;
 
+	//private bool _isActive = false;
 	//[SerializeField] private Rigidbody2D _rb;
 	//[SerializeField] private HealthPlayer _healthPlayer;
 	//[SerializeField] private RunePlayer _rune;
+	
 	private void Awake()
 	{
-		_isReady = false;
+		//_isReady = false;
 	}
 
 	protected override void Cast()
@@ -24,11 +26,16 @@ public class IceShadow : Ability
 		{
 			Shoot();
 		}
+		else
+		{
+			TryCancel();
+		}
 	}
 
 	protected override void Cancel()
 	{
 		_isReady = false;
+
 	}
 	private void Shoot()
 	{
@@ -36,7 +43,7 @@ public class IceShadow : Ability
 		projectile.dad = _playerLinks.gameObject;
 		projectile.energyPlayer = (EnergyPlayer)Mana;
 		projectile.healthPlayer = _playerLinks.HealthPlayer;
-		_isReady = false;
+		TryCancel();
 	}
 
 	/*private Vector3 InstantiatePoint()

@@ -41,6 +41,10 @@ public class IceRolling : Ability
 			{
 				Jump();
 			}
+			else
+			{
+				Cancel();
+			}
 		}
 		if (Input.GetMouseButtonDown(1))
 		{

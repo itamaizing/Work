@@ -4061,6 +4061,10 @@ PrefabInstance:
       propertyPath: _castLength
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 7915244162019678924, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: _isUseCharges
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8264867649627807809, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: AbilityPanel
       value: 
@@ -8845,7 +8849,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2906004067914324339, guid: ad3c47046ceed4c4280cf18cce39f9f5, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -855.25
+      value: -855.25006
       objectReference: {fileID: 0}
     - target: {fileID: 2906004067914324339, guid: ad3c47046ceed4c4280cf18cce39f9f5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -17033,6 +17037,10 @@ PrefabInstance:
     - target: {fileID: 2906004067914324339, guid: ad3c47046ceed4c4280cf18cce39f9f5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7864361253695612053, guid: ad3c47046ceed4c4280cf18cce39f9f5, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 40.00023
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
