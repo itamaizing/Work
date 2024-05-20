@@ -14,11 +14,6 @@ public class IceShadow : Ability
 	//[SerializeField] private HealthPlayer _healthPlayer;
 	//[SerializeField] private RunePlayer _rune;
 	
-	private void Awake()
-	{
-		//_isReady = false;
-	}
-
 	protected override void Cast()
 	{
 		PayCost();
@@ -34,7 +29,6 @@ public class IceShadow : Ability
 
 	protected override void Cancel()
 	{
-		_isReady = false;
 
 	}
 	private void Shoot()

@@ -12,11 +12,6 @@ public class IcePuddle : Ability
 	private Vector2 _mousePos;
 	private float _angle;
 
-	private void Awake()
-	{
-		_isReady = false;
-	}
-
 	private void Update()
 	{
 		if (!_isReady) return;
@@ -46,13 +41,11 @@ public class IcePuddle : Ability
 
 	protected override void Cast()
 	{
-		_isReady = true;
 		_croosFire.SetActive(true);
 	}
 
 	protected override void Cancel()
 	{
-		_isReady = false;
 		_croosFire.SetActive(false);
 	}
 	private void Shoot()

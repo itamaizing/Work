@@ -3,27 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // Интерфейс состояния
-public interface ICharacterState
+public abstract class AbstractCharacterState
 {
-    void EnterState(CharacterState character, float durationToExit, float damageToExit);
-    void UpdateState();
-    void ExitState();
+    public AbilityIcon icon;
+    protected CharacterState _characterState;
+    public abstract void EnterState(CharacterState character, float durationToExit, float damageToExit);
+	public abstract void UpdateState();
+	public abstract void ExitState();
 }
 
-
-public class DefaultState : ICharacterState
+public class DefaultState : AbstractCharacterState
 {
-    public void EnterState(CharacterState character, float durationToExit, float damageToExit)
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
     {
 
     }
 
-    public void UpdateState()
+    public override void UpdateState()
     {
 
     }
 
-    public void ExitState()
+    public override void ExitState()
     {
 
     }
@@ -31,9 +32,8 @@ public class DefaultState : ICharacterState
 
 
 // Cостояние невидимость
-public class InvisibleState : ICharacterState
+public class InvisibleState : AbstractCharacterState
 {
-	private CharacterState _characterState;
 	private Renderer[] childRenderers;
     private SelectObject _select;
     private GameObject _player;
@@ -43,7 +43,7 @@ public class InvisibleState : ICharacterState
     private float lastCheckTime;
     private float checkInterval = 1f;
 
-    public void EnterState(CharacterState character, float durationToExit, float damageToExit)
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
     {
         Debug.Log("Entering Invisible State");
         _characterState = character;
@@ -51,7 +51,7 @@ public class InvisibleState : ICharacterState
         _player = character.gameObject;
     }
 
-    public void UpdateState()
+    public override void UpdateState()
     {
         Debug.Log("Updating Invisible State");
 
@@ -172,7 +172,7 @@ public class InvisibleState : ICharacterState
         }
     }
 
-    public void ExitState()
+    public override void ExitState()
     {
         Debug.Log("Exiting Invisible State");
         // При выходе из состояния возвращаем видимость дочерним Renderer
@@ -191,14 +191,14 @@ public class InvisibleState : ICharacterState
 
 
 // Cостояние оглушение
-public class StunnedState : ICharacterState
+public class StunnedState : AbstractCharacterState
 {
     public bool turnOff = false;
+    public PlayerMove _playerMove;
 
     private CharacterState _characterState;
-    public PlayerMove _playerMove;
     private float _duration;
-    public void EnterState(CharacterState character, float durationToExit, float damageToExit)
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
     {
         Debug.Log("Entering Stunned State");
         _characterState = character;
@@ -207,7 +207,7 @@ public class StunnedState : ICharacterState
         //ability off
     }
 
-    public void UpdateState()
+    public override void UpdateState()
     {
         Debug.Log("Updating Stunned State");
         _duration -= Time.deltaTime;
@@ -217,7 +217,7 @@ public class StunnedState : ICharacterState
         }
     }
 
-    public void ExitState()
+    public override void ExitState()
     {
         Debug.Log("Exiting Stunned State");
         _playerMove.CanMove = true;
@@ -227,14 +227,14 @@ public class StunnedState : ICharacterState
 }
 
 // Cостояние ослепление
-public class BlindnessState : ICharacterState
+public class BlindnessState : AbstractCharacterState
 {
     public bool turnOff = false;
 
-	private CharacterState _characterState;
+	//private CharacterState _characterState;
 	private float _duration;
 
-	public void EnterState(CharacterState character, float durationToExit, float damageToExit)
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
     {
         Debug.Log("Entering Stunned State");
         _duration = durationToExit;
@@ -242,7 +242,7 @@ public class BlindnessState : ICharacterState
 		//ability off
 	}
 
-	public void UpdateState()
+	public override void UpdateState()
     {
         Debug.Log("Updating Stunned State");
 		_duration -= Time.deltaTime;
@@ -252,7 +252,7 @@ public class BlindnessState : ICharacterState
 		}
 	}
 
-    public void ExitState()
+    public override void ExitState()
     {
         Debug.Log("Exiting Stunned State");
         _characterState.RemoveState(this);
@@ -261,17 +261,17 @@ public class BlindnessState : ICharacterState
 }
 
 // Cостояние заморозки
-public class FrozenState : ICharacterState
+public class FrozenState : AbstractCharacterState
 {
 	public bool turnOff = false;
 
-	private CharacterState _characterState;
+	//private CharacterState _characterState;
 	private HealthPlayer _playerHP;
     private PlayerMove _playerMove;
     private float _duration;
     private float _damageToExit;
 
-	public void EnterState(CharacterState character, float durationToExit, float damageToExit)
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
     {
         Debug.Log("Entering Frozen State");
         _characterState = character;
@@ -299,7 +299,7 @@ public class FrozenState : ICharacterState
 
     }
 
-    public void UpdateState()
+    public override void UpdateState()
 	{
 		_duration -= Time.deltaTime;
 		if (_playerHP.sumDamageTaken >= _damageToExit || _duration < 0 || turnOff)
@@ -309,7 +309,7 @@ public class FrozenState : ICharacterState
 
 	}
 
-	public void ExitState()
+	public override void ExitState()
 	{
 		Debug.Log("Exiting Frozen State");
 
@@ -320,16 +320,16 @@ public class FrozenState : ICharacterState
 }
 
 
-public class FrostingState : ICharacterState
+public class FrostingState : AbstractCharacterState
 {
 	public bool turnOff = false;
 
-	private CharacterState _characterState;
+	//private CharacterState _characterState;
 	private HealthPlayer _playerHP;
 	private PlayerMove _targetMove;
 	private float _duration; 
 	private float _damageToExit;
-	public void EnterState(CharacterState character, float durationToExit, float damageToExit)
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
     {
         Debug.Log("Entering Frosting State");
         _characterState = character;
@@ -353,7 +353,7 @@ public class FrostingState : ICharacterState
 		//_characterState.energy.Use(_characterState.energy.Value);
     }
 
-	public void UpdateState()
+	public override void UpdateState()
 	{
 		_duration -= Time.deltaTime;
 		if (_playerHP.sumDamageTaken >= _damageToExit || _duration < 0 || turnOff)
@@ -362,7 +362,7 @@ public class FrostingState : ICharacterState
 		}
 	}
 
-	public void ExitState()
+	public override void ExitState()
 	{
 		Debug.Log("Exiting Frosting State");
 		_targetMove.CanMove = true;
@@ -380,7 +380,7 @@ public class CharacterState : MonoBehaviour
 
     //[HideInInspector] public PlayerStamina energy;//person who shoted
 
-    [SerializeField] private List<ICharacterState> currentStates = new List<ICharacterState>();
+    [SerializeField] private List<AbstractCharacterState> currentStates = new List<AbstractCharacterState>();
 
 	private void Start()
 	{
@@ -402,7 +402,7 @@ public class CharacterState : MonoBehaviour
         }
     }
 
-    public void AddState(ICharacterState newState)
+    public void AddState(AbstractCharacterState newState)
     {
         // переделать под лист
         //if already has, reset???
@@ -411,14 +411,14 @@ public class CharacterState : MonoBehaviour
         currentStates.Add(newState);
         currentStates[currentStates.Count - 1].EnterState(this, 0, 0);
     }
-    public void AddState(ICharacterState newState, float duration, float damageToExit)
+    public void AddState(AbstractCharacterState newState, float duration, float damageToExit)
     {
 		currentStates.Add(newState);
 		//currentStates[currentStates.Count - 1].
 		currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
 
 	}
-    public bool IfHasState(ICharacterState newState) 
+    public bool IfHasState(AbstractCharacterState newState) 
     {
         if(currentStates.Contains(newState))
         {
@@ -428,7 +428,7 @@ public class CharacterState : MonoBehaviour
 
     }
 
-	public void RemoveState(ICharacterState newState) 
+	public void RemoveState(AbstractCharacterState newState) 
     {
         //newState.ExitState(this);
         currentStates.Remove(newState);
