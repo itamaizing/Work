@@ -3999,6 +3999,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: IceDeath
       objectReference: {fileID: 0}
+    - target: {fileID: 2109578286988862312, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: _areaPref
+      value: 
+      objectReference: {fileID: 1574982521674352815, guid: 790fb3857b30c2b4fad4375343a84fad, type: 3}
+    - target: {fileID: 2109578286988862312, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+      propertyPath: _squareAreaPref
+      value: 
+      objectReference: {fileID: 6069098087972325736, guid: 613fcf3671552f04eb117ca2af2820f6, type: 3}
     - target: {fileID: 6627882834926959264, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: m_RootOrder
       value: 13
