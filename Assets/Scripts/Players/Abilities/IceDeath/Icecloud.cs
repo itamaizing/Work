@@ -13,7 +13,7 @@ public class Icecloud : Ability
 
 	private Vector2 _mousePos;
 	private float _angle;
-	[SerializeField] private bool _enabled = false;
+	private bool _enabled = false;
 
 	private void Awake()
 	{

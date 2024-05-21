@@ -17,21 +17,19 @@ public class IceRolling : Ability
 	[SerializeField] private LayerMask ObstacleLayerMask;
 	//[SerializeField] private GameObject _croosFire;
 
-	private Vector2 _mousePos;
+	//private Vector2 _mousePos;
 	private Vector2 _jumpPos;
-	private float _angle;
+	//private float _angle;
 	private bool _canJump = true;
-	private void Awake()
-	{
-		_isReady = false;
-	}
+	private bool _enabled = false;
+
 	private void Update()
 	{
-		if(!_isReady) return;
+		if(!_enabled) return;
 
-		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
-		_angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
+		//_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		//Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
+		//_angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
 		//_croosFire.transform.rotation = Quaternion.Euler(_croosFire.transform.rotation.x, _croosFire.transform.rotation.y, _angle);
 
 		if (Input.GetMouseButtonDown(0))
@@ -53,12 +51,12 @@ public class IceRolling : Ability
 	}
 	protected override void Cast()
 	{
-		_isReady = true;
+		_enabled = true;
 	}
 
 	protected override void Cancel()
 	{
-		_isReady = false;
+		_enabled = false;
 	}
 
 	private void Jump()
@@ -101,7 +99,7 @@ public class IceRolling : Ability
 	{
 		PlayerMove.CanMove = true;
 		_canJump = true;
-		_isReady = false;
+		_enabled = false;
 	}
 
 	private bool CheckObstacleBetween(Vector3 start, Vector3 end)

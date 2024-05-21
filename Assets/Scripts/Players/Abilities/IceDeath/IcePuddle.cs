@@ -11,10 +11,11 @@ public class IcePuddle : Ability
 
 	private Vector2 _mousePos;
 	private float _angle;
+	private bool _enabled = false;
 
 	private void Update()
 	{
-		if (!_isReady) return;
+		if (!_enabled) return;
 
 		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
@@ -42,6 +43,7 @@ public class IcePuddle : Ability
 	protected override void Cast()
 	{
 		_croosFire.SetActive(true);
+		_enabled = true;
 	}
 
 	protected override void Cancel()
@@ -54,7 +56,7 @@ public class IcePuddle : Ability
 		puddle.dad = _playerLinks.gameObject;
 		puddle.energyPlayer = (EnergyPlayer)Mana;
 		puddle.healthPlayer = _playerLinks.HealthPlayer;
-		_isReady = false;
+		_enabled = false;
 	}
 
 	private Vector3 InstantiatePoint()

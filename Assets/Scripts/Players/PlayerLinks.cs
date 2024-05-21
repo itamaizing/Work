@@ -11,6 +11,8 @@ public class PlayerLinks : MonoBehaviour
 	[SerializeField] private RunePlayer _runePlayer;
 	[SerializeField] private PlayerAbilities _abilities;
 	[SerializeField] private CharacterState _characterState;
+	[SerializeField] private StateIcons _stateIcons;
+	//[SerializeField] private SelectObject _selectObject;
 
 	public Rigidbody2D Rb => _rb;
 	public HealthPlayer HealthPlayer => _healthPlayer;
@@ -19,4 +21,6 @@ public class PlayerLinks : MonoBehaviour
 	public RunePlayer RunePlayer => _runePlayer;
 	public PlayerAbilities Abilities => _abilities;
 	public CharacterState CharacterState => _characterState;
+	public StateIcons StateIcons => _stateIcons;
+	//public SelectObject SelectObject => _selectObject;
 }

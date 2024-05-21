@@ -5,7 +5,6 @@ using UnityEngine;
 // Интерфейс состояния
 public abstract class AbstractCharacterState
 {
-    public AbilityIcon icon;
     protected CharacterState _characterState;
     public abstract void EnterState(CharacterState character, float durationToExit, float damageToExit);
 	public abstract void UpdateState();
@@ -196,7 +195,6 @@ public class StunnedState : AbstractCharacterState
     public bool turnOff = false;
     public PlayerMove _playerMove;
 
-    private CharacterState _characterState;
     private float _duration;
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
     {
@@ -284,9 +282,9 @@ public class FrozenState : AbstractCharacterState
         {
             _damageToExit = damageToExit;
         }
-        _playerHP = _characterState.PlayerHp;
+        _playerHP = _characterState.PlayerLinks.HealthPlayer;
 
-        _playerMove = _characterState.PlayerMove;
+        _playerMove = _characterState.PlayerLinks.PlayerMove;
         _playerMove.CanMove = false;
         //character.GetAbilityManager().ToggleAbility(false);//turn off abilities
 
@@ -333,7 +331,7 @@ public class FrostingState : AbstractCharacterState
     {
         Debug.Log("Entering Frosting State");
         _characterState = character;
-        _targetMove = _characterState.PlayerMove;
+        _targetMove = _characterState.PlayerLinks.PlayerMove;
 		if (damageToExit == 0)
 		{
 			_damageToExit = 10000;
@@ -342,7 +340,7 @@ public class FrostingState : AbstractCharacterState
 		{
 			_damageToExit = damageToExit;
 		}
-		_playerHP = _characterState.PlayerHp;
+		_playerHP = _characterState.PlayerLinks.HealthPlayer;
 
         _targetMove.CanMove = false;
         //decrease speed of attact
@@ -374,17 +372,15 @@ public class FrostingState : AbstractCharacterState
 // Класс персонажа, использующий состояния
 public class CharacterState : MonoBehaviour
 {
+    public  PlayerLinks PlayerLinks => _links;
     public SelectObject Select;    
-    public HealthPlayer PlayerHp;
-    public PlayerMove PlayerMove;
 
-    //[HideInInspector] public PlayerStamina energy;//person who shoted
-
-    [SerializeField] private List<AbstractCharacterState> currentStates = new List<AbstractCharacterState>();
+    [SerializeField] private PlayerLinks _links;
+	[SerializeField] private List<AbstractCharacterState> currentStates = new List<AbstractCharacterState>();
 
 	private void Start()
 	{
-        if (Select == null || PlayerHp == null || PlayerMove == null)
+        if (Select == null || _links.HealthPlayer == null || _links.PlayerMove == null || _links == null)
         {
             Debug.LogError("No required component in " + gameObject.name);
         }
