@@ -85,10 +85,13 @@ public class StateIcons : MonoBehaviour
         ico.fillAmount = 1;
         if (stack == 1)
         {
-            ico.DOFillAmount(0, time).OnComplete(() => RemoveItem(icoItem));
+			icoItem.Text.gameObject.SetActive(false);
+			ico.DOFillAmount(0, time).OnComplete(() => RemoveItem(icoItem));
         }
         else
         {
+            icoItem.Text.gameObject.SetActive(true);
+			icoItem.Text.text = stack.ToString();
 			ico.DOFillAmount(0, time).OnComplete(() => AnimateIco(icoItem, time, --stack));
 		}
     }
