@@ -22,7 +22,7 @@ public class StateIcons : MonoBehaviour
 	{
         //for test
 
-		if(Input.GetKeyUp(KeyCode.R))
+		/*if(Input.GetKeyUp(KeyCode.R))
         {
             ActivateIco(States.Stun, 2, 1);
         }
@@ -33,7 +33,7 @@ public class StateIcons : MonoBehaviour
 		if (Input.GetKeyUp(KeyCode.W))
 		{
 			ActivateIco(States.Stun, 2, 2);
-		}
+		}*/
 	}
 	public void ActivateIco(States state, float timeToDecrease, int stack)
     {
