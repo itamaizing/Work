@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 // Интерфейс состояния
@@ -165,7 +166,7 @@ public class InvisibleState : AbstractCharacterState
             {
                 if(Random.value <= chanceToBeSeen)
                 {
-                    _player.GetComponent<CharacterState>().AddState(new DefaultState());
+                    _player.GetComponent<CharacterState>().AddState(new DefaultState(), States.Default);
                 }
             }
         }
@@ -372,10 +373,11 @@ public class FrostingState : AbstractCharacterState
 // Класс персонажа, использующий состояния
 public class CharacterState : MonoBehaviour
 {
-    public  PlayerLinks PlayerLinks => _links;
+    public PlayerLinks PlayerLinks => _links;
     public SelectObject Select;    
 
     [SerializeField] private PlayerLinks _links;
+    //[SerializeField] private StateIcons _icons;
 	[SerializeField] private List<AbstractCharacterState> currentStates = new List<AbstractCharacterState>();
 
 	private void Start()
@@ -398,7 +400,7 @@ public class CharacterState : MonoBehaviour
         }
     }
 
-    public void AddState(AbstractCharacterState newState)
+    public void AddState(AbstractCharacterState newState, States state)
     {
         // переделать под лист
         //if already has, reset???
@@ -407,8 +409,11 @@ public class CharacterState : MonoBehaviour
         currentStates.Add(newState);
         currentStates[currentStates.Count - 1].EnterState(this, 0, 0);
     }
-    public void AddState(AbstractCharacterState newState, float duration, float damageToExit)
+    public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state)
     {
+        //if already exist 
+
+        _links.StateIcons.ActivateIco(state, duration, 1);
 		currentStates.Add(newState);
 		//currentStates[currentStates.Count - 1].
 		currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);

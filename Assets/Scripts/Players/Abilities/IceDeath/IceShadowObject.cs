@@ -48,7 +48,7 @@ public class IceShadowObject : MonoBehaviour
 			//target.CharacterState.energy = energyPlayer;
 			energyPlayer.UseAllEnergy();
 
-			target.CharacterState.AddState(new FrozenState(), duration, 0);
+			target.CharacterState.AddState(new FrozenState(), duration, 0, States.Frozen);
 			energyPlayer.Use(energyPlayer.Value);
 			GetComponent<Collider2D>().enabled = false;
 			Destroy(gameObject);

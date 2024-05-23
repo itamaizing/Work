@@ -100,7 +100,7 @@ public class PsionicCharge_PsionicaTalent1 : MonoBehaviour
 
             if (_timerBlinding <= 0)
             {
-                _target.GetComponent<CharacterState>().AddState(new DefaultState());
+                _target.GetComponent<CharacterState>().AddState(new DefaultState(), States.Default);
                 _target = null;
             }
         }
@@ -154,7 +154,7 @@ public class PsionicCharge_PsionicaTalent1 : MonoBehaviour
         if (_toggleAbility.isOn)
         {
             _target = _player.transform.Find("Abilities").gameObject.GetComponent<OneMeleeAttack>().Target;
-            _target.GetComponent<CharacterState>().AddState(new BlindnessState());
+            _target.GetComponent<CharacterState>().AddState(new BlindnessState(), States.Blind);
 
             float psionica = _player.GetComponent<PsionicaMelee>().Psionica;
 

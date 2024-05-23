@@ -193,7 +193,7 @@ public class Obscurity : MonoBehaviour
 
     private void ActivateInvisibility()
     {
-        _player.GetComponent<CharacterState>().AddState(new InvisibleState());
+        _player.GetComponent<CharacterState>().AddState(new InvisibleState(), States.Invisible);
 
         _player.GetComponent<PlayerMove>().MoveSpeed = _originalSpeed - _originalSpeed * _persentageOfSpeedReduction;
 
@@ -211,7 +211,7 @@ public class Obscurity : MonoBehaviour
         _player.GetComponent<PlayerMove>().MoveSpeed = _originalSpeed;
         if (_player.GetComponent<CharacterState>().IfHasState(new InvisibleState()))
         {
-            _player.GetComponent<CharacterState>().AddState(new DefaultState());
+            _player.GetComponent<CharacterState>().AddState(new DefaultState(), States.Default);
         }
 
         Destroy(_newEffectPrefab);

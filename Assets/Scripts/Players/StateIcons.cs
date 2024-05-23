@@ -8,30 +8,27 @@ using UnityEngine.UI;
 
 public class StateIcons : MonoBehaviour
 {
-    [SerializeField] private Image _stun;
-    [SerializeField] private TextMeshProUGUI _stunText;
-    [SerializeField] private Image _frozen;
-	[SerializeField] private TextMeshProUGUI _frozenText;
-	[SerializeField] private Image _frosting;
-	[SerializeField] private TextMeshProUGUI _frostingText;
-	[SerializeField] private Image _blind;
-    [SerializeField] private TextMeshProUGUI _blindText;
-	private void Start()
-	{
-		_stun.gameObject.SetActive(false);
-        _frozen.gameObject.SetActive(false);
-        _frosting.gameObject.SetActive(false);
-        _blind.gameObject.SetActive(false);
-	}
+    [SerializeField] private StateIcoItem _stun;
+    [SerializeField] private StateIcoItem _frozen;
+    [SerializeField] private StateIcoItem _frosting;
+    [SerializeField] private StateIcoItem _blind;
+    [SerializeField] private GameObject _spawnPos;
+
+    [SerializeField] private List<StateIcoItem> _icons;
+    private List<StateIcoItem> _activeEffects = new List<StateIcoItem>();
+    private bool _added = false;
+
 	private void Update()
 	{
+        //for test
+
 		if(Input.GetKeyUp(KeyCode.R))
         {
             ActivateIco(States.Stun, 2, 1);
         }
 		if (Input.GetKeyUp(KeyCode.E))
 		{
-			ActivateIco(States.Frosting, .2f, 2);
+			ActivateIco(States.Blind, .2f, 2);
 		}
 		if (Input.GetKeyUp(KeyCode.W))
 		{
@@ -40,45 +37,90 @@ public class StateIcons : MonoBehaviour
 	}
 	public void ActivateIco(States state, float timeToDecrease, int stack)
     {
-        switch (state)
+        foreach(var ico in _icons) 
+        {
+            if(ico.state == state)
+            {
+                var newIco = Instantiate(ico, _spawnPos.transform);
+                _activeEffects.Add(newIco);
+                AnimateIco(newIco, timeToDecrease, stack);
+                _added = true;
+            }
+        }
+        if (!_added)
+        {
+            Debug.Log("There is no stateIco " + state.ToString());
+            _added = false;
+        }
+       /* switch (state)
         {
             case States.Stun:
-                AnimateIco(_stun, timeToDecrease, stack);
+                var stun = Instantiate(_stun, _spawnPos.transform);
+                _activeEffects.Add(stun);
+                AnimateIco(stun, timeToDecrease, stack);
                 break;
             case States.Frozen:
-                AnimateIco(_frozen, timeToDecrease, stack);
+				var frozen = Instantiate(_frozen, _spawnPos.transform);
+                _activeEffects.Add(frozen);
+				AnimateIco(frozen, timeToDecrease, stack);
                 break;
             case States.Frosting:
-                AnimateIco(_frosting, timeToDecrease, stack);
+				var frosting = Instantiate(_frozen, _spawnPos.transform);
+                _activeEffects.Add(frosting);
+				AnimateIco(frosting, timeToDecrease, stack);
                 break;
             case States.Blind:
-                AnimateIco(_blind, timeToDecrease, stack);
+				var blind = Instantiate(_frozen, _spawnPos.transform);
+                _activeEffects.Add(blind);
+				AnimateIco(blind, timeToDecrease, stack);
                 break;
             default:
                 break;
-        }
+        }*/
     }
 
-    private void AnimateIco(Image ico, float time, int stack)
+    private void AnimateIco(StateIcoItem icoItem, float time, int stack)
     {
-        ico.gameObject.SetActive(true);
+        Image ico = icoItem.Ico;
         ico.fillAmount = 1;
-        if (stack <= 1)
+        if (stack == 1)
         {
-            ico.DOFillAmount(0, time).OnComplete(() => ico.gameObject.SetActive(false));
+            ico.DOFillAmount(0, time).OnComplete(() => RemoveItem(icoItem));
         }
         else
         {
-			ico.DOFillAmount(0, time).OnComplete(() => AnimateIco(ico, time, --stack));
+			ico.DOFillAmount(0, time).OnComplete(() => AnimateIco(icoItem, time, --stack));
 		}
     }
+
+    private void RemoveItem(StateIcoItem icoItem)
+    {
+        _activeEffects.Remove(icoItem);
+        //yield return new WaitForSeconds(0.1f);
+        Destroy(icoItem.gameObject);
+    }
+
+    //removing item before it ends
+	public void RemoveItemByState(States state)
+	{
+		foreach(var item in _activeEffects)
+        {
+            if(item.state == state)
+            {
+				_activeEffects.Remove(item);
+                Destroy(item.gameObject);
+			}
+        }
+	}
 }
 
 public enum States
 {
+    Default,
     Stun,
     Frozen, 
     Frosting,
-    Blind
+    Blind,
+    Invisible
 }
 
