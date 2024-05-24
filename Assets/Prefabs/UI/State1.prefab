@@ -223,7 +223,7 @@ GameObject:
   - component: {fileID: 2120230853870539906}
   - component: {fileID: 8110079681703881912}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Fade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -379,7 +379,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98bc1956ffad571439f483e0701d5ec0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Ico: {fileID: 8110079681703881912}
+  FadeFront: {fileID: 8110079681703881912}
   border: {fileID: 8016512512855021257}
   Text: {fileID: 7124779414521309969}
   count: 1

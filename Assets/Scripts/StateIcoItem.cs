@@ -10,7 +10,7 @@ public class StateIcoItem : MonoBehaviour
     //public private Image _ico;
     //public TextMeshProUGUI _text;
 
-    public Image Ico;
+    public Image FadeFront;
     public Image border;
     public TextMeshProUGUI Text;
     public int count = 1;

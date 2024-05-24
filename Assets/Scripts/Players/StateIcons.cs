@@ -1,24 +1,21 @@
 using DG.Tweening;
-using Pathfinding.Serialization;
-using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class StateIcons : MonoBehaviour
 {
-    [SerializeField] private StateIcoItem _stun;
+   /* [SerializeField] private StateIcoItem _stun;
     [SerializeField] private StateIcoItem _frozen;
     [SerializeField] private StateIcoItem _frosting;
-    [SerializeField] private StateIcoItem _blind;
+    [SerializeField] private StateIcoItem _blind;*/
     [SerializeField] private GameObject _spawnPos;
 
     [SerializeField] private List<StateIcoItem> _icons;
     private List<StateIcoItem> _activeEffects = new List<StateIcoItem>();
     private bool _added = false;
 
-	private void Update()
+	/*private void Update()
 	{
         //for test
 
@@ -42,7 +39,7 @@ public class StateIcons : MonoBehaviour
 		{
 			ActivateIco(States.Frosting, 2, 6);
 		}
-	}
+	}*/
 	public void ActivateIco(States state, float timeToDecrease, int stack)
     {
         foreach(var ico in _icons) 
@@ -89,7 +86,7 @@ public class StateIcons : MonoBehaviour
 
     private void AnimateIco(StateIcoItem icoItem, float time, int stack)
     {
-        Image ico = icoItem.Ico;
+        Image ico = icoItem.FadeFront;
         ico.fillAmount = 0;
         if (stack == 1)
         {
