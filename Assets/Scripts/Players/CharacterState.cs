@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 // Интерфейс состояния
 public abstract class AbstractCharacterState
@@ -194,16 +195,20 @@ public class InvisibleState : AbstractCharacterState
 public class StunnedState : AbstractCharacterState
 {
     public bool turnOff = false;
-    public PlayerMove _playerMove;
+    private PlayerMove _playerMove;
+    private PlayerAbilities _abilities;
 
     private float _duration;
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
     {
         Debug.Log("Entering Stunned State");
         _characterState = character;
+        _abilities = character.PlayerLinks.Abilities;
+        _abilities.SetAbilitiesDisabled();
         _playerMove.CanMove = false;
         //_duration = character.durationToExit;
         //ability off
+        
     }
 
     public override void UpdateState()
@@ -220,7 +225,7 @@ public class StunnedState : AbstractCharacterState
     {
         Debug.Log("Exiting Stunned State");
         _playerMove.CanMove = true;
-		//ability on
+		_abilities.SetAbilitiesEnabled();
 		_characterState.RemoveState(this);
 	}
 }
@@ -232,12 +237,14 @@ public class BlindnessState : AbstractCharacterState
 
 	//private CharacterState _characterState;
 	private float _duration;
-
+	private PlayerAbilities _abilities;
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
     {
         Debug.Log("Entering Stunned State");
         _duration = durationToExit;
         _characterState = character;
+		_abilities = character.PlayerLinks.Abilities;
+		_abilities.SetAbilitiesDisabled();
 		//ability off
 	}
 
@@ -255,6 +262,7 @@ public class BlindnessState : AbstractCharacterState
     {
         Debug.Log("Exiting Stunned State");
         _characterState.RemoveState(this);
+		_abilities.SetAbilitiesEnabled();
 		//ability on
 	}
 }
@@ -268,7 +276,8 @@ public class FrozenState : AbstractCharacterState
 	private HealthPlayer _playerHP;
     private PlayerMove _playerMove;
     private float _duration;
-    private float _damageToExit;
+    private float _damageToExit; 
+    private PlayerAbilities _abilities;
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
     {
@@ -287,14 +296,14 @@ public class FrozenState : AbstractCharacterState
 
         _playerMove = _characterState.PlayerLinks.PlayerMove;
         _playerMove.CanMove = false;
-        //character.GetAbilityManager().ToggleAbility(false);//turn off abilities
 
-        //_playerHP.TakePhisicDamage(10 + _characterState.energy.Value / 4);
-        //_playerHP.TakeDamage(10 + _characterState.energy.Value / 4, DamageType.Physical);
-        _playerHP.sumDamageTaken = 0;
-        //_duration = 2 + _characterState.energy.Value / 20; //тут мана того кто стрелял
-
+		_abilities = character.PlayerLinks.Abilities;
+		_abilities.SetAbilitiesDisabled();
+		//_playerHP.TakePhisicDamage(10 + _characterState.energy.Value / 4);
+		//_playerHP.TakeDamage(10 + _characterState.energy.Value / 4, DamageType.Physical);
+		//_duration = 2 + _characterState.energy.Value / 20; //тут мана того кто стрелял
 		//_characterState.energy.Use(_characterState.energy.Value);
+		_playerHP.sumDamageTaken = 0;
 
     }
 
@@ -314,6 +323,7 @@ public class FrozenState : AbstractCharacterState
 
 		//character.GetAbilityManager().ToggleAbility(true);//turn on abilities
         _playerMove.CanMove = true;
+        _abilities.SetAbilitiesEnabled();
 		_characterState.RemoveState(this);
 	}
 }
@@ -323,7 +333,6 @@ public class FrostingState : AbstractCharacterState
 {
 	public bool turnOff = false;
 
-	//private CharacterState _characterState;
 	private HealthPlayer _playerHP;
 	private PlayerMove _targetMove;
 	private float _duration; 

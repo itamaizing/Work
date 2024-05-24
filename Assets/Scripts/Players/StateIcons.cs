@@ -22,7 +22,7 @@ public class StateIcons : MonoBehaviour
 	{
         //for test
 
-		/*if(Input.GetKeyUp(KeyCode.R))
+		if(Input.GetKeyUp(KeyCode.R))
         {
             ActivateIco(States.Stun, 2, 1);
         }
@@ -32,8 +32,16 @@ public class StateIcons : MonoBehaviour
 		}
 		if (Input.GetKeyUp(KeyCode.W))
 		{
-			ActivateIco(States.Stun, 2, 2);
-		}*/
+			ActivateIco(States.Stun, 2, 4);
+		}
+		if (Input.GetKeyUp(KeyCode.T))
+		{
+			ActivateIco(States.Frozen, 2, 4);
+		}
+		if (Input.GetKeyUp(KeyCode.Y))
+		{
+			ActivateIco(States.Frosting, 2, 6);
+		}
 	}
 	public void ActivateIco(States state, float timeToDecrease, int stack)
     {
@@ -82,17 +90,17 @@ public class StateIcons : MonoBehaviour
     private void AnimateIco(StateIcoItem icoItem, float time, int stack)
     {
         Image ico = icoItem.Ico;
-        ico.fillAmount = 1;
+        ico.fillAmount = 0;
         if (stack == 1)
         {
 			icoItem.Text.gameObject.SetActive(false);
-			ico.DOFillAmount(0, time).OnComplete(() => RemoveItem(icoItem));
+			ico.DOFillAmount(1, time).OnComplete(() => RemoveItem(icoItem));
         }
         else
         {
             icoItem.Text.gameObject.SetActive(true);
 			icoItem.Text.text = stack.ToString();
-			ico.DOFillAmount(0, time).OnComplete(() => AnimateIco(icoItem, time, --stack));
+			ico.DOFillAmount(1, time).OnComplete(() => AnimateIco(icoItem, time, --stack));
 		}
     }
 
