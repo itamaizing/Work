@@ -34,6 +34,8 @@ public class PlayerAbilities : MonoBehaviour
         {
             item.SetPlayer(_playerMove, _mana, _health);
         }
+
+        OnDeselected();
     }
 
     private void OnEnable()
