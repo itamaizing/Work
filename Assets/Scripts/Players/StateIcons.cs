@@ -42,13 +42,24 @@ public class StateIcons : MonoBehaviour
 	}*/
 	public void ActivateIco(States state, float timeToDecrease, int stack)
     {
+        foreach(var ico in _activeEffects)
+        {
+            if(ico.state == state)
+            {
+                ico.count+= stack;
+				ico.Text.text = ico.count.ToString();
+				ico.Text.gameObject.SetActive(true);
+				return;
+            }
+        }
         foreach(var ico in _icons) 
         {
             if(ico.state == state)
             {
                 var newIco = Instantiate(ico, _spawnPos.transform);
+                newIco.count = stack;
                 _activeEffects.Add(newIco);
-                AnimateIco(newIco, timeToDecrease, stack);
+                AnimateIco(newIco, timeToDecrease);
                 _added = true;
             }
         }
@@ -84,11 +95,11 @@ public class StateIcons : MonoBehaviour
         }*/
     }
 
-    private void AnimateIco(StateIcoItem icoItem, float time, int stack)
+    private void AnimateIco(StateIcoItem icoItem, float time)
     {
         Image ico = icoItem.FadeFront;
         ico.fillAmount = 0;
-        if (stack == 1)
+        if (icoItem.count == 1)
         {
 			icoItem.Text.gameObject.SetActive(false);
 			ico.DOFillAmount(1, time).OnComplete(() => RemoveItem(icoItem));
@@ -96,8 +107,9 @@ public class StateIcons : MonoBehaviour
         else
         {
             icoItem.Text.gameObject.SetActive(true);
-			icoItem.Text.text = stack.ToString();
-			ico.DOFillAmount(1, time).OnComplete(() => AnimateIco(icoItem, time, --stack));
+			icoItem.Text.text = icoItem.count.ToString();
+            icoItem.count--;
+			ico.DOFillAmount(1, time).OnComplete(() => AnimateIco(icoItem, time));
 		}
     }
 
