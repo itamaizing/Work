@@ -18,8 +18,7 @@ public class IceCloudProjectile : MonoBehaviour
 
 	private void Awake()
 	{
-		startPos = transform.position;
-		
+		startPos = transform.position;		
 		_rb.AddForce(transform.up * _force, ForceMode2D.Impulse);
 	}
 
@@ -41,10 +40,10 @@ public class IceCloudProjectile : MonoBehaviour
 			//float duration = 1 + dad.Stamina.Value / 20;
 			float duration = 1 + energyDad / 20;
 			//target.CharacterState.energy = dad.Stamina;
-			target.Health.TakeDamage(10 + dad.Stamina.Value / 4, DamageType.Physical);
-			target.CharacterState.AddState(new FrozenState());
+			target.HealthPlayer.TakeDamage(10 + energyDad / 4, DamageType.Physical);
+			target.CharacterState.AddState(new FrozenState(), duration, 30, States.Frozen);
 
-			dad.Stamina.Use(duration * 20);
+			//dad.Stamina.Use(duration * 20);
 			//damage
 			GetComponent<Collider2D>().enabled = false;
 		}

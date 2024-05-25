@@ -232,6 +232,15 @@ public class BlindnessState : ICharacterState
     {
         Debug.Log("Entering Stunned State");
         _characterState = character;
+		if (character.PlayerLinks.Abilities != null)
+		{
+			_abilities = character.PlayerLinks.Abilities;
+			_abilities.SetAbilitiesDisabled();
+		}
+		else
+		{
+			Debug.Log("no ability at " + character.gameObject.name);
+		}
 		//ability off
 	}
 
@@ -249,6 +258,10 @@ public class BlindnessState : ICharacterState
     {
         Debug.Log("Exiting Stunned State");
         _characterState.RemoveState(this);
+		if (_abilities != null)
+		{
+			_abilities.SetAbilitiesEnabled();
+		}
 		//ability on
 	}
 }
@@ -270,13 +283,20 @@ public class FrozenState : ICharacterState
         _playerMove.CanMove = false;
         //character.GetAbilityManager().ToggleAbility(false);//turn off abilities
 
-        _componentHp = _characterState.ComponentHealth;
-        _componentHp.TakePhisicDamage(10 + _characterState.energy.Value / 4);
-        _componentHp.sumDamageTaken = 0;
-        //_duration = character.durationToExit;
-        _duration = 2 + _characterState.energy.Value / 20; //тут мана того кто стрелял
-
-		_characterState.energy.Use(_characterState.energy.Value);
+        if (character.PlayerLinks.Abilities != null)
+        {
+            _abilities = character.PlayerLinks.Abilities;
+            _abilities.SetAbilitiesDisabled();
+        }
+        else
+        {
+            Debug.Log("no ability at " + character.gameObject.name);
+        }
+		//_playerHP.TakePhisicDamage(10 + _characterState.energy.Value / 4);
+		//_playerHP.TakeDamage(10 + _characterState.energy.Value / 4, DamageType.Physical);
+		//_duration = 2 + _characterState.energy.Value / 20; //��� ���� ���� ��� �������
+		//_characterState.energy.Use(_characterState.energy.Value);
+		_playerHP.sumDamageTaken = 0;
 
     }
 
@@ -296,6 +316,10 @@ public class FrozenState : ICharacterState
 
 		//character.GetAbilityManager().ToggleAbility(true);//turn on abilities
         _playerMove.CanMove = true;
+        if (_abilities != null)
+        {
+            _abilities.SetAbilitiesEnabled();
+        }
 		_characterState.RemoveState(this);
 	}
 }
