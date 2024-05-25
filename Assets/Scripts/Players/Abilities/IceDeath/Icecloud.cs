@@ -32,6 +32,9 @@ public class Icecloud : Ability
 		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
 		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
 		projectile.dad = _playerLinks;
+		projectile.energyDad = _playerLinks.Stamina.Value;
+		_playerLinks.Stamina.Use(_playerLinks.Stamina.Value);
+		Cancel();
 	}
 	//���������� paycost ��� ���� ��� ��� ���� ����� �� �������� ��� �������
 

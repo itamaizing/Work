@@ -68,7 +68,7 @@ public class Energy : StaminaComponent
 		return true;
 	}
 
-	private IEnumerator RegenirateEnergy()
+	/*private IEnumerator RegenirateEnergy()
 	{
 		while (true)
 		{
@@ -78,7 +78,7 @@ public class Energy : StaminaComponent
 				this.Add(_regenerationValue);
 			}
 		}
-	}
+	}*/
 
 	public float UseAllEnergy()
 	{
