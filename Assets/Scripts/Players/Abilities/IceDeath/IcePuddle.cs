@@ -95,15 +95,12 @@ public class IcePuddle : Ability
 		Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
 		worldPosition.z = 1;
 		float distance = Vector2.Distance(gameObject.transform.position, worldPosition);
-		Debug.Log(distance);
 		if (distance <= _radius)
 		{
-			Debug.Log("alright");
 			return worldPosition;
 		}
 		else
 		{
-			Debug.Log("max pos, downgrading");
 			Vector3 direction = (worldPosition - gameObject.transform.position).normalized;
 			Vector3 spawnPosition = gameObject.transform.position + direction * _radius;
 			return spawnPosition;

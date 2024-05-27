@@ -89,7 +89,7 @@ public class PlayerAbilities : MonoBehaviour
 
             TryUseAbility();
         }
-        else if (_currentAbility.IsUsed == false)
+        else if (!_currentAbility.IsUsed)
         {
             AbilityDeselected?.Invoke(_currentAbilityIndex);
             _currentAbilityIndex = index;
@@ -109,7 +109,7 @@ public class PlayerAbilities : MonoBehaviour
 
     private void TryUseAbility()
     {
-        if (_currentAbility == null || _isAbilitiesDisabled == true || _currentAbility.IsUsed == true)
+        if (_currentAbility == null || _isAbilitiesDisabled  || _currentAbility.IsUsed )
             return;
 
         visualRender.Drawn(_currentAbility);
@@ -120,7 +120,7 @@ public class PlayerAbilities : MonoBehaviour
     {
         if (_currentAbility != null)
         {
-            if(_currentAbility.IsUsed == true)
+            if(_currentAbility.IsUsed)
             {
                 _currentAbility.TryCancel();
             }

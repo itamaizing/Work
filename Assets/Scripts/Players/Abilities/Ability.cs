@@ -169,8 +169,8 @@ public abstract class Ability : MonoBehaviour
             _streamingJob = StartCoroutine(ManaCostPerTickCorutine());
             return;
         }
-        CastEnded?.Invoke();
         _isUsed = false;
+        CastEnded?.Invoke();
     }
 
     protected bool TryUseCharge()
