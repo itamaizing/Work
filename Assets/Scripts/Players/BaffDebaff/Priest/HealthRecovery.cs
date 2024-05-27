@@ -90,13 +90,13 @@ public class HealthRecovery : BaseEffect
         _defaultHealth = _recHealth;
         _recHealth += _ticksCount;
 
-        float realHeal = hp.MaxHealth - hp.Health;
+        /*float realHeal = hp._maxHealth - hp._currentHealth;
         if (realHeal <= _recHealth)
         {
             _recHealth = realHeal;
         }
         if (_ticksCount > 0)
-        Player.GetComponent<ManaPlayer>().Add(_recHealth * _ticksCount * 0.1f);
+        Player.GetComponent<ManaPlayer>().Add(_recHealth * _ticksCount * 0.1f);*/
     }
 
     private IEnumerator Cooldown()

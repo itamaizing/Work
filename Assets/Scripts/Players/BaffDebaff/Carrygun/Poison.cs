@@ -41,8 +41,8 @@ public class Poison : BaseEffect
 
     private IEnumerator PoisonCoroutine(float duration)
     {
-        float originSpeed = _playerTarget.GetComponent<PlayerMove>().MoveSpeed;
-        _playerTarget.GetComponent<PlayerMove>().MoveSpeed -= originSpeed * 0.1f;
+        float originSpeed = _playerTarget.GetComponent<PlayerInfo>().MoveSpeed;
+        _playerTarget.GetComponent<PlayerMove>().ChangeMoveSpeed(0.1f);
 
         while (duration > 0)
         {
@@ -52,7 +52,7 @@ public class Poison : BaseEffect
             yield return new WaitForSeconds(1f);
             duration--;
         }
-        _playerTarget.GetComponent<PlayerMove>().MoveSpeed = originSpeed;
+        _playerTarget.GetComponent<PlayerMove>().SetDefaultSpeed();
 
         Destroy(gameObject);
     }

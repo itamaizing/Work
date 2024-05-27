@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -8,17 +6,24 @@ public abstract class PlayerStamina : MonoBehaviour
 	public float Value { get { return _value; } }
 	public float MaxValue { get { return _maxValue; } }
 
-	[SerializeField] protected float _value;
-	[SerializeField] protected float _maxValue;
-
-	[SerializeField] protected float _regenerationValue = 10;
-	[SerializeField] protected float _regenerationDelay = 3;
+	protected float _value;
+	protected float _maxValue;
+    protected float _regenerationValue = 10;
+	protected float _regenerationDelay = 3;
 
 	[SerializeField] protected GameObject Bar;
 	[SerializeField] protected Transform DamageSpawn;
 	[SerializeField] protected TextMeshPro PrefabText;
 
-	protected float _timerDelay = 0;
+	private float _timerDelay = 0;
+
+	public void Initialize(float maxValue,float regenValue,float regenDelay)
+	{
+		_value = maxValue;
+		_maxValue = maxValue;
+		_regenerationValue = regenValue;
+		_regenerationDelay = regenDelay;
+	}
 
 	public abstract void Add(float value);
 	public abstract bool Use(float value);

@@ -6,9 +6,6 @@ using UnityEngine.Events;
 
 public class PlayerAbilities : MonoBehaviour
 {
-    [SerializeField] private PlayerMove _playerMove;
-    [SerializeField] private PlayerStamina _mana;
-    [SerializeField] private HealthPlayer _health;
     [SerializeField] private List<Ability> _abilities;
     [SerializeField] private AbilityRender _abilityRender;
 
@@ -21,18 +18,15 @@ public class PlayerAbilities : MonoBehaviour
     public event UnityAction<int> AbilitySelected;
     public event UnityAction<int> AbilityDeselected;
 
-    private void Start()
+    public void Initialize(PlayerMove playerMove,PlayerStamina stamina , HealthPlayer healthPlayer)
     {
-        _playerMove.Selected += OnSelected;
-        _playerMove.Deselected += OnDeselected;
-
         if(_abilities.Count > 0)
         {
             _currentAbility = null;
         }
         foreach (var item in _abilities)
         {
-            item.SetPlayer(_playerMove, _mana, _health);
+            item.SetPlayer(playerMove, stamina, healthPlayer);
         }
 
         OnDeselected();
@@ -136,15 +130,5 @@ public class PlayerAbilities : MonoBehaviour
                 AbilityDeselected?.Invoke(_currentAbilityIndex);
             }
         }
-    }
-
-    private void OnDeselected()
-    {
-        this.enabled = false;
-    }
-
-    private void OnSelected()
-    {
-        this.enabled = true;
     }
 }

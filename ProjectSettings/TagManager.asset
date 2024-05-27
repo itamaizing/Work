@@ -22,7 +22,7 @@ TagManager:
   - UI
   - Markers
   - Obstecls
-  - Player
+  - Chatacter
   - OtherPlayers
   - InvisiblePlayer
   - ControlledObjects

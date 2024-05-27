@@ -59,13 +59,15 @@ public class EvolutionIntoUterus : MonoBehaviour
     }
     private IEnumerator AddHealthUterus(GameObject uterus)
     {
-        yield return new WaitForSeconds(1);
-        uterus.GetComponent<HealthPlayer>().Health += 33;
+       /* yield return new WaitForSeconds(1);
+        uterus.GetComponent<HealthPlayer>()._currentHealth += 33;
 
         yield return new WaitForSeconds(1);
-        uterus.GetComponent<HealthPlayer>().Health += 33;
+        uterus.GetComponent<HealthPlayer>()._currentHealth += 33;
 
         yield return new WaitForSeconds(1);
-        uterus.GetComponent<HealthPlayer>().Health += 34;
+        uterus.GetComponent<HealthPlayer>()._currentHealth += 34;
+       */
+       yield break;
     }
 }

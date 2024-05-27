@@ -19,6 +19,8 @@ public class ManaPlayer : MonoBehaviour
     public TextMeshPro PrefabText;
     private void Start()
     {
+        _value = MaxMana;
+        _maxValue = MaxMana;
         _waitForRegenMana = new WaitForSeconds(_manaRegenerationDelay);
         StartCoroutine(CoroutineRegenirateMana());
     }

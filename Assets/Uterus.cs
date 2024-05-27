@@ -44,11 +44,6 @@ public class Uterus : MonoBehaviour
             _AddHealthCoroutine = null;
             _canTakeDamage = true;
         }
-
-        if(_healthPlayer.Health <= 0)
-        {
-            Destroy(gameObject);
-        }
     }
 
     private void ReduceHealth()
@@ -70,7 +65,7 @@ public class Uterus : MonoBehaviour
         {
             for (int i = 0; i < Slimes.Count; i++)
             {
-                Slimes[i].GetComponent<HealthPlayer>().Health = 10f;
+                //Slimes[i].GetComponent<HealthPlayer>()._currentHealth = 10f;
             }
 
             Vector2 randomPoint = GetRandomPointInRadius(transform.position, _radius);
@@ -96,6 +91,5 @@ public class Uterus : MonoBehaviour
     private IEnumerator AddHealth()
     {
         yield return new WaitForSeconds(3);
-        _healthPlayer.Health += 40;
     }
 }

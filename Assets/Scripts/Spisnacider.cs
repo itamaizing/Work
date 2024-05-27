@@ -9,6 +9,7 @@ public class Spisnacider : MonoBehaviour
     [HideInInspector] public AttackRangeType AttackRangeType;
     [HideInInspector] public GameObject Player;
 
+    private PlayerInfo _playerData;
     private HealthPlayer _healthPlayer;
     private float _timer = 0f;
     private float _interval = 1f;
@@ -30,8 +31,6 @@ public class Spisnacider : MonoBehaviour
 
     void Start()
     {
-        _healthPlayer = GetComponent<HealthPlayer>();
-
         _healthPlayer.OnTakePhisicDamage += DamageMeleeEvasion;
         _healthPlayer.OnTakeMagicDamage += DamageMeleeEvasion;
 
@@ -39,8 +38,8 @@ public class Spisnacider : MonoBehaviour
         _controlledObjectsScript = Player.transform.Find("Abilities").gameObject.GetComponent<CarrygunControlledObjects>();
 
         _select = FindObjectOfType<SelectObject>();
-        healthOriginal = _healthPlayer.MaxHealth;
-        speedOriginal = GetComponent<PlayerMove>().MoveSpeed;
+        healthOriginal = _playerData.Health;
+        speedOriginal = GetComponent<PlayerInfo>().MoveSpeed;
     }
 
     void Update()
@@ -50,13 +49,11 @@ public class Spisnacider : MonoBehaviour
         if (!CheckForSlime(transform.position))
         {
             ReduceHealth();
-            _healthPlayer.MaxHealth = healthOriginal;
-            GetComponent<PlayerMove>().MoveSpeed = speedOriginal;
+            GetComponent<PlayerMove>().SetDefaultSpeed();
         }
         else
         {
-            _healthPlayer.MaxHealth += healthOriginal * 0.1f;
-            GetComponent<PlayerMove>().MoveSpeed += speedOriginal * 0.2f;
+            GetComponent<PlayerMove>().SetMoveSpeed(0.2f);
         }
 
         AttackRangeType = AttackRangeType.RangeAttack;

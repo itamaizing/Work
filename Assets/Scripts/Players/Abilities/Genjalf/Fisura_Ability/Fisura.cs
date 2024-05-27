@@ -89,7 +89,7 @@ public class Fisura : Ability
         if (rayHit.Length > 0 && rayHit[0].transform == transform.parent)
         {
             yield return GetCastDeleyCoroutine();
-            _fisuraTile.Rotate(PlayerMove.DirectionOfMovement);
+            _fisuraTile.Rotate(PlayerMove.MoveDirection);
             _fisuraTile.transform.Translate(Vector2.right * 2);
             _fisuraTile.SetSizeWithoutOffset(new Vector2(_width, _length));
             AddAngleTileWithoutOffset();

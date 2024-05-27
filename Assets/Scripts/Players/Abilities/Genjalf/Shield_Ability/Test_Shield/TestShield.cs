@@ -26,7 +26,7 @@ namespace Players.Abilities.Genjalf.Shield_Ability.Test_Shield
         {
             _enableShield.SetActive(false);
             _currentHealth = health;
-            _healthText.text = "Health: " + _currentHealth.ToString();
+            _healthText.text = "_currentHealth: " + _currentHealth.ToString();
             _currentShieldCharge = _soShieldData.ShieldCharges;
             _textShieldCharges.text = "Charges Shield: " + _currentShieldCharge.ToString();
         }
@@ -109,7 +109,7 @@ namespace Players.Abilities.Genjalf.Shield_Ability.Test_Shield
         private void DamageHealth(float remainingDamage)
         {
             _currentHealth -= remainingDamage;
-            _healthText.text = "Health: " + _currentHealth.ToString();
+            _healthText.text = "_currentHealth: " + _currentHealth.ToString();
             if (_currentHealth <= 0)
             {
                 gameObject.GetComponent<SpriteRenderer>().color = Color.red;

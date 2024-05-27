@@ -173,7 +173,6 @@ public class TwoRangeProtection : AbilityBase
     public override void HandleDealDamageOrHeal()
     {
         if (_castCoroutine != null) return;
-        //if (TargetParent == null || TargetParent.GetComponentInChildren<DebaffProtect>() != null) return;
        
             if (TargetParent == transform.parent.gameObject&&isLightSide)
             {

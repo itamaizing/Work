@@ -11,7 +11,7 @@ public class IceRolling : Ability
 	[Header("Ability properties")]
 	//[SerializeField] private Rigidbody2D _rb;
 	//[SerializeField] private RunePlayer _rune;
-	[SerializeField] private PlayerLinks _playerLinks;
+	[SerializeField] private Character _playerLinks;
 	[SerializeField] private float _jumprange = 2f;
 	[SerializeField] private float _durationOfJump = 0.3f;
 	[SerializeField] private LayerMask ObstacleLayerMask;

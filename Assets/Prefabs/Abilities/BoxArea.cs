@@ -31,7 +31,7 @@ public class BoxArea : MonoBehaviour
         {
             _isConcernsEnemy = true;
             _enemies.Add(enemy);
-            enemy.CircleSelect.SetActive(true);
+            enemy.GetComponent<UIPlayerComponents>().CircleSelect.IsActive = true;
         }
     }
 
@@ -40,7 +40,7 @@ public class BoxArea : MonoBehaviour
         if (collision.transform != transform.parent && collision.transform.TryGetComponent(out PlayerMove enemy))
         {
             _enemies.Remove(enemy);
-            enemy.CircleSelect.SetActive(false);
+            enemy.GetComponent<UIPlayerComponents>().CircleSelect.IsActive = false;
             if(_enemies.Count <= 0)
             {
                 _isConcernsEnemy = false;

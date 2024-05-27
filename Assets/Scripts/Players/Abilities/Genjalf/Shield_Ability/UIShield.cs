@@ -28,11 +28,11 @@ namespace Players.Abilities.Genjalf.Shield_Ability
 
         public void SetterHealthUI(float value, float currentHealth)
         {
-            gameObject.transform.parent.GetComponent<HealthPlayer>().Health -= value;
+            //gameObject.transform.parent.GetComponent<HealthPlayer>()._currentHealth -= value;
             gameObject.transform.parent.GetComponent<HealthPlayer>().UpdateHealthBar();
-            gameObject.transform.parent.GetComponent<HealthPlayer>().HealthBarText.text =
-                gameObject.transform.parent.GetComponent<HealthPlayer>().Health.ToString("F0");
-            currentHealth = gameObject.transform.parent.GetComponent<HealthPlayer>().Health;
+            //gameObject.transform.parent.GetComponent<HealthPlayer>().HealthBarText.text =
+            //gameObject.transform.parent.GetComponent<HealthPlayer>().Health.ToString("F0");
+            //currentHealth = gameObject.transform.parent.GetComponent<HealthPlayer>()._currentHealth;
         }
 
         public void ActivePanelCharges()

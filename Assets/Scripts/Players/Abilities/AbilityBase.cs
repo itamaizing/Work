@@ -97,7 +97,7 @@ public abstract class AbilityBase : MonoBehaviour
 	protected Coroutine _castCoroutine = null;
 	protected Coroutine _blinkCoroutine;
 	protected AbilityManager abilityManager;
-	[SerializeField] protected GameObject _targetCircle;
+	[SerializeField] protected SelectedCircle _targetCircle;
 	protected GameObject _player;
 	protected GameObject _playerAbility;
 	protected List<GameObject> _enemies = new List<GameObject>();
@@ -241,7 +241,7 @@ public abstract class AbilityBase : MonoBehaviour
 				{
 					if (collider.gameObject == transform.parent.gameObject && CanDoAbilityOnMyself == false) continue;
 					
-						collider.GetComponent<PlayerMove>().CircleSelect.SetActive(true);
+						collider.GetComponent<UIPlayerComponents>().CircleSelect.IsActive = true;
 						_enemies.Add(collider.gameObject);
 						collider.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
 							.SetColorCircleBackgroundPlayer(collider);					
@@ -267,7 +267,7 @@ public abstract class AbilityBase : MonoBehaviour
 			foreach (GameObject enemyToRemove in enemiesToRemove)
 			{
 				enemyToRemove.transform.GetChild(0).gameObject.SetActive(false);
-				enemyToRemove.GetComponent<PlayerMove>().CircleSelect.SetActive(false);
+				enemyToRemove.GetComponent<UIPlayerComponents>().CircleSelect.IsActive = true;
 				_enemies.Remove(enemyToRemove);
 			}
 
@@ -295,7 +295,7 @@ public abstract class AbilityBase : MonoBehaviour
 				foreach (GameObject enemy in _enemies)
 				{
 					enemy.transform.GetChild(0).gameObject.SetActive(false);
-					enemy.GetComponent<PlayerMove>().CircleSelect.SetActive(false);
+					enemy.GetComponent<UIPlayerComponents>().CircleSelect.IsActive = false;
 					enemiesToRemove.Add(enemy);
 				}
 
@@ -340,7 +340,7 @@ public abstract class AbilityBase : MonoBehaviour
 			// _targetCircle.transform.parent.GetChild(0).gameObject.GetComponent<BackgroundColorSwitcherDisabledEnabled>()
 			//     .StopSwitching();
 			_targetCircle.transform.parent.GetChild(0).gameObject.SetActive(false);
-			_targetCircle.SetActive(false);
+			_targetCircle.IsActive = false;
 		}
 
 		if (NewAbilityPrefab != null)
@@ -364,7 +364,7 @@ public abstract class AbilityBase : MonoBehaviour
 			{
 				//enemy.transform.GetChild(0).gameObject.GetComponent<BackgroundColorFader>().StopFadeSprite();
 				enemy.transform.GetChild(0).gameObject.SetActive(false);
-				enemy.GetComponent<PlayerMove>().CircleSelect.SetActive(false);
+				enemy.GetComponent<UIPlayerComponents>().CircleSelect.IsActive = false;
 			}
 
 			_enemies.Clear();
@@ -533,7 +533,7 @@ public abstract class AbilityBase : MonoBehaviour
 
 				if (_targetCircle != null && TargetParent != null)
 				{
-					_targetCircle.SetActive(true);
+					_targetCircle.IsActive = true;
 					_targetCircle.GetComponent<SpriteRenderer>().color =
 					TargetParent.transform.root.GetComponentInChildren<ControllerCircleBackgroundColor>()
 						.soCircleSelect.SpriteColor;
@@ -549,20 +549,20 @@ public abstract class AbilityBase : MonoBehaviour
 
 				if (_targetCircle == null)
 				{
-					_targetCircle = TargetParent.GetComponent<PlayerMove>().CircleSelect;
+					_targetCircle = TargetParent.GetComponent<UIPlayerComponents>().CircleSelect;
 				}
 
-				if (!_targetCircle.activeSelf && _player == Select.GetComponent<SelectObject>().SelectedObject)
+				if (!_targetCircle.IsActive && _player == Select.GetComponent<SelectObject>().SelectedObject)
 				{
-					_targetCircle.SetActive(true);
+					_targetCircle.IsActive = true;
 					_targetCircle.GetComponent<SpriteRenderer>().color = TargetParent.transform.GetChild(0)
 						.GetComponent<ControllerCircleBackgroundColor>().soCircleSelect.SpriteColor;
 				}
 
-				if (_player != Select.GetComponent<SelectObject>().SelectedObject && _targetCircle.activeSelf &&
+				if (_player != Select.GetComponent<SelectObject>().SelectedObject && _targetCircle.IsActive &&
 					TargetParent != Select.GetComponent<SelectObject>().SelectedObject)
 				{
-					_targetCircle.SetActive(false);
+					_targetCircle.IsActive = false;
 				}
 
 
@@ -587,15 +587,15 @@ public abstract class AbilityBase : MonoBehaviour
 
 			if (_targetCircle == null)
 			{
-				_targetCircle = TargetParent.GetComponent<PlayerMove>().CircleSelect;
+				_targetCircle = TargetParent.GetComponent<UIPlayerComponents>().CircleSelect;
 			}
 
-			if (_targetCircle.activeSelf && TargetParent != Select.GetComponent<SelectObject>().SelectedObject)
+			if (_targetCircle.IsActive && TargetParent != Select.GetComponent<SelectObject>().SelectedObject)
 			{
-				_targetCircle.SetActive(false);
+				_targetCircle.IsActive = false;
 			}
 
-			_targetCircle.SetActive(true);
+			_targetCircle.IsActive = true;
 			_targetCircle.GetComponent<SpriteRenderer>().color = TargetParent.transform.GetChild(0)
 				.GetComponent<ControllerCircleBackgroundColor>().soCircleColorBackgroundAttackSettings.SpriteColor;
 			TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()

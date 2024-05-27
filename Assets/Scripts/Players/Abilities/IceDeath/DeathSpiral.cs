@@ -5,7 +5,7 @@ using UnityEngine;
 public class DeathSpiral : Ability
 {
 	[SerializeField] private DeathSpiralProjectile _projectile;
-	[SerializeField] private PlayerLinks _playerLinks;
+	[SerializeField] private Character _playerLinks;
 	//[SerializeField] private RunePlayer _rune;
 	//[SerializeField] private Rigidbody2D _rb;
 

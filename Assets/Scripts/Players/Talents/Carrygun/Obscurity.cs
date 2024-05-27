@@ -37,7 +37,7 @@ public class Obscurity : MonoBehaviour
     {
         _player = transform.parent.gameObject;
         _playerAbility = _player.transform.Find("Abilities").gameObject;
-        _originalSpeed = _player.GetComponent<PlayerMove>().MoveSpeed;
+        _originalSpeed = _player.GetComponent<PlayerInfo>().MoveSpeed;
 
         _firstAbility = _playerAbility.GetComponent<OneMeleeAttack>();
         _secondAbility = _playerAbility.GetComponent<TwoMeleeAttack>();
@@ -107,21 +107,21 @@ public class Obscurity : MonoBehaviour
         {
             if (CheckForEnemy() && !_panelInactive.activeSelf)
             {
-                Debug.Log("Есть враг");
+                Debug.Log("пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ");
                 _panelInactive.SetActive(true) ;
                 _toggleAbility.enabled = false;
                 return;
             }
             else if(!CheckForEnemy() && _panelInactive.activeSelf)
             {
-                Debug.Log("Врагов нет");
+                Debug.Log("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ");
                 _panelInactive.SetActive(false);
                 _toggleAbility.enabled = true;
             }
 
             if (_toggleAbility.isOn)
             {
-                Debug.Log("активируем невидимость");
+                Debug.Log("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
 
                 _iconAbility.GetComponent<SpriteRenderer>().enabled = true;
                 Color newColor = _iconAbility.GetComponent<SpriteRenderer>().color;
@@ -159,21 +159,21 @@ public class Obscurity : MonoBehaviour
 
         foreach (Collider2D collider in colliders)
         {
-            // Проверка наличия тега "Enemies"
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ "Enemies"
             if (collider.CompareTag("Enemies"))
             {
-                // Обнаружен враг
+                // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
                 return true;
             }
         }
 
-        // Враг не обнаружен
+        // пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         return false;
     }
 
     private void TakeDamage(HealthPlayer.DamageInfo damageInfo)
     {
-        //Проверка нанесения урона
+        //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 
         if (!_invisibleIsActive)
         {
@@ -195,7 +195,7 @@ public class Obscurity : MonoBehaviour
     {
         _player.GetComponent<CharacterState>().AddState(new InvisibleState(), States.Invisible);
 
-        _player.GetComponent<PlayerMove>().MoveSpeed = _originalSpeed - _originalSpeed * _persentageOfSpeedReduction;
+        _player.GetComponent<PlayerMove>().SetMoveSpeed(_persentageOfSpeedReduction);
 
         _newEffectPrefab = Instantiate(_invisibleEffect);
         _newEffectPrefab.transform.SetParent(_player.transform);
@@ -208,7 +208,7 @@ public class Obscurity : MonoBehaviour
 
     private void DisactivateInvisibility()
     {
-        _player.GetComponent<PlayerMove>().MoveSpeed = _originalSpeed;
+        _player.GetComponent<PlayerMove>().SetDefaultSpeed();
         if (_player.GetComponent<CharacterState>().IfHasState(new InvisibleState()))
         {
             _player.GetComponent<CharacterState>().AddState(new DefaultState(), States.Default);
@@ -231,7 +231,7 @@ public class Obscurity : MonoBehaviour
     }
 
 
-    //Выход  из незаметности
+    //пїЅпїЅпїЅпїЅпїЅ  пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     private IEnumerator GetOutOfInvisibility()
     {
          _timerEvasion = _durationOfEvasion;
@@ -247,7 +247,7 @@ public class Obscurity : MonoBehaviour
         _evasion = false;
     }
     
-    //Уклонение
+    //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     private void EvadingPhysicalAttacks(HealthPlayer.DamageInfo damageInfo)
     {
         if(_evasion)
@@ -259,7 +259,7 @@ public class Obscurity : MonoBehaviour
         }
     }
 
-    //Если 2 удара когтями по одной цели, увеличиваем время и шанс уклонения
+    //пїЅпїЅпїЅпїЅ 2 пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     private void CheckClawsStrike()
     {
         if (_evasion)
@@ -291,7 +291,7 @@ public class Obscurity : MonoBehaviour
         }
     }
 
-    //Наложение кровотечения по оглушенным целям
+    //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     private void ImpositionOfBleeding(GameObject target, AbilityBase ability)
     {
         if(_toggleTalent.isOn)

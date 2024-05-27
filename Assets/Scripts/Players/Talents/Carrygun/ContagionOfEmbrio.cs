@@ -37,7 +37,7 @@ public class ContagionOfEmbrio : MonoBehaviour
 
             foreach (GameObject obj in controlledObjects)
             {
-                _select.ControlledObjects.Add(obj);
+                //_select.ControlledObjects.Add(obj);
             }
         }
     }

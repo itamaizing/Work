@@ -6,7 +6,7 @@ public class IceSword : Ability
 {
 	[SerializeField] private float _damage = 15f;
 	//[SerializeField] private GameObject _basePlayer;
-	[SerializeField] private PlayerLinks _playerLinks;
+	[SerializeField] private Character _playerLinks;
 	[SerializeField] private DeathSpiral _deathSpiral;
 	//private Vector2 _targetPosition;
 	private HealthPlayer _target;

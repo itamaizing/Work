@@ -10,11 +10,12 @@ GameObject:
   m_Component:
   - component: {fileID: 6627882834926959264}
   - component: {fileID: 1935025463078411595}
+  - component: {fileID: 4749801897734170438}
   - component: {fileID: 8264867649627807809}
   - component: {fileID: 7601164126198867055}
   - component: {fileID: 1105992124525835189}
   - component: {fileID: 7356665408746067551}
-  - component: {fileID: 94600116724242619}
+  - component: {fileID: 1861354317580254580}
   m_Layer: 9
   m_Name: PriestPlayer
   m_TagString: Allies
@@ -75,90 +76,8 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &8264867649627807809
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1089694967083977132}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 279100e0cb4b40f42b64a3ac1d1502fe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MoveSpeed: 300
-  CanMove: 1
-  IsMoving: 0
-  IsSelect: 0
-  DirectionOfMovement: {x: 0, y: 0}
-  SelectObject: {fileID: 0}
-  CircleSelect: {fileID: 7277157472421124586}
-  MarkersSelect: {fileID: 2009799302226646479}
-  AbilityPanel: {fileID: 0}
-  AbilitiesOnTargetToggles:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
---- !u!114 &7601164126198867055
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1089694967083977132}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b5add863fba6af449bc9b5c95b8199e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _hpRegenerationValue: 10
-  _hpRegenerationDelay: 3
-  Health: 333
-  MaxHealth: 333
-  HealthBar: {fileID: 3871001752529958990}
-  HealthBarText: {fileID: 2549404566520559099}
-  DamageSpawn: {fileID: 8933781320356208631}
-  PrefabText: {fileID: 97509558472111251, guid: b8ec9c7fb2a215a418a41efc3aec9187, type: 3}
---- !u!114 &1105992124525835189
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1089694967083977132}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 538268384e2d5f64f8ee01630137a16d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _manaRegenerationValue: 10
-  _manaRegenerationDelay: 3
-  MaxMana: 1666
-  Mana: 1000
-  ManaBar: {fileID: 5680468377122292335}
-  DamageSpawn: {fileID: 8933781320356208631}
-  PrefabText: {fileID: 97509558472111251, guid: b8ec9c7fb2a215a418a41efc3aec9187, type: 3}
---- !u!114 &7356665408746067551
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1089694967083977132}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7f243771c2613d40a4aecc719336ae4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Select: {fileID: 0}
---- !u!58 &94600116724242619
-CircleCollider2D:
+--- !u!60 &4749801897734170438
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -190,8 +109,172 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 1.1
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0.9292388, y: 0.31377006}
+      - {x: 0.90115714, y: 0.39198112}
+      - {x: 0.8687887, y: 0.47082424}
+      - {x: 0.8254719, y: 0.5445409}
+      - {x: 0.77398324, y: 0.618525}
+      - {x: 0.6626694, y: 0.7468207}
+      - {x: 0.57096124, y: 0.81851673}
+      - {x: 0.453923, y: 0.89686775}
+      - {x: 0.40948057, y: 0.919322}
+      - {x: 0.29798508, y: 0.96103764}
+      - {x: 0.27127934, y: 0.9650116}
+      - {x: 0.2638855, y: 0.96387863}
+      - {x: 0.2559651, y: 0.9685092}
+      - {x: 0.24680996, y: 0.968956}
+      - {x: 0.09592414, y: 0.99980927}
+      - {x: -0.01420784, y: 1.002842}
+      - {x: -0.19942856, y: 0.9860287}
+      - {x: -0.41405535, y: 0.9033408}
+      - {x: -0.5225272, y: 0.8445263}
+      - {x: -0.6706431, y: 0.7099581}
+      - {x: -0.7778764, y: 0.59356785}
+      - {x: -0.8744148, y: 0.43912005}
+      - {x: -0.94551295, y: 0.19985726}
+      - {x: -0.9398437, y: -0.08968043}
+      - {x: -0.8750254, y: -0.31005812}
+      - {x: -0.78273785, y: -0.48810744}
+      - {x: -0.6209721, y: -0.67518175}
+      - {x: -0.51985866, y: -0.7515223}
+      - {x: -0.40402818, y: -0.81607676}
+      - {x: -0.28775835, y: -0.85267854}
+      - {x: -0.13684392, y: -0.8925965}
+      - {x: -0.00958395, y: -0.9045596}
+      - {x: 0.059800625, y: -0.90308297}
+      - {x: 0.15823197, y: -0.887836}
+      - {x: 0.3568406, y: -0.83090365}
+      - {x: 0.51616204, y: -0.75056887}
+      - {x: 0.6136639, y: -0.6869781}
+      - {x: 0.68993807, y: -0.6179414}
+      - {x: 0.74366903, y: -0.55626774}
+      - {x: 0.77598596, y: -0.5158725}
+      - {x: 0.8157706, y: -0.44256067}
+      - {x: 0.8678336, y: -0.3410673}
+      - {x: 0.90957713, y: -0.2548871}
+      - {x: 0.9536052, y: -0.11074948}
+      - {x: 0.9578724, y: 0.004000187}
+      - {x: 0.9647796, y: 0.10394621}
+      - {x: 0.9522507, y: 0.22097534}
+  m_UseDelaunayMesh: 0
+--- !u!114 &8264867649627807809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089694967083977132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 279100e0cb4b40f42b64a3ac1d1502fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MoveSpeed: 3
+  CanMove: 1
+  IsMoving: 0
+  IsSelect: 0
+  MoveDirection: {x: 0, y: 0}
+  _uiComponents: {fileID: 1861354317580254580}
+  SelectObject: {fileID: 0}
+--- !u!114 &7601164126198867055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089694967083977132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b5add863fba6af449bc9b5c95b8199e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hpRegenerationValue: 10
+  _hpRegenerationDelay: 3
+  _defPhysDamage: 10
+  _defMagDamage: 10
+  _evadeMeleeDamage: 10
+  _evadeRangeDamage: 10
+  _evadeMagDamage: 10
+  _absorbPhysDamage: 0
+  _absorbMagDamage: 0
+  shields_Physic: []
+  shields_Magic: []
+  Health: 333
+  MaxHealth: 333
+  HealthBar: {fileID: 3871001752529958990}
+  HealthBarText: {fileID: 2549404566520559099}
+  DamageSpawn: {fileID: 8933781320356208631}
+  PrefabText: {fileID: 97509558472111251, guid: b8ec9c7fb2a215a418a41efc3aec9187, type: 3}
+  sumDamageTaken: 0
+--- !u!114 &1105992124525835189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089694967083977132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 538268384e2d5f64f8ee01630137a16d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _value: 0
+  _maxValue: 0
+  _regenerationValue: 10
+  _regenerationDelay: 3
+  Bar: {fileID: 5680468377122292335}
+  DamageSpawn: {fileID: 8933781320356208631}
+  PrefabText: {fileID: 97509558472111251, guid: b8ec9c7fb2a215a418a41efc3aec9187, type: 3}
+  _manaRegenerationValue: 10
+  _manaRegenerationDelay: 3
+  Mana: 1666
+  MaxMana: 1666
+  ManaBar: {fileID: 5680468377122292335}
+--- !u!114 &7356665408746067551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089694967083977132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7f243771c2613d40a4aecc719336ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Select: {fileID: 0}
+  PlayerHp: {fileID: 7601164126198867055}
+  PlayerMove: {fileID: 8264867649627807809}
+  energy: {fileID: 0}
+  durationToExit: 0
+  damageToExit: 0
+--- !u!114 &1861354317580254580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089694967083977132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 550b3daa2900e4d448f45b2c0a260552, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  abilitiesPanelPrefab: {fileID: 770607371636707797, guid: 38c8b99c44505824ea1bb0da4296ac38, type: 3}
+  CircleSelect: {fileID: 4727900227073510511}
+  MarkersSelect: {fileID: 6304457432918144960}
+  abilityPanelParent: {fileID: 0}
 --- !u!1 &1255810373264063487
 GameObject:
   m_ObjectHideFlags: 0
@@ -211,7 +294,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4106513984110700214
 Transform:
   m_ObjectHideFlags: 0
@@ -1466,6 +1549,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3949576892243209319}
   - component: {fileID: 1987023120012612249}
+  - component: {fileID: 4727900227073510511}
   m_Layer: 0
   m_Name: CircleSelect
   m_TagString: Untagged
@@ -1540,6 +1624,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &4727900227073510511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7277157472421124586}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d37dcef6f152524f82c5c9cfc5288fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7378065823814705286
 GameObject:
   m_ObjectHideFlags: 0
@@ -1549,7 +1645,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8923380669055877266}
-  - component: {fileID: 4769007552343539603}
+  - component: {fileID: 1757917591310994716}
   - component: {fileID: 8733775549418614246}
   - component: {fileID: 8768896892171752375}
   - component: {fileID: 6111745567471085271}
@@ -1558,7 +1654,7 @@ GameObject:
   - component: {fileID: 3423861005672603737}
   m_Layer: 0
   m_Name: Abilities
-  m_TagString: Allies
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1578,7 +1674,7 @@ Transform:
   m_Father: {fileID: 6627882834926959264}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4769007552343539603
+--- !u!114 &1757917591310994716
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1634,6 +1730,7 @@ MonoBehaviour:
   AttackType: 0
   AbilityType: 0
   AttackRangeType: 0
+  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1689,10 +1786,11 @@ MonoBehaviour:
   ToggleAbility: {fileID: 0}
   DrawCircle: {fileID: 8128605320138084665}
   IconAbilityAutoattack: {fileID: 0}
-  CircleSelect: {fileID: 0}
+  CircleSelect: {fileID: 7277157472421124586}
   AttackType: 0
   AbilityType: 0
   AttackRangeType: 0
+  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1735,10 +1833,11 @@ MonoBehaviour:
   ToggleAbility: {fileID: 0}
   DrawCircle: {fileID: 8128605320138084665}
   IconAbilityAutoattack: {fileID: 0}
-  CircleSelect: {fileID: 0}
+  CircleSelect: {fileID: 7277157472421124586}
   AttackType: 0
   AbilityType: 0
   AttackRangeType: 0
+  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1783,10 +1882,11 @@ MonoBehaviour:
   ToggleAbility: {fileID: 0}
   DrawCircle: {fileID: 8128605320138084665}
   IconAbilityAutoattack: {fileID: 0}
-  CircleSelect: {fileID: 0}
+  CircleSelect: {fileID: 7277157472421124586}
   AttackType: 0
   AbilityType: 0
   AttackRangeType: 0
+  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1802,7 +1902,7 @@ MonoBehaviour:
   IsActiveAbility: 0
   _targetCircle: {fileID: 0}
   RecoveryBaffPrefab: {fileID: 8887987041764017493, guid: 70e3d37fc4fe10e4e852b0b918d0776d, type: 3}
-  DamageDebaffPrefab: {fileID: 3161902913369863076, guid: 92b3843eb2376b743845974a02d0f69e, type: 3}
+  DamageDebaffPrefab: {fileID: 8908686081191195120, guid: bc6789e500ac32940bc1f7779553b1cc, type: 3}
   ManaCost: {fileID: 5002266305278314167}
   _castTime: 1.2
   _heal: 6
@@ -2070,6 +2170,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5695348324165294111}
   - component: {fileID: 8813801878831282486}
+  - component: {fileID: 6304457432918144960}
   m_Layer: 6
   m_Name: MarkerMinimap
   m_TagString: Marker
@@ -2145,3 +2246,15 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &6304457432918144960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8907104706748167993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22aca3966e1bfbc469f072742e7b35e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

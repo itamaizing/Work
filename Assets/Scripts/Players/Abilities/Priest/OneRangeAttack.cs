@@ -257,7 +257,7 @@ public class OneRangeAttack : AbilityBase
 		
             AddBaffEnergyOfSpirit();
             float heal = Heal + SpiritBaffCount;
-            float realHeal = TargetParent.GetComponent<HealthPlayer>().MaxHealth - TargetParent.GetComponent<HealthPlayer>().Health;
+            /*float realHeal = TargetParent.GetComponent<HealthPlayer>()._maxHealth - TargetParent.GetComponent<HealthPlayer>()._currentHealth;
             if (realHeal <= heal)
             {
                 heal = realHeal;
@@ -268,6 +268,7 @@ public class OneRangeAttack : AbilityBase
             _player.GetComponent<ManaPlayer>().Add(heal *0.1f);
             }
             _player.GetComponent<ManaPlayer>().Use(_manaForHeal);
+			*/
 			FirstAbilityEvent?.Invoke(heal);
 		
     }

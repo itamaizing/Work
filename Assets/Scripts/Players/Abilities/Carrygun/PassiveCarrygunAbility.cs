@@ -16,8 +16,8 @@ public class PassiveCarrygunAbility : MonoBehaviour
         GameObject _player = transform.parent.gameObject;
         _healthPlayer = _player.GetComponent<HealthPlayer>();
 
-        _health = _healthPlayer.Health; 
-        _maxHealth = _healthPlayer.MaxHealth;
+        //_health = _healthPlayer._currentHealth; 
+       // _maxHealth = _healthPlayer._maxHealth;
         _isRegeneration = true;
 
         if (_healthPlayer != null)

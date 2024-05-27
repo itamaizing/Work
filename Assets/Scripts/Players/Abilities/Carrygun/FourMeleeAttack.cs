@@ -65,9 +65,7 @@ public class FourMeleeAttack : AbilityBase
 		_distanceTentacles = _cellSize * CellDistance; //от щуполец до земли
 		AttackType = AttackType.OneAttack;
 		AbilityType = AbilityType.DamageAbility;
-
-		healthOriginal = transform.parent.GetComponent<HealthPlayer>().MaxHealth;
-		speedOriginal = transform.parent.GetComponent<PlayerMove>().MoveSpeed;
+		speedOriginal = transform.parent.GetComponent<PlayerInfo>().MoveSpeed;
 	}
 
 	private void Update()
@@ -82,13 +80,11 @@ public class FourMeleeAttack : AbilityBase
 
 		if (isSlimePresent)
 		{
-			_player.GetComponent<HealthPlayer>().MaxHealth += healthOriginal * 0.05f;
-			_player.GetComponent<PlayerMove>().MoveSpeed += speedOriginal * 0.1f;
+			_player.GetComponent<PlayerMove>().ChangeMoveSpeed(0.1f);
 		}
 		else
 		{
-			_player.GetComponent<HealthPlayer>().MaxHealth = healthOriginal;
-			_player.GetComponent<PlayerMove>().MoveSpeed = speedOriginal;
+			_player.GetComponent<PlayerMove>().SetDefaultSpeed();
 		}
 	}
 
@@ -360,9 +356,9 @@ public class FourMeleeAttack : AbilityBase
 										_canDrawDistancePrefab = false;
 									}
 
-									_targetCircle.SetActive(false);
-									_targetCircle = TargetParent.GetComponent<PlayerMove>().CircleSelect;
-									_targetCircle.SetActive(true);
+									_targetCircle.IsActive = false;
+									_targetCircle = TargetParent.GetComponent<UIPlayerComponents>().CircleSelect;
+									_targetCircle.IsActive = true;
 
 									break;
 								}

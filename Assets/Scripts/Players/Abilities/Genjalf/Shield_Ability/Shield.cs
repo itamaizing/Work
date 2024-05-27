@@ -40,8 +40,8 @@ namespace Players.Abilities.Genjalf.Shield_Ability
         {
             _uiShield = GetComponent<UIShield>();
             
-            _startSpeedPlayer = gameObject.transform.parent.GetComponent<PlayerMove>().MoveSpeed;
-            _currentHealth = gameObject.transform.parent.GetComponent<HealthPlayer>().Health;
+            _startSpeedPlayer = gameObject.transform.parent.GetComponent<PlayerInfo>().MoveSpeed;
+            //_currentHealth = gameObject.transform.parent.GetComponent<HealthPlayer>()._currentHealth;
             gameObject.transform.parent.GetComponent<HealthPlayer>().HealthBarText.text = _currentHealth.ToString("F0");
             _currentMana = gameObject.transform.parent.GetComponent<ManaPlayer>().Value;
             _currentShieldCharge = _soShieldData.ShieldCharges;
@@ -110,7 +110,7 @@ namespace Players.Abilities.Genjalf.Shield_Ability
                 _isResetCoroutineRunning = false;
             }
 
-            gameObject.transform.parent.GetComponent<PlayerMove>().MoveSpeed = 0;
+            gameObject.transform.parent.GetComponent<PlayerMove>().SetMoveSpeed(0);
 
             if (!_isGlobalCooldown)
             {
@@ -125,7 +125,7 @@ namespace Players.Abilities.Genjalf.Shield_Ability
 
             _currentShieldCharge--;
 
-            transform.parent.GetComponent<PlayerMove>().MoveSpeed = _startSpeedPlayer;
+            transform.parent.GetComponent<PlayerMove>().SetDefaultSpeed();
             _manaCost.SetActive(false);
             transform.parent.GetComponent<ManaPlayer>().Use(_soShieldData.ManaCost);
             _currentMana = gameObject.transform.parent.GetComponent<ManaPlayer>().Value;

@@ -33,9 +33,9 @@ public class DeathSpiralProjectile : MonoBehaviour
 		if (collision.gameObject == dad)
 			return;
 		//damage, freez etc
-		if (collision.TryGetComponent<PlayerLinks>(out var target))
+		if (collision.TryGetComponent<Character>(out var target))
 		{
-			target.HealthPlayer.TakePhisicDamage(20);
+			target.Health.TakePhisicDamage(20);
 			//damage
 		}
 		if(collision.TryGetComponent<IceShadowObject>(out var shadow))

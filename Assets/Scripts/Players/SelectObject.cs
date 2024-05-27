@@ -1,22 +1,33 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class SelectObject : MonoBehaviour
 {
-    [HideInInspector] public GameObject SelectedObject;
-    [HideInInspector] public bool CanSelect = true;
-    public GameObject FirstPlayer;
-    public GameObject SecondPlayer;
-    public GameObject ThirstPlayer;
-    public GameObject FourthPlayer;
-    public GameObject FifthPlayer;
-    public List<GameObject> ControlledObjects = new List<GameObject>();
+    [HideInInspector] public Character SelectedObject;
+    [HideInInspector] public bool CanSelect;
+    public Character FirstPlayer;
+    public Character SecondPlayer;
+    public List<Character> ControlledObjects = new List<Character>();
+
+    private static SelectObject instance;
+    public static SelectObject Instance => instance;
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     private void Start()
     {
         if(SelectedObject != null)
         {
-            SelectedObject.layer = LayerMask.NameToLayer("Player");
+            SelectedObject.gameObject.layer = LayerMask.NameToLayer("Character");
+        }
+        else
+        {
+            SelectedObject = FirstPlayer;
+            CanSelect = false;
         }
     }
     private void Update()
@@ -27,69 +38,37 @@ public class SelectObject : MonoBehaviour
             {
                 if (SelectedObject != null)
                 {
-                    SelectedObject.layer = LayerMask.NameToLayer("OtherPlayers");
+                    SelectedObject.gameObject.layer = LayerMask.NameToLayer("OtherPlayers");
                 }
 
                 SelectedObject = FirstPlayer;
-                SelectedObject.layer = LayerMask.NameToLayer("Player");
+                SelectedObject.gameObject.layer = LayerMask.NameToLayer("Character");
             }
             if (Input.GetKeyDown(KeyCode.F2))
             {
                 if (SelectedObject != null)
                 {
-                    SelectedObject.layer = LayerMask.NameToLayer("OtherPlayers");
+                    SelectedObject.gameObject.layer = LayerMask.NameToLayer("OtherPlayers");
                 }
 
                 SelectedObject = SecondPlayer;
-                SelectedObject.layer = LayerMask.NameToLayer("Player");
+                SelectedObject.gameObject.layer = LayerMask.NameToLayer("Character");
 
             }
-            if (Input.GetKeyDown(KeyCode.F3))
-            {
-                if (SelectedObject != null)
-                {
-                    SelectedObject.layer = LayerMask.NameToLayer("OtherPlayers");
-                }
 
-                SelectedObject = ThirstPlayer;
-                SelectedObject.layer = LayerMask.NameToLayer("Player");
-
-            }
-            if (Input.GetKeyDown(KeyCode.F4))
-            {
-                if (SelectedObject != null)
-                {
-                    SelectedObject.layer = LayerMask.NameToLayer("OtherPlayers");
-                }
-
-                SelectedObject = FourthPlayer;
-                SelectedObject.layer = LayerMask.NameToLayer("Player");
-
-            }
-            if (Input.GetKeyDown(KeyCode.F5))
-            {
-                if (SelectedObject != null)
-                {
-                    SelectedObject.layer = LayerMask.NameToLayer("OtherPlayers");
-                }
-
-                SelectedObject = FifthPlayer;
-                SelectedObject.layer = LayerMask.NameToLayer("Player");
-
-            }
             if (ControlledObjects != null && Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
             {
                 if (Input.GetKeyDown(KeyCode.Alpha1))
                 {
                     if (SelectedObject != null)
                     {
-                        SelectedObject.layer = LayerMask.NameToLayer("OtherPlayers");
+                        SelectedObject.gameObject.layer = LayerMask.NameToLayer("OtherPlayers");
                     }
 
                     if (ControlledObjects.Count > 0)
                     {
                         SelectedObject = ControlledObjects[0];
-                        SelectedObject.layer = LayerMask.NameToLayer("Player");
+                        SelectedObject.gameObject.layer = LayerMask.NameToLayer("Character");
                     }
                 }
             }
@@ -99,13 +78,13 @@ public class SelectObject : MonoBehaviour
                 {
                     if (SelectedObject != null)
                     {
-                        SelectedObject.layer = LayerMask.NameToLayer("OtherPlayers");
+                        SelectedObject.gameObject.layer = LayerMask.NameToLayer("OtherPlayers");
                     }
 
                     if (ControlledObjects.Count > 1)
                     {
                         SelectedObject = ControlledObjects[1];
-                        SelectedObject.layer = LayerMask.NameToLayer("Player");
+                        SelectedObject.gameObject.layer = LayerMask.NameToLayer("Character");
                     }
                 }
             }

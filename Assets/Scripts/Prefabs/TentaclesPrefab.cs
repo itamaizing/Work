@@ -47,7 +47,7 @@ public class TentaclesPrefab : MonoBehaviour
 			{
 				if (collider.CompareTag(targetTag) && collider.GetComponent<PlayerMove>())
 				{
-					collider.GetComponent<PlayerMove>().CircleSelect.SetActive(true);
+					collider.GetComponent<UIPlayerComponents>().CircleSelect.IsActive = true;
 					_enemies.Add(collider.gameObject);
 					collider.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
 						.SetColorCircleBackgroundPlayer(collider);
@@ -72,7 +72,7 @@ public class TentaclesPrefab : MonoBehaviour
 		foreach (GameObject enemyToRemove in enemiesToRemove)
 		{
 			enemyToRemove.transform.GetChild(0).gameObject.SetActive(false);
-			enemyToRemove.GetComponent<PlayerMove>().CircleSelect.SetActive(false);
+			enemyToRemove.GetComponent<UIPlayerComponents>().CircleSelect.IsActive = false;
 			_enemies.Remove(enemyToRemove);
 		}
 

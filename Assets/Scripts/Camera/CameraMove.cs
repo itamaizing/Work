@@ -24,13 +24,13 @@ public class CameraMove : MonoBehaviour
         Vector3 mousePosition = Input.mousePosition;
         Vector3 cameraPosition = transform.position;
 
-        float activationZoneX = Screen.width * 0.01f; // 1% ширины экрана с краю
-        float activationZoneY = Screen.height * 0.01f; // 1% высоты экрана с краю
+        float activationZoneX = Screen.width * 0.01f; // 1% пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ
+        float activationZoneY = Screen.height * 0.01f; // 1% пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ
 
         float cameraHalfWidth = _camera.orthographicSize * _camera.aspect;
         float cameraHalfHeight = _camera.orthographicSize;
 
-        if (Input.GetMouseButton(0)) // Левая кнопка мыши удерживается
+        if (Input.GetMouseButton(0)) // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         {
             float deltaX = -Input.GetAxis("Mouse X") * panSpeed * Time.deltaTime * 8;
             float deltaY = -Input.GetAxis("Mouse Y") * panSpeed * Time.deltaTime * 8;
@@ -71,7 +71,7 @@ public class CameraMove : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            GameObject gameObject = Select.GetComponent<SelectObject>().SelectedObject;
+            Character player = Select.GetComponent<SelectObject>().SelectedObject;
             transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, transform.position.z);
         }
     }

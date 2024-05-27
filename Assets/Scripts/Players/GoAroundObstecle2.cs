@@ -166,7 +166,7 @@ public class GoAroundObstecle2 : MonoBehaviour
 
                     Vector2 chosenPoint = Vector2.zero;
                     Vector2 middlePoint = Vector2.zero;
-                    if (hit.collider.CompareTag("Player"))
+                    if (hit.collider.CompareTag("Character"))
                     {
                         chosenPoint = furthestPointRight;
                         middlePoint = secondPointRight;

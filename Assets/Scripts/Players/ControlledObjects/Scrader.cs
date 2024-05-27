@@ -62,8 +62,7 @@ public class Scrader : MonoBehaviour
 
         _select = FindObjectOfType<SelectObject>();
 
-        healthOriginal = _healthPlayer.MaxHealth;
-        speedOriginal = GetComponent<PlayerMove>().MoveSpeed;
+        speedOriginal = GetComponent<PlayerInfo>().MoveSpeed;
 
     }
 
@@ -74,13 +73,11 @@ public class Scrader : MonoBehaviour
         if (!CheckForSlime(transform.position))
         {
             ReduceHealth();
-            _healthPlayer.MaxHealth = healthOriginal;
-            GetComponent<PlayerMove>().MoveSpeed = speedOriginal;
+            GetComponent<PlayerMove>().SetDefaultSpeed();;
         }
         else
         {
-            _healthPlayer.MaxHealth += healthOriginal * 0.1f;
-            GetComponent<PlayerMove>().MoveSpeed += speedOriginal * 0.1f;
+            GetComponent<PlayerMove>().SetMoveSpeed(0.1f);
         }
 
         CheckTarget();
@@ -100,11 +97,6 @@ public class Scrader : MonoBehaviour
         else if (!AbilityToggleEvolution.isOn)
         {
             IconAbility.GetComponent<SpriteRenderer>().enabled = false;
-        }
-
-        if (_healthPlayer.Health <= 0)
-        {
-            Destroy(gameObject);
         }
 
         if(AbilityPanel != null)
@@ -153,7 +145,7 @@ public class Scrader : MonoBehaviour
             _newCocoonPrefab.GetComponent<Cocoon>().Player = Player;
         }
 
-        _select.ControlledObjects.Remove(gameObject);
+        //_select.ControlledObjects.Remove(gameObject);
         Destroy(gameObject);
     }
 

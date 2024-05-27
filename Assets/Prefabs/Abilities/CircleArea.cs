@@ -24,19 +24,19 @@ public class CircleArea : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (_sprite.size != Vector2.zero && collision.transform != transform.parent && collision.transform.TryGetComponent(out PlayerMove enemy))
+        if (_sprite.size != Vector2.zero && collision.transform != transform.parent && collision.transform.TryGetComponent(out UIPlayerComponents enemy))
         {
             _isConcernsEnemy = true;
-            enemy.CircleSelect.SetActive(true);
+            enemy.CircleSelect.IsActive = true;
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (_sprite.size != Vector2.zero && collision.transform != transform.parent && collision.transform.TryGetComponent(out PlayerMove enemy))
+        if (_sprite.size != Vector2.zero && collision.transform != transform.parent && collision.transform.TryGetComponent(out UIPlayerComponents enemy))
         {
             _isConcernsEnemy = false;
-            enemy.CircleSelect.SetActive(false);
+            enemy.CircleSelect.IsActive = false;
         }
     }
 }

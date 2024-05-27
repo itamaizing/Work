@@ -41,7 +41,7 @@ public class EmbryonDebuff : MonoBehaviour
 
         GameObject newScrader = Instantiate(scraderPrefab);
 
-        Vector3 directionOfMovement = -(_target.GetComponent<PlayerMove>().DirectionOfMovement).normalized;
+        Vector3 directionOfMovement = -(_target.GetComponent<PlayerMove>().MoveDirection).normalized;
         float distance = 1.94f;
         Vector3 oppositePosition = _target.transform.position + directionOfMovement * distance;
         newScrader.transform.position = oppositePosition;

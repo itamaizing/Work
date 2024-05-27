@@ -39,7 +39,7 @@ public class PsionicaMelee : MonoBehaviour
 
     private void UpdateManaBars()
     {
-        float health = GetComponent<HealthPlayer>().Health;
+        //float health = GetComponent<HealthPlayer>()._currentHealth;
 
         if (Psionica <= 30f)
         {
@@ -49,8 +49,8 @@ public class PsionicaMelee : MonoBehaviour
         else
         {
             UpdateManaBar(ManaBar, 1.0f);
-            float newScaleX = Psionica / (health - 30);
-            UpdateManaBar(ManaBar2, Mathf.Clamp01(newScaleX));
+            //float newScaleX = Psionica / (health - 30);
+            //UpdateManaBar(ManaBar2, Mathf.Clamp01(newScaleX));
         }
     }
 
@@ -72,8 +72,8 @@ public class PsionicaMelee : MonoBehaviour
         isTimerActive = true;
 
         Psionica += damageValue;
-        float health = GetComponent<HealthPlayer>().Health;
-        Psionica = Mathf.Min(Psionica, health);
+        //float health = GetComponent<HealthPlayer>()._currentHealth;
+        //Psionica = Mathf.Min(Psionica, health);
     }
 
     public void UsePsionica(float value)

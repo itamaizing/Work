@@ -5,14 +5,11 @@ using UnityEngine;
 
 public class EnergyPlayer : PlayerStamina
 {
-	private WaitForSeconds _waitForRegen;
-	private float _regenDelay = 3;
 	private float _timer = 0;
 	private bool _canRegen = true;
 
 	private void Start()
 	{
-		_waitForRegen = new WaitForSeconds(_regenerationDelay);
 		StartCoroutine(RegenirateEnergy());
 	}
 
@@ -24,7 +21,7 @@ public class EnergyPlayer : PlayerStamina
 			return;
 		}
 		_timer += Time.deltaTime;
-		if(_timer > _regenDelay)
+		if(_timer > _regenerationDelay)
 		{
 			_timer = 0;
 			_canRegen = true;
@@ -61,7 +58,6 @@ public class EnergyPlayer : PlayerStamina
 			return false;
 		}
 		_canRegen = false;
-		_timerDelay = 0;
 		_timer = 0;
 
 		_value -= EnergyValue;
@@ -80,7 +76,7 @@ public class EnergyPlayer : PlayerStamina
 	{
 		while (true)
 		{
-			yield return _waitForRegen;
+			yield return new WaitForSeconds(_regenerationDelay);
 			if (_canRegen && _value < _maxValue)
 			{
 				this.Add(_regenerationValue);
