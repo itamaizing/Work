@@ -21,5 +21,5 @@ MonoBehaviour:
   _stamina: 333
   _moveSpeed: 5
   _defaultHealthRegen: 10
-  _defaultStaminaRegen: 2.9
-  _defaultRegenDelay: 2.1
+  _defaultStaminaRegen: 3
+  _defaultRegenDelay: 3

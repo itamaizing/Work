@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "PlayerInfo", fileName = "PlayerInfo")]
+[CreateAssetMenu(fileName = "PlayerData", menuName = "ScriptableObjects/Player", order = 1)]
 public class PlayerInfo : ScriptableObject
 {
     [SerializeField] private string _name;
@@ -11,9 +11,9 @@ public class PlayerInfo : ScriptableObject
     [SerializeField] private HealthInfo _healthInfo;
     [SerializeField] private float _stamina;
     [SerializeField] private float _moveSpeed;
-    [SerializeField][Range(0, 100)] private float _defaultHealthRegen;
-    [SerializeField][Range(0, 100)] private float _defaultStaminaRegen;
-    [SerializeField][Range(0, 100)] private float _defaultRegenDelay;
+    [SerializeField] private float _defaultHealthRegen;
+    [SerializeField] private float _defaultStaminaRegen;
+    [SerializeField] private float _defaultRegenDelay;
 
     public string Name => _name;
     public string Description => _description;

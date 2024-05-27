@@ -34,6 +34,7 @@ public class Character : MonoBehaviour
 		Health.Initialize(_playerData.Health,_playerData.HealthRegen,_playerData.RegenDelay ,_playerData.HealthInfo );
 		Move.Initialize(_playerData.MoveSpeed,Rb);
 		Stamina.Initialize(_playerData.Stamina, _playerData.StaminaRegen, _playerData.RegenDelay);
+		RunePlayer.Initialize(10,3,10);
 		CharacterState.Initialize(Health, Move);
 		UIPlayerComponents.Initialize(Abilities,Move,Stamina,Health);
 	}

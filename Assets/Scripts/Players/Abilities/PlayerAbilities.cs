@@ -27,6 +27,7 @@ public class PlayerAbilities : MonoBehaviour
         foreach (var item in _abilities)
         {
             item.SetPlayer(playerMove, stamina, healthPlayer);
+            Debug.Log("set");
         }
 
         OnDeselected();

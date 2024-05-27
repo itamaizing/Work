@@ -538,17 +538,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1675032641069307089, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
   m_PrefabInstance: {fileID: 8003220174388997041}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &165762051 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8480034257406857709, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
-  m_PrefabInstance: {fileID: 8003220174388997041}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 165762043}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b927948ae40d644492381b2c058cf47, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &165762059
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8100,6 +8089,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1824537901 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4990396536032889013, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
+  m_PrefabInstance: {fileID: 5290287038725802183}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b927948ae40d644492381b2c058cf47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &1843226576 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7335569941358741372, guid: eca3bd46d2933ef41855062b9afbfe29, type: 3}
@@ -14072,55 +14072,55 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1109675660136110575, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _area
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1109675660136110575, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _radius
-      value: 5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1109675660136110575, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _cooldown
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1109675660136110575, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _manaCost
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1109675660136110575, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _castDeley
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1109675660136110575, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _castWidth
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1109675660136110575, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _castLength
-      value: 12
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1885825803161317577, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _area
-      value: 5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1885825803161317577, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _radius
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1885825803161317577, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _cooldown
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1885825803161317577, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _manaCost
-      value: 5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1885825803161317577, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _castDeley
-      value: 5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1885825803161317577, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _castWidth
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1885825803161317577, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _castLength
@@ -14140,31 +14140,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3363981047473804389, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _area
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3363981047473804389, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _radius
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3363981047473804389, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _cooldown
-      value: 12
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3363981047473804389, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _manaCost
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3363981047473804389, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _castDeley
-      value: 125
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3363981047473804389, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _castWidth
-      value: 125
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3363981047473804389, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _castLength
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4307223359409179987, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: m_RootOrder
@@ -14212,31 +14212,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6207801900465079021, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _area
-      value: 12
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6207801900465079021, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _radius
-      value: 12
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6207801900465079021, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _cooldown
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6207801900465079021, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _manaCost
-      value: 12
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6207801900465079021, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _castDeley
-      value: 12
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6207801900465079021, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _castWidth
-      value: 12
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6207801900465079021, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: _castLength
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 9147229636590653032, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
       propertyPath: m_Layer
@@ -16651,7 +16651,7 @@ PrefabInstance:
     - target: {fileID: 760426066598959879, guid: ad3c47046ceed4c4280cf18cce39f9f5, type: 3}
       propertyPath: _playerAbilities
       value: 
-      objectReference: {fileID: 165762051}
+      objectReference: {fileID: 1824537901}
     - target: {fileID: 906215495343805811, guid: ad3c47046ceed4c4280cf18cce39f9f5, type: 3}
       propertyPath: m_Name
       value: AbilityPanel
@@ -16743,6 +16743,10 @@ PrefabInstance:
     - target: {fileID: 2906004067914324339, guid: ad3c47046ceed4c4280cf18cce39f9f5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5091484050759122791, guid: ad3c47046ceed4c4280cf18cce39f9f5, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
