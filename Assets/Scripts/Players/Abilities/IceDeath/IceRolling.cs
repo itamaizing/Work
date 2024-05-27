@@ -44,7 +44,7 @@ public class IceRolling : Ability
 				Cancel();
 			}
 		}
-		if (Input.GetMouseButtonDown(1))
+		if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
 		{
 			Cancel();
 		}
@@ -52,6 +52,7 @@ public class IceRolling : Ability
 	protected override void Cast()
 	{
 		_enabled = true;
+		
 	}
 
 	protected override void Cancel()
