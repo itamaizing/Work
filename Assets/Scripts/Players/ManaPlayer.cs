@@ -1,66 +1,44 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
 
-public class ManaPlayer : MonoBehaviour
+public class ManaPlayer : PlayerStamina
 {
-    [SerializeField][Range(0,100)] private float _manaRegenerationValue = 10;
-    [SerializeField][Range(0, 100)] private float _manaRegenerationDelay = 3;
-    [SerializeField] private float Mana;
-    [SerializeField] private float MaxMana;
-    [SerializeField] private GameObject ManaBar;
-    private WaitForSeconds _waitForRegenMana;
-
-    public float Mana = 1000;
     public GameObject ManaBar;
     public Transform DamageSpawn;
     public TextMeshPro PrefabText;
-    private void Start()
-    {
-        _value = MaxMana;
-        _maxValue = MaxMana;
-        _waitForRegenMana = new WaitForSeconds(_manaRegenerationDelay);
-        StartCoroutine(CoroutineRegenirateMana());
-    }
-    public void AddMana(float manaValue)
-    {
-        Mana += manaValue;
 
-        float newScaleX = Mana / MaxMana;
+    public override void Add(float manaValue)
+    {
+        _value += manaValue;
+
+        float newScaleX = _value / _maxValue;
         ManaBar.transform.localScale = new Vector3(newScaleX, 1.0f, 1.0f);
 
         if (manaValue > 0 && manaValue < 1)
         {
             manaValue = 1;
         }
-        
+
         PrefabText.text = "+" + manaValue.ToString("0.0");
         PrefabText.GetComponent<DamagePrefab>().StartColor = new Color(0, 0, 1, 1);
         PrefabText.GetComponent<DamagePrefab>().EndColor = new Color(0, 0, 1, 0.5f);
         TextMeshPro newPrefab = Instantiate(PrefabText, DamageSpawn.position, Quaternion.identity);
         newPrefab.transform.SetParent(transform);
 
-        Mana = Mathf.Clamp(Mana, 0, MaxMana);
+        _value = Mathf.Clamp(_value, 0, _maxValue);
 
     }
-    public void UseMana(float manaValue)
-    {
-        Mana -= manaValue;
 
-        float newScaleX = Mana / MaxMana;
+    public override bool Use(float manaValue)
+    {
+        _value -= manaValue;
+
+        float newScaleX = _value / _maxValue;
         ManaBar.transform.localScale = new Vector3(newScaleX, 1.0f, 1.0f);
 
-        Mana = Mathf.Clamp(Mana, 0, MaxMana);
+        _value = Mathf.Clamp(_value, 0, _maxValue);
+        
+        return false;
     }
 
-    private IEnumerator RegenirateMana()
-    {
-        while (true)
-        {
-            yield return _waitForRegenMana;
-            this.AddMana(_manaRegenerationValue);
-        }
-    }
 }

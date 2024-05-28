@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class IceCloudProjectile : MonoBehaviour
 {
-	[HideInInspector]public PlayerLinks dad;
+	[HideInInspector]public Character dad;
 
 	[SerializeField] private Rigidbody2D _rb;
 	[SerializeField] GameObject _hitEffect;
@@ -34,12 +34,12 @@ public class IceCloudProjectile : MonoBehaviour
 		if (collision.gameObject == dad.gameObject || collision.CompareTag("Ability"))
 			return;
 		//damage, freez etc
-		if(collision.TryGetComponent<PlayerLinks>(out var target))
+		if(collision.TryGetComponent<Character>(out var target))
 		{
 			float duration = 1 + dad.Stamina.Value / 20;
 			//target.CharacterState.energy = dad.Stamina;
-			target.HealthPlayer.TakeDamage(10 + dad.Stamina.Value / 4, DamageType.Physical);
-			target.CharacterState.AddState(new FrozenState(), duration, 30, States.Frozen);
+			target.Health.TakeDamage(10 + dad.Stamina.Value / 4, DamageType.Physical);
+			target.CharacterState.AddState(new FrozenState());
 
 			dad.Stamina.Use(duration * 20);
 			//damage

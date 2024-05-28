@@ -21,7 +21,14 @@ public enum AbilityType
 public enum AttackRangeType
 {
 	MeleeAttack,
-	RangeAttack
+	RangeAttack,
+	Inner
+}
+
+public enum DamageType
+{
+	Magical,
+	Physical
 }
 
 public abstract class AbilityBase : MonoBehaviour
@@ -45,6 +52,7 @@ public abstract class AbilityBase : MonoBehaviour
 	[SerializeField] protected GameObject CircleSelect;
 
 	[HideInInspector] public AttackType AttackType;
+	[HideInInspector] public DamageType DamageType;
 	[HideInInspector] public AbilityType AbilityType;
 	[HideInInspector] public AttackRangeType AttackRangeType;
 	[HideInInspector] public GameObject TargetParent;
@@ -55,14 +63,17 @@ public abstract class AbilityBase : MonoBehaviour
 	[HideInInspector] public bool CanDoAbility;
 	[HideInInspector] public bool CanDoAbilityOnMyself = true;
 	[HideInInspector] public bool CanDrawCircle = true;
-	[Header("Дистанция в клетках")]
+	[Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
 	[HideInInspector] public float Distance;
 	[SerializeField] public float CellDistance = 1f;
 	[SerializeField] protected float _cellSize = 1.9f;
 	[HideInInspector] public LastAbility lastAbility;
 	[HideInInspector] public bool IsActiveAbility;
 
-	public abstract void ChangeBoolAndValues();
+	public bool isInRadius { get; private set; }
+
+
+    public abstract void ChangeBoolAndValues();
 	public abstract void OnLeftDoubleClick();
 	public abstract void OnRightDoubleClick();
 	public abstract void HandleDealDamageOrHeal();
@@ -105,7 +116,7 @@ public abstract class AbilityBase : MonoBehaviour
 
     protected virtual void HandleToggleAbility()
 	{
-		// Текущий код в методе Update
+		// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ Update
 		if (_player == null)
 		{
 			_player = transform.parent.gameObject;
@@ -130,7 +141,13 @@ public abstract class AbilityBase : MonoBehaviour
 			IconAbility.GetComponent<SpriteRenderer>().color = newColor;
 
 			HandleToggleAbilityOn();
-		}
+
+            if (_isLastAbility == false && lastAbility != null)
+            {
+                lastAbility.AddLastAbility(this);
+                _isLastAbility = true;
+            }
+        }
 		else if (ToggleAbility.isOn == false)
 		{
 			HandleToggleAbilityOff();
@@ -175,7 +192,6 @@ public abstract class AbilityBase : MonoBehaviour
 
 	protected virtual void HandleToggleAbilityOn()
 	{
-		// Включенный ToggleAbility
 		SetNewRadiusCircleColor();
 
 		if (_player.GetComponent<PlayerMove>().IsSelect == false)
@@ -250,7 +266,7 @@ public abstract class AbilityBase : MonoBehaviour
 
 			_enemiesCirclesSelectActive = true;
 
-			// Создадим список для врагов, которые нужно удалить
+			// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 			List<GameObject> enemiesToRemove = new List<GameObject>();
 
 			foreach (GameObject enemy in _enemies)
@@ -263,7 +279,7 @@ public abstract class AbilityBase : MonoBehaviour
 				}
 			}
 
-			// Удаление врагов из списка
+			// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 			foreach (GameObject enemyToRemove in enemiesToRemove)
 			{
 				enemyToRemove.transform.GetChild(0).gameObject.SetActive(false);
@@ -299,13 +315,13 @@ public abstract class AbilityBase : MonoBehaviour
 					enemiesToRemove.Add(enemy);
 				}
 
-				// Удаление объектов из _enemies
+				// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ _enemies
 				foreach (GameObject enemyToRemove in enemiesToRemove)
 				{
 					_enemies.Remove(enemyToRemove);
 				}
 
-				enemiesToRemove.Clear(); // Очистим список удаленных объектов
+				enemiesToRemove.Clear(); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
 				_enemiesCirclesSelectActive = false;
 			}
@@ -318,6 +334,7 @@ public abstract class AbilityBase : MonoBehaviour
 
 		if (previousEnemyCount == 0)
 		{
+			Debug.Log($"Enemies count:{_enemies.Count}");
 			//_IsEnemyDetected = false;
 			DrawCircle.SetColor(Color.red);
 		}
@@ -330,7 +347,7 @@ public abstract class AbilityBase : MonoBehaviour
 
 	protected virtual void HandleToggleAbilityOff()
 	{
-		// Выключенный ToggleAbility
+		// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ ToggleAbility
 		IsActiveAbility = false;
 		_isPrefab = false;
 
@@ -383,7 +400,7 @@ public abstract class AbilityBase : MonoBehaviour
 		}
 
 
-		_targetCircle = null;
+        _targetCircle = null;
 		CanDrawCircle = true;
 		IconAbility.GetComponent<SpriteRenderer>().enabled = false;
 		_addAbilityManager = false;
@@ -396,7 +413,7 @@ public abstract class AbilityBase : MonoBehaviour
 	{
 		if (!_isInputClick)
 		{
-			//Выбор способности клавишей
+			//пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 			float timeSinceLastClick = Time.time - lastClickTime;
 
 			if (timeSinceLastClick <= doubleClickTime)
@@ -469,14 +486,15 @@ public abstract class AbilityBase : MonoBehaviour
 	{
 		RectTransform rectTransform = ToggleAbility.GetComponent<RectTransform>();
 
-		// Проверяем, находится ли курсор над toggleTarget
+		// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ toggleTarget
 		return RectTransformUtility.RectangleContainsScreenPoint(rectTransform, Input.mousePosition, Camera.main);
 	}
 
-	public void CancelAbilityOnClick()
+	public virtual void CancelAbilityOnClick()
 	{
 		Destroy(NewAbilityPrefab);
 		ToggleAbility.isOn = false;
+		Debug.LogWarning("Cansel Ability on Click");
 		HandleToggleAbilityOff();
 		DrawCircle.Clear();
 
@@ -485,7 +503,7 @@ public abstract class AbilityBase : MonoBehaviour
 
 	public void HandlePrefabVisibility()
 	{
-		// Создание префаба
+		// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 		_abilityPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
 		if (NewAbilityPrefab == null && _isPrefab == false)
@@ -499,9 +517,9 @@ public abstract class AbilityBase : MonoBehaviour
 		}
 	}
 
-	public void HandleDistanceToTarget()
+	public virtual void HandleDistanceToTarget()
 	{
-		// Проверка дистанции
+		// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 		if (CanDoAbility)
 		{
 			_distanceToTarget = (TargetParent.transform.position - _player.transform.position).magnitude;
@@ -522,7 +540,8 @@ public abstract class AbilityBase : MonoBehaviour
 				}
 
 				DrawCircle.SetColor(Color.red);
-			}
+                isInRadius = false;
+            }
 			else if (_distanceToTarget <= Distance)
 			{
 				TargetParent.transform.GetChild(0).GetComponent<BackgroundColorSwitcherDisabledEnabled>()
@@ -540,6 +559,7 @@ public abstract class AbilityBase : MonoBehaviour
 				}
 
 				DrawCircle.SetColor(Color.green);
+				isInRadius = true;
 			}
 
 			if (_distanceToTarget <= Distance && AttackType == AttackType.Autoattack && CanDealDamageOrHeal ||
@@ -573,11 +593,18 @@ public abstract class AbilityBase : MonoBehaviour
 					IsActiveAbility = true;
 
 					HandleDealDamageOrHeal();
-					//Debug.Log("Включение мерцания красного");
+					//Debug.Log("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
 
-					//Включение корутины мерцания красного.
+					//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
 					// TargetParent.transform.GetChild(0).GetComponent<BackgroundColorSwitcherDisabledEnabled>()
 					//     .StartSwitching();
+
+					if (_isLastAbility == false && lastAbility != null)
+					{
+						lastAbility.AddLastAbility(this);
+						_isLastAbility = true;
+					}
+
 				}
 			}
 		}
@@ -599,7 +626,7 @@ public abstract class AbilityBase : MonoBehaviour
 			_targetCircle.GetComponent<SpriteRenderer>().color = TargetParent.transform.GetChild(0)
 				.GetComponent<ControllerCircleBackgroundColor>().soCircleColorBackgroundAttackSettings.SpriteColor;
 			TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
-				.SetColorCircleBackgroundAttack(TargetParent); // Помечаем цель вне радиуса атаки.
+				.SetColorCircleBackgroundAttack(TargetParent); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ.
 															   //TargetParent.transform.GetChild(0).GetComponent<BackgroundColorFader>().StartFadeSprite();
 			TargetParent.transform.GetChild(0).GetComponent<BackgroundColorSwitcherDisabledEnabled>().StartSwitching();
 		}
@@ -607,7 +634,7 @@ public abstract class AbilityBase : MonoBehaviour
 
 	public void AddPsionicsForMoving()
 	{
-		// Добавление псионики при перемещении врага
+		// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 		if (previousPosition == Vector3.zero)
 		{
 			previousPosition = TargetParent.transform.position;
@@ -733,7 +760,7 @@ public abstract class AbilityBase : MonoBehaviour
 	{
 		while (true && _player == Select.GetComponent<SelectObject>().SelectedObject)
 		{
-			// Затухание
+			// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 			for (float t = 0f; t < 1; t += Time.deltaTime)
 			{
 				float normalizedTime = t / 1;
@@ -757,7 +784,7 @@ public abstract class AbilityBase : MonoBehaviour
 				yield return null;
 			}
 
-			// Появление
+			// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 			for (float t = 0f; t < 1; t += Time.deltaTime)
 			{
 				float normalizedTime = t / 1;

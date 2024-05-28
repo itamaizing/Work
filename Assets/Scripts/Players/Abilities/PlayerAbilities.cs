@@ -29,8 +29,6 @@ public class PlayerAbilities : MonoBehaviour
             item.SetPlayer(playerMove, stamina, healthPlayer);
             Debug.Log("set");
         }
-
-        OnDeselected();
     }
 
     private void OnEnable()

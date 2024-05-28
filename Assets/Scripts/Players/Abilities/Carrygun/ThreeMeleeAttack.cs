@@ -51,7 +51,7 @@ public class ThreeMeleeAttack : AbilityBase
     {
         base.HandleToggleAbility();
 
-        // Текущий код в методе Update
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ Update
 
         if (Input.GetMouseButtonDown(0) && ToggleAbility.gameObject.activeSelf && ToggleAbility.enabled &&
             _player.GetComponent<PlayerMove>().IsSelect)
@@ -68,14 +68,14 @@ public class ThreeMeleeAttack : AbilityBase
         }
     }
 
-    public override void CancelAbilityOnClick()
+    public void CancelAbilityOnClick()
     {
         StartCoroutine(Stop());
         base.CancelAbilityOnClick();
     }
     protected override void HandleToggleAbilityOn()
     {
-        // Включенный ToggleAbility
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ ToggleAbility
         base.HandleToggleAbilityOn();
 
         if (TargetParent == null)
@@ -92,7 +92,7 @@ public class ThreeMeleeAttack : AbilityBase
 
     protected override void HandleToggleAbilityOff()
     {
-        // Выключенный ToggleAbility
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ ToggleAbility
         base.HandleToggleAbilityOff();
 
         _castPrefab = false;
@@ -144,7 +144,7 @@ public class ThreeMeleeAttack : AbilityBase
 
     private void HandleTargetSelection()
     {
-        // Выбор врага
+        // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         _targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(_targetPosition, Vector2.zero);
 
@@ -157,7 +157,7 @@ public class ThreeMeleeAttack : AbilityBase
                 Destroy(NewAbilityPrefab);
             }
 
-            //Debug.Log("Помечен");
+            //Debug.Log("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
         }
     }
 
@@ -169,7 +169,7 @@ public class ThreeMeleeAttack : AbilityBase
 
     private void HandleCastJump()
     {
-        // Проверка дистанции и каст
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ
         _playerPosition = _player.transform.position;
         _enemyPosition = TargetParent.transform.position;
         _distanceToEnemy = (_enemyPosition - _playerPosition).magnitude;
@@ -376,7 +376,7 @@ public class ThreeMeleeAttack : AbilityBase
 
     private bool CheckObstacleBetween(Vector3 start, Vector3 end)
     {
-        //Проверка на наличие препятствия
+        //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         Vector2 direction = (end - start).normalized;
         float distance = Vector2.Distance(start, end);
 
@@ -408,7 +408,7 @@ public class ThreeMeleeAttack : AbilityBase
         ToggleAbility.enabled = true;
         _canJump = false;
         StopBackgroundSwitcherEvent.SendStartStopBackgroundSwitcher();
-        Debug.Log("Конец атаки");
+        Debug.Log("пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ");
         yield break;
     }
 }

@@ -11,7 +11,7 @@ public class PhysicalAttack : Ability
 {
 	[SerializeField] private float _damage = 8f;
 	[SerializeField] private float _abilityCooldown = 1f;
-	[SerializeField] private PlayerLinks _dad;
+	[SerializeField] private Character _dad;
 	private int _hitInARow = 0;
 	private float _multiplySpeed = .05f;
 	private HealthPlayer _target;
@@ -42,10 +42,10 @@ public class PhysicalAttack : Ability
 		{
 			if (col.gameObject == _dad)
 				continue;
-			if(TryGetComponent<PlayerLinks>(out var enemy))
+			if(TryGetComponent<Character>(out var enemy))
 			{
 				Debug.Log("Enemy detected: " + col.gameObject.name);
-				Hit(enemy.HealthPlayer);
+				Hit(enemy.Health);
 				break;
 			}			
 		}
@@ -78,7 +78,7 @@ public class PhysicalAttack : Ability
 		if (_dad.Stamina.Use(10))
 		{
 			_target.TakeDamage(_damage * .5f, DamageType.Physical);
-			//отбрасывание и стан
+			//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ
 			
 		}
 		_dad.Stamina.Add(_dad.Stamina.MaxValue*0.4f);
