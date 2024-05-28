@@ -36,7 +36,7 @@ public class IcePuddle : Ability
 		{
 			Vector3 _mousePos2 = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			Vector2 lookDir = _mousePos2 - _croosFire.transform.position;
-			_angle2 = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
+			_angle2 = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg + 90f;
 			_croosFire.transform.rotation = Quaternion.Euler(_croosFire.transform.rotation.x, _croosFire.transform.rotation.y, _angle2);
 		}
 		if (Input.GetMouseButtonDown(0))
@@ -62,6 +62,7 @@ public class IcePuddle : Ability
 		if (Input.GetMouseButtonDown(1))
 		{
 			Cancel();
+			_secondPoind = false;
 		}
 	}
 
