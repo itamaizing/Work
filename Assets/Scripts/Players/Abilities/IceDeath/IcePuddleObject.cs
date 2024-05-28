@@ -46,7 +46,7 @@ public class IcePuddleObject : MonoBehaviour
 			healthPlayer.SetBoostRegen2(0.01f);
 			return;
 		}
-		if (collision.TryGetComponent<PlayerLinks>(out var target) && energyPlayer != null && collision.gameObject != dad)
+		if (collision.TryGetComponent<Character>(out var target) && energyPlayer != null && collision.gameObject != dad)
 		{
 			float duration = 3;
 			//target.CharacterState.energy = energyPlayer;
@@ -60,7 +60,7 @@ public class IcePuddleObject : MonoBehaviour
 				duration += energyPlayer.Value / 5;
 				energyPlayer.UseAllEnergy();
 			}
-			target.CharacterState.AddState(new FrostingState(), duration, 30, States.Frosting);
+			target.CharacterState.AddState(new FrostingState());
 			_enemies.Add(target.CharacterState);
 		}
 		//Explode();
@@ -75,7 +75,7 @@ public class IcePuddleObject : MonoBehaviour
 		healthPlayer.SetBoostRegen2(0);
 		foreach (var target in _enemies)
 		{
-			target.AddState(new DefaultState(), States.Default);
+			target.AddState(new DefaultState());
 			_enemies.Remove(target);
 		}
 		Destroy(gameObject);

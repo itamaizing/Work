@@ -82,7 +82,7 @@ public class PsionicCharge_PsionicaTalent1 : MonoBehaviour
             }
         }
 
-        //Таймер ожидания удара когтями
+        //пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (_timerCharge > 0)
         {
             _timerCharge -= Time.deltaTime;
@@ -93,14 +93,14 @@ public class PsionicCharge_PsionicaTalent1 : MonoBehaviour
             RechargeCoroutine();
         }
 
-        //Цель ослеплена
+        //пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (_timerBlinding > 0)
         {
             _timerBlinding -= Time.deltaTime;
 
             if (_timerBlinding <= 0)
             {
-                _target.GetComponent<CharacterState>().AddState(new DefaultState(), States.Default);
+                _target.GetComponent<CharacterState>().AddState(new DefaultState());
                 _target = null;
             }
         }
@@ -148,13 +148,13 @@ public class PsionicCharge_PsionicaTalent1 : MonoBehaviour
         }
     }
 
-    //Наносим ослепление при ударе когтями
+    //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     private void CheckClawsStrike()
     {
         if (_toggleAbility.isOn)
         {
             _target = _player.transform.Find("Abilities").gameObject.GetComponent<OneMeleeAttack>().Target;
-            _target.GetComponent<CharacterState>().AddState(new BlindnessState(), States.Blind);
+            _target.GetComponent<CharacterState>().AddState(new BlindnessState());
 
             float psionica = _player.GetComponent<PsionicaMelee>().Psionica;
 
