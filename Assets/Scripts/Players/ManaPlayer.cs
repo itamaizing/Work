@@ -3,16 +3,12 @@ using UnityEngine;
 
 public class ManaPlayer : PlayerStamina
 {
-    public GameObject ManaBar;
-    public Transform DamageSpawn;
-    public TextMeshPro PrefabText;
-
     public override void Add(float manaValue)
     {
         _value += manaValue;
 
         float newScaleX = _value / _maxValue;
-        ManaBar.transform.localScale = new Vector3(newScaleX, 1.0f, 1.0f);
+        Bar.transform.localScale = new Vector3(newScaleX, 1.0f, 1.0f);
 
         if (manaValue > 0 && manaValue < 1)
         {
@@ -34,7 +30,7 @@ public class ManaPlayer : PlayerStamina
         _value -= manaValue;
 
         float newScaleX = _value / _maxValue;
-        ManaBar.transform.localScale = new Vector3(newScaleX, 1.0f, 1.0f);
+        Bar.transform.localScale = new Vector3(newScaleX, 1.0f, 1.0f);
 
         _value = Mathf.Clamp(_value, 0, _maxValue);
         

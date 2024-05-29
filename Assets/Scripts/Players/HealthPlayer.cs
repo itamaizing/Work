@@ -420,10 +420,10 @@ public class HealthPlayer : MonoBehaviour
         if (_currentHealth >= _maxHealth)
         {
             _currentHealth = _maxHealth;
-        }
-            ShowDamagePrefab(healthInfo.ModifiedHeal, new Color(0, 0.8f, 0, 1), new Color(0, 0.8f, 0, 0.5f));
-            UpdateHealthBar();
-            UpdateHealthBarText();
+        } 
+        ShowDamagePrefab(healthInfo.ModifiedHeal, new Color(0, 0.8f, 0, 1), new Color(0, 0.8f, 0, 0.5f)); 
+        UpdateHealthBar();
+        UpdateHealthBarText();
     }
 
     public void RegenHP(float healValue) // ��� ������, ��� �� ����� AddHeal, �� ��� ������� ��������

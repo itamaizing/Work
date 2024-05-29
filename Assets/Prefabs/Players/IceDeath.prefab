@@ -246,7 +246,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2132766220245704747}
   - component: {fileID: 3886793308049153217}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: MarkerSelect (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -333,7 +333,7 @@ GameObject:
   - component: {fileID: 4040537171006773893}
   - component: {fileID: 6207900749567539560}
   - component: {fileID: 7052549312264265469}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Circle_Color_Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -826,7 +826,7 @@ GameObject:
   - component: {fileID: 3074796512914894124}
   m_Layer: 9
   m_Name: IceDeath
-  m_TagString: Enemies
+  m_TagString: Allies
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1266,7 +1266,6 @@ GameObject:
   - component: {fileID: 7720206716590878117}
   - component: {fileID: 4990396536032889013}
   - component: {fileID: 7811854715153558744}
-  - component: {fileID: 8427181492216612505}
   - component: {fileID: 1885825803161317577}
   - component: {fileID: 3363981047473804389}
   - component: {fileID: 5460409890799402288}
@@ -1315,6 +1314,7 @@ MonoBehaviour:
   - {fileID: 1430634481281162007}
   - {fileID: 1109675660136110575}
   _abilityRender: {fileID: 7811854715153558744}
+  _currentAbility: {fileID: 0}
 --- !u!114 &7811854715153558744
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1331,37 +1331,6 @@ MonoBehaviour:
   _iconPref: {fileID: 7803743787710783319, guid: 793e4727b7b14be43a8a702db9da8643, type: 3}
   _areaPref: {fileID: 1574982521674352815, guid: 790fb3857b30c2b4fad4375343a84fad, type: 3}
   _squareAreaPref: {fileID: 6069098087972325736, guid: 613fcf3671552f04eb117ca2af2820f6, type: 3}
---- !u!114 &8427181492216612505
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4502226660093501227}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0472c7c6c6b721418ebe181869af7fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _abilityInfo: {fileID: 11400000, guid: f6b63db1fe9a8db4b86632917e246e69, type: 2}
-  _isAutoAttack: 1
-  _radius: 0
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
-  _manaCost: 0
-  _castDeley: 0
-  _cooldown: 0
-  _isUseCharges: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
-  _isStreaming: 0
-  _streamingDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: 0
-  _damage: 1
-  _abilityCooldown: 1
 --- !u!114 &1885825803161317577
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1376,10 +1345,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _abilityInfo: {fileID: 11400000, guid: 4149308b91515334c801b1f26c6c99ba, type: 2}
   _isAutoAttack: 0
-  _radius: 0
+  _radius: 10
   _area: 0
-  _castLength: 0
-  _castWidth: 0
+  _castLength: 5
+  _castWidth: 1
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
@@ -1471,8 +1440,8 @@ MonoBehaviour:
   _isAutoAttack: 0
   _radius: 0
   _area: 0
-  _castLength: 0
-  _castWidth: 0
+  _castLength: 4
+  _castWidth: 1
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
@@ -1486,6 +1455,7 @@ MonoBehaviour:
   _manaCostPerTick: 0
   _playerLinks: {fileID: 3821522964444331473}
   _jumprange: 2
+  _durationOfJump: 0.3
   ObstacleLayerMask:
     serializedVersion: 2
     m_Bits: 128
