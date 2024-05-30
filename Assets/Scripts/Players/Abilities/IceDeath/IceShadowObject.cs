@@ -1,13 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class IceShadowObject : MonoBehaviour
 {
 	[HideInInspector] public GameObject dad;
-	[FormerlySerializedAs("energyPlayer")] [HideInInspector] public Energy energy;
-	[FormerlySerializedAs("healthPlayer")] [HideInInspector] public HealthComponent healthComponent;
+	//[HideInInspector] public EnergyPlayer energyPlayer;
+	[HideInInspector] public HealthPlayer healthPlayer;
 	[HideInInspector] public float timeToDestroy = 2;
 	[HideInInspector] public float timeToDestroyAlive = 10;
 
@@ -17,23 +16,24 @@ public class IceShadowObject : MonoBehaviour
 	private Coroutine _destroyObj;
 	private float _hp = 10;
 	private bool _isAlive = false;
+	private float _energyValue;
 	/*
 	 * timer to destroy
 	 * buff player
 	 * */
 	private void Start()
 	{
-		float timeToAdd = energy.Value / 20;
-		timeToDestroy += timeToAdd;
-		energy.UseAllEnergy();
+		//float timeToAdd = energyPlayer.Value / 20;
+		//timeToDestroy += timeToAdd;
+		//energyPlayer.UseAllEnergy();
 		_destroyObj = StartCoroutine(DestroyShadow());
 	}
 
 	private void OnTriggerExit2D(Collider2D collision)
 	{
-		if (collision.gameObject == dad && healthComponent != null)
+		if (collision.gameObject == dad && healthPlayer != null)
 		{
-			healthComponent.SetBoostRegen(0);
+			healthPlayer.SetBoostRegen(0);
 			return;
 		}
 	}
@@ -41,16 +41,17 @@ public class IceShadowObject : MonoBehaviour
 	{
 		if (collision.gameObject == dad)
 		{
-			healthComponent.SetBoostRegen(0.01f);
+			healthPlayer.SetBoostRegen(0.01f);
 		}
-		if (collision.TryGetComponent<Character>(out var target) && energy != null && collision.gameObject !=dad)
+		//if (collision.TryGetComponent<PlayerLinks>(out var target) && energyPlayer != null && collision.gameObject !=dad)
+		if (collision.TryGetComponent<PlayerLinks>(out var target) && collision.gameObject !=dad)
 		{
-			float duration = 2 + energy.Value / 20;
-			//target.CharacterState.energy = energy;
-			energy.UseAllEnergy();
+			float duration = 2 + _energyValue / 20;
+			//target.CharacterState.energy = energyPlayer;
+			//energyPlayer.UseAllEnergy();
 
-			target.CharacterState.AddState(new FrozenState());
-			energy.Use(energy.Value);
+			target.CharacterState.AddState(new FrozenState(), duration, 0, States.Frozen);
+			//energyPlayer.Use(energyPlayer.Value);
 			GetComponent<Collider2D>().enabled = false;
 			Destroy(gameObject);
 		}
@@ -64,7 +65,7 @@ public class IceShadowObject : MonoBehaviour
 			GameObject hitEffect = Instantiate(_hitEffect, transform.position, Quaternion.identity);
 			Destroy(hitEffect, 5f);
 		}
-		healthComponent.SetBoostRegen(0);
+		healthPlayer.SetBoostRegen(0);
 		Destroy(gameObject);
 	}
 
@@ -89,5 +90,12 @@ public class IceShadowObject : MonoBehaviour
 		_isAlive = true;
 		StartCoroutine(DestroyAliveShadow());
 		//_destroyObj.
+	}
+
+	public void SetEnergy(float value)
+	{
+		float timeToAdd = value / 20;
+		timeToDestroy += timeToAdd;
+		_energyValue = value;
 	}
 }
