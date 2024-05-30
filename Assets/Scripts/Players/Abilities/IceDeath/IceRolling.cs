@@ -17,11 +17,13 @@ public class IceRolling : Ability
 	[SerializeField] private LayerMask _obstacleLayerMask;
 	//[SerializeField] private GameObject _croosFire;
 
-	//private Vector2 _mousePos;
+	private Vector2 _mousePos;
 	private Vector2 _jumpPos;
+	private Vector2 _lookDir;
 	//private float _angle;
 	private bool _canJump = true;
 	private bool _enabled = false;
+	[SerializeField] private int _jumpCount = 4;
 
 	private void Update()
 	{
@@ -37,7 +39,7 @@ public class IceRolling : Ability
 			PayCost();
 			if (_playerLinks.RuneComponent.RemoveRune(0.25f, this))
 			{
-				Jump();
+				NewJump();
 			}
 			else
 			{
@@ -51,8 +53,7 @@ public class IceRolling : Ability
 	}
 	protected override void Cast()
 	{
-		_enabled = true;
-		
+		_enabled = true;		
 	}
 
 	protected override void Cancel()
@@ -64,6 +65,8 @@ public class IceRolling : Ability
 	{
 		if (_canJump )
 		{
+			_enabled = true;
+			_isReady = false;
 			PlayerMove.CanMove = false;
 			_canJump = false;
 			float actualJumpRange = _jumprange;
@@ -100,7 +103,9 @@ public class IceRolling : Ability
 	{
 		PlayerMove.CanMove = true;
 		_canJump = true;
-		_enabled = false;
+		//_enabled = false;
+		_isReady = true;
+		_jumpCount = 4;
 	}
 
 	private bool CheckObstacleBetween(Vector3 start, Vector3 end)
@@ -110,7 +115,7 @@ public class IceRolling : Ability
 		float distance = Vector2.Distance(start, end);
 
 		RaycastHit2D[] hits =
-			Physics2D.BoxCastAll(start, new Vector2(1f, 1f), 0f, direction, distance, _obstacleLayerMask);
+			Physics2D.BoxCastAll(start, new Vector2(2f, 2f), 0f, direction, distance, _obstacleLayerMask);
 
 		foreach (RaycastHit2D hit in hits)
 		{
@@ -121,5 +126,51 @@ public class IceRolling : Ability
 		return false;
 	}
 
+	private void NewJump()
+	{
+		if (_canJump)
+		{
+			_enabled = true;
+			_isReady = false;
+			PlayerMove.CanMove = false;
+			_canJump = false;
+			float actualJumpRange = _jumprange;
 
+			_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			_lookDir = (_mousePos - _playerLinks.Rb.position).normalized;
+
+			actualJumpRange *= GlobalVariable.cellSize;
+			Vector2 jumpPos = _lookDir * actualJumpRange + (Vector2)PlayerMove.transform.position;
+			if (CheckObstacleBetween(_playerLinks.Rb.position, jumpPos))
+			{
+				Debug.Log("Обнаружено препятствие:");
+				//прыгать до препятствия
+				_playerLinks.Rb.DOMove(_jumpPos, _durationOfJump * actualJumpRange / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(AfterJump);
+			}
+			else
+			{
+				_playerLinks.Rb.DOMove(jumpPos, _durationOfJump * actualJumpRange / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(NextJump);
+			}
+		}
+	}
+
+	private void NextJump()
+	{
+		if(_jumpCount > 0 && Mana.Use(5))
+		{
+			Debug.Log("jump " + _jumpCount);
+			_jumpCount--;
+			Vector2 jumpPos = _lookDir + (Vector2)PlayerMove.transform.position;
+			if (CheckObstacleBetween(_playerLinks.Rb.position, jumpPos))
+			{
+				Debug.Log("Обнаружено препятствие:");
+				//прыгать до препятствия
+				_playerLinks.Rb.DOMove(_jumpPos, _durationOfJump / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(AfterJump);
+			}
+			else
+			{
+				_playerLinks.Rb.DOMove(jumpPos, _durationOfJump / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(NextJump);
+			}
+		}
+	}
 }
