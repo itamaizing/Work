@@ -102,14 +102,14 @@ public class StateIcons : MonoBehaviour
         if (icoItem.count == 1)
         {
 			icoItem.Text.gameObject.SetActive(false);
-			ico.DOFillAmount(1, time).OnComplete(() => RemoveItem(icoItem));
+			ico.DOFillAmount(1, time).SetEase(Ease.Linear).OnComplete(() => RemoveItem(icoItem));
         }
         else
         {
             icoItem.Text.gameObject.SetActive(true);
 			icoItem.Text.text = icoItem.count.ToString();
             icoItem.count--;
-			ico.DOFillAmount(1, time).OnComplete(() => AnimateIco(icoItem, time));
+			ico.DOFillAmount(1, time).SetEase(Ease.Linear).OnComplete(() => AnimateIco(icoItem, time));
 		}
     }
 

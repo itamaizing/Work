@@ -14,7 +14,7 @@ public class IceRolling : Ability
 	[SerializeField] private Character _playerLinks;
 	[SerializeField] private float _jumprange = 2f;
 	[SerializeField] private float _durationOfJump = 0.3f;
-	[SerializeField] private LayerMask ObstacleLayerMask;
+	[SerializeField] private LayerMask _obstacleLayerMask;
 	//[SerializeField] private GameObject _croosFire;
 
 	//private Vector2 _mousePos;
@@ -110,7 +110,7 @@ public class IceRolling : Ability
 		float distance = Vector2.Distance(start, end);
 
 		RaycastHit2D[] hits =
-			Physics2D.BoxCastAll(start, new Vector2(1f, 1f), 0f, direction, distance, ObstacleLayerMask);
+			Physics2D.BoxCastAll(start, new Vector2(1f, 1f), 0f, direction, distance, _obstacleLayerMask);
 
 		foreach (RaycastHit2D hit in hits)
 		{
