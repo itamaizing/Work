@@ -4,9 +4,11 @@ using UnityEngine;
 // Интерфейс состояния
 public interface ICharacterState
 {
-    void EnterState(CharacterState character);
-    void UpdateState();
-    void ExitState();
+    public StateType type;
+    protected CharacterState _characterState;
+    public abstract void EnterState(CharacterState character, float durationToExit, float damageToExit);
+	public abstract void UpdateState();
+	public abstract void ExitState();
 }
 
 
@@ -194,6 +196,7 @@ public class StunnedState : ICharacterState
     private float _duration;
     public void EnterState(CharacterState character)
     {
+        type = StateType.Physical;
         Debug.Log("Entering Stunned State");
         _characterState = character;
         _playerMove.CanMove = false;
@@ -230,7 +233,9 @@ public class BlindnessState : ICharacterState
 
 	public void EnterState(CharacterState character)
     {
-        Debug.Log("Entering Stunned State");
+		type = StateType.Physical;
+		Debug.Log("Entering Stunned State");
+        _duration = durationToExit;
         _characterState = character;
 		if (character.PlayerLinks.Abilities != null)
 		{
@@ -276,7 +281,8 @@ public class FrozenState : ICharacterState
     private float _duration;
 	public void EnterState(CharacterState character)
     {
-        Debug.Log("Entering Frozen State");
+		type = StateType.Magic;
+		Debug.Log("Entering Frozen State");
         _characterState = character;
         _playerMove = _characterState.PlayerMove;
         _playerMove.CanMove = false;
@@ -333,7 +339,8 @@ public class FrostingState : ICharacterState
 	private float _duration; //переделать под разные спелы
 	public void EnterState(CharacterState character)
     {
-        Debug.Log("Entering Frosting State");
+		type = StateType.Magic;
+		Debug.Log("Entering Frosting State");
         _characterState = character;
         _targetMove = _characterState.PlayerMove;
 
@@ -429,6 +436,16 @@ public class CharacterState : MonoBehaviour
         currentStates.Remove(newState);
     }
 
+    public void Dispel(StateType type)
+    {
+        foreach(AbstractCharacterState state in currentStates)
+        {
+            if(state.type == type)
+            {
+                state.ExitState();
+            }
+        }
+    }
    /* public AbilityManager GetAbilityManager()
     {
         if( _abilityManager == null ) 
@@ -438,4 +455,11 @@ public class CharacterState : MonoBehaviour
         }
         return _abilityManager;
     }*/
+}
+
+public enum StateType
+{
+    Physical,
+    Magic,
+    Third
 }
