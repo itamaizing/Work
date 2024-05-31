@@ -27,6 +27,7 @@ public class EnergyPlayer : PlayerStamina
 			_canRegen = true;
 		}
 	}
+	// ReSharper disable Unity.PerformanceAnalysis
 	public override void Add(float EnergyValue)
 	{
 		_value += EnergyValue;
@@ -34,22 +35,19 @@ public class EnergyPlayer : PlayerStamina
 		{
 			_value = _maxValue;
 		}
-		float newScaleX = _value / _maxValue;
-		Bar.transform.localScale = new Vector3(newScaleX, 1.0f, 1.0f);
-
+		
 		if (EnergyValue > 0 && EnergyValue < 1)
 		{
 			EnergyValue = 1;
 		}
 
 		EnergyValue = (int)EnergyValue;
-		PrefabText.text = "+" + EnergyValue.ToString();
-		PrefabText.GetComponent<DamagePrefab>().StartColor = new Color(0, 0, 1, 1);
-		PrefabText.GetComponent<DamagePrefab>().EndColor = new Color(0, 0, 1, 0.5f);
-		TextMeshPro newPrefab = Instantiate(PrefabText, DamageSpawn.position, Quaternion.identity);
-		newPrefab.transform.parent = transform;
-
 		
+		var text = "+" + EnergyValue.ToString();
+		var startColor = new Color(0, 0, 1, 1);
+		var endColor = new Color(0, 0, 1, 0.5f);
+		ShowPopupText(text,startColor,endColor);
+		UpdateBar();
 	}
 	public override bool Use(float EnergyValue)
 	{
@@ -62,13 +60,11 @@ public class EnergyPlayer : PlayerStamina
 
 		_value -= EnergyValue;
 
-		float newScaleX = _value / _maxValue;
-		Bar.transform.localScale = new Vector3(newScaleX, 1.0f, 1.0f);
-
 		if (_value <= 0)
 		{
 			_value = 0;
 		}
+		UpdateBar();
 		return true;
 	}
 

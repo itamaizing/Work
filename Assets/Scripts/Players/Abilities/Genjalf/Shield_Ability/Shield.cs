@@ -41,8 +41,6 @@ namespace Players.Abilities.Genjalf.Shield_Ability
             _uiShield = GetComponent<UIShield>();
             
             _startSpeedPlayer = gameObject.transform.parent.GetComponent<PlayerInfo>().MoveSpeed;
-            //_currentHealth = gameObject.transform.parent.GetComponent<HealthPlayer>()._currentHealth;
-            gameObject.transform.parent.GetComponent<HealthPlayer>().HealthBarText.text = _currentHealth.ToString("F0");
             _currentMana = gameObject.transform.parent.GetComponent<ManaPlayer>().Value;
             _currentShieldCharge = _soShieldData.ShieldCharges;
         }

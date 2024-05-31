@@ -44,7 +44,7 @@ public class TwoRangeProtection : AbilityBase
 	protected override void HandleToggleAbility()
     {
         base.HandleToggleAbility();
-        // Текущий код в методе Update
+        // РўРµРєСѓС‰РёР№ РєРѕРґ РІ РјРµС‚РѕРґРµ Update
 
         if (Input.GetMouseButtonDown(0) && _player.GetComponent<PlayerMove>().IsSelect && ToggleAbility.gameObject.activeSelf)
         {
@@ -72,7 +72,7 @@ public class TwoRangeProtection : AbilityBase
 
     protected override void HandleToggleAbilityOn()
     {
-        // Включенный ToggleAbility
+        // Р’РєР»СЋС‡РµРЅРЅС‹Р№ ToggleAbility
         base.HandleToggleAbilityOn();
 
         if (TargetParent == null)
@@ -101,7 +101,7 @@ public class TwoRangeProtection : AbilityBase
 
     protected override void HandleToggleAbilityOff()
     {
-        // Выключенный ToggleAbility
+        // Р’С‹РєР»СЋС‡РµРЅРЅС‹Р№ ToggleAbility
         base.HandleToggleAbilityOff();
 
         if (_isSelect == false)
@@ -132,7 +132,7 @@ public class TwoRangeProtection : AbilityBase
 
     private void HandleTargetSelection()
     {
-        // Выбор врага
+        // Р’С‹Р±РѕСЂ РІСЂР°РіР°
         _targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(_targetPosition, Vector2.zero);
 

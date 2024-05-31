@@ -3,6 +3,7 @@ using UnityEngine;
 
 public abstract class PlayerStamina : MonoBehaviour
 {
+	public Bar bar;
 	public float Value { get { return _value; } }
 	public float MaxValue { get { return _maxValue; } }
 
@@ -10,11 +11,7 @@ public abstract class PlayerStamina : MonoBehaviour
 	protected float _maxValue;
     protected float _regenerationValue = 10;
 	protected float _regenerationDelay = 3;
-
-	[SerializeField] protected GameObject Bar;
-	[SerializeField] protected Transform DamageSpawn;
-	[SerializeField] protected TextMeshPro PrefabText;
-
+	
 	private float _timerDelay = 0;
 
 	public void Initialize(float maxValue,float regenValue,float regenDelay)
@@ -38,5 +35,20 @@ public abstract class PlayerStamina : MonoBehaviour
 			_timerDelay = 0;
 			Add(_regenerationValue);
 		}
+	}
+	
+	protected void ShowPopupValue(float value, Color startColor, Color endColor)
+	{
+		GetComponent<UIPlayerComponents>().ShowPopupValue(value,startColor,endColor);
+	}
+
+	protected void ShowPopupText(string text, Color startColor, Color endColor) //������������ ��� �������
+	{
+		GetComponent<UIPlayerComponents>().ShowPopupText(text,startColor,endColor);
+	}
+
+	protected void UpdateBar()
+	{
+		bar.UpdateValue(_value,_maxValue);
 	}
 }

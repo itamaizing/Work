@@ -23,3 +23,4 @@ MonoBehaviour:
   _defaultHealthRegen: 70
   _defaultStaminaRegen: 2
   _defaultRegenDelay: 2
+  _visionRadius: 5

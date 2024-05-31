@@ -154,6 +154,7 @@ MonoBehaviour:
   IconAbilityAutoattack: {fileID: 0}
   CircleSelect: {fileID: 7190001683186257704}
   AttackType: 0
+  DamageType: 0
   AbilityType: 0
   AttackRangeType: 0
   TargetParent: {fileID: 0}
@@ -193,11 +194,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   CastPrefab: {fileID: 5074480402368706878, guid: 8fb008b85f2e29b48b39b1cd92d851a0, type: 3}
-  ToggleAbility: {fileID: 0}
+  ToggleAbility: {fileID: 638657867, guid: 9fc0d4010bbf28b4594072e72b8655ab, type: 2}
   DrawCircle: {fileID: 6065911254447815269}
   IconAbilityAutoattack: {fileID: 0}
   CircleSelect: {fileID: 0}
   AttackType: 0
+  DamageType: 0
   AbilityType: 0
   AttackRangeType: 0
   TargetParent: {fileID: 0}
@@ -210,10 +212,13 @@ MonoBehaviour:
   CanDrawCircle: 1
   Distance: 0
   CellDistance: 1
-  _cellSize: 1.9
+  _cellSize: 3
   lastAbility: {fileID: 0}
   IsActiveAbility: 0
   _targetCircle: {fileID: 0}
+  _cooldown: 8
+  IsGlobalCooldown: 1
+  TargetCanAvoidance: 1
 --- !u!114 &4469473750467504403
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -239,6 +244,7 @@ MonoBehaviour:
   IconAbilityAutoattack: {fileID: 0}
   CircleSelect: {fileID: 0}
   AttackType: 0
+  DamageType: 0
   AbilityType: 0
   AttackRangeType: 0
   TargetParent: {fileID: 0}
@@ -760,7 +766,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6324209418837801099
 Transform:
   m_ObjectHideFlags: 0
@@ -783,7 +789,7 @@ Transform:
   - {fileID: 293217135011449049}
   - {fileID: 6512966279280447584}
   m_Father: {fileID: 0}
-  m_RootOrder: 20
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &3789685442576764672
 Rigidbody2D:
@@ -824,20 +830,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 279100e0cb4b40f42b64a3ac1d1502fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 300
   CanMove: 1
   IsMoving: 0
   IsSelect: 0
-  DirectionOfMovement: {x: 0, y: 0}
-  SelectObject: {fileID: 0}
-  CircleSelect: {fileID: 7190001683186257704}
-  MarkersSelect: {fileID: 3532703621474320738}
-  AbilityPanel: {fileID: 0}
-  AbilitiesOnTargetToggles:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  MoveDirection: {x: 0, y: 0}
 --- !u!114 &8820526806495827167
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -850,14 +846,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b5add863fba6af449bc9b5c95b8199e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hpRegenerationValue: 10
-  _hpRegenerationDelay: 3
-  Health: 777
-  MaxHealth: 777
+  shields_Physic: []
+  shields_Magic: []
   HealthBar: {fileID: 306994359073746280}
   HealthBarText: {fileID: 3503570079415167903}
   DamageSpawn: {fileID: 1767791113909947721}
   PrefabText: {fileID: 97509558472111251, guid: b8ec9c7fb2a215a418a41efc3aec9187, type: 3}
+  sumDamageTaken: 0
 --- !u!114 &8932373845817391923
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -870,7 +865,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7f243771c2613d40a4aecc719336ae4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Select: {fileID: 0}
+  energy: {fileID: 0}
+  durationToExit: 0
+  damageToExit: 0
 --- !u!58 &8809644292612035220
 CircleCollider2D:
   m_ObjectHideFlags: 0

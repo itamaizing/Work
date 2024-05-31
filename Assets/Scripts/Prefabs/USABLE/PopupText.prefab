@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 97509558472111251}
   - component: {fileID: 3712476584407953316}
   m_Layer: 9
-  m_Name: DamageText
+  m_Name: PopupText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -182,8 +182,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 5806187615968283125}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 364f6c4423d058b4483c8f39e955022d, type: 3}
+  m_Script: {fileID: 11500000, guid: 72487e36d5f4d694683d29c510e80200, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _popupText: {fileID: 97509558472111251}
+  _speed: 2
+  _duration: 0.75
   StartColor: {r: 0, g: 1, b: 0, a: 1}
   EndColor: {r: 0, g: 1, b: 0, a: 0.5}

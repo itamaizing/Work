@@ -4,10 +4,7 @@ using UnityEngine;
 
 public class RunePlayer : PlayerStamina
 {
-	[SerializeField] private SpriteRenderer _runeSprite;
-
 	private Ability _lastUsedAbility = null;
-	private float _runeSpriteWidth = 3.7f;
 	private int _multiplier = 1;
 	private float _timer = 0;
 	private bool _multiplyCost = false;
@@ -34,11 +31,7 @@ public class RunePlayer : PlayerStamina
 		{
 			_value = _maxValue;
 		}
-		_runeSprite.size = new Vector2(_runeSprite.size.x + _regenerationValue / _maxValue * _runeSpriteWidth, _runeSprite.size.y);
-		if(_runeSprite.size.x > _runeSpriteWidth) 
-		{
-			_runeSprite.size = new Vector2(_runeSpriteWidth, _runeSprite.size.y);
-		}
+		UpdateBar();
 	}
 	
 	public bool RemoveRune(float runeValue, Ability usedAbility) 
@@ -52,7 +45,7 @@ public class RunePlayer : PlayerStamina
 		{
 			_lastUsedAbility = usedAbility;
 			_value -= runeValue;
-			_runeSprite.size = new Vector2(_runeSprite.size.x - runeValue / _maxValue * _runeSpriteWidth, _runeSprite.size.y);
+			UpdateBar();
 			_multiplyCost = true;
 			_timer = 0;
 			return true;

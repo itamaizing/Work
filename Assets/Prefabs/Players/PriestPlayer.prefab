@@ -16,13 +16,16 @@ GameObject:
   - component: {fileID: 1105992124525835189}
   - component: {fileID: 7356665408746067551}
   - component: {fileID: 1861354317580254580}
+  - component: {fileID: 7384630896396119212}
+  - component: {fileID: 28149988105132510}
+  - component: {fileID: 7269854637968200634}
   m_Layer: 9
   m_Name: PriestPlayer
   m_TagString: Allies
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6627882834926959264
 Transform:
   m_ObjectHideFlags: 0
@@ -180,13 +183,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 279100e0cb4b40f42b64a3ac1d1502fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 3
   CanMove: 1
   IsMoving: 0
   IsSelect: 0
   MoveDirection: {x: 0, y: 0}
-  _uiComponents: {fileID: 1861354317580254580}
-  SelectObject: {fileID: 0}
 --- !u!114 &7601164126198867055
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -199,19 +199,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b5add863fba6af449bc9b5c95b8199e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hpRegenerationValue: 10
-  _hpRegenerationDelay: 3
-  _defPhysDamage: 10
-  _defMagDamage: 10
-  _evadeMeleeDamage: 10
-  _evadeRangeDamage: 10
-  _evadeMagDamage: 10
-  _absorbPhysDamage: 0
-  _absorbMagDamage: 0
   shields_Physic: []
   shields_Magic: []
-  Health: 333
-  MaxHealth: 333
   HealthBar: {fileID: 3871001752529958990}
   HealthBarText: {fileID: 2549404566520559099}
   DamageSpawn: {fileID: 8933781320356208631}
@@ -229,18 +218,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 538268384e2d5f64f8ee01630137a16d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _value: 0
-  _maxValue: 0
-  _regenerationValue: 10
-  _regenerationDelay: 3
   Bar: {fileID: 5680468377122292335}
   DamageSpawn: {fileID: 8933781320356208631}
   PrefabText: {fileID: 97509558472111251, guid: b8ec9c7fb2a215a418a41efc3aec9187, type: 3}
-  _manaRegenerationValue: 10
-  _manaRegenerationDelay: 3
-  Mana: 1666
-  MaxMana: 1666
-  ManaBar: {fileID: 5680468377122292335}
 --- !u!114 &7356665408746067551
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -253,9 +233,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7f243771c2613d40a4aecc719336ae4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Select: {fileID: 0}
-  PlayerHp: {fileID: 7601164126198867055}
-  PlayerMove: {fileID: 8264867649627807809}
   energy: {fileID: 0}
   durationToExit: 0
   damageToExit: 0
@@ -271,10 +248,61 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 550b3daa2900e4d448f45b2c0a260552, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  abilitiesPanelPrefab: {fileID: 770607371636707797, guid: 38c8b99c44505824ea1bb0da4296ac38, type: 3}
   CircleSelect: {fileID: 4727900227073510511}
   MarkersSelect: {fileID: 6304457432918144960}
-  abilityPanelParent: {fileID: 0}
+--- !u!114 &7384630896396119212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089694967083977132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66a785c7c831cb94ea00e1bc10c7c245, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerData: {fileID: 11400000, guid: 80ce10cdeea490248a7097f9dfbaa541, type: 2}
+  _rb: {fileID: 1935025463078411595}
+  _healthPlayer: {fileID: 7601164126198867055}
+  _playerMove: {fileID: 8264867649627807809}
+  _playerStamina: {fileID: 1105992124525835189}
+  _runePlayer: {fileID: 0}
+  _abilities: {fileID: 28149988105132510}
+  _characterState: {fileID: 7356665408746067551}
+  _uiPlayerComponents: {fileID: 1861354317580254580}
+--- !u!114 &28149988105132510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089694967083977132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b927948ae40d644492381b2c058cf47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _abilities:
+  - {fileID: 0}
+  _abilityRender: {fileID: 0}
+  _currentAbility: {fileID: 0}
+--- !u!114 &7269854637968200634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089694967083977132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53472a99ea59ab74597e0875f6303fb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _circle: {fileID: 0}
+  _iconPref: {fileID: 7803743787710783319, guid: 793e4727b7b14be43a8a702db9da8643, type: 3}
+  _areaPref: {fileID: 0}
+  _squareAreaPref: {fileID: 0}
 --- !u!1 &1255810373264063487
 GameObject:
   m_ObjectHideFlags: 0
@@ -1728,9 +1756,9 @@ MonoBehaviour:
   IconAbilityAutoattack: {fileID: 0}
   CircleSelect: {fileID: 7277157472421124586}
   AttackType: 0
+  DamageType: 0
   AbilityType: 0
   AttackRangeType: 0
-  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1788,9 +1816,9 @@ MonoBehaviour:
   IconAbilityAutoattack: {fileID: 0}
   CircleSelect: {fileID: 7277157472421124586}
   AttackType: 0
+  DamageType: 0
   AbilityType: 0
   AttackRangeType: 0
-  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1835,9 +1863,9 @@ MonoBehaviour:
   IconAbilityAutoattack: {fileID: 0}
   CircleSelect: {fileID: 7277157472421124586}
   AttackType: 0
+  DamageType: 0
   AbilityType: 0
   AttackRangeType: 0
-  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1884,9 +1912,9 @@ MonoBehaviour:
   IconAbilityAutoattack: {fileID: 0}
   CircleSelect: {fileID: 7277157472421124586}
   AttackType: 0
+  DamageType: 0
   AbilityType: 0
   AttackRangeType: 0
-  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0

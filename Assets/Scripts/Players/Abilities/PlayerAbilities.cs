@@ -9,7 +9,7 @@ public class PlayerAbilities : MonoBehaviour
     [SerializeField] private List<Ability> _abilities;
     [SerializeField] private AbilityRender _abilityRender;
 
-    [SerializeField] private Ability _currentAbility;
+    private Ability _currentAbility;
     private int _currentAbilityIndex;
     private bool _isAbilitiesDisabled = false;
 

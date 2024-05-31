@@ -15,14 +15,14 @@ public class VisualManaCost : MonoBehaviour
     {
         if (ManaBarSprite != null)
         {
-            // Получаем границы спрайта
+            // РџРѕР»СѓС‡Р°РµРј РіСЂР°РЅРёС†С‹ СЃРїСЂР°Р№С‚Р°
             SpriteRenderer spriteRenderer = ManaBarSprite.GetComponent<SpriteRenderer>();
             Bounds spriteBounds = spriteRenderer.bounds;
 
-            // Рассчитываем конечную точку по X
+            // Р Р°СЃСЃС‡РёС‚С‹РІР°РµРј РєРѕРЅРµС‡РЅСѓСЋ С‚РѕС‡РєСѓ РїРѕ X
             float endX = spriteBounds.max.x;
 
-            // Устанавливаем позицию объекта в конец полоски маны по X
+            // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј РїРѕР·РёС†РёСЋ РѕР±СЉРµРєС‚Р° РІ РєРѕРЅРµС† РїРѕР»РѕСЃРєРё РјР°РЅС‹ РїРѕ X
             Vector3 newPosition = new Vector3(endX, transform.position.y, transform.position.z);
             transform.position = newPosition;
         }

@@ -39,7 +39,7 @@ public class ThreeRangeHeal : AbilityBase
     protected override void HandleToggleAbility()
     {
         base.HandleToggleAbility();
-        // Текущий код в методе Update
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ Update
 
         if (Input.GetMouseButtonDown(0) && ToggleAbility.gameObject.activeSelf && ToggleAbility.enabled && _player.GetComponent<PlayerMove>().IsSelect)
         {
@@ -49,7 +49,7 @@ public class ThreeRangeHeal : AbilityBase
 
     protected override void HandleToggleAbilityOn()
     {
-        // Включенный ToggleAbility
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ ToggleAbility
         base.HandleToggleAbilityOn();
 
         if (TargetParent == null)
@@ -77,7 +77,7 @@ public class ThreeRangeHeal : AbilityBase
 
     protected override void HandleToggleAbilityOff()
     {
-        // Выключенный ToggleAbility
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ ToggleAbility
         base.HandleToggleAbilityOff();
 
         if (_isSelect == false)
@@ -119,7 +119,7 @@ public class ThreeRangeHeal : AbilityBase
 
     private void HandleTargetSelection()
     {
-        // Выбор врага
+        // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         _targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(_targetPosition, Vector2.zero);
 
@@ -254,7 +254,7 @@ public class ThreeRangeHeal : AbilityBase
         _player.GetComponent<PlayerMove>().CanMove = true;
         Select.GetComponent<SelectObject>().CanSelect = true;
 
-		this.transform.root.GetComponentInChildren<FourRangeRecovery>().canCast = true;
+		transform.root.GetComponentInChildren<FourRangeRecovery>().canCast = true;
         if(isLightSide)
         {
             Heal();

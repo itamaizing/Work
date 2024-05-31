@@ -4,9 +4,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class HealthPlayer : MonoBehaviour
 {
+    [SerializeField]
+    private HealthBar healthBar;
+    
     private float _defPhysDamage;
     private float _defMagDamage;
 
@@ -29,12 +33,8 @@ public class HealthPlayer : MonoBehaviour
     [Header("Shields")]
     public List<Shielding> shields_Physic = new List<Shielding>();
     public List<Shielding> shields_Magic = new List<Shielding>();
-    [Space]
-
-    public GameObject HealthBar;
-    public TextMeshPro HealthBarText;
-    public Transform DamageSpawn;
-    public TextMeshPro PrefabText;
+    [FormerlySerializedAs("HealthBar")] [Space]
+    
     public float sumDamageTaken = 0;
     public struct DamageInfo
     {
@@ -115,16 +115,15 @@ public class HealthPlayer : MonoBehaviour
             }
             ShowDamagePrefab(-modifiedDamage, new Color(1, 0, 0, 1), new Color(1, 0, 0, 0.5f));
             UpdateHealthBar();
-            UpdateHealthBarText();
         }
     }
-    private float CalculateDamageWithStats(float damageValue, DamageType damageType, AttackRangeType attackRangeType, out bool hitSuccessed) // ���������� � tryTakeDamage �� ��������� �����
+    private float CalculateDamageWithStats(float damageValue, DamageType damageType, AttackRangeType attackRangeType, out bool hitSuccessed)
     {
         if (damageType == DamageType.Magical)
         {
             if (UnityEngine.Random.Range(0, 100) <= _evadeMagDamage)
             {
-                ShowDamagePrefab(new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f), "miss");
+                ShowDamagePrefab("miss",new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f));
                 hitSuccessed = false;
                 return 0;
             }
@@ -141,7 +140,7 @@ public class HealthPlayer : MonoBehaviour
                 case AttackRangeType.MeleeAttack:
                     if (UnityEngine.Random.Range(0, 100) <= _evadeMeleeDamage)
                     {
-                        ShowDamagePrefab(new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f), "miss");
+                        ShowDamagePrefab("miss",new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f));
                         hitSuccessed = false;
                         return 0;
                     }
@@ -152,7 +151,7 @@ public class HealthPlayer : MonoBehaviour
                 case AttackRangeType.RangeAttack:
                     if (UnityEngine.Random.Range(0, 100) <= _evadeRangeDamage)
                     {
-                        ShowDamagePrefab(new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f), "miss");
+                        ShowDamagePrefab("miss",new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f));
                         hitSuccessed = false;
                         return 0;
                     }
@@ -173,7 +172,7 @@ public class HealthPlayer : MonoBehaviour
         hitSuccessed = false;
         return 0; // �� ������� DamageType
     }
-    private float SummShields(DamageType damageType) // ������������ ��� �������� �����
+    private float SummShields(DamageType damageType)
     {
         float value = 0;
 
@@ -202,7 +201,7 @@ public class HealthPlayer : MonoBehaviour
         return value;
     }
 
-    private float CalculateDamageForShields(float damageValue, DamageType damageType) // ���������� � takeDamage �� ����� ��������� �����
+    private float CalculateDamageForShields(float damageValue, DamageType damageType)
     {
         if (damageType == DamageType.Physical)
         {
@@ -288,7 +287,6 @@ public class HealthPlayer : MonoBehaviour
             }
             
             UpdateHealthBar();
-            UpdateHealthBarText();
         }
     }
 
@@ -318,7 +316,6 @@ public class HealthPlayer : MonoBehaviour
             }
             ShowDamagePrefab(-modifiedDamage, new Color(1, 0, 0, 1), new Color(1, 0, 0, 0.5f));
             UpdateHealthBar();
-            UpdateHealthBarText();
         }
     }
 
@@ -423,7 +420,6 @@ public class HealthPlayer : MonoBehaviour
         } 
         ShowDamagePrefab(healthInfo.ModifiedHeal, new Color(0, 0.8f, 0, 1), new Color(0, 0.8f, 0, 0.5f)); 
         UpdateHealthBar();
-        UpdateHealthBarText();
     }
 
     public void RegenHP(float healValue) // ��� ������, ��� �� ����� AddHeal, �� ��� ������� ��������
@@ -445,8 +441,6 @@ public class HealthPlayer : MonoBehaviour
             _currentHealth = _maxHealth;
         }
         UpdateHealthBar();
-        UpdateHealthBarText();
-
     }
 
     private void HandleAbsorptionOrRepeat(ref float modifiedValue)
@@ -487,35 +481,17 @@ public class HealthPlayer : MonoBehaviour
     }
     private void ShowDamagePrefab(float value, Color startColor, Color endColor)
     {
-        if(value > 0 && value < 1)
-        {
-            value = 1;
-        }
-        PrefabText.text = (value > 0 ? "+" : "") + value.ToString("0.0");
-        PrefabText.GetComponent<DamagePrefab>().StartColor = startColor;
-        PrefabText.GetComponent<DamagePrefab>().EndColor = endColor;
-        TextMeshPro newPrefab = Instantiate(PrefabText, DamageSpawn.position, Quaternion.identity);
-        newPrefab.transform.SetParent(transform);
+        GetComponent<UIPlayerComponents>().ShowPopupValue(value,startColor,endColor);
     }
 
-    private void ShowDamagePrefab(Color startColor, Color endColor, string text) //������������ ��� �������
+    private void ShowDamagePrefab(string text, Color startColor, Color endColor) //������������ ��� �������
     {
-        PrefabText.text = text;
-        PrefabText.GetComponent<DamagePrefab>().StartColor = startColor;
-        PrefabText.GetComponent<DamagePrefab>().EndColor = endColor;
-        TextMeshPro newPrefab = Instantiate(PrefabText, DamageSpawn.position, Quaternion.identity);
-        newPrefab.transform.SetParent(transform);
+        GetComponent<UIPlayerComponents>().ShowPopupText(text,startColor,endColor);
     }
 
     public void UpdateHealthBar()
     {
-        float newScaleX = _currentHealth / _maxHealth;
-        HealthBar.transform.localScale = new Vector3(newScaleX, 1.0f, 1.0f);
-    }
-    private void UpdateHealthBarText()
-    {
-        float healthValue = Mathf.RoundToInt(_currentHealth);
-        HealthBarText.text = healthValue.ToString();
+        healthBar.UpdateValue(_currentHealth,_maxHealth);
     }
     private void Die()
     {

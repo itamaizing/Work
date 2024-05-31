@@ -1075,9 +1075,9 @@ MonoBehaviour:
   IconAbilityAutoattack: {fileID: 0}
   CircleSelect: {fileID: 977311239297086155}
   AttackType: 0
+  DamageType: 0
   AbilityType: 0
   AttackRangeType: 0
-  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1121,9 +1121,9 @@ MonoBehaviour:
   IconAbilityAutoattack: {fileID: 0}
   CircleSelect: {fileID: 977311239297086155}
   AttackType: 0
+  DamageType: 0
   AbilityType: 0
   AttackRangeType: 0
-  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1164,9 +1164,9 @@ MonoBehaviour:
   IconAbilityAutoattack: {fileID: 0}
   CircleSelect: {fileID: 0}
   AttackType: 0
+  DamageType: 0
   AbilityType: 0
   AttackRangeType: 0
-  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -1208,9 +1208,9 @@ MonoBehaviour:
   IconAbilityAutoattack: {fileID: 0}
   CircleSelect: {fileID: 0}
   AttackType: 0
+  DamageType: 0
   AbilityType: 0
   AttackRangeType: 0
-  DamageType: 0
   TargetParent: {fileID: 0}
   CanMakeDamage: 0
   CanDealDamageOrHeal: 0
@@ -2156,13 +2156,14 @@ GameObject:
   - component: {fileID: 332266684997287342}
   - component: {fileID: 8244358195715781526}
   - component: {fileID: 8017328481705754728}
+  - component: {fileID: 4436738514732395175}
   m_Layer: 9
   m_Name: CarrygunPlayer
   m_TagString: Allies
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3309320763842641188
 Transform:
   m_ObjectHideFlags: 0
@@ -2188,7 +2189,7 @@ Transform:
   - {fileID: 5565613549700228518}
   - {fileID: 3633434942918823971}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &4894628429328255368
 Rigidbody2D:
@@ -2229,20 +2230,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 279100e0cb4b40f42b64a3ac1d1502fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 300
   CanMove: 1
   IsMoving: 0
   IsSelect: 0
-  DirectionOfMovement: {x: 0, y: 0}
-  SelectObject: {fileID: 0}
-  CircleSelect: {fileID: 977311239297086155}
-  MarkersSelect: {fileID: 474754218617308991}
-  AbilityPanel: {fileID: 0}
-  AbilitiesOnTargetToggles:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  MoveDirection: {x: 0, y: 0}
 --- !u!114 &3504477266362453533
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2255,19 +2246,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b5add863fba6af449bc9b5c95b8199e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hpRegenerationValue: 10
-  _hpRegenerationDelay: 3
-  _defPhysDamage: 10
-  _defMagDamage: 10
-  _evadeMeleeDamage: 10
-  _evadeRangeDamage: 10
-  _evadeMagDamage: 10
-  _absorbPhysDamage: 0
-  _absorbMagDamage: 0
   shields_Physic: []
   shields_Magic: []
-  Health: 300
-  MaxHealth: 555
   HealthBar: {fileID: 3902827016351320800}
   HealthBarText: {fileID: 7726555042889023231}
   DamageSpawn: {fileID: 417943302763761069}
@@ -2302,9 +2282,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7f243771c2613d40a4aecc719336ae4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Select: {fileID: 0}
-  PlayerHp: {fileID: 3504477266362453533}
-  PlayerMove: {fileID: 6182276717380519424}
   energy: {fileID: 0}
   durationToExit: 0
   damageToExit: 0
@@ -2414,6 +2391,41 @@ CircleCollider2D:
   serializedVersion: 2
   m_Radius: 1.1
 --- !u!58 &8017328481705754728
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4371443321967966874}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 1.1
+--- !u!58 &4436738514732395175
 CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

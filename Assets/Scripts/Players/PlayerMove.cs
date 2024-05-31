@@ -38,7 +38,7 @@ public class PlayerMove : MonoBehaviour
 	}
 	void FixedUpdate()
 	{
-		if (!IsSelect || !CanMove)
+		if (!CanMove)
 		{
             _rigidbody.velocity = Vector2.zero;
             return;

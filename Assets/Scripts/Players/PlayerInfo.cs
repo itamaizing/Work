@@ -14,6 +14,7 @@ public class PlayerInfo : ScriptableObject
     [SerializeField] private float _defaultHealthRegen;
     [SerializeField] private float _defaultStaminaRegen;
     [SerializeField] private float _defaultRegenDelay;
+    [SerializeField] private float _visionRadius;
 
     public string Name => _name;
     public string Description => _description;
@@ -21,11 +22,12 @@ public class PlayerInfo : ScriptableObject
     public float IconSize => _iconSize;
 
     public float Health => _health;
-
     public HealthInfo HealthInfo => _healthInfo;
     public float Stamina => _stamina;
     public float MoveSpeed => _moveSpeed;
     public float HealthRegen => _defaultHealthRegen;
     public float StaminaRegen => _defaultStaminaRegen;
     public float RegenDelay => _defaultRegenDelay;
+
+    public float VisionRadius => _visionRadius;
 }

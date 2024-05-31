@@ -82,8 +82,8 @@ public class IceRolling : Ability
 			Vector2 jumpPos = lookDir * actualJumpRange + (Vector2)PlayerMove.transform.position;
 			if(CheckObstacleBetween(_playerLinks.Rb.position, jumpPos))
 			{
-				Debug.Log("Обнаружено препятствие:");
-				//прыгать до препятствия
+				Debug.Log("РћР±РЅР°СЂСѓР¶РµРЅРѕ РїСЂРµРїСЏС‚СЃС‚РІРёРµ:");
+				//РїСЂС‹РіР°С‚СЊ РґРѕ РїСЂРµРїСЏС‚СЃС‚РІРёСЏ
 				_playerLinks.Rb.DOMove(_jumpPos, _durationOfJump * actualJumpRange / GlobalVariable.cellSize).OnComplete(AfterJump);
 			}
 			else
@@ -93,7 +93,7 @@ public class IceRolling : Ability
 			}
 		}
 	}
-	//делим на cell size что бы считалось время не за одну единицу юнити, а за наши, клетки
+	//РґРµР»РёРј РЅР° cell size С‡С‚Рѕ Р±С‹ СЃС‡РёС‚Р°Р»РѕСЃСЊ РІСЂРµРјСЏ РЅРµ Р·Р° РѕРґРЅСѓ РµРґРёРЅРёС†Сѓ СЋРЅРёС‚Рё, Р° Р·Р° РЅР°С€Рё, РєР»РµС‚РєРё
 
 	private void AfterJump()
 	{
@@ -104,7 +104,7 @@ public class IceRolling : Ability
 
 	private bool CheckObstacleBetween(Vector3 start, Vector3 end)
 	{
-		//Проверка на наличие препятствия
+		//РџСЂРѕРІРµСЂРєР° РЅР° РЅР°Р»РёС‡РёРµ РїСЂРµРїСЏС‚СЃС‚РІРёСЏ
 		Vector2 direction = (end - start).normalized;
 		float distance = Vector2.Distance(start, end);
 

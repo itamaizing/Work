@@ -98,12 +98,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f48d90d77134e1a88a9b5b51bcc5e13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _fireWorks: {fileID: 7081192065382317012}
-  _fireWorksPreAblity: {fileID: 0}
-  _iconAbility: {fileID: 0}
-  _toggleAbility: {fileID: 0}
-  _abilitiesPanel: {fileID: 0}
-  _manaCost: {fileID: 0}
+  _abilityInfo: {fileID: 0}
+  _isAutoAttack: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _manaCost: 0
+  _castDeley: 0
+  _cooldown: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _fireworksPref: {fileID: 0}
+  _length: 0
+  _width: 0
+  _extraWidth: 0
+  _positionForExtraWidth: 0
+  _damageRate: 0
+  _minDamagePerTick: 0
+  _maxDamagePerTick: 0
+  _percentFirstTarget: 0
+  _percentSecondTarget: 0
+  _percentThirdTarget: 0
+  _percentOtherTarget: 0
 --- !u!1 &2127089797660670354
 GameObject:
   m_ObjectHideFlags: 0
@@ -218,7 +241,7 @@ PrefabInstance:
     - target: {fileID: 2923381398589063547, guid: badc00e91843e5f41a1b8cf804468ff6, type: 3}
       propertyPath: shootFireworks
       value: 
-      objectReference: {fileID: 2386114280604513151}
+      objectReference: {fileID: 0}
     - target: {fileID: 4762037140722973673, guid: badc00e91843e5f41a1b8cf804468ff6, type: 3}
       propertyPath: m_Name
       value: Fireworks_Prefab_V3_InPrefab_Genjalf
@@ -278,7 +301,7 @@ PrefabInstance:
     - target: {fileID: 6451889765325646418, guid: badc00e91843e5f41a1b8cf804468ff6, type: 3}
       propertyPath: shootFireworks
       value: 
-      objectReference: {fileID: 2386114280604513151}
+      objectReference: {fileID: 0}
     - target: {fileID: 7531091499775318389, guid: badc00e91843e5f41a1b8cf804468ff6, type: 3}
       propertyPath: _shootV2
       value: 
@@ -286,17 +309,12 @@ PrefabInstance:
     - target: {fileID: 7531091499775318389, guid: badc00e91843e5f41a1b8cf804468ff6, type: 3}
       propertyPath: shootFireworks
       value: 
-      objectReference: {fileID: 2386114280604513151}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: badc00e91843e5f41a1b8cf804468ff6, type: 3}
---- !u!1 &7081192065382317012 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4762037140722973673, guid: badc00e91843e5f41a1b8cf804468ff6, type: 3}
-  m_PrefabInstance: {fileID: 2329299058263261245}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8691387441431675909 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6398867345757733944, guid: badc00e91843e5f41a1b8cf804468ff6, type: 3}
