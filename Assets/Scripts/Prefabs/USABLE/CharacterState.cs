@@ -197,8 +197,8 @@ public class StunnedState : ICharacterState
         Debug.Log("Entering Stunned State");
         _characterState = character;
         _playerMove.CanMove = false;
-        _duration = character.durationToExit;
-        //ability off
+        _duration = durationToExit;
+        //_duration = character.durationToExit;      
     }
 
     public void UpdateState()
@@ -241,7 +241,6 @@ public class BlindnessState : ICharacterState
 		{
 			Debug.Log("no ability at " + character.gameObject.name);
 		}
-		//ability off
 	}
 
 	public void UpdateState()
@@ -307,7 +306,6 @@ public class FrozenState : ICharacterState
         {
 			ExitState();
 		}
-
 	}
 
 	public void ExitState()

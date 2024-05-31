@@ -25,7 +25,7 @@ public class StateIcons : MonoBehaviour
         }
 		if (Input.GetKeyUp(KeyCode.E))
 		{
-			ActivateIco(States.Blind, .2f, 2);
+			ActivateIco(States.Blind, 2f, 2);
 		}
 		if (Input.GetKeyUp(KeyCode.W))
 		{
