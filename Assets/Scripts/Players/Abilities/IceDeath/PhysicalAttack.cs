@@ -40,12 +40,14 @@ public class PhysicalAttack : Ability
 
 		foreach (Collider2D col in enemyDetected)
 		{
-			if (col.gameObject == _dad)
-				continue;
-			if(TryGetComponent<Character>(out var enemy))
+			if(col.TryGetComponent<PlayerLinks>(out var enemy))
 			{
-				Debug.Log("Enemy detected: " + col.gameObject.name);
-				Hit(enemy.Health);
+				if (enemy == _dad)
+				{
+					continue;
+				}				
+				Debug.Log("Enemy detected: " + enemy.gameObject.name);
+				Hit(enemy.HealthPlayer);
 				break;
 			}			
 		}
@@ -55,11 +57,14 @@ public class PhysicalAttack : Ability
 	{
 		if(_target == enemy && _dad.Stamina.Use(5))
 		{
+			Debug.Log("hit " + _hitInARow);
 			_hitInARow++;
+			_multiplySpeed*=_hitInARow;
 			_timer = _baseTimer;
 			enemy.TakeDamage(_damage + Random.Range(0, 2), DamageType.Physical);
 			if (_hitInARow >= 6)
 			{
+				Debug.Log("Lasthit");
 				LastHit();
 			}
 		}
@@ -96,6 +101,7 @@ public class PhysicalAttack : Ability
 			_timer -= Time.deltaTime;
 			if (_timer <= 0)
 			{
+				Debug.Log("lose streak");
 				_timer = _baseTimer;
 				_isInTheRow = false;
 			}
