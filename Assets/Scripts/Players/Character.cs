@@ -36,6 +36,6 @@ public class Character : MonoBehaviour
 		Stamina.Initialize(_playerData.Stamina, _playerData.StaminaRegen, _playerData.RegenDelay);
 		RunePlayer.Initialize(10,3,10);
 		CharacterState.Initialize(Health, Move);
-		UIPlayerComponents.Initialize(Abilities,Move,Stamina,Health);
+		UIPlayerComponents.Initialize(Abilities, this);
 	}
 }

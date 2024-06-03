@@ -18,7 +18,7 @@ public class PlayerAbilities : MonoBehaviour
     public event UnityAction<int> AbilitySelected;
     public event UnityAction<int> AbilityDeselected;
 
-    public void Initialize(PlayerMove playerMove,PlayerStamina stamina , HealthPlayer healthPlayer)
+    public void Initialize(Character character)
     {
         if(_abilities.Count > 0)
         {
@@ -26,7 +26,7 @@ public class PlayerAbilities : MonoBehaviour
         }
         foreach (var item in _abilities)
         {
-            item.SetPlayer(playerMove, stamina, healthPlayer);
+            item.Init(character);
             Debug.Log("set");
         }
     }

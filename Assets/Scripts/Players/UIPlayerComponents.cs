@@ -15,10 +15,10 @@ public class UIPlayerComponents : MonoBehaviour
     public PopupTextPrefab PopupText;
     private PopupTextPrefab popupTextPrefab;
 
-    public void Initialize(PlayerAbilities playerAbilities,PlayerMove playerMove,PlayerStamina stamina , HealthPlayer healthPlayer)
+    public void Initialize(PlayerAbilities playerAbilities, Character character)
     {
         ChangeSelection(true);
-        playerAbilities.Initialize(playerMove, stamina, healthPlayer);
+        playerAbilities.Initialize(character);
     }
     
     public void ChangeSelection(bool isSelect)
