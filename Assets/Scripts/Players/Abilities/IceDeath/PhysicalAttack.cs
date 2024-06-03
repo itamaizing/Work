@@ -12,14 +12,14 @@ public class PhysicalAttack : Ability
 	[SerializeField] private float _damage = 8f;
 	[SerializeField] private float _abilityCooldown = 1.4f;
 	[SerializeField] private PlayerLinks _dad;
-	private float _cooldownTimer = 1.4f;
-	private int _hitInARow = 0;
-	private float _multiplySpeed = .05f;
-	private HealthPlayer _target;
-	private float _timer = 2f;
+	[SerializeField] private float _cooldownTimer = 1.4f;
+	[SerializeField] private int _hitInARow = 0;
+	[SerializeField] private float _multiplySpeed = .05f;
+	[SerializeField] private float _timer = 2f;
+	[SerializeField] private bool _isInTheRow = false;
 	private float _baseTimer = 2f;
-	private bool _isInTheRow = false;
 	private bool _isReadyToShot = true;
+	private HealthPlayer _target;
 
 	private void Update()
 	{
@@ -65,8 +65,9 @@ public class PhysicalAttack : Ability
 		{
 			Debug.Log("hit " + _hitInARow);
 			_hitInARow++;
-			_multiplySpeed*=_hitInARow;
+			_multiplySpeed*=2;
 			_timer = _baseTimer;
+			_isInTheRow = true;
 			enemy.TakeDamage(_damage + Random.Range(0, 2), DamageType.Physical);
 			if (_hitInARow >= 6)
 			{
@@ -91,14 +92,14 @@ public class PhysicalAttack : Ability
 		if (_dad.Stamina.Use(10))
 		{
 			_target.TakeDamage(_damage * .5f, DamageType.Physical);
-			//отбрасывание и стан
-			
+			//отбрасывание и стан			
 		}
 		_dad.Stamina.Add(_dad.Stamina.MaxValue*0.4f);
 		//regen 40 energy
 		_hitInARow = 0;
 		_target = null;
 		_isInTheRow= false;
+		_multiplySpeed = 0.05f;
 		_timer = _baseTimer;
 	}
 
