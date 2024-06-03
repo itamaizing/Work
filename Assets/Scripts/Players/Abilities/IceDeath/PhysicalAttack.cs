@@ -25,6 +25,9 @@ public class PhysicalAttack : Ability
 	private PlayerLinks _target;
 	private Vector2 _jumpPos;
 
+	public PlayerLinks Target => _target;
+	public int HitInTheRow => _hitInARow;
+
 	private void Update()
 	{
 		Timer();
@@ -168,5 +171,14 @@ public class PhysicalAttack : Ability
 		}
 
 		return false;
+	}
+
+	public void HitFromSword(int hitInTheRow, float multiplySpeed)
+	{
+		_hitInARow = hitInTheRow;
+		_multiplySpeed = multiplySpeed;
+		_timer = _baseTimer;
+		_isInTheRow = true;
+
 	}
 }
