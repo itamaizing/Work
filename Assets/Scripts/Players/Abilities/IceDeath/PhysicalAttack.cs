@@ -97,7 +97,6 @@ public class PhysicalAttack : Ability
 			//отбрасывание 			
 		}
 		_dad.Stamina.Add(_dad.Stamina.MaxValue*0.4f);
-		//regen 40 energy
 		_hitInARow = 0;
 		_target = null;
 		_isInTheRow= false;
