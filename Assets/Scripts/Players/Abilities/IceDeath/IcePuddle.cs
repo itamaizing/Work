@@ -31,7 +31,8 @@ public class IcePuddle : Ability
 			_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
 			_angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
-			_preViewPuddle.transform.rotation = Quaternion.Euler(_preViewPuddle.transform.rotation.x, _preViewPuddle.transform.rotation.y, _angle);
+			//_preViewPuddle.transform.rotation = Quaternion.Euler(_preViewPuddle.transform.rotation.x, _preViewPuddle.transform.rotation.y, _angle);
+			_preViewPuddle.transform.rotation = Quaternion.Euler(0, 0, _angle);
 			_preViewPuddle.transform.position = InstantiatePoint();
 		}
 		else
@@ -43,7 +44,8 @@ public class IcePuddle : Ability
 			if (!_crutch)
 			{
 				//_preViewPuddle.transform.rotation = Quaternion.Euler(_preViewPuddle.transform.rotation.x, _preViewPuddle.transform.rotation.y, _preViewPuddle.transform.rotation.z);
-				_preViewPuddle.transform.rotation = Quaternion.Euler(_preViewPuddle.transform.rotation.x, _preViewPuddle.transform.rotation.y, _angle2);
+				//_preViewPuddle.transform.rotation = Quaternion.Euler(_preViewPuddle.transform.rotation.x, _preViewPuddle.transform.rotation.y, _angle2);
+				_preViewPuddle.transform.rotation = Quaternion.Euler(0, 0, _angle2);
 			}
 		}
 		if (Input.GetMouseButtonDown(0))
@@ -87,7 +89,8 @@ public class IcePuddle : Ability
 	private void Shoot()
 	{
 		//IcePuddleObject puddle = Instantiate(_puddle, _spawnPoint.transform.position, Quaternion.Euler(_croosFire.transform.rotation.x, _croosFire.transform.rotation.y, _croosFire.transform.rotation.z));
-		IcePuddleObject puddle = Instantiate(_puddle, _preViewPuddle.transform.position, Quaternion.Euler(0, 0, _preViewPuddle.transform.rotation.z));
+		//IcePuddleObject puddle = Instantiate(_puddle, _preViewPuddle.transform.position, Quaternion.Euler(0, 0, _angle2));
+		IcePuddleObject puddle = Instantiate(_puddle, _preViewPuddle.transform.position, Quaternion.Euler(0, 0, _preViewPuddle.transform.eulerAngles.z));
 		puddle.dad = _playerLinks.gameObject;
 		puddle.energyPlayer = (EnergyPlayer)Mana;
 		puddle.healthPlayer = _playerLinks.HealthPlayer;
