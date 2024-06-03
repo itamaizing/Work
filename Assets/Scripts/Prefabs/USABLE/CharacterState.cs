@@ -208,7 +208,7 @@ public class StunnedState : AbstractCharacterState
 	public bool turnOff = false;
 	private PlayerMove _playerMove;
 	private PlayerAbilities _abilities;
-
+	private float _baseDuration;
 	private float _duration;
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
 	{
@@ -222,6 +222,7 @@ public class StunnedState : AbstractCharacterState
 		_abilities.SetAbilitiesDisabled();
 		_playerMove.CanMove = false;
 		_duration = durationToExit;
+		_baseDuration = durationToExit;
 		//_duration = character.durationToExit;      
 	}
 
@@ -250,7 +251,15 @@ public class StunnedState : AbstractCharacterState
 	}
 	public override bool Stack(float time)
 	{
-		return false;
+		if (_baseDuration > time)
+		{
+			return false;
+		}
+		else
+		{
+			_duration = time;
+			return true;
+		}
 	}
 }
 
@@ -309,6 +318,7 @@ public class BlindnessState : AbstractCharacterState
 		}
 		else
 		{
+			_duration = time;
 			return true;
 		}
 
@@ -499,7 +509,7 @@ public class CharacterState : MonoBehaviour
 	{
 		// переделать под лист
 		//if already has, reset???
-
+		Debug.Log("THIS IS OLD SYSTEM TO ADD STATE, USE THIS AddState(AbstractCharacterState newState, float duration, float damageToExit, States state)");
 		// ¬ход в новое состо€ние
 		currentStates.Add(newState);
 		currentStates[currentStates.Count - 1].EnterState(this, 0, 0);
