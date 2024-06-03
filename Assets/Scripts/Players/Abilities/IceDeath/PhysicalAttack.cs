@@ -70,6 +70,7 @@ public class PhysicalAttack : Ability
 		}
 		else
 		{
+			Debug.Log("lose streak to another enemy");
 			_target = enemy;
 			_isInTheRow = true;
 			_timer = _baseTimer;
