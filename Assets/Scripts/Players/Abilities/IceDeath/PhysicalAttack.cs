@@ -10,15 +10,16 @@ using static UnityEngine.GraphicsBuffer;
 public class PhysicalAttack : Ability
 {
 	[SerializeField] private float _damage = 8f;
-	[SerializeField] private float _abilityCooldown = 1f;
-	[SerializeField] private Character _dad;
+	[SerializeField] private float _abilityCooldown = 1.4f;
+	[SerializeField] private float _cooldownTimer = 1.4f;
+	[SerializeField] private PlayerLinks _dad;
 	private int _hitInARow = 0;
 	private float _multiplySpeed = .05f;
-	private HealthComponent _target;
-	private float _timer = 1f;
-	private float _baseTimer = 1f;
+	private HealthPlayer _target;
+	private float _timer = 2f;
+	private float _baseTimer = 2f;
 	private bool _isInTheRow = false;
-
+	[SerializeField] private bool _isReadyToShot = true;
 
 	private void Update()
 	{
@@ -36,7 +37,11 @@ public class PhysicalAttack : Ability
 	
 	private void CheckEnemy()
 	{
-		Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, Radius);
+        if (!_isReadyToShot)
+        {
+			return;
+        }
+        Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, Radius);
 
 		foreach (Collider2D col in enemyDetected)
 		{
@@ -53,8 +58,9 @@ public class PhysicalAttack : Ability
 		}
 	}
 
-	private void Hit(HealthComponent enemy)
+	private void Hit(HealthPlayer enemy)
 	{
+		_isReadyToShot = false;
 		if(_target == enemy && _dad.Stamina.Use(5))
 		{
 			Debug.Log("hit " + _hitInARow);
@@ -84,7 +90,7 @@ public class PhysicalAttack : Ability
 		if (_dad.Stamina.Use(10))
 		{
 			_target.TakeDamage(_damage * .5f, DamageType.Physical);
-			//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ
+			//отбрасывание и стан
 			
 		}
 		_dad.Stamina.Add(_dad.Stamina.MaxValue*0.4f);
@@ -97,6 +103,15 @@ public class PhysicalAttack : Ability
 
 	private void Timer()
 	{
+		if(_cooldownTimer > 0 && !_isReadyToShot) 
+		{
+			_cooldownTimer -= Time.deltaTime;
+		}
+		else
+		{
+			_isReadyToShot = true;
+			_cooldownTimer = _abilityCooldown;
+		}
 		if (_isInTheRow)
 		{
 			_timer -= Time.deltaTime;
