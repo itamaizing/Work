@@ -19,7 +19,7 @@ public class PhysicalAttack : Ability
 	[SerializeField] private bool _isInTheRow = false;
 	private float _baseTimer = 2f;
 	private bool _isReadyToShot = true;
-	private HealthPlayer _target;
+	private PlayerLinks _target;
 
 	private void Update()
 	{
@@ -52,13 +52,13 @@ public class PhysicalAttack : Ability
 					continue;
 				}				
 				Debug.Log("Enemy detected: " + enemy.gameObject.name);
-				Hit(enemy.HealthPlayer);
+				Hit(enemy);
 				break;
 			}			
 		}
 	}
 
-	private void Hit(HealthPlayer enemy)
+	private void Hit(PlayerLinks enemy)
 	{
 		_isReadyToShot = false;
 		if(_target == enemy && _dad.Stamina.Use(5))
@@ -68,7 +68,7 @@ public class PhysicalAttack : Ability
 			_multiplySpeed*=2;
 			_timer = _baseTimer;
 			_isInTheRow = true;
-			enemy.TakeDamage(_damage + Random.Range(0, 2), DamageType.Physical);
+			enemy.HealthPlayer.TakeDamage(_damage + Random.Range(0, 2), DamageType.Physical);
 			if (_hitInARow >= 6)
 			{
 				Debug.Log("Lasthit");
@@ -84,15 +84,16 @@ public class PhysicalAttack : Ability
 			_hitInARow = 0;
 			_multiplySpeed = .05f;
 			
-			enemy.TakeDamage(_damage + Random.Range(0, 2), DamageType.Physical);
+			enemy.HealthPlayer.TakeDamage(_damage + Random.Range(0, 2), DamageType.Physical);
 		}
 	}
 	private void LastHit()
 	{
 		if (_dad.Stamina.Use(10))
 		{
-			_target.TakeDamage(_damage * .5f, DamageType.Physical);
-			//отбрасывание и стан			
+			_target.HealthPlayer.TakeDamage(_damage * .5f, DamageType.Physical);
+			_target.CharacterState.AddState(new StunnedState(), 1.5f, 0, States.Stun);
+			//отбрасывание 			
 		}
 		_dad.Stamina.Add(_dad.Stamina.MaxValue*0.4f);
 		//regen 40 energy
