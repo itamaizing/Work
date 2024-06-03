@@ -122,6 +122,7 @@ public class PhysicalAttack : Ability
 				Debug.Log("lose streak");
 				_timer = _baseTimer;
 				_isInTheRow = false;
+				_hitInARow = 0;
 			}
 		}
 	}
