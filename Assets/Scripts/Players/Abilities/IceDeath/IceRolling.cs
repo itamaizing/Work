@@ -119,7 +119,7 @@ public class IceRolling : Ability
 
 		foreach (RaycastHit2D hit in hits)
 		{
-			_jumpPos = hits[0].point - direction;
+			_jumpPos = hits[0].point - direction*1.2f;
 			return true;
 		}
 
