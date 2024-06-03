@@ -118,6 +118,7 @@ public class PhysicalAttack : Ability
 			_timer -= Time.deltaTime;
 			if (_timer <= 0)
 			{
+				_multiplySpeed = 0.05f;
 				Debug.Log("lose streak");
 				_timer = _baseTimer;
 				_isInTheRow = false;
