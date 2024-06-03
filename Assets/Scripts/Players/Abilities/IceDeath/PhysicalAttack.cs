@@ -10,14 +10,14 @@ using static UnityEngine.GraphicsBuffer;
 public class PhysicalAttack : Ability
 {
 	[SerializeField] private float _damage = 8f;
-	[SerializeField] private float _abilityCooldown = 1.4f;
 	[SerializeField] private PlayerLinks _dad;
-	[SerializeField] private float _cooldownTimer = 1.4f;
-	[SerializeField] private int _hitInARow = 0;
-	[SerializeField] private float _multiplySpeed = .05f;
-	[SerializeField] private float _timer = 2f;
-	[SerializeField] private bool _isInTheRow = false;
-	private float _baseTimer = 2f;
+	[SerializeField] private float _abilityCooldown = 1.4f; //cooldown between shots
+	private float _cooldownTimer = 1.4f;
+	private int _hitInARow = 0;
+	private float _multiplySpeed = .05f;
+	private bool _isInTheRow = false;
+	private float _baseTimer = 2f; //time and timer between losing streak
+	private float _timer = 2f;
 	private bool _isReadyToShot = true;
 	private PlayerLinks _target;
 
@@ -68,6 +68,7 @@ public class PhysicalAttack : Ability
 			_multiplySpeed*=2;
 			_timer = _baseTimer;
 			_isInTheRow = true;
+
 			enemy.HealthPlayer.TakeDamage(_damage + Random.Range(0, 2), DamageType.Physical);
 			if (_hitInARow >= 6)
 			{
@@ -79,10 +80,10 @@ public class PhysicalAttack : Ability
 		{
 			Debug.Log("lose streak to another enemy");
 			_target = enemy;
-			_isInTheRow = true;
-			_timer = _baseTimer;
 			_hitInARow = 0;
 			_multiplySpeed = .05f;
+			_timer = _baseTimer;
+			_isInTheRow = true;
 			
 			enemy.HealthPlayer.TakeDamage(_damage + Random.Range(0, 2), DamageType.Physical);
 		}
