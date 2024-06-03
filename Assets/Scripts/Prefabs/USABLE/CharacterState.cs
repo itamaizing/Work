@@ -212,14 +212,16 @@ public class StunnedState : AbstractCharacterState
 	private float _duration;
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
 	{
+		Debug.Log("Entering Stunned State");
 		type = StateType.Physical;
 		effects.Add(StatusEffect.Move);
 		effects.Add(StatusEffect.Ability);
 
-		Debug.Log("Entering Stunned State");
 		_characterState = character;
 		_abilities = character.PlayerLinks.Abilities;
 		_abilities.SetAbilitiesDisabled();
+
+		_playerMove = character.PlayerLinks.PlayerMove;
 		_playerMove.CanMove = false;
 		_duration = durationToExit;
 		_baseDuration = durationToExit;

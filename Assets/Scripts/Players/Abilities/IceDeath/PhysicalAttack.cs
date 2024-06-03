@@ -139,17 +139,15 @@ public class PhysicalAttack : Ability
 		Debug.Log("Push");
 		Vector2 pushPos = (_dad.Rb.position - enemy.Rb.position).normalized;
 		Vector2 endPos = -pushPos * 2;
-		enemy.PlayerMove.CanMove = false;
+		//enemy.PlayerMove.CanMove = false;
 		//Debug.DrawLine(enemy.Rb.position, enemy.Rb.position + endPos * 10, Color.red, Mathf.Infinity);
 		if (CheckObstacleBetween(enemy.Rb.position, endPos))
 		{
-			Debug.Log("Обнаружено препятствие:");
-			//прыгать до препятствия
-			enemy.Rb.DOMove(_jumpPos, 1).SetEase(Ease.Linear).OnComplete(() => enemy.PlayerMove.CanMove = true);
+			enemy.Rb.DOMove(_jumpPos, 1).SetEase(Ease.Linear);
 		}
 		else
 		{
-			enemy.Rb.DOMove(enemy.Rb.position + endPos, 1).SetEase(Ease.Linear).OnComplete(() => enemy.PlayerMove.CanMove = true);
+			enemy.Rb.DOMove(enemy.Rb.position + endPos, 1).SetEase(Ease.Linear);
 		}
 	}
 
@@ -165,7 +163,7 @@ public class PhysicalAttack : Ability
 		foreach (RaycastHit2D hit in hits)
 		{
 			Debug.Log(hit.collider.gameObject.name);
-			_jumpPos = hits[0].point - direction * 1.2f;
+			_jumpPos = hits[0].point - direction;
 			return true;
 		}
 
