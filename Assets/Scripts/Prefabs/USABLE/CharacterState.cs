@@ -1,242 +1,276 @@
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-// РРЅС‚РµСЂС„РµР№СЃ СЃРѕСЃС‚РѕСЏРЅРёСЏ
-public interface ICharacterState
+// Интерфейс состояния
+public abstract class AbstractCharacterState
 {
-    public StateType type;
-    protected CharacterState _characterState;
-    public abstract void EnterState(CharacterState character, float durationToExit, float damageToExit);
+	public StateType type;
+	public List<StatusEffect> effects = new List<StatusEffect>();
+	protected CharacterState _characterState;
+	public abstract void EnterState(CharacterState character, float durationToExit, float damageToExit);
 	public abstract void UpdateState();
 	public abstract void ExitState();
+	public abstract bool Stack(float time);
 }
 
-
-public class DefaultState : ICharacterState
+public class DefaultState : AbstractCharacterState
 {
-    public void EnterState(CharacterState character)
-    {
-    }
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+	{
 
-    public void UpdateState()
-    {
-    }
+	}
 
-    public void ExitState()
-    {
-    }
-}
+	public override void UpdateState()
+	{
 
+	}
 
-// CРѕСЃС‚РѕСЏРЅРёРµ РЅРµРІРёРґРёРјРѕСЃС‚СЊ
-public class InvisibleState : ICharacterState
-{
-	private CharacterState _characterState;
-	private Renderer[] childRenderers;
-    private GameObject _player;
+	public override void ExitState()
+	{
 
-    private List<GameObject> _enemies = new List<GameObject>();
+	}
 
-    private float lastCheckTime;
-    private float checkInterval = 1f;
-
-    public void EnterState(CharacterState character)
-    {
-        Debug.Log("Entering Invisible State");
-        _characterState = character;
-        _player = character.gameObject;
-    }
-
-    public void UpdateState()
-    {
-        Debug.Log("Updating Invisible State");
-
-        childRenderers = _characterState.GetComponentsInChildren<Renderer>();
-        
-        /*if (_select.SelectedObject.CompareTag("Enemies") && _characterState.gameObject.CompareTag("Allies") ||
-            _select.SelectedObject.CompareTag("Allies") && _characterState.gameObject.CompareTag("Enemies"))
-        {
-
-            // Р’С‹РєР»СЋС‡Р°РµРј РІРёРґРёРјРѕСЃС‚СЊ РєР°Р¶РґРѕРіРѕ РґРѕС‡РµСЂРЅРµРіРѕ Renderer
-            foreach (Renderer renderer in childRenderers)
-            {
-                if (renderer != null)
-                {
-                    renderer.enabled = false;
-                }
-            }
-        }
-        else
-        {
-            foreach (Renderer renderer in childRenderers)
-            {
-                if (renderer != null)
-                {
-                    renderer.enabled = true;
-                }
-            }
-        }*/
-
-        if (_player.GetComponent<MoveComponent>().IsMoving)
-        {
-            CheckEnemies();
-            //Р Р°Р· РІ СЃРµРєСѓРЅРґСѓ РїСЂРѕРІРµСЂСЏРµРј РґРёСЃС‚Р°РЅС†РёСЋ Рё С€Р°РЅСЃ Р±С‹С‚СЊ СѓРІРёРґРµРЅРЅС‹Рј
-            if (_enemies.Count > 0 && Time.time - lastCheckTime >= checkInterval)
-            {
-                CheckDistance();
-                lastCheckTime = Time.time;
-            }
-        }
-    }
-
-    private void CheckEnemies()
-    {
-        int otherPlayersLayer = LayerMask.NameToLayer("OtherPlayers");
-        string enemiesTag = "Enemies";
-        float radius = 3f * 1.94f;
-       
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(_player.transform.position, radius, 1 << otherPlayersLayer);
-
-        foreach (Collider2D collider in colliders)
-        {
-            if (collider.CompareTag(enemiesTag))
-            {
-                //РќР°РїСЂР°РІР»РµРЅРёРµ РІСЂР°РіР°
-                Vector2 enemyMovementDirection = collider.GetComponent<MoveComponent>().MoveDirection * radius;
-
-                // Р’РµРєС‚РѕСЂ РѕС‚ РІСЂР°РіР° РґРѕ РїР»РµРµСЂР°
-                Vector2 playerToEnemy = _player.transform.position - collider.transform.position;
-
-                // РџСЂРѕРІРµСЂСЏРµРј, РЅР°С…РѕРґРёС‚СЃСЏ Р»Рё РёРіСЂРѕРє СЃРїРµСЂРµРґРё РІСЂР°РіР°
-                float dotProduct = Vector3.Dot(playerToEnemy.normalized, enemyMovementDirection);
-
-                if (dotProduct > 0)
-                {
-                    _enemies.Add(collider.gameObject);
-                }
-            }
-        }
-    }
-
-    private void CheckDistance()
-    {
-        foreach(GameObject enemy in _enemies)
-        {
-            Vector2 enemyMovementDirection = enemy.GetComponent<MoveComponent>().MoveDirection;
-            Vector2 playerToEnemy = _player.transform.position - enemy.transform.position;
-
-            // РќР°С…РѕРґРёРј РїРµСЂРїРµРЅРґРёРєСѓР»СЏСЂРЅС‹Р№ РІРµРєС‚РѕСЂ Рє РІРµРєС‚РѕСЂСѓ РЅР°РїСЂР°РІР»РµРЅРёСЏ РІСЂР°РіР° Рё РµРіРѕ РґР»РёРЅСѓ
-            Vector2 perpendicularVector = Vector3.ProjectOnPlane(playerToEnemy, enemyMovementDirection);
-            float perpendicularDistance = perpendicularVector.magnitude;
-
-            // РќР°С…РѕРґРёРј РїСЂРѕРµРєС†РёСЋ РІРµРєС‚РѕСЂР° playerToEnemy РЅР° РІРµРєС‚РѕСЂ РЅР°РїСЂР°РІР»РµРЅРёСЏ РІСЂР°РіР° Рё РµРµ РґР»РёРЅСѓ
-            float projection = Vector2.Dot(playerToEnemy, enemyMovementDirection);
-            float projectionLength = Mathf.Abs(projection);
-
-            float chanceToBeSeen = 0;
-
-            if(projectionLength <= 1.94f * 1.5f)
-            {
-                if(perpendicularDistance <= 1.94f * 0.5f)
-                {
-                    chanceToBeSeen = 0.8f;
-                }
-                else if(perpendicularDistance <= 1.94f * 1.5f && perpendicularDistance > 1.94f * 0.5f)
-                {
-                    chanceToBeSeen = 0.7f;
-                }
-            }
-            else if(projectionLength <= 1.94f * 2.5f && projectionLength > 1.94f * 1.5f)
-            {
-                if (perpendicularDistance <= 1.94f * 0.5f)
-                {
-                    chanceToBeSeen = 0.3f;
-                }
-                else if (perpendicularDistance <= 1.94f * 1.5f && perpendicularDistance > 1.94f * 0.5f)
-                {
-                    chanceToBeSeen = 0.2f;
-                }
-            }
-
-            if (chanceToBeSeen > 0)
-            {
-                if(Random.value <= chanceToBeSeen)
-                {
-                    _player.GetComponent<CharacterState>().AddState(new DefaultState());
-                }
-            }
-        }
-    }
-
-    public void ExitState()
-    {
-        Debug.Log("Exiting Invisible State");
-        // РџСЂРё РІС‹С…РѕРґРµ РёР· СЃРѕСЃС‚РѕСЏРЅРёСЏ РІРѕР·РІСЂР°С‰Р°РµРј РІРёРґРёРјРѕСЃС‚СЊ РґРѕС‡РµСЂРЅРёРј Renderer
-        if (childRenderers != null)
-        {
-            foreach (Renderer renderer in childRenderers)
-            {
-                if (renderer != null)
-                {
-                    renderer.enabled = true;
-                }
-            }
-        }
-    }
-}
-
-
-// CРѕСЃС‚РѕСЏРЅРёРµ РѕРіР»СѓС€РµРЅРёРµ
-public class StunnedState : ICharacterState
-{
-    public bool turnOff = false;
-
-    private CharacterState _characterState;
-    public MoveComponent _playerMove;
-    private float _duration;
-    public void EnterState(CharacterState character)
-    {
-        type = StateType.Physical;
-        Debug.Log("Entering Stunned State");
-        _characterState = character;
-        _playerMove.CanMove = false;
-        _duration = durationToExit;
-        //_duration = character.durationToExit;      
-    }
-
-    public void UpdateState()
-    {
-        Debug.Log("Updating Stunned State");
-        _duration -= Time.deltaTime;
-        if (_duration < 0 || turnOff)
-        {
-            ExitState();
-        }
-    }
-
-    public void ExitState()
-    {
-        Debug.Log("Exiting Stunned State");
-        _playerMove.CanMove = true;
-		//ability on
-		_characterState.RemoveState(this);
+	public override bool Stack(float time)
+	{
+		return false;
 	}
 }
 
-// CРѕСЃС‚РѕСЏРЅРёРµ РѕСЃР»РµРїР»РµРЅРёРµ
-public class BlindnessState : ICharacterState
+
+// Cостояние невидимость
+public class InvisibleState : AbstractCharacterState
 {
-    public bool turnOff = false;
+	private Renderer[] childRenderers;
+	private SelectObject _select;
+	private GameObject _player;
 
-	private CharacterState _characterState;
+	private List<GameObject> _enemies = new List<GameObject>();
+
+	private float lastCheckTime;
+	private float checkInterval = 1f;
+
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+	{
+		Debug.Log("Entering Invisible State");
+		_characterState = character;
+		_select = character.Select;
+		_player = character.gameObject;
+	}
+
+	public override void UpdateState()
+	{
+		Debug.Log("Updating Invisible State");
+
+		childRenderers = _characterState.GetComponentsInChildren<Renderer>();
+
+		if (_select.SelectedObject.CompareTag("Enemies") && _characterState.gameObject.CompareTag("Allies") ||
+			_select.SelectedObject.CompareTag("Allies") && _characterState.gameObject.CompareTag("Enemies"))
+		{
+
+			// Выключаем видимость каждого дочернего Renderer
+			foreach (Renderer renderer in childRenderers)
+			{
+				if (renderer != null)
+				{
+					renderer.enabled = false;
+				}
+			}
+		}
+		else
+		{
+			foreach (Renderer renderer in childRenderers)
+			{
+				if (renderer != null)
+				{
+					renderer.enabled = true;
+				}
+			}
+		}
+
+		if (_player.GetComponent<PlayerMove>().IsMoving)
+		{
+			CheckEnemies();
+			//Раз в секунду проверяем дистанцию и шанс быть увиденным
+			if (_enemies.Count > 0 && Time.time - lastCheckTime >= checkInterval)
+			{
+				CheckDistance();
+				lastCheckTime = Time.time;
+			}
+		}
+	}
+
+	private void CheckEnemies()
+	{
+		int otherPlayersLayer = LayerMask.NameToLayer("OtherPlayers");
+		string enemiesTag = "Enemies";
+		float radius = 3f * 1.94f;
+
+		Collider2D[] colliders = Physics2D.OverlapCircleAll(_player.transform.position, radius, 1 << otherPlayersLayer);
+
+		foreach (Collider2D collider in colliders)
+		{
+			if (collider.CompareTag(enemiesTag))
+			{
+				//Направление врага
+				Vector2 enemyMovementDirection = collider.GetComponent<PlayerMove>().DirectionOfMovement * radius;
+
+				// Вектор от врага до плеера
+				Vector2 playerToEnemy = _player.transform.position - collider.transform.position;
+
+				// Проверяем, находится ли игрок спереди врага
+				float dotProduct = Vector3.Dot(playerToEnemy.normalized, enemyMovementDirection);
+
+				if (dotProduct > 0)
+				{
+					_enemies.Add(collider.gameObject);
+				}
+			}
+		}
+	}
+
+	private void CheckDistance()
+	{
+		foreach (GameObject enemy in _enemies)
+		{
+			Vector2 enemyMovementDirection = enemy.GetComponent<PlayerMove>().DirectionOfMovement;
+			Vector2 playerToEnemy = _player.transform.position - enemy.transform.position;
+
+			// Находим перпендикулярный вектор к вектору направления врага и его длину
+			Vector2 perpendicularVector = Vector3.ProjectOnPlane(playerToEnemy, enemyMovementDirection);
+			float perpendicularDistance = perpendicularVector.magnitude;
+
+			// Находим проекцию вектора playerToEnemy на вектор направления врага и ее длину
+			float projection = Vector2.Dot(playerToEnemy, enemyMovementDirection);
+			float projectionLength = Mathf.Abs(projection);
+
+			float chanceToBeSeen = 0;
+
+			if (projectionLength <= 1.94f * 1.5f)
+			{
+				if (perpendicularDistance <= 1.94f * 0.5f)
+				{
+					chanceToBeSeen = 0.8f;
+				}
+				else if (perpendicularDistance <= 1.94f * 1.5f && perpendicularDistance > 1.94f * 0.5f)
+				{
+					chanceToBeSeen = 0.7f;
+				}
+			}
+			else if (projectionLength <= 1.94f * 2.5f && projectionLength > 1.94f * 1.5f)
+			{
+				if (perpendicularDistance <= 1.94f * 0.5f)
+				{
+					chanceToBeSeen = 0.3f;
+				}
+				else if (perpendicularDistance <= 1.94f * 1.5f && perpendicularDistance > 1.94f * 0.5f)
+				{
+					chanceToBeSeen = 0.2f;
+				}
+			}
+
+			if (chanceToBeSeen > 0)
+			{
+				if (Random.value <= chanceToBeSeen)
+				{
+					_player.GetComponent<CharacterState>().AddState(new DefaultState(), States.Default);
+				}
+			}
+		}
+	}
+
+	public override void ExitState()
+	{
+		Debug.Log("Exiting Invisible State");
+		// При выходе из состояния возвращаем видимость дочерним Renderer
+		if (childRenderers != null)
+		{
+			foreach (Renderer renderer in childRenderers)
+			{
+				if (renderer != null)
+				{
+					renderer.enabled = true;
+				}
+			}
+		}
+	}
+	public override bool Stack(float time)
+	{
+		return false;
+	}
+}
+
+
+// Cостояние оглушение
+public class StunnedState : AbstractCharacterState
+{
+	public bool turnOff = false;
+	private PlayerMove _playerMove;
+	private PlayerAbilities _abilities;
+
 	private float _duration;
-
-	public void EnterState(CharacterState character)
-    {
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+	{
 		type = StateType.Physical;
+		effects.Add(StatusEffect.Move);
+		effects.Add(StatusEffect.Ability);
+
 		Debug.Log("Entering Stunned State");
-        _duration = durationToExit;
-        _characterState = character;
+		_characterState = character;
+		_abilities = character.PlayerLinks.Abilities;
+		_abilities.SetAbilitiesDisabled();
+		_playerMove.CanMove = false;
+		_duration = durationToExit;
+		//_duration = character.durationToExit;      
+	}
+
+	public override void UpdateState()
+	{
+		Debug.Log("Updating Stunned State");
+		_duration -= Time.deltaTime;
+		if (_duration < 0 || turnOff)
+		{
+			ExitState();
+		}
+	}
+
+	public override void ExitState()
+	{
+		Debug.Log("Exiting Stunned State");
+		if (_characterState.Check(StatusEffect.Move))
+		{
+			_playerMove.CanMove = true;
+		}
+		if (_characterState.Check(StatusEffect.Ability))
+		{
+			_abilities.SetAbilitiesEnabled();
+		}
+		_characterState.RemoveState(this);
+	}
+	public override bool Stack(float time)
+	{
+		return false;
+	}
+}
+
+// Cостояние ослепление
+public class BlindnessState : AbstractCharacterState
+{
+	public bool turnOff = false;
+
+	//private CharacterState _characterState;
+	private float _duration;
+	private float _baseDuration;
+	private PlayerAbilities _abilities;
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+	{
+		type = StateType.Physical;
+		effects.Add(StatusEffect.Ability);
+		Debug.Log("Entering Stunned State");
+		_duration = durationToExit;
+		_baseDuration = durationToExit;
+		_characterState = character;
 		if (character.PlayerLinks.Abilities != null)
 		{
 			_abilities = character.PlayerLinks.Abilities;
@@ -248,9 +282,9 @@ public class BlindnessState : ICharacterState
 		}
 	}
 
-	public void UpdateState()
-    {
-        Debug.Log("Updating Stunned State");
+	public override void UpdateState()
+	{
+		Debug.Log("Updating Stunned State");
 		_duration -= Time.deltaTime;
 		if (_duration < 0 || turnOff)
 		{
@@ -258,208 +292,302 @@ public class BlindnessState : ICharacterState
 		}
 	}
 
-    public void ExitState()
-    {
-        Debug.Log("Exiting Stunned State");
-        _characterState.RemoveState(this);
-		if (_abilities != null)
+	public override void ExitState()
+	{
+		Debug.Log("Exiting Stunned State");
+		if (_characterState.Check(StatusEffect.Ability))
 		{
 			_abilities.SetAbilitiesEnabled();
 		}
-		//ability on
+		_characterState.RemoveState(this);
+	}
+	public override bool Stack(float time)
+	{
+		if (_baseDuration > time)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+
 	}
 }
 
-// CРѕСЃС‚РѕСЏРЅРёРµ Р·Р°РјРѕСЂРѕР·РєРё
-public class FrozenState : ICharacterState
+// Cостояние заморозки
+public class FrozenState : AbstractCharacterState
 {
 	public bool turnOff = false;
 
-	private CharacterState _characterState;
-	private HealthComponent _componentHp;
-    private MoveComponent _playerMove;
-    private float _duration;
-	public void EnterState(CharacterState character)
-    {
-		type = StateType.Magic;
-		Debug.Log("Entering Frozen State");
-        _characterState = character;
-        _playerMove = _characterState.PlayerMove;
-        _playerMove.CanMove = false;
-        //character.GetAbilityManager().ToggleAbility(false);//turn off abilities
+	//private CharacterState _characterState;
+	private HealthPlayer _playerHP;
+	private PlayerMove _playerMove;
+	private float _duration;
+	private float _baseDuration;
+	private float _damageToExit;
+	private PlayerAbilities _abilities;
 
-        if (character.PlayerLinks.Abilities != null)
-        {
-            _abilities = character.PlayerLinks.Abilities;
-            _abilities.SetAbilitiesDisabled();
-        }
-        else
-        {
-            Debug.Log("no ability at " + character.gameObject.name);
-        }
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+	{
+		type = StateType.Magic;
+		effects.Add(StatusEffect.Move);
+		effects.Add(StatusEffect.Ability);
+		Debug.Log("Entering Frozen State");
+		_characterState = character;
+		_duration = durationToExit;
+		if (damageToExit == 0)
+		{
+			_damageToExit = 10000;
+		}
+		else
+		{
+			_damageToExit = damageToExit;
+		}
+		_playerHP = _characterState.PlayerLinks.HealthPlayer;
+
+		_playerMove = _characterState.PlayerLinks.PlayerMove;
+		_playerMove.CanMove = false;
+
+		if (character.PlayerLinks.Abilities != null)
+		{
+			_abilities = character.PlayerLinks.Abilities;
+			_abilities.SetAbilitiesDisabled();
+		}
+		else
+		{
+			Debug.Log("no ability at " + character.gameObject.name);
+		}
 		//_playerHP.TakePhisicDamage(10 + _characterState.energy.Value / 4);
 		//_playerHP.TakeDamage(10 + _characterState.energy.Value / 4, DamageType.Physical);
-		//_duration = 2 + _characterState.energy.Value / 20; //пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+		//_duration = 2 + _characterState.energy.Value / 20; //тут мана того кто стрелял
 		//_characterState.energy.Use(_characterState.energy.Value);
 		_playerHP.sumDamageTaken = 0;
 
-    }
+	}
 
-    public void UpdateState()
+	public override void UpdateState()
 	{
 		_duration -= Time.deltaTime;
-		if (_componentHp.sumDamageTaken >= 30 || _duration < 0 || turnOff)
-        {
+		if (_playerHP.sumDamageTaken >= _damageToExit || _duration < 0 || turnOff)
+		{
 			ExitState();
 		}
 	}
 
-	public void ExitState()
+	public override void ExitState()
 	{
 		Debug.Log("Exiting Frozen State");
 
 		//character.GetAbilityManager().ToggleAbility(true);//turn on abilities
-        _playerMove.CanMove = true;
-        if (_abilities != null)
-        {
-            _abilities.SetAbilitiesEnabled();
-        }
+		if (_characterState.Check(StatusEffect.Move))
+		{
+			_playerMove.CanMove = true;
+		}
+		if (_characterState.Check(StatusEffect.Ability))
+		{
+			_abilities.SetAbilitiesEnabled();
+		}
 		_characterState.RemoveState(this);
+	}
+	public override bool Stack(float time)
+	{
+		_duration = _baseDuration;
+		return false;
 	}
 }
 
-
-public class FrostingState : ICharacterState
+//change to ability speed drop
+public class FrostingState : AbstractCharacterState
 {
 	public bool turnOff = false;
 
-	private CharacterState _characterState;
-	private HealthComponent _componentHp;
-	private MoveComponent _targetMove;
-	private float _duration; //РїРµСЂРµРґРµР»Р°С‚СЊ РїРѕРґ СЂР°Р·РЅС‹Рµ СЃРїРµР»С‹
-	public void EnterState(CharacterState character)
-    {
+	private HealthPlayer _playerHP;
+	private PlayerMove _targetMove;
+	private float _duration;
+	private float _baseDuration;
+	private float _damageToExit;
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+	{
 		type = StateType.Magic;
+		effects.Add(StatusEffect.Move);
+		effects.Add(StatusEffect.AbilitySpeed);
 		Debug.Log("Entering Frosting State");
-        _characterState = character;
-        _targetMove = _characterState.PlayerMove;
+		_characterState = character;
+		_targetMove = _characterState.PlayerLinks.PlayerMove;
+		if (damageToExit == 0)
+		{
+			_damageToExit = 10000;
+		}
+		else
+		{
+			_damageToExit = damageToExit;
+		}
+		_duration = durationToExit;
+		_baseDuration = durationToExit;
+		_playerHP = _characterState.PlayerLinks.HealthPlayer;
 
-        _targetMove.CanMove = false;
-        //decrease speed of attact
-        _componentHp = _characterState.ComponentHealth;
-        //РљР°РєРѕР№ РґР°РјР°Рі РїРѕР»СѓС‡Р°РµРј? С„РёР·РёС‡РµСЃРєРёР№ РёР»Рё РјР°РіРёС‡РµСЃРєРёР№
-        _componentHp.TakePhisicDamage(10 + _characterState.energy.Value / 4);
-        _componentHp.sumDamageTaken = 0;
-        _duration = _characterState.durationToExit;
+		_targetMove.CanMove = false;
+		//decrease speed of attact
+		//_playerHP.TakePhisicDamage(10 + _characterState.energy.Value / 4);
+		//_playerHP.TakeDamage(10 + _characterState.energy.Value / 4, DamageType.Physical);
+		_playerHP.sumDamageTaken = 0;
 
-		_characterState.energy.Use(_characterState.energy.Value);
-    }
+		//_characterState.energy.Use(_characterState.energy.Value);
+	}
 
-	public void UpdateState()
+	public override void UpdateState()
 	{
 		_duration -= Time.deltaTime;
-		if (_componentHp.sumDamageTaken >= 30 || _duration < 0 || turnOff)
+		if (_playerHP.sumDamageTaken >= _damageToExit || _duration < 0 || turnOff)
 		{
 			ExitState();
 		}
 	}
 
-	public void ExitState()
+	public override void ExitState()
 	{
-		Debug.Log("Exiting Frozen State");
-		_targetMove.CanMove = true;
-        //return speed of attact
+		Debug.Log("Exiting Frosting State");
+		if (_characterState.Check(StatusEffect.Move))
+		{
+			_targetMove.CanMove = true;
+		}
+		if (_characterState.Check(StatusEffect.AbilitySpeed))
+		{
+			//return speed of attact
+		}
 		_characterState.RemoveState(this);
+	}
+	public override bool Stack(float time)
+	{
+		_duration = _baseDuration;
+		return false;
 	}
 }
 
-// РљР»Р°СЃСЃ РїРµСЂСЃРѕРЅР°Р¶Р°, РёСЃРїРѕР»СЊР·СѓСЋС‰РёР№ СЃРѕСЃС‚РѕСЏРЅРёСЏ
+// Класс персонажа, использующий состояния
 public class CharacterState : MonoBehaviour
 {
-    private HealthComponent _componentHealth;
-    private MoveComponent _playerMove;
-    [HideInInspector] public HealthComponent ComponentHealth => _componentHealth;
-    [HideInInspector] public MoveComponent PlayerMove => _playerMove;
-    
-    [HideInInspector] public StaminaComponent energy;//person who shoted
-	[HideInInspector] public float durationToExit;//duration of state
-    [HideInInspector] public float damageToExit; // damaege needed to exit
+	public PlayerLinks PlayerLinks => _links;
+	public SelectObject Select;
 
-    [SerializeField] private List<ICharacterState> currentStates = new List<ICharacterState>();
+	[SerializeField] private PlayerLinks _links;
+	//[SerializeField] private StateIcons _icons;
+	[SerializeField] private List<AbstractCharacterState> currentStates = new List<AbstractCharacterState>();
 
-	public void Initialize(HealthComponent componentHealth, MoveComponent playerMove , StaminaComponent energyComponent)
-    {
-        _componentHealth = componentHealth;
-        _playerMove = playerMove;
-        energy = energyComponent;
-        if (_componentHealth == null || _playerMove == null)
-        {
-            Debug.LogError("No required component in " + gameObject.name);
-        }
+	private void Start()
+	{
+		if (Select == null || _links.HealthPlayer == null || _links.PlayerMove == null || _links == null)
+		{
+			Debug.LogError("No required component in " + gameObject.name);
+		}
 	}
 
 	private void Update()
-    {
-        // РћР±РЅРѕРІР»РµРЅРёРµ С‚РµРєСѓС‰РµРіРѕ СЃРѕСЃС‚РѕСЏРЅРёСЏ
-        if (currentStates.Count > 0)
-        {
-            for (int i = 0; i < currentStates.Count; i++) 
-            {
-                currentStates[i].UpdateState();
-            }
-        }
-    }
+	{
+		// Обновление текущего состояния
+		if (currentStates.Count > 0)
+		{
+			for (int i = 0; i < currentStates.Count; i++)
+			{
+				currentStates[i].UpdateState();
+			}
+		}
+	}
 
-    public void AddState(ICharacterState newState)
-    {
-        // РїРµСЂРµРґРµР»Р°С‚СЊ РїРѕРґ Р»РёСЃС‚
-        //if already has, reset???
+	public void AddState(AbstractCharacterState newState, States state)
+	{
+		// переделать под лист
+		//if already has, reset???
 
-        // Р’С…РѕРґ РІ РЅРѕРІРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
-        currentStates.Add(newState);
-        currentStates[currentStates.Count - 1].EnterState(this);
-    }
+		// Вход в новое состояние
+		currentStates.Add(newState);
+		currentStates[currentStates.Count - 1].EnterState(this, 0, 0);
+	}
+	public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state)
+	{
+		//if already exist 
+		if (currentStates.Contains(newState))
+		{
+			foreach (AbstractCharacterState item in currentStates)
+			{
+				if (item.Stack(duration))
+				{
+					_links.StateIcons.ActivateIco(state, duration, 1);
+				}
+				else
+				{
+					//nothing at this time??
+				}
+			}
+		}
+		else
+		{
+			_links.StateIcons.ActivateIco(state, duration, 1);
+			currentStates.Add(newState);
+			//currentStates[currentStates.Count - 1].
+			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
+		}
+	}
+	public bool IfHasState(AbstractCharacterState newState)
+	{
+		if (currentStates.Contains(newState))
+		{
+			return true;
+		}
+		else return false;
+	}
 
-    public bool IfHasState(ICharacterState newState) 
-    {
-        if(currentStates.Contains(newState))
-        {
-            return true;
-        }
-        else return false;
+	public void RemoveState(AbstractCharacterState newState)
+	{
+		//newState.ExitState(this);
+		currentStates.Remove(newState);
+	}
 
-    }
+	public void Dispel(StateType type)
+	{
+		foreach (AbstractCharacterState state in currentStates)
+		{
+			if (state.type == type)
+			{
+				state.ExitState();
+			}
+		}
+	}
+	/* public AbilityManager GetAbilityManager()
+     {
+         if( _abilityManager == null ) 
+         {
+             Debug.LogError("No ability manager!");
+             return null;
+         }
+         return _abilityManager;
+     }*/
 
-	public void RemoveState(ICharacterState newState) 
-    {
-        //newState.ExitState(this);
-        currentStates.Remove(newState);
-    }
-
-    public void Dispel(StateType type)
-    {
-        foreach(AbstractCharacterState state in currentStates)
-        {
-            if(state.type == type)
-            {
-                state.ExitState();
-            }
-        }
-    }
-   /* public AbilityManager GetAbilityManager()
-    {
-        if( _abilityManager == null ) 
-        {
-            Debug.LogError("No ability manager!");
-            return null;
-        }
-        return _abilityManager;
-    }*/
+	public bool Check(StatusEffect effect)
+	{
+		foreach (AbstractCharacterState state in currentStates)
+		{
+			if (state.effects.Contains(effect))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
 }
 
 public enum StateType
 {
-    Physical,
-    Magic,
-    Third
+	Physical,
+	Magic,
+	Third
+}
+
+public enum StatusEffect
+{
+	Move,
+	Ability,
+	AbilitySpeed,
+	Others
 }
