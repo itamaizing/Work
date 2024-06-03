@@ -87,7 +87,7 @@ public class IcePuddle : Ability
 	private void Shoot()
 	{
 		//IcePuddleObject puddle = Instantiate(_puddle, _spawnPoint.transform.position, Quaternion.Euler(_croosFire.transform.rotation.x, _croosFire.transform.rotation.y, _croosFire.transform.rotation.z));
-		IcePuddleObject puddle = Instantiate(_puddle, _preViewPuddle.transform.position, Quaternion.Euler(0, 0, _angle2));
+		IcePuddleObject puddle = Instantiate(_puddle, _preViewPuddle.transform.position, Quaternion.Euler(0, 0, _preViewPuddle.transform.rotation.z));
 		puddle.dad = _playerLinks.gameObject;
 		puddle.energyPlayer = (EnergyPlayer)Mana;
 		puddle.healthPlayer = _playerLinks.HealthPlayer;
