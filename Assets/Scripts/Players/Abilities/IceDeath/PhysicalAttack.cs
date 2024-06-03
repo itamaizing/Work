@@ -11,15 +11,15 @@ public class PhysicalAttack : Ability
 {
 	[SerializeField] private float _damage = 8f;
 	[SerializeField] private float _abilityCooldown = 1.4f;
-	[SerializeField] private float _cooldownTimer = 1.4f;
 	[SerializeField] private PlayerLinks _dad;
+	private float _cooldownTimer = 1.4f;
 	private int _hitInARow = 0;
 	private float _multiplySpeed = .05f;
 	private HealthPlayer _target;
 	private float _timer = 2f;
 	private float _baseTimer = 2f;
 	private bool _isInTheRow = false;
-	[SerializeField] private bool _isReadyToShot = true;
+	private bool _isReadyToShot = true;
 
 	private void Update()
 	{
