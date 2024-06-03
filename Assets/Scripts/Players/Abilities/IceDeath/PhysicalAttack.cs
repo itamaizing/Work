@@ -82,6 +82,7 @@ public class PhysicalAttack : Ability
 			_timer = _baseTimer;
 			_hitInARow = 0;
 			_multiplySpeed = .05f;
+			
 			enemy.TakeDamage(_damage + Random.Range(0, 2), DamageType.Physical);
 		}
 	}
@@ -110,7 +111,7 @@ public class PhysicalAttack : Ability
 		else
 		{
 			_isReadyToShot = true;
-			_cooldownTimer = _abilityCooldown;
+			_cooldownTimer = _abilityCooldown * (1 - _multiplySpeed);
 		}
 		if (_isInTheRow)
 		{
