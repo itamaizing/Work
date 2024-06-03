@@ -86,6 +86,7 @@ public class Energy : StaminaComponent
 	{
 		float usedEnergy = _value;
 		_value -= usedEnergy;
+		Bar.transform.localScale = new Vector3(0, 1.0f, 1.0f);
 		return usedEnergy;
 	}
 }
