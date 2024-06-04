@@ -16,11 +16,11 @@ public class PhysicalAttack : Ability
 	[SerializeField] private float _abilityCooldown = 1.4f; //cooldown between shots
 	[SerializeField] private LayerMask _obstacleLayerMask;
 	private float _cooldownTimer = 1.4f;
-	[SerializeField] private int _hitInARow = 0;
+	private int _hitInARow = 0;
 	private float _multiplySpeed = .05f;
 	private bool _isInTheRow = false;
 	private float _baseTimer = 2f; //time and timer between losing streak
-	[SerializeField] private float _timer = 2f;
+	private float _timer = 2f;
 	private bool _isReadyToShot = true;
 	private PlayerLinks _target;
 	private Vector2 _jumpPos;
