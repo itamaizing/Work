@@ -8,6 +8,7 @@ public abstract class AutoAttackAbility : TargetAbility
     [SerializeField] protected float _attackSpeed = 1f;
 
     private Coroutine _autoAttackJob;
+    private bool _isAttacking = false;
 
     public void Pause()
     {
@@ -16,6 +17,7 @@ public abstract class AutoAttackAbility : TargetAbility
             StopCoroutine(_autoAttackJob);
             _autoAttackJob = null;
         }
+        _isAttacking = false;
     }
 
     public void Continue()
@@ -35,11 +37,13 @@ public abstract class AutoAttackAbility : TargetAbility
             StopCoroutine(_autoAttackJob);
             _autoAttackJob = null;
         }
+        IsUsed = false;
+        _isAttacking = false;
     }
 
     protected override IEnumerator UseCoroutine()
     {
-        yield return _chooseTatgetJob = StartCoroutine(ChooseTatgetCoroutine(Radius));
+        yield return _chooseTatgetJob = StartCoroutine(ChooseTatgetCoroutine(Radius + 99));
         yield return _autoAttackJob = StartCoroutine(AutoAttackCoroutine());
     }
 
@@ -47,12 +51,22 @@ public abstract class AutoAttackAbility : TargetAbility
     {
         while (Target != null)
         {
-            if (IsTargetInRadius(Radius))
+            if (IsTargetInRadius(Radius + _attackZoneSize))
             {
-                yield return new WaitForSeconds(_attackSpeed);
-                if (IsTargetInRadius(Radius + _attackZoneSize))
-                PayCost();
-                CastAction();
+                if(IsTargetInRadius(Radius))
+                    _isAttacking = true;
+                
+                if (_isAttacking)
+                {
+                    yield return new WaitForSeconds(_attackSpeed);
+                    PayCost();
+                    IsUsed = true;
+                    CastAction();
+                }
+            }
+            else
+            {
+                _isAttacking = false;
             }
             yield return null;
         }

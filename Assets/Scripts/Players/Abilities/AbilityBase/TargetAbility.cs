@@ -9,10 +9,10 @@ public abstract class TargetAbility : Ability
     protected Coroutine _useJob;
     protected Coroutine _castJob;
     protected Coroutine _chooseTatgetJob;
-    private Character _target = null;
+    private Character _target;
 
-    public bool IsTarget => (_target.transform == _character.transform);
-    public Character Target => _target;
+    protected bool IsTarget => (_target.transform == _character.transform);
+    protected Character Target => _target;
 
     protected abstract void CastAction();
 
@@ -78,7 +78,6 @@ public abstract class TargetAbility : Ability
     {
         yield return _chooseTatgetJob = StartCoroutine(ChooseTatgetCoroutine(Radius));
         yield return GetCastDeleyCoroutine();
-        PayCost();
         CastAction();
     }
 

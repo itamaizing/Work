@@ -34,7 +34,7 @@ public abstract class Ability : MonoBehaviour
     protected HealthPlayer _health;
     protected bool _isUsed = false;
     protected bool _isCanCancle = true;
-    protected bool _isReady = false;
+    protected bool _isReady = true;
     protected int _currentChargers;
     protected Coroutine _rechargeJob;
     protected Coroutine _streamingJob;
@@ -91,6 +91,7 @@ public abstract class Ability : MonoBehaviour
         _playerMove = character.Move;
         _mana = character.Stamina;
         _health = character.Health;
+        _character = character;
     }
 
     public virtual bool TryCancel()

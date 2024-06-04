@@ -13,6 +13,6 @@ public class StandartAutoAttack : AutoAttackAbility
 
     protected override void CastAction()
     {
-        Target.Health.TryTakeDamage(_damage, DamageType.Physical, AttackRangeType.MeleeAttack);
+        Target.Health.TakeDamage(_damage, DamageType.Physical);
     }
 }
