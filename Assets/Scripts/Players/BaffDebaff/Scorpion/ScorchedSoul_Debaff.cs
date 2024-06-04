@@ -28,7 +28,7 @@ public class ScorchedSoul_Debaff : BaseEffect
         _currentStacks--;
     }
 
-    public void DealDamage(HealthPlayer targetHealth)
+    public void DealDamage(HealthComponent targetHealth)
     {
         targetHealth.TryTakeDamage(_damageValue, _damageType, _attackRangeType);
     }

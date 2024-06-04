@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class IceShadowObject : MonoBehaviour
 {
 	[HideInInspector] public GameObject dad;
-	[HideInInspector] public EnergyPlayer energyPlayer;
-	[HideInInspector] public HealthPlayer healthPlayer;
+	[FormerlySerializedAs("energyPlayer")] [HideInInspector] public Energy energy;
+	[FormerlySerializedAs("healthPlayer")] [HideInInspector] public HealthComponent healthComponent;
 	[HideInInspector] public float timeToDestroy = 2;
 	[HideInInspector] public float timeToDestroyAlive = 10;
 
@@ -22,17 +23,17 @@ public class IceShadowObject : MonoBehaviour
 	 * */
 	private void Start()
 	{
-		float timeToAdd = energyPlayer.Value / 20;
+		float timeToAdd = energy.Value / 20;
 		timeToDestroy += timeToAdd;
-		energyPlayer.UseAllEnergy();
+		energy.UseAllEnergy();
 		_destroyObj = StartCoroutine(DestroyShadow());
 	}
 
 	private void OnTriggerExit2D(Collider2D collision)
 	{
-		if (collision.gameObject == dad && healthPlayer != null)
+		if (collision.gameObject == dad && healthComponent != null)
 		{
-			healthPlayer.SetBoostRegen(0);
+			healthComponent.SetBoostRegen(0);
 			return;
 		}
 	}
@@ -40,16 +41,16 @@ public class IceShadowObject : MonoBehaviour
 	{
 		if (collision.gameObject == dad)
 		{
-			healthPlayer.SetBoostRegen(0.01f);
+			healthComponent.SetBoostRegen(0.01f);
 		}
-		if (collision.TryGetComponent<Character>(out var target) && energyPlayer != null && collision.gameObject !=dad)
+		if (collision.TryGetComponent<Character>(out var target) && energy != null && collision.gameObject !=dad)
 		{
-			float duration = 2 + energyPlayer.Value / 20;
-			//target.CharacterState.energy = energyPlayer;
-			energyPlayer.UseAllEnergy();
+			float duration = 2 + energy.Value / 20;
+			//target.CharacterState.energy = energy;
+			energy.UseAllEnergy();
 
 			target.CharacterState.AddState(new FrozenState());
-			energyPlayer.Use(energyPlayer.Value);
+			energy.Use(energy.Value);
 			GetComponent<Collider2D>().enabled = false;
 			Destroy(gameObject);
 		}
@@ -63,7 +64,7 @@ public class IceShadowObject : MonoBehaviour
 			GameObject hitEffect = Instantiate(_hitEffect, transform.position, Quaternion.identity);
 			Destroy(hitEffect, 5f);
 		}
-		healthPlayer.SetBoostRegen(0);
+		healthComponent.SetBoostRegen(0);
 		Destroy(gameObject);
 	}
 

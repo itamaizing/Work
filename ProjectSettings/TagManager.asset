@@ -22,8 +22,8 @@ TagManager:
   - UI
   - Markers
   - Obstecls
-  - Chatacter
-  - OtherPlayers
+  - Enemy
+  - Allies
   - InvisiblePlayer
   - ControlledObjects
   - 

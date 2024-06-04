@@ -28,9 +28,9 @@ public abstract class Ability : MonoBehaviour
     [SerializeField] protected float _manaCostRate;
     [SerializeField] protected float _manaCostPerTick;
 
-	protected PlayerStamina _mana;
-	protected PlayerMove _playerMove;
-	protected HealthPlayer _health;
+	protected StaminaComponent _mana;
+	protected MoveComponent _playerMove;
+	protected HealthComponent _health;
 	protected bool _isUsed = false;
 	protected bool _isCanCancle = true;
 	protected bool _isReady = false;
@@ -40,9 +40,9 @@ public abstract class Ability : MonoBehaviour
 	protected Coroutine _castDeleyJob;
 	protected Coroutine _cooldownJob;
 
-    public PlayerMove PlayerMove => _playerMove;
-    public PlayerStamina Mana => _mana;
-    public HealthPlayer Health => _health;
+    public MoveComponent PlayerMove => _playerMove;
+    public StaminaComponent Mana => _mana;
+    public HealthComponent Health => _health;
     public string Name => _abilityInfo.Name;
     public string Description => _abilityInfo.Description;
     public Sprite Icon => _abilityInfo.Icon;
@@ -85,7 +85,7 @@ public abstract class Ability : MonoBehaviour
         }
     }
 
-    public void SetPlayer(PlayerMove playerMove, PlayerStamina mana, HealthPlayer health)
+    public void SetPlayer(MoveComponent playerMove, StaminaComponent mana, HealthComponent health)
     {
         _playerMove = playerMove;
         _mana = mana;

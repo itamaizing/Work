@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 // Интерфейс состояния
 public interface ICharacterState
@@ -33,7 +31,6 @@ public class InvisibleState : ICharacterState
 {
 	private CharacterState _characterState;
 	private Renderer[] childRenderers;
-    private SelectObject _select;
     private GameObject _player;
 
     private List<GameObject> _enemies = new List<GameObject>();
@@ -45,7 +42,6 @@ public class InvisibleState : ICharacterState
     {
         Debug.Log("Entering Invisible State");
         _characterState = character;
-        _select = character.SelectObject;
         _player = character.gameObject;
     }
 
@@ -55,7 +51,7 @@ public class InvisibleState : ICharacterState
 
         childRenderers = _characterState.GetComponentsInChildren<Renderer>();
         
-        if (_select.SelectedObject.CompareTag("Enemies") && _characterState.gameObject.CompareTag("Allies") ||
+        /*if (_select.SelectedObject.CompareTag("Enemies") && _characterState.gameObject.CompareTag("Allies") ||
             _select.SelectedObject.CompareTag("Allies") && _characterState.gameObject.CompareTag("Enemies"))
         {
 
@@ -77,9 +73,9 @@ public class InvisibleState : ICharacterState
                     renderer.enabled = true;
                 }
             }
-        }
+        }*/
 
-        if (_player.GetComponent<PlayerMove>().IsMoving)
+        if (_player.GetComponent<MoveComponent>().IsMoving)
         {
             CheckEnemies();
             //Раз в секунду проверяем дистанцию и шанс быть увиденным
@@ -104,7 +100,7 @@ public class InvisibleState : ICharacterState
             if (collider.CompareTag(enemiesTag))
             {
                 //Направление врага
-                Vector2 enemyMovementDirection = collider.GetComponent<PlayerMove>().MoveDirection * radius;
+                Vector2 enemyMovementDirection = collider.GetComponent<MoveComponent>().MoveDirection * radius;
 
                 // Вектор от врага до плеера
                 Vector2 playerToEnemy = _player.transform.position - collider.transform.position;
@@ -124,7 +120,7 @@ public class InvisibleState : ICharacterState
     {
         foreach(GameObject enemy in _enemies)
         {
-            Vector2 enemyMovementDirection = enemy.GetComponent<PlayerMove>().MoveDirection;
+            Vector2 enemyMovementDirection = enemy.GetComponent<MoveComponent>().MoveDirection;
             Vector2 playerToEnemy = _player.transform.position - enemy.transform.position;
 
             // Находим перпендикулярный вектор к вектору направления врага и его длину
@@ -194,7 +190,7 @@ public class StunnedState : ICharacterState
     public bool turnOff = false;
 
     private CharacterState _characterState;
-    public PlayerMove _playerMove;
+    public MoveComponent _playerMove;
     private float _duration;
     public void EnterState(CharacterState character)
     {
@@ -263,8 +259,8 @@ public class FrozenState : ICharacterState
 	public bool turnOff = false;
 
 	private CharacterState _characterState;
-	private HealthPlayer _playerHP;
-    private PlayerMove _playerMove;
+	private HealthComponent _componentHp;
+    private MoveComponent _playerMove;
     private float _duration;
 	public void EnterState(CharacterState character)
     {
@@ -274,9 +270,9 @@ public class FrozenState : ICharacterState
         _playerMove.CanMove = false;
         //character.GetAbilityManager().ToggleAbility(false);//turn off abilities
 
-        _playerHP = _characterState.PlayerHealth;
-        _playerHP.TakePhisicDamage(10 + _characterState.energy.Value / 4);
-        _playerHP.sumDamageTaken = 0;
+        _componentHp = _characterState.ComponentHealth;
+        _componentHp.TakePhisicDamage(10 + _characterState.energy.Value / 4);
+        _componentHp.sumDamageTaken = 0;
         //_duration = character.durationToExit;
         _duration = 2 + _characterState.energy.Value / 20; //тут мана того кто стрелял
 
@@ -287,7 +283,7 @@ public class FrozenState : ICharacterState
     public void UpdateState()
 	{
 		_duration -= Time.deltaTime;
-		if (_playerHP.sumDamageTaken >= 30 || _duration < 0 || turnOff)
+		if (_componentHp.sumDamageTaken >= 30 || _duration < 0 || turnOff)
         {
 			ExitState();
 		}
@@ -310,8 +306,8 @@ public class FrostingState : ICharacterState
 	public bool turnOff = false;
 
 	private CharacterState _characterState;
-	private HealthPlayer _playerHP;
-	private PlayerMove _targetMove;
+	private HealthComponent _componentHp;
+	private MoveComponent _targetMove;
 	private float _duration; //переделать под разные спелы
 	public void EnterState(CharacterState character)
     {
@@ -321,10 +317,10 @@ public class FrostingState : ICharacterState
 
         _targetMove.CanMove = false;
         //decrease speed of attact
-        _playerHP = _characterState.PlayerHealth;
+        _componentHp = _characterState.ComponentHealth;
         //Какой дамаг получаем? физический или магический
-        _playerHP.TakePhisicDamage(10 + _characterState.energy.Value / 4);
-        _playerHP.sumDamageTaken = 0;
+        _componentHp.TakePhisicDamage(10 + _characterState.energy.Value / 4);
+        _componentHp.sumDamageTaken = 0;
         _duration = _characterState.durationToExit;
 
 		_characterState.energy.Use(_characterState.energy.Value);
@@ -333,7 +329,7 @@ public class FrostingState : ICharacterState
 	public void UpdateState()
 	{
 		_duration -= Time.deltaTime;
-		if (_playerHP.sumDamageTaken >= 30 || _duration < 0 || turnOff)
+		if (_componentHp.sumDamageTaken >= 30 || _duration < 0 || turnOff)
 		{
 			ExitState();
 		}
@@ -351,26 +347,23 @@ public class FrostingState : ICharacterState
 // Класс персонажа, использующий состояния
 public class CharacterState : MonoBehaviour
 {
-    private SelectObject _selectObject;    
-    private HealthPlayer _playerHealth;
-    private PlayerMove _playerMove;
-
-    [HideInInspector] public SelectObject SelectObject => _selectObject;
-    [HideInInspector] public HealthPlayer PlayerHealth => _playerHealth;
-    [HideInInspector] public PlayerMove PlayerMove => _playerMove;
+    private HealthComponent _componentHealth;
+    private MoveComponent _playerMove;
+    [HideInInspector] public HealthComponent ComponentHealth => _componentHealth;
+    [HideInInspector] public MoveComponent PlayerMove => _playerMove;
     
-    [HideInInspector] public PlayerStamina energy;//person who shoted
+    [HideInInspector] public StaminaComponent energy;//person who shoted
 	[HideInInspector] public float durationToExit;//duration of state
     [HideInInspector] public float damageToExit; // damaege needed to exit
 
     [SerializeField] private List<ICharacterState> currentStates = new List<ICharacterState>();
 
-	public void Initialize(HealthPlayer playerHealth, PlayerMove playerMove)
+	public void Initialize(HealthComponent componentHealth, MoveComponent playerMove , StaminaComponent energyComponent)
     {
-        _selectObject = SelectObject.Instance;
-        _playerHealth = playerHealth;
+        _componentHealth = componentHealth;
         _playerMove = playerMove;
-        if (_selectObject == null || _playerHealth == null || _playerMove == null)
+        energy = energyComponent;
+        if (_componentHealth == null || _playerMove == null)
         {
             Debug.LogError("No required component in " + gameObject.name);
         }

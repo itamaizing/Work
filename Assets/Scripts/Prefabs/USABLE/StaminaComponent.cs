@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-public abstract class PlayerStamina : MonoBehaviour
+public abstract class StaminaComponent : MonoBehaviour
 {
 	public Bar bar;
 	public float Value { get { return _value; } }

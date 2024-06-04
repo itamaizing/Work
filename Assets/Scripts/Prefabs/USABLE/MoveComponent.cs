@@ -1,9 +1,10 @@
 using UnityEngine;
 
-public class PlayerMove : MonoBehaviour
+public class MoveComponent : MonoBehaviour
 {
 	private float _moveSpeed;
     private Rigidbody2D _rigidbody;
+    private SelectComponent _selectComponent;
 
     [HideInInspector] public bool CanMove;
 	[HideInInspector] public bool IsMoving;
@@ -11,6 +12,8 @@ public class PlayerMove : MonoBehaviour
 	[HideInInspector] public Vector2 MoveDirection;
 
 	private float _defaultSpeed;
+
+	private bool isInitialize = false;
 
     public void Initialize(float speed , Rigidbody2D rb)
 	{
@@ -21,7 +24,10 @@ public class PlayerMove : MonoBehaviour
 		_rigidbody.isKinematic = true;
 
 		MoveDirection = Vector2.down;
+
+		_selectComponent = GetComponent<SelectComponent>();
 		CanMove = true;
+		isInitialize = true;
 	}
 
 	public void ChangeMoveSpeed(float value)
@@ -38,7 +44,7 @@ public class PlayerMove : MonoBehaviour
 	}
 	void FixedUpdate()
 	{
-		if (!CanMove)
+		if (!CanMove||!_selectComponent.IsSelect)
 		{
             _rigidbody.velocity = Vector2.zero;
             return;

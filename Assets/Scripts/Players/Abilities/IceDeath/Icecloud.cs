@@ -7,14 +7,14 @@ public class Icecloud : Ability
 {
 	[SerializeField] private IceCloudProjectile _projectile;
 	[SerializeField] private Character _playerLinks;
-	//[SerializeField] private RunePlayer _rune;
+	//[SerializeField] private RuneComponent _rune;
 	//[SerializeField] private Rigidbody2D _rb;
 
 	private Vector2 _mousePos;
 	protected override void Cast()
 	{
 		PayCost();
-		if(_playerLinks.RunePlayer.RemoveRune(1, this)) 
+		if(_playerLinks.RuneComponent.RemoveRune(1, this)) 
 		{
 			Shoot();
 		}

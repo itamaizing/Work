@@ -19,7 +19,7 @@ MonoBehaviour:
   _health: 333
   _healthInfo: {fileID: 11400000, guid: 4204d0c51aaeb214db9ca63d16aa4aa8, type: 2}
   _stamina: 333
-  _moveSpeed: 5
+  _moveSpeed: 250
   _defaultHealthRegen: 70
   _defaultStaminaRegen: 2
   _defaultRegenDelay: 2

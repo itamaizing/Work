@@ -1,28 +1,25 @@
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 public class UIPlayerComponents : MonoBehaviour
 {
-    public SelectedCircle CircleSelect;
-
-    public MinimapMarker MarkersSelect;
-
-    private List<AbilityToggle> AbilitiesOnTargetToggles;
+    [SerializeField] private SelectedCircle CircleSelect;
+    [SerializeField] private MinimapMarker MarkersSelect;
     
     public Transform DamageSpawn;
-    
     public PopupTextPrefab PopupText;
     private PopupTextPrefab popupTextPrefab;
-
-    public void Initialize(PlayerAbilities playerAbilities,PlayerMove playerMove,PlayerStamina stamina , HealthPlayer healthPlayer)
+    
+    public void Initialize(PlayerAbilities playerAbilities,MoveComponent playerMove,StaminaComponent staminaComponent , HealthComponent healthComponent)
     {
-        ChangeSelection(true);
-        playerAbilities.Initialize(playerMove, stamina, healthPlayer);
+        ChangeSelection(false);
+        if(playerAbilities==null) return;
+        playerAbilities.Initialize(playerMove, staminaComponent, healthComponent);
     }
     
     public void ChangeSelection(bool isSelect)
     {
+        GetComponent<SelectComponent>().IsSelect = isSelect;
         CircleSelect.IsActive = isSelect;
         MarkersSelect.IsActive = isSelect;
     }

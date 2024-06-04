@@ -80,7 +80,7 @@ public class HealthRecovery : BaseEffect
     private void AddTick()
     {
         _ticksCount = Player.GetComponentInChildren<FourRangeRecovery>().CheckSpriritStacks(true);
-        HealthPlayer hp = transform.parent.GetComponent<HealthPlayer>();
+        HealthComponent hp = transform.parent.GetComponent<HealthComponent>();
 
         if (transform.parent.GetComponentInChildren<DamageAbsorption>() != null)
         {
@@ -96,7 +96,7 @@ public class HealthRecovery : BaseEffect
             _recHealth = realHeal;
         }
         if (_ticksCount > 0)
-        Player.GetComponent<ManaPlayer>().Add(_recHealth * _ticksCount * 0.1f);*/
+        Player.GetComponent<Mana>().Add(_recHealth * _ticksCount * 0.1f);*/
     }
 
     private IEnumerator Cooldown()
@@ -104,7 +104,7 @@ public class HealthRecovery : BaseEffect
         isRecovery = false;
         yield return new WaitForSeconds(_recCooldown);
         AddTick();
-        transform.parent.GetComponent<HealthPlayer>().AddHeal(_recHealth);
+        transform.parent.GetComponent<HealthComponent>().AddHeal(_recHealth);
         FourthBaffEvent?.Invoke(_recHealth);
         isRecovery = true;
 

@@ -13,8 +13,8 @@ public class Cocoon : MonoBehaviour
 
     void Start()
     {
-        GetComponent<HealthPlayer>().OnTakePhisicDamage += DamageEvasion;
-        GetComponent<HealthPlayer>().OnTakeMagicDamage += DamageEvasion;
+        GetComponent<HealthComponent>().OnTakePhisicDamage += DamageEvasion;
+        GetComponent<HealthComponent>().OnTakeMagicDamage += DamageEvasion;
 
     }
 
@@ -34,7 +34,7 @@ public class Cocoon : MonoBehaviour
         }
     }
 
-    private void DamageEvasion(HealthPlayer.DamageInfo damageInfo)
+    private void DamageEvasion(HealthComponent.DamageInfo damageInfo)
     {
         damageInfo.ModifiedDamage -= damageInfo.ModifiedDamage * _evasionAttack;
     }

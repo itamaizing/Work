@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RunePlayer : PlayerStamina
+public class RuneComponent : StaminaComponent
 {
 	private Ability _lastUsedAbility = null;
 	private int _multiplier = 1;

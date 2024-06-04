@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static HealthPlayer;
+using static HealthComponent;
 
 public class PsionicaMelee : MonoBehaviour
 {
@@ -24,7 +24,7 @@ public class PsionicaMelee : MonoBehaviour
     {
         UpdateManaBars();
 
-        text.text = "Псионика: " + Psionica.ToString();
+        text.text = "РџСЃРёРѕРЅРёРєР°: " + Psionica.ToString();
 
         if (isTimerActive)
         {
@@ -39,7 +39,7 @@ public class PsionicaMelee : MonoBehaviour
 
     private void UpdateManaBars()
     {
-        //float health = GetComponent<HealthPlayer>()._currentHealth;
+        //float health = GetComponent<HealthComponent>()._currentHealth;
 
         if (Psionica <= 30f)
         {
@@ -72,7 +72,7 @@ public class PsionicaMelee : MonoBehaviour
         isTimerActive = true;
 
         Psionica += damageValue;
-        //float health = GetComponent<HealthPlayer>()._currentHealth;
+        //float health = GetComponent<HealthComponent>()._currentHealth;
         //Psionica = Mathf.Min(Psionica, health);
     }
 

@@ -19,7 +19,7 @@ public class DeathSpiral : Ability
 	{
 		Debug.Log("try");
 		PayCost();
-		if(_playerLinks.RunePlayer.RemoveRune(2, this))
+		if(_playerLinks.RuneComponent.RemoveRune(2, this))
 			Shoot();
 		Debug.Log("shoot");
 
@@ -33,10 +33,10 @@ public class DeathSpiral : Ability
 		projectile.dad = _playerLinks.Rb.gameObject;
 	}
 
-	//переделать!!!!!
+	//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!!!!!
 	/*protected override void PayCost()
 	{
-	//руны тоже
+	//пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
 		if (Mana.Value >= _manaCost && _isReady && _playerLinks.RunePlayer.RemoveRune(2, this))
 		{
 			Mana.Use(_manaCost);

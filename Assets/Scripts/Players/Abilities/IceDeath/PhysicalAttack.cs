@@ -14,7 +14,7 @@ public class PhysicalAttack : Ability
 	[SerializeField] private Character _dad;
 	private int _hitInARow = 0;
 	private float _multiplySpeed = .05f;
-	private HealthPlayer _target;
+	private HealthComponent _target;
 	private float _timer = 1f;
 	private float _baseTimer = 1f;
 	private bool _isInTheRow = false;
@@ -51,7 +51,7 @@ public class PhysicalAttack : Ability
 		}
 	}
 
-	private void Hit(HealthPlayer enemy)
+	private void Hit(HealthComponent enemy)
 	{
 		if(_target == enemy && _dad.Stamina.Use(5))
 		{

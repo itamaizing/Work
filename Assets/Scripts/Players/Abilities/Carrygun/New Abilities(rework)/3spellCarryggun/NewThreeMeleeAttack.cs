@@ -28,7 +28,7 @@ public class NewThreeMeleeAttack : Ability
     private float timePassed = 0f;
 
 
-    private void Start() // временный костыль
+    private void Start() // РІСЂРµРјРµРЅРЅС‹Р№ РєРѕСЃС‚С‹Р»СЊ
     {
         _player = transform.parent.gameObject;
     }
@@ -65,7 +65,7 @@ public class NewThreeMeleeAttack : Ability
     }
     private bool CheckObstacleBetween(Vector3 start, Vector3 end)
     {
-        //Проверка на наличие препятствия
+        //РџСЂРѕРІРµСЂРєР° РЅР° РЅР°Р»РёС‡РёРµ РїСЂРµРїСЏС‚СЃС‚РІРёСЏ
         Vector2 direction = (end - start).normalized;
         float distance = Vector2.Distance(start, end);
         Debug.DrawLine(start, end, Color.white, 2.5f);
@@ -82,7 +82,7 @@ public class NewThreeMeleeAttack : Ability
     private void Jump()
     {
 
-        _player.GetComponent<PlayerMove>().CanMove = false;
+        _player.GetComponent<MoveComponent>().CanMove = false;
 
         if (!_isInitialized)
         {
@@ -149,18 +149,18 @@ public class NewThreeMeleeAttack : Ability
             if (_playerPosition == _targetPosition)
             {
                 Debug.LogWarning("Test1");
-                _target.GetComponent<HealthPlayer>().TryTakeDamage(_damageValue, DamageType.Magical, AttackRangeType.MeleeAttack);
+                _target.GetComponent<HealthComponent>().TryTakeDamage(_damageValue, DamageType.Magical, AttackRangeType.MeleeAttack);
             }
         }
         else
         {
             Debug.LogWarning("Test2");
-            _target.GetComponent<HealthPlayer>().TryTakeDamage(_damageValue, DamageType.Magical, AttackRangeType.MeleeAttack);
+            _target.GetComponent<HealthComponent>().TryTakeDamage(_damageValue, DamageType.Magical, AttackRangeType.MeleeAttack);
         }
     }
     private IEnumerator UseCoroutine()
     {
-        while (_target == null) //выбираем цель
+        while (_target == null) //РІС‹Р±РёСЂР°РµРј С†РµР»СЊ
         {
             if (Input.GetMouseButtonDown(0) && IsMouseInRadius())
             {
@@ -172,7 +172,7 @@ public class NewThreeMeleeAttack : Ability
             }
             yield return null;
         }
-        if(!CheckObstacleBetween(_player.transform.position, _target.transform.position)) // если нет препятсвий прыгаем
+        if(!CheckObstacleBetween(_player.transform.position, _target.transform.position)) // РµСЃР»Рё РЅРµС‚ РїСЂРµРїСЏС‚СЃРІРёР№ РїСЂС‹РіР°РµРј
         {
             timePassed = 0f;
             PlayerMove.CanMove = false;

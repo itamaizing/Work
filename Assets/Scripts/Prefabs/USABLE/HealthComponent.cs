@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class HealthPlayer : MonoBehaviour
+public class HealthComponent : MonoBehaviour
 {
     [SerializeField]
     private HealthBar healthBar;
@@ -381,7 +381,7 @@ public class HealthPlayer : MonoBehaviour
 
         float modifiedDamage = damageInfo.ModifiedDamage;
 
-        target.GetComponent<HealthPlayer>().TakePhisicDamage(modifiedDamage);
+        target.GetComponent<HealthComponent>().TakePhisicDamage(modifiedDamage);
     }
 
     public void MakeMagicDamage(float damageValue, GameObject target)
@@ -399,7 +399,7 @@ public class HealthPlayer : MonoBehaviour
 
         float modifiedDamage = damageInfo.ModifiedDamage;
 
-        target.GetComponent<HealthPlayer>().TakeMagicDamage(modifiedDamage);
+        target.GetComponent<HealthComponent>().TakeMagicDamage(modifiedDamage);
     }
 
     public void AddHeal(float healValue)

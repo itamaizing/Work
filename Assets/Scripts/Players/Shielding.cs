@@ -5,21 +5,21 @@ using UnityEngine;
 [System.Serializable]
 public class Shielding
 {
-    protected HealthPlayer _healthPlayer;
+    protected HealthComponent HealthComponent;
     public DamageType DamageType;
     public float shieldAmount;
 
-    public Shielding(HealthPlayer healthPlayer, float shieldValue, DamageType damageType)
+    public Shielding(HealthComponent healthComponent, float shieldValue, DamageType damageType)
     {
         shieldAmount = shieldValue;
-        _healthPlayer = healthPlayer;
+        HealthComponent = healthComponent;
         DamageType = damageType;
-        AddShieldBehavior(healthPlayer, damageType);
+        AddShieldBehavior(healthComponent, damageType);
     }
 
-    protected void AddShieldBehavior(HealthPlayer healthPlayer, DamageType damageType)
+    protected void AddShieldBehavior(HealthComponent healthComponent, DamageType damageType)
     {
-        healthPlayer.AddShieldBehavior(this, damageType);
+        healthComponent.AddShieldBehavior(this, damageType);
     }
 
 }

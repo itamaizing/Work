@@ -9,13 +9,13 @@ public class IceShadow : Ability
 	[SerializeField] private IceShadowObject _shadow;
 	[SerializeField] private Character _playerLinks;
 	//[SerializeField] private Rigidbody2D _rb;
-	//[SerializeField] private HealthPlayer _healthPlayer;
-	//[SerializeField] private RunePlayer _rune;
+	//[SerializeField] private HealthComponent _healthComponent;
+	//[SerializeField] private RuneComponent _rune;
 
 	protected override void Cast()
 	{
 		PayCost();
-		if (_playerLinks.RunePlayer.RemoveRune(1, this))
+		if (_playerLinks.RuneComponent.RemoveRune(1, this))
 		{
 			Shoot();
 		}
@@ -29,7 +29,7 @@ public class IceShadow : Ability
 	{
 		IceShadowObject projectile = Instantiate(_shadow, gameObject.transform.position, Quaternion.identity);
 		projectile.dad = _playerLinks.gameObject;
-		projectile.energyPlayer = (EnergyPlayer)Mana;
-		projectile.healthPlayer = _playerLinks.Health;
+		projectile.energy = (Energy)Mana;
+		projectile.healthComponent = _playerLinks.Health;
 	}
 }

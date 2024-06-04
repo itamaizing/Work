@@ -33,9 +33,9 @@ public class DarkThreeRangeHeal : AbilityBase
     protected override void HandleToggleAbility()
     {
         base.HandleToggleAbility();
-        // Текущий код в методе Update
+        // РўРµРєСѓС‰РёР№ РєРѕРґ РІ РјРµС‚РѕРґРµ Update
 
-        if (Input.GetMouseButtonDown(0) && Abilities.gameObject.activeSelf && ToggleAbility.enabled && _player.GetComponent<PlayerMove>().IsSelect)
+        if (Input.GetMouseButtonDown(0) && Abilities.gameObject.activeSelf && ToggleAbility.enabled && _player.GetComponent<MoveComponent>().IsSelect)
         {
             HandleLeftMouseButtonToggle();
         }
@@ -43,7 +43,7 @@ public class DarkThreeRangeHeal : AbilityBase
 
     protected override void HandleToggleAbilityOn()
     {
-        // Включенный ToggleAbility
+        // Р’РєР»СЋС‡РµРЅРЅС‹Р№ ToggleAbility
         base.HandleToggleAbilityOn();
 
         if (TargetParent == null)
@@ -71,7 +71,7 @@ public class DarkThreeRangeHeal : AbilityBase
 
     protected override void HandleToggleAbilityOff()
     {
-        // Выключенный ToggleAbility
+        // Р’С‹РєР»СЋС‡РµРЅРЅС‹Р№ ToggleAbility
         base.HandleToggleAbilityOff();
 
         if (_isSelect == false)
@@ -89,7 +89,7 @@ public class DarkThreeRangeHeal : AbilityBase
             StartCoroutine(ToggleDoubleClick());
         }
 
-        else if (AbilityTypeManager.ActiveAbilityType == 1 && _player.GetComponent<PlayerMove>().IsSelect && Abilities.gameObject.activeSelf)
+        else if (AbilityTypeManager.ActiveAbilityType == 1 && _player.GetComponent<MoveComponent>().IsSelect && Abilities.gameObject.activeSelf)
         {
             if (_castCoroutine != null)
             {
@@ -114,7 +114,7 @@ public class DarkThreeRangeHeal : AbilityBase
 
     private void HandleTargetSelection()
     {
-        // Выбор врага
+        // Р’С‹Р±РѕСЂ РІСЂР°РіР°
         _targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(_targetPosition, Vector2.zero);
 
@@ -142,8 +142,8 @@ public class DarkThreeRangeHeal : AbilityBase
     {
         if (TargetParent != null)
         {
-            TargetParent.GetComponent<HealthPlayer>().TakeMagicDamage(35f);
-            _player.GetComponent<ManaPlayer>().Use(30f);
+            TargetParent.GetComponent<HealthComponent>().TakeMagicDamage(35f);
+            _player.GetComponent<Mana>().Use(30f);
 
             DarkThirdAbilityEvent?.Invoke(35f);
             Recharge();
@@ -168,13 +168,13 @@ public class DarkThreeRangeHeal : AbilityBase
                 toggle.enabled = false;
             }
         }
-        _player.GetComponent<PlayerMove>().CanMove = false;
+        _player.GetComponent<MoveComponent>().CanMove = false;
         CreateCastPrefab(castTime);
 
         yield return new WaitForSeconds(castTime);
 
         _castCoroutine = null;
-        _player.GetComponent<PlayerMove>().CanMove = true;
+        _player.GetComponent<MoveComponent>().CanMove = true;
         Select.GetComponent<SelectObject>().CanSelect = true;
 
         Damage();

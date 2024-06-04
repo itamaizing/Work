@@ -9,9 +9,9 @@ public class CleavingBlade_Scorpion : Ability
     [SerializeField] private float _damageValue;
 
     private DrawCircle _circleTarget;
-    private HealthPlayer _target;
+    private HealthComponent _target;
     private Coroutine _useJob;
-    private int _counter = 1; // âðåìåííî âìåñòî áàôà
+    private int _counter = 1; // Ð²Ñ€ÐµÐ¼ÐµÐ½Ð½Ð¾ Ð²Ð¼ÐµÑÑ‚Ð¾ Ð±Ð°Ñ„Ð°
     protected override void Cancel()
     {
         if (_useJob != null)
@@ -58,12 +58,12 @@ public class CleavingBlade_Scorpion : Ability
     {
         _drawCircleSelf.Draw(Radius);
 
-        while (_target == null) //âûáèðàåì öåëü
+        while (_target == null) //Ð²Ñ‹Ð±Ð¸Ñ€Ð°ÐµÐ¼ Ñ†ÐµÐ»ÑŒ
         {
             if (Input.GetMouseButtonDown(0) && IsMouseInRadius())
             {
                 RaycastHit2D[] rayHit = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-                if (rayHit.Length > 0 && rayHit[0].transform.TryGetComponent<HealthPlayer>(out HealthPlayer enemyHealth))
+                if (rayHit.Length > 0 && rayHit[0].transform.TryGetComponent<HealthComponent>(out HealthComponent enemyHealth))
                 {
                     _target = enemyHealth;
                     Debug.LogWarning(_target.name);

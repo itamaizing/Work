@@ -10,7 +10,7 @@ public class IceRolling : Ability
 {
 	[Header("Ability properties")]
 	//[SerializeField] private Rigidbody2D _rb;
-	//[SerializeField] private RunePlayer _rune;
+	//[SerializeField] private RuneComponent _rune;
 	[SerializeField] private Character _playerLinks;
 	[SerializeField] private float _jumprange = 2f;
 	[SerializeField] private float _durationOfJump = 0.3f;
@@ -35,7 +35,7 @@ public class IceRolling : Ability
 		if (Input.GetMouseButtonDown(0))
 		{
 			PayCost();
-			if (_playerLinks.RunePlayer.RemoveRune(0.25f, this))
+			if (_playerLinks.RuneComponent.RemoveRune(0.25f, this))
 			{
 				Jump();
 			}

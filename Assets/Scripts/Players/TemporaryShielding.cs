@@ -6,7 +6,7 @@ public class TemporaryShielding : Shielding
 {
     //private float shieldAmount;
     private float shieldDurationTime;
-    public TemporaryShielding(HealthPlayer healthPlayer, float shieldAmount, DamageType damageType, float shieldDurationTime) : base(healthPlayer, shieldAmount, damageType)
+    public TemporaryShielding(HealthComponent healthComponent, float shieldAmount, DamageType damageType, float shieldDurationTime) : base(healthComponent, shieldAmount, damageType)
     {
         //StartCoroutine(ShieldLifeTime(shieldAmount,shieldDurationTime));
     }
@@ -19,7 +19,7 @@ public class TemporaryShielding : Shielding
 
     ~TemporaryShielding() 
     {
-        Debug.LogWarning("Из памяти удалился временный щит");
+        Debug.LogWarning("РР· РїР°РјСЏС‚Рё СѓРґР°Р»РёР»СЃСЏ РІСЂРµРјРµРЅРЅС‹Р№ С‰РёС‚");
     }
 
     void Update()

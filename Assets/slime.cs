@@ -6,13 +6,13 @@ public class slime : MonoBehaviour
 {
     [HideInInspector] public GameObject Uterus;
 
-    private HealthPlayer _healthPlayer;
+    private HealthComponent _healthComponent;
     private float _timer = 0f;
     private float _interval = 0.1f;
 
     void Start()
     {
-        _healthPlayer = GetComponent<HealthPlayer>();
+        _healthComponent = GetComponent<HealthComponent>();
     }
 
     void Update()
@@ -33,7 +33,7 @@ public class slime : MonoBehaviour
 
             if (_timer >= _interval)
             {
-                _healthPlayer.TakePhisicDamage(2);
+                _healthComponent.TakePhisicDamage(2);
                 _timer = 0f;
             }
         }

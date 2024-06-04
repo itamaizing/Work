@@ -40,9 +40,9 @@ public class DarkOneRangeAttack : AbilityBase
     protected override void HandleToggleAbility()
     {
         base.HandleToggleAbility();
-        // Текущий код в методе Update
+        // РўРµРєСѓС‰РёР№ РєРѕРґ РІ РјРµС‚РѕРґРµ Update
 
-        if (Input.GetMouseButtonDown(0) && _player.GetComponent<PlayerMove>().IsSelect && Abilities.gameObject.activeSelf && ToggleAbility.enabled)
+        if (Input.GetMouseButtonDown(0) && _player.GetComponent<MoveComponent>().IsSelect && Abilities.gameObject.activeSelf && ToggleAbility.enabled)
         {
             HandleLeftMouseButtonToggle();
             if (AbilityTypeManager.ActiveAbilityType == 1)
@@ -62,7 +62,7 @@ public class DarkOneRangeAttack : AbilityBase
 
     protected override void HandleToggleAbilityOn()
     {
-        // Включенный ToggleAbility
+        // Р’РєР»СЋС‡РµРЅРЅС‹Р№ ToggleAbility
         base.HandleToggleAbilityOn();
 
         if (TargetParent == null)
@@ -91,7 +91,7 @@ public class DarkOneRangeAttack : AbilityBase
 
     protected override void HandleToggleAbilityOff()
     {
-        // Выключенный ToggleAbility
+        // Р’С‹РєР»СЋС‡РµРЅРЅС‹Р№ ToggleAbility
         base.HandleToggleAbilityOff();
 
         if (_isSelect == false)
@@ -109,7 +109,7 @@ public class DarkOneRangeAttack : AbilityBase
         {
             StartCoroutine(ToggleDoubleClick());
         }
-        else if (AbilityTypeManager.ActiveAbilityType == 1 && _player.GetComponent<PlayerMove>().IsSelect && Abilities.gameObject.activeSelf)
+        else if (AbilityTypeManager.ActiveAbilityType == 1 && _player.GetComponent<MoveComponent>().IsSelect && Abilities.gameObject.activeSelf)
         {
             StartCoroutine(DoNotDoubleClickAtTarget());
         }*/
@@ -128,7 +128,7 @@ public class DarkOneRangeAttack : AbilityBase
 
     private void HandleTargetSelection()
     {
-        // Выбор врага
+        // Р’С‹Р±РѕСЂ РІСЂР°РіР°
         _targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(_targetPosition, Vector2.zero);
 
@@ -148,7 +148,7 @@ public class DarkOneRangeAttack : AbilityBase
 
     public override void HandleDealDamageOrHeal()
     {
-        //Нанесение урона
+        //РќР°РЅРµСЃРµРЅРёРµ СѓСЂРѕРЅР°
 
         if (_canCast && _castCoroutine == null)
         {
@@ -161,8 +161,8 @@ public class DarkOneRangeAttack : AbilityBase
     {
         if (TargetParent == null) return;
         AddBaffEnergyOfSpirit();
-        TargetParent.GetComponent<HealthPlayer>().TakeMagicDamage(_damage);
-        _player.GetComponent<ManaPlayer>().Use(_manaCost);
+        TargetParent.GetComponent<HealthComponent>().TakeMagicDamage(_damage);
+        _player.GetComponent<Mana>().Use(_manaCost);
         DarkFirstAbilityEvent?.Invoke(2f);
         
     }
@@ -202,9 +202,9 @@ public class DarkOneRangeAttack : AbilityBase
 
     private IEnumerator CastMove()
     {
-		GetComponentInParent<PlayerMove>().CanMove = false;
+		GetComponentInParent<MoveComponent>().CanMove = false;
         yield return new WaitForSeconds(0.4f);
-		GetComponentInParent<PlayerMove>().CanMove = true;
+		GetComponentInParent<MoveComponent>().CanMove = true;
     }
 }
 

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static HealthPlayer;
+using static HealthComponent;
 
 public class PassiveCarrygunAbility : MonoBehaviour
 {
@@ -9,24 +9,24 @@ public class PassiveCarrygunAbility : MonoBehaviour
     private float _health;
     private float _maxHealth;
     private bool _isRegeneration;
-    private HealthPlayer _healthPlayer;
+    private HealthComponent _healthComponent;
 
     void Start()
     {
         GameObject _player = transform.parent.gameObject;
-        _healthPlayer = _player.GetComponent<HealthPlayer>();
+        _healthComponent = _player.GetComponent<HealthComponent>();
 
-        //_health = _healthPlayer._currentHealth; 
-       // _maxHealth = _healthPlayer._maxHealth;
+        //_health = _healthComponent._currentHealth; 
+       // _maxHealth = _healthComponent._maxHealth;
         _isRegeneration = true;
 
-        if (_healthPlayer != null)
+        if (_healthComponent != null)
         {
-            _healthPlayer.OnTakePhisicDamage += HandleAvoidance;
-            _healthPlayer.OnTakePhisicDamage += HandleProtection;
+            _healthComponent.OnTakePhisicDamage += HandleAvoidance;
+            _healthComponent.OnTakePhisicDamage += HandleProtection;
 
-            _healthPlayer.OnTakeMagicDamage += HandleAvoidance;
-            _healthPlayer.OnTakeMagicDamage += HandleProtection;
+            _healthComponent.OnTakeMagicDamage += HandleAvoidance;
+            _healthComponent.OnTakeMagicDamage += HandleProtection;
 
         }
     }
@@ -38,31 +38,31 @@ public class PassiveCarrygunAbility : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (_healthPlayer != null)
+        if (_healthComponent != null)
         {
-            _healthPlayer.OnTakePhisicDamage -= HandleAvoidance;
-            _healthPlayer.OnTakePhisicDamage -= HandleProtection;
+            _healthComponent.OnTakePhisicDamage -= HandleAvoidance;
+            _healthComponent.OnTakePhisicDamage -= HandleProtection;
 
-            _healthPlayer.OnTakeMagicDamage -= HandleAvoidance;
-            _healthPlayer.OnTakeMagicDamage -= HandleProtection;
+            _healthComponent.OnTakeMagicDamage -= HandleAvoidance;
+            _healthComponent.OnTakeMagicDamage -= HandleProtection;
         }
     }
     private void HandleHeal()
     {
         if (_health < _maxHealth && _isRegeneration)
         {
-            _healthPlayer.AddHeal(1.5f);
+            _healthComponent.AddHeal(1.5f);
             StartCoroutine(HealthRegeneration());
         }
     }
-    private void HandleAvoidance(HealthPlayer.DamageInfo damageInfo)
+    private void HandleAvoidance(HealthComponent.DamageInfo damageInfo)
     {
         if (Random.Range(0f, 1f) <= AvoidanceChance)
         {
             damageInfo.ModifiedDamage = 0f;
         }
     }
-    private void HandleProtection(HealthPlayer.DamageInfo damageInfo)
+    private void HandleProtection(HealthComponent.DamageInfo damageInfo)
     {
         damageInfo.ModifiedDamage *= 0.97f;
     }

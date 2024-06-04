@@ -45,9 +45,9 @@ public class TentaclesPrefab : MonoBehaviour
 		{
 			foreach (string targetTag in targetTags)
 			{
-				if (collider.CompareTag(targetTag) && collider.GetComponent<PlayerMove>())
+				if (collider.CompareTag(targetTag) && collider.GetComponent<MoveComponent>())
 				{
-					collider.GetComponent<UIPlayerComponents>().CircleSelect.IsActive = true;
+					//collider.GetComponent<SelectComponent>().Highlight();
 					_enemies.Add(collider.gameObject);
 					collider.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
 						.SetColorCircleBackgroundPlayer(collider);
@@ -55,7 +55,7 @@ public class TentaclesPrefab : MonoBehaviour
 			}
 		}
 
-		// Создадим список для врагов, которые нужно удалить
+		// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 		List<GameObject> enemiesToRemove = new List<GameObject>();
 
 		foreach (GameObject enemy in _enemies)
@@ -68,11 +68,11 @@ public class TentaclesPrefab : MonoBehaviour
 			}
 		}
 
-		// Удаление врагов из списка
+		// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 		foreach (GameObject enemyToRemove in enemiesToRemove)
 		{
 			enemyToRemove.transform.GetChild(0).gameObject.SetActive(false);
-			enemyToRemove.GetComponent<UIPlayerComponents>().CircleSelect.IsActive = false;
+			//enemyToRemove.GetComponent<SelectComponent>().Highlight();
 			_enemies.Remove(enemyToRemove);
 		}
 

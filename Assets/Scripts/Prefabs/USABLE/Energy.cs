@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class EnergyPlayer : PlayerStamina
+public class Energy : StaminaComponent
 {
 	private float _timer = 0;
 	private bool _canRegen = true;

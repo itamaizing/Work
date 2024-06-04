@@ -38,7 +38,7 @@ public class GoAroundObstecle2 : MonoBehaviour
         //Debug.Log("FPS: " + fps);
         
 
-        if (GetComponent<PlayerMove>().IsSelect && GetComponent<PlayerMove>().CanMove)
+        if (GetComponent<MoveComponent>().IsSelect && GetComponent<MoveComponent>().CanMove)
         {
             if (Input.GetMouseButtonDown(1))
             {
@@ -48,7 +48,7 @@ public class GoAroundObstecle2 : MonoBehaviour
                 _clickPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             }
         }
-        else if(GetComponent<OneRangeAttack>() != null && GetComponent<OneRangeAttack>().ToggleAbility != null && GetComponent<OneRangeAttack>().ToggleAbility.isOn == true && !GetComponent<PlayerMove>().IsSelect) 
+        else if(GetComponent<OneRangeAttack>() != null && GetComponent<OneRangeAttack>().ToggleAbility != null && GetComponent<OneRangeAttack>().ToggleAbility.isOn == true && !GetComponent<MoveComponent>().IsSelect) 
         {
             if (Input.GetMouseButtonDown(1))
             {
@@ -58,7 +58,7 @@ public class GoAroundObstecle2 : MonoBehaviour
             }
         }
 
-        if (GetComponent<PlayerMove>().IsMoving || SearchObstacle)
+        if (GetComponent<MoveComponent>().IsMoving || SearchObstacle)
         {
             RaycastHit2D hitObject = Physics2D.Raycast(_clickPosition, Vector2.zero);
             if (hitObject.collider != null && hitObject.collider.CompareTag("Allies") || hitObject.collider != null && hitObject.collider.CompareTag("Enemies"))
@@ -242,7 +242,7 @@ public class GoAroundObstecle2 : MonoBehaviour
 
                 if (Vector2.Distance(transform.position, nextTarget) < 0.2f)
                 {
-                    // Ïëååð äîñòèã ïðîìåæóòî÷íîé öåëè, óäàëÿåì åå èç ñïèñêà
+                    // ÐŸÐ»ÐµÐµÑ€ Ð´Ð¾ÑÑ‚Ð¸Ð³ Ð¿Ñ€Ð¾Ð¼ÐµÐ¶ÑƒÑ‚Ð¾Ñ‡Ð½Ð¾Ð¹ Ñ†ÐµÐ»Ð¸, ÑƒÐ´Ð°Ð»ÑÐµÐ¼ ÐµÐµ Ð¸Ð· ÑÐ¿Ð¸ÑÐºÐ°
                     intermediateTargets.RemoveAt(0);
                 }
             }
@@ -279,7 +279,7 @@ public class GoAroundObstecle2 : MonoBehaviour
 
         else
         {
-            Debug.Log("Äðóãîé êîëëàèäåð");
+            Debug.Log("Ð”Ñ€ÑƒÐ³Ð¾Ð¹ ÐºÐ¾Ð»Ð»Ð°Ð¸Ð´ÐµÑ€");
         }
 
         return point;

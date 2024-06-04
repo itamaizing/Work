@@ -18,13 +18,13 @@ public class EmbryonDebuff : MonoBehaviour
     void Start()
     {
         _target = transform.parent.gameObject;
-        _target.GetComponent<HealthPlayer>().MakeMagicDamageEvent += DamageReduction;
-        _target.GetComponent<HealthPlayer>().MakePhisicDamageEvent += DamageReduction;
+        _target.GetComponent<HealthComponent>().MakeMagicDamageEvent += DamageReduction;
+        _target.GetComponent<HealthComponent>().MakePhisicDamageEvent += DamageReduction;
 
         StartCoroutine(TakeDamageForTarget());
     }
 
-    private void DamageReduction(HealthPlayer.DamageInfo damageInfo)
+    private void DamageReduction(HealthComponent.DamageInfo damageInfo)
     {
         damageInfo.ModifiedDamage *= _damageReduction;
     }
@@ -33,15 +33,15 @@ public class EmbryonDebuff : MonoBehaviour
     {
         for (int i = 0; i < _duration; i++)
         {
-            _target.GetComponent<HealthPlayer>().TakePhisicDamage(_damage);
+            _target.GetComponent<HealthComponent>().TakePhisicDamage(_damage);
             _damageReduction = Mathf.Min(_damageReduction + 0.1f, 0.3f);
             yield return new WaitForSeconds(1f);
         }
-        _target.GetComponent<HealthPlayer>().TakePhisicDamage(_finalDamage);
+        _target.GetComponent<HealthComponent>().TakePhisicDamage(_finalDamage);
 
         GameObject newScrader = Instantiate(scraderPrefab);
 
-        Vector3 directionOfMovement = -(_target.GetComponent<PlayerMove>().MoveDirection).normalized;
+        Vector3 directionOfMovement = -(_target.GetComponent<MoveComponent>().MoveDirection).normalized;
         float distance = 1.94f;
         Vector3 oppositePosition = _target.transform.position + directionOfMovement * distance;
         newScrader.transform.position = oppositePosition;
@@ -60,7 +60,7 @@ public class EmbryonDebuff : MonoBehaviour
 
     private void OnDisable()
     {
-        _target.GetComponent<HealthPlayer>().MakeMagicDamageEvent -= DamageReduction;
-        _target.GetComponent<HealthPlayer>().MakePhisicDamageEvent -= DamageReduction;
+        _target.GetComponent<HealthComponent>().MakeMagicDamageEvent -= DamageReduction;
+        _target.GetComponent<HealthComponent>().MakePhisicDamageEvent -= DamageReduction;
     }
 }

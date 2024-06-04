@@ -28,7 +28,7 @@ public class StunByTentacles : MonoBehaviour
             if (_playerAbility.GetComponent<FourMeleeAttack>().CanPull && !_isTentacleRetention)
             {
                 _target = _playerAbility.GetComponent<FourMeleeAttack>().Target;
-                _target.GetComponent<HealthPlayer>().TakePhisicDamage(20f);
+                _target.GetComponent<HealthComponent>().TakePhisicDamage(20f);
                 _target.GetComponent<CharacterState>().AddState(new StunnedState());
                 _timer = Time.time;
 

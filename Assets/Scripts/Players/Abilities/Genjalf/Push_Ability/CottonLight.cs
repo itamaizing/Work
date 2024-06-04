@@ -9,7 +9,7 @@ namespace Players.Abilities.Genjalf.Push_Ability
     public class CottonLight : Ability
     {
         [Header("Ability settings")]
-        [SerializeField] private ParticleSystem _castPrefab; // затычка для визуализации
+        [SerializeField] private ParticleSystem _castPrefab; // Р·Р°С‚С‹С‡РєР° РґР»СЏ РІРёР·СѓР°Р»РёР·Р°С†РёРё
         [SerializeField] private float _damage = 10f;
         [SerializeField] private BlindDebuff _blindPref;
         [SerializeField] private float _blindDuration = 1f;
@@ -34,7 +34,7 @@ namespace Players.Abilities.Genjalf.Push_Ability
 
         protected override void Cast()
         {
-            PlayCast(); // затычка для визуализации
+            PlayCast(); // Р·Р°С‚С‹С‡РєР° РґР»СЏ РІРёР·СѓР°Р»РёР·Р°С†РёРё
             PayCost();
 
             RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, Radius, Vector2.zero);
@@ -55,7 +55,7 @@ namespace Players.Abilities.Genjalf.Push_Ability
                     dir += item.transform.position;
 
                     _enemies.Add(item.transform.gameObject, dir);
-                    item.transform.GetComponent<HealthPlayer>().TakeMagicDamage(_damage);
+                    item.transform.GetComponent<HealthComponent>().TakeMagicDamage(_damage);
 
                     ApplyDebuffOnTarget(item.transform.gameObject);
                 }
@@ -68,7 +68,7 @@ namespace Players.Abilities.Genjalf.Push_Ability
             
         }
 
-        private void PlayCast() // затычка для визуализации
+        private void PlayCast() // Р·Р°С‚С‹С‡РєР° РґР»СЏ РІРёР·СѓР°Р»РёР·Р°С†РёРё
         {
             var particle = Instantiate(_castPrefab, transform.position, Quaternion.identity, null);
             ParticleSystem.ShapeModule shape = particle.shape;

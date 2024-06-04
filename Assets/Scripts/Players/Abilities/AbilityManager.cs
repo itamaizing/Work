@@ -10,7 +10,7 @@ public class AbilityManager : MonoBehaviour
 	public List<AbilityBase> abilityQueueAutoattack = new List<AbilityBase>();
 
 	private AbilityBase nextAbility;
-	private PlayerMove _playerMove;
+	private MoveComponent _playerMove;
 
     private void FixedUpdate()
     {
@@ -25,7 +25,7 @@ public class AbilityManager : MonoBehaviour
     }
     private void Awake()
 	{
-		_playerMove = GetComponentInParent<PlayerMove>();
+		_playerMove = GetComponentInParent<MoveComponent>();
 	}
 
 	private void OnEnable()
@@ -40,25 +40,25 @@ public class AbilityManager : MonoBehaviour
 
 	public void AddAbilityToQueue(AbilityBase ability)
 	{
-		// если способность - автоатака, то добавить в очередь автоатак
+		// РµСЃР»Рё СЃРїРѕСЃРѕР±РЅРѕСЃС‚СЊ - Р°РІС‚РѕР°С‚Р°РєР°, С‚Рѕ РґРѕР±Р°РІРёС‚СЊ РІ РѕС‡РµСЂРµРґСЊ Р°РІС‚РѕР°С‚Р°Рє
 		if (ability.AttackType == AttackType.Autoattack)
 		{
 			abilityQueueAutoattack.Add(ability);
 
 		}
-		else // если способность не автоатака, то добавить в очередь обычных способностей
+		else // РµСЃР»Рё СЃРїРѕСЃРѕР±РЅРѕСЃС‚СЊ РЅРµ Р°РІС‚РѕР°С‚Р°РєР°, С‚Рѕ РґРѕР±Р°РІРёС‚СЊ РІ РѕС‡РµСЂРµРґСЊ РѕР±С‹С‡РЅС‹С… СЃРїРѕСЃРѕР±РЅРѕСЃС‚РµР№
 		{
-			// если есть текущая способность и число абилок в очереди = 0 и есть абилка-автоатака 
+			// РµСЃР»Рё РµСЃС‚СЊ С‚РµРєСѓС‰Р°СЏ СЃРїРѕСЃРѕР±РЅРѕСЃС‚СЊ Рё С‡РёСЃР»Рѕ Р°Р±РёР»РѕРє РІ РѕС‡РµСЂРµРґРё = 0 Рё РµСЃС‚СЊ Р°Р±РёР»РєР°-Р°РІС‚РѕР°С‚Р°РєР° 
 			if (nextAbility != null && abilityQueue.Count == 0 && abilityQueueAutoattack.Count > 0)
 			{
-				// если есть префаб абилки
+				// РµСЃР»Рё РµСЃС‚СЊ РїСЂРµС„Р°Р± Р°Р±РёР»РєРё
 				//DeleteCurrentAbility();
             }
 
 			abilityQueue.Add(ability);
 		}
 
-		if (abilityQueue.Count == 1 || abilityQueueAutoattack.Count == 1) // Если это первая способность в очереди, начните ее выполнение
+		if (abilityQueue.Count == 1 || abilityQueueAutoattack.Count == 1) // Р•СЃР»Рё СЌС‚Рѕ РїРµСЂРІР°СЏ СЃРїРѕСЃРѕР±РЅРѕСЃС‚СЊ РІ РѕС‡РµСЂРµРґРё, РЅР°С‡РЅРёС‚Рµ РµРµ РІС‹РїРѕР»РЅРµРЅРёРµ
 		{
 			ExecuteNextAbility();
 		}
@@ -70,13 +70,13 @@ public class AbilityManager : MonoBehaviour
 		{
 			if (abilityQueueAutoattack[0].TargetParent == abilityQueueAutoattack[1].TargetParent)
 			{
-				if (abilityQueueAutoattack[0].isInRadius) // первая автоатака дотягивается
+				if (abilityQueueAutoattack[0].isInRadius) // РїРµСЂРІР°СЏ Р°РІС‚РѕР°С‚Р°РєР° РґРѕС‚СЏРіРёРІР°РµС‚СЃСЏ
 				{
                     abilityQueueAutoattack[0].CanDealDamageOrHeal = true;
                     abilityQueueAutoattack[1].CanDealDamageOrHeal = false;
                     nextAbility = abilityQueueAutoattack[0];
                 }
-				else if (abilityQueueAutoattack[0].Distance < abilityQueueAutoattack[1].Distance) // первая автоатака не дотягивается и ее дальность < второй
+				else if (abilityQueueAutoattack[0].Distance < abilityQueueAutoattack[1].Distance) // РїРµСЂРІР°СЏ Р°РІС‚РѕР°С‚Р°РєР° РЅРµ РґРѕС‚СЏРіРёРІР°РµС‚СЃСЏ Рё РµРµ РґР°Р»СЊРЅРѕСЃС‚СЊ < РІС‚РѕСЂРѕР№
 				{
                     abilityQueueAutoattack[0].CanDealDamageOrHeal = false;
                     abilityQueueAutoattack[1].CanDealDamageOrHeal = true;
@@ -84,7 +84,7 @@ public class AbilityManager : MonoBehaviour
                 }
 			}
 
-			else if (abilityQueueAutoattack[1].TargetParent != null) // разные цели и у второй атаки выбрана цель
+			else if (abilityQueueAutoattack[1].TargetParent != null) // СЂР°Р·РЅС‹Рµ С†РµР»Рё Рё Сѓ РІС‚РѕСЂРѕР№ Р°С‚Р°РєРё РІС‹Р±СЂР°РЅР° С†РµР»СЊ
 			{
 				abilityQueueAutoattack[0].CanDoAbility = true;
 				abilityQueueAutoattack[1].CanDoAbility = true;
@@ -96,7 +96,7 @@ public class AbilityManager : MonoBehaviour
 		}
 	}
 
-	private void SwapAutoattacksVisualisation() // костыль - отображение круга, отдельно чтобы можно было менять во время паузы (когда есть способность и выбрана цель)
+	private void SwapAutoattacksVisualisation() // РєРѕСЃС‚С‹Р»СЊ - РѕС‚РѕР±СЂР°Р¶РµРЅРёРµ РєСЂСѓРіР°, РѕС‚РґРµР»СЊРЅРѕ С‡С‚РѕР±С‹ РјРѕР¶РЅРѕ Р±С‹Р»Рѕ РјРµРЅСЏС‚СЊ РІРѕ РІСЂРµРјСЏ РїР°СѓР·С‹ (РєРѕРіРґР° РµСЃС‚СЊ СЃРїРѕСЃРѕР±РЅРѕСЃС‚СЊ Рё РІС‹Р±СЂР°РЅР° С†РµР»СЊ)
 	{
 		if (abilityQueueAutoattack.Count > 1)
 		{
@@ -119,12 +119,12 @@ public class AbilityManager : MonoBehaviour
 	{
 		if (nextAbility.NewAbilityPrefab != null)
 		{
-			// выключить префаб, очистить круг радиуса атаки
+			// РІС‹РєР»СЋС‡РёС‚СЊ РїСЂРµС„Р°Р±, РѕС‡РёСЃС‚РёС‚СЊ РєСЂСѓРі СЂР°РґРёСѓСЃР° Р°С‚Р°РєРё
 			nextAbility.NewAbilityPrefab.SetActive(false);
 			nextAbility.DrawCircle.Clear();
 		}
 
-		// удаляем текущую абилку
+		// СѓРґР°Р»СЏРµРј С‚РµРєСѓС‰СѓСЋ Р°Р±РёР»РєСѓ
 		nextAbility.CanDoAbility = false;
 		nextAbility.CancelAbilityOnClick();
 		nextAbility = null;
@@ -135,7 +135,7 @@ public class AbilityManager : MonoBehaviour
 	{
 		if (abilityQueue.Count > 0 && abilityQueue[0] != null)
 		{
-			if (abilityQueue[0].TargetParent != null) // если выбрали цель для способности, и есть автоатака, останавливаем атаку
+			if (abilityQueue[0].TargetParent != null) // РµСЃР»Рё РІС‹Р±СЂР°Р»Рё С†РµР»СЊ РґР»СЏ СЃРїРѕСЃРѕР±РЅРѕСЃС‚Рё, Рё РµСЃС‚СЊ Р°РІС‚РѕР°С‚Р°РєР°, РѕСЃС‚Р°РЅР°РІР»РёРІР°РµРј Р°С‚Р°РєСѓ
 			{
                 ChangeAutoAttackStateToFalse();
             }
@@ -209,7 +209,7 @@ public class AbilityManager : MonoBehaviour
 		}
 	}
 
-	// отмена текущего заклинания
+	// РѕС‚РјРµРЅР° С‚РµРєСѓС‰РµРіРѕ Р·Р°РєР»РёРЅР°РЅРёСЏ
 	public void CancelSpellCast()
 	{
 		if (!_playerMove.IsSelect)
@@ -237,7 +237,7 @@ public class AbilityManager : MonoBehaviour
 
 		if (abilityQueue.Count > 0)
 		{
-			ChangeAutoAttackStateToTrue(); //при прерывании способности включаем автоатаку
+			ChangeAutoAttackStateToTrue(); //РїСЂРё РїСЂРµСЂС‹РІР°РЅРёРё СЃРїРѕСЃРѕР±РЅРѕСЃС‚Рё РІРєР»СЋС‡Р°РµРј Р°РІС‚РѕР°С‚Р°РєСѓ
 			abilityQueue[0].DrawCircle.Clear();
 			abilityQueue[0].CancelAbilityOnClick();
 			abilityQueue.RemoveAt(0);

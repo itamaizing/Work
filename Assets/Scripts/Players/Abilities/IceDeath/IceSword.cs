@@ -9,7 +9,7 @@ public class IceSword : Ability
 	[SerializeField] private Character _playerLinks;
 	[SerializeField] private DeathSpiral _deathSpiral;
 	//private Vector2 _targetPosition;
-	private HealthPlayer _target;
+	private HealthComponent _target;
 	private int _hitInARow = 0;
 
 	protected override void Cancel()
@@ -23,7 +23,7 @@ public class IceSword : Ability
 
 		foreach (Collider2D collider in colliders)
 		{
-			if (collider.TryGetComponent<HealthPlayer>(out var enemy) && collider.gameObject != _playerLinks.gameObject)
+			if (collider.TryGetComponent<HealthComponent>(out var enemy) && collider.gameObject != _playerLinks.gameObject)
 			{
 				Debug.Log(collider.name);
 				//enemy.

@@ -30,9 +30,9 @@ public class CreeperTwoFastAttack : AbilityBase
 
     protected override void HandleToggleAbility()
     {
-        // Текущий код в методе Update
+        // РўРµРєСѓС‰РёР№ РєРѕРґ РІ РјРµС‚РѕРґРµ Update
         base.HandleToggleAbility();
-        if (Input.GetMouseButtonDown(0) && _player.GetComponent<PlayerMove>().IsSelect && ToggleAbility.gameObject.activeSelf)
+        if (Input.GetMouseButtonDown(0) && _player.GetComponent<MoveComponent>().IsSelect && ToggleAbility.gameObject.activeSelf)
         {
             HandleLeftMouseButtonToggle();
             if (AbilityTypeManager.ActiveAbilityType == 1)
@@ -52,7 +52,7 @@ public class CreeperTwoFastAttack : AbilityBase
     protected override void HandleToggleAbilityOn()
     {
         base.HandleToggleAbilityOn();
-        // Включенный ToggleAbility
+        // Р’РєР»СЋС‡РµРЅРЅС‹Р№ ToggleAbility
         if (TargetParent == null)
         {
             HandlePrefabVisibility();
@@ -67,7 +67,7 @@ public class CreeperTwoFastAttack : AbilityBase
     protected override void HandleToggleAbilityOff()
     {
         base.HandleToggleAbilityOff();
-        // Выключенный ToggleAbility
+        // Р’С‹РєР»СЋС‡РµРЅРЅС‹Р№ ToggleAbility
         TargetParent = null;
         CanDealDamageOrHeal = false;
         CanMakeDamage = false;
@@ -75,7 +75,7 @@ public class CreeperTwoFastAttack : AbilityBase
     }
     public override void ChangeBoolAndValues()
     {
-        _targetHealth = TargetParent.GetComponent<HealthPlayer>();
+        _targetHealth = TargetParent.GetComponent<HealthComponent>();
         CanMakeDamage = true;
         CanDealDamageOrHeal = true;
         Destroy(NewAbilityPrefab);
@@ -87,7 +87,7 @@ public class CreeperTwoFastAttack : AbilityBase
         {
             StartCoroutine(ToggleDoubleClick());
         }
-        else if (AbilityTypeManager.ActiveAbilityType == 1 && _player.GetComponent<PlayerMove>().IsSelect &&
+        else if (AbilityTypeManager.ActiveAbilityType == 1 && _player.GetComponent<MoveComponent>().IsSelect &&
                  Abilities.gameObject.activeSelf)
         {
             StartCoroutine(DoNotDoubleClickAtTarget());
@@ -100,7 +100,7 @@ public class CreeperTwoFastAttack : AbilityBase
 
     private void HandleTargetSelection()
     {
-        // Выбор врага
+        // Р’С‹Р±РѕСЂ РІСЂР°РіР°
         _targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(_targetPosition, Vector2.zero);
         if (hit.collider != null && hit.collider.CompareTag("Enemies") && hit.collider.gameObject != gameObject)
@@ -117,7 +117,7 @@ public class CreeperTwoFastAttack : AbilityBase
 
     public override void HandleDealDamageOrHeal()
     {
-        // Нанесение урона
+        // РќР°РЅРµСЃРµРЅРёРµ СѓСЂРѕРЅР°
         _damageValue = Random.Range(7, 12);
 
         if (CanMakeDamage && _castCoroutine == null && CanUseAbility)
@@ -172,7 +172,7 @@ public class CreeperTwoFastAttack : AbilityBase
     }
     private void MissAtDistance()
     {
-        // Промах при отдаление более чем на 10% от корпуса
+        // РџСЂРѕРјР°С… РїСЂРё РѕС‚РґР°Р»РµРЅРёРµ Р±РѕР»РµРµ С‡РµРј РЅР° 10% РѕС‚ РєРѕСЂРїСѓСЃР°
         if (previousPosition == Vector3.zero)
         {
             previousPosition = TargetParent.transform.position;

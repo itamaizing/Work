@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AbilityRender : MonoBehaviour
+public class VisualRender : MonoBehaviour
 {
     [SerializeField] private DrawCircle _circle;
     [SerializeField] private SpriteRenderer _iconPref;
@@ -126,14 +126,9 @@ public class AbilityRender : MonoBehaviour
                 _circle.SetColor(Color.red);
                 _area.SetColor(Color.red);
             }
-            if (_squareArea.IsConcernsEnemy)
-            {
-                _squareArea.SetColor(Color.green);
-            }
-            else
-            {
-                _squareArea.SetColor(Color.red);
-            }
+            
+            _squareArea.SetColor(Color.green);
+                
             yield return null;
         }
     }

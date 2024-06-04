@@ -49,7 +49,7 @@ public class RepeatedDamage : BaseEffect
         yield return new WaitForSeconds(time);
         if(_modDamage > 0)
         {
-            transform.parent.GetComponent<HealthPlayer>().TakeMagicDamage(_modDamage);
+            transform.parent.GetComponent<HealthComponent>().TakeMagicDamage(_modDamage);
         }
         IsRepeat = false;
     }

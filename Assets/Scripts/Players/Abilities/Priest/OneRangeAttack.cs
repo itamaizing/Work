@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class OneRangeAttack : AbilityBase
 {
-	// "Искра Света" - Лечение и бафф союзника , урон по врагу. 
+	// "РСЃРєСЂР° РЎРІРµС‚Р°" - Р›РµС‡РµРЅРёРµ Рё Р±Р°С„С„ СЃРѕСЋР·РЅРёРєР° , СѓСЂРѕРЅ РїРѕ РІСЂР°РіСѓ. 
 	[HideInInspector] public float Heal = 2f;
 	[HideInInspector] public int SpiritDebaffCount = 0;
     [HideInInspector] public int SpiritBaffCount = 0;
@@ -79,9 +79,9 @@ public class OneRangeAttack : AbilityBase
 	protected override void HandleToggleAbility()
 	{ 
 		base.HandleToggleAbility();
-		// Текущий код в методе Update
+		// РўРµРєСѓС‰РёР№ РєРѕРґ РІ РјРµС‚РѕРґРµ Update
 
-		if (Input.GetMouseButtonDown(0) && _player.GetComponent<PlayerMove>().IsSelect && ToggleAbility.gameObject.activeSelf)
+		if (Input.GetMouseButtonDown(0) && _player.GetComponent<MoveComponent>().IsSelect && ToggleAbility.gameObject.activeSelf)
 		{
 			HandleLeftMouseButtonToggle();
 			if (AbilityTypeManager.ActiveAbilityType == 1)
@@ -101,7 +101,7 @@ public class OneRangeAttack : AbilityBase
 
 	protected override void HandleToggleAbilityOn()
 	{
-		// Включенный ToggleAbility
+		// Р’РєР»СЋС‡РµРЅРЅС‹Р№ ToggleAbility
 		base.HandleToggleAbilityOn();
 
 		if (TargetParent == null)
@@ -130,7 +130,7 @@ public class OneRangeAttack : AbilityBase
 
 	protected override void HandleToggleAbilityOff()
 	{
-		// Выключенный ToggleAbility
+		// Р’С‹РєР»СЋС‡РµРЅРЅС‹Р№ ToggleAbility
 		base.HandleToggleAbilityOff();
 
 		if (_isSelect == false	)
@@ -148,7 +148,7 @@ public class OneRangeAttack : AbilityBase
         {
             StartCoroutine(ToggleDoubleClick());
         }
-        else if (AbilityTypeManager.ActiveAbilityType == 1 && _player.GetComponent<PlayerMove>().IsSelect && Abilities.gameObject.activeSelf)
+        else if (AbilityTypeManager.ActiveAbilityType == 1 && _player.GetComponent<MoveComponent>().IsSelect && Abilities.gameObject.activeSelf)
         {
             StartCoroutine(DoNotDoubleClickAtTarget());
         }*/
@@ -167,7 +167,7 @@ public class OneRangeAttack : AbilityBase
 
 	private void HandleTargetSelection()
 	{
-		// Выбор врага
+		// Р’С‹Р±РѕСЂ РІСЂР°РіР°
 
 		_targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		RaycastHit2D hit = Physics2D.Raycast(_targetPosition, Vector2.zero);
@@ -201,7 +201,7 @@ public class OneRangeAttack : AbilityBase
 
 	public override void HandleDealDamageOrHeal()
 	{
-		// Лечение
+		// Р›РµС‡РµРЅРёРµ
 		if (_canCast && _castCoroutine == null)
 		{
 			if (isLightSide)
@@ -257,17 +257,17 @@ public class OneRangeAttack : AbilityBase
 		
             AddBaffEnergyOfSpirit();
             float heal = Heal + SpiritBaffCount;
-            /*float realHeal = TargetParent.GetComponent<HealthPlayer>()._maxHealth - TargetParent.GetComponent<HealthPlayer>()._currentHealth;
+            /*float realHeal = TargetParent.GetComponent<HealthComponent>()._maxHealth - TargetParent.GetComponent<HealthComponent>()._currentHealth;
             if (realHeal <= heal)
             {
                 heal = realHeal;
             }
 			if (heal > 0)
 			{
-			TargetParent.GetComponent<HealthPlayer>().AddHeal(heal);
-            _player.GetComponent<ManaPlayer>().Add(heal *0.1f);
+			TargetParent.GetComponent<HealthComponent>().AddHeal(heal);
+            _player.GetComponent<Mana>().Add(heal *0.1f);
             }
-            _player.GetComponent<ManaPlayer>().Use(_manaForHeal);
+            _player.GetComponent<Mana>().Use(_manaForHeal);
 			*/
 			FirstAbilityEvent?.Invoke(heal);
 		
@@ -307,7 +307,7 @@ public class OneRangeAttack : AbilityBase
             default:
                 break;
         }
-        // Увеличение прочности накладываемого щита
+        // РЈРІРµР»РёС‡РµРЅРёРµ РїСЂРѕС‡РЅРѕСЃС‚Рё РЅР°РєР»Р°РґС‹РІР°РµРјРѕРіРѕ С‰РёС‚Р°
 		transform.GetComponent<TwoRangeProtection>().AddShieldBuff(shieldBuff*0.01f);
 		ResetAllEffects(EffectsType.EnergyOfSpirit);
     }
@@ -316,8 +316,8 @@ public class OneRangeAttack : AbilityBase
 	{
         if (TargetParent == null) return;
         AddDebaff();
-        TargetParent.GetComponent<HealthPlayer>().TakeMagicDamage(_damage+SpiritDebaffCount);
-        _player.GetComponent<ManaPlayer>().Use(_manaForDamage);
+        TargetParent.GetComponent<HealthComponent>().TakeMagicDamage(_damage+SpiritDebaffCount);
+        _player.GetComponent<Mana>().Use(_manaForDamage);
         DarkFirstAbilityEvent?.Invoke(_damage);
     }
 
@@ -381,9 +381,9 @@ public class OneRangeAttack : AbilityBase
 
 	private IEnumerator CastMove()
 	{
-		GetComponentInParent<PlayerMove>().CanMove = false;
+		GetComponentInParent<MoveComponent>().CanMove = false;
 		yield return new WaitForSeconds(0.2f);
-		GetComponentInParent<PlayerMove>().CanMove = true;
+		GetComponentInParent<MoveComponent>().CanMove = true;
 
 	}
 

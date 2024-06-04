@@ -11,7 +11,7 @@ public class Teleportation_Scorpion : Ability
     [SerializeField] private int _manaCostPerTile = 5;
     [SerializeField] private LayerMask _layerMask;
     private DrawCircle _circleTarget;
-    private PlayerMove _target;
+    private MoveComponent _target;
     private Coroutine _useJob;
 
     protected override void Cancel()
@@ -67,12 +67,12 @@ public class Teleportation_Scorpion : Ability
         _drawCircleSelf.Draw(GetCurrentRadius());
         Debug.LogWarning(GetCurrentRadius());
 
-        while (_target == null) //выбираем цель
+        while (_target == null) //РІС‹Р±РёСЂР°РµРј С†РµР»СЊ
         {
             if (Input.GetMouseButtonDown(0) && IsMouseInRadius())
             {
                 RaycastHit2D[] rayHit = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-                if (rayHit.Length > 0 && rayHit[0].transform.TryGetComponent<PlayerMove>(out PlayerMove enemyMove))
+                if (rayHit.Length > 0 && rayHit[0].transform.TryGetComponent<MoveComponent>(out MoveComponent enemyMove))
                 {
                     _target = enemyMove;
                 }
@@ -91,19 +91,19 @@ public class Teleportation_Scorpion : Ability
         Vector3 teleportPosition = _target.transform.position + offset;
         bool touchObstacle = Physics2D.OverlapCircle(teleportPosition, 2f, _layerMask);
 
-        if(touchObstacle) // если попадем в препятствие
+        if(touchObstacle) // РµСЃР»Рё РїРѕРїР°РґРµРј РІ РїСЂРµРїСЏС‚СЃС‚РІРёРµ
         {
             bool plaseFound = false;
             float angle = 0f;
             Vector3 newPosition;
 
-            while (angle != 180 && !plaseFound) // ищем ближайшее место без препятствий
+            while (angle != 180 && !plaseFound) // РёС‰РµРј Р±Р»РёР¶Р°Р№С€РµРµ РјРµСЃС‚Рѕ Р±РµР· РїСЂРµРїСЏС‚СЃС‚РІРёР№
             {
                 angle += 10;
                 newPosition = _target.transform.position + Quaternion.Euler(0,0,angle) * offset;
                 if (!Physics2D.OverlapCircle(newPosition, 1f, _layerMask))
                 {
-                    Debug.Log($"Найдено место чтобы не попасть в препятствие, поворот на {angle} градусов");
+                    Debug.Log($"РќР°Р№РґРµРЅРѕ РјРµСЃС‚Рѕ С‡С‚РѕР±С‹ РЅРµ РїРѕРїР°СЃС‚СЊ РІ РїСЂРµРїСЏС‚СЃС‚РІРёРµ, РїРѕРІРѕСЂРѕС‚ РЅР° {angle} РіСЂР°РґСѓСЃРѕРІ");
                     plaseFound=true;
                     teleportPosition = newPosition;
                 }
@@ -111,7 +111,7 @@ public class Teleportation_Scorpion : Ability
                 newPosition = _target.transform.position + Quaternion.Euler(0, 0, angle) * offset;
                 if (!Physics2D.OverlapCircle(newPosition, 1f, _layerMask))
                 {
-                    Debug.Log($"Найдено место чтобы не попасть в препятствие, поворот на {angle} градусов");
+                    Debug.Log($"РќР°Р№РґРµРЅРѕ РјРµСЃС‚Рѕ С‡С‚РѕР±С‹ РЅРµ РїРѕРїР°СЃС‚СЊ РІ РїСЂРµРїСЏС‚СЃС‚РІРёРµ, РїРѕРІРѕСЂРѕС‚ РЅР° {angle} РіСЂР°РґСѓСЃРѕРІ");
                     plaseFound = true;
                     teleportPosition = newPosition;
                 }
@@ -121,7 +121,7 @@ public class Teleportation_Scorpion : Ability
         }
         Debug.LogWarning(directionToEnemy);
 
-        PlayerMove.transform.position = teleportPosition; // сам тп
+        PlayerMove.transform.position = teleportPosition; // СЃР°Рј С‚Рї
 
         IsCanCancle = true;
         //PayCost();

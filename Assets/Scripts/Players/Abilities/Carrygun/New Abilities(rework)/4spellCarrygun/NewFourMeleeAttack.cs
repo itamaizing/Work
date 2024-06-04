@@ -9,7 +9,7 @@ public class NewFourMeleeAttack : Ability
     [SerializeField] private float _range;
     [SerializeField] private Tentacles _tentaclesPrefab;
     [SerializeField] private DamageType _damageType;
-    private PlayerMove _target;
+    private MoveComponent _target;
     private Vector3 _position;
     private Coroutine _useJob;
 
@@ -66,12 +66,12 @@ public class NewFourMeleeAttack : Ability
     private IEnumerator UseCoroutine()
     {
 
-        while (_target == null) //выбираем цель
+        while (_target == null) //РІС‹Р±РёСЂР°РµРј С†РµР»СЊ
         {
             if (Input.GetMouseButtonDown(0) && IsMouseInRadius())
             {
                 RaycastHit2D[] rayHit = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-                if (rayHit.Length > 0 && rayHit[0].transform.TryGetComponent<PlayerMove>(out PlayerMove enemyMover))
+                if (rayHit.Length > 0 && rayHit[0].transform.TryGetComponent<MoveComponent>(out MoveComponent enemyMover))
                 {
                     _target = enemyMover;
                 }
@@ -79,7 +79,7 @@ public class NewFourMeleeAttack : Ability
             yield return null;
         }
 
-        while (_position == Vector3.zero) //выбираем точку перемещения
+        while (_position == Vector3.zero) //РІС‹Р±РёСЂР°РµРј С‚РѕС‡РєСѓ РїРµСЂРµРјРµС‰РµРЅРёСЏ
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -100,7 +100,7 @@ public class NewFourMeleeAttack : Ability
 
         _enemies.Add(_target.transform);
         
-        while (time < StreamingDuration) // действие 
+        while (time < StreamingDuration) // РґРµР№СЃС‚РІРёРµ 
         {
 
             time += Time.deltaTime;
@@ -108,7 +108,7 @@ public class NewFourMeleeAttack : Ability
             _target.transform.position = Vector2.MoveTowards(_target.transform.position, _position, _range * Time.deltaTime /*/ StreamingDuration*/);
             yield return null;
         }
-        _target.GetComponent<HealthPlayer>().TryTakeDamage(10, _damageType, AttackRangeType.MeleeAttack);
+        _target.GetComponent<HealthComponent>().TryTakeDamage(10, _damageType, AttackRangeType.MeleeAttack);
         ResetValue();
     }
 }

@@ -29,12 +29,12 @@ public class FiveConversion : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha5) && _player.GetComponent<PlayerMove>().IsSelect)
+        if (Input.GetKeyDown(KeyCode.Alpha5) && _player.GetComponent<MoveComponent>().IsSelect)
         {
             ButtonAbility.onClick.Invoke();
         }
         _psionica = _player.GetComponent<PsionicaMelee>().Psionica;
-        text.text = "¿ÍÚË‚Ì‡ˇ ÔÒË: " + PsionicaActive.ToString();
+        text.text = "–ê–∫—Ç–∏–≤–Ω–∞—è –ø—Å–∏: " + PsionicaActive.ToString();
 
         float newScaleX = PsionicaActive / 30.0f;
         ActiveBar.transform.localScale = new Vector3(newScaleX, 1.0f, 1.0f);
@@ -62,7 +62,7 @@ public class FiveConversion : MonoBehaviour
     }
     public void MakeActive()
     {
-        if (_player.GetComponent<PlayerMove>().IsSelect && _psionica != 0)
+        if (_player.GetComponent<MoveComponent>().IsSelect && _psionica != 0)
         {
             Abilities.GetComponent<GlobalCooldown>().StartGlobalCooldown();
 

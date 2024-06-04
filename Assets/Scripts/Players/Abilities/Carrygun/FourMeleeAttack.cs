@@ -22,7 +22,7 @@ public class FourMeleeAttack : AbilityBase
 	[HideInInspector] public GameObject Target;
 	[HideInInspector] public float AbilityCooldownTime = 7f;
 
-	[Header("Длина щуполец в клетках")]
+	[Header("пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
 	[SerializeField] private float _tentaclesCellDistance = 3;
 
 	public delegate void FourthAbilityHandler(float value);
@@ -61,11 +61,11 @@ public class FourMeleeAttack : AbilityBase
 	private void Start()
 	{
 		_camera = Camera.main;
-		Distance = _tentaclesCellDistance * _cellSize; // дистанция от кастующего игрока до щупалец
-		_distanceTentacles = _cellSize * CellDistance; //от щуполец до земли
+		Distance = _tentaclesCellDistance * _cellSize; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+		_distanceTentacles = _cellSize * CellDistance; //пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 		AttackType = AttackType.OneAttack;
 		AbilityType = AbilityType.DamageAbility;
-		speedOriginal = transform.parent.GetComponent<PlayerInfo>().MoveSpeed;
+		speedOriginal = transform.parent.GetComponent<CharacterData>().MoveSpeed;
 	}
 
 	private void Update()
@@ -75,16 +75,16 @@ public class FourMeleeAttack : AbilityBase
 
 		Vector2 checkPosition = transform.position;
 
-		// Проверка наличия объекта с компонентом Slime в заданном радиусе
+		// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Slime пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 		bool isSlimePresent = CheckForSlime(checkPosition);
 
 		if (isSlimePresent)
 		{
-			_player.GetComponent<PlayerMove>().ChangeMoveSpeed(0.1f);
+			_player.GetComponent<MoveComponent>().ChangeMoveSpeed(0.1f);
 		}
 		else
 		{
-			_player.GetComponent<PlayerMove>().SetDefaultSpeed();
+			_player.GetComponent<MoveComponent>().SetDefaultSpeed();
 		}
 	}
 
@@ -105,7 +105,7 @@ public class FourMeleeAttack : AbilityBase
 	{
 		base.HandleToggleAbility();
 
-		// Текущий код в методе Update
+		// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ Update
 		_cooldownIsActive = CooldownButton.gameObject.activeSelf;
 
 		if (Input.GetKeyDown(ActivationKey))
@@ -116,13 +116,13 @@ public class FourMeleeAttack : AbilityBase
 			}
 		}
 
-		if (Input.GetMouseButtonDown(0) && _player.GetComponent<PlayerMove>().IsSelect &&
+		if (Input.GetMouseButtonDown(0) && _player.GetComponent<MoveComponent>().IsSelect &&
 			Abilities.gameObject.activeSelf && ToggleAbility.enabled == true)
 		{
 			HandleLeftMouseButtonToggle();
 		}
 
-		if (Input.GetMouseButtonDown(1) && _player.GetComponent<PlayerMove>().IsSelect &&
+		if (Input.GetMouseButtonDown(1) && _player.GetComponent<MoveComponent>().IsSelect &&
 			Abilities.gameObject.activeSelf)
 		{
 			Vector2 cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -209,7 +209,7 @@ public class FourMeleeAttack : AbilityBase
 
 		if (_canPull && NewAbilityPrefab != null && TargetParent != null)
 		{
-			TargetParent.GetComponent<PlayerMove>().CanMove = false;
+			TargetParent.GetComponent<MoveComponent>().CanMove = false;
 			float activePsionica = _playerAbility.GetComponent<FiveConversion>().PsionicaActive;
 			if (activePsionica > 0 && !_isDealDamage)
 			{
@@ -221,7 +221,7 @@ public class FourMeleeAttack : AbilityBase
 			{
 				end = NewAbilityPrefab.transform.position;
 				StartCoroutine(MoveEnemy());
-				Debug.Log("Старт движения к указанной точке.");
+				Debug.Log("пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ.");
 			}
 		}
 
@@ -274,28 +274,28 @@ public class FourMeleeAttack : AbilityBase
 			{
 				DrawCircle.SetColor(Color.green);
 				tentacleFound = true;
-				Debug.Log("в зоне");
+				Debug.Log("пїЅ пїЅпїЅпїЅпїЅ");
 				break;
 			}
 		}
 
 		if (!tentacleFound)
 		{
-			Debug.Log("нет в зоне");
+			Debug.Log("пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ");
 			DrawCircle.SetColor(Color.red);
 		}
 	}
 
 	protected override void HandleToggleAbilityOn()
 	{
-        // Включенный ToggleAbility
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ ToggleAbility
         SetNewRadiusCircleColor();
 
         base.HandleToggleAbilityOn();
 
 		if (FixPrefab == true && _cursorIsActive == false && _newCoursorPrefab == null)
 		{
-			Debug.Log("Момент клика, куда будет двигаться противник");
+			Debug.Log("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
 			//FindTentaclePrefab(Distance);
 			Cursor.visible = true;
 		}
@@ -311,7 +311,7 @@ public class FourMeleeAttack : AbilityBase
 				NewAbilityPrefab.transform.position = _targetPosition;
 			}
 
-			if (_player.GetComponent<PlayerMove>().IsSelect && Input.GetMouseButtonDown(0) &&
+			if (_player.GetComponent<MoveComponent>().IsSelect && Input.GetMouseButtonDown(0) &&
 				!EventSystem.current.IsPointerOverGameObject() && Target)
 			{
 				_targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -355,10 +355,6 @@ public class FourMeleeAttack : AbilityBase
 											(_distanceTentacles);
 										_canDrawDistancePrefab = false;
 									}
-
-									_targetCircle.IsActive = false;
-									_targetCircle = TargetParent.GetComponent<UIPlayerComponents>().CircleSelect;
-									_targetCircle.IsActive = true;
 
 									break;
 								}
@@ -455,7 +451,7 @@ public class FourMeleeAttack : AbilityBase
 
 	protected override void HandleToggleAbilityOff()
 	{
-		// Выключенный ToggleAbility
+		// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ ToggleAbility
 		base.HandleToggleAbilityOff();
 
 		if (TargetParent == null && NewAbilityPrefab)
@@ -495,7 +491,7 @@ public class FourMeleeAttack : AbilityBase
 
 	public override void OnRightDoubleClick()
 	{
-		if (AbilityTypeManager.ActiveAbilityType == 1 && _player.GetComponent<PlayerMove>().IsSelect &&
+		if (AbilityTypeManager.ActiveAbilityType == 1 && _player.GetComponent<MoveComponent>().IsSelect &&
 			Abilities.gameObject.activeSelf)
 		{
 			if (_castCoroutine != null)
@@ -548,7 +544,7 @@ public class FourMeleeAttack : AbilityBase
 
 		if (TargetParent != null && TargetParent.GetComponent<Rigidbody2D>())
 		{
-			TargetParent.GetComponent<PlayerMove>().CanMove = true;
+			TargetParent.GetComponent<MoveComponent>().CanMove = true;
 			TargetParent.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
 		}
 
@@ -589,7 +585,7 @@ public class FourMeleeAttack : AbilityBase
 			}
 		}
 
-		_player.GetComponent<PlayerMove>().CanMove = false;
+		_player.GetComponent<MoveComponent>().CanMove = false;
 		CreateCastPrefab(1.2f);
 
 		if (Abilities.GetComponent<GlobalCooldown>())
@@ -616,7 +612,7 @@ public class FourMeleeAttack : AbilityBase
 
 		ToggleAbility.enabled = false;
 
-		//_player.GetComponent<PlayerMove>().CanMove = true; //для фикса (раньше могли ходить когда начинаем притягивать)
+		//_player.GetComponent<MoveComponent>().CanMove = true; //пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ)
 		if (NewAbilityPrefab != null)
 		{
 			childSpriteRenderer.color = new Color(childSpriteRenderer.color.r, childSpriteRenderer.color.g,
@@ -709,7 +705,7 @@ public class FourMeleeAttack : AbilityBase
 		while (NewAbilityPrefab != null && TargetParent != null && (Vector2)TargetParent.transform.position != end)
 		{
 			NewAbilityPrefab.transform.position = end;
-			TargetParent.GetComponent<PlayerMove>().CanMove = false;
+			TargetParent.GetComponent<MoveComponent>().CanMove = false;
 
 			timer += Time.deltaTime;
 			if (hitObject != null)
@@ -737,7 +733,7 @@ public class FourMeleeAttack : AbilityBase
 						hit.collider.gameObject != TargetParent && hit.collider.CompareTag("Allies"))
 					{
 						hitObject = hit.collider.gameObject;
-						hitObject.GetComponent<PlayerMove>().CanMove = false;
+						hitObject.GetComponent<MoveComponent>().CanMove = false;
 
 
 						hitObject.transform.position = Vector2.MoveTowards(hitObject.transform.position, end,
@@ -766,14 +762,14 @@ public class FourMeleeAttack : AbilityBase
 		StopBackgroundSwitcherEvent.SendStartStopBackgroundSwitcher();
 		ToggleAbility.enabled = true;
 
-		//фикс
-		_player.GetComponent<PlayerMove>().CanMove = true;
+		//пїЅпїЅпїЅпїЅ
+		_player.GetComponent<MoveComponent>().CanMove = true;
 	}
 
 	private IEnumerator DamageCooldown(float activePsionica)
 	{
 		yield return new WaitForSeconds(0.1f);
-		TargetParent.GetComponent<HealthPlayer>().TryTakeDamage(activePsionica * 0.5f, DamageType.Magical, AttackRangeType.RangeAttack);
+		TargetParent.GetComponent<HealthComponent>().TryTakeDamage(activePsionica * 0.5f, DamageType.Magical, AttackRangeType.RangeAttack);
 	}
 
 	public void Recharge()
@@ -830,7 +826,7 @@ public class FourMeleeAttack : AbilityBase
 
 		foreach (RaycastHit2D hit in hits)
 		{
-			// Обработка столкновения
+			// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 			Debug.Log("Collision with: " + hit.collider.name);
 			return true;
 		}

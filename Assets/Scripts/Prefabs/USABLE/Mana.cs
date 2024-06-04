@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-public class ManaPlayer : PlayerStamina
+public class Mana : StaminaComponent
 {
     public override void Add(float manaValue)
     {

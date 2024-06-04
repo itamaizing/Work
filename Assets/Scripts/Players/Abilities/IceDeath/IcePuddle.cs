@@ -8,13 +8,13 @@ public class IcePuddle : Ability
 	[SerializeField] private IcePuddleObject _puddle;
 	[SerializeField] private Character _playerLinks;
 	//[SerializeField] private Rigidbody2D _rb;
-	//[SerializeField] private HealthPlayer _healthPlayer;
-	//[SerializeField] private RunePlayer _rune;
+	//[SerializeField] private HealthComponent _healthComponent;
+	//[SerializeField] private RuneComponent _rune;
 
 	protected override void Cast()
 	{
 		PayCost();
-		if (_playerLinks.RunePlayer.RemoveRune(1, this))
+		if (_playerLinks.RuneComponent.RemoveRune(1, this))
 		{
 			Shoot();
 		}
@@ -28,7 +28,7 @@ public class IcePuddle : Ability
 	{
 		IcePuddleObject puddle = Instantiate(_puddle, gameObject.transform.position, Quaternion.identity);
 		puddle.dad = _playerLinks.gameObject;
-		puddle.energyPlayer = (EnergyPlayer)Mana;
-		puddle.healthPlayer = _playerLinks.Health;
+		puddle.energy = (Energy)Mana;
+		puddle.healthComponent = _playerLinks.Health;
 	}
 }

@@ -104,7 +104,7 @@ public abstract class AbilityBase : MonoBehaviour
 	protected Vector2 _abilityPosition;
 	protected Vector3 previousPosition = Vector3.zero;
 	protected GameObject _newCastPrefab;
-	protected HealthPlayer _targetHealth;
+	protected HealthComponent _targetHealth;
 	protected Coroutine _castCoroutine = null;
 	protected Coroutine _blinkCoroutine;
 	protected AbilityManager abilityManager;
@@ -172,7 +172,7 @@ public abstract class AbilityBase : MonoBehaviour
 		}
 
 		if (Input.GetKeyDown(ActivationKey) && ToggleAbility.gameObject.activeSelf && Abilities.gameObject.activeSelf &&
-			ToggleAbility.enabled && _player.GetComponent<PlayerMove>().IsSelect)
+			ToggleAbility.enabled && _player.GetComponent<MoveComponent>().IsSelect)
 		{
 			if (lastAbility != null && lastAbility.LastUseAbility == this && lastAbility.OneClick)
 			{
@@ -194,7 +194,7 @@ public abstract class AbilityBase : MonoBehaviour
 	{
 		SetNewRadiusCircleColor();
 
-		if (_player.GetComponent<PlayerMove>().IsSelect == false)
+		if (_player.GetComponent<MoveComponent>().IsSelect == false)
 		{
 			if (TargetParent == null)
 			{
@@ -206,13 +206,13 @@ public abstract class AbilityBase : MonoBehaviour
 			CanDrawCircle = true;
 		}
 
-		if (CanDrawCircle && _player.GetComponent<PlayerMove>().IsSelect)
+		if (CanDrawCircle && _player.GetComponent<MoveComponent>().IsSelect)
 		{
 			DrawCircle.Draw(Distance);
 			CanDrawCircle = false;
 		}
 
-		if (_player.GetComponent<PlayerMove>().IsSelect && Input.GetMouseButtonDown(1) && _cast == false)
+		if (_player.GetComponent<MoveComponent>().IsSelect && Input.GetMouseButtonDown(1) && _cast == false)
 		{
 			StopBackgroundSwitcherEvent.SendStartStopBackgroundSwitcher();
 
@@ -253,11 +253,11 @@ public abstract class AbilityBase : MonoBehaviour
 
 			foreach (Collider2D collider in colList)
 			{
-				if (collider.CompareTag(targetTag) && collider.GetComponent<PlayerMove>())
+				if (collider.CompareTag(targetTag) && collider.GetComponent<MoveComponent>())
 				{
 					if (collider.gameObject == transform.parent.gameObject && CanDoAbilityOnMyself == false) continue;
 					
-						collider.GetComponent<UIPlayerComponents>().CircleSelect.IsActive = true;
+						//collider.GetComponent<UIPlayerComponents>().ChangeSelection();
 						_enemies.Add(collider.gameObject);
 						collider.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
 							.SetColorCircleBackgroundPlayer(collider);					
@@ -283,7 +283,7 @@ public abstract class AbilityBase : MonoBehaviour
 			foreach (GameObject enemyToRemove in enemiesToRemove)
 			{
 				enemyToRemove.transform.GetChild(0).gameObject.SetActive(false);
-				enemyToRemove.GetComponent<UIPlayerComponents>().CircleSelect.IsActive = true;
+				//enemyToRemove.GetComponent<SelectComponent>().Highlight();
 				_enemies.Remove(enemyToRemove);
 			}
 
@@ -311,7 +311,7 @@ public abstract class AbilityBase : MonoBehaviour
 				foreach (GameObject enemy in _enemies)
 				{
 					enemy.transform.GetChild(0).gameObject.SetActive(false);
-					enemy.GetComponent<UIPlayerComponents>().CircleSelect.IsActive = false;
+					//enemy.GetComponent<SelectComponent>().Highlight();
 					enemiesToRemove.Add(enemy);
 				}
 
@@ -381,7 +381,7 @@ public abstract class AbilityBase : MonoBehaviour
 			{
 				//enemy.transform.GetChild(0).gameObject.GetComponent<BackgroundColorFader>().StopFadeSprite();
 				enemy.transform.GetChild(0).gameObject.SetActive(false);
-				enemy.GetComponent<UIPlayerComponents>().CircleSelect.IsActive = false;
+				//enemy.GetComponent<SelectComponent>().Highlight();
 			}
 
 			_enemies.Clear();
@@ -567,11 +567,6 @@ public abstract class AbilityBase : MonoBehaviour
 			{
 				//TargetParent.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>().SetColorCircleBackgroundPlayer(TargetParent);
 
-				if (_targetCircle == null)
-				{
-					_targetCircle = TargetParent.GetComponent<UIPlayerComponents>().CircleSelect;
-				}
-
 				if (!_targetCircle.IsActive && _player == Select.GetComponent<SelectObject>().SelectedObject)
 				{
 					_targetCircle.IsActive = true;
@@ -611,11 +606,6 @@ public abstract class AbilityBase : MonoBehaviour
 		else
 		{
 			IsActiveAbility = false;
-
-			if (_targetCircle == null)
-			{
-				_targetCircle = TargetParent.GetComponent<UIPlayerComponents>().CircleSelect;
-			}
 
 			if (_targetCircle.IsActive && TargetParent != Select.GetComponent<SelectObject>().SelectedObject)
 			{
