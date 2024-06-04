@@ -10,12 +10,11 @@ public class IceSword : Ability
 	[SerializeField] private Character _playerLinks;
 	[SerializeField] private DeathSpiral _deathSpiral;
 	[SerializeField] private PhysicalAttack _physicalAttack;
-	//private Vector2 _targetPosition;
 	[SerializeField] private float _raduis;
-	[SerializeField] private float _cooldowns;
-	[SerializeField] private float _cooldownTimer = 1.4f;
+	[SerializeField] private float _cooldownTime;
+	private float _cooldownTimer = 1.4f;
 	private int _hitInTheRow = 0;
-	[SerializeField] private bool _canUse = true;
+	private bool _canUse = true;
 	private PlayerLinks _target;
 
 	private void Update()
@@ -40,7 +39,7 @@ public class IceSword : Ability
 			{
 				if (_target == enemy || enemy == _physicalAttack.Target)
 				{
-					_cooldownTimer = _cooldowns;
+					_cooldownTimer = _cooldownTime;
 					_canUse = false;
 					_hitInTheRow++;
 					_physicalAttack.HitFromSword(enemy);
@@ -48,7 +47,7 @@ public class IceSword : Ability
 				}
 				else
 				{
-					_cooldownTimer = _cooldowns;
+					_cooldownTimer = _cooldownTime;
 					_physicalAttack.LoseStreak();
 					_hitInTheRow = 1;
 					_canUse = false;
@@ -80,7 +79,7 @@ public class IceSword : Ability
 		if (_cooldownTimer <= 0)
 		{
 			_canUse = true;
-			_cooldownTimer = _cooldowns;
+			_cooldownTimer = _cooldownTime;
 			//_physicalAttack.LoseStreak();
 			//_IshitInTheRow = false;
 			//_hitInTheRow = 0;
