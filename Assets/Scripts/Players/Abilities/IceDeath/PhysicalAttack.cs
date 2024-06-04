@@ -16,11 +16,11 @@ public class PhysicalAttack : Ability
 	[SerializeField] private float _abilityCooldown = 1.4f; //cooldown between shots
 	[SerializeField] private LayerMask _obstacleLayerMask;
 	private float _cooldownTimer = 1.4f;
-	private int _hitInARow = 0;
+	[SerializeField] private int _hitInARow = 0;
 	private float _multiplySpeed = .05f;
 	private bool _isInTheRow = false;
 	private float _baseTimer = 2f; //time and timer between losing streak
-	private float _timer = 2f;
+	[SerializeField] private float _timer = 2f;
 	private bool _isReadyToShot = true;
 	private PlayerLinks _target;
 	private Vector2 _jumpPos;
@@ -112,7 +112,7 @@ public class PhysicalAttack : Ability
 		_timer = _baseTimer;
 	}
 
-	private void Timer()
+	public void Timer()
 	{
 		if(_cooldownTimer > 0 && !_isReadyToShot) 
 		{
@@ -128,6 +128,7 @@ public class PhysicalAttack : Ability
 			_timer -= Time.deltaTime;
 			if (_timer <= 0)
 			{
+				_target = null;
 				_multiplySpeed = 0.05f;
 				Debug.Log("lose streak");
 				_timer = _baseTimer;
@@ -179,6 +180,25 @@ public class PhysicalAttack : Ability
 		_multiplySpeed = multiplySpeed;
 		_timer = _baseTimer;
 		_isInTheRow = true;
+	}
 
+	public void HitFromSword(PlayerLinks enemy)
+	{
+		Debug.Log("hit from sword");
+		_target = enemy;
+		_hitInARow++;
+		_multiplySpeed *= 2;
+		_timer = _baseTimer;
+		_isInTheRow = true;
+	}
+
+	public void LoseStreak()
+	{
+		_target = null;
+		_multiplySpeed = 0.05f;
+		Debug.Log("lose streak");
+		_timer = _baseTimer;
+		_isInTheRow = false;
+		_hitInARow = 0;
 	}
 }
