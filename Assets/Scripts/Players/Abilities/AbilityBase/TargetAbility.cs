@@ -13,19 +13,8 @@ public abstract class TargetAbility : Ability
 
     public bool IsTarget => (_target.transform == _character.transform);
     public Character Target => _target;
-    public bool IsTargetInRadius
-    {
-        get
-        {
-            if (_target == null)
-                return false;
 
-            float distance = Vector3.Distance(_target.transform.position, transform.position);
-            return distance <= Radius;
-        }
-    }
-
-    protected abstract IEnumerator CastCoroutine();
+    protected abstract void CastAction();
 
     protected override void Cast()
     {
@@ -62,6 +51,15 @@ public abstract class TargetAbility : Ability
         return _target != null;
     }
 
+    protected bool IsTargetInRadius(float radius)
+    {
+        if (_target == null)
+            return false;
+
+        float distance = Vector3.Distance(_target.transform.position, transform.position);
+        return distance <= radius;
+    }
+
     protected virtual void Cleaning()
     {
         _target = null;
@@ -81,7 +79,7 @@ public abstract class TargetAbility : Ability
         yield return _chooseTatgetJob = StartCoroutine(ChooseTatgetCoroutine(Radius));
         yield return GetCastDeleyCoroutine();
         PayCost();
-        yield return _castJob = StartCoroutine(CastCoroutine());
+        CastAction();
     }
 
     protected IEnumerator ChooseTatgetCoroutine(float ChooseRadius)

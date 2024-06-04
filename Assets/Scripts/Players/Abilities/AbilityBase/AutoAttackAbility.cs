@@ -5,6 +5,7 @@ using UnityEngine;
 public abstract class AutoAttackAbility : TargetAbility
 {
     [SerializeField] private float _attackZoneSize;
+    [SerializeField] protected float _attackSpeed = 1f;
 
     private Coroutine _autoAttackJob;
 
@@ -46,10 +47,12 @@ public abstract class AutoAttackAbility : TargetAbility
     {
         while (Target != null)
         {
-            if (IsTargetInRadius)
+            if (IsTargetInRadius(Radius))
             {
+                yield return new WaitForSeconds(_attackSpeed);
+                if (IsTargetInRadius(Radius + _attackZoneSize))
                 PayCost();
-                yield return _castJob = StartCoroutine(CastCoroutine());
+                CastAction();
             }
             yield return null;
         }
