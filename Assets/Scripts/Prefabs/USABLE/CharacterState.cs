@@ -468,6 +468,7 @@ public class CharacterState : MonoBehaviour
 	private HealthComponent _health;
 	private MoveComponent _move;
 	private StaminaComponent _stamina;
+	[SerializeField] private StateIcons _stateIcons;
 	public HealthComponent Health => _health;
 	public MoveComponent Move => _move;
 	public StaminaComponent Stamina => _stamina;
@@ -515,7 +516,7 @@ public class CharacterState : MonoBehaviour
 			{
 				if (item.Stack(duration))
 				{
-					//_links.StateIcons.ActivateIco(state, duration, 1); StateIcons?
+					_stateIcons.ActivateIco(state, duration, 1);
 				}
 				else
 				{
@@ -525,7 +526,7 @@ public class CharacterState : MonoBehaviour
 		}
 		else
 		{
-			//_links.StateIcons.ActivateIco(state, duration, 1); State Icons?
+			_stateIcons.ActivateIco(state, duration, 1);
 			currentStates.Add(newState);
 			//currentStates[currentStates.Count - 1].
 			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
