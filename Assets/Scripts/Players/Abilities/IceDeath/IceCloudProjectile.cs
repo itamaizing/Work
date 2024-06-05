@@ -14,6 +14,7 @@ public class IceCloudProjectile : MonoBehaviour
 
 	private void Awake()
 	{
+		Debug.Log("bullet");
 		startPos = transform.position;		
 		_rb.AddForce(transform.up * _force, ForceMode2D.Impulse);
 	}

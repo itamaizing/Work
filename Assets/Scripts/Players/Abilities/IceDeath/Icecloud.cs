@@ -39,10 +39,10 @@ public class Icecloud : Ability
 	protected override void Cast()
 	{
 		_enabled = true;
-		if(_playerLinks.RuneComponent.RemoveRune(1, this)) 
+		/*if(_playerLinks.RuneComponent.RemoveRune(1, this)) 
 		{
 			Shoot();
-		}
+		}*/
 	}
 
 	protected override void Cancel()
@@ -52,6 +52,7 @@ public class Icecloud : Ability
 
 	private void Shoot()
 	{
+		Debug.Log("shot");
 		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
 		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;

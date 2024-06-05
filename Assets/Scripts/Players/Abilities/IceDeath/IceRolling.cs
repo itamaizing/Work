@@ -39,7 +39,7 @@ public class IceRolling : Ability
 			PayCost();
 			if (_playerLinks.RuneComponent.RemoveRune(0.25f, this))
 			{
-				NewJump();
+				Jump();
 			}
 			else
 			{
@@ -61,7 +61,7 @@ public class IceRolling : Ability
 		_enabled = false;
 	}
 
-	private void Jump()
+	/*private void Jump()
 	{
 		if (_canJump )
 		{
@@ -86,7 +86,7 @@ public class IceRolling : Ability
 			Vector2 jumpPos = lookDir * actualJumpRange + (Vector2)PlayerMove.transform.position;
 			if(CheckObstacleBetween(_playerLinks.Rb.position, jumpPos))
 			{
-				Debug.Log("Обнаружено препятствие:");
+				Debug.Log("Find obstacle:");
 				//прыгать до препятствия
 				_playerLinks.Rb.DOMove(_jumpPos, _durationOfJump * actualJumpRange / GlobalVariable.cellSize).OnComplete(AfterJump);
 			}
@@ -98,9 +98,10 @@ public class IceRolling : Ability
 		}
 	}
 	//делим на cell size что бы считалось время не за одну единицу юнити, а за наши, клетки
-
+	*/
 	private void AfterJump()
 	{
+		Debug.Log("can jump");
 		PlayerMove.CanMove = true;
 		_canJump = true;
 		//_enabled = false;
@@ -126,7 +127,7 @@ public class IceRolling : Ability
 		return false;
 	}
 
-	private void NewJump()
+	private void Jump()
 	{
 		if (_canJump)
 		{
@@ -138,7 +139,7 @@ public class IceRolling : Ability
 
 			_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			_lookDir = (_mousePos - _playerLinks.Rb.position).normalized;
-
+			Debug.Log("jump");
 			actualJumpRange *= GlobalVariable.cellSize;
 			Vector2 jumpPos = _lookDir * actualJumpRange + (Vector2)PlayerMove.transform.position;
 			if (CheckObstacleBetween(_playerLinks.Rb.position, jumpPos))
@@ -171,6 +172,10 @@ public class IceRolling : Ability
 			{
 				_playerLinks.Rb.DOMove(jumpPos, _durationOfJump / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(NextJump);
 			}
+		}
+		else
+		{
+			AfterJump();
 		}
 	}
 }

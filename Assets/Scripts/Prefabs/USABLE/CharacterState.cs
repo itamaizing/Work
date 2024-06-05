@@ -351,9 +351,9 @@ public class FrozenState : AbstractCharacterState
 		
 		_characterState.Move.CanMove = false;
 
-		if (character.GetComponent<PlayerAbilities>().Abilities != null)
+		if (character.TryGetComponent<PlayerAbilities>(out var ability))
 		{
-			_abilities = character.GetComponent<PlayerAbilities>();
+			_abilities = ability;
 			_abilities.SetAbilitiesDisabled();
 		}
 		else
@@ -386,7 +386,7 @@ public class FrozenState : AbstractCharacterState
 		{
 			_characterState.Move.CanMove = true;
 		}
-		if (_characterState.Check(StatusEffect.Ability))
+		if (_characterState.Check(StatusEffect.Ability) && _abilities!=null)
 		{
 			_abilities.SetAbilitiesEnabled();
 		}
