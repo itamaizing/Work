@@ -11,10 +11,9 @@ using static UnityEngine.GraphicsBuffer;
 
 public class MinionAttack : Ability
 {
-	[SerializeField] private float _damage = 3f;
+	[SerializeField] private float _damage = 3f;	
 	[SerializeField] private Character _dad;
 	[SerializeField] private float _abilityCooldown = 1.6f; //cooldown between shots
-	[SerializeField] private LayerMask _obstacleLayerMask;
 	private float _cooldownTimer = 1.6f;
 	private bool _isReadyToShot = true;
 

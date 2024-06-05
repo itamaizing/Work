@@ -615,6 +615,8 @@ GameObject:
   - component: {fileID: 3890056238783834650}
   - component: {fileID: 4569873764026062606}
   - component: {fileID: 1386630179779334956}
+  - component: {fileID: 6149066541462994990}
+  - component: {fileID: 1072701771335386490}
   m_Layer: 0
   m_Name: Abilities
   m_TagString: Untagged
@@ -649,7 +651,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b927948ae40d644492381b2c058cf47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _abilities: []
+  _abilities:
+  - {fileID: 6149066541462994990}
+  - {fileID: 1072701771335386490}
   visualRender: {fileID: 1386630179779334956}
 --- !u!114 &1386630179779334956
 MonoBehaviour:
@@ -667,6 +671,69 @@ MonoBehaviour:
   _iconPref: {fileID: 7803743787710783319, guid: 793e4727b7b14be43a8a702db9da8643, type: 3}
   _areaPref: {fileID: 1574982521674352815, guid: 790fb3857b30c2b4fad4375343a84fad, type: 3}
   _squareAreaPref: {fileID: 6069098087972325736, guid: 613fcf3671552f04eb117ca2af2820f6, type: 3}
+--- !u!114 &6149066541462994990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1977499344080468152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1103a5dd4aac175458f4ced0b307556f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _abilityInfo: {fileID: 11400000, guid: d5526a3e0c52096428c4effd609e27f9, type: 2}
+  _isAutoAttack: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _manaCost: 0
+  _castDeley: 0
+  _cooldown: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _damage: 3
+  _dad: {fileID: 2981867871510918870}
+  _abilityCooldown: 1.6
+--- !u!114 &1072701771335386490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1977499344080468152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77f4972268ef405438dda47930d6b05d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _abilityInfo: {fileID: 11400000, guid: 7174e29e2e4d47e4392e2e7108a5379f, type: 2}
+  _isAutoAttack: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _manaCost: 0
+  _castDeley: 0
+  _cooldown: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _smoke: {fileID: -1930347355044849197, guid: c62801e5e7752514bb8cc9b9e90e943d, type: 3}
+  _links: {fileID: 2981867871510918870}
 --- !u!1 &2683703737985704686
 GameObject:
   m_ObjectHideFlags: 0
@@ -2096,9 +2163,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7f243771c2613d40a4aecc719336ae4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  energy: {fileID: 0}
-  durationToExit: 0
-  damageToExit: 0
 --- !u!114 &1705208273768184284
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2128,7 +2192,6 @@ MonoBehaviour:
   MarkersSelect: {fileID: 6914308446287960741}
   DamageSpawn: {fileID: 632145400099622009}
   PopupText: {fileID: 3712476584407953316, guid: b8ec9c7fb2a215a418a41efc3aec9187, type: 3}
-  IsSelect: 1
 --- !u!114 &1836414566327765074
 MonoBehaviour:
   m_ObjectHideFlags: 0

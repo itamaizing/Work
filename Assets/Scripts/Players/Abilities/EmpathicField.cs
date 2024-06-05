@@ -21,6 +21,17 @@ public class EmpathicField : Ability
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		
+		if(collision.TryGetComponent<Character>(out var character))
+		{
+			_players.Add(character.Health);
+		}
+	}
+
+	private void OnTriggerExit2D(Collider2D collision)
+	{
+		if (collision.TryGetComponent<Character>(out var character))
+		{
+			_players.Remove(character.Health);
+		}
 	}
 }
