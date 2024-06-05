@@ -390,7 +390,7 @@ RectTransform:
   - {fileID: 4041501855964374284}
   - {fileID: 5762049827953977616}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -456,9 +456,9 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 0.027881742}
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 1.0994574
 --- !u!114 &5665079937663656764
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -548,7 +548,6 @@ MonoBehaviour:
   MarkersSelect: {fileID: 6779511414245420136}
   DamageSpawn: {fileID: 1934385862078041493}
   PopupText: {fileID: 3712476584407953316, guid: b8ec9c7fb2a215a418a41efc3aec9187, type: 3}
-  IsSelect: 0
 --- !u!114 &5511617219408767834
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2347,8 +2346,8 @@ RectTransform:
   m_Father: {fileID: 795014623008228812}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 7, y: 7}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -2704,7 +2703,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0.006649971, y: 0.0031900406}
+  m_AnchoredPosition: {x: 0.0066490173, y: 0.0031900406}
   m_SizeDelta: {x: -0.06688, y: -0.07107}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3745172579277152900

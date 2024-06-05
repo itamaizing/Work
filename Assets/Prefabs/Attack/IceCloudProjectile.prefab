@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 748218918613675416}
   - component: {fileID: -4999684937418030614}
   - component: {fileID: -53743584304020754}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: IceCloudProjectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -131,11 +131,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cec81e1ccabda534ea34bd1f490e8083, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dad: {fileID: 0}
   _rb: {fileID: -53743584304020754}
   _hitEffect: {fileID: 0}
   _force: 30
   _distance: 5
-  dad: {fileID: 0}
 --- !u!58 &-4999684937418030614
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -161,7 +161,7 @@ CircleCollider2D:
     m_Bits: 4294967295
   m_ContactCaptureLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 8183
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
