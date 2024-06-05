@@ -29,8 +29,10 @@ public class CameraMove : MonoBehaviour
 
         float cameraHalfWidth = _camera.orthographicSize * _camera.aspect;
         float cameraHalfHeight = _camera.orthographicSize;
+        
+        if (Input.GetMouseButton(0)) return;
 
-        if (Input.GetMouseButton(0)) // ����� ������ ���� ������������
+        if (Input.GetMouseButton(1)) // ����� ������ ���� ������������
         {
             float deltaX = -Input.GetAxis("Mouse X") * panSpeed * Time.deltaTime * 8;
             float deltaY = -Input.GetAxis("Mouse Y") * panSpeed * Time.deltaTime * 8;

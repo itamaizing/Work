@@ -44,14 +44,14 @@ public class FourRangeRecovery : AbilityBase
 	{
 		if (!canCast) return;
 		base.HandleToggleAbility();
-		// Текущий код в методе Update
+		// РўРµРєСѓС‰РёР№ РєРѕРґ РІ РјРµС‚РѕРґРµ Update
 
-		if (Input.GetMouseButtonDown(0) && _player.GetComponent<PlayerMove>().IsSelect && ToggleAbility.gameObject.activeSelf && ToggleAbility.enabled == true)
+		if (Input.GetMouseButtonDown(0) && _player.GetComponent<MoveComponent>().IsSelect && ToggleAbility.gameObject.activeSelf && ToggleAbility.enabled == true)
 		{
 			HandleLeftMouseButtonToggle();
 		}
 
-		if (Input.GetMouseButtonDown(1) && _player.GetComponent<PlayerMove>().IsSelect && ToggleAbility.gameObject.activeSelf && ToggleAbility.enabled == true)
+		if (Input.GetMouseButtonDown(1) && _player.GetComponent<MoveComponent>().IsSelect && ToggleAbility.gameObject.activeSelf && ToggleAbility.enabled == true)
 		{
 			Vector2 cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			RaycastHit2D hit = Physics2D.Raycast(cursorPosition, Vector2.zero);
@@ -66,7 +66,7 @@ public class FourRangeRecovery : AbilityBase
 	protected override void HandleToggleAbilityOn()
 	{
         if (!canCast) return;
-        // Включенный ToggleAbility
+        // Р’РєР»СЋС‡РµРЅРЅС‹Р№ ToggleAbility
         base.HandleToggleAbilityOn();
 
 		if (TargetParent == null)
@@ -95,7 +95,7 @@ public class FourRangeRecovery : AbilityBase
 
 	protected override void HandleToggleAbilityOff()
 	{
-		// Выключенный ToggleAbility
+		// Р’С‹РєР»СЋС‡РµРЅРЅС‹Р№ ToggleAbility
 		base.HandleToggleAbilityOff();
 
 		if (_isSelect == false)
@@ -117,7 +117,7 @@ public class FourRangeRecovery : AbilityBase
 
 	public override void OnRightDoubleClick()
 	{
-		if (AbilityTypeManager.ActiveAbilityType == 1 && _player.GetComponent<PlayerMove>().IsSelect && Abilities.gameObject.activeSelf)
+		if (AbilityTypeManager.ActiveAbilityType == 1 && _player.GetComponent<MoveComponent>().IsSelect && Abilities.gameObject.activeSelf)
 		{
 			if (_castCoroutine != null)
 			{
@@ -138,7 +138,7 @@ public class FourRangeRecovery : AbilityBase
 
 	private void HandleTargetSelection()
 	{
-		// Выбор врага
+		// Р’С‹Р±РѕСЂ РІСЂР°РіР°
 		_targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		RaycastHit2D hit = Physics2D.Raycast(_targetPosition, Vector2.zero);
 
@@ -210,13 +210,13 @@ public class FourRangeRecovery : AbilityBase
 
     private void Heal()
 	{
-		if (_newPrefab != null && TargetParent.GetComponentInChildren<HealthRecovery>() != null) // обновление спелла
+		if (_newPrefab != null && TargetParent.GetComponentInChildren<HealthRecovery>() != null) // РѕР±РЅРѕРІР»РµРЅРёРµ СЃРїРµР»Р»Р°
 		{
 			TargetParent.GetComponentInChildren<HealthRecovery>().Timer = Time.time;
             TargetParent.GetComponentInChildren<HealthRecovery>().isRecovery = false;
 			TargetParent.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
 		}
-		else if (TargetParent != null) // если на цели нет бафа
+		else if (TargetParent != null) // РµСЃР»Рё РЅР° С†РµР»Рё РЅРµС‚ Р±Р°С„Р°
 		{
             _newPrefab = null;
 			_newPrefab = Instantiate(RecoveryBaffPrefab);
@@ -224,7 +224,7 @@ public class FourRangeRecovery : AbilityBase
 			_newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
 			_newPrefab.GetComponent<HealthRecovery>().CastRecovery(12f, _heal, 4f,_player);
 		}
-		_player.GetComponent<ManaPlayer>().Use(4f);
+		_player.GetComponent<Mana>().Use(4f);
 		FourthAbilityEvent?.Invoke(0f);
 		Recharge();
 	}
@@ -245,7 +245,7 @@ public class FourRangeRecovery : AbilityBase
             _newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
             _newPrefab.GetComponent<Damage>().CastRecovery(12f, 6f, 3f , _player);
         }
-        _player.GetComponent<ManaPlayer>().Use(4f);
+        _player.GetComponent<Mana>().Use(4f);
 
         DarkFourthAbilityEvent?.Invoke(0f);
         Recharge();
@@ -279,12 +279,12 @@ public class FourRangeRecovery : AbilityBase
 				toggle.enabled = false;
 			}
 		}
-		_player.GetComponent<PlayerMove>().CanMove = false;
+		_player.GetComponent<MoveComponent>().CanMove = false;
 		CreateCastPrefab(castTime);
 
 		yield return new WaitForSeconds(castTime);
 		_castCoroutine = null;
-		_player.GetComponent<PlayerMove>().CanMove = true;
+		_player.GetComponent<MoveComponent>().CanMove = true;
 		if(isLightSide)
 		{
             Heal();

@@ -30,8 +30,8 @@ public class Invisibility_PsionicaTalent3 : MonoBehaviour
     {
         _player = transform.parent.gameObject;
 
-        _player.GetComponent<HealthPlayer>().OnTakeMagicDamage += TakeDamage;
-        _player.GetComponent<HealthPlayer>().OnTakePhisicDamage += TakeDamage;
+        _player.GetComponent<HealthComponent>().OnTakeMagicDamage += TakeDamage;
+        _player.GetComponent<HealthComponent>().OnTakePhisicDamage += TakeDamage;
 
     }
 
@@ -117,13 +117,13 @@ public class Invisibility_PsionicaTalent3 : MonoBehaviour
 
     private IEnumerator CastCoroutine()
     {
-        _player.GetComponent<PlayerMove>().CanMove = false;
+        _player.GetComponent<MoveComponent>().CanMove = false;
 
         CreateCastPrefab(2.7f);
 
         yield return new WaitForSeconds(2.7f);
 
-        _player.GetComponent<PlayerMove>().CanMove = true;
+        _player.GetComponent<MoveComponent>().CanMove = true;
 
         ActivateInvisibility();
     }
@@ -162,7 +162,7 @@ public class Invisibility_PsionicaTalent3 : MonoBehaviour
     {
         IsInvisibility = true;
 
-        _player.GetComponent<CharacterState>().AddState(new InvisibleState());
+        _player.GetComponent<CharacterState>().AddState(new InvisibleState(),0,0,0);//TODO ADDVALUES
 
         _newEffectPrefab = Instantiate(_invisibleEffect);
         _newEffectPrefab.transform.SetParent(_player.transform);
@@ -182,14 +182,14 @@ public class Invisibility_PsionicaTalent3 : MonoBehaviour
 
         if (_player.GetComponent<CharacterState>().IfHasState(new InvisibleState()))
         {
-            _player.GetComponent<CharacterState>().AddState(new DefaultState());
+            _player.GetComponent<CharacterState>().AddState(new DefaultState(),0,0,0);//TODO ADDVALUES
         }
 
         StartCoroutine(RechargeCoroutine());
     }
 
 
-    private void TakeDamage(HealthPlayer.DamageInfo damageInfo)
+    private void TakeDamage(HealthComponent.DamageInfo damageInfo)
     {
         if(_toggleAbility.isOn)
         {

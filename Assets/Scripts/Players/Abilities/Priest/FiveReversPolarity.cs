@@ -17,7 +17,7 @@ public class FiveReversPolarity : MonoBehaviour
 
 	void Update()
 	{
-		if (ToggleAbility.gameObject.activeSelf && Input.GetKeyDown(KeyCode.Alpha5) && transform.parent.GetComponent<PlayerMove>().IsSelect)
+		if (ToggleAbility.gameObject.activeSelf && Input.GetKeyDown(KeyCode.Alpha5) && transform.parent.GetComponent<MoveComponent>().IsSelect)
 		{
 			if (ToggleAbility.isOn)
 			{
@@ -54,7 +54,7 @@ public class FiveReversPolarity : MonoBehaviour
 
     private IEnumerator Cast(float castTime)
 	{
-		transform.parent.GetComponent<PlayerMove>().CanMove = false;
+		transform.parent.GetComponent<MoveComponent>().CanMove = false;
 
 		ManaCost.SetActive(true);
 		ManaCost.GetComponent<VisualManaCost>().CheckManaCost();
@@ -69,9 +69,9 @@ public class FiveReversPolarity : MonoBehaviour
 
         CreateBaffPrefab();
 
-        transform.parent.GetComponent<ManaPlayer>().Use(20);
+        transform.parent.GetComponent<Mana>().Use(20);
         ManaCost.SetActive(false);
-		transform.parent.GetComponent<PlayerMove>().CanMove = true;
+		transform.parent.GetComponent<MoveComponent>().CanMove = true;
 		ToggleAbility.enabled = true;
 	}
 

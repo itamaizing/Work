@@ -1,17 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BoxArea : MonoBehaviour
 {
     [SerializeField] BoxCollider2D _colider;
     [SerializeField] SpriteRenderer _sprite;
-
-
-    private List<PlayerMove> _enemies = new List<PlayerMove>();
-    private bool _isConcernsEnemy;
-
-    public bool IsConcernsEnemy { get => _isConcernsEnemy; set => _isConcernsEnemy = value; }
 
     public void SetSize(float width, float length)
     {
@@ -27,24 +19,17 @@ public class BoxArea : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.transform != transform.parent && collision.transform.TryGetComponent(out PlayerMove enemy))
+        if(collision.transform != transform.parent && collision.transform.TryGetComponent(out Character enemy))
         {
-            _isConcernsEnemy = true;
-            _enemies.Add(enemy);
-            enemy.GetComponent<UIPlayerComponents>().CircleSelect.IsActive = true;
+            // deistvie s enemy
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.transform != transform.parent && collision.transform.TryGetComponent(out PlayerMove enemy))
+        if (collision.transform != transform.parent && collision.transform.TryGetComponent(out Character enemy))
         {
-            _enemies.Remove(enemy);
-            enemy.GetComponent<UIPlayerComponents>().CircleSelect.IsActive = false;
-            if(_enemies.Count <= 0)
-            {
-                _isConcernsEnemy = false;
-            }
+            // bezdeistvie s enemy
         }
     }
 }

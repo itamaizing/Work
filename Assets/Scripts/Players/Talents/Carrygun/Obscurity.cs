@@ -37,15 +37,15 @@ public class Obscurity : MonoBehaviour
     {
         _player = transform.parent.gameObject;
         _playerAbility = _player.transform.Find("Abilities").gameObject;
-        _originalSpeed = _player.GetComponent<PlayerInfo>().MoveSpeed;
+        _originalSpeed = _player.GetComponent<CharacterData>().MoveSpeed;
 
         _firstAbility = _playerAbility.GetComponent<OneMeleeAttack>();
         _secondAbility = _playerAbility.GetComponent<TwoMeleeAttack>();
 
-        _player.GetComponent<HealthPlayer>().OnTakeMagicDamage += TakeDamage;
-        _player.GetComponent<HealthPlayer>().OnTakePhisicDamage += TakeDamage;
+        _player.GetComponent<HealthComponent>().OnTakeMagicDamage += TakeDamage;
+        _player.GetComponent<HealthComponent>().OnTakePhisicDamage += TakeDamage;
 
-        _player.GetComponent<HealthPlayer>().OnTakePhisicDamage += EvadingPhysicalAttacks;
+        _player.GetComponent<HealthComponent>().OnTakePhisicDamage += EvadingPhysicalAttacks;
 
         _firstAbility.FirstAbilityEvent += damage => CheckClawsStrike();
 
@@ -171,7 +171,7 @@ public class Obscurity : MonoBehaviour
         return false;
     }
 
-    private void TakeDamage(HealthPlayer.DamageInfo damageInfo)
+    private void TakeDamage(HealthComponent.DamageInfo damageInfo)
     {
         //�������� ��������� �����
 
@@ -193,9 +193,9 @@ public class Obscurity : MonoBehaviour
 
     private void ActivateInvisibility()
     {
-        _player.GetComponent<CharacterState>().AddState(new InvisibleState());
+        _player.GetComponent<CharacterState>().AddState(new InvisibleState(),0,0,0);//TODO ADDVALUES
 
-        _player.GetComponent<PlayerMove>().SetMoveSpeed(_persentageOfSpeedReduction);
+        _player.GetComponent<MoveComponent>().SetMoveSpeed(_persentageOfSpeedReduction);
 
         _newEffectPrefab = Instantiate(_invisibleEffect);
         _newEffectPrefab.transform.SetParent(_player.transform);
@@ -208,10 +208,10 @@ public class Obscurity : MonoBehaviour
 
     private void DisactivateInvisibility()
     {
-        _player.GetComponent<PlayerMove>().SetDefaultSpeed();
+        _player.GetComponent<MoveComponent>().SetDefaultSpeed();
         if (_player.GetComponent<CharacterState>().IfHasState(new InvisibleState()))
         {
-            _player.GetComponent<CharacterState>().AddState(new DefaultState());
+            _player.GetComponent<CharacterState>().AddState(new DefaultState(),0,0,0);//TODO ADDVALUES
         }
 
         Destroy(_newEffectPrefab);
@@ -248,7 +248,7 @@ public class Obscurity : MonoBehaviour
     }
     
     //���������
-    private void EvadingPhysicalAttacks(HealthPlayer.DamageInfo damageInfo)
+    private void EvadingPhysicalAttacks(HealthComponent.DamageInfo damageInfo)
     {
         if(_evasion)
         {
@@ -310,9 +310,9 @@ public class Obscurity : MonoBehaviour
 
     private void OnDisable()
     {
-        _player.GetComponent<HealthPlayer>().OnTakeMagicDamage -= TakeDamage;
-        _player.GetComponent<HealthPlayer>().OnTakePhisicDamage -= TakeDamage;
+        _player.GetComponent<HealthComponent>().OnTakeMagicDamage -= TakeDamage;
+        _player.GetComponent<HealthComponent>().OnTakePhisicDamage -= TakeDamage;
 
-        _player.GetComponent<HealthPlayer>().OnTakePhisicDamage -= EvadingPhysicalAttacks;
+        _player.GetComponent<HealthComponent>().OnTakePhisicDamage -= EvadingPhysicalAttacks;
     }
 }

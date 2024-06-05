@@ -6,7 +6,7 @@ public class Uterus : MonoBehaviour
 {
     [SerializeField] private GameObject slimePrefab;
 
-    private HealthPlayer _healthPlayer;
+    private HealthComponent _healthComponent;
     private float _timerReduce = 0f;
     private float _intervalReduce = 0.1f;
 
@@ -22,7 +22,7 @@ public class Uterus : MonoBehaviour
 
     void Start()
     {
-        _healthPlayer = GetComponent<HealthPlayer>();
+        _healthComponent = GetComponent<HealthComponent>();
 
     }
 
@@ -52,7 +52,7 @@ public class Uterus : MonoBehaviour
 
         if (_timerReduce >= _intervalReduce)
         {
-            _healthPlayer.TakePhisicDamage(2);
+            _healthComponent.TakePhisicDamage(2);
             _timerReduce = 0f;
         }
     }
@@ -65,7 +65,7 @@ public class Uterus : MonoBehaviour
         {
             for (int i = 0; i < Slimes.Count; i++)
             {
-                //Slimes[i].GetComponent<HealthPlayer>()._currentHealth = 10f;
+                //Slimes[i].GetComponent<HealthComponent>()._currentHealth = 10f;
             }
 
             Vector2 randomPoint = GetRandomPointInRadius(transform.position, _radius);

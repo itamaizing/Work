@@ -23,7 +23,7 @@ public class BladeProjectile : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.gameObject.layer == 9 && collision.TryGetComponent<HealthPlayer>(out HealthPlayer enemyhealth))
+        if(collision.gameObject.layer == 9 && collision.TryGetComponent<HealthComponent>(out HealthComponent enemyhealth))
         {
             enemyhealth.TryTakeDamage(10, DamageType.Physical, AttackRangeType.RangeAttack);
             SendMessage(collision.gameObject);
@@ -44,7 +44,7 @@ public class BladeProjectile : MonoBehaviour
 
     private void HitPerfomed() 
     {
-        //можно добавть визуал/партиклы при попадании
+        //РјРѕР¶РЅРѕ РґРѕР±Р°РІС‚СЊ РІРёР·СѓР°Р»/РїР°СЂС‚РёРєР»С‹ РїСЂРё РїРѕРїР°РґР°РЅРёРё
         Destroy(gameObject);
     }
 

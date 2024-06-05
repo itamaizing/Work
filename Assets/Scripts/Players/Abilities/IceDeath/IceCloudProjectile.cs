@@ -1,23 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class IceCloudProjectile : MonoBehaviour
 {
+	public float energyDad;
 	[HideInInspector]public Character dad;
 
 	[SerializeField] private Rigidbody2D _rb;
 	[SerializeField] GameObject _hitEffect;
 	[SerializeField] private float _force;
 	[SerializeField] private float _distance = 5;
-
+	
 	private Vector2 startPos;
 
 	private void Awake()
 	{
-		startPos = transform.position;
-		
+		Debug.Log("bullet");
+		startPos = transform.position;		
 		_rb.AddForce(transform.up * _force, ForceMode2D.Impulse);
 	}
 
@@ -36,12 +34,13 @@ public class IceCloudProjectile : MonoBehaviour
 		//damage, freez etc
 		if(collision.TryGetComponent<Character>(out var target))
 		{
-			float duration = 1 + dad.Stamina.Value / 20;
+			//float duration = 1 + dad.Stamina.Value / 20;
+			float duration = 1 + energyDad / 20;
 			//target.CharacterState.energy = dad.Stamina;
-			target.Health.TakeDamage(10 + dad.Stamina.Value / 4, DamageType.Physical);
-			target.CharacterState.AddState(new FrozenState());
+			target.Health.TakeDamage(10 + energyDad / 4, DamageType.Physical);
+			target.CharacterState.AddState(new FrozenState(), duration, 30, States.Frozen);
 
-			dad.Stamina.Use(duration * 20);
+			//dad.Stamina.Use(duration * 20);
 			//damage
 			GetComponent<Collider2D>().enabled = false;
 		}

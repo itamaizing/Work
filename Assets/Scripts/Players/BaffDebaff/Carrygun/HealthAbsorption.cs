@@ -1,29 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static HealthPlayer;
+using static HealthComponent;
 
 public class HealthAbsorption : BaseEffect
 {
     public float PercentageOfAbsorption;
-    private HealthPlayer _healthPlayer;
+    private HealthComponent _healthComponent;
     
     void Start()
     {
         Type = EffectType.Debuff;
-        _healthPlayer = transform.parent.GetComponent<HealthPlayer>();
-        if (_healthPlayer != null)
+        _healthComponent = transform.parent.GetComponent<HealthComponent>();
+        if (_healthComponent != null)
         {
-            _healthPlayer.AddHealth += HandleHealAbsorption;
+            _healthComponent.AddHealth += HandleHealAbsorption;
         }
         StartCoroutine(TimeAbsorption(6f));
     }
 
     private void OnDestroy()
     {
-        if (_healthPlayer != null)
+        if (_healthComponent != null)
         {
-            _healthPlayer.AddHealth -= HandleHealAbsorption;
+            _healthComponent.AddHealth -= HandleHealAbsorption;
         }
     }
 

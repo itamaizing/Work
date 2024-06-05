@@ -17,7 +17,7 @@ public class Scrader : MonoBehaviour
     [HideInInspector] public AttackRangeType AttackRangeType;
     [HideInInspector] public GameObject Player;
 
-    private HealthPlayer _healthPlayer;
+    private HealthComponent _healthComponent;
     private float _timer = 0f;
     private float _interval = 1f;
 
@@ -44,11 +44,11 @@ public class Scrader : MonoBehaviour
 
     void Start()
     {
-        _healthPlayer = GetComponent<HealthPlayer>();
-        _healthPlayer.OnTakePhisicDamage += DamageEvasion;
+        _healthComponent = GetComponent<HealthComponent>();
+        _healthComponent.OnTakePhisicDamage += DamageEvasion;
 
-        _healthPlayer.OnTakePhisicDamage += CheckTakeAttack;
-        _healthPlayer.OnTakeMagicDamage += CheckTakeAttack;
+        _healthComponent.OnTakePhisicDamage += CheckTakeAttack;
+        _healthComponent.OnTakeMagicDamage += CheckTakeAttack;
 
         Transform canvasAbilities = GameObject.Find("CanvasAbilities").transform;
 
@@ -62,7 +62,7 @@ public class Scrader : MonoBehaviour
 
         _select = FindObjectOfType<SelectObject>();
 
-        speedOriginal = GetComponent<PlayerInfo>().MoveSpeed;
+        speedOriginal = GetComponent<CharacterData>().MoveSpeed;
 
     }
 
@@ -73,11 +73,11 @@ public class Scrader : MonoBehaviour
         if (!CheckForSlime(transform.position))
         {
             ReduceHealth();
-            GetComponent<PlayerMove>().SetDefaultSpeed();;
+            GetComponent<MoveComponent>().SetDefaultSpeed();;
         }
         else
         {
-            GetComponent<PlayerMove>().SetMoveSpeed(0.1f);
+            GetComponent<MoveComponent>().SetMoveSpeed(0.1f);
         }
 
         CheckTarget();
@@ -149,7 +149,7 @@ public class Scrader : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private void CheckTakeAttack(HealthPlayer.DamageInfo damageInfo)
+    private void CheckTakeAttack(HealthComponent.DamageInfo damageInfo)
     {
         string thisType = "Scrader";
 
@@ -192,12 +192,12 @@ public class Scrader : MonoBehaviour
 
         if (_timer >= _interval)
         {
-            _healthPlayer.TakePhisicDamage(2);
+            _healthComponent.TakePhisicDamage(2);
             _timer = 0f;
         }
     }
 
-    private void DamageEvasion(HealthPlayer.DamageInfo damageInfo)
+    private void DamageEvasion(HealthComponent.DamageInfo damageInfo)
     {
         damageInfo.ModifiedDamage -= damageInfo.ModifiedDamage * _evasionPhisicAttack;
     }
@@ -221,7 +221,7 @@ public class Scrader : MonoBehaviour
         int damage = UnityEngine.Random.Range(1, 4);
         yield return new WaitForSeconds(_attackSpeed / 2);
 
-        target.GetComponent<HealthPlayer>().TakePhisicDamage(damage);
+        target.GetComponent<HealthComponent>().TakePhisicDamage(damage);
 
         if(UnityEngine.Random.value <= _chanceBleeding)
         {

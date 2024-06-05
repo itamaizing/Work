@@ -40,8 +40,8 @@ namespace Players.Abilities.Genjalf.Shield_Ability
         {
             _uiShield = GetComponent<UIShield>();
             
-            _startSpeedPlayer = gameObject.transform.parent.GetComponent<PlayerInfo>().MoveSpeed;
-            _currentMana = gameObject.transform.parent.GetComponent<ManaPlayer>().Value;
+            _startSpeedPlayer = gameObject.transform.parent.GetComponent<CharacterData>().MoveSpeed;
+            _currentMana = gameObject.transform.parent.GetComponent<Mana>().Value;
             _currentShieldCharge = _soShieldData.ShieldCharges;
         }
 
@@ -62,7 +62,7 @@ namespace Players.Abilities.Genjalf.Shield_Ability
                 return;
 
             if (_toggleAbility.gameObject.activeSelf && Input.GetKeyDown(KeyCode.Alpha1) &&
-                transform.parent.GetComponent<PlayerMove>().IsSelect && _toggleAbility.enabled)
+                transform.parent.GetComponent<MoveComponent>().IsSelect && _toggleAbility.enabled)
             {
                 if (_resetCoroutine != null)
                 {
@@ -108,7 +108,7 @@ namespace Players.Abilities.Genjalf.Shield_Ability
                 _isResetCoroutineRunning = false;
             }
 
-            gameObject.transform.parent.GetComponent<PlayerMove>().SetMoveSpeed(0);
+            gameObject.transform.parent.GetComponent<MoveComponent>().SetMoveSpeed(0);
 
             if (!_isGlobalCooldown)
             {
@@ -123,10 +123,10 @@ namespace Players.Abilities.Genjalf.Shield_Ability
 
             _currentShieldCharge--;
 
-            transform.parent.GetComponent<PlayerMove>().SetDefaultSpeed();
+            transform.parent.GetComponent<MoveComponent>().SetDefaultSpeed();
             _manaCost.SetActive(false);
-            transform.parent.GetComponent<ManaPlayer>().Use(_soShieldData.ManaCost);
-            _currentMana = gameObject.transform.parent.GetComponent<ManaPlayer>().Value;
+            transform.parent.GetComponent<Mana>().Use(_soShieldData.ManaCost);
+            _currentMana = gameObject.transform.parent.GetComponent<Mana>().Value;
 
             _currentAbAmount = _soShieldData.AbsorptionAmount;
             _shieldBar.transform.gameObject.SetActive(true);

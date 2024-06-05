@@ -37,14 +37,14 @@ public class DarkTwoRangeProtection : AbilityBase
     protected override void HandleToggleAbility()
     {
         base.HandleToggleAbility();
-        // Текущий код в методе Update
+        // РўРµРєСѓС‰РёР№ РєРѕРґ РІ РјРµС‚РѕРґРµ Update
 
-        if (Input.GetMouseButtonDown(0) && _player.GetComponent<PlayerMove>().IsSelect && Abilities.gameObject.activeSelf)
+        if (Input.GetMouseButtonDown(0) && _player.GetComponent<MoveComponent>().IsSelect && Abilities.gameObject.activeSelf)
         {
             HandleLeftMouseButtonToggle();
         }
 
-        if (Input.GetMouseButtonDown(1) && _player.GetComponent<PlayerMove>().IsSelect && Abilities.gameObject.activeSelf)
+        if (Input.GetMouseButtonDown(1) && _player.GetComponent<MoveComponent>().IsSelect && Abilities.gameObject.activeSelf)
         {
             HandleRightMouseButtonToggle();
 
@@ -65,7 +65,7 @@ public class DarkTwoRangeProtection : AbilityBase
 
     protected override void HandleToggleAbilityOn()
     {
-        // Включенный ToggleAbility
+        // Р’РєР»СЋС‡РµРЅРЅС‹Р№ ToggleAbility
         base.HandleToggleAbilityOn();
 
         if (TargetParent == null)
@@ -94,7 +94,7 @@ public class DarkTwoRangeProtection : AbilityBase
 
     protected override void HandleToggleAbilityOff()
     {
-        // Выключенный ToggleAbility
+        // Р’С‹РєР»СЋС‡РµРЅРЅС‹Р№ ToggleAbility
         base.HandleToggleAbilityOff();
 
         if (_isSelect == false)
@@ -125,7 +125,7 @@ public class DarkTwoRangeProtection : AbilityBase
 
     private void HandleTargetSelection()
     {
-        // Выбор врага
+        // Р’С‹Р±РѕСЂ РІСЂР°РіР°
         _targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(_targetPosition, Vector2.zero);
 
@@ -154,7 +154,7 @@ public class DarkTwoRangeProtection : AbilityBase
     {
         if (TargetParent != null)
         {
-            transform.parent.GetComponent<ManaPlayer>().Use(20f);
+            transform.parent.GetComponent<Mana>().Use(20f);
 
             TargetParent.AddComponent<DebaffRepeatedDamage>();
             TargetParent.GetComponent<DebaffRepeatedDamage>().CastDebaff(8f);
@@ -182,13 +182,13 @@ public class DarkTwoRangeProtection : AbilityBase
         }
 
         ToggleAbility.enabled = false;
-        _player.GetComponent<PlayerMove>().CanMove = false;
+        _player.GetComponent<MoveComponent>().CanMove = false;
         CreateCastPrefab(castTime);
 
         yield return new WaitForSeconds(castTime);
 
         ToggleAbility.enabled = true;
-        _player.GetComponent<PlayerMove>().CanMove = true;
+        _player.GetComponent<MoveComponent>().CanMove = true;
         Select.GetComponent<SelectObject>().CanSelect = true;
         _castCoroutine = null;
 

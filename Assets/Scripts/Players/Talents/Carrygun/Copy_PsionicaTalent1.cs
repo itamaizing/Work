@@ -95,17 +95,17 @@ public class Copy_PsionicaTalent1 : MonoBehaviour
 
         if (GetComponent<Invisibility_PsionicaTalent3>().IsInvisibility)
         {
-            _distance = 9 * 1.94f; //8 клеток
+            _distance = 9 * 1.94f; //8 РєР»РµС‚РѕРє
         }
         else
         {
-            _distance = 5 * 1.94f; // 4 клетки
+            _distance = 5 * 1.94f; // 4 РєР»РµС‚РєРё
         }
     }
 
     private void HandleToggleAbilityOn()
     {
-        if (_canDrawCircle && _player.GetComponent<PlayerMove>().IsSelect)
+        if (_canDrawCircle && _player.GetComponent<MoveComponent>().IsSelect)
         {
             _drawCircle.Draw(_distance);
             _canDrawCircle = false;
@@ -202,7 +202,7 @@ public class Copy_PsionicaTalent1 : MonoBehaviour
 
     private void HandlePrefabVisibility()
     {
-        // Создание префаба
+        // РЎРѕР·РґР°РЅРёРµ РїСЂРµС„Р°Р±Р°
         _abilityPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
         if (_newAbilityPrefab == null && _isPrefab == false)
@@ -223,7 +223,7 @@ public class Copy_PsionicaTalent1 : MonoBehaviour
 
     private void HandleCopyAbility()
     {
-        // Копирование способностей
+        // РљРѕРїРёСЂРѕРІР°РЅРёРµ СЃРїРѕСЃРѕР±РЅРѕСЃС‚РµР№
 
         Vector2 _targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(_targetPosition, Vector2.zero);
@@ -267,7 +267,7 @@ public class Copy_PsionicaTalent1 : MonoBehaviour
 
     private void HandleTargetSelection()
     {
-        // Выбор врага
+        // Р’С‹Р±РѕСЂ РІСЂР°РіР°
 
         Vector2 _targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(_targetPosition, Vector2.zero);
@@ -323,9 +323,9 @@ public class Copy_PsionicaTalent1 : MonoBehaviour
 
     private IEnumerator Blink()
     {
-        while (true && _player.GetComponent<PlayerMove>().IsSelect && _newAbilityPrefab != null)
+        while (true && _player.GetComponent<MoveComponent>().IsSelect && _newAbilityPrefab != null)
         {
-            // Затухание
+            // Р—Р°С‚СѓС…Р°РЅРёРµ
             for (float t = 0f; t < 1; t += Time.deltaTime)
             {
                 float normalizedTime = t / 1;
@@ -345,7 +345,7 @@ public class Copy_PsionicaTalent1 : MonoBehaviour
                 yield return null;
             }
 
-            // Появление
+            // РџРѕСЏРІР»РµРЅРёРµ
             for (float t = 0f; t < 1; t += Time.deltaTime)
             {
                 float normalizedTime = t / 1;

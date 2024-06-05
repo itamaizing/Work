@@ -28,22 +28,21 @@ public abstract class Ability : MonoBehaviour
     [SerializeField] protected float _manaCostRate;
     [SerializeField] protected float _manaCostPerTick;
 
-    protected Character _character;
-    protected PlayerStamina _mana;
-    protected PlayerMove _playerMove;
-    protected HealthPlayer _health;
-    protected bool _isUsed = false;
-    protected bool _isCanCancle = true;
-    protected bool _isReady = true;
+	protected StaminaComponent _mana;
+	protected MoveComponent _playerMove;
+	protected HealthComponent _health;
+	protected bool _isUsed = false;
+	protected bool _isCanCancle = true;
+	protected bool _isReady = true;
     protected int _currentChargers;
-    protected Coroutine _rechargeJob;
-    protected Coroutine _streamingJob;
-    protected Coroutine _castDeleyJob;
-    protected Coroutine _cooldownJob;
+	protected Coroutine _rechargeJob;
+	protected Coroutine _streamingJob;
+	protected Coroutine _castDeleyJob;
+	protected Coroutine _cooldownJob;
 
-    public PlayerMove PlayerMove => _playerMove;
-    public PlayerStamina Mana => _mana;
-    public HealthPlayer Health => _health;
+    public MoveComponent PlayerMove => _playerMove;
+    public StaminaComponent Mana => _mana;
+    public HealthComponent Health => _health;
     public string Name => _abilityInfo.Name;
     public string Description => _abilityInfo.Description;
     public Sprite Icon => _abilityInfo.Icon;
@@ -86,12 +85,11 @@ public abstract class Ability : MonoBehaviour
         }
     }
 
-    public void Init(Character character)
+    public void SetPlayer(MoveComponent playerMove, StaminaComponent mana, HealthComponent health)
     {
-        _playerMove = character.Move;
-        _mana = character.Stamina;
-        _health = character.Health;
-        _character = character;
+        _playerMove = playerMove;
+        _mana = mana;
+        _health = health;
     }
 
     public virtual bool TryCancel()
@@ -139,6 +137,13 @@ public abstract class Ability : MonoBehaviour
         return true;
     }
 
+    protected Coroutine GetCastDeleyCoroutine()
+    {
+        _castDeleyJob = StartCoroutine(CastDeleyCoroutine());
+        StartCastDeley?.Invoke(_castDeley);
+        return _castDeleyJob;
+    }
+
     protected virtual void PayCost()
     {
         if (TryUseCharge() && _mana.Value >= _manaCost && _isReady)
@@ -164,15 +169,8 @@ public abstract class Ability : MonoBehaviour
             _streamingJob = StartCoroutine(ManaCostPerTickCorutine());
             return;
         }
-        CastEnded?.Invoke();
         _isUsed = false;
-    }
-
-    protected Coroutine GetCastDeleyCoroutine()
-    {
-        _castDeleyJob = StartCoroutine(CastDeleyCoroutine());
-        StartCastDeley?.Invoke(_castDeley);
-        return _castDeleyJob;
+        CastEnded?.Invoke();
     }
 
     protected bool TryUseCharge()
@@ -198,16 +196,6 @@ public abstract class Ability : MonoBehaviour
     protected void AreaOff()
     {
         AreaOffed?.Invoke();
-    }
-
-    protected bool IsMouseInRadius(float radius)
-    {
-        float distance = Vector3.Distance(
-            new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, transform.position.z),
-            transform.position
-            );
-
-        return distance <= radius;
     }
 
     private IEnumerator CooldownCoroutine()

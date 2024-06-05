@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class IceSword : Ability
@@ -8,50 +9,84 @@ public class IceSword : Ability
 	//[SerializeField] private GameObject _basePlayer;
 	[SerializeField] private Character _playerLinks;
 	[SerializeField] private DeathSpiral _deathSpiral;
-	//private Vector2 _targetPosition;
-	private HealthPlayer _target;
-	private int _hitInARow = 0;
+	[SerializeField] private PhysicalAttack _physicalAttack;
+	[SerializeField] private float _raduis;
+	[SerializeField] private float _cooldownTime;
+	private float _cooldownTimer = 1.4f;
+	private int _hitInTheRow = 0;
+	private bool _canUse = true;
+	private Character _target;
 
+	private void Update()
+	{
+		if (_canUse) return;
+		Timer();
+	}
 	protected override void Cancel()
 	{
 		//turn off targets and etc		
 	}
 	protected override void Cast()
 	{
-		PayCost();
-		Collider2D[] colliders = Physics2D.OverlapCircleAll(gameObject.transform.position, Radius);
+		if(!_canUse) return;
 
+		PayCost();
+		Collider2D[] colliders = Physics2D.OverlapCircleAll(gameObject.transform.position, _raduis);
+		Debug.Log("try hit");
 		foreach (Collider2D collider in colliders)
 		{
-			if (collider.TryGetComponent<HealthPlayer>(out var enemy) && collider.gameObject != _playerLinks.gameObject)
+			if (collider.TryGetComponent<Character>(out var enemy) && enemy != _playerLinks)
 			{
-				Debug.Log(collider.name);
-				//enemy.
-				//check closest and then damage
-				if (_target == null || _target == enemy)
+				if (_target == enemy || enemy == _physicalAttack.Target)
 				{
-					_target = enemy;
-					_hitInARow++;
+					_cooldownTimer = _cooldownTime;
+					_canUse = false;
+					_hitInTheRow++;
+					_physicalAttack.HitFromSword(enemy);
+					Debug.Log("hit from sword in a row");
 				}
 				else
 				{
-					_hitInARow = 0;
+					_cooldownTimer = _cooldownTime;
+					_physicalAttack.LoseStreak();
+					_hitInTheRow = 1;
+					_canUse = false;
 					_target = enemy;
+					Debug.Log("first hit from sword");
 				}
 			}
 		}
 		if (_target != null)
 		{
-			_target.TakePhisicDamage(_damage + Random.Range(0, 10));
+			_target.Health.TakePhisicDamage(_damage + Random.Range(0, 10));
 		}
 
-		if( _hitInARow > 2 ) 
+		if( _hitInTheRow > 2 ) 
 		{
 			_deathSpiral.AddCharge();
-			_hitInARow = 0;
+			_hitInTheRow = 0;
 		}
 	}
+	private void LoseStreak()
+	{
+		_hitInTheRow = 0;
+		_target = null;
+	}
+	private void Timer()
+	{
+		Debug.Log("start timer");
+		_cooldownTimer -= Time.deltaTime;
+		if (_cooldownTimer <= 0)
+		{
+			_canUse = true;
+			_cooldownTimer = _cooldownTime;
+			//_physicalAttack.LoseStreak();
+			//_IshitInTheRow = false;
+			//_hitInTheRow = 0;
+			//_target = null;
+		}
 
+	}
 	/*protected override void PayCost()
 	{
 		if (Mana.Value >= _manaCost && _isReady)

@@ -55,7 +55,7 @@ public class TwoMeleeAttack : AbilityBase
     {
         base.HandleToggleAbility();
 
-        // Текущий код в методе Update
+        // РўРµРєСѓС‰РёР№ РєРѕРґ РІ РјРµС‚РѕРґРµ Update
         if (_toggleFirstAbility != null && !_toggleFirstAbility.isOn && !ToggleAbility.isOn)
         {
             TargetParent = null;
@@ -67,13 +67,13 @@ public class TwoMeleeAttack : AbilityBase
             _isOneChange = false;
         }
 
-        if (Input.GetMouseButtonDown(0) && _player.GetComponent<PlayerMove>().IsSelect &&
+        if (Input.GetMouseButtonDown(0) && _player.GetComponent<MoveComponent>().IsSelect &&
             Abilities.gameObject.activeSelf && ToggleAbility.enabled)
         {
             HandleLeftMouseButtonToggle();
         }
 
-        if (Input.GetMouseButtonDown(1) && _player.GetComponent<PlayerMove>().IsSelect &&
+        if (Input.GetMouseButtonDown(1) && _player.GetComponent<MoveComponent>().IsSelect &&
             Abilities.gameObject.activeSelf)
         {
             HandleRightMouseButtonToggle();
@@ -96,7 +96,7 @@ public class TwoMeleeAttack : AbilityBase
 
     protected override void HandleToggleAbilityOn()
     {
-        // Включенный ToggleAbility
+        // Р’РєР»СЋС‡РµРЅРЅС‹Р№ ToggleAbility
         base.HandleToggleAbilityOn();
 
         //if (_playerAbility.GetComponent<OneMeleeAttack>().TargetParent != null)
@@ -132,7 +132,7 @@ public class TwoMeleeAttack : AbilityBase
 
     protected override void HandleToggleAbilityOff()
     {
-        // Выключенный ToggleAbility
+        // Р’С‹РєР»СЋС‡РµРЅРЅС‹Р№ ToggleAbility
         base.HandleToggleAbilityOff();
 
         CanDealDamageOrHeal = false;
@@ -154,7 +154,7 @@ public class TwoMeleeAttack : AbilityBase
 
     public override void ChangeBoolAndValues()
     {
-        _targetHealth = TargetParent.GetComponent<HealthPlayer>();
+        _targetHealth = TargetParent.GetComponent<HealthComponent>();
         CanMakeDamage = true;
         CanDealDamageOrHeal = true;
         _isOneChange = true;
@@ -163,7 +163,7 @@ public class TwoMeleeAttack : AbilityBase
 
     private void HandleTargetSelection()
     {
-        // Выбор врага
+        // Р’С‹Р±РѕСЂ РІСЂР°РіР°
         _targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(_targetPosition, Vector2.zero);
 
@@ -181,7 +181,7 @@ public class TwoMeleeAttack : AbilityBase
 
     public override void HandleDealDamageOrHeal()
     {
-        // Нанесение урона
+        // РќР°РЅРµСЃРµРЅРёРµ СѓСЂРѕРЅР°
         _damageValue = Random.Range(11, 14);
 
         if (CanMakeDamage && _castCoroutine == null && CanUseAbility)
@@ -262,7 +262,7 @@ public class TwoMeleeAttack : AbilityBase
 
     private void HandleEffectsOnTarget(float activePsionica, GameObject target)
     {
-        // Обработка эффектов на основной цели
+        // РћР±СЂР°Р±РѕС‚РєР° СЌС„С„РµРєС‚РѕРІ РЅР° РѕСЃРЅРѕРІРЅРѕР№ С†РµР»Рё
         if (activePsionica >= 10 && activePsionica < 20)
         {
             List<BaseEffect> buffEffects = new List<BaseEffect>();
@@ -285,7 +285,7 @@ public class TwoMeleeAttack : AbilityBase
             }
         }
 
-        // Перемещение к цели, если активная псионика больше или равна 30
+        // РџРµСЂРµРјРµС‰РµРЅРёРµ Рє С†РµР»Рё, РµСЃР»Рё Р°РєС‚РёРІРЅР°СЏ РїСЃРёРѕРЅРёРєР° Р±РѕР»СЊС€Рµ РёР»Рё СЂР°РІРЅР° 30
         if (activePsionica >= 30)
         {
             MoveTowardsEnemy(target);
@@ -294,7 +294,7 @@ public class TwoMeleeAttack : AbilityBase
 
     private void HandleEffectsOnNearbyEnemies(float activePsionica, float damageValue)
     {
-        // Обработка эффектов на других врагах в радиусе
+        // РћР±СЂР°Р±РѕС‚РєР° СЌС„С„РµРєС‚РѕРІ РЅР° РґСЂСѓРіРёС… РІСЂР°РіР°С… РІ СЂР°РґРёСѓСЃРµ
 
         Collider2D[] colliders = Physics2D.OverlapCircleAll(_player.transform.position, radius);
 
@@ -304,10 +304,10 @@ public class TwoMeleeAttack : AbilityBase
                 collider.gameObject != TargetParent)
             {
                 StartCoroutine(DamageEnemiesCooldown(activePsionica, collider));
-                // Обработка эффектов на других врагах
+                // РћР±СЂР°Р±РѕС‚РєР° СЌС„С„РµРєС‚РѕРІ РЅР° РґСЂСѓРіРёС… РІСЂР°РіР°С…
                 HandleEffectsOnTarget(activePsionica, collider.gameObject);
 
-                // Перемещение к врагу, если активная псионика больше или равна 30
+                // РџРµСЂРµРјРµС‰РµРЅРёРµ Рє РІСЂР°РіСѓ, РµСЃР»Рё Р°РєС‚РёРІРЅР°СЏ РїСЃРёРѕРЅРёРєР° Р±РѕР»СЊС€Рµ РёР»Рё СЂР°РІРЅР° 30
                 if (activePsionica >= 30)
                 {
                     MoveTowardsEnemy(collider.gameObject);
@@ -332,7 +332,7 @@ public class TwoMeleeAttack : AbilityBase
     {
         if (_isDamageCooldownRunning)
         {
-            yield break; // Если корутина уже выполняется, просто выходим
+            yield break; // Р•СЃР»Рё РєРѕСЂСѓС‚РёРЅР° СѓР¶Рµ РІС‹РїРѕР»РЅСЏРµС‚СЃСЏ, РїСЂРѕСЃС‚Рѕ РІС‹С…РѕРґРёРј
         }
 
         _isDamageCooldownRunning = true;
@@ -348,15 +348,15 @@ public class TwoMeleeAttack : AbilityBase
     private IEnumerator DamageEnemyCooldown(float activePsionica)
     {
         yield return new WaitForSeconds(0.1f);
-        // Нанесение урона основной цели
+        // РќР°РЅРµСЃРµРЅРёРµ СѓСЂРѕРЅР° РѕСЃРЅРѕРІРЅРѕР№ С†РµР»Рё
         _targetHealth.TryTakeDamage(activePsionica * 0.3f, DamageType.Magical, AttackRangeType.Inner);
     }
 
     private IEnumerator DamageEnemiesCooldown(float activePsionica, Collider2D collider)
     {
         yield return new WaitForSeconds(0.1f);
-        // Нанесение урона врагам в радиусе
-        collider.GetComponent<HealthPlayer>().TakeMagicDamage(activePsionica * 0.5f);
+        // РќР°РЅРµСЃРµРЅРёРµ СѓСЂРѕРЅР° РІСЂР°РіР°Рј РІ СЂР°РґРёСѓСЃРµ
+        collider.GetComponent<HealthComponent>().TakeMagicDamage(activePsionica * 0.5f);
     }
 
     private IEnumerator MoveTowardsCoroutine(GameObject target, Vector3 targetPosition, float moveSpeed)

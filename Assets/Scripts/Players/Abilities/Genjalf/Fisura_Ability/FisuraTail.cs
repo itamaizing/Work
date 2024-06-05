@@ -66,7 +66,7 @@ public class FisuraTail : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.TryGetComponent<PlayerMove>(out PlayerMove player))
+        if (collision.TryGetComponent<MoveComponent>(out MoveComponent player))
         {
             player.GetComponent<Rigidbody2D>().isKinematic = true;
         }
@@ -74,7 +74,7 @@ public class FisuraTail : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.TryGetComponent<PlayerMove>(out PlayerMove player))
+        if (collision.TryGetComponent<MoveComponent>(out MoveComponent player))
         {
             player.GetComponent<Rigidbody2D>().isKinematic = false;
         }

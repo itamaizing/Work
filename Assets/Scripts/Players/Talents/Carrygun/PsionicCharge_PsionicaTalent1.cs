@@ -100,7 +100,7 @@ public class PsionicCharge_PsionicaTalent1 : MonoBehaviour
 
             if (_timerBlinding <= 0)
             {
-                _target.GetComponent<CharacterState>().AddState(new DefaultState());
+                _target.GetComponent<CharacterState>().AddState(new DefaultState(),0,0,0);//TODO ADDVALUES
                 _target = null;
             }
         }
@@ -108,12 +108,12 @@ public class PsionicCharge_PsionicaTalent1 : MonoBehaviour
 
     private IEnumerator CastCoroutine()
     {
-        _player.GetComponent<PlayerMove>().CanMove = false;
+        _player.GetComponent<MoveComponent>().CanMove = false;
 
         CreateCastPrefab(2.2f);
         yield return new WaitForSeconds(2.2f);
 
-        _player.GetComponent<PlayerMove>().CanMove = true;
+        _player.GetComponent<MoveComponent>().CanMove = true;
         _timerCharge = 6f;
 
     }
@@ -154,7 +154,7 @@ public class PsionicCharge_PsionicaTalent1 : MonoBehaviour
         if (_toggleAbility.isOn)
         {
             _target = _player.transform.Find("Abilities").gameObject.GetComponent<OneMeleeAttack>().Target;
-            _target.GetComponent<CharacterState>().AddState(new BlindnessState());
+            _target.GetComponent<CharacterState>().AddState(new BlindnessState(),0,0,0);//TODO ADDVALUES
 
             float psionica = _player.GetComponent<PsionicaMelee>().Psionica;
 
@@ -178,18 +178,18 @@ public class PsionicCharge_PsionicaTalent1 : MonoBehaviour
     {
         if(_toggleAbility.isOn)
         {
-            if (_target != null && _target.GetComponent<ManaPlayer>())
+            if (_target != null && _target.GetComponent<Mana>())
             {
-                float mana = _target.GetComponent<ManaPlayer>().Value;
+                float mana = _target.GetComponent<Mana>().Value;
 
                 if(mana < value)
                 {
-                    _target.GetComponent<ManaPlayer>().Use(mana);
+                    _target.GetComponent<Mana>().Use(mana);
                     _player.GetComponent<PsionicaMelee>().MakePsionica(mana);
                 }
                 else
                 {
-                    _target.GetComponent<ManaPlayer>().Use(value);
+                    _target.GetComponent<Mana>().Use(value);
                     _player.GetComponent<PsionicaMelee>().MakePsionica(value);
                 }
             }

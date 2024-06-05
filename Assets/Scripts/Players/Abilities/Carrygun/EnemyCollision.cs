@@ -20,7 +20,7 @@ public class EnemyCollision : MonoBehaviour
             _collision = collision.collider.gameObject;
             _collision.GetComponent<Rigidbody2D>().isKinematic = false;
             gameObject.GetComponent<Rigidbody2D>().isKinematic = false;
-            _collision.GetComponent<PlayerMove>().CanMove = false;
+            _collision.GetComponent<MoveComponent>().CanMove = false;
 
         }
     }
@@ -31,7 +31,7 @@ public class EnemyCollision : MonoBehaviour
         if(_collision != null)
         {
             _collision.GetComponent<Rigidbody2D>().isKinematic = true;
-            _collision.GetComponent<PlayerMove>().CanMove = true;
+            _collision.GetComponent<MoveComponent>().CanMove = true;
 
         }
         gameObject.GetComponent<Rigidbody2D>().isKinematic = true;

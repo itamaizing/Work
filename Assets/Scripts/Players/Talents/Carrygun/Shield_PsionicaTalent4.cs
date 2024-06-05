@@ -20,8 +20,8 @@ public class Shield_PsionicaTalent4 : MonoBehaviour
     {
         _player = transform.parent.gameObject;
 
-        _player.GetComponent<HealthPlayer>().MakeMagicDamageEvent += CheckDamagePsionicAbilities;
-        _player.GetComponent<HealthPlayer>().MakePhisicDamageEvent += CheckDamagePsionicAbilities;
+        _player.GetComponent<HealthComponent>().MakeMagicDamageEvent += CheckDamagePsionicAbilities;
+        _player.GetComponent<HealthComponent>().MakePhisicDamageEvent += CheckDamagePsionicAbilities;
 
     }
 
@@ -93,7 +93,7 @@ public class Shield_PsionicaTalent4 : MonoBehaviour
         }
     }
 
-    private void CheckDamagePsionicAbilities(HealthPlayer.DamageInfo damageInfo)
+    private void CheckDamagePsionicAbilities(HealthComponent.DamageInfo damageInfo)
     {
         if(_toggleTalent.isOn && _toggleSkillsOfPredator.isOn)
         {

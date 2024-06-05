@@ -46,12 +46,12 @@ public class TwoRangeProtection : AbilityBase
         base.HandleToggleAbility();
         // Текущий код в методе Update
 
-        if (Input.GetMouseButtonDown(0) && _player.GetComponent<PlayerMove>().IsSelect && ToggleAbility.gameObject.activeSelf)
+        if (Input.GetMouseButtonDown(0) && _player.GetComponent<MoveComponent>().IsSelect && ToggleAbility.gameObject.activeSelf)
         {
             HandleLeftMouseButtonToggle();
         }
 
-        if (Input.GetMouseButtonDown(1) && _player.GetComponent<PlayerMove>().IsSelect && ToggleAbility.gameObject.activeSelf)
+        if (Input.GetMouseButtonDown(1) && _player.GetComponent<MoveComponent>().IsSelect && ToggleAbility.gameObject.activeSelf)
         {
             HandleRightMouseButtonToggle();
 
@@ -208,14 +208,14 @@ public class TwoRangeProtection : AbilityBase
     {
         if(isLightSide)
         {
-            _player.GetComponent<ManaPlayer>().Use(6f);
+            _player.GetComponent<Mana>().Use(6f);
             SetProtectBuff();
             SetProtectDebaff();
             SecondAbilityEvent?.Invoke(0f);
         }
         else
         {
-            _player.GetComponent<ManaPlayer>().Use(20f);
+            _player.GetComponent<Mana>().Use(20f);
             SetDarkProtectionDebaff();
             SetProtectDebaff();
             SecondDarkAbilityEvent?.Invoke(0f);
@@ -265,13 +265,13 @@ public class TwoRangeProtection : AbilityBase
         }
 
         ToggleAbility.enabled = false;
-        _player.GetComponent<PlayerMove>().CanMove = false;
+        _player.GetComponent<MoveComponent>().CanMove = false;
         CreateCastPrefab(castTime);
 
         yield return new WaitForSeconds(castTime);
 
         ToggleAbility.enabled = true;
-        _player.GetComponent<PlayerMove>().CanMove = true;
+        _player.GetComponent<MoveComponent>().CanMove = true;
         _castCoroutine = null;
 
 		this.transform.root.GetComponentInChildren<FourRangeRecovery>().canCast = true;

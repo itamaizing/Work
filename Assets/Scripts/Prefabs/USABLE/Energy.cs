@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class EnergyPlayer : PlayerStamina
+public class Energy : StaminaComponent
 {
 	private float _timer = 0;
+	private float _sumDamageGiven = 0;
 	private bool _canRegen = true;
 
 	private void Start()
@@ -53,8 +54,10 @@ public class EnergyPlayer : PlayerStamina
 	{
 		if(EnergyValue > _value) 
 		{
+			Debug.Log("too much");
 			return false;
 		}
+		Debug.Log("energy used " + EnergyValue);
 		_canRegen = false;
 		_timer = 0;
 
@@ -83,7 +86,18 @@ public class EnergyPlayer : PlayerStamina
 	public float UseAllEnergy()
 	{
 		float usedEnergy = _value;
-		_value -= usedEnergy;
+		_value = 0;
+		UpdateBar();
 		return usedEnergy;
+	}
+
+	public void SumDamageMake(float damage)
+	{
+		_sumDamageGiven += damage;
+		if( _sumDamageGiven >= 10 ) 
+		{
+			Add(1);
+			_sumDamageGiven -= 10;
+		}
 	}
 }

@@ -41,7 +41,7 @@ public class ThreeRangeHeal : AbilityBase
         base.HandleToggleAbility();
         // ������� ��� � ������ Update
 
-        if (Input.GetMouseButtonDown(0) && ToggleAbility.gameObject.activeSelf && ToggleAbility.enabled && _player.GetComponent<PlayerMove>().IsSelect)
+        if (Input.GetMouseButtonDown(0) && ToggleAbility.gameObject.activeSelf && ToggleAbility.enabled && _player.GetComponent<MoveComponent>().IsSelect)
         {
             HandleLeftMouseButtonToggle();
         }
@@ -94,7 +94,7 @@ public class ThreeRangeHeal : AbilityBase
             StartCoroutine(ToggleDoubleClick());
         }
 
-        else if (AbilityTypeManager.ActiveAbilityType == 1 && _player.GetComponent<PlayerMove>().IsSelect && Abilities.gameObject.activeSelf)
+        else if (AbilityTypeManager.ActiveAbilityType == 1 && _player.GetComponent<MoveComponent>().IsSelect && Abilities.gameObject.activeSelf)
         {
             if (_castCoroutine != null)
             {
@@ -188,25 +188,25 @@ public class ThreeRangeHeal : AbilityBase
         float heal = _heal;
         if (TargetParent != null)
         {
-            /*float realHeal = TargetParent.GetComponent<HealthPlayer>()._maxHealth - TargetParent.GetComponent<HealthPlayer>()._currentHealth;
+            /*float realHeal = TargetParent.GetComponent<HealthComponent>()._maxHealth - TargetParent.GetComponent<HealthComponent>()._currentHealth;
             float eneryOfSpiritStacks = _player.GetComponentInChildren<OneRangeAttack>().SpiritBaffCount;
             heal = heal + eneryOfSpiritStacks;
             if (realHeal <= heal)
             {
                 heal = realHeal;
             }
-            TargetParent.GetComponent<HealthPlayer>().AddHeal(heal);
+            TargetParent.GetComponent<HealthComponent>().AddHeal(heal);
             if (eneryOfSpiritStacks > 0)
             {
                 heal = heal * _player.GetComponentInChildren<OneRangeAttack>().ManaBaff;
 
                 if (heal > 0)
                 {
-                    _player.GetComponent<ManaPlayer>().Add(heal);
+                    _player.GetComponent<Mana>().Add(heal);
                 }
             }*/
         }
-        _player.GetComponent<ManaPlayer>().Use(_manaForCast);
+        _player.GetComponent<Mana>().Use(_manaForCast);
 
 
         ThirdAbilityEvent?.Invoke(heal);
@@ -219,8 +219,8 @@ public class ThreeRangeHeal : AbilityBase
         {
             float eneryOfSpiritStacks = _player.GetComponentInChildren<OneRangeAttack>().SpiritDebaffCount;
             float damage = _damage + eneryOfSpiritStacks;
-            TargetParent.GetComponent<HealthPlayer>().TakeMagicDamage(damage);
-            _player.GetComponent<ManaPlayer>().Use(_manaForDarkCast);
+            TargetParent.GetComponent<HealthComponent>().TakeMagicDamage(damage);
+            _player.GetComponent<Mana>().Use(_manaForDarkCast);
 
             DarkThirdAbilityEvent?.Invoke(damage);
             Recharge();
@@ -245,13 +245,13 @@ public class ThreeRangeHeal : AbilityBase
                 toggle.enabled = false;
             }
         }
-        _player.GetComponent<PlayerMove>().CanMove = false;
+        _player.GetComponent<MoveComponent>().CanMove = false;
         CreateCastPrefab(castTime);
 
         yield return new WaitForSeconds(castTime);
 
         _castCoroutine = null;
-        _player.GetComponent<PlayerMove>().CanMove = true;
+        _player.GetComponent<MoveComponent>().CanMove = true;
         Select.GetComponent<SelectObject>().CanSelect = true;
 
 		transform.root.GetComponentInChildren<FourRangeRecovery>().canCast = true;

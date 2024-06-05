@@ -5,8 +5,8 @@ using UnityEngine;
 public class IceShadowObject : MonoBehaviour
 {
 	[HideInInspector] public GameObject dad;
-	[HideInInspector] public EnergyPlayer energyPlayer;
-	[HideInInspector] public HealthPlayer healthPlayer;
+	//[HideInInspector] public EnergyPlayer energyPlayer;
+	[HideInInspector] public HealthComponent healthPlayer;
 	[HideInInspector] public float timeToDestroy = 2;
 	[HideInInspector] public float timeToDestroyAlive = 10;
 
@@ -16,15 +16,16 @@ public class IceShadowObject : MonoBehaviour
 	private Coroutine _destroyObj;
 	private float _hp = 10;
 	private bool _isAlive = false;
+	private float _energyValue;
 	/*
 	 * timer to destroy
 	 * buff player
 	 * */
 	private void Start()
 	{
-		float timeToAdd = energyPlayer.Value / 20;
-		timeToDestroy += timeToAdd;
-		energyPlayer.UseAllEnergy();
+		//float timeToAdd = energyPlayer.Value / 20;
+		//timeToDestroy += timeToAdd;
+		//energyPlayer.UseAllEnergy();
 		_destroyObj = StartCoroutine(DestroyShadow());
 	}
 
@@ -42,14 +43,15 @@ public class IceShadowObject : MonoBehaviour
 		{
 			healthPlayer.SetBoostRegen(0.01f);
 		}
-		if (collision.TryGetComponent<Character>(out var target) && energyPlayer != null && collision.gameObject !=dad)
+		//if (collision.TryGetComponent<PlayerLinks>(out var target) && energyPlayer != null && collision.gameObject !=dad)
+		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject !=dad)
 		{
-			float duration = 2 + energyPlayer.Value / 20;
+			float duration = 2 + _energyValue / 20;
 			//target.CharacterState.energy = energyPlayer;
-			energyPlayer.UseAllEnergy();
+			//energyPlayer.UseAllEnergy();
 
-			target.CharacterState.AddState(new FrozenState());
-			energyPlayer.Use(energyPlayer.Value);
+			target.CharacterState.AddState(new FrozenState(), duration, 0, States.Frozen);
+			//energyPlayer.Use(energyPlayer.Value);
 			GetComponent<Collider2D>().enabled = false;
 			Destroy(gameObject);
 		}
@@ -88,5 +90,12 @@ public class IceShadowObject : MonoBehaviour
 		_isAlive = true;
 		StartCoroutine(DestroyAliveShadow());
 		//_destroyObj.
+	}
+
+	public void SetEnergy(float value)
+	{
+		float timeToAdd = value / 20;
+		timeToDestroy += timeToAdd;
+		_energyValue = value;
 	}
 }

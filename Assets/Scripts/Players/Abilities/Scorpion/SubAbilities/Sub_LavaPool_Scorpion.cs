@@ -13,7 +13,7 @@ public class Sub_LavaPool_Scorpion : MonoBehaviour
     private float _timeInterval = 1f;
     private float _lifeTime = 3f;
 
-    private List<HealthPlayer> _enemies = new List<HealthPlayer>();
+    private List<HealthComponent> _enemies = new List<HealthComponent>();
 
     public void Init()
     {
@@ -24,7 +24,7 @@ public class Sub_LavaPool_Scorpion : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.TryGetComponent<HealthPlayer>(out  HealthPlayer enemy) && collision.gameObject.CompareTag("Enemies")) 
+        if(collision.TryGetComponent<HealthComponent>(out  HealthComponent enemy) && collision.gameObject.CompareTag("Enemies")) 
         {
             _enemies.Add(enemy);
         }
@@ -32,7 +32,7 @@ public class Sub_LavaPool_Scorpion : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if(collision.TryGetComponent<HealthPlayer>(out HealthPlayer enemy) && collision.gameObject.CompareTag("Enemies"))
+        if(collision.TryGetComponent<HealthComponent>(out HealthComponent enemy) && collision.gameObject.CompareTag("Enemies"))
         {
             _enemies.Remove(enemy);
         }

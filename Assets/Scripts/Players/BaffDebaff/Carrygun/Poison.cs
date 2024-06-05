@@ -17,8 +17,8 @@ public class Poison : BaseEffect
         _damageValue = 1;
         PsionicaValue = _damageValue;
 
-        _playerTarget.GetComponent<HealthPlayer>().OnTakePhisicDamage += DamageReduction;
-        _playerTarget.GetComponent<HealthPlayer>().OnTakeMagicDamage += DamageReduction;
+        _playerTarget.GetComponent<HealthComponent>().OnTakePhisicDamage += DamageReduction;
+        _playerTarget.GetComponent<HealthComponent>().OnTakeMagicDamage += DamageReduction;
     }
 
     public void AddPoison(float duration)
@@ -34,33 +34,33 @@ public class Poison : BaseEffect
         }
     }
 
-    private void DamageReduction(HealthPlayer.DamageInfo damageInfo)
+    private void DamageReduction(HealthComponent.DamageInfo damageInfo)
     {
             damageInfo.ModifiedDamage -= damageInfo.ModifiedDamage * 0.1f;
     }
 
     private IEnumerator PoisonCoroutine(float duration)
     {
-        float originSpeed = _playerTarget.GetComponent<PlayerInfo>().MoveSpeed;
-        _playerTarget.GetComponent<PlayerMove>().ChangeMoveSpeed(0.1f);
+        float originSpeed = _playerTarget.GetComponent<CharacterData>().MoveSpeed;
+        _playerTarget.GetComponent<MoveComponent>().ChangeMoveSpeed(0.1f);
 
         while (duration > 0)
         {
-            _playerTarget.GetComponent<HealthPlayer>().TakePhisicDamage(_damageValue);
+            _playerTarget.GetComponent<HealthComponent>().TakePhisicDamage(_damageValue);
             Player.GetComponent<PsionicaMelee>().MakePsionica(PsionicaValue);
 
             yield return new WaitForSeconds(1f);
             duration--;
         }
-        _playerTarget.GetComponent<PlayerMove>().SetDefaultSpeed();
+        _playerTarget.GetComponent<MoveComponent>().SetDefaultSpeed();
 
         Destroy(gameObject);
     }
 
     private void OnDisable()
     {
-        _playerTarget.GetComponent<HealthPlayer>().OnTakePhisicDamage -= DamageReduction;
-        _playerTarget.GetComponent<HealthPlayer>().OnTakeMagicDamage -= DamageReduction;
+        _playerTarget.GetComponent<HealthComponent>().OnTakePhisicDamage -= DamageReduction;
+        _playerTarget.GetComponent<HealthComponent>().OnTakeMagicDamage -= DamageReduction;
 
     }
 }

@@ -11,7 +11,7 @@ public class Punch_Scorpion : Ability
     private Counter_ScorchedSoul_Baff _comboCounterBaff;
 
     private DrawCircle _circleTarget;
-    private HealthPlayer _target;
+    private HealthComponent _target;
     private Coroutine _useJob;
 
     protected override void Cancel()
@@ -48,9 +48,9 @@ public class Punch_Scorpion : Ability
 
     private void AttackPassed()
     {
-        Debug.LogWarning("Ïîïàë");
+        Debug.LogWarning("ÐŸÐ¾Ð¿Ð°Ð»");
 
-        if (_comboCounterBaff == null) // çàãëóøêà, æäó íîâóþ áàçó ïîä áàôû
+        if (_comboCounterBaff == null) // Ð·Ð°Ð³Ð»ÑƒÑˆÐºÐ°, Ð¶Ð´Ñƒ Ð½Ð¾Ð²ÑƒÑŽ Ð±Ð°Ð·Ñƒ Ð¿Ð¾Ð´ Ð±Ð°Ñ„Ñ‹
         {
             _comboCounterBaff = Instantiate(_comboCounterPrefab, PlayerMove.transform);
             Debug.LogWarning(_comboCounterBaff.CurrentStacks);
@@ -67,12 +67,12 @@ public class Punch_Scorpion : Ability
     {
         _drawCircleSelf.Draw(Radius);
 
-        while (_target == null) //âûáèðàåì öåëü
+        while (_target == null) //Ð²Ñ‹Ð±Ð¸Ñ€Ð°ÐµÐ¼ Ñ†ÐµÐ»ÑŒ
         {
             if (Input.GetMouseButtonDown(0) && IsMouseInRadius())
             {
                 RaycastHit2D[] rayHit = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-                if (rayHit.Length > 0 && rayHit[0].transform.TryGetComponent<HealthPlayer>(out HealthPlayer enemyHealth))
+                if (rayHit.Length > 0 && rayHit[0].transform.TryGetComponent<HealthComponent>(out HealthComponent enemyHealth))
                 {
                     _target = enemyHealth;
                 }

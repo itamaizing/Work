@@ -8,11 +8,11 @@ public class Kick_Scorpion : Ability
     [SerializeField] private DrawCircle _drawCircleSelf;
     [SerializeField] private Sub_LavaPool_Scorpion _pool;
     [SerializeField] private Counter_ScorchedSoul_Baff _comboCounterPrefab;
-    [SerializeField] private float _damageValue = 15f; // ïîòîì ñäåëàòü ðàçáðîñ 10-15
+    [SerializeField] private float _damageValue = 15f; // Ð¿Ð¾Ñ‚Ð¾Ð¼ ÑÐ´ÐµÐ»Ð°Ñ‚ÑŒ Ñ€Ð°Ð·Ð±Ñ€Ð¾Ñ 10-15
     private Counter_ScorchedSoul_Baff _newprefab;
 
     private DrawCircle _circleTarget;
-    private HealthPlayer _target;
+    private HealthComponent _target;
     private Coroutine _useJob;
 
     protected override void Cancel()
@@ -27,7 +27,7 @@ public class Kick_Scorpion : Ability
     }
     private void AttackPassed()
     {
-        if (_newprefab == null) // çàãëóøêà, æäó íîâóþ áàçó ïîä áàôû
+        if (_newprefab == null) // Ð·Ð°Ð³Ð»ÑƒÑˆÐºÐ°, Ð¶Ð´Ñƒ Ð½Ð¾Ð²ÑƒÑŽ Ð±Ð°Ð·Ñƒ Ð¿Ð¾Ð´ Ð±Ð°Ñ„Ñ‹
         {
             _newprefab = Instantiate(_comboCounterPrefab, PlayerMove.transform);
         }
@@ -67,12 +67,12 @@ public class Kick_Scorpion : Ability
     {
         _drawCircleSelf.Draw(Radius);
 
-        while (_target == null) //âûáèðàåì öåëü
+        while (_target == null) //Ð²Ñ‹Ð±Ð¸Ñ€Ð°ÐµÐ¼ Ñ†ÐµÐ»ÑŒ
         {
             if (Input.GetMouseButtonDown(0) && IsMouseInRadius())
             {
                 RaycastHit2D[] rayHit = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-                if (rayHit.Length > 0 && rayHit[0].transform.TryGetComponent<HealthPlayer>(out HealthPlayer enemyHealth))
+                if (rayHit.Length > 0 && rayHit[0].transform.TryGetComponent<HealthComponent>(out HealthComponent enemyHealth))
                 {
                     _target = enemyHealth;
                 }

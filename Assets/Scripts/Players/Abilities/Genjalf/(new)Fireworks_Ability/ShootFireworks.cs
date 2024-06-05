@@ -22,7 +22,7 @@ public class ShootFireworks : Ability
     [SerializeField] private float _percentThirdTarget;
     [SerializeField] private float _percentOtherTarget;
 
-    private List<HealthPlayer> _enemies = new List<HealthPlayer>();
+    private List<HealthComponent> _enemies = new List<HealthComponent>();
 
     private Fireworks _fireworks;
     private Coroutine _useJob;
@@ -128,7 +128,7 @@ public class ShootFireworks : Ability
 
             foreach (var item in _fireworks.Collisions)
             {
-                if (item.TryGetComponent<HealthPlayer>(out HealthPlayer enemy) && item.transform != transform.parent)
+                if (item.TryGetComponent<HealthComponent>(out HealthComponent enemy) && item.transform != transform.parent)
                 {
                     _enemies.Add(enemy);
                 }

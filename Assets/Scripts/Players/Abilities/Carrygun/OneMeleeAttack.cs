@@ -58,7 +58,7 @@ public class OneMeleeAttack : AbilityBase
             _isOneChange = false;
         }
 
-        if (Input.GetMouseButtonDown(0) && _player.GetComponent<PlayerMove>().IsSelect &&
+        if (Input.GetMouseButtonDown(0) && _player.GetComponent<MoveComponent>().IsSelect &&
             Abilities.gameObject.activeSelf)
         {
             HandleLeftMouseButtonToggle();
@@ -118,7 +118,7 @@ public class OneMeleeAttack : AbilityBase
         {
             StartCoroutine(ToggleDoubleClick());
         }
-        else if (AbilityTypeManager.ActiveAbilityType == 1 && _player.GetComponent<PlayerMove>().IsSelect &&
+        else if (AbilityTypeManager.ActiveAbilityType == 1 && _player.GetComponent<MoveComponent>().IsSelect &&
                  Abilities.gameObject.activeSelf)
         {
             StartCoroutine(DoNotDoubleClickAtTarget());
@@ -131,7 +131,7 @@ public class OneMeleeAttack : AbilityBase
 
     public override void ChangeBoolAndValues()
     {
-        _targetHealth = TargetParent.GetComponent<HealthPlayer>();
+        _targetHealth = TargetParent.GetComponent<HealthComponent>();
         CanMakeDamage = true;
         CanDealDamageOrHeal = true;
         _isOneChange = true;

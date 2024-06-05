@@ -1,7 +1,8 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "PlayerData", menuName = "ScriptableObjects/Player", order = 1)]
-public class PlayerInfo : ScriptableObject
+public class CharacterData : ScriptableObject
 {
     [SerializeField] private string _name;
     [SerializeField] private string _description;

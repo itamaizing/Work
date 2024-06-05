@@ -9,8 +9,8 @@ public class Spisnacider : MonoBehaviour
     [HideInInspector] public AttackRangeType AttackRangeType;
     [HideInInspector] public GameObject Player;
 
-    private PlayerInfo _playerData;
-    private HealthPlayer _healthPlayer;
+    private CharacterData _playerData;
+    private HealthComponent _healthComponent;
     private float _timer = 0f;
     private float _interval = 1f;
 
@@ -31,15 +31,15 @@ public class Spisnacider : MonoBehaviour
 
     void Start()
     {
-        _healthPlayer.OnTakePhisicDamage += DamageMeleeEvasion;
-        _healthPlayer.OnTakeMagicDamage += DamageMeleeEvasion;
+        _healthComponent.OnTakePhisicDamage += DamageMeleeEvasion;
+        _healthComponent.OnTakeMagicDamage += DamageMeleeEvasion;
 
         Player.transform.Find("Talents").gameObject.GetComponent<ContagionOfEmbrio>().controlledObjects.Add(gameObject);
         _controlledObjectsScript = Player.transform.Find("Abilities").gameObject.GetComponent<CarrygunControlledObjects>();
 
         _select = FindObjectOfType<SelectObject>();
         healthOriginal = _playerData.Health;
-        speedOriginal = GetComponent<PlayerInfo>().MoveSpeed;
+        speedOriginal = GetComponent<CharacterData>().MoveSpeed;
     }
 
     void Update()
@@ -49,11 +49,11 @@ public class Spisnacider : MonoBehaviour
         if (!CheckForSlime(transform.position))
         {
             ReduceHealth();
-            GetComponent<PlayerMove>().SetDefaultSpeed();
+            GetComponent<MoveComponent>().SetDefaultSpeed();
         }
         else
         {
-            GetComponent<PlayerMove>().SetMoveSpeed(0.2f);
+            GetComponent<MoveComponent>().SetMoveSpeed(0.2f);
         }
 
         AttackRangeType = AttackRangeType.RangeAttack;
@@ -92,12 +92,12 @@ public class Spisnacider : MonoBehaviour
 
         if (_timer >= _interval)
         {
-            _healthPlayer.TakePhisicDamage(2);
+            _healthComponent.TakePhisicDamage(2);
             _timer = 0f;
         }
     }
 
-    private void DamageMeleeEvasion(HealthPlayer.DamageInfo damageInfo)
+    private void DamageMeleeEvasion(HealthComponent.DamageInfo damageInfo)
     {
         Type callerType = damageInfo.CallerType;
 

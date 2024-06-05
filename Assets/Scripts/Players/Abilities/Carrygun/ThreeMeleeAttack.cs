@@ -54,7 +54,7 @@ public class ThreeMeleeAttack : AbilityBase
         // ������� ��� � ������ Update
 
         if (Input.GetMouseButtonDown(0) && ToggleAbility.gameObject.activeSelf && ToggleAbility.enabled &&
-            _player.GetComponent<PlayerMove>().IsSelect)
+            _player.GetComponent<MoveComponent>().IsSelect)
         {
             HandleLeftMouseButtonToggle();
         }
@@ -110,7 +110,7 @@ public class ThreeMeleeAttack : AbilityBase
             StartCoroutine(ToggleDoubleClick());
         }
 
-        else if (AbilityTypeManager.ActiveAbilityType == 1 && _player.GetComponent<PlayerMove>().IsSelect &&
+        else if (AbilityTypeManager.ActiveAbilityType == 1 && _player.GetComponent<MoveComponent>().IsSelect &&
                  Abilities.gameObject.activeSelf)
         {
             if (_castCoroutine != null)
@@ -195,7 +195,7 @@ public class ThreeMeleeAttack : AbilityBase
         if (_canJump && ToggleAbility.isOn == true)
         {
             ToggleAbility.enabled = false;
-            _player.GetComponent<PlayerMove>().CanMove = false;
+            _player.GetComponent<MoveComponent>().CanMove = false;
 
 
             if (!_isInitialized)
@@ -292,7 +292,7 @@ public class ThreeMeleeAttack : AbilityBase
                 }
                 else
                 {
-                    TargetParent.GetComponent<HealthPlayer>().TryTakeDamage(damage + (damage * 0.2f), DamageType, AttackRangeType);
+                    TargetParent.GetComponent<HealthComponent>().TryTakeDamage(damage + (damage * 0.2f), DamageType, AttackRangeType);
                     _player.GetComponent<PsionicaMelee>().MakePsionica(damage + (damage * 0.2f));
                     _damageDealt = true;
                     ThirdAbilityEvent?.Invoke(damage + (damage * 0.2f));
@@ -314,7 +314,7 @@ public class ThreeMeleeAttack : AbilityBase
                 else
                 {
                     float numberOfBody = distanceToTarget / 1.9f;
-                    TargetParent.GetComponent<HealthPlayer>()
+                    TargetParent.GetComponent<HealthComponent>()
                         .TryTakeDamage(damage + (damage * 0.005f * (numberOfBody / 0.1f)), DamageType, AttackRangeType);
                     _player.GetComponent<PsionicaMelee>()
                         .MakePsionica(damage + (damage * 0.005f * (numberOfBody / 0.1f)));
@@ -344,7 +344,7 @@ public class ThreeMeleeAttack : AbilityBase
             }
             else
             {
-                TargetParent.GetComponent<HealthPlayer>().TryTakeDamage(damage + (damage * 0.1f), DamageType, AttackRangeType);
+                TargetParent.GetComponent<HealthComponent>().TryTakeDamage(damage + (damage * 0.1f), DamageType, AttackRangeType);
                 _player.GetComponent<PsionicaMelee>().MakePsionica(damage + (damage * 0.1f));
                 _damageDealt = true;
                 ThirdAbilityEvent?.Invoke(damage + (damage * 0.1f));
@@ -358,7 +358,7 @@ public class ThreeMeleeAttack : AbilityBase
 
     private IEnumerator CastJump()
     {
-        _player.GetComponent<PlayerMove>().CanMove = false;
+        _player.GetComponent<MoveComponent>().CanMove = false;
 
 
         if (Abilities.GetComponent<GlobalCooldown>())
@@ -368,7 +368,7 @@ public class ThreeMeleeAttack : AbilityBase
 
         yield return new WaitForSeconds(0.3f);
 
-        _player.GetComponent<PlayerMove>().CanMove = true;
+        _player.GetComponent<MoveComponent>().CanMove = true;
         _canJump = true;
 
         Jump();
@@ -395,7 +395,7 @@ public class ThreeMeleeAttack : AbilityBase
     {
         yield return new WaitForSeconds(0.3f);
 
-        _player.GetComponent<PlayerMove>().CanMove = true;
+        _player.GetComponent<MoveComponent>().CanMove = true;
 
         yield return new WaitForSeconds(0.4f);
 

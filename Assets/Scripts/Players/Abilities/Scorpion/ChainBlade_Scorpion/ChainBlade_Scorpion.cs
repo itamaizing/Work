@@ -19,7 +19,7 @@ public class ChainBlade_Scorpion : Ability
     private BladeProjectile _blade;
 
     private DrawCircle _circleTarget;
-    private PlayerMove _target;
+    private MoveComponent _target;
     private Coroutine _useJob;
 
     private GameObject enemy;
@@ -72,7 +72,7 @@ public class ChainBlade_Scorpion : Ability
             _drawCircleSelf.Draw(Radius);
             bool isCliked = false;
 
-            while (isCliked == false) //выбираем цель
+            while (isCliked == false) //РІС‹Р±РёСЂР°РµРј С†РµР»СЊ
             {
                 if (Input.GetMouseButtonDown(0) && IsMouseInRadius())
                 {
@@ -101,19 +101,19 @@ public class ChainBlade_Scorpion : Ability
                 if (target == null) Destroy(_chain.gameObject); 
                 else _chain.AssignTarget(transform, enemy.transform);
                 bladeDestroyed = true;
-            }); // подписка на метод, получаем цель в которую попали. Отписка автоматическая при уничтожении префаба будет
+            }); // РїРѕРґРїРёСЃРєР° РЅР° РјРµС‚РѕРґ, РїРѕР»СѓС‡Р°РµРј С†РµР»СЊ РІ РєРѕС‚РѕСЂСѓСЋ РїРѕРїР°Р»Рё. РћС‚РїРёСЃРєР° Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєР°СЏ РїСЂРё СѓРЅРёС‡С‚РѕР¶РµРЅРёРё РїСЂРµС„Р°Р±Р° Р±СѓРґРµС‚
             IsCanCancle = true;
             while (!bladeDestroyed)
             {
                 yield return null;
             }
 
-            Debug.LogWarning("Закончилось");
+            Debug.LogWarning("Р—Р°РєРѕРЅС‡РёР»РѕСЃСЊ");
 
             IsCanCancle = true;
-            //PayCost(); // не могу дважды потратить ману, тк после этого можно опять юзать абилку и багуется
+            //PayCost(); // РЅРµ РјРѕРіСѓ РґРІР°Р¶РґС‹ РїРѕС‚СЂР°С‚РёС‚СЊ РјР°РЅСѓ, С‚Рє РїРѕСЃР»Рµ СЌС‚РѕРіРѕ РјРѕР¶РЅРѕ РѕРїСЏС‚СЊ СЋР·Р°С‚СЊ Р°Р±РёР»РєСѓ Рё Р±Р°РіСѓРµС‚СЃСЏ
 
-        //альтернативный каст
+        //Р°Р»СЊС‚РµСЂРЅР°С‚РёРІРЅС‹Р№ РєР°СЃС‚
 
         if (isAlternativeCast)
         {
@@ -121,7 +121,7 @@ public class ChainBlade_Scorpion : Ability
             PlayerMove.CanMove = false;
 
             float distance = Vector2.Distance(transform.position, enemy.transform.position);
-            enemy.GetComponent<PlayerMove>().CanMove = false;
+            enemy.GetComponent<MoveComponent>().CanMove = false;
 
             while (distance >= 2f)
             {
@@ -130,7 +130,7 @@ public class ChainBlade_Scorpion : Ability
                 yield return null;
 
             }
-            enemy.GetComponent<PlayerMove>().CanMove = true;
+            enemy.GetComponent<MoveComponent>().CanMove = true;
             Destroy(_chain.gameObject);
             isAlternativeCast = false;
             PlayerMove.CanMove = true;

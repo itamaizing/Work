@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RunePlayer : PlayerStamina
+public class RuneComponent : StaminaComponent
 {
 	private Ability _lastUsedAbility = null;
 	private int _multiplier = 1;
@@ -58,6 +58,7 @@ public class RunePlayer : PlayerStamina
 
 	public override bool Use(float EnergyValue)
 	{
+		Debug.Log("ERROR!!! You are using Rune instead of Mana or Energy!!!!");
 		return false;
 	}
 }

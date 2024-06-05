@@ -27,7 +27,7 @@ public class CircleArea : MonoBehaviour
         if (_sprite.size != Vector2.zero && collision.transform != transform.parent && collision.transform.TryGetComponent(out UIPlayerComponents enemy))
         {
             _isConcernsEnemy = true;
-            enemy.CircleSelect.IsActive = true;
+            enemy.ChangeSelection(true);
         }
     }
 
@@ -36,7 +36,7 @@ public class CircleArea : MonoBehaviour
         if (_sprite.size != Vector2.zero && collision.transform != transform.parent && collision.transform.TryGetComponent(out UIPlayerComponents enemy))
         {
             _isConcernsEnemy = false;
-            enemy.CircleSelect.IsActive = false;
+            enemy.ChangeSelection(false);
         }
     }
 }
