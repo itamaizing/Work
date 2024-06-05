@@ -6,10 +6,7 @@ public class StandartAutoAttack : AutoAttackAbility
 {
     [SerializeField] private float _damage;
 
-    protected override void Cancel()
-    {
-        
-    }
+    protected override void Cancel() { }
 
     protected override void CastAction()
     {

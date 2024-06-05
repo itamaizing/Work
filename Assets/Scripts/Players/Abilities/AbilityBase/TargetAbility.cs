@@ -4,6 +4,7 @@ using UnityEngine;
 
 public abstract class TargetAbility : Ability
 {
+    [Header("Target settings")]
     [SerializeField] protected bool _isCanTargetHimself;
 
     protected Coroutine _useJob;

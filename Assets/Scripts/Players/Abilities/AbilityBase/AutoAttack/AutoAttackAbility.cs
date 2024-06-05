@@ -4,8 +4,10 @@ using UnityEngine;
 
 public abstract class AutoAttackAbility : TargetAbility
 {
+    [Header("AutoAttack settings")]
     [SerializeField] private float _attackZoneSize;
     [SerializeField] protected float _attackSpeed = 1f;
+    [SerializeField] protected LayerMask _obstacle;
 
     private Coroutine _autoAttackJob;
     private bool _isAttacking = false;
@@ -41,6 +43,20 @@ public abstract class AutoAttackAbility : TargetAbility
         _isAttacking = false;
     }
 
+    private bool NoObstacles()
+    {
+        var vector = (Target.transform.position - transform.position);
+        var dir = vector.normalized;
+        float distance = vector.magnitude;
+
+        RaycastHit2D[] rayHit = Physics2D.RaycastAll(transform.position, dir, distance, _obstacle);
+
+        if (rayHit.Length > 0)
+            return false;
+        else
+            return true;
+    }
+
     protected override IEnumerator UseCoroutine()
     {
         yield return _chooseTatgetJob = StartCoroutine(ChooseTatgetCoroutine(Radius + 99));
@@ -56,12 +72,15 @@ public abstract class AutoAttackAbility : TargetAbility
                 if(IsTargetInRadius(Radius))
                     _isAttacking = true;
                 
-                if (_isAttacking)
+                if (_isAttacking && NoObstacles())
                 {
                     yield return new WaitForSeconds(_attackSpeed);
-                    PayCost();
-                    IsUsed = true;
-                    CastAction();
+                    if (IsTargetInRadius(Radius + _attackZoneSize) && NoObstacles())
+                    {
+                        PayCost();
+                        IsUsed = true;
+                        CastAction();
+                    }
                 }
             }
             else
