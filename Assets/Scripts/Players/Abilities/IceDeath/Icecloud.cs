@@ -6,34 +6,22 @@ using static UnityEngine.GraphicsBuffer;
 public class Icecloud : Ability
 {
 	[SerializeField] private IceCloudProjectile _projectile;
-	[SerializeField] private PlayerLinks _playerLinks;
+	[SerializeField] private Character _playerLinks;
 	//[SerializeField] private RunePlayer _rune;
 	//[SerializeField] private Rigidbody2D _rb;
 
 	private Vector2 _mousePos;
 	private float _angle;
-	private bool _enabled = false;
-
-	private void Awake()
-	{
-		//_croosFire.SetActive(false);
-		//_isReady = false;
-
-	}
-
+	private bool _enabled;
+	
 	private void Update()
 	{
 		if (!_enabled) return;
-
-		/*_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
-		_angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
-		_croosFire.transform.rotation = Quaternion.Euler(_croosFire.transform.rotation.x, _croosFire.transform.rotation.y, _angle);
-		*/
+		
 		if (Input.GetMouseButtonDown(0))
 		{
 			PayCost();
-			if (_playerLinks.RunePlayer.RemoveRune(1, this))
+			if (_playerLinks.RuneComponent.RemoveRune(1, this))
 			{
 				Shoot();
 			}
@@ -51,8 +39,7 @@ public class Icecloud : Ability
 	protected override void Cast()
 	{
 		_enabled = true;
-		//if(Input.GetMouseButtonDown(0))
-		/*if(_playerLinks.RunePlayer.RemoveRune(1, this)) 
+		if(_playerLinks.RuneComponent.RemoveRune(1, this)) 
 		{
 			Shoot();
 		}
@@ -61,7 +48,6 @@ public class Icecloud : Ability
 	protected override void Cancel()
 	{
 		_enabled = false;
-		//_isUsed = true;
 	}
 
 	private void Shoot()
@@ -69,7 +55,6 @@ public class Icecloud : Ability
 		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
 		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
-		//IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, _angle));
 		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
 		projectile.dad = _playerLinks;
 		projectile.energyDad = _playerLinks.Stamina.Value;

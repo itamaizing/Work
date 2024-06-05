@@ -6,7 +6,7 @@ using static UnityEngine.GraphicsBuffer;
 public class IcePuddle : Ability
 {
 	[SerializeField] private IcePuddleObject _puddle;
-	[SerializeField] private PlayerLinks _playerLinks;
+	[SerializeField] private Character _playerLinks;
 	[SerializeField] private GameObject _preViewPuddle;
 	[SerializeField] private GameObject _lowePoint;
 	//[SerializeField] private GameObject _spawnPoint;
@@ -54,7 +54,7 @@ public class IcePuddle : Ability
 			{
 				_secondPoind = false;
 				PayCost();
-				if (_playerLinks.RunePlayer.RemoveRune(1, this))
+				if (_playerLinks.RuneComponent.RemoveRune(1, this))
 				{
 					Shoot();
 				}
@@ -92,8 +92,8 @@ public class IcePuddle : Ability
 		//IcePuddleObject puddle = Instantiate(_puddle, _preViewPuddle.transform.position, Quaternion.Euler(0, 0, _angle2));
 		IcePuddleObject puddle = Instantiate(_puddle, _preViewPuddle.transform.position, Quaternion.Euler(0, 0, _preViewPuddle.transform.eulerAngles.z));
 		puddle.dad = _playerLinks.gameObject;
-		puddle.energyPlayer = (EnergyPlayer)Mana;
-		puddle.healthPlayer = _playerLinks.HealthPlayer;
+		puddle.energy = (Energy)Mana;
+		puddle.healthComponent = _playerLinks.Health;
 		_enabled = false;
 		_preViewPuddle.SetActive(false);
 	}

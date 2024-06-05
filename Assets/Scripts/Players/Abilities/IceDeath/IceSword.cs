@@ -15,7 +15,7 @@ public class IceSword : Ability
 	private float _cooldownTimer = 1.4f;
 	private int _hitInTheRow = 0;
 	private bool _canUse = true;
-	private PlayerLinks _target;
+	private Character _target;
 
 	private void Update()
 	{
@@ -35,7 +35,7 @@ public class IceSword : Ability
 		Debug.Log("try hit");
 		foreach (Collider2D collider in colliders)
 		{
-			if (collider.TryGetComponent<PlayerLinks>(out var enemy) && enemy != _playerLinks)
+			if (collider.TryGetComponent<Character>(out var enemy) && enemy != _playerLinks)
 			{
 				if (_target == enemy || enemy == _physicalAttack.Target)
 				{
@@ -58,7 +58,7 @@ public class IceSword : Ability
 		}
 		if (_target != null)
 		{
-			_target.HealthPlayer.TakePhisicDamage(_damage + Random.Range(0, 10));
+			_target.Health.TakePhisicDamage(_damage + Random.Range(0, 10));
 		}
 
 		if( _hitInTheRow > 2 ) 

@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class HealingSmokeObject : MonoBehaviour
 {
-	public PlayerLinks dad;
+	public Character dad;
 
 	[SerializeField] private float _timeToDestroy = 3;
 	private float _timer = 0;
 	private float _timeBetweenHeal = 1;
 	private float _healTimer = 1;
-	private List<PlayerLinks> _allys = new List<PlayerLinks>();
+	private List<Character> _allys = new List<Character>();
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		//if ally
-		if(collision.TryGetComponent<PlayerLinks>(out var ally))
+		if(collision.TryGetComponent<Character>(out var ally))
 		{
 			//if its ally
 			_allys.Add(ally);
@@ -23,7 +23,7 @@ public class HealingSmokeObject : MonoBehaviour
 	}
 	private void OnTriggerExit2D(Collider2D collision)
 	{
-		if (collision.TryGetComponent<PlayerLinks>(out var ally))
+		if (collision.TryGetComponent<Character>(out var ally))
 		{
 			//if its ally
 			_allys.Remove(ally);
@@ -43,7 +43,7 @@ public class HealingSmokeObject : MonoBehaviour
 			_healTimer = 0;
 			foreach (var ally in _allys)
 			{
-				ally.HealthPlayer.AddHeal(3 * Time.deltaTime);
+				ally.Health.AddHeal(3 * Time.deltaTime);
 			}
 		}
 	}

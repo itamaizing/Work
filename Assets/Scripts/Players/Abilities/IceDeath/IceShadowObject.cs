@@ -6,7 +6,7 @@ public class IceShadowObject : MonoBehaviour
 {
 	[HideInInspector] public GameObject dad;
 	//[HideInInspector] public EnergyPlayer energyPlayer;
-	[HideInInspector] public HealthPlayer healthPlayer;
+	[HideInInspector] public HealthComponent healthPlayer;
 	[HideInInspector] public float timeToDestroy = 2;
 	[HideInInspector] public float timeToDestroyAlive = 10;
 
@@ -44,7 +44,7 @@ public class IceShadowObject : MonoBehaviour
 			healthPlayer.SetBoostRegen(0.01f);
 		}
 		//if (collision.TryGetComponent<PlayerLinks>(out var target) && energyPlayer != null && collision.gameObject !=dad)
-		if (collision.TryGetComponent<PlayerLinks>(out var target) && collision.gameObject !=dad)
+		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject !=dad)
 		{
 			float duration = 2 + _energyValue / 20;
 			//target.CharacterState.energy = energyPlayer;

@@ -1,11 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class IceCloudProjectile : MonoBehaviour
 {
-	[HideInInspector]public PlayerLinks dad;
 	public float energyDad;
 	[HideInInspector]public Character dad;
 
@@ -40,7 +36,7 @@ public class IceCloudProjectile : MonoBehaviour
 			//float duration = 1 + dad.Stamina.Value / 20;
 			float duration = 1 + energyDad / 20;
 			//target.CharacterState.energy = dad.Stamina;
-			target.HealthPlayer.TakeDamage(10 + energyDad / 4, DamageType.Physical);
+			target.Health.TakeDamage(10 + energyDad / 4, DamageType.Physical);
 			target.CharacterState.AddState(new FrozenState(), duration, 30, States.Frozen);
 
 			//dad.Stamina.Use(duration * 20);

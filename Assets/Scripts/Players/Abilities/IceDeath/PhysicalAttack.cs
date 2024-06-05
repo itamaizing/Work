@@ -12,7 +12,7 @@ using static UnityEngine.GraphicsBuffer;
 public class PhysicalAttack : Ability
 {
 	[SerializeField] private float _damage = 8f;
-	[SerializeField] private PlayerLinks _dad;
+	[SerializeField] private Character _dad;
 	[SerializeField] private float _abilityCooldown = 1.4f; //cooldown between shots
 	[SerializeField] private LayerMask _obstacleLayerMask;
 	private float _cooldownTimer = 1.4f;
@@ -22,10 +22,10 @@ public class PhysicalAttack : Ability
 	private float _baseTimer = 2f; //time and timer between losing streak
 	private float _timer = 2f;
 	private bool _isReadyToShot = true;
-	private PlayerLinks _target;
+	private Character _target;
 	private Vector2 _jumpPos;
 
-	public PlayerLinks Target => _target;
+	public Character Target => _target;
 	public int HitInTheRow => _hitInARow;
 
 	private void Update()
@@ -52,7 +52,7 @@ public class PhysicalAttack : Ability
 
 		foreach (Collider2D col in enemyDetected)
 		{
-			if(col.TryGetComponent<PlayerLinks>(out var enemy))
+			if(col.TryGetComponent<Character>(out var enemy))
 			{
 				if (enemy == _dad)
 				{
@@ -65,7 +65,7 @@ public class PhysicalAttack : Ability
 		}
 	}
 
-	private void Hit(PlayerLinks enemy)
+	private void Hit(Character enemy)
 	{
 		_isReadyToShot = false;
 		if(_target == enemy && _dad.Stamina.Use(5))
@@ -76,7 +76,7 @@ public class PhysicalAttack : Ability
 			_timer = _baseTimer;
 			_isInTheRow = true;
 
-			enemy.HealthPlayer.TakeDamage(_damage + Random.Range(0, 2), DamageType.Physical);
+			enemy.Health.TakeDamage(_damage + Random.Range(0, 2), DamageType.Physical);
 			if (_hitInARow >= 6)
 			{
 				//Debug.Log("Lasthit");
@@ -92,17 +92,17 @@ public class PhysicalAttack : Ability
 			_timer = _baseTimer;
 			_isInTheRow = true;
 			
-			enemy.HealthPlayer.TakeDamage(_damage + Random.Range(0, 2), DamageType.Physical);
+			enemy.Health.TakeDamage(_damage + Random.Range(0, 2), DamageType.Physical);
 		}
 	}
 	private void LastHit()
 	{
 		if (_dad.Stamina.Use(10))
 		{
-			_target.HealthPlayer.TakeDamage(_damage * .5f, DamageType.Physical);
+			_target.Health.TakeDamage(_damage * .5f, DamageType.Physical);
 			_target.CharacterState.AddState(new StunnedState(), 1.5f, 0, States.Stun);
 			PushBackEnemy(_target);
-			//отбрасывание 			
+			//РѕС‚Р±СЂР°СЃС‹РІР°РЅРёРµ 			
 		}
 		_dad.Stamina.Add(_dad.Stamina.MaxValue*0.4f);
 		_hitInARow = 0;
@@ -138,7 +138,7 @@ public class PhysicalAttack : Ability
 		}
 	}
 
-	private void PushBackEnemy(PlayerLinks enemy)
+	private void PushBackEnemy(Character enemy)
 	{
 		Debug.Log("Push");
 		Vector2 pushPos = (_dad.Rb.position - enemy.Rb.position).normalized;
@@ -157,7 +157,7 @@ public class PhysicalAttack : Ability
 
 	private bool CheckObstacleBetween(Vector3 start, Vector3 end)
 	{
-		//Проверка на наличие препятствия
+		//РџСЂРѕРІРµСЂРєР° РЅР° РЅР°Р»РёС‡РёРµ РїСЂРµРїСЏС‚СЃС‚РІРёСЏ
 		Vector2 direction = (end - start).normalized;
 		float distance = Vector2.Distance(start, end);
 
@@ -182,7 +182,7 @@ public class PhysicalAttack : Ability
 		_isInTheRow = true;
 	}
 
-	public void HitFromSword(PlayerLinks enemy)
+	public void HitFromSword(Character enemy)
 	{
 		Debug.Log("hit from sword");
 		_target = enemy;

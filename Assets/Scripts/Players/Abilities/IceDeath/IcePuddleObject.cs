@@ -61,7 +61,7 @@ public class IcePuddleObject : MonoBehaviour
 				duration += energy.Value / 5;
 				energy.UseAllEnergy();
 			}
-			target.CharacterState.AddState(new FrostingState());
+			target.CharacterState.AddState(new FrostingState(),0,0,0); // TODO ADDVALUES
 			_enemies.Add(target.CharacterState);
 		}
 		//Explode();
@@ -76,7 +76,7 @@ public class IcePuddleObject : MonoBehaviour
 		healthComponent.SetBoostRegen2(0);
 		foreach (var target in _enemies)
 		{
-			target.AddState(new DefaultState());
+			target.AddState(new DefaultState(),0,0,0); //TODO ADDVALUES
 			_enemies.Remove(target);
 		}
 		Destroy(gameObject);

@@ -19,7 +19,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6693217339590262202
 Transform:
   m_ObjectHideFlags: 0
@@ -127,8 +127,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dad: {fileID: 0}
-  energyPlayer: {fileID: 0}
-  healthPlayer: {fileID: 0}
+  energy: {fileID: 0}
+  healthComponent: {fileID: 0}
   timeToDestroy: 3
   _rb: {fileID: 0}
   _hitEffect: {fileID: 0}

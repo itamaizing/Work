@@ -33,7 +33,7 @@ public class SelectManager : MonoBehaviour
     
     private void LateUpdate()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0)&&Input.GetKey(KeyCode.LeftShift))
         {
             _selectorPrefab.gameObject.SetActive(true);
             _selectorPrefab.StartDraw();
