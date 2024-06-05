@@ -12,7 +12,7 @@ public abstract class TargetAbility : Ability
     protected Coroutine _chooseTatgetJob;
     private Character _target;
 
-    protected bool IsTarget => (_target.transform == _character.transform);
+    protected bool IsTarget => (_target.transform == _health.transform);
     protected Character Target => _target;
 
     protected abstract void CastAction();
