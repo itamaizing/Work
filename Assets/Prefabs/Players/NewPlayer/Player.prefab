@@ -766,7 +766,6 @@ Transform:
   - {fileID: 6957490965455006917}
   - {fileID: 1565843841943292596}
   - {fileID: 5558330999923304335}
-  - {fileID: 410037592182265051}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -933,6 +932,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7f243771c2613d40a4aecc719336ae4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _stateIcons: {fileID: 0}
 --- !u!114 &4925993419457997993
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1316,6 +1316,7 @@ RectTransform:
   - {fileID: 2059020920351861044}
   - {fileID: 8440491181281685798}
   - {fileID: 4556887454945418991}
+  - {fileID: 410037592182265051}
   m_Father: {fileID: 4307223359409179987}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3005,11 +3006,11 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 4307223359409179987}
+    m_TransformParent: {fileID: 6957490965455006917}
     m_Modifications:
     - target: {fileID: 704795987884427103, guid: e5b733c903c6d9143af357e086455e86, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 704795987884427103, guid: e5b733c903c6d9143af357e086455e86, type: 3}
       propertyPath: m_LocalPosition.x

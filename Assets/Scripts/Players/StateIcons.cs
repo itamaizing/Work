@@ -15,7 +15,7 @@ public class StateIcons : MonoBehaviour
     private List<StateIcoItem> _activeEffects = new List<StateIcoItem>();
     private bool _added = false;
 
-	private void Update()
+	/*private void Update()
 	{
         //for test
 
@@ -39,7 +39,7 @@ public class StateIcons : MonoBehaviour
 		{
 			ActivateIco(States.Frosting, 2, 6);
 		}
-	}
+	}*/
 	public void ActivateIco(States state, float timeToDecrease, int stack)
     {
         foreach(var ico in _activeEffects)
