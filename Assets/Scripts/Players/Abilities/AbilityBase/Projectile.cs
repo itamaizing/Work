@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Projectile : MonoBehaviour
 {
@@ -11,7 +12,11 @@ public class Projectile : MonoBehaviour
     [SerializeField] private bool _selfDestroyInEndPoint = true;
     [SerializeField] private float _lifeTime = 10;
 
-    protected Transform _target;
+    private Transform _target;
+
+    public Transform Target => _target;
+
+    public event UnityAction<Projectile> EndPointReached;
 
     private void Start()
     {
@@ -38,6 +43,14 @@ public class Projectile : MonoBehaviour
         }
     }
 
+    public float GetDistanceToTarget()
+    {
+        if (_target != null)
+            return (transform.position - _target.position).magnitude;
+
+        return -1;
+    }
+
     public void StartFly(Vector3 position, bool directionMove = false)
     {
         var direction = (position - transform.position).normalized;
@@ -50,13 +63,17 @@ public class Projectile : MonoBehaviour
             StartCoroutine(FlyCoroutine(position));
     }
 
-    public void StartFly(Transform transform)
+    public void StartFly(Transform transform, bool follow = false)
     {
         _target = transform;
 
         Destroy(gameObject, _lifeTime);
 
-        StartCoroutine(FlyCoroutine());
+        if (follow)
+            StartCoroutine(FlyCoroutine());
+        else
+            StartFly(_target.position);
+
     }
 
     private void Rotate(Vector3 lookPoint)
@@ -74,6 +91,8 @@ public class Projectile : MonoBehaviour
             transform.position = Vector2.MoveTowards(transform.position, position, _speed * Time.deltaTime);
             yield return null;
         }
+        EndPointReached?.Invoke(this);
+
         if (_selfDestroyInEndPoint)
             Destroy(gameObject);
     }
@@ -87,6 +106,8 @@ public class Projectile : MonoBehaviour
             transform.position = Vector2.MoveTowards(transform.position, _target.position, _speed * Time.deltaTime);
             yield return null;
         }
+        EndPointReached?.Invoke(this);
+
         if (_selfDestroyInEndPoint)
             Destroy(gameObject);
     }

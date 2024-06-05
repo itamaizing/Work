@@ -3038,8 +3038,10 @@ MonoBehaviour:
   _attackSpeed: 1
   _obstacle:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   _projectilePref: {fileID: 3436609779166928419, guid: d490c899d604d2c4dbb3f72e61cacb6e, type: 3}
+  _damageRadius: 5
+  _damage: 5
 --- !u!1001 &1907220304
 PrefabInstance:
   m_ObjectHideFlags: 0
