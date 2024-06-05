@@ -6,6 +6,7 @@ using UnityEngine;
 public class Energy : StaminaComponent
 {
 	private float _timer = 0;
+	private float _sumDamageGiven = 0;
 	private bool _canRegen = true;
 
 	private void Start()
@@ -88,5 +89,15 @@ public class Energy : StaminaComponent
 		_value = 0;
 		UpdateBar();
 		return usedEnergy;
+	}
+
+	public void SumDamageMake(float damage)
+	{
+		_sumDamageGiven += damage;
+		if( _sumDamageGiven >= 10 ) 
+		{
+			Add(1);
+			_sumDamageGiven -= 10;
+		}
 	}
 }

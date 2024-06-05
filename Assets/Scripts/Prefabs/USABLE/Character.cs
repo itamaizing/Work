@@ -24,7 +24,6 @@ public abstract class Character : MonoBehaviour
 	public PlayerAbilities Abilities => _abilities;
 	public CharacterState CharacterState => _characterState;
 	public UIPlayerComponents UIPlayerComponents => _uiPlayerComponents;
-
 	public SelectComponent SelectComponentComponent => selectComponentComponent;
 
 	public abstract void Initialize(CharacterData data);
