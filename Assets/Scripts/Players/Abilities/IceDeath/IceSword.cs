@@ -37,7 +37,7 @@ public class IceSword : Ability
 		{
 			if (collider.TryGetComponent<Character>(out var enemy) && enemy != _playerLinks)
 			{
-				if (_target == enemy || enemy == _physicalAttack.Target)
+				if (_target == enemy || enemy == _physicalAttack.Target2)
 				{
 					_cooldownTimer = _cooldownTime;
 					_canUse = false;

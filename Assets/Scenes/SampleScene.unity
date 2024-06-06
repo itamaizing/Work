@@ -1168,6 +1168,12 @@ MonoBehaviour:
   _streamingDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: 0
+  _isCanTargetHimself: 0
+  _attackZoneSize: 2
+  _attackSpeed: 1
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 128
   _damage: 8
   _dad: {fileID: 143167269}
   _abilityCooldown: 1.4

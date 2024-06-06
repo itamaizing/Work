@@ -9,7 +9,7 @@ using UnityEngine.UI;
 using static UnityEditor.PlayerSettings;
 using static UnityEngine.GraphicsBuffer;
 
-public class PhysicalAttack : Ability
+public class PhysicalAttack : AutoAttackAbility
 {
 	[SerializeField] private float _damage = 8f;
 	[SerializeField] private Character _dad;
@@ -21,28 +21,32 @@ public class PhysicalAttack : Ability
 	private bool _isInTheRow = false;
 	private float _baseTimer = 2f; //time and timer between losing streak
 	private float _timer = 2f;
-	private bool _isReadyToShot = true;
-	private Character _target;
+	//private bool _isReadyToShot = true;
+	private Character _curTarget;
 	private Vector2 _jumpPos;
 
-	public Character Target => _target;
+	public Character Target2 => _curTarget;
 	public int HitInTheRow => _hitInARow;
 
 	private void Update()
 	{
 		Timer();
 	}
-	protected override void Cancel()
+	protected override void Cancel() { }
+
+	protected override void CastAction()
 	{
-		//turn off targets and etc		
+		Hit(Target);
+		//Target.Health.TakeDamage(_damage, DamageType.Physical);
 	}
-	protected override void Cast()
+
+	/*protected override void Cast()
 	{
 		PayCost();
 		CheckEnemy();
-	}
+	}*/
 	
-	private void CheckEnemy()
+	/*private void CheckEnemy()
 	{
         if (!_isReadyToShot)
         {
@@ -63,14 +67,14 @@ public class PhysicalAttack : Ability
 				break;
 			}			
 		}
-	}
+	}*/
 
 	private void Hit(Character enemy)
 	{
-		_isReadyToShot = false;
-		if(_target == enemy && _dad.Stamina.Use(5))
+		//_isReadyToShot = false;
+		if(_curTarget == enemy && _dad.Stamina.Use(5))
 		{
-			//Debug.Log("hit " + _hitInARow);
+			Debug.Log("hit " + _hitInARow);
 			_hitInARow++;
 			_multiplySpeed*=2;
 			_timer = _baseTimer;
@@ -91,8 +95,8 @@ public class PhysicalAttack : Ability
 		}
 		else
 		{
-			//Debug.Log("lose streak to another enemy");
-			_target = enemy;
+			Debug.Log("lose streak to another enemy");
+			_curTarget = enemy;
 			_hitInARow = 0;
 			_multiplySpeed = .05f;
 			_timer = _baseTimer;
@@ -107,17 +111,17 @@ public class PhysicalAttack : Ability
 	{
 		if (_dad.Stamina.Use(10))
 		{
-			_target.Health.TakeDamage(_damage * .5f, DamageType.Physical);
+			_curTarget.Health.TakeDamage(_damage * .5f, DamageType.Physical);
 			float curDamage = _damage * .5f;
 			Energy energy = (Energy)_dad.Stamina;
 			energy.SumDamageMake(curDamage);
-			_target.CharacterState.AddState(new StunnedState(), 1.5f, 0, States.Stun);
-			PushBackEnemy(_target);
+			_curTarget.CharacterState.AddState(new StunnedState(), 1.5f, 0, States.Stun);
+			PushBackEnemy(_curTarget);
 			//отбрасывание 			
 		}
 		_dad.Stamina.Add(_dad.Stamina.MaxValue*0.4f);
 		_hitInARow = 0;
-		_target = null;
+		_curTarget = null;
 		_isInTheRow= false;
 		_multiplySpeed = 0.05f;
 		_timer = _baseTimer;
@@ -125,7 +129,7 @@ public class PhysicalAttack : Ability
 
 	public void Timer()
 	{
-		if(_cooldownTimer > 0 && !_isReadyToShot) 
+		/*if(_cooldownTimer > 0 && !_isReadyToShot) 
 		{
 			_cooldownTimer -= Time.deltaTime;
 		}
@@ -133,13 +137,13 @@ public class PhysicalAttack : Ability
 		{
 			_isReadyToShot = true;
 			_cooldownTimer = _abilityCooldown * (1 - _multiplySpeed);
-		}
+		}*/
 		if (_isInTheRow)
 		{
 			_timer -= Time.deltaTime;
 			if (_timer <= 0)
 			{
-				_target = null;
+				_curTarget = null;
 				_multiplySpeed = 0.05f;
 				Debug.Log("lose streak");
 				_timer = _baseTimer;
@@ -196,7 +200,7 @@ public class PhysicalAttack : Ability
 	public void HitFromSword(Character enemy)
 	{
 		Debug.Log("hit from sword");
-		_target = enemy;
+		_curTarget = enemy;
 		_hitInARow++;
 		_multiplySpeed *= 2;
 		_timer = _baseTimer;
@@ -205,7 +209,7 @@ public class PhysicalAttack : Ability
 
 	public void LoseStreak()
 	{
-		_target = null;
+		_curTarget = null;
 		_multiplySpeed = 0.05f;
 		Debug.Log("lose streak");
 		_timer = _baseTimer;
