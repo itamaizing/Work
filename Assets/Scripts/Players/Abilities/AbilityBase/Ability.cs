@@ -198,6 +198,16 @@ public abstract class Ability : MonoBehaviour
         AreaOffed?.Invoke();
     }
 
+    protected bool IsMouseInRadius(float radius)
+    {
+        float distance = Vector3.Distance(
+            new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, transform.position.z),
+            transform.position
+            );
+
+        return distance <= radius;
+    }
+
     private IEnumerator CooldownCoroutine()
     {
         float time = 0;
