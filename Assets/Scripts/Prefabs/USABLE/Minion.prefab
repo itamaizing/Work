@@ -2220,14 +2220,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rb: {fileID: 955366229743536146}
-  healthComponent: {fileID: 3078913981996463649}
+  _healthComponent: {fileID: 3078913981996463649}
   _playerMove: {fileID: 9209893611178306962}
-  stamina: {fileID: 1705208273768184284}
-  runeComponent: {fileID: 0}
+  _stamina: {fileID: 1705208273768184284}
+  _runeComponent: {fileID: 0}
   _abilities: {fileID: 4569873764026062606}
   _characterState: {fileID: 4398543484626776188}
   _uiPlayerComponents: {fileID: 952347863481417298}
-  selectComponentComponent: {fileID: 1836414566327765074}
+  _selectComponent: {fileID: 1836414566327765074}
   _playerData: {fileID: 11400000, guid: 6d4bdd627c946744396722e0bd4dd7d5, type: 2}
 --- !u!1 &8379139266401705119
 GameObject:

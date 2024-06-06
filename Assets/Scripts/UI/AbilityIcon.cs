@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -64,6 +62,11 @@ public class AbilityIcon : MonoBehaviour
     public void Deselected()
     {
         _boxFrame.color = Color.white;
+    }
+
+    public void DestroyIcon()
+    {
+        Destroy(gameObject);
     }
 
     private void OnStartStreaming(float time)

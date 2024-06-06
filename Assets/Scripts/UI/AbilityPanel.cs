@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,45 +6,31 @@ public class AbilityPanel : MonoBehaviour
 {
     [SerializeField] private AbilityIcon _abilityIconPref;
     [SerializeField] private FillAmountOverTime _castLine;
-    [SerializeField] private PlayerAbilities _playerAbilities;
+    
+    private PlayerAbilities _playerAbilities;
+    private List<Ability> _abilities;
+    private List<AbilityIcon> _abilityIcons;
 
-    private List<Ability> _abilities = new List<Ability>();
-    private List<AbilityIcon> _abilityIcons = new List<AbilityIcon>();
-
-    private void Start()
+    private void Awake()
     {
-        List<Ability> abilities = _playerAbilities.Abilities;
+        _abilities = new List<Ability>();
+        _abilityIcons = new List<AbilityIcon>();
+    }
 
-        foreach (var item in abilities)
+    public void Fill(PlayerAbilities abilities)
+    {
+        _playerAbilities = abilities;
+        _abilities.AddRange(_playerAbilities.Abilities); 
+        
+        foreach (var item in _abilities)
         {
-            _abilities.Add(item);
+            AbilityIcon abilityIcon = Instantiate(_abilityIconPref, transform);
+            abilityIcon.Init(item, _castLine);
+            _abilityIcons.Add(abilityIcon);
         }
-        UpdateAbilityList();
 
         _playerAbilities.AbilitySelected += OnAbilitySelected;
         _playerAbilities.AbilityDeselected += OnAbilityDeselected;
-    }
-
-    public void UpdateAbilityList(List<Ability> abilities)
-    {
-        _abilities = abilities;
-
-        foreach (var item in _abilities)
-        {
-            AbilityIcon abilityIcon = Instantiate(_abilityIconPref, transform);
-            abilityIcon.Init(item, _castLine);
-            _abilityIcons.Add(abilityIcon);
-        }
-    }
-
-    private void UpdateAbilityList()
-    {
-        foreach (var item in _abilities)
-        {
-            AbilityIcon abilityIcon = Instantiate(_abilityIconPref, transform);
-            abilityIcon.Init(item, _castLine);
-            _abilityIcons.Add(abilityIcon);
-        }
     }
 
     private void OnAbilitySelected(int index)

@@ -1,18 +1,18 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
 
 public class PlayerAbilities : MonoBehaviour
 {
     [SerializeField] private List<Ability> _abilities;
-    [FormerlySerializedAs("_abilityRender")] [SerializeField] private VisualRender visualRender;
+    [SerializeField] private VisualRender visualRender;
 
     private Ability _currentAbility;
     private int _currentAbilityIndex;
-    private bool _isAbilitiesDisabled = false;
+    private bool _isAbilitiesEnabled = true;
+    public bool isAbilityPanelActive = false;
+
+    private AbilityPanel _abilityPanel;
 
     public List<Ability> Abilities => _abilities;
 
@@ -28,11 +28,11 @@ public class PlayerAbilities : MonoBehaviour
         foreach (var item in _abilities)
         {
             item.SetPlayer(playerMove, staminaComponent, healthComponent);
-            Debug.Log("set");
         }
+        _abilityPanel = AbilitiesManager.Instance.AddPanel(this);
     }
 
-    private void OnEnable()
+    private void EnableAbilities()
 	{
         InputHandler.OnClick += TryUseAbility;
         InputHandler.OnAltClick += CancelSpellCast;
@@ -47,7 +47,7 @@ public class PlayerAbilities : MonoBehaviour
         InputHandler.OnEighthCast += SetCurrentAbility;
     }
 
-    private void OnDisable()
+    private void DisableAbilities()
 	{
         InputHandler.OnClick -= TryUseAbility;
         InputHandler.OnAltClick -= CancelSpellCast;
@@ -62,14 +62,23 @@ public class PlayerAbilities : MonoBehaviour
         InputHandler.OnEighthCast -= SetCurrentAbility;
     }
 
-    public void SetAbilitiesDisabled()
+    public void SetAbilitiesEnable(bool isEnabled)
     {
-        _isAbilitiesDisabled = true;
+        _isAbilitiesEnabled = isEnabled;
     }
 
-    public void SetAbilitiesEnabled()
+    public void SetAbilitiesPanelEnable(bool isEnable)
     {
-        _isAbilitiesDisabled = false;
+        isAbilityPanelActive = isEnable;
+        if (isAbilityPanelActive)
+        {
+            EnableAbilities();
+            AbilitiesManager.Instance.ActiveCurrentPanel(_abilityPanel);
+        }
+        else
+        {
+            DisableAbilities();
+        }
     }
 
     private void SetCurrentAbility(int index)
@@ -109,7 +118,7 @@ public class PlayerAbilities : MonoBehaviour
 
     private void TryUseAbility()
     {
-        if (_currentAbility == null || _isAbilitiesDisabled  || _currentAbility.IsUsed )
+        if (_currentAbility == null || !_isAbilitiesEnabled || !isAbilityPanelActive  || _currentAbility.IsUsed )
             return;
 
         visualRender.Drawn(_currentAbility);

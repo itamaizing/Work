@@ -7,8 +7,11 @@ public class BoxSelector : MonoBehaviour
     
     private Vector3 startPosition;
 
+    private bool isDrawing;
+
     public void StartDraw()
     {
+        isDrawing = true;
         startPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         startPosition.z = 0f;
     }
@@ -25,6 +28,12 @@ public class BoxSelector : MonoBehaviour
 
     public void StopDraw()
     {
+        if (!isDrawing)
+        {
+            SelectManager.Instance.DeselectAll();
+            return;
+        }
+        
         Collider2D[] collider2DArray = Physics2D.OverlapAreaAll(startPosition, Camera.main.ScreenToWorldPoint(Input.mousePosition));
         
         SelectManager.Instance.DeselectAll();
@@ -38,5 +47,7 @@ public class BoxSelector : MonoBehaviour
             }
         }
         gameObject.SetActive(false);
+        
+        isDrawing = false;
     }
 }

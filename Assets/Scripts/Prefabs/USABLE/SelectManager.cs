@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class SelectManager : MonoBehaviour
@@ -14,6 +15,8 @@ public class SelectManager : MonoBehaviour
 
     private List<Character> controllableUnits;
     public List<Character> selectedControllableUnits;
+
+    private int currentUnitNumber = 0;
 
     private void Awake()
     {
@@ -33,13 +36,13 @@ public class SelectManager : MonoBehaviour
     
     private void LateUpdate()
     {
-        if (Input.GetMouseButtonDown(0)&&Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetMouseButtonDown(0) && Input.GetKey(KeyCode.LeftShift))
         {
             _selectorPrefab.gameObject.SetActive(true);
             _selectorPrefab.StartDraw();
         }
 
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0) && Input.GetKey(KeyCode.LeftShift))
         {
             _selectorPrefab.Draw();
         }
@@ -48,13 +51,24 @@ public class SelectManager : MonoBehaviour
         {
             _selectorPrefab.StopDraw();
         }
+
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            if(selectedControllableUnits==null) return;
+            foreach (var unit in selectedControllableUnits)
+            {
+                unit.SelectComponent.IsCurrentPlayer = false;
+            }
+            currentUnitNumber = (currentUnitNumber+1) % selectedControllableUnits.Count;
+            selectedControllableUnits[currentUnitNumber].SelectComponent.IsCurrentPlayer = true;
+        }
     }
 
     public void SelectOnClick(Character character)
     {
         DeselectAll();
         selectedControllableUnits.Add(character);
-        character.UIPlayerComponents.ChangeSelection(true);
+        character.SelectComponent.IsSelect = true;
     }
 
     public void SelectInArea(Character character)
@@ -62,19 +76,22 @@ public class SelectManager : MonoBehaviour
         if (!selectedControllableUnits.Contains(character))
         {
             selectedControllableUnits.Add(character);
-            character.UIPlayerComponents.ChangeSelection(true);
+            character.SelectComponent.IsSelect = true;
         }
         else
         {
             selectedControllableUnits.Remove(character);
-            character.UIPlayerComponents.ChangeSelection(false);
+            character.SelectComponent.IsSelect = false;
         }
+
+        selectedControllableUnits.FirstOrDefault().SelectComponent.IsCurrentPlayer = true;
+        currentUnitNumber = 0;
     }
     public void DeselectAll()
     {
         foreach (var character in selectedControllableUnits)
         {
-            character.UIPlayerComponents.ChangeSelection(false);
+            character.SelectComponent.IsSelect = false;
         }
         selectedControllableUnits.Clear();
     }

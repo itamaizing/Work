@@ -4,7 +4,6 @@ public class MoveComponent : MonoBehaviour
 {
 	private float _moveSpeed;
     private Rigidbody2D _rigidbody;
-    private SelectComponent _selectComponent;
 
     [HideInInspector] public bool CanMove;
 	[HideInInspector] public bool IsMoving;
@@ -24,8 +23,7 @@ public class MoveComponent : MonoBehaviour
 		_rigidbody.isKinematic = true;
 
 		MoveDirection = Vector2.down;
-
-		_selectComponent = GetComponent<SelectComponent>();
+		
 		CanMove = true;
 		isInitialize = true;
 	}
@@ -44,7 +42,9 @@ public class MoveComponent : MonoBehaviour
 	}
 	void FixedUpdate()
 	{
-		if (!CanMove||!_selectComponent.IsSelect)
+		if(!isInitialize) return;
+		
+		if (!CanMove)
 		{
             _rigidbody.velocity = Vector2.zero;
             return;

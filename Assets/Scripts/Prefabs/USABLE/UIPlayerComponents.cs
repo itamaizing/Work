@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class UIPlayerComponents : MonoBehaviour
@@ -12,14 +11,11 @@ public class UIPlayerComponents : MonoBehaviour
     
     public void Initialize(PlayerAbilities playerAbilities,MoveComponent playerMove,StaminaComponent staminaComponent , HealthComponent healthComponent)
     {
-        ChangeSelection(false);
-        if(playerAbilities==null) return;
         playerAbilities.Initialize(playerMove, staminaComponent, healthComponent);
     }
     
     public void ChangeSelection(bool isSelect)
     {
-        GetComponent<SelectComponent>().IsSelect = isSelect;
         CircleSelect.IsActive = isSelect;
         MarkersSelect.IsActive = isSelect;
     }

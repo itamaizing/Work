@@ -38,8 +38,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 60, y: -340}
-  m_SizeDelta: {x: -2602.27, y: -1786.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7711730357407754129
 CanvasRenderer:
@@ -119,7 +119,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _abilityIconPref: {fileID: 9202960188991424841, guid: efe20424d7f97944cba458615f140dd0, type: 3}
   _castLine: {fileID: 6931577662190943853}
-  _playerAbilities: {fileID: 0}
 --- !u!1001 &3256669622773705409
 PrefabInstance:
   m_ObjectHideFlags: 0
