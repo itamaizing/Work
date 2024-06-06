@@ -134,13 +134,3 @@ public class StateIcons : MonoBehaviour
 	}
 }
 
-public enum States
-{
-    Default,
-    Stun,
-    Frozen, 
-    Frosting,
-    Blind,
-    Invisible
-}
-

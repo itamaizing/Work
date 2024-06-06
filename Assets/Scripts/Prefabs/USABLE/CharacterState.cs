@@ -201,7 +201,6 @@ public class InvisibleState : AbstractCharacterState
 }
 
 
-// C�������� ���������
 public class StunnedState : AbstractCharacterState
 {
 	public bool turnOff = false;
@@ -225,14 +224,10 @@ public class StunnedState : AbstractCharacterState
 		else
 		{
 			Debug.Log("no ability at " + character.gameObject.name);
-		}
-		//_abilities = character.GetComponent<PlayerAbilities>();
-		//_abilities.SetAbilitiesDisabled();
-		
+		}		
 		_characterState.Move.CanMove = false;
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
-		//_duration = character.durationToExit;      
 	}
 
 	public override void UpdateState()
@@ -371,10 +366,6 @@ public class FrozenState : AbstractCharacterState
 		{
 			Debug.Log("no ability at " + character.gameObject.name);
 		}
-		//_playerHP.TakePhisicDamage(10 + _characterState.energy.Value / 4);
-		//_playerHP.TakeDamage(10 + _characterState.energy.Value / 4, DamageType.Physical);
-		//_duration = 2 + _characterState.energy.Value / 20; //��� ���� ���� ��� �������
-		//_characterState.energy.Use(_characterState.energy.Value);
 		_characterState.Health.sumDamageTaken = 0;
 
 	}
@@ -437,11 +428,8 @@ public class FrostingState : AbstractCharacterState
 		_baseDuration = durationToExit;
 		_characterState.Move.CanMove = false;
 		//decrease speed of attact
-		//_playerHP.TakePhisicDamage(10 + _characterState.energy.Value / 4);
-		//_playerHP.TakeDamage(10 + _characterState.energy.Value / 4, DamageType.Physical);
-		_characterState.Health.sumDamageTaken=0;
 
-		//_characterState.energy.Use(_characterState.energy.Value);
+		_characterState.Health.sumDamageTaken=0;
 	}
 
 	public override void UpdateState()
@@ -471,8 +459,67 @@ public class FrostingState : AbstractCharacterState
 		_duration = _baseDuration;
 		return false;
 	}
-}
 
+}
+public class Cooling : AbstractCharacterState
+{
+	public bool turnOff = false;
+	private float _duration;
+	private float _baseDuration;
+	private float _damageToExit;
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+	{
+		type = StateType.Magic;
+		effects.Add(StatusEffect.MoveSpeed);
+		effects.Add(StatusEffect.AbilitySpeed);
+		Debug.Log("Entering Frosting State");
+		_characterState = character;
+
+		if (damageToExit == 0)
+		{
+			_damageToExit = 10000;
+		}
+		else
+		{
+			_damageToExit = damageToExit;
+		}
+		_duration = durationToExit;
+		_baseDuration = durationToExit;
+		
+
+		//decrease speed of attact and movement
+		_characterState.Health.sumDamageTaken = 0;
+	}
+
+	public override void UpdateState()
+	{
+		_duration -= Time.deltaTime;
+		if (_characterState.Health.sumDamageTaken >= _damageToExit || _duration < 0 || turnOff)
+		{
+			ExitState();
+		}
+	}
+
+	public override void ExitState()
+	{
+		Debug.Log("Exiting Frosting State");
+		if (_characterState.Check(StatusEffect.Move))
+		{
+			_characterState.Move.CanMove = true;
+		}
+		if (_characterState.Check(StatusEffect.AbilitySpeed))
+		{
+			//return speed of attact
+		}
+		_characterState.RemoveState(this);
+	}
+	public override bool Stack(float time)
+	{
+		_duration = _baseDuration;
+		return false;
+	}
+
+}
 // ����� ���������, ������������ ���������
 public class CharacterState : MonoBehaviour
 {
@@ -624,7 +671,18 @@ public enum StateType
 public enum StatusEffect
 {
 	Move,
+	MoveSpeed,
 	Ability,
 	AbilitySpeed,
 	Others
+}
+public enum States
+{
+	Default,
+	Stun,
+	Frozen,
+	Frosting,
+	Cooling,
+	Blind,
+	Invisible
 }
