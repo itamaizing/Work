@@ -216,8 +216,18 @@ public class StunnedState : AbstractCharacterState
 		effects.Add(StatusEffect.Ability);
 
 		_characterState = character;
-		_abilities = character.GetComponent<PlayerAbilities>();
-		_abilities.SetAbilitiesDisabled();
+
+		if (character.TryGetComponent<PlayerAbilities>(out var ability))
+		{
+			_abilities = ability;
+			_abilities.SetAbilitiesDisabled();
+		}
+		else
+		{
+			Debug.Log("no ability at " + character.gameObject.name);
+		}
+		//_abilities = character.GetComponent<PlayerAbilities>();
+		//_abilities.SetAbilitiesDisabled();
 		
 		_characterState.Move.CanMove = false;
 		_duration = durationToExit;
@@ -242,7 +252,7 @@ public class StunnedState : AbstractCharacterState
 		{
 			_characterState.Move.CanMove = true;
 		}
-		if (_characterState.Check(StatusEffect.Ability))
+		if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
 		{
 			_abilities.SetAbilitiesEnabled();
 		}

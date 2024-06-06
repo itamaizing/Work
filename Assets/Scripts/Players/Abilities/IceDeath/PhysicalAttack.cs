@@ -15,7 +15,7 @@ public class PhysicalAttack : AutoAttackAbility
 	[SerializeField] private Character _dad;
 	[SerializeField] private float _abilityCooldown = 1.4f; //cooldown between shots
 	[SerializeField] private LayerMask _obstacleLayerMask;
-	private float _cooldownTimer = 1.4f;
+	//private float _cooldownTimer = 1.4f;
 	private int _hitInARow = 0;
 	private float _multiplySpeed = .05f;
 	private bool _isInTheRow = false;
@@ -72,11 +72,13 @@ public class PhysicalAttack : AutoAttackAbility
 	private void Hit(Character enemy)
 	{
 		//_isReadyToShot = false;
-		if(_curTarget == enemy && _dad.Stamina.Use(5))
+		Debug.Log("hit " + _hitInARow);
+		if (_curTarget == enemy && _dad.Stamina.Use(5))
 		{
 			Debug.Log("hit " + _hitInARow);
 			_hitInARow++;
 			_multiplySpeed*=2;
+			_attackSpeed *= (1 - _multiplySpeed);
 			_timer = _baseTimer;
 			_isInTheRow = true;
 			float curDamage = _damage + Random.Range(0, 2);
@@ -99,6 +101,7 @@ public class PhysicalAttack : AutoAttackAbility
 			_curTarget = enemy;
 			_hitInARow = 0;
 			_multiplySpeed = .05f;
+			_attackSpeed *= (1 - _multiplySpeed);
 			_timer = _baseTimer;
 			_isInTheRow = true;
 			float curDamage = _damage + Random.Range(0, 2);
@@ -124,6 +127,7 @@ public class PhysicalAttack : AutoAttackAbility
 		_curTarget = null;
 		_isInTheRow= false;
 		_multiplySpeed = 0.05f;
+		_attackSpeed *= (1 - _multiplySpeed);
 		_timer = _baseTimer;
 	}
 
@@ -145,6 +149,7 @@ public class PhysicalAttack : AutoAttackAbility
 			{
 				_curTarget = null;
 				_multiplySpeed = 0.05f;
+				_attackSpeed *= (1 - _multiplySpeed);
 				Debug.Log("lose streak");
 				_timer = _baseTimer;
 				_isInTheRow = false;
