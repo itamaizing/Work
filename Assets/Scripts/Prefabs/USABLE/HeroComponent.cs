@@ -16,8 +16,8 @@ public class HeroComponent : Character
     {
         Health.Initialize(characterData.Health,characterData.HealthRegen,characterData.RegenDelay ,characterData.HealthInfo);
         Move.Initialize(characterData.MoveSpeed,Rb);
-        Stamina.Initialize(characterData.Stamina, characterData.StaminaRegen, characterData.RegenDelay);
-        RuneComponent.Initialize(10,3,10);
+        Stamina.Initialize(characterData.Stamina, characterData.StaminaRegen, characterData.StaminaRegenDelay);
+        RuneComponent.Initialize(10,1,10);
         CharacterState.Initialize(Health, Move , Stamina);
         UIPlayerComponents.Initialize(Abilities,Move,Stamina,Health);
         SpawnMinion();

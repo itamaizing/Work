@@ -6,12 +6,12 @@ using UnityEngine;
 public class Energy : StaminaComponent
 {
 	private float _timer = 0;
-	private float _sumDamageGiven = 0;
+	[SerializeField] private float _sumDamageGiven = 0;
 	private bool _canRegen = true;
 
 	private void Start()
 	{
-		StartCoroutine(RegenirateEnergy());
+		//StartCoroutine(RegenirateEnergy());
 	}
 
 	private void Update()
@@ -71,7 +71,7 @@ public class Energy : StaminaComponent
 		return true;
 	}
 
-	private IEnumerator RegenirateEnergy()
+	/*private IEnumerator RegenirateEnergy()
 	{
 		while (true)
 		{
@@ -81,7 +81,7 @@ public class Energy : StaminaComponent
 				this.Add(_regenerationValue);
 			}
 		}
-	}
+	}*/
 
 	public float UseAllEnergy()
 	{
@@ -94,7 +94,7 @@ public class Energy : StaminaComponent
 	public void SumDamageMake(float damage)
 	{
 		_sumDamageGiven += damage;
-		if( _sumDamageGiven >= 10 ) 
+		while(_sumDamageGiven >= 10 ) 
 		{
 			Add(1);
 			_sumDamageGiven -= 10;

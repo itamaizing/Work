@@ -15,13 +15,14 @@ public class CharacterData : ScriptableObject
     [SerializeField] private float _defaultHealthRegen;
     [SerializeField] private float _defaultStaminaRegen;
     [SerializeField] private float _defaultRegenDelay;
+    [SerializeField] private float _defaultStaminaRegenDalay;
     [SerializeField] private float _visionRadius;
+
 
     public string Name => _name;
     public string Description => _description;
     public Sprite Icon => _icon;
     public float IconSize => _iconSize;
-
     public float Health => _health;
     public HealthInfo HealthInfo => _healthInfo;
     public float Stamina => _stamina;
@@ -29,6 +30,6 @@ public class CharacterData : ScriptableObject
     public float HealthRegen => _defaultHealthRegen;
     public float StaminaRegen => _defaultStaminaRegen;
     public float RegenDelay => _defaultRegenDelay;
-
+    public float StaminaRegenDelay => _defaultStaminaRegenDalay;
     public float VisionRadius => _visionRadius;
 }
