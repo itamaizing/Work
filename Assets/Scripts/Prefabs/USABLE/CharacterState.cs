@@ -558,6 +558,16 @@ public class CharacterState : MonoBehaviour
 		//newState.ExitState(this);
 		currentStates.Remove(newState);
 	}
+	public void RemoveState(States stateName)
+	{
+		foreach (AbstractCharacterState state in currentStates)
+		{
+			if (state.state == stateName)
+			{
+				state.ExitState();
+			}
+		}
+	}
 
 	public void Dispel(StateType type)
 	{

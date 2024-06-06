@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ public class IcePuddleObject : MonoBehaviour
 
 	[SerializeField] private Rigidbody2D _rb;
 	[SerializeField] GameObject _hitEffect;
+	[SerializeField] private SpriteRenderer _spriteRenderer;
 
 	private List<CharacterState> _enemies = new List<CharacterState>();
 
@@ -22,6 +24,7 @@ public class IcePuddleObject : MonoBehaviour
 	 * */
 	private void Start()
 	{
+		_spriteRenderer.DOFade(1, 1);
 		//energy.test();
 		int timeToAdd = (int)energy.Value / 5;
 		if (timeToAdd > 4)
@@ -30,6 +33,7 @@ public class IcePuddleObject : MonoBehaviour
 		timeToDestroy += timeToAdd;
 		energy.Use(timeToAdd * 5) ;
 		StartCoroutine(DestroyShadow());
+		StartCoroutine(StartFade());
 	}
 
 	private void OnTriggerExit2D(Collider2D collision)
@@ -61,7 +65,7 @@ public class IcePuddleObject : MonoBehaviour
 				duration += energy.Value / 5;
 				energy.UseAllEnergy();
 			}
-			target.CharacterState.AddState(new FrostingState(),0,0,0); // TODO ADDVALUES
+			target.CharacterState.AddState(new FrostingState(),duration,0,States.Frosting);
 			_enemies.Add(target.CharacterState);
 		}
 		//Explode();
@@ -76,7 +80,7 @@ public class IcePuddleObject : MonoBehaviour
 		healthComponent.SetBoostRegen2(0);
 		foreach (var target in _enemies)
 		{
-			target.AddState(new DefaultState(),0,0,0); //TODO ADDVALUES
+			target.RemoveState(States.Frosting); 
 			_enemies.Remove(target);
 		}
 		Destroy(gameObject);
@@ -88,7 +92,12 @@ public class IcePuddleObject : MonoBehaviour
 		Destroy(gameObject);
 		//turn off energy boost
 		//destroy
-
-
+	}
+	private IEnumerator StartFade()
+	{
+		yield return new WaitForSeconds(timeToDestroy-2);
+		_spriteRenderer.DOFade(0, 2);
+		//turn off energy boost
+		//destroy
 	}
 }

@@ -53,6 +53,7 @@ MonoBehaviour:
   timeToDestroy: 3
   _rb: {fileID: 1725752245413487704}
   _hitEffect: {fileID: 6292097104280928921}
+  _spriteRenderer: {fileID: 803633891831550741}
 --- !u!1 &1623331448569141304
 GameObject:
   m_ObjectHideFlags: 0
@@ -185,6 +186,7 @@ MonoBehaviour:
   timeToDestroy: 3
   _rb: {fileID: 0}
   _hitEffect: {fileID: 0}
+  _spriteRenderer: {fileID: 0}
 --- !u!70 &951530442451349632
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -328,7 +330,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 9da3e6b1d1e68cd4ca0a8e4e4107c42d, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -383,6 +385,7 @@ MonoBehaviour:
   timeToDestroy: 3
   _rb: {fileID: 0}
   _hitEffect: {fileID: 0}
+  _spriteRenderer: {fileID: 0}
 --- !u!70 &8220976115108720599
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
