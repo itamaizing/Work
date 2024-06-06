@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 
 public class IceCloudProjectile : MonoBehaviour
@@ -7,6 +8,7 @@ public class IceCloudProjectile : MonoBehaviour
 
 	[SerializeField] private Rigidbody2D _rb;
 	[SerializeField] GameObject _hitEffect;
+	[SerializeField] SpriteRenderer _spriteRenderer;
 	[SerializeField] private float _force;
 	[SerializeField] private float _distance = 5;
 	
@@ -21,6 +23,7 @@ public class IceCloudProjectile : MonoBehaviour
 
 	private void Update()
 	{
+		_spriteRenderer.DOFade(0, 1);
 		if(Vector2.Distance(transform.position, startPos) > _distance * GlobalVariable.cellSize)
 		{
 			Explode();
