@@ -219,7 +219,7 @@ public class StunnedState : AbstractCharacterState
 		if (character.TryGetComponent<PlayerAbilities>(out var ability))
 		{
 			_abilities = ability;
-			_abilities.SetAbilitiesDisabled();
+			_abilities.SetAbilitiesEnable(false);
 		}
 		else
 		{

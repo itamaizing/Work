@@ -54,7 +54,7 @@ public class SelectManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-            if(selectedControllableUnits==null) return;
+            if(selectedControllableUnits.Count<=0) return;
             foreach (var unit in selectedControllableUnits)
             {
                 unit.SelectComponent.IsCurrentPlayer = false;

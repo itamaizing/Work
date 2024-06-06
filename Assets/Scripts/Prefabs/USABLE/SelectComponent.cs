@@ -26,6 +26,7 @@ public class SelectComponent : MonoBehaviour
             isSelect = value;
             _moveComponent.CanMove = isSelect;
             _uiPlayerComponents.ChangeSelection(isSelect);
+            if(isSelect==false) _playerAbilities.SetAbilitiesPanelEnable(false);
         }
     }
 

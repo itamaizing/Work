@@ -390,7 +390,7 @@ RectTransform:
   - {fileID: 4041501855964374284}
   - {fileID: 5762049827953977616}
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -600,6 +600,7 @@ GameObject:
   - component: {fileID: 4417605804945313492}
   - component: {fileID: 5970767670451549340}
   - component: {fileID: 5424265573815036285}
+  - component: {fileID: 2423544550661109350}
   m_Layer: 0
   m_Name: Abilities
   m_TagString: Untagged
@@ -642,6 +643,7 @@ MonoBehaviour:
   - {fileID: 4417605804945313492}
   - {fileID: 5424265573815036285}
   visualRender: {fileID: 5564757508821022323}
+  isAbilityPanelActive: 0
 --- !u!114 &5564757508821022323
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -687,6 +689,12 @@ MonoBehaviour:
   _streamingDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: 0
+  _isCanTargetHimself: 0
+  _attackZoneSize: 0
+  _attackSpeed: 1
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
   _damage: 8
   _dad: {fileID: 8468544467696250796}
   _abilityCooldown: 1.4
@@ -786,8 +794,8 @@ MonoBehaviour:
   _manaCostPerTick: 0
   _puddle: {fileID: 1936770196361774655, guid: bc61883431de372488a55d10d8a02690, type: 3}
   _playerLinks: {fileID: 8468544467696250796}
-  _preViewPuddle: {fileID: 0}
-  _lowePoint: {fileID: 0}
+  _preViewPuddle: {fileID: 884365701278928767, guid: 7b6c0e56fb1a9e642a0e585447b9a071, type: 3}
+  _lowePoint: {fileID: 884365701278928767, guid: 7b6c0e56fb1a9e642a0e585447b9a071, type: 3}
 --- !u!114 &4417605804945313492
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -890,6 +898,47 @@ MonoBehaviour:
   _manaCostPerTick: 0
   _projectile: {fileID: 5633596165386628248, guid: 13d29f15dbe0e9c40bac53fe5ff49f89, type: 3}
   _playerLinks: {fileID: 8468544467696250796}
+--- !u!114 &2423544550661109350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1565031513079442272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0472c7c6c6b721418ebe181869af7fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _abilityInfo: {fileID: 11400000, guid: f6b63db1fe9a8db4b86632917e246e69, type: 2}
+  _isAutoAttack: 1
+  _radius: 2
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _manaCost: 0
+  _castDeley: 0
+  _cooldown: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _isCanTargetHimself: 0
+  _attackZoneSize: 2
+  _attackSpeed: 1
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 128
+  _damage: 8
+  _dad: {fileID: 8468544467696250796}
+  _abilityCooldown: 1.4
+  _obstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!1 &2281972326564055702
 GameObject:
   m_ObjectHideFlags: 0
@@ -2379,7 +2428,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2187239661110117204}
-  - {fileID: 986616382496101289}
   - {fileID: 7518994914618283409}
   - {fileID: 1249080123873661148}
   - {fileID: 5188756905167438128}
