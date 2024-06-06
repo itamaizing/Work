@@ -75,8 +75,10 @@ public class PhysicalAttack : Ability
 			_multiplySpeed*=2;
 			_timer = _baseTimer;
 			_isInTheRow = true;
-
-			enemy.Health.TakeDamage(_damage + Random.Range(0, 2), DamageType.Physical);
+			float curDamage = _damage + Random.Range(0, 2);
+			enemy.Health.TakeDamage(curDamage, DamageType.Physical);
+			Energy energy = (Energy)_dad.Stamina;
+			energy.SumDamageMake(curDamage);
 			if (_hitInARow >= 6)
 			{
 				//Debug.Log("Lasthit");
@@ -91,8 +93,10 @@ public class PhysicalAttack : Ability
 			_multiplySpeed = .05f;
 			_timer = _baseTimer;
 			_isInTheRow = true;
-			
-			enemy.Health.TakeDamage(_damage + Random.Range(0, 2), DamageType.Physical);
+			float curDamage = _damage + Random.Range(0, 2);
+			Energy energy = (Energy)_dad.Stamina;
+			energy.SumDamageMake(curDamage);
+			enemy.Health.TakeDamage(curDamage, DamageType.Physical);
 		}
 	}
 	private void LastHit()
@@ -100,6 +104,9 @@ public class PhysicalAttack : Ability
 		if (_dad.Stamina.Use(10))
 		{
 			_target.Health.TakeDamage(_damage * .5f, DamageType.Physical);
+			float curDamage = _damage * .5f;
+			Energy energy = (Energy)_dad.Stamina;
+			energy.SumDamageMake(curDamage);
 			_target.CharacterState.AddState(new StunnedState(), 1.5f, 0, States.Stun);
 			PushBackEnemy(_target);
 			//отбрасывание 			
