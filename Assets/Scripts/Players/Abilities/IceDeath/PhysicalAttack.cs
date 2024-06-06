@@ -78,6 +78,10 @@ public class PhysicalAttack : Ability
 			float curDamage = _damage + Random.Range(0, 2);
 			enemy.Health.TakeDamage(curDamage, DamageType.Physical);
 			Energy energy = (Energy)_dad.Stamina;
+			if(enemy.CharacterState.CheckForState(States.Frozen))
+			{
+				curDamage *= 1.4f;
+			}
 			energy.SumDamageMake(curDamage);
 			if (_hitInARow >= 6)
 			{

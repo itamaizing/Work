@@ -39,6 +39,10 @@ public class IceCloudProjectile : MonoBehaviour
 			//target.CharacterState.energy = dad.Stamina;
 			float curDamage = 10 + energyDad / 4;
 			Energy energyLink = (Energy)dad.Stamina;
+			if (target.CharacterState.CheckForState(States.Frozen))
+			{
+				curDamage *= 1.4f;
+			}
 			energyLink.SumDamageMake(curDamage);
 			target.Health.TakeDamage(curDamage, DamageType.Physical);
 			target.CharacterState.AddState(new FrozenState(), duration, 30, States.Frozen);

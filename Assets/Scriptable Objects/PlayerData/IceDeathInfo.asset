@@ -16,11 +16,12 @@ MonoBehaviour:
   _description: b b b
   _icon: {fileID: 21300000, guid: 48c94a024989bf74d9081978b98b6040, type: 3}
   _iconSize: 0
-  _health: 333
+  _health: 1111
   _healthInfo: {fileID: 11400000, guid: 4204d0c51aaeb214db9ca63d16aa4aa8, type: 2}
-  _stamina: 333
+  _stamina: 70
   _moveSpeed: 250
-  _defaultHealthRegen: 70
+  _defaultHealthRegen: 1.7
   _defaultStaminaRegen: 2
   _defaultRegenDelay: 2
+  _defaultStaminaRegenDalay: 0
   _visionRadius: 5

@@ -7,6 +7,7 @@ using UnityEngine;
 public abstract class AbstractCharacterState
 {
 	public StateType type;
+	public States state;
 	public List<StatusEffect> effects = new List<StatusEffect>();
 	protected CharacterState _characterState;
 	public abstract void EnterState(CharacterState character, float durationToExit, float damageToExit);
@@ -468,12 +469,12 @@ public class CharacterState : MonoBehaviour
 	private HealthComponent _health;
 	private MoveComponent _move;
 	private StaminaComponent _stamina;
+	private List<AbstractCharacterState> currentStates = new List<AbstractCharacterState>();
 	[SerializeField] private StateIcons _stateIcons;
 	public HealthComponent Health => _health;
 	public MoveComponent Move => _move;
 	public StaminaComponent Stamina => _stamina;
 	
-	[SerializeField] private List<AbstractCharacterState> currentStates = new List<AbstractCharacterState>();
 
 	public void Initialize(HealthComponent health,MoveComponent move , StaminaComponent stamina)
 	{
@@ -528,6 +529,7 @@ public class CharacterState : MonoBehaviour
 		{
 			_stateIcons.ActivateIco(state, duration, 1);
 			currentStates.Add(newState);
+			currentStates[currentStates.Count - 1].state = state;
 			//currentStates[currentStates.Count - 1].
 			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
 		}
@@ -577,6 +579,18 @@ public class CharacterState : MonoBehaviour
 			}
 		}
 		return true;
+	}
+
+	public bool CheckForState(States state)
+	{
+		foreach (AbstractCharacterState states in currentStates)
+		{
+			if(states.state == state)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 }
 
