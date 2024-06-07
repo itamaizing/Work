@@ -519,6 +519,7 @@ public class Cooling : AbstractCharacterState
 	}
 	public override bool Stack(float time)
 	{
+		Debug.Log("stacked");
 		//_characterState.Move.SetDefaultSpeed();
 		_duration = time;
 		_curSpeedDebuf += 0.05f;
@@ -526,7 +527,7 @@ public class Cooling : AbstractCharacterState
 		//ability speed decrease
 		_characterState.Move.ChangeMoveSpeed(1 - _curSpeedDebuf);
 		//_duration = _baseDuration;
-		return false;
+		return true;
 	}
 
 }
@@ -578,10 +579,13 @@ public class CharacterState : MonoBehaviour
 	public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state)
 	{
 		//if already exist 
-		if (currentStates.Contains(newState))
+		//if (currentStates.Contains(newState))
+		if(CheckForState(state))
 		{
 			foreach (AbstractCharacterState item in currentStates)
 			{
+				if (item.state != state) continue;
+
 				if (item.Stack(duration))
 				{
 					_stateIcons.ActivateIco(state, duration, 1);
