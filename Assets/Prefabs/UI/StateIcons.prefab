@@ -211,13 +211,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89bb8792cc67dea4487caae7c8fb0dfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stun: {fileID: 943178309112352084, guid: cd2e8c3ebca9f76408d5e871332ffac5, type: 3}
-  _frozen: {fileID: 943178309112352084, guid: cd2e8c3ebca9f76408d5e871332ffac5, type: 3}
-  _frosting: {fileID: 943178309112352084, guid: cd2e8c3ebca9f76408d5e871332ffac5, type: 3}
-  _blind: {fileID: 943178309112352084, guid: cd2e8c3ebca9f76408d5e871332ffac5, type: 3}
   _spawnPos: {fileID: 6049582075187755511}
   _icons:
   - {fileID: 943178309112352084, guid: cd2e8c3ebca9f76408d5e871332ffac5, type: 3}
   - {fileID: 943178309112352084, guid: af1a98e9164253c428c1ffab38694943, type: 3}
   - {fileID: 943178309112352084, guid: 1a94045065379714b99141ee7a8e3288, type: 3}
   - {fileID: 943178309112352084, guid: 66eec0bdff0f9a04d90e9265b560a569, type: 3}
+  - {fileID: 943178309112352084, guid: ea26e426348b1ce4dac54cb2e038f8af, type: 3}

@@ -224,7 +224,7 @@ GameObject:
   - component: {fileID: 3241168102769711572}
   - component: {fileID: 943178309112352084}
   m_Layer: 5
-  m_Name: State3
+  m_Name: FrostingIco
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
