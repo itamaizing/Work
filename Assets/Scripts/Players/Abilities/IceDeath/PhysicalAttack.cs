@@ -12,7 +12,7 @@ public class PhysicalAttack : AutoAttackAbility
 	[SerializeField] private float _damage = 8f;
 	[SerializeField] private Character _dad;
 	[SerializeField] private float _abilityCooldown = 1.4f; //cooldown between shots
-	[SerializeField] private LayerMask _obstacleLayerMask;
+	//[SerializeField] private LayerMask _obstacleLayerMask;
 	//private float _cooldownTimer = 1.4f;
 	private int _hitInARow = 0;
 	private float _multiplySpeed = .05f;
@@ -180,7 +180,7 @@ public class PhysicalAttack : AutoAttackAbility
 		float distance = Vector2.Distance(start, end);
 
 		RaycastHit2D[] hits =
-			Physics2D.BoxCastAll(start, new Vector2(1f, 1f), 0f, direction, distance, _obstacleLayerMask);
+			Physics2D.BoxCastAll(start, new Vector2(1f, 1f), 0f, direction, distance, _obstacle);
 
 		foreach (RaycastHit2D hit in hits)
 		{
