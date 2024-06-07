@@ -359,8 +359,8 @@ GameObject:
   - component: {fileID: 5665079937663656764}
   - component: {fileID: 1078220477695681604}
   - component: {fileID: 7760335386463111578}
-  - component: {fileID: 1057949845680950153}
   - component: {fileID: 2926669445991704918}
+  - component: {fileID: 1057949845680950153}
   - component: {fileID: 4715758111818368764}
   - component: {fileID: 5511617219408767834}
   - component: {fileID: 8468544467696250796}
@@ -504,19 +504,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _stateIcons: {fileID: 2794163301550220692}
---- !u!114 &1057949845680950153
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1521997633048654849}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1bd22fe231e3f2e41b5e309172c34d13, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bar: {fileID: 606832500078548383}
 --- !u!114 &2926669445991704918
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -531,6 +518,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bar: {fileID: 418534062616378238}
   _sumDamageGiven: 0
+--- !u!114 &1057949845680950153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1521997633048654849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bd22fe231e3f2e41b5e309172c34d13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bar: {fileID: 606832500078548383}
 --- !u!114 &4715758111818368764
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -572,14 +572,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rb: {fileID: 3759936847054020137}
-  _healthComponent: {fileID: 1078220477695681604}
+  healthComponent: {fileID: 1078220477695681604}
   _playerMove: {fileID: 5665079937663656764}
-  _stamina: {fileID: 2926669445991704918}
-  _runeComponent: {fileID: 1057949845680950153}
+  stamina: {fileID: 2926669445991704918}
+  runeComponent: {fileID: 1057949845680950153}
   _abilities: {fileID: 3734820572883177193}
   _characterState: {fileID: 7760335386463111578}
   _uiPlayerComponents: {fileID: 4715758111818368764}
-  _selectComponent: {fileID: 5511617219408767834}
+  selectComponentComponent: {fileID: 5511617219408767834}
   _playerData: {fileID: 11400000, guid: 1382b47eecc788c46b35297311c129c3, type: 2}
   _minion: {fileID: 2981867871510918870, guid: d321207ef616498478038beb68b111ea, type: 3}
 --- !u!1 &1565031513079442272
@@ -643,7 +643,6 @@ MonoBehaviour:
   - {fileID: 4417605804945313492}
   - {fileID: 5424265573815036285}
   visualRender: {fileID: 5564757508821022323}
-  isAbilityPanelActive: 0
 --- !u!114 &5564757508821022323
 MonoBehaviour:
   m_ObjectHideFlags: 0
