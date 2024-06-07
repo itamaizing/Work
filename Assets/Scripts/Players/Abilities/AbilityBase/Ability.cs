@@ -27,6 +27,8 @@ public abstract class Ability : MonoBehaviour
     [SerializeField] protected float _streamingDuration;
     [SerializeField] protected float _manaCostRate;
     [SerializeField] protected float _manaCostPerTick;
+	[SerializeField] protected Schools _abilitySchool;
+	[SerializeField] protected AbilityForm _abilityForm;
 
 	protected StaminaComponent _mana;
 	protected MoveComponent _playerMove;
@@ -34,13 +36,15 @@ public abstract class Ability : MonoBehaviour
 	protected bool _isUsed = false;
 	protected bool _isCanCancle = true;
 	protected bool _isReady = true;
+    protected bool _avaliable = false;
     protected int _currentChargers;
 	protected Coroutine _rechargeJob;
 	protected Coroutine _streamingJob;
 	protected Coroutine _castDeleyJob;
 	protected Coroutine _cooldownJob;
+    protected float _timerForDebuf = 0;
 
-    private float _remainingСooldownTime;
+    private float _remaining�ooldownTime;
 
     public MoveComponent PlayerMove => _playerMove;
     public StaminaComponent Mana => _mana;
@@ -64,8 +68,11 @@ public abstract class Ability : MonoBehaviour
     public bool IsUsed { get => _isUsed; protected set => _isUsed = value; }
     public bool IsCanCancle { get => _isCanCancle; protected set => _isCanCancle = value; }
     public bool IsReady { get => _isReady; set => _isReady = value; }
+    public Schools School => _abilitySchool;
+    public AbilityForm AbilityForm => _abilityForm;
 
-    public event UnityAction<int> CurrentChargeChange;
+
+	public event UnityAction<int> CurrentChargeChange;
     public event UnityAction<float> StartStreaming;
     public event UnityAction StopStreaming;
     public event UnityAction<float> StartCastDeley;
@@ -142,20 +149,18 @@ public abstract class Ability : MonoBehaviour
         return true;
     }
 
-    public void SetCooldown(float time)
-    {
-        _isReady = false;
+	public void SwitchAvailible(bool avalieble)
+	{
+        _avaliable = avalieble;
+	}
 
-        if (time < _remainingСooldownTime)
-            return;
+	public void KnockDownTimerStart(float time)
+	{
+        _timerForDebuf = time;
+        StartCoroutine(KnockDownTimer());
+	}
 
-        if(_cooldownJob != null)
-            StopCoroutine(_cooldownJob);
-
-        _cooldownJob = StartCoroutine(CooldownCoroutine(time));
-    }
-
-    protected Coroutine GetCastDeleyCoroutine()
+	protected Coroutine GetCastDeleyCoroutine()
     {
         _castDeleyJob = StartCoroutine(CastDeleyCoroutine());
         StartCastDeley?.Invoke(_castDeley);
@@ -238,11 +243,11 @@ public abstract class Ability : MonoBehaviour
     private IEnumerator CooldownCoroutine(float cooldownTime)
     {
         CooldownStarted?.Invoke(cooldownTime);
-        _remainingСooldownTime = cooldownTime;
+        _remaining�ooldownTime = cooldownTime;
 
-        while (_remainingСooldownTime > 0)
+        while (_remaining�ooldownTime > 0)
         {
-            _remainingСooldownTime -= Time.deltaTime;
+            _remaining�ooldownTime -= Time.deltaTime;
             yield return null;
         }
         _isReady = true;
@@ -301,4 +306,27 @@ public abstract class Ability : MonoBehaviour
         CastEnded?.Invoke();
         _streamingJob = null;
     }
+
+    private IEnumerator KnockDownTimer()
+    {
+		yield return new WaitForSeconds(_timerForDebuf);
+        _avaliable = true;
+	}
 }
+public enum Schools
+{
+	Light,
+	Dark,
+    Fire,
+    Water,
+    Air,
+    Earth
+}
+
+public enum AbilityForm
+{
+	Spell,
+    Magic,
+	Physical
+}
+

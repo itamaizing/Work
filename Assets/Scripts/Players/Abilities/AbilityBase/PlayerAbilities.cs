@@ -243,4 +243,27 @@ public class PlayerAbilities : MonoBehaviour
     {
         AbilitiesManager.Instance.RemovePanel(_abilityPanel);
     }
+
+    public void CancelBySchool(Schools school, float coolDown)
+    {
+        foreach(var item in _abilities) 
+        {
+            if(item.School == school)
+            {
+                item.SwitchAvailible(false);
+                item.KnockDownTimerStart(coolDown);
+            }
+        }
+    }
+	public void CancelByType(AbilityForm form, float coolDown)
+	{
+		foreach (var item in _abilities)
+		{
+			if (item.AbilityForm == form)
+			{
+				item.SwitchAvailible(false);
+				item.KnockDownTimerStart(coolDown);
+			}
+		}
+	}
 }
