@@ -7,9 +7,10 @@ public class BlockOfIce : Ability
 {
 	[SerializeField] private BlockOfIceProjectile _iceArrow;
 	[SerializeField] private Character _playerLinks;
+	[SerializeField] private float _castTime = 2.5f;
 	//[SerializeField] private RunePlayer _rune;
 	//[SerializeField] private Rigidbody2D _rb;
-
+	private bool _canCast = true;
 	private Vector2 _mousePos;
 	private float _angle;
 	private bool _enabled;
@@ -23,7 +24,7 @@ public class BlockOfIce : Ability
 			PayCost();
 			if (_playerLinks.RuneComponent.RemoveRune(1, this))
 			{
-				Shoot();
+				StartCoroutine(Casting());
 			}
 			else
 			{
@@ -62,6 +63,17 @@ public class BlockOfIce : Ability
 		//_playerLinks.Stamina.Use(_playerLinks.Stamina.Value);
 		Cancel();
 	}
-	//���������� paycost ��� ���� ��� ��� ���� ����� �� �������� ��� �������
 
+	private IEnumerator Casting()
+	{
+		yield return new WaitForSeconds(_castTime);
+		if (_canCast)
+		{
+			Shoot();
+		}
+		else
+		{
+			Cancel();
+		}
+	}
 }
