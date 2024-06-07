@@ -18,18 +18,11 @@ public class BlockOfIce : Ability
 	private void Update()
 	{
 		if (!_enabled) return;
-		
+
 		if (Input.GetMouseButtonDown(0))
 		{
 			PayCost();
-			if (_playerLinks.RuneComponent.RemoveRune(1, this))
-			{
-				StartCoroutine(Casting());
-			}
-			else
-			{
-				Cancel();
-			}
+			StartCoroutine(Casting());
 		}
 		if(Input.GetMouseButtonDown(1)) 
 		{
@@ -67,7 +60,7 @@ public class BlockOfIce : Ability
 	private IEnumerator Casting()
 	{
 		yield return new WaitForSeconds(_castTime);
-		if (_canCast)
+		if (_canCast && _playerLinks.RuneComponent.RemoveRune(1, this))
 		{
 			Shoot();
 		}
