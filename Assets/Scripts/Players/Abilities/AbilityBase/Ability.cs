@@ -72,6 +72,7 @@ public abstract class Ability : MonoBehaviour
     public event UnityAction PreparingEnded;
     public event UnityAction CastEnded;
     public event UnityAction AreaOffed;
+    public event UnityAction<float> CooldownStarted;
 
     protected abstract void Cast();
     protected abstract void Cancel();
@@ -156,7 +157,7 @@ public abstract class Ability : MonoBehaviour
             return;
         }
         _isReady = false;
-        _cooldownJob = StartCoroutine(CooldownCoroutine());
+        _cooldownJob = StartCoroutine(CooldownCoroutine(_cooldown));
         PreparingEnded?.Invoke();
 
         if (_isStreaming)
@@ -208,8 +209,9 @@ public abstract class Ability : MonoBehaviour
         return distance <= radius;
     }
 
-    private IEnumerator CooldownCoroutine()
+    private IEnumerator CooldownCoroutine(float cooldownTime)
     {
+        CooldownStarted?.Invoke(cooldownTime);
         float time = 0;
         while (time < _cooldown)
         {
