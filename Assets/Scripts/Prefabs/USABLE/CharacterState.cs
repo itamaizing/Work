@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 // ��������� ���������
 public abstract class AbstractCharacterState
@@ -467,12 +468,14 @@ public class Cooling : AbstractCharacterState
 	private float _duration;
 	private float _baseDuration;
 	private float _damageToExit;
+	private float _curAbilityDebuf = 0.1f;
+	private float _curSpeedDebuf = 0.05f;
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
 	{
 		type = StateType.Magic;
 		effects.Add(StatusEffect.MoveSpeed);
 		effects.Add(StatusEffect.AbilitySpeed);
-		Debug.Log("Entering Frosting State");
+		Debug.Log("Entering cooling State");
 		_characterState = character;
 
 		if (damageToExit == 0)
@@ -485,8 +488,8 @@ public class Cooling : AbstractCharacterState
 		}
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
-		
 
+		_characterState.Move.ChangeMoveSpeed(1-_curSpeedDebuf);
 		//decrease speed of attact and movement
 		_characterState.Health.sumDamageTaken = 0;
 	}
@@ -502,10 +505,11 @@ public class Cooling : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		Debug.Log("Exiting Frosting State");
-		if (_characterState.Check(StatusEffect.Move))
+		Debug.Log("Exiting cooling State");
+		if (_characterState.Check(StatusEffect.MoveSpeed))
 		{
-			_characterState.Move.CanMove = true;
+			_characterState.Move.SetDefaultSpeed();
+			//_characterState.Move.CanMove = true;
 		}
 		if (_characterState.Check(StatusEffect.AbilitySpeed))
 		{
@@ -515,7 +519,13 @@ public class Cooling : AbstractCharacterState
 	}
 	public override bool Stack(float time)
 	{
-		_duration = _baseDuration;
+		//_characterState.Move.SetDefaultSpeed();
+		_duration = time;
+		_curSpeedDebuf += 0.05f;
+		_curAbilityDebuf += 0.1f;
+		//ability speed decrease
+		_characterState.Move.ChangeMoveSpeed(1 - _curSpeedDebuf);
+		//_duration = _baseDuration;
 		return false;
 	}
 

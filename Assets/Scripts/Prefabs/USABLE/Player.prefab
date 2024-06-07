@@ -638,7 +638,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _abilities:
   - {fileID: 2803109671735995531}
-  - {fileID: 1005351013565685612}
+  - {fileID: 6553710306186458445}
   - {fileID: 938984537167284078}
   - {fileID: 812406894906728288}
   - {fileID: 4417605804945313492}
@@ -940,10 +940,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _abilityInfo: {fileID: 11400000, guid: 135c7988c60f2be45bef649300efe9fd, type: 2}
   _isAutoAttack: 0
-  _radius: 0
+  _radius: 10
   _area: 0
-  _castLength: 0
-  _castWidth: 0
+  _castLength: 6
+  _castWidth: 0.3
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
@@ -955,7 +955,7 @@ MonoBehaviour:
   _streamingDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: 0
-  _projectile: {fileID: 0}
+  _iceArrow: {fileID: -4446727431541074393, guid: 2b98bf57809a2ea488381e132571282f, type: 3}
   _playerLinks: {fileID: 8468544467696250796}
 --- !u!1 &2281972326564055702
 GameObject:
