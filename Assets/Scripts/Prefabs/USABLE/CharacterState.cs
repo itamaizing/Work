@@ -395,7 +395,7 @@ public class FrozenState : AbstractCharacterState
 	public override bool Stack(float time)
 	{
 		_duration = _baseDuration;
-		return false;
+		return true;
 	}
 }
 
@@ -454,7 +454,7 @@ public class FrostingState : AbstractCharacterState
 	public override bool Stack(float time)
 	{
 		_duration = _baseDuration;
-		return false;
+		return true;
 	}
 
 }
@@ -579,7 +579,7 @@ public class CounterSpell : AbstractCharacterState
 	}
 	public override bool Stack(float time)
 	{
-		if (_baseDuration > time)
+		if (_duration > time)
 		{
 			return false;
 		}
@@ -591,13 +591,14 @@ public class CounterSpell : AbstractCharacterState
 	}
 }
 
-public class Silence : AbstractCharacterState
+public class AbilityFormDebuf : AbstractCharacterState
 {
 	public bool turnOff = false;
 	private PlayerAbilities _abilities;
 	private float _baseDuration;
 	private float _duration;
 	public AbilityForm canceledForm;
+	public bool canCancel = false;
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
 	{
 		Debug.Log("Entering Silence State");
@@ -642,7 +643,7 @@ public class Silence : AbstractCharacterState
 	}
 	public override bool Stack(float time)
 	{
-		if (_baseDuration > time)
+		if (_duration > time)
 		{
 			return false;
 		}
@@ -653,6 +654,7 @@ public class Silence : AbstractCharacterState
 		}
 	}
 }
+
 public class CharacterState : MonoBehaviour
 {
 	private HealthComponent _health;
@@ -739,7 +741,13 @@ public class CharacterState : MonoBehaviour
 				}
 				else
 				{
-					//nothing at this time??
+					_stateIcons.ActivateIco(state, duration, 1);
+					currentStates.Add(newState);
+					var counterSpell = (CounterSpell)newState;
+					counterSpell.canceledSchoool = schools;
+					currentStates[currentStates.Count - 1].state = state;
+					//currentStates[currentStates.Count - 1].
+					currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
 				}
 			}
 		}
@@ -754,7 +762,8 @@ public class CharacterState : MonoBehaviour
 			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
 		}
 	}
-	public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state, AbilityForm form)
+	//can Cancel- if debuf can cancel ability that is casting right now
+	public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state, AbilityForm form, bool canCancel)
 	{
 		//if already exist 
 		//if (currentStates.Contains(newState))
@@ -770,6 +779,14 @@ public class CharacterState : MonoBehaviour
 				}
 				else
 				{
+					_stateIcons.ActivateIco(state, duration, 1);
+					currentStates.Add(newState);
+					var counterSpell = (AbilityFormDebuf)newState;
+					counterSpell.canCancel = canCancel;
+					counterSpell.canceledForm = form;
+					currentStates[currentStates.Count - 1].state = state;
+					//currentStates[currentStates.Count - 1].
+					currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
 					//nothing at this time??
 				}
 			}
@@ -778,7 +795,8 @@ public class CharacterState : MonoBehaviour
 		{
 			_stateIcons.ActivateIco(state, duration, 1);
 			currentStates.Add(newState);
-			var counterSpell = (Silence)newState;
+			var counterSpell = (AbilityFormDebuf)newState;
+			counterSpell.canCancel = canCancel;
 			counterSpell.canceledForm = form;
 			currentStates[currentStates.Count - 1].state = state;
 			//currentStates[currentStates.Count - 1].
