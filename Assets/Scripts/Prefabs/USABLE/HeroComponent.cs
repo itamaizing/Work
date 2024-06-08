@@ -7,9 +7,16 @@ public class HeroComponent : Character
 
     [SerializeField] private MinionComponent _minion;
 
+    public bool IController = false;
+
     private void Awake()
     {
         Initialize(_playerData);
+    }
+
+    private void Update()
+    {
+        if(IController) SelectManager.Instance.AddControl(this);
     }
 
     public override void Initialize(CharacterData characterData)

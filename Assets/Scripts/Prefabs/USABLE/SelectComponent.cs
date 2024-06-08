@@ -14,7 +14,7 @@ public class SelectComponent : MonoBehaviour
         set
         {
             isCurrentPLayer = value;
-            _playerAbilities.SetAbilitiesPanelEnable(isCurrentPLayer);
+            if(isCurrentPLayer) _playerAbilities.SetAbilitiesPanelEnable();
         }
         
     }
@@ -26,7 +26,7 @@ public class SelectComponent : MonoBehaviour
             isSelect = value;
             _moveComponent.CanMove = isSelect;
             _uiPlayerComponents.ChangeSelection(isSelect);
-            if(isSelect==false) _playerAbilities.SetAbilitiesPanelEnable(false);
+            _playerAbilities.SetAbilitiesPanelSelect(isSelect);
         }
     }
 

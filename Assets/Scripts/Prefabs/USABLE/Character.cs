@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public abstract class Character : MonoBehaviour
 {
@@ -27,4 +25,9 @@ public abstract class Character : MonoBehaviour
 	public SelectComponent SelectComponent => _selectComponent;
 
 	public abstract void Initialize(CharacterData data);
+
+	private void OnDestroy()
+	{
+		SelectManager.Instance.Deselect(this);
+	}
 }

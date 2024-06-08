@@ -10,10 +10,14 @@ public class SelectManager : MonoBehaviour
     [SerializeField] private LayerMask allies;
     [SerializeField] private LayerMask enemies;
 
+    private bool isControllable = false;
+    
     private static SelectManager instance; 
     public static SelectManager Instance => instance;
 
-    private List<Character> controllableUnits;
+    private Character _contoller;
+    private bool _canControll = false;
+    
     public List<Character> selectedControllableUnits;
 
     private int currentUnitNumber = 0;
@@ -28,8 +32,7 @@ public class SelectManager : MonoBehaviour
         {
             instance = this;
         }
-
-        controllableUnits = new List<Character>();
+        
         selectedControllableUnits = new List<Character>();
         _selectorPrefab.gameObject.SetActive(false);
     }
@@ -54,14 +57,36 @@ public class SelectManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-            if(selectedControllableUnits.Count<=0) return;
+            if(selectedControllableUnits.Count <= 0) return;
+            
             foreach (var unit in selectedControllableUnits)
             {
                 unit.SelectComponent.IsCurrentPlayer = false;
             }
+            
             currentUnitNumber = (currentUnitNumber+1) % selectedControllableUnits.Count;
             selectedControllableUnits[currentUnitNumber].SelectComponent.IsCurrentPlayer = true;
         }
+    }
+
+    public void AddControl(Character character)
+    {
+        _contoller = character;
+    }
+
+    private bool CanControl(Character character)
+    {
+        if (character is MinionComponent component && component.HeroParent == _contoller)
+        {
+            return true;
+        }
+
+        if (character == _contoller)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     public void SelectOnClick(Character character)
@@ -73,6 +98,8 @@ public class SelectManager : MonoBehaviour
 
     public void SelectInArea(Character character)
     {
+        if(!CanControl(character)) return;
+        
         if (!selectedControllableUnits.Contains(character))
         {
             selectedControllableUnits.Add(character);
@@ -84,8 +111,14 @@ public class SelectManager : MonoBehaviour
             character.SelectComponent.IsSelect = false;
         }
 
-        selectedControllableUnits.FirstOrDefault().SelectComponent.IsCurrentPlayer = true;
+        selectedControllableUnits.FirstOrDefault()!.SelectComponent.IsCurrentPlayer = true;
         currentUnitNumber = 0;
+    }
+
+    public void Deselect(Character character)
+    {
+        if(selectedControllableUnits.Contains(character)) 
+            selectedControllableUnits.Remove(character);
     }
     public void DeselectAll()
     {

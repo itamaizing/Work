@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -10,7 +12,6 @@ public class PlayerAbilities : MonoBehaviour
     private Ability _currentAbility;
     private int _currentAbilityIndex;
     private bool _isAbilitiesEnabled = true;
-    public bool isAbilityPanelActive = false;
 
     private AbilityPanel _abilityPanel;
 
@@ -67,18 +68,16 @@ public class PlayerAbilities : MonoBehaviour
         _isAbilitiesEnabled = isEnabled;
     }
 
-    public void SetAbilitiesPanelEnable(bool isEnable)
+    public void SetAbilitiesPanelSelect(bool isSelect)
     {
-        isAbilityPanelActive = isEnable;
-        if (isAbilityPanelActive)
-        {
-            EnableAbilities();
-            AbilitiesManager.Instance.ActiveCurrentPanel(_abilityPanel);
-        }
-        else
-        {
-            DisableAbilities();
-        }
+        AbilitiesManager.Instance.ChangeCurrentPanelSelectStatus(_abilityPanel,isSelect);
+        if(isSelect) EnableAbilities();
+        else DisableAbilities();
+    }
+
+    public void SetAbilitiesPanelEnable()
+    {
+        AbilitiesManager.Instance.ActiveCurrentPanel(_abilityPanel);
     }
 
     private void SetCurrentAbility(int index)
@@ -118,7 +117,7 @@ public class PlayerAbilities : MonoBehaviour
 
     private void TryUseAbility()
     {
-        if (_currentAbility == null || !_isAbilitiesEnabled || !isAbilityPanelActive  || _currentAbility.IsUsed )
+        if (_currentAbility == null || !_isAbilitiesEnabled || !_abilityPanel.IsActive  || _currentAbility.IsUsed )
             return;
 
         visualRender.Drawn(_currentAbility);
@@ -139,5 +138,10 @@ public class PlayerAbilities : MonoBehaviour
                 AbilityDeselected?.Invoke(_currentAbilityIndex);
             }
         }
+    }
+
+    private void OnDestroy()
+    {
+        AbilitiesManager.Instance.RemovePanel(_abilityPanel);
     }
 }

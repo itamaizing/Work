@@ -10,11 +10,30 @@ public class AbilityPanel : MonoBehaviour
     private PlayerAbilities _playerAbilities;
     private List<Ability> _abilities;
     private List<AbilityIcon> _abilityIcons;
+    private bool _isActive;
+    public bool _isSelect;
 
+    public bool IsSelect
+    {
+        get => _isSelect;
+        set => _isSelect = value;
+    }
+
+    public bool IsActive
+    {
+        get => _isActive;
+        set
+        {
+            _isActive = value && IsSelect;
+            gameObject.SetActive(_isActive);
+        }
+    }
+    
     private void Awake()
     {
         _abilities = new List<Ability>();
         _abilityIcons = new List<AbilityIcon>();
+        IsActive = false;
     }
 
     public void Fill(PlayerAbilities abilities)
@@ -31,6 +50,11 @@ public class AbilityPanel : MonoBehaviour
 
         _playerAbilities.AbilitySelected += OnAbilitySelected;
         _playerAbilities.AbilityDeselected += OnAbilityDeselected;
+    }
+
+    public void DestroyAbilityPanel()
+    {
+        Destroy(gameObject);
     }
 
     private void OnAbilitySelected(int index)

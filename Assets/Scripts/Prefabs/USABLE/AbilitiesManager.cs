@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class AbilitiesManager : MonoBehaviour
@@ -30,23 +31,34 @@ public class AbilitiesManager : MonoBehaviour
         var panel = Instantiate(_panelPrefab,panelsParent);
         panel.Fill(abilities);
         _panels.Add(panel);
-        panel.gameObject.SetActive(false);
         return panel;
     }
     public void RemovePanel(AbilityPanel panel)
     {
-        if (_panels.Contains(panel))
-        {
-            _panels.Remove(panel);
-            Destroy(panel.gameObject);
-        }
+        if (!_panels.Contains(panel)) return;
+        _panels.Remove(panel);
+        panel.DestroyAbilityPanel();
+        
+        ActiveFirstSelectedPanel();
     }
 
     public void ActiveCurrentPanel(AbilityPanel currentPanel)
     {
         foreach (var panel in _panels)
         {
-            panel.gameObject.SetActive(panel == currentPanel);
+            panel.IsActive = panel == currentPanel;
         }
+    }
+
+    public void ChangeCurrentPanelSelectStatus(AbilityPanel currentPanel,bool isSelect)
+    {
+        currentPanel.IsSelect = isSelect;
+    }
+
+    public void ActiveFirstSelectedPanel()
+    {
+        var panel = _panels.FirstOrDefault(o => o.IsSelect == true);
+        if(panel==null) return;
+        panel.IsActive = true;
     }
 }
