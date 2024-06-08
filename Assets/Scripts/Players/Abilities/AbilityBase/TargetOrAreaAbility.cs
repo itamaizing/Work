@@ -8,9 +8,18 @@ public abstract class TargetOrAreaAbility : TargetAbility
 
     public Vector3 Point => _point;
 
+    protected override void Cleaning()
+    {
+        base.Cleaning();
+        _point = Vector3.zero;
+    }
+
     protected override IEnumerator ChooseTatgetCoroutine(float ChooseRadius)
     {
-        while (Target == null && _point == null)
+        _target = null;
+        _point = Vector3.zero;
+
+        while (Target == null && _point == Vector3.zero)
         {
             if (Input.GetMouseButtonDown(0) && IsMouseInRadius(ChooseRadius))
             {

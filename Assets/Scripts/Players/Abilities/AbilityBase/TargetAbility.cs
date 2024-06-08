@@ -10,7 +10,7 @@ public abstract class TargetAbility : Ability
     protected Coroutine _useJob;
     protected Coroutine _castJob;
     protected Coroutine _chooseTatgetJob;
-    private Character _target;
+    protected Character _target;
 
     protected bool IsTarget => (_target.transform == _health.transform);
     protected Character Target => _target;
@@ -34,20 +34,20 @@ public abstract class TargetAbility : Ability
 
     protected bool TryRaycastTarget()
     {
+        _target = null;
         RaycastHit2D[] rayHit = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
 
-        if (rayHit.Length > 0 && rayHit[0].transform.TryGetComponent<Character>(out Character enemy))
+        foreach (var item in rayHit)
         {
-            _target = enemy;
-
-            if(_isCanTargetHimself == false && IsTarget)
+            if (rayHit.Length > 0 && item.transform.TryGetComponent<Character>(out Character enemy))
             {
-                _target = null;
+                _target = enemy;
+
+                if (_isCanTargetHimself == false && IsTarget)
+                {
+                    _target = null;
+                }
             }
-        }
-        else
-        {
-            _target = null;
         }
         return _target != null;
     }
@@ -84,6 +84,8 @@ public abstract class TargetAbility : Ability
 
     protected virtual IEnumerator ChooseTatgetCoroutine(float ChooseRadius)
     {
+        _target = null;
+
         while (_target == null)
         {
             if (Input.GetMouseButtonDown(0) && IsMouseInRadius(ChooseRadius))
