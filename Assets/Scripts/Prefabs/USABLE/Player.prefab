@@ -572,14 +572,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rb: {fileID: 3759936847054020137}
-  healthComponent: {fileID: 1078220477695681604}
+  _healthComponent: {fileID: 1078220477695681604}
   _playerMove: {fileID: 5665079937663656764}
-  stamina: {fileID: 2926669445991704918}
-  runeComponent: {fileID: 1057949845680950153}
+  _stamina: {fileID: 2926669445991704918}
+  _runeComponent: {fileID: 1057949845680950153}
   _abilities: {fileID: 3734820572883177193}
   _characterState: {fileID: 7760335386463111578}
   _uiPlayerComponents: {fileID: 4715758111818368764}
-  selectComponentComponent: {fileID: 5511617219408767834}
+  _selectComponent: {fileID: 5511617219408767834}
   _playerData: {fileID: 11400000, guid: 1382b47eecc788c46b35297311c129c3, type: 2}
   _minion: {fileID: 2981867871510918870, guid: d321207ef616498478038beb68b111ea, type: 3}
 --- !u!1 &1565031513079442272
@@ -643,6 +643,7 @@ MonoBehaviour:
   - {fileID: 4417605804945313492}
   - {fileID: 5424265573815036285}
   visualRender: {fileID: 5564757508821022323}
+  isAbilityPanelActive: 0
 --- !u!114 &5564757508821022323
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -672,8 +673,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _abilityInfo: {fileID: 11400000, guid: f6b63db1fe9a8db4b86632917e246e69, type: 2}
-  _isAutoAttack: 0
-  _radius: 0
+  _isAutoAttack: 1
+  _radius: 2
   _area: 0
   _castLength: 0
   _castWidth: 0
