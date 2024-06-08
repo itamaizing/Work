@@ -209,6 +209,11 @@ public abstract class Ability : MonoBehaviour
         return distance <= radius;
     }
 
+    protected Vector2 GetMousePoint()
+    {
+        return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    }
+
     private IEnumerator CooldownCoroutine(float cooldownTime)
     {
         CooldownStarted?.Invoke(cooldownTime);

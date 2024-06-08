@@ -82,7 +82,7 @@ public abstract class TargetAbility : Ability
         CastAction();
     }
 
-    protected IEnumerator ChooseTatgetCoroutine(float ChooseRadius)
+    protected virtual IEnumerator ChooseTatgetCoroutine(float ChooseRadius)
     {
         while (_target == null)
         {
