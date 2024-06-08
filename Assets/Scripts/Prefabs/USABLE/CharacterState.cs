@@ -545,9 +545,9 @@ public class AbilitySchoolDebuff : AbstractCharacterState
 		_characterState = character;
 
 		Debug.Log("CHECK FOR SCHOOL " + canceledSchoool);
-		if (character.TryGetComponent<PlayerAbilities>(out var ability))
+		if (character.TryGetComponent<Character>(out var ability))
 		{
-			_abilities = ability;
+			_abilities = ability.Abilities;
 			_abilities.SwitchAvaliable(canceledSchoool, false);
 		}
 		else
@@ -609,9 +609,9 @@ public class AbilityFormDebuff : AbstractCharacterState
 
 		Debug.Log("CHECK FOR FORM " + canceledForm);
 
-		if (character.TryGetComponent<PlayerAbilities>(out var ability))
+		if (character.TryGetComponent<Character>(out var ability))
 		{
-			_abilities = ability;
+			_abilities = ability.Abilities;
 			_abilities.SwitchAvaliable(canceledForm, false);
 		}
 		else
