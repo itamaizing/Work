@@ -132,26 +132,34 @@ public class PlayerAbilities : MonoBehaviour
         }
     }
 
-    public void CancelBySchool(Schools school, float coolDown)
+    public void SwitchAvaliable(Schools school, bool value)
     {
-        foreach(var item in _abilities) 
+		if (school == Schools.Physical)
+			return;
+		foreach (var item in _abilities) 
         {
             if(item.School == school)
             {
-                item.SwitchAvailible(false);
-                item.KnockDownTimerStart(coolDown);
+                item.SwitchAvailible(value);
+                //item.KnockDownTimerStart(coolDown);
             }
         }
     }
-	public void CancelByType(AbilityForm form, float coolDown)
-	{
+	public void SwitchAvaliable(AbilityForm form, bool value)
+	{       
 		foreach (var item in _abilities)
 		{
 			if (item.AbilityForm == form)
 			{
-				item.SwitchAvailible(false);
-				item.KnockDownTimerStart(coolDown);
+				item.SwitchAvailible(value);
+				//item.KnockDownTimerStart(coolDown);
 			}
 		}
+	}
+
+    private IEnumerator StartKnockDownTimer(float coolDown, Ability ability)
+    {
+		yield return new WaitForSeconds(coolDown);
+        ability.SwitchAvailible(true);
 	}
 }

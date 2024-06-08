@@ -1582,6 +1582,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 2803109671735995531, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+      propertyPath: SCHOOLS
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2803109671735995531, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+      propertyPath: _abilityForm
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2803109671735995531, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+      propertyPath: _abilitySchool
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 3734820572883177193, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
       propertyPath: _abilities.Array.data[0]
       value: 

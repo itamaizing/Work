@@ -36,7 +36,8 @@ public abstract class Ability : MonoBehaviour
 	protected bool _isUsed = false;
 	protected bool _isCanCancle = true;
 	protected bool _isReady = true;
-    protected bool _avaliable = false;
+    protected bool _avaliable = true;
+    protected bool _hasCanceled = false;
     protected int _currentChargers;
 	protected Coroutine _rechargeJob;
 	protected Coroutine _streamingJob;
@@ -68,7 +69,6 @@ public abstract class Ability : MonoBehaviour
     public bool IsReady { get => _isReady; set => _isReady = value; }
     public Schools School => _abilitySchool;
     public AbilityForm AbilityForm => _abilityForm;
-
 
 	public event UnityAction<int> CurrentChargeChange;
     public event UnityAction<float> StartStreaming;
@@ -125,7 +125,7 @@ public abstract class Ability : MonoBehaviour
 
     public virtual bool TryUse()
     {
-        if (_isUsed && (_mana.Value >= _manaCost && _isReady) == false)
+        if (_isUsed && (_mana.Value >= _manaCost && _isReady) == false && !_avaliable)
         {
             PreparingEnded?.Invoke();
             return false;
@@ -138,6 +138,10 @@ public abstract class Ability : MonoBehaviour
                 return false;
             }    
         }
+      /*  if(_hasCanceled)
+        {
+            KnockDownTimerStart();
+        }*/
         _isUsed = true;
         _isCanCancle = true;
         Cast();
@@ -303,7 +307,8 @@ public enum Schools
     Fire,
     Water,
     Air,
-    Earth
+    Earth,
+	Physical
 }
 
 public enum AbilityForm
