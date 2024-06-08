@@ -40,6 +40,8 @@ public abstract class Ability : MonoBehaviour
 	protected Coroutine _castDeleyJob;
 	protected Coroutine _cooldownJob;
 
+    private float _remaining—ooldownTime;
+
     public MoveComponent PlayerMove => _playerMove;
     public StaminaComponent Mana => _mana;
     public HealthComponent Health => _health;
@@ -138,6 +140,11 @@ public abstract class Ability : MonoBehaviour
         return true;
     }
 
+    public void SetCooldown(float time)
+    {
+        StartCoroutine(CooldownCoroutine(time));
+    }
+
     protected Coroutine GetCastDeleyCoroutine()
     {
         _castDeleyJob = StartCoroutine(CastDeleyCoroutine());
@@ -216,11 +223,15 @@ public abstract class Ability : MonoBehaviour
 
     private IEnumerator CooldownCoroutine(float cooldownTime)
     {
+        if (cooldownTime < _remaining—ooldownTime)
+            yield break;
+
         CooldownStarted?.Invoke(cooldownTime);
-        float time = 0;
-        while (time < _cooldown)
+        _remaining—ooldownTime = cooldownTime;
+
+        while (_remaining—ooldownTime > cooldownTime)
         {
-            time += Time.deltaTime;
+            _remaining—ooldownTime -= Time.deltaTime;
             yield return null;
         }
         _isReady = true;
