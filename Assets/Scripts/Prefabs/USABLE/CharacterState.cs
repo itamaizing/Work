@@ -529,7 +529,7 @@ public class Cooling : AbstractCharacterState
 
 }
 
-public class CounterSpell : AbstractCharacterState
+public class AbilitySchoolDebuff : AbstractCharacterState
 {
 	public bool turnOff = false;
 	private PlayerAbilities _abilities;
@@ -591,7 +591,7 @@ public class CounterSpell : AbstractCharacterState
 	}
 }
 
-public class AbilityFormDebuf : AbstractCharacterState
+public class AbilityFormDebuff : AbstractCharacterState
 {
 	public bool turnOff = false;
 	private PlayerAbilities _abilities;
@@ -743,7 +743,7 @@ public class CharacterState : MonoBehaviour
 				{
 					_stateIcons.ActivateIco(state, duration, 1);
 					currentStates.Add(newState);
-					var counterSpell = (CounterSpell)newState;
+					var counterSpell = (AbilitySchoolDebuff)newState;
 					counterSpell.canceledSchoool = schools;
 					currentStates[currentStates.Count - 1].state = state;
 					//currentStates[currentStates.Count - 1].
@@ -755,7 +755,7 @@ public class CharacterState : MonoBehaviour
 		{
 			_stateIcons.ActivateIco(state, duration, 1);
 			currentStates.Add(newState);
-			var counterSpell = (CounterSpell)newState;
+			var counterSpell = (AbilitySchoolDebuff)newState;
 			counterSpell.canceledSchoool = schools;
 			currentStates[currentStates.Count - 1].state = state;
 			//currentStates[currentStates.Count - 1].
@@ -781,7 +781,7 @@ public class CharacterState : MonoBehaviour
 				{
 					_stateIcons.ActivateIco(state, duration, 1);
 					currentStates.Add(newState);
-					var counterSpell = (AbilityFormDebuf)newState;
+					var counterSpell = (AbilityFormDebuff)newState;
 					counterSpell.canCancel = canCancel;
 					counterSpell.canceledForm = form;
 					currentStates[currentStates.Count - 1].state = state;
@@ -795,7 +795,7 @@ public class CharacterState : MonoBehaviour
 		{
 			_stateIcons.ActivateIco(state, duration, 1);
 			currentStates.Add(newState);
-			var counterSpell = (AbilityFormDebuf)newState;
+			var counterSpell = (AbilityFormDebuff)newState;
 			counterSpell.canCancel = canCancel;
 			counterSpell.canceledForm = form;
 			currentStates[currentStates.Count - 1].state = state;
@@ -898,5 +898,5 @@ public enum States
 	Cooling,
 	Blind,
 	Invisible,
-	CounterSpell
+	SchoolDebuff
 }
