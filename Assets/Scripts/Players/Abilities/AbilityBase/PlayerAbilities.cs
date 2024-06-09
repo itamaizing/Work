@@ -11,6 +11,7 @@ public class PlayerAbilities : MonoBehaviour
 
     private float _globalCooldownTime = 2f;
     private Ability _currentAbility;
+    private AutoAttackAbility _currentAutoAttackAbility;
     private int _currentAbilityIndex;
     private bool _isAbilitiesEnabled = true;
 
@@ -19,7 +20,9 @@ public class PlayerAbilities : MonoBehaviour
     public List<Ability> Abilities => _abilities;
 
     public event UnityAction<int> AbilitySelected;
+    public event UnityAction<int> AbilityAutoAttackSelected;
     public event UnityAction<int> AbilityDeselected;
+    public event UnityAction<int> AbilityAutoAttackDeselected;
 
     public void Initialize(MoveComponent playerMove,StaminaComponent staminaComponent , HealthComponent healthComponent)
     {
@@ -99,42 +102,81 @@ public class PlayerAbilities : MonoBehaviour
             _currentAbilityIndex = index;
             AbilitySelected?.Invoke(index);
 
+            if(_abilities[index].IsAutoAttack)
+                _currentAutoAttackAbility = _abilities[index] as AutoAttackAbility;
+
             _currentAbility = _abilities[index];
-            _currentAbility.PreparingEnded += visualRender.StopDraw;
-            _currentAbility.Cancled += visualRender.StopDraw;
-            _currentAbility.AreaOffed += visualRender.StopAreaDraw;
-            _currentAbility.CastEnded += GlobalCooldown;
+
+            SubscribingAbilityEvents();
 
             TryUseAbility();
         }
-        else if (!_currentAbility.IsUsed)
+        else if (_currentAbility.IsUsed == false || _currentAbility == _currentAutoAttackAbility)
         {
             AbilityDeselected?.Invoke(_currentAbilityIndex);
             _currentAbilityIndex = index;
             AbilitySelected?.Invoke(index);
 
-            _currentAbility.PreparingEnded -= visualRender.StopDraw;
-            _currentAbility.Cancled -= visualRender.StopDraw;
-            _currentAbility.AreaOffed -= visualRender.StopAreaDraw;
-            _currentAbility.CastEnded -= GlobalCooldown;
+            UnsubscribingAbilityEvents();
+
+            if (_abilities[index].IsAutoAttack)
+                _currentAutoAttackAbility = _abilities[index] as AutoAttackAbility;
 
             _currentAbility = _abilities[index];
-            _currentAbility.PreparingEnded += visualRender.StopDraw;
-            _currentAbility.Cancled += visualRender.StopDraw;
-            _currentAbility.AreaOffed += visualRender.StopAreaDraw;
-            _currentAbility.CastEnded += GlobalCooldown;
+
+            SubscribingAbilityEvents();
 
             TryUseAbility();
         }
     }
 
+    private void SubscribingAbilityEvents()
+    {
+        _currentAbility.PreparingEnded += visualRender.StopDraw;
+        _currentAbility.Cancled += visualRender.StopDraw;
+        _currentAbility.AreaOffed += visualRender.StopAreaDraw;
+        _currentAbility.CastEnded += GlobalCooldown;
+
+        if (_currentAutoAttackAbility != null && _currentAbility != _currentAutoAttackAbility)
+        {
+            _currentAbility.CastStarted += PauseAutoAttack;
+            _currentAbility.CastEnded += ContinueAutoAttack;
+            _currentAbility.Cancled += ContinueAutoAttack;
+        }
+    }
+    private void UnsubscribingAbilityEvents()
+    {
+        _currentAbility.PreparingEnded -= visualRender.StopDraw;
+        _currentAbility.Cancled -= visualRender.StopDraw;
+        _currentAbility.AreaOffed -= visualRender.StopAreaDraw;
+        _currentAbility.CastEnded -= GlobalCooldown;
+
+        if (_currentAutoAttackAbility != null && _currentAbility != _currentAutoAttackAbility)
+        {
+            _currentAbility.CastStarted -= PauseAutoAttack;
+            _currentAbility.CastEnded -= ContinueAutoAttack;
+            _currentAbility.Cancled -= ContinueAutoAttack;
+        }
+    }
+
     private void TryUseAbility()
     {
-        if (_currentAbility == null || !_isAbilitiesEnabled || !_abilityPanel.IsActive  || _currentAbility.IsUsed )
+        if (_currentAbility == null || !_isAbilitiesEnabled || !_abilityPanel.IsActive  || (_currentAbility.IsUsed))
             return;
+
+        PauseAutoAttack();
 
         visualRender.Drawn(_currentAbility);
         _currentAbility.TryUse();
+    }
+
+    private void ContinueAutoAttack()
+    {
+        _currentAutoAttackAbility.Continue();
+    }
+    private void PauseAutoAttack()
+    {
+        _currentAutoAttackAbility.Pause();
     }
 
     private void CancelSpellCast()
@@ -144,6 +186,10 @@ public class PlayerAbilities : MonoBehaviour
             if(_currentAbility.IsUsed)
             {
                 _currentAbility.TryCancel();
+            }
+            else if (_currentAutoAttackAbility.IsUsed)
+            {
+                _currentAutoAttackAbility.TryCancel();
             }
             else
             {

@@ -17,6 +17,7 @@ public class StandartRangeAutoAttack : AutoAttackAbility
     protected override void CastAction()
     {
         _projectile = Instantiate(_projectilePref, transform.position, Quaternion.identity);
+        Debug.Log(Target);
         _projectile.StartFly(Target.transform);
         _projectile.EndPointReached += OnEndPointReached;
     }

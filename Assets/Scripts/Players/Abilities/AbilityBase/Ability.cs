@@ -70,7 +70,8 @@ public abstract class Ability : MonoBehaviour
     public event UnityAction StopStreaming;
     public event UnityAction<float> StartCastDeley;
     public event UnityAction StopCastDeley;
-    public event UnityAction<Ability> Cancled;
+    public event UnityAction Cancled;
+    public event UnityAction CastStarted;
     public event UnityAction PreparingEnded;
     public event UnityAction CastEnded;
     public event UnityAction AreaOffed;
@@ -113,7 +114,7 @@ public abstract class Ability : MonoBehaviour
                 StopCoroutine(_castDeleyJob);
                 StopCastDeley?.Invoke();
             }
-            Cancled?.Invoke(this);
+            Cancled?.Invoke();
             return true;
         }
         return false;
@@ -136,6 +137,7 @@ public abstract class Ability : MonoBehaviour
         }
         _isUsed = true;
         _isCanCancle = true;
+        CastStarted?.Invoke();
         Cast();
         return true;
     }
