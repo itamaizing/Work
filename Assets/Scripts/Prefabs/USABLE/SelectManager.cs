@@ -50,7 +50,7 @@ public class SelectManager : MonoBehaviour
             _selectorPrefab.Draw();
         }
 
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonUp(0) && Input.GetKey(KeyCode.LeftShift))
         {
             _selectorPrefab.StopDraw();
         }
