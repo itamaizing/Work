@@ -37,6 +37,8 @@ public class AbilityIcon : MonoBehaviour
         }
         ability.StartCastDeley += OnStartCastDeley;
         ability.StopCastDeley += OnStopCastDeley;
+
+        ability.CooldownStarted += OnStartCooldown;
     }
 
     public void OnCurrentChargeText(int value)
@@ -49,9 +51,10 @@ public class AbilityIcon : MonoBehaviour
         _chargeCounter.text = value.ToString();
     }
 
-    public void StartCooldown(float dutarion)
+    public void OnStartCooldown(float dutarion)
     {
-        _cooldown.StartFill(dutarion);
+        _cooldown.StartFill(dutarion, 1, 0, false);
+        _cooldown.gameObject.SetActive(true);
     }
 
     public void Selected()

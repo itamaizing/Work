@@ -27,7 +27,7 @@ public class FillAmountOverTime : MonoBehaviour
         }
     }
 
-    public void StartFill(float duration, float startValue = 0, float endValue = 1, float curretTime = 0, int type = -1)
+    public void StartFill(float duration, float startValue = 0, float endValue = 1, bool addTime = true, float curretTime = 0, int type = -1)
     {
         gameObject.SetActive(true);
 
@@ -42,9 +42,18 @@ public class FillAmountOverTime : MonoBehaviour
 
         if (_fillJob != null)
         {
-            _duration += -_currentTime + duration;
-            StopCoroutine(_fillJob);
-            _fillJob = StartCoroutine(ChangeFillAmountOverTimeCoroutine(_duration, curretTime, startValue, endValue));
+            if (addTime)
+            {
+                _duration += -_currentTime + duration;
+                StopCoroutine(_fillJob);
+                _fillJob = StartCoroutine(ChangeFillAmountOverTimeCoroutine(_duration, curretTime, startValue, endValue));
+            }
+            else
+            {
+                _duration = duration;
+                StopCoroutine(_fillJob);
+                _fillJob = StartCoroutine(ChangeFillAmountOverTimeCoroutine(_duration, curretTime, startValue, endValue));
+            }
         }
         else
         {

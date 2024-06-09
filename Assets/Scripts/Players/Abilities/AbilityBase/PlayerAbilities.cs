@@ -9,6 +9,7 @@ public class PlayerAbilities : MonoBehaviour
     [SerializeField] private List<Ability> _abilities;
     [SerializeField] private VisualRender visualRender;
 
+    private float _globalCooldownTime = 2f;
     private Ability _currentAbility;
     private int _currentAbilityIndex;
     private bool _isAbilitiesEnabled = true;
@@ -80,6 +81,14 @@ public class PlayerAbilities : MonoBehaviour
         AbilitiesManager.Instance.ActiveCurrentPanel(_abilityPanel);
     }
 
+    public void SetAbilitiesCoolDown(float time)
+    {
+        foreach (var item in _abilities)
+        {
+            item.SetCooldown(time);
+        }
+    }
+
     private void SetCurrentAbility(int index)
     {
         if (index >= _abilities.Count)
@@ -94,6 +103,7 @@ public class PlayerAbilities : MonoBehaviour
             _currentAbility.PreparingEnded += visualRender.StopDraw;
             _currentAbility.Cancled += visualRender.StopDraw;
             _currentAbility.AreaOffed += visualRender.StopAreaDraw;
+            _currentAbility.CastEnded += GlobalCooldown;
 
             TryUseAbility();
         }
@@ -106,10 +116,13 @@ public class PlayerAbilities : MonoBehaviour
             _currentAbility.PreparingEnded -= visualRender.StopDraw;
             _currentAbility.Cancled -= visualRender.StopDraw;
             _currentAbility.AreaOffed -= visualRender.StopAreaDraw;
+            _currentAbility.CastEnded -= GlobalCooldown;
+
             _currentAbility = _abilities[index];
             _currentAbility.PreparingEnded += visualRender.StopDraw;
             _currentAbility.Cancled += visualRender.StopDraw;
             _currentAbility.AreaOffed += visualRender.StopAreaDraw;
+            _currentAbility.CastEnded += GlobalCooldown;
 
             TryUseAbility();
         }
@@ -138,6 +151,11 @@ public class PlayerAbilities : MonoBehaviour
                 AbilityDeselected?.Invoke(_currentAbilityIndex);
             }
         }
+    }
+
+    private void GlobalCooldown()
+    {
+        SetAbilitiesCoolDown(_globalCooldownTime);
     }
 
     private void OnDestroy()

@@ -142,7 +142,15 @@ public abstract class Ability : MonoBehaviour
 
     public void SetCooldown(float time)
     {
-        StartCoroutine(CooldownCoroutine(time));
+        _isReady = false;
+
+        if (time < _remaining—ooldownTime)
+            return;
+
+        if(_cooldownJob != null)
+            StopCoroutine(_cooldownJob);
+
+        _cooldownJob = StartCoroutine(CooldownCoroutine(time));
     }
 
     protected Coroutine GetCastDeleyCoroutine()
@@ -152,7 +160,7 @@ public abstract class Ability : MonoBehaviour
         return _castDeleyJob;
     }
 
-    protected virtual void PayCost()
+    protected virtual bool PayCost(bool castEnded = true)
     {
         if (TryUseCharge() && _mana.Value >= _manaCost && _isReady)
         {
@@ -161,7 +169,7 @@ public abstract class Ability : MonoBehaviour
         else
         {
             TryCancel();
-            return;
+            return false;
         }
         _isReady = false;
         _cooldownJob = StartCoroutine(CooldownCoroutine(_cooldown));
@@ -175,10 +183,14 @@ public abstract class Ability : MonoBehaviour
                 _streamingJob = null;
             }
             _streamingJob = StartCoroutine(ManaCostPerTickCorutine());
-            return;
+            return true;
         }
-        _isUsed = false;
-        CastEnded?.Invoke();
+        if (castEnded)
+        {
+            _isUsed = false;
+            CastEnded?.Invoke();
+        }
+        return true;
     }
 
     protected bool TryUseCharge()
@@ -223,13 +235,10 @@ public abstract class Ability : MonoBehaviour
 
     private IEnumerator CooldownCoroutine(float cooldownTime)
     {
-        if (cooldownTime < _remaining—ooldownTime)
-            yield break;
-
         CooldownStarted?.Invoke(cooldownTime);
         _remaining—ooldownTime = cooldownTime;
 
-        while (_remaining—ooldownTime > cooldownTime)
+        while (_remaining—ooldownTime > 0)
         {
             _remaining—ooldownTime -= Time.deltaTime;
             yield return null;
@@ -252,6 +261,7 @@ public abstract class Ability : MonoBehaviour
         }
         _playerMove.CanMove = true;
         _castDeleyJob = null;
+        CastEnded?.Invoke();
     }
 
     private IEnumerator RechargeCoroutine()

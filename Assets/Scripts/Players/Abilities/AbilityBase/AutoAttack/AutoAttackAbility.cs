@@ -77,8 +77,7 @@ public abstract class AutoAttackAbility : TargetAbility
                     yield return new WaitForSeconds(_attackSpeed);
                     if (IsTargetInRadius(Radius + _attackZoneSize) && NoObstacles())
                     {
-                        PayCost();
-                        IsUsed = true;
+                        PayCost(false);
                         CastAction();
                     }
                 }

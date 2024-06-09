@@ -78,7 +78,12 @@ public abstract class TargetAbility : Ability
     protected virtual IEnumerator UseCoroutine()
     {
         yield return _chooseTatgetJob = StartCoroutine(ChooseTatgetCoroutine(Radius));
+
+        if (!PayCost(false))
+            yield break;
+
         yield return GetCastDeleyCoroutine();
+        _isUsed = false;
         CastAction();
     }
 
