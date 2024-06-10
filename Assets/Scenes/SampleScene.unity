@@ -893,6 +893,42 @@ MonoBehaviour:
   _manaCostPerTick: 0
   _isCanTargetHimself: 0
   projectile: {fileID: 3436609779166928419, guid: d490c899d604d2c4dbb3f72e61cacb6e, type: 3}
+--- !u!114 &1151247984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1151247975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0cb15866c8b27045acf48230d9f19a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _abilityInfo: {fileID: 11400000, guid: 97adc7ca5fb538d4db27c7dda2e9285f, type: 2}
+  _isAutoAttack: 1
+  _radius: 5
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _manaCost: 0
+  _castDeley: 0
+  _cooldown: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _isCanTargetHimself: 0
+  _attackZoneSize: 0
+  _attackSpeed: 0.3
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _damage: 2
 --- !u!1 &1396013603
 GameObject:
   m_ObjectHideFlags: 0
@@ -1649,7 +1685,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3734820572883177193, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
       propertyPath: _abilities.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3734820572883177193, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
       propertyPath: _abilities.Array.data[0]
@@ -1659,6 +1695,10 @@ PrefabInstance:
       propertyPath: _abilities.Array.data[1]
       value: 
       objectReference: {fileID: 1151247979}
+    - target: {fileID: 3734820572883177193, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+      propertyPath: _abilities.Array.data[2]
+      value: 
+      objectReference: {fileID: 1151247984}
     - target: {fileID: 4328761905627105731, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -1707,6 +1747,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1151247979}
+    - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1151247984}
   m_SourcePrefab: {fileID: 100100000, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
 --- !u!1 &3811878440085573182
 GameObject:

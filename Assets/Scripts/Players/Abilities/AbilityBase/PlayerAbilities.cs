@@ -102,9 +102,15 @@ public class PlayerAbilities : MonoBehaviour
             _currentAbilityIndex = index;
             AbilitySelected?.Invoke(index);
 
-            if(_abilities[index].IsAutoAttack)
+            if (_abilities[index].IsAutoAttack)
+            {
+                if(_currentAutoAttackAbility != null)
+                {
+                    _currentAutoAttackAbility.TryCancel();
+                    _currentAutoAttackAbility = null;
+                }
                 _currentAutoAttackAbility = _abilities[index] as AutoAttackAbility;
-
+            }
             _currentAbility = _abilities[index];
 
             SubscribingAbilityEvents();
@@ -120,8 +126,14 @@ public class PlayerAbilities : MonoBehaviour
             UnsubscribingAbilityEvents();
 
             if (_abilities[index].IsAutoAttack)
+            {
+                if (_currentAutoAttackAbility != null)
+                {
+                    _currentAutoAttackAbility.TryCancel();
+                    _currentAutoAttackAbility = null;
+                }
                 _currentAutoAttackAbility = _abilities[index] as AutoAttackAbility;
-
+            }
             _currentAbility = _abilities[index];
 
             SubscribingAbilityEvents();
