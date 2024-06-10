@@ -13,6 +13,7 @@ public class PlayerAbilities : MonoBehaviour
     private Ability _currentAbility;
     private AutoAttackAbility _currentAutoAttackAbility;
     private int _currentAbilityIndex;
+    private int _currentAutoAttackAbilityIndex;
     private bool _isAbilitiesEnabled = true;
 
     private AbilityPanel _abilityPanel;
@@ -110,6 +111,10 @@ public class PlayerAbilities : MonoBehaviour
                     _currentAutoAttackAbility = null;
                 }
                 _currentAutoAttackAbility = _abilities[index] as AutoAttackAbility;
+                _currentAutoAttackAbilityIndex = index;
+
+                _currentAutoAttackAbility.Cancled += OnAbilityAutoAttackDeselected;
+                _currentAutoAttackAbility.CastStarted += OnAbilityAutoAttackSelected;
             }
             _currentAbility = _abilities[index];
 
@@ -127,12 +132,19 @@ public class PlayerAbilities : MonoBehaviour
 
             if (_abilities[index].IsAutoAttack)
             {
+                _currentAutoAttackAbility.Cancled -= OnAbilityAutoAttackDeselected;
+                _currentAutoAttackAbility.CastStarted -= OnAbilityAutoAttackSelected;
+
                 if (_currentAutoAttackAbility != null)
                 {
                     _currentAutoAttackAbility.TryCancel();
                     _currentAutoAttackAbility = null;
                 }
                 _currentAutoAttackAbility = _abilities[index] as AutoAttackAbility;
+                _currentAutoAttackAbilityIndex = index;
+
+                _currentAutoAttackAbility.Cancled += OnAbilityAutoAttackDeselected;
+                _currentAutoAttackAbility.CastStarted += OnAbilityAutoAttackSelected;
             }
             _currentAbility = _abilities[index];
 
@@ -190,6 +202,16 @@ public class PlayerAbilities : MonoBehaviour
     private void PauseAutoAttack()
     {
         _currentAutoAttackAbility.Pause();
+    }
+
+    private void OnAbilityAutoAttackSelected()
+    {
+        AbilityAutoAttackSelected?.Invoke(_currentAutoAttackAbilityIndex);
+    }
+
+    private void OnAbilityAutoAttackDeselected()
+    {
+        AbilityAutoAttackDeselected?.Invoke(_currentAutoAttackAbilityIndex);
     }
 
     private void CancelSpellCast()

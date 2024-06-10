@@ -23,9 +23,11 @@ public class Blink : MonoBehaviour
     private IEnumerator BlinkCoroutine(float time)
     {
         float alpha;
-        float curretTime = 0;
+        float curretTime;
         while (true)
         {
+            curretTime = 0;
+
             while (curretTime < time)
             {
                 alpha = Mathf.Lerp(0, 1, curretTime / time);

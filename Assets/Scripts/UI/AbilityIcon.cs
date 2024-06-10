@@ -7,6 +7,7 @@ public class AbilityIcon : MonoBehaviour
 {
     [SerializeField] private Image _abilityIcon;
     [SerializeField] private Image _boxFrame;
+    [SerializeField] private Blink _autoAttackBoxFrame;
     [SerializeField] private FillAmountOverTime _cooldown;
     [SerializeField] private TextMeshProUGUI _chargeCounter;
     [SerializeField] private GameObject _abilityNameBox;
@@ -65,6 +66,18 @@ public class AbilityIcon : MonoBehaviour
     public void Deselected()
     {
         _boxFrame.color = Color.white;
+    }
+
+    public void AutoAttackSelected()
+    {
+        _autoAttackBoxFrame.gameObject.SetActive(true);
+        _autoAttackBoxFrame.StartBlink(.5f);
+    }
+
+    public void AutoAttackDeselected()
+    {
+        _autoAttackBoxFrame.gameObject.SetActive(false);
+        _autoAttackBoxFrame.StopBlink();
     }
 
     public void DestroyIcon()

@@ -50,6 +50,8 @@ public class AbilityPanel : MonoBehaviour
 
         _playerAbilities.AbilitySelected += OnAbilitySelected;
         _playerAbilities.AbilityDeselected += OnAbilityDeselected;
+        _playerAbilities.AbilityAutoAttackSelected += OnAutoAttackAbilitySelected;
+        _playerAbilities.AbilityAutoAttackDeselected += OnAutoAttackAbilityDeselected;
     }
 
     public void DestroyAbilityPanel()
@@ -65,5 +67,15 @@ public class AbilityPanel : MonoBehaviour
     private void OnAbilityDeselected(int index)
     {
         _abilityIcons[index].Deselected();
+    }
+
+    private void OnAutoAttackAbilitySelected(int index)
+    {
+        _abilityIcons[index].AutoAttackSelected();
+    }
+
+    private void OnAutoAttackAbilityDeselected(int index)
+    {
+        _abilityIcons[index].AutoAttackDeselected();
     }
 }
