@@ -219,7 +219,7 @@ public class ThreeRangeHeal : AbilityBase
         {
             float eneryOfSpiritStacks = _player.GetComponentInChildren<OneRangeAttack>().SpiritDebaffCount;
             float damage = _damage + eneryOfSpiritStacks;
-            TargetParent.GetComponent<HealthComponent>().TakeMagicDamage(damage);
+            TargetParent.GetComponent<HealthComponent>().TryTakeDamage(damage, DamageType.Magical, AttackRangeType.RangeAttack);
             _player.GetComponent<Mana>().Use(_manaForDarkCast);
 
             DarkThirdAbilityEvent?.Invoke(damage);

@@ -77,16 +77,16 @@ public class ShootFireworks : Ability
             switch (i)
             {
                 case 0:
-                    _enemies[i].TakeMagicDamage(currentDamage * _percentFirstTarget);
+                    _enemies[i].TryTakeDamage(currentDamage * _percentFirstTarget, DamageType.Magical, AttackRangeType.RangeAttack);
                     break;
                 case 1:
-                    _enemies[i].TakeMagicDamage(currentDamage * _percentSecondTarget);
+                    _enemies[i].TryTakeDamage(currentDamage * _percentFirstTarget, DamageType.Magical, AttackRangeType.RangeAttack);
                     break;
                 case 2:
-                    _enemies[i].TakeMagicDamage(currentDamage * _percentThirdTarget);
+                    _enemies[i].TryTakeDamage(currentDamage * _percentFirstTarget, DamageType.Magical, AttackRangeType.RangeAttack);
                     break;
                 default:
-                    _enemies[i].TakeMagicDamage(currentDamage * _percentOtherTarget);
+                    _enemies[i].TryTakeDamage(currentDamage * _percentFirstTarget, DamageType.Magical, AttackRangeType.RangeAttack);
                     break;
             }
         }

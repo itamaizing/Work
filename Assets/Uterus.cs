@@ -52,7 +52,7 @@ public class Uterus : MonoBehaviour
 
         if (_timerReduce >= _intervalReduce)
         {
-            _healthComponent.TakePhisicDamage(2);
+            _healthComponent.TryTakeDamage(2, DamageType.Physical, AttackRangeType.MeleeAttack);
             _timerReduce = 0f;
         }
     }

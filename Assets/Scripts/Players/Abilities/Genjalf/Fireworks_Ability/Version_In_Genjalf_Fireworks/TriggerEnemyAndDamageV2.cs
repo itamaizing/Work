@@ -69,7 +69,7 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
 
                     if (healthComponent != null)
                     {
-                        healthComponent.TakeMagicDamage(damage);
+                        healthComponent.TryTakeDamage(damage, DamageType.Magical, AttackRangeType.RangeAttack);
                         Debug.Log(
                             $"Урон врагу {currentEnemy.name}: {damage}. Процент урона: {damageMultiplier * 100}%");
                     }

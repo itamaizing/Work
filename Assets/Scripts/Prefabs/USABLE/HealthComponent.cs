@@ -86,37 +86,6 @@ public class HealthComponent : MonoBehaviour
 
         return hit;
     }
-
-    public void TakePhisicDamage(float damageValue) //���������� �����
-    {
-
-        HandleAbsorptionOrRepeat(ref damageValue);
-        if (damageValue > 0)
-        {
-            StackTrace stackTrace = new StackTrace();
-            StackFrame callerFrame = stackTrace.GetFrame(1);
-
-            DamageInfo damageInfo;
-            damageInfo.CallerType = callerFrame.GetMethod().DeclaringType;
-
-            damageInfo.OriginalDamage = damageValue;
-
-            damageInfo.ModifiedDamage = damageInfo.OriginalDamage;
-
-            OnTakePhisicDamage?.Invoke(damageInfo);
-
-            float modifiedDamage = damageInfo.ModifiedDamage;
-            _currentHealth -= modifiedDamage;
-            sumDamageTaken += modifiedDamage;
-            if (_currentHealth <= 0)
-            {
-                _currentHealth = 0;
-                Die();
-            }
-            ShowDamagePrefab(-modifiedDamage, new Color(1, 0, 0, 1), new Color(1, 0, 0, 0.5f));
-            UpdateHealthBar();
-        }
-    }
     private float CalculateDamageWithStats(float damageValue, DamageType damageType, AttackRangeType attackRangeType, out bool hitSuccessed)
     {
         if (damageType == DamageType.Magical)
@@ -274,7 +243,7 @@ public class HealthComponent : MonoBehaviour
         damageValue = CalculateDamageForShields(damageValue, damageType);
 
 
-        HandleAbsorptionOrRepeat(ref damageValue);
+        //HandleAbsorptionOrRepeat(ref damageValue);
 
         if (damageValue > 0)
         {
@@ -286,35 +255,6 @@ public class HealthComponent : MonoBehaviour
                 Die();
             }
             
-            UpdateHealthBar();
-        }
-    }
-
-    public void TakeMagicDamage(float damageValue) //���������� �����
-    {
-        HandleAbsorptionOrRepeat(ref damageValue);
-        if (damageValue > 0)
-        {
-            StackTrace stackTrace = new StackTrace();
-            StackFrame callerFrame = stackTrace.GetFrame(1);
-
-            DamageInfo damageInfo;
-            damageInfo.CallerType = callerFrame.GetMethod().DeclaringType;
-            damageInfo.OriginalDamage = damageValue;
-
-            damageInfo.ModifiedDamage = damageInfo.OriginalDamage;
-
-            OnTakeMagicDamage?.Invoke(damageInfo);
-
-            float modifiedDamage = damageInfo.ModifiedDamage;
-            _currentHealth -= modifiedDamage;
-            sumDamageTaken += modifiedDamage;
-            if (_currentHealth <= 0)
-            {
-                _currentHealth = 0;
-                Die();
-            }
-            ShowDamagePrefab(-modifiedDamage, new Color(1, 0, 0, 1), new Color(1, 0, 0, 0.5f));
             UpdateHealthBar();
         }
     }
@@ -381,26 +321,26 @@ public class HealthComponent : MonoBehaviour
 
         float modifiedDamage = damageInfo.ModifiedDamage;
 
-        target.GetComponent<HealthComponent>().TakePhisicDamage(modifiedDamage);
+        //target.GetComponent<HealthComponent>().TakePhisicDamage(modifiedDamage);
     }
 
-    public void MakeMagicDamage(float damageValue, GameObject target)
-    {
-        StackTrace stackTrace = new StackTrace();
-        StackFrame callerFrame = stackTrace.GetFrame(1);
+    //public void MakeMagicDamage(float damageValue, GameObject target)
+    //{
+    //    StackTrace stackTrace = new StackTrace();
+    //    StackFrame callerFrame = stackTrace.GetFrame(1);
 
-        DamageInfo damageInfo;
-        damageInfo.CallerType = callerFrame.GetMethod().DeclaringType;
-        damageInfo.OriginalDamage = damageValue;
+    //    DamageInfo damageInfo;
+    //    damageInfo.CallerType = callerFrame.GetMethod().DeclaringType;
+    //    damageInfo.OriginalDamage = damageValue;
 
-        damageInfo.ModifiedDamage = damageInfo.OriginalDamage;
+    //    damageInfo.ModifiedDamage = damageInfo.OriginalDamage;
 
-        MakeMagicDamageEvent?.Invoke(damageInfo);
+    //    MakeMagicDamageEvent?.Invoke(damageInfo);
 
-        float modifiedDamage = damageInfo.ModifiedDamage;
+    //    float modifiedDamage = damageInfo.ModifiedDamage;
 
-        target.GetComponent<HealthComponent>().TakeMagicDamage(modifiedDamage);
-    }
+    //    //target.GetComponent<HealthComponent>().TakeMagicDamage(modifiedDamage);
+    //}
 
     public void AddHeal(float healValue)
     {

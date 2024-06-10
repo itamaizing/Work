@@ -23,7 +23,7 @@ public class ScraderBleeding : BaseEffect
         {
             _damageValue = Random.Range(1, 3);
 
-            transform.parent.GetComponent<HealthComponent>().TakePhisicDamage(_damageValue);
+            transform.parent.GetComponent<HealthComponent>().TryTakeDamage(_damageValue, DamageType.Physical, AttackRangeType.Inner);
 
             StartCoroutine(BleedingCooldown());
 

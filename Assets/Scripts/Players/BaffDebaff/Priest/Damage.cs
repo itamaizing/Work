@@ -56,7 +56,7 @@ public class Damage : BaseEffect
         isDamage = false;
         yield return new WaitForSeconds(_damageCooldown);
         ChangeDamageValue();
-        transform.parent.GetComponent<HealthComponent>().TakeMagicDamage(_damageValue);
+        transform.parent.GetComponent<HealthComponent>().TryTakeDamage(_damageValue, DamageType.Magical, AttackRangeType.RangeAttack);
         DarkFourthBaffEvent?.Invoke(_damageValue);
         _damageValue = _defaultDamage;
         isDamage = true;

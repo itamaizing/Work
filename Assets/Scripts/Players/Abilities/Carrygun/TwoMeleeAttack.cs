@@ -356,7 +356,7 @@ public class TwoMeleeAttack : AbilityBase
     {
         yield return new WaitForSeconds(0.1f);
         // Нанесение урона врагам в радиусе
-        collider.GetComponent<HealthComponent>().TakeMagicDamage(activePsionica * 0.5f);
+        collider.GetComponent<HealthComponent>().TryTakeDamage(activePsionica * 0.5f, DamageType.Magical, AttackRangeType.MeleeAttack);
     }
 
     private IEnumerator MoveTowardsCoroutine(GameObject target, Vector3 targetPosition, float moveSpeed)

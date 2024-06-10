@@ -92,7 +92,7 @@ public class Spisnacider : MonoBehaviour
 
         if (_timer >= _interval)
         {
-            _healthComponent.TakePhisicDamage(2);
+            _healthComponent.TryTakeDamage(2, DamageType.Physical, AttackRangeType.MeleeAttack);
             _timer = 0f;
         }
     }
