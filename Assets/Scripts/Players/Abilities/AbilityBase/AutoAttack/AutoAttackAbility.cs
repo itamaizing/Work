@@ -22,10 +22,8 @@ public abstract class AutoAttackAbility : TargetAbility
 
     public void Pause()
     {
-        Debug.Log(3);
         if (_autoAttackJob != null)
         {
-            Debug.Log(4);
             StopCoroutine(_autoAttackJob);
             _autoAttackJob = null;
         }
@@ -36,7 +34,6 @@ public abstract class AutoAttackAbility : TargetAbility
     {
         if (_autoAttackJob == null && Target != null)
         {
-            Debug.Log(68);
             _autoAttackJob = StartCoroutine(AutoAttackCoroutine());
         }
     }
@@ -70,7 +67,6 @@ public abstract class AutoAttackAbility : TargetAbility
 
     protected override IEnumerator UseCoroutine()
     {
-        Debug.Log(67);
         yield return _chooseTatgetJob = StartCoroutine(ChooseTatgetCoroutine(Radius + 99));
         yield return _autoAttackJob = StartCoroutine(AutoAttackCoroutine());
     }

@@ -176,7 +176,8 @@ public class PlayerAbilities : MonoBehaviour
         if (_currentAbility == null || !_isAbilitiesEnabled || !_abilityPanel.IsActive  || (_currentAbility.IsUsed))
             return;
 
-        PauseAutoAttack();
+        if(_currentAutoAttackAbility != null)
+            PauseAutoAttack();
 
         visualRender.Drawn(_currentAbility);
         _currentAbility.TryUse();
