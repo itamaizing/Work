@@ -48,7 +48,7 @@ public class Projectile : MonoBehaviour
         if (_target != null)
             return (transform.position - _target.position).magnitude;
 
-        return -1;
+        return 10000;
     }
 
     public void StartFly(Vector3 position, bool directionMove = false)
@@ -63,9 +63,9 @@ public class Projectile : MonoBehaviour
             StartCoroutine(FlyCoroutine(position));
     }
 
-    public void StartFly(Transform transform, bool follow = false)
+    public void StartFly(Transform target, bool follow = false)
     {
-        _target = transform;
+        _target = target;
 
         Destroy(gameObject, _lifeTime);
 

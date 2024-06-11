@@ -14,7 +14,7 @@ public abstract class TargetOrAreaAbility : TargetAbility
         _point = Vector3.zero;
     }
 
-    protected override IEnumerator ChooseTatgetCoroutine(float ChooseRadius)
+    protected override IEnumerator ChooseTargetCoroutine(float ChooseRadius)
     {
         _target = null;
         _point = Vector3.zero;

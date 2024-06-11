@@ -1,9 +1,10 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class AbilityIcon : MonoBehaviour
+public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHandler
 {
     [SerializeField] private Image _abilityIcon;
     [SerializeField] private Image _boxFrame;
@@ -111,16 +112,6 @@ public class AbilityIcon : MonoBehaviour
         _castLine.Stop();
     }
 
-    private void OnMouseEnter()
-    {
-        _abilityNameBox.SetActive(true);
-    }
-
-    private void OnMouseExit()
-    {
-        _abilityNameBox.SetActive(false);
-    }
-
     private IEnumerator CastLineCoroutine()
     {
         while (_castLine.enabled)
@@ -129,5 +120,15 @@ public class AbilityIcon : MonoBehaviour
 
             yield return null;
         }
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        _abilityNameBox.SetActive(true);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        _abilityNameBox.SetActive(false);
     }
 }

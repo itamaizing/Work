@@ -77,7 +77,7 @@ public abstract class TargetAbility : Ability
 
     protected virtual IEnumerator UseCoroutine()
     {
-        yield return _chooseTatgetJob = StartCoroutine(ChooseTatgetCoroutine(Radius));
+        yield return _chooseTatgetJob = StartCoroutine(ChooseTargetCoroutine(Radius));
 
         if (!PayCost(false))
             yield break;
@@ -87,7 +87,7 @@ public abstract class TargetAbility : Ability
         CastAction();
     }
 
-    protected virtual IEnumerator ChooseTatgetCoroutine(float ChooseRadius)
+    protected virtual IEnumerator ChooseTargetCoroutine(float ChooseRadius)
     {
         _target = null;
 
