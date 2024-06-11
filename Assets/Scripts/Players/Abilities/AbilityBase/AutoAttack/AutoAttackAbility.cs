@@ -67,7 +67,7 @@ public abstract class AutoAttackAbility : TargetAbility
 
     protected override IEnumerator UseCoroutine()
     {
-        yield return _chooseTatgetJob = StartCoroutine(ChooseTatgetCoroutine(Radius + 99));
+        yield return _chooseTatgetJob = StartCoroutine(ChooseTargetCoroutine(Radius + 99));
         yield return _autoAttackJob = StartCoroutine(AutoAttackCoroutine());
     }
 
