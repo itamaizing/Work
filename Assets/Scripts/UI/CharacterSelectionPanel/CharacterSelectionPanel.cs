@@ -6,5 +6,5 @@ using UnityEngine.UI;
 public class CharacterSelectionPanel : MonoBehaviour
 {
     [SerializeField] private NameBox _nameBoxPrefab;
-    [SerializeField] private VerticalLayoutGroup _characterList;
+    [SerializeField] private GridLayoutGroup _characterList;
 }
