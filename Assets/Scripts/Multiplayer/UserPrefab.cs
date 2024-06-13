@@ -4,15 +4,11 @@ using UnityEngine;
 
 public class UserPrefab : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if(TryGetComponent<HeroComponent>(out HeroComponent hero))
+        {
+            hero.IController = true;
+        }
     }
 }

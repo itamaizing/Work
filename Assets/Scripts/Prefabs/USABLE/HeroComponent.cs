@@ -9,6 +9,8 @@ public class HeroComponent : Character
 
     public bool IController = false;
 
+    public CharacterData PlayerData => _playerData;
+
     private void Awake()
     {
         Initialize(_playerData);

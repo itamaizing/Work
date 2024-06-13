@@ -26,4 +26,9 @@ public class MultiplayerManager : NetworkManager
             NetworkClient.RegisterPrefab(prefabs[i]);
         }
     }
+
+    public void SetPlayer(UserPrefab userPrefab)
+    {
+        _userPrefab = userPrefab;
+    }
 }
