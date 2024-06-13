@@ -423,9 +423,6 @@ MonoBehaviour:
   _multiplayerManager: {fileID: 1710071149}
   _characterList: {fileID: 470991151}
   _iconPref: {fileID: 4351954287549447584, guid: ab0fdee856a4be54e8013ec5dec7f646, type: 3}
-  _heroList:
-  - {fileID: 8468544467696250796, guid: a9061614c1122274ca2400d6eba3d90a, type: 3}
-  - {fileID: 8468544467696250796, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
 --- !u!1 &820655974
 GameObject:
   m_ObjectHideFlags: 0
@@ -1513,8 +1510,9 @@ MonoBehaviour:
   autoCreatePlayer: 0
   playerSpawnMethod: 0
   spawnPrefabs:
-  - {fileID: 1521997633048654849, guid: a9061614c1122274ca2400d6eba3d90a, type: 3}
   - {fileID: 1521997633048654849, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+  - {fileID: 8442599261096630905, guid: cbfb4777e45b41a4d9cb20bcbfe66715, type: 3}
+  - {fileID: 8763643763125113918, guid: 7ca7e11552419974da01f50646019b88, type: 3}
   - {fileID: 4932658458029131548, guid: 72bf53dfa1624064fa5072a77d9ba7f1, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
@@ -1531,8 +1529,10 @@ MonoBehaviour:
   evaluationMethod: 0
   evaluationInterval: 3
   timeInterpolationGui: 0
-  _userPrefab: {fileID: -7146587456276821115, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
   _onlineScene: Assets/Scenes/TestMPGame.unity
+  _heroList:
+  - {fileID: 8468544467696250796, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+  - {fileID: 1563676885133033940, guid: cbfb4777e45b41a4d9cb20bcbfe66715, type: 3}
 --- !u!4 &1710071150
 Transform:
   m_ObjectHideFlags: 0

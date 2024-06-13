@@ -30,7 +30,9 @@ public class HeroComponent : Character
         CharacterState.Initialize(Health, Move , Stamina);
         UIPlayerComponents.Initialize(Abilities,Move,Stamina,Health);
         SelectComponent.Initialize(false,Move,Abilities,UIPlayerComponents);
-        SpawnMinion();
+
+        if(_minion != null)
+            SpawnMinion();
     }
 
     public void SpawnMinion()

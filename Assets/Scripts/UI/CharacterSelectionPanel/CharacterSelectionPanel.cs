@@ -8,13 +8,15 @@ public class CharacterSelectionPanel : MonoBehaviour
     [SerializeField] private MultiplayerManager _multiplayerManager;
     [SerializeField] private GridLayoutGroup _characterList;
     [SerializeField] private PlayerSelectionIcon _iconPref;
-    [SerializeField] private List<HeroComponent> _heroList;
 
+    private List<HeroComponent> _heroList;
     private HeroComponent _selectedHero;
     private List<PlayerSelectionIcon> _iconList = new List<PlayerSelectionIcon>();
 
     private void Start()
     {
+        _heroList = _multiplayerManager.HeroList;
+
         foreach (var item in _heroList)
         {
             var icon = Instantiate(_iconPref, _characterList.transform);
@@ -27,7 +29,6 @@ public class CharacterSelectionPanel : MonoBehaviour
     private void OnPlayerSelected(HeroComponent hero)
     {
         _selectedHero = hero;
-        var user = hero.GetComponent<UserPrefab>();
-        _multiplayerManager.SetPlayer(user);
+        _multiplayerManager.SetPlayer(_heroList.IndexOf(_selectedHero));
     }
 }
