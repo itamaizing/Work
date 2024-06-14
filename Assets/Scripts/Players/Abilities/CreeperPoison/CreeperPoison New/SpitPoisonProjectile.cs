@@ -5,7 +5,7 @@ using UnityEngine;
 public class SpitPoisonProjectile : MonoBehaviour
 {
     [HideInInspector] public Character dad;
-    public float energyDad;
+    [HideInInspector] public float energyDad;
 
     [SerializeField] private Rigidbody2D _rb;
     [SerializeField] GameObject _hitEffect;
@@ -30,7 +30,9 @@ public class SpitPoisonProjectile : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject == dad.gameObject || collision.CompareTag("Ability"))
-            return;
+        {
+            return; 
+        }       
         //damage, blindness etc.
         if (collision.TryGetComponent<Character>(out var target))
         {
@@ -38,16 +40,20 @@ public class SpitPoisonProjectile : MonoBehaviour
             float duration = 1 + energyDad / 20;
             // Chance of blindness
             float chanceOfBlindness = 0.3f;
-            // Random numbers for calculating the chance
             float randomNumber = Random.Range(0, 1.0f);
+            // damage dealing 
+            float currentDamage = 4 + energyDad / 97;
+            Energy energyLink = (Energy)dad.Stamina;
 
-            target.Health.TakeDamage(4 + energyDad / 97, DamageType.Physical);
-            
+            energyLink.SumDamageMake(currentDamage);
+            target.Health.TakeDamage(currentDamage, DamageType.Physical);
             if (randomNumber <= chanceOfBlindness)
             {
-                target.CharacterState.AddState(new BlindnessState(), duration, 30, States.Blind);
+                target.CharacterState.AddState(new BlindnessState(), duration, 0, States.Blind);
+                Debug.Log("State is true");
             }
             GetComponent<Collider2D>().enabled = false;
+            Debug.Log("Collider2D false");
         }
         Explode();
     }

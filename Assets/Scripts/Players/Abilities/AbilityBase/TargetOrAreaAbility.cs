@@ -24,7 +24,9 @@ public abstract class TargetOrAreaAbility : TargetAbility
             if (Input.GetMouseButtonDown(0) && IsMouseInRadius(ChooseRadius))
             {
                 TryRaycastTarget();
+                Debug.Log("Таргет для снаряда " + Target);
                 _point = GetMousePoint();
+                Debug.Log(_point + " Точка для снаряда на территории");
             }
             yield return null;
         }

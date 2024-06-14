@@ -8,7 +8,6 @@ public class SpitPoison : Ability
     [SerializeField] private Character _playerLinks;
 
     private Vector2 _mousePos;
-    private float _angle;
     private bool _enabled = false;
 
     private void Update()
@@ -18,14 +17,7 @@ public class SpitPoison : Ability
         if (Input.GetMouseButtonDown(0))
         {
             PayCost();
-            if (_playerLinks.RuneComponent.RemoveRune(1, this))
-            {
-                Shoot();
-            }
-            else
-            {
-                Cancel();
-            }
+            Shoot();
         }
         if (Input.GetMouseButtonDown(1))
         {
