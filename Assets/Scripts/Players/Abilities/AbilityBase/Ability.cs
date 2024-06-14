@@ -27,8 +27,6 @@ public abstract class Ability : MonoBehaviour
     [SerializeField] protected float _streamingDuration;
     [SerializeField] protected float _manaCostRate;
     [SerializeField] protected float _manaCostPerTick;
-	[SerializeField] protected Schools _abilitySchool;
-	[SerializeField] protected AbilityForm _abilityForm;
 
 	protected StaminaComponent _mana;
 	protected MoveComponent _playerMove;
@@ -36,14 +34,13 @@ public abstract class Ability : MonoBehaviour
 	protected bool _isUsed = false;
 	protected bool _isCanCancle = true;
 	protected bool _isReady = true;
-    protected bool _avaliable = true;
-    protected bool _hasCanceled = false;
     protected int _currentChargers;
 	protected Coroutine _rechargeJob;
 	protected Coroutine _streamingJob;
 	protected Coroutine _castDeleyJob;
 	protected Coroutine _cooldownJob;
-    protected float _timerForDebuf = 0;
+
+    private float _remainingСooldownTime;
 
     public MoveComponent PlayerMove => _playerMove;
     public StaminaComponent Mana => _mana;
@@ -67,18 +64,18 @@ public abstract class Ability : MonoBehaviour
     public bool IsUsed { get => _isUsed; protected set => _isUsed = value; }
     public bool IsCanCancle { get => _isCanCancle; protected set => _isCanCancle = value; }
     public bool IsReady { get => _isReady; set => _isReady = value; }
-    public Schools School => _abilitySchool;
-    public AbilityForm AbilityForm => _abilityForm;
 
-	public event UnityAction<int> CurrentChargeChange;
+    public event UnityAction<int> CurrentChargeChange;
     public event UnityAction<float> StartStreaming;
     public event UnityAction StopStreaming;
     public event UnityAction<float> StartCastDeley;
     public event UnityAction StopCastDeley;
-    public event UnityAction<Ability> Cancled;
+    public event UnityAction Cancled;
+    public event UnityAction CastStarted;
     public event UnityAction PreparingEnded;
     public event UnityAction CastEnded;
     public event UnityAction AreaOffed;
+    public event UnityAction<float> CooldownStarted;
 
     protected abstract void Cast();
     protected abstract void Cancel();
@@ -117,7 +114,7 @@ public abstract class Ability : MonoBehaviour
                 StopCoroutine(_castDeleyJob);
                 StopCastDeley?.Invoke();
             }
-            Cancled?.Invoke(this);
+            Cancled?.Invoke();
             return true;
         }
         return false;
@@ -125,7 +122,7 @@ public abstract class Ability : MonoBehaviour
 
     public virtual bool TryUse()
     {
-        if (_isUsed && (_mana.Value >= _manaCost && _isReady) == false && !_avaliable)
+        if (_isUsed && (_mana.Value >= _manaCost && _isReady) == false)
         {
             PreparingEnded?.Invoke();
             return false;
@@ -138,35 +135,34 @@ public abstract class Ability : MonoBehaviour
                 return false;
             }    
         }
-      /*  if(_hasCanceled)
-        {
-            KnockDownTimerStart();
-        }*/
         _isUsed = true;
         _isCanCancle = true;
+        CastStarted?.Invoke();
         Cast();
         return true;
     }
 
-	public void SwitchAvailible(bool avalieble)
-	{
-        _avaliable = avalieble;
-	}
+    public void SetCooldown(float time)
+    {
+        _isReady = false;
 
-	public void KnockDownTimerStart(float time)
-	{
-        _timerForDebuf = time;
-        StartCoroutine(KnockDownTimer());
-	}
+        if (time < _remainingСooldownTime)
+            return;
 
-	protected Coroutine GetCastDeleyCoroutine()
+        if(_cooldownJob != null)
+            StopCoroutine(_cooldownJob);
+
+        _cooldownJob = StartCoroutine(CooldownCoroutine(time));
+    }
+
+    protected Coroutine GetCastDeleyCoroutine()
     {
         _castDeleyJob = StartCoroutine(CastDeleyCoroutine());
         StartCastDeley?.Invoke(_castDeley);
         return _castDeleyJob;
     }
 
-    protected virtual void PayCost()
+    protected virtual bool PayCost(bool castEnded = true)
     {
         if (TryUseCharge() && _mana.Value >= _manaCost && _isReady)
         {
@@ -175,10 +171,10 @@ public abstract class Ability : MonoBehaviour
         else
         {
             TryCancel();
-            return;
+            return false;
         }
         _isReady = false;
-        _cooldownJob = StartCoroutine(CooldownCoroutine());
+        _cooldownJob = StartCoroutine(CooldownCoroutine(_cooldown));
         PreparingEnded?.Invoke();
 
         if (_isStreaming)
@@ -189,10 +185,14 @@ public abstract class Ability : MonoBehaviour
                 _streamingJob = null;
             }
             _streamingJob = StartCoroutine(ManaCostPerTickCorutine());
-            return;
+            return true;
         }
-        _isUsed = false;
-        CastEnded?.Invoke();
+        if (castEnded)
+        {
+            _isUsed = false;
+            CastEnded?.Invoke();
+        }
+        return true;
     }
 
     protected bool TryUseCharge()
@@ -230,12 +230,19 @@ public abstract class Ability : MonoBehaviour
         return distance <= radius;
     }
 
-    private IEnumerator CooldownCoroutine()
+    protected Vector2 GetMousePoint()
     {
-        float time = 0;
-        while (time < _cooldown)
+        return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    }
+
+    private IEnumerator CooldownCoroutine(float cooldownTime)
+    {
+        CooldownStarted?.Invoke(cooldownTime);
+        _remainingСooldownTime = cooldownTime;
+
+        while (_remainingСooldownTime > 0)
         {
-            time += Time.deltaTime;
+            _remainingСooldownTime -= Time.deltaTime;
             yield return null;
         }
         _isReady = true;
@@ -256,6 +263,7 @@ public abstract class Ability : MonoBehaviour
         }
         _playerMove.CanMove = true;
         _castDeleyJob = null;
+        CastEnded?.Invoke();
     }
 
     private IEnumerator RechargeCoroutine()
@@ -293,28 +301,4 @@ public abstract class Ability : MonoBehaviour
         CastEnded?.Invoke();
         _streamingJob = null;
     }
-
-    private IEnumerator KnockDownTimer()
-    {
-		yield return new WaitForSeconds(_timerForDebuf);
-        _avaliable = true;
-	}
 }
-public enum Schools
-{
-	Light,
-	Dark,
-    Fire,
-    Water,
-    Air,
-    Earth,
-	Physical
-}
-
-public enum AbilityForm
-{
-	Spell,
-    Magic,
-	Physical
-}
-

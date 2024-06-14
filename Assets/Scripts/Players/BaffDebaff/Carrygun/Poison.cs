@@ -46,7 +46,7 @@ public class Poison : BaseEffect
 
         while (duration > 0)
         {
-            _playerTarget.GetComponent<HealthComponent>().TakePhisicDamage(_damageValue);
+            _playerTarget.GetComponent<HealthComponent>().TryTakeDamage(_damageValue, DamageType.Physical, AttackRangeType.Inner);
             Player.GetComponent<PsionicaMelee>().MakePsionica(PsionicaValue);
 
             yield return new WaitForSeconds(1f);

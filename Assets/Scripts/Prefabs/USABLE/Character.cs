@@ -1,30 +1,33 @@
-using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public abstract class Character : MonoBehaviour
 {
 	[SerializeField] private Rigidbody2D _rb;
-	[SerializeField] private HealthComponent healthComponent;
+	[SerializeField] private HealthComponent _healthComponent;
 	[SerializeField] private MoveComponent _playerMove; 
-	[FormerlySerializedAs("staminaComponent")] [SerializeField] private StaminaComponent stamina;
+	[SerializeField] private StaminaComponent _stamina;
 	[CanBeNull]
-	[SerializeField] private RuneComponent runeComponent;
+	[SerializeField] private RuneComponent _runeComponent;
 	[SerializeField] private PlayerAbilities _abilities;
 	[SerializeField] private CharacterState _characterState;
 	[SerializeField] private UIPlayerComponents _uiPlayerComponents;
-	[FormerlySerializedAs("_selectComponent")] [SerializeField] private SelectComponent selectComponentComponent;
+	[SerializeField] private SelectComponent _selectComponent;
 
 	public Rigidbody2D Rb => _rb;
-	public HealthComponent Health => healthComponent;
+	public HealthComponent Health => _healthComponent;
 	public MoveComponent Move => _playerMove;
-	public StaminaComponent Stamina => stamina;
-	public RuneComponent RuneComponent => runeComponent;
+	public StaminaComponent Stamina => _stamina;
+	public RuneComponent RuneComponent => _runeComponent;
 	public PlayerAbilities Abilities => _abilities;
 	public CharacterState CharacterState => _characterState;
 	public UIPlayerComponents UIPlayerComponents => _uiPlayerComponents;
-	public SelectComponent SelectComponentComponent => selectComponentComponent;
+	public SelectComponent SelectComponent => _selectComponent;
 
 	public abstract void Initialize(CharacterData data);
+
+	private void OnDestroy()
+	{
+		SelectManager.Instance.Deselect(this);
+	}
 }

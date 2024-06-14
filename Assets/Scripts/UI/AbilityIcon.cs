@@ -1,14 +1,14 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class AbilityIcon : MonoBehaviour
+public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHandler
 {
     [SerializeField] private Image _abilityIcon;
     [SerializeField] private Image _boxFrame;
+    [SerializeField] private Blink _autoAttackBoxFrame;
     [SerializeField] private FillAmountOverTime _cooldown;
     [SerializeField] private TextMeshProUGUI _chargeCounter;
     [SerializeField] private GameObject _abilityNameBox;
@@ -39,6 +39,8 @@ public class AbilityIcon : MonoBehaviour
         }
         ability.StartCastDeley += OnStartCastDeley;
         ability.StopCastDeley += OnStopCastDeley;
+
+        ability.CooldownStarted += OnStartCooldown;
     }
 
     public void OnCurrentChargeText(int value)
@@ -51,9 +53,10 @@ public class AbilityIcon : MonoBehaviour
         _chargeCounter.text = value.ToString();
     }
 
-    public void StartCooldown(float dutarion)
+    public void OnStartCooldown(float dutarion)
     {
-        _cooldown.StartFill(dutarion);
+        _cooldown.StartFill(dutarion, 1, 0, false);
+        _cooldown.gameObject.SetActive(true);
     }
 
     public void Selected()
@@ -64,6 +67,23 @@ public class AbilityIcon : MonoBehaviour
     public void Deselected()
     {
         _boxFrame.color = Color.white;
+    }
+
+    public void AutoAttackSelected()
+    {
+        _autoAttackBoxFrame.gameObject.SetActive(true);
+        _autoAttackBoxFrame.StartBlink(.5f);
+    }
+
+    public void AutoAttackDeselected()
+    {
+        _autoAttackBoxFrame.gameObject.SetActive(false);
+        _autoAttackBoxFrame.StopBlink();
+    }
+
+    public void DestroyIcon()
+    {
+        Destroy(gameObject);
     }
 
     private void OnStartStreaming(float time)
@@ -92,16 +112,6 @@ public class AbilityIcon : MonoBehaviour
         _castLine.Stop();
     }
 
-    private void OnMouseEnter()
-    {
-        _abilityNameBox.SetActive(true);
-    }
-
-    private void OnMouseExit()
-    {
-        _abilityNameBox.SetActive(false);
-    }
-
     private IEnumerator CastLineCoroutine()
     {
         while (_castLine.enabled)
@@ -110,5 +120,15 @@ public class AbilityIcon : MonoBehaviour
 
             yield return null;
         }
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        _abilityNameBox.SetActive(true);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        _abilityNameBox.SetActive(false);
     }
 }

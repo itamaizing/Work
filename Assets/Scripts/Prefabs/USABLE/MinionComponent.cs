@@ -14,6 +14,7 @@ public class MinionComponent : Character
         Stamina.Initialize(characterData.Stamina, characterData.StaminaRegen, characterData.RegenDelay);
         CharacterState.Initialize(Health, Move , Stamina);
         UIPlayerComponents.Initialize(Abilities,Move,Stamina,Health);
+        SelectComponent.Initialize(false,Move,Abilities,UIPlayerComponents);
     }
 
     public void SetMinion(HeroComponent parent)

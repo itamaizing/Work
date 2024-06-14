@@ -58,7 +58,7 @@ public class IceSword : Ability
 		}
 		if (_target != null)
 		{
-			_target.Health.TakePhisicDamage(_damage + Random.Range(0, 10));
+			_target.Health.TryTakeDamage(_damage + Random.Range(0, 10), DamageType.Physical, AttackRangeType.MeleeAttack);
 		}
 
 		if( _hitInTheRow > 2 ) 

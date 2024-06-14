@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,45 +6,57 @@ public class AbilityPanel : MonoBehaviour
 {
     [SerializeField] private AbilityIcon _abilityIconPref;
     [SerializeField] private FillAmountOverTime _castLine;
-    [SerializeField] private PlayerAbilities _playerAbilities;
+    
+    private PlayerAbilities _playerAbilities;
+    private List<Ability> _abilities;
+    private List<AbilityIcon> _abilityIcons;
+    private bool _isActive;
+    public bool _isSelect;
 
-    private List<Ability> _abilities = new List<Ability>();
-    private List<AbilityIcon> _abilityIcons = new List<AbilityIcon>();
-
-    private void Start()
+    public bool IsSelect
     {
-        List<Ability> abilities = _playerAbilities.Abilities;
+        get => _isSelect;
+        set => _isSelect = value;
+    }
 
-        foreach (var item in abilities)
+    public bool IsActive
+    {
+        get => _isActive;
+        set
         {
-            _abilities.Add(item);
+            _isActive = value && IsSelect;
+            gameObject.SetActive(_isActive);
         }
-        UpdateAbilityList();
+    }
+    
+    private void Awake()
+    {
+        _abilities = new List<Ability>();
+        _abilityIcons = new List<AbilityIcon>();
+        IsActive = false;
+    }
+
+    public void Fill(PlayerAbilities abilities)
+    {
+        _playerAbilities = abilities;
+        _abilities.AddRange(_playerAbilities.Abilities); 
+        
+        foreach (var item in _abilities)
+        {
+            AbilityIcon abilityIcon = Instantiate(_abilityIconPref, transform);
+            abilityIcon.Init(item, _castLine);
+            _abilityIcons.Add(abilityIcon);
+        }
 
         _playerAbilities.AbilitySelected += OnAbilitySelected;
         _playerAbilities.AbilityDeselected += OnAbilityDeselected;
+        _playerAbilities.AbilityAutoAttackSelected += OnAutoAttackAbilitySelected;
+        _playerAbilities.AbilityAutoAttackDeselected += OnAutoAttackAbilityDeselected;
     }
 
-    public void UpdateAbilityList(List<Ability> abilities)
+    public void DestroyAbilityPanel()
     {
-        _abilities = abilities;
-
-        foreach (var item in _abilities)
-        {
-            AbilityIcon abilityIcon = Instantiate(_abilityIconPref, transform);
-            abilityIcon.Init(item, _castLine);
-            _abilityIcons.Add(abilityIcon);
-        }
-    }
-
-    private void UpdateAbilityList()
-    {
-        foreach (var item in _abilities)
-        {
-            AbilityIcon abilityIcon = Instantiate(_abilityIconPref, transform);
-            abilityIcon.Init(item, _castLine);
-            _abilityIcons.Add(abilityIcon);
-        }
+        Destroy(gameObject);
     }
 
     private void OnAbilitySelected(int index)
@@ -54,5 +67,15 @@ public class AbilityPanel : MonoBehaviour
     private void OnAbilityDeselected(int index)
     {
         _abilityIcons[index].Deselected();
+    }
+
+    private void OnAutoAttackAbilitySelected(int index)
+    {
+        _abilityIcons[index].AutoAttackSelected();
+    }
+
+    private void OnAutoAttackAbilityDeselected(int index)
+    {
+        _abilityIcons[index].AutoAttackDeselected();
     }
 }

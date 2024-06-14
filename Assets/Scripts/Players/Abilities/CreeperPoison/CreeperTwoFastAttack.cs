@@ -157,11 +157,11 @@ public class CreeperTwoFastAttack : AbilityBase
         }
         else
         {
-            _targetHealth.TakePhisicDamage(_damageValue);
+            _targetHealth.TryTakeDamage(_damageValue, DamageType.Physical, AttackRangeType.MeleeAttack);
             CanMakeDamage = false;
 
             yield return new WaitForSeconds(damageRate / 1000);
-            _targetHealth.TakePhisicDamage(_damageValue);
+            _targetHealth.TryTakeDamage(_damageValue, DamageType.Physical, AttackRangeType.MeleeAttack);
         }
         ToggleAbility.isOn = false;
         ToggleAbility.enabled = false;

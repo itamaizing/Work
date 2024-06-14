@@ -149,7 +149,7 @@ public class CreeperSingleAttack : AbilityBase
         }
         else
         {
-            _targetHealth.TakePhisicDamage(_damageValue);
+            _targetHealth.TryTakeDamage(_damageValue, DamageType.Physical, AttackRangeType.MeleeAttack);
             CanMakeDamage = false;
 
             yield return new WaitForSeconds(damageRate / 2);

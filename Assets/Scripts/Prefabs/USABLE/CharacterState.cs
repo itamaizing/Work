@@ -219,7 +219,7 @@ public class StunnedState : AbstractCharacterState
 		if (character.TryGetComponent<PlayerAbilities>(out var ability))
 		{
 			_abilities = ability;
-			_abilities.SetAbilitiesDisabled();
+			_abilities.SetAbilitiesEnable(false);
 		}
 		else
 		{
@@ -249,7 +249,7 @@ public class StunnedState : AbstractCharacterState
 		}
 		if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
 		{
-			_abilities.SetAbilitiesEnabled();
+			_abilities.SetAbilitiesEnable(true);
 		}
 		_characterState.RemoveState(this);
 	}
@@ -286,7 +286,7 @@ public class BlindnessState : AbstractCharacterState
 		if (character.GetComponent<PlayerAbilities>().Abilities != null)
 		{
 			_abilities = character.GetComponent<PlayerAbilities>();
-			_abilities.SetAbilitiesDisabled();
+			_abilities.SetAbilitiesEnable(false);
 		}
 		else
 		{
@@ -309,7 +309,7 @@ public class BlindnessState : AbstractCharacterState
 		Debug.Log("Exiting Stunned State");
 		if (_characterState.Check(StatusEffect.Ability))
 		{
-			_abilities.SetAbilitiesEnabled();
+			_abilities.SetAbilitiesEnable(true);
 		}
 		_characterState.RemoveState(this);
 	}
@@ -358,7 +358,7 @@ public class FrozenState : AbstractCharacterState
 		if (character.TryGetComponent<PlayerAbilities>(out var ability))
 		{
 			_abilities = ability;
-			_abilities.SetAbilitiesDisabled();
+			_abilities.SetAbilitiesEnable(false);
 		}
 		else
 		{
@@ -388,7 +388,7 @@ public class FrozenState : AbstractCharacterState
 		}
 		if (_characterState.Check(StatusEffect.Ability) && _abilities!=null)
 		{
-			_abilities.SetAbilitiesEnabled();
+			_abilities.SetAbilitiesEnable(true);
 		}
 		_characterState.RemoveState(this);
 	}

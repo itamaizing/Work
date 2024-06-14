@@ -192,7 +192,7 @@ public class Scrader : MonoBehaviour
 
         if (_timer >= _interval)
         {
-            _healthComponent.TakePhisicDamage(2);
+            _healthComponent.TryTakeDamage(2, DamageType.Physical, AttackRangeType.MeleeAttack);
             _timer = 0f;
         }
     }
@@ -221,7 +221,7 @@ public class Scrader : MonoBehaviour
         int damage = UnityEngine.Random.Range(1, 4);
         yield return new WaitForSeconds(_attackSpeed / 2);
 
-        target.GetComponent<HealthComponent>().TakePhisicDamage(damage);
+        target.GetComponent<HealthComponent>().TryTakeDamage(damage, DamageType.Physical, AttackRangeType.MeleeAttack);
 
         if(UnityEngine.Random.value <= _chanceBleeding)
         {

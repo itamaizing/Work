@@ -55,7 +55,7 @@ namespace Players.Abilities.Genjalf.Push_Ability
                     dir += item.transform.position;
 
                     _enemies.Add(item.transform.gameObject, dir);
-                    item.transform.GetComponent<HealthComponent>().TakeMagicDamage(_damage);
+                    item.transform.GetComponent<HealthComponent>().TryTakeDamage(_damage, DamageType.Magical, AttackRangeType.RangeAttack);
 
                     ApplyDebuffOnTarget(item.transform.gameObject);
                 }

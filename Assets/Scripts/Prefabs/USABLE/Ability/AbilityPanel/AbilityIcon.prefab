@@ -690,6 +690,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _abilityIcon: {fileID: 4958593909440019377}
   _boxFrame: {fileID: 445071160786786330}
+  _autoAttackBoxFrame: {fileID: 7655645302055471648}
   _cooldown: {fileID: 6969086769628149977}
   _chargeCounter: {fileID: 5069155158559391274}
   _abilityNameBox: {fileID: 962580426844032932}
@@ -724,7 +725,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -886,6 +887,7 @@ GameObject:
   - component: {fileID: 3037359586449704281}
   - component: {fileID: 1225317402293565277}
   - component: {fileID: 7495796214725457445}
+  - component: {fileID: 7655645302055471648}
   m_Layer: 5
   m_Name: BoxFrameWork
   m_TagString: Untagged
@@ -934,7 +936,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 1, b: 0.13757372, a: 0.4745098}
+  m_Color: {r: 0.100182414, g: 1, b: 0, a: 0.4745098}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -951,3 +953,16 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7655645302055471648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9191123211847636415}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca6e86253cfec25438bf17db783a8017, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _image: {fileID: 7495796214725457445}

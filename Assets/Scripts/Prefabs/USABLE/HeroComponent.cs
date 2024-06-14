@@ -7,9 +7,16 @@ public class HeroComponent : Character
 
     [SerializeField] private MinionComponent _minion;
 
+    public bool IController = false;
+
     private void Awake()
     {
         Initialize(_playerData);
+    }
+
+    private void Update()
+    {
+        if(IController) SelectManager.Instance.AddControl(this);
     }
 
     public override void Initialize(CharacterData characterData)
@@ -20,6 +27,7 @@ public class HeroComponent : Character
         RuneComponent.Initialize(10,1,10);
         CharacterState.Initialize(Health, Move , Stamina);
         UIPlayerComponents.Initialize(Abilities,Move,Stamina,Health);
+        SelectComponent.Initialize(false,Move,Abilities,UIPlayerComponents);
         SpawnMinion();
     }
 

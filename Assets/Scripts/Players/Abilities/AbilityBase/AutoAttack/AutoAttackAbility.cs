@@ -12,6 +12,14 @@ public abstract class AutoAttackAbility : TargetAbility
     private Coroutine _autoAttackJob;
     private bool _isAttacking = false;
 
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.Alpha9))
+        {
+            Pause();
+        }
+    }
+
     public void Pause()
     {
         if (_autoAttackJob != null)
@@ -24,7 +32,7 @@ public abstract class AutoAttackAbility : TargetAbility
 
     public void Continue()
     {
-        if (_autoAttackJob == null)
+        if (_autoAttackJob == null && Target != null)
         {
             _autoAttackJob = StartCoroutine(AutoAttackCoroutine());
         }
@@ -59,7 +67,7 @@ public abstract class AutoAttackAbility : TargetAbility
 
     protected override IEnumerator UseCoroutine()
     {
-        yield return _chooseTatgetJob = StartCoroutine(ChooseTatgetCoroutine(Radius + 99));
+        yield return _chooseTatgetJob = StartCoroutine(ChooseTargetCoroutine(Radius + 99));
         yield return _autoAttackJob = StartCoroutine(AutoAttackCoroutine());
     }
 
@@ -75,10 +83,9 @@ public abstract class AutoAttackAbility : TargetAbility
                 if (_isAttacking && NoObstacles())
                 {
                     yield return new WaitForSeconds(_attackSpeed);
-                    if (IsTargetInRadius(Radius + _attackZoneSize) && NoObstacles())
+                    if (IsTargetInRadius(Radius + _attackZoneSize) && NoObstacles() && IsReady)
                     {
-                        PayCost();
-                        IsUsed = true;
+                        PayCost(false);
                         CastAction();
                     }
                 }
