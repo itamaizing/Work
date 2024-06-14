@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.Events;
+using System;
 
 public abstract class Ability : MonoBehaviour
 {
@@ -17,7 +18,9 @@ public abstract class Ability : MonoBehaviour
     [SerializeField] protected float _manaCost = 0f;
     [SerializeField] protected float _castDeley = 0f;
     [SerializeField] protected float _cooldown = 0f;
-    [Header("Charge settings")]
+	[SerializeField] protected Schools _abilitySchool;
+	[SerializeField] protected AbilityForm _abilityForm;
+	[Header("Charge settings")]
     [SerializeField] protected bool _isUseCharges;
     [SerializeField] protected bool _chargesHaveSeparateCooldown;
     [SerializeField] protected int _maxCharges;
@@ -45,9 +48,11 @@ public abstract class Ability : MonoBehaviour
 	protected Coroutine _cooldownJob;
     protected float _timerForDebuf = 0;
 
-    private float _remaining�ooldownTime;
+    private float _remainingСooldownTime;
+	private bool _avaliable;
+	private float _timerForDebuf;
 
-    public MoveComponent PlayerMove => _playerMove;
+	public MoveComponent PlayerMove => _playerMove;
     public StaminaComponent Mana => _mana;
     public HealthComponent Health => _health;
     public string Name => _abilityInfo.Name;
@@ -69,8 +74,8 @@ public abstract class Ability : MonoBehaviour
     public bool IsUsed { get => _isUsed; protected set => _isUsed = value; }
     public bool IsCanCancle { get => _isCanCancle; protected set => _isCanCancle = value; }
     public bool IsReady { get => _isReady; set => _isReady = value; }
-    public Schools School => _abilitySchool;
-    public AbilityForm AbilityForm => _abilityForm;
+	public Schools School => _abilitySchool;
+	public AbilityForm AbilityForm => _abilityForm;
 
 	public event UnityAction<int> CurrentChargeChange;
     public event UnityAction<float> StartStreaming;
@@ -310,28 +315,39 @@ public abstract class Ability : MonoBehaviour
         CastEnded?.Invoke();
         _streamingJob = null;
     }
+	public void SwitchAvailible(bool avalieble)
+	{
+		_avaliable = avalieble;
+	}
 
-    private IEnumerator KnockDownTimer()
-    {
+	public void KnockDownTimerStart(float time)
+	{
+		_timerForDebuf = time;
+		StartCoroutine(KnockDownTimer());
+	}
+
+	private IEnumerator KnockDownTimer()
+	{
 		yield return new WaitForSeconds(_timerForDebuf);
-        _avaliable = true;
+		_avaliable = true;
 	}
 }
+
 public enum Schools
 {
 	Light,
 	Dark,
-    Fire,
-    Water,
-    Air,
-    Earth,
+	Fire,
+	Water,
+	Air,
+	Earth,
 	Physical
 }
 
 public enum AbilityForm
 {
 	Spell,
-    Magic,
+	Magic,
 	Physical
 }
 
