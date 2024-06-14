@@ -15,6 +15,7 @@ public class PlayerAbilities : MonoBehaviour
 	private int _currentAbilityIndex;
 	private int _currentAutoAttackAbilityIndex;
 	private bool _isAbilitiesDisabled = false;
+	private bool _isAbilitiesEnabled = true;
 	private AbilityPanel _abilityPanel;
 
 	public List<Ability> Abilities => _abilities;
@@ -91,6 +92,12 @@ public class PlayerAbilities : MonoBehaviour
             item.SetCooldown(time);
         }
     }
+	public void SetAbilitiesEnable(bool isEnabled)
+	{
+		_isAbilitiesEnabled = isEnabled;
+	}
+
+
 	public void SetAbilitiesPanelSelect(bool isSelect)
 	{
 		AbilitiesManager.Instance.ChangeCurrentPanelSelectStatus(_abilityPanel, isSelect);
@@ -196,7 +203,7 @@ public class PlayerAbilities : MonoBehaviour
 			_currentAbility.Cancled -= ContinueAutoAttack;
 		}
 	}
-	private void TryUseAbility()
+	/*private void TryUseAbility()
     {
         if (_currentAbility == null || !_isAbilitiesEnabled || !_abilityPanel.IsActive  || (_currentAbility.IsUsed))
             return;
@@ -206,7 +213,18 @@ public class PlayerAbilities : MonoBehaviour
 
         visualRender.Drawn(_currentAbility);
         _currentAbility.TryUse();
-    }
+    }*/
+	private void TryUseAbility()
+	{
+		if (_currentAbility == null || !_isAbilitiesEnabled || !_abilityPanel.IsActive || (_currentAbility.IsUsed))
+			return;
+
+		if (_currentAutoAttackAbility != null)
+			PauseAutoAttack();
+
+		visualRender.Drawn(_currentAbility);
+		_currentAbility.TryUse();
+	}
 	private void ContinueAutoAttack()
 	{
 		_currentAutoAttackAbility.Continue();
