@@ -1743,6 +1743,10 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 105020725200031335, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
+      propertyPath: _durationOfLeap
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 105020725200031335, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
       propertyPath: _enemyLayerMask.m_Bits
       value: 256
       objectReference: {fileID: 0}
