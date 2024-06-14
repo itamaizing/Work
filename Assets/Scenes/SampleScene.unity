@@ -1276,6 +1276,8 @@ MonoBehaviour:
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1314,6 +1316,8 @@ MonoBehaviour:
   _manaCost: 0
   _castDeley: 2
   _cooldown: 6
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1345,6 +1349,8 @@ MonoBehaviour:
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -2193,9 +2199,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 2803109671735995531, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
-      propertyPath: SCHOOLS
+    - target: {fileID: 2423544550661109350, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+      propertyPath: _abilityForm
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2423544550661109350, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+      propertyPath: _abilitySchool
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3734820572883177193, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+      propertyPath: _abilities.Array.size
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2803109671735995531, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
       propertyPath: _abilityForm
