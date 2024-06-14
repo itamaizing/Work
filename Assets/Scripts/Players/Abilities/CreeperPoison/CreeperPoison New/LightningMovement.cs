@@ -3,12 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 
 public class LightningMovement : Ability
 {
-    LightningMovement lightningMovement;
     [Header("Ability properties")]
     [SerializeField] private Character _playerLinks;
     [SerializeField] private float _leapRange;
