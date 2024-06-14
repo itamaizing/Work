@@ -1706,6 +1706,10 @@ PrefabInstance:
       propertyPath: _playerLinks
       value: 
       objectReference: {fileID: 8468544467729562645}
+    - target: {fileID: 5791904809664854920, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
+      propertyPath: bar
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 6314414592503689021, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -1714,7 +1718,12 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 8848169558533100257, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
+      propertyPath: _runeComponent
+      value: 
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 5791904809664854920, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
     m_RemovedGameObjects:
     - {fileID: 3039442385091661987, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
     m_AddedGameObjects: []

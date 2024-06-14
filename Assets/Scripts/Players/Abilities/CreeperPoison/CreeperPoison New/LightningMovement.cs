@@ -58,16 +58,9 @@ public class LightningMovement : Ability
             if (_firstVectorSelected && _secondVectorSelected)
             {
                 PayCost();
-                if (_playerLinks.RuneComponent.RemoveRune(1, this))
-                {
-                    ExecuteLeap();
-                    StopCoroutine(TemporaryMoveToFirstLeapPoint(_leapPositionForSecondVector));
-                }
-                else
-                {
-                    Cancel();
-                    StopCoroutine(TemporaryMoveToFirstLeapPoint(_leapPositionForSecondVector));
-                }
+                
+                ExecuteLeap();
+                StopCoroutine(TemporaryMoveToFirstLeapPoint(_leapPositionForSecondVector));
             }
         }
         if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
