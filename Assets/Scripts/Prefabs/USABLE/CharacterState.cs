@@ -538,7 +538,7 @@ public class AbilitySchoolDebuff : AbstractCharacterState
 	public Schools canceledSchoool;
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
 	{
-		Debug.Log("Entering CounterSpell State");
+		Debug.Log("Entering AbilitySchoolDebuff State");
 		type = StateType.Immaterial;
 		effects.Add(StatusEffect.AbilitySchool);
 
@@ -560,7 +560,7 @@ public class AbilitySchoolDebuff : AbstractCharacterState
 
 	public override void UpdateState()
 	{
-		Debug.Log("Updating CounterSpell State");
+		Debug.Log("Updating AbilitySchoolDebuff State");
 		_duration -= Time.deltaTime;
 		if (_duration < 0 || turnOff)
 		{
@@ -570,7 +570,7 @@ public class AbilitySchoolDebuff : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		Debug.Log("Exiting Stunned State");
+		Debug.Log("Exiting AbilitySchoolDebuff State");
 		if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
 		{
 			_abilities.SwitchAvaliable(canceledSchoool, true);
@@ -579,12 +579,15 @@ public class AbilitySchoolDebuff : AbstractCharacterState
 	}
 	public override bool Stack(float time)
 	{
+		Debug.Log("STACKING TEST");
 		if (_duration > time)
 		{
-			return false;
+			Debug.Log("STACKING TEST 2 2 2");
+			return true;
 		}
 		else
 		{
+			Debug.Log("STACKING TEST 3 3 3");
 			_duration = time;
 			return true;
 		}
@@ -601,7 +604,7 @@ public class AbilityFormDebuff : AbstractCharacterState
 	public bool canCancel = false;
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
 	{
-		Debug.Log("Entering Silence State");
+		Debug.Log("Entering AbilityFormDebuff State");
 		type = StateType.Immaterial;
 		effects.Add(StatusEffect.AbilitySchool);
 
@@ -624,7 +627,7 @@ public class AbilityFormDebuff : AbstractCharacterState
 
 	public override void UpdateState()
 	{
-		Debug.Log("Updating Silence State");
+		Debug.Log("Updating AbilityFormDebuff State");
 		_duration -= Time.deltaTime;
 		if (_duration < 0 || turnOff)
 		{
@@ -634,7 +637,7 @@ public class AbilityFormDebuff : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		Debug.Log("Exiting Stunned State");
+		Debug.Log("Exiting AbilityFormDebuff State");
 		if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
 		{
 			_abilities.SwitchAvaliable(canceledForm, true);
@@ -643,9 +646,10 @@ public class AbilityFormDebuff : AbstractCharacterState
 	}
 	public override bool Stack(float time)
 	{
+		
 		if (_duration > time)
 		{
-			return false;
+			return true;
 		}
 		else
 		{
@@ -679,6 +683,15 @@ public class CharacterState : MonoBehaviour
 
 	private void Update()
 	{
+		/*if(Input.GetKey(KeyCode.K))
+		{
+			AddState(new AbilitySchoolDebuff(), 10, 0, States.SchoolDebuff, Schools.Water);
+		}
+		if (Input.GetKey(KeyCode.R))
+		{
+			AddState(new AbilitySchoolDebuff(), 5, 0, States.SchoolDebuff, Schools.Water);
+		}*/
+
 		if (currentStates.Count > 0)
 		{
 			for (int i = 0; i < currentStates.Count; i++)
@@ -708,7 +721,7 @@ public class CharacterState : MonoBehaviour
 
 				if (item.Stack(duration))
 				{
-					_stateIcons.ActivateIco(state, duration, 1);
+					//_stateIcons.ActivateIco(state, duration, 1);
 				}
 				else
 				{
@@ -898,5 +911,6 @@ public enum States
 	Cooling,
 	Blind,
 	Invisible,
-	SchoolDebuff
+	SchoolDebuff,
+	FormDebuf
 }

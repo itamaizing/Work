@@ -390,7 +390,7 @@ RectTransform:
   - {fileID: 4041501855964374284}
   - {fileID: 5762049827953977616}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -582,6 +582,7 @@ MonoBehaviour:
   _selectComponent: {fileID: 5511617219408767834}
   _playerData: {fileID: 11400000, guid: 1382b47eecc788c46b35297311c129c3, type: 2}
   _minion: {fileID: 2981867871510918870, guid: d321207ef616498478038beb68b111ea, type: 3}
+  IController: 0
 --- !u!1 &1565031513079442272
 GameObject:
   m_ObjectHideFlags: 0
@@ -593,7 +594,6 @@ GameObject:
   - component: {fileID: 4016452462218772239}
   - component: {fileID: 3734820572883177193}
   - component: {fileID: 5564757508821022323}
-  - component: {fileID: 2105836877704237594}
   - component: {fileID: 1005351013565685612}
   - component: {fileID: 938984537167284078}
   - component: {fileID: 812406894906728288}
@@ -636,14 +636,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _abilities:
-  - {fileID: 2105836877704237594}
+  - {fileID: 2423544550661109350}
   - {fileID: 1005351013565685612}
   - {fileID: 938984537167284078}
   - {fileID: 812406894906728288}
   - {fileID: 4417605804945313492}
   - {fileID: 5424265573815036285}
   visualRender: {fileID: 5564757508821022323}
-  isAbilityPanelActive: 0
 --- !u!114 &5564757508821022323
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -660,47 +659,6 @@ MonoBehaviour:
   _iconPref: {fileID: 7803743787710783319, guid: 793e4727b7b14be43a8a702db9da8643, type: 3}
   _areaPref: {fileID: 1574982521674352815, guid: 790fb3857b30c2b4fad4375343a84fad, type: 3}
   _squareAreaPref: {fileID: 6069098087972325736, guid: 613fcf3671552f04eb117ca2af2820f6, type: 3}
---- !u!114 &2105836877704237594
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1565031513079442272}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0472c7c6c6b721418ebe181869af7fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _abilityInfo: {fileID: 11400000, guid: f6b63db1fe9a8db4b86632917e246e69, type: 2}
-  _isAutoAttack: 1
-  _radius: 2
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
-  _manaCost: 0
-  _castDeley: 0
-  _cooldown: 0
-  _isUseCharges: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
-  _isStreaming: 0
-  _streamingDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: 0
-  _isCanTargetHimself: 0
-  _attackZoneSize: 0
-  _attackSpeed: 1
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
-  _damage: 8
-  _dad: {fileID: 8468544467696250796}
-  _abilityCooldown: 1.4
-  _obstacleLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!114 &1005351013565685612
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -722,6 +680,8 @@ MonoBehaviour:
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -753,6 +713,8 @@ MonoBehaviour:
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -784,6 +746,8 @@ MonoBehaviour:
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -817,6 +781,8 @@ MonoBehaviour:
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -853,6 +819,8 @@ MonoBehaviour:
   _manaCost: 10
   _castDeley: 1.4
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -888,6 +856,8 @@ MonoBehaviour:
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 1
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -919,6 +889,8 @@ MonoBehaviour:
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -936,9 +908,6 @@ MonoBehaviour:
   _damage: 8
   _dad: {fileID: 8468544467696250796}
   _abilityCooldown: 1.4
-  _obstacleLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!1 &2281972326564055702
 GameObject:
   m_ObjectHideFlags: 0
