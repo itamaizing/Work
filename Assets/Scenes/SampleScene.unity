@@ -1797,7 +1797,7 @@ PrefabInstance:
     - target: {fileID: 3866749288767764151, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
       propertyPath: _abilities.Array.data[2]
       value: 
-      objectReference: {fileID: 5564757508784530903}
+      objectReference: {fileID: 0}
     - target: {fileID: 4142585537257920599, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1929,9 +1929,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 132826892404079785, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
       insertIndex: -1
       addedObject: {fileID: 0}
-    - targetCorrespondingSourceObject: {fileID: 573140117665601435, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
-      insertIndex: 4
-      addedObject: {fileID: 5564757508784530903}
     - targetCorrespondingSourceObject: {fileID: 573140117665601435, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5564757508784530897}
@@ -2708,57 +2705,6 @@ MonoBehaviour:
   _manaCostPerTick: 0
   _projectile: {fileID: 748218918613675416, guid: f44e1a220c732a64f9af10c37bf5aed0, type: 3}
   _playerLinks: {fileID: 8468544467729562645}
---- !u!114 &5564757508784530899 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4071738984799970690, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
-  m_PrefabInstance: {fileID: 2316077830587556083}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1565031513045121241}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53472a99ea59ab74597e0875f6303fb9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &5564757508784530903
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1565031513045121241}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc559f5a371b79d4b80768068ae31a58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _abilityInfo: {fileID: 11400000, guid: 7d0ee064be7acc0469ab7540e835c7f9, type: 2}
-  _isAutoAttack: 0
-  _radius: 0
-  _area: 0
-  _castLength: 4
-  _castWidth: 1
-  _manaCost: 0
-  _castDeley: 0
-  _cooldown: 0
-  _isUseCharges: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
-  _isStreaming: 0
-  _streamingDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: 0
-  _playerLinks: {fileID: 8468544467729562645}
-  _leapRange: 4
-  _durationOfLeap: 0.2
-  _obstacleLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
-  pointForSecondLeap: {fileID: 1565031513045121241}
-  abilityRender: {fileID: 5564757508784530899}
-  _enemyLayerMask:
-    serializedVersion: 2
-    m_Bits: 256
 --- !u!114 &5564757508784530906 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 105020725200031335, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}

@@ -124,7 +124,6 @@ public class LightningMovement : Ability
 
     private void SelectFirstVectorLeap()
     {
-
         if (_canSelectedFirstVector && _isReadyFirstLeap)
         {
             _playerLinks.Rb.isKinematic = true;
@@ -147,29 +146,32 @@ public class LightningMovement : Ability
             if (CheckEnemy(PlayerMove.transform.position, _leapPositionForFirstVector))
             {
                 isEnemy = true;
-                //Остановка отрисовки первой позиции
-                abilityRender.StopDraw();
-                //Точка для отрисовки второго прыжка
-                StartCoroutine(TemporaryMoveToFirstLeapPoint(_leapPositionForFirstVector));
             }
+            //Остановка отрисовки первой позиции
+            abilityRender.StopDraw();
+            //Точка для отрисовки второго прыжка
+            StartCoroutine(TemporaryMoveToFirstLeapPoint(_leapPositionForFirstVector));
         }
     }
 
     private IEnumerator TemporaryMoveToFirstLeapPoint(Vector2 firstLeapPosition)
     {
-        // Сохранение позиции точки первого прыжка
-        Vector2 originalPosition = pointForSecondLeap.transform.position;
-        // Точка для отрисовки второго прыжка
-        pointForSecondLeap.transform.position = firstLeapPosition;
+        if (isEnemy)
+        {
+            // Сохранение позиции точки первого прыжка
+            Vector2 originalPosition = pointForSecondLeap.transform.position;
+            // Точка для отрисовки второго прыжка
+            pointForSecondLeap.transform.position = firstLeapPosition;
 
-        // Отрисовка второй области
-        abilityRender.Drawn(this);
+            // Отрисовка второй области
+            abilityRender.Drawn(this);
 
-        // Ожидание выбора второй точки прыжка
-        yield return new WaitUntil(() => _secondVectorSelected);
+            // Ожидание выбора второй точки прыжка
+            yield return new WaitUntil(() => _secondVectorSelected);
 
-        // Возвращение точки в исходное положение и прыжок игрока по двум точкам
-        pointForSecondLeap.transform.position = originalPosition;
+            // Возвращение точки в исходное положение и прыжок игрока по двум точкам
+            pointForSecondLeap.transform.position = originalPosition;
+        }
     }
 
     private void SelectSecondVectorLeap()
@@ -203,6 +205,7 @@ public class LightningMovement : Ability
         _playerLinks.Move.enabled = false;
         _enabled = true;
         _playerLinks.Rb.DOMove(_leapPositionForFirstVector, _durationOfLeap * actualFirstLeapRange / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(AfterLeap);
+        Debug.Log("Single leap work");
     }
 
     private void ExecuteDoubleLeap()
@@ -215,32 +218,37 @@ public class LightningMovement : Ability
             leapSequence.Append(_playerLinks.Rb.DOMove(_leapPositionForFirstVector, _durationOfLeap * actualFirstLeapRange / GlobalVariable.cellSize).SetEase(Ease.Linear));
             leapSequence.AppendCallback(() =>
                 {
-                    if (!CheckEnemy(PlayerMove.transform.position, _leapPositionForFirstVector))
+                    if (!CheckEnemy(PlayerMove.transform.position, _leapPositionForFirstVector) && !isEnemy)
                     {
                         leapSequence.Kill();
                         AfterLeap();
+                        Debug.Log(CheckEnemy(PlayerMove.transform.position, _leapPositionForFirstVector) + " Check enemy in leapCallback");
                     }
                 });
-            leapSequence.Append(_playerLinks.Rb.DOMove(_leapPositionForSecondVector, _durationOfLeap * actualSecondLeapRange / GlobalVariable.cellSize).SetEase(Ease.Linear));
+            leapSequence.AppendCallback(() =>
+            {
+                if (IsEnemyBehindPlayer(_playerLinks.transform.position, _leapPositionForFirstVector) && isEnemy)
+                {
+                    leapSequence.Append(_playerLinks.Rb.DOMove(_leapPositionForSecondVector, _durationOfLeap * actualSecondLeapRange / GlobalVariable.cellSize).SetEase(Ease.Linear));
+                    Debug.Log(IsEnemyBehindPlayer(_playerLinks.transform.position, _leapPositionForFirstVector) + " isEnemyBehind in leapCallback");
+                }
+                else
+                {
+                    leapSequence.Kill();
+                    AfterLeap();
+                }
+            });
             leapSequence.OnComplete(AfterLeap);
         }
     }
 
-    //private bool IsEnemyBehindPlayer(Vector3 playerPosition, Vector3 firstLeapEndPosition)
-    //{
-    //    Vector3 directionToFirstLeapEnd = (firstLeapEndPosition - playerPosition).normalized;
-    //    Collider2D[] enemies = Physics2D.OverlapCircleAll(playerPosition, actualFirstLeapRange, _enemyLayerMask);
+    private bool IsEnemyBehindPlayer(Vector2 playerPosition, Vector2 firstLeapEndPosition)
+    {
+        Vector2 directionToFirstLeapEnd = (firstLeapEndPosition - playerPosition).normalized;
+        Vector2 perpendicularDirection = new Vector2(-directionToFirstLeapEnd.y, directionToFirstLeapEnd.x);
+        float checkDistance = actualFirstLeapRange * GlobalVariable.cellSize;
 
-    //    foreach (Collider2D enemy in enemies)
-    //    {
-    //        Vector3 directionToEnemy = (enemy.transform.position - playerPosition).normalized;
-    //        float dotProduct = Vector2.Dot(directionToFirstLeapEnd, directionToEnemy);
-
-    //        if (dotProduct < 0) // враг позади игрока
-    //        {
-    //            return true;
-    //        }
-    //    }
-    //    return false;
-    //}
+        RaycastHit2D hit = Physics2D.Raycast(playerPosition, -directionToFirstLeapEnd, checkDistance, _enemyLayerMask);
+        return hit.collider != null;
+    }
 }
