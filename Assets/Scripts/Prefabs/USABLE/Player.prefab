@@ -395,7 +395,7 @@ Transform:
   - {fileID: 4041501855964374284}
   - {fileID: 5762049827953977616}
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &3759936847054020137
 Rigidbody2D:
@@ -624,8 +624,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 5
-  radius: 1
-  height: 2
+  radius: 0.5
+  height: 1
   canMove: 1
   maxSpeed: 1
   gravity: {x: 0, y: 0, z: 0}
@@ -666,9 +666,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  uniqueID: 3026970643028934867
+  uniqueID: 5985653448990282671
   updateError: 1
-  checkTime: 0.5
+  checkTime: 0.1
 --- !u!114 &1096122107475845768
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -787,6 +787,46 @@ MonoBehaviour:
   _iconPref: {fileID: 7803743787710783319, guid: 793e4727b7b14be43a8a702db9da8643, type: 3}
   _areaPref: {fileID: 1574982521674352815, guid: 790fb3857b30c2b4fad4375343a84fad, type: 3}
   _squareAreaPref: {fileID: 6069098087972325736, guid: 613fcf3671552f04eb117ca2af2820f6, type: 3}
+--- !u!114 &2105836877704237594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1565031513079442272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0472c7c6c6b721418ebe181869af7fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _abilityInfo: {fileID: 11400000, guid: f6b63db1fe9a8db4b86632917e246e69, type: 2}
+  _isAutoAttack: 1
+  _radius: 2
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _manaCost: 0
+  _castDeley: 0
+  _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _isCanTargetHimself: 0
+  _attackZoneSize: 0
+  _attackSpeed: 1
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _damage: 8
+  _dad: {fileID: 8468544467696250796}
+  _abilityCooldown: 1.4
 --- !u!114 &1005351013565685612
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1036,9 +1076,6 @@ MonoBehaviour:
   _damage: 8
   _dad: {fileID: 8468544467696250796}
   _abilityCooldown: 1.4
-  _obstacleLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!114 &7579798881083447851
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1060,6 +1097,8 @@ MonoBehaviour:
   _manaCost: 0
   _castDeley: 2
   _cooldown: 6
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1091,6 +1130,8 @@ MonoBehaviour:
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1129,6 +1170,8 @@ MonoBehaviour:
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0

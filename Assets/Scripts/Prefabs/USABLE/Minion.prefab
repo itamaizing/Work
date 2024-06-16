@@ -693,6 +693,8 @@ MonoBehaviour:
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -725,6 +727,8 @@ MonoBehaviour:
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -2275,7 +2279,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 5
-  radius: 0.5
+  radius: 0.25
   height: 2
   canMove: 1
   maxSpeed: 1
@@ -2319,7 +2323,7 @@ MonoBehaviour:
   version: 1
   uniqueID: 7133902660100005913
   updateError: 1
-  checkTime: 0.5
+  checkTime: 0.2
 --- !u!114 &6972549919535258818
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2333,7 +2337,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  smoothType: 0
+  smoothType: 3
   subdivisions: 2
   iterations: 2
   strength: 1
