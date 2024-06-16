@@ -4,44 +4,60 @@ using UnityEngine;
 
 public class SeriesOfStrikes : MonoBehaviour
 {
-    private float _usedRunesValue = 0;
+    private float _usedRunesValue1 = 0;
+    private float _usedRunesValue2 = 0;
     private float _timer = 0;
 	private float _baseTimer = 2f; //time and timer between losing streak
 	private float _multiplySpeed = .05f;
-	private int _hitCount = 0;
+	private int _hitCount1 = 0;
+	private int _hitCount2 = 0;
 	private bool _isInTheRow;
 	private Character _curTarget;
 
-	private bool _list1 = true;
-	private bool _list2 = true;
+	//private bool _list1 = true;
+	//private bool _list2 = true;
 	private List<AbilityForm> _formList = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical };
 	private List<AbilityForm> _formList2 = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Magic };
+
+	private void Update()
+	{
+		Timer();
+	}
 	public void MakeHit(Character target, AbilityForm form, float usedRuneValue)
     {
-		if(form == _formList[_hitCount] || form == _formList2[_hitCount]) 
+		if(form == _formList[_hitCount1]  && target == _curTarget || target == null) 
 		{
-			_hitCount++;
-		}
-
-		if (form == _formList[_hitCount] && _list1)
-		{
-			_list1 = true;
+			//_list1 = true;
 			_isInTheRow = true;
-			_usedRunesValue += usedRuneValue;
+			_curTarget = target;
+			_usedRunesValue1 += usedRuneValue;
+			_hitCount1++;
 		}
 		else
 		{
-			_list1 = false;
-		}
-		if (form == _formList2[_hitCount] && _list2)
-		{
-			_list2 = true;
 			_isInTheRow = true;
-			_usedRunesValue += usedRuneValue;
+			_hitCount1 = 0;
+			_usedRunesValue1 = usedRuneValue;
+			_curTarget = target;
+		}
+		if(form == _formList2[_hitCount2] && target == _curTarget || target == null)
+		{
+			//_list2 = true;
+			_isInTheRow = true;
+			_curTarget = target;
+			_usedRunesValue2 += usedRuneValue;
+			_hitCount2++;
 		}
 		else
 		{
-			_list2 = false;
+			_isInTheRow = true;
+			_hitCount2 = 0;
+			_usedRunesValue2 = usedRuneValue;
+			_curTarget = target;
+		}
+		if(_hitCount1 >=6 || _hitCount2 >=6)
+		{
+			LastHit();
 		}
 	}
 
@@ -58,7 +74,11 @@ public class SeriesOfStrikes : MonoBehaviour
 				Debug.Log("lose streak");
 				_timer = _baseTimer;
 				_isInTheRow = false;
-				_hitCount = 0;
+				_hitCount1 = 0;
+				_hitCount2 = 0;
+				_curTarget = null;
+				//_list1 = true;
+				//_list2 = true;
 			}
 		}
 	}

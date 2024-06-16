@@ -29,7 +29,7 @@ public class StateIcons : MonoBehaviour
 		}
 		if (Input.GetKeyUp(KeyCode.W))
 		{
-			ActivateIco(States.Stun, 2, 4);
+			ActivateIco(States.Stun, 6, 1);
 		}
 		if (Input.GetKeyUp(KeyCode.T))
 		{
@@ -42,24 +42,27 @@ public class StateIcons : MonoBehaviour
 	}*/
 	public void ActivateIco(States state, float timeToDecrease, int stack)
     {
-        foreach(var ico in _activeEffects)
+        foreach(var ico in _activeEffects)//if we already have the same ico
         {
             if(ico.state == state)
             {
                 ico.count+= stack;
+                ico.time.Add(timeToDecrease);
 				ico.Text.text = ico.count.ToString();
 				ico.Text.gameObject.SetActive(true);
+				//AnimateIco(ico);
 				return;
             }
         }
-        foreach(var ico in _icons) 
+        foreach(var ico in _icons) //instatiating new ico
         {
             if(ico.state == state)
             {
                 var newIco = Instantiate(ico, _spawnPos.transform);
+                newIco.time.Add(timeToDecrease);
                 newIco.count = stack;
                 _activeEffects.Add(newIco);
-                AnimateIco(newIco, timeToDecrease);
+                AnimateIco(newIco);
                 _added = true;
             }
         }
@@ -95,26 +98,34 @@ public class StateIcons : MonoBehaviour
         }*/
     }
 
-    private void AnimateIco(StateIcoItem icoItem, float time)
+    private void AnimateIco(StateIcoItem icoItem)
     {
         Image ico = icoItem.FadeFront;
         ico.fillAmount = 0;
         if (icoItem.count == 1)
         {
 			icoItem.Text.gameObject.SetActive(false);
-			ico.DOFillAmount(1, time).SetEase(Ease.Linear).OnComplete(() => RemoveItem(icoItem));
-        }
+            icoItem.count--;
+			ico.DOFillAmount(1, icoItem.time[0]).SetEase(Ease.Linear).OnComplete(() => RemoveItem(icoItem));
+			icoItem.time.Remove(icoItem.time[0]);
+		}
         else
         {
             icoItem.Text.gameObject.SetActive(true);
 			icoItem.Text.text = icoItem.count.ToString();
             icoItem.count--;
-			ico.DOFillAmount(1, time).SetEase(Ease.Linear).OnComplete(() => AnimateIco(icoItem, time));
+			ico.DOFillAmount(1, icoItem.time[0]).SetEase(Ease.Linear).OnComplete(() => AnimateIco(icoItem));
+            icoItem.time.Remove(icoItem.time[0]);
 		}
     }
 
     private void RemoveItem(StateIcoItem icoItem)
     {
+        if (icoItem.count > 0)
+        {
+            AnimateIco(icoItem);
+            return;
+        }
         _activeEffects.Remove(icoItem);
         //yield return new WaitForSeconds(0.1f);
         Destroy(icoItem.gameObject);
