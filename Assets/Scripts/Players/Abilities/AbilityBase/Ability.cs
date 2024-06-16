@@ -312,14 +312,28 @@ public abstract class Ability : NetworkBehaviour
     }
 
     [Command]
-    private void CmdApplyDamage(GameObject target, float damage, DamageType damageType, AttackRangeType attackRangeType)
+    protected void CmdInstantiate(GameObject gameObject)
     {
-        target.GetComponent<HealthComponent>().TryTakeDamage(damage, damageType, attackRangeType);
+        GameObject item = Instantiate(gameObject, transform.position, Quaternion.identity);
+        NetworkServer.Spawn(item);
     }
 
     [Command]
-    private void CmdUseMana(float value)
+    protected void CmdInstantiate(GameObject gameObject, GameObject parent)
+    {
+        GameObject item = Instantiate(gameObject, parent.transform.parent);
+        NetworkServer.Spawn(item);
+    }
+
+    [Command]
+    protected void CmdUseMana(float value)
     {
         _mana.Use(value);
+    }
+
+    [Command]
+    private void CmdApplyDamage(GameObject target, float damage, DamageType damageType, AttackRangeType attackRangeType)
+    {
+        target.GetComponent<HealthComponent>().TryTakeDamage(damage, damageType, attackRangeType);
     }
 }

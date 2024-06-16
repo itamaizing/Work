@@ -21,7 +21,7 @@ public class MoveComponent : NetworkBehaviour
 		_moveSpeed = speed;
 
 		_rigidbody = rb;
-		_rigidbody.isKinematic = true;
+		_rigidbody.isKinematic = false;
 
 		MoveDirection = Vector2.down;
 		
