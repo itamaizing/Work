@@ -9,12 +9,12 @@ public class MinionComponent : Character
     
     public override void Initialize(CharacterData characterData)
     {
-        Health.Initialize(characterData.Health,characterData.HealthRegen,characterData.RegenDelay ,characterData.HealthInfo);
-        Move.Initialize(characterData.MoveSpeed,Rb);
+        Health.Initialize(characterData.Health,characterData.HealthRegen, characterData.RegenDelay, characterData.HealthInfo);
+        Move.Initialize(characterData.MoveSpeed, Rb);
         Stamina.Initialize(characterData.Stamina, characterData.StaminaRegen, characterData.RegenDelay);
         CharacterState.Initialize(Health, Move , Stamina);
-        UIPlayerComponents.Initialize(Abilities,Move,Stamina,Health);
-        SelectComponent.Initialize(false,Move,Abilities,UIPlayerComponents);
+        UIPlayerComponents.Initialize(Abilities, Move, Stamina, Health);
+        SelectComponent.Initialize(false, Move, Abilities, UIPlayerComponents);
     }
 
     public void SetMinion(HeroComponent parent)
