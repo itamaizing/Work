@@ -1,6 +1,7 @@
+using Mirror;
 using UnityEngine;
 
-public class MoveComponent : MonoBehaviour
+public class MoveComponent : NetworkBehaviour
 {
 	private float _moveSpeed;
     private Rigidbody2D _rigidbody;
@@ -40,9 +41,10 @@ public class MoveComponent : MonoBehaviour
 	{
 		_moveSpeed = _defaultSpeed;
 	}
+
 	void FixedUpdate()
 	{
-		if(!isInitialize) return;
+		if(!isInitialize || !isLocalPlayer) return;
 		
 		if (!CanMove)
 		{
@@ -53,14 +55,21 @@ public class MoveComponent : MonoBehaviour
 		if (InputHandler.Instance.MovementVector != Vector2.zero)
 		{
 			_rigidbody.isKinematic = false;
-			_rigidbody.velocity = _moveSpeed * Time.fixedDeltaTime * InputHandler.Instance.MovementVector;
+			var velocity = _moveSpeed* Time.fixedDeltaTime * InputHandler.Instance.MovementVector;
+			CmdMove(velocity);
 		}
 		else
 		{
-			_rigidbody.velocity = Vector2.zero;
+			CmdMove(Vector2.zero);
 			_rigidbody.isKinematic = true;
 		}
 
 		IsMoving = _rigidbody.velocity != Vector2.zero;
+	}
+
+    [Command]
+	private void CmdMove(Vector2 velocity)
+    {
+		_rigidbody.velocity = velocity;
 	}
 }

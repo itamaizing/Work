@@ -3,8 +3,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.Events;
+using Mirror;
 
-public abstract class Ability : MonoBehaviour
+public abstract class Ability : NetworkBehaviour
 {
     [Header("AbilitieInfo")]
     [SerializeField] private AbilityInfo _abilityInfo;
@@ -41,6 +42,8 @@ public abstract class Ability : MonoBehaviour
 	protected Coroutine _cooldownJob;
 
     private float _remainingСooldownTime;
+
+    private HealthComponent _cmdHealth;
 
     public MoveComponent PlayerMove => _playerMove;
     public StaminaComponent Mana => _mana;
@@ -82,6 +85,7 @@ public abstract class Ability : MonoBehaviour
 
     protected virtual void Start()
     {
+        _cmdHealth = _health;
         if (_isUseCharges)
         {
             _currentChargers = _maxCharges;
@@ -166,7 +170,7 @@ public abstract class Ability : MonoBehaviour
     {
         if (TryUseCharge() && _mana.Value >= _manaCost && _isReady)
         {
-            _mana.Use(_manaCost);
+            CmdUseMana(_manaCost);
         }
         else
         {
@@ -235,6 +239,11 @@ public abstract class Ability : MonoBehaviour
         return Camera.main.ScreenToWorldPoint(Input.mousePosition);
     }
 
+    protected void ApplyDamage(HealthComponent health, float damage, DamageType damageType, AttackRangeType attackRangeType)
+    {
+        CmdApplyDamage(health.gameObject, damage, damageType, attackRangeType);
+    }
+
     private IEnumerator CooldownCoroutine(float cooldownTime)
     {
         CooldownStarted?.Invoke(cooldownTime);
@@ -290,7 +299,7 @@ public abstract class Ability : MonoBehaviour
 
         while (time < _streamingDuration + _manaCostRate && _mana.Value >= _manaCostPerTick)
         {
-            Mana.Use(_manaCostPerTick);
+            CmdUseMana(_manaCostPerTick);
             time += _manaCostRate;
             yield return new WaitForSeconds(_manaCostRate);
         }
@@ -300,5 +309,17 @@ public abstract class Ability : MonoBehaviour
         TryCancel();
         CastEnded?.Invoke();
         _streamingJob = null;
+    }
+
+    [Command]
+    private void CmdApplyDamage(GameObject target, float damage, DamageType damageType, AttackRangeType attackRangeType)
+    {
+        target.GetComponent<HealthComponent>().TryTakeDamage(damage, damageType, attackRangeType);
+    }
+
+    [Command]
+    private void CmdUseMana(float value)
+    {
+        _mana.Use(value);
     }
 }

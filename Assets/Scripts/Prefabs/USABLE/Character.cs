@@ -1,6 +1,8 @@
 using JetBrains.Annotations;
 using UnityEngine;
+using Mirror;
 
+[RequireComponent(typeof(NetworkIdentity))]
 public abstract class Character : MonoBehaviour
 {
 	[SerializeField] private Rigidbody2D _rb;

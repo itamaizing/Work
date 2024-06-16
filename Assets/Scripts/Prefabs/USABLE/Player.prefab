@@ -367,6 +367,7 @@ GameObject:
   - component: {fileID: -65063298450455639}
   - component: {fileID: -7146587456276821115}
   - component: {fileID: -5027009403038136984}
+  - component: {fileID: 7000184432333105671}
   m_Layer: 9
   m_Name: Player
   m_TagString: Allies
@@ -498,6 +499,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 279100e0cb4b40f42b64a3ac1d1502fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   CanMove: 1
   IsMoving: 0
   IsSelect: 0
@@ -514,6 +518,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b5add863fba6af449bc9b5c95b8199e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   healthBar: {fileID: 2798253226615935122}
   shields_Physic: []
   shields_Magic: []
@@ -543,6 +550,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30e849fb64ec77e4b94f9f568f688e22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   bar: {fileID: 418534062616378238}
   _sumDamageGiven: 0
 --- !u!114 &1057949845680950153
@@ -557,6 +567,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bd22fe231e3f2e41b5e309172c34d13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   bar: {fileID: 606832500078548383}
 --- !u!114 &4715758111818368764
 MonoBehaviour:
@@ -627,7 +640,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a553cb17010b2403e8523b558bffbc14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 1
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 795014623008228812}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  sendIntervalMultiplier: 1
+  timelineOffset: 0
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  bufferResetMultiplier: 3
+  changedDetection: 1
+  positionSensitivity: 0.01
+  rotationSensitivity: 0.01
+  scaleSensitivity: 0.01
+--- !u!114 &7000184432333105671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1521997633048654849}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c7e12ad9b9ae443c9fdf37e9f5ecd36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
   syncMode: 0
   syncInterval: 0
   target: {fileID: 795014623008228812}
@@ -739,6 +787,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0472c7c6c6b721418ebe181869af7fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: f6b63db1fe9a8db4b86632917e246e69, type: 2}
   _isAutoAttack: 1
   _radius: 2
@@ -780,6 +831,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d29bd518fc6a043439d0db6b7aae013c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 4149308b91515334c801b1f26c6c99ba, type: 2}
   _isAutoAttack: 0
   _radius: 10
@@ -811,6 +865,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4ad3c38086e96b4197ca42e65e25bcf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: e43281df2f36f8847a019f5d98c83495, type: 2}
   _isAutoAttack: 0
   _radius: 0
@@ -842,6 +899,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24f65756b4c9ac842be66740c2640b10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: f0fbbbbe7ed419f45a1c3c375281ecf1, type: 2}
   _isAutoAttack: 0
   _radius: 4
@@ -875,6 +935,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 924d76d3d13ffb24e84fa30e89ae4eb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 6e603452e81f85842b595b2c7f0d472d, type: 2}
   _isAutoAttack: 0
   _radius: 0
@@ -911,6 +974,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e55116f00838d7489e8c4649c0d5cfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 735131f592de46b408a7ae44e2bfe1c6, type: 2}
   _isAutoAttack: 0
   _radius: 1.9
@@ -946,6 +1012,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 414d375212949f842a89a5fb8463c471, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: a872290825a5a324e90a34f29c4bf3d2, type: 2}
   _isAutoAttack: 0
   _radius: 0
@@ -977,6 +1046,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0472c7c6c6b721418ebe181869af7fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: f6b63db1fe9a8db4b86632917e246e69, type: 2}
   _isAutoAttack: 1
   _radius: 2
