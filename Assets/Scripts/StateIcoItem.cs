@@ -15,7 +15,7 @@ public class StateIcoItem : MonoBehaviour
     public TextMeshProUGUI Text;
     public int count = 1;
     public States state;
-
+    public List<float> time = new List<float>();
     /*private void AnimateIco(Image ico, float time, int stack)
     {
         ico.gameObject.SetActive(true);
