@@ -1,9 +1,17 @@
+using Pathfinding;
 using UnityEngine;
 
 public class MoveComponent : MonoBehaviour
 {
-	private float _moveSpeed;
+	private Vector2 _offset = Vector2.zero;
+	
     private Rigidbody2D _rigidbody;
+
+    private Seeker _seeker;
+
+    private AIPath _agent;
+
+    private Vector2 target;
 
     [HideInInspector] public bool CanMove;
 	[HideInInspector] public bool IsMoving;
@@ -17,50 +25,67 @@ public class MoveComponent : MonoBehaviour
     public void Initialize(float speed , Rigidbody2D rb)
 	{
 		_defaultSpeed = speed;
-		_moveSpeed = speed;
 
 		_rigidbody = rb;
-		_rigidbody.isKinematic = true;
+
+		_seeker = GetComponent<Seeker>();
+		_agent = GetComponent<AIPath>();
+		SetDefaultSpeed();
 
 		MoveDirection = Vector2.down;
 		
 		CanMove = true;
+		IsSelect = false;
 		isInitialize = true;
 	}
-
+    
 	public void ChangeMoveSpeed(float value)
 	{
-		_moveSpeed *= value;
+		_agent.maxSpeed *= value;
 	}
 	public void SetMoveSpeed(float speed)
 	{
-		_moveSpeed = speed;
+		_agent.maxSpeed = speed;
 	}
 	public void SetDefaultSpeed()
 	{
-		_moveSpeed = _defaultSpeed;
+		_agent.maxSpeed = _defaultSpeed;
 	}
-	void FixedUpdate()
+
+	private void SetMoveDirection()
+	{
+		if(GetComponent<HeroComponent>()== null) return;
+		
+		Vector3 move = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical") , 0);
+		
+		if (move == Vector3.zero) return;
+		
+		target= transform.position + move * _agent.maxSpeed;
+		
+		_seeker.StartPath(transform.position,target);
+		
+	}
+
+	public void SetOffset(Vector2 offset)
+	{
+		_offset = offset;
+	}
+
+	void Update()
 	{
 		if(!isInitialize) return;
 		
-		if (!CanMove)
+		if (!IsSelect) { return;} 
+		
+		SetMoveDirection();
+		
+		if (Input.GetMouseButtonDown(1))
 		{
-            _rigidbody.velocity = Vector2.zero;
-            return;
-		}
+			target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-		if (InputHandler.Instance.MovementVector != Vector2.zero)
-		{
-			_rigidbody.isKinematic = false;
-			_rigidbody.velocity = _moveSpeed * Time.fixedDeltaTime * InputHandler.Instance.MovementVector;
+			_seeker.StartPath(transform.position,target + _offset);
 		}
-		else
-		{
-			_rigidbody.velocity = Vector2.zero;
-			_rigidbody.isKinematic = true;
-		}
-
-		IsMoving = _rigidbody.velocity != Vector2.zero;
+		
+		IsMoving = _agent.destination != transform.position;
 	}
 }

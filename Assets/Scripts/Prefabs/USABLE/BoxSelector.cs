@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class BoxSelector : MonoBehaviour
@@ -43,6 +42,7 @@ public class BoxSelector : MonoBehaviour
             var character = collider.GetComponent<Character>();
             if (character != null)
             {
+                Debug.Log(character.name);
                 SelectManager.Instance.SelectInArea(character);
             }
         }
