@@ -395,7 +395,7 @@ Transform:
   - {fileID: 4041501855964374284}
   - {fileID: 5762049827953977616}
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &3759936847054020137
 Rigidbody2D:
@@ -624,8 +624,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 5
-  radius: 1
-  height: 2
+  radius: 0.5
+  height: 1
   canMove: 1
   maxSpeed: 1
   gravity: {x: 0, y: 0, z: 0}
@@ -666,9 +666,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  uniqueID: 3026970643028934867
+  uniqueID: 5985653448990282671
   updateError: 1
-  checkTime: 0.5
+  checkTime: 0.1
 --- !u!114 &1096122107475845768
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -809,6 +809,8 @@ MonoBehaviour:
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -826,9 +828,6 @@ MonoBehaviour:
   _damage: 8
   _dad: {fileID: 8468544467696250796}
   _abilityCooldown: 1.4
-  _obstacleLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!114 &1005351013565685612
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -850,6 +849,8 @@ MonoBehaviour:
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -881,6 +882,8 @@ MonoBehaviour:
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -912,6 +915,8 @@ MonoBehaviour:
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -945,6 +950,8 @@ MonoBehaviour:
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -981,6 +988,8 @@ MonoBehaviour:
   _manaCost: 10
   _castDeley: 1.4
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1016,6 +1025,8 @@ MonoBehaviour:
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 1
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1047,6 +1058,8 @@ MonoBehaviour:
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1064,9 +1077,6 @@ MonoBehaviour:
   _damage: 8
   _dad: {fileID: 8468544467696250796}
   _abilityCooldown: 1.4
-  _obstacleLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!114 &7579798881083447851
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1088,6 +1098,8 @@ MonoBehaviour:
   _manaCost: 0
   _castDeley: 2
   _cooldown: 6
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1119,6 +1131,8 @@ MonoBehaviour:
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1157,6 +1171,8 @@ MonoBehaviour:
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
