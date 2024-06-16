@@ -33,8 +33,7 @@ public class LightningMovement : Ability
     private bool _isReadySecondLeap = true;
     private bool _secondVectorSelected = false;
 
-    private bool isEnemy = false;
-    private bool firstLeapEnemy = false;
+    public bool isEnemy = false;
 
     private new void Start()
     {
@@ -93,7 +92,6 @@ public class LightningMovement : Ability
         _firstVectorSelected = false;
         _secondVectorSelected = false;
         isEnemy = false;
-        firstLeapEnemy = false;
         // true
         _playerLinks.Move.enabled = true;
         _canSelectedFirstVector = true;
@@ -217,35 +215,32 @@ public class LightningMovement : Ability
             leapSequence.Append(_playerLinks.Rb.DOMove(_leapPositionForFirstVector, _durationOfLeap * actualFirstLeapRange / GlobalVariable.cellSize).SetEase(Ease.Linear));
             leapSequence.AppendCallback(() =>
                 {
-                    if (!CheckEnemy(PlayerMove.transform.position, _leapPositionForFirstVector) && !IsEnemyBehindPlayer(PlayerMove.transform.position, _leapPositionForFirstVector))
+                    if (!CheckEnemy(PlayerMove.transform.position, _leapPositionForFirstVector))
                     {
                         leapSequence.Kill();
                         AfterLeap();
                     }
-                    else if (IsEnemyBehindPlayer(PlayerMove.transform.position, _leapPositionForFirstVector))
-                    {
-                        leapSequence.Append(_playerLinks.Rb.DOMove(_leapPositionForSecondVector, _durationOfLeap * actualSecondLeapRange / GlobalVariable.cellSize).SetEase(Ease.Linear));
-                    }
                 });
+            leapSequence.Append(_playerLinks.Rb.DOMove(_leapPositionForSecondVector, _durationOfLeap * actualSecondLeapRange / GlobalVariable.cellSize).SetEase(Ease.Linear));
             leapSequence.OnComplete(AfterLeap);
         }
     }
 
-    private bool IsEnemyBehindPlayer(Vector3 playerPosition, Vector3 firstLeapEndPosition)
-    {
-        Vector3 directionToFirstLeapEnd = (firstLeapEndPosition - playerPosition).normalized;
-        Collider2D[] enemies = Physics2D.OverlapCircleAll(playerPosition, actualFirstLeapRange, _enemyLayerMask);
+    //private bool IsEnemyBehindPlayer(Vector3 playerPosition, Vector3 firstLeapEndPosition)
+    //{
+    //    Vector3 directionToFirstLeapEnd = (firstLeapEndPosition - playerPosition).normalized;
+    //    Collider2D[] enemies = Physics2D.OverlapCircleAll(playerPosition, actualFirstLeapRange, _enemyLayerMask);
 
-        foreach (Collider2D enemy in enemies)
-        {
-            Vector3 directionToEnemy = (enemy.transform.position - playerPosition).normalized;
-            float dotProduct = Vector2.Dot(directionToFirstLeapEnd, directionToEnemy);
+    //    foreach (Collider2D enemy in enemies)
+    //    {
+    //        Vector3 directionToEnemy = (enemy.transform.position - playerPosition).normalized;
+    //        float dotProduct = Vector2.Dot(directionToFirstLeapEnd, directionToEnemy);
 
-            if (dotProduct < 0) // враг позади игрока
-            {
-                return true;
-            }
-        }
-        return false;
-    }
+    //        if (dotProduct < 0) // враг позади игрока
+    //        {
+    //            return true;
+    //        }
+    //    }
+    //    return false;
+    //}
 }
