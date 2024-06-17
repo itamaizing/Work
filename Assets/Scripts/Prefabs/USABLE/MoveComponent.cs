@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using Pathfinding;
 using UnityEngine;
 
@@ -56,11 +58,11 @@ public class MoveComponent : MonoBehaviour
 	{
 		if(GetComponent<HeroComponent>()== null) return;
 		
-		Vector3 move = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical") , 0);
+		Vector2 move = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 		
-		if (move == Vector3.zero) return;
+		if (move == Vector2.zero) return;
 		
-		target= transform.position + move * _agent.maxSpeed;
+		target= transform.position + (Vector3)move * _agent.maxSpeed;
 		
 		_seeker.StartPath(transform.position,target);
 		
@@ -85,7 +87,7 @@ public class MoveComponent : MonoBehaviour
 
 			_seeker.StartPath(transform.position,target + _offset);
 		}
-		
-		IsMoving = _agent.destination != transform.position;
+
+		IsMoving = _agent.pathPending;
 	}
 }

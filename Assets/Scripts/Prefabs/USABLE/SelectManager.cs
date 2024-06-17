@@ -103,6 +103,7 @@ public class SelectManager : MonoBehaviour
         if (!selectedControllableUnits.Contains(character))
         {
             selectedControllableUnits.Add(character);
+            character.SelectComponent.NumberInGroup = selectedControllableUnits.IndexOf(character);
             character.SelectComponent.IsSelect = true;
         }
         else

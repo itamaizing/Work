@@ -8,25 +8,17 @@ public class SpawnComponent : MonoBehaviour
     
     private List<MinionComponent> _units = new List<MinionComponent>();
 
-    public List<Vector2> spawnPositions = new List<Vector2>()
-    {
-        new Vector2(0, 2),
-        new Vector2(2, 0),
-        new Vector2(2, 2),
-
-        new Vector2(0, -2),
-        new Vector2(-2, 0),
-        new Vector2(-2, -2),
-    };
-
     public void SpawnUnit(HeroComponent parent)
     {
             var controllable = Instantiate(unit);
-            controllable.transform.position = (Vector2) parent.transform.position + spawnPositions[_units.Count];
-            controllable.SetMinion(parent);
-            controllable.GetComponent<MoveComponent>().SetOffset(spawnPositions[_units.Count]);
             
             _units.Add(controllable);
+            
+            var position = _units.Count + 1 / Positions.unitInGroupPositions.Count;
+            Debug.Log("spawnComp position - " + position);
+
+            controllable.transform.position = (Vector2) parent.transform.position + Positions.unitInGroupPositions[position];
+            controllable.SetMinion(parent);
     }
 
     public void RemoveUnit()
