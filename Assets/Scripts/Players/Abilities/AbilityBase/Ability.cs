@@ -96,7 +96,6 @@ public abstract class Ability : NetworkBehaviour
 
     protected virtual void Start()
     {
-        _cmdHealth = _health;
         if (_isUseCharges)
         {
             _currentChargers = _maxCharges;
