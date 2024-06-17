@@ -35,7 +35,6 @@ public class PlayerAbilities : MonoBehaviour
         foreach (var item in _abilities)
         {
             item.SetPlayer(playerMove, staminaComponent, healthComponent);
-            Debug.Log("set");
         }
 		_abilityPanel = AbilitiesManager.Instance.AddPanel(this);
 	}

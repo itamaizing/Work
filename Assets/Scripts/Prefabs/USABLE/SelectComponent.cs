@@ -6,7 +6,7 @@ public class SelectComponent : MonoBehaviour
     private MoveComponent _moveComponent;
     private PlayerAbilities _playerAbilities;
     private UIPlayerComponents _uiPlayerComponents;
-    private bool isSelect;
+    private bool isSelect = false;
     private bool isCurrentPLayer;
 
     public int NumberInGroup { get; set; }
