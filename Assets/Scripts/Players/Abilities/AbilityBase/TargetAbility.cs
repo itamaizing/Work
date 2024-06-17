@@ -4,12 +4,13 @@ using UnityEngine;
 
 public abstract class TargetAbility : Ability
 {
+    
     [Header("Target settings")]
     [SerializeField] protected bool _isCanTargetHimself;
 
     protected Coroutine _useJob;
     protected Coroutine _castJob;
-    protected Coroutine _chooseTatgetJob;
+    protected Coroutine _chooseTargetJob;
     protected Character _target;
 
     protected bool IsTarget => (_target.transform == _health.transform);
@@ -50,6 +51,7 @@ public abstract class TargetAbility : Ability
             }
         }
         return _target != null;
+        
     }
 
     protected bool IsTargetInRadius(float radius)
@@ -71,13 +73,14 @@ public abstract class TargetAbility : Ability
         if(_useJob != null)
             StopCoroutine(_useJob);
 
-        if(_chooseTatgetJob != null)
-            StopCoroutine(_chooseTatgetJob);
+        if(_chooseTargetJob != null)
+            StopCoroutine(_chooseTargetJob);
+
     }
 
     protected virtual IEnumerator UseCoroutine()
     {
-        yield return _chooseTatgetJob = StartCoroutine(ChooseTargetCoroutine(Radius));
+        yield return _chooseTargetJob = StartCoroutine(ChooseTargetCoroutine(Radius));
 
         if (!PayCost(false))
             yield break;
