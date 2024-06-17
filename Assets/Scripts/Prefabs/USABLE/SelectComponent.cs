@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SelectComponent : MonoBehaviour
@@ -7,6 +8,8 @@ public class SelectComponent : MonoBehaviour
     private UIPlayerComponents _uiPlayerComponents;
     private bool isSelect;
     private bool isCurrentPLayer;
+
+    public int NumberInGroup { get; set; }
 
     public bool IsCurrentPlayer
     {
@@ -24,9 +27,10 @@ public class SelectComponent : MonoBehaviour
         set
         {
             isSelect = value;
-            _moveComponent.CanMove = isSelect;
             _uiPlayerComponents.ChangeSelection(isSelect);
             _playerAbilities.SetAbilitiesPanelSelect(isSelect);
+            _moveComponent.SetOffset(Positions.unitInGroupPositions[NumberInGroup]);
+            _moveComponent.IsSelect = isSelect;
         }
     }
 
@@ -37,6 +41,6 @@ public class SelectComponent : MonoBehaviour
         _uiPlayerComponents = uiComponents;
         IsSelect = isSelected;
         IsCurrentPlayer = isSelected;
-        Debug.Log(isSelected);
     }
+    
 }

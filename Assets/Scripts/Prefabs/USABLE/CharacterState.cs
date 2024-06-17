@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.Playables;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 // ��������� ���������
 public abstract class AbstractCharacterState
@@ -39,8 +41,6 @@ public class DefaultState : AbstractCharacterState
 	}
 }
 
-
-// C�������� �����������
 public class InvisibleState : AbstractCharacterState
 {
 	private Renderer[] childRenderers;
@@ -173,7 +173,8 @@ public class InvisibleState : AbstractCharacterState
 			{
 				if (Random.value <= chanceToBeSeen)
 				{
-					_player.GetComponent<CharacterState>().AddState(new DefaultState(), States.Default);
+					//_player.GetComponent<CharacterState>().AddState(new DefaultState(), States.Default);
+					ExitState();
 				}
 			}
 		}
@@ -200,7 +201,6 @@ public class InvisibleState : AbstractCharacterState
 	}
 }
 
-
 public class StunnedState : AbstractCharacterState
 {
 	public bool turnOff = false;
@@ -219,7 +219,7 @@ public class StunnedState : AbstractCharacterState
 		if (character.TryGetComponent<PlayerAbilities>(out var ability))
 		{
 			_abilities = ability;
-			_abilities.SetAbilitiesEnable(false);
+			_abilities.SetAbilitiesDisabled();
 		}
 		else
 		{
@@ -249,7 +249,7 @@ public class StunnedState : AbstractCharacterState
 		}
 		if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
 		{
-			_abilities.SetAbilitiesEnable(true);
+			_abilities.SetAbilitiesEnabled();
 		}
 		_characterState.RemoveState(this);
 	}
@@ -267,7 +267,6 @@ public class StunnedState : AbstractCharacterState
 	}
 }
 
-// C�������� ����������
 public class BlindnessState : AbstractCharacterState
 {
 	public bool turnOff = false;
@@ -287,7 +286,7 @@ public class BlindnessState : AbstractCharacterState
 		if (character.GetComponent<PlayerAbilities>().Abilities != null)
 		{
 			_abilities = character.GetComponent<PlayerAbilities>();
-			_abilities.SetAbilitiesEnable(false);
+			_abilities.SetAbilitiesDisabled();
 		}
 		else
 		{
@@ -310,7 +309,7 @@ public class BlindnessState : AbstractCharacterState
 		Debug.Log("Exiting Stunned State");
 		if (_characterState.Check(StatusEffect.Ability))
 		{
-			_abilities.SetAbilitiesEnable(true);
+			_abilities.SetAbilitiesEnabled();
 		}
 		_characterState.RemoveState(this);
 	}
@@ -329,7 +328,6 @@ public class BlindnessState : AbstractCharacterState
 	}
 }
 
-// C�������� ���������
 public class FrozenState : AbstractCharacterState
 {
 	public bool turnOff = false;
@@ -360,7 +358,7 @@ public class FrozenState : AbstractCharacterState
 		if (character.TryGetComponent<PlayerAbilities>(out var ability))
 		{
 			_abilities = ability;
-			_abilities.SetAbilitiesEnable(false);
+			_abilities.SetAbilitiesDisabled();
 		}
 		else
 		{
@@ -390,18 +388,17 @@ public class FrozenState : AbstractCharacterState
 		}
 		if (_characterState.Check(StatusEffect.Ability) && _abilities!=null)
 		{
-			_abilities.SetAbilitiesEnable(true);
+			_abilities.SetAbilitiesEnabled();
 		}
 		_characterState.RemoveState(this);
 	}
 	public override bool Stack(float time)
 	{
 		_duration = _baseDuration;
-		return false;
+		return true;
 	}
 }
 
-//change to ability speed drop
 public class FrostingState : AbstractCharacterState
 {
 	public bool turnOff = false;
@@ -457,22 +454,25 @@ public class FrostingState : AbstractCharacterState
 	public override bool Stack(float time)
 	{
 		_duration = _baseDuration;
-		return false;
+		return true;
 	}
 
 }
+
 public class Cooling : AbstractCharacterState
 {
 	public bool turnOff = false;
 	private float _duration;
 	private float _baseDuration;
 	private float _damageToExit;
+	private float _curAbilityDebuf = 0.1f;
+	private float _curSpeedDebuf = 0.05f;
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
 	{
 		type = StateType.Magic;
 		effects.Add(StatusEffect.MoveSpeed);
 		effects.Add(StatusEffect.AbilitySpeed);
-		Debug.Log("Entering Frosting State");
+		Debug.Log("Entering cooling State");
 		_characterState = character;
 
 		if (damageToExit == 0)
@@ -485,8 +485,8 @@ public class Cooling : AbstractCharacterState
 		}
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
-		
 
+		_characterState.Move.ChangeMoveSpeed(1-_curSpeedDebuf);
 		//decrease speed of attact and movement
 		_characterState.Health.sumDamageTaken = 0;
 	}
@@ -502,10 +502,11 @@ public class Cooling : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		Debug.Log("Exiting Frosting State");
-		if (_characterState.Check(StatusEffect.Move))
+		Debug.Log("Exiting cooling State");
+		if (_characterState.Check(StatusEffect.MoveSpeed))
 		{
-			_characterState.Move.CanMove = true;
+			_characterState.Move.SetDefaultSpeed();
+			//_characterState.Move.CanMove = true;
 		}
 		if (_characterState.Check(StatusEffect.AbilitySpeed))
 		{
@@ -515,12 +516,145 @@ public class Cooling : AbstractCharacterState
 	}
 	public override bool Stack(float time)
 	{
-		_duration = _baseDuration;
-		return false;
+		Debug.Log("stacked");
+		//_characterState.Move.SetDefaultSpeed();
+		_duration = time;
+		_curSpeedDebuf += 0.05f;
+		_curAbilityDebuf += 0.1f;
+		//ability speed decrease
+		_characterState.Move.ChangeMoveSpeed(1 - _curSpeedDebuf);
+		//_duration = _baseDuration;
+		return true;
 	}
 
 }
-// ����� ���������, ������������ ���������
+
+public class AbilitySchoolDebuff : AbstractCharacterState
+{
+	public bool turnOff = false;
+	private PlayerAbilities _abilities;
+	private float _baseDuration;
+	private float _duration;
+	public Schools canceledSchoool;
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+	{
+		Debug.Log("Entering CounterSpell State");
+		type = StateType.Immaterial;
+		effects.Add(StatusEffect.AbilitySchool);
+
+		_characterState = character;
+
+		Debug.Log("CHECK FOR SCHOOL " + canceledSchoool);
+		if (character.TryGetComponent<Character>(out var ability))
+		{
+			_abilities = ability.Abilities;
+			_abilities.SwitchAvaliable(canceledSchoool, false);
+		}
+		else
+		{
+			Debug.Log("no ability at " + character.gameObject.name);
+		}
+		_duration = durationToExit;
+		_baseDuration = durationToExit;
+	}
+
+	public override void UpdateState()
+	{
+		Debug.Log("Updating CounterSpell State");
+		_duration -= Time.deltaTime;
+		if (_duration < 0 || turnOff)
+		{
+			ExitState();
+		}
+	}
+
+	public override void ExitState()
+	{
+		Debug.Log("Exiting Stunned State");
+		if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
+		{
+			_abilities.SwitchAvaliable(canceledSchoool, true);
+		}
+		_characterState.RemoveState(this);
+	}
+	public override bool Stack(float time)
+	{
+		if (_duration > time)
+		{
+			return false;
+		}
+		else
+		{
+			_duration = time;
+			return true;
+		}
+	}
+}
+
+public class AbilityFormDebuff : AbstractCharacterState
+{
+	public bool turnOff = false;
+	private PlayerAbilities _abilities;
+	private float _baseDuration;
+	private float _duration;
+	public AbilityForm canceledForm;
+	public bool canCancel = false;
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+	{
+		Debug.Log("Entering Silence State");
+		type = StateType.Immaterial;
+		effects.Add(StatusEffect.AbilitySchool);
+
+		_characterState = character;
+
+		Debug.Log("CHECK FOR FORM " + canceledForm);
+
+		if (character.TryGetComponent<Character>(out var ability))
+		{
+			_abilities = ability.Abilities;
+			_abilities.SwitchAvaliable(canceledForm, false);
+		}
+		else
+		{
+			Debug.Log("no ability at " + character.gameObject.name);
+		}
+		_duration = durationToExit;
+		_baseDuration = durationToExit;
+	}
+
+	public override void UpdateState()
+	{
+		Debug.Log("Updating Silence State");
+		_duration -= Time.deltaTime;
+		if (_duration < 0 || turnOff)
+		{
+			ExitState();
+		}
+	}
+
+	public override void ExitState()
+	{
+		Debug.Log("Exiting Stunned State");
+		if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
+		{
+			_abilities.SwitchAvaliable(canceledForm, true);
+		}
+		_characterState.RemoveState(this);
+	}
+	public override bool Stack(float time)
+	{
+		if (_duration > time)
+		{
+			return false;
+		}
+		else
+		{
+			_duration = time;
+			return true;
+		}
+	}
+}
+
 public class CharacterState : MonoBehaviour
 {
 	private HealthComponent _health;
@@ -532,7 +666,6 @@ public class CharacterState : MonoBehaviour
 	public MoveComponent Move => _move;
 	public StaminaComponent Stamina => _stamina;
 	
-
 	public void Initialize(HealthComponent health,MoveComponent move , StaminaComponent stamina)
 	{
 		_health = health;
@@ -546,7 +679,6 @@ public class CharacterState : MonoBehaviour
 
 	private void Update()
 	{
-		// ���������� �������� ���������
 		if (currentStates.Count > 0)
 		{
 			for (int i = 0; i < currentStates.Count; i++)
@@ -556,22 +688,24 @@ public class CharacterState : MonoBehaviour
 		}
 	}
 
-	public void AddState(AbstractCharacterState newState, States state)
+	/*public void AddState(AbstractCharacterState newState, States state)
 	{
-		// ���������� ��� ����
 		//if already has, reset???
 		Debug.Log("THIS IS OLD SYSTEM TO ADD STATE, USE THIS AddState(AbstractCharacterState newState, float duration, float damageToExit, States state)");
 		// ���� � ����� ���������
 		currentStates.Add(newState);
 		currentStates[currentStates.Count - 1].EnterState(this, 0, 0);
-	}
+	}*/
 	public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state)
 	{
 		//if already exist 
-		if (currentStates.Contains(newState))
+		//if (currentStates.Contains(newState))
+		if (CheckForState(state))
 		{
 			foreach (AbstractCharacterState item in currentStates)
 			{
+				if (item.state != state) continue;
+
 				if (item.Stack(duration))
 				{
 					_stateIcons.ActivateIco(state, duration, 1);
@@ -586,6 +720,84 @@ public class CharacterState : MonoBehaviour
 		{
 			_stateIcons.ActivateIco(state, duration, 1);
 			currentStates.Add(newState);
+			currentStates[currentStates.Count - 1].state = state;
+			//currentStates[currentStates.Count - 1].
+			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
+		}
+	}
+	public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state, Schools schools)
+	{
+		//if already exist 
+		//if (currentStates.Contains(newState))
+		if (CheckForState(state))
+		{
+			foreach (AbstractCharacterState item in currentStates)
+			{
+				if (item.state != state) continue;
+
+				if (item.Stack(duration))
+				{
+					_stateIcons.ActivateIco(state, duration, 1);
+				}
+				else
+				{
+					_stateIcons.ActivateIco(state, duration, 1);
+					currentStates.Add(newState);
+					var counterSpell = (AbilitySchoolDebuff)newState;
+					counterSpell.canceledSchoool = schools;
+					currentStates[currentStates.Count - 1].state = state;
+					//currentStates[currentStates.Count - 1].
+					currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
+				}
+			}
+		}
+		else
+		{
+			_stateIcons.ActivateIco(state, duration, 1);
+			currentStates.Add(newState);
+			var counterSpell = (AbilitySchoolDebuff)newState;
+			counterSpell.canceledSchoool = schools;
+			currentStates[currentStates.Count - 1].state = state;
+			//currentStates[currentStates.Count - 1].
+			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
+		}
+	}
+	//can Cancel- if debuf can cancel ability that is casting right now
+	public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state, AbilityForm form, bool canCancel)
+	{
+		//if already exist 
+		//if (currentStates.Contains(newState))
+		if (CheckForState(state))
+		{
+			foreach (AbstractCharacterState item in currentStates)
+			{
+				if (item.state != state) continue;
+
+				if (item.Stack(duration))
+				{
+					_stateIcons.ActivateIco(state, duration, 1);
+				}
+				else
+				{
+					_stateIcons.ActivateIco(state, duration, 1);
+					currentStates.Add(newState);
+					var counterSpell = (AbilityFormDebuff)newState;
+					counterSpell.canCancel = canCancel;
+					counterSpell.canceledForm = form;
+					currentStates[currentStates.Count - 1].state = state;
+					//currentStates[currentStates.Count - 1].
+					currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
+					//nothing at this time??
+				}
+			}
+		}
+		else
+		{
+			_stateIcons.ActivateIco(state, duration, 1);
+			currentStates.Add(newState);
+			var counterSpell = (AbilityFormDebuff)newState;
+			counterSpell.canCancel = canCancel;
+			counterSpell.canceledForm = form;
 			currentStates[currentStates.Count - 1].state = state;
 			//currentStates[currentStates.Count - 1].
 			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
@@ -665,7 +877,7 @@ public enum StateType
 {
 	Physical,
 	Magic,
-	Third
+	Immaterial
 }
 
 public enum StatusEffect
@@ -673,6 +885,7 @@ public enum StatusEffect
 	Move,
 	MoveSpeed,
 	Ability,
+	AbilitySchool,
 	AbilitySpeed,
 	Others
 }
@@ -684,5 +897,6 @@ public enum States
 	Frosting,
 	Cooling,
 	Blind,
-	Invisible
+	Invisible,
+	SchoolDebuff
 }

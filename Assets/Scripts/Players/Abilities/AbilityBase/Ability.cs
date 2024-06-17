@@ -4,6 +4,8 @@ using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.Events;
 using Mirror;
+using System;
+
 
 public abstract class Ability : NetworkBehaviour
 {
@@ -18,7 +20,9 @@ public abstract class Ability : NetworkBehaviour
     [SerializeField] protected float _manaCost = 0f;
     [SerializeField] protected float _castDeley = 0f;
     [SerializeField] protected float _cooldown = 0f;
-    [Header("Charge settings")]
+	[SerializeField] protected Schools _abilitySchool;
+	[SerializeField] protected AbilityForm _abilityForm;
+	[Header("Charge settings")]
     [SerializeField] protected bool _isUseCharges;
     [SerializeField] protected bool _chargesHaveSeparateCooldown;
     [SerializeField] protected int _maxCharges;
@@ -42,10 +46,10 @@ public abstract class Ability : NetworkBehaviour
 	protected Coroutine _cooldownJob;
 
     private float _remainingСooldownTime;
+	private bool _avaliable;
+	private float _timerForDebuf;
 
-    private HealthComponent _cmdHealth;
-
-    public MoveComponent PlayerMove => _playerMove;
+	public MoveComponent PlayerMove => _playerMove;
     public StaminaComponent Mana => _mana;
     public HealthComponent Health => _health;
     public string Name => _abilityInfo.Name;
@@ -67,8 +71,10 @@ public abstract class Ability : NetworkBehaviour
     public bool IsUsed { get => _isUsed; protected set => _isUsed = value; }
     public bool IsCanCancle { get => _isCanCancle; protected set => _isCanCancle = value; }
     public bool IsReady { get => _isReady; set => _isReady = value; }
+	public Schools School => _abilitySchool;
+	public AbilityForm AbilityForm => _abilityForm;
 
-    public event UnityAction<int> CurrentChargeChange;
+	public event UnityAction<int> CurrentChargeChange;
     public event UnityAction<float> StartStreaming;
     public event UnityAction StopStreaming;
     public event UnityAction<float> StartCastDeley;
@@ -126,7 +132,7 @@ public abstract class Ability : NetworkBehaviour
 
     public virtual bool TryUse()
     {
-        if (_isUsed && (_mana.Value >= _manaCost && _isReady) == false)
+        if (_isUsed && (_mana.Value >= _manaCost && _isReady) == false && !_avaliable)
         {
             PreparingEnded?.Invoke();
             return false;
@@ -310,7 +316,7 @@ public abstract class Ability : NetworkBehaviour
         CastEnded?.Invoke();
         _streamingJob = null;
     }
-
+    
     [Command]
     protected void CmdInstantiate(GameObject gameObject)
     {
@@ -336,4 +342,39 @@ public abstract class Ability : NetworkBehaviour
     {
         target.GetComponent<HealthComponent>().TryTakeDamage(damage, damageType, attackRangeType);
     }
+
+	public void SwitchAvailible(bool avalieble)
+	{
+		_avaliable = avalieble;
+	}
+
+	public void KnockDownTimerStart(float time)
+	{
+		_timerForDebuf = time;
+		StartCoroutine(KnockDownTimer());
+	}
+
+	private IEnumerator KnockDownTimer()
+	{
+		yield return new WaitForSeconds(_timerForDebuf);
+		_avaliable = true;
+	}
+}
+
+public enum Schools
+{
+	Light,
+	Dark,
+	Fire,
+	Water,
+	Air,
+	Earth,
+	Physical
+}
+
+public enum AbilityForm
+{
+	Spell,
+	Magic,
+	Physical
 }

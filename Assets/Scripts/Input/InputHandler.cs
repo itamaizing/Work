@@ -10,7 +10,7 @@ public class InputHandler : MonoBehaviour
 	private Vector2 _movementVector;
 	private StandardInput _inputActions;
 
-	public Vector2 MovementVector { get { return _movementVector; } }
+	public Vector2 MovementVector => _movementVector;
 
 	#region Events
 

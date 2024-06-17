@@ -1,4 +1,3 @@
-using Pathfinding;
 using UnityEngine;
 
 public class test : MonoBehaviour
@@ -8,8 +7,5 @@ public class test : MonoBehaviour
     public void UpdateGraphForObstacle()
     {
         Bounds bounds = obstacleCollider.bounds;
-
-        GraphUpdateObject guo = new GraphUpdateObject(bounds);
-        AstarPath.active.UpdateGraphs(guo);
     }
 }

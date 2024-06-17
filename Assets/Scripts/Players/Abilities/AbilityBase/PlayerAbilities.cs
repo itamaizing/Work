@@ -1,31 +1,32 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 public class PlayerAbilities : MonoBehaviour
 {
     [SerializeField] private List<Ability> _abilities;
     [SerializeField] private VisualRender visualRender;
 
-    private float _globalCooldownTime = 2f;
-    private Ability _currentAbility;
-    private AutoAttackAbility _currentAutoAttackAbility;
-    private int _currentAbilityIndex;
-    private int _currentAutoAttackAbilityIndex;
-    private bool _isAbilitiesEnabled = true;
+	private float _globalCooldownTime = 2f;
+	private Ability _currentAbility;
+	private AutoAttackAbility _currentAutoAttackAbility;
+	private int _currentAbilityIndex;
+	private int _currentAutoAttackAbilityIndex;
+	private bool _isAbilitiesDisabled = false;
+	private bool _isAbilitiesEnabled = true;
+	private AbilityPanel _abilityPanel;
 
-    private AbilityPanel _abilityPanel;
-
-    public List<Ability> Abilities => _abilities;
+	public List<Ability> Abilities => _abilities;
 
     public event UnityAction<int> AbilitySelected;
-    public event UnityAction<int> AbilityAutoAttackSelected;
-    public event UnityAction<int> AbilityDeselected;
-    public event UnityAction<int> AbilityAutoAttackDeselected;
+	public event UnityAction<int> AbilityAutoAttackSelected;
+	public event UnityAction<int> AbilityDeselected;
+	public event UnityAction<int> AbilityAutoAttackDeselected;
 
-    public void Initialize(MoveComponent playerMove,StaminaComponent staminaComponent , HealthComponent healthComponent)
+	public void Initialize(MoveComponent playerMove,StaminaComponent staminaComponent , HealthComponent healthComponent)
     {
         if(_abilities.Count > 0)
         {
@@ -34,9 +35,10 @@ public class PlayerAbilities : MonoBehaviour
         foreach (var item in _abilities)
         {
             item.SetPlayer(playerMove, staminaComponent, healthComponent);
+            Debug.Log("set");
         }
-        _abilityPanel = AbilitiesManager.Instance.AddPanel(this);
-    }
+		_abilityPanel = AbilitiesManager.Instance.AddPanel(this);
+	}
 
     private void EnableAbilities()
 	{
@@ -68,32 +70,39 @@ public class PlayerAbilities : MonoBehaviour
         InputHandler.OnEighthCast -= SetCurrentAbility;
     }
 
-    public void SetAbilitiesEnable(bool isEnabled)
+    public void SetAbilitiesDisabled()
     {
-        _isAbilitiesEnabled = isEnabled;
+        _isAbilitiesDisabled = true;
     }
 
-    public void SetAbilitiesPanelSelect(bool isSelect)
+    public void SetAbilitiesEnabled()
     {
-        AbilitiesManager.Instance.ChangeCurrentPanelSelectStatus(_abilityPanel,isSelect);
-        if(isSelect) EnableAbilities();
-        else DisableAbilities();
+        _isAbilitiesDisabled = false;
     }
+	public void SetAbilitiesEnable(bool isEnabled)
+	{
+		_isAbilitiesEnabled = isEnabled;
+	}
 
-    public void SetAbilitiesPanelEnable()
-    {
-        AbilitiesManager.Instance.ActiveCurrentPanel(_abilityPanel);
-    }
 
-    public void SetAbilitiesCoolDown(float time)
-    {
-        foreach (var item in _abilities)
-        {
-            item.SetCooldown(time);
-        }
-    }
-
-    private void SetCurrentAbility(int index)
+	public void SetAbilitiesPanelSelect(bool isSelect)
+	{
+		AbilitiesManager.Instance.ChangeCurrentPanelSelectStatus(_abilityPanel, isSelect);
+		if (isSelect) EnableAbilities();
+		else DisableAbilities();
+	}
+	public void SetAbilitiesPanelEnable()
+	{
+		AbilitiesManager.Instance.ActiveCurrentPanel(_abilityPanel);
+	}
+	public void SetAbilitiesCoolDown(float time)
+	{
+		foreach (var item in _abilities)
+		{
+			item.SetCooldown(time);
+		}
+	}
+	private void SetCurrentAbility(int index)
     {
         if (index >= _abilities.Count)
             return;
@@ -103,144 +112,178 @@ public class PlayerAbilities : MonoBehaviour
             _currentAbilityIndex = index;
             AbilitySelected?.Invoke(index);
 
-            if (_abilities[index].IsAutoAttack)
-            {
-                if(_currentAutoAttackAbility != null)
-                {
-                    _currentAutoAttackAbility.TryCancel();
-                    _currentAutoAttackAbility = null;
-                }
-                _currentAutoAttackAbility = _abilities[index] as AutoAttackAbility;
-                _currentAutoAttackAbilityIndex = index;
+			if (_abilities[index].IsAutoAttack)
+			{
+				if (_currentAutoAttackAbility != null)
+				{
+					_currentAutoAttackAbility.TryCancel();
+					_currentAutoAttackAbility = null;
+				}
+				_currentAutoAttackAbility = _abilities[index] as AutoAttackAbility;
+				_currentAutoAttackAbilityIndex = index;
 
-                _currentAutoAttackAbility.Cancled += OnAbilityAutoAttackDeselected;
-                _currentAutoAttackAbility.CastStarted += OnAbilityAutoAttackSelected;
-            }
-            _currentAbility = _abilities[index];
+				_currentAutoAttackAbility.Cancled += OnAbilityAutoAttackDeselected;
+				_currentAutoAttackAbility.CastStarted += OnAbilityAutoAttackSelected;
+			}
+			_currentAbility = _abilities[index];
 
-            SubscribingAbilityEvents();
+			SubscribingAbilityEvents();
 
-            TryUseAbility();
-        }
-        else if (_currentAbility.IsUsed == false || _currentAbility == _currentAutoAttackAbility)
-        {
-            AbilityDeselected?.Invoke(_currentAbilityIndex);
-            _currentAbilityIndex = index;
-            AbilitySelected?.Invoke(index);
+			TryUseAbility();
+		}
+		else if (_currentAbility.IsUsed == false || _currentAbility == _currentAutoAttackAbility)
+		{
+			AbilityDeselected?.Invoke(_currentAbilityIndex);
+			_currentAbilityIndex = index;
+			AbilitySelected?.Invoke(index);
 
-            UnsubscribingAbilityEvents();
+			UnsubscribingAbilityEvents();
 
-            if (_abilities[index].IsAutoAttack)
-            {
-                _currentAutoAttackAbility.Cancled -= OnAbilityAutoAttackDeselected;
-                _currentAutoAttackAbility.CastStarted -= OnAbilityAutoAttackSelected;
+			if (_abilities[index].IsAutoAttack)
+			{
+				_currentAutoAttackAbility.Cancled -= OnAbilityAutoAttackDeselected;
+				_currentAutoAttackAbility.CastStarted -= OnAbilityAutoAttackSelected;
 
-                if (_currentAutoAttackAbility != null)
-                {
-                    _currentAutoAttackAbility.TryCancel();
-                    _currentAutoAttackAbility = null;
-                }
-                _currentAutoAttackAbility = _abilities[index] as AutoAttackAbility;
-                _currentAutoAttackAbilityIndex = index;
+				if (_currentAutoAttackAbility != null)
+				{
+					_currentAutoAttackAbility.TryCancel();
+					_currentAutoAttackAbility = null;
+				}
+				_currentAutoAttackAbility = _abilities[index] as AutoAttackAbility;
+				_currentAutoAttackAbilityIndex = index;
 
-                _currentAutoAttackAbility.Cancled += OnAbilityAutoAttackDeselected;
-                _currentAutoAttackAbility.CastStarted += OnAbilityAutoAttackSelected;
-            }
-            _currentAbility = _abilities[index];
+				_currentAutoAttackAbility.Cancled += OnAbilityAutoAttackDeselected;
+				_currentAutoAttackAbility.CastStarted += OnAbilityAutoAttackSelected;
+			}
+			_currentAbility = _abilities[index];
 
-            SubscribingAbilityEvents();
+			SubscribingAbilityEvents();
 
-            TryUseAbility();
-        }
-    }
+			TryUseAbility();
+		}
+	}
+	private void SubscribingAbilityEvents()
+	{
+		_currentAbility.PreparingEnded += visualRender.StopDraw;
+		_currentAbility.Cancled += visualRender.StopDraw;
+		_currentAbility.AreaOffed += visualRender.StopAreaDraw;
+		_currentAbility.CastEnded += GlobalCooldown;
 
-    private void SubscribingAbilityEvents()
+		if (_currentAutoAttackAbility != null && _currentAbility != _currentAutoAttackAbility)
+		{
+			_currentAbility.CastStarted += PauseAutoAttack;
+			_currentAbility.CastEnded += ContinueAutoAttack;
+			_currentAbility.Cancled += ContinueAutoAttack;
+		}
+	}
+	private void UnsubscribingAbilityEvents()
+	{
+		_currentAbility.PreparingEnded -= visualRender.StopDraw;
+		_currentAbility.Cancled -= visualRender.StopDraw;
+		_currentAbility.AreaOffed -= visualRender.StopAreaDraw;
+		_currentAbility.CastEnded -= GlobalCooldown;
+
+		if (_currentAutoAttackAbility != null && _currentAbility != _currentAutoAttackAbility)
+		{
+			_currentAbility.CastStarted -= PauseAutoAttack;
+			_currentAbility.CastEnded -= ContinueAutoAttack;
+			_currentAbility.Cancled -= ContinueAutoAttack;
+		}
+	}
+	/*private void TryUseAbility()
     {
-        _currentAbility.PreparingEnded += visualRender.StopDraw;
-        _currentAbility.Cancled += visualRender.StopDraw;
-        _currentAbility.AreaOffed += visualRender.StopAreaDraw;
-        _currentAbility.CastEnded += GlobalCooldown;
-
-        if (_currentAutoAttackAbility != null && _currentAbility != _currentAutoAttackAbility)
-        {
-            _currentAbility.CastStarted += PauseAutoAttack;
-            _currentAbility.CastEnded += ContinueAutoAttack;
-            _currentAbility.Cancled += ContinueAutoAttack;
-        }
-    }
-    private void UnsubscribingAbilityEvents()
-    {
-        _currentAbility.PreparingEnded -= visualRender.StopDraw;
-        _currentAbility.Cancled -= visualRender.StopDraw;
-        _currentAbility.AreaOffed -= visualRender.StopAreaDraw;
-        _currentAbility.CastEnded -= GlobalCooldown;
-
-        if (_currentAutoAttackAbility != null && _currentAbility != _currentAutoAttackAbility)
-        {
-            _currentAbility.CastStarted -= PauseAutoAttack;
-            _currentAbility.CastEnded -= ContinueAutoAttack;
-            _currentAbility.Cancled -= ContinueAutoAttack;
-        }
-    }
-
-    private void TryUseAbility()
-    {
-        if (_currentAbility == null || !_isAbilitiesEnabled || !_abilityPanel.IsActive  || (_currentAbility.IsUsed))
+        if (_currentAbility == null || _isAbilitiesDisabled  || _currentAbility.IsUsed )
             return;
-
-        if(_currentAutoAttackAbility != null)
-            PauseAutoAttack();
 
         visualRender.Drawn(_currentAbility);
         _currentAbility.TryUse();
-    }
+    }*/
+	private void TryUseAbility()
+	{
+		if (_currentAbility == null || !_isAbilitiesEnabled || !_abilityPanel.IsActive || (_currentAbility.IsUsed))
+			return;
 
-    private void ContinueAutoAttack()
-    {
-        _currentAutoAttackAbility.Continue();
-    }
-    private void PauseAutoAttack()
-    {
-        _currentAutoAttackAbility.Pause();
-    }
+		if (_currentAutoAttackAbility != null)
+			PauseAutoAttack();
 
-    private void OnAbilityAutoAttackSelected()
-    {
-        AbilityAutoAttackSelected?.Invoke(_currentAutoAttackAbilityIndex);
-    }
+		visualRender.Drawn(_currentAbility);
+		_currentAbility.TryUse();
+	}
+	private void ContinueAutoAttack()
+	{
+		_currentAutoAttackAbility.Continue();
+	}
+	private void PauseAutoAttack()
+	{
+		_currentAutoAttackAbility.Pause();
+	}
 
-    private void OnAbilityAutoAttackDeselected()
-    {
-        AbilityAutoAttackDeselected?.Invoke(_currentAutoAttackAbilityIndex);
-    }
+	private void OnAbilityAutoAttackSelected()
+	{
+		AbilityAutoAttackSelected?.Invoke(_currentAutoAttackAbilityIndex);
+	}
 
-    private void CancelSpellCast()
+	private void OnAbilityAutoAttackDeselected()
+	{
+		AbilityAutoAttackDeselected?.Invoke(_currentAutoAttackAbilityIndex);
+	}
+	private void CancelSpellCast()
     {
-        if (_currentAbility != null)
+		if (_currentAbility != null)
+		{
+			if (_currentAbility.IsUsed)
+			{
+				_currentAbility.TryCancel();
+			}
+			else if (_currentAutoAttackAbility != null && _currentAutoAttackAbility.IsUsed)
+			{
+				_currentAutoAttackAbility.TryCancel();
+			}
+			else
+			{
+				_currentAbility = null;
+				AbilityDeselected?.Invoke(_currentAbilityIndex);
+			}
+		}
+	}
+
+    public void SwitchAvaliable(Schools school, bool value)
+    {
+		if (school == Schools.Physical)
+			return;
+		foreach (var item in _abilities) 
         {
-            if(_currentAbility.IsUsed)
+            if(item.School == school)
             {
-                _currentAbility.TryCancel();
-            }
-            else if (_currentAutoAttackAbility != null && _currentAutoAttackAbility.IsUsed)
-            {
-                _currentAutoAttackAbility.TryCancel();
-            }
-            else
-            {
-                _currentAbility = null;
-                AbilityDeselected?.Invoke(_currentAbilityIndex);
+                item.SwitchAvailible(value);
+                //item.KnockDownTimerStart(coolDown);
             }
         }
     }
+	public void SwitchAvaliable(AbilityForm form, bool value)
+	{       
+		foreach (var item in _abilities)
+		{
+			if (item.AbilityForm == form)
+			{
+				item.SwitchAvailible(value);
+				//item.KnockDownTimerStart(coolDown);
+			}
+		}
+	}
 
-    private void GlobalCooldown()
+    private IEnumerator StartKnockDownTimer(float coolDown, Ability ability)
     {
-        SetAbilitiesCoolDown(_globalCooldownTime);
-    }
+		yield return new WaitForSeconds(coolDown);
+        ability.SwitchAvailible(true);
+	}
+	private void GlobalCooldown()
+	{
+		SetAbilitiesCoolDown(_globalCooldownTime);
+	}
 
-    private void OnDestroy()
-    {
-        AbilitiesManager.Instance.RemovePanel(_abilityPanel);
-    }
+	private void OnDestroy()
+	{
+		AbilitiesManager.Instance.RemovePanel(_abilityPanel);
+	}
 }

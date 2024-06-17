@@ -1,11 +1,8 @@
-using System;
 using UnityEngine;
 
 public class HeroComponent : Character
 {
     [SerializeField] private CharacterData _playerData;
-
-    [SerializeField] private MinionComponent _minion;
 
     public bool IController = false;
 
@@ -14,17 +11,13 @@ public class HeroComponent : Character
     private void Awake()
     {
         Initialize(_playerData);
-    }
-
-    private void Update()
-    {
         if(IController) SelectManager.Instance.AddControl(this);
     }
 
     public override void Initialize(CharacterData characterData)
     {
-        Health.Initialize(characterData.Health,characterData.HealthRegen,characterData.RegenDelay ,characterData.HealthInfo);
-        Move.Initialize(characterData.MoveSpeed,Rb);
+        Health.Initialize(characterData.Health, characterData.HealthRegen, characterData.RegenDelay, characterData.HealthInfo);
+        Move.Initialize(characterData.MoveSpeed, Rb);
         Stamina.Initialize(characterData.Stamina, characterData.StaminaRegen, characterData.StaminaRegenDelay);
         RuneComponent.Initialize(10,1,10);
         CharacterState.Initialize(Health, Move , Stamina);
