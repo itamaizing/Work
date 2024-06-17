@@ -200,6 +200,7 @@ public class InvisibleStateOld : AbstractCharacterState
 		return false;
 	}
 }
+
 public class InvisibleState : AbstractCharacterState
 {
 	public bool turnOff = false;
@@ -316,6 +317,7 @@ public class StunnedState : AbstractCharacterState
 		}
 	}
 }
+
 public class Desiccuration : AbstractCharacterState
 {
 	public bool turnOff = false;
