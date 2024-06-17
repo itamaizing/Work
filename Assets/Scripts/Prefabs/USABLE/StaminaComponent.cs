@@ -1,13 +1,16 @@
+using Mirror;
 using TMPro;
 using UnityEngine;
 
-public abstract class StaminaComponent : MonoBehaviour
+public abstract class StaminaComponent : NetworkBehaviour
 {
 	public Bar bar;
 	public float Value { get { return _value; } }
 	public float MaxValue { get { return _maxValue; } }
 
+	[SyncVar(hook = nameof(NetworkUpdateBar))]
 	protected float _value;
+
 	protected float _maxValue;
     protected float _regenerationValue = 10;
 	protected float _regenerationDelay = 3;
@@ -50,5 +53,9 @@ public abstract class StaminaComponent : MonoBehaviour
 	protected void UpdateBar()
 	{
 		bar.UpdateValue(_value,_maxValue);
+	}
+	public void NetworkUpdateBar(float oldValue, float newValue)
+	{
+		UpdateBar();
 	}
 }

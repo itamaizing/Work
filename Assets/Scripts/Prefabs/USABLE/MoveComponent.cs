@@ -1,9 +1,10 @@
+using Mirror;
 using System;
 using System.Collections;
 using Pathfinding;
 using UnityEngine;
 
-public class MoveComponent : MonoBehaviour
+public class MoveComponent : NetworkBehaviour
 {
 	private Vector2 _offset = Vector2.zero;
 	
@@ -29,6 +30,7 @@ public class MoveComponent : MonoBehaviour
 		_defaultSpeed = speed;
 
 		_rigidbody = rb;
+		_rigidbody.isKinematic = false;
 
 		_seeker = GetComponent<Seeker>();
 		_agent = GetComponent<AIPath>();
@@ -54,28 +56,29 @@ public class MoveComponent : MonoBehaviour
 		_agent.maxSpeed = _defaultSpeed;
 	}
 
-	private void SetMoveDirection()
-	{
-		if(GetComponent<HeroComponent>()== null) return;
+	void FixedUpdate()
+	//private void SetMoveDirection()
+	//{
+	//	if(GetComponent<HeroComponent>()== null) return;
 		
-		Vector2 move = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+	//	Vector2 move = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 		
-		if (move == Vector2.zero) return;
+	//	if (move == Vector2.zero) return;
 		
-		target= transform.position + (Vector3)move * _agent.maxSpeed;
+	//	target= transform.position + (Vector3)move * _agent.maxSpeed;
 		
-		_seeker.StartPath(transform.position,target);
+	//	_seeker.StartPath(transform.position,target);
 		
-	}
+	//}
 
-	public void SetOffset(Vector2 offset)
-	{
-		_offset = offset;
-	}
+	//public void SetOffset(Vector2 offset)
+	//{
+	//	_offset = offset;
+	//}
 
-	void Update()
+	//void Update()
 	{
-		if(!isInitialize) return;
+		if(!isInitialize || !isLocalPlayer) return;
 		
 		if (!IsSelect) { return;} 
 		
@@ -85,9 +88,25 @@ public class MoveComponent : MonoBehaviour
 		{
 			target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-			_seeker.StartPath(transform.position,target + _offset);
+		if (InputHandler.Instance.MovementVector != Vector2.zero)
+		{
+			_rigidbody.isKinematic = false;
+			var velocity = _moveSpeed* Time.fixedDeltaTime * InputHandler.Instance.MovementVector;
+			CmdMove(velocity);
+		}
+		else
+		{
+			CmdMove(Vector2.zero);
+			_rigidbody.isKinematic = true;
+		//	_seeker.StartPath(transform.position,target + _offset);
 		}
 
 		IsMoving = _agent.pathPending;
+	}
+
+    [Command]
+	private void CmdMove(Vector2 velocity)
+    {
+		_rigidbody.velocity = velocity;
 	}
 }

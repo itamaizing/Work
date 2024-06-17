@@ -235,7 +235,7 @@ public class PlayerAbilities : MonoBehaviour
 			{
 				_currentAbility.TryCancel();
 			}
-			else if (_currentAutoAttackAbility.IsUsed)
+			else if (_currentAutoAttackAbility != null && _currentAutoAttackAbility.IsUsed)
 			{
 				_currentAutoAttackAbility.TryCancel();
 			}

@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,6 @@ public class StandartAutoAttack : AutoAttackAbility
 
     protected override void CastAction()
     {
-        Target.Health.TakeDamage(_damage, DamageType.Physical);
+        ApplyDamage(Target.Health, _damage, DamageType.Physical, AttackRangeType.MeleeAttack);
     }
 }
