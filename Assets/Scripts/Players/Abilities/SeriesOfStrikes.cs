@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SeriesOfStrikes : MonoBehaviour
 {
+	[SerializeField] private Character _player;
     private float _usedRunesValue1 = 0;
     private float _usedRunesValue2 = 0;
     private float _timer = 0;
@@ -14,6 +15,7 @@ public class SeriesOfStrikes : MonoBehaviour
 	private bool _isInTheRow;
 	private Character _curTarget;
 
+
 	//private bool _list1 = true;
 	//private bool _list2 = true;
 	private List<AbilityForm> _formList = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical };
@@ -22,6 +24,17 @@ public class SeriesOfStrikes : MonoBehaviour
 	private void Update()
 	{
 		Timer();
+	}
+	public float GetMultipliedSpeed()
+	{
+		if(_hitCount1 >= _hitCount2)
+		{
+			return _multiplySpeed*Mathf.Pow(2, _hitCount1);
+		}
+		else
+		{
+			return _multiplySpeed * Mathf.Pow(2, _hitCount2);
+		}
 	}
 	public void MakeHit(Character target, AbilityForm form, float usedRuneValue)
     {
@@ -55,9 +68,13 @@ public class SeriesOfStrikes : MonoBehaviour
 			_usedRunesValue2 = usedRuneValue;
 			_curTarget = target;
 		}
-		if(_hitCount1 >=6 || _hitCount2 >=6)
+		if(_hitCount1 >=6)
 		{
-			LastHit();
+			LastHit(_usedRunesValue1);
+		}
+		if(_hitCount2 >= 6)
+		{
+			LastHit(_usedRunesValue2);
 		}
 	}
 
@@ -83,8 +100,8 @@ public class SeriesOfStrikes : MonoBehaviour
 		}
 	}
 
-	private void LastHit()
+	private void LastHit(float value)
 	{
-
+		_player.RuneComponent.Add(value);
 	}
 }

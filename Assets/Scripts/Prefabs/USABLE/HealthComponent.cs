@@ -28,7 +28,8 @@ public class HealthComponent : MonoBehaviour
 
     private float _boostRegen = 0;
     private float _boostRegen2 = 0;
-    
+
+    private bool _invinsible = false;
 
     [Header("Shields")]
     public List<Shielding> shields_Physic = new List<Shielding>();
@@ -88,6 +89,11 @@ public class HealthComponent : MonoBehaviour
     }
     private float CalculateDamageWithStats(float damageValue, DamageType damageType, AttackRangeType attackRangeType, out bool hitSuccessed)
     {
+        if (_invinsible)
+        {
+            hitSuccessed = false;
+            return 0;
+        }
         if (damageType == DamageType.Magical)
         {
             if (UnityEngine.Random.Range(0, 100) <= _evadeMagDamage)
@@ -486,4 +492,8 @@ public class HealthComponent : MonoBehaviour
 	{
 		_boostRegen2 = boostRegen;
 	}
+    public void SetInvincible(bool invincible)
+    {
+        _invinsible = invincible;
+    }
 }
