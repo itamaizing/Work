@@ -114,9 +114,13 @@ using UnityEngine;
 public class MoveComponent : NetworkBehaviour
 {
 	private Vector2 _offset = Vector2.zero; // new
-
-	private float _moveSpeed;
+	
+	private Seeker _seeker;
+	private AIPath _agent;
+	
 	private Rigidbody2D _rigidbody;
+	
+	private Vector2 target;
 
 	[HideInInspector] public bool CanMove;
 	[HideInInspector] public bool IsMoving;
@@ -135,10 +139,14 @@ public class MoveComponent : NetworkBehaviour
 	public void Initialize(float speed, Rigidbody2D rb)
 	{
 		_defaultSpeed = speed;
-		_moveSpeed = speed;
 
 		_rigidbody = rb;
 		_rigidbody.isKinematic = false;
+		
+		_seeker = GetComponent<Seeker>(); 
+		_agent = GetComponent<AIPath>();
+		
+		SetDefaultSpeed();
 
 		MoveDirection = Vector2.down;
 
@@ -148,45 +156,56 @@ public class MoveComponent : NetworkBehaviour
 
 	public void ChangeMoveSpeed(float value)
 	{
-		_moveSpeed *= value;
+		_agent.maxSpeed *= value;
 	}
 	public void SetMoveSpeed(float speed)
 	{
-		_moveSpeed = speed;
+		_agent.maxSpeed = speed;
 	}
 	public void SetDefaultSpeed()
 	{
-		_moveSpeed = _defaultSpeed;
+		_agent.maxSpeed = _defaultSpeed;
 	}
+
+
+	private void SetMoveDirection()
+	{
+		if (GetComponent<HeroComponent>() == null) return;
+
+		Vector2 move = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+
+		if (move == Vector2.zero) return;
+
+		target = transform.position + (Vector3)move * _agent.maxSpeed;
+		
+		CmdMove(target, Vector2.zero);
+	}
+
 
 	void FixedUpdate()
 	{
 		if (!isInitialize || !isLocalPlayer) return;
 
-		if (!CanMove)
+		if (!CanMove || !IsSelect)
 		{
 			_rigidbody.velocity = Vector2.zero;
 			return;
 		}
 
-		if (InputHandler.Instance.MovementVector != Vector2.zero)
-		{
-			_rigidbody.isKinematic = false;
-			var velocity = _moveSpeed * Time.fixedDeltaTime * InputHandler.Instance.MovementVector;
-			CmdMove(velocity);
-		}
-		else
-		{
-			CmdMove(Vector2.zero);
-			_rigidbody.isKinematic = true;
-		}
+		SetMoveDirection();
 
-		IsMoving = _rigidbody.velocity != Vector2.zero;
+		if (Input.GetMouseButtonDown(1))
+		{
+			target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			CmdMove(target,_offset);
+		}
+		
+		IsMoving = _agent.pathPending;
 	}
 
 	[Command]
-	private void CmdMove(Vector2 velocity)
+	private void CmdMove(Vector2 target , Vector2 offset)
 	{
-		_rigidbody.velocity = velocity;
+		_seeker.StartPath(transform.position, target + offset);
 	}
 }

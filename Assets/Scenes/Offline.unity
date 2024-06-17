@@ -1499,7 +1499,7 @@ MonoBehaviour:
   autoStartServerBuild: 0
   autoConnectClientBuild: 0
   offlineScene: Assets/Scenes/Offline.unity
-  onlineScene: Assets/Scenes/TestMPGame.unity
+  onlineScene: Assets/Scenes/SampleScene.unity
   transport: {fileID: 1710071148}
   networkAddress: localhost
   maxConnections: 100
@@ -1525,7 +1525,6 @@ MonoBehaviour:
   - {fileID: 4371443321967966874, guid: d8e8dba9ab53a4743bbdb63cd7b41f6d, type: 3}
   - {fileID: 4371443321967966874, guid: 5c26e995f253a6646a634242e54ca546, type: 3}
   - {fileID: 4371443321967966874, guid: 2568a29acdeadce4db91958923f49b66, type: 3}
-  - {fileID: 8763643763125113918, guid: 7ca7e11552419974da01f50646019b88, type: 3}
   - {fileID: 4932658458029131548, guid: 72bf53dfa1624064fa5072a77d9ba7f1, type: 3}
   - {fileID: 4371443321967966874, guid: 8fec45e4e7a73734f926c26ecfe03de4, type: 3}
   exceptionsDisconnect: 1
@@ -1543,7 +1542,7 @@ MonoBehaviour:
   evaluationMethod: 0
   evaluationInterval: 3
   timeInterpolationGui: 0
-  _onlineScene: Assets/Scenes/TestMPGame.unity
+  _onlineScene: Assets/Scenes/SampleScene.unity
   _heroList:
   - {fileID: 8468544467696250796, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
   - {fileID: 1563676885133033940, guid: cbfb4777e45b41a4d9cb20bcbfe66715, type: 3}

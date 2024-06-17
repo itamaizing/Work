@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -72,6 +71,7 @@ public class SelectManager : MonoBehaviour
     public void AddControl(Character character)
     {
         _contoller = character;
+        Debug.Log(_contoller.name);
     }
 
     private bool CanControl(Character character)
@@ -98,7 +98,11 @@ public class SelectManager : MonoBehaviour
 
     public void SelectInArea(Character character)
     {
-        if(!CanControl(character)) return;
+        if (!CanControl(character))
+        {
+            Debug.Log("cant control");
+            return;
+        }
         
         if (!selectedControllableUnits.Contains(character))
         {

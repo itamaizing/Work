@@ -367,7 +367,10 @@ GameObject:
   - component: {fileID: -65063298450455639}
   - component: {fileID: -7146587456276821115}
   - component: {fileID: -5027009403038136984}
-  - component: {fileID: 7000184432333105671}
+  - component: {fileID: 1892565365500318185}
+  - component: {fileID: 4030725381616344407}
+  - component: {fileID: 8778059283886800227}
+  - component: {fileID: 3330577042116454553}
   m_Layer: 9
   m_Name: Player
   m_TagString: Allies
@@ -396,11 +399,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1.18, y: -2.44}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8468544467696250796
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -422,9 +420,9 @@ MonoBehaviour:
   _characterState: {fileID: 7760335386463111578}
   _uiPlayerComponents: {fileID: 4715758111818368764}
   _selectComponent: {fileID: 5511617219408767834}
+  _spawnComponent: {fileID: 3330577042116454553}
   _playerData: {fileID: 11400000, guid: 1382b47eecc788c46b35297311c129c3, type: 2}
-  _minion: {fileID: 2981867871510918870, guid: d321207ef616498478038beb68b111ea, type: 3}
-  IController: 0
+  IController: 1
 --- !u!50 &3759936847054020137
 Rigidbody2D:
   serializedVersion: 4
@@ -663,41 +661,108 @@ MonoBehaviour:
   positionSensitivity: 0.01
   rotationSensitivity: 0.01
   scaleSensitivity: 0.01
---- !u!114 &7000184432333105671
+--- !u!114 &1892565365500318185
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1521997633048654849}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c7e12ad9b9ae443c9fdf37e9f5ecd36, type: 3}
+  m_Script: {fileID: 11500000, guid: 183748dd497aa473a98ff0cd8cb67fc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  uniqueID: 8723257340348515721
+  updateError: 1
+  checkTime: 0.5
+--- !u!114 &4030725381616344407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1521997633048654849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 373b52eb9bf8c40f785bb6947a1aee66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  drawGizmos: 1
+  detailedGizmos: 0
+  startEndModifier:
+    addPoints: 0
+    exactStartPoint: 0
+    exactEndPoint: 0
+    useRaycasting: 0
+    mask:
+      serializedVersion: 2
+      m_Bits: 4294967295
+    useGraphRaycasting: 0
+  traversableTags: -1
+  tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  graphMask:
+    value: -1
+--- !u!114 &8778059283886800227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1521997633048654849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6eb1402c17e84a9282a7f0f62eb584f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 5
+  radius: 1
+  height: 2
+  canMove: 1
+  maxSpeed: 1
+  gravity: {x: 0, y: 0, z: 0}
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  centerOffsetCompatibility: NaN
+  repathRateCompatibility: NaN
+  canSearchCompability: 0
+  orientation: 1
+  enableRotation: 0
+  autoRepath:
+    mode: 1
+    interval: 0.5
+    sensitivity: 10
+    maximumInterval: 2
+    visualizeSensitivity: 0
+  targetCompatibility: {fileID: 0}
+  maxAcceleration: -2.5
+  rotationSpeed: 360
+  slowdownDistance: 0.6
+  pickNextWaypointDist: 2
+  endReachedDistance: 0.2
+  alwaysDrawGizmos: 0
+  slowWhenNotFacingTarget: 1
+  whenCloseToDestination: 0
+  constrainInsideGraph: 0
+--- !u!114 &3330577042116454553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1521997633048654849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25397801c5beb30488b57202e0ad634f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  target: {fileID: 795014623008228812}
-  syncPosition: 1
-  syncRotation: 1
-  syncScale: 0
-  onlySyncOnChange: 1
-  compressRotation: 1
-  interpolatePosition: 1
-  interpolateRotation: 1
-  interpolateScale: 1
-  coordinateSpace: 0
-  sendIntervalMultiplier: 1
-  timelineOffset: 0
-  showGizmos: 0
-  showOverlay: 0
-  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
-  bufferResetMultiplier: 3
-  changedDetection: 1
-  positionSensitivity: 0.01
-  rotationSensitivity: 0.01
-  scaleSensitivity: 0.01
+  unit: {fileID: 2981867871510918870, guid: d321207ef616498478038beb68b111ea, type: 3}
 --- !u!1 &1565031513079442272
 GameObject:
   m_ObjectHideFlags: 0
@@ -1099,6 +1164,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56dec73901922b247b25465f613b8740, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 83e21c29a8358a84c98e9e3409e72dce, type: 2}
   _isAutoAttack: 0
   _radius: 10
@@ -1119,7 +1187,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: 0
   _isCanTargetHimself: 0
-  projectile: {fileID: 3436609779166928419, guid: d490c899d604d2c4dbb3f72e61cacb6e, type: 3}
+  _projectile: {fileID: 0}
 --- !u!114 &8699213103126326918
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1132,6 +1200,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1788050ad61a70f48b29be664d78cee1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: d225c810085a24647a426dd4b47a9983, type: 2}
   _isAutoAttack: 1
   _radius: 20
@@ -1172,6 +1243,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0cb15866c8b27045acf48230d9f19a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 97adc7ca5fb538d4db27c7dda2e9285f, type: 2}
   _isAutoAttack: 1
   _radius: 5

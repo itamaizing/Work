@@ -1,12 +1,18 @@
+using System;
 using UnityEngine;
 
 public class MinionComponent : Character
 {
     [SerializeField] private CharacterData _playerData;
-    private HeroComponent _heroParent;
+    public HeroComponent _heroParent;
 
     public HeroComponent HeroParent => _heroParent;
-    
+
+    private void Awake()
+    {
+        Initialize(_playerData);
+    }
+
     public override void Initialize(CharacterData characterData)
     {
         Health.Initialize(characterData.Health,characterData.HealthRegen, characterData.RegenDelay, characterData.HealthInfo);
@@ -15,11 +21,5 @@ public class MinionComponent : Character
         CharacterState.Initialize(Health, Move , Stamina);
         UIPlayerComponents.Initialize(Abilities, Move, Stamina, Health);
         SelectComponent.Initialize(false, Move, Abilities, UIPlayerComponents);
-    }
-
-    public void SetMinion(HeroComponent parent)
-    {
-        _heroParent = parent;
-        Initialize(_playerData);
     }
 }
