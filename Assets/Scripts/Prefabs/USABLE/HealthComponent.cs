@@ -247,7 +247,7 @@ public class HealthComponent : MonoBehaviour
         DisplayTakenDamage(damageValue, damageType);
         
         damageValue = CalculateDamageForShields(damageValue, damageType);
-
+        sumDamageTaken += damageValue;
 
         //HandleAbsorptionOrRepeat(ref damageValue);
 
