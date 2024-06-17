@@ -2279,7 +2279,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 5
-  radius: 0.25
+  radius: 0.5
   height: 2
   canMove: 1
   maxSpeed: 1
@@ -2294,7 +2294,7 @@ MonoBehaviour:
   enableRotation: 0
   autoRepath:
     mode: 1
-    interval: 0.2
+    interval: 0.1
     sensitivity: 20
     maximumInterval: 2
     visualizeSensitivity: 1
@@ -2323,7 +2323,7 @@ MonoBehaviour:
   version: 1
   uniqueID: 7133902660100005913
   updateError: 1
-  checkTime: 0.2
+  checkTime: 0.1
 --- !u!114 &6972549919535258818
 MonoBehaviour:
   m_ObjectHideFlags: 0

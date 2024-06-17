@@ -364,11 +364,11 @@ GameObject:
   - component: {fileID: 4715758111818368764}
   - component: {fileID: 5511617219408767834}
   - component: {fileID: 8468544467696250796}
+  - component: {fileID: 6530201719220294955}
   - component: {fileID: 2567293315208052936}
   - component: {fileID: 7595555951611567272}
   - component: {fileID: 1339830477918061007}
   - component: {fileID: 1096122107475845768}
-  - component: {fileID: 6530201719220294955}
   m_Layer: 8
   m_Name: Player
   m_TagString: Allies
@@ -580,9 +580,22 @@ MonoBehaviour:
   _characterState: {fileID: 7760335386463111578}
   _uiPlayerComponents: {fileID: 4715758111818368764}
   _selectComponent: {fileID: 5511617219408767834}
-  _spawnComponent: {fileID: 0}
+  _spawnComponent: {fileID: 6530201719220294955}
   _playerData: {fileID: 11400000, guid: 1382b47eecc788c46b35297311c129c3, type: 2}
   IController: 1
+--- !u!114 &6530201719220294955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1521997633048654849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25397801c5beb30488b57202e0ad634f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unit: {fileID: 2981867871510918870, guid: d321207ef616498478038beb68b111ea, type: 3}
 --- !u!114 &2567293315208052936
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -600,8 +613,8 @@ MonoBehaviour:
   detailedGizmos: 0
   startEndModifier:
     addPoints: 0
-    exactStartPoint: 3
-    exactEndPoint: 3
+    exactStartPoint: 0
+    exactEndPoint: 0
     useRaycasting: 0
     mask:
       serializedVersion: 2
@@ -639,7 +652,7 @@ MonoBehaviour:
   enableRotation: 0
   autoRepath:
     mode: 1
-    interval: 0.2
+    interval: 0.1
     sensitivity: 9.96
     maximumInterval: 2
     visualizeSensitivity: 1
@@ -647,7 +660,7 @@ MonoBehaviour:
   maxAcceleration: -2.5
   rotationSpeed: 360
   slowdownDistance: 0.6
-  pickNextWaypointDist: 3
+  pickNextWaypointDist: 2
   endReachedDistance: 0.25
   alwaysDrawGizmos: 1
   slowWhenNotFacingTarget: 1
@@ -666,7 +679,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  uniqueID: 5985653448990282671
+  uniqueID: 5235563653268151085
   updateError: 1
   checkTime: 0.1
 --- !u!114 &1096122107475845768
@@ -691,26 +704,6 @@ MonoBehaviour:
   bezierTangentLength: 0.4
   offset: 0.2
   factor: 0.1
---- !u!114 &6530201719220294955
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1521997633048654849}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25397801c5beb30488b57202e0ad634f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  unit: {fileID: 2981867871510918870, guid: d321207ef616498478038beb68b111ea, type: 3}
-  spawnPositions:
-  - {x: 0, y: 3}
-  - {x: 3, y: 0}
-  - {x: 3, y: 3}
-  - {x: 0, y: -3}
-  - {x: -3, y: 0}
-  - {x: -3, y: -3}
 --- !u!1 &1565031513079442272
 GameObject:
   m_ObjectHideFlags: 0
