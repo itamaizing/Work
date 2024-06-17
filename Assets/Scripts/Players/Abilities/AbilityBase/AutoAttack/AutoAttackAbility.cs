@@ -12,14 +12,6 @@ public abstract class AutoAttackAbility : TargetAbility
     private Coroutine _autoAttackJob;
     private bool _isAttacking = false;
 
-    private void Update()
-    {
-        if (Input.GetKey(KeyCode.Alpha9))
-        {
-            Pause();
-        }
-    }
-
     public void Pause()
     {
         if (_autoAttackJob != null)

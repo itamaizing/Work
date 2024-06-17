@@ -1,3 +1,4 @@
+using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,7 +7,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class HealthComponent : MonoBehaviour
+[RequireComponent(typeof(NetworkIdentity))]
+public class HealthComponent : NetworkBehaviour
 {
     [SerializeField]
     private HealthBar healthBar;
@@ -23,7 +25,9 @@ public class HealthComponent : MonoBehaviour
     
     private float _hpRegenerationValue;
     private float _hpRegenerationDelay;
+    [SyncVar(hook = nameof(NetworkUpdateHealthBar))] 
     private float _currentHealth;
+
     private float _maxHealth;
 
     private float _boostRegen = 0;
@@ -87,6 +91,7 @@ public class HealthComponent : MonoBehaviour
 
         return hit;
     }
+
     private float CalculateDamageWithStats(float damageValue, DamageType damageType, AttackRangeType attackRangeType, out bool hitSuccessed)
     {
         if (_invinsible)
@@ -439,6 +444,12 @@ public class HealthComponent : MonoBehaviour
     {
         healthBar.UpdateValue(_currentHealth,_maxHealth);
     }
+
+    public void NetworkUpdateHealthBar(float oldValue, float newValue)
+    {
+        UpdateHealthBar();
+    }
+
     private void Die()
     {
        

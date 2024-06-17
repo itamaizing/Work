@@ -6,6 +6,8 @@ public class HeroComponent : Character
 
     public bool IController = false;
 
+    public CharacterData PlayerData => _playerData;
+
     private void Awake()
     {
         Initialize(_playerData);
@@ -18,8 +20,18 @@ public class HeroComponent : Character
         Move.Initialize(characterData.MoveSpeed, Rb);
         Stamina.Initialize(characterData.Stamina, characterData.StaminaRegen, characterData.StaminaRegenDelay);
         RuneComponent.Initialize(10,1,10);
-        CharacterState.Initialize(Health, Move, Stamina);
-        UIPlayerComponents.Initialize(Abilities, Move, Stamina, Health);
-        SelectComponent.Initialize(false, Move, Abilities, UIPlayerComponents);
+        CharacterState.Initialize(Health, Move , Stamina);
+        UIPlayerComponents.Initialize(Abilities,Move,Stamina,Health);
+        SelectComponent.Initialize(false,Move,Abilities,UIPlayerComponents);
+
+        if(_minion != null)
+            SpawnMinion();
+    }
+
+    public void SpawnMinion()
+    {
+        var controllable = Instantiate(_minion);
+        controllable.transform.position = transform.position + new Vector3(2, 2, 0);
+        controllable.SetMinion(this);
     }
 }

@@ -86,7 +86,10 @@ public abstract class TargetAbility : Ability
             yield break;
 
         yield return GetCastDeleyCoroutine();
-        _isUsed = false;
+
+        if(_isStreaming == false)
+            _isUsed = false;
+
         CastAction();
     }
 
