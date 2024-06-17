@@ -13,12 +13,13 @@ public class PhysicalAttack : AutoAttackAbility
 {
 	[SerializeField] private float _damage = 8f;
 	[SerializeField] private Character _dad;
+	[SerializeField] private SeriesOfStrikes _combo;
 	[SerializeField] private float _abilityCooldown = 1.4f; //cooldown between shots
 	//[SerializeField] private LayerMask _obstacleLayerMask;
 	//private float _cooldownTimer = 1.4f;
-	private int _hitInARow = 0;
-	private float _multiplySpeed = .05f;
-	private bool _isInTheRow = false;
+	//private int _hitInARow = 0;
+	//private float _multiplySpeed = .05f;
+	//private bool _isInTheRow = false;
 	private float _baseTimer = 2f; //time and timer between losing streak
 	private float _timer = 2f;
 	//private bool _isReadyToShot = true;
@@ -26,12 +27,12 @@ public class PhysicalAttack : AutoAttackAbility
 	private Vector2 _jumpPos;
 
 	public Character Target2 => _curTarget;
-	public int HitInTheRow => _hitInARow;
+	//public int HitInTheRow => _hitInARow;
 
-	private void Update()
+	/*private void Update()
 	{
 		Timer();
-	}
+	}*/
 	protected override void Cancel() { }
 
 	protected override void CastAction()
@@ -72,15 +73,16 @@ public class PhysicalAttack : AutoAttackAbility
 	private void Hit(Character enemy)
 	{
 		//_isReadyToShot = false;
-		Debug.Log("hit " + _hitInARow);
+		//Debug.Log("hit " + _hitInARow);
 		if (_curTarget == enemy && _dad.Stamina.Use(5))
 		{
-			Debug.Log("hit " + _hitInARow);
-			_hitInARow++;
-			_multiplySpeed*=2;
-			_attackSpeed *= (1 - _multiplySpeed);
-			_timer = _baseTimer;
-			_isInTheRow = true;
+			_combo.MakeHit(enemy, AbilityForm.Physical, 5);
+			//Debug.Log("hit " + _hitInARow);
+			//_hitInARow++;
+			//_multiplySpeed*=2;
+			_attackSpeed *= (1 - _combo.GetMultipliedSpeed());
+			//_timer = _baseTimer;
+			//_isInTheRow = true;
 			float curDamage = _damage + Random.Range(0, 2);
 			enemy.Health.TakeDamage(curDamage, DamageType.Physical);
 			Energy energy = (Energy)_dad.Stamina;
@@ -89,28 +91,29 @@ public class PhysicalAttack : AutoAttackAbility
 				curDamage *= 1.4f;
 			}
 			energy.SumDamageMake(curDamage);
-			if (_hitInARow >= 6)
+			/*if (_hitInARow >= 6)
 			{
 				//Debug.Log("Lasthit");
 				LastHit();
-			}
+			}*/
 		}
 		else
 		{
+			_combo.MakeHit(enemy, AbilityForm.Physical, 0);
 			Debug.Log("lose streak to another enemy");
 			_curTarget = enemy;
-			_hitInARow = 0;
-			_multiplySpeed = .05f;
-			_attackSpeed *= (1 - _multiplySpeed);
+			//_hitInARow = 0;
+			//_multiplySpeed = .05f;
+			_attackSpeed *= (1 - _combo.GetMultipliedSpeed());
 			_timer = _baseTimer;
-			_isInTheRow = true;
+			//_isInTheRow = true;
 			float curDamage = _damage + Random.Range(0, 2);
 			Energy energy = (Energy)_dad.Stamina;
 			energy.SumDamageMake(curDamage);
 			enemy.Health.TakeDamage(curDamage, DamageType.Physical);
 		}
 	}
-	private void LastHit()
+	/*private void LastHit()
 	{
 		if (_dad.Stamina.Use(10))
 		{
@@ -123,15 +126,15 @@ public class PhysicalAttack : AutoAttackAbility
 			//отбрасывание 			
 		}
 		_dad.Stamina.Add(_dad.Stamina.MaxValue*0.4f);
-		_hitInARow = 0;
+		//_hitInARow = 0;
 		_curTarget = null;
-		_isInTheRow= false;
-		_multiplySpeed = 0.05f;
-		_attackSpeed *= (1 - _multiplySpeed);
+		//_isInTheRow= false;
+		//_multiplySpeed = 0.05f;
+		//_attackSpeed *= (1 - _multiplySpeed);
 		_timer = _baseTimer;
-	}
+	}*/
 
-	public void Timer()
+	/*public void Timer()
 	{
 		/*if(_cooldownTimer > 0 && !_isReadyToShot) 
 		{
@@ -141,7 +144,7 @@ public class PhysicalAttack : AutoAttackAbility
 		{
 			_isReadyToShot = true;
 			_cooldownTimer = _abilityCooldown * (1 - _multiplySpeed);
-		}*/
+		}
 		if (_isInTheRow)
 		{
 			_timer -= Time.deltaTime;
@@ -156,7 +159,7 @@ public class PhysicalAttack : AutoAttackAbility
 				_hitInARow = 0;
 			}
 		}
-	}
+	}*/
 
 	private void PushBackEnemy(Character enemy)
 	{
@@ -194,7 +197,7 @@ public class PhysicalAttack : AutoAttackAbility
 		return false;
 	}
 
-	public void HitFromSword(int hitInTheRow, float multiplySpeed)
+	/*public void HitFromSword(int hitInTheRow, float multiplySpeed)
 	{
 		_hitInARow = hitInTheRow;
 		_multiplySpeed = multiplySpeed;
@@ -220,5 +223,5 @@ public class PhysicalAttack : AutoAttackAbility
 		_timer = _baseTimer;
 		_isInTheRow = false;
 		_hitInARow = 0;
-	}
+	}*/
 }

@@ -41,7 +41,7 @@ public class DefaultState : AbstractCharacterState
 	}
 }
 
-public class InvisibleState : AbstractCharacterState
+public class InvisibleStateOld : AbstractCharacterState
 {
 	private Renderer[] childRenderers;
 	private GameObject _player;
@@ -200,6 +200,56 @@ public class InvisibleState : AbstractCharacterState
 		return false;
 	}
 }
+public class InvisibleState : AbstractCharacterState
+{
+	public bool turnOff = false;
+	private float _baseDuration;
+	private float _duration;
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+	{
+		Debug.Log("Entering Invisible State");
+		effects.Add(StatusEffect.Others);
+
+		_characterState = character;
+		_characterState.Health.SetInvincible(true);
+		_characterState.invinsible = true;
+		_duration = durationToExit;
+		_baseDuration = durationToExit;
+	}
+
+	public override void UpdateState()
+	{
+		Debug.Log("Updating Invisible State");
+		_duration -= Time.deltaTime;
+		if (_duration < 0 || turnOff)
+		{
+			ExitState();
+		}
+	}
+
+	public override void ExitState()
+	{
+		Debug.Log("Exiting Invisible State");
+		if (_characterState.Check(StatusEffect.Others))
+		{
+			_characterState.Health.SetInvincible(false);
+			_characterState.invinsible = false;
+		}
+		_characterState.RemoveState(this);
+	}
+	public override bool Stack(float time)
+	{
+		if (_baseDuration > time)
+		{
+			return false;
+		}
+		else
+		{
+			_duration = time;
+			return true;
+		}
+	}
+}
 
 public class StunnedState : AbstractCharacterState
 {
@@ -243,6 +293,74 @@ public class StunnedState : AbstractCharacterState
 	public override void ExitState()
 	{
 		Debug.Log("Exiting Stunned State");
+		if (_characterState.Check(StatusEffect.Move))
+		{
+			_characterState.Move.CanMove = true;
+		}
+		if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
+		{
+			_abilities.SetAbilitiesEnabled();
+		}
+		_characterState.RemoveState(this);
+	}
+	public override bool Stack(float time)
+	{
+		if (_baseDuration > time)
+		{
+			return false;
+		}
+		else
+		{
+			_duration = time;
+			return true;
+		}
+	}
+}
+public class Desiccuration : AbstractCharacterState
+{
+	public bool turnOff = false;
+	private PlayerAbilities _abilities;
+	private float _baseDuration;
+	private float _duration;
+	private float _damageToExit;
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+	{
+		Debug.Log("Entering Desiccuration State");
+		type = StateType.Physical;
+		effects.Add(StatusEffect.Move);
+		effects.Add(StatusEffect.Ability);
+
+		_characterState = character;
+
+		if (character.TryGetComponent<PlayerAbilities>(out var ability))
+		{
+			_abilities = ability;
+			_abilities.SetAbilitiesDisabled();
+		}
+		else
+		{
+			Debug.Log("no ability at " + character.gameObject.name);
+		}
+		_characterState.Move.CanMove = false;
+		_duration = durationToExit;
+		_baseDuration = durationToExit;
+		//_damageToExit = damageToExit;
+		_damageToExit = 0.01f;
+	}
+
+	public override void UpdateState()
+	{
+		Debug.Log("Updating Desiccuration State");
+		_duration -= Time.deltaTime;
+		if (_duration < 0 || turnOff || _characterState.Health.sumDamageTaken >= _damageToExit)
+		{
+			ExitState();
+		}
+	}
+
+	public override void ExitState()
+	{
+		Debug.Log("Exiting Desiccuration State");
 		if (_characterState.Check(StatusEffect.Move))
 		{
 			_characterState.Move.CanMove = true;
@@ -666,6 +784,7 @@ public class CharacterState : MonoBehaviour
 	private StaminaComponent _stamina;
 	private List<AbstractCharacterState> currentStates = new List<AbstractCharacterState>();
 	[SerializeField] private StateIcons _stateIcons;
+	public bool invinsible = false;
 	public HealthComponent Health => _health;
 	public MoveComponent Move => _move;
 	public StaminaComponent Stamina => _stamina;
@@ -711,6 +830,8 @@ public class CharacterState : MonoBehaviour
 	}*/
 	public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state)
 	{
+		if (invinsible)
+			return;
 		//if already exist 
 		//if (currentStates.Contains(newState))
 		if (CheckForState(state))

@@ -9,7 +9,7 @@ public class IceSword : Ability
 	//[SerializeField] private GameObject _basePlayer;
 	[SerializeField] private Character _playerLinks;
 	[SerializeField] private DeathSpiral _deathSpiral;
-	[SerializeField] private PhysicalAttack _physicalAttack;
+	[SerializeField] private SeriesOfStrikes _combo;
 	[SerializeField] private float _raduis;
 	[SerializeField] private float _cooldownTime;
 	private float _cooldownTimer = 1.4f;
@@ -37,23 +37,24 @@ public class IceSword : Ability
 		{
 			if (collider.TryGetComponent<Character>(out var enemy) && enemy != _playerLinks)
 			{
-				if (_target == enemy || enemy == _physicalAttack.Target2)
+				_combo.MakeHit(enemy, AbilityForm.Magic, 0);
+				/*if (_target == enemy)
 				{
 					_cooldownTimer = _cooldownTime;
 					_canUse = false;
 					_hitInTheRow++;
-					_physicalAttack.HitFromSword(enemy);
+					//_physicalAttack.HitFromSword(enemy);
 					Debug.Log("hit from sword in a row");
 				}
 				else
 				{
 					_cooldownTimer = _cooldownTime;
-					_physicalAttack.LoseStreak();
+					//_physicalAttack.LoseStreak();
 					_hitInTheRow = 1;
 					_canUse = false;
 					_target = enemy;
 					Debug.Log("first hit from sword");
-				}
+				}*/
 			}
 		}
 		if (_target != null)
