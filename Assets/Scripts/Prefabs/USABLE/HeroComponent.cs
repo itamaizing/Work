@@ -23,15 +23,5 @@ public class HeroComponent : Character
         CharacterState.Initialize(Health, Move , Stamina);
         UIPlayerComponents.Initialize(Abilities,Move,Stamina,Health);
         SelectComponent.Initialize(false,Move,Abilities,UIPlayerComponents);
-
-        if(_minion != null)
-            SpawnMinion();
-    }
-
-    public void SpawnMinion()
-    {
-        var controllable = Instantiate(_minion);
-        controllable.transform.position = transform.position + new Vector3(2, 2, 0);
-        controllable.SetMinion(this);
     }
 }
