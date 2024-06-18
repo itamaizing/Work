@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class IceShadowObject : MonoBehaviour
 {
-	[HideInInspector] public GameObject dad;
+	[HideInInspector] public Character dad;
 	//[HideInInspector] public EnergyPlayer energyPlayer;
 	[HideInInspector] public HealthComponent healthPlayer;
 	[HideInInspector] public float timeToDestroy = 2;
@@ -39,18 +39,18 @@ public class IceShadowObject : MonoBehaviour
 	}
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		if (collision.gameObject == dad)
+		if (collision.gameObject == dad.gameObject)
 		{
 			healthPlayer.SetBoostRegen(0.01f);
 		}
 		//if (collision.TryGetComponent<PlayerLinks>(out var target) && energyPlayer != null && collision.gameObject !=dad)
-		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject !=dad)
+		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject !=dad.gameObject)
 		{
 			float duration = 2 + _energyValue / 20;
 			//target.CharacterState.energy = energyPlayer;
 			//energyPlayer.UseAllEnergy();
 
-			target.CharacterState.AddState(new FrozenState(), duration, 0, States.Frozen);
+			target.CharacterState.AddState(new FrozenState(), dad, duration, 0, States.Frozen);
 			//energyPlayer.Use(energyPlayer.Value);
 			GetComponent<Collider2D>().enabled = false;
 			Destroy(gameObject);

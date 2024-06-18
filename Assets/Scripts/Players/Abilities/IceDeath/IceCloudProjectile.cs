@@ -48,7 +48,7 @@ public class IceCloudProjectile : MonoBehaviour
 			}
 			energyLink.SumDamageMake(curDamage);
 			target.Health.TakeDamage(curDamage, DamageType.Physical);
-			target.CharacterState.AddState(new FrozenState(), duration, 30, States.Frozen);
+			target.CharacterState.AddState(new FrozenState(), dad, duration, 30, States.Frozen);
 
 			//dad.Stamina.Use(duration * 20);
 			//damage

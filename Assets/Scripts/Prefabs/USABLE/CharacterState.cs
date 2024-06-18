@@ -830,7 +830,7 @@ public class CharacterState : MonoBehaviour
 		currentStates.Add(newState);
 		currentStates[currentStates.Count - 1].EnterState(this, 0, 0);
 	}*/
-	public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state)
+	public void AddState(AbstractCharacterState newState, Character personWhoShoted, float duration, float damageToExit, States state)
 	{
 		if (invinsible)
 			return;

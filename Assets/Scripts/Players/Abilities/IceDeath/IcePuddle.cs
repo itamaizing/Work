@@ -9,6 +9,7 @@ public class IcePuddle : Ability
 	[SerializeField] private Character _playerLinks;
 	[SerializeField] private GameObject _preViewPuddle;
 	[SerializeField] private GameObject _lowePoint;
+	[SerializeField] private FrostingFrozenTalant _frostingFrozenTalant;
 	//[SerializeField] private GameObject _spawnPoint;
 
 	private Vector2 _mousePos;
@@ -91,7 +92,8 @@ public class IcePuddle : Ability
 		//IcePuddleObject puddle = Instantiate(_puddle, _spawnPoint.transform.position, Quaternion.Euler(_croosFire.transform.rotation.x, _croosFire.transform.rotation.y, _croosFire.transform.rotation.z));
 		//IcePuddleObject puddle = Instantiate(_puddle, _preViewPuddle.transform.position, Quaternion.Euler(0, 0, _angle2));
 		IcePuddleObject puddle = Instantiate(_puddle, _preViewPuddle.transform.position, Quaternion.Euler(0, 0, _preViewPuddle.transform.eulerAngles.z));
-		puddle.dad = _playerLinks.gameObject;
+		puddle.talant = _frostingFrozenTalant;
+		puddle.dad = _playerLinks;
 		puddle.energy = (Energy)Mana;
 		puddle.healthComponent = _playerLinks.Health;
 		_enabled = false;

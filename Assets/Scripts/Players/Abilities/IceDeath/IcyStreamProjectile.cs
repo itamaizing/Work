@@ -8,6 +8,7 @@ public class IcyStreamProjectile : MonoBehaviour
 {
 	public float energyDad;
 	[HideInInspector] public Character dad;
+	[HideInInspector] public FrostingFrozenTalant talant;
 
 	[SerializeField] private Rigidbody2D _rb;
 	[SerializeField] GameObject _hitEffect;
@@ -61,7 +62,7 @@ public class IcyStreamProjectile : MonoBehaviour
 			Energy energyLink = (Energy)dad.Stamina;
 			energyLink.SumDamageMake(_damage);
 			target.Health.TryTakeDamage(_damage, DamageType.Magical, AttackRangeType.RangeAttack);
-			target.CharacterState.AddState(new Cooling(), _durationOfDebuff, 0, States.Cooling);
+			target.CharacterState.AddState(new Cooling(), dad, _durationOfDebuff, 0, States.Cooling);
 		}
 		//Explode();
 	}
@@ -99,10 +100,17 @@ public class IcyStreamProjectile : MonoBehaviour
 			{
 				enemy.Health.TryTakeDamage(_damage, DamageType.Magical, AttackRangeType.RangeAttack);
 
-				enemy.CharacterState.AddState(new Cooling(), _durationOfDebuff, 0, States.Cooling);
+				enemy.CharacterState.AddState(new Cooling(), dad, _durationOfDebuff, 0, States.Cooling);
 				if (Random.Range(0, 1f) <= _chanceOfFrosting)
 				{
-					enemy.CharacterState.AddState(new FrostingState(), _durationOfDebuff, 0, States.Frosting);
+					enemy.CharacterState.AddState(new FrostingState(), dad, _durationOfDebuff, 0, States.Frosting);
+					if(talant != null)
+					{
+						if(talant.IsActive)
+						{
+							enemy.CharacterState.AddState(new FrozenState(), dad, _durationOfDebuff, 0, States.Frozen);
+						}
+					}
 				}
 			}
 		}
