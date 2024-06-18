@@ -536,6 +536,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _stateIcons: {fileID: 2794163301550220692}
+  invinsible: 0
 --- !u!114 &2926669445991704918
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -819,8 +820,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _abilities:
-  - {fileID: 7579798881083447851}
-  - {fileID: 8699213103126326918}
+  - {fileID: 938984537167284078}
+  - {fileID: 1005351013565685612}
   - {fileID: 8812684071966432408}
   visualRender: {fileID: 5564757508821022323}
 --- !u!114 &5564757508821022323
@@ -881,6 +882,7 @@ MonoBehaviour:
     m_Bits: 0
   _damage: 8
   _dad: {fileID: 8468544467696250796}
+  _combo: {fileID: 0}
   _abilityCooldown: 1.4
 --- !u!114 &1005351013565685612
 MonoBehaviour:
@@ -992,6 +994,7 @@ MonoBehaviour:
   _playerLinks: {fileID: 8468544467696250796}
   _preViewPuddle: {fileID: 884365701278928767, guid: 7b6c0e56fb1a9e642a0e585447b9a071, type: 3}
   _lowePoint: {fileID: 884365701278928767, guid: 7b6c0e56fb1a9e642a0e585447b9a071, type: 3}
+  _frostingFrozenTalant: {fileID: 0}
 --- !u!114 &4417605804945313492
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1070,7 +1073,7 @@ MonoBehaviour:
   _damage: 15
   _playerLinks: {fileID: 8468544467696250796}
   _deathSpiral: {fileID: 5424265573815036285}
-  _physicalAttack: {fileID: 0}
+  _combo: {fileID: 0}
   _raduis: 0
   _cooldownTime: 0
 --- !u!114 &5424265573815036285
@@ -1151,6 +1154,7 @@ MonoBehaviour:
     m_Bits: 128
   _damage: 8
   _dad: {fileID: 8468544467696250796}
+  _combo: {fileID: 0}
   _abilityCooldown: 1.4
 --- !u!114 &7579798881083447851
 MonoBehaviour:
@@ -1187,7 +1191,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: 0
   _isCanTargetHimself: 0
-  _projectile: {fileID: 0}
+  _projectile: {fileID: 3436609779166928419, guid: d490c899d604d2c4dbb3f72e61cacb6e, type: 3}
 --- !u!114 &8699213103126326918
 MonoBehaviour:
   m_ObjectHideFlags: 0

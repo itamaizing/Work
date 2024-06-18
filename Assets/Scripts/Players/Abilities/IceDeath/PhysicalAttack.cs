@@ -32,36 +32,6 @@ public class PhysicalAttack : AutoAttackAbility
 		Hit(Target);
 		//Target.Health.TakeDamage(_damage, DamageType.Physical);
 	}
-
-	/*protected override void Cast()
-	{
-		PayCost();
-		CheckEnemy();
-	}*/
-	
-	/*private void CheckEnemy()
-	{
-        if (!_isReadyToShot)
-        {
-			return;
-        }
-        Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, Radius);
-
-		foreach (Collider2D col in enemyDetected)
-		{
-			if(col.TryGetComponent<Character>(out var enemy))
-			{
-				if (enemy == _dad)
-				{
-					continue;
-				}				
-				//Debug.Log("Enemy detected: " + enemy.gameObject.name);
-				Hit(enemy);
-				break;
-			}			
-		}
-	}*/
-
 	private void Hit(Character enemy)
 	{
 		//_isReadyToShot = false;
@@ -76,7 +46,9 @@ public class PhysicalAttack : AutoAttackAbility
 			//_timer = _baseTimer;
 			//_isInTheRow = true;
 			float curDamage = _damage + Random.Range(0, 2);
-			enemy.Health.TakeDamage(curDamage, DamageType.Physical);
+
+			ApplyDamage(enemy.Health, curDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
+			//enemy.Health.TakeDamage(curDamage, DamageType.Physical);
 			Energy energy = (Energy)_dad.Stamina;
 			if(enemy.CharacterState.CheckForState(States.Frozen))
 			{
@@ -102,7 +74,10 @@ public class PhysicalAttack : AutoAttackAbility
 			float curDamage = _damage + Random.Range(0, 2);
 			Energy energy = (Energy)_dad.Stamina;
 			energy.SumDamageMake(curDamage);
-			enemy.Health.TakeDamage(curDamage, DamageType.Physical);
+			//enemy.Health.TakeDamage(curDamage, DamageType.Physical);
+			ApplyDamage(enemy.Health, curDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
+
+
 		}
 	}
 	/*private void LastHit()

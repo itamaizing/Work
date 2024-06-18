@@ -48,11 +48,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dad: {fileID: 0}
+  talant: {fileID: 0}
   energy: {fileID: 0}
   healthComponent: {fileID: 0}
   timeToDestroy: 3
   _rb: {fileID: 1725752245413487704}
-  _hitEffect: {fileID: 6292097104280928921}
+  _hitEffect: {fileID: 0}
   _spriteRenderer: {fileID: 803633891831550741}
 --- !u!1 &1623331448569141304
 GameObject:
@@ -65,7 +66,6 @@ GameObject:
   - component: {fileID: 7658136484673092860}
   - component: {fileID: 4978543577925286211}
   - component: {fileID: 7370605016615101471}
-  - component: {fileID: 6692014934976887065}
   - component: {fileID: 951530442451349632}
   m_Layer: 0
   m_Name: IcePuddleObject (1)
@@ -168,25 +168,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &6692014934976887065
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1623331448569141304}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64d06b83561c52446afe0cd29349baeb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dad: {fileID: 0}
-  energy: {fileID: 0}
-  healthComponent: {fileID: 0}
-  timeToDestroy: 3
-  _rb: {fileID: 0}
-  _hitEffect: {fileID: 0}
-  _spriteRenderer: {fileID: 0}
 --- !u!70 &951530442451349632
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -264,7 +245,6 @@ GameObject:
   - component: {fileID: 7409209701678894136}
   - component: {fileID: 803633891831550741}
   - component: {fileID: 1725752245413487704}
-  - component: {fileID: 1302976023414520027}
   - component: {fileID: 8220976115108720599}
   m_Layer: 0
   m_Name: IcePuddleObject
@@ -367,25 +347,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &1302976023414520027
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6292097104280928921}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64d06b83561c52446afe0cd29349baeb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dad: {fileID: 0}
-  energy: {fileID: 0}
-  healthComponent: {fileID: 0}
-  timeToDestroy: 3
-  _rb: {fileID: 0}
-  _hitEffect: {fileID: 0}
-  _spriteRenderer: {fileID: 0}
 --- !u!70 &8220976115108720599
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
