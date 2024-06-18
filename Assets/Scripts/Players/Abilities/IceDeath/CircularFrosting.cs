@@ -6,6 +6,7 @@ public class CircularFrosting : Ability
 {
 	//[SerializeField] private CircularFrostingObject _circle;
 	[SerializeField] private Character _links;
+	[SerializeField] private FrostingFrozenTalant _talant;
 	private float _cooldownTimer = 0;
 	private bool _canCast = true;
 	private float _timer = 0;
@@ -47,7 +48,14 @@ public class CircularFrosting : Ability
 		{
 			if(enemy.TryGetComponent<Character>(out var enemyCharacter))
 			{
-				enemyCharacter.CharacterState.AddState(new FrostingState(), _duration, 0, States.Frosting);
+				enemyCharacter.CharacterState.AddState(new FrostingState(), _links, _duration, 0, States.Frosting);
+				if (_talant != null)
+				{
+					if (_talant.IsActive)
+					{
+						enemyCharacter.CharacterState.AddState(new FrozenState(), _links, _duration, 0, States.Frozen);
+					}
+				}
 			}
 		}
 		//var smoke = Instantiate(_circle, transform);

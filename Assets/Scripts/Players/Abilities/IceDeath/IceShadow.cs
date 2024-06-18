@@ -34,7 +34,7 @@ public class IceShadow : Ability
 	private void Shoot()
 	{
 		IceShadowObject projectile = Instantiate(_shadow, gameObject.transform.position, Quaternion.identity);
-		projectile.dad = _playerLinks.gameObject;
+		projectile.dad = _playerLinks;
 		projectile.SetEnergy(Mana.Value);
 		Energy energy = (Energy)Mana;
 		energy.UseAllEnergy();

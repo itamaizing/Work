@@ -4,6 +4,7 @@ public class IcyStream : Ability
 {
 	[SerializeField] private IcyStreamProjectile _projectile;
 	[SerializeField] private Character _playerLinks;
+	[SerializeField] private FrostingFrozenTalant _frostingFrozenTalant;
 	//[SerializeField] private RunePlayer _rune;
 	//[SerializeField] private Rigidbody2D _rb;
 
@@ -54,6 +55,7 @@ public class IcyStream : Ability
 		Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
 		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
 		IcyStreamProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
+		projectile.talant = _frostingFrozenTalant;
 		projectile.dad = _playerLinks;
 		projectile.energyDad = _playerLinks.Stamina.Value;
 		float usedEnergy = 0;

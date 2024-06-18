@@ -7,7 +7,8 @@ using UnityEngine.Serialization;
 
 public class IcePuddleObject : MonoBehaviour
 {
-	[HideInInspector] public GameObject dad;
+	[HideInInspector] public Character dad;
+	[HideInInspector] public FrostingFrozenTalant talant;
 	[FormerlySerializedAs("energyPlayer")] [HideInInspector] public Energy energy;
 	[FormerlySerializedAs("healthPlayer")] [HideInInspector] public HealthComponent healthComponent;
 	[HideInInspector] public float timeToDestroy = 3;
@@ -38,7 +39,7 @@ public class IcePuddleObject : MonoBehaviour
 
 	private void OnTriggerExit2D(Collider2D collision)
 	{
-		if (collision.gameObject == dad && healthComponent != null)
+		if (collision.gameObject == dad.gameObject && healthComponent != null)
 		{
 			healthComponent.SetBoostRegen2(0);
 			return;
@@ -46,12 +47,12 @@ public class IcePuddleObject : MonoBehaviour
 	}
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		if (collision.gameObject == dad)
+		if (collision.gameObject == dad.gameObject)
 		{
 			healthComponent.SetBoostRegen2(0.01f);
 			return;
 		}
-		if (collision.TryGetComponent<Character>(out var target) && energy != null && collision.gameObject != dad)
+		if (collision.TryGetComponent<Character>(out var target) && energy != null && collision.gameObject != dad.gameObject)
 		{
 			float duration = 3;
 			//target.CharacterState.energy = energy;
@@ -65,7 +66,14 @@ public class IcePuddleObject : MonoBehaviour
 				duration += energy.Value / 5;
 				energy.UseAllEnergy();
 			}
-			target.CharacterState.AddState(new FrostingState(),duration,0,States.Frosting);
+			target.CharacterState.AddState(new FrostingState(), dad, duration,0,States.Frosting);
+			if (talant != null)
+			{
+				if (talant.IsActive)
+				{
+					target.CharacterState.AddState(new FrozenState(), dad, duration, 0, States.Frozen);
+				}
+			}
 			_enemies.Add(target.CharacterState);
 		}
 		//Explode();

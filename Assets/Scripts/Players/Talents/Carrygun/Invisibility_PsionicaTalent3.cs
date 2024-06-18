@@ -162,7 +162,7 @@ public class Invisibility_PsionicaTalent3 : MonoBehaviour
     {
         IsInvisibility = true;
 
-        _player.GetComponent<CharacterState>().AddState(new InvisibleState(),0,0,0);//TODO ADDVALUES
+        //_player.GetComponent<CharacterState>().AddState(new InvisibleState(),0,0,0);//TODO ADDVALUES
 
         _newEffectPrefab = Instantiate(_invisibleEffect);
         _newEffectPrefab.transform.SetParent(_player.transform);
@@ -182,7 +182,7 @@ public class Invisibility_PsionicaTalent3 : MonoBehaviour
 
         if (_player.GetComponent<CharacterState>().IfHasState(new InvisibleState()))
         {
-            _player.GetComponent<CharacterState>().AddState(new DefaultState(),0,0,0);//TODO ADDVALUES
+           // _player.GetComponent<CharacterState>().AddState(new DefaultState(),0,0,0);//TODO ADDVALUES
         }
 
         StartCoroutine(RechargeCoroutine());
