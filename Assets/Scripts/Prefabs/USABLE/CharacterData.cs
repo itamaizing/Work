@@ -33,3 +33,19 @@ public class CharacterData : ScriptableObject
     public float StaminaRegenDelay => _defaultStaminaRegenDalay;
     public float VisionRadius => _visionRadius;
 }
+
+public static class Positions
+{
+    public static List<Vector2> unitInGroupPositions = new()
+    {
+        new Vector2(0,0),
+        new Vector2(0, 3),
+        new Vector2(3, 0),
+        new Vector2(3, 3),
+        new Vector2(0, -3),
+        new Vector2(-3, 0),
+        new Vector2(-3, -3),
+        new Vector2(3,-3),
+        new Vector2(3,-3)
+    };
+}

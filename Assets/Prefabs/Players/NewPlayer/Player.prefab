@@ -959,6 +959,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bar: {fileID: 345166492354941108}
+  _sumDamageGiven: 0
 --- !u!114 &3074796512914894124
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -35,7 +35,6 @@ public class PlayerAbilities : MonoBehaviour
         foreach (var item in _abilities)
         {
             item.SetPlayer(playerMove, staminaComponent, healthComponent);
-            Debug.Log("set");
         }
 		_abilityPanel = AbilitiesManager.Instance.AddPanel(this);
 	}
@@ -235,7 +234,7 @@ public class PlayerAbilities : MonoBehaviour
 			{
 				_currentAbility.TryCancel();
 			}
-			else if (_currentAutoAttackAbility.IsUsed)
+			else if (_currentAutoAttackAbility != null && _currentAutoAttackAbility.IsUsed)
 			{
 				_currentAutoAttackAbility.TryCancel();
 			}

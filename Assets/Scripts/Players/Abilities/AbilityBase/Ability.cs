@@ -3,9 +3,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.Events;
+using Mirror;
 using System;
 
-public abstract class Ability : MonoBehaviour
+
+public abstract class Ability : NetworkBehaviour
 {
     [Header("AbilitieInfo")]
     [SerializeField] private AbilityInfo _abilityInfo;
@@ -173,7 +175,7 @@ public abstract class Ability : MonoBehaviour
     {
         if (TryUseCharge() && _mana.Value >= _manaCost && _isReady)
         {
-            _mana.Use(_manaCost);
+            CmdUseMana(_manaCost);
         }
         else
         {
@@ -242,6 +244,11 @@ public abstract class Ability : MonoBehaviour
         return Camera.main.ScreenToWorldPoint(Input.mousePosition);
     }
 
+    protected void ApplyDamage(HealthComponent health, float damage, DamageType damageType, AttackRangeType attackRangeType)
+    {
+        CmdApplyDamage(health.gameObject, damage, damageType, attackRangeType);
+    }
+
     private IEnumerator CooldownCoroutine(float cooldownTime)
     {
         CooldownStarted?.Invoke(cooldownTime);
@@ -297,7 +304,7 @@ public abstract class Ability : MonoBehaviour
 
         while (time < _streamingDuration + _manaCostRate && _mana.Value >= _manaCostPerTick)
         {
-            Mana.Use(_manaCostPerTick);
+            CmdUseMana(_manaCostPerTick);
             time += _manaCostRate;
             yield return new WaitForSeconds(_manaCostRate);
         }
@@ -308,6 +315,33 @@ public abstract class Ability : MonoBehaviour
         CastEnded?.Invoke();
         _streamingJob = null;
     }
+    
+    [Command]
+    protected void CmdInstantiate(GameObject gameObject)
+    {
+        GameObject item = Instantiate(gameObject, transform.position, Quaternion.identity);
+        NetworkServer.Spawn(item);
+    }
+
+    [Command]
+    protected void CmdInstantiate(GameObject gameObject, GameObject parent)
+    {
+        GameObject item = Instantiate(gameObject, parent.transform.parent);
+        NetworkServer.Spawn(item);
+    }
+
+    [Command]
+    protected void CmdUseMana(float value)
+    {
+        _mana.Use(value);
+    }
+
+    [Command]
+    private void CmdApplyDamage(GameObject target, float damage, DamageType damageType, AttackRangeType attackRangeType)
+    {
+        target.GetComponent<HealthComponent>().TryTakeDamage(damage, damageType, attackRangeType);
+    }
+
 	public void SwitchAvailible(bool avalieble)
 	{
 		_avaliable = avalieble;
