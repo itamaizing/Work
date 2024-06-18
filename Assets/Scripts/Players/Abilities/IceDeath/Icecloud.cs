@@ -1,6 +1,8 @@
+using Mirror;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 using static UnityEngine.GraphicsBuffer;
 
 public class Icecloud : Ability
@@ -49,18 +51,30 @@ public class Icecloud : Ability
 	{
 		_enabled = false;
 	}
-
+	
 	private void Shoot()
 	{
 		Debug.Log("shot");
 		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
 		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
+		/*IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
+		projectile.dad = _playerLinks;
+		projectile.energyDad = _playerLinks.Stamina.Value;
+		_playerLinks.Stamina.Use(_playerLinks.Stamina.Value);
+		Cancel();*/
+		CmdCreateProjecttile(angle);
+	}
+	[Command]
+	private void CmdCreateProjecttile(float angle)
+	{
 		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
 		projectile.dad = _playerLinks;
 		projectile.energyDad = _playerLinks.Stamina.Value;
 		_playerLinks.Stamina.Use(_playerLinks.Stamina.Value);
 		Cancel();
+
+		NetworkServer.Spawn(projectile.gameObject);
 	}
 	//���������� paycost ��� ���� ��� ��� ���� ����� �� �������� ��� �������
 

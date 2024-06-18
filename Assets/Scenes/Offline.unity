@@ -652,7 +652,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2906004067914324339, guid: ad3c47046ceed4c4280cf18cce39f9f5, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.000061035156
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2906004067914324339, guid: ad3c47046ceed4c4280cf18cce39f9f5, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1514,7 +1514,13 @@ MonoBehaviour:
   - {fileID: 4371443321967966874, guid: 0fe4228580ff977419acc74a8f3e1a6f, type: 3}
   - {fileID: 4371443321967966874, guid: a79366755ff1599429f6d57fd0be0061, type: 3}
   - {fileID: 3633788159689046964, guid: 4f0ac8409ec730b42870eeae25085111, type: 3}
+  - {fileID: 5195731727944466540, guid: 13d29f15dbe0e9c40bac53fe5ff49f89, type: 3}
   - {fileID: 1740845397034949897, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
+  - {fileID: 2672404202709694877, guid: c62801e5e7752514bb8cc9b9e90e943d, type: 3}
+  - {fileID: 5195731727944466540, guid: 2b98bf57809a2ea488381e132571282f, type: 3}
+  - {fileID: 5195731727944466540, guid: f44e1a220c732a64f9af10c37bf5aed0, type: 3}
+  - {fileID: 884365701278928767, guid: bc61883431de372488a55d10d8a02690, type: 3}
+  - {fileID: 2672404202709694877, guid: 8dea5af4c60165d45af4522b1a596998, type: 3}
   - {fileID: 8266765981491458884, guid: d321207ef616498478038beb68b111ea, type: 3}
   - {fileID: 1521997633048654849, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
   - {fileID: 2385148975066525671, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
@@ -1525,6 +1531,7 @@ MonoBehaviour:
   - {fileID: 4371443321967966874, guid: d8e8dba9ab53a4743bbdb63cd7b41f6d, type: 3}
   - {fileID: 4371443321967966874, guid: 5c26e995f253a6646a634242e54ca546, type: 3}
   - {fileID: 4371443321967966874, guid: 2568a29acdeadce4db91958923f49b66, type: 3}
+  - {fileID: 8763643763125113918, guid: 7ca7e11552419974da01f50646019b88, type: 3}
   - {fileID: 4932658458029131548, guid: 72bf53dfa1624064fa5072a77d9ba7f1, type: 3}
   - {fileID: 4371443321967966874, guid: 8fec45e4e7a73734f926c26ecfe03de4, type: 3}
   exceptionsDisconnect: 1
