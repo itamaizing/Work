@@ -1,6 +1,8 @@
+using Mirror;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 using static UnityEngine.GraphicsBuffer;
 
 public class IceShadow : Ability
@@ -16,6 +18,7 @@ public class IceShadow : Ability
 	
 	protected override void Cast()
 	{
+		Debug.Log("test spawn22222");
 		PayCost();
 		if (_playerLinks.RuneComponent.RemoveRune(1, this))
 		{
@@ -31,9 +34,12 @@ public class IceShadow : Ability
 	{
 
 	}
+	[Command]
 	private void Shoot()
 	{
-		IceShadowObject projectile = Instantiate(_shadow, gameObject.transform.position, Quaternion.identity);
+		Debug.Log("test spawn");
+		GameObject projectileGm = Instantiate(_shadow.gameObject, gameObject.transform.position, Quaternion.identity);
+		IceShadowObject projectile = projectileGm.GetComponent<IceShadowObject>();
 		projectile.dad = _playerLinks;
 		projectile.SetEnergy(Mana.Value);
 		Energy energy = (Energy)Mana;
@@ -41,8 +47,17 @@ public class IceShadow : Ability
 		//projectile.energyPlayer = (EnergyPlayer)Mana;
 		projectile.healthPlayer = _playerLinks.Health;
 		TryCancel();
+		NetworkServer.Spawn(projectileGm);
 	}
+	[Command]
+	protected void CmdCreateProjecttile(Transform target)
+	{
+		GameObject item = Instantiate(_shadow.gameObject, transform.position, Quaternion.identity);
 
+		item.GetComponent<Projectile>().StartFly(target, true);
+
+		NetworkServer.Spawn(item);
+	}
 	/*private Vector3 InstantiatePoint()
 	{
 		Vector3 mousePosition = Input.mousePosition;
