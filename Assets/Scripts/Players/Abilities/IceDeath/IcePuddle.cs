@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -58,6 +59,9 @@ public class IcePuddle : Ability
 				if (_playerLinks.RuneComponent.RemoveRune(1, this))
 				{
 					Shoot();
+
+					_enabled = false;
+					_preViewPuddle.SetActive(false);
 				}
 				else
 				{
@@ -87,17 +91,17 @@ public class IcePuddle : Ability
 		_preViewPuddle.SetActive(false);
 		_enabled = false;
 	}
+	[Command]
 	private void Shoot()
 	{
-		//IcePuddleObject puddle = Instantiate(_puddle, _spawnPoint.transform.position, Quaternion.Euler(_croosFire.transform.rotation.x, _croosFire.transform.rotation.y, _croosFire.transform.rotation.z));
-		//IcePuddleObject puddle = Instantiate(_puddle, _preViewPuddle.transform.position, Quaternion.Euler(0, 0, _angle2));
-		IcePuddleObject puddle = Instantiate(_puddle, _preViewPuddle.transform.position, Quaternion.Euler(0, 0, _preViewPuddle.transform.eulerAngles.z));
-		puddle.talant = _frostingFrozenTalant;
-		puddle.dad = _playerLinks;
-		puddle.energy = (Energy)Mana;
-		puddle.healthComponent = _playerLinks.Health;
-		_enabled = false;
-		_preViewPuddle.SetActive(false);
+		GameObject puddleGm = Instantiate(_puddle.gameObject, _preViewPuddle.transform.position, Quaternion.Euler(0, 0, _preViewPuddle.transform.eulerAngles.z));
+		IcePuddleObject puddle = puddleGm.GetComponent<IcePuddleObject>();
+		puddle.Init(_playerLinks.gameObject);
+		//puddle.talant = _frostingFrozenTalant;
+		//puddle.energy = (Energy)Mana;
+		//puddle.healthComponent = _playerLinks.Health;
+
+		NetworkServer.Spawn(puddle.gameObject);
 	}
 
 	private Vector3 InstantiatePoint()

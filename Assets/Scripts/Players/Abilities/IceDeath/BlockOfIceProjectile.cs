@@ -6,7 +6,6 @@ using UnityEngine;
 public class BlockOfIceProjectile : MonoBehaviour
 {
 	public float energyDad;
-	[HideInInspector] public Character dad;
 
 	[SerializeField] private Rigidbody2D _rb;
 	[SerializeField] GameObject _hitEffect;
@@ -14,8 +13,15 @@ public class BlockOfIceProjectile : MonoBehaviour
 	[SerializeField] private float _force;
 	[SerializeField] private float _distance = 6;
 
+	private Character _dad;
 	private Vector2 startPos;
-
+	private bool _initialized = false;
+	public void Init(GameObject dad)
+	{
+		_dad = dad.GetComponent<Character>();
+		Debug.Log("bullet");
+		_initialized = true;
+	}
 	private void Awake()
 	{
 		Debug.Log("bullet");
@@ -25,6 +31,7 @@ public class BlockOfIceProjectile : MonoBehaviour
 
 	private void Update()
 	{
+		if (!_initialized) return;
 		//_spriteRenderer.DOFade(0, 1);
 		if (Vector2.Distance(transform.position, startPos) > _distance * GlobalVariable.cellSize)
 		{
@@ -34,7 +41,8 @@ public class BlockOfIceProjectile : MonoBehaviour
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		if (collision.gameObject == dad.gameObject || collision.CompareTag("Ability"))
+		if (!_initialized || _dad == null) return;
+		if (collision.gameObject == _dad.gameObject || collision.CompareTag("Ability"))
 			return;
 		//damage, freez etc
 		if (collision.TryGetComponent<Character>(out var target))
@@ -43,14 +51,14 @@ public class BlockOfIceProjectile : MonoBehaviour
 			float duration = 9;
 			//target.CharacterState.energy = dad.Stamina;
 			float curDamage = 20 + Random.Range(0, 10);
-			Energy energyLink = (Energy)dad.Stamina;
+			Energy energyLink = (Energy)_dad.Stamina;
 			if (target.CharacterState.CheckForState(States.Frozen))
 			{
 				curDamage *= 1.4f;
 			}
 			energyLink.SumDamageMake(curDamage);
 			target.Health.TakeDamage(curDamage, DamageType.Physical);
-			target.CharacterState.AddState(new Cooling(), dad, duration, 0, States.Cooling);
+			target.CharacterState.AddState(new Cooling(), _dad, duration, 0, States.Cooling);
 
 			//dad.Stamina.Use(duration * 20);
 			//damage

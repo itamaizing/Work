@@ -93,10 +93,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8903762149178614652}
-  - component: {fileID: 748218918613675416}
   - component: {fileID: -4999684937418030614}
   - component: {fileID: -53743584304020754}
   - component: {fileID: 1551949807324494597}
+  - component: {fileID: 7979070038508063649}
+  - component: {fileID: 4413981166328840572}
   m_Layer: 12
   m_Name: IcyStreamProjectile
   m_TagString: Untagged
@@ -120,25 +121,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &748218918613675416
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5195731727944466540}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cec81e1ccabda534ea34bd1f490e8083, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  energyDad: 0
-  dad: {fileID: 0}
-  _rb: {fileID: -53743584304020754}
-  _hitEffect: {fileID: 0}
-  _spriteRenderer: {fileID: 2859774875230355193}
-  _force: 30
-  _distance: 5
 --- !u!58 &-4999684937418030614
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -214,9 +196,61 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   energyDad: 0
-  dad: {fileID: 0}
+  talant: {fileID: 0}
   _rb: {fileID: -53743584304020754}
   _hitEffect: {fileID: 0}
   _spriteRenderer: {fileID: 2859774875230355193}
   _force: 2
   _distance: 4
+--- !u!114 &7979070038508063649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5195731727944466540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  _assetId: 3300477131
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
+--- !u!114 &4413981166328840572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5195731727944466540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a553cb17010b2403e8523b558bffbc14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 3270493855239363353, guid: d490c899d604d2c4dbb3f72e61cacb6e, type: 3}
+  syncPosition: 1
+  syncRotation: 0
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  sendIntervalMultiplier: 1
+  timelineOffset: 0
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  bufferResetMultiplier: 3
+  changedDetection: 1
+  positionSensitivity: 0.01
+  rotationSensitivity: 0.01
+  scaleSensitivity: 0.01

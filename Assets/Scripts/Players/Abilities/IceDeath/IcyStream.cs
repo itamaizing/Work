@@ -1,3 +1,4 @@
+using Mirror;
 using UnityEngine;
 
 public class IcyStream : Ability
@@ -54,10 +55,11 @@ public class IcyStream : Ability
 		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
 		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
-		IcyStreamProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
+		/*IcyStreamProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
 		projectile.talant = _frostingFrozenTalant;
 		projectile.dad = _playerLinks;
-		projectile.energyDad = _playerLinks.Stamina.Value;
+		projectile.energyDad = _playerLinks.Stamina.Value;*/
+		CmdCreateProjecttile(angle);
 		float usedEnergy = 0;
 		if (_playerLinks.Stamina.Value >= 40)
 		{
@@ -69,5 +71,16 @@ public class IcyStream : Ability
 		}
 		_playerLinks.Stamina.Use(usedEnergy);
 		Cancel();
+	}
+
+	[Command]
+	private void CmdCreateProjecttile(float angle)
+	{
+		IcyStreamProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
+		projectile.talant = _frostingFrozenTalant;
+		projectile.Init(_playerLinks.gameObject);
+		projectile.energyDad = _playerLinks.Stamina.Value;
+
+		NetworkServer.Spawn(projectile.gameObject);
 	}
 }

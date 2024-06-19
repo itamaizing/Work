@@ -15,6 +15,7 @@ public class DeathSpiralProjectile : MonoBehaviour
 
 	private void Awake()
 	{
+		Debug.Log("has spawned");
 		startPos = transform.position;
 
 		_rb.AddForce(transform.up * _force, ForceMode2D.Impulse);
@@ -30,6 +31,7 @@ public class DeathSpiralProjectile : MonoBehaviour
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
+		if (dad == null) return;
 		if (collision.gameObject == dad)
 			return;
 		//damage, freez etc
@@ -45,7 +47,7 @@ public class DeathSpiralProjectile : MonoBehaviour
 		}
 
 		//if collision == ice puddle or ice shadow
-		Explode();
+		//Explode();
 	}
 
 	private void Explode()

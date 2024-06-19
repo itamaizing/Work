@@ -1,29 +1,40 @@
 using DG.Tweening;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class IceCloudProjectile : MonoBehaviour
 {
 	public float energyDad;
-	[HideInInspector]public Character dad;
+	//[HideInInspector] public GameObject dadGm;
 
+	private Character _dad;
 	[SerializeField] private Rigidbody2D _rb;
-	[SerializeField] GameObject _hitEffect;
-	[SerializeField] SpriteRenderer _spriteRenderer;
+	[SerializeField] private GameObject _hitEffect;
+	[SerializeField] private SpriteRenderer _spriteRenderer;
 	[SerializeField] private float _force;
 	[SerializeField] private float _distance = 5;
 	
 	private Vector2 startPos;
+	private bool _initialized = false;
 
+	public void Init(GameObject dad)
+	{
+		_dad = dad.GetComponent<Character>();
+		Debug.Log("bullet");
+		_initialized = true;
+	}
 	private void Awake()
 	{
-		Debug.Log("bullet");
-		startPos = transform.position;		
+		//_dad = dadGm.GetComponent<Character>();
+		startPos = transform.position;
 		_rb.AddForce(transform.up * _force, ForceMode2D.Impulse);
 	}
 
 	private void Update()
 	{
-		_spriteRenderer.DOFade(0, 1);
+		//if (!_initialized) return;
+
+        _spriteRenderer.DOFade(0, 1);
 		if(Vector2.Distance(transform.position, startPos) > _distance * GlobalVariable.cellSize)
 		{
 			Explode();
@@ -32,7 +43,8 @@ public class IceCloudProjectile : MonoBehaviour
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		if (collision.gameObject == dad.gameObject || collision.CompareTag("Ability"))
+		if (_dad == null) return;
+		if (collision.gameObject == _dad.gameObject || collision.CompareTag("Ability"))
 			return;
 		//damage, freez etc
 		if(collision.TryGetComponent<Character>(out var target))
@@ -41,14 +53,14 @@ public class IceCloudProjectile : MonoBehaviour
 			float duration = 1 + energyDad / 20;
 			//target.CharacterState.energy = dad.Stamina;
 			float curDamage = 10 + energyDad / 4;
-			Energy energyLink = (Energy)dad.Stamina;
+			Energy energyLink = (Energy)_dad.Stamina;
 			if (target.CharacterState.CheckForState(States.Frozen))
 			{
 				curDamage *= 1.4f;
 			}
 			energyLink.SumDamageMake(curDamage);
 			target.Health.TakeDamage(curDamage, DamageType.Physical);
-			target.CharacterState.AddState(new FrozenState(), dad, duration, 30, States.Frozen);
+			target.CharacterState.AddState(new FrozenState(), _dad, duration, 30, States.Frozen);
 
 			//dad.Stamina.Use(duration * 20);
 			//damage
