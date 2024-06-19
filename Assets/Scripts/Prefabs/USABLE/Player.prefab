@@ -411,6 +411,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22d89e8fc912e73459ee8ef407455b14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _rb: {fileID: 3759936847054020137}
   _healthComponent: {fileID: 1078220477695681604}
   _playerMove: {fileID: 5665079937663656764}
@@ -422,7 +425,7 @@ MonoBehaviour:
   _selectComponent: {fileID: 5511617219408767834}
   _spawnComponent: {fileID: 3330577042116454553}
   _playerData: {fileID: 11400000, guid: 1382b47eecc788c46b35297311c129c3, type: 2}
-  IController: 1
+  AAA: 0
 --- !u!50 &3759936847054020137
 Rigidbody2D:
   serializedVersion: 4
@@ -431,7 +434,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1521997633048654849}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -722,7 +725,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 5
-  radius: 1
+  radius: 0.25
   height: 2
   canMove: 1
   maxSpeed: 1
@@ -766,7 +769,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  unit: {fileID: 2981867871510918870, guid: d321207ef616498478038beb68b111ea, type: 3}
+  unit: {fileID: 8266765981491458884, guid: d321207ef616498478038beb68b111ea, type: 3}
 --- !u!1 &1565031513079442272
 GameObject:
   m_ObjectHideFlags: 0

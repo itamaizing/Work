@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 
 [RequireComponent(typeof(NetworkIdentity))]
-public abstract class Character : MonoBehaviour
+public abstract class Character : NetworkBehaviour
 {
 	[SerializeField] private Rigidbody2D _rb;
 	[SerializeField] private HealthComponent _healthComponent;

@@ -4,14 +4,18 @@ public class HeroComponent : Character
 {
     [SerializeField] private CharacterData _playerData;
 
-    public bool IController = false;
-
     public CharacterData PlayerData => _playerData;
 
-    private void Awake()
+    public bool AAA;
+    private void Start()
     {
         Initialize(_playerData);
-        if(IController) SelectManager.Instance.AddControl(this);
+    }
+
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        if(isLocalPlayer) SelectManager.Instance.AddControl(this);
     }
 
     public override void Initialize(CharacterData characterData)
