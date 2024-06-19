@@ -76,7 +76,7 @@ public class SelectManager : MonoBehaviour
 
     private bool CanControl(Character character)
     {
-        if (character is MinionComponent component && component.HeroParent == _contoller)
+        if (character is MinionComponent component && component.HeroParent.GetComponent<HeroComponent>() == _contoller)
         {
             return true;
         }

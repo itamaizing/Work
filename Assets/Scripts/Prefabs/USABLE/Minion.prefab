@@ -2244,6 +2244,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4a13cc13c691cf48b313c3aceaea208, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _rb: {fileID: 955366229743536146}
   _healthComponent: {fileID: 3078913981996463649}
   _playerMove: {fileID: 9209893611178306962}
@@ -2255,7 +2258,7 @@ MonoBehaviour:
   _selectComponent: {fileID: 1836414566327765074}
   _spawnComponent: {fileID: 0}
   _playerData: {fileID: 11400000, guid: 6d4bdd627c946744396722e0bd4dd7d5, type: 2}
-  _heroParent: {fileID: 8468544467696250796, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+  _heroParent: {fileID: 0}
 --- !u!114 &1589028376223215338
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2297,7 +2300,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 5
-  radius: 0.5
+  radius: 0.1
   height: 2
   canMove: 1
   maxSpeed: 5

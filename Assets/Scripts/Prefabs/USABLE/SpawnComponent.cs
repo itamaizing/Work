@@ -5,8 +5,7 @@ using UnityEngine;
 
 public class SpawnComponent : NetworkBehaviour
 {
-    [SerializeField] private MinionComponent unit;
-    
+    [SerializeField] private GameObject unit;
     
     private List<MinionComponent> _units = new List<MinionComponent>();
 
@@ -18,17 +17,18 @@ public class SpawnComponent : NetworkBehaviour
     [Command]
     public void Cmd_SpawnUnit(GameObject parent)
     {
-        var controllable = Instantiate(unit.gameObject);
-        var contollableMinion = unit.GetComponent<MinionComponent>();
-        var parentHC = parent.GetComponent<HeroComponent>();
+        var controllable = Instantiate(unit);
+        var contollableMinion = controllable.GetComponent<MinionComponent>();
             
         _units.Add(contollableMinion);
             
         var position = _units.Count + 1 / Positions.unitInGroupPositions.Count;
 
         controllable.transform.position = (Vector2) parent.transform.position + Positions.unitInGroupPositions[position];
-
-        NetworkServer.Spawn(controllable);
+        
+        controllable.GetComponent<MinionComponent>().SetParent(parent);
+        
+        NetworkServer.Spawn(controllable , parent);
     }
     
 
@@ -40,7 +40,7 @@ public class SpawnComponent : NetworkBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Z) && GetComponent<SelectComponent>().IsSelect )
+        if (Input.GetKeyDown(KeyCode.Z) && GetComponent<SelectComponent>().IsSelect)
         {
             SpawnUnit(this.gameObject);
         }
