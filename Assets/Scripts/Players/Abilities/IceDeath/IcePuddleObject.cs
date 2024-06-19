@@ -7,71 +7,96 @@ using UnityEngine.Serialization;
 
 public class IcePuddleObject : MonoBehaviour
 {
-	[HideInInspector] public Character dad;
+	//[HideInInspector] public GameObject dadGm;
 	[HideInInspector] public FrostingFrozenTalant talant;
-	[FormerlySerializedAs("energyPlayer")] [HideInInspector] public Energy energy;
-	[FormerlySerializedAs("healthPlayer")] [HideInInspector] public HealthComponent healthComponent;
 	[HideInInspector] public float timeToDestroy = 3;
 
+	[FormerlySerializedAs("energyPlayer")]  private Energy _energy;
+	[FormerlySerializedAs("healthPlayer")]  private HealthComponent _healthComponent;
 	[SerializeField] private Rigidbody2D _rb;
-	[SerializeField] GameObject _hitEffect;
 	[SerializeField] private SpriteRenderer _spriteRenderer;
+	[SerializeField] private GameObject _hitEffect;
 
+	 private Character _dad;
 	private List<CharacterState> _enemies = new List<CharacterState>();
-
+	private bool _initialized = false;
 	/*
 	 * timer to destroy
 	 * buff player
 	 * */
-	private void Start()
+	public void Init(GameObject dad)
 	{
-		_spriteRenderer.DOFade(1, 1);
+		_dad = dad.GetComponent<Character>();
+		_initialized = true;
+
+		_energy = (Energy)_dad.Stamina;
+		_healthComponent = _dad.Health;
+
+		AfterInit();
+		/*_spriteRenderer.DOFade(1, 1);
 		//energy.test();
 		int timeToAdd = (int)energy.Value / 5;
 		if (timeToAdd > 4)
 			timeToAdd = 4;
 
 		timeToDestroy += timeToAdd;
-		energy.Use(timeToAdd * 5) ;
+		energy.Use(timeToAdd * 5);
+		StartCoroutine(DestroyShadow());
+		StartCoroutine(StartFade());*/
+	}
+	private void Start()
+	{
+		_spriteRenderer.DOFade(1, 1);
+	}
+	private void AfterInit()
+	{
+		//energy.test();
+		int timeToAdd = (int)_energy.Value / 5;
+		if (timeToAdd > 4)
+			timeToAdd = 4;
+
+		timeToDestroy += timeToAdd;
+		_energy.Use(timeToAdd * 5) ;
 		StartCoroutine(DestroyShadow());
 		StartCoroutine(StartFade());
 	}
 
 	private void OnTriggerExit2D(Collider2D collision)
 	{
-		if (collision.gameObject == dad.gameObject && healthComponent != null)
+		if (collision.gameObject == _dad.gameObject && _healthComponent != null)
 		{
-			healthComponent.SetBoostRegen2(0);
+			_healthComponent.SetBoostRegen2(0);
 			return;
 		}		
 	}
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		if (collision.gameObject == dad.gameObject)
+		if(!_initialized) return;
+		if (collision.gameObject == _dad.gameObject)
 		{
-			healthComponent.SetBoostRegen2(0.01f);
+			_healthComponent.SetBoostRegen2(0.01f);
 			return;
 		}
-		if (collision.TryGetComponent<Character>(out var target) && energy != null && collision.gameObject != dad.gameObject)
+		if (collision.TryGetComponent<Character>(out var target) && _energy != null && collision.gameObject != _dad.gameObject)
 		{
 			float duration = 3;
 			//target.CharacterState.energy = energy;
-			if(energy.Value/5 > 4) 
+			if(_energy.Value/5 > 4) 
 			{
 				duration += 4;
-				energy.Use(20);
+				_energy.Use(20);
 			}
 			else
 			{
-				duration += energy.Value / 5;
-				energy.UseAllEnergy();
+				duration += _energy.Value / 5;
+				_energy.UseAllEnergy();
 			}
-			target.CharacterState.AddState(new FrostingState(), dad, duration,0,States.Frosting);
+			target.CharacterState.AddState(new FrostingState(), _dad, duration,0,States.Frosting);
 			if (talant != null)
 			{
 				if (talant.IsActive)
 				{
-					target.CharacterState.AddState(new FrozenState(), dad, duration, 0, States.Frozen);
+					target.CharacterState.AddState(new FrozenState(), _dad, duration, 0, States.Frozen);
 				}
 			}
 			_enemies.Add(target.CharacterState);
@@ -85,7 +110,7 @@ public class IcePuddleObject : MonoBehaviour
 			GameObject hitEffect = Instantiate(_hitEffect, transform.position, Quaternion.identity);
 			Destroy(hitEffect, 5f);
 		}
-		healthComponent.SetBoostRegen2(0);
+		_healthComponent.SetBoostRegen2(0);
 		foreach (var target in _enemies)
 		{
 			target.RemoveState(States.Frosting); 

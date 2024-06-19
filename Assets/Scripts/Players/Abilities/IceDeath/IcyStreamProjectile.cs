@@ -1,13 +1,10 @@
 using DG.Tweening;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class IcyStreamProjectile : MonoBehaviour
 {
 	public float energyDad;
-	[HideInInspector] public Character dad;
 	[HideInInspector] public FrostingFrozenTalant talant;
 
 	[SerializeField] private Rigidbody2D _rb;
@@ -16,14 +13,23 @@ public class IcyStreamProjectile : MonoBehaviour
 	[SerializeField] private float _force;
 	[SerializeField] private float _distance = 4;
 
+	private Character _dad;
 	private float _timer = 1.5f;
 	private float _time = 0;
 	private float _stepOfTimer = 0.3f;
 	private float _damage = 1;
 	private float _chanceOfFrosting = 0.05f;
 	private float _durationOfDebuff = 2;
+	private bool _initialized = false;
 	private List<Character> _enemyList;
 	//private Vector2 startPos;
+
+	public void Init(GameObject dad)
+	{
+		_dad = dad.GetComponent<Character>();
+		Debug.Log("bullet");
+		_initialized = true;
+	}
 
 	private void Awake()
 	{
@@ -53,22 +59,23 @@ public class IcyStreamProjectile : MonoBehaviour
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		if (collision.gameObject == dad.gameObject || collision.CompareTag("Ability"))
+		if (!_initialized || _dad == null) return;
+		if (collision.gameObject == _dad.gameObject || collision.CompareTag("Ability"))
 			return;
 
 		if (collision.TryGetComponent<Character>(out var target))
 		{
 			_enemyList.Add(target);
-			Energy energyLink = (Energy)dad.Stamina;
+			Energy energyLink = (Energy)_dad.Stamina;
 			energyLink.SumDamageMake(_damage);
 			target.Health.TryTakeDamage(_damage, DamageType.Magical, AttackRangeType.RangeAttack);
-			target.CharacterState.AddState(new Cooling(), dad, _durationOfDebuff, 0, States.Cooling);
+			target.CharacterState.AddState(new Cooling(), _dad, _durationOfDebuff, 0, States.Cooling);
 		}
 		//Explode();
 	}
 	private void OnTriggerExit2D(Collider2D collision)
 	{
-		if (collision.gameObject == dad.gameObject || collision.CompareTag("Ability"))
+		if (collision.gameObject == _dad.gameObject || collision.CompareTag("Ability"))
 			return;
 
 		if (collision.TryGetComponent<Character>(out var target))
@@ -100,15 +107,15 @@ public class IcyStreamProjectile : MonoBehaviour
 			{
 				enemy.Health.TryTakeDamage(_damage, DamageType.Magical, AttackRangeType.RangeAttack);
 
-				enemy.CharacterState.AddState(new Cooling(), dad, _durationOfDebuff, 0, States.Cooling);
+				enemy.CharacterState.AddState(new Cooling(), _dad, _durationOfDebuff, 0, States.Cooling);
 				if (Random.Range(0, 1f) <= _chanceOfFrosting)
 				{
-					enemy.CharacterState.AddState(new FrostingState(), dad, _durationOfDebuff, 0, States.Frosting);
+					enemy.CharacterState.AddState(new FrostingState(), _dad, _durationOfDebuff, 0, States.Frosting);
 					if(talant != null)
 					{
 						if(talant.IsActive)
 						{
-							enemy.CharacterState.AddState(new FrozenState(), dad, _durationOfDebuff, 0, States.Frozen);
+							enemy.CharacterState.AddState(new FrozenState(), _dad, _durationOfDebuff, 0, States.Frozen);
 						}
 					}
 				}

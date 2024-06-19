@@ -38,18 +38,18 @@ public class IceShadow : Ability
 	private void Shoot()
 	{
 		Debug.Log("test spawn");
-		GameObject projectileGm = Instantiate(_shadow.gameObject, gameObject.transform.position, Quaternion.identity);
-		IceShadowObject projectile = projectileGm.GetComponent<IceShadowObject>();
-		projectile.dad = _playerLinks;
-		projectile.SetEnergy(Mana.Value);
+		IceShadowObject projectileGm = Instantiate(_shadow, gameObject.transform.position, Quaternion.identity);
+		//IceShadowObject projectile = projectileGm.GetComponent<IceShadowObject>();
+		projectileGm.dadGm = _playerLinks.gameObject;
+		projectileGm.SetEnergy(Mana.Value);
 		Energy energy = (Energy)Mana;
 		energy.UseAllEnergy();
 		//projectile.energyPlayer = (EnergyPlayer)Mana;
-		projectile.healthPlayer = _playerLinks.Health;
-		TryCancel();
-		NetworkServer.Spawn(projectileGm);
+		//projectile.healthPlayer = _playerLinks.Health;
+		
+		NetworkServer.Spawn(projectileGm.gameObject);
 	}
-	[Command]
+	/*[Command]
 	protected void CmdCreateProjecttile(Transform target)
 	{
 		GameObject item = Instantiate(_shadow.gameObject, transform.position, Quaternion.identity);
@@ -57,7 +57,7 @@ public class IceShadow : Ability
 		item.GetComponent<Projectile>().StartFly(target, true);
 
 		NetworkServer.Spawn(item);
-	}
+	}*/
 	/*private Vector3 InstantiatePoint()
 	{
 		Vector3 mousePosition = Input.mousePosition;

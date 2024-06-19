@@ -24,14 +24,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 174297435391799958}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: -0.31577134}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 8903762149178614652}
   m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
 --- !u!212 &2859774875230355193
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -73,12 +73,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.14550711, g: 0.07027408, b: 0.7924528, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 05d1feecc31470d488b7d2844ff7d6eb, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 9.2, y: 9.2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -95,11 +95,11 @@ GameObject:
   - component: {fileID: 8903762149178614652}
   - component: {fileID: -4999684937418030614}
   - component: {fileID: -53743584304020754}
-  - component: {fileID: 5633596165386628248}
-  - component: {fileID: -780911811811319846}
-  - component: {fileID: 4683029469677447633}
-  m_Layer: 0
-  m_Name: DeathSpiralProjectile
+  - component: {fileID: 7979070038508063649}
+  - component: {fileID: 4413981166328840572}
+  - component: {fileID: 7046970149100517610}
+  m_Layer: 12
+  m_Name: BlockOfIceProjectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -146,7 +146,7 @@ CircleCollider2D:
     m_Bits: 4294967295
   m_ContactCaptureLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 8183
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -155,7 +155,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 2
 --- !u!50 &-53743584304020754
 Rigidbody2D:
   serializedVersion: 4
@@ -183,24 +183,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &5633596165386628248
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5195731727944466540}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3e4e82926022c346a7f7a6e640675fd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dad: {fileID: 0}
-  _rb: {fileID: -53743584304020754}
-  _hitEffect: {fileID: 0}
-  _force: 30
-  _distance: 5
---- !u!114 &-780911811811319846
+--- !u!114 &7979070038508063649
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -213,11 +196,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneId: 0
-  _assetId: 2379881633
+  _assetId: 2417398854
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
---- !u!114 &4683029469677447633
+--- !u!114 &4413981166328840572
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -252,3 +235,21 @@ MonoBehaviour:
   positionSensitivity: 0.01
   rotationSensitivity: 0.01
   scaleSensitivity: 0.01
+--- !u!114 &7046970149100517610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5195731727944466540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0864bbbb11d8a1349a43930b579e3d92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  energyDad: 0
+  _rb: {fileID: -53743584304020754}
+  _hitEffect: {fileID: 0}
+  _spriteRenderer: {fileID: 2859774875230355193}
+  _force: 2
+  _distance: 6

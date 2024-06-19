@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-public class IceSword : Ability
+public class IceSword : TargetOrAreaAbility
 {
 	[SerializeField] private float _damage = 15f;
 	//[SerializeField] private GameObject _basePlayer;
@@ -15,7 +15,7 @@ public class IceSword : Ability
 	private float _cooldownTimer = 1.4f;
 	private int _hitInTheRow = 0;
 	private bool _canUse = true;
-	private Character _target;
+	private Character _oldtarget;
 
 	private void Update()
 	{
@@ -26,11 +26,11 @@ public class IceSword : Ability
 	{
 		//turn off targets and etc		
 	}
-	protected override void Cast()
+	/*protected override void Cast()
 	{
 		if(!_canUse) return;
 
-		PayCost();
+		/*PayCost();
 		Collider2D[] colliders = Physics2D.OverlapCircleAll(gameObject.transform.position, _raduis);
 		Debug.Log("try hit");
 		foreach (Collider2D collider in colliders)
@@ -54,15 +54,35 @@ public class IceSword : Ability
 					_canUse = false;
 					_target = enemy;
 					Debug.Log("first hit from sword");
-				}*/
+				}
 			}
 		}
 		if (_target != null)
 		{
-			_target.Health.TryTakeDamage(_damage + Random.Range(0, 10), DamageType.Physical, AttackRangeType.MeleeAttack);
+			ApplyDamage(Target.Health, _damage + Random.Range(0, 10), DamageType.Physical, AttackRangeType.MeleeAttack);
+			//_target.Health.TryTakeDamage(_damage + Random.Range(0, 10), DamageType.Physical, AttackRangeType.MeleeAttack);
 		}
 
 		if( _hitInTheRow > 2 ) 
+		{
+			_deathSpiral.AddCharge();
+			_hitInTheRow = 0;
+		}
+	}*/
+
+	protected override void CastAction()
+	{
+		Debug.Log("SHOT SWORD");
+		if (Target != null)
+		{
+			_target.Health.TryTakeDamage(_damage + Random.Range(0, 10), DamageType.Physical, AttackRangeType.MeleeAttack);
+			if (_oldtarget == null || _oldtarget == Target)
+			{
+				_oldtarget = Target;
+				_hitInTheRow++;
+			}
+		}
+		if (_hitInTheRow > 2)
 		{
 			_deathSpiral.AddCharge();
 			_hitInTheRow = 0;

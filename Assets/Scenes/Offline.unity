@@ -1510,6 +1510,7 @@ MonoBehaviour:
   autoCreatePlayer: 0
   playerSpawnMethod: 0
   spawnPrefabs:
+  - {fileID: 5195731727944466540, guid: 972ffc3bac4d76048b18c6e9bbdcfb98, type: 3}
   - {fileID: 4371443321967966874, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
   - {fileID: 4371443321967966874, guid: 0fe4228580ff977419acc74a8f3e1a6f, type: 3}
   - {fileID: 4371443321967966874, guid: a79366755ff1599429f6d57fd0be0061, type: 3}
@@ -1521,6 +1522,7 @@ MonoBehaviour:
   - {fileID: 5195731727944466540, guid: f44e1a220c732a64f9af10c37bf5aed0, type: 3}
   - {fileID: 884365701278928767, guid: bc61883431de372488a55d10d8a02690, type: 3}
   - {fileID: 2672404202709694877, guid: 8dea5af4c60165d45af4522b1a596998, type: 3}
+  - {fileID: 5195731727944466540, guid: 34a7c786c7eb01e4d8859ae87ecd6019, type: 3}
   - {fileID: 8266765981491458884, guid: d321207ef616498478038beb68b111ea, type: 3}
   - {fileID: 1521997633048654849, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
   - {fileID: 2385148975066525671, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}

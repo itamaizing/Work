@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -50,12 +51,23 @@ public class BlockOfIce : Ability
 		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
 		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
-		BlockOfIceProjectile projectile = Instantiate(_iceArrow, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
-		projectile.dad = _playerLinks;
-		projectile.energyDad = _playerLinks.Stamina.Value;
+		/*BlockOfIceProjectile projectile = Instantiate(_iceArrow, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
+		projectile._dad = _playerLinks;
+		projectile.energyDad = _playerLinks.Stamina.Value;*/
+		CmdCreateProjecttile(angle);
 		//_playerLinks.Stamina.Use(_playerLinks.Stamina.Value);
 		Cancel();
 	}
+	[Command]
+	private void CmdCreateProjecttile(float angle)
+	{
+		BlockOfIceProjectile projectile = Instantiate(_iceArrow, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
+		projectile.Init(_playerLinks.gameObject);
+		projectile.energyDad = _playerLinks.Stamina.Value;
+
+		NetworkServer.Spawn(projectile.gameObject);
+	}
+
 
 	private IEnumerator Casting()
 	{

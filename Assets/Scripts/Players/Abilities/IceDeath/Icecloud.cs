@@ -54,7 +54,6 @@ public class Icecloud : Ability
 	
 	private void Shoot()
 	{
-		Debug.Log("shot");
 		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
 		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
@@ -65,11 +64,12 @@ public class Icecloud : Ability
 		Cancel();*/
 		CmdCreateProjecttile(angle);
 	}
+
 	[Command]
 	private void CmdCreateProjecttile(float angle)
 	{
 		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
-		projectile.dad = _playerLinks;
+		projectile.Init(_playerLinks.gameObject);
 		projectile.energyDad = _playerLinks.Stamina.Value;
 		_playerLinks.Stamina.Use(_playerLinks.Stamina.Value);
 		Cancel();
