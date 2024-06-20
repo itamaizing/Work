@@ -1,37 +1,42 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 
-public class IceShadowObject : MonoBehaviour
+public class IceShadowObject : Projectiles
 {
-	[HideInInspector] public GameObject dadGm;
 	//[HideInInspector] public EnergyPlayer energyPlayer;
-	[HideInInspector] public float timeToDestroy = 2;
+	[HideInInspector] public float timeToDestroy = 20;
 	[HideInInspector] public float timeToDestroyAlive = 10;
 
-	[HideInInspector] private HealthComponent _healthPlayer;
-	[HideInInspector] private Character _dad;
-	[SerializeField] private Rigidbody2D _rb;
-	[SerializeField] GameObject _hitEffect;
-
+	private HealthComponent _healthPlayer;
 	private Coroutine _destroyObj;
-	private float _hp = 10;
 	private bool _isAlive = false;
-	private float _energyValue;
 	/*
 	 * timer to destroy
 	 * buff player
 	 * */
-	private void Start()
+	
+	public override void Init(Character dad, float energy)
 	{
-		_dad = dadGm.GetComponent<Character>();
+		_dad = dad;
+		_energyDad = energy;
 		_healthPlayer = _dad.Health;
-		//float timeToAdd = energyPlayer.Value / 20;
-		//timeToDestroy += timeToAdd;
-		//energyPlayer.UseAllEnergy();
-		_destroyObj = StartCoroutine(DestroyShadow());
+		_initialized = true;
+
+		float timeToAdd = energy / 20;
+		timeToDestroy += timeToAdd;
+		Debug.Log("bullet init  " + _dad.name);
 	}
 
+	private void Start()
+	{
+		_destroyObj = StartCoroutine(DestroyShadow());
+	}
+	private void Update()
+	{
+		if (_initialized) { Debug.Log("SEEEEEEEEEEEEEEEEEEEEEEEEEET"); }
+	}
 	private void OnTriggerExit2D(Collider2D collision)
 	{
 		if (collision.gameObject == _dad && _healthPlayer != null)
@@ -42,20 +47,17 @@ public class IceShadowObject : MonoBehaviour
 	}
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
+		if(_dad == null) return;
 		if (collision.gameObject == _dad.gameObject)
 		{
 			_healthPlayer.SetBoostRegen(0.01f);
 		}
-		//if (collision.TryGetComponent<PlayerLinks>(out var target) && energyPlayer != null && collision.gameObject !=dad)
 		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject !=_dad.gameObject)
 		{
-			float duration = 2 + _energyValue / 20;
-			//target.CharacterState.energy = energyPlayer;
-			//energyPlayer.UseAllEnergy();
+			float duration = 2 + _energyDad / 20;
 
 			target.CharacterState.AddState(new FrozenState(), _dad, duration, 0, States.Frozen);
-			//energyPlayer.Use(energyPlayer.Value);
-			GetComponent<Collider2D>().enabled = false;
+			//GetComponent<Collider2D>().enabled = false;
 			Destroy(gameObject);
 		}
 		//Explode();
@@ -95,10 +97,10 @@ public class IceShadowObject : MonoBehaviour
 		//_destroyObj.
 	}
 
-	public void SetEnergy(float value)
+	/*public void SetEnergy(float value)
 	{
 		float timeToAdd = value / 20;
 		timeToDestroy += timeToAdd;
 		_energyValue = value;
-	}
+	}*/
 }

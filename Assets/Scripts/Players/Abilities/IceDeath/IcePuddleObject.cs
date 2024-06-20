@@ -5,61 +5,36 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class IcePuddleObject : MonoBehaviour
+public class IcePuddleObject : Projectiles
 {
-	//[HideInInspector] public GameObject dadGm;
 	[HideInInspector] public FrostingFrozenTalant talant;
-	[HideInInspector] public float timeToDestroy = 3;
 
 	[FormerlySerializedAs("energyPlayer")]  private Energy _energy;
 	[FormerlySerializedAs("healthPlayer")]  private HealthComponent _healthComponent;
-	[SerializeField] private Rigidbody2D _rb;
-	[SerializeField] private SpriteRenderer _spriteRenderer;
-	[SerializeField] private GameObject _hitEffect;
+	//[SerializeField] private Rigidbody2D _rb;
 
-	 private Character _dad;
+	private float _timeToDestroy = 0;
 	private List<CharacterState> _enemies = new List<CharacterState>();
-	private bool _initialized = false;
 	/*
-	 * timer to destroy
 	 * buff player
 	 * */
-	public void Init(GameObject dad)
+	public override void Init(Character dad, float timeToDestroy)
 	{
-		_dad = dad.GetComponent<Character>();
+		_dad = dad;
 		_initialized = true;
 
 		_energy = (Energy)_dad.Stamina;
 		_healthComponent = _dad.Health;
+		_timeToDestroy += timeToDestroy;
 
-		AfterInit();
-		/*_spriteRenderer.DOFade(1, 1);
-		//energy.test();
-		int timeToAdd = (int)energy.Value / 5;
-		if (timeToAdd > 4)
-			timeToAdd = 4;
-
-		timeToDestroy += timeToAdd;
-		energy.Use(timeToAdd * 5);
 		StartCoroutine(DestroyShadow());
-		StartCoroutine(StartFade());*/
+		StartCoroutine(StartFade());
 	}
 	private void Start()
 	{
 		_spriteRenderer.DOFade(1, 1);
 	}
-	private void AfterInit()
-	{
-		//energy.test();
-		int timeToAdd = (int)_energy.Value / 5;
-		if (timeToAdd > 4)
-			timeToAdd = 4;
 
-		timeToDestroy += timeToAdd;
-		_energy.Use(timeToAdd * 5) ;
-		StartCoroutine(DestroyShadow());
-		StartCoroutine(StartFade());
-	}
 
 	private void OnTriggerExit2D(Collider2D collision)
 	{
@@ -121,14 +96,14 @@ public class IcePuddleObject : MonoBehaviour
 
 	private IEnumerator DestroyShadow()
 	{
-		yield return new WaitForSeconds(timeToDestroy);
+		yield return new WaitForSeconds(_timeToDestroy);
 		Destroy(gameObject);
 		//turn off energy boost
 		//destroy
 	}
 	private IEnumerator StartFade()
 	{
-		yield return new WaitForSeconds(timeToDestroy-2);
+		yield return new WaitForSeconds(_timeToDestroy-2);
 		_spriteRenderer.DOFade(0, 2);
 		//turn off energy boost
 		//destroy

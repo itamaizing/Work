@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +8,7 @@ public class CircularFrosting : Ability
 	//[SerializeField] private CircularFrostingObject _circle;
 	[SerializeField] private Character _links;
 	[SerializeField] private FrostingFrozenTalant _talant;
+	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 	private float _cooldownTimer = 0;
 	private bool _canCast = true;
 	private float _timer = 0;
@@ -31,6 +33,8 @@ public class CircularFrosting : Ability
 			CreateSmoke();
 		}
 	}
+
+	[Command]
 	private void CreateSmoke()
 	{
 		Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, Radius);
@@ -46,8 +50,9 @@ public class CircularFrosting : Ability
 		}
 		foreach (var enemy in enemyDetected) 
 		{
-			if(enemy.TryGetComponent<Character>(out var enemyCharacter))
+			if (enemy.TryGetComponent<Character>(out var enemyCharacter))
 			{
+				_seriesOfStrikes.MakeHit(enemyCharacter, AbilityForm.Magic, 1);
 				enemyCharacter.CharacterState.AddState(new FrostingState(), _links, _duration, 0, States.Frosting);
 				if (_talant != null)
 				{

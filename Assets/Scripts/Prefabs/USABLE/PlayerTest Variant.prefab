@@ -30,7 +30,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 795014623008228812, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
       propertyPath: m_RootOrder
-      value: -1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 795014623008228812, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
       propertyPath: m_AnchorMax.x
@@ -242,6 +242,8 @@ MonoBehaviour:
   _manaCost: 20
   _castDeley: 2
   _cooldown: 10
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -276,6 +278,8 @@ MonoBehaviour:
   _manaCost: 2
   _castDeley: 0
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -315,6 +319,8 @@ MonoBehaviour:
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -356,6 +362,8 @@ MonoBehaviour:
   _manaCost: 0
   _castDeley: 1
   _cooldown: 5
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0

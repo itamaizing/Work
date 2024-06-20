@@ -8,12 +8,10 @@ public class BlockOfIce : Ability
 {
 	[SerializeField] private BlockOfIceProjectile _iceArrow;
 	[SerializeField] private Character _playerLinks;
+	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 	[SerializeField] private float _castTime = 2.5f;
-	//[SerializeField] private RunePlayer _rune;
-	//[SerializeField] private Rigidbody2D _rb;
 	private bool _canCast = true;
 	private Vector2 _mousePos;
-	private float _angle;
 	private bool _enabled;
 	
 	private void Update()
@@ -51,10 +49,8 @@ public class BlockOfIce : Ability
 		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
 		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
-		/*BlockOfIceProjectile projectile = Instantiate(_iceArrow, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
-		projectile._dad = _playerLinks;
-		projectile.energyDad = _playerLinks.Stamina.Value;*/
 		CmdCreateProjecttile(angle);
+		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1);
 		//_playerLinks.Stamina.Use(_playerLinks.Stamina.Value);
 		Cancel();
 	}
@@ -62,12 +58,18 @@ public class BlockOfIce : Ability
 	private void CmdCreateProjecttile(float angle)
 	{
 		BlockOfIceProjectile projectile = Instantiate(_iceArrow, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
-		projectile.Init(_playerLinks.gameObject);
-		projectile.energyDad = _playerLinks.Stamina.Value;
+		projectile.Init(_playerLinks, _playerLinks.Stamina.Value);
 
 		NetworkServer.Spawn(projectile.gameObject);
+
+		RpcInit(projectile.gameObject, _playerLinks.Stamina.Value);
 	}
 
+	[ClientRpc]
+	private void RpcInit(GameObject obj, float manaValue)
+	{
+		obj.GetComponent<BlockOfIceProjectile>().Init(_playerLinks, manaValue);
+	}
 
 	private IEnumerator Casting()
 	{

@@ -2,47 +2,31 @@ using DG.Tweening;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IcyStreamProjectile : MonoBehaviour
+public class IcyStreamProjectile : Projectiles
 {
-	public float energyDad;
 	[HideInInspector] public FrostingFrozenTalant talant;
 
-	[SerializeField] private Rigidbody2D _rb;
-	[SerializeField] GameObject _hitEffect;
-	[SerializeField] SpriteRenderer _spriteRenderer;
-	[SerializeField] private float _force;
-	[SerializeField] private float _distance = 4;
-
-	private Character _dad;
 	private float _timer = 1.5f;
 	private float _time = 0;
 	private float _stepOfTimer = 0.3f;
 	private float _damage = 1;
 	private float _chanceOfFrosting = 0.05f;
 	private float _durationOfDebuff = 2;
-	private bool _initialized = false;
 	private List<Character> _enemyList;
 	//private Vector2 startPos;
-
-	public void Init(GameObject dad)
-	{
-		_dad = dad.GetComponent<Character>();
-		Debug.Log("bullet");
-		_initialized = true;
-	}
 
 	private void Awake()
 	{
 		Debug.Log("bullet");
 		//startPos = transform.position;
 		//_rb.AddForce(transform.up * _force, ForceMode2D.Impulse);
-		if (energyDad >= 40)
+		if (_energyDad >= 40)
 		{
 			_durationOfDebuff += 4;
 		}
 		else
 		{
-			_durationOfDebuff += energyDad / 10;
+			_durationOfDebuff += _energyDad / 10;
 		}
 		_rb.DOMove(transform.up * _distance * GlobalVariable.cellSize, _timer).OnComplete(Explode);
 	}

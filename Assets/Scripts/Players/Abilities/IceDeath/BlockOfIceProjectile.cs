@@ -3,19 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BlockOfIceProjectile : MonoBehaviour
+public class BlockOfIceProjectile : Projectiles
 {
-	public float energyDad;
-
-	[SerializeField] private Rigidbody2D _rb;
-	[SerializeField] GameObject _hitEffect;
-	[SerializeField] SpriteRenderer _spriteRenderer;
-	[SerializeField] private float _force;
-	[SerializeField] private float _distance = 6;
-
-	private Character _dad;
 	private Vector2 startPos;
-	private bool _initialized = false;
+
 	public void Init(GameObject dad)
 	{
 		_dad = dad.GetComponent<Character>();

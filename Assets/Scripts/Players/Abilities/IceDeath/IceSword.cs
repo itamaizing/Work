@@ -9,7 +9,7 @@ public class IceSword : TargetOrAreaAbility
 	//[SerializeField] private GameObject _basePlayer;
 	[SerializeField] private Character _playerLinks;
 	[SerializeField] private DeathSpiral _deathSpiral;
-	[SerializeField] private SeriesOfStrikes _combo;
+	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 	[SerializeField] private float _raduis;
 	[SerializeField] private float _cooldownTime;
 	private float _cooldownTimer = 1.4f;
@@ -75,11 +75,17 @@ public class IceSword : TargetOrAreaAbility
 		Debug.Log("SHOT SWORD");
 		if (Target != null)
 		{
-			_target.Health.TryTakeDamage(_damage + Random.Range(0, 10), DamageType.Physical, AttackRangeType.MeleeAttack);
+			_seriesOfStrikes.MakeHit(Target, AbilityForm.Magic, 1);
+			ApplyDamage(Target.Health, _damage, DamageType.Physical, AttackRangeType.MeleeAttack);
+			//_target.Health.TryTakeDamage(_damage + Random.Range(0, 10), DamageType.Physical, AttackRangeType.MeleeAttack);
 			if (_oldtarget == null || _oldtarget == Target)
 			{
 				_oldtarget = Target;
 				_hitInTheRow++;
+			}
+			else
+			{
+				LoseStreak();
 			}
 		}
 		if (_hitInTheRow > 2)

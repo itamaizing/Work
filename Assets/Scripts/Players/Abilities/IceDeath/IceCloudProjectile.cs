@@ -2,27 +2,10 @@ using DG.Tweening;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class IceCloudProjectile : MonoBehaviour
-{
-	public float energyDad;
-	//[HideInInspector] public GameObject dadGm;
-
-	private Character _dad;
-	[SerializeField] private Rigidbody2D _rb;
-	[SerializeField] private GameObject _hitEffect;
-	[SerializeField] private SpriteRenderer _spriteRenderer;
-	[SerializeField] private float _force;
-	[SerializeField] private float _distance = 5;
-	
+public class IceCloudProjectile : Projectiles
+{	
 	private Vector2 startPos;
-	private bool _initialized = false;
 
-	public void Init(GameObject dad)
-	{
-		_dad = dad.GetComponent<Character>();
-		Debug.Log("bullet");
-		_initialized = true;
-	}
 	private void Awake()
 	{
 		//_dad = dadGm.GetComponent<Character>();
@@ -50,9 +33,9 @@ public class IceCloudProjectile : MonoBehaviour
 		if(collision.TryGetComponent<Character>(out var target))
 		{
 			//float duration = 1 + dad.Stamina.Value / 20;
-			float duration = 1 + energyDad / 20;
+			float duration = 1 + _energyDad / 20;
 			//target.CharacterState.energy = dad.Stamina;
-			float curDamage = 10 + energyDad / 4;
+			float curDamage = 10 + _energyDad / 4;
 			Energy energyLink = (Energy)_dad.Stamina;
 			if (target.CharacterState.CheckForState(States.Frozen))
 			{

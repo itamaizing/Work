@@ -2,15 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DeathSpiralProjectile : MonoBehaviour
+public class DeathSpiralProjectile : Projectiles
 {
-	[HideInInspector] public GameObject dad;
-
-	[SerializeField] private Rigidbody2D _rb;
-	[SerializeField] GameObject _hitEffect;
-	[SerializeField] private float _force;
-	[SerializeField] private float _distance = 5;
-
 	private Vector2 startPos;
 
 	private void Awake()
@@ -31,8 +24,8 @@ public class DeathSpiralProjectile : MonoBehaviour
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		if (dad == null) return;
-		if (collision.gameObject == dad)
+		if (_dad == null) return;
+		if (collision.gameObject == _dad)
 			return;
 		//damage, freez etc
 		if (collision.TryGetComponent<Character>(out var target))
