@@ -1792,7 +1792,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3866749288767764151, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
       propertyPath: _abilities.Array.size
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3866749288767764151, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
       propertyPath: _abilities.Array.data[0]
@@ -1810,6 +1810,10 @@ PrefabInstance:
       propertyPath: _abilities.Array.data[3]
       value: 
       objectReference: {fileID: 5564757508784530906}
+    - target: {fileID: 3866749288767764151, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
+      propertyPath: _abilities.Array.data[4]
+      value: 
+      objectReference: {fileID: 5564757508784530917}
     - target: {fileID: 4142585537257920599, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1904,7 +1908,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5197633848987564949, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
       propertyPath: m_TagString
-      value: Allies
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 5460533147100191806, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
       propertyPath: _playerLinks
@@ -1921,6 +1925,10 @@ PrefabInstance:
     - target: {fileID: 6314414592503689021, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8249157818335217477, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8568118064749123518, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
       propertyPath: m_Value
@@ -1947,9 +1955,12 @@ PrefabInstance:
       addedObject: {fileID: 0}
     - targetCorrespondingSourceObject: {fileID: 573140117665601435, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
       insertIndex: 3
-      addedObject: {fileID: 5564757508784530912}
+      addedObject: {fileID: 5564757508784530917}
     - targetCorrespondingSourceObject: {fileID: 573140117665601435, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
       insertIndex: 4
+      addedObject: {fileID: 5564757508784530912}
+    - targetCorrespondingSourceObject: {fileID: 573140117665601435, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
+      insertIndex: 5
       addedObject: {fileID: 5564757508784530908}
   m_SourcePrefab: {fileID: 100100000, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
 --- !u!1 &3219308240574283163
@@ -2794,6 +2805,41 @@ MonoBehaviour:
     m_Bits: 128
   creeperStrike: {fileID: 5564757508784530908}
   _isUsing: 0
+--- !u!114 &5564757508784530917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1565031513045121241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e478f6bede98f5a4590bf849a2c62acc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _abilityInfo: {fileID: 11400000, guid: 5e12a4e98f6c3dd42ad804c36ea87337, type: 2}
+  _isAutoAttack: 0
+  _radius: 0
+  _area: 0
+  _castLength: 6
+  _castWidth: 1
+  _manaCost: 0
+  _castDeley: 0
+  _cooldown: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _playerLinks: {fileID: 8468544467729562645}
+  _projectile: {fileID: 305006197583289814, guid: bafec3b1bf156734397167fd3de0f92e, type: 3}
+  targetOrPointPosition: {x: 0, y: 0}
+  firstMousePosition: {x: 0, y: 0}
+  secondMousePosition: {x: 0, y: 0}
+  _firstClickDone: 0
 --- !u!212 &5571791533491939028
 SpriteRenderer:
   m_ObjectHideFlags: 0
