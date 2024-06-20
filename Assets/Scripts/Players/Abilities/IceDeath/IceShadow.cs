@@ -9,16 +9,11 @@ public class IceShadow : Ability
 {
 	[Header("Ability properties")]
 	[SerializeField] private IceShadowObject _shadow;
-	[SerializeField] private Character _playerLinks;
+	[SerializeField] private Character _playerLinks; 
+	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 
-	//private bool _isActive = false;
-	//[SerializeField] private Rigidbody2D _rb;
-	//[SerializeField] private HealthPlayer _healthPlayer;
-	//[SerializeField] private RunePlayer _rune;
-	
 	protected override void Cast()
 	{
-		Debug.Log("test spawn22222");
 		PayCost();
 		if (_playerLinks.RuneComponent.RemoveRune(1, this))
 		{
@@ -34,30 +29,32 @@ public class IceShadow : Ability
 	{
 
 	}
-	[Command]
+
 	private void Shoot()
 	{
 		Debug.Log("test spawn");
-		IceShadowObject projectileGm = Instantiate(_shadow, gameObject.transform.position, Quaternion.identity);
-		//IceShadowObject projectile = projectileGm.GetComponent<IceShadowObject>();
-		projectileGm.dadGm = _playerLinks.gameObject;
-		projectileGm.SetEnergy(Mana.Value);
-		Energy energy = (Energy)Mana;
-		energy.UseAllEnergy();
-		//projectile.energyPlayer = (EnergyPlayer)Mana;
-		//projectile.healthPlayer = _playerLinks.Health;
-		
-		NetworkServer.Spawn(projectileGm.gameObject);
+		/*IceShadowObject projectileGm = Instantiate(_shadow, gameObject.transform.position, Quaternion.identity);
+		projectileGm.Init(_playerLinks.gameObject ,Mana.Value);*/
+		CmdCreateProjecttile(0, _playerLinks.Stamina.Value);
+		_playerLinks.Stamina.Use(_playerLinks.Stamina.Value);		
 	}
-	/*[Command]
-	protected void CmdCreateProjecttile(Transform target)
+
+	[Command]
+	private void CmdCreateProjecttile(float angle, float manaValue)
 	{
-		GameObject item = Instantiate(_shadow.gameObject, transform.position, Quaternion.identity);
+		IceShadowObject projectile = Instantiate(_shadow, gameObject.transform.position, Quaternion.identity);
+		projectile.Init(_playerLinks, manaValue);
 
-		item.GetComponent<Projectile>().StartFly(target, true);
+		NetworkServer.Spawn(projectile.gameObject);
 
-		NetworkServer.Spawn(item);
-	}*/
+		RpcInit(projectile.gameObject, manaValue);
+	}
+
+	[ClientRpc]
+	private void RpcInit(GameObject obj, float manaValue)
+	{
+		obj.GetComponent<IceShadowObject>().Init(_playerLinks, manaValue);
+	}
 	/*private Vector3 InstantiatePoint()
 	{
 		Vector3 mousePosition = Input.mousePosition;

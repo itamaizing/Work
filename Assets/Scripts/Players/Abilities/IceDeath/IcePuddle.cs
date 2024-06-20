@@ -11,6 +11,8 @@ public class IcePuddle : Ability
 	[SerializeField] private GameObject _preViewPuddle;
 	[SerializeField] private GameObject _lowePoint;
 	[SerializeField] private FrostingFrozenTalant _frostingFrozenTalant;
+	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
+	[SerializeField] private float _timeToDestroy = 3f;
 	//[SerializeField] private GameObject _spawnPoint;
 
 	private Vector2 _mousePos;
@@ -91,18 +93,37 @@ public class IcePuddle : Ability
 		_preViewPuddle.SetActive(false);
 		_enabled = false;
 	}
-	[Command]
 	private void Shoot()
 	{
-		GameObject puddleGm = Instantiate(_puddle.gameObject, _preViewPuddle.transform.position, Quaternion.Euler(0, 0, _preViewPuddle.transform.eulerAngles.z));
-		IcePuddleObject puddle = puddleGm.GetComponent<IcePuddleObject>();
-		puddle.Init(_playerLinks.gameObject);
-		//puddle.talant = _frostingFrozenTalant;
-		//puddle.energy = (Energy)Mana;
-		//puddle.healthComponent = _playerLinks.Health;
+		int timeToAdd = (int)Mana.Value / 5;
+		if (timeToAdd > 4)
+			timeToAdd = 4;
 
-		NetworkServer.Spawn(puddle.gameObject);
+		_timeToDestroy += timeToAdd;
+		//puddle.talant = _frostingFrozenTalant;
+
+		Debug.Log("test spawn");
+		CmdCreateProjecttile(_angle2, _timeToDestroy, _preViewPuddle.transform.position);
+		Mana.Use(timeToAdd * 5);
 	}
+
+	[Command]
+	private void CmdCreateProjecttile(float angle, float manaValue, Vector3 position)
+	{
+		IcePuddleObject projectile = Instantiate(_puddle, position, Quaternion.Euler(0, 0, angle));
+		projectile.Init(_playerLinks, manaValue);
+
+		NetworkServer.Spawn(projectile.gameObject);
+
+		RpcInit(projectile.gameObject, manaValue);
+	}
+
+	[ClientRpc]
+	private void RpcInit(GameObject obj, float manaValue)
+	{
+		obj.GetComponent<IcePuddleObject>().Init(_playerLinks, manaValue);
+	}
+
 
 	private Vector3 InstantiatePoint()
 	{

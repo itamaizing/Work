@@ -7,19 +7,14 @@ public class PhysicalAttack : AutoAttackAbility
 	[SerializeField] private Character _dad;
 	[SerializeField] private SeriesOfStrikes _combo;
 	[SerializeField] private float _abilityCooldown = 1.4f; //cooldown between shots
-	//[SerializeField] private LayerMask _obstacleLayerMask;
-	//private float _cooldownTimer = 1.4f;
-	//private int _hitInARow = 0;
-	//private float _multiplySpeed = .05f;
-	//private bool _isInTheRow = false;
+
 	private float _baseTimer = 2f; //time and timer between losing streak
 	private float _timer = 2f;
-	//private bool _isReadyToShot = true;
 	private Character _curTarget;
 	private Vector2 _jumpPos;
 
 	public Character Target2 => _curTarget;
-	//public int HitInTheRow => _hitInARow;
+
 
 	/*private void Update()
 	{
@@ -34,47 +29,31 @@ public class PhysicalAttack : AutoAttackAbility
 	}
 	private void Hit(Character enemy)
 	{
-		//_isReadyToShot = false;
-		//Debug.Log("hit " + _hitInARow);
 		if (_curTarget == enemy && _dad.Stamina.Use(5))
 		{
 			_combo.MakeHit(enemy, AbilityForm.Physical, 5);
-			//Debug.Log("hit " + _hitInARow);
-			//_hitInARow++;
-			//_multiplySpeed*=2;
+
 			_attackSpeed *= (1 - _combo.GetMultipliedSpeed());
-			//_timer = _baseTimer;
-			//_isInTheRow = true;
 			float curDamage = _damage + Random.Range(0, 2);
 
 			ApplyDamage(enemy.Health, curDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
-			//enemy.Health.TakeDamage(curDamage, DamageType.Physical);
 			Energy energy = (Energy)_dad.Stamina;
 			if(enemy.CharacterState.CheckForState(States.Frozen))
 			{
 				curDamage *= 1.4f;
 			}
 			energy.SumDamageMake(curDamage);
-			/*if (_hitInARow >= 6)
-			{
-				//Debug.Log("Lasthit");
-				LastHit();
-			}*/
 		}
 		else
 		{
 			_combo.MakeHit(enemy, AbilityForm.Physical, 0);
 			Debug.Log("lose streak to another enemy");
 			_curTarget = enemy;
-			//_hitInARow = 0;
-			//_multiplySpeed = .05f;
 			_attackSpeed *= (1 - _combo.GetMultipliedSpeed());
 			_timer = _baseTimer;
-			//_isInTheRow = true;
 			float curDamage = _damage + Random.Range(0, 2);
 			Energy energy = (Energy)_dad.Stamina;
 			energy.SumDamageMake(curDamage);
-			//enemy.Health.TakeDamage(curDamage, DamageType.Physical);
 			ApplyDamage(enemy.Health, curDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
 
 

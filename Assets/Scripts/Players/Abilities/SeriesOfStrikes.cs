@@ -9,7 +9,7 @@ public class SeriesOfStrikes : MonoBehaviour
     private float _usedRunesValue2 = 0;
     private float _timer = 0;
 	private float _baseTimer = 2f; //time and timer between losing streak
-	private float _multiplySpeed = .05f;
+	//private float _multiplySpeed = .05f;
 	private int _hitCount1 = 0;
 	private int _hitCount2 = 0;
 	private bool _isInTheRow;
@@ -29,11 +29,11 @@ public class SeriesOfStrikes : MonoBehaviour
 	{
 		if(_hitCount1 >= _hitCount2)
 		{
-			return _multiplySpeed*Mathf.Pow(2, _hitCount1);
+			return Mathf.Pow(2, _hitCount1);
 		}
 		else
 		{
-			return _multiplySpeed * Mathf.Pow(2, _hitCount2);
+			return Mathf.Pow(2, _hitCount2);
 		}
 	}
 	public void MakeHit(Character target, AbilityForm form, float usedRuneValue)
@@ -45,6 +45,7 @@ public class SeriesOfStrikes : MonoBehaviour
 			_curTarget = target;
 			_usedRunesValue1 += usedRuneValue;
 			_hitCount1++;
+			
 		}
 		else
 		{
@@ -86,7 +87,7 @@ public class SeriesOfStrikes : MonoBehaviour
 			if (_timer <= 0)
 			{
 				_curTarget = null;
-				_multiplySpeed = 0.05f;
+				//_multiplySpeed = 0.05f;
 				//_attackSpeed *= (1 - _multiplySpeed);
 				Debug.Log("lose streak");
 				_timer = _baseTimer;

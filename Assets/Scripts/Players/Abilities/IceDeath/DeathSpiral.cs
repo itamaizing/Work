@@ -7,8 +7,7 @@ public class DeathSpiral : Ability
 {
 	[SerializeField] private DeathSpiralProjectile _projectile;
 	[SerializeField] private Character _playerLinks;
-	//[SerializeField] private RunePlayer _rune;
-	//[SerializeField] private Rigidbody2D _rb;
+	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 
 	private Vector2 _mousePos;
 
@@ -24,6 +23,7 @@ public class DeathSpiral : Ability
 			_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
 			float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
+			_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1);
 			Shoot(angle);
 		}
 	}
@@ -32,9 +32,17 @@ public class DeathSpiral : Ability
 	private void Shoot(float angle)
 	{		
 		DeathSpiralProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
-		projectile.dad = _playerLinks.Rb.gameObject;
+		projectile.Init(_playerLinks, 0);
 
 		NetworkServer.Spawn(projectile.gameObject);
+
+		RpcInit(projectile.gameObject);
+	}
+
+	[ClientRpc]
+	private void RpcInit(GameObject obj)
+	{
+		obj.GetComponent<DeathSpiralProjectile>().Init(_playerLinks, 0);
 	}
 
 	public void AddCharge()
