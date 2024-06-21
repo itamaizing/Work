@@ -8,7 +8,7 @@ public class PoisonBallProjectile : MonoBehaviour
 {
     //[SerializeField] PoisonBall poisonBall;
 
-     public Character dad;
+    [HideInInspector] public Character dad;
     [HideInInspector] public float energyDad;
 
     [SerializeField] private Rigidbody2D rigidbodyBall;
@@ -23,11 +23,12 @@ public class PoisonBallProjectile : MonoBehaviour
     private float maxDistance = 6f;
     private float currentDamage = 35f;
     private bool isFast;
+    
     // private Transform targetTransform;
 
     private void Start()
     {
-        startPos = transform.position;
+        startPos = transform.position; 
     }
     private void Update()
     {
@@ -41,13 +42,15 @@ public class PoisonBallProjectile : MonoBehaviour
         targetOrPointPosition = Vector2.zero;
         targetOrPointPosition = _targetOrPointPosition;
         isFast = _isFast;
-        float speed = isFast ? fastMovementSpeed : slowMovementSpeed;
-        Debug.Log("Speed = " + speed);
-        StartCoroutine(MoveCoroutine(targetOrPointPosition ,speed));
+        float _speed = isFast ? fastMovementSpeed : slowMovementSpeed;
+        Debug.Log("Speed = " + _speed);
+        StartCoroutine(MoveCoroutine(targetOrPointPosition ,_speed));
     }
 
     private IEnumerator MoveCoroutine(Vector2 target, float _speed)
     {
+        //float actualMaxDistance = maxDistance;
+        //actualMaxDistance *= GlobalVariable.cellSize;
         rigidbodyBall.DOMove(target, _speed * maxDistance / GlobalVariable.cellSize).SetEase(Ease.Linear);
         yield return null;
     }
@@ -56,6 +59,7 @@ public class PoisonBallProjectile : MonoBehaviour
     {
         if (collision.gameObject == dad.gameObject || collision.CompareTag("Ability"))
         {
+            Debug.Log(dad + " OnTriggerEnter explode dad");
             return;
         }
         // damage
@@ -70,8 +74,8 @@ public class PoisonBallProjectile : MonoBehaviour
 
             GetComponent<Collider2D>().enabled = false;
             Debug.Log("Collider2D false");
+            Explode();
         }
-        //Explode();
     }
 
     private void Explode()

@@ -16,6 +16,7 @@ public class SpitPoison : Ability
 
         if (Input.GetMouseButtonDown(0))
         {
+            Debug.Log("SpitPoisonUpdate");
             PayCost();
             Shoot();
         }

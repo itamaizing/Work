@@ -1797,15 +1797,15 @@ PrefabInstance:
     - target: {fileID: 3866749288767764151, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
       propertyPath: _abilities.Array.data[0]
       value: 
-      objectReference: {fileID: 5564757508784530908}
+      objectReference: {fileID: 5564757508784530907}
     - target: {fileID: 3866749288767764151, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
       propertyPath: _abilities.Array.data[1]
       value: 
-      objectReference: {fileID: 5564757508784530912}
+      objectReference: {fileID: 5564757508784530908}
     - target: {fileID: 3866749288767764151, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
       propertyPath: _abilities.Array.data[2]
       value: 
-      objectReference: {fileID: 5564757508784530907}
+      objectReference: {fileID: 5564757508784530912}
     - target: {fileID: 3866749288767764151, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
       propertyPath: _abilities.Array.data[3]
       value: 
@@ -1908,7 +1908,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5197633848987564949, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
       propertyPath: m_TagString
-      value: Player
+      value: Allies
       objectReference: {fileID: 0}
     - target: {fileID: 5460533147100191806, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
       propertyPath: _playerLinks
@@ -1929,6 +1929,10 @@ PrefabInstance:
     - target: {fileID: 8249157818335217477, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8249157818335217477, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
+      propertyPath: m_ContactCaptureLayers.m_Bits
+      value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 8568118064749123518, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
       propertyPath: m_Value
@@ -2836,10 +2840,12 @@ MonoBehaviour:
   _manaCostPerTick: 0
   _playerLinks: {fileID: 8468544467729562645}
   _projectile: {fileID: 305006197583289814, guid: bafec3b1bf156734397167fd3de0f92e, type: 3}
+  pointPref: {fileID: 8920393221322089648, guid: 3ac53da8712b04247bfb2817d9c4ff06, type: 3}
   targetOrPointPosition: {x: 0, y: 0}
   firstMousePosition: {x: 0, y: 0}
   secondMousePosition: {x: 0, y: 0}
   _firstClickDone: 0
+  _secondClickDone: 0
 --- !u!212 &5571791533491939028
 SpriteRenderer:
   m_ObjectHideFlags: 0
