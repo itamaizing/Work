@@ -66,12 +66,12 @@ public class IcePuddleObject : Projectiles
 				duration += _energy.Value / 5;
 				_energy.UseAllEnergy();
 			}
-			target.CharacterState.AddState(new FrostingState(), _dad, duration,0,States.Frosting);
+			target.CharacterState.AddState(new FrostingState(), duration,0,States.Frosting);
 			if (talant != null)
 			{
 				if (talant.IsActive)
 				{
-					target.CharacterState.AddState(new FrozenState(), _dad, duration, 0, States.Frozen);
+					target.CharacterState.AddState(new FrozenState(), duration, 0, States.Frozen);
 				}
 			}
 			_enemies.Add(target.CharacterState);

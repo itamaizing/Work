@@ -29,7 +29,7 @@ public class CircularFrosting : Ability
 	{
 		if (_canCast)
 		{
-			PayCost();
+			//PayCost();
 			CreateSmoke();
 		}
 	}
@@ -53,12 +53,12 @@ public class CircularFrosting : Ability
 			if (enemy.TryGetComponent<Character>(out var enemyCharacter))
 			{
 				_seriesOfStrikes.MakeHit(enemyCharacter, AbilityForm.Magic, 1);
-				enemyCharacter.CharacterState.AddState(new FrostingState(), _links, _duration, 0, States.Frosting);
+				enemyCharacter.CharacterState.AddState(new FrostingState(), _duration, 0, States.Frosting);
 				if (_talant != null)
 				{
 					if (_talant.IsActive)
 					{
-						enemyCharacter.CharacterState.AddState(new FrozenState(), _links, _duration, 0, States.Frozen);
+						enemyCharacter.CharacterState.AddState(new FrozenState(), _duration, 0, States.Frozen);
 					}
 				}
 			}

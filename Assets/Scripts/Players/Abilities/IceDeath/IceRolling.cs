@@ -36,7 +36,7 @@ public class IceRolling : Ability
 
 		if (Input.GetMouseButtonDown(0))
 		{
-			PayCost();
+			//PayCost();
 			if (_playerLinks.RuneComponent.RemoveRune(0.25f, this))
 			{
 				Jump();

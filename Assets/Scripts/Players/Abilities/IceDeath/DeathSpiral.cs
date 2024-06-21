@@ -17,7 +17,7 @@ public class DeathSpiral : Ability
 	}
 	protected override void Cast()
 	{
-		PayCost();
+		//PayCost();
 		if (_playerLinks.RuneComponent.RemoveRune(2, this))
 		{
 			_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);

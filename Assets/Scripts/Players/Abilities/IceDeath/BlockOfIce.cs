@@ -20,7 +20,7 @@ public class BlockOfIce : Ability
 
 		if (Input.GetMouseButtonDown(0))
 		{
-			PayCost();
+			//PayCost();
 			StartCoroutine(Casting());
 		}
 		if(Input.GetMouseButtonDown(1)) 

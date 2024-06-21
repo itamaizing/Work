@@ -49,7 +49,7 @@ public class BlockOfIceProjectile : Projectiles
 			}
 			energyLink.SumDamageMake(curDamage);
 			target.Health.TakeDamage(curDamage, DamageType.Physical);
-			target.CharacterState.AddState(new Cooling(), _dad, duration, 0, States.Cooling);
+			target.CharacterState.AddState(new Cooling(), duration, 0, States.Cooling);
 
 			//dad.Stamina.Use(duration * 20);
 			//damage

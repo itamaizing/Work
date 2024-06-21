@@ -79,7 +79,7 @@ public class SeriesOfStrikes : MonoBehaviour
 		}
 	}
 
-    public void Timer()
+	public void Timer()
     {
 		if (_isInTheRow)
 		{
