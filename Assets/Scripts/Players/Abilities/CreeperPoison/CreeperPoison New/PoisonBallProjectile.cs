@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class PoisonBallProjectile : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class PoisonBallProjectile : MonoBehaviour
     private float fastMovementSpeed = 0.6f;  // Units per second
     private float slowMovementSpeed = 1.7f;  // Units per second
     private float durationStun = 1.2f;
+    private float distanceEnemyOffset = 1;
     private float maxDistance = 6f;
     private float currentDamage = 35f;
     private bool isFast;
@@ -39,7 +41,6 @@ public class PoisonBallProjectile : MonoBehaviour
     }
     public void MoveBall(Vector2 _targetOrPointPosition, bool _isFast)
     {
-        targetOrPointPosition = Vector2.zero;
         targetOrPointPosition = _targetOrPointPosition;
         isFast = _isFast;
         float _speed = isFast ? fastMovementSpeed : slowMovementSpeed;
@@ -65,14 +66,25 @@ public class PoisonBallProjectile : MonoBehaviour
         // damage
         if (collision.TryGetComponent<Character>(out var target))
         {
+            Debug.Log("Target Rigidbody = " +  target);
             // State duration 
             Energy energyLink = (Energy)dad.Stamina;
 
             energyLink.SumDamageMake(currentDamage);
             target.Health.TakeDamage(currentDamage, DamageType.Physical);
-            target.CharacterState.AddState(new StunnedState(), durationStun, 0, States.Stun);
+            if (target != null)
+            {
+                Vector2 offsetDirection = (target.transform.position - rigidbodyBall.transform.position).normalized;
+                Debug.Log("offsetDirection = " + offsetDirection);
+                float durationOffset = 1.2f;
+                float rangeOffset = 1.0f;
+                durationOffset = ((durationOffset * GlobalVariable.cellSize) * rangeOffset) / GlobalVariable.cellSize; 
+                target.transform.DOMove((Vector2)target.transform.position + offsetDirection, durationOffset).SetEase(Ease.Linear);
+                target.CharacterState.AddState(new StunnedState(), durationStun, durationOffset, States.Stun);
+            }
 
             GetComponent<Collider2D>().enabled = false;
+            
             Debug.Log("Collider2D false");
             Explode();
         }

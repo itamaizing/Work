@@ -209,7 +209,7 @@ public class StunnedState : AbstractCharacterState
 	private float _duration;
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
 	{
-		Debug.Log("Entering Stunned State");
+		//Debug.Log("Entering Stunned State");
 		type = StateType.Physical;
 		effects.Add(StatusEffect.Move);
 		effects.Add(StatusEffect.Ability);
@@ -223,7 +223,7 @@ public class StunnedState : AbstractCharacterState
 		}
 		else
 		{
-			Debug.Log("no ability at " + character.gameObject.name);
+			//Debug.Log("no ability at " + character.gameObject.name);
 		}		
 		_characterState.Move.CanMove = false;
 		_duration = durationToExit;
@@ -232,7 +232,7 @@ public class StunnedState : AbstractCharacterState
 
 	public override void UpdateState()
 	{
-		Debug.Log("Updating Stunned State");
+		//Debug.Log("Updating Stunned State");
 		_duration -= Time.deltaTime;
 		if (_duration < 0 || turnOff)
 		{
@@ -242,7 +242,7 @@ public class StunnedState : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		Debug.Log("Exiting Stunned State");
+		//Debug.Log("Exiting Stunned State");
 		if (_characterState.Check(StatusEffect.Move))
 		{
 			_characterState.Move.CanMove = true;
