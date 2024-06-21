@@ -20,7 +20,7 @@ public class Icecloud : Ability
 		
 		if (Input.GetMouseButtonDown(0))
 		{
-			PayCost();
+			//PayCost();
 			if (_playerLinks.RuneComponent.RemoveRune(1, this))
 			{
 				Shoot();

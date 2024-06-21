@@ -14,7 +14,7 @@ public class IceShadow : Ability
 
 	protected override void Cast()
 	{
-		PayCost();
+		//PayCost();
 		if (_playerLinks.RuneComponent.RemoveRune(1, this))
 		{
 			Shoot();

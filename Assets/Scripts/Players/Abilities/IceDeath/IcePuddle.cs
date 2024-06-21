@@ -57,7 +57,7 @@ public class IcePuddle : Ability
 			if (_secondPoind)
 			{
 				_secondPoind = false;
-				PayCost();
+				//PayCost();
 				if (_playerLinks.RuneComponent.RemoveRune(1, this))
 				{
 					Shoot();
@@ -130,6 +130,7 @@ public class IcePuddle : Ability
 		Vector3 mousePosition = Input.mousePosition;
 		Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
 		worldPosition.z = 1;
+
 		float distance = Vector2.Distance(gameObject.transform.position, worldPosition);
 		if (distance <= _radius)
 		{

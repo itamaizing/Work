@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -39,6 +40,8 @@ public class DefaultState : AbstractCharacterState
 
 public class InvisibleStateOld : AbstractCharacterState
 {
+	public new States state = States.Invisible;
+
 	private Renderer[] childRenderers;
 	private GameObject _player;
 
@@ -46,7 +49,7 @@ public class InvisibleStateOld : AbstractCharacterState
 
 	private float lastCheckTime;
 	private float checkInterval = 1f;
-
+	
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
 	{
 		Debug.Log("Entering Invisible State");
@@ -199,6 +202,7 @@ public class InvisibleStateOld : AbstractCharacterState
 
 public class InvisibleState : AbstractCharacterState
 {
+	public new States state = States.Invisible;
 	public bool turnOff = false;
 	private float _baseDuration;
 	private float _duration;
@@ -250,6 +254,7 @@ public class InvisibleState : AbstractCharacterState
 
 public class StunnedState : AbstractCharacterState
 {
+	public new States state = States.Stun;
 	public bool turnOff = false;
 	private PlayerAbilities _abilities;
 	private float _baseDuration;
@@ -316,6 +321,7 @@ public class StunnedState : AbstractCharacterState
 
 public class Desiccuration : AbstractCharacterState
 {
+	public new States state = States.Desiccuration;
 	public bool turnOff = false;
 	private PlayerAbilities _abilities;
 	private float _baseDuration;
@@ -385,6 +391,7 @@ public class Desiccuration : AbstractCharacterState
 
 public class BlindnessState : AbstractCharacterState
 {
+	public new States state = States.Blind;
 	public bool turnOff = false;
 
 	//private CharacterState _characterState;
@@ -446,6 +453,7 @@ public class BlindnessState : AbstractCharacterState
 
 public class FrozenState : AbstractCharacterState
 {
+	public new States state = States.Frozen;
 	public bool turnOff = false;
 	private float _duration;
 	private float _baseDuration;
@@ -517,6 +525,7 @@ public class FrozenState : AbstractCharacterState
 
 public class FrostingState : AbstractCharacterState
 {
+	public new States state = States.Frosting;
 	public bool turnOff = false;
 	private float _duration;
 	private float _baseDuration;
@@ -577,6 +586,7 @@ public class FrostingState : AbstractCharacterState
 
 public class Cooling : AbstractCharacterState
 {
+	public new States state = States.Cooling;
 	public bool turnOff = false;
 	private float _duration;
 	private float _baseDuration;
@@ -647,6 +657,7 @@ public class Cooling : AbstractCharacterState
 
 public class AbilitySchoolDebuff : AbstractCharacterState
 {
+	public new States state = States.SchoolDebuff;
 	public bool turnOff = false;
 	private PlayerAbilities _abilities;
 	private float _baseDuration;
@@ -712,6 +723,7 @@ public class AbilitySchoolDebuff : AbstractCharacterState
 
 public class AbilityFormDebuff : AbstractCharacterState
 {
+	public new States state = States.FormDebuf;
 	public bool turnOff = false;
 	private PlayerAbilities _abilities;
 	private float _baseDuration;
@@ -775,7 +787,7 @@ public class AbilityFormDebuff : AbstractCharacterState
 	}
 }
 
-public class CharacterState : MonoBehaviour
+public class CharacterState : NetworkBehaviour
 {
 	private HealthComponent _health;
 	private MoveComponent _move;
@@ -786,7 +798,19 @@ public class CharacterState : MonoBehaviour
 	public HealthComponent Health => _health;
 	public MoveComponent Move => _move;
 	public StaminaComponent Stamina => _stamina;
-	
+
+	public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
+	{
+		[States.Stun] = new StunnedState(),
+		[States.Frozen] = new FrozenState(),
+		[States.Frosting] = new FrostingState(),
+		[States.Cooling] = new Cooling(),
+		[States.Blind] = new BlindnessState(),
+		[States.Invisible] = new InvisibleState(),
+		[States.SchoolDebuff] = new AbilitySchoolDebuff(),
+		[States.Desiccuration] = new Desiccuration()
+	};
+
 	public void Initialize(HealthComponent health,MoveComponent move , StaminaComponent stamina)
 	{
 		_health = health;
@@ -800,15 +824,6 @@ public class CharacterState : MonoBehaviour
 
 	private void Update()
 	{
-		/*if(Input.GetKey(KeyCode.K))
-		{
-			AddState(new AbilitySchoolDebuff(), 10, 0, States.SchoolDebuff, Schools.Water);
-		}
-		if (Input.GetKey(KeyCode.R))
-		{
-			AddState(new AbilitySchoolDebuff(), 5, 0, States.SchoolDebuff, Schools.Water);
-		}*/
-
 		if (currentStates.Count > 0)
 		{
 			for (int i = 0; i < currentStates.Count; i++)
@@ -816,22 +831,17 @@ public class CharacterState : MonoBehaviour
 				currentStates[i].UpdateState();
 			}
 		}
+
+		if(Input.GetKeyDown(KeyCode.R))
+		{
+			CmdAddState(States.Stun, 10, 0);
+		}
 	}
 
-	/*public void AddState(AbstractCharacterState newState, States state)
-	{
-		//if already has, reset???
-		Debug.Log("THIS IS OLD SYSTEM TO ADD STATE, USE THIS AddState(AbstractCharacterState newState, float duration, float damageToExit, States state)");
-		// ���� � ����� ���������
-		currentStates.Add(newState);
-		currentStates[currentStates.Count - 1].EnterState(this, 0, 0);
-	}*/
-	public void AddState(AbstractCharacterState newState, Character personWhoShoted, float duration, float damageToExit, States state)
+	public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state)
 	{
 		if (invinsible)
 			return;
-		//if already exist 
-		//if (currentStates.Contains(newState))
 		if (CheckForState(state))
 		{
 			foreach (AbstractCharacterState item in currentStates)
@@ -935,8 +945,22 @@ public class CharacterState : MonoBehaviour
 			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
 		}
 	}
+
+	[Command]
+	public void CmdAddState(States state, float duration, float damageToExit)
+	{
+		AddStateLogic(state, duration, damageToExit);
+		ClientAddState(state, duration, damageToExit);
+	}
+	[ClientRpc]
+	private void ClientAddState(States state, float duration, float damageToExit)
+	{
+		AddStateLogic(state, duration, damageToExit);
+	}
+
 	public bool IfHasState(AbstractCharacterState newState)
 	{
+		//ITS NOT WORKING!!!!
 		if (currentStates.Contains(newState))
 		{
 			return true;
@@ -949,6 +973,7 @@ public class CharacterState : MonoBehaviour
 		//newState.ExitState(this);
 		currentStates.Remove(newState);
 	}
+
 	public void RemoveState(States stateName)
 	{
 		foreach (AbstractCharacterState state in currentStates)
@@ -970,15 +995,6 @@ public class CharacterState : MonoBehaviour
 			}
 		}
 	}
-	/* public AbilityManager GetAbilityManager()
-     {
-         if( _abilityManager == null ) 
-         {
-             Debug.LogError("No ability manager!");
-             return null;
-         }
-         return _abilityManager;
-     }*/
 
 	public bool Check(StatusEffect effect)
 	{
@@ -1002,6 +1018,73 @@ public class CharacterState : MonoBehaviour
 			}
 		}
 		return false;
+	}
+
+	private void AddStateLogic(States state, float duration, float damageToExit)
+	{
+		if (invinsible)
+			return;
+		if (CheckForState(state))
+		{
+			foreach (AbstractCharacterState item in currentStates)
+			{
+				if (item.state != state) continue;
+
+				if (item.Stack(duration))
+				{
+					//_stateIcons.ActivateIco(state, duration, 1);
+				}
+				else
+				{
+					//nothing at this time??
+				}
+			}
+		}
+		else
+		{
+			/*switch (state)
+			{
+				case States.Stun:
+					CreateState(new StunnedState(), state, duration, damageToExit);
+					break;
+				case States.Frozen:
+					CreateState(new FrozenState(), state, duration, damageToExit);
+					break;
+				case States.Frosting:
+					CreateState(new FrostingState(), state, duration, damageToExit);
+					break;
+				case States.Cooling:
+					CreateState(new Cooling(), state, duration, damageToExit);
+					break;
+				case States.Blind:
+					CreateState(new BlindnessState(), state, duration, damageToExit);
+					break;
+				case States.Invisible:
+					CreateState(new InvisibleState(), state, duration, damageToExit);
+					break;
+				case States.SchoolDebuff:
+					CreateState(new AbilitySchoolDebuff(), state, duration, damageToExit);
+					break;
+				case States.FormDebuf:
+					CreateState(new AbilityFormDebuff(), state, duration, damageToExit);
+					break;
+				case States.Desiccuration:
+					CreateState(new Desiccuration(), state, duration, damageToExit);
+					break;
+				default:
+					Debug.Log("Create method for state " + state);
+					break;
+			}*/
+
+			CreateState(enumToState[state], state, duration, damageToExit);
+		}
+	}
+
+	private void CreateState(AbstractCharacterState state, States stateName, float duration, float damageToExit)
+	{
+		_stateIcons.ActivateIco(stateName, duration, 1);
+		currentStates.Add(state);
+		currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
 	}
 }
 
@@ -1031,5 +1114,7 @@ public enum States
 	Blind,
 	Invisible,
 	SchoolDebuff,
-	FormDebuf
+	FormDebuf,
+	Desiccuration
 }
+

@@ -56,7 +56,7 @@ public class IceShadowObject : Projectiles
 		{
 			float duration = 2 + _energyDad / 20;
 
-			target.CharacterState.AddState(new FrozenState(), _dad, duration, 0, States.Frozen);
+			target.CharacterState.AddState(new FrozenState(), duration, 0, States.Frozen);
 			//GetComponent<Collider2D>().enabled = false;
 			Destroy(gameObject);
 		}
