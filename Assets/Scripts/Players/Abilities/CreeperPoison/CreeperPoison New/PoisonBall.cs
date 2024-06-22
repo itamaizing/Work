@@ -20,26 +20,17 @@ public class PoisonBall : Ability
     private Vector2 firstMousePosition;
     private Vector2 secondMousePosition;
 
-    private bool _firstClickDone = false;
-    private bool _secondClickDone = false;
-    private bool _isEnemy = false;
-    private bool _enabled = false;
-    private bool isFast;
+    public bool _firstClickDone = false;
+    public bool _secondClickDone = false;
+    public bool _isEnemy = false;
+    public bool _enabled = false;
+    public bool isFast;
 
-    //private float[] _cooldownTimers;
-    //private new void Start()
-    //{
-    //    _maxCharges = maxCharges;
-    //    _currentChargers = _maxCharges;
-    //    _chargeCooldown = cooldownCharge;
-    //    _cooldownTimers = new float[maxCharges];
-    //}
     private void Update()
     {
         //StartCooldownForCharge();
         if (!_enabled) return;
 
-        Debug.Log("_currentChargers > 0 / " + _currentChargers);
         if (Input.GetMouseButtonDown(0))
         {
             if (!_firstClickDone)
@@ -116,14 +107,16 @@ public class PoisonBall : Ability
     private IEnumerator FastMoveShoot()
     {
         Debug.Log("FastMoveShoot()");
-        yield return new WaitForSeconds(timeFastMovementCast);
+        _castDeley = timeFastMovementCast;
+        yield return GetCastDeleyCoroutine();
         ShootProjectile(true);
     }
 
     private IEnumerator SlowMoveShoot()
     {
         Debug.Log("SlowMoveShoot()");
-        yield return new WaitForSeconds(timeSlowMovementCast);
+        _castDeley = timeSlowMovementCast;
+        yield return GetCastDeleyCoroutine();
         ShootProjectile(false);
     }
 
@@ -138,29 +131,5 @@ public class PoisonBall : Ability
         projectile.MoveBall(targetOrPointPosition, _isFast);
         Cancel();
     }
-
-    //private void StartCooldownForCharge()
-    //{
-    //    while (true)
-    //    {
-    //        for (int i = 0; i < maxCharges; i++)
-    //        {
-    //            if (_cooldownTimers[i] > 0)
-    //            {
-    //                _cooldownTimers[i] -= Time.deltaTime;
-    //                if (_cooldownTimers[i] <= 0)
-    //                {
-    //                    Debug.Log("cooldown = " + _chargeCooldown);
-    //                    _cooldownTimers[i] = 0;
-    //                    _currentChargers++;
-    //                    if (_currentChargers > maxCharges)
-    //                    {
-    //                        _currentChargers = maxCharges;
-    //                    }
-    //                }
-    //            }
-    //        }
-    //    }
-    //}
 }
 

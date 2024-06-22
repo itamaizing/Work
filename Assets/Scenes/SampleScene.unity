@@ -2828,13 +2828,13 @@ MonoBehaviour:
   _castLength: 6
   _castWidth: 1
   _manaCost: 0
-  _castDeley: 1
-  _cooldown: 0
-  _isUseCharges: 0
+  _castDeley: 0
+  _cooldown: 1
+  _isUseCharges: 1
   _chargesHaveSeparateCooldown: 1
-  _maxCharges: 0
-  _chargeCooldown: 0
-  _isStreaming: 1
+  _maxCharges: 2
+  _chargeCooldown: 14
+  _isStreaming: 0
   _streamingDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: 0
@@ -2842,8 +2842,24 @@ MonoBehaviour:
   _projectile: {fileID: 305006197583289814, guid: bafec3b1bf156734397167fd3de0f92e, type: 3}
   _enemyLayerMask:
     serializedVersion: 2
-    m_Bits: 0
-  abilityRender: {fileID: 0}
+    m_Bits: 256
+  abilityRender: {fileID: 5564757508784530919}
+  _firstClickDone: 0
+  _secondClickDone: 0
+  _isEnemy: 0
+  _enabled: 0
+  isFast: 0
+--- !u!114 &5564757508784530919 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4071738984799970690, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
+  m_PrefabInstance: {fileID: 2316077830587556083}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1565031513045121241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53472a99ea59ab74597e0875f6303fb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!212 &5571791533491939028
 SpriteRenderer:
   m_ObjectHideFlags: 0

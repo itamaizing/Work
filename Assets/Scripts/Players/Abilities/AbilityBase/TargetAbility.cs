@@ -51,7 +51,6 @@ public abstract class TargetAbility : Ability
             }
         }
         return _target != null;
-        
     }
 
     protected bool IsTargetInRadius(float radius)

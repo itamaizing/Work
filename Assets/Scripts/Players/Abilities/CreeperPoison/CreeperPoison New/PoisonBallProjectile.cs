@@ -74,20 +74,20 @@ public class PoisonBallProjectile : MonoBehaviour
             target.Health.TakeDamage(currentDamage, DamageType.Physical);
             if (target != null)
             {
+                // —мещение врага при попадании снар€да
                 Vector2 offsetDirection = (target.transform.position - rigidbodyBall.transform.position).normalized;
                 Debug.Log("offsetDirection = " + offsetDirection);
                 float durationOffset = 1.2f;
                 float rangeOffset = 1.0f;
                 durationOffset = ((durationOffset * GlobalVariable.cellSize) * rangeOffset) / GlobalVariable.cellSize; 
                 target.transform.DOMove((Vector2)target.transform.position + offsetDirection, durationOffset).SetEase(Ease.Linear);
+                // ѕрмен€ем оглушение пока цель смещаетс€
                 target.CharacterState.AddState(new StunnedState(), durationStun, durationOffset, States.Stun);
             }
-
             GetComponent<Collider2D>().enabled = false;
-            
             Debug.Log("Collider2D false");
-            Explode();
         }
+        Explode();
     }
 
     private void Explode()
