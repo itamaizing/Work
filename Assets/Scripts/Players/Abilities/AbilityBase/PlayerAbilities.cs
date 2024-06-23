@@ -155,11 +155,11 @@ public class PlayerAbilities : MonoBehaviour
 
 			if (_abilities[index].IsAutoAttack)
 			{
-				_currentAutoAttackAbility.Cancled -= OnAbilityAutoAttackDeselected;
-				_currentAutoAttackAbility.CastStarted -= OnAbilityAutoAttackSelected;
-
 				if (_currentAutoAttackAbility != null)
 				{
+					_currentAutoAttackAbility.Cancled -= OnAbilityAutoAttackDeselected;
+					_currentAutoAttackAbility.CastStarted -= OnAbilityAutoAttackSelected;
+
 					_currentAutoAttackAbility.TryCancel();
 					_currentAutoAttackAbility = null;
 				}
