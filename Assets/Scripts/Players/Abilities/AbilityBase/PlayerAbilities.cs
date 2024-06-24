@@ -18,6 +18,7 @@ public class PlayerAbilities : MonoBehaviour
 	private bool _isAbilitiesDisabled = false;
 	private bool _isAbilitiesEnabled = true;
 	private AbilityPanel _abilityPanel;
+	private float _abilitySpeedCast = 1;
 
 	public List<Ability> Abilities => _abilities;
 

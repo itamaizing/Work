@@ -1,4 +1,5 @@
 using Mirror;
+using Org.BouncyCastle.Bcpg;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -507,4 +508,9 @@ public class HealthComponent : NetworkBehaviour
     {
         _invinsible = invincible;
     }
+
+    public void SetEvadeMagic(float value)
+    {
+        _evadeMagDamage = value;
+    }    
 }
