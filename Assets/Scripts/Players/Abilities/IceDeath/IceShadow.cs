@@ -12,6 +12,7 @@ public class IceShadow : Ability
 	[SerializeField] private Character _playerLinks; 
 	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 
+	private bool _lastHit = false;
 	protected override void Cast()
 	{
 		//PayCost();
@@ -35,25 +36,26 @@ public class IceShadow : Ability
 		Debug.Log("test spawn");
 		/*IceShadowObject projectileGm = Instantiate(_shadow, gameObject.transform.position, Quaternion.identity);
 		projectileGm.Init(_playerLinks.gameObject ,Mana.Value);*/
-		CmdCreateProjecttile(0, _playerLinks.Stamina.Value);
-		_playerLinks.Stamina.Use(_playerLinks.Stamina.Value);		
+		_lastHit = _seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1);
+		CmdCreateProjecttile(0, _playerLinks.Stamina.Value, _lastHit);
+		_playerLinks.Stamina.Use(_playerLinks.Stamina.Value);
 	}
 
 	[Command]
-	private void CmdCreateProjecttile(float angle, float manaValue)
+	private void CmdCreateProjecttile(float angle, float manaValue, bool lastHit)
 	{
 		IceShadowObject projectile = Instantiate(_shadow, gameObject.transform.position, Quaternion.identity);
-		projectile.Init(_playerLinks, manaValue);
+		projectile.Init(_playerLinks, manaValue, lastHit);
 
 		NetworkServer.Spawn(projectile.gameObject);
 
-		RpcInit(projectile.gameObject, manaValue);
+		RpcInit(projectile.gameObject, manaValue, lastHit);
 	}
 
 	[ClientRpc]
-	private void RpcInit(GameObject obj, float manaValue)
+	private void RpcInit(GameObject obj, float manaValue, bool lastHit)
 	{
-		obj.GetComponent<IceShadowObject>().Init(_playerLinks, manaValue);
+		obj.GetComponent<IceShadowObject>().Init(_playerLinks, manaValue, lastHit);
 	}
 	/*private Vector3 InstantiatePoint()
 	{

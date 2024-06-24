@@ -53,12 +53,14 @@ public class CircularFrosting : Ability
 			if (enemy.TryGetComponent<Character>(out var enemyCharacter))
 			{
 				_seriesOfStrikes.MakeHit(enemyCharacter, AbilityForm.Magic, 1);
-				enemyCharacter.CharacterState.AddState(new FrostingState(), _duration, 0, States.Frosting);
+				//enemyCharacter.CharacterState.AddState(new FrostingState(), _duration, 0, States.Frosting);
+				enemyCharacter.CharacterState.CmdAddState(States.Frosting, _duration, 0);
 				if (_talant != null)
 				{
 					if (_talant.IsActive)
 					{
-						enemyCharacter.CharacterState.AddState(new FrozenState(), _duration, 0, States.Frozen);
+						enemyCharacter.CharacterState.CmdAddState(States.Frozen, _duration, 0);
+						//enemyCharacter.CharacterState.AddState(new FrozenState(), _duration, 0, States.Frozen);
 					}
 				}
 			}

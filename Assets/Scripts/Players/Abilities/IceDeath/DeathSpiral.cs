@@ -32,7 +32,7 @@ public class DeathSpiral : Ability
 	private void Shoot(float angle)
 	{		
 		DeathSpiralProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
-		projectile.Init(_playerLinks, 0);
+		projectile.Init(_playerLinks, 0, false);
 
 		NetworkServer.Spawn(projectile.gameObject);
 
@@ -42,7 +42,7 @@ public class DeathSpiral : Ability
 	[ClientRpc]
 	private void RpcInit(GameObject obj)
 	{
-		obj.GetComponent<DeathSpiralProjectile>().Init(_playerLinks, 0);
+		obj.GetComponent<DeathSpiralProjectile>().Init(_playerLinks, 0, false);
 	}
 
 	public void AddCharge()
