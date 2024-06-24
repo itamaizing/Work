@@ -43,7 +43,8 @@ public class IceCloudProjectile : Projectiles
 			}
 			energyLink.SumDamageMake(curDamage);
 			target.Health.TakeDamage(curDamage, DamageType.Physical);
-			target.CharacterState.AddState(new FrozenState(), duration, 30, States.Frozen);
+			//target.CharacterState.AddState(new FrozenState(), duration, 30, States.Frozen);
+			target.CharacterState.CmdAddState(States.Frozen, duration, 30);
 
 			//dad.Stamina.Use(duration * 20);
 			//damage

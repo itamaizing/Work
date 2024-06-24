@@ -12,12 +12,14 @@ public class Projectiles : MonoBehaviour
 	protected Character _dad;
 	protected bool _initialized = false;
 	protected float _energyDad = 0;
+	protected bool _lastHit = false;
 
-	public virtual void Init(Character dad, float energy)
+	public virtual void Init(Character dad, float energy, bool lastHit)
 	{
 		_dad = dad;
 		_energyDad = energy;
 		_initialized = true;
+		_lastHit = lastHit;
 		Debug.Log("bullet init");
 	}
 }

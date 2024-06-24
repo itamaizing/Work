@@ -66,7 +66,7 @@ public class Icecloud : Ability
 	private void CmdCreateProjecttile(float angle, float manaValue)
 	{
 		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
-		projectile.Init(_playerLinks, manaValue);
+		projectile.Init(_playerLinks, manaValue, false);
 		
 		NetworkServer.Spawn(projectile.gameObject);
 
@@ -76,6 +76,6 @@ public class Icecloud : Ability
 	[ClientRpc]
 	private void RpcInit(GameObject obj, float manaValue)
 	{
-		obj.GetComponent<IceCloudProjectile>().Init(_playerLinks, manaValue);
+		obj.GetComponent<IceCloudProjectile>().Init(_playerLinks, manaValue, false);
 	}
 }

@@ -76,7 +76,7 @@ public class IcyStream : Ability
 	{
 		IcyStreamProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
 		projectile.talant = _frostingFrozenTalant;
-		projectile.Init(_playerLinks, _playerLinks.Stamina.Value);
+		projectile.Init(_playerLinks, _playerLinks.Stamina.Value, false);
 
 		NetworkServer.Spawn(projectile.gameObject);
 
@@ -86,6 +86,6 @@ public class IcyStream : Ability
 	[ClientRpc]
 	private void RpcInit(GameObject obj, float manaValue)
 	{
-		obj.GetComponent<IceCloudProjectile>().Init(_playerLinks, manaValue);
+		obj.GetComponent<IceCloudProjectile>().Init(_playerLinks, manaValue, false);
 	}
 }

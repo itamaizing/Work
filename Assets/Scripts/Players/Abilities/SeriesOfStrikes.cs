@@ -36,7 +36,7 @@ public class SeriesOfStrikes : MonoBehaviour
 			return Mathf.Pow(2, _hitCount2);
 		}
 	}
-	public void MakeHit(Character target, AbilityForm form, float usedRuneValue)
+	public bool MakeHit(Character target, AbilityForm form, float usedRuneValue)
     {
 		if(form == _formList[_hitCount1]  && target == _curTarget || target == null) 
 		{
@@ -72,11 +72,14 @@ public class SeriesOfStrikes : MonoBehaviour
 		if(_hitCount1 >=6)
 		{
 			LastHit(_usedRunesValue1);
+			return true;
 		}
 		if(_hitCount2 >= 6)
 		{
 			LastHit(_usedRunesValue2);
+			return true;
 		}
+		return false;
 	}
 
 	public void Timer()

@@ -53,7 +53,7 @@ public class IcyStreamProjectile : Projectiles
 			Energy energyLink = (Energy)_dad.Stamina;
 			energyLink.SumDamageMake(_damage);
 			target.Health.TryTakeDamage(_damage, DamageType.Magical, AttackRangeType.RangeAttack);
-			target.CharacterState.AddState(new Cooling(), _durationOfDebuff, 0, States.Cooling);
+			target.CharacterState.CmdAddState(States.Cooling, _durationOfDebuff, 0);
 		}
 		//Explode();
 	}
@@ -90,15 +90,15 @@ public class IcyStreamProjectile : Projectiles
 			{
 				enemy.Health.TryTakeDamage(_damage, DamageType.Magical, AttackRangeType.RangeAttack);
 
-				enemy.CharacterState.AddState(new Cooling(), _durationOfDebuff, 0, States.Cooling);
+				enemy.CharacterState.CmdAddState(States.Cooling, _durationOfDebuff, 0);
 				if (Random.Range(0, 1f) <= _chanceOfFrosting)
 				{
-					enemy.CharacterState.AddState(new FrostingState(), _durationOfDebuff, 0, States.Frosting);
+					enemy.CharacterState.CmdAddState(States.Frosting, _durationOfDebuff, 0);
 					if(talant != null)
 					{
 						if(talant.IsActive)
 						{
-							enemy.CharacterState.AddState(new FrozenState(), _durationOfDebuff, 0, States.Frozen);
+							enemy.CharacterState.CmdAddState(States.Frozen, _durationOfDebuff, 0);
 						}
 					}
 				}

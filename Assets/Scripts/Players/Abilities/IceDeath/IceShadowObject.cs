@@ -9,6 +9,7 @@ public class IceShadowObject : Projectiles
 	[HideInInspector] public float timeToDestroy = 20;
 	[HideInInspector] public float timeToDestroyAlive = 10;
 
+
 	private HealthComponent _healthPlayer;
 	private Coroutine _destroyObj;
 	private bool _isAlive = false;
@@ -17,12 +18,13 @@ public class IceShadowObject : Projectiles
 	 * buff player
 	 * */
 	
-	public override void Init(Character dad, float energy)
+	public override void Init(Character dad, float energy, bool lastHit)
 	{
 		_dad = dad;
 		_energyDad = energy;
 		_healthPlayer = _dad.Health;
 		_initialized = true;
+		_lastHit = lastHit;
 
 		float timeToAdd = energy / 20;
 		timeToDestroy += timeToAdd;
@@ -56,9 +58,22 @@ public class IceShadowObject : Projectiles
 		{
 			float duration = 2 + _energyDad / 20;
 
-			target.CharacterState.AddState(new FrozenState(), duration, 0, States.Frozen);
+			target.CharacterState.CmdAddState(States.Frozen, duration, 0);
 			//GetComponent<Collider2D>().enabled = false;
-			Destroy(gameObject);
+			//Destroy(gameObject);
+			if(_lastHit)
+			{
+				Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, 3);
+				foreach (var enemy in enemyDetected) 
+				{
+					if (enemy.TryGetComponent<Character>(out var newTatget) && collision.gameObject != _dad.gameObject)
+					{
+						newTatget.CharacterState.CmdAddState(States.Frozen, duration, 0);
+					}
+
+
+				}
+			}
 		}
 		//Explode();
 	}

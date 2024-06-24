@@ -111,7 +111,7 @@ public class IcePuddle : Ability
 	private void CmdCreateProjecttile(float angle, float manaValue, Vector3 position)
 	{
 		IcePuddleObject projectile = Instantiate(_puddle, position, Quaternion.Euler(0, 0, angle));
-		projectile.Init(_playerLinks, manaValue);
+		projectile.Init(_playerLinks, manaValue, false);
 
 		NetworkServer.Spawn(projectile.gameObject);
 
@@ -121,7 +121,7 @@ public class IcePuddle : Ability
 	[ClientRpc]
 	private void RpcInit(GameObject obj, float manaValue)
 	{
-		obj.GetComponent<IcePuddleObject>().Init(_playerLinks, manaValue);
+		obj.GetComponent<IcePuddleObject>().Init(_playerLinks, manaValue, false);
 	}
 
 

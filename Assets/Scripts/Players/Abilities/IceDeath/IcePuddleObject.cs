@@ -18,11 +18,11 @@ public class IcePuddleObject : Projectiles
 	/*
 	 * buff player
 	 * */
-	public override void Init(Character dad, float timeToDestroy)
+	public override void Init(Character dad, float timeToDestroy, bool lastHit)
 	{
 		_dad = dad;
 		_initialized = true;
-
+		_lastHit = lastHit;
 		_energy = (Energy)_dad.Stamina;
 		_healthComponent = _dad.Health;
 		_timeToDestroy += timeToDestroy;
@@ -66,12 +66,14 @@ public class IcePuddleObject : Projectiles
 				duration += _energy.Value / 5;
 				_energy.UseAllEnergy();
 			}
-			target.CharacterState.AddState(new FrostingState(), duration,0,States.Frosting);
+			//target.CharacterState.AddState(new FrostingState(), duration,0,States.Frosting);
+			target.CharacterState.CmdAddState(States.Frosting, duration, 0);
 			if (talant != null)
 			{
 				if (talant.IsActive)
 				{
-					target.CharacterState.AddState(new FrozenState(), duration, 0, States.Frozen);
+					//target.CharacterState.AddState(new FrozenState(), duration, 0, States.Frozen);
+					target.CharacterState.CmdAddState(States.Frozen, duration, 0);
 				}
 			}
 			_enemies.Add(target.CharacterState);
