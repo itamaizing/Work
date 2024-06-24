@@ -6,6 +6,7 @@ public class IceCloudProjectile : Projectiles
 {	
 	private Vector2 startPos;
 
+
 	private void Awake()
 	{
 		//_dad = dadGm.GetComponent<Character>();
@@ -45,6 +46,7 @@ public class IceCloudProjectile : Projectiles
 			target.Health.TakeDamage(curDamage, DamageType.Physical);
 			//target.CharacterState.AddState(new FrozenState(), duration, 30, States.Frozen);
 			target.CharacterState.CmdAddState(States.Frozen, duration, 30);
+
 
 			//dad.Stamina.Use(duration * 20);
 			//damage
