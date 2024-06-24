@@ -46,7 +46,14 @@ public class IceCloudProjectile : Projectiles
 			target.Health.TakeDamage(curDamage, DamageType.Physical);
 			//target.CharacterState.AddState(new FrozenState(), duration, 30, States.Frozen);
 			target.CharacterState.CmdAddState(States.Frozen, duration, 30);
-
+			if(_dad.Health.GetEvadeMagic() >=20)
+			{
+				_dad.Health.SetEvadeMagic(5);
+			}
+			else
+			{
+				_dad.Health.SetEvadeMagic(20);
+			}
 
 			//dad.Stamina.Use(duration * 20);
 			//damage
