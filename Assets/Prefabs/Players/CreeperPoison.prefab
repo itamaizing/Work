@@ -257,8 +257,11 @@ GameObject:
   - component: {fileID: 2558762928176775106}
   - component: {fileID: 3866749288767764151}
   - component: {fileID: 4071738984799970690}
-  - component: {fileID: 5460533147100191806}
+  - component: {fileID: 3923834704028430900}
+  - component: {fileID: 2133911755741689447}
   - component: {fileID: 105020725200031335}
+  - component: {fileID: 5460533147100191806}
+  - component: {fileID: 7291314749889313123}
   m_Layer: 0
   m_Name: Abilities
   m_TagString: Untagged
@@ -294,8 +297,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _abilities:
-  - {fileID: 5460533147100191806}
+  - {fileID: 3923834704028430900}
+  - {fileID: 2133911755741689447}
   - {fileID: 105020725200031335}
+  - {fileID: 5460533147100191806}
+  - {fileID: 7291314749889313123}
   visualRender: {fileID: 4071738984799970690}
 --- !u!114 &4071738984799970690
 MonoBehaviour:
@@ -313,6 +319,126 @@ MonoBehaviour:
   _iconPref: {fileID: 7803743787710783319, guid: 793e4727b7b14be43a8a702db9da8643, type: 3}
   _areaPref: {fileID: 1574982521674352815, guid: 790fb3857b30c2b4fad4375343a84fad, type: 3}
   _squareAreaPref: {fileID: 6069098087972325736, guid: 613fcf3671552f04eb117ca2af2820f6, type: 3}
+--- !u!114 &3923834704028430900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 573140117665601435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f30962dd1626e2843a0e7b51a3758ca1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _abilityInfo: {fileID: 11400000, guid: 3f2366dd6c4aabe499c9701e0d47053b, type: 2}
+  _isAutoAttack: 1
+  _radius: 2
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _manaCost: 0
+  _castDeley: 0
+  _cooldown: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _isCanTargetHimself: 0
+  _attackZoneSize: 2
+  _attackSpeed: 1
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 128
+  lightningStrikes: {fileID: 2133911755741689447}
+  _currentRadius: 0
+  _currentAttackSpeed: 0
+  _damageDeal: 0
+  dad: {fileID: 8848169558533100257}
+  _originalAttackSpeed: 0
+  _currentTarget: {fileID: 0}
+--- !u!114 &2133911755741689447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 573140117665601435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87743b00886f2da409d50bdc896eaa14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _abilityInfo: {fileID: 11400000, guid: 1af7963ead8875042bc84e9fa3cf58e1, type: 2}
+  _isAutoAttack: 0
+  _radius: 2
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _manaCost: 0
+  _castDeley: 0
+  _cooldown: 8
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _isCanTargetHimself: 0
+  _attackZoneSize: 2
+  _attackSpeed: 1
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 128
+  creeperStrike: {fileID: 3923834704028430900}
+  _isUsing: 0
+--- !u!114 &105020725200031335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 573140117665601435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3937b4f7a865f3b498a887200f7e8325, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _abilityInfo: {fileID: 11400000, guid: 7d0ee064be7acc0469ab7540e835c7f9, type: 2}
+  _isAutoAttack: 0
+  _radius: 0
+  _area: 0
+  _castLength: 4
+  _castWidth: 1
+  _manaCost: 0
+  _castDeley: 0
+  _cooldown: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _leapRange: 4
+  _durationOfLeap: 0.2
+  _playerLinks: {fileID: 8848169558533100257}
+  _obstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  pointForSecondLeap: {fileID: 573140117665601435}
+  abilityRender: {fileID: 4071738984799970690}
+  _enemyLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
+  isEnemy: 0
 --- !u!114 &5460533147100191806
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -344,7 +470,7 @@ MonoBehaviour:
   _manaCostPerTick: 0
   _projectile: {fileID: 9185291158651071422, guid: 2df088c1e08769144ba1fbb1cd7e00f1, type: 3}
   _playerLinks: {fileID: 8848169558533100257}
---- !u!114 &105020725200031335
+--- !u!114 &7291314749889313123
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -353,34 +479,37 @@ MonoBehaviour:
   m_GameObject: {fileID: 573140117665601435}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3937b4f7a865f3b498a887200f7e8325, type: 3}
+  m_Script: {fileID: 11500000, guid: e478f6bede98f5a4590bf849a2c62acc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _abilityInfo: {fileID: 11400000, guid: 7d0ee064be7acc0469ab7540e835c7f9, type: 2}
+  _abilityInfo: {fileID: 11400000, guid: 5e12a4e98f6c3dd42ad804c36ea87337, type: 2}
   _isAutoAttack: 0
   _radius: 0
   _area: 0
-  _castLength: 4
+  _castLength: 6
   _castWidth: 1
   _manaCost: 0
   _castDeley: 0
   _cooldown: 0
-  _isUseCharges: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
+  _isUseCharges: 1
+  _chargesHaveSeparateCooldown: 1
+  _maxCharges: 2
+  _chargeCooldown: 14
   _isStreaming: 0
   _streamingDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: 0
   _playerLinks: {fileID: 8848169558533100257}
-  _leapRange: 4
-  _durationOfLeap: 0.2
-  _obstacleLayerMask:
+  _projectile: {fileID: 305006197583289814, guid: bafec3b1bf156734397167fd3de0f92e, type: 3}
+  _enemyLayerMask:
     serializedVersion: 2
-    m_Bits: 128
-  pointForSecondLeap: {fileID: 573140117665601435}
+    m_Bits: 256
   abilityRender: {fileID: 4071738984799970690}
+  _firstClickDone: 0
+  _secondClickDone: 0
+  _isEnemy: 0
+  _enabled: 0
+  isFast: 0
 --- !u!1 &615051740401084893
 GameObject:
   m_ObjectHideFlags: 0
@@ -766,7 +895,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 48c94a024989bf74d9081978b98b6040, type: 3}
+  m_Sprite: {fileID: 21300000, guid: dfa6db335114f8e498d6358b3d8118ed, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1746,7 +1875,7 @@ RectTransform:
   - {fileID: 4570673472186744744}
   - {fileID: 5575131436335557587}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1859,7 +1988,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7f243771c2613d40a4aecc719336ae4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stateIcons: {fileID: 2311144671411762809}
+  _stateIcons: {fileID: 473623452932789595}
 --- !u!114 &3949213651364217919
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1976,7 +2105,7 @@ RectTransform:
   - {fileID: 2268206065188862395}
   - {fileID: 846488170722865958}
   - {fileID: 7422263495847217136}
-  - {fileID: 4943026833636207756}
+  - {fileID: 7068781589405011886}
   m_Father: {fileID: 4142585537257920599}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2910,7 +3039,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e5b733c903c6d9143af357e086455e86, type: 3}
---- !u!114 &2311144671411762809 stripped
+--- !u!114 &473623452932789595 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7875684509955136938, guid: e5b733c903c6d9143af357e086455e86, type: 3}
   m_PrefabInstance: {fileID: 7772838370458618097}
@@ -2921,7 +3050,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89bb8792cc67dea4487caae7c8fb0dfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &4943026833636207756 stripped
+--- !u!4 &7068781589405011886 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 704795987884427103, guid: e5b733c903c6d9143af357e086455e86, type: 3}
   m_PrefabInstance: {fileID: 7772838370458618097}

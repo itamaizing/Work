@@ -36,7 +36,6 @@ public class PoisonBall : Ability
             if (!_firstClickDone)
             {
                 FirstClickMouse();
-                Debug.Log("FirstClickDone currentCharge = " + _currentChargers);
             }
             else if (!_secondClickDone)
             {
@@ -100,13 +99,16 @@ public class PoisonBall : Ability
         {
             isFast = Vector2.Distance(_playerLinks.transform.position, secondMousePosition) > Vector2.Distance(_playerLinks.transform.position, firstMousePosition);
         }
-        Debug.Log("Cast method isFast = " + isFast);
+
+        //Debug.Log("Cast method isFast = " + isFast);
+
         StartCoroutine(isFast ? FastMoveShoot() : SlowMoveShoot());
     }
 
     private IEnumerator FastMoveShoot()
     {
-        Debug.Log("FastMoveShoot()");
+        //Debug.Log("FastMoveShoot()");
+
         _castDeley = timeFastMovementCast;
         yield return GetCastDeleyCoroutine();
         ShootProjectile(true);
@@ -114,7 +116,8 @@ public class PoisonBall : Ability
 
     private IEnumerator SlowMoveShoot()
     {
-        Debug.Log("SlowMoveShoot()");
+        //Debug.Log("SlowMoveShoot()");
+
         _castDeley = timeSlowMovementCast;
         yield return GetCastDeleyCoroutine();
         ShootProjectile(false);
@@ -122,8 +125,9 @@ public class PoisonBall : Ability
 
     private void ShootProjectile(bool _isFast)
     {
+        //Debug.Log("ShootProjectile targetOrPointPosition = " + targetOrPointPosition);
+
         targetOrPointPosition = _isEnemy ? _target : firstMousePosition;
-        Debug.Log("ShootProjectile targetOrPointPosition = " + targetOrPointPosition);
         PoisonBallProjectile projectile = Instantiate(_projectile, PlayerMove.transform.position, Quaternion.Euler(0.0f, 0.0f, angle));
         projectile.dad = _playerLinks;
         projectile.energyDad = _playerLinks.Stamina.Value;

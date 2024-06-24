@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class MoveComponent : MonoBehaviour
 {
-	private float _moveSpeed;
+	[SerializeField] private float _moveSpeed;
     private Rigidbody2D _rigidbody;
 
     [HideInInspector] public bool CanMove;

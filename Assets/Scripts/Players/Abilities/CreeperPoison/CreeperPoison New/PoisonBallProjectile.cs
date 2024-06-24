@@ -17,16 +17,14 @@ public class PoisonBallProjectile : MonoBehaviour
 
     private Vector2 startPos;
     private Vector2 targetOrPointPosition;
-    //private Vector2 _targetPos;
+
     private float fastMovementSpeed = 0.6f;  // Units per second
     private float slowMovementSpeed = 1.7f;  // Units per second
     private float durationStun = 1.2f;
-    private float distanceEnemyOffset = 1;
     private float maxDistance = 6f;
     private float currentDamage = 35f;
+
     private bool isFast;
-    
-    // private Transform targetTransform;
 
     private void Start()
     {
@@ -50,8 +48,6 @@ public class PoisonBallProjectile : MonoBehaviour
 
     private IEnumerator MoveCoroutine(Vector2 target, float _speed)
     {
-        //float actualMaxDistance = maxDistance;
-        //actualMaxDistance *= GlobalVariable.cellSize;
         rigidbodyBall.DOMove(target, _speed * maxDistance / GlobalVariable.cellSize).SetEase(Ease.Linear);
         yield return null;
     }
@@ -60,14 +56,11 @@ public class PoisonBallProjectile : MonoBehaviour
     {
         if (collision.gameObject == dad.gameObject || collision.CompareTag("Ability"))
         {
-            Debug.Log(dad + " OnTriggerEnter explode dad");
             return;
         }
         // damage
         if (collision.TryGetComponent<Character>(out var target))
         {
-            Debug.Log("Target Rigidbody = " +  target);
-            // State duration 
             Energy energyLink = (Energy)dad.Stamina;
 
             energyLink.SumDamageMake(currentDamage);
@@ -76,11 +69,13 @@ public class PoisonBallProjectile : MonoBehaviour
             {
                 // —мещение врага при попадании снар€да
                 Vector2 offsetDirection = (target.transform.position - rigidbodyBall.transform.position).normalized;
-                Debug.Log("offsetDirection = " + offsetDirection);
+
                 float durationOffset = 1.2f;
                 float rangeOffset = 1.0f;
+
                 durationOffset = ((durationOffset * GlobalVariable.cellSize) * rangeOffset) / GlobalVariable.cellSize; 
                 target.transform.DOMove((Vector2)target.transform.position + offsetDirection, durationOffset).SetEase(Ease.Linear);
+
                 // ѕрмен€ем оглушение пока цель смещаетс€
                 target.CharacterState.AddState(new StunnedState(), durationStun, durationOffset, States.Stun);
             }

@@ -81,7 +81,7 @@ public abstract class AutoAttackAbility : TargetAbility
             if (IsTargetInRadius(Radius + _attackZoneSize))
             {
                 //if (IsTargetInRadius(Radius)) // Не работает авто-атака, если включить этот if
-                _isAttacking = true;
+                    _isAttacking = true;
 
                 if (_isAttacking && NoObstacles())
                 {

@@ -1,19 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class SpitPoison : Ability
 {
     [SerializeField] private SpitPoisonProjectile _projectile;
     [SerializeField] private Character _playerLinks;
-
     private Vector2 _mousePos;
     private bool _enabled = false;
-
+    private bool _canAttack = true;
     private void Update()
     {
         if (!_enabled) return;
 
+        Debug.Log("SpitPoisonUpdate Timer = " + _cooldown);
         if (Input.GetMouseButtonDown(0))
         {
             Debug.Log("SpitPoisonUpdate");
@@ -34,6 +35,7 @@ public class SpitPoison : Ability
     protected override void Cancel()
     {
         _enabled = false;
+        _canAttack = false;
     }
 
     private void Shoot()
@@ -47,4 +49,5 @@ public class SpitPoison : Ability
         _playerLinks.Stamina.Use(_playerLinks.Stamina.Value);
         Cancel();
     }
+
 }

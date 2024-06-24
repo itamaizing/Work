@@ -6,27 +6,27 @@ public class CreeperStrike : AutoAttackAbility
 {
     [SerializeField] LightningStrikes lightningStrikes;
 
-    [SerializeField] public float _currentRadius;
-    [SerializeField] public float _currentAttackSpeed;
     [SerializeField] protected float _damageDeal = 0.0f;
     [SerializeField] protected Character dad;
-    public float _originalAttackSpeed;
+    
+    [HideInInspector] public float _currentRadius;
+    [HideInInspector] public float _currentAttackSpeed;
+    [HideInInspector] public Character _currentTarget;
+    [HideInInspector] public float _originalAttackSpeed;
     private bool _enabled = false;
 
-    public Character _currentTarget;
-    public float AttackSpeed => _attackSpeed;
+    [HideInInspector] public float AttackSpeed => _attackSpeed;
     protected float ThisRadius => _currentRadius;
     private void Update()
     {
         if (!_enabled) return;
 
         Continue();
-        if (lightningStrikes._isUsing) 
-        { 
+        if (lightningStrikes._isUsing)
+        {
             lightningStrikes.DecreaseAttackSpeed(_currentAttackSpeed);
         }
     }
-
     protected override void Cancel()
     {
         _enabled = false;

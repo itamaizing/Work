@@ -280,7 +280,7 @@ public class BlindnessState : AbstractCharacterState
 	{
 		type = StateType.Physical;
 		effects.Add(StatusEffect.Ability);
-		Debug.Log("Entering Stunned State");
+		Debug.Log("Entering Blindness State");
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
 		_characterState = character;
@@ -297,7 +297,7 @@ public class BlindnessState : AbstractCharacterState
 
 	public override void UpdateState()
 	{
-		Debug.Log("Updating Stunned State");
+		Debug.Log("Updating Blindness State");
 		_duration -= Time.deltaTime;
 		if (_duration < 0 || turnOff)
 		{
@@ -307,7 +307,7 @@ public class BlindnessState : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		Debug.Log("Exiting Stunned State");
+		Debug.Log("Exiting Blindness State");
 		if (_characterState.Check(StatusEffect.Ability))
 		{
 			_abilities.SetAbilitiesEnable(true);

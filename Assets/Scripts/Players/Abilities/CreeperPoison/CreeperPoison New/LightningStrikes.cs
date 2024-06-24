@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-[RequireComponent(typeof(CreeperStrike))]
+
 public class LightningStrikes : AutoAttackAbility
 {
     [SerializeField] CreeperStrike creeperStrike;
@@ -18,24 +18,20 @@ public class LightningStrikes : AutoAttackAbility
     private bool _enemyInRadius = false;
     public bool _isUsing = false;
 
-    private new void Start() 
-    { 
+    private new void Start()
+    {
         creeperStrike = GetComponent<CreeperStrike>();
     }
 
     private void Update()
     {
         Timer();
-        
+
         if (_cooldownStrikes <= 0 && _isUsing)
         {
             CastAction();
         }
-        else
-        {
-            Cancel();
-        }
-       
+
         if (Input.GetMouseButtonDown(1))
         {
             Cancel();
@@ -61,7 +57,7 @@ public class LightningStrikes : AutoAttackAbility
             {
                 creeperStrike._originalAttackSpeed = creeperStrike.AttackSpeed;
                 _attackSpeedStrikes = creeperStrike._currentAttackSpeed / _attackSpeedDeacrease;
-                
+
                 creeperStrike.ModifyAttackSpeed(_attackSpeedStrikes);
 
                 for (int i = 0; i < _countStrikes; i++)
@@ -74,7 +70,7 @@ public class LightningStrikes : AutoAttackAbility
         _canCast = false;
         _isUsing = false;
         _enemyInRadius = false;
-        
+        Cancel();
     }
 
     private void Timer()

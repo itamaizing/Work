@@ -6,6 +6,8 @@ public abstract class StaminaComponent : MonoBehaviour
 	public Bar bar;
 	public float Value { get { return _value; } }
 	public float MaxValue { get { return _maxValue; } }
+	// Для увелечения регенерации от способности Invisible у CreeperPoison
+	public float RegenValue { get { return _regenerationValue; } }
 
 	protected float _value;
 	protected float _maxValue;

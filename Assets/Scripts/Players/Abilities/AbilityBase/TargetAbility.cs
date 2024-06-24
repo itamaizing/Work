@@ -20,6 +20,7 @@ public abstract class TargetAbility : Ability
 
     protected override void Cast()
     {
+        Debug.Log("Cast in TargetAbility work");
         _useJob = StartCoroutine(UseCoroutine());
     }
 

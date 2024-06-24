@@ -7,6 +7,8 @@ using UnityEngine;
 
 public class LightningMovement : Ability
 {
+    [SerializeField] private CreeperStrike creeperStrike;
+
     [Header("Ability properties")]
     [SerializeField] private float _leapRange;
     [SerializeField] private float _durationOfLeap;
@@ -14,9 +16,10 @@ public class LightningMovement : Ability
     [SerializeField] private LayerMask _obstacleLayerMask;
     [SerializeField] private GameObject pointForSecondLeap;
     [SerializeField] private VisualRender abilityRender;
+    [SerializeField] private LayerMask _enemyLayerMask;
     private Vector2 _mousePosition;
     private bool _enabled = false;
-    public LayerMask _enemyLayerMask;
+    public bool isEnemy = false;
     
     // First leap
     private float actualFirstLeapRange;
@@ -33,11 +36,11 @@ public class LightningMovement : Ability
     private bool _isReadySecondLeap = true;
     private bool _secondVectorSelected = false;
 
-    public bool isEnemy = false;
-
+    GameObject pointPref;
     private new void Start()
     {
         pointForSecondLeap.transform.position = PlayerMove.transform.position;
+        pointPref = pointForSecondLeap;
     }
 
     private void Update()
@@ -162,7 +165,6 @@ public class LightningMovement : Ability
             Vector2 originalPosition = pointForSecondLeap.transform.position;
             // Точка для отрисовки второго прыжка
             pointForSecondLeap.transform.position = firstLeapPosition;
-
             // Отрисовка второй области
             abilityRender.Drawn(this);
 
