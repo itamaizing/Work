@@ -26,6 +26,10 @@ public class IcePuddleObject : Projectiles
 		_energy = (Energy)_dad.Stamina;
 		_healthComponent = _dad.Health;
 		_timeToDestroy += timeToDestroy;
+		if(_lastHit)
+		{
+			transform.localScale = Vector3.one * 1.7f;
+		}
 
 		StartCoroutine(DestroyShadow());
 		StartCoroutine(StartFade());

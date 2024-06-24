@@ -18,18 +18,22 @@ public class IcePuddle : Ability
 	private Vector2 _mousePos;
 	private float _angle;
 	private float _angle2;
+	private bool _lastHit = false;
 	private bool _enabled = false;
 	private bool _secondPoind = false;
-	private bool _crutch = false; //��� ������ ����� ��� �������
+	private bool _crutch = false;
+	private float _timer = 2;
+	private float _time = 0;
 
-	private void Start()
+	/*private void Start()
 	{
 		_preViewPuddle.SetActive(false);
-	}
+	}*/
 	private void Update()
 	{
 		if (!_enabled) return;
 
+		Timer();
 		if (!_secondPoind)
 		{
 			_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -84,6 +88,11 @@ public class IcePuddle : Ability
 
 	protected override void Cast()
 	{
+		_lastHit = _seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1);
+		//_lastHit = true;
+		if(_lastHit)
+			_preViewPuddle.transform.localScale = Vector3.one * 1.7f;
+
 		_preViewPuddle.SetActive(true);
 		_enabled = true;
 	}
@@ -103,25 +112,25 @@ public class IcePuddle : Ability
 		//puddle.talant = _frostingFrozenTalant;
 
 		Debug.Log("test spawn");
-		CmdCreateProjecttile(_angle2, _timeToDestroy, _preViewPuddle.transform.position);
+		CmdCreateProjecttile(_angle2, _timeToDestroy, _preViewPuddle.transform.position, _lastHit);
 		Mana.Use(timeToAdd * 5);
 	}
 
 	[Command]
-	private void CmdCreateProjecttile(float angle, float manaValue, Vector3 position)
+	private void CmdCreateProjecttile(float angle, float manaValue, Vector3 position, bool lastHit)
 	{
 		IcePuddleObject projectile = Instantiate(_puddle, position, Quaternion.Euler(0, 0, angle));
-		projectile.Init(_playerLinks, manaValue, false);
+		projectile.Init(_playerLinks, manaValue, lastHit);
 
 		NetworkServer.Spawn(projectile.gameObject);
 
-		RpcInit(projectile.gameObject, manaValue);
+		RpcInit(projectile.gameObject, manaValue, lastHit);
 	}
 
 	[ClientRpc]
-	private void RpcInit(GameObject obj, float manaValue)
+	private void RpcInit(GameObject obj, float manaValue, bool lastHit)
 	{
-		obj.GetComponent<IcePuddleObject>().Init(_playerLinks, manaValue, false);
+		obj.GetComponent<IcePuddleObject>().Init(_playerLinks, manaValue, lastHit);
 	}
 
 
@@ -145,5 +154,18 @@ public class IcePuddle : Ability
 			return spawnPosition;
 		}
 
+	}
+
+	private void Timer()
+	{
+		if(_lastHit) 
+		{
+			_time += Time.deltaTime;
+			if(_time >= _timer)
+			{
+				_lastHit = false;
+				_preViewPuddle.transform.localScale = Vector3.one;
+			}
+		}
 	}
 }
