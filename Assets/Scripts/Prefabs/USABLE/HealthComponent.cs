@@ -248,8 +248,7 @@ public class HealthComponent : NetworkBehaviour
         return damageValue; // �� ������� ��� �����
     }
     public void TakeDamage(float damageValue, DamageType damageType)
-    {
-        
+    {        
         DisplayTakenDamage(damageValue, damageType);
         
         damageValue = CalculateDamageForShields(damageValue, damageType);
@@ -511,6 +510,11 @@ public class HealthComponent : NetworkBehaviour
 
     public void SetEvadeMagic(float value)
     {
-        _evadeMagDamage = value;
+        _evadeMagDamage =+ value;
     }    
+
+    public float GetEvadeMagic()
+    {
+        return _evadeMagDamage;
+    }
 }
