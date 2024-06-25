@@ -15,7 +15,6 @@ public class SeriesOfStrikes : MonoBehaviour
 	private bool _isInTheRow;
 	private Character _curTarget;
 
-
 	//private bool _list1 = true;
 	//private bool _list2 = true;
 	private List<AbilityForm> _formList = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical };
@@ -109,3 +108,4 @@ public class SeriesOfStrikes : MonoBehaviour
 		_player.RuneComponent.Add(value);
 	}
 }
+

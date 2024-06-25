@@ -838,6 +838,7 @@ public class CharacterState : NetworkBehaviour
 		}
 	}
 
+
 	public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state)
 	{
 		if (invinsible)
@@ -947,15 +948,22 @@ public class CharacterState : NetworkBehaviour
 	}
 
 	[Command]
+	public void CmdAddState(States state, float duration, float damageToExit, Schools schools)
+	{
+		AddStateLogic(state, duration, damageToExit, schools);
+		ClientAddState(state, duration, damageToExit, schools);
+	}
+
+	[Command]
 	public void CmdAddState(States state, float duration, float damageToExit)
 	{
-		AddStateLogic(state, duration, damageToExit);
-		ClientAddState(state, duration, damageToExit);
+		AddStateLogic(state, duration, damageToExit, Schools.None);
+		ClientAddState(state, duration, damageToExit, Schools.None);
 	}
 	[ClientRpc]
-	private void ClientAddState(States state, float duration, float damageToExit)
+	private void ClientAddState(States state, float duration, float damageToExit, Schools schools)
 	{
-		AddStateLogic(state, duration, damageToExit);
+		AddStateLogic(state, duration, damageToExit, schools);
 	}
 
 	public bool IfHasState(AbstractCharacterState newState)
@@ -1020,7 +1028,7 @@ public class CharacterState : NetworkBehaviour
 		return false;
 	}
 
-	private void AddStateLogic(States state, float duration, float damageToExit)
+	private void AddStateLogic(States state, float duration, float damageToExit, Schools school)
 	{
 		if (invinsible)
 			return;
@@ -1032,7 +1040,7 @@ public class CharacterState : NetworkBehaviour
 
 				if (item.Stack(duration))
 				{
-					//_stateIcons.ActivateIco(state, duration, 1);
+					_stateIcons.ActivateIco(state, duration, 1);
 				}
 				else
 				{
@@ -1042,41 +1050,13 @@ public class CharacterState : NetworkBehaviour
 		}
 		else
 		{
-			/*switch (state)
-			{
-				case States.Stun:
-					CreateState(new StunnedState(), state, duration, damageToExit);
-					break;
-				case States.Frozen:
-					CreateState(new FrozenState(), state, duration, damageToExit);
-					break;
-				case States.Frosting:
-					CreateState(new FrostingState(), state, duration, damageToExit);
-					break;
-				case States.Cooling:
-					CreateState(new Cooling(), state, duration, damageToExit);
-					break;
-				case States.Blind:
-					CreateState(new BlindnessState(), state, duration, damageToExit);
-					break;
-				case States.Invisible:
-					CreateState(new InvisibleState(), state, duration, damageToExit);
-					break;
-				case States.SchoolDebuff:
-					CreateState(new AbilitySchoolDebuff(), state, duration, damageToExit);
-					break;
-				case States.FormDebuf:
-					CreateState(new AbilityFormDebuff(), state, duration, damageToExit);
-					break;
-				case States.Desiccuration:
-					CreateState(new Desiccuration(), state, duration, damageToExit);
-					break;
-				default:
-					Debug.Log("Create method for state " + state);
-					break;
-			}*/
-
 			CreateState(enumToState[state], state, duration, damageToExit);
+
+			if(school!=Schools.None)
+			{
+				var counterSpell = (AbilitySchoolDebuff)enumToState[state];
+				counterSpell.canceledSchoool = school;
+			}
 		}
 	}
 
