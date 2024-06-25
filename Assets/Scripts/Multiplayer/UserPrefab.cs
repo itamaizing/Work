@@ -8,7 +8,7 @@ public class UserPrefab : MonoBehaviour
     {
         if(TryGetComponent<HeroComponent>(out HeroComponent hero))
         {
-            hero.IController = true;
+            //hero.IController = true;
         }
     }
 }

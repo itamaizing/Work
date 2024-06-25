@@ -122,10 +122,10 @@ public class MoveComponent : NetworkBehaviour
 	
 	private Vector2 target;
 
-	[HideInInspector] public bool CanMove;
-	[HideInInspector] public bool IsMoving;
-	[HideInInspector] public bool IsSelect;
-	[HideInInspector] public Vector2 MoveDirection;
+	public bool CanMove;
+	public bool IsMoving;
+	public bool IsSelect;
+	public Vector2 MoveDirection;
 
 	private float _defaultSpeed;
 
@@ -184,11 +184,10 @@ public class MoveComponent : NetworkBehaviour
 
 	void FixedUpdate()
 	{
-		if (!isInitialize || !isLocalPlayer) return;
+		if (!isInitialize) return;
 
 		if (!CanMove || !IsSelect)
 		{
-			_rigidbody.velocity = Vector2.zero;
 			return;
 		}
 
@@ -204,8 +203,8 @@ public class MoveComponent : NetworkBehaviour
 	}
 
 	[Command]
-	private void CmdMove(Vector2 target , Vector2 offset)
+	private void CmdMove(Vector2 targetPos , Vector2 offset)
 	{
-		_seeker.StartPath(transform.position, target + offset);
+		_seeker.StartPath(transform.position, targetPos + offset);
 	}
 }

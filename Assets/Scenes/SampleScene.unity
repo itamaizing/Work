@@ -370,7 +370,6 @@ GameObject:
   - component: {fileID: 852043363}
   - component: {fileID: 852043365}
   - component: {fileID: 852043366}
-  - component: {fileID: 852043367}
   m_Layer: 7
   m_Name: "\u0431\u043E\u043B\u044C\u0448\u043E\u0439 \u043B\u0435\u0432 (8)"
   m_TagString: Obstacle
@@ -480,18 +479,6 @@ CapsuleCollider2D:
   m_Offset: {x: 0.00000011920929, y: 0}
   m_Size: {x: 2.76, y: 3.73}
   m_Direction: 0
---- !u!114 &852043367
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 852043362}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &939885594
 GameObject:
   m_ObjectHideFlags: 0
@@ -538,7 +525,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1
   data:
-    dataString: UEsDBBQAAAgIAAAYIewTTpqeXwIAABQFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQF1VEtz2jAQ/iuMzqUDCY/QWwuE9EBgQjq5+LK21liDLHkkmUcy/PeuZBu7yfTE8u23u98+5A8mlC0wcdqsjOBrzZH96DFvs2+91vmEZ9hrtRPv2HDeBHeZJ0HgvIATmvChD7M6R2dE8lPtpScPCCyVSLXJl3yPc22dJTgFaZFcRjsfrQj66LEz/fRnPuRC1t3UW+9kzQa9K5kJKoempTbEhlaxSpVIyAvkXnJLnjTsUUVT1EzN8MITLaWwtRLmLkXodFdkaNC3ygVQY6H64Pt0TEiGYp85r7MbvklTi64WZeCyEIZGVOVlv3Q1txzsoVJ2BFn6Sg+zSVBVJV1/8feHwZ0anT81dYcDX8NlIjm8wCUB6zqD7cKLVvswDOgE8gCxxLcM1bNeGV0qTk5nSh9aWrxbtH9vrc0zTA4tXkn9BJbF/9fje7iG7s9zKfI4jHJUATupw8TD8tHQbn6T4HAatk5BqFfxx+Ir7Ls3VDsehbGOXHWXysuLdWk8lS3DzHw3pZtrozDAtegCFUh32VIa113h3Vdfp+wnzyP411IXr33NI/gUEuCWH9bYdW316bYsm+nTGm22KZ0UClvR3vFMc5prpaoL686kCduVJoWkE7YvBf/3tFh8PxkM4WHK79PBZDyK+zB7mExhnMaQjKbDaczC7QlFfYLcVkLrpdDWVJtc0Z01H5HeykARrp0bOK3Ee647Ixcq1bvEIKpNleEmHA0VoXfJl1zQgHbonFBh3+wjYlInB+TRLVEUOl2enYGozRKxQhy180jE5uGrETEP3255a/Ao8OSLN8mu7PoXUEsDBBQAAAgIAAAYIez4ArfubQAAAHgAAAAJACQAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0Bq1YqSy0qzszPU7JSMNEz0jM011FQSi9KLMgoBooYgjilmSkgdrRSkrGZgWGihXmKcZqBmalJkm6ipYWZeaJpWlJisom5oXmSUixQfUllQapfYm4qRE9AYklGWmZeSmZeup57UWaKO8hopdhaAFBLAQItABQAAAgIAAAYIewTTpqeXwIAABQFAAALACQAAAAAAAAAAAAAAAAAAABncmFwaDAuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLAQItABQAAAgIAAAYIez4ArfubQAAAHgAAAAJACQAAAAAAAAAAAAAAKwCAABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwUGAAAAAAIAAgC4AAAAZAMAAAAA
+    dataString: UEsDBBQAAAgIAAAYIextDPCnWAIAAA4FAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQF1VE1z2jAQ/SuMzk0HEgKht5YQ0gMJE9rJxRfZWmMNsuTRBx/J8N+7K9vYSaYnxHtvd99+wDuT2lWQeWOXVoqVEcB+DBi92bdBRz7CkW+N3sg3aDWvUviCRDxqXriXBvERhTlTgrcy+6m3isRDBIOWubHlQmxhbpx3COdcOUDKGk/RGqH3ATvix9WMQk74up7S6w1fs+HgjM8MtAfbSVthK6tVQWeKlxUIstyJJ616XMs0NtMoyHhmlJKuccL8qYqdvvAT9Skkx65iadIWILeFJ4f9wOc8d+AbO5af7qXF4dQZ2S9TT6zkbld72nMVqMbdbBL91ElXX/irUaRza8rHtu5oSDV8IbMdOsy4872R9uH7j8aDPnC146mC1wL0k1laE7RA0ttAocHB9X339dLavIBs1+G11U9gqP6/GOrhHLs/zpUsU6K+j2tgo0ycdVw7WNzKbzQcj8I1KRAlF38d/OHb/vU0xIO0ziPVdKnJXmqCJSlbxJlRN8HPjdUQ4cZ0BZorf1pjGt9f4fVXrlf2E/PA6XfSFG+49vw/hUS408c19qm1OVyW5QpzWIErnoNXUkNnmognnNPcaF1fWH8mbdgm2JxnvbBtkOLjabH0ZjIc8bupuMmHk9txesVnd5Mpv81Tno2no2nK4u1JjX1yta6NNkvBrekuucY7a/8+BkvLq3jtwvLDUr6VpjdyqXOzySyAfq4zXIyDxSL4ixQLIXFAG/Be6rhv9p4wZbIdiOSSKImdLo7e8qTLkrBK7o0nJGHz+H+RMIIvt7y2sJdwoOJtsjM7/wNQSwMEFAAACAgAABgh7PgCt+5tAAAAeAAAAAkAJABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQGrVipLLSrOzM9TslIw0TPSMzTXUVBKL0osyCgGihiCOKWZKSB2tFKSsZmBYaKFeYpxmoGZqUmSbqKlhZl5omlaUmKyibmheZJSLFB9SWVBql9ibipET0BiSUZaZl5KZl66nntRZoo7yGil2FoAUEsBAi0AFAAACAgAABgh7G0M8KdYAgAADgUAAAsAJAAAAAAAAAAAAAAAAAAAAGdyYXBoMC5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsBAi0AFAAACAgAABgh7PgCt+5tAAAAeAAAAAkAJAAAAAAAAAAAAAAApQIAAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLBQYAAAAAAgACALgAAABdAwAAAAA=
     upgradeData: 
     file_cachedStartup: {fileID: 0}
     data_cachedStartup: 
@@ -1187,7 +1174,6 @@ GameObject:
   - component: {fileID: 9013063947852723648}
   - component: {fileID: 5571791533491939028}
   - component: {fileID: 9013063947852723649}
-  - component: {fileID: 9013063947852723650}
   m_Layer: 7
   m_Name: "\u0431\u043E\u043B\u044C\u0448\u043E\u0439 \u043B\u0435\u0432 (7)"
   m_TagString: Obstacle
@@ -1487,7 +1473,6 @@ GameObject:
   - component: {fileID: 2142613265428980101}
   - component: {fileID: 5492157350459586579}
   - component: {fileID: 5492157350459586580}
-  - component: {fileID: 5492157350459586581}
   m_Layer: 7
   m_Name: "\u0431\u043E\u043B\u044C\u0448\u043E\u0439 \u043B\u0435\u0432 (5)"
   m_TagString: Obstacle
@@ -1521,7 +1506,6 @@ GameObject:
   - component: {fileID: 7451020765757083600}
   - component: {fileID: 7755735783188625458}
   - component: {fileID: 7755735783188625459}
-  - component: {fileID: 7755735783188625460}
   m_Layer: 7
   m_Name: "\u0431\u043E\u043B\u044C\u0448\u043E\u0439 \u043B\u0435\u0432 (1)"
   m_TagString: Obstacle
@@ -1644,7 +1628,6 @@ GameObject:
   - component: {fileID: 8155382055463189932}
   - component: {fileID: 4905181980649524266}
   - component: {fileID: 8155382055463189933}
-  - component: {fileID: 8155382055463189934}
   m_Layer: 7
   m_Name: "\u0431\u043E\u043B\u044C\u0448\u043E\u0439 \u043B\u0435\u0432 (4)"
   m_TagString: Obstacle
@@ -1723,7 +1706,6 @@ GameObject:
   - component: {fileID: 4089723136238382617}
   - component: {fileID: 8459204020063126022}
   - component: {fileID: 8459204020063126023}
-  - component: {fileID: 8459204020063126024}
   m_Layer: 7
   m_Name: "\u0431\u043E\u043B\u044C\u0448\u043E\u0439 \u043B\u0435\u0432 (2)"
   m_TagString: Obstacle
@@ -1856,18 +1838,6 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0.00000047683716}
   m_Size: {x: 2.76, y: 3.73}
   m_Direction: 0
---- !u!114 &5492157350459586581
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3811878440085573182}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!212 &5571791533491939028
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2363,18 +2333,6 @@ CapsuleCollider2D:
   m_Offset: {x: 0.0000009536743, y: 0}
   m_Size: {x: 2.7599998, y: 3.7299995}
   m_Direction: 0
---- !u!114 &7755735783188625460
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4146083723392018184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &7980821659159193853
 GameObject:
   m_ObjectHideFlags: 0
@@ -2442,18 +2400,6 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: -0.00000047683716}
   m_Size: {x: 2.760001, y: 3.7300014}
   m_Direction: 0
---- !u!114 &8155382055463189934
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5112353084424354775}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!212 &8459204020063126022
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2541,18 +2487,6 @@ CapsuleCollider2D:
   m_Offset: {x: 0.00000047683716, y: -0.00000047683716}
   m_Size: {x: 2.7599998, y: 3.7299995}
   m_Direction: 0
---- !u!114 &8459204020063126024
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5328515990413224121}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &8662699191061360429
 Transform:
   m_ObjectHideFlags: 0
@@ -2587,7 +2521,6 @@ GameObject:
   - component: {fileID: 6729436215042442622}
   - component: {fileID: 5194631198794281876}
   - component: {fileID: 8666893270200769185}
-  - component: {fileID: 8666893270200769186}
   m_Layer: 7
   m_Name: "\u0431\u043E\u043B\u044C\u0448\u043E\u0439 \u043B\u0435\u0432 (3)"
   m_TagString: Obstacle
@@ -2630,18 +2563,6 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 2.760001, y: 3.7300014}
   m_Direction: 0
---- !u!114 &8666893270200769186
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8666893270200769184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &8986014295020313752
 GameObject:
   m_ObjectHideFlags: 0
@@ -2653,7 +2574,6 @@ GameObject:
   - component: {fileID: 5711627958063419457}
   - component: {fileID: 4774686967600937726}
   - component: {fileID: 8986014295020313753}
-  - component: {fileID: 8986014295020313754}
   m_Layer: 7
   m_Name: "\u0431\u043E\u043B\u044C\u0448\u043E\u0439 \u043B\u0435\u0432 (6)"
   m_TagString: Obstacle
@@ -2696,18 +2616,6 @@ CapsuleCollider2D:
   m_Offset: {x: -0.00000047683716, y: 0}
   m_Size: {x: 2.7600017, y: 3.7300017}
   m_Direction: 0
---- !u!114 &8986014295020313754
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8986014295020313752}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &9013063947852723648
 Transform:
   m_ObjectHideFlags: 0
@@ -2758,15 +2666,3 @@ CapsuleCollider2D:
   m_Offset: {x: -0.00000047683716, y: 0}
   m_Size: {x: 2.7600014, y: 3.7300017}
   m_Direction: 0
---- !u!114 &9013063947852723650
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 870437442548077594}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

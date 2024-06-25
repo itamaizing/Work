@@ -277,7 +277,7 @@ public abstract class Ability : NetworkBehaviour
         }
         _playerMove.CanMove = true;
         _castDeleyJob = null;
-        CastEnded?.Invoke();
+        //CastEnded?.Invoke();
     }
 
     private IEnumerator RechargeCoroutine()

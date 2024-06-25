@@ -1,12 +1,13 @@
-using System;
+using Mirror;
 using UnityEngine;
 
 public class MinionComponent : Character
 {
     [SerializeField] private CharacterData _playerData;
-    public HeroComponent _heroParent;
-
-    public HeroComponent HeroParent => _heroParent;
+    
+    [SyncVar]
+    public GameObject _heroParent;
+    public GameObject HeroParent => _heroParent;
 
     private void Awake()
     {
@@ -21,5 +22,11 @@ public class MinionComponent : Character
         CharacterState.Initialize(Health, Move , Stamina);
         UIPlayerComponents.Initialize(Abilities, Move, Stamina, Health);
         SelectComponent.Initialize(false, Move, Abilities, UIPlayerComponents);
+    }
+
+    public void SetParent(GameObject parent)
+    {
+        Debug.Log(parent.name);
+        _heroParent = parent;
     }
 }
