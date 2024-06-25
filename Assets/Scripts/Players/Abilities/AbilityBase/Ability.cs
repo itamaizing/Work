@@ -122,7 +122,7 @@ public abstract class Ability : MonoBehaviour
 
     public virtual bool TryUse()
     {
-        if (_isUsed && (_mana.Value >= _manaCost && _isReady) == false)
+        if (_isUsed || (_mana.Value >= _manaCost && _isReady) == false)
         {
             PreparingEnded?.Invoke();
             return false;
