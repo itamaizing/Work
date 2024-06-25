@@ -10,8 +10,8 @@ public class IcePuddle : Ability
 	[SerializeField] private Character _playerLinks;
 	[SerializeField] private GameObject _preViewPuddle;
 	[SerializeField] private GameObject _lowePoint;
-	[SerializeField] private FrostingFrozenTalant _frostingFrozenTalant;
-	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
+	//[SerializeField] private FrostingFrozenTalant _frostingFrozenTalant;
+	//[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 	[SerializeField] private float _timeToDestroy = 3f;
 	//[SerializeField] private GameObject _spawnPoint;
 
@@ -88,7 +88,7 @@ public class IcePuddle : Ability
 
 	protected override void Cast()
 	{
-		_lastHit = _seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1);
+		//_lastHit = _seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1);
 		//_lastHit = true;
 		if(_lastHit)
 			_preViewPuddle.transform.localScale = Vector3.one * 1.7f;
