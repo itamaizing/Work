@@ -43,7 +43,8 @@ public class IceCloudProjectile : Projectiles
 				curDamage *= 1.4f;
 			}
 			energyLink.SumDamageMake(curDamage);
-			target.Health.TakeDamage(curDamage, DamageType.Physical);
+			//target.Health.TakeDamage(curDamage, DamageType.Physical);
+			target.Health.TryTakeDamage(curDamage, DamageType.Physical, AttackRangeType.RangeAttack);
 			//target.CharacterState.AddState(new FrozenState(), duration, 30, States.Frozen);
 			target.CharacterState.CmdAddState(States.Frozen, duration, 30);
 			if(_dad.Health.GetEvadeMagic() >=20)

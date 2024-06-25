@@ -375,7 +375,8 @@ public enum Schools
 	Water,
 	Air,
 	Earth,
-	Physical
+	Physical,
+    None
 }
 
 public enum AbilityForm
