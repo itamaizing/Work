@@ -7,17 +7,22 @@ public class SpitPoison : Ability
 {
     [SerializeField] private SpitPoisonProjectile _projectile;
     [SerializeField] private Character _playerLinks;
+    [SerializeField] public Collider2D _collider;
     private Vector2 _mousePos;
     private bool _enabled = false;
-    private bool _canAttack = true;
+
+    private void Awake()
+    {
+        _collider = _playerLinks.GetComponent<Collider2D>();
+    }
     private void Update()
     {
         if (!_enabled) return;
 
-        Debug.Log("SpitPoisonUpdate Timer = " + _cooldown);
+        //Debug.Log("SpitPoisonUpdate Timer = " + _cooldown);
         if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log("SpitPoisonUpdate");
+            //Debug.Log("SpitPoisonUpdate");
             PayCost();
             Shoot();
         }
@@ -35,15 +40,15 @@ public class SpitPoison : Ability
     protected override void Cancel()
     {
         _enabled = false;
-        _canAttack = false;
     }
 
     private void Shoot()
     {
+        _cooldown = 9f;
         _mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
         float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
-        SpitPoisonProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
+        SpitPoisonProjectile projectile = Instantiate(_projectile, _playerLinks.Rb.position, Quaternion.Euler(0, 0, angle));
         projectile.dad = _playerLinks;
         projectile.energyDad = _playerLinks.Stamina.Value;
         _playerLinks.Stamina.Use(_playerLinks.Stamina.Value);

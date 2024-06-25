@@ -50,7 +50,6 @@ MonoBehaviour:
   dad: {fileID: 0}
   energyDad: 0
   rigidbodyBall: {fileID: 8153657160320903263}
-  circleCollider: {fileID: 8587250490602419491}
   _hitEffect: {fileID: 0}
 --- !u!50 &8153657160320903263
 Rigidbody2D:

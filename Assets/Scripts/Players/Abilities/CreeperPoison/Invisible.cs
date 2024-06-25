@@ -17,17 +17,16 @@ public class Invisible : Ability
 
     [SerializeField] private float reduceMoveSpeed = 0.3f;
     [SerializeField] private float moveSpeedDecrease;
-    [SerializeField] private float originalMoveSpeed;
 
     private float maxDistanceVisible = 12.0f / GlobalVariable.cellSize;
 
     [SerializeField] private bool _isUsing = false;
-    //private List<GameObject> enemies = new();
 
     private Coroutine _useJob;
 
     [SerializeField] private bool _enemyIsSees = false;
     private bool _enabled = false;
+    private bool _isAttacked = false;
 
     private void Update()
     {

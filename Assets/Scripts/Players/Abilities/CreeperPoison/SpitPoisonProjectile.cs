@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class SpitPoisonProjectile : MonoBehaviour
 {
-    [HideInInspector] public Character dad;
+    SpitPoison spitPoison;
+    //[HideInInspector] 
+    public Character dad;
     [HideInInspector] public float energyDad;
-
+    public Collider2D dadCollider;
+    [SerializeField] private Collider2D projectileCollider;
     [SerializeField] private Rigidbody2D _rb;
     [SerializeField] GameObject _hitEffect;
     [SerializeField] private float _force;
@@ -17,23 +20,29 @@ public class SpitPoisonProjectile : MonoBehaviour
     {
         startPos = transform.position;
         _rb.AddForce(transform.up * _force, ForceMode2D.Impulse);
+        
+        projectileCollider = GetComponent<Collider2D>();
+        dadCollider = spitPoison._collider;
+
+        Physics2D.IgnoreCollision(projectileCollider, dadCollider);
     }
 
     private void Update()
     {
-        if (Vector2.Distance(transform.position, startPos) > _distance * GlobalVariable.cellSize)
-        {
-            Explode();
-        }
+        //if (Vector2.Distance(transform.position, startPos) > _distance * GlobalVariable.cellSize)
+        //{
+        //    Explode();
+        //}
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject == dad.gameObject || collision.CompareTag("Ability"))
         {
-            return; 
-        }       
-        //damage, blindness etc.
+            Debug.Log("Ball is destroy");
+            return;
+        }
+        // damage, blindness etc.
         if (collision.TryGetComponent<Character>(out var target))
         {
             // State duration 
@@ -60,6 +69,7 @@ public class SpitPoisonProjectile : MonoBehaviour
 
     private void Explode()
     {
+        Debug.Log("Ball is destroy in Explode()");
         if (_hitEffect != null)
         {
             GameObject hitEffect = Instantiate(_hitEffect, transform.position, Quaternion.identity);

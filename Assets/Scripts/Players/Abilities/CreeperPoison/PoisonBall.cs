@@ -57,6 +57,7 @@ public class PoisonBall : Ability
     {
         Debug.Log("Cast");
         _enabled = true;
+        //IsFast();
     }
 
     protected override void Cancel()
@@ -133,7 +134,7 @@ public class PoisonBall : Ability
         projectile.energyDad = _playerLinks.Stamina.Value;
         _playerLinks.Stamina.Use(_playerLinks.Stamina.Value);
         projectile.MoveBall(targetOrPointPosition, _isFast);
-        Cancel();
+        //Cancel();
     }
 }
 

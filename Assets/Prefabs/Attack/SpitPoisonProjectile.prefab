@@ -49,9 +49,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dad: {fileID: 0}
   energyDad: 0
+  projectileCollider: {fileID: 1593443830899751966}
   _rb: {fileID: 4203435246731193498}
   _hitEffect: {fileID: 0}
-  _force: 30
+  _force: 2
   _distance: 5
 --- !u!50 &4203435246731193498
 Rigidbody2D:

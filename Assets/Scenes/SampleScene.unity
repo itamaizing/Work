@@ -311,7 +311,6 @@ MonoBehaviour:
     m_Bits: 128
   reduceMoveSpeed: 0.3
   moveSpeedDecrease: 0
-  originalMoveSpeed: 0
   _isUsing: 0
   _enemyIsSees: 0
 --- !u!1 &424455545
@@ -602,6 +601,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5460533147100191806, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
+      propertyPath: _collider
+      value: 
+      objectReference: {fileID: 2091061434}
     - target: {fileID: 5791904809664854920, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
       propertyPath: bar
       value: 
@@ -613,6 +616,10 @@ PrefabInstance:
     - target: {fileID: 6314414592503689021, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8848169558533100257, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
+      propertyPath: IController
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
@@ -1620,6 +1627,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22d89e8fc912e73459ee8ef407455b14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!58 &2091061434 stripped
+CircleCollider2D:
+  m_CorrespondingSourceObject: {fileID: 8249157818335217477, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
+  m_PrefabInstance: {fileID: 734939674}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2137047476
 GameObject:
   m_ObjectHideFlags: 0
