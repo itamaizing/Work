@@ -1,8 +1,9 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 public class PlayerAbilities : MonoBehaviour
 {
@@ -69,29 +70,14 @@ public class PlayerAbilities : MonoBehaviour
         InputHandler.OnEighthCast -= SetCurrentAbility;
     }
 
-    public void SetAbilitiesEnable(bool isEnabled)
+    public void SetAbilitiesDisabled()
     {
-        _isAbilitiesEnabled = isEnabled;
+        _isAbilitiesDisabled = true;
     }
 
-    public void SetAbilitiesPanelSelect(bool isSelect)
+    public void SetAbilitiesEnabled()
     {
-        AbilitiesManager.Instance.ChangeCurrentPanelSelectStatus(_abilityPanel,isSelect);
-        if(isSelect) EnableAbilities();
-        else DisableAbilities();
-    }
-
-    public void SetAbilitiesPanelEnable()
-    {
-        AbilitiesManager.Instance.ActiveCurrentPanel(_abilityPanel);
-    }
-
-    public void SetAbilitiesCoolDown(float time)
-    {
-        foreach (var item in _abilities)
-        {
-            item.SetCooldown(time);
-        }
+        _isAbilitiesDisabled = false;
     }
 	public void SetAbilitiesEnable(bool isEnabled)
 	{
@@ -206,11 +192,8 @@ public class PlayerAbilities : MonoBehaviour
 	}
 	/*private void TryUseAbility()
     {
-        if (_currentAbility == null || !_isAbilitiesEnabled || !_abilityPanel.IsActive  || (_currentAbility.IsUsed))
+        if (_currentAbility == null || _isAbilitiesDisabled  || _currentAbility.IsUsed )
             return;
-
-        if(_currentAutoAttackAbility != null)
-            PauseAutoAttack();
 
         visualRender.Drawn(_currentAbility);
         _currentAbility.TryUse();

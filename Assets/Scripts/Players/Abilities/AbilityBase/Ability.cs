@@ -385,4 +385,3 @@ public enum AbilityForm
 	Magic,
 	Physical
 }
-
