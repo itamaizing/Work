@@ -389,6 +389,76 @@ public class Desiccuration : AbstractCharacterState
 	}
 }
 
+public class Desiccuration : AbstractCharacterState
+{
+	public new States state = States.Desiccuration;
+	public bool turnOff = false;
+	private PlayerAbilities _abilities;
+	private float _baseDuration;
+	private float _duration;
+	private float _damageToExit;
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+	{
+		Debug.Log("Entering Desiccuration State");
+		type = StateType.Physical;
+		effects.Add(StatusEffect.Move);
+		effects.Add(StatusEffect.Ability);
+
+		_characterState = character;
+
+		if (character.TryGetComponent<PlayerAbilities>(out var ability))
+		{
+			_abilities = ability;
+			_abilities.SetAbilitiesDisabled();
+		}
+		else
+		{
+			Debug.Log("no ability at " + character.gameObject.name);
+		}
+		_characterState.Move.CanMove = false;
+		_duration = durationToExit;
+		_baseDuration = durationToExit;
+		//_damageToExit = damageToExit;
+		_damageToExit = 0.01f;
+	}
+
+	public override void UpdateState()
+	{
+		Debug.Log("Updating Desiccuration State");
+		_duration -= Time.deltaTime;
+		if (_duration < 0 || turnOff || _characterState.Health.sumDamageTaken >= _damageToExit)
+		{
+			ExitState();
+		}
+	}
+
+	public override void ExitState()
+	{
+		Debug.Log("Exiting Desiccuration State");
+		if (_characterState.Check(StatusEffect.Move))
+		{
+			_characterState.Move.CanMove = true;
+		}
+		if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
+		{
+			_abilities.SetAbilitiesEnabled();
+		}
+		_characterState.RemoveState(this);
+	}
+	public override bool Stack(float time)
+	{
+		if (_baseDuration > time)
+		{
+			return false;
+		}
+		else
+		{
+			_duration = time;
+			return true;
+		}
+	}
+}
+
 public class BlindnessState : AbstractCharacterState
 {
 	public new States state = States.Blind;
@@ -830,6 +900,11 @@ public class CharacterState : NetworkBehaviour
 			{
 				currentStates[i].UpdateState();
 			}
+		}
+
+		if(Input.GetKeyDown(KeyCode.R))
+		{
+			CmdAddState(States.Stun, 10, 0);
 		}
 
 		if(Input.GetKeyDown(KeyCode.R))
