@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class DeathSpiralProjectile : Projectiles
 {
+	public bool inTheRow = false;
 	private Vector2 startPos;
-
+	
 	private void Awake()
 	{
 		Debug.Log("has spawned");
@@ -30,12 +31,34 @@ public class DeathSpiralProjectile : Projectiles
 		//damage, freez etc
 		if (collision.TryGetComponent<Character>(out var target))
 		{
-			target.Health.TryTakeDamage(20, DamageType.Physical, AttackRangeType.RangeAttack);
-			//damage
+			if (inTheRow)
+			{
+				target.Health.TryTakeDamage(10, DamageType.Physical, AttackRangeType.RangeAttack);
+			}
+			else
+			{
+				target.Health.TryTakeDamage(20, DamageType.Physical, AttackRangeType.RangeAttack);
+			}
 		}
 		if(collision.TryGetComponent<IceShadowObject>(out var shadow))
 		{
-			shadow.SetAlive();
+            if (shadow.IsAlive && !inTheRow)
+            {
+				shadow.SetAlive(20);
+			}
+			else if(shadow.IsAlive && inTheRow)
+			{
+				shadow.SetAlive(10);
+			}
+            if (inTheRow) 
+			{
+				shadow.SetAlive(10);
+			}
+            else
+            {
+				shadow.SetAlive(40);
+			}
+            
 			Debug.Log(shadow.name + " become alive");
 		}
 

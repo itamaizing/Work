@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class AutoAttackAbility : TargetAbility
 {
     [Header("AutoAttack settings")]
-    [SerializeField] protected float _attackZoneSize;
+    [SerializeField] private float _attackZoneSize;
     [SerializeField] protected float _attackSpeed = 1f;
     [SerializeField] protected LayerMask _obstacle;
 
@@ -33,6 +33,7 @@ public abstract class AutoAttackAbility : TargetAbility
     protected override void Cleaning()
     {
         base.Cleaning();
+
         if (_autoAttackJob != null)
         {
             StopCoroutine(_autoAttackJob);
@@ -51,18 +52,14 @@ public abstract class AutoAttackAbility : TargetAbility
         RaycastHit2D[] rayHit = Physics2D.RaycastAll(transform.position, dir, distance, _obstacle);
 
         if (rayHit.Length > 0)
-        {
             return false;
-        }
         else
-        {
             return true;
-        }
     }
 
     protected override IEnumerator UseCoroutine()
     {
-        yield return _chooseTargetJob = StartCoroutine(ChooseTargetCoroutine(Radius + 99));
+        yield return _chooseTatgetJob = StartCoroutine(ChooseTargetCoroutine(Radius + 99));
         yield return _autoAttackJob = StartCoroutine(AutoAttackCoroutine());
     }
 
@@ -72,9 +69,9 @@ public abstract class AutoAttackAbility : TargetAbility
         {
             if (IsTargetInRadius(Radius + _attackZoneSize))
             {
-                //if (IsTargetInRadius(Radius)) // Не работает авто-атака, если включить этот if
+                if(IsTargetInRadius(Radius))
                     _isAttacking = true;
-
+                
                 if (_isAttacking && NoObstacles())
                 {
                     yield return new WaitForSeconds(_attackSpeed);

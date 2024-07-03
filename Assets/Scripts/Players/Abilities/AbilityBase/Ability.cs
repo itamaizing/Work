@@ -32,8 +32,6 @@ public abstract class Ability : NetworkBehaviour
     [SerializeField] protected float _streamingDuration;
     [SerializeField] protected float _manaCostRate;
     [SerializeField] protected float _manaCostPerTick;
-	[SerializeField] protected Schools _abilitySchool;
-	[SerializeField] protected AbilityForm _abilityForm;
 
 	protected StaminaComponent _mana;
 	protected MoveComponent _playerMove;
@@ -41,14 +39,11 @@ public abstract class Ability : NetworkBehaviour
 	protected bool _isUsed = false;
 	protected bool _isCanCancle = true;
 	protected bool _isReady = true;
-    protected bool _avaliable = true;
-    protected bool _hasCanceled = false;
     protected int _currentChargers;
 	protected Coroutine _rechargeJob;
 	protected Coroutine _streamingJob;
 	protected Coroutine _castDeleyJob;
 	protected Coroutine _cooldownJob;
-    protected float _timerForDebuf = 0;
 
     private float _remainingСooldownTime;
 	private bool _avaliable;
@@ -149,10 +144,6 @@ public abstract class Ability : NetworkBehaviour
                 return false;
             }    
         }
-      /*  if(_hasCanceled)
-        {
-            KnockDownTimerStart();
-        }*/
         _isUsed = true;
         _isCanCancle = true;
         CastStarted?.Invoke();
@@ -160,18 +151,20 @@ public abstract class Ability : NetworkBehaviour
         return true;
     }
 
-	public void SwitchAvailible(bool avalieble)
-	{
-        _avaliable = avalieble;
-	}
+    public void SetCooldown(float time)
+    {
+        _isReady = false;
 
-	public void KnockDownTimerStart(float time)
-	{
-        _timerForDebuf = time;
-        StartCoroutine(KnockDownTimer());
-	}
+        if (time < _remainingСooldownTime)
+            return;
 
-	protected Coroutine GetCastDeleyCoroutine()
+        if(_cooldownJob != null)
+            StopCoroutine(_cooldownJob);
+
+        _cooldownJob = StartCoroutine(CooldownCoroutine(time));
+    }
+
+    protected Coroutine GetCastDeleyCoroutine()
     {
         _castDeleyJob = StartCoroutine(CastDeleyCoroutine());
         StartCastDeley?.Invoke(_castDeley);
@@ -259,11 +252,11 @@ public abstract class Ability : NetworkBehaviour
     private IEnumerator CooldownCoroutine(float cooldownTime)
     {
         CooldownStarted?.Invoke(cooldownTime);
-        _remaining�ooldownTime = cooldownTime;
+        _remainingСooldownTime = cooldownTime;
 
-        while (_remaining�ooldownTime > 0)
+        while (_remainingСooldownTime > 0)
         {
-            _remaining�ooldownTime -= Time.deltaTime;
+            _remainingСooldownTime -= Time.deltaTime;
             yield return null;
         }
         _isReady = true;

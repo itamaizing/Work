@@ -58,6 +58,11 @@ public class PhysicalAttack : AutoAttackAbility
 
 
 		}
+
+		if(Random.Range(0, 100) <2)
+		{
+			_dad.RuneComponent.Add(1);
+		}
 	}
 	/*private void LastHit()
 	{

@@ -16,6 +16,7 @@ public abstract class Character : NetworkBehaviour
 	[SerializeField] private CharacterState _characterState;
 	[SerializeField] private UIPlayerComponents _uiPlayerComponents;
 	[SerializeField] private SelectComponent _selectComponent;
+	[SerializeField] private TalentSystem _talentSystem;
 	[CanBeNull] [SerializeField] private SpawnComponent _spawnComponent;
 
 	public Rigidbody2D Rb => _rb;
@@ -28,6 +29,7 @@ public abstract class Character : NetworkBehaviour
 	public UIPlayerComponents UIPlayerComponents => _uiPlayerComponents;
 	public SelectComponent SelectComponent => _selectComponent;
 	public SpawnComponent SpawnComponent => _spawnComponent;
+	public TalentSystem TalentSystem => _talentSystem;
 
 	public abstract void Initialize(CharacterData data);
 

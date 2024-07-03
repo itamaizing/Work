@@ -13,6 +13,10 @@ public class IceShadowObject : Projectiles
 	private HealthComponent _healthPlayer;
 	private Coroutine _destroyObj;
 	private bool _isAlive = false;
+	private float _hp;
+
+	public bool IsAlive => _isAlive;
+	public float HP => _hp;
 	/*
 	 * timer to destroy
 	 * buff player
@@ -78,7 +82,7 @@ public class IceShadowObject : Projectiles
 		//Explode();
 	}
 
-	private void Explode()
+	public void Explode()
 	{
 		if (_hitEffect != null)
 		{
@@ -105,9 +109,10 @@ public class IceShadowObject : Projectiles
 		//destroy	
 	}
 
-	public void SetAlive()
+	public void SetAlive(float hp)
 	{
 		_isAlive = true;
+		_hp += hp;
 		StartCoroutine(DestroyAliveShadow());
 		//_destroyObj.
 	}
