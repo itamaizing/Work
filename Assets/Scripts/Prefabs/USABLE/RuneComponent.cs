@@ -4,24 +4,25 @@ using UnityEngine;
 
 public class RuneComponent : StaminaComponent
 {
-	private Ability _lastUsedAbility = null;
-	private int _multiplier = 1;
-	private float _timer = 0;
-	private bool _multiplyCost = false;
-	
+	//private Ability _lastUsedAbility = null;
+	//private int _multiplier = 1;
+	//private float _timer = 0;
+	//private bool _multiplyCost = false;
+
+	private List<AbilityTimer> _abilities;
 	private void Update()
 	{
 		Regen();
-		if (!_multiplyCost) return;
+		//if (!_multiplyCost) return;
 
-		_timer += Time.deltaTime;
+		/*_timer += Time.deltaTime;
 		if (_timer > _regenerationDelay)
 		{
 			_timer = 0;
 			_multiplyCost = false;
 			_multiplier = 1;
 			_lastUsedAbility = null;
-		}
+		}*/
 	}
 
 	public override void Add(float runeValue)
@@ -36,7 +37,51 @@ public class RuneComponent : StaminaComponent
 	
 	public bool RemoveRune(float runeValue, Ability usedAbility) 
 	{
-		if(_lastUsedAbility == usedAbility && _value >= runeValue*_multiplier * 2)
+		if(_abilities.Count > 0)
+		{
+			for(int i = 0; i < _abilities.Count; i++)
+			{
+				if (_abilities[i].ability == usedAbility && _value >= runeValue * _abilities[i].multiplier * 2)
+				{
+					var newValue = _abilities[i];
+					newValue.multiplier *= 2;
+					_abilities[i] = newValue;
+
+					runeValue *= _abilities[i].multiplier;
+
+					_value -= runeValue;
+					UpdateBar();
+					//_multiplyCost = true;
+
+					var newTimer = _abilities[i];
+					newTimer.time = 6;
+					_abilities[i] = newTimer;
+					return true;
+				}				
+			}
+			return false;
+		}
+		else
+		{
+			if(_value >= runeValue)
+			{
+				AbilityTimer abilityTimer = new AbilityTimer();
+				abilityTimer.time = 6;
+				abilityTimer.multiplier = 1;
+				abilityTimer.ability = usedAbility;
+				_abilities.Add(abilityTimer);
+
+				_value -= runeValue;
+				UpdateBar();
+				return true;
+			}
+			else 
+			{
+				return false;
+			}
+		}
+
+		/*if(_lastUsedAbility == usedAbility && _value >= runeValue*_multiplier * 2)
 		{
 			_multiplier *= 2;
 		}
@@ -53,7 +98,7 @@ public class RuneComponent : StaminaComponent
 		else
 		{
 			return false;
-		}
+		}*/
 	}
 
 	public override bool Use(float EnergyValue)
@@ -63,8 +108,9 @@ public class RuneComponent : StaminaComponent
 	}
 }
 
-struct AbilityTimer
+public struct AbilityTimer
 {
 	public Ability ability;
 	public float time;
+	public float multiplier;
 }
