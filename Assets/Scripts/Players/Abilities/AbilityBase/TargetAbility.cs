@@ -4,12 +4,13 @@ using UnityEngine;
 
 public abstract class TargetAbility : Ability
 {
+    
     [Header("Target settings")]
     [SerializeField] protected bool _isCanTargetHimself;
 
     protected Coroutine _useJob;
     protected Coroutine _castJob;
-    protected Coroutine _chooseTatgetJob;
+    protected Coroutine _chooseTargetJob;
     protected Character _target;
 
     protected bool IsTarget => (_target.transform == _health.transform);
@@ -19,6 +20,7 @@ public abstract class TargetAbility : Ability
 
     protected override void Cast()
     {
+        Debug.Log("Cast in TargetAbility work");
         _useJob = StartCoroutine(UseCoroutine());
     }
 
@@ -36,7 +38,7 @@ public abstract class TargetAbility : Ability
     {
         _target = null;
         RaycastHit2D[] rayHit = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-
+        Debug.Log("tryRaycastTarget / Target == " + rayHit);
         foreach (var item in rayHit)
         {
             if (rayHit.Length > 0 && item.transform.TryGetComponent<Character>(out Character enemy))
@@ -71,13 +73,14 @@ public abstract class TargetAbility : Ability
         if(_useJob != null)
             StopCoroutine(_useJob);
 
-        if(_chooseTatgetJob != null)
-            StopCoroutine(_chooseTatgetJob);
+        if(_chooseTargetJob != null)
+            StopCoroutine(_chooseTargetJob);
+
     }
 
     protected virtual IEnumerator UseCoroutine()
     {
-        yield return _chooseTatgetJob = StartCoroutine(ChooseTargetCoroutine(Radius));
+        yield return _chooseTargetJob = StartCoroutine(ChooseTargetCoroutine(Radius));
 
         if (!PayCost(false))
             yield break;

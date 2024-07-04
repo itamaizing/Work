@@ -656,7 +656,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2906004067914324339, guid: ad3c47046ceed4c4280cf18cce39f9f5, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -442.56
+      value: -442.55994
       objectReference: {fileID: 0}
     - target: {fileID: 2906004067914324339, guid: ad3c47046ceed4c4280cf18cce39f9f5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -801,8 +801,8 @@ Canvas:
   m_GameObject: {fileID: 848726538}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_RenderMode: 1
+  m_Camera: {fileID: 1237832216}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -1404,7 +1404,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9208979367607251715, guid: 6e0cc7b34bfacbe4987cca859b59d293, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 891.0155
+      value: 891.01544
       objectReference: {fileID: 0}
     - target: {fileID: 9208979367607251715, guid: 6e0cc7b34bfacbe4987cca859b59d293, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1514,7 +1514,7 @@ MonoBehaviour:
   - {fileID: 4371443321967966874, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
   - {fileID: 4371443321967966874, guid: 0fe4228580ff977419acc74a8f3e1a6f, type: 3}
   - {fileID: 4371443321967966874, guid: a79366755ff1599429f6d57fd0be0061, type: 3}
-  - {fileID: 3633788159689046964, guid: 4f0ac8409ec730b42870eeae25085111, type: 3}
+  - {fileID: 5197633848987564949, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
   - {fileID: 5195731727944466540, guid: 13d29f15dbe0e9c40bac53fe5ff49f89, type: 3}
   - {fileID: 1740845397034949897, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
   - {fileID: 2672404202709694877, guid: c62801e5e7752514bb8cc9b9e90e943d, type: 3}
@@ -1527,12 +1527,15 @@ MonoBehaviour:
   - {fileID: 1521997633048654849, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
   - {fileID: 2385148975066525671, guid: 6a0ddc9e39819654e966cd893270775b, type: 3}
   - {fileID: 8442599261096630905, guid: cbfb4777e45b41a4d9cb20bcbfe66715, type: 3}
+  - {fileID: 8028649200744656771, guid: bafec3b1bf156734397167fd3de0f92e, type: 3}
+  - {fileID: 6623607984683778980, guid: d097441cb29bc5a42b2defb1e1f12525, type: 3}
   - {fileID: 1089694967083977132, guid: d8d224a388f0ff843a0a43d3bba85eb0, type: 3}
   - {fileID: 1099707679034851779, guid: d490c899d604d2c4dbb3f72e61cacb6e, type: 3}
   - {fileID: 1740845397034949897, guid: e16bc4ff4d2817e46838f2731c3b803a, type: 3}
   - {fileID: 4371443321967966874, guid: d8e8dba9ab53a4743bbdb63cd7b41f6d, type: 3}
   - {fileID: 4371443321967966874, guid: 5c26e995f253a6646a634242e54ca546, type: 3}
   - {fileID: 4371443321967966874, guid: 2568a29acdeadce4db91958923f49b66, type: 3}
+  - {fileID: 6570596488840784737, guid: 2df088c1e08769144ba1fbb1cd7e00f1, type: 3}
   - {fileID: 4932658458029131548, guid: 72bf53dfa1624064fa5072a77d9ba7f1, type: 3}
   - {fileID: 4371443321967966874, guid: 8fec45e4e7a73734f926c26ecfe03de4, type: 3}
   exceptionsDisconnect: 1
@@ -1554,6 +1557,7 @@ MonoBehaviour:
   _heroList:
   - {fileID: 8468544467696250796, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
   - {fileID: 1563676885133033940, guid: cbfb4777e45b41a4d9cb20bcbfe66715, type: 3}
+  - {fileID: 8848169558533100257, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
 --- !u!4 &1710071150
 Transform:
   m_ObjectHideFlags: 0

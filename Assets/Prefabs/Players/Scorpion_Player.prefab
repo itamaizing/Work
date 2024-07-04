@@ -243,16 +243,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b927948ae40d644492381b2c058cf47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerMove: {fileID: 7682162387749688049}
-  _mana: {fileID: 1094104296704797349}
-  _health: {fileID: 8017403384711168740}
   _abilities:
   - {fileID: 3872907724992027390}
   - {fileID: 4248034767522565474}
   - {fileID: 8510656036757050977}
   - {fileID: 3102830003482922377}
   - {fileID: 1622158732122876119}
-  _abilityRender: {fileID: 7389968634782177109}
+  visualRender: {fileID: 0}
 --- !u!114 &7389968634782177109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -281,6 +278,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ce911ed1fee4ac4081cac9fd3485b7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 4ac214b92b88f1f43b4b3f39e43659fd, type: 2}
   _isAutoAttack: 0
   _radius: 2
@@ -290,6 +290,8 @@ MonoBehaviour:
   _manaCost: 20
   _castDeley: 1
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -317,6 +319,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 742a35404981fe14884579c1c7fe0b20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: c41e05ae8c15c48499aa896fb305ad06, type: 2}
   _isAutoAttack: 0
   _radius: 2
@@ -326,6 +331,8 @@ MonoBehaviour:
   _manaCost: 2
   _castDeley: 1.1
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -349,6 +356,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f9a096671cfb1d4d8b33bcdf1ecf80f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: c86ba2dc4b3fc8a4fbb00ca788a0822c, type: 2}
   _isAutoAttack: 0
   _radius: 4
@@ -358,6 +368,8 @@ MonoBehaviour:
   _manaCost: 6
   _castDeley: 1.3
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -382,6 +394,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bcc26ec105616c40b78e0515b385bed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: f954632b892f43143bbee3c9ddaa45aa, type: 2}
   _isAutoAttack: 0
   _radius: 8
@@ -391,6 +406,8 @@ MonoBehaviour:
   _manaCost: 10
   _castDeley: 0.5
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -416,6 +433,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70e54b3b201230e4e9e91bfb7f4c3164, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 674d1ee282701154a88a87e00fa5f772, type: 2}
   _isAutoAttack: 0
   _radius: 2
@@ -425,6 +445,8 @@ MonoBehaviour:
   _manaCost: 20
   _castDeley: 1.2
   _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -450,6 +472,7 @@ GameObject:
   - component: {fileID: 8017403384711168740}
   - component: {fileID: 1094104296704797349}
   - component: {fileID: 4078259535836011217}
+  - component: {fileID: 5163387227096806258}
   m_Layer: 9
   m_Name: Scorpion_Player
   m_TagString: Enemies
@@ -482,7 +505,7 @@ Transform:
   - {fileID: 2709810244463014874}
   - {fileID: 365582621145851117}
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &680286997676261946
 Rigidbody2D:
@@ -615,18 +638,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 279100e0cb4b40f42b64a3ac1d1502fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 300
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   CanMove: 1
   IsMoving: 0
   IsSelect: 0
-  DirectionOfMovement: {x: 0, y: 0}
-  SelectObject: {fileID: 0}
-  CircleSelect: {fileID: 8843138204280373677}
-  MarkersSelect: {fileID: 2648934868589617978}
-  AbilityPanel: {fileID: 0}
-  AbilitiesOnTargetToggles:
-  - {fileID: 0}
-  - {fileID: 0}
+  MoveDirection: {x: 0, y: 0}
 --- !u!114 &8017403384711168740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -639,23 +657,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b5add863fba6af449bc9b5c95b8199e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hpRegenerationValue: 4.8
-  _hpRegenerationDelay: 3
-  _defPhysDamage: 4
-  _defMagDamage: 2
-  _evadeMeleeDamage: 4
-  _evadeRangeDamage: 2
-  _evadeMagDamage: 1
-  _absorbPhysDamage: 0
-  _absorbMagDamage: 0
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  healthBar: {fileID: 0}
   shields_Physic: []
   shields_Magic: []
-  Health: 999
-  MaxHealth: 999
-  HealthBar: {fileID: 3938253269705692174}
-  HealthBarText: {fileID: 4852884334704020607}
-  DamageSpawn: {fileID: 9077626058765136094}
-  PrefabText: {fileID: 97509558472111251, guid: b8ec9c7fb2a215a418a41efc3aec9187, type: 3}
   sumDamageTaken: 0
 --- !u!114 &1094104296704797349
 MonoBehaviour:
@@ -669,13 +676,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30e849fb64ec77e4b94f9f568f688e22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _value: 100
-  _maxValue: 100
-  _regenerationValue: 10
-  _regenerationDelay: 1
-  Bar: {fileID: 3150191971195330590}
-  DamageSpawn: {fileID: 9077626058765136094}
-  PrefabText: {fileID: 97509558472111251, guid: b8ec9c7fb2a215a418a41efc3aec9187, type: 3}
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  bar: {fileID: 0}
+  _sumDamageGiven: 0
 --- !u!114 &4078259535836011217
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -688,12 +693,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7f243771c2613d40a4aecc719336ae4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Select: {fileID: 0}
-  PlayerHp: {fileID: 8017403384711168740}
-  PlayerMove: {fileID: 7682162387749688049}
-  energy: {fileID: 0}
-  durationToExit: 0
-  damageToExit: 0
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _stateIcons: {fileID: 0}
+  invinsible: 0
+--- !u!114 &5163387227096806258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1740845397034949897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  _assetId: 3221064355
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1 &2575113939423756866
 GameObject:
   m_ObjectHideFlags: 0
