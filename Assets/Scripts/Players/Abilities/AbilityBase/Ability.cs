@@ -353,7 +353,7 @@ public abstract class Ability : NetworkBehaviour
     }
 
     [Command]
-    private void CmdApplyDamage(GameObject target, float damage, DamageType damageType, AttackRangeType attackRangeType)
+    protected void CmdApplyDamage(GameObject target, float damage, DamageType damageType, AttackRangeType attackRangeType)
     {
         target.GetComponent<HealthComponent>().TryTakeDamage(damage, damageType, attackRangeType);
     }

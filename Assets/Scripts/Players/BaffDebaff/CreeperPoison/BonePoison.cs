@@ -9,7 +9,7 @@ public class BonePoison : BaseEffect
     [SerializeField] private int _stackDuration = 30;
     private float _currentDamage;
     private float _timeBetweenAttack = 1.0f;
-    private int _currentStacks;
+    private int _currentStacks = 1;
     private int _maxStacks = 4;
 
     private DamageType _damageType = DamageType.Physical;
@@ -24,46 +24,50 @@ public class BonePoison : BaseEffect
         if (_currentStacks < _maxStacks)
         {
             _currentStacks++;
-            _currentDamage = _currentStacks * _baseDamage;
-            //targetHealth.GetComponent<Character>().CharacterState.AddState(new AbilityFormDebuff(), 6.0f, 0, States.SchoolDebuff);
 
-            Debug.Log("AddStacks _currentStacks == " + _currentStacks);
-
-            _damageDealCoroutine = StartCoroutine(DamageDealCoroutine(targetHealth, _currentStacks));
+            if (_damageDealCoroutine == null)
+            {
+                _damageDealCoroutine = StartCoroutine(DamageDealCoroutine(targetHealth));
+            }
+            else
+            {
+                _currentDamage = _currentStacks * _baseDamage;
+            }
         }
-        _lifeTimeStacksCoroutine = StartCoroutine(LifeTimeStacksCoroutine(targetHealth, _currentStacks));
+        _lifeTimeStacksCoroutine = StartCoroutine(LifeTimeStacksCoroutine(targetHealth));
     }
 
-    private IEnumerator DamageDealCoroutine(HealthComponent targetHealth, int currentStacks)
+    private IEnumerator DamageDealCoroutine(HealthComponent targetHealth)
     {
-        Debug.Log("DamageDealCoroutine _currentStacks == " + currentStacks);
-        while (currentStacks > 0)
+        while (_currentStacks > 0)
         {
+            //targetHealth.GetComponent<Character>().CharacterState.AddState(new AbilityFormDebuff(), 6.0f, 0, States.SchoolDebuff);
             targetHealth.TryTakeDamage(_currentDamage, _damageType, _attackRangeType);
 
             yield return new WaitForSeconds(_timeBetweenAttack);
         }
     }
 
-    private IEnumerator LifeTimeStacksCoroutine(HealthComponent targetHealth, int currentStacks)
+    private IEnumerator LifeTimeStacksCoroutine(HealthComponent targetHealth)
     {
-        if (currentStacks > 0)
+        
+        while (_currentStacks > 0)
         {
             yield return new WaitForSeconds(_stackDuration);
-            currentStacks--;
-            Debug.Log("CurrentStacks-- == " + currentStacks);
-            StartCoroutine(LifeTimeStacksCoroutine(targetHealth, currentStacks));
+            _currentStacks--;
+            Debug.Log("CurrentStacks-- == " + _currentStacks);
         }
-        else if (currentStacks == 0)
+
+        if (_currentStacks == 0)
         {
             Debug.Log("else if coroutine");
             Destroy(gameObject);
             if (_damageDealCoroutine != null && _lifeTimeStacksCoroutine != null)
             {
-                StopCoroutine(DamageDealCoroutine(targetHealth, currentStacks));
+                StopCoroutine(DamageDealCoroutine(targetHealth));
                 _damageDealCoroutine = null;
 
-                StopCoroutine(LifeTimeStacksCoroutine(targetHealth, currentStacks));
+                StopCoroutine(LifeTimeStacksCoroutine(targetHealth));
                 _lifeTimeStacksCoroutine = null;
             }
         }
