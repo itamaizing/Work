@@ -12,7 +12,7 @@ public class IceShadowObject : Projectiles
 
 	private HealthComponent _healthPlayer;
 	private Coroutine _destroyObj;
-	private bool _isAlive = false;
+	private bool _isAlive = true;
 	private float _hp;
 
 	public bool IsAlive => _isAlive;

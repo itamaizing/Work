@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,31 @@ using UnityEngine;
 public class Absorption : Ability
 {
 	[SerializeField] private Character _player;
+	private bool _active = false;
+
+
+	private void Update()
+	{
+		if(!_active) return;
+
+		if (Input.GetMouseButton(0))
+		{
+			var _mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			RaycastHit2D[] hits =
+				Physics2D.CircleCastAll(_mousePos, _radius, Vector2.zero);
+			for (int i = 0; i < hits.Length; i++)
+			{
+				if (hits[i].collider.TryGetComponent<IceShadowObject>(out var shadow))
+				{
+					if (shadow.IsAlive)
+					{
+						CmdAction(shadow.gameObject);
+					}
+				}
+			}
+			_active = false;
+		}
+	}
 
 	protected override void Cancel()
 	{
@@ -12,17 +38,33 @@ public class Absorption : Ability
 	}
 	protected override void Cast()
 	{
-
+		_active = true;
 	}
 
-	private void Action(IceShadowObject body)
+	[Command]
+	private void CmdAction(GameObject bodyObj)
 	{
-		if(body.IsAlive) 
-		{
-			float regen = 0.1f * body.HP + 0.05f * _player.Stamina.Value/10;
-			_player.Stamina.Use(_player.Stamina.Value);
-			_player.Health.AddHeal(regen);
-			body.Explode();
-		}
+		Debug.Log(bodyObj.name);
+		Action(bodyObj);
+		RpcAction(bodyObj);
+	}
+
+	[ClientRpc]
+	private void RpcAction(GameObject bodyObj) 
+	{
+		Debug.Log(bodyObj.name);
+		Action(bodyObj);
+	}
+
+	private void Action(GameObject bodyObj)
+	{
+		Debug.Log(bodyObj.name);
+		IceShadowObject body = bodyObj.GetComponent<IceShadowObject>();
+
+		float regen = 0.1f * body.HP + 0.05f * _player.Stamina.Value / 10;
+		_player.Stamina.Use(_player.Stamina.Value);
+		_player.Health.AddHeal(regen);
+		body.Explode();
+
 	}
 }
