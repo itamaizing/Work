@@ -31,7 +31,7 @@ public class LightningStrikes : AutoAttackAbility
         {
             CastAction();
         }
-
+        
         if (Input.GetMouseButtonDown(1))
         {
             Cancel();

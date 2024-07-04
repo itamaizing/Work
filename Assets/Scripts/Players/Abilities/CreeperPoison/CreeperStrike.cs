@@ -7,7 +7,6 @@ using UnityEngine;
 public class CreeperStrike : AutoAttackAbility
 {
     [SerializeField] private LightningStrikes _lightningStrikes;
-    [SerializeField] private BonePoison _bonePoisonPrefab;
     [SerializeField] protected Character dad;
     [SerializeField] protected float _damageDeal = 0.0f;
 
@@ -38,7 +37,7 @@ public class CreeperStrike : AutoAttackAbility
             StopCoroutine(ModifyAttackSpeedCoroutine());
 
         if (_strikeCoroutine != null)
-            StopCoroutine(StrikeCoroutine(Target, _currentDamage));
+            StopCoroutine(StrikeCoroutine(_currentDamage));
     }
 
     protected override void CastAction()
@@ -50,16 +49,16 @@ public class CreeperStrike : AutoAttackAbility
     public IEnumerator UseAbilityCoroutine()
     {
         _currentTarget = Target.gameObject;
-        _strikeCoroutine = StartCoroutine(StrikeCoroutine(Target, _currentDamage));
+        _strikeCoroutine = StartCoroutine(StrikeCoroutine(_currentDamage));
         yield return null;
     }
 
-    private IEnumerator StrikeCoroutine(Character enemy, float currentDamage)
+    private IEnumerator StrikeCoroutine(float currentDamage)
     {
         float chanceOfCriticalStrike = 0.5f;
         float numbersForChanceOfCriticalStrike = Random.Range(0.0f, 1.0f);
 
-        Debug.Log("Chance for Crit == " + numbersForChanceOfCriticalStrike);
+        //Debug.Log("Chance for Crit == " + numbersForChanceOfCriticalStrike);
 
         if (_lightningStrikes._isUsing)
         {
@@ -68,18 +67,27 @@ public class CreeperStrike : AutoAttackAbility
 
         if (numbersForChanceOfCriticalStrike <= chanceOfCriticalStrike)
         {
-            _bonePoisonDebuff = CurrentTarget.GetComponentInChildren<BonePoison>();
-            if (_bonePoisonDebuff != null)
-            {
-                currentDamage = CalculateCriticalDamage(currentDamage);
-            }
+            CmdCriticalDamage(CurrentTarget, currentDamage);
+            //Debug.Log("currentDamage if == " + currentDamage);            
+        }
+        else
+        {
+            CmdApplyDamage(CurrentTarget, currentDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
+            //Debug.Log("Current Damage else == " + currentDamage);
         }
 
-        Debug.Log("Strike Coroutine damage == " + currentDamage);
-        //yield return CriticalDamageCoroutine(currentDamage);
-        MakeDamage(enemy.Health, currentDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
-
         yield return null;
+    }
+
+    [Command]
+    private void CmdCriticalDamage(GameObject currentTarget, float criticalDamage)
+    {
+        _bonePoisonDebuff = currentTarget.GetComponentInChildren<BonePoison>();
+        if (_bonePoisonDebuff != null)
+        {
+            criticalDamage = CalculateCriticalDamage(criticalDamage);
+        }
+        currentTarget.GetComponent<HealthComponent>().TryTakeDamage(criticalDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
     }
 
     private IEnumerator ModifyAttackSpeedCoroutine()
@@ -99,7 +107,7 @@ public class CreeperStrike : AutoAttackAbility
 
         if (_bonePoisonDebuff != null)
         {
-            Debug.Log("If Crit work");
+            //Debug.Log("If Crit work");
 
             for (int i = 1; i < _bonePoisonDebuff.CurrentStacks; i++)
             {
@@ -117,16 +125,5 @@ public class CreeperStrike : AutoAttackAbility
     public void ResetAttackSpeed()
     {
         CurrentAttackSpeed = OriginalAttackSpeed;
-    }
-
-    private void MakeDamage(HealthComponent target, float damage, DamageType damageType, AttackRangeType attackRangeType)
-    {
-        CmdApplyDamage(target.gameObject, damage, damageType, attackRangeType);
-    }
-
-    [Command]
-    private void CmdApplyDamage(GameObject target, float damage, DamageType damageType, AttackRangeType attackRangeType)
-    {
-        target.GetComponent<HealthComponent>().TryTakeDamage(damage, damageType, attackRangeType);
     }
 }

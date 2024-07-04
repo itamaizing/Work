@@ -42,6 +42,7 @@ public class SpitPoisonProjectile : NetworkBehaviour
 
                 DealDamage(targetHealth, _damage, DamageType.Magical, AttackRangeType.RangeAttack);
                 CreateBonePoisonDebuff(targetHealth);
+                //RpcCreateBonePoisonDebuff(targetHealth);
             }
         }
     }
@@ -59,14 +60,28 @@ public class SpitPoisonProjectile : NetworkBehaviour
 
         if (numbersForChanceOfBlindness <= chanceOfBlindness)
         {
-            targetHealth.GetComponent<Character>().CharacterState.AddState(new BlindnessState(), 3.0f, 0, States.Blind);
+            //targetHealth.GetComponent<Character>().CharacterState.AddState(new BlindnessState(), 3.0f, 0, States.Blind);
         }
 
         Explode();
     }
 
-    [ClientRpc]
     private void CreateBonePoisonDebuff(HealthComponent targetHealth)
+    {
+        _bonePoisonDebuff = targetHealth.GetComponentInChildren<BonePoison>();
+        if (_bonePoisonDebuff == null)
+        {
+            _bonePoisonDebuff = Instantiate(_bonePoisonPrefab, targetHealth.transform);
+            _bonePoisonDebuff.AddStacks(targetHealth);
+        }
+        else
+        {
+            _bonePoisonDebuff.AddStacks(targetHealth);
+        }
+    }
+
+    [ClientRpc]
+    private void RpcCreateBonePoisonDebuff(HealthComponent targetHealth)
     {
         _bonePoisonDebuff = targetHealth.GetComponentInChildren<BonePoison>();
         if (_bonePoisonDebuff == null)
