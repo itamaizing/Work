@@ -133,7 +133,7 @@ public abstract class Ability : NetworkBehaviour
 
     public virtual bool TryUse()
     {
-        if (_isUsed || (_mana.Value >= _manaCost && _isReady) == false && !_avaliable)
+        if (_isUsed || (_mana.Value >= _manaCost && _isReady) == false || !_avaliable)
         {
             PreparingEnded?.Invoke();
             return false;
