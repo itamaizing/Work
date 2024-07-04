@@ -760,7 +760,10 @@ GameObject:
   - component: {fileID: 8809644292612035220}
   - component: {fileID: 9198666995638284382}
   - component: {fileID: 4406351895598319088}
+<<<<<<< HEAD
   - component: {fileID: 797213350321369648}
+=======
+>>>>>>> main
   m_Layer: 9
   m_Name: CreepPoison
   m_TagString: Allies
@@ -831,9 +834,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 279100e0cb4b40f42b64a3ac1d1502fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< HEAD
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+=======
+>>>>>>> main
   CanMove: 1
   IsMoving: 0
   IsSelect: 0
@@ -850,12 +856,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b5add863fba6af449bc9b5c95b8199e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< HEAD
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
   healthBar: {fileID: 0}
   shields_Physic: []
   shields_Magic: []
+=======
+  shields_Physic: []
+  shields_Magic: []
+  HealthBar: {fileID: 306994359073746280}
+  HealthBarText: {fileID: 3503570079415167903}
+  DamageSpawn: {fileID: 1767791113909947721}
+  PrefabText: {fileID: 97509558472111251, guid: b8ec9c7fb2a215a418a41efc3aec9187, type: 3}
+>>>>>>> main
   sumDamageTaken: 0
 --- !u!114 &8932373845817391923
 MonoBehaviour:
@@ -869,11 +884,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7f243771c2613d40a4aecc719336ae4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< HEAD
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
   _stateIcons: {fileID: 0}
   invinsible: 0
+=======
+  energy: {fileID: 0}
+  durationToExit: 0
+  damageToExit: 0
+>>>>>>> main
 --- !u!58 &8809644292612035220
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -979,6 +1000,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 1.1
+<<<<<<< HEAD
 --- !u!114 &797213350321369648
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -996,6 +1018,8 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
+=======
+>>>>>>> main
 --- !u!1 &4427551564579766945
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,11 +6,17 @@ public abstract class AutoAttackAbility : TargetAbility
 {
     [Header("AutoAttack settings")]
     [SerializeField] private float _attackZoneSize;
+<<<<<<< HEAD
     [SerializeField] protected float _attackSpeed = 1f;
+=======
+    [SerializeField] private float _attackSpeed = 1f;
+>>>>>>> main
     [SerializeField] protected LayerMask _obstacle;
 
     private Coroutine _autoAttackJob;
     private bool _isAttacking = false;
+
+    public float AttackSpeed { get => Buff.AttackSpeed.GetBuffedValue(_attackSpeed); }
 
     public void Pause()
     {
@@ -74,7 +80,7 @@ public abstract class AutoAttackAbility : TargetAbility
                 
                 if (_isAttacking && NoObstacles())
                 {
-                    yield return new WaitForSeconds(_attackSpeed);
+                    yield return new WaitForSeconds(AttackSpeed);
                     if (IsTargetInRadius(Radius + _attackZoneSize) && NoObstacles() && IsReady)
                     {
                         PayCost(false);

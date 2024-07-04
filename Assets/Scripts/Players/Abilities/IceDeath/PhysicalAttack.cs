@@ -33,7 +33,9 @@ public class PhysicalAttack : AutoAttackAbility
 		{
 			_combo.MakeHit(enemy, AbilityForm.Physical, 5);
 
-			_attackSpeed *= (1 - _combo.GetMultipliedSpeed());
+			//AttackSpeed *= (1 - _combo.GetMultipliedSpeed()); // Error
+			Buff.AttackSpeed.IncreasePercentage(1 - _combo.GetMultipliedSpeed()); // ?
+
 			float curDamage = _damage + Random.Range(0, 2);
 
 			ApplyDamage(enemy.Health, curDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
@@ -49,7 +51,10 @@ public class PhysicalAttack : AutoAttackAbility
 			_combo.MakeHit(enemy, AbilityForm.Physical, 0);
 			Debug.Log("lose streak to another enemy");
 			_curTarget = enemy;
-			_attackSpeed *= (1 - _combo.GetMultipliedSpeed());
+
+			//AttackSpeed *= (1 - _combo.GetMultipliedSpeed()); // error
+			Buff.AttackSpeed.IncreasePercentage(1 - _combo.GetMultipliedSpeed()); // ?
+
 			_timer = _baseTimer;
 			float curDamage = _damage + Random.Range(0, 2);
 			Energy energy = (Energy)_dad.Stamina;

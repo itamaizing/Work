@@ -48,6 +48,7 @@ public abstract class Ability : NetworkBehaviour
     private float _remainingСooldownTime;
 	private bool _avaliable;
 	private float _timerForDebuf;
+    private StatsBuff _statsBuff = new StatsBuff(1, 0);
 
 	public MoveComponent PlayerMove => _playerMove;
     public StaminaComponent Mana => _mana;
@@ -62,19 +63,20 @@ public abstract class Ability : NetworkBehaviour
     public bool IsRechargedInTurn => _chargesHaveSeparateCooldown;
     public bool IsStreaming => _isStreaming;
     public float StreamingDuration => _streamingDuration;
-    public float CastDeley { get => _castDeley; protected set => _castDeley = value; }
-    public float Radius { get => _radius; protected set => _radius = value; }
-    public float Area { get => _area; protected set => _area = value; }
-    public float CastLength { get => _castLength; protected set => _castLength = value; }
-    public float CastWidth { get => _castWidth; protected set => _castWidth = value; }
+    public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); protected set => _castDeley = value; }
+    public float Radius { get => Buff.Radius.GetBuffedValue(_radius); protected set => _radius = value; }
+    public float Area { get => Buff.Area.GetBuffedValue(_area); protected set => _area = value; }
+    public float CastLength { get => Buff.Area.GetBuffedValue(_castLength); protected set => _castLength = value; }
+    public float CastWidth { get => Buff.Area.GetBuffedValue(_castWidth); protected set => _castWidth = value; }
     public bool IsAutoAttack { get => _isAutoAttack; protected set => _isAutoAttack = value; }
     public bool IsUsed { get => _isUsed; protected set => _isUsed = value; }
     public bool IsCanCancle { get => _isCanCancle; protected set => _isCanCancle = value; }
     public bool IsReady { get => _isReady; set => _isReady = value; }
 	public Schools School => _abilitySchool;
 	public AbilityForm AbilityForm => _abilityForm;
+    public StatsBuff Buff => _statsBuff;
 
-	public event UnityAction<int> CurrentChargeChange;
+    public event UnityAction<int> CurrentChargeChange;
     public event UnityAction<float> StartStreaming;
     public event UnityAction StopStreaming;
     public event UnityAction<float> StartCastDeley;
@@ -131,7 +133,7 @@ public abstract class Ability : NetworkBehaviour
 
     public virtual bool TryUse()
     {
-        if (_isUsed && (_mana.Value >= _manaCost && _isReady) == false && !_avaliable)
+        if (_isUsed || (_mana.Value >= _manaCost && _isReady) == false || !_avaliable)
         {
             PreparingEnded?.Invoke();
             return false;
@@ -167,7 +169,7 @@ public abstract class Ability : NetworkBehaviour
     protected Coroutine GetCastDeleyCoroutine()
     {
         _castDeleyJob = StartCoroutine(CastDeleyCoroutine());
-        StartCastDeley?.Invoke(_castDeley);
+        StartCastDeley?.Invoke(CastDeley);
         return _castDeleyJob;
     }
 
@@ -246,7 +248,7 @@ public abstract class Ability : NetworkBehaviour
 
     protected void ApplyDamage(HealthComponent health, float damage, DamageType damageType, AttackRangeType attackRangeType)
     {
-        CmdApplyDamage(health.gameObject, damage, damageType, attackRangeType);
+        CmdApplyDamage(health.gameObject, Buff.Damage.GetBuffedValue(damage), damageType, attackRangeType);
     }
 
     private IEnumerator CooldownCoroutine(float cooldownTime)
@@ -270,7 +272,7 @@ public abstract class Ability : NetworkBehaviour
         PreparingEnded?.Invoke();
         float time = 0;
 
-        while (time < _castDeley)
+        while (time < CastDeley)
         {
             time += Time.deltaTime;
             yield return null;
@@ -377,4 +379,63 @@ public enum AbilityForm
 	Spell,
 	Magic,
 	Physical
+}
+
+public struct StatsBuff
+{
+    private StatBuff _damage;
+    private StatBuff _radius;
+    private StatBuff _area;
+    private StatBuff _attackSpeed;
+    private StatBuff _castSpeed;
+
+    public StatBuff Damage => _damage;
+    public StatBuff Radius => _radius;
+    public StatBuff Area => _area;
+    public StatBuff AttackSpeed => _attackSpeed;
+    public StatBuff CastSpeed => _castSpeed;
+
+    public StatsBuff(float multiplier, float additional)
+    {
+        _damage = new StatBuff(multiplier, additional);
+        _radius = new StatBuff(multiplier, additional);
+        _area = new StatBuff(multiplier, additional);
+        _attackSpeed = new StatBuff(multiplier, additional);
+        _castSpeed = new StatBuff(multiplier, additional);
+    }
+}
+
+public struct StatBuff
+{
+    private float _multiplier;
+    private float _additional;
+
+    public float Multiplier => _multiplier;
+    public float Additional => _additional;
+
+    public StatBuff(float multiplier, float additional)
+    {
+        _multiplier = multiplier;
+        _additional = additional;
+    }
+
+    public float GetBuffedValue(float value)
+    {
+        return (value + _additional) * _multiplier;
+    }
+
+    public void IncreasePercentage(float value)
+    {
+        _multiplier *= value;
+    }
+
+    public void ReductionPercentage(float value)
+    {
+        _multiplier /= value;
+    }
+
+    public void AddValue(float value)
+    {
+        _additional += value;
+    }
 }
