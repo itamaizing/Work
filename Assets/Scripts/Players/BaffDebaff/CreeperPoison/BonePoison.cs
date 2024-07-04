@@ -6,7 +6,7 @@ using UnityEngine;
 public class BonePoison : BaseEffect
 {
     [SerializeField] private int _baseDamage = 1;
-    [SerializeField] private int _stackDuration = 6;
+    [SerializeField] private int _stackDuration = 30;
     private float _currentDamage;
     private float _timeBetweenAttack = 1.0f;
     private int _currentStacks;
@@ -18,6 +18,7 @@ public class BonePoison : BaseEffect
     private Coroutine _lifeTimeStacksCoroutine;
     private Coroutine _damageDealCoroutine;
 
+    public int CurrentStacks => _currentStacks;
     public void AddStacks(HealthComponent targetHealth)
     {
         if (_currentStacks < _maxStacks)
@@ -30,7 +31,7 @@ public class BonePoison : BaseEffect
 
             _damageDealCoroutine = StartCoroutine(DamageDealCoroutine(targetHealth, _currentStacks));
         }
-         _lifeTimeStacksCoroutine = StartCoroutine(LifeTimeStacksCoroutine(targetHealth, _currentStacks));     
+        _lifeTimeStacksCoroutine = StartCoroutine(LifeTimeStacksCoroutine(targetHealth, _currentStacks));
     }
 
     private IEnumerator DamageDealCoroutine(HealthComponent targetHealth, int currentStacks)
@@ -53,7 +54,7 @@ public class BonePoison : BaseEffect
             Debug.Log("CurrentStacks-- == " + currentStacks);
             StartCoroutine(LifeTimeStacksCoroutine(targetHealth, currentStacks));
         }
-        else if (currentStacks == 0) 
+        else if (currentStacks == 0)
         {
             Debug.Log("else if coroutine");
             Destroy(gameObject);

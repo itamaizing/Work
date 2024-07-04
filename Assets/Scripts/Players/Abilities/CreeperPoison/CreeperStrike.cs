@@ -1,69 +1,127 @@
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CreeperStrike : AutoAttackAbility
 {
-    [SerializeField] LightningStrikes lightningStrikes;
-
-    [SerializeField] protected float _damageDeal = 0.0f;
+    [SerializeField] private LightningStrikes _lightningStrikes;
+    [SerializeField] private BonePoison _bonePoisonPrefab;
     [SerializeField] protected Character dad;
-    
-    [HideInInspector] public float _currentRadius;
-    [HideInInspector] public float _currentAttackSpeed;
-    [HideInInspector] public Character _currentTarget;
-    [HideInInspector] public float _originalAttackSpeed;
-    private bool _enabled = false;
+    [SerializeField] protected float _damageDeal = 0.0f;
 
-    [HideInInspector] public float AttackSpeed => _attackSpeed;
+    private BonePoison _bonePoisonDebuff;
+    private GameObject _currentTarget;
+
+    private float _currentDamage;
+    private float _currentRadius;
+    private float _multiplyCritDamage = 1.5f;
+
+    public float CurrentAttackSpeed;
+    public float OriginalAttackSpeed;
+
+    private Coroutine _useAbilityCoroutine;
+    private Coroutine _attackSpeedModifyCoroutine;
+    private Coroutine _strikeCoroutine;
+
     protected float ThisRadius => _currentRadius;
-    private void Update()
-    {
-        if (!_enabled) return;
+    public float AttackSpeed => _attackSpeed;
+    public GameObject CurrentTarget => _currentTarget;
 
-        Continue();
-        if (lightningStrikes._isUsing)
-        {
-            lightningStrikes.DecreaseAttackSpeed(_currentAttackSpeed);
-        }
-    }
     protected override void Cancel()
     {
-        _enabled = false;
+        if (_useAbilityCoroutine != null)
+            StopCoroutine(UseAbilityCoroutine());
+
+        if (_attackSpeedModifyCoroutine != null)
+            StopCoroutine(ModifyAttackSpeedCoroutine());
+
+        if (_strikeCoroutine != null)
+            StopCoroutine(StrikeCoroutine(Target, _currentDamage));
     }
 
     protected override void CastAction()
     {
-        Debug.Log("Its CreeperAttack CastAction Method. He work");
-        _enabled = true;
-        Strike(Target);
-        Debug.Log(_attackSpeed + " attackSpeed Strikes");
+        _currentDamage = Random.Range(7.0f, 11.0f);
+        _useAbilityCoroutine = StartCoroutine(UseAbilityCoroutine());
     }
 
-    public void Strike(Character enemy)
+    public IEnumerator UseAbilityCoroutine()
     {
-        _currentTarget = enemy;
-        _currentRadius = _attackZoneSize;
-        Debug.Log("Strike at: " +  enemy);
-        float currentDamage = _damageDeal + Random.Range(7, 11);
+        _currentTarget = Target.gameObject;
+        _strikeCoroutine = StartCoroutine(StrikeCoroutine(Target, _currentDamage));
+        yield return null;
+    }
+
+    private IEnumerator StrikeCoroutine(Character enemy, float currentDamage)
+    {
+        float chanceOfCriticalStrike = 0.5f;
+        float numbersForChanceOfCriticalStrike = Random.Range(0.0f, 1.0f);
+
+        Debug.Log("Chance for Crit == " + numbersForChanceOfCriticalStrike);
+
+        if (_lightningStrikes._isUsing)
+        {
+            _attackSpeedModifyCoroutine = StartCoroutine(ModifyAttackSpeedCoroutine());
+        }
+
+        if (numbersForChanceOfCriticalStrike <= chanceOfCriticalStrike)
+        {
+            _bonePoisonDebuff = CurrentTarget.GetComponentInChildren<BonePoison>();
+            if (_bonePoisonDebuff != null)
+            {
+                currentDamage = CalculateCriticalDamage(currentDamage);
+            }
+        }
+
+        Debug.Log("Strike Coroutine damage == " + currentDamage);
+        //yield return CriticalDamageCoroutine(currentDamage);
         MakeDamage(enemy.Health, currentDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
-        Debug.Log("Deal Damage: " +  currentDamage + " on enemy " + enemy);
+
+        yield return null;
     }
 
-    public void ModifyAttackSpeed(float _attackSpeedStrikes)
+    private IEnumerator ModifyAttackSpeedCoroutine()
     {
-        _currentAttackSpeed = _attackSpeedStrikes;
+        while (_lightningStrikes._isUsing)
+        {
+            _lightningStrikes.DecreaseAttackSpeed(CurrentAttackSpeed);
+
+            yield return null;
+        }
     }
+
+    private float CalculateCriticalDamage(float baseDamage)
+    {
+        float criticalDamage = baseDamage;
+        float multiplyDamage = _multiplyCritDamage;
+
+        if (_bonePoisonDebuff != null)
+        {
+            Debug.Log("If Crit work");
+
+            for (int i = 1; i < _bonePoisonDebuff.CurrentStacks; i++)
+            {
+                multiplyDamage += 0.5f;
+            }
+        }
+        return criticalDamage *= multiplyDamage;
+    }
+
+    public void ModifyAttackSpeed(float attackSpeedStrikes)
+    {
+        CurrentAttackSpeed = attackSpeedStrikes;
+    }
+
     public void ResetAttackSpeed()
     {
-        _currentAttackSpeed = _originalAttackSpeed;
+        CurrentAttackSpeed = OriginalAttackSpeed;
     }
 
-    
-    private void MakeDamage(HealthComponent _target, float _damage, DamageType _damageType, AttackRangeType _attackRangeType)
+    private void MakeDamage(HealthComponent target, float damage, DamageType damageType, AttackRangeType attackRangeType)
     {
-        CmdApplyDamage(_target.gameObject, _damage, _damageType, _attackRangeType);
+        CmdApplyDamage(target.gameObject, damage, damageType, attackRangeType);
     }
 
     [Command]

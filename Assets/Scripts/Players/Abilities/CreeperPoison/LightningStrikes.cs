@@ -37,6 +37,7 @@ public class LightningStrikes : AutoAttackAbility
             Cancel();
         }
     }
+
     protected override void CastAction()
     {
         _isUsing = true;
@@ -50,19 +51,19 @@ public class LightningStrikes : AutoAttackAbility
 
     public void DecreaseAttackSpeed(float _attackSpeedStrikes)
     {
-        if (creeperStrike._currentTarget != null)
+        if (creeperStrike.CurrentTarget != null)
         {
             _enemyInRadius = true;
             if (_enemyInRadius)
             {
-                creeperStrike._originalAttackSpeed = creeperStrike.AttackSpeed;
-                _attackSpeedStrikes = creeperStrike._currentAttackSpeed / _attackSpeedDeacrease;
+                creeperStrike.OriginalAttackSpeed = creeperStrike.AttackSpeed;
+                _attackSpeedStrikes = creeperStrike.CurrentAttackSpeed / _attackSpeedDeacrease;
 
                 creeperStrike.ModifyAttackSpeed(_attackSpeedStrikes);
 
                 for (int i = 0; i < _countStrikes; i++)
                 {
-                    creeperStrike.Strike(creeperStrike?._currentTarget);
+                    StartCoroutine(creeperStrike.UseAbilityCoroutine());
                 }
             }
         }
