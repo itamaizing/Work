@@ -6,11 +6,7 @@ public abstract class AutoAttackAbility : TargetAbility
 {
     [Header("AutoAttack settings")]
     [SerializeField] private float _attackZoneSize;
-<<<<<<< HEAD
-    [SerializeField] protected float _attackSpeed = 1f;
-=======
     [SerializeField] private float _attackSpeed = 1f;
->>>>>>> main
     [SerializeField] protected LayerMask _obstacle;
 
     private Coroutine _autoAttackJob;
