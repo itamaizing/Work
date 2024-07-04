@@ -62,3 +62,9 @@ public class RuneComponent : StaminaComponent
 		return false;
 	}
 }
+
+struct AbilityTimer
+{
+	public Ability ability;
+	public float time;
+}
