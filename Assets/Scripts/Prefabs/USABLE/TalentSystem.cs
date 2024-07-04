@@ -10,6 +10,7 @@ public abstract class Talent : NetworkBehaviour
 	public string Name;
 	public string Description;
 	public Sprite ico;
+    public Character character;
 
 	public abstract void Enter();
 

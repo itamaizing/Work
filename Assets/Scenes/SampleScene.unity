@@ -267,7 +267,6 @@ Transform:
   m_Father: {fileID: 424455546}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-<<<<<<< HEAD
 --- !u!1 &194711153 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7828036230296040018, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
@@ -303,8 +302,6 @@ MonoBehaviour:
   Name: TEST
   Description: TSET
   ico: {fileID: 21300000, guid: 1a805cda24a5090458bc0512f9f4d186, type: 3}
-=======
->>>>>>> main
 --- !u!1 &424455545
 GameObject:
   m_ObjectHideFlags: 0
