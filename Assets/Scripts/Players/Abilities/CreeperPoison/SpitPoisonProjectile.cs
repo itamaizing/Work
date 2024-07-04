@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpitPoisonProjectile : NetworkBehaviour
+public class SpitPoisonProjectile : MonoBehaviour
 {
     [SerializeField] private BonePoison _bonePoisonPrefab;
     [SerializeField] private Rigidbody2D _rb;
@@ -41,8 +41,7 @@ public class SpitPoisonProjectile : NetworkBehaviour
                 _damage = Random.Range(4.0f, 12.0f);
 
                 DealDamage(targetHealth, _damage, DamageType.Magical, AttackRangeType.RangeAttack);
-                CreateBonePoisonDebuff(targetHealth);
-                //RpcCreateBonePoisonDebuff(targetHealth);
+                BonePoisonDebuff(targetHealth);
             }
         }
     }
@@ -50,38 +49,23 @@ public class SpitPoisonProjectile : NetworkBehaviour
     private void DealDamage(HealthComponent targetHealth, float damage, DamageType damageType, AttackRangeType attackRangeType)
     {
         // Chance to apply Blindness
-        float chanceOfBlindness = 0.3f;
-        float numbersForChanceOfBlindness = Random.Range(0.0f, 1.0f);
+        float _chanceOfBlindness = 0.3f;
+        float _numbersForChanceOfBlindness = Random.Range(0.0f, 1.0f);
 
         Energy _energyLink = (Energy)_dad.Stamina;
         _energyLink.SumDamageMake(damage);
 
         targetHealth.TryTakeDamage(damage, damageType, attackRangeType);
 
-        if (numbersForChanceOfBlindness <= chanceOfBlindness)
+        if (_numbersForChanceOfBlindness <= _chanceOfBlindness)
         {
-            //targetHealth.GetComponent<Character>().CharacterState.AddState(new BlindnessState(), 3.0f, 0, States.Blind);
+            targetHealth.GetComponent<Character>().CharacterState.AddState(new BlindnessState(), 3.0f, 0, States.Blind);
         }
 
         Explode();
     }
 
-    private void CreateBonePoisonDebuff(HealthComponent targetHealth)
-    {
-        _bonePoisonDebuff = targetHealth.GetComponentInChildren<BonePoison>();
-        if (_bonePoisonDebuff == null)
-        {
-            _bonePoisonDebuff = Instantiate(_bonePoisonPrefab, targetHealth.transform);
-            _bonePoisonDebuff.AddStacks(targetHealth);
-        }
-        else
-        {
-            _bonePoisonDebuff.AddStacks(targetHealth);
-        }
-    }
-
-    [ClientRpc]
-    private void RpcCreateBonePoisonDebuff(HealthComponent targetHealth)
+    private void BonePoisonDebuff(HealthComponent targetHealth)
     {
         _bonePoisonDebuff = targetHealth.GetComponentInChildren<BonePoison>();
         if (_bonePoisonDebuff == null)

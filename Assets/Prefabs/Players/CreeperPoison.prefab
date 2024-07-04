@@ -360,12 +360,13 @@ MonoBehaviour:
   _obstacle:
     serializedVersion: 2
     m_Bits: 128
-  _lightningStrikes: {fileID: 2133911755741689447}
-  _bonePoisonPrefab: {fileID: -6945864312988002102, guid: acf0aa1d343559640b903638c293a6b1, type: 3}
-  dad: {fileID: 8848169558533100257}
+  lightningStrikes: {fileID: 2133911755741689447}
   _damageDeal: 0
-  CurrentAttackSpeed: 0
-  OriginalAttackSpeed: 0
+  dad: {fileID: 8848169558533100257}
+  _currentRadius: 0
+  _currentAttackSpeed: 0
+  _currentTarget: {fileID: 0}
+  _originalAttackSpeed: 0
 --- !u!114 &2133911755741689447
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Scripts/Multiplayer/MPManager.cs.meta
 guid: 02c469e77762a3940a2bdd5031fdb898
+========
+guid: 3dff67db1c96bbe47987abce49f71c94
+>>>>>>>> 1ef277fd (New Branch):Assets/Scripts/Players/Abilities/CreeperPoison/Invisible.cs.meta
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2

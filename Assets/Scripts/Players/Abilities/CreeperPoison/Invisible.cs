@@ -77,7 +77,7 @@ public class Invisible : Ability
             moveSpeedDecrease = 1 - reduceMoveSpeed;
             _playerLinks.Move.ChangeMoveSpeed(moveSpeedDecrease);
             // Увеличиваем реген энергии на 30%
-            increaseEnergy = _playerLinks.Stamina.RegenerationValue * (1 + increaseEnergyRegen);
+            increaseEnergy = _playerLinks.Stamina.RegenValue * (1 + increaseEnergyRegen);
         }
         else if (_enemyIsSees && _isUsing)
         {
@@ -97,7 +97,7 @@ public class Invisible : Ability
             moveSpeedDecrease = 1.1285715f + reduceMoveSpeed;
             _playerLinks.Move.ChangeMoveSpeed(moveSpeedDecrease);
             // Уменьшаем реген энергии на 30%
-            increaseEnergy = _playerLinks.Stamina.RegenerationValue / (1 + increaseEnergyRegen);
+            increaseEnergy = _playerLinks.Stamina.RegenValue / (1 + increaseEnergyRegen);
             _isUsing = false;
         }
     }
