@@ -118,6 +118,7 @@ public class RuneComponent : StaminaComponent
 
 	private void Timer()
 	{
+		if(_abilities !=null)
 		foreach (var ability in _abilities) 
 		{
 			ability.time-=Time.deltaTime;
