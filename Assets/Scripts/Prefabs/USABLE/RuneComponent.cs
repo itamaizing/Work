@@ -10,9 +10,11 @@ public class RuneComponent : StaminaComponent
 	//private bool _multiplyCost = false;
 
 	private List<AbilityTimer> _abilities;
+	private bool _disableMultiplier = false;
 	private void Update()
 	{
 		Regen();
+		Timer();
 		//if (!_multiplyCost) return;
 
 		/*_timer += Time.deltaTime;
@@ -38,24 +40,26 @@ public class RuneComponent : StaminaComponent
 	public bool RemoveRune(float runeValue, Ability usedAbility) 
 	{
 		if(_abilities.Count > 0)
-		{
+		{			
 			for(int i = 0; i < _abilities.Count; i++)
 			{
+				if (_disableMultiplier && _value >= runeValue * _abilities[i].multiplier)
+				{
+					_value -= runeValue * _abilities[i].multiplier;
+					UpdateBar();
+					_disableMultiplier = false;
+					return true;
+				}
 				if (_abilities[i].ability == usedAbility && _value >= runeValue * _abilities[i].multiplier * 2)
 				{
-					var newValue = _abilities[i];
-					newValue.multiplier *= 2;
-					_abilities[i] = newValue;
+					_abilities[i].multiplier *=2;
 
 					runeValue *= _abilities[i].multiplier;
 
 					_value -= runeValue;
 					UpdateBar();
 					//_multiplyCost = true;
-
-					var newTimer = _abilities[i];
-					newTimer.time = 6;
-					_abilities[i] = newTimer;
+					_abilities[i].time = 6;
 					return true;
 				}				
 			}
@@ -70,7 +74,7 @@ public class RuneComponent : StaminaComponent
 				abilityTimer.multiplier = 1;
 				abilityTimer.ability = usedAbility;
 				_abilities.Add(abilityTimer);
-
+				_disableMultiplier = false;
 				_value -= runeValue;
 				UpdateBar();
 				return true;
@@ -106,11 +110,30 @@ public class RuneComponent : StaminaComponent
 		Debug.LogError("ERROR!!! You are using Rune instead of Mana or Energy!!!!");
 		return false;
 	}
+
+	public void SwitchMultiplier(bool value)
+	{
+		_disableMultiplier = value;
+	}
+
+	private void Timer()
+	{
+		foreach (var ability in _abilities) 
+		{
+			ability.time-=Time.deltaTime;
+			if(ability.time <= 0 )
+			{
+				_abilities.Remove(ability);
+			}
+		}
+	}
 }
 
-public struct AbilityTimer
+public class AbilityTimer
 {
 	public Ability ability;
 	public float time;
 	public float multiplier;
+
+
 }
