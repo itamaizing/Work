@@ -46,7 +46,7 @@ public abstract class Ability : NetworkBehaviour
 	protected Coroutine _cooldownJob;
 
     private float _remainingСooldownTime;
-	private bool _avaliable;
+	private bool _avaliable = true;
 	private float _timerForDebuf;
     private StatsBuff _statsBuff = new StatsBuff(1, 0);
 

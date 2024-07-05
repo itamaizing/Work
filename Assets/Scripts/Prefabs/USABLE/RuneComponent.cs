@@ -9,7 +9,7 @@ public class RuneComponent : StaminaComponent
 	//private float _timer = 0;
 	//private bool _multiplyCost = false;
 
-	private List<AbilityTimer> _abilities;
+	private List<AbilityTimer> _abilities = new List<AbilityTimer>();
 	private bool _disableMultiplier = false;
 	private void Update()
 	{
