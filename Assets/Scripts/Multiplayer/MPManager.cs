@@ -16,7 +16,7 @@ public class MPManager : NetworkManager
     bool subscenesLoaded;
 
     // subscenes are added to this list as they're loaded
-    readonly List<Scene> subScenes = new List<Scene>();
+    public readonly List<Scene> subScenes = new List<Scene>();
 
     // Sequential index used in round-robin deployment of players into instances and score positioning
     int clientIndex;
@@ -58,7 +58,7 @@ public class MPManager : NetworkManager
         // This is what allows Scene Interest Management
         // to isolate matches per scene instance on server.
         if (subScenes.Count > 0)
-            SceneManager.MoveGameObjectToScene(conn.identity.gameObject, subScenes[clientIndex % subScenes.Count]);
+            SceneManager.MoveGameObjectToScene(conn.identity.gameObject, subScenes[(clientIndex % subScenes.Count)+1]);
 
         clientIndex++;
     }
@@ -81,9 +81,9 @@ public class MPManager : NetworkManager
     // If instances is zero, the loop is bypassed entirely.
     IEnumerator ServerLoadSubScenes()
     {
-        for (int index = 1; index <= instances; index++)
+        for (int index = 0; index <= instances; index++)
         {
-            yield return SceneManager.LoadSceneAsync(gameScene, new LoadSceneParameters { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = LocalPhysicsMode.Physics3D });
+            yield return SceneManager.LoadSceneAsync(gameScene, new LoadSceneParameters { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = LocalPhysicsMode.Physics2D });
 
             Scene newScene = SceneManager.GetSceneAt(index);
             subScenes.Add(newScene);

@@ -1,5 +1,6 @@
 using Mirror;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TestH3 : TargetOrAreaAbility
 {
@@ -40,6 +41,8 @@ public class TestH3 : TargetOrAreaAbility
     protected void CmdCreateProjecttile(Vector3 point)
     {
         GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
+
+        SceneManager.MoveGameObjectToScene(item, FindObjectOfType<MPManager>().subScenes[1]);
 
         item.GetComponent<Projectile>().StartFly(point, true);
 
