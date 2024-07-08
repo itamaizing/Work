@@ -1,7 +1,9 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class TalentColumn : MonoBehaviour
 {
@@ -29,15 +31,15 @@ public class TalentColumn : MonoBehaviour
 			}
 		}
 	}
-
-	private void Start()
+	public void Init(TalentSystem system)
 	{
-		Init();
-	}
-
-	public void Init()
-	{
+		_system = system; 
 		int count = 0;
+		if(_buttons1.Length != _system.Talents.Count) 
+		{
+			Debug.Log("not equal counts in TalentColumn");
+			return; 
+		}
 		for(int i = 0; i < _buttons1.Length; i++)
 		{
 			_buttons1[i].ico.sprite = _system.Talents[i].ico;
@@ -63,4 +65,16 @@ public class TalentColumn : MonoBehaviour
 
 		_column1.text = _system.ActiveTalents.Count.ToString();
 	}
+
+	public void SwitchActiveUI()
+	{
+		if (gameObject.transform.localScale.x == 0)
+		{
+			gameObject.transform.DOScale(1, 0.5f);
+		}
+		else
+		{
+			gameObject.transform.DOScale(0, 0.5f);
+		}
+	}	
 }

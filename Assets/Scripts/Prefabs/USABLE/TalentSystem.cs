@@ -27,6 +27,10 @@ public class TalentSystem : NetworkBehaviour
 	public List<Talent> Talents => _talents;
     public List<Talent> ActiveTalents => _activeTalents;
 
+	public void Initialize()
+	{
+		TalentManager.Instance.AddPanel(this);
+	}
 	public void AddPoints(int value)
 	{
 		_points += value;

@@ -867,7 +867,7 @@ MonoBehaviour:
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: f6b63db1fe9a8db4b86632917e246e69, type: 2}
   _isAutoAttack: 1
-  _radius: 4
+  _radius: 2
   _area: 0
   _castLength: 0
   _castWidth: 0
@@ -1006,7 +1006,7 @@ MonoBehaviour:
   _preViewPuddle: {fileID: 5022254978724240394}
   _lowePoint: {fileID: 7180523067200980956}
   _timeToDestroy: 3
-  _combo: {fileID: 0}
+  _combo: {fileID: 6347228247449020419}
 --- !u!114 &4417605804945313492
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3265,6 +3265,7 @@ GameObject:
   - component: {fileID: 5762049827953977616}
   - component: {fileID: 8675175310089954536}
   - component: {fileID: 6347228247449020419}
+  - component: {fileID: 5115025386098828278}
   m_Layer: 0
   m_Name: Talents_Container
   m_TagString: Untagged
@@ -3302,7 +3303,19 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _talents: []
+  _talents:
+  - {fileID: 5115025386098828278}
+  - {fileID: 5115025386098828278}
+  - {fileID: 5115025386098828278}
+  - {fileID: 5115025386098828278}
+  - {fileID: 5115025386098828278}
+  - {fileID: 5115025386098828278}
+  - {fileID: 5115025386098828278}
+  - {fileID: 5115025386098828278}
+  - {fileID: 5115025386098828278}
+  - {fileID: 5115025386098828278}
+  - {fileID: 5115025386098828278}
+  - {fileID: 5115025386098828278}
 --- !u!114 &6347228247449020419
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3316,6 +3329,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _player: {fileID: 8468544467696250796}
+--- !u!114 &5115025386098828278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7828036230296040018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8088ed7ede33cdf4093458b33145b274, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  isActive: 0
+  Name: Name
+  Description: LOOOOOOOOOOOng description
+  ico: {fileID: 21300000, guid: ed1972ce01824b542b0ae1113bc01a7e, type: 3}
+  character: {fileID: 8468544467696250796}
 --- !u!1 &8210224711045638505
 GameObject:
   m_ObjectHideFlags: 0

@@ -7,7 +7,7 @@ public class ButtonSetActiveObject : MonoBehaviour
 {
     public GameObject targetObject;
 
-    private void Update()
+	private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
