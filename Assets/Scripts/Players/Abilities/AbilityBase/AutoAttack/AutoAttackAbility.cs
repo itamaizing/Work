@@ -6,7 +6,7 @@ public abstract class AutoAttackAbility : TargetAbility
 {
     [Header("AutoAttack settings")]
     [SerializeField] private float _attackZoneSize;
-    [SerializeField] private float _attackSpeed = 1f;
+    [SerializeField] protected float _attackSpeed = 1f;
     [SerializeField] protected LayerMask _obstacle;
 
     private Coroutine _autoAttackJob;
@@ -61,7 +61,7 @@ public abstract class AutoAttackAbility : TargetAbility
 
     protected override IEnumerator UseCoroutine()
     {
-        yield return _chooseTatgetJob = StartCoroutine(ChooseTargetCoroutine(Radius + 99));
+        yield return _chooseTargetJob = StartCoroutine(ChooseTargetCoroutine(Radius + 99));
         yield return _autoAttackJob = StartCoroutine(AutoAttackCoroutine());
     }
 
