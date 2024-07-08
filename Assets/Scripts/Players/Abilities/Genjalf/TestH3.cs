@@ -42,7 +42,7 @@ public class TestH3 : TargetOrAreaAbility
     {
         GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
 
-        SceneManager.MoveGameObjectToScene(item, FindObjectOfType<MPManager>().subScenes[1]);
+        //SceneManager.MoveGameObjectToScene(item, FindObjectOfType<MPManager>()._rooms[1]);
 
         item.GetComponent<Projectile>().StartFly(point, true);
 
