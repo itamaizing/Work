@@ -929,7 +929,7 @@ MonoBehaviour:
   _manaCostPerTick: 0
   _projectile: {fileID: 748218918613675416, guid: f44e1a220c732a64f9af10c37bf5aed0, type: 3}
   _playerLinks: {fileID: 8468544467696250796}
-  _seriesOfStrikes: {fileID: 6347228247449020419}
+  _combo: {fileID: 6347228247449020419}
 --- !u!114 &938984537167284078
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -966,7 +966,7 @@ MonoBehaviour:
   _manaCostPerTick: 0
   _shadow: {fileID: 7237307863484890914, guid: 8dea5af4c60165d45af4522b1a596998, type: 3}
   _playerLinks: {fileID: 8468544467696250796}
-  _seriesOfStrikes: {fileID: 6347228247449020419}
+  _combo: {fileID: 6347228247449020419}
 --- !u!114 &812406894906728288
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1006,6 +1006,7 @@ MonoBehaviour:
   _preViewPuddle: {fileID: 5022254978724240394}
   _lowePoint: {fileID: 7180523067200980956}
   _timeToDestroy: 3
+  _combo: {fileID: 0}
 --- !u!114 &4417605804945313492
 MonoBehaviour:
   m_ObjectHideFlags: 0

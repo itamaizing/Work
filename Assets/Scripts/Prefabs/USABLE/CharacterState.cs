@@ -2,7 +2,6 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-// ��������� ���������
 public abstract class AbstractCharacterState
 {
 	public StateType type;

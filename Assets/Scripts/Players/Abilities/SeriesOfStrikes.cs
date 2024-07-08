@@ -109,3 +109,11 @@ public class SeriesOfStrikes : MonoBehaviour
 	}
 }
 
+/*
+ * struck or class
+ * 
+ * list of ability form
+ * hit count
+ * used rune 
+ * 
+ * */
