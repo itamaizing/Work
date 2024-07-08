@@ -25,7 +25,6 @@ public class CreeperStrike : AutoAttackAbility
     private Coroutine _strikeCoroutine;
 
     protected float ThisRadius => _currentRadius;
-    public float AttackSpeed => _attackSpeed;
     public GameObject CurrentTarget => _currentTarget;
 
     protected override void Cancel()
