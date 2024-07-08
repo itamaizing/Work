@@ -18,7 +18,6 @@ public class TalentButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 	public Button button;
 	public Sprite[] borders;
 	public GameObject description;
-	public bool isActive = false;
 
 	private Material _mat;
 

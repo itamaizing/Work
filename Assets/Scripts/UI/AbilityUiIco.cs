@@ -2,15 +2,11 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using TMPro;
 
 public class AbilityUiIco : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
 	[SerializeField] private GameObject _description;
-	[SerializeField] private Image _ico;
-	[SerializeField] private TextMeshProUGUI _text;
 
 	public void OnPointerEnter(PointerEventData eventData)
 	{
@@ -24,10 +20,4 @@ public class AbilityUiIco : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 		Debug.Log("Mouse exit");
 	}
 
-
-	public void Init(Sprite ico, string text)
-	{
-		_ico.sprite = ico;
-		_text.text = text;
-	}
 }
