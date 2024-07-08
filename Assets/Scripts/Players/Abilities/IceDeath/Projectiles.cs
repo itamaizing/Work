@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Projectiles : MonoBehaviour
 {
 	[SerializeField] protected GameObject _hitEffect;

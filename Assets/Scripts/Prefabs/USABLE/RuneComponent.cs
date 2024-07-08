@@ -58,7 +58,13 @@ public class RuneComponent : StaminaComponent
 
 	public override bool Use(float EnergyValue)
 	{
-		Debug.Log("ERROR!!! You are using Rune instead of Mana or Energy!!!!");
+		Debug.LogError("ERROR!!! You are using Rune instead of Mana or Energy!!!!");
 		return false;
 	}
+}
+
+struct AbilityTimer
+{
+	public Ability ability;
+	public float time;
 }

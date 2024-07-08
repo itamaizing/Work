@@ -79,11 +79,11 @@ public class PlayerAbilities : MonoBehaviour
     {
         _isAbilitiesDisabled = false;
     }
-
 	public void SetAbilitiesEnable(bool isEnabled)
 	{
 		_isAbilitiesEnabled = isEnabled;
 	}
+
 
 	public void SetAbilitiesPanelSelect(bool isSelect)
 	{
@@ -91,12 +91,10 @@ public class PlayerAbilities : MonoBehaviour
 		if (isSelect) EnableAbilities();
 		else DisableAbilities();
 	}
-
 	public void SetAbilitiesPanelEnable()
 	{
 		AbilitiesManager.Instance.ActiveCurrentPanel(_abilityPanel);
 	}
-
 	public void SetAbilitiesCoolDown(float time)
 	{
 		foreach (var item in _abilities)
@@ -104,7 +102,6 @@ public class PlayerAbilities : MonoBehaviour
 			item.SetCooldown(time);
 		}
 	}
-
 	private void SetCurrentAbility(int index)
     {
         if (index >= _abilities.Count)

@@ -261,7 +261,7 @@ public class StunnedState : AbstractCharacterState
 	private float _duration;
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
 	{
-		//Debug.Log("Entering Stunned State");
+		Debug.Log("Entering Stunned State");
 		type = StateType.Physical;
 		effects.Add(StatusEffect.Move);
 		effects.Add(StatusEffect.Ability);
@@ -275,7 +275,7 @@ public class StunnedState : AbstractCharacterState
 		}
 		else
 		{
-			//Debug.Log("no ability at " + character.gameObject.name);
+			Debug.Log("no ability at " + character.gameObject.name);
 		}		
 		_characterState.Move.CanMove = false;
 		_duration = durationToExit;
@@ -284,7 +284,7 @@ public class StunnedState : AbstractCharacterState
 
 	public override void UpdateState()
 	{
-		//Debug.Log("Updating Stunned State");
+		Debug.Log("Updating Stunned State");
 		_duration -= Time.deltaTime;
 		if (_duration < 0 || turnOff)
 		{
@@ -294,7 +294,7 @@ public class StunnedState : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		//Debug.Log("Exiting Stunned State");
+		Debug.Log("Exiting Stunned State");
 		if (_characterState.Check(StatusEffect.Move))
 		{
 			_characterState.Move.CanMove = true;
@@ -402,7 +402,7 @@ public class BlindnessState : AbstractCharacterState
 	{
 		type = StateType.Physical;
 		effects.Add(StatusEffect.Ability);
-		Debug.Log("Entering Blindness State");
+		Debug.Log("Entering Stunned State");
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
 		_characterState = character;
@@ -419,7 +419,7 @@ public class BlindnessState : AbstractCharacterState
 
 	public override void UpdateState()
 	{
-		Debug.Log("Updating Blindness State");
+		Debug.Log("Updating Stunned State");
 		_duration -= Time.deltaTime;
 		if (_duration < 0 || turnOff)
 		{
@@ -429,7 +429,7 @@ public class BlindnessState : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		Debug.Log("Exiting Blindness State");
+		Debug.Log("Exiting Stunned State");
 		if (_characterState.Check(StatusEffect.Ability))
 		{
 			_abilities.SetAbilitiesEnabled();
@@ -836,13 +836,7 @@ public class CharacterState : NetworkBehaviour
 		{
 			CmdAddState(States.Stun, 10, 0);
 		}
-
-		if(Input.GetKeyDown(KeyCode.R))
-		{
-			CmdAddState(States.Stun, 10, 0);
-		}
 	}
-
 
 	public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state)
 	{
@@ -873,6 +867,7 @@ public class CharacterState : NetworkBehaviour
 			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
 		}
 	}
+
 	public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state, Schools schools)
 	{
 		//if already exist 

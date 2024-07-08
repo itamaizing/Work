@@ -4,13 +4,12 @@ using UnityEngine;
 
 public class IceCloudProjectile : Projectiles
 {	
-	private Vector2 startPos;
-
+	private Vector2 _startPos;
 
 	private void Awake()
 	{
 		//_dad = dadGm.GetComponent<Character>();
-		startPos = transform.position;
+		_startPos = transform.position;
 		_rb.AddForce(transform.up * _force, ForceMode2D.Impulse);
 	}
 
@@ -19,7 +18,7 @@ public class IceCloudProjectile : Projectiles
 		//if (!_initialized) return;
 
         _spriteRenderer.DOFade(0, 1);
-		if(Vector2.Distance(transform.position, startPos) > _distance * GlobalVariable.cellSize)
+		if(Vector2.Distance(transform.position, _startPos) > _distance * GlobalVariable.cellSize)
 		{
 			Explode();
 		}

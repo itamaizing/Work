@@ -9,7 +9,14 @@ public class DeathSpiral : Ability
 	[SerializeField] private Character _playerLinks;
 	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 
+	private float _timer = 1f;
 	private Vector2 _mousePos;
+	private bool _inTheRow = false;
+
+	private void Update()
+	{
+		Timer();
+	}
 
 	protected override void Cancel()
 	{
@@ -18,8 +25,18 @@ public class DeathSpiral : Ability
 	protected override void Cast()
 	{
 		//PayCost();
-		if (_playerLinks.RuneComponent.RemoveRune(2, this))
+		if(_inTheRow) 
 		{
+			_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
+			float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
+			_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1);
+			Shoot(angle);
+		}
+		else if (_playerLinks.RuneComponent.RemoveRune(2, this))
+		{
+			_currentChargers--;
+			_inTheRow = true;
 			_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
 			float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
@@ -47,6 +64,18 @@ public class DeathSpiral : Ability
 
 	public void AddCharge()
 	{
-		_currentChargers++;
+		if(_currentChargers<_maxCharges)
+			_currentChargers++;
+	}
+
+	private void Timer()
+	{
+		if (!_inTheRow) return;
+		_timer-= Time.deltaTime;
+		if(_timer <= 0)
+		{
+			_inTheRow = false;
+			_timer = 1; 
+		}
 	}
 }
