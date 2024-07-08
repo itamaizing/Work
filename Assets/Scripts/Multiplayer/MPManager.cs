@@ -58,7 +58,7 @@ public class MPManager : NetworkManager
         // This is what allows Scene Interest Management
         // to isolate matches per scene instance on server.
         if (subScenes.Count > 0)
-            SceneManager.MoveGameObjectToScene(conn.identity.gameObject, subScenes[(clientIndex % subScenes.Count)+1]);
+            SceneManager.MoveGameObjectToScene(conn.identity.gameObject, subScenes[(clientIndex % subScenes.Count)]);
 
         clientIndex++;
     }
@@ -84,9 +84,15 @@ public class MPManager : NetworkManager
         for (int index = 0; index <= instances; index++)
         {
             yield return SceneManager.LoadSceneAsync(gameScene, new LoadSceneParameters { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = LocalPhysicsMode.Physics2D });
-
             Scene newScene = SceneManager.GetSceneAt(index);
             subScenes.Add(newScene);
+        }
+
+        subScenes.RemoveAt(0);
+
+        foreach (var item in subScenes)
+        {
+            Debug.Log(item.name);
         }
 
         subscenesLoaded = true;
