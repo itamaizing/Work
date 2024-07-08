@@ -2,8 +2,6 @@ using Mirror;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
-using static UnityEngine.GraphicsBuffer;
 
 public class IceShadow : Ability
 {
@@ -15,7 +13,7 @@ public class IceShadow : Ability
 	private bool _lastHit = false;
 	protected override void Cast()
 	{
-		//PayCost();
+		PayCost();
 		if (_playerLinks.RuneComponent.RemoveRune(1, this))
 		{
 			Shoot();

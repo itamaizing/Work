@@ -58,8 +58,9 @@ public class IceCloudProjectile : Projectiles
 			//dad.Stamina.Use(duration * 20);
 			//damage
 			GetComponent<Collider2D>().enabled = false;
+			Explode();
 		}
-		Explode();
+		
 	}
 
 	private void Explode()

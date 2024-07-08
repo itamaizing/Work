@@ -1,8 +1,5 @@
 using Mirror;
-using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
-using static UnityEngine.GraphicsBuffer;
 
 public class IcePuddle : Ability
 {
@@ -61,7 +58,7 @@ public class IcePuddle : Ability
 			if (_secondPoind)
 			{
 				_secondPoind = false;
-				//PayCost();
+				PayCost();
 				if (_playerLinks.RuneComponent.RemoveRune(1, this))
 				{
 					Shoot();
