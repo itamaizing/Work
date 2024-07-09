@@ -7,8 +7,11 @@ using UnityEngine;
 
 public class SpitPoison : Ability
 {
+    [SerializeField] private PoisonCloudBuff _poisonCloudBuffPrefab;
     [SerializeField] private SpitPoisonProjectile _projectile;
     [SerializeField] private Character _playerLinks;
+    private PoisonCloudBuff _poisonCloudBuff;
+
     private Vector2 _mousePos;
 
     private Coroutine _useCoroutine;
@@ -32,12 +35,13 @@ public class SpitPoison : Ability
 
     protected override void Cast()
     {
-        _useCoroutine = StartCoroutine(UseCoroutine());
+        _useCoroutine = StartCoroutine(UseCoroutine()); 
     }
 
     private IEnumerator UseCoroutine()
     {
         yield return _mouseDirectionCoroutine = StartCoroutine(MouseDirectionCoroutine());
+        CreatePoisonCloudBuff();
         _shootCoroutine = StartCoroutine(CallShootCoroutine());
     }
     private IEnumerator MouseDirectionCoroutine()
@@ -69,6 +73,19 @@ public class SpitPoison : Ability
         Cancel();
     }
 
+    private void CreatePoisonCloudBuff()
+    {
+        _poisonCloudBuff = _playerLinks.GetComponentInChildren<PoisonCloudBuff>();
+        if (_poisonCloudBuff == null)
+        {
+            _poisonCloudBuff = Instantiate(_poisonCloudBuffPrefab, _playerLinks.transform);
+            _poisonCloudBuff.PoisonCloudAddStacks(_playerLinks);
+        }
+        else
+        {
+            _poisonCloudBuff.PoisonCloudAddStacks(_playerLinks);
+        }
+    }
 
     [Command]
     private void CmdInstantiateProjectile(float angle, float manaValue)

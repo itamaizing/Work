@@ -50,7 +50,6 @@ public class BonePoison : BaseEffect
 
     private IEnumerator LifeTimeStacksCoroutine(HealthComponent targetHealth)
     {
-        
         while (_currentStacks > 0)
         {
             yield return new WaitForSeconds(_stackDuration);

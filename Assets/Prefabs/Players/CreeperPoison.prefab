@@ -361,7 +361,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   _lightningStrikes: {fileID: 2133911755741689447}
-  _bonePoisonPrefab: {fileID: -6945864312988002102, guid: acf0aa1d343559640b903638c293a6b1, type: 3}
   dad: {fileID: 8848169558533100257}
   _damageDeal: 0
   CurrentAttackSpeed: 0
@@ -487,6 +486,7 @@ MonoBehaviour:
   _streamingDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: 0
+  _poisonCloudBuffPrefab: {fileID: -5737491862988992034, guid: fb3b0602f17456a43875770ff14e2a51, type: 3}
   _projectile: {fileID: 9185291158651071422, guid: 2df088c1e08769144ba1fbb1cd7e00f1, type: 3}
   _playerLinks: {fileID: 8848169558533100257}
 --- !u!114 &7672760003326398008
@@ -2153,6 +2153,7 @@ MonoBehaviour:
   _characterState: {fileID: 9125115414574900035}
   _uiPlayerComponents: {fileID: 1645294641665896745}
   _selectComponent: {fileID: 5916936634625571291}
+  _talentSystem: {fileID: 0}
   _spawnComponent: {fileID: -2268727896515507771}
   _playerData: {fileID: 11400000, guid: 47cac5ab51e8b334aafb537b893ada29, type: 2}
   AAA: 0
