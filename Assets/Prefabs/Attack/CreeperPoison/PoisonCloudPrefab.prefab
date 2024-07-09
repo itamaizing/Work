@@ -153,14 +153,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Type: 0
-  _dad: {fileID: 0}
-  _targets: []
-  _radiusSpeel: {fileID: -1395477883878879546}
+  _triggerCircleCollider: {fileID: -1395477883878879546}
   _poisonCloudPrefab: {fileID: -2206078893807982276, guid: 7662169ba1918d540a117ba6989859cc, type: 3}
+  _instancePoisonCloud: {fileID: 0}
   _maxStacks: 5
   _duration: 6
-  _baseDamage: 0.5
-  _radiusCloud: 0.95
+  _radiusCloud: 2
 --- !u!58 &-1395477883878879546
 CircleCollider2D:
   m_ObjectHideFlags: 0

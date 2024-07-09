@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 1
   _baseDamage: 1
-  _stackDuration: 30
+  _stackDuration: 6
 --- !u!114 &7911371424456658218
 MonoBehaviour:
   m_ObjectHideFlags: 0

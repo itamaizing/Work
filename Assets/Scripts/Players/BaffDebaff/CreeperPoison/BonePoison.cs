@@ -9,7 +9,7 @@ public class BonePoison : BaseEffect
     [SerializeField] private int _stackDuration = 30;
     private float _currentDamage;
     private float _timeBetweenAttack = 1.0f;
-    private int _currentStacks = 1;
+    private int _currentStacks = 0;
     private int _maxStacks = 4;
 
     private DamageType _damageType = DamageType.Physical;
@@ -19,19 +19,17 @@ public class BonePoison : BaseEffect
     private Coroutine _damageDealCoroutine;
 
     public int CurrentStacks => _currentStacks;
+
     public void AddStacks(HealthComponent targetHealth)
     {
         if (_currentStacks < _maxStacks)
         {
             _currentStacks++;
+            _currentDamage = _currentStacks * _baseDamage;
 
             if (_damageDealCoroutine == null)
             {
                 _damageDealCoroutine = StartCoroutine(DamageDealCoroutine(targetHealth));
-            }
-            else
-            {
-                _currentDamage = _currentStacks * _baseDamage;
             }
         }
         _lifeTimeStacksCoroutine = StartCoroutine(LifeTimeStacksCoroutine(targetHealth));

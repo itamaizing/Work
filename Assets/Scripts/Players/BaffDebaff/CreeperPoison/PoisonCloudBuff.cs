@@ -1,60 +1,58 @@
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 public class PoisonCloudBuff : BaseEffect
 {
     [Header("Buff Components")]
-    [SerializeField] private List<GameObject> _targets = new();
-    [SerializeField] private CircleCollider2D _radiusSpeel;
+    [SerializeField] private CircleCollider2D _triggerCircleCollider;
     [SerializeField] private ParticleSystem _poisonCloudPrefab;
-    [SerializeField] private ParticleSystem _poisonCloudInstance;
-    private Character _dad;
-    private HealthComponent _target;
+    [SerializeField] private ParticleSystem _instancePoisonCloud;
+    private Character _caster;
 
     [Header("Buff Values")]
     [SerializeField] private int _maxStacks = 5;
     [SerializeField] private float _duration = 6;
-    [SerializeField] private float _baseDamage = 0.5f;
-    [SerializeField] private float _radiusCloud = 0.5f * GlobalVariable.cellSize;
-    private int _currentStacks = 1;
+    [SerializeField] private float _radiusCloud;
+    private int _currentStacks = 0;
     private float _currentDamage;
+    private float _increasedDamage;
+    private float _baseDamage = 0.005f;
     private float _timeBetweenAttack = 1.0f;
 
+    [Header("Coroutines")]
     private Coroutine _useCoroutine;
     private Coroutine _lifeTimeStacksCoroutine;
     private Coroutine _damageDealCoroutine;
-    private Coroutine _destroyPrefabCoroutine;
 
-    public void PoisonCloudAddStacks(Character dad)
+    private void Start()
     {
-        _dad = dad;
+        _radiusCloud = (2f * GlobalVariable.cellSize) / GlobalVariable.cellSize;
+        _triggerCircleCollider.radius = _radiusCloud;
+    }
+
+    public void PoisonCloudAddStacks(Character caster)
+    {
+        _caster = caster;
 
         if (_currentStacks < _maxStacks)
         {
             _currentStacks++;
-            Debug.Log("_CurrentStacks == " + _currentStacks);
+            _increasedDamage = _currentStacks * _baseDamage;
 
             if (_useCoroutine == null)
             {
-                _useCoroutine = StartCoroutine(UseCoroutine());
+                _useCoroutine = StartCoroutine(ActivatePoisonCloud());
             }
             else
             {
-                if (_poisonCloudInstance != null)
-                {
-                    _poisonCloudInstance.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-                    ParticleSystem.MainModule main = _poisonCloudInstance.main;
-                    main.duration = _duration;
-                    _poisonCloudInstance.Play();
-                }
+                UpdateInstancePoisonCloud();
 
                 if (_lifeTimeStacksCoroutine != null)
-                {
                     StopCoroutine(_lifeTimeStacksCoroutine);
-                }
             }
 
             _lifeTimeStacksCoroutine = StartCoroutine(LifeTimeStacks());
@@ -62,91 +60,136 @@ public class PoisonCloudBuff : BaseEffect
         }
         else if (_currentStacks == _maxStacks)
         {
-            if (_lifeTimeStacksCoroutine != null)
-            {
-                StopCoroutine(_lifeTimeStacksCoroutine);
-            }
-
-            _lifeTimeStacksCoroutine = StartCoroutine(LifeTimeStacks());
+            ResetLifeTimeStacks();
         }
     }
 
-    private void InstantiateParticle()
+    private void ResetLifeTimeStacks()
     {
-        if (_poisonCloudInstance == null)
+        //Метод для обновления таймера стаков
+        if (_lifeTimeStacksCoroutine != null)
         {
-            _poisonCloudInstance = Instantiate(_poisonCloudPrefab, transform.position, Quaternion.identity);
+            StopCoroutine(_lifeTimeStacksCoroutine);
         }
 
-        _poisonCloudInstance.Play();
+        _lifeTimeStacksCoroutine = StartCoroutine(LifeTimeStacks());
     }
 
-    private void Update()
-    {
-        if (_poisonCloudInstance != null)
-        {
-            _poisonCloudInstance.transform.position = _dad.transform.position;
-        }
-    }
+    #region OnTrigger
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.transform != _dad.transform)
+        if (collision.gameObject.transform != _caster.transform)
         {
             if (collision.TryGetComponent<HealthComponent>(out var target))
             {
-                _target = target;
-                _damageDealCoroutine = StartCoroutine(DamageDeal(_target));
+                if (_damageDealCoroutine == null)
+                {
+                    _damageDealCoroutine = StartCoroutine(DealDamage());
+                }
             }
         }
     }
 
-    #region Coroutines
-
-    private IEnumerator UseCoroutine()
+    private void OnTriggerExit2D(Collider2D collision)
     {
-        _currentStacks = 1;
-        _radiusSpeel.radius = _radiusCloud;
-        InstantiateParticle();
-        yield return null;
-    }
-
-    private IEnumerator DamageDeal(HealthComponent target)
-    {
-        while (_currentStacks > 0)
+        if (_damageDealCoroutine != null && collision.TryGetComponent<HealthComponent>(out var target))
         {
-            target.TryTakeDamage(_currentDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
-
-            yield return new WaitForSeconds(_timeBetweenAttack);
+            StopCoroutine(_damageDealCoroutine);
+            _damageDealCoroutine = null;
         }
     }
 
+    #endregion
+
+    #region InstancePoisonCloud
+
+    private void InstantiateCloud()
+    {
+        if (_instancePoisonCloud == null)
+        {
+            _instancePoisonCloud = Instantiate(_poisonCloudPrefab, transform.position, Quaternion.identity);
+        }
+
+        _instancePoisonCloud.Play();
+    }
+
+    private void UpdateInstancePoisonCloud()
+    {
+        if (_instancePoisonCloud != null)
+        {
+            _instancePoisonCloud.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            ParticleSystem.MainModule main = _instancePoisonCloud.main;
+            main.duration = _duration;
+            _instancePoisonCloud.Play();
+        }
+    }
+    private void Update()
+    {
+        // Нужно для того, чтобы PoisonCloud оставался на игроке при передвижении игрока.
+        if (_instancePoisonCloud != null)
+        {
+            _instancePoisonCloud.transform.position = _caster.transform.position;
+        }
+    }
+
+    #endregion
+
+    #region Coroutines
+
+    private IEnumerator ActivatePoisonCloud()
+    {
+        InstantiateCloud();
+        yield return null;
+    }
+
+    private IEnumerator DealDamage()
+    {
+        while (_currentStacks > 0)
+        {
+            Collider2D[] hitTargets = Physics2D.OverlapCircleAll(_caster.transform.position, _radiusCloud);
+            foreach (var targets in hitTargets)
+            {
+                if (targets.TryGetComponent<HealthComponent>(out var target) && target.gameObject != _caster.gameObject)
+                {
+                    _currentDamage = target.MaxHealth * _increasedDamage;
+
+                    target.TryTakeDamage(_currentDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
+                }
+            }
+            yield return new WaitForSeconds(_timeBetweenAttack);
+        }
+    }
 
     private IEnumerator LifeTimeStacks()
     {
         yield return new WaitForSeconds(_duration);
 
-        _currentStacks = 0;
-        
+        while (_currentStacks > 0)
+        {
+            _currentStacks--;
+        }
+
         if (_currentStacks == 0)
         {
-            if (_poisonCloudInstance != null)
+            if (_instancePoisonCloud != null)
             {
-                _poisonCloudInstance.transform.parent = null;
-                _poisonCloudInstance.Stop();
-                Destroy(_poisonCloudInstance.gameObject);
-                _poisonCloudInstance = null;
+                _instancePoisonCloud.transform.parent = null;
+                _instancePoisonCloud.Stop();
+                Destroy(_instancePoisonCloud.gameObject);
+                _instancePoisonCloud = null;
             }
 
-            if (_useCoroutine != null)
-                StopCoroutine(UseCoroutine());
-
-            if (_damageDealCoroutine != null)
-                StopCoroutine(DamageDeal(_target));
-
+            StopAllCoroutines();
             Destroy(gameObject);
         }
     }
 
     #endregion
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, _radiusCloud);
+    }
 }

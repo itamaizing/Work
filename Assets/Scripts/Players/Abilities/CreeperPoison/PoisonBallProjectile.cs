@@ -31,14 +31,6 @@ public class PoisonBallProjectile : NetworkBehaviour
         _startPosition = transform.position;
     }
 
-    private void Update()
-    {
-        if (Vector2.Distance(transform.position, _startPosition) > _maxDistance * GlobalVariable.cellSize)
-        {
-            Destroy(this.gameObject);
-        }
-    }
-
     [Server]
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -48,6 +40,7 @@ public class PoisonBallProjectile : NetworkBehaviour
             if (collision.TryGetComponent<HealthComponent>(out var targetHealth))
             {
                 DealDamage(targetHealth, _currentDamage, DamageType.Magical, AttackRangeType.RangeAttack);
+                Destroy(gameObject);
             }
         }
     }
@@ -76,14 +69,14 @@ public class PoisonBallProjectile : NetworkBehaviour
     {
         Debug.Log("PoisonBallProjectile MovingToTarget");
 
-        _rbBall.DOMove(target, speed * _maxDistance / GlobalVariable.cellSize).SetEase(Ease.Linear);
+        _rbBall.DOMove(target, speed * _maxDistance / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(DestroyProjectile);
     }
 
     private void CmdMovingToPoint(Vector3 point, float speed)
     {
         Debug.Log("PoisonBallProjectile MovingToPoint _point == " + point);
 
-        _rbBall.DOMove(point, speed * _maxDistance / GlobalVariable.cellSize).SetEase(Ease.Linear);
+        _rbBall.DOMove(point, speed * _maxDistance / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(DestroyProjectile);
     }
     #endregion
 
@@ -120,4 +113,8 @@ public class PoisonBallProjectile : NetworkBehaviour
         _energyDad = energyDad;
     }
 
+    private void DestroyProjectile()
+    {
+        Destroy(gameObject);
+    }
 }

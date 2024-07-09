@@ -10,6 +10,9 @@ public class SpitPoison : Ability
     [SerializeField] private PoisonCloudBuff _poisonCloudBuffPrefab;
     [SerializeField] private SpitPoisonProjectile _projectile;
     [SerializeField] private Character _playerLinks;
+
+    private float _angle;
+
     private PoisonCloudBuff _poisonCloudBuff;
 
     private Vector2 _mousePos;
@@ -17,8 +20,6 @@ public class SpitPoison : Ability
     private Coroutine _useCoroutine;
     private Coroutine _shootCoroutine;
     private Coroutine _mouseDirectionCoroutine;
-
-    private float _angle;
 
     protected override void Cancel()
     {
@@ -41,7 +42,6 @@ public class SpitPoison : Ability
     private IEnumerator UseCoroutine()
     {
         yield return _mouseDirectionCoroutine = StartCoroutine(MouseDirectionCoroutine());
-        CreatePoisonCloudBuff();
         _shootCoroutine = StartCoroutine(CallShootCoroutine());
     }
     private IEnumerator MouseDirectionCoroutine()
@@ -63,17 +63,22 @@ public class SpitPoison : Ability
         yield return null;
     }
 
-
+    
     private void Shoot()
     {
         CmdInstantiateProjectile(_angle, _playerLinks.Stamina.Value);
+
+        CmdCreatePoisonCloudBuff();
 
         _playerLinks.Stamina.Use(_playerLinks.Stamina.Value);
 
         Cancel();
     }
 
-    private void CreatePoisonCloudBuff()
+    #region Command Methods
+
+    [Command]
+    private void CmdCreatePoisonCloudBuff()
     {
         _poisonCloudBuff = _playerLinks.GetComponentInChildren<PoisonCloudBuff>();
         if (_poisonCloudBuff == null)
@@ -98,9 +103,15 @@ public class SpitPoison : Ability
         RpcInitialization(projectile.gameObject, manaValue);
     }
 
+    #endregion
+
+    #region ClientRpc Methods
+
     [ClientRpc]
     private void RpcInitialization(GameObject projectile, float manaValue)
     {
         projectile.GetComponent<SpitPoisonProjectile>().InitializationProjectile(_playerLinks, manaValue);
     }
+
+    #endregion
 }

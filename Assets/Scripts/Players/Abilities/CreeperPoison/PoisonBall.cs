@@ -5,8 +5,9 @@ using UnityEngine;
 
 public class PoisonBall : TargetOrAreaAbility
 {
-    [SerializeField] private Character _playerLinks;
+    [SerializeField] private PoisonCloudBuff _poisonCloudBuffPrefab;
     [SerializeField] private PoisonBallProjectile _projectile;
+    [SerializeField] private Character _playerLinks;
     [SerializeField] private Vector3 _secondMousePosition;
 
     private float _fastMovementTimeCast = 1.8f;
@@ -15,6 +16,8 @@ public class PoisonBall : TargetOrAreaAbility
     private bool _secondClickDone = false;
     private bool _isEnemy = false;
     private bool _isFast;
+
+    private PoisonCloudBuff _poisonCloudBuff;
 
     private Coroutine _clickCoroutine;
     private Coroutine _useCoroutine;
@@ -57,6 +60,7 @@ public class PoisonBall : TargetOrAreaAbility
             _isEnemy = false;
             ChooseMovement();
         }
+        Cancel();
     }
 
     private IEnumerator ClickCoroutine()
@@ -71,25 +75,15 @@ public class PoisonBall : TargetOrAreaAbility
             yield return null;
         }
     }
-    private void ChooseMovement()
-    {
-        if (_isEnemy)
-        {
-            _isFast = Vector2.Distance(_playerLinks.transform.position, _secondMousePosition) > Vector2.Distance(_playerLinks.transform.position, Target.transform.position);
-        }
-        else
-        {
-            _isFast = Vector2.Distance(_playerLinks.transform.position, _secondMousePosition) > Vector2.Distance(_playerLinks.transform.position, Point);
-        }
-        StartCoroutine(_isFast ? FastMoveShoot(_isEnemy, _isFast) : SlowMoveShoot(_isEnemy, _isFast));
-    }
 
     #region ShootSpeed
     private IEnumerator FastMoveShoot(bool isEnemy, bool isFast)
     {
-        Debug.Log("FastMoveShoot");
         _castDeley = _fastMovementTimeCast;
         yield return GetCastDeleyCoroutine();
+
+        CmdCreatePoisonCloudBuff();
+
         if (_isEnemy)
         {
             CmdCreateProjectile(Target.transform.position, _isFast);
@@ -104,6 +98,9 @@ public class PoisonBall : TargetOrAreaAbility
     {
         _castDeley = _slowMovementTimeCast;
         yield return GetCastDeleyCoroutine();
+
+        CmdCreatePoisonCloudBuff();
+
         if (_isEnemy)
         {
             CmdCreateProjectile(Target.transform.position, _isFast);
@@ -114,6 +111,21 @@ public class PoisonBall : TargetOrAreaAbility
         }
     }
     #endregion
+
+    private void ChooseMovement()
+    {
+        if (_isEnemy)
+        {
+            _isFast = Vector2.Distance(_playerLinks.transform.position, _secondMousePosition) > Vector2.Distance(_playerLinks.transform.position, Target.transform.position);
+        }
+        else
+        {
+            _isFast = Vector2.Distance(_playerLinks.transform.position, _secondMousePosition) > Vector2.Distance(_playerLinks.transform.position, Point);
+        }
+        StartCoroutine(_isFast ? FastMoveShoot(_isEnemy, _isFast) : SlowMoveShoot(_isEnemy, _isFast));
+    }   
+
+    #region Command Methods
 
     [Command]
     private void CmdCreateProjectile(Vector3 targetOrPoint, bool isFast)
@@ -126,4 +138,21 @@ public class PoisonBall : TargetOrAreaAbility
 
         NetworkServer.Spawn(item);
     }
+
+    [Command]
+    private void CmdCreatePoisonCloudBuff()
+    {
+        _poisonCloudBuff = _playerLinks.GetComponentInChildren<PoisonCloudBuff>();
+        if (_poisonCloudBuff == null)
+        {
+            _poisonCloudBuff = Instantiate(_poisonCloudBuffPrefab, _playerLinks.transform);
+            _poisonCloudBuff.PoisonCloudAddStacks(_playerLinks);
+        }
+        else
+        {
+            _poisonCloudBuff.PoisonCloudAddStacks(_playerLinks);
+        }
+    }
+
+    #endregion
 }
