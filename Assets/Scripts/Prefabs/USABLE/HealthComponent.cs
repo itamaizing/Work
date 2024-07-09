@@ -62,6 +62,8 @@ public class HealthComponent : NetworkBehaviour
 
     public Func<HealInfo, HealInfo> AddHealth;
 
+    public float MaxHealth => _maxHealth;
+
     public void Initialize(float maxHealth,float regenValue,float regenDelay , HealthInfo healthInfo)
     {
         _currentHealth = maxHealth;
