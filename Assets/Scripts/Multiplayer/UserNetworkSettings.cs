@@ -10,6 +10,9 @@ public class UserNetworkSettings : NetworkBehaviour
     private Scene _myRoom;
 
     [SyncVar]
+    private byte _teamIndex;
+
+    [SyncVar]
     public int playerNumber;
 
     [SyncVar]
@@ -24,13 +27,5 @@ public class UserNetworkSettings : NetworkBehaviour
     public int clientMatchIndex = -1;
 
     public Scene MyRoom { get => _myRoom; set => _myRoom = value; }
-
-    void OnGUI()
-    {
-        if (!isServerOnly && !isLocalPlayer && clientMatchIndex < 0)
-            clientMatchIndex = NetworkClient.connection.identity.GetComponent<UserNetworkSettings>().matchIndex;
-
-        if (isLocalPlayer || matchIndex == clientMatchIndex)
-            GUI.Box(new Rect(10f + (scoreIndex * 110), 10f, 100f, 25f), $"P{playerNumber}: {score}");
-    }
+    public byte TeamIndex { get => _teamIndex; set => _teamIndex = value; }
 }
