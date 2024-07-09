@@ -286,4 +286,13 @@ public class PlayerAbilities : MonoBehaviour
 	{
 		AbilitiesManager.Instance.RemovePanel(_abilityPanel);
 	}
+
+	public void AddAbility(Ability ability)
+	{
+		_abilities.Add(ability);
+	}	
+	public void RemoveAbility(Ability ability) 
+	{
+		_abilities.Remove(ability);
+	}
 }
