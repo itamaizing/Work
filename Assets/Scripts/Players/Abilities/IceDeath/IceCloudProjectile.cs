@@ -1,4 +1,5 @@
 using DG.Tweening;
+using Mirror;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -24,6 +25,7 @@ public class IceCloudProjectile : Projectiles
 		}
 	}
 
+	[Server]
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		if (_dad == null) return;

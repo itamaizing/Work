@@ -4,22 +4,31 @@ using UnityEngine;
 
 public class IceShardTalent : Talent
 {
-	[SerializeField] private IceShard iceShard;
-	[SerializeField] private PlayerAbilities ability;
+	[SerializeField] private IceShard _iceShard;
+	[SerializeField] private PlayerAbilities _ability;
 	public override void Enter()
 	{
-		if(ability.Abilities.Contains(iceShard)) 
+		if(_ability.Abilities.Contains(_iceShard)) 
 		{
-
+			_iceShard.enabled = true;
 		}
 		else
 		{
-			ability.AddAbility(iceShard);
+			_ability.AddAbility(_iceShard);
 		}
 	}
 
 	public override void Exit()
 	{
-
+		if (_ability.Abilities.Contains(_iceShard))
+		{
+			_ability.RemoveAbility(_iceShard);
+			//iceShard.enabled = false;
+		}
+		else
+		{
+			_iceShard.enabled = false;
+			//ability.RemoveAbility(iceShard);
+		}
 	}
 }

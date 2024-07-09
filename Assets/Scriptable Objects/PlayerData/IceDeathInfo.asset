@@ -21,7 +21,7 @@ MonoBehaviour:
   _stamina: 70
   _moveSpeed: 7
   _defaultHealthRegen: 1.7
-  _defaultStaminaRegen: 0.2
+  _defaultStaminaRegen: 2
   _defaultRegenDelay: 2
-  _defaultStaminaRegenDalay: 1
+  _defaultStaminaRegenDalay: 0.1
   _visionRadius: 5

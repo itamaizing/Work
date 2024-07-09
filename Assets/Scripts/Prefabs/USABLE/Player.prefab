@@ -3793,6 +3793,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3830031760113648994, guid: e5b733c903c6d9143af357e086455e86, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 2.191
+      objectReference: {fileID: 0}
     - target: {fileID: 7703766091663909860, guid: e5b733c903c6d9143af357e086455e86, type: 3}
       propertyPath: m_Name
       value: StateIcons

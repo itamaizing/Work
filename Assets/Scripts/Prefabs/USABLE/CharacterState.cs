@@ -478,9 +478,9 @@ public class FrozenState : AbstractCharacterState
 		
 		_characterState.Move.CanMove = false;
 
-		if (character.TryGetComponent<PlayerAbilities>(out var ability))
+		if (character.TryGetComponent<Character>(out var ability))
 		{
-			_abilities = ability;
+			_abilities = ability.Abilities;
 			_abilities.SetAbilitiesDisabled();
 		}
 		else
@@ -953,15 +953,24 @@ public class CharacterState : NetworkBehaviour
 		ClientAddState(state, duration, damageToExit, schools);
 	}
 
-	[Command]
+	//[Command]
 	public void CmdAddState(States state, float duration, float damageToExit)
 	{
+		Debug.Log("Add state cmd");
 		AddStateLogic(state, duration, damageToExit, Schools.None);
 		ClientAddState(state, duration, damageToExit, Schools.None);
 	}
+
+	/*public void AddNewState(States state, float duration, float damageToExit)
+	{
+		CmdAddState(state, duration, damageToExit);
+		//ClientAddState(state, duration, damageToExit, Schools.None);
+	}*/
+
 	[ClientRpc]
 	private void ClientAddState(States state, float duration, float damageToExit, Schools schools)
 	{
+		Debug.Log("Add state rpc");
 		AddStateLogic(state, duration, damageToExit, schools);
 	}
 
@@ -1029,6 +1038,7 @@ public class CharacterState : NetworkBehaviour
 
 	private void AddStateLogic(States state, float duration, float damageToExit, Schools school)
 	{
+		Debug.Log("Add state logic");
 		if (invinsible)
 			return;
 		if (CheckForState(state))
