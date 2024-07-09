@@ -5,14 +5,13 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
-public abstract class NetworkRoom : NetworkManager
+public struct NetworkRoom
 {
-    [SerializeField, Scene] public string _scene;
-    [SerializeField] int _maxNumPlayers;
-
-    private List<UserNetworkSettings> _players = new();
+    private string _scene;
+    int _maxNumPlayers;
+    private List<UserNetworkSettings> _players;
     private Scene _currentRoom;
-    private bool _isLoaded = false;
+    private bool _isLoaded;
 
     public bool IsHaveSlot { get => _maxNumPlayers > _players.Count; }
     public int NumOfFreeSlots { get => _maxNumPlayers - _players.Count; }
@@ -21,9 +20,15 @@ public abstract class NetworkRoom : NetworkManager
 
     public event UnityAction SlotsEnded;
 
-    public abstract IEnumerator GameStarting();
-    public abstract IEnumerator Game();
-    public abstract IEnumerator GameEnding();
+    public NetworkRoom(string scene, int maxNumPlayers)
+    {
+        _scene = scene;
+        _maxNumPlayers = maxNumPlayers;
+        _players = new();
+        _currentRoom = SceneManager.GetSceneAt(SceneManager.sceneCount);
+        _isLoaded = false;
+        SlotsEnded = null;
+    }
 
     public IEnumerator LoadRoomJob(LocalPhysicsMode physicsMode = LocalPhysicsMode.Physics2D)
     {
@@ -67,4 +72,16 @@ public abstract class NetworkRoom : NetworkManager
             return false;
         }
     }
+
+    //public void GameStart(GameObject item)
+    //{
+    //    if (_isLoaded)
+    //    {
+    //        SceneManager.MoveGameObjectToScene(item, _currentRoom);
+    //    }
+    //    else
+    //    {
+    //        Debug.LogError($"Room loaded status - {_isLoaded}");
+    //    }
+    //}
 }
