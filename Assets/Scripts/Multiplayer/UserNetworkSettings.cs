@@ -2,9 +2,13 @@ using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class UserPrefab : NetworkBehaviour
+public class UserNetworkSettings : NetworkBehaviour
 {
+    [SyncVar]
+    private Scene _myRoom;
+
     [SyncVar]
     public int playerNumber;
 
@@ -19,10 +23,12 @@ public class UserPrefab : NetworkBehaviour
 
     public int clientMatchIndex = -1;
 
+    public Scene MyRoom { get => _myRoom; set => _myRoom = value; }
+
     void OnGUI()
     {
         if (!isServerOnly && !isLocalPlayer && clientMatchIndex < 0)
-            clientMatchIndex = NetworkClient.connection.identity.GetComponent<UserPrefab>().matchIndex;
+            clientMatchIndex = NetworkClient.connection.identity.GetComponent<UserNetworkSettings>().matchIndex;
 
         if (isLocalPlayer || matchIndex == clientMatchIndex)
             GUI.Box(new Rect(10f + (scoreIndex * 110), 10f, 100f, 25f), $"P{playerNumber}: {score}");

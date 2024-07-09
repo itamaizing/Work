@@ -28,7 +28,8 @@ public class MPManager : NetworkManager
 
         base.OnServerAddPlayer(conn);
 
-        UserPrefab playerScore = conn.identity.GetComponent<UserPrefab>();
+        UserNetworkSettings playerScore = conn.identity.GetComponent<UserNetworkSettings>();
+        playerScore.MyRoom = _rooms[(_clientCount % _rooms.Count)];
         playerScore.playerNumber = _clientCount;
         playerScore.scoreIndex = _clientCount / _rooms.Count;
         playerScore.matchIndex = _clientCount % _rooms.Count;
@@ -96,7 +97,50 @@ public class MPManager : NetworkManager
     }
 }
 
-public class NetworkRooms
+public class NetworkRoom : NetworkBehaviour
 {
+    [Scene] private string _scene;
+    private int _maxNumPlayers = 0;
+    private int _currentNumPlayers = 0;
+    private Scene _currentRoom;
+    private bool _isLoaded = false;
+
+
+    public bool IsHaveSlot { get => _maxNumPlayers > _currentNumPlayers; }
+    public int NumOfFreeSlots { get => _maxNumPlayers - _currentNumPlayers; }
+
+    public void Init(string scene, int maxNumPlayers)
+    {
+
+    }
+
+    public Coroutine LoadRoom(LocalPhysicsMode physicsMode = LocalPhysicsMode.Physics2D)
+    {
+        return StartCoroutine(LoadRoomJob(physicsMode));
+    }
+
+    public bool TryAddPlayerInRoom(GameObject player)
+    {
+        if (IsHaveSlot && _isLoaded)
+        {
+            SceneManager.MoveGameObjectToScene(player, _currentRoom);
+            player.GetComponent<UserNetworkSettings>().MyRoom = _currentRoom;
+
+            _currentNumPlayers++;
+            return true;
+        }
+        else
+        {
+            Debug.LogError($"Room loaded status - {_isLoaded}\nFree slots - {NumOfFreeSlots}");
+            return false;
+        }
+    }
+
+    private IEnumerator LoadRoomJob(LocalPhysicsMode physicsMode)
+    {
+        yield return SceneManager.LoadSceneAsync(_scene, new LoadSceneParameters { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = physicsMode });
+        _currentRoom = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
+        _isLoaded = true;
+    }
 
 }
