@@ -135,6 +135,4 @@ public class AbilityTimer
 	public Ability ability;
 	public float time;
 	public float multiplier;
-
-
 }

@@ -97,9 +97,9 @@ GameObject:
   - component: {fileID: -53743584304020754}
   - component: {fileID: 7979070038508063649}
   - component: {fileID: 4413981166328840572}
-  - component: {fileID: 7046970149100517610}
+  - component: {fileID: -5318331524605723407}
   m_Layer: 12
-  m_Name: BlockOfIceProjectile
+  m_Name: Ice Shard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -235,7 +235,7 @@ MonoBehaviour:
   positionSensitivity: 0.01
   rotationSensitivity: 0.01
   scaleSensitivity: 0.01
---- !u!114 &7046970149100517610
+--- !u!114 &-5318331524605723407
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -244,12 +244,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 5195731727944466540}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0864bbbb11d8a1349a43930b579e3d92, type: 3}
+  m_Script: {fileID: 11500000, guid: f0f1ed43ae9b6164bab311a2f177badd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  energyDad: 0
-  _rb: {fileID: -53743584304020754}
   _hitEffect: {fileID: 0}
   _spriteRenderer: {fileID: 2859774875230355193}
-  _force: 2
-  _distance: 6
+  _rb: {fileID: -53743584304020754}
+  _force: 0
+  _distance: 5

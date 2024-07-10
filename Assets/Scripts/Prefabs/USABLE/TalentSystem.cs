@@ -22,14 +22,16 @@ public class TalentSystem : NetworkBehaviour
 {
     [SerializeField] private List<Talent> _talents;
     private List<Talent> _activeTalents = new List<Talent>();
+    private TalentColumn _panel;
     private int _points = 10;
 
+    public TalentColumn Panel => _panel;
 	public List<Talent> Talents => _talents;
     public List<Talent> ActiveTalents => _activeTalents;
 
 	public void Initialize()
 	{
-		TalentManager.Instance.AddPanel(this);
+		_panel = TalentManager.Instance.AddPanel(this);
 	}
 	public void AddPoints(int value)
 	{
