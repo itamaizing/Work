@@ -30,6 +30,7 @@ public class NetworkRoom
         _players = new();
     }
 
+    [Server]
     public IEnumerator LoadRoomJob(LocalPhysicsMode physicsMode = LocalPhysicsMode.Physics2D)
     {
         if (_isLoaded == false)
@@ -40,6 +41,7 @@ public class NetworkRoom
         }
     }
 
+    [Server]
     public IEnumerator UnloadRoomJob()
     {
         if (_isLoaded)
@@ -83,6 +85,7 @@ public class NetworkRoom
 
             item.Init(this);
             item.IsStarted = true;
+            item.GameStatusHook(true, true);
         }
         else
         {

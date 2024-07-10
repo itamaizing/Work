@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-[System.Serializable]
 public class NetworkRoomsManager : NetworkBehaviour
 {
 	[SerializeField] private GameMode _gameMode;
@@ -15,16 +14,14 @@ public class NetworkRoomsManager : NetworkBehaviour
 
 	private List<NetworkRoom> _rooms = new();
 
+    public string Scene => _scene;
+
     protected override void OnValidate()
     {
         base.OnValidate();
 
 		switch (_gameMode)
         {
-			case GameMode.GMTest:
-				_maxPlayers = 1;
-				break;
-
 			case GameMode.GM1vs1:
 				_maxPlayers = 2;
 				break;

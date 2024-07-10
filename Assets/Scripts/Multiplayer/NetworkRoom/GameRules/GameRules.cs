@@ -6,14 +6,14 @@ using UnityEngine;
 
 public abstract class GameRules : NetworkBehaviour
 {
-    [SyncVar(hook = nameof(GameStatusHook))] bool _isStarted;
-    [SyncVar] private List<GameObject> _players;
-    private NetworkRoom _room;
+    [SyncVar] protected List<GameObject> _players;
+    protected NetworkRoom _room;
+    [SyncVar(hook = nameof(GameStatusHook))] private bool _isStarted;
 
     public bool IsStarted { get => _isStarted; set => _isStarted = value; }
     public List<GameObject> Players { get => _players; set => _players = value; }
 
-    protected abstract void GameStatusHook(bool oldValue, bool newValue);
+    public abstract void GameStatusHook(bool oldValue, bool newValue);
 
     public void Init(NetworkRoom room)
     {

@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class MPManager : NetworkManager
 {
+    [SerializeField] private List<NetworkRoomsManager> _managers;
     [Scene] private string _room;
     private int _roomsNum = 0;
     private bool _subscenesLoaded;
@@ -20,30 +21,25 @@ public class MPManager : NetworkManager
 
     IEnumerator OnServerAddPlayerDelayed(NetworkConnectionToClient conn)
     {
-        while (!_subscenesLoaded)
-            yield return null;
+        GameObject player = Instantiate(playerPrefab);
+        NetworkServer.AddPlayerForConnection(conn, player);
 
-        conn.Send(new SceneMessage { sceneName = _room, sceneOperation = SceneOperation.LoadAdditive });
+        yield return StartCoroutine(_managers[0].AddPlayerJob(player));
+        
+        conn.Send(new SceneMessage { sceneName = _managers[0].Scene, sceneOperation = SceneOperation.LoadAdditive });
 
         yield return new WaitForEndOfFrame();
 
-        base.OnServerAddPlayer(conn);
+        //base.OnServerAddPlayer(conn);
 
         UserNetworkSettings playerScore = conn.identity.GetComponent<UserNetworkSettings>();
-        playerScore.MyRoom = _rooms[(_clientCount % _rooms.Count)];
-        playerScore.playerNumber = _clientCount;
-        playerScore.scoreIndex = _clientCount / _rooms.Count;
-        playerScore.matchIndex = _clientCount % _rooms.Count;
-
-        if (_rooms.Count > 0)
-            SceneManager.MoveGameObjectToScene(conn.identity.gameObject, _rooms[(_clientCount % _rooms.Count)]);
 
         _clientCount++;
     }
 
     public override void OnStartServer()
     {
-        StartCoroutine(ServerLoadSubScenes());
+        //StartCoroutine(ServerLoadSubScenes());
     }
 
     IEnumerator ServerLoadSubScenes()
