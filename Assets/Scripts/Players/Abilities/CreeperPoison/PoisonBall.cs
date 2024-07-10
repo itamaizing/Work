@@ -1,6 +1,7 @@
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PoisonBall : TargetOrAreaAbility
@@ -9,6 +10,8 @@ public class PoisonBall : TargetOrAreaAbility
     [SerializeField] private PoisonBallProjectile _projectile;
     [SerializeField] private Character _playerLinks;
     [SerializeField] private Vector3 _secondMousePosition;
+
+    private int _countProjectiles = 0;
 
     private float _fastMovementTimeCast = 1.8f;
     private float _slowMovementTimeCast = 0.4f;
@@ -21,6 +24,10 @@ public class PoisonBall : TargetOrAreaAbility
 
     private Coroutine _clickCoroutine;
     private Coroutine _useCoroutine;
+    
+    public GameObject LastTarget { get; set; }
+    public GameObject CurrentTarget { get; set; }
+    public int CountProjectiles { get; set; }
 
     protected override IEnumerator UseCoroutine()
     {
@@ -45,24 +52,6 @@ public class PoisonBall : TargetOrAreaAbility
             StopCoroutine(PoisonBallUseCoroutine());
     }
 
-    private IEnumerator PoisonBallUseCoroutine()
-    {
-        yield return _clickCoroutine = StartCoroutine(ClickCoroutine());
-
-        PayCost();
-        if (Target != null)
-        {
-            _isEnemy = true;
-            ChooseMovement();
-        }
-        else
-        {
-            _isEnemy = false;
-            ChooseMovement();
-        }
-        Cancel();
-    }
-
     private IEnumerator ClickCoroutine()
     {
         while (!_secondClickDone)
@@ -76,22 +65,52 @@ public class PoisonBall : TargetOrAreaAbility
         }
     }
 
-    #region ShootSpeed
+    private IEnumerator PoisonBallUseCoroutine()
+    {
+        yield return _clickCoroutine = StartCoroutine(ClickCoroutine());
+        PayCost();
+
+        _countProjectiles++;
+
+        //Debug.Log("PoisonBall Count == " + _countProjectiles);
+        if (_countProjectiles < 3)
+        {
+            if (Target != null)
+            {
+                _isEnemy = true;
+            }
+            else
+            {
+                _isEnemy = false;
+            }
+            ChooseMovementDependingOnCountProjectiles();
+        }
+        else if (_countProjectiles == 3)
+        {
+            if (Target != null)
+            {
+                _isEnemy = true;
+            }
+            else
+            {
+                _isEnemy = false;
+            }
+            ChooseMovementDependingOnCountProjectiles();
+            _countProjectiles = 0;
+        }
+
+        Cancel();
+    }
+
+    #region ChooseMoveSpeedProjectile
     private IEnumerator FastMoveShoot(bool isEnemy, bool isFast)
     {
         _castDeley = _fastMovementTimeCast;
         yield return GetCastDeleyCoroutine();
 
-        CmdCreatePoisonCloudBuff();
+        ChooseWhichProjectileCreate(isEnemy, isFast);
 
-        if (_isEnemy)
-        {
-            CmdCreateProjectile(Target.transform.position, _isFast);
-        }
-        else
-        {
-            CmdCreateProjectile(Point, _isFast);
-        }
+        CmdCreatePoisonCloudBuff();
     }
 
     private IEnumerator SlowMoveShoot(bool isEnemy, bool isFast)
@@ -99,20 +118,35 @@ public class PoisonBall : TargetOrAreaAbility
         _castDeley = _slowMovementTimeCast;
         yield return GetCastDeleyCoroutine();
 
-        CmdCreatePoisonCloudBuff();
+        ChooseWhichProjectileCreate(isEnemy, isFast);
 
-        if (_isEnemy)
+        CmdCreatePoisonCloudBuff();
+    }
+
+    private IEnumerator ThirdProjectileMovement(bool isEnemy, bool isFast)
+    {
+        _castDeley = 0.4f;
+        yield return GetCastDeleyCoroutine();
+
+        ChooseWhichProjectileCreate(isEnemy, isFast);
+
+        CmdCreatePoisonCloudBuff();
+    }
+
+    private void ChooseWhichProjectileCreate(bool isEnemy, bool isFast)
+    {
+        // В зависимости от того выбран таргет или поинт, и какая скорость скорость, запускаем снаряд
+        if (isEnemy)
         {
-            CmdCreateProjectile(Target.transform.position, _isFast);
+            CmdCreateProjectile(Target.gameObject, Target.transform.position, _isFast);
         }
         else
         {
             CmdCreateProjectile(Point, _isFast);
         }
     }
-    #endregion
 
-    private void ChooseMovement()
+    private void ChooseSpeed()
     {
         if (_isEnemy)
         {
@@ -122,14 +156,61 @@ public class PoisonBall : TargetOrAreaAbility
         {
             _isFast = Vector2.Distance(_playerLinks.transform.position, _secondMousePosition) > Vector2.Distance(_playerLinks.transform.position, Point);
         }
-        StartCoroutine(_isFast ? FastMoveShoot(_isEnemy, _isFast) : SlowMoveShoot(_isEnemy, _isFast));
-    }   
+    }
+
+    private void ChooseMovementDependingOnCountProjectiles()
+    {
+        if (_countProjectiles < 3)
+        {
+            ChooseSpeed();
+            StartCoroutine(_isFast ? FastMoveShoot(_isEnemy, _isFast) : SlowMoveShoot(_isEnemy, _isFast));
+        }
+        else if (_countProjectiles == 3)
+        {
+            ChooseSpeed();
+            StartCoroutine(ThirdProjectileMovement(_isEnemy, _isFast));
+        }
+    }
+
+    #endregion
 
     #region Command Methods
 
     [Command]
+    private void CmdCreateProjectile(GameObject target, Vector3 targetOrPoint, bool isFast)
+    {
+        CurrentTarget = target;
+
+        if (CountProjectiles < 3)
+        {
+            CountProjectiles++;
+        }
+        else if (CountProjectiles == 3)
+        {
+            CountProjectiles = 1;
+        }
+
+        GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
+        PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>();
+
+        poisonBallProjectile.InitializationProjectile(_playerLinks.transform, _playerLinks.Stamina.Value);
+        poisonBallProjectile.MoveBallToTarget(targetOrPoint, isFast);
+
+        NetworkServer.Spawn(item);
+    }
+
+    [Command]
     private void CmdCreateProjectile(Vector3 targetOrPoint, bool isFast)
     {
+        if (CountProjectiles < 3)
+        {
+            CountProjectiles++;
+        }
+        else if (CountProjectiles == 3)
+        {
+            CountProjectiles = 1;
+        }
+
         GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
         PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>();
 

@@ -5,82 +5,60 @@ using UnityEngine;
 
 public class LightningStrikes : AutoAttackAbility
 {
-    [SerializeField] CreeperStrike creeperStrike;
+    [SerializeField] private Character _dad;
+    private CreeperStrike creeperStrike;
+
+    private int _countStrikes = 2;
 
     private float _attackSpeedDeacrease = 10f;
     private float _attackSpeedStrikes;
-    private float originalAttackSpeed;
-    private float _cooldownStrikes;
-    private int _countStrikes = 2;
 
-    private bool _enabled = false;
-    private bool _canCast = true;
-    private bool _enemyInRadius = false;
-    public bool _isUsing = false;
+    private Coroutine _useCoroutine;
+    private Coroutine _decreaseAttackSpeedCoroutine;
 
     private new void Start()
     {
-        creeperStrike = GetComponent<CreeperStrike>();
+        creeperStrike = _dad.GetComponentInChildren<CreeperStrike>();
     }
 
-    private void Update()
+    protected override void Cancel()
     {
-        Timer();
+        creeperStrike.ResetAttackSpeed();
+        _attackSpeedStrikes = 1;
+        _countStrikes = 2;
 
-        if (_cooldownStrikes <= 0 && _isUsing)
-        {
-            CastAction();
-        }
-        
-        if (Input.GetMouseButtonDown(1))
-        {
-            Cancel();
-        }
+        if (_useCoroutine != null)
+            StopCoroutine(UseAbilityCoroutine());
+
+        if (_decreaseAttackSpeedCoroutine != null)
+            StopCoroutine(DecreaseAttackSpeed());
     }
 
     protected override void CastAction()
     {
-        _isUsing = true;
-        _enabled = true;
-        DecreaseAttackSpeed(_attackSpeedStrikes);
-    }
-    protected override void Cancel()
-    {
-        _enabled = false;
+        _useCoroutine = StartCoroutine(UseAbilityCoroutine());
     }
 
-    public void DecreaseAttackSpeed(float _attackSpeedStrikes)
+    public IEnumerator UseAbilityCoroutine()
+    {
+        _decreaseAttackSpeedCoroutine = StartCoroutine(DecreaseAttackSpeed());
+        yield return null;
+    }
+
+    private IEnumerator DecreaseAttackSpeed()
     {
         if (creeperStrike.CurrentTarget != null)
         {
-            _enemyInRadius = true;
-            if (_enemyInRadius)
+            _attackSpeedStrikes = creeperStrike.CurrentAttackSpeed / _attackSpeedDeacrease;
+            creeperStrike.ModifyAttackSpeed(_attackSpeedStrikes);
+
+            while (_countStrikes > 0)
             {
-                creeperStrike.OriginalAttackSpeed = creeperStrike.AttackSpeed;
-                _attackSpeedStrikes = creeperStrike.CurrentAttackSpeed / _attackSpeedDeacrease;
-
-                creeperStrike.ModifyAttackSpeed(_attackSpeedStrikes);
-
-                for (int i = 0; i < _countStrikes; i++)
-                {
-                    StartCoroutine(creeperStrike.UseAbilityCoroutine());
-                }
+                StartCoroutine(creeperStrike.UseAbilityCoroutine());
+                _countStrikes--;
             }
         }
-        creeperStrike.ResetAttackSpeed();
-        _canCast = false;
-        _isUsing = false;
-        _enemyInRadius = false;
         Cancel();
-    }
-
-    private void Timer()
-    {
-        _cooldownStrikes = _cooldown;
-        _cooldownStrikes -= Time.deltaTime;
-        if (_cooldownStrikes <= 0)
-        {
-            _canCast = true;
-        }
+        yield return null;
     }
 }

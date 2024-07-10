@@ -12,7 +12,7 @@ public class PlayerAbilities : MonoBehaviour
 	[SerializeField] private CharacterData _characterData;
 	[SerializeField] private TalentSystem _talentSystem;
 
-	private float _globalCooldownTime = 2f;
+	private float _globalCooldownTime = 0.5f;
 	private Ability _currentAbility;
 	private AutoAttackAbility _currentAutoAttackAbility;
 	private int _currentAbilityIndex;

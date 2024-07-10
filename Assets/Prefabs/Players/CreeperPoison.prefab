@@ -337,7 +337,7 @@ MonoBehaviour:
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 3f2366dd6c4aabe499c9701e0d47053b, type: 2}
   _isAutoAttack: 1
-  _radius: 2
+  _radius: 3
   _area: 0
   _castLength: 0
   _castWidth: 0
@@ -361,10 +361,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   _lightningStrikes: {fileID: 2133911755741689447}
-  dad: {fileID: 8848169558533100257}
-  _damageDeal: 0
-  CurrentAttackSpeed: 0
-  OriginalAttackSpeed: 0
+  _dad: {fileID: 8848169558533100257}
 --- !u!114 &2133911755741689447
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -382,7 +379,7 @@ MonoBehaviour:
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 1af7963ead8875042bc84e9fa3cf58e1, type: 2}
   _isAutoAttack: 0
-  _radius: 2
+  _radius: 3
   _area: 0
   _castLength: 0
   _castWidth: 0
@@ -405,7 +402,7 @@ MonoBehaviour:
   _obstacle:
     serializedVersion: 2
     m_Bits: 128
-  creeperStrike: {fileID: 3923834704028430900}
+  _dad: {fileID: 8848169558533100257}
   _isUsing: 0
 --- !u!114 &105020725200031335
 MonoBehaviour:
@@ -517,8 +514,8 @@ MonoBehaviour:
   _abilityForm: 0
   _isUseCharges: 1
   _chargesHaveSeparateCooldown: 1
-  _maxCharges: 2
-  _chargeCooldown: 2
+  _maxCharges: 3
+  _chargeCooldown: 5
   _isStreaming: 0
   _streamingDuration: 0
   _manaCostRate: 0

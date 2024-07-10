@@ -79,11 +79,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _poisonBall: {fileID: 0}
   _hitEffect: {fileID: 0}
   _spriteRenderer: {fileID: 1376465542260136675}
   _collider: {fileID: 4712967696769287591}
   _rbBall: {fileID: -9037394795196072516}
-  _dad: {fileID: 0}
+  _dad: {fileID: 4142585537257920599, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
 --- !u!58 &4712967696769287591
 CircleCollider2D:
   m_ObjectHideFlags: 0
