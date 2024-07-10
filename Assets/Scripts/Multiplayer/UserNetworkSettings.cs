@@ -8,19 +8,14 @@ public class UserNetworkSettings : NetworkBehaviour
 {
     [SyncVar]
     private Scene _myRoom;
-
     [SyncVar]
     private byte _teamIndex;
-
     [SyncVar]
     public int playerNumber;
-
     [SyncVar]
     public int scoreIndex;
-
     [SyncVar]
     public int matchIndex;
-
     [SyncVar]
     public uint score;
 
