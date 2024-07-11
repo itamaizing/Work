@@ -15,7 +15,12 @@ public class HeroComponent : Character
     public override void OnStartClient()
     {
         base.OnStartClient();
-        if(isLocalPlayer) SelectManager.Instance.AddControl(this);
+
+        Debug.Log(isLocalPlayer);
+        if(isLocalPlayer)
+        {
+            SelectManager.Instance.AddControl(this);
+        }
     }
 
     public override void Initialize(CharacterData characterData)
