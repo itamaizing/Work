@@ -74,8 +74,7 @@ public abstract class Ability : NetworkBehaviour
     public bool IsUsed { get => _isUsed; protected set => _isUsed = value; }
     public bool IsCanCancle { get => _isCanCancle; protected set => _isCanCancle = value; }
     public bool IsReady { get => _isReady; set => _isReady = value; }
-    public float RemainingСooldownTime => _remainingСooldownTime;
-    public Schools School => _abilitySchool;
+	public Schools School => _abilitySchool;
 	public AbilityForm AbilityForm => _abilityForm;
     public StatsBuff Buff => _statsBuff;
 
