@@ -22,7 +22,6 @@ public abstract class Ability : NetworkBehaviour
     [SerializeField] protected float _cooldown = 0f;
 	[SerializeField] protected Schools _abilitySchool;
 	[SerializeField] protected AbilityForm _abilityForm;
-	[SerializeField] protected LayerMask _targetsLayers;
 	[Header("Charge settings")]
     [SerializeField] protected bool _isUseCharges;
     [SerializeField] protected bool _chargesHaveSeparateCooldown;
@@ -37,7 +36,6 @@ public abstract class Ability : NetworkBehaviour
 	protected StaminaComponent _mana;
 	protected MoveComponent _playerMove;
 	protected HealthComponent _health;
-    protected HeroComponent _hero;
 	protected bool _isUsed = false;
 	protected bool _isCanCancle = true;
 	protected bool _isReady = true;
@@ -52,8 +50,8 @@ public abstract class Ability : NetworkBehaviour
 	private float _timerForDebuf;
     private StatsBuff _statsBuff = new StatsBuff();
 
-    public MoveComponent PlayerMove => _playerMove;
-    public StaminaComponent Mana =>_mana;
+	public MoveComponent PlayerMove => _playerMove;
+    public StaminaComponent Mana => _mana;
     public HealthComponent Health => _health;
     public string Name => _abilityInfo.Name;
     public string Description => _abilityInfo.Description;
@@ -74,7 +72,8 @@ public abstract class Ability : NetworkBehaviour
     public bool IsUsed { get => _isUsed; protected set => _isUsed = value; }
     public bool IsCanCancle { get => _isCanCancle; protected set => _isCanCancle = value; }
     public bool IsReady { get => _isReady; set => _isReady = value; }
-	public Schools School => _abilitySchool;
+    public float RemainingСooldownTime { get => Buff.Area.GetBuffedValue(_remainingСooldownTime); protected set => _remainingСooldownTime = value; }
+    public Schools School => _abilitySchool;
 	public AbilityForm AbilityForm => _abilityForm;
     public StatsBuff Buff => _statsBuff;
 
@@ -102,7 +101,7 @@ public abstract class Ability : NetworkBehaviour
         }
     }
 
-    public void Init(MoveComponent playerMove, StaminaComponent mana, HealthComponent health)
+    public void SetPlayer(MoveComponent playerMove, StaminaComponent mana, HealthComponent health)
     {
         _playerMove = playerMove;
         _mana = mana;
@@ -159,7 +158,7 @@ public abstract class Ability : NetworkBehaviour
     {
         _isReady = false;
 
-        if (time < _remainingСooldownTime)
+        if (time < RemainingСooldownTime)
             return;
 
         if(_cooldownJob != null)
@@ -256,11 +255,11 @@ public abstract class Ability : NetworkBehaviour
     private IEnumerator CooldownCoroutine(float cooldownTime)
     {
         CooldownStarted?.Invoke(cooldownTime);
-        _remainingСooldownTime = cooldownTime;
+        RemainingСooldownTime = cooldownTime;
 
-        while (_remainingСooldownTime > 0)
+        while (RemainingСooldownTime > 0)
         {
-            _remainingСooldownTime -= Time.deltaTime;
+            RemainingСooldownTime -= Time.deltaTime;
             yield return null;
         }
         _isReady = true;
@@ -289,7 +288,7 @@ public abstract class Ability : NetworkBehaviour
         while (_currentChargers < _maxCharges)
         {
             float time = 0;
-            while (time < ChargeCooldown)
+            while (time < _chargeCooldown)
             {
                 time += Time.deltaTime;
                 yield return null;
@@ -353,8 +352,7 @@ public abstract class Ability : NetworkBehaviour
 
 	public void KnockDownTimerStart(float time)
 	{
-        _avaliable = false;
-        _timerForDebuf = time;
+		_timerForDebuf = time;
 		StartCoroutine(KnockDownTimer());
 	}
 
@@ -363,4 +361,69 @@ public abstract class Ability : NetworkBehaviour
 		yield return new WaitForSeconds(_timerForDebuf);
 		_avaliable = true;
 	}
+}
+
+public enum Schools
+{
+	Light,
+	Dark,
+	Fire,
+	Water,
+	Air,
+	Earth,
+	Physical,
+    None
+}
+
+public enum AbilityForm
+{
+	Spell,
+	Magic,
+	Physical
+}
+
+public class StatsBuff
+{
+    private StatBuff _damage = new StatBuff();
+    private StatBuff _radius = new StatBuff();
+    private StatBuff _area = new StatBuff();
+    private StatBuff _attackSpeed = new StatBuff();
+    private StatBuff _castSpeed = new StatBuff();
+    private StatBuff _remainingСooldownTime = new StatBuff();
+
+    public StatBuff Damage => _damage;
+    public StatBuff Radius => _radius;
+    public StatBuff Area => _area;
+    public StatBuff AttackSpeed => _attackSpeed;
+    public StatBuff CastSpeed => _castSpeed;
+    public StatBuff RemainingСooldownTime => _remainingСooldownTime;
+}
+
+public class StatBuff
+{
+    private float _multiplier = 1;
+    private float _additional;
+
+    public float Multiplier => _multiplier;
+    public float Additional => _additional;
+
+    public float GetBuffedValue(float value)
+    {
+        return (value + _additional) * _multiplier;
+    }
+
+    public void IncreasePercentage(float value)
+    {
+        _multiplier *= value;
+    }
+
+    public void ReductionPercentage(float value)
+    {
+        _multiplier /= value;
+    }
+
+    public void AddValue(float value)
+    {
+        _additional += value;
+    }
 }
