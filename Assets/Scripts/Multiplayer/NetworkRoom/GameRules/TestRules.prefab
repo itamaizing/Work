@@ -49,6 +49,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _lifeTime: 10
+  isRemoveRoom: 0
 --- !u!114 &2921794203723352403
 MonoBehaviour:
   m_ObjectHideFlags: 0

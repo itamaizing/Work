@@ -16,6 +16,8 @@ public class NetworkRoomsManager : NetworkBehaviour
 
     public string Scene => _scene;
 
+    public GameMode GameMode { get => _gameMode; set => _gameMode = value; }
+
     protected override void OnValidate()
     {
         base.OnValidate();

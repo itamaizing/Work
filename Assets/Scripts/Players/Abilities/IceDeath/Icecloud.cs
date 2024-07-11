@@ -1,9 +1,5 @@
 using Mirror;
-using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
-using static UnityEditor.Progress;
-using static UnityEngine.GraphicsBuffer;
 
 public class Icecloud : Ability
 {
