@@ -10,6 +10,7 @@ public class TalentManager : MonoBehaviour
 	[SerializeField] private TalentColumn _talentColumn;
 	[SerializeField] private Button button;
 
+
 	public static TalentManager Instance;
 
 	private void Awake()
