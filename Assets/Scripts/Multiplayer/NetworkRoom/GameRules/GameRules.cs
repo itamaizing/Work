@@ -6,19 +6,25 @@ using UnityEngine;
 
 public abstract class GameRules : NetworkBehaviour
 {
-    [SyncVar] protected List<GameObject> _players;
+    protected readonly SyncList<GameObject> _players = new SyncList<GameObject>();
+
     protected NetworkRoom _room;
-    [SyncVar(hook = nameof(GameStatusHook))] private bool _isStarted;
+
+    [SyncVar] private bool _isStarted;
 
     public bool IsStarted { get => _isStarted; set => _isStarted = value; }
-    public List<GameObject> Players { get => _players; set => _players = value; }
+    public SyncList<GameObject> Players => _players;
 
     public abstract void GameStatusHook(bool oldValue, bool newValue);
 
     public void Init(NetworkRoom room)
     {
         _room = room;
-        _players = _room.Players;
+
+        foreach (var item in _room.Players)
+        {
+            _players.Add(item);
+        }
     }
 
     protected IEnumerator CloseRoomJob()

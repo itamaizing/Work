@@ -56,8 +56,8 @@ public class NetworkRoomsManager : NetworkBehaviour
 
 	private void OnRoomSlotsEnded(NetworkRoom room)
     {
-		//GameRules rules = Instantiate(_gameRulesPref);
-		//room.GameStart(rules);
+		GameRules rules = Instantiate(_gameRulesPref);
+		room.GameStart(rules);
     }
 
 	private void OnRoomClosed(NetworkRoom room)
