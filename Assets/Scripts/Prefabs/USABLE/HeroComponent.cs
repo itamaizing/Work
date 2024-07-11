@@ -16,7 +16,6 @@ public class HeroComponent : Character
     {
         base.OnStartClient();
 
-        Debug.Log(isLocalPlayer);
         if(isLocalPlayer)
         {
             SelectManager.Instance.AddControl(this);

@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,7 @@ public class TestGameRules : GameRules
         StartCoroutine(CloseJob());
     }
 
+    [Server]
     private IEnumerator CloseJob()
     {
         while(_lifeTime > 0)

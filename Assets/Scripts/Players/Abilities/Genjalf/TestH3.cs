@@ -8,7 +8,7 @@ public class TestH3 : TargetOrAreaAbility
 
     protected override void Cancel()
     {
-        
+
     }
 
     protected override void CastAction()
@@ -42,7 +42,9 @@ public class TestH3 : TargetOrAreaAbility
     {
         GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
 
-        //SceneManager.MoveGameObjectToScene(item, FindObjectOfType<MPManager>()._rooms[1]);
+        var userSettings = gameObject.GetComponentInParent<UserNetworkSettings>();
+
+        SceneManager.MoveGameObjectToScene(item, userSettings.MyRoom);
 
         item.GetComponent<Projectile>().StartFly(point, true);
 

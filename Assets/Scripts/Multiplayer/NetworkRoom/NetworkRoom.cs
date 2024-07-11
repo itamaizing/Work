@@ -61,7 +61,7 @@ public class NetworkRoom
 
             UserNetworkSettings playerSettings = player.GetComponent<UserNetworkSettings>();
 
-            playerSettings.MyRoom = _currentRoom;
+            playerSettings.MyRoom = Scene;
 
             if (IsHaveSlot == false)
                 SlotsEnded?.Invoke(this);
@@ -86,6 +86,18 @@ public class NetworkRoom
             item.Init(this);
             item.IsStarted = true;
             item.GameStatusHook(true, true);
+        }
+        else
+        {
+            Debug.LogError($"Room loaded status - {_isLoaded}");
+        }
+    }
+
+    public void AddItem(GameObject item)
+    {
+        if (_isLoaded)
+        {
+            SceneManager.MoveGameObjectToScene(item.gameObject, _currentRoom);
         }
         else
         {
