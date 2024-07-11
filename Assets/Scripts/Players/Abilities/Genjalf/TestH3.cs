@@ -1,5 +1,6 @@
 using Mirror;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TestH3 : TargetOrAreaAbility
 {
@@ -7,7 +8,7 @@ public class TestH3 : TargetOrAreaAbility
 
     protected override void Cancel()
     {
-        
+
     }
 
     protected override void CastAction()
@@ -40,6 +41,10 @@ public class TestH3 : TargetOrAreaAbility
     protected void CmdCreateProjecttile(Vector3 point)
     {
         GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
+
+        var userSettings = gameObject.GetComponentInParent<UserNetworkSettings>();
+
+        SceneManager.MoveGameObjectToScene(item, userSettings.MyRoom);
 
         item.GetComponent<Projectile>().StartFly(point, true);
 

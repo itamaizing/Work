@@ -2,18 +2,22 @@ using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public struct CreateMMOCharacterMessage : NetworkMessage
+public struct CharacterMessage : NetworkMessage
 {
     public int Index;
+    public GameMode Mode;
 }
 
 public class MultiplayerManager : NetworkManager
 {
-    [SerializeField, Scene] private string _onlineScene;
+    [SerializeField] private List<NetworkRoomsManager> _managers;
     [SerializeField] private List<HeroComponent> _heroList;
 
+    private int _clientCount;
     private int _currentHeroIndex;
+    private GameMode _currentGameMod = GameMode.GMTest;
 
     public List<HeroComponent> HeroList { get => _heroList; set => _heroList = value; }
 
@@ -21,63 +25,86 @@ public class MultiplayerManager : NetworkManager
     {
         base.OnStartServer();
 
-        NetworkServer.RegisterHandler<CreateMMOCharacterMessage>(OnCreateCharacter);
+        NetworkServer.RegisterHandler<CharacterMessage>(OnCreateCharacter);
+    }
+
+    //public override void OnServerAddPlayer(NetworkConnectionToClient conn)
+    //{
+    //    StartCoroutine(OnServerAddPlayerDelayed(conn));
+    //}
+
+    private void OnCreateCharacter(NetworkConnectionToClient conn, CharacterMessage message)
+    {
+        StartCoroutine(OnServerAddPlayerDelayed(conn, message));
+
+        //GameObject gameobject = Instantiate(_heroList[message.Index]).gameObject;
+
+        //NetworkServer.AddPlayerForConnection(conn, gameobject);
+    }
+
+    IEnumerator OnServerAddPlayerDelayed(NetworkConnectionToClient conn, CharacterMessage message)
+    {
+        GameObject player = Instantiate(_heroList[message.Index]).gameObject;
+        NetworkServer.AddPlayerForConnection(conn, player);
+
+        int index = GetManagerIndex(message.Mode);
+
+        yield return StartCoroutine(_managers[index].AddPlayerJob(player));
+
+        conn.Send(new SceneMessage { sceneName = _managers[index].Scene, sceneOperation = SceneOperation.LoadAdditive });
+
+        _clientCount++;
+    }
+
+    private int GetManagerIndex(GameMode mode)
+    {
+        for (int i = 0; i < _managers.Count; i++)
+        {
+            if (_managers[i].GameMode == mode)
+                return i;
+        }
+        Debug.LogError("manager not found");
+        return -37;
+    }
+
+
+    //public override void OnStopServer()
+    //{
+    //    NetworkServer.SendToAll(new SceneMessage { sceneName = _room, sceneOperation = SceneOperation.UnloadAdditive });
+    //    _clientCount = 0;
+    //}
+
+    public override void OnStopClient()
+    {
+        if (mode == NetworkManagerMode.Offline)
+            StartCoroutine(ClientUnloadSubScenes());
+    }
+
+    IEnumerator ClientUnloadSubScenes()
+    {
+        for (int index = 0; index < SceneManager.sceneCount; index++)
+            if (SceneManager.GetSceneAt(index) != SceneManager.GetActiveScene())
+                yield return SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(index));
     }
 
     public override void OnClientConnect()
     {
         base.OnClientConnect();
 
-        CreateMMOCharacterMessage characterMessage = new CreateMMOCharacterMessage
+        CharacterMessage characterMessage = new CharacterMessage
         {
             Index = _currentHeroIndex,
+            Mode = _currentGameMod,
         };
         NetworkClient.Send(characterMessage);
     }
-
-    private void OnCreateCharacter(NetworkConnectionToClient conn, CreateMMOCharacterMessage message)
-    {
-        GameObject gameobject = Instantiate(_heroList[message.Index]).gameObject;
-
-        NetworkServer.AddPlayerForConnection(conn, gameobject);
-        //ReplacePlayer(conn, message);
-    }
-
-    //public override void OnServerAddPlayer(NetworkConnectionToClient conn)
-    //{
-    //    if (Utils.IsSceneActive(_onlineScene))
-    //    {
-    //        var player = Instantiate(_userPrefab);
-    //        NetworkServer.AddPlayerForConnection(conn, player.gameObject);
-    //    }
-    //}
-
-    //public override void OnStartClient()
-    //{
-    //    GameObject[] prefabs = Resources.LoadAll<GameObject>("MPPrefabs");
-    //
-    //    for (int i = 0; i < prefabs.Length; i++)
-    //    {
-    //        NetworkClient.RegisterPrefab(prefabs[i]);
-    //    }
-    //}
 
     public void SetPlayer(int heroIndex)
     {
         _currentHeroIndex = heroIndex;
     }
-
-    public void ReplacePlayer(NetworkConnectionToClient conn, CreateMMOCharacterMessage newPrefab)
+    public void SetMode(GameMode mode)
     {
-        // Кэшировать ссылку на текущий объект игрока
-        GameObject oldPlayer = conn.identity.gameObject;
-
-        // Instantiate новый объект игрока и рассказать об этом клиентам
-        // Включить значение true для параметра keepAuthority чтобы предотвратить смену владельца
-        //NetworkServer.ReplacePlayerForConnection(conn, Instantiate(newPrefab.UserPrefab), true);
-
-        // Удалите предыдущий объект игрока, который теперь был заменен
-        // Для завершения замены требуется задержка.
-        Destroy(oldPlayer, 0.5f);
+        _currentGameMod = mode;
     }
 }
