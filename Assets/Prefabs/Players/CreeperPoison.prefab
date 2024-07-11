@@ -360,7 +360,8 @@ MonoBehaviour:
   _obstacle:
     serializedVersion: 2
     m_Bits: 128
-  _strokesOfAspiration: {fileID: 0}
+  _strokesOfAspirationTalent: {fileID: 8392273409717092943}
+  _strokesOfAspiration: {fileID: 1645057456738598666}
   _dad: {fileID: 8848169558533100257}
 --- !u!114 &2133911755741689447
 MonoBehaviour:
@@ -617,7 +618,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _talents: []
+  _talents:
+  - {fileID: 1645057456738598666}
 --- !u!114 &1645057456738598666
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -630,7 +632,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ba74ffb0d2fcad4f9f653983ae7ab39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _dad: {fileID: 8848169558533100257}
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  isActive: 0
+  Name: Strokes of Aspiration
+  Description: 
+  ico: {fileID: 21300000, guid: d711e158d4244e449a813d065a5d0e09, type: 3}
+  character: {fileID: 8848169558533100257}
   _poisonBall: {fileID: 7672760003326398008}
   _spitPoison: {fileID: 5460533147100191806}
   _creeperStrike: {fileID: 3923834704028430900}
@@ -2960,7 +2969,7 @@ LineRenderer:
       atime6: 0
       atime7: 0
       m_Mode: 0
-      m_ColorSpace: 0
+      m_ColorSpace: -1
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     numCornerVertices: 0

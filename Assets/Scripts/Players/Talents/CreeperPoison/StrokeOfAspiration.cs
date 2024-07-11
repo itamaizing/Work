@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StrokesOfAspiration : MonoBehaviour
+public class StrokesOfAspiration : Talent
 {
-    [SerializeField] private Character _dad;
     [SerializeField] private PoisonBall _poisonBall;
     [SerializeField] private SpitPoison _spitPoison;
     [SerializeField] private CreeperStrike _creeperStrike;
@@ -18,24 +17,29 @@ public class StrokesOfAspiration : MonoBehaviour
     private GameObject _currentTarget;
     private GameObject _lastTarget;
 
-    private Coroutine _useTalentCoroutine;
-    public Coroutine StartJobTalentCoroutine;
-
-    private void Awake()
+    private void Start()
     {
+        _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_timeBetweenAttack);
+        isActive = true;
         _currentHitCount = _maxHitCount;
         InitializationAbilities();
     }
 
-    public IEnumerator StartJobTalent()
+    public override void Enter()
     {
-        _currentHitCount--;
+        Debug.Log(_creeperStrike.Buff.AttackSpeed.Multiplier);
         UseTalent();
-        yield return null;
+    }
+
+    public override void Exit()
+    {
+        isActive = false;
+        _creeperStrike.Buff.AttackSpeed.IncreasePercentage(1.0f);
     }
 
     private void UseTalent()
     {
+        _currentHitCount--;
         if (_creeperStrike.CurrentTarget != null)
         {
             _currentTarget = _creeperStrike.CurrentTarget;
@@ -46,24 +50,22 @@ public class StrokesOfAspiration : MonoBehaviour
                 _poisonBall.ReductionSetCooldown(updateRemainingCooldownTimeForPoisonBall);
 
                 float updateRemainingCooldownTimeForSpitPoison = _spitPoison.Remaining—ooldownTime - _decreaseCooldownTime;
-                _spitPoison.ReductionSetCooldown(updateRemainingCooldownTimeForSpitPoison);
+                _spitPoison.ReductionSetCooldown(updateRemainingCooldownTimeForSpitPoison); 
             }
             else
             {
                 _lastTarget = _currentTarget; 
             }
         }
-        
+
         if (_currentHitCount == 0)
             _currentHitCount = _maxHitCount;
     }
 
     private void InitializationAbilities()
     {
-        _poisonBall = _dad.GetComponentInChildren<PoisonBall>();
-        _spitPoison = _dad.GetComponentInChildren<SpitPoison>();
-        _creeperStrike = _dad.GetComponentInChildren<CreeperStrike>();
+        _poisonBall = character.GetComponentInChildren<PoisonBall>();
+        _spitPoison = character.GetComponentInChildren<SpitPoison>();
+        _creeperStrike = character.GetComponentInChildren<CreeperStrike>();
     }
-
-
 }

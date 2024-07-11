@@ -6,7 +6,8 @@ using UnityEngine;
 
 public class CreeperStrike : AutoAttackAbility
 {
-    [SerializeField] private StrokesOfAspiration _strokesOfAspiration; 
+    [SerializeField] private TalentSystem _strokesOfAspirationTalent;
+    [SerializeField] private StrokesOfAspiration _strokesOfAspiration;
     [SerializeField] protected Character _dad;
 
     private BonePoison _bonePoisonDebuff;
@@ -15,7 +16,6 @@ public class CreeperStrike : AutoAttackAbility
     private float _currentDamage;
     private float _currentRadius;
     private float _multiplyCritDamage = 1.5f;
-    private float _timeBetweenAttack = 0.1f;
 
     private Coroutine _useAbilityCoroutine;
 
@@ -25,9 +25,8 @@ public class CreeperStrike : AutoAttackAbility
     protected override void Start()
     {
         base.Start();
-        _strokesOfAspiration = _dad.GetComponentInChildren<StrokesOfAspiration>();
-
-        Buff.AttackSpeed.IncreasePercentage(_timeBetweenAttack);
+        _strokesOfAspirationTalent = _dad.GetComponentInChildren<TalentSystem>();
+        _strokesOfAspirationTalent.Add(_strokesOfAspiration);
     }
 
     protected override void Cancel()
@@ -39,7 +38,10 @@ public class CreeperStrike : AutoAttackAbility
     protected override void CastAction()
     {
         _currentDamage = Random.Range(7.0f, 11.0f); 
-        _strokesOfAspiration.StartJobTalentCoroutine = StartCoroutine(_strokesOfAspiration.StartJobTalent());
+        if (_strokesOfAspiration.isActive)
+        {
+            _strokesOfAspiration.Enter();
+        }
         _useAbilityCoroutine = StartCoroutine(UseAbilityCoroutine());
     }
 

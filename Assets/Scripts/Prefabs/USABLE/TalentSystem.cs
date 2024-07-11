@@ -154,13 +154,13 @@ public class TalentSystem : NetworkBehaviour
 		}
 	}
 
-    private void Add(Talent talent)
+    public void Add(Talent talent)
     {
         _activeTalents.Add(talent);
         talent.Enter();
     }
 
-    private void Remove(Talent talent)
+    public void Remove(Talent talent)
     {
         talent.Exit();
         _activeTalents.Remove(talent);
