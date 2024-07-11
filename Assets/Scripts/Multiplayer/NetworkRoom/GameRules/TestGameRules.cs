@@ -6,12 +6,13 @@ using UnityEngine;
 public class TestGameRules : GameRules
 {
     [SerializeField] private float _lifeTime = 10f;
-    public override void GameStatusHook(bool oldValue, bool newValue)
+
+    protected override void GameStart()
     {
-        StartCoroutine(CloseJob());
+        if(isServer)
+            StartCoroutine(CloseJob());
     }
 
-    [Server]
     private IEnumerator CloseJob()
     {
         while(_lifeTime > 0)

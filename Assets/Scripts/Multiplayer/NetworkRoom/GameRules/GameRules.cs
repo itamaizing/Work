@@ -10,12 +10,12 @@ public abstract class GameRules : NetworkBehaviour
 
     protected NetworkRoom _room;
 
-    [SyncVar] private bool _isStarted;
+    [SyncVar(hook = nameof(GameStatusHook))] private bool _isStarted;
 
     public bool IsStarted { get => _isStarted; set => _isStarted = value; }
     public SyncList<GameObject> Players => _players;
 
-    public abstract void GameStatusHook(bool oldValue, bool newValue);
+    protected abstract void GameStart();
 
     public void Init(NetworkRoom room)
     {
@@ -25,6 +25,10 @@ public abstract class GameRules : NetworkBehaviour
         {
             _players.Add(item);
         }
+    }
+    public void GameStatusHook(bool oldValue, bool newValue)
+    {
+        GameStart();
     }
 
     protected IEnumerator CloseRoomJob()
