@@ -6,8 +6,9 @@ public class AbilityPanel : MonoBehaviour
 {
     [SerializeField] private AbilityIcon _abilityIconPref;
     [SerializeField] private FillAmountOverTime _castLine;
-    
-    private PlayerAbilities _playerAbilities;
+	[SerializeField] private IcoPlayerForPanel _playerForPanel;
+
+	private PlayerAbilities _playerAbilities;
     private List<Ability> _abilities;
     private List<AbilityIcon> _abilityIcons;
     private bool _isActive;
@@ -39,8 +40,11 @@ public class AbilityPanel : MonoBehaviour
     public void Fill(PlayerAbilities abilities)
     {
         _playerAbilities = abilities;
-        _abilities.AddRange(_playerAbilities.Abilities); 
-        
+        _abilities.AddRange(_playerAbilities.Abilities);
+
+        var ico = Instantiate(_playerForPanel, transform);
+        ico.Init(abilities.CharacterData.Icon, abilities.TalentSystem.Panel.SwitchActiveUI);
+
         foreach (var item in _abilities)
         {
             AbilityIcon abilityIcon = Instantiate(_abilityIconPref, transform);

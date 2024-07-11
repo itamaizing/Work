@@ -22,11 +22,17 @@ public class TalentSystem : NetworkBehaviour
 {
     [SerializeField] private List<Talent> _talents;
     private List<Talent> _activeTalents = new List<Talent>();
+    private TalentColumn _panel;
     private int _points = 10;
 
+    public TalentColumn Panel => _panel;
 	public List<Talent> Talents => _talents;
     public List<Talent> ActiveTalents => _activeTalents;
 
+	public void Initialize()
+	{
+		_panel = TalentManager.Instance.AddPanel(this);
+	}
 	public void AddPoints(int value)
 	{
 		_points += value;
@@ -110,12 +116,12 @@ public class TalentSystem : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void RpcAdd(Talent talent)
+    public void RpcAdd(Talent talent)
     {
         Add(talent);
     }
 
-    private void Add(int id)
+	public void Add(int id)
     {
 		Debug.Log("Add");
 		if (_talents.Count >= id && _points > _activeTalents.Count)
@@ -126,7 +132,7 @@ public class TalentSystem : NetworkBehaviour
         }
     }
 
-    private void Remove(int id) 
+	public void Remove(int id) 
     {
 		Debug.Log("Removes");
 		if (_talents.Count >= id)
@@ -137,7 +143,7 @@ public class TalentSystem : NetworkBehaviour
 		}
 	}
 
-    private void EnterAll()
+	public void EnterAll()
     {
         foreach(Talent talent in _activeTalents)
         {
@@ -145,7 +151,7 @@ public class TalentSystem : NetworkBehaviour
         }
     }
 
-    private void ExitAll()
+	public void ExitAll()
     {
 		foreach (Talent talent in _activeTalents)
 		{
@@ -154,13 +160,13 @@ public class TalentSystem : NetworkBehaviour
 		}
 	}
 
-    private void Add(Talent talent)
+	public void Add(Talent talent)
     {
         _activeTalents.Add(talent);
         talent.Enter();
     }
 
-    private void Remove(Talent talent)
+	public void Remove(Talent talent)
     {
         talent.Exit();
         _activeTalents.Remove(talent);

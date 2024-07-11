@@ -5,7 +5,7 @@ public class Icecloud : Ability
 {
 	[SerializeField] private IceCloudProjectile _projectile;
 	[SerializeField] private Character _playerLinks;
-	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
+	[SerializeField] private SeriesOfStrikes _combo;
 
 	private Vector2 _mousePos;
 	private bool _enabled;
@@ -16,7 +16,7 @@ public class Icecloud : Ability
 		
 		if (Input.GetMouseButtonDown(0))
 		{
-			//PayCost();
+			PayCost();
 			if (_playerLinks.RuneComponent.RemoveRune(1, this))
 			{
 				Shoot();
@@ -48,10 +48,15 @@ public class Icecloud : Ability
 	
 	private void Shoot()
 	{
+		Buff.AttackSpeed.ReductionPercentage(1 + _combo.GetMultipliedSpeed() / 100);
+
+		_playerLinks.RuneComponent.SwitchMultiplier(true);
 		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
 		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
-		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1);
+		_combo.MakeHit(null, AbilityForm.Magic, 1);
+
+		Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);
 
 		CmdCreateProjecttile(angle, _playerLinks.Stamina.Value);
 		_playerLinks.Stamina.Use(_playerLinks.Stamina.Value);

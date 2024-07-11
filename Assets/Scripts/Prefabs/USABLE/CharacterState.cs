@@ -2,7 +2,6 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-// ��������� ���������
 public abstract class AbstractCharacterState
 {
 	public StateType type;
@@ -268,9 +267,9 @@ public class StunnedState : AbstractCharacterState
 
 		_characterState = character;
 
-		if (character.TryGetComponent<PlayerAbilities>(out var ability))
+		if (character.TryGetComponent<Character>(out var ability))
 		{
-			_abilities = ability;
+			_abilities = ability.Abilities;
 			_abilities.SetAbilitiesDisabled();
 		}
 		else
@@ -336,9 +335,9 @@ public class Desiccuration : AbstractCharacterState
 
 		_characterState = character;
 
-		if (character.TryGetComponent<PlayerAbilities>(out var ability))
+		if (character.TryGetComponent<Character>(out var ability))
 		{
-			_abilities = ability;
+			_abilities = ability.Abilities;
 			_abilities.SetAbilitiesDisabled();
 		}
 		else
@@ -406,9 +405,9 @@ public class BlindnessState : AbstractCharacterState
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
 		_characterState = character;
-		if (character.GetComponent<PlayerAbilities>().Abilities != null)
+		if (character.TryGetComponent<Character>(out var ability))
 		{
-			_abilities = character.GetComponent<PlayerAbilities>();
+			_abilities = ability.Abilities;
 			_abilities.SetAbilitiesDisabled();
 		}
 		else
@@ -479,9 +478,9 @@ public class FrozenState : AbstractCharacterState
 		
 		_characterState.Move.CanMove = false;
 
-		if (character.TryGetComponent<PlayerAbilities>(out var ability))
+		if (character.TryGetComponent<Character>(out var ability))
 		{
-			_abilities = ability;
+			_abilities = ability.Abilities;
 			_abilities.SetAbilitiesDisabled();
 		}
 		else
@@ -530,6 +529,8 @@ public class FrostingState : AbstractCharacterState
 	private float _duration;
 	private float _baseDuration;
 	private float _damageToExit;
+	private PlayerAbilities _abilities;
+
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
 	{
 		type = StateType.Magic;
@@ -549,7 +550,24 @@ public class FrostingState : AbstractCharacterState
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
 		_characterState.Move.CanMove = false;
-		//decrease speed of attact
+
+		//decrease speed
+		if (character.TryGetComponent<Character>(out var ability))
+		{
+			_abilities = ability.Abilities;
+
+			foreach (Ability abil in _abilities.Abilities)
+			{
+				if (abil.AbilityForm == AbilityForm.Physical)
+				{
+					abil.Buff.CastSpeed.ReductionPercentage(.5f);
+				}
+			}
+		}
+		else
+		{
+			Debug.Log("no ability at " + character.gameObject.name);
+		}
 
 		_characterState.Health.sumDamageTaken=0;
 	}
@@ -572,7 +590,13 @@ public class FrostingState : AbstractCharacterState
 		}
 		if (_characterState.Check(StatusEffect.AbilitySpeed))
 		{
-			//return speed of attact
+			foreach (Ability abil in _abilities.Abilities)
+			{
+				if (abil.AbilityForm == AbilityForm.Physical)
+				{
+					abil.Buff.CastSpeed.IncreasePercentage(.5f);
+				}
+			}
 		}
 		_characterState.RemoveState(this);
 	}
@@ -954,15 +978,24 @@ public class CharacterState : NetworkBehaviour
 		ClientAddState(state, duration, damageToExit, schools);
 	}
 
-	[Command]
+	//[Command]
 	public void CmdAddState(States state, float duration, float damageToExit)
 	{
+		Debug.Log("Add state cmd");
 		AddStateLogic(state, duration, damageToExit, Schools.None);
 		ClientAddState(state, duration, damageToExit, Schools.None);
 	}
+
+	/*public void AddNewState(States state, float duration, float damageToExit)
+	{
+		CmdAddState(state, duration, damageToExit);
+		//ClientAddState(state, duration, damageToExit, Schools.None);
+	}*/
+
 	[ClientRpc]
 	private void ClientAddState(States state, float duration, float damageToExit, Schools schools)
 	{
+		Debug.Log("Add state rpc");
 		AddStateLogic(state, duration, damageToExit, schools);
 	}
 
@@ -1030,6 +1063,7 @@ public class CharacterState : NetworkBehaviour
 
 	private void AddStateLogic(States state, float duration, float damageToExit, Schools school)
 	{
+		Debug.Log("Add state logic");
 		if (invinsible)
 			return;
 		if (CheckForState(state))

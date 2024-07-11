@@ -30,17 +30,13 @@ public class IceShadowObject : Projectiles
 
 		float timeToAdd = energy / 20;
 		timeToDestroy += timeToAdd;
-		Debug.Log("bullet init  " + _dad.name);
 	}
 
 	private void Start()
 	{
 		_destroyObj = StartCoroutine(DestroyShadow());
 	}
-	private void Update()
-	{
-		if (_initialized) { Debug.Log("SEEEEEEEEEEEEEEEEEEEEEEEEEET"); }
-	}
+
 	private void OnTriggerExit2D(Collider2D collision)
 	{
 		if (collision.gameObject == _dad && _healthPlayer != null)
@@ -56,8 +52,18 @@ public class IceShadowObject : Projectiles
 		{
 			_healthPlayer.SetBoostRegen(0.01f);
 		}
+		if(collision.TryGetComponent<IcePuddleObject>(out var obj)) 
+		{
+			//attact speed increase
+		}
 		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject !=_dad.gameObject)
 		{
+			if(_isAlive)
+			{
+				//damage
+				return;
+			}
+
 			float duration = 2 + _energyDad / 20;
 
 			target.CharacterState.CmdAddState(States.Frozen, duration, 0);

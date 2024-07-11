@@ -7,6 +7,7 @@ public class AbilitiesManager : MonoBehaviour
     [SerializeField] private RectTransform panelsParent;
     [SerializeField] private AbilityPanel _panelPrefab;
     
+
     private List<AbilityPanel> _panels;
     
     private static AbilitiesManager instance;

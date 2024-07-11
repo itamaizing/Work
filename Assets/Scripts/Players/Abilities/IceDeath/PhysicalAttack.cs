@@ -6,7 +6,7 @@ public class PhysicalAttack : AutoAttackAbility
 	[SerializeField] private float _damage = 8f;
 	[SerializeField] private Character _dad;
 	[SerializeField] private SeriesOfStrikes _combo;
-	[SerializeField] private float _abilityCooldown = 1.4f; //cooldown between shots
+	//[SerializeField] private float _abilityCooldown = 1.4f; //cooldown between shots
 
 	private float _baseTimer = 2f; //time and timer between losing streak
 	private float _timer = 2f;
@@ -31,10 +31,11 @@ public class PhysicalAttack : AutoAttackAbility
 	{
 		if (_curTarget == enemy && _dad.Stamina.Use(5))
 		{
+			Buff.AttackSpeed.ReductionPercentage(1 + _combo.GetMultipliedSpeed() / 100);
 			_combo.MakeHit(enemy, AbilityForm.Physical, 5);
 
 			//AttackSpeed *= (1 - _combo.GetMultipliedSpeed()); // Error
-			Buff.AttackSpeed.IncreasePercentage(1 - _combo.GetMultipliedSpeed()); // ?
+			Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed()/100); // ?
 
 			float curDamage = _damage + Random.Range(0, 2);
 
@@ -48,23 +49,22 @@ public class PhysicalAttack : AutoAttackAbility
 		}
 		else
 		{
+			Buff.AttackSpeed.ReductionPercentage(1 + _combo.GetMultipliedSpeed() / 100);
 			_combo.MakeHit(enemy, AbilityForm.Physical, 0);
 			Debug.Log("lose streak to another enemy");
 			_curTarget = enemy;
 
 			//AttackSpeed *= (1 - _combo.GetMultipliedSpeed()); // error
-			Buff.AttackSpeed.IncreasePercentage(1 - _combo.GetMultipliedSpeed()); // ?
+			Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed()/100); // ?
 
 			_timer = _baseTimer;
 			float curDamage = _damage + Random.Range(0, 2);
 			Energy energy = (Energy)_dad.Stamina;
 			energy.SumDamageMake(curDamage);
 			ApplyDamage(enemy.Health, curDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
-
-
 		}
 
-		if(Random.Range(0, 100) <2)
+		if (Random.Range(0, 100) <2)
 		{
 			_dad.RuneComponent.Add(1);
 		}

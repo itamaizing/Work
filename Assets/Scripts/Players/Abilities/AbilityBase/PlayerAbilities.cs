@@ -9,6 +9,8 @@ public class PlayerAbilities : MonoBehaviour
 {
     [SerializeField] private List<Ability> _abilities;
     [SerializeField] private VisualRender visualRender;
+	[SerializeField] private CharacterData _characterData;
+	[SerializeField] private TalentSystem _talentSystem;
 
 	private float _globalCooldownTime = 2f;
 	private Ability _currentAbility;
@@ -21,6 +23,8 @@ public class PlayerAbilities : MonoBehaviour
 	private float _abilitySpeedCast = 1;
 
 	public List<Ability> Abilities => _abilities;
+	public CharacterData CharacterData => _characterData;
+	public TalentSystem TalentSystem => _talentSystem;
 
     public event UnityAction<int> AbilitySelected;
 	public event UnityAction<int> AbilityAutoAttackSelected;
@@ -285,5 +289,20 @@ public class PlayerAbilities : MonoBehaviour
 	private void OnDestroy()
 	{
 		AbilitiesManager.Instance.RemovePanel(_abilityPanel);
+	}
+
+	public void AddAbility(Ability ability)
+	{
+		_abilities.Add(ability);
+		AbilitiesManager.Instance.RemovePanel(_abilityPanel);
+		_abilityPanel = AbilitiesManager.Instance.AddPanel(this);
+		_abilityPanel.gameObject.SetActive(true);
+	}	
+	public void RemoveAbility(Ability ability) 
+	{
+		_abilities.Remove(ability);
+		AbilitiesManager.Instance.RemovePanel(_abilityPanel);
+		_abilityPanel = AbilitiesManager.Instance.AddPanel(this);
+		_abilityPanel.gameObject.SetActive(true);
 	}
 }

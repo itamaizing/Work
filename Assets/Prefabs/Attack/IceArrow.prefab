@@ -95,9 +95,9 @@ GameObject:
   - component: {fileID: 8903762149178614652}
   - component: {fileID: -4999684937418030614}
   - component: {fileID: -53743584304020754}
-  - component: {fileID: -4446727431541074393}
   - component: {fileID: 5442946739488048905}
   - component: {fileID: 4563585894594687800}
+  - component: {fileID: -4716538455152202873}
   m_Layer: 12
   m_Name: IceArrow
   m_TagString: Untagged
@@ -183,25 +183,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &-4446727431541074393
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5195731727944466540}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0864bbbb11d8a1349a43930b579e3d92, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  energyDad: 0
-  dad: {fileID: 0}
-  _rb: {fileID: -53743584304020754}
-  _hitEffect: {fileID: 0}
-  _spriteRenderer: {fileID: 2859774875230355193}
-  _force: 50
-  _distance: 6
 --- !u!114 &5442946739488048905
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -254,3 +235,20 @@ MonoBehaviour:
   positionSensitivity: 0.01
   rotationSensitivity: 0.01
   scaleSensitivity: 0.01
+--- !u!114 &-4716538455152202873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5195731727944466540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0864bbbb11d8a1349a43930b579e3d92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hitEffect: {fileID: 0}
+  _spriteRenderer: {fileID: 2859774875230355193}
+  _rb: {fileID: -53743584304020754}
+  _force: 50
+  _distance: 6

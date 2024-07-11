@@ -8,12 +8,14 @@ public abstract class StaminaComponent : NetworkBehaviour
 	public float Value { get { return _value; } }
 	public float MaxValue { get { return _maxValue; } }
 
-	[SyncVar(hook = nameof(NetworkUpdateBar))]
+    public float RegenerationValue { get => _regenerationValue; set => _regenerationValue = value; }
+
+    [SyncVar(hook = nameof(NetworkUpdateBar))]
 	protected float _value;
 
 	protected float _maxValue;
-    protected float _regenerationValue = 10;
-	protected float _regenerationDelay = 3;
+    private float _regenerationValue = 10;
+    protected float _regenerationDelay = 3;
 	
 	private float _timerDelay = 0;
 

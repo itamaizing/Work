@@ -1,17 +1,18 @@
 using Mirror;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class IceShadow : Ability
 {
 	[Header("Ability properties")]
 	[SerializeField] private IceShadowObject _shadow;
 	[SerializeField] private Character _playerLinks; 
-	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
+	[SerializeField] private SeriesOfStrikes _combo;
 
 	private bool _lastHit = false;
 	protected override void Cast()
 	{
-		//PayCost();
+		PayCost();
 		if (_playerLinks.RuneComponent.RemoveRune(1, this))
 		{
 			Shoot();
@@ -29,10 +30,15 @@ public class IceShadow : Ability
 
 	private void Shoot()
 	{
+		Buff.AttackSpeed.ReductionPercentage(1 + _combo.GetMultipliedSpeed() / 100);
+
 		Debug.Log("test spawn");
 		/*IceShadowObject projectileGm = Instantiate(_shadow, gameObject.transform.position, Quaternion.identity);
 		projectileGm.Init(_playerLinks.gameObject ,Mana.Value);*/
-		_lastHit = _seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1);
+		_lastHit = _combo.MakeHit(null, AbilityForm.Magic, 1);
+
+		Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);
+
 		CmdCreateProjecttile(0, _playerLinks.Stamina.Value, _lastHit);
 		_playerLinks.Stamina.Use(_playerLinks.Stamina.Value);
 	}

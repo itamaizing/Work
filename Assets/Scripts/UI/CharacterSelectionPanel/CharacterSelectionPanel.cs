@@ -8,6 +8,7 @@ public class CharacterSelectionPanel : MonoBehaviour
     [SerializeField] private MultiplayerManager _multiplayerManager;
     [SerializeField] private GridLayoutGroup _characterList;
     [SerializeField] private PlayerSelectionIcon _iconPref;
+    [SerializeField] private MainMenuPanels _mainPanels;
 
     private List<HeroComponent> _heroList;
     private HeroComponent _selectedHero;
@@ -30,5 +31,6 @@ public class CharacterSelectionPanel : MonoBehaviour
     {
         _selectedHero = hero;
         _multiplayerManager.SetPlayer(_heroList.IndexOf(_selectedHero));
+        _mainPanels.SetPanel(hero.TalentSystem, hero.Abilities);
     }
 }

@@ -1,8 +1,5 @@
 using Mirror;
-using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
-using static UnityEngine.GraphicsBuffer;
 
 public class IcePuddle : Ability
 {
@@ -13,6 +10,7 @@ public class IcePuddle : Ability
 	//[SerializeField] private FrostingFrozenTalant _frostingFrozenTalant;
 	//[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 	[SerializeField] private float _timeToDestroy = 3f;
+	[SerializeField] private SeriesOfStrikes _combo;
 	//[SerializeField] private GameObject _spawnPoint;
 
 	private Vector2 _mousePos;
@@ -61,7 +59,7 @@ public class IcePuddle : Ability
 			if (_secondPoind)
 			{
 				_secondPoind = false;
-				//PayCost();
+				PayCost();
 				if (_playerLinks.RuneComponent.RemoveRune(1, this))
 				{
 					Shoot();
@@ -110,6 +108,12 @@ public class IcePuddle : Ability
 
 		_timeToDestroy += timeToAdd;
 		//puddle.talant = _frostingFrozenTalant;
+
+		Buff.AttackSpeed.ReductionPercentage(1 + _combo.GetMultipliedSpeed() / 100);
+
+		_lastHit = _combo.MakeHit(null, AbilityForm.Magic, 1);
+
+		Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);
 
 		Debug.Log("test spawn");
 		CmdCreateProjecttile(_angle2, _timeToDestroy, _preViewPuddle.transform.position, _lastHit);

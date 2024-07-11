@@ -1,4 +1,5 @@
 using DG.Tweening;
+using Mirror;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -24,6 +25,7 @@ public class IceCloudProjectile : Projectiles
 		}
 	}
 
+	[Server]
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		if (_dad == null) return;
@@ -58,8 +60,9 @@ public class IceCloudProjectile : Projectiles
 			//dad.Stamina.Use(duration * 20);
 			//damage
 			GetComponent<Collider2D>().enabled = false;
+			Explode();
 		}
-		Explode();
+		
 	}
 
 	private void Explode()
