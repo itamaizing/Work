@@ -6,10 +6,11 @@ using UnityEngine;
 public class TestGameRules : GameRules
 {
     [SerializeField] private float _lifeTime = 10f;
+    [SerializeField] private bool isRemoveRoom = true;
 
     protected override void GameStart()
     {
-        if(isServer)
+        if(isServer && isRemoveRoom)
             StartCoroutine(CloseJob());
     }
 
