@@ -360,7 +360,6 @@ MonoBehaviour:
   _obstacle:
     serializedVersion: 2
     m_Bits: 128
-  _creeperStrike: {fileID: 3923834704028430900}
   _strokesOfAspiration: {fileID: 0}
   _dad: {fileID: 8848169558533100257}
 --- !u!114 &2133911755741689447

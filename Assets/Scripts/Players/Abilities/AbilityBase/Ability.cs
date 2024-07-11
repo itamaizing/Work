@@ -154,14 +154,27 @@ public abstract class Ability : NetworkBehaviour
         return true;
     }
 
-    public void SetCooldown(float time)
+    public void IncreaseSetCooldown(float time)
     {
         _isReady = false;
 
         if (time < _remainingСooldownTime)
             return;
 
-        if(_cooldownJob != null)
+        if (_cooldownJob != null)
+            StopCoroutine(_cooldownJob);
+
+        _cooldownJob = StartCoroutine(CooldownCoroutine(time));
+    }
+
+    public void ReductionSetCooldown(float time)
+    {
+        _isReady = false;
+
+        if (time > _remainingСooldownTime)
+            return;
+
+        if (_cooldownJob != null)
             StopCoroutine(_cooldownJob);
 
         _cooldownJob = StartCoroutine(CooldownCoroutine(time));

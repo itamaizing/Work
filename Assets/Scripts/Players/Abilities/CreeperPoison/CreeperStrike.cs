@@ -28,18 +28,12 @@ public class CreeperStrike : AutoAttackAbility
         _strokesOfAspiration = _dad.GetComponentInChildren<StrokesOfAspiration>();
 
         Buff.AttackSpeed.IncreasePercentage(_timeBetweenAttack);
-
-        Debug.Log("Buff.AttackSpeed " + Buff.AttackSpeed.Multiplier);
-        Debug.Log("Buff.AttackSpeed " + Buff.AttackSpeed.GetBuffedValue(_attackSpeed));
     }
 
     protected override void Cancel()
     {
         if (_useAbilityCoroutine != null)
             StopCoroutine(UseAbilityCoroutine());
-
-        //if (_strokesOfAspiration.StartJobTalentCoroutine != null)
-        //    StopCoroutine(_strokesOfAspiration.StartJobTalent());
     }
 
     protected override void CastAction()

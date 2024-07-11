@@ -15,8 +15,6 @@ public class StrokesOfAspiration : MonoBehaviour
     private const float _timeBetweenAttack = 0.1f;
     private const float _decreaseCooldownTime = 0.3f;
 
-    //private bool _isActive = false;
-
     private GameObject _currentTarget;
     private GameObject _lastTarget;
 
@@ -25,14 +23,12 @@ public class StrokesOfAspiration : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Log("Talent Awake Work");
         _currentHitCount = _maxHitCount;
         InitializationAbilities();
     }
 
     public IEnumerator StartJobTalent()
     {
-        Debug.Log("Talent StartJobTalent Work");
         _currentHitCount--;
         UseTalent();
         yield return null;
@@ -40,23 +36,21 @@ public class StrokesOfAspiration : MonoBehaviour
 
     private void UseTalent()
     {
-        Debug.Log("Talent UseTalent Work");
-
         if (_creeperStrike.CurrentTarget != null)
         {
             _currentTarget = _creeperStrike.CurrentTarget;
-            Debug.Log("CurrentTarget == " + _currentTarget);
-            Debug.Log("CurrentHitCount == " + _currentHitCount);
 
             if (_currentHitCount <= 0 && _lastTarget == _currentTarget)
             {
-                // Ëîãèêà óìåíüøåíèÿ âðåìåíè ïåðåçàðÿäêè
-                
+                float updateRemainingCooldownTimeForPoisonBall = _poisonBall.RemainingÑooldownTime - _decreaseCooldownTime;
+                _poisonBall.ReductionSetCooldown(updateRemainingCooldownTimeForPoisonBall);
+
+                float updateRemainingCooldownTimeForSpitPoison = _spitPoison.RemainingÑooldownTime - _decreaseCooldownTime;
+                _spitPoison.ReductionSetCooldown(updateRemainingCooldownTimeForSpitPoison);
             }
             else
             {
                 _lastTarget = _currentTarget; 
-                Debug.Log("LastTarget == " + _lastTarget);
             }
         }
         
@@ -66,7 +60,6 @@ public class StrokesOfAspiration : MonoBehaviour
 
     private void InitializationAbilities()
     {
-        //_isActive = true;
         _poisonBall = _dad.GetComponentInChildren<PoisonBall>();
         _spitPoison = _dad.GetComponentInChildren<SpitPoison>();
         _creeperStrike = _dad.GetComponentInChildren<CreeperStrike>();
