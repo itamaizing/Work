@@ -72,7 +72,7 @@ public abstract class Ability : NetworkBehaviour
     public bool IsUsed { get => _isUsed; protected set => _isUsed = value; }
     public bool IsCanCancle { get => _isCanCancle; protected set => _isCanCancle = value; }
     public bool IsReady { get => _isReady; set => _isReady = value; }
-    public float RemainingСooldownTime { get => Buff.Area.GetBuffedValue(_remainingСooldownTime); protected set => _remainingСooldownTime = value; }
+    public float RemainingСooldownTime => _remainingСooldownTime
     public Schools School => _abilitySchool;
 	public AbilityForm AbilityForm => _abilityForm;
     public StatsBuff Buff => _statsBuff;
@@ -158,7 +158,7 @@ public abstract class Ability : NetworkBehaviour
     {
         _isReady = false;
 
-        if (time < RemainingСooldownTime)
+        if (time < _remainingСooldownTime)
             return;
 
         if(_cooldownJob != null)
@@ -255,11 +255,11 @@ public abstract class Ability : NetworkBehaviour
     private IEnumerator CooldownCoroutine(float cooldownTime)
     {
         CooldownStarted?.Invoke(cooldownTime);
-        RemainingСooldownTime = cooldownTime;
+        _remainingСooldownTime = cooldownTime;
 
-        while (RemainingСooldownTime > 0)
+        while (_remainingСooldownTime > 0)
         {
-            RemainingСooldownTime -= Time.deltaTime;
+            _remainingСooldownTime -= Time.deltaTime;
             yield return null;
         }
         _isReady = true;
