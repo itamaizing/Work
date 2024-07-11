@@ -6,24 +6,24 @@ using UnityEngine;
 public class LightningStrikes : AutoAttackAbility
 {
     [SerializeField] private Character _dad;
-    private CreeperStrike creeperStrike;
+    private CreeperStrike _creeperStrike;
 
     private int _countStrikes = 2;
 
-    private float _attackSpeedDeacrease = 10f;
+    private float _attackSpeedDeacrease = 0.1f;
     private float _attackSpeedStrikes;
+    private float _currentDamage;
 
     private Coroutine _useCoroutine;
     private Coroutine _decreaseAttackSpeedCoroutine;
 
     private new void Start()
     {
-        creeperStrike = _dad.GetComponentInChildren<CreeperStrike>();
+        _creeperStrike = _dad.GetComponentInChildren<CreeperStrike>();
     }
 
     protected override void Cancel()
     {
-        creeperStrike.ResetAttackSpeed();
         _attackSpeedStrikes = 1;
         _countStrikes = 2;
 
@@ -47,17 +47,17 @@ public class LightningStrikes : AutoAttackAbility
 
     private IEnumerator DecreaseAttackSpeed()
     {
-        if (creeperStrike.CurrentTarget != null)
+        if (_creeperStrike.CurrentTarget != null)
         {
-            _attackSpeedStrikes = creeperStrike.CurrentAttackSpeed / _attackSpeedDeacrease;
-            creeperStrike.ModifyAttackSpeed(_attackSpeedStrikes);
+            _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_attackSpeedDeacrease);
 
             while (_countStrikes > 0)
             {
-                StartCoroutine(creeperStrike.UseAbilityCoroutine());
+                _creeperStrike.DealingDamageFromHits(_currentDamage);
                 _countStrikes--;
             }
         }
+        _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_attackSpeedDeacrease);
         Cancel();
         yield return null;
     }

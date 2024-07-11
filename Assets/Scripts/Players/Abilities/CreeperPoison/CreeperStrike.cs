@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class CreeperStrike : AutoAttackAbility
 {
-    [SerializeField] private LightningStrikes _lightningStrikes;
+    [SerializeField] private StrokesOfAspiration _strokesOfAspiration; 
     [SerializeField] protected Character _dad;
 
     private BonePoison _bonePoisonDebuff;
@@ -15,21 +15,22 @@ public class CreeperStrike : AutoAttackAbility
     private float _currentDamage;
     private float _currentRadius;
     private float _multiplyCritDamage = 1.5f;
+    private float _timeBetweenAttack = 0.1f;
 
     private Coroutine _useAbilityCoroutine;
-    private Coroutine _attackSpeedModifyCoroutine;
-    private Coroutine _strikeCoroutine;
 
-    public float CurrentAttackSpeed { get; set; }
-    public float OriginalAttackSpeed { get; set; }
     protected float ThisRadius => _currentRadius;
     public GameObject CurrentTarget => _currentTarget;
 
-    private new void Start()
+    protected override void Start()
     {
-        _lightningStrikes = _dad.GetComponentInChildren<LightningStrikes>();
-        OriginalAttackSpeed = _attackSpeed;
-        CurrentAttackSpeed = OriginalAttackSpeed;
+        base.Start();
+        _strokesOfAspiration = _dad.GetComponentInChildren<StrokesOfAspiration>();
+
+        Buff.AttackSpeed.IncreasePercentage(_timeBetweenAttack);
+
+        Debug.Log("Buff.AttackSpeed " + Buff.AttackSpeed.Multiplier);
+        Debug.Log("Buff.AttackSpeed " + Buff.AttackSpeed.GetBuffedValue(_attackSpeed));
     }
 
     protected override void Cancel()
@@ -37,24 +38,25 @@ public class CreeperStrike : AutoAttackAbility
         if (_useAbilityCoroutine != null)
             StopCoroutine(UseAbilityCoroutine());
 
-        if (_strikeCoroutine != null)
-            StopCoroutine(StrikeCoroutine(_currentDamage));
+        //if (_strokesOfAspiration.StartJobTalentCoroutine != null)
+        //    StopCoroutine(_strokesOfAspiration.StartJobTalent());
     }
 
     protected override void CastAction()
     {
-        _currentDamage = Random.Range(7.0f, 11.0f);
+        _currentDamage = Random.Range(7.0f, 11.0f); 
+        _strokesOfAspiration.StartJobTalentCoroutine = StartCoroutine(_strokesOfAspiration.StartJobTalent());
         _useAbilityCoroutine = StartCoroutine(UseAbilityCoroutine());
     }
 
-    public IEnumerator UseAbilityCoroutine()
+    private IEnumerator UseAbilityCoroutine()
     {
         _currentTarget = Target.gameObject;
-        _strikeCoroutine = StartCoroutine(StrikeCoroutine(_currentDamage));
+        DealingDamageFromHits(_currentDamage);
         yield return null;
     }
 
-    private IEnumerator StrikeCoroutine(float currentDamage)
+    public void DealingDamageFromHits(float currentDamage)
     {
         float chanceOfCriticalStrike = 0.5f;
         float numbersForChanceOfCriticalStrike = Random.Range(0.0f, 1.0f);
@@ -69,7 +71,6 @@ public class CreeperStrike : AutoAttackAbility
         }
 
         Cancel();
-        yield return null;
     }
 
     private float CalculateCriticalDamage(float baseDamage)
@@ -79,24 +80,12 @@ public class CreeperStrike : AutoAttackAbility
 
         if (_bonePoisonDebuff != null)
         {
-            //Debug.Log("If Crit work");
-
             for (int i = 1; i < _bonePoisonDebuff.CurrentStacks; i++)
             {
                 multiplyDamage += 0.5f;
             }
         }
         return criticalDamage *= multiplyDamage;
-    }
-
-    public void ModifyAttackSpeed(float attackSpeedStrikes)
-    {
-        CurrentAttackSpeed = attackSpeedStrikes;
-    }
-
-    public void ResetAttackSpeed()
-    {
-        CurrentAttackSpeed = OriginalAttackSpeed;
     }
 
     [Command]

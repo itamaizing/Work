@@ -360,7 +360,8 @@ MonoBehaviour:
   _obstacle:
     serializedVersion: 2
     m_Bits: 128
-  _lightningStrikes: {fileID: 2133911755741689447}
+  _creeperStrike: {fileID: 3923834704028430900}
+  _strokesOfAspiration: {fileID: 0}
   _dad: {fileID: 8848169558533100257}
 --- !u!114 &2133911755741689447
 MonoBehaviour:
@@ -403,7 +404,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   _dad: {fileID: 8848169558533100257}
-  _isUsing: 0
 --- !u!114 &105020725200031335
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -579,6 +579,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5575131436335557587}
+  - component: {fileID: 8392273409717092943}
+  - component: {fileID: 1645057456738598666}
   m_Layer: 0
   m_Name: Talents_Container
   m_TagString: Untagged
@@ -601,6 +603,38 @@ Transform:
   m_Father: {fileID: 4142585537257920599}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8392273409717092943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 615051740401084893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0dd0cb78ed16a4748be0e767e28e738c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _talents: []
+--- !u!114 &1645057456738598666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 615051740401084893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ba74ffb0d2fcad4f9f653983ae7ab39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _dad: {fileID: 8848169558533100257}
+  _poisonBall: {fileID: 7672760003326398008}
+  _spitPoison: {fileID: 5460533147100191806}
+  _creeperStrike: {fileID: 3923834704028430900}
 --- !u!1 &740190560921219825
 GameObject:
   m_ObjectHideFlags: 0
