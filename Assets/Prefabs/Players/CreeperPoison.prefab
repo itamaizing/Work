@@ -259,10 +259,9 @@ GameObject:
   - component: {fileID: 4071738984799970690}
   - component: {fileID: 3923834704028430900}
   - component: {fileID: 2133911755741689447}
-  - component: {fileID: 105020725200031335}
   - component: {fileID: 5460533147100191806}
   - component: {fileID: 7672760003326398008}
-  - component: {fileID: 1328427926572379365}
+  - component: {fileID: 6227316397025926076}
   m_Layer: 0
   m_Name: Abilities
   m_TagString: Untagged
@@ -300,7 +299,6 @@ MonoBehaviour:
   _abilities:
   - {fileID: 3923834704028430900}
   - {fileID: 2133911755741689447}
-  - {fileID: 1328427926572379365}
   - {fileID: 5460533147100191806}
   - {fileID: 7672760003326398008}
   visualRender: {fileID: 4071738984799970690}
@@ -361,7 +359,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   _strokesOfAspirationTalent: {fileID: 8392273409717092943}
-  _strokesOfAspiration: {fileID: 1645057456738598666}
+  _strokesOfAspiration: {fileID: 1020456628770039310}
   _dad: {fileID: 8848169558533100257}
 --- !u!114 &2133911755741689447
 MonoBehaviour:
@@ -404,51 +402,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   _dad: {fileID: 8848169558533100257}
---- !u!114 &105020725200031335
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 573140117665601435}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3937b4f7a865f3b498a887200f7e8325, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _abilityInfo: {fileID: 11400000, guid: 7d0ee064be7acc0469ab7540e835c7f9, type: 2}
-  _isAutoAttack: 0
-  _radius: 0
-  _area: 0
-  _castLength: 4
-  _castWidth: 1
-  _manaCost: 0
-  _castDeley: 0
-  _cooldown: 0
-  _abilitySchool: 7
-  _abilityForm: 0
-  _isUseCharges: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
-  _isStreaming: 0
-  _streamingDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: 0
-  _leapRange: 4
-  _durationOfLeap: 0.2
-  _playerLinks: {fileID: 8848169558533100257}
-  _obstacleLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
-  _pointForSecondLeap: {x: 0, y: 0}
-  _abilityRender: {fileID: 4071738984799970690}
-  _enemyLayerMask:
-    serializedVersion: 2
-    m_Bits: 256
 --- !u!114 &5460533147100191806
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -525,30 +478,30 @@ MonoBehaviour:
   _projectile: {fileID: 5760352791335105038, guid: d097441cb29bc5a42b2defb1e1f12525, type: 3}
   _playerLinks: {fileID: 8848169558533100257}
   _secondMousePosition: {x: 0, y: 0, z: 0}
---- !u!114 &1328427926572379365
+--- !u!114 &6227316397025926076
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 573140117665601435}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5023615d5d9b9394780fc482bb1123b3, type: 3}
+  m_Script: {fileID: 11500000, guid: 16aa558704629304fa1ebd8e98dae16d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _abilityInfo: {fileID: 11400000, guid: 7d0ee064be7acc0469ab7540e835c7f9, type: 2}
+  _abilityInfo: {fileID: 0}
   _isAutoAttack: 0
-  _radius: 8
+  _radius: 0
   _area: 0
-  _castLength: 4
-  _castWidth: 1
+  _castLength: 0
+  _castWidth: 0
   _manaCost: 0
   _castDeley: 0
-  _cooldown: 4
+  _cooldown: 0
   _abilitySchool: 0
   _abilityForm: 0
   _isUseCharges: 0
@@ -560,16 +513,12 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: 0
   _isCanTargetHimself: 0
-  _dad: {fileID: 8848169558533100257}
-  _obstacleLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
-  _enemyLayerMask:
-    serializedVersion: 2
-    m_Bits: 256
-  _abilityRender: {fileID: 4071738984799970690}
-  _rangeLeap: 4
-  _durationLeap: 0.2
+  _dad: {fileID: 0}
+  _poisonBall: {fileID: 0}
+  _poisonBallProjectile: {fileID: 0}
+  _creeperStrike: {fileID: 0}
+  _lightningStrikes: {fileID: 0}
+  IsActive: 0
 --- !u!1 &615051740401084893
 GameObject:
   m_ObjectHideFlags: 0
@@ -580,7 +529,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5575131436335557587}
   - component: {fileID: 8392273409717092943}
-  - component: {fileID: 1645057456738598666}
+  - component: {fileID: 1020456628770039310}
   m_Layer: 0
   m_Name: Talents_Container
   m_TagString: Untagged
@@ -619,8 +568,19 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _talents:
-  - {fileID: 1645057456738598666}
---- !u!114 &1645057456738598666
+  - {fileID: 1020456628770039310}
+  - {fileID: 1020456628770039310}
+  - {fileID: 1020456628770039310}
+  - {fileID: 1020456628770039310}
+  - {fileID: 1020456628770039310}
+  - {fileID: 1020456628770039310}
+  - {fileID: 1020456628770039310}
+  - {fileID: 1020456628770039310}
+  - {fileID: 1020456628770039310}
+  - {fileID: 1020456628770039310}
+  - {fileID: 1020456628770039310}
+  - {fileID: 1020456628770039310}
+--- !u!114 &1020456628770039310
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -636,7 +596,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   isActive: 0
-  Name: Strokes of Aspiration
+  Name: Stroke Of Aspiration
   Description: 
   ico: {fileID: 21300000, guid: d711e158d4244e449a813d065a5d0e09, type: 3}
   character: {fileID: 8848169558533100257}
@@ -2193,7 +2153,7 @@ MonoBehaviour:
   _characterState: {fileID: 9125115414574900035}
   _uiPlayerComponents: {fileID: 1645294641665896745}
   _selectComponent: {fileID: 5916936634625571291}
-  _talentSystem: {fileID: 0}
+  _talentSystem: {fileID: 8392273409717092943}
   _spawnComponent: {fileID: -2268727896515507771}
   _playerData: {fileID: 11400000, guid: 47cac5ab51e8b334aafb537b893ada29, type: 2}
   AAA: 0

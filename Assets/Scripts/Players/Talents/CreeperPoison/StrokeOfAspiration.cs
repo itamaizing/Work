@@ -19,27 +19,33 @@ public class StrokesOfAspiration : Talent
 
     private void Start()
     {
-        _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_timeBetweenAttack);
-        isActive = true;
         _currentHitCount = _maxHitCount;
         InitializationAbilities();
     }
 
     public override void Enter()
     {
-        Debug.Log(_creeperStrike.Buff.AttackSpeed.Multiplier);
+        isActive = true;
+        if (_creeperStrike.Buff.AttackSpeed.Multiplier > _timeBetweenAttack)
+        {
+            _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_timeBetweenAttack);
+        }
         UseTalent();
     }
 
     public override void Exit()
     {
         isActive = false;
-        _creeperStrike.Buff.AttackSpeed.IncreasePercentage(1.0f);
+        if (_creeperStrike.Buff.AttackSpeed.Multiplier < 1.0f)
+        {
+            _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_timeBetweenAttack);
+        }
     }
 
     private void UseTalent()
     {
         _currentHitCount--;
+
         if (_creeperStrike.CurrentTarget != null)
         {
             _currentTarget = _creeperStrike.CurrentTarget;

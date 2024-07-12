@@ -13,6 +13,7 @@ public class CreeperStrike : AutoAttackAbility
     private BonePoison _bonePoisonDebuff;
     private GameObject _currentTarget;
 
+    private float _currentCountHit = 0;
     private float _currentDamage;
     private float _currentRadius;
     private float _multiplyCritDamage = 1.5f;
@@ -21,12 +22,12 @@ public class CreeperStrike : AutoAttackAbility
 
     protected float ThisRadius => _currentRadius;
     public GameObject CurrentTarget => _currentTarget;
+    public float CurrentDamage => _currentDamage;
+    public float CurrentCountHit => _currentCountHit;
 
     protected override void Start()
     {
         base.Start();
-        _strokesOfAspirationTalent = _dad.GetComponentInChildren<TalentSystem>();
-        _strokesOfAspirationTalent.Add(_strokesOfAspiration);
     }
 
     protected override void Cancel()
@@ -37,33 +38,35 @@ public class CreeperStrike : AutoAttackAbility
 
     protected override void CastAction()
     {
-        _currentDamage = Random.Range(7.0f, 11.0f); 
-        if (_strokesOfAspiration.isActive)
-        {
-            _strokesOfAspiration.Enter();
-        }
         _useAbilityCoroutine = StartCoroutine(UseAbilityCoroutine());
     }
 
     private IEnumerator UseAbilityCoroutine()
     {
         _currentTarget = Target.gameObject;
-        DealingDamageFromHits(_currentDamage);
+        DealingDamageFromHits();
         yield return null;
     }
 
-    public void DealingDamageFromHits(float currentDamage)
+    public void DealingDamageFromHits()
     {
+        _currentCountHit++;
+        _currentDamage = Random.Range(7.0f, 11.0f); 
         float chanceOfCriticalStrike = 0.5f;
         float numbersForChanceOfCriticalStrike = Random.Range(0.0f, 1.0f);
 
         if (numbersForChanceOfCriticalStrike <= chanceOfCriticalStrike)
         {
-            CmdCriticalDamage(CurrentTarget, currentDamage);           
+            CmdCriticalDamage(CurrentTarget, _currentDamage);           
         }
         else
         {
-            CmdApplyDamage(CurrentTarget, currentDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
+            CmdApplyDamage(CurrentTarget, _currentDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
+        }
+
+        if (_currentCountHit == 2)
+        {
+            _currentCountHit = 0;
         }
 
         Cancel();

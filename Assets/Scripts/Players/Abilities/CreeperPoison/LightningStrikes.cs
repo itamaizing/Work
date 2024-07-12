@@ -53,7 +53,7 @@ public class LightningStrikes : AutoAttackAbility
 
             while (_countStrikes > 0)
             {
-                _creeperStrike.DealingDamageFromHits(_currentDamage);
+                _creeperStrike.DealingDamageFromHits();
                 _countStrikes--;
             }
         }

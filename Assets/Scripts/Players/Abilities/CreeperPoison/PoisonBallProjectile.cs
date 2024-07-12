@@ -7,6 +7,8 @@ using UnityEngine;
 public class PoisonBallProjectile : NetworkBehaviour
 {
     [SerializeField] protected PoisonBall _poisonBall;
+    [SerializeField] private PoisonSlap _poisonSlap;
+
     [SerializeField] protected GameObject _hitEffect;
     [SerializeField] protected SpriteRenderer _spriteRenderer;
     [SerializeField] protected Collider2D _collider;
@@ -18,24 +20,24 @@ public class PoisonBallProjectile : NetworkBehaviour
     private float _energyDad;
     private float _fastMovementSpeed = 0.6f;
     private float _slowMovementSpeed = 1.7f;
-    private float _durationStun = 1.2f;
     private float _distancePush = 1.0f;
     private float _maxDistance = 6f;
     private float _currentDamage = 35f;
     private float _durationPush;
 
     private GameObject _currentTarget;
-    private GameObject _lastTarget;
 
     private void Start()
     {
         _durationPush = 1.0f;
-        CountProjectile();
+        InitializationComponentsForCountProjectile();
     }
 
-    private void CountProjectile()
+    private void InitializationComponentsForCountProjectile()
     {
+        _poisonSlap = _dad.GetComponentInChildren<PoisonSlap>();
         _poisonBall = _dad.GetComponentInChildren<PoisonBall>();
+
         _countProjectiles = _poisonBall.GetComponent<PoisonBall>().CountProjectiles;
         _currentTarget = _poisonBall.GetComponent<PoisonBall>().CurrentTarget;
     }
@@ -47,9 +49,16 @@ public class PoisonBallProjectile : NetworkBehaviour
         {
             if (collision.TryGetComponent<HealthComponent>(out var targetHealth))
             {
-                DealDamage(targetHealth, _currentDamage, DamageType.Magical, AttackRangeType.RangeAttack);
-                _poisonBall.LastTarget = targetHealth.gameObject;
-                Destroy(gameObject);
+                if (_poisonSlap.IsActive)
+                {
+                    DamageDeal();
+                }
+                else
+                {
+                    DealDamage(targetHealth, _currentDamage, DamageType.Magical, AttackRangeType.RangeAttack);
+                    _poisonBall.LastTarget = targetHealth.gameObject;
+                    Destroy(gameObject);
+                }
             }
         }
     }
@@ -114,6 +123,20 @@ public class PoisonBallProjectile : NetworkBehaviour
 
         //target.GetComponent<CharacterState>().AddState(new StunnedState(), durationStun, 0, States.Stun);
     }
+    #endregion
+
+    #region PoisonBallMethodsForPoisonSlapAbility
+
+    public void DamageDeal()
+    {
+
+    }
+
+    public void PushEnemyForPoisonSlap()
+    {
+        
+    }
+
     #endregion
 
     public void InitializationProjectile(Transform dad, float energyDad)
