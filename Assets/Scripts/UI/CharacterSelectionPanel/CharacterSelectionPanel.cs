@@ -31,6 +31,6 @@ public class CharacterSelectionPanel : MonoBehaviour
     {
         _selectedHero = hero;
         _multiplayerManager.SetPlayer(_heroList.IndexOf(_selectedHero));
-        _mainPanels.SetPanel(hero.TalentSystem, hero.Abilities);
+        _mainPanels.SetPanel(hero);
     }
 }

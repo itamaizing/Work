@@ -11,17 +11,32 @@ public class AttributeItem : MonoBehaviour
 	[SerializeField] private Button _plus;
 	[SerializeField] private Button _minus;
 
+	public Material mat;
+
+	public Image Ico => _ico;
+	public Button Plus => _plus;
+	public Button Minus => _minus;
+
+
 	private float _value;
 	public void Init(Sprite ico, float value)
 	{
-		_ico.sprite = ico;
+	//	_ico.sprite = ico;
 		_value = value;
 		_text.text = value.ToString();
+
+	//	_plus.onClick.AddListener(Add);
+	//	_minus.onClick.AddListener(Remove);
 	}
 
-	public void Add(float value)
+	public void Add()
 	{
-		_value += value;
+		_value *= 1.01f;
+		_text.text = _value.ToString();
+	}
+	public void Remove()
+	{
+		_value /= 1.01f;
 		_text.text = _value.ToString();
 	}
 }
