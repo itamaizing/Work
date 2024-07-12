@@ -8,10 +8,20 @@ public class AttributeItem : MonoBehaviour
 {
 	[SerializeField] private Image _ico;
 	[SerializeField] private TextMeshProUGUI _text;
+	[SerializeField] private Button _plus;
+	[SerializeField] private Button _minus;
 
-	public void Init(Sprite ico, string text)
+	private float _value;
+	public void Init(Sprite ico, float value)
 	{
 		_ico.sprite = ico;
-		_text.text = text;
+		_value = value;
+		_text.text = value.ToString();
+	}
+
+	public void Add(float value)
+	{
+		_value += value;
+		_text.text = _value.ToString();
 	}
 }
