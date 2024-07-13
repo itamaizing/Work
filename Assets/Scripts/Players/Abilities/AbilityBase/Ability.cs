@@ -18,7 +18,7 @@ public abstract class Ability : NetworkBehaviour
     [SerializeField] protected float _castLength = 0f;
     [SerializeField] protected float _castWidth = 0f;
     [SerializeField] protected float _manaCost = 0f;
-    [SerializeField] protected float _castDeley = 0f;
+    [SerializeField] protected float _castDelay = 0f;
     [SerializeField] protected float _cooldown = 0f;
 	[SerializeField] protected Schools _abilitySchool;
 	[SerializeField] protected AbilityForm _abilityForm;
@@ -63,7 +63,7 @@ public abstract class Ability : NetworkBehaviour
     public bool IsRechargedInTurn => _chargesHaveSeparateCooldown;
     public bool IsStreaming => _isStreaming;
     public float StreamingDuration => _streamingDuration;
-    public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); protected set => _castDeley = value; }
+    public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDelay); protected set => _castDelay = value; }
     public float Radius { get => Buff.Radius.GetBuffedValue(_radius); protected set => _radius = value; }
     public float Area { get => Buff.Area.GetBuffedValue(_area); protected set => _area = value; }
     public float CastLength { get => Buff.Area.GetBuffedValue(_castLength); protected set => _castLength = value; }

@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,85 +8,128 @@ public class PoisonSlap : TargetOrAreaAbility
 {
     [SerializeField] private Character _dad;
     [SerializeField] private PoisonBall _poisonBall;
-    [SerializeField] private PoisonBallProjectile _poisonBallProjectile;
     [SerializeField] private CreeperStrike _creeperStrike;
     [SerializeField] private LightningStrikes _lightningStrikes;
 
-    private const float _increasingExecutionSpeedFromCreeperStrike = 0.5f;
-    private const float _increasingExecutionSpeedFromLightningStrikes = 1.0f;
-    private float _timeCast = 1.6f;
+    private float _increasingExecutionSpeedFromCreeperStrike = 0.5f; // Уменьшение скорости каста на 50%
+    private float _increasingExecutionSpeedFromLightningStrikes = 0.0f;  // Уменьшение скорости каста на 100%
+    private float _baseTimeCast = 1.6f;
 
     private float _baseDamage = 30f;
     private float _distancePush = 3.0f;
     private float _durationPushInSeconds = 1.0f;
 
-    public bool IsActive = false;
-
     private Coroutine _useCoroutine;
-    private Transform _startPosition;
-    private GameObject _currentTarget => Target.gameObject;
+    private Coroutine _castSpeedFromCreeperStrikeCoroutine;
+    private Coroutine _castSpeedFromLightningStrikesCoroutine;
 
 
-    protected override void Start()
-    {
-        base.Start();
-        InitializationComponents();
-        _startPosition.transform.position = new Vector3(_dad.transform.position.x, _dad.transform.position.y + 1.5f);
-    }
+    private GameObject _currentTarget;
+
+    private bool _isIncreasedCastSpeedFromCreeperStrike = false;
+    private bool _isIncreasedCastSpeedFromLightningStrike = false;
+
     protected override void CastAction()
     {
-       // _useCoroutine = StartCoroutine(UseAbilityCoroutine());
+        _useCoroutine = StartCoroutine(UseAbilityCoroutine());
     }
 
     protected override void Cancel()
     {
-        throw new System.NotImplementedException();
+        _castDelay = 0;
+
+        _isIncreasedCastSpeedFromCreeperStrike = false;
+        _isIncreasedCastSpeedFromLightningStrike = false;
+
+        if (_useCoroutine != null)
+            StopCoroutine(UseAbilityCoroutine());
+
+        if (_castSpeedFromCreeperStrikeCoroutine != null)
+            StopCoroutine(CastSpeedFromCreeperStrike());
+
+        if (_castSpeedFromLightningStrikesCoroutine != null)
+            StopCoroutine(CastSpeedFromLightningStrikes());
+        //if (_damageDealCoroutine != null)
+        //    StopCoroutine(DamageDeal());
     }
 
-    //private IEnumerator UseAbilityCoroutine()
-    //{
-
-    //}
-
-    private IEnumerator InstantiatePoisonBall()
+    private IEnumerator UseAbilityCoroutine()
     {
-        _castDeley = _timeCast;
+        PayCost();
+        if (_poisonBall.CurrentCharges != 0)
+        {
+            _poisonBall.CurrentCharges--;
+            yield return null;
+        }
+
+        if (_creeperStrike.IsTwoHit && !_isIncreasedCastSpeedFromLightningStrike)
+        {
+            _castSpeedFromCreeperStrikeCoroutine = StartCoroutine(CastSpeedFromCreeperStrike());
+        }
+        else if (_lightningStrikes.IsUsedLightningStrikes && !_isIncreasedCastSpeedFromCreeperStrike)
+        {
+            _castSpeedFromLightningStrikesCoroutine = StartCoroutine(CastSpeedFromLightningStrikes());
+        }
+        else
+        {
+            _castDelay = _baseTimeCast;
+            yield return GetCastDeleyCoroutine();
+            DamageDeal();
+        }
+    }
+
+
+    private IEnumerator CastSpeedFromCreeperStrike()
+    {
+        _creeperStrike.IsTwoHit = false;
+        _isIncreasedCastSpeedFromCreeperStrike = true;
+
+        float _timeCastFromCreeperStrike = _baseTimeCast * _increasingExecutionSpeedFromCreeperStrike;
+
+        _castDelay = _timeCastFromCreeperStrike;
         yield return GetCastDeleyCoroutine();
+        Debug.Log("CastTime int if == " + _castDelay);
 
-        GameObject item = Instantiate(_poisonBallProjectile.gameObject, _startPosition);
-        PoisonBallProjectile poisonBall = item.GetComponent<PoisonBallProjectile>();
-
-
-
-
+        DamageDeal();
     }
 
-    private void Attack()
+    private IEnumerator CastSpeedFromLightningStrikes()
     {
+        _isIncreasedCastSpeedFromLightningStrike = true;
 
-    }
-    
-    private void IncreaseExecutionSpeedFromCreeperStrike()
-    {
+        float _timeCastFromLightningStrikes = _baseTimeCast * _increasingExecutionSpeedFromLightningStrikes;
 
-    }
+        _castDelay = _timeCastFromLightningStrikes;
+        yield return GetCastDeleyCoroutine();
+        Debug.Log("CastTime int else if == " + _castDelay);
 
-    private void IncreaseExecutionSpeedFromLightningStrikes()
-    {
-
+        DamageDeal();
     }
 
-    private void InitializationComponents()
+    private void DamageDeal()
     {
-        _dad = GetComponent<Character>();
-        _poisonBall = _dad.GetComponentInChildren<PoisonBall>();
-        _creeperStrike = _dad.GetComponentInChildren<CreeperStrike>();
-        _lightningStrikes = _dad.GetComponentInChildren<LightningStrikes>();
+        _currentTarget = Target.gameObject;
+
+        if (_currentTarget != null) 
+        {
+            CmdApplyDamage(_currentTarget.gameObject, _baseDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
+            PushEnemy(_currentTarget, _distancePush, _durationPushInSeconds);
+        }
+
+        Cancel();
+    }
+
+    private void PushEnemy(GameObject target, float distancePush, float durationPush)
+    {
+        CmdPushEnemy(target, distancePush, durationPush);
     }
 
     [Command]
-    private void CmdInstantiatePoisonBall()
+    private void CmdPushEnemy(GameObject target, float distancePush, float durationPush) 
     {
+        Vector2 directionPush = (target.transform.position - transform.position);
 
+        distancePush = ((distancePush * GlobalVariable.cellSize) * durationPush) / GlobalVariable.cellSize;
+        target.GetComponent<Transform>().transform.DOMove((Vector2)target.transform.position + directionPush * distancePush, durationPush).SetEase(Ease.Linear);
     }
 }

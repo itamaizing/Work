@@ -1,90 +1,120 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class Invisible : Ability
 {
     [SerializeField] private Character _playerLinks;
-    [SerializeField] private CharacterData _playerData;
     [SerializeField] private LayerMask _enemyLayerMask;
     [SerializeField] private LayerMask _obstacleLayerMask;
-    //[SerializeField] private CircleCollider2D _searchingCircleCollider;
-    private float timeWithoutDamage = 6.0f;
-
-    private float increaseEnergyRegen = 0.3f;
-    private float increaseEnergy;
+    [SerializeField] private CircleCollider2D _searchingCollider;
 
     [SerializeField] private float reduceMoveSpeed = 0.3f;
     [SerializeField] private float moveSpeedDecrease;
 
-    private float maxDistanceVisible = 12.0f / GlobalVariable.cellSize;
+    private float _maxDistanceVisible = 6.0f;
+    private float _timeWithoutDamage = 6.0f;
+    private float _increaseEnergyRegen = 0.3f;
 
-    [SerializeField] private bool _isUsing = false;
+    public bool _enemyIsSees = false;
+    public bool _isAttacked = false;
+    public bool _isUsing = false;
 
+    private HealthComponent _playerHealth;
+
+    private Coroutine _useInvisibleCoroutine;
+    private Coroutine _notAttackedCoroutine;
     private Coroutine _useJob;
 
-    [SerializeField] private bool _enemyIsSees = false;
-    private bool _enabled = false;
-    private bool _isAttacked = false;
-
-    private void Update()
+    protected override void Start()
     {
-        if (!_enabled) return;
-        //EnemyIsVisible();
-        if (Input.GetMouseButtonDown(0))
-            PayCost();
-            Cast();
-
-        if (Input.GetMouseButtonDown(1))
-            Cancel();
+        _playerHealth = _playerLinks.GetComponent<HealthComponent>();
     }
+
     protected override void Cast()
     {
-        _enabled = true;
-        Debug.Log("Cast() coroutine");
         _useJob = StartCoroutine(UseCoroutine());
     }
 
     protected override void Cancel()
     {
-        _enabled = false;
+        ResetAbility();
+        _searchingCollider.radius = 0f;
+
         if (_useJob != null)
-        {
-            StopCoroutine(_useJob);
-            ResetAbility();
-        }
+            StopCoroutine(UseCoroutine());
+
+        if (_useInvisibleCoroutine != null)
+            StopCoroutine(InvisibleCoroutine());
+
+        if (_notAttackedCoroutine != null)
+            StopCoroutine(NotAttackedCoroutine());
     }
 
     private IEnumerator UseCoroutine()
     {
-        Collider2D hitEnemy = Physics2D.OverlapCircle(transform.position, maxDistanceVisible, _enemyLayerMask);
-        Debug.Log("UseCoroutine hitEnemies = " + hitEnemy);
+        _searchingCollider.radius = _maxDistanceVisible;
+        PayCost();
+        _useInvisibleCoroutine = StartCoroutine(InvisibleCoroutine());
+        yield return null;
+    }
+
+    private IEnumerator InvisibleCoroutine()
+    {
+        yield return _notAttackedCoroutine = StartCoroutine(NotAttackedCoroutine());
+
+        Collider2D hitEnemy = Physics2D.OverlapCircle(transform.position, _maxDistanceVisible, _enemyLayerMask);
+        Debug.Log("HitEnemy == " + hitEnemy);
         if (hitEnemy == null)
         {
-            Debug.Log("UseCoroutine. If < maxDistanceVisible. hit = " + hitEnemy);
+            Debug.Log("HitEnemy == null");
             _enemyIsSees = false;
+            if (!_enemyIsSees && !_isUsing && !_isAttacked)
+            {
+                _isUsing = true;
+                _playerLinks.CharacterState.AddState(new InvisibleState(), Mathf.Infinity, 0, States.Invisible);
+                // уменьшаем скорость передвижения на 30%
+                moveSpeedDecrease += reduceMoveSpeed;
+                _playerLinks.Move.ChangeMoveSpeed(moveSpeedDecrease);
+                // Увеличиваем реген энергии на 30%
+                _playerLinks.Stamina.RegenerationValue *= (1 + _increaseEnergyRegen);
+            }
         }
         else if (hitEnemy != null)
         {
-            Debug.Log("UseCoroutine. If > maxDistanceVisible. hit = " + hitEnemy);
+            Debug.Log("HitEnemy != null");
             _enemyIsSees = true;
-        }
-        if (!_enemyIsSees && !_isUsing)
-        {
-            _isUsing = true;
-            // уменьшаем скорость передвижения на 30%
-            moveSpeedDecrease = 1 - reduceMoveSpeed;
-            _playerLinks.Move.ChangeMoveSpeed(moveSpeedDecrease);
-            // Увеличиваем реген энергии на 30%
-            increaseEnergy = _playerLinks.Stamina.RegenerationValue * (1 + increaseEnergyRegen);
-        }
-        else if (_enemyIsSees && _isUsing)
-        {
-            ResetAbility();
+            if (_enemyIsSees && _isUsing || _isAttacked)
+            {
+                Cancel();
+            }
         }
         else
         {
+            Debug.Log("else");
+            yield return null;
+        }
+    }
+
+    private IEnumerator NotAttackedCoroutine()
+    {
+        float time = 0;
+        while (time < _timeWithoutDamage)
+        {
+            Debug.Log("time < _timeWithoutDamage");
+            if (_playerHealth.CurrentHealth == _playerHealth.MaxHealth)
+            {
+                time += Time.deltaTime;
+                _isAttacked = false;
+                Debug.Log("time < _timeWithoutDamage/ isAttacked == " + _isAttacked);
+            }
+            else
+            {
+                _isAttacked = true;
+                break;
+            }
             yield return null;
         }
     }
@@ -93,11 +123,12 @@ public class Invisible : Ability
     {
         if (_isUsing)
         {
+            _playerLinks.CharacterState.RemoveState(States.Invisible);
             // 1.1285715f - число, чтобы вернуть скорость к стандартному значению
-            moveSpeedDecrease = 1.1285715f + reduceMoveSpeed;
+            moveSpeedDecrease -= reduceMoveSpeed;
             _playerLinks.Move.ChangeMoveSpeed(moveSpeedDecrease);
             // Уменьшаем реген энергии на 30%
-            increaseEnergy = _playerLinks.Stamina.RegenerationValue / (1 + increaseEnergyRegen);
+            _playerLinks.Stamina.RegenerationValue /= (1 + _increaseEnergyRegen);
             _isUsing = false;
         }
     }

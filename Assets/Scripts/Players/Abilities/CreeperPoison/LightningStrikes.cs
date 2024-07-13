@@ -17,6 +17,10 @@ public class LightningStrikes : AutoAttackAbility
     private Coroutine _useCoroutine;
     private Coroutine _decreaseAttackSpeedCoroutine;
 
+    private bool _isUsedLightningStrikes = false;
+
+    public bool IsUsedLightningStrikes => _isUsedLightningStrikes;
+
     private new void Start()
     {
         _creeperStrike = _dad.GetComponentInChildren<CreeperStrike>();
@@ -41,6 +45,7 @@ public class LightningStrikes : AutoAttackAbility
 
     public IEnumerator UseAbilityCoroutine()
     {
+        _isUsedLightningStrikes = true;
         _decreaseAttackSpeedCoroutine = StartCoroutine(DecreaseAttackSpeed());
         yield return null;
     }
@@ -53,12 +58,14 @@ public class LightningStrikes : AutoAttackAbility
 
             while (_countStrikes > 0)
             {
+                _creeperStrike.CurrentCountHit = 0;
                 _creeperStrike.DealingDamageFromHits();
                 _countStrikes--;
             }
         }
         _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_attackSpeedDeacrease);
         Cancel();
-        yield return null;
+        yield return new WaitForSeconds(4f);
+        _isUsedLightningStrikes = false;
     }
 }

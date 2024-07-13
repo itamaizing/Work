@@ -24,7 +24,8 @@ public class PoisonBall : TargetOrAreaAbility
 
     private Coroutine _clickCoroutine;
     private Coroutine _useCoroutine;
-    
+
+    public int CurrentCharges { get => _currentChargers; set => _currentChargers = value; }
     public GameObject LastTarget { get; set; }
     public GameObject CurrentTarget { get; set; }
     public int CountProjectiles { get; set; }
@@ -105,7 +106,7 @@ public class PoisonBall : TargetOrAreaAbility
     #region ChooseMoveSpeedProjectile
     private IEnumerator FastMoveShoot(bool isEnemy, bool isFast)
     {
-        _castDeley = _fastMovementTimeCast;
+        _castDelay = _fastMovementTimeCast;
         yield return GetCastDeleyCoroutine();
 
         ChooseWhichProjectileCreate(isEnemy, isFast);
@@ -115,7 +116,7 @@ public class PoisonBall : TargetOrAreaAbility
 
     private IEnumerator SlowMoveShoot(bool isEnemy, bool isFast)
     {
-        _castDeley = _slowMovementTimeCast;
+        _castDelay = _slowMovementTimeCast;
         yield return GetCastDeleyCoroutine();
 
         ChooseWhichProjectileCreate(isEnemy, isFast);
@@ -125,7 +126,7 @@ public class PoisonBall : TargetOrAreaAbility
 
     private IEnumerator ThirdProjectileMovement(bool isEnemy, bool isFast)
     {
-        _castDeley = 0.4f;
+        _castDelay = 0.4f;
         yield return GetCastDeleyCoroutine();
 
         ChooseWhichProjectileCreate(isEnemy, isFast);
@@ -193,7 +194,7 @@ public class PoisonBall : TargetOrAreaAbility
         GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
         PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>();
 
-        poisonBallProjectile.InitializationProjectile(_playerLinks.transform, _playerLinks.Stamina.Value);
+        poisonBallProjectile.InitializationProjectileForPoisonBall(_playerLinks.transform, _playerLinks.Stamina.Value);
         poisonBallProjectile.MoveBallToTarget(targetOrPoint, isFast);
 
         NetworkServer.Spawn(item);
@@ -214,7 +215,7 @@ public class PoisonBall : TargetOrAreaAbility
         GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
         PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>();
 
-        poisonBallProjectile.InitializationProjectile(_playerLinks.transform, _playerLinks.Stamina.Value);
+        poisonBallProjectile.InitializationProjectileForPoisonBall(_playerLinks.transform, _playerLinks.Stamina.Value);
         poisonBallProjectile.MoveBallToTarget(targetOrPoint, isFast);
 
         NetworkServer.Spawn(item);

@@ -7,7 +7,6 @@ using UnityEngine;
 public class PoisonBallProjectile : NetworkBehaviour
 {
     [SerializeField] protected PoisonBall _poisonBall;
-    [SerializeField] private PoisonSlap _poisonSlap;
 
     [SerializeField] protected GameObject _hitEffect;
     [SerializeField] protected SpriteRenderer _spriteRenderer;
@@ -18,12 +17,15 @@ public class PoisonBallProjectile : NetworkBehaviour
     private int _countProjectiles;
 
     private float _energyDad;
+
     private float _fastMovementSpeed = 0.6f;
     private float _slowMovementSpeed = 1.7f;
+
     private float _distancePush = 1.0f;
     private float _maxDistance = 6f;
-    private float _currentDamage = 35f;
     private float _durationPush;
+
+    private float _currentDamageForPoisonBall = 35f;
 
     private GameObject _currentTarget;
 
@@ -35,7 +37,6 @@ public class PoisonBallProjectile : NetworkBehaviour
 
     private void InitializationComponentsForCountProjectile()
     {
-        _poisonSlap = _dad.GetComponentInChildren<PoisonSlap>();
         _poisonBall = _dad.GetComponentInChildren<PoisonBall>();
 
         _countProjectiles = _poisonBall.GetComponent<PoisonBall>().CountProjectiles;
@@ -49,16 +50,9 @@ public class PoisonBallProjectile : NetworkBehaviour
         {
             if (collision.TryGetComponent<HealthComponent>(out var targetHealth))
             {
-                if (_poisonSlap.IsActive)
-                {
-                    DamageDeal();
-                }
-                else
-                {
-                    DealDamage(targetHealth, _currentDamage, DamageType.Magical, AttackRangeType.RangeAttack);
-                    _poisonBall.LastTarget = targetHealth.gameObject;
-                    Destroy(gameObject);
-                }
+                DealDamage(targetHealth, _currentDamageForPoisonBall, DamageType.Magical, AttackRangeType.RangeAttack);
+                _poisonBall.LastTarget = targetHealth.gameObject;
+                Destroy(gameObject);
             }
         }
     }
@@ -125,25 +119,15 @@ public class PoisonBallProjectile : NetworkBehaviour
     }
     #endregion
 
-    #region PoisonBallMethodsForPoisonSlapAbility
+    #region InitializationProjectiles
 
-    public void DamageDeal()
-    {
-
-    }
-
-    public void PushEnemyForPoisonSlap()
-    {
-        
-    }
-
-    #endregion
-
-    public void InitializationProjectile(Transform dad, float energyDad)
+    public void InitializationProjectileForPoisonBall(Transform dad, float energyDad)
     {
         _dad = dad;
         _energyDad = energyDad;
     }
+
+    #endregion
 
     private void DestroyProjectile()
     {
