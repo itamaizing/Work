@@ -116,7 +116,7 @@ public class MoveComponent : NetworkBehaviour
 	private Vector2 _offset = Vector2.zero; // new
 	
 	private Seeker _seeker;
-	private AIPath _agent;
+	public AIPath _agent;
 	
 	private Rigidbody2D _rigidbody;
 	
@@ -154,19 +154,6 @@ public class MoveComponent : NetworkBehaviour
 		isInitialize = true;
 	}
 
-	public void ChangeMoveSpeed(float value)
-	{
-		_agent.maxSpeed *= value;
-	}
-	public void SetMoveSpeed(float speed)
-	{
-		_agent.maxSpeed = speed;
-	}
-	public void SetDefaultSpeed()
-	{
-		_agent.maxSpeed = _defaultSpeed;
-	}
-
 
 	private void SetMoveDirection()
 	{
@@ -201,6 +188,20 @@ public class MoveComponent : NetworkBehaviour
 		
 		IsMoving = _agent.pathPending;
 	}
+    public void ChangeMoveSpeed(float value) 
+	{
+        _agent.maxSpeed *= value;
+    }
+
+    public void SetMoveSpeed(float speed)
+	{
+        _agent.maxSpeed = speed;
+    }
+
+    public void SetDefaultSpeed()
+	{
+        _agent.maxSpeed = _defaultSpeed;
+    }
 
 	[Command]
 	private void CmdMove(Vector2 targetPos , Vector2 offset)

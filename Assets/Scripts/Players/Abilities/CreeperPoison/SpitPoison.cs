@@ -44,6 +44,7 @@ public class SpitPoison : Ability
         yield return _mouseDirectionCoroutine = StartCoroutine(MouseDirectionCoroutine());
         _shootCoroutine = StartCoroutine(CallShootCoroutine());
     }
+
     private IEnumerator MouseDirectionCoroutine()
     {
         while (!Input.GetMouseButtonDown(0))

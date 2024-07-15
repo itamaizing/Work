@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -7,12 +8,12 @@ using UnityEngine.EventSystems;
 public class Invisible : Ability
 {
     [SerializeField] private Character _playerLinks;
+    [SerializeField] private CharacterData _playerData;
     [SerializeField] private LayerMask _enemyLayerMask;
-    [SerializeField] private LayerMask _obstacleLayerMask;
-    [SerializeField] private CircleCollider2D _searchingCollider;
 
-    [SerializeField] private float reduceMoveSpeed = 0.3f;
-    [SerializeField] private float moveSpeedDecrease;
+    [SerializeField] private float _reduceMoveSpeed = 0.3f;
+    [SerializeField] private float _moveSpeedDecrease;
+    [SerializeField] private float _originalMoveSpeed;
 
     private float _maxDistanceVisible = 6.0f;
     private float _timeWithoutDamage = 6.0f;
@@ -31,6 +32,16 @@ public class Invisible : Ability
     protected override void Start()
     {
         _playerHealth = _playerLinks.GetComponent<HealthComponent>();
+        _originalMoveSpeed = _playerData.MoveSpeed;
+    }
+
+    private void Update()
+    {
+        if (_useInvisibleCoroutine != null) 
+        {
+            if (_playerHealth.CurrentHealth != _playerHealth.MaxHealth)
+                Cancel();
+        }
     }
 
     protected override void Cast()
@@ -40,8 +51,8 @@ public class Invisible : Ability
 
     protected override void Cancel()
     {
+        _playerLinks.CharacterState.RemoveState(States.Invisible);
         ResetAbility();
-        _searchingCollider.radius = 0f;
 
         if (_useJob != null)
             StopCoroutine(UseCoroutine());
@@ -55,9 +66,9 @@ public class Invisible : Ability
 
     private IEnumerator UseCoroutine()
     {
-        _searchingCollider.radius = _maxDistanceVisible;
         PayCost();
         _useInvisibleCoroutine = StartCoroutine(InvisibleCoroutine());
+
         yield return null;
     }
 
@@ -71,22 +82,19 @@ public class Invisible : Ability
         {
             Debug.Log("HitEnemy == null");
             _enemyIsSees = false;
+
             if (!_enemyIsSees && !_isUsing && !_isAttacked)
             {
                 _isUsing = true;
-                _playerLinks.CharacterState.AddState(new InvisibleState(), Mathf.Infinity, 0, States.Invisible);
-                // уменьшаем скорость передвижения на 30%
-                moveSpeedDecrease += reduceMoveSpeed;
-                _playerLinks.Move.ChangeMoveSpeed(moveSpeedDecrease);
-                // Увеличиваем реген энергии на 30%
-                _playerLinks.Stamina.RegenerationValue *= (1 + _increaseEnergyRegen);
+                InvisibleState();
             }
         }
         else if (hitEnemy != null)
         {
             Debug.Log("HitEnemy != null");
             _enemyIsSees = true;
-            if (_enemyIsSees && _isUsing || _isAttacked)
+
+            if (_enemyIsSees && _isUsing)
             {
                 Cancel();
             }
@@ -119,17 +127,49 @@ public class Invisible : Ability
         }
     }
 
+    private void InvisibleState()
+    {
+        CmdInvisibleState();
+    }
+
     private void ResetAbility()
+    {
+        CmdResetAbility();
+    }
+
+    [Command]
+    private void CmdResetAbility()
     {
         if (_isUsing)
         {
-            _playerLinks.CharacterState.RemoveState(States.Invisible);
-            // 1.1285715f - число, чтобы вернуть скорость к стандартному значению
-            moveSpeedDecrease -= reduceMoveSpeed;
-            _playerLinks.Move.ChangeMoveSpeed(moveSpeedDecrease);
+            // Возвращаем скорость к изначальной
+            _playerLinks.Move.SetMoveSpeed(_originalMoveSpeed);
+
             // Уменьшаем реген энергии на 30%
             _playerLinks.Stamina.RegenerationValue /= (1 + _increaseEnergyRegen);
             _isUsing = false;
         }
     }
+
+    [Command]
+    private void CmdInvisibleState()
+    {
+        if (!_playerLinks.CharacterState.CheckForState(States.Invisible))
+        {
+            Debug.Log("CheckState");
+            _playerLinks.CharacterState.CmdAddState(States.Invisible, Mathf.Infinity, 0);
+        }
+        // уменьшаем скорость передвижения на 30%
+        _moveSpeedDecrease = _originalMoveSpeed * _reduceMoveSpeed;
+
+        float _applyModifiedMoveSpeed = _originalMoveSpeed - _moveSpeedDecrease;
+
+        _playerLinks.Move.SetMoveSpeed(_applyModifiedMoveSpeed);
+        Debug.Log("speed == " + _playerLinks.Move._agent.maxSpeed);
+
+        // Увеличиваем реген энергии на 30%
+        _playerLinks.Stamina.RegenerationValue *= (1 + _increaseEnergyRegen);
+        Debug.Log("Stamina regen == " + _playerLinks.Stamina.RegenerationValue);
+    }
+
 }

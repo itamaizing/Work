@@ -263,6 +263,7 @@ GameObject:
   - component: {fileID: 5460533147100191806}
   - component: {fileID: 7672760003326398008}
   - component: {fileID: 6227316397025926076}
+  - component: {fileID: 6027837359207633613}
   m_Layer: 0
   m_Name: Abilities
   m_TagString: Untagged
@@ -304,6 +305,7 @@ MonoBehaviour:
   - {fileID: 5460533147100191806}
   - {fileID: 7672760003326398008}
   - {fileID: 6227316397025926076}
+  - {fileID: 6027837359207633613}
   visualRender: {fileID: 4071738984799970690}
   _characterData: {fileID: 11400000, guid: 47cac5ab51e8b334aafb537b893ada29, type: 2}
   _talentSystem: {fileID: 8392273409717092943}
@@ -443,15 +445,13 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: 0
   _playerLinks: {fileID: 8848169558533100257}
+  _playerData: {fileID: 11400000, guid: 47cac5ab51e8b334aafb537b893ada29, type: 2}
   _enemyLayerMask:
     serializedVersion: 2
     m_Bits: 256
-  _obstacleLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
-  _searchingCollider: {fileID: 1772491109373558400}
-  reduceMoveSpeed: 0.3
-  moveSpeedDecrease: 0
+  _reduceMoveSpeed: 0.3
+  _moveSpeedDecrease: 0
+  _originalMoveSpeed: 0
   _enemyIsSees: 0
   _isAttacked: 0
   _isUsing: 0
@@ -570,6 +570,42 @@ MonoBehaviour:
   _poisonBall: {fileID: 7672760003326398008}
   _creeperStrike: {fileID: 3923834704028430900}
   _lightningStrikes: {fileID: 2133911755741689447}
+--- !u!114 &6027837359207633613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 573140117665601435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d19ce5ada878d194385e017efba2fefc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _abilityInfo: {fileID: 11400000, guid: 210da40a0085cd74dbbe0231617f4591, type: 2}
+  _isAutoAttack: 0
+  _radius: 3
+  _area: 0
+  _castLength: 3
+  _castWidth: 1
+  _manaCost: 0
+  _castDelay: 0
+  _cooldown: 4
+  _abilitySchool: 0
+  _abilityForm: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _dad: {fileID: 8848169558533100257}
+  _tongueProjectile: {fileID: 5721942681369797396, guid: 0335b54680e29c74daf86f45acd8389b, type: 3}
 --- !u!1 &615051740401084893
 GameObject:
   m_ObjectHideFlags: 0
@@ -1634,73 +1670,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _bar: {fileID: 1039359840152212135}
   _barText: {fileID: 0}
---- !u!1 &3078283999951321485
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 374638076892536325}
-  - component: {fileID: 1772491109373558400}
-  m_Layer: 0
-  m_Name: SearchingCollider
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &374638076892536325
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3078283999951321485}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 4570673472186744744}
-  m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!58 &1772491109373558400
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3078283999951321485}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.5
 --- !u!1 &3196226116550340777
 GameObject:
   m_ObjectHideFlags: 0
@@ -2144,6 +2113,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _agent: {fileID: 0}
   CanMove: 1
   IsMoving: 0
   IsSelect: 0
@@ -2164,6 +2134,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   healthBar: {fileID: 2342745902559160409}
+  IsInAir: 0
   shields_Physic: []
   shields_Magic: []
   sumDamageTaken: 0
@@ -2894,7 +2865,6 @@ Transform:
   m_Children:
   - {fileID: 2558762928176775106}
   - {fileID: 5973383979691084895}
-  - {fileID: 374638076892536325}
   m_Father: {fileID: 4142585537257920599}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

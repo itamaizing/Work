@@ -21,9 +21,9 @@ public class PoisonBallProjectile : NetworkBehaviour
     private float _fastMovementSpeed = 0.6f;
     private float _slowMovementSpeed = 1.7f;
 
-    private float _distancePush = 1.0f;
+    private float _distancePush = 1.2f;
     private float _maxDistance = 6f;
-    private float _durationPush;
+    private float _durationPush = 1.0f;
 
     private float _currentDamageForPoisonBall = 35f;
 
@@ -82,7 +82,7 @@ public class PoisonBallProjectile : NetworkBehaviour
         _energyLink.SumDamageMake(currentDamage);
 
         targetHealth.TryTakeDamage(currentDamage, damageType, attackRangeType);
-
+        targetHealth.IsInAir = true;
         PushEnemyDependingOnCountProjectile(targetHealth, _durationPush, _distancePush);
 
         Destroy(this.gameObject);
@@ -92,7 +92,7 @@ public class PoisonBallProjectile : NetworkBehaviour
     {
         if (_countProjectiles < 3)
         {
-            PushEnemy(target.gameObject, durationPush, distancePush);
+           PushEnemy(target.gameObject, durationPush, distancePush);
         }
         else if (_countProjectiles == 3)
         {
@@ -102,7 +102,7 @@ public class PoisonBallProjectile : NetworkBehaviour
             }
             else
             {
-                distancePush = 1.0f;
+                distancePush = 1.2f;
             }
             PushEnemy(target.gameObject, durationPush, distancePush);
         }
@@ -113,8 +113,15 @@ public class PoisonBallProjectile : NetworkBehaviour
         Vector2 directionPush = (target.transform.position - transform.position);
 
         distancePush = ((distancePush * GlobalVariable.cellSize) * durationPush) / GlobalVariable.cellSize;
-        target.GetComponent<Transform>().transform.DOMove((Vector2)target.transform.position + directionPush * distancePush, durationPush).SetEase(Ease.Linear);
-
+        Debug.Log("distancePush == " + distancePush);
+        if (_countProjectiles < 3)
+        {
+            target.GetComponent<Transform>().transform.DOMove((Vector2)target.transform.position - directionPush * distancePush, durationPush).SetEase(Ease.Linear);
+        }
+        else if (_countProjectiles == 3)
+        {
+            target.GetComponent<Transform>().transform.DOMove((Vector2)target.transform.position + directionPush * distancePush, durationPush).SetEase(Ease.Linear);
+        }
         //target.GetComponent<CharacterState>().AddState(new StunnedState(), durationStun, 0, States.Stun);
     }
     #endregion
