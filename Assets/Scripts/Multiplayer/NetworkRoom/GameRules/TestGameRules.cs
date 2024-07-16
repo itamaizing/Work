@@ -8,10 +8,17 @@ public class TestGameRules : GameRules
     [SerializeField] private float _lifeTime = 10f;
     [SerializeField] private bool isRemoveRoom = true;
 
-    protected override void GameStart()
+    public override void GameStartServer()
     {
-        if(isServer && isRemoveRoom)
+        StartCoroutine(SplitIntoTeams());
+
+        if (isServer && isRemoveRoom)
             StartCoroutine(CloseJob());
+    }
+
+    protected override void GameStartClient()
+    {
+        
     }
 
     private IEnumerator CloseJob()

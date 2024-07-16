@@ -85,7 +85,7 @@ public class NetworkRoom
 
             item.Init(this);
             item.IsStarted = true;
-            item.GameStatusHook(true, true);
+            item.GameStartServer();
         }
         else
         {
