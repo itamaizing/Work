@@ -35,7 +35,7 @@ public abstract class TargetAbility : Ability
     protected bool TryRaycastTarget()
     {
         _target = null;
-        RaycastHit2D[] rayHit = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+        RaycastHit2D[] rayHit = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 99, _targetsLayers);
 
         foreach (var item in rayHit)
         {

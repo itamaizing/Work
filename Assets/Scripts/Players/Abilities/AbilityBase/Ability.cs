@@ -22,6 +22,7 @@ public abstract class Ability : NetworkBehaviour
     [SerializeField] protected float _cooldown = 0f;
 	[SerializeField] protected Schools _abilitySchool;
 	[SerializeField] protected AbilityForm _abilityForm;
+	[SerializeField] protected LayerMask _targetsLayers;
 	[Header("Charge settings")]
     [SerializeField] protected bool _isUseCharges;
     [SerializeField] protected bool _chargesHaveSeparateCooldown;
