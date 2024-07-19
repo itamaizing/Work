@@ -7,16 +7,27 @@ using UnityEngine;
 public class GrabTongueProjectile : NetworkBehaviour
 {
     [SerializeField] private LayerMask _enemyLayer;
-    [SerializeField] private SpriteRenderer _tongueSprite;
+    [SerializeField] private LineRenderer _tongueLineRendrer;
     private Character _dad;
 
     private float _moveSpeedDirectionFromPlayer = 20f; // скорость 0.2 клетки в секунду.
     private float _moveSpeedDirectionToPlayer = 6f; // скорость 0ю6 клеток в секунду.
 
-    private Vector2 _startPosition;
-    private Vector2 _endPosition;
+    [SyncVar] private Vector2 _startPosition;
+    [SyncVar] private Vector2 _endPosition;
 
     private GameObject _target;
+
+    private void Start()
+    {
+        _tongueLineRendrer.positionCount = 2;
+    }
+
+    private void Update()
+    {
+        _tongueLineRendrer.SetPosition(0, _startPosition);
+        _tongueLineRendrer.SetPosition(1, _endPosition);
+    }
     
     private void PulledTarget(GameObject target)
     {
@@ -32,10 +43,30 @@ public class GrabTongueProjectile : NetworkBehaviour
         _startPosition = startPosition;
         _endPosition = endPosition;
 
-        StartCoroutine(MoveTongue(startPosition, endPosition));
+        _tongueLineRendrer.SetPosition(0, startPosition);
+        _tongueLineRendrer.SetPosition(1, endPosition);
+
+        RaycastHit2D hit = Physics2D.Linecast(startPosition, endPosition, _enemyLayer);
+        if (hit.collider != null && hit.collider.transform != _dad)
+        {
+            Debug.Log("Hit detected: " + hit.collider.gameObject.name);
+            if (hit.collider.TryGetComponent<HealthComponent>(out var target))
+            {
+                _target = target.gameObject;
+                if (_target.gameObject.GetComponent<Character>().CharacterState.CheckForState(States.InAir))
+                {
+                    _target.GetComponent<MoveComponent>().CanMove = false;
+                    StartCoroutine(AnimateTongueWithTarget(startPosition, hit.point, target.gameObject));
+                }
+            }
+        }
+        else
+        {
+            StartCoroutine(AnimateTongueWithoutTarget(startPosition, endPosition));
+        }
     }
 
-    private IEnumerator MoveTongue(Vector2 startPosition, Vector2 endPosition)
+    private IEnumerator AnimateTongueWithoutTarget(Vector2 startPosition, Vector2 endPosition)
     {
         float elapsedTime = 0f;
         float distance = Vector2.Distance(startPosition, endPosition);
@@ -44,31 +75,29 @@ public class GrabTongueProjectile : NetworkBehaviour
         while (elapsedTime < duration)
         {
             elapsedTime += Time.deltaTime;
-            transform.position = Vector2.Lerp(startPosition, endPosition, elapsedTime / duration);
+            _endPosition = Vector2.Lerp(startPosition, endPosition, elapsedTime / duration);
             yield return null;
         }
 
-        transform.position = endPosition;
+        _endPosition = endPosition;
+        DestoryProjectile();
+    }
 
-        RaycastHit2D hit = Physics2D.Linecast(startPosition, endPosition, _enemyLayer);
-        if (hit.collider != null && hit.collider.transform != _dad)
+    private IEnumerator AnimateTongueWithTarget(Vector2 startPosition, Vector2 hitPosition, GameObject target)
+    {
+        float elapsedTime = 0f;
+        float distance = Vector2.Distance(startPosition, hitPosition);
+        float duration = distance / _moveSpeedDirectionFromPlayer;
+
+        while (elapsedTime < duration)
         {
-            if (hit.collider.TryGetComponent<HealthComponent>(out var target))
-            {
-                _target = target.gameObject;
-                if (_target.GetComponent<Character>().CharacterState.CheckForState(States.InAir))
-                {
-                    _target.GetComponent<MoveComponent>().CanMove = false;
-                    yield return StartCoroutine(ReturnTongueWithTarget(_target.transform.position));
-                }
-            }
-        }
-        else
-        {
-            yield return StartCoroutine(ReturnTongue(startPosition));
+            elapsedTime += Time.deltaTime;
+            _endPosition = Vector2.Lerp(startPosition, hitPosition, elapsedTime / duration);
+            yield return null;
         }
 
-        Destroy(gameObject);
+        _endPosition = hitPosition;
+        PulledTarget(target);
     }
 
     private IEnumerator ReturnTongue(Vector2 targetPosition)
@@ -80,31 +109,18 @@ public class GrabTongueProjectile : NetworkBehaviour
         while (elapsedTime < duration)
         {
             elapsedTime += Time.deltaTime;
-            transform.position = Vector2.Lerp(targetPosition, _startPosition, elapsedTime / duration);
+            _endPosition = Vector2.Lerp(targetPosition, _startPosition, elapsedTime / duration);
             yield return null;
         }
 
-        transform.position = _startPosition;
+        _endPosition = _startPosition;
+        DestoryProjectile();
     }
 
-    private IEnumerator ReturnTongueWithTarget(Vector2 targetPosition)
+    
+    private void DestoryProjectile()
     {
-        Vector2 directionPulled = _target.transform.position - _dad.transform.position;
-
-        _target.transform.DOMove((Vector2)_target.transform.position - directionPulled, 0.6f).SetEase(Ease.Linear);
-
-        float elapsedTime = 0f;
-        float distance = Vector2.Distance(targetPosition, _startPosition);
-        float duration = distance / _moveSpeedDirectionToPlayer;
-
-        while (elapsedTime < duration)
-        {
-            elapsedTime += Time.deltaTime;
-            transform.position = Vector2.Lerp(targetPosition, _startPosition, elapsedTime / duration);
-            yield return null;
-        }
-
-        transform.position = _startPosition;
+        Destroy(gameObject);
     }
 
     public void InitializationProjectile(Character dad)
