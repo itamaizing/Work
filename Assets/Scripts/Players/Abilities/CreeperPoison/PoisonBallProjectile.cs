@@ -21,9 +21,10 @@ public class PoisonBallProjectile : NetworkBehaviour
     private float _fastMovementSpeed = 0.6f;
     private float _slowMovementSpeed = 1.7f;
 
-    private float _distancePush = 1.2f;
+    private float _distancePush = 1.0f;
     private float _maxDistance = 6f;
-    private float _durationPush = 1.0f;
+    private float _durationPush = 1.2f;
+    private float _durationStun = 1.0f;
 
     private float _currentDamageForPoisonBall = 35f;
 
@@ -82,7 +83,6 @@ public class PoisonBallProjectile : NetworkBehaviour
         _energyLink.SumDamageMake(currentDamage);
 
         targetHealth.TryTakeDamage(currentDamage, damageType, attackRangeType);
-        targetHealth.IsInAir = true;
         PushEnemyDependingOnCountProjectile(targetHealth, _durationPush, _distancePush);
 
         Destroy(this.gameObject);
@@ -102,7 +102,7 @@ public class PoisonBallProjectile : NetworkBehaviour
             }
             else
             {
-                distancePush = 1.2f;
+                distancePush = 1.0f;
             }
             PushEnemy(target.gameObject, durationPush, distancePush);
         }
@@ -122,7 +122,7 @@ public class PoisonBallProjectile : NetworkBehaviour
         {
             target.GetComponent<Transform>().transform.DOMove((Vector2)target.transform.position + directionPush * distancePush, durationPush).SetEase(Ease.Linear);
         }
-        //target.GetComponent<CharacterState>().AddState(new StunnedState(), durationStun, 0, States.Stun);
+        target.GetComponent<Character>().CharacterState.AddState(new InAirState(), _durationStun, 0, States.InAir);
     }
     #endregion
 

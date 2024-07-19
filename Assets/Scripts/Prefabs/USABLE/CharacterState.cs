@@ -680,6 +680,71 @@ public class Cooling : AbstractCharacterState
 
 }
 
+public class InAirState : AbstractCharacterState
+{
+    public new States state = States.InAir;
+    private PlayerAbilities _abilities;
+
+    private float _duration;
+    private float _baseDuration;
+    private float _damageToExit;
+
+    public bool turnOff = false;
+
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+    {
+        Debug.Log("Entering InAir State");
+        type = StateType.Physical;
+        effects.Add(StatusEffect.Move);
+        effects.Add(StatusEffect.Ability);
+        _characterState = character;
+
+        if (character.TryGetComponent<Character>(out var ability))
+        {
+            _abilities = ability.Abilities;
+            _abilities.SetAbilitiesDisabled();
+        }
+        else
+        {
+            Debug.Log("no ability at " + character.gameObject.name);
+        }
+
+        _characterState.Move.CanMove = false;
+        _duration = durationToExit;
+        _baseDuration = durationToExit;
+    }
+
+    public override void UpdateState()
+    {
+        Debug.Log("Updating InAir State");
+        _duration -= Time.deltaTime;
+		Debug.Log("_duration == " + _duration);
+        if (_duration < 0 || turnOff)
+        {
+            ExitState();
+        }
+    }
+
+    public override void ExitState()
+    {
+        Debug.Log("Exiting InAir State");
+        if (_characterState.Check(StatusEffect.Move))
+        {
+            _characterState.Move.CanMove = true;
+        }
+        if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
+        {
+            _abilities.SetAbilitiesEnabled();
+        }
+        _characterState.RemoveState(this);
+    }
+
+    public override bool Stack(float time)
+    {
+        return false;
+    }
+}
+
 public class AbilitySchoolDebuff : AbstractCharacterState
 {
 	public new States state = States.SchoolDebuff;
@@ -1142,6 +1207,7 @@ public enum States
 	Frozen,
 	Frosting,
 	Cooling,
+	InAir,
 	Blind,
 	Invisible,
 	SchoolDebuff,

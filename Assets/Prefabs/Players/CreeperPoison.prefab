@@ -605,6 +605,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: 0
   _dad: {fileID: 8848169558533100257}
+  _lineRenderer: {fileID: 7900996044532349954, guid: 06c5415f9410c754594294be38257457, type: 3}
   _tongueProjectile: {fileID: 5721942681369797396, guid: 0335b54680e29c74daf86f45acd8389b, type: 3}
 --- !u!1 &615051740401084893
 GameObject:
@@ -2134,7 +2135,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   healthBar: {fileID: 2342745902559160409}
-  IsInAir: 0
   shields_Physic: []
   shields_Magic: []
   sumDamageTaken: 0

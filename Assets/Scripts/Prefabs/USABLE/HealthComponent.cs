@@ -36,8 +36,6 @@ public class HealthComponent : NetworkBehaviour
 
     private bool _invinsible = false;
 
-    public bool IsInAir = false;
-
     [Header("Shields")]
     public List<Shielding> shields_Physic = new List<Shielding>();
     public List<Shielding> shields_Magic = new List<Shielding>();

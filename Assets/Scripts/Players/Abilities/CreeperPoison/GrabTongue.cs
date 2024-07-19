@@ -1,4 +1,5 @@
 using DG.Tweening;
+using JetBrains.Annotations;
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using UnityEngine;
 public class GrabTongue : Ability
 {
     [SerializeField] private Character _dad;
+    //[SerializeField] private LineRenderer _lineRenderer;
     [SerializeField] private GrabTongueProjectile _tongueProjectile;
 
     private Vector2 _mousePosition;
@@ -14,8 +16,6 @@ public class GrabTongue : Ability
     private Coroutine _useAbilityCoroutine;
     private Coroutine _throwInDirectionTargetCoroutine;
     private Coroutine _mouseDirectionCoroutine;
-
-    public Vector2 MousePosition { get => _mousePosition; set => _mousePosition = value; }
 
     protected override void Cast()
     {
@@ -63,17 +63,17 @@ public class GrabTongue : Ability
     private IEnumerator ThrowInDirectionTarget() 
     {
         PayCost();
-        CreateToungeProjectile(MousePosition);
+        CreateTongueProjectile(_mousePosition);
         yield return null;
     }
 
-    private void CreateToungeProjectile(Vector2 mousePosition)
+    private void CreateTongueProjectile(Vector2 mousePosition)
     {
-        CmdCreateToungeProjectile(mousePosition);
+        CmdCreateTongueProjectile(mousePosition);
     }
 
     [Command]
-    private void CmdCreateToungeProjectile(Vector2 mousePosition)
+    private void CmdCreateTongueProjectile(Vector2 mousePosition)
     {
         GameObject item = Instantiate(_tongueProjectile.gameObject, transform.position, Quaternion.identity);
         GrabTongueProjectile tongueProjectile = item.GetComponent<GrabTongueProjectile>();
@@ -83,8 +83,19 @@ public class GrabTongue : Ability
 
         NetworkServer.Spawn(item);
 
+        //RpcCreate(mousePosition);
         RpcInitializationProjectile(item);
     }
+
+    //[ClientRpc]
+    //private void RpcCreate(Vector2 mousePosition)
+    //{
+    //    GameObject item = Instantiate(_tongueProjectile.gameObject, transform.position, Quaternion.identity);
+    //    GrabTongueProjectile tongueProjectile = item.GetComponent<GrabTongueProjectile>();
+
+    //    tongueProjectile.InitializationProjectile(_dad);
+    //    tongueProjectile.MovingTongueFromPlayer(_dad.transform.position, mousePosition);
+    //}
 
     [ClientRpc]
     private void RpcInitializationProjectile(GameObject projectile)
