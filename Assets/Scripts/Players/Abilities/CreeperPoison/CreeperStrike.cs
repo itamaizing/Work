@@ -6,20 +6,20 @@ using UnityEngine;
 
 public class CreeperStrike : AutoAttackAbility
 {
-    [SerializeField] private StrokesOfAspiration _strokesOfAspiration;
-    [SerializeField] private PoisonBall _poisonBall;
-    [SerializeField] private SpitPoison _spitPoison;
     [SerializeField] protected Character _dad;
 
+    [Header("Talents")]
+    [SerializeField] private StrokesOfAspiration _strokesOfAspiration;
+    [SerializeField] private LightweightSlap _lightweightSlap;
+
     private BonePoison _bonePoisonDebuff;
+
     private GameObject _currentTarget;
     private GameObject _lastTarget;
 
     private int _currentCountHit = 0;
 
-    private const float _decreaseCooldownTime = 0.3f;
     private float _currentDamage;
-    private float _currentRadius;
     private float _multiplyCritDamage = 1.5f;
 
     private bool _isTwoHit = false;
@@ -27,9 +27,8 @@ public class CreeperStrike : AutoAttackAbility
     private Coroutine _useAbilityCoroutine;
 
     public GameObject CurrentTarget => _currentTarget;
-
-    public bool IsTwoHit { get => _isTwoHit; set => _isTwoHit = value; }
     public int CurrentCountHit { get => _currentCountHit; set => _currentCountHit = value; }
+    public bool IsTwoHit { get => _isTwoHit; set => _isTwoHit = value; }
 
     protected override void Start()
     {
@@ -67,7 +66,7 @@ public class CreeperStrike : AutoAttackAbility
         {
             if (_lastTarget == _currentTarget)
             {
-                UseTalent();
+                _strokesOfAspiration.UseTalentStrokesOfAspiration();
             }
             else
             {
@@ -109,17 +108,6 @@ public class CreeperStrike : AutoAttackAbility
             }
         }
         return criticalDamage *= multiplyDamage;
-    }
-
-    private void UseTalent()
-    {
-        float updateRemainingCooldownTimeForSpitPoison = _spitPoison.Remaining—ooldownTime - _decreaseCooldownTime;
-        _spitPoison.ReductionSetCooldown(updateRemainingCooldownTimeForSpitPoison);
-
-        //float updateRemainingCooldownTimeForPoisonBall = _poisonBall.RemainingCooldownCharges - _decreaseCooldownTime;
-        //_poisonBall.ReductionSetCooldown(updateRemainingCooldownTimeForPoisonBall);
-        //Debug.Log("ReductinCooldown SpitPoison == " + updateRemainingCooldownTimeForPoisonBall);
-        //Debug.Log("SpitPoison Cooldown == " + _poisonBall.RemainingCooldownCharges);
     }
 
     [Command]

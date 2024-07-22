@@ -6,7 +6,11 @@ public class StrokesOfAspiration : Talent
 {
     [SerializeField] private CreeperStrike _creeperStrike;
 
+    [SerializeField] private PoisonBall _poisonBall;
+    [SerializeField] private SpitPoison _spitPoison;
+
     private const float _timeBetweenAttack = 0.1f;
+    private const float _decreaseCooldownTime = 0.3f;
 
     public override void Enter()
     {
@@ -24,5 +28,16 @@ public class StrokesOfAspiration : Talent
         {
             _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_timeBetweenAttack);
         }
+    }
+
+    public void UseTalentStrokesOfAspiration()
+    {
+        float updateRemainingCooldownTimeForSpitPoison = _spitPoison.Remaining—ooldownTime - _decreaseCooldownTime;
+        _spitPoison.ReductionSetCooldown(updateRemainingCooldownTimeForSpitPoison);
+
+        //float updateRemainingCooldownTimeForPoisonBall = _poisonBall.RemainingCooldownCharges - _decreaseCooldownTime;
+        //_poisonBall.ReductionSetCooldown(updateRemainingCooldownTimeForPoisonBall);
+        //Debug.Log("ReductinCooldown SpitPoison == " + updateRemainingCooldownTimeForPoisonBall);
+        //Debug.Log("SpitPoison Cooldown == " + _poisonBall.RemainingCooldownCharges);
     }
 }

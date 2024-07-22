@@ -46,6 +46,7 @@ public class PoisonBall : TargetOrAreaAbility
     {
         _isEnemy = false;
         _secondClickDone = false;
+        _secondMousePosition = Vector3.zero;
 
         if (_clickCoroutine != null)
             StopCoroutine(ClickCoroutine());
@@ -62,6 +63,10 @@ public class PoisonBall : TargetOrAreaAbility
             {
                 _secondClickDone = true;
                 _secondMousePosition = GetMousePoint();
+            }
+            else if (Input.GetMouseButtonDown(1))
+            {
+                Cancel();
             }
             yield return null;
         }
@@ -238,4 +243,9 @@ public class PoisonBall : TargetOrAreaAbility
     }
 
     #endregion
+
+    public void PayCostPoisonBall()
+    {
+        PayCost();
+    }
 }

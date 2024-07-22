@@ -11,8 +11,6 @@ public class LightningStrikes : AutoAttackAbility
     private int _countStrikes = 2;
 
     private float _attackSpeedDeacrease = 0.1f;
-    private float _attackSpeedStrikes;
-    private float _currentDamage;
 
     private Coroutine _useCoroutine;
     private Coroutine _decreaseAttackSpeedCoroutine;
@@ -28,7 +26,6 @@ public class LightningStrikes : AutoAttackAbility
 
     protected override void Cancel()
     {
-        _attackSpeedStrikes = 1;
         _countStrikes = 2;
 
         if (_useCoroutine != null)

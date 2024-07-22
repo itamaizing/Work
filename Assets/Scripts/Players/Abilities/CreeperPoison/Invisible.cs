@@ -142,7 +142,7 @@ public class Invisible : Ability
         if (_isUsing)
         {
             // Возвращаем скорость к изначальной
-            _playerLinks.Move.SetMoveSpeed(_originalMoveSpeed);
+            _playerLinks.Move.SetDefaultSpeed();
 
             // Уменьшаем реген энергии на 30%
             _playerLinks.Stamina.RegenerationValue /= (1 + _increaseEnergyRegen);
@@ -163,7 +163,7 @@ public class Invisible : Ability
 
         float _applyModifiedMoveSpeed = _originalMoveSpeed - _moveSpeedDecrease;
 
-        _playerLinks.Move.SetMoveSpeed(_applyModifiedMoveSpeed);
+        _playerLinks.Move.ChangeMoveSpeed(_applyModifiedMoveSpeed);
         Debug.Log("speed == " + _playerLinks.Move._agent.maxSpeed);
 
         // Увеличиваем реген энергии на 30%

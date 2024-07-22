@@ -2,14 +2,21 @@ using DG.Tweening;
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
 
 public class PoisonSlap : TargetOrAreaAbility
 {
     [SerializeField] private Character _dad;
+
+    [Header("Abilities")]
     [SerializeField] private PoisonBall _poisonBall;
     [SerializeField] private CreeperStrike _creeperStrike;
     [SerializeField] private LightningStrikes _lightningStrikes;
+
+    [SerializeField] private LightweightSlap _lightweightSlap;
+
+    private GameObject _currentTarget;
 
     private float _increasingExecutionSpeedFromCreeperStrike = 0.5f; // Уменьшение скорости каста на 50%
     private float _increasingExecutionSpeedFromLightningStrikes = 0.0f;  // Уменьшение скорости каста на 100%
@@ -22,8 +29,6 @@ public class PoisonSlap : TargetOrAreaAbility
     private Coroutine _useCoroutine;
     private Coroutine _castSpeedFromCreeperStrikeCoroutine;
     private Coroutine _castSpeedFromLightningStrikesCoroutine;
-
-    private GameObject _currentTarget;
 
     private bool _isIncreasedCastSpeedFromCreeperStrike = false;
     private bool _isIncreasedCastSpeedFromLightningStrike = false;
@@ -53,10 +58,20 @@ public class PoisonSlap : TargetOrAreaAbility
     private IEnumerator UseAbilityCoroutine()
     {
         PayCost();
+
         if (_poisonBall.CurrentCharges != 0)
         {
-            _poisonBall.CurrentCharges--;
-            yield return null;
+            if ((_lightweightSlap.isActive && _creeperStrike.IsTwoHit) || (_lightweightSlap.isActive && _lightningStrikes.IsUsedLightningStrikes))
+            {
+                Debug.Log("IsActive true and Two hit");
+                yield return null;
+            }
+            else
+            {
+                Debug.Log("charge --");
+                //_poisonBall.CurrentCharges--;
+                _poisonBall.PayCostPoisonBall();
+            }
         }
 
         if (_creeperStrike.IsTwoHit && !_isIncreasedCastSpeedFromLightningStrike)

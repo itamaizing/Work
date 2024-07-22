@@ -369,10 +369,9 @@ MonoBehaviour:
   _obstacle:
     serializedVersion: 2
     m_Bits: 128
-  _strokesOfAspiration: {fileID: 1020456628770039310}
-  _poisonBall: {fileID: 7672760003326398008}
-  _spitPoison: {fileID: 5460533147100191806}
   _dad: {fileID: 8848169558533100257}
+  _strokesOfAspiration: {fileID: 1020456628770039310}
+  _lightweightSlap: {fileID: 0}
 --- !u!114 &2133911755741689447
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -525,7 +524,7 @@ MonoBehaviour:
   _isUseCharges: 1
   _chargesHaveSeparateCooldown: 1
   _maxCharges: 3
-  _chargeCooldown: 5
+  _chargeCooldown: 14
   _isStreaming: 0
   _streamingDuration: 0
   _manaCostRate: 0
@@ -574,6 +573,7 @@ MonoBehaviour:
   _poisonBall: {fileID: 7672760003326398008}
   _creeperStrike: {fileID: 3923834704028430900}
   _lightningStrikes: {fileID: 2133911755741689447}
+  _lightweightSlap: {fileID: 969632895075172795}
 --- !u!114 &6027837359207633613
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -694,6 +694,7 @@ GameObject:
   - component: {fileID: 5575131436335557587}
   - component: {fileID: 8392273409717092943}
   - component: {fileID: 1020456628770039310}
+  - component: {fileID: 969632895075172795}
   m_Layer: 0
   m_Name: Talents_Container
   m_TagString: Untagged
@@ -738,12 +739,12 @@ MonoBehaviour:
   - {fileID: 1020456628770039310}
   - {fileID: 1020456628770039310}
   - {fileID: 1020456628770039310}
-  - {fileID: 1020456628770039310}
-  - {fileID: 1020456628770039310}
-  - {fileID: 1020456628770039310}
-  - {fileID: 1020456628770039310}
-  - {fileID: 1020456628770039310}
-  - {fileID: 1020456628770039310}
+  - {fileID: 969632895075172795}
+  - {fileID: 969632895075172795}
+  - {fileID: 969632895075172795}
+  - {fileID: 969632895075172795}
+  - {fileID: 969632895075172795}
+  - {fileID: 969632895075172795}
 --- !u!114 &1020456628770039310
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -762,7 +763,30 @@ MonoBehaviour:
   isActive: 0
   Name: Stroke Of Aspiration
   Description: 
-  ico: {fileID: 21300000, guid: d711e158d4244e449a813d065a5d0e09, type: 3}
+  ico: {fileID: 21300000, guid: 5711d4c2b5c281147ab022c75cb66999, type: 3}
+  character: {fileID: 8848169558533100257}
+  _creeperStrike: {fileID: 3923834704028430900}
+  _poisonBall: {fileID: 7672760003326398008}
+  _spitPoison: {fileID: 5460533147100191806}
+--- !u!114 &969632895075172795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 615051740401084893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4ceefaec061c884b86df4749352f9ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  isActive: 0
+  Name: Lightweight Slap
+  Description: 
+  ico: {fileID: 21300000, guid: dfa6db335114f8e498d6358b3d8118ed, type: 3}
   character: {fileID: 8848169558533100257}
   _creeperStrike: {fileID: 3923834704028430900}
 --- !u!1 &740190560921219825
