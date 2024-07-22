@@ -264,6 +264,8 @@ GameObject:
   - component: {fileID: 7672760003326398008}
   - component: {fileID: 6227316397025926076}
   - component: {fileID: 6027837359207633613}
+  - component: {fileID: 2185409320862421989}
+  - component: {fileID: 817346276867831510}
   m_Layer: 0
   m_Name: Abilities
   m_TagString: Untagged
@@ -301,11 +303,13 @@ MonoBehaviour:
   _abilities:
   - {fileID: 3923834704028430900}
   - {fileID: 2133911755741689447}
-  - {fileID: 3216856000846122427}
   - {fileID: 5460533147100191806}
   - {fileID: 7672760003326398008}
   - {fileID: 6227316397025926076}
   - {fileID: 6027837359207633613}
+  - {fileID: 2185409320862421989}
+  - {fileID: 817346276867831510}
+  - {fileID: 3216856000846122427}
   visualRender: {fileID: 4071738984799970690}
   _characterData: {fileID: 11400000, guid: 47cac5ab51e8b334aafb537b893ada29, type: 2}
   _talentSystem: {fileID: 8392273409717092943}
@@ -527,10 +531,10 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: 0
   _isCanTargetHimself: 0
-  _poisonCloudBuffPrefab: {fileID: -5737491862988992034, guid: fb3b0602f17456a43875770ff14e2a51, type: 3}
-  _projectile: {fileID: 5760352791335105038, guid: d097441cb29bc5a42b2defb1e1f12525, type: 3}
   _playerLinks: {fileID: 8848169558533100257}
   _secondMousePosition: {x: 0, y: 0, z: 0}
+  _poisonCloudBuffPrefab: {fileID: -5737491862988992034, guid: fb3b0602f17456a43875770ff14e2a51, type: 3}
+  _projectile: {fileID: 5760352791335105038, guid: d097441cb29bc5a42b2defb1e1f12525, type: 3}
 --- !u!114 &6227316397025926076
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -605,8 +609,80 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: 0
   _dad: {fileID: 8848169558533100257}
-  _lineRenderer: {fileID: 7900996044532349954, guid: 06c5415f9410c754594294be38257457, type: 3}
   _tongueProjectile: {fileID: 5721942681369797396, guid: 0335b54680e29c74daf86f45acd8389b, type: 3}
+--- !u!114 &2185409320862421989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 573140117665601435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a5742b330fadaf458dbf1c67b84e5fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _abilityInfo: {fileID: 11400000, guid: ebeca0253d3207d4cb39a4e352e99b11, type: 2}
+  _isAutoAttack: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _manaCost: 80
+  _castDelay: 0
+  _cooldown: 14
+  _abilitySchool: 6
+  _abilityForm: 2
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _player: {fileID: 8848169558533100257}
+  _creeperStrike: {fileID: 3923834704028430900}
+--- !u!114 &817346276867831510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 573140117665601435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 171d1ae5fdc10c54380015ddae5bd2b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _abilityInfo: {fileID: 11400000, guid: e0a694047bc706b4fb4d88da4b0399dc, type: 2}
+  _isAutoAttack: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _manaCost: 80
+  _castDelay: 0
+  _cooldown: 14
+  _abilitySchool: 0
+  _abilityForm: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _player: {fileID: 8848169558533100257}
+  _poisonBall: {fileID: 7672760003326398008}
+  _spitPoison: {fileID: 5460533147100191806}
 --- !u!1 &615051740401084893
 GameObject:
   m_ObjectHideFlags: 0

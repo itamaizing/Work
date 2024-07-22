@@ -7,7 +7,6 @@ public abstract class StaminaComponent : NetworkBehaviour
 	public Bar bar;
 	public float Value { get { return _value; } }
 	public float MaxValue { get { return _maxValue; } }
-
     public float RegenerationValue { get => _regenerationValue; set => _regenerationValue = value; }
 
     [SyncVar(hook = nameof(NetworkUpdateBar))]

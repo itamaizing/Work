@@ -32,7 +32,6 @@ public class Invisible : Ability
     protected override void Start()
     {
         _playerHealth = _playerLinks.GetComponent<HealthComponent>();
-        _originalMoveSpeed = _playerData.MoveSpeed;
     }
 
     private void Update()

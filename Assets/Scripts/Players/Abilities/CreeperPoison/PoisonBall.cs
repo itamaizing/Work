@@ -6,29 +6,30 @@ using UnityEngine;
 
 public class PoisonBall : TargetOrAreaAbility
 {
-    [SerializeField] private PoisonCloudBuff _poisonCloudBuffPrefab;
-    [SerializeField] private PoisonBallProjectile _projectile;
     [SerializeField] private Character _playerLinks;
     [SerializeField] private Vector3 _secondMousePosition;
 
+    [SerializeField] private PoisonCloudBuff _poisonCloudBuffPrefab;
+    [SerializeField] private PoisonBallProjectile _projectile;
+
+    private PoisonCloudBuff _poisonCloudBuff;
+
     private int _countProjectiles = 0;
 
-    private float _fastMovementTimeCast = 1.8f;
-    private float _slowMovementTimeCast = 0.4f;
+    private float _fastTimeCast = 1.8f;
+    private float _slowTimeCast = 0.4f;
 
     private bool _secondClickDone = false;
     private bool _isEnemy = false;
     private bool _isFast;
 
-    private PoisonCloudBuff _poisonCloudBuff;
-
     private Coroutine _clickCoroutine;
     private Coroutine _useCoroutine;
 
     public int CurrentCharges { get => _currentChargers; set => _currentChargers = value; }
+    public int CountProjectiles { get; set; }
     public GameObject LastTarget { get; set; }
     public GameObject CurrentTarget { get; set; }
-    public int CountProjectiles { get; set; }
 
     protected override IEnumerator UseCoroutine()
     {
@@ -106,7 +107,7 @@ public class PoisonBall : TargetOrAreaAbility
     #region ChooseMoveSpeedProjectile
     private IEnumerator FastMoveShoot(bool isEnemy, bool isFast)
     {
-        _castDelay = _fastMovementTimeCast;
+        _castDelay = _fastTimeCast;
         yield return GetCastDeleyCoroutine();
 
         ChooseWhichProjectileCreate(isEnemy, isFast);
@@ -116,7 +117,7 @@ public class PoisonBall : TargetOrAreaAbility
 
     private IEnumerator SlowMoveShoot(bool isEnemy, bool isFast)
     {
-        _castDelay = _slowMovementTimeCast;
+        _castDelay = _slowTimeCast;
         yield return GetCastDeleyCoroutine();
 
         ChooseWhichProjectileCreate(isEnemy, isFast);

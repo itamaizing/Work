@@ -23,7 +23,6 @@ public class PoisonSlap : TargetOrAreaAbility
     private Coroutine _castSpeedFromCreeperStrikeCoroutine;
     private Coroutine _castSpeedFromLightningStrikesCoroutine;
 
-
     private GameObject _currentTarget;
 
     private bool _isIncreasedCastSpeedFromCreeperStrike = false;
@@ -49,8 +48,6 @@ public class PoisonSlap : TargetOrAreaAbility
 
         if (_castSpeedFromLightningStrikesCoroutine != null)
             StopCoroutine(CastSpeedFromLightningStrikes());
-        //if (_damageDealCoroutine != null)
-        //    StopCoroutine(DamageDeal());
     }
 
     private IEnumerator UseAbilityCoroutine()
