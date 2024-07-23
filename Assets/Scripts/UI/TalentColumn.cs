@@ -47,9 +47,15 @@ public class TalentColumn : MonoBehaviour
 			_buttons1[i].talentDescription.text = _system.Talents[i].Name + "\n" + _system.Talents[i].Description;
 			int id = i;
 			_buttons1[i].button.onClick.AddListener(() => { SwitchTalent(id, !_system.Talents[id].isActive); });
+
 			if(_system.Talents[id].isActive)
 			{
 				count++;
+				_buttons1[i].SwitchBorders(true);
+			}
+			else
+			{
+				_buttons1[i].SwitchBorders(false);
 			}
 			//_buttons1[i].SwitchBorders();
 		}

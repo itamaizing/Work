@@ -3521,7 +3521,7 @@ MonoBehaviour:
   Name: Talents2
   Description: df asdf adsf asf
   ico: {fileID: 21300000, guid: f0ccd677cfe30094c8aebaee7b301751, type: 3}
-  character: {fileID: 0}
+  character: {fileID: 8468544467696250796}
 --- !u!114 &3240623405797250538
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3541,7 +3541,7 @@ MonoBehaviour:
   Name: Talents3
   Description: df asdf asdf asdf
   ico: {fileID: 21300000, guid: 4f77fa0459846d84484335b98dce4ac7, type: 3}
-  character: {fileID: 0}
+  character: {fileID: 8468544467696250796}
 --- !u!114 &8682121660824369185
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3560,8 +3560,8 @@ MonoBehaviour:
   isActive: 0
   Name: Talents4
   Description: fds dfasdf asdfasf
-  ico: {fileID: 0}
-  character: {fileID: 0}
+  ico: {fileID: 21300000, guid: efaec6374d1b5054d9037d5d0446e029, type: 3}
+  character: {fileID: 8468544467696250796}
 --- !u!114 &8525686735181722530
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3581,7 +3581,7 @@ MonoBehaviour:
   Name: Talents5
   Description: asdgsagdasdfsdf
   ico: {fileID: 21300000, guid: d83da3915c2142f4f8cd56b3844b91aa, type: 3}
-  character: {fileID: 0}
+  character: {fileID: 8468544467696250796}
 --- !u!114 &895138939693564751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3601,7 +3601,7 @@ MonoBehaviour:
   Name: Talents6
   Description: dadsadsadsas
   ico: {fileID: 21300000, guid: 3c709b466f53c0141944292653b6dff8, type: 3}
-  character: {fileID: 0}
+  character: {fileID: 8468544467696250796}
 --- !u!1 &8210224711045638505
 GameObject:
   m_ObjectHideFlags: 0
