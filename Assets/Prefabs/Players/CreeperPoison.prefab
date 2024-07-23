@@ -492,6 +492,9 @@ MonoBehaviour:
   _streamingDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: 0
+  _talentSystem: {fileID: 8392273409717092943}
+  _healingPoisonCloud: {fileID: 2373151710181061745}
+  _capaciousPoisonCloud: {fileID: 3625646612109896303}
   _poisonCloudBuffPrefab: {fileID: -5737491862988992034, guid: fb3b0602f17456a43875770ff14e2a51, type: 3}
   _projectile: {fileID: 9185291158651071422, guid: 2df088c1e08769144ba1fbb1cd7e00f1, type: 3}
   _playerLinks: {fileID: 8848169558533100257}
@@ -530,6 +533,9 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: 0
   _isCanTargetHimself: 0
+  _talentSystem: {fileID: 8392273409717092943}
+  _healingPoisonCloud: {fileID: 2373151710181061745}
+  _capaciousPoisonCloud: {fileID: 3625646612109896303}
   _playerLinks: {fileID: 8848169558533100257}
   _secondMousePosition: {x: 0, y: 0, z: 0}
   _poisonCloudBuffPrefab: {fileID: -5737491862988992034, guid: fb3b0602f17456a43875770ff14e2a51, type: 3}
@@ -695,6 +701,8 @@ GameObject:
   - component: {fileID: 8392273409717092943}
   - component: {fileID: 1020456628770039310}
   - component: {fileID: 969632895075172795}
+  - component: {fileID: 3625646612109896303}
+  - component: {fileID: 2373151710181061745}
   m_Layer: 0
   m_Name: Talents_Container
   m_TagString: Untagged
@@ -733,18 +741,18 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _talents:
-  - {fileID: 1020456628770039310}
-  - {fileID: 1020456628770039310}
-  - {fileID: 1020456628770039310}
-  - {fileID: 1020456628770039310}
-  - {fileID: 1020456628770039310}
-  - {fileID: 1020456628770039310}
+  - {fileID: 2373151710181061745}
+  - {fileID: 3625646612109896303}
   - {fileID: 969632895075172795}
+  - {fileID: 1020456628770039310}
+  - {fileID: 2373151710181061745}
+  - {fileID: 3625646612109896303}
   - {fileID: 969632895075172795}
+  - {fileID: 1020456628770039310}
+  - {fileID: 2373151710181061745}
+  - {fileID: 3625646612109896303}
   - {fileID: 969632895075172795}
-  - {fileID: 969632895075172795}
-  - {fileID: 969632895075172795}
-  - {fileID: 969632895075172795}
+  - {fileID: 1020456628770039310}
 --- !u!114 &1020456628770039310
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -789,6 +797,46 @@ MonoBehaviour:
   ico: {fileID: 21300000, guid: dfa6db335114f8e498d6358b3d8118ed, type: 3}
   character: {fileID: 8848169558533100257}
   _creeperStrike: {fileID: 3923834704028430900}
+--- !u!114 &3625646612109896303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 615051740401084893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5300110580da641af0fed875db082f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  isActive: 0
+  Name: Capacious Poison Cloud
+  Description: 
+  ico: {fileID: 21300000, guid: 2792173d76a5f4d2ebe800b6b4b096cf, type: 3}
+  character: {fileID: 8848169558533100257}
+--- !u!114 &2373151710181061745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 615051740401084893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43d31da3a0620bd469d47c7183a75a3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  isActive: 0
+  Name: Healing Poison Cloud
+  Description: 
+  ico: {fileID: 21300000, guid: d83da3915c2142f4f8cd56b3844b91aa, type: 3}
+  character: {fileID: 8848169558533100257}
 --- !u!1 &740190560921219825
 GameObject:
   m_ObjectHideFlags: 0

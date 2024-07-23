@@ -86,7 +86,7 @@ public class HealthComponent : NetworkBehaviour
         _absorbPhysDamage = healthInfo.AbsorbPhysicsDamage;
         
         UpdateHealthBar();
-       // StartCoroutine(CoroutineRegenirateHP());
+        StartCoroutine(CoroutineRegenirateHP());
     }
 
     public bool TryTakeDamage(float damageValue, DamageType damageType, AttackRangeType attackRangeType)

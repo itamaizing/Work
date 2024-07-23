@@ -3,45 +3,76 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
 
 public class PoisonCloudBuff : BaseEffect
 {
+    [Header("Talents")]
+    [SerializeField] private HealingPoisonCloud _healingPoisonCloud;
+    [SerializeField] private CapaciousPoisonCloud _capaciousPoisonCloud;
+
     [Header("Buff Components")]
+    [SerializeField] private Character _dad;
     [SerializeField] private CircleCollider2D _triggerCircleCollider;
     [SerializeField] private ParticleSystem _poisonCloudPrefab;
     [SerializeField] private ParticleSystem _instancePoisonCloud;
-    private Character _caster;
 
     [Header("Buff Values")]
     [SerializeField] private int _maxStacks = 5;
     [SerializeField] private float _duration = 6;
-    [SerializeField] private float _radiusCloud;
+
     private int _currentStacks = 0;
+    public float _radiusCloud;
     private float _currentDamage;
     private float _increasedDamage;
     private float _baseDamage = 0.005f;
     private float _timeBetweenAttack = 1.0f;
 
-    [Header("Coroutines")]
     private Coroutine _useCoroutine;
     private Coroutine _lifeTimeStacksCoroutine;
     private Coroutine _damageDealCoroutine;
+    private Coroutine _healPoisonCloudTalentCoroutine;
 
-    private void Start()
+    #region ForTalents
+
+    private float _maxHealth;
+    private float _baseHealthRegen;
+    private float _currentHealthRegen;
+    private float _increaseHealthRegen = 0.005f;
+    private float _newRadiusCloud = 1.5f;
+
+    private bool _isActiveCapaciousCloud;
+
+    #endregion
+
+    public void PoisonCloudAddStacks(Character caster, bool isActiveHealingCloud, bool isActiveCapaciousCloud)
     {
-        _radiusCloud = (2f * GlobalVariable.cellSize) / GlobalVariable.cellSize;
-        _triggerCircleCollider.radius = _radiusCloud;
-    }
+        _dad = caster;
 
-    public void PoisonCloudAddStacks(Character caster)
-    {
-        _caster = caster;
+        _isActiveCapaciousCloud = isActiveCapaciousCloud;
 
+        _healingPoisonCloud = _dad.GetComponentInChildren<HealingPoisonCloud>();
+        _capaciousPoisonCloud = _dad.GetComponentInChildren<CapaciousPoisonCloud>();
+        
         if (_currentStacks < _maxStacks)
         {
             _currentStacks++;
             _increasedDamage = _currentStacks * _baseDamage;
+
+            if (isActiveHealingCloud)
+            {
+                _currentHealthRegen = _currentStacks * _increaseHealthRegen;
+
+                if (_healPoisonCloudTalentCoroutine == null)
+                {
+                    Debug.Log("Work healCLoud");
+
+                    _maxHealth = _dad.Health.MaxHealth;
+                    _baseHealthRegen = _dad.Health.HpRegenerationValue;
+                    _healPoisonCloudTalentCoroutine = StartCoroutine(HealingCloud());
+                }
+            }
 
             if (_useCoroutine == null)
             {
@@ -79,7 +110,7 @@ public class PoisonCloudBuff : BaseEffect
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.transform != _caster.transform)
+        if (collision.gameObject.transform != _dad.transform)
         {
             if (collision.TryGetComponent<HealthComponent>(out var target))
             {
@@ -126,10 +157,19 @@ public class PoisonCloudBuff : BaseEffect
     }
     private void Update()
     {
-        // Нужно для того, чтобы PoisonCloud оставался на игроке при передвижении игрока.
+        if (_isActiveCapaciousCloud)
+        {
+            _radiusCloud = 0.5f + _newRadiusCloud;
+        }
+        else if (_isActiveCapaciousCloud)
+        {
+            _radiusCloud = 0.5f;
+        }
+        _triggerCircleCollider.radius = _radiusCloud;
+
         if (_instancePoisonCloud != null)
         {
-            _instancePoisonCloud.transform.position = _caster.transform.position;
+            _instancePoisonCloud.transform.position = _dad.transform.position;
         }
     }
 
@@ -147,10 +187,10 @@ public class PoisonCloudBuff : BaseEffect
     {
         while (_currentStacks > 0)
         {
-            Collider2D[] hitTargets = Physics2D.OverlapCircleAll(_caster.transform.position, _radiusCloud);
+            Collider2D[] hitTargets = Physics2D.OverlapCircleAll(_dad.transform.position, _radiusCloud);
             foreach (var targets in hitTargets)
             {
-                if (targets.TryGetComponent<HealthComponent>(out var target) && target.gameObject != _caster.gameObject)
+                if (targets.TryGetComponent<HealthComponent>(out var target) && target.gameObject != _dad.gameObject)
                 {
                     _currentDamage = target.MaxHealth * _increasedDamage;
 
@@ -180,9 +220,26 @@ public class PoisonCloudBuff : BaseEffect
                 _instancePoisonCloud = null;
             }
 
+            _dad.Health.HpRegenerationValue = _baseHealthRegen;
             StopAllCoroutines();
             Destroy(gameObject);
         }
+    }
+
+    private IEnumerator HealingCloud()
+    {
+        float originalHpRegen = _dad.Health.HpRegenerationValue;
+
+        while (_currentStacks != 0)
+        {
+            float increasedHealthRegen = _maxHealth * _currentHealthRegen + originalHpRegen;
+
+            _dad.Health.HpRegenerationValue = increasedHealthRegen;
+
+            yield return null;
+        }
+
+        _dad.Health.HpRegenerationValue = originalHpRegen;
     }
 
     #endregion
