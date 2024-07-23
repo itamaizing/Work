@@ -39,4 +39,11 @@ public class AttributeItem : MonoBehaviour
 		_value /= 1.01f;
 		_text.text = _value.ToString();
 	}
+
+	public void SetGreyScale(int grey)
+	{
+		mat = Instantiate(Ico.material);
+		Ico.material = mat;
+		mat.SetFloat("_GrayscaleAmount", grey);
+	}
 }

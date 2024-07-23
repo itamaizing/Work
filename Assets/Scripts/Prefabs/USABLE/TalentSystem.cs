@@ -6,11 +6,13 @@ using UnityEngine.UI;
 
 public abstract class Talent : NetworkBehaviour
 {
-    public bool isActive;
+    private bool _isActive;
 	public string Name;
 	public string Description;
 	public Sprite ico;
     public Character character;
+
+    public bool IsActive => _isActive;
 
 	public abstract void Enter();
 
@@ -21,13 +23,13 @@ public abstract class Talent : NetworkBehaviour
 public class TalentSystem : NetworkBehaviour
 {
     [SerializeField] private List<Talent> _talents;
-    private List<Talent> _activeTalents = new List<Talent>();
+    //private List<Talent> _activeTalents = new List<Talent>();
     private TalentColumn _panel;
     private int _points = 10;
 
     public TalentColumn Panel => _panel;
 	public List<Talent> Talents => _talents;
-    public List<Talent> ActiveTalents => _activeTalents;
+    //public List<Talent> ActiveTalents => _activeTalents;
 
 	public void Initialize()
 	{
@@ -42,7 +44,8 @@ public class TalentSystem : NetworkBehaviour
     public void CmdSwitchActive(int id)
     {
         if (id > _talents.Count) return;
-        if (_activeTalents.Contains(_talents[id]))
+        //if (_activeTalents.Contains(_talents[id]))
+        if (_talents[id].IsActive)
         {
             Remove(id);
          //   RpcRemove(id);
@@ -124,11 +127,11 @@ public class TalentSystem : NetworkBehaviour
 	public void Add(int id)
     {
 		Debug.Log("Add");
-		if (_talents.Count >= id && _points > _activeTalents.Count)
+		if (_talents.Count >= id && _points > GetActiveTalentCount())
         {	
-			_activeTalents.Add(_talents[id]);
-            _activeTalents[_activeTalents.Count- 1].Enter();
-            _talents[id].isActive = true;
+			//_activeTalents.Add(_talents[id]);
+            //_activeTalents[_activeTalents.Count- 1].Enter();
+            _talents[id].Enter();
         }
     }
 
@@ -137,15 +140,16 @@ public class TalentSystem : NetworkBehaviour
 		Debug.Log("Removes");
 		if (_talents.Count >= id)
 		{
-			_activeTalents[_activeTalents.Count - 1].Exit();
+            /*_activeTalents[_activeTalents.Count - 1].Exit();
 			_activeTalents.Remove(_talents[id]);
-			_talents[id].isActive = false;
+			_talents[id].isActive = false;*/
+            _talents[id].Exit();
 		}
 	}
 
 	public void EnterAll()
     {
-        foreach(Talent talent in _activeTalents)
+        foreach(Talent talent in _talents)
         {
             talent.Enter();
         }
@@ -153,22 +157,35 @@ public class TalentSystem : NetworkBehaviour
 
 	public void ExitAll()
     {
-		foreach (Talent talent in _activeTalents)
+		foreach (Talent talent in _talents)
 		{
 			talent.Exit();
-            _activeTalents.Remove(talent);
+            //_activeTalents.Remove(talent);
 		}
 	}
 
 	public void Add(Talent talent)
     {
-        _activeTalents.Add(talent);
-        talent.Enter();
+       // _activeTalents.Add(talent);
+       talent.Enter();
     }
 
 	public void Remove(Talent talent)
     {
         talent.Exit();
-        _activeTalents.Remove(talent);
+       // _activeTalents.Remove(talent);
+    }
+
+    public int GetActiveTalentCount()
+    {
+        int count = 0;
+        for(int i = 0; i< _talents.Count; i++)
+        {
+            if (_talents[i].IsActive) 
+            {  
+                count++;
+            }
+        }
+        return count;
     }
 }

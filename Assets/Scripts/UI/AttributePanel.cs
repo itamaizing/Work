@@ -94,9 +94,7 @@ public class AttributePanel : MonoBehaviour
         {
 			for (int i = 0; i < _attributes.Length; i++)
 			{
-				_attributes[i].mat = Instantiate(_attributes[i].Ico.material);
-				_attributes[i].Ico.material = _attributes[i].mat;
-				_attributes[i].mat.SetFloat("_GrayscaleAmount", 1);
+                _attributes[i].SetGreyScale(1);
 			}
 		}
     }    
@@ -115,9 +113,7 @@ public class AttributePanel : MonoBehaviour
 		{
 			for (int i = 0; i < _attributes.Length; i++)
 			{
-				_attributes[i].mat = Instantiate(_attributes[i].Ico.material);
-				_attributes[i].Ico.material = _attributes[i].mat;
-				_attributes[i].mat.SetFloat("_GrayscaleAmount", 0);
+				_attributes[i].SetGreyScale(0);
 			}
 		}
 	}
