@@ -13,7 +13,7 @@ public class AttributePanel : MonoBehaviour
     private int[] _modif = new int[7];
     private List<int> _changes = new List<int>();
 
-    private int _points = 10;
+    private int _points = 0;
     private int _bonus = 0;
 
     public void SwitchVisible(bool visible)
