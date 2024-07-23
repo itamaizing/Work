@@ -8,19 +8,19 @@ public class IceShardTalent : Talent
 	[SerializeField] private PlayerAbilities _ability;
 	public override void Enter()
 	{
-		if(_ability.Abilities.Contains(_iceShard)) 
+		/*if(_ability.Abilities.Contains(_iceShard)) 
 		{
 			_iceShard.enabled = true;
 		}
 		else
 		{
 			_ability.AddAbility(_iceShard);
-		}
+		}*/
 	}
 
 	public override void Exit()
 	{
-		if (_ability.Abilities.Contains(_iceShard))
+		/*if (_ability.Abilities.Contains(_iceShard))
 		{
 			_ability.RemoveAbility(_iceShard);
 			//iceShard.enabled = false;
@@ -29,6 +29,6 @@ public class IceShardTalent : Talent
 		{
 			_iceShard.enabled = false;
 			//ability.RemoveAbility(iceShard);
-		}
+		}*/
 	}
 }

@@ -14,18 +14,17 @@ public class AttributePanel : MonoBehaviour
     private List<int> _changes = new List<int>();
 
     private int _points = 10;
+    private int _bonus = 0;
+
     public void SwitchVisible(bool visible)
     {
         _content.SetActive(visible);
     }
+
 	public void SwitchVisible()
 	{
 		_content.SetActive(!_content.activeSelf);
 	}
-	/*private void Start()
-	{
-        Init(_hero);
-	}*/
 
 	public void Init(HeroComponent character)
     {
@@ -145,5 +144,19 @@ public class AttributePanel : MonoBehaviour
 			return true;
         }
         return false;
+    }
+
+    public void SetBonus(int bonus)
+    {
+        if(_bonus > bonus)
+        {
+            RemovePoints(_bonus - bonus);
+            _bonus = bonus;
+        }
+        else
+        {
+            AddPoints(bonus - _bonus);
+            _bonus = bonus;
+        }
     }
 }

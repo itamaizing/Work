@@ -20,6 +20,14 @@ PrefabInstance:
       propertyPath: m_SortingLayer
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 445838640881858043, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+      propertyPath: isActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 445838640881858043, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+      propertyPath: _deathSpiral
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 795014623008228812, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -120,6 +128,10 @@ PrefabInstance:
       propertyPath: uniqueID
       value: 2446313085426384720
       objectReference: {fileID: 0}
+    - target: {fileID: 3240623405797250538, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+      propertyPath: isActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3359680783071017316, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
       propertyPath: m_SortingLayer
       value: 0
@@ -212,6 +224,14 @@ PrefabInstance:
       propertyPath: _playerData
       value: 
       objectReference: {fileID: 11400000, guid: f71e3e6e8b3ca6245b0c37fd016a4039, type: 2}
+    - target: {fileID: 8525686735181722530, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+      propertyPath: isActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8682121660824369185, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+      propertyPath: isActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 2105836877704237594, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
     - {fileID: 1005351013565685612, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
@@ -283,7 +303,6 @@ MonoBehaviour:
   _manaCostPerTick: 0
   _isCanTargetHimself: 0
   _projectile: {fileID: 3436609779166928419, guid: d490c899d604d2c4dbb3f72e61cacb6e, type: 3}
-  _userSettings: {fileID: 0}
 --- !u!114 &3174589714439514509
 MonoBehaviour:
   m_ObjectHideFlags: 0

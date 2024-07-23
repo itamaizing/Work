@@ -16,6 +16,9 @@ public class TalentColumn : MonoBehaviour
 	[SerializeField] private TextMeshProUGUI _column3;
 	[SerializeField] private TalentSystem _system;
 	[SerializeField] private AttributePanel _attributePanel;
+
+	private int _bonus = 0;
+	//private int _prevCount = 0;
 	public void OnContentShow(int id)
 	{
 		//_content[id].SetActive(!_content[id].activeSelf);
@@ -45,18 +48,20 @@ public class TalentColumn : MonoBehaviour
 			_buttons1[i].ico.sprite = _system.Talents[i].ico;
 			_buttons1[i].talentName.text = _system.Talents[i].Name + i;
 			_buttons1[i].talentDescription.text = _system.Talents[i].Name + "\n" + _system.Talents[i].Description;
-			int id = i;
-			_buttons1[i].button.onClick.AddListener(() => { SwitchTalent(id, !_system.Talents[id].isActive); });
-
-			if(_system.Talents[id].isActive)
+			
+			if(_system.Talents[i].isActive)
 			{
 				count++;
 				_buttons1[i].SwitchBorders(true);
+				_buttons1[i].isActive = true;
 			}
 			else
 			{
 				_buttons1[i].SwitchBorders(false);
+				_buttons1[i].isActive = false;
 			}
+			int id = i;
+			_buttons1[i].button.onClick.AddListener(() => { SwitchTalent(id, !_system.Talents[id].isActive); });
 			//_buttons1[i].SwitchBorders();
 		}
 		_column1.text = count.ToString();
@@ -79,6 +84,7 @@ public class TalentColumn : MonoBehaviour
 		{
 			_attributePanel.RemovePoints(1);
 		}
+		BonusAttributePoints(0);
 	}
 
 	public void SwitchActiveUI()
@@ -92,4 +98,30 @@ public class TalentColumn : MonoBehaviour
 			gameObject.transform.DOScale(0, 0.5f);
 		}
 	}	
+
+	private void BonusAttributePoints(int id)
+	{
+		int count = 0;
+		for(int i = 9; i < 12; i++)
+		{
+			if (_system.Talents[i].isActive)
+			{
+				count++;
+			}
+		}
+
+		if(count <= 1)
+		{
+			_bonus = 0;
+		}
+		if(count ==2)
+		{
+			_bonus = 1;
+		}
+		if(count ==3)
+		{
+			_bonus = 3;
+		}
+		_attributePanel.SetBonus(_bonus);		
+	}
 }

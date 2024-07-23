@@ -8,19 +8,19 @@ public class BlockOfIceTalent : Talent
 	[SerializeField] private PlayerAbilities _ability;
 	public override void Enter()
 	{
-		if (_ability.Abilities.Contains(_blockOfIce))
+		/*if (_ability.Abilities.Contains(_blockOfIce))
 		{
 			_blockOfIce.enabled = true;
 		}
 		else
 		{
 			_ability.AddAbility(_blockOfIce);
-		}
+		}*/
 	}
 
 	public override void Exit()
 	{
-		if (_ability.Abilities.Contains(_blockOfIce))
+		/*if (_ability.Abilities.Contains(_blockOfIce))
 		{
 			_ability.RemoveAbility(_blockOfIce);
 			//iceShard.enabled = false;
@@ -29,6 +29,6 @@ public class BlockOfIceTalent : Talent
 		{
 			_blockOfIce.enabled = false;
 			//ability.RemoveAbility(iceShard);
-		}
+		}*/
 	}
 }
