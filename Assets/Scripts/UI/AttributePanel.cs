@@ -6,8 +6,10 @@ public class AttributePanel : MonoBehaviour
 {
     [SerializeField] private GameObject _content;
     [SerializeField] private AttributeItem[] _attributes;
+    //[SerializeField] private HeroComponent _hero;
 
-    private float[] _modif = new float[7];
+    private int[] _modif = new int[7];
+    private List<int> _changes = new List<int>();
 
     private int _points = 10;
     public void SwitchVisible(bool visible)
@@ -18,6 +20,10 @@ public class AttributePanel : MonoBehaviour
 	{
 		_content.SetActive(!_content.activeSelf);
 	}
+	/*private void Start()
+	{
+        Init(_hero);
+	}*/
 
 	public void Init(HeroComponent character)
     {
@@ -33,8 +39,8 @@ public class AttributePanel : MonoBehaviour
         {
             _modif[i] = 0;
             int id = i;
-            _attributes[i].Plus.onClick.AddListener(() => OnValueChange(1, id));
-            _attributes[i].Minus.onClick.AddListener(() => OnValueChange(-1, id));
+            _attributes[i].Plus.onClick.AddListener(() => Add(id));
+            _attributes[i].Minus.onClick.AddListener(() => Remove(id));
         }
     }
 
@@ -42,13 +48,13 @@ public class AttributePanel : MonoBehaviour
     {
         if (value > 0 && _points > 0)//if we adding value and if we have some free points, we can add attribute value
         {
-            _modif[id] =+ value;
+           // _modif[id] =+ value;
             _points--;
             _attributes[id].Add();
         }
         if(value < 0 && _modif[id] > 0) //if we removing value and if value is bigger than default then we removing value and adding points
 		{
-			_modif[id] =+ value;
+		//	_modif[id] =+ value;
             _points++;
 			_attributes[id].Remove();
 		}
@@ -71,5 +77,66 @@ public class AttributePanel : MonoBehaviour
 				_attributes[i].mat.SetFloat("_GrayscaleAmount", 0);
 			}
 		}
+    }
+
+    private void Add(int id)
+    {
+        if(_points > 0)
+        {
+			_modif[id]++;
+			_points--;
+			_attributes[id].Add();
+            _changes.Add(id);
+		}
+        if(_points <=0)
+        {
+			for (int i = 0; i < _attributes.Length; i++)
+			{
+				_attributes[i].mat = Instantiate(_attributes[i].Ico.material);
+				_attributes[i].Ico.material = _attributes[i].mat;
+				_attributes[i].mat.SetFloat("_GrayscaleAmount", 1);
+			}
+		}
+    }    
+
+    private void Remove(int id)
+    {
+		if (_modif[id] > 0)
+		{
+			_modif[id]--;
+			_points++;
+			_attributes[id].Remove();
+            _changes.Remove(id);
+		}
+		if (_points > 0)
+		{
+			for (int i = 0; i < _attributes.Length; i++)
+			{
+				_attributes[i].mat = Instantiate(_attributes[i].Ico.material);
+				_attributes[i].Ico.material = _attributes[i].mat;
+				_attributes[i].mat.SetFloat("_GrayscaleAmount", 0);
+			}
+		}
+	}
+
+    public void AddPoints(int value)
+    {
+        _points += value;
+    }
+
+    public bool RemovePoints(int value) 
+    {
+        if (_points >= value)
+        {
+            _points -= value;
+            return true;
+        }
+        else if(_changes.Count > 0)
+        {
+            Remove(_changes[0]);
+            _changes.RemoveAt(0);
+            return true;
+        }
+        return false;
     }
 }

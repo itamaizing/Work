@@ -15,7 +15,7 @@ public class TalentColumn : MonoBehaviour
 	[SerializeField] private TalentButton[] _buttons3;
 	[SerializeField] private TextMeshProUGUI _column3;
 	[SerializeField] private TalentSystem _system;
-
+	[SerializeField] private AttributePanel _attributePanel;
 	public void OnContentShow(int id)
 	{
 		//_content[id].SetActive(!_content[id].activeSelf);
@@ -64,6 +64,15 @@ public class TalentColumn : MonoBehaviour
 		Debug.Log("switch");
 
 		_column1.text = _system.ActiveTalents.Count.ToString();
+
+		if(value)
+		{
+			_attributePanel.AddPoints(1);
+		}
+		else
+		{
+			_attributePanel.RemovePoints(1);
+		}
 	}
 
 	public void SwitchActiveUI()
