@@ -682,7 +682,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  uniqueID: 8723257340348515721
+  uniqueID: 1854654857872005158
   updateError: 1
   checkTime: 0.5
 --- !u!114 &4030725381616344407
@@ -3348,6 +3348,11 @@ GameObject:
   - component: {fileID: 2269426203430854731}
   - component: {fileID: 5082383780772546697}
   - component: {fileID: 445838640881858043}
+  - component: {fileID: 3193596479322258093}
+  - component: {fileID: 3240623405797250538}
+  - component: {fileID: 8682121660824369185}
+  - component: {fileID: 8525686735181722530}
+  - component: {fileID: 895138939693564751}
   m_Layer: 0
   m_Name: Talents_Container
   m_TagString: Untagged
@@ -3386,15 +3391,15 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _talents:
+  - {fileID: 5115025386098828278}
+  - {fileID: 3193596479322258093}
+  - {fileID: 3240623405797250538}
+  - {fileID: 8682121660824369185}
+  - {fileID: 8525686735181722530}
+  - {fileID: 895138939693564751}
   - {fileID: 2269426203430854731}
   - {fileID: 5082383780772546697}
   - {fileID: 445838640881858043}
-  - {fileID: 5115025386098828278}
-  - {fileID: 5115025386098828278}
-  - {fileID: 5115025386098828278}
-  - {fileID: 5115025386098828278}
-  - {fileID: 5115025386098828278}
-  - {fileID: 5115025386098828278}
   - {fileID: 5115025386098828278}
   - {fileID: 5115025386098828278}
   - {fileID: 5115025386098828278}
@@ -3497,6 +3502,106 @@ MonoBehaviour:
   character: {fileID: 8468544467696250796}
   _deathSpiral: {fileID: 5424265573815036285}
   _ability: {fileID: 3734820572883177193}
+--- !u!114 &3193596479322258093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7828036230296040018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11d75527305895c4690791193f705fea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  isActive: 0
+  Name: Talents2
+  Description: df asdf adsf asf
+  ico: {fileID: 21300000, guid: f0ccd677cfe30094c8aebaee7b301751, type: 3}
+  character: {fileID: 0}
+--- !u!114 &3240623405797250538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7828036230296040018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a8398f2c481e3a4482a021578ca75bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  isActive: 0
+  Name: Talents3
+  Description: df asdf asdf asdf
+  ico: {fileID: 21300000, guid: 4f77fa0459846d84484335b98dce4ac7, type: 3}
+  character: {fileID: 0}
+--- !u!114 &8682121660824369185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7828036230296040018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c27921c3440ef54990a037dc731c7c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  isActive: 0
+  Name: Talents4
+  Description: fds dfasdf asdfasf
+  ico: {fileID: 0}
+  character: {fileID: 0}
+--- !u!114 &8525686735181722530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7828036230296040018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 165e5e37391908344aaf97197c6e3593, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  isActive: 0
+  Name: Talents5
+  Description: asdgsagdasdfsdf
+  ico: {fileID: 21300000, guid: d83da3915c2142f4f8cd56b3844b91aa, type: 3}
+  character: {fileID: 0}
+--- !u!114 &895138939693564751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7828036230296040018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d945ace531a483c4e989e803a26e4e98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  isActive: 0
+  Name: Talents6
+  Description: dadsadsadsas
+  ico: {fileID: 21300000, guid: 3c709b466f53c0141944292653b6dff8, type: 3}
+  character: {fileID: 0}
 --- !u!1 &8210224711045638505
 GameObject:
   m_ObjectHideFlags: 0
