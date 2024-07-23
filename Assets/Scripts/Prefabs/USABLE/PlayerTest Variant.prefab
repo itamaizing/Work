@@ -200,6 +200,10 @@ PrefabInstance:
       propertyPath: m_SortingLayer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7579798881083447851, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+      propertyPath: _userSettings
+      value: 
+      objectReference: {fileID: 9000200958661223933}
     - target: {fileID: 8468544467696250796, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
       propertyPath: _minion
       value: 
@@ -279,6 +283,7 @@ MonoBehaviour:
   _manaCostPerTick: 0
   _isCanTargetHimself: 0
   _projectile: {fileID: 3436609779166928419, guid: d490c899d604d2c4dbb3f72e61cacb6e, type: 3}
+  _userSettings: {fileID: 0}
 --- !u!114 &3174589714439514509
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -399,3 +404,14 @@ MonoBehaviour:
   _manaCostPerTick: 0
   _isCanTargetHimself: 0
   _pushDistance: 5
+--- !u!114 &9000200958661223933 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -7146587456276821115, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+  m_PrefabInstance: {fileID: 6932477457714540152}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4045a79ec1c504439a0501f22780052, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
