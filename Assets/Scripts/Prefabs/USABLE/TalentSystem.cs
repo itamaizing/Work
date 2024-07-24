@@ -6,13 +6,13 @@ using UnityEngine.UI;
 
 public abstract class Talent : NetworkBehaviour
 {
-    public bool isActive;
+    private bool _isActive;
 	public string Name;
 	public string Description;
 	public Sprite ico;
     public Character character;
 
-    //public bool IsActive => _isActive;
+    public bool IsActive => _isActive;
 
 	public abstract void Enter();
 
@@ -20,7 +20,7 @@ public abstract class Talent : NetworkBehaviour
 
     public void SetActive(bool isActive)
     {
-        this.isActive = isActive;
+        _isActive = isActive;
     }
 }
 
@@ -49,7 +49,7 @@ public class TalentSystem : NetworkBehaviour
     {
         if (id > _talents.Count) return;
         //if (_activeTalents.Contains(_talents[id]))
-        if (_talents[id].isActive)
+        if (_talents[id].IsActive)
         {
             Remove(id);
          //   RpcRemove(id);
@@ -212,7 +212,7 @@ public class TalentSystem : NetworkBehaviour
         int count = 0;
         for(int i = 0; i< _talents.Count; i++)
         {
-            if (_talents[i].isActive) 
+            if (_talents[i].IsActive) 
             {  
                 count++;
             }
