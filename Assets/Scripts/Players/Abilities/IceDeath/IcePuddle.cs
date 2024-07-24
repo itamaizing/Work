@@ -47,12 +47,20 @@ public class IcePuddle : Ability
 			Vector2 lookDir = _mousePos2 - _preViewPuddle.transform.position;
 			_angle2 = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg + 90f;
 			_lowePoint.transform.position = InstantiatePoint();
-			if (!_crutch)
+			float distanceA = Vector2.Distance(gameObject.transform.position, _preViewPuddle.transform.position);
+			float distanceB = Vector2.Distance(_lowePoint.transform.position, _preViewPuddle.transform.position);
+			float distanceC = Vector2.Distance(gameObject.transform.position, _lowePoint.transform.position);
+			float maxAngle = (Mathf.Pow(distanceA, 2) + Mathf.Pow(distanceB, 2) - Mathf.Pow(distanceC, 2) / (2*distanceA*distanceB));
+			if(_angle2 > maxAngle) 
 			{
+				_angle2 = maxAngle;
+			}
+			//if (!_crutch)
+		//	{
 				//_preViewPuddle.transform.rotation = Quaternion.Euler(_preViewPuddle.transform.rotation.x, _preViewPuddle.transform.rotation.y, _preViewPuddle.transform.rotation.z);
 				//_preViewPuddle.transform.rotation = Quaternion.Euler(_preViewPuddle.transform.rotation.x, _preViewPuddle.transform.rotation.y, _angle2);
 				_preViewPuddle.transform.rotation = Quaternion.Euler(0, 0, _angle2);
-			}
+			//}
 		}
 		if (Input.GetMouseButtonDown(0))
 		{
@@ -157,7 +165,9 @@ public class IcePuddle : Ability
 			Vector3 spawnPosition = gameObject.transform.position + direction * _radius;
 			return spawnPosition;
 		}
-
+		/*var length = Mathf.Min(distance, _radius);
+		var direction = (worldPosition - gameObject.transform.position).normalized;
+		return transform.position + direction * length;*/
 	}
 
 	private void Timer()
