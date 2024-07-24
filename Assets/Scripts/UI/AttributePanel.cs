@@ -15,6 +15,8 @@ public class AttributePanel : MonoBehaviour
 
     private int _points = 0;
     private int _bonus = 0;
+    private int _bonus2 = 0;
+    private int _bonus3 = 0;
 
     public void SwitchVisible(bool visible)
     {
@@ -142,9 +144,9 @@ public class AttributePanel : MonoBehaviour
         return false;
     }
 
-    public void SetBonus(int bonus)
+    public void SetBonus(int bonus, int bonus2, int bonus3)
     {
-        if(_bonus > bonus)
+        if(_bonus > bonus) //first row bonus
         {
             RemovePoints(_bonus - bonus);
             _bonus = bonus;
@@ -154,5 +156,27 @@ public class AttributePanel : MonoBehaviour
             AddPoints(bonus - _bonus);
             _bonus = bonus;
         }
-    }
+
+		if (_bonus2 > bonus2) // second row bonus
+		{
+			RemovePoints(_bonus2 - bonus2);
+			_bonus2 = bonus2;
+		}
+		else
+		{
+			AddPoints(bonus2 - _bonus2);
+			_bonus2 = bonus2;
+		}
+
+		if (_bonus3 > bonus3) // third row bonus
+		{
+			RemovePoints(_bonus3 - bonus3);
+			_bonus3 = bonus3;
+		}
+		else
+		{
+			AddPoints(bonus3 - _bonus3);
+			_bonus3 = bonus3;
+		}
+	}
 }

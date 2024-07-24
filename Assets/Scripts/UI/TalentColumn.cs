@@ -18,6 +18,8 @@ public class TalentColumn : MonoBehaviour
 	[SerializeField] private AttributePanel _attributePanel;
 
 	private int _bonus = 0;
+	private int _bonus2 = 0;
+	private int _bonus3 = 0;
 	//private int _prevCount = 0;
 	public void OnContentShow(int id)
 	{
@@ -49,7 +51,7 @@ public class TalentColumn : MonoBehaviour
 			_buttons1[i].talentName.text = _system.Talents[i].Name + i;
 			_buttons1[i].talentDescription.text = _system.Talents[i].Name + "\n" + _system.Talents[i].Description;
 			
-			if(_system.Talents[i].IsActive)
+			if(_system.Talents[i].isActive)
 			{
 				count++;
 				_buttons1[i].SwitchBorders(true);
@@ -61,7 +63,7 @@ public class TalentColumn : MonoBehaviour
 				_buttons1[i].isActive = false;
 			}
 			int id = i;
-			_buttons1[i].button.onClick.AddListener(() => { SwitchTalent(id, !_system.Talents[id].IsActive); });
+			_buttons1[i].button.onClick.AddListener(() => { SwitchTalent(id, !_system.Talents[id].isActive); });
 			//_buttons1[i].SwitchBorders();
 		}
 		_column1.text = count.ToString();
@@ -70,7 +72,7 @@ public class TalentColumn : MonoBehaviour
 	private void SwitchTalent(int id, bool value)
 	{
 		Debug.Log(id);
-		_system.CmdSwitchActive(id);
+		_system.SetActive(id, value);
 		_buttons1[id].SwitchBorders(value);
 		Debug.Log("switch");
 
@@ -84,7 +86,7 @@ public class TalentColumn : MonoBehaviour
 		{
 			_attributePanel.RemovePoints(1);
 		}
-		BonusAttributePoints(0);
+		BonusAttributePoints();
 	}
 
 	public void SwitchActiveUI()
@@ -99,18 +101,36 @@ public class TalentColumn : MonoBehaviour
 		}
 	}	
 
-	private void BonusAttributePoints(int id)
+	private void BonusAttributePoints() //its very strange but....  first "for" is for the first row, if we had 2 active talents we get 1 extra point, 
+											  //if we have 3 active then we get 3 points, for the second row, 2 active-1 point, 3 active-2 points,
+											  //for third row for 3 active 1 point
 	{
 		int count = 0;
 		for(int i = 9; i < 12; i++)
 		{
-			if (_system.Talents[i].IsActive)
+			if (_system.Talents[i].isActive)
 			{
 				count++;
 			}
 		}
+		int count2 = 0;
+		for (int i = 6; i < 9; i++)
+		{
+			if (_system.Talents[i].isActive)
+			{
+				count2++;
+			}
+		}
+		int count3 = 0;
+		for (int i = 3; i < 6; i++)
+		{
+			if (_system.Talents[i].isActive)
+			{
+				count3++;
+			}
+		}
 
-		if(count <= 1)
+		if (count <= 1)
 		{
 			_bonus = 0;
 		}
@@ -122,6 +142,28 @@ public class TalentColumn : MonoBehaviour
 		{
 			_bonus = 3;
 		}
-		_attributePanel.SetBonus(_bonus);		
+
+		if (count2 <= 1)
+		{
+			_bonus2 = 0;
+		}
+		if (count2 == 2)
+		{
+			_bonus2 = 1;
+		}
+		if (count2 == 3)
+		{
+			_bonus2 = 2;
+		}
+
+		if (count3 < 3)
+		{
+			_bonus3 = 0;
+		}
+		if (count3 == 3)
+		{
+			_bonus3 = 1;
+		}
+		_attributePanel.SetBonus(_bonus, _bonus2, _bonus3);		
 	}
 }
