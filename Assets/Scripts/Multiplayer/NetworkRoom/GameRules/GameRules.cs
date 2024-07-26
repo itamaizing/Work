@@ -7,6 +7,7 @@ using UnityEngine;
 public abstract class GameRules : NetworkBehaviour
 {
     protected readonly SyncList<GameObject> _players = new SyncList<GameObject>();
+    protected List<UserNetworkSettings> _playersSettings = new List<UserNetworkSettings>();
 
     protected NetworkRoom _room;
 
@@ -15,7 +16,8 @@ public abstract class GameRules : NetworkBehaviour
     public bool IsStarted { get => _isStarted; set => _isStarted = value; }
     public SyncList<GameObject> Players => _players;
 
-    protected abstract void GameStart();
+    public abstract void GameStartServer();
+    protected abstract void GameStartClient();
 
     public void Init(NetworkRoom room)
     {
@@ -26,9 +28,35 @@ public abstract class GameRules : NetworkBehaviour
             _players.Add(item);
         }
     }
-    public void GameStatusHook(bool oldValue, bool newValue)
+    protected void GameStatusHook(bool oldValue, bool newValue)
     {
-        GameStart();
+        GameStartClient();
+    }
+
+    protected virtual IEnumerator SplitIntoTeams()
+    {
+        for (int i = 0; i < _players.Count / 2; i++)
+        {
+            _playersSettings.Add(_players[i].GetComponent<UserNetworkSettings>());
+            _playersSettings[i].TeamIndex = 1;
+        }
+        for (int i = _players.Count / 2; i < _players.Count; i++)
+        {
+            _playersSettings.Add(_players[i].GetComponent<UserNetworkSettings>());
+            _playersSettings[i].TeamIndex = 2;
+        }
+
+        yield return new WaitForEndOfFrame();
+
+        foreach (var item in _playersSettings)
+        {
+            foreach (var player in _playersSettings)
+            {
+                item.Players.Add(player.gameObject);
+            }
+            yield return new WaitForEndOfFrame();
+            item.MarkUpEnemiesOrAllies();
+        }
     }
 
     protected IEnumerator CloseRoomJob()

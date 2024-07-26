@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 public class NetworkRoom
 {
     private string _scene;
-    int _maxNumPlayers;
+    private int _maxNumPlayers;
     private List<GameObject> _players;
     private Scene _currentRoom;
     private bool _isLoaded;
@@ -85,7 +85,7 @@ public class NetworkRoom
 
             item.Init(this);
             item.IsStarted = true;
-            item.GameStatusHook(true, true);
+            item.GameStartServer();
         }
         else
         {
