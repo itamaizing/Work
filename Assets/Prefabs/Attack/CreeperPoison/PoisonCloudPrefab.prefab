@@ -161,7 +161,6 @@ MonoBehaviour:
   _instancePoisonCloud: {fileID: 0}
   _maxStacks: 5
   _duration: 6
-  _radiusCloud: 0.5
 --- !u!58 &-1395477883878879546
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -196,4 +195,4 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 3

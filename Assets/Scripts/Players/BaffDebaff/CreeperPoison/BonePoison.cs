@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class BonePoison : BaseEffect
 {
-    [SerializeField] private int _baseDamage = 1;
-    [SerializeField] private int _stackDuration = 30;
+    [SerializeField] private int _baseDamage;
+    [SerializeField] private int _stackDuration = 6;
     private float _currentDamage;
     private float _timeBetweenAttack = 1.0f;
     private int _currentStacks = 0;
@@ -18,7 +18,8 @@ public class BonePoison : BaseEffect
     private Coroutine _lifeTimeStacksCoroutine;
     private Coroutine _damageDealCoroutine;
 
-    public int CurrentStacks => _currentStacks;
+    public int CurrentStacks { get => _currentStacks; set => _currentStacks = value; }
+    public int MaxStacks => _maxStacks;
 
     public void AddStacks(HealthComponent targetHealth)
     {
@@ -31,8 +32,23 @@ public class BonePoison : BaseEffect
             {
                 _damageDealCoroutine = StartCoroutine(DamageDealCoroutine(targetHealth));
             }
+            else
+            {
+                if (_lifeTimeStacksCoroutine != null)
+                    StopCoroutine(LifeTimeStacksCoroutine(targetHealth));
+            }
+
+            _lifeTimeStacksCoroutine = StartCoroutine(LifeTimeStacksCoroutine(targetHealth));
         }
-        _lifeTimeStacksCoroutine = StartCoroutine(LifeTimeStacksCoroutine(targetHealth));
+        else if (_currentStacks == _maxStacks)
+        {
+            if (_lifeTimeStacksCoroutine != null)
+            {
+                StopCoroutine(LifeTimeStacksCoroutine(targetHealth));
+            }
+
+            _lifeTimeStacksCoroutine = StartCoroutine(LifeTimeStacksCoroutine(targetHealth));
+        }
     }
 
     private IEnumerator DamageDealCoroutine(HealthComponent targetHealth)
@@ -48,16 +64,11 @@ public class BonePoison : BaseEffect
 
     private IEnumerator LifeTimeStacksCoroutine(HealthComponent targetHealth)
     {
-        while (_currentStacks > 0)
-        {
-            yield return new WaitForSeconds(_stackDuration);
-            _currentStacks--;
-            Debug.Log("CurrentStacks-- == " + _currentStacks);
-        }
+        yield return new WaitForSeconds(_stackDuration);
+        _currentStacks = 0;
 
         if (_currentStacks == 0)
         {
-            Debug.Log("else if coroutine");
             Destroy(gameObject);
             if (_damageDealCoroutine != null && _lifeTimeStacksCoroutine != null)
             {

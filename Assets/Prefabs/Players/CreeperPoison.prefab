@@ -266,6 +266,7 @@ GameObject:
   - component: {fileID: 6027837359207633613}
   - component: {fileID: 2185409320862421989}
   - component: {fileID: 817346276867831510}
+  - component: {fileID: 1536798141796345319}
   m_Layer: 0
   m_Name: Abilities
   m_TagString: Untagged
@@ -305,11 +306,12 @@ MonoBehaviour:
   - {fileID: 2133911755741689447}
   - {fileID: 5460533147100191806}
   - {fileID: 7672760003326398008}
+  - {fileID: 1536798141796345319}
   - {fileID: 6227316397025926076}
-  - {fileID: 6027837359207633613}
   - {fileID: 2185409320862421989}
   - {fileID: 817346276867831510}
   - {fileID: 3216856000846122427}
+  - {fileID: 6027837359207633613}
   visualRender: {fileID: 4071738984799970690}
   _characterData: {fileID: 11400000, guid: 47cac5ab51e8b334aafb537b893ada29, type: 2}
   _talentSystem: {fileID: 8392273409717092943}
@@ -364,14 +366,15 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: 0
   _isCanTargetHimself: 0
-  _attackZoneSize: 2
+  _attackZoneSize: 4
   _attackSpeed: 1
   _obstacle:
     serializedVersion: 2
     m_Bits: 128
-  _dad: {fileID: 8848169558533100257}
   _strokesOfAspiration: {fileID: 1020456628770039310}
-  _lightweightSlap: {fileID: 0}
+  _lightweightSlap: {fileID: 969632895075172795}
+  _ownElement: {fileID: 2590453872719564230}
+  _dad: {fileID: 8848169558533100257}
 --- !u!114 &2133911755741689447
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -492,7 +495,6 @@ MonoBehaviour:
   _streamingDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: 0
-  _talentSystem: {fileID: 8392273409717092943}
   _healingPoisonCloud: {fileID: 2373151710181061745}
   _capaciousPoisonCloud: {fileID: 3625646612109896303}
   _poisonCloudBuffPrefab: {fileID: -5737491862988992034, guid: fb3b0602f17456a43875770ff14e2a51, type: 3}
@@ -689,6 +691,45 @@ MonoBehaviour:
   _player: {fileID: 8848169558533100257}
   _poisonBall: {fileID: 7672760003326398008}
   _spitPoison: {fileID: 5460533147100191806}
+--- !u!114 &1536798141796345319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 573140117665601435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a499ceb173cd94994e8ef8c6af2f5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _abilityInfo: {fileID: 11400000, guid: 5dd2210736bee3d4197798d0dd5f05e3, type: 2}
+  _isAutoAttack: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _manaCost: 20
+  _castDelay: 0
+  _cooldown: 12
+  _abilitySchool: 0
+  _abilityForm: 1
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _dad: {fileID: 8848169558533100257}
+  _bonePoisonPrefab: {fileID: -6945864312988002102, guid: acf0aa1d343559640b903638c293a6b1, type: 3}
+  _enemyLayer:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!1 &615051740401084893
 GameObject:
   m_ObjectHideFlags: 0
@@ -703,6 +744,7 @@ GameObject:
   - component: {fileID: 969632895075172795}
   - component: {fileID: 3625646612109896303}
   - component: {fileID: 2373151710181061745}
+  - component: {fileID: 2590453872719564230}
   m_Layer: 0
   m_Name: Talents_Container
   m_TagString: Untagged
@@ -745,7 +787,7 @@ MonoBehaviour:
   - {fileID: 3625646612109896303}
   - {fileID: 969632895075172795}
   - {fileID: 1020456628770039310}
-  - {fileID: 2373151710181061745}
+  - {fileID: 2590453872719564230}
   - {fileID: 3625646612109896303}
   - {fileID: 969632895075172795}
   - {fileID: 1020456628770039310}
@@ -837,6 +879,32 @@ MonoBehaviour:
   Description: 
   ico: {fileID: 21300000, guid: d83da3915c2142f4f8cd56b3844b91aa, type: 3}
   character: {fileID: 8848169558533100257}
+--- !u!114 &2590453872719564230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 615051740401084893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a40a9755254f8c140a260181abf099f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  isActive: 0
+  Name: Own Element
+  Description: 
+  ico: {fileID: 21300000, guid: ed1972ce01824b542b0ae1113bc01a7e, type: 3}
+  character: {fileID: 8848169558533100257}
+  _creeperStrike: {fileID: 3923834704028430900}
+  _enemyLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  _enemiesWithDebuff: []
+  _radiusSearching: 100
 --- !u!1 &740190560921219825
 GameObject:
   m_ObjectHideFlags: 0

@@ -31,7 +31,7 @@ public class SpitPoisonProjectile : NetworkBehaviour
         }
     }
 
-    [Server]
+    
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.transform != _dad.transform)
@@ -42,7 +42,6 @@ public class SpitPoisonProjectile : NetworkBehaviour
 
                 DealDamage(targetHealth, _damage, DamageType.Magical, AttackRangeType.RangeAttack);
                 CreateBonePoisonDebuff(targetHealth);
-                //RpcCreateBonePoisonDebuff(targetHealth);
             }
         }
     }
@@ -67,21 +66,6 @@ public class SpitPoisonProjectile : NetworkBehaviour
     }
 
     private void CreateBonePoisonDebuff(HealthComponent targetHealth)
-    {
-        _bonePoisonDebuff = targetHealth.GetComponentInChildren<BonePoison>();
-        if (_bonePoisonDebuff == null)
-        {
-            _bonePoisonDebuff = Instantiate(_bonePoisonPrefab, targetHealth.transform);
-            _bonePoisonDebuff.AddStacks(targetHealth);
-        }
-        else
-        {
-            _bonePoisonDebuff.AddStacks(targetHealth);
-        }
-    }
-
-    [ClientRpc]
-    private void RpcCreateBonePoisonDebuff(HealthComponent targetHealth)
     {
         _bonePoisonDebuff = targetHealth.GetComponentInChildren<BonePoison>();
         if (_bonePoisonDebuff == null)

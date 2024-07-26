@@ -32,7 +32,7 @@ public class PoisonBall : TargetOrAreaAbility
     private Coroutine _useCoroutine;
 
     public int CurrentCharges { get => _currentChargers; set => _currentChargers = value; }
-    public int CountProjectiles { get; set; }
+    public int CountProjectiles { get => _countProjectiles; set => _countProjectiles = value; }
     public bool HealingCloudTalentIsActive => _healingPoisonCloud.isActive;
     public bool CapaciousCloudTalentIsActive => _capaciousPoisonCloud.isActive;
     public GameObject LastTarget { get; set; }
@@ -83,9 +83,6 @@ public class PoisonBall : TargetOrAreaAbility
         yield return _clickCoroutine = StartCoroutine(ClickCoroutine());
         PayCost();
 
-        _countProjectiles++;
-
-        //Debug.Log("PoisonBall Count == " + _countProjectiles);
         if (_countProjectiles < 3)
         {
             if (Target != null)
@@ -148,14 +145,13 @@ public class PoisonBall : TargetOrAreaAbility
 
     private void ChooseWhichProjectileCreate(bool isEnemy, bool isFast)
     {
-        // В зависимости от того выбран таргет или поинт, и какая скорость скорость, запускаем снаряд
         if (isEnemy)
         {
-            CmdCreateProjectile(Target.gameObject, Target.transform.position, _isFast);
+            CmdCreateProjectileForTaret(Target.gameObject, Target.transform.position, _isFast);
         }
         else
         {
-            CmdCreateProjectile(Point, _isFast);
+            CmdCreateProjectileForFlyingMaxDistance(Point, _isFast);
         }
     }
 
@@ -190,15 +186,15 @@ public class PoisonBall : TargetOrAreaAbility
     #region Command Methods
 
     [Command]
-    private void CmdCreateProjectile(GameObject target, Vector3 targetOrPoint, bool isFast)
+    private void CmdCreateProjectileForTaret(GameObject target, Vector3 targetOrPoint, bool isFast)
     {
         CurrentTarget = target;
 
-        if (CountProjectiles < 3)
+        if (LastTarget == CurrentTarget)
         {
             CountProjectiles++;
         }
-        else if (CountProjectiles == 3)
+        else if (LastTarget != CurrentTarget || CountProjectiles == 3)
         {
             CountProjectiles = 1;
         }
@@ -213,13 +209,13 @@ public class PoisonBall : TargetOrAreaAbility
     }
 
     [Command]
-    private void CmdCreateProjectile(Vector3 targetOrPoint, bool isFast)
+    private void CmdCreateProjectileForFlyingMaxDistance(Vector3 point, bool isFast)
     {
-        if (CountProjectiles < 3)
+        if (LastTarget == CurrentTarget)
         {
             CountProjectiles++;
         }
-        else if (CountProjectiles == 3)
+        else if (LastTarget != CurrentTarget || CountProjectiles == 3)
         {
             CountProjectiles = 1;
         }
@@ -228,7 +224,7 @@ public class PoisonBall : TargetOrAreaAbility
         PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>();
 
         poisonBallProjectile.InitializationProjectileForPoisonBall(_playerLinks.transform, _playerLinks.Stamina.Value);
-        poisonBallProjectile.MoveBallToTarget(targetOrPoint, isFast);
+        poisonBallProjectile.MoveBallOnMaxDistance(point, isFast);
 
         NetworkServer.Spawn(item);
     }

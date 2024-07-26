@@ -23,11 +23,11 @@ public class PoisonCloudBuff : BaseEffect
     [SerializeField] private float _duration = 6;
 
     private int _currentStacks = 0;
-    public float _radiusCloud;
     private float _currentDamage;
     private float _increasedDamage;
     private float _baseDamage = 0.005f;
     private float _timeBetweenAttack = 1.0f;
+    private float _radiusCloud = 0.5f;
 
     private Coroutine _useCoroutine;
     private Coroutine _lifeTimeStacksCoroutine;
@@ -46,8 +46,12 @@ public class PoisonCloudBuff : BaseEffect
 
     #endregion
 
+    public float RadiusCloud { get => _radiusCloud; set => _radiusCloud = value; }
+    public int CurrentStacks { get => _currentStacks; set => _currentStacks = value; }
+
     public void PoisonCloudAddStacks(Character caster, bool isActiveHealingCloud, bool isActiveCapaciousCloud)
     {
+        Debug.Log("PoisonCloudAddStacks work");
         _dad = caster;
 
         _isActiveCapaciousCloud = isActiveCapaciousCloud;
@@ -57,6 +61,7 @@ public class PoisonCloudBuff : BaseEffect
         
         if (_currentStacks < _maxStacks)
         {
+            Debug.Log("PoisonCloudAddStacks if CurrentStacks == " + _currentStacks);
             _currentStacks++;
             _increasedDamage = _currentStacks * _baseDamage;
 
@@ -76,10 +81,12 @@ public class PoisonCloudBuff : BaseEffect
 
             if (_useCoroutine == null)
             {
+                Debug.Log("if use coroutine == null");
                 _useCoroutine = StartCoroutine(ActivatePoisonCloud());
             }
             else
             {
+                Debug.Log("else use coroutine == null");
                 UpdateInstancePoisonCloud();
 
                 if (_lifeTimeStacksCoroutine != null)
@@ -91,6 +98,7 @@ public class PoisonCloudBuff : BaseEffect
         }
         else if (_currentStacks == _maxStacks)
         {
+            Debug.Log("else if CurrentStacks == _maxStacks");
             ResetLifeTimeStacks();
         }
     }
@@ -159,11 +167,11 @@ public class PoisonCloudBuff : BaseEffect
     {
         if (_isActiveCapaciousCloud)
         {
-            _radiusCloud = 0.5f + _newRadiusCloud;
+            _radiusCloud = 4f + _newRadiusCloud;
         }
-        else if (_isActiveCapaciousCloud)
+        else if (!_isActiveCapaciousCloud)
         {
-            _radiusCloud = 0.5f;
+            _radiusCloud = 4f;
         }
         _triggerCircleCollider.radius = _radiusCloud;
 
@@ -243,10 +251,4 @@ public class PoisonCloudBuff : BaseEffect
     }
 
     #endregion
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, _radiusCloud);
-    }
 }

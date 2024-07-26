@@ -8,7 +8,6 @@ using UnityEngine;
 public class SpitPoison : Ability
 {
     [Header("Talents")]
-    [SerializeField] private TalentSystem _talentSystem;
     [SerializeField] private HealingPoisonCloud _healingPoisonCloud;
     [SerializeField] private CapaciousPoisonCloud _capaciousPoisonCloud;
 
@@ -87,6 +86,18 @@ public class SpitPoison : Ability
     #region Command Methods
 
     [Command]
+    private void CmdInstantiateProjectile(float angle, float manaValue)
+    {
+        SpitPoisonProjectile projectile = Instantiate(_projectile, _playerLinks.Rb.position, Quaternion.Euler(0, 0, angle));
+        projectile.InitializationProjectile(_playerLinks, manaValue);
+
+        NetworkServer.Spawn(projectile.gameObject);
+
+        RpcInstantiateProjectile(angle, manaValue);
+        RpcInitialization(projectile.gameObject, manaValue);
+    }
+
+    [Command]
     private void CmdCreatePoisonCloudBuff(bool isActiveHealingCloud, bool isActiveCapaciousCloud)
     {
         RpcCreatePoisonCloudBuff(isActiveHealingCloud, isActiveCapaciousCloud);
@@ -103,17 +114,6 @@ public class SpitPoison : Ability
         }
     }
 
-    [Command]
-    private void CmdInstantiateProjectile(float angle, float manaValue)
-    {
-        SpitPoisonProjectile projectile = Instantiate(_projectile, _playerLinks.Rb.position, Quaternion.Euler(0, 0, angle));
-        projectile.InitializationProjectile(_playerLinks, manaValue);
-
-        NetworkServer.Spawn(projectile.gameObject);
-
-        RpcInitialization(projectile.gameObject, manaValue);
-    }
-
     #endregion
 
     #region ClientRpc Methods
@@ -122,6 +122,13 @@ public class SpitPoison : Ability
     private void RpcInitialization(GameObject projectile, float manaValue)
     {
         projectile.GetComponent<SpitPoisonProjectile>().InitializationProjectile(_playerLinks, manaValue);
+    }
+
+    [ClientRpc]
+    private void RpcInstantiateProjectile(float angle, float manaValue)
+    {
+        SpitPoisonProjectile projectile = Instantiate(_projectile, _playerLinks.Rb.position, Quaternion.Euler(0, 0, angle));
+        projectile.InitializationProjectile(_playerLinks, manaValue);
     }
 
     [ClientRpc]

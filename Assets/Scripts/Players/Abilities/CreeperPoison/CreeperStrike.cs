@@ -6,11 +6,13 @@ using UnityEngine;
 
 public class CreeperStrike : AutoAttackAbility
 {
-    [SerializeField] protected Character _dad;
-
     [Header("Talents")]
     [SerializeField] private StrokesOfAspiration _strokesOfAspiration;
     [SerializeField] private LightweightSlap _lightweightSlap;
+    [SerializeField] private OwnElement _ownElement;
+
+    [Header("Ability properties")]
+    [SerializeField] protected Character _dad;
 
     private BonePoison _bonePoisonDebuff;
 

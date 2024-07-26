@@ -59,24 +59,30 @@ public class PoisonBallProjectile : NetworkBehaviour
     }
 
     #region MovementBall
+
     public void MoveBallToTarget(Vector3 target, bool isFast)
     {
         Debug.Log("PoisonBallProjectile MoveBallToTarget");
 
-        float _speed = isFast ? _fastMovementSpeed : _slowMovementSpeed;
-
-        CmdMovingToTarget(target, _speed);
-    }
-
-    private void CmdMovingToTarget(Vector3 target, float speed)
-    {
-        Debug.Log("PoisonBallProjectile MovingToTarget");
+        float speed = isFast ? _fastMovementSpeed : _slowMovementSpeed;
 
         _rbBall.DOMove(target, speed * _maxDistance / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(DestroyProjectile);
     }
+
+    public void MoveBallOnMaxDistance(Vector3 point, bool isFast)
+    {
+        float speed = isFast ? _fastMovementSpeed : _slowMovementSpeed;
+
+        Vector3 direction = point - transform.position;
+        Debug.Log("direction == " + direction);
+
+        _rbBall.DOMove(transform.position + direction * _maxDistance, speed * _maxDistance / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(DestroyProjectile);
+    }
+
     #endregion
 
     #region Making Damage
+
     private void DealDamage(HealthComponent targetHealth, float currentDamage, DamageType damageType, AttackRangeType attackRangeType)
     {
         Energy _energyLink = (Energy)_dad.GetComponent<Character>().Stamina;
@@ -90,22 +96,13 @@ public class PoisonBallProjectile : NetworkBehaviour
 
     private void PushEnemyDependingOnCountProjectile(HealthComponent target, float durationPush, float distancePush)
     {
-        if (_countProjectiles < 3)
+        distancePush = 1.0f;
+        if (_countProjectiles == 3 && _currentTarget == _poisonBall.LastTarget)
         {
-           PushEnemy(target.gameObject, durationPush, distancePush);
+            distancePush = 4.0f;
         }
-        else if (_countProjectiles == 3)
-        {
-            if (_currentTarget == _poisonBall.LastTarget)
-            {
-                distancePush = 4.0f;
-            }
-            else
-            {
-                distancePush = 1.0f;
-            }
-            PushEnemy(target.gameObject, durationPush, distancePush);
-        }
+        PushEnemy(target.gameObject, durationPush, distancePush);
+        Debug.Log("countProjectiles == " +  _countProjectiles);
     }
 
     private void PushEnemy(GameObject target, float durationPush, float distancePush)
@@ -113,17 +110,23 @@ public class PoisonBallProjectile : NetworkBehaviour
         Vector2 directionPush = (target.transform.position - transform.position);
 
         distancePush = ((distancePush * GlobalVariable.cellSize) * durationPush) / GlobalVariable.cellSize;
-        Debug.Log("distancePush == " + distancePush);
+
         if (_countProjectiles < 3)
         {
             target.GetComponent<Transform>().transform.DOMove((Vector2)target.transform.position - directionPush * distancePush, durationPush).SetEase(Ease.Linear);
         }
-        else if (_countProjectiles == 3)
+        else if (_countProjectiles == 3 && _currentTarget == _poisonBall.LastTarget)
         {
             target.GetComponent<Transform>().transform.DOMove((Vector2)target.transform.position + directionPush * distancePush, durationPush).SetEase(Ease.Linear);
         }
+        else if (_countProjectiles == 3 && _currentTarget != _poisonBall.LastTarget)
+        {
+            target.GetComponent<Transform>().transform.DOMove((Vector2)target.transform.position - directionPush * distancePush, durationPush).SetEase(Ease.Linear);
+        }
+
         target.GetComponent<Character>().CharacterState.AddState(new InAirState(), _durationStun, 0, States.InAir);
     }
+
     #endregion
 
     #region InitializationProjectiles
