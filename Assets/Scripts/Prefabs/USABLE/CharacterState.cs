@@ -1,6 +1,7 @@
 using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 public abstract class AbstractCharacterState
 {
@@ -855,11 +856,6 @@ public class CharacterState : NetworkBehaviour
 				currentStates[i].UpdateState();
 			}
 		}
-
-		if(Input.GetKeyDown(KeyCode.R))
-		{
-			CmdAddState(States.Stun, 10, 0);
-		}
 	}
 
 	//[Command]
@@ -877,6 +873,7 @@ public class CharacterState : NetworkBehaviour
 		ClientAddState(state, duration, damageToExit, Schools.None);
 	}
 
+	[Command]
 	public void CmdRemoveState(States state)
 	{
 		RemoveState(state);
@@ -887,15 +884,7 @@ public class CharacterState : NetworkBehaviour
 		CmdAddState(state, duration, damageToExit);
 		//ClientAddState(state, duration, damageToExit, Schools.None);
 	}*/
-	public bool IfHasState(AbstractCharacterState newState)
-	{
-		//ITS NOT WORKING!!!!
-		if (currentStates.Contains(newState))
-		{
-			return true;
-		}
-		else return false;
-	}
+
 
 	public void RemoveState(AbstractCharacterState newState)
 	{
@@ -905,6 +894,7 @@ public class CharacterState : NetworkBehaviour
 
 	private void RemoveState(States stateName)
 	{
+		if (currentStates.Count <= 0) return;
 		foreach (AbstractCharacterState state in currentStates)
 		{
 			if (state.state == stateName)
@@ -926,6 +916,7 @@ public class CharacterState : NetworkBehaviour
 	{
 		RemoveState(stateName);
 	}
+
 	public void Dispel(StateType type)
 	{
 		foreach (AbstractCharacterState state in currentStates)
@@ -1001,7 +992,18 @@ public class CharacterState : NetworkBehaviour
 		currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
 	}
 
-	/*public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state, Schools schools)
+	/*
+	 * 	public bool IfHasState(AbstractCharacterState newState)
+	{
+		//ITS NOT WORKING!!!!
+		if (currentStates.Contains(newState))
+		{
+			return true;
+		}
+		else return false;
+	}
+	 * 
+	 * public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state, Schools schools)
 	{
 		//if already exist 
 		//if (currentStates.Contains(newState))

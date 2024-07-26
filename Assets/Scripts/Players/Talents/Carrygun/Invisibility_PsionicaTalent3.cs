@@ -180,10 +180,10 @@ public class Invisibility_PsionicaTalent3 : MonoBehaviour
     {
         IsInvisibility = false;
 
-        if (_player.GetComponent<CharacterState>().IfHasState(new InvisibleState()))
+       /* if (_player.GetComponent<CharacterState>().IfHasState(new InvisibleState()))
         {
            // _player.GetComponent<CharacterState>().AddState(new DefaultState(),0,0,0);//TODO ADDVALUES
-        }
+        }*/
 
         StartCoroutine(RechargeCoroutine());
     }
