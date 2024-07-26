@@ -40,7 +40,6 @@ public abstract class GameRules : NetworkBehaviour
             _playersSettings.Add(_players[i].GetComponent<UserNetworkSettings>());
             _playersSettings[i].TeamIndex = 1;
         }
-
         for (int i = _players.Count / 2; i < _players.Count; i++)
         {
             _playersSettings.Add(_players[i].GetComponent<UserNetworkSettings>());
@@ -53,7 +52,7 @@ public abstract class GameRules : NetworkBehaviour
         {
             foreach (var player in _playersSettings)
             {
-                item.PlayersGameObject.Add(player.gameObject);
+                item.Players.Add(player.gameObject);
             }
             yield return new WaitForEndOfFrame();
             item.MarkUpEnemiesOrAllies();

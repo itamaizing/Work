@@ -101,7 +101,7 @@ public abstract class Ability : NetworkBehaviour
         }
     }
 
-    public void SetPlayer(MoveComponent playerMove, StaminaComponent mana, HealthComponent health)
+    public void Init(MoveComponent playerMove, StaminaComponent mana, HealthComponent health)
     {
         _playerMove = playerMove;
         _mana = mana;
@@ -288,7 +288,7 @@ public abstract class Ability : NetworkBehaviour
         while (_currentChargers < _maxCharges)
         {
             float time = 0;
-            while (time < _chargeCooldown)
+            while (time < ChargeCooldown)
             {
                 time += Time.deltaTime;
                 yield return null;
@@ -389,12 +389,14 @@ public struct StatsBuff
     private StatBuff _area;
     private StatBuff _attackSpeed;
     private StatBuff _castSpeed;
+    private StatBuff _chargeCooldown;
 
     public StatBuff Damage => _damage;
     public StatBuff Radius => _radius;
     public StatBuff Area => _area;
     public StatBuff AttackSpeed => _attackSpeed;
     public StatBuff CastSpeed => _castSpeed;
+    public StatBuff ChargeCooldown => _chargeCooldown;
 
     public StatsBuff(float multiplier, float additional)
     {
@@ -403,6 +405,7 @@ public struct StatsBuff
         _area = new StatBuff(multiplier, additional);
         _attackSpeed = new StatBuff(multiplier, additional);
         _castSpeed = new StatBuff(multiplier, additional);
+        _chargeCooldown = new StatBuff(multiplier, additional);
     }
 }
 

@@ -8,7 +8,7 @@ public class UserNetworkSettings : NetworkBehaviour
 {
     private List<HeroComponent> _allies = new List<HeroComponent>();
     private List<HeroComponent> _enemies = new List<HeroComponent>();
-    public readonly SyncList<GameObject> PlayersGameObject = new SyncList<GameObject>();
+    public readonly SyncList<GameObject> Players = new SyncList<GameObject>();
 
     private Scene myRoom;
 
@@ -30,13 +30,8 @@ public class UserNetworkSettings : NetworkBehaviour
     [TargetRpc]
     public void MarkUpEnemiesOrAllies()
     {
-        Debug.Log(PlayersGameObject.Count);
-
-        foreach (var item in PlayersGameObject)
+        foreach (var item in Players)
         {
-            Debug.Log(item);
-            Debug.Log(item.GetComponent<UserNetworkSettings>());
-            Debug.Log(item.GetComponent<UserNetworkSettings>().TeamIndex);
             if(item.GetComponent<UserNetworkSettings>().TeamIndex != _teamIndex)
             {
                 item.layer = LayerMask.NameToLayer("Enemy");
