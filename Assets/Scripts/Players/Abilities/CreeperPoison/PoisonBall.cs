@@ -6,10 +6,17 @@ using UnityEngine;
 
 public class PoisonBall : TargetOrAreaAbility
 {
+    #region ForTalents
+
     [Header("Talents")]
-    [SerializeField] private TalentSystem _talentSystem;
     [SerializeField] private HealingPoisonCloud _healingPoisonCloud;
     [SerializeField] private CapaciousPoisonCloud _capaciousPoisonCloud;
+    [SerializeField] private ToxiqueCloud _toxiqueCloud;
+    public bool HealingCloudTalentIsActive => _healingPoisonCloud.isActive;
+    public bool CapaciousCloudTalentIsActive => _capaciousPoisonCloud.isActive;
+    public bool ToxiqueCloudIsActive => _toxiqueCloud.isActive;
+
+    #endregion
 
     [SerializeField] private Character _playerLinks;
     [SerializeField] private Vector3 _secondMousePosition;
@@ -33,10 +40,9 @@ public class PoisonBall : TargetOrAreaAbility
 
     public int CurrentCharges { get => _currentChargers; set => _currentChargers = value; }
     public int CountProjectiles { get => _countProjectiles; set => _countProjectiles = value; }
-    public bool HealingCloudTalentIsActive => _healingPoisonCloud.isActive;
-    public bool CapaciousCloudTalentIsActive => _capaciousPoisonCloud.isActive;
     public GameObject LastTarget { get; set; }
     public GameObject CurrentTarget { get; set; }
+
     protected override IEnumerator UseCoroutine()
     {
         yield return _chooseTargetJob = StartCoroutine(ChooseTargetCoroutine(Radius));
@@ -119,8 +125,8 @@ public class PoisonBall : TargetOrAreaAbility
         yield return GetCastDeleyCoroutine();
 
         ChooseWhichProjectileCreate(isEnemy, isFast);
-
-        CmdCreatePoisonCloudBuff(HealingCloudTalentIsActive, CapaciousCloudTalentIsActive);
+        Debug.Log("ToxiqueCloud int PoisonBall is active == " + ToxiqueCloudIsActive);
+        CmdCreatePoisonCloudBuff(HealingCloudTalentIsActive, CapaciousCloudTalentIsActive, ToxiqueCloudIsActive);
     }
 
     private IEnumerator SlowMoveShoot(bool isEnemy, bool isFast)
@@ -129,8 +135,8 @@ public class PoisonBall : TargetOrAreaAbility
         yield return GetCastDeleyCoroutine();
 
         ChooseWhichProjectileCreate(isEnemy, isFast);
-
-        CmdCreatePoisonCloudBuff(HealingCloudTalentIsActive, CapaciousCloudTalentIsActive);
+        Debug.Log("ToxiqueCloud int PoisonBall is active == " + ToxiqueCloudIsActive);
+        CmdCreatePoisonCloudBuff(HealingCloudTalentIsActive, CapaciousCloudTalentIsActive, ToxiqueCloudIsActive);
     }
 
     private IEnumerator ThirdProjectileMovement(bool isEnemy, bool isFast)
@@ -139,8 +145,8 @@ public class PoisonBall : TargetOrAreaAbility
         yield return GetCastDeleyCoroutine();
 
         ChooseWhichProjectileCreate(isEnemy, isFast);
-
-        CmdCreatePoisonCloudBuff(HealingCloudTalentIsActive, CapaciousCloudTalentIsActive);
+        Debug.Log("ToxiqueCloud int PoisonBall is active == " + ToxiqueCloudIsActive);
+        CmdCreatePoisonCloudBuff(HealingCloudTalentIsActive, CapaciousCloudTalentIsActive, ToxiqueCloudIsActive);
     }
 
     private void ChooseWhichProjectileCreate(bool isEnemy, bool isFast)
@@ -230,36 +236,36 @@ public class PoisonBall : TargetOrAreaAbility
     }
 
     [Command]
-    private void CmdCreatePoisonCloudBuff(bool isActiveHealingCloud, bool isActiveCapaciousCloud)
+    private void CmdCreatePoisonCloudBuff(bool isActiveHealingCloud, bool isActiveCapaciousCloud, bool isActiveToxiqueCloud)
     {
-        RpcCreatePoisonCloudBuff(isActiveHealingCloud, isActiveCapaciousCloud);
+        RpcCreatePoisonCloudBuff(isActiveHealingCloud, isActiveCapaciousCloud, isActiveToxiqueCloud);
 
         _poisonCloudBuff = _playerLinks.GetComponentInChildren<PoisonCloudBuff>();
         if (_poisonCloudBuff == null)
         {
             _poisonCloudBuff = Instantiate(_poisonCloudBuffPrefab, _playerLinks.transform);
-            _poisonCloudBuff.PoisonCloudAddStacks(_playerLinks, isActiveHealingCloud, isActiveCapaciousCloud);
+            _poisonCloudBuff.PoisonCloudAddStacks(_playerLinks, isActiveHealingCloud, isActiveCapaciousCloud, isActiveToxiqueCloud);
         }
         else
         {
-            _poisonCloudBuff.PoisonCloudAddStacks(_playerLinks, isActiveHealingCloud, isActiveCapaciousCloud);
+            _poisonCloudBuff.PoisonCloudAddStacks(_playerLinks, isActiveHealingCloud, isActiveCapaciousCloud, isActiveToxiqueCloud);
         }
     }
 
     #endregion
 
     [ClientRpc]
-    private void RpcCreatePoisonCloudBuff(bool isActiveHealingCloud, bool isActiveCapaciousCloud)
+    private void RpcCreatePoisonCloudBuff(bool isActiveHealingCloud, bool isActiveCapaciousCloud, bool isActiveToxiqueCloud)
     {
         _poisonCloudBuff = _playerLinks.GetComponentInChildren<PoisonCloudBuff>();
         if (_poisonCloudBuff == null)
         {
             _poisonCloudBuff = Instantiate(_poisonCloudBuffPrefab, _playerLinks.transform);
-            _poisonCloudBuff.PoisonCloudAddStacks(_playerLinks, isActiveHealingCloud, isActiveCapaciousCloud);
+            _poisonCloudBuff.PoisonCloudAddStacks(_playerLinks, isActiveHealingCloud, isActiveCapaciousCloud, isActiveToxiqueCloud);
         }
         else
         {
-            _poisonCloudBuff.PoisonCloudAddStacks(_playerLinks, isActiveHealingCloud, isActiveCapaciousCloud);
+            _poisonCloudBuff.PoisonCloudAddStacks(_playerLinks, isActiveHealingCloud, isActiveCapaciousCloud, isActiveToxiqueCloud);
         }
     }
 

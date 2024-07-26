@@ -497,6 +497,7 @@ MonoBehaviour:
   _manaCostPerTick: 0
   _healingPoisonCloud: {fileID: 2373151710181061745}
   _capaciousPoisonCloud: {fileID: 3625646612109896303}
+  _toxiqueCloud: {fileID: 4684996771512024355}
   _poisonCloudBuffPrefab: {fileID: -5737491862988992034, guid: fb3b0602f17456a43875770ff14e2a51, type: 3}
   _projectile: {fileID: 9185291158651071422, guid: 2df088c1e08769144ba1fbb1cd7e00f1, type: 3}
   _playerLinks: {fileID: 8848169558533100257}
@@ -535,9 +536,9 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: 0
   _isCanTargetHimself: 0
-  _talentSystem: {fileID: 8392273409717092943}
   _healingPoisonCloud: {fileID: 2373151710181061745}
   _capaciousPoisonCloud: {fileID: 3625646612109896303}
+  _toxiqueCloud: {fileID: 4684996771512024355}
   _playerLinks: {fileID: 8848169558533100257}
   _secondMousePosition: {x: 0, y: 0, z: 0}
   _poisonCloudBuffPrefab: {fileID: -5737491862988992034, guid: fb3b0602f17456a43875770ff14e2a51, type: 3}
@@ -745,6 +746,7 @@ GameObject:
   - component: {fileID: 3625646612109896303}
   - component: {fileID: 2373151710181061745}
   - component: {fileID: 2590453872719564230}
+  - component: {fileID: 4684996771512024355}
   m_Layer: 0
   m_Name: Talents_Container
   m_TagString: Untagged
@@ -788,7 +790,7 @@ MonoBehaviour:
   - {fileID: 969632895075172795}
   - {fileID: 1020456628770039310}
   - {fileID: 2590453872719564230}
-  - {fileID: 3625646612109896303}
+  - {fileID: 4684996771512024355}
   - {fileID: 969632895075172795}
   - {fileID: 1020456628770039310}
   - {fileID: 2373151710181061745}
@@ -905,6 +907,27 @@ MonoBehaviour:
     m_Bits: 256
   _enemiesWithDebuff: []
   _radiusSearching: 100
+--- !u!114 &4684996771512024355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 615051740401084893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fa98a282de9a2d40b85e19ed7eb612d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  isActive: 0
+  Name: Toxique Cloud
+  Description: 
+  ico: {fileID: 21300000, guid: d9b6be6cf3de5d742bd0a9085c71f42b, type: 3}
+  character: {fileID: 8848169558533100257}
+  _bonePoisonPrefab: {fileID: -6945864312988002102, guid: acf0aa1d343559640b903638c293a6b1, type: 3}
 --- !u!1 &740190560921219825
 GameObject:
   m_ObjectHideFlags: 0

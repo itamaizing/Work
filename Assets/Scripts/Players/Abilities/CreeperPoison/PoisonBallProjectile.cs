@@ -62,8 +62,6 @@ public class PoisonBallProjectile : NetworkBehaviour
 
     public void MoveBallToTarget(Vector3 target, bool isFast)
     {
-        Debug.Log("PoisonBallProjectile MoveBallToTarget");
-
         float speed = isFast ? _fastMovementSpeed : _slowMovementSpeed;
 
         _rbBall.DOMove(target, speed * _maxDistance / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(DestroyProjectile);
@@ -74,7 +72,6 @@ public class PoisonBallProjectile : NetworkBehaviour
         float speed = isFast ? _fastMovementSpeed : _slowMovementSpeed;
 
         Vector3 direction = point - transform.position;
-        Debug.Log("direction == " + direction);
 
         _rbBall.DOMove(transform.position + direction * _maxDistance, speed * _maxDistance / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(DestroyProjectile);
     }
@@ -102,7 +99,6 @@ public class PoisonBallProjectile : NetworkBehaviour
             distancePush = 4.0f;
         }
         PushEnemy(target.gameObject, durationPush, distancePush);
-        Debug.Log("countProjectiles == " +  _countProjectiles);
     }
 
     private void PushEnemy(GameObject target, float durationPush, float distancePush)

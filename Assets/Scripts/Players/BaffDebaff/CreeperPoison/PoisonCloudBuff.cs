@@ -11,6 +11,7 @@ public class PoisonCloudBuff : BaseEffect
     [Header("Talents")]
     [SerializeField] private HealingPoisonCloud _healingPoisonCloud;
     [SerializeField] private CapaciousPoisonCloud _capaciousPoisonCloud;
+    [SerializeField] private ToxiqueCloud _toxiqueCloud;
 
     [Header("Buff Components")]
     [SerializeField] private Character _dad;
@@ -27,14 +28,13 @@ public class PoisonCloudBuff : BaseEffect
     private float _increasedDamage;
     private float _baseDamage = 0.005f;
     private float _timeBetweenAttack = 1.0f;
-    private float _radiusCloud = 0.5f;
+    private float _radiusCloud;
 
     private Coroutine _useCoroutine;
     private Coroutine _lifeTimeStacksCoroutine;
     private Coroutine _damageDealCoroutine;
-    private Coroutine _healPoisonCloudTalentCoroutine;
 
-    #region ForTalents
+    #region ForTalentsHealingCloudAndCapaciousCloud
 
     private float _maxHealth;
     private float _baseHealthRegen;
@@ -44,21 +44,39 @@ public class PoisonCloudBuff : BaseEffect
 
     private bool _isActiveCapaciousCloud;
 
+    private Coroutine _healPoisonCloudTalentCoroutine;
+
+    #endregion
+
+    #region ForTalentToxicCloud
+
+    private float _time = 2f;
+
+    private bool _isActiveToxiqueCloud;
+
+    private Coroutine _applyBonePoisonForToxiqueCloudTalent;
+
     #endregion
 
     public float RadiusCloud { get => _radiusCloud; set => _radiusCloud = value; }
     public int CurrentStacks { get => _currentStacks; set => _currentStacks = value; }
 
-    public void PoisonCloudAddStacks(Character caster, bool isActiveHealingCloud, bool isActiveCapaciousCloud)
+    public void PoisonCloudAddStacks(Character caster, bool isActiveHealingCloud, bool isActiveCapaciousCloud, bool isActiveToxiqueCloud)
     {
         Debug.Log("PoisonCloudAddStacks work");
         _dad = caster;
 
+        #region ForTalents
+
         _isActiveCapaciousCloud = isActiveCapaciousCloud;
+        _isActiveToxiqueCloud = isActiveToxiqueCloud;
 
         _healingPoisonCloud = _dad.GetComponentInChildren<HealingPoisonCloud>();
         _capaciousPoisonCloud = _dad.GetComponentInChildren<CapaciousPoisonCloud>();
-        
+        _toxiqueCloud = _dad.GetComponentInChildren<ToxiqueCloud>();
+
+        #endregion
+
         if (_currentStacks < _maxStacks)
         {
             Debug.Log("PoisonCloudAddStacks if CurrentStacks == " + _currentStacks);
@@ -167,11 +185,11 @@ public class PoisonCloudBuff : BaseEffect
     {
         if (_isActiveCapaciousCloud)
         {
-            _radiusCloud = 4f + _newRadiusCloud;
+            _radiusCloud = _triggerCircleCollider.radius + _newRadiusCloud;
         }
         else if (!_isActiveCapaciousCloud)
         {
-            _radiusCloud = 4f;
+            _radiusCloud = _triggerCircleCollider.radius;
         }
         _triggerCircleCollider.radius = _radiusCloud;
 
@@ -198,11 +216,22 @@ public class PoisonCloudBuff : BaseEffect
             Collider2D[] hitTargets = Physics2D.OverlapCircleAll(_dad.transform.position, _radiusCloud);
             foreach (var targets in hitTargets)
             {
+                _applyBonePoisonForToxiqueCloudTalent = null;
                 if (targets.TryGetComponent<HealthComponent>(out var target) && target.gameObject != _dad.gameObject)
                 {
                     _currentDamage = target.MaxHealth * _increasedDamage;
 
                     target.TryTakeDamage(_currentDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
+                    //Debug.Log("ToxiqueCloud == " + _isActiveToxiqueCloud);
+                    if (_isActiveToxiqueCloud)
+                    {
+                        //Debug.Log("isActiveToxiqueCloud");
+                        if (_applyBonePoisonForToxiqueCloudTalent == null)
+                        {
+                            Debug.Log("applyBonepoison == null");
+                            _applyBonePoisonForToxiqueCloudTalent = StartCoroutine(TimerForApplyDebuff(target));
+                        }
+                    }
                 }
             }
             yield return new WaitForSeconds(_timeBetweenAttack);
@@ -248,6 +277,16 @@ public class PoisonCloudBuff : BaseEffect
         }
 
         _dad.Health.HpRegenerationValue = originalHpRegen;
+    }
+
+    private IEnumerator TimerForApplyDebuff(HealthComponent target)
+    {
+        while (_currentStacks > 0)
+        {
+            yield return new WaitForSeconds(_time);
+            _toxiqueCloud.ApplyBonePoison(target);
+            Debug.Log("TimerForApply stacks");
+        }
     }
 
     #endregion

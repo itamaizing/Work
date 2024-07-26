@@ -155,6 +155,7 @@ MonoBehaviour:
   Type: 0
   _healingPoisonCloud: {fileID: 0}
   _capaciousPoisonCloud: {fileID: 0}
+  _toxiqueCloud: {fileID: 0}
   _dad: {fileID: 0}
   _triggerCircleCollider: {fileID: -1395477883878879546}
   _poisonCloudPrefab: {fileID: -2206078893807982276, guid: 7662169ba1918d540a117ba6989859cc, type: 3}
