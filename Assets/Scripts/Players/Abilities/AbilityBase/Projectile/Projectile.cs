@@ -73,6 +73,7 @@ public class Projectile : MonoBehaviour
             StartCoroutine(FlyCoroutine());
         else
             StartFly(_target.position);
+
     }
 
     private void Rotate(Vector3 lookPoint)

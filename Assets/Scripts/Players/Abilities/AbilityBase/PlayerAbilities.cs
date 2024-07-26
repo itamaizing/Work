@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,8 +8,6 @@ public class PlayerAbilities : MonoBehaviour
 {
     [SerializeField] private List<Ability> _abilities;
     [SerializeField] private VisualRender visualRender;
-	[SerializeField] private CharacterData _characterData;
-	[SerializeField] private TalentSystem _talentSystem;
 
 	private float _globalCooldownTime = 2f;
 	private Ability _currentAbility;
@@ -20,11 +17,8 @@ public class PlayerAbilities : MonoBehaviour
 	private bool _isAbilitiesDisabled = false;
 	private bool _isAbilitiesEnabled = true;
 	private AbilityPanel _abilityPanel;
-	private float _abilitySpeedCast = 1;
 
 	public List<Ability> Abilities => _abilities;
-	public CharacterData CharacterData => _characterData;
-	public TalentSystem TalentSystem => _talentSystem;
 
     public event UnityAction<int> AbilitySelected;
 	public event UnityAction<int> AbilityAutoAttackSelected;
@@ -39,7 +33,7 @@ public class PlayerAbilities : MonoBehaviour
         }
         foreach (var item in _abilities)
         {
-            item.Init(playerMove, staminaComponent, healthComponent);
+            item.SetPlayer(playerMove, staminaComponent, healthComponent);
         }
 		_abilityPanel = AbilitiesManager.Instance.AddPanel(this);
 	}
@@ -123,11 +117,15 @@ public class PlayerAbilities : MonoBehaviour
 					_currentAutoAttackAbility.TryCancel();
 					_currentAutoAttackAbility = null;
 				}
+				
 				_currentAutoAttackAbility = _abilities[index] as AutoAttackAbility;
 				_currentAutoAttackAbilityIndex = index;
 
-				_currentAutoAttackAbility.Cancled += OnAbilityAutoAttackDeselected;
-				_currentAutoAttackAbility.CastStarted += OnAbilityAutoAttackSelected;
+				if (_currentAutoAttackAbility != null)
+				{
+					_currentAutoAttackAbility.Cancled += OnAbilityAutoAttackDeselected;
+					_currentAutoAttackAbility.CastStarted += OnAbilityAutoAttackSelected;
+				}
 			}
 			_currentAbility = _abilities[index];
 
@@ -153,11 +151,15 @@ public class PlayerAbilities : MonoBehaviour
 					_currentAutoAttackAbility.TryCancel();
 					_currentAutoAttackAbility = null;
 				}
+				
 				_currentAutoAttackAbility = _abilities[index] as AutoAttackAbility;
 				_currentAutoAttackAbilityIndex = index;
 
-				_currentAutoAttackAbility.Cancled += OnAbilityAutoAttackDeselected;
-				_currentAutoAttackAbility.CastStarted += OnAbilityAutoAttackSelected;
+				if (_currentAutoAttackAbility != null)
+				{
+					_currentAutoAttackAbility.Cancled += OnAbilityAutoAttackDeselected;
+					_currentAutoAttackAbility.CastStarted += OnAbilityAutoAttackSelected;
+				}
 			}
 			_currentAbility = _abilities[index];
 
@@ -194,14 +196,6 @@ public class PlayerAbilities : MonoBehaviour
 			_currentAbility.Cancled -= ContinueAutoAttack;
 		}
 	}
-	/*private void TryUseAbility()
-    {
-        if (_currentAbility == null || _isAbilitiesDisabled  || _currentAbility.IsUsed )
-            return;
-
-        visualRender.Drawn(_currentAbility);
-        _currentAbility.TryUse();
-    }*/
 	private void TryUseAbility()
 	{
 		if (_currentAbility == null || !_isAbilitiesEnabled || !_abilityPanel.IsActive || (_currentAbility.IsUsed))
@@ -260,7 +254,6 @@ public class PlayerAbilities : MonoBehaviour
             if(item.School == school)
             {
                 item.SwitchAvailible(value);
-                //item.KnockDownTimerStart(coolDown);
             }
         }
     }
@@ -271,7 +264,6 @@ public class PlayerAbilities : MonoBehaviour
 			if (item.AbilityForm == form)
 			{
 				item.SwitchAvailible(value);
-				//item.KnockDownTimerStart(coolDown);
 			}
 		}
 	}
@@ -289,20 +281,5 @@ public class PlayerAbilities : MonoBehaviour
 	private void OnDestroy()
 	{
 		AbilitiesManager.Instance.RemovePanel(_abilityPanel);
-	}
-
-	public void AddAbility(Ability ability)
-	{
-		_abilities.Add(ability);
-		AbilitiesManager.Instance.RemovePanel(_abilityPanel);
-		_abilityPanel = AbilitiesManager.Instance.AddPanel(this);
-		_abilityPanel.gameObject.SetActive(true);
-	}	
-	public void RemoveAbility(Ability ability) 
-	{
-		_abilities.Remove(ability);
-		AbilitiesManager.Instance.RemovePanel(_abilityPanel);
-		_abilityPanel = AbilitiesManager.Instance.AddPanel(this);
-		_abilityPanel.gameObject.SetActive(true);
 	}
 }

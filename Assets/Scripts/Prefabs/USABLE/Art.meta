@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/FogOfWar.meta
+guid: c7dbd2ee0a88b434f90f1f069f89371d
+========
+guid: d4dd5fefb4d6e7d4390f8e8399c6cd62
+>>>>>>>> c560f8a (fix):Assets/Scripts/Prefabs/USABLE/Art.meta
+folderAsset: yes
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

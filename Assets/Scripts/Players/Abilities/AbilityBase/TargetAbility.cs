@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class TargetAbility : Ability
@@ -9,7 +8,7 @@ public abstract class TargetAbility : Ability
 
     protected Coroutine _useJob;
     protected Coroutine _castJob;
-    protected Coroutine _chooseTargetJob;
+    protected Coroutine _chooseTatgetJob;
     protected Character _target;
 
     protected bool IsTarget => (_target.transform == _health.transform);
@@ -35,7 +34,7 @@ public abstract class TargetAbility : Ability
     protected bool TryRaycastTarget()
     {
         _target = null;
-        RaycastHit2D[] rayHit = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 99, _targetsLayers);
+        RaycastHit2D[] rayHit = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
 
         foreach (var item in rayHit)
         {
@@ -71,13 +70,13 @@ public abstract class TargetAbility : Ability
         if(_useJob != null)
             StopCoroutine(_useJob);
 
-        if(_chooseTargetJob != null)
-            StopCoroutine(_chooseTargetJob);
+        if(_chooseTatgetJob != null)
+            StopCoroutine(_chooseTatgetJob);
     }
 
     protected virtual IEnumerator UseCoroutine()
     {
-        yield return _chooseTargetJob = StartCoroutine(ChooseTargetCoroutine(Radius));
+        yield return _chooseTatgetJob = StartCoroutine(ChooseTargetCoroutine(Radius));
 
         if (!PayCost(false))
             yield break;

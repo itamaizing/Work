@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Scripts/Prefabs/USABLE/Art/Environment.meta
+guid: c64121667f396694b86891f35b5fcb64
+folderAsset: yes
+DefaultImporter:
+========
+guid: 9e6a2748c915f92488bb8bf2d46fe992
+ComputeShaderImporter:
+>>>>>>>> main:Assets/FogOfWar/Shaders/Compute/FogOfWarCompute.compute.meta
+  externalObjects: {}
+  currentAPIMask: 4
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

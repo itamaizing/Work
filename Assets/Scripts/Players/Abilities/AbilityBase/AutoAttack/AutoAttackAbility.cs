@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class AutoAttackAbility : TargetAbility
@@ -12,7 +11,10 @@ public abstract class AutoAttackAbility : TargetAbility
     private Coroutine _autoAttackJob;
     private bool _isAttacking = false;
 
-    public float AttackSpeed { get => Buff.AttackSpeed.GetBuffedValue(_attackSpeed); }
+    public float AttackSpeed
+    {
+        get => _attackSpeed; /*Buff.AttackSpeed.GetBuffedValue(_attackSpeed);*/
+    }
 
     public void Pause()
     {
@@ -61,7 +63,7 @@ public abstract class AutoAttackAbility : TargetAbility
 
     protected override IEnumerator UseCoroutine()
     {
-        yield return _chooseTargetJob = StartCoroutine(ChooseTargetCoroutine(Radius + 99));
+        yield return _chooseTatgetJob = StartCoroutine(ChooseTargetCoroutine(Radius + 99));
         yield return _autoAttackJob = StartCoroutine(AutoAttackCoroutine());
     }
 
