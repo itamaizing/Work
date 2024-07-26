@@ -110,7 +110,7 @@ public class PoisonBallProjectile : NetworkBehaviour
         _durationPush = ((_durationPush * GlobalVariable.cellSize) * _rangePush) / GlobalVariable.cellSize;
         target.GetComponent<Transform>().transform.DOMove((Vector2)target.transform.position + directionPush, _durationPush).SetEase(Ease.Linear);
 
-        target.GetComponent<CharacterState>().AddState(new StunnedState(), _durationStun, _durationPush, States.Stun);
+        //target.GetComponent<CharacterState>().AddState(new StunnedState(), _durationStun, _durationPush, States.Stun);
     }
     #endregion
 

@@ -22,4 +22,6 @@ public class Shielding
         healthComponent.AddShieldBehavior(this, damageType);
     }
 
+
+
 }

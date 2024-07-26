@@ -862,116 +862,7 @@ public class CharacterState : NetworkBehaviour
 		}
 	}
 
-	public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state)
-	{
-		if (invinsible)
-			return;
-		if (CheckForState(state))
-		{
-			foreach (AbstractCharacterState item in currentStates)
-			{
-				if (item.state != state) continue;
-
-				if (item.Stack(duration))
-				{
-					//_stateIcons.ActivateIco(state, duration, 1);
-				}
-				else
-				{
-					//nothing at this time??
-				}
-			}
-		}
-		else
-		{
-			_stateIcons.ActivateIco(state, duration, 1);
-			currentStates.Add(newState);
-			currentStates[currentStates.Count - 1].state = state;
-			//currentStates[currentStates.Count - 1].
-			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
-		}
-	}
-
-	public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state, Schools schools)
-	{
-		//if already exist 
-		//if (currentStates.Contains(newState))
-		if (CheckForState(state))
-		{
-			foreach (AbstractCharacterState item in currentStates)
-			{
-				if (item.state != state) continue;
-
-				if (item.Stack(duration))
-				{
-					_stateIcons.ActivateIco(state, duration, 1);
-				}
-				else
-				{
-					_stateIcons.ActivateIco(state, duration, 1);
-					currentStates.Add(newState);
-					var counterSpell = (AbilitySchoolDebuff)newState;
-					counterSpell.canceledSchoool = schools;
-					currentStates[currentStates.Count - 1].state = state;
-					//currentStates[currentStates.Count - 1].
-					currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
-				}
-			}
-		}
-		else
-		{
-			_stateIcons.ActivateIco(state, duration, 1);
-			currentStates.Add(newState);
-			var counterSpell = (AbilitySchoolDebuff)newState;
-			counterSpell.canceledSchoool = schools;
-			currentStates[currentStates.Count - 1].state = state;
-			//currentStates[currentStates.Count - 1].
-			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
-		}
-	}
-	//can Cancel- if debuf can cancel ability that is casting right now
-	public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state, AbilityForm form, bool canCancel)
-	{
-		//if already exist 
-		//if (currentStates.Contains(newState))
-		if (CheckForState(state))
-		{
-			foreach (AbstractCharacterState item in currentStates)
-			{
-				if (item.state != state) continue;
-
-				if (item.Stack(duration))
-				{
-					_stateIcons.ActivateIco(state, duration, 1);
-				}
-				else
-				{
-					_stateIcons.ActivateIco(state, duration, 1);
-					currentStates.Add(newState);
-					var counterSpell = (AbilityFormDebuff)newState;
-					counterSpell.canCancel = canCancel;
-					counterSpell.canceledForm = form;
-					currentStates[currentStates.Count - 1].state = state;
-					//currentStates[currentStates.Count - 1].
-					currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
-					//nothing at this time??
-				}
-			}
-		}
-		else
-		{
-			_stateIcons.ActivateIco(state, duration, 1);
-			currentStates.Add(newState);
-			var counterSpell = (AbilityFormDebuff)newState;
-			counterSpell.canCancel = canCancel;
-			counterSpell.canceledForm = form;
-			currentStates[currentStates.Count - 1].state = state;
-			//currentStates[currentStates.Count - 1].
-			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
-		}
-	}
-
-	[Command]
+	//[Command]
 	public void CmdAddState(States state, float duration, float damageToExit, Schools schools)
 	{
 		AddStateLogic(state, duration, damageToExit, schools);
@@ -986,19 +877,16 @@ public class CharacterState : NetworkBehaviour
 		ClientAddState(state, duration, damageToExit, Schools.None);
 	}
 
+	public void CmdRemoveState(States state)
+	{
+		RemoveState(state);
+		ClientRemoveState(state);
+	}
 	/*public void AddNewState(States state, float duration, float damageToExit)
 	{
 		CmdAddState(state, duration, damageToExit);
 		//ClientAddState(state, duration, damageToExit, Schools.None);
 	}*/
-
-	[ClientRpc]
-	private void ClientAddState(States state, float duration, float damageToExit, Schools schools)
-	{
-		Debug.Log("Add state rpc");
-		AddStateLogic(state, duration, damageToExit, schools);
-	}
-
 	public bool IfHasState(AbstractCharacterState newState)
 	{
 		//ITS NOT WORKING!!!!
@@ -1015,7 +903,7 @@ public class CharacterState : NetworkBehaviour
 		currentStates.Remove(newState);
 	}
 
-	public void RemoveState(States stateName)
+	private void RemoveState(States stateName)
 	{
 		foreach (AbstractCharacterState state in currentStates)
 		{
@@ -1026,6 +914,18 @@ public class CharacterState : NetworkBehaviour
 		}
 	}
 
+	[ClientRpc]
+	private void ClientAddState(States state, float duration, float damageToExit, Schools schools)
+	{
+		Debug.Log("Add state rpc");
+		AddStateLogic(state, duration, damageToExit, schools);
+	}
+
+	[ClientRpc]
+	public void ClientRemoveState(States stateName)
+	{
+		RemoveState(stateName);
+	}
 	public void Dispel(StateType type)
 	{
 		foreach (AbstractCharacterState state in currentStates)
@@ -1100,6 +1000,117 @@ public class CharacterState : NetworkBehaviour
 		currentStates.Add(state);
 		currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
 	}
+
+	/*public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state, Schools schools)
+	{
+		//if already exist 
+		//if (currentStates.Contains(newState))
+		if (CheckForState(state))
+		{
+			foreach (AbstractCharacterState item in currentStates)
+			{
+				if (item.state != state) continue;
+
+				if (item.Stack(duration))
+				{
+					_stateIcons.ActivateIco(state, duration, 1);
+				}
+				else
+				{
+					_stateIcons.ActivateIco(state, duration, 1);
+					currentStates.Add(newState);
+					var counterSpell = (AbilitySchoolDebuff)newState;
+					counterSpell.canceledSchoool = schools;
+					currentStates[currentStates.Count - 1].state = state;
+					//currentStates[currentStates.Count - 1].
+					currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
+				}
+			}
+		}
+		else
+		{
+			_stateIcons.ActivateIco(state, duration, 1);
+			currentStates.Add(newState);
+			var counterSpell = (AbilitySchoolDebuff)newState;
+			counterSpell.canceledSchoool = schools;
+			currentStates[currentStates.Count - 1].state = state;
+			//currentStates[currentStates.Count - 1].
+			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
+		}
+	}
+
+	public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state)
+	{
+		if (invinsible)
+			return;
+		if (CheckForState(state))
+		{
+			foreach (AbstractCharacterState item in currentStates)
+			{
+				if (item.state != state) continue;
+
+				if (item.Stack(duration))
+				{
+					//_stateIcons.ActivateIco(state, duration, 1);
+				}
+				else
+				{
+					//nothing at this time??
+				}
+			}
+		}
+		else
+		{
+			_stateIcons.ActivateIco(state, duration, 1);
+			currentStates.Add(newState);
+			currentStates[currentStates.Count - 1].state = state;
+			//currentStates[currentStates.Count - 1].
+			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
+		}
+	}
+
+	//can Cancel- if debuf can cancel ability that is casting right now
+	public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state, AbilityForm form, bool canCancel)
+	{
+		//if already exist 
+		//if (currentStates.Contains(newState))
+		if (CheckForState(state))
+		{
+			foreach (AbstractCharacterState item in currentStates)
+			{
+				if (item.state != state) continue;
+
+				if (item.Stack(duration))
+				{
+					_stateIcons.ActivateIco(state, duration, 1);
+				}
+				else
+				{
+					_stateIcons.ActivateIco(state, duration, 1);
+					currentStates.Add(newState);
+					var counterSpell = (AbilityFormDebuff)newState;
+					counterSpell.canCancel = canCancel;
+					counterSpell.canceledForm = form;
+					currentStates[currentStates.Count - 1].state = state;
+					//currentStates[currentStates.Count - 1].
+					currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
+					//nothing at this time??
+				}
+			}
+		}
+		else
+		{
+			_stateIcons.ActivateIco(state, duration, 1);
+			currentStates.Add(newState);
+			var counterSpell = (AbilityFormDebuff)newState;
+			counterSpell.canCancel = canCancel;
+			counterSpell.canceledForm = form;
+			currentStates[currentStates.Count - 1].state = state;
+			//currentStates[currentStates.Count - 1].
+			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
+		}
+	}
+	*/
 }
 
 public enum StateType

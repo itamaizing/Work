@@ -78,6 +78,11 @@ public class TalentColumn : MonoBehaviour
 
 		_column1.text = _system.GetActiveTalentCount().ToString();
 
+		if(_attributePanel == null)
+		{
+			Debug.Log("NO ATTRIBUTE PANEL AT TalentColumn!!!!");
+			return;
+		}
 		if(value)
 		{
 			_attributePanel.AddPoints(1);

@@ -35,6 +35,7 @@ public class HealthComponent : NetworkBehaviour
     private float _boostRegen2 = 0;
 
     private bool _invinsible = false;
+    private Ability _personWhoShooted;
 
     [Header("Shields")]
     public List<Shielding> shields_Physic = new List<Shielding>();
@@ -95,7 +96,20 @@ public class HealthComponent : NetworkBehaviour
         return hit;
     }
 
-    private float CalculateDamageWithStats(float damageValue, DamageType damageType, AttackRangeType attackRangeType, out bool hitSuccessed)
+	public bool TryTakeDamage(float damageValue, DamageType damageType, AttackRangeType attackRangeType, Ability ability)
+	{
+        _personWhoShooted = ability;
+		float modifiedDamage = CalculateDamageWithStats(damageValue, damageType, attackRangeType, out bool hit);
+
+		if (hit)
+		{
+			TakeDamage(modifiedDamage, damageType);
+		}
+
+		return hit;
+	}
+
+	private float CalculateDamageWithStats(float damageValue, DamageType damageType, AttackRangeType attackRangeType, out bool hitSuccessed)
     {
         if (_invinsible)
         {
@@ -155,6 +169,7 @@ public class HealthComponent : NetworkBehaviour
         hitSuccessed = false;
         return 0; // �� ������� DamageType
     }
+
     private float SummShields(DamageType damageType)
     {
         float value = 0;
@@ -249,6 +264,7 @@ public class HealthComponent : NetworkBehaviour
         }
         return damageValue; // �� ������� ��� �����
     }
+
     public void TakeDamage(float damageValue, DamageType damageType)
     {        
         DisplayTakenDamage(damageValue, damageType);
@@ -270,31 +286,6 @@ public class HealthComponent : NetworkBehaviour
             
             UpdateHealthBar();
         }
-    }
-
-    [ContextMenu ("Add Magic Shield")] //��� ����� � ����������
-    private void AddShields()
-    {
-        DamageType dmgtype = DamageType.Magical;
-        Shielding shield = new Shielding(this, 50, dmgtype);
-
-    }
-
-    [ContextMenu("Add Physic Shield")] //��� ����� � ����������
-    private void AddPhysShields()
-    {
-        DamageType dmgtype = DamageType.Physical;
-        Shielding shield = new Shielding(this, 50, dmgtype);
-
-    }
-
-    [ContextMenu("Add Temporary Shield")] //��� ����� � ����������
-    private void AddtemporaryShield()
-    {
-        DamageType dmgtype = DamageType.Physical;
-
-        StartCoroutine(CoroutineAddShield(50, dmgtype, 5f));
-
     }
     
     public void AddShieldBehavior(Shielding shielding, DamageType damageType) // ���������� � ������������ ����� �����
@@ -318,42 +309,6 @@ public class HealthComponent : NetworkBehaviour
     {
         StartCoroutine(CoroutineAddShield(shieldValue, damageType, durationTime));
     }
-
-    public void MakePhisicDamage(float damageValue, GameObject target)
-    {
-        StackTrace stackTrace = new StackTrace();
-        StackFrame callerFrame = stackTrace.GetFrame(1);
-
-        DamageInfo damageInfo;
-        damageInfo.CallerType = callerFrame.GetMethod().DeclaringType;
-        damageInfo.OriginalDamage = damageValue;
-
-        damageInfo.ModifiedDamage = damageInfo.OriginalDamage;
-
-        MakePhisicDamageEvent?.Invoke(damageInfo);
-
-        float modifiedDamage = damageInfo.ModifiedDamage;
-
-        //target.GetComponent<HealthComponent>().TakePhisicDamage(modifiedDamage);
-    }
-
-    //public void MakeMagicDamage(float damageValue, GameObject target)
-    //{
-    //    StackTrace stackTrace = new StackTrace();
-    //    StackFrame callerFrame = stackTrace.GetFrame(1);
-
-    //    DamageInfo damageInfo;
-    //    damageInfo.CallerType = callerFrame.GetMethod().DeclaringType;
-    //    damageInfo.OriginalDamage = damageValue;
-
-    //    damageInfo.ModifiedDamage = damageInfo.OriginalDamage;
-
-    //    MakeMagicDamageEvent?.Invoke(damageInfo);
-
-    //    float modifiedDamage = damageInfo.ModifiedDamage;
-
-    //    //target.GetComponent<HealthComponent>().TakeMagicDamage(modifiedDamage);
-    //}
 
     public void AddHeal(float healValue)
     {
@@ -396,31 +351,6 @@ public class HealthComponent : NetworkBehaviour
         UpdateHealthBar();
     }
 
-    private void HandleAbsorptionOrRepeat(ref float modifiedValue)
-    {
-        for (int i = 0; i < transform.childCount; i++)
-        {
-            Transform child = transform.GetChild(i);
-
-            DamageAbsorption damageAbsorption = child.GetComponent<DamageAbsorption>();
-            if (damageAbsorption != null)
-            {
-                damageAbsorption.Absorption(ref modifiedValue);
-            }
-
-            RepeatedDamage repeatedDamage = child.GetComponent<RepeatedDamage>();
-            if (repeatedDamage != null && !repeatedDamage.IsRepeat)
-            {
-                repeatedDamage.RepeatDamage(ref modifiedValue);
-            }
-        }
-        PsionicaMelee psionicaMelee = GetComponent<PsionicaMelee>();
-        if (psionicaMelee != null)
-        {
-            psionicaMelee.PsionicaAbsorption(ref modifiedValue);
-
-        }
-    }
     private void DisplayTakenDamage(float damageValue, DamageType damageType)
     {
         if (damageType == DamageType.Physical)
@@ -432,6 +362,7 @@ public class HealthComponent : NetworkBehaviour
             ShowDamagePrefab(-damageValue, new Color(140, 0, 255, 1), new Color(140, 0, 255, 0.5f));
         }
     }
+
     private void ShowDamagePrefab(float value, Color startColor, Color endColor)
     {
         GetComponent<UIPlayerComponents>().ShowPopupValue(value,startColor,endColor);
@@ -519,4 +450,91 @@ public class HealthComponent : NetworkBehaviour
     {
         return _evadeMagDamage;
     }
+	[ContextMenu("Add Magic Shield")] //��� ����� � ����������
+	private void AddShields()
+	{
+		DamageType dmgtype = DamageType.Magical;
+		Shielding shield = new Shielding(this, 50, dmgtype);
+
+	}
+
+	[ContextMenu("Add Physic Shield")] //��� ����� � ����������
+	private void AddPhysShields()
+	{
+		DamageType dmgtype = DamageType.Physical;
+		Shielding shield = new Shielding(this, 50, dmgtype);
+
+	}
+
+	[ContextMenu("Add Temporary Shield")] //��� ����� � ����������
+	private void AddtemporaryShield()
+	{
+		DamageType dmgtype = DamageType.Physical;
+
+		StartCoroutine(CoroutineAddShield(50, dmgtype, 5f));
+
+	}
+	/*
+     * private void HandleAbsorptionOrRepeat(ref float modifiedValue)
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Transform child = transform.GetChild(i);
+
+            DamageAbsorption damageAbsorption = child.GetComponent<DamageAbsorption>();
+            if (damageAbsorption != null)
+            {
+                damageAbsorption.Absorption(ref modifiedValue);
+            }
+
+            RepeatedDamage repeatedDamage = child.GetComponent<RepeatedDamage>();
+            if (repeatedDamage != null && !repeatedDamage.IsRepeat)
+            {
+                repeatedDamage.RepeatDamage(ref modifiedValue);
+            }
+        }
+        PsionicaMelee psionicaMelee = GetComponent<PsionicaMelee>();
+        if (psionicaMelee != null)
+        {
+            psionicaMelee.PsionicaAbsorption(ref modifiedValue);
+
+        }
+    }
+     //public void MakeMagicDamage(float damageValue, GameObject target)
+    //{
+    //    StackTrace stackTrace = new StackTrace();
+    //    StackFrame callerFrame = stackTrace.GetFrame(1);
+
+    //    DamageInfo damageInfo;
+    //    damageInfo.CallerType = callerFrame.GetMethod().DeclaringType;
+    //    damageInfo.OriginalDamage = damageValue;
+
+    //    damageInfo.ModifiedDamage = damageInfo.OriginalDamage;
+
+    //    MakeMagicDamageEvent?.Invoke(damageInfo);
+
+    //    float modifiedDamage = damageInfo.ModifiedDamage;
+
+    //    //target.GetComponent<HealthComponent>().TakeMagicDamage(modifiedDamage);
+    //}
+
+      public void MakePhisicDamage(float damageValue, GameObject target)
+    {
+        StackTrace stackTrace = new StackTrace();
+        StackFrame callerFrame = stackTrace.GetFrame(1);
+
+        DamageInfo damageInfo;
+        damageInfo.CallerType = callerFrame.GetMethod().DeclaringType;
+        damageInfo.OriginalDamage = damageValue;
+
+        damageInfo.ModifiedDamage = damageInfo.OriginalDamage;
+
+        MakePhisicDamageEvent?.Invoke(damageInfo);
+
+        float modifiedDamage = damageInfo.ModifiedDamage;
+
+        //target.GetComponent<HealthComponent>().TakePhisicDamage(modifiedDamage);
+    }
+
+     * */
 }
