@@ -11,10 +11,7 @@ public abstract class AutoAttackAbility : TargetAbility
     private Coroutine _autoAttackJob;
     private bool _isAttacking = false;
 
-    public float AttackSpeed
-    {
-        get => _attackSpeed; /*Buff.AttackSpeed.GetBuffedValue(_attackSpeed);*/
-    }
+    public float AttackSpeed => Buff.AttackSpeed.GetBuffedValue(_attackSpeed);
 
     public void Pause()
     {

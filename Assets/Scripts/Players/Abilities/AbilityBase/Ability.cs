@@ -79,6 +79,7 @@ public abstract class Ability : NetworkBehaviour
     
     public bool IsHaveCharge => _haveCharges;
     public bool IsUseCharges => _isUseCharges;
+    public bool IsRechargedInTurn => _charges.HaveSeparateCooldown;
     
     public bool IsStreaming => _isStreaming;
     public float StreamingDuration => _streamingDuration;
@@ -137,7 +138,7 @@ public abstract class Ability : NetworkBehaviour
         }
     }
 
-    public void SetPlayer(MoveComponent playerMove, StaminaComponent mana, HealthComponent health)
+    public void Init(MoveComponent playerMove, StaminaComponent mana, HealthComponent health)
     {
         _playerMove = playerMove;
         _mana = mana;
@@ -170,9 +171,7 @@ public abstract class Ability : NetworkBehaviour
 
     public virtual bool TryUse()
     {
-        var isEnoughtStamina = true;
-        
-        if (_isUsed && (_mana.Value >= _staminaTypes.costValue && _isReady) == false && !_avaliable)
+        if (_isUsed || (_mana.Value >= _staminaTypes.costValue && _isReady) == false || !_avaliable)
         {
             PreparingEnded?.Invoke();
             return false;
@@ -254,6 +253,8 @@ public abstract class Ability : NetworkBehaviour
 
         if (_currentChargers > 0)
         {
+            _currentChargers--;
+            
             CurrentChargeChange?.Invoke(_currentChargers);
 
             if (_rechargeJob == null || _charges.HaveSeparateCooldown)
@@ -379,7 +380,7 @@ public abstract class Ability : NetworkBehaviour
     }
 
     [Command]
-    private void CmdApplyDamage(GameObject target, float damage, DamageType damageType, AttackRangeType attackRangeType)
+    protected void CmdApplyDamage(GameObject target, float damage, DamageType damageType, AttackRangeType attackRangeType)
     {
         target.GetComponent<HealthComponent>().TryTakeDamage(damage, damageType, attackRangeType);
     }
@@ -408,12 +409,14 @@ public abstract class Ability : NetworkBehaviour
         private StatBuff _area;
         private StatBuff _attackSpeed;
         private StatBuff _castSpeed;
+        private StatBuff _chargeCooldown;
 
         public StatBuff Damage => _damage;
         public StatBuff Radius => _radius;
         public StatBuff Area => _area;
         public StatBuff AttackSpeed => _attackSpeed;
         public StatBuff CastSpeed => _castSpeed;
+        public StatBuff ChargeCooldown => _chargeCooldown;
 
         public StatsBuff(float multiplier, float additional)
         {
@@ -422,6 +425,7 @@ public abstract class Ability : NetworkBehaviour
             _area = new StatBuff(multiplier, additional);
             _attackSpeed = new StatBuff(multiplier, additional);
             _castSpeed = new StatBuff(multiplier, additional);
+            _chargeCooldown = new StatBuff(multiplier, additional);
         }
     }
 
