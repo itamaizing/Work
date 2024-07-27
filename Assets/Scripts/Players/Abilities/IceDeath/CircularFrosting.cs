@@ -73,7 +73,7 @@ public class CircularFrosting : Ability
 	private void Timer()
 	{
 		_cooldownTimer += Time.deltaTime;
-		if (_cooldownTimer >= _cooldown)
+		if (_cooldownTimer >= Cooldown)
 		{
 			_canCast = true;
 			_cooldownTimer = 0;

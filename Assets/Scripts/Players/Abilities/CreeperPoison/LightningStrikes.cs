@@ -76,7 +76,7 @@ public class LightningStrikes : AutoAttackAbility
 
     private void Timer()
     {
-        _cooldownStrikes = _cooldown;
+        _cooldownStrikes = Charges.ChargeCooldown;
         _cooldownStrikes -= Time.deltaTime;
         if (_cooldownStrikes <= 0)
         {

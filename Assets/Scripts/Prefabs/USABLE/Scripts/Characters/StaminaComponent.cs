@@ -12,7 +12,7 @@ public abstract class StaminaComponent : NetworkBehaviour
 	protected float _value;
 
 	protected float _maxValue;
-    protected float _regenerationValue = 10;
+    public float _regenerationValue = 10;
 	protected float _regenerationDelay = 3;
 	
 	private float _timerDelay = 0;

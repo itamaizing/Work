@@ -558,6 +558,7 @@ MonoBehaviour:
   uiComponent: {fileID: 4715758111818368764}
   _selectComponent: {fileID: 5511617219408767834}
   _spawnComponent: {fileID: 3330577042116454553}
+  _talentSystem: {fileID: 3023306480799323972}
   _playerData: {fileID: 11400000, guid: 191eb68f954e3b44b84d8524f5039132, type: 2}
 --- !u!114 &7760335386463111578
 MonoBehaviour:
@@ -630,6 +631,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   bar: {fileID: 418534062616378238}
+  _regenerationValue: 10
   _sumDamageGiven: 0
 --- !u!114 &1057949845680950153
 MonoBehaviour:
@@ -647,6 +649,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   bar: {fileID: 606832500078548383}
+  _regenerationValue: 10
 --- !u!114 &4715758111818368764
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -861,7 +864,6 @@ GameObject:
   - component: {fileID: 4417605804945313492}
   - component: {fileID: 5970767670451549340}
   - component: {fileID: 5424265573815036285}
-  - component: {fileID: 2423544550661109350}
   - component: {fileID: 7579798881083447851}
   - component: {fileID: 8699213103126326918}
   - component: {fileID: 8812684071966432408}
@@ -900,11 +902,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _abilities:
-  - {fileID: 7579798881083447851}
+  - {fileID: 2105836877704237594}
+  - {fileID: 1005351013565685612}
   - {fileID: 938984537167284078}
+  - {fileID: 4417605804945313492}
+  - {fileID: 5970767670451549340}
+  - {fileID: 5424265573815036285}
+  - {fileID: 7579798881083447851}
   - {fileID: 8699213103126326918}
   - {fileID: 8812684071966432408}
   visualRender: {fileID: 5564757508821022323}
+  _characterData: {fileID: 11400000, guid: 191eb68f954e3b44b84d8524f5039132, type: 2}
+  _talentSystem: {fileID: 3023306480799323972}
 --- !u!114 &5564757508821022323
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -928,7 +937,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1565031513079442272}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e0472c7c6c6b721418ebe181869af7fb, type: 3}
   m_Name: 
@@ -936,7 +945,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  abilityData: {fileID: 11400000, guid: 659936d2371ce46438312d9aa526813d, type: 2}
+  abilityData: {fileID: 11400000, guid: e7178108dacb30c4d8aacee8ff6a535a, type: 2}
   _isAutoAttack: 1
   _area: 0
   _castLength: 0
@@ -954,7 +963,6 @@ MonoBehaviour:
   _damage: 8
   _dad: {fileID: 8468544467696250796}
   _combo: {fileID: 0}
-  _abilityCooldown: 1.4
 --- !u!114 &1005351013565685612
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -962,7 +970,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1565031513079442272}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d29bd518fc6a043439d0db6b7aae013c, type: 3}
   m_Name: 
@@ -970,7 +978,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  abilityData: {fileID: 11400000, guid: 4149308b91515334c801b1f26c6c99ba, type: 2}
+  abilityData: {fileID: 11400000, guid: 308a2fb22e0226f46952977a97727f20, type: 2}
   _isAutoAttack: 0
   _area: 0
   _castLength: 5
@@ -981,7 +989,7 @@ MonoBehaviour:
   _manaCostPerTick: 0
   _projectile: {fileID: 748218918613675416, guid: f44e1a220c732a64f9af10c37bf5aed0, type: 3}
   _playerLinks: {fileID: 8468544467696250796}
-  _seriesOfStrikes: {fileID: 0}
+  _combo: {fileID: 0}
 --- !u!114 &938984537167284078
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -997,7 +1005,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  abilityData: {fileID: 11400000, guid: 86c0b8bb982288740aeba322dc5203d3, type: 2}
+  abilityData: {fileID: 11400000, guid: 308a2fb22e0226f46952977a97727f20, type: 2}
   _isAutoAttack: 0
   _area: 0
   _castLength: 0
@@ -1007,8 +1015,8 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: 0
   _shadow: {fileID: 7237307863484890914, guid: 8dea5af4c60165d45af4522b1a596998, type: 3}
-  _seriesOfStrikes: {fileID: 0}
   _playerLinks: {fileID: 8468544467696250796}
+  _combo: {fileID: 0}
 --- !u!114 &812406894906728288
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1016,7 +1024,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1565031513079442272}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 24f65756b4c9ac842be66740c2640b10, type: 3}
   m_Name: 
@@ -1024,7 +1032,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  abilityData: {fileID: 0}
+  abilityData: {fileID: 11400000, guid: 308a2fb22e0226f46952977a97727f20, type: 2}
   _isAutoAttack: 0
   _area: 0
   _castLength: 0
@@ -1037,6 +1045,8 @@ MonoBehaviour:
   _playerLinks: {fileID: 8468544467696250796}
   _preViewPuddle: {fileID: 884365701278928767, guid: 7b6c0e56fb1a9e642a0e585447b9a071, type: 3}
   _lowePoint: {fileID: 884365701278928767, guid: 7b6c0e56fb1a9e642a0e585447b9a071, type: 3}
+  _timeToDestroy: 3
+  _combo: {fileID: 0}
 --- !u!114 &4417605804945313492
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1044,7 +1054,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1565031513079442272}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 924d76d3d13ffb24e84fa30e89ae4eb2, type: 3}
   m_Name: 
@@ -1052,7 +1062,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  abilityData: {fileID: 0}
+  abilityData: {fileID: 11400000, guid: 308a2fb22e0226f46952977a97727f20, type: 2}
   _isAutoAttack: 0
   _area: 0
   _castLength: 4
@@ -1075,7 +1085,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1565031513079442272}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7e55116f00838d7489e8c4649c0d5cfe, type: 3}
   m_Name: 
@@ -1083,7 +1093,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  abilityData: {fileID: 0}
+  abilityData: {fileID: 11400000, guid: 308a2fb22e0226f46952977a97727f20, type: 2}
   _isAutoAttack: 0
   _area: 0
   _castLength: 0
@@ -1106,7 +1116,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1565031513079442272}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 414d375212949f842a89a5fb8463c471, type: 3}
   m_Name: 
@@ -1114,7 +1124,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  abilityData: {fileID: 0}
+  abilityData: {fileID: 11400000, guid: 308a2fb22e0226f46952977a97727f20, type: 2}
   _isAutoAttack: 0
   _area: 0
   _castLength: 0
@@ -1126,40 +1136,6 @@ MonoBehaviour:
   _projectile: {fileID: 5633596165386628248, guid: 13d29f15dbe0e9c40bac53fe5ff49f89, type: 3}
   _playerLinks: {fileID: 8468544467696250796}
   _seriesOfStrikes: {fileID: 0}
---- !u!114 &2423544550661109350
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1565031513079442272}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0472c7c6c6b721418ebe181869af7fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  abilityData: {fileID: 11400000, guid: 659936d2371ce46438312d9aa526813d, type: 2}
-  _isAutoAttack: 1
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
-  _isStreaming: 0
-  _streamingDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: 0
-  _isCanTargetHimself: 0
-  _attackZoneSize: 2
-  _attackSpeed: 1
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 128
-  _damage: 8
-  _dad: {fileID: 8468544467696250796}
-  _combo: {fileID: 0}
-  _abilityCooldown: 1.4
 --- !u!114 &7579798881083447851
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1175,7 +1151,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  abilityData: {fileID: 11400000, guid: 4149308b91515334c801b1f26c6c99ba, type: 2}
+  abilityData: {fileID: 11400000, guid: e7178108dacb30c4d8aacee8ff6a535a, type: 2}
   _isAutoAttack: 0
   _area: 0
   _castLength: 0
@@ -1201,7 +1177,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  abilityData: {fileID: 11400000, guid: 659936d2371ce46438312d9aa526813d, type: 2}
+  abilityData: {fileID: 11400000, guid: e7178108dacb30c4d8aacee8ff6a535a, type: 2}
   _isAutoAttack: 1
   _area: 0
   _castLength: 0
@@ -1234,7 +1210,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  abilityData: {fileID: 11400000, guid: 659936d2371ce46438312d9aa526813d, type: 2}
+  abilityData: {fileID: 11400000, guid: e7178108dacb30c4d8aacee8ff6a535a, type: 2}
   _isAutoAttack: 1
   _area: 0
   _castLength: 0
@@ -1996,7 +1972,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &6779511414245420136
@@ -3048,6 +3024,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5762049827953977616}
+  - component: {fileID: 3023306480799323972}
+  - component: {fileID: 3641537915999868803}
   m_Layer: 0
   m_Name: Talents_Container
   m_TagString: Untagged
@@ -3070,6 +3048,43 @@ Transform:
   m_Father: {fileID: 795014623008228812}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3023306480799323972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7828036230296040018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0dd0cb78ed16a4748be0e767e28e738c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _talents:
+  - {fileID: 3641537915999868803}
+--- !u!114 &3641537915999868803
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7828036230296040018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8088ed7ede33cdf4093458b33145b274, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  isActive: 1
+  Name: d
+  Description: d
+  ico: {fileID: 21300000, guid: 8d9c7e37d337f36478e9e8a06c88ad59, type: 3}
+  character: {fileID: 8468544467696250796}
 --- !u!1 &8210224711045638505
 GameObject:
   m_ObjectHideFlags: 0

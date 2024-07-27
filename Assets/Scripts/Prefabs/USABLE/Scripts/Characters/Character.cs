@@ -22,6 +22,8 @@ public abstract class Character : NetworkBehaviour
 	[SerializeField] private UIComponent uiComponent;
 	[SerializeField] private SelectComponent _selectComponent;
 	[CanBeNull] [SerializeField] private SpawnComponent _spawnComponent;
+	[SerializeField] private TalentSystem _talentSystem;
+	
 	private TeamType _teamType;
 
 	public Rigidbody2D Rb => _rb;
@@ -36,6 +38,7 @@ public abstract class Character : NetworkBehaviour
 	protected UIComponent UIComponent => uiComponent;
 	public SelectComponent SelectComponent => _selectComponent;
 	public SpawnComponent SpawnComponent => _spawnComponent;
+	public TalentSystem TalentSystem => _talentSystem;
 
 	public TeamType Team => _teamType;
 	

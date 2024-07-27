@@ -117,6 +117,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3583469219831964218}
+  - component: {fileID: 4134561793839395153}
+  - component: {fileID: 7501493852460478226}
   m_Layer: 0
   m_Name: Talents_Container
   m_TagString: Untagged
@@ -139,6 +141,43 @@ Transform:
   m_Father: {fileID: 4935675786201089849}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4134561793839395153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 266238608977055519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0dd0cb78ed16a4748be0e767e28e738c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _talents:
+  - {fileID: 7501493852460478226}
+--- !u!114 &7501493852460478226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 266238608977055519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8088ed7ede33cdf4093458b33145b274, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  isActive: 0
+  Name: c
+  Description: c
+  ico: {fileID: 21300000, guid: 8d9c7e37d337f36478e9e8a06c88ad59, type: 3}
+  character: {fileID: 2981867871510918870}
 --- !u!1 &372790081134549457
 GameObject:
   m_ObjectHideFlags: 0
@@ -652,8 +691,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b927948ae40d644492381b2c058cf47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _abilities: []
+  _abilities:
+  - {fileID: 6149066541462994990}
+  - {fileID: 1072701771335386490}
   visualRender: {fileID: 1386630179779334956}
+  _characterData: {fileID: 11400000, guid: 5ce515f6fe62cf7439e06a1ef4e521bc, type: 2}
+  _talentSystem: {fileID: 4134561793839395153}
 --- !u!114 &1386630179779334956
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -685,7 +728,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  abilityData: {fileID: 0}
+  abilityData: {fileID: 11400000, guid: e7178108dacb30c4d8aacee8ff6a535a, type: 2}
   _isAutoAttack: 0
   _area: 0
   _castLength: 0
@@ -704,7 +747,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1977499344080468152}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 77f4972268ef405438dda47930d6b05d, type: 3}
   m_Name: 
@@ -712,7 +755,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  abilityData: {fileID: 0}
+  abilityData: {fileID: 11400000, guid: e7178108dacb30c4d8aacee8ff6a535a, type: 2}
   _isAutoAttack: 0
   _area: 0
   _castLength: 0
@@ -1795,7 +1838,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &6914308446287960741
@@ -2194,6 +2237,7 @@ MonoBehaviour:
   uiComponent: {fileID: 952347863481417298}
   _selectComponent: {fileID: 1836414566327765074}
   _spawnComponent: {fileID: 0}
+  _talentSystem: {fileID: 4134561793839395153}
   _playerData: {fileID: 11400000, guid: 5ce515f6fe62cf7439e06a1ef4e521bc, type: 2}
   _heroParent: {fileID: 0}
 --- !u!114 &9209893611178306962
@@ -2267,6 +2311,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   bar: {fileID: 2251684946869129842}
+  _regenerationValue: 10
   _sumDamageGiven: 0
 --- !u!114 &952347863481417298
 MonoBehaviour:

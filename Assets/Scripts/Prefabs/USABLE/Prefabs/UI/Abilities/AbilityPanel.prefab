@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7711730357407754129}
   - component: {fileID: 4788263362833967954}
   - component: {fileID: 7646152483739298491}
-  - component: {fileID: 760426066598959879}
+  - component: {fileID: 2795438965690513112}
   m_Layer: 5
   m_Name: AbilityPanel
   m_TagString: Untagged
@@ -105,7 +105,7 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &760426066598959879
+--- !u!114 &2795438965690513112
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -114,11 +114,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 906215495343805811}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: baa3040758301b64e980b93688721490, type: 3}
+  m_Script: {fileID: 11500000, guid: 2241ba80b09395b47a39257e5123bd6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _abilityIconPref: {fileID: 9202960188991424841, guid: efe20424d7f97944cba458615f140dd0, type: 3}
   _castLine: {fileID: 6931577662190943853}
+  _playerForPanel: {fileID: 5441161983867919347, guid: 1bfb503c273b80e42b6a62d8c27c62c5, type: 3}
+  _isSelect: 0
 --- !u!1001 &3256669622773705409
 PrefabInstance:
   m_ObjectHideFlags: 0

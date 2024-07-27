@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CircleArea : MonoBehaviour
@@ -24,7 +22,7 @@ public class CircleArea : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (_sprite.size != Vector2.zero && collision.transform != transform.parent && collision.transform.TryGetComponent(out UIPlayerComponents enemy))
+        if (_sprite.size != Vector2.zero && collision.transform != transform.parent && collision.transform.TryGetComponent(out UIComponent enemy))
         {
             _isConcernsEnemy = true;
             enemy.ChangeSelection(true);
@@ -33,7 +31,7 @@ public class CircleArea : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (_sprite.size != Vector2.zero && collision.transform != transform.parent && collision.transform.TryGetComponent(out UIPlayerComponents enemy))
+        if (_sprite.size != Vector2.zero && collision.transform != transform.parent && collision.transform.TryGetComponent(out UIComponent enemy))
         {
             _isConcernsEnemy = false;
             enemy.ChangeSelection(false);

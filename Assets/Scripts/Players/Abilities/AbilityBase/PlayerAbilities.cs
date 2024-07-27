@@ -1,15 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
 
 public class PlayerAbilities : MonoBehaviour
 {
     [SerializeField] private List<Ability> _abilities;
     [SerializeField] private VisualRender visualRender;
     [SerializeField] private CharacterData _characterData;
-    [SerializeField] private TalentSystem _talentSystem;
+    [CanBeNull][SerializeField] private TalentSystem _talentSystem;
 
 	private float _globalCooldownTime = 2f;
 	private Ability _currentAbility;

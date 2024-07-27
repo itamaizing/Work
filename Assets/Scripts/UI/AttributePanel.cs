@@ -32,11 +32,11 @@ public class AttributePanel : MonoBehaviour
     {
         _attributes[0].Init(null, character.PlayerData.Health);
         _attributes[1].Init(null, character.PlayerData.Stamina);
-        _attributes[2].Init(null, character.PlayerData.HealthInfo.DefaultPhysicsDamage);
-        _attributes[3].Init(null, character.PlayerData.HealthInfo.DefaultMagicDamage);
-        _attributes[4].Init(null, character.PlayerData.HealthInfo.EvadeMeleeDamage);
-        _attributes[5].Init(null, character.PlayerData.HealthInfo.EvadeRangeDamage);
-        _attributes[6].Init(null, character.PlayerData.HealthInfo.EvadeMagicDamage);
+        _attributes[2].Init(null, character.PlayerData.StatsInfo.DefaultPhysicsDamage);
+        _attributes[3].Init(null, character.PlayerData.StatsInfo.DefaultMagicDamage);
+        _attributes[4].Init(null, character.PlayerData.StatsInfo.EvadeMeleeDamage);
+        _attributes[5].Init(null, character.PlayerData.StatsInfo.EvadeRangeDamage);
+        _attributes[6].Init(null, character.PlayerData.StatsInfo.EvadeMagicDamage);
 
         for(int i = 0; i < _attributes.Length; i++) 
         {

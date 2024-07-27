@@ -145,7 +145,7 @@ public class IcePuddle : Ability
 		worldPosition.z = 1;
 
 		float distance = Vector2.Distance(gameObject.transform.position, worldPosition);
-		if (distance <= _radius)
+		if (distance <= Radius)
 		{
 			_crutch = false;
 			return worldPosition;
@@ -154,7 +154,7 @@ public class IcePuddle : Ability
 		{
 			_crutch = true;
 			Vector3 direction = (worldPosition - gameObject.transform.position).normalized;
-			Vector3 spawnPosition = gameObject.transform.position + direction * _radius;
+			Vector3 spawnPosition = gameObject.transform.position + direction * Radius;
 			return spawnPosition;
 		}
 

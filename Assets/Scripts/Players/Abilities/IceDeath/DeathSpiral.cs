@@ -64,7 +64,7 @@ public class DeathSpiral : Ability
 
 	public void AddCharge()
 	{
-		if(_currentChargers<_maxCharges)
+		if(_currentChargers < Charges.ChargesCount)
 			_currentChargers++;
 	}
 

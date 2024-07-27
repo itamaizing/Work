@@ -29,7 +29,7 @@ public class LightningMovementUpdated : TargetOrAreaAbility
     protected override IEnumerator UseCoroutine()
     {
         Debug.Log("LightningMovement UseCoroutine work");
-        yield return _chooseTargetJob = StartCoroutine(ChooseTargetCoroutine(Radius));
+        yield return _chooseTatgetJob = StartCoroutine(ChooseTargetCoroutine(Radius));
         CastAction();
     }
 

@@ -17,7 +17,7 @@ public class Absorption : Ability
 		{
 			var _mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			RaycastHit2D[] hits =
-				Physics2D.CircleCastAll(_mousePos, _radius, Vector2.zero);
+				Physics2D.CircleCastAll(_mousePos, Radius, Vector2.zero);
 			for (int i = 0; i < hits.Length; i++)
 			{
 				if (hits[i].collider.TryGetComponent<IceShadowObject>(out var shadow))

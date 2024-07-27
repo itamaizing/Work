@@ -18,6 +18,7 @@ public class HeroComponent : Character
         Stamina.Initialize(characterData.Stamina, characterData.StaminaRegen, characterData.StaminaRegenDelay);
         RuneComponent.Initialize(10,1,10);
         CharacterState.Initialize(Health, Move , Stamina);
+        TalentSystem.Initialize();
         UIComponent.Initialize(Abilities, Move, Stamina, Health);
         SelectComponent.Initialize(Move, Abilities, UIComponent);
     }

@@ -21,7 +21,7 @@ public class PoisonBall : TargetOrAreaAbility
 
     protected override IEnumerator UseCoroutine()
     {
-        yield return _chooseTargetJob = StartCoroutine(ChooseTargetCoroutine(Radius));
+        yield return _chooseTatgetJob = StartCoroutine(ChooseTargetCoroutine(Radius));
         CastAction();
     }
 
@@ -88,7 +88,7 @@ public class PoisonBall : TargetOrAreaAbility
     private IEnumerator FastMoveShoot(bool isEnemy, bool isFast)
     {
         Debug.Log("FastMoveShoot");
-        _castDeley = _fastMovementTimeCast;
+        CastDeley = _fastMovementTimeCast;
         yield return GetCastDeleyCoroutine();
         if (_isEnemy)
         {
@@ -102,7 +102,7 @@ public class PoisonBall : TargetOrAreaAbility
 
     private IEnumerator SlowMoveShoot(bool isEnemy, bool isFast)
     {
-        _castDeley = _slowMovementTimeCast;
+        CastDeley = _slowMovementTimeCast;
         yield return GetCastDeleyCoroutine();
         if (_isEnemy)
         {
