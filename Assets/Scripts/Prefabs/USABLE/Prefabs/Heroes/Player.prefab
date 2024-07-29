@@ -558,8 +558,8 @@ MonoBehaviour:
   uiComponent: {fileID: 4715758111818368764}
   _selectComponent: {fileID: 5511617219408767834}
   _spawnComponent: {fileID: 3330577042116454553}
-  _talentSystem: {fileID: 3023306480799323972}
   _playerData: {fileID: 11400000, guid: 191eb68f954e3b44b84d8524f5039132, type: 2}
+  talentsComponent: {fileID: 3023306480799323972}
 --- !u!114 &7760335386463111578
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -763,7 +763,7 @@ MonoBehaviour:
     mode: 2
     period: 0.5
     sensitivity: 10
-    maximumPeriod: 0.8
+    maximumPeriod: 5
     visualizeSensitivity: 0
   targetCompatibility: {fileID: 0}
   maxAcceleration: -2.5
@@ -841,7 +841,7 @@ MonoBehaviour:
   obstacleTimeHorizon: 2
   maxNeighbours: 15
   layer: 1
-  collidesWith: 2147483644
+  collidesWith: 1
   wallAvoidForce: 1
   wallAvoidFalloff: 1
   priority: 0.5
@@ -912,8 +912,7 @@ MonoBehaviour:
   - {fileID: 8699213103126326918}
   - {fileID: 8812684071966432408}
   visualRender: {fileID: 5564757508821022323}
-  _characterData: {fileID: 11400000, guid: 191eb68f954e3b44b84d8524f5039132, type: 2}
-  _talentSystem: {fileID: 3023306480799323972}
+  AbilityPanel: {fileID: 0}
 --- !u!114 &5564757508821022323
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3063,6 +3062,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  playerIcon: {fileID: 6975871845216543699, guid: 7a0d84fd90b3aba4bb98245644ce5aad, type: 3}
   _talents:
   - {fileID: 3641537915999868803}
 --- !u!114 &3641537915999868803

@@ -1,6 +1,7 @@
 using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public abstract class Talent : NetworkBehaviour
 {
@@ -21,20 +22,23 @@ public abstract class Talent : NetworkBehaviour
 
 }
 
-public class TalentSystem : NetworkBehaviour
-{
+public class TalentsComponent : NetworkBehaviour
+{ 
+	[SerializeField] private PlayerIcon playerIcon;
     [SerializeField] private List<Talent> _talents;
     //private List<Talent> _activeTalents = new List<Talent>();
-    private TalentColumn _panel;
+    private CharacterData _characterData;
     private int _points = 10;
 
 	public List<Talent> Talents => _talents;
-	public TalentColumn Panel => _panel;
+	public CharacterData CharacterData => _characterData;
+	
    // public List<Talent> ActiveTalents => _activeTalents;
    
-   public void Initialize()
+   public void Initialize(CharacterData characterData)
    {
-	   _panel = TalentManager.Instance.AddPanel(this);
+	   _characterData = characterData;
+	   TalentManager.Instance.AddPanel(this , playerIcon);
    }
 
 	public void AddPoints(int value)

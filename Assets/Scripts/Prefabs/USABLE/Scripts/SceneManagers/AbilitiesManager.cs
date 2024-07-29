@@ -28,7 +28,7 @@ public class AbilitiesManager : MonoBehaviour
 
     public AbilityPanel AddPanel(PlayerAbilities abilities)
     {
-        var panel = Instantiate(_panelPrefab,panelsParent);
+        var panel = Instantiate(_panelPrefab, panelsParent);
         panel.Fill(abilities);
         _panels.Add(panel);
         return panel;

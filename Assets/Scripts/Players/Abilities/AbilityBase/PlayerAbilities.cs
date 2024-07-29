@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -8,8 +7,6 @@ public class PlayerAbilities : MonoBehaviour
 {
     [SerializeField] private List<Ability> _abilities;
     [SerializeField] private VisualRender visualRender;
-    [SerializeField] private CharacterData _characterData;
-    [CanBeNull][SerializeField] private TalentSystem _talentSystem;
 
 	private float _globalCooldownTime = 2f;
 	private Ability _currentAbility;
@@ -18,19 +15,17 @@ public class PlayerAbilities : MonoBehaviour
 	private int _currentAutoAttackAbilityIndex;
 	private bool _isAbilitiesDisabled = false;
 	private bool _isAbilitiesEnabled = true;
-	private AbilityPanel _abilityPanel;
+	public AbilityPanel AbilityPanel;
 	private float _abilitySpeedCast = 1;
 
 	public List<Ability> Abilities => _abilities;
-	public CharacterData CharacterData => _characterData;
-	public TalentSystem TalentSystem => _talentSystem;
-
+	
     public event UnityAction<int> AbilitySelected;
 	public event UnityAction<int> AbilityAutoAttackSelected;
 	public event UnityAction<int> AbilityDeselected;
 	public event UnityAction<int> AbilityAutoAttackDeselected;
 
-	public void Initialize(MoveComponent playerMove,StaminaComponent staminaComponent , HealthComponent healthComponent)
+	public void Initialize(MoveComponent playerMove, StaminaComponent staminaComponent, HealthComponent healthComponent)
     {
         if(_abilities.Count > 0)
         {
@@ -40,7 +35,8 @@ public class PlayerAbilities : MonoBehaviour
         {
             item.Init(playerMove, staminaComponent, healthComponent);
         }
-		_abilityPanel = AbilitiesManager.Instance.AddPanel(this);
+        
+		AbilityPanel = AbilitiesManager.Instance.AddPanel(this);
 	}
 
     private void EnableAbilities()
@@ -90,13 +86,13 @@ public class PlayerAbilities : MonoBehaviour
 
 	public void SetAbilitiesPanelSelect(bool isSelect)
 	{
-		AbilitiesManager.Instance.ChangeCurrentPanelSelectStatus(_abilityPanel, isSelect);
+		AbilitiesManager.Instance.ChangeCurrentPanelSelectStatus(AbilityPanel, isSelect);
 		if (isSelect) EnableAbilities();
 		else DisableAbilities();
 	}
 	public void SetAbilitiesPanelEnable()
 	{
-		AbilitiesManager.Instance.ActiveCurrentPanel(_abilityPanel);
+		AbilitiesManager.Instance.ActiveCurrentPanel(AbilityPanel);
 	}
 	public void SetAbilitiesCoolDown(float time)
 	{
@@ -197,7 +193,7 @@ public class PlayerAbilities : MonoBehaviour
 	}
 	private void TryUseAbility()
 	{
-		if (_currentAbility == null || !_isAbilitiesEnabled || !_abilityPanel.IsActive || (_currentAbility.IsUsed))
+		if (_currentAbility == null || !_isAbilitiesEnabled || !AbilityPanel.IsActive || (_currentAbility.IsUsed))
 			return;
 
 		if (_currentAutoAttackAbility != null)
@@ -270,16 +266,16 @@ public class PlayerAbilities : MonoBehaviour
 	public void AddAbility(Ability ability)
 	{
 		_abilities.Add(ability);
-		AbilitiesManager.Instance.RemovePanel(_abilityPanel);
-		_abilityPanel = AbilitiesManager.Instance.AddPanel(this);
-		_abilityPanel.gameObject.SetActive(true);
+		AbilitiesManager.Instance.RemovePanel(AbilityPanel);
+		AbilityPanel = AbilitiesManager.Instance.AddPanel(this);
+		AbilityPanel.gameObject.SetActive(true);
 	}	
 	public void RemoveAbility(Ability ability) 
 	{
 		_abilities.Remove(ability);
-		AbilitiesManager.Instance.RemovePanel(_abilityPanel);
-		_abilityPanel = AbilitiesManager.Instance.AddPanel(this);
-		_abilityPanel.gameObject.SetActive(true);
+		AbilitiesManager.Instance.RemovePanel(AbilityPanel);
+		AbilityPanel = AbilitiesManager.Instance.AddPanel(this);
+		AbilityPanel.gameObject.SetActive(true);
 	}
 
     private IEnumerator StartKnockDownTimer(float coolDown, Ability ability)
@@ -294,6 +290,6 @@ public class PlayerAbilities : MonoBehaviour
 
 	private void OnDestroy()
 	{
-		AbilitiesManager.Instance.RemovePanel(_abilityPanel);
+		AbilitiesManager.Instance.RemovePanel(AbilityPanel);
 	}
 }

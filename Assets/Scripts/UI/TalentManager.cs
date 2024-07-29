@@ -1,16 +1,14 @@
 using DG.Tweening;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class TalentManager : MonoBehaviour
 {
-	[SerializeField] private RectTransform _panelsParent;
-	[SerializeField] private TalentColumn _talentColumn;
+	[SerializeField] private RectTransform panelParent;
+	[SerializeField] private RectTransform characterParent;
+	[SerializeField] private TalentsPanel talentsPanel;
 	[SerializeField] private Button button;
-
-
+	
 	public static TalentManager Instance;
 
 	private void Awake()
@@ -23,17 +21,16 @@ public class TalentManager : MonoBehaviour
 		{
 			Instance = this;
 		}
-
-		//Init();
 	}
 
-	public TalentColumn AddPanel(TalentSystem talent)
+	public void AddPanel(TalentsComponent talents, PlayerIcon playerIcon)
 	{
-		var panel = Instantiate(_talentColumn, _panelsParent);
-		panel.Init(talent);
+		var panel = Instantiate(talentsPanel, transform);
+		panel.Init(talents);
 		panel.transform.DOScale(0, 0);
 		button.onClick.AddListener(panel.SwitchActiveUI);
-		//_panels.Add(panel);
-		return panel;
+		
+		var ico = Instantiate(playerIcon, characterParent.transform);
+		ico.Init(talents.CharacterData.Icon, panel.SwitchActiveUI);
 	}
 }

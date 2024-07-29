@@ -1,4 +1,3 @@
-using System;
 using Mirror;
 using Pathfinding;
 using Pathfinding.RVO;
@@ -19,24 +18,26 @@ public class MoveComponent : NetworkBehaviour
 
 	private float _defaultSpeed;
 
-	private bool _isHeroMovement = false;
-	
-	public void SetOffset(Vector2 offset)
-	{
-		_offset = offset;
-	}
+	private bool _isHero = false;
 
-	public void Initialize(float speed, AIPath agent, RVOController agentRvo)
+	public void Initialize(float speed, AIPath agent, RVOController agentRvo , bool isHero = false)
 	{
 		_defaultSpeed = speed;
 		_agent = agent;
 		_agent.constrainInsideGraph = true;
 		_agentRvo = agentRvo;
 		
+		_isHero = isHero;
+		
 		SetDefaultSpeed();
 
 		CanMove = true;
 	} 
+	
+	public void SetOffset(Vector2 offset)
+	{
+		_offset = offset;
+	}
 	
 	public void ChangeMoveSpeed(float value)
 	{
@@ -58,7 +59,7 @@ public class MoveComponent : NetworkBehaviour
 		{
 			return;
 		}
-		UnitMovement();
+		HandleMouseInput();
 		HandleKeyboardInput();
 	}
 
@@ -67,21 +68,20 @@ public class MoveComponent : NetworkBehaviour
 	{
 		if (!_agent.pathPending && _agent.reachedEndOfPath)
 		{
-			_agentRvo.priority = 0.6f;
+			_agentRvo.priority = _isHero ? 0.6f : 0.5f;
 		}
 		else if(_agent.pathPending)
 		{
-			_agentRvo.priority = 0.7f;
+			_agentRvo.priority = _isHero ? 0.9f : 0.7f;
 		}
 		else if (_agent.reachedEndOfPath)
 		{
-			_agentRvo.priority = 0.5f;
+			_agentRvo.priority = 0.3f;
 		}
 	}
 
-	private void UnitMovement()
+	private void HandleMouseInput()
 	{
-		if(GetComponent<UnitComponent>() == null) return;
 		if(!Mouse.current.rightButton.wasPressedThisFrame) return;
 		
 		Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
@@ -91,7 +91,7 @@ public class MoveComponent : NetworkBehaviour
 	
 	private void HandleKeyboardInput()
 	{
-		if(GetComponent<HeroComponent>() == null) return;
+		if(!_isHero) return;
 		
 		MoveDirection = new Vector2(
 			Keyboard.current.aKey.isPressed ? -1 : Keyboard.current.dKey.isPressed ? 1 : 0,
@@ -100,7 +100,7 @@ public class MoveComponent : NetworkBehaviour
 
 		if (MoveDirection != Vector2.zero)
 		{
-			CmdMove(transform.position + (Vector3)MoveDirection, _offset);
+			CmdMove(transform.position + (Vector3)MoveDirection, Vector3.zero);
 		}
 	}
 
@@ -110,7 +110,7 @@ public class MoveComponent : NetworkBehaviour
 		NNInfo nearestNodeInfo = AstarPath.active.GetNearest(targetPosition);
 		
 		if (nearestNodeInfo.node is not { Walkable: true } || 
-		    Vector3.Distance(targetPosition, nearestNodeInfo.position) > 1f)
+		    Vector3.Distance(targetPosition, nearestNodeInfo.position) > 0.6f)
 		{
 			return;
 		}

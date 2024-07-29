@@ -5,7 +5,6 @@ public class AbilityPanel : MonoBehaviour
 {
     [SerializeField] private AbilityIcon _abilityIconPref;
     [SerializeField] private FillAmountOverTime _castLine;
-	[SerializeField] private IcoPlayerForPanel _playerForPanel;
 
 	private PlayerAbilities _playerAbilities;
     private List<Ability> _abilities;
@@ -40,9 +39,6 @@ public class AbilityPanel : MonoBehaviour
     {
         _playerAbilities = abilities;
         _abilities.AddRange(_playerAbilities.Abilities);
-
-        var ico = Instantiate(_playerForPanel, transform);
-        ico.Init(abilities.CharacterData.Icon, abilities.TalentSystem.Panel.SwitchActiveUI);
 
         foreach (var item in _abilities)
         {

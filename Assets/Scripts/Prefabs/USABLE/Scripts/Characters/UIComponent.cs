@@ -9,8 +9,10 @@ public class UIComponent : MonoBehaviour
     public PopupTextPrefab PopupText;
     private PopupTextPrefab popupTextPrefab;
     
-    public void Initialize(PlayerAbilities playerAbilities,MoveComponent playerMove,StaminaComponent staminaComponent , HealthComponent healthComponent)
+    public void Initialize(PlayerAbilities playerAbilities, TalentsComponent talentsComponent, MoveComponent playerMove, StaminaComponent staminaComponent, HealthComponent healthComponent, CharacterData data)
     {
+        if(talentsComponent != null) talentsComponent.Initialize(data);
+        
         playerAbilities.Initialize(playerMove, staminaComponent, healthComponent);
     }
     
@@ -32,7 +34,7 @@ public class UIComponent : MonoBehaviour
         popupTextPrefab.EndColor = endColor;
     }
 
-    public void ShowPopupText(string text, Color startColor, Color endColor) //������������ ��� �������
+    public void ShowPopupText(string text, Color startColor, Color endColor)
     {
         popupTextPrefab = Instantiate(PopupText, DamageSpawn.position, Quaternion.identity,transform);
         popupTextPrefab.PopupText.text = text;

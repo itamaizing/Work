@@ -1,11 +1,8 @@
 using DG.Tweening;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UIElements;
 
-public class TalentColumn : MonoBehaviour
+public class TalentsPanel : MonoBehaviour
 {
 	[SerializeField] private GameObject[] _content;
 	[SerializeField] private TalentButton[] _buttons1;
@@ -14,13 +11,13 @@ public class TalentColumn : MonoBehaviour
 	[SerializeField] private TextMeshProUGUI _column2;
 	[SerializeField] private TalentButton[] _buttons3;
 	[SerializeField] private TextMeshProUGUI _column3;
-	[SerializeField] private TalentSystem _system;
 	[SerializeField] private AttributePanel _attributePanel;
 
+	private TalentsComponent _talentsComponent;
+	
 	private int _bonus = 0;
 	private int _bonus2 = 0;
 	private int _bonus3 = 0;
-	//private int _prevCount = 0;
 	public void OnContentShow(int id)
 	{
 		//_content[id].SetActive(!_content[id].activeSelf);
@@ -36,22 +33,24 @@ public class TalentColumn : MonoBehaviour
 			}
 		}
 	}
-	public void Init(TalentSystem system)
+	public void Init(TalentsComponent system)
 	{
-		_system = system; 
+		_talentsComponent = system; 
 		int count = 0;
-		if(_buttons1.Length != _system.Talents.Count) 
+		
+		if(_buttons1.Length != _talentsComponent.Talents.Count) 
 		{
 			Debug.Log("not equal counts in TalentColumn");
 			return; 
 		}
+		
 		for(int i = 0; i < _buttons1.Length; i++)
 		{
-			_buttons1[i].ico.sprite = _system.Talents[i].ico;
-			_buttons1[i].talentName.text = _system.Talents[i].Name + i;
-			_buttons1[i].talentDescription.text = _system.Talents[i].Name + "\n" + _system.Talents[i].Description;
+			_buttons1[i].ico.sprite = _talentsComponent.Talents[i].ico;
+			_buttons1[i].talentName.text = _talentsComponent.Talents[i].Name + i;
+			_buttons1[i].talentDescription.text = _talentsComponent.Talents[i].Name + "\n" + _talentsComponent.Talents[i].Description;
 			
-			if(_system.Talents[i].isActive)
+			if(_talentsComponent.Talents[i].isActive)
 			{
 				count++;
 				_buttons1[i].SwitchBorders(true);
@@ -62,9 +61,9 @@ public class TalentColumn : MonoBehaviour
 				_buttons1[i].SwitchBorders(false);
 				_buttons1[i].isActive = false;
 			}
+			
 			int id = i;
-			_buttons1[i].button.onClick.AddListener(() => { SwitchTalent(id, !_system.Talents[id].isActive); });
-			//_buttons1[i].SwitchBorders();
+			_buttons1[i].button.onClick.AddListener(() => { SwitchTalent(id, !_talentsComponent.Talents[id].isActive); });
 		}
 		_column1.text = count.ToString();
 	}
@@ -72,11 +71,11 @@ public class TalentColumn : MonoBehaviour
 	private void SwitchTalent(int id, bool value)
 	{
 		Debug.Log(id);
-		_system.SetActive(id, value);
+		_talentsComponent.SetActive(id, value);
 		_buttons1[id].SwitchBorders(value);
 		Debug.Log("switch");
 
-		_column1.text = _system.GetActiveTalentCount().ToString();
+		_column1.text = _talentsComponent.GetActiveTalentCount().ToString();
 
 		if(value)
 		{
@@ -108,7 +107,7 @@ public class TalentColumn : MonoBehaviour
 		int count = 0;
 		for(int i = 9; i < 12; i++)
 		{
-			if (_system.Talents[i].isActive)
+			if (_talentsComponent.Talents[i].isActive)
 			{
 				count++;
 			}
@@ -116,7 +115,7 @@ public class TalentColumn : MonoBehaviour
 		int count2 = 0;
 		for (int i = 6; i < 9; i++)
 		{
-			if (_system.Talents[i].isActive)
+			if (_talentsComponent.Talents[i].isActive)
 			{
 				count2++;
 			}
@@ -124,7 +123,7 @@ public class TalentColumn : MonoBehaviour
 		int count3 = 0;
 		for (int i = 3; i < 6; i++)
 		{
-			if (_system.Talents[i].isActive)
+			if (_talentsComponent.Talents[i].isActive)
 			{
 				count3++;
 			}

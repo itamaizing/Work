@@ -20,7 +20,7 @@ public class UnitComponent : Character
         Move.Initialize(characterData.MoveSpeed, Agent, RvoAgent);
         Stamina.Initialize(characterData.Stamina, characterData.StaminaRegen, characterData.RegenDelay);
         CharacterState.Initialize(Health, Move , Stamina);
-        UIComponent.Initialize(Abilities, Move, Stamina, Health);
+        UIComponent.Initialize(Abilities, null, Move, Stamina, Health, _playerData);
         SelectComponent.Initialize(Move, Abilities, UIComponent);
     }
 

@@ -1,11 +1,8 @@
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using DG.Tweening;
 
-public class IcoPlayerForPanel : MonoBehaviour
-	//, IPointerEnterHandler, IPointerExitHandler
+public class PlayerIcon : MonoBehaviour //, IPointerEnterHandler, IPointerExitHandler
 {
 	public Image ico;
 	public Button button;

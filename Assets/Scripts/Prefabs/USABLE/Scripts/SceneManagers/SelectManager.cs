@@ -64,11 +64,16 @@ namespace Prefabs.USABLE
 
             if (Mouse.current.rightButton.wasPressedThisFrame)
             {
+                if(SelectedControllableUnits.Count <= 1) return;
+
                 var center = CalculateCenterPoint();
+                bool[] sectorOccupied = new bool[SelectedControllableUnits.Count];
+
                 foreach (var character in SelectedControllableUnits)
                 {
-                    if(character is HeroComponent) continue; 
-                    character.Move.SetOffset(DetermineOffset(character.transform.position, center));
+                    int sector = DetermineOffset(character.transform.position, center, sectorOccupied, out Vector3 offset);
+                    sectorOccupied[sector] = true;
+                    character.Move.SetOffset(offset);
                 }
             }
         }
@@ -118,22 +123,17 @@ namespace Prefabs.USABLE
         
         private Vector3 CalculateCenterPoint()
         {
-            if (SelectedControllableUnits.Count == 0)
-                return Vector3.zero;
-
             Vector3 sum = Vector3.zero;
             
             foreach (var character in SelectedControllableUnits)
             {
-                if(character is HeroComponent) continue;
-                
                 sum += character.transform.position;
             }
             
             return sum / SelectedControllableUnits.Count;
         }
         
-        private Vector3 DetermineOffset(Vector3 characterPosition, Vector3 centerPoint)
+        /*private Vector3 DetermineOffset(Vector3 characterPosition, Vector3 centerPoint)
         {
             Vector3 direction = characterPosition - centerPoint;
             
@@ -142,7 +142,33 @@ namespace Prefabs.USABLE
             float distance = 3f;
             
             return direction * distance;
-        }
+        }*/
         
+        private int DetermineOffset(Vector3 characterPosition, Vector3 centerPoint, bool[] sectorOccupied, out Vector3 offset)
+        {
+            Vector3 direction = characterPosition - centerPoint;
+            float angle = Mathf.Atan2(direction.y, direction.x);
+
+            int sectorCount = sectorOccupied.Length;
+            float sectorAngle = 2 * Mathf.PI / sectorCount;
+            int sector = Mathf.FloorToInt((angle + Mathf.PI) / sectorAngle);
+            int initialSector = sector;
+
+            while (sectorOccupied[sector % sectorCount])
+            {
+                sector = (sector + 1) % sectorCount;
+                if (sector == initialSector)
+                {
+                    Debug.LogError("Все секторы заняты!");
+                    offset = Vector3.zero;
+                    return -1; // возвращаем -1, чтобы указать на ошибку
+                }
+            }
+
+            float sectorCenterAngle = sector * sectorAngle - Mathf.PI + sectorAngle / 2;
+
+            offset = new Vector3(Mathf.Cos(sectorCenterAngle), Mathf.Sin(sectorCenterAngle), 0) * 3f;
+            return sector;
+        }
     }
 }
