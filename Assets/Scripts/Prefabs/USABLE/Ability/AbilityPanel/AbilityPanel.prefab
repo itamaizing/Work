@@ -120,7 +120,7 @@ MonoBehaviour:
   _abilityIconPref: {fileID: 9202960188991424841, guid: efe20424d7f97944cba458615f140dd0, type: 3}
   _castLine: {fileID: 6931577662190943853}
   _playerForPanel: {fileID: 5441161983867919347, guid: 1bfb503c273b80e42b6a62d8c27c62c5, type: 3}
-  _isSelect: 0
+  _isSelect: 1
 --- !u!1001 &3256669622773705409
 PrefabInstance:
   m_ObjectHideFlags: 0

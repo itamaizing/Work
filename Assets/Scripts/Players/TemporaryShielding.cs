@@ -13,7 +13,7 @@ public class TemporaryShielding : Shielding
 
     private void GainShieldForTime(float shield, float time)
     {
-        shieldAmount = shield;
+        _shieldAmount = shield;
         shieldDurationTime = time;
     }
 
@@ -29,8 +29,8 @@ public class TemporaryShielding : Shielding
 
     private IEnumerator ShieldLifeTime(float shield,float time)
     {
-        shieldAmount = shield;
+        _shieldAmount = shield;
         yield return new WaitForSeconds(time);
-        shieldAmount = 0;
+        _shieldAmount = 0;
     }
 }
