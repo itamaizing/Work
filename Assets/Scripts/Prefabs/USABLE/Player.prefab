@@ -843,6 +843,7 @@ MonoBehaviour:
   - {fileID: 1005351013565685612}
   - {fileID: 812406894906728288}
   - {fileID: 7153112277257404364}
+  - {fileID: 1793503949241234987}
   visualRender: {fileID: 5564757508821022323}
   _characterData: {fileID: 11400000, guid: 1382b47eecc788c46b35297311c129c3, type: 2}
   _talentSystem: {fileID: 8675175310089954536}
