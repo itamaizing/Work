@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d8548505a2c5104980a6fa13739ca3d, type: 3}
   m_Name: IceShield
   m_EditorClassIdentifier: 
-  _name: BlockOfIce
-  _description: 
-  _icon: {fileID: 21300000, guid: ed1972ce01824b542b0ae1113bc01a7e, type: 3}
+  _name: Iceshield
+  _description: Bruh
+  _icon: {fileID: 21300000, guid: 4179c97ba3375c14097a417042c7263d, type: 3}

@@ -15,6 +15,7 @@ public class IceShardTalent : Talent
 		else
 		{
 			_ability.AddAbility(_iceShard);
+			_iceShard.enabled = true;
 		}
 	}
 

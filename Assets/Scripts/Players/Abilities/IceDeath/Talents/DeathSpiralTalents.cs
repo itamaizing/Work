@@ -15,6 +15,7 @@ public class DeathSpiralTalents : Talent
 		else
 		{
 			_ability.AddAbility(_deathSpiral);
+			_deathSpiral.enabled = true;
 		}
 	}
 
