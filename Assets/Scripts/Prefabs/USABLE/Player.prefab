@@ -802,6 +802,7 @@ GameObject:
   - component: {fileID: 8699213103126326918}
   - component: {fileID: 7579798881083447851}
   - component: {fileID: 5123931816226076045}
+  - component: {fileID: 1793503949241234987}
   m_Layer: 0
   m_Name: Abilities
   m_TagString: Untagged
@@ -1367,6 +1368,44 @@ MonoBehaviour:
   _playerLinks: {fileID: 8468544467696250796}
   _seriesOfStrikes: {fileID: 6347228247449020419}
   _castTime: 2.5
+--- !u!114 &1793503949241234987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1565031513079442272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9b717731bcc0e447b11a37b03c635fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _abilityInfo: {fileID: 11400000, guid: ca645d4fb59a1ff43b0dde4c469f64bf, type: 2}
+  _isAutoAttack: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _manaCost: 0
+  _castDeley: 0
+  _cooldown: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _isStreaming: 0
+  _streamingDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _percentOfShield: 0.9
+  _decreaseSpeed: 0.2
+  _character: {fileID: 8468544467696250796}
+  _combo: {fileID: 6347228247449020419}
 --- !u!1 &2281972326564055702
 GameObject:
   m_ObjectHideFlags: 0
