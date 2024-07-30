@@ -175,8 +175,8 @@ public class HealthComponent : NetworkBehaviour
     {
         float value = 0;
 
-        if (damageType == DamageType.Physical)
-        {
+       // if (damageType == DamageType.Physical)
+       // {
             for (int i = 0; i < shields.Count; i++)
             {
                 if (shields[i].DamageType == damageType || shields[i].DamageType == DamageType.Both)
@@ -184,9 +184,9 @@ public class HealthComponent : NetworkBehaviour
                     value += shields[i].GetShieldAmount(ability.gameObject);
                 }
             }
-        }
+      //  }
 
-        if (damageType == DamageType.Magical)
+      /*  if (damageType == DamageType.Magical)
         {
             for (int i = 0; i < shields.Count; i++)
             {
@@ -195,15 +195,15 @@ public class HealthComponent : NetworkBehaviour
                     value += shields[i].GetShieldAmount(ability.gameObject);
                 }
             }
-        }
+        }*/
 
         return value;
     }
 
     private float CalculateDamageForShields(float damageValue, DamageType damageType, Ability ability)
     {
-        if (damageType == DamageType.Physical)
-        {
+       // if (damageType == DamageType.Physical)
+      //  {
             if (SummShields(damageType, ability) > damageValue)
             {
                 for (int i = shields.Count - 1; i >= 0; i--)
@@ -231,8 +231,8 @@ public class HealthComponent : NetworkBehaviour
             }
 
             return damageValue; // ���� ���� <= 0
-        }
-
+     //   }
+     /*
         else if (damageType == DamageType.Magical)
         {
             if (SummShields(damageType, ability) > damageValue)
@@ -263,7 +263,7 @@ public class HealthComponent : NetworkBehaviour
 
             return damageValue; // ���� ���� <= 0
         }
-        return damageValue; // �� ������� ��� �����
+        return damageValue; // �� ������� ��� �����*/
     }
 
     public void TakeDamage(float damageValue, DamageType damageType, Ability abilty)

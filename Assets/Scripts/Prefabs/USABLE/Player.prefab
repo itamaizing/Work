@@ -524,8 +524,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   healthBar: {fileID: 2798253226615935122}
-  shields_Physic: []
-  shields_Magic: []
+  shields: []
   sumDamageTaken: 0
 --- !u!114 &7760335386463111578
 MonoBehaviour:
