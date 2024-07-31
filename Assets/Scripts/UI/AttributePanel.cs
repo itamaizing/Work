@@ -119,8 +119,25 @@ public class AttributePanel : MonoBehaviour
 			}
 		}
 	}
-
-    public void AddPoints(int value)
+	private void Remove2(int id)
+	{
+		if (_modif[id] > 0)
+		{
+			_modif[id]--;
+			//_points++;
+			_attributes[id].Remove();
+			_changes.Remove(id);
+			_count.text = _points.ToString();
+		}
+		if (_points > 0)
+		{
+			for (int i = 0; i < _attributes.Length; i++)
+			{
+				_attributes[i].SetGreyScale(0);
+			}
+		}
+	}
+	public void AddPoints(int value)
     {
         _points += value;
 		_count.text = _points.ToString();
@@ -136,9 +153,12 @@ public class AttributePanel : MonoBehaviour
         }
         else if(_changes.Count > 0)
         {
-            Remove(_changes[0]);
-            _changes.RemoveAt(0);
-			_count.text = _points.ToString();
+            for (int i = 0; i < value - _points; i++)
+            {
+                Remove2(_changes[0]);
+               // _changes.RemoveAt(0);
+                _count.text = _points.ToString();
+            }
 			return true;
         }
         return false;

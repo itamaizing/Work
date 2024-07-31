@@ -96,7 +96,6 @@ public class HealthComponent : NetworkBehaviour
 
         return hit;
     }
-
 	public bool TryTakeDamage(float damageValue, DamageType damageType, AttackRangeType attackRangeType, Ability ability)
 	{
         _personWhoShooted = ability;
@@ -104,6 +103,7 @@ public class HealthComponent : NetworkBehaviour
 
 		if (hit)
 		{
+
 			TakeDamage(modifiedDamage, damageType, ability);
 		}
 
