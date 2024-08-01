@@ -13,7 +13,9 @@ public class HealthComponent : NetworkBehaviour
 {
     [SerializeField]
     private HealthBar healthBar;
-    
+
+    private HeroComponent _enemyHeroComponent;
+
     private float _defPhysDamage;
     private float _defMagDamage;
 
@@ -36,6 +38,8 @@ public class HealthComponent : NetworkBehaviour
 
     private bool _invinsible = false;
 
+    public HeroComponent EnemyHeroComponent => _enemyHeroComponent;
+
     [Header("Shields")]
     public List<Shielding> shields_Physic = new List<Shielding>();
     public List<Shielding> shields_Magic = new List<Shielding>();
@@ -48,6 +52,8 @@ public class HealthComponent : NetworkBehaviour
         public float ModifiedDamage;
         public Type CallerType;
     }
+
+    public event Action<HeroComponent> OnDamageTaken;
 
     public Action<DamageInfo> OnTakePhisicDamage;
     public Action<DamageInfo> OnTakeMagicDamage;
@@ -90,6 +96,20 @@ public class HealthComponent : NetworkBehaviour
         if (hit)
         {
             TakeDamage(modifiedDamage, damageType);
+        }
+
+        return hit;
+    }
+
+    public bool TryTakeDamage(float damageValue, DamageType damageType, AttackRangeType attackRangeType, Ability ability)
+    {
+        float modifiedDamage = CalculateDamageWithStats(damageValue, damageType, attackRangeType, out bool hit);
+
+        if (hit)
+        {
+            _enemyHeroComponent = ability.Health.GetComponent<HeroComponent>();
+            TakeDamage(modifiedDamage, damageType);
+            OnDamageTaken?.Invoke(_enemyHeroComponent);
         }
 
         return hit;
