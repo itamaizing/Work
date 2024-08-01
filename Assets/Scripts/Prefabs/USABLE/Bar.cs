@@ -7,10 +7,14 @@ public abstract class Bar : MonoBehaviour
 {
     [SerializeField]
     protected Slider _bar;
-    
-    [CanBeNull]
+
+	[CanBeNull]
+	[SerializeField]
+	protected Slider _barMinus;
+
+	[CanBeNull]
     [SerializeField]
     protected TextMeshPro _barText;
-
-    public abstract void UpdateValue(float hp, float maxHp);
+	
+	public abstract void UpdateValue(float hp, float maxHp);
 }
