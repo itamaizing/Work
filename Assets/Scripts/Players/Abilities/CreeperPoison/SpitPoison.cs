@@ -7,12 +7,6 @@ using UnityEngine;
 
 public class SpitPoison : Ability
 {
-    [Header("Talents")]
-    [SerializeField] private HealingPoisonCloud _healingPoisonCloud;
-    [SerializeField] private CapaciousPoisonCloud _capaciousPoisonCloud;
-    [SerializeField] private ToxiqueCloud _toxiqueCloud;
-
-    [SerializeField] private PoisonCloudBuff _poisonCloudBuffPrefab;
     [SerializeField] private SpitPoisonProjectile _projectile;
     [SerializeField] private Character _playerLinks;
 
@@ -25,10 +19,6 @@ public class SpitPoison : Ability
     private Coroutine _useCoroutine;
     private Coroutine _shootCoroutine;
     private Coroutine _mouseDirectionCoroutine;
-
-    public bool HealingCloudTalentIsActive => _healingPoisonCloud.isActive;
-    public bool CapaciousCloudTalentIsActive => _capaciousPoisonCloud.isActive;
-    public bool ToxiqueCloudTalentIsActive => _toxiqueCloud.isActive;
 
     protected override void Cancel()
     {
@@ -79,7 +69,7 @@ public class SpitPoison : Ability
         CmdInstantiateProjectile(_angle, _playerLinks.Stamina.Value);
 
         //CmdCreatePoisonCloudBuff(HealingCloudTalentIsActive, CapaciousCloudTalentIsActive, ToxiqueCloudTalentIsActive);
-        CmdApplyCLoudPoison();
+        CmdApplyCloudPoison();
         _playerLinks.Stamina.Use(_playerLinks.Stamina.Value);
 
         Cancel();
@@ -100,20 +90,10 @@ public class SpitPoison : Ability
     }
 
     [Command]
-    private void CmdCreatePoisonCloudBuff(bool isActiveHealingCloud, bool isActiveCapaciousCloud, bool isActiveToxiqueCloud)
+    private void CmdApplyCloudPoison()
     {
-        RpcCreatePoisonCloudBuff(isActiveHealingCloud, isActiveCapaciousCloud, isActiveToxiqueCloud);
-
-        _poisonCloudBuff = _playerLinks.GetComponentInChildren<PoisonCloudBuff>();
-        if (_poisonCloudBuff == null)
-        {
-            _poisonCloudBuff = Instantiate(_poisonCloudBuffPrefab, _playerLinks.transform);
-            _poisonCloudBuff.PoisonCloudAddStacks(_playerLinks, isActiveHealingCloud, isActiveCapaciousCloud, isActiveToxiqueCloud);
-        }
-        else
-        {
-            _poisonCloudBuff.PoisonCloudAddStacks(_playerLinks, isActiveHealingCloud, isActiveCapaciousCloud, isActiveToxiqueCloud);
-        }
+        _playerLinks.CharacterState.AddState(new PoisonCloud(), 6f, 0, States.PoisonCloud);
+        RpcApplyCloudPoison();
     }
 
     #endregion
@@ -134,31 +114,12 @@ public class SpitPoison : Ability
     }
 
     [ClientRpc]
-    private void RpcCreatePoisonCloudBuff(bool isActiveHealingCloud, bool isActiveCapaciousCloud, bool isActiveToxiqueCloud)
-    {
-        _poisonCloudBuff = _playerLinks.GetComponentInChildren<PoisonCloudBuff>();
-        if (_poisonCloudBuff == null)
-        {
-            _poisonCloudBuff = Instantiate(_poisonCloudBuffPrefab, _playerLinks.transform);
-            _poisonCloudBuff.PoisonCloudAddStacks(_playerLinks, isActiveHealingCloud, isActiveCapaciousCloud, isActiveToxiqueCloud);
-        }
-        else
-        {
-            _poisonCloudBuff.PoisonCloudAddStacks(_playerLinks, isActiveHealingCloud, isActiveCapaciousCloud, isActiveToxiqueCloud);
-        }
-    }
-
-    #endregion
-    [Command]
-    private void CmdApplyCLoudPoison()
-    {
-        _playerLinks.CharacterState.AddState(new PoisonCloud(), 6f, 0, States.PoisonCloud);
-        RpcApplyCloudPoison();
-    }
-
-    [ClientRpc]
     private void RpcApplyCloudPoison()
     {
         _playerLinks.CharacterState.AddState(new PoisonCloud(), 6f, 0, States.PoisonCloud);        
     }
+
+    #endregion
+
+
 }

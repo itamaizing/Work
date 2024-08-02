@@ -1,5 +1,6 @@
 using Mirror;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public abstract class AbstractCharacterState
@@ -752,7 +753,6 @@ public class PoisonCloud : AbstractCharacterState
     public new States state = States.PoisonCloud;
     private PlayerAbilities _abilities;
     private ToxiqueCloud _toxiqueCloud;
-	private EmpathicPoisons _empathicPoisons;
 
     private float _currentStacks = 0;
     private float _maxStacks = 5;
@@ -767,9 +767,12 @@ public class PoisonCloud : AbstractCharacterState
 
     private float _duration;
     private float _baseDuration;
+	private float _durationEmpathicPoisons = 3f;
+
     private float _damageToExit;
 
     public bool turnOff = false;
+	public Character Player;
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
     {
@@ -780,7 +783,7 @@ public class PoisonCloud : AbstractCharacterState
 
         _characterState = character;
         _toxiqueCloud = _characterState.GetComponentInChildren<ToxiqueCloud>();
-        Debug.Log("EmpathhicPoison getting ToxiqueCloud == " + _toxiqueCloud);
+		Player = _characterState.GetComponent<Character>();
 
         if (character.TryGetComponent<Character>(out var ability))
         {
@@ -851,18 +854,6 @@ public class PoisonCloud : AbstractCharacterState
         _duration = _baseDuration;
     }
 
-    private void LifeTimeStacks()
-    {
-        if (_duration < _baseDuration)
-        {
-            _currentStacks = 0;
-        }
-        if (_duration < 0 || turnOff)
-        {
-            ExitState();
-        }
-    }
-
 	private void SearchingEnemies()
 	{
 		Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(_characterState.transform.position, _radiusCloud);
@@ -887,25 +878,11 @@ public class PoisonCloud : AbstractCharacterState
 		targetHealth.TryTakeDamage(_endDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
 		if (_toxiqueCloud.isActive)
 		{
-			Debug.Log("toxiqueCloud is active");
-
-			if (_empathicPoisons == null)
-			{
-				_empathicPoisons = EmpathicPoisons.Intstance;
-
-				targetHealth.GetComponent<CharacterState>().AddState(new EmpathicPoisons(), 3f, 0, States.EmpathicPoisons);
-                _empathicPoisons.CurrentTarget = targetHealth;
-                _empathicPoisons.RadiusCloud = _radiusCloud;
-                Debug.Log("Called Empathic poisons from PoisonCloud if _empathicPoisons == null");
-            }
-
-			if (_empathicPoisons != null)
-			{
-                _empathicPoisons.CurrentTarget = targetHealth;
-                _empathicPoisons.RadiusCloud = _radiusCloud;
-				Debug.Log("Called Empathic poisons from PoisonCloud if _empathicPoisons != null");
-			}
-		}
+			//var empathicPoisons = EmpathicPoisons.Intstance;
+			targetHealth.GetComponent<CharacterState>().AddState(new EmpathicPoisons(), _durationEmpathicPoisons, 10000, States.EmpathicPoisons);
+			EmpathicPoisons.Player = Player.gameObject;
+			EmpathicPoisons.RadiusCloud = _radiusCloud;
+        }
 	}
 
 	private void ResetValues()
@@ -922,54 +899,42 @@ public class PoisonCloud : AbstractCharacterState
 public class EmpathicPoisons : AbstractCharacterState
 {
 	public new States state = States.EmpathicPoisons;
-	private PlayerAbilities _abilities;
-	private static EmpathicPoisons _instance;
 
 	private float _baseEvasionValue = 0.1f;
 	private float _increasedEvasionValue;
 	private float _endEvasionValue;
+	private float _originalEvasionValue;
 
 	private float _currentStacks = 0;
 	private float _maxStacks = 3;
 
+	private float _timeBetweenToApplyStacks;
+	private float _startTimeBetweentoApplyStacks = 1.0f;
 	private float _duration;
 	private float _baseDuration;
 	private float _damageToExit;
 
-	public bool turnOff = false;
-	public HealthComponent CurrentTarget;
+	private HealthComponent _characterHealth;
+	private Vector3 _playerPosition;
+	private Vector3 _characterPosition;
 
-	public float RadiusCloud;
-	public static EmpathicPoisons Intstance 
-	{ 
-		get
-		{
-			if (_instance == null)
-			{
-				_instance = new EmpathicPoisons();
-				Debug.Log("Instance == " + _instance);
-			}
-			return _instance;
-		} 
-	}
+	private bool _isInPoisonCloud;
+	public bool turnOff = false;
+
+	public static float RadiusCloud;
+
+	public static GameObject Player;
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
 	{
-		Debug.Log("Entering EmpathicPoisons State");
+		_timeBetweenToApplyStacks = _startTimeBetweentoApplyStacks;
+
 		type = StateType.Physical;
 		effects.Add(StatusEffect.Ability);
 
 		_characterState = character;
-
-		if (character.TryGetComponent<Character>(out var ability))
-		{
-			_abilities = ability.Abilities;
-			_abilities.SetAbilitiesDisabled();
-		}
-		else
-		{
-			Debug.Log("no ability at " + character.gameObject.name);
-		}
+		_characterHealth = _characterState.GetComponent<HealthComponent>();
+		_originalEvasionValue = _characterHealth.EvadeMeleeDamage;
 
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
@@ -977,36 +942,39 @@ public class EmpathicPoisons : AbstractCharacterState
 		if (_currentStacks < _maxStacks)
 		{
 			AddStacks();
-			Debug.Log("Called AddStacks in EmpathicPoison");
 		}
 	}
 
 	public override void UpdateState()
-	{
-		Debug.Log("Updating State in EmpathicPoison");
-		_duration -= Time.deltaTime;
-		if (_duration > 0)
-		{
-			CheckDistance();
-		}
+    {
+		_playerPosition = Player.transform.position;
+		_characterPosition = _characterState.transform.position;
 
+		_duration -= Time.deltaTime;
 		if (_duration < 0 || turnOff)
 		{
 			ExitState();
 		}
+
+		_timeBetweenToApplyStacks -= Time.deltaTime;
+		if (_timeBetweenToApplyStacks <= 0)
+		{
+			if (_isInPoisonCloud)
+			{
+				ReducingChanceOfHittingAtEnemy();
+			}
+			else
+			{
+				DecreaseEvasionForCurrentTarget();
+			}
+			_timeBetweenToApplyStacks = _startTimeBetweentoApplyStacks;
+		}
+		CheckIfInPoisonCloud(_playerPosition, _characterPosition);
 	}
 
 	public override void ExitState()
 	{
-		if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
-		{
-			_abilities.SetAbilitiesEnabled();
-		}
-
-		_currentStacks = 0;
-		_baseDuration = 0;
-		_duration = 0;
-
+		ResetValues();
 		_characterState.RemoveState(this);
 	}
 
@@ -1018,40 +986,52 @@ public class EmpathicPoisons : AbstractCharacterState
 			return true;
 		}
 		else
-		{ 
-			_duration = _baseDuration;
+		{
+            _duration = _baseDuration;
 			return false;
 		}
 	}
 
 	private void AddStacks()
 	{
-		Debug.Log("AddStacks in EmpathicPoison");
 		_currentStacks++;
 		_duration = _baseDuration;
 	}
-	
-	private void CheckDistance()
-	{
-		Debug.Log("ChaeckDistance in EmpathicPoison");
-		Vector2 enemyMovementDirection = CurrentTarget.GetComponent<MoveComponent>().MoveDirection;
-		Vector2 playerToEnemy = _characterState.transform.position - CurrentTarget.transform.position;
 
-		if (Vector2.Distance(playerToEnemy, enemyMovementDirection) < RadiusCloud)
-		{
-			Debug.Log("Vector2.Distance " + Vector2.Distance(playerToEnemy, enemyMovementDirection));
-			IncreaseEvasionForCurrentTarget();
-		}
+	private void ReducingChanceOfHittingAtEnemy()
+	{
+		// Позже будет реализована другая логика.
+		_increasedEvasionValue = _baseEvasionValue * _currentStacks;
+
+		_endEvasionValue = _originalEvasionValue * _increasedEvasionValue;
+
+        _characterHealth.EvadeMeleeDamage = _originalEvasionValue - _endEvasionValue;
+	}
+
+    private void DecreaseEvasionForCurrentTarget()
+    {
+        float reductionPerSecond = _baseEvasionValue * 0.33f;
+        _endEvasionValue = Mathf.Max(_originalEvasionValue, _characterHealth.EvadeMeleeDamage + reductionPerSecond);
+        _characterHealth.EvadeMeleeDamage = _endEvasionValue;
     }
 
-	private void IncreaseEvasionForCurrentTarget()
+    private void CheckIfInPoisonCloud(Vector3 playerPos, Vector3 characterPos)
+    {
+        float distance = Vector3.Distance(playerPos, characterPos);
+        _isInPoisonCloud = distance <= RadiusCloud;
+    }
+
+    private void ResetValues()
 	{
-		Debug.Log("Decrease Evasion Value for == " + CurrentTarget);
-		_increasedEvasionValue = _baseEvasionValue * _currentStacks;
-		_endEvasionValue = CurrentTarget.EvadeMeleeDamage / _increasedEvasionValue;
-		Debug.Log("End value evasion for == " + CurrentTarget + "; value == " + _endEvasionValue);
-		Debug.Log(CurrentTarget.name + " his value of evasion melee damage == " + CurrentTarget.EvadeMeleeDamage);
-	}
+        _currentStacks = 0;
+        _baseDuration = 0;
+        _duration = 0;
+
+		_baseEvasionValue = 0.1f;
+		_increasedEvasionValue = 0;
+		_endEvasionValue = 0;
+		_characterHealth.EvadeMeleeDamage = _originalEvasionValue;
+    }
 }
 
 public class AbilitySchoolDebuff : AbstractCharacterState
@@ -1230,7 +1210,6 @@ public class CharacterState : NetworkBehaviour
 			for (int i = 0; i < currentStates.Count; i++)
 			{
 				currentStates[i].UpdateState();
-				Debug.Log("CurrentState naming == " + currentStates);
 			}
 		}
 
