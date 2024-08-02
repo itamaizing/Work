@@ -67,9 +67,9 @@ public class HealthComponent : NetworkBehaviour
 
     public float MaxHealth => _maxHealth;
 
-    public static event Action<float, float, float> OnHpChanged;
+    public event Action<float, float, float> OnHpChanged;
 
-    public static void FireHpChanged(float damageTaken, float hp, float maxHp) => OnHpChanged?.Invoke(damageTaken, hp, maxHp);
+    public void FireHpChanged(float damageTaken, float hp, float maxHp) => OnHpChanged?.Invoke(damageTaken, hp, maxHp);
 
     public void Initialize(float maxHealth,float regenValue,float regenDelay , HealthInfo healthInfo)
     {
@@ -108,7 +108,6 @@ public class HealthComponent : NetworkBehaviour
 
 		if (hit)
 		{
-
 			TakeDamage(modifiedDamage, damageType, ability);
 		}
 
