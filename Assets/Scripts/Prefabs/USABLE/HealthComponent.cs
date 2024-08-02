@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -65,6 +66,10 @@ public class HealthComponent : NetworkBehaviour
     public Func<HealInfo, HealInfo> AddHealth;
 
     public float MaxHealth => _maxHealth;
+
+    public static event Action<float, float, float> OnHpChanged;
+
+    public static void FireHpChanged(float damageTaken, float hp, float maxHp) => OnHpChanged?.Invoke(damageTaken, hp, maxHp);
 
     public void Initialize(float maxHealth,float regenValue,float regenDelay , HealthInfo healthInfo)
     {
@@ -276,18 +281,17 @@ public class HealthComponent : NetworkBehaviour
         //HandleAbsorptionOrRepeat(ref damageValue);
 
         if (damageValue > 0)
-        {
-            
+        {            
             _currentHealth -= damageValue;
             if (_currentHealth <= 0)
             {
                 _currentHealth = 0;
                 Die();
-            }
-            
+            }            
             UpdateHealthBar();
         }
-    }
+		FireHpChanged(damageValue, _currentHealth, _maxHealth);
+	}
     
     public void AddShieldBehavior(Shielding shielding, DamageType damageType) // ���������� � ������������ ����� �����
     {
