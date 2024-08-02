@@ -1,7 +1,6 @@
 using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 
 public abstract class AbstractCharacterState
 {
@@ -9,7 +8,6 @@ public abstract class AbstractCharacterState
 	public States state;
 	public List<StatusEffect> effects = new List<StatusEffect>();
 	protected CharacterState _characterState;
-	protected SkillManager _abilities;
 
 	public abstract void EnterState(CharacterState character, float durationToExit, float damageToExit);
 	public abstract void UpdateState();
@@ -258,12 +256,12 @@ public class StunnedState : AbstractCharacterState
 {
 	public new States state = States.Stun;
 	public bool turnOff = false;
-	//private PlayerAbilities _abilities;
+	private PlayerAbilities _abilities;
 	private float _baseDuration;
 	private float _duration;
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
 	{
-		//Debug.Log("Entering Stunned State");
+		Debug.Log("Entering Stunned State");
 		type = StateType.Physical;
 		effects.Add(StatusEffect.Move);
 		effects.Add(StatusEffect.Ability);
@@ -277,7 +275,7 @@ public class StunnedState : AbstractCharacterState
 		}
 		else
 		{
-			//Debug.Log("no ability at " + character.gameObject.name);
+			Debug.Log("no ability at " + character.gameObject.name);
 		}		
 		_characterState.Move.CanMove = false;
 		_duration = durationToExit;
@@ -286,7 +284,7 @@ public class StunnedState : AbstractCharacterState
 
 	public override void UpdateState()
 	{
-		//Debug.Log("Updating Stunned State");
+		Debug.Log("Updating Stunned State");
 		_duration -= Time.deltaTime;
 		if (_duration < 0 || turnOff)
 		{
@@ -296,7 +294,7 @@ public class StunnedState : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		//Debug.Log("Exiting Stunned State");
+		Debug.Log("Exiting Stunned State");
 		if (_characterState.Check(StatusEffect.Move))
 		{
 			_characterState.Move.CanMove = true;
@@ -325,6 +323,7 @@ public class Desiccuration : AbstractCharacterState
 {
 	public new States state = States.Desiccuration;
 	public bool turnOff = false;
+	private PlayerAbilities _abilities;
 	private float _baseDuration;
 	private float _duration;
 	private float _damageToExit;
@@ -398,12 +397,12 @@ public class BlindnessState : AbstractCharacterState
 	//private CharacterState _characterState;
 	private float _duration;
 	private float _baseDuration;
-	//private PlayerAbilities _abilities;
+	private PlayerAbilities _abilities;
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
 	{
 		type = StateType.Physical;
 		effects.Add(StatusEffect.Ability);
-		Debug.Log("Entering Blindness State");
+		Debug.Log("Entering Stunned State");
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
 		_characterState = character;
@@ -420,7 +419,7 @@ public class BlindnessState : AbstractCharacterState
 
 	public override void UpdateState()
 	{
-		Debug.Log("Updating Blindness State");
+		Debug.Log("Updating Stunned State");
 		_duration -= Time.deltaTime;
 		if (_duration < 0 || turnOff)
 		{
@@ -430,7 +429,7 @@ public class BlindnessState : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		Debug.Log("Exiting Blindness State");
+		Debug.Log("Exiting Stunned State");
 		if (_characterState.Check(StatusEffect.Ability))
 		{
 			_abilities.SetAbilitiesEnabled();
@@ -459,6 +458,7 @@ public class FrozenState : AbstractCharacterState
 	private float _duration;
 	private float _baseDuration;
 	private float _damageToExit;
+	private PlayerAbilities _abilities;
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
 	{
@@ -530,6 +530,7 @@ public class FrostingState : AbstractCharacterState
 	private float _duration;
 	private float _baseDuration;
 	private float _damageToExit;
+	private PlayerAbilities _abilities;
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
 	{
@@ -549,7 +550,6 @@ public class FrostingState : AbstractCharacterState
 		}
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
-
 		_characterState.Move.CanMove = false;
 
 		//decrease speed
@@ -557,7 +557,7 @@ public class FrostingState : AbstractCharacterState
 		{
 			_abilities = ability.Abilities;
 
-			foreach (var abil in _abilities.Abilities)
+			foreach (Ability abil in _abilities.Abilities)
 			{
 				if (abil.AbilityForm == AbilityForm.Physical)
 				{
@@ -591,7 +591,7 @@ public class FrostingState : AbstractCharacterState
 		}
 		if (_characterState.Check(StatusEffect.AbilitySpeed))
 		{
-			foreach (var abil in _abilities.Abilities)
+			foreach (Ability abil in _abilities.Abilities)
 			{
 				if (abil.AbilityForm == AbilityForm.Physical)
 				{
@@ -711,6 +711,7 @@ public class InAirState : AbstractCharacterState
 
         _characterState.Move.CanMove = false;
         _duration = durationToExit;
+		_baseDuration = _duration;
         _baseDuration = durationToExit;
     }
 
@@ -724,6 +725,7 @@ public class InAirState : AbstractCharacterState
             ExitState();
         }
     }
+
 
     public override void ExitState()
     {
@@ -745,10 +747,318 @@ public class InAirState : AbstractCharacterState
     }
 }
 
+public class PoisonCloud : AbstractCharacterState
+{
+    public new States state = States.PoisonCloud;
+    private PlayerAbilities _abilities;
+    private ToxiqueCloud _toxiqueCloud;
+	private EmpathicPoisons _empathicPoisons;
+
+    private float _currentStacks = 0;
+    private float _maxStacks = 5;
+	private float _radiusCloud = 3.5f;
+
+	private float _baseDamage = 0.005f;
+	private float _increasedDamage;
+	private float _endDamage;
+
+	private float _timeBetweenAttack;
+	private float _startTimeBetweenAttack = 1f;
+
+    private float _duration;
+    private float _baseDuration;
+    private float _damageToExit;
+
+    public bool turnOff = false;
+
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+    {
+		_timeBetweenAttack = _startTimeBetweenAttack;
+
+        type = StateType.Physical;
+        effects.Add(StatusEffect.Ability);
+
+        _characterState = character;
+        _toxiqueCloud = _characterState.GetComponentInChildren<ToxiqueCloud>();
+        Debug.Log("EmpathhicPoison getting ToxiqueCloud == " + _toxiqueCloud);
+
+        if (character.TryGetComponent<Character>(out var ability))
+        {
+            _abilities = ability.Abilities;
+            _abilities.SetAbilitiesDisabled();
+        }
+        else
+        {
+            Debug.Log("no ability at " + character.gameObject.name);
+        }
+
+        _duration = durationToExit;
+        _baseDuration = durationToExit;
+
+        if (_currentStacks < _maxStacks)
+        {
+            AddStacks();
+        }
+    }
+
+    public override void UpdateState()
+    {
+        _timeBetweenAttack -= Time.deltaTime;
+		//Debug.Log("_timeBetweenAttack == " + _timeBetweenAttack);
+		if (_timeBetweenAttack <= 0)
+		{
+			SearchingEnemies();
+			_timeBetweenAttack = _startTimeBetweenAttack;
+		}
+
+        _duration -= Time.deltaTime;
+        if (_duration < 0 || turnOff)
+        {
+            ExitState();
+        }
+
+    }
+
+    public override void ExitState()
+    {
+        if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
+        {
+            _abilities.SetAbilitiesEnabled();
+        }
+
+		ResetValues();
+
+        _characterState.RemoveState(this);
+    }
+
+    public override bool Stack(float time)
+    {
+        if (_currentStacks < _maxStacks)
+        {
+            AddStacks();
+            return true;
+        }
+        else
+        {
+            _duration = _baseDuration;
+            return false;
+        }
+    }
+
+    private void AddStacks()
+    {
+        _currentStacks++;
+        _duration = _baseDuration;
+    }
+
+    private void LifeTimeStacks()
+    {
+        if (_duration < _baseDuration)
+        {
+            _currentStacks = 0;
+        }
+        if (_duration < 0 || turnOff)
+        {
+            ExitState();
+        }
+    }
+
+	private void SearchingEnemies()
+	{
+		Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(_characterState.transform.position, _radiusCloud);
+		foreach (Collider2D enemy in hitEnemies)
+		{
+			if (enemy.CompareTag("Enemies"))
+			{
+				if (enemy.TryGetComponent<HealthComponent>(out var target) && enemy.transform != _characterState.transform)
+				{
+					DamageDeal(target);
+					_timeBetweenAttack = _startTimeBetweenAttack;
+
+				}
+			}
+		}
+	}
+
+	private void DamageDeal(HealthComponent targetHealth)
+	{
+		_increasedDamage = _baseDamage * _currentStacks;
+		_endDamage = targetHealth.MaxHealth * _increasedDamage;
+		targetHealth.TryTakeDamage(_endDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
+		if (_toxiqueCloud.isActive)
+		{
+			Debug.Log("toxiqueCloud is active");
+
+			if (_empathicPoisons == null)
+			{
+				_empathicPoisons = EmpathicPoisons.Intstance;
+
+				targetHealth.GetComponent<CharacterState>().AddState(new EmpathicPoisons(), 3f, 0, States.EmpathicPoisons);
+                _empathicPoisons.CurrentTarget = targetHealth;
+                _empathicPoisons.RadiusCloud = _radiusCloud;
+                Debug.Log("Called Empathic poisons from PoisonCloud if _empathicPoisons == null");
+            }
+
+			if (_empathicPoisons != null)
+			{
+                _empathicPoisons.CurrentTarget = targetHealth;
+                _empathicPoisons.RadiusCloud = _radiusCloud;
+				Debug.Log("Called Empathic poisons from PoisonCloud if _empathicPoisons != null");
+			}
+		}
+	}
+
+	private void ResetValues()
+	{
+        _currentStacks = 0;
+        _baseDuration = 0;
+        _duration = 0;
+        _endDamage = 0;
+        _increasedDamage = 0;
+        _baseDamage = 0.5f;
+    }
+}
+
+public class EmpathicPoisons : AbstractCharacterState
+{
+	public new States state = States.EmpathicPoisons;
+	private PlayerAbilities _abilities;
+	private static EmpathicPoisons _instance;
+
+	private float _baseEvasionValue = 0.1f;
+	private float _increasedEvasionValue;
+	private float _endEvasionValue;
+
+	private float _currentStacks = 0;
+	private float _maxStacks = 3;
+
+	private float _duration;
+	private float _baseDuration;
+	private float _damageToExit;
+
+	public bool turnOff = false;
+	public HealthComponent CurrentTarget;
+
+	public float RadiusCloud;
+	public static EmpathicPoisons Intstance 
+	{ 
+		get
+		{
+			if (_instance == null)
+			{
+				_instance = new EmpathicPoisons();
+				Debug.Log("Instance == " + _instance);
+			}
+			return _instance;
+		} 
+	}
+
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+	{
+		Debug.Log("Entering EmpathicPoisons State");
+		type = StateType.Physical;
+		effects.Add(StatusEffect.Ability);
+
+		_characterState = character;
+
+		if (character.TryGetComponent<Character>(out var ability))
+		{
+			_abilities = ability.Abilities;
+			_abilities.SetAbilitiesDisabled();
+		}
+		else
+		{
+			Debug.Log("no ability at " + character.gameObject.name);
+		}
+
+		_duration = durationToExit;
+		_baseDuration = durationToExit;
+
+		if (_currentStacks < _maxStacks)
+		{
+			AddStacks();
+			Debug.Log("Called AddStacks in EmpathicPoison");
+		}
+	}
+
+	public override void UpdateState()
+	{
+		Debug.Log("Updating State in EmpathicPoison");
+		_duration -= Time.deltaTime;
+		if (_duration > 0)
+		{
+			CheckDistance();
+		}
+
+		if (_duration < 0 || turnOff)
+		{
+			ExitState();
+		}
+	}
+
+	public override void ExitState()
+	{
+		if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
+		{
+			_abilities.SetAbilitiesEnabled();
+		}
+
+		_currentStacks = 0;
+		_baseDuration = 0;
+		_duration = 0;
+
+		_characterState.RemoveState(this);
+	}
+
+	public override bool Stack(float time)
+	{
+		if (_currentStacks < _maxStacks)
+		{
+			AddStacks();
+			return true;
+		}
+		else
+		{ 
+			_duration = _baseDuration;
+			return false;
+		}
+	}
+
+	private void AddStacks()
+	{
+		Debug.Log("AddStacks in EmpathicPoison");
+		_currentStacks++;
+		_duration = _baseDuration;
+	}
+	
+	private void CheckDistance()
+	{
+		Debug.Log("ChaeckDistance in EmpathicPoison");
+		Vector2 enemyMovementDirection = CurrentTarget.GetComponent<MoveComponent>().MoveDirection;
+		Vector2 playerToEnemy = _characterState.transform.position - CurrentTarget.transform.position;
+
+		if (Vector2.Distance(playerToEnemy, enemyMovementDirection) < RadiusCloud)
+		{
+			Debug.Log("Vector2.Distance " + Vector2.Distance(playerToEnemy, enemyMovementDirection));
+			IncreaseEvasionForCurrentTarget();
+		}
+    }
+
+	private void IncreaseEvasionForCurrentTarget()
+	{
+		Debug.Log("Decrease Evasion Value for == " + CurrentTarget);
+		_increasedEvasionValue = _baseEvasionValue * _currentStacks;
+		_endEvasionValue = CurrentTarget.EvadeMeleeDamage / _increasedEvasionValue;
+		Debug.Log("End value evasion for == " + CurrentTarget + "; value == " + _endEvasionValue);
+		Debug.Log(CurrentTarget.name + " his value of evasion melee damage == " + CurrentTarget.EvadeMeleeDamage);
+	}
+}
+
 public class AbilitySchoolDebuff : AbstractCharacterState
 {
 	public new States state = States.SchoolDebuff;
 	public bool turnOff = false;
+	private PlayerAbilities _abilities;
 	private float _baseDuration;
 	private float _duration;
 	public Schools canceledSchoool;
@@ -814,7 +1124,7 @@ public class AbilityFormDebuff : AbstractCharacterState
 {
 	public new States state = States.FormDebuf;
 	public bool turnOff = false;
-	//private PlayerAbilities _abilities;
+	private PlayerAbilities _abilities;
 	private float _baseDuration;
 	private float _duration;
 	public AbilityForm canceledForm;
@@ -895,12 +1205,14 @@ public class CharacterState : NetworkBehaviour
 		[States.Frosting] = new FrostingState(),
 		[States.Cooling] = new Cooling(),
 		[States.Blind] = new BlindnessState(),
+		[States.PoisonCloud] = new PoisonCloud(),
+		[States.EmpathicPoisons] = new EmpathicPoisons(),
 		[States.Invisible] = new InvisibleState(),
 		[States.SchoolDebuff] = new AbilitySchoolDebuff(),
 		[States.Desiccuration] = new Desiccuration()
 	};
 
-	public void Initialize(HealthComponent health,MoveComponent move , StaminaComponent stamina)
+	public void Initialize(HealthComponent health, MoveComponent move, StaminaComponent stamina)
 	{
 		_health = health;
 		_move = move;
@@ -918,11 +1230,126 @@ public class CharacterState : NetworkBehaviour
 			for (int i = 0; i < currentStates.Count; i++)
 			{
 				currentStates[i].UpdateState();
+				Debug.Log("CurrentState naming == " + currentStates);
 			}
+		}
+
+		if(Input.GetKeyDown(KeyCode.R))
+		{
+			CmdAddState(States.Stun, 10, 0);
 		}
 	}
 
-	//[Command]
+	public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state)
+	{
+		if (invinsible)
+			return;
+		if (CheckForState(state))
+		{
+			foreach (AbstractCharacterState item in currentStates)
+			{
+				if (item.state != state) continue;
+
+				if (item.Stack(duration))
+				{
+					//_stateIcons.ActivateIco(state, duration, 1);
+				}
+				else
+				{
+					//nothing at this time??
+				}
+			}
+		}
+		else
+		{
+			_stateIcons.ActivateIco(state, duration, 1);
+			currentStates.Add(newState);
+			currentStates[currentStates.Count - 1].state = state;
+			//currentStates[currentStates.Count - 1].
+			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
+		}
+	}
+
+	public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state, Schools schools)
+	{
+		//if already exist 
+		//if (currentStates.Contains(newState))
+		if (CheckForState(state))
+		{
+			foreach (AbstractCharacterState item in currentStates)
+			{
+				if (item.state != state) continue;
+
+				if (item.Stack(duration))
+				{
+					_stateIcons.ActivateIco(state, duration, 1);
+				}
+				else
+				{
+					_stateIcons.ActivateIco(state, duration, 1);
+					currentStates.Add(newState);
+					var counterSpell = (AbilitySchoolDebuff)newState;
+					counterSpell.canceledSchoool = schools;
+					currentStates[currentStates.Count - 1].state = state;
+					//currentStates[currentStates.Count - 1].
+					currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
+				}
+			}
+		}
+		else
+		{
+			_stateIcons.ActivateIco(state, duration, 1);
+			currentStates.Add(newState);
+			var counterSpell = (AbilitySchoolDebuff)newState;
+			counterSpell.canceledSchoool = schools;
+			currentStates[currentStates.Count - 1].state = state;
+			//currentStates[currentStates.Count - 1].
+			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
+		}
+	}
+	//can Cancel- if debuf can cancel ability that is casting right now
+	public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state, AbilityForm form, bool canCancel)
+	{
+		//if already exist 
+		//if (currentStates.Contains(newState))
+		if (CheckForState(state))
+		{
+			foreach (AbstractCharacterState item in currentStates)
+			{
+				if (item.state != state) continue;
+
+				if (item.Stack(duration))
+				{
+					_stateIcons.ActivateIco(state, duration, 1);
+				}
+				else
+				{
+					_stateIcons.ActivateIco(state, duration, 1);
+					currentStates.Add(newState);
+					var counterSpell = (AbilityFormDebuff)newState;
+					counterSpell.canCancel = canCancel;
+					counterSpell.canceledForm = form;
+					currentStates[currentStates.Count - 1].state = state;
+					//currentStates[currentStates.Count - 1].
+					currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
+					//nothing at this time??
+				}
+			}
+		}
+		else
+		{
+			_stateIcons.ActivateIco(state, duration, 1);
+			currentStates.Add(newState);
+			var counterSpell = (AbilityFormDebuff)newState;
+			counterSpell.canCancel = canCancel;
+			counterSpell.canceledForm = form;
+			currentStates[currentStates.Count - 1].state = state;
+			//currentStates[currentStates.Count - 1].
+			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
+		}
+	}
+
+	[Command]
 	public void CmdAddState(States state, float duration, float damageToExit, Schools schools)
 	{
 		AddStateLogic(state, duration, damageToExit, schools);
@@ -937,41 +1364,11 @@ public class CharacterState : NetworkBehaviour
 		ClientAddState(state, duration, damageToExit, Schools.None);
 	}
 
-	[Command]
-	public void CmdRemoveState(States state)
-	{
-		RemoveState(state);
-		ClientRemoveState(state);
-	}
 	/*public void AddNewState(States state, float duration, float damageToExit)
 	{
 		CmdAddState(state, duration, damageToExit);
 		//ClientAddState(state, duration, damageToExit, Schools.None);
 	}*/
-
-
-	public void RemoveState(AbstractCharacterState newState)
-	{
-		//newState.ExitState(this);
-		currentStates.Remove(newState);
-	}
-
-	private void RemoveState(States stateName)
-	{
-		if (currentStates.Count <= 0) return;
-		foreach (AbstractCharacterState state in currentStates)
-		{
-			if (state.state == stateName)
-			{
-				state.ExitState();
-			}
-		}
-
-		if(Input.GetKeyDown(KeyCode.R))
-		{
-			CmdAddState(States.Stun, 10, 0);
-		}
-	}
 
 	[ClientRpc]
 	private void ClientAddState(States state, float duration, float damageToExit, Schools schools)
@@ -980,10 +1377,31 @@ public class CharacterState : NetworkBehaviour
 		AddStateLogic(state, duration, damageToExit, schools);
 	}
 
-	[ClientRpc]
-	public void ClientRemoveState(States stateName)
+	public bool IfHasState(AbstractCharacterState newState)
 	{
-		RemoveState(stateName);
+		//ITS NOT WORKING!!!!
+		if (currentStates.Contains(newState))
+		{
+			return true;
+		}
+		else return false;
+	}
+
+	public void RemoveState(AbstractCharacterState newState)
+	{
+		//newState.ExitState(this);
+		currentStates.Remove(newState);
+	}
+
+	public void RemoveState(States stateName)
+	{
+		foreach (AbstractCharacterState state in currentStates)
+		{
+			if (state.state == stateName)
+			{
+				state.ExitState();
+			}
+		}
 	}
 
 	public void Dispel(StateType type)
@@ -1060,128 +1478,6 @@ public class CharacterState : NetworkBehaviour
 		currentStates.Add(state);
 		currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
 	}
-
-	/*
-	 * 	public bool IfHasState(AbstractCharacterState newState)
-	{
-		//ITS NOT WORKING!!!!
-		if (currentStates.Contains(newState))
-		{
-			return true;
-		}
-		else return false;
-	}
-	 * 
-	 * public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state, Schools schools)
-	{
-		//if already exist 
-		//if (currentStates.Contains(newState))
-		if (CheckForState(state))
-		{
-			foreach (AbstractCharacterState item in currentStates)
-			{
-				if (item.state != state) continue;
-
-				if (item.Stack(duration))
-				{
-					_stateIcons.ActivateIco(state, duration, 1);
-				}
-				else
-				{
-					_stateIcons.ActivateIco(state, duration, 1);
-					currentStates.Add(newState);
-					var counterSpell = (AbilitySchoolDebuff)newState;
-					counterSpell.canceledSchoool = schools;
-					currentStates[currentStates.Count - 1].state = state;
-					//currentStates[currentStates.Count - 1].
-					currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
-				}
-			}
-		}
-		else
-		{
-			_stateIcons.ActivateIco(state, duration, 1);
-			currentStates.Add(newState);
-			var counterSpell = (AbilitySchoolDebuff)newState;
-			counterSpell.canceledSchoool = schools;
-			currentStates[currentStates.Count - 1].state = state;
-			//currentStates[currentStates.Count - 1].
-			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
-		}
-	}
-
-	public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state)
-	{
-		if (invinsible)
-			return;
-		if (CheckForState(state))
-		{
-			foreach (AbstractCharacterState item in currentStates)
-			{
-				if (item.state != state) continue;
-
-				if (item.Stack(duration))
-				{
-					//_stateIcons.ActivateIco(state, duration, 1);
-				}
-				else
-				{
-					//nothing at this time??
-				}
-			}
-		}
-		else
-		{
-			_stateIcons.ActivateIco(state, duration, 1);
-			currentStates.Add(newState);
-			currentStates[currentStates.Count - 1].state = state;
-			//currentStates[currentStates.Count - 1].
-			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
-		}
-	}
-
-	//can Cancel- if debuf can cancel ability that is casting right now
-	public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state, AbilityForm form, bool canCancel)
-	{
-		//if already exist 
-		//if (currentStates.Contains(newState))
-		if (CheckForState(state))
-		{
-			foreach (AbstractCharacterState item in currentStates)
-			{
-				if (item.state != state) continue;
-
-				if (item.Stack(duration))
-				{
-					_stateIcons.ActivateIco(state, duration, 1);
-				}
-				else
-				{
-					_stateIcons.ActivateIco(state, duration, 1);
-					currentStates.Add(newState);
-					var counterSpell = (AbilityFormDebuff)newState;
-					counterSpell.canCancel = canCancel;
-					counterSpell.canceledForm = form;
-					currentStates[currentStates.Count - 1].state = state;
-					//currentStates[currentStates.Count - 1].
-					currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
-					//nothing at this time??
-				}
-			}
-		}
-		else
-		{
-			_stateIcons.ActivateIco(state, duration, 1);
-			currentStates.Add(newState);
-			var counterSpell = (AbilityFormDebuff)newState;
-			counterSpell.canCancel = canCancel;
-			counterSpell.canceledForm = form;
-			currentStates[currentStates.Count - 1].state = state;
-			//currentStates[currentStates.Count - 1].
-			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
-		}
-	}
-	*/
 }
 
 public enum StateType
@@ -1208,6 +1504,8 @@ public enum States
 	Frosting,
 	Cooling,
 	InAir,
+	PoisonCloud,
+	EmpathicPoisons,
 	Blind,
 	Invisible,
 	SchoolDebuff,

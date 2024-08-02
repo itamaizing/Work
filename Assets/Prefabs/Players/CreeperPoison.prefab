@@ -2353,7 +2353,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _agent: {fileID: 0}
+  _agent: {fileID: 451289984174521583}
   CanMove: 1
   IsMoving: 0
   IsSelect: 0

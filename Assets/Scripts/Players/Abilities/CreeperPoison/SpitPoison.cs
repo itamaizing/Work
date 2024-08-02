@@ -78,8 +78,8 @@ public class SpitPoison : Ability
     {
         CmdInstantiateProjectile(_angle, _playerLinks.Stamina.Value);
 
-        CmdCreatePoisonCloudBuff(HealingCloudTalentIsActive, CapaciousCloudTalentIsActive, ToxiqueCloudTalentIsActive);
-
+        //CmdCreatePoisonCloudBuff(HealingCloudTalentIsActive, CapaciousCloudTalentIsActive, ToxiqueCloudTalentIsActive);
+        CmdApplyCLoudPoison();
         _playerLinks.Stamina.Use(_playerLinks.Stamina.Value);
 
         Cancel();
@@ -149,4 +149,16 @@ public class SpitPoison : Ability
     }
 
     #endregion
+    [Command]
+    private void CmdApplyCLoudPoison()
+    {
+        _playerLinks.CharacterState.AddState(new PoisonCloud(), 6f, 0, States.PoisonCloud);
+        RpcApplyCloudPoison();
+    }
+
+    [ClientRpc]
+    private void RpcApplyCloudPoison()
+    {
+        _playerLinks.CharacterState.AddState(new PoisonCloud(), 6f, 0, States.PoisonCloud);        
+    }
 }

@@ -112,8 +112,6 @@ public class HealthComponent : NetworkBehaviour
         {
             if (UnityEngine.Random.Range(0, 100) <= EvadeMagicDamage)
             {
-                UnityEngine.Debug.Log("_evadeMagDamage == " + EvadeMagicDamage);
-
                 ShowDamagePrefab("miss",new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f));
                 hitSuccessed = false;
                 return 0;
@@ -131,8 +129,6 @@ public class HealthComponent : NetworkBehaviour
                 case AttackRangeType.MeleeAttack:
                     if (UnityEngine.Random.Range(0, 100) <= EvadeMeleeDamage)
                     {
-                        UnityEngine.Debug.Log("_evadeMeleeDamage == " + EvadeMeleeDamage);
-
                         ShowDamagePrefab("miss",new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f));
                         hitSuccessed = false;
                         return 0;
@@ -144,8 +140,6 @@ public class HealthComponent : NetworkBehaviour
                 case AttackRangeType.RangeAttack:
                     if (UnityEngine.Random.Range(0, 100) <= EvadeRangeDamage)
                     {
-                        UnityEngine.Debug.Log("_evadeRangeDamage == " + EvadeRangeDamage);
-
                         ShowDamagePrefab("miss",new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f));
                         hitSuccessed = false;
                         return 0;

@@ -125,7 +125,6 @@ public class PoisonBall : TargetOrAreaAbility
         yield return GetCastDeleyCoroutine();
 
         ChooseWhichProjectileCreate(isEnemy, isFast);
-        Debug.Log("ToxiqueCloud int PoisonBall is active == " + ToxiqueCloudIsActive);
         CmdCreatePoisonCloudBuff(HealingCloudTalentIsActive, CapaciousCloudTalentIsActive, ToxiqueCloudIsActive);
     }
 
@@ -135,7 +134,6 @@ public class PoisonBall : TargetOrAreaAbility
         yield return GetCastDeleyCoroutine();
 
         ChooseWhichProjectileCreate(isEnemy, isFast);
-        Debug.Log("ToxiqueCloud int PoisonBall is active == " + ToxiqueCloudIsActive);
         CmdCreatePoisonCloudBuff(HealingCloudTalentIsActive, CapaciousCloudTalentIsActive, ToxiqueCloudIsActive);
     }
 
@@ -145,7 +143,6 @@ public class PoisonBall : TargetOrAreaAbility
         yield return GetCastDeleyCoroutine();
 
         ChooseWhichProjectileCreate(isEnemy, isFast);
-        Debug.Log("ToxiqueCloud int PoisonBall is active == " + ToxiqueCloudIsActive);
         CmdCreatePoisonCloudBuff(HealingCloudTalentIsActive, CapaciousCloudTalentIsActive, ToxiqueCloudIsActive);
     }
 

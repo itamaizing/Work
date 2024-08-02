@@ -63,7 +63,7 @@ public class PoisonCloudBuff : BaseEffect
 
     public void PoisonCloudAddStacks(Character caster, bool isActiveHealingCloud, bool isActiveCapaciousCloud, bool isActiveToxiqueCloud)
     {
-        Debug.Log("PoisonCloudAddStacks work");
+        //Debug.Log("PoisonCloudAddStacks work");
         _dad = caster;
 
         #region ForTalents
@@ -79,7 +79,7 @@ public class PoisonCloudBuff : BaseEffect
 
         if (_currentStacks < _maxStacks)
         {
-            Debug.Log("PoisonCloudAddStacks if CurrentStacks == " + _currentStacks);
+            //Debug.Log("PoisonCloudAddStacks if CurrentStacks == " + _currentStacks);
             _currentStacks++;
             _increasedDamage = _currentStacks * _baseDamage;
 
@@ -89,7 +89,7 @@ public class PoisonCloudBuff : BaseEffect
 
                 if (_healPoisonCloudTalentCoroutine == null)
                 {
-                    Debug.Log("Work healCLoud");
+                    //Debug.Log("Work healCLoud");
 
                     _maxHealth = _dad.Health.MaxHealth;
                     _baseHealthRegen = _dad.Health.HpRegenerationValue;
@@ -99,12 +99,12 @@ public class PoisonCloudBuff : BaseEffect
 
             if (_useCoroutine == null)
             {
-                Debug.Log("if use coroutine == null");
+                //Debug.Log("if use coroutine == null");
                 _useCoroutine = StartCoroutine(ActivatePoisonCloud());
             }
             else
             {
-                Debug.Log("else use coroutine == null");
+                //Debug.Log("else use coroutine == null");
                 UpdateInstancePoisonCloud();
 
                 if (_lifeTimeStacksCoroutine != null)
@@ -116,7 +116,7 @@ public class PoisonCloudBuff : BaseEffect
         }
         else if (_currentStacks == _maxStacks)
         {
-            Debug.Log("else if CurrentStacks == _maxStacks");
+            //Debug.Log("else if CurrentStacks == _maxStacks");
             ResetLifeTimeStacks();
         }
     }
@@ -181,6 +181,7 @@ public class PoisonCloudBuff : BaseEffect
             _instancePoisonCloud.Play();
         }
     }
+
     private void Update()
     {
         if (_isActiveCapaciousCloud)
@@ -228,7 +229,7 @@ public class PoisonCloudBuff : BaseEffect
                         //Debug.Log("isActiveToxiqueCloud");
                         if (_applyBonePoisonForToxiqueCloudTalent == null)
                         {
-                            Debug.Log("applyBonepoison == null");
+                            //Debug.Log("applyBonepoison == null");
                             _applyBonePoisonForToxiqueCloudTalent = StartCoroutine(TimerForApplyDebuff(target));
                         }
                     }
@@ -281,12 +282,15 @@ public class PoisonCloudBuff : BaseEffect
 
     private IEnumerator TimerForApplyDebuff(HealthComponent target)
     {
-        while (_currentStacks > 0)
-        {
-            yield return new WaitForSeconds(_time);
-            _toxiqueCloud.ApplyBonePoison(target);
-            Debug.Log("TimerForApply stacks");
-        }
+        //while (_currentStacks > 0)
+        //{
+        //    yield return new WaitForSeconds(_time);
+        //    _toxiqueCloud.ApplyBonePoison(target);
+        //    Debug.Log("TimerForApply stacks");
+        //}
+
+        yield return new WaitForSeconds(_time);
+        //target.GetComponent<Character>().CharacterState.AddState(new EmpathicPoisons(), 3, 10000, States.Poison);
     }
 
     #endregion
