@@ -19,8 +19,8 @@ public class MinionComponent : Character
         Health.Initialize(characterData.Health,characterData.HealthRegen, characterData.RegenDelay, characterData.HealthInfo);
         Move.Initialize(characterData.MoveSpeed, Rb);
         Stamina.Initialize(characterData.Stamina, characterData.StaminaRegen, characterData.RegenDelay);
-        CharacterState.Initialize(Health, Move , Stamina);
-        //UIPlayerComponents.Initialize(Abilities, Move, Stamina, Health); //Why is initialization of this component necessary at all? Moreover, the UI should not initialize the logic
+        CharacterState.Initialize(Health, Move , Stamina, this);
+        UIPlayerComponents.Initialize(Abilities, Move, Stamina, Health);
         SelectComponent.Initialize(false, Move, Abilities, UIPlayerComponents);
     }
 
