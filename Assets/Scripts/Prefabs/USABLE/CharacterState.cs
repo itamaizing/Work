@@ -550,6 +550,7 @@ public class FrostingState : AbstractCharacterState
 		}
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
+
 		_characterState.Move.CanMove = false;
 
 		//decrease speed

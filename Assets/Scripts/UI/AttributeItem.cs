@@ -17,7 +17,7 @@ public class AttributeItem : MonoBehaviour
 	public Button Plus => _plus;
 	public Button Minus => _minus;
 
-	private bool _isPercent = false;
+	[SerializeField] private bool _isPercent = false;
 	private float _value;
 	public void Init(Sprite ico, float value)
 	{
