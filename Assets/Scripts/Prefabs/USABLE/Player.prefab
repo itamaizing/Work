@@ -878,7 +878,7 @@ MonoBehaviour:
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: f6b63db1fe9a8db4b86632917e246e69, type: 2}
   _isAutoAttack: 1
-  _radius: 2
+  _radius: 4
   _area: 0
   _castLength: 0
   _castWidth: 0
