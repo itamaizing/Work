@@ -94,7 +94,7 @@ public class IcePuddleObject : Projectiles
 		_healthComponent.SetBoostRegen2(0);
 		foreach (var target in _enemies)
 		{
-			target.RemoveState(States.Frosting); 
+			target.CmdRemoveState(States.Frosting); 
 			_enemies.Remove(target);
 		}
 		Destroy(gameObject);

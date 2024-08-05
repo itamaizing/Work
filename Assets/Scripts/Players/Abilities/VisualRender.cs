@@ -5,22 +5,22 @@ using UnityEngine;
 public class VisualRender : MonoBehaviour
 {
     [SerializeField] private DrawCircle _circle;
-    [SerializeField] private SpriteRenderer _iconPref;
+    //[SerializeField] private SpriteRenderer _iconPref;
     [SerializeField] private CircleArea _areaPref;
     [SerializeField] private BoxArea _squareAreaPref;
 
     private float _radius;
-    private SpriteRenderer _icon;
+   // private SpriteRenderer _icon;
     private CircleArea _area;
     private BoxArea _squareArea;
-    private Coroutine _drawCursorAbilityIconJob;
+    //private Coroutine _drawCursorAbilityIconJob;
     private Coroutine _drawAreaAbilityIconJob;
     public void Drawn(Ability ability)
     {
-        Cursor.visible = false;
+       // Cursor.visible = false;
 
-        _icon = Instantiate(_iconPref);
-        _icon.sprite = ability.Icon;
+       // _icon = Instantiate(_iconPref);
+       // _icon.sprite = ability.Icon;
 
         _area = Instantiate(_areaPref, transform);
         _area.SetSize(ability.Area);
@@ -35,18 +35,18 @@ public class VisualRender : MonoBehaviour
             _circle.Draw(_radius);
         }
         _drawAreaAbilityIconJob = StartCoroutine(DrawAreaCoroutine());
-        _drawCursorAbilityIconJob = StartCoroutine(DrawCursorCoroutine());
+        //_drawCursorAbilityIconJob = StartCoroutine(DrawCursorCoroutine());
     }
 
     public void StopDraw()
     {
-        if (_icon == null)
+       /* if (_icon == null)
             return;
 
-        Cursor.visible = true;
-        StopCoroutine(_drawCursorAbilityIconJob);
-        Destroy(_icon.gameObject);
-        _icon = null;
+        Cursor.visible = true;*/
+        //StopCoroutine(_drawCursorAbilityIconJob);
+        //Destroy(_icon.gameObject);
+        //_icon = null;
         StopAreaDraw();
     }
 
@@ -74,8 +74,8 @@ public class VisualRender : MonoBehaviour
 
     public void StopAreaMove()
     {
-        if (_icon == null)
-            return;
+        /*if (_icon == null)
+            return;*/
 
         StopCoroutine(_drawAreaAbilityIconJob);
     }
@@ -102,7 +102,7 @@ public class VisualRender : MonoBehaviour
         while (true)
         {
             Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, 0);
-            _icon.transform.position = mouse;
+           // _icon.transform.position = mouse;
 
             yield return null;
         }

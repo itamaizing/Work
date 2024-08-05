@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Mirror;
 
 public class IceShardProjectile : Projectiles
 {
@@ -23,6 +24,7 @@ public class IceShardProjectile : Projectiles
 		}
 	}
 
+	[Server]
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		if (_dad == null) return;

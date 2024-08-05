@@ -1,4 +1,5 @@
 using DG.Tweening;
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -30,6 +31,7 @@ public class BlockOfIceProjectile : Projectiles
 		}
 	}
 
+	[Server]
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		if (!_initialized || _dad == null) return;

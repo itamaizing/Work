@@ -37,6 +37,7 @@ public abstract class Ability : NetworkBehaviour
 	protected StaminaComponent _mana;
 	protected MoveComponent _playerMove;
 	protected HealthComponent _health;
+    protected HeroComponent _hero;
 	protected bool _isUsed = false;
 	protected bool _isCanCancle = true;
 	protected bool _isReady = true;
@@ -51,8 +52,8 @@ public abstract class Ability : NetworkBehaviour
 	private float _timerForDebuf;
     private StatsBuff _statsBuff = new StatsBuff(1, 0);
 
-	public MoveComponent PlayerMove => _playerMove;
-    public StaminaComponent Mana => _mana;
+    public MoveComponent PlayerMove => _playerMove;
+    public StaminaComponent Mana =>_mana;
     public HealthComponent Health => _health;
     public string Name => _abilityInfo.Name;
     public string Description => _abilityInfo.Description;

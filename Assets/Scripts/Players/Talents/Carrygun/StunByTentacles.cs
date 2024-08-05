@@ -40,7 +40,7 @@ public class StunByTentacles : MonoBehaviour
                 _isTentacleRetention = false;
             }
 
-            if (_target != null && _target.GetComponent<CharacterState>().IfHasState(new StunnedState()))
+           // if (_target != null && _target.GetComponent<CharacterState>().IfHasState(new StunnedState()))
             {
                 if (Time.time - _timer >= _timerDuration)
                 {

@@ -32,7 +32,10 @@ public class TalentManager : MonoBehaviour
 		var panel = Instantiate(_talentColumn, _panelsParent);
 		panel.Init(talent);
 		panel.transform.DOScale(0, 0);
-		button.onClick.AddListener(panel.SwitchActiveUI);
+		if (button != null)
+		{
+			button.onClick.AddListener(panel.SwitchActiveUI);
+		}
 		//_panels.Add(panel);
 		return panel;
 	}

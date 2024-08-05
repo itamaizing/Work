@@ -49,7 +49,7 @@ public class Acid : MonoBehaviour
 
     private void MakeDamage()
     {
-        Spisnscider.GetComponent<HealthComponent>().MakePhisicDamage(Damage, Target);
+        //Spisnscider.GetComponent<HealthComponent>().MakePhisicDamage(Damage, Target);
 
         if(Random.value <= _chanceMakeVenom)
         {

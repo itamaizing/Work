@@ -17,7 +17,7 @@ public class AttributeItem : MonoBehaviour
 	public Button Plus => _plus;
 	public Button Minus => _minus;
 
-
+	private bool _isPercent = false;
 	private float _value;
 	public void Init(Sprite ico, float value)
 	{
@@ -31,12 +31,29 @@ public class AttributeItem : MonoBehaviour
 
 	public void Add()
 	{
-		_value *= 1.01f;
+        if (_isPercent)
+        {
+			_value += 1;
+        }
+		else
+		{
+			_value *= 1.01f;
+			_value = Mathf.Round(_value);
+		}      
+		
 		_text.text = _value.ToString();
 	}
 	public void Remove()
 	{
-		_value /= 1.01f;
+		if (_isPercent)
+		{
+			_value -= 1;
+		}
+		else
+		{
+			_value /= 1.01f;
+			_value = Mathf.Round( _value );
+		}
 		_text.text = _value.ToString();
 	}
 
