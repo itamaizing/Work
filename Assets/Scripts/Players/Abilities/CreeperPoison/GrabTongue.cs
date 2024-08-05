@@ -16,7 +16,7 @@ public class GrabTongue : Ability
     private Coroutine _useAbilityCoroutine;
     private Coroutine _throwInDirectionTargetCoroutine;
     private Coroutine _mouseDirectionCoroutine;
-
+    public bool Enabled;
     protected override void Cast()
     {
         _useAbilityCoroutine = StartCoroutine(UseAbility());

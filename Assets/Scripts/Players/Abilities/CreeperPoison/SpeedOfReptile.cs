@@ -15,7 +15,7 @@ public class SpeedOfReptile : Ability
 
     private Coroutine _useAbilityCoroutine;
     private Coroutine _increaseValuesCoroutine;
-
+    public bool Enabled;
     protected override void Cast()
     {
         _useAbilityCoroutine = StartCoroutine(UseAbility());

@@ -29,7 +29,7 @@ public class PoisonBall : TargetOrAreaAbility
     public int CountProjectiles { get => _countProjectiles; set => _countProjectiles = value; }
     public GameObject LastTarget { get; set; }
     public GameObject CurrentTarget { get; set; }
-
+    public bool Enabled;
     protected override IEnumerator UseCoroutine()
     {
         yield return _chooseTargetJob = StartCoroutine(ChooseTargetCoroutine(Radius));

@@ -19,7 +19,7 @@ public class SpitPoison : Ability
     private Coroutine _useCoroutine;
     private Coroutine _shootCoroutine;
     private Coroutine _mouseDirectionCoroutine;
-
+    public bool Enabled;
     protected override void Cancel()
     {
 

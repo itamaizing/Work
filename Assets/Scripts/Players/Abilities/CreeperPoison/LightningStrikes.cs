@@ -18,7 +18,7 @@ public class LightningStrikes : AutoAttackAbility
     private bool _isUsedLightningStrikes = false;
 
     public bool IsUsedLightningStrikes => _isUsedLightningStrikes;
-
+    public bool Enabled;
     private new void Start()
     {
         _creeperStrike = _dad.GetComponentInChildren<CreeperStrike>();

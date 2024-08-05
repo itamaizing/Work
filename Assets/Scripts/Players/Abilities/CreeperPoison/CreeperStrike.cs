@@ -31,7 +31,7 @@ public class CreeperStrike : AutoAttackAbility
     public GameObject CurrentTarget => _currentTarget;
     public int CurrentCountHit { get => _currentCountHit; set => _currentCountHit = value; }
     public bool IsTwoHit { get => _isTwoHit; set => _isTwoHit = value; }
-
+    public bool Enabled;
     protected override void Start()
     {
         base.Start();

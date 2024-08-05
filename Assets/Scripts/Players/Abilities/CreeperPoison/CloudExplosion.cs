@@ -29,6 +29,8 @@ public class CloudExplosion : Ability
     private int _currentStacksPoisonCloud { get; set; }
     private int _maxStacks { get; set; }
 
+    public bool Enabled;
+
     protected override void Start()
     {
         base.Start();

@@ -28,7 +28,7 @@ public class Invisible : Ability
     private Coroutine _useInvisibleCoroutine;
     private Coroutine _notAttackedCoroutine;
     private Coroutine _useJob;
-
+    public bool Enabled;
     protected override void Start()
     {
         _playerHealth = _playerLinks.GetComponent<HealthComponent>();

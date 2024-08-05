@@ -32,7 +32,7 @@ public class PoisonSlap : TargetOrAreaAbility
 
     private bool _isIncreasedCastSpeedFromCreeperStrike = false;
     private bool _isIncreasedCastSpeedFromLightningStrike = false;
-
+    public bool Enabled;
     protected override void CastAction()
     {
         _useCoroutine = StartCoroutine(UseAbilityCoroutine());
