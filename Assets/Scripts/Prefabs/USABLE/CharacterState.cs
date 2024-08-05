@@ -748,6 +748,29 @@ public class InAirState : AbstractCharacterState
     }
 }
 
+public class PoisonBone : AbstractCharacterState
+{
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+    {
+
+    }
+
+    public override void UpdateState()
+    {
+
+    }
+
+    public override void ExitState()
+    {
+
+    }
+
+    public override bool Stack(float time)
+    {
+        return false;
+    }
+}
+
 public class PoisonCloud : AbstractCharacterState
 {
     public new States state = States.PoisonCloud;
@@ -1483,6 +1506,7 @@ public enum States
 	Frosting,
 	Cooling,
 	InAir,
+	PoisonBone,
 	PoisonCloud,
 	EmpathicPoisons,
 	Blind,
