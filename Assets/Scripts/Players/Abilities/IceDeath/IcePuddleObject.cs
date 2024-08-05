@@ -46,8 +46,13 @@ public class IcePuddleObject : Projectiles
 		{
 			_healthComponent.SetBoostRegen2(0);
 			return;
-		}		
+		}
+		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject != _dad.gameObject)
+		{
+			target.Health.SetEvadeAll(-3);
+		}
 	}
+
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		if(!_initialized) return;
@@ -80,6 +85,7 @@ public class IcePuddleObject : Projectiles
 					target.CharacterState.CmdAddState(States.Frozen, duration, 0);
 				}
 			}
+			target.Health.SetEvadeAll(3);
 			_enemies.Add(target.CharacterState);
 		}
 		//Explode();

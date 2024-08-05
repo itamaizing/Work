@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 
@@ -8,12 +9,7 @@ public class Energy : StaminaComponent
 	private float _timer = 0;
 	[SerializeField] private float _sumDamageGiven = 0;
 	private bool _canRegen = true;
-
-	private void Start()
-	{
-		//StartCoroutine(RegenirateEnergy());
-	}
-
+	private float _firstRegenDelay = 3;
 	private void Update()
 	{
 		if (_canRegen)
@@ -60,6 +56,7 @@ public class Energy : StaminaComponent
 		Debug.Log("energy used " + EnergyValue);
 		_canRegen = false;
 		_timer = 0;
+		_firstRegenDelay = 3;
 
 		_value -= EnergyValue;
 
@@ -71,21 +68,27 @@ public class Energy : StaminaComponent
 		return true;
 	}
 
-	/*private IEnumerator RegenirateEnergy()
+	protected override void Regen()
 	{
-		while (true)
+		if (_value >= _maxValue) return;
+
+		if(_firstRegenDelay > 0) 
 		{
-			yield return new WaitForSeconds(_regenerationDelay);
-			if (_canRegen && _value < _maxValue)
-			{
-				this.Add(_regenerationValue);
-			}
+			_firstRegenDelay-=Time.deltaTime;
+			return;
 		}
-	}*/
+		_timerDelay += Time.deltaTime;
+		if (_timerDelay > _regenerationDelay)
+		{
+			_timerDelay = 0;
+			Add(_regenerationValue);
+		}
+	}
 
 	public float UseAllEnergy()
 	{
 		float usedEnergy = _value;
+		_firstRegenDelay = 3;
 		_value = 0;
 		UpdateBar();
 		return usedEnergy;

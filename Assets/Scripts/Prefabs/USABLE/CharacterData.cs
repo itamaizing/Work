@@ -14,7 +14,7 @@ public class CharacterData : ScriptableObject
     [SerializeField] private float _moveSpeed;
     [SerializeField] private float _defaultHealthRegen;
     [SerializeField] private float _defaultStaminaRegen;
-    [SerializeField] private float _defaultRegenDelay;
+    [SerializeField] private float _defaultHpRegenDelay;
     [SerializeField] private float _defaultStaminaRegenDalay;
     [SerializeField] private float _visionRadius;
 
@@ -29,7 +29,7 @@ public class CharacterData : ScriptableObject
     public float MoveSpeed => _moveSpeed;
     public float HealthRegen => _defaultHealthRegen;
     public float StaminaRegen => _defaultStaminaRegen;
-    public float RegenDelay => _defaultRegenDelay;
+    public float RegenDelay => _defaultHpRegenDelay;
     public float StaminaRegenDelay => _defaultStaminaRegenDalay;
     public float VisionRadius => _visionRadius;
 }
