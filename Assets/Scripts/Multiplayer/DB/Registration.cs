@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Authorization : MonoBehaviour
+public class Registration : MonoBehaviour
 {
     private const string LOGIN = "login";
     private const string PASSWORD = "password";
@@ -11,6 +11,7 @@ public class Authorization : MonoBehaviour
     private int _id;
     private string _login;
     private string _password;
+    private string _confirmPassword;
 
     public event Action<string> Error;
     public event Action<int> Successed;
@@ -25,29 +26,41 @@ public class Authorization : MonoBehaviour
         _password = password;
     }
 
-    public void SignIn()
+    public void SetConfirmPassword(string password)
     {
-        if(string.IsNullOrEmpty(_login) || string.IsNullOrEmpty(_password))
+        _confirmPassword = password;
+    }
+
+    public void SignUp()
+    {
+        if (string.IsNullOrEmpty(_login) || string.IsNullOrEmpty(_password) || string.IsNullOrEmpty(_confirmPassword))
         {
-            Error?.Invoke("login or pass not validate");
-            Debug.LogError("login or pass not validate");
+            Error?.Invoke("pass not validate");
+            Debug.LogError("pass not validate");
             return;
         }
+        if (_password != _confirmPassword)
+        {
+            Debug.LogError("pass not confirm");
+            return;
+        }
+
         Dictionary<string, string> data = new Dictionary<string, string>()
         {
             {LOGIN, _login},
             {PASSWORD, _password }
         };
 
-        NetworkHTTP.Instance.Post(URLLibrary.Authorization, data, Success);
+        NetworkHTTP.Instance.Post(URLLibrary.Registration, data, Success);
     }
 
     private void Success(string data)
     {
-        if(int.TryParse(data, out int id))
+        if (int.TryParse(data, out int id))
         {
             _id = id;
             Successed?.Invoke(id);
+            Error?.Invoke("New user created");
         }
         else
         {
