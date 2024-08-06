@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class PoisonBall : TargetOrAreaAbility
 {
+    [SerializeField] private FootInstincts _footInstincts;
+
     [SerializeField] private Character _playerLinks;
     [SerializeField] private Vector3 _secondMousePosition;
 
     [SerializeField] private PoisonBallProjectile _projectile;
-
-    private PoisonCloudBuff _poisonCloudBuff;
 
     private int _countProjectiles = 0;
 
@@ -29,6 +29,8 @@ public class PoisonBall : TargetOrAreaAbility
     public int CountProjectiles { get => _countProjectiles; set => _countProjectiles = value; }
     public GameObject LastTarget { get; set; }
     public GameObject CurrentTarget { get; set; }
+    public FootInstincts FootInstinctsTalent { get; set; }
+
     public bool Enabled;
     protected override IEnumerator UseCoroutine()
     {
@@ -179,6 +181,8 @@ public class PoisonBall : TargetOrAreaAbility
     private void CmdCreateProjectileForTaret(GameObject target, Vector3 targetOrPoint, bool isFast)
     {
         CurrentTarget = target;
+        FootInstinctsTalent = _footInstincts;
+        Debug.Log("FootInstinctsTalent in Cmd PoisonBall == " + FootInstinctsTalent);
 
         if (LastTarget == CurrentTarget)
         {
@@ -196,11 +200,16 @@ public class PoisonBall : TargetOrAreaAbility
         poisonBallProjectile.MoveBallToTarget(targetOrPoint, isFast);
 
         NetworkServer.Spawn(item);
+
+        RpcCreateProjectileForTaret(target, targetOrPoint, isFast);
+        RpcInitializationProjectile(item);
     }
 
     [Command]
     private void CmdCreateProjectileForFlyingMaxDistance(Vector3 point, bool isFast)
     {
+        FootInstinctsTalent = _footInstincts;
+        Debug.Log("FootInstinctsTalent in Cmd PoisonBall == " + FootInstinctsTalent);
         if (LastTarget == CurrentTarget)
         {
             CountProjectiles++;
@@ -217,12 +226,15 @@ public class PoisonBall : TargetOrAreaAbility
         poisonBallProjectile.MoveBallOnMaxDistance(point, isFast);
 
         NetworkServer.Spawn(item);
+
+        RpcCreateProjectileForFlyingMaxDistance(point, isFast);
+        RpcInitializationProjectile(item);
     }
 
     [Command]
     private void CmdApplyCloudPoison()
     {
-        _playerLinks.CharacterState.AddState(new PoisonCloud(), 6f, 0, States.PoisonCloud);
+        _playerLinks.CharacterState.AddState(new PoisonCloudState(), 6f, 0, States.PoisonCloud);
         RpcApplyCloudPoison();
     }
 
@@ -231,9 +243,57 @@ public class PoisonBall : TargetOrAreaAbility
     #region ClientRpcMethods
 
     [ClientRpc]
+    private void RpcCreateProjectileForTaret(GameObject target, Vector3 targetOrPoint, bool isFast)
+    {
+        FootInstinctsTalent = _footInstincts;
+        CurrentTarget = target;
+
+        if (LastTarget == CurrentTarget)
+        {
+            CountProjectiles++;
+        }
+        else if (LastTarget != CurrentTarget || CountProjectiles == 3)
+        {
+            CountProjectiles = 1;
+        }
+
+        GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
+        PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>();
+
+        poisonBallProjectile.InitializationProjectileForPoisonBall(_playerLinks.transform, _playerLinks.Stamina.Value);
+        poisonBallProjectile.MoveBallToTarget(targetOrPoint, isFast);
+    }
+
+    [ClientRpc]
+    private void RpcCreateProjectileForFlyingMaxDistance(Vector3 point, bool isFast)
+    {
+        FootInstinctsTalent = _footInstincts;
+        if (LastTarget == CurrentTarget)
+        {
+            CountProjectiles++;
+        }
+        else if (LastTarget != CurrentTarget || CountProjectiles == 3)
+        {
+            CountProjectiles = 1;
+        }
+
+        GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
+        PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>();
+
+        poisonBallProjectile.InitializationProjectileForPoisonBall(_playerLinks.transform, _playerLinks.Stamina.Value);
+        poisonBallProjectile.MoveBallOnMaxDistance(point, isFast);
+    }
+
+    [ClientRpc]
+    private void RpcInitializationProjectile(GameObject projectile)
+    {
+        projectile.GetComponent<PoisonBallProjectile>().InitializationProjectileForPoisonBall(_playerLinks.transform, _playerLinks.Stamina.Value);
+    }
+
+    [ClientRpc]
     private void RpcApplyCloudPoison()
     {
-        _playerLinks.CharacterState.AddState(new PoisonCloud(), 6f, 0, States.PoisonCloud);
+        _playerLinks.CharacterState.AddState(new PoisonCloudState(), 6f, 0, States.PoisonCloud);
     }
 
     #endregion

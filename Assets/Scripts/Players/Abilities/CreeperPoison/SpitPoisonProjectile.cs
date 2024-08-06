@@ -10,7 +10,8 @@ public class SpitPoisonProjectile : NetworkBehaviour
     [SerializeField] private GameObject _hitEffect;
     [SerializeField] private float _distance = 5f;
     [SerializeField] private int _force = 40;
-    private BonePoison _bonePoisonDebuff;
+
+
     private Character _dad;
     private Vector2 _startPos;
 
@@ -41,7 +42,6 @@ public class SpitPoisonProjectile : NetworkBehaviour
                 _damage = Random.Range(4.0f, 12.0f);
 
                 DealDamage(targetHealth, _damage, DamageType.Magical, AttackRangeType.RangeAttack);
-                CreateBonePoisonDebuff(targetHealth);
             }
         }
     }
@@ -56,6 +56,9 @@ public class SpitPoisonProjectile : NetworkBehaviour
         _energyLink.SumDamageMake(damage);
 
         targetHealth.TryTakeDamage(damage, damageType, attackRangeType);
+        targetHealth.GetComponent<Character>().CharacterState.AddState(new PoisonBoneState(), 6, 0, States.PoisonBone);
+
+        Debug.Log("Наложен дебафф яд костей из скрипта SpitPoisonProjectile");
 
         if (numbersForChanceOfBlindness <= chanceOfBlindness)
         {
@@ -63,20 +66,6 @@ public class SpitPoisonProjectile : NetworkBehaviour
         }
 
         Explode();
-    }
-
-    private void CreateBonePoisonDebuff(HealthComponent targetHealth)
-    {
-        _bonePoisonDebuff = targetHealth.GetComponentInChildren<BonePoison>();
-        if (_bonePoisonDebuff == null)
-        {
-            _bonePoisonDebuff = Instantiate(_bonePoisonPrefab, targetHealth.transform);
-            _bonePoisonDebuff.AddStacks(targetHealth);
-        }
-        else
-        {
-            _bonePoisonDebuff.AddStacks(targetHealth);
-        }
     }
 
     private void Explode()

@@ -92,7 +92,7 @@ public class SpitPoison : Ability
     [Command]
     private void CmdApplyCloudPoison()
     {
-        _playerLinks.CharacterState.AddState(new PoisonCloud(), 6f, 0, States.PoisonCloud);
+        _playerLinks.CharacterState.AddState(new PoisonCloudState(), 6f, 0, States.PoisonCloud);
         RpcApplyCloudPoison();
     }
 
@@ -116,7 +116,7 @@ public class SpitPoison : Ability
     [ClientRpc]
     private void RpcApplyCloudPoison()
     {
-        _playerLinks.CharacterState.AddState(new PoisonCloud(), 6f, 0, States.PoisonCloud);        
+        _playerLinks.CharacterState.AddState(new PoisonCloudState(), 6f, 0, States.PoisonCloud);        
     }
 
     #endregion

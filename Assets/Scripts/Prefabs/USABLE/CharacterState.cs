@@ -748,20 +748,121 @@ public class InAirState : AbstractCharacterState
     }
 }
 
-public class PoisonBone : AbstractCharacterState
+public class CreeperInvisibleState : AbstractCharacterState
 {
+    public new States state = States.Invisible;
+
+    private GameObject _player;
+
+    private List<GameObject> _enemies = new List<GameObject>();
+
+    private float lastCheckTime;
+    private float checkInterval = 1f;
+
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
     {
-
+        Debug.Log("Entering Invisible State");
+        _characterState = character;
+        _player = character.gameObject;
     }
 
     public override void UpdateState()
     {
+        Debug.Log("Updating Invisible State");
+        if (_characterState.Move.IsMoving)
+        {
+            CheckEnemies();
+            //��� � ������� ��������� ��������� � ���� ���� ���������
+            if (_enemies.Count > 0 && Time.time - lastCheckTime >= checkInterval)
+            {
+                CheckDistance();
+                lastCheckTime = Time.time;
+            }
+        }
+    }
 
+    private void CheckEnemies()
+    {
+        int otherPlayersLayer = LayerMask.NameToLayer("OtherPlayers");
+        string enemiesTag = "Enemies";
+        float radius = 3f * 1.94f;
+
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(_player.transform.position, radius, 1 << otherPlayersLayer);
+
+        foreach (Collider2D collider in colliders)
+        {
+            if (collider.CompareTag(enemiesTag))
+            {
+                //����������� �����
+                Vector2 enemyMovementDirection = collider.GetComponent<MoveComponent>().MoveDirection * radius;
+
+                // ������ �� ����� �� ������
+                Vector2 playerToEnemy = _player.transform.position - collider.transform.position;
+
+                // ���������, ��������� �� ����� ������� �����
+                float dotProduct = Vector3.Dot(playerToEnemy.normalized, enemyMovementDirection);
+
+                if (dotProduct > 0)
+                {
+                    _enemies.Add(collider.gameObject);
+                }
+            }
+        }
+    }
+
+    private void CheckDistance()
+    {
+        foreach (GameObject enemy in _enemies)
+        {
+            Vector2 enemyMovementDirection = enemy.GetComponent<MoveComponent>().MoveDirection;
+            Vector2 playerToEnemy = _player.transform.position - enemy.transform.position;
+
+            // ������� ���������������� ������ � ������� ����������� ����� � ��� �����
+            Vector2 perpendicularVector = Vector3.ProjectOnPlane(playerToEnemy, enemyMovementDirection);
+            float perpendicularDistance = perpendicularVector.magnitude;
+
+            // ������� �������� ������� playerToEnemy �� ������ ����������� ����� � �� �����
+            float projection = Vector2.Dot(playerToEnemy, enemyMovementDirection);
+            float projectionLength = Mathf.Abs(projection);
+
+            float chanceToBeSeen = 0;
+
+            if (projectionLength <= 1.94f * 1.5f)
+            {
+                if (perpendicularDistance <= 1.94f * 0.5f)
+                {
+                    chanceToBeSeen = 0.8f;
+                }
+                else if (perpendicularDistance <= 1.94f * 1.5f && perpendicularDistance > 1.94f * 0.5f)
+                {
+                    chanceToBeSeen = 0.7f;
+                }
+            }
+            else if (projectionLength <= 1.94f * 2.5f && projectionLength > 1.94f * 1.5f)
+            {
+                if (perpendicularDistance <= 1.94f * 0.5f)
+                {
+                    chanceToBeSeen = 0.3f;
+                }
+                else if (perpendicularDistance <= 1.94f * 1.5f && perpendicularDistance > 1.94f * 0.5f)
+                {
+                    chanceToBeSeen = 0.2f;
+                }
+            }
+
+            if (chanceToBeSeen > 0)
+            {
+                if (Random.value <= chanceToBeSeen)
+                {
+                    ExitState();
+                }
+            }
+        }
     }
 
     public override void ExitState()
     {
+        Debug.Log("Exiting Invisible State");
 
     }
 
@@ -771,7 +872,123 @@ public class PoisonBone : AbstractCharacterState
     }
 }
 
-public class PoisonCloud : AbstractCharacterState
+public class PoisonBoneState : AbstractCharacterState
+{
+    public new States state = States.PoisonBone;
+    private PlayerAbilities _abilities;
+
+    private int _currentStacks = 0;
+    private int _maxStacks = 4;
+
+    private float _baseDamage = 1f;
+	private float _endDamage;
+
+    private float _timeBetweenAttack;
+    private float _startTimeBetweenAttack = 1f;
+
+    private float _duration;
+    private float _baseDuration;
+
+    public bool turnOff = false;
+	public int CurrentStacks { get => _currentStacks; set => _currentStacks = value; }
+
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+    {
+		Debug.Log("Яд костей дебафф сработал. Вход в состояние");
+        _timeBetweenAttack = _startTimeBetweenAttack;
+
+        type = StateType.Physical;
+        effects.Add(StatusEffect.Ability);
+
+        _characterState = character;
+
+        if (character.TryGetComponent<Character>(out var ability))
+        {
+            _abilities = ability.Abilities;
+            _abilities.SetAbilitiesDisabled();
+        }
+        else
+        {
+            Debug.Log("no ability at " + character.gameObject.name);
+        }
+
+        _duration = durationToExit;
+        _baseDuration = durationToExit;
+
+        if (_currentStacks < _maxStacks)
+        {
+            AddStacks();
+        }
+    }
+
+    public override void UpdateState()
+    {
+        _timeBetweenAttack -= Time.deltaTime;
+        //Debug.Log("_timeBetweenAttack == " + _timeBetweenAttack);
+        if (_timeBetweenAttack <= 0)
+        {
+			DamageDeal();
+            _timeBetweenAttack = _startTimeBetweenAttack;
+        }
+
+        _duration -= Time.deltaTime;
+        if (_duration < 0 || turnOff)
+        {
+            ExitState();
+        }
+
+    }
+
+    public override void ExitState()
+    {
+        if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
+        {
+            _abilities.SetAbilitiesEnabled();
+        }
+
+        ResetValues();
+
+        _characterState.RemoveState(this);
+    }
+
+    public override bool Stack(float time)
+    {
+        if (_currentStacks < _maxStacks)
+        {
+            AddStacks();
+            return true;
+        }
+        else
+        {
+            _duration = _baseDuration;
+            return false;
+        }
+    }
+
+    private void AddStacks()
+    {
+        _currentStacks++;
+        _duration = _baseDuration;
+    }
+
+	private void DamageDeal()
+	{
+		_endDamage = _currentStacks * _baseDamage;
+
+		_characterState.Health.TryTakeDamage(_endDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
+	}
+
+    private void ResetValues()
+    {
+        _currentStacks = 0;
+        _baseDuration = 0;
+        _duration = 0;
+        _endDamage = 0;
+        _baseDamage = 1f;
+    }
+}
+
+public class PoisonCloudState : AbstractCharacterState
 {
     public new States state = States.PoisonCloud;
     private PlayerAbilities _abilities;
@@ -902,14 +1119,14 @@ public class PoisonCloud : AbstractCharacterState
 		if (_toxiqueCloud.isActive)
 		{
 			//var empathicPoisons = EmpathicPoisons.Intstance;
-			targetHealth.GetComponent<CharacterState>().AddState(new EmpathicPoisons(), _durationEmpathicPoisons, 10000, States.EmpathicPoisons);
-			EmpathicPoisons.Player = Player.gameObject;
-			EmpathicPoisons.RadiusCloud = _radiusCloud;
+			targetHealth.GetComponent<CharacterState>().AddState(new EmpathicPoisonsState(), _durationEmpathicPoisons, 10000, States.EmpathicPoisons);
+			EmpathicPoisonsState.Player = Player.gameObject;
+			EmpathicPoisonsState.RadiusCloud = _radiusCloud;
         }
 	}
 
-	private void ResetValues()
-	{
+    private void ResetValues()
+    {
         _currentStacks = 0;
         _baseDuration = 0;
         _duration = 0;
@@ -919,7 +1136,7 @@ public class PoisonCloud : AbstractCharacterState
     }
 }
 
-public class EmpathicPoisons : AbstractCharacterState
+public class EmpathicPoisonsState : AbstractCharacterState
 {
 	public new States state = States.EmpathicPoisons;
 
@@ -1208,8 +1425,9 @@ public class CharacterState : NetworkBehaviour
 		[States.Frosting] = new FrostingState(),
 		[States.Cooling] = new Cooling(),
 		[States.Blind] = new BlindnessState(),
-		[States.PoisonCloud] = new PoisonCloud(),
-		[States.EmpathicPoisons] = new EmpathicPoisons(),
+		[States.PoisonBone] = new PoisonBoneState(),
+		[States.PoisonCloud] = new PoisonCloudState(),
+		[States.EmpathicPoisons] = new EmpathicPoisonsState(),
 		[States.Invisible] = new InvisibleState(),
 		[States.SchoolDebuff] = new AbilitySchoolDebuff(),
 		[States.Desiccuration] = new Desiccuration()

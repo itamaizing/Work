@@ -8,6 +8,7 @@ public class PoisonBallProjectile : NetworkBehaviour
 {
     [SerializeField] protected PoisonBall _poisonBall;
 
+
     [SerializeField] protected GameObject _hitEffect;
     [SerializeField] protected SpriteRenderer _spriteRenderer;
     [SerializeField] protected Collider2D _collider;
@@ -29,7 +30,7 @@ public class PoisonBallProjectile : NetworkBehaviour
     private float _currentDamageForPoisonBall = 35f;
 
     private GameObject _currentTarget;
-
+    private FootInstincts _footInstincts;
     private void Start()
     {
         _durationPush = 1.0f;
@@ -40,11 +41,14 @@ public class PoisonBallProjectile : NetworkBehaviour
     {
         _poisonBall = _dad.GetComponentInChildren<PoisonBall>();
 
+        _footInstincts = _poisonBall.GetComponent<PoisonBall>().FootInstinctsTalent;
+        Debug.Log("FootInstincts in PoisonBallProjectile == " + _footInstincts);
+        Debug.Log("FootInstincts.isActive in PoisonBallProjectile == " + _footInstincts.isActive);
+
         _countProjectiles = _poisonBall.GetComponent<PoisonBall>().CountProjectiles;
         _currentTarget = _poisonBall.GetComponent<PoisonBall>().CurrentTarget;
     }
 
-    [Server]
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.transform != _dad)
@@ -52,6 +56,10 @@ public class PoisonBallProjectile : NetworkBehaviour
             if (collision.TryGetComponent<HealthComponent>(out var targetHealth))
             {
                 DealDamage(targetHealth, _currentDamageForPoisonBall, DamageType.Magical, AttackRangeType.RangeAttack);
+                if (_footInstincts.isActive)
+                {
+                    _footInstincts.ReductionCooldownLightningMovement();
+                }
                 _poisonBall.LastTarget = targetHealth.gameObject;
                 Destroy(gameObject);
             }

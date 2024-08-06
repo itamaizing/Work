@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class InvisibleTalent : Talent
 {
-    [SerializeField] private Invisible _invisible;
+    [SerializeField] private CreeperInvisible _invisible;
     [SerializeField] private PlayerAbilities _ability;
     public override void Enter()
     {
