@@ -40,8 +40,8 @@ public class AssasinPoison : Talent
             }
         }
     }
+    
 
-    [Command]
     public void CmdSpendCharge(Character target, float lifeTimePoisonBoneStack)
     {
         if (character.CharacterState.CheckForState(States.CreeperInvisible))
@@ -50,14 +50,9 @@ public class AssasinPoison : Talent
             if (CurrentChargePoison > 0)
             {
                 Debug.Log("CurrentChargePoison == " + CurrentChargePoison);
-                for (int i = 0; i < CurrentChargePoison; i++)
-                {
-                    Debug.Log("I == " + i);
-                    target.CharacterState.CmdAddState(States.PoisonBone, 6f, 0);
-                    Debug.Log("AddStacks PoisonBone");
-                    Debug.Log("_invisibleCreeper.CurrentChargePoison == " + CurrentChargePoison);
-                }
-                CurrentChargePoison = 0;
+                target.CharacterState.CmdAddState(States.PoisonBone, 6f, 0);
+                CurrentChargePoison--;
+                Debug.Log("AddStacks PoisonBone");
                 Debug.Log("Before for / _invisibleCreeper.CurrentChargePoison == " + CurrentChargePoison);
             }
         }
@@ -65,10 +60,14 @@ public class AssasinPoison : Talent
 
     private void AccumulateChargePoison()
     {
-        CmdAccumulateChargePoison();
+        if (_currentChargePoison < _maxChargePoison)
+        {
+            _currentChargePoison++;
+            Debug.Log("CurrentChargePoison == " + _currentChargePoison);
+            Debug.Log("TimeAccumulateCharge == " + _timeAccumulateCharge);
+        }
     }
 
-    [Command]
     private void CmdAccumulateChargePoison()
     {
         if (_currentChargePoison < _maxChargePoison)
@@ -76,15 +75,7 @@ public class AssasinPoison : Talent
             _currentChargePoison++;
             Debug.Log("CMD CurrentChargePoison == " + _currentChargePoison);
             Debug.Log("CMD TimeAccumulateCharge == " + _timeAccumulateCharge);
-            RpcAccumulateChargePoison();
         }
     }
-    
-    [ClientRpc]
-    private void RpcAccumulateChargePoison()
-    {
-            _currentChargePoison++;
-            Debug.Log("CMD CurrentChargePoison == " + _currentChargePoison);
-            Debug.Log("CMD TimeAccumulateCharge == " + _timeAccumulateCharge);
-    }
+
 }
