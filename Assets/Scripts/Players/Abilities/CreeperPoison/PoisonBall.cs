@@ -114,7 +114,6 @@ public class PoisonBall : TargetOrAreaAbility
         yield return GetCastDeleyCoroutine();
 
         ChooseWhichProjectileCreate(isEnemy, isFast);
-        CmdApplyCloudPoison();
     }
 
     private IEnumerator SlowMoveShoot(bool isEnemy, bool isFast)
@@ -123,7 +122,6 @@ public class PoisonBall : TargetOrAreaAbility
         yield return GetCastDeleyCoroutine();
 
         ChooseWhichProjectileCreate(isEnemy, isFast);
-        CmdApplyCloudPoison();
     }
 
     private IEnumerator ThirdProjectileMovement(bool isEnemy, bool isFast)
@@ -132,7 +130,6 @@ public class PoisonBall : TargetOrAreaAbility
         yield return GetCastDeleyCoroutine();
 
         ChooseWhichProjectileCreate(isEnemy, isFast);
-        CmdApplyCloudPoison();
     }
 
     private void ChooseWhichProjectileCreate(bool isEnemy, bool isFast)
@@ -175,6 +172,11 @@ public class PoisonBall : TargetOrAreaAbility
 
     #endregion
 
+    private void ApplyCloudPoison()
+    {
+        _playerLinks.CharacterState.CmdAddState(States.PoisonCloud, 6f, 0);
+    }
+
     #region Command Methods
 
     [Command]
@@ -203,6 +205,7 @@ public class PoisonBall : TargetOrAreaAbility
 
         RpcCreateProjectileForTaret(target, targetOrPoint, isFast);
         RpcInitializationProjectile(item);
+        ApplyCloudPoison();
     }
 
     [Command]
@@ -229,13 +232,7 @@ public class PoisonBall : TargetOrAreaAbility
 
         RpcCreateProjectileForFlyingMaxDistance(point, isFast);
         RpcInitializationProjectile(item);
-    }
-
-    [Command]
-    private void CmdApplyCloudPoison()
-    {
-        _playerLinks.CharacterState.AddState(new PoisonCloudState(), 6f, 0, States.PoisonCloud);
-        RpcApplyCloudPoison();
+        ApplyCloudPoison();
     }
 
     #endregion
@@ -288,12 +285,6 @@ public class PoisonBall : TargetOrAreaAbility
     private void RpcInitializationProjectile(GameObject projectile)
     {
         projectile.GetComponent<PoisonBallProjectile>().InitializationProjectileForPoisonBall(_playerLinks.transform, _playerLinks.Stamina.Value);
-    }
-
-    [ClientRpc]
-    private void RpcApplyCloudPoison()
-    {
-        _playerLinks.CharacterState.AddState(new PoisonCloudState(), 6f, 0, States.PoisonCloud);
     }
 
     #endregion

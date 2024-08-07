@@ -29,19 +29,19 @@ public class OwnElement : Talent
 
     public override void Enter()
     {
-        isActive = true;
+        SetActive(true);
         StartCoroutine(SearchingDebuffOnEnemy());
     }
 
     public override void Exit()
     {
         StopCoroutine(SearchingDebuffOnEnemy());
-        isActive = false;
+        SetActive(false);
     }
 
     private IEnumerator SearchingDebuffOnEnemy()
     {
-        while (isActive)
+        while (IsActive)
         {
             _enemiesWithDebuff.Clear();
             _currentPoisonOnEnemy = 0;

@@ -62,17 +62,19 @@ public class SpitPoison : Ability
         Shoot();
         yield return null;
     }
-
     
     private void Shoot()
-    {
+    { 
         CmdInstantiateProjectile(_angle, _playerLinks.Stamina.Value);
 
-        //CmdCreatePoisonCloudBuff(HealingCloudTalentIsActive, CapaciousCloudTalentIsActive, ToxiqueCloudTalentIsActive);
-        CmdApplyCloudPoison();
         _playerLinks.Stamina.Use(_playerLinks.Stamina.Value);
 
         Cancel();
+    }
+
+    private void ApplyCloudPoison()
+    {
+        _playerLinks.CharacterState.CmdAddState(States.PoisonCloud, 6f, 0);
     }
 
     #region Command Methods
@@ -85,15 +87,9 @@ public class SpitPoison : Ability
 
         NetworkServer.Spawn(projectile.gameObject);
 
-        RpcInstantiateProjectile(angle, manaValue);
+        //RpcInstantiateProjectile(angle, manaValue);
         RpcInitialization(projectile.gameObject, manaValue);
-    }
-
-    [Command]
-    private void CmdApplyCloudPoison()
-    {
-        _playerLinks.CharacterState.AddState(new PoisonCloudState(), 6f, 0, States.PoisonCloud);
-        RpcApplyCloudPoison();
+        ApplyCloudPoison();
     }
 
     #endregion
@@ -106,20 +102,13 @@ public class SpitPoison : Ability
         projectile.GetComponent<SpitPoisonProjectile>().InitializationProjectile(_playerLinks, manaValue);
     }
 
-    [ClientRpc]
-    private void RpcInstantiateProjectile(float angle, float manaValue)
-    {
-        SpitPoisonProjectile projectile = Instantiate(_projectile, _playerLinks.Rb.position, Quaternion.Euler(0, 0, angle));
-        projectile.InitializationProjectile(_playerLinks, manaValue);
-    }
-
-    [ClientRpc]
-    private void RpcApplyCloudPoison()
-    {
-        _playerLinks.CharacterState.AddState(new PoisonCloudState(), 6f, 0, States.PoisonCloud);        
-    }
+    //[ClientRpc]
+    //private void RpcInstantiateProjectile(float angle, float manaValue)
+    //{
+    //    SpitPoisonProjectile projectile = Instantiate(_projectile, _playerLinks.Rb.position, Quaternion.Euler(0, 0, angle));
+    //    projectile.InitializationProjectile(_playerLinks, manaValue);
+    //}
 
     #endregion
-
 
 }

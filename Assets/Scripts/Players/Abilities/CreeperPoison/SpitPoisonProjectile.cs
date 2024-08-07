@@ -5,18 +5,17 @@ using UnityEngine;
 
 public class SpitPoisonProjectile : NetworkBehaviour
 {
-    [SerializeField] private BonePoison _bonePoisonPrefab;
     [SerializeField] private Rigidbody2D _rb;
     [SerializeField] private GameObject _hitEffect;
     [SerializeField] private float _distance = 5f;
     [SerializeField] private int _force = 40;
-
 
     private Character _dad;
     private Vector2 _startPos;
 
     private float _energyDad;
     private float _damage;
+    private float _lifeTimePoisonBoneStacks = 20.0f;
 
     private void Awake()
     {
@@ -24,7 +23,7 @@ public class SpitPoisonProjectile : NetworkBehaviour
         _rb.AddForce(transform.up * _force, ForceMode2D.Impulse);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (Vector2.Distance(transform.position, _startPos) > _distance * GlobalVariable.cellSize)
         {
@@ -32,37 +31,35 @@ public class SpitPoisonProjectile : NetworkBehaviour
         }
     }
 
-    
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.transform != _dad.transform)
         {
-            if (collision.TryGetComponent<HealthComponent>(out var targetHealth))
+            if (collision.TryGetComponent<HeroComponent>(out var target))
             {
                 _damage = Random.Range(4.0f, 12.0f);
 
-                DealDamage(targetHealth, _damage, DamageType.Magical, AttackRangeType.RangeAttack);
+                DealDamage(target, _damage, DamageType.Magical, AttackRangeType.RangeAttack);
             }
         }
     }
 
-    private void DealDamage(HealthComponent targetHealth, float damage, DamageType damageType, AttackRangeType attackRangeType)
+    private void DealDamage(HeroComponent target, float damage, DamageType damageType, AttackRangeType attackRangeType)
     {
-        // Chance to apply Blindness
         float chanceOfBlindness = 0.3f;
         float numbersForChanceOfBlindness = Random.Range(0.0f, 1.0f);
 
         Energy _energyLink = (Energy)_dad.Stamina;
         _energyLink.SumDamageMake(damage);
 
-        targetHealth.TryTakeDamage(damage, damageType, attackRangeType);
-        targetHealth.GetComponent<Character>().CharacterState.AddState(new PoisonBoneState(), 6, 0, States.PoisonBone);
+        target.Health.TryTakeDamage(damage, damageType, attackRangeType);
 
-        Debug.Log("Наложен дебафф яд костей из скрипта SpitPoisonProjectile");
+        PoisonBone.SetPlayer(_dad);
+        target.CharacterState.CmdAddState(States.PoisonBone, _lifeTimePoisonBoneStacks, 0);
 
         if (numbersForChanceOfBlindness <= chanceOfBlindness)
         {
-            //targetHealth.GetComponent<Character>().CharacterState.AddState(new BlindnessState(), 3.0f, 0, States.Blind);
+            //target.CharacterState.CmdAddState(States.Blind, 6f, 0);
         }
 
         Explode();

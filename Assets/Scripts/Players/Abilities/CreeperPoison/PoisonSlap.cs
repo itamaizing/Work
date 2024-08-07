@@ -61,7 +61,7 @@ public class PoisonSlap : TargetOrAreaAbility
 
         if (_poisonBall.CurrentCharges != 0)
         {
-            if ((_lightweightSlap.isActive && _creeperStrike.IsTwoHit) || (_lightweightSlap.isActive && _lightningStrikes.IsUsedLightningStrikes))
+            if ((_lightweightSlap.IsActive && _creeperStrike.IsTwoHit) || (_lightweightSlap.IsActive && _lightningStrikes.IsUsedLightningStrikes))
             {
                 Debug.Log("IsActive true and Two hit");
                 yield return null;

@@ -43,7 +43,7 @@ public class PoisonBallProjectile : NetworkBehaviour
 
         _footInstincts = _poisonBall.GetComponent<PoisonBall>().FootInstinctsTalent;
         Debug.Log("FootInstincts in PoisonBallProjectile == " + _footInstincts);
-        Debug.Log("FootInstincts.isActive in PoisonBallProjectile == " + _footInstincts.isActive);
+        Debug.Log("FootInstincts.isActive in PoisonBallProjectile == " + _footInstincts.IsActive);
 
         _countProjectiles = _poisonBall.GetComponent<PoisonBall>().CountProjectiles;
         _currentTarget = _poisonBall.GetComponent<PoisonBall>().CurrentTarget;
@@ -56,7 +56,7 @@ public class PoisonBallProjectile : NetworkBehaviour
             if (collision.TryGetComponent<HealthComponent>(out var targetHealth))
             {
                 DealDamage(targetHealth, _currentDamageForPoisonBall, DamageType.Magical, AttackRangeType.RangeAttack);
-                if (_footInstincts.isActive)
+                if (_footInstincts.IsActive)
                 {
                     _footInstincts.ReductionCooldownLightningMovement();
                 }
@@ -128,7 +128,7 @@ public class PoisonBallProjectile : NetworkBehaviour
             target.GetComponent<Transform>().transform.DOMove((Vector2)target.transform.position - directionPush * distancePush, durationPush).SetEase(Ease.Linear);
         }
 
-        target.GetComponent<Character>().CharacterState.AddState(new InAirState(), _durationStun, 0, States.InAir);
+        target.GetComponent<Character>().CharacterState.CmdAddState(States.InAir, _durationStun, 0);
     }
 
     #endregion

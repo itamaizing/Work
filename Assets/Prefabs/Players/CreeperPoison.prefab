@@ -262,7 +262,7 @@ GameObject:
   - component: {fileID: 7672760003326398008}
   - component: {fileID: 5460533147100191806}
   - component: {fileID: 6740800947030524566}
-  - component: {fileID: 3216856000846122427}
+  - component: {fileID: 2975631799492417301}
   - component: {fileID: 6227316397025926076}
   - component: {fileID: 2185409320862421989}
   - component: {fileID: 817346276867831510}
@@ -307,11 +307,10 @@ MonoBehaviour:
   - {fileID: 2133911755741689447}
   - {fileID: 5460533147100191806}
   - {fileID: 7672760003326398008}
-  - {fileID: 1536798141796345319}
+  - {fileID: 2975631799492417301}
   - {fileID: 6227316397025926076}
   - {fileID: 2185409320862421989}
   - {fileID: 817346276867831510}
-  - {fileID: 3216856000846122427}
   - {fileID: 6027837359207633613}
   visualRender: {fileID: 4071738984799970690}
   _characterData: {fileID: 11400000, guid: 47cac5ab51e8b334aafb537b893ada29, type: 2}
@@ -329,7 +328,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _circle: {fileID: 853659683752618383}
-  _iconPref: {fileID: 7803743787710783319, guid: 793e4727b7b14be43a8a702db9da8643, type: 3}
   _areaPref: {fileID: 1574982521674352815, guid: 790fb3857b30c2b4fad4375343a84fad, type: 3}
   _squareAreaPref: {fileID: 6069098087972325736, guid: 613fcf3671552f04eb117ca2af2820f6, type: 3}
 --- !u!114 &3923834704028430900
@@ -378,7 +376,9 @@ MonoBehaviour:
   _strokesOfAspiration: {fileID: 1020456628770039310}
   _lightweightSlap: {fileID: 969632895075172795}
   _ownElement: {fileID: 2590453872719564230}
+  _assasinPoison: {fileID: 5514712970816059840}
   _dad: {fileID: 8848169558533100257}
+  _creeperInvisible: {fileID: 2975631799492417301}
   Enabled: 0
 --- !u!114 &2133911755741689447
 MonoBehaviour:
@@ -491,7 +491,7 @@ MonoBehaviour:
   _castWidth: 1
   _manaCost: 0
   _castDelay: 0
-  _cooldown: 9
+  _cooldown: 1
   _abilitySchool: 0
   _abilityForm: 0
   _targetsLayers:
@@ -556,7 +556,7 @@ MonoBehaviour:
   _abilityRender: {fileID: 0}
   _rangeLeap: 0
   _durationLeap: 0
---- !u!114 &3216856000846122427
+--- !u!114 &2975631799492417301
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -565,7 +565,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 573140117665601435}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3dff67db1c96bbe47987abce49f71c94, type: 3}
+  m_Script: {fileID: 11500000, guid: 124851524d795e742a7bf7705cb85e28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncDirection: 0
@@ -593,18 +593,7 @@ MonoBehaviour:
   _streamingDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: 0
-  _playerLinks: {fileID: 8848169558533100257}
-  _playerData: {fileID: 11400000, guid: 47cac5ab51e8b334aafb537b893ada29, type: 2}
-  _enemyLayerMask:
-    serializedVersion: 2
-    m_Bits: 256
-  _reduceMoveSpeed: 0.3
-  _moveSpeedDecrease: 0
-  _originalMoveSpeed: 0
-  _enemyIsSees: 0
-  _isAttacked: 0
-  _isUsing: 0
-  Enabled: 0
+  _player: {fileID: 8848169558533100257}
 --- !u!114 &6227316397025926076
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -830,6 +819,7 @@ GameObject:
   - component: {fileID: 2590453872719564230}
   - component: {fileID: 4684996771512024355}
   - component: {fileID: 6592723509884285390}
+  - component: {fileID: 5514712970816059840}
   m_Layer: 0
   m_Name: Talents_Container
   m_TagString: Untagged
@@ -875,7 +865,7 @@ MonoBehaviour:
   - {fileID: 2590453872719564230}
   - {fileID: 4684996771512024355}
   - {fileID: 6592723509884285390}
-  - {fileID: 1020456628770039310}
+  - {fileID: 5514712970816059840}
   - {fileID: 2373151710181061745}
   - {fileID: 3625646612109896303}
   - {fileID: 969632895075172795}
@@ -895,7 +885,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  isActive: 0
   Name: Stroke Of Aspiration
   Description: 
   ico: {fileID: 21300000, guid: 5711d4c2b5c281147ab022c75cb66999, type: 3}
@@ -918,7 +907,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  isActive: 0
   Name: Lightweight Slap
   Description: 
   ico: {fileID: 21300000, guid: dfa6db335114f8e498d6358b3d8118ed, type: 3}
@@ -939,7 +927,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  isActive: 0
   Name: Capacious Poison Cloud
   Description: 
   ico: {fileID: 21300000, guid: 2792173d76a5f4d2ebe800b6b4b096cf, type: 3}
@@ -959,7 +946,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  isActive: 0
   Name: Healing Poison Cloud
   Description: 
   ico: {fileID: 21300000, guid: d83da3915c2142f4f8cd56b3844b91aa, type: 3}
@@ -979,7 +965,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  isActive: 0
   Name: Own Element
   Description: 
   ico: {fileID: 21300000, guid: ed1972ce01824b542b0ae1113bc01a7e, type: 3}
@@ -1005,7 +990,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  isActive: 0
   Name: Toxique Cloud
   Description: 
   ico: {fileID: 21300000, guid: d9b6be6cf3de5d742bd0a9085c71f42b, type: 3}
@@ -1026,12 +1010,31 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  isActive: 0
   Name: FootInstincts
   Description: 
   ico: {fileID: 21300000, guid: 1362422e60efaf2429effe82d6f18557, type: 3}
   character: {fileID: 8848169558533100257}
   _lightningMovement: {fileID: 6740800947030524566}
+--- !u!114 &5514712970816059840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 615051740401084893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50b1503a081fe6344b1052f91e77c8dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: AssasinPoison
+  Description: 
+  ico: {fileID: 21300000, guid: e1eafea04aee5fa44b72a54b898c488c, type: 3}
+  character: {fileID: 8848169558533100257}
+  _invisibleCreeper: {fileID: 2975631799492417301}
 --- !u!1 &740190560921219825
 GameObject:
   m_ObjectHideFlags: 0
@@ -1312,6 +1315,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bar: {fileID: 8568118064749123518}
+  _barMinus: {fileID: 0}
   _barText: {fileID: 2629987180383507587}
 --- !u!1 &1284908955648489760
 GameObject:
@@ -1752,6 +1756,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bar: {fileID: 7550655947956566949}
+  _barMinus: {fileID: 0}
   _barText: {fileID: 2105370328282220038}
 --- !u!1 &2415767525020367749
 GameObject:
@@ -2013,6 +2018,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bar: {fileID: 1039359840152212135}
+  _barMinus: {fileID: 0}
   _barText: {fileID: 0}
 --- !u!1 &3196226116550340777
 GameObject:
@@ -2478,8 +2484,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   healthBar: {fileID: 2342745902559160409}
-  shields_Physic: []
-  shields_Magic: []
+  shields: []
   sumDamageTaken: 0
 --- !u!114 &9125115414574900035
 MonoBehaviour:

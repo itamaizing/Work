@@ -50,10 +50,10 @@ public class Energy : StaminaComponent
 	{
 		if(EnergyValue > _value) 
 		{
-			Debug.Log("too much");
+			//Debug.Log("too much");
 			return false;
 		}
-		Debug.Log("energy used " + EnergyValue);
+		//Debug.Log("energy used " + EnergyValue);
 		_canRegen = false;
 		_timer = 0;
 		_firstRegenDelay = 3;

@@ -10,12 +10,12 @@ public class ToxiqueCloud : Talent
 
     public override void Enter()
     {
-        isActive = true;
+        SetActive(true);
     }
 
     public override void Exit()
     {
-        isActive = false;
+        SetActive(false);
     }
 
     public void ApplyBonePoison(HealthComponent targetHealth)

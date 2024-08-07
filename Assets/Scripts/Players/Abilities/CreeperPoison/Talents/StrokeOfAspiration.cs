@@ -14,7 +14,7 @@ public class StrokesOfAspiration : Talent
 
     public override void Enter()
     {
-        isActive = true;
+        SetActive(true);
         if (_creeperStrike.Buff.AttackSpeed.Multiplier > _timeBetweenAttack)
         {
             _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_timeBetweenAttack);
@@ -23,7 +23,7 @@ public class StrokesOfAspiration : Talent
 
     public override void Exit()
     {
-        isActive = false;
+        SetActive(false);
         if (_creeperStrike.Buff.AttackSpeed.Multiplier < 1.0f)
         {
             _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_timeBetweenAttack);

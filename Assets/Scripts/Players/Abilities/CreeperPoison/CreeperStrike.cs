@@ -10,28 +10,32 @@ public class CreeperStrike : AutoAttackAbility
     [SerializeField] private StrokesOfAspiration _strokesOfAspiration;
     [SerializeField] private LightweightSlap _lightweightSlap;
     [SerializeField] private OwnElement _ownElement;
+    [SerializeField] private AssasinPoison _assasinPoison;
 
     [Header("Ability properties")]
     [SerializeField] protected Character _dad;
+    [SerializeField] private CreeperInvisible _creeperInvisible;
 
-    private BonePoison _bonePoisonDebuff;
-
-    private GameObject _currentTarget;
-    private GameObject _lastTarget;
+    private Character _currentTarget;
+    private Character _lastTarget;
 
     private int _currentCountHit = 0;
+    private int _poisonBoneStacks = 0;
 
     private float _currentDamage;
     private float _multiplyCritDamage = 1.5f;
+    private float _lifeTimePoisonBoneStacks = 6.0f;
 
     private bool _isTwoHit = false;
 
     private Coroutine _useAbilityCoroutine;
 
-    public GameObject CurrentTarget => _currentTarget;
     public int CurrentCountHit { get => _currentCountHit; set => _currentCountHit = value; }
     public bool IsTwoHit { get => _isTwoHit; set => _isTwoHit = value; }
+
     public bool Enabled;
+    public Character CurrentTarget => _currentTarget;
+
     protected override void Start()
     {
         base.Start();
@@ -50,7 +54,7 @@ public class CreeperStrike : AutoAttackAbility
 
     private IEnumerator UseAbilityCoroutine()
     {
-        _currentTarget = Target.gameObject;
+        _currentTarget = Target;
         DealingDamageFromHits();
         yield return null;
     }
@@ -58,13 +62,22 @@ public class CreeperStrike : AutoAttackAbility
     public void DealingDamageFromHits()
     {
         _currentCountHit++;
-        Debug.Log("Current hit == " + _currentCountHit);
-        _currentDamage = Random.Range(7.0f, 11.0f); 
 
-        float chanceOfCriticalStrike = 0.5f;
+        _currentDamage = Random.Range(7, 11);
+
+        float chanceOfCriticalStrike = 0.05f;
         float numbersForChanceOfCriticalStrike = Random.Range(0.0f, 1.0f);
 
-        if (_strokesOfAspiration.isActive && _currentCountHit == 2)
+        if (_assasinPoison.IsActive)
+        {
+            if (_assasinPoison.CurrentChargePoison > 0)
+            {
+                Debug.Log("AssasinPoison CurrentCharge == " + _assasinPoison.CurrentChargePoison);
+                _assasinPoison.CmdSpendCharge(_currentTarget, _lifeTimePoisonBoneStacks);
+            }
+        }
+
+        if (_strokesOfAspiration.IsActive && _currentCountHit == 2)
         {
             if (_lastTarget == _currentTarget)
             {
@@ -91,7 +104,7 @@ public class CreeperStrike : AutoAttackAbility
         }
         else
         {
-            CmdApplyDamage(CurrentTarget, _currentDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
+            CmdApplyDamage(CurrentTarget.gameObject, _currentDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
         }
 
         Cancel();
@@ -102,21 +115,23 @@ public class CreeperStrike : AutoAttackAbility
         float criticalDamage = baseDamage;
         float multiplyDamage = _multiplyCritDamage;
 
-        if (_bonePoisonDebuff != null)
+        for (int i = 0; i < _poisonBoneStacks; i++)
         {
-            for (int i = 1; i < _bonePoisonDebuff.CurrentStacks; i++)
-            {
-                multiplyDamage += 0.5f;
-            }
+            multiplyDamage += 0.5f;
         }
+        
         return criticalDamage *= multiplyDamage;
     }
 
-    [Command]
-    private void CmdCriticalDamage(GameObject currentTarget, float criticalDamage)
+    public void PoisonBoneStacks(int poisonBoneStacks)
     {
-        _bonePoisonDebuff = currentTarget.GetComponentInChildren<BonePoison>();
-        if (_bonePoisonDebuff != null)
+        _poisonBoneStacks = poisonBoneStacks;
+    }
+
+    [Command]
+    private void CmdCriticalDamage(Character currentTarget, float criticalDamage)
+    {
+        if (currentTarget.CharacterState.CheckForState(States.PoisonBone))
         {
             criticalDamage = CalculateCriticalDamage(criticalDamage);
         }

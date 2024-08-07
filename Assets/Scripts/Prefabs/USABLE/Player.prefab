@@ -504,6 +504,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _agent: {fileID: 0}
   CanMove: 1
   IsMoving: 0
   IsSelect: 0
@@ -883,7 +884,7 @@ MonoBehaviour:
   _castLength: 0
   _castWidth: 0
   _manaCost: 0
-  _castDeley: 0
+  _castDelay: 0
   _cooldown: 0
   _abilitySchool: 0
   _abilityForm: 0
@@ -929,7 +930,7 @@ MonoBehaviour:
   _castLength: 5
   _castWidth: 1
   _manaCost: 0
-  _castDeley: 0
+  _castDelay: 0
   _cooldown: 0
   _abilitySchool: 0
   _abilityForm: 0
@@ -969,7 +970,7 @@ MonoBehaviour:
   _castLength: 0
   _castWidth: 0
   _manaCost: 0
-  _castDeley: 0
+  _castDelay: 0
   _cooldown: 0
   _abilitySchool: 0
   _abilityForm: 0
@@ -1009,7 +1010,7 @@ MonoBehaviour:
   _castLength: 0
   _castWidth: 0
   _manaCost: 0
-  _castDeley: 0
+  _castDelay: 0
   _cooldown: 0
   _abilitySchool: 0
   _abilityForm: 0
@@ -1052,7 +1053,7 @@ MonoBehaviour:
   _castLength: 4
   _castWidth: 1
   _manaCost: 0
-  _castDeley: 0
+  _castDelay: 0
   _cooldown: 0
   _abilitySchool: 0
   _abilityForm: 0
@@ -1096,7 +1097,7 @@ MonoBehaviour:
   _castLength: 0
   _castWidth: 0
   _manaCost: 10
-  _castDeley: 1.4
+  _castDelay: 0
   _cooldown: 0
   _abilitySchool: 0
   _abilityForm: 0
@@ -1140,7 +1141,7 @@ MonoBehaviour:
   _castLength: 0
   _castWidth: 0
   _manaCost: 0
-  _castDeley: 0
+  _castDelay: 0
   _cooldown: 0
   _abilitySchool: 0
   _abilityForm: 0
@@ -1181,7 +1182,7 @@ MonoBehaviour:
   _castLength: 0
   _castWidth: 0
   _manaCost: 0
-  _castDeley: 0
+  _castDelay: 0
   _cooldown: 0
   _abilitySchool: 0
   _abilityForm: 0
@@ -1219,7 +1220,7 @@ MonoBehaviour:
   _castLength: 0
   _castWidth: 0
   _manaCost: 0
-  _castDeley: 0
+  _castDelay: 0
   _cooldown: 0
   _abilitySchool: 0
   _abilityForm: 0
@@ -1259,7 +1260,7 @@ MonoBehaviour:
   _castLength: 0
   _castWidth: 0
   _manaCost: 0
-  _castDeley: 0
+  _castDelay: 0
   _cooldown: 0
   _abilitySchool: 0
   _abilityForm: 0
@@ -1300,7 +1301,7 @@ MonoBehaviour:
   _castLength: 0
   _castWidth: 0
   _manaCost: 0
-  _castDeley: 0
+  _castDelay: 0
   _cooldown: 0
   _abilitySchool: 0
   _abilityForm: 0
@@ -1340,7 +1341,7 @@ MonoBehaviour:
   _castLength: 0
   _castWidth: 0
   _manaCost: 0
-  _castDeley: 0
+  _castDelay: 0
   _cooldown: 0
   _abilitySchool: 0
   _abilityForm: 0
@@ -1384,7 +1385,7 @@ MonoBehaviour:
   _castLength: 0
   _castWidth: 0
   _manaCost: 0
-  _castDeley: 0
+  _castDelay: 0
   _cooldown: 0
   _abilitySchool: 0
   _abilityForm: 0
@@ -1430,7 +1431,7 @@ MonoBehaviour:
   _castLength: 0
   _castWidth: 0
   _manaCost: 0
-  _castDeley: 2
+  _castDelay: 0
   _cooldown: 6
   _abilitySchool: 0
   _abilityForm: 0

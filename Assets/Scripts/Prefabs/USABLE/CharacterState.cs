@@ -1,5 +1,6 @@
 using Mirror;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 
@@ -681,6 +682,637 @@ public class Cooling : AbstractCharacterState
 
 }
 
+public class CreeperInvisibleState : AbstractCharacterState
+{
+    private PlayerAbilities _abilities;
+	private Character _player;
+
+    private float _distanceWithoutEnemies = 6f;
+
+	private float _timeWithoutDamage;
+	private float _startTimeWithoutDamage = 6f;
+	private float _playerMaxHealth;
+	private float _playerCurrentHealth;
+
+	private float _reductionMoveSpeed = 0.3f;
+	private float _originalMoveSpeed;
+	private float _increaseStaminaRegen = 0.3f;
+
+	private bool _isEnemy;
+	private bool _isDamagedPlayer = false;
+	private bool _isPlayerSeen = true;
+	private bool _isPlayerInvisability = false;
+
+    public bool turnOff = false;
+
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+    {
+		state = States.CreeperInvisible;
+
+        _characterState = character;
+		_playerMaxHealth = _characterState.Health.CurrentHealth;
+
+		_timeWithoutDamage = _startTimeWithoutDamage;
+		_player = _characterState.Character;
+
+		_originalMoveSpeed = _player.Move._agent.maxSpeed;
+
+        type = StateType.Physical;
+
+        effects.Add(StatusEffect.Move);
+        effects.Add(StatusEffect.Ability);
+    }
+
+    public override void UpdateState()
+    {
+		if (_isPlayerSeen)
+		{
+			CheckEnemies();
+		}
+
+		_timeWithoutDamage -= Time.deltaTime;
+
+		if (!_isDamagedPlayer)
+		{
+			PlayerTookDamage();
+		}
+
+		if (_timeWithoutDamage <= 0 && !_isPlayerSeen && !_isPlayerInvisability)
+		{
+			ApplyInvisible();
+            _timeWithoutDamage = _startTimeWithoutDamage;
+        }
+    }
+
+    public override void ExitState()
+    {
+		if (_isPlayerInvisability)
+		{
+			_isPlayerInvisability = false;
+			ResetValues();
+			_characterState.RemoveState(this);
+		}
+    }
+
+    public override bool Stack(float time)
+    {
+        return false;
+    }
+
+	private void PlayerTookDamage()
+    {
+        _playerCurrentHealth = _characterState.Health.CurrentHealth;
+
+        if (_playerCurrentHealth < _playerMaxHealth)
+        {
+			_isDamagedPlayer = true;
+			ExitState();
+        }
+    }
+
+	private void ApplyInvisible()
+	{
+		_isPlayerInvisability = true;
+
+		float reductionMoveSpeed = _originalMoveSpeed * _reductionMoveSpeed;
+		float endReductionMoveSpeed = _originalMoveSpeed - reductionMoveSpeed;
+		_player.Move.SetMoveSpeed(endReductionMoveSpeed);
+
+        _player.Stamina.RegenerationValue *= (1 + _increaseStaminaRegen);
+        _timeWithoutDamage = _startTimeWithoutDamage;
+    }
+
+	private bool CheckEnemies()
+	{
+        _isEnemy = false;
+
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(_characterState.transform.position, _distanceWithoutEnemies);
+		foreach (Collider2D enemy in hitEnemies)
+		{
+			if (enemy != null && enemy.CompareTag("Enemies"))
+			{
+				_isEnemy = true;
+				break;
+			}
+		}
+
+		if (!_isEnemy)
+		{
+			_isPlayerSeen = false;
+		}
+		else
+		{
+			_isPlayerSeen = true;
+		}
+
+		hitEnemies = null;
+		return _isEnemy;
+	}
+
+	private void ResetValues()
+	{
+		_player.Move.SetDefaultSpeed();
+        _player.Stamina.RegenerationValue /= (1 + _increaseStaminaRegen);
+
+        _timeWithoutDamage = 0;
+
+		_isPlayerSeen = true;
+		_isEnemy = false;
+		_isDamagedPlayer = false;
+		_isPlayerInvisability =	false;
+	}
+}
+
+public class InAirState : AbstractCharacterState
+{
+    private PlayerAbilities _abilities;
+
+    private float _duration;
+    private float _baseDuration;
+    private float _damageToExit;
+
+    public bool turnOff = false;
+
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+    {
+		state = States.InAir;
+
+        Debug.Log("Entering InAir State");
+        type = StateType.Physical;
+        effects.Add(StatusEffect.Move);
+        effects.Add(StatusEffect.Ability);
+        _characterState = character;
+
+        if (character.TryGetComponent<Character>(out var ability))
+        {
+            _abilities = ability.Abilities;
+            _abilities.SetAbilitiesDisabled();
+        }
+        else
+        {
+            Debug.Log("no ability at " + character.gameObject.name);
+        }
+
+        _characterState.Move.CanMove = false;
+        _duration = durationToExit;
+        _baseDuration = _duration;
+        _baseDuration = durationToExit;
+    }
+
+    public override void UpdateState()
+    {
+        Debug.Log("Updating InAir State");
+        _duration -= Time.deltaTime;
+        Debug.Log("_duration == " + _duration);
+        if (_duration < 0 || turnOff)
+        {
+            ExitState();
+        }
+    }
+
+
+    public override void ExitState()
+    {
+        Debug.Log("Exiting InAir State");
+        if (_characterState.Check(StatusEffect.Move))
+        {
+            _characterState.Move.CanMove = true;
+        }
+        if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
+        {
+            _abilities.SetAbilitiesEnabled();
+        }
+        _characterState.RemoveState(this);
+    }
+
+    public override bool Stack(float time)
+    {
+        return false;
+    }
+}
+
+public class PoisonBone : AbstractCharacterState
+{
+    //private PlayerAbilities _abilities;
+
+	private List<Ability> _abilities = new();
+	private CreeperStrike _creeperStrike;
+
+    private int _currentStacks = 0;
+    private int _maxStacks = 4;
+
+    private float _timeBetweenAttack;
+    private float _startTimeBetweenAttack = 1f;
+
+    private float _duration;
+    private float _baseDuration;
+
+    private float _baseDamage = 1f;
+    private float _endDamage;
+
+	private static Character _player;
+
+    public bool turnOff = false;
+
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+    {
+		state = States.PoisonBone;
+		//Debug.Log("Entering PoisonBone State");
+        _timeBetweenAttack = _startTimeBetweenAttack;
+
+        type = StateType.Physical;
+        effects.Add(StatusEffect.Ability);
+
+        _characterState = character;
+
+        _duration = durationToExit;
+        _baseDuration = durationToExit;
+
+
+        if (_currentStacks < _maxStacks)
+        {
+            AddStacks();
+        }
+
+		if (_player != null)
+		{
+			_abilities = _player.GetComponent<CharacterState>().Character.Abilities.Abilities;
+			//Debug.Log("PoisonBone player == " + _player);
+
+			foreach (Ability ability in _abilities)
+			{
+				//Debug.Log("Checking ability: " + ability.name + ", Type: " + ability.GetType());
+				if (ability is CreeperStrike creeperStrike)
+				{
+					//Debug.Log("if / ability");
+					if (_creeperStrike == null)
+					{
+						_creeperStrike = creeperStrike;
+					//Debug.Log("CreeperStrike == " + _creeperStrike);
+						_creeperStrike.PoisonBoneStacks(_currentStacks);
+					}
+				}
+			}
+		}
+    }
+
+    public override void UpdateState()
+    {
+        _timeBetweenAttack -= Time.deltaTime;
+        if (_timeBetweenAttack <= 0)
+        {
+            DamageDeal();
+            _timeBetweenAttack = _startTimeBetweenAttack;
+        }
+
+        _duration -= Time.deltaTime;
+        if (_duration < 0 || turnOff)
+        {
+            ExitState();
+        }
+
+    }
+
+    public override void ExitState()
+    {
+        ResetValues();
+
+        _characterState.RemoveState(this);
+    }
+
+    public override bool Stack(float time)
+    {
+        if (_currentStacks < _maxStacks)
+        {
+            AddStacks();
+            return true;
+        }
+        else
+        {
+            _duration = _baseDuration;
+            return false;
+        }
+    }
+
+    public void AddStacks()
+    {
+		if (_currentStacks < _maxStacks)
+		{
+			_currentStacks++;
+			//Debug.Log("if / CurrentStackPoisonBone in AddStacks == " + _currentStacks);
+			_duration = _baseDuration;
+		}
+		else
+		{
+            //Debug.Log("else / CurrentStackPoisonBone in AddStacks == " + _currentStacks);
+            _duration = _baseDuration;
+        }
+    }
+
+    private void DamageDeal()
+    {
+        _endDamage = _currentStacks * _baseDamage;
+
+        _characterState.Health.TryTakeDamage(_endDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
+    }
+
+    private void ResetValues()
+    {
+        _currentStacks = 0;
+        _baseDuration = 0;
+        _duration = 0;
+        _endDamage = 0;
+        _baseDamage = 1f;
+		_timeBetweenAttack = _startTimeBetweenAttack;
+    }
+
+	public static void SetPlayer(Character player)
+	{
+		_player = player;
+	}
+}
+
+public class PoisonCloud : AbstractCharacterState
+{
+    private PlayerAbilities _abilities;
+    private ToxiqueCloud _toxiqueCloud;
+
+    private static float _currentStacks = 0;
+    private static float _maxStacks = 5;
+    private float _radiusCloud = 3.5f;
+
+    private float _baseDamage = 0.005f;
+    private float _increasedDamage;
+    private float _endDamage;
+
+    private float _timeBetweenAttack;
+    private float _startTimeBetweenAttack = 1f;
+
+    private static float _duration;
+    private static float _baseDuration;
+    private float _durationEmpathicPoisons = 3f;
+
+    public bool turnOff = false;
+    public Character Player;
+
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+    {
+		state = States.PoisonCloud;
+        _timeBetweenAttack = _startTimeBetweenAttack;
+
+        type = StateType.Physical;
+        effects.Add(StatusEffect.Ability);
+
+        _characterState = character;
+        _toxiqueCloud = _characterState.GetComponentInChildren<ToxiqueCloud>();
+        Player = _characterState.GetComponent<Character>();
+
+        _duration = durationToExit;
+        _baseDuration = durationToExit;
+
+        if (_currentStacks < _maxStacks)
+        {
+            AddStacks();
+        }
+    }
+
+    public override void UpdateState()
+    {
+        _timeBetweenAttack -= Time.deltaTime;
+        if (_timeBetweenAttack <= 0)
+        {
+            SearchingEnemies();
+            _timeBetweenAttack = _startTimeBetweenAttack;
+        }
+
+        _duration -= Time.deltaTime;
+        if (_duration < 0 || turnOff)
+        {
+            ExitState();
+        }
+
+    }
+
+    public override void ExitState()
+    {
+        if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
+        {
+            _abilities.SetAbilitiesEnabled();
+        }
+
+        ResetValues();
+
+        _characterState.RemoveState(this);
+    }
+
+    public override bool Stack(float time)
+    {
+        if (_currentStacks < _maxStacks)
+        {
+            AddStacks();
+            return true;
+        }
+        else
+        {
+            _duration = _baseDuration;
+            return false;
+        }
+    }
+
+    public static void AddStacks()
+    {
+		if (_currentStacks < _maxStacks)
+		{
+            _currentStacks++;
+			_duration = _baseDuration;
+            Debug.Log("if / CurrentStackPoisonCloud in AddStacks == " + _currentStacks); 
+		}
+		else
+		{
+            Debug.Log("else / CurrentStackPoisonCloud in AddStacks == " + _currentStacks);
+            _duration = _baseDuration;
+		}
+    }
+
+    private void SearchingEnemies()
+    {
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(_characterState.transform.position, _radiusCloud);
+        foreach (Collider2D enemy in hitEnemies)
+        {
+            if (enemy.CompareTag("Enemies"))
+            {
+                if (enemy.TryGetComponent<HealthComponent>(out var target) && enemy.transform != _characterState.transform)
+                {
+                    DamageDeal(target);
+                    _timeBetweenAttack = _startTimeBetweenAttack;
+
+                }
+            }
+        }
+    }
+
+    private void DamageDeal(HealthComponent targetHealth)
+    {
+        _increasedDamage = _baseDamage * _currentStacks;
+        _endDamage = targetHealth.MaxHealth * _increasedDamage;
+        targetHealth.TryTakeDamage(_endDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
+        if (_toxiqueCloud.IsActive)
+        {
+			targetHealth.GetComponent<CharacterState>().CmdAddState(States.EmpathicPoisons, _durationEmpathicPoisons, 0);
+            EmpathicPoisons.Player = Player.gameObject;
+            EmpathicPoisons.RadiusCloud = _radiusCloud;
+        }
+    }
+
+    private void ResetValues()
+    {
+        _currentStacks = 0;
+        _baseDuration = 0;
+        _duration = 0;
+        _endDamage = 0;
+        _increasedDamage = 0;
+        _baseDamage = 0.005f;
+    }
+}
+
+public class EmpathicPoisons : AbstractCharacterState
+{
+    private float _baseEvasionValue = 0.1f;
+    private float _increasedEvasionValue;
+    private float _endEvasionValue;
+    private float _originalEvasionValue;
+
+    private float _currentStacks = 0;
+    private float _maxStacks = 3;
+
+    private float _timeBetweenToApplyStacks;
+    private float _startTimeBetweentoApplyStacks = 1.0f;
+    private float _duration;
+    private float _baseDuration;
+    private float _damageToExit;
+
+    private HealthComponent _characterHealth;
+    private Vector3 _playerPosition;
+    private Vector3 _characterPosition;
+
+    private bool _isInPoisonCloud;
+    public bool turnOff = false;
+
+    public static float RadiusCloud;
+
+    public static GameObject Player;
+
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+    {
+		state = States.EmpathicPoisons;
+
+        _timeBetweenToApplyStacks = _startTimeBetweentoApplyStacks;
+
+        type = StateType.Physical;
+        effects.Add(StatusEffect.Ability);
+
+        _characterState = character;
+        _characterHealth = _characterState.GetComponent<HealthComponent>();
+        _originalEvasionValue = _characterHealth.EvadeMeleeDamage;
+
+        _duration = durationToExit;
+        _baseDuration = durationToExit;
+
+        if (_currentStacks < _maxStacks)
+        {
+            AddStacks();
+        }
+    }
+
+    public override void UpdateState()
+    {
+        _playerPosition = Player.transform.position;
+        _characterPosition = _characterState.transform.position;
+
+        _duration -= Time.deltaTime;
+        if (_duration < 0 || turnOff)
+        {
+            ExitState();
+        }
+
+        _timeBetweenToApplyStacks -= Time.deltaTime;
+        if (_timeBetweenToApplyStacks <= 0)
+        {
+            if (_isInPoisonCloud)
+            {
+                ReducingChanceOfHittingAtEnemy();
+            }
+            else
+            {
+                DecreaseEvasionForCurrentTarget();
+            }
+            _timeBetweenToApplyStacks = _startTimeBetweentoApplyStacks;
+        }
+        CheckIfInPoisonCloud(_playerPosition, _characterPosition);
+    }
+
+    public override void ExitState()
+    {
+        ResetValues();
+        _characterState.RemoveState(this);
+    }
+
+    public override bool Stack(float time)
+    {
+        if (_currentStacks < _maxStacks)
+        {
+            AddStacks();
+            return true;
+        }
+        else
+        {
+            _duration = _baseDuration;
+            return false;
+        }
+    }
+
+    private void AddStacks()
+    {
+        _currentStacks++;
+        _duration = _baseDuration;
+    }
+
+    private void ReducingChanceOfHittingAtEnemy()
+    {
+        // Позже будет реализована другая логика.
+        _increasedEvasionValue = _baseEvasionValue * _currentStacks;
+
+        _endEvasionValue = _originalEvasionValue * _increasedEvasionValue;
+
+        _characterHealth.EvadeMeleeDamage = _originalEvasionValue - _endEvasionValue;
+    }
+
+    private void DecreaseEvasionForCurrentTarget()
+    {
+        float reductionPerSecond = _baseEvasionValue * 0.33f;
+        _endEvasionValue = Mathf.Max(_originalEvasionValue, _characterHealth.EvadeMeleeDamage + reductionPerSecond);
+        _characterHealth.EvadeMeleeDamage = _endEvasionValue;
+    }
+
+    private void CheckIfInPoisonCloud(Vector3 playerPos, Vector3 characterPos)
+    {
+        float distance = Vector3.Distance(playerPos, characterPos);
+        _isInPoisonCloud = distance <= RadiusCloud;
+    }
+
+    private void ResetValues()
+    {
+        _currentStacks = 0;
+        _baseDuration = 0;
+        _duration = 0;
+
+        _baseEvasionValue = 0.1f;
+        _increasedEvasionValue = 0;
+        _endEvasionValue = 0;
+        _characterHealth.EvadeMeleeDamage = _originalEvasionValue;
+    }
+}
+
 public class AbilitySchoolDebuff : AbstractCharacterState
 {
 	public new States state = States.SchoolDebuff;
@@ -835,6 +1467,10 @@ public class CharacterState : NetworkBehaviour
 		[States.Frozen] = new FrozenState(),
 		[States.Frosting] = new FrostingState(),
 		[States.Cooling] = new Cooling(),
+		[States.CreeperInvisible] = new CreeperInvisibleState(),
+		[States.PoisonBone] = new PoisonBone(),
+		[States.PoisonCloud] = new PoisonCloud(),
+		[States.EmpathicPoisons] = new EmpathicPoisons(),
 		[States.Blind] = new BlindnessState(),
 		[States.Invisible] = new InvisibleState(),
 		[States.SchoolDebuff] = new AbilitySchoolDebuff(),
@@ -847,7 +1483,7 @@ public class CharacterState : NetworkBehaviour
 		_health = health;
 		_move = move;
 		_stamina = stamina;
-		if (_move == null || _health == null || _stamina == null)
+		if (_move == null || _health == null || _stamina == null || _hero == null)
 		{
 			Debug.LogError("No required component in " + gameObject.name);
 		}
@@ -874,7 +1510,7 @@ public class CharacterState : NetworkBehaviour
 	//[Command]
 	public void CmdAddState(States state, float duration, float damageToExit)
 	{
-		Debug.Log("Add state cmd");
+		//Debug.Log("Add state cmd");
 		AddStateLogic(state, duration, damageToExit, Schools.None);
 		ClientAddState(state, duration, damageToExit, Schools.None);
 	}
@@ -910,10 +1546,16 @@ public class CharacterState : NetworkBehaviour
 		}
 	}
 
+	public void AddState(States state, float duration, float damageToExit)
+	{
+       // Debug.Log("Add state rpc");
+        AddStateLogic(state, duration, damageToExit, Schools.None);
+    }
+
 	[ClientRpc]
 	private void ClientAddState(States state, float duration, float damageToExit, Schools schools)
 	{
-		Debug.Log("Add state rpc");
+		//Debug.Log("Add state rpc");
 		AddStateLogic(state, duration, damageToExit, schools);
 	}
 
@@ -960,7 +1602,7 @@ public class CharacterState : NetworkBehaviour
 
 	private void AddStateLogic(States state, float duration, float damageToExit, Schools school)
 	{
-		Debug.Log("Add state logic");
+		//Debug.Log("Add state logic");
 		if (invinsible)
 			return;
 		if (CheckForState(state))
@@ -1144,6 +1786,11 @@ public enum States
 	Frozen,
 	Frosting,
 	Cooling,
+	InAir,
+	CreeperInvisible,
+	PoisonBone,
+	PoisonCloud,
+	EmpathicPoisons,
 	Blind,
 	Invisible,
 	SchoolDebuff,

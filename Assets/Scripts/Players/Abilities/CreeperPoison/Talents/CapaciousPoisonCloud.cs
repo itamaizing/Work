@@ -6,11 +6,11 @@ public class CapaciousPoisonCloud : Talent
 {
     public override void Enter()
     {
-        isActive = true;
+        SetActive(true);
     }
 
     public override void Exit()
     {
-        isActive = false;
+        SetActive(false);
     }
 }

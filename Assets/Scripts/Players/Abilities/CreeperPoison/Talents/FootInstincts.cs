@@ -9,12 +9,12 @@ public class FootInstincts : Talent
 
     public override void Enter()
     {
-        isActive = true;
+        SetActive(true);
     }
 
     public override void Exit()
     {
-        isActive = false;
+        SetActive(false);
     }
 
     public void ReductionCooldownLightningMovement()
