@@ -11,6 +11,7 @@ public abstract class Skill : MonoBehaviour
     [SerializeField] protected bool _isAutoAttack;
     [SerializeField] protected float _manaCost = 0f;
     [SerializeField] protected float _cooldownTime = 0f;
+    [SerializeField] protected float _castDeley = 0f;
     [Header("Charge settings")]
     [SerializeField] protected bool _isUseCharges;
     [SerializeField] protected bool _chargesHaveSeparateCooldown;
@@ -24,6 +25,7 @@ public abstract class Skill : MonoBehaviour
     protected Coroutine _castingCoroutine;
     protected Coroutine _cooldownJob;
     protected Coroutine _rechargeJob;
+    protected Coroutine _castDeleyJob;
 
     private float _remainingÑooldownTime;
     private StatsBuff _statsBuff = new StatsBuff();
@@ -45,6 +47,7 @@ public abstract class Skill : MonoBehaviour
     public bool IsHaveResurces { get => IsHaveManaOnSkill && IsCooldowned && IsHaveCharge; }
     public float ManaCost { get => Buff.ManaCost.GetBuffedValue(_manaCost); }
     public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); }
+    public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); }
     public bool IsCasting { get => _isCasting; set => _isCasting = value; }
 
     public event Action<int> CurrentChargeChange;
@@ -52,6 +55,8 @@ public abstract class Skill : MonoBehaviour
     public event Action CooldownEnded;
     public event Action PreparingStarted;
     public event Action PreparingEnded;
+    public event Action<float> CastDeleyStarted;
+    public event Action CastDeleyEnded;
     public event Action CastingStarted;
     public event Action CastingEnded;
     public event Action Canceled;
@@ -137,6 +142,12 @@ public abstract class Skill : MonoBehaviour
             TryUseCharge();
     }
 
+    protected Coroutine TryStartAndGetCastDeleyCoroutine()
+    {
+        _castDeleyJob = StartCoroutine(CastDeleyCoroutine());
+        return _castDeleyJob;
+    }
+
     private bool TryUseCharge()
     {
         if (_isUseCharges == false)
@@ -199,6 +210,20 @@ public abstract class Skill : MonoBehaviour
         _cooldownJob = null;
     }
 
+    private IEnumerator CastDeleyCoroutine()
+    {
+        CastDeleyStarted?.Invoke(CastDeley);
+        float time = 0;
+
+        while (time < CastDeley)
+        {
+            time += Time.deltaTime;
+            yield return null;
+        }
+        _castDeleyJob = null;
+        CastDeleyEnded?.Invoke();
+    }
+
     private IEnumerator ActionWrapperForPreparingJob()
     {
         PreparingStarted?.Invoke();
@@ -214,6 +239,10 @@ public abstract class Skill : MonoBehaviour
     {
         CastingStarted?.Invoke();
         _isCasting = true;
+
+        if (CastDeley > 0)
+            yield return TryStartAndGetCastDeleyCoroutine();
+
         yield return _castingCoroutine = StartCoroutine(CastJob());
         CastingEnded?.Invoke();
         _isCasting = false;
