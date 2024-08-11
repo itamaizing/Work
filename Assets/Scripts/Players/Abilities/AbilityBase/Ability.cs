@@ -50,7 +50,7 @@ public abstract class Ability : NetworkBehaviour
     private float _remainingСooldownTime;
 	private bool _avaliable = true;
 	private float _timerForDebuf;
-    private StatsBuff _statsBuff = new StatsBuff(1, 0);
+    private StatsBuff _statsBuff = new StatsBuff();
 
     public MoveComponent PlayerMove => _playerMove;
     public StaminaComponent Mana =>_mana;
@@ -353,7 +353,8 @@ public abstract class Ability : NetworkBehaviour
 
 	public void KnockDownTimerStart(float time)
 	{
-		_timerForDebuf = time;
+        _avaliable = false;
+        _timerForDebuf = time;
 		StartCoroutine(KnockDownTimer());
 	}
 
@@ -383,46 +384,32 @@ public enum AbilityForm
 	Physical
 }
 
-public struct StatsBuff
+public class StatsBuff
 {
-    private StatBuff _damage;
-    private StatBuff _radius;
-    private StatBuff _area;
-    private StatBuff _attackSpeed;
-    private StatBuff _castSpeed;
-    private StatBuff _chargeCooldown;
+    private StatBuff _damage = new StatBuff();
+    private StatBuff _radius = new StatBuff();
+    private StatBuff _area = new StatBuff();
+    private StatBuff _attackSpeed = new StatBuff();
+    private StatBuff _castSpeed = new StatBuff();
+    private StatBuff _cooldown = new StatBuff();
+    private StatBuff _manaCost = new StatBuff();
 
     public StatBuff Damage => _damage;
     public StatBuff Radius => _radius;
     public StatBuff Area => _area;
     public StatBuff AttackSpeed => _attackSpeed;
     public StatBuff CastSpeed => _castSpeed;
-    public StatBuff ChargeCooldown => _chargeCooldown;
-
-    public StatsBuff(float multiplier, float additional)
-    {
-        _damage = new StatBuff(multiplier, additional);
-        _radius = new StatBuff(multiplier, additional);
-        _area = new StatBuff(multiplier, additional);
-        _attackSpeed = new StatBuff(multiplier, additional);
-        _castSpeed = new StatBuff(multiplier, additional);
-        _chargeCooldown = new StatBuff(multiplier, additional);
-    }
+    public StatBuff Cooldown => _cooldown;
+    public StatBuff ManaCost => _manaCost;
 }
 
-public struct StatBuff
+public class StatBuff
 {
-    private float _multiplier;
-    private float _additional;
+    private float _multiplier = 1;
+    private float _additional = 0;
 
     public float Multiplier => _multiplier;
     public float Additional => _additional;
-
-    public StatBuff(float multiplier, float additional)
-    {
-        _multiplier = multiplier;
-        _additional = additional;
-    }
 
     public float GetBuffedValue(float value)
     {

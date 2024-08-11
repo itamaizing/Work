@@ -1301,6 +1301,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _talentPanel: {fileID: 838696090}
   _abilityMenuPanel: {fileID: 1772544725}
+  _attributePanel: {fileID: 0}
 --- !u!114 &598375253
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3640,6 +3641,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2615292199501890077, guid: 39e4462838f6b8149a334cab529cfac1, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2615292199501890077, guid: 39e4462838f6b8149a334cab529cfac1, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -3649,6 +3654,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2980101181405108601, guid: 39e4462838f6b8149a334cab529cfac1, type: 3}
       propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2980101181405108601, guid: 39e4462838f6b8149a334cab529cfac1, type: 3}
+      propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3150623121678355983, guid: 39e4462838f6b8149a334cab529cfac1, type: 3}
