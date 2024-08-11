@@ -9,12 +9,16 @@ public abstract class Skill : MonoBehaviour
     [SerializeField] private AbilityInfo _abilityInfo;
     [Header("Settings")]
     [SerializeField] protected bool _isAutoAttack;
-    [SerializeField] protected float _manaCost = 0f;
-    [SerializeField] protected float _cooldownTime = 0f;
-    [SerializeField] protected float _castDeley = 0f;
+    [SerializeField] protected float _manaCost;
+    [SerializeField] protected float _cooldownTime;
+    [SerializeField] protected float _castDeley;
     [SerializeField] protected Schools _abilitySchool;
     [SerializeField] protected AbilityForm _abilityForm;
     [SerializeField] protected LayerMask _targetsLayers;
+    [Header("Streaming settings")]
+    [SerializeField] protected float _castDuration;
+    [SerializeField] protected float _manaCostRate;
+    [SerializeField] protected float _manaCostPerTick;
     [Header("Charge settings")]
     [SerializeField] protected bool _isUseCharges;
     [SerializeField] protected bool _chargesHaveSeparateCooldown;
@@ -24,11 +28,12 @@ public abstract class Skill : MonoBehaviour
     protected HeroComponent _hero;
     protected bool _isCanCancle = true;
     protected int _currentChargers;
-    protected Coroutine _preparingCoroutine;
-    protected Coroutine _castingCoroutine;
+    protected Coroutine _prepareCoroutine;
+    protected Coroutine _castCoroutine;
     protected Coroutine _cooldownJob;
     protected Coroutine _rechargeJob;
-    protected Coroutine _castDeleyJob;
+    protected Coroutine _castDeleyCoroutine;
+    protected Coroutine _castStreamCoroutine;
 
     private float _remainingÑooldownTime;
     private StatsBuff _statsBuff = new StatsBuff();
@@ -52,6 +57,7 @@ public abstract class Skill : MonoBehaviour
     public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); }
     public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); }
     public bool IsCasting { get => _isCasting; set => _isCasting = value; }
+    public float CastStreamDuration { get => _castDuration; }
     public LayerMask TargetsLayers => _targetsLayers; 
 
     public event Action<int> CurrentChargeChange;
@@ -61,8 +67,10 @@ public abstract class Skill : MonoBehaviour
     public event Action PreparingEnded;
     public event Action<float> CastDeleyStarted;
     public event Action CastDeleyEnded;
-    public event Action CastingStarted;
-    public event Action CastingEnded;
+    public event Action<float> CastStreamStarted;
+    public event Action CastStreamEnded;
+    public event Action CastStarted;
+    public event Action CastEnded;
     public event Action Canceled;
     public event Action<float> MassageHaventMana;
     public event Action MassageHaventCharge;
@@ -70,7 +78,7 @@ public abstract class Skill : MonoBehaviour
 
     protected abstract bool IsCanCast { get; }
 
-    protected abstract IEnumerator PreparingJob();
+    protected abstract IEnumerator PrepareJob();
     protected abstract IEnumerator CastJob();
     protected abstract void ClearData();
 
@@ -114,15 +122,11 @@ public abstract class Skill : MonoBehaviour
     {
         if (foceCancel || _isCanCancle)
         {
-            ClearData();
-
-            if (_castingCoroutine != null)
-                StopCoroutine(_castingCoroutine);
-
-            if(_preparingCoroutine != null)
-                StopCoroutine(_preparingCoroutine);
-
             Canceled?.Invoke();
+            ClearData();
+            CancelCoroutine(_castCoroutine);
+            CancelCoroutine(_prepareCoroutine);
+            CancelCoroutine(_castDeleyCoroutine);
         }
     }
 
@@ -146,10 +150,16 @@ public abstract class Skill : MonoBehaviour
             TryUseCharge();
     }
 
-    protected Coroutine TryStartAndGetCastDeleyCoroutine()
+    protected Coroutine StartCastDeleyCoroutine()
     {
-        _castDeleyJob = StartCoroutine(CastDeleyCoroutine());
-        return _castDeleyJob;
+        _castDeleyCoroutine = StartCoroutine(CastDeleyJob());
+        return _castDeleyCoroutine;
+    }
+
+    protected void CancelCoroutine(Coroutine coroutine)
+    {
+        if (coroutine != null)
+            StopCoroutine(coroutine);
     }
 
     private bool TryUseCharge()
@@ -214,7 +224,7 @@ public abstract class Skill : MonoBehaviour
         _cooldownJob = null;
     }
 
-    private IEnumerator CastDeleyCoroutine()
+    private IEnumerator CastDeleyJob()
     {
         CastDeleyStarted?.Invoke(CastDeley);
         float time = 0;
@@ -224,33 +234,53 @@ public abstract class Skill : MonoBehaviour
             time += Time.deltaTime;
             yield return null;
         }
-        _castDeleyJob = null;
+        _castDeleyCoroutine = null;
         CastDeleyEnded?.Invoke();
+    }
+
+    private IEnumerator CastStreamJob()
+    {
+        CastStreamStarted?.Invoke(CastStreamDuration);
+        float time = 0;
+
+        while (time < CastStreamDuration)
+        {
+            time += _manaCostRate;
+            _hero.Stamina.Use(_manaCostPerTick);
+
+            yield return new WaitForSeconds(_manaCostRate);
+        }
+        _castStreamCoroutine = null;
+        CastStreamEnded?.Invoke();
     }
 
     private IEnumerator ActionWrapperForPreparingJob()
     {
         PreparingStarted?.Invoke();
         _isPreparing = true;
-        yield return _preparingCoroutine = StartCoroutine(PreparingJob());
+        yield return _prepareCoroutine = StartCoroutine(PrepareJob());
         PreparingEnded?.Invoke();
         _isPreparing = false;
 
-        _preparingCoroutine = null;
+        _prepareCoroutine = null;
     }
 
     private IEnumerator ActionWrapperForCastingJob()
     {
-        CastingStarted?.Invoke();
+        CastStarted?.Invoke();
         _isCasting = true;
 
         if (CastDeley > 0)
-            yield return TryStartAndGetCastDeleyCoroutine();
+            yield return StartCastDeleyCoroutine();
 
-        yield return _castingCoroutine = StartCoroutine(CastJob());
-        CastingEnded?.Invoke();
+        if (_castDuration > 0)
+            StartCoroutine(CastStreamJob());
+
+        yield return _castCoroutine = StartCoroutine(CastJob());
+
+        CastEnded?.Invoke();
         _isCasting = false;
 
-        _castingCoroutine = null;
+        _castCoroutine = null;
     }
 }
