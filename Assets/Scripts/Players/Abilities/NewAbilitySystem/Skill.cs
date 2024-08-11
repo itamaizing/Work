@@ -12,6 +12,9 @@ public abstract class Skill : MonoBehaviour
     [SerializeField] protected float _manaCost = 0f;
     [SerializeField] protected float _cooldownTime = 0f;
     [SerializeField] protected float _castDeley = 0f;
+    [SerializeField] protected Schools _abilitySchool;
+    [SerializeField] protected AbilityForm _abilityForm;
+    [SerializeField] protected LayerMask _targetsLayers;
     [Header("Charge settings")]
     [SerializeField] protected bool _isUseCharges;
     [SerializeField] protected bool _chargesHaveSeparateCooldown;
@@ -49,6 +52,7 @@ public abstract class Skill : MonoBehaviour
     public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); }
     public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); }
     public bool IsCasting { get => _isCasting; set => _isCasting = value; }
+    public LayerMask TargetsLayers => _targetsLayers; 
 
     public event Action<int> CurrentChargeChange;
     public event Action<float> CooldownStarted;
