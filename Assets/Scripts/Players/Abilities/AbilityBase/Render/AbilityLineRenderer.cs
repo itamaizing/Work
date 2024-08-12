@@ -5,9 +5,9 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Ability/AbilityLineRenderer", fileName = "NewLine")]
 public class AbilityLineRenderer : ScriptableObject
 {
-    [SerializeField] private SpriteRenderer _startSprite;
-    [SerializeField] private SpriteRenderer _endSprite;
+    [SerializeField] private BoxArea _startSprite;
+    [SerializeField] private BoxArea _endSprite;
 
-    public SpriteRenderer Start => _startSprite;
-    public SpriteRenderer End => _endSprite;
+    public BoxArea Start => _startSprite;
+    public BoxArea End => _endSprite;
 }

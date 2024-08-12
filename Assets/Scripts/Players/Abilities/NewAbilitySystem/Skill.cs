@@ -1,14 +1,35 @@
+using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
+public enum Schools
+{
+    Light,
+    Dark,
+    Fire,
+    Water,
+    Air,
+    Earth,
+    Physical,
+    None
+}
+
+public enum AbilityForm
+{
+    Spell,
+    Magic,
+    Physical
+}
+
+[RequireComponent(typeof(AbilityRenderer))]
 public abstract class Skill : MonoBehaviour
 {
     [Header("AbilitieInfo")]
     [SerializeField] private AbilityInfo _abilityInfo;
-    [Header("Settings")]
-    [SerializeField] protected bool _isAutoAttack;
+    [Header("Main Settings")]
     [SerializeField] protected float _manaCost;
     [SerializeField] protected float _cooldownTime;
     [SerializeField] protected float _castDeley;
@@ -24,7 +45,17 @@ public abstract class Skill : MonoBehaviour
     [SerializeField] protected bool _chargesHaveSeparateCooldown;
     [SerializeField] protected int _maxCharges;
     [SerializeField] protected float _chargeCooldown;
+    [Header("Area settings")]
+    [SerializeField] protected float _radius;
+    [SerializeField] protected float _area;
+    [SerializeField] protected float _castLength;
+    [SerializeField] protected float _castWidth;
+    [Header("Render settings")]
+    [SerializeField] protected bool _isAutoRadiusRender = true;
+    [SerializeField] protected bool _isAutoAreaRender = true;
+    [SerializeField] protected bool _isAutoLineRender = true;
 
+    protected AbilityRenderer _abilityRender;
     protected HeroComponent _hero;
     protected bool _isCanCancle = true;
     protected int _currentChargers;
@@ -58,6 +89,10 @@ public abstract class Skill : MonoBehaviour
     public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); }
     public bool IsCasting { get => _isCasting; set => _isCasting = value; }
     public float CastStreamDuration { get => _castDuration; }
+    public float Radius { get => Buff.Radius.GetBuffedValue(_radius); protected set => _radius = value; }
+    public float Area { get => Buff.Area.GetBuffedValue(_area); protected set => _area = value; }
+    public float CastLength { get => Buff.Area.GetBuffedValue(_castLength); protected set => _castLength = value; }
+    public float CastWidth { get => Buff.Area.GetBuffedValue(_castWidth); protected set => _castWidth = value; }
     public LayerMask TargetsLayers => _targetsLayers; 
 
     public event Action<int> CurrentChargeChange;
@@ -105,9 +140,7 @@ public abstract class Skill : MonoBehaviour
 
     public bool TryCast()
     {
-        CheckResources();
-
-        if (IsHaveResurces && IsCanCast && _isCasting == false)
+        if (TryPayCost() && IsCanCast && _isCasting == false)
         {
             _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
             return true;
@@ -141,13 +174,84 @@ public abstract class Skill : MonoBehaviour
         _cooldownJob = StartCoroutine(CooldownCoroutine(time));
     }
 
-    protected virtual void PayCost()
+    public void CheckResources()
     {
-        _hero.Stamina.Use(_manaCost);
-        SetCooldown(CooldownTime);
+        if (IsHaveManaOnSkill == false)
+            MassageHaventMana?.Invoke(ManaCost - _hero.Stamina.Value);
 
-        if (_isUseCharges)
+        if (IsCooldowned == false)
+            MassageNotCooldowned?.Invoke(_remainingÑooldownTime);
+
+        if (IsHaveCharge == false)
+            MassageHaventCharge?.Invoke();
+    }
+
+    protected virtual void StartAutoDraw()
+    {
+        if(_isAutoRadiusRender)
+            _abilityRender.DrawRadius(Radius);
+
+        if (_isAutoAreaRender)
+            _abilityRender.DrawArea(Area, TargetsLayers);
+
+        if (_isAutoLineRender)
+            _abilityRender.DrawLine(CastLength, CastWidth, TargetsLayers);
+    } 
+
+    protected virtual void StopAutoDraw()
+    {
+        _abilityRender.StopDrawRadius();
+        _abilityRender.StopDrawArea();
+        _abilityRender.StopDrawLine();
+    }
+
+    protected virtual bool TryPayCost(float mana)
+    {
+        if (IsHaveResurces)
+        {
+            _hero.Stamina.CmdUse(mana);
+            SetCooldown(CooldownTime);
             TryUseCharge();
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    protected virtual bool TryPayCost()
+    {
+        return TryPayCost(_manaCost);
+    }
+
+    protected bool TryRaycastTarget(out Character target, bool isCanTargetHimself = false)
+    {
+        target = null;
+        RaycastHit2D[] rayHit = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 99, TargetsLayers);
+
+        foreach (var item in rayHit)
+        {
+            if (rayHit.Length > 0 && item.transform.TryGetComponent<Character>(out Character enemy))
+            {
+                target = enemy;
+
+                if (isCanTargetHimself == false && target.transform == _hero.Health.transform)
+                {
+                    target = null;
+                }
+            }
+        }
+        return target != null;
+    }
+
+    protected bool IsTargetInRadius(float radius, Transform target)
+    {
+        if (target == null)
+            return false;
+
+        float distance = Vector3.Distance(target.position, transform.position);
+        return distance <= radius;
     }
 
     protected Coroutine StartCastDeleyCoroutine()
@@ -160,6 +264,21 @@ public abstract class Skill : MonoBehaviour
     {
         if (coroutine != null)
             StopCoroutine(coroutine);
+    }
+
+    protected bool IsMouseInRadius(float radius)
+    {
+        float distance = Vector3.Distance(
+            new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, transform.position.z),
+            transform.position
+            );
+
+        return distance <= radius;
+    }
+
+    protected Vector2 GetMousePoint()
+    {
+        return Camera.main.ScreenToWorldPoint(Input.mousePosition);
     }
 
     private bool TryUseCharge()
@@ -180,18 +299,6 @@ public abstract class Skill : MonoBehaviour
         {
             return false;
         }
-    }
-
-    private void CheckResources()
-    {
-        if (IsHaveManaOnSkill == false)
-            MassageHaventMana?.Invoke(ManaCost - _hero.Stamina.Value);
-
-        if (IsCooldowned == false)
-            MassageNotCooldowned?.Invoke(_remainingÑooldownTime);
-
-        if (IsHaveCharge == false)
-            MassageHaventCharge?.Invoke();
     }
 
     private IEnumerator RechargeCoroutine()
@@ -258,9 +365,13 @@ public abstract class Skill : MonoBehaviour
     {
         PreparingStarted?.Invoke();
         _isPreparing = true;
+        StartAutoDraw();
+
         yield return _prepareCoroutine = StartCoroutine(PrepareJob());
+
         PreparingEnded?.Invoke();
         _isPreparing = false;
+        StopAutoDraw();
 
         _prepareCoroutine = null;
     }

@@ -60,4 +60,10 @@ public abstract class StaminaComponent : NetworkBehaviour
 	{
 		UpdateBar();
 	}
+
+	[Command]
+	public void CmdUse(float value)
+    {
+		Use(value);
+	}
 }
