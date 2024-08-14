@@ -104,6 +104,7 @@ public abstract class Skill : NetworkBehaviour
     public event Action CooldownEnded;
     public event Action PreparingStarted;
     public event Action PreparingSuccess;
+    public event Action PreparingCanceled;
     public event Action<float> CastDeleyStarted;
     public event Action CastDeleyEnded;
     public event Action<float> CastStreamStarted;
@@ -168,7 +169,19 @@ public abstract class Skill : NetworkBehaviour
         {
             Canceled?.Invoke();
             ClearData();
+
             CancelCoroutine(_castCoroutine);
+            if (_actionWrapperForCastCoroutine != null)
+            {
+                StopCoroutine(_actionWrapperForCastCoroutine);
+                CancelCoroutine(_castCoroutine);
+                _actionWrapperForCastCoroutine = null;
+                _isCasting = false;
+                ClearData();
+
+                CastEnded?.Invoke();
+            }
+
             CancelCoroutine(_castDeleyCoroutine);
             CancelCoroutine(_castStreamCoroutine);
 
@@ -429,8 +442,14 @@ public abstract class Skill : NetworkBehaviour
         while (time < CastStreamDuration)
         {
             time += _manaCostRate;
-            _hero.Stamina.Use(_manaCostPerTick);
-
+            if (_hero.Stamina.Value >= _manaCostPerTick)
+            {
+                _hero.Stamina.Use(_manaCostPerTick);
+            }
+            else
+            {
+                TryCancel(true);
+            }
             yield return new WaitForSeconds(_manaCostRate);
         }
         _castStreamCoroutine = null;
@@ -465,6 +484,8 @@ public abstract class Skill : NetworkBehaviour
             StartCoroutine(CastStreamJob());
 
         yield return _castCoroutine = StartCoroutine(CastJob());
+
+        Debug.Log(123);
 
         CastEnded?.Invoke();
         _isCasting = false;

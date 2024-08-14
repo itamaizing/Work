@@ -9,7 +9,7 @@ public class SkillQueue : MonoBehaviour
     private Skill _currentSkill = null;
 
     public bool IsBusy { get => _currentSkill != null; }
-    public bool IsEmpty { get => _skills.Count > 0; }
+    public bool IsEmpty { get => _skills.Count == 0; }
     public Skill CurrentSkill { get => _currentSkill; }
 
     public event Action<Skill> SkillAdded;
@@ -53,7 +53,8 @@ public class SkillQueue : MonoBehaviour
 
     private void RemoveFromQueue()
     {
-        SkillDeleted?.Invoke(_skills.Dequeue());
+        var temp = _skills.Dequeue();
+        SkillDeleted?.Invoke(temp);
     }
 
     private void OnCastEnded()

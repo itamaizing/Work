@@ -11,7 +11,16 @@ public class TestH3 : Skill
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private Character _target;
 
-    protected override bool IsCanCast => Vector3.Distance(_targetPoint, transform.position) <= Radius;
+    protected override bool IsCanCast { get => CheckCanCast(); }
+
+    private bool CheckCanCast()
+    {
+        if (_target == null)
+            return Vector3.Distance(_targetPoint, transform.position) <= Radius;
+
+        return Vector3.Distance(_targetPoint, transform.position) <= Radius ||
+               Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+    }
 
     protected override IEnumerator CastJob()
     {
@@ -34,7 +43,7 @@ public class TestH3 : Skill
 
     protected override IEnumerator PrepareJob()
     {
-        while (float.IsPositiveInfinity(_targetPoint.x))
+        while (float.IsPositiveInfinity(_targetPoint.x) && _target == null)
         {
             if (Input.GetMouseButton(0))
             {

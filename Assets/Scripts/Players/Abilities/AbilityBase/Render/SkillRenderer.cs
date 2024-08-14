@@ -7,7 +7,6 @@ public class SkillRenderer : MonoBehaviour
     [SerializeField] private DrawCircle _circle;
     [SerializeField] private CircleArea _areaPref;
     [SerializeField] private AbilityLineRenderer _line;
-    [SerializeField] private bool _onlifirstTarget;
     [SerializeField] private Color _colorForEnd;
     [SerializeField] private Color _colorForStart;
 
@@ -93,11 +92,11 @@ public class SkillRenderer : MonoBehaviour
 
             RaycastHit2D rayHit = Physics2D.Raycast(transform.position, dir, length * 2, layerMask);
 
-            if (_onlifirstTarget && rayHit)
+            if (rayHit)
             {
                 float distance = Vector2.Distance(transform.position, rayHit.transform.position);
 
-                _lineStartImage.SetSize(width, distance / 2);
+                _lineStartImage.SetSize(width, distance / 2 + 0.3f);
                 _lineEndImage.SetSize(width, length);
             }
             else

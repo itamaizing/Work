@@ -137,7 +137,7 @@ public class SkillManager : MonoBehaviour
         {
             PrepereSkill();
         }
-        else if (_selectedSkill != _skills[index] && _selectedSkill != null)
+        else if (_selectedSkill != _skills[index])
         {
             UnsubscribingSkillOnEvents(_selectedSkill);
 
