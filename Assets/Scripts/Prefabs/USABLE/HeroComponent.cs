@@ -30,7 +30,7 @@ public class HeroComponent : Character
         RuneComponent.Initialize(10,1,10);
         CharacterState.Initialize(Health, Move , Stamina);
         TalentSystem.Initialize();
-        UIPlayerComponents.Initialize(Abilities,Move,Stamina,Health);
+        //UIPlayerComponents.Initialize(Abilities,Move,Stamina,Health); //Why is initialization of this component necessary at all? Moreover, the UI should not initialize the logic
         SelectComponent.Initialize(false,Move,Abilities,UIPlayerComponents);
 
 	}

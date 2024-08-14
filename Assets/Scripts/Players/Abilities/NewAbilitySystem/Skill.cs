@@ -94,7 +94,9 @@ public abstract class Skill : MonoBehaviour
     public float Area { get => Buff.Area.GetBuffedValue(_area); protected set => _area = value; }
     public float CastLength { get => Buff.Area.GetBuffedValue(_castLength); protected set => _castLength = value; }
     public float CastWidth { get => Buff.Area.GetBuffedValue(_castWidth); protected set => _castWidth = value; }
-    public LayerMask TargetsLayers => _targetsLayers; 
+    public LayerMask TargetsLayers => _targetsLayers;
+    public Schools School => _abilitySchool;
+    public AbilityForm AbilityForm => _abilityForm;
 
     public event Action<int> CurrentChargeChange;
     public event Action<float> CooldownStarted;

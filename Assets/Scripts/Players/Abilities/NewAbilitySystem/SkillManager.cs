@@ -20,6 +20,7 @@ public class SkillManager : MonoBehaviour
     private Skill _selectedSkill;
 
     public TalentSystem TalentSystem => _talentSystem;
+    public List<Skill> Abilities => _skills;
 
     public event Action<int> SkillSelected;
     public event Action<int> SkillDeselected;
@@ -39,6 +40,7 @@ public class SkillManager : MonoBehaviour
             else
             {
                 _simpleSkills.Add(item);
+                item.CastStarted += GlobalCooldown;
             }
         }
         foreach (var simpleSkill in _simpleSkills)
@@ -79,6 +81,14 @@ public class SkillManager : MonoBehaviour
         InputHandler.OnSixthCast -= SelectSkill;
         InputHandler.OnSeventhCast -= SelectSkill;
         InputHandler.OnEighthCast -= SelectSkill;
+    }
+
+    public void SetAbilitiesCoolDown(float time)
+    {
+        foreach (var item in _skills)
+        {
+            item.SetCooldown(time);
+        }
     }
 
     private void PrepereSkill()
@@ -136,6 +146,11 @@ public class SkillManager : MonoBehaviour
         }
     }
 
+    private void GlobalCooldown()
+    {
+        SetAbilitiesCoolDown(_globalCooldownTime);
+    }
+
     private void SubscribingSkillOnEvents(Skill skill)
     {
         skill.PreparingSuccess += OnPreperingSuccess;
@@ -153,4 +168,86 @@ public class SkillManager : MonoBehaviour
         else
             _skillQueue.Add(_selectedSkill);
     }
+
+    #region legacycode
+    private void OnDestroy()
+    {
+        /*
+        AbilitiesManager.Instance.RemovePanel(_abilityPanel);
+        */
+    }
+    public void AddAbility(Ability ability)
+    {
+        /*
+        _abilities.Add(ability);
+        if (AbilitiesManager.Instance == null) return;
+
+        AbilitiesManager.Instance.RemovePanel(_abilityPanel);
+        _abilityPanel = AbilitiesManager.Instance.AddPanel(this);
+        _abilityPanel.gameObject.SetActive(true);
+        */
+    }
+    public void RemoveAbility(Ability ability)
+    {
+        /*
+        _abilities.Remove(ability);
+        if (AbilitiesManager.Instance == null) return;
+
+        AbilitiesManager.Instance.RemovePanel(_abilityPanel);
+        _abilityPanel = AbilitiesManager.Instance.AddPanel(this);
+        _abilityPanel.gameObject.SetActive(true);
+        */
+    }
+    public void SetAbilitiesPanelSelect(bool isSelect)
+    {
+        /*
+        AbilitiesManager.Instance.ChangeCurrentPanelSelectStatus(_abilityPanel, isSelect);
+        if (isSelect) EnableAbilities();
+        else DisableAbilities();
+        */
+    }
+    public void SetAbilitiesPanelEnable()
+    {
+        /*
+        AbilitiesManager.Instance.ActiveCurrentPanel(_abilityPanel);
+        */
+    }
+    public void SetAbilitiesDisabled()
+    {
+        //_isAbilitiesDisabled = true;
+    }
+    public void SetAbilitiesEnabled()
+    {
+        //_isAbilitiesDisabled = false;
+    }
+    public void SwitchAvaliable(Schools school, bool value)
+    {
+        /*
+        if (school == Schools.Physical)
+            return;
+        foreach (var item in _abilities)
+        {
+            if (item.School == school)
+            {
+                item.SwitchAvailible(value);
+                //item.KnockDownTimerStart(coolDown);
+            }
+        }
+        */
+    }
+
+    public void SwitchAvaliable(AbilityForm form, bool value)
+    {
+        /*
+        foreach (var item in _abilities)
+        {
+            if (item.AbilityForm == form)
+            {
+                item.SwitchAvailible(value);
+                //item.KnockDownTimerStart(coolDown);
+            }
+        }
+        */
+    }
+    #endregion
 }

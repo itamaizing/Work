@@ -9,6 +9,8 @@ public abstract class AbstractCharacterState
 	public States state;
 	public List<StatusEffect> effects = new List<StatusEffect>();
 	protected CharacterState _characterState;
+	protected SkillManager _abilities;
+
 	public abstract void EnterState(CharacterState character, float durationToExit, float damageToExit);
 	public abstract void UpdateState();
 	public abstract void ExitState();
@@ -256,7 +258,7 @@ public class StunnedState : AbstractCharacterState
 {
 	public new States state = States.Stun;
 	public bool turnOff = false;
-	private PlayerAbilities _abilities;
+	//private PlayerAbilities _abilities;
 	private float _baseDuration;
 	private float _duration;
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
@@ -323,7 +325,6 @@ public class Desiccuration : AbstractCharacterState
 {
 	public new States state = States.Desiccuration;
 	public bool turnOff = false;
-	private PlayerAbilities _abilities;
 	private float _baseDuration;
 	private float _duration;
 	private float _damageToExit;
@@ -397,7 +398,7 @@ public class BlindnessState : AbstractCharacterState
 	//private CharacterState _characterState;
 	private float _duration;
 	private float _baseDuration;
-	private PlayerAbilities _abilities;
+	//private PlayerAbilities _abilities;
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
 	{
 		type = StateType.Physical;
@@ -458,7 +459,6 @@ public class FrozenState : AbstractCharacterState
 	private float _duration;
 	private float _baseDuration;
 	private float _damageToExit;
-	private PlayerAbilities _abilities;
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
 	{
@@ -530,7 +530,6 @@ public class FrostingState : AbstractCharacterState
 	private float _duration;
 	private float _baseDuration;
 	private float _damageToExit;
-	private PlayerAbilities _abilities;
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
 	{
@@ -558,7 +557,7 @@ public class FrostingState : AbstractCharacterState
 		{
 			_abilities = ability.Abilities;
 
-			foreach (Ability abil in _abilities.Abilities)
+			foreach (var abil in _abilities.Abilities)
 			{
 				if (abil.AbilityForm == AbilityForm.Physical)
 				{
@@ -592,7 +591,7 @@ public class FrostingState : AbstractCharacterState
 		}
 		if (_characterState.Check(StatusEffect.AbilitySpeed))
 		{
-			foreach (Ability abil in _abilities.Abilities)
+			foreach (var abil in _abilities.Abilities)
 			{
 				if (abil.AbilityForm == AbilityForm.Physical)
 				{
@@ -685,7 +684,6 @@ public class AbilitySchoolDebuff : AbstractCharacterState
 {
 	public new States state = States.SchoolDebuff;
 	public bool turnOff = false;
-	private PlayerAbilities _abilities;
 	private float _baseDuration;
 	private float _duration;
 	public Schools canceledSchoool;
@@ -751,7 +749,7 @@ public class AbilityFormDebuff : AbstractCharacterState
 {
 	public new States state = States.FormDebuf;
 	public bool turnOff = false;
-	private PlayerAbilities _abilities;
+	//private PlayerAbilities _abilities;
 	private float _baseDuration;
 	private float _duration;
 	public AbilityForm canceledForm;

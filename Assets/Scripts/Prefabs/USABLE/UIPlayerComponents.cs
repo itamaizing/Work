@@ -8,12 +8,12 @@ public class UIPlayerComponents : MonoBehaviour
     public Transform DamageSpawn;
     public PopupTextPrefab PopupText;
     private PopupTextPrefab popupTextPrefab;
-    
-    public void Initialize(PlayerAbilities playerAbilities,MoveComponent playerMove,StaminaComponent staminaComponent , HealthComponent healthComponent)
-    {
-        playerAbilities.Initialize(playerMove, staminaComponent, healthComponent);
-    }
-    
+
+    /* public void Initialize(PlayerAbilities playerAbilities,MoveComponent playerMove,StaminaComponent staminaComponent , HealthComponent healthComponent)
+     {
+         playerAbilities.Initialize(playerMove, staminaComponent, healthComponent);
+     }
+     */ //Why is initialization of this component necessary at all? Moreover, the UI should not initialize the logic
     public void ChangeSelection(bool isSelect)
     {
         CircleSelect.IsActive = isSelect;

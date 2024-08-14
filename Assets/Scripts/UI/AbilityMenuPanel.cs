@@ -18,7 +18,7 @@ public class AbilityMenuPanel : MonoBehaviour
 	{
 		Init(_ability);
 	}*/
-	public void Init(PlayerAbilities ability)
+	public void Init(/*PlayerAbilities ability */ SkillManager ability)
 	{
 		if(_icos.Count > 0)
 		{
