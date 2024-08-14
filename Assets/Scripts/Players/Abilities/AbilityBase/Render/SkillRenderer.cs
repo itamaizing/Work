@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AbilityRenderer : MonoBehaviour
+public class SkillRenderer : MonoBehaviour
 {
     [SerializeField] private DrawCircle _circle;
     [SerializeField] private CircleArea _areaPref;

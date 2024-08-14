@@ -45,8 +45,7 @@ public abstract class AutoAttackSkill : Skill
         {
             if (Input.GetMouseButton(0))
             {
-                TryRaycastTarget(out Character target);
-                _target = target;
+                _target = GetRaycastTarget();
             }
             yield return null;
         }
@@ -107,7 +106,7 @@ public abstract class AutoAttackSkill : Skill
                             CastAction();
 
                             if (_isAutoattackMode == false)
-                                StopCoroutine(_autoAttackCoroutine);
+                                ClearData();
                         }
                     }
                 }
@@ -118,5 +117,6 @@ public abstract class AutoAttackSkill : Skill
             }
             yield return null;
         }
+        _autoAttackCoroutine = null;
     }
 }

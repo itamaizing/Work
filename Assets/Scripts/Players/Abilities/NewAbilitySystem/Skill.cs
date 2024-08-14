@@ -2,6 +2,7 @@ using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -24,7 +25,6 @@ public enum AbilityForm
     Physical
 }
 
-[RequireComponent(typeof(AbilityRenderer))]
 public abstract class Skill : MonoBehaviour
 {
     [Header("AbilitieInfo")]
@@ -55,7 +55,7 @@ public abstract class Skill : MonoBehaviour
     [SerializeField] protected bool _isAutoAreaRender = true;
     [SerializeField] protected bool _isAutoLineRender = true;
 
-    protected AbilityRenderer _abilityRender;
+    protected SkillRenderer _skillRender;
     protected HeroComponent _hero;
     protected bool _isCanCancle = true;
     protected int _currentChargers;
@@ -73,6 +73,7 @@ public abstract class Skill : MonoBehaviour
     private bool _isPreparing = false;
     private bool _isCasting = false;
 
+    public HeroComponent Hero { get => _hero; }
     public StatsBuff Buff => _statsBuff;
     public string Name => _abilityInfo.Name;
     public string Description => _abilityInfo.Description;
@@ -87,7 +88,7 @@ public abstract class Skill : MonoBehaviour
     public float ManaCost { get => Buff.ManaCost.GetBuffedValue(_manaCost); }
     public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); }
     public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); }
-    public bool IsCasting { get => _isCasting; set => _isCasting = value; }
+    public bool IsCasting { get => _isCasting; }
     public float CastStreamDuration { get => _castDuration; }
     public float Radius { get => Buff.Radius.GetBuffedValue(_radius); protected set => _radius = value; }
     public float Area { get => Buff.Area.GetBuffedValue(_area); protected set => _area = value; }
@@ -99,7 +100,7 @@ public abstract class Skill : MonoBehaviour
     public event Action<float> CooldownStarted;
     public event Action CooldownEnded;
     public event Action PreparingStarted;
-    public event Action PreparingEnded;
+    public event Action PreparingSuccess;
     public event Action<float> CastDeleyStarted;
     public event Action CastDeleyEnded;
     public event Action<float> CastStreamStarted;
@@ -117,6 +118,12 @@ public abstract class Skill : MonoBehaviour
     protected abstract IEnumerator CastJob();
     protected abstract void ClearData();
 
+    public void Init(SkillRenderer render, HeroComponent hero)
+    {
+        _hero = hero;
+        _skillRender = render;
+    }
+
     protected virtual void Awake()
     {
         if (_isUseCharges)
@@ -127,7 +134,7 @@ public abstract class Skill : MonoBehaviour
 
     public bool TryPreparing()
     {
-        if(_isPreparing == false)
+        if(_isPreparing == false && _isCasting == false)
         {
             _actionWrapperForPreparingCoroutine = StartCoroutine(ActionWrapperForPreparingJob());
             return true;
@@ -151,15 +158,30 @@ public abstract class Skill : MonoBehaviour
         }
     }
 
-    public void Cancel(bool foceCancel = false)
+    public bool TryCancel(bool foceCancel = false)
     {
         if (foceCancel || _isCanCancle)
         {
             Canceled?.Invoke();
             ClearData();
             CancelCoroutine(_castCoroutine);
-            CancelCoroutine(_prepareCoroutine);
             CancelCoroutine(_castDeleyCoroutine);
+            CancelCoroutine(_castStreamCoroutine);
+
+            if (_actionWrapperForPreparingCoroutine != null)
+            {
+                StopCoroutine(_actionWrapperForPreparingCoroutine);
+                CancelCoroutine(_prepareCoroutine);
+                _actionWrapperForPreparingCoroutine = null;
+                _isPreparing = false;
+                StopAutoDraw();
+            }
+
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
@@ -189,20 +211,20 @@ public abstract class Skill : MonoBehaviour
     protected virtual void StartAutoDraw()
     {
         if(_isAutoRadiusRender)
-            _abilityRender.DrawRadius(Radius);
+            _skillRender.DrawRadius(Radius);
 
         if (_isAutoAreaRender)
-            _abilityRender.DrawArea(Area, TargetsLayers);
+            _skillRender.DrawArea(Area, TargetsLayers);
 
         if (_isAutoLineRender)
-            _abilityRender.DrawLine(CastLength, CastWidth, TargetsLayers);
+            _skillRender.DrawLine(CastLength, CastWidth, TargetsLayers);
     } 
 
     protected virtual void StopAutoDraw()
     {
-        _abilityRender.StopDrawRadius();
-        _abilityRender.StopDrawArea();
-        _abilityRender.StopDrawLine();
+        _skillRender.StopDrawRadius();
+        _skillRender.StopDrawArea();
+        _skillRender.StopDrawLine();
     }
 
     protected virtual bool TryPayCost(float mana)
@@ -225,9 +247,9 @@ public abstract class Skill : MonoBehaviour
         return TryPayCost(_manaCost);
     }
 
-    protected bool TryRaycastTarget(out Character target, bool isCanTargetHimself = false)
+    protected Character GetRaycastTarget(bool isCanTargetHimself = false)
     {
-        target = null;
+        Character target = null;
         RaycastHit2D[] rayHit = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 99, TargetsLayers);
 
         foreach (var item in rayHit)
@@ -242,7 +264,27 @@ public abstract class Skill : MonoBehaviour
                 }
             }
         }
-        return target != null;
+        return target;
+    } 
+
+    protected List<Character> GetCloserTargets(Vector3 position, float radius, bool isCanTargetHimself = false)
+    {
+        List<Character>  targets = new List<Character>();
+        Collider2D[] collider = Physics2D.OverlapCircleAll(position, radius, TargetsLayers);
+
+        foreach (var item in collider)
+        {
+            if (collider.Length > 0 && item.transform.TryGetComponent<Character>(out Character enemy))
+            {
+                if (isCanTargetHimself == false && targets[targets.Count - 1].transform == _hero.Health.transform)
+                {
+                    continue;
+                }
+                targets.Add(enemy);
+            }
+        }
+        targets = targets.OrderBy(character => Vector3.Distance(character.transform.position, gameObject.transform.position)).ToList();
+        return targets;
     }
 
     protected bool IsTargetInRadius(float radius, Transform target)
@@ -251,6 +293,12 @@ public abstract class Skill : MonoBehaviour
             return false;
 
         float distance = Vector3.Distance(target.position, transform.position);
+        return distance <= radius;
+    }
+
+    protected bool IsPointInRadius(float radius, Vector3 point)
+    {
+        float distance = Vector3.Distance(point, transform.position);
         return distance <= radius;
     }
 
@@ -263,7 +311,9 @@ public abstract class Skill : MonoBehaviour
     protected void CancelCoroutine(Coroutine coroutine)
     {
         if (coroutine != null)
+        {
             StopCoroutine(coroutine);
+        }
     }
 
     protected bool IsMouseInRadius(float radius)
@@ -369,7 +419,7 @@ public abstract class Skill : MonoBehaviour
 
         yield return _prepareCoroutine = StartCoroutine(PrepareJob());
 
-        PreparingEnded?.Invoke();
+        PreparingSuccess?.Invoke();
         _isPreparing = false;
         StopAutoDraw();
 
@@ -391,6 +441,8 @@ public abstract class Skill : MonoBehaviour
 
         CastEnded?.Invoke();
         _isCasting = false;
+
+        ClearData();
 
         _castCoroutine = null;
     }
