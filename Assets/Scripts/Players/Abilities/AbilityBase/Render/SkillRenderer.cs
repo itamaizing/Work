@@ -7,6 +7,7 @@ public class SkillRenderer : MonoBehaviour
     [SerializeField] private DrawCircle _circle;
     [SerializeField] private CircleArea _areaPref;
     [SerializeField] private AbilityLineRenderer _line;
+    [SerializeField] private bool _onlifirstTarget;
     [SerializeField] private Color _colorForEnd;
     [SerializeField] private Color _colorForStart;
 
@@ -31,7 +32,10 @@ public class SkillRenderer : MonoBehaviour
 
     public void DrawArea(float rarius, LayerMask layerMask, CircleArea area = null)
     {
-        _drawAreaCoroutine = StartCoroutine(DrawAreaJob(rarius, layerMask));
+        if (area == null)
+            area = _areaPref;
+
+        _drawAreaCoroutine = StartCoroutine(DrawAreaJob(rarius, layerMask, area));
     }
 
     public void StopDrawArea()
@@ -40,7 +44,7 @@ public class SkillRenderer : MonoBehaviour
             StopCoroutine(_drawAreaCoroutine);
 
         if(_tempArea != null)
-            Destroy(_tempArea);
+            Destroy(_tempArea.gameObject);
     }
 
     public void DrawLine(float length, float width, LayerMask layerMask, AbilityLineRenderer line = null)
@@ -57,10 +61,10 @@ public class SkillRenderer : MonoBehaviour
             StopCoroutine(_drawLineCoroutine);
 
         if (_lineStartImage != null)
-            Destroy(_lineStartImage);
+            Destroy(_lineStartImage.gameObject);
 
         if (_lineEndImage != null)
-            Destroy(_lineEndImage);
+            Destroy(_lineEndImage.gameObject);
     }
 
     private void RotateAtMouse(Transform transform)
@@ -73,7 +77,7 @@ public class SkillRenderer : MonoBehaviour
     private IEnumerator DrawLineJob(float length, float width, LayerMask layerMask, AbilityLineRenderer line)
     {
         _lineStartImage = Instantiate(line.Start, transform);
-        _lineEndImage = Instantiate(line.End, _lineStartImage.transform);
+        _lineEndImage = Instantiate(line.End, transform);
 
         _lineStartImage.SetColor(_colorForStart);
         _lineEndImage.SetColor(_colorForEnd);
@@ -81,34 +85,35 @@ public class SkillRenderer : MonoBehaviour
         while (true)
         {
             RotateAtMouse(_lineStartImage.transform);
+            RotateAtMouse(_lineEndImage.transform);
 
             Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, 0);
             var vector = (mouse - transform.position);
             var dir = vector.normalized;
 
-            RaycastHit2D rayHit = Physics2D.Raycast(transform.position, dir, length, layerMask);
+            RaycastHit2D rayHit = Physics2D.Raycast(transform.position, dir, length * 2, layerMask);
 
-            if (rayHit)
+            if (_onlifirstTarget && rayHit)
             {
-                float distance = Vector2.Distance(rayHit.transform.position, transform.position);
+                float distance = Vector2.Distance(transform.position, rayHit.transform.position);
 
-                _lineStartImage.SetSize(width, distance);
-                _lineEndImage.SetSize(width, length - distance);
+                _lineStartImage.SetSize(width, distance / 2);
+                _lineEndImage.SetSize(width, length);
             }
             else
             {
                 _lineStartImage.SetSize(width, length);
-                _lineEndImage.SetSize(width, 0);
+                _lineEndImage.SetSize(width, length);
             }
             yield return null;
         }
     }
 
-    private IEnumerator DrawAreaJob(float radius, LayerMask layerMask)
+    private IEnumerator DrawAreaJob(float radius, LayerMask layerMask, CircleArea areaPref)
     {
         Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, 0);
 
-        _tempArea = Instantiate(_areaPref, mouse, Quaternion.identity);
+        _tempArea = Instantiate(areaPref, mouse, Quaternion.identity);
         _tempArea.SetSize(radius);
 
         while (true)

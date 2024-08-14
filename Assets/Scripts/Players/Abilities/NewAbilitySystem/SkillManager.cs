@@ -5,6 +5,8 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(SkillRenderer))]
+[RequireComponent(typeof(SkillQueue))]
+[RequireComponent(typeof(AutoAttackQueue))]
 public class SkillManager : MonoBehaviour
 {
     [SerializeField] private List<Skill> _skills;
@@ -28,6 +30,8 @@ public class SkillManager : MonoBehaviour
     private void Awake()
     {
         _skillRenderer = GetComponent<SkillRenderer>();
+        _skillQueue = GetComponent<SkillQueue>();
+        _autoAttackQueue = GetComponent<AutoAttackQueue>();
 
         foreach (var item in _skills)
         {
@@ -50,6 +54,11 @@ public class SkillManager : MonoBehaviour
                 simpleSkill.CastStarted += autoAttackSkill.Pause;
                 simpleSkill.CastEnded += autoAttackSkill.Continue;
             }
+        }
+        if(_skills.Count > 0)
+        {
+            _selectedSkill = _skills[0];
+            SubscribingSkillOnEvents(_selectedSkill);
         }
     }
 
@@ -121,17 +130,10 @@ public class SkillManager : MonoBehaviour
 
     private void SelectSkill(int index)
     {
-        if (_selectedSkill.IsPreparing == true) // ----
+        if (_selectedSkill.IsPreparing == true)
             return;
 
-        if (_selectedSkill == null)
-        {
-            _selectedSkill = _skills[index];
-            SubscribingSkillOnEvents(_selectedSkill);
-
-            PrepereSkill();
-        }
-        else if (_selectedSkill == _skills[index])
+        if (_selectedSkill == _skills[index])
         {
             PrepereSkill();
         }

@@ -9,7 +9,6 @@ public abstract class AutoAttackSkill : Skill
     [SerializeField] private float _attackManaCost;
     [SerializeField] private float _attackZoneSize;
     [SerializeField] protected float _attackSpeed = 1f;
-    [SerializeField] protected LayerMask _obstacle;
 
     protected bool _isAutoattackMode = true;
     protected Character _target;
@@ -18,7 +17,7 @@ public abstract class AutoAttackSkill : Skill
 
     public float AttackSpeed { get => Buff.AttackSpeed.GetBuffedValue(_attackSpeed); }
     public Character Target { get => _target; }
-    protected override bool IsCanCast { get => NoObstacles() && IsTargetInRadius(Radius, Target.transform); }
+    protected override bool IsCanCast { get => NoObstacles(Target.transform.position, _obstacle) && IsTargetInRadius(Radius, Target.transform); }
 
 
     protected abstract void CastAction();
@@ -70,23 +69,6 @@ public abstract class AutoAttackSkill : Skill
         }
     }
 
-    private bool NoObstacles()
-    {
-        if (Target == null)
-            return true;
-
-        var vector = (Target.transform.position - transform.position);
-        var dir = vector.normalized;
-        float distance = vector.magnitude;
-
-        RaycastHit2D[] rayHit = Physics2D.RaycastAll(transform.position, dir, distance, _obstacle);
-
-        if (rayHit.Length > 0)
-            return false;
-        else
-            return true;
-    }
-
     protected virtual IEnumerator AutoAttackJob()
     {
         while (Target != null)
@@ -96,10 +78,10 @@ public abstract class AutoAttackSkill : Skill
                 if (IsTargetInRadius(Radius, Target.transform))
                     _isAttacking = true;
 
-                if (_isAttacking && NoObstacles())
+                if (_isAttacking && NoObstacles(Target.transform.position, _obstacle))
                 {
                     yield return new WaitForSeconds(AttackSpeed);
-                    if (IsTargetInRadius(Radius + _attackZoneSize, Target.transform) && NoObstacles() && IsCooldowned)
+                    if (IsTargetInRadius(Radius + _attackZoneSize, Target.transform) && NoObstacles(Target.transform.position, _obstacle) && IsCooldowned)
                     {
                         if (TryPayCost(_attackManaCost))
                         {

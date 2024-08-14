@@ -232,6 +232,10 @@ PrefabInstance:
       propertyPath: _playerData
       value: 
       objectReference: {fileID: 11400000, guid: f71e3e6e8b3ca6245b0c37fd016a4039, type: 2}
+    - target: {fileID: 8468544467696250796, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+      propertyPath: _networkSettings
+      value: 
+      objectReference: {fileID: 9000200958661223933}
     - target: {fileID: 8525686735181722530, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
       propertyPath: isActive
       value: 0
@@ -266,7 +270,19 @@ PrefabInstance:
       addedObject: {fileID: 3863539453607731558}
     - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 719519892971730700}
+    - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1221651674664103097}
+    - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 9026023121006572505}
+    - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3836582496103541675}
+    - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6478478900417536801}
   m_SourcePrefab: {fileID: 100100000, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
 --- !u!114 &771352717599252324 stripped
 MonoBehaviour:
@@ -326,8 +342,33 @@ MonoBehaviour:
   _circle: {fileID: 771352717599252324}
   _areaPref: {fileID: 1574982521674352815, guid: 790fb3857b30c2b4fad4375343a84fad, type: 3}
   _line: {fileID: 11400000, guid: 7faf4d32cfcc4f54d967e4d01a0c4b65, type: 2}
-  _colorForEnd: {r: 1, g: 0, b: 0, a: 0}
-  _colorForStart: {r: 0.0025007725, g: 1, b: 0, a: 0}
+  _onlifirstTarget: 0
+  _colorForEnd: {r: 1, g: 0, b: 0, a: 1}
+  _colorForStart: {r: 0.0025007725, g: 1, b: 0, a: 1}
+--- !u!114 &719519892971730700
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8470426861222888728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5f4a2549f1d1594693ec217b7147344, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1221651674664103097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8470426861222888728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e866d003f81af94d8fbb2b45fa2a30c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &9026023121006572505
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -340,9 +381,98 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73c845a97d0479341a34f6e1275e1107, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _skills: []
+  _skills:
+  - {fileID: 3836582496103541675}
+  - {fileID: 6478478900417536801}
   _hero: {fileID: 1563676885133033940}
   _talentSystem: {fileID: 1752307623473760912}
+--- !u!114 &3836582496103541675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8470426861222888728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56dec73901922b247b25465f613b8740, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _abilityInfo: {fileID: 11400000, guid: 44ef9f5c61bd03a4a9d02045a6dfb776, type: 2}
+  _manaCost: 5
+  _cooldownTime: 1
+  _castDeley: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 5
+  _area: 5
+  _castLength: 5
+  _castWidth: 2
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 1
+  _projectile: {fileID: 3436609779166928419, guid: d490c899d604d2c4dbb3f72e61cacb6e, type: 3}
+--- !u!114 &6478478900417536801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8470426861222888728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0cb15866c8b27045acf48230d9f19a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _abilityInfo: {fileID: 11400000, guid: 1f2a5a037601fdd438b17c4c4917caaa, type: 2}
+  _manaCost: 0
+  _cooldownTime: 0
+  _castDeley: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 768
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 128
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 5
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 1
+  _attackManaCost: 1
+  _attackZoneSize: 3
+  _attackSpeed: 0.5
+  _damage: 5
 --- !u!114 &9000200958661223933 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: -7146587456276821115, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}

@@ -579,7 +579,7 @@ public class HealthComponent : NetworkBehaviour
 
      * */
 
-    [Command]
+    [Command(requiresAuthority = false)]
     public void CmdTryTakeDamage(float damageValue, DamageType damageType, AttackRangeType attackRangeType)
     {
         TryTakeDamage(damageValue, damageType, attackRangeType);

@@ -7,6 +7,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NetworkIdentity))]
 public abstract class Character : NetworkBehaviour
 {
+	[SerializeField] private UserNetworkSettings _networkSettings;
 	[SerializeField] private Rigidbody2D _rb;
 	[SerializeField] private HealthComponent _healthComponent;
 	[SerializeField] private MoveComponent _playerMove; 
@@ -20,6 +21,7 @@ public abstract class Character : NetworkBehaviour
 	[SerializeField] private TalentSystem _talentSystem;
 	[CanBeNull] [SerializeField] private SpawnComponent _spawnComponent;
 
+	public UserNetworkSettings NetworkSettings => _networkSettings;
 	public Rigidbody2D Rb => _rb;
 	public HealthComponent Health => _healthComponent;
 	public MoveComponent Move => _playerMove;

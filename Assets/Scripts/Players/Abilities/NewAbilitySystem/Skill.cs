@@ -25,7 +25,7 @@ public enum AbilityForm
     Physical
 }
 
-public abstract class Skill : MonoBehaviour
+public abstract class Skill : NetworkBehaviour
 {
     [Header("AbilitieInfo")]
     [SerializeField] private AbilityInfo _abilityInfo;
@@ -36,6 +36,7 @@ public abstract class Skill : MonoBehaviour
     [SerializeField] protected Schools _abilitySchool;
     [SerializeField] protected AbilityForm _abilityForm;
     [SerializeField] protected LayerMask _targetsLayers;
+    [SerializeField] protected LayerMask _obstacle;
     [Header("Streaming settings")]
     [SerializeField] protected float _castDuration;
     [SerializeField] protected float _manaCostRate;
@@ -78,7 +79,7 @@ public abstract class Skill : MonoBehaviour
     public string Name => _abilityInfo.Name;
     public string Description => _abilityInfo.Description;
     public Sprite Icon => _abilityInfo.Icon;
-    public bool IsCooldowned { get => _remaining—ooldownTime < 0; }
+    public bool IsCooldowned { get => _remaining—ooldownTime <= 0; }
     public int Chargers => _currentChargers;
     public bool IsHaveCharge => (_currentChargers > 0);
     public float ChargeCooldown => _chargeCooldown;
@@ -136,7 +137,7 @@ public abstract class Skill : MonoBehaviour
 
     public bool TryPreparing()
     {
-        if(_isPreparing == false && _isCasting == false)
+        if (_isPreparing == false && _isCasting == false)
         {
             _actionWrapperForPreparingCoroutine = StartCoroutine(ActionWrapperForPreparingJob());
             return true;
@@ -149,8 +150,9 @@ public abstract class Skill : MonoBehaviour
 
     public bool TryCast()
     {
-        if (TryPayCost() && IsCanCast && _isCasting == false)
+        if (IsHaveResurces && IsCanCast && _isCasting == false)
         {
+            TryPayCost();
             _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
             return true;
         }
@@ -212,7 +214,7 @@ public abstract class Skill : MonoBehaviour
 
     protected virtual void StartAutoDraw()
     {
-        if(_isAutoRadiusRender)
+        if (_isAutoRadiusRender)
             _skillRender.DrawRadius(Radius);
 
         if (_isAutoAreaRender)
@@ -220,7 +222,7 @@ public abstract class Skill : MonoBehaviour
 
         if (_isAutoLineRender)
             _skillRender.DrawLine(CastLength, CastWidth, TargetsLayers);
-    } 
+    }
 
     protected virtual void StopAutoDraw()
     {
@@ -267,11 +269,11 @@ public abstract class Skill : MonoBehaviour
             }
         }
         return target;
-    } 
+    }
 
     protected List<Character> GetCloserTargets(Vector3 position, float radius, bool isCanTargetHimself = false)
     {
-        List<Character>  targets = new List<Character>();
+        List<Character> targets = new List<Character>();
         Collider2D[] collider = Physics2D.OverlapCircleAll(position, radius, TargetsLayers);
 
         foreach (var item in collider)
@@ -302,6 +304,28 @@ public abstract class Skill : MonoBehaviour
     {
         float distance = Vector3.Distance(point, transform.position);
         return distance <= radius;
+    }
+
+    protected bool NoObstacles(Vector3 target, Vector3 point, LayerMask obstacle)
+    {
+        if (target == Vector3.zero)
+            return true;
+
+        var vector = (target - point);
+        var dir = vector.normalized;
+        float distance = vector.magnitude;
+
+        RaycastHit2D[] rayHit = Physics2D.RaycastAll(point, dir, distance, obstacle);
+
+        if (rayHit.Length > 0)
+            return false;
+        else
+            return true;
+    }
+
+    protected bool NoObstacles(Vector3 target, LayerMask obstacle)
+    {
+        return NoObstacles(target, transform.position, obstacle);
     }
 
     protected Coroutine StartCastDeleyCoroutine()
@@ -417,6 +441,7 @@ public abstract class Skill : MonoBehaviour
     {
         PreparingStarted?.Invoke();
         _isPreparing = true;
+        ClearData();
         StartAutoDraw();
 
         yield return _prepareCoroutine = StartCoroutine(PrepareJob());
