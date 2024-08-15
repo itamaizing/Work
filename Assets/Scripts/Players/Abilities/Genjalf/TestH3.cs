@@ -1,29 +1,56 @@
 using Mirror;
+using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class TestH3 : TargetOrAreaAbility
+public class TestH3 : Skill
 {
     [SerializeField] private Projectile _projectile;
 
-    protected override void Cancel()
-    {
+    private Vector3 _targetPoint = Vector3.positiveInfinity;
+    private Character _target;
 
+    protected override bool IsCanCast { get => CheckCanCast(); }
+
+    private bool CheckCanCast()
+    {
+        if (_target == null)
+            return Vector3.Distance(_targetPoint, transform.position) <= Radius;
+
+        return Vector3.Distance(_targetPoint, transform.position) <= Radius ||
+               Vector3.Distance(_target.transform.position, transform.position) <= Radius;
     }
 
-    protected override void CastAction()
+    protected override IEnumerator CastJob()
     {
-        //var tile = Instantiate(projectile, transform.position, Quaternion.identity);
-        
-        if(Target != null)
+        if (_target != null)
         {
-            //tile.StartFly(Target.transform, true);
-            CmdCreateProjecttile(Target.transform);
+            CmdCreateProjecttile(_target.transform);
         }
         else
         {
-            //tile.StartFly(Point, true);
-            CmdCreateProjecttile(Point);
+            CmdCreateProjecttile(_targetPoint);
+        }
+        yield return null;
+    }
+
+    protected override void ClearData()
+    {
+        _target = null;
+        _targetPoint = Vector3.positiveInfinity;
+    }
+
+    protected override IEnumerator PrepareJob()
+    {
+        while (float.IsPositiveInfinity(_targetPoint.x) && _target == null)
+        {
+            if (Input.GetMouseButton(0))
+            {
+                _target = GetRaycastTarget();
+                _targetPoint = GetMousePoint();
+            }
+            yield return null;
         }
     }
 
@@ -31,6 +58,8 @@ public class TestH3 : TargetOrAreaAbility
     protected void CmdCreateProjecttile(Transform target)
     {
         GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
+
+        SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
         item.GetComponent<Projectile>().StartFly(target, true);
 
@@ -42,9 +71,7 @@ public class TestH3 : TargetOrAreaAbility
     {
         GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
 
-        var userSettings = gameObject.GetComponentInParent<UserNetworkSettings>();
-
-        SceneManager.MoveGameObjectToScene(item, userSettings.MyRoom);
+        SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
         item.GetComponent<Projectile>().StartFly(point, true);
 

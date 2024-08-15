@@ -50,7 +50,7 @@ public abstract class Ability : NetworkBehaviour
     private float _remainingСooldownTime;
 	private bool _avaliable = true;
 	private float _timerForDebuf;
-    private StatsBuff _statsBuff = new StatsBuff(1, 0);
+    private StatsBuff _statsBuff = new StatsBuff();
 
     public MoveComponent PlayerMove => _playerMove;
     public StaminaComponent Mana =>_mana;
@@ -353,7 +353,8 @@ public abstract class Ability : NetworkBehaviour
 
 	public void KnockDownTimerStart(float time)
 	{
-		_timerForDebuf = time;
+        _avaliable = false;
+        _timerForDebuf = time;
 		StartCoroutine(KnockDownTimer());
 	}
 
@@ -362,85 +363,4 @@ public abstract class Ability : NetworkBehaviour
 		yield return new WaitForSeconds(_timerForDebuf);
 		_avaliable = true;
 	}
-}
-
-public enum Schools
-{
-	Light,
-	Dark,
-	Fire,
-	Water,
-	Air,
-	Earth,
-	Physical,
-    None
-}
-
-public enum AbilityForm
-{
-	Spell,
-	Magic,
-	Physical
-}
-
-public struct StatsBuff
-{
-    private StatBuff _damage;
-    private StatBuff _radius;
-    private StatBuff _area;
-    private StatBuff _attackSpeed;
-    private StatBuff _castSpeed;
-    private StatBuff _chargeCooldown;
-
-    public StatBuff Damage => _damage;
-    public StatBuff Radius => _radius;
-    public StatBuff Area => _area;
-    public StatBuff AttackSpeed => _attackSpeed;
-    public StatBuff CastSpeed => _castSpeed;
-    public StatBuff ChargeCooldown => _chargeCooldown;
-
-    public StatsBuff(float multiplier, float additional)
-    {
-        _damage = new StatBuff(multiplier, additional);
-        _radius = new StatBuff(multiplier, additional);
-        _area = new StatBuff(multiplier, additional);
-        _attackSpeed = new StatBuff(multiplier, additional);
-        _castSpeed = new StatBuff(multiplier, additional);
-        _chargeCooldown = new StatBuff(multiplier, additional);
-    }
-}
-
-public struct StatBuff
-{
-    private float _multiplier;
-    private float _additional;
-
-    public float Multiplier => _multiplier;
-    public float Additional => _additional;
-
-    public StatBuff(float multiplier, float additional)
-    {
-        _multiplier = multiplier;
-        _additional = additional;
-    }
-
-    public float GetBuffedValue(float value)
-    {
-        return (value + _additional) * _multiplier;
-    }
-
-    public void IncreasePercentage(float value)
-    {
-        _multiplier *= value;
-    }
-
-    public void ReductionPercentage(float value)
-    {
-        _multiplier /= value;
-    }
-
-    public void AddValue(float value)
-    {
-        _additional += value;
-    }
 }
