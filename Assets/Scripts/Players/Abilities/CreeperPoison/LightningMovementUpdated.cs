@@ -11,6 +11,7 @@ public class LightningMovementUpdated : TargetOrAreaAbility
     [SerializeField] private LayerMask _obstacleLayerMask;
     [SerializeField] private LayerMask _enemyLayerMask;
     [SerializeField] private VisualRender _abilityRender;
+    [SerializeField] private LightningMovementTalent _lMTalent;
 
     [SerializeField] private float _rangeLeap;
     [SerializeField] private float _durationLeap;
@@ -46,6 +47,11 @@ public class LightningMovementUpdated : TargetOrAreaAbility
 
         Debug.Log("LightningMovement Cancel work");
 
+        if (_lMTalent.IsActive)
+        {
+            _lMTalent.ResetCharacterResistance();
+        }
+
         if (_useCoroutine != null)
             StopCoroutine(UseLeapCoroutine());
 
@@ -59,12 +65,20 @@ public class LightningMovementUpdated : TargetOrAreaAbility
     private IEnumerator UseLeapCoroutine()
     {
         Debug.Log("LightningMovement UseLeapCoroutine work");
-
+        Debug.Log($"RigidBody Player == {_dad.Rb}");
         PayCost();
         if (Target != null)
         {
             yield return _midPointCoroutine = StartCoroutine(MidPointCoroutine(_firstLeapPoint));
-            ExecuteLeaps(_dad, _firstLeapPoint, _secondLeapPoint, _durationLeap, _rangeLeap); 
+            if (_lMTalent.IsActive)
+            {
+                _lMTalent.IncreasingResistance();
+                ExecuteLeaps(_dad, _firstLeapPoint, _secondLeapPoint, _durationLeap, _rangeLeap); 
+            }
+            else
+            {
+                ExecuteLeaps(_dad, _firstLeapPoint, _secondLeapPoint, _durationLeap, _rangeLeap);
+            }
         }
         else
         {

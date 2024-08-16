@@ -81,11 +81,11 @@ public class Punch_Scorpion : Ability
         }
         _drawCircleSelf.Clear();
 
-        IsCanCancle = false;
+        IsCanCancel = false;
 
         yield return GetCastDeleyCoroutine();
 
-        IsCanCancle = true;
+        IsCanCancel = true;
         PayCost();
 
         if (Vector2.Distance(transform.position, _target.transform.position) <= 2f + 0.19f)

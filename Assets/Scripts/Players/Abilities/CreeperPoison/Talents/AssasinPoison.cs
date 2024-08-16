@@ -27,7 +27,7 @@ public class AssasinPoison : Talent
 
     private void Update()
     {
-        if (IsActive)
+        if (IsActive && _currentChargePoison < 3)
         {
             if (character.CharacterState.CheckForState(States.CreeperInvisible))
             {
@@ -41,19 +41,14 @@ public class AssasinPoison : Talent
         }
     }
     
-
     public void CmdSpendCharge(Character target, float lifeTimePoisonBoneStack)
     {
         if (character.CharacterState.CheckForState(States.CreeperInvisible))
         {
-            Debug.Log("Check State in AssasinPoison == " + character.CharacterState.CheckForState(States.CreeperInvisible));
             if (CurrentChargePoison > 0)
             {
-                Debug.Log("CurrentChargePoison == " + CurrentChargePoison);
                 target.CharacterState.CmdAddState(States.PoisonBone, 6f, 0);
                 CurrentChargePoison--;
-                Debug.Log("AddStacks PoisonBone");
-                Debug.Log("Before for / _invisibleCreeper.CurrentChargePoison == " + CurrentChargePoison);
             }
         }
     }
@@ -63,19 +58,15 @@ public class AssasinPoison : Talent
         if (_currentChargePoison < _maxChargePoison)
         {
             _currentChargePoison++;
-            Debug.Log("CurrentChargePoison == " + _currentChargePoison);
-            Debug.Log("TimeAccumulateCharge == " + _timeAccumulateCharge);
         }
     }
 
-    private void CmdAccumulateChargePoison()
-    {
-        if (_currentChargePoison < _maxChargePoison)
-        {
-            _currentChargePoison++;
-            Debug.Log("CMD CurrentChargePoison == " + _currentChargePoison);
-            Debug.Log("CMD TimeAccumulateCharge == " + _timeAccumulateCharge);
-        }
-    }
+    //private void CmdAccumulateChargePoison()
+    //{
+    //    if (_currentChargePoison < _maxChargePoison)
+    //    {
+    //        _currentChargePoison++;
+    //    }
+    //}
 
 }

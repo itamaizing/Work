@@ -32,7 +32,7 @@ public class Teleportation_Scorpion : Ability
 
     private void ResetValue()
     {
-        IsCanCancle = true;
+        IsCanCancel = true;
         _drawCircleSelf.Clear();
         _target = null;
     }
@@ -81,7 +81,7 @@ public class Teleportation_Scorpion : Ability
         }
         _drawCircleSelf.Clear();
 
-        IsCanCancle = false;
+        IsCanCancel = false;
         yield return GetCastDeleyCoroutine();
         PayCost();
 
@@ -123,7 +123,7 @@ public class Teleportation_Scorpion : Ability
 
         PlayerMove.transform.position = teleportPosition; // сам тп
 
-        IsCanCancle = true;
+        IsCanCancel = true;
         //PayCost();
 
         ResetValue();

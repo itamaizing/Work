@@ -91,14 +91,14 @@ public class Telekinesis : Ability
             }
             yield return null;
         }
-        IsCanCancle = false;
+        IsCanCancel = false;
         PlayerMove.CanMove = false;
         _target.CanMove = false;
         Destroy(_circleTarget.gameObject);
         yield return GetCastDeleyCoroutine();
 
         float time = 0;
-        IsCanCancle = true;
+        IsCanCancel = true;
         PayCost();
 
         while (time < StreamingDuration) // действие 

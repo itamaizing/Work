@@ -66,6 +66,13 @@ public class HealthComponent : NetworkBehaviour
     public Func<HealInfo, HealInfo> AddHealth;
 
     public float MaxHealth => _maxHealth;
+    public float CurrentHealth => _currentHealth;
+    public float HpRegenerationValue { get => _hpRegenerationValue; set => _hpRegenerationValue = value; }
+
+    public float EvadeMagicDamage { get => _evadeMagDamage; set => _evadeMagDamage = value; }
+    public float EvadeMeleeDamage { get => _evadeMeleeDamage; set => _evadeMeleeDamage = value; }
+    public float EvadeRangeDamage { get => _evadeRangeDamage; set => _evadeRangeDamage = value; }
+    public float DefMagDamage { get => _defMagDamage; set => _defMagDamage = value; }
 
     public event Action<float, float, float> OnHpChanged;
 
@@ -75,19 +82,19 @@ public class HealthComponent : NetworkBehaviour
     {
         _currentHealth = maxHealth;
         _maxHealth = maxHealth;
-        _hpRegenerationValue = regenValue;
+        HpRegenerationValue = regenValue;
         _hpRegenerationDelay = regenDelay;
         
         _defPhysDamage = healthInfo.DefaultPhysicsDamage;
         _defMagDamage = healthInfo.DefaultMagicDamage;
-        _evadeMagDamage = healthInfo.EvadeMagicDamage;
-        _evadeMeleeDamage = healthInfo.EvadeMeleeDamage;
-        _evadeRangeDamage = healthInfo.EvadeRangeDamage;
+        EvadeMagicDamage = healthInfo.EvadeMagicDamage;
+        EvadeMeleeDamage = healthInfo.EvadeMeleeDamage;
+        EvadeRangeDamage = healthInfo.EvadeRangeDamage;
         _absorbMagDamage = healthInfo.AbsorbMagicDamage;
         _absorbPhysDamage = healthInfo.AbsorbPhysicsDamage;
         
         UpdateHealthBar();
-       // StartCoroutine(CoroutineRegenirateHP());
+        StartCoroutine(CoroutineRegenirateHP());
     }
 
     public bool TryTakeDamage(float damageValue, DamageType damageType, AttackRangeType attackRangeType)
@@ -123,7 +130,7 @@ public class HealthComponent : NetworkBehaviour
         }
         if (damageType == DamageType.Magical)
         {
-            if (UnityEngine.Random.Range(0, 100) <= _evadeMagDamage)
+            if (UnityEngine.Random.Range(0, 100) <= EvadeMagicDamage)
             {
                 ShowDamagePrefab("miss",new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f));
                 hitSuccessed = false;
@@ -140,7 +147,7 @@ public class HealthComponent : NetworkBehaviour
             switch (attackRangeType)
             {
                 case AttackRangeType.MeleeAttack:
-                    if (UnityEngine.Random.Range(0, 100) <= _evadeMeleeDamage)
+                    if (UnityEngine.Random.Range(0, 100) <= EvadeMeleeDamage)
                     {
                         ShowDamagePrefab("miss",new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f));
                         hitSuccessed = false;
@@ -151,7 +158,7 @@ public class HealthComponent : NetworkBehaviour
                     return damageValue - _absorbPhysDamage;
 
                 case AttackRangeType.RangeAttack:
-                    if (UnityEngine.Random.Range(0, 100) <= _evadeRangeDamage)
+                    if (UnityEngine.Random.Range(0, 100) <= EvadeRangeDamage)
                     {
                         ShowDamagePrefab("miss",new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f));
                         hitSuccessed = false;
@@ -413,9 +420,9 @@ public class HealthComponent : NetworkBehaviour
         while (true)
         {
             yield return new WaitForSeconds(_hpRegenerationDelay);
-            if(_currentHealth < _maxHealth)
+            if (_currentHealth < _maxHealth)
             {
-                this.RegenHP(_hpRegenerationValue + _hpRegenerationValue * _boostRegen + +_hpRegenerationValue * _boostRegen2);
+                this.RegenHP(HpRegenerationValue + HpRegenerationValue * _boostRegen + HpRegenerationValue * _boostRegen2);
             }
         }
     }
@@ -477,12 +484,12 @@ public class HealthComponent : NetworkBehaviour
 
     public void SetEvadeMagic(float value)
     {
-        _evadeMagDamage =+ value;
+        EvadeMagicDamage =+ value;
     }    
 
     public float GetEvadeMagic()
     {
-        return _evadeMagDamage;
+        return EvadeMagicDamage;
     }
 
     public void SetEvadeAll(float value)
@@ -492,7 +499,17 @@ public class HealthComponent : NetworkBehaviour
         _evadeRangeDamage += value;
     }
 
-	[ContextMenu("Add Magic Shield")] //��� ����� � ����������
+    public void SetDefMagicDamage(float value)
+    {
+        _defMagDamage += value;
+    }
+
+    public void ResetDefMagicDamage(float baseValue)
+    {
+        _defMagDamage = baseValue;
+    }
+
+    [ContextMenu("Add Magic Shield")] //��� ����� � ����������
 	private void AddShields()
 	{
 		DamageType dmgtype = DamageType.Magical;

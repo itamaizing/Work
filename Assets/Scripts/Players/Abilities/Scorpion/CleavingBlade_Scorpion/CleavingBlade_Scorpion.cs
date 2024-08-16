@@ -73,7 +73,7 @@ public class CleavingBlade_Scorpion : Ability
         }
         _drawCircleSelf.Clear();
 
-        IsCanCancle = false;
+        IsCanCancel = false;
         float initialCastDelay = CastDeley;
         if (_counter == 2) CastDeley *= 0.8f;
 
@@ -81,7 +81,7 @@ public class CleavingBlade_Scorpion : Ability
 
         CastDeley = initialCastDelay;
 
-        IsCanCancle = true;
+        IsCanCancel = true;
         PayCost();
 
         if (_target != null && Vector2.Distance(transform.position, _target.transform.position) <= 2f + 0.19f)

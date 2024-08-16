@@ -49,11 +49,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 466379c09c984d94093f72bd7d2d9e6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bonePoisonPrefab: {fileID: -6945864312988002102, guid: acf0aa1d343559640b903638c293a6b1, type: 3}
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _rb: {fileID: 4203435246731193498}
   _hitEffect: {fileID: 0}
   _distance: 5
-  _force: 30
+  _force: 15
 --- !u!50 &4203435246731193498
 Rigidbody2D:
   serializedVersion: 4

@@ -17,10 +17,17 @@ public class SpitPoisonProjectile : NetworkBehaviour
     private float _damage;
     private float _lifeTimePoisonBoneStacks = 20.0f;
 
+    private bool _isPlayer;
+    private bool _isAllies;
+    private bool _isEnemy;
+
+    private bool _talentIsActive;
+
     private void Awake()
     {
         _startPos = transform.position;
         _rb.AddForce(transform.up * _force, ForceMode2D.Impulse);
+        //StartCoroutine(DisableCollider());
     }
 
     private void FixedUpdate()
@@ -31,20 +38,85 @@ public class SpitPoisonProjectile : NetworkBehaviour
         }
     }
 
+    //private IEnumerator DisableCollider()
+    //{
+    //    Collider2D projectileCollider = this.gameObject.GetComponent<Collider2D>();
+
+    //    projectileCollider.enabled = false;
+    //    Debug.Log($"Before projectileSpitPoisonCollider enabled == {projectileCollider.enabled}");
+
+    //    yield return new WaitForSeconds(0.2f);
+    //    Debug.Log("Two seconds passed");
+
+    //    projectileCollider.enabled = true;
+    //    Debug.Log($"After projectileSpitPoisonCollider enabled == {projectileCollider.enabled}");
+    //}
+
+    //[Server]
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.transform != _dad.transform)
+        if (_talentIsActive)
         {
-            if (collision.TryGetComponent<HeroComponent>(out var target))
+            if (_isPlayer)
             {
-                _damage = Random.Range(4.0f, 12.0f);
+                if (collision.gameObject == _dad.gameObject)
+                {
+                    SetPlayer();
+                    Debug.Log($"if (IsPlayer) // RegeneratingPoison.SetPlayer == {_dad}");
+                    _dad.CharacterState.CmdAddState(States.RegeneratingPoison, 6.0f, 0);
+                    Destroy(gameObject);
+                }
+            }
+            else if (_isAllies)
+            {
+                if (collision.gameObject.layer == LayerMask.NameToLayer("Allies") && collision.gameObject != _dad.gameObject)
+                {
+                    if (collision.TryGetComponent<Character>(out var alliesHealth))
+                    {
+                        SetPlayer(); 
+                        Debug.Log($"if (IsAllies) // RegeneratingPoison.SetPlayer == {_dad}");
+                        alliesHealth.CharacterState.CmdAddState(States.RegeneratingPoison, 6.0f, 0);
+                        Destroy(gameObject);
+                    }
+                }
+                else if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy") && collision.gameObject != _dad.gameObject)
+                {
+                    return;
+                }
+            }   
+            else if (_isEnemy)
+            {
+                if (collision.gameObject.transform != _dad.transform && collision.gameObject.layer != LayerMask.NameToLayer("Allies"))
+                {
+                    if (collision.TryGetComponent<Character>(out var target))
+                    {
+                        _damage = Random.Range(4.0f, 12.0f);
 
-                DealDamage(target, _damage, DamageType.Magical, AttackRangeType.RangeAttack);
+                        DealDamage(target, _damage, DamageType.Magical, AttackRangeType.RangeAttack);
+                    }
+                }
+                else if (collision.gameObject.layer == LayerMask.NameToLayer("Allies") && collision.gameObject != _dad.gameObject)
+                {
+                    return;
+                }
+            }    
+            
+        }
+        else
+        {
+            if (collision.gameObject.transform != _dad.transform && collision.gameObject.layer != LayerMask.NameToLayer("Allies"))
+            {
+                if (collision.TryGetComponent<Character>(out var target))
+                {
+                    _damage = Random.Range(4.0f, 12.0f);
+
+                    DealDamage(target, _damage, DamageType.Magical, AttackRangeType.RangeAttack);
+                }
             }
         }
     }
 
-    private void DealDamage(HeroComponent target, float damage, DamageType damageType, AttackRangeType attackRangeType)
+    private void DealDamage(Character target, float damage, DamageType damageType, AttackRangeType attackRangeType)
     {
         float chanceOfBlindness = 0.3f;
         float numbersForChanceOfBlindness = Random.Range(0.0f, 1.0f);
@@ -54,7 +126,6 @@ public class SpitPoisonProjectile : NetworkBehaviour
 
         target.Health.TryTakeDamage(damage, damageType, attackRangeType);
 
-        PoisonBone.SetPlayer(_dad);
         target.CharacterState.CmdAddState(States.PoisonBone, _lifeTimePoisonBoneStacks, 0);
 
         if (numbersForChanceOfBlindness <= chanceOfBlindness)
@@ -67,7 +138,6 @@ public class SpitPoisonProjectile : NetworkBehaviour
 
     private void Explode()
     {
-        Debug.Log("Ball is destroy in Explode()");
         if (_hitEffect != null)
         {
             GameObject hitEffect = Instantiate(_hitEffect, transform.position, Quaternion.identity);
@@ -76,9 +146,31 @@ public class SpitPoisonProjectile : NetworkBehaviour
         Destroy(gameObject);
     }
 
-    public void InitializationProjectile(Character dad, float energy)
+    public void InitializationProjectile(Character dad, float energy, bool talentIsActive, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
     {
         _dad = dad;
         _energyDad = energy;
+        _isPlayer = isTargetPlayer;
+        _isAllies = isTargetAllies;
+        _isEnemy = isTargetEnemy;
+        _talentIsActive = talentIsActive;
+        Debug.Log($"InitializationProjectileSpitPoison / _dad == {_dad}");
+        Debug.Log($"_isPlayer == {_isPlayer}; _isAllies == {_isAllies}; _isEnemy == {_isEnemy}; _talentIsActive == {_talentIsActive}");
+    }
+
+    private void SetPlayer()
+    {
+        RegeneratingPoison.SetPlayer(_dad);
+        PoisonBone.SetPlayer(_dad);
+        Debug.Log($"RegeneratingPoison.SetPlayer == {_dad}");
+        RpcSetPlayer();
+    }
+
+    [ClientRpc]
+    private void RpcSetPlayer()
+    {
+        RegeneratingPoison.SetPlayer(_dad);
+        PoisonBone.SetPlayer(_dad);
+        Debug.Log($"Rpc // RegeneratingPoison.SetPlayer == {_dad}");
     }
 }

@@ -22,7 +22,7 @@ public abstract class Ability : NetworkBehaviour
     [SerializeField] protected float _cooldown = 0f;
 	[SerializeField] protected Schools _abilitySchool;
 	[SerializeField] protected AbilityForm _abilityForm;
-	[SerializeField] protected LayerMask _targetsLayers;
+	[SerializeField] protected LayerMask[] _targetsLayers;
 	[Header("Charge settings")]
     [SerializeField] protected bool _isUseCharges;
     [SerializeField] protected bool _chargesHaveSeparateCooldown;
@@ -38,7 +38,7 @@ public abstract class Ability : NetworkBehaviour
 	protected MoveComponent _playerMove;
 	protected HealthComponent _health;
 	protected bool _isUsed = false;
-	protected bool _isCanCancle = true;
+	protected bool _isCanCancel = true;
 	protected bool _isReady = true;
     protected int _currentChargers;
 	protected Coroutine _rechargeJob;
@@ -49,7 +49,7 @@ public abstract class Ability : NetworkBehaviour
     private float _remainingСooldownTime;
 	private bool _avaliable = true;
 	private float _timerForDebuf;
-    private StatsBuff _statsBuff = new StatsBuff(1, 0);
+    private StatsBuff _statsBuff = new StatsBuff();
 
 	public MoveComponent PlayerMove => _playerMove;
     public StaminaComponent Mana => _mana;
@@ -69,9 +69,10 @@ public abstract class Ability : NetworkBehaviour
     public float Area { get => Buff.Area.GetBuffedValue(_area); protected set => _area = value; }
     public float CastLength { get => Buff.Area.GetBuffedValue(_castLength); protected set => _castLength = value; }
     public float CastWidth { get => Buff.Area.GetBuffedValue(_castWidth); protected set => _castWidth = value; }
+    public float ManaCost { get => Buff.ManaCost.GetBuffedValue(_manaCost); protected set => _manaCost = value; }
     public bool IsAutoAttack { get => _isAutoAttack; protected set => _isAutoAttack = value; }
     public bool IsUsed { get => _isUsed; protected set => _isUsed = value; }
-    public bool IsCanCancle { get => _isCanCancle; protected set => _isCanCancle = value; }
+    public bool IsCanCancel { get => _isCanCancel; protected set => _isCanCancel = value; }
     public bool IsReady { get => _isReady; set => _isReady = value; }
 	public Schools School => _abilitySchool;
     public float RemainingСooldownTime => _remainingСooldownTime;
@@ -111,7 +112,7 @@ public abstract class Ability : NetworkBehaviour
 
     public virtual bool TryCancel()
     {
-        if(_isUsed && _isCanCancle)
+        if(_isUsed && _isCanCancel)
         {
             Cancel();
             _isUsed = false;
@@ -135,7 +136,7 @@ public abstract class Ability : NetworkBehaviour
 
     public virtual bool TryUse()
     {
-        if (_isUsed || (_mana.Value >= _manaCost && _isReady) == false || !_avaliable)
+        if (_isUsed || (_mana.Value >= ManaCost && _isReady) == false || !_avaliable)
         {
             PreparingEnded?.Invoke();
             return false;
@@ -149,7 +150,7 @@ public abstract class Ability : NetworkBehaviour
             }    
         }
         _isUsed = true;
-        _isCanCancle = true;
+        _isCanCancel = true;
         CastStarted?.Invoke();
         Cast();
         return true;
@@ -190,9 +191,9 @@ public abstract class Ability : NetworkBehaviour
 
     protected virtual bool PayCost(bool castEnded = true)
     {
-        if (TryUseCharge() && _mana.Value >= _manaCost && _isReady)
+        if (TryUseCharge() && _mana.Value >= ManaCost && _isReady)
         {
-            CmdUseMana(_manaCost);
+            CmdUseMana(ManaCost);
         }
         else
         {
@@ -327,7 +328,7 @@ public abstract class Ability : NetworkBehaviour
         }
         StopStreaming?.Invoke();
         _playerMove.CanMove = true;
-        _isCanCancle = true;
+        _isCanCancel = true;
         TryCancel();
         CastEnded?.Invoke();
         _streamingJob = null;
@@ -396,46 +397,32 @@ public enum AbilityForm
 	Physical
 }
 
-public struct StatsBuff
+public class StatsBuff
 {
-    private StatBuff _damage;
-    private StatBuff _radius;
-    private StatBuff _area;
-    private StatBuff _attackSpeed;
-    private StatBuff _castSpeed;
-    private StatBuff _chargeCooldown;
+    private StatBuff _damage = new StatBuff();
+    private StatBuff _radius = new StatBuff();
+    private StatBuff _area = new StatBuff();
+    private StatBuff _attackSpeed = new StatBuff();
+    private StatBuff _castSpeed = new StatBuff();
+    private StatBuff _remainingСooldownTime = new StatBuff();
+    private StatBuff _manaCost = new StatBuff();
 
     public StatBuff Damage => _damage;
     public StatBuff Radius => _radius;
     public StatBuff Area => _area;
     public StatBuff AttackSpeed => _attackSpeed;
     public StatBuff CastSpeed => _castSpeed;
-    public StatBuff ChargeCooldown => _chargeCooldown;
-
-    public StatsBuff(float multiplier, float additional)
-    {
-        _damage = new StatBuff(multiplier, additional);
-        _radius = new StatBuff(multiplier, additional);
-        _area = new StatBuff(multiplier, additional);
-        _attackSpeed = new StatBuff(multiplier, additional);
-        _castSpeed = new StatBuff(multiplier, additional);
-        _chargeCooldown = new StatBuff(multiplier, additional);
-    }
+    public StatBuff RemainingСooldownTime => _remainingСooldownTime;
+    public StatBuff ManaCost => _manaCost;
 }
 
-public struct StatBuff
+public class StatBuff
 {
-    private float _multiplier;
+    private float _multiplier = 1;
     private float _additional;
 
     public float Multiplier => _multiplier;
     public float Additional => _additional;
-
-    public StatBuff(float multiplier, float additional)
-    {
-        _multiplier = multiplier;
-        _additional = additional;
-    }
 
     public float GetBuffedValue(float value)
     {
