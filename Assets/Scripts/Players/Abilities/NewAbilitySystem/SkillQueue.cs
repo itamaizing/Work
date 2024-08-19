@@ -34,6 +34,7 @@ public class SkillQueue : MonoBehaviour
     public void Add(Skill skill)
     {
         _skills.Enqueue(skill);
+        SkillAdded?.Invoke(skill);
     }
 
     public bool TryCancel(bool foceCancel = false)

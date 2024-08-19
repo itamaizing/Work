@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class AbilitiesManager : MonoBehaviour
 {
+    /*
     [SerializeField] private RectTransform panelsParent;
     [SerializeField] private AbilityPanel _panelPrefab;
     
@@ -62,4 +63,5 @@ public class AbilitiesManager : MonoBehaviour
         if(panel==null) return;
         panel.IsActive = true;
     }
+    */
 }

@@ -111,7 +111,7 @@ public abstract class Ability : NetworkBehaviour
 
     public virtual bool TryCancel()
     {
-        if(_isUsed && _isCanCancle)
+        if (_isUsed && _isCanCancle)
         {
             Cancel();
             _isUsed = false;
