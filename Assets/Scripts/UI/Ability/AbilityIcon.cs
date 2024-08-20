@@ -16,9 +16,19 @@ public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHa
     [SerializeField] private TextMeshProUGUI _description;
 
     private FillAmountOverTime _castLine;
-    private Ability _ability;
+    private Skill _ability;
 
-    public void Init(Ability ability, FillAmountOverTime castLine)
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        _abilityNameBox.SetActive(true);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        _abilityNameBox.SetActive(false);
+    }
+
+    public void Init(Skill ability, FillAmountOverTime castLine)
     {
         _ability = ability;
         _abilityIcon.sprite = ability.Icon;
@@ -32,15 +42,20 @@ public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHa
             _chargeCounter.enabled = true;
             OnCurrentChargeText(ability.Chargers);
         }
-        if (ability.IsStreaming)
-        {
-            ability.StartStreaming += OnStartStreaming;
-            ability.StopStreaming += OnStopStreaming;
-        }
-        ability.StartCastDeley += OnStartCastDeley;
-        ability.StopCastDeley += OnStopCastDeley;
+        SubscribingSkillOnEvents(ability);
+    }
 
-        ability.CooldownStarted += OnStartCooldown;
+    public void Init(Skill ability)
+    {
+        _ability = ability;
+        _abilityIcon.sprite = ability.Icon;
+        _name.text = ability.Name;
+        _description.text = ability.Description;
+    }
+
+    private void OnDestroy()
+    {
+        UnsubscribingSkillOnEvents(_ability);
     }
 
     public void OnCurrentChargeText(int value)
@@ -90,7 +105,7 @@ public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHa
     {
         _castLine.gameObject.SetActive(true);
         _castLine.StartFill(time, 1, 0);
-        StartCoroutine(CastLineCoroutine());
+       // StartCoroutine(CastLineCoroutine());
     }
 
     private void OnStopStreaming()
@@ -103,7 +118,7 @@ public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHa
     {
         _castLine.gameObject.SetActive(true);
         _castLine.StartFill(time);
-        StartCoroutine(CastLineCoroutine());
+        //StartCoroutine(CastLineCoroutine());
     }
 
     private void OnStopCastDeley()
@@ -111,7 +126,7 @@ public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHa
         _castLine.gameObject.SetActive(false);
         _castLine.Stop();
     }
-
+    /*
     private IEnumerator CastLineCoroutine()
     {
         while (_castLine.enabled)
@@ -121,14 +136,26 @@ public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHa
             yield return null;
         }
     }
-
-    public void OnPointerEnter(PointerEventData eventData)
+    */
+    private void SubscribingSkillOnEvents(Skill ability)
     {
-        _abilityNameBox.SetActive(true);
+        ability.CastStreamStarted += OnStartStreaming;
+        ability.Canceled += OnStopStreaming;
+
+        ability.CastDeleyStarted += OnStartCastDeley;
+        ability.Canceled += OnStopCastDeley;
+
+        ability.CooldownStarted += OnStartCooldown;
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    private void UnsubscribingSkillOnEvents(Skill ability)
     {
-        _abilityNameBox.SetActive(false);
+        ability.CastStreamStarted -= OnStartStreaming;
+        ability.Canceled -= OnStopStreaming;
+
+        ability.CastDeleyStarted -= OnStartCastDeley;
+        ability.Canceled -= OnStopCastDeley;
+
+        ability.CooldownStarted -= OnStartCooldown;
     }
 }

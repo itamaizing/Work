@@ -13,7 +13,6 @@ public abstract class Character : NetworkBehaviour
 	[SerializeField] private MoveComponent _playerMove; 
 	[SerializeField] private StaminaComponent _stamina;
 	[CanBeNull] [SerializeField] private RuneComponent _runeComponent;
-	//[SerializeField] private PlayerAbilities _abilities;
 	[SerializeField] private SkillManager _abilities;
 	[SerializeField] private CharacterState _characterState;
 	[SerializeField] private UIPlayerComponents _uiPlayerComponents;

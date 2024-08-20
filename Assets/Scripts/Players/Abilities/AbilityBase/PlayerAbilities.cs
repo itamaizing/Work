@@ -7,6 +7,7 @@ using UnityEngine.Serialization;
 
 public class PlayerAbilities : MonoBehaviour
 {
+
     [SerializeField] private List<Ability> _abilities;
     [SerializeField] private VisualRender visualRender;
 	[SerializeField] private CharacterData _characterData;
@@ -41,7 +42,7 @@ public class PlayerAbilities : MonoBehaviour
         {
             item.Init(playerMove, staminaComponent, healthComponent);
         }
-		_abilityPanel = AbilitiesManager.Instance.AddPanel(this);
+		//_abilityPanel = AbilitiesManager.Instance.AddPanel(this);
 	}
 
     private void EnableAbilities()
@@ -91,13 +92,13 @@ public class PlayerAbilities : MonoBehaviour
 
 	public void SetAbilitiesPanelSelect(bool isSelect)
 	{
-		AbilitiesManager.Instance.ChangeCurrentPanelSelectStatus(_abilityPanel, isSelect);
+		//AbilitiesManager.Instance.ChangeCurrentPanelSelectStatus(_abilityPanel, isSelect);
 		if (isSelect) EnableAbilities();
 		else DisableAbilities();
 	}
 	public void SetAbilitiesPanelEnable()
 	{
-		AbilitiesManager.Instance.ActiveCurrentPanel(_abilityPanel);
+		//AbilitiesManager.Instance.ActiveCurrentPanel(_abilityPanel);
 	}
 	public void SetAbilitiesCoolDown(float time)
 	{
@@ -194,14 +195,7 @@ public class PlayerAbilities : MonoBehaviour
 			_currentAbility.Cancled -= ContinueAutoAttack;
 		}
 	}
-	/*private void TryUseAbility()
-    {
-        if (_currentAbility == null || _isAbilitiesDisabled  || _currentAbility.IsUsed )
-            return;
 
-        visualRender.Drawn(_currentAbility);
-        _currentAbility.TryUse();
-    }*/
 	private void TryUseAbility()
 	{
 		if (_currentAbility == null || !_isAbilitiesEnabled || !_abilityPanel.IsActive || (_currentAbility.IsUsed))
@@ -288,25 +282,26 @@ public class PlayerAbilities : MonoBehaviour
 
 	private void OnDestroy()
 	{
-		AbilitiesManager.Instance.RemovePanel(_abilityPanel);
+		//AbilitiesManager.Instance.RemovePanel(_abilityPanel);
 	}
 
 	public void AddAbility(Ability ability)
 	{
 		_abilities.Add(ability);
-		if (AbilitiesManager.Instance == null) return;
+		//if (AbilitiesManager.Instance == null) return;
 
-		AbilitiesManager.Instance.RemovePanel(_abilityPanel);
-		_abilityPanel = AbilitiesManager.Instance.AddPanel(this);
+		//AbilitiesManager.Instance.RemovePanel(_abilityPanel);
+		//_abilityPanel = AbilitiesManager.Instance.AddPanel(this);
 		_abilityPanel.gameObject.SetActive(true);
 	}
 	public void RemoveAbility(Ability ability)
 	{
 		_abilities.Remove(ability);
-		if (AbilitiesManager.Instance == null) return;
+		//if (AbilitiesManager.Instance == null) return;
 
-		AbilitiesManager.Instance.RemovePanel(_abilityPanel);
-		_abilityPanel = AbilitiesManager.Instance.AddPanel(this);
+		//AbilitiesManager.Instance.RemovePanel(_abilityPanel);
+		//_abilityPanel = AbilitiesManager.Instance.AddPanel(this);
 		_abilityPanel.gameObject.SetActive(true);
 	}
+
 }

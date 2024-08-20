@@ -13,7 +13,16 @@ public class TestH2 : Skill
 
     private Character _target;
 
-    protected override bool IsCanCast => Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+    protected override bool IsCanCast
+    {
+        get
+        {
+            if(_target != null)
+                return Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+
+            return false;
+        }
+    }
 
     protected override IEnumerator CastJob()
     {
@@ -47,7 +56,7 @@ public class TestH2 : Skill
         {
             if (Input.GetMouseButton(0))
             {
-                _target = GetRaycastTarget();
+                _target = GetRaycastTarget(true);
             }
             yield return null;
         }

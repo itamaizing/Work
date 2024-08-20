@@ -42,7 +42,7 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] protected float _manaCostRate;
     [SerializeField] protected float _manaCostPerTick;
     [Header("Charge settings")]
-    [SerializeField] protected bool _isUseCharges;
+    [SerializeField] private bool _isUseCharges;
     [SerializeField] protected bool _chargesHaveSeparateCooldown;
     [SerializeField] protected int _maxCharges;
     [SerializeField] protected float _chargeCooldown;
@@ -95,6 +95,7 @@ public abstract class Skill : NetworkBehaviour
     public float Area { get => Buff.Area.GetBuffedValue(_area); protected set => _area = value; }
     public float CastLength { get => Buff.Area.GetBuffedValue(_castLength); protected set => _castLength = value; }
     public float CastWidth { get => Buff.Area.GetBuffedValue(_castWidth); protected set => _castWidth = value; }
+    public bool IsUseCharges { get => _isUseCharges; }
     public LayerMask TargetsLayers => _targetsLayers;
     public Schools School => _abilitySchool;
     public AbilityForm AbilityForm => _abilityForm;
@@ -484,8 +485,6 @@ public abstract class Skill : NetworkBehaviour
             StartCoroutine(CastStreamJob());
 
         yield return _castCoroutine = StartCoroutine(CastJob());
-
-        Debug.Log(123);
 
         CastEnded?.Invoke();
         _isCasting = false;
