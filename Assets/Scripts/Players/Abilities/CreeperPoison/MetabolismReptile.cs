@@ -13,6 +13,7 @@ public class MetabolismReptile : Skill
  
     private float _duration = 3f;
 
+    private float _originalHpRegen;
     private float _increaseHealthRegen = 2f;
     private float _increaseCastTime = 2f;
     private float _increaseCooldownTime = 2f;
@@ -24,47 +25,52 @@ public class MetabolismReptile : Skill
 
     protected override IEnumerator PrepareJob()
     {
-        throw new System.NotImplementedException();
+        Debug.Log("MetabolismReptile / PrepareJob");
+        _originalHpRegen = _player.Health.HpRegenerationValue;
+        yield return null;
     }
 
     protected override IEnumerator CastJob()
     {
-        _isCanCast = false;
-        TryPayCost();
+        Debug.Log("MetabolismReptile / CastJob");
         IncreaseValues();
-        yield return new WaitForSeconds(_duration);
-        ClearData();
+        yield return null;
     }
 
     protected override void ClearData()
     {
-        ResetValues();
+        Debug.Log("MetabolismReptile / ClearData");
     }
 
     private void IncreaseValues()
     {
-        //float currentHpRegen = _player.Health.HpRegenerationValue;
-        //float increasedHealthRegen = currentHpRegen * _increaseHealthRegen;
-        //_player.Health.HpRegenerationValue = increasedHealthRegen;
-        //Debug.Log("HpRegen == " + _player.Health.HpRegenerationValue);
+        Debug.Log("MetabolismReptile / IncreaseValues");
 
-        //float newRemainingCooldownForSpitPoison = _spitPoison.Remaining—ooldownTime / _increaseCooldownTime;
-        //_spitPoison.ReductionSetCooldown(newRemainingCooldownForSpitPoison);
+        float increasedHpRegen = _originalHpRegen * _increaseHealthRegen;
+        _player.Health.HpRegenerationValue = increasedHpRegen;
+        Debug.Log("HpRegen / IncreaseValues == " + _player.Health.HpRegenerationValue);
 
-        //_poisonBall.Buff.CastSpeed.ReductionPercentage(_increaseCastTime);
-        //_spitPoison.Buff.CastSpeed.ReductionPercentage(_increaseCastTime);
+        Debug.Log($"MetabolismReptile / IncreaseValues / after newRemainingCooldownForSpitPoison = {_spitPoison.Remaining—ooldownTime}");
+        float newRemainingCooldownForSpitPoison = _spitPoison.Remaining—ooldownTime / _increaseCooldownTime;
+        _spitPoison.ReductionSetCooldown(newRemainingCooldownForSpitPoison);
+        Debug.Log($"MetabolismReptile / IncreaseValues / before newRemainingCooldownForSpitPoison = {_spitPoison.Remaining—ooldownTime}");
+        //—‰ÂÎ‡Ú¸ ÔÓÚÓÏ ÛÏÂÌ¸¯ÂÌËÂ ÍÛÎ‰‡ÛÌÓ‚ Á‡ˇ‰Ó‚ ‰Îˇ PoisonBall
+
+        _poisonBall.Buff.CastSpeed.ReductionPercentage(_increaseCastTime);
+        _spitPoison.Buff.CastSpeed.ReductionPercentage(_increaseCastTime);
+
+        Invoke("ResetValues", _duration);
     }
 
     private void ResetValues()
     {
-        //float currentHpRegen = _player.Health.HpRegenerationValue;
-        //float increasedHealthRegen = currentHpRegen / _increaseHealthRegen;
-        //_player.Health.HpRegenerationValue = increasedHealthRegen;
-        //Debug.Log("HpRegen == " + _player.Health.HpRegenerationValue);
+        Debug.Log("MetabolismReptile / IncreaseValues");
+        _player.Health.HpRegenerationValue = _originalHpRegen;
+        Debug.Log("HpRegen / ResetValues == " + _player.Health.HpRegenerationValue);
 
-        //_poisonBall.Buff.CastSpeed.IncreasePercentage(_increaseCastTime);
-        //_spitPoison.Buff.CastSpeed.IncreasePercentage(_increaseCastTime);
-        //_isCanCast = true;
+        _poisonBall.Buff.CastSpeed.IncreasePercentage(_increaseCastTime);
+        _spitPoison.Buff.CastSpeed.IncreasePercentage(_increaseCastTime);
+        _isCanCast = true;
     }
 
 }

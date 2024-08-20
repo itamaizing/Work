@@ -26,6 +26,7 @@ public class FirstStrike : Talent
         _isCanIncreaseCrit = true;
         FirstHit = true;
 
+        Debug.Log($"FirstStrike / SetBoolTrue / IsCanCrit = {_isCanIncreaseCrit} | FirstHit = {FirstHit}");
         return _isCanIncreaseCrit && FirstHit;
     }
 
@@ -35,6 +36,7 @@ public class FirstStrike : Talent
         {
             _isCanIncreaseCrit = false;
             FirstHit = false;
+            Debug.Log($"FirstStrike / ReturnBoolFalse / IsCanCrit = {_isCanIncreaseCrit} | FirstHit = {FirstHit}");
         }
         return _isCanIncreaseCrit;
     }

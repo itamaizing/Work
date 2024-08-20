@@ -16,7 +16,7 @@ public class SkillManager : MonoBehaviour
     private List<AutoAttackSkill> _autoAttackSkills = new List<AutoAttackSkill>();
     private List<Skill> _simpleSkills = new List<Skill>();
     private SkillRenderer _skillRenderer;
-    private float _globalCooldownTime = 2f;
+    private float _globalCooldownTime = 0.1f;
     private SkillQueue _skillQueue;
     private AutoAttackQueue _autoAttackQueue;
     private Skill _selectedSkill;

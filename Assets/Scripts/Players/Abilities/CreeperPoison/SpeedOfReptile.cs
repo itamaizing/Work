@@ -21,61 +21,74 @@ public class SpeedOfReptile : Skill
 
     protected override IEnumerator PrepareJob()
     {
+        Debug.Log("SpeedOfReptile / PrepareJob");
         yield return null;
     }
 
     protected override IEnumerator CastJob()
     {
-        _isCanCast = false;
-        TryPayCost();
+        Debug.Log("SpeedOfReptile / CastJob");
         IncreaseValues();
-
-        yield return new WaitForSeconds(_duration);
-
-        Debug.Log($"After _duration called ClearData()");
-        ClearData();
+        yield return null;
     }
 
     protected override void ClearData()
     {
         Debug.Log("ClearData work");
-        ResetValues();
     }
 
     private void IncreaseValues()
     {
-        _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_increaseAttackSpeed);
+        Debug.Log("SpeedOfReptile / IncreaseValues");
 
+        _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_increaseAttackSpeed);
+        Debug.Log($"SpeedOfReptile / IncreaseValues / IncreaseAttackSpeed = {_creeperStrike.Buff.AttackSpeed.Multiplier}");
         CmdIncreaseValues();
+
+        Invoke("ResetValues", _duration);
     }
 
     private void ResetValues()
     {
+        Debug.Log("SpeedOfReptile / ResetValues");
+
         _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_increaseAttackSpeed);
-
+        Debug.Log($"SpeedOfReptile / IncreaseValues / ReductionAttackSpeed = {_creeperStrike.Buff.AttackSpeed.Multiplier}");
         CmdResetValues();
-
-        _isCanCast = true;
     }
 
     [Command]
     private void CmdIncreaseValues()
     {
+        Debug.Log("SpeedOfReptile / CmdIncreaseValues");
+
         _player.Health.EvadeMagicDamage *= _increaseEvasion;
-        _player.Health.EvadeMeleeDamage *= _increaseEvasion;
-        _player.Health.EvadeRangeDamage *= _increaseEvasion;
+        _player.Health.EvadeMeleeDamage *= _increaseEvasion; 
+        _player.Health.EvadeRangeDamage *= _increaseEvasion; 
+
+        Debug.Log($"SpeedOfReptile / CmdIncreaseValues / _player.Health.EvadeMagicDamage = {_player.Health.EvadeMagicDamage}");
+        Debug.Log($"SpeedOfReptile / CmdIncreaseValues / _player.Health.EvadeMeleeDamage = {_player.Health.EvadeMeleeDamage}");
+        Debug.Log($"SpeedOfReptile / CmdIncreaseValues / _player.Health.EvadeRangeDamage = {_player.Health.EvadeRangeDamage}");
 
         _player.Move.ChangeMoveSpeed(_increaseMoveSpeed);
+        Debug.Log($"SpeedOfReptile / CmdIncreaseValues / PlayerMoveSpeed = {_player.Move._agent.maxSpeed}");
     }
 
     [Command]
     private void CmdResetValues()
     {
+        Debug.Log("SpeedOfReptile / CmdResetValues");
+
         _player.Health.EvadeMagicDamage /= _increaseEvasion;
         _player.Health.EvadeMeleeDamage /= _increaseEvasion;
         _player.Health.EvadeRangeDamage /= _increaseEvasion;
 
+        Debug.Log($"SpeedOfReptile / CmdResetValues / _player.Health.EvadeMagicDamage = {_player.Health.EvadeMagicDamage}");
+        Debug.Log($"SpeedOfReptile / CmdResetValues / _player.Health.EvadeMeleeDamage = {_player.Health.EvadeMeleeDamage}");
+        Debug.Log($"SpeedOfReptile / CmdResetValues / _player.Health.EvadeRangeDamage = {_player.Health.EvadeRangeDamage}");
+
         _player.Move.SetDefaultSpeed();
+        Debug.Log($"SpeedOfReptile / CmdResetValues / PlayerMoveSpeed = {_player.Move._agent.maxSpeed}");
     }
 
 }

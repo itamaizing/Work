@@ -11,6 +11,7 @@ public class StatsBuff
     private StatBuff _castSpeed = new StatBuff();
     private StatBuff _cooldown = new StatBuff();
     private StatBuff _manaCost = new StatBuff();
+    private StatBuff _remainingCooldwonTime = new StatBuff();
 
     public StatBuff Damage => _damage;
     public StatBuff Radius => _radius;
@@ -19,6 +20,7 @@ public class StatsBuff
     public StatBuff CastSpeed => _castSpeed;
     public StatBuff Cooldown => _cooldown;
     public StatBuff ManaCost => _manaCost;
+    public StatBuff RemainingCooldownTime => _remainingCooldwonTime;
 }
 
 public class StatBuff

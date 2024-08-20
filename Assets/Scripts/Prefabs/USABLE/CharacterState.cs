@@ -2,6 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.Playables;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 
@@ -730,7 +731,7 @@ public class CreeperInvisibleState : AbstractCharacterState
 
         if (_player != null)
         {
-			_abilities = _player.CharacterState.Character.Abilities.Abilities;
+            _abilities = _player.CharacterState.Character.Abilities.Abilities;
             foreach (Skill ability in _abilities)
             {
                 if (ability is CreeperInvisible creeperInvisible)
@@ -740,21 +741,14 @@ public class CreeperInvisibleState : AbstractCharacterState
                         _creeperInvisible = creeperInvisible;
                     }
                 }
-				if (!_isIncreasedManaCost)
-				{
-                    ability.Buff.ManaCost.IncreasePercentage(1.3f);
-					Debug.Log("Ability manaCost == " + ability.Buff.ManaCost.Multiplier);
-					Debug.Log("Modified manaCost at ability: " + ability.name + ", Type: " + ability.GetType() + ", ManaCost Value = " + ability.ManaCost);
-				}
-                Debug.Log("IsIncreasedManaCost in Search Abilities== " + _isIncreasedManaCost);
             }
-			_isIncreasedManaCost = true;
         }
     }
 
 	public override void UpdateState()
     {
         _isInvisible = _creeperInvisible.IsInvisible;
+		Debug.Log($"CreeperInvisible / _isInvisible = {_isInvisible}");
         if (_isInvisible)
 		{
 			if (_isPlayerSeen)
@@ -820,6 +814,17 @@ public class CreeperInvisibleState : AbstractCharacterState
 		Debug.Log("Player StaminaRegen == " + _player.Stamina.RegenerationValue);
         _timeWithoutDamage = StartTimeWithoutDamage;
 
+		if (!_isIncreasedManaCost)
+		{
+			foreach (Skill ability in _abilities)
+			{ 
+				ability.Buff.ManaCost.IncreasePercentage(1.3f);
+				Debug.Log("Ability manaCost == " + ability.Buff.ManaCost.Multiplier);
+				Debug.Log("Modified manaCost at ability: " + ability.name + ", Type: " + ability.GetType() + ", ManaCost Value = " + ability.ManaCost);
+				Debug.Log("IsIncreasedManaCost in Search Abilities== " + _isIncreasedManaCost);
+			}
+			_isIncreasedManaCost = true;
+		}
     }
 
 	private bool CheckEnemies()
@@ -1088,6 +1093,10 @@ public class PoisonBone : AbstractCharacterState
 public class PoisonCloud : AbstractCharacterState
 {
     private List<Skill> _abilities = new();
+	private List<Talent> _talents = new();
+
+	private HealingPoisonCloud _healingPoisonCloud;
+	private CapaciousPoisonCloud _capaciousPoisonCloud;
     private ToxiqueCloud _toxiqueCloud;
 	private ExplosionPoisonCloud _cloudExplosion;
 
@@ -1134,21 +1143,59 @@ public class PoisonCloud : AbstractCharacterState
 		    _abilities = _player.CharacterState.Character.Abilities.Abilities;
 		    Debug.Log("PoisonCloud player == " + _player);
 
-		    foreach (Skill ability in _abilities)
-		    {
-		        Debug.Log("Checking ability: " + ability.name + ", Type: " + ability.GetType());
-		        if (ability is ExplosionPoisonCloud cloudExplosion)
-		        {
-		            Debug.Log("if / ability");
-		            if (_cloudExplosion == null)
-		            {
-						_cloudExplosion = cloudExplosion;
-						Debug.Log("CloudExplosion == " + _cloudExplosion);
-		            }
-		        }
-		    }
+			SearchAbilities();
+
+			SearchTalent();
+		}
+
+		if (_capaciousPoisonCloud.IsActive)
+		{
+			_radiusCloud += 1.5f; 
 		}
     }
+
+	private void SearchAbilities()
+	{
+		Debug.Log("PoisonCloud / SearchAbilities");
+        foreach (Skill ability in _abilities)
+        {
+            Debug.Log("Checking ability: " + ability.name + ", Type: " + ability.GetType());
+            if (ability is ExplosionPoisonCloud cloudExplosion)
+            {
+                Debug.Log("if / ability");
+                if (_cloudExplosion == null)
+                {
+                    _cloudExplosion = cloudExplosion;
+                    Debug.Log("CloudExplosion == " + _cloudExplosion);
+                }
+            }
+        }
+    }
+
+	private void SearchTalent()
+	{
+        Debug.Log("PoisonCLoud / SearchTalent");
+        foreach (Talent talent in _talents)
+        {
+            Debug.Log("Checking Talent: " + talent.name + ", Type: " + talent.GetType());
+            if (talent is HealingPoisonCloud healCloud)
+            {
+				if (_healingPoisonCloud == null)
+				{
+					_healingPoisonCloud = healCloud;
+					Debug.Log($"HealingPoisonCloud = {_healingPoisonCloud}");
+				}
+			}
+			if (talent is CapaciousPoisonCloud capaciousCloud)
+			{
+				if (_capaciousPoisonCloud == null)
+				{
+					_capaciousPoisonCloud = capaciousCloud;
+                    Debug.Log($"CapaciousPoisonCloud = {_capaciousPoisonCloud}");
+                }
+			}
+		}
+	}
 
     public override void UpdateState()
     {
@@ -1229,6 +1276,10 @@ public class PoisonCloud : AbstractCharacterState
 
     private void DamageDeal(HeroComponent targetHealth)
     {
+		if (_healingPoisonCloud.IsActive)
+		{
+
+		}
         _increasedDamage = _baseDamage * _currentStacks;
         _endDamage = targetHealth.Health.MaxHealth * _increasedDamage;
         targetHealth.Health.TryTakeDamage(_endDamage, DamageType.Physical, AttackRangeType.MeleeAttack);

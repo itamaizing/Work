@@ -422,7 +422,7 @@ public class HealthComponent : NetworkBehaviour
             yield return new WaitForSeconds(_hpRegenerationDelay);
             if (_currentHealth < _maxHealth)
             {
-                this.RegenHP(_hpRegenerationValue + _hpRegenerationValue * _boostRegen + +_hpRegenerationValue * _boostRegen2);
+                this.RegenHP(_hpRegenerationValue + _hpRegenerationValue * _boostRegen +_hpRegenerationValue * _boostRegen2);
             }
         }
     }

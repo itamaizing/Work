@@ -79,7 +79,7 @@ public abstract class Skill : NetworkBehaviour
     public string Name => _abilityInfo.Name;
     public string Description => _abilityInfo.Description;
     public Sprite Icon => _abilityInfo.Icon;
-    public bool IsCooldowned { get => _remaining—ooldownTime <= 0; }
+    public bool IsCooldowned { get => Remaining—ooldownTime <= 0; }
     public int Chargers => _currentChargers;
     public bool IsHaveCharge => (_currentChargers > 0);
     public float ChargeCooldown => _chargeCooldown;
@@ -88,6 +88,7 @@ public abstract class Skill : NetworkBehaviour
     public bool IsHaveResurces { get => IsHaveManaOnSkill && IsCooldowned && IsHaveCharge; }
     public float ManaCost { get => Buff.ManaCost.GetBuffedValue(_manaCost); }
     public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); }
+    public float Remaining—ooldownTime { get => Buff.RemainingCooldownTime.GetBuffedValue(_remaining—ooldownTime); protected set => _remaining—ooldownTime = value; }
     public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDelay); }
     public bool IsCasting { get => _isCasting; }
     public float CastStreamDuration { get => _castDuration; }
@@ -205,7 +206,7 @@ public abstract class Skill : NetworkBehaviour
 
     public void IncreaseSetCooldown(float time)
     {
-        if (time < _remaining—ooldownTime)
+        if (time < Remaining—ooldownTime)
             return;
 
         if (_cooldownJob != null)
@@ -216,7 +217,7 @@ public abstract class Skill : NetworkBehaviour
 
     public void ReductionSetCooldown(float time)
     {
-        if (time > _remaining—ooldownTime)
+        if (time > Remaining—ooldownTime)
             return;
 
         if (_cooldownJob != null)
@@ -231,7 +232,7 @@ public abstract class Skill : NetworkBehaviour
             MassageHaventMana?.Invoke(ManaCost - _hero.Stamina.Value);
 
         if (IsCooldowned == false)
-            MassageNotCooldowned?.Invoke(_remaining—ooldownTime);
+            MassageNotCooldowned?.Invoke(Remaining—ooldownTime);
 
         if (IsHaveCharge == false)
             MassageHaventCharge?.Invoke();
@@ -424,11 +425,11 @@ public abstract class Skill : NetworkBehaviour
     private IEnumerator CooldownCoroutine(float cooldownTime)
     {
         CooldownStarted?.Invoke(cooldownTime);
-        _remaining—ooldownTime = cooldownTime;
+        Remaining—ooldownTime = cooldownTime;
 
-        while (_remaining—ooldownTime > 0)
+        while (Remaining—ooldownTime > 0)
         {
-            _remaining—ooldownTime -= Time.deltaTime;
+            Remaining—ooldownTime -= Time.deltaTime;
             yield return null;
         }
         CooldownEnded?.Invoke();

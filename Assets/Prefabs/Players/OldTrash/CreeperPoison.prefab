@@ -310,11 +310,12 @@ MonoBehaviour:
   - {fileID: 2133911755741689447}
   - {fileID: 5460533147100191806}
   - {fileID: 7672760003326398008}
-  - {fileID: 7570501944005742571}
   - {fileID: 2975631799492417301}
   - {fileID: 6227316397025926076}
-  - {fileID: 2185409320862421989}
   - {fileID: 6027837359207633613}
+  - {fileID: 7570501944005742571}
+  - {fileID: 817346276867831510}
+  - {fileID: 2185409320862421989}
   _hero: {fileID: 8848169558533100257}
   _talentSystem: {fileID: 8392273409717092943}
 --- !u!114 &5093648390786532450
@@ -712,7 +713,7 @@ MonoBehaviour:
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: ebeca0253d3207d4cb39a4e352e99b11, type: 2}
   _manaCost: 80
-  _cooldownTime: 0
+  _cooldownTime: 14
   _castDelay: 0
   _abilitySchool: 6
   _abilityForm: 2
@@ -756,7 +757,7 @@ MonoBehaviour:
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: e0a694047bc706b4fb4d88da4b0399dc, type: 2}
   _manaCost: 80
-  _cooldownTime: 0
+  _cooldownTime: 14
   _castDelay: 0
   _abilitySchool: 0
   _abilityForm: 0

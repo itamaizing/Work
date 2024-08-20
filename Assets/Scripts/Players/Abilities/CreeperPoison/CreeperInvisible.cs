@@ -24,39 +24,39 @@ public class CreeperInvisible : Skill
 
     protected override bool IsCanCast => true;
 
+    protected override void ClearData()
+    {
+        Debug.Log("CreeperInvisible / ClearData");
+        //CmdRemoveInvisible();
+    }
+
     protected override IEnumerator PrepareJob()
     {
-        throw new System.NotImplementedException();
+        Debug.Log("CreeperInvisible / PrepareJob");
+        yield return null;
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_startCoroutine != null)
+        Debug.Log("CreeperInvisible / CastJob");
+        if (IsInvisible)
         {
-            ClearData();
+            Debug.Log($"CreeperInvisible / CastJob / if (IsInvisible = {IsInvisible})");
+            CmdRemoveInvisible();
             yield break;
         }
-
-        if (_startCoroutine == null)
+        else
         {
+            Debug.Log($"CreeperInvisible / CastJob / else (IsInvisible = {IsInvisible})");
             EnteringInvisibleState();
         }
+        Debug.Log("CreeperInvisible / CastJob / after cycle");
         yield return null;
-    }
-
-    protected override void ClearData()
-    {
-        CmdRemoveInvisible();
-
-        if (_releaseFromSecrecy.IsActive)
-        {
-            _releaseFromSecrecy.ApplyBuff();
-        }
     }
 
     public void EnteringInvisibleState()
     {
-        TryPayCost();
+        Debug.Log("CreeperInvisible / EnteringInvisibleState");
         if (_desireToHide.IsActive && _desireToHide.IsCanApply)
         {
             CmdApplyInvisibleWithTalent();
@@ -72,11 +72,14 @@ public class CreeperInvisible : Skill
     [Command]
     private void CmdApplyInvis()
     {
+        Debug.Log("CreeperInvisible / CmdApplyInvis");
         IsInvisible = true;
+        Debug.Log($"CreeperInvisible / CmdApplyInvis / IsInvisible = {IsInvisible}");
         RpcApplyInvis();
 
         StartTimeToApplyInvisible = _baseTimeToApplyInvisible;
         CreeperInvisibleState.StartTimeWithoutDamage = StartTimeToApplyInvisible;
+        Debug.Log($"CreeperInvisible / CmdApplyInvis / CreeperInvisibleState.StartTimeWithoutDamage = {CreeperInvisibleState.StartTimeWithoutDamage}");
 
         _player.CharacterState.CmdAddState(States.CreeperInvisible, 0, 0);
     }
@@ -84,6 +87,7 @@ public class CreeperInvisible : Skill
     [Command]
     private void CmdApplyInvisibleWithTalent()
     {
+        Debug.Log("CreeperInvisible / CmdApplyInvisibleWithTalent");
         IsInvisible = true;
         RpcApplyInvisibleWithTalent();
 
@@ -98,7 +102,13 @@ public class CreeperInvisible : Skill
     [Command]
     private void CmdRemoveInvisible()
     {
+        Debug.Log("CreeperInvisible / CmdRemoveInvisible");
         IsInvisible = false;
+        if (_releaseFromSecrecy.IsActive)
+        {
+            _releaseFromSecrecy.ApplyBuff();
+        }
+        Debug.Log($"CreeperInvisible / CmdRemoveInvisible / IsInvisible = {IsInvisible}");
         RpcRemoveInvisible();
     }
 
@@ -109,14 +119,18 @@ public class CreeperInvisible : Skill
     [ClientRpc]
     private void RpcApplyInvis()
     {
+        Debug.Log("CreeperInvisible / RpcApplyInvis");
         IsInvisible = true;
+        Debug.Log($"CreeperInvisible / RpcApplyInvis / IsInvisible = {IsInvisible}");
         StartTimeToApplyInvisible = _baseTimeToApplyInvisible;
         CreeperInvisibleState.StartTimeWithoutDamage = StartTimeToApplyInvisible;
+        Debug.Log($"CreeperInvisible / RpcApplyInvis / CreeperInvisibleState.StartTimeWithoutDamage = {CreeperInvisibleState.StartTimeWithoutDamage}");
     }
 
     [ClientRpc]
     private void RpcApplyInvisibleWithTalent()
     {
+        Debug.Log("CreeperInvisible / RpcApplyInvisibleWithTalent");
         IsInvisible = true;
 
         StartTimeToApplyInvisible = _baseTimeToApplyInvisibleWithTalent;
@@ -128,7 +142,13 @@ public class CreeperInvisible : Skill
     [ClientRpc]
     private void RpcRemoveInvisible()
     {
+        Debug.Log("CreeperInvisible / RpcRemoveInvisible");
         IsInvisible = false;
+        if (_releaseFromSecrecy.IsActive)
+        {
+            _releaseFromSecrecy.ApplyBuff();
+        }
+        Debug.Log($"CreeperInvisible / RpcRemoveInvisible / IsInvisible = {IsInvisible}");
         if (_firstStrike.IsActive && !_firstStrike.IsCanIncreaseCrit)
         {
             _firstStrike.SetBoolTrue();
