@@ -203,9 +203,20 @@ public abstract class Skill : NetworkBehaviour
         }
     }
 
-    public void SetCooldown(float time)
+    public void IncreaseSetCooldown(float time)
     {
         if (time < _remaining—ooldownTime)
+            return;
+
+        if (_cooldownJob != null)
+            StopCoroutine(_cooldownJob);
+
+        _cooldownJob = StartCoroutine(CooldownCoroutine(time));
+    }
+
+    public void ReductionSetCooldown(float time)
+    {
+        if (time > _remaining—ooldownTime)
             return;
 
         if (_cooldownJob != null)
@@ -250,7 +261,7 @@ public abstract class Skill : NetworkBehaviour
         if (IsHaveResurces)
         {
             _hero.Stamina.CmdUse(mana);
-            SetCooldown(CooldownTime);
+            IncreaseSetCooldown(CooldownTime);
             TryUseCharge();
             return true;
         }
@@ -403,6 +414,9 @@ public abstract class Skill : NetworkBehaviour
             }
             _currentChargers++;
             CurrentChargeChange?.Invoke(_currentChargers);
+
+            if (_chargesHaveSeparateCooldown)
+                break;
         }
         _rechargeJob = null;
     }
@@ -442,7 +456,7 @@ public abstract class Skill : NetworkBehaviour
 
         while (time < CastStreamDuration)
         {
-            time += _manaCostRate;
+            time -= _manaCostRate;
             if (_hero.Stamina.Value >= _manaCostPerTick)
             {
                 _hero.Stamina.Use(_manaCostPerTick);

@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Prefabs/Players/OldTrash.meta
 guid: 7637ee2b299613b45a43e792bf51fb02
+========
+guid: a94184d2f9dbf004fa412bceef8e6797
+>>>>>>>> AbilityUI:Assets/Prefabs/Players/New Characters.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
