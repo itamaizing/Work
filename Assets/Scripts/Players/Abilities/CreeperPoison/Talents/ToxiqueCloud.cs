@@ -5,9 +5,6 @@ using UnityEngine;
 
 public class ToxiqueCloud : Talent
 {
-    [SerializeField] private BonePoison _bonePoisonPrefab;
-    private BonePoison _bonePoison;
-
     public override void Enter()
     {
         SetActive(true);
@@ -18,26 +15,9 @@ public class ToxiqueCloud : Talent
         SetActive(false);
     }
 
-    public void ApplyBonePoison(HealthComponent targetHealth)
+    public void ApplyBonePoison(Character targetHealth)
     {
         Debug.Log("ApplyBonePoison in ToxiqueCloud");
-        CmdApplyBonePoison(targetHealth);
-    }
-
-    private void CmdApplyBonePoison(HealthComponent targetHealth)
-    {
-        _bonePoison = targetHealth.GetComponentInChildren<BonePoison>();
-        if (_bonePoison == null)
-        {
-            _bonePoison = Instantiate(_bonePoisonPrefab, targetHealth.transform);
-            _bonePoison.AddStacks(targetHealth);
-            Debug.Log("if CmdApplyBonePoison == " + _bonePoison.CurrentStacks);
-
-        }
-        else
-        {
-            _bonePoison.AddStacks(targetHealth);
-            Debug.Log("else CmdApplyBonePoison == " + _bonePoison.CurrentStacks);
-        }
+        targetHealth.CharacterState.CmdAddState(States.PoisonBone, 6f, 0);
     }
 }

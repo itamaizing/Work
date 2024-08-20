@@ -45,13 +45,13 @@ public class ReleaseFromSecrecy : Talent
     private void IncreaseAttackSpeed()
     {
         _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_attackSpeedIncrease);
+        Debug.Log($"ReleaseFromSecrecy / ReturnOriginalAttackSpeed / _creeperStrike.Buff.AttackSpeed.Increase = {_creeperStrike.Buff.AttackSpeed.Multiplier}");
     }
 
     private void ReturnOriginalAttackSpeed()
     {
-        //Выпилить ResetValues
-        _creeperStrike.Buff.AttackSpeed.ResetValues();
-
+        _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_attackSpeedIncrease);
+        Debug.Log($"ReleaseFromSecrecy / ReturnOriginalAttackSpeed / _creeperStrike.Buff.AttackSpeed.Reduction = {_creeperStrike.Buff.AttackSpeed.Multiplier}");
         _timeDurationBuff = _startTimeDurationBuff;
         _currentCountBuff = 0;
     }

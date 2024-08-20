@@ -53,14 +53,15 @@ public class OwnElement : Talent
             {
                 foreach (Collider2D target in enemies)
                 {
-                    BonePoison targetWithDebuff = target.gameObject.GetComponentInChildren<BonePoison>();
+                    var targetWithDebuffPoisonBone = target.GetComponent<CharacterState>().CheckForState(States.PoisonBone);
+                    Debug.Log($"OwnElement / SearchingDebuffEnemy / targetWithDebuff = {target.GetComponent<CharacterState>().CheckForState(States.PoisonBone)}");
 
-                    if (targetWithDebuff != null)
+                    if (targetWithDebuffPoisonBone != false)
                     {
-                        _enemiesWithDebuff.Add(targetWithDebuff.gameObject);
+                        _enemiesWithDebuff.Add(target.gameObject);
 
-                        _currentStacksPoison += targetWithDebuff.CurrentStacks;
-
+                        _currentStacksPoison += PoisonBone.CurrentStacks;
+                        Debug.Log($"OwnElement / SearchingDebuffEnemy / _currentStacksPoison = {_currentStacksPoison}");
                         for (int i = 0; i < _enemiesWithDebuff.Count; i++)
                         {
                             _currentPoisonOnEnemy = _enemiesWithDebuff.Count;
@@ -93,17 +94,21 @@ public class OwnElement : Talent
             {
                 ResetAttackSpeed();
                 _increasedAttackSpeedCreeperStrike = _baseAttackSpeed - (_previousAllStacks * _increaseAttackSpeed);
-                Debug.Log("Increased attack speed == " + _increasedAttackSpeedCreeperStrike);
+                Debug.Log("OwnElement / Increased attack speed == " + _increasedAttackSpeedCreeperStrike);
+
                 _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_increasedAttackSpeedCreeperStrike);
-                Debug.Log("_Creeper attack speed == " + _creeperStrike.AttackSpeed);
+                Debug.Log("OwnElement / _Creeper attack speed == " + _creeperStrike.AttackSpeed);
             }
         }
     }
 
     private void ResetAttackSpeed()
     {
-        Debug.Log("Reset Increased attack speed == " + _increasedAttackSpeedCreeperStrike);
-        _creeperStrike.Buff.AttackSpeed.ResetValues();
-        Debug.Log("ResetAttackSpeed _Creeper attack speed == " + _creeperStrike.AttackSpeed);
+        if (_increasedAttackSpeedCreeperStrike < 1.0f)
+        {
+            Debug.Log("OwnElement / Reset Increased attack speed == " + _increasedAttackSpeedCreeperStrike);
+            _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_increasedAttackSpeedCreeperStrike);
+            Debug.Log("OwnElement / ResetAttackSpeed _Creeper attack speed == " + _creeperStrike.AttackSpeed);
+        }
     }
 }

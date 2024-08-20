@@ -310,10 +310,11 @@ MonoBehaviour:
   - {fileID: 2133911755741689447}
   - {fileID: 5460533147100191806}
   - {fileID: 7672760003326398008}
+  - {fileID: 7570501944005742571}
   - {fileID: 2975631799492417301}
   - {fileID: 6227316397025926076}
   - {fileID: 2185409320862421989}
-  - {fileID: 817346276867831510}
+  - {fileID: 6027837359207633613}
   _hero: {fileID: 8848169558533100257}
   _talentSystem: {fileID: 8392273409717092943}
 --- !u!114 &5093648390786532450
@@ -425,7 +426,7 @@ MonoBehaviour:
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 1af7963ead8875042bc84e9fa3cf58e1, type: 2}
   _manaCost: 0
-  _cooldownTime: 0
+  _cooldownTime: 4
   _castDelay: 0
   _abilitySchool: 6
   _abilityForm: 2
@@ -452,7 +453,7 @@ MonoBehaviour:
   _attackManaCost: 0
   _attackZoneSize: 3
   _attackSpeed: 1
-  _dad: {fileID: 8848169558533100257}
+  _player: {fileID: 8848169558533100257}
   _creeperStrike: {fileID: 3923834704028430900}
   Enabled: 0
 --- !u!114 &5460533147100191806
@@ -1114,7 +1115,6 @@ MonoBehaviour:
   Description: 
   ico: {fileID: 21300000, guid: d9b6be6cf3de5d742bd0a9085c71f42b, type: 3}
   character: {fileID: 8848169558533100257}
-  _bonePoisonPrefab: {fileID: -6945864312988002102, guid: acf0aa1d343559640b903638c293a6b1, type: 3}
 --- !u!114 &6592723509884285390
 MonoBehaviour:
   m_ObjectHideFlags: 0

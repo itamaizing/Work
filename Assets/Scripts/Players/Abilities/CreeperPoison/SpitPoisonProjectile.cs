@@ -10,7 +10,7 @@ public class SpitPoisonProjectile : NetworkBehaviour
     [SerializeField] private GameObject _hitEffect;
     [SerializeField] private Collider2D _colliderBall;
     [SerializeField] private float _maxDistance = 5f;
-    [SerializeField] private float _speed = 30f;
+    [SerializeField] private float _speed = 60f;
 
     private Character _player;
     private Vector2 _startPos;
@@ -27,7 +27,7 @@ public class SpitPoisonProjectile : NetworkBehaviour
 
     private void Awake()
     {
-        StartCoroutine(DisableCollider());
+        //StartCoroutine(DisableCollider());
     }
 
     private IEnumerator DisableCollider()
@@ -110,15 +110,12 @@ public class SpitPoisonProjectile : NetworkBehaviour
 
     public void MoveBallToTarget(Vector3 target)
     {
-        Debug.Log("MoveBallToTarget SpitPoisonBall");
-        Debug.Log($"MoveBallToTarget SpitPoisonBall / targetPos = {target}");
-        Debug.Log($"MoveBallToTarget SpitPoisonBall / transformPos = {transform.position}");
-        _rbBall.DOMove(target, _speed * _maxDistance / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(Explode);
+        float speed = _speed / 100f;
+        _rbBall.DOMove(target, speed * _maxDistance / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(Explode);
     }
 
     public void MoveBallOnMaxDistance(Vector3 point)
     {
-        Debug.Log("MoveBallOnMaxDistance SpitPoisonBall");
         Vector3 direction = (point - transform.position).normalized;
 
         StartCoroutine(MoveBallOnMaxDistanceCoroutine(direction, _speed));
@@ -126,7 +123,6 @@ public class SpitPoisonProjectile : NetworkBehaviour
 
     private IEnumerator MoveBallOnMaxDistanceCoroutine(Vector3 direction, float speed)
     {
-        Debug.Log("MoveBallOnMaxDistanceCoroutine SpitPoisonBall");
         while (true)
         {
             transform.position += direction * speed * Time.deltaTime;
@@ -135,7 +131,6 @@ public class SpitPoisonProjectile : NetworkBehaviour
                 Explode();
             }
             yield return null;
-            Debug.Log($"MoveBallOnMaxDistanceCoroutine SpitPoisonBall / transform.position = {transform.position}");
         }
     }
 

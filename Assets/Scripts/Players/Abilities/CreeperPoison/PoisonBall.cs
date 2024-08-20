@@ -54,63 +54,8 @@ public class PoisonBall : Skill
 
     protected override bool IsCanCast => CheckCanCast();
 
-    protected override IEnumerator PrepareJob()
-    {
-        //if (_healingPoisonBall.IsActive)
-        //{
-        //    _isCanTargetHimself = _healingPoisonBall.IsCanTargetHimself;
-        //    _isActiveTalent = _healingPoisonBall.IsActive;
-        //}
-        //else
-        //{
-        //    _isCanTargetHimself = false;
-        //    _isActiveTalent = _healingPoisonBall.IsActive;
-        //}
-        Debug.Log("PrepareJob Coroutine work PoisonBall");
-        while (_currentTarget == null && float.IsPositiveInfinity(_firstMousePosition.x))
-        {
-            Debug.Log("PrepareJob Coroutine after while");
-            if (Input.GetMouseButtonDown(0))
-            {
-                Debug.Log($"PrepareJob Coroutine after if Input {Input.GetMouseButtonDown(0)}");
-                _currentTarget = GetRaycastTarget();
-                ChooseTarget();
-                Debug.Log($"PrepareJob Coroutine / currentTarget == {_currentTarget}");
-                _firstMousePosition = GetMousePoint();
-                Debug.Log($"PrepareJob Coroutine / firstMousePos == {_firstMousePosition}");
-            }
-            yield return null;
-        }
-        Debug.Log("PrepareJob Coroutine after while");
-        yield return _secondClickCoroutine = StartCoroutine(SecondClick());
-    }
-
-    protected override IEnumerator CastJob()
-    {
-        while (!_projectileLaunched)
-        {
-            Debug.Log("CastJobCoroutine work PoisonBall / after while");
-            if (_secondClickDone)
-            {
-                Debug.Log($"CastJobCoroutine / secondClickDone == {_secondClickDone}");
-                TryPayCost();
-                if (_isActiveTalent)
-                {
-                    IsAlliesOrPlayer();
-                }
-                if (_useAbilityCoroutine == null)
-                {
-                    _useAbilityCoroutine = StartCoroutine(UseAbilityCoroutine());
-                }
-            }
-            yield return null;
-        }
-    }
-
     protected override void ClearData()
     {
-        Debug.Log("ClearData PoisonBall");
-
         _isTarget = false;
         _secondClickDone = false;
         _projectileLaunched = false;
@@ -124,59 +69,47 @@ public class PoisonBall : Skill
         {
             StopCoroutine(SecondClick());
             _secondClickCoroutine = null;
-            Debug.Log($"ClearData / If / _secondClickCoroutine after reset == {_secondClickCoroutine}");
-        }
-        if (_useAbilityCoroutine != null)
-        {
-            StopCoroutine(UseAbilityCoroutine());
-            _useAbilityCoroutine = null;
-            Debug.Log($"ClearData / If / _useAbilityCoroutine after reset == {_useAbilityCoroutine}");
         }
     }
 
-    private IEnumerator SecondClick()
+    protected override IEnumerator PrepareJob()
     {
-        Debug.Log("SecondClickCoroutine work PoisonBall");
-        while (!_secondClickDone)
+        if (_healingPoisonBall.IsActive)
         {
-            Debug.Log("SecondClickCoroutine work PoisonBall after while");
+            _isActiveTalent = _healingPoisonBall.IsActive;
+        }
+        else
+        {
+            _isActiveTalent = _healingPoisonBall.IsActive;
+        }
+
+        while (_currentTarget == null && float.IsPositiveInfinity(_firstMousePosition.x))
+        {
             if (Input.GetMouseButtonDown(0))
             {
-                Debug.Log($"SecondClick Coroutine after if Input {Input.GetMouseButtonDown(0)}");
-                _secondClickDone = true;
-                _secondMousePosition = GetMousePoint();
+                _currentTarget = GetRaycastTarget(true);
+                ChooseTarget();
+
+                _firstMousePosition = GetMousePoint();
             }
+            CooldownChange();
             yield return null;
         }
+        yield return _secondClickCoroutine = StartCoroutine(SecondClick());
+        UseAbility();
     }
 
-    private IEnumerator UseAbilityCoroutine()
+    protected override IEnumerator CastJob()
     {
-        Debug.Log("UseAbilityCoroutine work PoisonBall");
-        switch (_countProjectiles)
-        {
-            case < 3:
-                _isTarget = IsTarget();
-                Debug.Log($"UseAbilityCoroutine / switch / case < 3 / _isTarget = {_isTarget}");
-                ChooseMovementDependingOnCountProjectiles();
-                break;
-
-            case 3:
-                _isTarget = IsTarget();
-                Debug.Log($"UseAbilityCoroutine / switch / case 3 / _isTarget = {_isTarget}");
-                ChooseMovementDependingOnCountProjectiles();
-                break;
-
-            default:
-                break;
-        }
+        ChooseWhichProjectileCreate();
+        Debug.Log("PoisonBall / CastJob / Called ChooseWhichProjectileCreate");
         yield return null;
     }
+
     private void ChooseTarget()
     {
         if (_currentTarget != null)
         {
-            Debug.Log("ChooseTarget");
             if (_currentTarget.gameObject == _player.gameObject)
             {
                 Debug.Log("Target == Player");
@@ -207,6 +140,65 @@ public class PoisonBall : Skill
         }
     }
 
+    private void CooldownChange()
+    {
+        Debug.Log("CooldownChange PoisonBall");
+        if (_isActiveTalent)
+        {
+            if (_isOriginalTargetAllies || _isOriginalTargetPlayer)
+            {
+                if (_chargeCooldown == _originalChargeCooldown)
+                {
+                    _chargeCooldown /= 2; 
+                    Debug.Log("if _chargeCooldown == " + _chargeCooldown);
+                    Debug.Log("if ChargeCooldown == " + ChargeCooldown);
+                }
+            }
+            else
+            {
+                _chargeCooldown = _originalChargeCooldown; 
+                Debug.Log("else _chargeCooldown == " + _chargeCooldown);
+            }
+        }
+        else
+        {
+            _chargeCooldown = _originalChargeCooldown;
+        }
+    }
+
+    private IEnumerator SecondClick()
+    {
+        while (!_secondClickDone)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                _secondClickDone = true;
+                _secondMousePosition = GetMousePoint();
+            }
+            yield return null;
+        }
+    }
+
+    private void UseAbility()
+    {
+        switch (_countProjectiles)
+        {
+            case < 3:
+                _isTarget = IsTarget();
+                ChooseMovementDependingOnCountProjectiles();
+                break;
+
+            case 3:
+                _isTarget = IsTarget();
+                ChooseMovementDependingOnCountProjectiles();
+                break;
+
+            default:
+                break;
+        }
+    }
+
+
     #region BooleanMethods
 
     private bool CheckCanCast()
@@ -218,23 +210,6 @@ public class PoisonBall : Skill
 
         return Vector3.Distance(_firstMousePosition, transform.position) <= Radius ||
                Vector3.Distance(_currentTarget.transform.position, transform.position) <= Radius;
-    }
-
-    private bool IsAlliesOrPlayer()
-    {
-        if (_isOriginalTargetAllies || _isOriginalTargetPlayer)
-        {
-            if (_chargeCooldown == _originalChargeCooldown)
-            {
-                _chargeCooldown /= 2;
-            }
-            return true;
-        }
-        else
-        {
-            _chargeCooldown = _originalChargeCooldown;
-        }
-        return false;
     }
 
     private bool IsTarget()
@@ -249,53 +224,22 @@ public class PoisonBall : Skill
 
     #region ChooseMoveSpeedProjectile
 
-    private IEnumerator FastMoveShoot(bool isEnemy, bool isFast)
+    private void ChooseMovementDependingOnCountProjectiles()
     {
-        Debug.Log($"FastMoveShoot (isEnemy = {isEnemy}, isFast = {isFast})");
-        _castDelay = _fastTimeCast;
-        yield return StartCastDelayCoroutine();
-
-        ChooseWhichProjectileCreate(isEnemy, isFast);
-    }
-
-    private IEnumerator SlowMoveShoot(bool isEnemy, bool isFast)
-    {
-        Debug.Log($"SlowMoveShoot (isEnemy = {isEnemy}, isFast = {isFast})");
-        _castDelay = _slowTimeCast;
-        yield return StartCastDelayCoroutine();
-
-        ChooseWhichProjectileCreate(isEnemy, isFast);
-    }
-
-    private IEnumerator ThirdProjectileMovement(bool isEnemy, bool isFast)
-    {
-        Debug.Log($"ThirdProjectileMovement (isEnemy = {isEnemy}, isFast = {isFast})");
-        _castDelay = 0.4f;
-        yield return StartCastDelayCoroutine();
-
-        ChooseWhichProjectileCreate(isEnemy, isFast);
-    }
-
-    private void ChooseWhichProjectileCreate(bool isEnemy, bool isFast)
-    {
-        Debug.Log($"ChooseWhichProjectileCreate (isEnemy =  {isEnemy} , isFast =  {isFast} )");
-        if (isEnemy)
+        Debug.Log("ChooseMovementDependingOnCountProjectiles");
+        if (_countProjectiles < 3)
         {
-            Debug.Log($"ChooseWhichProjectileCreate / if / (isEnemy =  {isEnemy})");
-            Debug.Log($"ChooseWhichProjectileCreate / if / _currentTarget = {_currentTarget.gameObject} And _currentTarget.Pos = {_currentTarget.transform.position}");
-            CmdCreateProjectileForTarget(_currentTarget.gameObject, _currentTarget.transform.position, 
-                isFast, _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
-
+            Debug.Log("ChooseMovementDependingOnCountProjectiles / if (_countProj < 3)");
+            ChooseSpeed();
+            StartCoroutine(_isFast ? TimeCastForFastMoveProjectile() : TimeCastForSlowMoveProjectile());
         }
-        else
+        else if (_countProjectiles == 3)
         {
-            Debug.Log($"ChooseWhichProjectileCreate / else / (isEnemy =  {isEnemy})");
-            CmdCreateProjectileForFlyingMaxDistance(_firstMousePosition, 
-                isFast, _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
+            Debug.Log("ChooseMovementDependingOnCountProjectiles / else if (_countProj = 3)");
+            ChooseSpeed();
+            StartCoroutine(TimeCastForThirdProjectile());
         }
-        _projectileLaunched = true;
     }
-
 
     private void ChooseSpeed()
     {
@@ -312,21 +256,45 @@ public class PoisonBall : Skill
         }
     }
 
-    private void ChooseMovementDependingOnCountProjectiles()
+    private IEnumerator TimeCastForFastMoveProjectile()
     {
-        Debug.Log("ChooseMovementDependingOnCountProjectiles");
-        if (_countProjectiles < 3)
+        Debug.Log($"FastMoveShoot (isEnemy = {_isTarget}, isFast = {_isFast})");
+        _castDelay = _slowTimeCast;
+        yield return null;
+    }
+
+    private IEnumerator TimeCastForSlowMoveProjectile()
+    {
+        Debug.Log($"SlowMoveShoot (isEnemy = {_isTarget}, isFast = {_isFast})");
+        _castDelay = _fastTimeCast;
+        yield return null;
+    }
+
+    private IEnumerator TimeCastForThirdProjectile()
+    {
+        Debug.Log($"ThirdProjectileMovement (isEnemy = {_isTarget}, isFast = {_isFast})");
+        _castDelay = 0.4f;
+        yield return null;
+    }
+
+    private void ChooseWhichProjectileCreate()
+    {
+        Debug.Log($"ChooseWhichProjectileCreate (isEnemy =  {_isTarget} , isFast =  {_isFast} )");
+        if (_isTarget)
         {
-            Debug.Log("ChooseMovementDependingOnCountProjectiles / if (_countProj < 3)");
-            ChooseSpeed();
-            StartCoroutine(_isFast ? FastMoveShoot(_isTarget, _isFast) : SlowMoveShoot(_isTarget, _isFast));
+            Debug.Log($"ChooseWhichProjectileCreate / if / (isEnemy =  {_isTarget})");
+            Debug.Log($"ChooseWhichProjectileCreate / if / _currentTarget = {_currentTarget.gameObject} And _currentTarget.Pos = {_currentTarget.transform.position}");
+            CmdCreateProjectileForTarget(_currentTarget.gameObject, _currentTarget.transform.position,
+                _isFast, _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
+
         }
-        else if (_countProjectiles == 3)
+        else
         {
-            Debug.Log("ChooseMovementDependingOnCountProjectiles / else if (_countProj = 3)");
-            ChooseSpeed();
-            StartCoroutine(ThirdProjectileMovement(_isTarget, _isFast));
+            Debug.Log($"ChooseWhichProjectileCreate / else / (isEnemy =  {_isTarget})");
+            CmdCreateProjectileForFlyingMaxDistance(_firstMousePosition,
+                _isFast, _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
         }
+        _projectileLaunched = true;
     }
 
     #endregion
@@ -344,7 +312,7 @@ public class PoisonBall : Skill
     {
         CurrentTarget = target;
         FootInstinctsTalent = _footInstincts;
-        //Debug.Log("CmdCreateProj");
+        Debug.Log("CmdCreateProj");
         //Debug.Log("Cmd // IsActiveTalent == " + isActiveTalent);
         //Debug.Log("Cmd // isTargetPlayer == " + isTargetPlayer);
         //Debug.Log("Cmd // isTargetEnemy == " + isTargetEnemy);
@@ -403,61 +371,61 @@ public class PoisonBall : Skill
 
     #region ClientRpcMethods
 
-    //[ClientRpc]
-    //private void RpcCreateProjectileForTaret(GameObject target, Vector3 targetOrPoint, PoisonBallProjectile poisonBallProjectile,
-    //    bool isFast, bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
-    //{
-    //    FootInstinctsTalent = _footInstincts;
-    //    CurrentTarget = target;
-    //    //Debug.Log("RpcCreateProj");
-    //    //Debug.Log("Rpc // IsActiveTalent == " + isActiveTalent);
-    //    //Debug.Log("Rpc // isTargetPlayer == " + isTargetPlayer);
-    //    //Debug.Log("Rpc // isTargetEnemy == " + isTargetEnemy);
-    //    //Debug.Log("Rpc // isTargetAllies == " + isTargetAllies);
-    //    if (CurrentTarget == _playerLinks.gameObject)
-    //    {
-    //        IsPlayer = true;
-    //    }
-    //    else
-    //    {
-    //        IsPlayer = false;
-    //    }
+    [ClientRpc]
+    private void RpcCreateProjectileForTaret(GameObject target, Vector3 targetOrPoint, PoisonBallProjectile poisonBallProjectile,
+        bool isFast, bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
+    {
+        FootInstinctsTalent = _footInstincts;
+        CurrentTarget = target;
+        Debug.Log("RpcCreateProj");
+        //Debug.Log("Rpc // IsActiveTalent == " + isActiveTalent);
+        //Debug.Log("Rpc // isTargetPlayer == " + isTargetPlayer);
+        //Debug.Log("Rpc // isTargetEnemy == " + isTargetEnemy);
+        //Debug.Log("Rpc // isTargetAllies == " + isTargetAllies);
+        if (CurrentTarget == _player.gameObject)
+        {
+            IsPlayer = true;
+        }
+        else
+        {
+            IsPlayer = false;
+        }
 
-    //    if (LastTarget == CurrentTarget)
-    //    {
-    //        CountProjectiles++;
-    //    }
-    //    else if (LastTarget != CurrentTarget || CountProjectiles == 3)
-    //    {
-    //        CountProjectiles = 1;
-    //    }
+        if (LastTarget == CurrentTarget)
+        {
+            CountProjectiles++;
+        }
+        else if (LastTarget != CurrentTarget || CountProjectiles == 3)
+        {
+            CountProjectiles = 1;
+        }
 
-    //    //GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
-    //    //PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>();
+        //GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
+        //PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>();
 
-    //    poisonBallProjectile.InitializationProjectileForPoisonBall(_playerLinks, _playerLinks.Stamina.Value, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies);
-    //    poisonBallProjectile.MoveBallToTarget(targetOrPoint, isFast);
-    //}
+        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.Value, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies);
+        poisonBallProjectile.MoveBallToTarget(targetOrPoint, isFast);
+    }
 
-    //[ClientRpc]
-    //private void RpcCreateProjectileForFlyingMaxDistance(Vector3 point, bool isFast, PoisonBallProjectile poisonBallProjectile, bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
-    //{
-    //    FootInstinctsTalent = _footInstincts;
-    //    if (LastTarget == CurrentTarget)
-    //    {
-    //        CountProjectiles++;
-    //    }
-    //    else if (LastTarget != CurrentTarget || CountProjectiles == 3)
-    //    {
-    //        CountProjectiles = 1;
-    //    }
+    [ClientRpc]
+    private void RpcCreateProjectileForFlyingMaxDistance(Vector3 point, bool isFast, PoisonBallProjectile poisonBallProjectile, bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
+    {
+        FootInstinctsTalent = _footInstincts;
+        if (LastTarget == CurrentTarget)
+        {
+            CountProjectiles++;
+        }
+        else if (LastTarget != CurrentTarget || CountProjectiles == 3)
+        {
+            CountProjectiles = 1;
+        }
 
-    //    //GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
-    //    //PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>();
+        //GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
+        //PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>();
 
-    //    poisonBallProjectile.InitializationProjectileForPoisonBall(_playerLinks, _playerLinks.Stamina.Value, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies);
-    //    poisonBallProjectile.MoveBallOnMaxDistance(point, isFast);
-    //}
+        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.Value, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies);
+        poisonBallProjectile.MoveBallOnMaxDistance(point, isFast);
+    }
 
     #endregion
 

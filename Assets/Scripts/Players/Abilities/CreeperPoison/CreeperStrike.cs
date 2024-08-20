@@ -47,6 +47,7 @@ public class CreeperStrike : AutoAttackSkill
 
     protected override void ClearData()
     {
+        base.ClearData();
         Debug.Log("CreeperStrike / ClearData");
         if (_firstStrike.IsActive)
         {
@@ -54,14 +55,17 @@ public class CreeperStrike : AutoAttackSkill
         }
 
         _currentTarget = null;
+
         if (_useAbilityCoroutine != null)
+        {
             StopCoroutine(UseAbilityCoroutine());
+            _useAbilityCoroutine = null;
+        }
     }
 
     protected override void CastAction()
     {
         Debug.Log("CreeperStrike / CastAction");
-        Debug.Log($"CreeperStrike / CastAction / CurrentTarget = {_currentTarget}");
 
         _useAbilityCoroutine = StartCoroutine(UseAbilityCoroutine());
     }
@@ -70,6 +74,7 @@ public class CreeperStrike : AutoAttackSkill
     {
         Debug.Log("CreeperStrike / UseAbilityCoroutine");
         _currentTarget = Target;
+        Debug.Log($"CreeperStrike / UseAbilityCoroutine / CurrentTarget = {_currentTarget}");
         DealingDamageFromHits();
         yield return null;
     }
@@ -129,8 +134,6 @@ public class CreeperStrike : AutoAttackSkill
         {
             CurrentTarget.Health.CmdTryTakeDamage(_currentDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
         }
-
-        ClearData();
     }
 
     private float CalculateCriticalDamage(float baseDamage)

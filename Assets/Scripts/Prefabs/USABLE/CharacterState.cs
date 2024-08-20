@@ -947,12 +947,10 @@ public class InAirState : AbstractCharacterState
 
 public class PoisonBone : AbstractCharacterState
 {
-    //private PlayerAbilities _abilities;
-
 	private List<Skill> _abilities = new();
 	private CreeperStrike _creeperStrike;
 
-    private int _currentStacks = 0;
+    private static int _currentStacks = 0;
     private int _maxStacks = 4;
 
     private float _timeBetweenAttack;
@@ -967,11 +965,11 @@ public class PoisonBone : AbstractCharacterState
 	private static Character _player;
 
     public bool turnOff = false;
+	public static int CurrentStacks { get => _currentStacks; }
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
     {
 		state = States.PoisonBone;
-		//Debug.Log("Entering PoisonBone State");
         _timeBetweenAttack = _startTimeBetweenAttack;
 
         type = StateType.Physical;
@@ -1089,9 +1087,9 @@ public class PoisonBone : AbstractCharacterState
 
 public class PoisonCloud : AbstractCharacterState
 {
-    //private List<Skill> _abilities = new();
+    private List<Skill> _abilities = new();
     private ToxiqueCloud _toxiqueCloud;
-	//private ExplosionPoisonCloud _cloudExplosion;
+	private ExplosionPoisonCloud _cloudExplosion;
 
     private static int _currentStacks = 0;
     private static int _maxStacks = 5;
@@ -1131,25 +1129,25 @@ public class PoisonCloud : AbstractCharacterState
             AddStacks();
         }
 
-      // if (_player != null)
-      // {
-      //     _abilities = _player.CharacterState.Character.Abilities.Abilities;
-      //     Debug.Log("PoisonCloud player == " + _player);
+		if (_player != null)
+		{
+		    _abilities = _player.CharacterState.Character.Abilities.Abilities;
+		    Debug.Log("PoisonCloud player == " + _player);
 
-      //     foreach (Skill ability in _abilities)
-      //     {
-      //         Debug.Log("Checking ability: " + ability.name + ", Type: " + ability.GetType());
-      //         if (ability is ExplosionPoisonCloud cloudExplosion)
-      //         {
-      //             Debug.Log("if / ability");
-      //             if (_cloudExplosion == null)
-      //             {
-						//_cloudExplosion = cloudExplosion;
-						//Debug.Log("CloudExplosion == " + _cloudExplosion);
-      //             }
-      //         }
-      //     }
-      // }
+		    foreach (Skill ability in _abilities)
+		    {
+		        Debug.Log("Checking ability: " + ability.name + ", Type: " + ability.GetType());
+		        if (ability is ExplosionPoisonCloud cloudExplosion)
+		        {
+		            Debug.Log("if / ability");
+		            if (_cloudExplosion == null)
+		            {
+						_cloudExplosion = cloudExplosion;
+						Debug.Log("CloudExplosion == " + _cloudExplosion);
+		            }
+		        }
+		    }
+		}
     }
 
     public override void UpdateState()
@@ -1181,13 +1179,19 @@ public class PoisonCloud : AbstractCharacterState
         if (_currentStacks < _maxStacks)
         {
             AddStacks();
-            //_cloudExplosion.CurrentStacksPoisonCloud(_currentStacks, _radiusCloud);
+			if (_cloudExplosion != null)
+			{
+				_cloudExplosion.CurrentStacksPoisonCloud(_currentStacks, _radiusCloud);
+			}
             return true;
         }
         else
         {
             _duration = _baseDuration;
-            //_cloudExplosion.CurrentStacksPoisonCloud(_currentStacks, _radiusCloud);
+            if (_cloudExplosion != null)
+            {
+                _cloudExplosion.CurrentStacksPoisonCloud(_currentStacks, _radiusCloud);
+            }
             return false;
         }
     }
@@ -1427,25 +1431,25 @@ public class HealingPoison : AbstractCharacterState
         }
 		Debug.Log($"SetPlayer in EnterHealingPoisonState == {_player}");
 
-   //     if (_player != null)
-   //     {
-			//_talents = _player.CharacterState.Character.TalentSystem.Talents;
-			////Debug.Log("HealingPoison player == " + _player);
+		//if (_player != null)
+		//{
+		//	_talents = _player.CharacterState.Character.TalentSystem.Talents;
+		//	Debug.Log("HealingPoison player == " + _player);
 
-   //         foreach (Talent talent in _talents)
-   //         {
-   //             //Debug.Log("Checking talents: " + talent.name + ", Type: " + talent.GetType());
-   //             if (talent is SurgeTreatment surgeTreatment)
-   //             {
-   //                 //Debug.Log("if / talents");
-   //                 if (_surgeTreatment == null)
-   //                 {
-   //                     _surgeTreatment = surgeTreatment;
-			//			//Debug.Log("SurgeTreatment == " + _surgeTreatment);
-   //                 }
-   //             }
-   //         }
-   //     }
+		//	foreach (Talent talent in _talents)
+		//	{
+		//		Debug.Log("Checking talents: " + talent.name + ", Type: " + talent.GetType());
+		//		if (talent is SurgeTreatment surgeTreatment)
+		//		{
+		//			Debug.Log("if / talents");
+		//			if (_surgeTreatment == null)
+		//			{
+		//				_surgeTreatment = surgeTreatment;
+		//				Debug.Log("SurgeTreatment == " + _surgeTreatment);
+		//			}
+		//		}
+		//	}
+		//}
     }
 
     public override void UpdateState()
@@ -1482,7 +1486,7 @@ public class HealingPoison : AbstractCharacterState
 			//if (_surgeTreatment != null && _surgeTreatment.IsActive)
 			//{
 			//	Debug.Log("SurgeTreatment == " + _surgeTreatment.IsActive);
-			//	//InstantHeal();
+			//	InstantHeal();
 			//}
 			Debug.Log("Duration == " + _duration);
             return false;
@@ -1508,10 +1512,10 @@ public class HealingPoison : AbstractCharacterState
 
 	//private void InstantHeal()
 	//{
- //       Debug.Log("Instant Heal Method");
- //       _characterState.Health.AddHeal(_totalHealed);
- //       _totalHealed = 0.0f;
- //   }
+ //      Debug.Log("Instant Heal Method");
+ //     _characterState.Health.AddHeal(_totalHealed);
+ //      _totalHealed = 0.0f;
+	//}
 
 	public static void SetPlayer(Character player)
 	{
@@ -1522,7 +1526,8 @@ public class HealingPoison : AbstractCharacterState
 public class RegeneratingPoison : AbstractCharacterState
 {
 	private List<Talent> _talents = new();
-	private SurgeTreatment _surgeTreatment;
+	private static SurgeTreatment _surgeTreatment;
+
 	private static Character _player;
 	private static CharacterState _character;
 
@@ -1544,7 +1549,6 @@ public class RegeneratingPoison : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
     {
         state = States.RegeneratingPoison;
-        //Debug.Log("Entering PoisonBone State");
         _timeBetweenHeal = _startTimeBetweenHeal;
 
         type = StateType.Physical;
@@ -1564,18 +1568,18 @@ public class RegeneratingPoison : AbstractCharacterState
         if (_player != null)
         {
 			_talents = _player.CharacterState.Character.TalentSystem.Talents;
-			//Debug.Log("HealingPoison player == " + _player);
+			Debug.Log("HealingPoison player == " + _player);
 
             foreach (Talent talent in _talents)
             {
-                //Debug.Log("Checking talents: " + talent.name + ", Type: " + talent.GetType());
+                Debug.Log("Checking talents: " + talent.name + ", Type: " + talent.GetType());
                 if (talent is SurgeTreatment surgeTreatment)
                 {
-					//Debug.Log("if / talents");
+					Debug.Log("if / talents");
                     if (_surgeTreatment == null)
                     {
                         _surgeTreatment = surgeTreatment;
-        				//Debug.Log("SurgeTreatment == " + _surgeTreatment);
+        				Debug.Log("SurgeTreatment == " + _surgeTreatment);
                     }
                 }
             }
@@ -1624,12 +1628,12 @@ public class RegeneratingPoison : AbstractCharacterState
         if (_currentStacks < _maxStacks)
         {
             _currentStacks++;
-            //Debug.Log("if / CurrentStackHealingPoison in AddStacks == " + _currentStacks);
+            Debug.Log("if / CurrentStackHealingPoison in AddStacks == " + _currentStacks);
             _duration = _baseDuration;
         }
         else
         {
-            //Debug.Log("else / CurrentStackHealingPoison in AddStacks == " + _currentStacks);
+            Debug.Log("else / CurrentStackHealingPoison in AddStacks == " + _currentStacks);
             _duration = _baseDuration;
         }
     }
@@ -1659,10 +1663,13 @@ public class RegeneratingPoison : AbstractCharacterState
 
 	public static void InstantHeal()
 	{
-		float totalHeal = _totalHeal;
-		Debug.Log("InstantHeal // totalHeal == " + totalHeal);
-		_character.Health.AddHeal(totalHeal);
-		_totalHeal = 0;
+		if (_surgeTreatment != null)
+		{
+			float totalHeal = _totalHeal;
+			Debug.Log("InstantHeal // totalHeal == " + totalHeal);
+			_character.Health.AddHeal(totalHeal);
+			_totalHeal = 0;
+		}
 	}
 }
 

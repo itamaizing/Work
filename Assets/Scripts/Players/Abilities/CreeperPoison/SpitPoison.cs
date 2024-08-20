@@ -40,58 +40,32 @@ public class SpitPoison : Skill
 
     protected override IEnumerator PrepareJob()
     {
-        //if (_healingSpitPoison.IsActive)
-        //{
-        //    _isCanTargetHimself = _healingSpitPoison.IsCanTargetHimself;
-        //    _isActiveTalent = _healingSpitPoison.IsActive;
-        //    //Debug.Log("CanTargetHimself == " + _isCanTargetHimself);
-        //}
-        //else
-        //{
-        //    _isCanTargetHimself = false;
-        //    _isActiveTalent = _healingSpitPoison.IsActive;
-        //}
+       if (_healingSpitPoison.IsActive)
+       {
+           _isActiveTalent = _healingSpitPoison.IsActive;
+       }
+       else
+       {
+           _isActiveTalent = _healingSpitPoison.IsActive;
+       }
 
         while (_currentTarget == null && float.IsPositiveInfinity(_mousePos.x))
         {
             if (Input.GetMouseButton(0))
             {
-                _currentTarget = GetRaycastTarget();
+                _currentTarget = GetRaycastTarget(true);
                 ChooseTarget();
 
                 _mousePos = GetMousePoint();
                 CalculateAngleRotation();
             }
+            CooldownChange();
             yield return null;
         }
     }
 
     protected override IEnumerator CastJob()
     {
-        Debug.Log("CallShootCoroutine SpitPoison");
-        if (_isActiveTalent)
-        {
-            if (_isOriginalTargetAllies || _isOriginalTargetPlayer)
-            {
-                if (_cooldownTime == _originalCooldown)
-                {
-                    _cooldownTime /= 3;
-                }
-                Debug.Log("if Cooldown == " + _cooldownTime);
-                TryPayCost();
-            }
-            else
-            {
-                _cooldownTime = _originalCooldown;
-                Debug.Log("else Cooldown == " + _cooldownTime);
-                TryPayCost();
-            }
-        }
-        else
-        {
-            Debug.Log("Else Talent is Active == " + _isActiveTalent);
-            TryPayCost();
-        }
         Shoot();
         yield return null;
     }
@@ -100,6 +74,35 @@ public class SpitPoison : Skill
     {
         _currentTarget = null; 
         _mousePos = Vector3.positiveInfinity;
+    }
+
+    private void CooldownChange()
+    {
+        Debug.Log("CooldownChange SpitPoison");
+        if (_isActiveTalent)
+        {
+            if (_isOriginalTargetAllies || _isOriginalTargetPlayer)
+            {
+                if (_cooldownTime == _originalCooldown)
+                {
+                    _cooldownTime /= 3;
+                }
+                Debug.Log("if _cooldownTime == " + _cooldownTime);
+                Debug.Log("if CooldownTime == " + CooldownTime);
+
+            }
+            else
+            {
+                _cooldownTime = _originalCooldown;
+                Debug.Log("else Cooldown == " + _cooldownTime);
+
+            }
+        }
+        else
+        {
+            _cooldownTime = _originalCooldown;
+            Debug.Log("Else Talent is Active == " + _isActiveTalent);
+        }
     }
 
     private void Shoot()
@@ -123,7 +126,6 @@ public class SpitPoison : Skill
     {
         Vector3 rotationDirection = _mousePos - _player.transform.position;
         _angleRotation = Mathf.Atan2(rotationDirection.y, rotationDirection.x) * Mathf.Rad2Deg - 90f;
-        Debug.Log($"AngleRotation == {_angleRotation}");
     }
 
     private void ChooseTarget()
@@ -199,8 +201,6 @@ public class SpitPoison : Skill
         projectile.InitializationProjectile(_player, manaValue, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies);
 
         projectile.MoveBallToTarget(target.transform.position);
-
-        Debug.Log($"projectile.MoveBallToTarget = {target.transform.position}");
 
         NetworkServer.Spawn(item);
 
