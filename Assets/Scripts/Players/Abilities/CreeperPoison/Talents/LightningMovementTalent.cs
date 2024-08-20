@@ -26,7 +26,7 @@ public class LightningMovementTalent : Talent
 
     public void ResetCharacterResistance()
     {
-        character.Health.ResetDefMagicDamage(_baseDefMagDamage);
+        character.Health.SetDefMagicDamage(-_increaseResistanceToMagicDamage);
         Debug.Log($"Reset DefMagDamage == {character.Health.DefMagDamage}");
     }
 }

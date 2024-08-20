@@ -5,7 +5,7 @@ using UnityEngine;
 public class GrabTongueTalent : Talent
 {
     [SerializeField] private GrabTongue _grabTongue;
-    [SerializeField] private PlayerAbilities _ability;
+    [SerializeField] private SkillManager _ability;
     public override void Enter()
     {
         if (_ability.Abilities.Contains(_grabTongue))
@@ -14,7 +14,7 @@ public class GrabTongueTalent : Talent
         }
         else
         {
-            _ability.AddAbility(_grabTongue);
+            //_ability.AddAbility(_grabTongue);
         }
     }
 
@@ -22,7 +22,7 @@ public class GrabTongueTalent : Talent
     {
         if (_ability.Abilities.Contains(_grabTongue))
         {
-            _ability.RemoveAbility(_grabTongue);
+            //_ability.RemoveAbility(_grabTongue);
             _grabTongue.enabled = false;
         }
         else

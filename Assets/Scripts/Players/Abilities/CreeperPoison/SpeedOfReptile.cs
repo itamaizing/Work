@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpeedOfReptile : Ability
+public class SpeedOfReptile : Skill
 {
     [SerializeField] private Character _player;
     [SerializeField] private CreeperStrike _creeperStrike;
@@ -13,39 +13,33 @@ public class SpeedOfReptile : Ability
     private float _increaseAttackSpeed = 2f;
     private float _increaseEvasion = 2f;
 
-    private Coroutine _useAbilityCoroutine;
-    private Coroutine _increaseValuesCoroutine;
+    private bool _isCanCast = true;
+
     public bool Enabled;
-    protected override void Cast()
+
+    protected override bool IsCanCast => _isCanCast;
+
+    protected override IEnumerator PrepareJob()
     {
-        _useAbilityCoroutine = StartCoroutine(UseAbility());
-    }
-
-    protected override void Cancel()
-    {
-        ResetValues();
-
-        if (_useAbilityCoroutine != null)
-            StopCoroutine(UseAbility());
-
-        if (_increaseValuesCoroutine != null)
-            StopCoroutine(IncreaseValuesCoroutine());
-    }
-
-    private IEnumerator UseAbility()
-    {
-        PayCost();
-        _increaseValuesCoroutine = StartCoroutine(IncreaseValuesCoroutine());
         yield return null;
     }
 
-    private IEnumerator IncreaseValuesCoroutine()
+    protected override IEnumerator CastJob()
     {
+        _isCanCast = false;
+        TryPayCost();
         IncreaseValues();
 
         yield return new WaitForSeconds(_duration);
-        Debug.Log(" work");
-        Cancel();
+
+        Debug.Log($"After _duration called ClearData()");
+        ClearData();
+    }
+
+    protected override void ClearData()
+    {
+        Debug.Log("ClearData work");
+        ResetValues();
     }
 
     private void IncreaseValues()
@@ -60,6 +54,8 @@ public class SpeedOfReptile : Ability
         _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_increaseAttackSpeed);
 
         CmdResetValues();
+
+        _isCanCast = true;
     }
 
     [Command]

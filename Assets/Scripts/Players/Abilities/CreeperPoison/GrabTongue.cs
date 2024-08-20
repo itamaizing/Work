@@ -5,101 +5,81 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GrabTongue : Ability
+public class GrabTongue : Skill
 {
-    [SerializeField] private Character _dad;
-    //[SerializeField] private LineRenderer _lineRenderer;
+    [SerializeField] private Character _player;
     [SerializeField] private GrabTongueProjectile _tongueProjectile;
+    private Character _target;
 
-    private Vector2 _mousePosition;
+    private Vector3 _mousePosition;
+    private Vector3 _startPosition;
+    private Vector3 _endPosition;
 
-    private Coroutine _useAbilityCoroutine;
-    private Coroutine _throwInDirectionTargetCoroutine;
-    private Coroutine _mouseDirectionCoroutine;
     public bool Enabled;
-    protected override void Cast()
+
+    protected override bool IsCanCast => throw new System.NotImplementedException();
+
+    protected override IEnumerator PrepareJob()
     {
-        _useAbilityCoroutine = StartCoroutine(UseAbility());
-    }
+        _startPosition = _player.transform.position;
 
-    protected override void Cancel()
-    {
-        if (_useAbilityCoroutine != null)
-        {
-            StopCoroutine(UseAbility());
-            _useAbilityCoroutine = null;
-        }
-
-        if (_throwInDirectionTargetCoroutine != null)
-        {
-            StopCoroutine(ThrowInDirectionTarget());
-            _throwInDirectionTargetCoroutine = null;
-        }
-
-        if (_mouseDirectionCoroutine != null)
-        {
-            StopCoroutine(MouseDirectionCoroutine());
-            _mouseDirectionCoroutine = null;
-        }
-    }
-
-    private IEnumerator UseAbility()
-    {
-        yield return _mouseDirectionCoroutine = StartCoroutine(MouseDirectionCoroutine());
-
-        _throwInDirectionTargetCoroutine = StartCoroutine(ThrowInDirectionTarget());
-    }
-    
-    private IEnumerator MouseDirectionCoroutine()
-    {
         while (!Input.GetMouseButtonDown(0))
         {
             yield return null;
         }
 
+        if (Input.GetMouseButtonDown(0))
+        {
+            _target = GetRaycastTarget();
+        }
+
         _mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+        if (Vector3.Distance(_startPosition, _mousePosition) <= Radius)
+        {
+            _endPosition = _mousePosition;
+        }
     }
 
-    private IEnumerator ThrowInDirectionTarget() 
+    protected override IEnumerator CastJob()
     {
-        PayCost();
-        CreateTongueProjectile(_mousePosition);
+        if (_target != null)
+        {
+            TryPayCost();
+            CreateTongueProjectile(_mousePosition, _target);
+        }
         yield return null;
     }
 
-    private void CreateTongueProjectile(Vector2 mousePosition)
+    protected override void ClearData()
     {
-        CmdCreateTongueProjectile(mousePosition);
+        _target = null;
+
+    }
+
+    private void CreateTongueProjectile(Vector2 mousePosition, Character target)
+    {
+        CmdCreateTongueProjectile(mousePosition, target);
     }
 
     [Command]
-    private void CmdCreateTongueProjectile(Vector2 mousePosition)
+    private void CmdCreateTongueProjectile(Vector2 mousePosition, Character target)
     {
         GameObject item = Instantiate(_tongueProjectile.gameObject, transform.position, Quaternion.identity);
         GrabTongueProjectile tongueProjectile = item.GetComponent<GrabTongueProjectile>();
 
-        tongueProjectile.InitializationProjectile(_dad);
-        tongueProjectile.MovingTongueFromPlayer(_dad.transform.position, mousePosition);
+        tongueProjectile.InitializationProjectile(_player, target, _startPosition, _endPosition);
+        tongueProjectile.StartTongueAttract();
 
         NetworkServer.Spawn(item);
 
         //RpcCreate(mousePosition);
-        RpcInitializationProjectile(item);
+        RpcInitializationProjectile(item, target);
     }
 
-    //[ClientRpc]
-    //private void RpcCreate(Vector2 mousePosition)
-    //{
-    //    GameObject item = Instantiate(_tongueProjectile.gameObject, transform.position, Quaternion.identity);À 
-    //    GrabTongueProjectile tongueProjectile = item.GetComponent<GrabTongueProjectile>();
-
-    //    tongueProjectile.InitializationProjectile(_dad);
-    //    tongueProjectile.MovingTongueFromPlayer(_dad.transform.position, mousePosition);
-    //}
-
     [ClientRpc]
-    private void RpcInitializationProjectile(GameObject projectile)
+    private void RpcInitializationProjectile(GameObject projectile, Character target)
     {
-        projectile.GetComponent<GrabTongueProjectile>().InitializationProjectile(_dad);
+        projectile.GetComponent<GrabTongueProjectile>().InitializationProjectile(_player, target, _startPosition, _endPosition);
     }
 }

@@ -5,27 +5,24 @@ using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
+using System.Drawing;
 
-public class SpitPoison : TargetOrAreaAbility
+public class SpitPoison : Skill
 {
     [Header("Talents")]
     [SerializeField] private HealingSpitPoison _healingSpitPoison;
 
     [SerializeField] private SpitPoisonProjectile _projectile;
-    [SerializeField] private Character _playerCharacter;
+    [SerializeField] private Character _player;
 
-    private float _angle;
     private float _originalCooldown;
+    private float _angleRotation;
 
-    private Vector2 _mousePos;
+    private Vector3 _mousePos = Vector3.positiveInfinity;
 
     private Character _currentTarget;
 
-    private Coroutine _useCoroutine;
-    private Coroutine _shootCoroutine;
-    private Coroutine _mouseDirectionCoroutine;
-
-    private bool _isPlayer;
     private bool _isActiveTalent;
 
     private bool _isOriginalTargetEnemy;
@@ -34,133 +31,123 @@ public class SpitPoison : TargetOrAreaAbility
 
     public bool Enabled;
 
-    [Header("Test ParticleSystem")]
-    [SerializeField] private ParticleSystem _soulDrainPrefab;
-    private ParticleSystem _soulDrain;
+    protected override bool IsCanCast => CheckCanCast();
 
-    protected override void Start()
+    protected void Start()
     {
-        base.Start();
-        _originalCooldown = _cooldown;
+        _originalCooldown = _cooldownTime;
     }
 
-    protected override IEnumerator UseCoroutine()
+    protected override IEnumerator PrepareJob()
     {
-        if (_healingSpitPoison.IsActive)
+        //if (_healingSpitPoison.IsActive)
+        //{
+        //    _isCanTargetHimself = _healingSpitPoison.IsCanTargetHimself;
+        //    _isActiveTalent = _healingSpitPoison.IsActive;
+        //    //Debug.Log("CanTargetHimself == " + _isCanTargetHimself);
+        //}
+        //else
+        //{
+        //    _isCanTargetHimself = false;
+        //    _isActiveTalent = _healingSpitPoison.IsActive;
+        //}
+
+        while (_currentTarget == null && float.IsPositiveInfinity(_mousePos.x))
         {
-            _isCanTargetHimself = _healingSpitPoison.IsCanTargetHimself;
-            _isActiveTalent = _healingSpitPoison.IsActive;
-            //Debug.Log("CanTargetHimself == " + _isCanTargetHimself);
+            if (Input.GetMouseButton(0))
+            {
+                _currentTarget = GetRaycastTarget();
+                ChooseTarget();
+
+                _mousePos = GetMousePoint();
+                CalculateAngleRotation();
+            }
+            yield return null;
         }
-        else
-        {
-            _isCanTargetHimself = false;
-            _isActiveTalent = _healingSpitPoison.IsActive;
-        }
-        yield return _chooseTargetJob = StartCoroutine(ChooseTargetCoroutine(Radius));
-        CastAction();
     }
 
-    protected override void CastAction()
+    protected override IEnumerator CastJob()
     {
-        //Debug.Log("CastAction SpitPoison");
-        _useCoroutine = StartCoroutine(UseAbilityCoroutine()); 
-    }
-
-    protected override void Cancel()
-    {
-        if (_useCoroutine != null)
-            StopCoroutine(UseAbilityCoroutine());
-
-        if (_shootCoroutine != null)
-            StopCoroutine(CallShootCoroutine());
-
-        if (_mouseDirectionCoroutine != null)
-            StopCoroutine(MouseDirectionCoroutine());
-    }
-
-    private IEnumerator UseAbilityCoroutine()
-    {
-        yield return _mouseDirectionCoroutine = StartCoroutine(MouseDirectionCoroutine());
-        _shootCoroutine = StartCoroutine(CallShootCoroutine());
-    }
-
-    private IEnumerator MouseDirectionCoroutine()
-    {
-        _mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 lookDir = _mousePos - _playerCharacter.Rb.position;
-        _angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
-        ChooseTarget();
-        yield return null;
-    }
-
-    private IEnumerator CallShootCoroutine()
-    {
+        Debug.Log("CallShootCoroutine SpitPoison");
         if (_isActiveTalent)
         {
             if (_isOriginalTargetAllies || _isOriginalTargetPlayer)
             {
-                if (_cooldown == _originalCooldown)
+                if (_cooldownTime == _originalCooldown)
                 {
-                    _cooldown /= 3;
+                    _cooldownTime /= 3;
                 }
-                Debug.Log("if Cooldown == " + _cooldown);
-                PayCost();
+                Debug.Log("if Cooldown == " + _cooldownTime);
+                TryPayCost();
             }
             else
             {
-                _cooldown = _originalCooldown;
-                Debug.Log("else Cooldown == " + _cooldown);
-                PayCost();
+                _cooldownTime = _originalCooldown;
+                Debug.Log("else Cooldown == " + _cooldownTime);
+                TryPayCost();
             }
         }
         else
         {
             Debug.Log("Else Talent is Active == " + _isActiveTalent);
-            PayCost();
+            TryPayCost();
         }
         Shoot();
         yield return null;
     }
-    
+
+    protected override void ClearData()
+    {
+        _currentTarget = null; 
+        _mousePos = Vector3.positiveInfinity;
+    }
+
     private void Shoot()
     {
+        Debug.Log("Shoot SpitPoison");
         if (_currentTarget != null)
         {
-            CmdInstantiateProjectile(_currentTarget.gameObject, _angle, _playerCharacter.Stamina.Value, _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
+            CmdInstantiateProjectileToTarget(_currentTarget.gameObject, _angleRotation, _player.Stamina.Value, 
+                _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
         }
         else
         {
-            CmdInstantiateProjectileToPoint(Point, _angle, _playerCharacter.Stamina.Value, _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
+            CmdInstantiateProjectileToPoint(_mousePos, _angleRotation, _player.Stamina.Value, 
+                _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
         }
 
-        _playerCharacter.Stamina.Use(_playerCharacter.Stamina.Value);
+        ClearData();
+    }
 
-        Cancel();
+    private void CalculateAngleRotation()
+    {
+        Vector3 rotationDirection = _mousePos - _player.transform.position;
+        _angleRotation = Mathf.Atan2(rotationDirection.y, rotationDirection.x) * Mathf.Rad2Deg - 90f;
+        Debug.Log($"AngleRotation == {_angleRotation}");
     }
 
     private void ChooseTarget()
     {
-        _currentTarget = Target;
+        Debug.Log("ChooseTarget");
         if (_currentTarget != null)
         {
-            if (_currentTarget.gameObject == _playerCharacter.gameObject)
+            if (_currentTarget.gameObject == _player.gameObject)
             {
-                // Debug.Log("Target == Player");
+                Debug.Log("Target == Player");
                 _isOriginalTargetPlayer = true;
                 _isOriginalTargetAllies = false;
                 _isOriginalTargetEnemy = false;
             }
             else if (_currentTarget.gameObject.layer == LayerMask.NameToLayer("Allies"))
             {
-                //.Log("Target == Allies");
+                Debug.Log("Target == Allies");
                 _isOriginalTargetPlayer = false;
                 _isOriginalTargetAllies = true;
                 _isOriginalTargetEnemy = false;
             }
             else if (_currentTarget.gameObject.layer == LayerMask.NameToLayer("Enemy"))
             {
-                //Debug.Log("Target == Enemy");
+                Debug.Log("Target == Enemy");
                 _isOriginalTargetPlayer = false;
                 _isOriginalTargetAllies = false;
                 _isOriginalTargetEnemy = true;
@@ -168,69 +155,97 @@ public class SpitPoison : TargetOrAreaAbility
         }
         else
         {
+            Debug.Log($"Else ChooseTarget / _currentTarget == {_currentTarget}");
+
             _isOriginalTargetPlayer = false;
             _isOriginalTargetAllies = false;
             _isOriginalTargetEnemy = false;
 
-            if (Point != Vector3.zero)
+            if (_mousePos != Vector3.zero)
             {
                 _currentTarget = null;
             }
         }
     }
 
+    private bool CheckCanCast()
+    {
+        Debug.Log("CheckCanCast");
+
+        if (_currentTarget == null)
+            return Vector3.Distance(_mousePos, transform.position) <= Radius;
+
+        return Vector3.Distance(_mousePos, transform.position) <= Radius ||
+               Vector3.Distance(_currentTarget.transform.position, transform.position) <= Radius;
+    }
+
     private void ApplyCloudPoison()
     {
-        _playerCharacter.CharacterState.CmdAddState(States.PoisonCloud, 6f, 0);
+        _player.CharacterState.CmdAddState(States.PoisonCloud, 6f, 0);
     }
 
     #region Command Methods
 
     [Command]
-    private void CmdInstantiateProjectile(GameObject target, float angle, float manaValue, bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
+    private void CmdInstantiateProjectileToTarget(GameObject target, float angleRotation, float manaValue, 
+        bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
     {
-        //Debug.Log("CmdInstProj / isActiveTalent == " + isActiveTalent);
+        GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.Euler(0, 0, angleRotation));
 
-        GameObject item = Instantiate(_projectile.gameObject, _playerCharacter.Rb.position, Quaternion.Euler(0, 0, angle));
+        SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
+
         SpitPoisonProjectile projectile = item.GetComponent<SpitPoisonProjectile>();
 
-        projectile.InitializationProjectile(_playerCharacter, manaValue, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies);
+        projectile.InitializationProjectile(_player, manaValue, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies);
+
+        projectile.MoveBallToTarget(target.transform.position);
+
+        Debug.Log($"projectile.MoveBallToTarget = {target.transform.position}");
+
         NetworkServer.Spawn(item);
 
-        RpcInstantiateProjectile(target, projectile, angle, manaValue, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies);
+        RpcInstantiateProjectile(target, projectile, manaValue, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies);
         ApplyCloudPoison();
     }
 
     [Command]
-    private void CmdInstantiateProjectileToPoint(Vector3 point, float angle, float manaValue, bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
+    private void CmdInstantiateProjectileToPoint(Vector3 point, float angleRotation, float manaValue, 
+        bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
     {
-        //Debug.Log("CmdInstProj / isActiveTalent == " + isActiveTalent);
+        GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.Euler(0, 0, angleRotation));
 
-        GameObject item = Instantiate(_projectile.gameObject, _playerCharacter.Rb.position, Quaternion.Euler(0, 0, angle));
+        SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
+
         SpitPoisonProjectile projectile = item.GetComponent<SpitPoisonProjectile>();
 
-        projectile.InitializationProjectile(_playerCharacter, manaValue, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies);
+        projectile.InitializationProjectile(_player, _player.Stamina.Value, _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
+
+        projectile.MoveBallOnMaxDistance(point);
+
         NetworkServer.Spawn(item);
 
-        RpcInstantiateProjectileToPoint(point, projectile, angle, manaValue, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies);
+        RpcInstantiateProjectileToPoint(point, projectile, manaValue, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies);
         ApplyCloudPoison();
     }
+
     #endregion
 
     #region ClientRpc Methods
 
     [ClientRpc]
-    private void RpcInstantiateProjectile(GameObject target, SpitPoisonProjectile projectile, float angle, float manaValue, 
+    private void RpcInstantiateProjectile(GameObject target, SpitPoisonProjectile projectile, float manaValue,
         bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
     {
-        projectile.InitializationProjectile(_playerCharacter, manaValue, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies);
+        projectile.InitializationProjectile(_player, _player.Stamina.Value, _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
     }
 
     [ClientRpc]
-    private void RpcInstantiateProjectileToPoint(Vector3 point, SpitPoisonProjectile projectile, float angle, float manaValue, bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
+    private void RpcInstantiateProjectileToPoint(Vector3 point, SpitPoisonProjectile projectile, float manaValue,
+        bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
     { 
-        projectile.InitializationProjectile(_playerCharacter, manaValue, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies);
+        projectile.InitializationProjectile(_player, _player.Stamina.Value, _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
     }
+
     #endregion
 
 }

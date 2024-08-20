@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class AbilityMenuPanel : MonoBehaviour
 {
-	[SerializeField] private PlayerAbilities _ability;
+	[SerializeField] private SkillManager _ability;
 	[SerializeField] private Image[] _icos;
 	[SerializeField] private TextMeshProUGUI[] _name;
 

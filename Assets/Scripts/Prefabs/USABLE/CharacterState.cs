@@ -258,7 +258,7 @@ public class StunnedState : AbstractCharacterState
 {
 	public new States state = States.Stun;
 	public bool turnOff = false;
-	private PlayerAbilities _abilities;
+	private SkillManager _abilities;
 	private float _baseDuration;
 	private float _duration;
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
@@ -325,7 +325,7 @@ public class Desiccuration : AbstractCharacterState
 {
 	public new States state = States.Desiccuration;
 	public bool turnOff = false;
-	private PlayerAbilities _abilities;
+	private SkillManager _abilities;
 	private float _baseDuration;
 	private float _duration;
 	private float _damageToExit;
@@ -399,7 +399,7 @@ public class BlindnessState : AbstractCharacterState
 	//private CharacterState _characterState;
 	private float _duration;
 	private float _baseDuration;
-	private PlayerAbilities _abilities;
+	private SkillManager _abilities;
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
 	{
 		type = StateType.Physical;
@@ -460,7 +460,7 @@ public class FrozenState : AbstractCharacterState
 	private float _duration;
 	private float _baseDuration;
 	private float _damageToExit;
-	private PlayerAbilities _abilities;
+	private SkillManager _abilities;
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
 	{
@@ -532,7 +532,7 @@ public class FrostingState : AbstractCharacterState
 	private float _duration;
 	private float _baseDuration;
 	private float _damageToExit;
-	private PlayerAbilities _abilities;
+	private SkillManager _abilities;
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
 	{
@@ -560,7 +560,7 @@ public class FrostingState : AbstractCharacterState
 		{
 			_abilities = ability.Abilities;
 
-			foreach (Ability abil in _abilities.Abilities)
+			foreach (Skill abil in _abilities.Abilities)
 			{
 				if (abil.AbilityForm == AbilityForm.Physical)
 				{
@@ -594,7 +594,7 @@ public class FrostingState : AbstractCharacterState
 		}
 		if (_characterState.Check(StatusEffect.AbilitySpeed))
 		{
-			foreach (Ability abil in _abilities.Abilities)
+			foreach (Skill abil in _abilities.Abilities)
 			{
 				if (abil.AbilityForm == AbilityForm.Physical)
 				{
@@ -685,7 +685,7 @@ public class Cooling : AbstractCharacterState
 
 public class CreeperInvisibleState : AbstractCharacterState
 {
-    private List<Ability> _abilities = new();
+    private List<Skill> _abilities = new();
 	private CreeperInvisible _creeperInvisible;
     private Character _player;
 
@@ -731,7 +731,7 @@ public class CreeperInvisibleState : AbstractCharacterState
         if (_player != null)
         {
 			_abilities = _player.CharacterState.Character.Abilities.Abilities;
-            foreach (Ability ability in _abilities)
+            foreach (Skill ability in _abilities)
             {
                 if (ability is CreeperInvisible creeperInvisible)
                 {
@@ -862,7 +862,7 @@ public class CreeperInvisibleState : AbstractCharacterState
 
 		if (_isIncreasedManaCost)
 		{
-			foreach (Ability ability in _abilities)
+			foreach (Skill ability in _abilities)
 			{
 				ability.Buff.ManaCost.ReductionPercentage(1.3f);
 				Debug.Log("Ability manaCost == " + ability.Buff.ManaCost.Multiplier);
@@ -883,7 +883,7 @@ public class CreeperInvisibleState : AbstractCharacterState
 
 public class InAirState : AbstractCharacterState
 {
-    private PlayerAbilities _abilities;
+    private SkillManager _abilities;
 
     private float _duration;
     private float _baseDuration;
@@ -949,7 +949,7 @@ public class PoisonBone : AbstractCharacterState
 {
     //private PlayerAbilities _abilities;
 
-	private List<Ability> _abilities = new();
+	private List<Skill> _abilities = new();
 	private CreeperStrike _creeperStrike;
 
     private int _currentStacks = 0;
@@ -994,7 +994,7 @@ public class PoisonBone : AbstractCharacterState
 			_abilities = _player.GetComponent<CharacterState>().Character.Abilities.Abilities;
 			//Debug.Log("PoisonBone player == " + _player);
 
-			foreach (Ability ability in _abilities)
+			foreach (Skill ability in _abilities)
 			{
 				//Debug.Log("Checking ability: " + ability.name + ", Type: " + ability.GetType());
 				if (ability is CreeperStrike creeperStrike)
@@ -1089,9 +1089,9 @@ public class PoisonBone : AbstractCharacterState
 
 public class PoisonCloud : AbstractCharacterState
 {
-    private List<Ability> _abilities = new();
+    //private List<Skill> _abilities = new();
     private ToxiqueCloud _toxiqueCloud;
-	private ExplosionPoisonCloud _cloudExplosion;
+	//private ExplosionPoisonCloud _cloudExplosion;
 
     private static int _currentStacks = 0;
     private static int _maxStacks = 5;
@@ -1131,25 +1131,25 @@ public class PoisonCloud : AbstractCharacterState
             AddStacks();
         }
 
-       if (_player != null)
-       {
-           _abilities = _player.CharacterState.Character.Abilities.Abilities;
-           Debug.Log("PoisonCloud player == " + _player);
+      // if (_player != null)
+      // {
+      //     _abilities = _player.CharacterState.Character.Abilities.Abilities;
+      //     Debug.Log("PoisonCloud player == " + _player);
 
-           foreach (Ability ability in _abilities)
-           {
-               Debug.Log("Checking ability: " + ability.name + ", Type: " + ability.GetType());
-               if (ability is ExplosionPoisonCloud cloudExplosion)
-               {
-                   Debug.Log("if / ability");
-                   if (_cloudExplosion == null)
-                   {
-						_cloudExplosion = cloudExplosion;
-						Debug.Log("CloudExplosion == " + _cloudExplosion);
-                   }
-               }
-           }
-       }
+      //     foreach (Skill ability in _abilities)
+      //     {
+      //         Debug.Log("Checking ability: " + ability.name + ", Type: " + ability.GetType());
+      //         if (ability is ExplosionPoisonCloud cloudExplosion)
+      //         {
+      //             Debug.Log("if / ability");
+      //             if (_cloudExplosion == null)
+      //             {
+						//_cloudExplosion = cloudExplosion;
+						//Debug.Log("CloudExplosion == " + _cloudExplosion);
+      //             }
+      //         }
+      //     }
+      // }
     }
 
     public override void UpdateState()
@@ -1181,13 +1181,13 @@ public class PoisonCloud : AbstractCharacterState
         if (_currentStacks < _maxStacks)
         {
             AddStacks();
-            _cloudExplosion.CurrentStacksPoisonCloud(_currentStacks, _radiusCloud);
+            //_cloudExplosion.CurrentStacksPoisonCloud(_currentStacks, _radiusCloud);
             return true;
         }
         else
         {
             _duration = _baseDuration;
-            _cloudExplosion.CurrentStacksPoisonCloud(_currentStacks, _radiusCloud);
+            //_cloudExplosion.CurrentStacksPoisonCloud(_currentStacks, _radiusCloud);
             return false;
         }
     }
@@ -1670,7 +1670,7 @@ public class AbilitySchoolDebuff : AbstractCharacterState
 {
 	public new States state = States.SchoolDebuff;
 	public bool turnOff = false;
-	private PlayerAbilities _abilities;
+	private SkillManager _abilities;
 	private float _baseDuration;
 	private float _duration;
 	public Schools canceledSchoool;
@@ -1736,7 +1736,7 @@ public class AbilityFormDebuff : AbstractCharacterState
 {
 	public new States state = States.FormDebuf;
 	public bool turnOff = false;
-	private PlayerAbilities _abilities;
+	private SkillManager _abilities;
 	private float _baseDuration;
 	private float _duration;
 	public AbilityForm canceledForm;

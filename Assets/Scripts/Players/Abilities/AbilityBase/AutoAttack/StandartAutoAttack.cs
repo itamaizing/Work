@@ -9,6 +9,6 @@ public class StandartAutoAttack : AutoAttackSkill
 
     protected override void CastAction()
     {
-        _target.Health.CmdTryTakeDamage(Buff.Damage.GetBuffedValue(_damage), DamageType.Physical, AttackRangeType.MeleeAttack);
+        _target.Health.TryTakeDamage(Buff.Damage.GetBuffedValue(_damage), DamageType.Physical, AttackRangeType.MeleeAttack);
     }
 }

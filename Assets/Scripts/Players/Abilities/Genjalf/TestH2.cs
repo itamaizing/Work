@@ -17,7 +17,7 @@ public class TestH2 : Skill
 
     protected override IEnumerator CastJob()
     {
-        _target.Health.CmdTryTakeDamage(Buff.Damage.GetBuffedValue(_damage), DamageType.Magical, AttackRangeType.RangeAttack);
+        _target.Health.TryTakeDamage(Buff.Damage.GetBuffedValue(_damage), DamageType.Magical, AttackRangeType.RangeAttack);
 
         var deley = new WaitForSeconds(_spawnDeley); ;
 
@@ -58,7 +58,7 @@ public class TestH2 : Skill
     {
         GameObject item = Instantiate(_projectile.gameObject, spawnPoint, Quaternion.identity);
 
-        SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
+        //SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
         item.GetComponent<Projectile>().StartFly(pointToflay, true);
 

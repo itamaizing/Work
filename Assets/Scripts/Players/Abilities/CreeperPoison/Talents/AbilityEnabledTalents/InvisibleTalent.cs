@@ -5,7 +5,7 @@ using UnityEngine;
 public class InvisibleTalent : Talent
 {
     [SerializeField] private CreeperInvisible _invisible;
-    [SerializeField] private PlayerAbilities _ability;
+    [SerializeField] private SkillManager _ability;
     public override void Enter()
     {
         if (_ability.Abilities.Contains(_invisible))
@@ -14,7 +14,7 @@ public class InvisibleTalent : Talent
         }
         else
         {
-            _ability.AddAbility(_invisible);
+            //_ability.AddAbility(_invisible);
         }
     }
 
@@ -22,7 +22,7 @@ public class InvisibleTalent : Talent
     {
         if (_ability.Abilities.Contains(_invisible))
         {
-            _ability.RemoveAbility(_invisible);
+            //_ability.RemoveAbility(_invisible);
             _invisible.enabled = false;
         }
         else

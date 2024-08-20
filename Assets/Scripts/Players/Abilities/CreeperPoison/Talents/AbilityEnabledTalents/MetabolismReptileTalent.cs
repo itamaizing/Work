@@ -5,7 +5,7 @@ using UnityEngine;
 public class MetabolismReptileTalent : Talent
 {
     [SerializeField] private MetabolismReptile _metabolismReptile;
-    [SerializeField] private PlayerAbilities _ability;
+    [SerializeField] private SkillManager _ability;
 
     public override void Enter()
     {
@@ -15,7 +15,7 @@ public class MetabolismReptileTalent : Talent
         }
         else
         {
-            _ability.AddAbility(_metabolismReptile);
+            //_ability.AddAbility(_metabolismReptile);
         }
     }
 
@@ -23,7 +23,7 @@ public class MetabolismReptileTalent : Talent
     {
         if (_ability.Abilities.Contains(_metabolismReptile))
         {
-            _ability.RemoveAbility(_metabolismReptile);
+            //_ability.RemoveAbility(_metabolismReptile);
             _metabolismReptile.enabled = false;
         }
         else

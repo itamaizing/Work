@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
 
-public class PoisonSlap : TargetOrAreaAbility
+public class PoisonSlap : Skill
 {
     [SerializeField] private Character _dad;
 
@@ -16,7 +16,7 @@ public class PoisonSlap : TargetOrAreaAbility
 
     [SerializeField] private LightweightSlap _lightweightSlap;
 
-    private GameObject _currentTarget;
+    private Character _currentTarget;
 
     private float _increasingExecutionSpeedFromCreeperStrike = 0.5f; // Уменьшение скорости каста на 50%
     private float _increasingExecutionSpeedFromLightningStrikes = 0.0f;  // Уменьшение скорости каста на 100%
@@ -26,70 +26,93 @@ public class PoisonSlap : TargetOrAreaAbility
     private float _distancePush = 3.0f;
     private float _durationPushInSeconds = 1.0f;
 
-    private Coroutine _useCoroutine;
     private Coroutine _castSpeedFromCreeperStrikeCoroutine;
     private Coroutine _castSpeedFromLightningStrikesCoroutine;
 
     private bool _isIncreasedCastSpeedFromCreeperStrike = false;
     private bool _isIncreasedCastSpeedFromLightningStrike = false;
+
     public bool Enabled;
-    protected override void CastAction()
+
+    protected override bool IsCanCast => CheckDistance();
+
+    protected override IEnumerator PrepareJob()
     {
-        _useCoroutine = StartCoroutine(UseAbilityCoroutine());
+        while (_currentTarget == null)
+        {
+            if (Input.GetMouseButton(0))
+            {
+                _currentTarget = GetRaycastTarget();
+            }
+            yield return null;
+        }
     }
 
-    protected override void Cancel()
+    protected override IEnumerator CastJob()
     {
+        if (_currentTarget != null)
+        {
+            TryPayCost();
+
+            if (_poisonBall.CurrentCharges != 0)
+            {
+                if ((_lightweightSlap.IsActive && _creeperStrike.IsTwoHit) || (_lightweightSlap.IsActive && _lightningStrikes.IsUsedLightningStrikes))
+                {
+                    Debug.Log("IsActive true and Two hit");
+                    yield return null;
+                }
+                else
+                {
+                    Debug.Log("charge --");
+                    _poisonBall.PayCostPoisonBall();
+                }
+            }
+
+            if (_creeperStrike.IsTwoHit && !_isIncreasedCastSpeedFromLightningStrike)
+            {
+                _castSpeedFromCreeperStrikeCoroutine = StartCoroutine(CastSpeedFromCreeperStrike());
+            }
+            else if (_lightningStrikes.IsUsedLightningStrikes && !_isIncreasedCastSpeedFromCreeperStrike)
+            {
+                _castSpeedFromLightningStrikesCoroutine = StartCoroutine(CastSpeedFromLightningStrikes());
+            }
+            else
+            {
+                _castDelay = _baseTimeCast;
+                yield return StartCastDelayCoroutine();
+                DamageDeal();
+            }
+        }
+    }
+
+    protected override void ClearData()
+    {
+        _currentTarget = null;
         _castDelay = 0;
 
         _isIncreasedCastSpeedFromCreeperStrike = false;
         _isIncreasedCastSpeedFromLightningStrike = false;
 
-        if (_useCoroutine != null)
-            StopCoroutine(UseAbilityCoroutine());
-
         if (_castSpeedFromCreeperStrikeCoroutine != null)
+        {
             StopCoroutine(CastSpeedFromCreeperStrike());
-
+            _castSpeedFromCreeperStrikeCoroutine = null;
+        }
         if (_castSpeedFromLightningStrikesCoroutine != null)
+        {
             StopCoroutine(CastSpeedFromLightningStrikes());
+            _castSpeedFromLightningStrikesCoroutine = null;
+        }
     }
 
-    private IEnumerator UseAbilityCoroutine()
+    private bool CheckDistance()
     {
-        PayCost();
-
-        if (_poisonBall.CurrentCharges != 0)
+        if (_currentTarget == null)
         {
-            if ((_lightweightSlap.IsActive && _creeperStrike.IsTwoHit) || (_lightweightSlap.IsActive && _lightningStrikes.IsUsedLightningStrikes))
-            {
-                Debug.Log("IsActive true and Two hit");
-                yield return null;
-            }
-            else
-            {
-                Debug.Log("charge --");
-                //_poisonBall.CurrentCharges--;
-                _poisonBall.PayCostPoisonBall();
-            }
+            return Vector3.Distance(_currentTarget.transform.position, transform.position) <= Radius;
         }
-
-        if (_creeperStrike.IsTwoHit && !_isIncreasedCastSpeedFromLightningStrike)
-        {
-            _castSpeedFromCreeperStrikeCoroutine = StartCoroutine(CastSpeedFromCreeperStrike());
-        }
-        else if (_lightningStrikes.IsUsedLightningStrikes && !_isIncreasedCastSpeedFromCreeperStrike)
-        {
-            _castSpeedFromLightningStrikesCoroutine = StartCoroutine(CastSpeedFromLightningStrikes());
-        }
-        else
-        {
-            _castDelay = _baseTimeCast;
-            yield return GetCastDeleyCoroutine();
-            DamageDeal();
-        }
+        return Vector3.Distance(_currentTarget.transform.position, transform.position) <= Radius;
     }
-
 
     private IEnumerator CastSpeedFromCreeperStrike()
     {
@@ -99,7 +122,7 @@ public class PoisonSlap : TargetOrAreaAbility
         float _timeCastFromCreeperStrike = _baseTimeCast * _increasingExecutionSpeedFromCreeperStrike;
 
         _castDelay = _timeCastFromCreeperStrike;
-        yield return GetCastDeleyCoroutine();
+        yield return StartCastDelayCoroutine();
         Debug.Log("CastTime int if == " + _castDelay);
 
         DamageDeal();
@@ -112,7 +135,7 @@ public class PoisonSlap : TargetOrAreaAbility
         float _timeCastFromLightningStrikes = _baseTimeCast * _increasingExecutionSpeedFromLightningStrikes;
 
         _castDelay = _timeCastFromLightningStrikes;
-        yield return GetCastDeleyCoroutine();
+        yield return StartCastDelayCoroutine();
         Debug.Log("CastTime int else if == " + _castDelay);
 
         DamageDeal();
@@ -120,15 +143,12 @@ public class PoisonSlap : TargetOrAreaAbility
 
     private void DamageDeal()
     {
-        _currentTarget = Target.gameObject;
-
         if (_currentTarget != null) 
         {
-            CmdApplyDamage(_currentTarget.gameObject, _baseDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
-            PushEnemy(_currentTarget, _distancePush, _durationPushInSeconds);
+            _currentTarget.Health.CmdTryTakeDamage(Buff.Damage.GetBuffedValue(_baseDamage), DamageType.Physical, AttackRangeType.MeleeAttack);
+            PushEnemy(_currentTarget.gameObject, _distancePush, _durationPushInSeconds);
         }
-
-        Cancel();
+        ClearData();
     }
 
     private void PushEnemy(GameObject target, float distancePush, float durationPush)

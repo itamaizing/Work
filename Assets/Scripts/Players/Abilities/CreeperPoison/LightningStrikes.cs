@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class LightningStrikes : AutoAttackAbility
+public class LightningStrikes : AutoAttackSkill
 {
     [SerializeField] private Character _dad;
-    private CreeperStrike _creeperStrike;
+    [SerializeField] private CreeperStrike _creeperStrike;
 
     private int _countStrikes = 2;
 
@@ -19,13 +19,11 @@ public class LightningStrikes : AutoAttackAbility
 
     public bool IsUsedLightningStrikes => _isUsedLightningStrikes;
     public bool Enabled;
-    private new void Start()
-    {
-        _creeperStrike = _dad.GetComponentInChildren<CreeperStrike>();
-    }
 
-    protected override void Cancel()
+    protected override void ClearData()
     {
+        base.ClearData();
+
         _countStrikes = 2;
 
         if (_useCoroutine != null)
@@ -49,19 +47,20 @@ public class LightningStrikes : AutoAttackAbility
 
     private IEnumerator DecreaseAttackSpeed()
     {
+        Debug.Log("DecreaseAttackSpeed in LightningStrikes");
         if (_creeperStrike.CurrentTarget != null)
         {
             _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_attackSpeedDeacrease);
 
             while (_countStrikes > 0)
             {
-                _creeperStrike.CurrentCountHit = 0;
                 _creeperStrike.DealingDamageFromHits();
                 _countStrikes--;
+                _creeperStrike.CurrentCountHit = 0;
             }
         }
         _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_attackSpeedDeacrease);
-        Cancel();
+        ClearData();
         yield return new WaitForSeconds(4f);
         _isUsedLightningStrikes = false;
     }

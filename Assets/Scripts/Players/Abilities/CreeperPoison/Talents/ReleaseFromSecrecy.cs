@@ -49,7 +49,8 @@ public class ReleaseFromSecrecy : Talent
 
     private void ReturnOriginalAttackSpeed()
     {
-        _creeperStrike.Buff.AttackSpeed.ResetValue();
+        //Выпилить ResetValues
+        _creeperStrike.Buff.AttackSpeed.ResetValues();
 
         _timeDurationBuff = _startTimeDurationBuff;
         _currentCountBuff = 0;

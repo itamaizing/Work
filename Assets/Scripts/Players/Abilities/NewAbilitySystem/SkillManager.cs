@@ -130,6 +130,8 @@ public class SkillManager : MonoBehaviour
 
     private void SelectSkill(int index)
     {
+        Debug.Log($"Skill.Count == {_skills.Count}");
+        Debug.Log($"Index == {index}");
         if (_selectedSkill.IsPreparing == true)
             return;
 

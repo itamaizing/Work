@@ -32,7 +32,7 @@ public abstract class Skill : NetworkBehaviour
     [Header("Main Settings")]
     [SerializeField] protected float _manaCost;
     [SerializeField] protected float _cooldownTime;
-    [SerializeField] protected float _castDeley;
+    [SerializeField] protected float _castDelay;
     [SerializeField] protected Schools _abilitySchool;
     [SerializeField] protected AbilityForm _abilityForm;
     [SerializeField] protected LayerMask _targetsLayers;
@@ -88,7 +88,7 @@ public abstract class Skill : NetworkBehaviour
     public bool IsHaveResurces { get => IsHaveManaOnSkill && IsCooldowned && IsHaveCharge; }
     public float ManaCost { get => Buff.ManaCost.GetBuffedValue(_manaCost); }
     public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); }
-    public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); }
+    public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDelay); }
     public bool IsCasting { get => _isCasting; }
     public float CastStreamDuration { get => _castDuration; }
     public float Radius { get => Buff.Radius.GetBuffedValue(_radius); protected set => _radius = value; }
@@ -341,9 +341,9 @@ public abstract class Skill : NetworkBehaviour
         return NoObstacles(target, transform.position, obstacle);
     }
 
-    protected Coroutine StartCastDeleyCoroutine()
+    protected Coroutine StartCastDelayCoroutine()
     {
-        _castDeleyCoroutine = StartCoroutine(CastDeleyJob());
+        _castDeleyCoroutine = StartCoroutine(CastDelayJob());
         return _castDeleyCoroutine;
     }
 
@@ -420,7 +420,7 @@ public abstract class Skill : NetworkBehaviour
         _cooldownJob = null;
     }
 
-    private IEnumerator CastDeleyJob()
+    private IEnumerator CastDelayJob()
     {
         CastDeleyStarted?.Invoke(CastDeley);
         float time = 0;
@@ -478,7 +478,7 @@ public abstract class Skill : NetworkBehaviour
         _isCasting = true;
 
         if (CastDeley > 0)
-            yield return StartCastDeleyCoroutine();
+            yield return StartCastDelayCoroutine();
 
         if (_castDuration > 0)
             StartCoroutine(CastStreamJob());

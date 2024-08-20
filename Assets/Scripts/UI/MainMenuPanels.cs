@@ -10,7 +10,6 @@ public class MainMenuPanels : MonoBehaviour
 	public void SetPanel(HeroComponent hero)
 	{
 		_talentPanel.Init(hero.TalentSystem);
-		_abilityMenuPanel.Init(hero.Abilities);
 		_attributePanel.Init(hero);
 	}
 }

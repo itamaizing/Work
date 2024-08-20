@@ -136,9 +136,3 @@ public class AbilityTimer
 	public float time;
 	public float multiplier;
 }
-
-struct AbilityTimer
-{
-	public Ability ability;
-	public float time;
-}

@@ -108,20 +108,20 @@ public class HealthComponent : NetworkBehaviour
 
         return hit;
     }
-	public bool TryTakeDamage(float damageValue, DamageType damageType, AttackRangeType attackRangeType, Ability ability)
-	{
+    public bool TryTakeDamage(float damageValue, DamageType damageType, AttackRangeType attackRangeType, Ability ability)
+    {
         _personWhoShooted = ability;
-		float modifiedDamage = CalculateDamageWithStats(damageValue, damageType, attackRangeType, out bool hit);
+        float modifiedDamage = CalculateDamageWithStats(damageValue, damageType, attackRangeType, out bool hit);
 
-		if (hit)
-		{
-			TakeDamage(modifiedDamage, damageType, ability);
-		}
+        if (hit)
+        {
+            TakeDamage(modifiedDamage, damageType, ability);
+        }
 
-		return hit;
-	}
+        return hit;
+    }
 
-	private float CalculateDamageWithStats(float damageValue, DamageType damageType, AttackRangeType attackRangeType, out bool hitSuccessed)
+    private float CalculateDamageWithStats(float damageValue, DamageType damageType, AttackRangeType attackRangeType, out bool hitSuccessed)
     {
         if (_invinsible)
         {
@@ -132,13 +132,13 @@ public class HealthComponent : NetworkBehaviour
         {
             if (UnityEngine.Random.Range(0, 100) <= EvadeMagicDamage)
             {
-                ShowDamagePrefab("miss",new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f));
+                ShowDamagePrefab("miss", new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f));
                 hitSuccessed = false;
                 return 0;
             }
             hitSuccessed = true;
-            
-            damageValue -= (damageValue * _defMagDamage / 100);
+
+            damageValue -= (damageValue * DefMagDamage / 100);
             return damageValue - _absorbMagDamage;
         }
 
@@ -149,7 +149,7 @@ public class HealthComponent : NetworkBehaviour
                 case AttackRangeType.MeleeAttack:
                     if (UnityEngine.Random.Range(0, 100) <= EvadeMeleeDamage)
                     {
-                        ShowDamagePrefab("miss",new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f));
+                        ShowDamagePrefab("miss", new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f));
                         hitSuccessed = false;
                         return 0;
                     }
@@ -160,7 +160,7 @@ public class HealthComponent : NetworkBehaviour
                 case AttackRangeType.RangeAttack:
                     if (UnityEngine.Random.Range(0, 100) <= EvadeRangeDamage)
                     {
-                        ShowDamagePrefab("miss",new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f));
+                        ShowDamagePrefab("miss", new Color(120, 120, 120, 1), new Color(120, 120, 120, 0.5f));
                         hitSuccessed = false;
                         return 0;
                     }
@@ -186,119 +186,119 @@ public class HealthComponent : NetworkBehaviour
     {
         float value = 0;
 
-       // if (damageType == DamageType.Physical)
-       // {
-            for (int i = 0; i < shields.Count; i++)
-            {
-                if (shields[i].DamageType == damageType || shields[i].DamageType == DamageType.Both)
-                {
-                    value += shields[i].GetShieldAmount(ability.gameObject);
-                }
-            }
-      //  }
-
-      /*  if (damageType == DamageType.Magical)
+        // if (damageType == DamageType.Physical)
+        // {
+        for (int i = 0; i < shields.Count; i++)
         {
-            for (int i = 0; i < shields.Count; i++)
+            if (shields[i].DamageType == damageType || shields[i].DamageType == DamageType.Both)
             {
-                if (shields[i].DamageType == damageType || shields[i].DamageType == DamageType.Both)
-                {
-                    value += shields[i].GetShieldAmount(ability.gameObject);
-                }
+                value += shields[i].GetShieldAmount(ability.gameObject);
             }
-        }*/
+        }
+        //  }
+
+        /*  if (damageType == DamageType.Magical)
+          {
+              for (int i = 0; i < shields.Count; i++)
+              {
+                  if (shields[i].DamageType == damageType || shields[i].DamageType == DamageType.Both)
+                  {
+                      value += shields[i].GetShieldAmount(ability.gameObject);
+                  }
+              }
+          }*/
 
         return value;
     }
 
     private float CalculateDamageForShields(float damageValue, DamageType damageType, Ability ability)
     {
-       // if (damageType == DamageType.Physical)
-      //  {
-            if (SummShields(damageType, ability) > damageValue)
-            {
-                for (int i = shields.Count - 1; i >= 0; i--)
-                {
-                    Shielding shield = shields[i];
-                    if (damageValue >= shield.GetShieldAmount(ability.gameObject))
-                    {
-                        damageValue -= shield.GetShieldAmount(ability.gameObject);
-                        shield.RemoveAmount(shield.GetShieldAmount(ability.gameObject));
-                        shields.Remove(shield);
-                    }
-                    else
-                    {
-                        shield.RemoveAmount( damageValue);
-                        return 0;
-                    }
-                }
-            }
-
-            else if (SummShields(damageType, ability) <= damageValue && SummShields(damageType, ability) > 0)
-            {
-                float value = damageValue - SummShields(damageType, ability);
-                shields.Clear();
-                return value;
-            }
-
-            return damageValue; // ���� ���� <= 0
-     //   }
-     /*
-        else if (damageType == DamageType.Magical)
+        // if (damageType == DamageType.Physical)
+        //  {
+        if (SummShields(damageType, ability) > damageValue)
         {
-            if (SummShields(damageType, ability) > damageValue)
+            for (int i = shields.Count - 1; i >= 0; i--)
             {
-                for (int i = shields.Count - 1; i >= 0; i--)
+                Shielding shield = shields[i];
+                if (damageValue >= shield.GetShieldAmount(ability.gameObject))
                 {
-                    Shielding shield = shields[i];
-                    if (damageValue >= shield.GetShieldAmount(ability.gameObject))
-                    {
-                        damageValue -= shield.GetShieldAmount(ability.gameObject);
-						shield.RemoveAmount(shield.GetShieldAmount(ability.gameObject));
-						shields.Remove(shield);
-                    }
-                    else
-                    {
-						shield.RemoveAmount(damageValue);
-						return 0;
-                    }
+                    damageValue -= shield.GetShieldAmount(ability.gameObject);
+                    shield.RemoveAmount(shield.GetShieldAmount(ability.gameObject));
+                    shields.Remove(shield);
+                }
+                else
+                {
+                    shield.RemoveAmount(damageValue);
+                    return 0;
                 }
             }
-
-            else if (SummShields(damageType, ability) <= damageValue && SummShields(damageType, ability) > 0)
-            {
-                float value = damageValue - SummShields(damageType, ability);
-				shields.Clear();
-                return value;
-            }
-
-            return damageValue; // ���� ���� <= 0
         }
-        return damageValue; // �� ������� ��� �����*/
+
+        else if (SummShields(damageType, ability) <= damageValue && SummShields(damageType, ability) > 0)
+        {
+            float value = damageValue - SummShields(damageType, ability);
+            shields.Clear();
+            return value;
+        }
+
+        return damageValue; // ���� ���� <= 0
+                            //   }
+        /*
+           else if (damageType == DamageType.Magical)
+           {
+               if (SummShields(damageType, ability) > damageValue)
+               {
+                   for (int i = shields.Count - 1; i >= 0; i--)
+                   {
+                       Shielding shield = shields[i];
+                       if (damageValue >= shield.GetShieldAmount(ability.gameObject))
+                       {
+                           damageValue -= shield.GetShieldAmount(ability.gameObject);
+                           shield.RemoveAmount(shield.GetShieldAmount(ability.gameObject));
+                           shields.Remove(shield);
+                       }
+                       else
+                       {
+                           shield.RemoveAmount(damageValue);
+                           return 0;
+                       }
+                   }
+               }
+
+               else if (SummShields(damageType, ability) <= damageValue && SummShields(damageType, ability) > 0)
+               {
+                   float value = damageValue - SummShields(damageType, ability);
+                   shields.Clear();
+                   return value;
+               }
+
+               return damageValue; // ���� ���� <= 0
+           }
+           return damageValue; // �� ������� ��� �����*/
     }
 
     public void TakeDamage(float damageValue, DamageType damageType, Ability abilty)
-    {        
+    {
         DisplayTakenDamage(damageValue, damageType);
-        
+
         damageValue = CalculateDamageForShields(damageValue, damageType, abilty);
         sumDamageTaken += damageValue;
 
         //HandleAbsorptionOrRepeat(ref damageValue);
 
         if (damageValue > 0)
-        {            
+        {
             _currentHealth -= damageValue;
             if (_currentHealth <= 0)
             {
                 _currentHealth = 0;
                 Die();
-            }            
+            }
             UpdateHealthBar();
         }
-		FireHpChanged(damageValue, _currentHealth, _maxHealth);
-	}
-    
+        FireHpChanged(damageValue, _currentHealth, _maxHealth);
+    }
+
     public void AddShieldBehavior(Shielding shielding, DamageType damageType) // ���������� � ������������ ����� �����
     {
         shields.Add(shielding);
@@ -318,24 +318,24 @@ public class HealthComponent : NetworkBehaviour
 
     public void RemoveShield(Shielding shielding, DamageType damageType)
     {
-        if(shields.Contains(shielding))
+        if (shields.Contains(shielding))
         {
-			shields.Remove (shielding);
+            shields.Remove(shielding);
 
-		}
-	/*	if (damageType == DamageType.Both)
-		{
-			shields_Both.Add(shielding);
-		}
-		else if (damageType == DamageType.Physical && shields_Physic.Contains(shielding))
-		{
-			shields_Physic.Remove(shielding);
-		}
-		else if (damageType == DamageType.Magical && shields_Physic.Contains(shielding))
-		{
-			shields_Magic.Remove(shielding);
-		}*/
-	}
+        }
+        /*	if (damageType == DamageType.Both)
+            {
+                shields_Both.Add(shielding);
+            }
+            else if (damageType == DamageType.Physical && shields_Physic.Contains(shielding))
+            {
+                shields_Physic.Remove(shielding);
+            }
+            else if (damageType == DamageType.Magical && shields_Physic.Contains(shielding))
+            {
+                shields_Magic.Remove(shielding);
+            }*/
+    }
 
     public void AddHeal(float healValue)
     {
@@ -352,8 +352,8 @@ public class HealthComponent : NetworkBehaviour
         if (_currentHealth >= _maxHealth)
         {
             _currentHealth = _maxHealth;
-        } 
-        ShowDamagePrefab(healthInfo.ModifiedHeal, new Color(0, 0.8f, 0, 1), new Color(0, 0.8f, 0, 0.5f)); 
+        }
+        ShowDamagePrefab(healthInfo.ModifiedHeal, new Color(0, 0.8f, 0, 1), new Color(0, 0.8f, 0, 0.5f));
         UpdateHealthBar();
     }
 
@@ -392,17 +392,17 @@ public class HealthComponent : NetworkBehaviour
 
     private void ShowDamagePrefab(float value, Color startColor, Color endColor)
     {
-        GetComponent<UIPlayerComponents>().ShowPopupValue(value,startColor,endColor);
+        GetComponent<UIPlayerComponents>().ShowPopupValue(value, startColor, endColor);
     }
 
     private void ShowDamagePrefab(string text, Color startColor, Color endColor) //������������ ��� �������
     {
-        GetComponent<UIPlayerComponents>().ShowPopupText(text,startColor,endColor);
+        GetComponent<UIPlayerComponents>().ShowPopupText(text, startColor, endColor);
     }
 
     public void UpdateHealthBar()
     {
-        healthBar.UpdateValue(_currentHealth,_maxHealth);
+        healthBar.UpdateValue(_currentHealth, _maxHealth);
     }
 
     public void NetworkUpdateHealthBar(float oldValue, float newValue)
@@ -412,7 +412,7 @@ public class HealthComponent : NetworkBehaviour
 
     private void Die()
     {
-       
+
     }
 
     private IEnumerator CoroutineRegenirateHP()
@@ -422,21 +422,21 @@ public class HealthComponent : NetworkBehaviour
             yield return new WaitForSeconds(_hpRegenerationDelay);
             if (_currentHealth < _maxHealth)
             {
-                this.RegenHP(HpRegenerationValue + HpRegenerationValue * _boostRegen + HpRegenerationValue * _boostRegen2);
+                this.RegenHP(_hpRegenerationValue + _hpRegenerationValue * _boostRegen + +_hpRegenerationValue * _boostRegen2);
             }
         }
     }
 
-    private IEnumerator CoroutineAddShield(float shieldValue, DamageType damageType,float shieldsDuration) 
+    private IEnumerator CoroutineAddShield(float shieldValue, DamageType damageType, float shieldsDuration)
     {
         Shielding shield = new TemporaryShielding(this, shieldValue, damageType, shieldsDuration);
 
         yield return new WaitForSeconds(shieldsDuration);
 
-		shield.RemoveAmount(shield.GetShieldAmount(null));
-		shields.Remove(shield);
-		UnityEngine.Debug.LogWarning("Im expired");
-		/* if(damageType == DamageType.Physical)
+        shield.RemoveAmount(shield.GetShieldAmount(null));
+        shields.Remove(shield);
+        UnityEngine.Debug.LogWarning("Im expired");
+        /* if(damageType == DamageType.Physical)
 		 {
 			 if (shield != null)
 			 {
@@ -464,19 +464,17 @@ public class HealthComponent : NetworkBehaviour
 				 UnityEngine.Debug.LogWarning("Im expired");
 			 }
 		 }*/
-	}
+    }
 
     //��, ��� ����, ��������� �����.... ���� ��� �������� ��� ������������� �����
-    public void SetBoostRegen(float boostRegen) 
+    public void SetBoostRegen(float boostRegen)
     {
         _boostRegen = boostRegen;
-	}
-
-	public void SetBoostRegen2(float boostRegen)
-	{
-		_boostRegen2 = boostRegen;
-	}
-
+    }
+    public void SetBoostRegen2(float boostRegen)
+    {
+        _boostRegen2 = boostRegen;
+    }
     public void SetInvincible(bool invincible)
     {
         _invinsible = invincible;
@@ -484,12 +482,12 @@ public class HealthComponent : NetworkBehaviour
 
     public void SetEvadeMagic(float value)
     {
-        EvadeMagicDamage =+ value;
-    }    
+        _evadeMagDamage = +value;
+    }
 
     public float GetEvadeMagic()
     {
-        return EvadeMagicDamage;
+        return _evadeMagDamage;
     }
 
     public void SetEvadeAll(float value)
@@ -504,45 +502,40 @@ public class HealthComponent : NetworkBehaviour
         _defMagDamage += value;
     }
 
-    public void ResetDefMagicDamage(float baseValue)
+    [ContextMenu("Add Magic Shield")] //��� ����� � ����������
+    private void AddShields()
     {
-        _defMagDamage = baseValue;
+        DamageType dmgtype = DamageType.Magical;
+        Shielding shield = new Shielding(this, 50, dmgtype);
+
     }
 
-    [ContextMenu("Add Magic Shield")] //��� ����� � ����������
-	private void AddShields()
-	{
-		DamageType dmgtype = DamageType.Magical;
-		Shielding shield = new Shielding(this, 50, dmgtype);
+    [ContextMenu("Add Physic Shield")] //��� ����� � ����������
+    private void AddPhysShields()
+    {
+        DamageType dmgtype = DamageType.Physical;
+        Shielding shield = new Shielding(this, 50, dmgtype);
 
-	}
+    }
 
-	[ContextMenu("Add Physic Shield")] //��� ����� � ����������
-	private void AddPhysShields()
-	{
-		DamageType dmgtype = DamageType.Physical;
-		Shielding shield = new Shielding(this, 50, dmgtype);
+    [ContextMenu("Add Temporary Shield")] //��� ����� � ����������
+    private void AddtemporaryShield()
+    {
+        DamageType dmgtype = DamageType.Physical;
 
-	}
+        StartCoroutine(CoroutineAddShield(50, dmgtype, 5f));
 
-	[ContextMenu("Add Temporary Shield")] //��� ����� � ����������
-	private void AddtemporaryShield()
-	{
-		DamageType dmgtype = DamageType.Physical;
+    }
+    public void AddShield(float shieldValue, DamageType damageType) // ������������ � ������������
+    {
+        Shielding shield = new Shielding(this, shieldValue, damageType);
+    }
 
-		StartCoroutine(CoroutineAddShield(50, dmgtype, 5f));
-
-	}
-	public void AddShield(float shieldValue, DamageType damageType) // ������������ � ������������
-	{
-		Shielding shield = new Shielding(this, shieldValue, damageType);
-	}
-
-	public void AddShield(float shieldValue, DamageType damageType, float durationTime) // ���������� ��� ��������� �����
-	{
-		StartCoroutine(CoroutineAddShield(shieldValue, damageType, durationTime));
-	}
-	/*
+    public void AddShield(float shieldValue, DamageType damageType, float durationTime) // ���������� ��� ��������� �����
+    {
+        StartCoroutine(CoroutineAddShield(shieldValue, damageType, durationTime));
+    }
+    /*
      * private void HandleAbsorptionOrRepeat(ref float modifiedValue)
     {
         for (int i = 0; i < transform.childCount; i++)
@@ -605,4 +598,10 @@ public class HealthComponent : NetworkBehaviour
     }
 
      * */
+
+    [Command(requiresAuthority = false)]
+    public void CmdTryTakeDamage(float damageValue, DamageType damageType, AttackRangeType attackRangeType)
+    {
+        TryTakeDamage(damageValue, damageType, attackRangeType);
+    }
 }

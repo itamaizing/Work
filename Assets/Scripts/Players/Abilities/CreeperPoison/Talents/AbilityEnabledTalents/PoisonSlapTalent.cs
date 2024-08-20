@@ -5,7 +5,7 @@ using UnityEngine;
 public class PoisonSlapTalent : Talent
 {
     [SerializeField] private PoisonSlap _poisonSlap;
-    [SerializeField] private PlayerAbilities _ability;
+    [SerializeField] private SkillManager _ability;
 
     public override void Enter()
     {
@@ -15,7 +15,7 @@ public class PoisonSlapTalent : Talent
         }
         else
         {
-            _ability.AddAbility(_poisonSlap);
+            //_ability.AddAbility(_poisonSlap);
         }
     }
 
@@ -23,7 +23,7 @@ public class PoisonSlapTalent : Talent
     {
         if (_ability.Abilities.Contains(_poisonSlap))
         {
-            _ability.RemoveAbility(_poisonSlap);
+            //_ability.RemoveAbility(_poisonSlap);
             _poisonSlap.enabled = false;
         }
         else

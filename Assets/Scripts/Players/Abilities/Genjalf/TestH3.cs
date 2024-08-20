@@ -59,7 +59,7 @@ public class TestH3 : Skill
     {
         GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
 
-        SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
+        //SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
         item.GetComponent<Projectile>().StartFly(target, true);
 
@@ -71,7 +71,7 @@ public class TestH3 : Skill
     {
         GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
 
-        SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
+        //SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
         item.GetComponent<Projectile>().StartFly(point, true);
 

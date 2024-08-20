@@ -29,12 +29,12 @@ public class SkillRenderer : MonoBehaviour
         _circle.Clear();
     }
 
-    public void DrawArea(float rarius, LayerMask layerMask, CircleArea area = null)
+    public void DrawArea(float radius, LayerMask layerMask, CircleArea area = null)
     {
         if (area == null)
             area = _areaPref;
 
-        _drawAreaCoroutine = StartCoroutine(DrawAreaJob(rarius, layerMask, area));
+        _drawAreaCoroutine = StartCoroutine(DrawAreaJob(radius, layerMask, area));
     }
 
     public void StopDrawArea()

@@ -168,13 +168,18 @@ public class PoisonBallProjectile : NetworkBehaviour
 
     public void MoveBallToTarget(Vector3 target, bool isFast)
     {
+        Debug.Log("MoveBallToTarget PoisonBallProjectile");
+
         float speed = isFast ? _fastMovementSpeed : _slowMovementSpeed;
 
         _rbBall.DOMove(target, speed * _maxDistance / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(DestroyProjectile);
+        Debug.Log($"MoveBallToTarget PoisonBallProjectile / transform.pos = {transform.position}");
     }
 
     public void MoveBallOnMaxDistance(Vector3 point, bool isFast)
     {
+        Debug.Log("MoveBallOnMaxDistance PoisonBallProjectile");
+
         float speed = isFast ? _fastMovementSpeed : _slowMovementSpeed;
 
         Vector3 direction = (point - transform.position).normalized;
@@ -184,6 +189,7 @@ public class PoisonBallProjectile : NetworkBehaviour
 
     private IEnumerator MoveBallOnMaxDistanceCoroutine(Vector3 direction, float speed)
     {
+        Debug.Log("MoveBallOnMaxDistanceCoroutine PoisonBallProjectile");
         while (true)
         {
             transform.position += direction * speed * Time.deltaTime;

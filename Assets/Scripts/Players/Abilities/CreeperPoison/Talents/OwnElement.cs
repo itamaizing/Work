@@ -103,7 +103,7 @@ public class OwnElement : Talent
     private void ResetAttackSpeed()
     {
         Debug.Log("Reset Increased attack speed == " + _increasedAttackSpeedCreeperStrike);
-        _creeperStrike.Buff.AttackSpeed.ResetValue();
+        _creeperStrike.Buff.AttackSpeed.ResetValues();
         Debug.Log("ResetAttackSpeed _Creeper attack speed == " + _creeperStrike.AttackSpeed);
     }
 }

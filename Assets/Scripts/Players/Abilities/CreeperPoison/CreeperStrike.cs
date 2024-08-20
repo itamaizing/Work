@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class CreeperStrike : AutoAttackAbility
+public class CreeperStrike : AutoAttackSkill
 {
     [Header("Talents")]
     [SerializeField] private StrokesOfAspiration _strokesOfAspiration;
@@ -45,29 +45,30 @@ public class CreeperStrike : AutoAttackAbility
     public bool Enabled;
     public Character CurrentTarget => _currentTarget;
 
-    protected override void Start()
+    protected override void ClearData()
     {
-        base.Start();
-    }
-
-    protected override void Cancel()
-    {
+        Debug.Log("CreeperStrike / ClearData");
         if (_firstStrike.IsActive)
         {
             _firstStrike.FirstHit = false;
         }
 
+        _currentTarget = null;
         if (_useAbilityCoroutine != null)
             StopCoroutine(UseAbilityCoroutine());
     }
 
     protected override void CastAction()
     {
+        Debug.Log("CreeperStrike / CastAction");
+        Debug.Log($"CreeperStrike / CastAction / CurrentTarget = {_currentTarget}");
+
         _useAbilityCoroutine = StartCoroutine(UseAbilityCoroutine());
     }
 
     private IEnumerator UseAbilityCoroutine()
     {
+        Debug.Log("CreeperStrike / UseAbilityCoroutine");
         _currentTarget = Target;
         DealingDamageFromHits();
         yield return null;
@@ -75,6 +76,7 @@ public class CreeperStrike : AutoAttackAbility
 
     public void DealingDamageFromHits()
     {
+        Debug.Log("CreeperStrike / DealingDamageFromHits");
         _currentDamage = Random.Range(7.0f, 11.0f);
         float _currentChanceOfCriticalStrike = Random.Range(0.0f, 1.0f);
 
@@ -125,14 +127,15 @@ public class CreeperStrike : AutoAttackAbility
         }
         else
         {
-            CmdApplyDamage(CurrentTarget.gameObject, _currentDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
+            CurrentTarget.Health.CmdTryTakeDamage(_currentDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
         }
 
-        Cancel();
+        ClearData();
     }
 
     private float CalculateCriticalDamage(float baseDamage)
     {
+        Debug.Log("CreeperStrike / CalculateCriticalDamage");
         float criticalDamage = baseDamage;
         float multiplyDamage = _multiplyCritDamage;
         float firstStrikeTalentMultiplyDamage = 5.0f;
@@ -161,10 +164,11 @@ public class CreeperStrike : AutoAttackAbility
 
     private void CmdCriticalDamage(Character currentTarget, float criticalDamage)
     {
+        Debug.Log("CreeperStrike / CmdCriticalDamage");
         if (currentTarget.CharacterState.CheckForState(States.PoisonBone))
         {
             criticalDamage = CalculateCriticalDamage(criticalDamage);
         }
-        CmdApplyDamage(currentTarget.gameObject, criticalDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
+        currentTarget.Health.CmdTryTakeDamage(criticalDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
     }
 }

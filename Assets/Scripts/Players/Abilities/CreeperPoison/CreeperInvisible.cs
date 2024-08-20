@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CreeperInvisible : Ability
+public class CreeperInvisible : Skill
 {
     [Header("Talents")]
     [SerializeField] private ReleaseFromSecrecy _releaseFromSecrecy;
@@ -22,21 +22,29 @@ public class CreeperInvisible : Ability
 
     public bool IsInvisible = false;
 
-    protected override void Cast()
+    protected override bool IsCanCast => true;
+
+    protected override IEnumerator PrepareJob()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    protected override IEnumerator CastJob()
     {
         if (_startCoroutine != null)
         {
-            Cancel();
-            return;
+            ClearData();
+            yield break;
         }
 
         if (_startCoroutine == null)
         {
-            _startCoroutine = StartCoroutine(StartAbility());
+            EnteringInvisibleState();
         }
+        yield return null;
     }
 
-    protected override void Cancel()
+    protected override void ClearData()
     {
         CmdRemoveInvisible();
 
@@ -44,23 +52,11 @@ public class CreeperInvisible : Ability
         {
             _releaseFromSecrecy.ApplyBuff();
         }
-
-        if (_startCoroutine != null)
-        {
-            StopCoroutine(StartAbility());
-            _startCoroutine = null;
-        }
-    }
-
-    private IEnumerator StartAbility()
-    {
-        EnteringInvisibleState();
-        yield return null;
     }
 
     public void EnteringInvisibleState()
     {
-        PayCost();
+        TryPayCost();
         if (_desireToHide.IsActive && _desireToHide.IsCanApply)
         {
             CmdApplyInvisibleWithTalent();
@@ -104,7 +100,6 @@ public class CreeperInvisible : Ability
     {
         IsInvisible = false;
         RpcRemoveInvisible();
-
     }
 
     #endregion

@@ -48,4 +48,10 @@ public class StatBuff
     {
         _additional += value;
     }
+
+    public void ResetValues()
+    {
+        _multiplier = 1;
+        _additional = 0;
+    }
 }
