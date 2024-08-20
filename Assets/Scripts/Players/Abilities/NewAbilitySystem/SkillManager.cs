@@ -96,7 +96,7 @@ public class SkillManager : MonoBehaviour
     {
         foreach (var item in _skills)
         {
-            item.SetCooldown(time);
+            item.IncreaseSetCooldown(time);
         }
     }
 

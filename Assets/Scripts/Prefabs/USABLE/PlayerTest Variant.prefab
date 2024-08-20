@@ -413,9 +413,9 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 44ef9f5c61bd03a4a9d02045a6dfb776, type: 2}
-  _manaCost: 5
+  _manaCost: 1
   _cooldownTime: 1
-  _castDeley: 3
+  _castDeley: 0
   _abilitySchool: 0
   _abilityForm: 0
   _targetsLayers:
@@ -427,10 +427,10 @@ MonoBehaviour:
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: 0
-  _isUseCharges: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
+  _isUseCharges: 1
+  _chargesHaveSeparateCooldown: 1
+  _maxCharges: 3
+  _chargeCooldown: 3
   _radius: 10
   _area: 5
   _castLength: 5
