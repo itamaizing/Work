@@ -41,10 +41,10 @@ public class SkillQueue : MonoBehaviour
     {
         if (_currentSkill != null)
         {
-            if (_currentSkill.TryCancel(foceCancel))
-                return true;
+            _currentSkill.TryCancel(foceCancel);
+            return true;
         }
-        else
+        else if(IsEmpty == false)
         {
             RemoveFromQueue();
             return true;
