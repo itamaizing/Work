@@ -4,6 +4,8 @@ using UnityEngine;
 public class MoveComponent : NetworkBehaviour
 {
 	private Vector2 _offset = Vector2.zero; // new
+	[SyncVar]
+	private Vector3 _targetPosition;
 	
 	private Rigidbody2D _rigidbody;
 	
@@ -18,13 +20,14 @@ public class MoveComponent : NetworkBehaviour
 	private float _currentSpeed;
 
 	private bool isInitialize = false;
+	public bool _isHero = false;
 
 	public void SetOffset(Vector2 offset) // new
 	{
 		_offset = offset;
 	}
 
-	public void Initialize(float speed, Rigidbody2D rb)
+	public void Initialize(float speed, Rigidbody2D rb , bool isHero = false)
 	{
 		_defaultSpeed = speed;
 
@@ -36,6 +39,7 @@ public class MoveComponent : NetworkBehaviour
 		MoveDirection = Vector2.down;
 
 		CanMove = true;
+		_isHero = isHero;
 		isInitialize = true;
 	}
 
@@ -52,15 +56,58 @@ public class MoveComponent : NetworkBehaviour
 		_currentSpeed = _defaultSpeed;
 	}
 	
-	private void SetMoveDirection()
+	[ClientCallback]
+	void Update()
 	{
-		if (GetComponent<HeroComponent>() == null) return;
+		if (!isOwned || !CanMove || !IsSelect)
+		{
+			return;
+		}
+        
+		HandleMouseInput();
+		HandleKeyboardInput();
+	}
 
-		Vector2 move = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+	[Client]
+	private void HandleMouseInput()
+	{
+		if (Input.GetKeyDown(KeyCode.Mouse1))
+		{
+			Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			mousePosition.z = transform.position.z;
+			
+			CmdSetTargetPosition(mousePosition);
+		}
+	}
 
-		if (move == Vector2.zero) return;
+	[Client]
+	private void HandleKeyboardInput()
+	{
+		if (!_isHero) return;
 
-		target = transform.position + (Vector3)move * _currentSpeed;
-		
+		MoveDirection = new Vector2(
+			Input.GetKey(KeyCode.A) ? -1 : Input.GetKey(KeyCode.D) ? 1 : 0,
+			Input.GetKey(KeyCode.S) ? -1 : Input.GetKey(KeyCode.W) ? 1 : 0
+		);
+
+		if (MoveDirection != Vector2.zero)
+		{
+			Vector3 targetPosition = transform.position + (Vector3)MoveDirection * (_currentSpeed * Time.deltaTime);
+			CmdSetTargetPosition(targetPosition);
+		}
+	}
+
+	[Command]
+	private void CmdSetTargetPosition(Vector3 targetPosition)
+	{
+		_targetPosition = targetPosition;
+	}
+
+	void FixedUpdate()
+	{
+		if (isServer)
+		{
+			transform.position = Vector3.MoveTowards(transform.position, _targetPosition, _currentSpeed * Time.fixedDeltaTime);
+		}
 	}
 }
