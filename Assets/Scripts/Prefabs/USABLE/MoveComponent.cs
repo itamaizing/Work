@@ -1,122 +1,11 @@
 using Mirror;
-using System;
-using System.Collections;
-using Pathfinding;
 using UnityEngine;
-
-//public class MoveComponent : NetworkBehaviour
-//{
-//	private Vector2 _offset = Vector2.zero;
-	
-//    private Rigidbody2D _rigidbody;
-
-//    private Seeker _seeker;
-
-//    private AIPath _agent;
-
-//    private Vector2 target;
-
-//    [HideInInspector] public bool CanMove;
-//	[HideInInspector] public bool IsMoving;
-//	[HideInInspector] public bool IsSelect;
-//	[HideInInspector] public Vector2 MoveDirection;
-
-//	private float _defaultSpeed;
-
-//	private bool isInitialize = false;
-
-//    public void Initialize(float speed , Rigidbody2D rb)
-//	{
-//		_defaultSpeed = speed;
-
-//		_rigidbody = rb;
-//		_rigidbody.isKinematic = false;
-
-//		_seeker = GetComponent<Seeker>();
-//		_agent = GetComponent<AIPath>();
-//		SetDefaultSpeed();
-
-//		MoveDirection = Vector2.down;
-		
-//		CanMove = true;
-//		IsSelect = false;
-//		isInitialize = true;
-//	}
-    
-//	public void ChangeMoveSpeed(float value)
-//	{
-//		_agent.maxSpeed *= value;
-//	}
-//	public void SetMoveSpeed(float speed)
-//	{
-//		_agent.maxSpeed = speed;
-//	}
-//	public void SetDefaultSpeed()
-//	{
-//		_agent.maxSpeed = _defaultSpeed;
-//	}
-
-//	void FixedUpdate()
-//	//private void SetMoveDirection()
-//	//{
-//	//	if(GetComponent<HeroComponent>()== null) return;
-		
-//	//	Vector2 move = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-		
-//	//	if (move == Vector2.zero) return;
-		
-//	//	target= transform.position + (Vector3)move * _agent.maxSpeed;
-		
-//	//	_seeker.StartPath(transform.position,target);
-		
-//	//}
-
-//	//public void SetOffset(Vector2 offset)
-//	//{
-//	//	_offset = offset;
-//	//}
-
-//	//void Update()
-//	{
-//		if(!isInitialize || !isLocalPlayer) return;
-		
-//		if (!IsSelect) { return;} 
-		
-//		SetMoveDirection();
-		
-//		if (Input.GetMouseButtonDown(1))
-//		{
-//			target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-//		if (InputHandler.Instance.MovementVector != Vector2.zero)
-//		{
-//			_rigidbody.isKinematic = false;
-//			var velocity = _moveSpeed* Time.fixedDeltaTime * InputHandler.Instance.MovementVector;
-//			CmdMove(velocity);
-//		}
-//		else
-//		{
-//			CmdMove(Vector2.zero);
-//			_rigidbody.isKinematic = true;
-//		//	_seeker.StartPath(transform.position,target + _offset);
-//		}
-
-//		IsMoving = _agent.pathPending;
-//	}
-
-//    [Command]
-//	private void CmdMove(Vector2 velocity)
-//    {
-//		_rigidbody.velocity = velocity;
-//	}
-//}
 
 public class MoveComponent : NetworkBehaviour
 {
 	private Vector2 _offset = Vector2.zero; // new
-	
-	private Seeker _seeker;
-	private AIPath _agent;
+	[SyncVar]
+	private Vector3 _targetPosition;
 	
 	private Rigidbody2D _rigidbody;
 	
@@ -128,83 +17,97 @@ public class MoveComponent : NetworkBehaviour
 	public Vector2 MoveDirection;
 
 	private float _defaultSpeed;
+	private float _currentSpeed;
 
 	private bool isInitialize = false;
+	public bool _isHero = false;
 
 	public void SetOffset(Vector2 offset) // new
 	{
 		_offset = offset;
 	}
 
-	public void Initialize(float speed, Rigidbody2D rb)
+	public void Initialize(float speed, Rigidbody2D rb , bool isHero = false)
 	{
 		_defaultSpeed = speed;
 
 		_rigidbody = rb;
 		_rigidbody.isKinematic = false;
 		
-		_seeker = GetComponent<Seeker>(); 
-		_agent = GetComponent<AIPath>();
-		
 		SetDefaultSpeed();
 
 		MoveDirection = Vector2.down;
 
 		CanMove = true;
+		_isHero = isHero;
 		isInitialize = true;
 	}
 
 	public void ChangeMoveSpeed(float value)
 	{
-		_agent.maxSpeed *= value;
+		_currentSpeed *= value;
 	}
 	public void SetMoveSpeed(float speed)
 	{
-		_agent.maxSpeed = speed;
+		_currentSpeed = speed;
 	}
 	public void SetDefaultSpeed()
 	{
-		_agent.maxSpeed = _defaultSpeed;
+		_currentSpeed = _defaultSpeed;
 	}
-
-
-	private void SetMoveDirection()
+	
+	[ClientCallback]
+	void Update()
 	{
-		if (GetComponent<HeroComponent>() == null) return;
-
-		Vector2 move = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-
-		if (move == Vector2.zero) return;
-
-		target = transform.position + (Vector3)move * _agent.maxSpeed;
-		
-		CmdMove(target, Vector2.zero);
-	}
-
-
-	void FixedUpdate()
-	{
-		if (!isInitialize) return;
-
-		if (!CanMove || !IsSelect)
+		if (!isOwned || !CanMove || !IsSelect)
 		{
 			return;
 		}
+        
+		HandleMouseInput();
+		HandleKeyboardInput();
+	}
 
-		SetMoveDirection();
-
-		if (Input.GetMouseButtonDown(1))
+	[Client]
+	private void HandleMouseInput()
+	{
+		if (Input.GetKeyDown(KeyCode.Mouse1))
 		{
-			target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			CmdMove(target,_offset);
+			Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			mousePosition.z = transform.position.z;
+			
+			CmdSetTargetPosition(mousePosition);
 		}
-		
-		IsMoving = _agent.pathPending;
+	}
+
+	[Client]
+	private void HandleKeyboardInput()
+	{
+		if (!_isHero) return;
+
+		MoveDirection = new Vector2(
+			Input.GetKey(KeyCode.A) ? -1 : Input.GetKey(KeyCode.D) ? 1 : 0,
+			Input.GetKey(KeyCode.S) ? -1 : Input.GetKey(KeyCode.W) ? 1 : 0
+		);
+
+		if (MoveDirection != Vector2.zero)
+		{
+			Vector3 targetPosition = transform.position + (Vector3)MoveDirection * (_currentSpeed * Time.deltaTime);
+			CmdSetTargetPosition(targetPosition);
+		}
 	}
 
 	[Command]
-	private void CmdMove(Vector2 targetPos , Vector2 offset)
+	private void CmdSetTargetPosition(Vector3 targetPosition)
 	{
-		_seeker.StartPath(transform.position, targetPos + offset);
+		_targetPosition = targetPosition;
+	}
+
+	void FixedUpdate()
+	{
+		if (isServer)
+		{
+			transform.position = Vector3.MoveTowards(transform.position, _targetPosition, _currentSpeed * Time.fixedDeltaTime);
+		}
 	}
 }

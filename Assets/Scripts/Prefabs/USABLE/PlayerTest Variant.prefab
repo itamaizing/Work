@@ -270,6 +270,9 @@ PrefabInstance:
     - {fileID: 7579798881083447851, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
     - {fileID: 5564757508821022323, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
     - {fileID: 3734820572883177193, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+    - {fileID: 1892565365500318185, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+    - {fileID: 4030725381616344407, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+    - {fileID: 8778059283886800227, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -415,7 +418,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 44ef9f5c61bd03a4a9d02045a6dfb776, type: 2}
   _manaCost: 1
   _cooldownTime: 1
-  _castDeley: 0
+  _castDeley: 3
   _abilitySchool: 0
   _abilityForm: 0
   _targetsLayers:
