@@ -14,12 +14,13 @@ public class PoisonBall : Skill
     [SerializeField] private WitheringPoison _witheringPoison;
 
     [SerializeField] private Character _player;
-    [SerializeField] private Vector3 _secondMousePosition;
 
     [SerializeField] private PoisonBallProjectile _projectile;
 
     private Character _currentTarget;
     private Vector3 _firstMousePosition = Vector3.positiveInfinity;
+    private Vector3 _secondMousePosition;
+    private Vector3 _thirdMousePosition;
 
     private int _countProjectiles = 0;
 
@@ -29,8 +30,10 @@ public class PoisonBall : Skill
     private float _durationPoisonCloud = 6f;
 
     private bool _secondClickDone = false;
+    private bool _thirdClickDone = false;
+    private bool _isPushTarget;
+
     private bool _isTarget = false;
-    private bool _projectileLaunched = false;
 
     private bool _isFast;
     private bool _isActiveTalent;
@@ -40,7 +43,7 @@ public class PoisonBall : Skill
     private bool _isHealingPoisonCloud = false;
 
     private Coroutine _secondClickCoroutine;
-    private Coroutine _useAbilityCoroutine;
+    private Coroutine _thirdClickCoroutine;
 
     public int CurrentCharges;
     public int CountProjectiles;
@@ -62,17 +65,23 @@ public class PoisonBall : Skill
     {
         _isTarget = false;
         _secondClickDone = false;
-        _projectileLaunched = false;
+        _thirdClickDone = false;
 
         _currentTarget = null;
 
         _firstMousePosition = Vector3.positiveInfinity;
         _secondMousePosition = Vector3.zero;
+        _thirdMousePosition = Vector3.zero;
 
         if (_secondClickCoroutine != null)
         {
             StopCoroutine(SecondClick());
             _secondClickCoroutine = null;
+        }
+        if (_thirdClickCoroutine != null)
+        {
+            StopCoroutine(ThirdClick());
+            _thirdClickCoroutine = null;
         }
     }
 
@@ -99,7 +108,11 @@ public class PoisonBall : Skill
             CooldownChange();
             yield return null;
         }
+
         yield return _secondClickCoroutine = StartCoroutine(SecondClick());
+
+        yield return _thirdClickCoroutine = StartCoroutine(ThirdClick());
+
         UseAbility();
     }
 
@@ -185,19 +198,6 @@ public class PoisonBall : Skill
         }
     }
 
-    private IEnumerator SecondClick()
-    {
-        while (!_secondClickDone)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                _secondClickDone = true;
-                _secondMousePosition = GetMousePoint();
-            }
-            yield return null;
-        }
-    }
-
     private void UseAbility()
     {
         switch (_countProjectiles)
@@ -216,6 +216,37 @@ public class PoisonBall : Skill
                 break;
         }
     }
+
+    #region MouseClick
+
+    private IEnumerator SecondClick()
+    {
+        while (!_secondClickDone)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                _secondClickDone = true;
+                _secondMousePosition = GetMousePoint();
+            }
+            yield return null;
+        }
+    }
+
+    private IEnumerator ThirdClick()
+    {
+        while (!_thirdClickDone)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                _thirdClickDone = true;
+                _thirdMousePosition = GetMousePoint();
+            }
+            yield return null;
+        }
+    }
+
+    #endregion
+
 
 
     #region BooleanMethods
@@ -250,12 +281,16 @@ public class PoisonBall : Skill
         {
             Debug.Log("ChooseMovementDependingOnCountProjectiles / if (_countProj < 3)");
             ChooseSpeed();
+            ChooseDirectionPush();
+
             StartCoroutine(_isFast ? TimeCastForFastMoveProjectile() : TimeCastForSlowMoveProjectile());
         }
         else if (_countProjectiles == 3)
         {
             Debug.Log("ChooseMovementDependingOnCountProjectiles / else if (_countProj = 3)");
             ChooseSpeed();
+            ChooseDirectionPush();
+
             StartCoroutine(TimeCastForThirdProjectile());
         }
     }
@@ -273,6 +308,12 @@ public class PoisonBall : Skill
             Debug.Log($"ChooseSpeed / else / _isTarget = {_isTarget}");
             _isFast = Vector2.Distance(_player.transform.position, _secondMousePosition) > Vector2.Distance(_player.transform.position, _firstMousePosition);
         }
+    }
+
+    private void ChooseDirectionPush()
+    {
+        _isPushTarget = Vector2.Distance(_player.transform.position, _thirdMousePosition) > Vector2.Distance(_player.transform.position, _secondMousePosition);
+        Debug.Log($"PoisonBall / ChooseDirectionPush / isPushTarget = {_isPushTarget}");
     }
 
     private IEnumerator TimeCastForFastMoveProjectile()
@@ -302,20 +343,20 @@ public class PoisonBall : Skill
         if (_isTarget)
         {
             CmdCreateProjectileForTarget(_currentTarget.gameObject, _currentTarget.transform.position,
-                _isFast, _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy, 
+                _isFast, _isPushTarget, _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy, 
                 _isOriginalTargetAllies, _witheringPoison.IsActive);
-            CmdApplyCloudPoison(_healPoisonCloud.IsActive, _isHealingPoisonCloud);
 
+            CmdApplyCloudPoison(_healPoisonCloud.IsActive, _isHealingPoisonCloud);
         }
         else
         {
             Debug.Log($"ChooseWhichProjectileCreate / else / WitheringPoison IsActive = {_witheringPoison.IsActive})");
             CmdCreateProjectileForFlyingMaxDistance(_firstMousePosition,
-                _isFast, _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy,
+                _isFast, _isPushTarget, _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy,
                 _isOriginalTargetAllies, _witheringPoison.IsActive);
+
             CmdApplyCloudPoison(_healPoisonCloud.IsActive, _isHealingPoisonCloud);
         }
-        _projectileLaunched = true;
     }
 
     #endregion
@@ -324,7 +365,7 @@ public class PoisonBall : Skill
 
     [Command]
     private void CmdCreateProjectileForTarget(GameObject target, Vector3 targetOrPoint,
-        bool isFast, bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies,
+        bool isFast, bool isPushTarget, bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies,
         bool isWitheringPoisonTalentActive)
     {
         CurrentTarget = target;
@@ -344,7 +385,9 @@ public class PoisonBall : Skill
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
-        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.Value, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies, isWitheringPoisonTalentActive);
+        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.Value, isActiveTalent, 
+            isTargetPlayer, isTargetEnemy, isTargetAllies, isWitheringPoisonTalentActive, isPushTarget);
+
         poisonBallProjectile.MoveBallToTarget(targetOrPoint, isFast);
 
         NetworkServer.Spawn(item);
@@ -352,7 +395,8 @@ public class PoisonBall : Skill
     }
 
     [Command]
-    private void CmdCreateProjectileForFlyingMaxDistance(Vector3 point, bool isFast, bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, 
+    private void CmdCreateProjectileForFlyingMaxDistance(Vector3 point, bool isFast, bool isPushTarget, 
+        bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, 
         bool isWitheringPoisonTalentActive)
     {
         FootInstinctsTalent = _footInstincts;
@@ -371,7 +415,9 @@ public class PoisonBall : Skill
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
-        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.Value, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies, isWitheringPoisonTalentActive);
+        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.Value, isActiveTalent, isTargetPlayer, 
+            isTargetEnemy, isTargetAllies, isWitheringPoisonTalentActive, isPushTarget);
+
         poisonBallProjectile.MoveBallOnMaxDistance(point, isFast);
 
         NetworkServer.Spawn(item);

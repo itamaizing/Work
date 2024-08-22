@@ -37,6 +37,7 @@ public class PoisonBallProjectile : NetworkBehaviour
     private bool _isEnemy;
     private bool _talentHealingIPoisonBallIsActive;
     private bool _talentWitheringPoisonIsActive;
+    private bool _isPushTarget;
 
     private void Start()
     {
@@ -166,7 +167,7 @@ public class PoisonBallProjectile : NetworkBehaviour
     {
         while (true)
         {
-            transform.position += direction * speed * Time.deltaTime;
+            transform.position += direction * (speed * 30f) * Time.deltaTime;
             if (Vector3.Distance(transform.position, _dad.transform.position) > _maxDistance * GlobalVariable.cellSize) 
             {
                 DestroyProjectile();
@@ -184,7 +185,7 @@ public class PoisonBallProjectile : NetworkBehaviour
         Energy _energyLink = (Energy)_dad.GetComponent<Character>().Stamina;
         _energyLink.SumDamageMake(currentDamage);
 
-        targetHealth.Health.TryTakeDamage(currentDamage, damageType, attackRangeType);
+        targetHealth.Health.CmdTryTakeDamage(currentDamage, damageType, attackRangeType);
 
         if (_talentWitheringPoisonIsActive)
         {
@@ -199,10 +200,6 @@ public class PoisonBallProjectile : NetworkBehaviour
     private void PushEnemyDependingOnCountProjectile(HeroComponent target, float durationPush, float distancePush)
     {
         distancePush = 1.0f;
-        if (_countProjectiles == 3 && _currentTarget == _poisonBall.LastTarget)
-        {
-            distancePush = 4.0f;
-        }
         PushEnemy(target, durationPush, distancePush);
     }
 
@@ -212,20 +209,37 @@ public class PoisonBallProjectile : NetworkBehaviour
 
         distancePush = ((distancePush * GlobalVariable.cellSize) * durationPush) / GlobalVariable.cellSize;
 
-        if (_countProjectiles < 3)
-        {
-            target.transform.DOMove((Vector2)target.transform.position - directionPush * distancePush, durationPush).SetEase(Ease.Linear);
-        }
-        else if (_countProjectiles == 3 && _currentTarget == _poisonBall.LastTarget)
+        if (_isPushTarget)
         {
             target.transform.DOMove((Vector2)target.transform.position + directionPush * distancePush, durationPush).SetEase(Ease.Linear);
+            Debug.Log($"PoisonBallProjectile / PushEnemy / if (_isPushTarget = {_isPushTarget})");
         }
-        else if (_countProjectiles == 3 && _currentTarget != _poisonBall.LastTarget)
+        else
         {
             target.transform.DOMove((Vector2)target.transform.position - directionPush * distancePush, durationPush).SetEase(Ease.Linear);
+            Debug.Log($"PoisonBallProjectile / PushEnemy / else (_isPushTarget = {_isPushTarget})");
         }
 
+
+        //if (_countProjectiles < 3)
+        //{
+        //    target.transform.DOMove((Vector2)target.transform.position - directionPush * distancePush, durationPush).SetEase(Ease.Linear);
+        //}
+        //else if (_countProjectiles == 3 && _currentTarget == _poisonBall.LastTarget)
+        //{
+        //    target.transform.DOMove((Vector2)target.transform.position + directionPush * distancePush, durationPush).SetEase(Ease.Linear);
+        //}
+        //else if (_countProjectiles == 3 && _currentTarget != _poisonBall.LastTarget)
+        //{
+        //    target.transform.DOMove((Vector2)target.transform.position - directionPush * distancePush, durationPush).SetEase(Ease.Linear);
+        //}
+
         target.CharacterState.CmdAddState(States.InAir, _durationStun, 0);
+    }
+
+    private void DestroyProjectile()
+    {
+        Destroy(gameObject);
     }
 
     #endregion
@@ -234,7 +248,7 @@ public class PoisonBallProjectile : NetworkBehaviour
 
     public void InitializationProjectileForPoisonBall(Character dad, float energyDad, 
         bool isActiveTalentHealingPoisonBall, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies,
-        bool isActiveTalentWitheringPoison)
+        bool isActiveTalentWitheringPoison, bool isPushTarget)
     {
         _dad = dad;
         _energyDad = energyDad;
@@ -243,17 +257,15 @@ public class PoisonBallProjectile : NetworkBehaviour
         _isEnemy = isTargetEnemy;
         _talentHealingIPoisonBallIsActive = isActiveTalentHealingPoisonBall;
         _talentWitheringPoisonIsActive = isActiveTalentWitheringPoison;
-        //Debug.Log($"InitializationProjectilePoisonBall / _dad == {_dad}");
+        _isPushTarget = isPushTarget;
         Debug.Log($"_isPlayer == {_isPlayer}; _isAllies == {_isAllies}; _isEnemy == {_isEnemy}; _talentIsActive == {_talentHealingIPoisonBallIsActive};" +
-            $" _talentWitheringPosion = {_talentWitheringPoisonIsActive}");
+            $" _talentWitheringPosion = {_talentWitheringPoisonIsActive}; _isPushTarget = {_isPushTarget}");
     }
 
     #endregion
 
-    private void DestroyProjectile()
-    {
-        Destroy(gameObject);
-    }
+
+    #region SetPlayerAndCheckState
 
     private void SetPlayer()
     {
@@ -291,4 +303,5 @@ public class PoisonBallProjectile : NetworkBehaviour
         }
     }
 
+    #endregion
 }
