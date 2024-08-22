@@ -7,86 +7,53 @@ using UnityEngine;
 
 public class PoisonSlap : Skill
 {
-    [SerializeField] private Character _dad;
+    #region Variables
+
+    [SerializeField] private Character _player;
 
     [Header("Abilities")]
     [SerializeField] private PoisonBall _poisonBall;
     [SerializeField] private CreeperStrike _creeperStrike;
     [SerializeField] private LightningStrikes _lightningStrikes;
-
     [SerializeField] private LightweightSlap _lightweightSlap;
 
     private Character _currentTarget;
 
-    private float _increasingExecutionSpeedFromCreeperStrike = 0.5f; // Уменьшение скорости каста на 50%
-    private float _increasingExecutionSpeedFromLightningStrikes = 0.0f;  // Уменьшение скорости каста на 100%
+    private Vector3 _firstMousePosition = Vector3.positiveInfinity;
+    private Vector3 _secondMousePosition;
+
+    private float _creeperStrikeCastSpeedMultiplier = 0.5f; // Уменьшение скорости каста на 50%
+    private float _lightningStrikesCastSpeedMultiplier = 0.0f;  // Уменьшение скорости каста на 100%
     private float _baseTimeCast = 1.6f;
 
     private float _baseDamage = 30f;
     private float _distancePush = 3.0f;
-    private float _durationPushInSeconds = 1.0f;
+    private float _durationPush = 1.0f;
 
+    private Coroutine _secondMouseClickCoroutine;
     private Coroutine _castSpeedFromCreeperStrikeCoroutine;
     private Coroutine _castSpeedFromLightningStrikesCoroutine;
 
+    private bool _isPushTargetAllowed;
+    private bool _secondClickDone;
     private bool _isIncreasedCastSpeedFromCreeperStrike = false;
     private bool _isIncreasedCastSpeedFromLightningStrike = false;
 
     public bool Enabled;
+    protected override bool IsCanCast => true;
 
-    protected override bool IsCanCast => CheckDistance();
+    #endregion
 
-    protected override IEnumerator PrepareJob()
-    {
-        while (_currentTarget == null)
-        {
-            if (Input.GetMouseButton(0))
-            {
-                _currentTarget = GetRaycastTarget();
-            }
-            yield return null;
-        }
-    }
-
-    protected override IEnumerator CastJob()
-    {
-        if (_currentTarget != null)
-        {
-            TryPayCost();
-
-            if (_poisonBall.CurrentCharges != 0)
-            {
-                if ((_lightweightSlap.IsActive && _creeperStrike.IsTwoHit) || (_lightweightSlap.IsActive && _lightningStrikes.IsUsedLightningStrikes))
-                {
-                    Debug.Log("IsActive true and Two hit");
-                    yield return null;
-                }
-                else
-                {
-                    Debug.Log("charge --");
-                    _poisonBall.PayCostPoisonBall();
-                }
-            }
-
-            if (_creeperStrike.IsTwoHit && !_isIncreasedCastSpeedFromLightningStrike)
-            {
-                _castSpeedFromCreeperStrikeCoroutine = StartCoroutine(CastSpeedFromCreeperStrike());
-            }
-            else if (_lightningStrikes.IsUsedLightningStrikes && !_isIncreasedCastSpeedFromCreeperStrike)
-            {
-                _castSpeedFromLightningStrikesCoroutine = StartCoroutine(CastSpeedFromLightningStrikes());
-            }
-            else
-            {
-                _castDelay = _baseTimeCast;
-                yield return StartCastDelayCoroutine();
-                DamageDeal();
-            }
-        }
-    }
+    #region PrepareAndStartJob
 
     protected override void ClearData()
     {
+        _firstMousePosition = Vector3.positiveInfinity;
+        _secondMousePosition = Vector3.zero;
+
+        _secondClickDone = false;
+        _isPushTargetAllowed = false;
+
         _currentTarget = null;
         _castDelay = 0;
 
@@ -105,13 +72,83 @@ public class PoisonSlap : Skill
         }
     }
 
-    private bool CheckDistance()
+    protected override IEnumerator PrepareJob()
     {
-        if (_currentTarget == null)
+        while (_currentTarget == null)
         {
-            return Vector3.Distance(_currentTarget.transform.position, transform.position) <= Radius;
+            if (Input.GetMouseButton(0))
+            {
+                _currentTarget = GetRaycastTarget();
+
+                _firstMousePosition = GetMousePoint();
+            }
+            yield return null;
         }
-        return Vector3.Distance(_currentTarget.transform.position, transform.position) <= Radius;
+
+        yield return _secondMouseClickCoroutine = StartCoroutine(SecondClick());
+
+        if (_currentTarget != null)
+        {
+            if (_poisonBall.CurrentCharges != 0)
+            {
+                if ((_lightweightSlap.IsActive && _creeperStrike.IsTwoHit) || (_lightweightSlap.IsActive && _lightningStrikes.IsUsedLightningStrikes))
+                {
+                    yield break;
+                }
+                else
+                {
+                    _poisonBall.PayCostPoisonBall();
+                }
+            }
+        }
+    }
+
+    protected override IEnumerator CastJob()
+    {
+        if (_creeperStrike.IsTwoHit && !_isIncreasedCastSpeedFromLightningStrike)
+        {
+            _castSpeedFromCreeperStrikeCoroutine = StartCoroutine(CastSpeedFromCreeperStrike());
+        }
+        else if (_lightningStrikes.IsUsedLightningStrikes && !_isIncreasedCastSpeedFromCreeperStrike)
+        {
+            _castSpeedFromLightningStrikesCoroutine = StartCoroutine(CastSpeedFromLightningStrikes());
+        }
+        else
+        {
+            _castDelay = _baseTimeCast;
+            yield return StartCastDelayCoroutine();
+
+            ChooseDirectionPush();
+
+            DamageDeal();
+        }
+    }
+
+    #endregion
+
+    #region CalculationsDistances
+
+    private void ChooseDirectionPush()
+    {
+        _isPushTargetAllowed = Vector2.Distance(_player.transform.position, _secondMousePosition) > Vector2.Distance(_player.transform.position, _currentTarget.transform.position);
+
+    }
+
+    #endregion
+
+    #region Coroutines
+
+    private IEnumerator SecondClick()
+    {
+        while (!_secondClickDone)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                _secondClickDone = true;
+                _secondMousePosition = GetMousePoint();
+            }
+            yield return null;
+        }
     }
 
     private IEnumerator CastSpeedFromCreeperStrike()
@@ -119,11 +156,14 @@ public class PoisonSlap : Skill
         _creeperStrike.IsTwoHit = false;
         _isIncreasedCastSpeedFromCreeperStrike = true;
 
-        float _timeCastFromCreeperStrike = _baseTimeCast * _increasingExecutionSpeedFromCreeperStrike;
+        float _timeCastFromCreeperStrike = _baseTimeCast * _creeperStrikeCastSpeedMultiplier;
 
         _castDelay = _timeCastFromCreeperStrike;
         yield return StartCastDelayCoroutine();
+
         Debug.Log("CastTime int if == " + _castDelay);
+
+        ChooseDirectionPush();
 
         DamageDeal();
     }
@@ -132,36 +172,55 @@ public class PoisonSlap : Skill
     {
         _isIncreasedCastSpeedFromLightningStrike = true;
 
-        float _timeCastFromLightningStrikes = _baseTimeCast * _increasingExecutionSpeedFromLightningStrikes;
+        float _timeCastFromLightningStrikes = _baseTimeCast * _lightningStrikesCastSpeedMultiplier;
 
         _castDelay = _timeCastFromLightningStrikes;
         yield return StartCastDelayCoroutine();
+
         Debug.Log("CastTime int else if == " + _castDelay);
+
+        ChooseDirectionPush();
 
         DamageDeal();
     }
+
+    #endregion
+
+    #region DamageDealAndPushTargetMethods
 
     private void DamageDeal()
     {
         if (_currentTarget != null) 
         {
             _currentTarget.Health.CmdTryTakeDamage(Buff.Damage.GetBuffedValue(_baseDamage), DamageType.Physical, AttackRangeType.MeleeAttack);
-            PushEnemy(_currentTarget.gameObject, _distancePush, _durationPushInSeconds);
+            PushTarget(_currentTarget.gameObject, _distancePush, _durationPush, _isPushTargetAllowed);
         }
-        ClearData();
     }
 
-    private void PushEnemy(GameObject target, float distancePush, float durationPush)
+    private void PushTarget(GameObject target, float distancePush, float durationPush, bool isCanPushTarget)
     {
-        CmdPushEnemy(target, distancePush, durationPush);
+        CmdPushEnemy(target, distancePush, durationPush, isCanPushTarget);
     }
+
+    #endregion
+
+    #region CommandMethods
 
     [Command]
-    private void CmdPushEnemy(GameObject target, float distancePush, float durationPush) 
+    private void CmdPushEnemy(GameObject target, float distancePush, float durationPush, bool isCanPushTarget) 
     {
         Vector2 directionPush = (target.transform.position - transform.position);
 
         distancePush = ((distancePush * GlobalVariable.cellSize) * durationPush) / GlobalVariable.cellSize;
-        target.GetComponent<Transform>().transform.DOMove((Vector2)target.transform.position + directionPush * distancePush, durationPush).SetEase(Ease.Linear);
+        if (isCanPushTarget)
+        {
+            target.GetComponent<Transform>().transform.DOMove((Vector2)target.transform.position + directionPush * distancePush, durationPush).SetEase(Ease.Linear);
+        }
+        else
+        {
+            target.GetComponent<Transform>().transform.DOMove((Vector2)target.transform.position - directionPush * distancePush, durationPush).SetEase(Ease.Linear);
+        }
     }
+
+    #endregion
 }

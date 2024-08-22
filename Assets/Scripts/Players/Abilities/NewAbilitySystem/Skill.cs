@@ -44,7 +44,7 @@ public abstract class Skill : NetworkBehaviour
     [Header("Charge settings")]
     [SerializeField] private bool _isUseCharges;
     [SerializeField] protected bool _chargesHaveSeparateCooldown;
-    [SerializeField] protected int _maxCharges;
+    [SerializeField] private int _maxCharges;
     [SerializeField] protected float _chargeCooldown;
     [Header("Area settings")]
     [SerializeField] protected float _radius;
@@ -81,6 +81,7 @@ public abstract class Skill : NetworkBehaviour
     public Sprite Icon => _abilityInfo.Icon;
     public bool IsCooldowned { get => Remaining—ooldownTime <= 0; }
     public int Chargers => _currentChargers;
+    public int MaxCharges { get => _maxCharges; protected set => _maxCharges = value; }
     public bool IsHaveCharge => (_currentChargers > 0);
     public float ChargeCooldown => _chargeCooldown;
     public bool IsPreparing => _isPreparing;
@@ -133,7 +134,7 @@ public abstract class Skill : NetworkBehaviour
     protected virtual void Awake()
     {
         if (_isUseCharges)
-            _currentChargers = _maxCharges;
+            _currentChargers = MaxCharges;
         else
             _currentChargers = 1;
     }
@@ -405,7 +406,7 @@ public abstract class Skill : NetworkBehaviour
 
     private IEnumerator RechargeCoroutine()
     {
-        while (_currentChargers < _maxCharges)
+        while (_currentChargers < MaxCharges)
         {
             float time = 0;
             while (time < ChargeCooldown)

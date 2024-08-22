@@ -6,13 +6,18 @@ using UnityEngine;
 
 public class PoisonBallProjectile : NetworkBehaviour
 {
+    #region Variables
     [SerializeField] protected PoisonBall _poisonBall;
 
     [SerializeField] protected GameObject _hitEffect;
     [SerializeField] protected SpriteRenderer _spriteRenderer;
     [SerializeField] protected Collider2D _collider;
     [SerializeField] private Rigidbody2D _rbBall;
-    [SerializeField] private Character _dad;
+    [SerializeField] private Character _player;
+
+    private List<Talent> _talents = new();
+    private ContinuationAmbush _continuationAmbush;
+    private HealingPoisonBall _healingPoisonBall;
 
     private Vector3 _startPosition;
     private GameObject _currentTarget;
@@ -32,23 +37,52 @@ public class PoisonBallProjectile : NetworkBehaviour
 
     private float _currentDamageForPoisonBall = 35f;
 
+    #region BoolVaribales
+
     private bool _isPlayer;
     private bool _isAllies;
     private bool _isEnemy;
-    private bool _talentHealingIPoisonBallIsActive;
-    private bool _talentWitheringPoisonIsActive;
+
+    private bool _isActiveHealingPoisonBall;
+    private bool _isActvieWitheringPoison;
+    private bool _isActiveContinuationAmbush;
+
     private bool _isPushTarget;
 
+    #endregion
+
+    #endregion
     private void Start()
     {
         _durationPush = 1.0f;
         _startPosition = transform.position;
         InitializationComponentsForCountProjectile();
+
+        _talents = _player.TalentSystem.Talents;
+        foreach(Talent talent in _talents)
+        {
+            if (talent is HealingPoisonBall healBall)
+            {
+                _healingPoisonBall = healBall;
+                Debug.Log($"PoisonBallProjectile / foreach / HealingPoisonBall = {_healingPoisonBall}");
+            }
+
+            if (talent is ContinuationAmbush contAmbush)
+            {
+                _continuationAmbush = contAmbush;
+                Debug.Log($"PoisonBallProjectile / foreach / ContinuationAmbush = {_continuationAmbush}");
+            }
+        }
+
+        bool isAmbush = _continuationAmbush.IsActive;
+        bool isHealBall = _healingPoisonBall.IsActive;
+        Debug.Log($"PoisonBallProjectile / ContinuationAmbush.isActive = {isAmbush}");
+        Debug.Log($"PoisonBallProjectile / HealingPoisonBall.isActive = {isHealBall}");
     }
 
     private void InitializationComponentsForCountProjectile()
     {
-        _poisonBall = _dad.GetComponentInChildren<PoisonBall>();
+        _poisonBall = _player.GetComponentInChildren<PoisonBall>();
 
         _footInstincts = _poisonBall.FootInstinctsTalent;
         _countProjectiles = _poisonBall.CountProjectiles;
@@ -59,69 +93,75 @@ public class PoisonBallProjectile : NetworkBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         SetPlayer();
-        if (_talentHealingIPoisonBallIsActive)
+        if (_isActiveHealingPoisonBall)
         {
             if (_isPlayer)
             {
-                if (collision.gameObject == _dad.gameObject)
+                if (collision.gameObject == _player.gameObject)
                 {
-                    Debug.Log($"if (IsPlayer) // HealingPoison.SetPlayer == {_dad}");
-                    TargetCheckForState(_dad);
-                    _dad.CharacterState.CmdAddState(States.HealingPoison, 6.0f, 0);
+                    TargetCheckForState(_player);
+
+                    _player.CharacterState.CmdAddState(States.HealingPoison, 6.0f, 0);
+
                     Destroy(gameObject);
                 }
             }
             else if (_isAllies)
             {
-                if (collision.gameObject.layer == LayerMask.NameToLayer("Allies") && collision.gameObject != _dad.gameObject)
+                if (collision.gameObject.layer == LayerMask.NameToLayer("Allies") && collision.gameObject != _player.gameObject)
                 {
                     if (collision.TryGetComponent<Character>(out var alliesHealth))
                     {
                         TargetCheckForState(alliesHealth); 
-                        Debug.Log($"if (IsAllies) // HealingPoison.SetPlayer == {_dad}");
-                        Debug.Log($"Collision gameObject AlliesHealth == {alliesHealth.name}");
+
                         alliesHealth.CharacterState.CmdAddState(States.HealingPoison, 6.0f, 0);
 
                         Destroy(gameObject);
                     }
                 }
-                else if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy") && collision.gameObject != _dad.gameObject)
+                else if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy") && collision.gameObject != _player.gameObject)
                 {
                     return;
                 }
             }
             else if (_isEnemy)
             {
-                if (collision.gameObject.transform != _dad.transform && collision.gameObject.layer != LayerMask.NameToLayer("Allies"))
+                if (collision.gameObject.transform != _player.transform && collision.gameObject.layer != LayerMask.NameToLayer("Allies"))
                 {
                     if (collision.TryGetComponent<HeroComponent>(out var targetHealth))
                     {
                         DealDamage(targetHealth, _currentDamageForPoisonBall, DamageType.Magical, AttackRangeType.RangeAttack);
+
                         if (_footInstincts.IsActive)
                         {
                             _footInstincts.ReductionCooldownLightningMovement();
                         }
+
                         _poisonBall.LastTarget = targetHealth.gameObject;
+
                         Destroy(gameObject);
                     }
                 }
-                else if (collision.gameObject.layer == LayerMask.NameToLayer("Allies") && collision.gameObject != _dad.gameObject)
+                else if (collision.gameObject.layer == LayerMask.NameToLayer("Allies") && collision.gameObject != _player.gameObject)
                 {
                     return;
                 }
             }
             else
             {
-                if (collision.gameObject.transform != _dad.transform && collision.gameObject.layer != LayerMask.NameToLayer("Allies"))
+                if (collision.gameObject.transform != _player.transform && collision.gameObject.layer != LayerMask.NameToLayer("Allies"))
                 {
                     if (collision.TryGetComponent<HeroComponent>(out var targetHealth))
                     {
                         DealDamage(targetHealth, _currentDamageForPoisonBall, DamageType.Magical, AttackRangeType.RangeAttack);
+
                         if (_footInstincts.IsActive)
                         {
                             _footInstincts.ReductionCooldownLightningMovement();
                         }
+
                         _poisonBall.LastTarget = targetHealth.gameObject;
+
                         Destroy(gameObject);
                     }
                 }
@@ -129,16 +169,19 @@ public class PoisonBallProjectile : NetworkBehaviour
         }
         else
         {
-            if (collision.gameObject.transform != _dad.transform && collision.gameObject.layer != LayerMask.NameToLayer("Allies"))
+            if (collision.gameObject.transform != _player.transform && collision.gameObject.layer != LayerMask.NameToLayer("Allies"))
             {
                 if (collision.TryGetComponent<HeroComponent>(out var targetHealth))
                 {
                     DealDamage(targetHealth, _currentDamageForPoisonBall, DamageType.Magical, AttackRangeType.RangeAttack);
+
                     if (_footInstincts.IsActive)
                     {
                         _footInstincts.ReductionCooldownLightningMovement();
                     }
+
                     _poisonBall.LastTarget = targetHealth.gameObject;
+
                     Destroy(gameObject);
                 }
             }
@@ -168,7 +211,7 @@ public class PoisonBallProjectile : NetworkBehaviour
         while (true)
         {
             transform.position += direction * (speed * 30f) * Time.deltaTime;
-            if (Vector3.Distance(transform.position, _dad.transform.position) > _maxDistance * GlobalVariable.cellSize) 
+            if (Vector3.Distance(transform.position, _player.transform.position) > _maxDistance * GlobalVariable.cellSize) 
             {
                 DestroyProjectile();
             }
@@ -182,12 +225,20 @@ public class PoisonBallProjectile : NetworkBehaviour
 
     private void DealDamage(HeroComponent targetHealth, float currentDamage, DamageType damageType, AttackRangeType attackRangeType)
     {
-        Energy _energyLink = (Energy)_dad.GetComponent<Character>().Stamina;
+        if (_isActiveContinuationAmbush)
+        {
+            if (_countProjectiles == 4 && _currentTarget == _poisonBall.LastTarget)
+            {
+                return; //Другая логика будет
+            }
+        }
+
+        Energy _energyLink = (Energy)_player.GetComponent<Character>().Stamina;
         _energyLink.SumDamageMake(currentDamage);
 
         targetHealth.Health.CmdTryTakeDamage(currentDamage, damageType, attackRangeType);
 
-        if (_talentWitheringPoisonIsActive)
+        if (_isActvieWitheringPoison)
         {
             targetHealth.CharacterState.CmdAddState(States.WitheringPoison, 6f, 0);
         }
@@ -220,19 +271,8 @@ public class PoisonBallProjectile : NetworkBehaviour
             Debug.Log($"PoisonBallProjectile / PushEnemy / else (_isPushTarget = {_isPushTarget})");
         }
 
-
-        //if (_countProjectiles < 3)
-        //{
-        //    target.transform.DOMove((Vector2)target.transform.position - directionPush * distancePush, durationPush).SetEase(Ease.Linear);
-        //}
         //else if (_countProjectiles == 3 && _currentTarget == _poisonBall.LastTarget)
-        //{
-        //    target.transform.DOMove((Vector2)target.transform.position + directionPush * distancePush, durationPush).SetEase(Ease.Linear);
-        //}
-        //else if (_countProjectiles == 3 && _currentTarget != _poisonBall.LastTarget)
-        //{
-        //    target.transform.DOMove((Vector2)target.transform.position - directionPush * distancePush, durationPush).SetEase(Ease.Linear);
-        //}
+
 
         target.CharacterState.CmdAddState(States.InAir, _durationStun, 0);
     }
@@ -248,18 +288,20 @@ public class PoisonBallProjectile : NetworkBehaviour
 
     public void InitializationProjectileForPoisonBall(Character dad, float energyDad, 
         bool isActiveTalentHealingPoisonBall, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies,
-        bool isActiveTalentWitheringPoison, bool isPushTarget)
+        bool isActiveTalentWitheringPoison, bool isPushTarget, bool isActiveContinuationAmbush)
     {
-        _dad = dad;
+        _player = dad;
         _energyDad = energyDad;
         _isPlayer = isTargetPlayer;
         _isAllies = isTargetAllies;
         _isEnemy = isTargetEnemy;
-        _talentHealingIPoisonBallIsActive = isActiveTalentHealingPoisonBall;
-        _talentWitheringPoisonIsActive = isActiveTalentWitheringPoison;
+        _isActiveHealingPoisonBall = isActiveTalentHealingPoisonBall;
+        _isActvieWitheringPoison = isActiveTalentWitheringPoison;
+        _isActiveContinuationAmbush = isActiveContinuationAmbush;
         _isPushTarget = isPushTarget;
-        Debug.Log($"_isPlayer == {_isPlayer}; _isAllies == {_isAllies}; _isEnemy == {_isEnemy}; _talentIsActive == {_talentHealingIPoisonBallIsActive};" +
-            $" _talentWitheringPosion = {_talentWitheringPoisonIsActive}; _isPushTarget = {_isPushTarget}");
+
+        Debug.Log($"_isPlayer == {_isPlayer}; _isAllies == {_isAllies}; _isEnemy == {_isEnemy}; _talentIsActive == {_isActiveHealingPoisonBall};" +
+            $" _talentWitheringPosion = {_isActvieWitheringPoison}; _isPushTarget = {_isPushTarget}; _isActiveContinuationAmbush = {_isActiveContinuationAmbush}");
     }
 
     #endregion
@@ -269,9 +311,9 @@ public class PoisonBallProjectile : NetworkBehaviour
 
     private void SetPlayer()
     {
-        HealingPoison.SetPlayer(_dad);
-        WitheringPoisonState.SetPlayer(_dad);
-        Debug.Log($" WitheringPoisonState.SetPlayer == {_dad}");
+        HealingPoison.SetPlayer(_player);
+        WitheringPoisonState.SetPlayer(_player);
+        Debug.Log($" WitheringPoisonState.SetPlayer == {_player}");
         RpcSetPlayer();
     }
 
@@ -288,9 +330,9 @@ public class PoisonBallProjectile : NetworkBehaviour
     [ClientRpc]
     private void RpcSetPlayer()
     {
-        HealingPoison.SetPlayer(_dad);
-        WitheringPoisonState.SetPlayer(_dad);
-        Debug.Log($"Rpc //  WitheringPoisonState.SetPlayer == {_dad}");
+        HealingPoison.SetPlayer(_player);
+        WitheringPoisonState.SetPlayer(_player);
+        Debug.Log($"Rpc //  WitheringPoisonState.SetPlayer == {_player}");
     }
 
     [ClientRpc]

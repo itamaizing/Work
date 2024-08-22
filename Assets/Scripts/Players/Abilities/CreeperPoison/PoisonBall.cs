@@ -7,17 +7,21 @@ using UnityEngine.SceneManagement;
 
 public class PoisonBall : Skill
 {
+    #region Variables
+
     [Header("Talents")]
     [SerializeField] private FootInstincts _footInstincts;
     [SerializeField] private HealingPoisonBall _healingPoisonBall;
     [SerializeField] private HealPoisonCloud _healPoisonCloud;
     [SerializeField] private WitheringPoison _witheringPoison;
+    [SerializeField] private EnlargedGlands _enlargedGlands;
+    [SerializeField] private ContinuationAmbush _continuationAmbush;
 
     [SerializeField] private Character _player;
-
     [SerializeField] private PoisonBallProjectile _projectile;
 
     private Character _currentTarget;
+
     private Vector3 _firstMousePosition = Vector3.positiveInfinity;
     private Vector3 _secondMousePosition;
     private Vector3 _thirdMousePosition;
@@ -29,30 +33,42 @@ public class PoisonBall : Skill
     private float _originalChargeCooldown;
     private float _durationPoisonCloud = 6f;
 
+    #region BoolVariables
+
+    private bool _isFast;
+    private bool _isOriginalTargetEnemy;
+    private bool _isOriginalTargetAllies;
+    private bool _isOriginalTargetPlayer;
+
     private bool _secondClickDone = false;
     private bool _thirdClickDone = false;
     private bool _isPushTarget;
 
     private bool _isTarget = false;
 
-    private bool _isFast;
-    private bool _isActiveTalent;
-    private bool _isOriginalTargetEnemy;
-    private bool _isOriginalTargetAllies;
-    private bool _isOriginalTargetPlayer;
+    private bool _isActiveHealingPoisonBall;
+    private bool _isActiveEnlargedGlands;
+    private bool _isActiveContinuationAmbush;
     private bool _isHealingPoisonCloud = false;
+
+    public bool Enabled;
+    public bool IsPlayer { get; set; }
+
+    #endregion
 
     private Coroutine _secondClickCoroutine;
     private Coroutine _thirdClickCoroutine;
 
     public int CurrentCharges;
     public int CountProjectiles;
-    public bool Enabled;
 
-    public bool IsPlayer { get; set; }
     public GameObject LastTarget { get; set; }
     public GameObject CurrentTarget { get; set; }
     public FootInstincts FootInstinctsTalent { get; set; }
+
+    #endregion
+
+    #region PrepareAndStartJob
 
     protected void Start()
     {
@@ -87,21 +103,14 @@ public class PoisonBall : Skill
 
     protected override IEnumerator PrepareJob()
     {
-        if (_healingPoisonBall.IsActive)
-        {
-            _isActiveTalent = _healingPoisonBall.IsActive;
-        }
-        else
-        {
-            _isActiveTalent = _healingPoisonBall.IsActive;
-        }
+        CheckingActiveTalents();
 
         while (_currentTarget == null && float.IsPositiveInfinity(_firstMousePosition.x))
         {
             if (Input.GetMouseButtonDown(0))
             {
                 _currentTarget = GetRaycastTarget(true);
-                ChooseTarget();
+                CheckWhoTarget();
 
                 _firstMousePosition = GetMousePoint();
             }
@@ -123,7 +132,61 @@ public class PoisonBall : Skill
         yield return null;
     }
 
-    private void ChooseTarget()
+    private void UseAbility()
+    {
+        switch (_countProjectiles)
+        {
+            case < 3:
+                _isTarget = IsTarget();
+                ChooseMovementDependingOnCountProjectiles();
+                break;
+
+            case 3:
+                _isTarget = IsTarget();
+                ChooseMovementDependingOnCountProjectiles();
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    #endregion
+
+    #region CheckingMethods
+
+    private void CheckingActiveTalents()
+    {
+        if (_healingPoisonBall.IsActive)
+        {
+            _isActiveHealingPoisonBall = true;
+        }
+        else
+        {
+            _isActiveHealingPoisonBall = false;
+        }
+
+        if (_continuationAmbush.IsActive)
+        {
+            _isActiveContinuationAmbush = true;
+        }
+        else
+        {
+            _isActiveContinuationAmbush = false;
+        }
+
+        if (_enlargedGlands.IsActive)
+        {
+            _isActiveEnlargedGlands = true;
+            MaxCharges = 4;
+        }
+        else
+        {
+            _isActiveEnlargedGlands = false;
+        }
+    }
+
+    private void CheckWhoTarget()
     {
         if (_currentTarget != null)
         {
@@ -175,7 +238,7 @@ public class PoisonBall : Skill
     private void CooldownChange()
     {
         Debug.Log("CooldownChange PoisonBall");
-        if (_isActiveTalent)
+        if (_isActiveHealingPoisonBall)
         {
             if (_isOriginalTargetAllies || _isOriginalTargetPlayer)
             {
@@ -198,24 +261,7 @@ public class PoisonBall : Skill
         }
     }
 
-    private void UseAbility()
-    {
-        switch (_countProjectiles)
-        {
-            case < 3:
-                _isTarget = IsTarget();
-                ChooseMovementDependingOnCountProjectiles();
-                break;
-
-            case 3:
-                _isTarget = IsTarget();
-                ChooseMovementDependingOnCountProjectiles();
-                break;
-
-            default:
-                break;
-        }
-    }
+    #endregion
 
     #region MouseClick
 
@@ -246,8 +292,6 @@ public class PoisonBall : Skill
     }
 
     #endregion
-
-
 
     #region BooleanMethods
 
@@ -343,8 +387,8 @@ public class PoisonBall : Skill
         if (_isTarget)
         {
             CmdCreateProjectileForTarget(_currentTarget.gameObject, _currentTarget.transform.position,
-                _isFast, _isPushTarget, _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy, 
-                _isOriginalTargetAllies, _witheringPoison.IsActive);
+                _isFast, _isPushTarget, _isActiveHealingPoisonBall, _isOriginalTargetPlayer, _isOriginalTargetEnemy, 
+                _isOriginalTargetAllies, _witheringPoison.IsActive, _isActiveContinuationAmbush);
 
             CmdApplyCloudPoison(_healPoisonCloud.IsActive, _isHealingPoisonCloud);
         }
@@ -352,8 +396,8 @@ public class PoisonBall : Skill
         {
             Debug.Log($"ChooseWhichProjectileCreate / else / WitheringPoison IsActive = {_witheringPoison.IsActive})");
             CmdCreateProjectileForFlyingMaxDistance(_firstMousePosition,
-                _isFast, _isPushTarget, _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy,
-                _isOriginalTargetAllies, _witheringPoison.IsActive);
+                _isFast, _isPushTarget, _isActiveHealingPoisonBall, _isOriginalTargetPlayer, _isOriginalTargetEnemy,
+                _isOriginalTargetAllies, _witheringPoison.IsActive, _isActiveContinuationAmbush);
 
             CmdApplyCloudPoison(_healPoisonCloud.IsActive, _isHealingPoisonCloud);
         }
@@ -366,7 +410,7 @@ public class PoisonBall : Skill
     [Command]
     private void CmdCreateProjectileForTarget(GameObject target, Vector3 targetOrPoint,
         bool isFast, bool isPushTarget, bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies,
-        bool isWitheringPoisonTalentActive)
+        bool isActiveWitheringPoison, bool isActiveContinuationAmbush)
     {
         CurrentTarget = target;
         FootInstinctsTalent = _footInstincts;
@@ -375,7 +419,7 @@ public class PoisonBall : Skill
         {
             CountProjectiles++;
         }
-        else if (LastTarget != CurrentTarget || CountProjectiles == 3)
+        else if (LastTarget != CurrentTarget || CountProjectiles == 4)
         {
             CountProjectiles = 1;
         }
@@ -386,7 +430,7 @@ public class PoisonBall : Skill
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
         poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.Value, isActiveTalent, 
-            isTargetPlayer, isTargetEnemy, isTargetAllies, isWitheringPoisonTalentActive, isPushTarget);
+            isTargetPlayer, isTargetEnemy, isTargetAllies, isActiveWitheringPoison, isPushTarget, isActiveContinuationAmbush);
 
         poisonBallProjectile.MoveBallToTarget(targetOrPoint, isFast);
 
@@ -397,7 +441,7 @@ public class PoisonBall : Skill
     [Command]
     private void CmdCreateProjectileForFlyingMaxDistance(Vector3 point, bool isFast, bool isPushTarget, 
         bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, 
-        bool isWitheringPoisonTalentActive)
+        bool isActiveWitheringPoison, bool isActiveContinuationAmbush)
     {
         FootInstinctsTalent = _footInstincts;
 
@@ -405,7 +449,7 @@ public class PoisonBall : Skill
         {
             CountProjectiles++;
         }
-        else if (LastTarget != CurrentTarget || CountProjectiles == 3)
+        else if (LastTarget != CurrentTarget || CountProjectiles == 4)
         {
             CountProjectiles = 1;
         }
@@ -416,7 +460,7 @@ public class PoisonBall : Skill
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
         poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.Value, isActiveTalent, isTargetPlayer, 
-            isTargetEnemy, isTargetAllies, isWitheringPoisonTalentActive, isPushTarget);
+            isTargetEnemy, isTargetAllies, isActiveWitheringPoison, isPushTarget, isActiveContinuationAmbush);
 
         poisonBallProjectile.MoveBallOnMaxDistance(point, isFast);
 

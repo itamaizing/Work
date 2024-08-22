@@ -15,8 +15,6 @@ public class CreeperInvisible : Skill
 
     private float _baseTimeToApplyInvisible = 6.0f;
     private float _baseTimeToApplyInvisibleWithTalent = 0.0f;
-    
-    private Coroutine _startCoroutine;
 
     public float StartTimeToApplyInvisible;
 
