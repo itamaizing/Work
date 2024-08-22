@@ -37,13 +37,6 @@ public class PoisonBallProjectile : NetworkBehaviour
     private bool _isEnemy;
     private bool _talentHealingIPoisonBallIsActive;
     private bool _talentWitheringPoisonIsActive;
-    
-
-    private void Awake()
-    {
-        Debug.Log("Awake");
-        //StartCoroutine(DisableCollider());
-    }
 
     private void Start()
     {
@@ -59,17 +52,6 @@ public class PoisonBallProjectile : NetworkBehaviour
         _footInstincts = _poisonBall.FootInstinctsTalent;
         _countProjectiles = _poisonBall.CountProjectiles;
         _currentTarget = _poisonBall.CurrentTarget;
-    }
-
-    private IEnumerator DisableCollider()
-    { // Deleted this method!
-        Collider2D projectileCollider = this.gameObject.GetComponent<Collider2D>();
-
-        projectileCollider.enabled = false;
-
-        yield return new WaitForSeconds(0.5f);
-
-        projectileCollider.enabled = true;
     }
 
     [Server]

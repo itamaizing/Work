@@ -124,6 +124,7 @@ public class PoisonBall : Skill
                 {
                     _isHealingPoisonCloud = true;
                 }
+                Debug.Log($"ChooseTarget / currentTarget = {_currentTarget.gameObject.name}");
             }
             else if (_currentTarget.gameObject.layer == LayerMask.NameToLayer("Allies"))
             {
@@ -135,6 +136,7 @@ public class PoisonBall : Skill
                 {
                     _isHealingPoisonCloud = true;
                 }
+                Debug.Log($"ChooseTarget / currentTarget = {_currentTarget.gameObject.name}");
             }
             else if (_currentTarget.gameObject.layer == LayerMask.NameToLayer("Enemy"))
             {
@@ -146,6 +148,7 @@ public class PoisonBall : Skill
                 {
                     _isHealingPoisonCloud = true;
                 }
+                Debug.Log($"ChooseTarget / currentTarget = {_currentTarget.gameObject.name}");
             }
         }
         else
@@ -326,12 +329,6 @@ public class PoisonBall : Skill
     {
         CurrentTarget = target;
         FootInstinctsTalent = _footInstincts;
-        Debug.Log("CmdCreateProj");
-        //Debug.Log("Cmd // IsActiveTalent == " + isActiveTalent);
-        //Debug.Log("Cmd // isTargetPlayer == " + isTargetPlayer);
-        //Debug.Log("Cmd // isTargetEnemy == " + isTargetEnemy);
-        //Debug.Log("Cmd // isTargetAllies == " + isTargetAllies);
-
 
         if (LastTarget == CurrentTarget)
         {
@@ -351,6 +348,7 @@ public class PoisonBall : Skill
         poisonBallProjectile.MoveBallToTarget(targetOrPoint, isFast);
 
         NetworkServer.Spawn(item);
+        //RpcCreateProjectileForTaret(target, poisonBallProjectile, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies, isWitheringPoisonTalentActive);
     }
 
     [Command]
@@ -377,13 +375,12 @@ public class PoisonBall : Skill
         poisonBallProjectile.MoveBallOnMaxDistance(point, isFast);
 
         NetworkServer.Spawn(item);
+        //RpcCreateProjectileForFlyingMaxDistance(poisonBallProjectile, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies, isWitheringPoisonTalentActive);
     }
 
     [Command]
     private void CmdApplyCloudPoison(bool isActiveTalent, bool isHealingCloud)
     {
-        //Debug.Log($"SpitPoison / CmdApplyCloudPoison");
-        //Debug.Log($"SpitPoison / ApplyCloudPoison / if (_healPoisonCloud.IsActive = {isActiveTalent} && _isHealingPoisonCloud = {isHealingCloud})");
         if (isActiveTalent && isHealingCloud)
         {
             _player.CharacterState.CmdAddState(States.HealingPoisonCloud, _durationPoisonCloud, 0);
@@ -399,16 +396,12 @@ public class PoisonBall : Skill
     #region ClientRpcMethods
 
     //[ClientRpc]
-    //private void RpcCreateProjectileForTaret(GameObject target, Vector3 targetOrPoint, PoisonBallProjectile poisonBallProjectile,
-    //    bool isFast, bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
+    //private void RpcCreateProjectileForTaret(GameObject target, PoisonBallProjectile poisonBallProjectile,
+    //    bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, bool isWitheringPoisonTalentActive)
     //{
     //    FootInstinctsTalent = _footInstincts;
     //    CurrentTarget = target;
-    //    Debug.Log("RpcCreateProj");
-    //    //Debug.Log("Rpc // IsActiveTalent == " + isActiveTalent);
-    //    //Debug.Log("Rpc // isTargetPlayer == " + isTargetPlayer);
-    //    //Debug.Log("Rpc // isTargetEnemy == " + isTargetEnemy);
-    //    //Debug.Log("Rpc // isTargetAllies == " + isTargetAllies);
+
     //    if (CurrentTarget == _player.gameObject)
     //    {
     //        IsPlayer = true;
@@ -427,15 +420,12 @@ public class PoisonBall : Skill
     //        CountProjectiles = 1;
     //    }
 
-    //    //GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
-    //    //PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>();
-
-    //    poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.Value, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies);
-    //    poisonBallProjectile.MoveBallToTarget(targetOrPoint, isFast);
+    //    poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.Value, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies, isWitheringPoisonTalentActive);
     //}
 
     //[ClientRpc]
-    //private void RpcCreateProjectileForFlyingMaxDistance(Vector3 point, bool isFast, PoisonBallProjectile poisonBallProjectile, bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
+    //private void RpcCreateProjectileForFlyingMaxDistance(PoisonBallProjectile poisonBallProjectile, 
+    //    bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, bool isWitheringPoisonTalentActive)
     //{
     //    FootInstinctsTalent = _footInstincts;
     //    if (LastTarget == CurrentTarget)
@@ -447,11 +437,7 @@ public class PoisonBall : Skill
     //        CountProjectiles = 1;
     //    }
 
-    //    //GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
-    //    //PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>();
-
-    //    poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.Value, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies);
-    //    poisonBallProjectile.MoveBallOnMaxDistance(point, isFast);
+    //    poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.Value, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies, isWitheringPoisonTalentActive);
     //}
 
     #endregion

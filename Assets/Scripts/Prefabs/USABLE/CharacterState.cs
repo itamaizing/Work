@@ -1247,7 +1247,9 @@ public class WitheringPoisonState : AbstractCharacterState
 
     private float _baseValueTakeAwayMana = 0.03f;
     private float _endValueTakeAwayMana;
-	private float _chanceOfApplyBindingPoison = 0.03f;
+	private float _chanceOfApplyBindingPoison = 0.9f;
+
+	private bool _isActiveTalentBindingPoison = false;
 
     private static Character _player;
 
@@ -1256,7 +1258,7 @@ public class WitheringPoisonState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
     {
-		Debug.Log("Withering Enter State");
+		//Debug.Log("Withering Enter State");
         state = States.WitheringPoison;
         _timeBetweenTakeAwayMana = _startTimeBetweenTakeAwayMana;
 
@@ -1268,22 +1270,23 @@ public class WitheringPoisonState : AbstractCharacterState
         _duration = durationToExit;
         _baseDuration = durationToExit;
 
-        Debug.Log("player in WitheringPoisonState == " + _player);
+        //Debug.Log("player in WitheringPoisonState == " + _player);
         if (_player != null)
         {
             _talents = _player.CharacterState.Character.TalentSystem.Talents;
-            Debug.Log("WitheringPoisonState Talent == " + _talents);
+            //Debug.Log("WitheringPoisonState Talent == " + _talents);
 
             foreach (Talent talent in _talents)
             {
-                Debug.Log("Checking talents: " + talent.name + ", Type: " + talent.GetType());
+                //Debug.Log("Checking talents: " + talent.name + ", Type: " + talent.GetType());
                 if (talent is BindingPoison bindingPoison)
                 {
 					Debug.Log($"if talent is bindingPoison = {bindingPoison}");
                     if (_bindingPoison == null)
                     {
                         _bindingPoison = bindingPoison;
-                        Debug.Log("bindingPoison == " + _bindingPoison + $" /  and _bindingPoison.IsActive = {_bindingPoison.IsActive}");
+						_isActiveTalentBindingPoison = _bindingPoison.IsActive;
+                        Debug.Log("bindingPoison == " + _bindingPoison + $" /  and _bindingPoison.IsActive = {_isActiveTalentBindingPoison}");
                     }
                 }
             }
@@ -1313,7 +1316,6 @@ public class WitheringPoisonState : AbstractCharacterState
 
     public override void ExitState()
     {
-		Debug.Log("ExitState WitheringState");
         ResetValues();
 
         _characterState.RemoveState(this);
@@ -1352,17 +1354,16 @@ public class WitheringPoisonState : AbstractCharacterState
 
     private void TakeAwayMana()
     {
-        Debug.Log($"Withering TakeAwayMana / _bindingPoison = {_bindingPoison} / _bindingPoison.IsActive = {_bindingPoison.IsActive}");
+        Debug.Log($"Withering TakeAwayMana / _bindingPoison = {_bindingPoison} / _bindingPoison.IsActive = {_isActiveTalentBindingPoison}");
         float takeAwayMana = _currentStacks * _baseValueTakeAwayMana;
         _endValueTakeAwayMana = _characterState.Stamina.Value * takeAwayMana;
 
-		if (_bindingPoison.IsActive)
+		if (_isActiveTalentBindingPoison)
 		{
-			Debug.Log($"WitheringPoisonState / TakeAwayMana / first if (_bindingPoison.IsActive = {_bindingPoison.IsActive})");
+			Debug.Log($"WitheringPoisonState / TakeAwayMana / first if (_bindingPoison.IsActive = {_isActiveTalentBindingPoison})");
 			if (Random.Range(0.0f, 1.0f) <= _chanceOfApplyBindingPoison)
 			{
-				_characterState.CmdAddState(States.BindingPoison, Mathf.Infinity, 0);
-                Debug.Log($"WitheringPoisonState / TakeAwayMana / second if ChanceApply)");
+				_characterState.CmdAddState(States.BindingPoison, 10, 0);
             }
         }
 
@@ -1408,7 +1409,8 @@ public class BindingPoisonState : AbstractCharacterState
         _characterState = character;
 
 		_skillManager = _characterState.Character.Abilities;
-		Debug.Log($"BindingPoisonState / CharacterManager = {_skillManager}");
+		//Debug.Log($"BindingPoisonState / EnterState / CharacterManager = {_skillManager}");
+
         _duration = durationToExit;
         _baseDuration = durationToExit;
 
@@ -1416,10 +1418,12 @@ public class BindingPoisonState : AbstractCharacterState
         {
             AddStacks();
         }
+        BlockingOrCancleingAbility();
     }
 
     public override void UpdateState()
     {
+        //Debug.Log($"BindingPoisonState / UpdateState / CharacterManager = {_skillManager}");
         if (_duration < 0 || turnOff)
         {
             ExitState();
@@ -1429,6 +1433,7 @@ public class BindingPoisonState : AbstractCharacterState
 
     public override void ExitState()
     {
+        //Debug.Log($"BindingPoisonState / ExitState / CharacterManager = {_skillManager}");
         ResetValues();
 
         _characterState.RemoveState(this);
@@ -1436,6 +1441,7 @@ public class BindingPoisonState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
+        //Debug.Log($"BindingPoisonState / Stack / CharacterManager = {_skillManager}");
         if (_currentStacks < _maxStacks)
         {
             AddStacks();
@@ -1450,10 +1456,10 @@ public class BindingPoisonState : AbstractCharacterState
 
     public void AddStacks()
     {
+        Debug.Log($"BindingPoisonState / AddStacks / CharacterManager = {_skillManager}");
         if (_currentStacks < _maxStacks)
         {
 			_currentStacks++;
-			BlockingOrCancleingAbility();
             //Debug.Log("if / CurrentStackPoisonBone in AddStacks == " + _currentStacks);
             _duration = _baseDuration;
         }
@@ -1466,22 +1472,31 @@ public class BindingPoisonState : AbstractCharacterState
 
     private void BlockingOrCancleingAbility()
     {
-		Debug.Log("BindingPoison / BlockingOrCancleingAbility");
+        Debug.Log("BindingPoison / BlockingOrCancleingAbility");
+       // Debug.Log($"BindingPoisonState / BlockingOrCancleingAbility / CharacterManager = {_skillManager}");
+
 		_skillManager.SkillQueue.TryCancel(true);
+		//Debug.Log($"BindingPoison / BlockingOrCancleingAbility / skillManager.TryCancel = {_skillManager.SkillQueue.TryCancel(true)}");
+
 		if (!_skillManager.SkillQueue.TryCancel(true))
 		{
-			Debug.Log("BindingPoison / BlockingOrCancleingAbility / before if");
+            Debug.Log("BindingPoison / BlockingOrCancleingAbility / TryCancel = false");
             _skillManager.SkillQueue.SkillAdded += OnSkillAdded;
-		}
-		//ExitState();
+			Debug.Log($"BindingPoison / BlockingOrCancleingAbility / after SkillAdded += OnSkillAdded");
+        }
+		ExitState();
     }
 
 	private void OnSkillAdded(Skill skill)
 	{
 		Debug.Log("BindingPoison / OnSkillAdded Start");
-        _skillManager.SkillQueue.TryCancel(true);
-        _skillManager.SkillQueue.SkillAdded -= OnSkillAdded;
-		Debug.Log("BindingPoison / OnSkillAdde End");
+        Debug.Log($"BindingPoison / OnSkillAdded / CurrentSkill = {_skillManager.SkillQueue.CurrentSkill}");
+
+		Debug.Log($"BindingPoison / OnSkillAdded / _skillManager.SkillQueue.TryCancel(true) = {_skillManager.SkillQueue.TryCancel(true)}");
+		_skillManager.SkillQueue.TryCancel(true);
+		
+		_skillManager.SkillQueue.SkillAdded -= OnSkillAdded;
+		Debug.Log("BindingPoison / OnSkillAdded End");
     }
 
     private void ResetValues()

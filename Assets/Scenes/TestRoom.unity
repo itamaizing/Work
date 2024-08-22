@@ -254,7 +254,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7775636882345027638, guid: cbfb4777e45b41a4d9cb20bcbfe66715, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8442599261096630905, guid: cbfb4777e45b41a4d9cb20bcbfe66715, type: 3}
       propertyPath: m_Name
@@ -272,13 +272,7 @@ PrefabInstance:
     m_RemovedGameObjects:
     - {fileID: 907439034921688106, guid: cbfb4777e45b41a4d9cb20bcbfe66715, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2755998073433856612, guid: cbfb4777e45b41a4d9cb20bcbfe66715, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
-    - targetCorrespondingSourceObject: {fileID: 2331573783356132272, guid: cbfb4777e45b41a4d9cb20bcbfe66715, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cbfb4777e45b41a4d9cb20bcbfe66715, type: 3}
 --- !u!1001 &664578080
 PrefabInstance:
@@ -554,7 +548,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7775636882345027638, guid: cbfb4777e45b41a4d9cb20bcbfe66715, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8028422410261857379, guid: cbfb4777e45b41a4d9cb20bcbfe66715, type: 3}
       propertyPath: m_Layer
@@ -600,13 +594,7 @@ PrefabInstance:
     m_RemovedGameObjects:
     - {fileID: 907439034921688106, guid: cbfb4777e45b41a4d9cb20bcbfe66715, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2755998073433856612, guid: cbfb4777e45b41a4d9cb20bcbfe66715, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
-    - targetCorrespondingSourceObject: {fileID: 2331573783356132272, guid: cbfb4777e45b41a4d9cb20bcbfe66715, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cbfb4777e45b41a4d9cb20bcbfe66715, type: 3}
 --- !u!1001 &712774398
 PrefabInstance:
@@ -882,7 +870,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7775636882345027638, guid: cbfb4777e45b41a4d9cb20bcbfe66715, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8028422410261857379, guid: cbfb4777e45b41a4d9cb20bcbfe66715, type: 3}
       propertyPath: m_Layer
@@ -932,13 +920,7 @@ PrefabInstance:
     m_RemovedGameObjects:
     - {fileID: 907439034921688106, guid: cbfb4777e45b41a4d9cb20bcbfe66715, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2755998073433856612, guid: cbfb4777e45b41a4d9cb20bcbfe66715, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
-    - targetCorrespondingSourceObject: {fileID: 2331573783356132272, guid: cbfb4777e45b41a4d9cb20bcbfe66715, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cbfb4777e45b41a4d9cb20bcbfe66715, type: 3}
 --- !u!1 &749885457
 GameObject:
