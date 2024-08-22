@@ -684,6 +684,70 @@ public class Cooling : AbstractCharacterState
 
 }
 
+public class InAirState : AbstractCharacterState
+{
+    private SkillManager _abilities;
+
+    private float _duration;
+    private float _baseDuration;
+    private float _damageToExit;
+
+    public bool turnOff = false;
+
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+    {
+		state = States.InAir;
+
+        type = StateType.Physical;
+        effects.Add(StatusEffect.Move);
+        effects.Add(StatusEffect.Ability);
+        _characterState = character;
+
+        if (character.TryGetComponent<Character>(out var ability))
+        {
+            _abilities = ability.Abilities;
+            _abilities.SetAbilitiesDisabled();
+        }
+        else
+        {
+            Debug.Log("no ability at " + character.gameObject.name);
+        }
+
+        _characterState.Move.CanMove = false;
+        _duration = durationToExit;
+        _baseDuration = _duration;
+        _baseDuration = durationToExit;
+    }
+
+    public override void UpdateState()
+    {
+        _duration -= Time.deltaTime;
+        if (_duration < 0 || turnOff)
+        {
+            ExitState();
+        }
+    }
+
+
+    public override void ExitState()
+    {
+        if (_characterState.Check(StatusEffect.Move))
+        {
+            _characterState.Move.CanMove = true;
+        }
+        if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
+        {
+            _abilities.SetAbilitiesEnabled();
+        }
+        _characterState.RemoveState(this);
+    }
+
+    public override bool Stack(float time)
+    {
+        return false;
+    }
+}
+
 public class CreeperInvisibleState : AbstractCharacterState
 {
     private List<Skill> _abilities = new();
@@ -886,67 +950,143 @@ public class CreeperInvisibleState : AbstractCharacterState
 	}
 }
 
-public class InAirState : AbstractCharacterState
-{
-    private SkillManager _abilities;
+#region CreeperDebuffPoisons
 
+public class EmpathicPoisons : AbstractCharacterState
+{
+    private float _baseEvasionValue = 0.1f;
+    private float _increasedEvasionValue;
+    private float _endEvasionValue;
+    private float _originalEvasionValue;
+
+    private float _currentStacks = 0;
+    private float _maxStacks = 3;
+
+    private float _timeBetweenToApplyStacks;
+    private float _startTimeBetweentoApplyStacks = 1.0f;
     private float _duration;
     private float _baseDuration;
     private float _damageToExit;
 
+    private HealthComponent _characterHealth;
+    private Vector3 _playerPosition;
+    private Vector3 _characterPosition;
+
+    private bool _isInPoisonCloud;
     public bool turnOff = false;
+
+    public static float RadiusCloud;
+
+    public static GameObject Player;
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
     {
-		state = States.InAir;
+		state = States.EmpathicPoisons;
+
+        _timeBetweenToApplyStacks = _startTimeBetweentoApplyStacks;
 
         type = StateType.Physical;
-        effects.Add(StatusEffect.Move);
         effects.Add(StatusEffect.Ability);
+
         _characterState = character;
+        _characterHealth = _characterState.GetComponent<HealthComponent>();
+        _originalEvasionValue = _characterHealth.EvadeMeleeDamage;
 
-        if (character.TryGetComponent<Character>(out var ability))
-        {
-            _abilities = ability.Abilities;
-            _abilities.SetAbilitiesDisabled();
-        }
-        else
-        {
-            Debug.Log("no ability at " + character.gameObject.name);
-        }
-
-        _characterState.Move.CanMove = false;
         _duration = durationToExit;
-        _baseDuration = _duration;
         _baseDuration = durationToExit;
+
+        if (_currentStacks < _maxStacks)
+        {
+            AddStacks();
+        }
     }
 
     public override void UpdateState()
     {
+        _playerPosition = Player.transform.position;
+        _characterPosition = _characterState.transform.position;
+
         _duration -= Time.deltaTime;
         if (_duration < 0 || turnOff)
         {
             ExitState();
         }
-    }
 
+        _timeBetweenToApplyStacks -= Time.deltaTime;
+        if (_timeBetweenToApplyStacks <= 0)
+        {
+            if (_isInPoisonCloud)
+            {
+                ReducingChanceOfHittingAtEnemy();
+            }
+            else
+            {
+                DecreaseEvasionForCurrentTarget();
+            }
+            _timeBetweenToApplyStacks = _startTimeBetweentoApplyStacks;
+        }
+        CheckIfInPoisonCloud(_playerPosition, _characterPosition);
+    }
 
     public override void ExitState()
     {
-        if (_characterState.Check(StatusEffect.Move))
-        {
-            _characterState.Move.CanMove = true;
-        }
-        if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
-        {
-            _abilities.SetAbilitiesEnabled();
-        }
+        ResetValues();
         _characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        return false;
+        if (_currentStacks < _maxStacks)
+        {
+            AddStacks();
+            return true;
+        }
+        else
+        {
+            _duration = _baseDuration;
+            return false;
+        }
+    }
+
+    private void AddStacks()
+    {
+        _currentStacks++;
+        _duration = _baseDuration;
+    }
+
+    private void ReducingChanceOfHittingAtEnemy()
+    {
+        // Позже будет реализована другая логика.
+        _increasedEvasionValue = _baseEvasionValue * _currentStacks;
+
+        _endEvasionValue = _originalEvasionValue * _increasedEvasionValue;
+
+        _characterHealth.EvadeMeleeDamage = _originalEvasionValue - _endEvasionValue;
+    }
+
+    private void DecreaseEvasionForCurrentTarget()
+    {
+        float reductionPerSecond = _baseEvasionValue * 0.33f;
+        _endEvasionValue = Mathf.Max(_originalEvasionValue, _characterHealth.EvadeMeleeDamage + reductionPerSecond);
+        _characterHealth.EvadeMeleeDamage = _endEvasionValue;
+    }
+
+    private void CheckIfInPoisonCloud(Vector3 playerPos, Vector3 characterPos)
+    {
+        float distance = Vector3.Distance(playerPos, characterPos);
+        _isInPoisonCloud = distance <= RadiusCloud;
+    }
+
+    private void ResetValues()
+    {
+        _currentStacks = 0;
+        _baseDuration = 0;
+        _duration = 0;
+
+        _baseEvasionValue = 0.1f;
+        _increasedEvasionValue = 0;
+        _endEvasionValue = 0;
+        _characterHealth.EvadeMeleeDamage = _originalEvasionValue;
     }
 }
 
@@ -1090,12 +1230,277 @@ public class PoisonBone : AbstractCharacterState
 	}
 }
 
+public class WitheringPoisonState : AbstractCharacterState
+{
+    private List<Skill> _abilities = new();
+	private List<Talent> _talents = new();
+	private BindingPoison _bindingPoison;
+
+    private static int _currentStacks = 0;
+    private int _maxStacks = 3;
+
+    private float _timeBetweenTakeAwayMana;
+    private float _startTimeBetweenTakeAwayMana = 1f;
+
+    private float _duration;
+    private float _baseDuration;
+
+    private float _baseValueTakeAwayMana = 0.03f;
+    private float _endValueTakeAwayMana;
+	private float _chanceOfApplyBindingPoison = 0.03f;
+
+    private static Character _player;
+
+    public bool turnOff = false;
+    public static int CurrentStacks { get => _currentStacks; }
+
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+    {
+		Debug.Log("Withering Enter State");
+        state = States.WitheringPoison;
+        _timeBetweenTakeAwayMana = _startTimeBetweenTakeAwayMana;
+
+        type = StateType.Physical;
+        effects.Add(StatusEffect.Ability);
+
+        _characterState = character;
+
+        _duration = durationToExit;
+        _baseDuration = durationToExit;
+
+        Debug.Log("player in WitheringPoisonState == " + _player);
+        if (_player != null)
+        {
+            _talents = _player.CharacterState.Character.TalentSystem.Talents;
+            Debug.Log("WitheringPoisonState Talent == " + _talents);
+
+            foreach (Talent talent in _talents)
+            {
+                Debug.Log("Checking talents: " + talent.name + ", Type: " + talent.GetType());
+                if (talent is BindingPoison bindingPoison)
+                {
+					Debug.Log($"if talent is bindingPoison = {bindingPoison}");
+                    if (_bindingPoison == null)
+                    {
+                        _bindingPoison = bindingPoison;
+                        Debug.Log("bindingPoison == " + _bindingPoison + $" /  and _bindingPoison.IsActive = {_bindingPoison.IsActive}");
+                    }
+                }
+            }
+        }
+
+        if (_currentStacks < _maxStacks)
+        {
+            AddStacks();
+        }
+    }
+
+    public override void UpdateState()
+    {
+        _timeBetweenTakeAwayMana -= Time.deltaTime;
+        if (_timeBetweenTakeAwayMana <= 0)
+        {
+            TakeAwayMana();
+            _timeBetweenTakeAwayMana = _startTimeBetweenTakeAwayMana;
+        }
+
+        _duration -= Time.deltaTime;
+        if (_duration < 0 || turnOff)
+        {
+            ExitState();
+        }
+    }
+
+    public override void ExitState()
+    {
+		Debug.Log("ExitState WitheringState");
+        ResetValues();
+
+        _characterState.RemoveState(this);
+    }
+
+    public override bool Stack(float time)
+    {
+        Debug.Log("Withering Stack");
+        if (_currentStacks < _maxStacks)
+        {
+            AddStacks();
+            return true;
+        }
+        else
+        {
+            _duration = _baseDuration;
+            return false;
+        }
+    }
+
+    public void AddStacks()
+    {
+        Debug.Log("Withering AddStacks");
+        if (_currentStacks < _maxStacks)
+        {
+            _currentStacks++;
+            //Debug.Log("if / CurrentStackPoisonBone in AddStacks == " + _currentStacks);
+            _duration = _baseDuration;
+        }
+        else
+        {
+            //Debug.Log("else / CurrentStackPoisonBone in AddStacks == " + _currentStacks);
+            _duration = _baseDuration;
+        }
+    }
+
+    private void TakeAwayMana()
+    {
+        Debug.Log($"Withering TakeAwayMana / _bindingPoison = {_bindingPoison} / _bindingPoison.IsActive = {_bindingPoison.IsActive}");
+        float takeAwayMana = _currentStacks * _baseValueTakeAwayMana;
+        _endValueTakeAwayMana = _characterState.Stamina.Value * takeAwayMana;
+
+		if (_bindingPoison.IsActive)
+		{
+			Debug.Log($"WitheringPoisonState / TakeAwayMana / first if (_bindingPoison.IsActive = {_bindingPoison.IsActive})");
+			if (Random.Range(0.0f, 1.0f) <= _chanceOfApplyBindingPoison)
+			{
+				_characterState.CmdAddState(States.BindingPoison, Mathf.Infinity, 0);
+                Debug.Log($"WitheringPoisonState / TakeAwayMana / second if ChanceApply)");
+            }
+        }
+
+		_characterState.Stamina.ReductionCurrentValue(_endValueTakeAwayMana);
+    }
+
+    private void ResetValues()
+    {
+        _currentStacks = 0;
+        _baseDuration = 0;
+        _duration = 0;
+        _endValueTakeAwayMana = 0;
+        _baseValueTakeAwayMana = 1f;
+        _timeBetweenTakeAwayMana = _startTimeBetweenTakeAwayMana;
+    }
+
+    public static void SetPlayer(Character player)
+    {
+        _player = player;
+    }
+}
+
+public class BindingPoisonState : AbstractCharacterState
+{
+	private SkillManager _skillManager;
+
+    private static int _currentStacks = 0;
+    private int _maxStacks = 1;
+
+    private float _duration;
+    private float _baseDuration;
+
+    public bool turnOff = false;
+
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+    {
+		Debug.Log("BindingPoison / EnterState");
+        state = States.BindingPoison;
+
+        type = StateType.Physical;
+        effects.Add(StatusEffect.Ability);
+
+        _characterState = character;
+
+		_skillManager = _characterState.Character.Abilities;
+		Debug.Log($"BindingPoisonState / CharacterManager = {_skillManager}");
+        _duration = durationToExit;
+        _baseDuration = durationToExit;
+
+        if (_currentStacks < _maxStacks)
+        {
+            AddStacks();
+        }
+    }
+
+    public override void UpdateState()
+    {
+        if (_duration < 0 || turnOff)
+        {
+            ExitState();
+        }
+
+    }
+
+    public override void ExitState()
+    {
+        ResetValues();
+
+        _characterState.RemoveState(this);
+    }
+
+    public override bool Stack(float time)
+    {
+        if (_currentStacks < _maxStacks)
+        {
+            AddStacks();
+            return true;
+        }
+        else
+        {
+            _duration = _baseDuration;
+            return false;
+        }
+    }
+
+    public void AddStacks()
+    {
+        if (_currentStacks < _maxStacks)
+        {
+			_currentStacks++;
+			BlockingOrCancleingAbility();
+            //Debug.Log("if / CurrentStackPoisonBone in AddStacks == " + _currentStacks);
+            _duration = _baseDuration;
+        }
+        else
+        {
+            //Debug.Log("else / CurrentStackPoisonBone in AddStacks == " + _currentStacks);
+            _duration = _baseDuration;
+        }
+    }
+
+    private void BlockingOrCancleingAbility()
+    {
+		Debug.Log("BindingPoison / BlockingOrCancleingAbility");
+		_skillManager.SkillQueue.TryCancel(true);
+		if (!_skillManager.SkillQueue.TryCancel(true))
+		{
+			Debug.Log("BindingPoison / BlockingOrCancleingAbility / before if");
+            _skillManager.SkillQueue.SkillAdded += OnSkillAdded;
+		}
+		//ExitState();
+    }
+
+	private void OnSkillAdded(Skill skill)
+	{
+		Debug.Log("BindingPoison / OnSkillAdded Start");
+        _skillManager.SkillQueue.TryCancel(true);
+        _skillManager.SkillQueue.SkillAdded -= OnSkillAdded;
+		Debug.Log("BindingPoison / OnSkillAdde End");
+    }
+
+    private void ResetValues()
+    {
+        _currentStacks = 0;
+        _baseDuration = 0;
+        _duration = 0;
+    }
+}
+
+#endregion
+
+#region PoisonClouds
+
 public class PoisonCloud : AbstractCharacterState
 {
     private List<Skill> _abilities = new();
 	private List<Talent> _talents = new();
 
-	private HealingPoisonCloud _healingPoisonCloud;
 	private CapaciousPoisonCloud _capaciousPoisonCloud;
     private ToxiqueCloud _toxiqueCloud;
 	private ExplosionPoisonCloud _cloudExplosion;
@@ -1133,14 +1538,10 @@ public class PoisonCloud : AbstractCharacterState
         _duration = durationToExit;
         _baseDuration = durationToExit;
 
-        if (_currentStacks < _maxStacks)
-        {
-            AddStacks();
-        }
-
 		if (_player != null)
 		{
 		    _abilities = _player.CharacterState.Character.Abilities.Abilities;
+			_talents = _player.CharacterState.Character.TalentSystem.Talents;
 		    Debug.Log("PoisonCloud player == " + _player);
 
 			SearchAbilities();
@@ -1148,10 +1549,15 @@ public class PoisonCloud : AbstractCharacterState
 			SearchTalent();
 		}
 
-		if (_capaciousPoisonCloud.IsActive)
+		if (_capaciousPoisonCloud != null && _capaciousPoisonCloud.IsActive)
 		{
 			_radiusCloud += 1.5f; 
 		}
+
+        if (_currentStacks < _maxStacks)
+        {
+            AddStacks();
+        }
     }
 
 	private void SearchAbilities()
@@ -1178,14 +1584,6 @@ public class PoisonCloud : AbstractCharacterState
         foreach (Talent talent in _talents)
         {
             Debug.Log("Checking Talent: " + talent.name + ", Type: " + talent.GetType());
-            if (talent is HealingPoisonCloud healCloud)
-            {
-				if (_healingPoisonCloud == null)
-				{
-					_healingPoisonCloud = healCloud;
-					Debug.Log($"HealingPoisonCloud = {_healingPoisonCloud}");
-				}
-			}
 			if (talent is CapaciousPoisonCloud capaciousCloud)
 			{
 				if (_capaciousPoisonCloud == null)
@@ -1276,10 +1674,6 @@ public class PoisonCloud : AbstractCharacterState
 
     private void DamageDeal(HeroComponent targetHealth)
     {
-		if (_healingPoisonCloud.IsActive)
-		{
-
-		}
         _increasedDamage = _baseDamage * _currentStacks;
         _endDamage = targetHealth.Health.MaxHealth * _increasedDamage;
         targetHealth.Health.TryTakeDamage(_endDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
@@ -1302,45 +1696,39 @@ public class PoisonCloud : AbstractCharacterState
     }
 }
 
-public class EmpathicPoisons : AbstractCharacterState
+public class HealingPoisonCloud : AbstractCharacterState
 {
-    private float _baseEvasionValue = 0.1f;
-    private float _increasedEvasionValue;
-    private float _endEvasionValue;
-    private float _originalEvasionValue;
+    //private List<Skill> _abilities = new();
+    //private List<Talent> _talents = new();
 
-    private float _currentStacks = 0;
-    private float _maxStacks = 3;
+    private static int _currentStacks = 0;
+    private static int _maxStacks = 5;
+    private float _radiusCloud = 3.5f;
 
-    private float _timeBetweenToApplyStacks;
-    private float _startTimeBetweentoApplyStacks = 1.0f;
-    private float _duration;
-    private float _baseDuration;
-    private float _damageToExit;
+    private float _baseHeal = 0.005f;
+    private float _increasedHeal;
+    private float _endHeal;
 
-    private HealthComponent _characterHealth;
-    private Vector3 _playerPosition;
-    private Vector3 _characterPosition;
+    private float _timeBetweenHeal;
+    private float _startTimeBetweenHeal = 1f;
 
-    private bool _isInPoisonCloud;
+    private static float _duration;
+    private static float _baseDuration;
+
     public bool turnOff = false;
-
-    public static float RadiusCloud;
-
-    public static GameObject Player;
+    private Character _player;
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
     {
-		state = States.EmpathicPoisons;
-
-        _timeBetweenToApplyStacks = _startTimeBetweentoApplyStacks;
+		Debug.Log("HealingPoisonCLoudState / EnterState");
+        state = States.HealingPoisonCloud;
+        _timeBetweenHeal = _startTimeBetweenHeal;
 
         type = StateType.Physical;
         effects.Add(StatusEffect.Ability);
 
         _characterState = character;
-        _characterHealth = _characterState.GetComponent<HealthComponent>();
-        _originalEvasionValue = _characterHealth.EvadeMeleeDamage;
+        _player = _characterState.Character;
 
         _duration = durationToExit;
         _baseDuration = durationToExit;
@@ -1349,12 +1737,24 @@ public class EmpathicPoisons : AbstractCharacterState
         {
             AddStacks();
         }
+
+        //if (_player != null)
+        //{
+        //    _abilities = _player.CharacterState.Character.Abilities.Abilities;
+        //    Debug.Log("PoisonCloud player == " + _player);
+        //}
     }
 
     public override void UpdateState()
     {
-        _playerPosition = Player.transform.position;
-        _characterPosition = _characterState.transform.position;
+        Debug.Log("HealingPoisonCLoudState / UpdateState");
+
+        _timeBetweenHeal -= Time.deltaTime;
+        if (_timeBetweenHeal <= 0)
+        {
+            SearchingEnemies();
+            _timeBetweenHeal = _startTimeBetweenHeal;
+        }
 
         _duration -= Time.deltaTime;
         if (_duration < 0 || turnOff)
@@ -1362,30 +1762,21 @@ public class EmpathicPoisons : AbstractCharacterState
             ExitState();
         }
 
-        _timeBetweenToApplyStacks -= Time.deltaTime;
-        if (_timeBetweenToApplyStacks <= 0)
-        {
-            if (_isInPoisonCloud)
-            {
-                ReducingChanceOfHittingAtEnemy();
-            }
-            else
-            {
-                DecreaseEvasionForCurrentTarget();
-            }
-            _timeBetweenToApplyStacks = _startTimeBetweentoApplyStacks;
-        }
-        CheckIfInPoisonCloud(_playerPosition, _characterPosition);
     }
 
     public override void ExitState()
     {
+        Debug.Log("HealingPoisonCLoudState / ExitState");
+
         ResetValues();
+
         _characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
+        Debug.Log("HealingPoisonCLoudState / Stack");
+
         if (_currentStacks < _maxStacks)
         {
             AddStacks();
@@ -1398,47 +1789,65 @@ public class EmpathicPoisons : AbstractCharacterState
         }
     }
 
-    private void AddStacks()
+    public static void AddStacks()
     {
-        _currentStacks++;
-        _duration = _baseDuration;
+        Debug.Log("HealingPoisonCLoudState / AddStacks");
+
+        if (_currentStacks < _maxStacks)
+        {
+            _currentStacks++;
+            _duration = _baseDuration;
+            //Debug.Log("if / CurrentStackPoisonCloud in AddStacks == " + _currentStacks); 
+        }
+        else
+        {
+            //Debug.Log("else / CurrentStackPoisonCloud in AddStacks == " + _currentStacks);
+            _duration = _baseDuration;
+        }
     }
 
-    private void ReducingChanceOfHittingAtEnemy()
+    private void SearchingEnemies()
     {
-        // Позже будет реализована другая логика.
-        _increasedEvasionValue = _baseEvasionValue * _currentStacks;
+        Debug.Log("HealingPoisonCLoudState / SearchingEnemies");
 
-        _endEvasionValue = _originalEvasionValue * _increasedEvasionValue;
-
-        _characterHealth.EvadeMeleeDamage = _originalEvasionValue - _endEvasionValue;
+        Collider2D[] hitAllies = Physics2D.OverlapCircleAll(_characterState.transform.position, _radiusCloud);
+        foreach (Collider2D alliesOrPlayer in hitAllies)
+        {
+            if (alliesOrPlayer.CompareTag("Allies"))
+            {
+                if (alliesOrPlayer.TryGetComponent<HeroComponent>(out var target))
+                {
+                    ApplyHealing(target);
+                    _timeBetweenHeal = _startTimeBetweenHeal;
+                }
+            }
+        }
     }
 
-    private void DecreaseEvasionForCurrentTarget()
+    private void ApplyHealing(HeroComponent targetHealth)
     {
-        float reductionPerSecond = _baseEvasionValue * 0.33f;
-        _endEvasionValue = Mathf.Max(_originalEvasionValue, _characterHealth.EvadeMeleeDamage + reductionPerSecond);
-        _characterHealth.EvadeMeleeDamage = _endEvasionValue;
-    }
-
-    private void CheckIfInPoisonCloud(Vector3 playerPos, Vector3 characterPos)
-    {
-        float distance = Vector3.Distance(playerPos, characterPos);
-        _isInPoisonCloud = distance <= RadiusCloud;
+        Debug.Log("HealingPoisonCLoudState / ApplyHealing");
+		_increasedHeal = _baseHeal * _currentStacks;
+		_endHeal = targetHealth.Health.MaxHealth * _increasedHeal;
+		targetHealth.Health.AddHeal(_endHeal);
     }
 
     private void ResetValues()
     {
+        Debug.Log("HealingPoisonCLoudState / ResetValues");
+
         _currentStacks = 0;
         _baseDuration = 0;
         _duration = 0;
-
-        _baseEvasionValue = 0.1f;
-        _increasedEvasionValue = 0;
-        _endEvasionValue = 0;
-        _characterHealth.EvadeMeleeDamage = _originalEvasionValue;
+        _endHeal = 0;
+        _increasedHeal = 0;
+        _baseHeal = 0.005f;
     }
 }
+
+#endregion
+
+#region HealingPoisons
 
 public class HealingPoison : AbstractCharacterState
 {
@@ -1724,6 +2133,8 @@ public class RegeneratingPoison : AbstractCharacterState
 	}
 }
 
+#endregion
+
 public class AbilitySchoolDebuff : AbstractCharacterState
 {
 	public new States state = States.SchoolDebuff;
@@ -1858,19 +2269,20 @@ public class AbilityFormDebuff : AbstractCharacterState
 
 public class CharacterState : NetworkBehaviour
 {
+	[SerializeField] private StateIcons _stateIcons;
+
 	private HealthComponent _health;
 	private MoveComponent _move;
 	private StaminaComponent _stamina;
 	private Character _hero;
 
 	private List<AbstractCharacterState> currentStates = new List<AbstractCharacterState>();
-	[SerializeField] private StateIcons _stateIcons;
-	public bool invinsible = false;
 	public HealthComponent Health => _health;
 	public MoveComponent Move => _move;
 	public StaminaComponent Stamina => _stamina;
-
 	public Character Character => _hero;
+
+	public bool invinsible = false;
 
 	public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
 	{
@@ -1881,7 +2293,10 @@ public class CharacterState : NetworkBehaviour
 		[States.CreeperInvisible] = new CreeperInvisibleState(),
 		[States.InAir] = new InAirState(),
 		[States.PoisonBone] = new PoisonBone(),
+		[States.WitheringPoison] = new WitheringPoisonState(),
+		[States.BindingPoison] = new BindingPoisonState(),
 		[States.PoisonCloud] = new PoisonCloud(),
+		[States.HealingPoisonCloud] = new HealingPoisonCloud(),
 		[States.EmpathicPoisons] = new EmpathicPoisons(),
 		[States.HealingPoison] = new HealingPoison(),
 		[States.RegeneratingPoison] = new RegeneratingPoison(),
@@ -1891,7 +2306,7 @@ public class CharacterState : NetworkBehaviour
 		[States.Desiccuration] = new Desiccuration()
 	};
 
-	public void Initialize(HealthComponent health,MoveComponent move , StaminaComponent stamina, Character hero)
+	public void Initialize(HealthComponent health, MoveComponent move, StaminaComponent stamina, Character hero)
 	{
 		_hero = hero;
 		_health = health;
@@ -2203,7 +2618,10 @@ public enum States
 	InAir,
 	CreeperInvisible,
 	PoisonBone,
+	WitheringPoison,
+	BindingPoison,
 	PoisonCloud,
+	HealingPoisonCloud,
 	EmpathicPoisons,
 	HealingPoison,
 	RegeneratingPoison,

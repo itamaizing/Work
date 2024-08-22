@@ -16,7 +16,6 @@ public abstract class StaminaComponent : NetworkBehaviour
 	protected float _regenerationValue = 10;
     protected float _regenerationDelay = 3;
 
-
 	protected float _timerDelay = 0;
 
 	public void Initialize(float maxValue,float regenValue,float regenDelay)
@@ -66,4 +65,11 @@ public abstract class StaminaComponent : NetworkBehaviour
     {
 		Use(value);
 	}
+
+	public void ReductionCurrentValue(float value)
+	{
+		Debug.Log("StaminaComponent / ReductionCurrentValue");
+		_value -= value;
+        Debug.Log($"StaminaComponent / ReductionCurrentValue / after (_value -= value) == {_value}");
+    }
 }

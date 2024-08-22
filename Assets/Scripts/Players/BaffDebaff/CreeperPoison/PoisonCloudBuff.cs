@@ -9,7 +9,7 @@ using UnityEngine.UIElements;
 public class PoisonCloudBuff : BaseEffect
 {
     [Header("Talents")]
-    [SerializeField] private HealingPoisonCloud _healingPoisonCloud;
+    [SerializeField] private HealPoisonCloud _healingPoisonCloud;
     [SerializeField] private CapaciousPoisonCloud _capaciousPoisonCloud;
     [SerializeField] private ToxiqueCloud _toxiqueCloud;
 
@@ -71,7 +71,7 @@ public class PoisonCloudBuff : BaseEffect
         _isActiveCapaciousCloud = isActiveCapaciousCloud;
         _isActiveToxiqueCloud = isActiveToxiqueCloud;
 
-        _healingPoisonCloud = _dad.GetComponentInChildren<HealingPoisonCloud>();
+        _healingPoisonCloud = _dad.GetComponentInChildren<HealPoisonCloud>();
         _capaciousPoisonCloud = _dad.GetComponentInChildren<CapaciousPoisonCloud>();
         _toxiqueCloud = _dad.GetComponentInChildren<ToxiqueCloud>();
 
