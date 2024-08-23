@@ -33,6 +33,9 @@ public class SkillQueue : MonoBehaviour
 
     public void Add(Skill skill)
     {
+        if (_skills.Contains(skill))
+            return; 
+
         _skills.Enqueue(skill);
         SkillAdded?.Invoke(skill);
     }

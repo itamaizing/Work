@@ -19,7 +19,7 @@ public abstract class StaminaComponent : NetworkBehaviour
 	
 	private float _timerDelay = 0;
 
-	public void Initialize(float maxValue,float regenValue,float regenDelay)
+	public void Initialize(float maxValue, float regenValue, float regenDelay)
 	{
 		_value = maxValue;
 		_maxValue = maxValue;

@@ -33,8 +33,10 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] protected float _manaCost;
     [SerializeField] protected float _cooldownTime;
     [SerializeField] protected float _castDeley;
-    [SerializeField] protected Schools _abilitySchool;
-    [SerializeField] protected AbilityForm _abilityForm;
+    [SerializeField] private Schools _abilitySchool;
+    [SerializeField] private AbilityForm _abilityForm;
+    [SerializeField] private DamageType _damageType;
+    [SerializeField] private AttackRangeType _attackRangeType;
     [SerializeField] protected LayerMask _targetsLayers;
     [SerializeField] protected LayerMask _obstacle;
     [Header("Streaming settings")]
@@ -99,8 +101,10 @@ public abstract class Skill : NetworkBehaviour
     public LayerMask TargetsLayers => _targetsLayers;
     public Schools School => _abilitySchool;
     public AbilityForm AbilityForm => _abilityForm;
+    public DamageType DamageType => _damageType;
+    public AttackRangeType AttackRangeType => _attackRangeType;
 
-    public event Action<int> CurrentChargeChange;
+    public event Action<int> CurrentChargeChanged;
     public event Action<float> CooldownStarted;
     public event Action CooldownEnded;
     public event Action PreparingStarted;
@@ -235,6 +239,13 @@ public abstract class Skill : NetworkBehaviour
 
         if (IsHaveCharge == false)
             MassageHaventCharge?.Invoke();
+    }
+
+    public void AddCharge()
+    {
+        _maxCharges += 1;
+        _currentChargers += 1;
+        CurrentChargeChanged?.Invoke(_currentChargers);
     }
 
     protected virtual void StartAutoDraw()
@@ -390,7 +401,7 @@ public abstract class Skill : NetworkBehaviour
         if (_currentChargers > 0)
         {
             _currentChargers--;
-            CurrentChargeChange?.Invoke(_currentChargers);
+            CurrentChargeChanged?.Invoke(_currentChargers);
 
             if (_rechargeJob == null || _chargesHaveSeparateCooldown)
                 _rechargeJob = StartCoroutine(RechargeCoroutine());
@@ -413,7 +424,7 @@ public abstract class Skill : NetworkBehaviour
                 yield return null;
             }
             _currentChargers++;
-            CurrentChargeChange?.Invoke(_currentChargers);
+            CurrentChargeChanged?.Invoke(_currentChargers);
 
             if (_chargesHaveSeparateCooldown)
                 break;

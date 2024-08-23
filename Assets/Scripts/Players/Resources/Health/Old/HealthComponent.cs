@@ -83,8 +83,6 @@ public class HealthComponent : NetworkBehaviour
         _evadeMagDamage = healthInfo.EvadeMagicDamage;
         _evadeMeleeDamage = healthInfo.EvadeMeleeDamage;
         _evadeRangeDamage = healthInfo.EvadeRangeDamage;
-        _absorbMagDamage = healthInfo.AbsorbMagicDamage;
-        _absorbPhysDamage = healthInfo.AbsorbPhysicsDamage;
         
         UpdateHealthBar();
        // StartCoroutine(CoroutineRegenirateHP());

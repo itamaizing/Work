@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Players.Abilities.Genjalf.Shield_Ability
 {
-    public class Shield : MonoBehaviour
+    public class OldShield : MonoBehaviour
     {
         [SerializeField] public GameObject _cooldownButton;
         [SerializeField] private SoShieldData _soShieldData;

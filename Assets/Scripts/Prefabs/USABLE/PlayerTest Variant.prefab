@@ -216,6 +216,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6791969768364216469, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+      propertyPath: _skills.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7000184432333105671, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -273,6 +277,13 @@ PrefabInstance:
     - {fileID: 1892565365500318185, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
     - {fileID: 4030725381616344407, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
     - {fileID: 8778059283886800227, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+    - {fileID: 7905948510851364970, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+    - {fileID: 1145950345730042880, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+    - {fileID: 5047771524899203190, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+    - {fileID: 6791969768364216469, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+    - {fileID: 2822314166871515824, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+    - {fileID: 7517869829640561379, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+    - {fileID: 2233169376284932548, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:

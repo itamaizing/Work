@@ -141,11 +141,11 @@ public class CreeperTwoFastAttack : AbilityBase
 
         yield return new WaitForSeconds(damageRate / 2);
 
-        Shield _shield = null;
+        OldShield _shield = null;
 
         if (TargetParent != null)
         {
-            _shield = TargetParent.GetComponentInChildren<Shield>();
+            _shield = TargetParent.GetComponentInChildren<OldShield>();
         }
 
         if (_shield != null)
