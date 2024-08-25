@@ -33,11 +33,13 @@ public class DeathSpiralProjectile : Projectiles
 		{
 			if (inTheRow)
 			{
-				target.Health.TryTakeDamage(10, DamageType.Physical, AttackRangeType.RangeAttack);
+				//target.Health.TryTakeDamage(10, DamageType.Physical, AttackRangeType.RangeAttack);
+				Debug.LogError("!!!The damage method has been changed!!!");
 			}
 			else
 			{
-				target.Health.TryTakeDamage(20, DamageType.Physical, AttackRangeType.RangeAttack);
+				//target.Health.TryTakeDamage(20, DamageType.Physical, AttackRangeType.RangeAttack);
+				Debug.LogError("!!!The damage method has been changed!!!");
 			}
 		}
 		if(collision.TryGetComponent<IceShadowObject>(out var shadow))

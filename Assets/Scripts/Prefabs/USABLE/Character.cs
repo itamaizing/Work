@@ -8,8 +8,8 @@ using UnityEngine.AI;
 public abstract class Character : NetworkBehaviour
 {
 	[SerializeField] private UserNetworkSettings _networkSettings;
-	[SerializeField] private Rigidbody2D _rb;
-	[SerializeField] private HealthComponent _healthComponent;
+	[SerializeField] private Rigidbody2D _rigidbody2D;
+	[SerializeField] private Health _healthComponent;
 	[SerializeField] private MoveComponent _playerMove; 
 	[SerializeField] private StaminaComponent _stamina;
 	[CanBeNull] [SerializeField] private RuneComponent _runeComponent;
@@ -21,8 +21,8 @@ public abstract class Character : NetworkBehaviour
 	[CanBeNull] [SerializeField] private SpawnComponent _spawnComponent;
 
 	public UserNetworkSettings NetworkSettings => _networkSettings;
-	public Rigidbody2D Rb => _rb;
-	public HealthComponent Health => _healthComponent;
+	public Rigidbody2D Rigidbody2D => _rigidbody2D;
+	public Health Health => _healthComponent;
 	public MoveComponent Move => _playerMove;
 	public StaminaComponent Stamina => _stamina;
 	public RuneComponent RuneComponent => _runeComponent;

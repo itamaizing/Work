@@ -6,5 +6,5 @@ using UnityEngine;
 public interface IDamageable
 {
     public event Action<float, DamageType> DamageTaked;
-    public bool TryTakeDamage(ref float damage, Skill skill);
+    public bool TryTakeDamage(ref float damage, IDamageDealer skill);
 }

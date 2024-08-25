@@ -25,7 +25,7 @@ public class HeroComponent : Character
     public override void Initialize(CharacterData characterData)
     {
         Health.Initialize(characterData.Health, characterData.HealthRegen, characterData.RegenDelay, characterData.HealthInfo);
-        Move.Initialize(characterData.MoveSpeed, Rb , true);
+        Move.Initialize(characterData.MoveSpeed, Rigidbody2D , true);
         Stamina.Initialize(characterData.Stamina, characterData.StaminaRegen, characterData.StaminaRegenDelay);
         RuneComponent.Initialize(10,1,10);
         CharacterState.Initialize(Health, Move , Stamina);

@@ -52,7 +52,7 @@ public class Icecloud : Ability
 
 		_playerLinks.RuneComponent.SwitchMultiplier(true);
 		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
+		Vector2 lookDir = _mousePos - _playerLinks.Rigidbody2D.position;
 		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
 		_combo.MakeHit(null, AbilityForm.Magic, 1);
 

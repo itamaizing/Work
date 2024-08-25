@@ -39,7 +39,9 @@ public class PhysicalAttack : AutoAttackAbility
 
 			float curDamage = _damage + Random.Range(0, 2);
 
-			ApplyDamage(enemy.Health, curDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
+			//ApplyDamage(enemy.Health, curDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
+			Debug.LogError("!!!The damage method has been changed!!!");
+
 			Energy energy = (Energy)_dad.Stamina;
 			if(enemy.CharacterState.CheckForState(States.Frozen))
 			{
@@ -61,7 +63,9 @@ public class PhysicalAttack : AutoAttackAbility
 			float curDamage = _damage + Random.Range(0, 2);
 			Energy energy = (Energy)_dad.Stamina;
 			energy.SumDamageMake(curDamage);
-			ApplyDamage(enemy.Health, curDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
+
+			//ApplyDamage(enemy.Health, curDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
+			Debug.LogError("!!!damage method has been changed!!!");
 		}
 
 		if (Random.Range(0, 100) <2)
@@ -120,17 +124,17 @@ public class PhysicalAttack : AutoAttackAbility
 	private void PushBackEnemy(Character enemy)
 	{
 		Debug.Log("Push");
-		Vector2 pushPos = (_dad.Rb.position - enemy.Rb.position).normalized;
+		Vector2 pushPos = (_dad.Rigidbody2D.position - enemy.Rigidbody2D.position).normalized;
 		Vector2 endPos = -pushPos * 2;
 		//enemy.PlayerMove.CanMove = false;
 		//Debug.DrawLine(enemy.Rb.position, enemy.Rb.position + endPos * 10, Color.red, Mathf.Infinity);
-		if (CheckObstacleBetween(enemy.Rb.position, endPos))
+		if (CheckObstacleBetween(enemy.Rigidbody2D.position, endPos))
 		{
-			enemy.Rb.DOMove(_jumpPos, 1).SetEase(Ease.Linear);
+			enemy.Rigidbody2D.DOMove(_jumpPos, 1).SetEase(Ease.Linear);
 		}
 		else
 		{
-			enemy.Rb.DOMove(enemy.Rb.position + endPos, 1).SetEase(Ease.Linear);
+			enemy.Rigidbody2D.DOMove(enemy.Rigidbody2D.position + endPos, 1).SetEase(Ease.Linear);
 		}
 	}
 

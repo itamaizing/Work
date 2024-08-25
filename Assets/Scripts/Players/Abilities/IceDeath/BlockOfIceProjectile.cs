@@ -50,7 +50,10 @@ public class BlockOfIceProjectile : Projectiles
 				curDamage *= 1.4f;
 			}
 			energyLink.SumDamageMake(curDamage);
-			target.Health.TryTakeDamage(curDamage, DamageType.Physical, AttackRangeType.RangeAttack);
+
+			//target.Health.TryTakeDamage(curDamage, DamageType.Physical, AttackRangeType.RangeAttack);
+			Debug.LogError("!!!The damage method has been changed!!!");
+
 			//target.CharacterState.AddState(new Cooling(), duration, 0, States.Cooling);
 			target.CharacterState.CmdAddState(States.Cooling, duration, 0);
 

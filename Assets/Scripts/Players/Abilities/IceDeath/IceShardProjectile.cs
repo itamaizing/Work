@@ -44,7 +44,10 @@ public class IceShardProjectile : Projectiles
 			}
 			energyLink.SumDamageMake(curDamage);
 			//target.Health.TakeDamage(curDamage, DamageType.Physical);
-			target.Health.TryTakeDamage(curDamage, DamageType.Physical, AttackRangeType.RangeAttack);
+
+			//target.Health.TryTakeDamage(curDamage, DamageType.Physical, AttackRangeType.RangeAttack);
+			Debug.LogError("!!!damage method has been changed!!!");
+
 			//target.CharacterState.AddState(new FrozenState(), duration, 30, States.Frozen);
 			target.CharacterState.CmdAddState(States.Frozen, duration, 30);
 

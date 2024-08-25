@@ -324,8 +324,8 @@ GameObject:
   - component: {fileID: 8468544467696250796}
   - component: {fileID: 3759936847054020137}
   - component: {fileID: 4218118007188876841}
+  - component: {fileID: 5839731411926097146}
   - component: {fileID: 5665079937663656764}
-  - component: {fileID: 1078220477695681604}
   - component: {fileID: 7760335386463111578}
   - component: {fileID: 2926669445991704918}
   - component: {fileID: 1057949845680950153}
@@ -336,7 +336,7 @@ GameObject:
   - component: {fileID: -5027009403038136984}
   - component: {fileID: 3330577042116454553}
   m_Layer: 9
-  m_Name: Player
+  m_Name: PlayerBase
   m_TagString: Allies
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -379,8 +379,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _networkSettings: {fileID: -7146587456276821115}
-  _rb: {fileID: 3759936847054020137}
-  _healthComponent: {fileID: 1078220477695681604}
+  _rigidbody2D: {fileID: 3759936847054020137}
+  _healthComponent: {fileID: 5839731411926097146}
   _playerMove: {fileID: 5665079937663656764}
   _stamina: {fileID: 2926669445991704918}
   _runeComponent: {fileID: 1057949845680950153}
@@ -454,6 +454,23 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0.027881742}
   serializedVersion: 2
   m_Radius: 1.0994574
+--- !u!114 &5839731411926097146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1521997633048654849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04a32c9096d066945864c8dff3c0ab74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Testskill1: {fileID: 0}
+  TestDamage: 0
 --- !u!114 &5665079937663656764
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -474,24 +491,6 @@ MonoBehaviour:
   IsSelect: 0
   MoveDirection: {x: 0, y: 0}
   _isHero: 0
---- !u!114 &1078220477695681604
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1521997633048654849}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b5add863fba6af449bc9b5c95b8199e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  healthBar: {fileID: 2798253226615935122}
-  shields: []
-  sumDamageTaken: 0
 --- !u!114 &7760335386463111578
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -813,7 +812,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   segments: 64
   lineColor: {r: 0.27835703, g: 1, b: 0, a: 0.6117647}
-  lineRenderer: {fileID: 0}
+  lineRenderer: {fileID: 3307719523220879840}
 --- !u!114 &5254550688682045830
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3097,16 +3096,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5762049827953977616}
   - component: {fileID: 8675175310089954536}
-  - component: {fileID: 6347228247449020419}
-  - component: {fileID: 5115025386098828278}
-  - component: {fileID: 2269426203430854731}
-  - component: {fileID: 5082383780772546697}
-  - component: {fileID: 445838640881858043}
-  - component: {fileID: 3193596479322258093}
-  - component: {fileID: 3240623405797250538}
-  - component: {fileID: 8682121660824369185}
-  - component: {fileID: 8525686735181722530}
-  - component: {fileID: 895138939693564751}
   m_Layer: 0
   m_Name: Talents_Container
   m_TagString: Untagged
@@ -3144,209 +3133,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _talents:
-  - {fileID: 5115025386098828278}
-  - {fileID: 5115025386098828278}
-  - {fileID: 5115025386098828278}
-  - {fileID: 5115025386098828278}
-  - {fileID: 895138939693564751}
-  - {fileID: 8525686735181722530}
-  - {fileID: 8682121660824369185}
-  - {fileID: 3240623405797250538}
-  - {fileID: 3193596479322258093}
-  - {fileID: 445838640881858043}
-  - {fileID: 5082383780772546697}
-  - {fileID: 2269426203430854731}
---- !u!114 &6347228247449020419
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7828036230296040018}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6fcf2694bddcb1d409a326e23057b996, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _player: {fileID: 8468544467696250796}
---- !u!114 &5115025386098828278
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7828036230296040018}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8088ed7ede33cdf4093458b33145b274, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  Name: Name
-  Description: LOOOOOOOOOOOng description
-  ico: {fileID: 21300000, guid: ed1972ce01824b542b0ae1113bc01a7e, type: 3}
-  character: {fileID: 8468544467696250796}
---- !u!114 &2269426203430854731
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7828036230296040018}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cac4d75947c835a46a9470e7a3314f9c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  Name: Block of Ice
-  Description: sdgsagasdg
-  ico: {fileID: 21300000, guid: ed1972ce01824b542b0ae1113bc01a7e, type: 3}
-  character: {fileID: 8468544467696250796}
-  _blockOfIce: {fileID: 0}
-  _ability: {fileID: 0}
---- !u!114 &5082383780772546697
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7828036230296040018}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9852c4f8f61b918459c0e52a62af84e5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  Name: Ice Shard
-  Description: dsdsdsd
-  ico: {fileID: 21300000, guid: 1a805cda24a5090458bc0512f9f4d186, type: 3}
-  character: {fileID: 8468544467696250796}
-  _iceShard: {fileID: 0}
-  _ability: {fileID: 0}
---- !u!114 &445838640881858043
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7828036230296040018}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 44d6cbf7f68e2fe42b7465394dc177d1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  Name: Death Spiral
-  Description: sdgsfhasdg
-  ico: {fileID: 21300000, guid: d83da3915c2142f4f8cd56b3844b91aa, type: 3}
-  character: {fileID: 8468544467696250796}
-  _deathSpiral: {fileID: 0}
-  _ability: {fileID: 0}
---- !u!114 &3193596479322258093
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7828036230296040018}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11d75527305895c4690791193f705fea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  Name: Talents2
-  Description: df asdf adsf asf
-  ico: {fileID: 21300000, guid: f0ccd677cfe30094c8aebaee7b301751, type: 3}
-  character: {fileID: 8468544467696250796}
---- !u!114 &3240623405797250538
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7828036230296040018}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a8398f2c481e3a4482a021578ca75bf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  Name: Talents3
-  Description: df asdf asdf asdf
-  ico: {fileID: 21300000, guid: 4f77fa0459846d84484335b98dce4ac7, type: 3}
-  character: {fileID: 8468544467696250796}
---- !u!114 &8682121660824369185
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7828036230296040018}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c27921c3440ef54990a037dc731c7c7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  Name: Talents4
-  Description: fds dfasdf asdfasf
-  ico: {fileID: 21300000, guid: efaec6374d1b5054d9037d5d0446e029, type: 3}
-  character: {fileID: 8468544467696250796}
---- !u!114 &8525686735181722530
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7828036230296040018}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 165e5e37391908344aaf97197c6e3593, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  Name: Talents5
-  Description: asdgsagdasdfsdf
-  ico: {fileID: 21300000, guid: d83da3915c2142f4f8cd56b3844b91aa, type: 3}
-  character: {fileID: 8468544467696250796}
---- !u!114 &895138939693564751
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7828036230296040018}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d945ace531a483c4e989e803a26e4e98, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  Name: Talents6
-  Description: dadsadsadsas
-  ico: {fileID: 21300000, guid: 3c709b466f53c0141944292653b6dff8, type: 3}
-  character: {fileID: 8468544467696250796}
+  _talents: []
 --- !u!1 &8078003564020341802
 GameObject:
   m_ObjectHideFlags: 0

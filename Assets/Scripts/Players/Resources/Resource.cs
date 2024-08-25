@@ -4,13 +4,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(NetworkIdentity))]
 public abstract class Resource : NetworkBehaviour
 {
     [SyncVar(hook = nameof(HookValueChanged))] protected float _currentValue;
     [SyncVar(hook = nameof(HookMaxValueChanged))] protected float _maxValue;
-
-    protected float _regenerationValue;
-    protected float _regenerationDelay;
+    [SyncVar] protected float _regenerationValue;
+    [SyncVar] protected float _regenerationDelay;
     protected Coroutine _regenCoroutine;
 
     public float CurrentValue { get => _currentValue; protected set { _currentValue = value; ValueChanged?.Invoke(_currentValue); } }
@@ -26,13 +26,13 @@ public abstract class Resource : NetworkBehaviour
         _regenerationValue = regenValue;
         _regenerationDelay = regenDelay;
 
-        if(regenValue > 0)
-            _regenCoroutine = StartCoroutine(RegenirateJob());
+        if (regenValue > 0)
+            ClientStartRegenirateJob();
     }
 
     public virtual void Add(float value)
     {
-        if (MaxValue <= _currentValue + value)
+        if (MaxValue >= _currentValue + value)
             CurrentValue += value;
         else
             CurrentValue = _maxValue;
@@ -62,18 +62,24 @@ public abstract class Resource : NetworkBehaviour
         MaxValueChanged?.Invoke(newValue);
     }
 
+    [Client]
+    private void ClientStartRegenirateJob()
+    {
+        _regenCoroutine = StartCoroutine(RegenirateJob());
+    }
+
     private IEnumerator RegenirateJob()
     {
         while (true)
         {
-            if (_currentValue < _maxValue)
-            {
-                if (_currentValue + _regenerationValue > _maxValue && _currentValue != _maxValue)
-                    CurrentValue = _maxValue;
-                else
-                    CurrentValue += _regenerationValue;
-            }
+            CmdRegen();
             yield return new WaitForSeconds(_regenerationDelay);
         }
+    }
+
+    [Command]
+    protected void CmdRegen()
+    {
+        Add(_regenerationValue);
     }
 }

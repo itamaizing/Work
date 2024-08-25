@@ -25,7 +25,7 @@ public enum AbilityForm
     Physical
 }
 
-public abstract class Skill : NetworkBehaviour
+public abstract class Skill : NetworkBehaviour, IDamageDealer
 {
     [Header("AbilitieInfo")]
     [SerializeField] private AbilityInfo _abilityInfo;
@@ -467,7 +467,7 @@ public abstract class Skill : NetworkBehaviour
 
         while (time < CastStreamDuration)
         {
-            time -= _manaCostRate;
+            time += _manaCostRate;
             if (_hero.Stamina.Value >= _manaCostPerTick)
             {
                 _hero.Stamina.Use(_manaCostPerTick);

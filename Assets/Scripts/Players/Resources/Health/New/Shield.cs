@@ -7,18 +7,20 @@ public class Shield : Resource, IDamageable
 {
     private DamageType _absorptionDamageType;
     private float _percentageAbsorption;
+    private bool _isBreaksDown;
 
     public event Action<float, DamageType> DamageTaked;
 
-    public void Initialize(float maxValue, float regenValue, float regenDelay, DamageType damageType, float percentageAbsorption = 1)
+    public void Initialize(float maxValue, DamageType damageType, float percentageAbsorption = 1, bool isBreaksDown = true, float regenValue = 0, float regenDelay = 0)
     {
         base.Initialize(maxValue, regenValue, regenDelay);
 
         _absorptionDamageType = damageType;
         _percentageAbsorption = percentageAbsorption;
+        _isBreaksDown = isBreaksDown;
     }
 
-    public bool TryTakeDamage(ref float damage, Skill skill)
+    public bool TryTakeDamage(ref float damage, IDamageDealer skill)
     {
         if(_absorptionDamageType == DamageType.Both || _absorptionDamageType == skill.DamageType)
         {
@@ -35,6 +37,10 @@ public class Shield : Resource, IDamageable
             {
                 DamageTaked?.Invoke(damage - remainingDamage, skill.DamageType);
                 damage = remainingDamage;
+
+                if (_isBreaksDown)
+                    Destroy(this.gameObject);
+
                 return true;
             }
         }

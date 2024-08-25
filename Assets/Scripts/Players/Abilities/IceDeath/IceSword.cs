@@ -73,7 +73,10 @@ public class IceSword : TargetOrAreaAbility
 		if (Target != null)
 		{
 			_seriesOfStrikes.MakeHit(Target, AbilityForm.Magic, 1);
-			ApplyDamage(Target.Health, _damage, DamageType.Physical, AttackRangeType.MeleeAttack);
+
+			//ApplyDamage(Target.Health, _damage, DamageType.Physical, AttackRangeType.MeleeAttack);
+			Debug.LogError("!!!damage method has been changed!!!");
+
 			//_target.Health.TryTakeDamage(_damage + Random.Range(0, 10), DamageType.Physical, AttackRangeType.MeleeAttack);
 			if (_oldtarget == null || _oldtarget == Target)
 			{

@@ -63,7 +63,7 @@ public class Absorption : Ability
 
 		float regen = 0.1f * body.HP + 0.05f * _player.Stamina.Value / 10;
 		_player.Stamina.Use(_player.Stamina.Value);
-		_player.Health.AddHeal(regen);
+		_player.Health.Add(regen);
 		body.Explode();
 
 	}
