@@ -11,16 +11,29 @@ public class PlayerIcon : MonoBehaviour
     [SerializeField] private Bar _playerHp;
     [SerializeField] private Bar _playerMana;
 
+    public void Init(Character character)
+    {
+        _playerIcon.sprite = character.CharacterData.Icon;
+        _playerHp.Init(character.Health);
+        _playerMana.Init(character.Stamina);
+    }
+
     private void Start()
     {
-        _selectManager.CharacterSelected += OnCharacterSelected;
-        _selectManager.CharacterDeselected += OnCharacterDeselected;
+        if(_selectManager != null)
+        {
+            _selectManager.CharacterSelected += OnCharacterSelected;
+            _selectManager.CharacterDeselected += OnCharacterDeselected;
+        }
     }
 
     private void OnDestroy()
     {
-        _selectManager.CharacterSelected -= OnCharacterSelected;
-        _selectManager.CharacterDeselected -= OnCharacterDeselected;
+        if (_selectManager != null)
+        {
+            _selectManager.CharacterSelected -= OnCharacterSelected;
+            _selectManager.CharacterDeselected -= OnCharacterDeselected;
+        }
     }
 
     private void OnCharacterSelected(Character character)
