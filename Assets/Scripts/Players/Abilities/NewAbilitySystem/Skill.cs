@@ -25,7 +25,7 @@ public enum AbilityForm
     Physical
 }
 
-public abstract class Skill : NetworkBehaviour, IDamageDealer
+public abstract class Skill : NetworkBehaviour
 {
     [Header("AbilitieInfo")]
     [SerializeField] private AbilityInfo _abilityInfo;
@@ -75,6 +75,8 @@ public abstract class Skill : NetworkBehaviour, IDamageDealer
     private Coroutine _actionWrapperForCastCoroutine;
     private bool _isPreparing = false;
     private bool _isCasting = false;
+    private Transform _tempTargetForDamage;
+    private Health _tempHPForDamage;
 
     public HeroComponent Hero { get => _hero; }
     public StatsBuff Buff => _statsBuff;
@@ -241,11 +243,25 @@ public abstract class Skill : NetworkBehaviour, IDamageDealer
             MassageHaventCharge?.Invoke();
     }
 
-    public void AddCharge()
+    public void AddMaxChargeCount()
     {
         _maxCharges += 1;
         _currentChargers += 1;
         CurrentChargeChanged?.Invoke(_currentChargers);
+    }
+
+    public void DeductMaxChargeCount()
+    {
+        if(_maxCharges - 1 > 0)
+        {
+            _maxCharges -= 1;
+
+            if(_currentChargers > _maxCharges)
+            {
+                _currentChargers -= 1;
+                CurrentChargeChanged?.Invoke(_currentChargers);
+            }
+        }
     }
 
     protected virtual void StartAutoDraw()
@@ -423,9 +439,11 @@ public abstract class Skill : NetworkBehaviour, IDamageDealer
                 time += Time.deltaTime;
                 yield return null;
             }
-            _currentChargers++;
-            CurrentChargeChanged?.Invoke(_currentChargers);
-
+            if(_currentChargers < _maxCharges)
+            {
+                _currentChargers++;
+                CurrentChargeChanged?.Invoke(_currentChargers);
+            }
             if (_chargesHaveSeparateCooldown)
                 break;
         }
@@ -517,5 +535,18 @@ public abstract class Skill : NetworkBehaviour, IDamageDealer
         ClearData();
 
         _castCoroutine = null;
+    }
+
+    [Command]
+    protected void CmdApplyDamage(float damageValue, GameObject hp)
+    {
+        Damage damage = new(damageValue, DamageType, AttackRangeType);
+
+        if (_tempTargetForDamage != hp.transform)
+        {
+            _tempTargetForDamage = hp.transform;
+            _tempHPForDamage = hp.GetComponent<Health>();
+        }
+        _tempHPForDamage.TryTakeDamage(ref damage, this);
     }
 }

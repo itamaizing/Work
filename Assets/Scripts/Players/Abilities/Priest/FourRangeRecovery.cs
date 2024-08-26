@@ -231,10 +231,10 @@ public class FourRangeRecovery : AbilityBase
 
     private void Damage()
     {
-        if (_newPrefab != null && TargetParent.GetComponentInChildren<Damage>()!=null)
+        if (_newPrefab != null && TargetParent.GetComponentInChildren<Damage1>()!=null)
         {
-            TargetParent.GetComponent<Damage>().Timer = Time.time;
-			TargetParent.GetComponentInChildren<Damage>().isDamage = false;
+            TargetParent.GetComponent<Damage1>().Timer = Time.time;
+			TargetParent.GetComponentInChildren<Damage1>().isDamage = false;
             TargetParent.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
         }
         else if(TargetParent!=null)
@@ -243,7 +243,7 @@ public class FourRangeRecovery : AbilityBase
             _newPrefab = Instantiate(DamageDebaffPrefab);
             _newPrefab.transform.SetParent(TargetParent.transform);
             _newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
-            _newPrefab.GetComponent<Damage>().CastRecovery(12f, 6f, 3f , _player);
+            _newPrefab.GetComponent<Damage1>().CastRecovery(12f, 6f, 3f , _player);
         }
         _player.GetComponent<Mana>().Use(4f);
 

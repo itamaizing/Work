@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Damage : BaseEffect
+public class Damage1 : BaseEffect
 {
     private GameObject _player;
     public bool isDamage;

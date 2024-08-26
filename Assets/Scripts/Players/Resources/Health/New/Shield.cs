@@ -6,8 +6,8 @@ using UnityEngine;
 public class Shield : Resource, IDamageable
 {
     private DamageType _absorptionDamageType;
-    private float _percentageAbsorption;
-    private bool _isBreaksDown;
+    private float _percentageAbsorption = 1;
+    private bool _isBreaksDown = true;
 
     public event Action<float, DamageType> DamageTaked;
 
@@ -20,23 +20,23 @@ public class Shield : Resource, IDamageable
         _isBreaksDown = isBreaksDown;
     }
 
-    public bool TryTakeDamage(ref float damage, IDamageDealer skill)
+    public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
-        if(_absorptionDamageType == DamageType.Both || _absorptionDamageType == skill.DamageType)
+        if(_absorptionDamageType == DamageType.Both || _absorptionDamageType == damage.Type)
         {
-            float absorptionDamage = damage * _percentageAbsorption;
-            float remainingDamage = damage - CurrentValue;
+            float absorptionDamage = damage.Value * _percentageAbsorption;
+            float remainingDamage = damage.Value - CurrentValue;
 
             if (TryUse(absorptionDamage))
             {
                 DamageTaked?.Invoke(absorptionDamage, skill.DamageType);
-                damage = damage - absorptionDamage;
+                damage.Value = damage.Value - absorptionDamage;
                 return true;
             }
             else
             {
-                DamageTaked?.Invoke(damage - remainingDamage, skill.DamageType);
-                damage = remainingDamage;
+                DamageTaked?.Invoke(damage.Value - remainingDamage, skill.DamageType);
+                damage.Value = remainingDamage;
 
                 if (_isBreaksDown)
                     Destroy(this.gameObject);

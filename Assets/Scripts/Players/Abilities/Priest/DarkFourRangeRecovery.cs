@@ -155,7 +155,7 @@ public class DarkFourRangeRecovery : AbilityBase
     {
         if (_newPrefab != null && Target != null && _newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>())
         {
-            _newPrefab.GetComponent<Damage>().Timer = Time.time;
+            _newPrefab.GetComponent<Damage1>().Timer = Time.time;
             _newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
         }
         else

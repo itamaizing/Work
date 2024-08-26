@@ -41,7 +41,7 @@ public class Health : Resource, IDamageable, IHealingable
         _evadeRangeDamage = healthInfo.EvadeRangeDamage;
     }
 
-    public bool TryTakeDamage(ref float damage, IDamageDealer skill)
+    public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
         if (TryEvade(skill.DamageType, skill.AttackRangeType))
         {
@@ -50,15 +50,15 @@ public class Health : Resource, IDamageable, IHealingable
         }
         UseShields(ref damage, skill);
 
-        if (damage == 0)
+        if (damage.Value == 0)
             return true;
 
-        if (TryUse(damage) == false)
+        if (TryUse(damage.Value) == false)
         {
             ClientRpcDied();
         }
-        ClientRpcDamageTaked(damage, skill.DamageType);
-        _sumDamageTaken += damage;
+        ClientRpcDamageTaked(damage.Value, skill.DamageType);
+        _sumDamageTaken += damage.Value;
         return true;
     }
 
@@ -124,14 +124,14 @@ public class Health : Resource, IDamageable, IHealingable
         return false;
     }
 
-    protected void UseShields(ref float damage, IDamageDealer skill)
+    protected void UseShields(ref Damage damage, Skill skill)
     {
         for(int i = 0; i < _shields.Count; i++)
         {
             if (_shields[i] != null)
             {
                 _shields[i].TryTakeDamage(ref damage, skill);
-                if (damage == 0)
+                if (damage.Value == 0)
                 {
                     break;
                 }
@@ -189,7 +189,8 @@ public class Health : Resource, IDamageable, IHealingable
     [Command]
     private void CmdTestTakeDamage()
     {
-        TryTakeDamage(ref TestDamage, Testskill1);
+        Damage damage = new Damage(TestDamage, DamageType.Magical, AttackRangeType.MeleeAttack);
+        TryTakeDamage(ref damage, Testskill1);
     }
 
     #endregion

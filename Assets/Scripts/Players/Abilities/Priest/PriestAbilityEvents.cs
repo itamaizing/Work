@@ -26,9 +26,9 @@ public class PriestAbilityEvents : MonoBehaviour, ICharacterEvents
         {
             GetComponent<FourRangeRecovery>().TargetParent.GetComponent<HealthRecovery>().FourthBaffEvent += HandleEvent;
         }
-        if(GetComponent<FourRangeRecovery>().TargetParent && GetComponent<FourRangeRecovery>().TargetParent.GetComponent<Damage>())
+        if(GetComponent<FourRangeRecovery>().TargetParent && GetComponent<FourRangeRecovery>().TargetParent.GetComponent<Damage1>())
         {
-            GetComponent<FourRangeRecovery>().TargetParent.GetComponent<Damage>().DarkFourthBaffEvent += HandleEvent;
+            GetComponent<FourRangeRecovery>().TargetParent.GetComponent<Damage1>().DarkFourthBaffEvent += HandleEvent;
         }
     }
 
@@ -49,9 +49,9 @@ public class PriestAbilityEvents : MonoBehaviour, ICharacterEvents
         {
             GetComponent<FourRangeRecovery>().TargetParent.GetComponent<HealthRecovery>().FourthBaffEvent -= HandleEvent;
         }
-        if (GetComponent<FourRangeRecovery>().TargetParent && GetComponent<FourRangeRecovery>().TargetParent.GetComponent<Damage>())
+        if (GetComponent<FourRangeRecovery>().TargetParent && GetComponent<FourRangeRecovery>().TargetParent.GetComponent<Damage1>())
         {
-            GetComponent<FourRangeRecovery>().TargetParent.GetComponent<Damage>().DarkFourthBaffEvent -= HandleEvent;
+            GetComponent<FourRangeRecovery>().TargetParent.GetComponent<Damage1>().DarkFourthBaffEvent -= HandleEvent;
         }
     }
 

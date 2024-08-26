@@ -26,8 +26,7 @@ public class TestH2 : Skill
 
     protected override IEnumerator CastJob()
     {
-        //_target.Health.CmdTryTakeDamage(Buff.Damage.GetBuffedValue(_damage), DamageType.Magical, AttackRangeType.RangeAttack);
-        Debug.LogError("!!!The damage method has been changed!!!");
+        CmdApplyDamage(Buff.Damage.GetBuffedValue(_damage), _target.gameObject);
 
         var deley = new WaitForSeconds(_spawnDeley); ;
 
