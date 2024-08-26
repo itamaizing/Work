@@ -52,7 +52,10 @@ public class IcyStreamProjectile : Projectiles
 			_enemyList.Add(target);
 			Energy energyLink = (Energy)_dad.Stamina;
 			energyLink.SumDamageMake(_damage);
-			target.Health.TryTakeDamage(_damage, DamageType.Magical, AttackRangeType.RangeAttack);
+
+			//target.Health.TryTakeDamage(_damage, DamageType.Magical, AttackRangeType.RangeAttack);
+			Debug.LogError("!!!damage method has been changed!!!");
+
 			target.CharacterState.CmdAddState(States.Cooling, _durationOfDebuff, 0);
 		}
 		//Explode();
@@ -88,7 +91,8 @@ public class IcyStreamProjectile : Projectiles
 			_chanceOfFrosting *= 2;
 			foreach(var enemy in _enemyList) 
 			{
-				enemy.Health.TryTakeDamage(_damage, DamageType.Magical, AttackRangeType.RangeAttack);
+				//enemy.Health.TryTakeDamage(_damage, DamageType.Magical, AttackRangeType.RangeAttack);
+				Debug.LogError("!!!damage method has been changed!!!");
 
 				enemy.CharacterState.CmdAddState(States.Cooling, _durationOfDebuff, 0);
 				if (Random.Range(0, 1f) <= _chanceOfFrosting)

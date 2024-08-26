@@ -5,7 +5,7 @@ using UnityEngine;
 public class EmpathicField : Ability
 {
 	[SerializeField] private Collider2D _collider;
-	private List<HealthComponent> _players;
+	private List<Health> _players;
 	private bool _enabled;
 	protected override void Cast()
 	{

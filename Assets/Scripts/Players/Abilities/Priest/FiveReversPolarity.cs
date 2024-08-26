@@ -69,7 +69,7 @@ public class FiveReversPolarity : MonoBehaviour
 
         CreateBaffPrefab();
 
-        transform.parent.GetComponent<Mana>().Use(20);
+        transform.parent.GetComponent<Mana>().TryUse(20);
         ManaCost.SetActive(false);
 		transform.parent.GetComponent<MoveComponent>().CanMove = true;
 		ToggleAbility.enabled = true;

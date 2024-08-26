@@ -61,9 +61,9 @@ public class Absorption : Ability
 		Debug.Log(bodyObj.name);
 		IceShadowObject body = bodyObj.GetComponent<IceShadowObject>();
 
-		float regen = 0.1f * body.HP + 0.05f * _player.Stamina.Value / 10;
-		_player.Stamina.Use(_player.Stamina.Value);
-		_player.Health.AddHeal(regen);
+		float regen = 0.1f * body.HP + 0.05f * _player.Stamina.CurrentValue / 10;
+		_player.Stamina.TryUse(_player.Stamina.CurrentValue);
+		_player.Health.Add(regen);
 		body.Explode();
 
 	}

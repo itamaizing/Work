@@ -43,7 +43,7 @@ public class HealingSmokeObject : MonoBehaviour
 			_healTimer = 0;
 			foreach (var ally in _allys)
 			{
-				ally.Health.AddHeal(3 * Time.deltaTime);
+				ally.Health.Add(3 * Time.deltaTime);
 			}
 		}
 	}

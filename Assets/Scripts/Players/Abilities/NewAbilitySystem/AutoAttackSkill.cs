@@ -14,11 +14,12 @@ public abstract class AutoAttackSkill : Skill
     protected Character _target;
     private Coroutine _autoAttackCoroutine;
     private bool _isAttacking = false;
+    private Vector2 _lastTargetPosition;
 
     public float AttackSpeed { get => Buff.AttackSpeed.GetBuffedValue(_attackSpeed); }
     public Character Target { get => _target; }
+    public Vector2 LastTargetPosition { get => _lastTargetPosition; }
     protected override bool IsCanCast { get => NoObstacles(Target.transform.position, _obstacle) && IsTargetInRadius(Radius, Target.transform); }
-
 
     protected abstract void CastAction();
 
@@ -80,6 +81,7 @@ public abstract class AutoAttackSkill : Skill
 
                 if (_isAttacking && NoObstacles(Target.transform.position, _obstacle))
                 {
+                    _lastTargetPosition = Target.transform.position;
                     yield return new WaitForSeconds(AttackSpeed);
                     if (IsTargetInRadius(Radius + _attackZoneSize, Target.transform) && NoObstacles(Target.transform.position, _obstacle) && IsCooldowned)
                     {

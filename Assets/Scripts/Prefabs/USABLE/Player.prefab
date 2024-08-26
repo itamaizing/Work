@@ -429,9 +429,6 @@ GameObject:
   - component: {fileID: -7146587456276821115}
   - component: {fileID: -5027009403038136984}
   - component: {fileID: 3330577042116454553}
-  - component: {fileID: 7905948510851364970}
-  - component: {fileID: 1145950345730042880}
-  - component: {fileID: 5047771524899203190}
   m_Layer: 9
   m_Name: Player
   m_TagString: Allies
@@ -755,47 +752,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   unit: {fileID: 8266765981491458884, guid: d321207ef616498478038beb68b111ea, type: 3}
---- !u!114 &7905948510851364970
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1521997633048654849}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 22ad95934c7e55b4b8afeb7c627a8f71, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _circle: {fileID: 0}
-  _areaPref: {fileID: 0}
-  _line: {fileID: 0}
-  _colorForEnd: {r: 0, g: 0, b: 0, a: 0}
-  _colorForStart: {r: 0, g: 0, b: 0, a: 0}
---- !u!114 &1145950345730042880
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1521997633048654849}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5f4a2549f1d1594693ec217b7147344, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &5047771524899203190
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1521997633048654849}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e866d003f81af94d8fbb2b45fa2a30c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1565031513079442272
 GameObject:
   m_ObjectHideFlags: 0

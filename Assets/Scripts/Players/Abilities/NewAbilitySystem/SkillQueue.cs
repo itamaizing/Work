@@ -33,6 +33,9 @@ public class SkillQueue : MonoBehaviour
 
     public void Add(Skill skill)
     {
+        if (_skills.Contains(skill))
+            return; 
+
         _skills.Enqueue(skill);
         SkillAdded?.Invoke(skill);
     }
@@ -41,10 +44,10 @@ public class SkillQueue : MonoBehaviour
     {
         if (_currentSkill != null)
         {
-            if (_currentSkill.TryCancel(foceCancel))
-                return true;
+            _currentSkill.TryCancel(foceCancel);
+            return true;
         }
-        else
+        else if(IsEmpty == false)
         {
             RemoveFromQueue();
             return true;

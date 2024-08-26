@@ -38,15 +38,15 @@ public class CircularFrosting : Ability
 	private void CreateSmoke()
 	{
 		Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, Radius);
-		if (_links.Stamina.Value >= 30)
+		if (_links.Stamina.CurrentValue >= 30)
 		{
 			_duration = _baseDuration + 3;
-			_links.Stamina.Use(30);
+			_links.Stamina.TryUse(30);
 		}
 		else
 		{
-			_duration = _baseDuration + _links.Stamina.Value / 10;
-			_links.Stamina.Use(_links.Stamina.Value);
+			_duration = _baseDuration + _links.Stamina.CurrentValue / 10;
+			_links.Stamina.TryUse(_links.Stamina.CurrentValue);
 		}
 		foreach (var enemy in enemyDetected) 
 		{

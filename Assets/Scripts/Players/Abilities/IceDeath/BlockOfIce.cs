@@ -47,7 +47,7 @@ public class BlockOfIce : Ability
 	{
 		Debug.Log("shot");
 		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
+		Vector2 lookDir = _mousePos - _playerLinks.Rigidbody2D.position;
 		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
 		CmdCreateProjecttile(angle);
 		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1);
@@ -58,11 +58,11 @@ public class BlockOfIce : Ability
 	private void CmdCreateProjecttile(float angle)
 	{
 		BlockOfIceProjectile projectile = Instantiate(_iceArrow, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
-		projectile.Init(_playerLinks, _playerLinks.Stamina.Value, false);
+		projectile.Init(_playerLinks, _playerLinks.Stamina.CurrentValue, false);
 
 		NetworkServer.Spawn(projectile.gameObject);
 
-		RpcInit(projectile.gameObject, _playerLinks.Stamina.Value);
+		RpcInit(projectile.gameObject, _playerLinks.Stamina.CurrentValue);
 	}
 
 	[ClientRpc]

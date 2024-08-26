@@ -54,19 +54,19 @@ public class IcyStream : Ability
 	{
 		Debug.Log("shot");
 		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
+		Vector2 lookDir = _mousePos - _playerLinks.Rigidbody2D.position;
 		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
 		CmdCreateProjecttile(angle);
 		float usedEnergy = 0;
-		if (_playerLinks.Stamina.Value >= 40)
+		if (_playerLinks.Stamina.CurrentValue >= 40)
 		{
 			usedEnergy = 40;
 		}
 		else
 		{
-			usedEnergy = _playerLinks.Stamina.Value;
+			usedEnergy = _playerLinks.Stamina.CurrentValue;
 		}
-		_playerLinks.Stamina.Use(usedEnergy);
+		_playerLinks.Stamina.TryUse(usedEnergy);
 		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1);
 		Cancel();
 	}
@@ -76,11 +76,11 @@ public class IcyStream : Ability
 	{
 		IcyStreamProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
 		projectile.talant = _frostingFrozenTalant;
-		projectile.Init(_playerLinks, _playerLinks.Stamina.Value, false);
+		projectile.Init(_playerLinks, _playerLinks.Stamina.CurrentValue, false);
 
 		NetworkServer.Spawn(projectile.gameObject);
 
-		RpcInit(projectile.gameObject, _playerLinks.Stamina.Value);
+		RpcInit(projectile.gameObject, _playerLinks.Stamina.CurrentValue);
 	}
 
 	[ClientRpc]

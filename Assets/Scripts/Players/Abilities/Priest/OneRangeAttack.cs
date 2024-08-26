@@ -317,7 +317,7 @@ public class OneRangeAttack : AbilityBase
         if (TargetParent == null) return;
         AddDebaff();
         TargetParent.GetComponent<HealthComponent>().TryTakeDamage(_damage + SpiritDebaffCount, DamageType.Magical, AttackRangeType.RangeAttack);
-        _player.GetComponent<Mana>().Use(_manaForDamage);
+        _player.GetComponent<Mana>().TryUse(_manaForDamage);
         DarkFirstAbilityEvent?.Invoke(_damage);
     }
 

@@ -10,7 +10,7 @@ public class IcePuddleObject : Projectiles
 	[HideInInspector] public FrostingFrozenTalant talant;
 
 	[FormerlySerializedAs("energyPlayer")]  private Energy _energy;
-	[FormerlySerializedAs("healthPlayer")]  private HealthComponent _healthComponent;
+	[FormerlySerializedAs("healthPlayer")]  private Health _healthComponent;
 	//[SerializeField] private Rigidbody2D _rb;
 
 	private float _timeToDestroy = 0;
@@ -44,7 +44,8 @@ public class IcePuddleObject : Projectiles
 	{
 		if (collision.gameObject == _dad.gameObject && _healthComponent != null)
 		{
-			_healthComponent.SetBoostRegen2(0);
+			//_healthComponent.SetBoostRegen2(0);
+			Debug.LogError("SetBoostRegen has been deleted");
 			return;
 		}		
 	}
@@ -53,21 +54,22 @@ public class IcePuddleObject : Projectiles
 		if(!_initialized) return;
 		if (collision.gameObject == _dad.gameObject)
 		{
-			_healthComponent.SetBoostRegen2(0.01f);
+			//_healthComponent.SetBoostRegen2(0.01f);
+			Debug.LogError("SetBoostRegen has been deleted");
 			return;
 		}
 		if (collision.TryGetComponent<Character>(out var target) && _energy != null && collision.gameObject != _dad.gameObject)
 		{
 			float duration = 3;
 			//target.CharacterState.energy = energy;
-			if(_energy.Value/5 > 4) 
+			if(_energy.CurrentValue/5 > 4) 
 			{
 				duration += 4;
-				_energy.Use(20);
+				_energy.TryUse(20);
 			}
 			else
 			{
-				duration += _energy.Value / 5;
+				duration += _energy.CurrentValue / 5;
 				_energy.UseAllEnergy();
 			}
 			//target.CharacterState.AddState(new FrostingState(), duration,0,States.Frosting);
@@ -91,7 +93,10 @@ public class IcePuddleObject : Projectiles
 			GameObject hitEffect = Instantiate(_hitEffect, transform.position, Quaternion.identity);
 			Destroy(hitEffect, 5f);
 		}
-		_healthComponent.SetBoostRegen2(0);
+
+		//_healthComponent.SetBoostRegen2(0);
+		Debug.LogError("SetBoostRegen has been deleted");
+
 		foreach (var target in _enemies)
 		{
 			target.CmdRemoveState(States.Frosting); 

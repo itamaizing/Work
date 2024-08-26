@@ -38,7 +38,7 @@ public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHa
 
         if (ability.IsUseCharges)
         {
-            ability.CurrentChargeChange += OnCurrentChargeText;
+            ability.CurrentChargeChanged += OnCurrentChargeText;
             _chargeCounter.enabled = true;
             OnCurrentChargeText(ability.Chargers);
         }
