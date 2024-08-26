@@ -224,7 +224,7 @@ public class FourRangeRecovery : AbilityBase
 			_newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
 			_newPrefab.GetComponent<HealthRecovery>().CastRecovery(12f, _heal, 4f,_player);
 		}
-		_player.GetComponent<Mana>().Use(4f);
+		_player.GetComponent<Mana>().TryUse(4f);
 		FourthAbilityEvent?.Invoke(0f);
 		Recharge();
 	}
@@ -245,7 +245,7 @@ public class FourRangeRecovery : AbilityBase
             _newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
             _newPrefab.GetComponent<Damage1>().CastRecovery(12f, 6f, 3f , _player);
         }
-        _player.GetComponent<Mana>().Use(4f);
+        _player.GetComponent<Mana>().TryUse(4f);
 
         DarkFourthAbilityEvent?.Invoke(0f);
         Recharge();

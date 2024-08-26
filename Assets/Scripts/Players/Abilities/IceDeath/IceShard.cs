@@ -19,7 +19,7 @@ public class IceShard : Ability
 		if (Input.GetMouseButtonDown(0))
 		{
 			//PayCost();
-			if (_playerLinks.Stamina.Use(5))
+			if (_playerLinks.Stamina.TryUse(5))
 			{
 				Shoot();
 			}
@@ -55,7 +55,7 @@ public class IceShard : Ability
 		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
 		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1);
 
-		CmdCreateProjecttile(angle, _playerLinks.Stamina.Value);
+		CmdCreateProjecttile(angle, _playerLinks.Stamina.CurrentValue);
 		Cancel();
 	}
 

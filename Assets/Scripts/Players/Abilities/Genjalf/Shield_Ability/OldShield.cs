@@ -41,7 +41,7 @@ namespace Players.Abilities.Genjalf.Shield_Ability
             _uiShield = GetComponent<UIShield>();
             
             _startSpeedPlayer = gameObject.transform.parent.GetComponent<CharacterData>().MoveSpeed;
-            _currentMana = gameObject.transform.parent.GetComponent<Mana>().Value;
+            _currentMana = gameObject.transform.parent.GetComponent<Mana>().CurrentValue;
             _currentShieldCharge = _soShieldData.ShieldCharges;
         }
 
@@ -125,8 +125,8 @@ namespace Players.Abilities.Genjalf.Shield_Ability
 
             transform.parent.GetComponent<MoveComponent>().SetDefaultSpeed();
             _manaCost.SetActive(false);
-            transform.parent.GetComponent<Mana>().Use(_soShieldData.ManaCost);
-            _currentMana = gameObject.transform.parent.GetComponent<Mana>().Value;
+            transform.parent.GetComponent<Mana>().TryUse(_soShieldData.ManaCost);
+            _currentMana = gameObject.transform.parent.GetComponent<Mana>().CurrentValue;
 
             _currentAbAmount = _soShieldData.AbsorptionAmount;
             _shieldBar.transform.gameObject.SetActive(true);

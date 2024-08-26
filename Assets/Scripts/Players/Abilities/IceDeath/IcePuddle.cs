@@ -114,7 +114,7 @@ public class IcePuddle : Ability
 	}
 	private void Shoot()
 	{
-		int timeToAdd = (int)Mana.Value / 5;
+		int timeToAdd = (int)Mana.CurrentValue / 5;
 		if (timeToAdd > 4)
 			timeToAdd = 4;
 
@@ -129,7 +129,7 @@ public class IcePuddle : Ability
 
 		Debug.Log("test spawn");
 		CmdCreateProjecttile(_angle2, _timeToDestroy, _preViewPuddle.transform.position, _lastHit);
-		Mana.Use(timeToAdd * 5);
+		Mana.TryUse(timeToAdd * 5);
 	}
 
 	[Command]

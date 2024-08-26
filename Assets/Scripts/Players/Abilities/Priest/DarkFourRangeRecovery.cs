@@ -166,7 +166,7 @@ public class DarkFourRangeRecovery : AbilityBase
             //_newPrefab.GetComponent<Damage>().CastRecovery(12f, 6f, 3f);
 
         }
-        _player.GetComponent<Mana>().Use(4f);
+        _player.GetComponent<Mana>().TryUse(4f);
 
         DarkFourthAbilityEvent?.Invoke(0f);
         Recharge();

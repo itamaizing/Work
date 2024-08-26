@@ -1,20 +1,14 @@
+using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public struct Damage
+public struct Damage : NetworkMessage
 {
-    public float Value { get; set; }
-    public DamageType Type { get; }
-    public AttackRangeType Range { get; }
-
-    public Damage(float value, DamageType type, AttackRangeType range)
-    {
-        Value = value;
-        Type = type;
-        Range = range;
-    }
+    public float Value;
+    public DamageType Type;
+    public AttackRangeType Range;
 }
 
 public interface IDamageable

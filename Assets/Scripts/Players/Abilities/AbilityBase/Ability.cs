@@ -135,7 +135,7 @@ public abstract class Ability : NetworkBehaviour
 
     public virtual bool TryUse()
     {
-        if (_isUsed || (_mana.Value >= _manaCost && _isReady) == false || !_avaliable)
+        if (_isUsed || (_mana.CurrentValue >= _manaCost && _isReady) == false || !_avaliable)
         {
             PreparingEnded?.Invoke();
             return false;
@@ -177,7 +177,7 @@ public abstract class Ability : NetworkBehaviour
 
     protected virtual bool PayCost(bool castEnded = true)
     {
-        if (TryUseCharge() && _mana.Value >= _manaCost && _isReady)
+        if (TryUseCharge() && _mana.CurrentValue >= _manaCost && _isReady)
         {
             CmdUseMana(_manaCost);
         }
@@ -306,7 +306,7 @@ public abstract class Ability : NetworkBehaviour
         StartStreaming?.Invoke(_streamingDuration);
         float time = 0;
 
-        while (time < _streamingDuration + _manaCostRate && _mana.Value >= _manaCostPerTick)
+        while (time < _streamingDuration + _manaCostRate && _mana.CurrentValue >= _manaCostPerTick)
         {
             CmdUseMana(_manaCostPerTick);
             time += _manaCostRate;
@@ -337,7 +337,7 @@ public abstract class Ability : NetworkBehaviour
     [Command]
     protected void CmdUseMana(float value)
     {
-        _mana.Use(value);
+        _mana.TryUse(value);
     }
 
     [Command]

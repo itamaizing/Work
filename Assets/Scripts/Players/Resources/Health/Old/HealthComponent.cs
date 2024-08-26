@@ -393,7 +393,7 @@ public class HealthComponent : NetworkBehaviour
 
     public void UpdateHealthBar()
     {
-        healthBar.UpdateValue(_currentHealth,_maxHealth);
+        //healthBar.UpdateBar(_currentHealth,_maxHealth);
     }
 
     public void NetworkUpdateHealthBar(float oldValue, float newValue)

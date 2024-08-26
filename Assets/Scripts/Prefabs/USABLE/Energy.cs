@@ -3,25 +3,26 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class Energy : StaminaComponent
+public class Energy : Resource
 {
-	private float _timer = 0;
 	[SerializeField] private float _sumDamageGiven = 0;
-	private bool _canRegen = true;
 
-	private void Start()
-	{
-		//StartCoroutine(RegenirateEnergy());
-	}
+	private float _timer = 0;
+	private bool _canRegen = true;
 
 	private void Update()
 	{
-		if (_canRegen)
+		if (_canRegen && _regenCoroutine == null)
 		{
-			Regen();
+			ClientStartRegenirateJob();
 			return;
 		}
+        else
+        {
+			ClientStopRegenirateJob();
+        }
 		_timer += Time.deltaTime;
+
 		if(_timer > _regenerationDelay)
 		{
 			_timer = 0;
@@ -31,28 +32,15 @@ public class Energy : StaminaComponent
 	// ReSharper disable Unity.PerformanceAnalysis
 	public override void Add(float EnergyValue)
 	{
-		_value += EnergyValue;
-		if (_value >= _maxValue)
+		CurrentValue += EnergyValue;
+		if (CurrentValue >= _maxValue)
 		{
-			_value = _maxValue;
+			CurrentValue = _maxValue;
 		}
-		
-		if (EnergyValue > 0 && EnergyValue < 1)
-		{
-			EnergyValue = 1;
-		}
-
-		EnergyValue = (int)EnergyValue;
-		
-		var text = "+" + EnergyValue.ToString();
-		var startColor = new Color(0, 0, 1, 1);
-		var endColor = new Color(0, 0, 1, 0.5f);
-		ShowPopupText(text,startColor,endColor);
-		UpdateBar();
 	}
-	public override bool Use(float EnergyValue)
+	public override bool TryUse(float EnergyValue)
 	{
-		if(EnergyValue > _value) 
+		if(EnergyValue > CurrentValue) 
 		{
 			Debug.Log("too much");
 			return false;
@@ -61,13 +49,12 @@ public class Energy : StaminaComponent
 		_canRegen = false;
 		_timer = 0;
 
-		_value -= EnergyValue;
+		CurrentValue -= EnergyValue;
 
-		if (_value <= 0)
+		if (CurrentValue <= 0)
 		{
-			_value = 0;
+			CurrentValue = 0;
 		}
-		UpdateBar();
 		return true;
 	}
 
@@ -85,9 +72,8 @@ public class Energy : StaminaComponent
 
 	public float UseAllEnergy()
 	{
-		float usedEnergy = _value;
-		_value = 0;
-		UpdateBar();
+		float usedEnergy = CurrentValue;
+		CurrentValue = 0;
 		return usedEnergy;
 	}
 

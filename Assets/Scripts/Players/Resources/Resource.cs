@@ -13,11 +13,13 @@ public abstract class Resource : NetworkBehaviour
     [SyncVar] protected float _regenerationDelay;
     protected Coroutine _regenCoroutine;
 
-    public float CurrentValue { get => _currentValue; protected set { _currentValue = value; ValueChanged?.Invoke(_currentValue); } }
-    public float MaxValue { get => _maxValue; protected set { _maxValue = value; MaxValueChanged?.Invoke(_maxValue); } }
+    public float CurrentValue { get => _currentValue; protected set { _currentValue = value; } }
+    public float MaxValue { get => _maxValue; protected set { _maxValue = value; } }
+    public float RegenerationValue { get => _regenerationValue;  set { _regenerationValue = value; } }
+    public float RegenerationDelay { get => _regenerationDelay;  set { _regenerationDelay = value; } }
 
-    public event Action<float> MaxValueChanged;
-    public event Action<float> ValueChanged;
+    public event Action<float, float> MaxValueChanged;
+    public event Action<float, float> ValueChanged;
 
     public virtual void Initialize(float maxValue, float regenValue, float regenDelay)
     {
@@ -54,18 +56,12 @@ public abstract class Resource : NetworkBehaviour
 
     protected virtual void HookValueChanged(float oldValue, float newValue)
     {
-        ValueChanged?.Invoke(newValue);
+        ValueChanged?.Invoke(oldValue, newValue);
     }
 
     protected virtual void HookMaxValueChanged(float oldValue, float newValue)
     {
-        MaxValueChanged?.Invoke(newValue);
-    }
-
-    [Client]
-    private void ClientStartRegenirateJob()
-    {
-        _regenCoroutine = StartCoroutine(RegenirateJob());
+        MaxValueChanged?.Invoke(oldValue, newValue);
     }
 
     private IEnumerator RegenirateJob()
@@ -74,6 +70,27 @@ public abstract class Resource : NetworkBehaviour
         {
             CmdRegen();
             yield return new WaitForSeconds(_regenerationDelay);
+        }
+    }
+
+    [Command]
+    public void CmdUse(float value)
+    {
+        TryUse(value);
+    }
+
+    [Client]
+    protected void ClientStartRegenirateJob()
+    {
+        _regenCoroutine = StartCoroutine(RegenirateJob());
+    }
+
+    [Client]
+    protected void ClientStopRegenirateJob()
+    {
+        if (_regenCoroutine != null)
+        {
+            StopCoroutine(RegenirateJob());
         }
     }
 

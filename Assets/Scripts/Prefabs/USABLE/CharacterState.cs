@@ -823,13 +823,13 @@ public class CharacterState : NetworkBehaviour
 {
 	private Health _health;
 	private MoveComponent _move;
-	private StaminaComponent _stamina;
+	private Resource _stamina;
 	private List<AbstractCharacterState> currentStates = new List<AbstractCharacterState>();
 	[SerializeField] private StateIcons _stateIcons;
 	public bool invinsible = false;
 	public Health Health => _health;
 	public MoveComponent Move => _move;
-	public StaminaComponent Stamina => _stamina;
+	public Resource Stamina => _stamina;
 
 	public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
 	{
@@ -843,7 +843,7 @@ public class CharacterState : NetworkBehaviour
 		[States.Desiccuration] = new Desiccuration()
 	};
 
-	public void Initialize(Health health,MoveComponent move , StaminaComponent stamina)
+	public void Initialize(Health health,MoveComponent move , Resource stamina)
 	{
 		_health = health;
 		_move = move;

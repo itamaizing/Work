@@ -88,7 +88,7 @@ public abstract class Skill : NetworkBehaviour
     public bool IsHaveCharge => (_currentChargers > 0);
     public float ChargeCooldown => _chargeCooldown;
     public bool IsPreparing => _isPreparing;
-    public bool IsHaveManaOnSkill { get => ManaCost <= _hero.Stamina.Value; }
+    public bool IsHaveManaOnSkill { get => ManaCost <= _hero.Stamina.CurrentValue; }
     public bool IsHaveResurces { get => IsHaveManaOnSkill && IsCooldowned && IsHaveCharge; }
     public float ManaCost { get => Buff.ManaCost.GetBuffedValue(_manaCost); }
     public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); }
@@ -234,7 +234,7 @@ public abstract class Skill : NetworkBehaviour
     public void CheckResources()
     {
         if (IsHaveManaOnSkill == false)
-            MassageHaventMana?.Invoke(ManaCost - _hero.Stamina.Value);
+            MassageHaventMana?.Invoke(ManaCost - _hero.Stamina.CurrentValue);
 
         if (IsCooldowned == false)
             MassageNotCooldowned?.Invoke(_remaining—ooldownTime);
@@ -486,9 +486,9 @@ public abstract class Skill : NetworkBehaviour
         while (time < CastStreamDuration)
         {
             time += _manaCostRate;
-            if (_hero.Stamina.Value >= _manaCostPerTick)
+            if (_hero.Stamina.CurrentValue >= _manaCostPerTick)
             {
-                _hero.Stamina.Use(_manaCostPerTick);
+                _hero.Stamina.TryUse(_manaCostPerTick);
             }
             else
             {
@@ -538,10 +538,8 @@ public abstract class Skill : NetworkBehaviour
     }
 
     [Command]
-    protected void CmdApplyDamage(float damageValue, GameObject hp)
+    protected void CmdApplyDamage(Damage damage, GameObject hp)
     {
-        Damage damage = new(damageValue, DamageType, AttackRangeType);
-
         if (_tempTargetForDamage != hp.transform)
         {
             _tempTargetForDamage = hp.transform;

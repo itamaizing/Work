@@ -26,7 +26,13 @@ public class TestH2 : Skill
 
     protected override IEnumerator CastJob()
     {
-        CmdApplyDamage(Buff.Damage.GetBuffedValue(_damage), _target.gameObject);
+        Damage damage = new Damage
+        {
+            Value = Buff.Damage.GetBuffedValue(_damage),
+            Type = DamageType,
+            Range = AttackRangeType,
+        };
+        CmdApplyDamage(damage, _target.gameObject);
 
         var deley = new WaitForSeconds(_spawnDeley); ;
 

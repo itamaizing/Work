@@ -39,8 +39,8 @@ public class IceShadow : Ability
 
 		Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);
 
-		CmdCreateProjecttile(0, _playerLinks.Stamina.Value, _lastHit);
-		_playerLinks.Stamina.Use(_playerLinks.Stamina.Value);
+		CmdCreateProjecttile(0, _playerLinks.Stamina.CurrentValue, _lastHit);
+		_playerLinks.Stamina.TryUse(_playerLinks.Stamina.CurrentValue);
 	}
 
 	[Command]

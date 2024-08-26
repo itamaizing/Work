@@ -157,7 +157,7 @@ public class IceRolling : Ability
 
 	private void NextJump()
 	{
-		if(_jumpCount > 0 && Mana.Use(5))
+		if(_jumpCount > 0 && Mana.TryUse(5))
 		{
 			Debug.Log("jump " + _jumpCount);
 			_jumpCount--;

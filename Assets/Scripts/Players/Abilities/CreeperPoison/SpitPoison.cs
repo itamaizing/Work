@@ -62,9 +62,9 @@ public class SpitPoison : Ability
 
     private void Shoot()
     {
-        CmdInstantiateProjectile(_angle, _playerLinks.Stamina.Value);
+        CmdInstantiateProjectile(_angle, _playerLinks.Stamina.CurrentValue);
 
-        _playerLinks.Stamina.Use(_playerLinks.Stamina.Value);
+        _playerLinks.Stamina.TryUse(_playerLinks.Stamina.CurrentValue);
 
         Cancel();
     }

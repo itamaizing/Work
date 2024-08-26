@@ -3,16 +3,9 @@ using UnityEngine;
 
 public class MinionComponent : Character
 {
-    [SerializeField] private CharacterData _playerData;
-    
     [SyncVar]
     public GameObject _heroParent;
     public GameObject HeroParent => _heroParent;
-
-    private void Awake()
-    {
-        Initialize(_playerData);
-    }
 
     public override void Initialize(CharacterData characterData)
     {

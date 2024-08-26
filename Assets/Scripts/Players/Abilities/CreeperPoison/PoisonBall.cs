@@ -121,7 +121,7 @@ public class PoisonBall : TargetOrAreaAbility
         GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
         PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>();
 
-        poisonBallProjectile.InitializationProjectile(_playerLinks.transform, _playerLinks.Stamina.Value);
+        poisonBallProjectile.InitializationProjectile(_playerLinks.transform, _playerLinks.Stamina.CurrentValue);
         poisonBallProjectile.MoveBallToTarget(targetOrPoint, isFast);
 
         NetworkServer.Spawn(item);

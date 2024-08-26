@@ -58,11 +58,11 @@ public class BlockOfIce : Ability
 	private void CmdCreateProjecttile(float angle)
 	{
 		BlockOfIceProjectile projectile = Instantiate(_iceArrow, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
-		projectile.Init(_playerLinks, _playerLinks.Stamina.Value, false);
+		projectile.Init(_playerLinks, _playerLinks.Stamina.CurrentValue, false);
 
 		NetworkServer.Spawn(projectile.gameObject);
 
-		RpcInit(projectile.gameObject, _playerLinks.Stamina.Value);
+		RpcInit(projectile.gameObject, _playerLinks.Stamina.CurrentValue);
 	}
 
 	[ClientRpc]

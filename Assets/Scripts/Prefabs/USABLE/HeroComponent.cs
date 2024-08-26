@@ -2,16 +2,6 @@ using UnityEngine;
 
 public class HeroComponent : Character
 {
-    [SerializeField] private CharacterData _playerData;
-
-    public CharacterData PlayerData => _playerData;
-
-    public bool AAA;
-    private void Start()
-    {
-        Initialize(_playerData);
-    }
-
     public override void OnStartClient()
     {
         base.OnStartClient();

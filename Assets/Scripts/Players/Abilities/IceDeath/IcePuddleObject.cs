@@ -62,14 +62,14 @@ public class IcePuddleObject : Projectiles
 		{
 			float duration = 3;
 			//target.CharacterState.energy = energy;
-			if(_energy.Value/5 > 4) 
+			if(_energy.CurrentValue/5 > 4) 
 			{
 				duration += 4;
-				_energy.Use(20);
+				_energy.TryUse(20);
 			}
 			else
 			{
-				duration += _energy.Value / 5;
+				duration += _energy.CurrentValue / 5;
 				_energy.UseAllEnergy();
 			}
 			//target.CharacterState.AddState(new FrostingState(), duration,0,States.Frosting);

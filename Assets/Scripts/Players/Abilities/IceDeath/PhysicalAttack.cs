@@ -29,7 +29,7 @@ public class PhysicalAttack : AutoAttackAbility
 	}
 	private void Hit(Character enemy)
 	{
-		if (_curTarget == enemy && _dad.Stamina.Use(5))
+		if (_curTarget == enemy && _dad.Stamina.TryUse(5))
 		{
 			Buff.AttackSpeed.ReductionPercentage(1 + _combo.GetMultipliedSpeed() / 100);
 			_combo.MakeHit(enemy, AbilityForm.Physical, 5);

@@ -5,9 +5,10 @@ using UnityEngine.UI;
 
 public class HealthBar : Bar
 {
+    /*
     private float _timeToDisapear = 0.2f;
 
-	public override void UpdateValue(float hp, float maxHp)
+	public override void UpdateBar(float hp, float maxHp)
     {
 		_bar.value = hp/maxHp;
         _barText.text = Mathf.RoundToInt(hp).ToString();
@@ -19,4 +20,5 @@ public class HealthBar : Bar
 		yield return new WaitForSeconds(_timeToDisapear);
 		_barMinus.DOValue(hp/maxHp, 0.5f);
 	}
+    */
 }

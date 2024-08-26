@@ -152,46 +152,4 @@ public class Health : Resource, IDamageable, IHealingable
     {
         Died?.Invoke();
     }
-
-    #region Test
-
-    [SerializeField] Skill Testskill1;
-    [SerializeField] float TestDamage;
-    [SerializeField] Shield Shield;
-
-    [ContextMenu("CmdAddShield")]
-    private void TestAddShield()
-    {
-        CmdTestAddShield();
-    }
-
-    [Command]
-    private void CmdTestAddShield()
-    {
-        var shield = Instantiate(Shield);
-
-        shield.Initialize(100, DamageType.Magical, 1, true, 10, 1);
-        NetworkServer.Spawn(shield.gameObject, gameObject);
-
-        Shields.Add(shield);
-        ClientRpcTestAddShield(shield.gameObject);
-    } 
-
-    [ClientRpc]
-    private void ClientRpcTestAddShield(GameObject gameObject)
-    {
-        var shield = gameObject.GetComponent<Shield>();
-        shield.Initialize(100, DamageType.Magical, 1, true, 10, 1);
-        Shields.Add(shield);
-    }
-
-    [ContextMenu("CmdTakeDamage")]
-    [Command]
-    private void CmdTestTakeDamage()
-    {
-        Damage damage = new Damage(TestDamage, DamageType.Magical, AttackRangeType.MeleeAttack);
-        TryTakeDamage(ref damage, Testskill1);
-    }
-
-    #endregion
 }

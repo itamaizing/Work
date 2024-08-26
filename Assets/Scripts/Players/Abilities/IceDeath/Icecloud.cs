@@ -58,8 +58,8 @@ public class Icecloud : Ability
 
 		Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);
 
-		CmdCreateProjecttile(angle, _playerLinks.Stamina.Value);
-		_playerLinks.Stamina.Use(_playerLinks.Stamina.Value);
+		CmdCreateProjecttile(angle, _playerLinks.Stamina.CurrentValue);
+		_playerLinks.Stamina.TryUse(_playerLinks.Stamina.CurrentValue);
 		Cancel();
 	}
 

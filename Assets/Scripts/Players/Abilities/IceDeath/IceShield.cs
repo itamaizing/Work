@@ -44,7 +44,7 @@ public class IceShield : Ability
 		if (_active) 
 		{
 			_character.Move.ChangeMoveSpeed(0.8f);
-			IceShieldObj shield = new IceShieldObj(Health, _character.Stamina.Value, DamageType.Both);
+			IceShieldObj shield = new IceShieldObj(Health, _character.Stamina.CurrentValue, DamageType.Both);
 			_shield = shield;
 			//create shield
 			//_character.Health.
@@ -64,7 +64,7 @@ public class IceShield : Ability
 			_timer -= Time.deltaTime;
 			if (_timer > 0) return;
 
-			if (_character.Stamina.Use(1))
+			if (_character.Stamina.TryUse(1))
 			{
 				_timer = _delay;
 			}
