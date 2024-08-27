@@ -43,7 +43,7 @@ public class Health : Resource, IDamageable, IHealingable
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
-        if (TryEvade(skill.DamageType, skill.AttackRangeType))
+        if (TryEvade(damage.Type, damage.Range))
         {
             Evaded?.Invoke();
             return false;
@@ -57,7 +57,7 @@ public class Health : Resource, IDamageable, IHealingable
         {
             ClientRpcDied();
         }
-        ClientRpcDamageTaked(damage.Value, skill.DamageType);
+        ClientRpcDamageTaked(damage.Value, damage.Type);
         _sumDamageTaken += damage.Value;
         return true;
     }
