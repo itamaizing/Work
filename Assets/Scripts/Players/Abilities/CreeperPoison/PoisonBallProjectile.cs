@@ -18,6 +18,8 @@ public class PoisonBallProjectile : NetworkBehaviour
     [SerializeField] private Rigidbody2D _rbBall;
     [SerializeField] private Character _player;
 
+    private Skill _skill;
+
     private List<Talent> _talents = new();
     private List<Skill> _skills = new();
 
@@ -81,7 +83,6 @@ public class PoisonBallProjectile : NetworkBehaviour
     [Server]
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        SetPlayer();
         if (_isActiveHealingPoisonBall)
         {
             if (_isPlayer)
@@ -92,10 +93,12 @@ public class PoisonBallProjectile : NetworkBehaviour
 
                     if (_isFast)
                     {
+                        SetPlayer(_player);
                         _player.CharacterState.CmdAddState(States.HealingPoisonPerSecond, 6.0f, 0);
                     }
                     else
                     {
+                        SetPlayer(_player);
                         _player.CharacterState.CmdAddState(States.InstantHealingPoison, 6.0f, 0);
                     }
 
@@ -114,12 +117,14 @@ public class PoisonBallProjectile : NetworkBehaviour
 
                         if (_isFast)
                         {
-                            Debug.Log($"_isfast PoisBallProj= {_isFast}");
+                            Debug.Log($"_isfast PoisBallProj= {_isFast}"); 
+                            SetPlayer(_player);
                             alliesHealth.CharacterState.CmdAddState(States.HealingPoisonPerSecond, 6.0f, 0);
                         }
                         else
                         {
-                            Debug.Log($"_isfast PoisBallProj = {_isFast}");
+                            Debug.Log($"_isfast PoisBallProj = {_isFast}"); 
+                            SetPlayer(_player);
                             alliesHealth.CharacterState.CmdAddState(States.InstantHealingPoison, 6.0f, 0);
                         }
 
@@ -178,10 +183,12 @@ public class PoisonBallProjectile : NetworkBehaviour
         {
             if (collision.gameObject.transform != _player.transform && collision.gameObject.layer != LayerMask.NameToLayer("Allies"))
             {
+                Debug.Log($"Collision.gameObject == {collision.gameObject}");
                 if (collision.TryGetComponent<HeroComponent>(out var targetHealth))
                 {
+                    Debug.Log($"Target = {targetHealth}");
                     DealDamage(targetHealth, _currentDamageForPoisonBall, DamageType.Magical, AttackRangeType.RangeAttack);
-
+                    
                     if (_footInstincts.IsActive)
                     {
                         _footInstincts.ReductionCooldownLightningMovement();
@@ -236,6 +243,7 @@ public class PoisonBallProjectile : NetworkBehaviour
 
     private void DealDamage(HeroComponent targetHealth, float currentDamage, DamageType damageType, AttackRangeType attackRangeType)
     {
+        Debug.Log($"Skill = {_skill}");
         if (_isActiveContinuationAmbush)
         {
             if (_countProjectiles == 3 && _currentTarget == _poisonBall.LastTarget)
@@ -246,13 +254,17 @@ public class PoisonBallProjectile : NetworkBehaviour
             }
         }
 
-        Energy _energyLink = (Energy)_player.GetComponent<Character>().Stamina;
-        _energyLink.SumDamageMake(currentDamage);
-
-        targetHealth.Health.CmdTryTakeDamage(currentDamage, damageType, attackRangeType);
+        Damage damage = new Damage
+        {
+            Value = _skill.Buff.Damage.GetBuffedValue(currentDamage),
+            Type = DamageType.Physical,
+            Range = AttackRangeType.RangeAttack,
+        };
+        targetHealth.Health.TryTakeDamage(ref damage, _skill);
 
         if (_isActvieWitheringPoison)
         {
+            SetPlayer(targetHealth);
             targetHealth.CharacterState.CmdAddState(States.WitheringPoison, 6f, 0);
         }
 
@@ -299,13 +311,14 @@ public class PoisonBallProjectile : NetworkBehaviour
 
     #region InitializationProjectiles
 
-    public void InitializationProjectileForPoisonBall(Character dad, float energyDad,
+    public void InitializationProjectileForPoisonBall(Character dad, float energyDad, Skill skill,
         bool isActiveTalentHealingPoisonBall, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies,
         bool isActiveTalentWitheringPoison, bool isPushTarget, bool isActiveContinuationAmbush,
         bool isActiveVoluminousBall)
     {
         _player = dad;
         _energyDad = energyDad;
+        _skill = skill;
         _isPlayer = isTargetPlayer;
         _isAllies = isTargetAllies;
         _isEnemy = isTargetEnemy;
@@ -316,6 +329,7 @@ public class PoisonBallProjectile : NetworkBehaviour
         _isPushTarget = isPushTarget;
 
         Debug.Log($"PoisonBallProjectile / Player = {_player}");
+        Debug.Log($"PoisonBallProjectile / Skill = {_skill}");
 
         Debug.Log($"_isPlayer == {_isPlayer}; _isAllies == {_isAllies}; _isEnemy == {_isEnemy}; _talentIsActive == {_isActiveHealingPoisonBall};" +
             $" _talentWitheringPosion = {_isActvieWitheringPoison}; _isPushTarget = {_isPushTarget}; _isActiveContinuationAmbush = {_isActiveContinuationAmbush}; " +
@@ -339,38 +353,43 @@ public class PoisonBallProjectile : NetworkBehaviour
 
     #region SetPlayerAndCheckState
 
-    private void SetPlayer()
+    private void SetPlayer(Character target)
     {
-        HealingPoisonPerSecond.SetPlayer(_player);
-        WitheringPoisonState.SetPlayer(_player);
-        RpcSetPlayer();
+        target.CharacterState.WhoPersonShooted = _player;
     }
 
-    private void TargetCheckForState(Character alliesHealth)
-    {
-        if (alliesHealth.CharacterState.CheckForState(States.RegeneratingPoison))
-        {
-            //Debug.Log($"TargetCheckForState.CheckForState == {alliesHealth.CharacterState.CheckForState(States.RegeneratingPoison)}");
-            RegeneratingPoison.InstantHeal();
-        }
-        RpcTargetCheckForState(alliesHealth);
-    }
+    //private void SetPlayer()
+    //{
+    //    HealingPoisonPerSecond.SetPlayer(_player);
+    //    WitheringPoisonState.SetPlayer(_player);
+    //    RpcSetPlayer();
+    //}
 
-    [ClientRpc]
-    private void RpcSetPlayer()
-    {
-        HealingPoisonPerSecond.SetPlayer(_player);
-        WitheringPoisonState.SetPlayer(_player);
-    }
+    //private void TargetCheckForState(Character alliesHealth)
+    //{
+    //    if (alliesHealth.CharacterState.CheckForState(States.RegeneratingPoison))
+    //    {
+    //        //Debug.Log($"TargetCheckForState.CheckForState == {alliesHealth.CharacterState.CheckForState(States.RegeneratingPoison)}");
+    //        RegeneratingPoison.InstantHeal();
+    //    }
+    //    RpcTargetCheckForState(alliesHealth);
+    //}
 
-    [ClientRpc]
-    private void RpcTargetCheckForState(Character alliesHealth)
-    {
-        if (alliesHealth.CharacterState.CheckForState(States.RegeneratingPoison))
-        {
-            RegeneratingPoison.InstantHeal();
-        }
-    }
+    //[ClientRpc]
+    //private void RpcSetPlayer()
+    //{
+    //    HealingPoisonPerSecond.SetPlayer(_player);
+    //    WitheringPoisonState.SetPlayer(_player);
+    //}
+
+    //[ClientRpc]
+    //private void RpcTargetCheckForState(Character alliesHealth)
+    //{
+    //    if (alliesHealth.CharacterState.CheckForState(States.RegeneratingPoison))
+    //    {
+    //        RegeneratingPoison.InstantHeal();
+    //    }
+    //}
 
     #endregion
 

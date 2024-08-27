@@ -60,7 +60,7 @@ public class OwnElement : Talent
                     {
                         _enemiesWithDebuff.Add(target.gameObject);
 
-                        _currentStacksPoison += PoisonBone.CurrentStacks;
+                        //_currentStacksPoison += PoisonBone.CurrentStacks;
                         Debug.Log($"OwnElement / SearchingDebuffEnemy / _currentStacksPoison = {_currentStacksPoison}");
                         for (int i = 0; i < _enemiesWithDebuff.Count; i++)
                         {

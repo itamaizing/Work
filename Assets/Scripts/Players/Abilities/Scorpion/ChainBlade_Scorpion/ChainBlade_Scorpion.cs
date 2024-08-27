@@ -85,7 +85,7 @@ public class ChainBlade_Scorpion : Ability
             Destroy(_castLine.gameObject);
             _drawCircleSelf.Clear();
 
-            IsCanCancel = false;
+            //IsCanCancel = false;
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
             //yield return GetCastDeleyCoroutine();
@@ -102,7 +102,7 @@ public class ChainBlade_Scorpion : Ability
                 else _chain.AssignTarget(transform, enemy.transform);
                 bladeDestroyed = true;
             }); // подписка на метод, получаем цель в которую попали. Отписка автоматическая при уничтожении префаба будет
-            IsCanCancel = true;
+            //IsCanCancel = true;
             while (!bladeDestroyed)
             {
                 yield return null;
@@ -110,14 +110,14 @@ public class ChainBlade_Scorpion : Ability
 
             Debug.LogWarning("Закончилось");
 
-            IsCanCancel = true;
+            //IsCanCancel = true;
             //PayCost(); // не могу дважды потратить ману, тк после этого можно опять юзать абилку и багуется
 
         //альтернативный каст
 
         if (isAlternativeCast)
         {
-            IsCanCancel = false;
+            //IsCanCancel = false;
             PlayerMove.CanMove = false;
 
             float distance = Vector2.Distance(transform.position, enemy.transform.position);

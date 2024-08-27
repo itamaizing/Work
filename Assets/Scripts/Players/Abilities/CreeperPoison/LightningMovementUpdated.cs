@@ -51,7 +51,7 @@ public class LightningMovementUpdated : TargetOrAreaAbility
 
         if (_lMTalent.IsActive)
         {
-            _lMTalent.ResetCharacterResistance();
+           // _lMTalent.ResetCharacterResistance();
         }
 
         if (_useCoroutine != null)
@@ -67,14 +67,14 @@ public class LightningMovementUpdated : TargetOrAreaAbility
     private IEnumerator UseLeapCoroutine()
     {
         Debug.Log("LightningMovement UseLeapCoroutine work");
-        Debug.Log($"RigidBody Player == {_dad.Rb}");
+        //Debug.Log($"RigidBody Player == {_dad.Rb}");
         PayCost();
         if (Target != null)
         {
             yield return _midPointCoroutine = StartCoroutine(MidPointCoroutine(_firstLeapPoint));
             if (_lMTalent.IsActive)
             {
-                _lMTalent.IncreasingResistance();
+                //_lMTalent.IncreasingResistance();
                 ExecuteLeaps(_dad, _firstLeapPoint, _secondLeapPoint, _durationLeap, _rangeLeap); 
             }
             else

@@ -179,13 +179,13 @@ public class SpitPoison : Skill
         Debug.Log("Shoot SpitPoison");
         if (_currentTarget != null)
         {
-            CmdInstantiateProjectileToTarget(_currentTarget.gameObject, _angleRotation, _player.Stamina.Value, 
+            CmdInstantiateProjectileToTarget(_currentTarget.gameObject, _angleRotation, _player.Stamina.CurrentValue, 
                 _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
             CmdApplyCloudPoison(_healPoisonCloud.IsActive, _isHealingPoisonCloud);
         }
         else
         {
-            CmdInstantiateProjectileToPoint(_mousePos, _angleRotation, _player.Stamina.Value, 
+            CmdInstantiateProjectileToPoint(_mousePos, _angleRotation, _player.Stamina.CurrentValue, 
                 _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
             CmdApplyCloudPoison(_healPoisonCloud.IsActive, _isHealingPoisonCloud);
         }
@@ -203,7 +203,7 @@ public class SpitPoison : Skill
 
         SpitPoisonProjectile projectile = item.GetComponent<SpitPoisonProjectile>();
 
-        projectile.InitializationProjectile(_player, manaValue, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies);
+        projectile.InitializationProjectile(_player, this, manaValue, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies);
 
         projectile.MoveBallToTarget(target.transform.position);
 
@@ -222,7 +222,7 @@ public class SpitPoison : Skill
 
         SpitPoisonProjectile projectile = item.GetComponent<SpitPoisonProjectile>();
 
-        projectile.InitializationProjectile(_player, _player.Stamina.Value, _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
+        projectile.InitializationProjectile(_player, this, _player.Stamina.CurrentValue, _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
 
         projectile.MoveBallOnMaxDistance(point);
 
@@ -254,14 +254,14 @@ public class SpitPoison : Skill
     private void RpcInstantiateProjectile(GameObject target, SpitPoisonProjectile projectile, float manaValue,
         bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
     {
-        projectile.InitializationProjectile(_player, _player.Stamina.Value, _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
+        projectile.InitializationProjectile(_player, this, _player.Stamina.CurrentValue, _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
     }
 
     [ClientRpc]
     private void RpcInstantiateProjectileToPoint(Vector3 point, SpitPoisonProjectile projectile, float manaValue,
         bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
     { 
-        projectile.InitializationProjectile(_player, _player.Stamina.Value, _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
+        projectile.InitializationProjectile(_player, this, _player.Stamina.CurrentValue, _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
     }
 
     #endregion

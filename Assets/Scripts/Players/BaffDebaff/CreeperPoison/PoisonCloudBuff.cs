@@ -91,9 +91,8 @@ public class PoisonCloudBuff : BaseEffect
                 {
                     //Debug.Log("Work healCLoud");
 
-                    _maxHealth = _dad.Health.MaxHealth;
-                    _baseHealthRegen = _dad.Health.HpRegenerationValue;
-                    _healPoisonCloudTalentCoroutine = StartCoroutine(HealingCloud());
+                    //
+                    //_healPoisonCloudTalentCoroutine = StartCoroutine(HealingCloud());
                 }
             }
 
@@ -258,27 +257,12 @@ public class PoisonCloudBuff : BaseEffect
                 _instancePoisonCloud = null;
             }
 
-            _dad.Health.HpRegenerationValue = _baseHealthRegen;
+    //
             StopAllCoroutines();
             Destroy(gameObject);
         }
     }
-
-    private IEnumerator HealingCloud()
-    {
-        float originalHpRegen = _dad.Health.HpRegenerationValue;
-
-        while (_currentStacks != 0)
-        {
-            float increasedHealthRegen = _maxHealth * _currentHealthRegen + originalHpRegen;
-
-            _dad.Health.HpRegenerationValue = increasedHealthRegen;
-
-            yield return null;
-        }
-
-        _dad.Health.HpRegenerationValue = originalHpRegen;
-    }
+//
 
     private IEnumerator TimerForApplyDebuff(HealthComponent target)
     {

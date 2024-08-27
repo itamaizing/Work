@@ -87,13 +87,13 @@ public class NewFourMeleeAttack : Ability
             }
             yield return null;
         }
-        IsCanCancel = false;
+        //IsCanCancel = false;
         PlayerMove.CanMove = false;
         _target.CanMove = false;
         yield return GetCastDeleyCoroutine();
 
         float time = 0;
-        IsCanCancel = true;
+        //IsCanCancel = true;
         //PayCost();
         _tentacles = Instantiate(_tentaclesPrefab, _target.transform);
         var targetpos = _target.transform.position;

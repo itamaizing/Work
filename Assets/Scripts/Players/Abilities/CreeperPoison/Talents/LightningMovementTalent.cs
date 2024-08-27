@@ -18,15 +18,15 @@ public class LightningMovementTalent : Talent
         SetActive(false);
     }
 
-    public void IncreasingResistance()
-    {
-        character.Health.SetDefMagicDamage(_increaseResistanceToMagicDamage);
-        Debug.Log($"Increased DefMagDamage == {character.Health.DefMagDamage}");
-    }
+    //public void IncreasingResistance()
+    //{
+    //    character.Health.SetDefMagicDamage(_increaseResistanceToMagicDamage);
+    //    Debug.Log($"Increased DefMagDamage == {character.Health.DefMagDamage}");
+    //}
 
-    public void ResetCharacterResistance()
-    {
-        character.Health.SetDefMagicDamage(-_increaseResistanceToMagicDamage);
-        Debug.Log($"Reset DefMagDamage == {character.Health.DefMagDamage}");
-    }
+    //public void ResetCharacterResistance()
+    //{
+    //    character.Health.SetDefMagicDamage(-_increaseResistanceToMagicDamage);
+    //    Debug.Log($"Reset DefMagDamage == {character.Health.DefMagDamage}");
+    //}
 }

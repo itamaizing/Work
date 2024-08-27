@@ -15,9 +15,6 @@ public class ExplosionPoisonCloud : Skill
     private float _chanceApplyBonePoison = 0.9f;
     private float _radiusExplosion = 4f;
 
-    private DamageType _damageType = DamageType.Magical;
-    private AttackRangeType _attackRangeType = AttackRangeType.MeleeAttack;
-
     public bool Enabled;
 
     protected override bool IsCanCast => _player.CharacterState.CheckForState(States.PoisonCloud);
@@ -64,13 +61,24 @@ public class ExplosionPoisonCloud : Skill
     private void ExplosionCloud()
     {
         Debug.Log("ExplosionCloud");
+
         _currentDamage = _baseDamage * _currentStacksPoisonCloud;
-        Debug.Log($"CurrentDamage ExplosionCloud == {_currentDamage}");
+
+        Damage damage = new Damage
+        {
+            Value = Buff.Damage.GetBuffedValue(_currentDamage),
+            Type = DamageType.Physical,
+            Range = AttackRangeType.MeleeAttack
+        };
+
+        Debug.Log($"CurrentDamage ExplosionCloud == {damage.Value}");
         foreach (HeroComponent target in _enemies)
         {
             if (target != null)
             {
-                target.Health.CmdTryTakeDamage(Buff.Damage.GetBuffedValue(_currentDamage), _damageType, _attackRangeType);
+
+                CmdApplyDamage(damage, target.gameObject);
+
                 for (int i = 0; i < _currentStacksPoisonCloud; i++)
                 {
                     if (Random.Range(0.0f, 1.0f) <= _chanceApplyBonePoison)

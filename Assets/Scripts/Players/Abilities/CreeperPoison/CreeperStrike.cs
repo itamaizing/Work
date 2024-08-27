@@ -122,7 +122,14 @@ public class CreeperStrike : AutoAttackSkill
         }
         else
         {
-            CurrentTarget.Health.CmdTryTakeDamage(_currentDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
+            Damage damage = new Damage
+            {
+                Value = Buff.Damage.GetBuffedValue(_currentDamage),
+                Type = DamageType.Physical,
+                Range = AttackRangeType.MeleeAttack
+            };
+
+            CmdApplyDamage(damage, CurrentTarget.gameObject);
         }
 
         if (_firstStrike.IsActive)
@@ -166,6 +173,15 @@ public class CreeperStrike : AutoAttackSkill
         {
             criticalDamage = CalculateCriticalDamage(criticalDamage);
         }
-        currentTarget.Health.CmdTryTakeDamage(criticalDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
+
+        Damage critDamage = new Damage
+        {
+            Value = Buff.Damage.GetBuffedValue(criticalDamage),
+            Type = DamageType.Physical,
+            Range = AttackRangeType.MeleeAttack
+        };
+
+        CmdApplyDamage(critDamage, CurrentTarget.gameObject);
+        //currentTarget.Health.CmdTryTakeDamage(criticalDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
     }
 }

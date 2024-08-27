@@ -50,7 +50,7 @@ public class CreeperInvisible : Skill
 
     protected override IEnumerator PrepareJob()
     {
-        _maxHealth = _player.Health.CurrentHealth;
+        _maxHealth = _player.Health.CurrentValue;
         switch (IsInvisible)
         {
             case false:
@@ -167,7 +167,7 @@ public class CreeperInvisible : Skill
         {
             time -= Time.deltaTime;
 
-            _currentHealth = _player.Health.CurrentHealth;
+            _currentHealth = _player.Health.CurrentValue;
 
             if (_currentHealth < _maxHealth)
             {

@@ -12,6 +12,7 @@ public class SpitPoisonProjectile : NetworkBehaviour
     [SerializeField] private float _maxDistance = 5f;
     [SerializeField] private float _speed = 60f;
 
+    private Skill _skill;
     private Character _player;
     private Vector2 _startPos;
 
@@ -22,7 +23,6 @@ public class SpitPoisonProjectile : NetworkBehaviour
     private bool _isPlayer;
     private bool _isAllies;
     private bool _isEnemy;
-
     private bool _talentIsActive;
 
     private void Awake()
@@ -53,7 +53,7 @@ public class SpitPoisonProjectile : NetworkBehaviour
             {
                 if (collision.gameObject == _player.gameObject)
                 {
-                    SetPlayer();
+                    SetPlayer(_player);
                     Debug.Log($"if (IsPlayer) // RegeneratingPoison.SetPlayer == {_player}");
                     _player.CharacterState.CmdAddState(States.RegeneratingPoison, 6.0f, 0);
                     Destroy(gameObject);
@@ -65,7 +65,7 @@ public class SpitPoisonProjectile : NetworkBehaviour
                 {
                     if (collision.TryGetComponent<Character>(out var alliesHealth))
                     {
-                        SetPlayer(); 
+                        SetPlayer(alliesHealth); 
                         Debug.Log($"if (IsAllies) // RegeneratingPoison.SetPlayer == {_player}");
                         alliesHealth.CharacterState.CmdAddState(States.RegeneratingPoison, 6.0f, 0);
                         Destroy(gameObject);
@@ -134,20 +134,25 @@ public class SpitPoisonProjectile : NetworkBehaviour
         }
     }
 
-    private void DealDamage(Character target, float damage, DamageType damageType, AttackRangeType attackRangeType)
+    private void DealDamage(Character target, float currentDamage, DamageType damageType, AttackRangeType attackRangeType)
     {
         float chanceOfBlindness = 0.3f;
         float numbersForChanceOfBlindness = Random.Range(0.0f, 1.0f);
 
-        Energy _energyLink = (Energy)_player.Stamina;
-        _energyLink.SumDamageMake(damage);
+        Damage damage = new Damage
+        {
+            Value = _skill.Buff.Damage.GetBuffedValue(currentDamage),
+            Type = DamageType.Physical,
+            Range = AttackRangeType.RangeAttack,
+        };
+        target.Health.TryTakeDamage(ref damage, _skill);
 
-        target.Health.TryTakeDamage(damage, damageType, attackRangeType);
-
+        SetPlayer(target);
         target.CharacterState.CmdAddState(States.PoisonBone, _lifeTimePoisonBoneStacks, 0);
 
         if (numbersForChanceOfBlindness <= chanceOfBlindness)
         {
+            SetPlayer(target);
             //target.CharacterState.CmdAddState(States.Blind, 6f, 0);
         }
 
@@ -164,31 +169,20 @@ public class SpitPoisonProjectile : NetworkBehaviour
         Destroy(gameObject);
     }
 
-    public void InitializationProjectile(Character dad, float energy, bool talentIsActive, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
+    public void InitializationProjectile(Character dad, Skill skill, float energy, bool talentIsActive, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
     {
         _player = dad;
         _energyDad = energy;
+        _skill = skill;
         _isPlayer = isTargetPlayer;
         _isAllies = isTargetAllies;
         _isEnemy = isTargetEnemy;
         _talentIsActive = talentIsActive;
-        Debug.Log($"InitializationProjectileSpitPoison / _dad == {_player}");
-        Debug.Log($"_isPlayer == {_isPlayer}; _isAllies == {_isAllies}; _isEnemy == {_isEnemy}; _talentIsActive == {_talentIsActive}");
     }
 
-    private void SetPlayer()
+    private void SetPlayer(Character target)
     {
-        RegeneratingPoison.SetPlayer(_player);
-        PoisonBone.SetPlayer(_player);
-        Debug.Log($"RegeneratingPoison.SetPlayer == {_player}");
-        RpcSetPlayer();
+        target.CharacterState.WhoPersonShooted = _player;
     }
 
-    [ClientRpc]
-    private void RpcSetPlayer()
-    {
-        RegeneratingPoison.SetPlayer(_player);
-        PoisonBone.SetPlayer(_player);
-        Debug.Log($"Rpc // RegeneratingPoison.SetPlayer == {_player}");
-    }
 }

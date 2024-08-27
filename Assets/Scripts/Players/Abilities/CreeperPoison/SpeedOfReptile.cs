@@ -62,16 +62,16 @@ public class SpeedOfReptile : Skill
     {
         Debug.Log("SpeedOfReptile / CmdIncreaseValues");
 
-        _player.Health.EvadeMagicDamage *= _increaseEvasion;
+        _player.Health.EvadeMagDamage *= _increaseEvasion;
         _player.Health.EvadeMeleeDamage *= _increaseEvasion; 
         _player.Health.EvadeRangeDamage *= _increaseEvasion; 
 
-        Debug.Log($"SpeedOfReptile / CmdIncreaseValues / _player.Health.EvadeMagicDamage = {_player.Health.EvadeMagicDamage}");
+        Debug.Log($"SpeedOfReptile / CmdIncreaseValues / _player.Health.EvadeMagicDamage = {_player.Health.EvadeMagDamage}");
         Debug.Log($"SpeedOfReptile / CmdIncreaseValues / _player.Health.EvadeMeleeDamage = {_player.Health.EvadeMeleeDamage}");
         Debug.Log($"SpeedOfReptile / CmdIncreaseValues / _player.Health.EvadeRangeDamage = {_player.Health.EvadeRangeDamage}");
 
         _player.Move.ChangeMoveSpeed(_increaseMoveSpeed);
-        Debug.Log($"SpeedOfReptile / CmdIncreaseValues / PlayerMoveSpeed = {_player.Move._agent.maxSpeed}");
+        Debug.Log($"SpeedOfReptile / CmdIncreaseValues / PlayerMoveSpeed = {_player.Move.CurrentSpeed}");
     }
 
     [Command]
@@ -79,16 +79,16 @@ public class SpeedOfReptile : Skill
     {
         Debug.Log("SpeedOfReptile / CmdResetValues");
 
-        _player.Health.EvadeMagicDamage /= _increaseEvasion;
+        _player.Health.EvadeMagDamage /= _increaseEvasion;
         _player.Health.EvadeMeleeDamage /= _increaseEvasion;
         _player.Health.EvadeRangeDamage /= _increaseEvasion;
 
-        Debug.Log($"SpeedOfReptile / CmdResetValues / _player.Health.EvadeMagicDamage = {_player.Health.EvadeMagicDamage}");
+        Debug.Log($"SpeedOfReptile / CmdResetValues / _player.Health.EvadeMagicDamage = {_player.Health.EvadeMagDamage}");
         Debug.Log($"SpeedOfReptile / CmdResetValues / _player.Health.EvadeMeleeDamage = {_player.Health.EvadeMeleeDamage}");
         Debug.Log($"SpeedOfReptile / CmdResetValues / _player.Health.EvadeRangeDamage = {_player.Health.EvadeRangeDamage}");
 
         _player.Move.SetDefaultSpeed();
-        Debug.Log($"SpeedOfReptile / CmdResetValues / PlayerMoveSpeed = {_player.Move._agent.maxSpeed}");
+        Debug.Log($"SpeedOfReptile / CmdResetValues / PlayerMoveSpeed = {_player.Move.CurrentSpeed}");
     }
 
 }

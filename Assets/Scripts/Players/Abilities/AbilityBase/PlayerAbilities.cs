@@ -104,7 +104,7 @@ public class PlayerAbilities : MonoBehaviour
 	{
 		foreach (var item in _abilities)
 		{
-			item.IncreaseSetCooldown(time);
+			item.SetCooldown(time);
 		}
 	}
 	private void SetCurrentAbility(int index)

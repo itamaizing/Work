@@ -175,6 +175,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _playerData: {fileID: 11400000, guid: f71e3e6e8b3ca6245b0c37fd016a4039, type: 2}
   _networkSettings: {fileID: -7146587456276821115}
   _rigidbody2D: {fileID: 3759936847054020137}
   _healthComponent: {fileID: 5839731411926097146}
@@ -187,7 +188,6 @@ MonoBehaviour:
   _selectComponent: {fileID: 5511617219408767834}
   _talentSystem: {fileID: 8675175310089954536}
   _spawnComponent: {fileID: 3330577042116454553}
-  _playerData: {fileID: 11400000, guid: f71e3e6e8b3ca6245b0c37fd016a4039, type: 2}
 --- !u!50 &3759936847054020137
 Rigidbody2D:
   serializedVersion: 4
@@ -280,11 +280,11 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  MoveDirection: {x: 0, y: 0}
   CanMove: 1
   IsMoving: 0
   IsSelect: 0
-  MoveDirection: {x: 0, y: 0}
-  _isHero: 0
+  IsHero: 0
 --- !u!114 &7760335386463111578
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -301,7 +301,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _stateIcons: {fileID: 2794163301550220692}
-  invinsible: 0
+  Invinsible: 0
 --- !u!114 &2926669445991704918
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -659,7 +659,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73c845a97d0479341a34f6e1275e1107, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _skills: []
+  _skills:
+  - {fileID: 0}
   _hero: {fileID: 8468544467696250796}
   _talentSystem: {fileID: 8675175310089954536}
 --- !u!1 &2339943645575800385
@@ -2012,6 +2013,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _talents: []
+  _talents2: []
+  _talents3: []
 --- !u!1 &8924967412356559927
 GameObject:
   m_ObjectHideFlags: 0

@@ -32,10 +32,10 @@ public class StrokesOfAspiration : Talent
 
     public void UseTalentStrokesOfAspiration()
     {
-        Debug.Log($"StrokesOfAspiration / UseTalentStrokesOfAspiration / after updateRemainingCooldownTimeForSpitPoison = {_spitPoison.Remaining—ooldownTime}");
-        float updateRemainingCooldownTimeForSpitPoison = _spitPoison.Remaining—ooldownTime - _decreaseCooldownTime;
+        Debug.Log($"StrokesOfAspiration / UseTalentStrokesOfAspiration / after updateRemainingCooldownTimeForSpitPoison = {_spitPoison.CooldownTime}");
+        float updateRemainingCooldownTimeForSpitPoison = _spitPoison.CooldownTime - _decreaseCooldownTime;
         _spitPoison.ReductionSetCooldown(updateRemainingCooldownTimeForSpitPoison);
-        Debug.Log($"StrokesOfAspiration / UseTalentStrokesOfAspiration / before updateRemainingCooldownTimeForSpitPoison = {_spitPoison.Remaining—ooldownTime}");
+        Debug.Log($"StrokesOfAspiration / UseTalentStrokesOfAspiration / before updateRemainingCooldownTimeForSpitPoison = {_spitPoison.CooldownTime}");
 
         //float updateRemainingCooldownTimeForPoisonBall = _poisonBall.RemainingCooldownCharges - _decreaseCooldownTime;
         //_poisonBall.ReductionSetCooldown(updateRemainingCooldownTimeForPoisonBall);

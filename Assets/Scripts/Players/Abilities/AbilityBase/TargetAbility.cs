@@ -36,13 +36,7 @@ public abstract class TargetAbility : Ability
     {
         _target = null;
 
-        int combinedLayers = 0;
-        foreach (LayerMask layer in _targetsLayers)
-        {
-            combinedLayers |= layer;
-        }
-
-        RaycastHit2D[] rayHit = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 99, combinedLayers);
+        RaycastHit2D[] rayHit = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 99, _targetsLayers);
 
         foreach (var item in rayHit)
         {

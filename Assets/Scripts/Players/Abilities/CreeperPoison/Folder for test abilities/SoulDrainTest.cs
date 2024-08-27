@@ -64,12 +64,12 @@ public class SoulDrainTest : TargetOrAreaAbility
 
     private void DamageDeal()
     {
-        CmdApplyDamage(_currentTarget.gameObject, _damageDeal, DamageType.Magical, AttackRangeType.RangeAttack);
+        //CmdApplyDamage(_currentTarget.gameObject, _damageDeal, DamageType.Magical, AttackRangeType.RangeAttack);
     }
 
     private void AcceptHeal()
     {
-        _player.Health.AddHeal(_acceptHeal);
+        //_player.Health.AddHeal(_acceptHeal);
     }
 
     private void InstanceParticleSystem()

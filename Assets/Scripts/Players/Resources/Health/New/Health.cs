@@ -18,11 +18,11 @@ public class Health : Resource, IDamageable, IHealingable
     private float _sumDamageTaken = 0;
 
     public float SumDamageTaken { get => _sumDamageTaken; }
-    public float EvadeMeleeDamage { get => _evadeMeleeDamage; }
-    public float EvadeRangeDamage { get => _evadeRangeDamage; }
-    public float DefPhysDamage { get => _defPhysDamage; }
-    public float EvadeMagDamage { get => _evadeMagDamage; }
-    public float DefMagDamage { get => _defMagDamage; }
+    public float EvadeMeleeDamage { get => _evadeMeleeDamage; set => _evadeMeleeDamage = value; }
+    public float EvadeRangeDamage { get => _evadeRangeDamage; set => _evadeRangeDamage = value; }
+    public float DefPhysDamage { get => _defPhysDamage; set => _defPhysDamage = value; }
+    public float EvadeMagDamage { get => _evadeMagDamage; set => _evadeMagDamage = value; }
+    public float DefMagDamage { get => _defMagDamage; set => _defMagDamage = value; }
     public List<IDamageable> Shields { get => _shields; }
 
     public event Action Evaded;

@@ -111,7 +111,7 @@ public class ShootFireworks : Ability
         float time = 0 + _damageRate * 2;
         float damageTime = 0;
 
-        IsCanCancel = false;
+        //IsCanCancel = false;
         PayCost();
 
         while (time < StreamingDuration)

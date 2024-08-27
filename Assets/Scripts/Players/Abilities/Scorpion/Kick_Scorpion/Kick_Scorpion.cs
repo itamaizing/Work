@@ -82,11 +82,11 @@ public class Kick_Scorpion : Ability
         _drawCircleSelf.Clear();
 
         PlayerMove.CanMove = false;
-        IsCanCancel = false;
+        //IsCanCancel = false;
 
         yield return GetCastDeleyCoroutine();
 
-        IsCanCancel = true;
+        //IsCanCancel = true;
         PayCost();
 
         if (Vector2.Distance(transform.position, _target.transform.position) <= 2f + 0.19f)

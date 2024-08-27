@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.TextCore.LowLevel;
 
 [RequireComponent(typeof(NetworkIdentity))]
 public abstract class Resource : NetworkBehaviour
@@ -52,6 +53,12 @@ public abstract class Resource : NetworkBehaviour
             CurrentValue = 0;
             return false;
         }
+    }
+
+    // Используется в CharacterState для уменьшения маны цели
+    public void ReductionCurrentValue(float value)
+    {
+        _currentValue -= value;
     }
 
     protected virtual void HookValueChanged(float oldValue, float newValue)

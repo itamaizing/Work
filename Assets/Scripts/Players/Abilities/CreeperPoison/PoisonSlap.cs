@@ -55,7 +55,7 @@ public class PoisonSlap : Skill
         _isPushTargetAllowed = false;
 
         _currentTarget = null;
-        _castDelay = 0;
+        _castDeley = 0;
 
         _isIncreasedCastSpeedFromCreeperStrike = false;
         _isIncreasedCastSpeedFromLightningStrike = false;
@@ -115,8 +115,8 @@ public class PoisonSlap : Skill
         }
         else
         {
-            _castDelay = _baseTimeCast;
-            yield return StartCastDelayCoroutine();
+            _castDeley = _baseTimeCast;
+            yield return StartCastDeleyCoroutine();
 
             ChooseDirectionPush();
 
@@ -158,10 +158,10 @@ public class PoisonSlap : Skill
 
         float _timeCastFromCreeperStrike = _baseTimeCast * _creeperStrikeCastSpeedMultiplier;
 
-        _castDelay = _timeCastFromCreeperStrike;
-        yield return StartCastDelayCoroutine();
+        _castDeley = _timeCastFromCreeperStrike;
+        yield return StartCastDeleyCoroutine();
 
-        Debug.Log("CastTime int if == " + _castDelay);
+        Debug.Log("CastTime int if == " + _castDeley);
 
         ChooseDirectionPush();
 
@@ -174,10 +174,10 @@ public class PoisonSlap : Skill
 
         float _timeCastFromLightningStrikes = _baseTimeCast * _lightningStrikesCastSpeedMultiplier;
 
-        _castDelay = _timeCastFromLightningStrikes;
-        yield return StartCastDelayCoroutine();
+        _castDeley = _timeCastFromLightningStrikes;
+        yield return StartCastDeleyCoroutine();
 
-        Debug.Log("CastTime int else if == " + _castDelay);
+        Debug.Log("CastTime int else if == " + _castDeley);
 
         ChooseDirectionPush();
 
@@ -192,7 +192,7 @@ public class PoisonSlap : Skill
     {
         if (_currentTarget != null) 
         {
-            _currentTarget.Health.CmdTryTakeDamage(Buff.Damage.GetBuffedValue(_baseDamage), DamageType.Physical, AttackRangeType.MeleeAttack);
+            //_currentTarget.Health.CmdTryTakeDamage(Buff.Damage.GetBuffedValue(_baseDamage), DamageType.Physical, AttackRangeType.MeleeAttack);
             PushTarget(_currentTarget.gameObject, _distancePush, _durationPush, _isPushTargetAllowed);
         }
     }
