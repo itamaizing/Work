@@ -35,7 +35,7 @@ public class IcePuddle : Ability
 		if (!_secondPoind)
 		{
 			_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
+			Vector2 lookDir = _mousePos - _playerLinks.Rigidbody2D.position;
 			_angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
 			//_preViewPuddle.transform.rotation = Quaternion.Euler(_preViewPuddle.transform.rotation.x, _preViewPuddle.transform.rotation.y, _angle);
 			_preViewPuddle.transform.rotation = Quaternion.Euler(0, 0, _angle);
@@ -114,7 +114,7 @@ public class IcePuddle : Ability
 	}
 	private void Shoot()
 	{
-		int timeToAdd = (int)Mana.Value / 5;
+		int timeToAdd = (int)Mana.CurrentValue / 5;
 		if (timeToAdd > 4)
 			timeToAdd = 4;
 
@@ -129,7 +129,7 @@ public class IcePuddle : Ability
 
 		Debug.Log("test spawn");
 		CmdCreateProjecttile(_angle2, _timeToDestroy, _preViewPuddle.transform.position, _lastHit);
-		Mana.Use(timeToAdd * 5);
+		Mana.TryUse(timeToAdd * 5);
 	}
 
 	[Command]

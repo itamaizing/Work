@@ -207,7 +207,7 @@ public class TwoMeleeAttack : AbilityBase
                 SecondAbilityEvent?.Invoke(_damageValue);
             }
 
-            Shield _shield = TargetParent.GetComponentInChildren<Shield>();
+            OldShield _shield = TargetParent.GetComponentInChildren<OldShield>();
             
             if (_shield != null)
             {

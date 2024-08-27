@@ -7,11 +7,12 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NetworkIdentity))]
 public abstract class Character : NetworkBehaviour
 {
+	[SerializeField] private CharacterData _playerData;
 	[SerializeField] private UserNetworkSettings _networkSettings;
-	[SerializeField] private Rigidbody2D _rb;
-	[SerializeField] private HealthComponent _healthComponent;
+	[SerializeField] private Rigidbody2D _rigidbody2D;
+	[SerializeField] private Health _healthComponent;
 	[SerializeField] private MoveComponent _playerMove; 
-	[SerializeField] private StaminaComponent _stamina;
+	[SerializeField] private Resource _stamina;
 	[CanBeNull] [SerializeField] private RuneComponent _runeComponent;
 	[SerializeField] private SkillManager _abilities;
 	[SerializeField] private CharacterState _characterState;
@@ -20,13 +21,15 @@ public abstract class Character : NetworkBehaviour
 	[SerializeField] private TalentSystem _talentSystem;
 	[CanBeNull] [SerializeField] private SpawnComponent _spawnComponent;
 
+
+
+	public CharacterData CharacterData => _playerData;
 	public UserNetworkSettings NetworkSettings => _networkSettings;
-	public Rigidbody2D Rb => _rb;
-	public HealthComponent Health => _healthComponent;
+	public Rigidbody2D Rigidbody2D => _rigidbody2D;
+	public Health Health => _healthComponent;
 	public MoveComponent Move => _playerMove;
-	public StaminaComponent Stamina => _stamina;
+	public Resource Stamina => _stamina;
 	public RuneComponent RuneComponent => _runeComponent;
-	//public PlayerAbilities Abilities => _abilities;
 	public SkillManager Abilities => _abilities;
 	public CharacterState CharacterState => _characterState;
 	public UIPlayerComponents UIPlayerComponents => _uiPlayerComponents;
@@ -35,6 +38,11 @@ public abstract class Character : NetworkBehaviour
 	public TalentSystem TalentSystem => _talentSystem;
 
 	public abstract void Initialize(CharacterData data);
+
+	private void Start()
+	{
+		Initialize(_playerData);
+	}
 
 	private void OnDestroy()
 	{

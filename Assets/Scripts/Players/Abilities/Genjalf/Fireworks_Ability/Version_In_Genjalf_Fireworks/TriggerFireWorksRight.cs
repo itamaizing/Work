@@ -42,7 +42,7 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
 
         private IEnumerator DamageOverTime()
         {
-            while (shootFireworks.gameObject.transform.parent.GetComponent<Mana>().Value > 0 && _enemies.Count > 0)
+            while (shootFireworks.gameObject.transform.parent.GetComponent<Mana>().CurrentValue > 0 && _enemies.Count > 0)
             {
                 if (_currentEnemyIndex < _enemies.Count)
                 {
@@ -70,7 +70,7 @@ namespace Players.Abilities.Genjalf.Fireworks_Ability.Version_In_Genjalf_Firewor
                         Debug.Log($"Урон врагу {currentEnemy.name}: {damage}. Процент урона: {damageMultiplier * 100}%");
                     }
                     
-                    shootFireworks.gameObject.transform.parent.GetComponent<Mana>().Use(_fireworks.soFireworksData.ManaCost);
+                    shootFireworks.gameObject.transform.parent.GetComponent<Mana>().TryUse(_fireworks.soFireworksData.ManaCost);
                     
                     // Переход к следующему противнику
                     _currentEnemyIndex = (_currentEnemyIndex + 1) % _enemies.Count;

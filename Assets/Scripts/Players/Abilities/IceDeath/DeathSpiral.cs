@@ -28,7 +28,7 @@ public class DeathSpiral : Ability
 		if(_inTheRow) 
 		{
 			_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
+			Vector2 lookDir = _mousePos - _playerLinks.Rigidbody2D.position;
 			float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
 			_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1);
 			Shoot(angle);
@@ -38,7 +38,7 @@ public class DeathSpiral : Ability
 			_currentChargers--;
 			_inTheRow = true;
 			_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
+			Vector2 lookDir = _mousePos - _playerLinks.Rigidbody2D.position;
 			float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
 			_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1);
 			Shoot(angle);

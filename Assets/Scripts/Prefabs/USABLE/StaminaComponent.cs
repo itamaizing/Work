@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class StaminaComponent : NetworkBehaviour
 {
 	public Bar bar;
-	public float Value { get { return _value; } }
+	public float CurrentValue { get { return _value; } }
 	public float MaxValue { get { return _maxValue; } }
     public float RegenerationValue { get => _regenerationValue; set => _regenerationValue = value; }
 
@@ -18,7 +18,7 @@ public abstract class StaminaComponent : NetworkBehaviour
 
 	protected float _timerDelay = 0;
 
-	public void Initialize(float maxValue,float regenValue,float regenDelay)
+	public void Initialize(float maxValue, float regenValue, float regenDelay)
 	{
 		_value = maxValue;
 		_maxValue = maxValue;
@@ -27,7 +27,7 @@ public abstract class StaminaComponent : NetworkBehaviour
 	}
 
 	public abstract void Add(float value);
-	public abstract bool Use(float value);
+	public abstract bool TryUse(float value);
 
 	protected virtual void Regen()
 	{
@@ -53,7 +53,7 @@ public abstract class StaminaComponent : NetworkBehaviour
 
 	protected void UpdateBar()
 	{
-		bar.UpdateValue(_value,_maxValue);
+		//bar.UpdateBar(_value,_maxValue);
 	}
 	public void NetworkUpdateBar(float oldValue, float newValue)
 	{
@@ -63,7 +63,7 @@ public abstract class StaminaComponent : NetworkBehaviour
 	[Command]
 	public void CmdUse(float value)
     {
-		Use(value);
+		TryUse(value);
 	}
 
 	public void ReductionCurrentValue(float value)

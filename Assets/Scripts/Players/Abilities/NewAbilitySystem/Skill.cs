@@ -32,9 +32,11 @@ public abstract class Skill : NetworkBehaviour
     [Header("Main Settings")]
     [SerializeField] protected float _manaCost;
     [SerializeField] protected float _cooldownTime;
-    [SerializeField] protected float _castDelay;
-    [SerializeField] protected Schools _abilitySchool;
-    [SerializeField] protected AbilityForm _abilityForm;
+    [SerializeField] protected float _castDeley;
+    [SerializeField] private Schools _abilitySchool;
+    [SerializeField] private AbilityForm _abilityForm;
+    [SerializeField] private DamageType _damageType;
+    [SerializeField] private AttackRangeType _attackRangeType;
     [SerializeField] protected LayerMask _targetsLayers;
     [SerializeField] protected LayerMask _obstacle;
     [Header("Streaming settings")]
@@ -44,7 +46,7 @@ public abstract class Skill : NetworkBehaviour
     [Header("Charge settings")]
     [SerializeField] private bool _isUseCharges;
     [SerializeField] protected bool _chargesHaveSeparateCooldown;
-    [SerializeField] private int _maxCharges;
+    [SerializeField] protected int _maxCharges;
     [SerializeField] protected float _chargeCooldown;
     [Header("Area settings")]
     [SerializeField] protected float _radius;
@@ -73,24 +75,24 @@ public abstract class Skill : NetworkBehaviour
     private Coroutine _actionWrapperForCastCoroutine;
     private bool _isPreparing = false;
     private bool _isCasting = false;
+    private Transform _tempTargetForDamage;
+    private Health _tempHPForDamage;
 
     public HeroComponent Hero { get => _hero; }
     public StatsBuff Buff => _statsBuff;
     public string Name => _abilityInfo.Name;
     public string Description => _abilityInfo.Description;
     public Sprite Icon => _abilityInfo.Icon;
-    public bool IsCooldowned { get => Remaining—ooldownTime <= 0; }
+    public bool IsCooldowned { get => _remaining—ooldownTime <= 0; }
     public int Chargers => _currentChargers;
-    public int MaxCharges { get => _maxCharges; protected set => _maxCharges = value; }
     public bool IsHaveCharge => (_currentChargers > 0);
     public float ChargeCooldown => _chargeCooldown;
     public bool IsPreparing => _isPreparing;
-    public bool IsHaveManaOnSkill { get => ManaCost <= _hero.Stamina.Value; }
+    public bool IsHaveManaOnSkill { get => ManaCost <= _hero.Stamina.CurrentValue; }
     public bool IsHaveResurces { get => IsHaveManaOnSkill && IsCooldowned && IsHaveCharge; }
     public float ManaCost { get => Buff.ManaCost.GetBuffedValue(_manaCost); }
     public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); }
-    public float Remaining—ooldownTime { get => Buff.RemainingCooldownTime.GetBuffedValue(_remaining—ooldownTime); protected set => _remaining—ooldownTime = value; }
-    public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDelay); }
+    public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); }
     public bool IsCasting { get => _isCasting; }
     public float CastStreamDuration { get => _castDuration; }
     public float Radius { get => Buff.Radius.GetBuffedValue(_radius); protected set => _radius = value; }
@@ -101,8 +103,10 @@ public abstract class Skill : NetworkBehaviour
     public LayerMask TargetsLayers => _targetsLayers;
     public Schools School => _abilitySchool;
     public AbilityForm AbilityForm => _abilityForm;
+    public DamageType DamageType => _damageType;
+    public AttackRangeType AttackRangeType => _attackRangeType;
 
-    public event Action<int> CurrentChargeChange;
+    public event Action<int> CurrentChargeChanged;
     public event Action<float> CooldownStarted;
     public event Action CooldownEnded;
     public event Action PreparingStarted;
@@ -134,7 +138,7 @@ public abstract class Skill : NetworkBehaviour
     protected virtual void Awake()
     {
         if (_isUseCharges)
-            _currentChargers = MaxCharges;
+            _currentChargers = _maxCharges;
         else
             _currentChargers = 1;
     }
@@ -207,7 +211,7 @@ public abstract class Skill : NetworkBehaviour
 
     public void IncreaseSetCooldown(float time)
     {
-        if (time < Remaining—ooldownTime)
+        if (time < _remaining—ooldownTime)
             return;
 
         if (_cooldownJob != null)
@@ -218,7 +222,7 @@ public abstract class Skill : NetworkBehaviour
 
     public void ReductionSetCooldown(float time)
     {
-        if (time > Remaining—ooldownTime)
+        if (time > _remaining—ooldownTime)
             return;
 
         if (_cooldownJob != null)
@@ -230,13 +234,34 @@ public abstract class Skill : NetworkBehaviour
     public void CheckResources()
     {
         if (IsHaveManaOnSkill == false)
-            MassageHaventMana?.Invoke(ManaCost - _hero.Stamina.Value);
+            MassageHaventMana?.Invoke(ManaCost - _hero.Stamina.CurrentValue);
 
         if (IsCooldowned == false)
-            MassageNotCooldowned?.Invoke(Remaining—ooldownTime);
+            MassageNotCooldowned?.Invoke(_remaining—ooldownTime);
 
         if (IsHaveCharge == false)
             MassageHaventCharge?.Invoke();
+    }
+
+    public void AddMaxChargeCount()
+    {
+        _maxCharges += 1;
+        _currentChargers += 1;
+        CurrentChargeChanged?.Invoke(_currentChargers);
+    }
+
+    public void DeductMaxChargeCount()
+    {
+        if(_maxCharges - 1 > 0)
+        {
+            _maxCharges -= 1;
+
+            if(_currentChargers > _maxCharges)
+            {
+                _currentChargers -= 1;
+                CurrentChargeChanged?.Invoke(_currentChargers);
+            }
+        }
     }
 
     protected virtual void StartAutoDraw()
@@ -355,9 +380,9 @@ public abstract class Skill : NetworkBehaviour
         return NoObstacles(target, transform.position, obstacle);
     }
 
-    protected Coroutine StartCastDelayCoroutine()
+    protected Coroutine StartCastDeleyCoroutine()
     {
-        _castDeleyCoroutine = StartCoroutine(CastDelayJob());
+        _castDeleyCoroutine = StartCoroutine(CastDeleyJob());
         return _castDeleyCoroutine;
     }
 
@@ -392,7 +417,7 @@ public abstract class Skill : NetworkBehaviour
         if (_currentChargers > 0)
         {
             _currentChargers--;
-            CurrentChargeChange?.Invoke(_currentChargers);
+            CurrentChargeChanged?.Invoke(_currentChargers);
 
             if (_rechargeJob == null || _chargesHaveSeparateCooldown)
                 _rechargeJob = StartCoroutine(RechargeCoroutine());
@@ -406,7 +431,7 @@ public abstract class Skill : NetworkBehaviour
 
     private IEnumerator RechargeCoroutine()
     {
-        while (_currentChargers < MaxCharges)
+        while (_currentChargers < _maxCharges)
         {
             float time = 0;
             while (time < ChargeCooldown)
@@ -414,9 +439,11 @@ public abstract class Skill : NetworkBehaviour
                 time += Time.deltaTime;
                 yield return null;
             }
-            _currentChargers++;
-            CurrentChargeChange?.Invoke(_currentChargers);
-
+            if(_currentChargers < _maxCharges)
+            {
+                _currentChargers++;
+                CurrentChargeChanged?.Invoke(_currentChargers);
+            }
             if (_chargesHaveSeparateCooldown)
                 break;
         }
@@ -426,18 +453,18 @@ public abstract class Skill : NetworkBehaviour
     private IEnumerator CooldownCoroutine(float cooldownTime)
     {
         CooldownStarted?.Invoke(cooldownTime);
-        Remaining—ooldownTime = cooldownTime;
+        _remaining—ooldownTime = cooldownTime;
 
-        while (Remaining—ooldownTime > 0)
+        while (_remaining—ooldownTime > 0)
         {
-            Remaining—ooldownTime -= Time.deltaTime;
+            _remaining—ooldownTime -= Time.deltaTime;
             yield return null;
         }
         CooldownEnded?.Invoke();
         _cooldownJob = null;
     }
 
-    private IEnumerator CastDelayJob()
+    private IEnumerator CastDeleyJob()
     {
         CastDeleyStarted?.Invoke(CastDeley);
         float time = 0;
@@ -458,10 +485,10 @@ public abstract class Skill : NetworkBehaviour
 
         while (time < CastStreamDuration)
         {
-            time -= _manaCostRate;
-            if (_hero.Stamina.Value >= _manaCostPerTick)
+            time += _manaCostRate;
+            if (_hero.Stamina.CurrentValue >= _manaCostPerTick)
             {
-                _hero.Stamina.Use(_manaCostPerTick);
+                _hero.Stamina.TryUse(_manaCostPerTick);
             }
             else
             {
@@ -495,7 +522,7 @@ public abstract class Skill : NetworkBehaviour
         _isCasting = true;
 
         if (CastDeley > 0)
-            yield return StartCastDelayCoroutine();
+            yield return StartCastDeleyCoroutine();
 
         if (_castDuration > 0)
             StartCoroutine(CastStreamJob());
@@ -508,5 +535,16 @@ public abstract class Skill : NetworkBehaviour
         ClearData();
 
         _castCoroutine = null;
+    }
+
+    [Command]
+    protected void CmdApplyDamage(Damage damage, GameObject hp)
+    {
+        if (_tempTargetForDamage != hp.transform)
+        {
+            _tempTargetForDamage = hp.transform;
+            _tempHPForDamage = hp.GetComponent<Health>();
+        }
+        _tempHPForDamage.TryTakeDamage(ref damage, this);
     }
 }

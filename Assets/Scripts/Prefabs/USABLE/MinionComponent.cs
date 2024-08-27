@@ -3,21 +3,14 @@ using UnityEngine;
 
 public class MinionComponent : Character
 {
-    [SerializeField] private CharacterData _playerData;
-    
     [SyncVar]
     public GameObject _heroParent;
     public GameObject HeroParent => _heroParent;
 
-    private void Awake()
-    {
-        Initialize(_playerData);
-    }
-
     public override void Initialize(CharacterData characterData)
     {
         Health.Initialize(characterData.Health,characterData.HealthRegen, characterData.RegenDelay, characterData.HealthInfo);
-        Move.Initialize(characterData.MoveSpeed, Rb);
+        Move.Initialize(characterData.MoveSpeed, Rigidbody2D);
         Stamina.Initialize(characterData.Stamina, characterData.StaminaRegen, characterData.RegenDelay);
         CharacterState.Initialize(Health, Move , Stamina, this);
         SelectComponent.Initialize(false, Move, Abilities, UIPlayerComponents);

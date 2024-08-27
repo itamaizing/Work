@@ -208,14 +208,14 @@ public class TwoRangeProtection : AbilityBase
     {
         if(isLightSide)
         {
-            _player.GetComponent<Mana>().Use(6f);
+            _player.GetComponent<Mana>().TryUse(6f);
             SetProtectBuff();
             SetProtectDebaff();
             SecondAbilityEvent?.Invoke(0f);
         }
         else
         {
-            _player.GetComponent<Mana>().Use(20f);
+            _player.GetComponent<Mana>().TryUse(20f);
             SetDarkProtectionDebaff();
             SetProtectDebaff();
             SecondDarkAbilityEvent?.Invoke(0f);

@@ -155,7 +155,7 @@ public class DarkFourRangeRecovery : AbilityBase
     {
         if (_newPrefab != null && Target != null && _newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>())
         {
-            _newPrefab.GetComponent<Damage>().Timer = Time.time;
+            _newPrefab.GetComponent<Damage1>().Timer = Time.time;
             _newPrefab.GetComponentInChildren<BaffDebaffEffectPrefab>().StartCountdown(12);
         }
         else
@@ -166,7 +166,7 @@ public class DarkFourRangeRecovery : AbilityBase
             //_newPrefab.GetComponent<Damage>().CastRecovery(12f, 6f, 3f);
 
         }
-        _player.GetComponent<Mana>().Use(4f);
+        _player.GetComponent<Mana>().TryUse(4f);
 
         DarkFourthAbilityEvent?.Invoke(0f);
         Recharge();

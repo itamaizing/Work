@@ -18,11 +18,11 @@ public abstract class Ability : NetworkBehaviour
     [SerializeField] protected float _castLength = 0f;
     [SerializeField] protected float _castWidth = 0f;
     [SerializeField] protected float _manaCost = 0f;
-    [SerializeField] protected float _castDelay = 0f;
+    [SerializeField] protected float _castDeley = 0f;
     [SerializeField] protected float _cooldown = 0f;
 	[SerializeField] protected Schools _abilitySchool;
 	[SerializeField] protected AbilityForm _abilityForm;
-	[SerializeField] protected LayerMask[] _targetsLayers;
+	[SerializeField] protected LayerMask _targetsLayers;
 	[Header("Charge settings")]
     [SerializeField] protected bool _isUseCharges;
     [SerializeField] protected bool _chargesHaveSeparateCooldown;
@@ -37,8 +37,9 @@ public abstract class Ability : NetworkBehaviour
 	protected StaminaComponent _mana;
 	protected MoveComponent _playerMove;
 	protected HealthComponent _health;
+    protected HeroComponent _hero;
 	protected bool _isUsed = false;
-	protected bool _isCanCancel = true;
+	protected bool _isCanCancle = true;
 	protected bool _isReady = true;
     protected int _currentChargers;
 	protected Coroutine _rechargeJob;
@@ -51,8 +52,8 @@ public abstract class Ability : NetworkBehaviour
 	private float _timerForDebuf;
     private StatsBuff _statsBuff = new StatsBuff();
 
-	public MoveComponent PlayerMove => _playerMove;
-    public StaminaComponent Mana => _mana;
+    public MoveComponent PlayerMove => _playerMove;
+    public StaminaComponent Mana =>_mana;
     public HealthComponent Health => _health;
     public string Name => _abilityInfo.Name;
     public string Description => _abilityInfo.Description;
@@ -64,19 +65,17 @@ public abstract class Ability : NetworkBehaviour
     public bool IsRechargedInTurn => _chargesHaveSeparateCooldown;
     public bool IsStreaming => _isStreaming;
     public float StreamingDuration => _streamingDuration;
-    public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDelay); protected set => _castDelay = value; }
+    public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); protected set => _castDeley = value; }
     public float Radius { get => Buff.Radius.GetBuffedValue(_radius); protected set => _radius = value; }
     public float Area { get => Buff.Area.GetBuffedValue(_area); protected set => _area = value; }
     public float CastLength { get => Buff.Area.GetBuffedValue(_castLength); protected set => _castLength = value; }
     public float CastWidth { get => Buff.Area.GetBuffedValue(_castWidth); protected set => _castWidth = value; }
-    public float ManaCost { get => Buff.ManaCost.GetBuffedValue(_manaCost); protected set => _manaCost = value; }
     public bool IsAutoAttack { get => _isAutoAttack; protected set => _isAutoAttack = value; }
     public bool IsUsed { get => _isUsed; protected set => _isUsed = value; }
-    public bool IsCanCancel { get => _isCanCancel; protected set => _isCanCancel = value; }
+    public bool IsCanCancle { get => _isCanCancle; protected set => _isCanCancle = value; }
     public bool IsReady { get => _isReady; set => _isReady = value; }
 	public Schools School => _abilitySchool;
-    public float RemainingСooldownTime => _remainingСooldownTime;
-    public AbilityForm AbilityForm => _abilityForm;
+	public AbilityForm AbilityForm => _abilityForm;
     public StatsBuff Buff => _statsBuff;
 
     public event UnityAction<int> CurrentChargeChange;
@@ -112,7 +111,7 @@ public abstract class Ability : NetworkBehaviour
 
     public virtual bool TryCancel()
     {
-        if(_isUsed && _isCanCancel)
+        if (_isUsed && _isCanCancle)
         {
             Cancel();
             _isUsed = false;
@@ -136,7 +135,7 @@ public abstract class Ability : NetworkBehaviour
 
     public virtual bool TryUse()
     {
-        if (_isUsed || (_mana.Value >= ManaCost && _isReady) == false || !_avaliable)
+        if (_isUsed || (_mana.CurrentValue >= _manaCost && _isReady) == false || !_avaliable)
         {
             PreparingEnded?.Invoke();
             return false;
@@ -150,13 +149,13 @@ public abstract class Ability : NetworkBehaviour
             }    
         }
         _isUsed = true;
-        _isCanCancel = true;
+        _isCanCancle = true;
         CastStarted?.Invoke();
         Cast();
         return true;
     }
 
-    public void IncreaseSetCooldown(float time)
+    public void SetCooldown(float time)
     {
         _isReady = false;
 
@@ -164,19 +163,6 @@ public abstract class Ability : NetworkBehaviour
             return;
 
         if(_cooldownJob != null)
-            StopCoroutine(_cooldownJob);
-
-        _cooldownJob = StartCoroutine(CooldownCoroutine(time));
-    }
-
-    public void ReductionSetCooldown(float time)
-    {
-        _isReady = false;
-
-        if (time > _remainingСooldownTime)
-            return;
-
-        if (_cooldownJob != null)
             StopCoroutine(_cooldownJob);
 
         _cooldownJob = StartCoroutine(CooldownCoroutine(time));
@@ -191,9 +177,9 @@ public abstract class Ability : NetworkBehaviour
 
     protected virtual bool PayCost(bool castEnded = true)
     {
-        if (TryUseCharge() && _mana.Value >= ManaCost && _isReady)
+        if (TryUseCharge() && _mana.CurrentValue >= _manaCost && _isReady)
         {
-            CmdUseMana(ManaCost);
+            CmdUseMana(_manaCost);
         }
         else
         {
@@ -320,7 +306,7 @@ public abstract class Ability : NetworkBehaviour
         StartStreaming?.Invoke(_streamingDuration);
         float time = 0;
 
-        while (time < _streamingDuration + _manaCostRate && _mana.Value >= _manaCostPerTick)
+        while (time < _streamingDuration + _manaCostRate && _mana.CurrentValue >= _manaCostPerTick)
         {
             CmdUseMana(_manaCostPerTick);
             time += _manaCostRate;
@@ -328,7 +314,7 @@ public abstract class Ability : NetworkBehaviour
         }
         StopStreaming?.Invoke();
         _playerMove.CanMove = true;
-        _isCanCancel = true;
+        _isCanCancle = true;
         TryCancel();
         CastEnded?.Invoke();
         _streamingJob = null;
@@ -351,7 +337,7 @@ public abstract class Ability : NetworkBehaviour
     [Command]
     protected void CmdUseMana(float value)
     {
-        _mana.Use(value);
+        _mana.TryUse(value);
     }
 
     [Command]
@@ -367,7 +353,8 @@ public abstract class Ability : NetworkBehaviour
 
 	public void KnockDownTimerStart(float time)
 	{
-		_timerForDebuf = time;
+        _avaliable = false;
+        _timerForDebuf = time;
 		StartCoroutine(KnockDownTimer());
 	}
 

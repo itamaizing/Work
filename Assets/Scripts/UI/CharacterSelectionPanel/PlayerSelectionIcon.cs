@@ -20,7 +20,7 @@ public class PlayerSelectionIcon : MonoBehaviour, IPointerEnterHandler, IPointer
     public void Init(HeroComponent player)
     {
         _playerPref = player;
-        _icon.sprite = player.PlayerData.Icon;
+        _icon.sprite = player.CharacterData.Icon;
     }
 
     public void OnPointerEnter(PointerEventData eventData)

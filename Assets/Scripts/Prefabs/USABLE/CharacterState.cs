@@ -215,7 +215,10 @@ public class InvisibleState : AbstractCharacterState
 		effects.Add(StatusEffect.Others);
 
 		_characterState = character;
-		_characterState.Health.SetInvincible(true);
+
+		//_characterState.Health.SetInvincible(true);
+		Debug.LogError("Invisible not ready");
+
 		_characterState.invinsible = true;
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
@@ -236,7 +239,8 @@ public class InvisibleState : AbstractCharacterState
 		Debug.Log("Exiting Invisible State");
 		if (_characterState.Check(StatusEffect.Others))
 		{
-			_characterState.Health.SetInvincible(false);
+			//_characterState.Health.SetInvincible(false);
+			Debug.LogError("Invisible not ready");
 			_characterState.invinsible = false;
 		}
 		_characterState.RemoveState(this);
@@ -359,7 +363,7 @@ public class Desiccuration : AbstractCharacterState
 	{
 		Debug.Log("Updating Desiccuration State");
 		_duration -= Time.deltaTime;
-		if (_duration < 0 || turnOff || _characterState.Health.sumDamageTaken >= _damageToExit)
+		if (_duration < 0 || turnOff || _characterState.Health.SumDamageTaken >= _damageToExit)
 		{
 			ExitState();
 		}
@@ -491,14 +495,15 @@ public class FrozenState : AbstractCharacterState
 		{
 			Debug.Log("no ability at " + character.gameObject.name);
 		}
-		_characterState.Health.sumDamageTaken = 0;
+		//_characterState.Health.sumDamageTaken = 0;
+		Debug.LogError("sumDamageTaken havnt set");
 
 	}
 
 	public override void UpdateState()
 	{
 		_duration -= Time.deltaTime;
-		if (_characterState.Health.sumDamageTaken >= _damageToExit || _duration < 0 || turnOff)
+		if (_characterState.Health.SumDamageTaken >= _damageToExit || _duration < 0 || turnOff)
 		{
 			ExitState();
 		}
@@ -574,13 +579,14 @@ public class FrostingState : AbstractCharacterState
 			Debug.Log("no ability at " + character.gameObject.name);
 		}
 
-		_characterState.Health.sumDamageTaken=0;
+		//_characterState.Health.sumDamageTaken=0;
+		Debug.LogError("sumDamageTaken havnt set");
 	}
 
 	public override void UpdateState()
 	{
 		_duration -= Time.deltaTime;
-		if (_characterState.Health.sumDamageTaken >= _damageToExit || _duration < 0 || turnOff)
+		if (_characterState.Health.SumDamageTaken >= _damageToExit || _duration < 0 || turnOff)
 		{
 			ExitState();
 		}
@@ -643,13 +649,15 @@ public class Cooling : AbstractCharacterState
 
 		_characterState.Move.ChangeMoveSpeed(1-_curSpeedDebuf);
 		//decrease speed of attact and movement
-		_characterState.Health.sumDamageTaken = 0;
+
+		//_characterState.Health.sumDamageTaken = 0;
+		Debug.LogError("sumDamageTaken havnt set");
 	}
 
 	public override void UpdateState()
 	{
 		_duration -= Time.deltaTime;
-		if (_characterState.Health.sumDamageTaken >= _damageToExit || _duration < 0 || turnOff)
+		if (_characterState.Health.SumDamageTaken >= _damageToExit || _duration < 0 || turnOff)
 		{
 			ExitState();
 		}
@@ -2251,20 +2259,15 @@ public class AbilityFormDebuff : AbstractCharacterState
 
 public class CharacterState : NetworkBehaviour
 {
-	[SerializeField] private StateIcons _stateIcons;
-
-	private HealthComponent _health;
+	private Health _health;
 	private MoveComponent _move;
-	private StaminaComponent _stamina;
-	private Character _hero;
-
+	private Resource _stamina;
 	private List<AbstractCharacterState> currentStates = new List<AbstractCharacterState>();
-	public HealthComponent Health => _health;
-	public MoveComponent Move => _move;
-	public StaminaComponent Stamina => _stamina;
-	public Character Character => _hero;
-
+	[SerializeField] private StateIcons _stateIcons;
 	public bool invinsible = false;
+	public Health Health => _health;
+	public MoveComponent Move => _move;
+	public Resource Stamina => _stamina;
 
 	public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
 	{
@@ -2289,7 +2292,7 @@ public class CharacterState : NetworkBehaviour
 		[States.Desiccuration] = new Desiccuration()
 	};
 
-	public void Initialize(HealthComponent health, MoveComponent move, StaminaComponent stamina, Character hero)
+	public void Initialize(Health health,MoveComponent move , Resource stamina)
 	{
 		_hero = hero;
 		_health = health;

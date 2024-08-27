@@ -282,7 +282,7 @@ public class ThreeMeleeAttack : AbilityBase
 
             if (distanceToTarget >= maxDistance && TargetParent != null)
             {
-                Shield _shield = TargetParent.GetComponentInChildren<Shield>();
+                OldShield _shield = TargetParent.GetComponentInChildren<OldShield>();
 
                 if (_shield != null)
                 {
@@ -300,7 +300,7 @@ public class ThreeMeleeAttack : AbilityBase
             }
             else if (distanceToTarget < maxDistance && TargetParent != null)
             {
-                Shield _shield = TargetParent.GetComponentInChildren<Shield>();
+                OldShield _shield = TargetParent.GetComponentInChildren<OldShield>();
 
                 if (_shield != null)
                 {
@@ -334,7 +334,7 @@ public class ThreeMeleeAttack : AbilityBase
         if (!_damageDealt && TargetParent != null && _distanceToEnemy < 2.1f)
         {
             float damage = UnityEngine.Random.Range(11, 13);
-            Shield _shield = TargetParent.GetComponentInChildren<Shield>();
+            OldShield _shield = TargetParent.GetComponentInChildren<OldShield>();
 
             if (_shield != null)
             {

@@ -1,23 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 
-public class Energy : StaminaComponent
+public class Energy : Resource
 {
-	private float _timer = 0;
 	[SerializeField] private float _sumDamageGiven = 0;
+
+	private float _timer = 0;
 	private bool _canRegen = true;
-	private float _firstRegenDelay = 3;
+
 	private void Update()
 	{
-		if (_canRegen)
+		if (_canRegen && _regenCoroutine == null)
 		{
-			Regen();
+			ClientStartRegenirateJob();
 			return;
 		}
+        else
+        {
+			ClientStopRegenirateJob();
+        }
 		_timer += Time.deltaTime;
+
 		if(_timer > _regenerationDelay)
 		{
 			_timer = 0;
@@ -27,70 +32,48 @@ public class Energy : StaminaComponent
 	// ReSharper disable Unity.PerformanceAnalysis
 	public override void Add(float EnergyValue)
 	{
-		_value += EnergyValue;
-		if (_value >= _maxValue)
+		CurrentValue += EnergyValue;
+		if (CurrentValue >= _maxValue)
 		{
-			_value = _maxValue;
+			CurrentValue = _maxValue;
 		}
-		
-		if (EnergyValue > 0 && EnergyValue < 1)
-		{
-			EnergyValue = 1;
-		}
-
-		EnergyValue = (int)EnergyValue;
-		
-		var text = "+" + EnergyValue.ToString();
-		var startColor = new Color(0, 0, 1, 1);
-		var endColor = new Color(0, 0, 1, 0.5f);
-		ShowPopupText(text,startColor,endColor);
-		UpdateBar();
 	}
-	public override bool Use(float EnergyValue)
+	public override bool TryUse(float EnergyValue)
 	{
-		if(EnergyValue > _value) 
+		if(EnergyValue > CurrentValue) 
 		{
-			//Debug.Log("too much");
+			Debug.Log("too much");
 			return false;
 		}
-		//Debug.Log("energy used " + EnergyValue);
+		Debug.Log("energy used " + EnergyValue);
 		_canRegen = false;
 		_timer = 0;
-		_firstRegenDelay = 3;
 
-		_value -= EnergyValue;
+		CurrentValue -= EnergyValue;
 
-		if (_value <= 0)
+		if (CurrentValue <= 0)
 		{
-			_value = 0;
+			CurrentValue = 0;
 		}
-		UpdateBar();
 		return true;
 	}
 
-	protected override void Regen()
+	/*private IEnumerator RegenirateEnergy()
 	{
-		if (_value >= _maxValue) return;
-
-		if(_firstRegenDelay > 0) 
+		while (true)
 		{
-			_firstRegenDelay-=Time.deltaTime;
-			return;
+			yield return new WaitForSeconds(_regenerationDelay);
+			if (_canRegen && _value < _maxValue)
+			{
+				this.Add(_regenerationValue);
+			}
 		}
-		_timerDelay += Time.deltaTime;
-		if (_timerDelay > _regenerationDelay)
-		{
-			_timerDelay = 0;
-			Add(_regenerationValue);
-		}
-	}
+	}*/
 
 	public float UseAllEnergy()
 	{
-		float usedEnergy = _value;
-		_firstRegenDelay = 3;
-		_value = 0;
-		UpdateBar();
+		float usedEnergy = CurrentValue;
+		CurrentValue = 0;
 		return usedEnergy;
 	}
 

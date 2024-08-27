@@ -8,7 +8,7 @@ public class IceShadowObject : Projectiles
 	[HideInInspector] public float timeToDestroyAlive = 10;
 
 
-	private HealthComponent _healthPlayer;
+	private Health _healthPlayer;
 	private Coroutine _destroyObj;
 	private bool _isAlive = true;
 	private float _hp;
@@ -41,7 +41,9 @@ public class IceShadowObject : Projectiles
 	{
 		if (collision.gameObject == _dad && _healthPlayer != null)
 		{
-			_healthPlayer.SetBoostRegen(0);
+			//_healthPlayer.SetBoostRegen(0);
+			Debug.LogError("setboost in hp has been deleted");
+
 			return;
 		}
 	}
@@ -50,7 +52,8 @@ public class IceShadowObject : Projectiles
 		if(_dad == null) return;
 		if (collision.gameObject == _dad.gameObject)
 		{
-			_healthPlayer.SetBoostRegen(0.01f);
+			//_healthPlayer.SetBoostRegen(0.01f);
+			Debug.LogError("setboost in hp has been deleted");
 		}
 		if(collision.TryGetComponent<IcePuddleObject>(out var obj)) 
 		{
@@ -93,7 +96,10 @@ public class IceShadowObject : Projectiles
 			GameObject hitEffect = Instantiate(_hitEffect, transform.position, Quaternion.identity);
 			Destroy(hitEffect, 5f);
 		}
-		_healthPlayer.SetBoostRegen(0);
+
+		//_healthPlayer.SetBoostRegen(0);
+		Debug.LogError("SetBoostRegen has been deleted");
+
 		Destroy(gameObject);
 	}
 

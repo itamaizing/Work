@@ -143,7 +143,7 @@ public class DarkThreeRangeHeal : AbilityBase
         if (TargetParent != null)
         {
             TargetParent.GetComponent<HealthComponent>().TryTakeDamage(35f, DamageType.Magical, AttackRangeType.RangeAttack);
-            _player.GetComponent<Mana>().Use(30f);
+            _player.GetComponent<Mana>().TryUse(30f);
 
             DarkThirdAbilityEvent?.Invoke(35f);
             Recharge();

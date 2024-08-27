@@ -48,7 +48,9 @@ public class MinionAttack : Ability
 	private void Hit(Character enemy)
 	{
 		_isReadyToShot = false;
-		enemy.Health.TakeDamage(_damage + Random.Range(0, 1), DamageType.Physical, this);
+
+		//enemy.Health.TakeDamage(_damage + Random.Range(0, 1), DamageType.Physical, this);
+		Debug.LogError("!!!damage method has been changed!!!");
 	}
 
 	public void Timer()

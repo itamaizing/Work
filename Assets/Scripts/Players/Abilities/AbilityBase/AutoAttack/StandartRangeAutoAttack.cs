@@ -25,7 +25,9 @@ public class StandartRangeAutoAttack : AutoAttackAbility
     protected virtual void OnEndPointReached(Projectile projectile)
     {
         if (projectile.GetDistanceToTarget() <= _damageRadius)
-            projectile.Target.GetComponent<Character>().Health.TryTakeDamage(_damage, DamageType.Physical, AttackRangeType.RangeAttack);
+        {
+            //projectile.Target.GetComponent<Character>().Health.TryTakeDamage(ref _damage, this);
+        }
     }
 
     [Command]
