@@ -80,7 +80,6 @@ public class SpitPoison : Skill
 
     private void CooldownChange()
     {
-        Debug.Log("CooldownChange SpitPoison");
         if (_isActiveTalent)
         {
             if (_isOriginalTargetAllies || _isOriginalTargetPlayer)
@@ -89,21 +88,15 @@ public class SpitPoison : Skill
                 {
                     _cooldownTime /= 3;
                 }
-                Debug.Log("if _cooldownTime == " + _cooldownTime);
-                Debug.Log("if CooldownTime == " + CooldownTime);
-
             }
             else
             {
                 _cooldownTime = _originalCooldown;
-                Debug.Log("else Cooldown == " + _cooldownTime);
-
             }
         }
         else
         {
             _cooldownTime = _originalCooldown;
-            Debug.Log("Else Talent is Active == " + _isActiveTalent);
         }
     }
     private void CalculateAngleRotation()

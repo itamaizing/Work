@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class LightningMovementUpdated : TargetOrAreaAbility
 {
+    [SerializeField] private AcceleratedSlap _acceleratedSlap;
+
     [Header("Ability properties")]
     [SerializeField] private Character _dad;
     [SerializeField] private LayerMask _obstacleLayerMask;

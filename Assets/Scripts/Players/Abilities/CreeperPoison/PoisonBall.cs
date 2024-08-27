@@ -1,9 +1,7 @@
 using Mirror;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine;
 
 public class PoisonBall : Skill
 {
@@ -16,9 +14,20 @@ public class PoisonBall : Skill
     [SerializeField] private WitheringPoison _witheringPoison;
     [SerializeField] private EnlargedGlands _enlargedGlands;
     [SerializeField] private ContinuationAmbush _continuationAmbush;
+    [SerializeField] private VoluminousBall _voluminousBall;
 
     [SerializeField] private Character _player;
     [SerializeField] private PoisonBallProjectile _projectile;
+    [SerializeField] private GameObject arrowPrefab;
+
+    public int CurrentCharges;
+    public int CountProjectiles;
+    public float TimeBetweenAttack;
+    public float StartTimeBetweenAttack = 3.0f;
+
+    public bool IsActiveTimer = false; 
+
+    private GameObject[] arrowRenderers = new GameObject[4];
 
     private Character _currentTarget;
 
@@ -35,36 +44,33 @@ public class PoisonBall : Skill
 
     #region BoolVariables
 
+    private bool _isPushTarget;
+    private bool _isTarget;
     private bool _isFast;
     private bool _isOriginalTargetEnemy;
     private bool _isOriginalTargetAllies;
     private bool _isOriginalTargetPlayer;
-
     private bool _secondClickDone = false;
     private bool _thirdClickDone = false;
-    private bool _isPushTarget;
-
-    private bool _isTarget = false;
-
     private bool _isActiveHealingPoisonBall;
     private bool _isActiveEnlargedGlands;
     private bool _isActiveContinuationAmbush;
-    private bool _isHealingPoisonCloud = false;
-
-    public bool Enabled;
-    public bool IsPlayer { get; set; }
+    private bool _isActiveVoluminousBall;
+    private bool _isHealingPoisonCloud;
+    private bool firstClickCompleted = false;
+    private bool colorLockedAfterSecondClick = false;
+    private bool colorLockedAfterThirdClick = false;
 
     #endregion
 
     private Coroutine _secondClickCoroutine;
     private Coroutine _thirdClickCoroutine;
 
-    public int CurrentCharges;
-    public int CountProjectiles;
-
     public GameObject LastTarget { get; set; }
     public GameObject CurrentTarget { get; set; }
     public FootInstincts FootInstinctsTalent { get; set; }
+    public ContinuationAmbush ContinuationAmbushTalent { get; set; }
+
 
     #endregion
 
@@ -73,6 +79,7 @@ public class PoisonBall : Skill
     protected void Start()
     {
         _originalChargeCooldown = _chargeCooldown;
+        TimeBetweenAttack = StartTimeBetweenAttack;
     }
 
     protected override bool IsCanCast => CheckCanCast();
@@ -89,14 +96,20 @@ public class PoisonBall : Skill
         _secondMousePosition = Vector3.zero;
         _thirdMousePosition = Vector3.zero;
 
+        ClearArrows();
+
+        firstClickCompleted = false;
+        colorLockedAfterSecondClick = false;
+        colorLockedAfterThirdClick = false;
+
         if (_secondClickCoroutine != null)
         {
-            StopCoroutine(SecondClick());
+            StopCoroutine(_secondClickCoroutine);
             _secondClickCoroutine = null;
         }
         if (_thirdClickCoroutine != null)
         {
-            StopCoroutine(ThirdClick());
+            StopCoroutine(_thirdClickCoroutine);
             _thirdClickCoroutine = null;
         }
     }
@@ -110,16 +123,26 @@ public class PoisonBall : Skill
             if (Input.GetMouseButtonDown(0))
             {
                 _currentTarget = GetRaycastTarget(true);
-                CheckWhoTarget();
 
-                _firstMousePosition = GetMousePoint();
+                if (_currentTarget != null)
+                {
+                    Debug.Log($"Target Found: {_currentTarget.name}");
+                    CheckWhoTarget();
+                    _firstMousePosition = GetMousePoint();
+                    CreateArrowsParallelToPlayer();
+                    StopAutoDraw();
+                    firstClickCompleted = true;
+                }
+                else
+                {
+                    Debug.Log("Target not found.");
+                }
             }
             CooldownChange();
             yield return null;
         }
 
         yield return _secondClickCoroutine = StartCoroutine(SecondClick());
-
         yield return _thirdClickCoroutine = StartCoroutine(ThirdClick());
 
         UseAbility();
@@ -129,136 +152,138 @@ public class PoisonBall : Skill
     {
         ChooseWhichProjectileCreate();
         Debug.Log("PoisonBall / CastJob / Called ChooseWhichProjectileCreate");
+
+        ClearArrows();
+
         yield return null;
     }
 
     private void UseAbility()
     {
-        switch (_countProjectiles)
+        if (_secondClickDone && _thirdClickDone)
         {
-            case < 3:
-                _isTarget = IsTarget();
-                ChooseMovementDependingOnCountProjectiles();
-                break;
-
-            case 3:
-                _isTarget = IsTarget();
-                ChooseMovementDependingOnCountProjectiles();
-                break;
-
-            default:
-                break;
+            _isTarget = IsTarget();
+            ChooseMovementDependingOnCountProjectiles();
+        }
+        else
+        {
+            Debug.Log("Ability not triggered due to incomplete clicks.");
         }
     }
 
     #endregion
 
-    #region CheckingMethods
+    #region ArrowManagement
 
-    private void CheckingActiveTalents()
+    private void CreateArrowsParallelToPlayer()
     {
-        if (_healingPoisonBall.IsActive)
+        if (_currentTarget == null || arrowPrefab == null)
         {
-            _isActiveHealingPoisonBall = true;
-        }
-        else
-        {
-            _isActiveHealingPoisonBall = false;
+            Debug.LogError("Arrow Prefab is not assigned or Target is null");
+            return;
         }
 
-        if (_continuationAmbush.IsActive)
-        {
-            _isActiveContinuationAmbush = true;
-        }
-        else
-        {
-            _isActiveContinuationAmbush = false;
-        }
+        Vector3 targetPosition = _currentTarget.transform.position;
+        Vector3 playerPosition = _player.transform.position;
 
-        if (_enlargedGlands.IsActive)
+        Vector3 directionToTarget = (targetPosition - playerPosition).normalized;
+
+        Vector3 perpendicularDirection = Vector3.Cross(directionToTarget, Vector3.forward).normalized;
+
+        arrowRenderers[0] = Instantiate(arrowPrefab, targetPosition + directionToTarget, Quaternion.identity);
+        arrowRenderers[1] = Instantiate(arrowPrefab, targetPosition - directionToTarget, Quaternion.identity);
+        arrowRenderers[2] = Instantiate(arrowPrefab, targetPosition + directionToTarget * 1.5f, Quaternion.identity);
+        arrowRenderers[3] = Instantiate(arrowPrefab, targetPosition - directionToTarget * 1.5f, Quaternion.identity);
+
+        SetArrowDirections(perpendicularDirection);
+        SetArrowColors(Color.red);
+    }
+
+    private void SetArrowDirections(Vector3 perpendicularDirection)
+    {
+        for (int i = 0; i < arrowRenderers.Length; i++)
         {
-            _isActiveEnlargedGlands = true;
-            MaxCharges = 4;
-        }
-        else
-        {
-            _isActiveEnlargedGlands = false;
+            var arrow = arrowRenderers[i];
+            if (arrow != null)
+            {
+                var drawArrow = arrow.GetComponent<DrawArrow>();
+                if (drawArrow != null)
+                {
+                    Vector3 startPoint = arrow.transform.position - perpendicularDirection * 0.5f;
+                    Vector3 endPoint = arrow.transform.position + perpendicularDirection * 0.5f;
+
+                    if (i % 2 == 0)
+                    {
+                        drawArrow.DrawCurvedArrow(startPoint, endPoint, true);
+                    }
+                    else
+                    {
+                        drawArrow.DrawCurvedArrow(startPoint, endPoint, false);
+                    }
+                }
+            }
         }
     }
 
-    private void CheckWhoTarget()
+    private void SetArrowColors(Color color)
     {
-        if (_currentTarget != null)
+        foreach (var arrow in arrowRenderers)
         {
-            if (_currentTarget.gameObject == _player.gameObject)
+            if (arrow != null)
             {
-                Debug.Log("Target == Player");
-                _isOriginalTargetPlayer = true;
-                _isOriginalTargetAllies = false;
-                _isOriginalTargetEnemy = false;
-                if (_healPoisonCloud.IsActive)
+                var lineRenderer = arrow.GetComponent<LineRenderer>();
+                if (lineRenderer != null)
                 {
-                    _isHealingPoisonCloud = true;
+                    lineRenderer.startColor = color;
+                    lineRenderer.endColor = color;
                 }
-                Debug.Log($"ChooseTarget / currentTarget = {_currentTarget.gameObject.name}");
             }
-            else if (_currentTarget.gameObject.layer == LayerMask.NameToLayer("Allies"))
-            {
-                Debug.Log("Target == Allies");
-                _isOriginalTargetPlayer = false;
-                _isOriginalTargetAllies = true;
-                _isOriginalTargetEnemy = false;
-                if (_healPoisonCloud.IsActive)
-                {
-                    _isHealingPoisonCloud = true;
-                }
-                Debug.Log($"ChooseTarget / currentTarget = {_currentTarget.gameObject.name}");
-            }
-            else if (_currentTarget.gameObject.layer == LayerMask.NameToLayer("Enemy"))
-            {
-                Debug.Log("Target == Enemies");
-                _isOriginalTargetPlayer = false;
-                _isOriginalTargetAllies = false;
-                _isOriginalTargetEnemy = true;
-                if (_healPoisonCloud.IsActive)
-                {
-                    _isHealingPoisonCloud = true;
-                }
-                Debug.Log($"ChooseTarget / currentTarget = {_currentTarget.gameObject.name}");
-            }
-        }
-        else
-        {
-            _isOriginalTargetPlayer = false;
-            _isOriginalTargetAllies = false;
-            _isOriginalTargetEnemy = false;
         }
     }
 
-    private void CooldownChange()
+    private void SetArrowColor(int arrowIndex, Color color)
     {
-        Debug.Log("CooldownChange PoisonBall");
-        if (_isActiveHealingPoisonBall)
+        if (arrowRenderers[arrowIndex] != null)
         {
-            if (_isOriginalTargetAllies || _isOriginalTargetPlayer)
+            var lineRenderer = arrowRenderers[arrowIndex].GetComponent<LineRenderer>();
+            if (lineRenderer != null)
             {
-                if (_chargeCooldown == _originalChargeCooldown)
-                {
-                    _chargeCooldown /= 2; 
-                    Debug.Log("if _chargeCooldown == " + _chargeCooldown);
-                    Debug.Log("if ChargeCooldown == " + ChargeCooldown);
-                }
-            }
-            else
-            {
-                _chargeCooldown = _originalChargeCooldown; 
-                Debug.Log("else _chargeCooldown == " + _chargeCooldown);
+                lineRenderer.startColor = color;
+                lineRenderer.endColor = color;
             }
         }
-        else
+    }
+
+    private void DarkenArrowColor(int arrowIndex, float alpha)
+    {
+        if (arrowRenderers[arrowIndex] != null)
         {
-            _chargeCooldown = _originalChargeCooldown;
+            var lineRenderer = arrowRenderers[arrowIndex].GetComponent<LineRenderer>();
+            if (lineRenderer != null)
+            {
+                Color startColor = lineRenderer.startColor;
+                Color endColor = lineRenderer.endColor;
+
+                startColor.a = alpha;
+                endColor.a = alpha;
+
+                lineRenderer.startColor = startColor;
+                lineRenderer.endColor = endColor;
+            }
         }
+    }
+
+    private void ClearArrows()
+    {
+        foreach (var arrow in arrowRenderers)
+        {
+            if (arrow != null)
+            {
+                Destroy(arrow);
+            }
+        }
+
+        Debug.Log("Arrows cleared.");
     }
 
     #endregion
@@ -273,6 +298,17 @@ public class PoisonBall : Skill
             {
                 _secondClickDone = true;
                 _secondMousePosition = GetMousePoint();
+
+                if (_secondMousePosition.x < _firstMousePosition.x)
+                {
+                    DarkenArrowColor(0, 0.8f);
+                    DarkenArrowColor(1, 0f);
+                }
+                else
+                {
+                    DarkenArrowColor(0, 0f);
+                    DarkenArrowColor(1, 0.8f);
+                }
             }
             yield return null;
         }
@@ -286,8 +322,126 @@ public class PoisonBall : Skill
             {
                 _thirdClickDone = true;
                 _thirdMousePosition = GetMousePoint();
+
+                if (_thirdMousePosition.x < _secondMousePosition.x)
+                {
+                    DarkenArrowColor(2, 0.8f);
+                    DarkenArrowColor(3, 0f);
+                }
+                else
+                {
+                    DarkenArrowColor(2, 0f);
+                    DarkenArrowColor(3, 0.8f);
+                }
+
+                colorLockedAfterThirdClick = true;
             }
             yield return null;
+        }
+    }
+
+
+
+    #endregion
+
+    #region Update Method for Mouse Movement Detection
+
+    private void Update()
+    {
+        if (firstClickCompleted && !_secondClickDone)
+        {
+            Vector3 currentMousePosition = GetMousePoint();
+            if (currentMousePosition.x < _firstMousePosition.x)
+            {
+                SetArrowColor(0, Color.green);
+                SetArrowColor(1, Color.red);
+            }
+            else
+            {
+                SetArrowColor(0, Color.red);
+                SetArrowColor(1, Color.green);
+            }
+        }
+
+        if (_secondClickDone && !colorLockedAfterSecondClick && !colorLockedAfterThirdClick)
+        {
+            Vector3 currentMousePosition = GetMousePoint();
+            if (currentMousePosition.x < _secondMousePosition.x)
+            {
+                SetArrowColor(2, Color.green);
+                SetArrowColor(3, Color.red);
+            }
+            else
+            {
+                SetArrowColor(2, Color.red);
+                SetArrowColor(3, Color.green);
+            }
+        }
+    }
+
+    #endregion
+
+    #region CheckingMethods
+
+    private void CheckingActiveTalents()
+    {
+        _isActiveHealingPoisonBall = _healingPoisonBall.IsActive;
+        _isActiveContinuationAmbush = _continuationAmbush.IsActive;
+        _isActiveEnlargedGlands = _enlargedGlands.IsActive;
+        _isActiveVoluminousBall = _voluminousBall.IsActive;
+
+        if (_isActiveEnlargedGlands)
+        {
+            MaxCharges = 4;
+        }
+    }
+
+    private void CheckWhoTarget()
+    {
+        if (_currentTarget != null)
+        {
+            if (_currentTarget.gameObject == _player.gameObject)
+            {
+                Debug.Log("Target == Player");
+                _isOriginalTargetPlayer = true;
+                _isOriginalTargetAllies = false;
+                _isOriginalTargetEnemy = false;
+                _isHealingPoisonCloud = _healPoisonCloud.IsActive;
+            }
+            else if (_currentTarget.gameObject.layer == LayerMask.NameToLayer("Allies"))
+            {
+                Debug.Log("Target == Allies");
+                _isOriginalTargetPlayer = false;
+                _isOriginalTargetAllies = true;
+                _isOriginalTargetEnemy = false;
+                _isHealingPoisonCloud = _healPoisonCloud.IsActive;
+            }
+            else if (_currentTarget.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+            {
+                Debug.Log("Target == Enemies");
+                _isOriginalTargetPlayer = false;
+                _isOriginalTargetAllies = false;
+                _isOriginalTargetEnemy = true;
+                _isHealingPoisonCloud = _healPoisonCloud.IsActive;
+            }
+        }
+        else
+        {
+            _isOriginalTargetPlayer = false;
+            _isOriginalTargetAllies = false;
+            _isOriginalTargetEnemy = false;
+        }
+    }
+
+    private void CooldownChange()
+    {
+        if (_isActiveHealingPoisonBall && (_isOriginalTargetAllies || _isOriginalTargetPlayer))
+        {
+            _chargeCooldown = _originalChargeCooldown / 2;
+        }
+        else
+        {
+            _chargeCooldown = _originalChargeCooldown;
         }
     }
 
@@ -297,21 +451,14 @@ public class PoisonBall : Skill
 
     private bool CheckCanCast()
     {
-        Debug.Log("CheckCanCast PoisonBall");
-
-        if (_currentTarget == null)
-            return Vector3.Distance(_firstMousePosition, transform.position) <= Radius;
-
-        return Vector3.Distance(_firstMousePosition, transform.position) <= Radius ||
-               Vector3.Distance(_currentTarget.transform.position, transform.position) <= Radius;
+        return _currentTarget != null &&
+               (Vector3.Distance(_firstMousePosition, transform.position) <= Radius ||
+                Vector3.Distance(_currentTarget.transform.position, transform.position) <= Radius);
     }
 
     private bool IsTarget()
     {
-        if (_currentTarget != null)
-            return true;
-
-        return false;
+        return _currentTarget != null;
     }
 
     #endregion
@@ -320,84 +467,66 @@ public class PoisonBall : Skill
 
     private void ChooseMovementDependingOnCountProjectiles()
     {
-        Debug.Log("ChooseMovementDependingOnCountProjectiles");
         if (_countProjectiles < 3)
         {
-            Debug.Log("ChooseMovementDependingOnCountProjectiles / if (_countProj < 3)");
             ChooseSpeed();
             ChooseDirectionPush();
-
             StartCoroutine(_isFast ? TimeCastForFastMoveProjectile() : TimeCastForSlowMoveProjectile());
         }
         else if (_countProjectiles == 3)
         {
-            Debug.Log("ChooseMovementDependingOnCountProjectiles / else if (_countProj = 3)");
             ChooseSpeed();
             ChooseDirectionPush();
-
             StartCoroutine(TimeCastForThirdProjectile());
         }
     }
 
     private void ChooseSpeed()
     {
-        Debug.Log("ChooseSpeed");
-        if (_isTarget)
-        {
-            Debug.Log($"ChooseSpeed / if / _isTarget = {_isTarget}");
-            _isFast = Vector2.Distance(_player.transform.position, _secondMousePosition) > Vector2.Distance(_player.transform.position, _currentTarget.transform.position);
-        }
-        else
-        {
-            Debug.Log($"ChooseSpeed / else / _isTarget = {_isTarget}");
-            _isFast = Vector2.Distance(_player.transform.position, _secondMousePosition) > Vector2.Distance(_player.transform.position, _firstMousePosition);
-        }
+        _isFast = _isTarget
+            ? Vector2.Distance(_player.transform.position, _secondMousePosition) > Vector2.Distance(_player.transform.position, _currentTarget.transform.position)
+            : Vector2.Distance(_player.transform.position, _secondMousePosition) > Vector2.Distance(_player.transform.position, _firstMousePosition);
+        Debug.Log($"ISFAST?? = {_isFast}");
     }
 
     private void ChooseDirectionPush()
     {
         _isPushTarget = Vector2.Distance(_player.transform.position, _thirdMousePosition) > Vector2.Distance(_player.transform.position, _secondMousePosition);
-        Debug.Log($"PoisonBall / ChooseDirectionPush / isPushTarget = {_isPushTarget}");
     }
 
     private IEnumerator TimeCastForFastMoveProjectile()
     {
-        Debug.Log($"FastMoveShoot (isEnemy = {_isTarget}, isFast = {_isFast})");
         _castDelay = _slowTimeCast;
         yield return null;
     }
 
     private IEnumerator TimeCastForSlowMoveProjectile()
     {
-        Debug.Log($"SlowMoveShoot (isEnemy = {_isTarget}, isFast = {_isFast})");
         _castDelay = _fastTimeCast;
         yield return null;
     }
 
     private IEnumerator TimeCastForThirdProjectile()
     {
-        Debug.Log($"ThirdProjectileMovement (isEnemy = {_isTarget}, isFast = {_isFast})");
         _castDelay = 0.4f;
         yield return null;
     }
 
     private void ChooseWhichProjectileCreate()
     {
-        Debug.Log($"ChooseWhichProjectileCreate WitheringPoison IsActive = {_witheringPoison.IsActive}");
         if (_isTarget)
         {
             CmdCreateProjectileForTarget(_currentTarget.gameObject, _currentTarget.transform.position,
-                _isFast, _isPushTarget, _isActiveHealingPoisonBall, _isOriginalTargetPlayer, _isOriginalTargetEnemy, 
-                _isOriginalTargetAllies, _witheringPoison.IsActive, _isActiveContinuationAmbush);
+                _isFast, _isPushTarget, _isActiveHealingPoisonBall, _isOriginalTargetPlayer, _isOriginalTargetEnemy,
+                _isOriginalTargetAllies, _witheringPoison.IsActive, _isActiveContinuationAmbush, _isActiveVoluminousBall);
 
             CmdApplyCloudPoison(_healPoisonCloud.IsActive, _isHealingPoisonCloud);
         }
         else
         {
-            Debug.Log($"ChooseWhichProjectileCreate / else / WitheringPoison IsActive = {_witheringPoison.IsActive})");
             CmdCreateProjectileForFlyingMaxDistance(_firstMousePosition,
                 _isFast, _isPushTarget, _isActiveHealingPoisonBall, _isOriginalTargetPlayer, _isOriginalTargetEnemy,
-                _isOriginalTargetAllies, _witheringPoison.IsActive, _isActiveContinuationAmbush);
+                _isOriginalTargetAllies, _witheringPoison.IsActive, _isActiveContinuationAmbush, _isActiveVoluminousBall);
 
             CmdApplyCloudPoison(_healPoisonCloud.IsActive, _isHealingPoisonCloud);
         }
@@ -410,38 +539,71 @@ public class PoisonBall : Skill
     [Command]
     private void CmdCreateProjectileForTarget(GameObject target, Vector3 targetOrPoint,
         bool isFast, bool isPushTarget, bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies,
-        bool isActiveWitheringPoison, bool isActiveContinuationAmbush)
-    {
+        bool isActiveWitheringPoison, bool isActiveContinuationAmbush, bool isActiveVoluminousBall)
+    { 
         CurrentTarget = target;
         FootInstinctsTalent = _footInstincts;
 
         if (LastTarget == CurrentTarget)
         {
             CountProjectiles++;
+            Debug.Log($"PoisonBall / CmdCreateToTarget / first if CountProjectiles == {CountProjectiles}");
         }
-        else if (LastTarget != CurrentTarget || CountProjectiles == 4)
+        else
         {
             CountProjectiles = 1;
+            Debug.Log($"PoisonBall / CmdCreateToTarget / first else CountProjectiles == {CountProjectiles}");
         }
 
+        if (CountProjectiles == 1 && LastTarget == CurrentTarget)
+        {
+            TimeBetweenAttack = StartTimeBetweenAttack;
+            IsActiveTimer = true;
+            Debug.Log($"PoisonBall / CmdCreateToTarget / second if CountProjectiles == {CountProjectiles}, IsActiveTimer = {IsActiveTimer}, " +
+                $"TimeBetweenAttack = {TimeBetweenAttack}");
+        }
+        else if (CountProjectiles == 2 && LastTarget == CurrentTarget)
+        {
+            TimeBetweenAttack = StartTimeBetweenAttack;
+            Debug.Log($"PoisonBall / CmdCreateToTarget / first else if CountProjectiles == {CountProjectiles}, IsActiveTimer = {IsActiveTimer}, " +
+                      $"TimeBetweenAttack = {TimeBetweenAttack}");
+        }
+        else if (LastTarget != CurrentTarget || CountProjectiles == 3)
+        {
+            IsActiveTimer = false;
+            CountProjectiles = 0;
+            Debug.Log($"PoisonBall / CmdCreateToTarget / second else if CountProjectiles == {CountProjectiles}, IsActiveTimer = {IsActiveTimer}, " +
+            $"TimeBetweenAttack = {TimeBetweenAttack}");
+        }
+
+        if (IsActiveTimer)
+        {
+            TimeBetweenAttack -= Time.deltaTime;
+            Debug.Log($"PoisonBall / CmdCreateToTarget / Timer = {TimeBetweenAttack}");
+            if (TimeBetweenAttack <= 0)
+            {
+                IsActiveTimer = false;
+                CountProjectiles = 0;
+            }
+        }
+        
         GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
-        PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>();
+        PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>(); 
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
-        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.Value, isActiveTalent, 
-            isTargetPlayer, isTargetEnemy, isTargetAllies, isActiveWitheringPoison, isPushTarget, isActiveContinuationAmbush);
+        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.Value, isActiveTalent,
+            isTargetPlayer, isTargetEnemy, isTargetAllies, isActiveWitheringPoison, isPushTarget, isActiveContinuationAmbush, isActiveVoluminousBall);
 
         poisonBallProjectile.MoveBallToTarget(targetOrPoint, isFast);
 
         NetworkServer.Spawn(item);
-        //RpcCreateProjectileForTaret(target, poisonBallProjectile, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies, isWitheringPoisonTalentActive);
     }
 
     [Command]
-    private void CmdCreateProjectileForFlyingMaxDistance(Vector3 point, bool isFast, bool isPushTarget, 
-        bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, 
-        bool isActiveWitheringPoison, bool isActiveContinuationAmbush)
+    private void CmdCreateProjectileForFlyingMaxDistance(Vector3 point, bool isFast, bool isPushTarget,
+        bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies,
+        bool isActiveWitheringPoison, bool isActiveContinuationAmbush, bool isActiveVoluminousBall)
     {
         FootInstinctsTalent = _footInstincts;
 
@@ -449,23 +611,47 @@ public class PoisonBall : Skill
         {
             CountProjectiles++;
         }
-        else if (LastTarget != CurrentTarget || CountProjectiles == 4)
+        else
         {
             CountProjectiles = 1;
         }
 
+        if (CountProjectiles == 1 && LastTarget == CurrentTarget)
+        {
+            TimeBetweenAttack = StartTimeBetweenAttack;
+            IsActiveTimer = true;
+        }
+        else if (CountProjectiles == 2 && LastTarget == CurrentTarget)
+        {
+            TimeBetweenAttack = StartTimeBetweenAttack;
+        }
+        else if (LastTarget != CurrentTarget || CountProjectiles == 3)
+        {
+            IsActiveTimer = false;
+            CountProjectiles = 0;
+        }
+
+        if (IsActiveTimer)
+        {
+            TimeBetweenAttack -= Time.deltaTime;
+            if (TimeBetweenAttack <= 0)
+            {
+                IsActiveTimer = false;
+                CountProjectiles = 0;
+            }
+        }
+
         GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
-        PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>();
+        PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>(); 
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
-        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.Value, isActiveTalent, isTargetPlayer, 
-            isTargetEnemy, isTargetAllies, isActiveWitheringPoison, isPushTarget, isActiveContinuationAmbush);
+        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.Value, isActiveTalent,
+            isTargetPlayer, isTargetEnemy, isTargetAllies, isActiveWitheringPoison, isPushTarget, isActiveContinuationAmbush, isActiveVoluminousBall);
 
         poisonBallProjectile.MoveBallOnMaxDistance(point, isFast);
 
         NetworkServer.Spawn(item);
-        //RpcCreateProjectileForFlyingMaxDistance(poisonBallProjectile, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies, isWitheringPoisonTalentActive);
     }
 
     [Command]
@@ -481,59 +667,10 @@ public class PoisonBall : Skill
         }
     }
 
-    #endregion
-
-    #region ClientRpcMethods
-
-    //[ClientRpc]
-    //private void RpcCreateProjectileForTaret(GameObject target, PoisonBallProjectile poisonBallProjectile,
-    //    bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, bool isWitheringPoisonTalentActive)
-    //{
-    //    FootInstinctsTalent = _footInstincts;
-    //    CurrentTarget = target;
-
-    //    if (CurrentTarget == _player.gameObject)
-    //    {
-    //        IsPlayer = true;
-    //    }
-    //    else
-    //    {
-    //        IsPlayer = false;
-    //    }
-
-    //    if (LastTarget == CurrentTarget)
-    //    {
-    //        CountProjectiles++;
-    //    }
-    //    else if (LastTarget != CurrentTarget || CountProjectiles == 3)
-    //    {
-    //        CountProjectiles = 1;
-    //    }
-
-    //    poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.Value, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies, isWitheringPoisonTalentActive);
-    //}
-
-    //[ClientRpc]
-    //private void RpcCreateProjectileForFlyingMaxDistance(PoisonBallProjectile poisonBallProjectile, 
-    //    bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, bool isWitheringPoisonTalentActive)
-    //{
-    //    FootInstinctsTalent = _footInstincts;
-    //    if (LastTarget == CurrentTarget)
-    //    {
-    //        CountProjectiles++;
-    //    }
-    //    else if (LastTarget != CurrentTarget || CountProjectiles == 3)
-    //    {
-    //        CountProjectiles = 1;
-    //    }
-
-    //    poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.Value, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies, isWitheringPoisonTalentActive);
-    //}
-
-    #endregion
-
     public void PayCostPoisonBall()
     {
         TryPayCost();
     }
+
+    #endregion
 }

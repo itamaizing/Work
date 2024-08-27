@@ -31,11 +31,11 @@ Transform:
   m_GameObject: {fileID: 6623607984683778980}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.2, y: 1.2, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &-9037394795196072516
 Rigidbody2D:
@@ -82,9 +82,10 @@ MonoBehaviour:
   _poisonBall: {fileID: 0}
   _hitEffect: {fileID: 0}
   _spriteRenderer: {fileID: 1376465542260136675}
+  _transformBall: {fileID: 744895182535649991}
   _collider: {fileID: 4712967696769287591}
   _rbBall: {fileID: -9037394795196072516}
-  _dad: {fileID: 4142585537257920599, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
+  _player: {fileID: 0}
 --- !u!58 &4712967696769287591
 CircleCollider2D:
   m_ObjectHideFlags: 0

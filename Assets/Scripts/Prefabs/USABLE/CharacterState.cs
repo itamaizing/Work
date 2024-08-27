@@ -754,32 +754,20 @@ public class CreeperInvisibleState : AbstractCharacterState
 	private CreeperInvisible _creeperInvisible;
     private Character _player;
 
-    private float _distanceWithoutEnemies = 6f;
-
-	private float _timeWithoutDamage;
-	private float _playerMaxHealth;
-	private float _playerCurrentHealth;
-
 	private float _reductionMoveSpeed = 0.3f;
 	private float _originalMoveSpeed;
 	private float _increaseStaminaRegen = 0.3f;
 	private float _originalStaminaRegen;
 
-	private static bool _isEnemy;
-	private static bool _isDamagedPlayer = false;
-	private static bool _isPlayerSeen = true;
-	private static bool _isPlayerInvisability = false;
-	private static bool _isInvisible;
 	private static bool _isIncreasedManaCost = false;
+	private bool _isInvisible;
+	private bool _isPlayerInvisability;
 
-	public bool turnOff = false;
-	public static bool IsDamagedPlayer { set => _isDamagedPlayer = value; }
-	public static bool IsPlayerSeen { set => _isPlayerSeen = value; }
-
-	public static float StartTimeWithoutDamage;
+    public bool turnOff = false;
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
     {
+		Debug.Log("EnterState CreeperInvisible");
 		state = States.CreeperInvisible;
         type = StateType.Physical;
         effects.Add(StatusEffect.Move);
@@ -788,10 +776,8 @@ public class CreeperInvisibleState : AbstractCharacterState
         _characterState = character;
 		_player = _characterState.Character;
 
-		_playerMaxHealth = _characterState.Health.CurrentHealth;
 		_originalMoveSpeed = _player.Move._agent.maxSpeed;
 		_originalStaminaRegen = _player.Stamina.RegenerationValue;
-		_timeWithoutDamage = StartTimeWithoutDamage;
 
         if (_player != null)
         {
@@ -812,25 +798,12 @@ public class CreeperInvisibleState : AbstractCharacterState
 	public override void UpdateState()
     {
         _isInvisible = _creeperInvisible.IsInvisible;
-		Debug.Log($"CreeperInvisible / _isInvisible = {_isInvisible}");
+		//Debug.Log($"CreeperInvisible / _isInvisible = {_isInvisible}");
         if (_isInvisible)
 		{
-			if (_isPlayerSeen)
-			{
-				CheckEnemies();
-			}
-
-			_timeWithoutDamage -= Time.deltaTime;
-
-			if (!_isDamagedPlayer)
-			{
-				PlayerTookDamage();
-			}
-
-			if (_timeWithoutDamage <= 0 && !_isPlayerSeen && !_isPlayerInvisability)
+			if (!_isPlayerInvisability)
 			{
 				ApplyInvisible();
-				_timeWithoutDamage = StartTimeWithoutDamage;
 			}
 		}
 		else
@@ -854,17 +827,6 @@ public class CreeperInvisibleState : AbstractCharacterState
         return false;
     }
 
-	private void PlayerTookDamage()
-    {
-        _playerCurrentHealth = _characterState.Health.CurrentHealth;
-
-        if (_playerCurrentHealth < _playerMaxHealth)
-        {
-			_isDamagedPlayer = true;
-			ExitState();
-        }
-    }
-
 	private void ApplyInvisible()
 	{
         _isPlayerInvisability = true;
@@ -876,7 +838,6 @@ public class CreeperInvisibleState : AbstractCharacterState
 
         _player.Stamina.RegenerationValue *= (1 + _increaseStaminaRegen);
 		Debug.Log("Player StaminaRegen == " + _player.Stamina.RegenerationValue);
-        _timeWithoutDamage = StartTimeWithoutDamage;
 
 		if (!_isIncreasedManaCost)
 		{
@@ -890,33 +851,6 @@ public class CreeperInvisibleState : AbstractCharacterState
 			_isIncreasedManaCost = true;
 		}
     }
-
-	private bool CheckEnemies()
-	{
-        _isEnemy = false;
-
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(_characterState.transform.position, _distanceWithoutEnemies);
-		foreach (Collider2D enemy in hitEnemies)
-		{
-			if (enemy != null && enemy.CompareTag("Enemies"))
-			{
-				_isEnemy = true;
-				break;
-			}
-		}
-
-		if (!_isEnemy)
-		{
-			_isPlayerSeen = false;
-		}
-		else
-		{
-			_isPlayerSeen = true;
-		}
-
-		hitEnemies = null;
-		return _isEnemy;
-	}
 
 	private void ResetValues()
 	{
@@ -941,11 +875,6 @@ public class CreeperInvisibleState : AbstractCharacterState
 			Debug.Log("IsIncreasedManaCost in ResetValues == " + _isIncreasedManaCost);
 		}
 
-        _timeWithoutDamage = 0;
-
-        _isPlayerSeen = true;
-		_isEnemy = false;
-		_isDamagedPlayer = false;
 		_isPlayerInvisability =	false;
 	}
 }
@@ -1131,7 +1060,6 @@ public class PoisonBone : AbstractCharacterState
             AddStacks();
         }
 
-		Debug.Log("player in PoisonBone == " + _player);
 		if (_player != null)
 		{
 			_abilities = _player.GetComponent<CharacterState>().Character.Abilities.Abilities;
@@ -1281,12 +1209,10 @@ public class WitheringPoisonState : AbstractCharacterState
                 //Debug.Log("Checking talents: " + talent.name + ", Type: " + talent.GetType());
                 if (talent is BindingPoison bindingPoison)
                 {
-					Debug.Log($"if talent is bindingPoison = {bindingPoison}");
                     if (_bindingPoison == null)
                     {
                         _bindingPoison = bindingPoison;
 						_isActiveTalentBindingPoison = _bindingPoison.IsActive;
-                        Debug.Log("bindingPoison == " + _bindingPoison + $" /  and _bindingPoison.IsActive = {_isActiveTalentBindingPoison}");
                     }
                 }
             }
@@ -1323,7 +1249,6 @@ public class WitheringPoisonState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        Debug.Log("Withering Stack");
         if (_currentStacks < _maxStacks)
         {
             AddStacks();
@@ -1338,7 +1263,6 @@ public class WitheringPoisonState : AbstractCharacterState
 
     public void AddStacks()
     {
-        Debug.Log("Withering AddStacks");
         if (_currentStacks < _maxStacks)
         {
             _currentStacks++;
@@ -1354,13 +1278,11 @@ public class WitheringPoisonState : AbstractCharacterState
 
     private void TakeAwayMana()
     {
-        Debug.Log($"Withering TakeAwayMana / _bindingPoison = {_bindingPoison} / _bindingPoison.IsActive = {_isActiveTalentBindingPoison}");
         float takeAwayMana = _currentStacks * _baseValueTakeAwayMana;
         _endValueTakeAwayMana = _characterState.Stamina.Value * takeAwayMana;
 
 		if (_isActiveTalentBindingPoison)
 		{
-			Debug.Log($"WitheringPoisonState / TakeAwayMana / first if (_bindingPoison.IsActive = {_isActiveTalentBindingPoison})");
 			if (Random.Range(0.0f, 1.0f) <= _chanceOfApplyBindingPoison)
 			{
 				_characterState.CmdAddState(States.BindingPoison, 10, 0);
@@ -1400,7 +1322,6 @@ public class BindingPoisonState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
     {
-		Debug.Log("BindingPoison / EnterState");
         state = States.BindingPoison;
 
         type = StateType.Physical;
@@ -1456,7 +1377,6 @@ public class BindingPoisonState : AbstractCharacterState
 
     public void AddStacks()
     {
-        Debug.Log($"BindingPoisonState / AddStacks / CharacterManager = {_skillManager}");
         if (_currentStacks < _maxStacks)
         {
 			_currentStacks++;
@@ -1557,7 +1477,6 @@ public class PoisonCloud : AbstractCharacterState
 		{
 		    _abilities = _player.CharacterState.Character.Abilities.Abilities;
 			_talents = _player.CharacterState.Character.TalentSystem.Talents;
-		    Debug.Log("PoisonCloud player == " + _player);
 
 			SearchAbilities();
 
@@ -1577,17 +1496,13 @@ public class PoisonCloud : AbstractCharacterState
 
 	private void SearchAbilities()
 	{
-		Debug.Log("PoisonCloud / SearchAbilities");
         foreach (Skill ability in _abilities)
         {
-            Debug.Log("Checking ability: " + ability.name + ", Type: " + ability.GetType());
             if (ability is ExplosionPoisonCloud cloudExplosion)
             {
-                Debug.Log("if / ability");
                 if (_cloudExplosion == null)
                 {
                     _cloudExplosion = cloudExplosion;
-                    Debug.Log("CloudExplosion == " + _cloudExplosion);
                 }
             }
         }
@@ -1595,16 +1510,13 @@ public class PoisonCloud : AbstractCharacterState
 
 	private void SearchTalent()
 	{
-        Debug.Log("PoisonCLoud / SearchTalent");
         foreach (Talent talent in _talents)
         {
-            Debug.Log("Checking Talent: " + talent.name + ", Type: " + talent.GetType());
 			if (talent is CapaciousPoisonCloud capaciousCloud)
 			{
 				if (_capaciousPoisonCloud == null)
 				{
 					_capaciousPoisonCloud = capaciousCloud;
-                    Debug.Log($"CapaciousPoisonCloud = {_capaciousPoisonCloud}");
                 }
 			}
 		}
@@ -1735,7 +1647,6 @@ public class HealingPoisonCloud : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
     {
-		Debug.Log("HealingPoisonCLoudState / EnterState");
         state = States.HealingPoisonCloud;
         _timeBetweenHeal = _startTimeBetweenHeal;
 
@@ -1762,7 +1673,6 @@ public class HealingPoisonCloud : AbstractCharacterState
 
     public override void UpdateState()
     {
-        Debug.Log("HealingPoisonCLoudState / UpdateState");
 
         _timeBetweenHeal -= Time.deltaTime;
         if (_timeBetweenHeal <= 0)
@@ -1781,8 +1691,6 @@ public class HealingPoisonCloud : AbstractCharacterState
 
     public override void ExitState()
     {
-        Debug.Log("HealingPoisonCLoudState / ExitState");
-
         ResetValues();
 
         _characterState.RemoveState(this);
@@ -1790,8 +1698,6 @@ public class HealingPoisonCloud : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        Debug.Log("HealingPoisonCLoudState / Stack");
-
         if (_currentStacks < _maxStacks)
         {
             AddStacks();
@@ -1806,8 +1712,6 @@ public class HealingPoisonCloud : AbstractCharacterState
 
     public static void AddStacks()
     {
-        Debug.Log("HealingPoisonCLoudState / AddStacks");
-
         if (_currentStacks < _maxStacks)
         {
             _currentStacks++;
@@ -1823,8 +1727,6 @@ public class HealingPoisonCloud : AbstractCharacterState
 
     private void SearchingEnemies()
     {
-        Debug.Log("HealingPoisonCLoudState / SearchingEnemies");
-
         Collider2D[] hitAllies = Physics2D.OverlapCircleAll(_characterState.transform.position, _radiusCloud);
         foreach (Collider2D alliesOrPlayer in hitAllies)
         {
@@ -1841,7 +1743,6 @@ public class HealingPoisonCloud : AbstractCharacterState
 
     private void ApplyHealing(HeroComponent targetHealth)
     {
-        Debug.Log("HealingPoisonCLoudState / ApplyHealing");
 		_increasedHeal = _baseHeal * _currentStacks;
 		_endHeal = targetHealth.Health.MaxHealth * _increasedHeal;
 		targetHealth.Health.AddHeal(_endHeal);
@@ -1849,8 +1750,6 @@ public class HealingPoisonCloud : AbstractCharacterState
 
     private void ResetValues()
     {
-        Debug.Log("HealingPoisonCLoudState / ResetValues");
-
         _currentStacks = 0;
         _baseDuration = 0;
         _duration = 0;
@@ -1864,7 +1763,7 @@ public class HealingPoisonCloud : AbstractCharacterState
 
 #region HealingPoisons
 
-public class HealingPoison : AbstractCharacterState
+public class HealingPoisonPerSecond : AbstractCharacterState
 {
     //private List<Talent> _talents = new();
     //private SurgeTreatment _surgeTreatment;
@@ -1872,11 +1771,11 @@ public class HealingPoison : AbstractCharacterState
 	private int _currentStacks = 0;
 	private int _maxStacks = 1;
 
-	private float _baseHealingValue = 12.0f;
+	private float _baseHealingValue = 0.0f;
 	private float _totalHealed = 0.0f;
 
 	private float _timeBetweenHeal;
-	private float _startTimeBetweenHeal = 2.0f;
+	private float _startTimeBetweenHeal = 1.0f;
 
 	private float _duration;
 	private float _baseDuration;
@@ -1887,7 +1786,88 @@ public class HealingPoison : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
     {
-		state = States.HealingPoison;
+		Debug.Log("HealingPoisonPerSecond / EnterState");
+		state = States.HealingPoisonPerSecond;
+        _timeBetweenHeal = _startTimeBetweenHeal;
+
+        type = StateType.Physical;
+        effects.Add(StatusEffect.Ability);
+
+        _characterState = character;
+
+        _duration = durationToExit; 
+		Debug.Log($"HealingPoisonPerSecond / EnterState / _duration = {_duration}");
+        _baseDuration = durationToExit;
+    }
+
+    public override void UpdateState()
+    {
+        _timeBetweenHeal -= Time.deltaTime;
+        if (_timeBetweenHeal <= 0)
+        {
+			_baseHealingValue += 1.0f;
+			Debug.Log($"HealingPoisonPerSecond / UpdateState / _baseHealingValue = {_baseHealingValue}");
+            MakeHeal();
+            _timeBetweenHeal = _startTimeBetweenHeal;
+        }
+
+        _duration -= Time.deltaTime;
+        if (_duration < 0 || turnOff)
+        {
+            ExitState();
+        }
+    }
+
+    public override void ExitState()
+    {
+		_baseHealingValue = 0.0f;
+        _characterState.RemoveState(this);
+    }
+
+    public override bool Stack(float time)
+    {
+		Debug.Log("HealingPoisonPerSecond / Stack");
+        return false;
+    }
+
+    private void MakeHeal()
+	{ 
+        _characterState.Health.AddHeal(_baseHealingValue);
+    }
+
+	public static void SetPlayer(Character player)
+	{
+		_player = player;
+	}
+}
+
+public class InstantHealingPoison : AbstractCharacterState
+{
+    //private List<Talent> _talents = new();
+    //private SurgeTreatment _surgeTreatment;
+
+    private int _currentStacks = 0;
+    private int _maxStacks = 1;
+
+    private float _baseHealingValue = 14.0f;
+	private float _healingValuePerSecond;
+
+    private float _totalHealed = 0.0f;
+
+    private float _timeBetweenHeal;
+    private float _startTimeBetweenHeal = 1.0f;
+
+    private float _duration;
+    private float _baseDuration;
+
+    private static Character _player;
+
+    public bool turnOff = false;
+
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+    {
+        Debug.Log("InstantHealingPoison / EnterState");
+		state = States.InstantHealingPoison;
         _timeBetweenHeal = _startTimeBetweenHeal;
 
         type = StateType.Physical;
@@ -1898,33 +1878,33 @@ public class HealingPoison : AbstractCharacterState
         _duration = durationToExit;
         _baseDuration = durationToExit;
 
-		//Debug.Log("_player == " + _player);
+        //Debug.Log("_player == " + _player);
 
         if (_currentStacks < _maxStacks)
         {
             AddStacks();
         }
-		Debug.Log($"SetPlayer in EnterHealingPoisonState == {_player}");
+        //Debug.Log($"SetPlayer in EnterHealingPoisonState == {_player}");
 
-		//if (_player != null)
-		//{
-		//	_talents = _player.CharacterState.Character.TalentSystem.Talents;
-		//	Debug.Log("HealingPoison player == " + _player);
+        //if (_player != null)
+        //{
+        //	_talents = _player.CharacterState.Character.TalentSystem.Talents;
+        //	Debug.Log("HealingPoison player == " + _player);
 
-		//	foreach (Talent talent in _talents)
-		//	{
-		//		Debug.Log("Checking talents: " + talent.name + ", Type: " + talent.GetType());
-		//		if (talent is SurgeTreatment surgeTreatment)
-		//		{
-		//			Debug.Log("if / talents");
-		//			if (_surgeTreatment == null)
-		//			{
-		//				_surgeTreatment = surgeTreatment;
-		//				Debug.Log("SurgeTreatment == " + _surgeTreatment);
-		//			}
-		//		}
-		//	}
-		//}
+        //	foreach (Talent talent in _talents)
+        //	{
+        //		Debug.Log("Checking talents: " + talent.name + ", Type: " + talent.GetType());
+        //		if (talent is SurgeTreatment surgeTreatment)
+        //		{
+        //			Debug.Log("if / talents");
+        //			if (_surgeTreatment == null)
+        //			{
+        //				_surgeTreatment = surgeTreatment;
+        //				Debug.Log("SurgeTreatment == " + _surgeTreatment);
+        //			}
+        //		}
+        //	}
+        //}
     }
 
     public override void UpdateState()
@@ -1950,53 +1930,40 @@ public class HealingPoison : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        if (_currentStacks < _maxStacks)
-        {
-            AddStacks();
-            return true;
-        }
-        else
-        {
-            _duration += _baseDuration;
-			//if (_surgeTreatment != null && _surgeTreatment.IsActive)
-			//{
-			//	Debug.Log("SurgeTreatment == " + _surgeTreatment.IsActive);
-			//	InstantHeal();
-			//}
-			Debug.Log("Duration == " + _duration);
-            return false;
-        }
+        return false;
     }
 
     public void AddStacks()
     {
-		Debug.Log("AddStacks");
+        Debug.Log("InstantHealingPoison / AddStacks");
         _currentStacks++;
-		_duration = _baseDuration;
+        _duration = _baseDuration;
     }
 
     private void MakeHeal()
-	{ 
+    {
         _characterState.Health.AddHeal(_baseHealingValue);
-		//if (_surgeTreatment != null && _surgeTreatment.IsActive)
-		//{
-		//	_totalHealed += _baseHealingValue;
-		//	Debug.Log("TotalHeal == " + _totalHealed);
-		//}
+        //if (_surgeTreatment != null && _surgeTreatment.IsActive)
+        //{
+        //	_totalHealed += _baseHealingValue;
+        //	Debug.Log("TotalHeal == " + _totalHealed);
+        //}
     }
 
-	//private void InstantHeal()
-	//{
- //      Debug.Log("Instant Heal Method");
- //     _characterState.Health.AddHeal(_totalHealed);
- //      _totalHealed = 0.0f;
-	//}
+    //private void InstantHeal()
+    //{
+    //      Debug.Log("Instant Heal Method");
+    //     _characterState.Health.AddHeal(_totalHealed);
+    //      _totalHealed = 0.0f;
+    //}
 
-	public static void SetPlayer(Character player)
-	{
-		_player = player;
-	}
+    public static void SetPlayer(Character player)
+    {
+        _player = player;
+    }
 }
+
+
 
 public class RegeneratingPoison : AbstractCharacterState
 {
@@ -2313,7 +2280,8 @@ public class CharacterState : NetworkBehaviour
 		[States.PoisonCloud] = new PoisonCloud(),
 		[States.HealingPoisonCloud] = new HealingPoisonCloud(),
 		[States.EmpathicPoisons] = new EmpathicPoisons(),
-		[States.HealingPoison] = new HealingPoison(),
+		[States.HealingPoisonPerSecond] = new HealingPoisonPerSecond(),
+		[States.InstantHealingPoison] = new InstantHealingPoison(),
 		[States.RegeneratingPoison] = new RegeneratingPoison(),
 		[States.Blind] = new BlindnessState(),
 		[States.Invisible] = new InvisibleState(),
@@ -2449,33 +2417,35 @@ public class CharacterState : NetworkBehaviour
 		//Debug.Log("Add state logic");
 		if (invinsible)
 			return;
-		if (CheckForState(state))
-		{
-			foreach (AbstractCharacterState item in currentStates)
-			{
-				if (item.state != state) continue;
+        if (CheckForState(state))
+        {
+            for (int i = 0; i < currentStates.Count; i++)
+            {
+                if (currentStates[i].state != state) continue;
 
-				if (item.Stack(duration))
-				{
-					_stateIcons.ActivateIco(state, duration, 1);
-				}
-				else
-				{
-					//nothing at this time??
-				}
-			}
-		}
-		else
-		{
-			CreateState(enumToState[state], state, duration, damageToExit);
+                if (currentStates[i].Stack(duration))
+                {
+                    _stateIcons.ActivateIco(state, duration, 1);
+                }
+                else
+                {
+                    CreateState(enumToState[state], state, duration, damageToExit);
+                    break;
+                    //nothing at this time??
+                }
+            }
+        }
+        else
+        {
+        	CreateState(enumToState[state], state, duration, damageToExit);
 
-			if(school!=Schools.None)
-			{
-				var counterSpell = (AbilitySchoolDebuff)enumToState[state];
-				counterSpell.canceledSchoool = school;
-			}
-		}
-	}
+        	if (school != Schools.None)
+        	{
+        		var counterSpell = (AbilitySchoolDebuff)enumToState[state];
+        		counterSpell.canceledSchoool = school;
+        	}
+        }
+    }
 
 	private void CreateState(AbstractCharacterState state, States stateName, float duration, float damageToExit)
 	{
@@ -2638,7 +2608,8 @@ public enum States
 	PoisonCloud,
 	HealingPoisonCloud,
 	EmpathicPoisons,
-	HealingPoison,
+	HealingPoisonPerSecond,
+	InstantHealingPoison,
 	RegeneratingPoison,
 	Blind,
 	Invisible,

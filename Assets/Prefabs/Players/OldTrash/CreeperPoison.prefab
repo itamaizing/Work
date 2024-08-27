@@ -519,7 +519,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 5e12a4e98f6c3dd42ad804c36ea87337, type: 2}
-  _manaCost: 5
+  _manaCost: 30
   _cooldownTime: 0
   _castDelay: 0
   _abilitySchool: 0
@@ -550,9 +550,10 @@ MonoBehaviour:
   _witheringPoison: {fileID: 667566705647366020}
   _enlargedGlands: {fileID: 7155292747044799159}
   _continuationAmbush: {fileID: 6684373526785283092}
+  _voluminousBall: {fileID: 4349086328842664515}
   _player: {fileID: 8848169558533100257}
   _projectile: {fileID: 5760352791335105038, guid: d097441cb29bc5a42b2defb1e1f12525, type: 3}
-  Enabled: 0
+  arrowPrefab: {fileID: 7504653704119560997, guid: 441e78fa2212e4d41bfedd3dc078f1b5, type: 3}
   CurrentCharges: 0
   CountProjectiles: 0
 --- !u!114 &6740800947030524566
@@ -595,6 +596,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: 0
   _isCanTargetHimself: 0
+  _acceleratedSlap: {fileID: 0}
   _dad: {fileID: 8848169558533100257}
   _obstacleLayerMask:
     serializedVersion: 2
@@ -629,7 +631,7 @@ MonoBehaviour:
   _abilityForm: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -650,8 +652,9 @@ MonoBehaviour:
   _releaseFromSecrecy: {fileID: 7350915924887007584}
   _desireToHide: {fileID: 5223122822222587713}
   _firstStrike: {fileID: 448271629773716171}
+  _continuationAmbush: {fileID: 6684373526785283092}
+  _transparentPoisons: {fileID: 6141714768343711499}
   _player: {fileID: 8848169558533100257}
-  StartTimeToApplyInvisible: 0
   IsInvisible: 0
 --- !u!114 &6227316397025926076
 MonoBehaviour:
@@ -948,6 +951,8 @@ GameObject:
   - component: {fileID: 1379429540423357297}
   - component: {fileID: 7155292747044799159}
   - component: {fileID: 6684373526785283092}
+  - component: {fileID: 6141714768343711499}
+  - component: {fileID: 4349086328842664515}
   m_Layer: 0
   m_Name: Talents_Container
   m_TagString: Untagged
@@ -990,10 +995,10 @@ MonoBehaviour:
   - {fileID: 1184820562972239293}
   - {fileID: 667566705647366020}
   - {fileID: 1379429540423357297}
-  - {fileID: 3625646612109896303}
-  - {fileID: 4684996771512024355}
-  - {fileID: 5514712970816059840}
-  - {fileID: 6297758217871551400}
+  - {fileID: 6684373526785283092}
+  - {fileID: 7155292747044799159}
+  - {fileID: 6141714768343711499}
+  - {fileID: 4349086328842664515}
   - {fileID: 7350915924887007584}
   - {fileID: 5223122822222587713}
   - {fileID: 6297758217871551400}
@@ -1395,6 +1400,49 @@ MonoBehaviour:
   Description: 
   ico: {fileID: 21300000, guid: 9f42d22003c5e8f439093da05407f78f, type: 3}
   character: {fileID: 8848169558533100257}
+--- !u!114 &6141714768343711499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 615051740401084893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ec6dac149af0a142901c36cb4858fab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: TransparentPoisons
+  Description: 
+  ico: {fileID: 21300000, guid: 09e359aa32a9ff04ea7bbdf596fa2faa, type: 3}
+  character: {fileID: 8848169558533100257}
+  _poisonBall: {fileID: 7672760003326398008}
+  _spitPoison: {fileID: 5460533147100191806}
+--- !u!114 &4349086328842664515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 615051740401084893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 559e49f72a29fc34e858b23f9ecf3dac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: VoluminousBall
+  Description: 
+  ico: {fileID: 21300000, guid: ae29ded27bedede4eaa0a76e40eeffe8, type: 3}
+  character: {fileID: 8848169558533100257}
+  _poisonBall: {fileID: 7672760003326398008}
+  IncreasedSizeX: 1.2
+  IncreasedSizeY: 1.2
 --- !u!1 &740190560921219825
 GameObject:
   m_ObjectHideFlags: 0
