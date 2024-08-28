@@ -7,7 +7,7 @@ using UnityEngine;
 public abstract class GameRules : NetworkBehaviour
 {
     protected readonly SyncList<GameObject> _players = new SyncList<GameObject>();
-    protected List<UserNetworkSettings> _playersSettings = new List<UserNetworkSettings>();
+    protected List<Character> _playersSettings = new List<Character>();
 
     protected NetworkRoom _room;
 
@@ -28,6 +28,7 @@ public abstract class GameRules : NetworkBehaviour
             _players.Add(item);
         }
     }
+
     protected void GameStatusHook(bool oldValue, bool newValue)
     {
         GameStartClient();
@@ -37,13 +38,13 @@ public abstract class GameRules : NetworkBehaviour
     {
         for (int i = 0; i < _players.Count / 2; i++)
         {
-            _playersSettings.Add(_players[i].GetComponent<UserNetworkSettings>());
-            _playersSettings[i].TeamIndex = 1;
+            _playersSettings.Add(_players[i].GetComponent<Character>());
+            _playersSettings[i].NetworkSettings.TeamIndex = 1;
         }
         for (int i = _players.Count / 2; i < _players.Count; i++)
         {
-            _playersSettings.Add(_players[i].GetComponent<UserNetworkSettings>());
-            _playersSettings[i].TeamIndex = 2;
+            _playersSettings.Add(_players[i].GetComponent<Character>());
+            _playersSettings[i].NetworkSettings.TeamIndex = 2;
         }
 
         yield return new WaitForEndOfFrame();
@@ -52,10 +53,10 @@ public abstract class GameRules : NetworkBehaviour
         {
             foreach (var player in _playersSettings)
             {
-                item.Players.Add(player.gameObject);
+                item.NetworkSettings.Players.Add(player.gameObject);
             }
             yield return new WaitForEndOfFrame();
-            item.MarkUpEnemiesOrAllies();
+            item.NetworkSettings.MarkUpEnemiesOrAllies();
         }
     }
 
