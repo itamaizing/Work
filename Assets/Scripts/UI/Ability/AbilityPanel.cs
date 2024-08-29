@@ -51,6 +51,8 @@ public class AbilityPanel : MonoBehaviour
         {
             _playerAbilities.SkillSelected -= OnAbilitySelected;
             _playerAbilities.SkillDeselected -= OnAbilityDeselected;
+            _playerAbilities.SkillAdded -= OnSkillAdded;
+            _playerAbilities.SkillRemoved -= OnSkillRemoved;
         }
 
         _playerAbilities = abilities;
@@ -65,6 +67,15 @@ public class AbilityPanel : MonoBehaviour
 
         _playerAbilities.SkillSelected += OnAbilitySelected;
         _playerAbilities.SkillDeselected += OnAbilityDeselected;
+        _playerAbilities.SkillAdded += OnSkillAdded;
+        _playerAbilities.SkillRemoved += OnSkillRemoved;
+    }
+
+    private void UpdatePanel()
+    {
+        ClearPanel();
+        Fill(_currentCharacter.Abilities);
+        _queuePanel.Init(_currentCharacter.Abilities.SkillQueue);
     }
 
     private void OnCharacterSelected(Character character)
@@ -82,16 +93,31 @@ public class AbilityPanel : MonoBehaviour
     {
         if (character != null && character == _currentCharacter)
         {
-            foreach (var item in _abilityIcons)
-            {
-                Destroy(item.gameObject);
-            }
-            _abilityIcons.Clear();
-            _abilities.Clear();
+            ClearPanel();
 
             gameObject.SetActive(false);
             _currentCharacter = null;
         }
+    }
+
+    private void OnSkillAdded(Skill skill)
+    {
+        UpdatePanel();
+    }
+
+    private void OnSkillRemoved(Skill skill)
+    {
+        UpdatePanel();
+    }
+
+    private void ClearPanel()
+    {
+        foreach (var item in _abilityIcons)
+        {
+            Destroy(item.gameObject);
+        }
+        _abilityIcons.Clear();
+        _abilities.Clear();
     }
 
     private void OnAbilitySelected(int index)

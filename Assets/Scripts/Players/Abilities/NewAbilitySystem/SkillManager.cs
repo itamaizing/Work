@@ -16,7 +16,7 @@ public class SkillManager : MonoBehaviour
     private List<AutoAttackSkill> _autoAttackSkills = new List<AutoAttackSkill>();
     private List<Skill> _simpleSkills = new List<Skill>();
     private SkillRenderer _skillRenderer;
-    private float _globalCooldownTime = 2f;
+    private float _globalCooldownTime = .5f;
     private SkillQueue _skillQueue;
     private AutoAttackQueue _autoAttackQueue;
     private Skill _selectedSkill;
@@ -27,6 +27,8 @@ public class SkillManager : MonoBehaviour
 
     public event Action<int> SkillSelected;
     public event Action<int> SkillDeselected;
+    public event Action<Skill> SkillAdded;
+    public event Action<Skill> SkillRemoved;
 
     private void Awake()
     {
@@ -38,18 +40,27 @@ public class SkillManager : MonoBehaviour
 
         foreach (var item in _skills)
         {
-            item.Init(_skillRenderer, _hero);
-
-            if (item is AutoAttackSkill attackSkill)
-            {
-                _autoAttackSkills.Add(attackSkill);
-            }
-            else
-            {
-                _simpleSkills.Add(item);
-                item.CastStarted += GlobalCooldown;
-            }
+            AddSkill(item);
         }
+    }
+
+    public void AddSkill(Skill skill)
+    {
+        if(_skills.Contains(skill) == false)
+            _skills.Add(skill);
+
+        skill.Init(_skillRenderer, _hero);
+
+        if (skill is AutoAttackSkill attackSkill)
+        {
+            _autoAttackSkills.Add(attackSkill);
+        }
+        else
+        {
+            _simpleSkills.Add(skill);
+            skill.CastStarted += GlobalCooldown;
+        }
+
         foreach (var simpleSkill in _simpleSkills)
         {
             foreach (var autoAttackSkill in _autoAttackSkills)
@@ -57,6 +68,41 @@ public class SkillManager : MonoBehaviour
                 simpleSkill.CastStarted += autoAttackSkill.Pause;
                 simpleSkill.CastEnded += autoAttackSkill.Continue;
             }
+        }
+
+        SkillAdded?.Invoke(skill);
+    }
+
+    public void RemoveSkill(Skill skill)
+    {
+        foreach (var simpleSkill in _simpleSkills)
+        {
+            foreach (var autoAttackSkill in _autoAttackSkills)
+            {
+                simpleSkill.CastStarted -= autoAttackSkill.Pause;
+                simpleSkill.CastEnded -= autoAttackSkill.Continue;
+            }
+        }
+
+        if (skill is AutoAttackSkill attackSkill)
+        {
+            _autoAttackSkills.Remove(attackSkill);
+        }
+        else
+        {
+            _simpleSkills.Remove(skill);
+            skill.CastStarted -= GlobalCooldown;
+        }
+        _skills.Remove(skill);
+
+        SkillRemoved?.Invoke(skill);
+    }
+
+    public void SetAbilitiesCoolDown(float time)
+    {
+        foreach (var item in _skills)
+        {
+            item.IncreaseSetCooldown(time);
         }
     }
 
@@ -89,14 +135,6 @@ public class SkillManager : MonoBehaviour
             InputHandler.OnSixthCast -= SelectSkill;
             InputHandler.OnSeventhCast -= SelectSkill;
             InputHandler.OnEighthCast -= SelectSkill;
-        }
-    }
-
-    public void SetAbilitiesCoolDown(float time)
-    {
-        foreach (var item in _skills)
-        {
-            item.IncreaseSetCooldown(time);
         }
     }
 
@@ -168,7 +206,11 @@ public class SkillManager : MonoBehaviour
 
     private void GlobalCooldown()
     {
-        SetAbilitiesCoolDown(_globalCooldownTime);
+        foreach (var item in _skills)
+        {
+            if(item.IsSubjectToGlobalCooldownTime)
+                item.IncreaseSetCooldown(_globalCooldownTime);
+        }
     }
 
     private void SubscribingSkillOnEvents(Skill skill)

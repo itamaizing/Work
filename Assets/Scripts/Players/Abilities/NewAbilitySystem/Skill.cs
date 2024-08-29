@@ -30,6 +30,7 @@ public abstract class Skill : NetworkBehaviour
     [Header("AbilitieInfo")]
     [SerializeField] private AbilityInfo _abilityInfo;
     [Header("Main Settings")]
+    [SerializeField] protected bool _isSubjectToGlobalCooldownTime = true;
     [SerializeField] protected float _manaCost;
     [SerializeField] protected float _cooldownTime;
     [SerializeField] protected float _castDeley;
@@ -78,6 +79,7 @@ public abstract class Skill : NetworkBehaviour
     private Transform _tempTargetForDamage;
     private Health _tempHPForDamage;
 
+    public bool IsSubjectToGlobalCooldownTime { get => _isSubjectToGlobalCooldownTime; }
     public HeroComponent Hero { get => _hero; }
     public StatsBuff Buff => _statsBuff;
     public string Name => _abilityInfo.Name;
