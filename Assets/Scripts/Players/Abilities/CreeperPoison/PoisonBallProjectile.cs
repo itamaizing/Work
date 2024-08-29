@@ -20,17 +20,8 @@ public class PoisonBallProjectile : NetworkBehaviour
 
     private Skill _skill;
 
-    private List<Talent> _talents = new();
-    private List<Skill> _skills = new();
-
-    private ContinuationAmbush _continuationAmbush;
     private HealingPoisonBall _healingPoisonBall;
     private FootInstincts _footInstincts;
-
-    private Vector3 _startPosition;
-    private GameObject _currentTarget;
-
-    private int _countProjectiles;
 
     #region FloatVariables
 
@@ -53,7 +44,6 @@ public class PoisonBallProjectile : NetworkBehaviour
     private bool _isEnemy;
     private bool _isActiveHealingPoisonBall;
     private bool _isActvieWitheringPoison;
-    private bool _isActiveContinuationAmbush;
     private bool _isActiveVoluminousBall;
     private bool _isPushTarget;
 
@@ -64,7 +54,6 @@ public class PoisonBallProjectile : NetworkBehaviour
     private void Start()
     {
         _durationPush = 1.0f;
-        _startPosition = transform.position;
         //InitializationComponentsForCountProjectile();
     }
 
@@ -72,12 +61,7 @@ public class PoisonBallProjectile : NetworkBehaviour
     {
         _poisonBall = _player.GetComponentInChildren<PoisonBall>();
 
-        _continuationAmbush = _poisonBall.ContinuationAmbushTalent;
-        Debug.Log($"PoisonBallProjectile / ContinuationAmbush = {_continuationAmbush}");
         _footInstincts = _poisonBall.FootInstinctsTalent;
-        _countProjectiles = _poisonBall.CountProjectiles;
-        Debug.Log("CountProjectiles = " + _countProjectiles);
-        _currentTarget = _poisonBall.CurrentTarget;
     }
 
     [Server]
@@ -228,7 +212,7 @@ public class PoisonBallProjectile : NetworkBehaviour
     {
         while (true)
         {
-            transform.position += direction * (speed * 30f) * Time.deltaTime;
+            transform.position += direction * (speed * 15f) * Time.deltaTime;
             if (Vector3.Distance(transform.position, _player.transform.position) > _maxDistance * GlobalVariable.cellSize)
             {
                 DestroyProjectile();
@@ -243,17 +227,6 @@ public class PoisonBallProjectile : NetworkBehaviour
 
     private void DealDamage(HeroComponent targetHealth, float currentDamage, DamageType damageType, AttackRangeType attackRangeType)
     {
-        Debug.Log($"Skill = {_skill}");
-        if (_isActiveContinuationAmbush)
-        {
-            if (_countProjectiles == 3 && _currentTarget == _poisonBall.LastTarget)
-            {
-                Debug.Log("CountProjectiles == 4 && CurrentTarget == LastTarget");
-                _continuationAmbush.CanApplyInvisible(true);
-                _countProjectiles = 0;
-            }
-        }
-
         Damage damage = new Damage
         {
             Value = _skill.Buff.Damage.GetBuffedValue(currentDamage),
@@ -313,27 +286,34 @@ public class PoisonBallProjectile : NetworkBehaviour
 
     public void InitializationProjectileForPoisonBall(Character dad, float energyDad, Skill skill,
         bool isActiveTalentHealingPoisonBall, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies,
-        bool isActiveTalentWitheringPoison, bool isPushTarget, bool isActiveContinuationAmbush,
-        bool isActiveVoluminousBall)
+        bool isActiveTalentWitheringPoison, bool isPushTarget, bool isActiveVoluminousBall)
     {
         _player = dad;
         _energyDad = energyDad;
         _skill = skill;
+        _isPushTarget = isPushTarget;
         _isPlayer = isTargetPlayer;
         _isAllies = isTargetAllies;
         _isEnemy = isTargetEnemy;
         _isActiveHealingPoisonBall = isActiveTalentHealingPoisonBall;
         _isActvieWitheringPoison = isActiveTalentWitheringPoison;
-        _isActiveContinuationAmbush = isActiveContinuationAmbush;
         _isActiveVoluminousBall = isActiveVoluminousBall;
-        _isPushTarget = isPushTarget;
 
-        Debug.Log($"PoisonBallProjectile / Player = {_player}");
-        Debug.Log($"PoisonBallProjectile / Skill = {_skill}");
+        Debug.Log($"_isPlayer = {_isPlayer}"); 
+        Debug.Log($"_isAllies = {_isAllies}");
+        Debug.Log($"_isEnemy = {_isEnemy}");
+        Debug.Log($"_isActiveHealingPoisonBall = {_isActiveHealingPoisonBall}");
+        Debug.Log($"_isActvieWitheringPoison = {_isActvieWitheringPoison}");
+        Debug.Log($"_isActvieWitheringPoison = {_isActvieWitheringPoison}");
+        Debug.Log($"_isActiveVoluminousBall = {_isActiveVoluminousBall}");
+        Debug.Log($"_isPushTarget = {isPushTarget}");
 
-        Debug.Log($"_isPlayer == {_isPlayer}; _isAllies == {_isAllies}; _isEnemy == {_isEnemy}; _talentIsActive == {_isActiveHealingPoisonBall};" +
-            $" _talentWitheringPosion = {_isActvieWitheringPoison}; _isPushTarget = {_isPushTarget}; _isActiveContinuationAmbush = {_isActiveContinuationAmbush}; " +
-            $"_isActiveVoluminousBall = {_isActiveVoluminousBall}");
+
+
+
+
+
+        #region VoluminousBallTalentIsActvie
 
         if (_isActiveVoluminousBall)
         {
@@ -345,6 +325,8 @@ public class PoisonBallProjectile : NetworkBehaviour
             _transformBall.localScale = new Vector2(1.0f, 1.0f);
             Debug.Log($"TransformBall == {_transformBall.localScale}");
         }
+
+        #endregion
 
         InitializationComponentsForCountProjectile();
     }

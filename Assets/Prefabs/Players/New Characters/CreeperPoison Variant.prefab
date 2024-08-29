@@ -191,7 +191,7 @@ PrefabInstance:
     - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _talents.Array.data[7]
       value: 
-      objectReference: {fileID: 8934884499273345818}
+      objectReference: {fileID: 4933334587710268522}
     - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _talents.Array.data[8]
       value: 
@@ -316,6 +316,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5121733092760162073}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4933334587710268522}
   m_SourcePrefab: {fileID: 100100000, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
 --- !u!114 &362903699018664054 stripped
 MonoBehaviour:
@@ -759,6 +762,25 @@ MonoBehaviour:
   _poisonBall: {fileID: 4790497256626355497}
   IncreasedSizeX: 1.2
   IncreasedSizeY: 1.2
+--- !u!114 &4933334587710268522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2030525112425534856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6077aa9b0a97f1e4d99d824c4f97d793, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Inertial Glands
+  Description: 
+  ico: {fileID: 21300000, guid: d711e158d4244e449a813d065a5d0e09, type: 3}
+  character: {fileID: 362903699018664054}
 --- !u!1 &7293299703933357242 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1565031513079442272, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
@@ -964,14 +986,11 @@ MonoBehaviour:
   _enlargedGlands: {fileID: 2442619433370514812}
   _continuationAmbush: {fileID: 6720675008021194891}
   _voluminousBall: {fileID: 5121733092760162073}
-  _player: {fileID: 362903699018664054}
+  _inertialGlands: {fileID: 4933334587710268522}
+  _spitPoison: {fileID: 1565719447917374839}
   _projectile: {fileID: 5760352791335105038, guid: d097441cb29bc5a42b2defb1e1f12525, type: 3}
+  _player: {fileID: 362903699018664054}
   arrowPrefab: {fileID: 7504653704119560997, guid: 441e78fa2212e4d41bfedd3dc078f1b5, type: 3}
-  CurrentCharges: 0
-  CountProjectiles: 0
-  TimeBetweenAttack: 0
-  StartTimeBetweenAttack: 3
-  IsActiveTimer: 0
 --- !u!114 &727315664775304267
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -4,6 +4,32 @@ using UnityEngine.SceneManagement;
 using UnityEngine;
 using Mono.CecilX.Cil;
 
+public struct PoisonBallInfo : NetworkMessage
+{
+    public int CountProjectiles;
+    public int MaxCountProjectile;
+
+    public float TimeBetweenAttack;
+    public float StartTimeBetweenAttack;
+
+    public bool IsProjectileCreate;
+    public bool IsActiveTimer;
+    public bool IsThreeProjectileOnOnetarget;
+    public bool IsCanApplyInvisible;
+
+    public bool IsOriginalTargetEnemy;
+    public bool IsOriginalTargetAllies;
+    public bool IsOriginalTargetPlayer;
+
+    public bool IsActiveWitheringPoison;
+    public bool IsActiveContinuationAmbush; 
+    public bool IsActiveHealingPoisonBall;
+    public bool IsActiveEnlargedGlands;
+    public bool IsActiveVoluminousBall;
+    public bool IsHealingPoisonCloud;
+    public bool IsActiveInertialGlands;
+}
+
 public class PoisonBall : Skill
 {
     #region Variables
@@ -16,17 +42,13 @@ public class PoisonBall : Skill
     [SerializeField] private EnlargedGlands _enlargedGlands;
     [SerializeField] private ContinuationAmbush _continuationAmbush;
     [SerializeField] private VoluminousBall _voluminousBall;
+    [SerializeField] private InertialGlands _inertialGlands;
 
-    [SerializeField] private Character _player;
+    [Header("Ability properties")]
+    [SerializeField] private SpitPoison _spitPoison;
     [SerializeField] private PoisonBallProjectile _projectile;
+    [SerializeField] private Character _player;
     [SerializeField] private GameObject arrowPrefab;
-
-    public int CurrentCharges;
-    public int CountProjectiles;
-    public float TimeBetweenAttack;
-    public float StartTimeBetweenAttack = 3.0f;
-    public bool IsProjectileCreate = false;
-    public bool IsActiveTimer = false; 
 
     private GameObject[] arrowRenderers = new GameObject[4];
 
@@ -36,10 +58,12 @@ public class PoisonBall : Skill
     private Vector3 _secondMousePosition;
     private Vector3 _thirdMousePosition;
 
+    private PoisonBallInfo _poisonBallInfo = new PoisonBallInfo();
+
     private int _countProjectiles = 0;
 
-    private float _fastTimeCast = 0.1f;
-    private float _slowTimeCast = 0.1f;
+    private float _fastTimeCast = 0.4f;
+    private float _slowTimeCast = 1.8f;
     private float _originalChargeCooldown;
     private float _durationPoisonCloud = 6f;
 
@@ -48,16 +72,8 @@ public class PoisonBall : Skill
     private bool _isPushTarget;
     private bool _isTarget;
     private bool _isFast;
-    private bool _isOriginalTargetEnemy;
-    private bool _isOriginalTargetAllies;
-    private bool _isOriginalTargetPlayer;
     private bool _secondClickDone = false;
     private bool _thirdClickDone = false;
-    private bool _isActiveHealingPoisonBall;
-    private bool _isActiveEnlargedGlands;
-    private bool _isActiveContinuationAmbush;
-    private bool _isActiveVoluminousBall;
-    private bool _isHealingPoisonCloud;
     private bool firstClickCompleted = false;
     private bool colorLockedAfterSecondClick = false;
     private bool colorLockedAfterThirdClick = false;
@@ -74,19 +90,26 @@ public class PoisonBall : Skill
 
     #endregion
 
+    private void Start()
+    {
+        _originalChargeCooldown = _chargeCooldown;
+
+        _poisonBallInfo.StartTimeBetweenAttack = 3.0f;
+        _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
+        _poisonBallInfo.MaxCountProjectile = _maxCharges;
+    }
+    
     private void Update()
     {
         UpdateMouseDetection();
-        CmdTimer();
+        if (_poisonBallInfo.IsActiveTimer)
+        {
+            Timer();
+        }
+        CheckingActiveTalents();
     }
 
     #region PrepareAndStartJob
-
-    protected void Start()
-    {
-        _originalChargeCooldown = _chargeCooldown;
-        TimeBetweenAttack = StartTimeBetweenAttack;
-    }
 
     protected override bool IsCanCast => CheckCanCast();
 
@@ -122,27 +145,22 @@ public class PoisonBall : Skill
 
     protected override IEnumerator PrepareJob()
     {
-        CheckingActiveTalents();
+        //CheckingActiveTalents();
 
         while (_currentTarget == null && float.IsPositiveInfinity(_firstMousePosition.x))
         {
             if (Input.GetMouseButtonDown(0))
             {
                 _currentTarget = GetRaycastTarget(true);
-
+                CheckWhoTarget();
+                _firstMousePosition = GetMousePoint();
                 if (_currentTarget != null)
                 {
-                    Debug.Log($"Target Found: {_currentTarget.name}");
-                    CheckWhoTarget();
-                    _firstMousePosition = GetMousePoint();
                     CreateArrowsParallelToPlayer();
                     StopAutoDraw();
-                    firstClickCompleted = true;
                 }
-                else
-                {
-                    Debug.Log("Target not found.");
-                }
+                firstClickCompleted = true;
+
             }
             CooldownChange();
             yield return null;
@@ -169,6 +187,7 @@ public class PoisonBall : Skill
         if (_secondClickDone && _thirdClickDone)
         {
             _isTarget = IsTarget();
+            Debug.Log($"PoisonBallPorjectile / UseAbility / if / isTarget = {_isTarget}"); 
             ChooseMovementDependingOnCountProjectiles();
         }
         else
@@ -304,16 +323,18 @@ public class PoisonBall : Skill
             {
                 _secondClickDone = true;
                 _secondMousePosition = GetMousePoint();
-
-                if (_secondMousePosition.x < _firstMousePosition.x)
+                if (_currentTarget != null)
                 {
-                    DarkenArrowColor(0, 0.8f);
-                    DarkenArrowColor(1, 0f);
-                }
-                else
-                {
-                    DarkenArrowColor(0, 0f);
-                    DarkenArrowColor(1, 0.8f);
+                    if (_secondMousePosition.x < _firstMousePosition.x)
+                    {
+                        DarkenArrowColor(0, 0.8f);
+                        DarkenArrowColor(1, 0f);
+                    }
+                    else
+                    {
+                        DarkenArrowColor(0, 0f);
+                        DarkenArrowColor(1, 0.8f);
+                    }
                 }
             }
             yield return null;
@@ -329,24 +350,24 @@ public class PoisonBall : Skill
                 _thirdClickDone = true;
                 _thirdMousePosition = GetMousePoint();
 
-                if (_thirdMousePosition.x < _secondMousePosition.x)
+                if (_currentTarget != null)
                 {
-                    DarkenArrowColor(2, 0.8f);
-                    DarkenArrowColor(3, 0f);
+                    if (_thirdMousePosition.x < _secondMousePosition.x)
+                    {
+                        DarkenArrowColor(2, 0.8f);
+                        DarkenArrowColor(3, 0f);
+                    }
+                    else
+                    {
+                        DarkenArrowColor(2, 0f);
+                        DarkenArrowColor(3, 0.8f);
+                    }
                 }
-                else
-                {
-                    DarkenArrowColor(2, 0f);
-                    DarkenArrowColor(3, 0.8f);
-                }
-
                 colorLockedAfterThirdClick = true;
             }
             yield return null;
         }
     }
-
-
 
     #endregion
 
@@ -391,15 +412,50 @@ public class PoisonBall : Skill
 
     private void CheckingActiveTalents()
     {
-        _isActiveHealingPoisonBall = _healingPoisonBall.IsActive;
-        _isActiveContinuationAmbush = _continuationAmbush.IsActive;
-        _isActiveEnlargedGlands = _enlargedGlands.IsActive;
-        _isActiveVoluminousBall = _voluminousBall.IsActive;
+        _poisonBallInfo.IsActiveWitheringPoison = _witheringPoison.IsActive;
+        _poisonBallInfo.IsActiveContinuationAmbush = _continuationAmbush.IsActive;
+        _poisonBallInfo.IsActiveHealingPoisonBall = _healingPoisonBall.IsActive;
+        _poisonBallInfo.IsActiveEnlargedGlands = _enlargedGlands.IsActive;
+        _poisonBallInfo.IsActiveVoluminousBall = _voluminousBall.IsActive;
+        _poisonBallInfo.IsActiveInertialGlands = _inertialGlands.IsActive;
 
-        if (_isActiveEnlargedGlands)
+        #region EnlargedGlandTalentIsActive
+
+        if (_poisonBallInfo.IsActiveEnlargedGlands && _maxCharges == 3)
         {
-            //MaxCharges = 4;
+            AddMaxChargeCount();
+            _poisonBallInfo.MaxCountProjectile = _maxCharges;
+            Debug.Log($"Enlarged / MaxCountProjectiles = {_poisonBallInfo.MaxCountProjectile}");
         }
+        else if (!_poisonBallInfo.IsActiveEnlargedGlands && _maxCharges >= 4)
+        {
+            DeductMaxChargeCount();
+            _poisonBallInfo.MaxCountProjectile = _maxCharges;
+            Debug.Log($"Enlarged / MaxCountProjectiles = {_poisonBallInfo.MaxCountProjectile}");
+        }
+
+        #endregion
+
+        #region InertialGlandTalentIsActive
+
+        if (_poisonBallInfo.IsActiveInertialGlands && _poisonBallInfo.IsThreeProjectileOnOnetarget)
+        {
+            Debug.Log("CheckTalents / InertialGland isActive");
+            float newRemainingTime = 0.0f;
+            _spitPoison.ReductionSetCooldown(newRemainingTime);
+        }
+
+        #endregion
+
+        #region ContinuationAmbushTalentIsActive
+
+        if (_poisonBallInfo.IsActiveContinuationAmbush && _poisonBallInfo.IsCanApplyInvisible)
+        {
+            _continuationAmbush.CanApplyInvisible(true);
+            Debug.Log("CanApplyInvisible");
+        }
+
+        #endregion
     }
 
     private void CheckWhoTarget()
@@ -409,39 +465,52 @@ public class PoisonBall : Skill
             if (_currentTarget.gameObject == _player.gameObject)
             {
                 Debug.Log("Target == Player");
-                _isOriginalTargetPlayer = true;
-                _isOriginalTargetAllies = false;
-                _isOriginalTargetEnemy = false;
-                _isHealingPoisonCloud = _healPoisonCloud.IsActive;
+                _poisonBallInfo.IsOriginalTargetPlayer = true;
+                _poisonBallInfo.IsOriginalTargetAllies = false;
+                _poisonBallInfo.IsOriginalTargetEnemy = false;
+                _poisonBallInfo.IsHealingPoisonCloud = _healPoisonCloud.IsActive;
             }
             else if (_currentTarget.gameObject.layer == LayerMask.NameToLayer("Allies"))
             {
                 Debug.Log("Target == Allies");
-                _isOriginalTargetPlayer = false;
-                _isOriginalTargetAllies = true;
-                _isOriginalTargetEnemy = false;
-                _isHealingPoisonCloud = _healPoisonCloud.IsActive;
+                _poisonBallInfo.IsOriginalTargetPlayer = false;
+                _poisonBallInfo.IsOriginalTargetAllies = true;
+                _poisonBallInfo.IsOriginalTargetEnemy = false;
+                _poisonBallInfo.IsHealingPoisonCloud = _healPoisonCloud.IsActive;
             }
             else if (_currentTarget.gameObject.layer == LayerMask.NameToLayer("Enemy"))
             {
                 Debug.Log("Target == Enemies");
-                _isOriginalTargetPlayer = false;
-                _isOriginalTargetAllies = false;
-                _isOriginalTargetEnemy = true;
-                _isHealingPoisonCloud = _healPoisonCloud.IsActive;
+                _poisonBallInfo.IsOriginalTargetPlayer = false;
+                _poisonBallInfo.IsOriginalTargetAllies = false;
+                _poisonBallInfo.IsOriginalTargetEnemy = true;
+                _poisonBallInfo.IsHealingPoisonCloud = _healPoisonCloud.IsActive;
             }
         }
         else
         {
-            _isOriginalTargetPlayer = false;
-            _isOriginalTargetAllies = false;
-            _isOriginalTargetEnemy = false;
+            _poisonBallInfo.IsOriginalTargetPlayer = false;
+            _poisonBallInfo.IsOriginalTargetAllies = false;
+            _poisonBallInfo.IsOriginalTargetEnemy = false;
         }
+    }
+
+    private void Timer()
+    {
+        _poisonBallInfo.TimeBetweenAttack -= Time.deltaTime;
+
+        if (_poisonBallInfo.TimeBetweenAttack < 0)
+        {
+            _poisonBallInfo.CountProjectiles = 0;
+            _poisonBallInfo.IsActiveTimer = false;
+            _poisonBallInfo.IsProjectileCreate = false;
+        }
+        
     }
 
     private void CooldownChange()
     {
-        if (_isActiveHealingPoisonBall && (_isOriginalTargetAllies || _isOriginalTargetPlayer))
+        if (_poisonBallInfo.IsActiveHealingPoisonBall && (_poisonBallInfo.IsOriginalTargetAllies || _poisonBallInfo.IsOriginalTargetPlayer))
         {
             _chargeCooldown = _originalChargeCooldown / 2;
         }
@@ -457,9 +526,13 @@ public class PoisonBall : Skill
 
     private bool CheckCanCast()
     {
-        return _currentTarget != null &&
-               (Vector3.Distance(_firstMousePosition, transform.position) <= Radius ||
-                Vector3.Distance(_currentTarget.transform.position, transform.position) <= Radius);
+        //Debug.Log("CheckCanCast PoisonBall");
+
+        if (_currentTarget == null)
+            return Vector3.Distance(_firstMousePosition, transform.position) <= Radius;
+
+        return Vector3.Distance(_firstMousePosition, transform.position) <= Radius ||
+               Vector3.Distance(_currentTarget.transform.position, transform.position) <= Radius;
     }
 
     private bool IsTarget()
@@ -473,18 +546,9 @@ public class PoisonBall : Skill
 
     private void ChooseMovementDependingOnCountProjectiles()
     {
-        if (_countProjectiles < 3)
-        {
-            ChooseSpeed();
-            ChooseDirectionPush();
-            StartCoroutine(_isFast ? TimeCastForFastMoveProjectile() : TimeCastForSlowMoveProjectile());
-        }
-        else if (_countProjectiles == 3)
-        {
-            ChooseSpeed();
-            ChooseDirectionPush();
-            StartCoroutine(TimeCastForThirdProjectile());
-        }
+        ChooseSpeed();
+        ChooseDirectionPush();
+        StartCoroutine(_isFast ? TimeCastForFastMoveProjectile() : TimeCastForSlowMoveProjectile());
     }
 
     private void ChooseSpeed()
@@ -492,7 +556,7 @@ public class PoisonBall : Skill
         _isFast = _isTarget
             ? Vector2.Distance(_player.transform.position, _secondMousePosition) > Vector2.Distance(_player.transform.position, _currentTarget.transform.position)
             : Vector2.Distance(_player.transform.position, _secondMousePosition) > Vector2.Distance(_player.transform.position, _firstMousePosition);
-        Debug.Log($"ISFAST?? = {_isFast}");
+        //Debug.Log($"ISFAST?? = {_isFast}");
     }
 
     private void ChooseDirectionPush()
@@ -512,29 +576,27 @@ public class PoisonBall : Skill
         yield return null;
     }
 
-    private IEnumerator TimeCastForThirdProjectile()
-    {
-        _castDeley = 0.4f;
-        yield return null;
-    }
-
     private void ChooseWhichProjectileCreate()
     {
         if (_isTarget)
         {
-            CmdCreateProjectileForTarget(_currentTarget.gameObject, _currentTarget.transform.position,
-                _isFast, _isPushTarget, _isActiveHealingPoisonBall, _isOriginalTargetPlayer, _isOriginalTargetEnemy,
-                _isOriginalTargetAllies, _witheringPoison.IsActive, _isActiveContinuationAmbush, _isActiveVoluminousBall);
+            //Debug.Log($"PoisonBallPorjectile / ChooseWhichProjectileCreate / if isTarget = {_isTarget}");
+            CmdCreateProjectileForTarget(_currentTarget.gameObject, _currentTarget.transform.position, _poisonBallInfo.MaxCountProjectile, 
+                _isFast, _isPushTarget,
+                _poisonBallInfo.IsActiveHealingPoisonBall, _poisonBallInfo.IsActiveWitheringPoison, _poisonBallInfo.IsActiveVoluminousBall,
+                _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies);
 
-            CmdApplyCloudPoison(_healPoisonCloud.IsActive, _isHealingPoisonCloud);
+            CmdApplyCloudPoison(_healPoisonCloud.IsActive, _poisonBallInfo.IsHealingPoisonCloud);
         }
         else
         {
-            CmdCreateProjectileForFlyingMaxDistance(_firstMousePosition,
-                _isFast, _isPushTarget, _isActiveHealingPoisonBall, _isOriginalTargetPlayer, _isOriginalTargetEnemy,
-                _isOriginalTargetAllies, _witheringPoison.IsActive, _isActiveContinuationAmbush, _isActiveVoluminousBall);
+            //Debug.Log($"PoisonBallPorjectile / ChooseWhichProjectileCreate / esle isTarget = {_isTarget}");
+            CmdCreateProjectileForFlyingMaxDistance(_firstMousePosition, _poisonBallInfo.MaxCountProjectile, 
+                _isFast, _isPushTarget,
+                _poisonBallInfo.IsActiveHealingPoisonBall, _poisonBallInfo.IsActiveWitheringPoison, _poisonBallInfo.IsActiveVoluminousBall,
+                _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies);
 
-            CmdApplyCloudPoison(_healPoisonCloud.IsActive, _isHealingPoisonCloud);
+            CmdApplyCloudPoison(_healPoisonCloud.IsActive, _poisonBallInfo.IsHealingPoisonCloud);
         }
     }
 
@@ -543,66 +605,63 @@ public class PoisonBall : Skill
     #region Command Methods
 
     [Command]
-    private void CmdCreateProjectileForTarget(GameObject target, Vector3 targetOrPoint,
-        bool isFast, bool isPushTarget, bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies,
-        bool isActiveWitheringPoison, bool isActiveContinuationAmbush, bool isActiveVoluminousBall)
+    private void CmdCreateProjectileForTarget(GameObject target, Vector3 targetOrPoint, int maxCountProjectiles,
+        bool isFast, bool isPushTarget,
+        bool isActiveHealingPoisonBall, bool isActiveWitheringPoison, bool isActiveVoluminousBall,
+        bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies)
+        
     { 
         CurrentTarget = target;
         FootInstinctsTalent = _footInstincts;
 
         if (LastTarget == CurrentTarget)
         {
-            CountProjectiles++;
+            _poisonBallInfo.CountProjectiles += 1;
+            _poisonBallInfo.IsProjectileCreate = true;
         }
         else
         {
-            CountProjectiles = 1;
+            _poisonBallInfo.IsActiveTimer = false;
+            _poisonBallInfo.IsThreeProjectileOnOnetarget = false;
+            _poisonBallInfo.IsCanApplyInvisible = false;
+            _poisonBallInfo.CountProjectiles = 1;
+            _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
         }
 
-        if (CountProjectiles == 1 && LastTarget == CurrentTarget)
+        if (_poisonBallInfo.CountProjectiles >= 3 && _poisonBallInfo.IsActiveInertialGlands)
         {
-            Debug.Log("CountProjectiles = 1");
-            Debug.Log($"LastTarget = {LastTarget}");
-            Debug.Log($"CurrentTarget = {CurrentTarget}");
-            TimeBetweenAttack = StartTimeBetweenAttack;
-            IsProjectileCreate = true;
-            return;
-        }
-        else if (CountProjectiles == 2 && LastTarget == CurrentTarget)
-        {
-            Debug.Log("CountProjectiles = 2");
-            Debug.Log($"LastTarget = {LastTarget}");
-            Debug.Log($"CurrentTarget = {CurrentTarget}");
-            TimeBetweenAttack = StartTimeBetweenAttack;
-            IsProjectileCreate = true;
-            return;
-        }
-        else if (CountProjectiles == 3 && LastTarget == CurrentTarget)
-        {
-            Debug.Log("CountProjectiles = 3");
-            Debug.Log($"LastTarget = {LastTarget}");
-            Debug.Log($"CurrentTarget = {CurrentTarget}");
-            TimeBetweenAttack = StartTimeBetweenAttack;
-        }
-        else if (LastTarget != CurrentTarget || CountProjectiles >= 3)
-        {
-            Debug.Log("CountProjectiles >= 3");
-            Debug.Log($"LastTarget = {LastTarget}");
-            Debug.Log($"CurrentTarget = {CurrentTarget}");
-            IsActiveTimer = false;
-            IsProjectileCreate = false;
-            CountProjectiles = 0;
-            return;
+            _poisonBallInfo.IsThreeProjectileOnOnetarget = true;
         }
 
+        if (_poisonBallInfo.CountProjectiles >= 4 && _poisonBallInfo.IsActiveContinuationAmbush)
+        {
+            _poisonBallInfo.IsCanApplyInvisible = true;
+        }
+
+        if (_poisonBallInfo.CountProjectiles < maxCountProjectiles && LastTarget == CurrentTarget)
+        {
+            _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
+            _poisonBallInfo.IsActiveTimer = true;
+        }
+        else if (_poisonBallInfo.CountProjectiles >= maxCountProjectiles)
+        {
+            _poisonBallInfo.IsActiveTimer = false;
+
+            _poisonBallInfo.CountProjectiles = 0; 
+            _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
+        }
+
+        Debug.Log($"bool isTargetEnemy = {isTargetEnemy}, bool isTargetPlayer = {isTargetPlayer}, bool isTargetAllies = {isTargetAllies}");
+
+        Debug.Log($"_poisonBallInfo.HealingBall = {_poisonBallInfo.IsActiveHealingPoisonBall}");
 
         GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
         PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>(); 
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
-        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.CurrentValue, this, isActiveTalent,
-            isTargetPlayer, isTargetEnemy, isTargetAllies, isActiveWitheringPoison, isPushTarget, isActiveContinuationAmbush, isActiveVoluminousBall);
+        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.CurrentValue, this, isActiveHealingPoisonBall,
+            isTargetPlayer, isTargetEnemy, isTargetAllies, isActiveWitheringPoison, isPushTarget, isActiveVoluminousBall);
 
         poisonBallProjectile.MoveBallToTarget(targetOrPoint, isFast);
 
@@ -610,53 +669,60 @@ public class PoisonBall : Skill
     }
 
     [Command]
-    private void CmdCreateProjectileForFlyingMaxDistance(Vector3 point, bool isFast, bool isPushTarget,
-        bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies,
-        bool isActiveWitheringPoison, bool isActiveContinuationAmbush, bool isActiveVoluminousBall)
+    private void CmdCreateProjectileForFlyingMaxDistance(Vector3 point, int maxCountProjectiles,
+        bool isFast, bool isPushTarget,
+        bool isActiveHealingPoisonBall, bool isActiveWitheringPoison, bool isActiveVoluminousBall,
+        bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies)
     {
         FootInstinctsTalent = _footInstincts;
+        CurrentTarget = LastTarget;
 
         if (LastTarget == CurrentTarget)
         {
-            CountProjectiles++;
+            _poisonBallInfo.CountProjectiles += 1;
+            _poisonBallInfo.IsProjectileCreate = true;
         }
         else
         {
-            CountProjectiles = 1;
+            _poisonBallInfo.IsActiveTimer = false;
+            _poisonBallInfo.IsThreeProjectileOnOnetarget = false;
+            _poisonBallInfo.IsCanApplyInvisible = false;
+            _poisonBallInfo.CountProjectiles = 1;
+            _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
         }
 
-        if (CountProjectiles == 1 && LastTarget == CurrentTarget)
+        if (_poisonBallInfo.CountProjectiles >= 3 && _poisonBallInfo.IsActiveInertialGlands)
         {
-            TimeBetweenAttack = StartTimeBetweenAttack;
-            IsActiveTimer = true;
-        }
-        else if (CountProjectiles == 2 && LastTarget == CurrentTarget)
-        {
-            TimeBetweenAttack = StartTimeBetweenAttack;
-        }
-        else if (LastTarget != CurrentTarget || CountProjectiles == 3)
-        {
-            IsActiveTimer = false;
-            CountProjectiles = 0;
+            _poisonBallInfo.IsThreeProjectileOnOnetarget = true;
         }
 
-        if (IsActiveTimer)
+        if (_poisonBallInfo.CountProjectiles >= 4 && _poisonBallInfo.IsActiveContinuationAmbush)
         {
-            TimeBetweenAttack -= Time.deltaTime;
-            if (TimeBetweenAttack <= 0)
-            {
-                IsActiveTimer = false;
-                CountProjectiles = 0;
-            }
+            _poisonBallInfo.IsCanApplyInvisible = true;
         }
+
+        if (_poisonBallInfo.CountProjectiles < maxCountProjectiles && LastTarget == CurrentTarget)
+        {
+            _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
+            _poisonBallInfo.IsActiveTimer = true;
+        }
+        else if (_poisonBallInfo.CountProjectiles >= maxCountProjectiles)
+        {
+            _poisonBallInfo.IsActiveTimer = false;
+
+            _poisonBallInfo.CountProjectiles = 0;
+            _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
+        }
+
+        Debug.Log($"bool isTargetEnemy = {isTargetEnemy}, bool isTargetPlayer = {isTargetPlayer}, bool isTargetAllies = {isTargetAllies}");
 
         GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
         PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>(); 
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
-        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.CurrentValue, this, isActiveTalent,
-            isTargetPlayer, isTargetEnemy, isTargetAllies, isActiveWitheringPoison, isPushTarget, isActiveContinuationAmbush, isActiveVoluminousBall);
+        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.CurrentValue, this, isActiveHealingPoisonBall,
+            isTargetPlayer, isTargetEnemy, isTargetAllies, isActiveWitheringPoison, isPushTarget, isActiveVoluminousBall);
 
         poisonBallProjectile.MoveBallOnMaxDistance(point, isFast);
 
@@ -676,23 +742,6 @@ public class PoisonBall : Skill
         }
     }
 
-    [Command]
-    private void CmdTimer()
-    {
-        Debug.Log("CmdTimer");
-        if (IsProjectileCreate)
-        {
-            Debug.Log($"CmdTimer / IsProjectileCreate == {IsProjectileCreate}");
-            TimeBetweenAttack -= Time.deltaTime;
-            if (TimeBetweenAttack < 0)
-            {
-                Debug.Log($"CmdTimer / if (TimeBetweenAttack < 0) == {TimeBetweenAttack}");
-                CountProjectiles = 0;
-                IsActiveTimer = false;
-                IsProjectileCreate = false;
-            }
-        }
-    }
 
     public void PayCostPoisonBall()
     {

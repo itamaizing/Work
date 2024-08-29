@@ -87,20 +87,20 @@ public class PoisonSlap : Skill
 
         yield return _secondMouseClickCoroutine = StartCoroutine(SecondClick());
 
-        if (_currentTarget != null)
-        {
-            if (_poisonBall.CurrentCharges != 0)
-            {
-                if ((_lightweightSlap.IsActive && _creeperStrike.IsTwoHit) || (_lightweightSlap.IsActive && _lightningStrikes.IsUsedLightningStrikes))
-                {
-                    yield break;
-                }
-                else
-                {
-                    _poisonBall.PayCostPoisonBall();
-                }
-            }
-        }
+        //if (_currentTarget != null)
+        //{
+        //    if (_poisonBall.CurrentCharges != 0)
+        //    {
+        //        if ((_lightweightSlap.IsActive && _creeperStrike.IsTwoHit) || (_lightweightSlap.IsActive && _lightningStrikes.IsUsedLightningStrikes))
+        //        {
+        //            yield break;
+        //        }
+        //        else
+        //        {
+        //            _poisonBall.PayCostPoisonBall();
+        //        }
+        //    }
+        //}
     }
 
     protected override IEnumerator CastJob()
