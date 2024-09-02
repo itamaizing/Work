@@ -53,9 +53,8 @@ public class SpitPoisonProjectile : NetworkBehaviour
             {
                 if (collision.gameObject == _player.gameObject)
                 {
-                    SetPlayer(_player);
                     Debug.Log($"if (IsPlayer) // RegeneratingPoison.SetPlayer == {_player}");
-                    _player.CharacterState.CmdAddState(States.RegeneratingPoison, 6.0f, 0);
+                    _player.CharacterState.CmdAddState(States.RegeneratingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
                     Destroy(gameObject);
                 }
             }
@@ -65,9 +64,8 @@ public class SpitPoisonProjectile : NetworkBehaviour
                 {
                     if (collision.TryGetComponent<Character>(out var alliesHealth))
                     {
-                        SetPlayer(alliesHealth); 
                         Debug.Log($"if (IsAllies) // RegeneratingPoison.SetPlayer == {_player}");
-                        alliesHealth.CharacterState.CmdAddState(States.RegeneratingPoison, 6.0f, 0);
+                        alliesHealth.CharacterState.CmdAddState(States.RegeneratingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
                         Destroy(gameObject);
                     }
                 }
@@ -147,13 +145,11 @@ public class SpitPoisonProjectile : NetworkBehaviour
         };
         target.Health.TryTakeDamage(ref damage, _skill);
 
-        SetPlayer(target);
-        target.CharacterState.CmdAddState(States.PoisonBone, _lifeTimePoisonBoneStacks, 0);
+        target.CharacterState.AddState(States.PoisonBone, _lifeTimePoisonBoneStacks, 0, _player.gameObject, _skill.Name);
 
         if (numbersForChanceOfBlindness <= chanceOfBlindness)
         {
-            SetPlayer(target);
-            //target.CharacterState.CmdAddState(States.Blind, 6f, 0);
+            target.CharacterState.AddState(States.Blind, 6f, 0, _player.gameObject, _skill.Name);
         }
 
         Explode();
@@ -178,11 +174,6 @@ public class SpitPoisonProjectile : NetworkBehaviour
         _isAllies = isTargetAllies;
         _isEnemy = isTargetEnemy;
         _talentIsActive = talentIsActive;
-    }
-
-    private void SetPlayer(Character target)
-    {
-        target.CharacterState.WhoPersonShooted = _player;
     }
 
 }

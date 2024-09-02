@@ -16,7 +16,6 @@ public class CreeperStrike : AutoAttackSkill
     [SerializeField] protected Character _dad;
     [SerializeField] private CreeperInvisible _creeperInvisible;
 
-    private Character _currentTarget;
     private Character _lastTarget;
 
     private int _currentCountHit = 0;
@@ -43,13 +42,11 @@ public class CreeperStrike : AutoAttackSkill
     public bool IsTwoHit { get => _isTwoHit; set => _isTwoHit = value; }
 
     public bool Enabled;
-    public Character CurrentTarget => _currentTarget;
+    public Character CurrentTarget => _target;
 
     protected override void ClearData()
     {
         base.ClearData();
-
-        _currentTarget = null;
 
         if (_useAbilityCoroutine != null)
         {
@@ -102,7 +99,7 @@ public class CreeperStrike : AutoAttackSkill
         {
             if (_assasinPoison.CurrentChargePoison > 0)
             {
-                _assasinPoison.CmdSpendCharge(_currentTarget, _lifeTimePoisonBoneStacks);
+                _assasinPoison.CmdSpendCharge(CurrentTarget, _lifeTimePoisonBoneStacks);
             }
         }
 

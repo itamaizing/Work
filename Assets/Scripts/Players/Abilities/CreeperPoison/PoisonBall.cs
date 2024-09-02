@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 using Mono.CecilX.Cil;
+using Org.BouncyCastle.Security;
 
 public struct PoisonBallInfo : NetworkMessage
 {
@@ -47,23 +48,20 @@ public class PoisonBall : Skill
     [Header("Ability properties")]
     [SerializeField] private SpitPoison _spitPoison;
     [SerializeField] private PoisonBallProjectile _projectile;
-    [SerializeField] private PoisonCloudDisplay _poisonDamagingCloudDisplayPrefab;
-    [SerializeField] private PoisonCloudDisplay _poisonHealingCloudDisplayPrefab;
+    [SerializeField] private PoisonCloudDisplay _prefabPoisonDamagingCloud;
+    [SerializeField] private PoisonCloudDisplay _prefabPoisonHealingCloud;
+    [SerializeField] private PoisonCloudDisplay _poisonHealingCloud;
+    [SerializeField] private PoisonCloudDisplay _poisonDamagingCloud;
 
     [SerializeField] private Character _player;
-    [SerializeField] private GameObject arrowPrefab;
+    [SerializeField] private GameObject _arrowPrefab;
 
-    private GameObject[] arrowRenderers = new GameObject[4];
-
-    private PoisonCloudDisplay _poisonCloudDisplay;
-
+    private PoisonBallInfo _poisonBallInfo = new PoisonBallInfo();
+    private GameObject[] _arrowRenderers = new GameObject[4];
     private Character _currentTarget;
-
     private Vector3 _firstMousePosition = Vector3.positiveInfinity;
     private Vector3 _secondMousePosition;
     private Vector3 _thirdMousePosition;
-
-    private PoisonBallInfo _poisonBallInfo = new PoisonBallInfo();
 
     private int _countProjectiles = 0;
 
@@ -79,9 +77,9 @@ public class PoisonBall : Skill
     private bool _isFast;
     private bool _secondClickDone = false;
     private bool _thirdClickDone = false;
-    private bool firstClickCompleted = false;
-    private bool colorLockedAfterSecondClick = false;
-    private bool colorLockedAfterThirdClick = false;
+    private bool _firstClickCompleted = false;
+    private bool _colorLockedAfterSecondClick = false;
+    private bool _colorLockedAfterThirdClick = false;
 
     #endregion
 
@@ -92,6 +90,7 @@ public class PoisonBall : Skill
     public GameObject CurrentTarget { get; set; }
     public FootInstincts FootInstinctsTalent { get; set; }
     public ContinuationAmbush ContinuationAmbushTalent { get; set; }
+    public int CurrentCharges { get => _currentChargers; set => _currentChargers = value; }
 
     #endregion
 
@@ -137,9 +136,9 @@ public class PoisonBall : Skill
 
         ClearArrows();
 
-        firstClickCompleted = false;
-        colorLockedAfterSecondClick = false;
-        colorLockedAfterThirdClick = false;
+        _firstClickCompleted = false;
+        _colorLockedAfterSecondClick = false;
+        _colorLockedAfterThirdClick = false;
 
         if (_secondClickCoroutine != null)
         {
@@ -155,7 +154,7 @@ public class PoisonBall : Skill
 
     protected override IEnumerator PrepareJob()
     {
-        //CheckingActiveTalents();
+        CheckingActiveTalents();
 
         while (_currentTarget == null && float.IsPositiveInfinity(_firstMousePosition.x))
         {
@@ -169,7 +168,7 @@ public class PoisonBall : Skill
                     CreateArrowsParallelToPlayer();
                     StopAutoDraw();
                 }
-                firstClickCompleted = true;
+                _firstClickCompleted = true;
 
             }
             CooldownChange();
@@ -185,7 +184,6 @@ public class PoisonBall : Skill
     protected override IEnumerator CastJob()
     {
         ChooseWhichProjectileCreate();
-        Debug.Log("PoisonBall / CastJob / Called ChooseWhichProjectileCreate");
 
         ClearArrows();
 
@@ -197,12 +195,7 @@ public class PoisonBall : Skill
         if (_secondClickDone && _thirdClickDone)
         {
             _isTarget = IsTarget();
-            Debug.Log($"PoisonBallPorjectile / UseAbility / if / isTarget = {_isTarget}"); 
             ChooseMovementDependingOnCountProjectiles();
-        }
-        else
-        {
-            Debug.Log("Ability not triggered due to incomplete clicks.");
         }
     }
 
@@ -212,7 +205,7 @@ public class PoisonBall : Skill
 
     private void CreateArrowsParallelToPlayer()
     {
-        if (_currentTarget == null || arrowPrefab == null)
+        if (_currentTarget == null || _arrowPrefab == null)
         {
             Debug.LogError("Arrow Prefab is not assigned or Target is null");
             return;
@@ -225,10 +218,10 @@ public class PoisonBall : Skill
 
         Vector3 perpendicularDirection = Vector3.Cross(directionToTarget, Vector3.forward).normalized;
 
-        arrowRenderers[0] = Instantiate(arrowPrefab, targetPosition + directionToTarget, Quaternion.identity);
-        arrowRenderers[1] = Instantiate(arrowPrefab, targetPosition - directionToTarget, Quaternion.identity);
-        arrowRenderers[2] = Instantiate(arrowPrefab, targetPosition + directionToTarget * 1.5f, Quaternion.identity);
-        arrowRenderers[3] = Instantiate(arrowPrefab, targetPosition - directionToTarget * 1.5f, Quaternion.identity);
+        _arrowRenderers[0] = Instantiate(_arrowPrefab, targetPosition + directionToTarget, Quaternion.identity);
+        _arrowRenderers[1] = Instantiate(_arrowPrefab, targetPosition - directionToTarget, Quaternion.identity);
+        _arrowRenderers[2] = Instantiate(_arrowPrefab, targetPosition + directionToTarget * 1.5f, Quaternion.identity);
+        _arrowRenderers[3] = Instantiate(_arrowPrefab, targetPosition - directionToTarget * 1.5f, Quaternion.identity);
 
         SetArrowDirections(perpendicularDirection);
         SetArrowColors(Color.red);
@@ -236,9 +229,9 @@ public class PoisonBall : Skill
 
     private void SetArrowDirections(Vector3 perpendicularDirection)
     {
-        for (int i = 0; i < arrowRenderers.Length; i++)
+        for (int i = 0; i < _arrowRenderers.Length; i++)
         {
-            var arrow = arrowRenderers[i];
+            var arrow = _arrowRenderers[i];
             if (arrow != null)
             {
                 var drawArrow = arrow.GetComponent<DrawArrow>();
@@ -262,7 +255,7 @@ public class PoisonBall : Skill
 
     private void SetArrowColors(Color color)
     {
-        foreach (var arrow in arrowRenderers)
+        foreach (var arrow in _arrowRenderers)
         {
             if (arrow != null)
             {
@@ -278,9 +271,9 @@ public class PoisonBall : Skill
 
     private void SetArrowColor(int arrowIndex, Color color)
     {
-        if (arrowRenderers[arrowIndex] != null)
+        if (_arrowRenderers[arrowIndex] != null)
         {
-            var lineRenderer = arrowRenderers[arrowIndex].GetComponent<LineRenderer>();
+            var lineRenderer = _arrowRenderers[arrowIndex].GetComponent<LineRenderer>();
             if (lineRenderer != null)
             {
                 lineRenderer.startColor = color;
@@ -291,9 +284,9 @@ public class PoisonBall : Skill
 
     private void DarkenArrowColor(int arrowIndex, float alpha)
     {
-        if (arrowRenderers[arrowIndex] != null)
+        if (_arrowRenderers[arrowIndex] != null)
         {
-            var lineRenderer = arrowRenderers[arrowIndex].GetComponent<LineRenderer>();
+            var lineRenderer = _arrowRenderers[arrowIndex].GetComponent<LineRenderer>();
             if (lineRenderer != null)
             {
                 Color startColor = lineRenderer.startColor;
@@ -310,15 +303,13 @@ public class PoisonBall : Skill
 
     private void ClearArrows()
     {
-        foreach (var arrow in arrowRenderers)
+        foreach (var arrow in _arrowRenderers)
         {
             if (arrow != null)
             {
                 Destroy(arrow);
             }
         }
-
-        Debug.Log("Arrows cleared.");
     }
 
     #endregion
@@ -373,7 +364,7 @@ public class PoisonBall : Skill
                         DarkenArrowColor(3, 0.8f);
                     }
                 }
-                colorLockedAfterThirdClick = true;
+                _colorLockedAfterThirdClick = true;
             }
             yield return null;
         }
@@ -385,7 +376,7 @@ public class PoisonBall : Skill
 
     private void UpdateMouseDetection()
     {
-        if (firstClickCompleted && !_secondClickDone)
+        if (_firstClickCompleted && !_secondClickDone)
         {
             Vector3 currentMousePosition = GetMousePoint();
             if (currentMousePosition.x < _firstMousePosition.x)
@@ -400,7 +391,7 @@ public class PoisonBall : Skill
             }
         }
 
-        if (_secondClickDone && !colorLockedAfterSecondClick && !colorLockedAfterThirdClick)
+        if (_secondClickDone && !_colorLockedAfterSecondClick && !_colorLockedAfterThirdClick)
         {
             Vector3 currentMousePosition = GetMousePoint();
             if (currentMousePosition.x < _secondMousePosition.x)
@@ -435,13 +426,11 @@ public class PoisonBall : Skill
         {
             AddMaxChargeCount();
             _poisonBallInfo.MaxCountProjectile = _maxCharges;
-            Debug.Log($"Enlarged / MaxCountProjectiles = {_poisonBallInfo.MaxCountProjectile}");
         }
         else if (!_poisonBallInfo.IsActiveEnlargedGlands && _maxCharges >= 4)
         {
             DeductMaxChargeCount();
             _poisonBallInfo.MaxCountProjectile = _maxCharges;
-            Debug.Log($"Enlarged / MaxCountProjectiles = {_poisonBallInfo.MaxCountProjectile}");
         }
 
         #endregion
@@ -450,7 +439,6 @@ public class PoisonBall : Skill
 
         if (_poisonBallInfo.IsActiveInertialGlands && _poisonBallInfo.IsThreeProjectileOnOnetarget)
         {
-            Debug.Log("CheckTalents / InertialGland isActive");
             float newRemainingTime = 0.0f;
             _spitPoison.ReductionSetCooldown(newRemainingTime);
         }
@@ -462,7 +450,6 @@ public class PoisonBall : Skill
         if (_poisonBallInfo.IsActiveContinuationAmbush && _poisonBallInfo.IsCanApplyInvisible)
         {
             _continuationAmbush.CanApplyInvisible(true);
-            Debug.Log("CanApplyInvisible");
         }
 
         #endregion
@@ -566,7 +553,6 @@ public class PoisonBall : Skill
         _isFast = _isTarget
             ? Vector2.Distance(_player.transform.position, _secondMousePosition) > Vector2.Distance(_player.transform.position, _currentTarget.transform.position)
             : Vector2.Distance(_player.transform.position, _secondMousePosition) > Vector2.Distance(_player.transform.position, _firstMousePosition);
-        //Debug.Log($"ISFAST?? = {_isFast}");
     }
 
     private void ChooseDirectionPush()
@@ -590,7 +576,6 @@ public class PoisonBall : Skill
     {
         if (_isTarget)
         {
-            //Debug.Log($"PoisonBallPorjectile / ChooseWhichProjectileCreate / if isTarget = {_isTarget}");
             CmdCreateProjectileForTarget(_currentTarget.gameObject, _currentTarget.transform.position, _poisonBallInfo.MaxCountProjectile, 
                 _isFast, _isPushTarget,
                 _poisonBallInfo.IsActiveHealingPoisonBall, _poisonBallInfo.IsActiveWitheringPoison, _poisonBallInfo.IsActiveVoluminousBall,
@@ -600,7 +585,6 @@ public class PoisonBall : Skill
         }
         else
         {
-            //Debug.Log($"PoisonBallPorjectile / ChooseWhichProjectileCreate / esle isTarget = {_isTarget}");
             CmdCreateProjectileForFlyingMaxDistance(_firstMousePosition, _poisonBallInfo.MaxCountProjectile, 
                 _isFast, _isPushTarget,
                 _poisonBallInfo.IsActiveHealingPoisonBall, _poisonBallInfo.IsActiveWitheringPoison, _poisonBallInfo.IsActiveVoluminousBall,
@@ -744,114 +728,67 @@ public class PoisonBall : Skill
     {
         if (isActiveTalent && isHealingCloud)
         {
-            if (_poisonCloudDisplay == null)
+            if (_poisonHealingCloud.PoisonHealingCloud == null)
             {
-                Debug.Log("PoisonCloud Healing is Active");
-                _player.CharacterState.CmdAddState(States.HealingPoisonCloud, _durationPoisonCloud, 0);
+                _player.CharacterState.AddState(States.HealingPoisonCloud, _durationPoisonCloud, 0, _player.gameObject, Name);
 
-                _poisonCloudDisplay = Instantiate(_poisonHealingCloudDisplayPrefab, transform.position, Quaternion.identity);
+                //_poisonCloudDisplay.transform.SetParent(playerTransform, false);
+                _poisonHealingCloud.PoisonHealingCloud = Instantiate(_prefabPoisonHealingCloud, transform.position, Quaternion.identity);
 
-                SceneManager.MoveGameObjectToScene(_poisonCloudDisplay.gameObject, _hero.NetworkSettings.MyRoom);
+                SceneManager.MoveGameObjectToScene(_poisonHealingCloud.PoisonHealingCloud.gameObject, _hero.NetworkSettings.MyRoom);
 
-                _poisonCloudDisplay.InitializationPrefab(_player, 6f, 3.5f, 5);
-                _poisonCloudDisplay.AddStack();
+                _poisonHealingCloud.PoisonHealingCloud.InitializationPrefab(_player, 6f, 3.5f, 5);
+                _poisonHealingCloud.PoisonHealingCloud.AddStack();
 
-                NetworkServer.Spawn(_poisonCloudDisplay.gameObject);
+                NetworkServer.Spawn(_poisonHealingCloud.PoisonHealingCloud.gameObject);
             }
             else
             {
-                _poisonCloudDisplay.AddStack();
+                _player.CharacterState.AddState(States.HealingPoisonCloud, _durationPoisonCloud, 0, _player.gameObject, Name);
+                _poisonHealingCloud.PoisonHealingCloud.AddStack();
             }
         }
         else
         {
-            if (_poisonCloudDisplay == null)
+            if (_poisonDamagingCloud.PoisonDamagingCloud == null)
             {
-                Debug.Log("PoisonCloud Healing is Active");
-                _player.CharacterState.CmdAddState(States.HealingPoisonCloud, _durationPoisonCloud, 0);
+                _player.CharacterState.AddState(States.PoisonCloud, _durationPoisonCloud, 0, _player.gameObject, Name);
 
-                _poisonCloudDisplay = Instantiate(_poisonHealingCloudDisplayPrefab, transform.position, Quaternion.identity);
+                //_poisonCloudDisplay.transform.SetParent(playerTransform, false);
+                _poisonDamagingCloud.PoisonDamagingCloud = Instantiate(_prefabPoisonDamagingCloud, transform.position, Quaternion.identity);
 
-                SceneManager.MoveGameObjectToScene(_poisonCloudDisplay.gameObject, _hero.NetworkSettings.MyRoom);
+                SceneManager.MoveGameObjectToScene(_poisonDamagingCloud.PoisonDamagingCloud.gameObject, _hero.NetworkSettings.MyRoom);
 
-                _poisonCloudDisplay.InitializationPrefab(_player, 6f, 3.5f, 5);
-                _poisonCloudDisplay.AddStack();
+                _poisonDamagingCloud.PoisonDamagingCloud.InitializationPrefab(_player, 6f, 3.5f, 5);
+                _poisonDamagingCloud.PoisonDamagingCloud.AddStack();
 
-                NetworkServer.Spawn(_poisonCloudDisplay.gameObject);
+                NetworkServer.Spawn(_poisonDamagingCloud.PoisonDamagingCloud.gameObject);
             }
             else
             {
-                _poisonCloudDisplay.AddStack();
+                _player.CharacterState.AddState(States.PoisonCloud, _durationPoisonCloud, 0, _player.gameObject, Name);
+                //Debug.Log("CmdPoisonDamagingCloud / Else / AddStack");
+                _poisonDamagingCloud.PoisonDamagingCloud.AddStack();
             }
         }
-        RpcApplyCloudPoisons(_poisonCloudDisplay, isActiveTalent, isHealingCloud);
+        RpcApplyCloudPoisons(_poisonDamagingCloud.PoisonDamagingCloud, _poisonHealingCloud.PoisonHealingCloud, isActiveTalent, isHealingCloud);
     }
 
     #endregion
 
     [ClientRpc]
-    private void RpcApplyCloudPoisons(PoisonCloudDisplay cloud, bool isActiveTalent, bool isHealingCloud)
+    private void RpcApplyCloudPoisons(PoisonCloudDisplay damageCloud, PoisonCloudDisplay healCloud, bool isActiveTalent, bool isHealingCloud)
     {
-        Debug.Log($"PoisonBall / RpcApplyCloud / cloud == {cloud}");
-        if (cloud != null)
+        if (damageCloud != null)
         {
-            cloud.InitializationPrefab(_player, 6f, 3.5f, 5);
-            cloud.AddStack();
+            damageCloud.InitializationPrefab(_player, 6f, 3.5f, 5);
+            damageCloud.AddStack();
+            //Debug.Log("RpcPoisonDamagingCloud / if dmgCloud / AddStack");
+        }
+        if (healCloud != null)
+        {
+            healCloud.InitializationPrefab(_player, 6f, 3.5f, 5);
+            healCloud.AddStack();
         }
     }
-
-    //[ClientRpc]
-    //private void RpcApplyCloudPoisons(bool isActiveTalent, bool isHealingCloud)
-    //{
-    //    PoisonCloudDisplay existingCloud = null;
-
-    //    // »щем существующий объект PoisonCloudDisplay
-    //    foreach (var cloud in FindObjectsOfType<PoisonCloudDisplay>())
-    //    {
-    //        if (cloud.IsOwner == _player)
-    //        {
-    //            existingCloud = cloud;
-    //            break;
-    //        }
-    //    }
-
-    //    if (isActiveTalent && isHealingCloud)
-    //    {
-    //        if (existingCloud == null)
-    //        {
-    //            Debug.Log("PoisonCloud Healing is Active");
-    //            _player.CharacterState.CmdAddState(States.HealingPoisonCloud, _durationPoisonCloud, 0);
-
-    //            GameObject item = Instantiate(_poisonHealingCloudDisplayPrefab.gameObject, transform.position, Quaternion.identity);
-    //            PoisonCloudDisplay poisonCloud = item.GetComponent<PoisonCloudDisplay>();
-
-    //            poisonCloud.InitializationPrefab(_player, 6, 3.5f, 5);
-
-    //            poisonCloud.AddStack();
-    //        }
-    //        else
-    //        {
-    //            existingCloud.AddStack();
-    //        }
-    //    }
-    //    else
-    //    {
-    //        if (existingCloud == null)
-    //        {
-    //            Debug.Log("PoisonCloud Damaging is Active");
-    //            _player.CharacterState.CmdAddState(States.PoisonCloud, _durationPoisonCloud, 0);
-
-    //            GameObject item = Instantiate(_poisonDamagingCloudDisplayPrefab.gameObject, transform.position, Quaternion.identity);
-    //            PoisonCloudDisplay poisonCloud = item.GetComponent<PoisonCloudDisplay>();
-
-    //            poisonCloud.InitializationPrefab(_player, 6, 3.5f, 5);
-
-    //            poisonCloud.AddStack();
-    //        }
-    //        else
-    //        {
-    //            existingCloud.AddStack();
-    //        }
-    //    }
-    //}
 }

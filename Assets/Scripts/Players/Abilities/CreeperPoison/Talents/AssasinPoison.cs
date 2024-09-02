@@ -47,7 +47,7 @@ public class AssasinPoison : Talent
         {
             if (CurrentChargePoison > 0)
             {
-                target.CharacterState.CmdAddState(States.PoisonBone, lifeTimePoisonBoneStack, 0);
+                target.CharacterState.CmdAddState(States.PoisonBone, lifeTimePoisonBoneStack, 0, character.gameObject, null);
                 CurrentChargePoison--;
             }
         }

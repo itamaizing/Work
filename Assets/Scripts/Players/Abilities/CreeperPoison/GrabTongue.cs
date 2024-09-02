@@ -21,14 +21,14 @@ public class GrabTongue : Skill
 
     public bool Enabled;
 
-    protected override bool IsCanCast => CheckCanCastt();
+    protected override bool IsCanCast => CheckCanCast();
 
     protected override void ClearData()
     {
-        //_target = null;
-        //_mousePosition = Vector3.positiveInfinity;
-        //_startPosition = Vector3.zero;
-        //_endPosition = Vector3.zero;
+        _target = null;
+        _mousePosition = Vector3.positiveInfinity;
+        _startPosition = Vector3.zero;
+        _endPosition = Vector3.zero;
     }
 
     protected override IEnumerator PrepareJob()
@@ -79,6 +79,7 @@ public class GrabTongue : Skill
 
                     if (_target.CharacterState.CheckForState(States.InAir))
                     {
+                        Debug.Log("CheckForState in SearchingEnemies");
                         _isCanAttract = true;
                     }
                     else
@@ -92,7 +93,7 @@ public class GrabTongue : Skill
         }
     }
 
-    private bool CheckCanCastt()
+    private bool CheckCanCast()
     {
         if (_target != null)
             return Vector3.Distance(_player.transform.position, _target.transform.position) <= Radius;
@@ -101,25 +102,16 @@ public class GrabTongue : Skill
             return false;
     }
 
-    private bool CheckCanCast()
-    {
-        Debug.Log("CheckCanCast");
-
-        if (_target == null)
-            return Vector3.Distance(_mousePosition, transform.position) <= Radius;
-
-        return Vector3.Distance(_mousePosition, transform.position) <= Radius ||
-               Vector3.Distance(_target.transform.position, transform.position) <= Radius;
-    }
-
     private void CreateTongueProjectile(Character target, Vector3 startPosition, Vector3 endPosition)
     {
+        Debug.Log("CreateTongueProjectile");
         CmdCreateTongueProjectile(target, startPosition, endPosition);
     }
 
     [Command]
     private void CmdCreateTongueProjectile(Character target, Vector3 startPosition, Vector3 endPosition)
     {
+        Debug.Log("CmdCreateTongueProjectile");
         GameObject item = Instantiate(_tongueProjectile.gameObject, transform.position, Quaternion.identity);
         GrabTongueProjectile tongueProjectile = item.GetComponent<GrabTongueProjectile>();
 

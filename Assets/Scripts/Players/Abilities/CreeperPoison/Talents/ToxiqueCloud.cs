@@ -18,6 +18,6 @@ public class ToxiqueCloud : Talent
     public void ApplyBonePoison(Character targetHealth)
     {
         Debug.Log("ApplyBonePoison in ToxiqueCloud");
-        targetHealth.CharacterState.CmdAddState(States.PoisonBone, 6f, 0);
+        targetHealth.CharacterState.CmdAddState(States.PoisonBone, 6f, 0, character.gameObject, null);
     }
 }

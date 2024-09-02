@@ -108,6 +108,6 @@ public class ExplosionPoisonCloud : Skill
     [Command]
     private void CmdApplyPoisonBone(HeroComponent target)
     {
-        target.CharacterState.CmdAddState(States.PoisonBone, 6f, 0);
+        target.CharacterState.AddState(States.PoisonBone, 6f, 0, _player.gameObject, Name);
     }
 }

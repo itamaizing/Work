@@ -260,7 +260,6 @@ public class TalentSystem : NetworkBehaviour
              _talents[id].SetActive(false);
              _points++;
          }*/
-    }
 
     public void EnterAll()
     {
@@ -326,13 +325,6 @@ public class TalentSystem : NetworkBehaviour
        // _activeTalents.Add(talent);
        talent.Enter();
        talent.SetActive(true);
-    }
-
-    public void Add(Talent talent)
-    {
-        // _activeTalents.Add(talent);
-        talent.Enter();
-        talent.SetActive(true);
     }
 
     public void Remove(Talent talent)

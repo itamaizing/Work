@@ -77,13 +77,11 @@ public class PoisonBallProjectile : NetworkBehaviour
 
                     if (_isFast)
                     {
-                        SetPlayer(_player);
-                        _player.CharacterState.CmdAddState(States.HealingPoisonPerSecond, 6.0f, 0);
+                        _player.CharacterState.CmdAddState(States.HealingPoisonPerSecond, 6.0f, 0, _player.gameObject, _skill.Name);
                     }
                     else
                     {
-                        SetPlayer(_player);
-                        _player.CharacterState.CmdAddState(States.InstantHealingPoison, 6.0f, 0);
+                        _player.CharacterState.CmdAddState(States.InstantHealingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
                     }
 
                     Destroy(gameObject);
@@ -102,14 +100,12 @@ public class PoisonBallProjectile : NetworkBehaviour
                         if (_isFast)
                         {
                             Debug.Log($"_isfast PoisBallProj= {_isFast}"); 
-                            SetPlayer(_player);
-                            alliesHealth.CharacterState.CmdAddState(States.HealingPoisonPerSecond, 6.0f, 0);
+                            alliesHealth.CharacterState.CmdAddState(States.HealingPoisonPerSecond, 6.0f, 0, _player.gameObject, _skill.Name);
                         }
                         else
                         {
                             Debug.Log($"_isfast PoisBallProj = {_isFast}"); 
-                            SetPlayer(_player);
-                            alliesHealth.CharacterState.CmdAddState(States.InstantHealingPoison, 6.0f, 0);
+                            alliesHealth.CharacterState.CmdAddState(States.InstantHealingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
                         }
 
                         Destroy(gameObject);
@@ -233,13 +229,15 @@ public class PoisonBallProjectile : NetworkBehaviour
             Type = DamageType.Physical,
             Range = AttackRangeType.RangeAttack,
         };
+
         targetHealth.Health.TryTakeDamage(ref damage, _skill);
 
         if (_isActvieWitheringPoison)
         {
-            SetPlayer(targetHealth);
-            targetHealth.CharacterState.CmdAddState(States.WitheringPoison, 6f, 0);
+            targetHealth.CharacterState.AddState(States.WitheringPoison, 6f, 0, _player.gameObject, _skill.Name);
         }
+
+        targetHealth.CharacterState.AddState(States.InAir, _durationStun, 0, _player.gameObject, _skill.Name);
 
         PushEnemyDependingOnCountProjectile(targetHealth, _durationPush, _distancePush);
 
@@ -268,11 +266,6 @@ public class PoisonBallProjectile : NetworkBehaviour
             target.transform.DOMove((Vector2)target.transform.position - directionPush * distancePush, durationPush).SetEase(Ease.Linear);
             Debug.Log($"PoisonBallProjectile / PushEnemy / else (_isPushTarget = {_isPushTarget})");
         }
-
-        //else if (_countProjectiles == 3 && _currentTarget == _poisonBall.LastTarget)
-
-
-        target.CharacterState.CmdAddState(States.InAir, _durationStun, 0);
     }
 
     private void DestroyProjectile()
@@ -334,11 +327,6 @@ public class PoisonBallProjectile : NetworkBehaviour
     #endregion
 
     #region SetPlayerAndCheckState
-
-    private void SetPlayer(Character target)
-    {
-        target.CharacterState.WhoPersonShooted = _player;
-    }
 
     //private void SetPlayer()
     //{

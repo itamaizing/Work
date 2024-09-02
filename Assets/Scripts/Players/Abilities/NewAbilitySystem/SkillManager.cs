@@ -138,14 +138,6 @@ public class SkillManager : MonoBehaviour
         }
     }
 
-    public void SetAbilitiesCoolDown(float time)
-    {
-        foreach (var item in _skills)
-        {
-            item.IncreaseSetCooldown(time);
-        }
-    }
-
     private void PrepereSkill()
     {
         if(_selectedSkill != null)
@@ -252,7 +244,7 @@ public class SkillManager : MonoBehaviour
     public void AddAbility(Ability ability)
     {
         /*
-        _abilities.Add(ability);
+        _skills.Add(ability);
         if (AbilitiesManager.Instance == null) return;
 
         AbilitiesManager.Instance.RemovePanel(_abilityPanel);
@@ -263,7 +255,7 @@ public class SkillManager : MonoBehaviour
     public void RemoveAbility(Ability ability)
     {
         /*
-        _abilities.Remove(ability);
+        _skills.Remove(ability);
         if (AbilitiesManager.Instance == null) return;
 
         AbilitiesManager.Instance.RemovePanel(_abilityPanel);
@@ -298,7 +290,7 @@ public class SkillManager : MonoBehaviour
         /*
         if (school == Schools.Physical)
             return;
-        foreach (var item in _abilities)
+        foreach (var item in _skills)
         {
             if (item.School == school)
             {
@@ -312,7 +304,7 @@ public class SkillManager : MonoBehaviour
     public void SwitchAvaliable(AbilityForm form, bool value)
     {
         /*
-        foreach (var item in _abilities)
+        foreach (var item in _skills)
         {
             if (item.AbilityForm == form)
             {

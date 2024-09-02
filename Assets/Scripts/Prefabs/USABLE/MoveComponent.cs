@@ -3,6 +3,12 @@ using UnityEngine;
 
 public class MoveComponent : NetworkBehaviour
 {
+	public bool CanMove;
+	public bool IsMoving;
+	public bool IsSelect;
+	public bool IsHero = false;
+	public Vector2 MoveDirection;
+
 	private Vector2 _offset = Vector2.zero; // new
 	[SyncVar]
 	private Vector3 _targetPosition;
@@ -11,14 +17,6 @@ public class MoveComponent : NetworkBehaviour
 	
 	private Vector2 target;
 
-	public bool CanMove;
-	public bool IsMoving;
-	public bool IsSelect;
-	public bool IsHero = false;
-
-    [SyncVar] private Vector3 _targetPosition;
-	private Vector2 _offset = Vector2.zero; // new
-	private Rigidbody2D _rigidbody;
 
 	private float _defaultSpeed;
 	private float _currentSpeed;
@@ -27,8 +25,6 @@ public class MoveComponent : NetworkBehaviour
 
 	public float CurrentSpeed { get => _currentSpeed; }
 	public float DefaultSpeed { get => _defaultSpeed; }
-	private bool isInitialize = false;
-	public bool _isHero = false;
 
 	public void SetOffset(Vector2 offset) // new
 	{
@@ -47,8 +43,8 @@ public class MoveComponent : NetworkBehaviour
 		MoveDirection = Vector2.down;
 
 		CanMove = true;
-		_isHero = isHero;
-		isInitialize = true;
+		IsHero = isHero;
+		_isInitialize = true;
 	}
 
 	public void ChangeMoveSpeed(float value)
@@ -63,6 +59,7 @@ public class MoveComponent : NetworkBehaviour
 	{
 		_currentSpeed = _defaultSpeed;
 	}
+
 	[ClientCallback]
 	void Update()
 	{
@@ -90,7 +87,7 @@ public class MoveComponent : NetworkBehaviour
 	[Client]
 	private void HandleKeyboardInput()
 	{
-		if (!_isHero) return;
+		if (!IsHero) return;
 
 		MoveDirection = new Vector2(
 			Input.GetKey(KeyCode.A) ? -1 : Input.GetKey(KeyCode.D) ? 1 : 0,

@@ -26,7 +26,7 @@ public class RuneComponent : Resource
 				if (_disableMultiplier && CurrentValue >= runeValue * _abilities[i].multiplier && _abilities[i].ability == usedAbility)
 				{
 					CurrentValue -= runeValue * _abilities[i].multiplier;
-					//Debug.Log("Used rune " + runeValue * _abilities[i].multiplier);
+					//Debug.Log("Used rune " + runeValue * _skills[i].multiplier);
 					_lastUsedRuneValue = runeValue * _abilities[i].multiplier;
 					_disableMultiplier = false;
 					return true;
@@ -38,7 +38,7 @@ public class RuneComponent : Resource
 					runeValue *= _abilities[i].multiplier;
 
 					CurrentValue -= runeValue;
-					//Debug.Log("Used rune " + runeValue * _abilities[i].multiplier);
+					//Debug.Log("Used rune " + runeValue * _skills[i].multiplier);
 					//_multiplyCost = true;
 					_abilities[i].time = 6;
 					_lastUsedRuneValue = runeValue;
@@ -91,12 +91,12 @@ public class RuneComponent : Resource
 					_abilities.Remove(_abilities[i]);
 				}
 			}
-		/*foreach (var ability in _abilities) 
+		/*foreach (var ability in _skills) 
 		{
 			ability.time-=Time.deltaTime;
 			if(ability.time <= 0 )
 			{
-				_abilities.Remove(ability);
+				_skills.Remove(ability);
 			}
 		}*/
 	}

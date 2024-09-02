@@ -220,7 +220,7 @@ public class CreeperInvisible : Skill
         Debug.Log($"CreeperInvisible / CmdApplyInvis / IsInvisible = {IsInvisible}");
         RpcApplyInvis();
 
-        _player.CharacterState.CmdAddState(States.CreeperInvisible, 0, 0);
+        _player.CharacterState.CmdAddState(States.CreeperInvisible, 0, 0, _player.gameObject, Name);
     }
 
     [Command]
@@ -230,7 +230,7 @@ public class CreeperInvisible : Skill
         IsInvisible = true;
         RpcApplyInvisibleWithTalent();
 
-        _player.CharacterState.CmdAddState(States.CreeperInvisible, 0, 0);
+        _player.CharacterState.CmdAddState(States.CreeperInvisible, 0, 0, _player.gameObject, Name);
     }
 
     [Command]

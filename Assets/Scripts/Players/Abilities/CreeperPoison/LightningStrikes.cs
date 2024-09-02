@@ -12,11 +12,8 @@ public class LightningStrikes : AutoAttackSkill
     private float _attackSpeedDeacrease = 0.1f;
     private bool _isUsedLightningStrikes = false;
 
-    private Character _currentTarget;
     private Coroutine _useCoroutine;
     private Coroutine _decreaseAttackSpeedCoroutine;
-
-
 
     public bool IsUsedLightningStrikes => _isUsedLightningStrikes;
     public bool Enabled;
@@ -25,23 +22,27 @@ public class LightningStrikes : AutoAttackSkill
     {
         base.ClearData();
         Debug.Log("LightningStrikes / ClearData");
-        _countStrikes = 2;
 
         if (_useCoroutine != null)
+        {
             StopCoroutine(UseAbilityCoroutine());
+            _useCoroutine = null;
+        }
 
         if (_decreaseAttackSpeedCoroutine != null)
+        {
             StopCoroutine(DecreaseAttackSpeed());
+            _decreaseAttackSpeedCoroutine = null;
+        }
     }
 
     protected override void CastAction()
     {
         Debug.Log("LightningStrikes / CastAction");
-        _currentTarget = _target;
         _useCoroutine = StartCoroutine(UseAbilityCoroutine());
     }
 
-    public IEnumerator UseAbilityCoroutine()
+    private IEnumerator UseAbilityCoroutine()
     {
         Debug.Log("LightningStrikes / UseAbilityCoroutine");
         _isUsedLightningStrikes = true;
@@ -53,8 +54,8 @@ public class LightningStrikes : AutoAttackSkill
     private IEnumerator DecreaseAttackSpeed()
     {
         Debug.Log("LightningStrikes / DecreaseAttackSpeed");
-        Debug.Log($"LightningStrikes / DecreaseAttackSpeed / CreeperStrike.CurrentTarget = {_currentTarget}");
-        if (_currentTarget != null)
+        Debug.Log($"LightningStrikes / DecreaseAttackSpeed / CreeperStrike.CurrentTarget = {_target}");
+        if (_target != null)
         {
             Debug.Log("LightningStrikes / DecreaseAttackSpeed / if (CreeperStrike.CurrentTarget != null)");
             _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_attackSpeedDeacrease);
@@ -63,7 +64,7 @@ public class LightningStrikes : AutoAttackSkill
             while (_countStrikes > 0)
             {
                 Debug.Log($"LightningStrikes / DecreaseAttackSpeed / while (countStrikes = {_countStrikes})");
-                _creeperStrike.DealingDamageFromHits(_currentTarget);
+                _creeperStrike.DealingDamageFromHits(_target);
                 _countStrikes--;
                 _creeperStrike.CurrentCountHit = 0;
             }
