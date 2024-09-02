@@ -1,7 +1,9 @@
 using DG.Tweening;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 public class StateIcons : MonoBehaviour
 {
@@ -134,14 +136,24 @@ public class StateIcons : MonoBehaviour
     //removing item before it ends
 	public void RemoveItemByState(States state)
 	{
-		foreach(var item in _activeEffects)
+        if(_activeEffects.Count > 0)
+		/*foreach(var item in _activeEffects)
         {
             if(item.state == state)
             {
 				_activeEffects.Remove(item);
                 Destroy(item.gameObject);
 			}
-        }
+        }*/
+        for(int i = _activeEffects.Count - 1; i >= 0; i--)
+        {
+			if (_activeEffects[i].state == state)
+			{
+                StateIcoItem icoItem = _activeEffects[i];
+				_activeEffects.Remove(icoItem);
+				Destroy(icoItem.gameObject);
+			}
+		}
 	}
 }
 

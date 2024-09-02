@@ -1,15 +1,21 @@
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class Absorption : Ability
+public class Absorption : Skill
 {
 	[SerializeField] private Character _player;
+	private IcyCorpse _target;
 	private bool _active = false;
 
+	protected override bool IsCanCast
+	{
+		get { return _target != null; }
+	}
 
-	private void Update()
+	/*private void Update()
 	{
 		if(!_active) return;
 
@@ -20,8 +26,9 @@ public class Absorption : Ability
 				Physics2D.CircleCastAll(_mousePos, _radius, Vector2.zero);
 			for (int i = 0; i < hits.Length; i++)
 			{
-				if (hits[i].collider.TryGetComponent<IceShadowObject>(out var shadow))
+				if (hits[i].collider.TryGetComponent<IcyCorpse>(out var shadow))
 				{
+					CmdAction(shadow.gameObject);
 					if (shadow.IsAlive)
 					{
 						CmdAction(shadow.gameObject);
@@ -30,23 +37,15 @@ public class Absorption : Ability
 			}
 			_active = false;
 		}
-	}
+	}*/
 
-	protected override void Cancel()
-	{
-		//turn off targets and etc		
-	}
-	protected override void Cast()
-	{
-		_active = true;
-	}
 
 	[Command]
 	private void CmdAction(GameObject bodyObj)
 	{
 		Debug.Log(bodyObj.name);
 		Action(bodyObj);
-		RpcAction(bodyObj);
+		//RpcAction(bodyObj);
 	}
 
 	[ClientRpc]
@@ -59,12 +58,37 @@ public class Absorption : Ability
 	private void Action(GameObject bodyObj)
 	{
 		Debug.Log(bodyObj.name);
-		IceShadowObject body = bodyObj.GetComponent<IceShadowObject>();
+		IcyCorpse body = bodyObj.GetComponent<IcyCorpse>();
 
-		float regen = 0.1f * body.HP + 0.05f * _player.Stamina.CurrentValue / 10;
+		//float regen = 0.1f * body.HP + 0.05f * _player.Stamina.Value / 10;
 		_player.Stamina.TryUse(_player.Stamina.CurrentValue);
-		_player.Health.Add(regen);
-		body.Explode();
+		//_player.Health.AddHeal(regen);
+		body.DestroyCorpse();
 
+	}
+
+	protected override IEnumerator PrepareJob()
+	{
+		while (_target == null)
+		{
+			if (Input.GetMouseButton(0))
+			{
+				_target = (IcyCorpse)GetRaycastTarget();
+			}
+			yield return null;
+		}
+	}
+
+	protected override IEnumerator CastJob()
+	{
+		CmdAction(_target.gameObject);
+
+		yield return null;
+	}
+
+	protected override void ClearData()
+	{
+		_target = null;
+		return;
 	}
 }

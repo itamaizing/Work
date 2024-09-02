@@ -5,7 +5,7 @@ using UnityEngine;
 public class DeathSpiralTalents : Talent
 {
 	[SerializeField] private DeathSpiral _deathSpiral;
-	[SerializeField] private PlayerAbilities _ability;
+	[SerializeField] private SkillManager _ability;
 	public override void Enter()
 	{
 		if (_ability.Abilities.Contains(_deathSpiral))
@@ -14,7 +14,7 @@ public class DeathSpiralTalents : Talent
 		}
 		else
 		{
-			_ability.AddAbility(_deathSpiral);
+			//_ability.AddAbility(_deathSpiral);
 			_deathSpiral.enabled = true;
 		}
 	}
@@ -23,7 +23,7 @@ public class DeathSpiralTalents : Talent
 	{
 		if (_ability.Abilities.Contains(_deathSpiral))
 		{
-			_ability.RemoveAbility(_deathSpiral);
+			//_ability.RemoveAbility(_deathSpiral);
 			_deathSpiral.enabled = false;
 		}
 		else

@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/Prefabs/Attack/CreeperPoison/PoisonCloudPrefab.prefab.meta
-guid: a1d629594619b4a4a8e203010a1866c7
-========
 guid: efb208058a098504dba60733ca30d327
->>>>>>>> main:Assets/Prefabs/Players/Shield/Shield.prefab.meta
 PrefabImporter:
   externalObjects: {}
   userData: 

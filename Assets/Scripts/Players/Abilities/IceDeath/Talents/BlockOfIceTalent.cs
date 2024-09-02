@@ -5,7 +5,7 @@ using UnityEngine;
 public class BlockOfIceTalent : Talent
 {
 	[SerializeField] private BlockOfIce _blockOfIce;
-	[SerializeField] private PlayerAbilities _ability;
+	[SerializeField] private SkillManager _ability;
 	public override void Enter()
 	{
 		if (_ability.Abilities.Contains(_blockOfIce))
@@ -14,7 +14,7 @@ public class BlockOfIceTalent : Talent
 		}
 		else
 		{
-			_ability.AddAbility(_blockOfIce);
+			//_ability.AddAbility(_blockOfIce);
 		}
 	}
 
@@ -22,7 +22,7 @@ public class BlockOfIceTalent : Talent
 	{
 		if (_ability.Abilities.Contains(_blockOfIce))
 		{
-			_ability.RemoveAbility(_blockOfIce);
+			//_ability.RemoveAbility(_blockOfIce);
 			_blockOfIce.enabled = false;
 		}
 		else

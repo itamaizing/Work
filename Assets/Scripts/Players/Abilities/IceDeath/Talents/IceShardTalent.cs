@@ -5,7 +5,7 @@ using UnityEngine;
 public class IceShardTalent : Talent
 {
 	[SerializeField] private IceShard _iceShard;
-	[SerializeField] private PlayerAbilities _ability;
+	[SerializeField] private SkillManager _ability;
 	public override void Enter()
 	{
 		if(_ability.Abilities.Contains(_iceShard)) 
@@ -14,7 +14,7 @@ public class IceShardTalent : Talent
 		}
 		else
 		{
-			_ability.AddAbility(_iceShard);
+			//_ability.AddAbility(_iceShard);
 			_iceShard.enabled = true;
 		}
 	}
@@ -23,7 +23,7 @@ public class IceShardTalent : Talent
 	{
 		if (_ability.Abilities.Contains(_iceShard))
 		{
-			_ability.RemoveAbility(_iceShard); 
+			//_ability.RemoveAbility(_iceShard); 
 			_iceShard.enabled = false;
 			//iceShard.enabled = false;
 		}

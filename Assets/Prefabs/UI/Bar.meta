@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Prefabs/UI/Bar.meta
 guid: bc7a17f0e0107424f92783d41d9c2ba8
+========
+guid: 0bc7a53dc8f071945b51b50ebcffd40a
+>>>>>>>> origin/Nokman2:Assets/Prefabs/UI/Player.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

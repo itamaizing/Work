@@ -280,11 +280,11 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  MoveDirection: {x: 0, y: 0}
   CanMove: 1
   IsMoving: 0
   IsSelect: 0
-  IsHero: 0
+  MoveDirection: {x: 0, y: 0}
+  _isHero: 0
 --- !u!114 &7760335386463111578
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -301,7 +301,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _stateIcons: {fileID: 2794163301550220692}
-  Invinsible: 0
+  invinsible: 0
 --- !u!114 &2926669445991704918
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -659,8 +659,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73c845a97d0479341a34f6e1275e1107, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _skills:
-  - {fileID: 0}
+  _skills: []
   _hero: {fileID: 8468544467696250796}
   _talentSystem: {fileID: 8675175310089954536}
 --- !u!1 &2339943645575800385
@@ -2013,8 +2012,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _talents: []
-  _talents2: []
-  _talents3: []
 --- !u!1 &8924967412356559927
 GameObject:
   m_ObjectHideFlags: 0
@@ -2329,7 +2326,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5986742654928283402, guid: 8f0fa40e85ca19945835320293912095, type: 3}
       propertyPath: m_fontSize
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7701301239079888858, guid: 8f0fa40e85ca19945835320293912095, type: 3}
       propertyPath: m_Pivot.x
@@ -2361,11 +2358,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7701301239079888858, guid: 8f0fa40e85ca19945835320293912095, type: 3}
       propertyPath: m_SizeDelta.x
-      value: -4.2815
+      value: -3.975
       objectReference: {fileID: 0}
     - target: {fileID: 7701301239079888858, guid: 8f0fa40e85ca19945835320293912095, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0.4986
+      value: 0.381
       objectReference: {fileID: 0}
     - target: {fileID: 7701301239079888858, guid: 8f0fa40e85ca19945835320293912095, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2397,11 +2394,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7701301239079888858, guid: 8f0fa40e85ca19945835320293912095, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.02699995
+      value: 0.012511969
       objectReference: {fileID: 0}
     - target: {fileID: 7701301239079888858, guid: 8f0fa40e85ca19945835320293912095, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -1.796
+      value: -1.7372
       objectReference: {fileID: 0}
     - target: {fileID: 7701301239079888858, guid: 8f0fa40e85ca19945835320293912095, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

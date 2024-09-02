@@ -12,6 +12,7 @@ public class AttributePanel : MonoBehaviour
 
     private int[] _modif = new int[7];
     private List<int> _changes = new List<int>();
+    private bool _init = false;
 
     private int _points = 0;
     private int _bonus = 0;
@@ -45,6 +46,7 @@ public class AttributePanel : MonoBehaviour
             _attributes[i].Plus.onClick.AddListener(() => Add(id));
             _attributes[i].Minus.onClick.AddListener(() => Remove(id));
         }
+        _init = true;
     }
 
     private void OnValueChange(float value, int id)
@@ -84,6 +86,8 @@ public class AttributePanel : MonoBehaviour
 
     private void Add(int id)
     {
+        if (!_init) return;
+
         if(_points > 0)
         {
 			_modif[id]++;
@@ -103,6 +107,8 @@ public class AttributePanel : MonoBehaviour
 
     private void Remove(int id)
     {
+		if (!_init) return;
+
 		if (_modif[id] > 0)
 		{
 			_modif[id]--;
@@ -121,6 +127,8 @@ public class AttributePanel : MonoBehaviour
 	}
 	private void Remove2(int id)
 	{
+		if (!_init) return;
+
 		if (_modif[id] > 0)
 		{
 			_modif[id]--;
@@ -139,13 +147,17 @@ public class AttributePanel : MonoBehaviour
 	}
 	public void AddPoints(int value)
     {
-        _points += value;
+		if (!_init) return;
+
+		_points += value;
 		_count.text = _points.ToString();
 	}
 
     public bool RemovePoints(int value) 
     {
-        if (_points >= value)
+		if (!_init) return false;
+
+		if (_points >= value)
         {
             _points -= value;
 			_count.text = _points.ToString();
@@ -166,7 +178,9 @@ public class AttributePanel : MonoBehaviour
 
     public void SetBonus(int bonus, int bonus2, int bonus3)
     {
-        if(_bonus > bonus) //first row bonus
+		if (!_init) return;
+
+		if (_bonus > bonus) //first row bonus
         {
             RemovePoints(_bonus - bonus);
             _bonus = bonus;

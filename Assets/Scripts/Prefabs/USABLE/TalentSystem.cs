@@ -46,7 +46,7 @@ public class TalentSystem : NetworkBehaviour
         _points += value;
     }
 
-    // [Command]
+   // [Command]
     public void CmdSwitchActive(int id, int row)
     {
         if (id > _talents.Count) return;
@@ -54,31 +54,31 @@ public class TalentSystem : NetworkBehaviour
         if (_talents[id].IsActive)
         {
             Remove(id, row);
-            //   RpcRemove(id);
-            Debug.Log("Removes");
-        }
+         //   RpcRemove(id);
+			Debug.Log("Removes");
+		}
         else
         {
             Add(id, row);
-            // RpcAdd(id);
-            Debug.Log("Add");
-        }
+           // RpcAdd(id);
+			Debug.Log("Add");
+		}
     }
-    public void SetActive(int id, int row, bool value)
-    {
-        if (id > _talents.Count) return;
-        //if (_activeTalents.Contains(_talents[id]))
-        if (value)
-        {
-            Add(id, row);
-            //   RpcRemove(id);
-        }
-        else
-        {
+	public void SetActive(int id, int row,  bool value)
+	{
+		if (id > _talents.Count) return;
+		//if (_activeTalents.Contains(_talents[id]))
+		if (value)
+		{
+			Add(id, row);
+			//   RpcRemove(id);
+		}
+		else
+		{
             Remove(id, row);
-            // RpcAdd(id);
-        }
-    }
+			// RpcAdd(id);
+		}
+	}
 
     [Command]
     public void CmdAdd(Talent talent)
@@ -108,24 +108,24 @@ public class TalentSystem : NetworkBehaviour
         RpcAdd(id, row);
     }
 
-    [Command]
-    public void CmdRemove(int id, int row)
+	[Command]
+	public void CmdRemove(int id, int row) 
     {
-        Remove(id, row);
+        Remove(id, row); 
         RpcRemove(id, row);
     }
 
     [ClientRpc]
     private void RpcAdd(int id, int row)
     {
-        Add(id, row);
-    }
+		Add(id, row);
+	}
 
-    [ClientRpc]
-    private void RpcRemove(int id, int row)
+	[ClientRpc]
+	private void RpcRemove(int id, int row)
     {
-        Remove(id, row);
-    }
+		Remove(id, row);
+	}
 
     [ClientRpc]
     private void RpcAddAll()
@@ -145,94 +145,108 @@ public class TalentSystem : NetworkBehaviour
         Add(talent);
     }
 
-    public void Add(int id, int row)
+	public void Add(int id, int row)
     {
-        Debug.Log("Add");
+		Debug.Log("Add");
         switch (row)
         {
             case 0:
-                if (_talents.Count >= id && _points > GetActiveTalentCount())
-                {
-                    Debug.Log("Add2222");
-                    //_activeTalents.Add(_talents[id]);
-                    //_activeTalents[_activeTalents.Count- 1].Enter();
-                    _talents[id].Enter();
-                    _talents[id].SetActive(true);
-                    _points--;
-                }
-                break;
+				if (_talents.Count >= id && _points > GetActiveTalentCount())
+				{
+					Debug.Log("Add2222");
+					//_activeTalents.Add(_talents[id]);
+					//_activeTalents[_activeTalents.Count- 1].Enter();
+					_talents[id].Enter();
+					_talents[id].SetActive(true);
+					_points--;
+				}
+				break;
             case 1:
-                if (_talents2.Count >= id && _points > GetActiveTalentCount())
-                {
-                    Debug.Log("Add2222");
-                    //_activeTalents.Add(_talents[id]);
-                    //_activeTalents[_activeTalents.Count- 1].Enter();
-                    _talents2[id].Enter();
-                    _talents2[id].SetActive(true);
-                    _points--;
-                }
-                break;
+				if (_talents2.Count >= id && _points > GetActiveTalentCount())
+				{
+					Debug.Log("Add2222");
+					//_activeTalents.Add(_talents[id]);
+					//_activeTalents[_activeTalents.Count- 1].Enter();
+					_talents2[id].Enter();
+					_talents2[id].SetActive(true);
+					_points--;
+				}
+				break;
             case 2:
-                if (_talents3.Count >= id && _points > GetActiveTalentCount())
-                {
-                    Debug.Log("Add2222");
-                    //_activeTalents.Add(_talents[id]);
-                    //_activeTalents[_activeTalents.Count- 1].Enter();
-                    _talents3[id].Enter();
-                    _talents3[id].SetActive(true);
-                    _points--;
-                }
-                break;
+				if (_talents3.Count >= id && _points > GetActiveTalentCount())
+				{
+					Debug.Log("Add2222");
+					//_activeTalents.Add(_talents[id]);
+					//_activeTalents[_activeTalents.Count- 1].Enter();
+					_talents3[id].Enter();
+					_talents3[id].SetActive(true);
+					_points--;
+				}
+				break;
             default:
                 break;
         }
 
-
+		
     }
 
-    public void Remove(int id, int row)
+	public void Remove(int id, int row)
     {
         switch (row)
         {
             case 0:
-                if (_talents.Count >= id)
-                {
-                    Debug.Log("Removes22222");
-                    /*_activeTalents[_activeTalents.Count - 1].Exit();
+				if (_talents.Count >= id)
+				{
+					Debug.Log("Removes22222");
+					/*_activeTalents[_activeTalents.Count - 1].Exit();
 					_activeTalents.Remove(_talents[id]);
 					_talents[id].isActive = false;*/
-                    _talents[id].Exit();
-                    _talents[id].SetActive(false);
-                    _points++;
-                }
-                break;
+					_talents[id].Exit();
+					_talents[id].SetActive(false);
+					_points++;
+				}
+				break;
             case 1:
-                if (_talents2.Count >= id)
-                {
-                    Debug.Log("Removes22222");
-                    /*_activeTalents[_activeTalents.Count - 1].Exit();
+				if (_talents2.Count >= id)
+				{
+					Debug.Log("Removes22222");
+					/*_activeTalents[_activeTalents.Count - 1].Exit();
 					_activeTalents.Remove(_talents[id]);
 					_talents[id].isActive = false;*/
-                    _talents2[id].Exit();
-                    _talents2[id].SetActive(false);
-                    _points++;
-                }
-                break;
+					_talents2[id].Exit();
+					_talents2[id].SetActive(false);
+					_points++;
+				}
+				break;
             case 2:
-                if (_talents3.Count >= id)
-                {
-                    Debug.Log("Removes22222");
-                    /*_activeTalents[_activeTalents.Count - 1].Exit();
+				if (_talents3.Count >= id)
+				{
+					Debug.Log("Removes22222");
+					/*_activeTalents[_activeTalents.Count - 1].Exit();
 					_activeTalents.Remove(_talents[id]);
 					_talents[id].isActive = false;*/
-                    _talents3[id].Exit();
-                    _talents3[id].SetActive(false);
-                    _points++;
-                }
-                break;
+					_talents3[id].Exit();
+					_talents3[id].SetActive(false);
+					_points++;
+				}
+				break;
             default:
                 break;
         }
+
+
+       /* Debug.Log("Removes");
+		if (_talents.Count >= id)
+		{
+			Debug.Log("Removes22222");
+			/*_activeTalents[_activeTalents.Count - 1].Exit();
+			_activeTalents.Remove(_talents[id]);
+			_talents[id].isActive = false;
+			_talents[id].Exit();
+			_talents[id].SetActive(false);
+			_points++;
+		}*/
+	}
 
 
         /* Debug.Log("Removes");
@@ -268,7 +282,19 @@ public class TalentSystem : NetworkBehaviour
             talent.SetActive(true);
             _points--;
         }
-    }
+		foreach (Talent talent in _talents2)
+		{
+			talent.Enter();
+			talent.SetActive(true);
+			_points--;
+		}
+		foreach (Talent talent in _talents3)
+		{
+			talent.Enter();
+			talent.SetActive(true);
+			_points--;
+		}
+	}
 
     public void ExitAll()
     {
@@ -278,21 +304,28 @@ public class TalentSystem : NetworkBehaviour
             talent.Exit();
             talent.SetActive(false);
             //_activeTalents.Remove(talent);
-        }
-        foreach (Talent talent in _talents2)
-        {
-            _points++;
-            talent.Exit();
-            talent.SetActive(false);
-            //_activeTalents.Remove(talent);
-        }
-        foreach (Talent talent in _talents3)
-        {
-            _points++;
-            talent.Exit();
-            talent.SetActive(false);
-            //_activeTalents.Remove(talent);
-        }
+		}
+		foreach (Talent talent in _talents2)
+		{
+			_points++;
+			talent.Exit();
+			talent.SetActive(false);
+			//_activeTalents.Remove(talent);
+		}
+		foreach (Talent talent in _talents3)
+		{
+			_points++;
+			talent.Exit();
+			talent.SetActive(false);
+			//_activeTalents.Remove(talent);
+		}
+	}
+
+	public void Add(Talent talent)
+    {
+       // _activeTalents.Add(talent);
+       talent.Enter();
+       talent.SetActive(true);
     }
 
     public void Add(Talent talent)

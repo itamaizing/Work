@@ -3,16 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Playables;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 
 public abstract class AbstractCharacterState
 {
-	public StateType type;
-	public States state;
-	public List<StatusEffect> effects = new List<StatusEffect>();
 	protected CharacterState _characterState;
-	public abstract void EnterState(CharacterState character, float durationToExit, float damageToExit);
+	protected SkillManager _abilities;
+	protected Health _health;
+	protected Character _personWhoMadeBuff;
+
+	public abstract States State { get; }
+	public abstract StateType Type { get; }
+	public abstract List<StatusEffect> Effects { get; }
+
+	public abstract void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName);
 	public abstract void UpdateState();
 	public abstract void ExitState();
 	public abstract bool Stack(float time);
@@ -20,7 +27,14 @@ public abstract class AbstractCharacterState
 
 public class DefaultState : AbstractCharacterState
 {
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+	private List<StatusEffect> _effects = new List<StatusEffect>();
+	public override States State => States.Default;
+
+	public override StateType Type => StateType.Physical;
+
+	public override List<StatusEffect> Effects => _effects;
+
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 
 	}
@@ -43,8 +57,6 @@ public class DefaultState : AbstractCharacterState
 
 public class InvisibleStateOld : AbstractCharacterState
 {
-	public new States state = States.Invisible;
-
 	private Renderer[] childRenderers;
 	private GameObject _player;
 
@@ -52,8 +64,13 @@ public class InvisibleStateOld : AbstractCharacterState
 
 	private float lastCheckTime;
 	private float checkInterval = 1f;
-	
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+	private List<StatusEffect> _effects = new List<StatusEffect>();
+
+	public override States State => States.Invisible;
+	public override StateType Type => StateType.Magic;
+	public override List<StatusEffect> Effects => _effects;
+
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		Debug.Log("Entering Invisible State");
 		_characterState = character;
@@ -90,7 +107,7 @@ public class InvisibleStateOld : AbstractCharacterState
 			}
 		}
 */
-		if (_characterState.Move.IsMoving)
+		if (_characterState.Character.Move.IsMoving)
 		{
 			CheckEnemies();
 			//��� � ������� ��������� ��������� � ���� ���� ���������
@@ -205,21 +222,23 @@ public class InvisibleStateOld : AbstractCharacterState
 
 public class InvisibleState : AbstractCharacterState
 {
-	public new States state = States.Invisible;
 	public bool turnOff = false;
 	private float _baseDuration;
 	private float _duration;
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+	private List<StatusEffect> _effects = new List<StatusEffect>();
+
+	public override States State => States.Invisible;
+	public override StateType Type => StateType.Magic;
+	public override List<StatusEffect> Effects => _effects;
+
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		Debug.Log("Entering Invisible State");
-		effects.Add(StatusEffect.Others);
+		//effects.Add(StatusEffect.Others);
 
 		_characterState = character;
-
 		//_characterState.Health.SetInvincible(true);
-		Debug.LogError("Invisible not ready");
-
-		_characterState.Invinsible = true;
+		_characterState.invinsible = true;
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
 	}
@@ -240,11 +259,11 @@ public class InvisibleState : AbstractCharacterState
 		if (_characterState.Check(StatusEffect.Others))
 		{
 			//_characterState.Health.SetInvincible(false);
-			Debug.LogError("Invisible not ready");
-			_characterState.Invinsible = false;
+			_characterState.invinsible = false;
 		}
 		_characterState.RemoveState(this);
 	}
+
 	public override bool Stack(float time)
 	{
 		if (_baseDuration > time)
@@ -261,17 +280,20 @@ public class InvisibleState : AbstractCharacterState
 
 public class StunnedState : AbstractCharacterState
 {
-	public new States state = States.Stun;
 	public bool turnOff = false;
 	private SkillManager _abilities;
 	private float _baseDuration;
 	private float _duration;
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+
+	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.Ability};
+
+	public override States State => States.Stun;
+	public override StateType Type => StateType.Physical;
+	public override List<StatusEffect> Effects => _effects;
+
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		Debug.Log("Entering Stunned State");
-		type = StateType.Physical;
-		effects.Add(StatusEffect.Move);
-		effects.Add(StatusEffect.Ability);
 
 		_characterState = character;
 
@@ -284,7 +306,7 @@ public class StunnedState : AbstractCharacterState
 		{
 			Debug.Log("no ability at " + character.gameObject.name);
 		}		
-		_characterState.Move.CanMove = false;
+		_characterState.Character.Move.CanMove = false;
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
 	}
@@ -304,7 +326,7 @@ public class StunnedState : AbstractCharacterState
 		Debug.Log("Exiting Stunned State");
 		if (_characterState.Check(StatusEffect.Move))
 		{
-			_characterState.Move.CanMove = true;
+			_characterState.Character.Move.CanMove = true;
 		}
 		if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
 		{
@@ -312,6 +334,7 @@ public class StunnedState : AbstractCharacterState
 		}
 		_characterState.RemoveState(this);
 	}
+
 	public override bool Stack(float time)
 	{
 		if (_baseDuration > time)
@@ -328,18 +351,21 @@ public class StunnedState : AbstractCharacterState
 
 public class Desiccuration : AbstractCharacterState
 {
-	public new States state = States.Desiccuration;
 	public bool turnOff = false;
 	private SkillManager _abilities;
 	private float _baseDuration;
 	private float _duration;
 	private float _damageToExit;
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+
+	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.Ability};
+
+	public override States State => States.Desiccuration;
+	public override StateType Type => StateType.Physical;
+	public override List<StatusEffect> Effects => _effects;
+
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		Debug.Log("Entering Desiccuration State");
-		type = StateType.Physical;
-		effects.Add(StatusEffect.Move);
-		effects.Add(StatusEffect.Ability);
 
 		_characterState = character;
 
@@ -352,7 +378,7 @@ public class Desiccuration : AbstractCharacterState
 		{
 			Debug.Log("no ability at " + character.gameObject.name);
 		}
-		_characterState.Move.CanMove = false;
+		_characterState.Character.Move.CanMove = false;
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
 		//_damageToExit = damageToExit;
@@ -363,7 +389,7 @@ public class Desiccuration : AbstractCharacterState
 	{
 		Debug.Log("Updating Desiccuration State");
 		_duration -= Time.deltaTime;
-		if (_duration < 0 || turnOff || _characterState.Health.SumDamageTaken >= _damageToExit)
+		if (_duration < 0 || turnOff || _characterState.Character.Health.SumDamageTaken >= _damageToExit)
 		{
 			ExitState();
 		}
@@ -374,7 +400,7 @@ public class Desiccuration : AbstractCharacterState
 		Debug.Log("Exiting Desiccuration State");
 		if (_characterState.Check(StatusEffect.Move))
 		{
-			_characterState.Move.CanMove = true;
+			_characterState.Character.Move.CanMove = true;
 		}
 		if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
 		{
@@ -382,6 +408,7 @@ public class Desiccuration : AbstractCharacterState
 		}
 		_characterState.RemoveState(this);
 	}
+
 	public override bool Stack(float time)
 	{
 		if (_baseDuration > time)
@@ -398,17 +425,21 @@ public class Desiccuration : AbstractCharacterState
 
 public class BlindnessState : AbstractCharacterState
 {
-	public new States state = States.Blind;
 	public bool turnOff = false;
 
 	//private CharacterState _characterState;
 	private float _duration;
 	private float _baseDuration;
-	private SkillManager _abilities;
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+
+	private List<StatusEffect> _effects = new List<StatusEffect>() {StatusEffect.Ability};
+
+	public override States State => States.Blind;
+	public override StateType Type => StateType.Physical;
+	public override List<StatusEffect> Effects => _effects;
+
+	//private PlayerAbilities _abilities;
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		type = StateType.Physical;
-		effects.Add(StatusEffect.Ability);
 		Debug.Log("Entering Stunned State");
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
@@ -443,6 +474,7 @@ public class BlindnessState : AbstractCharacterState
 		}
 		_characterState.RemoveState(this);
 	}
+
 	public override bool Stack(float time)
 	{
 		if (_baseDuration > time)
@@ -460,18 +492,20 @@ public class BlindnessState : AbstractCharacterState
 
 public class FrozenState : AbstractCharacterState
 {
-	public new States state = States.Frozen;
 	public bool turnOff = false;
 	private float _duration;
 	private float _baseDuration;
 	private float _damageToExit;
 	private SkillManager _abilities;
 
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.Ability };
+
+	public override States State => States.Frozen;
+	public override StateType Type => StateType.Magic;
+	public override List<StatusEffect> Effects => _effects;
+
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		type = StateType.Magic;
-		effects.Add(StatusEffect.Move);
-		effects.Add(StatusEffect.Ability);
 		Debug.Log("Entering Frozen State");
 		_characterState = character;
 		_duration = durationToExit;
@@ -484,7 +518,7 @@ public class FrozenState : AbstractCharacterState
 			_damageToExit = damageToExit;
 		}
 		
-		_characterState.Move.CanMove = false;
+		_characterState.Character.Move.CanMove = false;
 
 		if (character.TryGetComponent<Character>(out var ability))
 		{
@@ -495,15 +529,15 @@ public class FrozenState : AbstractCharacterState
 		{
 			Debug.Log("no ability at " + character.gameObject.name);
 		}
+
 		//_characterState.Health.sumDamageTaken = 0;
-		Debug.LogError("sumDamageTaken havnt set");
 
 	}
 
 	public override void UpdateState()
 	{
 		_duration -= Time.deltaTime;
-		if (_characterState.Health.SumDamageTaken >= _damageToExit || _duration < 0 || turnOff)
+		if (_characterState.Character.Health.SumDamageTaken >= _damageToExit || _duration < 0 || turnOff)
 		{
 			ExitState();
 		}
@@ -516,7 +550,7 @@ public class FrozenState : AbstractCharacterState
 		//character.GetAbilityManager().ToggleAbility(true);//turn on abilities
 		if (_characterState.Check(StatusEffect.Move))
 		{
-			_characterState.Move.CanMove = true;
+			_characterState.Character.Move.CanMove = true;
 		}
 		if (_characterState.Check(StatusEffect.Ability) && _abilities!=null)
 		{
@@ -524,27 +558,30 @@ public class FrozenState : AbstractCharacterState
 		}
 		_characterState.RemoveState(this);
 	}
+
 	public override bool Stack(float time)
 	{
 		_duration = _baseDuration;
-		return true;
+		return false;
 	}
 }
 
 public class FrostingState : AbstractCharacterState
 {
-	public new States state = States.Frosting;
 	public bool turnOff = false;
 	private float _duration;
 	private float _baseDuration;
 	private float _damageToExit;
 	private SkillManager _abilities;
 
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.AbilitySpeed };
+
+	public override States State => States.Frosting;
+	public override StateType Type => StateType.Magic;
+	public override List<StatusEffect> Effects => _effects;
+
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		type = StateType.Magic;
-		effects.Add(StatusEffect.Move);
-		effects.Add(StatusEffect.AbilitySpeed);
 		Debug.Log("Entering Frosting State");
 		_characterState = character;
 		
@@ -559,7 +596,7 @@ public class FrostingState : AbstractCharacterState
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
 
-		_characterState.Move.CanMove = false;
+		_characterState.Character.Move.CanMove = false;
 
 		//decrease speed
 		if (character.TryGetComponent<Character>(out var ability))
@@ -580,13 +617,12 @@ public class FrostingState : AbstractCharacterState
 		}
 
 		//_characterState.Health.sumDamageTaken=0;
-		Debug.LogError("sumDamageTaken havnt set");
 	}
 
 	public override void UpdateState()
 	{
 		_duration -= Time.deltaTime;
-		if (_characterState.Health.SumDamageTaken >= _damageToExit || _duration < 0 || turnOff)
+		if (_characterState.Character.Health.SumDamageTaken >= _damageToExit || _duration < 0 || turnOff)
 		{
 			ExitState();
 		}
@@ -597,7 +633,7 @@ public class FrostingState : AbstractCharacterState
 		Debug.Log("Exiting Frosting State");
 		if (_characterState.Check(StatusEffect.Move))
 		{
-			_characterState.Move.CanMove = true;
+			_characterState.Character.Move.CanMove = true;
 		}
 		if (_characterState.Check(StatusEffect.AbilitySpeed))
 		{
@@ -611,6 +647,7 @@ public class FrostingState : AbstractCharacterState
 		}
 		_characterState.RemoveState(this);
 	}
+
 	public override bool Stack(float time)
 	{
 		_duration = _baseDuration;
@@ -621,18 +658,21 @@ public class FrostingState : AbstractCharacterState
 
 public class Cooling : AbstractCharacterState
 {
-	public new States state = States.Cooling;
 	public bool turnOff = false;
 	private float _duration;
 	private float _baseDuration;
 	private float _damageToExit;
 	private float _curAbilityDebuf = 0.1f;
 	private float _curSpeedDebuf = 0.05f;
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+
+	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.MoveSpeed, StatusEffect.AbilitySpeed};
+
+	public override States State => States.Cooling;
+	public override StateType Type => StateType.Physical;
+	public override List<StatusEffect> Effects => _effects;
+
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		type = StateType.Magic;
-		effects.Add(StatusEffect.MoveSpeed);
-		effects.Add(StatusEffect.AbilitySpeed);
 		Debug.Log("Entering cooling State");
 		_characterState = character;
 
@@ -647,17 +687,15 @@ public class Cooling : AbstractCharacterState
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
 
-		_characterState.Move.ChangeMoveSpeed(1-_curSpeedDebuf);
+		_characterState.Character.Move.ChangeMoveSpeed(1-_curSpeedDebuf);
 		//decrease speed of attact and movement
-
 		//_characterState.Health.sumDamageTaken = 0;
-		Debug.LogError("sumDamageTaken havnt set");
 	}
 
 	public override void UpdateState()
 	{
 		_duration -= Time.deltaTime;
-		if (_characterState.Health.SumDamageTaken >= _damageToExit || _duration < 0 || turnOff)
+		if (_characterState.Character.Health.SumDamageTaken >= _damageToExit || _duration < 0 || turnOff)
 		{
 			ExitState();
 		}
@@ -668,7 +706,7 @@ public class Cooling : AbstractCharacterState
 		Debug.Log("Exiting cooling State");
 		if (_characterState.Check(StatusEffect.MoveSpeed))
 		{
-			_characterState.Move.SetDefaultSpeed();
+			_characterState.Character.Move.SetDefaultSpeed();
 			//_characterState.Move.CanMove = true;
 		}
 		if (_characterState.Check(StatusEffect.AbilitySpeed))
@@ -677,6 +715,7 @@ public class Cooling : AbstractCharacterState
 		}
 		_characterState.RemoveState(this);
 	}
+
 	public override bool Stack(float time)
 	{
 		Debug.Log("stacked");
@@ -685,7 +724,7 @@ public class Cooling : AbstractCharacterState
 		_curSpeedDebuf += 0.05f;
 		_curAbilityDebuf += 0.1f;
 		//ability speed decrease
-		_characterState.Move.ChangeMoveSpeed(1 - _curSpeedDebuf);
+		_characterState.Character.Move.ChangeMoveSpeed(1 - _curSpeedDebuf);
 		//_duration = _baseDuration;
 		return true;
 	}
@@ -2141,17 +2180,21 @@ public class RegeneratingPoison : AbstractCharacterState
 
 public class AbilitySchoolDebuff : AbstractCharacterState
 {
-	public new States state = States.SchoolDebuff;
 	public bool turnOff = false;
 	private SkillManager _abilities;
 	private float _baseDuration;
 	private float _duration;
 	public Schools canceledSchoool;
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+
+	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.AbilitySchool};
+
+	public override States State => States.SchoolDebuff;
+	public override StateType Type => StateType.Immaterial;
+	public override List<StatusEffect> Effects => _effects;
+
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		Debug.Log("Entering AbilitySchoolDebuff State");
-		type = StateType.Immaterial;
-		effects.Add(StatusEffect.AbilitySchool);
 
 		_characterState = character;
 
@@ -2188,6 +2231,7 @@ public class AbilitySchoolDebuff : AbstractCharacterState
 		}
 		_characterState.RemoveState(this);
 	}
+
 	public override bool Stack(float time)
 	{
 		Debug.Log("STACKING TEST");
@@ -2207,19 +2251,22 @@ public class AbilitySchoolDebuff : AbstractCharacterState
 
 public class AbilityFormDebuff : AbstractCharacterState
 {
-	public new States state = States.FormDebuf;
 	public bool turnOff = false;
 	private SkillManager _abilities;
 	private float _baseDuration;
 	private float _duration;
 	public AbilityForm canceledForm;
 	public bool canCancel = false;
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
+
+	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.AbilitySchool};
+
+	public override States State => States.FormDebuf;
+	public override StateType Type => StateType.Immaterial;
+	public override List<StatusEffect> Effects => _effects;
+
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		Debug.Log("Entering AbilityFormDebuff State");
-		type = StateType.Immaterial;
-		effects.Add(StatusEffect.AbilitySchool);
-
 		_characterState = character;
 
 		Debug.Log("CHECK FOR FORM " + canceledForm);
@@ -2256,6 +2303,7 @@ public class AbilityFormDebuff : AbstractCharacterState
 		}
 		_characterState.RemoveState(this);
 	}
+
 	public override bool Stack(float time)
 	{
 		
@@ -2271,9 +2319,298 @@ public class AbilityFormDebuff : AbstractCharacterState
 	}
 }
 
+public class Plague : AbstractCharacterState
+{
+	private int _stack = 0;
+	private float _durationToExit = 0f;
+	private float _damageTimer = 1f;
+	public int GetStack => _stack;
+	public override States State => States.Plague;
+	public override StateType Type => StateType.Magic;
+	public override List<StatusEffect> Effects => throw new System.NotImplementedException();
+
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+	{
+		Debug.Log("Entering Plague State");
+		_characterState = character;
+		_durationToExit = durationToExit;
+		_health = _characterState.Character.Health;
+		_abilities = character.Character.Abilities;
+
+		for(int i = 0; i<_abilities.Abilities.Count; i++) 
+		{
+			_abilities.Abilities[i].Buff.Damage.ReductionPercentage(0.05f);
+		}
+		// reduce damage given
+	}
+
+	public override void UpdateState()
+	{
+		_durationToExit -= Time.deltaTime;
+		_damageTimer -= Time.deltaTime;
+
+		if (_damageTimer <= 0)
+		{
+			_damageTimer = 1;
+			int damage = Random.Range(1, 4);
+			MakeDamage(damage);
+
+
+			//_health.TryTakeDamage(damage, DamageType.Magical, AttackRangeType.MeleeAttack);
+			if (Random.Range(0, 100) < 50 && _personWhoMadeBuff != null)
+			{
+				/*DeathSpiral deathSpiral = (DeathSpiral)_characterState.personWhoShoted.Abilities.GetAbilityByName("DeathSpiral");
+				if(deathSpiral != null) 
+				{
+					Debug.Log("ADD CHRAGE");
+					deathSpiral.AddCharge();
+				}*/
+			}
+
+			if (Random.Range(0, 5) < 1)
+			{
+				AddState();
+			}
+			//20% chance of inflicting close enemy
+		}
+		if(_durationToExit <= 0) 
+		{
+			ExitState();
+		}
+	}
+
+	public override void ExitState()
+	{
+		Debug.Log("Exiting Plague State");
+		// return reduced damage given
+		for (int i = 0; i < _abilities.Abilities.Count; i++)
+		{
+			_abilities.Abilities[i].Buff.Damage.IncreasePercentage(0.05f);
+		}
+		_characterState.RemoveState(this);
+	}
+
+	public override bool Stack(float time)
+	{
+		if(_stack <= 4)
+		{
+			_durationToExit = time;
+			_stack++;
+			return true;
+		}
+        else
+        {
+			_durationToExit = time;
+            return true;
+        }
+    }
+
+	[Server]
+	private void MakeDamage(float damage)
+	{
+		//_health.TryTakeDamage(damage, DamageType.Magical, AttackRangeType.MeleeAttack);
+	}
+	[Server]
+	private void AddState()
+	{
+		Collider2D[] colliders = Physics2D.OverlapCircleAll(_characterState.gameObject.transform.position, 3);
+
+		foreach (Collider2D collider in colliders)
+		{
+			if (collider.TryGetComponent<Character>(out var enemy) && collider.gameObject != _characterState.gameObject)
+			{
+				//enemy.Health.TryTakeDamage(damage / 2, DamageType.Magical, AttackRangeType.RangeAttack);
+				enemy.CharacterState.CmdAddState(States.Plague, 4, 0, null, null);
+			}
+		}
+	}
+}
+
+public class NorthernerEndurance : AbstractCharacterState
+{
+	private float _durationToExit;
+	private float _damageToExit;
+
+	public override States State => States.NorthernerEndurance;
+	public override StateType Type => StateType.Magic;
+	public override List<StatusEffect> Effects => throw new System.NotImplementedException();
+
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+	{
+		_health = character.Character.Health;
+		//_health.BoostHpBonus(damageToExit);
+		_durationToExit = durationToExit;
+		_damageToExit = damageToExit;
+	}
+
+	public override void UpdateState()
+	{
+		_durationToExit-=Time.deltaTime;
+		if(_durationToExit < 0)
+		{
+			ExitState();
+		}
+	}
+
+	public override void ExitState()
+	{
+		//_health.BoostHpReverse(_damageToExit);
+	}
+
+	public override bool Stack(float time)
+	{
+		_durationToExit = time;
+		return true;
+	}	
+}
+
+public class Curse : AbstractCharacterState
+{
+	private Character _personWhoShooted;
+	private float _durationToExit = 0;
+
+	public override States State => States.Curse;
+	public override StateType Type => StateType.Magic;
+	public override List<StatusEffect> Effects => throw new System.NotImplementedException();
+
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+	{
+		_characterState = character;
+		_durationToExit = durationToExit;
+		//if(character.personWhoShoted != null)
+		//_personWhoShooted = character.personWhoShoted;
+	}
+
+	public override void UpdateState()
+	{
+		_durationToExit -= Time.deltaTime;
+		if( _durationToExit < 0 )
+		{
+			ExitState();
+		}
+	}
+
+	public override void ExitState()
+	{
+		_characterState.RemoveState(this);
+	}
+
+	public override bool Stack(float time)
+	{
+		/*if (_characterState.personWhoShoted != null)
+		{
+			_personWhoShooted = _characterState.personWhoShoted;
+		}*/
+		return true;
+	}
+}
+
+public class LastBreath : AbstractCharacterState
+{
+	private Character _character;
+	private float _durationToExit = 0;
+
+	public override States State => States.LastBreath;
+	public override StateType Type => StateType.Magic;
+	public override List<StatusEffect> Effects => throw new System.NotImplementedException();
+
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+	{
+		_character = character.Character;
+		_abilities = _character.Abilities;
+		_durationToExit = durationToExit;
+		_health = _character.Health;
+
+		_character.Move.ChangeMoveSpeed(1.2f);
+		for(int i = 0; i < _abilities.Abilities.Count; i++) 
+		{
+			_abilities.Abilities[i].Buff.AttackSpeed.IncreasePercentage(1.4f);
+		}
+		_health.RegenerationValue *= 4;
+		//increase -regen
+	}
+
+	public override void UpdateState()
+	{
+		_durationToExit -= Time.deltaTime;
+		if(_durationToExit < 0)
+		{
+			ExitState();
+		}
+	}
+
+	public override void ExitState()
+	{
+		//decrease -regen
+		//_character.Move.ChangeMoveSpeedBack(1.2f);
+		for (int i = 0; i < _abilities.Abilities.Count; i++)
+		{
+			_abilities.Abilities[i].Buff.AttackSpeed.ReductionPercentage(1.4f);
+		}
+		_health.RegenerationValue /= 4;
+	}
+
+	public override bool Stack(float time)
+	{
+		return true;
+	}		
+}
+
+public class MagicBuff : AbstractCharacterState
+{
+	private Character _character;
+	private float _durationToExit;
+	private float _shieldCapacity;
+
+	public override States State => States.MagicBuff;
+	public override StateType Type => StateType.Magic;
+	public override List<StatusEffect> Effects => throw new System.NotImplementedException();
+
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+	{
+		_character = character.Character;
+		_durationToExit = durationToExit;
+		_shieldCapacity = damageToExit;
+
+		//_character.Health.SetMagAbsorb(_shieldCapacity);
+	}
+
+	public override void UpdateState()
+	{
+		_durationToExit -= Time.deltaTime;
+		if(_durationToExit < 0)
+		{
+			ExitState();
+		}
+	}
+
+	public override void ExitState()
+	{
+		//_character.Health.SetMagAbsorb(0);
+	}
+
+	public override bool Stack(float time)
+	{
+		_durationToExit = time;
+		return true;
+	}
+}
+
 public class CharacterState : NetworkBehaviour
 {
+	/*private Health _health;
+	private MoveComponent _move;
+	private Resource _stamina;*/
+	private Character _hero;
+
+	private List<AbstractCharacterState> currentStates = new List<AbstractCharacterState>();
 	[SerializeField] private StateIcons _stateIcons;
+
+	public bool invinsible = false;
+	/*public Health Health => _health;
+	public MoveComponent Move => _move;
+	public Resource Stamina => _stamina;*/
+	public Character Character => _hero;
 
 	public bool Invinsible = false;
 
@@ -2311,18 +2648,23 @@ public class CharacterState : NetworkBehaviour
 		[States.Blind] = new BlindnessState(),
 		[States.Invisible] = new InvisibleState(),
 		[States.SchoolDebuff] = new AbilitySchoolDebuff(),
-		[States.Desiccuration] = new Desiccuration()
+		[States.Desiccuration] = new Desiccuration(),
+		[States.Plague] = new Plague(),
+		[States.Curse] = new Curse(),
+		[States.NorthernerEndurance] = new NorthernerEndurance(),
+		[States.LastBreath] = new LastBreath(),
+		[States.MagicBuff] = new MagicBuff(),
 	};
 
-	public void Initialize(Health health, MoveComponent move, Resource stamina, Character hero)
+	public void Initialize(Character hero)
 	{
 		_hero = hero;
-		_health = health;
+		/*_health = health;
 		_move = move;
-		_stamina = stamina;
-		if (_move == null || _health == null || _stamina == null || _hero == null)
+		_stamina = stamina;*/
+		if (_hero == null)
 		{
-			Debug.LogError("No required component in " + gameObject.name);
+			Debug.LogError("No required component in " + name + " " + gameObject.name);
 		}
 	}
 
@@ -2337,76 +2679,11 @@ public class CharacterState : NetworkBehaviour
 		}
 	}
 
-	//[Command]
-	public void CmdAddState(States state, float duration, float damageToExit, Schools schools)
-	{
-		AddStateLogic(state, duration, damageToExit, schools);
-		ClientAddState(state, duration, damageToExit, schools);
-	}
-
-	//[Command]
-	public void CmdAddState(States state, float duration, float damageToExit)
-	{
-		//Debug.Log("Add state cmd");
-		AddStateLogic(state, duration, damageToExit, Schools.None);
-		ClientAddState(state, duration, damageToExit, Schools.None);
-	}
-
-	[Command]
-	public void CmdRemoveState(States state)
-	{
-		RemoveState(state);
-		ClientRemoveState(state);
-	}
-	/*public void AddNewState(States state, float duration, float damageToExit)
-	{
-		CmdAddState(state, duration, damageToExit);
-		//ClientAddState(state, duration, damageToExit, Schools.None);
-	}*/
-
-
-	public void RemoveState(AbstractCharacterState newState)
-	{
-		//newState.ExitState(this);
-		_currentStates.Remove(newState);
-	}
-
-	private void RemoveState(States stateName)
-	{
-		if (_currentStates.Count <= 0) return;
-		foreach (AbstractCharacterState state in _currentStates)
-		{
-			if (state.state == stateName)
-			{
-				state.ExitState();
-			}
-		}
-	}
-
-	public void AddState(States state, float duration, float damageToExit)
-	{
-       // Debug.Log("Add state rpc");
-        AddStateLogic(state, duration, damageToExit, Schools.None);
-    }
-
-	[ClientRpc]
-	private void ClientAddState(States state, float duration, float damageToExit, Schools schools)
-	{
-		//Debug.Log("Add state rpc");
-		AddStateLogic(state, duration, damageToExit, schools);
-	}
-
-	[ClientRpc]
-	public void ClientRemoveState(States stateName)
-	{
-		RemoveState(stateName);
-	}
-
 	public void Dispel(StateType type)
 	{
 		foreach (AbstractCharacterState state in _currentStates)
 		{
-			if (state.type == type)
+			if (state.Type == type)
 			{
 				state.ExitState();
 			}
@@ -2417,7 +2694,7 @@ public class CharacterState : NetworkBehaviour
 	{
 		foreach (AbstractCharacterState state in _currentStates)
 		{
-			if (state.effects.Contains(effect))
+			if (state.Effects.Contains(effect))
 			{
 				return false;
 			}
@@ -2429,7 +2706,8 @@ public class CharacterState : NetworkBehaviour
 	{
 		foreach (AbstractCharacterState states in _currentStates)
 		{
-			if(states.state == state)
+			Debug.Log(states.State + " on enemy, check for " + state);
+			if (states.State == state)
 			{
 				return true;
 			}
@@ -2437,37 +2715,117 @@ public class CharacterState : NetworkBehaviour
 		return false;
 	}
 
-	private void AddStateLogic(States state, float duration, float damageToExit, Schools school)
+	public AbstractCharacterState GetState(States state)
+	{
+		foreach (AbstractCharacterState states in currentStates)
+		{
+			Debug.Log(states.State + " on enemy, check for " + state);
+			if (states.State == state)
+			{
+				return states;
+			}
+		}
+		return null;
+	}
+
+	[Command]
+	public void CmdAddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
+	{
+		AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
+		ClientAddState(state, duration, damageToExit, schools, personWhoShooted, skillName);
+	}
+
+	[Command]
+	public void CmdAddState(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
+	{
+		Debug.Log("Add state cmd");
+		AddStateLogic(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
+		ClientAddState(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
+	}
+
+	public void AddState(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
+	{
+		Debug.Log("Add state from server");
+		AddStateLogic(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
+		ClientAddState(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
+	}
+
+	[Command]
+	public void CmdRemoveState(States state)
+	{
+		RemoveStateLogic(state);
+		ClientRemoveState(state);
+	}
+
+	public void RemoveState(States state)
+	{
+		RemoveStateLogic(state);
+		ClientRemoveState(state);
+	}
+
+	public void RemoveState(AbstractCharacterState newState)
+	{
+		if (currentStates.Contains(newState))
+		{
+			//newState.ExitState(this);
+			//_stateIcons.RemoveItemByState(newState.state);
+			currentStates.Remove(newState);
+		}
+	}
+
+	private void RemoveStateLogic(States stateName)
+	{
+		if (currentStates.Count <= 0) return;
+
+		_stateIcons.RemoveItemByState(stateName);
+		for(int i = currentStates.Count - 1; i >= 0; i --)
+		{
+			if (currentStates[i].State == stateName)
+			{
+				currentStates[i].ExitState();
+			}
+		}
+	}
+
+	[ClientRpc]
+	private void ClientAddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
+	{
+		Debug.Log("Add state rpc");
+		AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
+	}
+
+	[ClientRpc]
+	private void ClientRemoveState(States stateName)
+	{
+		RemoveStateLogic(stateName);
+	}
+
+	private void AddStateLogic(States state, float duration, float damageToExit, Schools school, GameObject personWhoShooted, string skillName)
 	{
 		//Debug.Log("Add state logic");
 		if (Invinsible)
 			return;
-        if (CheckForState(state))
-        {
-			Debug.Log($"IF / CheckForState = {CheckForState(state)}");
-            for (int i = 0; i < _currentStates.Count; i++)
-            {
-                Debug.Log($"For / CheckForState = {CheckForState(state)}");
-                if (_currentStates[i].state != state) continue;
+		if (CheckForState(state))
+		{
+			for(int i = 0; i < currentStates.Count; i++)
+			{
+				if (currentStates[i].State != state) continue;
 
-                if (_currentStates[i].Stack(duration))
-                {
-                    Debug.Log($"for / if / Stack");
-                    _stateIcons.ActivateIco(state, duration, 1);
-                }
-                else
-                {
-                    Debug.Log($"for / else / new State");
-                    CreateState(EnumToState[state], state, duration, damageToExit);
-                    break;
-                    //nothing at this time??
-                }
-            }
-        }
-        else
-        {
-            Debug.Log($"else / CheckForState = {CheckForState(state)}");
-            CreateState(EnumToState[state], state, duration, damageToExit);
+				if (currentStates[i].Stack(duration))
+				{
+					_stateIcons.ActivateIco(state, duration, 1);
+				}
+				else
+				{
+					CreateState(enumToState[state], state, duration, damageToExit, personWhoShooted, skillName);
+					break;
+					//nothing at this time??
+				}
+			}
+		}
+		else
+		{
+			CreateState(enumToState[state], state, duration, damageToExit, personWhoShooted, skillName);
 
         	if (school != Schools.None)
         	{
@@ -2477,134 +2835,19 @@ public class CharacterState : NetworkBehaviour
         }
     }
 
-	private void CreateState(AbstractCharacterState state, States stateName, float duration, float damageToExit)
+	private void CreateState(AbstractCharacterState state, States stateName, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
 	{
 		_stateIcons.ActivateIco(stateName, duration, 1);
-		_currentStates.Add(state);
-		_currentStates[_currentStates.Count - 1].EnterState(this, duration, damageToExit);
-	}
-
-	/*
-	 * 	public bool IfHasState(AbstractCharacterState newState)
-	{
-		//ITS NOT WORKING!!!!
-		if (currentStates.Contains(newState))
+		currentStates.Add(state);
+		if (personWhoShooted.TryGetComponent<Character>(out var character))
 		{
-			return true;
-		}
-		else return false;
-	}
-	 * 
-	 * public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state, Schools schools)
-	{
-		//if already exist 
-		//if (currentStates.Contains(newState))
-		if (CheckForState(state))
-		{
-			foreach (AbstractCharacterState item in currentStates)
-			{
-				if (item.state != state) continue;
-
-				if (item.Stack(duration))
-				{
-					_stateIcons.ActivateIco(state, duration, 1);
-				}
-				else
-				{
-					_stateIcons.ActivateIco(state, duration, 1);
-					currentStates.Add(newState);
-					var counterSpell = (AbilitySchoolDebuff)newState;
-					counterSpell.canceledSchoool = schools;
-					currentStates[currentStates.Count - 1].state = state;
-					//currentStates[currentStates.Count - 1].
-					currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
-				}
-			}
+			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit, character, skillName);
 		}
 		else
 		{
-			_stateIcons.ActivateIco(state, duration, 1);
-			currentStates.Add(newState);
-			var counterSpell = (AbilitySchoolDebuff)newState;
-			counterSpell.canceledSchoool = schools;
-			currentStates[currentStates.Count - 1].state = state;
-			//currentStates[currentStates.Count - 1].
-			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
+			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit, null, skillName);
 		}
 	}
-
-	public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state)
-	{
-		if (invinsible)
-			return;
-		if (CheckForState(state))
-		{
-			foreach (AbstractCharacterState item in currentStates)
-			{
-				if (item.state != state) continue;
-
-				if (item.Stack(duration))
-				{
-					//_stateIcons.ActivateIco(state, duration, 1);
-				}
-				else
-				{
-					//nothing at this time??
-				}
-			}
-		}
-		else
-		{
-			_stateIcons.ActivateIco(state, duration, 1);
-			currentStates.Add(newState);
-			currentStates[currentStates.Count - 1].state = state;
-			//currentStates[currentStates.Count - 1].
-			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
-		}
-	}
-
-	//can Cancel- if debuf can cancel ability that is casting right now
-	public void AddState(AbstractCharacterState newState, float duration, float damageToExit, States state, AbilityForm form, bool canCancel)
-	{
-		//if already exist 
-		//if (currentStates.Contains(newState))
-		if (CheckForState(state))
-		{
-			foreach (AbstractCharacterState item in currentStates)
-			{
-				if (item.state != state) continue;
-
-				if (item.Stack(duration))
-				{
-					_stateIcons.ActivateIco(state, duration, 1);
-				}
-				else
-				{
-					_stateIcons.ActivateIco(state, duration, 1);
-					currentStates.Add(newState);
-					var counterSpell = (AbilityFormDebuff)newState;
-					counterSpell.canCancel = canCancel;
-					counterSpell.canceledForm = form;
-					currentStates[currentStates.Count - 1].state = state;
-					//currentStates[currentStates.Count - 1].
-					currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
-					//nothing at this time??
-				}
-			}
-		}
-		else
-		{
-			_stateIcons.ActivateIco(state, duration, 1);
-			currentStates.Add(newState);
-			var counterSpell = (AbilityFormDebuff)newState;
-			counterSpell.canCancel = canCancel;
-			counterSpell.canceledForm = form;
-			currentStates[currentStates.Count - 1].state = state;
-			//currentStates[currentStates.Count - 1].
-			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit);
-		}
-	}
-	*/
 }
 
 public enum StateType
@@ -2645,6 +2888,11 @@ public enum States
 	Invisible,
 	SchoolDebuff,
 	FormDebuf,
-	Desiccuration
+	Desiccuration,
+	Plague,
+	Curse,
+	NorthernerEndurance,
+	LastBreath,
+	MagicBuff
 }
 

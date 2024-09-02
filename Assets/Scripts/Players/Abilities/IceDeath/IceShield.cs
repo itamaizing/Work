@@ -22,14 +22,14 @@ public class IceShield : Ability
 	protected override void Cast()
 	{
 		PayCost();
-		if (_character.RuneComponent.RemoveRune(1, this))
+		/*if (_character.RuneComponent.RemoveRune(1, this))
 		{
 			Shoot();
 		}
 		else
 		{
 			TryCancel();
-		}
+		}*/
 	}
 
 	protected override void Cancel()

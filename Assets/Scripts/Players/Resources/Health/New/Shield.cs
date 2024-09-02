@@ -29,13 +29,13 @@ public class Shield : Resource, IDamageable
 
             if (TryUse(absorptionDamage))
             {
-                DamageTaked?.Invoke(absorptionDamage, skill.DamageType);
+                DamageTaked?.Invoke(absorptionDamage, damage.Type);
                 damage.Value = damage.Value - absorptionDamage;
                 return true;
             }
             else
             {
-                DamageTaked?.Invoke(damage.Value - remainingDamage, skill.DamageType);
+                DamageTaked?.Invoke(damage.Value - remainingDamage, damage.Type);
                 damage.Value = remainingDamage;
 
                 if (_isBreaksDown)

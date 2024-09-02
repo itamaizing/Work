@@ -656,6 +656,8 @@ MonoBehaviour:
   - {fileID: 6149066541462994990}
   - {fileID: 1072701771335386490}
   visualRender: {fileID: 1386630179779334956}
+  _characterData: {fileID: 0}
+  _talentSystem: {fileID: 0}
 --- !u!114 &1386630179779334956
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -669,7 +671,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _circle: {fileID: 8233096242748604547}
-  _iconPref: {fileID: 7803743787710783319, guid: 793e4727b7b14be43a8a702db9da8643, type: 3}
   _areaPref: {fileID: 1574982521674352815, guid: 790fb3857b30c2b4fad4375343a84fad, type: 3}
   _squareAreaPref: {fileID: 6069098087972325736, guid: 613fcf3671552f04eb117ca2af2820f6, type: 3}
 --- !u!114 &6149066541462994990
@@ -698,6 +699,9 @@ MonoBehaviour:
   _cooldown: 0
   _abilitySchool: 0
   _abilityForm: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -735,6 +739,9 @@ MonoBehaviour:
   _cooldown: 0
   _abilitySchool: 0
   _abilityForm: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1487,6 +1494,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bar: {fileID: 2112896316502074405}
+  _barMinus: {fileID: 0}
   _barText: {fileID: 7397353884959154280}
 --- !u!1 &4683133516264855793
 GameObject:
@@ -2171,8 +2179,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   healthBar: {fileID: 1393686521246122183}
-  shields_Physic: []
-  shields_Magic: []
+  shields: []
   sumDamageTaken: 0
 --- !u!114 &4398543484626776188
 MonoBehaviour:
@@ -2186,7 +2193,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7f243771c2613d40a4aecc719336ae4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _stateIcons: {fileID: 6752157805873756373}
+  invinsible: 0
 --- !u!114 &1705208273768184284
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2256,6 +2267,7 @@ MonoBehaviour:
   _characterState: {fileID: 4398543484626776188}
   _uiPlayerComponents: {fileID: 952347863481417298}
   _selectComponent: {fileID: 1836414566327765074}
+  _talentSystem: {fileID: 0}
   _spawnComponent: {fileID: 0}
   _playerData: {fileID: 11400000, guid: 6d4bdd627c946744396722e0bd4dd7d5, type: 2}
   _heroParent: {fileID: 0}
@@ -2680,6 +2692,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bar: {fileID: 123216669481917164}
+  _barMinus: {fileID: 0}
   _barText: {fileID: 749252149185387820}
 --- !u!1001 &3528701056857957759
 PrefabInstance:

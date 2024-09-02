@@ -3,7 +3,14 @@ using UnityEngine;
 
 public class MoveComponent : NetworkBehaviour
 {
-	public Vector2 MoveDirection;
+	private Vector2 _offset = Vector2.zero; // new
+	[SyncVar]
+	private Vector3 _targetPosition;
+	
+	private Rigidbody2D _rigidbody;
+	
+	private Vector2 target;
+
 	public bool CanMove;
 	public bool IsMoving;
 	public bool IsSelect;
@@ -20,6 +27,8 @@ public class MoveComponent : NetworkBehaviour
 
 	public float CurrentSpeed { get => _currentSpeed; }
 	public float DefaultSpeed { get => _defaultSpeed; }
+	private bool isInitialize = false;
+	public bool _isHero = false;
 
 	public void SetOffset(Vector2 offset) // new
 	{
@@ -38,8 +47,8 @@ public class MoveComponent : NetworkBehaviour
 		MoveDirection = Vector2.down;
 
 		CanMove = true;
-		IsHero = isHero;
-		_isInitialize = true;
+		_isHero = isHero;
+		isInitialize = true;
 	}
 
 	public void ChangeMoveSpeed(float value)
@@ -54,7 +63,6 @@ public class MoveComponent : NetworkBehaviour
 	{
 		_currentSpeed = _defaultSpeed;
 	}
-	
 	[ClientCallback]
 	void Update()
 	{
@@ -82,7 +90,7 @@ public class MoveComponent : NetworkBehaviour
 	[Client]
 	private void HandleKeyboardInput()
 	{
-		if (!IsHero) return;
+		if (!_isHero) return;
 
 		MoveDirection = new Vector2(
 			Input.GetKey(KeyCode.A) ? -1 : Input.GetKey(KeyCode.D) ? 1 : 0,

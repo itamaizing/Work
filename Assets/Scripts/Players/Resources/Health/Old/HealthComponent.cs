@@ -27,8 +27,10 @@ public class HealthComponent : NetworkBehaviour
     
     private float _hpRegenerationValue;
     private float _hpRegenerationDelay;
+    private float _timer = 0;
     [SyncVar(hook = nameof(NetworkUpdateHealthBar))] 
     private float _currentHealth;
+    private float _boostHpBonus;
 
     private float _maxHealth;
 
@@ -37,6 +39,7 @@ public class HealthComponent : NetworkBehaviour
 
     private bool _invinsible = false;
     private Ability _personWhoShooted;
+    private DamageType damageType;
 
     [Header("Shields")]
     //public List<Shielding> shields_Physic = new List<Shielding>();
@@ -45,6 +48,7 @@ public class HealthComponent : NetworkBehaviour
     [FormerlySerializedAs("HealthBar")] [Space]
     
     public float sumDamageTaken = 0;
+
     public struct DamageInfo
     {
         public float OriginalDamage;
@@ -67,11 +71,24 @@ public class HealthComponent : NetworkBehaviour
 
     public float MaxHealth => _maxHealth;
 
-    public event Action<float, float, float> OnHpChanged;
+    public event Action OnEvaded;
 
-    public void FireHpChanged(float damageTaken, float hp, float maxHp) => OnHpChanged?.Invoke(damageTaken, hp, maxHp);
+    [Client]
+    public void FireEvaded() => OnEvaded.Invoke();    
 
-    public void Initialize(float maxHealth,float regenValue,float regenDelay , HealthInfo healthInfo)
+    public event Action<float, float, float, DamageType> OnHpChanged;
+
+    [ClientRpc]
+    public void ClientRpcFireHpChanged(float damageTaken, float hp, float maxHp, DamageType damageType) 
+    { 
+        OnHpChanged?.Invoke(damageTaken, hp, maxHp, damageType); 
+    }
+
+	private void Update()
+	{
+		RegenHP();
+	}
+	public void Initialize(float maxHealth,float regenValue,float regenDelay , HealthInfo healthInfo)
     {
         _currentHealth = maxHealth;
         _maxHealth = maxHealth;
@@ -85,6 +102,8 @@ public class HealthComponent : NetworkBehaviour
         _evadeRangeDamage = healthInfo.EvadeRangeDamage;
         
         UpdateHealthBar();
+
+        OnHpChanged += DisplayTakenDamage;
        // StartCoroutine(CoroutineRegenirateHP());
     }
 
@@ -95,6 +114,10 @@ public class HealthComponent : NetworkBehaviour
         if (hit)
         {
             TakeDamage(modifiedDamage, damageType, null);
+        }
+        else
+        {
+            FireEvaded();
         }
 
         return hit;
@@ -107,6 +130,10 @@ public class HealthComponent : NetworkBehaviour
 		if (hit)
 		{
 			TakeDamage(modifiedDamage, damageType, ability);
+		}
+		else
+		{
+			FireEvaded();
 		}
 
 		return hit;
@@ -204,73 +231,40 @@ public class HealthComponent : NetworkBehaviour
 
     private float CalculateDamageForShields(float damageValue, DamageType damageType, Ability ability)
     {
-       // if (damageType == DamageType.Physical)
-      //  {
-            if (SummShields(damageType, ability) > damageValue)
-            {
-                for (int i = shields.Count - 1; i >= 0; i--)
-                {
-                    Shielding shield = shields[i];
-                    if (damageValue >= shield.GetShieldAmount(ability.gameObject))
-                    {
-                        damageValue -= shield.GetShieldAmount(ability.gameObject);
-                        shield.RemoveAmount(shield.GetShieldAmount(ability.gameObject));
-                        shields.Remove(shield);
-                    }
-                    else
-                    {
-                        shield.RemoveAmount( damageValue);
-                        return 0;
-                    }
-                }
-            }
 
-            else if (SummShields(damageType, ability) <= damageValue && SummShields(damageType, ability) > 0)
-            {
-                float value = damageValue - SummShields(damageType, ability);
-                shields.Clear();
-                return value;
-            }
-
-            return damageValue; // ���� ���� <= 0
-     //   }
-     /*
-        else if (damageType == DamageType.Magical)
+        if (SummShields(damageType, ability) > damageValue)
         {
-            if (SummShields(damageType, ability) > damageValue)
+            for (int i = shields.Count - 1; i >= 0; i--)
             {
-                for (int i = shields.Count - 1; i >= 0; i--)
+                Shielding shield = shields[i];
+                if (damageValue >= shield.GetShieldAmount(ability.gameObject))
                 {
-                    Shielding shield = shields[i];
-                    if (damageValue >= shield.GetShieldAmount(ability.gameObject))
-                    {
-                        damageValue -= shield.GetShieldAmount(ability.gameObject);
-						shield.RemoveAmount(shield.GetShieldAmount(ability.gameObject));
-						shields.Remove(shield);
-                    }
-                    else
-                    {
-						shield.RemoveAmount(damageValue);
-						return 0;
-                    }
+                    damageValue -= shield.GetShieldAmount(ability.gameObject);
+                    shield.RemoveAmount(shield.GetShieldAmount(ability.gameObject));
+                    shields.Remove(shield);
+                }
+                else
+                {
+                    shield.RemoveAmount(damageValue);
+                    return 0;
                 }
             }
-
-            else if (SummShields(damageType, ability) <= damageValue && SummShields(damageType, ability) > 0)
-            {
-                float value = damageValue - SummShields(damageType, ability);
-				shields.Clear();
-                return value;
-            }
-
-            return damageValue; // ���� ���� <= 0
         }
-        return damageValue; // �� ������� ��� �����*/
+
+        else if (SummShields(damageType, ability) <= damageValue && SummShields(damageType, ability) > 0)
+        {
+            float value = damageValue - SummShields(damageType, ability);
+            shields.Clear();
+            return value;
+        }
+
+        return damageValue; // ���� ���� <= 0
+
     }
 
     public void TakeDamage(float damageValue, DamageType damageType, Ability abilty)
     {        
-        DisplayTakenDamage(damageValue, damageType);
+        //DisplayTakenDamage(damageValue, damageType);
         
         damageValue = CalculateDamageForShields(damageValue, damageType, abilty);
         sumDamageTaken += damageValue;
@@ -278,7 +272,17 @@ public class HealthComponent : NetworkBehaviour
         //HandleAbsorptionOrRepeat(ref damageValue);
 
         if (damageValue > 0)
-        {            
+        {
+            if (_boostHpBonus > 0 && _boostHpBonus >= damageValue)
+            {
+                _boostHpBonus -= damageValue;
+                damageValue = 0;
+            }
+            else if (_boostHpBonus > 0)
+            {
+                damageValue -= _boostHpBonus;
+                _boostHpBonus = 0;
+            }
             _currentHealth -= damageValue;
             if (_currentHealth <= 0)
             {
@@ -287,24 +291,12 @@ public class HealthComponent : NetworkBehaviour
             }            
             UpdateHealthBar();
         }
-		FireHpChanged(damageValue, _currentHealth, _maxHealth);
+		ClientRpcFireHpChanged(damageValue, _currentHealth, _maxHealth, damageType);
 	}
     
     public void AddShieldBehavior(Shielding shielding, DamageType damageType) // ���������� � ������������ ����� �����
     {
         shields.Add(shielding);
-        /*if(damageType == DamageType.Both)
-        {
-			shields.Add(shielding);
-        }
-        else if(damageType == DamageType.Physical)
-        {
-            shields_Physic.Add(shielding);
-        }
-        else if (damageType == DamageType.Magical)
-        {
-            shields_Magic.Add(shielding);
-        }*/
     }
 
     public void RemoveShield(Shielding shielding, DamageType damageType)
@@ -314,18 +306,6 @@ public class HealthComponent : NetworkBehaviour
 			shields.Remove (shielding);
 
 		}
-	/*	if (damageType == DamageType.Both)
-		{
-			shields_Both.Add(shielding);
-		}
-		else if (damageType == DamageType.Physical && shields_Physic.Contains(shielding))
-		{
-			shields_Physic.Remove(shielding);
-		}
-		else if (damageType == DamageType.Magical && shields_Physic.Contains(shielding))
-		{
-			shields_Magic.Remove(shielding);
-		}*/
 	}
 
     public void AddHeal(float healValue)
@@ -348,28 +328,20 @@ public class HealthComponent : NetworkBehaviour
         UpdateHealthBar();
     }
 
-    public void RegenHP(float healValue) // ��� ������, ��� �� ����� AddHeal, �� ��� ������� ��������
+    public void RegenHP()
     {
-        HealInfo healthInfo;
-        healthInfo.OriginalHeal = healValue;
-
-        healthInfo.ModifiedHeal = healthInfo.OriginalHeal;
-        if (AddHealth != null)
+        if (_maxHealth > _currentHealth || (_hpRegenerationValue < 0))
         {
-            healthInfo = AddHealth(healthInfo);
+            _timer += Time.deltaTime;
+            if (_timer >= _hpRegenerationDelay)
+            {
+                AddHeal(_hpRegenerationValue);
+                _timer = 0;
+            }
         }
-
-        float modifiedHeal = healthInfo.ModifiedHeal;
-
-        _currentHealth += modifiedHeal;
-        if (_currentHealth >= _maxHealth)
-        {
-            _currentHealth = _maxHealth;
-        }
-        UpdateHealthBar();
     }
 
-    private void DisplayTakenDamage(float damageValue, DamageType damageType)
+    private void DisplayTakenDamage(float damageValue, float curHp, float maxHp, DamageType damageType)
     {
         if (damageType == DamageType.Physical)
         {
@@ -399,14 +371,15 @@ public class HealthComponent : NetworkBehaviour
     public void NetworkUpdateHealthBar(float oldValue, float newValue)
     {
         UpdateHealthBar();
-    }
+		//FireHpChanged(oldValue - newValue, _currentHealth, _maxHealth, damageType);
+	}
 
     private void Die()
     {
        
     }
 
-    private IEnumerator CoroutineRegenirateHP()
+    /*private IEnumerator CoroutineRegenirateHP()
     {
         while (true)
         {
@@ -416,7 +389,7 @@ public class HealthComponent : NetworkBehaviour
                 this.RegenHP(_hpRegenerationValue + _hpRegenerationValue * _boostRegen + +_hpRegenerationValue * _boostRegen2);
             }
         }
-    }
+    }*/
 
     private IEnumerator CoroutineAddShield(float shieldValue, DamageType damageType,float shieldsDuration) 
     {
@@ -462,10 +435,12 @@ public class HealthComponent : NetworkBehaviour
     {
         _boostRegen = boostRegen;
 	}
+
 	public void SetBoostRegen2(float boostRegen)
 	{
 		_boostRegen2 = boostRegen;
 	}
+
     public void SetInvincible(bool invincible)
     {
         _invinsible = invincible;
@@ -480,6 +455,50 @@ public class HealthComponent : NetworkBehaviour
     {
         return _evadeMagDamage;
     }
+
+    public void SetEvadeAll(float value)
+    {
+        _evadeMagDamage += value;
+        _evadeMeleeDamage += value;
+        _evadeRangeDamage += value;
+    }
+
+    public void SetNewHpValues(float hpValue,  float maxHpValue)
+    {
+        _currentHealth = hpValue;
+        _maxHealth = maxHpValue;
+    }
+
+    public void BoostHpBonus(float value)
+    {
+        _maxHealth *=value;
+        _boostHpBonus = _maxHealth * value;
+        UpdateHealthBar();
+    }
+    public void BoostHpReverse(float value)
+    {
+        _maxHealth /= value;
+        _boostHpBonus = 0;
+		UpdateHealthBar();
+	}
+    public void IncreaseRegenValue(float value)
+    {
+        _hpRegenerationValue *= value;
+    }
+	public void DecreaseRegenValue(float value)
+	{
+		_hpRegenerationValue /= value;
+	}
+
+    public void SetMagAbsorb(float value)
+    {
+        _absorbMagDamage = value;
+    }
+	public Ability GetPersonWhoShoted()
+    {
+        return _personWhoShooted;
+    }
+
 	[ContextMenu("Add Magic Shield")] //��� ����� � ����������
 	private void AddShields()
 	{

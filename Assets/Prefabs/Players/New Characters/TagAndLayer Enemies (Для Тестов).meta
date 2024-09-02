@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Prefabs/Players/New Characters/TagAndLayer Enemies (Для Тестов).meta
 guid: 7e4718c0cc89cdd438b2a76d2d317811
+========
+guid: 0d0e263a7860bbd4da67cb1c0eb34cc0
+>>>>>>>> origin/Nokman2:Assets/Prefabs/Players/Shield.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

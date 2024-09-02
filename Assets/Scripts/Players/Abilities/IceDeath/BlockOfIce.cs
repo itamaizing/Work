@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static UnityEngine.GraphicsBuffer;
 
-public class BlockOfIce : Ability
+public class BlockOfIce : Skill
 {
 	[SerializeField] private BlockOfIceProjectile _iceArrow;
 	[SerializeField] private Character _playerLinks;
@@ -13,8 +13,10 @@ public class BlockOfIce : Ability
 	private bool _canCast = true;
 	private Vector2 _mousePos;
 	private bool _enabled;
-	
-	private void Update()
+
+	protected override bool IsCanCast => true;
+
+	/*private void Update()
 	{
 		if (!_enabled) return;
 
@@ -25,23 +27,10 @@ public class BlockOfIce : Ability
 		}
 		if(Input.GetMouseButtonDown(1)) 
 		{
-			Cancel();
+			//Cancel();
 		}
-	}
+	}*/
 
-	protected override void Cast()
-	{
-		_enabled = true;
-		/*if(_playerLinks.RuneComponent.RemoveRune(1, this)) 
-		{
-			Shoot();
-		}*/
-	}
-
-	protected override void Cancel()
-	{
-		_enabled = false;
-	}
 
 	private void Shoot()
 	{
@@ -50,9 +39,9 @@ public class BlockOfIce : Ability
 		Vector2 lookDir = _mousePos - _playerLinks.Rigidbody2D.position;
 		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
 		CmdCreateProjecttile(angle);
-		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1);
+		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0);
 		//_playerLinks.Stamina.Use(_playerLinks.Stamina.Value);
-		Cancel();
+		//Cancel();
 	}
 	[Command]
 	private void CmdCreateProjecttile(float angle)
@@ -71,16 +60,43 @@ public class BlockOfIce : Ability
 		obj.GetComponent<BlockOfIceProjectile>().Init(_playerLinks, manaValue, false);
 	}
 
-	private IEnumerator Casting()
+	/*private IEnumerator Casting()
 	{
+		_playerLinks.Move.CanMove = false;
 		yield return new WaitForSeconds(_castTime);
-		if (_canCast && _playerLinks.RuneComponent.RemoveRune(1, this))
+		//if (_canCast && _playerLinks.RuneComponent.RemoveRune(1, this))
 		{
+			_playerLinks.Move.CanMove = true;
 			Shoot();
 		}
-		else
+		//else
 		{
-			Cancel();
+			_playerLinks.Move.CanMove = true;
+			//Cancel();
 		}
+	}*/
+
+	protected override IEnumerator PrepareJob()
+	{
+		while (float.IsPositiveInfinity(_mousePos.x))
+		{
+			if (Input.GetMouseButton(0))
+			{
+				_playerLinks.RuneComponent.CmdUse(1);
+				_mousePos = GetMousePoint();
+			}
+			yield return null;
+		}
+	}
+
+	protected override IEnumerator CastJob()
+	{
+		Shoot();
+		yield return null;
+	}
+
+	protected override void ClearData()
+	{
+		_mousePos = Vector2.positiveInfinity;
 	}
 }

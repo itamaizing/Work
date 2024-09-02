@@ -29,22 +29,18 @@ public class IceRolling : Ability
 	{
 		if(!_enabled) return;
 
-		//_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		//Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
-		//_angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
-		//_croosFire.transform.rotation = Quaternion.Euler(_croosFire.transform.rotation.x, _croosFire.transform.rotation.y, _angle);
 
 		if (Input.GetMouseButtonDown(0))
 		{
 			//PayCost();
-			if (_playerLinks.RuneComponent.RemoveRune(0.25f, this))
+			/*if (_playerLinks.RuneComponent.RemoveRune(1, this))
 			{
 				Jump();
 			}
 			else
 			{
 				Cancel();
-			}
+			}*/
 		}
 		if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
 		{

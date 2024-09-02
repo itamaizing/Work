@@ -3,35 +3,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CircularFrosting : Ability
+public class CircularFrosting : Skill
 {
 	//[SerializeField] private CircularFrostingObject _circle;
 	[SerializeField] private Character _links;
-	[SerializeField] private FrostingFrozenTalant _talant;
+	//[SerializeField] private FrostingFrozenTalant _talant;
 	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
-	private float _cooldownTimer = 0;
-	private bool _canCast = true;
-	private float _timer = 0;
+
 	private float _baseDuration = 2;
 	private float _duration;
-	//how to mark ally
 
-	private void Update()
+	protected override bool IsCanCast => true;
+
+
+	protected override IEnumerator CastJob()
 	{
-		if (_canCast) return;
-		Timer();
+		throw new System.NotImplementedException();
 	}
-	protected override void Cancel()
+
+	protected override void ClearData()
 	{
-		//turn off targets and etc		
+		throw new System.NotImplementedException();
 	}
-	protected override void Cast()
+
+	protected override IEnumerator PrepareJob()
 	{
-		if (_canCast)
-		{
-			//PayCost();
-			CreateSmoke();
-		}
+		throw new System.NotImplementedException();
 	}
 
 	[Command]
@@ -52,31 +49,21 @@ public class CircularFrosting : Ability
 		{
 			if (enemy.TryGetComponent<Character>(out var enemyCharacter))
 			{
-				_seriesOfStrikes.MakeHit(enemyCharacter, AbilityForm.Magic, 1);
+				_seriesOfStrikes.MakeHit(enemyCharacter, AbilityForm.Magic, 1, 0);
 				//enemyCharacter.CharacterState.AddState(new FrostingState(), _duration, 0, States.Frosting);
-				enemyCharacter.CharacterState.CmdAddState(States.Frosting, _duration, 0);
-				if (_talant != null)
+				enemyCharacter.CharacterState.CmdAddState(States.Frosting, _duration, 0, _links.gameObject, name);
+				/*if (_talant != null)
 				{
 					if (_talant.IsActive)
 					{
 						enemyCharacter.CharacterState.CmdAddState(States.Frozen, _duration, 0);
 						//enemyCharacter.CharacterState.AddState(new FrozenState(), _duration, 0, States.Frozen);
 					}
-				}
+				}*/
 			}
 		}
 		//var smoke = Instantiate(_circle, transform);
 		//smoke.dad = _links;
 		//_canCast = false;
-	}
-
-	private void Timer()
-	{
-		_cooldownTimer += Time.deltaTime;
-		if (_cooldownTimer >= _cooldown)
-		{
-			_canCast = true;
-			_cooldownTimer = 0;
-		}
 	}
 }

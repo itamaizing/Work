@@ -2,20 +2,29 @@ using System.Collections.Generic;
 using System.Linq;
 using Mirror;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class SpawnComponent : NetworkBehaviour
 {
-    [SerializeField] private GameObject unit;
+    [SerializeField] private MinionComponent unit;
     
     private List<MinionComponent> _units = new List<MinionComponent>();
 
-    public void SpawnUnit(GameObject parent)
-    {
-        Cmd_SpawnUnit(parent);
-    }
-    
+    public List<MinionComponent> Units => _units;
+
     [Command]
-    public void Cmd_SpawnUnit(GameObject parent)
+    public void Cmd_SpawnUnit(Transform transform)
+    {
+		SpawnUnit(transform);
+    }
+
+	[Command]
+	public void Cmd_SpawnUnit(GameObject parent)
+	{
+		SpawnUnit(parent);
+	}
+
+	public void SpawnUnit(GameObject parent)
     {
         var controllable = Instantiate(unit);
         var contollableMinion = controllable.GetComponent<MinionComponent>();
@@ -28,11 +37,22 @@ public class SpawnComponent : NetworkBehaviour
         
         controllable.GetComponent<MinionComponent>().SetParent(parent);
         
-        NetworkServer.Spawn(controllable , parent);
+        NetworkServer.Spawn(controllable.gameObject , parent);
     }
-    
+	public void SpawnUnit(Transform transform)
+	{
+		var controllable = Instantiate(unit, transform.position, Quaternion.identity);
+		var contollableMinion = controllable.GetComponent<MinionComponent>();
 
-    public void RemoveUnit()
+		_units.Add(contollableMinion);
+
+		controllable.GetComponent<MinionComponent>().SetParent(gameObject);
+
+		NetworkServer.Spawn(controllable.gameObject, gameObject);
+	}
+
+
+	public void RemoveUnit()
     {
         Destroy(_units.Last().gameObject);
         _units.Remove(_units.Last());
@@ -42,7 +62,7 @@ public class SpawnComponent : NetworkBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Z) && GetComponent<SelectComponent>().IsSelect)
         {
-            SpawnUnit(this.gameObject);
+			Cmd_SpawnUnit(gameObject);
         }
         
         if (Input.GetKeyDown(KeyCode.X) && GetComponent<SelectComponent>().IsSelect)

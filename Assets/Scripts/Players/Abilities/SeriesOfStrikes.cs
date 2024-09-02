@@ -5,80 +5,147 @@ using UnityEngine;
 public class SeriesOfStrikes : MonoBehaviour
 {
 	[SerializeField] private Character _player;
-    private float _usedRunesValue1 = 0;
-    private float _usedRunesValue2 = 0;
-    private float _timer = 0;
-	private float _baseTimer = 2f; //time and timer between losing streak
-	//private float _multiplySpeed = .05f;
-	private int _hitCount1 = 0;
-	private int _hitCount2 = 0;
+
+    private float _timer = 6;
+	private float _baseTimer = 6; //time and timer between losing streak
+
 	private bool _isInTheRow;
 	private Character _curTarget;
+	private Energy _energy;
+	private float _sumPhisDamage = 0;
+	private float _speedMultiplier = 5;
 
-	//private bool _list1 = true;
-	//private bool _list2 = true;
-	private List<AbilityForm> _formList = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical };
-	private List<AbilityForm> _formList2 = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Magic };
+	private static List<AbilityForm> _formList = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical };
+	private static List<AbilityForm> _formList2 = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Magic };
+	private static List<AbilityForm> _formList3 = new List<AbilityForm> { AbilityForm.Physical, AbilityForm.Magic, AbilityForm.Physical };
 
+	private List<Series> _seriesOfStrikes = new List<Series>()
+	{
+		new Series(_formList),
+		new Series(_formList2),
+		new Series(_formList3),
+	};
+
+	private void Start()
+	{
+		if(_player != null)
+		{
+			_energy = (Energy)_player.Stamina;
+		}
+	}
 	private void Update()
 	{
 		Timer();
 	}
 	public float GetMultipliedSpeed()
 	{
-		if(_hitCount1 >= _hitCount2)
+		int maxCount = 0;
+		for(int i = 0; i< _seriesOfStrikes.Count; i++)
 		{
-			return Mathf.Pow(2, _hitCount1);
+			if (_seriesOfStrikes[i].hitCount > maxCount)
+			{
+				maxCount = _seriesOfStrikes[i].hitCount;
+			}
 		}
-		else
-		{
-			return Mathf.Pow(2, _hitCount2);
-		}
+		return _speedMultiplier * Mathf.Pow(2, maxCount);
 	}
-	public bool MakeHit(Character target, AbilityForm form, float usedRuneValue)
-    {
-		if(form == _formList[_hitCount1]  && target == _curTarget || target == null) 
+	public bool MakeHit(Character target, AbilityForm form, float usedRuneValue, float damage)
+	{
+		if (target != null)
 		{
-			//_list1 = true;
-			_isInTheRow = true;
-			_curTarget = target;
-			_usedRunesValue1 += usedRuneValue;
-			_hitCount1++;
-			
+			//target.CharacterState.personWhoShoted = _player;
 		}
-		else
+		CheckCurse(target, damage);
+		BonusRuneForDamage(damage);
+		//float usedEnergy = 0;
+		for(int i=0; i< _seriesOfStrikes.Count; i++)
 		{
-			_isInTheRow = true;
-			_hitCount1 = 0;
-			_usedRunesValue1 = usedRuneValue;
-			_curTarget = target;
+			if(form == _seriesOfStrikes[i].formList[_seriesOfStrikes[i].hitCount] && (target == _curTarget || target == null))
+			{
+				_isInTheRow = true;
+				_curTarget = target;
+				_seriesOfStrikes[i].usedRune += usedRuneValue;
+				_seriesOfStrikes[i].hitCount++;
+				_timer = _baseTimer;
+
+				Debug.Log("Hit from " + _seriesOfStrikes[i] + " #" + _seriesOfStrikes[i].hitCount);
+
+				if (_seriesOfStrikes[i].hitCount >= _seriesOfStrikes[i].formList.Count)
+				{
+					LastHit(_seriesOfStrikes[i].usedRune, 0);
+					return true;
+				}
+			}
+			else
+			{
+				_isInTheRow = true;
+				_seriesOfStrikes[i].Reset(usedRuneValue);
+				_timer = _baseTimer;
+				_curTarget = target;
+			}
 		}
-		if(form == _formList2[_hitCount2] && target == _curTarget || target == null)
-		{
-			//_list2 = true;
-			_isInTheRow = true;
-			_curTarget = target;
-			_usedRunesValue2 += usedRuneValue;
-			_hitCount2++;
+		return false;
+		/*if (_hitCount1 < _formList.Count) 
+		{ 
+			if (form == _formList[_hitCount1] && (target == _curTarget || target == null))
+			{
+				//Debug.Log("HIT COUNT1 " + _hitCount1);
+				//_list1 = true;
+				_isInTheRow = true;
+				_curTarget = target;
+				_usedRunesValue1 += usedRuneValue;
+				_usedEnergy1 += usedEnergy;
+				_hitCount1++;
+				_timer = _baseTimer;
+
+			}
+			else
+			{
+				_energy.ResetUsedEnergy();
+				_isInTheRow = true;
+				_hitCount1 = 0;
+				_usedRunesValue1 = usedRuneValue;
+				_usedEnergy1 = usedEnergy;
+				_curTarget = target;
+				_timer = _baseTimer;
+			}
 		}
-		else
+		if (_hitCount2 < _formList2.Count)
 		{
-			_isInTheRow = true;
-			_hitCount2 = 0;
-			_usedRunesValue2 = usedRuneValue;
-			_curTarget = target;
+			if (form == _formList2[_hitCount2] && ( target == _curTarget || target == null))
+			{
+				//_list2 = true;
+				_isInTheRow = true;
+				_curTarget = target;
+				_usedRunesValue2 += usedRuneValue;
+				_usedEnergy2 += usedEnergy;
+				_hitCount2++;
+				Debug.Log("HIT COUNT2 " + _hitCount2);
+				_timer = _baseTimer;
+			}
+			else
+			{
+				_energy.ResetUsedEnergy();
+				_isInTheRow = true;
+				_hitCount2 = 0;
+				_usedRunesValue2 = usedRuneValue;
+				_usedEnergy2 = usedEnergy;
+				_curTarget = target;
+				_timer = _baseTimer;
+			}
 		}
 		if(_hitCount1 >=6)
 		{
-			LastHit(_usedRunesValue1);
+			LastHit(_usedRunesValue1, _usedEnergy1);
 			return true;
 		}
 		if(_hitCount2 >= 6)
 		{
-			LastHit(_usedRunesValue2);
+			
+			LastHit(_usedRunesValue2, _usedEnergy2);
 			return true;
 		}
-		return false;
+		return false;*/
 	}
 
 	public void Timer()
@@ -89,23 +156,82 @@ public class SeriesOfStrikes : MonoBehaviour
 			if (_timer <= 0)
 			{
 				_curTarget = null;
-				//_multiplySpeed = 0.05f;
-				//_attackSpeed *= (1 - _multiplySpeed);
 				Debug.Log("lose streak");
 				_timer = _baseTimer;
 				_isInTheRow = false;
-				_hitCount1 = 0;
-				_hitCount2 = 0;
-				_curTarget = null;
-				//_list1 = true;
-				//_list2 = true;
+
+				for(int i = 0; i < _seriesOfStrikes.Count; i++) 
+				{
+					_seriesOfStrikes[i].Reset();
+				}
 			}
 		}
 	}
 
-	private void LastHit(float value)
+	private void LastHit(float usedRune, float UsedEnergy)
 	{
-		_player.RuneComponent.Add(value);
+
+		Debug.Log("LAST HIT + " + usedRune * 2);
+		_player.RuneComponent.Add(usedRune * 2 + 0.5f);
+		//_player
+		//_energy.SeriesOfStrikeBoost();
+
+		for (int i = 0; i < _seriesOfStrikes.Count; i++)
+		{
+			_seriesOfStrikes[i].Reset();
+		}
+	}
+
+	private void BonusRuneForDamage(float damage)
+	{
+		_sumPhisDamage += damage;
+		while( _sumPhisDamage >= 50 ) 
+		{
+			_player.RuneComponent.Add(0.5f);
+			_sumPhisDamage -= 50;
+		}
+	}
+
+	public void TalentBoostMultiplier(float multiplier)
+	{
+		_speedMultiplier = multiplier;
+	}
+
+	private void CheckCurse(Character target, float damage)
+	{
+		if(target == null) return;
+		if(target.CharacterState.CheckForState(States.Curse))
+		{
+			_player.Health.Heal(damage * 0.2f);
+		}
+	}
+}
+
+public class Series
+{
+	public List<AbilityForm> formList;
+	public List<float> speedBoost;
+	public int hitCount = 0;
+	public float usedRune = 0;
+	public float usedEnergy = 0;
+
+	public Series(List<AbilityForm> formList)
+	{
+		this.formList = formList;
+	}
+
+	public void Reset(float usedRuneValue)
+	{
+		hitCount = 1;
+		usedRune = usedRuneValue;
+		usedEnergy = 0;
+	}
+
+	public void Reset()
+	{
+		hitCount = 0;
+		usedRune = 0;
+		usedEnergy = 0;
 	}
 }
 
