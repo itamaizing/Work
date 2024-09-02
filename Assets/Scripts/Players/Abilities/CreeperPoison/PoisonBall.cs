@@ -47,10 +47,15 @@ public class PoisonBall : Skill
     [Header("Ability properties")]
     [SerializeField] private SpitPoison _spitPoison;
     [SerializeField] private PoisonBallProjectile _projectile;
+    [SerializeField] private PoisonCloudDisplay _poisonDamagingCloudDisplayPrefab;
+    [SerializeField] private PoisonCloudDisplay _poisonHealingCloudDisplayPrefab;
+
     [SerializeField] private Character _player;
     [SerializeField] private GameObject arrowPrefab;
 
     private GameObject[] arrowRenderers = new GameObject[4];
+
+    private PoisonCloudDisplay _poisonCloudDisplay;
 
     private Character _currentTarget;
 
@@ -112,6 +117,11 @@ public class PoisonBall : Skill
     #region PrepareAndStartJob
 
     protected override bool IsCanCast => CheckCanCast();
+
+    public void PayCostPoisonBall()
+    {
+        TryPayCost();
+    }
 
     protected override void ClearData()
     {
@@ -734,19 +744,114 @@ public class PoisonBall : Skill
     {
         if (isActiveTalent && isHealingCloud)
         {
-            //_player.CharacterState.CmdAddState(States.HealingPoisonCloud, _durationPoisonCloud, 0);
+            if (_poisonCloudDisplay == null)
+            {
+                Debug.Log("PoisonCloud Healing is Active");
+                _player.CharacterState.CmdAddState(States.HealingPoisonCloud, _durationPoisonCloud, 0);
+
+                _poisonCloudDisplay = Instantiate(_poisonHealingCloudDisplayPrefab, transform.position, Quaternion.identity);
+
+                SceneManager.MoveGameObjectToScene(_poisonCloudDisplay.gameObject, _hero.NetworkSettings.MyRoom);
+
+                _poisonCloudDisplay.InitializationPrefab(_player, 6f, 3.5f, 5);
+                _poisonCloudDisplay.AddStack();
+
+                NetworkServer.Spawn(_poisonCloudDisplay.gameObject);
+            }
+            else
+            {
+                _poisonCloudDisplay.AddStack();
+            }
         }
         else
         {
-           // _player.CharacterState.CmdAddState(States.PoisonCloud, _durationPoisonCloud, 0);
+            if (_poisonCloudDisplay == null)
+            {
+                Debug.Log("PoisonCloud Healing is Active");
+                _player.CharacterState.CmdAddState(States.HealingPoisonCloud, _durationPoisonCloud, 0);
+
+                _poisonCloudDisplay = Instantiate(_poisonHealingCloudDisplayPrefab, transform.position, Quaternion.identity);
+
+                SceneManager.MoveGameObjectToScene(_poisonCloudDisplay.gameObject, _hero.NetworkSettings.MyRoom);
+
+                _poisonCloudDisplay.InitializationPrefab(_player, 6f, 3.5f, 5);
+                _poisonCloudDisplay.AddStack();
+
+                NetworkServer.Spawn(_poisonCloudDisplay.gameObject);
+            }
+            else
+            {
+                _poisonCloudDisplay.AddStack();
+            }
         }
-    }
-
-
-    public void PayCostPoisonBall()
-    {
-        TryPayCost();
+        RpcApplyCloudPoisons(_poisonCloudDisplay, isActiveTalent, isHealingCloud);
     }
 
     #endregion
+
+    [ClientRpc]
+    private void RpcApplyCloudPoisons(PoisonCloudDisplay cloud, bool isActiveTalent, bool isHealingCloud)
+    {
+        Debug.Log($"PoisonBall / RpcApplyCloud / cloud == {cloud}");
+        if (cloud != null)
+        {
+            cloud.InitializationPrefab(_player, 6f, 3.5f, 5);
+            cloud.AddStack();
+        }
+    }
+
+    //[ClientRpc]
+    //private void RpcApplyCloudPoisons(bool isActiveTalent, bool isHealingCloud)
+    //{
+    //    PoisonCloudDisplay existingCloud = null;
+
+    //    // »щем существующий объект PoisonCloudDisplay
+    //    foreach (var cloud in FindObjectsOfType<PoisonCloudDisplay>())
+    //    {
+    //        if (cloud.IsOwner == _player)
+    //        {
+    //            existingCloud = cloud;
+    //            break;
+    //        }
+    //    }
+
+    //    if (isActiveTalent && isHealingCloud)
+    //    {
+    //        if (existingCloud == null)
+    //        {
+    //            Debug.Log("PoisonCloud Healing is Active");
+    //            _player.CharacterState.CmdAddState(States.HealingPoisonCloud, _durationPoisonCloud, 0);
+
+    //            GameObject item = Instantiate(_poisonHealingCloudDisplayPrefab.gameObject, transform.position, Quaternion.identity);
+    //            PoisonCloudDisplay poisonCloud = item.GetComponent<PoisonCloudDisplay>();
+
+    //            poisonCloud.InitializationPrefab(_player, 6, 3.5f, 5);
+
+    //            poisonCloud.AddStack();
+    //        }
+    //        else
+    //        {
+    //            existingCloud.AddStack();
+    //        }
+    //    }
+    //    else
+    //    {
+    //        if (existingCloud == null)
+    //        {
+    //            Debug.Log("PoisonCloud Damaging is Active");
+    //            _player.CharacterState.CmdAddState(States.PoisonCloud, _durationPoisonCloud, 0);
+
+    //            GameObject item = Instantiate(_poisonDamagingCloudDisplayPrefab.gameObject, transform.position, Quaternion.identity);
+    //            PoisonCloudDisplay poisonCloud = item.GetComponent<PoisonCloudDisplay>();
+
+    //            poisonCloud.InitializationPrefab(_player, 6, 3.5f, 5);
+
+    //            poisonCloud.AddStack();
+    //        }
+    //        else
+    //        {
+    //            existingCloud.AddStack();
+    //        }
+    //    }
+    //}
 }

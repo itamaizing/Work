@@ -989,6 +989,8 @@ MonoBehaviour:
   _inertialGlands: {fileID: 4933334587710268522}
   _spitPoison: {fileID: 1565719447917374839}
   _projectile: {fileID: 5760352791335105038, guid: d097441cb29bc5a42b2defb1e1f12525, type: 3}
+  _poisonDamagingCloudDisplayPrefab: {fileID: 8889763167221866413, guid: 83595e1d2c3640a449b737f911ce64ef, type: 3}
+  _poisonHealingCloudDisplayPrefab: {fileID: 2895369021635967405, guid: 44fb31203d76b894da4bc44ce5536057, type: 3}
   _player: {fileID: 362903699018664054}
   arrowPrefab: {fileID: 7504653704119560997, guid: 441e78fa2212e4d41bfedd3dc078f1b5, type: 3}
 --- !u!114 &727315664775304267
@@ -1269,13 +1271,13 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 3
+  _radius: 6
   _area: 0
   _castLength: 3
   _castWidth: 1
   _isAutoRadiusRender: 0
   _isAutoAreaRender: 0
-  _isAutoLineRender: 1
+  _isAutoLineRender: 0
   _player: {fileID: 362903699018664054}
   _tongueProjectile: {fileID: 5721942681369797396, guid: 0335b54680e29c74daf86f45acd8389b, type: 3}
   Enabled: 0

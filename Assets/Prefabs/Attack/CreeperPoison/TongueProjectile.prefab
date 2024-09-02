@@ -50,10 +50,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _enemyLayer:
-    serializedVersion: 2
-    m_Bits: 256
-  _tongueLineRendrer: {fileID: -1068938911050769858}
+  _lineRenderer: {fileID: -1068938911050769858}
 --- !u!120 &-1068938911050769858
 LineRenderer:
   serializedVersion: 2

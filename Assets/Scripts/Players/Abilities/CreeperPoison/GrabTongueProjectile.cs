@@ -33,11 +33,13 @@ public class GrabTongueProjectile : NetworkBehaviour
 
     public void StartTongueAttract()
     {
+        Debug.Log("GrabTongueProjectile / StartTongueAttract work");
         _toungeToTargetCoroutine = StartCoroutine(TongueToTarget());
     }
 
     private IEnumerator TongueToTarget()
     {
+        Debug.Log("GrabTongueProjectile / TongueToTarget work");
         float elapsedTime = 0f;
         float distance = Vector2.Distance(_startPosition, _endPosition);
         float duration = distance / _moveSpeedDirectionFromPlayer;
@@ -49,11 +51,12 @@ public class GrabTongueProjectile : NetworkBehaviour
             yield return null;
         }
 
-        PullTargetToPlayer(_target, _moveSpeedDirectionToPlayer);
+        _toungeFromPlayerCoroutine = StartCoroutine(PullTargetToPlayer(_target, _moveSpeedDirectionToPlayer));
     }
 
     private IEnumerator PullTargetToPlayer(Character target, float speed)
     {
+        Debug.Log("GrabTongueProjectile / PullTargetToPlayer work");
         float elapsedTime = 0f;
         Vector3 startPosition = target.transform.position;
         float distance = Vector2.Distance(startPosition, _startPosition);
@@ -73,6 +76,17 @@ public class GrabTongueProjectile : NetworkBehaviour
     private void DestoryProjectile()
     {
         Destroy(gameObject);
+
+        if (_toungeToTargetCoroutine != null)
+        {
+            StopCoroutine(TongueToTarget());
+            _toungeToTargetCoroutine = null;
+        }
+        if (_toungeFromPlayerCoroutine != null)
+        {
+            StopCoroutine(PullTargetToPlayer(_target, _moveSpeedDirectionToPlayer));
+            _toungeFromPlayerCoroutine = null;
+        }
     }
 
     public void InitializationProjectile(Character player, Character target, Vector3 startPosition, Vector3 endPosition)

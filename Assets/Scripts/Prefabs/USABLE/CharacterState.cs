@@ -704,6 +704,7 @@ public class InAirState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit)
     {
+		Debug.Log("InAirState / EnterState");
 		state = States.InAir;
 
         type = StateType.Physical;
@@ -1607,10 +1608,19 @@ public class PoisonCloud : AbstractCharacterState
     {
         _increasedDamage = _baseDamage * _currentStacks;
         _endDamage = targetHealth.Health.MaxValue * _increasedDamage;
-        //targetHealth.Health.TryTakeDamage(_endDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
+
+		Damage damage = new Damage()
+		{
+			Value = _endDamage,
+			Type = DamageType.Physical,
+			Range = AttackRangeType.MeleeAttack
+		};
+
+        //targetHealth.Health.TryTakeDamage(ref damage, );
+
         if (_toxiqueCloud.IsActive)
         {
-			targetHealth.GetComponent<CharacterState>().CmdAddState(States.EmpathicPoisons, _durationEmpathicPoisons, 0);
+			targetHealth.CharacterState.CmdAddState(States.EmpathicPoisons, _durationEmpathicPoisons, 0);
             EmpathicPoisons.Player = _player.gameObject;
             EmpathicPoisons.RadiusCloud = _radiusCloud;
         }
@@ -2272,6 +2282,7 @@ public class CharacterState : NetworkBehaviour
 	private Resource _stamina;
 	private Character _hero;
 	private Character _whoPersonShooted;
+
 	private List<AbstractCharacterState> _currentStates = new List<AbstractCharacterState>();
 
 	public Health Health => _health;

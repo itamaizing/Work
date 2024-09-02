@@ -65,12 +65,11 @@ public class CreeperStrike : AutoAttackSkill
 
     private IEnumerator UseAbilityCoroutine()
     {
-        _currentTarget = Target;
-        DealingDamageFromHits();
+        DealingDamageFromHits(CurrentTarget);
         yield return null;
     }
 
-    public void DealingDamageFromHits()
+    public void DealingDamageFromHits(Character target)
     {
         _currentDamage = Random.Range(7.0f, 11.0f);
         float _currentChanceOfCriticalStrike = Random.Range(0.0f, 1.0f);
@@ -89,13 +88,13 @@ public class CreeperStrike : AutoAttackSkill
 
         if (_strokesOfAspiration.IsActive && _currentCountHit == 2)
         {
-            if (_lastTarget == _currentTarget)
+            if (_lastTarget == target)
             {
                 _strokesOfAspiration.UseTalentStrokesOfAspiration();
             }
             else
             {
-                _lastTarget = _currentTarget;
+                _lastTarget = target;
             }
         }
 
@@ -118,7 +117,7 @@ public class CreeperStrike : AutoAttackSkill
 
         if (_currentChanceOfCriticalStrike <= chanceOfCriticalStrike)
         {
-            CmdCriticalDamage(CurrentTarget, _currentDamage);
+            CmdCriticalDamage(target, _currentDamage);
         }
         else
         {
@@ -129,7 +128,7 @@ public class CreeperStrike : AutoAttackSkill
                 Range = AttackRangeType.MeleeAttack
             };
 
-            CmdApplyDamage(damage, CurrentTarget.gameObject);
+            CmdApplyDamage(damage, target.gameObject);
         }
 
         if (_firstStrike.IsActive)
