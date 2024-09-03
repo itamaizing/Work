@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6831387573606860695}
   - component: {fileID: 6689609086563257994}
-  - component: {fileID: 4849691088378816773}
   - component: {fileID: 168827570330890960}
   m_Layer: 0
   m_Name: DamageDebaff
@@ -47,21 +46,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6b14777b5dbd184e926e63e484b30c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &4849691088378816773
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3161902913369863076}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1f6dcc834cb47c4699e6631a85b1bee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Type: 0
-  isDamage: 0
-  Timer: 0
 --- !u!114 &168827570330890960
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -260,6 +244,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tmp: {fileID: 0}
+  _tmpImage: {fileID: 0}
   Timer: 0
   BaffType: 6
 --- !u!1 &4902091174522013790

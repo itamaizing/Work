@@ -2,7 +2,6 @@ using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class NetworkRoomsManager : NetworkBehaviour
 {
@@ -12,7 +11,7 @@ public class NetworkRoomsManager : NetworkBehaviour
 	[SerializeField] private int _maxPlayers;
 	[SerializeField] private GameRules _gameRulesPref;
 
-	private List<NetworkRoom> _rooms = new();
+	private readonly List<NetworkRoom> _rooms = new();
 
     public string Scene => _scene;
 
@@ -40,20 +39,20 @@ public class NetworkRoomsManager : NetworkBehaviour
 
     public IEnumerator AddPlayerJob(GameObject player)
     {
-		if (_rooms.Count <= 0 || _rooms[_rooms.Count - 1].IsHaveSlot == false)
+		if (_rooms.Count <= 0 || _rooms[^1].IsHaveSlot == false)
         {
 			NetworkRoom room = new NetworkRoom();
 			room.Init(_scene, _maxPlayers);
 
 			_rooms.Add(room);
 
-			_rooms[_rooms.Count - 1].SlotsEnded += OnRoomSlotsEnded;
-			_rooms[_rooms.Count - 1].RoomClosed += OnRoomClosed;
+			_rooms[^1].SlotsEnded += OnRoomSlotsEnded;
+			_rooms[^1].RoomClosed += OnRoomClosed;
 
-			yield return StartCoroutine(_rooms[_rooms.Count - 1].LoadRoomJob());
+			yield return StartCoroutine(_rooms[^1].LoadRoomJob());
 		}
 
-		_rooms[_rooms.Count - 1].TryAddPlayerInRoom(player);
+		_rooms[^1].TryAddPlayerInRoom(player);
 	}
 
 	private void OnRoomSlotsEnded(NetworkRoom room)
@@ -75,4 +74,13 @@ public enum GameMode
 	GM2vs2,
 	GM3vs3,
 	GMAllvsAll,
+	None
 }
+
+public enum MainGameMode
+{
+	Battlegrounds,
+	Arena,
+	None
+}
+

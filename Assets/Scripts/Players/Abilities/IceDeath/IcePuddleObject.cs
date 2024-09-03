@@ -11,7 +11,7 @@ public class IcePuddleObject : Projectiles
 
 	[FormerlySerializedAs("energyPlayer")]  private Energy _energy;
 	[FormerlySerializedAs("healthPlayer")]  private Health _healthComponent;
-	//[SerializeField] private Rigidbody2D _rb;
+	//[SerializeField] private Rb _rb;
 
 	private float _timeToDestroy = 0;
 	private List<CharacterState> _enemies = new List<CharacterState>();

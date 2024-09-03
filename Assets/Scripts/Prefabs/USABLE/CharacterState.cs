@@ -829,7 +829,6 @@ public class CharacterState : NetworkBehaviour
 	public bool invinsible = false;
 	public Health Health => _health;
 	public MoveComponent Move => _move;
-	public Resource Stamina => _stamina;
 
 	public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
 	{
@@ -843,11 +842,11 @@ public class CharacterState : NetworkBehaviour
 		[States.Desiccuration] = new Desiccuration()
 	};
 
-	public void Initialize(Health health,MoveComponent move , Resource stamina)
+	public void Initialize(Health health,MoveComponent move)
 	{
 		_health = health;
 		_move = move;
-		_stamina = stamina;
+		
 		if (_move == null || _health == null || _stamina == null)
 		{
 			Debug.LogError("No required component in " + gameObject.name);

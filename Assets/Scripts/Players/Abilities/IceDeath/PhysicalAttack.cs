@@ -75,17 +75,17 @@ public class PhysicalAttack : AutoAttackAbility
 	}
 	/*private void LastHit()
 	{
-		if (_dad.Stamina.Use(10))
+		if (_dad.Runes.Use(10))
 		{
 			_curTarget.Health.TakeDamage(_damage * .5f, DamageType.Physical);
 			float curDamage = _damage * .5f;
-			Energy energy = (Energy)_dad.Stamina;
+			Runes energy = (Runes)_dad.Runes;
 			energy.SumDamageMake(curDamage);
 			_curTarget.CharacterState.AddState(new StunnedState(), 1.5f, 0, States.Stun);
 			PushBackEnemy(_curTarget);
 			//отбрасывание 			
 		}
-		_dad.Stamina.Add(_dad.Stamina.MaxValue*0.4f);
+		_dad.Runes.Add(_dad.Runes.MaxValue*0.4f);
 		//_hitInARow = 0;
 		_curTarget = null;
 		//_isInTheRow= false;
@@ -124,17 +124,17 @@ public class PhysicalAttack : AutoAttackAbility
 	private void PushBackEnemy(Character enemy)
 	{
 		Debug.Log("Push");
-		Vector2 pushPos = (_dad.Rigidbody2D.position - enemy.Rigidbody2D.position).normalized;
+		Vector2 pushPos = (_dad.Rb.position - enemy.Rb.position).normalized;
 		Vector2 endPos = -pushPos * 2;
 		//enemy.PlayerMove.CanMove = false;
 		//Debug.DrawLine(enemy.Rb.position, enemy.Rb.position + endPos * 10, Color.red, Mathf.Infinity);
-		if (CheckObstacleBetween(enemy.Rigidbody2D.position, endPos))
+		if (CheckObstacleBetween(enemy.Rb.position, endPos))
 		{
-			enemy.Rigidbody2D.DOMove(_jumpPos, 1).SetEase(Ease.Linear);
+			enemy.Rb.DOMove(_jumpPos, 1).SetEase(Ease.Linear);
 		}
 		else
 		{
-			enemy.Rigidbody2D.DOMove(enemy.Rigidbody2D.position + endPos, 1).SetEase(Ease.Linear);
+			enemy.Rb.DOMove(enemy.Rb.position + endPos, 1).SetEase(Ease.Linear);
 		}
 	}
 

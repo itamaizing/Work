@@ -8,7 +8,7 @@ public class IcyStream : Ability
 	[SerializeField] private FrostingFrozenTalant _frostingFrozenTalant;
 	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 	//[SerializeField] private RunePlayer _rune;
-	//[SerializeField] private Rigidbody2D _rb;
+	//[SerializeField] private Rb _rb;
 
 	private Vector2 _mousePos;
 	private float _angle;
@@ -54,7 +54,7 @@ public class IcyStream : Ability
 	{
 		Debug.Log("shot");
 		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		Vector2 lookDir = _mousePos - _playerLinks.Rigidbody2D.position;
+		Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
 		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
 		CmdCreateProjecttile(angle);
 		float usedEnergy = 0;

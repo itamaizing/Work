@@ -35,7 +35,7 @@ public class IcePuddle : Ability
 		if (!_secondPoind)
 		{
 			_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			Vector2 lookDir = _mousePos - _playerLinks.Rigidbody2D.position;
+			Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
 			_angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
 			//_preViewPuddle.transform.rotation = Quaternion.Euler(_preViewPuddle.transform.rotation.x, _preViewPuddle.transform.rotation.y, _angle);
 			_preViewPuddle.transform.rotation = Quaternion.Euler(0, 0, _angle);

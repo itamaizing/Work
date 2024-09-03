@@ -18,15 +18,15 @@ public class AbilityPanel : MonoBehaviour
 
     private void Start()
     {
-        _selectManager = SelectManager.Instance;
-        _selectManager.CharacterSelected += OnCharacterSelected;
-        _selectManager.CharacterDeselected += OnCharacterDeselected;
+       // _selectManager = SelectManager.Instance;
+       // _selectManager.CharacterSelected += OnCharacterSelected;
+       // _selectManager.CharacterDeselected += OnCharacterDeselected;
     }
 
     private void OnDestroy()
     {
-        _selectManager.CharacterSelected -= OnCharacterSelected;
-        _selectManager.CharacterDeselected -= OnCharacterDeselected;
+      //  _selectManager.CharacterSelected -= OnCharacterSelected;
+       // _selectManager.CharacterDeselected -= OnCharacterDeselected;
     }
 
     public bool IsSelect

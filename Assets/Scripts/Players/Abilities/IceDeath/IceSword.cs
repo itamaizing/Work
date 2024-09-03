@@ -116,9 +116,9 @@ public class IceSword : TargetOrAreaAbility
 	}
 	/*protected override void PayCost()
 	{
-		if (Mana.Value >= _manaCost && _isReady)
+		if (Runes.Value >= _manaCost && _isReady)
 		{
-			Mana.Use(_manaCost);
+			Runes.Use(_manaCost);
 		}
 		else
 		{

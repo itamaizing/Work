@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(SkillRenderer))]
@@ -35,8 +33,6 @@ public class SkillManager : MonoBehaviour
         _skillRenderer = GetComponent<SkillRenderer>();
         _skillQueue = GetComponent<SkillQueue>();
         _autoAttackQueue = GetComponent<AutoAttackQueue>();
-
-        _hero.SelectComponent.IsSelected += OnSelected;
 
         foreach (var item in _skills)
         {
@@ -106,7 +102,7 @@ public class SkillManager : MonoBehaviour
         }
     }
 
-    private void OnSelected(bool value)
+    public void OnSelect(bool value)
     {
         if (value)
         {

@@ -34,7 +34,7 @@ public class IceShadow : Ability
 
 		Debug.Log("test spawn");
 		/*IceShadowObject projectileGm = Instantiate(_shadow, gameObject.transform.position, Quaternion.identity);
-		projectileGm.Init(_playerLinks.gameObject ,Mana.Value);*/
+		projectileGm.Init(_playerLinks.gameObject ,Runes.Value);*/
 		_lastHit = _combo.MakeHit(null, AbilityForm.Magic, 1);
 
 		Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);

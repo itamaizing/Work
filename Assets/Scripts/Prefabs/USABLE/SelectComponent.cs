@@ -1,52 +1,62 @@
-using System;
-using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class SelectComponent : MonoBehaviour
+public class SelectComponent : NetworkBehaviour
 {
+    private readonly UnityEvent _onSelect = null;
+    private readonly UnityEvent _onDeselect = null;
+    
     private MoveComponent _moveComponent;
-    //private PlayerAbilities _playerAbilities;
-    private SkillManager _playerAbilities;
-    private UIPlayerComponents _uiPlayerComponents;
-    private bool isSelect = false;
-    private bool isCurrentPLayer;
+    private SkillManager _abilitiesComponent;
+    private UIPlayerComponents _uiComponent;
+    
+    private bool _isCurrentPLayer;
 
-    public int NumberInGroup { get; set; }
-
-    public event Action<bool> IsSelected;
+    public Vector3 OffsetInGroup { get; set; }
 
     public bool IsCurrentPlayer
     {
-        get => isCurrentPLayer;
+        get => _isCurrentPLayer;
         set
         {
-            isCurrentPLayer = value;
-            if(isCurrentPLayer) _playerAbilities.SetAbilitiesPanelEnable();
-        }
-        
-    }
-    public bool IsSelect
-    {
-        get => isSelect;
-        set
-        {
-            isSelect = value;
-            _uiPlayerComponents.ChangeSelection(isSelect);
-            Debug.Log(_playerAbilities);
-            _playerAbilities.SetAbilitiesPanelSelect(isSelect);
-            _moveComponent.SetOffset(Positions.unitInGroupPositions[NumberInGroup]);
-            _moveComponent.IsSelect = isSelect;
-            IsSelected?.Invoke(isSelect);
+            _isCurrentPLayer = value;
+            if(_isCurrentPLayer) _abilitiesComponent.SetAbilitiesPanelEnable();
         }
     }
 
-    public void Initialize(bool isSelected , MoveComponent move, SkillManager abilities /* PlayerAbilities abilities */, UIPlayerComponents uiComponents)
+    public void Initialize(MoveComponent move, SkillManager abilitiesComponent,UIPlayerComponents uiComponent)
     {
         _moveComponent = move;
-        _playerAbilities = abilities;
-        _uiPlayerComponents = uiComponents;
-        IsSelect = isSelected;
-        IsCurrentPlayer = isSelected;
+        _abilitiesComponent = abilitiesComponent;
+        _uiComponent = uiComponent;
+    } 
+    
+    [Client] 
+    public void Select()
+    {
+        if(!isOwned) return;
+        
+        _uiComponent.ChangeSelection(true);
+        _abilitiesComponent.SetAbilitiesPanelSelect(true);
+        _abilitiesComponent.OnSelect(true);
+        _moveComponent.SetOffset(OffsetInGroup);
+        _moveComponent.IsSelect = true;
+        
+        _onSelect?.Invoke();
+    }
+    [Client]
+    public void Deselect()
+    {
+        if(!isOwned) return;
+        
+        _uiComponent.ChangeSelection(false);
+        _abilitiesComponent.SetAbilitiesPanelSelect(false);
+        _abilitiesComponent.OnSelect(false);
+        _moveComponent.SetOffset(OffsetInGroup);
+        _moveComponent.IsSelect = false;
+        
+        _onDeselect?.Invoke();
     }
     
 }

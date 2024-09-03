@@ -2,26 +2,15 @@ using UnityEngine;
 
 public class HeroComponent : Character
 {
-    public override void OnStartClient()
+    [SerializeField] private TalentSystem talents;
+    [SerializeField] private SpawnComponent _spawnComponent;
+    
+    public SpawnComponent SpawnComponent => _spawnComponent;
+    public TalentSystem Talents => talents;
+    
+    public override void Initialize()
     {
-        base.OnStartClient();
-
-        if(isLocalPlayer)
-        {
-            SelectManager.Instance.AddControl(this);
-        }
-    }
-
-    public override void Initialize(CharacterData characterData)
-    {
-        Health.Initialize(characterData.Health, characterData.HealthRegen, characterData.RegenDelay, characterData.HealthInfo);
-        Move.Initialize(characterData.MoveSpeed, Rigidbody2D , true);
-        Stamina.Initialize(characterData.Stamina, characterData.StaminaRegen, characterData.StaminaRegenDelay);
-        RuneComponent.Initialize(10,1,10);
-        CharacterState.Initialize(Health, Move , Stamina);
-        TalentSystem.Initialize();
-        //UIPlayerComponents.Initialize(Abilities,Move,Stamina,Health); //Why is initialization of this component necessary at all? Moreover, the UI should not initialize the logic
-        SelectComponent.Initialize(false,Move,Abilities,UIPlayerComponents);
-
+        base.Initialize();
+        Talents.Initialize();
 	}
 }

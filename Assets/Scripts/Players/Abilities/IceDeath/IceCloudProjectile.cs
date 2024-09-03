@@ -34,9 +34,9 @@ public class IceCloudProjectile : Projectiles
 		//damage, freez etc
 		if(collision.TryGetComponent<Character>(out var target))
 		{
-			//float duration = 1 + dad.Stamina.Value / 20;
+			//float duration = 1 + dad.Runes.Value / 20;
 			float duration = 1 + _energyDad / 20;
-			//target.CharacterState.energy = dad.Stamina;
+			//target.CharacterState.energy = dad.Runes;
 			float curDamage = 10 + _energyDad / 4;
 			Energy energyLink = (Energy)_dad.Stamina;
 			if (target.CharacterState.CheckForState(States.Frozen))
@@ -60,7 +60,7 @@ public class IceCloudProjectile : Projectiles
 				_dad.Health.SetEvadeMagic(20);
 			}
 
-			//dad.Stamina.Use(duration * 20);
+			//dad.Runes.Use(duration * 20);
 			//damage
 			GetComponent<Collider2D>().enabled = false;
 			Explode();

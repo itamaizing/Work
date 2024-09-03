@@ -1,25 +1,7 @@
-using Mirror;
-using UnityEngine;
-
 public class MinionComponent : Character
 {
-    [SyncVar]
-    public GameObject _heroParent;
-    public GameObject HeroParent => _heroParent;
-
-    public override void Initialize(CharacterData characterData)
+    public override void Initialize()
     {
-        Health.Initialize(characterData.Health,characterData.HealthRegen, characterData.RegenDelay, characterData.HealthInfo);
-        Move.Initialize(characterData.MoveSpeed, Rigidbody2D);
-        Stamina.Initialize(characterData.Stamina, characterData.StaminaRegen, characterData.RegenDelay);
-        CharacterState.Initialize(Health, Move , Stamina);
-        //UIPlayerComponents.Initialize(Abilities, Move, Stamina, Health); //Why is initialization of this component necessary at all? Moreover, the UI should not initialize the logic
-        SelectComponent.Initialize(false, Move, Abilities, UIPlayerComponents);
-    }
-
-    public void SetParent(GameObject parent)
-    {
-        Debug.Log(parent.name);
-        _heroParent = parent;
+        base.Initialize();
     }
 }

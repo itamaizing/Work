@@ -33,9 +33,9 @@ public class IceShardProjectile : Projectiles
 		//damage, freez etc
 		if (collision.TryGetComponent<Character>(out var target))
 		{
-			//float duration = 1 + dad.Stamina.Value / 20;
+			//float duration = 1 + dad.Runes.Value / 20;
 			float duration = 1 + _energyDad / 20;
-			//target.CharacterState.energy = dad.Stamina;
+			//target.CharacterState.energy = dad.Runes;
 			float curDamage = 3 + Random.Range(0, 3);
 			Energy energyLink = (Energy)_dad.Stamina;
 			if (target.CharacterState.CheckForState(States.Frozen) && Random.Range(0, 100) < 15)
@@ -51,7 +51,7 @@ public class IceShardProjectile : Projectiles
 			//target.CharacterState.AddState(new FrozenState(), duration, 30, States.Frozen);
 			target.CharacterState.CmdAddState(States.Frozen, duration, 30);
 
-			//dad.Stamina.Use(duration * 20);
+			//dad.Runes.Use(duration * 20);
 			//damage
 			GetComponent<Collider2D>().enabled = false;
 		}

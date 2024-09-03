@@ -65,7 +65,7 @@ public class FourMeleeAttack : AbilityBase
 		_distanceTentacles = _cellSize * CellDistance; //�� ������� �� �����
 		AttackType = AttackType.OneAttack;
 		AbilityType = AbilityType.DamageAbility;
-		speedOriginal = transform.parent.GetComponent<CharacterData>().MoveSpeed;
+		speedOriginal = transform.parent.GetComponent<CharacterData>().GetAttributeValue(AttributeNames.Speed);
 	}
 
 	private void Update()

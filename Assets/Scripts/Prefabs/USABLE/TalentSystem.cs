@@ -37,7 +37,7 @@ public class TalentSystem : NetworkBehaviour
 
 	public void Initialize()
 	{
-		_panel = TalentManager.Instance.AddPanel(this);
+		//_panel = TalentManager.Instance.AddPanel(this);
 	}
 	public void AddPoints(int value)
 	{

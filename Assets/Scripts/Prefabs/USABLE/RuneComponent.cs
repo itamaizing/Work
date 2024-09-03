@@ -107,7 +107,7 @@ public class RuneComponent : StaminaComponent
 
 	public override bool TryUse(float EnergyValue)
 	{
-		Debug.LogError("ERROR!!! You are using Rune instead of Mana or Energy!!!!");
+		Debug.LogError("ERROR!!! You are using Rune instead of Runes or Runes!!!!");
 		return false;
 	}
 

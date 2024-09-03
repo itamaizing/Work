@@ -38,8 +38,6 @@ public class Spisnacider : MonoBehaviour
         _controlledObjectsScript = Player.transform.Find("Abilities").gameObject.GetComponent<CarrygunControlledObjects>();
 
         _select = FindObjectOfType<SelectObject>();
-        healthOriginal = _playerData.Health;
-        speedOriginal = GetComponent<CharacterData>().MoveSpeed;
     }
 
     void Update()

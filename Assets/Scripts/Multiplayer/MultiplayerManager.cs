@@ -14,12 +14,33 @@ public class MultiplayerManager : NetworkManager
 {
     [SerializeField] private List<NetworkRoomsManager> _managers;
     [SerializeField] private List<HeroComponent> _heroList;
-
+    [SerializeField] private List<GameMode> _activeCountModes;
+    [SerializeField] private List<MainGameMode> _activeMainModes;
+    
     private int _clientCount;
     private int _currentHeroIndex;
     private GameMode _currentGameMod = GameMode.GMTest;
+    
+    private static MultiplayerManager _instance;
+    public static MultiplayerManager Instance => _instance;
+    
+    public List<GameMode> ActiveCountModes => _activeCountModes;
+    public List<MainGameMode> ActiveMainModes => _activeMainModes;
 
     public List<HeroComponent> HeroList { get => _heroList; set => _heroList = value; }
+
+    public override void Awake()
+    {
+        base.Awake();
+        if (_instance != null)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            _instance = this;
+        }
+    }
 
     public override void OnStartServer()
     {
@@ -106,5 +127,6 @@ public class MultiplayerManager : NetworkManager
     public void SetMode(GameMode mode)
     {
         _currentGameMod = mode;
+        Debug.Log(_currentGameMod);
     }
 }

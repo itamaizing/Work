@@ -96,7 +96,7 @@ public class HealthRecovery : BaseEffect
             _recHealth = realHeal;
         }
         if (_ticksCount > 0)
-        Player.GetComponent<Mana>().Add(_recHealth * _ticksCount * 0.1f);*/
+        Player.GetComponent<Runes>().Add(_recHealth * _ticksCount * 0.1f);*/
     }
 
     private IEnumerator Cooldown()
