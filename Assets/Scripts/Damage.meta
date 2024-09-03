@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Scripts/Damage.meta
 guid: b3b7338339cde0743a8c69ca1d9fb56b
+========
+guid: 0bc7a53dc8f071945b51b50ebcffd40a
+>>>>>>>> main:Assets/Prefabs/UI/Player.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

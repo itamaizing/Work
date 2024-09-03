@@ -59,7 +59,6 @@ public class MoveComponent : NetworkBehaviour
 	{
 		_currentSpeed = _defaultSpeed;
 	}
-
 	[ClientCallback]
 	void Update()
 	{

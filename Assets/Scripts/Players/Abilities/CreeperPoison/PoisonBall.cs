@@ -657,6 +657,7 @@ public class PoisonBall : Skill
         poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.CurrentValue, this, isActiveHealingPoisonBall,
             isTargetPlayer, isTargetEnemy, isTargetAllies, isActiveWitheringPoison, isPushTarget, isActiveVoluminousBall);
 
+        poisonBallProjectile.InitializationProjectile(_playerLinks.transform, _playerLinks.Stamina.CurrentValue);
         poisonBallProjectile.MoveBallToTarget(targetOrPoint, isFast);
 
         NetworkServer.Spawn(item);

@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Scripts/Players/Abilities/CreeperPoison/Folder for test abilities.meta
 guid: ce160565c392e6545859b9175c434a9c
+========
+guid: b3b7338339cde0743a8c69ca1d9fb56b
+>>>>>>>> main:Assets/Scripts/Damage.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

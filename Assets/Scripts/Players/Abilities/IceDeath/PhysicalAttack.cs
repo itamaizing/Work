@@ -109,9 +109,9 @@ public class PhysicalAttack : AutoAttackSkill
 		Vector2 endPos = -pushPos * 2;
 		//enemy.PlayerMove.CanMove = false;
 		//Debug.DrawLine(enemy.Rb.position, enemy.Rb.position + endPos * 10, Color.red, Mathf.Infinity);
-		if (CheckObstacleBetween(enemy.Rb.position, endPos))
+		if (CheckObstacleBetween(enemy.Rigidbody2D.position, endPos))
 		{
-			enemy.Rb.DOMove(_jumpPos, 1).SetEase(Ease.Linear);
+			enemy.Rigidbody2D.DOMove(_jumpPos, 1).SetEase(Ease.Linear);
 		}
 		else
 		{
