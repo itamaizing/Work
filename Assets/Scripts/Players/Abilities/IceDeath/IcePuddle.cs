@@ -1,7 +1,8 @@
 using Mirror;
 using UnityEngine;
 
-public class IcePuddle : Ability
+/*
+public class IcePuddle : skill
 {
 	[SerializeField] private IcePuddleObject _puddle;
 	[SerializeField] private Character _playerLinks;
@@ -23,10 +24,10 @@ public class IcePuddle : Ability
 	private float _timer = 2;
 	private float _time = 0;
 
-	/*private void Start()
+	private void Start()
 	{
 		_preViewPuddle.SetActive(false);
-	}*/
+	}
 	private void Update()
 	{
 		if (!_enabled) return;
@@ -72,7 +73,7 @@ public class IcePuddle : Ability
 			{
 				_secondPoind = false;
 				PayCost();
-				if (_playerLinks.RuneComponent.RemoveRune(1, this))
+				if (_playerLinks.RuneComponent.RemoveRune(1, ))
 				{
 					Shoot();
 
@@ -171,7 +172,7 @@ public class IcePuddle : Ability
 		}
 		/*var length = Mathf.Min(distance, _radius);
 		var direction = (worldPosition - gameObject.transform.position).normalized;
-		return transform.position + direction * length;*/
+		return transform.position + direction * length;
 	}
 
 	private void Timer()
@@ -186,4 +187,4 @@ public class IcePuddle : Ability
 			}
 		}
 	}
-}
+}*/

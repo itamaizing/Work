@@ -19,7 +19,6 @@ public class ReleaseFromSecrecy : Talent
     {
         SetActive(true);
         _timeDurationBuff = _startTimeDurationBuff;
-
     }
 
     public override void Exit()

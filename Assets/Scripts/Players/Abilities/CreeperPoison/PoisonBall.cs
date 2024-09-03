@@ -581,7 +581,7 @@ public class PoisonBall : Skill
                 _poisonBallInfo.IsActiveHealingPoisonBall, _poisonBallInfo.IsActiveWitheringPoison, _poisonBallInfo.IsActiveVoluminousBall,
                 _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies);
 
-            CmdApplyCloudPoison(_healPoisonCloud.IsActive, _poisonBallInfo.IsHealingPoisonCloud);
+            CmdApplyCloudPoison(_poisonBallInfo.IsHealingPoisonCloud);
         }
         else
         {
@@ -590,7 +590,7 @@ public class PoisonBall : Skill
                 _poisonBallInfo.IsActiveHealingPoisonBall, _poisonBallInfo.IsActiveWitheringPoison, _poisonBallInfo.IsActiveVoluminousBall,
                 _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies);
 
-            CmdApplyCloudPoison(_healPoisonCloud.IsActive, _poisonBallInfo.IsHealingPoisonCloud);
+            CmdApplyCloudPoison(_poisonBallInfo.IsHealingPoisonCloud);
         }
     }
 
@@ -645,9 +645,9 @@ public class PoisonBall : Skill
             _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
         }
 
-        Debug.Log($"bool isTargetEnemy = {isTargetEnemy}, bool isTargetPlayer = {isTargetPlayer}, bool isTargetAllies = {isTargetAllies}");
+        //Debug.Log($"bool isTargetEnemy = {isTargetEnemy}, bool isTargetPlayer = {isTargetPlayer}, bool isTargetAllies = {isTargetAllies}");
 
-        Debug.Log($"_poisonBallInfo.HealingBall = {_poisonBallInfo.IsActiveHealingPoisonBall}");
+       // Debug.Log($"_poisonBallInfo.HealingBall = {_poisonBallInfo.IsActiveHealingPoisonBall}");
 
         GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
         PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>(); 
@@ -657,7 +657,6 @@ public class PoisonBall : Skill
         poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.CurrentValue, this, isActiveHealingPoisonBall,
             isTargetPlayer, isTargetEnemy, isTargetAllies, isActiveWitheringPoison, isPushTarget, isActiveVoluminousBall);
 
-        poisonBallProjectile.InitializationProjectile(_playerLinks.transform, _playerLinks.Stamina.CurrentValue);
         poisonBallProjectile.MoveBallToTarget(targetOrPoint, isFast);
 
         NetworkServer.Spawn(item);
@@ -709,7 +708,7 @@ public class PoisonBall : Skill
             _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
         }
 
-        Debug.Log($"bool isTargetEnemy = {isTargetEnemy}, bool isTargetPlayer = {isTargetPlayer}, bool isTargetAllies = {isTargetAllies}");
+        //Debug.Log($"bool isTargetEnemy = {isTargetEnemy}, bool isTargetPlayer = {isTargetPlayer}, bool isTargetAllies = {isTargetAllies}");
 
         GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
         PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>(); 
@@ -725,12 +724,14 @@ public class PoisonBall : Skill
     }
 
     [Command]
-    private void CmdApplyCloudPoison(bool isActiveTalent, bool isHealingCloud)
+    private void CmdApplyCloudPoison(bool isHealingCloud)
     {
-        if (isActiveTalent && isHealingCloud)
+        if (isHealingCloud)
         {
+           // Debug.Log("Healing Cloud");
             if (_poisonHealingCloud.PoisonHealingCloud == null)
             {
+             //   Debug.Log("Healing Cloud / if");
                 _player.CharacterState.AddState(States.HealingPoisonCloud, _durationPoisonCloud, 0, _player.gameObject, Name);
 
                 //_poisonCloudDisplay.transform.SetParent(playerTransform, false);
@@ -745,14 +746,17 @@ public class PoisonBall : Skill
             }
             else
             {
+              //  Debug.Log("Healing Cloud / else");
                 _player.CharacterState.AddState(States.HealingPoisonCloud, _durationPoisonCloud, 0, _player.gameObject, Name);
                 _poisonHealingCloud.PoisonHealingCloud.AddStack();
             }
         }
         else
         {
+          //  Debug.Log("Damaging Cloud");
             if (_poisonDamagingCloud.PoisonDamagingCloud == null)
             {
+              //  Debug.Log("Damaging Cloud / if");
                 _player.CharacterState.AddState(States.PoisonCloud, _durationPoisonCloud, 0, _player.gameObject, Name);
 
                 //_poisonCloudDisplay.transform.SetParent(playerTransform, false);
@@ -767,29 +771,31 @@ public class PoisonBall : Skill
             }
             else
             {
+               // Debug.Log("Damaging Cloud / else");
                 _player.CharacterState.AddState(States.PoisonCloud, _durationPoisonCloud, 0, _player.gameObject, Name);
                 //Debug.Log("CmdPoisonDamagingCloud / Else / AddStack");
                 _poisonDamagingCloud.PoisonDamagingCloud.AddStack();
             }
         }
-        RpcApplyCloudPoisons(_poisonDamagingCloud.PoisonDamagingCloud, _poisonHealingCloud.PoisonHealingCloud, isActiveTalent, isHealingCloud);
+        RpcApplyCloudPoisons(_poisonDamagingCloud.PoisonDamagingCloud, _poisonHealingCloud.PoisonHealingCloud, isHealingCloud);
     }
 
     #endregion
 
     [ClientRpc]
-    private void RpcApplyCloudPoisons(PoisonCloudDisplay damageCloud, PoisonCloudDisplay healCloud, bool isActiveTalent, bool isHealingCloud)
+    private void RpcApplyCloudPoisons(PoisonCloudDisplay damageCloud, PoisonCloudDisplay healCloud, bool isHealingCloud)
     {
         if (damageCloud != null)
         {
             damageCloud.InitializationPrefab(_player, 6f, 3.5f, 5);
             damageCloud.AddStack();
-            //Debug.Log("RpcPoisonDamagingCloud / if dmgCloud / AddStack");
+           // Debug.Log("RpcPoisonDamagingCloud / if dmgCloud / AddStack");
         }
         if (healCloud != null)
         {
             healCloud.InitializationPrefab(_player, 6f, 3.5f, 5);
             healCloud.AddStack();
+           // Debug.Log("RpcPoisonHealingCloud / if dmgCloud / AddStack");
         }
     }
 }

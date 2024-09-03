@@ -10,7 +10,7 @@ public class SpitPoisonProjectile : NetworkBehaviour
     [SerializeField] private GameObject _hitEffect;
     [SerializeField] private Collider2D _colliderBall;
     [SerializeField] private float _maxDistance = 5f;
-    [SerializeField] private float _speed = 60f;
+    [SerializeField] private float _speed = 40f;
 
     private Skill _skill;
     private Character _player;
@@ -54,7 +54,7 @@ public class SpitPoisonProjectile : NetworkBehaviour
                 if (collision.gameObject == _player.gameObject)
                 {
                     Debug.Log($"if (IsPlayer) // RegeneratingPoison.SetPlayer == {_player}");
-                    _player.CharacterState.CmdAddState(States.RegeneratingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
+                    _player.CharacterState.AddState(States.RegeneratingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
                     Destroy(gameObject);
                 }
             }
@@ -65,7 +65,7 @@ public class SpitPoisonProjectile : NetworkBehaviour
                     if (collision.TryGetComponent<Character>(out var alliesHealth))
                     {
                         Debug.Log($"if (IsAllies) // RegeneratingPoison.SetPlayer == {_player}");
-                        alliesHealth.CharacterState.CmdAddState(States.RegeneratingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
+                        alliesHealth.CharacterState.AddState(States.RegeneratingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
                         Destroy(gameObject);
                     }
                 }

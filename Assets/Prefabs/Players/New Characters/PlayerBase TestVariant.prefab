@@ -14,7 +14,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -65063298450455639, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _assetId
-      value: 1271131092
+      value: 4217164867
       objectReference: {fileID: 0}
     - target: {fileID: 795014623008228812, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_RootOrder
@@ -163,6 +163,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 44ef9f5c61bd03a4a9d02045a6dfb776, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
   _manaCost: 5
   _cooldownTime: 0
   _castDeley: 1
@@ -207,6 +208,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 83e21c29a8358a84c98e9e3409e72dce, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
   _manaCost: 1
   _cooldownTime: 0
   _castDeley: 0
@@ -254,6 +256,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: d225c810085a24647a426dd4b47a9983, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
   _manaCost: 5
   _cooldownTime: 2
   _castDeley: 1

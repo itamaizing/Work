@@ -1180,6 +1180,7 @@ public class PoisonBone : AbstractCharacterState
 	[Server]
     private void DamageDeal()
     {
+		Debug.Log("PoisonBone / DamageDeal");
         _endDamage = _currentStacks * _baseDamage;
 
 		Damage damage = new Damage
@@ -1326,6 +1327,7 @@ public class WitheringPoisonState : AbstractCharacterState
 
     private void TakeAwayMana()
     {
+		Debug.Log("WitheringPoison / TakeAwayMana");
         float takeAwayMana = _currentStacks * _baseValueTakeAwayMana;
         _endValueTakeAwayMana = _characterState.Character.Stamina.CurrentValue * takeAwayMana;
 
@@ -1510,17 +1512,19 @@ public class PoisonCloud : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-		Debug.Log("EnterState PoisonCloud");
+		//Debug.Log("EnterState PoisonCloud");
         _characterState = character;
         _toxiqueCloud = _characterState.GetComponentInChildren<ToxiqueCloud>();
 		_player = personWhoMadeBuff;
-		_enemiesLayer = LayerMask.NameToLayer("Enemy");
-		Debug.Log($"LayerMask = {_enemiesLayer}");
+
         _duration = durationToExit;
         _baseDuration = durationToExit;
-		//_empathicPoisons = _player.CharacterState.GetComponent<EmpathicPoisons>();
 
-		Debug.Log($"_empathicPoisons in PoisonCloud = {_empathicPoisons}");
+		_timeBetweenAttack = _startTimeBetweenAttack;
+
+		//_empathicPoisons = _player.CharacterState.GetComponent<EmpathicPoisons>();
+		//Debug.Log($"_empathicPoisons in PoisonCloud = {_empathicPoisons}");
+
 
 		if (_player != null)
 		{
@@ -1552,7 +1556,7 @@ public class PoisonCloud : AbstractCharacterState
                 if (_cloudExplosion == null)
                 {
                     _cloudExplosion = cloudExplosion;
-					Debug.Log($"PoisonCloud / SearchAbilities / cloudExplosion = {_cloudExplosion}");
+					//Debug.Log($"PoisonCloud / SearchAbilities / cloudExplosion = {_cloudExplosion}");
                 }
             }
         }
@@ -1577,6 +1581,7 @@ public class PoisonCloud : AbstractCharacterState
         _timeBetweenAttack -= Time.deltaTime;
         if (_timeBetweenAttack <= 0)
         {
+			//Debug.Log("PoisonCloud / timeBetweenAttack <= 0");
             SearchingEnemies();
             _timeBetweenAttack = _startTimeBetweenAttack;
         }
@@ -1591,7 +1596,7 @@ public class PoisonCloud : AbstractCharacterState
 
     public override void ExitState()
     {
-		Debug.Log("PoisonCloud / ExitState");
+		//Debug.Log("PoisonCloud / ExitState");
         ResetValues();
 
         _characterState.RemoveState(this);
@@ -1599,7 +1604,7 @@ public class PoisonCloud : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        Debug.Log($"PoisonCloud / Stack / currentStacks = {_currentStacks}");
+        //Debug.Log($"PoisonCloud / Stack / currentStacks = {_currentStacks}");
 
         if (_currentStacks < _maxStacks)
         {
@@ -1607,7 +1612,7 @@ public class PoisonCloud : AbstractCharacterState
 			if (_cloudExplosion != null)
 			{
 				_cloudExplosion.CurrentStacksPoisonCloud(_currentStacks, _radiusCloud);
-				Debug.Log($"PoisonCloud / Stack / if / CurrentStacks/RadiusCloud = {_currentStacks}, {_radiusCloud}");
+				//Debug.Log($"PoisonCloud / Stack / if / CurrentStacks/RadiusCloud = {_currentStacks}, {_radiusCloud}");
 			}
             return true;
         }
@@ -1617,7 +1622,7 @@ public class PoisonCloud : AbstractCharacterState
             if (_cloudExplosion != null)
             {
                 _cloudExplosion.CurrentStacksPoisonCloud(_currentStacks, _radiusCloud);
-                Debug.Log($"PoisonCloud / Stack / else / CurrentStacks/RadiusCloud = {_currentStacks}, {_radiusCloud}");
+               // Debug.Log($"PoisonCloud / Stack / else / CurrentStacks/RadiusCloud = {_currentStacks}, {_radiusCloud}");
             }
             return false;
         }
@@ -1629,12 +1634,12 @@ public class PoisonCloud : AbstractCharacterState
 		{
             _currentStacks++;
 			_duration = _baseDuration;
-			Debug.Log("PoisonCloud AddStacks = " + _currentStacks);
-            //Debug.Log("if / CurrentStackPoisonCloud in AddStacks == " + _currentStacks); 
+			//Debug.Log("PoisonCloud AddStacks = " + _currentStacks);
+          //  Debug.Log("if / CurrentStackPoisonCloud in AddStacks == " + _currentStacks); 
 		}
 		else
 		{
-            //Debug.Log("else / CurrentStackPoisonCloud in AddStacks == " + _currentStacks);
+			//Debug.Log("else / CurrentStackPoisonCloud in AddStacks == " + _currentStacks);
             _duration = _baseDuration;
 		}
     }
@@ -1645,19 +1650,21 @@ public class PoisonCloud : AbstractCharacterState
         
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(_characterState.transform.position, _radiusCloud);
         Debug.Log($"PoisonCloud / SearchingEnemies / after hitEnemies = {hitEnemies}");
-        foreach (Collider2D enemy in hitEnemies)
-        {
-            Debug.Log($"PoisonCloud / SearchingEnemies / enemy = {enemy}");
-            if (enemy.TryGetComponent<Character>(out var target) && enemy.transform != _characterState.transform)
-            {
-                DamageDeal(target);
-				Debug.Log("After TryGetComponent");
-                _timeBetweenAttack = _startTimeBetweenAttack;
-            }
-        }
+		foreach (Collider2D enemy in hitEnemies)
+		{
+			if (enemy.CompareTag("Enemies"))
+			{
+				Debug.Log($"PoisonCloud / SearchingEnemies / enemy = {enemy}");
+				if (enemy.TryGetComponent<Character>(out var target) && enemy.transform != _characterState.transform)
+				{
+					DamageDeal(target);
+					Debug.Log("After TryGetComponent");
+					_timeBetweenAttack = _startTimeBetweenAttack;
+				}
+			}
+		}
     }
 
-	[Server]
     private void DamageDeal(Character target)
     {
         Debug.Log($"PoisonCloud / DamageDeal");
@@ -1678,9 +1685,9 @@ public class PoisonCloud : AbstractCharacterState
 
         if (_toxiqueCloud.IsActive)
         {
-			//target.CharacterState.CmdAddState(States.EmpathicPoisons, _durationEmpathicPoisons, 0, _player.gameObject, null);
-           // _empathicPoisons.Player = _player.gameObject;
-            //_empathicPoisons.RadiusCloud = _radiusCloud;
+			target.CharacterState.CmdAddState(States.EmpathicPoisons, _durationEmpathicPoisons, 0, _player.gameObject, null);
+            _empathicPoisons.Player = _player.gameObject;
+            _empathicPoisons.RadiusCloud = _radiusCloud;
         }
     }
 
@@ -2158,6 +2165,7 @@ public class RegeneratingPoison : AbstractCharacterState
 
     private void MakeHeal()
     {
+		Debug.Log("RegenerationPoison / MakeHeal");
 		_endHealingValue = _currentStacks * _baseHealingValue;
 		_characterState.Character.Health.Heal(_endHealingValue);
 		if (_surgeTreatment != null && _surgeTreatment.IsActive)

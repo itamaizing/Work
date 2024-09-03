@@ -67,6 +67,7 @@ public class PoisonBallProjectile : NetworkBehaviour
     [Server]
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        Debug.Log("OnTriggerEnter2D PoisonBall");
         if (_isActiveHealingPoisonBall)
         {
             if (_isPlayer)
@@ -163,10 +164,8 @@ public class PoisonBallProjectile : NetworkBehaviour
         {
             if (collision.gameObject.transform != _player.transform && collision.gameObject.layer != LayerMask.NameToLayer("Allies"))
             {
-                Debug.Log($"Collision.gameObject == {collision.gameObject}");
                 if (collision.TryGetComponent<HeroComponent>(out var targetHealth))
                 {
-                    Debug.Log($"Target = {targetHealth}");
                     DealDamage(targetHealth, _currentDamageForPoisonBall, DamageType.Magical, AttackRangeType.RangeAttack);
                     
                     if (_footInstincts.IsActive)

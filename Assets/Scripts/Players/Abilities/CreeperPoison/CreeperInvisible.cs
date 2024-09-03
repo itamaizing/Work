@@ -96,7 +96,7 @@ public class CreeperInvisible : Skill
             CmdRemoveInvisible();
             yield break;
         }
-        else if (IsInvisible && _isClickForCastInvisibleSkill)
+        else if (IsInvisible)
         {
             Debug.Log($"CreeperInvisible / CastJob / else if (IsInvisible = {IsInvisible}, isCastSkill = {_isClickForCastInvisibleSkill})");
             //Метод для того, чтобы сделать способности невидымим
@@ -220,7 +220,7 @@ public class CreeperInvisible : Skill
         Debug.Log($"CreeperInvisible / CmdApplyInvis / IsInvisible = {IsInvisible}");
         RpcApplyInvis();
 
-        _player.CharacterState.CmdAddState(States.CreeperInvisible, 0, 0, _player.gameObject, Name);
+        _player.CharacterState.AddState(States.CreeperInvisible, 0, 0, _player.gameObject, Name);
     }
 
     [Command]
@@ -230,7 +230,7 @@ public class CreeperInvisible : Skill
         IsInvisible = true;
         RpcApplyInvisibleWithTalent();
 
-        _player.CharacterState.CmdAddState(States.CreeperInvisible, 0, 0, _player.gameObject, Name);
+        _player.CharacterState.AddState(States.CreeperInvisible, 0, 0, _player.gameObject, Name);
     }
 
     [Command]

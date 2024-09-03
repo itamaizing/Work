@@ -60,10 +60,10 @@ public class Absorption : Skill
 		Debug.Log(bodyObj.name);
 		IcyCorpse body = bodyObj.GetComponent<IcyCorpse>();
 
-		float regen = 0.1f * body.HP + 0.05f * _player.Stamina.CurrentValue / 10;
-		_player.Stamina.TryUse(_player.Stamina.CurrentValue);
-		_player.Health.Add(regen);
-		body.Explode();
+		//float regen = 0.1f * body.HP + 0.05f * _player.Stamina.CurrentValue / 10;
+		//_player.Stamina.TryUse(_player.Stamina.CurrentValue);
+		//_player.Health.Add(regen);
+		//body.Explode();
 
 	}
 
