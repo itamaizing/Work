@@ -1,7 +1,6 @@
 using Mirror;
 using System.Collections;
 using UnityEngine;
-using static UnityEditor.Progress;
 using UnityEngine.SceneManagement;
 
 public class Icecloud : Skill

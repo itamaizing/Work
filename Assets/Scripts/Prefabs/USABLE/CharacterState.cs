@@ -1,13 +1,6 @@
 using Mirror;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
-using UnityEditor.Playables;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
-
 public abstract class AbstractCharacterState
 {
 	protected CharacterState _characterState;
