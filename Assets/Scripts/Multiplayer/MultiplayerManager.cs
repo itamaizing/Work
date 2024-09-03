@@ -127,6 +127,5 @@ public class MultiplayerManager : NetworkManager
     public void SetMode(GameMode mode)
     {
         _currentGameMod = mode;
-        Debug.Log(_currentGameMod);
     }
 }

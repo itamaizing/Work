@@ -823,7 +823,6 @@ public class CharacterState : NetworkBehaviour
 {
 	private Health _health;
 	private MoveComponent _move;
-	private Resource _stamina;
 	private List<AbstractCharacterState> currentStates = new List<AbstractCharacterState>();
 	[SerializeField] private StateIcons _stateIcons;
 	public bool invinsible = false;
@@ -847,7 +846,7 @@ public class CharacterState : NetworkBehaviour
 		_health = health;
 		_move = move;
 		
-		if (_move == null || _health == null || _stamina == null)
+		if (_move == null || _health == null)
 		{
 			Debug.LogError("No required component in " + gameObject.name);
 		}
