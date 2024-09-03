@@ -1485,10 +1485,11 @@ public class PoisonCloud : AbstractCharacterState
 	private ExplosionPoisonCloud _cloudExplosion;
 
     private Character _player;
+	private LayerMask _enemiesLayer;
 
     private int _currentStacks = 0;
     private int _maxStacks = 5;
-    private float _radiusCloud = 3.5f;
+    private float _radiusCloud = 5.5f;
 
     private float _baseDamage = 0.005f;
     private float _increasedDamage;
@@ -1513,7 +1514,8 @@ public class PoisonCloud : AbstractCharacterState
         _characterState = character;
         _toxiqueCloud = _characterState.GetComponentInChildren<ToxiqueCloud>();
 		_player = personWhoMadeBuff;
-
+		_enemiesLayer = LayerMask.NameToLayer("Enemy");
+		Debug.Log($"LayerMask = {_enemiesLayer}");
         _duration = durationToExit;
         _baseDuration = durationToExit;
 		//_empathicPoisons = _player.CharacterState.GetComponent<EmpathicPoisons>();
@@ -1639,38 +1641,44 @@ public class PoisonCloud : AbstractCharacterState
 
     private void SearchingEnemies()
     {
+		Debug.Log($"PoisonCloud / SearchingEnemies");
+        
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(_characterState.transform.position, _radiusCloud);
+        Debug.Log($"PoisonCloud / SearchingEnemies / after hitEnemies = {hitEnemies}");
         foreach (Collider2D enemy in hitEnemies)
         {
-            if (enemy.CompareTag("Enemies"))
+            Debug.Log($"PoisonCloud / SearchingEnemies / enemy = {enemy}");
+            if (enemy.TryGetComponent<Character>(out var target) && enemy.transform != _characterState.transform)
             {
-                if (enemy.TryGetComponent<HeroComponent>(out var target) && enemy.transform != _characterState.transform)
-                {
-                    DamageDeal(target);
-                    _timeBetweenAttack = _startTimeBetweenAttack;
-                }
+                DamageDeal(target);
+				Debug.Log("After TryGetComponent");
+                _timeBetweenAttack = _startTimeBetweenAttack;
             }
         }
     }
 
 	[Server]
-    private void DamageDeal(HeroComponent targetHealth)
+    private void DamageDeal(Character target)
     {
+        Debug.Log($"PoisonCloud / DamageDeal");
         _increasedDamage = _baseDamage * _currentStacks;
-        _endDamage = targetHealth.Health.MaxValue * _increasedDamage;
+        Debug.Log($"PoisonCloud / DamageDeal / _increasedDamage = {_increasedDamage}");
+        _endDamage = target.Health.MaxValue * _increasedDamage;
+        Debug.Log($"PoisonCloud / DamageDeal / _endDamage = {_endDamage}");
 
-		Damage damage = new Damage()
+        Damage damage = new Damage()
 		{
 			Value = _endDamage,
 			Type = DamageType.Physical,
 			Range = AttackRangeType.MeleeAttack
 		};
+        Debug.Log($"PoisonCloud / DamageDeal / damage = {damage}");
 
-        targetHealth.Health.TryTakeDamage(ref damage, _cloudExplosion);
+        target.Health.TryTakeDamage(ref damage, _cloudExplosion);
 
         if (_toxiqueCloud.IsActive)
         {
-			//targetHealth.CharacterState.CmdAddState(States.EmpathicPoisons, _durationEmpathicPoisons, 0, _player.gameObject, null);
+			//target.CharacterState.CmdAddState(States.EmpathicPoisons, _durationEmpathicPoisons, 0, _player.gameObject, null);
            // _empathicPoisons.Player = _player.gameObject;
             //_empathicPoisons.RadiusCloud = _radiusCloud;
         }
