@@ -2,6 +2,7 @@ using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public abstract class Talent : NetworkBehaviour
@@ -39,7 +40,8 @@ public class TalentSystem : NetworkBehaviour
 
     public void Initialize()
     {
-        _panel = TalentManager.Instance.AddPanel(this);
+	    if(SceneManager.GetActiveScene().buildIndex == 1) 
+		    _panel = TalentManager.Instance.AddPanel(this);
     }
     public void AddPoints(int value)
     {
