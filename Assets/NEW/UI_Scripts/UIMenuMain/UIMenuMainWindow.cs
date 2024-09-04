@@ -7,6 +7,7 @@ public class UIMenuMainWindow : MonoBehaviour
     [SerializeField] private UIMenuMainTalentsPanel _talentsPanel;
     [SerializeField] private UIMenuMainCharactersPanel _charactersPanel;
     [SerializeField] private UIMenuMainGameTypesPanel _gameTypesPanel;
+    [SerializeField] private UIMenuMainSavesPanel _savesPanel;
 
     private void Start()
     {
@@ -25,6 +26,9 @@ public class UIMenuMainWindow : MonoBehaviour
 
         _gameTypesPanel.Owner = this;
         _gameTypesPanel.Show();
+
+        _savesPanel.Owner = this;
+        _savesPanel.Show();
         
         UpdateCharacterPanels();
     }
@@ -33,18 +37,14 @@ public class UIMenuMainWindow : MonoBehaviour
     {
         var currentHero = hero;
         
-        /*var heroData = SaveManager.Instance.SelectHero(hero.Data.ID);
-        
-        if (heroData != null)
-        {
-            currentHero.Initialize();
-        }
-        else
-        {
-            SaveManager.Instance.AddHeroToSave(hero);
-            currentHero.Initialize();
-        }*/
+        SaveManager.Instance.SetHero(currentHero);
         currentHero.Initialize();
+        UpdateCharacterPanels();
+    }
+
+    public void SetHeroSaveIndex(int index)
+    {
+        SaveManager.Instance.SetSaveIndex(index);
         UpdateCharacterPanels();
     }
 

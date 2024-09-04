@@ -1,130 +1,71 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
+using System.Linq;
 using UnityEngine;
 
 public class SaveManager : MonoBehaviour
 {
     private static SaveManager _instance;
     public static SaveManager Instance => _instance;
-    
-    private string saveFilePath;
-    private CharacterData currentHero;
 
+    private Character _character;
+    private int _currentSaveGroup = 0;
+    
     void Awake()
     {
-        if (_instance == null) 
+        if (_instance == null)
         {
             _instance = this;
-        } 
-        
-        saveFilePath = Path.Combine(Application.persistentDataPath, "saveData.json");
-    }
-    
-    public CharacterData SelectHero(int heroId)
-    {
-        currentHero = LoadHero(heroId);
-        return currentHero;
-    }
-    
-    public void AddHeroToSave(HeroComponent hero)
-    {
-        CharacterData newHeroData = hero.Data;
-        List<CharacterData> heroes = LoadData();
-        heroes.Add(newHeroData);
-        SaveData(heroes);
-    }
-
-    public void SaveData(List<CharacterData> heroes)
-    {
-        string json = JsonUtility.ToJson(new SaveData(heroes), true);
-        File.WriteAllText(saveFilePath, json);
-    }
-    
-    public void SaveCurrentHeroData()
-    {
-        if (currentHero != null)
-        {
-            List<CharacterData> heroes = LoadData();
-            
-            int index = heroes.FindIndex(h => h.ID == currentHero.ID);
-            if (index >= 0)
-            {
-                heroes[index] = currentHero;
-            }
-            else
-            {
-                heroes.Add(currentHero);
-            }
-            SaveData(heroes);
-        }
-        else
-        {
-            Debug.LogWarning("No hero selected to save.");
         }
     }
 
-    private CharacterData LoadHero(int heroId)
+    public void SetHero(Character hero)
     {
-        List<CharacterData> heroes = LoadData();
-        
-        return heroes.Find(h => h.ID == heroId);
+        _character = hero;
+        LoadData();
+    }
+
+    public void SetSaveIndex(int index)
+    {
+        _currentSaveGroup = index;
+        LoadData();
+    }
+
+    public void SaveData()
+    {
+        PlayerPrefs.SetInt(_character.Data.Name, _character.Data.ID);
+
+        foreach (var t in _character.Data.Attributes.AttributeData)
+        {
+            PlayerPrefs.SetInt(_character.Data.Name + t.Name + "_Points", t.Points);
+        }
+
+        PlayerPrefs.Save();
+    }
+
+    public void AddAttribute(int index, int points)
+    {
+        var currentPoints = GetAttributeValue(index);
+        PlayerPrefs.SetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_" + _character.Data.Attributes.AttributeData.FirstOrDefault(o => o.Id == index)?.Name + "_Points", currentPoints + points);
+        PlayerPrefs.Save();
     }
     
-    public List<CharacterData> LoadData()
+    public int GetAttributeValue(int index)
     {
-        if (File.Exists(saveFilePath))
-        {
-            string json = File.ReadAllText(saveFilePath);
-            SaveData saveData = JsonUtility.FromJson<SaveData>(json);
-        
-            if (saveData == null)
-            {
-                Debug.LogError("Failed to load save data. Returning default heroes.");
-                return GetDefaultHeroes();
-            }
-
-            if (saveData.Heroes == null)
-            {
-                Debug.LogWarning("Loaded hero list is null. Returning default heroes.");
-                return GetDefaultHeroes();
-            }
-
-            if (saveData.Heroes.Count == 0)
-            {
-                Debug.LogWarning("Loaded hero list is empty. Returning default heroes.");
-                return GetDefaultHeroes();
-            }
-
-            return saveData.Heroes;
-        }
-        else
-        {
-            return GetDefaultHeroes();
-        }
+       return PlayerPrefs.GetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_" + _character.Data.Attributes.AttributeData.FirstOrDefault(o => o.Id == index)?.Name + "_Points", 0);
+    }
+    
+    public void SaveTalent(int indexGroup, int index, bool isActive)
+    {
+        var points = isActive ? 1 : 0;
+        PlayerPrefs.SetInt(_character.Data.Name + _character.Data.Talents[indexGroup].TalentsData[index].Name, points);
+        PlayerPrefs.Save();
     }
 
-    private List<CharacterData> GetDefaultHeroes()
+    public void LoadData()
     {
-        List<CharacterData> defaultHeroes = new List<CharacterData>();
-        
-        CharacterData hero = ScriptableObject.CreateInstance<CharacterData>();
-        
-        //hero.SetToDefault();
-
-        defaultHeroes.Add(hero);
-
-        return defaultHeroes;
-    }
-}
-
-[Serializable]
-public class SaveData
-{
-    public List<CharacterData> Heroes;
-
-    public SaveData(List<CharacterData> heroes)
-    {
-        Heroes = heroes;
+        foreach (var t in _character.Data.Attributes.AttributeData)
+        {
+            int savedPoints = PlayerPrefs.GetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_" + t.Name + "_Points", 0);
+            t.Points = savedPoints;
+        }
     }
 }

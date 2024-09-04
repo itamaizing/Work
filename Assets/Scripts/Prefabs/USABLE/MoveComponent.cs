@@ -69,6 +69,7 @@ public class MoveComponent : NetworkBehaviour
 		}
 	}
 	
+	[Client]
 	private void FixedUpdate()
 	{
 		CmdMove(MoveDirection, _currentSpeed);

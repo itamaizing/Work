@@ -24,31 +24,31 @@ MonoBehaviour:
       Points: 0
       DefaultValue: 0
       Icon: {fileID: 0}
-      IsVisible: 0
+      IsVisible: 1
     - Id: 1002
       Name: Mana
       Points: 0
       DefaultValue: 0
       Icon: {fileID: 0}
-      IsVisible: 0
+      IsVisible: 1
     - Id: 1003
       Name: Energy
       Points: 0
       DefaultValue: 0
       Icon: {fileID: 0}
-      IsVisible: 0
+      IsVisible: 1
     - Id: 1004
       Name: Rune
       Points: 0
       DefaultValue: 0
       Icon: {fileID: 0}
-      IsVisible: 0
+      IsVisible: 1
     - Id: 1005
       Name: Speed
       Points: 0
       DefaultValue: 7
       Icon: {fileID: 0}
-      IsVisible: 0
+      IsVisible: 1
     - Id: 1006
       Name: HPRegen
       Points: 0
