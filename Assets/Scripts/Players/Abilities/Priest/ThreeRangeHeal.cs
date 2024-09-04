@@ -202,7 +202,7 @@ public class ThreeRangeHeal : AbilityBase
 
                 if (heal > 0)
                 {
-                    _player.GetComponent<Mana>().Add(heal);
+                    _player.GetComponent<Runes>().Add(heal);
                 }
             }*/
         }

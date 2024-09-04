@@ -12,4 +12,5 @@ public class AbilityInfo : ScriptableObject
     public string Name => _name;
     public string Description => _description;
     public Sprite Icon => _icon;
+    
 }

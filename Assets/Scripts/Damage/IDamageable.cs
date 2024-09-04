@@ -13,6 +13,6 @@ public struct Damage : NetworkMessage
 
 public interface IDamageable
 {
-    public event Action<float, DamageType> DamageTaked;
+    public event Action<float, DamageType> DamageTaken;
     public bool TryTakeDamage(ref Damage damage, Skill skill);
 }

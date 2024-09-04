@@ -105,7 +105,6 @@ public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHa
     {
         _castLine.gameObject.SetActive(true);
         _castLine.StartFill(time, 1, 0);
-       // StartCoroutine(CastLineCoroutine());
     }
 
     private void OnStopStreaming()
@@ -118,7 +117,6 @@ public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHa
     {
         _castLine.gameObject.SetActive(true);
         _castLine.StartFill(time);
-        //StartCoroutine(CastLineCoroutine());
     }
 
     private void OnStopCastDeley()
@@ -126,17 +124,7 @@ public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHa
         _castLine.gameObject.SetActive(false);
         _castLine.Stop();
     }
-    /*
-    private IEnumerator CastLineCoroutine()
-    {
-        while (_castLine.enabled)
-        {
-            _castLine.transform.position = _ability.transform.position + new Vector3(0, -1.7f, 0);
-
-            yield return null;
-        }
-    }
-    */
+    
     private void SubscribingSkillOnEvents(Skill ability)
     {
         ability.CastStreamStarted += OnStartStreaming;

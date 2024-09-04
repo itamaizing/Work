@@ -40,9 +40,9 @@ public class BlockOfIceProjectile : Projectiles
 		//damage, freez etc
 		if (collision.TryGetComponent<Character>(out var target))
 		{
-			//float duration = 1 + dad.Stamina.Value / 20;
+			//float duration = 1 + dad.Runes.Value / 20;
 			float duration = 9;
-			//target.CharacterState.energy = dad.Stamina;
+			//target.CharacterState.energy = dad.Runes;
 			float curDamage = 20 + Random.Range(0, 10);
 			Energy energyLink = (Energy)_dad.Stamina;
 			if (target.CharacterState.CheckForState(States.Frozen))
@@ -57,7 +57,7 @@ public class BlockOfIceProjectile : Projectiles
 			//target.CharacterState.AddState(new Cooling(), duration, 0, States.Cooling);
 			target.CharacterState.CmdAddState(States.Cooling, duration, 0, _dad.gameObject, _skill.name);
 
-			//dad.Stamina.Use(duration * 20);
+			//dad.Runes.Use(duration * 20);
 			//damage
 			GetComponent<Collider2D>().enabled = false;
 		}

@@ -259,7 +259,7 @@ public abstract class AbilityBase : MonoBehaviour
 				{
 					if (collider.gameObject == transform.parent.gameObject && CanDoAbilityOnMyself == false) continue;
 					
-						//collider.GetComponent<UIPlayerComponents>().ChangeSelection();
+						//collider.GetComponent<UIComponent>().ChangeSelection();
 						_enemies.Add(collider.gameObject);
 						collider.transform.GetChild(0).GetComponent<ControllerCircleBackgroundColor>()
 							.SetColorCircleBackgroundPlayer(collider);					

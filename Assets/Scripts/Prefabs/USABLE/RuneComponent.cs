@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RuneComponent : Resource
+public class RuneComponent : StaminaComponent
 {
 	//private Ability _lastUsedAbility = null;
 	//private int _multiplier = 1;
@@ -11,36 +11,55 @@ public class RuneComponent : Resource
 
 	private List<AbilityTimer> _abilities = new List<AbilityTimer>();
 	private bool _disableMultiplier = false;
-	private float _lastUsedRuneValue = 0;
-	/*private void Update()
+	private void Update()
 	{
+		Regen();
 		Timer();
-	}*/
-	public bool RemoveRune(float runeValue, Skill usedAbility) 
+		//if (!_multiplyCost) return;
+
+		/*_timer += Time.deltaTime;
+		if (_timer > _regenerationDelay)
+		{
+			_timer = 0;
+			_multiplyCost = false;
+			_multiplier = 1;
+			_lastUsedAbility = null;
+		}*/
+	}
+
+	public override void Add(float runeValue)
+	{
+		_value += runeValue;
+		if (_value > _maxValue)
+		{
+			_value = _maxValue;
+		}
+		UpdateBar();
+	}
+	
+	public bool RemoveRune(float runeValue, Ability usedAbility) 
 	{
 		if(_abilities.Count > 0)
 		{			
 			for(int i = 0; i < _abilities.Count; i++)
 			{
-				if (_disableMultiplier && CurrentValue >= runeValue * _abilities[i].multiplier && _abilities[i].ability == usedAbility)
+				if (_disableMultiplier && _value >= runeValue * _abilities[i].multiplier)
 				{
-					CurrentValue -= runeValue * _abilities[i].multiplier;
-					//Debug.Log("Used rune " + runeValue * _skills[i].multiplier);
-					_lastUsedRuneValue = runeValue * _abilities[i].multiplier;
+					_value -= runeValue * _abilities[i].multiplier;
+					UpdateBar();
 					_disableMultiplier = false;
 					return true;
 				}
-				if (_abilities[i].ability == usedAbility && CurrentValue >= runeValue * _abilities[i].multiplier * 2)
+				if (_abilities[i].ability == usedAbility && _value >= runeValue * _abilities[i].multiplier * 2)
 				{
 					_abilities[i].multiplier *=2;
 
 					runeValue *= _abilities[i].multiplier;
 
-					CurrentValue -= runeValue;
-					//Debug.Log("Used rune " + runeValue * _skills[i].multiplier);
+					_value -= runeValue;
+					UpdateBar();
 					//_multiplyCost = true;
 					_abilities[i].time = 6;
-					_lastUsedRuneValue = runeValue;
 					return true;
 				}				
 			}
@@ -48,7 +67,7 @@ public class RuneComponent : Resource
 		}
 		else
 		{
-			if(CurrentValue >= runeValue)
+			if(_value >= runeValue)
 			{
 				AbilityTimer abilityTimer = new AbilityTimer();
 				abilityTimer.time = 6;
@@ -56,8 +75,8 @@ public class RuneComponent : Resource
 				abilityTimer.ability = usedAbility;
 				_abilities.Add(abilityTimer);
 				_disableMultiplier = false;
-				CurrentValue -= runeValue;
-				_lastUsedRuneValue = runeValue;
+				_value -= runeValue;
+				UpdateBar();
 				return true;
 			}
 			else 
@@ -65,13 +84,32 @@ public class RuneComponent : Resource
 				return false;
 			}
 		}
+
+		/*if(_lastUsedAbility == usedAbility && _value >= runeValue*_multiplier * 2)
+		{
+			_multiplier *= 2;
+		}
+		runeValue *= _multiplier;
+		if(_value >= runeValue)
+		{
+			_lastUsedAbility = usedAbility;
+			_value -= runeValue;
+			UpdateBar();
+			_multiplyCost = true;
+			_timer = 0;
+			return true;
+		}
+		else
+		{
+			return false;
+		}*/
 	}
 
-	/*public override bool TryUse(float EnergyValue)
+	public override bool TryUse(float EnergyValue)
 	{
-		Debug.LogError("ERROR!!! You are using Rune instead of Mana or Energy!!!!");
+		Debug.LogError("ERROR!!! You are using Rune instead of Runes or Runes!!!!");
 		return false;
-	}*/
+	}
 
 	public void SwitchMultiplier(bool value)
 	{
@@ -80,35 +118,21 @@ public class RuneComponent : Resource
 
 	private void Timer()
 	{
-		if(_abilities != null)
-		
-		for(int i = _abilities.Count - 1; i >= 0; i--) 
-			{
-				_abilities[i].time -= Time.deltaTime;
-				if (_abilities[i].time <= 0)
-				{
-					_abilities.Remove(_abilities[i]);
-				}
-			}
-		/*foreach (var ability in _skills) 
+		if(_abilities !=null)
+		foreach (var ability in _abilities) 
 		{
 			ability.time-=Time.deltaTime;
 			if(ability.time <= 0 )
 			{
-				_skills.Remove(ability);
+				_abilities.Remove(ability);
 			}
-		}*/
-	}
-	public void IceCloudBonus()
-	{
-		CurrentValue += _lastUsedRuneValue;
-		_lastUsedRuneValue = 0;
+		}
 	}
 }
 
 public class AbilityTimer
 {
-	public Skill ability;
+	public Ability ability;
 	public float time;
 	public float multiplier;
 }

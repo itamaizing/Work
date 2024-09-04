@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Scripts/Players/Abilities/CreeperPoison/TestEnemyPrefab (Можно удалить).meta
 guid: 7df56bb52d2d9b44895acbcb71a17261
+========
+guid: bc7a17f0e0107424f92783d41d9c2ba8
+>>>>>>>> main:Assets/Prefabs/UI/Bar.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

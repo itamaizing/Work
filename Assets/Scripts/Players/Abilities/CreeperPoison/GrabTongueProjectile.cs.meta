@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Scripts/Players/Abilities/CreeperPoison/GrabTongueProjectile.cs.meta
 guid: 98ab8a1d97bc5874997d40577d4898cc
+========
+guid: 2d6697fbefaef0748a73dfa2f71b3de2
+>>>>>>>> main:Assets/Scripts/Players/BaffDebaff/Priest/Damage1.cs.meta
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2

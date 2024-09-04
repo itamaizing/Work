@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Prefabs/UI/MagicDefenseIco.prefab.meta
 guid: 93493abdb86d1654780b765e7cd31df4
+========
+guid: 6e77d80ce968d1b4b924b2fb512143b2
+>>>>>>>> main:Assets/Prefabs/UI/Bar/Bar.prefab.meta
 PrefabImporter:
   externalObjects: {}
   userData: 

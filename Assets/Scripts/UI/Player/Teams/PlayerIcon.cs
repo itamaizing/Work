@@ -13,7 +13,7 @@ public class PlayerIcon : MonoBehaviour
 
     public void Init(Character character)
     {
-        _playerIcon.sprite = character.CharacterData.Icon;
+        _playerIcon.sprite = character.Data.Icon;
         _playerHp.Init(character.Health);
         _playerMana.Init(character.Stamina);
     }
@@ -40,7 +40,7 @@ public class PlayerIcon : MonoBehaviour
     {
         _icon.SetActive(true);
 
-        _playerIcon.sprite = character.CharacterData.Icon;
+        _playerIcon.sprite = character.Data.Icon;
         _playerHp.Init(character.Health);
         _playerMana.Init(character.Stamina);
     }

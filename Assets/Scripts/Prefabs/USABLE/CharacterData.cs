@@ -1,37 +1,60 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "PlayerData", menuName = "ScriptableObjects/Player", order = 1)]
+[Serializable]
 public class CharacterData : ScriptableObject
 {
+    [SerializeField] private int _id;
     [SerializeField] private string _name;
     [SerializeField] private string _description;
     [SerializeField] private Sprite _icon;
     [SerializeField] private float _iconSize;
-    [SerializeField] private float _health;
-    [SerializeField] private HealthInfo _healthInfo;
-    [SerializeField] private float _stamina;
-    [SerializeField] private float _moveSpeed;
-    [SerializeField] private float _defaultHealthRegen;
-    [SerializeField] private float _defaultStaminaRegen;
-    [SerializeField] private float _defaultHpRegenDelay;
-    [SerializeField] private float _defaultStaminaRegenDalay;
-    [SerializeField] private float _visionRadius;
+    [SerializeField] private AttributeGroup _attributes;
+    [SerializeField] private List<TalentsGroup> _talents;
+    [SerializeField] private HealthInfo statsInfo;
 
-
+    public int ID => _id;
     public string Name => _name;
     public string Description => _description;
     public Sprite Icon => _icon;
     public float IconSize => _iconSize;
-    public float Health => _health;
-    public HealthInfo HealthInfo => _healthInfo;
-    public float Stamina => _stamina;
-    public float MoveSpeed => _moveSpeed;
-    public float HealthRegen => _defaultHealthRegen;
-    public float StaminaRegen => _defaultStaminaRegen;
-    public float RegenDelay => _defaultHpRegenDelay;
-    public float StaminaRegenDelay => _defaultStaminaRegenDalay;
-    public float VisionRadius => _visionRadius;
+    
+    public HealthInfo StatsInfo => statsInfo;
+    public AttributeGroup Attributes => _attributes;
+    public List<TalentsGroup> Talents => _talents;
+    
+    public void Initialize(int id, string name, AttributeGroup attributeList, List<TalentsGroup> talentsList)
+    {
+        _id = id;
+        _name = name;
+        _attributes = attributeList;
+        _talents = talentsList;
+    }
+
+    public float GetAttributeValue(string attributeName)
+    {
+        var attribute = _attributes.AttributeData.FirstOrDefault(o => o.Name == attributeName);
+        return attribute?.DefaultValue ?? 0f;
+    }
+
+    public void SetToDefault()
+    {
+        _id = 10001;
+        _name = "default";
+
+        foreach (var attribute in Attributes.AttributeData)
+        {
+            attribute.Points = 0;
+        }
+
+        foreach (var talent in Talents.SelectMany(talentGroup => talentGroup.TalentsData))
+        {
+            talent.IsOpen = false;
+        }
+    }
 }
 
 public static class Positions
@@ -46,6 +69,110 @@ public static class Positions
         new Vector2(-3, 0),
         new Vector2(-3, -3),
         new Vector2(3,-3),
-        new Vector2(3,-3)
+        new Vector2(-3,3)
     };
+}
+
+[Serializable]
+public class Attribute
+{
+    public int Id;
+    public string Name;
+    public int Points;
+    
+    public float DefaultValue;
+    public Sprite Icon;
+    
+    public bool IsVisible = false;
+
+    public Attribute(int id, string name, int points)
+    {
+        Id = id;
+        Name = name;
+        Points = points;
+    }
+}
+
+public static class AttributeNames
+{
+    public const string Health = "Health";
+    public const string Mana = "Mana";
+    public const string Energy = "Energy";
+    public const string Rune = "Rune";
+    public const string Speed = "Speed";
+    public const string HpRegen = "HPRegen";
+    public const string ManaRegen = "ManaRegen";
+    public const string EnergyRegen = "EnergyRegen";
+    public const string RuneRegen = "RuneRegen";
+    public const string HpRegenDelay = "HPRegenDelay";
+    public const string ManaRegenDelay = "ManaRegenDelay";
+    public const string EnergyRegenDelay = "EnergyRegenDelay";
+    public const string RuneRegenDelay = "RuneRegenDelay";
+    public const string VisionRadius = "VisionRadius";
+    public const string PhysicResist = "PhysicResist";
+    public const string MagicResist = "MagicResist";
+    public const string MeleeEvade = "MeleeEvade";
+    public const string RangeEvade = "RangeEvade";
+    public const string MagicEvade = "MagicEvade";
+    public const string PhysicAbsorb = "PhysicAbsorb";
+    public const string MagicAbsorb = "MagicAbsorb";
+}
+
+[Serializable]
+public class AttributeGroup
+{ 
+    [SerializeField] private List<Attribute> attributesGroup = new()
+    {
+        new Attribute(1001, AttributeNames.Health, 0),
+        new Attribute(1002, AttributeNames.Mana, 0),
+        new Attribute(1003, AttributeNames.Energy, 0),
+        new Attribute(1004, AttributeNames.Rune, 0),
+        new Attribute(1005, AttributeNames.Speed, 0),
+        new Attribute(1006, AttributeNames.HpRegen, 0),
+        new Attribute(1007, AttributeNames.ManaRegen, 0),
+        new Attribute(1008, AttributeNames.EnergyRegen, 0),
+        new Attribute(1009, AttributeNames.RuneRegen, 0),
+        new Attribute(1010, AttributeNames.HpRegenDelay, 0),
+        new Attribute(1011, AttributeNames.ManaRegenDelay, 0),
+        new Attribute(1012, AttributeNames.EnergyRegenDelay, 0),
+        new Attribute(1013, AttributeNames.RuneRegenDelay, 0),
+        new Attribute(1014, AttributeNames.VisionRadius, 0),
+        new Attribute(1015, AttributeNames.PhysicResist, 0),
+        new Attribute(1016, AttributeNames.MagicResist, 0),
+        new Attribute(1017, AttributeNames.MeleeEvade, 0),
+        new Attribute(1018, AttributeNames.RangeEvade, 0),
+        new Attribute(1019, AttributeNames.MagicEvade, 0),
+        new Attribute(1020, AttributeNames.PhysicAbsorb, 0),
+        new Attribute(1021, AttributeNames.MagicAbsorb, 0)
+    };
+    
+    public List<Attribute> AttributeData => attributesGroup;
+}
+
+[Serializable]
+public class TalentData
+{
+    public int Id;
+    public string Name;
+    public bool IsOpen;
+
+    public Sprite Icon;
+
+    public TalentData(int id, string name, bool isOpen)
+    {
+        Id = id;
+        Name = name;
+        IsOpen = isOpen;
+    }
+}
+
+[Serializable]
+public class TalentsGroup
+{
+    [SerializeField] private string _name;
+    [SerializeField] private List<TalentData> _talentGroup;
+
+    public string Name => _name;
+    public List<TalentData> TalentsData => _talentGroup;
+    public int TalentsCount => TalentsData.Count;
 }

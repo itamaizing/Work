@@ -37,7 +37,7 @@ public class Obscurity : MonoBehaviour
     {
         _player = transform.parent.gameObject;
         _playerAbility = _player.transform.Find("Abilities").gameObject;
-        _originalSpeed = _player.GetComponent<CharacterData>().MoveSpeed;
+        _originalSpeed = _player.GetComponent<CharacterData>().GetAttributeValue(AttributeNames.Speed);
 
         _firstAbility = _playerAbility.GetComponent<OneMeleeAttack>();
         _secondAbility = _playerAbility.GetComponent<TwoMeleeAttack>();

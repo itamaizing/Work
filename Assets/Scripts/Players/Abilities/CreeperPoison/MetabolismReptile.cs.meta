@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Scripts/Players/Abilities/CreeperPoison/MetabolismReptile.cs.meta
 guid: 171d1ae5fdc10c54380015ddae5bd2b6
+========
+guid: 04a32c9096d066945864c8dff3c0ab74
+>>>>>>>> main:Assets/Scripts/Players/Resources/Health/New/Health.cs.meta
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
