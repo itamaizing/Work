@@ -3503,10 +3503,8 @@ MonoBehaviour:
   - {fileID: 1410414307}
   - {fileID: 1054432932}
   _heroList:
-  - {fileID: 8468544467696250796, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
-  - {fileID: 1563676885133033940, guid: cbfb4777e45b41a4d9cb20bcbfe66715, type: 3}
-  - {fileID: 8468544467696250796, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
   - {fileID: 8191609785747737368, guid: 64886c26381f2c54c85fe43a25e0fb39, type: 3}
+  - {fileID: 8468544467696250796, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
 --- !u!4 &1710071150
 Transform:
   m_ObjectHideFlags: 0
