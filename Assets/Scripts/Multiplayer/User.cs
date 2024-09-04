@@ -10,6 +10,9 @@ public class User : NetworkBehaviour
     [Client]
     private void Awake()
     {
+        if (Instance != null)
+            Debug.LogError("2 Users on client?!");
+
         Instance = this;
     }
 }
