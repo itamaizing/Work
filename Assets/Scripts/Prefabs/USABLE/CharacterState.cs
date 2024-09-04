@@ -2795,54 +2795,54 @@ public class CharacterState : NetworkBehaviour
 		RemoveStateLogic(stateName);
 	}
 
-	private void AddStateLogic(States state, float duration, float damageToExit, Schools school, GameObject personWhoShooted, string skillName)
-	{
-		//Debug.Log("Add state logic");
-		if (Invinsible)
-			return;
-		if (CheckForState(state))
-		{
-			for(int i = 0; i < _currentStates.Count; i++)
-			{
-				if (_currentStates[i].State != state) continue;
+    private void AddStateLogic(States state, float duration, float damageToExit, Schools school, GameObject personWhoShooted, string skillName)
+    {
+        Debug.Log("Add state logic");
+        if (invinsible)
+            return;
+        if (CheckForState(state))
+        {
+            for (int i = 0; i < _currentStates.Count; i++)
+            {
+                if (_currentStates[i].State != state) continue;
 
-				if (_currentStates[i].Stack(duration))
-				{
-					_stateIcons.ActivateIco(state, duration, 1);
-				}
-				else
-				{
-					CreateState(EnumToState[state], state, duration, damageToExit, personWhoShooted, skillName);
-					break;
-					//nothing at this time??
-				}
-			}
-		}
-		else
-		{
-			CreateState(EnumToState[state], state, duration, damageToExit, personWhoShooted, skillName);
+                if (_currentStates[i].Stack(duration))
+                {
+                    _stateIcons.ActivateIco(state, duration, 1, true);
+                }
+                else
+                {
+                    CreateState(EnumToState[state], state, duration, damageToExit, personWhoShooted, skillName, false);
+                    break;
+                    //nothing at this time??
+                }
+            }
+        }
+        else
+        {
+            CreateState(EnumToState[state], state, duration, damageToExit, personWhoShooted, skillName, false);
 
-        	if (school != Schools.None)
-        	{
-        		var counterSpell = (AbilitySchoolDebuff)EnumToState[state];
-        		counterSpell.canceledSchoool = school;
-        	}
+            if (school != Schools.None)
+            {
+                var counterSpell = (AbilitySchoolDebuff)EnumToState[state];
+                counterSpell.canceledSchoool = school;
+            }
         }
     }
 
-	private void CreateState(AbstractCharacterState state, States stateName, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
-	{
-		_stateIcons.ActivateIco(stateName, duration, 1);
-		_currentStates.Add(state);
-		if (personWhoShooted.TryGetComponent<Character>(out var character))
-		{
-			_currentStates[_currentStates.Count - 1].EnterState(this, duration, damageToExit, character, skillName);
-		}
-		else
-		{
-			_currentStates[_currentStates.Count - 1].EnterState(this, duration, damageToExit, null, skillName);
-		}
-	}
+    private void CreateState(AbstractCharacterState state, States stateName, float duration, float damageToExit, GameObject personWhoShooted, string skillName, bool stack)
+    {
+        _stateIcons.ActivateIco(stateName, duration, 1, stack);
+        _currentStates.Add(state);
+        if (personWhoShooted.TryGetComponent<Character>(out var character))
+        {
+            _currentStates[_currentStates.Count - 1].EnterState(this, duration, damageToExit, character, skillName);
+        }
+        else
+        {
+            _currentStates[_currentStates.Count - 1].EnterState(this, duration, damageToExit, null, skillName);
+        }
+    }
 }
 
 public enum StateType

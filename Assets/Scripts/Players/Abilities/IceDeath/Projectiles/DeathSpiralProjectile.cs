@@ -117,7 +117,7 @@ public class DeathSpiralProjectile : Projectiles
 			}
 			if(_talentChragesPlague)
 			{
-				//target.CharacterState.personWhoShoted = _dad;
+				//target.CharacterState.personWhoShoted = _player;
 			}
 			if(_talentSuperCharge)
 			{
@@ -144,7 +144,7 @@ public class DeathSpiralProjectile : Projectiles
 			}
 			if (_talentChragesPlague)
 			{
-				//target.CharacterState.personWhoShoted = _dad;
+				//target.CharacterState.personWhoShoted = _player;
 			}
 			if (_talentSuperCharge)
 			{

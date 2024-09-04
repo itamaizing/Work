@@ -58,7 +58,7 @@ public class IcePuddleObject : Projectiles
 			if (_talentActive)
 			{
 				Debug.LogError("fix");
-				//_dad.Health.SetEvadeAll(-3);
+				//_player.Health.SetEvadeAll(-3);
 			}
 		}
 	}
@@ -97,7 +97,7 @@ public class IcePuddleObject : Projectiles
 			if (_talentActive)
 			{
 				Debug.LogError("fix");
-				//_dad.Health.SetEvadeAll(3);
+				//_player.Health.SetEvadeAll(3);
 			}
 			_enemies.Add(target.CharacterState);
 		}

@@ -36,6 +36,8 @@ public class PoisonCloudDisplay : NetworkBehaviour
 
     public void AddStack()
     {
+        Debug.Log($"PoisonCloudDisplay / AddStack / PoisonHealingCloud = {PoisonHealingCloud}");
+        Debug.Log($"PoisonCloudDisplay / AddStack / PoisonDamagingCloud = {PoisonDamagingCloud}");
         if (_currentStacks < _maxStacks)
         {
             _currentStacks++;
@@ -69,11 +71,12 @@ public class PoisonCloudDisplay : NetworkBehaviour
 
     private void UpdateInstancePoisonCloud()
     {
+        Debug.Log("UpdateInstancePoisonCloud / particleSystem");
         if (_instancePoisonCloud != null)
         {
             _instancePoisonCloud.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             ParticleSystem.MainModule main = _instancePoisonCloud.main;
-            main.duration = _duration;
+            main.duration = _baseDuration;
             _instancePoisonCloud.Play();
         }
     }
@@ -84,6 +87,9 @@ public class PoisonCloudDisplay : NetworkBehaviour
         {
             _instancePoisonCloud.transform.position = _dad.transform.position;
         }
+        Debug.Log($"PoisonCloudDisplay / Update / instancePoisonCloud = {_instancePoisonCloud}");
+        Debug.Log($"PoisonCloudDisplay / Update / PoisonHealingCloud = {PoisonHealingCloud}");
+        Debug.Log($"PoisonCloudDisplay / Update / PoisonDamagingCloud = {PoisonDamagingCloud}");
     }
 
     private IEnumerator ActivatePoisonCloud()
@@ -94,30 +100,27 @@ public class PoisonCloudDisplay : NetworkBehaviour
 
     private IEnumerator LifeTimeStacks()
     {
-        _duration = _baseDuration;
-        //Debug.Log("PoisonCloudDisplay / LifeTimeStacks");
-
+        Debug.Log("LifeTimeStacks");
+        Debug.Log($"PoisonCloudDisplay / LifeTimeStacks / before while and yield return - instancePoisonCloud = {_instancePoisonCloud}");
+        yield return new WaitForSecondsRealtime(_duration);
+        Debug.Log("PoisonCloudDisplay / LifeTimeStacks");
         while (_currentStacks > 0)
         {
-            yield return new WaitForSecondsRealtime(_duration);
             _currentStacks = 0;
-            //Debug.Log($"PoisonCloudDisplay / LifeTimeStacks / after yield return / currentStacks = {_currentStacks}");
         }
+        Debug.Log($"PoisonCloudDisplay / LifeTimeStacks / after while / currentStacks = {_currentStacks}");
+        Debug.Log($"PoisonCloudDisplay / LifeTimeStacks / after while / instancePoisonCloud = {_instancePoisonCloud}");
 
-        if (_currentStacks == 0)
-        {
-            if (_instancePoisonCloud != null)
-            {
-                _instancePoisonCloud.Stop();
-                Destroy(_instancePoisonCloud.gameObject);
-                _instancePoisonCloud.transform.parent = null;
-                _instancePoisonCloud = null;
-            }
-            PoisonHealingCloud = null;
-            PoisonDamagingCloud = null;
-            StopAllCoroutines();
-            Destroy(gameObject);
-        }
+        _instancePoisonCloud.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        StopAllCoroutines();
+        NetworkServer.Destroy(_instancePoisonCloud.gameObject);
+        NetworkServer.Destroy(gameObject);
+
+        _instancePoisonCloud = null;
+        PoisonHealingCloud = null;
+        PoisonDamagingCloud = null;
+
+        Debug.Log($"PoisonCloudDisplay / LifeTimeStacks / after nulls / instancePoisonCloud = {_instancePoisonCloud}");
     }
 
 }

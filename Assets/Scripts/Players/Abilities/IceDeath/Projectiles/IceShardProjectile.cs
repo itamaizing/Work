@@ -60,7 +60,7 @@ public class IceShardProjectile : Projectiles
 			}
 			if(_talentChragesPlague)
 			{
-				//target.CharacterState.personWhoShoted = _dad;
+				//target.CharacterState.personWhoShoted = _player;
 			}
 			//dad.Stamina.Use(duration * 20);
 			GetComponent<Collider2D>().enabled = false;

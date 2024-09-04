@@ -105,7 +105,7 @@ public class PhysicalAttack : AutoAttackSkill
 	private void PushBackEnemy(Character enemy)
 	{
 		/*Debug.Log("Push");
-		Vector2 pushPos = (_dad.Rb.position - enemy.Rb.position).normalized;
+		Vector2 pushPos = (_player.Rb.position - enemy.Rb.position).normalized;
 		Vector2 endPos = -pushPos * 2;
 		//enemy.PlayerMove.CanMove = false;
 		//Debug.DrawLine(enemy.Rb.position, enemy.Rb.position + endPos * 10, Color.red, Mathf.Infinity);

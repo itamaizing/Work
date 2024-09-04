@@ -116,7 +116,7 @@ public class IceShadowObject : Projectiles
 		_hp += hp;
 		StartCoroutine(DestroyAliveShadow());
 		//_destroyObj.*/
-		//_dad.SpawnComponent.SpawnUnit();
+		//_player.SpawnComponent.SpawnUnit();
 		Destroy(gameObject);
 	}
 

@@ -16,6 +16,7 @@ public class SpitPoison : Skill
 
     [SerializeField] private PoisonCloudDisplay _prefabPoisonDamagingCloud;
     [SerializeField] private PoisonCloudDisplay _prefabPoisonHealingCloud;
+
     [SerializeField] private PoisonCloudDisplay _poisonHealingCloud;
     [SerializeField] private PoisonCloudDisplay _poisonDamagingCloud;
 
@@ -279,7 +280,7 @@ public class SpitPoison : Skill
                 _poisonDamagingCloud.PoisonDamagingCloud.AddStack();
             }
         }
-        RpcApplyCloudPoisons(_poisonDamagingCloud.PoisonDamagingCloud, _poisonHealingCloud.PoisonHealingCloud, isActiveTalent, isHealingCloud);
+        RpcApplyCloudPoisons(_poisonDamagingCloud, _poisonHealingCloud, isActiveTalent, isHealingCloud);
     }
 
     #endregion
@@ -307,7 +308,7 @@ public class SpitPoison : Skill
         {
             damageCloud.InitializationPrefab(_player, 6f, 3.5f, 5);
             damageCloud.AddStack();
-           // Debug.Log("RpcPoisonDamagingCloud / if dmgCloud / AddStack");
+            //Debug.Log("RpcPoisonDamagingCloud / if dmgCloud / AddStack");
         }
         if (healCloud != null)
         {

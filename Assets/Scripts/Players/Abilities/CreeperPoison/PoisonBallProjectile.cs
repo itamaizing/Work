@@ -26,8 +26,8 @@ public class PoisonBallProjectile : NetworkBehaviour
     #region FloatVariables
 
     private float _energyDad;
-    private float _fastMovementSpeed = 0.6f;
-    private float _slowMovementSpeed = 1.7f;
+    private float _fastMovementSpeed = 0.425f;
+    private float _slowMovementSpeed = 0.85f;
     private float _distancePush = 1.0f;
     private float _maxDistance = 6f;
     private float _durationPush = 1.2f;
@@ -207,7 +207,7 @@ public class PoisonBallProjectile : NetworkBehaviour
     {
         while (true)
         {
-            transform.position += direction * (speed * 15f) * Time.deltaTime;
+            transform.position += direction * (speed * 10f) * Time.deltaTime;
             if (Vector3.Distance(transform.position, _player.transform.position) > _maxDistance * GlobalVariable.cellSize)
             {
                 DestroyProjectile();

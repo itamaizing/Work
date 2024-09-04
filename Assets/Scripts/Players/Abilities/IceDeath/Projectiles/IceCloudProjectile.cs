@@ -10,7 +10,7 @@ public class IceCloudProjectile : Projectiles
 
 	private void Awake()
 	{
-		//_dad = dadGm.GetComponent<Character>();
+		//_player = dadGm.GetComponent<Character>();
 		_startPos = transform.position;
 		_rb.AddForce(transform.up * _force, ForceMode2D.Impulse);
 	}
@@ -36,7 +36,7 @@ public class IceCloudProjectile : Projectiles
 		if(collision.TryGetComponent<Character>(out var target))
 		{
 			//target.CharacterState.CmdAddState(States.Plague, 4, 0);
-			//target.CharacterState.personWhoShoted = _dad;
+			//target.CharacterState.personWhoShoted = _player;
 
 			float duration = 1 + _energyDad / 20;
 			float curDamage = 10 + _energyDad / 4;
