@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/*
 public class DeathSpiral : Skill
 {
 	[SerializeField] private DeathSpiralProjectile _projectile;
@@ -125,8 +126,11 @@ public class DeathSpiral : Skill
 			Shoot(angle, _inTheRow);
 		}
 		
-	}*/
+	}
+*/
 
+
+/*
 	[Command]
 	private void Shoot(float angle, bool inTheRow)
 	{		
@@ -282,3 +286,4 @@ public class DeathSpiral : Skill
 		_talentCorpseBoostExplode = value;
 	}
 }
+*/

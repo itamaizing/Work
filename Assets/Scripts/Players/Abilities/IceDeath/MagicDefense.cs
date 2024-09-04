@@ -7,7 +7,7 @@ using UnityEngine;
 public class MagicDefense : Skill
 {
 	[SerializeField] private PlagueAbsorption _plagueAbsorption;
-	[SerializeField] private DeathSpiral _deathSpiral;
+	//[SerializeField] private DeathSpiral _deathSpiral;
 	[SerializeField] private Character _character;
 	[SerializeField] private MagicDefenseArea _magDefArea;
 

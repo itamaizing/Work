@@ -93,9 +93,9 @@ public class DeathSpiralProjectile : Projectiles
 	}
 	public void SetAlive(float hp, Transform transform)
 	{
-		_dad.SpawnComponent.SpawnUnit(transform);
-		_icyCorpse =  (IcyCorpse)_dad.SpawnComponent.Units.Last();
-		_icyCorpse.Talents(_talentCorpseDeath, _talentCorpseBoostExplode);
+		//_dad.SpawnComponent.SpawnUnit(transform);
+		//_icyCorpse =  (IcyCorpse)_dad.SpawnComponent.Units.Last();
+		//_icyCorpse.Talents(_talentCorpseDeath, _talentCorpseBoostExplode);
 		Explode();
 	}
 

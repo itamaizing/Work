@@ -39,7 +39,7 @@ public abstract class Character : NetworkBehaviour
 	public virtual void Initialize()
 	{
 		Move.Initialize(Data.GetAttributeValue(AttributeNames.Speed), Rb , true);
-		CharacterState.Initialize(Health, Move);
+		CharacterState.Initialize(this);
 		SelectComponent.Initialize(Move,Abilities,UIComponent);
 		
 		foreach (var resource in Resources)

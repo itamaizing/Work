@@ -166,7 +166,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _talents2.Array.size
-      value: 12
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _talents.Array.data[0]
@@ -885,7 +885,7 @@ MonoBehaviour:
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 3f2366dd6c4aabe499c9701e0d47053b, type: 2}
   _isSubjectToGlobalCooldownTime: 1
-  _manaCost: 0
+  _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _abilitySchool: 6
@@ -912,7 +912,6 @@ MonoBehaviour:
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
-  _attackManaCost: 0
   _attackZoneSize: 3
   _attackSpeed: 1
   _strokesOfAspiration: {fileID: 4643755454022477495}
@@ -939,7 +938,7 @@ MonoBehaviour:
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 1af7963ead8875042bc84e9fa3cf58e1, type: 2}
   _isSubjectToGlobalCooldownTime: 1
-  _manaCost: 0
+  _skillEnergyCosts: []
   _cooldownTime: 4
   _castDeley: 0
   _abilitySchool: 6
@@ -966,7 +965,6 @@ MonoBehaviour:
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
-  _attackManaCost: 0
   _attackZoneSize: 3
   _attackSpeed: 1
   _player: {fileID: 362903699018664054}
@@ -989,7 +987,7 @@ MonoBehaviour:
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 899fa83671534eb42b15ae0986749e2c, type: 2}
   _isSubjectToGlobalCooldownTime: 1
-  _manaCost: 5
+  _skillEnergyCosts: []
   _cooldownTime: 9
   _castDeley: 0
   _abilitySchool: 0
@@ -1061,7 +1059,7 @@ MonoBehaviour:
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 5e12a4e98f6c3dd42ad804c36ea87337, type: 2}
   _isSubjectToGlobalCooldownTime: 1
-  _manaCost: 30
+  _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _abilitySchool: 0
@@ -1121,7 +1119,7 @@ MonoBehaviour:
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 7d0ee064be7acc0469ab7540e835c7f9, type: 2}
   _isSubjectToGlobalCooldownTime: 1
-  _manaCost: 0
+  _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _abilitySchool: 0
@@ -1170,7 +1168,7 @@ MonoBehaviour:
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: a81ffcd04ca1cad479f49a2f56016a70, type: 2}
   _isSubjectToGlobalCooldownTime: 1
-  _manaCost: 0
+  _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _abilitySchool: 0
@@ -1221,7 +1219,7 @@ MonoBehaviour:
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 99ddb513034121044845fa2d5c1fd25a, type: 2}
   _isSubjectToGlobalCooldownTime: 1
-  _manaCost: 30
+  _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _abilitySchool: 6
@@ -1272,7 +1270,7 @@ MonoBehaviour:
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: ebeca0253d3207d4cb39a4e352e99b11, type: 2}
   _isSubjectToGlobalCooldownTime: 1
-  _manaCost: 80
+  _skillEnergyCosts: []
   _cooldownTime: 14
   _castDeley: 0
   _abilitySchool: 6
@@ -1319,7 +1317,7 @@ MonoBehaviour:
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: e0a694047bc706b4fb4d88da4b0399dc, type: 2}
   _isSubjectToGlobalCooldownTime: 1
-  _manaCost: 80
+  _skillEnergyCosts: []
   _cooldownTime: 14
   _castDeley: 0
   _abilitySchool: 0
@@ -1367,7 +1365,7 @@ MonoBehaviour:
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 210da40a0085cd74dbbe0231617f4591, type: 2}
   _isSubjectToGlobalCooldownTime: 1
-  _manaCost: 0
+  _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _abilitySchool: 0
@@ -1414,7 +1412,7 @@ MonoBehaviour:
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 5dd2210736bee3d4197798d0dd5f05e3, type: 2}
   _isSubjectToGlobalCooldownTime: 1
-  _manaCost: 20
+  _skillEnergyCosts: []
   _cooldownTime: 12
   _castDeley: 0
   _abilitySchool: 0

@@ -239,17 +239,6 @@ public abstract class Skill : NetworkBehaviour
         _cooldownJob = StartCoroutine(CooldownCoroutine(time));
     }
 
-    public void ReductionSetCooldown(float time)
-    {
-        if (time > _remaining�ooldownTime)
-            return;
-
-        if (_cooldownJob != null)
-            StopCoroutine(_cooldownJob);
-
-        _cooldownJob = StartCoroutine(CooldownCoroutine(time));
-    }
-
     public void CheckResources()
     {
         foreach (var skillCost in _skillEnergyCosts)

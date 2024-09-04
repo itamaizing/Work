@@ -21,7 +21,7 @@ public class IcyCorpse : MinionComponent
     {
         if(_talentDestroy) 
         {		
-			_dad = _heroParent.GetComponent<Character>();
+			//_dad = _heroParent.GetComponent<Character>();
 			Collider2D[] colliders = Physics2D.OverlapCircleAll(gameObject.transform.position, 3);
 			float damage = 10;
 			if(_talentBoostExplode && Random.Range(0, 10) < 3)
@@ -30,7 +30,7 @@ public class IcyCorpse : MinionComponent
 			}
 			foreach (Collider2D collider in colliders)
 			{
-				if (collider.TryGetComponent<Character>(out var enemy) && collider.gameObject != gameObject && collider.gameObject != _heroParent)
+				if (collider.TryGetComponent<Character>(out var enemy) && collider.gameObject != gameObject)
 				{
 					Damage damage2 = new Damage
 					{

@@ -40,6 +40,6 @@ public class TransparentPoisons : Talent
     {
         _poisonBall.Buff.ManaCost.IncreasePercentage(_increaseManaCostValue);
         _spitPoison.Buff.ManaCost.IncreasePercentage(_increaseManaCostValue);
-        Debug.Log($"TransparentPoisons / RpcIncreaseManaCost / _poisonBallManaCost = {_poisonBall.ManaCost}, _spitPoisonManaCost = {_spitPoison.ManaCost}");
+        Debug.Log($"TransparentPoisons / RpcIncreaseManaCost / _poisonBallManaCost = {_poisonBall.Buff.ManaCost}, _spitPoisonManaCost = {_spitPoison.Buff.ManaCost}");
     }
 }

@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/Sprites/Line/electricLine0004.png.meta
-guid: 12ce3c945db18654c8f15c874794af8f
-========
-guid: 56ccc070bb785894588c0ad2add807cf
->>>>>>>> main:Assets/Sprites/Ui/Cost.png.meta
+guid: 6b8cdbcb18a6dc2459f5d4dbfadcf84b
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -41,15 +37,6 @@ TextureImporter:
     filterMode: 1
     aniso: 1
     mipBias: 0
-<<<<<<<< HEAD:Assets/Sprites/Line/electricLine0004.png.meta
-    wrapU: 0
-    wrapV: 0
-    wrapW: 0
-  nPOTScale: 0
-  lightmap: 0
-  compressionQuality: 50
-  spriteMode: 2
-========
     wrapU: 1
     wrapV: 1
     wrapW: 1
@@ -57,7 +44,6 @@ TextureImporter:
   lightmap: 0
   compressionQuality: 50
   spriteMode: 1
->>>>>>>> main:Assets/Sprites/Ui/Cost.png.meta
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -134,7 +120,6 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
-<<<<<<<< HEAD:Assets/Sprites/Line/electricLine0004.png.meta
     buildTarget: iPhone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -149,9 +134,19 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: WebGL
-========
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
     buildTarget: Windows Store Apps
->>>>>>>> main:Assets/Sprites/Ui/Cost.png.meta
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1

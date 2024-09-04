@@ -361,6 +361,7 @@ MonoBehaviour:
   syncInterval: 0
   _stateIcons: {fileID: 2794163301550220692}
   invinsible: 0
+  Invinsible: 0
 --- !u!114 &5839731411926097146
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2054,6 +2055,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _talents: []
+  _talents2: []
+  _talents3: []
 --- !u!1 &8924967412356559927
 GameObject:
   m_ObjectHideFlags: 0

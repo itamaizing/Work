@@ -881,7 +881,7 @@ public class CreeperInvisibleState : AbstractCharacterState
 			{ 
 				ability.Buff.ManaCost.IncreasePercentage(1.3f);
 				Debug.Log("Ability manaCost == " + ability.Buff.ManaCost.Multiplier);
-				Debug.Log("Modified manaCost at ability: " + ability.name + ", Type: " + ability.GetType() + ", ManaCost Value = " + ability.ManaCost);
+				Debug.Log("Modified manaCost at ability: " + ability.name + ", Type: " + ability.GetType() + ", ManaCost Value = " + ability.Buff.ManaCost);
 				Debug.Log("IsIncreasedManaCost in Search Abilities== " + _isIncreasedManaCost);
 			}
 			_isIncreasedManaCost = true;
@@ -905,7 +905,7 @@ public class CreeperInvisibleState : AbstractCharacterState
 			{
 				ability.Buff.ManaCost.ReductionPercentage(1.3f);
 				Debug.Log("Ability manaCost == " + ability.Buff.ManaCost.Multiplier);
-				Debug.Log("Modified manaCost at ability: " + ability.name + ", Type: " + ability.GetType() + ", ManaCost Value = " + ability.ManaCost);
+				Debug.Log("Modified manaCost at ability: " + ability.name + ", Type: " + ability.GetType() + ", ManaCost Value = " + ability.Buff.ManaCost);
 			}
 			_isIncreasedManaCost = false;
 			Debug.Log("IsIncreasedManaCost in ResetValues == " + _isIncreasedManaCost);
@@ -1243,7 +1243,7 @@ public class WitheringPoisonState : AbstractCharacterState
         //Debug.Log("player in WitheringPoisonState == " + _player);
         if (_player != null)
         {
-            _talents = _player.CharacterState.Character.TalentSystem.Talents;
+			_talents = _player.CharacterState.Character.GetComponent<HeroComponent>().Talents.Talents;
             //Debug.Log("WitheringPoisonState Talent == " + _talents);
 
             foreach (Talent talent in _talents)
@@ -1522,9 +1522,9 @@ public class PoisonCloud : AbstractCharacterState
 		if (_player != null)
 		{
 		    _skills = _player.CharacterState.Character.Abilities.Abilities;
-			_talents = _player.CharacterState.Character.TalentSystem.Talents;
+			_talents = _player.CharacterState.Character.GetComponent<HeroComponent>().Talents.Talents;
 
-			SearchAbilities();
+            SearchAbilities();
 
 			SearchTalent();
 		}
@@ -2085,7 +2085,7 @@ public class RegeneratingPoison : AbstractCharacterState
 		Debug.Log("_player in EnterRegenPoisonState == " + _player);
         if (_player != null)
         {
-			_talents = _player.CharacterState.Character.TalentSystem.Talents;
+			_talents = _player.CharacterState.Character.GetComponent<HeroComponent>().Talents.Talents;
 			Debug.Log("HealingPoison player == " + _player);
 
             foreach (Talent talent in _talents)

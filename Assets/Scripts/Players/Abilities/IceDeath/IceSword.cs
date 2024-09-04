@@ -6,7 +6,7 @@ public class IceSword : Skill
 	[SerializeField] private float _damage = 15f;
 	//[SerializeField] private GameObject _basePlayer;
 	[SerializeField] private Character _playerLinks;
-	[SerializeField] private DeathSpiral _deathSpiral;
+//	[SerializeField] private DeathSpiral _deathSpiral;
 	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 
 
@@ -18,9 +18,9 @@ public class IceSword : Skill
 	{
 		get 
 		{
-			if (Hero.Stamina.CurrentValue >= _manaCost)
+			if (Hero.Stamina.CurrentValue >= _manaCostRate)
 			{
-				Hero.Stamina.TryUse(_manaCost);
+				Hero.Stamina.TryUse(_manaCostRate);
 				return true;
 			}
 			else
@@ -57,7 +57,7 @@ public class IceSword : Skill
 		}
 		if (_hitInTheRow > 2)
 		{
-			_deathSpiral.AddCharge();
+			//_deathSpiral.AddCharge();
 			_hitInTheRow = 0;
 		}
 		ApplyDamage();

@@ -188,7 +188,7 @@ public class LightningMovementUpdated : Skill
 
         Debug.Log("LightningMovement CmdSingleLeap playerLinks Move false");
 
-        _player.Rigidbody2D.DOMove(firstLeapPoint, durationLeap * rangeLeap / GlobalVariable.cellSize).SetEase(Ease.Linear);
+        _player.Rb.DOMove(firstLeapPoint, durationLeap * rangeLeap / GlobalVariable.cellSize).SetEase(Ease.Linear);
         //playerLinks.Rb.MovePosition(firstLeapPoint * durationLeap * rangeLeap / GlobalVariable.cellSize);
 
         Debug.Log("LightningMovement CmdSingleLeap playerLinks MovePos work / firstLeapPoint == " + firstLeapPoint);
@@ -201,7 +201,7 @@ public class LightningMovementUpdated : Skill
 
         _player.Move.enabled = false;
         Sequence leapSequence = DOTween.Sequence();
-        leapSequence.Append(_player.Rigidbody2D.DOMove(firstLeapPoint, durationLeap * rangeLeap / GlobalVariable.cellSize).SetEase(Ease.Linear));
-        leapSequence.Append(_player.Rigidbody2D.DOMove(secondLeapPoint, durationLeap * rangeLeap / GlobalVariable.cellSize).SetEase(Ease.Linear));
+        leapSequence.Append(_player.Rb.DOMove(firstLeapPoint, durationLeap * rangeLeap / GlobalVariable.cellSize).SetEase(Ease.Linear));
+        leapSequence.Append(_player.Rb.DOMove(secondLeapPoint, durationLeap * rangeLeap / GlobalVariable.cellSize).SetEase(Ease.Linear));
     }
 }

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
 public class DeathSpiralTalents : Talent
 {
 	[SerializeField] private DeathSpiral _deathSpiral;
@@ -33,3 +33,4 @@ public class DeathSpiralTalents : Talent
 		}
 	}
 }
+*/

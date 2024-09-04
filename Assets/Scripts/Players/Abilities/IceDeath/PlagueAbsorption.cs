@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlagueAbsorption : Skill
 {
-	[SerializeField] private DeathSpiral _deathSpiral;
+	//[SerializeField] private DeathSpiral _deathSpiral;
 	[SerializeField] private Character _character;
 	private Plague _plagueEnemy;
 	private Character _target;
@@ -67,24 +67,24 @@ public class PlagueAbsorption : Skill
 		}
 		else if (_character.Stamina.TryUse(70))
 		{
-			if (_character.RuneComponent.RemoveRune(1, this))
-			{
-				_plagueEnemy = (Plague)_target.CharacterState.GetState(States.Plague);
-				if (_plagueEnemy == null) return;
+			//if (_character.RuneComponent.RemoveRune(1, this))
+			//{
+			//	_plagueEnemy = (Plague)_target.CharacterState.GetState(States.Plague);
+			//	if (_plagueEnemy == null) return;
 
 				
-				if (_plagueEnemy.GetStack >= 0)
-				{
-					Debug.Log("CHECK FOR TEst@@");
-					_charges++;
-					//_deathSpiral.TalentAddSuperCharge();
-					_target.CharacterState.CmdRemoveState(States.Plague);
-				}
-			}
-			else
-			{
-				_character.Stamina.Add(70);
-			}
+			//	if (_plagueEnemy.GetStack >= 0)
+			//	{
+			//		Debug.Log("CHECK FOR TEst@@");
+			//		_charges++;
+			//		//_deathSpiral.TalentAddSuperCharge();
+			//		_target.CharacterState.CmdRemoveState(States.Plague);
+			//	}
+			//}
+			//else
+			//{
+			//	_character.Stamina.Add(70);
+			//}
 		}
 	}
 }
