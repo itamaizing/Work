@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class MoveComponent : NetworkBehaviour
 {
-	public Vector2 MoveDirection;
+	public Vector2 MoveDirection = Vector2.zero;
 	
 	public bool CanMove = false;
 	public bool IsMoving = false;
@@ -32,7 +32,7 @@ public class MoveComponent : NetworkBehaviour
 		
 		SetDefaultSpeed();
 
-		MoveDirection = Vector2.down;
+		MoveDirection = Vector2.zero;
 
 		CanMove = true;
 		_isHero = isHero;
@@ -58,35 +58,35 @@ public class MoveComponent : NetworkBehaviour
 			return;
 		}
 		
-		HandleKeyboardInput();
-	}
-
-	[Client]
-	private void HandleKeyboardInput()
-	{
-		if (!_isHero) return;
-
 		float moveX = Input.GetAxis("Horizontal");
 		float moveY = Input.GetAxis("Vertical");
-		MoveDirection = new Vector2(moveX, moveY).normalized;
-
-		if (MoveDirection != Vector2.zero)
+		MoveDirection = new Vector2(moveX, moveY);
+		
+		if (MoveDirection.magnitude > 1)
 		{
-			CmdMove(MoveDirection, _currentSpeed);
-		}
-		else
-		{
-			CmdStopMovement();
+			MoveDirection.Normalize();
 		}
 	}
-
-	private void CmdMove(Vector2 moveDirection, float speed)
+	
+	private void FixedUpdate()
 	{
-		_rigidbody.velocity = moveDirection * speed;
+		CmdMove(MoveDirection, _currentSpeed);
 	}
 
-	private void CmdStopMovement()
+	[Command]
+	private void CmdMove(Vector2 movement, float moveSpeed)
 	{
-		_rigidbody.velocity = Vector2.zero;
+		_rigidbody.velocity = movement * moveSpeed;
+		
+		RpcMove(_rigidbody.position, moveSpeed);
+	}
+
+	[ClientRpc]
+	private void RpcMove(Vector2 position, float moveSpeed)
+	{
+		if (!isLocalPlayer)
+		{
+			_rigidbody.position = Vector2.Lerp(_rigidbody.position, position, Time.fixedDeltaTime * moveSpeed);
+		}
 	}
 }

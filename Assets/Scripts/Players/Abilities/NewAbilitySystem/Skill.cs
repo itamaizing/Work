@@ -97,7 +97,7 @@ public abstract class Skill : NetworkBehaviour
     public bool IsHaveCharge => (_currentChargers > 0);
     public float ChargeCooldown => _chargeCooldown;
     public bool IsPreparing => _isPreparing;
-    public bool IsHaveResourceOnSkill { get; set; }
+    public bool IsHaveResourceOnSkill { get => CheckResourcesOnSkill(); }
     public bool IsHaveResources { get => IsHaveResourceOnSkill && IsCooldowned && IsHaveCharge; }
     public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); }
     public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); }
@@ -276,6 +276,12 @@ public abstract class Skill : NetworkBehaviour
             MassageHaventCharge?.Invoke();
     }
 
+    private bool CheckResourcesOnSkill()
+    {
+        return _skillEnergyCosts.All(skillCost =>
+            _hero.Resources.Where(r => r.Type == skillCost.resourceType).Sum(r => r.CurrentValue) >= Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
+    }
+
     public void AddMaxChargeCount()
     {
         _maxCharges += 1;
@@ -318,9 +324,6 @@ public abstract class Skill : NetworkBehaviour
 
     protected virtual bool TryPayCost(List<SkillEnergyCost> skillEnergyCosts)
     {
-        IsHaveResourceOnSkill = skillEnergyCosts.All(skillCost =>
-            _hero.Resources.Where(r => r.Type == skillCost.resourceType).Sum(r => r.CurrentValue) >= Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
-        
         if (IsHaveResourceOnSkill)
         {
             foreach (var skillCost in skillEnergyCosts)
@@ -341,9 +344,6 @@ public abstract class Skill : NetworkBehaviour
     
     protected virtual bool TryPayCost()
     {
-        IsHaveResourceOnSkill = _skillEnergyCosts.All(skillCost =>
-            _hero.Resources.Where(r => r.Type == skillCost.resourceType).Sum(r => r.CurrentValue) >= Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
-        
         if (IsHaveResourceOnSkill)
         {
             foreach (var skillCost in _skillEnergyCosts)

@@ -22,8 +22,8 @@ public class PlayerIcon : MonoBehaviour
     {
         if(_selectManager != null)
         {
-            //_selectManager.CharacterSelected += OnCharacterSelected;
-            //_selectManager.CharacterDeselected += OnCharacterDeselected;
+            _selectManager.CharacterSelected += OnCharacterSelected;
+            _selectManager.CharacterDeselected += OnCharacterDeselected;
         }
     }
 
@@ -31,8 +31,8 @@ public class PlayerIcon : MonoBehaviour
     {
         if (_selectManager != null)
         {
-            //_selectManager.CharacterSelected -= OnCharacterSelected;
-            //_selectManager.CharacterDeselected -= OnCharacterDeselected;
+            _selectManager.CharacterSelected -= OnCharacterSelected;
+            _selectManager.CharacterDeselected -= OnCharacterDeselected;
         }
     }
 

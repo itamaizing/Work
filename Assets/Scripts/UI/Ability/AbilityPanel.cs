@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +6,7 @@ public class AbilityPanel : MonoBehaviour
     [SerializeField] private AbilityIcon _abilityIconPref;
     [SerializeField] private FillAmountOverTime _castLine;
     [SerializeField] private QueuePanel _queuePanel;
-
+    [SerializeField]
     private SelectManager _selectManager;
     private Character _currentCharacter;
     private SkillManager _playerAbilities;
@@ -18,15 +17,14 @@ public class AbilityPanel : MonoBehaviour
 
     private void Start()
     {
-       // _selectManager = SelectManager.Instance;
-       // _selectManager.CharacterSelected += OnCharacterSelected;
-       // _selectManager.CharacterDeselected += OnCharacterDeselected;
+        _selectManager.CharacterSelected += OnCharacterSelected;
+        _selectManager.CharacterDeselected += OnCharacterDeselected;
     }
 
     private void OnDestroy()
     {
-      //  _selectManager.CharacterSelected -= OnCharacterSelected;
-       // _selectManager.CharacterDeselected -= OnCharacterDeselected;
+        _selectManager.CharacterSelected -= OnCharacterSelected;
+        _selectManager.CharacterDeselected -= OnCharacterDeselected;
     }
 
     public bool IsSelect
