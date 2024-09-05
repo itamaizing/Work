@@ -77,7 +77,7 @@ public class SpitPoison : Ability
     {
 		Debug.LogError("fix"); 
 		SpitPoisonProjectile projectile = Instantiate(_projectile, _playerLinks.gameObject.transform.position, Quaternion.Euler(0, 0, angle)); // it was Rb postion
-        //projectile.InitializationProjectile(_playerLinks, manaValue);
+        projectile.InitializationProjectile(_playerLinks, manaValue);
 
         NetworkServer.Spawn(projectile.gameObject);
 
@@ -87,6 +87,6 @@ public class SpitPoison : Ability
     [ClientRpc]
     private void RpcInitialization(GameObject projectile, float manaValue)
     {
-      // projectile.GetComponent<SpitPoisonProjectile>().InitializationProjectile(_playerLinks, manaValue);
+        projectile.GetComponent<SpitPoisonProjectile>().InitializationProjectile(_playerLinks, manaValue);
     }
 }

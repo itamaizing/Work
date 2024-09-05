@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/NEW/UI/UIMenu/Saves.meta
 guid: eba73955000ca3b4a8ba470037fc1914
+========
+guid: 5fe42a8d982899344b6c52d843decb33
+>>>>>>>> main:Assets/NEW/UI/UIGame.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

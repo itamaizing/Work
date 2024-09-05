@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Sprites/Ui/Button_Background.png.meta
 guid: f7df872907012ca40a332e4ef95a3de5
+========
+guid: 56ccc070bb785894588c0ad2add807cf
+>>>>>>>> main:Assets/Sprites/Ui/Cost.png.meta
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -139,7 +143,11 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
+<<<<<<<< HEAD:Assets/Sprites/Ui/Button_Background.png.meta
     internalID: 1537655665
+========
+    internalID: 0
+>>>>>>>> main:Assets/Sprites/Ui/Cost.png.meta
     vertices: []
     indices: 
     edges: []

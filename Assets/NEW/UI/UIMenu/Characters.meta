@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/NEW/UI/UIMenu/Characters.meta
 guid: c28c62a536172774aadc66f63cb2168d
+========
+guid: c83aadec244cbdf49bcf9db9938e1096
+>>>>>>>> main:Assets/NEW.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

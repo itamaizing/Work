@@ -1,9 +1,13 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Sprites/Ui/Cost.png.meta
 <<<<<<<< HEAD:Assets/Sprites/Ui/prew.jpg.meta
-guid: fece2be8e3d9764468e6dec608aabc8c
+guid: 227d7c2452786c5478e4bcae72820b66
 ========
 guid: 56ccc070bb785894588c0ad2add807cf
 >>>>>>>> main:Assets/Sprites/Ui/Cost.png.meta
+========
+guid: fece2be8e3d9764468e6dec608aabc8c
+>>>>>>>> main:Assets/Sprites/Ui/prew.jpg.meta
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}

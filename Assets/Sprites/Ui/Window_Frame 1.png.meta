@@ -1,9 +1,13 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/Sprites/Ui/Window_Frame 1.png.meta
-guid: cdcaf942b75e2864d9b7912d938c932f
-========
+<<<<<<<< HEAD:Assets/Sprites/Ui/prew.jpg.meta
+<<<<<<<< HEAD:Assets/Sprites/Ui/prew.jpg.meta
 guid: fece2be8e3d9764468e6dec608aabc8c
->>>>>>>> main:Assets/Sprites/Ui/prew.jpg.meta
+========
+guid: 56ccc070bb785894588c0ad2add807cf
+>>>>>>>> main:Assets/Sprites/Ui/Cost.png.meta
+========
+guid: cdcaf942b75e2864d9b7912d938c932f
+>>>>>>>> main:Assets/Sprites/Ui/Window_Frame 1.png.meta
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -76,15 +80,15 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-<<<<<<<< HEAD:Assets/Sprites/Ui/Window_Frame 1.png.meta
-    textureCompression: 2
-    compressionQuality: 100
-    crunchedCompression: 1
-========
+<<<<<<<< HEAD:Assets/Sprites/Ui/prew.jpg.meta
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
->>>>>>>> main:Assets/Sprites/Ui/prew.jpg.meta
+========
+    textureCompression: 2
+    compressionQuality: 100
+    crunchedCompression: 1
+>>>>>>>> main:Assets/Sprites/Ui/Window_Frame 1.png.meta
     allowsAlphaSplitting: 0
     overridden: 0
     ignorePlatformSupport: 0
@@ -149,11 +153,11 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
-<<<<<<<< HEAD:Assets/Sprites/Ui/Window_Frame 1.png.meta
-    internalID: 1537655665
-========
+<<<<<<<< HEAD:Assets/Sprites/Ui/prew.jpg.meta
     internalID: 0
->>>>>>>> main:Assets/Sprites/Ui/prew.jpg.meta
+========
+    internalID: 1537655665
+>>>>>>>> main:Assets/Sprites/Ui/Window_Frame 1.png.meta
     vertices: []
     indices: 
     edges: []
