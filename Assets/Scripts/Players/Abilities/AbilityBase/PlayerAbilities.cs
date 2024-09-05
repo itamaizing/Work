@@ -303,5 +303,14 @@ public class PlayerAbilities : MonoBehaviour
 		//_abilityPanel = AbilitiesManager.Instance.AddPanel(this);
 		_abilityPanel.gameObject.SetActive(true);
 	}
+	public Ability GetAbilityByName(string name)
+	{
+		foreach (var ability in _abilities) 
+		{
+			if(ability.Name == name)
+				return ability;
+		}
+		return null;
+	}
 
 }

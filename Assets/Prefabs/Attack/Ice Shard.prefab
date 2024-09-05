@@ -250,5 +250,5 @@ MonoBehaviour:
   _hitEffect: {fileID: 0}
   _spriteRenderer: {fileID: 2859774875230355193}
   _rb: {fileID: -53743584304020754}
-  _force: 0
+  _force: 30
   _distance: 5

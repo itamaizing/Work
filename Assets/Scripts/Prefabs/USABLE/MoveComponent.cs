@@ -3,26 +3,22 @@ using UnityEngine;
 
 public class MoveComponent : NetworkBehaviour
 {
-	private Vector2 _offset = Vector2.zero; // new
-	[SyncVar]
-	private Vector3 _targetPosition;
+	public Vector2 MoveDirection = Vector2.zero;
+	
+	public bool CanMove = false;
+	public bool IsMoving = false;
+	public bool IsSelect = false;
 	
 	private Rigidbody2D _rigidbody;
 	
-	private Vector2 target;
-
-	public bool CanMove;
-	public bool IsMoving;
-	public bool IsSelect;
-	public Vector2 MoveDirection;
-
+	private Vector2 _offset = Vector2.zero;
+	
+	private bool _isHero = false;
+	
 	private float _defaultSpeed;
 	private float _currentSpeed;
 
-	private bool isInitialize = false;
-	public bool _isHero = false;
-
-	public void SetOffset(Vector2 offset) // new
+	public void SetOffset(Vector2 offset)
 	{
 		_offset = offset;
 	}
@@ -36,11 +32,10 @@ public class MoveComponent : NetworkBehaviour
 		
 		SetDefaultSpeed();
 
-		MoveDirection = Vector2.down;
+		MoveDirection = Vector2.zero;
 
 		CanMove = true;
 		_isHero = isHero;
-		isInitialize = true;
 	}
 
 	public void ChangeMoveSpeed(float value)
@@ -56,58 +51,43 @@ public class MoveComponent : NetworkBehaviour
 		_currentSpeed = _defaultSpeed;
 	}
 	
-	[ClientCallback]
 	void Update()
 	{
-		if (!isOwned || !CanMove || !IsSelect)
+		if (!isLocalPlayer || !CanMove || !IsSelect)
 		{
 			return;
 		}
-        
-		HandleMouseInput();
-		HandleKeyboardInput();
-	}
-
-	[Client]
-	private void HandleMouseInput()
-	{
-		if (Input.GetKeyDown(KeyCode.Mouse1))
+		
+		float moveX = Input.GetAxis("Horizontal");
+		float moveY = Input.GetAxis("Vertical");
+		MoveDirection = new Vector2(moveX, moveY);
+		
+		if (MoveDirection.magnitude > 1)
 		{
-			Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			mousePosition.z = transform.position.z;
-			
-			CmdSetTargetPosition(mousePosition);
+			MoveDirection.Normalize();
 		}
 	}
 
 	[Client]
-	private void HandleKeyboardInput()
+	private void FixedUpdate()
 	{
-		if (!_isHero) return;
-
-		MoveDirection = new Vector2(
-			Input.GetKey(KeyCode.A) ? -1 : Input.GetKey(KeyCode.D) ? 1 : 0,
-			Input.GetKey(KeyCode.S) ? -1 : Input.GetKey(KeyCode.W) ? 1 : 0
-		);
-
-		if (MoveDirection != Vector2.zero)
-		{
-			Vector3 targetPosition = transform.position + (Vector3)MoveDirection * (_currentSpeed * Time.deltaTime);
-			CmdSetTargetPosition(targetPosition);
-		}
+		CmdMove(MoveDirection, _currentSpeed);
 	}
 
 	[Command]
-	private void CmdSetTargetPosition(Vector3 targetPosition)
+	private void CmdMove(Vector2 movement, float moveSpeed)
 	{
-		_targetPosition = targetPosition;
+		_rigidbody.velocity = movement * moveSpeed;
+		
+		RpcMove(_rigidbody.position, moveSpeed);
 	}
 
-	void FixedUpdate()
+	[ClientRpc]
+	private void RpcMove(Vector2 position, float moveSpeed)
 	{
-		if (isServer)
+		if (!isLocalPlayer)
 		{
-			transform.position = Vector3.MoveTowards(transform.position, _targetPosition, _currentSpeed * Time.fixedDeltaTime);
+			_rigidbody.position = Vector2.Lerp(_rigidbody.position, position, Time.fixedDeltaTime * moveSpeed);
 		}
 	}
 }

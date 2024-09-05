@@ -6,7 +6,6 @@ using UnityEngine;
 public abstract class AutoAttackSkill : Skill
 {
     [Header("AutoAttack settings")]
-    [SerializeField] private float _attackManaCost;
     [SerializeField] private float _attackZoneSize;
     [SerializeField] protected float _attackSpeed = 1f;
 
@@ -85,7 +84,7 @@ public abstract class AutoAttackSkill : Skill
                     yield return new WaitForSeconds(AttackSpeed);
                     if (IsTargetInRadius(Radius + _attackZoneSize, Target.transform) && NoObstacles(Target.transform.position, _obstacle) && IsCooldowned)
                     {
-                        if (TryPayCost(_attackManaCost))
+                        if (TryPayCost())
                         {
                             CastAction();
 

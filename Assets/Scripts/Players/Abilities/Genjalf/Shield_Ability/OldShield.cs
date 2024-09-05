@@ -40,7 +40,7 @@ namespace Players.Abilities.Genjalf.Shield_Ability
         {
             _uiShield = GetComponent<UIShield>();
             
-            _startSpeedPlayer = gameObject.transform.parent.GetComponent<CharacterData>().MoveSpeed;
+            _startSpeedPlayer = gameObject.transform.parent.GetComponent<CharacterData>().GetAttributeValue(AttributeNames.Speed);
             _currentMana = gameObject.transform.parent.GetComponent<Mana>().CurrentValue;
             _currentShieldCharge = _soShieldData.ShieldCharges;
         }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MinionAttack : Ability
+public class MinionAttack : AutoAttackSkill
 {
 	[SerializeField] private float _damage = 3f;	
 	[SerializeField] private Character _dad;
@@ -8,20 +8,6 @@ public class MinionAttack : Ability
 	private float _cooldownTimer = 1.6f;
 	private bool _isReadyToShot = true;
 
-	private void Update()
-	{
-		if (_isReadyToShot) return;
-		Timer();
-	}
-	protected override void Cancel()
-	{
-		//turn off targets and etc		
-	}
-	protected override void Cast()
-	{
-		PayCost();
-		CheckEnemy();
-	}
 	
 	private void CheckEnemy()
 	{
@@ -64,5 +50,16 @@ public class MinionAttack : Ability
 			_isReadyToShot = true;
 			_cooldownTimer = _abilityCooldown;
 		}
+	}
+
+	protected override void CastAction()
+	{
+		Damage damage = new Damage
+		{
+			Value = 1 + Random.Range(0, 2),
+			Type = DamageType.Physical,
+			Range = AttackRangeType.MeleeAttack,
+		};
+		_target.Health.TryTakeDamage(ref damage, this);
 	}
 }

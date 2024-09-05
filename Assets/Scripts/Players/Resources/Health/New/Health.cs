@@ -1,10 +1,6 @@
 using Mirror;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class Health : Resource, IDamageable, IHealingable
 {
@@ -27,18 +23,18 @@ public class Health : Resource, IDamageable, IHealingable
 
     public event Action Evaded;
     public event Action<float> HealTaked;
-    public event Action<float, DamageType> DamageTaked;
+    public event Action<float, DamageType> DamageTaken;
     public event Action Died;
 
-    public void Initialize(float maxHealth, float regenValue, float regenDelay, HealthInfo healthInfo)
+    public override void Initialize(float health , float hpRegen, float hpRegenDelay, CharacterData data)
     {
-        base.Initialize(maxHealth, regenValue, regenDelay);
+        base.Initialize(health,hpRegen, hpRegenDelay, data);
 
-        _defPhysDamage = healthInfo.DefaultPhysicsDamage;
-        _defMagDamage = healthInfo.DefaultMagicDamage;
-        _evadeMagDamage = healthInfo.EvadeMagicDamage;
-        _evadeMeleeDamage = healthInfo.EvadeMeleeDamage;
-        _evadeRangeDamage = healthInfo.EvadeRangeDamage;
+        _defPhysDamage = data.GetAttributeValue(AttributeNames.PhysicResist);
+        _defMagDamage = data.GetAttributeValue(AttributeNames.MagicResist);
+        _evadeMagDamage = data.GetAttributeValue(AttributeNames.MagicEvade);
+        _evadeMeleeDamage = data.GetAttributeValue(AttributeNames.MeleeEvade);
+        _evadeRangeDamage = data.GetAttributeValue(AttributeNames.RangeEvade);
     }
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
@@ -144,7 +140,7 @@ public class Health : Resource, IDamageable, IHealingable
     [ClientRpc]
     private void ClientRpcDamageTaked(float damageTaken, DamageType damageType)
     {
-        DamageTaked?.Invoke(damageTaken, damageType);
+        DamageTaken?.Invoke(damageTaken, damageType);
     }
 
     [ClientRpc]

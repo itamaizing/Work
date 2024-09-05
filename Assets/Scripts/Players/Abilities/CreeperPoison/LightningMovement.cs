@@ -86,8 +86,10 @@ public class LightningMovement : Ability
 
     private void AfterLeap()
     {
-        // false
-        _playerLinks.Rigidbody2D.isKinematic = false;
+		// false
+		Debug.LogError("fix");
+		//_playerLinks.Rigidbody2D.isKinematic = false;
+
         _firstVectorSelected = false;
         _secondVectorSelected = false;
         _isEnemy = false;
@@ -101,7 +103,7 @@ public class LightningMovement : Ability
     }  
     private bool CheckObstacleBetween(Vector3 startPosition, Vector3 endPosition)
     {
-        // проверка на наличие припятствия
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         Vector2 direction = (endPosition - startPosition).normalized;
         float distance = Vector2.Distance(startPosition, endPosition);
 
@@ -125,7 +127,8 @@ public class LightningMovement : Ability
     {
         if (_canSelectedFirstVector && _isReadyFirstLeap)
         {
-            _playerLinks.Rigidbody2D.isKinematic = true;
+			Debug.LogError("fix");
+			//_playerLinks.Rigidbody2D.isKinematic = true;
             _firstVectorSelected = true;
             _canSelectedFirstVector = false;
             _isReadyFirstLeap = false;
@@ -133,11 +136,12 @@ public class LightningMovement : Ability
             _actualFirstLeapRange = _leapRange;
 
             Vector2 mousePositionFirstVector = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 _lookDirectionForFirstVector = (mousePositionFirstVector - _playerLinks.Rigidbody2D.position).normalized;
+			Debug.LogError("fix");
+			//Vector2 _lookDirectionForFirstVector = (mousePositionFirstVector - _playerLinks.Rigidbody2D.position).normalized;
 
             _actualFirstLeapRange *= GlobalVariable.cellSize;
-            _leapPositionForFirstVector = (_lookDirectionForFirstVector * _actualFirstLeapRange) + (Vector2)PlayerMove.transform.position;
-            // Проверка на препятствие для первого прыжка, если оно есть, то останавливаемся перед препятствием
+           // _leapPositionForFirstVector = (_lookDirectionForFirstVector * _actualFirstLeapRange) + (Vector2)PlayerMove.transform.position;
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             if (CheckObstacleBetween(PlayerMove.transform.position, _leapPositionForFirstVector))
             {
                 _leapPositionForFirstVector = _firstLeapPositionForObstacles;
@@ -146,9 +150,9 @@ public class LightningMovement : Ability
             {
                 _isEnemy = true;
             }
-            //Остановка отрисовки первой позиции
+            //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             _abilityRender.StopDraw();
-            //Точка для отрисовки второго прыжка
+            //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             StartCoroutine(TemporaryMoveToFirstLeapPoint(_leapPositionForFirstVector));
         }
     }
@@ -157,27 +161,29 @@ public class LightningMovement : Ability
     {
         if (_isEnemy)
         {
-            // Сохранение позиции точки первого прыжка
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             Vector2 originalPosition = _pointForSecondLeap;
-            // Точка для отрисовки второго прыжка
+            // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             _pointForSecondLeap = firstLeapPosition;
-            // Отрисовка второй области
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             _abilityRender.Drawn(this);
 
-            // Ожидание выбора второй точки прыжка
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             yield return new WaitUntil(() => _secondVectorSelected);
 
-            // Возвращение точки в исходное положение и прыжок игрока по двум точкам
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             _pointForSecondLeap = originalPosition;
         }
     }
 
     private void SelectSecondVectorLeap()
     {
-        Debug.Log(_pointForSecondLeap + " точка второго прыжка");
+        Debug.Log(_pointForSecondLeap + " пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ");
         if (_canSelectedSecondVector && _isReadySecondLeap)
         {
-            _playerLinks.Rigidbody2D.isKinematic = true;
+			Debug.LogError("fix");
+			//_playerLinks.Rigidbody2D.isKinematic = true;
+
             _secondVectorSelected = true;
             _canSelectedSecondVector = false;
             _isReadySecondLeap = false;
@@ -189,7 +195,7 @@ public class LightningMovement : Ability
 
             _actualSecondLeapRange *= GlobalVariable.cellSize;
             _leapPositionForSecondVector = _lookDirectionForSecondVector * _actualSecondLeapRange + _leapPositionForFirstVector;
-            // Проверка на препятствие для второго прыжка, если оно есть, то останавливаемся перед препятствием
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             if (CheckObstacleBetween(_leapPositionForFirstVector, _leapPositionForSecondVector))
             {
                 _leapPositionForSecondVector = _secondLeapPositionForObstacles;
@@ -202,7 +208,8 @@ public class LightningMovement : Ability
     {
         _playerLinks.Move.enabled = false;
         _enabled = true;
-        _playerLinks.Rigidbody2D.DOMove(_leapPositionForFirstVector, _durationOfLeap * _actualFirstLeapRange / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(AfterLeap);
+		Debug.LogError("fix");
+		//_playerLinks.Rigidbody2D.DOMove(_leapPositionForFirstVector, _durationOfLeap * _actualFirstLeapRange / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(AfterLeap);
         Debug.Log("Single leap work");
     }
 
@@ -213,7 +220,8 @@ public class LightningMovement : Ability
             _playerLinks.Move.enabled = false;
             _enabled = true;
             DG.Tweening.Sequence leapSequence = DOTween.Sequence();
-            leapSequence.Append(_playerLinks.Rigidbody2D.DOMove(_leapPositionForFirstVector, _durationOfLeap * _actualFirstLeapRange / GlobalVariable.cellSize).SetEase(Ease.Linear));
+			Debug.LogError("fix");
+			//leapSequence.Append(_playerLinks.Rigidbody2D.DOMove(_leapPositionForFirstVector, _durationOfLeap * _actualFirstLeapRange / GlobalVariable.cellSize).SetEase(Ease.Linear));
             leapSequence.AppendCallback(() =>
                 {
                     if (!CheckEnemy(PlayerMove.transform.position, _leapPositionForFirstVector) && !_isEnemy)
@@ -227,7 +235,8 @@ public class LightningMovement : Ability
             {
                 if (IsEnemyBehindPlayer(_playerLinks.transform.position, _leapPositionForFirstVector) && _isEnemy)
                 {
-                    leapSequence.Append(_playerLinks.Rigidbody2D.DOMove(_leapPositionForSecondVector, _durationOfLeap * _actualSecondLeapRange / GlobalVariable.cellSize).SetEase(Ease.Linear));
+					Debug.LogError("fix");
+					//leapSequence.Append(_playerLinks.Rigidbody2D.DOMove(_leapPositionForSecondVector, _durationOfLeap * _actualSecondLeapRange / GlobalVariable.cellSize).SetEase(Ease.Linear));
                     Debug.Log(IsEnemyBehindPlayer(_playerLinks.transform.position, _leapPositionForFirstVector) + " isEnemyBehind in leapCallback");
                 }
                 else

@@ -29,22 +29,18 @@ public class IceRolling : Ability
 	{
 		if(!_enabled) return;
 
-		//_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		//Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
-		//_angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
-		//_croosFire.transform.rotation = Quaternion.Euler(_croosFire.transform.rotation.x, _croosFire.transform.rotation.y, _angle);
 
 		if (Input.GetMouseButtonDown(0))
 		{
 			//PayCost();
-			if (_playerLinks.RuneComponent.RemoveRune(0.25f, this))
+			/*if (_playerLinks.RuneComponent.RemoveRune(1, this))
 			{
 				Jump();
 			}
 			else
 			{
 				Cancel();
-			}
+			}*/
 		}
 		if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
 		{
@@ -138,11 +134,11 @@ public class IceRolling : Ability
 			float actualJumpRange = _jumprange;
 
 			_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			_lookDir = (_mousePos - _playerLinks.Rigidbody2D.position).normalized;
+			//_lookDir = (_mousePos - _playerLinks.Rigidbody2D.position).normalized;
 			Debug.Log("jump");
 			actualJumpRange *= GlobalVariable.cellSize;
 			Vector2 jumpPos = _lookDir * actualJumpRange + (Vector2)PlayerMove.transform.position;
-			if (CheckObstacleBetween(_playerLinks.Rigidbody2D.position, jumpPos))
+		/*	if (CheckObstacleBetween(_playerLinks.Rigidbody2D.position, jumpPos))
 			{
 				Debug.Log("Обнаружено препятствие:");
 				//прыгать до препятствия
@@ -151,7 +147,7 @@ public class IceRolling : Ability
 			else
 			{
 				_playerLinks.Rigidbody2D.DOMove(jumpPos, _durationOfJump * actualJumpRange / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(NextJump);
-			}
+			}*/
 		}
 	}
 
@@ -162,16 +158,16 @@ public class IceRolling : Ability
 			Debug.Log("jump " + _jumpCount);
 			_jumpCount--;
 			Vector2 jumpPos = _lookDir + (Vector2)PlayerMove.transform.position;
-			if (CheckObstacleBetween(_playerLinks.Rigidbody2D.position, jumpPos))
+			/*if (CheckObstacleBetween(_playerLinks.Rigidbody2D.position, jumpPos))
 			{
 				Debug.Log("Обнаружено препятствие:");
 				//прыгать до препятствия
-				_playerLinks.Rigidbody2D.DOMove(_jumpPos, _durationOfJump / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(AfterJump);
+				//_playerLinks.Rigidbody2D.DOMove(_jumpPos, _durationOfJump / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(AfterJump);
 			}
 			else
 			{
-				_playerLinks.Rigidbody2D.DOMove(jumpPos, _durationOfJump / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(NextJump);
-			}
+				//_playerLinks.Rigidbody2D.DOMove(jumpPos, _durationOfJump / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(NextJump);
+			}*/
 		}
 		else
 		{

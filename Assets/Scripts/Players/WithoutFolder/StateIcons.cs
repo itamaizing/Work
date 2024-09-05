@@ -1,5 +1,6 @@
 using DG.Tweening;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -40,20 +41,24 @@ public class StateIcons : MonoBehaviour
 			ActivateIco(States.Frosting, 2, 6);
 		}
 	}*/
-	public void ActivateIco(States state, float timeToDecrease, int stack)
+	public void ActivateIco(States state, float timeToDecrease, int stack, bool canStack)
     {
-        foreach(var ico in _activeEffects)//if we already have the same ico
+        if (canStack)
         {
-            if(ico.state == state)
+            foreach (var ico in _activeEffects)//if we already have the same ico
             {
-                ico.count+= stack;
-                ico.time.Add(timeToDecrease);
-				ico.Text.text = ico.count.ToString();
-				ico.Text.gameObject.SetActive(true);
-				//AnimateIco(ico);
-				return;
+                if (ico.state == state)
+                {
+                    ico.count += stack;
+                    ico.time.Add(timeToDecrease);
+                    ico.Text.text = ico.count.ToString();
+                    ico.Text.gameObject.SetActive(true);
+                    //AnimateIco(ico);
+                    return;
+                }
             }
         }
+
         foreach(var ico in _icons) //instatiating new ico
         {
             if(ico.state == state)
@@ -134,14 +139,24 @@ public class StateIcons : MonoBehaviour
     //removing item before it ends
 	public void RemoveItemByState(States state)
 	{
-		foreach(var item in _activeEffects)
+        if(_activeEffects.Count > 0)
+		/*foreach(var item in _activeEffects)
         {
             if(item.state == state)
             {
 				_activeEffects.Remove(item);
                 Destroy(item.gameObject);
 			}
-        }
+        }*/
+        for(int i = _activeEffects.Count - 1; i >= 0; i--)
+        {
+			if (_activeEffects[i].state == state)
+			{
+                StateIcoItem icoItem = _activeEffects[i];
+				_activeEffects.Remove(icoItem);
+				Destroy(icoItem.gameObject);
+			}
+		}
 	}
 }
 

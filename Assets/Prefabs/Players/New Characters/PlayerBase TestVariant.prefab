@@ -8,6 +8,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -5027009403038136984, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: syncInterval
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -5027009403038136984, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: bufferResetMultiplier
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: -65063298450455639, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: sceneId
       value: 0
@@ -18,7 +26,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 795014623008228812, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 795014623008228812, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_LocalPosition.x
@@ -82,6 +90,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5593248747746896156, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5665079937663656764, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5665079937663656764, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: MoveDirection.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5839731411926097146, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
@@ -163,7 +179,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 44ef9f5c61bd03a4a9d02045a6dfb776, type: 2}
-  _manaCost: 5
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 1
   _abilitySchool: 0
@@ -207,7 +224,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 83e21c29a8358a84c98e9e3409e72dce, type: 2}
-  _manaCost: 1
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _abilitySchool: 0
@@ -234,7 +252,6 @@ MonoBehaviour:
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
-  _attackManaCost: 0.5
   _attackZoneSize: 4
   _attackSpeed: 0.5
   _damage: 4
@@ -254,7 +271,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: d225c810085a24647a426dd4b47a9983, type: 2}
-  _manaCost: 5
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
   _cooldownTime: 2
   _castDeley: 1
   _abilitySchool: 0

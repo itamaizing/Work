@@ -20,3 +20,4 @@ MonoBehaviour:
     \u0446\u0435\u043B\u044C \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u0442 \u043C\u0435\u043D\u044C\u0448\u0435
     \u0443\u0440\u043E\u043D\u0430"
   _icon: {fileID: 21300000, guid: b345fc210d23e9c4ca43881906dfc495, type: 3}
+  isMainAbility: 1

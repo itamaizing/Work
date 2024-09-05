@@ -3,38 +3,36 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class IceShield : Ability
+public class IceShield : Skill
 {
 	[SerializeField] private float _percentOfShield = 0.9f;
 	[SerializeField] private float _decreaseSpeed = 0.2f;
-	[SerializeField] private Character _character;
+	[SerializeField] private HeroComponent _playerLinks;
 	[SerializeField] private SeriesOfStrikes _combo;
 
 	private IceShieldObj _shield;
 	private bool _active = false;
 	private float _timer = 1f;
 	private float _delay = 1f;
+	private Energy _energy;
+
+	protected override bool IsCanCast => throw new System.NotImplementedException();
+
+	private void Start()
+	{
+		for (int i = 0; i < _playerLinks.Resources.Count; i++)
+		{
+			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
+			{
+				_energy = (Energy)_playerLinks.Resources[i];
+			}
+		}
+
+	}
 
 	private void Update()
 	{
 		Timer();
-	}
-	protected override void Cast()
-	{
-		PayCost();
-		if (_character.RuneComponent.RemoveRune(1, this))
-		{
-			Shoot();
-		}
-		else
-		{
-			TryCancel();
-		}
-	}
-
-	protected override void Cancel()
-	{
-		
 	}
 
 	private void Shoot() 
@@ -43,16 +41,16 @@ public class IceShield : Ability
 
 		if (_active) 
 		{
-			_character.Move.ChangeMoveSpeed(0.8f);
-			IceShieldObj shield = new IceShieldObj(Health, _character.Stamina.CurrentValue, DamageType.Both);
-			_shield = shield;
+			_playerLinks.Move.ChangeMoveSpeed(0.8f);
+			//IceShieldObj shield = new IceShieldObj(Health, _playerLinks.Stamina.CurrentValue, DamageType.Both);
+			//_shield = shield;
 			//create shield
 			//_character.Health.
 		}
 		else
 		{
-			_character.Move.ChangeMoveSpeed(1.25f);
-			Health.RemoveShield(_shield, DamageType.Both);
+			_playerLinks.Move.ChangeMoveSpeed(1.25f);
+			//Health.RemoveShield(_shield, DamageType.Both);
 			_shield = null;
 		}
 	}
@@ -64,7 +62,7 @@ public class IceShield : Ability
 			_timer -= Time.deltaTime;
 			if (_timer > 0) return;
 
-			if (_character.Stamina.TryUse(1))
+		/*	if (_character.Stamina.TryUse(1))
 			{
 				_timer = _delay;
 			}
@@ -72,8 +70,23 @@ public class IceShield : Ability
 			{
 				_active = false;
 			}
-
+		*/
 		}
+	}
+
+	protected override IEnumerator PrepareJob()
+	{
+		throw new System.NotImplementedException();
+	}
+
+	protected override IEnumerator CastJob()
+	{
+		throw new System.NotImplementedException();
+	}
+
+	protected override void ClearData()
+	{
+		throw new System.NotImplementedException();
 	}
 }
 

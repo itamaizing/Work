@@ -37,7 +37,7 @@ public class Bar : MonoBehaviour
 		_resource.MaxValueChanged += OnMaxValueChanged;
 	}
 
-    private void Awake()
+    private void Start()
     {
         if (_resource != null)
 			Init(_resource);

@@ -61,7 +61,7 @@ public class Scrader : MonoBehaviour
 
         _select = FindObjectOfType<SelectObject>();
 
-        speedOriginal = GetComponent<CharacterData>().MoveSpeed;
+        speedOriginal = GetComponent<CharacterData>().GetAttributeValue(AttributeNames.Speed);
 
     }
 

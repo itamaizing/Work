@@ -1,16 +1,25 @@
 using Mirror;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+
+public enum ResourceType 
+{
+    Health, 
+    Mana, 
+    Energy, 
+    Rune
+}
 
 [RequireComponent(typeof(NetworkIdentity))]
 public abstract class Resource : NetworkBehaviour
 {
+    [SerializeField] private ResourceType _resourceType;
     [SyncVar(hook = nameof(HookValueChanged))] protected float _currentValue;
     [SyncVar(hook = nameof(HookMaxValueChanged))] protected float _maxValue;
     [SyncVar] protected float _regenerationValue;
     [SyncVar] protected float _regenerationDelay;
+    
     protected Coroutine _regenCoroutine;
 
     public float CurrentValue { get => _currentValue; protected set { _currentValue = value; } }
@@ -18,10 +27,12 @@ public abstract class Resource : NetworkBehaviour
     public float RegenerationValue { get => _regenerationValue;  set { _regenerationValue = value; } }
     public float RegenerationDelay { get => _regenerationDelay;  set { _regenerationDelay = value; } }
 
+    public ResourceType Type => _resourceType;
+
     public event Action<float, float> MaxValueChanged;
     public event Action<float, float> ValueChanged;
 
-    public virtual void Initialize(float maxValue, float regenValue, float regenDelay)
+    public virtual void Initialize(float maxValue, float regenValue, float regenDelay, CharacterData data)
     {
         _currentValue = maxValue;
         _maxValue = maxValue;
@@ -29,7 +40,7 @@ public abstract class Resource : NetworkBehaviour
         _regenerationDelay = regenDelay;
 
         if (regenValue > 0)
-            ClientStartRegenirateJob();
+            ClientStartRegenerateJob();
     }
 
     public virtual void Add(float value)
@@ -64,7 +75,7 @@ public abstract class Resource : NetworkBehaviour
         MaxValueChanged?.Invoke(oldValue, newValue);
     }
 
-    private IEnumerator RegenirateJob()
+    private IEnumerator RegenerateJob()
     {
         while (true)
         {
@@ -82,15 +93,15 @@ public abstract class Resource : NetworkBehaviour
     [ClientCallback]
     protected void ClientStartRegenirateJob()
     {
-        _regenCoroutine = StartCoroutine(RegenirateJob());
+        _regenCoroutine = StartCoroutine(RegenerateJob());
     }
 
     [Client]
-    protected void ClientStopRegenirateJob()
+    protected void ClientStopRegenerateJob()
     {
         if (_regenCoroutine != null)
         {
-            StopCoroutine(RegenirateJob());
+            StopCoroutine(RegenerateJob());
         }
     }
 

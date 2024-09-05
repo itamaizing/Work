@@ -13,15 +13,15 @@ public class CounterSpell : Ability
 	protected override void Cast()
 	{
 		Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, Radius);
-		/*if (_links.Stamina.Value >= 30)
+		/*if (_links.Runes.Value >= 30)
 		{
 			_duration = _baseDuration + 3;
-			_links.Stamina.Use(30);
+			_links.Runes.Use(30);
 		}
 		else
 		{
-			_duration = _baseDuration + _links.Stamina.Value / 10;
-			_links.Stamina.Use(_links.Stamina.Value);
+			_duration = _baseDuration + _links.Runes.Value / 10;
+			_links.Runes.Use(_links.Runes.Value);
 		}*/
 		
 		foreach (var enemy in enemyDetected)
@@ -30,7 +30,7 @@ public class CounterSpell : Ability
 			if (enemy.TryGetComponent<Character>(out var enemyCharacter))
 			{
 				//enemyCharacter.CharacterState.AddState(new AbilitySchoolDebuff(), _duration, 0, States.SchoolDebuff, Schools.Fire);
-				enemyCharacter.CharacterState.CmdAddState(States.SchoolDebuff, _duration, 0, Schools.Fire);
+				enemyCharacter.CharacterState.CmdAddState(States.SchoolDebuff, _duration, 0, Schools.Fire, _links.gameObject, this.name);
 			}
 		}
 	}

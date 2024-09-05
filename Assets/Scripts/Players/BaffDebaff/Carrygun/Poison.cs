@@ -41,7 +41,7 @@ public class Poison : BaseEffect
 
     private IEnumerator PoisonCoroutine(float duration)
     {
-        float originSpeed = _playerTarget.GetComponent<CharacterData>().MoveSpeed;
+        float originSpeed = _playerTarget.GetComponent<CharacterData>().GetAttributeValue(AttributeNames.Speed);
         _playerTarget.GetComponent<MoveComponent>().ChangeMoveSpeed(0.1f);
 
         while (duration > 0)

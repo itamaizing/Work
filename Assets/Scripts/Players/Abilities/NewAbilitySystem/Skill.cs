@@ -3,8 +3,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
+
+[Serializable]
+public class SkillEnergyCost
+{
+    public ResourceType resourceType;
+    public float resourceCost;
+}
 
 public enum Schools
 {
@@ -27,11 +33,12 @@ public enum AbilityForm
 
 public abstract class Skill : NetworkBehaviour
 {
-    [Header("AbilitieInfo")]
+    [Header("AbilitiesInfo")]
     [SerializeField] private AbilityInfo _abilityInfo;
     [Header("Main Settings")]
     [SerializeField] protected bool _isSubjectToGlobalCooldownTime = true;
-    [SerializeField] protected float _manaCost;
+
+    [SerializeField] protected List<SkillEnergyCost> _skillEnergyCosts;
     [SerializeField] protected float _cooldownTime;
     [SerializeField] protected float _castDeley;
     [SerializeField] private Schools _abilitySchool;
@@ -70,7 +77,7 @@ public abstract class Skill : NetworkBehaviour
     protected Coroutine _castDeleyCoroutine;
     protected Coroutine _castStreamCoroutine;
 
-    private float _remaining—ooldownTime;
+    private float _remainingCooldownTime;
     private StatsBuff _statsBuff = new StatsBuff();
     private Coroutine _actionWrapperForPreparingCoroutine;
     private Coroutine _actionWrapperForCastCoroutine;
@@ -85,14 +92,13 @@ public abstract class Skill : NetworkBehaviour
     public string Name => _abilityInfo.Name;
     public string Description => _abilityInfo.Description;
     public Sprite Icon => _abilityInfo.Icon;
-    public bool IsCooldowned { get => _remaining—ooldownTime <= 0; }
+    public bool IsCooldowned { get => _remainingCooldownTime <= 0; }
     public int Chargers => _currentChargers;
     public bool IsHaveCharge => (_currentChargers > 0);
     public float ChargeCooldown => _chargeCooldown;
     public bool IsPreparing => _isPreparing;
-    public bool IsHaveManaOnSkill { get => ManaCost <= _hero.Stamina.CurrentValue; }
-    public bool IsHaveResurces { get => IsHaveManaOnSkill && IsCooldowned && IsHaveCharge; }
-    public float ManaCost { get => Buff.ManaCost.GetBuffedValue(_manaCost); }
+    public bool IsHaveResourceOnSkill { get => CheckResourcesOnSkill(); }
+    public bool IsHaveResources { get => IsHaveResourceOnSkill && IsCooldowned && IsHaveCharge; }
     public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); }
     public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); }
     public bool IsCasting { get => _isCasting; }
@@ -160,7 +166,7 @@ public abstract class Skill : NetworkBehaviour
 
     public bool TryCast()
     {
-        if (IsHaveResurces && IsCanCast && _isCasting == false)
+        if (IsHaveResources && IsCanCast && _isCasting == false)
         {
             TryPayCost();
             _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
@@ -213,7 +219,7 @@ public abstract class Skill : NetworkBehaviour
 
     public void IncreaseSetCooldown(float time)
     {
-        if (time < _remaining—ooldownTime)
+        if (time < _remainingCooldownTime)
             return;
 
         if (_cooldownJob != null)
@@ -224,7 +230,7 @@ public abstract class Skill : NetworkBehaviour
 
     public void ReductionSetCooldown(float time)
     {
-        if (time > _remaining—ooldownTime)
+        if (time > _remainingCooldownTime)
             return;
 
         if (_cooldownJob != null)
@@ -235,14 +241,45 @@ public abstract class Skill : NetworkBehaviour
 
     public void CheckResources()
     {
-        if (IsHaveManaOnSkill == false)
-            MassageHaventMana?.Invoke(ManaCost - _hero.Stamina.CurrentValue);
+        foreach (var skillCost in _skillEnergyCosts)
+        {
+            var currentResourceValue = _hero.Resources.Where(r => r.Type == skillCost.resourceType).Sum(r => r.CurrentValue);
+        
+            if (currentResourceValue < Buff.ManaCost.GetBuffedValue(skillCost.resourceCost))
+            {
+                float shortage = Buff.ManaCost.GetBuffedValue(skillCost.resourceCost) - currentResourceValue;
+                
+                switch (skillCost.resourceType)
+                {
+                    case ResourceType.Health:
+                        MassageHaventMana?.Invoke(shortage);
+                        break;
+                    case ResourceType.Mana:
+                        MassageHaventMana?.Invoke(shortage);
+                        break;
+                    case ResourceType.Energy:
+                        MassageHaventMana?.Invoke(shortage);
+                        break;
+                    case ResourceType.Rune:
+                        MassageHaventMana?.Invoke(shortage);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
 
         if (IsCooldowned == false)
-            MassageNotCooldowned?.Invoke(_remaining—ooldownTime);
+            MassageNotCooldowned?.Invoke(_remainingCooldownTime);
 
         if (IsHaveCharge == false)
             MassageHaventCharge?.Invoke();
+    }
+
+    private bool CheckResourcesOnSkill()
+    {
+        return _skillEnergyCosts.All(skillCost =>
+            _hero.Resources.Where(r => r.Type == skillCost.resourceType).Sum(r => r.CurrentValue) >= Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
     }
 
     public void AddMaxChargeCount()
@@ -285,11 +322,16 @@ public abstract class Skill : NetworkBehaviour
         _skillRender.StopDrawLine();
     }
 
-    protected virtual bool TryPayCost(float mana)
+    protected virtual bool TryPayCost(List<SkillEnergyCost> skillEnergyCosts)
     {
-        if (IsHaveResurces)
+        if (IsHaveResourceOnSkill)
         {
-            _hero.Stamina.CmdUse(mana);
+            foreach (var skillCost in skillEnergyCosts)
+            {
+                var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
+                resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
+            }
+
             IncreaseSetCooldown(CooldownTime);
             TryUseCharge();
             return true;
@@ -299,10 +341,25 @@ public abstract class Skill : NetworkBehaviour
             return false;
         }
     }
-
+    
     protected virtual bool TryPayCost()
     {
-        return TryPayCost(_manaCost);
+        if (IsHaveResourceOnSkill)
+        {
+            foreach (var skillCost in _skillEnergyCosts)
+            {
+                var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
+                resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
+            }
+
+            IncreaseSetCooldown(CooldownTime);
+            TryUseCharge();
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     protected Character GetRaycastTarget(bool isCanTargetHimself = false)
@@ -455,11 +512,11 @@ public abstract class Skill : NetworkBehaviour
     private IEnumerator CooldownCoroutine(float cooldownTime)
     {
         CooldownStarted?.Invoke(cooldownTime);
-        _remaining—ooldownTime = cooldownTime;
+        _remainingCooldownTime = cooldownTime;
 
-        while (_remaining—ooldownTime > 0)
+        while (_remainingCooldownTime > 0)
         {
-            _remaining—ooldownTime -= Time.deltaTime;
+            _remainingCooldownTime -= Time.deltaTime;
             yield return null;
         }
         CooldownEnded?.Invoke();
