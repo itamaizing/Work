@@ -29,7 +29,8 @@ public enum DamageType
 {
 	Magical,
 	Physical,
-	Both
+	Both,
+	None
 }
 
 public abstract class AbilityBase : MonoBehaviour

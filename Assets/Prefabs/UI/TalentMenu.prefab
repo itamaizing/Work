@@ -654,6 +654,10 @@ MonoBehaviour:
   - {fileID: 9213869394837860764}
   - {fileID: 4461423214865279382}
   - {fileID: 2171621567838603393}
+  _talentContentName:
+  - {fileID: 6240497658888712278}
+  - {fileID: 3179453556133542827}
+  - {fileID: 4603459921726252210}
   _buttons1:
   - {fileID: 1226661006472500967}
   - {fileID: 6415449926324198884}
@@ -1337,7 +1341,7 @@ GameObject:
   - component: {fileID: 8353460619356542511}
   - component: {fileID: 4603459921726252210}
   m_Layer: 5
-  m_Name: ButtonText
+  m_Name: ThirdContentName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1548,7 +1552,7 @@ GameObject:
   - component: {fileID: 6396198360986558380}
   - component: {fileID: 3179453556133542827}
   m_Layer: 5
-  m_Name: ButtonText
+  m_Name: SecondContentName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2031,7 +2035,7 @@ GameObject:
   - component: {fileID: 3663930615240101535}
   - component: {fileID: 6240497658888712278}
   m_Layer: 5
-  m_Name: ButtonText
+  m_Name: FirstContentName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

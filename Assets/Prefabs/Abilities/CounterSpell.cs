@@ -30,7 +30,7 @@ public class CounterSpell : Ability
 			if (enemy.TryGetComponent<Character>(out var enemyCharacter))
 			{
 				//enemyCharacter.CharacterState.AddState(new AbilitySchoolDebuff(), _duration, 0, States.SchoolDebuff, Schools.Fire);
-				enemyCharacter.CharacterState.CmdAddState(States.SchoolDebuff, _duration, 0, Schools.Fire);
+				enemyCharacter.CharacterState.CmdAddState(States.SchoolDebuff, _duration, 0, Schools.Fire, _links.gameObject, this.name);
 			}
 		}
 	}

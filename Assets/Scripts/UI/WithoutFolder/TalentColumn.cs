@@ -8,6 +8,7 @@ using UnityEngine.UIElements;
 public class TalentColumn : MonoBehaviour
 {
 	[SerializeField] private GameObject[] _content;
+	[SerializeField] private TextMeshProUGUI[] _talentContentName;
 	[SerializeField] private TalentButton[] _buttons1;
 	[SerializeField] private TextMeshProUGUI _column1;
 	[SerializeField] private TalentButton[] _buttons2;
@@ -63,16 +64,16 @@ public class TalentColumn : MonoBehaviour
 				_buttons1[i].isActive = false;
 			}
 			int id = i;
-			_buttons1[i].button.onClick.AddListener(() => { SwitchTalent(id, !_system.Talents[id].IsActive); });
+			_buttons1[i].button.onClick.AddListener(() => { SwitchTalent(id, 0, !_system.Talents[id].IsActive); });
 			//_buttons1[i].SwitchBorders();
 		}
 		_column1.text = count.ToString();
 	}
 
-	private void SwitchTalent(int id, bool value)
+	private void SwitchTalent(int id, int row, bool value)
 	{
 		Debug.Log(id);
-		_system.SetActive(id, value);
+		_system.SetActive(id, row, value);
 		_buttons1[id].SwitchBorders(value);
 		Debug.Log("switch");
 

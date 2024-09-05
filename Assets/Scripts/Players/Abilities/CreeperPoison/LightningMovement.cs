@@ -86,8 +86,10 @@ public class LightningMovement : Ability
 
     private void AfterLeap()
     {
-        // false
-        _playerLinks.Rb.isKinematic = false;
+		// false
+		Debug.LogError("fix");
+		//_playerLinks.Rigidbody2D.isKinematic = false;
+
         _firstVectorSelected = false;
         _secondVectorSelected = false;
         _isEnemy = false;
@@ -125,7 +127,8 @@ public class LightningMovement : Ability
     {
         if (_canSelectedFirstVector && _isReadyFirstLeap)
         {
-            _playerLinks.Rb.isKinematic = true;
+			Debug.LogError("fix");
+			//_playerLinks.Rigidbody2D.isKinematic = true;
             _firstVectorSelected = true;
             _canSelectedFirstVector = false;
             _isReadyFirstLeap = false;
@@ -133,10 +136,11 @@ public class LightningMovement : Ability
             _actualFirstLeapRange = _leapRange;
 
             Vector2 mousePositionFirstVector = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 _lookDirectionForFirstVector = (mousePositionFirstVector - _playerLinks.Rb.position).normalized;
+			Debug.LogError("fix");
+			//Vector2 _lookDirectionForFirstVector = (mousePositionFirstVector - _playerLinks.Rigidbody2D.position).normalized;
 
             _actualFirstLeapRange *= GlobalVariable.cellSize;
-            _leapPositionForFirstVector = (_lookDirectionForFirstVector * _actualFirstLeapRange) + (Vector2)PlayerMove.transform.position;
+           // _leapPositionForFirstVector = (_lookDirectionForFirstVector * _actualFirstLeapRange) + (Vector2)PlayerMove.transform.position;
             // �������� �� ����������� ��� ������� ������, ���� ��� ����, �� ��������������� ����� ������������
             if (CheckObstacleBetween(PlayerMove.transform.position, _leapPositionForFirstVector))
             {
@@ -177,7 +181,9 @@ public class LightningMovement : Ability
         Debug.Log(_pointForSecondLeap + " ����� ������� ������");
         if (_canSelectedSecondVector && _isReadySecondLeap)
         {
-            _playerLinks.Rb.isKinematic = true;
+			Debug.LogError("fix");
+			//_playerLinks.Rigidbody2D.isKinematic = true;
+
             _secondVectorSelected = true;
             _canSelectedSecondVector = false;
             _isReadySecondLeap = false;
@@ -202,7 +208,8 @@ public class LightningMovement : Ability
     {
         _playerLinks.Move.enabled = false;
         _enabled = true;
-        _playerLinks.Rb.DOMove(_leapPositionForFirstVector, _durationOfLeap * _actualFirstLeapRange / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(AfterLeap);
+		Debug.LogError("fix");
+		//_playerLinks.Rigidbody2D.DOMove(_leapPositionForFirstVector, _durationOfLeap * _actualFirstLeapRange / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(AfterLeap);
         Debug.Log("Single leap work");
     }
 
@@ -213,7 +220,8 @@ public class LightningMovement : Ability
             _playerLinks.Move.enabled = false;
             _enabled = true;
             DG.Tweening.Sequence leapSequence = DOTween.Sequence();
-            leapSequence.Append(_playerLinks.Rb.DOMove(_leapPositionForFirstVector, _durationOfLeap * _actualFirstLeapRange / GlobalVariable.cellSize).SetEase(Ease.Linear));
+			Debug.LogError("fix");
+			//leapSequence.Append(_playerLinks.Rigidbody2D.DOMove(_leapPositionForFirstVector, _durationOfLeap * _actualFirstLeapRange / GlobalVariable.cellSize).SetEase(Ease.Linear));
             leapSequence.AppendCallback(() =>
                 {
                     if (!CheckEnemy(PlayerMove.transform.position, _leapPositionForFirstVector) && !_isEnemy)
@@ -227,7 +235,8 @@ public class LightningMovement : Ability
             {
                 if (IsEnemyBehindPlayer(_playerLinks.transform.position, _leapPositionForFirstVector) && _isEnemy)
                 {
-                    leapSequence.Append(_playerLinks.Rb.DOMove(_leapPositionForSecondVector, _durationOfLeap * _actualSecondLeapRange / GlobalVariable.cellSize).SetEase(Ease.Linear));
+					Debug.LogError("fix");
+					//leapSequence.Append(_playerLinks.Rigidbody2D.DOMove(_leapPositionForSecondVector, _durationOfLeap * _actualSecondLeapRange / GlobalVariable.cellSize).SetEase(Ease.Linear));
                     Debug.Log(IsEnemyBehindPlayer(_playerLinks.transform.position, _leapPositionForFirstVector) + " isEnemyBehind in leapCallback");
                 }
                 else

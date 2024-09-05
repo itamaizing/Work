@@ -1,74 +1,78 @@
 using Mirror;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class Icecloud : Ability
+public class Icecloud : Skill
 {
 	[SerializeField] private IceCloudProjectile _projectile;
-	[SerializeField] private Character _playerLinks;
+	[SerializeField] private HeroComponent _playerLinks;
 	[SerializeField] private SeriesOfStrikes _combo;
 
-	private Vector2 _mousePos;
-	private bool _enabled;
-	
-	private void Update()
-	{
-		if (!_enabled) return;
-		
-		if (Input.GetMouseButtonDown(0))
-		{
-			PayCost();
-			if (_playerLinks.RuneComponent.RemoveRune(1, this))
-			{
-				Shoot();
-			}
-			else
-			{
-				Cancel();
-			}
-		}
-		if(Input.GetMouseButtonDown(1)) 
-		{
-			Cancel();
-		}
-	}
+	private Vector2 _mousePos = Vector3.positiveInfinity;
+	//private bool _enabled;
+	private bool _boostDmg;
+	private Energy _energy;
+	private RuneComponent _rune;
 
-	protected override void Cast()
+	protected override bool IsCanCast => IsCanCastCheck();
+
+	private bool IsCanCastCheck()
 	{
-		_enabled = true;
-		/*if(_playerLinks.RuneComponent.RemoveRune(1, this)) 
+		return true;
+		/*if (_rune.CurrentValue >= 1)
 		{
-			Shoot();
+			_rune.CmdUse(1);
+			return true;
+		}
+		else
+		{
+			return false;
 		}*/
 	}
-
-	protected override void Cancel()
+	private void Start()
 	{
-		_enabled = false;
+		for (int i = 0; i < _playerLinks.Resources.Count; i++)
+		{
+			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
+			{
+				_energy = (Energy)_playerLinks.Resources[i];
+			}
+			if (_playerLinks.Resources[i].Type == ResourceType.Rune)
+			{
+				_rune = (RuneComponent)_playerLinks.Resources[i];
+			}
+		}
 	}
-	
+
 	private void Shoot()
 	{
 		Buff.AttackSpeed.ReductionPercentage(1 + _combo.GetMultipliedSpeed() / 100);
 
-		_playerLinks.RuneComponent.SwitchMultiplier(true);
-		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
+		//_playerLinks.RuneComponent.SwitchMultiplier(true);
+		//_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		Vector2 lookDir = _mousePos - (Vector2)_playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
-		_combo.MakeHit(null, AbilityForm.Magic, 1);
+		if( _combo.MakeHit(null, AbilityForm.Magic, 1, 0))
+		{
+			Debug.LogError("some talents i guess in ice cloud");
+			//_playerLinks.RuneComponent.IceCloudBonus();
+		}
 
 		Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);
 
-		CmdCreateProjecttile(angle, _playerLinks.Stamina.CurrentValue);
-		_playerLinks.Stamina.TryUse(_playerLinks.Stamina.CurrentValue);
-		Cancel();
+		CmdCreateProjecttile(angle, _energy.CurrentValue);
+		//_energy.TryUse(_energy.CurrentValue);
+		ClearData();
 	}
 
 	[Command]
 	private void CmdCreateProjecttile(float angle, float manaValue)
 	{
 		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
-		projectile.Init(_playerLinks, manaValue, false);
-		
+		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
+		projectile.Init(_playerLinks, manaValue, false, this);	
+
 		NetworkServer.Spawn(projectile.gameObject);
 
 		RpcInit(projectile.gameObject, manaValue);
@@ -77,6 +81,35 @@ public class Icecloud : Ability
 	[ClientRpc]
 	private void RpcInit(GameObject obj, float manaValue)
 	{
-		obj.GetComponent<IceCloudProjectile>().Init(_playerLinks, manaValue, false);
+		obj.GetComponent<IceCloudProjectile>().Init(_playerLinks, manaValue, false, this);
+	}
+
+	public void TalentBoostDmg(bool value)
+	{
+		_boostDmg = value;
+	}
+
+	protected override IEnumerator PrepareJob()
+	{
+		while (float.IsPositiveInfinity(_mousePos.x))
+		{
+			if (Input.GetMouseButton(0))
+			{				
+				_mousePos = GetMousePoint();
+			}
+			yield return null;
+		}
+	}
+
+	protected override IEnumerator CastJob()
+	{
+		Shoot();
+		yield return null;
+	}
+
+	protected override void ClearData()
+	{
+		_mousePos = Vector2.positiveInfinity;
+		//_enabled = false;
 	}
 }

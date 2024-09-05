@@ -126,8 +126,8 @@ public class LightningMovementUpdated : TargetOrAreaAbility
         //playerLinks.Move.enabled = false;
 
         Debug.Log("LightningMovement CmdSingleLeap playerLinks Move false");
-
-        playerLinks.Rb.DOMove(firstLeapPoint, durationLeap * rangeLeap / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(Cancel);
+		Debug.LogError("fix");
+		//playerLinks.Rigidbody2D.DOMove(firstLeapPoint, durationLeap * rangeLeap / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(Cancel);
         //playerLinks.Rb.MovePosition(firstLeapPoint * durationLeap * rangeLeap / GlobalVariable.cellSize);
 
         Debug.Log("LightningMovement CmdSingleLeap playerLinks MovePos work / firstLeapPoint == " + firstLeapPoint);
@@ -142,8 +142,9 @@ public class LightningMovementUpdated : TargetOrAreaAbility
 
         playerLinks.Move.enabled = false;
         Sequence leapSequence = DOTween.Sequence();
-        leapSequence.Append(playerLinks.Rb.DOMove(firstLeapPoint, durationLeap * rangeLeap / GlobalVariable.cellSize).SetEase(Ease.Linear));
-        leapSequence.Append(playerLinks.Rb.DOMove(secondLeapPoint, durationLeap * rangeLeap / GlobalVariable.cellSize).SetEase(Ease.Linear));
+		Debug.LogError("fix");
+		//leapSequence.Append(playerLinks.Rigidbody2D.DOMove(firstLeapPoint, durationLeap * rangeLeap / GlobalVariable.cellSize).SetEase(Ease.Linear));
+        //leapSequence.Append(playerLinks.Rigidbody2D.DOMove(secondLeapPoint, durationLeap * rangeLeap / GlobalVariable.cellSize).SetEase(Ease.Linear));
         leapSequence.OnComplete(Cancel);
     }
 }

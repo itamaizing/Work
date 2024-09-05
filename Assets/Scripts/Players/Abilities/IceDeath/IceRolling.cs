@@ -9,7 +9,7 @@ using DG.Tweening;
 public class IceRolling : Ability
 {
 	[Header("Ability properties")]
-	//[SerializeField] private Rb _rb;
+	//[SerializeField] private Rigidbody2D _rb;
 	//[SerializeField] private RuneComponent _rune;
 	[SerializeField] private Character _playerLinks;
 	[SerializeField] private float _jumprange = 2f;
@@ -29,22 +29,18 @@ public class IceRolling : Ability
 	{
 		if(!_enabled) return;
 
-		//_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		//Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
-		//_angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
-		//_croosFire.transform.rotation = Quaternion.Euler(_croosFire.transform.rotation.x, _croosFire.transform.rotation.y, _angle);
 
 		if (Input.GetMouseButtonDown(0))
 		{
 			//PayCost();
-			if (_playerLinks.RuneComponent.RemoveRune(0.25f, this))
+			/*if (_playerLinks.RuneComponent.RemoveRune(1, this))
 			{
 				Jump();
 			}
 			else
 			{
 				Cancel();
-			}
+			}*/
 		}
 		if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
 		{
@@ -74,11 +70,11 @@ public class IceRolling : Ability
 			Vector2 _mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			Vector2 lookDir = (_mousePos - _playerLinks.Rb.position).normalized;
 			
-			if(Runes.Value >= 10)
+			if(Mana.Value >= 10)
 			{
 				actualJumpRange += 2;
 			}
-			else if(Runes.Value < 10 && Runes.Value >=5)
+			else if(Mana.Value < 10 && Mana.Value >=5)
 			{
 				actualJumpRange += 1;
 			}
@@ -92,7 +88,7 @@ public class IceRolling : Ability
 			}
 			else
 			{
-				Runes.Use((actualJumpRange - _jumprange) * 5);
+				Mana.Use((actualJumpRange - _jumprange) * 5);
 				_playerLinks.Rb.DOMove(jumpPos, _durationOfJump * actualJumpRange / GlobalVariable.cellSize).OnComplete(AfterJump);
 			}
 		}
@@ -138,20 +134,20 @@ public class IceRolling : Ability
 			float actualJumpRange = _jumprange;
 
 			_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			_lookDir = (_mousePos - _playerLinks.Rb.position).normalized;
+			//_lookDir = (_mousePos - _playerLinks.Rigidbody2D.position).normalized;
 			Debug.Log("jump");
 			actualJumpRange *= GlobalVariable.cellSize;
 			Vector2 jumpPos = _lookDir * actualJumpRange + (Vector2)PlayerMove.transform.position;
-			if (CheckObstacleBetween(_playerLinks.Rb.position, jumpPos))
+		/*	if (CheckObstacleBetween(_playerLinks.Rigidbody2D.position, jumpPos))
 			{
-				Debug.Log("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:");
-				//пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-				_playerLinks.Rb.DOMove(_jumpPos, _durationOfJump * actualJumpRange / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(AfterJump);
+				Debug.Log("Обнаружено препятствие:");
+				//прыгать до препятствия
+				_playerLinks.Rigidbody2D.DOMove(_jumpPos, _durationOfJump * actualJumpRange / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(AfterJump);
 			}
 			else
 			{
-				_playerLinks.Rb.DOMove(jumpPos, _durationOfJump * actualJumpRange / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(NextJump);
-			}
+				_playerLinks.Rigidbody2D.DOMove(jumpPos, _durationOfJump * actualJumpRange / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(NextJump);
+			}*/
 		}
 	}
 
@@ -162,16 +158,16 @@ public class IceRolling : Ability
 			Debug.Log("jump " + _jumpCount);
 			_jumpCount--;
 			Vector2 jumpPos = _lookDir + (Vector2)PlayerMove.transform.position;
-			if (CheckObstacleBetween(_playerLinks.Rb.position, jumpPos))
+			/*if (CheckObstacleBetween(_playerLinks.Rigidbody2D.position, jumpPos))
 			{
-				Debug.Log("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:");
-				//пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-				_playerLinks.Rb.DOMove(_jumpPos, _durationOfJump / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(AfterJump);
+				Debug.Log("Обнаружено препятствие:");
+				//прыгать до препятствия
+				//_playerLinks.Rigidbody2D.DOMove(_jumpPos, _durationOfJump / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(AfterJump);
 			}
 			else
 			{
-				_playerLinks.Rb.DOMove(jumpPos, _durationOfJump / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(NextJump);
-			}
+				//_playerLinks.Rigidbody2D.DOMove(jumpPos, _durationOfJump / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(NextJump);
+			}*/
 		}
 		else
 		{

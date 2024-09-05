@@ -48,8 +48,10 @@ public class SpitPoison : Ability
         }
 
         _mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
-        _angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
+		Debug.LogError("fix");
+		//Vector2 lookDir = _mousePos - _playerLinks.Rigidbody2D.position;
+		Debug.LogError("fix");
+		//_angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
     }
 
     private IEnumerator CallShootCoroutine()
@@ -73,7 +75,8 @@ public class SpitPoison : Ability
     [Command]
     private void CmdInstantiateProjectile(float angle, float manaValue)
     {
-        SpitPoisonProjectile projectile = Instantiate(_projectile, _playerLinks.Rb.position, Quaternion.Euler(0, 0, angle));
+		Debug.LogError("fix"); 
+		SpitPoisonProjectile projectile = Instantiate(_projectile, _playerLinks.gameObject.transform.position, Quaternion.Euler(0, 0, angle)); // it was Rb postion
         projectile.InitializationProjectile(_playerLinks, manaValue);
 
         NetworkServer.Spawn(projectile.gameObject);

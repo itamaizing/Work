@@ -10,6 +10,8 @@ public class SpawnComponent : NetworkBehaviour
     
     private readonly List<MinionComponent> _units = new();
 
+    public List<MinionComponent> Units => _units;
+
     private void SpawnUnit(GameObject parent)
     {
         if (!isOwned) return;
@@ -36,8 +38,26 @@ public class SpawnComponent : NetworkBehaviour
         NetworkServer.Spawn(controllable , connectionToClient);
     }
 
+	public void SpawnUnit(Transform transform)
+	{
+		var controllable = Instantiate(unit, transform);
+		var contollableMinion = controllable.GetComponent<MinionComponent>();
+		contollableMinion.Initialize();
+		var user = GetComponent<UserNetworkSettings>();
 
-    private void RemoveUnit()
+		SceneManager.MoveGameObjectToScene(controllable, user.MyRoom);
+
+		_units.Add(contollableMinion);
+
+		//var position = _units.Count + 1 / Positions.unitInGroupPositions.Count;
+
+		//controllable.transform.position = (Vector2)parent.transform.position + Positions.unitInGroupPositions[position];
+
+		NetworkServer.Spawn(controllable, connectionToClient);
+	}
+
+
+	private void RemoveUnit()
     {
         Destroy(_units.Last().gameObject);
         _units.Remove(_units.Last());

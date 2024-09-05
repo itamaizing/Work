@@ -67,7 +67,8 @@ public class MoveComponent : NetworkBehaviour
 			MoveDirection.Normalize();
 		}
 	}
-	
+
+	[Client]
 	private void FixedUpdate()
 	{
 		CmdMove(MoveDirection, _currentSpeed);
