@@ -2,62 +2,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RuneComponent : StaminaComponent
+public class RuneComponent : Resource
 {
-	//private Ability _lastUsedAbility = null;
-	//private int _multiplier = 1;
-	//private float _timer = 0;
-	//private bool _multiplyCost = false;
-
 	private List<AbilityTimer> _abilities = new List<AbilityTimer>();
 	private bool _disableMultiplier = false;
-	private void Update()
+
+	/*private void Update()
 	{
-		Regen();
 		Timer();
-		//if (!_multiplyCost) return;
+	}*/
 
-		/*_timer += Time.deltaTime;
-		if (_timer > _regenerationDelay)
-		{
-			_timer = 0;
-			_multiplyCost = false;
-			_multiplier = 1;
-			_lastUsedAbility = null;
-		}*/
-	}
-
-	public override void Add(float runeValue)
-	{
-		_value += runeValue;
-		if (_value > _maxValue)
-		{
-			_value = _maxValue;
-		}
-		UpdateBar();
-	}
-	
-	public bool RemoveRune(float runeValue, Ability usedAbility) 
+	private bool RemoveRune(float runeValue, Skill usedAbility) 
 	{
 		if(_abilities.Count > 0)
 		{			
 			for(int i = 0; i < _abilities.Count; i++)
 			{
-				if (_disableMultiplier && _value >= runeValue * _abilities[i].multiplier)
+				if (_disableMultiplier && _currentValue >= runeValue * _abilities[i].multiplier)
 				{
-					_value -= runeValue * _abilities[i].multiplier;
-					UpdateBar();
+					_currentValue -= runeValue * _abilities[i].multiplier;
 					_disableMultiplier = false;
 					return true;
 				}
-				if (_abilities[i].ability == usedAbility && _value >= runeValue * _abilities[i].multiplier * 2)
+				if (_abilities[i].ability == usedAbility && _currentValue >= runeValue * _abilities[i].multiplier * 2)
 				{
 					_abilities[i].multiplier *=2;
 
 					runeValue *= _abilities[i].multiplier;
 
-					_value -= runeValue;
-					UpdateBar();
+					_currentValue -= runeValue;
 					//_multiplyCost = true;
 					_abilities[i].time = 6;
 					return true;
@@ -67,7 +40,7 @@ public class RuneComponent : StaminaComponent
 		}
 		else
 		{
-			if(_value >= runeValue)
+			if(_currentValue >= runeValue)
 			{
 				AbilityTimer abilityTimer = new AbilityTimer();
 				abilityTimer.time = 6;
@@ -75,8 +48,7 @@ public class RuneComponent : StaminaComponent
 				abilityTimer.ability = usedAbility;
 				_abilities.Add(abilityTimer);
 				_disableMultiplier = false;
-				_value -= runeValue;
-				UpdateBar();
+				_currentValue -= runeValue;
 				return true;
 			}
 			else 
@@ -84,31 +56,6 @@ public class RuneComponent : StaminaComponent
 				return false;
 			}
 		}
-
-		/*if(_lastUsedAbility == usedAbility && _value >= runeValue*_multiplier * 2)
-		{
-			_multiplier *= 2;
-		}
-		runeValue *= _multiplier;
-		if(_value >= runeValue)
-		{
-			_lastUsedAbility = usedAbility;
-			_value -= runeValue;
-			UpdateBar();
-			_multiplyCost = true;
-			_timer = 0;
-			return true;
-		}
-		else
-		{
-			return false;
-		}*/
-	}
-
-	public override bool TryUse(float EnergyValue)
-	{
-		Debug.LogError("ERROR!!! You are using Rune instead of Runes or Runes!!!!");
-		return false;
 	}
 
 	public void SwitchMultiplier(bool value)
@@ -132,7 +79,7 @@ public class RuneComponent : StaminaComponent
 
 public class AbilityTimer
 {
-	public Ability ability;
+	public Skill ability;
 	public float time;
 	public float multiplier;
 }

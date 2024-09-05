@@ -6,31 +6,61 @@ using UnityEngine.SceneManagement;
 public class IcyStream : Skill
 {
 	[SerializeField] private IcyStreamProjectile _projectile;
-	[SerializeField] private Character _playerLinks;
+	[SerializeField] private HeroComponent _playerLinks;
 	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 	private bool _talent = false;
 
 	private Vector2 _mousePos = Vector3.positiveInfinity;
-	protected override bool IsCanCast => true;
+	private Energy _energy;
+	private RuneComponent _rune;
 
+	protected override bool IsCanCast => IsCanCastCheck();
 
+	private bool IsCanCastCheck()
+	{
+		if (_rune.CurrentValue >= 1.5f)
+		{
+			_rune.CmdUse(1.5f);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	private void Start()
+	{
+		for (int i = 0; i < _playerLinks.Resources.Count; i++)
+		{
+			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
+			{
+				_energy = (Energy)_playerLinks.Resources[i];
+			}
+			if (_playerLinks.Resources[i].Type == ResourceType.Rune)
+			{
+				_rune = (RuneComponent)_playerLinks.Resources[i];
+			}
+		}
+
+	}
 	private void Shoot()
 	{
 		Debug.Log("shot");
 		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
+		Vector2 lookDir = _mousePos - (Vector2)_playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
 		CmdCreateProjecttile(angle);
 		float usedEnergy = 0;
-		if (_playerLinks.Stamina.CurrentValue >= 40)
+		if (_energy.CurrentValue >= 40)
 		{
 			usedEnergy = 40;
 		}
 		else
 		{
-			usedEnergy = _playerLinks.Stamina.CurrentValue;
+			usedEnergy = _energy.CurrentValue;
 		}
-		_playerLinks.Stamina.TryUse(usedEnergy);
+		_energy.TryUse(usedEnergy);
 		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 1);
 	}
 
@@ -39,17 +69,17 @@ public class IcyStream : Skill
 	{
 		IcyStreamProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
 		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
-		projectile.Init(_playerLinks, _playerLinks.Stamina.CurrentValue, _talent); //its talent bool, no last hit 
+		projectile.Init(_playerLinks, _energy.CurrentValue, _talent, this); //its talent bool, no last hit 
 
 		NetworkServer.Spawn(projectile.gameObject);
 
-		RpcInit(projectile.gameObject, _playerLinks.Stamina.CurrentValue);
+		RpcInit(projectile.gameObject, _energy.CurrentValue);
 	}
 
 	[ClientRpc]
 	private void RpcInit(GameObject obj, float manaValue)
 	{
-		obj.GetComponent<IceCloudProjectile>().Init(_playerLinks, manaValue, false);
+		obj.GetComponent<IceCloudProjectile>().Init(_playerLinks, manaValue, false, this);
 	}
 
 	protected override IEnumerator PrepareJob()
@@ -58,7 +88,6 @@ public class IcyStream : Skill
 		{
 			if (Input.GetMouseButton(0))
 			{
-				_playerLinks.RuneComponent.CmdUse(1.5f);
 				_mousePos = GetMousePoint();
 			}
 			yield return null;

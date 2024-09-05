@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/NEW/UI/UIMenu.meta
 guid: 984ef0f559028bc4ebe6d51d6b343696
+========
+guid: 0573867f613183c4394b7664321bb18d
+>>>>>>>> main:Assets/NEW/UI.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

@@ -1,5 +1,7 @@
 using Mirror;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 public abstract class AbstractCharacterState
 {
@@ -428,7 +430,7 @@ public class BlindnessState : AbstractCharacterState
 	public override StateType Type => StateType.Physical;
 	public override List<StatusEffect> Effects => _effects;
 
-	//private PlayerAbilities _skills;
+	//private PlayerAbilities _abilities;
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		Debug.Log("Entering Stunned State");
@@ -2612,6 +2614,15 @@ public class CharacterState : NetworkBehaviour
 	private Resource _stamina;*/
 	private Character _hero;
 
+	private List<AbstractCharacterState> currentStates = new List<AbstractCharacterState>();
+	[SerializeField] private StateIcons _stateIcons;
+
+	public bool invinsible = false;
+	/*public Health Health => _health;
+	public MoveComponent Move => _move;
+	public Resource Stamina => _stamina;*/
+	public Character Character => _hero;
+
 	private List<AbstractCharacterState> _currentStates = new List<AbstractCharacterState>();
 	[SerializeField] private StateIcons _stateIcons;
 
@@ -2712,7 +2723,7 @@ public class CharacterState : NetworkBehaviour
 
 	public AbstractCharacterState GetState(States state)
 	{
-		foreach (AbstractCharacterState states in _currentStates)
+		foreach (AbstractCharacterState states in currentStates)
 		{
 			Debug.Log(states.State + " on enemy, check for " + state);
 			if (states.State == state)
@@ -2722,6 +2733,102 @@ public class CharacterState : NetworkBehaviour
 		}
 		return null;
 	}
+
+	[Command]
+	public void CmdAddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
+	{
+		AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
+		ClientAddState(state, duration, damageToExit, schools, personWhoShooted, skillName);
+	}
+
+	[Command]
+	public void CmdAddState(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
+	{
+		Debug.Log("Add state cmd");
+		AddStateLogic(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
+		ClientAddState(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
+	}
+
+	public void AddState(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
+	{
+		Debug.Log("Add state from server");
+		AddStateLogic(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
+		ClientAddState(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
+	}
+
+	[Command]
+	public void CmdRemoveState(States state)
+	{
+		RemoveStateLogic(state);
+		ClientRemoveState(state);
+	}
+
+	public void RemoveState(States state)
+	{
+		RemoveStateLogic(state);
+		ClientRemoveState(state);
+	}
+
+	public void RemoveState(AbstractCharacterState newState)
+	{
+		if (currentStates.Contains(newState))
+		{
+			//newState.ExitState(this);
+			//_stateIcons.RemoveItemByState(newState.state);
+			currentStates.Remove(newState);
+		}
+	}
+
+	private void RemoveStateLogic(States stateName)
+	{
+		if (currentStates.Count <= 0) return;
+
+		_stateIcons.RemoveItemByState(stateName);
+		for(int i = currentStates.Count - 1; i >= 0; i --)
+		{
+			if (currentStates[i].State == stateName)
+			{
+				currentStates[i].ExitState();
+			}
+		}
+	}
+
+	[ClientRpc]
+	private void ClientAddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
+	{
+		Debug.Log("Add state rpc");
+		AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
+	}
+
+	[ClientRpc]
+	private void ClientRemoveState(States stateName)
+	{
+		RemoveStateLogic(stateName);
+	}
+
+	private void AddStateLogic(States state, float duration, float damageToExit, Schools school, GameObject personWhoShooted, string skillName)
+	{
+		foreach (AbstractCharacterState states in _currentStates)
+		{
+			for(int i = 0; i < currentStates.Count; i++)
+			{
+				if (currentStates[i].State != state) continue;
+
+				if (currentStates[i].Stack(duration))
+				{
+					_stateIcons.ActivateIco(state, duration, 1, true);
+				}
+				else
+				{
+					CreateState(enumToState[state], state, duration, damageToExit, personWhoShooted, skillName, false);
+					break;
+					//nothing at this time??
+				}
+			}
+		}
+		else
+		{
+			CreateState(enumToState[state], state, duration, damageToExit, personWhoShooted, skillName, false);
 
 	[Command]
 	public void CmdAddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
@@ -2782,67 +2889,19 @@ public class CharacterState : NetworkBehaviour
 		}
 	}
 
-	[ClientRpc]
-	private void ClientAddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
+	private void CreateState(AbstractCharacterState state, States stateName, float duration, float damageToExit, GameObject personWhoShooted, string skillName, bool stack)
 	{
-		Debug.Log("Add state rpc");
-		AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
+		_stateIcons.ActivateIco(stateName, duration, 1, stack);
+		currentStates.Add(state);
+		if (personWhoShooted.TryGetComponent<Character>(out var character))
+		{
+			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit, character, skillName);
+		}
+		else
+		{
+			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit, null, skillName);
+		}
 	}
-
-	[ClientRpc]
-	private void ClientRemoveState(States stateName)
-	{
-		RemoveStateLogic(stateName);
-	}
-
-    private void AddStateLogic(States state, float duration, float damageToExit, Schools school, GameObject personWhoShooted, string skillName)
-    {
-        Debug.Log("Add state logic");
-        if (invinsible)
-            return;
-        if (CheckForState(state))
-        {
-            for (int i = 0; i < _currentStates.Count; i++)
-            {
-                if (_currentStates[i].State != state) continue;
-
-                if (_currentStates[i].Stack(duration))
-                {
-                    _stateIcons.ActivateIco(state, duration, 1, true);
-                }
-                else
-                {
-                    CreateState(EnumToState[state], state, duration, damageToExit, personWhoShooted, skillName, false);
-                    break;
-                    //nothing at this time??
-                }
-            }
-        }
-        else
-        {
-            CreateState(EnumToState[state], state, duration, damageToExit, personWhoShooted, skillName, false);
-
-            if (school != Schools.None)
-            {
-                var counterSpell = (AbilitySchoolDebuff)EnumToState[state];
-                counterSpell.canceledSchoool = school;
-            }
-        }
-    }
-
-    private void CreateState(AbstractCharacterState state, States stateName, float duration, float damageToExit, GameObject personWhoShooted, string skillName, bool stack)
-    {
-        _stateIcons.ActivateIco(stateName, duration, 1, stack);
-        _currentStates.Add(state);
-        if (personWhoShooted.TryGetComponent<Character>(out var character))
-        {
-            _currentStates[_currentStates.Count - 1].EnterState(this, duration, damageToExit, character, skillName);
-        }
-        else
-        {
-            _currentStates[_currentStates.Count - 1].EnterState(this, duration, damageToExit, null, skillName);
-        }
-    }
 }
 
 public enum StateType

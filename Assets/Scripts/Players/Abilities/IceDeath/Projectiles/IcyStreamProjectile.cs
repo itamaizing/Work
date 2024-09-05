@@ -13,7 +13,7 @@ public class IcyStreamProjectile : Projectiles
 	private List<Character> _enemyList;
 	//private Vector2 startPos;
 
-	private void Awake()
+	private void Start()
 	{
 		Debug.Log("bullet");
 		//startPos = transform.position;
@@ -33,10 +33,6 @@ public class IcyStreamProjectile : Projectiles
 	{
 		Timer();
 		_spriteRenderer.DOFade(0, _timer);
-		/*if (Vector2.Distance(transform.position, startPos) > _distance * GlobalVariable.cellSize)
-		{
-			Explode();
-		}*/
 	}
 
 	private void OnTriggerEnter2D(Collider2D collision)
@@ -48,8 +44,8 @@ public class IcyStreamProjectile : Projectiles
 		if (collision.TryGetComponent<Character>(out var target))
 		{
 			_enemyList.Add(target);
-			Energy energyLink = (Energy)_dad.Stamina;
-			energyLink.SumDamageMake(_damage);
+			//Energy energyLink = (Energy)_dad.Stamina;
+			_energy.SumDamageMake(_damage);
 
 			//target.Health.TryTakeDamage(_damage, DamageType.Magical, AttackRangeType.RangeAttack);
 			Debug.LogError("!!!damage method has been changed!!!");

@@ -9,7 +9,7 @@ public class IcePuddleObject : Projectiles
 {
 	[HideInInspector] public FrostingFrozenTalant talant;
 
-	[FormerlySerializedAs("energyPlayer")]  private Energy _energy;
+	//[FormerlySerializedAs("energyPlayer")]  private Energy _energy;
 	[FormerlySerializedAs("healthPlayer")]  private Health _healthComponent;
 	//[SerializeField] private Rigidbody2D _rb;
 
@@ -19,12 +19,12 @@ public class IcePuddleObject : Projectiles
 	/*
 	 * buff player
 	 * */
-	public override void Init(Character dad, float timeToDestroy, bool lastHit)
+	public override void Init(HeroComponent dad, float timeToDestroy, bool lastHit, Skill skill)
 	{
 		_dad = dad;
+		_skill = skill;
 		_initialized = true;
 		_lastHit = lastHit;
-		_energy = (Energy)_dad.Stamina;
 		_healthComponent = _dad.Health;
 		_timeToDestroy += timeToDestroy;
 		if(_lastHit)
@@ -58,7 +58,7 @@ public class IcePuddleObject : Projectiles
 			if (_talentActive)
 			{
 				Debug.LogError("fix");
-				//_player.Health.SetEvadeAll(-3);
+				//_dad.Health.SetEvadeAll(-3);
 			}
 		}
 	}
@@ -97,7 +97,7 @@ public class IcePuddleObject : Projectiles
 			if (_talentActive)
 			{
 				Debug.LogError("fix");
-				//_player.Health.SetEvadeAll(3);
+				//_dad.Health.SetEvadeAll(3);
 			}
 			_enemies.Add(target.CharacterState);
 		}

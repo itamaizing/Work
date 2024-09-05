@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SeriesOfStrikes : MonoBehaviour
 {
-	[SerializeField] private Character _player;
+	[SerializeField] private HeroComponent _playerLinks;
 
     private float _timer = 6;
 	private float _baseTimer = 6; //time and timer between losing streak
@@ -12,6 +12,7 @@ public class SeriesOfStrikes : MonoBehaviour
 	private bool _isInTheRow;
 	private Character _curTarget;
 	private Energy _energy;
+	private RuneComponent _rune;
 	private float _sumPhisDamage = 0;
 	private float _speedMultiplier = 5;
 
@@ -28,10 +29,18 @@ public class SeriesOfStrikes : MonoBehaviour
 
 	private void Start()
 	{
-		if(_player != null)
+		for (int i = 0; i < _playerLinks.Resources.Count; i++)
 		{
-			_energy = (Energy)_player.Stamina;
+			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
+			{
+				_energy = (Energy)_playerLinks.Resources[i];
+			}
+			if (_playerLinks.Resources[i].Type == ResourceType.Rune)
+			{
+				_rune = (RuneComponent)_playerLinks.Resources[i];
+			}
 		}
+
 	}
 	private void Update()
 	{
@@ -172,7 +181,7 @@ public class SeriesOfStrikes : MonoBehaviour
 	{
 
 		Debug.Log("LAST HIT + " + usedRune * 2);
-		_player.RuneComponent.Add(usedRune * 2 + 0.5f);
+		_rune.Add(usedRune * 2 + 0.5f);
 		//_player
 		//_energy.SeriesOfStrikeBoost();
 
@@ -187,7 +196,7 @@ public class SeriesOfStrikes : MonoBehaviour
 		_sumPhisDamage += damage;
 		while( _sumPhisDamage >= 50 ) 
 		{
-			_player.RuneComponent.Add(0.5f);
+			_rune.Add(0.5f);
 			_sumPhisDamage -= 50;
 		}
 	}
@@ -202,7 +211,7 @@ public class SeriesOfStrikes : MonoBehaviour
 		if(target == null) return;
 		if(target.CharacterState.CheckForState(States.Curse))
 		{
-			_player.Health.Heal(damage * 0.2f);
+			_playerLinks.Health.Heal(damage * 0.2f);
 		}
 	}
 }

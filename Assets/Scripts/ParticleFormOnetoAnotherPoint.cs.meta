@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/Scripts/Players/Abilities/CreeperPoison/CreeperInvisible.cs.meta
-guid: d2f5bacbc4ce11b48838f7b28a04a202
-========
 guid: 239352606eaf54047a2a6b0dfce75974
->>>>>>>> origin/Nokman2:Assets/Scripts/ParticleFormOnetoAnotherPoint.cs.meta
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2

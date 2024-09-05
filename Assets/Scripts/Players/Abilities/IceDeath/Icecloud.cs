@@ -6,32 +6,63 @@ using UnityEngine.SceneManagement;
 public class Icecloud : Skill
 {
 	[SerializeField] private IceCloudProjectile _projectile;
-	[SerializeField] private Character _playerLinks;
+	[SerializeField] private HeroComponent _playerLinks;
 	[SerializeField] private SeriesOfStrikes _combo;
 
 	private Vector2 _mousePos = Vector3.positiveInfinity;
 	//private bool _enabled;
 	private bool _boostDmg;
+	private Energy _energy;
+	private RuneComponent _rune;
 
-	protected override bool IsCanCast => true;
-	
+	protected override bool IsCanCast => IsCanCastCheck();
+
+	private bool IsCanCastCheck()
+	{
+		return true;
+		/*if (_rune.CurrentValue >= 1)
+		{
+			_rune.CmdUse(1);
+			return true;
+		}
+		else
+		{
+			return false;
+		}*/
+	}
+	private void Start()
+	{
+		for (int i = 0; i < _playerLinks.Resources.Count; i++)
+		{
+			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
+			{
+				_energy = (Energy)_playerLinks.Resources[i];
+			}
+			if (_playerLinks.Resources[i].Type == ResourceType.Rune)
+			{
+				_rune = (RuneComponent)_playerLinks.Resources[i];
+			}
+		}
+	}
+
 	private void Shoot()
 	{
 		Buff.AttackSpeed.ReductionPercentage(1 + _combo.GetMultipliedSpeed() / 100);
 
 		//_playerLinks.RuneComponent.SwitchMultiplier(true);
 		//_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		Vector2 lookDir = _mousePos - _playerLinks.Rb.position;
+		Vector2 lookDir = _mousePos - (Vector2)_playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
 		if( _combo.MakeHit(null, AbilityForm.Magic, 1, 0))
 		{
+			Debug.LogError("some talents i guess in ice cloud");
 			//_playerLinks.RuneComponent.IceCloudBonus();
 		}
 
 		Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);
 
-		CmdCreateProjecttile(angle, _playerLinks.Stamina.CurrentValue);
-		_playerLinks.Stamina.TryUse(_playerLinks.Stamina.CurrentValue);
+		CmdCreateProjecttile(angle, _energy.CurrentValue);
+		//_energy.TryUse(_energy.CurrentValue);
 		ClearData();
 	}
 
@@ -40,7 +71,7 @@ public class Icecloud : Skill
 	{
 		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
 		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
-		projectile.Init(_playerLinks, manaValue, false);		
+		projectile.Init(_playerLinks, manaValue, false, this);	
 
 		NetworkServer.Spawn(projectile.gameObject);
 
@@ -50,7 +81,7 @@ public class Icecloud : Skill
 	[ClientRpc]
 	private void RpcInit(GameObject obj, float manaValue)
 	{
-		obj.GetComponent<IceCloudProjectile>().Init(_playerLinks, manaValue, false);
+		obj.GetComponent<IceCloudProjectile>().Init(_playerLinks, manaValue, false, this);
 	}
 
 	public void TalentBoostDmg(bool value)
@@ -63,8 +94,7 @@ public class Icecloud : Skill
 		while (float.IsPositiveInfinity(_mousePos.x))
 		{
 			if (Input.GetMouseButton(0))
-			{
-				_playerLinks.RuneComponent.CmdUse(1);
+			{				
 				_mousePos = GetMousePoint();
 			}
 			yield return null;

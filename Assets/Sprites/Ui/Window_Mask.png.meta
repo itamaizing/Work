@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Sprites/Ui/Window_Mask.png.meta
 guid: 47c94ece59523da4b9004e0a6c895b3b
+========
+guid: cdcaf942b75e2864d9b7912d938c932f
+>>>>>>>> main:Assets/Sprites/Ui/Window_Frame 1.png.meta
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -49,7 +53,11 @@ TextureImporter:
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
+<<<<<<<< HEAD:Assets/Sprites/Ui/Window_Mask.png.meta
   spriteBorder: {x: 13, y: 11, z: 12, w: 12}
+========
+  spriteBorder: {x: 14, y: 14, z: 14, w: 14}
+>>>>>>>> main:Assets/Sprites/Ui/Window_Frame 1.png.meta
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 2
   alphaIsTransparency: 1

@@ -65,12 +65,6 @@ public abstract class Resource : NetworkBehaviour
         }
     }
 
-    // ������������ � CharacterState ��� ���������� ���� ����
-    public void ReductionCurrentValue(float value)
-    {
-        _currentValue -= value;
-    }
-
     protected virtual void HookValueChanged(float oldValue, float newValue)
     {
         ValueChanged?.Invoke(oldValue, newValue);

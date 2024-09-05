@@ -10,15 +10,15 @@ public class BlockOfIceProjectile : Projectiles
 
 	public void Init(GameObject dad)
 	{
-		_dad = dad.GetComponent<Character>();
+		_dad = dad.GetComponent<HeroComponent>();
 		Debug.Log("bullet");
 		_initialized = true;
 	}
-	private void Awake()
+	private void Start()
 	{
 		Debug.Log("bullet");
 		startPos = transform.position;
-		_rb.AddForce(transform.up * _force, ForceMode2D.Impulse);
+		//_rb.AddForce(transform.up * _force, ForceMode2D.Impulse);
 	}
 
 	private void Update()
@@ -44,12 +44,11 @@ public class BlockOfIceProjectile : Projectiles
 			float duration = 9;
 			//target.CharacterState.energy = dad.Runes;
 			float curDamage = 20 + Random.Range(0, 10);
-			Energy energyLink = (Energy)_dad.Stamina;
 			if (target.CharacterState.CheckForState(States.Frozen))
 			{
 				curDamage *= 1.4f;
 			}
-			energyLink.SumDamageMake(curDamage);
+			_energy.SumDamageMake(curDamage);
 
 			//target.Health.TryTakeDamage(curDamage, DamageType.Physical, AttackRangeType.RangeAttack);
 			Debug.LogError("!!!The damage method has been changed!!!");

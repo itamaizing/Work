@@ -6,9 +6,10 @@ using UnityEngine;
 
 public class Absorption : Skill
 {
-	[SerializeField] private Character _player;
+	[SerializeField] private Character _playerLinks;
 	private IcyCorpse _target;
 	private bool _active = false;
+	private Energy _energy;
 
 	protected override bool IsCanCast
 	{
@@ -38,7 +39,16 @@ public class Absorption : Skill
 			_active = false;
 		}
 	}*/
-
+	private void Start()
+	{
+		for (int i = 0; i < _playerLinks.Resources.Count; i++)
+		{
+			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
+			{
+				_energy = (Energy)_playerLinks.Resources[i];
+			}
+		}
+	}
 
 	[Command]
 	private void CmdAction(GameObject bodyObj)
@@ -60,10 +70,10 @@ public class Absorption : Skill
 		Debug.Log(bodyObj.name);
 		IcyCorpse body = bodyObj.GetComponent<IcyCorpse>();
 
-		//float regen = 0.1f * body.HP + 0.05f * _player.Stamina.CurrentValue / 10;
-		//_player.Stamina.TryUse(_player.Stamina.CurrentValue);
-		//_player.Health.Add(regen);
-		//body.Explode();
+		//float regen = 0.1f * body.HP + 0.05f * _player.Stamina.Value / 10;
+	_energy.TryUse(_energy.CurrentValue);
+		//_player.Health.AddHeal(regen);
+		body.DestroyCorpse();
 
 	}
 

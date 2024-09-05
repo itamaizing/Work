@@ -8,17 +8,13 @@ public class IceCloudProjectile : Projectiles
 	private Vector2 _startPos;
 	private bool _boostDmg;
 
-	private void Awake()
+	private void Start()
 	{
-		//_player = dadGm.GetComponent<Character>();
 		_startPos = transform.position;
-		_rb.AddForce(transform.up * _force, ForceMode2D.Impulse);
 	}
 
 	private void Update()
 	{
-		//if (!_initialized) return;
-
         _spriteRenderer.DOFade(0, 1);
 		if(Vector2.Distance(transform.position, _startPos) > _distance * GlobalVariable.cellSize)
 		{
@@ -30,18 +26,17 @@ public class IceCloudProjectile : Projectiles
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		if (_dad == null) return;
-		if (collision.gameObject == _dad.gameObject || collision.CompareTag("Ability"))
+		if (collision.gameObject == _dad.gameObject)
 			return;
-		//damage, freez etc
+
 		if(collision.TryGetComponent<Character>(out var target))
 		{
+			Debug.Log(collision.name);
 			//target.CharacterState.CmdAddState(States.Plague, 4, 0);
-			//target.CharacterState.personWhoShoted = _player;
+			//target.CharacterState.personWhoShoted = _dad;
 
 			float duration = 1 + _energyDad / 20;
 			float curDamage = 10 + _energyDad / 4;
-			Energy energyLink = (Energy)_dad.Stamina;
-
 
 			if (target.CharacterState.CheckForState(States.Frozen) && _boostDmg)
 			{
@@ -49,7 +44,7 @@ public class IceCloudProjectile : Projectiles
 				Debug.Log("NEW DAMAGE");
 			}
 			
-			energyLink.SumDamageMake(curDamage);			
+			_energy.SumDamageMake(curDamage);			
 			Damage damage = new Damage
 			{
 				Value = curDamage,
@@ -60,7 +55,7 @@ public class IceCloudProjectile : Projectiles
 			target.Health.TryTakeDamage(ref damage, _skill);
 
 
-			target.CharacterState.CmdAddState(States.Frozen, duration, 30, _dad.gameObject, _skill.name);
+			target.CharacterState.AddState(States.Frozen, duration, 30, _dad.gameObject, _skill.name);
 
 			//talents???
 			if (_dad.Health.EvadeMagDamage >=20)

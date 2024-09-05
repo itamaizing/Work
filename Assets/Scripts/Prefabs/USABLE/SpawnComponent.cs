@@ -2,14 +2,15 @@ using System.Collections.Generic;
 using System.Linq;
 using Mirror;
 using UnityEngine;
-using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
 
 public class SpawnComponent : NetworkBehaviour
 {
-    [SerializeField] private MinionComponent unit;
+    [SerializeField] private GameObject unit;
     
     private readonly List<MinionComponent> _units = new();
+
+    public List<MinionComponent> Units => _units;
 
     private void SpawnUnit(GameObject parent)
     {
@@ -17,16 +18,16 @@ public class SpawnComponent : NetworkBehaviour
         
         Cmd_SpawnUnit(parent);
     }
-
+    
     [Command]
-	public void Cmd_SpawnUnit(GameObject parent)
+    public void Cmd_SpawnUnit(GameObject parent)
     {
         var controllable = Instantiate(unit);
         var contollableMinion = controllable.GetComponent<MinionComponent>();
         contollableMinion.Initialize();
         var user = GetComponent<UserNetworkSettings>();
         
-        SceneManager.MoveGameObjectToScene(controllable.gameObject, user.MyRoom);
+        SceneManager.MoveGameObjectToScene(controllable, user.MyRoom);
             
         _units.Add(contollableMinion);
             
@@ -34,11 +35,29 @@ public class SpawnComponent : NetworkBehaviour
 
         controllable.transform.position = (Vector2) parent.transform.position + Positions.unitInGroupPositions[position];
         
-        NetworkServer.Spawn(controllable.gameObject, connectionToClient);
+        NetworkServer.Spawn(controllable , connectionToClient);
     }
 
+	public void SpawnUnit(Transform transform)
+	{
+		var controllable = Instantiate(unit, transform);
+		var contollableMinion = controllable.GetComponent<MinionComponent>();
+		contollableMinion.Initialize();
+		var user = GetComponent<UserNetworkSettings>();
 
-    private void RemoveUnit()
+		SceneManager.MoveGameObjectToScene(controllable, user.MyRoom);
+
+		_units.Add(contollableMinion);
+
+		//var position = _units.Count + 1 / Positions.unitInGroupPositions.Count;
+
+		//controllable.transform.position = (Vector2)parent.transform.position + Positions.unitInGroupPositions[position];
+
+		NetworkServer.Spawn(controllable, connectionToClient);
+	}
+
+
+	private void RemoveUnit()
     {
         Destroy(_units.Last().gameObject);
         _units.Remove(_units.Last());
@@ -48,7 +67,7 @@ public class SpawnComponent : NetworkBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Z))
         {
-			Cmd_SpawnUnit(gameObject);
+            SpawnUnit(this.gameObject);
         }
         
         if (Input.GetKeyDown(KeyCode.X))

@@ -7,17 +7,18 @@ public abstract class StaminaComponent : NetworkBehaviour
 	public Bar bar;
 	public float CurrentValue { get { return _value; } }
 	public float MaxValue { get { return _maxValue; } }
+
     public float RegenerationValue { get => _regenerationValue; set => _regenerationValue = value; }
 
     [SyncVar(hook = nameof(NetworkUpdateBar))]
 	protected float _value;
 
 	protected float _maxValue;
-	protected float _regenerationValue = 10;
+    private float _regenerationValue = 10;
     protected float _regenerationDelay = 3;
-
-	private float _timerDelay = 0;
 	
+	private float _timerDelay = 0;
+
 	public void Initialize(float maxValue, float regenValue, float regenDelay)
 	{
 		_value = maxValue;
@@ -65,11 +66,4 @@ public abstract class StaminaComponent : NetworkBehaviour
     {
 		TryUse(value);
 	}
-
-	public void ReductionCurrentValue(float value)
-	{
-		Debug.Log("StaminaComponent / ReductionCurrentValue");
-		_value -= value;
-        Debug.Log($"StaminaComponent / ReductionCurrentValue / after (_value -= value) == {_value}");
-    }
 }

@@ -2,32 +2,63 @@ using Mirror;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class IceShadow : Skill
 {
 	[Header("Ability properties")]
 	[SerializeField] private IceShadowObject _shadow;
-	[SerializeField] private Character _playerLinks; 
+	[SerializeField] private HeroComponent _playerLinks; 
 	[SerializeField] private SeriesOfStrikes _combo;
 
+	private Energy _energy;
 	private bool _lastHit = false;
 	private bool _talentEvade = false;
 	private bool _evaded = false;
 	private float _evadedTimer = 2f;
+	private float _manaUsed = 0;
+	private RuneComponent _rune;
 
-	protected override bool IsCanCast
+	protected override bool IsCanCast => IsCanCastCheck();
+
+	private bool IsCanCastCheck()
 	{
-		get { return true; }
+		if (_rune.CurrentValue >= 1)
+		{
+			_rune.CmdUse(1);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	private void Start()
+	{
+		for (int i = 0; i < _playerLinks.Resources.Count; i++)
+		{
+			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
+			{
+				_energy = (Energy)_playerLinks.Resources[i];
+			}
+			if (_playerLinks.Resources[i].Type == ResourceType.Rune)
+			{
+				_rune = (RuneComponent)_playerLinks.Resources[i];
+			}
+		}
+
 	}
 
 	private void OnEnable()
 	{
 		_playerLinks.Health.Evaded += Evaded;
 	}
+
 	private void OnDestroy()
 	{
 		_playerLinks.Health.Evaded -= Evaded;
 	}
+
 	protected override IEnumerator PrepareJob()
 	{
 		yield return null;
@@ -36,7 +67,7 @@ public class IceShadow : Skill
 	protected override IEnumerator CastJob()
 	{
 		//if (_playerLinks.RuneComponent.RemoveRune(1, this))
-		_playerLinks.RuneComponent.CmdUse(1);
+		//_playerLinks.RuneComponent.CmdUse(1);
 		Shoot();
 		yield return null;
 	}
@@ -79,8 +110,9 @@ public class IceShadow : Skill
 
 		Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);
 
-		CmdCreateProjecttile(0, _playerLinks.Stamina.CurrentValue, _lastHit);
-		_playerLinks.Stamina.TryUse(_playerLinks.Stamina.CurrentValue);
+		_manaUsed = _energy.CurrentValue;
+		_energy.TryUse(_manaUsed);
+		CmdCreateProjecttile(0, _manaUsed, _lastHit);
 	}
 
 	[Command]
@@ -91,7 +123,7 @@ public class IceShadow : Skill
 		//var userSettings = gameObject.GetComponentInParent<UserNetworkSettings>();
 		//SceneManager.MoveGameObjectToScene(projectile.gameObject, userSettings.MyRoom);
 
-		projectile.Init(_playerLinks, manaValue, lastHit);
+		projectile.Init(_playerLinks, manaValue, lastHit, this);
 
 		NetworkServer.Spawn(projectile.gameObject);
 
@@ -101,13 +133,14 @@ public class IceShadow : Skill
 	[ClientRpc]
 	private void RpcInit(GameObject obj, float manaValue, bool lastHit)
 	{
-		obj.GetComponent<IceShadowObject>().Init(_playerLinks, manaValue, lastHit);
+		obj.GetComponent<IceShadowObject>().Init(_playerLinks, manaValue, lastHit, this);
 	}
 
 	public void TalentEvade(bool value)
 	{
 		_talentEvade = value;
 	}
+
 	public void Evaded()
 	{
 		if( _talentEvade) 
@@ -116,6 +149,7 @@ public class IceShadow : Skill
 			StartCoroutine(CountDownToTalentEvede());
 		}
 	}
+		
 	private IEnumerator CountDownToTalentEvede()
 	{
 		yield return new WaitForSeconds(_evadedTimer);

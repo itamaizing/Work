@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/Scripts/Players/Abilities/IceDeath/Projectiles.meta
-guid: a4ad42e66ce220a499efec7cb7449d8c
-========
 guid: 0bc7a53dc8f071945b51b50ebcffd40a
->>>>>>>> main:Assets/Prefabs/UI/Player.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

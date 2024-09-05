@@ -6,21 +6,22 @@ public class IceSword : Skill
 	[SerializeField] private float _damage = 15f;
 	//[SerializeField] private GameObject _basePlayer;
 	[SerializeField] private Character _playerLinks;
-//	[SerializeField] private DeathSpiral _deathSpiral;
+	[SerializeField] private DeathSpiral _deathSpiral;
 	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 
 
 	private int _hitInTheRow = 0;
 	private Character _oldtarget;
 	private Character _target;
+	private Energy _energy;
 
 	protected override bool IsCanCast
 	{
 		get 
 		{
-			if (Hero.Stamina.CurrentValue >= _manaCostRate)
+			if (_energy.CurrentValue >= 10)
 			{
-				Hero.Stamina.TryUse(_manaCostRate);
+				_energy.TryUse(10);
 				return true;
 			}
 			else
@@ -29,6 +30,18 @@ public class IceSword : Skill
 			}
 		}
 	}
+	private void Start()
+	{
+		for (int i = 0; i < _playerLinks.Resources.Count; i++)
+		{
+			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
+			{
+				_energy = (Energy)_playerLinks.Resources[i];
+			}
+		}
+
+	}
+
 	protected override IEnumerator PrepareJob()
 	{
 		while (_target == null)
@@ -57,7 +70,7 @@ public class IceSword : Skill
 		}
 		if (_hitInTheRow > 2)
 		{
-			//_deathSpiral.AddCharge();
+			_deathSpiral.AddCharge();
 			_hitInTheRow = 0;
 		}
 		ApplyDamage();

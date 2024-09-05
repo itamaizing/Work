@@ -2,12 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FrostingFrozenTalant : MonoBehaviour
+public class FrostingFrozenTalant : Talent
 {
-    private bool _isActive = false;
-    public bool IsActive { get { return _isActive; } }
-    public void SetActive(bool active)
-    {
-        _isActive = active;
-    }
+	public override void Enter()
+	{
+		
+	}
+
+	public override void Exit()
+	{
+		
+	}
+
 }

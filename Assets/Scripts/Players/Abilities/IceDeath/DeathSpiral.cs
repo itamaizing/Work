@@ -6,11 +6,10 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-/*
 public class DeathSpiral : Skill
 {
 	[SerializeField] private DeathSpiralProjectile _projectile;
-	[SerializeField] private Character _playerLinks;
+	[SerializeField] private HeroComponent _playerLinks;
 	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 	[SerializeField] private SpawnComponent _spawnComponent;
 	[SerializeField] private PlagueAbsorption _plagueAbsorption;
@@ -26,8 +25,21 @@ public class DeathSpiral : Skill
 	private bool _talentChragesPlague = false;
 	private bool _talentCorpseDeath = false;
 	private bool _talentCorpseBoostExplode;
+	private RuneComponent _rune;
 
 	protected override bool IsCanCast => true;
+
+	private void Start()
+	{
+		for (int i = 0; i < _playerLinks.Resources.Count; i++)
+		{
+			if (_playerLinks.Resources[i].Type == ResourceType.Rune)
+			{
+				_rune = (RuneComponent)_playerLinks.Resources[i];
+			}
+		}
+
+	}
 
 	private void Update()
 	{
@@ -56,10 +68,10 @@ public class DeathSpiral : Skill
 		{
 			SecondAttact();
 		}
-		else if (_playerLinks.RuneComponent.RemoveRune(2, this))
+		/*/else if (_rune.RemoveRune(2, this))
 		{
 			BasicShoot();
-		}
+		}*/
 		yield return null;
 	}
 	protected override void ClearData()
@@ -126,23 +138,20 @@ public class DeathSpiral : Skill
 			Shoot(angle, _inTheRow);
 		}
 		
-	}
-*/
+	}*/
 
-
-/*
 	[Command]
 	private void Shoot(float angle, bool inTheRow)
 	{		
 		DeathSpiralProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
 		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
-		projectile.Init(_playerLinks, 0, false);
+		projectile.Init(_playerLinks, 0, false, this);
 		projectile.Talents(_talentBoostHPBOdy, _talentHitState, inTheRow, _talentPlague, _talentChragesPlague, _superCharge);
 		projectile.Talents(_talentCorpseDeath, _talentCorpseBoostExplode);
 		//projectile.TalentBoostHp(_talentBoostHPBOdy);
 		//projectile.TalentHitState(_talentHitState);
 
-		NetworkServer.Spawn(projectile.gameObject, _playerLinks.SpawnComponent.gameObject);
+		NetworkServer.Spawn(projectile.gameObject);
 
 		RpcInit(projectile.gameObject);
 		_superCharge = false;
@@ -152,7 +161,7 @@ public class DeathSpiral : Skill
 	private void RpcInit(GameObject obj)
 	{
 		DeathSpiralProjectile projectile = obj.GetComponent<DeathSpiralProjectile>();
-		projectile.Init(_playerLinks, 0, false);
+		projectile.Init(_playerLinks, 0, false, this);
 		projectile.Talents(_talentBoostHPBOdy, _talentHitState, _inTheRow, _talentPlague, _talentChragesPlague, _superCharge);
 		projectile.Talents(_talentCorpseDeath, _talentCorpseBoostExplode);
 		_superCharge = false;
@@ -184,7 +193,7 @@ public class DeathSpiral : Skill
 				}
 			}
 		}
-		Vector2 lookDir = _mousePos - _playerLinks.Rigidbody2D.position;
+		Vector2 lookDir = _mousePos - (Vector2)_playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
 		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0);
 		Shoot(angle, _inTheRow);
@@ -195,7 +204,7 @@ public class DeathSpiral : Skill
 		_superCharge = false;
 		_currentChargers--;
 		_inTheRow = true;
-		Vector2 lookDir = _mousePos - _playerLinks.Rigidbody2D.position;
+		Vector2 lookDir = _mousePos - (Vector2)_playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
 		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0);
 		Shoot(angle, _inTheRow);
@@ -204,7 +213,7 @@ public class DeathSpiral : Skill
 	private void SecondAttact()
 	{
 		_superCharge = false;
-		Vector2 lookDir = _mousePos - _playerLinks.Rigidbody2D.position;
+		Vector2 lookDir = _mousePos - (Vector2)_playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
 		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0);
 		Shoot(angle, _inTheRow);
@@ -286,4 +295,3 @@ public class DeathSpiral : Skill
 		_talentCorpseBoostExplode = value;
 	}
 }
-*/
