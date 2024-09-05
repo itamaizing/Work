@@ -28,8 +28,6 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
             
             ItemsPool.Add(panel);
         }
-        
-        HidePanels();
     }
     
     private void ResetPanel()

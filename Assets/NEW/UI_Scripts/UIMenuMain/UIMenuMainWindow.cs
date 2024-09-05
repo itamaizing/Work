@@ -45,6 +45,9 @@ public class UIMenuMainWindow : MonoBehaviour
     public void SetHeroSaveIndex(int index)
     {
         SaveManager.Instance.SetSaveIndex(index);
+        SaveManager.Instance.LoadAttributes();
+        SaveManager.Instance.LoadTalents();
+
         UpdateCharacterPanels();
     }
 

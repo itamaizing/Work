@@ -169,9 +169,11 @@ public class TalentData
 [Serializable]
 public class TalentsGroup
 {
+    [SerializeField] private int _id;
     [SerializeField] private string _name;
     [SerializeField] private List<TalentData> _talentGroup;
 
+    public int ID => _id;
     public string Name => _name;
     public List<TalentData> TalentsData => _talentGroup;
     public int TalentsCount => TalentsData.Count;

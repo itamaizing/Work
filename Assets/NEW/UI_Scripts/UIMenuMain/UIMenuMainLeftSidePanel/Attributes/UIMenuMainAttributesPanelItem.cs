@@ -21,26 +21,20 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour
 
     public void Add()
     {
-        var previousPoints = SaveManager.Instance.GetAttributeValue(_currentAttribute.Id);
+        SaveManager.Instance.SaveAttribute(_currentAttribute.Id,1);
+        SaveManager.Instance.LoadAttribute(_currentAttribute.Id);
         
-        SaveManager.Instance.AddAttribute(_currentAttribute.Id,1);
-        
-        var points = SaveManager.Instance.GetAttributeValue(_currentAttribute.Id);
-        
-        _attributeValue.ChangeKey(previousPoints,points);
+        _attributeValue.ChangeKey(_currentAttribute.Points);
     }
 
     public void Reduce()
     {
-        var previousPoints = SaveManager.Instance.GetAttributeValue(_currentAttribute.Id);
+        if(_currentAttribute.Points <= 0) return;
         
-        if(previousPoints <= 0) return;
+        SaveManager.Instance.SaveAttribute(_currentAttribute.Id,-1);
+        SaveManager.Instance.LoadAttribute(_currentAttribute.Id);
         
-        SaveManager.Instance.AddAttribute(_currentAttribute.Id,-1);
-        
-        var points = SaveManager.Instance.GetAttributeValue(_currentAttribute.Id);
-        
-        _attributeValue.ChangeKey(previousPoints,points);
+        _attributeValue.ChangeKey(_currentAttribute.Points);
     }
     
     public void Destroy()

@@ -42,8 +42,11 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
         _talentsCount.ChangeKey(activeTalentsCount);
     }
 
-    void OnTalentSelected(TalentData hero)
+    void OnTalentSelected(TalentData talent, bool isOpen)
     { 
+        SaveManager.Instance.SaveTalent(_talentsGroup.ID, talent.Id, isOpen);
+        SaveManager.Instance.LoadTalent(_talentsGroup.ID, talent.Id);
+
         UpdateActiveTalentsCount();
     }
 

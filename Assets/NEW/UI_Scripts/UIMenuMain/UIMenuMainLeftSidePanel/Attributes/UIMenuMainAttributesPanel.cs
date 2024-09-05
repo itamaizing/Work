@@ -28,8 +28,6 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
             attribute.Fill(item);
             _attributes.Add(attribute);
         }
-        
-        ShowHide(false);
     }
     
     private void ResetPanel()

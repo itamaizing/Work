@@ -26,7 +26,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7507918101948230071}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
@@ -78,8 +78,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Owner: {fileID: 0}
-  savePanelItemItem: {fileID: 0}
-  _itemsParent: {fileID: 0}
+  savePanelItemItem: {fileID: 6033611643287131306, guid: 94afbc91ea651b14a989b4b85c56db1f, type: 3}
+  _itemsParent: {fileID: 8770181466920464337}
 --- !u!114 &7799480496857161706
 MonoBehaviour:
   m_ObjectHideFlags: 0

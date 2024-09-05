@@ -1731,7 +1731,7 @@ RectTransform:
   - {fileID: 5120500587282319492}
   - {fileID: 330853286567417491}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -3788,14 +3788,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5120500587282319492}
     m_Modifications:
-    - target: {fileID: 6081677902423530366, guid: b24c6ac28db77214888197923ca683a7, type: 3}
-      propertyPath: _itemsParent
-      value: 
-      objectReference: {fileID: 7643251562757647348}
-    - target: {fileID: 6081677902423530366, guid: b24c6ac28db77214888197923ca683a7, type: 3}
-      propertyPath: savePanelItemItem
-      value: 
-      objectReference: {fileID: 6033611643287131306, guid: 94afbc91ea651b14a989b4b85c56db1f, type: 3}
     - target: {fileID: 7507918101948230071, guid: b24c6ac28db77214888197923ca683a7, type: 3}
       propertyPath: m_Name
       value: UIMenuMainSavesPanel

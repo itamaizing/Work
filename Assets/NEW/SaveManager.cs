@@ -20,13 +20,13 @@ public class SaveManager : MonoBehaviour
     public void SetHero(Character hero)
     {
         _character = hero;
-        LoadData();
+        LoadHeroData();
     }
 
     public void SetSaveIndex(int index)
     {
         _currentSaveGroup = index;
-        LoadData();
+        LoadHeroData();
     }
 
     public void SaveData()
@@ -41,31 +41,98 @@ public class SaveManager : MonoBehaviour
         PlayerPrefs.Save();
     }
 
-    public void AddAttribute(int index, int points)
+    public void SaveAttribute(int index, int points)
     {
-        var currentPoints = GetAttributeValue(index);
+        var currentPoints = _character.Data.Attributes.AttributeData.FirstOrDefault(o=>o.Id == index)!.Points;
         PlayerPrefs.SetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_" + _character.Data.Attributes.AttributeData.FirstOrDefault(o => o.Id == index)?.Name + "_Points", currentPoints + points);
         PlayerPrefs.Save();
     }
-    
-    public int GetAttributeValue(int index)
+
+    public void LoadAttributes()
     {
-       return PlayerPrefs.GetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_" + _character.Data.Attributes.AttributeData.FirstOrDefault(o => o.Id == index)?.Name + "_Points", 0);
+        foreach (var attribute in _character.Data.Attributes.AttributeData)
+        {
+            int savedPoints = PlayerPrefs.GetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_" + 
+                                                 attribute.Name + "_Points", 0);
+            attribute.Points = savedPoints;
+        }
     }
     
-    public void SaveTalent(int indexGroup, int index, bool isActive)
+    public void LoadAttribute(int index)
+    {
+        var attribute = _character.Data.Attributes.AttributeData.FirstOrDefault(o => o.Id == index);
+        int savedPoints = PlayerPrefs.GetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_" + 
+                                             attribute.Name + "_Points", 0);
+        attribute.Points = savedPoints;
+    }
+    
+    public void SaveTalent(int idGroup, int idTalent, bool isActive)
     {
         var points = isActive ? 1 : 0;
-        PlayerPrefs.SetInt(_character.Data.Name + _character.Data.Talents[indexGroup].TalentsData[index].Name, points);
+        var talentGroup = _character.Data.Talents.FirstOrDefault(o => o.ID == idGroup);
+        var talent = talentGroup?.TalentsData.FirstOrDefault(o => o.Id == idTalent);
+        
+        if(talentGroup == null || talent == null) return;
+        
+        PlayerPrefs.SetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_" + talentGroup.Name + "_" + talent.Name, points);
         PlayerPrefs.Save();
     }
 
-    public void LoadData()
+    public void LoadTalent(int idGroup, int idTalent)
     {
-        foreach (var t in _character.Data.Attributes.AttributeData)
+        var groupTemp = _character.Data.Talents.FirstOrDefault(o => o.ID == idGroup);
+        var talentTemp = groupTemp?.TalentsData.FirstOrDefault(o=>o.Id == idTalent);
+        
+        if(groupTemp == null || talentTemp == null) return;
+                
+        int isActive =  PlayerPrefs.GetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_" + groupTemp.Name + "_" + talentTemp.Name, 0);
+        talentTemp.IsOpen = isActive == 1;
+    }
+
+    public void LoadTalents()
+    {
+        foreach (var talentGroup in _character.Data.Talents)
         {
-            int savedPoints = PlayerPrefs.GetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_" + t.Name + "_Points", 0);
-            t.Points = savedPoints;
+            var groupTemp = _character.Data.Talents.FirstOrDefault(o => o.ID == talentGroup.ID);
+            
+            if(groupTemp == null) return;
+            
+            foreach (var talent in talentGroup.TalentsData)
+            {
+                var talentTemp = groupTemp.TalentsData.FirstOrDefault(o=>o.Id == talent.Id);
+        
+                if(talentTemp == null) return;
+                
+                int isActive =  PlayerPrefs.GetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_" + groupTemp.Name + "_" + talentTemp.Name, 0);
+                talent.IsOpen = isActive == 1;
+            }
+        }
+    }
+
+    public void LoadHeroData()
+    {
+        foreach (var attribute in _character.Data.Attributes.AttributeData)
+        {
+            int savedPoints = PlayerPrefs.GetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_" + 
+                                                 attribute.Name + "_Points", 0);
+            attribute.Points = savedPoints;
+        }
+
+        foreach (var talentGroup in _character.Data.Talents)
+        {
+            var groupTemp = _character.Data.Talents.FirstOrDefault(o => o.ID == talentGroup.ID);
+            
+            if(groupTemp == null) return;
+            
+            foreach (var talent in talentGroup.TalentsData)
+            {
+                var talentTemp = groupTemp.TalentsData.FirstOrDefault(o=>o.Id == talent.Id);
+        
+                if(talentTemp == null) return;
+                
+                int isActive =  PlayerPrefs.GetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_" + groupTemp.Name + "_" + talentTemp.Name, 0);
+                talent.IsOpen = isActive == 1;
+            }
         }
     }
 }
