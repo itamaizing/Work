@@ -42,6 +42,7 @@ public class Registration : MonoBehaviour
         if (_password != _confirmPassword)
         {
             Debug.LogError("pass not confirm");
+            Error?.Invoke("pass not confirm");
             return;
         }
 

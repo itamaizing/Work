@@ -79,7 +79,7 @@ public abstract class Resource : NetworkBehaviour
         TryUse(value);
     }
 
-    [Client]
+    [ClientCallback]
     protected void ClientStartRegenirateJob()
     {
         _regenCoroutine = StartCoroutine(RegenirateJob());

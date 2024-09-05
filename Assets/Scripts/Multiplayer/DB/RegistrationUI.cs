@@ -18,7 +18,7 @@ public class RegistrationUI : MonoBehaviour
     {
         _login.onEndEdit.AddListener(_registration.SetLogin);
         _password.onEndEdit.AddListener(_registration.SetPassword);
-        _password.onEndEdit.AddListener(_registration.SetConfirmPassword);
+        _confirmPassword.onEndEdit.AddListener(_registration.SetConfirmPassword);
 
         _apply.onClick.AddListener(OnSignIn);
 
