@@ -36,8 +36,8 @@ public class PoisonSlap : Skill
     private Vector3 _firstMousePosition = Vector3.positiveInfinity;
     private Vector3 _secondMousePosition;
 
-    private float _creeperStrikeCastSpeedMultiplier = 0.5f; // Уменьшение скорости каста на 50%
-    private float _lightningStrikesCastSpeedMultiplier = 0.0f;  // Уменьшение скорости каста на 100%
+    private float _creeperStrikeCastSpeedMultiplier = 0.5f; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ 50%
+    private float _lightningStrikesCastSpeedMultiplier = 0.0f;  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ 100%
     private float _baseTimeCast = 1.6f;
 
     private float _baseDamage = 30f;
@@ -118,7 +118,7 @@ public class PoisonSlap : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_currentTarget != null)
+       /* if (_currentTarget != null)
         {
             if (_poisonBall.CurrentCharges != 0)
             {
@@ -132,7 +132,7 @@ public class PoisonSlap : Skill
                 }
             }
         }
-
+*/
         if (_creeperStrike.IsTwoHit && !_isIncreasedCastSpeedFromLightningStrike)
         {
             _castSpeedFromCreeperStrikeCoroutine = StartCoroutine(CastSpeedFromCreeperStrike());

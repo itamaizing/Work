@@ -62,9 +62,9 @@ public class SpeedOfReptile : Skill
     {
         Debug.Log("SpeedOfReptile / CmdIncreaseValues");
 
-        _player.Health.EvadeMagDamage *= _increaseEvasion;
-        _player.Health.EvadeMeleeDamage *= _increaseEvasion; 
-        _player.Health.EvadeRangeDamage *= _increaseEvasion; 
+        //_player.Health.EvadeMagDamage *= _increaseEvasion;
+        //_player.Health.EvadeMeleeDamage *= _increaseEvasion; 
+        //_player.Health.EvadeRangeDamage *= _increaseEvasion; 
 
         Debug.Log($"SpeedOfReptile / CmdIncreaseValues / _player.Health.EvadeMagicDamage = {_player.Health.EvadeMagDamage}");
         Debug.Log($"SpeedOfReptile / CmdIncreaseValues / _player.Health.EvadeMeleeDamage = {_player.Health.EvadeMeleeDamage}");
@@ -79,9 +79,9 @@ public class SpeedOfReptile : Skill
     {
         Debug.Log("SpeedOfReptile / CmdResetValues");
 
-        _player.Health.EvadeMagDamage /= _increaseEvasion;
-        _player.Health.EvadeMeleeDamage /= _increaseEvasion;
-        _player.Health.EvadeRangeDamage /= _increaseEvasion;
+       // _player.Health.EvadeMagDamage /= _increaseEvasion;
+       // _player.Health.EvadeMeleeDamage /= _increaseEvasion;
+       // //_player.Health.EvadeRangeDamage /= _increaseEvasion;
 
         Debug.Log($"SpeedOfReptile / CmdResetValues / _player.Health.EvadeMagicDamage = {_player.Health.EvadeMagDamage}");
         Debug.Log($"SpeedOfReptile / CmdResetValues / _player.Health.EvadeMeleeDamage = {_player.Health.EvadeMeleeDamage}");

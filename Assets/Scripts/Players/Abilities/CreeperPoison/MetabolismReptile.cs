@@ -50,11 +50,11 @@ public class MetabolismReptile : Skill
         _player.Health.RegenerationValue = increasedHpRegen;
         Debug.Log("HpRegen / IncreaseValues == " + _player.Health.RegenerationValue);
 
-        Debug.Log($"MetabolismReptile / IncreaseValues / after newRemainingCooldownForSpitPoison = {_spitPoison.CooldownTime}");
-        float newRemainingCooldownForSpitPoison = _spitPoison.CooldownTime / _increaseCooldownTime;
-        _spitPoison.ReductionSetCooldown(newRemainingCooldownForSpitPoison);
-        Debug.Log($"MetabolismReptile / IncreaseValues / before newRemainingCooldownForSpitPoison = {_spitPoison.CooldownTime}");
-        //Сделать потом уменьшение кулдаунов зарядов для PoisonBall
+       // Debug.Log($"MetabolismReptile / IncreaseValues / after newRemainingCooldownForSpitPoison = {_spitPoison.CooldownTime}");
+        //float newRemainingCooldownForSpitPoison = _spitPoison.CooldownTime / _increaseCooldownTime;
+       // _spitPoison.ReductionSetCooldown(newRemainingCooldownForSpitPoison);
+      //  Debug.Log($"MetabolismReptile / IncreaseValues / before newRemainingCooldownForSpitPoison = {_spitPoison.CooldownTime}");
+        //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ PoisonBall
 
         _poisonBall.Buff.CastSpeed.ReductionPercentage(_increaseCastTime);
         _spitPoison.Buff.CastSpeed.ReductionPercentage(_increaseCastTime);

@@ -61,7 +61,7 @@ public class PoisonBallProjectile : NetworkBehaviour
     {
         _poisonBall = _player.GetComponentInChildren<PoisonBall>();
 
-        _footInstincts = _poisonBall.FootInstinctsTalent;
+       // _footInstincts = _poisonBall.FootInstinctsTalent;
     }
 
     [Server]
@@ -130,7 +130,7 @@ public class PoisonBallProjectile : NetworkBehaviour
                             _footInstincts.ReductionCooldownLightningMovement();
                         }
 
-                        _poisonBall.LastTarget = targetHealth.gameObject;
+                        //_poisonBall.LastTarget = targetHealth.gameObject;
 
                         Destroy(gameObject);
                     }
@@ -153,7 +153,7 @@ public class PoisonBallProjectile : NetworkBehaviour
                             _footInstincts.ReductionCooldownLightningMovement();
                         }
 
-                        _poisonBall.LastTarget = targetHealth.gameObject;
+                        //_poisonBall.LastTarget = targetHealth.gameObject;
 
                         Destroy(gameObject);
                     }
@@ -173,7 +173,7 @@ public class PoisonBallProjectile : NetworkBehaviour
                         _footInstincts.ReductionCooldownLightningMovement();
                     }
 
-                    _poisonBall.LastTarget = targetHealth.gameObject;
+                   // _poisonBall.LastTarget = targetHealth.gameObject;
 
                     Destroy(gameObject);
                 }
