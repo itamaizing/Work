@@ -48,11 +48,11 @@ public class TalentColumn : MonoBehaviour
 		}
 		for(int i = 0; i < _buttons1.Length; i++)
 		{
-			_buttons1[i].ico.sprite = _system.Talents[i].ico;
-			_buttons1[i].talentName.text = _system.Talents[i].Name + i;
-			_buttons1[i].talentDescription.text = _system.Talents[i].Name + "\n" + _system.Talents[i].Description;
+			_buttons1[i].ico.sprite = _system.Talents[0].TalentsData[i].Data.Icon;
+			_buttons1[i].talentName.text = _system.Talents[0].TalentsData[i].Data.Name + i;
+			_buttons1[i].talentDescription.text = _system.Talents[0].TalentsData[i].Data.Name + "\n" + _system.Talents[0].TalentsData[i].Data.Description;
 			
-			if(_system.Talents[i].IsActive)
+			if(_system.Talents[0].TalentsData[i].Data.IsOpen)
 			{
 				count++;
 				_buttons1[i].SwitchBorders(true);
@@ -64,7 +64,7 @@ public class TalentColumn : MonoBehaviour
 				_buttons1[i].isActive = false;
 			}
 			int id = i;
-			_buttons1[i].button.onClick.AddListener(() => { SwitchTalent(id, 0, !_system.Talents[id].IsActive); });
+			_buttons1[i].button.onClick.AddListener(() => { SwitchTalent(id, 0, !_system.Talents[0].TalentsData[id].Data.IsOpen); });
 			//_buttons1[i].SwitchBorders();
 		}
 		_column1.text = count.ToString();
@@ -114,7 +114,7 @@ public class TalentColumn : MonoBehaviour
 		int count = 0;
 		for(int i = 9; i < 12; i++)
 		{
-			if (_system.Talents[i].IsActive)
+			if (_system.Talents[0].TalentsData[i].Data.IsOpen)
 			{
 				count++;
 			}
@@ -122,7 +122,7 @@ public class TalentColumn : MonoBehaviour
 		int count2 = 0;
 		for (int i = 6; i < 9; i++)
 		{
-			if (_system.Talents[i].IsActive)
+			if (_system.Talents[0].TalentsData[i].Data.IsOpen)
 			{
 				count2++;
 			}
@@ -130,7 +130,7 @@ public class TalentColumn : MonoBehaviour
 		int count3 = 0;
 		for (int i = 3; i < 6; i++)
 		{
-			if (_system.Talents[i].IsActive)
+			if (_system.Talents[0].TalentsData[i].Data.IsOpen)
 			{
 				count3++;
 			}

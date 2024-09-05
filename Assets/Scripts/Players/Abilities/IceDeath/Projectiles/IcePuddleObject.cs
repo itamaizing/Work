@@ -89,7 +89,7 @@ public class IcePuddleObject : Projectiles
 			target.CharacterState.CmdAddState(States.Frosting, duration, 0, _dad.gameObject, _skill.name);
 			if (talant != null)
 			{
-				if (talant.IsActive)
+				if (talant.Data.IsOpen)
 				{
 					target.CharacterState.CmdAddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
 				}

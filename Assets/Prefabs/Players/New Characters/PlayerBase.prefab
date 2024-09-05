@@ -332,7 +332,6 @@ MonoBehaviour:
   rb: {fileID: 3759936847054020137}
   _healthComponent: {fileID: 5839731411926097146}
   Stamina: {fileID: 2926669445991704918}
-  RuneComponent: {fileID: 1057949845680950153}
   _playerMove: {fileID: 5665079937663656764}
   _abilities: {fileID: 7985862907129416471}
   _characterState: {fileID: 7760335386463111578}
@@ -342,7 +341,7 @@ MonoBehaviour:
   - {fileID: 5839731411926097146}
   - {fileID: 2603903007656169372}
   - {fileID: 2926669445991704918}
-  talents: {fileID: 8675175310089954536}
+  talentManager: {fileID: 8675175310089954536}
   _spawnComponent: {fileID: 3330577042116454553}
 --- !u!114 &7760335386463111578
 MonoBehaviour:
@@ -409,7 +408,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  bar: {fileID: 606832500078548383}
+  _resourceType: 0
 --- !u!114 &4715758111818368764
 MonoBehaviour:
   m_ObjectHideFlags: 0

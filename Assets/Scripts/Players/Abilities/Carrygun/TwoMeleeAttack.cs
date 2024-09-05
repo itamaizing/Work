@@ -39,7 +39,7 @@ public class TwoMeleeAttack : AbilityBase
         Target = TargetParent;
         if (_player != null)
         {
-            _talents = _player.transform.Find("Talents").gameObject;
+            _talents = _player.transform.Find("TalentManager").gameObject;
             _darts = _talents.GetComponent<DeepWounds>().Darts;
         }
 

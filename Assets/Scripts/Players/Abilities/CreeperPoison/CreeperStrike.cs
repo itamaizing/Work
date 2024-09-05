@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class CreeperStrike : AutoAttackSkill
 {
-    [Header("Talents")]
+    [Header("TalentManager")]
     [SerializeField] private StrokesOfAspiration _strokesOfAspiration;
     [SerializeField] private AssasinPoison _assasinPoison;
     [SerializeField] private DesireToHide _desireToHide;
@@ -83,7 +83,7 @@ public class CreeperStrike : AutoAttackSkill
             _currentCountHit = 0;
         }
 
-        if (_strokesOfAspiration.IsActive && _currentCountHit == 2)
+        if (_strokesOfAspiration.Data.IsOpen && _currentCountHit == 2)
         {
             if (_lastTarget == target)
             {
@@ -95,7 +95,7 @@ public class CreeperStrike : AutoAttackSkill
             }
         }
 
-        if (_assasinPoison.IsActive)
+        if (_assasinPoison.Data.IsOpen)
         {
             if (_assasinPoison.CurrentChargePoison > 0)
             {
@@ -103,7 +103,7 @@ public class CreeperStrike : AutoAttackSkill
             }
         }
 
-        if (_desireToHide.IsActive)
+        if (_desireToHide.Data.IsOpen)
         {
             if (_countHitForDesireToHideTalent == 5)
             {
@@ -128,7 +128,7 @@ public class CreeperStrike : AutoAttackSkill
             CmdApplyDamage(damage, target.gameObject);
         }
 
-        if (_firstStrike.IsActive)
+        if (_firstStrike.Data.IsOpen)
         {
             _firstStrike.FirstHit = false;
         }
@@ -146,7 +146,7 @@ public class CreeperStrike : AutoAttackSkill
             multiplyDamage += 0.5f;
         }
 
-        if (_firstStrike.IsActive && _firstStrike.IsCanIncreaseCrit && _firstStrike.FirstHit)
+        if (_firstStrike.Data.IsOpen && _firstStrike.IsCanIncreaseCrit && _firstStrike.FirstHit)
         {
             criticalDamage *= (multiplyDamage * firstStrikeTalentMultiplyDamage);
             _firstStrike.ReturnBoolFalse();

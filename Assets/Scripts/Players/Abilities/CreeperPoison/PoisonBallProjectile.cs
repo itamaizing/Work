@@ -125,7 +125,7 @@ public class PoisonBallProjectile : NetworkBehaviour
                     {
                         DealDamage(targetHealth, _currentDamageForPoisonBall, DamageType.Magical, AttackRangeType.RangeAttack);
 
-                        if (_footInstincts.IsActive)
+                        if (_footInstincts.Data.IsOpen)
                         {
                             _footInstincts.ReductionCooldownLightningMovement();
                         }
@@ -148,7 +148,7 @@ public class PoisonBallProjectile : NetworkBehaviour
                     {
                         DealDamage(targetHealth, _currentDamageForPoisonBall, DamageType.Magical, AttackRangeType.RangeAttack);
 
-                        if (_footInstincts.IsActive)
+                        if (_footInstincts.Data.IsOpen)
                         {
                             _footInstincts.ReductionCooldownLightningMovement();
                         }
@@ -168,7 +168,7 @@ public class PoisonBallProjectile : NetworkBehaviour
                 {
                     DealDamage(targetHealth, _currentDamageForPoisonBall, DamageType.Magical, AttackRangeType.RangeAttack);
                     
-                    if (_footInstincts.IsActive)
+                    if (_footInstincts.Data.IsOpen)
                     {
                         _footInstincts.ReductionCooldownLightningMovement();
                     }

@@ -29,7 +29,7 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
             var talent = Instantiate(_talentPrefab, _itemsParent);
             
             talent.Owner = this;
-            talent.Fill(item);
+            talent.Fill(item.Data);
             talent.Selected += OnTalentSelected;
             
             _talents.Add(talent);
@@ -38,7 +38,7 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
 
     void UpdateActiveTalentsCount()
     {
-        var activeTalentsCount = _talentsGroup.TalentsData.Count(o => o.IsOpen);
+        var activeTalentsCount = _talentsGroup.TalentsData.Count(o => o.Data.IsOpen);
         _talentsCount.ChangeKey(activeTalentsCount);
     }
 

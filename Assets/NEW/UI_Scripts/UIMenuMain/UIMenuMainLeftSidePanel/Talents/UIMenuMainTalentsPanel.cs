@@ -19,7 +19,7 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
         
         ResetPanel();
 
-        foreach (var data in Owner.GetHero().Data.Talents)
+        foreach (var data in Owner.GetHero().TalentManager.Talents)
         {
             var panel = Instantiate(_talentsPanelGroup, _itemsParent);
             

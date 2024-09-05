@@ -34,7 +34,7 @@ public class Spisnacider : MonoBehaviour
         _healthComponent.OnTakePhisicDamage += DamageMeleeEvasion;
         _healthComponent.OnTakeMagicDamage += DamageMeleeEvasion;
 
-        Player.transform.Find("Talents").gameObject.GetComponent<ContagionOfEmbrio>().controlledObjects.Add(gameObject);
+        Player.transform.Find("TalentManager").gameObject.GetComponent<ContagionOfEmbrio>().controlledObjects.Add(gameObject);
         _controlledObjectsScript = Player.transform.Find("Abilities").gameObject.GetComponent<CarrygunControlledObjects>();
 
         _select = FindObjectOfType<SelectObject>();
@@ -150,7 +150,7 @@ public class Spisnacider : MonoBehaviour
     {
         if (Player != null)
         {
-            Player.transform.Find("Talents").gameObject.GetComponent<ContagionOfEmbrio>().controlledObjects.Remove(gameObject);
+            Player.transform.Find("TalentManager").gameObject.GetComponent<ContagionOfEmbrio>().controlledObjects.Remove(gameObject);
         }
     }
 }

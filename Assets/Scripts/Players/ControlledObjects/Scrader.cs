@@ -56,7 +56,7 @@ public class Scrader : MonoBehaviour
 
         AttackRangeType = AttackRangeType.MeleeAttack;
 
-        Player.transform.Find("Talents").gameObject.GetComponent<ContagionOfEmbrio>().controlledObjects.Add(gameObject);
+        Player.transform.Find("TalentManager").gameObject.GetComponent<ContagionOfEmbrio>().controlledObjects.Add(gameObject);
         _controlledObjectsScript = Player.transform.Find("Abilities").gameObject.GetComponent<CarrygunControlledObjects>();
 
         _select = FindObjectOfType<SelectObject>();
@@ -287,6 +287,6 @@ public class Scrader : MonoBehaviour
     {
         Destroy(AbilityPanel);
 
-        Player.transform.Find("Talents").gameObject.GetComponent<ContagionOfEmbrio>().controlledObjects.Remove(gameObject);
+        Player.transform.Find("TalentManager").gameObject.GetComponent<ContagionOfEmbrio>().controlledObjects.Remove(gameObject);
     }
 }

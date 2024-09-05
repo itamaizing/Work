@@ -7,7 +7,7 @@ public class CreeperInvisible : Skill
 {
     #region Variables
 
-    [Header("Talents")]
+    [Header("TalentManager")]
     [SerializeField] private ReleaseFromSecrecy _releaseFromSecrecy;
     [SerializeField] private DesireToHide _desireToHide;
     [SerializeField] private FirstStrike _firstStrike;
@@ -54,13 +54,13 @@ public class CreeperInvisible : Skill
         switch (IsInvisible)
         {
             case false:
-                if (_desireToHide.IsActive && _desireToHide.IsCanApply)
+                if (_desireToHide.Data.IsOpen && _desireToHide.IsCanApply)
                 {
                     Debug.Log("CreeperInvisible / _desireToHide isActive");
                     CmdApplyInvisibleWithTalent();
                     yield break;
                 }
-                else if (_continuationAmbush.IsActive && _continuationAmbush.IsCanApplyInvisible)
+                else if (_continuationAmbush.Data.IsOpen && _continuationAmbush.IsCanApplyInvisible)
                 {
                     Debug.Log("CreeperInvisible / _continuationAmbush isActive");
                     CmdApplyInvisibleWithTalent();
@@ -99,8 +99,8 @@ public class CreeperInvisible : Skill
         else if (IsInvisible)
         {
             Debug.Log($"CreeperInvisible / CastJob / else if (IsInvisible = {IsInvisible}, isCastSkill = {_isClickForCastInvisibleSkill})");
-            //Метод для того, чтобы сделать способности невидымим
-            if (_transparentPoisons.IsActive)
+            //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+            if (_transparentPoisons.Data.IsOpen)
             {
                 _transparentPoisons.IncreaseManaCost();
             }
@@ -238,7 +238,7 @@ public class CreeperInvisible : Skill
     {
         Debug.Log("CreeperInvisible / CmdRemoveInvisible");
         IsInvisible = false;
-        if (_releaseFromSecrecy.IsActive)
+        if (_releaseFromSecrecy.Data.IsOpen)
         {
             _releaseFromSecrecy.ApplyBuff();
         }
@@ -285,12 +285,12 @@ public class CreeperInvisible : Skill
     {
         Debug.Log("CreeperInvisible / RpcRemoveInvisible");
         IsInvisible = false;
-        if (_releaseFromSecrecy.IsActive)
+        if (_releaseFromSecrecy.Data.IsOpen)
         {
             _releaseFromSecrecy.ApplyBuff();
         }
         Debug.Log($"CreeperInvisible / RpcRemoveInvisible / IsInvisible = {IsInvisible}");
-        if (_firstStrike.IsActive && !_firstStrike.IsCanIncreaseCrit)
+        if (_firstStrike.Data.IsOpen && !_firstStrike.IsCanIncreaseCrit)
         {
             _firstStrike.SetBoolTrue();
         }

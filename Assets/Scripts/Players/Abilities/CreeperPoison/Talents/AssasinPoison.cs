@@ -27,7 +27,7 @@ public class AssasinPoison : Talent
 
     private void Update()
     {
-        if (IsActive && _currentChargePoison < 3)
+        if (Data.IsOpen && _currentChargePoison < 3)
         {
             if (character.CharacterState.CheckForState(States.CreeperInvisible))
             {

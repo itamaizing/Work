@@ -1,16 +1,17 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class HeroComponent : Character
 {
-    [SerializeField] private TalentSystem talents;
+    [FormerlySerializedAs("talents")] [SerializeField] private TalentSystem talentManager;
     [SerializeField] private SpawnComponent _spawnComponent;
     
     public SpawnComponent SpawnComponent => _spawnComponent;
-    public TalentSystem Talents => talents;
+    public TalentSystem TalentManager => talentManager;
     
     public override void Initialize()
     {
         base.Initialize();
-        Talents.Initialize();
+        TalentManager.Initialize();
 	}
 }

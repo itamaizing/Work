@@ -868,8 +868,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _talents.Array.size
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[0]
+      value: 
+      objectReference: {fileID: 360660316683608278}
     - target: {fileID: 8836867217626735083, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -933,6 +941,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5948793039085152286}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 360660316683608278}
   m_SourcePrefab: {fileID: 100100000, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
 --- !u!114 &722151420503682181 stripped
 MonoBehaviour:
@@ -1640,6 +1651,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerLinks: {fileID: 5889404958618692528}
+--- !u!114 &360660316683608278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5233125259320276558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dec7b5ee5b05ace449dc2e299285714a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _data:
+    Id: 0
+    Name: 
+    Description: 
+    IsOpen: 1
+    Icon: {fileID: 0}
+  character: {fileID: 0}
+  _absorption: {fileID: 0}
+  _ability: {fileID: 0}
 --- !u!114 &5889404958618692528 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8468544467696250796, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}

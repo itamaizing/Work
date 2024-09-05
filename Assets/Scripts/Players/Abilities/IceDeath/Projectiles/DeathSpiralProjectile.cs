@@ -212,7 +212,7 @@ public class DeathSpiralProjectile : Projectiles
 		}
 	}
 
-	/*internal void Talents(bool talentBoostHPBOdy, bool talentHitState, bool inTheRow, object talentPlague)
+	/*internal void TalentManager(bool talentBoostHPBOdy, bool talentHitState, bool inTheRow, object talentPlague)
 	{
 		throw new NotImplementedException();
 	}*/

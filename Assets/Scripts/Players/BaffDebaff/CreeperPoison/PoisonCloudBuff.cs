@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 
 public class PoisonCloudBuff : BaseEffect
 {
-    [Header("Talents")]
+    [Header("TalentManager")]
     [SerializeField] private HealPoisonCloud _healingPoisonCloud;
     [SerializeField] private CapaciousPoisonCloud _capaciousPoisonCloud;
     [SerializeField] private ToxiqueCloud _toxiqueCloud;
@@ -122,7 +122,7 @@ public class PoisonCloudBuff : BaseEffect
 
     private void ResetLifeTimeStacks()
     {
-        //Метод для обновления таймера стаков
+        //РњРµС‚РѕРґ РґР»СЏ РѕР±РЅРѕРІР»РµРЅРёСЏ С‚Р°Р№РјРµСЂР° СЃС‚Р°РєРѕРІ
         if (_lifeTimeStacksCoroutine != null)
         {
             StopCoroutine(_lifeTimeStacksCoroutine);

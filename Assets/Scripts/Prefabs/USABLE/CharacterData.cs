@@ -24,36 +24,11 @@ public class CharacterData : ScriptableObject
     
     public HealthInfo StatsInfo => statsInfo;
     public AttributeGroup Attributes => _attributes;
-    public List<TalentsGroup> Talents => _talents;
-    
-    public void Initialize(int id, string name, AttributeGroup attributeList, List<TalentsGroup> talentsList)
-    {
-        _id = id;
-        _name = name;
-        _attributes = attributeList;
-        _talents = talentsList;
-    }
 
     public float GetAttributeValue(string attributeName)
     {
         var attribute = _attributes.AttributeData.FirstOrDefault(o => o.Name == attributeName);
         return attribute?.DefaultValue ?? 0f;
-    }
-
-    public void SetToDefault()
-    {
-        _id = 10001;
-        _name = "default";
-
-        foreach (var attribute in Attributes.AttributeData)
-        {
-            attribute.Points = 0;
-        }
-
-        foreach (var talent in Talents.SelectMany(talentGroup => talentGroup.TalentsData))
-        {
-            talent.IsOpen = false;
-        }
     }
 }
 
@@ -154,6 +129,7 @@ public class TalentData
 {
     public int Id;
     public string Name;
+    public string Description;
     public bool IsOpen;
 
     public Sprite Icon;
@@ -171,10 +147,10 @@ public class TalentsGroup
 {
     [SerializeField] private int _id;
     [SerializeField] private string _name;
-    [SerializeField] private List<TalentData> _talentGroup;
+    [SerializeField] private List<Talent> _talentGroup;
 
     public int ID => _id;
     public string Name => _name;
-    public List<TalentData> TalentsData => _talentGroup;
+    public List<Talent> TalentsData => _talentGroup;
     public int TalentsCount => TalentsData.Count;
 }

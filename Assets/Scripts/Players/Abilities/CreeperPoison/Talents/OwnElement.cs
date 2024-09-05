@@ -41,7 +41,7 @@ public class OwnElement : Talent
 
     private IEnumerator SearchingDebuffOnEnemy()
     {
-        while (IsActive)
+        while (Data.IsOpen)
         {
             _enemiesWithDebuff.Clear();
             _currentPoisonOnEnemy = 0;

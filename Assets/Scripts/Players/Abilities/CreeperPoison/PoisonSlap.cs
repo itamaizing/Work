@@ -18,7 +18,7 @@ public class PoisonSlap : Skill
     [SerializeField] private CreeperStrike _creeperStrike;
     [SerializeField] private LightningStrikes _lightningStrikes;
 
-    [Header("Talents")]
+    [Header("TalentManager")]
     [SerializeField] private LightweightSlap _lightweightSlap;
 
     #region DisplayArrow
@@ -133,7 +133,7 @@ public class PoisonSlap : Skill
             }
         }
 */
-        if (_creeperStrike.IsTwoHit && !_isIncreasedCastSpeedFromLightningStrike)
+        if (/*_creeperStrike.IsTwoHit &&*/ !_isIncreasedCastSpeedFromLightningStrike)
         {
             _castSpeedFromCreeperStrikeCoroutine = StartCoroutine(CastSpeedFromCreeperStrike());
         }
@@ -329,7 +329,7 @@ public class PoisonSlap : Skill
 
     private IEnumerator CastSpeedFromCreeperStrike()
     {
-        _creeperStrike.IsTwoHit = false;
+        //_creeperStrike.IsTwoHit = false;
         _isIncreasedCastSpeedFromCreeperStrike = true;
 
         float _timeCastFromCreeperStrike = _baseTimeCast * _creeperStrikeCastSpeedMultiplier;
