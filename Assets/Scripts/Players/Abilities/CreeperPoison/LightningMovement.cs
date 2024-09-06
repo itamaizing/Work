@@ -1,253 +1,475 @@
 using DG.Tweening;
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
-/*
-public class LightningMovement : Ability
+using UnityEngine.UIElements;
+
+public class LightningMovement : Skill
 {
+    [SerializeField] private AcceleratedSlap _acceleratedSlap;
+    [SerializeField] private SuperFastScales _superFastScales;
+
     [Header("Ability properties")]
-    [SerializeField] private float _leapRange;
-    [SerializeField] private float _durationOfLeap;
-    [SerializeField] private Character _playerLinks;
-    [SerializeField] private LayerMask _obstacleLayerMask;
-    [SerializeField] private Vector2 _pointForSecondLeap;
-    [SerializeField] private VisualRender _abilityRender;
-    [SerializeField] private LayerMask _enemyLayerMask;
+    [SerializeField] private CreeperStrike _creeperStrike; 
+    [SerializeField] private AbilityLineRenderer _line;
+    [SerializeField] private GameObject _midPointForLeapPrefab;
+    [SerializeField] private Character _player;
+    [SerializeField] private Collider2D _playerCollider;
+    [SerializeField] private Color _colorForEnd;
+    [SerializeField] private Color _colorForStart;
 
-    private bool _enabled = false;
-    private bool _isEnemy = false;
-    
-    // First leap
-    private float _actualFirstLeapRange;
-    private Vector2 _firstLeapPositionForObstacles;
-    private Vector2 _leapPositionForFirstVector;
-    private bool _canSelectedFirstVector = true;
-    private bool _isReadyFirstLeap = true;
-    private bool _firstVectorSelected = false;
-    //Second leap
-    private float _actualSecondLeapRange;
-    private Vector2 _secondLeapPositionForObstacles;
-    private Vector2 _leapPositionForSecondVector;
-    private bool _canSelectedSecondVector = true;
-    private bool _isReadySecondLeap = true;
-    private bool _secondVectorSelected = false;
+    [SerializeField] private float _rangeLeap;
+    [SerializeField] private float _durationLeap;
 
-    private new void Start()
+    #region ForRenderingVectors
+
+    private BoxArea _lineStartImageForFirstLeap;
+    private BoxArea _lineEndImageForFirstLeap;
+    private BoxArea _lineStartImageForSecondLeap;
+    private BoxArea _lineEndImageForSecondLeap;
+    private GameObject _midPointForLeap;
+
+    #endregion
+
+    private Character _target;
+
+    private Vector3 _firstLeapPoint = Vector3.positiveInfinity;
+    private Vector3 _secondLeapPoint;
+
+    private Vector3 _firstLeapPointIfIsObstacle;
+    private Vector3 _secondLeapPointIfIsObstacle;
+
+    private Coroutine _firstPointForLeapCoroutine;
+    private Coroutine _secondPointForLeapCoroutine;
+    private Coroutine _midPointForLeapCoroutine;
+    private Coroutine _renderLineForFirstLeapCoroutine;
+    private Coroutine _renderLineForSecondLeapCoroutine;
+    private Coroutine _isTargetBeforePlayerCoroutine;
+    private Coroutine _isTargetBehindPlayerCoroutine;
+
+    [SyncVar] private bool _isTargetBeforePlayer = false;
+    [SyncVar] private bool _isTargetBehindPlayer = false;
+    private bool _isFirstClickDone = false;
+    private bool _isSecondClickDone = false;
+    private bool _isTarget = false;
+
+    protected override bool IsCanCast => CheckCanCast();
+
+    #region PrepareAndStartJob
+
+    protected override void ClearData()
     {
-        _pointForSecondLeap = Vector2.zero;
+        float timer = _durationLeap * _rangeLeap + 0.8f;
+        Invoke("ResetBools", timer);
+
+        _player.Move.enabled = true;
+
+        _isFirstClickDone = false;
+        _isSecondClickDone = false;
+        _isTarget = false;
+
+        _firstLeapPoint = Vector3.positiveInfinity;
+        _secondLeapPoint = Vector3.zero;
+        _firstLeapPointIfIsObstacle = Vector3.zero;
+        _secondLeapPointIfIsObstacle = Vector3.zero;
+
+        StopRenderLine();
+
+        if (_superFastScales.IsActive)
+        {
+            _superFastScales.ResetResistance();
+        }
+        
+        if(_firstPointForLeapCoroutine != null)
+        {
+            StopCoroutine(_firstPointForLeapCoroutine);
+            _firstPointForLeapCoroutine = null;
+        }
+
+        if (_secondPointForLeapCoroutine != null)
+        {
+            StopCoroutine(_secondPointForLeapCoroutine);
+            _secondPointForLeapCoroutine = null;
+        }
+
+        if (_midPointForLeapCoroutine != null)
+        {
+            StopCoroutine(_midPointForLeapCoroutine);
+            _midPointForLeapCoroutine = null;
+        }
+        
     }
 
-    private void Update()
+    private void ResetBools()
     {
-        if (!_enabled) return;
+        _isTargetBeforePlayer = false;
+        _isTargetBehindPlayer = false;
 
-        if (Input.GetMouseButtonDown(0))
+        if (_isTargetBeforePlayerCoroutine != null)
         {
-            if (!_firstVectorSelected)
+            StopCoroutine(_isTargetBeforePlayerCoroutine);
+            _isTargetBeforePlayerCoroutine = null;
+        }
+
+        if (_isTargetBehindPlayerCoroutine != null)
+        {
+            StopCoroutine(_isTargetBehindPlayerCoroutine);
+            _isTargetBehindPlayerCoroutine = null;
+        }
+
+        if (_superFastScales.IsActive)
+        {
+            _superFastScales.ResetResistance();
+        }
+
+        _creeperStrike.Buff.AttackSpeed.ReductionPercentage(0.1f);
+    }
+
+    protected override IEnumerator PrepareJob()
+    {
+        StopAutoDraw();
+        _renderLineForFirstLeapCoroutine = StartCoroutine(RenderLineForFirstLeapJob(_castLength, _castWidth, _line, transform));
+
+        while (_target == null && float.IsPositiveInfinity(_firstLeapPoint.x))
+        {
+            if (Input.GetMouseButtonDown(0))
             {
-                SelectFirstVectorLeap();
-                Debug.Log(_isEnemy + " Update: is enemy param");
+                yield return _firstPointForLeapCoroutine = StartCoroutine(FirstVectorForLeap());
+
+                if (_isFirstClickDone && _isTarget)
+                {
+                    yield return _midPointForLeapCoroutine = StartCoroutine(MidpointForRenderingSecondLeap(_firstLeapPoint));
+                }
             }
-            else if (!_secondVectorSelected && _isEnemy) 
+            yield return null;
+        }
+
+    }
+
+    protected override IEnumerator CastJob()
+    {
+        if (_isFirstClickDone && !_isTarget)
+        {
+            if (IsObstacle(transform.position, _firstLeapPoint))
             {
-                SelectSecondVectorLeap();
+                _firstLeapPoint = _firstLeapPointIfIsObstacle;
             }
-            if (_firstVectorSelected && !_isEnemy)
+            SingleLeap(_firstLeapPoint, _durationLeap, _rangeLeap);
+        }
+        else if (_isFirstClickDone && _isSecondClickDone && _isTarget)
+        {
+            if (IsObstacle(transform.position, _firstLeapPoint))
             {
-                PayCost();
-                SingleLeap();
+                _firstLeapPoint = _firstLeapPointIfIsObstacle;
+                SingleLeap(_firstLeapPoint, _durationLeap, _rangeLeap);
             }
-            else if (_firstVectorSelected && _secondVectorSelected)
+            else
             {
-                PayCost();
-                ExecuteDoubleLeap();
-                StopCoroutine(TemporaryMoveToFirstLeapPoint(_leapPositionForSecondVector));
+                if (IsObstacle(_firstLeapPoint, _secondLeapPoint))
+                {
+                    _secondLeapPoint = _secondLeapPointIfIsObstacle;
+                }
+                ExecuteLeaps(_firstLeapPoint, _secondLeapPoint, _durationLeap, _rangeLeap);
             }
         }
-        if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
+
+        yield return null;
+    }
+
+    #endregion
+
+    #region CheckMethods
+
+    private bool CheckCanCast()
+    {
+        if (_target == null)
+            return Vector3.Distance(_firstLeapPoint, transform.position) <= Radius;
+
+        return Vector3.Distance(_firstLeapPoint, transform.position) <= Radius ||
+               Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+    }
+
+    private bool IsObstacle(Vector3 startPos, Vector3 endPos)
+    {
+        RaycastHit2D hitObstacle = Physics2D.Linecast(startPos, endPos, _obstacle);
+        if (hitObstacle.collider != null)
         {
-            Cancel();
-            StopCoroutine(TemporaryMoveToFirstLeapPoint(_leapPositionForSecondVector));
+            _firstLeapPointIfIsObstacle = hitObstacle.point;
+            _secondLeapPointIfIsObstacle = hitObstacle.point;
         }
+        return hitObstacle.collider != null;
     }
 
-    protected override void Cast()
+    private bool IsEnemyBeforePlayer(Vector3 startPos, Vector3 endPos)
     {
-        _enabled = true;
-    }
-
-    protected override void Cancel()
-    {
-        _enabled = false;
-        _abilityRender.StopDraw();
-    }
-
-    private void AfterLeap()
-    {
-        // false
-        _playerLinks.Rigidbody2D.isKinematic = false;
-        _firstVectorSelected = false;
-        _secondVectorSelected = false;
-        _isEnemy = false;
-        // true
-        _playerLinks.Move.enabled = true;
-        _canSelectedFirstVector = true;
-        _canSelectedSecondVector = true;
-        _isReadyFirstLeap = true;
-        _isReadySecondLeap = true;
-        _isReady = true;
-    }  
-    private bool CheckObstacleBetween(Vector3 startPosition, Vector3 endPosition)
-    {
-        // �������� �� ������� �����������
-        Vector2 direction = (endPosition - startPosition).normalized;
-        float distance = Vector2.Distance(startPosition, endPosition);
-
-        RaycastHit2D[] hits = Physics2D.BoxCastAll(startPosition, new Vector2(0.5f, 4f), 0f, direction, distance, _obstacleLayerMask);
-        foreach (RaycastHit2D hit in hits)
-        {
-            _firstLeapPositionForObstacles = hits[0].point - direction;
-            _secondLeapPositionForObstacles = hits[0].point - direction; 
-            return true;
-        }
-        return false;
-    }
-
-    private bool CheckEnemy(Vector3 startPosition, Vector3 endPosition)
-    {
-        RaycastHit2D hitEnemy = Physics2D.Linecast(startPosition, endPosition, _enemyLayerMask);
+        RaycastHit2D hitEnemy = Physics2D.Linecast(startPos, endPos, _targetsLayers);
         return hitEnemy.collider != null;
     }
 
-    private void SelectFirstVectorLeap()
+    private IEnumerator IsEnemyBeforePlayerJob(Vector3 startPos, Vector3 endPos, float rangeLeap, LayerMask enemyLayer)
     {
-        if (_canSelectedFirstVector && _isReadyFirstLeap)
+        while (true)
         {
-            _playerLinks.Rigidbody2D.isKinematic = true;
-            _firstVectorSelected = true;
-            _canSelectedFirstVector = false;
-            _isReadyFirstLeap = false;
+            Debug.Log("IsEnemyBeforePlayerJob");
+            Vector3 direction = (endPos - startPos).normalized;
+            float distance = rangeLeap * GlobalVariable.cellSize;
 
-            _actualFirstLeapRange = _leapRange;
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, distance, enemyLayer);
 
-            Vector2 mousePositionFirstVector = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 _lookDirectionForFirstVector = (mousePositionFirstVector - _playerLinks.Rigidbody2D.position).normalized;
-
-            _actualFirstLeapRange *= GlobalVariable.cellSize;
-            _leapPositionForFirstVector = (_lookDirectionForFirstVector * _actualFirstLeapRange) + (Vector2)PlayerMove.transform.position;
-            // �������� �� ����������� ��� ������� ������, ���� ��� ����, �� ��������������� ����� ������������
-            if (CheckObstacleBetween(PlayerMove.transform.position, _leapPositionForFirstVector))
+            if (hit.collider != null)
             {
-                _leapPositionForFirstVector = _firstLeapPositionForObstacles;
+                _isTargetBeforePlayer = true;
             }
-            if (CheckEnemy(PlayerMove.transform.position, _leapPositionForFirstVector))
+            Debug.Log("IsEnemyBeforePlayerJob / IsEnemyBeforePlayer = " + _isTargetBeforePlayer);
+            yield return null;
+        }  
+    }
+
+    private IEnumerator IsEnemyBehindPlayerJob(Vector3 startPos, Vector3 endPos, float rangeLeap, LayerMask enemyLayer)
+    {
+        while (true) 
+        {
+            Debug.Log("IsEnemyBehindPlayerJob");
+            Vector3 direction = (endPos - startPos).normalized;
+            float distance = rangeLeap * GlobalVariable.cellSize;
+
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, -direction, distance, enemyLayer);
+            if (hit.collider != null)
             {
-                _isEnemy = true;
+                _isTargetBehindPlayer = true;
             }
-            //��������� ��������� ������ �������
-            _abilityRender.StopDraw();
-            //����� ��� ��������� ������� ������
-            StartCoroutine(TemporaryMoveToFirstLeapPoint(_leapPositionForFirstVector));
+            Debug.Log("IsEnemyBehindPlayerJob / _isTargetBehindPlayer = " + _isTargetBehindPlayer);
+            yield return null;
         }
     }
 
-    private IEnumerator TemporaryMoveToFirstLeapPoint(Vector2 firstLeapPosition)
+    #endregion
+
+    #region RenderingLine
+
+    private void RotateAtMouse(Transform transform)
     {
-        if (_isEnemy)
+        Vector3 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0, 0, angle - 90f);
+    }
+
+    private IEnumerator RenderLineForFirstLeapJob(float length, float width, AbilityLineRenderer line, Transform lineTransform)
+    {
+        Debug.Log("LightningMovement / RenderLineFirstLeapJob");
+        Transform transformLine = lineTransform;
+
+        _lineStartImageForFirstLeap = Instantiate(line.Start, transformLine);
+        _lineEndImageForFirstLeap = Instantiate(line.End, transformLine);
+
+        _lineStartImageForFirstLeap.SetColor(_colorForStart);
+        _lineEndImageForFirstLeap.SetColor(_colorForEnd);
+
+        while (!_isFirstClickDone)
         {
-            // ���������� ������� ����� ������� ������
-            Vector2 originalPosition = _pointForSecondLeap;
-            // ����� ��� ��������� ������� ������
-            _pointForSecondLeap = firstLeapPosition;
-            // ��������� ������ �������
-            _abilityRender.Drawn(this);
+            RotateAtMouse(_lineStartImageForFirstLeap.transform);
+            RotateAtMouse(_lineEndImageForFirstLeap.transform);
 
-            // �������� ������ ������ ����� ������
-            yield return new WaitUntil(() => _secondVectorSelected);
+            _lineStartImageForFirstLeap.SetSize(width, length);
+            _lineEndImageForFirstLeap.SetSize(width, length);
 
-            // ����������� ����� � �������� ��������� � ������ ������ �� ���� ������
-            _pointForSecondLeap = originalPosition;
+            yield return null;
         }
     }
 
-    private void SelectSecondVectorLeap()
+    private IEnumerator RenderLineForSecondLeapJob(float length, float width, AbilityLineRenderer line, Transform lineTransform)
     {
-        Debug.Log(_pointForSecondLeap + " ����� ������� ������");
-        if (_canSelectedSecondVector && _isReadySecondLeap)
+        Debug.Log("LightningMovement / RenderLineFirstLeapJob");
+
+        Transform transformLine = lineTransform;
+
+        _lineStartImageForSecondLeap = Instantiate(line.Start, transformLine);
+        _lineEndImageForSecondLeap = Instantiate(line.End, transformLine);
+
+        _lineStartImageForSecondLeap.SetColor(_colorForStart);
+        _lineEndImageForSecondLeap.SetColor(_colorForEnd);
+
+        while (!_isSecondClickDone)
         {
-            _playerLinks.Rigidbody2D.isKinematic = true;
-            _secondVectorSelected = true;
-            _canSelectedSecondVector = false;
-            _isReadySecondLeap = false;
+            RotateAtMouse(_lineStartImageForSecondLeap.transform);
+            RotateAtMouse(_lineEndImageForSecondLeap.transform);
 
-            _actualSecondLeapRange = _leapRange;
+            _lineStartImageForSecondLeap.SetSize(width, length);
+            _lineEndImageForSecondLeap.SetSize(width, length);
 
-            Vector2 mousePositionSecondVector = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 _lookDirectionForSecondVector = (mousePositionSecondVector - _leapPositionForFirstVector).normalized;
+            yield return null;
+        }
+    }
 
-            _actualSecondLeapRange *= GlobalVariable.cellSize;
-            _leapPositionForSecondVector = _lookDirectionForSecondVector * _actualSecondLeapRange + _leapPositionForFirstVector;
-            // �������� �� ����������� ��� ������� ������, ���� ��� ����, �� ��������������� ����� ������������
-            if (CheckObstacleBetween(_leapPositionForFirstVector, _leapPositionForSecondVector))
+    private void StopRenderLine()
+    {
+        Debug.Log("LightningMovement / StopRenderLine");
+
+        if (_renderLineForFirstLeapCoroutine != null)
+        {
+            Debug.Log($"LightningMovement / StopRenderLine / renderFirstLeapLine = {_renderLineForFirstLeapCoroutine}");
+            StopCoroutine(_renderLineForFirstLeapCoroutine);
+            _renderLineForFirstLeapCoroutine = null;
+        }
+
+        if (_renderLineForSecondLeapCoroutine != null)
+        {
+            Debug.Log($"LightningMovement / StopRenderLine / renderSecondLeapLine = {_renderLineForSecondLeapCoroutine}");
+            StopCoroutine(_renderLineForSecondLeapCoroutine);
+            _renderLineForSecondLeapCoroutine = null;
+        }
+
+        if (_lineStartImageForFirstLeap != null)
+            Destroy(_lineStartImageForFirstLeap.gameObject);
+
+        if (_lineEndImageForFirstLeap != null)
+            Destroy(_lineEndImageForFirstLeap.gameObject);
+
+        if (_lineStartImageForSecondLeap != null)
+            Destroy(_lineStartImageForSecondLeap.gameObject);
+
+        if (_lineEndImageForSecondLeap != null)
+            Destroy(_lineEndImageForSecondLeap.gameObject);
+
+        Debug.Log($"LightningMovement / StopRenderLine / after all destroy LineImages");
+    }
+
+    #endregion
+
+    #region Coroutines
+
+    private IEnumerator FirstVectorForLeap()
+    {
+        while (!_isFirstClickDone)
+        {
+            if (Input.GetMouseButtonDown(0))
             {
-                _leapPositionForSecondVector = _secondLeapPositionForObstacles;
+                _isFirstClickDone = true;
+                _firstLeapPoint = GetMousePoint();
+
+                _isTarget = IsEnemyBeforePlayer(transform.position, _firstLeapPoint);
             }
-            _abilityRender.StopDraw();
+            yield return null;
         }
     }
 
-    private void SingleLeap()
+    private IEnumerator SecondVectorForLeap()
     {
-        _playerLinks.Move.enabled = false;
-        _enabled = true;
-        _playerLinks.Rigidbody2D.DOMove(_leapPositionForFirstVector, _durationOfLeap * _actualFirstLeapRange / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(AfterLeap);
-        Debug.Log("Single leap work");
-    }
-
-    private void ExecuteDoubleLeap()
-    {
-        if (_firstVectorSelected && _secondVectorSelected)
+        while (!_isSecondClickDone)
         {
-            _playerLinks.Move.enabled = false;
-            _enabled = true;
-            DG.Tweening.Sequence leapSequence = DOTween.Sequence();
-            leapSequence.Append(_playerLinks.Rigidbody2D.DOMove(_leapPositionForFirstVector, _durationOfLeap * _actualFirstLeapRange / GlobalVariable.cellSize).SetEase(Ease.Linear));
-            leapSequence.AppendCallback(() =>
-                {
-                    if (!CheckEnemy(PlayerMove.transform.position, _leapPositionForFirstVector) && !_isEnemy)
-                    {
-                        leapSequence.Kill();
-                        AfterLeap();
-                        Debug.Log(CheckEnemy(PlayerMove.transform.position, _leapPositionForFirstVector) + " Check enemy in leapCallback");
-                    }
-                });
-            leapSequence.AppendCallback(() =>
+            if (Input.GetMouseButtonDown(0))
             {
-                if (IsEnemyBehindPlayer(_playerLinks.transform.position, _leapPositionForFirstVector) && _isEnemy)
-                {
-                    leapSequence.Append(_playerLinks.Rigidbody2D.DOMove(_leapPositionForSecondVector, _durationOfLeap * _actualSecondLeapRange / GlobalVariable.cellSize).SetEase(Ease.Linear));
-                    Debug.Log(IsEnemyBehindPlayer(_playerLinks.transform.position, _leapPositionForFirstVector) + " isEnemyBehind in leapCallback");
-                }
-                else
-                {
-                    leapSequence.Kill();
-                    AfterLeap();
-                }
-            });
-            leapSequence.OnComplete(AfterLeap);
+                _isSecondClickDone = true;
+                _secondLeapPoint = GetMousePoint();
+            }
+            yield return null;
         }
     }
 
-    private bool IsEnemyBehindPlayer(Vector2 playerPosition, Vector2 firstLeapEndPosition)
+    private IEnumerator MidpointForRenderingSecondLeap(Vector2 firstLeapPoint)
     {
-        Vector2 directionToFirstLeapEnd = (firstLeapEndPosition - playerPosition).normalized;
-        Vector2 perpendicularDirection = new Vector2(-directionToFirstLeapEnd.y, directionToFirstLeapEnd.x);
-        float checkDistance = _actualFirstLeapRange * GlobalVariable.cellSize;
+        Vector3 originalPoint = firstLeapPoint;
 
-        RaycastHit2D hit = Physics2D.Raycast(playerPosition, -directionToFirstLeapEnd, checkDistance, _enemyLayerMask);
-        return hit.collider != null;
+        _midPointForLeap = Instantiate(_midPointForLeapPrefab, originalPoint, Quaternion.identity);
+
+        _renderLineForSecondLeapCoroutine = StartCoroutine(RenderLineForSecondLeapJob(_castLength, _castWidth, _line, _midPointForLeap.transform));
+
+        yield return _secondPointForLeapCoroutine = StartCoroutine(SecondVectorForLeap());
+
+        Destroy(_midPointForLeap.gameObject);
+
+        StopRenderLine();
     }
+
+    #endregion
+
+    #region Leaps
+    private void SingleLeap(Vector2 firstLeapPoint, float durationLeap, float rangeLeap)
+    {
+        if (_isTargetBeforePlayerCoroutine == null)
+        {
+            _isTargetBeforePlayerCoroutine = StartCoroutine(IsEnemyBeforePlayerJob(_player.transform.position, firstLeapPoint, rangeLeap, _targetsLayers));
+        }
+
+        _player.Rb.isKinematic = true;
+        _player.Move.enabled = false;
+
+        if (_superFastScales.IsActive)
+        {
+            _superFastScales.IncreasingResistance();
+        }
+
+        _creeperStrike.Buff.AttackSpeed.IncreasePercentage(0.1f);
+
+        CmdSingleLeap(firstLeapPoint, durationLeap, rangeLeap);
+    }
+
+    private void ExecuteLeaps(Vector2 firstLeapPoint, Vector2 secondLeapPoint, float durationLeap, float rangeLeap)
+    {
+        Vector3 startPos = _player.transform.position;
+        if (_isTargetBeforePlayerCoroutine == null)
+        {
+            Debug.Log("StartCoroutine BeforePlayer");
+            _isTargetBeforePlayerCoroutine = StartCoroutine(IsEnemyBeforePlayerJob(_player.transform.position, firstLeapPoint, rangeLeap, _targetsLayers));
+        }
+        if (_isTargetBehindPlayerCoroutine == null)
+        {
+            Debug.Log("StartCoroutine BehindPlayer");
+            _isTargetBehindPlayerCoroutine = StartCoroutine(IsEnemyBehindPlayerJob(startPos, firstLeapPoint, rangeLeap, _targetsLayers));
+        }
+
+        _player.Rb.isKinematic = true;
+        _player.Move.enabled = false;
+
+        if (_superFastScales.IsActive)
+        {
+            _superFastScales.IncreasingResistance();
+        }
+
+        _creeperStrike.Buff.AttackSpeed.IncreasePercentage(0.1f);
+
+        CmdExecuteTwoLeaps(firstLeapPoint, secondLeapPoint, durationLeap, rangeLeap, _targetsLayers);
+    }
+
+    #endregion
+
+    #region Command
+
+    [Command]
+    private void CmdSingleLeap(Vector2 firstLeapPoint, float durationLeap, float rangeLeap)
+    {
+        _player.CharacterState.AddState(States.Immateriality, 10f, 0, _player.gameObject, Name);
+
+        _player.Move.enabled = false;
+
+        _player.Rb.DOMove(firstLeapPoint, durationLeap * rangeLeap / GlobalVariable.cellSize).SetEase(Ease.Linear);
+    }
+
+    [Command]
+    private void CmdExecuteTwoLeaps(Vector2 firstLeapPoint, Vector2 secondLeapPoint, float durationLeap, float rangeLeap, LayerMask enemyLayer)
+    {
+        Debug.Log("CmdExecuteTwoLeaps / isTargetBeforePlayer = " + _isTargetBeforePlayer);
+        Debug.Log("CmdExecuteTwoLeaps / isTargetBehindPlayer = " + _isTargetBehindPlayer);
+        _player.CharacterState.AddState(States.Immateriality, 10f, 0, _player.gameObject, Name);
+
+        _player.Move.enabled = false;
+
+        DG.Tweening.Sequence leapSequence = DOTween.Sequence();
+        leapSequence.Append(_player.Rb.DOMove(firstLeapPoint, durationLeap * rangeLeap / GlobalVariable.cellSize).SetEase(Ease.Linear));
+        leapSequence.AppendCallback(() =>
+        { 
+            if (_isTargetBehindPlayer)
+            {
+                leapSequence.Append(_player.Rb.DOMove(secondLeapPoint, durationLeap * rangeLeap / GlobalVariable.cellSize).SetEase(Ease.Linear));
+            }
+            else
+            {
+                leapSequence.Kill();
+            }
+        });
+    }
+
+    #endregion
 }
-*/

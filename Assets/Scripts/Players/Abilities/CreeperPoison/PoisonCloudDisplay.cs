@@ -2,17 +2,20 @@ using Mirror;
 using Org.BouncyCastle.Asn1.Pkcs;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PoisonCloudDisplay : NetworkBehaviour
 {
     [SerializeField] private Character _dad;
-    [SerializeField] private ParticleSystem _poisonCloudPrefab;
+    [SerializeField] private ParticleSystem _poisonDamagingCloudPrefab;
+    [SerializeField] private ParticleSystem _poisonHealingCloudPrefab;
 
     public PoisonCloudDisplay PoisonHealingCloud { get; set; }
     public PoisonCloudDisplay PoisonDamagingCloud { get; set; }
 
-    private ParticleSystem _instancePoisonCloud;
+    private ParticleSystem _instancePoisonDamagingCloud;
+    private ParticleSystem _instancePoisonHealingCloud;
 
     public int _currentStacks;
     public int _maxStacks;
@@ -22,22 +25,23 @@ public class PoisonCloudDisplay : NetworkBehaviour
 
     private float _radiusCloud;
 
+    private bool _isHealingCloud;
+
     private Coroutine _activatePoisonCloudCoroutine;
     private Coroutine _lifeTimeStacksCoroutine;
 
-    public void InitializationPrefab(Character player, float duration, float radiusCloud, int maxStacks)
+    public void InitializationPrefab(Character player, float duration, float radiusCloud, int maxStacks, bool isHealingCloud)
     {
         _dad = player;
         _duration = duration;
         _baseDuration = duration;
         _radiusCloud = radiusCloud;
         _maxStacks = maxStacks;
+        _isHealingCloud = isHealingCloud;
     }
 
     public void AddStack()
     {
-        Debug.Log($"PoisonCloudDisplay / AddStack / PoisonHealingCloud = {PoisonHealingCloud}");
-        Debug.Log($"PoisonCloudDisplay / AddStack / PoisonDamagingCloud = {PoisonDamagingCloud}");
         if (_currentStacks < _maxStacks)
         {
             _currentStacks++;
@@ -56,40 +60,63 @@ public class PoisonCloudDisplay : NetworkBehaviour
             StopCoroutine(_lifeTimeStacksCoroutine);
         }
 
+        _duration = _baseDuration;
         _lifeTimeStacksCoroutine = StartCoroutine(LifeTimeStacks());
     }
 
     private void InstantiateCloud()
     {
-        if (_instancePoisonCloud == null)
+        if (_isHealingCloud)
         {
-            _instancePoisonCloud = Instantiate(_poisonCloudPrefab, transform.position, Quaternion.identity);
+            if (_instancePoisonHealingCloud == null)
+            {
+                _instancePoisonHealingCloud = Instantiate(_poisonHealingCloudPrefab, transform.position, Quaternion.identity);
+                _instancePoisonHealingCloud.Play();
+            }
+        }
+        else
+        {
+            if (_instancePoisonDamagingCloud == null)
+            {
+                _instancePoisonDamagingCloud = Instantiate(_poisonDamagingCloudPrefab, transform.position, Quaternion.identity);
+                _instancePoisonDamagingCloud.Play();
+                Debug.Log("PoisonDamagingCloud = " + _instancePoisonDamagingCloud);
+            }
         }
 
-        _instancePoisonCloud.Play();
     }
 
     private void UpdateInstancePoisonCloud()
     {
         Debug.Log("UpdateInstancePoisonCloud / particleSystem");
-        if (_instancePoisonCloud != null)
+        if (_instancePoisonDamagingCloud != null)
         {
-            _instancePoisonCloud.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-            ParticleSystem.MainModule main = _instancePoisonCloud.main;
+            _instancePoisonDamagingCloud.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            ParticleSystem.MainModule main = _instancePoisonDamagingCloud.main;
             main.duration = _baseDuration;
-            _instancePoisonCloud.Play();
+            _instancePoisonDamagingCloud.Play();
+        }
+
+        if (_instancePoisonHealingCloud != null)
+        {
+            _instancePoisonHealingCloud.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            ParticleSystem.MainModule main = _instancePoisonHealingCloud.main;
+            main.duration = _baseDuration;
+            _instancePoisonHealingCloud.Play();
         }
     }
 
     private void Update()
     {
-        if (_instancePoisonCloud != null)
+        if (_instancePoisonDamagingCloud != null)
         {
-            _instancePoisonCloud.transform.position = _dad.transform.position;
+            _instancePoisonDamagingCloud.transform.position = _dad.transform.position;
         }
-        Debug.Log($"PoisonCloudDisplay / Update / instancePoisonCloud = {_instancePoisonCloud}");
-        Debug.Log($"PoisonCloudDisplay / Update / PoisonHealingCloud = {PoisonHealingCloud}");
-        Debug.Log($"PoisonCloudDisplay / Update / PoisonDamagingCloud = {PoisonDamagingCloud}");
+
+        if (_instancePoisonHealingCloud != null)
+        {
+            _instancePoisonHealingCloud.transform.position = _dad.transform.position;
+        }
     }
 
     private IEnumerator ActivatePoisonCloud()
@@ -101,26 +128,35 @@ public class PoisonCloudDisplay : NetworkBehaviour
     private IEnumerator LifeTimeStacks()
     {
         Debug.Log("LifeTimeStacks");
-        Debug.Log($"PoisonCloudDisplay / LifeTimeStacks / before while and yield return - instancePoisonCloud = {_instancePoisonCloud}");
+
         yield return new WaitForSecondsRealtime(_duration);
         Debug.Log("PoisonCloudDisplay / LifeTimeStacks");
         while (_currentStacks > 0)
         {
             _currentStacks = 0;
         }
-        Debug.Log($"PoisonCloudDisplay / LifeTimeStacks / after while / currentStacks = {_currentStacks}");
-        Debug.Log($"PoisonCloudDisplay / LifeTimeStacks / after while / instancePoisonCloud = {_instancePoisonCloud}");
 
-        _instancePoisonCloud.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        if (_instancePoisonDamagingCloud != null && PoisonDamagingCloud != null)
+        {
+            Debug.Log("Damag cloud not null");
+            _instancePoisonDamagingCloud.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            NetworkServer.Destroy(PoisonDamagingCloud.gameObject);
+            _instancePoisonDamagingCloud = null;
+            NetworkServer.Destroy(_instancePoisonDamagingCloud.gameObject);
+            PoisonDamagingCloud = null;
+        }
+
+        if (_instancePoisonHealingCloud != null && PoisonHealingCloud)
+        {
+            Debug.Log("Heal cloud not null");
+            _instancePoisonHealingCloud.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            NetworkServer.Destroy(_instancePoisonHealingCloud.gameObject);
+            _instancePoisonHealingCloud = null;
+            NetworkServer.Destroy(PoisonHealingCloud.gameObject);
+            PoisonHealingCloud = null;
+        }
+
         StopAllCoroutines();
-        NetworkServer.Destroy(_instancePoisonCloud.gameObject);
-        NetworkServer.Destroy(gameObject);
-
-        _instancePoisonCloud = null;
-        PoisonHealingCloud = null;
-        PoisonDamagingCloud = null;
-
-        Debug.Log($"PoisonCloudDisplay / LifeTimeStacks / after nulls / instancePoisonCloud = {_instancePoisonCloud}");
     }
 
 }

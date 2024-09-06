@@ -247,7 +247,7 @@ public class SpitPoison : Skill
 
                 SceneManager.MoveGameObjectToScene(_poisonHealingCloud.PoisonHealingCloud.gameObject, _hero.NetworkSettings.MyRoom);
 
-                _poisonHealingCloud.PoisonHealingCloud.InitializationPrefab(_player, 6f, 3.5f, 5);
+                _poisonHealingCloud.PoisonHealingCloud.InitializationPrefab(_player, 6f, 3.5f, 5, isHealingCloud);
                 _poisonHealingCloud.PoisonHealingCloud.AddStack();
 
                 NetworkServer.Spawn(_poisonHealingCloud.PoisonHealingCloud.gameObject);
@@ -268,7 +268,7 @@ public class SpitPoison : Skill
 
                 SceneManager.MoveGameObjectToScene(_poisonDamagingCloud.PoisonDamagingCloud.gameObject, _hero.NetworkSettings.MyRoom);
 
-                _poisonDamagingCloud.PoisonDamagingCloud.InitializationPrefab(_player, 6f, 3.5f, 5);
+                _poisonDamagingCloud.PoisonDamagingCloud.InitializationPrefab(_player, 6f, 3.5f, 5, isHealingCloud);
                 _poisonDamagingCloud.PoisonDamagingCloud.AddStack();
 
                 NetworkServer.Spawn(_poisonDamagingCloud.PoisonDamagingCloud.gameObject);
@@ -306,13 +306,13 @@ public class SpitPoison : Skill
     {
         if (damageCloud != null)
         {
-            damageCloud.InitializationPrefab(_player, 6f, 3.5f, 5);
+            damageCloud.InitializationPrefab(_player, 6f, 3.5f, 5, isHealingCloud);
             damageCloud.AddStack();
             //Debug.Log("RpcPoisonDamagingCloud / if dmgCloud / AddStack");
         }
         if (healCloud != null)
         {
-            healCloud.InitializationPrefab(_player, 6f, 3.5f, 5);
+            healCloud.InitializationPrefab(_player, 6f, 3.5f, 5, isHealingCloud);
             healCloud.AddStack();
         }
     }

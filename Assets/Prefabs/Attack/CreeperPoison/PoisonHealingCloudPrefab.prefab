@@ -102,7 +102,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _dad: {fileID: 0}
-  _poisonCloudPrefab: {fileID: 802311107519225536, guid: 8bb61d2cf932c0049baad78bef73fde6, type: 3}
-  IsOwner: {fileID: 0}
+  _poisonDamagingCloudPrefab: {fileID: 1725746134164870641, guid: 7501bcfe40fedcd45b625291d0efcf01, type: 3}
+  _poisonHealingCloudPrefab: {fileID: 802311107519225536, guid: 8bb61d2cf932c0049baad78bef73fde6, type: 3}
   _currentStacks: 0
   _maxStacks: 0

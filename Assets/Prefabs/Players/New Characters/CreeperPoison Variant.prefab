@@ -159,6 +159,10 @@ PrefabInstance:
       propertyPath: m_FillAmount
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3307719523220879840, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_Parameters.colorGradient.m_ColorSpace
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 3330577042116454553, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: unit
       value: 
@@ -1122,7 +1126,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _dad: {fileID: 362903699018664054}
-  _poisonCloudPrefab: {fileID: 802311107519225536, guid: 8bb61d2cf932c0049baad78bef73fde6, type: 3}
+  _poisonDamagingCloudPrefab: {fileID: 1725746134164870641, guid: 7501bcfe40fedcd45b625291d0efcf01, type: 3}
+  _poisonHealingCloudPrefab: {fileID: 802311107519225536, guid: 8bb61d2cf932c0049baad78bef73fde6, type: 3}
   _currentStacks: 0
   _maxStacks: 0
 --- !u!114 &4790497256626355497
@@ -1230,7 +1235,8 @@ MonoBehaviour:
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _acceleratedSlap: {fileID: 7262619753731106163}
-  _lMTalent: {fileID: 2021791018241839671}
+  _superFastScales: {fileID: 2021791018241839671}
+  _creeperStrike: {fileID: 7329957038414124695}
   _line: {fileID: 11400000, guid: 7faf4d32cfcc4f54d967e4d01a0c4b65, type: 2}
   _midPointForLeapPrefab: {fileID: 4589213694028823931}
   _player: {fileID: 362903699018664054}
@@ -1238,7 +1244,7 @@ MonoBehaviour:
   _colorForEnd: {r: 0.99215686, g: 0.029412868, b: 0, a: 1}
   _colorForStart: {r: 0.27887654, g: 1, b: 0, a: 1}
   _rangeLeap: 4
-  _durationLeap: 0.8
+  _durationLeap: 0.6
 --- !u!114 &8692283665806418931
 MonoBehaviour:
   m_ObjectHideFlags: 0

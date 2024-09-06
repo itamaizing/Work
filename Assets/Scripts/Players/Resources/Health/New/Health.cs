@@ -74,6 +74,10 @@ public class Health : Resource, IDamageable, IHealingable
         _evadeMagDamage = value;
     }
 
+    public void SetDefMagicDamage(float value)
+    {
+        _defMagDamage = value;
+    }
     protected bool TryEvade(DamageType damageType, AttackRangeType attackRangeType)
     {
         switch (damageType)

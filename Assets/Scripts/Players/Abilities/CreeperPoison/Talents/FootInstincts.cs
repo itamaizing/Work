@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FootInstincts : Talent
 {
-    [SerializeField] private LightningMovementUpdated _lightningMovement;
+    [SerializeField] private LightningMovement _lightningMovement;
     private float _reductionCooldownTime = 2.0f;
 
     public override void Enter()
