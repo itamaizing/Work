@@ -13,24 +13,15 @@ public class IceSword : Skill
 	private int _hitInTheRow = 0;
 	private Character _oldtarget;
 	private Character _target;
-	private Energy _energy;
+	//private Energy _energy;
+	protected override bool IsCanCast => IsCanCastCheck();
 
-	protected override bool IsCanCast
+	private bool IsCanCastCheck()
 	{
-		get 
-		{
-			if (_energy.CurrentValue >= 10)
-			{
-				_energy.TryUse(10);
-				return true;
-			}
-			else
-			{ 
-				return false; 
-			}
-		}
+		return true;
 	}
-	private void Start()
+
+	/*private void Start()
 	{
 		for (int i = 0; i < _playerLinks.Resources.Count; i++)
 		{
@@ -40,7 +31,7 @@ public class IceSword : Skill
 			}
 		}
 
-	}
+	}*/
 
 	protected override IEnumerator PrepareJob()
 	{
@@ -80,11 +71,12 @@ public class IceSword : Skill
 
 	protected override void ClearData()
 	{
-		throw new System.NotImplementedException();
+		_target = null;
 	}
 
 	private void ApplyDamage()
 	{
+
 		Damage damage2 = new Damage
 		{
 			Value = _damage,
@@ -92,6 +84,7 @@ public class IceSword : Skill
 			Range = AttackRangeType.RangeAttack,
 		};
 		//_skill.CmdApplyDamage(damage, target.gameObject);
-		_target.Health.TryTakeDamage(ref damage2, this);
+		CmdApplyDamage(damage2, _target.gameObject);
+		//_target.Health.TryTakeDamage(ref damage2, this);
 	}
 }

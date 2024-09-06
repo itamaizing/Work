@@ -12,18 +12,19 @@ public class IceShadow : Skill
 	[SerializeField] private SeriesOfStrikes _combo;
 
 	private Energy _energy;
+	//private RuneComponent _rune;
 	private bool _lastHit = false;
 	private bool _talentEvade = false;
 	private bool _evaded = false;
 	private float _evadedTimer = 2f;
 	private float _manaUsed = 0;
-	private RuneComponent _rune;
 
 	protected override bool IsCanCast => IsCanCastCheck();
 
 	private bool IsCanCastCheck()
 	{
-		if (_rune.CurrentValue >= 1)
+		return true;
+		/*if (_rune.CurrentValue >= 1)
 		{
 			_rune.CmdUse(1);
 			return true;
@@ -31,7 +32,7 @@ public class IceShadow : Skill
 		else
 		{
 			return false;
-		}
+		}*/
 	}
 	private void Start()
 	{
@@ -41,10 +42,10 @@ public class IceShadow : Skill
 			{
 				_energy = (Energy)_playerLinks.Resources[i];
 			}
-			if (_playerLinks.Resources[i].Type == ResourceType.Rune)
+			/*if (_playerLinks.Resources[i].Type == ResourceType.Rune)
 			{
 				_rune = (RuneComponent)_playerLinks.Resources[i];
-			}
+			}*/
 		}
 
 	}
@@ -92,18 +93,11 @@ public class IceShadow : Skill
 		{
 			TryCancel();
 		}
-	}
-
-	protected override void Cancel()
-	{
-
 	}*/
 
 	private void Shoot()
 	{
 		Buff.AttackSpeed.ReductionPercentage(1 + _combo.GetMultipliedSpeed() / 100);
-
-		Debug.Log("test spawn");
 		/*IceShadowObject projectileGm = Instantiate(_shadow, gameObject.transform.position, Quaternion.identity);
 		projectileGm.Init(_playerLinks.gameObject ,Mana.Value);*/
 		_lastHit = _combo.MakeHit(null, AbilityForm.Magic, 1, 0);
@@ -111,7 +105,7 @@ public class IceShadow : Skill
 		Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);
 
 		_manaUsed = _energy.CurrentValue;
-		_energy.TryUse(_manaUsed);
+		_energy.CmdUse(_manaUsed);
 		CmdCreateProjecttile(0, _manaUsed, _lastHit);
 	}
 

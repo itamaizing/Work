@@ -82,7 +82,7 @@ public class MoveComponent : NetworkBehaviour
 		RpcMove(_rigidbody.position, moveSpeed);
 	}
 
-	[ClientRpc]
+	[TargetRpc]
 	private void RpcMove(Vector2 position, float moveSpeed)
 	{
 		if (!isLocalPlayer)

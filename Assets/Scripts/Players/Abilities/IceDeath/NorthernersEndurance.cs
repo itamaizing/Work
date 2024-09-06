@@ -10,7 +10,7 @@ public class NorthernersEndurance : Skill
 	private Character _target;
 	private Energy _energy;
 
-	protected override bool IsCanCast => throw new System.NotImplementedException();
+	protected override bool IsCanCast => true;
 	private void Start()
 	{
 		for (int i = 0; i < _playerLinks.Resources.Count; i++)
@@ -40,7 +40,7 @@ public class NorthernersEndurance : Skill
 		{
 			if (Input.GetMouseButton(0))
 			{
-				_target = GetRaycastTarget();
+				_target = GetRaycastTarget(true);
 			}
 			yield return null;
 		}
@@ -52,7 +52,7 @@ public class NorthernersEndurance : Skill
 		//if (_character.RuneComponent.RemoveRune(1, this))
 		{
 			float boostHp = 0.1f + 0.003f * _energy.CurrentValue;
-			_energy.TryUse(_energy.CurrentValue);
+			_energy.CmdUse(_energy.CurrentValue);
 			_target.CharacterState.CmdAddState(States.NorthernerEndurance, 6, boostHp, _playerLinks.gameObject, name);
 		}
 	}
