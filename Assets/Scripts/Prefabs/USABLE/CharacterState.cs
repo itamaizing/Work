@@ -48,6 +48,61 @@ public class DefaultState : AbstractCharacterState
 	}
 }
 
+public class ImmaterialityState : AbstractCharacterState
+{
+	private float _duration;
+	private float _baseDuration;
+	private Character _player;
+
+	private List<StatusEffect> _effects = new List<StatusEffect>();
+	public override States State => States.Immateriality;
+
+	public override StateType Type => StateType.Physical;
+
+	public override List<StatusEffect> Effects => _effects;
+
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+	{
+		_characterState = character;
+		_player = _characterState.Character;
+		Debug.Log("enterState Immateriality");
+		_duration = durationToExit;
+		_baseDuration = _duration;
+
+		DisabledCollider();
+	}
+
+	public override void UpdateState()
+	{
+		_duration -= Time.deltaTime;
+		if (_duration < 0)
+		{
+			ExitState();
+		}
+	}
+
+	public override void ExitState()
+	{
+		_player.Collider.enabled = true;
+		_duration = 0;
+		_baseDuration = 0;
+	}
+
+	public override bool Stack(float time)
+	{
+		return false;
+	}
+
+	private void DisabledCollider()
+	{
+		if (_player != null)
+		{
+			Debug.Log("DisabledCollider if player != null / _player.collider == " + _player.Collider);
+			_player.Collider.enabled = false;
+		}
+	}
+}
+
 public class InvisibleStateOld : AbstractCharacterState
 {
 	private Renderer[] childRenderers;
@@ -917,7 +972,7 @@ public class CreeperInvisibleState : AbstractCharacterState
 
 #region CreeperDebuffPoisons
 
-public class EmpathicPoisons : AbstractCharacterState
+public class EmpathicPoisonsState : AbstractCharacterState
 {
     private float _baseEvasionValue = 0.1f;
     private float _increasedEvasionValue;
@@ -1051,7 +1106,7 @@ public class EmpathicPoisons : AbstractCharacterState
     }
 }
 
-public class PoisonBone : AbstractCharacterState
+public class PoisonBoneState : AbstractCharacterState
 {
 	public bool turnOff = false;
 
@@ -1235,6 +1290,7 @@ public class WitheringPoisonState : AbstractCharacterState
 
         _characterState = character;
 
+
         _duration = durationToExit;
         _baseDuration = durationToExit;
 
@@ -1345,6 +1401,7 @@ public class WitheringPoisonState : AbstractCharacterState
         _timeBetweenTakeAwayMana = _startTimeBetweenTakeAwayMana;
     }
 }
+
 
 public class BindingPoisonState : AbstractCharacterState
 {
@@ -1467,14 +1524,14 @@ public class BindingPoisonState : AbstractCharacterState
 
 #region PoisonClouds
 
-public class PoisonCloud : AbstractCharacterState
+public class PoisonCloudState : AbstractCharacterState
 {
     public bool turnOff = false;
 
     private List<Skill> _skills = new();
 	private List<Talent> _talents = new();
 
-	private EmpathicPoisons _empathicPoisons;
+	private EmpathicPoisonsState _empathicPoisons;
 	private CapaciousPoisonCloud _capaciousPoisonCloud;
     private ToxiqueCloud _toxiqueCloud;
 	private ExplosionPoisonCloud _cloudExplosion;
@@ -1695,7 +1752,7 @@ public class PoisonCloud : AbstractCharacterState
     }
 }
 
-public class HealingPoisonCloud : AbstractCharacterState
+public class HealingPoisonCloudState : AbstractCharacterState
 {
     public bool turnOff = false;
 
@@ -1836,7 +1893,7 @@ public class HealingPoisonCloud : AbstractCharacterState
 
 #region HealingPoisons
 
-public class HealingPoisonPerSecond : AbstractCharacterState
+public class HealingPoisonPerSecondState : AbstractCharacterState
 {
 	//private List<Talent> _talents = new();
 	//private SurgeTreatment _surgeTreatment;
@@ -1921,7 +1978,7 @@ public class HealingPoisonPerSecond : AbstractCharacterState
     }
 }
 
-public class InstantHealingPoison : AbstractCharacterState
+public class InstantHealingPoisonState : AbstractCharacterState
 {
     //private List<Talent> _talents = new();
     //private SurgeTreatment _surgeTreatment;
@@ -2041,7 +2098,7 @@ public class InstantHealingPoison : AbstractCharacterState
 
 
 
-public class RegeneratingPoison : AbstractCharacterState
+public class RegeneratingPoisonState : AbstractCharacterState
 {
 	public bool turnOff = false;
 
@@ -2625,21 +2682,22 @@ public class CharacterState : NetworkBehaviour
 
 	public Dictionary<States, AbstractCharacterState> EnumToState = new Dictionary<States, AbstractCharacterState>()
 	{
+		[States.Immateriality] = new ImmaterialityState(),
 		[States.Stun] = new StunnedState(),
 		[States.Frozen] = new FrozenState(),
 		[States.Frosting] = new FrostingState(),
 		[States.Cooling] = new Cooling(),
 		[States.CreeperInvisible] = new CreeperInvisibleState(),
 		[States.InAir] = new InAirState(),
-		[States.PoisonBone] = new PoisonBone(),
+		[States.PoisonBone] = new PoisonBoneState(),
 		[States.WitheringPoison] = new WitheringPoisonState(),
 		[States.BindingPoison] = new BindingPoisonState(),
-		[States.PoisonCloud] = new PoisonCloud(),
-		[States.HealingPoisonCloud] = new HealingPoisonCloud(),
-		[States.EmpathicPoisons] = new EmpathicPoisons(),
-		[States.HealingPoisonPerSecond] = new HealingPoisonPerSecond(),
-		[States.InstantHealingPoison] = new InstantHealingPoison(),
-		[States.RegeneratingPoison] = new RegeneratingPoison(),
+		[States.PoisonCloud] = new PoisonCloudState(),
+		[States.HealingPoisonCloud] = new HealingPoisonCloudState(),
+		[States.EmpathicPoisons] = new EmpathicPoisonsState(),
+		[States.HealingPoisonPerSecond] = new HealingPoisonPerSecondState(),
+		[States.InstantHealingPoison] = new InstantHealingPoisonState(),
+		[States.RegeneratingPoison] = new RegeneratingPoisonState(),
 		[States.Blind] = new BlindnessState(),
 		[States.Invisible] = new InvisibleState(),
 		[States.SchoolDebuff] = new AbilitySchoolDebuff(),
@@ -2864,7 +2922,8 @@ public enum StatusEffect
 public enum States
 {
 	Default,
-	Stun,
+    Immateriality,
+    Stun,
 	Frozen,
 	Frosting,
 	Cooling,

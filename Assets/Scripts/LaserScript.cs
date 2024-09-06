@@ -27,7 +27,7 @@ public class LaserScript : MonoBehaviour
 		{
 			isPlaying = true;
 			songPlay = false;
-			lineRenderer.enabled = false;
+			_lineRenderer.enabled = false;
 			AudioController.instance.StopSound("laser");
 			return;
 		}
@@ -86,7 +86,7 @@ public class LaserScript : MonoBehaviour
 			curve.AddKey(i / 20, Mathf.Sin((Mathf.PI / 180) * i));
 			//curve.AddKey(1.0f, 1.0f);
 		}
-		//lineRenderer.widthCurve = curve;
-		//  lineRenderer.widthMultiplier = width;
+		//_lineRenderer.widthCurve = curve;
+		//  _lineRenderer.widthMultiplier = width;
 	}
 }

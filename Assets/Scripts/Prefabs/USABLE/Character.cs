@@ -10,6 +10,7 @@ public abstract class Character : NetworkBehaviour
 	[SerializeField] private CharacterData _playerData;
 	[SerializeField] private UserNetworkSettings _networkSettings; 
 	[SerializeField] private Rigidbody2D rb;
+	[SerializeField] private Collider2D _collider;
 	[SerializeField] private Health _healthComponent;
 	public Energy Stamina;
 	public RuneComponent RuneComponent;
@@ -23,6 +24,7 @@ public abstract class Character : NetworkBehaviour
 	public CharacterData Data => _playerData;
 	public UserNetworkSettings NetworkSettings => _networkSettings;
 	public Rigidbody2D Rb => rb;
+	public Collider2D Collider => _collider;
 	public Health Health => _healthComponent;
 	public MoveComponent Move => _playerMove;
 	public SkillManager Abilities => _abilities;
@@ -79,7 +81,7 @@ public abstract class Character : NetworkBehaviour
 		}
 	}
 	
-	private void Start()
+	private void Awake()
 	{
 		Initialize();
 	}
