@@ -48,6 +48,7 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
         SaveManager.Instance.LoadTalent(_talentsGroup.ID, talent.Id);
 
         UpdateActiveTalentsCount();
+        Owner.Owner.UpdateAttributes();
     }
 
     public void Show()

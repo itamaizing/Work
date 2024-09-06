@@ -29,16 +29,17 @@ public class SaveManager : MonoBehaviour
         LoadHeroData();
     }
 
-    public void SaveData()
+    public void SaveAttributePoints(int points)
     {
-        PlayerPrefs.SetInt(_character.Data.Name, _character.Data.ID);
-
-        foreach (var t in _character.Data.Attributes.AttributeData)
-        {
-            PlayerPrefs.SetInt(_character.Data.Name + t.Name + "_Points", t.Points);
-        }
-
+        var currentPoints = _character.Data.Attributes.FreeAttributePointsCount;
+        PlayerPrefs.SetInt(_character.Data.Name + "_Group" + _currentSaveGroup  + "_FreeAttributesPoints", currentPoints + points);
         PlayerPrefs.Save();
+    }
+    
+    public void LoadAttributePoints()
+    {
+        var points =  PlayerPrefs.GetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_FreeAttributesPoints", 0);
+        _character.Data.Attributes.FreeAttributePointsCount = points;
     }
 
     public void SaveAttribute(int index, int points)
@@ -46,6 +47,8 @@ public class SaveManager : MonoBehaviour
         var currentPoints = _character.Data.Attributes.AttributeData.FirstOrDefault(o=>o.Id == index)!.Points;
         PlayerPrefs.SetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_" + _character.Data.Attributes.AttributeData.FirstOrDefault(o => o.Id == index)?.Name + "_Points", currentPoints + points);
         PlayerPrefs.Save();
+        
+        SaveAttributePoints(-points);
     }
 
     public void LoadAttributes()
@@ -71,14 +74,26 @@ public class SaveManager : MonoBehaviour
     
     public void SaveTalent(int idGroup, int idTalent, bool isActive)
     {
-        var points = isActive ? 1 : 0;
+        var isTalentActive = isActive ? 1 : 0;
         var talentGroup = _character.TalentManager.Talents.FirstOrDefault(o => o.ID == idGroup);
         var talent = talentGroup?.TalentsData.FirstOrDefault(o => o.Data.Id == idTalent);
         
         if(talentGroup == null || talent == null) return;
         
-        PlayerPrefs.SetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_" + talentGroup.Name + "_" + talent.Data.Name, points);
+        var points = talentGroup.BonusAttributePoints();
+        
+        PlayerPrefs.SetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_" + talentGroup.Name + "_" + talent.Data.Name, isTalentActive);
+        PlayerPrefs.SetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_" + talentGroup.Name + "_" + talent.Data.Name + "_Points_", points);
         PlayerPrefs.Save();
+
+        if (isActive)
+        {
+            SaveAttributePoints(points);
+        }
+        else
+        {
+            SaveAttributePoints(-talent.Data.AttributePoints);   
+        }
     }
 
     public void LoadTalent(int idGroup, int idTalent)
@@ -89,7 +104,10 @@ public class SaveManager : MonoBehaviour
         if(groupTemp == null || talentTemp == null) return;
                 
         int isActive =  PlayerPrefs.GetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_" + groupTemp.Name + "_" + talentTemp.Data.Name, 0);
+        int points = PlayerPrefs.GetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_" + groupTemp.Name + "_" + talentTemp.Data.Name + "_Points_", 0);
+        
         talentTemp.Data.IsOpen = isActive == 1;
+        talentTemp.Data.AttributePoints = points;
     }
 
     public void LoadTalents()

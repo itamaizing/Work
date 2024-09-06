@@ -25,6 +25,7 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour
         SaveManager.Instance.LoadAttribute(_currentAttribute.Id);
         
         _attributeValue.ChangeKey(_currentAttribute.Points);
+        Owner.UpdateAttributesPoints();
     }
 
     public void Reduce()
@@ -35,6 +36,7 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour
         SaveManager.Instance.LoadAttribute(_currentAttribute.Id);
         
         _attributeValue.ChangeKey(_currentAttribute.Points);
+        Owner.UpdateAttributesPoints();
     }
     
     public void Destroy()

@@ -67,4 +67,9 @@ public class UIMenuMainWindow : MonoBehaviour
         _talentsPanel.Owner = this;
         _talentsPanel.Show();
     }
+
+    public void UpdateAttributes()
+    {
+        _attributesPanel.UpdateAttributesPoints();
+    }
 }

@@ -1,13 +1,14 @@
+using System;
 using Mirror;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public abstract class Talent : NetworkBehaviour
 {
 	[SerializeField]
 	private TalentData _data;
+	
     public Character character;
 
     public TalentData Data => _data;
@@ -20,6 +21,73 @@ public abstract class Talent : NetworkBehaviour
     {
 	    _data.IsOpen = isActive;
     }
+}
+
+[Serializable]
+public class TalentData
+{
+	public int Id;
+	public string Name;
+	public bool IsOpen;
+	public int AttributePoints = 0;
+	
+	
+	public string Description = string.Empty;
+	public Sprite Icon;
+
+	public TalentData(int id, string name, bool isOpen)
+	{
+		Id = id;
+		Name = name;
+		IsOpen = isOpen;
+	}
+}
+
+[Serializable]
+public class TalentsGroup
+{
+	[SerializeField] private int _id;
+	[SerializeField] private string _name;
+	[SerializeField] private List<Talent> _talentGroup;
+
+	public int ID => _id;
+	public string Name => _name;
+	public List<Talent> TalentsData => _talentGroup;
+	public int TalentsCount => TalentsData.Count;
+	
+	public int BonusAttributePoints()
+	{
+		int totalBonus = 1;
+		int rowLength = 3;
+		int numberOfRows = TalentsData.Count / rowLength;
+
+		for (int row = 0; row < numberOfRows; row++)
+		{
+			int activeCount = 0;
+			for (int i = row * rowLength; i < (row + 1) * rowLength && i < TalentsData.Count; i++)
+			{
+				if (TalentsData[i].Data.IsOpen)
+				{
+					activeCount++;
+				}
+			}
+
+			switch (row)
+			{
+				case 0:
+					totalBonus += activeCount == 2 ? 1 : activeCount == 3 ? 3 : 0;
+					break;
+				case 1:
+					totalBonus += activeCount == 2 ? 1 : activeCount == 3 ? 2 : 0;
+					break;
+				case 2:
+					totalBonus += activeCount == 3 ? 1 : 0;
+					break;
+			}
+		}
+
+		return totalBonus;
+	}
 }
 
 public class TalentSystem : NetworkBehaviour
@@ -36,26 +104,13 @@ public class TalentSystem : NetworkBehaviour
 
     public void Initialize()
     {
-	    if(SceneManager.GetActiveScene().buildIndex == 1) 
-		    _panel = TalentManager.Instance.AddPanel(this);
     }
     public void AddPoints(int value)
     {
-        _points += value;
     }
     
 	public void SetActive(int id, int row,  bool value)
 	{
-		if (id > _talents.Count) return;
-		//if (_activeTalents.Contains(_talents[id]))
-		if (value)
-		{
-
-		}
-		else
-		{
-
-		}
 	}
 
     [Command]

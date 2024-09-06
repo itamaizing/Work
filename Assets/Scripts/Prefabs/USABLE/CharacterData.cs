@@ -13,7 +13,6 @@ public class CharacterData : ScriptableObject
     [SerializeField] private Sprite _icon;
     [SerializeField] private float _iconSize;
     [SerializeField] private AttributeGroup _attributes;
-    [SerializeField] private List<TalentsGroup> _talents;
     [SerializeField] private HealthInfo statsInfo;
 
     public int ID => _id;
@@ -122,35 +121,6 @@ public class AttributeGroup
     };
     
     public List<Attribute> AttributeData => attributesGroup;
-}
-
-[Serializable]
-public class TalentData
-{
-    public int Id;
-    public string Name;
-    public string Description;
-    public bool IsOpen;
-
-    public Sprite Icon;
-
-    public TalentData(int id, string name, bool isOpen)
-    {
-        Id = id;
-        Name = name;
-        IsOpen = isOpen;
-    }
-}
-
-[Serializable]
-public class TalentsGroup
-{
-    [SerializeField] private int _id;
-    [SerializeField] private string _name;
-    [SerializeField] private List<Talent> _talentGroup;
-
-    public int ID => _id;
-    public string Name => _name;
-    public List<Talent> TalentsData => _talentGroup;
-    public int TalentsCount => TalentsData.Count;
+    public int FreeAttributePointsCount { get; set; }
+    public int UsedAttributePointsCount => attributesGroup.Sum(o => o.Points);
 }

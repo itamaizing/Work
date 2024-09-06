@@ -15,7 +15,7 @@ MonoBehaviour:
   _id: 10
   _name: GENA
   _description: golden ball heat trick
-  _icon: {fileID: 21300000, guid: 48c94a024989bf74d9081978b98b6040, type: 3}
+  _icon: {fileID: 21300000, guid: 7fef3134086136c46a8653cbc1e564e4, type: 3}
   _iconSize: 0
   _attributes:
     attributesGroup:
@@ -145,5 +145,4 @@ MonoBehaviour:
       DefaultValue: 0
       Icon: {fileID: 0}
       IsVisible: 0
-  _talents: []
   statsInfo: {fileID: 0}
