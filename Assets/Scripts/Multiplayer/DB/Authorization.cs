@@ -1,3 +1,4 @@
+using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,6 +6,8 @@ using UnityEngine;
 
 public class Authorization : MonoBehaviour
 {
+    [SerializeField] private NetworkManager _networkManager;
+
     private const string LOGIN = "login";
     private const string PASSWORD = "password";
 
@@ -38,7 +41,11 @@ public class Authorization : MonoBehaviour
             {LOGIN, _login},
             {PASSWORD, _password }
         };
-
+        StartCoroutine(TimeOutJob());
+        //----------------------------TEST
+        if (Test(data))
+            return;
+        //----------------------------TEST
         NetworkHTTP.Instance.Post(URLLibrary.Authorization, data, Success);
     }
 
@@ -53,5 +60,22 @@ public class Authorization : MonoBehaviour
         {
             Error?.Invoke(data);
         }
+    }
+
+    private bool Test(Dictionary<string, string> data)
+    {
+        if(data[LOGIN] == "test" && data[LOGIN] == "test")
+        {
+            Debug.Log("Test user");
+            _networkManager.StartClient();
+            return true;
+        }
+        return false;
+    }
+
+    private IEnumerator TimeOutJob()
+    {
+        yield return new WaitForSecondsRealtime(10);
+        Error?.Invoke("TimeOut");
     }
 }
