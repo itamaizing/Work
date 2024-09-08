@@ -13,7 +13,7 @@ public class Icecloud : Skill
 	//private bool _enabled;
 	private bool _boostDmg;
 	private Energy _energy;
-	private RuneComponent _rune;
+	//private RuneComponent _rune;
 
 	protected override bool IsCanCast => IsCanCastCheck();
 
@@ -38,10 +38,10 @@ public class Icecloud : Skill
 			{
 				_energy = (Energy)_playerLinks.Resources[i];
 			}
-			if (_playerLinks.Resources[i].Type == ResourceType.Rune)
+			/*if (_playerLinks.Resources[i].Type == ResourceType.Rune)
 			{
 				_rune = (RuneComponent)_playerLinks.Resources[i];
-			}
+			}*/
 		}
 	}
 

@@ -468,7 +468,7 @@ public abstract class Skill : NetworkBehaviour
         return Camera.main.ScreenToWorldPoint(Input.mousePosition);
     }
 
-    private bool TryUseCharge()
+    protected bool TryUseCharge()
     {
         if (_isUseCharges == false)
             return true;

@@ -16,13 +16,16 @@ public class IcePuddle : Skill
 	private Vector2 _mousePos;
 	private float _angle;
 	private float _angle2;
+	private float _angle3;
 	private bool _lastHit = false;
 	private bool _enabled = false;
 	private bool _secondPoind = false;
 	private bool _crutch = false;
 	private float _timer = 2;
 	private float _time = 0;
-	private bool _talentActive = false;
+	private bool _talentPuddleSize = false;
+	private bool _talentFrostingFrozen = false;
+	private bool _talentEvadeDadBoost = false;
 	private bool _shooted = false;
 	private Energy _energy;
 
@@ -33,7 +36,7 @@ public class IcePuddle : Skill
 		{
 			_enabled = true;
 			_lastHit = _seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0);
-			if (_lastHit && _talentActive)
+			if (_lastHit && _talentPuddleSize)
 				_preViewPuddle.transform.localScale = Vector3.one * 1.7f;
 
 			_preViewPuddle.SetActive(true);
@@ -183,6 +186,7 @@ public class IcePuddle : Skill
 		IcePuddleObject projectile = Instantiate(_puddle, position, Quaternion.Euler(0, 0, angle));
 		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
 		projectile.Init(_hero, manaValue, lastHit, this);
+		projectile.SetTalents(_talentEvadeDadBoost, _talentFrostingFrozen);
 
 		NetworkServer.Spawn(projectile.gameObject);
 
@@ -219,6 +223,30 @@ public class IcePuddle : Skill
 		return transform.position + direction * length;*/
 	}
 
+	private Vector3 InstantiatePoint2()
+	{
+		Vector3 mousePosition = Input.mousePosition;
+		Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
+		worldPosition.z = 1;
+
+		worldPosition += (worldPosition - _preViewPuddle.transform.position).normalized * 2;
+		float distance = Vector2.Distance(gameObject.transform.position, worldPosition);
+		if (distance <= _radius)
+		{
+			_crutch = false;
+			return worldPosition;
+		}
+		else
+		{
+			_crutch = true;
+			Vector3 direction = (worldPosition - gameObject.transform.position).normalized;
+			Vector3 spawnPosition = gameObject.transform.position + direction * _radius;
+			return spawnPosition;
+		}
+		/*var length = Mathf.Min(distance, _radius);
+		var direction = (worldPosition - gameObject.transform.position).normalized;
+		return transform.position + direction * length;*/
+	}
 	private void Timer()
 	{
 		if(_lastHit) 
@@ -247,9 +275,11 @@ public class IcePuddle : Skill
 			Vector3 _mousePos2 = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			Vector2 lookDir = _mousePos2 - _preViewPuddle.transform.position;
 			_angle2 = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg + 90f;
-			_lowePoint.transform.position = InstantiatePoint();
+			
+			_lowePoint.transform.position = InstantiatePoint2();
 			if (!_crutch)
 			{
+				_angle3 = _angle2;
 				_preViewPuddle.transform.rotation = Quaternion.Euler(0, 0, _angle2);
 			}
 		}
@@ -263,6 +293,7 @@ public class IcePuddle : Skill
 			timeToAdd = 4;
 
 		_timeToDestroy += timeToAdd;
+		_energy.CmdUse(timeToAdd * 5);
 		//puddle.talant = _frostingFrozenTalant;
 
 		Buff.AttackSpeed.ReductionPercentage(1 + _seriesOfStrikes.GetMultipliedSpeed() / 100);
@@ -272,12 +303,21 @@ public class IcePuddle : Skill
 		Buff.AttackSpeed.IncreasePercentage(1 + _seriesOfStrikes.GetMultipliedSpeed() / 100);
 
 		Debug.Log("test spawn");
-		CmdCreateProjecttile(_angle2, _timeToDestroy, _preViewPuddle.transform.position, _lastHit);
-		_energy.TryUse(timeToAdd * 5);
+		CmdCreateProjecttile(_angle3, _timeToDestroy, _preViewPuddle.transform.position, _lastHit);
 	}
 
-	public void SetTalentActive(bool active)
+	public void SetTalentPuddleSize(bool active)
 	{
-		_talentActive = active;
+		_talentPuddleSize = active;
+	}
+
+	public void SetTalentFrostingFrozen(bool value)
+	{
+		_talentFrostingFrozen = value;
+	}
+
+	public void SetTalentEvadeDadBoost(bool value)
+	{
+		_talentEvadeDadBoost = value;
 	}
 }

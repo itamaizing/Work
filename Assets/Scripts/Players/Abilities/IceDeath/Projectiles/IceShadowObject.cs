@@ -32,7 +32,7 @@ public class IceShadowObject : Projectiles
 		if (collision.gameObject == _dad && _healthPlayer != null)
 		{
 			//_healthPlayer.SetBoostRegen(0);
-			Debug.LogError("setboost in hp has been deleted");
+			//Debug.LogError("setboost in hp has been deleted");
 
 			return;
 		}
@@ -41,7 +41,7 @@ public class IceShadowObject : Projectiles
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		if(_dad == null) return;
-		if (collision.gameObject == _dad.gameObject)
+		/*if (collision.gameObject == _dad.gameObject)
 		{
 			//_healthPlayer.SetBoostRegen(0.01f);
 			//Debug.LogError("setboost in hp has been deleted");
@@ -49,7 +49,7 @@ public class IceShadowObject : Projectiles
 		if(collision.TryGetComponent<IcePuddleObject>(out var obj)) 
 		{
 			//attact speed increase
-		}
+		}*/
 		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject !=_dad.gameObject)
 		{
 			float duration = 2 + _energyDad / 20;
