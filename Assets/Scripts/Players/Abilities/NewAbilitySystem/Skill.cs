@@ -50,7 +50,7 @@ public abstract class Skill : NetworkBehaviour
     [Header("Streaming settings")]
     [SerializeField] protected float _castDuration;
     [SerializeField] protected float _manaCostRate;
-    [SerializeField] protected float _manaCostPerTick;
+    [SerializeField] protected List<SkillEnergyCost> _skillEnergyCostsByTick;
     [Header("Charge settings")]
     [SerializeField] private bool _isUseCharges;
     [SerializeField] protected bool _chargesHaveSeparateCooldown;
@@ -545,15 +545,15 @@ public abstract class Skill : NetworkBehaviour
         while (time < CastStreamDuration)
         {
             time += _manaCostRate;
-            if (_hero.Stamina.CurrentValue >= _manaCostPerTick)
-            {
-                _hero.Stamina.TryUse(_manaCostPerTick);
-            }
-            else
-            {
-                TryCancel(true);
-            }
-            yield return new WaitForSeconds(_manaCostRate);
+            
+           var canCast = TryPayCost(_skillEnergyCostsByTick);
+           
+           if (canCast)
+           {
+               TryCancel(true);
+           }
+
+           yield return new WaitForSeconds(_manaCostRate);
         }
         _castStreamCoroutine = null;
         CastStreamEnded?.Invoke();

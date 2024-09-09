@@ -11,7 +11,7 @@ public abstract class Character : NetworkBehaviour
 	[SerializeField] private UserNetworkSettings _networkSettings; 
 	[SerializeField] private Rigidbody2D rb;
 	[SerializeField] private Health _healthComponent;
-	public Energy Stamina;
+	//public Energy Stamina;
 	//public RuneComponent RuneComponent;
 	[SerializeField] private MoveComponent _playerMove; 
 	[SerializeField] private SkillManager _abilities;
