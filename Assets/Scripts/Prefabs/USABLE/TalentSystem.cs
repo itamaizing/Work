@@ -26,18 +26,14 @@ public abstract class Talent : NetworkBehaviour
 [Serializable]
 public class TalentData
 {
-	public int Id;
 	public string Name;
 	public bool IsOpen;
-	public int AttributePoints = 0;
-	
 	
 	public string Description = string.Empty;
 	public Sprite Icon;
 
-	public TalentData(int id, string name, bool isOpen)
+	public TalentData(string name, bool isOpen)
 	{
-		Id = id;
 		Name = name;
 		IsOpen = isOpen;
 	}
@@ -53,40 +49,40 @@ public class TalentsGroup
 	public int ID => _id;
 	public string Name => _name;
 	public List<Talent> TalentsData => _talentGroup;
-	public int TalentsCount => TalentsData.Count;
 	
-	public int BonusAttributePoints()
+	public int BonusAttributePoints(string talentName, bool isDecrease)
 	{
-		int totalBonus = 1;
-		int rowLength = 3;
-		int numberOfRows = TalentsData.Count / rowLength;
+		var bonus = 1;
+		var rowLength = 3;
 
-		for (int row = 0; row < numberOfRows; row++)
+		var talentIndex = TalentsData.FindIndex(talent => talent.Data.Name == talentName);
+		if (talentIndex == -1)
 		{
-			int activeCount = 0;
-			for (int i = row * rowLength; i < (row + 1) * rowLength && i < TalentsData.Count; i++)
-			{
-				if (TalentsData[i].Data.IsOpen)
-				{
-					activeCount++;
-				}
-			}
+			return 0;
+		}
 
-			switch (row)
+		var row = talentIndex / rowLength;
+
+		var activeCount = 0;
+		for (var i = row * rowLength; i < (row + 1) * rowLength && i < TalentsData.Count; i++)
+		{
+			if (TalentsData[i].Data.IsOpen)
 			{
-				case 0:
-					totalBonus += activeCount == 2 ? 1 : activeCount == 3 ? 3 : 0;
-					break;
-				case 1:
-					totalBonus += activeCount == 2 ? 1 : activeCount == 3 ? 2 : 0;
-					break;
-				case 2:
-					totalBonus += activeCount == 3 ? 1 : 0;
-					break;
+				activeCount++;
 			}
 		}
 
-		return totalBonus;
+		activeCount = isDecrease ? activeCount - 1 : activeCount;
+
+		bonus += row switch
+		{
+			0 => activeCount == 0 ? 0 : activeCount == 1 ? 1 : activeCount == 2 ? 3 : 0,
+			1 => activeCount == 0 ? 0 : activeCount == 1 ? 1 : activeCount == 2 ? 2 : 0,
+			2 => activeCount == 0 ? 0 : activeCount == 1 ? 0 : activeCount == 2 ? 1 : 0,
+			_ => bonus
+		};
+
+		return isDecrease ? -bonus : bonus;
 	}
 }
 
@@ -104,6 +100,10 @@ public class TalentSystem : NetworkBehaviour
 
     public void Initialize()
     {
+	    foreach (var talent in _talents.SelectMany(talentsGroup => talentsGroup.TalentsData))
+	    {
+		    talent.Data.Name = talent.GetType().Name;
+	    }
     }
     public void AddPoints(int value)
     {

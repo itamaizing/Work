@@ -30,6 +30,7 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
             
             talent.Owner = this;
             talent.Fill(item.Data);
+            
             talent.Selected += OnTalentSelected;
             
             _talents.Add(talent);
@@ -44,8 +45,8 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
 
     void OnTalentSelected(TalentData talent, bool isOpen)
     { 
-        SaveManager.Instance.SaveTalent(_talentsGroup.ID, talent.Id, isOpen);
-        SaveManager.Instance.LoadTalent(_talentsGroup.ID, talent.Id);
+        SaveManager.Instance.SaveTalent(_talentsGroup.ID, talent.Name, isOpen);
+        SaveManager.Instance.LoadTalent(_talentsGroup.ID, talent.Name);
 
         UpdateActiveTalentsCount();
         Owner.Owner.UpdateAttributes();
