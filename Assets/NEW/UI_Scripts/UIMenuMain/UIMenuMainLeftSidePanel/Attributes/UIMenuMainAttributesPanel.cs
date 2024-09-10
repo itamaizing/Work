@@ -56,6 +56,11 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
 
     public void UpdateAttributesPoints()
     {
+        foreach (var attribute in _attributes)
+        {
+            attribute.UpdateValue();
+        }
+        
         SaveManager.Instance.LoadAttributePoints();
         _attributesText.ChangeKey(_attributeGroup.FreeAttributePointsCount);
     }

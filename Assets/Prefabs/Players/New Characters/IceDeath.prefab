@@ -1142,7 +1142,7 @@ MonoBehaviour:
     m_Bits: 0
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _skillEnergyCostsByTick: []
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1195,7 +1195,7 @@ MonoBehaviour:
     m_Bits: 0
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _skillEnergyCostsByTick: []
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1242,7 +1242,7 @@ MonoBehaviour:
     m_Bits: 0
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _skillEnergyCostsByTick: []
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1289,7 +1289,7 @@ MonoBehaviour:
     m_Bits: 0
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _skillEnergyCostsByTick: []
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1339,7 +1339,7 @@ MonoBehaviour:
     m_Bits: 0
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _skillEnergyCostsByTick: []
   _isUseCharges: 1
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 1
@@ -1388,7 +1388,7 @@ MonoBehaviour:
     m_Bits: 0
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _skillEnergyCostsByTick: []
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1434,7 +1434,7 @@ MonoBehaviour:
     m_Bits: 0
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _skillEnergyCostsByTick: []
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1482,7 +1482,7 @@ MonoBehaviour:
     m_Bits: 0
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _skillEnergyCostsByTick: []
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1527,7 +1527,7 @@ MonoBehaviour:
     m_Bits: 0
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _skillEnergyCostsByTick: []
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1575,7 +1575,7 @@ MonoBehaviour:
     m_Bits: 0
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _skillEnergyCostsByTick: []
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1621,7 +1621,7 @@ MonoBehaviour:
     m_Bits: 0
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _skillEnergyCostsByTick: []
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1668,7 +1668,7 @@ MonoBehaviour:
     m_Bits: 0
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _skillEnergyCostsByTick: []
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1715,7 +1715,7 @@ MonoBehaviour:
     m_Bits: 0
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _skillEnergyCostsByTick: []
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0

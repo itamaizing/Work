@@ -82,7 +82,7 @@ public class TalentsGroup
 			_ => bonus
 		};
 
-		return isDecrease ? -bonus : bonus;
+		return bonus;
 	}
 }
 
