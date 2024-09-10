@@ -57,17 +57,20 @@ public class CreeperStrike : AutoAttackSkill
 
     protected override void CastAction()
     {
+        Debug.Log("CastAction CreeperStrike");
         _useAbilityCoroutine = StartCoroutine(UseAbilityCoroutine());
     }
 
     private IEnumerator UseAbilityCoroutine()
     {
+        Debug.Log("UseAbilityCoroutine CreeperStrike");
         DealingDamageFromHits(CurrentTarget);
         yield return null;
     }
 
     public void DealingDamageFromHits(Character target)
     {
+        Debug.Log("DealDamage CreeperStrike");
         _currentDamage = Random.Range(7.0f, 11.0f);
         float _currentChanceOfCriticalStrike = Random.Range(0.0f, 1.0f);
 

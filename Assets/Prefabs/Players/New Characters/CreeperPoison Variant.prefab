@@ -1026,7 +1026,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 1af7963ead8875042bc84e9fa3cf58e1, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
-  _cooldownTime: 4
+  _cooldownTime: 0.5
   _castDeley: 0
   _abilitySchool: 6
   _abilityForm: 2
@@ -1054,9 +1054,11 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _attackZoneSize: 3
   _attackSpeed: 1
+  Enabled: 0
+  IsCanDamageDeal: 0
+  _lightningMovement: {fileID: 727315664775304267}
   _player: {fileID: 362903699018664054}
   _creeperStrike: {fileID: 7329957038414124695}
-  Enabled: 0
 --- !u!114 &1565719447917374839
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1207,8 +1209,10 @@ MonoBehaviour:
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 7d0ee064be7acc0469ab7540e835c7f9, type: 2}
   _isSubjectToGlobalCooldownTime: 1
-  _skillEnergyCosts: []
-  _cooldownTime: 0
+  _skillEnergyCosts:
+  - resourceType: 1
+    resourceCost: 0
+  _cooldownTime: 8
   _castDeley: 0
   _abilitySchool: 0
   _abilityForm: 0
@@ -1232,11 +1236,13 @@ MonoBehaviour:
   _castLength: 4
   _castWidth: 1
   _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
+  _isAutoAreaRender: 0
   _isAutoLineRender: 1
   _acceleratedSlap: {fileID: 7262619753731106163}
   _superFastScales: {fileID: 2021791018241839671}
   _creeperStrike: {fileID: 7329957038414124695}
+  _lightningStrikes: {fileID: 143331137762906477}
+  _poisonSlap: {fileID: 1002733962749832698}
   _line: {fileID: 11400000, guid: 7faf4d32cfcc4f54d967e4d01a0c4b65, type: 2}
   _midPointForLeapPrefab: {fileID: 4589213694028823931}
   _player: {fileID: 362903699018664054}
@@ -1244,7 +1250,9 @@ MonoBehaviour:
   _colorForEnd: {r: 0.99215686, g: 0.029412868, b: 0, a: 1}
   _colorForStart: {r: 0.27887654, g: 1, b: 0, a: 1}
   _rangeLeap: 4
-  _durationLeap: 0.6
+  _durationLeap: 0.4
+  _radiusAttack: 3
+  IsInMovement: 0
 --- !u!114 &8692283665806418931
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1340,11 +1348,13 @@ MonoBehaviour:
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
+  IsCanDamageDeal: 0
   Enabled: 0
   _player: {fileID: 362903699018664054}
   _poisonBall: {fileID: 4790497256626355497}
   _creeperStrike: {fileID: 7329957038414124695}
   _lightningStrikes: {fileID: 143331137762906477}
+  _lightningMovement: {fileID: 727315664775304267}
   _lightweightSlap: {fileID: 6183290324740309638}
   _arrowPrefab: {fileID: 7504653704119560997, guid: 441e78fa2212e4d41bfedd3dc078f1b5, type: 3}
 --- !u!114 &9138948894302703476

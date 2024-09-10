@@ -5,18 +5,22 @@ using UnityEngine;
 
 public class LightningStrikes : AutoAttackSkill
 {
+    public bool Enabled;
+    public bool IsCanDamageDeal = false;
+
+    [SerializeField] private LightningMovement _lightningMovement;
     [SerializeField] private Character _player;
     [SerializeField] private CreeperStrike _creeperStrike;
+
+    private Character _currentTarget;
 
     private int _countStrikes = 2;
     private float _attackSpeedDeacrease = 0.1f;
     private bool _isUsedLightningStrikes = false;
-
     private Coroutine _useCoroutine;
-    private Coroutine _decreaseAttackSpeedCoroutine;
+    //private Coroutine _decreaseAttackSpeedCoroutine;
 
     public bool IsUsedLightningStrikes => _isUsedLightningStrikes;
-    public bool Enabled;
 
     protected override void ClearData()
     {
@@ -29,50 +33,76 @@ public class LightningStrikes : AutoAttackSkill
             _useCoroutine = null;
         }
 
-        if (_decreaseAttackSpeedCoroutine != null)
+        //if (_decreaseAttackSpeedCoroutine != null)
+        //{
+        //    StopCoroutine(DecreaseAttackSpeed());
+        //    _decreaseAttackSpeedCoroutine = null;
+        //}
+
+        if (_isUsedLightningStrikes)
         {
-            StopCoroutine(DecreaseAttackSpeed());
-            _decreaseAttackSpeedCoroutine = null;
+            Invoke("ResetUsedLightningStrikes", 4f);
+        }
+    }
+
+    protected override IEnumerator PrepareJob()
+    {
+        if (_lightningMovement.IsInMovement)
+        {
+            Debug.Log("LightningStrikes / PrepareJob / if");
+            IsCanDamageDeal = true;
+            yield break;
+        }
+        else
+        {
+            Debug.Log("LightningStrikes / PrepareJob / else");
+            base.PrepareJob();
         }
     }
 
     protected override void CastAction()
     {
-        Debug.Log("LightningStrikes / CastAction");
+        _currentTarget = _target;
+        Debug.Log("LightningStrikes / CastAction / Not LightningMovement");
         _useCoroutine = StartCoroutine(UseAbilityCoroutine());
+    }
+
+    public void UseLightningStrikes(Character target)
+    {
+        DecreaseAttackSpeed(target);
+    }
+
+    private void ResetUsedLightningStrikes()
+    {
+        _isUsedLightningStrikes = false;
+        IsCanDamageDeal = false;
     }
 
     private IEnumerator UseAbilityCoroutine()
     {
         Debug.Log("LightningStrikes / UseAbilityCoroutine");
         _isUsedLightningStrikes = true;
-        _countStrikes = 2;
-        _decreaseAttackSpeedCoroutine = StartCoroutine(DecreaseAttackSpeed());
+        DecreaseAttackSpeed(_target);
         yield return null;
     }
 
-    private IEnumerator DecreaseAttackSpeed()
+    private void DecreaseAttackSpeed(Character target)
     {
         Debug.Log("LightningStrikes / DecreaseAttackSpeed");
-        Debug.Log($"LightningStrikes / DecreaseAttackSpeed / CreeperStrike.CurrentTarget = {_target}");
-        if (_target != null)
+        if (target != null)
         {
-            Debug.Log("LightningStrikes / DecreaseAttackSpeed / if (CreeperStrike.CurrentTarget != null)");
             _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_attackSpeedDeacrease);
             Debug.Log($"LightningStrikes / DecreaseAttackSpeed / _creeperStrike.Buff.AttackSpeed.Increase = {_creeperStrike.Buff.AttackSpeed.Multiplier}");
 
-            while (_countStrikes > 0)
+            for (int i = 0; i < _countStrikes; i++)
             {
-                Debug.Log($"LightningStrikes / DecreaseAttackSpeed / while (countStrikes = {_countStrikes})");
-                _creeperStrike.DealingDamageFromHits(_target);
-                _countStrikes--;
+                Debug.Log("LightningStrikes / DecreaseAttackSpeed / cycle For");
+                _creeperStrike.DealingDamageFromHits(target);
                 _creeperStrike.CurrentCountHit = 0;
             }
-            Debug.Log("LightningStrikes / DecreaseAttackSpeed / after while");
+
             _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_attackSpeedDeacrease);
             Debug.Log($"LightningStrikes / DecreaseAttackSpeed / _creeperStrike.Buff.AttackSpeed.Reduction = {_creeperStrike.Buff.AttackSpeed.Multiplier}");
-            yield return new WaitForSeconds(4f);
-            _isUsedLightningStrikes = false;
         }
     }
 }

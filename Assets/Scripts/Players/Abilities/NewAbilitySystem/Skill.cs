@@ -178,9 +178,9 @@ public abstract class Skill : NetworkBehaviour
         }
     }
 
-    public bool TryCancel(bool foceCancel = false)
+    public bool TryCancel(bool forceCancel = false)
     {
-        if (foceCancel || _isCanCancle)
+        if (forceCancel || _isCanCancle)
         {
             Canceled?.Invoke();
             ClearData();
@@ -599,6 +599,7 @@ public abstract class Skill : NetworkBehaviour
     [Command]
     protected void CmdApplyDamage(Damage damage, GameObject hp)
     {
+        Debug.Log("CmdApplyDamage in Skill");
         if (_tempTargetForDamage != hp.transform)
         {
             _tempTargetForDamage = hp.transform;

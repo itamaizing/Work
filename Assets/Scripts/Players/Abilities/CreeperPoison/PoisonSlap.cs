@@ -9,6 +9,7 @@ public class PoisonSlap : Skill
 {
     #region Variables
 
+    public bool IsCanDamageDeal = false;
     public bool Enabled;
 
     [SerializeField] private Character _player;
@@ -17,9 +18,11 @@ public class PoisonSlap : Skill
     [SerializeField] private PoisonBall _poisonBall;
     [SerializeField] private CreeperStrike _creeperStrike;
     [SerializeField] private LightningStrikes _lightningStrikes;
+    [SerializeField] private LightningMovement _lightningMovement;
 
     [Header("Talents")]
     [SerializeField] private LightweightSlap _lightweightSlap;
+
 
     #region DisplayArrow
 
@@ -39,7 +42,6 @@ public class PoisonSlap : Skill
     private float _creeperStrikeCastSpeedMultiplier = 0.5f; // Уменьшение скорости каста на 50%
     private float _lightningStrikesCastSpeedMultiplier = 0.0f;  // Уменьшение скорости каста на 100%
     private float _baseTimeCast = 1.6f;
-
     private float _baseDamage = 30f;
     private float _distancePush = 3.0f;
     private float _durationPush = 1.0f;
@@ -54,7 +56,7 @@ public class PoisonSlap : Skill
     private bool _isIncreasedCastSpeedFromCreeperStrike = false;
     private bool _isIncreasedCastSpeedFromLightningStrike = false;
 
-    protected override bool IsCanCast => true;
+    protected override bool IsCanCast => CheckCanCast();
 
     #endregion
 
@@ -96,23 +98,30 @@ public class PoisonSlap : Skill
 
     protected override IEnumerator PrepareJob()
     {
-        while (_currentTarget == null)
+        if (_lightningMovement.IsInMovement)
         {
-            if (Input.GetMouseButton(0))
-            {
-                _currentTarget = GetRaycastTarget();
-
-                _firstMousePosition = GetMousePoint();
-                if (_currentTarget != null)
-                {
-                    CreateArrowsParallelToPlayer();
-                    StopAutoDraw();
-                }
-                _firstClickDone = true;
-            }
-            yield return null;
+            IsCanDamageDeal = true;
+            yield break;
         }
+        else
+        {
+            while (_currentTarget == null)
+            {
+                if (Input.GetMouseButton(0))
+                {
+                    _currentTarget = GetRaycastTarget();
 
+                    _firstMousePosition = GetMousePoint();
+                    if (_currentTarget != null)
+                    {
+                        CreateArrowsParallelToPlayer();
+                        StopAutoDraw();
+                    }
+                    _firstClickDone = true;
+                }
+                yield return null;
+            }
+        }
         yield return _secondMouseClickCoroutine = StartCoroutine(SecondClick());
     }
 
@@ -146,9 +155,9 @@ public class PoisonSlap : Skill
             _castDeley = _baseTimeCast;
             yield return StartCastDeleyCoroutine();
 
-            ChooseDirectionPush();
+            ChooseDirectionPush(_currentTarget);
 
-            DamageDeal();
+            DamageDeal(_currentTarget);
         }
     }
 
@@ -156,10 +165,17 @@ public class PoisonSlap : Skill
 
     #region CalculationsDistances
 
-    private void ChooseDirectionPush()
+    private bool CheckCanCast()
     {
-        _isPushTargetAllowed = Vector2.Distance(_player.transform.position, _secondMousePosition) > Vector2.Distance(_player.transform.position, _currentTarget.transform.position);
+        if (_currentTarget == null)
+            return false;
 
+        return Vector2.Distance(_player.transform.position, _currentTarget.transform.position) <= Radius;
+    }
+
+    private void ChooseDirectionPush(Character target)
+    {
+        _isPushTargetAllowed = Vector2.Distance(_player.transform.position, _secondMousePosition) > Vector2.Distance(_player.transform.position, target.transform.position);
     }
 
     #endregion
@@ -339,9 +355,9 @@ public class PoisonSlap : Skill
 
         Debug.Log("CastTime int if == " + _castDeley);
 
-        ChooseDirectionPush();
+        ChooseDirectionPush(_currentTarget);
 
-        DamageDeal();
+        DamageDeal(_currentTarget);
     }
 
     private IEnumerator CastSpeedFromLightningStrikes()
@@ -355,25 +371,34 @@ public class PoisonSlap : Skill
 
         Debug.Log("CastTime int else if == " + _castDeley);
 
-        ChooseDirectionPush();
+        ChooseDirectionPush(_currentTarget);
 
-        DamageDeal();
+        DamageDeal(_currentTarget);
     }
 
     #endregion
 
     #region DamageDealAndPushTargetMethods
 
-    private void DamageDeal()
+    public void DamageDeal(Character target)
     {
-        if (_currentTarget != null) 
+        if (target != null) 
         {
-            //_currentTarget.Health.CmdTryTakeDamage(Buff.Damage.GetBuffedValue(_baseDamage), DamageType.Physical, AttackRangeType.MeleeAttack);
-            PushTarget(_currentTarget.gameObject, _distancePush, _durationPush, _isPushTargetAllowed);
+            Debug.Log("DamageDeal PoisonSlap after if / target = " + target);
+            Damage damage = new Damage
+            {
+                Value = _baseDamage,
+                Type = DamageType.Physical,
+                Range = AttackRangeType.MeleeAttack
+            };
+
+            CmdApplyDamage(damage, target.gameObject);
+
+            PushTarget(target, _distancePush, _durationPush, _isPushTargetAllowed);
         }
     }
 
-    private void PushTarget(GameObject target, float distancePush, float durationPush, bool isCanPushTarget)
+    private void PushTarget(Character target, float distancePush, float durationPush, bool isCanPushTarget)
     {
         CmdPushEnemy(target, distancePush, durationPush, isCanPushTarget);
     }
@@ -383,7 +408,7 @@ public class PoisonSlap : Skill
     #region CommandMethods
 
     [Command]
-    private void CmdPushEnemy(GameObject target, float distancePush, float durationPush, bool isCanPushTarget) 
+    private void CmdPushEnemy(Character target, float distancePush, float durationPush, bool isCanPushTarget) 
     {
         Vector2 directionPush = (target.transform.position - transform.position);
 

@@ -75,7 +75,7 @@ public class ImmaterialityState : AbstractCharacterState
 	public override void UpdateState()
 	{
 		_duration -= Time.deltaTime;
-		if (_duration < 0)
+		if (_duration <= 0)
 		{
 			ExitState();
 		}
@@ -86,6 +86,7 @@ public class ImmaterialityState : AbstractCharacterState
 		_player.Collider.enabled = true;
 		_duration = 0;
 		_baseDuration = 0;
+		_characterState.RemoveState(this);
 	}
 
 	public override bool Stack(float time)
