@@ -71,15 +71,15 @@ public class TalentsGroup
 				activeCount++;
 			}
 		}
-
+		Debug.Log(activeCount);
 		activeCount = isDecrease ? activeCount - 1 : activeCount;
 
 		bonus += row switch
 		{
-			0 => activeCount == 0 ? 0 : activeCount == 1 ? 1 : activeCount == 2 ? 3 : 0,
-			1 => activeCount == 0 ? 0 : activeCount == 1 ? 1 : activeCount == 2 ? 2 : 0,
+			0 => activeCount == 0 ? 0 : activeCount == 1 ? 1 : activeCount == 2 ? 2 : 0,
+			1 => activeCount == 0 ? 0 : activeCount == 1 ? 1 : activeCount == 2 ? 1 : 0,
 			2 => activeCount == 0 ? 0 : activeCount == 1 ? 0 : activeCount == 2 ? 1 : 0,
-			_ => bonus
+			_ => 0
 		};
 
 		return bonus;
