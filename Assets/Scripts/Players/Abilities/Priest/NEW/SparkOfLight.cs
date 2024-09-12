@@ -12,51 +12,61 @@ public class SparkOfLight : AutoAttackSkill
     [SerializeField] private List<SkillEnergyCost> _manaCostHeal;
     [SerializeField] private List<SkillEnergyCost> _manaCostDamage;
 
+    [Header("Alternative Mode Settings")]
+    [SerializeField] private float _altRange = 6f;
+    [SerializeField] private float _altBuffDuration = 5f;
+    [SerializeField] private float _altDamageAmount = 2f;
+    [SerializeField] private List<SkillEnergyCost> _altManaCostDamage;
+
+    public bool isDefaultMode = true;
+
     protected override void CastAction()
     {
-        Debug.Log("CastAction вызван. Проверяем цель...");
+        if (_target == null) return;
 
-        if (_target == null)
+        if (isDefaultMode)
         {
-            Debug.LogError("Цель отсутствует! CastAction отменён.");
-            return;
+            HandleDefaultMode();
         }
+        else
+        {
+            HandleAlternativeMode();
+        }
+    }
 
+    private void HandleDefaultMode()
+    {
         bool isAlly = _target.gameObject.layer == LayerMask.NameToLayer("Allies");
         bool isEnemy = _target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
-        Debug.Log($"Цель: {_target.name}, Союзник: {isAlly}, Враг: {isEnemy}");
-
         if (isAlly && TryPayCost(_manaCostHeal))
         {
-            Debug.Log("Начинаем лечение союзника...");
             Heal(_target);
             ApplySpiritEnergyBuff(_target);
         }
         else if (isEnemy && TryPayCost(_manaCostDamage))
         {
-            Debug.Log("Начинаем атаку на врага...");
             Damage(_target);
         }
-        else
+    }
+
+    private void HandleAlternativeMode()
+    {
+        bool isEnemy = _target.gameObject.layer == LayerMask.NameToLayer("Enemy");
+
+        if (isEnemy && TryPayCost(_altManaCostDamage))
         {
-            Debug.LogWarning("Цель не подходит для лечения или атаки, либо недостаточно маны.");
+            ApplyDamageInAltMode(_target);
+            ApplySpiritHealthBuff(_target);
         }
     }
 
     private void Heal(Character target)
     {
-        Debug.Log($"Попытка исцелить цель: {target.name}");
-
         var healthComponent = target.GetComponent<Health>();
         if (healthComponent != null)
         {
             healthComponent.Heal(_healAmount);
-            Debug.Log($"Союзник {target.name} вылечен на {_healAmount} ед. здоровья.");
-        }
-        else
-        {
-            Debug.LogError($"Компонент Health не найден на объекте {target.name}. Лечение невозможно.");
         }
     }
 
@@ -72,25 +82,36 @@ public class SparkOfLight : AutoAttackSkill
         CmdApplyDamage(damage, target.gameObject);
     }
 
+    private void ApplyDamageInAltMode(Character target)
+    {
+        Damage damage = new Damage
+        {
+            Value = _altDamageAmount,
+            Type = DamageType.Magical,
+            Range = AttackRangeType.RangeAttack
+        };
+
+        CmdApplyDamage(damage, target.gameObject);
+    }
+
     private void ApplySpiritEnergyBuff(Character target)
     {
-        Debug.Log($"Попытка наложить бафф 'Spirit Energy' на цель: {target.name}");
-
         if (target.TryGetComponent<CharacterState>(out var characterState))
         {
             characterState.CmdAddState(States.SpiritEnergy, _buffDuration, 0, target.gameObject, "SparkOfLight");
-            Debug.Log($"Бафф 'Spirit Energy' успешно наложен на {target.name} на {_buffDuration} секунд.");
         }
-        else
+    }
+
+    private void ApplySpiritHealthBuff(Character target)
+    {
+        if (target.TryGetComponent<CharacterState>(out var characterState))
         {
-            Debug.LogError($"Компонент CharacterState не найден на объекте {target.name}. Наложение баффа невозможно.");
+            characterState.CmdAddState(States.SpiritHealth, _altBuffDuration, 0, target.gameObject, "SparkOfLight");
         }
     }
 
     protected override void ClearData()
     {
-        Debug.Log("Очистка данных...");
         base.ClearData();
-        Debug.Log("Данные успешно очищены.");
     }
 }

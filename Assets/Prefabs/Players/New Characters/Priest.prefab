@@ -1071,7 +1071,7 @@ MonoBehaviour:
   _attackSpeed: 1
   _buffDuration: 9
   _healAmount: 2
-  _damageAmount: 2
+  _damageAmount: 20
   _castTime: 0.8
   _range: 4
   _manaCostHeal:
@@ -1079,7 +1079,14 @@ MonoBehaviour:
     resourceCost: 2
   _manaCostDamage:
   - resourceType: 1
+    resourceCost: 1
+  _altRange: 6
+  _altBuffDuration: 5
+  _altDamageAmount: 2
+  _altManaCostDamage:
+  - resourceType: 1
     resourceCost: 2
+  isDefaultMode: 1
 --- !u!114 &2587368830626074845
 MonoBehaviour:
   m_ObjectHideFlags: 0
