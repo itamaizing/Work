@@ -50,7 +50,7 @@ public class UIMenuMainAbilitiesPanel : MonoBehaviour
     {
         _abilityInfo.gameObject.SetActive(true);
         _abilityInfo.ChangePosition(position);
-        _abilityInfo.Fill(ability.Name,ability.Description, ability.CooldownTime,ability.CastDeley);
+        _abilityInfo.Fill(ability.Name,ability.Description, ability.CooldownTime,ability.CastDelay);
     }
 
     public void HideTooltip()

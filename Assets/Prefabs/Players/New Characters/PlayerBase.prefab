@@ -331,7 +331,6 @@ MonoBehaviour:
   _networkSettings: {fileID: -7146587456276821115}
   rb: {fileID: 3759936847054020137}
   _healthComponent: {fileID: 5839731411926097146}
-  Stamina: {fileID: 2926669445991704918}
   _playerMove: {fileID: 5665079937663656764}
   _abilities: {fileID: 7985862907129416471}
   _characterState: {fileID: 7760335386463111578}
@@ -2495,7 +2494,7 @@ PrefabInstance:
     - target: {fileID: 8562128034702415490, guid: 8f0fa40e85ca19945835320293912095, type: 3}
       propertyPath: _resource
       value: 
-      objectReference: {fileID: 2926669445991704918}
+      objectReference: {fileID: 2603903007656169372}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

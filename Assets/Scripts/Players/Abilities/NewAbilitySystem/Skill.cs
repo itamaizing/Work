@@ -100,7 +100,7 @@ public abstract class Skill : NetworkBehaviour
     public bool IsHaveResourceOnSkill { get => CheckResourcesOnSkill(); }
     public bool IsHaveResources { get => IsHaveResourceOnSkill && IsCooldowned && IsHaveCharge; }
     public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); }
-    public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); }
+    public float CastDelay { get => Buff.CastSpeed.GetBuffedValue(_castDeley); }
     public bool IsCasting { get => _isCasting; }
     public float CastStreamDuration { get => _castDuration; }
     public float Radius { get => Buff.Radius.GetBuffedValue(_radius); protected set => _radius = value; }
@@ -525,10 +525,10 @@ public abstract class Skill : NetworkBehaviour
 
     private IEnumerator CastDeleyJob()
     {
-        CastDeleyStarted?.Invoke(CastDeley);
+        CastDeleyStarted?.Invoke(CastDelay);
         float time = 0;
 
-        while (time < CastDeley)
+        while (time < CastDelay)
         {
             time += Time.deltaTime;
             yield return null;
@@ -580,7 +580,7 @@ public abstract class Skill : NetworkBehaviour
         CastStarted?.Invoke();
         _isCasting = true;
 
-        if (CastDeley > 0)
+        if (CastDelay > 0)
             yield return StartCastDeleyCoroutine();
 
         if (_castDuration > 0)

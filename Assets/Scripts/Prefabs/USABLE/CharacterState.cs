@@ -1,5 +1,6 @@
 using Mirror;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public abstract class AbstractCharacterState
@@ -1139,6 +1140,150 @@ public class MagicBuff : AbstractCharacterState
 	}
 }
 
+public class SpiritEnergyState : AbstractCharacterState
+{
+    private float _baseDuration;
+    private float _duration;
+    private int _stacks;
+    private const int MaxStacks = 2;
+    private const float ManaRestorePerStack = 0.09f;
+    private const float ShieldStrengthIncreaseFirstStack = 0.10f;
+    private const float ShieldStrengthIncreaseSecondStack = 0.05f;
+
+    private List<StatusEffect> _effects = new ();
+
+    public override States State => States.SpiritEnergy;
+    public override StateType Type => StateType.Magic;
+    public override List<StatusEffect> Effects => _effects;
+
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        _characterState = character;
+        _duration = durationToExit;
+        _baseDuration = durationToExit;
+        _stacks = 1;
+
+        ApplyManaRestore();
+        ApplyShieldStrengthIncrease();
+    }
+
+    public override void UpdateState()
+    {
+        _duration -= Time.deltaTime;
+
+        if (_duration <= 0 || _stacks == 0)
+        {
+            ExitState();
+        }
+    }
+
+    public override void ExitState()
+    {
+        ResetShieldStrength();
+
+        _characterState.RemoveState(this);
+    }
+
+    public override bool Stack(float time)
+    {
+        if (_stacks >= MaxStacks)
+        {
+            return false;
+        }
+
+        _stacks++;
+        _duration = Mathf.Max(_duration, time);
+
+        ApplyManaRestore();
+        ApplyShieldStrengthIncrease();
+
+        return true;
+    }
+
+    private void ApplyManaRestore()
+    {
+        _characterState.Character.Resources.FirstOrDefault(o => o.Type == ResourceType.Mana)?.Add(ManaRestorePerStack * _stacks);
+    }
+
+    private void ApplyShieldStrengthIncrease()
+    {
+        if (_stacks == 1)
+        {
+	        
+        }
+        else if (_stacks == 2)
+        {
+	        
+        }
+    }
+
+    private void ResetShieldStrength()
+    {
+        // Reset shield strength to its original value if applicable
+    }
+}
+
+public class SpiritHealthState : AbstractCharacterState
+{
+    private float _baseDuration;
+    private float _duration;
+    private int _stacks;
+    private const int MaxStacks = 2;
+    private const float HealthRestorePerStack = 0.09f; // 9% health restore per stack
+    private const float ManaRestorePerStack = 0.09f; // 9% mana restore per stack
+
+    private List<StatusEffect> _effects = new ();
+
+    public override States State => States.SpiritHealth;
+    public override StateType Type => StateType.Magic;
+    public override List<StatusEffect> Effects => _effects;
+
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        _characterState = character;
+        _duration = durationToExit;
+        _baseDuration = durationToExit;
+        _stacks = 1;
+        
+        ApplyManaRestore();
+    }
+
+    public override void UpdateState()
+    {
+        _duration -= Time.deltaTime;
+
+        if (_duration <= 0 || _stacks == 0)
+        {
+            ExitState();
+        }
+    }
+
+    public override void ExitState()
+    {
+        _characterState.RemoveState(this);
+    }
+
+    public override bool Stack(float time)
+    {
+        if (_stacks >= MaxStacks)
+        {
+            return false;
+        }
+
+        _stacks++;
+        _duration = Mathf.Max(_duration, time);
+
+        ApplyManaRestore();
+
+        return true;
+    }
+
+    private void ApplyManaRestore()
+    {
+        _characterState.Character.Resources.FirstOrDefault(o=>o.Type == ResourceType.Mana)?.Add(ManaRestorePerStack * _stacks);
+    }
+}
+
 public class CharacterState : NetworkBehaviour
 {
 	/*private Health _health;
@@ -1155,7 +1300,7 @@ public class CharacterState : NetworkBehaviour
 	public Resource Stamina => _stamina;*/
 	public Character Character => _hero;
 
-	public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
+	private Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
 	{
 		[States.Stun] = new StunnedState(),
 		[States.Frozen] = new FrozenState(),
@@ -1170,6 +1315,8 @@ public class CharacterState : NetworkBehaviour
 		[States.NorthernerEndurance] = new NorthernerEndurance(),
 		[States.LastBreath] = new LastBreath(),
 		[States.MagicBuff] = new MagicBuff(),
+		[States.SpiritEnergy] = new SpiritEnergyState(),
+		[States.SpiritEnergy] = new SpiritHealthState()
 	};
 
 	public void Initialize(Character hero)
@@ -1357,11 +1504,11 @@ public class CharacterState : NetworkBehaviour
 		currentStates.Add(state);
 		if (personWhoShooted.TryGetComponent<Character>(out var character))
 		{
-			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit, character, skillName);
+			currentStates[^1].EnterState(this, duration, damageToExit, character, skillName);
 		}
 		else
 		{
-			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit, null, skillName);
+			currentStates[^1].EnterState(this, duration, damageToExit, null, skillName);
 		}
 	}
 }
@@ -1406,6 +1553,8 @@ public enum States
 	CreeperInvisible,
 	InstantHealingPoison,
 	RegeneratingPoison,
-	HealingPoisonPerSecond
+	HealingPoisonPerSecond,
+	SpiritEnergy,
+	SpiritHealth
 }
 
