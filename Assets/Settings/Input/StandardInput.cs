@@ -109,6 +109,78 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""Spell9"",
+                    ""type"": ""Button"",
+                    ""id"": ""1212190a-a773-45c1-b3c9-e8c710d20451"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Spell10"",
+                    ""type"": ""Button"",
+                    ""id"": ""9b4849a6-c7a4-4f8f-b954-0bf5ba4976db"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Spell11"",
+                    ""type"": ""Button"",
+                    ""id"": ""0854e6a2-413b-4c3a-aecc-cb0162c0788c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Spell12"",
+                    ""type"": ""Button"",
+                    ""id"": ""5b9e3f9d-6108-44de-a64f-1488c9701992"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Spell13"",
+                    ""type"": ""Button"",
+                    ""id"": ""20501e33-2d85-46db-8be6-14fc38dfa9ee"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Spell14"",
+                    ""type"": ""Button"",
+                    ""id"": ""6c2460c0-fa25-44f5-ae6d-05fe64ffd001"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Spell15"",
+                    ""type"": ""Button"",
+                    ""id"": ""1f982958-7c69-491b-b028-8c7f96a4a497"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Spell16"",
+                    ""type"": ""Button"",
+                    ""id"": ""672d3e6b-8dcd-4c5c-a868-98a0551480ea"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""Click"",
                     ""type"": ""Button"",
                     ""id"": ""44516835-b257-46c8-abad-39ef22ace919"",
@@ -239,7 +311,7 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""7ced5113-28cb-4bdb-8c20-01686d1cb8ee"",
-                    ""path"": ""<Keyboard>/5"",
+                    ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -283,7 +355,7 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""7c4f201f-0ec4-42b2-98ee-a58a8f3bcaae"",
-                    ""path"": ""<Keyboard>/6"",
+                    ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -294,7 +366,7 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""d35cb6df-5596-4f1b-a8c5-a4e8a556d07b"",
-                    ""path"": ""<Keyboard>/7"",
+                    ""path"": ""<Keyboard>/r"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -305,11 +377,99 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""64fa2808-d8d4-43d3-9816-8474de2d1239"",
-                    ""path"": ""<Keyboard>/8"",
+                    ""path"": ""<Keyboard>/f"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Spell8"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""34f7e20e-e141-424a-a245-2f0151531024"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Spell9"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a41cbe4e-57f7-4f98-8f71-5e2bff61b6fe"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Spell10"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0ff422cf-ae3e-4955-b4bb-2501b8977b4e"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Spell11"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c9457032-943e-42a8-8565-fd4419d83569"",
+                    ""path"": ""<Keyboard>/v"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Spell12"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9c411925-34ad-4835-ab89-e6f32fe667a8"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Spell13"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""88a77d19-8d19-418c-80e6-b4c0237cd405"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Spell14"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b4ba3cc3-18ee-476f-b768-925330c29dd6"",
+                    ""path"": ""<Keyboard>/b"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Spell15"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e2cf1b2c-2382-421a-a59d-f9ce99e51c02"",
+                    ""path"": ""<Keyboard>/g"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Spell16"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -329,6 +489,14 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
         m_GameplayMap_Spell6 = m_GameplayMap.FindAction("Spell6", throwIfNotFound: true);
         m_GameplayMap_Spell7 = m_GameplayMap.FindAction("Spell7", throwIfNotFound: true);
         m_GameplayMap_Spell8 = m_GameplayMap.FindAction("Spell8", throwIfNotFound: true);
+        m_GameplayMap_Spell9 = m_GameplayMap.FindAction("Spell9", throwIfNotFound: true);
+        m_GameplayMap_Spell10 = m_GameplayMap.FindAction("Spell10", throwIfNotFound: true);
+        m_GameplayMap_Spell11 = m_GameplayMap.FindAction("Spell11", throwIfNotFound: true);
+        m_GameplayMap_Spell12 = m_GameplayMap.FindAction("Spell12", throwIfNotFound: true);
+        m_GameplayMap_Spell13 = m_GameplayMap.FindAction("Spell13", throwIfNotFound: true);
+        m_GameplayMap_Spell14 = m_GameplayMap.FindAction("Spell14", throwIfNotFound: true);
+        m_GameplayMap_Spell15 = m_GameplayMap.FindAction("Spell15", throwIfNotFound: true);
+        m_GameplayMap_Spell16 = m_GameplayMap.FindAction("Spell16", throwIfNotFound: true);
         m_GameplayMap_Click = m_GameplayMap.FindAction("Click", throwIfNotFound: true);
         m_GameplayMap_AltClick = m_GameplayMap.FindAction("AltClick", throwIfNotFound: true);
         m_GameplayMap_AltDoubleClick = m_GameplayMap.FindAction("AltDoubleClick", throwIfNotFound: true);
@@ -402,6 +570,14 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_GameplayMap_Spell6;
     private readonly InputAction m_GameplayMap_Spell7;
     private readonly InputAction m_GameplayMap_Spell8;
+    private readonly InputAction m_GameplayMap_Spell9;
+    private readonly InputAction m_GameplayMap_Spell10;
+    private readonly InputAction m_GameplayMap_Spell11;
+    private readonly InputAction m_GameplayMap_Spell12;
+    private readonly InputAction m_GameplayMap_Spell13;
+    private readonly InputAction m_GameplayMap_Spell14;
+    private readonly InputAction m_GameplayMap_Spell15;
+    private readonly InputAction m_GameplayMap_Spell16;
     private readonly InputAction m_GameplayMap_Click;
     private readonly InputAction m_GameplayMap_AltClick;
     private readonly InputAction m_GameplayMap_AltDoubleClick;
@@ -418,6 +594,14 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
         public InputAction @Spell6 => m_Wrapper.m_GameplayMap_Spell6;
         public InputAction @Spell7 => m_Wrapper.m_GameplayMap_Spell7;
         public InputAction @Spell8 => m_Wrapper.m_GameplayMap_Spell8;
+        public InputAction @Spell9 => m_Wrapper.m_GameplayMap_Spell9;
+        public InputAction @Spell10 => m_Wrapper.m_GameplayMap_Spell10;
+        public InputAction @Spell11 => m_Wrapper.m_GameplayMap_Spell11;
+        public InputAction @Spell12 => m_Wrapper.m_GameplayMap_Spell12;
+        public InputAction @Spell13 => m_Wrapper.m_GameplayMap_Spell13;
+        public InputAction @Spell14 => m_Wrapper.m_GameplayMap_Spell14;
+        public InputAction @Spell15 => m_Wrapper.m_GameplayMap_Spell15;
+        public InputAction @Spell16 => m_Wrapper.m_GameplayMap_Spell16;
         public InputAction @Click => m_Wrapper.m_GameplayMap_Click;
         public InputAction @AltClick => m_Wrapper.m_GameplayMap_AltClick;
         public InputAction @AltDoubleClick => m_Wrapper.m_GameplayMap_AltDoubleClick;
@@ -457,6 +641,30 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
             @Spell8.started += instance.OnSpell8;
             @Spell8.performed += instance.OnSpell8;
             @Spell8.canceled += instance.OnSpell8;
+            @Spell9.started += instance.OnSpell9;
+            @Spell9.performed += instance.OnSpell9;
+            @Spell9.canceled += instance.OnSpell9;
+            @Spell10.started += instance.OnSpell10;
+            @Spell10.performed += instance.OnSpell10;
+            @Spell10.canceled += instance.OnSpell10;
+            @Spell11.started += instance.OnSpell11;
+            @Spell11.performed += instance.OnSpell11;
+            @Spell11.canceled += instance.OnSpell11;
+            @Spell12.started += instance.OnSpell12;
+            @Spell12.performed += instance.OnSpell12;
+            @Spell12.canceled += instance.OnSpell12;
+            @Spell13.started += instance.OnSpell13;
+            @Spell13.performed += instance.OnSpell13;
+            @Spell13.canceled += instance.OnSpell13;
+            @Spell14.started += instance.OnSpell14;
+            @Spell14.performed += instance.OnSpell14;
+            @Spell14.canceled += instance.OnSpell14;
+            @Spell15.started += instance.OnSpell15;
+            @Spell15.performed += instance.OnSpell15;
+            @Spell15.canceled += instance.OnSpell15;
+            @Spell16.started += instance.OnSpell16;
+            @Spell16.performed += instance.OnSpell16;
+            @Spell16.canceled += instance.OnSpell16;
             @Click.started += instance.OnClick;
             @Click.performed += instance.OnClick;
             @Click.canceled += instance.OnClick;
@@ -497,6 +705,30 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
             @Spell8.started -= instance.OnSpell8;
             @Spell8.performed -= instance.OnSpell8;
             @Spell8.canceled -= instance.OnSpell8;
+            @Spell9.started -= instance.OnSpell9;
+            @Spell9.performed -= instance.OnSpell9;
+            @Spell9.canceled -= instance.OnSpell9;
+            @Spell10.started -= instance.OnSpell10;
+            @Spell10.performed -= instance.OnSpell10;
+            @Spell10.canceled -= instance.OnSpell10;
+            @Spell11.started -= instance.OnSpell11;
+            @Spell11.performed -= instance.OnSpell11;
+            @Spell11.canceled -= instance.OnSpell11;
+            @Spell12.started -= instance.OnSpell12;
+            @Spell12.performed -= instance.OnSpell12;
+            @Spell12.canceled -= instance.OnSpell12;
+            @Spell13.started -= instance.OnSpell13;
+            @Spell13.performed -= instance.OnSpell13;
+            @Spell13.canceled -= instance.OnSpell13;
+            @Spell14.started -= instance.OnSpell14;
+            @Spell14.performed -= instance.OnSpell14;
+            @Spell14.canceled -= instance.OnSpell14;
+            @Spell15.started -= instance.OnSpell15;
+            @Spell15.performed -= instance.OnSpell15;
+            @Spell15.canceled -= instance.OnSpell15;
+            @Spell16.started -= instance.OnSpell16;
+            @Spell16.performed -= instance.OnSpell16;
+            @Spell16.canceled -= instance.OnSpell16;
             @Click.started -= instance.OnClick;
             @Click.performed -= instance.OnClick;
             @Click.canceled -= instance.OnClick;
@@ -534,6 +766,14 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
         void OnSpell6(InputAction.CallbackContext context);
         void OnSpell7(InputAction.CallbackContext context);
         void OnSpell8(InputAction.CallbackContext context);
+        void OnSpell9(InputAction.CallbackContext context);
+        void OnSpell10(InputAction.CallbackContext context);
+        void OnSpell11(InputAction.CallbackContext context);
+        void OnSpell12(InputAction.CallbackContext context);
+        void OnSpell13(InputAction.CallbackContext context);
+        void OnSpell14(InputAction.CallbackContext context);
+        void OnSpell15(InputAction.CallbackContext context);
+        void OnSpell16(InputAction.CallbackContext context);
         void OnClick(InputAction.CallbackContext context);
         void OnAltClick(InputAction.CallbackContext context);
         void OnAltDoubleClick(InputAction.CallbackContext context);

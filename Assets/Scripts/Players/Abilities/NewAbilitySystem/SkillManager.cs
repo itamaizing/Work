@@ -11,6 +11,7 @@ public class SkillManager : MonoBehaviour
     [SerializeField] private HeroComponent _hero;
     [SerializeField] private TalentSystem _talentSystem;
 
+    private Skill[] _selectedSkills = new Skill[15];
     private List<AutoAttackSkill> _autoAttackSkills = new List<AutoAttackSkill>();
     private List<Skill> _simpleSkills = new List<Skill>();
     private SkillRenderer _skillRenderer;
@@ -22,6 +23,7 @@ public class SkillManager : MonoBehaviour
     public TalentSystem TalentSystem => _talentSystem;
     public List<Skill> Abilities => _skills;
     public SkillQueue SkillQueue { get => _skillQueue; }
+    public Skill[] SelectedSkills { get => _selectedSkills; }
 
     public event Action<int> SkillSelected;
     public event Action<int> SkillDeselected;
@@ -37,6 +39,14 @@ public class SkillManager : MonoBehaviour
         foreach (var item in _skills)
         {
             AddSkill(item);
+        }
+
+        for (int i = 0; i < 16; i++)
+        {
+            if (_skills.Count > i + 1)
+                _selectedSkills[i] = _skills[i];
+            else
+                _selectedSkills[i] = null;
         }
     }
 
@@ -109,28 +119,14 @@ public class SkillManager : MonoBehaviour
             InputHandler.OnClick += PrepereSkill;
             InputHandler.OnAltClick += CancelSkillCast;
 
-            InputHandler.OnFirstCast += SelectSkill;
-            InputHandler.OnSecondCast += SelectSkill;
-            InputHandler.OnThirdCast += SelectSkill;
-            InputHandler.OnFourthCast += SelectSkill;
-            InputHandler.OnFifthCast += SelectSkill;
-            InputHandler.OnSixthCast += SelectSkill;
-            InputHandler.OnSeventhCast += SelectSkill;
-            InputHandler.OnEighthCast += SelectSkill;
+            InputHandler.OnCast += SelectSkill;
         }
         else
         {
             InputHandler.OnClick -= PrepereSkill;
             InputHandler.OnAltClick -= CancelSkillCast;
 
-            InputHandler.OnFirstCast -= SelectSkill;
-            InputHandler.OnSecondCast -= SelectSkill;
-            InputHandler.OnThirdCast -= SelectSkill;
-            InputHandler.OnFourthCast -= SelectSkill;
-            InputHandler.OnFifthCast -= SelectSkill;
-            InputHandler.OnSixthCast -= SelectSkill;
-            InputHandler.OnSeventhCast -= SelectSkill;
-            InputHandler.OnEighthCast -= SelectSkill;
+            InputHandler.OnCast -= SelectSkill;
         }
     }
 
