@@ -7,12 +7,16 @@ public class CreeperInvisible : Skill
 {
     #region Variables
 
+    public bool IsInvisible = false;
+    public bool IsReadyToThreeHitForPreparingForFightTalent = false;
+
     [Header("Talents")]
     [SerializeField] private ReleaseFromSecrecy _releaseFromSecrecy;
     [SerializeField] private DesireToHide _desireToHide;
     [SerializeField] private FirstStrike _firstStrike;
     [SerializeField] private ContinuationAmbush _continuationAmbush;
     [SerializeField] private TransparentPoisons _transparentPoisons;
+    [SerializeField] private PreparingForFight _preparingForFight;
 
     [Header("Ability Properties")]
     [SerializeField] private Character _player;
@@ -35,7 +39,6 @@ public class CreeperInvisible : Skill
     private Coroutine _exitFromInvisibleCoroutine;
     private Coroutine _invisibleAbilitiesCoroutine;
 
-    public bool IsInvisible = false;
 
     protected override bool IsCanCast => _isCanCast;
 
@@ -285,6 +288,7 @@ public class CreeperInvisible : Skill
     {
         Debug.Log("CreeperInvisible / RpcRemoveInvisible");
         IsInvisible = false;
+
         if (_releaseFromSecrecy.IsActive)
         {
             _releaseFromSecrecy.ApplyBuff();
@@ -293,6 +297,11 @@ public class CreeperInvisible : Skill
         if (_firstStrike.IsActive && !_firstStrike.IsCanIncreaseCrit)
         {
             _firstStrike.SetBoolTrue();
+        }
+
+        if (_preparingForFight.IsActive)
+        {
+            IsReadyToThreeHitForPreparingForFightTalent = true;
         }
 
         #region CancleCoroutines

@@ -48,7 +48,7 @@ public class TalentColumn : MonoBehaviour
 		}
 		for(int i = 0; i < _buttons1.Length; i++)
 		{
-			_buttons1[i].ico.sprite = _system.Talents[i].ico;
+			_buttons1[i].ico.sprite = _system.Talents[i].Ico;
 			_buttons1[i].talentName.text = _system.Talents[i].Name + i;
 			_buttons1[i].talentDescription.text = _system.Talents[i].Name + "\n" + _system.Talents[i].Description;
 			

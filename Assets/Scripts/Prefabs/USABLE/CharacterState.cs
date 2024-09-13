@@ -839,6 +839,8 @@ public class InAirState : AbstractCharacterState
     }
 }
 
+#region CreeperStates
+
 public class CreeperInvisibleState : AbstractCharacterState
 {
     public bool turnOff = false;
@@ -2247,6 +2249,94 @@ public class RegeneratingPoisonState : AbstractCharacterState
 
 #endregion
 
+public class HeatedGlandsState : AbstractCharacterState
+{
+	private int _currentStacks;
+	private int _maxStacks = 10;
+
+	private float _duration;
+	private float _baseDuration;
+	private float _amountManaIncreasingValue = 0.02f;
+	private float _newMaxManaPlayer;
+	private float _maxManaPlayer;
+
+	private Character _player;
+	private Resource _playerMana;
+
+    private List<StatusEffect> _effects = new List<StatusEffect>();
+
+    public override States State => States.HeatedGlands;
+    public override StateType Type => StateType.Physical;
+    public override List<StatusEffect> Effects => _effects;
+
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+		_characterState = character;
+		_player = personWhoMadeBuff;
+		_playerMana = _player.TryGetResource(ResourceType.Mana);
+
+		_duration = durationToExit;
+		_baseDuration = _duration;
+
+		_maxManaPlayer = _playerMana.MaxValue;
+
+		IncreasingAmountManaValue();
+    }
+
+    public override void UpdateState()
+    {
+		_duration -= Time.deltaTime;
+		if (_duration < 0)
+		{
+			ExitState();
+		}
+    }
+
+    public override void ExitState()
+    {
+		_playerMana.IncreaseMaxValue(-_newMaxManaPlayer);
+        Debug.Log("ExitState / MaxManaPlayer == " + _playerMana.MaxValue);
+
+        _newMaxManaPlayer = 0;
+		_currentStacks = 0;
+
+		_characterState.RemoveState(this);
+    }
+
+    public override bool Stack(float time)
+    {
+		if (_currentStacks < _maxStacks)
+		{
+			AddStack();
+			return true;
+		}
+		else
+		{
+			_duration = _baseDuration;
+			return false;
+		}
+    }
+
+	private void AddStack()
+	{
+		_currentStacks++;
+		_duration = _baseDuration;
+	}
+
+	private void IncreasingAmountManaValue()
+	{
+		float bonusAmountMana = _amountManaIncreasingValue * _maxManaPlayer;
+        Debug.Log("IncreasingMana / MaxManaPlayer before +bonusMana == " + _maxManaPlayer);
+
+        _playerMana.IncreaseMaxValue(bonusAmountMana);
+
+		_newMaxManaPlayer += bonusAmountMana;
+		Debug.Log("IncreasingMana / MaxManaPlayer after +bonusMana == " + _playerMana.MaxValue);
+	}
+}
+
+#endregion
+
 public class AbilitySchoolDebuff : AbstractCharacterState
 {
 	public bool turnOff = false;
@@ -2683,13 +2773,8 @@ public class CharacterState : NetworkBehaviour
 
 	public Dictionary<States, AbstractCharacterState> EnumToState = new Dictionary<States, AbstractCharacterState>()
 	{
-		[States.Immateriality] = new ImmaterialityState(),
-		[States.Stun] = new StunnedState(),
-		[States.Frozen] = new FrozenState(),
-		[States.Frosting] = new FrostingState(),
-		[States.Cooling] = new Cooling(),
+		#region CreeperStates
 		[States.CreeperInvisible] = new CreeperInvisibleState(),
-		[States.InAir] = new InAirState(),
 		[States.PoisonBone] = new PoisonBoneState(),
 		[States.WitheringPoison] = new WitheringPoisonState(),
 		[States.BindingPoison] = new BindingPoisonState(),
@@ -2699,7 +2784,16 @@ public class CharacterState : NetworkBehaviour
 		[States.HealingPoisonPerSecond] = new HealingPoisonPerSecondState(),
 		[States.InstantHealingPoison] = new InstantHealingPoisonState(),
 		[States.RegeneratingPoison] = new RegeneratingPoisonState(),
-		[States.Blind] = new BlindnessState(),
+		[States.HeatedGlands] = new HeatedGlandsState(),
+        #endregion
+
+		[States.Immateriality] = new ImmaterialityState(),
+		[States.Stun] = new StunnedState(),
+		[States.Frozen] = new FrozenState(),
+		[States.Frosting] = new FrostingState(),
+		[States.Cooling] = new Cooling(),
+		[States.InAir] = new InAirState(),
+        [States.Blind] = new BlindnessState(),
 		[States.Invisible] = new InvisibleState(),
 		[States.SchoolDebuff] = new AbilitySchoolDebuff(),
 		[States.Desiccuration] = new Desiccuration(),
@@ -2922,14 +3016,8 @@ public enum StatusEffect
 }
 public enum States
 {
-	Default,
-    Immateriality,
-    Stun,
-	Frozen,
-	Frosting,
-	Cooling,
-	InAir,
-	CreeperInvisible,
+    #region CreeperStates
+    CreeperInvisible,
 	PoisonBone,
 	WitheringPoison,
 	BindingPoison,
@@ -2939,7 +3027,17 @@ public enum States
 	HealingPoisonPerSecond,
 	InstantHealingPoison,
 	RegeneratingPoison,
-	Blind,
+	HeatedGlands,
+    #endregion
+
+	Default,
+    Immateriality,
+    Stun,
+	Frozen,
+	Frosting,
+	Cooling,
+	InAir,
+    Blind,
 	Invisible,
 	SchoolDebuff,
 	FormDebuf,

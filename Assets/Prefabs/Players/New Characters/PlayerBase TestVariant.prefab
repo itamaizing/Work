@@ -160,6 +160,10 @@ PrefabInstance:
       propertyPath: _skills.Array.data[2]
       value: 
       objectReference: {fileID: 4972498942525129522}
+    - target: {fileID: 8468544467696250796, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _collider
+      value: 
+      objectReference: {fileID: 4513136908747016861}
     - target: {fileID: 8618050890525431220, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -335,3 +339,8 @@ MonoBehaviour:
   _damage: 50
   _projectileCount: 5
   _spawnDeley: 0.5
+--- !u!58 &4513136908747016861 stripped
+CircleCollider2D:
+  m_CorrespondingSourceObject: {fileID: 4218118007188876841, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+  m_PrefabInstance: {fileID: 299526628755236020}
+  m_PrefabAsset: {fileID: 0}

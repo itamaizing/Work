@@ -87,6 +87,14 @@ PrefabInstance:
       propertyPath: _assetId
       value: 2307597614
       objectReference: {fileID: 0}
+    - target: {fileID: 46355437965775755, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_Value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 102174379765015531, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_Value
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 795014623008228812, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -156,6 +164,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2800782367266392627, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_FillAmount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2926669445991704918, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _resourceType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3163159492090740332, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_FillAmount
       value: 1
       objectReference: {fileID: 0}
@@ -250,7 +266,7 @@ PrefabInstance:
     - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _talents.Array.data[0]
       value: 
-      objectReference: {fileID: 5117743073277419063}
+      objectReference: {fileID: 1682250100759698988}
     - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _talents.Array.data[1]
       value: 
@@ -463,6 +479,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7262619753731106163}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1682250100759698988}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8457481688637312902}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3590262281468402026}
   m_SourcePrefab: {fileID: 100100000, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
 --- !u!114 &362903699018664054 stripped
 MonoBehaviour:
@@ -497,8 +522,8 @@ MonoBehaviour:
   syncInterval: 0
   Name: Stroke Of Aspiration
   Description: 
-  ico: {fileID: 21300000, guid: 5711d4c2b5c281147ab022c75cb66999, type: 3}
-  character: {fileID: 362903699018664054}
+  Ico: {fileID: 0}
+  Character: {fileID: 0}
   _creeperStrike: {fileID: 7329957038414124695}
   _poisonBall: {fileID: 4790497256626355497}
   _spitPoison: {fileID: 1565719447917374839}
@@ -519,8 +544,8 @@ MonoBehaviour:
   syncInterval: 0
   Name: Lightweight Slap
   Description: 
-  ico: {fileID: 21300000, guid: dfa6db335114f8e498d6358b3d8118ed, type: 3}
-  character: {fileID: 362903699018664054}
+  Ico: {fileID: 0}
+  Character: {fileID: 0}
   _creeperStrike: {fileID: 7329957038414124695}
 --- !u!114 &5117743073277419063
 MonoBehaviour:
@@ -539,8 +564,8 @@ MonoBehaviour:
   syncInterval: 0
   Name: Capacious Poison Cloud
   Description: 
-  ico: {fileID: 21300000, guid: 2792173d76a5f4d2ebe800b6b4b096cf, type: 3}
-  character: {fileID: 362903699018664054}
+  Ico: {fileID: 0}
+  Character: {fileID: 0}
 --- !u!114 &4556797069023159239
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -558,8 +583,8 @@ MonoBehaviour:
   syncInterval: 0
   Name: Healing Poison Cloud
   Description: 
-  ico: {fileID: 21300000, guid: d83da3915c2142f4f8cd56b3844b91aa, type: 3}
-  character: {fileID: 362903699018664054}
+  Ico: {fileID: 0}
+  Character: {fileID: 0}
 --- !u!114 &4896032680918828316
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -577,8 +602,8 @@ MonoBehaviour:
   syncInterval: 0
   Name: Own Element
   Description: 
-  ico: {fileID: 21300000, guid: ed1972ce01824b542b0ae1113bc01a7e, type: 3}
-  character: {fileID: 362903699018664054}
+  Ico: {fileID: 0}
+  Character: {fileID: 0}
   _creeperStrike: {fileID: 7329957038414124695}
   _enemyLayer:
     serializedVersion: 2
@@ -602,8 +627,8 @@ MonoBehaviour:
   syncInterval: 0
   Name: Toxique Cloud
   Description: 
-  ico: {fileID: 21300000, guid: d9b6be6cf3de5d742bd0a9085c71f42b, type: 3}
-  character: {fileID: 362903699018664054}
+  Ico: {fileID: 0}
+  Character: {fileID: 0}
 --- !u!114 &1528214953864034277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -621,8 +646,8 @@ MonoBehaviour:
   syncInterval: 0
   Name: Foot Instincts
   Description: 
-  ico: {fileID: 21300000, guid: 1362422e60efaf2429effe82d6f18557, type: 3}
-  character: {fileID: 362903699018664054}
+  Ico: {fileID: 0}
+  Character: {fileID: 0}
   _lightningMovement: {fileID: 727315664775304267}
 --- !u!114 &5467376781486848465
 MonoBehaviour:
@@ -641,8 +666,8 @@ MonoBehaviour:
   syncInterval: 0
   Name: Assasin Poison
   Description: 
-  ico: {fileID: 21300000, guid: e1eafea04aee5fa44b72a54b898c488c, type: 3}
-  character: {fileID: 362903699018664054}
+  Ico: {fileID: 0}
+  Character: {fileID: 0}
   _invisibleCreeper: {fileID: 8692283665806418931}
 --- !u!114 &2710589388934225026
 MonoBehaviour:
@@ -661,8 +686,8 @@ MonoBehaviour:
   syncInterval: 0
   Name: Release From Secrecy
   Description: 
-  ico: {fileID: 21300000, guid: a4f17c088f5d22a4980f7f3f499a70bd, type: 3}
-  character: {fileID: 362903699018664054}
+  Ico: {fileID: 0}
+  Character: {fileID: 0}
   _creeperInvisible: {fileID: 8692283665806418931}
   _creeperStrike: {fileID: 7329957038414124695}
 --- !u!114 &4921582011988066485
@@ -682,8 +707,8 @@ MonoBehaviour:
   syncInterval: 0
   Name: Desire To Hide
   Description: 
-  ico: {fileID: 21300000, guid: 85b3ec50840e15c4c9f640f48479c64f, type: 3}
-  character: {fileID: 362903699018664054}
+  Ico: {fileID: 0}
+  Character: {fileID: 0}
   _creeperStrike: {fileID: 7329957038414124695}
   _creeperInvisible: {fileID: 8692283665806418931}
   IsCanApply: 0
@@ -704,8 +729,8 @@ MonoBehaviour:
   syncInterval: 0
   Name: Healing Poison Ball
   Description: 
-  ico: {fileID: 21300000, guid: 4179c97ba3375c14097a417042c7263d, type: 3}
-  character: {fileID: 362903699018664054}
+  Ico: {fileID: 0}
+  Character: {fileID: 0}
   IsCanTargetHimself: 0
 --- !u!114 &6557248580414914859
 MonoBehaviour:
@@ -724,8 +749,8 @@ MonoBehaviour:
   syncInterval: 0
   Name: HealingSpitPoison
   Description: 
-  ico: {fileID: 21300000, guid: d98277b1f14b3c84e906db928f1d5fff, type: 3}
-  character: {fileID: 362903699018664054}
+  Ico: {fileID: 0}
+  Character: {fileID: 0}
   IsCanTargetHimself: 0
 --- !u!114 &3000551519214026504
 MonoBehaviour:
@@ -744,8 +769,8 @@ MonoBehaviour:
   syncInterval: 0
   Name: 
   Description: 
-  ico: {fileID: 21300000, guid: 193b2e86377d5ae4e87acee90f0dcef8, type: 3}
-  character: {fileID: 362903699018664054}
+  Ico: {fileID: 0}
+  Character: {fileID: 0}
   _creeperInvisible: {fileID: 8692283665806418931}
   _creeperStrike: {fileID: 7329957038414124695}
   FirstHit: 0
@@ -766,8 +791,8 @@ MonoBehaviour:
   syncInterval: 0
   Name: Surge Treatment
   Description: 
-  ico: {fileID: 21300000, guid: 663d4b49d36212d41987ebed6a57cda1, type: 3}
-  character: {fileID: 362903699018664054}
+  Ico: {fileID: 0}
+  Character: {fileID: 0}
 --- !u!114 &2021791018241839671
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -785,8 +810,8 @@ MonoBehaviour:
   syncInterval: 0
   Name: LMTalent
   Description: 
-  ico: {fileID: 21300000, guid: d98277b1f14b3c84e906db928f1d5fff, type: 3}
-  character: {fileID: 362903699018664054}
+  Ico: {fileID: 0}
+  Character: {fileID: 0}
 --- !u!114 &3678072325379082348
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -804,8 +829,8 @@ MonoBehaviour:
   syncInterval: 0
   Name: Withering Poison
   Description: 
-  ico: {fileID: 21300000, guid: 43480285767ce97409cd3ed5339beb91, type: 3}
-  character: {fileID: 362903699018664054}
+  Ico: {fileID: 0}
+  Character: {fileID: 0}
 --- !u!114 &8934884499273345818
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -823,8 +848,8 @@ MonoBehaviour:
   syncInterval: 0
   Name: Binding Poison
   Description: 
-  ico: {fileID: 21300000, guid: 09e359aa32a9ff04ea7bbdf596fa2faa, type: 3}
-  character: {fileID: 362903699018664054}
+  Ico: {fileID: 0}
+  Character: {fileID: 0}
 --- !u!114 &2442619433370514812
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -842,8 +867,8 @@ MonoBehaviour:
   syncInterval: 0
   Name: Enlarged Glands
   Description: 
-  ico: {fileID: 21300000, guid: 3c709b466f53c0141944292653b6dff8, type: 3}
-  character: {fileID: 362903699018664054}
+  Ico: {fileID: 0}
+  Character: {fileID: 0}
 --- !u!114 &6720675008021194891
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -861,8 +886,8 @@ MonoBehaviour:
   syncInterval: 0
   Name: Continuation Ambush
   Description: 
-  ico: {fileID: 21300000, guid: 9f42d22003c5e8f439093da05407f78f, type: 3}
-  character: {fileID: 362903699018664054}
+  Ico: {fileID: 0}
+  Character: {fileID: 0}
 --- !u!114 &652576641430040905
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -880,8 +905,8 @@ MonoBehaviour:
   syncInterval: 0
   Name: TransparentPoisons
   Description: 
-  ico: {fileID: 21300000, guid: 09e359aa32a9ff04ea7bbdf596fa2faa, type: 3}
-  character: {fileID: 362903699018664054}
+  Ico: {fileID: 0}
+  Character: {fileID: 0}
   _poisonBall: {fileID: 4790497256626355497}
   _spitPoison: {fileID: 1565719447917374839}
 --- !u!114 &5121733092760162073
@@ -901,8 +926,8 @@ MonoBehaviour:
   syncInterval: 0
   Name: VoluminousBall
   Description: 
-  ico: {fileID: 21300000, guid: ae29ded27bedede4eaa0a76e40eeffe8, type: 3}
-  character: {fileID: 362903699018664054}
+  Ico: {fileID: 0}
+  Character: {fileID: 0}
   _poisonBall: {fileID: 4790497256626355497}
   IncreasedSizeX: 1.2
   IncreasedSizeY: 1.2
@@ -923,8 +948,8 @@ MonoBehaviour:
   syncInterval: 0
   Name: Inertial Glands
   Description: 
-  ico: {fileID: 21300000, guid: d711e158d4244e449a813d065a5d0e09, type: 3}
-  character: {fileID: 362903699018664054}
+  Ico: {fileID: 0}
+  Character: {fileID: 0}
 --- !u!114 &7262619753731106163
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -942,9 +967,66 @@ MonoBehaviour:
   syncInterval: 0
   Name: Accelerated Slap
   Description: 
-  ico: {fileID: 21300000, guid: ae29ded27bedede4eaa0a76e40eeffe8, type: 3}
-  character: {fileID: 362903699018664054}
+  Ico: {fileID: 0}
+  Character: {fileID: 0}
   _poisonSlap: {fileID: 1002733962749832698}
+--- !u!114 &1682250100759698988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2030525112425534856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 034c48fc15844c848a392812c2b435ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: FeelingOfContinuation
+  Description: 
+  Ico: {fileID: 21300000, guid: 83ca62be811ed384cbb8baf58479f27b, type: 3}
+  Character: {fileID: 362903699018664054}
+--- !u!114 &8457481688637312902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2030525112425534856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81419aa55a1ebc3459664e07d0c32e28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Heated Glands
+  Description: 
+  Ico: {fileID: 21300000, guid: 9204ae068284fba43b442c92c1ac501a, type: 3}
+  Character: {fileID: 362903699018664054}
+--- !u!114 &3590262281468402026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2030525112425534856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc2a2ba9ba958f14fb2f1721ac3a29af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Preparing for Fight
+  Description: 
+  Ico: {fileID: 21300000, guid: 4567ce7a1cf16433196f2688091df4ca, type: 3}
+  Character: {fileID: 362903699018664054}
 --- !u!58 &5334189765432920563 stripped
 CircleCollider2D:
   m_CorrespondingSourceObject: {fileID: 4218118007188876841, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
@@ -1001,13 +1083,15 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _attackZoneSize: 3
   _attackSpeed: 1
+  Enabled: 0
   _strokesOfAspiration: {fileID: 4643755454022477495}
   _assasinPoison: {fileID: 5467376781486848465}
   _desireToHide: {fileID: 4921582011988066485}
   _firstStrike: {fileID: 3000551519214026504}
+  _feelingOfContinuation: {fileID: 1682250100759698988}
+  _preparingForFight: {fileID: 3590262281468402026}
   _dad: {fileID: 362903699018664054}
   _creeperInvisible: {fileID: 8692283665806418931}
-  Enabled: 0
 --- !u!114 &143331137762906477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1056,9 +1140,10 @@ MonoBehaviour:
   _attackSpeed: 1
   Enabled: 0
   IsCanDamageDeal: 0
+  _heatedGlands: {fileID: 8457481688637312902}
   _lightningMovement: {fileID: 727315664775304267}
-  _player: {fileID: 362903699018664054}
   _creeperStrike: {fileID: 7329957038414124695}
+  _player: {fileID: 362903699018664054}
 --- !u!114 &1565719447917374839
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1240,6 +1325,7 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _acceleratedSlap: {fileID: 7262619753731106163}
   _superFastScales: {fileID: 2021791018241839671}
+  _heatedGlands: {fileID: 8457481688637312902}
   _creeperStrike: {fileID: 7329957038414124695}
   _lightningStrikes: {fileID: 143331137762906477}
   _poisonSlap: {fileID: 1002733962749832698}
@@ -1251,7 +1337,8 @@ MonoBehaviour:
   _colorForStart: {r: 0.27887654, g: 1, b: 0, a: 1}
   _rangeLeap: 4
   _durationLeap: 0.4
-  _radiusAttack: 3
+  _radiusAttack: 1.15
+  _cooldownAttack: 0.95
   IsInMovement: 0
 --- !u!114 &8692283665806418931
 MonoBehaviour:
@@ -1297,13 +1384,15 @@ MonoBehaviour:
   _isAutoRadiusRender: 0
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
+  IsInvisible: 0
+  IsReadyToThreeHitForPreparingForFightTalent: 0
   _releaseFromSecrecy: {fileID: 2710589388934225026}
   _desireToHide: {fileID: 4921582011988066485}
   _firstStrike: {fileID: 3000551519214026504}
   _continuationAmbush: {fileID: 6720675008021194891}
   _transparentPoisons: {fileID: 652576641430040905}
+  _preparingForFight: {fileID: 0}
   _player: {fileID: 362903699018664054}
-  IsInvisible: 0
 --- !u!114 &1002733962749832698
 MonoBehaviour:
   m_ObjectHideFlags: 0

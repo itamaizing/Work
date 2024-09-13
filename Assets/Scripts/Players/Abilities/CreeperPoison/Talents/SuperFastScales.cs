@@ -10,7 +10,7 @@ public class SuperFastScales : Talent
     public override void Enter()
     {
         SetActive(true);
-        _baseDefMagDamage = character.Health.DefMagDamage;
+        _baseDefMagDamage = Character.Health.DefMagDamage;
     }
 
     public override void Exit()
@@ -20,13 +20,13 @@ public class SuperFastScales : Talent
 
     public void IncreasingResistance()
     {
-        character.Health.SetDefMagicDamage(_increaseResistanceToMagicDamage);
-        Debug.Log($"Increased DefMagDamage == {character.Health.DefMagDamage}");
+        Character.Health.SetDefMagicDamage(_increaseResistanceToMagicDamage);
+        Debug.Log($"Increased DefMagDamage == {Character.Health.DefMagDamage}");
     }
 
     public void ResetResistance()
     {
-        character.Health.SetDefMagicDamage(-_increaseResistanceToMagicDamage);
-        Debug.Log($"Reset DefMagDamage == {character.Health.DefMagDamage}");
+        Character.Health.SetDefMagicDamage(-_increaseResistanceToMagicDamage);
+        Debug.Log($"Reset DefMagDamage == {Character.Health.DefMagDamage}");
     }
 }

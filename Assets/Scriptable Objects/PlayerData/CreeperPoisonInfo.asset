@@ -22,27 +22,27 @@ MonoBehaviour:
     - Id: 1001
       Name: Health
       Points: 0
-      DefaultValue: 0
+      DefaultValue: 777
       Icon: {fileID: 0}
-      IsVisible: 0
+      IsVisible: 1
     - Id: 1002
       Name: Mana
       Points: 0
-      DefaultValue: 0
+      DefaultValue: 1000
       Icon: {fileID: 0}
-      IsVisible: 0
+      IsVisible: 1
     - Id: 1003
       Name: Energy
       Points: 0
       DefaultValue: 0
       Icon: {fileID: 0}
-      IsVisible: 0
+      IsVisible: 1
     - Id: 1004
       Name: Rune
       Points: 0
       DefaultValue: 0
       Icon: {fileID: 0}
-      IsVisible: 0
+      IsVisible: 1
     - Id: 1005
       Name: Speed
       Points: 0
@@ -146,4 +146,4 @@ MonoBehaviour:
       Icon: {fileID: 0}
       IsVisible: 0
   _talents: []
-  statsInfo: {fileID: 0}
+  statsInfo: {fileID: 11400000, guid: c3a7cc3569f730144936c7d492a97e83, type: 2}

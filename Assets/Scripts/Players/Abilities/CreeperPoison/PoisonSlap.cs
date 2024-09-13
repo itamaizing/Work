@@ -353,8 +353,6 @@ public class PoisonSlap : Skill
         _castDeley = _timeCastFromCreeperStrike;
         yield return StartCastDeleyCoroutine();
 
-        Debug.Log("CastTime int if == " + _castDeley);
-
         ChooseDirectionPush(_currentTarget);
 
         DamageDeal(_currentTarget);
@@ -369,8 +367,6 @@ public class PoisonSlap : Skill
         _castDeley = _timeCastFromLightningStrikes;
         yield return StartCastDeleyCoroutine();
 
-        Debug.Log("CastTime int else if == " + _castDeley);
-
         ChooseDirectionPush(_currentTarget);
 
         DamageDeal(_currentTarget);
@@ -384,7 +380,6 @@ public class PoisonSlap : Skill
     {
         if (target != null) 
         {
-            Debug.Log("DamageDeal PoisonSlap after if / target = " + target);
             Damage damage = new Damage
             {
                 Value = _baseDamage,
@@ -400,7 +395,14 @@ public class PoisonSlap : Skill
 
     private void PushTarget(Character target, float distancePush, float durationPush, bool isCanPushTarget)
     {
-        CmdPushEnemy(target, distancePush, durationPush, isCanPushTarget);
+       if (_lightningMovement.IsInMovement)
+       {
+            CmdPushEnemyInLightningMovement(target, distancePush, durationPush);
+       }
+       else
+       {
+            CmdPushEnemy(target, distancePush, durationPush, isCanPushTarget);
+       }
     }
 
     #endregion
@@ -415,13 +417,34 @@ public class PoisonSlap : Skill
         distancePush = ((distancePush * GlobalVariable.cellSize) * durationPush) / GlobalVariable.cellSize;
         if (isCanPushTarget)
         {
-            target.GetComponent<Transform>().transform.DOMove((Vector2)target.transform.position + directionPush * distancePush, durationPush).SetEase(Ease.Linear);
+            target.Rb.DOMove((Vector2)target.transform.position + directionPush * distancePush, durationPush).SetEase(Ease.Linear);
         }
         else
         {
-            target.GetComponent<Transform>().transform.DOMove((Vector2)target.transform.position - directionPush * distancePush, durationPush).SetEase(Ease.Linear);
+            target.Rb.DOMove((Vector2)target.transform.position - directionPush * distancePush, durationPush).SetEase(Ease.Linear);
         }
     }
+
+    [Command]
+    private void CmdPushEnemyInLightningMovement(Character target, float distancePush, float durationPush)
+    {
+        Vector3 directionPush = (target.transform.position - transform.position).normalized;
+        Vector3 perpendicularDirection;
+
+        if (directionPush.x < 0)
+        {
+            perpendicularDirection = new Vector3(directionPush.y, -directionPush.x, 0).normalized;
+        }
+        else
+        {
+            perpendicularDirection = new Vector3(-directionPush.y, directionPush.x, 0).normalized;
+        }
+
+        distancePush = ((distancePush * GlobalVariable.cellSize) * durationPush) / GlobalVariable.cellSize;
+
+        target.Rb.DOMove(target.transform.position + perpendicularDirection * distancePush, durationPush).SetEase(Ease.Linear);
+    }
+
 
     #endregion
 }

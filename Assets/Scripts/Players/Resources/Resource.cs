@@ -2,6 +2,7 @@ using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public enum ResourceType 
 {
@@ -69,6 +70,11 @@ public abstract class Resource : NetworkBehaviour
     public void ReductionCurrentValue(float value)
     {
         _currentValue -= value;
+    }
+
+    public void IncreaseMaxValue(float Value)
+    {
+        _maxValue += Value;
     }
 
     protected virtual void HookValueChanged(float oldValue, float newValue)

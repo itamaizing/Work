@@ -8,36 +8,34 @@ public class LightningStrikes : AutoAttackSkill
     public bool Enabled;
     public bool IsCanDamageDeal = false;
 
+    [Header("Talents")]
+    [SerializeField] private HeatedGlands _heatedGlands;
+    private float _timeBaff = 4f;
+
+    [Header("Abillity Components")]
     [SerializeField] private LightningMovement _lightningMovement;
-    [SerializeField] private Character _player;
     [SerializeField] private CreeperStrike _creeperStrike;
+    [SerializeField] private Character _player;
 
     private Character _currentTarget;
 
     private int _countStrikes = 2;
     private float _attackSpeedDeacrease = 0.1f;
     private bool _isUsedLightningStrikes = false;
+
     private Coroutine _useCoroutine;
-    //private Coroutine _decreaseAttackSpeedCoroutine;
 
     public bool IsUsedLightningStrikes => _isUsedLightningStrikes;
 
     protected override void ClearData()
     {
         base.ClearData();
-        Debug.Log("LightningStrikes / ClearData");
 
         if (_useCoroutine != null)
         {
             StopCoroutine(UseAbilityCoroutine());
             _useCoroutine = null;
         }
-
-        //if (_decreaseAttackSpeedCoroutine != null)
-        //{
-        //    StopCoroutine(DecreaseAttackSpeed());
-        //    _decreaseAttackSpeedCoroutine = null;
-        //}
 
         if (_isUsedLightningStrikes)
         {
@@ -49,13 +47,11 @@ public class LightningStrikes : AutoAttackSkill
     {
         if (_lightningMovement.IsInMovement)
         {
-            Debug.Log("LightningStrikes / PrepareJob / if");
             IsCanDamageDeal = true;
             yield break;
         }
         else
         {
-            Debug.Log("LightningStrikes / PrepareJob / else");
             base.PrepareJob();
         }
     }
@@ -63,7 +59,6 @@ public class LightningStrikes : AutoAttackSkill
     protected override void CastAction()
     {
         _currentTarget = _target;
-        Debug.Log("LightningStrikes / CastAction / Not LightningMovement");
         _useCoroutine = StartCoroutine(UseAbilityCoroutine());
     }
 
@@ -80,29 +75,28 @@ public class LightningStrikes : AutoAttackSkill
 
     private IEnumerator UseAbilityCoroutine()
     {
-        Debug.Log("LightningStrikes / UseAbilityCoroutine");
         _isUsedLightningStrikes = true;
-        DecreaseAttackSpeed(_target);
+        DecreaseAttackSpeed(_currentTarget);
         yield return null;
     }
 
     private void DecreaseAttackSpeed(Character target)
     {
-        Debug.Log("LightningStrikes / DecreaseAttackSpeed");
         if (target != null)
         {
             _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_attackSpeedDeacrease);
-            Debug.Log($"LightningStrikes / DecreaseAttackSpeed / _creeperStrike.Buff.AttackSpeed.Increase = {_creeperStrike.Buff.AttackSpeed.Multiplier}");
 
             for (int i = 0; i < _countStrikes; i++)
             {
-                Debug.Log("LightningStrikes / DecreaseAttackSpeed / cycle For");
                 _creeperStrike.DealingDamageFromHits(target);
+                if (_heatedGlands.IsActive)
+                {
+                    _player.CharacterState.CmdAddState(States.HeatedGlands, _timeBaff, 0, _player.gameObject, Name);
+                }
                 _creeperStrike.CurrentCountHit = 0;
             }
 
             _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_attackSpeedDeacrease);
-            Debug.Log($"LightningStrikes / DecreaseAttackSpeed / _creeperStrike.Buff.AttackSpeed.Reduction = {_creeperStrike.Buff.AttackSpeed.Multiplier}");
         }
     }
 }

@@ -129,7 +129,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 1710071150}
     m_Modifications:
     - target: {fileID: 330853286567417491, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
       propertyPath: m_SizeDelta.y
@@ -193,7 +193,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 798438015288439400, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 798438015288439400, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
       propertyPath: m_AnchorMax.x
@@ -1067,7 +1067,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1054432930
 GameObject:
@@ -1345,7 +1345,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1544740112
 MonoBehaviour:
@@ -1522,9 +1522,8 @@ MonoBehaviour:
   - {fileID: 1410414307}
   - {fileID: 1054432932}
   _heroList:
-  - {fileID: 8468544467696250796, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+  - {fileID: 8191609785747737368, guid: 84e8338c34c430c4f8b56e16b5b6533e, type: 3}
   - {fileID: 362903699018664054, guid: f9a45f6b5745d2242af7bbbd2adab01f, type: 3}
-  - {fileID: 2865796237324360994, guid: 829d129f1a240294bab1479fd22c8414, type: 3}
   _activeCountModes: 000000000100000002000000
   _activeMainModes: 0000000001000000
 --- !u!4 &1710071150
@@ -1542,6 +1541,7 @@ Transform:
   - {fileID: 955530750}
   - {fileID: 1410414306}
   - {fileID: 1054432931}
+  - {fileID: 1842812229}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1557,3 +1557,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b979f26c95d34324ba005bfacfa9c4fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &1842812229 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 798438015288439400, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
+  m_PrefabInstance: {fileID: 902043621}
+  m_PrefabAsset: {fileID: 0}

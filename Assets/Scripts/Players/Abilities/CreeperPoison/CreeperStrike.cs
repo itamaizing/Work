@@ -6,11 +6,15 @@ using UnityEngine;
 
 public class CreeperStrike : AutoAttackSkill
 {
+    public bool Enabled;
+
     [Header("Talents")]
     [SerializeField] private StrokesOfAspiration _strokesOfAspiration;
     [SerializeField] private AssasinPoison _assasinPoison;
     [SerializeField] private DesireToHide _desireToHide;
     [SerializeField] private FirstStrike _firstStrike;
+    [SerializeField] private FeelingOfContinuation _feelingOfContinuation;
+    [SerializeField] private PreparingForFight _preparingForFight;
 
     [Header("Ability properties")]
     [SerializeField] protected Character _dad;
@@ -19,29 +23,23 @@ public class CreeperStrike : AutoAttackSkill
     private Character _lastTarget;
 
     private int _currentCountHit = 0;
-    private int _poisonBoneStacks = 0;
     private int _countHitForDesireToHideTalent = 0;
+    private int _countCurrentHitForPreparingForFight = 0;
+
+    private int _poisonBoneStacks = 0;
 
     private float _currentDamage;
     private float _multiplyCritDamage = 1.5f;
     private float _lifeTimePoisonBoneStacks = 6.0f;
-
-    private float chanceOfCriticalStrike = 0.05f;
+    private float chanceOfCriticalStrike = 1f;
     
     private bool _isTwoHit = false;
 
     private Coroutine _useAbilityCoroutine;
 
     public int CurrentCountHit { get => _currentCountHit; set => _currentCountHit = value; }
-    public int CountHitForReleaseFromSecrecyTalent 
-    { 
-        get => _countHitForDesireToHideTalent; 
-
-        set => _countHitForDesireToHideTalent = value; 
-    }
+    public int CountHitForReleaseFromSecrecyTalent { get => _countHitForDesireToHideTalent; set => _countHitForDesireToHideTalent = value; }
     public bool IsTwoHit { get => _isTwoHit; set => _isTwoHit = value; }
-
-    public bool Enabled;
     public Character CurrentTarget => _target;
 
     protected override void ClearData()
@@ -75,7 +73,6 @@ public class CreeperStrike : AutoAttackSkill
         float _currentChanceOfCriticalStrike = Random.Range(0.0f, 1.0f);
 
         _currentCountHit++;
-        _countHitForDesireToHideTalent++;
 
         if (_currentCountHit == 2)
         {
@@ -108,6 +105,8 @@ public class CreeperStrike : AutoAttackSkill
 
         if (_desireToHide.IsActive)
         {
+            _countHitForDesireToHideTalent++;
+
             if (_countHitForDesireToHideTalent == 5)
             {
                 _desireToHide.IsCanApplyInvisible();
@@ -115,9 +114,22 @@ public class CreeperStrike : AutoAttackSkill
             }
         }
 
+        if (_preparingForFight.IsActive && _creeperInvisible.IsReadyToThreeHitForPreparingForFightTalent)
+        {
+            _countCurrentHitForPreparingForFight++;
+
+            _preparingForFight.IncreaseManaRegeneration();
+
+            if (_countCurrentHitForPreparingForFight == 3)
+            {
+                _countCurrentHitForPreparingForFight = 0;
+                _creeperInvisible.IsReadyToThreeHitForPreparingForFightTalent = false;
+            }
+        }
+
         if (_currentChanceOfCriticalStrike <= chanceOfCriticalStrike)
         {
-            CmdCriticalDamage(target, _currentDamage);
+            DealCriticalDamage(target, _currentDamage);
         }
         else
         {
@@ -166,7 +178,7 @@ public class CreeperStrike : AutoAttackSkill
         _poisonBoneStacks = poisonBoneStacks;
     }
 
-    private void CmdCriticalDamage(Character currentTarget, float criticalDamage)
+    private void DealCriticalDamage(Character currentTarget, float criticalDamage)
     {
         if (currentTarget.CharacterState.CheckForState(States.PoisonBone))
         {
@@ -180,7 +192,12 @@ public class CreeperStrike : AutoAttackSkill
             Range = AttackRangeType.MeleeAttack
         };
 
-        CmdApplyDamage(critDamage, CurrentTarget.gameObject);
-        //currentTarget.Health.CmdTryTakeDamage(criticalDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
+        CmdApplyDamage(critDamage, currentTarget.gameObject);
+
+        if (_feelingOfContinuation.IsActive)
+        {
+            _feelingOfContinuation.IncreaseRegenerationMana(criticalDamage);
+        }
     }
+
 }
