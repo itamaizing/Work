@@ -16,7 +16,7 @@ public class Shield : Resource, IDamageable
         _regenerationDelay = regenDelay;
 
         if (regenValue > 0)
-            ClientStartRegenerateJob();
+            ClientStartRegenirateJob();
 
         _absorptionDamageType = damageType;
         _percentageAbsorption = percentageAbsorption;

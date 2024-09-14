@@ -42,6 +42,7 @@ public class Registration : MonoBehaviour
         if (_password != _confirmPassword)
         {
             Debug.LogError("pass not confirm");
+            Error?.Invoke("pass not confirm");
             return;
         }
 
@@ -52,6 +53,8 @@ public class Registration : MonoBehaviour
         };
 
         NetworkHTTP.Instance.Post(URLLibrary.Registration, data, Success);
+
+        StartCoroutine(TimeOutJob());
     }
 
     private void Success(string data)
@@ -66,5 +69,13 @@ public class Registration : MonoBehaviour
         {
             Error?.Invoke(data);
         }
+    }
+
+    private IEnumerator TimeOutJob()
+    {
+        yield return new WaitForSecondsRealtime(15);
+
+        if(_id == 0)
+            Error?.Invoke("TimeOut");
     }
 }
