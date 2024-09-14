@@ -14,7 +14,7 @@ public class SkillPanel : MonoBehaviour
     [SerializeField] private QueuePanel _queuePanel;
     [SerializeField] private SelectManager _selectManager;
 
-    private List<DraggableIcon> _skills;
+    private List<DraggableIcon> _skills = new List<DraggableIcon>();
     private Character _currentCharacter;
     private SkillManager _playerAbilities;
     private bool _isActive;
@@ -60,6 +60,9 @@ public class SkillPanel : MonoBehaviour
 
         for (int i = 0; i < _playerAbilities.SelectedSkills.Length; i++)
         {
+            if (_playerAbilities.SelectedSkills[i] == null)
+                continue;
+
             var icon = Instantiate(_skillIconPref, _skillIcons[i].transform);
             icon.Init(_playerAbilities.SelectedSkills[i]);
             _skills.Add(icon);

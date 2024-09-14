@@ -43,7 +43,7 @@ public class SkillManager : MonoBehaviour
 
         for (int i = 0; i < 16; i++)
         {
-            if (_skills.Count > i + 1)
+            if (_skills.Count > i)
                 _selectedSkills[i] = _skills[i];
             else
                 _selectedSkills[i] = null;
@@ -54,6 +54,15 @@ public class SkillManager : MonoBehaviour
     {
         if(_skills.Contains(skill) == false)
             _skills.Add(skill);
+
+        for (int i = 0; i < _selectedSkills.Length; i++)
+        {
+            if(_selectedSkills[i] == null)
+            {
+                _selectedSkills[i] = skill;
+                break;
+            }
+        }
 
         skill.Init(_skillRenderer, _hero);
 
@@ -100,6 +109,9 @@ public class SkillManager : MonoBehaviour
             skill.CastStarted -= GlobalCooldown;
         }
         _skills.Remove(skill);
+
+        var index = Array.IndexOf(_selectedSkills, skill);
+        _selectedSkills[index] = null;
 
         SkillRemoved?.Invoke(skill);
     }
@@ -158,7 +170,7 @@ public class SkillManager : MonoBehaviour
         }
         else if(_selectedSkill != null)
         {
-            SkillDeselected?.Invoke(_skills.IndexOf(_selectedSkill));
+            SkillDeselected?.Invoke(Array.IndexOf(_selectedSkills, _selectedSkill));
             UnsubscribingSkillOnEvents(_selectedSkill);
             _selectedSkill = null;
         }
@@ -166,10 +178,13 @@ public class SkillManager : MonoBehaviour
 
     private void SelectSkill(int index)
     {
+        if (_selectedSkills[index] == null)
+            return;
+
         if (_selectedSkill != null && _selectedSkill.IsPreparing == true)
             return;
 
-        if (_selectedSkill == _skills[index])
+        if (_selectedSkill == _selectedSkills[index])
         {
             SkillSelected?.Invoke(index);
 
@@ -177,18 +192,18 @@ public class SkillManager : MonoBehaviour
         }
         else if (_selectedSkill == null)
         {
-            _selectedSkill = _skills[index];
+            _selectedSkill = _selectedSkills[index];
             SubscribingSkillOnEvents(_selectedSkill);
             SkillSelected?.Invoke(index);
 
             PrepereSkill();
         }
-        else if (_selectedSkill != _skills[index])
+        else if (_selectedSkill != _selectedSkills[index])
         {
             UnsubscribingSkillOnEvents(_selectedSkill);
-            SkillDeselected?.Invoke(_skills.IndexOf(_selectedSkill));
+            SkillDeselected?.Invoke(Array.IndexOf(_selectedSkills, _selectedSkill));
 
-            _selectedSkill = _skills[index];
+            _selectedSkill = _selectedSkills[index];
             SubscribingSkillOnEvents(_selectedSkill);
             SkillSelected?.Invoke(index);
 
