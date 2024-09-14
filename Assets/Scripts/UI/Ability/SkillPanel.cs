@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,16 +6,27 @@ using UnityEngine.InputSystem;
 
 public class SkillPanel : MonoBehaviour
 {
-    [SerializeField] private RebindUI _rebindUI;
+    [SerializeField] private List<RebindUI> _rebindsUI;
     [SerializeField] private SkillIcon[] _skillIcons = new SkillIcon[15];
     private Character _currentCharacter;
 
     private void Start()
     {
-        UpdateKey();
+        UpdateKeys();
+
+        foreach (var item in _rebindsUI)
+        {
+            item.updateBindingUIEvent.AddListener(RebindSpellKeys);
+        }
+        InputHandler.OnCast += SelectSkill;
     }
-        
-    public void UpdateKey()
+
+    private void SelectSkill(int arg0)
+    {
+        Debug.Log(arg0);
+    }
+
+    public void UpdateKeys()
     {
         _skillIcons[0].Key.text = InputHandler.Instance.InputActions.GameplayMap.Spell1.GetBindingDisplayString(InputBinding.DisplayStringOptions.DontIncludeInteractions);
         _skillIcons[1].Key.text = InputHandler.Instance.InputActions.GameplayMap.Spell2.GetBindingDisplayString(InputBinding.DisplayStringOptions.DontIncludeInteractions);
@@ -34,11 +46,8 @@ public class SkillPanel : MonoBehaviour
         _skillIcons[15].Key.text = InputHandler.Instance.InputActions.GameplayMap.Spell16.GetBindingDisplayString(InputBinding.DisplayStringOptions.DontIncludeInteractions);
     }
 
-    public void UpdateKeys(RebindUI rebindUI, string key, string z, string x)
+    public void RebindSpellKeys(RebindUI rebindUI, string key, string deviceLayoutName, string controlPath)
     {
-        Debug.Log(key);
-        Debug.Log(z);
-        Debug.Log(x);
-        _skillIcons[0].Key.text = key;
+        UpdateKeys();
     }
 }

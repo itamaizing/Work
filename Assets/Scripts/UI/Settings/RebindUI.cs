@@ -104,9 +104,6 @@ public class RebindUI : MonoBehaviour
 
     public InputActionRebindingExtensions.RebindingOperation ongoingRebind => m_RebindOperation;
 
-    public event Action ButtonChenged;
-    public UnityEvent ButtonsChenged = new UnityEvent();
-
     public bool ResolveActionAndBinding(out InputAction action, out int bindingIndex)
     {
         bindingIndex = -1;
@@ -146,9 +143,10 @@ public class RebindUI : MonoBehaviour
         if (m_BindingText != null)
             m_BindingText.text = displayString;
 
+        if(InputHandler.Instance != null)
+            InputHandler.Instance.InputActions.FindAction(actionReference.action.name).ApplyBindingOverride(deviceLayoutName + "/" + controlPath);
+
         m_UpdateBindingUIEvent?.Invoke(this, displayString, deviceLayoutName, controlPath);
-        ButtonChenged?.Invoke();
-        ButtonsChenged.Invoke();
     }
 
     public void ResetToDefault()
