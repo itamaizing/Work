@@ -8,12 +8,20 @@ using UnityEngine.UI;
 public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     [SerializeField] Image _image;
-    [SerializeField] private FillAmountOverTime _cooldown;
-    [SerializeField] private TextMeshProUGUI _chargeCounter;
 
     private Transform _patentAfterDrag;
+    private Skill _skill;
+    private bool _selected;
 
     public Transform PatentAfterDrag { get => _patentAfterDrag; set => _patentAfterDrag = value; }
+    public Skill Skill { get => _skill; set => _skill = value; }
+    public bool Selected { get => _selected; set => _selected = value; }
+
+    public void Init(Skill skill)
+    {
+        _skill = skill;
+        _image.sprite = _skill.Icon;
+    }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
