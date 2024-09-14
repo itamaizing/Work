@@ -52,6 +52,8 @@ public class SkillIcon : MonoBehaviour, IDropHandler
             {
                 UnsubscribingSkillOnEvents(_currentIcon.Skill);
 
+                _currentIcon = value;
+
                 if (_currentIcon.Selected)
                     Selected();
                 else

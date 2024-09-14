@@ -65,6 +65,8 @@ public class SkillPanel : MonoBehaviour
 
             var icon = Instantiate(_skillIconPref, _skillIcons[i].transform);
             icon.Init(_playerAbilities.SelectedSkills[i]);
+            _skillIcons[i].CurrentIcon = icon;
+            icon.transform.SetAsFirstSibling();
             _skills.Add(icon);
         }
 

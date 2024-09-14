@@ -181,7 +181,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 44ef9f5c61bd03a4a9d02045a6dfb776, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
-  _cooldownTime: 0
+  _cooldownTime: 2
   _castDeley: 1
   _abilitySchool: 0
   _abilityForm: 1
@@ -273,7 +273,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: d225c810085a24647a426dd4b47a9983, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
-  _cooldownTime: 2
+  _cooldownTime: 5
   _castDeley: 1
   _abilitySchool: 0
   _abilityForm: 0
