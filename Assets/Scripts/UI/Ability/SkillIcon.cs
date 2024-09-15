@@ -30,9 +30,9 @@ public class SkillIcon : MonoBehaviour, IDropHandler
                 if(_currentIcon != null)
                     UnsubscribingSkillOnEvents(_currentIcon.Skill);
 
-                Deselected();
-
                 _currentIcon = value;
+
+                Deselected();
 
                 CurrentSkillChenged?.Invoke(_index, null);
                 return;
