@@ -17,8 +17,9 @@ public class CreeperStrike : AutoAttackSkill
     [SerializeField] private PreparingForFight _preparingForFight;
 
     [Header("Ability properties")]
-    [SerializeField] protected Character _dad;
+    [SerializeField] private Character _dad;
     [SerializeField] private CreeperInvisible _creeperInvisible;
+    [SerializeField] private AbsoluteAccuracy _absoluteAccuracy;
 
     private Character _lastTarget;
 
@@ -127,8 +128,14 @@ public class CreeperStrike : AutoAttackSkill
             }
         }
 
-        if (_currentChanceOfCriticalStrike <= chanceOfCriticalStrike)
+        if (_absoluteAccuracy.IsCanCrit)
         {
+            Debug.Log("if absoluteAccuracy.IsCAnCrit == " + _absoluteAccuracy.IsCanCrit);
+            DealCriticalDamage(target, _currentDamage);
+        }
+        else if (_currentChanceOfCriticalStrike <= chanceOfCriticalStrike)
+        {
+            Debug.Log("else if (_currentChanceOfCriticalStrike <= chanceOfCriticalStrike)");
             DealCriticalDamage(target, _currentDamage);
         }
         else
@@ -151,23 +158,42 @@ public class CreeperStrike : AutoAttackSkill
 
     private float CalculateCriticalDamage(float baseDamage)
     {
-        Debug.Log("CreeperStrike / CalculateCriticalDamage");
+        Debug.Log("CalculateCriticalDamage");
         float criticalDamage = baseDamage;
         float multiplyDamage = _multiplyCritDamage;
         float firstStrikeTalentMultiplyDamage = 5.0f;
+        float absoluteAccucaryMultiplyDamage = 2.5f;
 
-        for (int i = 0; i < _poisonBoneStacks; i++)
+        if (_poisonBoneStacks > 0)
         {
-            multiplyDamage += 0.5f;
+            Debug.Log("CalculateCriticalDamage / poisonBoneStacks > 0");
+            for (int i = 0; i < _poisonBoneStacks; i++)
+            {
+                multiplyDamage += 0.5f;
+            }
         }
 
         if (_firstStrike.IsActive && _firstStrike.IsCanIncreaseCrit && _firstStrike.FirstHit)
         {
+            Debug.Log("CalculateCriticalDamage / if (_firstStrike.IsActive && _firstStrike.IsCanIncreaseCrit && _firstStrike.FirstHit)");
             criticalDamage *= (multiplyDamage * firstStrikeTalentMultiplyDamage);
             _firstStrike.ReturnBoolFalse();
         }
+        else if (_absoluteAccuracy.IsCanCrit && _poisonBoneStacks == 0)
+        {
+            Debug.Log("CalculateCriticalDamage / else if (_absoluteAccuracy.IsCanCrit && _poisonBoneStacks == 0)");
+            criticalDamage *= absoluteAccucaryMultiplyDamage;
+
+            if (_creeperInvisible.IsInvisible)
+            {
+                Debug.Log("CreeperStrike / CritDamage / IsInvisible == true");
+                _creeperInvisible.ExitingInvisibleState();
+            }
+            Debug.Log("CalculateCriticalDamage / else if (_absoluteAccuracy.IsCanCrit && _poisonBoneStacks == 0) / damage = " + criticalDamage);
+        }
         else
         {
+            Debug.Log("CalculateCriticalDamage");
             criticalDamage *= multiplyDamage;
         }
         return criticalDamage;
@@ -180,7 +206,13 @@ public class CreeperStrike : AutoAttackSkill
 
     private void DealCriticalDamage(Character currentTarget, float criticalDamage)
     {
-        if (currentTarget.CharacterState.CheckForState(States.PoisonBone))
+        Debug.Log("DealCriticalDamage");
+        if (_absoluteAccuracy.IsCanCrit)
+        {
+            Debug.Log("DealCriticalDamage / IsCanCrit = " + _absoluteAccuracy.IsCanCrit);
+            criticalDamage = CalculateCriticalDamage(criticalDamage);
+        }
+        else if (currentTarget.CharacterState.CheckForState(States.PoisonBone))
         {
             criticalDamage = CalculateCriticalDamage(criticalDamage);
         }
@@ -195,7 +227,7 @@ public class CreeperStrike : AutoAttackSkill
         CmdApplyDamage(critDamage, currentTarget.gameObject);
 
         if (_feelingOfContinuation.IsActive)
-        {
+        { 
             _feelingOfContinuation.IncreaseRegenerationMana(criticalDamage);
         }
     }

@@ -2260,7 +2260,7 @@ public class HeatedGlandsState : AbstractCharacterState
 	private float _newMaxManaPlayer;
 	private float _maxManaPlayer;
 
-	private Character _player;
+	private Character _player; 
 	private Resource _playerMana;
 
     private List<StatusEffect> _effects = new List<StatusEffect>();
@@ -2280,12 +2280,16 @@ public class HeatedGlandsState : AbstractCharacterState
 
 		_maxManaPlayer = _playerMana.MaxValue;
 
-		IncreasingAmountManaValue();
+		if (_currentStacks < _maxStacks)
+		{
+            AddStack();
+		}
+
     }
 
     public override void UpdateState()
     {
-		_duration -= Time.deltaTime;
+        _duration -= Time.deltaTime;
 		if (_duration < 0)
 		{
 			ExitState();
@@ -2294,20 +2298,19 @@ public class HeatedGlandsState : AbstractCharacterState
 
     public override void ExitState()
     {
-		_playerMana.IncreaseMaxValue(-_newMaxManaPlayer);
-        Debug.Log("ExitState / MaxManaPlayer == " + _playerMana.MaxValue);
+        _playerMana.ReductionMaxValue(_newMaxManaPlayer);
 
-        _newMaxManaPlayer = 0;
 		_currentStacks = 0;
+        _newMaxManaPlayer = 0;
 
 		_characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-		if (_currentStacks < _maxStacks)
-		{
-			AddStack();
+        if (_currentStacks < _maxStacks)
+        {
+            AddStack();
 			return true;
 		}
 		else
@@ -2318,20 +2321,25 @@ public class HeatedGlandsState : AbstractCharacterState
     }
 
 	private void AddStack()
-	{
-		_currentStacks++;
+    {
+        _currentStacks++;
 		_duration = _baseDuration;
-	}
+		IncreasingAmountManaValue();
+    }
 
-	private void IncreasingAmountManaValue()
-	{
-		float bonusAmountMana = _amountManaIncreasingValue * _maxManaPlayer;
-        Debug.Log("IncreasingMana / MaxManaPlayer before +bonusMana == " + _maxManaPlayer);
+    private void IncreasingAmountManaValue()
+    {
+        Debug.Log("HeatedGlands / IncreasingAmountManaValue");
+
+        float bonusAmountMana = _amountManaIncreasingValue * _maxManaPlayer;
+        Debug.Log("IncreasingMana / bonusMana == " + bonusAmountMana);
 
         _playerMana.IncreaseMaxValue(bonusAmountMana);
 
 		_newMaxManaPlayer += bonusAmountMana;
-		Debug.Log("IncreasingMana / MaxManaPlayer after +bonusMana == " + _playerMana.MaxValue);
+        Debug.Log("IncreasingMana / newMaxManaPlayer == " + _newMaxManaPlayer);
+
+       Debug.Log("IncreasingMana / MaxManaPlayer after +bonusMana == " + _playerMana.MaxValue);
 	}
 }
 

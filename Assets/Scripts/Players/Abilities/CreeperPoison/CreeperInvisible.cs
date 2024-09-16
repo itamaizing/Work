@@ -17,8 +17,10 @@ public class CreeperInvisible : Skill
     [SerializeField] private ContinuationAmbush _continuationAmbush;
     [SerializeField] private TransparentPoisons _transparentPoisons;
     [SerializeField] private PreparingForFight _preparingForFight;
+    [SerializeField] private ConcentratedPrecision _concentratedPrecision;
 
     [Header("Ability Properties")]
+    [SerializeField] private AbsoluteAccuracy _absoluteAccuracy;
     [SerializeField] private Character _player;
 
     private float _maxHealth;
@@ -122,6 +124,13 @@ public class CreeperInvisible : Skill
         Debug.Log("CreeperInvisible / EnteringInvisibleState");
 
         CmdApplyInvis();
+    }
+
+    public void ExitingInvisibleState()
+    {
+        Debug.Log("CreeperInvisible / ExitingInvisibleState");
+
+        CmdRemoveInvisible();
     }
 
     #endregion
@@ -302,6 +311,22 @@ public class CreeperInvisible : Skill
         if (_preparingForFight.IsActive)
         {
             IsReadyToThreeHitForPreparingForFightTalent = true;
+        }
+        Debug.Log("CreeperInvisible / RpcRemoveInvisible / _absoluteAccuracy.IsCanCrit = " + _absoluteAccuracy.IsCanCrit); 
+        Debug.Log("CreeperInvisible / RpcRemoveInvisible / _concentratedPrecision.IsActive = " + _concentratedPrecision.IsActive);
+        if (_absoluteAccuracy.IsCanCrit)
+        {
+            if (_concentratedPrecision.IsActive)
+            {
+                float newCooldownTime = _absoluteAccuracy.CooldownTime / _absoluteAccuracy.DecreaseCooldownTime;
+
+                _absoluteAccuracy.IncreaseSetCooldown(newCooldownTime);
+
+                Debug.Log("CreeperInvisible / IsCanCrit true / new cooldownTime = " + newCooldownTime);
+                Debug.Log("CreeperInvisible / IsCanCrit true / Absolute Cooldown = " + _absoluteAccuracy.Buff.Cooldown.Multiplier);
+            }
+
+            _absoluteAccuracy.IsCanCrit = false;
         }
 
         #region CancleCoroutines

@@ -46,10 +46,17 @@ public abstract class Resource : NetworkBehaviour
 
     public virtual void Add(float value)
     {
+        Debug.Log("Resource / Add");
         if (MaxValue >= _currentValue + value)
+        {
             CurrentValue += value;
+            Debug.Log("Resource / Add / if / CurrentValue = " + CurrentValue);
+        }
         else
+        {
             CurrentValue = _maxValue;
+            Debug.Log("Resource / Add / else / CurrentValue = " + CurrentValue);
+        }
     }
 
     public virtual bool TryUse(float value)
@@ -72,9 +79,14 @@ public abstract class Resource : NetworkBehaviour
         _currentValue -= value;
     }
 
-    public void IncreaseMaxValue(float Value)
+    public void IncreaseMaxValue(float value)
     {
-        _maxValue += Value;
+        _maxValue += value;
+    }
+
+    public void ReductionMaxValue(float value)
+    {
+        _maxValue -= value;
     }
 
     protected virtual void HookValueChanged(float oldValue, float newValue)

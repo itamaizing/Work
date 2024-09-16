@@ -2,14 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HeatedGlands : Talent
+public class ConcentratedPrecision : Talent
 {
 
-    //private void Start()
-    //{
-    //    //Enter();
-    //    //Debug.Log("HeatedGlands Started");
-    //}
+    private void Start()
+    {
+        Enter();
+    }
 
     public override void Enter()
     {
@@ -20,4 +19,5 @@ public class HeatedGlands : Talent
     {
         SetActive(false);
     }
+
 }

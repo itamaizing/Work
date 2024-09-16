@@ -57,9 +57,11 @@ public class FeelingOfContinuation : Talent
             Debug.Log("_maxMana = " + _maxMana);
             Debug.Log("_currentMana = " + _currentMana);
 
-            if (_currentMana > _maxMana)
+            if (_currentMana >= _maxMana)
             {
+                Debug.Log("If (currentMana > maxMana)");
                 _currentMana = _maxMana;
+                yield break;
             }
 
             yield return null;
