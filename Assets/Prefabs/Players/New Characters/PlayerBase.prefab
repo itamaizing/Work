@@ -330,6 +330,7 @@ MonoBehaviour:
   _playerData: {fileID: 11400000, guid: f71e3e6e8b3ca6245b0c37fd016a4039, type: 2}
   _networkSettings: {fileID: -7146587456276821115}
   rb: {fileID: 3759936847054020137}
+  _collider: {fileID: 0}
   _healthComponent: {fileID: 5839731411926097146}
   Stamina: {fileID: 2926669445991704918}
   _playerMove: {fileID: 5665079937663656764}
@@ -360,6 +361,7 @@ MonoBehaviour:
   syncInterval: 0
   _stateIcons: {fileID: 2794163301550220692}
   invinsible: 0
+  Invinsible: 0
 --- !u!114 &5839731411926097146
 MonoBehaviour:
   m_ObjectHideFlags: 0

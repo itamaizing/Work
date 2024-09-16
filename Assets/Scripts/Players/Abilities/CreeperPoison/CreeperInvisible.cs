@@ -312,9 +312,9 @@ public class CreeperInvisible : Skill
         {
             IsReadyToThreeHitForPreparingForFightTalent = true;
         }
-        Debug.Log("CreeperInvisible / RpcRemoveInvisible / _absoluteAccuracy.IsCanCrit = " + _absoluteAccuracy.IsCanCrit); 
+        Debug.Log("CreeperInvisible / RpcRemoveInvisible / _absoluteAccuracy.IsCanCrit = " + _absoluteAccuracy.IsCanCritCreeperStrike); 
         Debug.Log("CreeperInvisible / RpcRemoveInvisible / _concentratedPrecision.IsActive = " + _concentratedPrecision.IsActive);
-        if (_absoluteAccuracy.IsCanCrit)
+        if (_absoluteAccuracy.IsCanCritCreeperStrike)
         {
             if (_concentratedPrecision.IsActive)
             {
@@ -326,7 +326,7 @@ public class CreeperInvisible : Skill
                 Debug.Log("CreeperInvisible / IsCanCrit true / Absolute Cooldown = " + _absoluteAccuracy.Buff.Cooldown.Multiplier);
             }
 
-            _absoluteAccuracy.IsCanCrit = false;
+            _absoluteAccuracy.IsCanCritCreeperStrike = false;
         }
 
         #region CancleCoroutines

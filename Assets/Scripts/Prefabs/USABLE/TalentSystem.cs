@@ -10,8 +10,8 @@ public abstract class Talent : NetworkBehaviour
     private bool _isActive;
 	public string Name;
 	public string Description;
-	public Sprite ico;
-    public Character character;
+	public Sprite Ico;
+    public Character Character;
 
     public bool IsActive => _isActive;
 

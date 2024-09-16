@@ -24,11 +24,14 @@ public abstract class AutoAttackSkill : Skill
 
     protected override IEnumerator CastJob()
     {
+        Debug.Log("AutoAttackSkill / CastJob");
+
         yield return _autoAttackCoroutine = StartCoroutine(AutoAttackJob());
     }
 
     protected override void ClearData()
     {
+        Debug.Log("AutoAttackSkill / ClearData");
         if (_autoAttackCoroutine != null)
         {
             StopCoroutine(_autoAttackCoroutine);
@@ -40,6 +43,7 @@ public abstract class AutoAttackSkill : Skill
 
     protected override IEnumerator PrepareJob()
     {
+        Debug.Log("AutoAttackSkill / PrepareJob");
         do
         {
             if (Input.GetMouseButton(0))
@@ -53,6 +57,7 @@ public abstract class AutoAttackSkill : Skill
 
     public void Pause()
     {
+        Debug.Log("AutoAttackSkill / Pause");
         if (_autoAttackCoroutine != null)
         {
             StopCoroutine(_autoAttackCoroutine);
@@ -63,6 +68,7 @@ public abstract class AutoAttackSkill : Skill
 
     public void Continue()
     {
+        Debug.Log("AutoAttackSkill / Continue");
         if (_autoAttackCoroutine == null && Target != null)
         {
             _autoAttackCoroutine = StartCoroutine(AutoAttackJob());
@@ -71,6 +77,7 @@ public abstract class AutoAttackSkill : Skill
 
     protected virtual IEnumerator AutoAttackJob()
     {
+        Debug.Log("AutoAttackSkill / AutoAttackJob");
         while (Target != null)
         {
             if (IsTargetInRadius(Radius + _attackZoneSize, Target.transform))

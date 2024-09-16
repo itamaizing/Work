@@ -9,6 +9,7 @@ public class AbsoluteAccuracyTalent : Talent
 
     private void Start()
     {
+        Debug.Log("AbsoluteAccuracyTalent Started");
         Enter();
     }
 

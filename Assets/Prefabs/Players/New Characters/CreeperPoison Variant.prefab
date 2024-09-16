@@ -163,6 +163,14 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2640449256033852773, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: controllableUnits.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2640449256033852773, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: controllableUnits.Array.data[0]
+      value: 
+      objectReference: {fileID: 362903699018664054}
     - target: {fileID: 2800782367266392627, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_FillAmount
       value: 1
@@ -183,6 +191,22 @@ PrefabInstance:
       propertyPath: unit
       value: 
       objectReference: {fileID: 2981867871510918870, guid: d321207ef616498478038beb68b111ea, type: 3}
+    - target: {fileID: 3331720620529543771, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3331720620529543771, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4250437611048027662, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4250437611048027662, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5188756905167438128, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
@@ -497,6 +521,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6139812905706467644}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2263224126478404923}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 397963123425295436}
   m_SourcePrefab: {fileID: 100100000, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
 --- !u!114 &362903699018664054 stripped
 MonoBehaviour:
@@ -1076,6 +1106,44 @@ MonoBehaviour:
   Description: 
   Ico: {fileID: 0}
   Character: {fileID: 362903699018664054}
+--- !u!114 &2263224126478404923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2030525112425534856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66e2e0670c0735c4ebafe9630e9a5631, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Killers Stamina
+  Description: 
+  Ico: {fileID: 21300000, guid: a2d8694b191104c8cb1b7e715b3a5e47, type: 3}
+  Character: {fileID: 362903699018664054}
+--- !u!114 &397963123425295436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2030525112425534856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 014d932c20ea61146bd0f731492d3df8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Cold Blood
+  Description: 
+  Ico: {fileID: 0}
+  Character: {fileID: 362903699018664054}
 --- !u!114 &2187736417149807821 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
@@ -1171,7 +1239,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 1af7963ead8875042bc84e9fa3cf58e1, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
-  _cooldownTime: 0.5
+  _cooldownTime: 4
   _castDeley: 0
   _abilitySchool: 6
   _abilityForm: 2
@@ -1202,6 +1270,8 @@ MonoBehaviour:
   Enabled: 0
   IsCanDamageDeal: 0
   _heatedGlands: {fileID: 8457481688637312902}
+  _killersStamina: {fileID: 2263224126478404923}
+  _absoluteAccuracy: {fileID: 8157482668818343295}
   _lightningMovement: {fileID: 727315664775304267}
   _creeperStrike: {fileID: 7329957038414124695}
   _player: {fileID: 362903699018664054}
@@ -1705,7 +1775,7 @@ MonoBehaviour:
   _attackRangeType: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 768
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -1716,7 +1786,7 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 0
+  _radius: 100
   _area: 0
   _castLength: 0
   _castWidth: 0
@@ -1725,7 +1795,10 @@ MonoBehaviour:
   _isAutoLineRender: 1
   DecreaseCooldownTime: 2
   _absoluteAccuracyTalent: {fileID: 335721864678906200}
+  _killersStamina: {fileID: 2263224126478404923}
+  _coldBlood: {fileID: 397963123425295436}
   _creeperStrike: {fileID: 7329957038414124695}
+  _player: {fileID: 362903699018664054}
 --- !u!114 &8045868120606563763
 MonoBehaviour:
   m_ObjectHideFlags: 0

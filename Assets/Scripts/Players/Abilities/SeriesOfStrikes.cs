@@ -172,7 +172,7 @@ public class SeriesOfStrikes : MonoBehaviour
 	{
 
 		Debug.Log("LAST HIT + " + usedRune * 2);
-		_player.RuneComponent.Add(usedRune * 2 + 0.5f);
+		//_player.RuneComponent.Add(usedRune * 2 + 0.5f);
 		//_player
 		//_energy.SeriesOfStrikeBoost();
 
@@ -187,7 +187,7 @@ public class SeriesOfStrikes : MonoBehaviour
 		_sumPhisDamage += damage;
 		while( _sumPhisDamage >= 50 ) 
 		{
-			_player.RuneComponent.Add(0.5f);
+			//_player.RuneComponent.Add(0.5f);
 			_sumPhisDamage -= 50;
 		}
 	}

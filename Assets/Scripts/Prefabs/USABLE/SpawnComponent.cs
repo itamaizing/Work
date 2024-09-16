@@ -28,7 +28,7 @@ public class SpawnComponent : NetworkBehaviour
         contollableMinion.Initialize();
         var user = GetComponent<UserNetworkSettings>();
         
-        SceneManager.MoveGameObjectToScene(controllable, user.MyRoom);
+        SceneManager.MoveGameObjectToScene(controllable.gameObject, user.MyRoom);
             
         _units.Add(contollableMinion);
             
@@ -36,7 +36,7 @@ public class SpawnComponent : NetworkBehaviour
 
         controllable.transform.position = (Vector2) parent.transform.position + Positions.unitInGroupPositions[position];
         
-        NetworkServer.Spawn(controllable , connectionToClient);
+        NetworkServer.Spawn(controllable.gameObject, connectionToClient);
     }
 
 	public void SpawnUnit(Transform transform)
@@ -46,7 +46,7 @@ public class SpawnComponent : NetworkBehaviour
 		contollableMinion.Initialize();
 		var user = GetComponent<UserNetworkSettings>();
 
-		SceneManager.MoveGameObjectToScene(controllable, user.MyRoom);
+		SceneManager.MoveGameObjectToScene(controllable.gameObject, user.MyRoom);
 
 		_units.Add(contollableMinion);
 
@@ -54,7 +54,7 @@ public class SpawnComponent : NetworkBehaviour
 
 		//controllable.transform.position = (Vector2)parent.transform.position + Positions.unitInGroupPositions[position];
 
-		NetworkServer.Spawn(controllable, connectionToClient);
+		NetworkServer.Spawn(controllable.gameObject, connectionToClient);
 	}
 
 

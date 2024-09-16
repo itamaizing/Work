@@ -32,7 +32,7 @@ public class CreeperStrike : AutoAttackSkill
     private float _currentDamage;
     private float _multiplyCritDamage = 1.5f;
     private float _lifeTimePoisonBoneStacks = 6.0f;
-    private float chanceOfCriticalStrike = 1f;
+    private float chanceOfCriticalStrike = 0.05f;
     
     private bool _isTwoHit = false;
 
@@ -128,9 +128,9 @@ public class CreeperStrike : AutoAttackSkill
             }
         }
 
-        if (_absoluteAccuracy.IsCanCrit)
+        if (_absoluteAccuracy.IsCanCritCreeperStrike || _absoluteAccuracy.IsCanCritLightningStrikes)
         {
-            Debug.Log("if absoluteAccuracy.IsCAnCrit == " + _absoluteAccuracy.IsCanCrit);
+            Debug.Log("if absoluteAccuracy.IsCAnCrit == " + _absoluteAccuracy.IsCanCritCreeperStrike);
             DealCriticalDamage(target, _currentDamage);
         }
         else if (_currentChanceOfCriticalStrike <= chanceOfCriticalStrike)
@@ -179,7 +179,7 @@ public class CreeperStrike : AutoAttackSkill
             criticalDamage *= (multiplyDamage * firstStrikeTalentMultiplyDamage);
             _firstStrike.ReturnBoolFalse();
         }
-        else if (_absoluteAccuracy.IsCanCrit && _poisonBoneStacks == 0)
+        else if (_absoluteAccuracy.IsCanCritCreeperStrike && _poisonBoneStacks == 0)
         {
             Debug.Log("CalculateCriticalDamage / else if (_absoluteAccuracy.IsCanCrit && _poisonBoneStacks == 0)");
             criticalDamage *= absoluteAccucaryMultiplyDamage;
@@ -207,9 +207,9 @@ public class CreeperStrike : AutoAttackSkill
     private void DealCriticalDamage(Character currentTarget, float criticalDamage)
     {
         Debug.Log("DealCriticalDamage");
-        if (_absoluteAccuracy.IsCanCrit)
+        if (_absoluteAccuracy.IsCanCritCreeperStrike || _absoluteAccuracy.IsCanCritLightningStrikes)
         {
-            Debug.Log("DealCriticalDamage / IsCanCrit = " + _absoluteAccuracy.IsCanCrit);
+            Debug.Log("CreeperStrike / _isCanCritLightningStrikes = " + _absoluteAccuracy.IsCanCritLightningStrikes);
             criticalDamage = CalculateCriticalDamage(criticalDamage);
         }
         else if (currentTarget.CharacterState.CheckForState(States.PoisonBone))

@@ -109,33 +109,4 @@ public class IcyStream : Skill
 	{
 		_talent = value;
 	}
-
-	protected override IEnumerator PrepareJob()
-	{
-		while (float.IsPositiveInfinity(_mousePos.x))
-		{
-			if (Input.GetMouseButton(0))
-			{
-				_playerLinks.RuneComponent.CmdUse(1.5f);
-				_mousePos = GetMousePoint();
-			}
-			yield return null;
-		}
-	}
-
-	protected override IEnumerator CastJob()
-	{
-		Shoot();
-		yield return null;
-	}
-
-	protected override void ClearData()
-	{
-		_mousePos = Vector3.positiveInfinity;
-	}
-
-	public void Talent(bool value)
-	{
-		_talent = value;
-	}
 }

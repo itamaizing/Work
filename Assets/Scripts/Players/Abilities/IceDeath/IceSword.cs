@@ -33,18 +33,6 @@ public class IceSword : Skill
 
 	}*/
 
-	protected override IEnumerator PrepareJob()
-	{
-		while (_target == null)
-		{
-			if (Input.GetMouseButton(0))
-			{
-				_target = GetRaycastTarget();
-			}
-			yield return null;
-		}
-	}
-
 	protected override IEnumerator CastJob()
 	{
 		_seriesOfStrikes.MakeHit(_target, AbilityForm.Magic, 0, 0);
@@ -59,6 +47,7 @@ public class IceSword : Skill
 			_oldtarget = _target;
 			Debug.Log("first hit from sword");
 		}
+		yield return null;
 	}
 	protected override IEnumerator PrepareJob()
 	{
