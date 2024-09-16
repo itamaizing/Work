@@ -18,7 +18,16 @@ public abstract class AutoAttackSkill : Skill
     public float AttackSpeed { get => Buff.AttackSpeed.GetBuffedValue(_attackSpeed); }
     public Character Target { get => _target; }
     public Vector2 LastTargetPosition { get => _lastTargetPosition; }
-    protected override bool IsCanCast { get => NoObstacles(Target.transform.position, _obstacle) && IsTargetInRadius(Radius, Target.transform); }
+    protected override bool IsCanCast
+    {
+        get
+        {
+            if (Target == null)
+                return false;
+
+            return NoObstacles(Target.transform.position, _obstacle) && IsTargetInRadius(Radius, Target.transform); ;
+        }
+    }
 
     protected abstract void CastAction();
 
