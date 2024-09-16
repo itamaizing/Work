@@ -242,7 +242,7 @@ public class DeathSpiral : Skill
 		}
 	}
 
-	protected override bool TryPayCost()
+	protected override bool TryPayCost(bool startCooldown = true)
 	{
 		if (IsHaveResourceOnSkill)
 		{

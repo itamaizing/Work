@@ -18,6 +18,7 @@ public abstract class AutoAttackSkill : Skill
     public float AttackSpeed { get => Buff.AttackSpeed.GetBuffedValue(_attackSpeed); }
     public Character Target { get => _target; }
     public Vector2 LastTargetPosition { get => _lastTargetPosition; }
+    public override bool IsPayCostStartCooldown { get => false; }
     protected override bool IsCanCast
     {
         get
@@ -93,7 +94,7 @@ public abstract class AutoAttackSkill : Skill
                     yield return new WaitForSeconds(AttackSpeed);
                     if (IsTargetInRadius(Radius + _attackZoneSize, Target.transform) && NoObstacles(Target.transform.position, _obstacle) && IsCooldowned)
                     {
-                        if (TryPayCost())
+                        if (TryPayCost(true))
                         {
                             CastAction();
 
