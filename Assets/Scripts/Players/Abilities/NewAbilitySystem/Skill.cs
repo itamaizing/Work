@@ -468,7 +468,7 @@ public abstract class Skill : NetworkBehaviour
         return Camera.main.ScreenToWorldPoint(Input.mousePosition);
     }
 
-    private bool TryUseCharge()
+    protected bool TryUseCharge()
     {
         if (_isUseCharges == false)
             return true;
@@ -599,7 +599,6 @@ public abstract class Skill : NetworkBehaviour
     [Command]
     protected void CmdApplyDamage(Damage damage, GameObject hp)
     {
-        Debug.Log("CmdApplyDamage in Skill");
         if (_tempTargetForDamage != hp.transform)
         {
             _tempTargetForDamage = hp.transform;

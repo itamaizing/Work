@@ -3,25 +3,17 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-public class LastBreathCorpse : Ability
+public class LastBreathCorpse : Skill
 {
 	[SerializeField] private Character _character;
 	private float _timer = 12;
+	private float _cooldown = 12;
 	private bool _isAvaliable = true;
-	//private float _cooldown = 12;
-	protected override void Cancel()
-	{
-		
-	}
 
-	protected override void Cast()
-	{
-		if (_isAvaliable)
-		{
-			_isAvaliable = false;
-			_character.CharacterState.CmdAddState(States.LastBreath, 12, 0, _character.gameObject, name);
-		}
-	}
+	protected override bool IsCanCast => true;
+
+	//private float _cooldown = 12;
+	
 
 	private void Update()
 	{
@@ -39,5 +31,21 @@ public class LastBreathCorpse : Ability
 			_isAvaliable = true;
 			_timer = _cooldown;
 		}
+	}
+
+	protected override IEnumerator PrepareJob()
+	{
+		yield return null;
+	}
+
+	protected override IEnumerator CastJob()
+	{
+		_character.CharacterState.CmdAddState(States.LastBreath, 12, 0, _character.gameObject, name);
+		yield return null;
+	}
+
+	protected override void ClearData()
+	{
+		return;
 	}
 }

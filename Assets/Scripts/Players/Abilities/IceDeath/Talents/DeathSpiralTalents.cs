@@ -8,29 +8,12 @@ public class DeathSpiralTalents : Talent
 	[SerializeField] private SkillManager _ability;
 	public override void Enter()
 	{
-		if (_ability.Abilities.Contains(_deathSpiral))
-		{
-			_deathSpiral.enabled = true;
-		}
-		else
-		{
-			//_ability.AddAbility(_deathSpiral);
-			_deathSpiral.enabled = true;
-		}
+		_ability.AddSkill(_deathSpiral);
 	}
 
 	public override void Exit()
 	{
-		if (_ability.Abilities.Contains(_deathSpiral))
-		{
-			//_ability.RemoveAbility(_deathSpiral);
-			_deathSpiral.enabled = false;
-		}
-		else
-		{
-			_deathSpiral.enabled = false;
-			//ability.RemoveAbility(iceShard);
-		}
+		_ability.RemoveSkill(_deathSpiral);
 	}
 }
 */

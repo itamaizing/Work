@@ -8,28 +8,11 @@ public class MagicDefenseTalent : Talent
 	[SerializeField] private SkillManager _ability;
 	public override void Enter()
 	{
-		if (_ability.Abilities.Contains(_magicDefense))
-		{
-			_magicDefense.enabled = true;
-		}
-		else
-		{
-			//_ability.AddAbility(_magicDefense);
-			_magicDefense.enabled = true;
-		}
+		_ability.AddSkill(_magicDefense);
 	}
 
 	public override void Exit()
 	{
-		if (_ability.Abilities.Contains(_magicDefense))
-		{
-			//_ability.RemoveAbility(_magicDefense);
-			_magicDefense.enabled = false;
-		}
-		else
-		{
-			_magicDefense.enabled = false;
-			//ability.RemoveAbility(iceShard);
-		}
+		_ability.RemoveSkill(_magicDefense);
 	}
 }

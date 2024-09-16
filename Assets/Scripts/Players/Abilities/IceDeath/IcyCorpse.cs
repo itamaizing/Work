@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class IcyCorpse : MinionComponent
 {
 	[SerializeField] private PlagueCloud _cloud;
-	private Character _dad;
+	private HeroComponent _dad;
     private bool _talentDestroy = false;
 	private bool _talentBoostExplode = false;
 
@@ -30,7 +30,7 @@ public class IcyCorpse : MinionComponent
 			}
 			foreach (Collider2D collider in colliders)
 			{
-				if (collider.TryGetComponent<Character>(out var enemy) && collider.gameObject != gameObject)
+				if (collider.TryGetComponent<Character>(out var enemy) && collider.gameObject != gameObject && collider.gameObject != _dad.gameObject)
 				{
 					Damage damage2 = new Damage
 					{
@@ -62,7 +62,7 @@ public class IcyCorpse : MinionComponent
 	{
 		PlagueCloud projectile = Instantiate(_cloud, gameObject.transform.position, Quaternion.Euler(0, 0, 0));
 		SceneManager.MoveGameObjectToScene(projectile.gameObject, _dad.NetworkSettings.MyRoom);
-		projectile.Init(_dad, 0, false);
+		projectile.Init(_dad, 0, false, null);
 		
 		//projectile.TalentBoostHp(_talentBoostHPBOdy);
 		//projectile.TalentHitState(_talentHitState);
@@ -75,7 +75,7 @@ public class IcyCorpse : MinionComponent
 	[ClientRpc]
 	private void RpcInit(GameObject obj)
 	{
-		obj.GetComponent<DeathSpiralProjectile>().Init(_dad, 0, false);
+		obj.GetComponent<DeathSpiralProjectile>().Init(_dad, 0, false, null);
 	}
 
 	public void Talents(bool destroy, bool boostExplode)

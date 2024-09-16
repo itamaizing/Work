@@ -33,7 +33,7 @@ public class PlayerSelectionIcon : MonoBehaviour, IPointerEnterHandler, IPointer
         _transform.localScale = _standardScale;
     }
 
-    public void Select()
+    public void OnClick()
     {
         Selected?.Invoke(_playerPref);
     }

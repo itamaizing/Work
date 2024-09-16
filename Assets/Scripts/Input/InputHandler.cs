@@ -2,19 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
 public class InputHandler : MonoBehaviour
 {
 	public static InputHandler Instance;
+
+	private string[] _keySpell = new string[16];
 
 	private Vector2 _movementVector;
 	private StandardInput _inputActions;
 
 	public Vector2 MovementVector => _movementVector;
 
-	#region Events
+    public StandardInput InputActions { get => _inputActions; set => _inputActions = value; }
 
-	public static UnityAction<Vector2> OnPlayerMove = delegate { };
+    #region Events
+
+    public static UnityAction<Vector2> OnPlayerMove = delegate { };
 	public static UnityAction OnClick = delegate { };
 	public static UnityAction OnAltClick = delegate { };
 	public static UnityAction OnDoubleAltClick = delegate { };
@@ -36,6 +41,8 @@ public class InputHandler : MonoBehaviour
 	public static UnityAction<int> OnSixthCast = delegate { };
 	public static UnityAction<int> OnSeventhCast = delegate { };
 	public static UnityAction<int> OnEighthCast = delegate { };
+
+	public static UnityAction<int> OnCast = delegate { };
 	#endregion
 
 	private void Awake()
@@ -46,6 +53,11 @@ public class InputHandler : MonoBehaviour
 			Destroy(Instance);
 
 		_inputActions = new StandardInput();
+
+
+		//Debug.Log(_inputActions.GameplayMap.Spell3.bindings[0].path);
+		//Debug.Log(_inputActions.GameplayMap.Spell3.GetBindingDisplayString(InputBinding.DisplayStringOptions.DontIncludeInteractions));
+		//Debug.Log(_inputActions.GameplayMap.Move.GetBindingDisplayString(InputBinding.DisplayStringOptions.DontIncludeInteractions));
 
 		#region Events Listeners
 
@@ -72,6 +84,23 @@ public class InputHandler : MonoBehaviour
 		_inputActions.GameplayMap.Spell6.performed += i => OnSixthCast?.Invoke(5);
 		_inputActions.GameplayMap.Spell7.performed += i => OnSeventhCast?.Invoke(6);
 		_inputActions.GameplayMap.Spell8.performed += i => OnEighthCast?.Invoke(7);
+
+		_inputActions.GameplayMap.Spell1.performed += i => OnCast?.Invoke(0);
+		_inputActions.GameplayMap.Spell2.performed += i => OnCast?.Invoke(1);
+		_inputActions.GameplayMap.Spell3.performed += i => OnCast?.Invoke(2);
+		_inputActions.GameplayMap.Spell4.performed += i => OnCast?.Invoke(3);
+		_inputActions.GameplayMap.Spell5.performed += i => OnCast?.Invoke(4);
+		_inputActions.GameplayMap.Spell6.performed += i => OnCast?.Invoke(5);
+		_inputActions.GameplayMap.Spell7.performed += i => OnCast?.Invoke(6);
+		_inputActions.GameplayMap.Spell8.performed += i => OnCast?.Invoke(7);
+		_inputActions.GameplayMap.Spell9.performed += i => OnCast?.Invoke(8);
+		_inputActions.GameplayMap.Spell10.performed += i => OnCast?.Invoke(9);
+		_inputActions.GameplayMap.Spell11.performed += i => OnCast?.Invoke(10);
+		_inputActions.GameplayMap.Spell12.performed += i => OnCast?.Invoke(11);
+		_inputActions.GameplayMap.Spell13.performed += i => OnCast?.Invoke(12);
+		_inputActions.GameplayMap.Spell14.performed += i => OnCast?.Invoke(13);
+		_inputActions.GameplayMap.Spell15.performed += i => OnCast?.Invoke(14);
+		_inputActions.GameplayMap.Spell16.performed += i => OnCast?.Invoke(15);
 
 		#endregion
 

@@ -10,15 +10,8 @@ public class IceShardProjectile : Projectiles
 	private bool _talentPlague = false;
 	private bool _talentChragesPlague = false;
 
-	private void Awake()
-	{
-		_rb.AddForce(transform.up * _force, ForceMode2D.Impulse);
-	}
-
 	private void Update()
 	{
-		//if (!_initialized) return;
-
 		_spriteRenderer.DOFade(0, 1);
 		if (Vector2.Distance(transform.position, _startPos) > _distance * GlobalVariable.cellSize)
 		{
@@ -37,12 +30,11 @@ public class IceShardProjectile : Projectiles
 		{
 			float duration = 1 + _energyDad / 20;
 			float curDamage = 3 + Random.Range(0, 3);
-			Energy energyLink = (Energy)_dad.Stamina;
 			if (target.CharacterState.CheckForState(States.Frozen) && Random.Range(0, 100) < 15)
 			{
 				curDamage *= 2.2f;
 			}
-			energyLink.SumDamageMake(curDamage);
+			_energy.SumDamageMake(curDamage);
 			Damage damage = new Damage
 			{
 				Value = curDamage,
@@ -60,7 +52,7 @@ public class IceShardProjectile : Projectiles
 			}
 			if(_talentChragesPlague)
 			{
-				//target.CharacterState.personWhoShoted = _player;
+				//target.CharacterState.personWhoShoted = _dad;
 			}
 			//dad.Stamina.Use(duration * 20);
 			GetComponent<Collider2D>().enabled = false;

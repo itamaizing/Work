@@ -13,22 +13,26 @@ public class IceSword : Skill
 	private int _hitInTheRow = 0;
 	private Character _oldtarget;
 	private Character _target;
+	//private Energy _energy;
+	protected override bool IsCanCast => IsCanCastCheck();
 
-	protected override bool IsCanCast
+	private bool IsCanCastCheck()
 	{
-		get 
+		return true;
+	}
+
+	/*private void Start()
+	{
+		for (int i = 0; i < _playerLinks.Resources.Count; i++)
 		{
-			if (Hero.Stamina.CurrentValue >= _manaCostRate)
+			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
 			{
-				Hero.Stamina.TryUse(_manaCostRate);
-				return true;
-			}
-			else
-			{ 
-				return false; 
+				_energy = (Energy)_playerLinks.Resources[i];
 			}
 		}
-	}
+
+	}*/
+
 	protected override IEnumerator PrepareJob()
 	{
 		while (_target == null)
@@ -55,10 +59,16 @@ public class IceSword : Skill
 			_oldtarget = _target;
 			Debug.Log("first hit from sword");
 		}
-		if (_hitInTheRow > 2)
+	}
+	protected override IEnumerator PrepareJob()
+	{
+		while (_target == null)
 		{
-			//_deathSpiral.AddCharge();
-			_hitInTheRow = 0;
+			if (Input.GetMouseButton(0))
+			{
+				_target = GetRaycastTarget();
+			}
+			yield return null;
 		}
 		ApplyDamage();
 
@@ -67,11 +77,12 @@ public class IceSword : Skill
 
 	protected override void ClearData()
 	{
-		throw new System.NotImplementedException();
+		_target = null;
 	}
 
 	private void ApplyDamage()
 	{
+
 		Damage damage2 = new Damage
 		{
 			Value = _damage,
@@ -79,6 +90,7 @@ public class IceSword : Skill
 			Range = AttackRangeType.RangeAttack,
 		};
 		//_skill.CmdApplyDamage(damage, target.gameObject);
-		_target.Health.TryTakeDamage(ref damage2, this);
+		CmdApplyDamage(damage2, _target.gameObject);
+		//_target.Health.TryTakeDamage(ref damage2, this);
 	}
 }

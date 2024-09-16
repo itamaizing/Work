@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/Prefabs/UI/Bar/BarHp.prefab.meta
-guid: 075722012a0c4054dbad7fdc2bae7d96
-========
 guid: efb208058a098504dba60733ca30d327
->>>>>>>> main:Assets/Prefabs/Players/Shield/Shield.prefab.meta
 PrefabImporter:
   externalObjects: {}
   userData: 

@@ -21,11 +21,9 @@ public class DeathSpiralProjectile : Projectiles
 	//private bool _talentCorpseDestroy;
 	private bool _talentCorpseBoostExplode;
 
-	private void Awake()
+	private void Start()
 	{
 		startPos = transform.position;
-
-		_rb.AddForce(transform.up * _force, ForceMode2D.Impulse);
 	}
 
 	private void Update()
@@ -93,9 +91,9 @@ public class DeathSpiralProjectile : Projectiles
 	}
 	public void SetAlive(float hp, Transform transform)
 	{
-		//_dad.SpawnComponent.SpawnUnit(transform);
-		//_icyCorpse =  (IcyCorpse)_dad.SpawnComponent.Units.Last();
-		//_icyCorpse.Talents(_talentCorpseDeath, _talentCorpseBoostExplode);
+		_dad.SpawnComponent.SpawnUnit(transform);
+		_icyCorpse =  (IcyCorpse)_dad.SpawnComponent.Units.Last();
+		_icyCorpse.Talents(_talentCorpseDeath, _talentCorpseBoostExplode);
 		Explode();
 	}
 
@@ -117,7 +115,7 @@ public class DeathSpiralProjectile : Projectiles
 			}
 			if(_talentChragesPlague)
 			{
-				//target.CharacterState.personWhoShoted = _player;
+				//target.CharacterState.personWhoShoted = _dad;
 			}
 			if(_talentSuperCharge)
 			{
@@ -144,7 +142,7 @@ public class DeathSpiralProjectile : Projectiles
 			}
 			if (_talentChragesPlague)
 			{
-				//target.CharacterState.personWhoShoted = _player;
+				//target.CharacterState.personWhoShoted = _dad;
 			}
 			if (_talentSuperCharge)
 			{

@@ -7,8 +7,8 @@ using UnityEngine;
 public class MagicDefense : Skill
 {
 	[SerializeField] private PlagueAbsorption _plagueAbsorption;
-	//[SerializeField] private DeathSpiral _deathSpiral;
-	[SerializeField] private Character _character;
+	[SerializeField] private DeathSpiral _deathSpiral;
+	[SerializeField] private HeroComponent _playerLinks;
 	[SerializeField] private MagicDefenseArea _magDefArea;
 
 	private Vector3 _position;
@@ -16,9 +16,21 @@ public class MagicDefense : Skill
 	private float _shieldCapacity = 200;
 	private bool _ready = false;
 	private bool _hit = false;
+	private Energy _energy;
 
 	protected override bool IsCanCast => throw new System.NotImplementedException();
 
+	private void Start()
+	{
+		for (int i = 0; i < _playerLinks.Resources.Count; i++)
+		{
+			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
+			{
+				_energy = (Energy)_playerLinks.Resources[i];
+			}
+		}
+
+	}
 
 	private void Update()
 	{
@@ -83,15 +95,15 @@ public class MagicDefense : Skill
 	private void ServerAdd(GameObject obj)
 	{
 		Character target = obj.GetComponent<Character>();
-		target.CharacterState.CmdAddState(States.MagicBuff, 6, _character.Stamina.CurrentValue * 10 + _shieldCapacity, _character.gameObject, name);
+		target.CharacterState.CmdAddState(States.MagicBuff, 6, _energy.CurrentValue * 10 + _shieldCapacity, _playerLinks.gameObject, name);
 	}
 
 	[Command]
 	private void SpawnArea(Vector3 position)
 	{
 		MagicDefenseArea area = Instantiate(_magDefArea, position, Quaternion.identity);
-		area.Init(_character, _character.Stamina.CurrentValue, false);
-		_character.Stamina.TryUse(_character.Stamina.CurrentValue);
+		area.Init(_playerLinks, _energy.CurrentValue, false, this);
+		_energy.TryUse(_energy.CurrentValue);
 		NetworkServer.Spawn(area.gameObject);
 
 		RpcInit(area.gameObject, position);
@@ -102,7 +114,7 @@ public class MagicDefense : Skill
 	private void RpcInit(GameObject area, Vector3 position)
 	{
 		MagicDefenseArea magArea = area.GetComponent<MagicDefenseArea>();
-		magArea.Init(_character, _character.Stamina.CurrentValue, false);
+		magArea.Init(_playerLinks, _energy.CurrentValue, false, this);
 	}
 
 	protected override IEnumerator PrepareJob()

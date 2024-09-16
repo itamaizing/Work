@@ -8,16 +8,16 @@ using UnityEngine.UI;
 public abstract class Talent : NetworkBehaviour
 {
     private bool _isActive;
-    public string Name;
-    public string Description;
-    public Sprite Ico;
-    public Character Character;
+	public string Name;
+	public string Description;
+	public Sprite ico;
+    public Character character;
 
     public bool IsActive => _isActive;
 
-    public abstract void Enter();
+	public abstract void Enter();
 
-    public abstract void Exit();
+	public abstract void Exit();
 
     public void SetActive(bool isActive)
     {
@@ -35,18 +35,21 @@ public class TalentSystem : NetworkBehaviour
     private int _points = 10;
 
     public TalentColumn Panel => _panel;
-    public List<Talent> Talents => _talents;
+	public List<Talent> Talents => _talents;
     //public List<Talent> ActiveTalents => _activeTalents;
 
-    public void Initialize()
-    {
-	    if(SceneManager.GetActiveScene().buildIndex == 1) 
-		    _panel = TalentManager.Instance.AddPanel(this);
-    }
-    public void AddPoints(int value)
-    {
-        _points += value;
-    }
+	public void Initialize()
+	{
+		if(SceneManager.GetActiveScene().buildIndex == 1)
+		{
+			_panel = TalentManager.Instance.AddPanel(this);
+		}
+		//_panel = TalentManager.Instance.AddPanel(this);
+	}
+	public void AddPoints(int value)
+	{
+		_points += value;
+	}
 
    // [Command]
     public void CmdSwitchActive(int id, int row)
@@ -82,14 +85,14 @@ public class TalentSystem : NetworkBehaviour
 		}
 	}
 
-    [Command]
+	[Command]
     public void CmdAdd(Talent talent)
     {
         Add(talent);
         RpcAdd(talent);
     }
 
-    [Command]
+	[Command]
     public void CmdEnterAll()
     {
         EnterAll();
@@ -97,10 +100,10 @@ public class TalentSystem : NetworkBehaviour
     }
 
     [Command]
-    public void CmdExitAll()
-    {
-        ExitAll();
-        RpcRemoveAll();
+    public void CmdExitAll() 
+    { 
+        ExitAll(); 
+        RpcRemoveAll(); 
     }
 
     [Command]
@@ -132,8 +135,8 @@ public class TalentSystem : NetworkBehaviour
     [ClientRpc]
     private void RpcAddAll()
     {
-        EnterAll();
-    }
+		EnterAll();
+	}
 
     [ClientRpc]
     private void RpcRemoveAll()
@@ -250,34 +253,9 @@ public class TalentSystem : NetworkBehaviour
 		}*/
 	}
 
-
-        /* Debug.Log("Removes");
-         if (_talents.Count >= id)
-         {
-             Debug.Log("Removes22222");
-             /*_activeTalents[_activeTalents.Count - 1].Exit();
-             _activeTalents.Remove(_talents[id]);
-             _talents[id].isActive = false;
-             _talents[id].Exit();
-             _talents[id].SetActive(false);
-             _points++;
-         }*/
-
-    public void EnterAll()
+	public void EnterAll()
     {
-        foreach (Talent talent in _talents)
-        {
-            talent.Enter();
-            talent.SetActive(true);
-            _points--;
-        }
-        foreach (Talent talent in _talents2)
-        {
-            talent.Enter();
-            talent.SetActive(true);
-            _points--;
-        }
-        foreach (Talent talent in _talents3)
+        foreach(Talent talent in _talents)
         {
             talent.Enter();
             talent.SetActive(true);
@@ -297,12 +275,12 @@ public class TalentSystem : NetworkBehaviour
 		}
 	}
 
-    public void ExitAll()
+	public void ExitAll()
     {
-        foreach (Talent talent in _talents)
-        {
+		foreach (Talent talent in _talents)
+		{
             _points++;
-            talent.Exit();
+			talent.Exit();
             talent.SetActive(false);
             //_activeTalents.Remove(talent);
 		}
@@ -329,20 +307,20 @@ public class TalentSystem : NetworkBehaviour
        talent.SetActive(true);
     }
 
-    public void Remove(Talent talent)
+	public void Remove(Talent talent)
     {
         talent.Exit();
-        talent.SetActive(false);
-        // _activeTalents.Remove(talent);
-    }
+		talent.SetActive(false);
+		// _activeTalents.Remove(talent);
+	}
 
     public int GetActiveTalentCount()
     {
         int count = 0;
-        for (int i = 0; i < _talents.Count; i++)
+        for(int i = 0; i< _talents.Count; i++)
         {
-            if (_talents[i].IsActive)
-            {
+            if (_talents[i].IsActive) 
+            {  
                 count++;
             }
         }

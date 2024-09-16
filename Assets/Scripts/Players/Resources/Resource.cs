@@ -2,7 +2,6 @@ using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.VFX;
 
 public enum ResourceType 
 {
@@ -41,22 +40,15 @@ public abstract class Resource : NetworkBehaviour
         _regenerationDelay = regenDelay;
 
         if (regenValue > 0)
-            ClientStartRegenerateJob();
+            ClientStartRegenirateJob();
     }
 
     public virtual void Add(float value)
     {
-        Debug.Log("Resource / Add");
         if (MaxValue >= _currentValue + value)
-        {
             CurrentValue += value;
-            Debug.Log("Resource / Add / if / CurrentValue = " + CurrentValue);
-        }
         else
-        {
             CurrentValue = _maxValue;
-            Debug.Log("Resource / Add / else / CurrentValue = " + CurrentValue);
-        }
     }
 
     public virtual bool TryUse(float value)
@@ -114,8 +106,8 @@ public abstract class Resource : NetworkBehaviour
         TryUse(value);
     }
 
-    [Client]
-    protected void ClientStartRegenerateJob()
+    [ClientCallback]
+    protected void ClientStartRegenirateJob()
     {
         _regenCoroutine = StartCoroutine(RegenerateJob());
     }

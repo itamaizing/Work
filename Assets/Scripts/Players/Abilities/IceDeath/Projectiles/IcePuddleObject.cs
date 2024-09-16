@@ -7,24 +7,25 @@ using UnityEngine.Serialization;
 
 public class IcePuddleObject : Projectiles
 {
-	[HideInInspector] public FrostingFrozenTalant talant;
+	//[HideInInspector] public FrostingFrozenTalant talant;
 
-	[FormerlySerializedAs("energyPlayer")]  private Energy _energy;
+	//[FormerlySerializedAs("energyPlayer")]  private Energy _energy;
 	[FormerlySerializedAs("healthPlayer")]  private Health _healthComponent;
 	//[SerializeField] private Rigidbody2D _rb;
 
 	private float _timeToDestroy = 0;
-	private bool _talentActive = false;
+	private bool _talentEvadeDadBoost = false;
+	private bool _talentFrostingFrozen = false;
 	private List<CharacterState> _enemies = new List<CharacterState>();
 	/*
 	 * buff player
 	 * */
-	public override void Init(Character dad, float timeToDestroy, bool lastHit)
+	public override void Init(HeroComponent dad, float timeToDestroy, bool lastHit, Skill skill)
 	{
 		_dad = dad;
+		_skill = skill;
 		_initialized = true;
 		_lastHit = lastHit;
-		_energy = (Energy)_dad.Stamina;
 		_healthComponent = _dad.Health;
 		_timeToDestroy += timeToDestroy;
 		if(_lastHit)
@@ -35,9 +36,10 @@ public class IcePuddleObject : Projectiles
 		StartCoroutine(DestroyShadow());
 		StartCoroutine(StartFade());
 	}
-	public void SetTalentActive(bool active)
+	public void SetTalents(bool talentEvadeDadBoost, bool talentFrostingFrozen)
 	{
-		_talentActive=active;
+		_talentEvadeDadBoost= talentEvadeDadBoost;
+		_talentFrostingFrozen= talentFrostingFrozen;
 	}
 	private void Start()
 	{
@@ -55,10 +57,10 @@ public class IcePuddleObject : Projectiles
 		}
 		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject != _dad.gameObject)
 		{
-			if (_talentActive)
+			if (_talentEvadeDadBoost)
 			{
 				Debug.LogError("fix");
-				//_player.Health.SetEvadeAll(-3);
+				//_dad.Health.SetEvadeAll(-3);
 			}
 		}
 	}
@@ -87,12 +89,15 @@ public class IcePuddleObject : Projectiles
 				_energy.UseAllEnergy();
 			}
 			target.CharacterState.CmdAddState(States.Frosting, duration, 0, _dad.gameObject, _skill.name);
-			if (talant != null)
+
+			if (_talentFrostingFrozen)
 			{
-				if (talant.IsActive)
-				{
-					target.CharacterState.CmdAddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
-				}
+				target.CharacterState.CmdAddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
+			}
+			if (_talentEvadeDadBoost)
+			{
+				Debug.LogError("fix");
+				//_dad.Health.SetEvadeAll(3);
 			}
 			if (_talentActive)
 			{

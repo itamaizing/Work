@@ -4,21 +4,40 @@ using UnityEngine;
 public class PhysicalAttack : AutoAttackSkill
 {
 	[SerializeField] private float _damage = 8f;
-	[SerializeField] private Character _character;
+	[SerializeField] private HeroComponent _playerLinks;
 	[SerializeField] private SeriesOfStrikes _combo;
 
 	private Character _curTarget;
 	private Vector2 _jumpPos;
 	private bool _talentActive = false;
+	private Energy _energy;
+	private RuneComponent _rune;
+
 	public Character Target2 => _curTarget;
+
+	private void Start()
+	{
+		for (int i = 0; i < _playerLinks.Resources.Count; i++)
+		{
+			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
+			{
+				_energy = (Energy)_playerLinks.Resources[i];
+			}
+			if (_playerLinks.Resources[i].Type == ResourceType.Rune)
+			{
+				_rune = (RuneComponent)_playerLinks.Resources[i];
+			}
+		}
+	}
 
 	protected override void CastAction()
 	{
-		Hit(Target);
+		if(_target != null) 
+		Hit(_target);
 	}
 	private void Hit(Character enemy)
 	{
-		if (_curTarget == enemy && _character.Stamina.TryUse(5))
+		if (_curTarget == enemy && _energy.TryUse(5))
 		{
 			Buff.AttackSpeed.ReductionPercentage(1 + _combo.GetMultipliedSpeed() / 100);
 
@@ -40,12 +59,11 @@ public class PhysicalAttack : AutoAttackSkill
 
 			//enemy.Health.TryTakeDamage(ref damage, this);
 			//ApplyDamage(enemy.Health, curDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
-			Energy energy = (Energy)_character.Stamina;
 			if(enemy.CharacterState.CheckForState(States.Frozen))
 			{
 				curDamage *= 1.4f;
 			}
-			energy.SumDamageMake(curDamage);
+			_energy.SumDamageMake(curDamage);
 		}
 		else
 		{
@@ -56,8 +74,7 @@ public class PhysicalAttack : AutoAttackSkill
 			//AttackSpeed *= (1 - _combo.GetMultipliedSpeed()); // error
 
 			float curDamage = _damage + Random.Range(0, 2);
-			Energy energy = (Energy)_character.Stamina;
-			energy.SumDamageMake(curDamage);
+			_energy.SumDamageMake(curDamage);
 
 			_combo.MakeHit(enemy, AbilityForm.Physical, 0, curDamage);
 
@@ -75,12 +92,12 @@ public class PhysicalAttack : AutoAttackSkill
 
 		if (Random.Range(0, 100) <2 && _talentActive)
 		{
-			_character.RuneComponent.Add(1);
+			_rune.Add(1);
 		}
 	}
 	private void LastHit()
 	{
-		if (_character.Stamina.TryUse(10))
+		if (_energy.TryUse(10))
 		{
 			Damage damage = new Damage
 			{
@@ -91,13 +108,12 @@ public class PhysicalAttack : AutoAttackSkill
 			CmdApplyDamage(damage, _curTarget.gameObject);
 			//_curTarget.Health.TryTakeDamage(_damage * .5f, DamageType.Physical, AttackRangeType.MeleeAttack);
 			float curDamage = _damage * .5f;
-			Energy energy = (Energy)_character.Stamina;
-			energy.SumDamageMake(curDamage);
-			_curTarget.CharacterState.CmdAddState(States.Stun, 1.5f, 0, _character.gameObject, name);
+			_energy.SumDamageMake(curDamage);
+			_curTarget.CharacterState.CmdAddState(States.Stun, 1.5f, 0, _playerLinks.gameObject, name);
 			PushBackEnemy(_curTarget);
 			//отбрасывание 			
 		}
-		_character.Stamina.Add(_character.Stamina.MaxValue*0.4f);
+		_energy.Add(_energy.MaxValue*0.4f);
 		_curTarget = null;
 	}
 
@@ -105,7 +121,7 @@ public class PhysicalAttack : AutoAttackSkill
 	private void PushBackEnemy(Character enemy)
 	{
 		/*Debug.Log("Push");
-		Vector2 pushPos = (_player.Rb.position - enemy.Rb.position).normalized;
+		Vector2 pushPos = (_dad.Rb.position - enemy.Rb.position).normalized;
 		Vector2 endPos = -pushPos * 2;
 		//enemy.PlayerMove.CanMove = false;
 		//Debug.DrawLine(enemy.Rb.position, enemy.Rb.position + endPos * 10, Color.red, Mathf.Infinity);

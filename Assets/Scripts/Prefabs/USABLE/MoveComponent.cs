@@ -72,10 +72,7 @@ public class MoveComponent : NetworkBehaviour
 	[Client]
 	private void FixedUpdate()
 	{
-		if (MoveDirection != null)
-		{
-			CmdMove(MoveDirection, _currentSpeed);
-		}
+		CmdMove(MoveDirection, _currentSpeed);
 	}
 
 	[Command]
@@ -86,7 +83,7 @@ public class MoveComponent : NetworkBehaviour
 		RpcMove(_rigidbody.position, moveSpeed);
 	}
 
-	[ClientRpc]
+	[TargetRpc]
 	private void RpcMove(Vector2 position, float moveSpeed)
 	{
 		if (!isLocalPlayer)

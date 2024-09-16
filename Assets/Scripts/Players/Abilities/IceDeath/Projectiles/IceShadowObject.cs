@@ -8,17 +8,15 @@ public class IceShadowObject : Projectiles
 	[HideInInspector] public float timeToDestroy = 30;
 	[HideInInspector] public float timeToDestroyAlive = 30;
 
-
 	private Health _healthPlayer;
-	private Coroutine _destroyObj;
 
 	/*
 	 * timer to destroy
 	 * buff player
 	 * */
-	
-	public override void Init(Character dad, float energy, bool lastHit)
+	public override void Init(HeroComponent dad, float energy, bool lastHit, Skill skill)
 	{
+		_skill = skill;
 		_dad = dad;
 		_energyDad = energy;
 		_healthPlayer = _dad.Health;
@@ -29,17 +27,12 @@ public class IceShadowObject : Projectiles
 		timeToDestroy += timeToAdd;
 	}
 
-	private void Start()
-	{
-		//_destroyObj = StartCoroutine(DestroyShadow());
-	}
-
 	private void OnTriggerExit2D(Collider2D collision)
 	{
 		if (collision.gameObject == _dad && _healthPlayer != null)
 		{
 			//_healthPlayer.SetBoostRegen(0);
-			Debug.LogError("setboost in hp has been deleted");
+			//Debug.LogError("setboost in hp has been deleted");
 
 			return;
 		}
@@ -48,15 +41,15 @@ public class IceShadowObject : Projectiles
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		if(_dad == null) return;
-		if (collision.gameObject == _dad.gameObject)
+		/*if (collision.gameObject == _dad.gameObject)
 		{
 			//_healthPlayer.SetBoostRegen(0.01f);
-			Debug.LogError("setboost in hp has been deleted");
+			//Debug.LogError("setboost in hp has been deleted");
 		}
 		if(collision.TryGetComponent<IcePuddleObject>(out var obj)) 
 		{
 			//attact speed increase
-		}
+		}*/
 		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject !=_dad.gameObject)
 		{
 			float duration = 2 + _energyDad / 20;
@@ -102,28 +95,4 @@ public class IceShadowObject : Projectiles
 		//turn off energy boost
 		//destroy	
 	}
-	/*private IEnumerator DestroyAliveShadow()
-	{
-		yield return new WaitForSeconds(timeToDestroyAlive);
-			Destroy(gameObject);
-		//turn off energy boost
-		//destroy	
-	}*/
-
-	public void SetAlive(float hp)
-	{
-		/*_isAlive = true;
-		_hp += hp;
-		StartCoroutine(DestroyAliveShadow());
-		//_destroyObj.*/
-		//_player.SpawnComponent.SpawnUnit();
-		Destroy(gameObject);
-	}
-
-	/*public void SetEnergy(float value)
-	{
-		float timeToAdd = value / 20;
-		timeToDestroy += timeToAdd;
-		_energyValue = value;
-	}*/
 }
