@@ -10,6 +10,7 @@ public class NetworkRoom
     private string _scene;
     private int _maxNumPlayers;
     private List<GameObject> _players;
+    private List<Transform> _spawnPoints;
     private Scene _currentRoom;
     private bool _isLoaded;
 
@@ -37,6 +38,7 @@ public class NetworkRoom
         {
             yield return SceneManager.LoadSceneAsync(_scene, new LoadSceneParameters { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = physicsMode });
             _currentRoom = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
+            FindSpawnPoints();
             _isLoaded = true;
         }
     }
@@ -49,6 +51,19 @@ public class NetworkRoom
             yield return SceneManager.UnloadSceneAsync(_currentRoom);
             _isLoaded = false;
             RoomClosed?.Invoke(this);
+        }
+    }
+
+    private void FindSpawnPoints()
+    {
+        var spawnPointContainer = Object.FindObjectOfType<SpawnPointsContainer>();
+        if (spawnPointContainer != null)
+        {
+            _spawnPoints = spawnPointContainer.GetSpawnPoints();
+        }
+        else
+        {
+            Debug.LogError("SpawnPointsContainer не найден в сцене.");
         }
     }
 
@@ -85,7 +100,7 @@ public class NetworkRoom
 
             item.Init(this);
             item.IsStarted = true;
-            item.GameStartServer();
+            item.GameStartServer(_spawnPoints);
         }
         else
         {

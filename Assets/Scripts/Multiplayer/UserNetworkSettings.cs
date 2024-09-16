@@ -1,5 +1,4 @@
 using Mirror;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,31 +14,64 @@ public class UserNetworkSettings : NetworkBehaviour
     [SyncVar] private byte _teamIndex;
 
     public int playerNumber;
-    
     public int scoreIndex;
-    
     public int matchIndex;
-    
     public uint score;
-
     public int clientMatchIndex = -1;
 
-    public byte TeamIndex { get => _teamIndex; set => _teamIndex = value; }
+    public byte TeamIndex
+    {
+        get => _teamIndex;
+        set
+        {
+            if (isServer)
+            {
+                _teamIndex = value;
+                TargetUpdateLayers(connectionToClient);
+            }
+        }
+    }
+
     public Scene MyRoom { get => myRoom; set => myRoom = value; }
 
+    [SyncVar] private Vector3 spawnPosition;
+
+    public void SetSpawnPosition(Vector3 position)
+    {
+        if (isServer)
+        {
+            spawnPosition = position;
+            RpcUpdatePosition(position);
+        }
+    }
+
+    [ClientRpc]
+    private void RpcUpdatePosition(Vector3 position)
+    {
+        transform.position = position;
+    }
+
     [TargetRpc]
+    public void TargetUpdateLayers(NetworkConnection target)
+    {
+        MarkUpEnemiesOrAllies();
+    }
+
     public void MarkUpEnemiesOrAllies()
     {
-        foreach (var item in Players)
+        _allies.Clear();
+        _enemies.Clear();
+
+        foreach (var item in FindObjectsOfType<UserNetworkSettings>())
         {
-            if(item.GetComponent<UserNetworkSettings>().TeamIndex != _teamIndex)
+            if (item.TeamIndex != _teamIndex)
             {
-                item.layer = LayerMask.NameToLayer("Enemy");
+                item.gameObject.layer = LayerMask.NameToLayer("Enemy");
                 _enemies.Add(item.GetComponent<HeroComponent>());
             }
             else
             {
-                item.layer = LayerMask.NameToLayer("Allies");
+                item.gameObject.layer = LayerMask.NameToLayer("Allies");
                 _allies.Add(item.GetComponent<HeroComponent>());
             }
         }

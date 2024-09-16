@@ -51,7 +51,7 @@ public class Health : Resource, IDamageable, IHealingable
 
         if (TryUse(damage.Value) == false)
         {
-            ClientRpcDied();
+            if (isServer) SmdDied();
         }
         ClientRpcDamageTaked(damage.Value, damage.Type);
         _sumDamageTaken += damage.Value;
@@ -143,9 +143,19 @@ public class Health : Resource, IDamageable, IHealingable
         DamageTaken?.Invoke(damageTaken, damageType);
     }
 
-    [ClientRpc]
-    private void ClientRpcDied()
+    [Server]
+    private void SmdDied()
     {
         Died?.Invoke();
+        TestGameRules gameRules = FindObjectOfType<TestGameRules>();
+        if (gameRules != null)
+        {
+            gameRules.OnPlayerDeath(gameObject);
+        }
+    }
+
+    public void ResetValue()
+    {
+        _currentValue = _maxValue;
     }
 }
