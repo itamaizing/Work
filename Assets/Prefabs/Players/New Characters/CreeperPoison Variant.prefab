@@ -562,7 +562,7 @@ MonoBehaviour:
   Name: Stroke Of Aspiration
   Description: 
   Ico: {fileID: 0}
-  Character: {fileID: 0}
+  Character: {fileID: 362903699018664054}
   _creeperStrike: {fileID: 7329957038414124695}
   _poisonBall: {fileID: 4790497256626355497}
   _spitPoison: {fileID: 1565719447917374839}
@@ -584,7 +584,7 @@ MonoBehaviour:
   Name: Lightweight Slap
   Description: 
   Ico: {fileID: 0}
-  Character: {fileID: 0}
+  Character: {fileID: 362903699018664054}
   _creeperStrike: {fileID: 7329957038414124695}
 --- !u!114 &5117743073277419063
 MonoBehaviour:
@@ -604,7 +604,7 @@ MonoBehaviour:
   Name: Capacious Poison Cloud
   Description: 
   Ico: {fileID: 0}
-  Character: {fileID: 0}
+  Character: {fileID: 362903699018664054}
 --- !u!114 &4556797069023159239
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -623,7 +623,7 @@ MonoBehaviour:
   Name: Healing Poison Cloud
   Description: 
   Ico: {fileID: 0}
-  Character: {fileID: 0}
+  Character: {fileID: 362903699018664054}
 --- !u!114 &4896032680918828316
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -642,7 +642,7 @@ MonoBehaviour:
   Name: Own Element
   Description: 
   Ico: {fileID: 0}
-  Character: {fileID: 0}
+  Character: {fileID: 362903699018664054}
   _creeperStrike: {fileID: 7329957038414124695}
   _enemyLayer:
     serializedVersion: 2
@@ -667,7 +667,7 @@ MonoBehaviour:
   Name: Toxique Cloud
   Description: 
   Ico: {fileID: 0}
-  Character: {fileID: 0}
+  Character: {fileID: 362903699018664054}
 --- !u!114 &1528214953864034277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -686,7 +686,7 @@ MonoBehaviour:
   Name: Foot Instincts
   Description: 
   Ico: {fileID: 0}
-  Character: {fileID: 0}
+  Character: {fileID: 362903699018664054}
   _lightningMovement: {fileID: 727315664775304267}
 --- !u!114 &5467376781486848465
 MonoBehaviour:
@@ -706,7 +706,7 @@ MonoBehaviour:
   Name: Assasin Poison
   Description: 
   Ico: {fileID: 0}
-  Character: {fileID: 0}
+  Character: {fileID: 362903699018664054}
   _invisibleCreeper: {fileID: 8692283665806418931}
 --- !u!114 &2710589388934225026
 MonoBehaviour:
@@ -726,7 +726,7 @@ MonoBehaviour:
   Name: Release From Secrecy
   Description: 
   Ico: {fileID: 0}
-  Character: {fileID: 0}
+  Character: {fileID: 362903699018664054}
   _creeperInvisible: {fileID: 8692283665806418931}
   _creeperStrike: {fileID: 7329957038414124695}
 --- !u!114 &4921582011988066485
@@ -747,7 +747,7 @@ MonoBehaviour:
   Name: Desire To Hide
   Description: 
   Ico: {fileID: 0}
-  Character: {fileID: 0}
+  Character: {fileID: 362903699018664054}
   _creeperStrike: {fileID: 7329957038414124695}
   _creeperInvisible: {fileID: 8692283665806418931}
   IsCanApply: 0
@@ -769,7 +769,7 @@ MonoBehaviour:
   Name: Healing Poison Ball
   Description: 
   Ico: {fileID: 0}
-  Character: {fileID: 0}
+  Character: {fileID: 362903699018664054}
   IsCanTargetHimself: 0
 --- !u!114 &6557248580414914859
 MonoBehaviour:
@@ -789,7 +789,7 @@ MonoBehaviour:
   Name: HealingSpitPoison
   Description: 
   Ico: {fileID: 0}
-  Character: {fileID: 0}
+  Character: {fileID: 362903699018664054}
   IsCanTargetHimself: 0
 --- !u!114 &3000551519214026504
 MonoBehaviour:
@@ -809,7 +809,7 @@ MonoBehaviour:
   Name: 
   Description: 
   Ico: {fileID: 0}
-  Character: {fileID: 0}
+  Character: {fileID: 362903699018664054}
   _creeperInvisible: {fileID: 8692283665806418931}
   _creeperStrike: {fileID: 7329957038414124695}
   FirstHit: 0
@@ -831,7 +831,7 @@ MonoBehaviour:
   Name: Surge Treatment
   Description: 
   Ico: {fileID: 0}
-  Character: {fileID: 0}
+  Character: {fileID: 362903699018664054}
 --- !u!114 &2021791018241839671
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -850,7 +850,7 @@ MonoBehaviour:
   Name: LMTalent
   Description: 
   Ico: {fileID: 0}
-  Character: {fileID: 0}
+  Character: {fileID: 362903699018664054}
 --- !u!114 &3678072325379082348
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -869,7 +869,7 @@ MonoBehaviour:
   Name: Withering Poison
   Description: 
   Ico: {fileID: 0}
-  Character: {fileID: 0}
+  Character: {fileID: 362903699018664054}
 --- !u!114 &8934884499273345818
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -888,7 +888,7 @@ MonoBehaviour:
   Name: Binding Poison
   Description: 
   Ico: {fileID: 0}
-  Character: {fileID: 0}
+  Character: {fileID: 362903699018664054}
 --- !u!114 &2442619433370514812
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -907,7 +907,7 @@ MonoBehaviour:
   Name: Enlarged Glands
   Description: 
   Ico: {fileID: 0}
-  Character: {fileID: 0}
+  Character: {fileID: 362903699018664054}
 --- !u!114 &6720675008021194891
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -926,7 +926,7 @@ MonoBehaviour:
   Name: Continuation Ambush
   Description: 
   Ico: {fileID: 0}
-  Character: {fileID: 0}
+  Character: {fileID: 362903699018664054}
 --- !u!114 &652576641430040905
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -945,7 +945,7 @@ MonoBehaviour:
   Name: TransparentPoisons
   Description: 
   Ico: {fileID: 0}
-  Character: {fileID: 0}
+  Character: {fileID: 362903699018664054}
   _poisonBall: {fileID: 4790497256626355497}
   _spitPoison: {fileID: 1565719447917374839}
 --- !u!114 &5121733092760162073
@@ -966,7 +966,7 @@ MonoBehaviour:
   Name: VoluminousBall
   Description: 
   Ico: {fileID: 0}
-  Character: {fileID: 0}
+  Character: {fileID: 362903699018664054}
   _poisonBall: {fileID: 4790497256626355497}
   IncreasedSizeX: 1.2
   IncreasedSizeY: 1.2
@@ -988,7 +988,7 @@ MonoBehaviour:
   Name: Inertial Glands
   Description: 
   Ico: {fileID: 0}
-  Character: {fileID: 0}
+  Character: {fileID: 362903699018664054}
 --- !u!114 &7262619753731106163
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1007,7 +1007,7 @@ MonoBehaviour:
   Name: Accelerated Slap
   Description: 
   Ico: {fileID: 0}
-  Character: {fileID: 0}
+  Character: {fileID: 362903699018664054}
   _poisonSlap: {fileID: 1002733962749832698}
 --- !u!114 &1682250100759698988
 MonoBehaviour:
@@ -1382,6 +1382,7 @@ MonoBehaviour:
   _continuationAmbush: {fileID: 6720675008021194891}
   _voluminousBall: {fileID: 5121733092760162073}
   _inertialGlands: {fileID: 4933334587710268522}
+  _assasinPoison: {fileID: 5467376781486848465}
   _spitPoison: {fileID: 1565719447917374839}
   _projectile: {fileID: 5760352791335105038, guid: d097441cb29bc5a42b2defb1e1f12525, type: 3}
   _prefabPoisonDamagingCloud: {fileID: 8889763167221866413, guid: 83595e1d2c3640a449b737f911ce64ef, type: 3}

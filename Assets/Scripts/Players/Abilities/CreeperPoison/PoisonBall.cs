@@ -43,6 +43,7 @@ public class PoisonBall : Skill
     [SerializeField] private ContinuationAmbush _continuationAmbush;
     [SerializeField] private VoluminousBall _voluminousBall;
     [SerializeField] private InertialGlands _inertialGlands;
+    [SerializeField] private AssasinPoison _assasinPoison;
 
     [Header("Ability properties")]
     [SerializeField] private SpitPoison _spitPoison;
@@ -63,12 +64,11 @@ public class PoisonBall : Skill
     private Vector3 _secondMousePosition;
     private Vector3 _thirdMousePosition;
 
-    private int _countProjectiles = 0;
-
     private float _fastTimeCast = 0.4f;
     private float _slowTimeCast = 1.8f;
     private float _originalChargeCooldown;
     private float _durationPoisonCloud = 6f;
+    private float _currentStacksAsssasinPoison = 0;
 
     #region BoolVariables
 
@@ -413,6 +413,25 @@ public class PoisonBall : Skill
 
     private void CheckingActiveTalents()
     {
+        if (_assasinPoison.IsActive)
+        {
+            _currentStacksAsssasinPoison = _assasinPoison.CurrentChargeAssasinPoison;
+            Debug.Log("PoisonBall / CurrentStacksAssasinPoison == " + _currentStacksAsssasinPoison);
+            for (int i = 0; i < _currentStacksAsssasinPoison; i++)
+            {
+                Debug.Log("CycleFor");
+                if (CurrentCharges < _maxCharges)
+                {
+                    _currentStacksAsssasinPoison--;
+                    Debug.Log("PoisonBall / CurrentStacksAssasinPoison == " + _currentStacksAsssasinPoison);
+                    Debug.Log("PoisonBall / _chargeCooldown == " + _chargeCooldown);
+                    float newCooldownTime = _chargeCooldown * 0;
+                    Debug.Log("PoisonBall / newCooldownTime == " + newCooldownTime);
+                    this.IncreaseSetCooldown(newCooldownTime);
+                }
+            }
+        }
+
         _poisonBallInfo.IsActiveWitheringPoison = _witheringPoison.IsActive;
         _poisonBallInfo.IsActiveContinuationAmbush = _continuationAmbush.IsActive;
         _poisonBallInfo.IsActiveHealingPoisonBall = _healingPoisonBall.IsActive;

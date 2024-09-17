@@ -13,7 +13,12 @@ public class AssasinPoison : Talent
     private float _timeAccumulateCharge;
     private float _startTimeAccumulateCharge = 3f;
 
-    public int CurrentChargePoison { get => _currentChargePoison; set => _currentChargePoison = value; }
+    public int CurrentChargeAssasinPoison { get => _currentChargePoison; set => _currentChargePoison = value; }
+
+    private void Start()
+    {
+        Enter();
+    }
 
     public override void Enter()
     {
@@ -27,16 +32,13 @@ public class AssasinPoison : Talent
 
     private void Update()
     {
-        if (IsActive && _currentChargePoison < 3)
+        if (IsActive && _currentChargePoison < 3 && Character.CharacterState.CheckForState(States.CreeperInvisible))
         {
-            if (Character.CharacterState.CheckForState(States.CreeperInvisible))
+            Debug.Log("AssasinPoison / currentCharge++");
+            _timeAccumulateCharge -= Time.deltaTime;
+            if (_timeAccumulateCharge <= 0)
             {
-                _timeAccumulateCharge -= Time.deltaTime;
-                if (_timeAccumulateCharge <= 0)
-                {
-                    AccumulateChargePoison();
-                    _timeAccumulateCharge = _startTimeAccumulateCharge;
-                }
+                AccumulateChargePoison();
             }
         }
     }
@@ -45,10 +47,10 @@ public class AssasinPoison : Talent
     {
         if (Character.CharacterState.CheckForState(States.CreeperInvisible))
         {
-            if (CurrentChargePoison > 0)
+            if (_currentChargePoison > 0)
             {
                 target.CharacterState.CmdAddState(States.PoisonBone, lifeTimePoisonBoneStack, 0, Character.gameObject, null);
-                CurrentChargePoison--;
+                _currentChargePoison--;
             }
         }
     }
@@ -58,6 +60,9 @@ public class AssasinPoison : Talent
         if (_currentChargePoison < _maxChargePoison)
         {
             _currentChargePoison++;
+            Debug.Log("AssasinPoison / AccumulateChargePoison / CurrentChargePoison == " + _currentChargePoison);
+            _timeAccumulateCharge = _startTimeAccumulateCharge;
+            Debug.Log("AssasinPoison / AccumulateChargePoison / timeAccumulateCharge == " + _timeAccumulateCharge);
         }
     }
 

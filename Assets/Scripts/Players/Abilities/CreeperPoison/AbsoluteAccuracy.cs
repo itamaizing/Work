@@ -39,10 +39,16 @@ public class AbsoluteAccuracy : Skill
         _mousePosition = Vector3.positiveInfinity;
         _target = null;
         _isPlayer = false;
+        if (_player.CharacterState.CheckForState(States.Immateriality))
+        {
+            _player.CharacterState.CmdRemoveState(States.Immateriality);
+        }
     }
 
     protected override IEnumerator PrepareJob()
     {
+        _player.CharacterState.CmdAddState(States.Immateriality, 0, 0, _player.gameObject, Name);
+
         Debug.Log("AbsoluteAccurcay / PrepareJob");
         if (_absoluteAccuracyTalent.IsActive)
         {

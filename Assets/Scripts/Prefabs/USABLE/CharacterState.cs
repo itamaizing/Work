@@ -1557,7 +1557,7 @@ public class PoisonCloudState : AbstractCharacterState
 
     private float _duration;
     private float _baseDuration;
-    private float _durationEmpathicPoisons = 3f;
+    private float _durationEmpathicPoisons = 5f;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.AbilitySpeed };
 

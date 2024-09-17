@@ -4,10 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using Unity.VisualScripting;
-using UnityEditor.Playables;
 using UnityEngine;
 using UnityEngine.UIElements;
-using static UnityEditor.Progress;
 
 public class LightningMovement : Skill
 {

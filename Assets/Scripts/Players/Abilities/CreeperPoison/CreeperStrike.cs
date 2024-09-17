@@ -98,7 +98,7 @@ public class CreeperStrike : AutoAttackSkill
 
         if (_assasinPoison.IsActive)
         {
-            if (_assasinPoison.CurrentChargePoison > 0)
+            if (_assasinPoison.CurrentChargeAssasinPoison > 0)
             {
                 _assasinPoison.CmdSpendCharge(CurrentTarget, _lifeTimePoisonBoneStacks);
             }
