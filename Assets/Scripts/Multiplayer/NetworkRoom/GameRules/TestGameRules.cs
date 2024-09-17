@@ -9,22 +9,22 @@ public class TestGameRules : GameRules
     [SerializeField] private bool isRemoveRoom = true;
 
     private TeamsPanel _teams;
-    private SpawnPointsContainer _spawnPointsContainer;
-    private List<Transform> _spawnPoints;
-
     private int[] teamDeaths = new int[3];
     private int team1Score = 0;
     private int team2Score = 0;
 
     public override void GameStartServer(List<Transform> spawnPoints)
     {
-        _spawnPointsContainer = FindObjectOfType<SpawnPointsContainer>();
-        if (_spawnPointsContainer != null)
-        {
-            _spawnPoints = _spawnPointsContainer.GetSpawnPoints();
-        }
+        StartCoroutine(HandleTeamsAndSpawns(spawnPoints));
 
-        StartCoroutine(HandleTeamsAndSpawns(_spawnPoints));
+        foreach (var playerSettings in _playersSettings)
+        {
+            var health = playerSettings.NetworkSettings.CachedHealth;
+            if (health != null)
+            {
+                health.Died += () => OnPlayerDeath(playerSettings.gameObject);
+            }
+        }
 
         if (isServer && isRemoveRoom)
             StartCoroutine(CloseJob());
@@ -34,26 +34,25 @@ public class TestGameRules : GameRules
     {
         _teams = FindObjectOfType<TeamsPanel>();
 
-        for (int i = 0; i < _players.Count; i++)
+        foreach (var playerSettings in _playersSettings)
         {
-            if (_players[i].GetComponent<UserNetworkSettings>().TeamIndex == 1)
+            if (playerSettings.NetworkSettings.TeamIndex == 1)
             {
-                _teams.AddInFirstTeam(_players[i].GetComponent<Character>());
+                _teams.AddInFirstTeam(playerSettings.GetComponent<Character>());
             }
             else
             {
-                _teams.AddInSecondTeam(_players[i].GetComponent<Character>());
+                _teams.AddInSecondTeam(playerSettings.GetComponent<Character>());
             }
         }
     }
 
     public void OnPlayerDeath(GameObject player)
     {
-        var playerSettings = player.GetComponent<UserNetworkSettings>();
-        if (playerSettings == null || playerSettings.TeamIndex < 1 || playerSettings.TeamIndex > 2) return;
+        var playerSettings = _playersSettings.Find(p => p.gameObject == player);
+        if (playerSettings == null || playerSettings.NetworkSettings.TeamIndex < 1 || playerSettings.NetworkSettings.TeamIndex > 2) return;
 
-        teamDeaths[playerSettings.TeamIndex]++;
-
+        teamDeaths[playerSettings.NetworkSettings.TeamIndex]++;
         CheckForRoundEnd();
     }
 
@@ -72,10 +71,9 @@ public class TestGameRules : GameRules
     private int GetTeamCount(int teamIndex)
     {
         int count = 0;
-        foreach (var player in _players)
+        foreach (var playerSettings in _playersSettings)
         {
-            var playerSettings = player.GetComponent<UserNetworkSettings>();
-            if (playerSettings.TeamIndex == teamIndex)
+            if (playerSettings.NetworkSettings.TeamIndex == teamIndex)
             {
                 count++;
             }
@@ -88,18 +86,16 @@ public class TestGameRules : GameRules
         teamDeaths[1] = 0;
         teamDeaths[2] = 0;
 
-        foreach (var player in _players)
+        foreach (var playerSettings in _playersSettings)
         {
-            var health = player.GetComponent<Health>();
-            var playerSettings = player.GetComponent<UserNetworkSettings>();
-
+            var health = playerSettings.NetworkSettings.CachedHealth;
             health?.ResetValue();
 
-            int spawnIndex = playerSettings.TeamIndex - 1;
+            int spawnIndex = playerSettings.NetworkSettings.TeamIndex - 1;
             if (_spawnPoints != null && spawnIndex >= 0 && spawnIndex < _spawnPoints.Count)
             {
                 Transform spawnPoint = _spawnPoints[spawnIndex];
-                player.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
+                playerSettings.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
             }
         }
     }

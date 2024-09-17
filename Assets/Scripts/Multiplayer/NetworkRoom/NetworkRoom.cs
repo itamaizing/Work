@@ -10,7 +10,6 @@ public class NetworkRoom
     private string _scene;
     private int _maxNumPlayers;
     private List<GameObject> _players;
-    private List<Transform> _spawnPoints;
     private Scene _currentRoom;
     private bool _isLoaded;
 
@@ -20,7 +19,6 @@ public class NetworkRoom
     public Scene Scene => _currentRoom;
     public bool IsLoaded => _isLoaded;
 
-
     public event UnityAction<NetworkRoom> SlotsEnded;
     public event UnityAction<NetworkRoom> RoomClosed;
 
@@ -28,17 +26,16 @@ public class NetworkRoom
     {
         _scene = scene;
         _maxNumPlayers = maxNumPlayers;
-        _players = new();
+        _players = new List<GameObject>();
     }
 
     [Server]
     public IEnumerator LoadRoomJob(LocalPhysicsMode physicsMode = LocalPhysicsMode.Physics2D)
     {
-        if (_isLoaded == false)
+        if (!_isLoaded)
         {
             yield return SceneManager.LoadSceneAsync(_scene, new LoadSceneParameters { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = physicsMode });
             _currentRoom = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
-            FindSpawnPoints();
             _isLoaded = true;
         }
     }
@@ -54,19 +51,6 @@ public class NetworkRoom
         }
     }
 
-    private void FindSpawnPoints()
-    {
-        var spawnPointContainer = Object.FindObjectOfType<SpawnPointsContainer>();
-        if (spawnPointContainer != null)
-        {
-            _spawnPoints = spawnPointContainer.GetSpawnPoints();
-        }
-        else
-        {
-            Debug.LogError("SpawnPointsContainer не найден в сцене.");
-        }
-    }
-
     public bool TryAddPlayerInRoom(GameObject player)
     {
         if (IsHaveSlot && _isLoaded)
@@ -75,10 +59,9 @@ public class NetworkRoom
             _players.Add(player);
 
             UserNetworkSettings playerSettings = player.GetComponent<UserNetworkSettings>();
-
             playerSettings.MyRoom = Scene;
 
-            if (IsHaveSlot == false)
+            if (!IsHaveSlot)
                 SlotsEnded?.Invoke(this);
 
             return true;
@@ -95,12 +78,11 @@ public class NetworkRoom
         if (_isLoaded)
         {
             SceneManager.MoveGameObjectToScene(item.gameObject, _currentRoom);
-
             NetworkServer.Spawn(item.gameObject);
 
             item.Init(this);
             item.IsStarted = true;
-            item.GameStartServer(_spawnPoints);
+            item.GameStartServer(item.SpawnPoints);
         }
         else
         {
@@ -112,7 +94,7 @@ public class NetworkRoom
     {
         if (_isLoaded)
         {
-            SceneManager.MoveGameObjectToScene(item.gameObject, _currentRoom);
+            SceneManager.MoveGameObjectToScene(item, _currentRoom);
         }
         else
         {

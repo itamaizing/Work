@@ -8,16 +8,13 @@ public abstract class GameRules : NetworkBehaviour
     protected readonly SyncList<GameObject> _players = new SyncList<GameObject>();
     protected List<Character> _playersSettings = new List<Character>();
     protected NetworkRoom _room;
+    protected List<Transform> _spawnPoints;
 
-    [SyncVar(hook = nameof(GameStatusHook))]
-    private bool _isStarted;
+    [SyncVar(hook = nameof(GameStatusHook))] private bool _isStarted;
+    public bool IsStarted { get => _isStarted; set => _isStarted = value; }
 
-    public bool IsStarted
-    {
-        get => _isStarted;
-        set => _isStarted = value;
-    }
     public SyncList<GameObject> Players => _players;
+    public List<Transform> SpawnPoints => _spawnPoints;
 
     public abstract void GameStartServer(List<Transform> spawnPoints);
     protected abstract void GameStartClient();
@@ -26,13 +23,20 @@ public abstract class GameRules : NetworkBehaviour
     {
         _room = room;
 
-        foreach (var player in _room.Players)
+        foreach (var item in _room.Players)
         {
-            _players.Add(player);
+            _players.Add(item);
+            var playerSettings = item.GetComponent<Character>();
+            if (playerSettings != null)
+            {
+                _playersSettings.Add(playerSettings);
+            }
         }
+
+        StartCoroutine(WaitForSceneAndFindSpawnPoints());
     }
 
-    protected void GameStatusHook(bool oldValue, bool newValue)
+    protected virtual void GameStatusHook(bool oldValue, bool newValue)
     {
         if (newValue)
         {
@@ -40,25 +44,46 @@ public abstract class GameRules : NetworkBehaviour
         }
     }
 
-    protected IEnumerator SplitTeams(List<Transform> spawnPoints)
+    protected virtual IEnumerator WaitForSceneAndFindSpawnPoints()
+    {
+        while (!_room.IsLoaded)
+        {
+            yield return null;
+        }
+
+        FindSpawnPoints();
+    }
+
+    protected void FindSpawnPoints()
+    {
+        var spawnPointContainer = FindObjectOfType<SpawnPointsContainer>();
+        if (spawnPointContainer != null)
+        {
+            _spawnPoints = spawnPointContainer.GetSpawnPoints();
+        }
+    }
+
+    protected virtual IEnumerator SplitTeams(List<Transform> spawnPoints)
     {
         int team1Count = 0;
         int team2Count = 0;
 
-        for (int i = 0; i < _players.Count; i++)
+        for (int i = 0; i < _playersSettings.Count; i++)
         {
-            var player = _players[i];
-            var playerSettings = player.GetComponent<UserNetworkSettings>();
-
+            var playerSettings = _playersSettings[i];
             byte teamIndex = (byte)(team1Count <= team2Count ? 1 : 2);
+            playerSettings.NetworkSettings.TeamIndex = teamIndex;
 
-            playerSettings.TeamIndex = teamIndex;
-
-            Transform spawnPoint = teamIndex == 1 ? spawnPoints[0] : spawnPoints[1];
+            Transform spawnPoint = spawnPoints[i % spawnPoints.Count];
             if (spawnPoint != null)
             {
-                player.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
-                playerSettings.SetSpawnPosition(spawnPoint.position);
+                foreach (var player in _playersSettings)
+                {
+                    playerSettings.NetworkSettings.Players.Add(player.gameObject);
+                }
+
+                playerSettings.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
+                playerSettings.NetworkSettings.SetSpawnPosition(spawnPoint.position);
             }
 
             if (teamIndex == 1)
@@ -70,15 +95,14 @@ public abstract class GameRules : NetworkBehaviour
         yield return null;
     }
 
-    protected IEnumerator SavePositionsAndAssignLayers()
+    protected virtual IEnumerator SavePositionsAndAssignLayers()
     {
-        foreach (var player in _players)
+        foreach (var item in _playersSettings)
         {
-            var playerSettings = player.GetComponent<UserNetworkSettings>();
-            if (playerSettings != null)
+            if (item != null)
             {
-                playerSettings.SetSpawnPosition(player.transform.position);
-                playerSettings.TargetUpdateLayers(playerSettings.connectionToClient);
+                item.NetworkSettings.SetSpawnPosition(item.transform.position);
+                item.NetworkSettings.TargetUpdateLayers(item.connectionToClient);
             }
         }
 
@@ -87,6 +111,6 @@ public abstract class GameRules : NetworkBehaviour
 
     protected IEnumerator CloseRoomJob()
     {
-        yield return null;
+        yield return StartCoroutine(_room.UnloadRoomJob());
     }
 }

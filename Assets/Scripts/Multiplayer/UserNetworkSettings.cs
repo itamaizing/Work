@@ -9,15 +9,10 @@ public class UserNetworkSettings : NetworkBehaviour
     private List<HeroComponent> _enemies = new List<HeroComponent>();
     public readonly SyncList<GameObject> Players = new SyncList<GameObject>();
 
-    private Scene myRoom;
 
     [SyncVar] private byte _teamIndex;
 
-    public int playerNumber;
-    public int scoreIndex;
-    public int matchIndex;
-    public uint score;
-    public int clientMatchIndex = -1;
+    private Health _cachedHealth;
 
     public byte TeamIndex
     {
@@ -32,9 +27,21 @@ public class UserNetworkSettings : NetworkBehaviour
         }
     }
 
-    public Scene MyRoom { get => myRoom; set => myRoom = value; }
+    public Health CachedHealth
+    {
+        get
+        {
+            if (_cachedHealth == null)
+            {
+                _cachedHealth = GetComponent<Health>();
+            }
+            return _cachedHealth;
+        }
+    }
 
     [SyncVar] private Vector3 spawnPosition;
+
+    public Scene MyRoom { get; set; }
 
     public void SetSpawnPosition(Vector3 position)
     {
@@ -59,12 +66,10 @@ public class UserNetworkSettings : NetworkBehaviour
 
     public void MarkUpEnemiesOrAllies()
     {
-        _allies.Clear();
-        _enemies.Clear();
-
-        foreach (var item in FindObjectsOfType<UserNetworkSettings>())
+        foreach (var item in Players)
         {
-            if (item.TeamIndex != _teamIndex)
+
+            if (item.GetComponent<UserNetworkSettings>().TeamIndex != _teamIndex)
             {
                 item.gameObject.layer = LayerMask.NameToLayer("Enemy");
                 _enemies.Add(item.GetComponent<HeroComponent>());
@@ -72,7 +77,7 @@ public class UserNetworkSettings : NetworkBehaviour
             else
             {
                 item.gameObject.layer = LayerMask.NameToLayer("Allies");
-                _allies.Add(item.GetComponent<HeroComponent>());
+                _enemies.Add(item.GetComponent<HeroComponent>());
             }
         }
     }
