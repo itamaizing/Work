@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class UIPlayerComponents : MonoBehaviour
 {
+    [SerializeField] private Character _character;
     [SerializeField] private SelectedCircle CircleSelect;
     [SerializeField] private MinimapMarker MarkersSelect;
     
@@ -9,11 +10,19 @@ public class UIPlayerComponents : MonoBehaviour
     public PopupTextPrefab PopupText;
     private PopupTextPrefab popupTextPrefab;
 
+    private Color _magDamageColor = Color.blue;
+    private Color _physDamageColor = Color.red;
+
     /* public void Initialize(PlayerAbilities playerAbilities,MoveComponent playerMove,StaminaComponent staminaComponent , HealthComponent healthComponent)
      {
          playerAbilities.Initialize(playerMove, staminaComponent, healthComponent);
      }
      */ //Why is initialization of this component necessary at all? Moreover, the UI should not initialize the logic
+    private void Awake()
+    {
+        _character.Health.DamageTaken += OnDamageTaken;
+    }
+
     public void ChangeSelection(bool isSelect)
     {
         CircleSelect.IsActive = isSelect;
@@ -38,5 +47,23 @@ public class UIPlayerComponents : MonoBehaviour
         popupTextPrefab.PopupText.text = text;
         popupTextPrefab.StartColor = startColor;
         popupTextPrefab.EndColor = endColor;
+    }
+
+    private void OnDamageTaken(float value, DamageType damageType)
+    {
+        switch (damageType)
+        {
+            case DamageType.Magical:
+                ShowPopupValue(-value, _magDamageColor, _magDamageColor);
+                break;
+
+            case DamageType.Physical:
+                ShowPopupValue(-value, _physDamageColor, _physDamageColor);
+                break;
+
+            default:
+                ShowPopupValue(-value, _physDamageColor, _physDamageColor);
+                break;
+        }
     }
 }

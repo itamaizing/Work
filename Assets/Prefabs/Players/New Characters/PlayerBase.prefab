@@ -421,6 +421,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 550b3daa2900e4d448f45b2c0a260552, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _character: {fileID: 8468544467696250796}
   CircleSelect: {fileID: 9081349754013333447}
   MarkersSelect: {fileID: 6779511414245420136}
   DamageSpawn: {fileID: 1934385862078041493}
