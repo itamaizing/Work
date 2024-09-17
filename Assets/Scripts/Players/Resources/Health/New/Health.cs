@@ -127,6 +127,7 @@ public class Health : Resource, IDamageable, IHealingable
             if (_shields[i] != null)
             {
                 _shields[i].TryTakeDamage(ref damage, skill);
+
                 if (damage.Value == 0)
                 {
                     break;

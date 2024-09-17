@@ -9,7 +9,7 @@ public abstract class AutoAttackSkill : Skill
     [SerializeField] private float _attackZoneSize;
     [SerializeField] protected float _attackSpeed = 1f;
 
-    protected bool _isAutoattackMode = true;
+    public bool _isAutoattackMode = true;
     protected Character _target;
     private Coroutine _autoAttackCoroutine;
     private bool _isAttacking = false;
@@ -99,7 +99,11 @@ public abstract class AutoAttackSkill : Skill
                             CastAction();
 
                             if (_isAutoattackMode == false)
+                            {
                                 ClearData();
+                                yield break;
+                            }
+
                         }
                     }
                 }

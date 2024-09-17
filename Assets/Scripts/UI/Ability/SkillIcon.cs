@@ -9,6 +9,7 @@ using UnityEngine.UI;
 public class SkillIcon : MonoBehaviour, IDropHandler
 {
     [SerializeField] private Image _boxFrame;
+    [SerializeField] private Blink _blinkBoxFrame;
     [SerializeField] private TMP_Text _key;
 
     [SerializeField] private FillAmountOverTime _cooldown;
@@ -127,6 +128,10 @@ public class SkillIcon : MonoBehaviour, IDropHandler
 
         ability.CooldownStarted += OnStartCooldown;
         ability.CurrentChargeChanged += OnCurrentChargeText;
+
+        ability.CastStarted += OnCastStarted;
+        ability.CastEnded += OnCastEnded;
+        ability.Canceled += OnCastEnded;
     }
 
     private void UnsubscribingSkillOnEvents(Skill ability)
@@ -139,6 +144,21 @@ public class SkillIcon : MonoBehaviour, IDropHandler
 
         ability.CooldownStarted -= OnStartCooldown;
         ability.CurrentChargeChanged -= OnCurrentChargeText;
+
+        ability.CastStarted -= OnCastStarted;
+        ability.CastEnded -= OnCastEnded;
+    }
+
+    private void OnCastStarted()
+    {
+        _blinkBoxFrame.gameObject.SetActive(true);
+        _blinkBoxFrame.StartBlink(0.5f);
+    } 
+
+    private void OnCastEnded()
+    {
+        _blinkBoxFrame.StopBlink();
+        _blinkBoxFrame.gameObject.SetActive(false);
     }
 
     private void OnCurrentChargeText(int value)
