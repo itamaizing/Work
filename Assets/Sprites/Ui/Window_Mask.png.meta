@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/Sprites/Ui/Window_Mask.png.meta
 guid: 47c94ece59523da4b9004e0a6c895b3b
-========
-guid: 5fc2490d4f2941f4ca46f33e329cf3d7
->>>>>>>> main:Assets/Samples/Input System/1.6.3/Rebinding UI/Icons/PS4_Dpad_Down.png.meta
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -38,15 +34,9 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-<<<<<<<< HEAD:Assets/Sprites/Ui/Window_Mask.png.meta
     filterMode: 1
     aniso: 1
     mipBias: 0
-========
-    filterMode: -1
-    aniso: -1
-    mipBias: -100
->>>>>>>> main:Assets/Samples/Input System/1.6.3/Rebinding UI/Icons/PS4_Dpad_Down.png.meta
     wrapU: 1
     wrapV: 1
     wrapW: 1
@@ -82,20 +72,14 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-<<<<<<<< HEAD:Assets/Sprites/Ui/Window_Mask.png.meta
     textureCompression: 2
     compressionQuality: 100
     crunchedCompression: 1
-========
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
->>>>>>>> main:Assets/Samples/Input System/1.6.3/Rebinding UI/Icons/PS4_Dpad_Down.png.meta
     allowsAlphaSplitting: 0
     overridden: 0
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Standalone
     maxTextureSize: 2048
@@ -147,7 +131,7 @@ TextureImporter:
     overridden: 0
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites: []
@@ -155,11 +139,7 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
-<<<<<<<< HEAD:Assets/Sprites/Ui/Window_Mask.png.meta
     internalID: 1537655665
-========
-    internalID: 0
->>>>>>>> main:Assets/Samples/Input System/1.6.3/Rebinding UI/Icons/PS4_Dpad_Down.png.meta
     vertices: []
     indices: 
     edges: []

@@ -93,6 +93,7 @@ public abstract class Skill : NetworkBehaviour
     public string Description => _abilityInfo.Description;
     public Sprite Icon => _abilityInfo.Icon;
     public bool IsCooldowned { get => _remainingCooldownTime <= 0; }
+    public virtual bool IsPayCostStartCooldown { get => true; }
     public int Chargers => _currentChargers;
     public bool IsHaveCharge => (_currentChargers > 0);
     public float ChargeCooldown => _chargeCooldown;
@@ -168,7 +169,7 @@ public abstract class Skill : NetworkBehaviour
     {
         if (IsHaveResources && IsCanCast && _isCasting == false)
         {
-            TryPayCost();
+            TryPayCost(IsPayCostStartCooldown);
             _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
             return true;
         }
@@ -322,7 +323,7 @@ public abstract class Skill : NetworkBehaviour
         _skillRender.StopDrawLine();
     }
 
-    protected virtual bool TryPayCost(List<SkillEnergyCost> skillEnergyCosts)
+    protected virtual bool TryPayCost(List<SkillEnergyCost> skillEnergyCosts, bool startCooldown = true)
     {
         if (IsHaveResourceOnSkill)
         {
@@ -332,7 +333,9 @@ public abstract class Skill : NetworkBehaviour
                 resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
             }
 
-            IncreaseSetCooldown(CooldownTime);
+            if (startCooldown)
+                IncreaseSetCooldown(CooldownTime);
+
             TryUseCharge();
             return true;
         }
@@ -342,24 +345,9 @@ public abstract class Skill : NetworkBehaviour
         }
     }
     
-    protected virtual bool TryPayCost()
+    protected virtual bool TryPayCost(bool startCooldown = true)
     {
-        if (IsHaveResourceOnSkill)
-        {
-            foreach (var skillCost in _skillEnergyCosts)
-            {
-                var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
-                resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
-            }
-
-            IncreaseSetCooldown(CooldownTime);
-            TryUseCharge();
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return TryPayCost(_skillEnergyCosts, startCooldown);
     }
 
     protected Character GetRaycastTarget(bool isCanTargetHimself = false)
