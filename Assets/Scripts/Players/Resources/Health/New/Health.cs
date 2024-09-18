@@ -60,7 +60,7 @@ public class Health : Resource, IDamageable, IHealingable
     }
 
     [Command(requiresAuthority = false)]
-    public void CmdTryTakeDamage(Damage damage, GameObject skill = null)
+    public void CmdTryTakeDamage(Damage damage, GameObject skillCanBeNull)
     {
         TryTakeDamage(ref damage, null);
     }
