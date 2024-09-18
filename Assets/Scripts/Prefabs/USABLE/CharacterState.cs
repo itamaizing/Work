@@ -1298,7 +1298,6 @@ public class TiredSoul : AbstractCharacterState
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		_duration = durationToExit;
-		Debug.Log("TiredSoul debuff applied to " + character.name);
 	}
 
 	public override void UpdateState()
@@ -1312,14 +1311,12 @@ public class TiredSoul : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		Debug.Log("TiredSoul debuff expired.");
 		_characterState.RemoveState(this);
 	}
 
 	public override bool Stack(float time)
 	{
-		_duration += time;
-		return true;
+		return false;
 	}
 }
 

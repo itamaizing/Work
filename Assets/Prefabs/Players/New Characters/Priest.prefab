@@ -636,6 +636,10 @@ PrefabInstance:
       propertyPath: _assetId
       value: 3343527065
       objectReference: {fileID: 0}
+    - target: {fileID: 326124096443825601, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _resource
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 572197949806570838, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_Type
       value: 2
@@ -1093,6 +1097,7 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _attackZoneSize: 0
   _attackSpeed: 1
+  _isAutoattackMode: 1
   _damage: 8
   _playerLinks: {fileID: 5889404958618692528}
   _combo: {fileID: 5948793039085152286}
@@ -1142,6 +1147,7 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _attackZoneSize: 0
   _attackSpeed: 1
+  _isAutoattackMode: 1
   _buffDuration: 9
   _healAmount: 2
   _damageAmount: 20
