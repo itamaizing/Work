@@ -41,12 +41,10 @@ public class SkillIcon : MonoBehaviour, IDropHandler
             else if (_currentIcon == null)
             {
                 _currentIcon = value;
-
                 if (_currentIcon.Selected)
                     Selected();
                 else
                     Deselected();
-
                 SubscribingSkillOnEvents(_currentIcon.Skill);
             }
             else
@@ -54,12 +52,10 @@ public class SkillIcon : MonoBehaviour, IDropHandler
                 UnsubscribingSkillOnEvents(_currentIcon.Skill);
 
                 _currentIcon = value;
-
                 if (_currentIcon.Selected)
                     Selected();
                 else
                     Deselected();
-
                 SubscribingSkillOnEvents(_currentIcon.Skill);
             }
             CurrentSkillChenged?.Invoke(_index, _currentIcon.Skill);
@@ -118,13 +114,23 @@ public class SkillIcon : MonoBehaviour, IDropHandler
             _currentIcon.Selected = false;
     }
 
+    public void Show()
+    {
+        gameObject.SetActive(true);
+    }
+
+    public void Hide()
+    {
+        gameObject.SetActive(false);
+    }
+
     private void SubscribingSkillOnEvents(Skill ability)
     {
-        ability.CastStreamStarted += OnStartStreaming;
-        ability.Canceled += OnStopStreaming;
+        //ability.CastStreamStarted += OnStartStreaming;
+        //ability.Canceled += OnStopStreaming;
 
-        ability.CastDeleyStarted += OnStartCastDeley;
-        ability.Canceled += OnStopCastDeley;
+        //ability.CastDeleyStarted += OnStartCastDeley;
+        //ability.Canceled += OnStopCastDeley;
 
         ability.CooldownStarted += OnStartCooldown;
         ability.CurrentChargeChanged += OnCurrentChargeText;
@@ -136,11 +142,11 @@ public class SkillIcon : MonoBehaviour, IDropHandler
 
     private void UnsubscribingSkillOnEvents(Skill ability)
     {
-        ability.CastStreamStarted -= OnStartStreaming;
-        ability.Canceled -= OnStopStreaming;
+        //ability.CastStreamStarted -= OnStartStreaming;
+        //ability.Canceled -= OnStopStreaming;
 
-        ability.CastDeleyStarted -= OnStartCastDeley;
-        ability.Canceled -= OnStopCastDeley;
+        //ability.CastDeleyStarted -= OnStartCastDeley;
+        //ability.Canceled -= OnStopCastDeley;
 
         ability.CooldownStarted -= OnStartCooldown;
         ability.CurrentChargeChanged -= OnCurrentChargeText;

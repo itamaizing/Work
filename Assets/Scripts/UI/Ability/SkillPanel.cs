@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 
 public class SkillPanel : MonoBehaviour
 {
+    [SerializeField] private bool _hideUnusedButtons = true;
     [SerializeField] private List<RebindUI> _rebindsUI;
     [SerializeField] private SkillIcon[] _skillIcons;
 
@@ -68,12 +69,63 @@ public class SkillPanel : MonoBehaviour
             _skillIcons[i].CurrentIcon = icon;
             icon.transform.SetAsFirstSibling();
             _skills.Add(icon);
+
+            icon.BeginDrag += OnBeginDrag;
+            icon.EndDrag += OnEndDrag;
         }
 
         _playerAbilities.SkillSelected += OnAbilitySelected;
         _playerAbilities.SkillDeselected += OnAbilityDeselected;
         _playerAbilities.SkillAdded += OnSkillAdded;
         _playerAbilities.SkillRemoved += OnSkillRemoved;
+
+        OnEndDrag();
+    }
+
+    public void SetHideUnusedButtons(bool value)
+    {
+        Debug.Log(value);
+
+        if (value)
+        {
+            _hideUnusedButtons = value;
+
+            OnEndDrag();
+        }
+        else
+        {
+            _hideUnusedButtons = value;
+
+            foreach (var item in _skillIcons)
+            {
+                item.Show();
+            }
+        }
+    }
+
+    private void OnBeginDrag()
+    {
+        if (_hideUnusedButtons)
+        {
+            foreach (var item in _skillIcons)
+            {
+                item.Show();
+            }
+        }
+    }
+    
+    private void OnEndDrag()
+    {
+        if (_hideUnusedButtons)
+        {
+            foreach (var item in _skillIcons)
+            {
+                if (item.CurrentIcon == null)
+                {
+                    item.Hide();
+                }
+            }
+        }
     }
 
     private void SkillChenged(int index, Skill skill)

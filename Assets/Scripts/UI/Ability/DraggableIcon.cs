@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -17,6 +18,9 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public Skill Skill { get => _skill; set => _skill = value; }
     public bool Selected { get => _selected; set => _selected = value; }
 
+    public event Action BeginDrag;
+    public event Action EndDrag;
+
     public void Init(Skill skill)
     {
         _skill = skill;
@@ -30,6 +34,8 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         transform.SetParent(transform.root);
         transform.SetAsLastSibling();
         _image.raycastTarget = false;
+
+        BeginDrag?.Invoke();
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -43,5 +49,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         transform.SetAsFirstSibling();
         _image.raycastTarget = true;
         PatentAfterDrag.GetComponent<SkillIcon>().CurrentIcon = this;
+
+        EndDrag?.Invoke();
     }
 }
