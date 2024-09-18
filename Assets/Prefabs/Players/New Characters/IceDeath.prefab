@@ -180,6 +180,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1384998200796471846, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _damageZonePref
+      value: 
+      objectReference: {fileID: 1574982521674352815, guid: 5fb5f6f37d830674cbf46c1a048e80bf, type: 3}
     - target: {fileID: 1521997633048654849, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_Name
       value: IceDeath
@@ -254,38 +258,42 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.size
-      value: 8
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[0]
       value: 
-      objectReference: {fileID: 2587368830626074845}
+      objectReference: {fileID: 1732216057120849014}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[1]
       value: 
-      objectReference: {fileID: 5120720823893537476}
+      objectReference: {fileID: 2587368830626074845}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[2]
       value: 
-      objectReference: {fileID: 7399292444007859597}
+      objectReference: {fileID: 5120720823893537476}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[3]
       value: 
-      objectReference: {fileID: 5123067305954894}
+      objectReference: {fileID: 7399292444007859597}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[4]
       value: 
-      objectReference: {fileID: 7602457161793523920}
+      objectReference: {fileID: 5123067305954894}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[5]
       value: 
-      objectReference: {fileID: 6342019075777602023}
+      objectReference: {fileID: 7602457161793523920}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[6]
       value: 
-      objectReference: {fileID: 5457379887385446469}
+      objectReference: {fileID: 6342019075777602023}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[7]
+      value: 
+      objectReference: {fileID: 5457379887385446469}
+    - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _skills.Array.data[8]
       value: 
       objectReference: {fileID: 7262956384283558558}
     - target: {fileID: 8468544467696250796, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
@@ -369,6 +377,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6870347913229280057}
+    - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1732216057120849014}
     - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5948793039085152286}
@@ -1069,6 +1080,50 @@ MonoBehaviour:
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _playerLinks: {fileID: 5889404958618692528}
+--- !u!114 &1732216057120849014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3568281468258103164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fafd8a80e3c427d438079f29bbdc5d10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _abilityInfo: {fileID: 11400000, guid: 83e21c29a8358a84c98e9e3409e72dce, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
+  _cooldownTime: 2
+  _castDeley: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 10
+  _area: 16
+  _castLength: 0
+  _castWidth: 0
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 1
 --- !u!1 &5233125259320276558 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
