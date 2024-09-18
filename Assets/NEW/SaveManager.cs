@@ -10,7 +10,7 @@ public class SaveManager : MonoBehaviour
     private HeroComponent _character;
     private int _currentSaveGroup = 0;
 
-    void Awake()
+    private void Awake()
     {
         if (_instance == null)
         {
@@ -127,68 +127,68 @@ public class SaveManager : MonoBehaviour
         PlayerPrefs.Save();
     }
 
-public void SaveTalent(int idGroup, string idTalent, bool isActive)
-{
-    var isTalentActive = isActive ? 1 : 0;
-    var talentGroup = _character.TalentManager.Talents.FirstOrDefault(o => o.ID == idGroup);
-    var talent = talentGroup?.TalentsData.FirstOrDefault(o => o.Data.Name == idTalent);
-
-    if (talentGroup == null || talent == null) return;
-
-    var points = talentGroup.BonusAttributePoints(talent.Data.Name, !isActive);
-
-    if (isActive)
+    public void SaveTalent(int idGroup, string idTalent, bool isActive)
     {
-        SaveAttributePoints(points);
-    }
-    else
-    {
-        var freePoints = LoadAttributePoints();
-        var remainingPoints = points;
+        var isTalentActive = isActive ? 1 : 0;
+        var talentGroup = _character.TalentManager.Talents.FirstOrDefault(o => o.ID == idGroup);
+        var talent = talentGroup?.TalentsData.FirstOrDefault(o => o.Data.Name == idTalent);
 
-        if (freePoints > 0)
+        if (talentGroup == null || talent == null) return;
+
+        var points = talentGroup.BonusAttributePoints(talent.Data.Name, !isActive);
+
+        if (isActive)
         {
-            var deductFromFreePoints = Mathf.Min(freePoints, remainingPoints);
-            SaveAttributePoints(-deductFromFreePoints);
-            remainingPoints -= deductFromFreePoints;
+            SaveAttributePoints(points);
         }
-
-        if (remainingPoints > 0)
+        else
         {
-            var usedAttributes = LoadUsedAttributes();
-            usedAttributes.Reverse();
+            var freePoints = LoadAttributePoints();
+            var remainingPoints = points;
 
-            foreach (var attributeIndex in usedAttributes)
+            if (freePoints > 0)
             {
-                if (remainingPoints <= 0)
-                    break;
-
-                var attribute = _character.Data.Attributes.AttributeData.FirstOrDefault(o => o.Id == attributeIndex);
-
-                if (attribute is not { Points: > 0 }) continue;
-
-                var deductPoints = 1;
-                attribute.Points -= deductPoints;
-                remainingPoints -= deductPoints;
-
-                SaveAttribute(attributeIndex);
-                LoadAttribute(attributeIndex);
+                var deductFromFreePoints = Mathf.Min(freePoints, remainingPoints);
+                SaveAttributePoints(-deductFromFreePoints);
+                remainingPoints -= deductFromFreePoints;
             }
 
             if (remainingPoints > 0)
             {
-                Debug.LogWarning("Недостаточно очков для деактивации таланта!");
-                return;
+                var usedAttributes = LoadUsedAttributes();
+                usedAttributes.Reverse();
+
+                foreach (var attributeIndex in usedAttributes)
+                {
+                    if (remainingPoints <= 0)
+                        break;
+
+                    var attribute = _character.Data.Attributes.AttributeData.FirstOrDefault(o => o.Id == attributeIndex);
+
+                    if (attribute is not { Points: > 0 }) continue;
+
+                    var deductPoints = 1;
+                    attribute.Points -= deductPoints;
+                    remainingPoints -= deductPoints;
+
+                    SaveAttribute(attributeIndex);
+                    LoadAttribute(attributeIndex);
+                }
+
+                if (remainingPoints > 0)
+                {
+                    Debug.LogWarning("Недостаточно очков для деактивации таланта!");
+                    return;
+                }
+
+                usedAttributes.RemoveAll(attributeIndex => _character.Data.Attributes.AttributeData.FirstOrDefault(o => o.Id == attributeIndex)?.Points <= 0);
+                SaveUsedAttributes(usedAttributes);
             }
-
-            usedAttributes.RemoveAll(attributeIndex => _character.Data.Attributes.AttributeData.FirstOrDefault(o => o.Id == attributeIndex)?.Points <= 0);
-            SaveUsedAttributes(usedAttributes);
         }
-    }
 
-    PlayerPrefs.SetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_" + talentGroup.Name + "_" + talent.Data.Name, isTalentActive);
-    PlayerPrefs.Save();
-}
+        PlayerPrefs.SetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_" + talentGroup.Name + "_" + talent.Data.Name, isTalentActive);
+        PlayerPrefs.Save();
+    }
 
     public void LoadTalent(int idGroup, string idTalent)
     {

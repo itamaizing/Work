@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,14 +18,43 @@ public class SparkOfLight : AutoAttackSkill
     [SerializeField] private float _altBuffDuration = 5f;
     [SerializeField] private float _altDamageAmount = 2f;
     [SerializeField] private List<SkillEnergyCost> _altManaCostDamage;
+    
+    public bool isLightMode = true;
 
-    public bool isDefaultMode = true;
+    public event Action OnModeChange;
+    
+    private void OnEnable()
+    {
+        OnModeChange += HandleModeChange;
+        UpdateMode();
+    }
 
+    private void OnDisable()
+    {
+        OnModeChange -= HandleModeChange;
+    }
+
+    public void SwitchMode()
+    {
+        isLightMode = !isLightMode;
+        OnModeChange?.Invoke();
+    }
+    
+    private void HandleModeChange()
+    {
+        UpdateMode();
+    }
+    
+    private void UpdateMode()
+    {
+        School = isLightMode ? Schools.Light : Schools.Dark;
+    }
+    
     protected override void CastAction()
     {
         if (_target == null) return;
 
-        if (isDefaultMode)
+        if (isLightMode)
         {
             HandleDefaultMode();
         }

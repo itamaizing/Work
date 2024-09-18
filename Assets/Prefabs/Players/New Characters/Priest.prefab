@@ -798,7 +798,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.size
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[0]
@@ -807,7 +807,19 @@ PrefabInstance:
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[1]
       value: 
-      objectReference: {fileID: 2587368830626074845}
+      objectReference: {fileID: 511462281639160856}
+    - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _skills.Array.data[2]
+      value: 
+      objectReference: {fileID: 2176654669723873954}
+    - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _skills.Array.data[3]
+      value: 
+      objectReference: {fileID: 6852806551808849247}
+    - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _skills.Array.data[4]
+      value: 
+      objectReference: {fileID: 5758935830089276413}
     - target: {fileID: 8468544467696250796, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _playerData
       value: 
@@ -936,10 +948,22 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 2587368830626074845}
+    - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 3221087257418840363}
     - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2587368830626074845}
+      addedObject: {fileID: 511462281639160856}
+    - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2176654669723873954}
+    - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6852806551808849247}
+    - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5758935830089276413}
     - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5948793039085152286}
@@ -1023,6 +1047,55 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1565031513079442272, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
   m_PrefabInstance: {fileID: 2611259613135651868}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2587368830626074845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3568281468258103164}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0472c7c6c6b721418ebe181869af7fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _abilityInfo: {fileID: 11400000, guid: f6b63db1fe9a8db4b86632917e246e69, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
+  _cooldownTime: 0
+  _castDeley: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _castDuration: 0
+  _manaCostRate: 0
+  _skillEnergyCostsByTick: []
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 1
+  _attackZoneSize: 0
+  _attackSpeed: 1
+  _damage: 8
+  _playerLinks: {fileID: 5889404958618692528}
+  _combo: {fileID: 5948793039085152286}
 --- !u!114 &3221087257418840363
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1038,7 +1111,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _abilityInfo: {fileID: 11400000, guid: 9486bd646d0e4774ca29b60d7c588751, type: 2}
+  _abilityInfo: {fileID: 11400000, guid: 186781931331ccf429137bf765b408ab, type: 2}
   _isSubjectToGlobalCooldownTime: 0
   _skillEnergyCosts: []
   _cooldownTime: 0
@@ -1086,8 +1159,8 @@ MonoBehaviour:
   _altManaCostDamage:
   - resourceType: 1
     resourceCost: 2
-  isDefaultMode: 1
---- !u!114 &2587368830626074845
+  isLightMode: 1
+--- !u!114 &511462281639160856
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1096,13 +1169,121 @@ MonoBehaviour:
   m_GameObject: {fileID: 3568281468258103164}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0472c7c6c6b721418ebe181869af7fb, type: 3}
+  m_Script: {fileID: 11500000, guid: 04c323cf82777f045969e76df3a08b76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _abilityInfo: {fileID: 11400000, guid: f6b63db1fe9a8db4b86632917e246e69, type: 2}
+  _abilityInfo: {fileID: 11400000, guid: 7e98cd0fb8d475a46a14ebb1e73942be, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts:
+  - resourceType: 1
+    resourceCost: 30
+  _cooldownTime: 9
+  _castDeley: 1.8
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 1
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 768
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 128
+  _castDuration: 0
+  _manaCostRate: 0
+  _skillEnergyCostsByTick: []
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 1
+  _healAmount: 35
+  _lightRange: 4
+  _damageAmount: 35
+  _darkRange: 6
+  isLightMode: 1
+--- !u!114 &2176654669723873954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3568281468258103164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 645647de304b45342b0157368900dd6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _abilityInfo: {fileID: 11400000, guid: e2ea17e1f9ee9eb4492b2abdc46910f6, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts:
+  - resourceType: 1
+    resourceCost: 4
+  _cooldownTime: 9
+  _castDeley: 1.2
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 1
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 768
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 128
+  _castDuration: 0
+  _manaCostRate: 0
+  _skillEnergyCostsByTick: []
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 1
+  healPerTick: 6
+  lightRange: 4
+  lightDuration: 12
+  healInterval: 4
+  lightCastTime: 1.2
+  damagePerTick: 6
+  darkRange: 6
+  darkDuration: 12
+  damageInterval: 3
+  darkCastTime: 1.2
+  isLightMode: 1
+--- !u!114 &6852806551808849247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3568281468258103164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6011d369136c0e649aebdf6132a9b329, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _abilityInfo: {fileID: 11400000, guid: 7d474016baf7c764597b4ef52e2eda39, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
   _cooldownTime: 0
@@ -1110,7 +1291,71 @@ MonoBehaviour:
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
-  _attackRangeType: 0
+  _attackRangeType: 2
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 768
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 128
+  _castDuration: 0
+  _manaCostRate: 0
+  _skillEnergyCostsByTick: []
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 6
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 1
+  lightShieldDuration: 18
+  tiredSoulDuration: 12
+  selfCastTime: 0.6
+  allyCastTime: 1.2
+  absorbAmount: 20
+  manaCostLight:
+  - resourceType: 1
+    resourceCost: 6
+  cooldownLight: 4
+  darkShieldDuration: 12
+  damageDebuffDelay: 0.2
+  maxDamagePerTick: 20
+  manaCostDark:
+  - resourceType: 1
+    resourceCost: 20
+  cooldownDark: 4
+  darkCastTime: 1.2
+  isLightMode: 1
+--- !u!114 &5758935830089276413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3568281468258103164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03f1375f7ee0d584a9a1963f85152047, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _abilityInfo: {fileID: 11400000, guid: 063b82a6e39577245b9ff400f0d5104d, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts:
+  - resourceType: 1
+    resourceCost: 20
+  _cooldownTime: 0
+  _castDeley: 1.5
+  _abilitySchool: 7
+  _abilityForm: 0
+  _damageType: 3
+  _attackRangeType: 2
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -1131,11 +1376,10 @@ MonoBehaviour:
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
-  _attackZoneSize: 0
-  _attackSpeed: 1
-  _damage: 8
-  _playerLinks: {fileID: 5889404958618692528}
-  _combo: {fileID: 5948793039085152286}
+  sparkOfLight: {fileID: 3221087257418840363}
+  flashOfLight: {fileID: 511462281639160856}
+  restoration: {fileID: 2176654669723873954}
+  priestShield: {fileID: 6852806551808849247}
 --- !u!224 &3667579481457121046 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1646297468163658506, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
