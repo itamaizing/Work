@@ -14,7 +14,7 @@ public class Energy : Resource
 	{
 		if (_canRegen && _regenCoroutine == null)
 		{
-			ClientStartRegenerateJob();
+			ClientStartRegenirateJob();
 			return;
 		}
         else

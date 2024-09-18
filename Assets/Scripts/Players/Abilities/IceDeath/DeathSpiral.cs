@@ -25,11 +25,13 @@ public class DeathSpiral : Skill
 	private bool _talentChragesPlague = false;
 	private bool _talentCorpseDeath = false;
 	private bool _talentCorpseBoostExplode;
-	private RuneComponent _rune;
+	private bool _firstShot = true;
+
+	//private RuneComponent _rune;
 
 	protected override bool IsCanCast => true;
 
-	private void Start()
+	/*private void Start()
 	{
 		for (int i = 0; i < _playerLinks.Resources.Count; i++)
 		{
@@ -39,7 +41,7 @@ public class DeathSpiral : Skill
 			}
 		}
 
-	}
+	}*/
 
 	private void Update()
 	{
@@ -68,10 +70,10 @@ public class DeathSpiral : Skill
 		{
 			SecondAttact();
 		}
-		/*/else if (_rune.RemoveRune(2, this))
+		else
 		{
 			BasicShoot();
-		}*/
+		}
 		yield return null;
 	}
 	protected override void ClearData()
@@ -201,6 +203,7 @@ public class DeathSpiral : Skill
 
 	private void BasicShoot()
 	{
+		_firstShot = false;
 		_superCharge = false;
 		_currentChargers--;
 		_inTheRow = true;
@@ -233,25 +236,32 @@ public class DeathSpiral : Skill
 		_timer-= Time.deltaTime;
 		if(_timer <= 0)
 		{
+			_firstShot = true;
 			_inTheRow = false;
 			_timer = 1; 
 		}
 	}
 
-	public bool TryUseCharges(int value)
+	protected override bool TryPayCost(bool startCooldown = true)
 	{
-		if(_currentChargers- value >= 0)
+		if (IsHaveResourceOnSkill)
 		{
+			if (_firstShot)
+			{
+				foreach (var skillCost in _skillEnergyCosts)
+				{
+					var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
+					resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
+				}
+				_firstShot= false;
+			}
+			IncreaseSetCooldown(CooldownTime);
+			TryUseCharge();
 			return true;
 		}
-		return false;
-	}
-
-	public void UseCharge(int value)
-	{
-		if (_currentChargers - value >= 0)
+		else
 		{
-			_currentChargers-= value;
+			return false;
 		}
 	}
 

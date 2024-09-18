@@ -40,7 +40,7 @@ public abstract class Resource : NetworkBehaviour
         _regenerationDelay = regenDelay;
 
         if (regenValue > 0)
-            ClientStartRegenerateJob();
+            ClientStartRegenirateJob();
     }
 
     public virtual void Add(float value)
@@ -90,8 +90,8 @@ public abstract class Resource : NetworkBehaviour
         TryUse(value);
     }
 
-    [Client]
-    protected void ClientStartRegenerateJob()
+    [ClientCallback]
+    protected void ClientStartRegenirateJob()
     {
         _regenCoroutine = StartCoroutine(RegenerateJob());
     }

@@ -1,6 +1,7 @@
 using Mirror;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class Health : Resource, IDamageable, IHealingable
 {
@@ -56,6 +57,12 @@ public class Health : Resource, IDamageable, IHealingable
         ClientRpcDamageTaked(damage.Value, damage.Type);
         _sumDamageTaken += damage.Value;
         return true;
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdTryTakeDamage(Damage damage, GameObject skillCanBeNull)
+    {
+        TryTakeDamage(ref damage, null);
     }
 
     public void Heal(float value)
@@ -127,6 +134,7 @@ public class Health : Resource, IDamageable, IHealingable
             if (_shields[i] != null)
             {
                 _shields[i].TryTakeDamage(ref damage, skill);
+
                 if (damage.Value == 0)
                 {
                     break;

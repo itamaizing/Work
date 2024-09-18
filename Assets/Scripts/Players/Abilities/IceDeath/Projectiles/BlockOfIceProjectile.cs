@@ -50,8 +50,14 @@ public class BlockOfIceProjectile : Projectiles
 			}
 			_energy.SumDamageMake(curDamage);
 
-			//target.Health.TryTakeDamage(curDamage, DamageType.Physical, AttackRangeType.RangeAttack);
-			Debug.LogError("!!!The damage method has been changed!!!");
+			Damage damage = new Damage
+			{
+				Value = curDamage,
+				Type = DamageType.Magical,
+				Range = AttackRangeType.RangeAttack,
+			};
+			//_skill.CmdApplyDamage(damage, target.gameObject);
+			target.Health.TryTakeDamage(ref damage, _skill);
 
 			//target.CharacterState.AddState(new Cooling(), duration, 0, States.Cooling);
 			target.CharacterState.CmdAddState(States.Cooling, duration, 0, _dad.gameObject, _skill.name);

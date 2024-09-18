@@ -7,14 +7,15 @@ using UnityEngine.Serialization;
 
 public class IcePuddleObject : Projectiles
 {
-	[HideInInspector] public FrostingFrozenTalant talant;
+	//[HideInInspector] public FrostingFrozenTalant talant;
 
 	//[FormerlySerializedAs("energyPlayer")]  private Energy _energy;
 	[FormerlySerializedAs("healthPlayer")]  private Health _healthComponent;
 	//[SerializeField] private Rigidbody2D _rb;
 
 	private float _timeToDestroy = 0;
-	private bool _talentActive = false;
+	private bool _talentEvadeDadBoost = false;
+	private bool _talentFrostingFrozen = false;
 	private List<CharacterState> _enemies = new List<CharacterState>();
 	/*
 	 * buff player
@@ -35,9 +36,10 @@ public class IcePuddleObject : Projectiles
 		StartCoroutine(DestroyShadow());
 		StartCoroutine(StartFade());
 	}
-	public void SetTalentActive(bool active)
+	public void SetTalents(bool talentEvadeDadBoost, bool talentFrostingFrozen)
 	{
-		_talentActive=active;
+		_talentEvadeDadBoost= talentEvadeDadBoost;
+		_talentFrostingFrozen= talentFrostingFrozen;
 	}
 	private void Start()
 	{
@@ -55,7 +57,7 @@ public class IcePuddleObject : Projectiles
 		}
 		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject != _dad.gameObject)
 		{
-			if (_talentActive)
+			if (_talentEvadeDadBoost)
 			{
 				Debug.LogError("fix");
 				//_dad.Health.SetEvadeAll(-3);
@@ -87,14 +89,12 @@ public class IcePuddleObject : Projectiles
 				_energy.UseAllEnergy();
 			}
 			target.CharacterState.CmdAddState(States.Frosting, duration, 0, _dad.gameObject, _skill.name);
-			if (talant != null)
+
+			if (_talentFrostingFrozen)
 			{
-				if (talant.Data.IsOpen)
-				{
-					target.CharacterState.CmdAddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
-				}
+				target.CharacterState.CmdAddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
 			}
-			if (_talentActive)
+			if (_talentEvadeDadBoost)
 			{
 				Debug.LogError("fix");
 				//_dad.Health.SetEvadeAll(3);

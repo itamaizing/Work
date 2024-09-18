@@ -31,7 +31,8 @@ public class PhysicalAttack : AutoAttackSkill
 
 	protected override void CastAction()
 	{
-		Hit(Target);
+		if(_target != null) 
+		Hit(_target);
 	}
 	private void Hit(Character enemy)
 	{

@@ -7,7 +7,7 @@ public abstract class AutoAttackSkill : Skill
     [SerializeField] private float _attackZoneSize;
     [SerializeField] protected float _attackSpeed = 1f;
 
-    protected bool _isAutoattackMode = true;
+    public bool _isAutoattackMode = true;
     protected Character _target;
     private Coroutine _autoAttackCoroutine;
     private bool _isAttacking = false;
@@ -16,7 +16,17 @@ public abstract class AutoAttackSkill : Skill
     public float AttackSpeed { get => Buff.AttackSpeed.GetBuffedValue(_attackSpeed); }
     public Character Target { get => _target; }
     public Vector2 LastTargetPosition { get => _lastTargetPosition; }
-    protected override bool IsCanCast { get => NoObstacles(Target.transform.position, _obstacle) && IsTargetInRadius(Radius, Target.transform); }
+    public override bool IsPayCostStartCooldown { get => false; }
+    protected override bool IsCanCast
+    {
+        get
+        {
+            if (Target == null)
+                return false;
+
+            return NoObstacles(Target.transform.position, _obstacle) && IsTargetInRadius(Radius, Target.transform); ;
+        }
+    }
 
     protected abstract void CastAction();
 
@@ -82,12 +92,16 @@ public abstract class AutoAttackSkill : Skill
                     yield return new WaitForSeconds(AttackSpeed);
                     if (IsTargetInRadius(Radius + _attackZoneSize, Target.transform) && NoObstacles(Target.transform.position, _obstacle) && IsCooldowned)
                     {
-                        if (TryPayCost())
+                        if (TryPayCost(true))
                         {
                             CastAction();
 
                             if (_isAutoattackMode == false)
+                            {
                                 ClearData();
+                                yield break;
+                            }
+
                         }
                     }
                 }
