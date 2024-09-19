@@ -65,7 +65,7 @@ public class SkillPanel : MonoBehaviour
                 continue;
 
             var icon = Instantiate(_skillIconPref, _skillIcons[i].transform);
-            icon.Init(_playerAbilities.SelectedSkills[i]);
+            icon.Init(_playerAbilities.SelectedSkills[i], _skillIcons[i].transform);
             _skillIcons[i].CurrentIcon = icon;
             icon.transform.SetAsFirstSibling();
             _skills.Add(icon);
@@ -84,8 +84,6 @@ public class SkillPanel : MonoBehaviour
 
     public void SetHideUnusedButtons(bool value)
     {
-        Debug.Log(value);
-
         if (value)
         {
             _hideUnusedButtons = value;

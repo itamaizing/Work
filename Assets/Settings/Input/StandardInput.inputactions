@@ -184,6 +184,15 @@
                     "processors": "",
                     "interactions": "MultiTap",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "SwitchAutoMode",
+                    "type": "Button",
+                    "id": "f54e5d04-26d1-4e01-896f-f076220314c1",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -450,6 +459,39 @@
                     "action": "Spell16",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "One Modifier",
+                    "id": "d5e33051-6068-4ea6-85c8-54ce0a28b536",
+                    "path": "OneModifier(overrideModifiersNeedToBePressedFirst=true)",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SwitchAutoMode",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "Modifier",
+                    "id": "c172b242-1a92-487f-bc74-b3633c12faa4",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SwitchAutoMode",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Binding",
+                    "id": "9b0a6bad-5d24-466c-8339-532c7fe0a714",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SwitchAutoMode",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         }
