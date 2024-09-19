@@ -595,7 +595,6 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _attackZoneSize: 2
   _attackSpeed: 1
-  _isAutoattackMode: 1
   _damage: 8
   _playerLinks: {fileID: 5889404958618692528}
   _combo: {fileID: 5948793039085152286}

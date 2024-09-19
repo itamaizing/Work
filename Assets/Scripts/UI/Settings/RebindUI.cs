@@ -143,8 +143,10 @@ public class RebindUI : MonoBehaviour
         if (m_BindingText != null)
             m_BindingText.text = displayString;
 
-        if(InputHandler.Instance != null)
-            InputHandler.Instance.InputActions.FindAction(actionReference.action.name).ApplyBindingOverride(deviceLayoutName + "/" + controlPath);
+        var bindingIndex1 = action.bindings.IndexOf(x => x.id.ToString() == m_BindingId);
+
+        if (InputHandler.Instance != null)
+            InputHandler.Instance.InputActions.FindAction(actionReference.action.name).ApplyBindingOverride(bindingIndex1, deviceLayoutName + "/" + controlPath);
 
         m_UpdateBindingUIEvent?.Invoke(this, displayString, deviceLayoutName, controlPath);
     }

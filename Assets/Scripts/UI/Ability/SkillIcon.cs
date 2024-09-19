@@ -93,8 +93,8 @@ public class SkillIcon : MonoBehaviour, IDropHandler
 
     public void OnStartCooldown(float dutarion)
     {
-        _cooldown.StartFill(dutarion, 1, 0, false);
         _cooldown.gameObject.SetActive(true);
+        _cooldown.StartFill(dutarion, 1, 0, false);
     }
 
     public void Selected()
@@ -153,6 +153,7 @@ public class SkillIcon : MonoBehaviour, IDropHandler
 
         ability.CastStarted -= OnCastStarted;
         ability.CastEnded -= OnCastEnded;
+        ability.Canceled -= OnCastEnded;
     }
 
     private void OnCastStarted()

@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] Image _image;
 
@@ -21,14 +21,18 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public event Action BeginDrag;
     public event Action EndDrag;
 
-    public void Init(Skill skill)
+    public void Init(Skill skill, Transform parent)
     {
         _skill = skill;
         _image.sprite = _skill.Icon;
+        PatentAfterDrag = parent;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        if (_skill.IsCasting)
+            return;
+
         PatentAfterDrag = transform.parent;
         PatentAfterDrag.GetComponent<SkillIcon>().CurrentIcon = null;
         transform.SetParent(transform.root);
@@ -40,6 +44,9 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnDrag(PointerEventData eventData)
     {
+        if (_skill.IsCasting)
+            return;
+
         transform.position = Input.mousePosition;
     }
 
@@ -51,5 +58,24 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         PatentAfterDrag.GetComponent<SkillIcon>().CurrentIcon = this;
 
         EndDrag?.Invoke();
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        InputHandler.OnSwitchAutoMode += OnClickWithCtrl;
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        InputHandler.OnSwitchAutoMode -= OnClickWithCtrl;
+    }
+
+    private void OnClickWithCtrl()
+    {
+        if (Skill is AutoAttackSkill autuAttackSkill)
+        {
+            autuAttackSkill.SwitchAutoMode();
+            Debug.Log("AA mode - " + autuAttackSkill.IsAutoattackMode);
+        }
     }
 }
