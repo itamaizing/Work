@@ -77,7 +77,7 @@ public class UserNetworkSettings : NetworkBehaviour
             else
             {
                 item.gameObject.layer = LayerMask.NameToLayer("Allies");
-                _enemies.Add(item.GetComponent<HeroComponent>());
+                _allies.Add(item.GetComponent<HeroComponent>());
             }
         }
     }

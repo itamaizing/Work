@@ -51,7 +51,8 @@ public class Health : Resource, IDamageable, IHealingable
 
         if (TryUse(damage.Value) == false)
         {
-            if (isServer) ClientRpcDied();
+            ClientRpcDied();
+            Died?.Invoke();
         }
         ClientRpcDamageTaked(damage.Value, damage.Type);
         _sumDamageTaken += damage.Value;
@@ -143,7 +144,7 @@ public class Health : Resource, IDamageable, IHealingable
         DamageTaken?.Invoke(damageTaken, damageType);
     }
 
-    [Server]
+    [ClientRpc]
     private void ClientRpcDied()
     {
         Died?.Invoke();
