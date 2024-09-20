@@ -407,7 +407,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _resourceType: 0
+  _resourceType: 3
 --- !u!114 &4715758111818368764
 MonoBehaviour:
   m_ObjectHideFlags: 0

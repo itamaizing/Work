@@ -60,7 +60,7 @@ public class BlockOfIceProjectile : Projectiles
 			target.Health.TryTakeDamage(ref damage, _skill);
 
 			//target.CharacterState.AddState(new Cooling(), duration, 0, States.Cooling);
-			target.CharacterState.CmdAddState(States.Cooling, duration, 0, _dad.gameObject, _skill.name);
+			target.CharacterState.AddState(States.Cooling, duration, 0, _dad.gameObject, _skill.name);
 
 			//dad.Runes.Use(duration * 20);
 			//damage

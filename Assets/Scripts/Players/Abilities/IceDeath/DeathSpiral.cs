@@ -242,7 +242,7 @@ public class DeathSpiral : Skill
 		}
 	}
 
-	protected override bool TryPayCost(bool startCooldown = true)
+	protected override bool TryPayCost(List<SkillEnergyCost> skillEnergyCosts, bool startCooldown = true)
 	{
 		if (IsHaveResourceOnSkill)
 		{
@@ -255,7 +255,9 @@ public class DeathSpiral : Skill
 				}
 				_firstShot= false;
 			}
-			IncreaseSetCooldown(CooldownTime);
+			if (startCooldown)
+				IncreaseSetCooldown(CooldownTime);
+
 			TryUseCharge();
 			return true;
 		}

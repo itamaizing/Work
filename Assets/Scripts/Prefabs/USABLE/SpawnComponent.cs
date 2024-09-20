@@ -38,6 +38,7 @@ public class SpawnComponent : NetworkBehaviour
         NetworkServer.Spawn(controllable , connectionToClient);
     }
 
+    
 	public void SpawnUnit(Transform transform)
 	{
 		var controllable = Instantiate(unit, transform);

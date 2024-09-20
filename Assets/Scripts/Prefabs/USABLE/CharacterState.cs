@@ -52,7 +52,7 @@ public class DefaultState : AbstractCharacterState
 		return false;
 	}
 }
-
+/*
 public class InvisibleStateOld : AbstractCharacterState
 {
 	private Renderer[] childRenderers;
@@ -104,7 +104,7 @@ public class InvisibleStateOld : AbstractCharacterState
 				}
 			}
 		}
-*/
+
 		if (_characterState.Character.Move.IsMoving)
 		{
 			CheckEnemies();
