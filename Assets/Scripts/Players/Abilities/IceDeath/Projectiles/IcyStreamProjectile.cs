@@ -1,4 +1,5 @@
 using DG.Tweening;
+using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,10 +11,10 @@ public class IcyStreamProjectile : Projectiles
 	private float _damage = 1;
 	private float _chanceOfFrosting = 0.05f;
 	private float _durationOfDebuff = 2;
-	private List<Character> _enemyList;
+	private List<Character> _enemyList = new List<Character>();
 	//private Vector2 startPos;
 
-	private void Start()
+	/*private void Start()
 	{
 		Debug.Log("bullet");
 		//startPos = transform.position;
@@ -27,7 +28,7 @@ public class IcyStreamProjectile : Projectiles
 			_durationOfDebuff += _energyDad / 10;
 		}
 		_rb.DOMove(transform.up * _distance * GlobalVariable.cellSize, _timer).OnComplete(Explode);
-	}
+	}*/
 
 	private void Update()
 	{
@@ -35,22 +36,28 @@ public class IcyStreamProjectile : Projectiles
 		_spriteRenderer.DOFade(0, _timer);
 	}
 
+	[Server]
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		if (!_initialized || _dad == null) return;
-		if (collision.gameObject == _dad.gameObject || collision.CompareTag("Ability"))
+		if (collision.gameObject == _dad.gameObject)
 			return;
 
 		if (collision.TryGetComponent<Character>(out var target))
 		{
 			_enemyList.Add(target);
-			//Energy energyLink = (Energy)_dad.Stamina;
 			_energy.SumDamageMake(_damage);
 
-			//target.Health.TryTakeDamage(_damage, DamageType.Magical, AttackRangeType.RangeAttack);
-			Debug.LogError("!!!damage method has been changed!!!");
+			Damage damage = new Damage
+			{
+				Value = _damage,
+				Type = DamageType.Magical,
+				Range = AttackRangeType.RangeAttack,
+			};
+			//_skill.CmdApplyDamage(damage, target.gameObject);
+			target.Health.TryTakeDamage(ref damage, _skill);
 
-			target.CharacterState.CmdAddState(States.Cooling, _durationOfDebuff, 0, _dad.gameObject, _skill.name);
+			target.CharacterState.AddState(States.Cooling, _durationOfDebuff, 0, _dad.gameObject, _skill.name);
 		}
 		//Explode();
 	}
@@ -83,18 +90,25 @@ public class IcyStreamProjectile : Projectiles
 			_time = 0;
 			_distance++;
 			_chanceOfFrosting *= 2;
-			foreach (var enemy in _enemyList)
+			for(int i = 0; i < _enemyList.Count; i ++)
 			{
-				//enemy.Health.TryTakeDamage(_damage, DamageType.Magical, AttackRangeType.RangeAttack);
-				Debug.LogError("!!!damage method has been changed!!!");
+				Damage damage = new Damage
+				{
+					Value = _damage,
+					Type = DamageType.Magical,
+					Range = AttackRangeType.RangeAttack,
+				};
+				//_skill.CmdApplyDamage(damage, target.gameObject);
+				_enemyList[i].Health.TryTakeDamage(ref damage, _skill);
 
-				enemy.CharacterState.CmdAddState(States.Cooling, _durationOfDebuff, 0, _dad.gameObject, _skill.name);
+
+				_enemyList[i].CharacterState.AddState(States.Cooling, _durationOfDebuff, 0, _dad.gameObject, _skill.name);
 				if (Random.Range(0, 1f) <= _chanceOfFrosting)
 				{
-					enemy.CharacterState.CmdAddState(States.Frosting, _durationOfDebuff, 0, _dad.gameObject, _skill.name);
+					_enemyList[i].CharacterState.AddState(States.Frosting, _durationOfDebuff, 0, _dad.gameObject, _skill.name);
 					if (_lastHit) //its talent bool, no last hit 
 					{
-						enemy.CharacterState.CmdAddState(States.Frozen, _durationOfDebuff, 0, _dad.gameObject, _skill.name);
+						_enemyList[i].CharacterState.AddState(States.Frozen, _durationOfDebuff, 0, _dad.gameObject, _skill.name);
 					}
 				}
 			}

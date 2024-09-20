@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections;
 using UnityEngine;
 
@@ -13,6 +14,7 @@ public class IceSword : Skill
 	private int _hitInTheRow = 0;
 	private Character _oldtarget;
 	private Character _target;
+	private float _duration = 3;
 	//private Energy _energy;
 	protected override bool IsCanCast => IsCanCastCheck();
 
@@ -65,7 +67,7 @@ public class IceSword : Skill
 			_hitInTheRow = 0;
 		}
 		ApplyDamage();
-
+		CmdAdd(_target.gameObject);
 		yield return null;
 	}
 
@@ -76,7 +78,6 @@ public class IceSword : Skill
 
 	private void ApplyDamage()
 	{
-
 		Damage damage2 = new Damage
 		{
 			Value = _damage,
@@ -85,6 +86,14 @@ public class IceSword : Skill
 		};
 		//_skill.CmdApplyDamage(damage, target.gameObject);
 		CmdApplyDamage(damage2, _target.gameObject);
+		//_target.CharacterState.CmdAddState(States.Cooling, _duration, 0, _playerLinks.gameObject, name);
 		//_target.Health.TryTakeDamage(ref damage2, this);
+	}
+
+	[Command]
+	private void CmdAdd(GameObject enemy)
+	{
+		Character enemyCharacter = enemy.GetComponent<Character>();
+		enemyCharacter.CharacterState.AddState(States.Cooling, _duration, 0, _playerLinks.gameObject, name);
 	}
 }

@@ -1,9 +1,5 @@
 using Mirror;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class DeathSpiralProjectile : Projectiles
@@ -90,6 +86,7 @@ public class DeathSpiralProjectile : Projectiles
 		_talentCorpseDeath = destroy;
 		_talentCorpseBoostExplode = boostExplode;
 	}
+
 	public void SetAlive(float hp, Transform transform)
 	{
 		_dad.SpawnComponent.SpawnUnit(transform);
@@ -112,7 +109,7 @@ public class DeathSpiralProjectile : Projectiles
 			target.Health.TryTakeDamage(ref damage, _skill);
 			if(_talentPlague)
 			{
-				target.CharacterState.CmdAddState(States.Plague, 5, 0, _dad.gameObject, _skill.name);
+				target.CharacterState.AddState(States.Plague, 5, 0, _dad.gameObject, _skill.name);
 			}
 			if(_talentChragesPlague)
 			{
@@ -120,7 +117,7 @@ public class DeathSpiralProjectile : Projectiles
 			}
 			if(_talentSuperCharge)
 			{
-				target.CharacterState.CmdAddState(States.Curse, 40, 0, _dad.gameObject, _skill.name);
+				target.CharacterState.AddState(States.Curse, 40, 0, _dad.gameObject, _skill.name);
 			}
 			if (_talentHitState)
 			{
@@ -139,7 +136,7 @@ public class DeathSpiralProjectile : Projectiles
 			target.Health.TryTakeDamage(ref damage, _skill);
 			if (_talentPlague)
 			{
-				target.CharacterState.CmdAddState(States.Plague, 5, 0, _dad.gameObject, _skill.name);
+				target.CharacterState.AddState(States.Plague, 5, 0, _dad.gameObject, _skill.name);
 			}
 			if (_talentChragesPlague)
 			{
@@ -147,7 +144,7 @@ public class DeathSpiralProjectile : Projectiles
 			}
 			if (_talentSuperCharge)
 			{
-				target.CharacterState.CmdAddState(States.Curse, 40, 0, _dad.gameObject, _skill.name);
+				target.CharacterState.AddState(States.Curse, 40, 0, _dad.gameObject, _skill.name);
 			}
 			if (_talentHitState)
 			{
@@ -160,8 +157,8 @@ public class DeathSpiralProjectile : Projectiles
 	{
 		if (target.CharacterState.CheckForState(States.Frozen))
 		{
-			target.CharacterState.CmdRemoveState(States.Frozen);
-			target.CharacterState.CmdAddState(States.Frosting, 40, 0, _dad.gameObject, _skill.name);
+			target.CharacterState.RemoveState(States.Frozen);
+			target.CharacterState.AddState(States.Frosting, 40, 0, _dad.gameObject, _skill.name);
 
 			Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 4);
 
@@ -177,16 +174,16 @@ public class DeathSpiralProjectile : Projectiles
 					};
 					//_skill.CmdApplyDamage(damage, target.gameObject);
 					target.Health.TryTakeDamage(ref damage2, _skill);
-					enemy.CharacterState.CmdAddState(States.Frosting, 40, 0, _dad.gameObject, _skill.name);
+					enemy.CharacterState.AddState(States.Frosting, 40, 0, _dad.gameObject, _skill.name);
 				}
 			}
 		}
 		else if (target.CharacterState.CheckForState(States.Frosting))
 		{
-			target.CharacterState.CmdRemoveState(States.Frosting);
+			target.CharacterState.RemoveState(States.Frosting);
 			for (int i = 0; i < 5; i++)
 			{
-				target.CharacterState.CmdAddState(States.Cooling, 4, 0, _dad.gameObject, _skill.name);
+				target.CharacterState.AddState(States.Cooling, 4, 0, _dad.gameObject, _skill.name);
 			}
 
 			Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 4);
@@ -205,7 +202,7 @@ public class DeathSpiralProjectile : Projectiles
 					target.Health.TryTakeDamage(ref damage2, _skill);
 					for (int i = 0; i < 5; i++)
 					{
-						enemy.CharacterState.CmdAddState(States.Cooling, 4, 0, _dad.gameObject, _skill.name);
+						enemy.CharacterState.AddState(States.Cooling, 4, 0, _dad.gameObject, _skill.name);
 					}
 				}
 			}

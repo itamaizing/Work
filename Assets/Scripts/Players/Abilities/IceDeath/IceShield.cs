@@ -1,6 +1,8 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 public class IceShield : Skill
@@ -9,53 +11,34 @@ public class IceShield : Skill
 	[SerializeField] private float _decreaseSpeed = 0.2f;
 	[SerializeField] private HeroComponent _playerLinks;
 	[SerializeField] private SeriesOfStrikes _combo;
+	[SerializeField] private IceShieldObject _shield;
 
-	private IceShieldObj _shield;
 	private bool _active = false;
 	private float _timer = 1f;
 	private float _delay = 1f;
 	private Energy _energy;
 
-	protected override bool IsCanCast => throw new System.NotImplementedException();
-
-	private void Start()
-	{
-		for (int i = 0; i < _playerLinks.Resources.Count; i++)
-		{
-			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)_playerLinks.Resources[i];
-			}
-		}
-
-	}
-
-	private void Update()
-	{
-		Timer();
-	}
+	protected override bool IsCanCast => true;
 
 	private void Shoot() 
 	{
 		_active = !_active;
-
+		Debug.Log(_playerLinks.Health.Shields.Count);
 		if (_active) 
 		{
+			_shield.gameObject.SetActive(true);
 			_playerLinks.Move.ChangeMoveSpeed(0.8f);
-			//IceShieldObj shield = new IceShieldObj(Health, _playerLinks.Stamina.CurrentValue, DamageType.Both);
-			//_shield = shield;
-			//create shield
-			//_character.Health.
+			CmdAddShield();
 		}
 		else
 		{
+			_shield.gameObject.SetActive(false);
 			_playerLinks.Move.ChangeMoveSpeed(1.25f);
-			//Health.RemoveShield(_shield, DamageType.Both);
-			_shield = null;
+			CmdRemoveShield();
 		}
 	}
 
-	private void Timer()
+	/*private void Timer()
 	{
 		if (_active)
 		{
@@ -70,61 +53,38 @@ public class IceShield : Skill
 			{
 				_active = false;
 			}
-		*/
+		
 		}
-	}
+	}*/
 
 	protected override IEnumerator PrepareJob()
 	{
-		throw new System.NotImplementedException();
+		yield return null;
 	}
 
 	protected override IEnumerator CastJob()
 	{
-		throw new System.NotImplementedException();
+		Shoot();
+		yield return null;
 	}
 
 	protected override void ClearData()
 	{
-		throw new System.NotImplementedException();
+		
+	}
+
+	[Command]
+	private void CmdAddShield()
+	{
+		_playerLinks.Health.Shields.Add(_shield);
+		Debug.Log(_playerLinks.Health.Shields.Count);
+	}
+
+	[Command]
+	private void CmdRemoveShield()
+	{
+		_playerLinks.Health.Shields.Remove(_shield);
+		Debug.Log(_playerLinks.Health.Shields.Count);
 	}
 }
 
-
-public class IceShieldObj : Shielding
-{
-	//private GameObject _enemy;
-	public IceShieldObj(HealthComponent healthComponent, float shieldValue, DamageType damageType) : base(healthComponent, shieldValue, damageType)
-	{
-		//_enemy = enemy;
-	}
-
-	protected new void AddShieldBehavior(HealthComponent healthComponent, DamageType damageType)
-	{
-		healthComponent.AddShieldBehavior(this, damageType);
-	}
-
-	public override float GetShieldAmount(GameObject obj)
-	{
-		if(obj == null)
-		{
-			return _shieldAmount;
-		}
-
-		Vector2 lookDir = obj.transform.position - _healthComponent.transform.position;
-		float _angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
-		if (_angle > -75 && _angle < 75)
-		{
-			return _shieldAmount;
-		}
-		else
-		{
-			return 0;
-		}
-	}
-
-	public override void RemoveAmount(float amount)
-	{
-		_shieldAmount -= amount;
-	}
-}
