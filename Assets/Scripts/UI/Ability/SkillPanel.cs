@@ -34,7 +34,7 @@ public class SkillPanel : MonoBehaviour
 
         for (int i = 0; i < _skillIcons.Length; i++)
         {
-            _skillIcons[i].Init(i, _castLine);
+            _skillIcons[i].Init(i);
             _skillIcons[i].CurrentSkillChenged += SkillChenged;
         }
 

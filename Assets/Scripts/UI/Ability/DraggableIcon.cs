@@ -10,6 +10,10 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 {
     [SerializeField] Image _image;
 
+    [SerializeField] private FillAmountOverTime _cooldown;
+    [SerializeField] private TextMeshProUGUI _chargeCounter;
+    [SerializeField] private Blink _blinkBoxFrame;
+
     private Transform _patentAfterDrag;
     private Skill _skill;
     private bool _selected;
@@ -26,13 +30,17 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         _skill = skill;
         _image.sprite = _skill.Icon;
         PatentAfterDrag = parent;
+
+        SubscribingSkillOnEvents(_skill);
+    }
+
+    private void OnDestroy()
+    {
+        UnsubscribingSkillOnEvents(_skill);
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (_skill.IsCasting)
-            return;
-
         PatentAfterDrag = transform.parent;
         PatentAfterDrag.GetComponent<SkillIcon>().CurrentIcon = null;
         transform.SetParent(transform.root);
@@ -44,9 +52,6 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (_skill.IsCasting)
-            return;
-
         transform.position = Input.mousePosition;
     }
 
@@ -70,6 +75,38 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         InputHandler.OnSwitchAutoMode -= OnClickWithCtrl;
     }
 
+    private void SubscribingSkillOnEvents(Skill ability)
+    {
+        //ability.CastStreamStarted += OnStartStreaming;
+        //ability.Canceled += OnStopStreaming;
+
+        //ability.CastDeleyStarted += OnStartCastDeley;
+        //ability.Canceled += OnStopCastDeley;
+
+        ability.CooldownStarted += OnStartCooldown;
+        ability.CurrentChargeChanged += OnCurrentChargeText;
+
+        ability.CastStarted += OnCastStarted;
+        ability.CastEnded += OnCastEnded;
+        ability.Canceled += OnCastEnded;
+    }
+
+    private void UnsubscribingSkillOnEvents(Skill ability)
+    {
+        //ability.CastStreamStarted -= OnStartStreaming;
+        //ability.Canceled -= OnStopStreaming;
+
+        //ability.CastDeleyStarted -= OnStartCastDeley;
+        //ability.Canceled -= OnStopCastDeley;
+
+        ability.CooldownStarted -= OnStartCooldown;
+        ability.CurrentChargeChanged -= OnCurrentChargeText;
+
+        ability.CastStarted -= OnCastStarted;
+        ability.CastEnded -= OnCastEnded;
+        ability.Canceled -= OnCastEnded;
+    }
+
     private void OnClickWithCtrl()
     {
         if (Skill is AutoAttackSkill autuAttackSkill)
@@ -77,5 +114,33 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             autuAttackSkill.SwitchAutoMode();
             Debug.Log("AA mode - " + autuAttackSkill.IsAutoattackMode);
         }
+    }
+
+    private void OnCastStarted()
+    {
+        _blinkBoxFrame.gameObject.SetActive(true);
+        _blinkBoxFrame.StartBlink(0.5f);
+    }
+
+    private void OnCastEnded()
+    {
+        _blinkBoxFrame.StopBlink();
+        _blinkBoxFrame.gameObject.SetActive(false);
+    }
+
+    private void OnCurrentChargeText(int value)
+    {
+        if (value > 0)
+            _chargeCounter.color = Color.green;
+        else
+            _chargeCounter.color = Color.red;
+
+        _chargeCounter.text = value.ToString();
+    }
+
+    private void OnStartCooldown(float dutarion)
+    {
+        _cooldown.gameObject.SetActive(true);
+        _cooldown.StartFill(dutarion, 1, 0, false);
     }
 }
