@@ -1,16 +1,14 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using Mirror;
 
-public class Level : MonoBehaviour
+public class Level : NetworkBehaviour
 {
-    protected int _experienceForNextLVL = 100;
+    [SyncVar] protected int _experienceForNextLVL = 100;
     protected int _additionalToExperienceForNextLVL = 10;
     protected float _multiplierToExperienceForNextLVL = 1;
     private float _multiplierToExperience = 1;
-    private int _experience = 0;
-    private int _value = 1;
+    [SyncVar] private int _experience = 0;
+    [SyncVar] private int _value = 1;
 
     public int Value { get => _value; protected set { _value = value; LVLUped?.Invoke(_value); } }
     public int Experience { get => _experience; }
