@@ -8,6 +8,8 @@ public class TestPush : Skill
     [SerializeField] private float _pushDistance = 5f;
 
     private Character _target;
+    private GameObject _tempTarget;
+    private MoveComponent _tempTargetMove;
 
     protected override bool IsCanCast
     {
@@ -53,6 +55,11 @@ public class TestPush : Skill
     [Command]
     private void CmdPush(GameObject gameObject, Vector2 force)
     {
-        gameObject.GetComponent<MoveComponent>().TargetRpcAddTransformPosition(force);
+        if (_tempTarget != gameObject)
+        {
+            _tempTarget = gameObject;
+            _tempTargetMove = gameObject.GetComponent<MoveComponent>();
+        }
+        _tempTargetMove.TargetRpcAddTransformPosition(force);
     }
 }
