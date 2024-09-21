@@ -10,6 +10,7 @@ public abstract class Character : NetworkBehaviour
 	[SerializeField] private CharacterData _playerData;
 	[SerializeField] private UserNetworkSettings _networkSettings; 
 	[SerializeField] private Rigidbody2D rb;
+	[SerializeField] private Level _lvl;
 	[SerializeField] private Health _healthComponent;
 	public Energy Stamina;
 	//public RuneComponent RuneComponent;
@@ -24,6 +25,7 @@ public abstract class Character : NetworkBehaviour
 	public UserNetworkSettings NetworkSettings => _networkSettings;
 	public Rigidbody2D Rb => rb;
 	public Health Health => _healthComponent;
+	public Level LVL => _lvl;
 	public MoveComponent Move => _playerMove;
 	public SkillManager Abilities => _abilities;
 	public CharacterState CharacterState => _characterState;
