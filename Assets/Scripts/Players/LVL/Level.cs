@@ -8,12 +8,14 @@ public class Level : MonoBehaviour
     protected int _experienceForNextLVL = 100;
     protected int _additionalToExperienceForNextLVL = 10;
     protected float _multiplierToExperienceForNextLVL = 1;
+    private float _multiplierToExperience = 1;
     private int _experience = 0;
     private int _value = 1;
 
     public int Value { get => _value; protected set { _value = value; LVLUped?.Invoke(_value); } }
     public int Experience { get => _experience; }
     public int ExperienceForNextLVL { get => _experienceForNextLVL; }
+    public float MultiplierToExperience { get => _multiplierToExperience; set => _multiplierToExperience = value; }
 
     public event Action<int> EXPAdded;
     public event Action<int> LVLUped;
@@ -22,6 +24,8 @@ public class Level : MonoBehaviour
     {
         if (value <= 0)
             return;
+
+        value = (int)(value * _multiplierToExperience);
 
         _experience += value;
         EXPAdded?.Invoke(value);
@@ -41,7 +45,6 @@ public class Level : MonoBehaviour
 
     private void IncreasExperienceForNextLVL()
     {
-        var temp = _experienceForNextLVL * _multiplierToExperienceForNextLVL;
-        _experienceForNextLVL = (int)temp + _additionalToExperienceForNextLVL;
+        _experienceForNextLVL = (int)(_experienceForNextLVL * _multiplierToExperienceForNextLVL) + _additionalToExperienceForNextLVL;
     }
 }
