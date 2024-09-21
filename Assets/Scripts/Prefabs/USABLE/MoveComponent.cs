@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class MoveComponent : NetworkBehaviour
 {
-	[SerializeField] private float _smoothTime = 0.15f;
+	[SerializeField, Range(0, 1)] private float _smoothTime = 0.15f;
 
 	public Vector2 MoveDirection = Vector2.zero;
 	
@@ -81,9 +81,20 @@ public class MoveComponent : NetworkBehaviour
 	}
 
 	[TargetRpc]
-	public void TargetRpcMove()
+	public void TargetRpcAddForce(Vector2 vector2)
     {
-		CanMove = false;
-		_rigidbody.velocity = Vector2.up;
+		_rigidbody.AddForce(vector2);
+	}
+
+	[TargetRpc]
+	public void TargetRpcAddTransformPosition(Vector3 vector3)
+    {
+		transform.position += vector3;
+	}
+
+	[TargetRpc]
+	public void TargetRpcSetTransformPosition(Vector3 vector3)
+    {
+		transform.position = vector3;
 	}
 }

@@ -22,8 +22,14 @@ public class TestPush : Skill
 
     protected override IEnumerator CastJob()
     {
-        CmdPush(_target.gameObject);
-        yield return null;
+        float time = 3;
+
+        while(time > 0)
+        {
+            time -= Time.deltaTime;
+            CmdPush(_target.gameObject, (_target.transform.position - transform.position).normalized * 2 * Time.deltaTime);
+            yield return null;
+        }
     }
 
     protected override void ClearData()
@@ -45,8 +51,8 @@ public class TestPush : Skill
     }
 
     [Command]
-    private void CmdPush(GameObject gameObject)
+    private void CmdPush(GameObject gameObject, Vector2 force)
     {
-        gameObject.GetComponent<MoveComponent>().TargetRpcMove();
+        gameObject.GetComponent<MoveComponent>().TargetRpcAddTransformPosition(force);
     }
 }
