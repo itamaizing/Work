@@ -72,6 +72,7 @@ public class MoveComponent : NetworkBehaviour
 			return;
 		}
 		_currentVelocity = Vector2.SmoothDamp(_currentVelocity, _dir, ref _currentVelocityTemp, _smoothTime);
+		_rigidbody.velocity = _currentVelocity * _currentSpeed;
 	}
 
 	private void OnMove(Vector2 dir)
@@ -79,15 +80,10 @@ public class MoveComponent : NetworkBehaviour
 		_dir = dir;
 	}
 
-	[Client]
-	private void FixedUpdate()
-	{
-		CmdMove(_currentVelocity * _currentSpeed);
-	}
-
-	[Command]
-	private void CmdMove(Vector2 velocity)
-	{
-		_rigidbody.velocity = velocity;
+	[TargetRpc]
+	public void TargetRpcMove()
+    {
+		CanMove = false;
+		_rigidbody.velocity = Vector2.up;
 	}
 }
