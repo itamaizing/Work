@@ -1,6 +1,7 @@
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class CircularFrosting : Skill
@@ -11,7 +12,7 @@ public class CircularFrosting : Skill
 	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 
 	private float _baseDuration = 2;
-	private float _duration;
+	private float _duration = 2;
 	private Energy _energy;
 
 	protected override bool IsCanCast => true;
@@ -30,40 +31,44 @@ public class CircularFrosting : Skill
 
 	protected override IEnumerator CastJob()
 	{
-		throw new System.NotImplementedException();
+		CreateSmoke();
+		yield return null;
 	}
 
 	protected override void ClearData()
 	{
-		throw new System.NotImplementedException();
+		
 	}
 
 	protected override IEnumerator PrepareJob()
 	{
-		throw new System.NotImplementedException();
+		yield return null;
 	}
 
-	[Command]
 	private void CreateSmoke()
 	{
 		Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, Radius);
 		if (_energy.CurrentValue >= 30)
 		{
 			_duration = _baseDuration + 3;
-			_energy.TryUse(30);
+			_energy.CmdUse(30);
 		}
 		else
 		{
 			_duration = _baseDuration + _energy.CurrentValue / 10;
-			_energy.TryUse(_energy.CurrentValue);
+			_energy.CmdUse(_energy.CurrentValue);
 		}
 		foreach (var enemy in enemyDetected) 
 		{
+			//Debug.Log(enemy);
 			if (enemy.TryGetComponent<Character>(out var enemyCharacter))
 			{
-				_seriesOfStrikes.MakeHit(enemyCharacter, AbilityForm.Magic, 1, 0);
-				//enemyCharacter.CharacterState.AddState(new FrostingState(), _duration, 0, States.Frosting);
-				enemyCharacter.CharacterState.CmdAddState(States.Frosting, _duration, 0, _playerLinks.gameObject, name);
+				if (enemyCharacter != _playerLinks)
+				{
+					_seriesOfStrikes.MakeHit(enemyCharacter, AbilityForm.Magic, 1, 0);
+					CmdAdd(enemy.gameObject);
+					//enemyCharacter.CharacterState.CmdAddState(States.Frosting, _duration, 0, _playerLinks.gameObject, name);
+				}
 				/*if (_talant != null)
 				{
 					if (_talant.IsActive)
@@ -77,5 +82,12 @@ public class CircularFrosting : Skill
 		//var smoke = Instantiate(_circle, transform);
 		//smoke.dad = _links;
 		//_canCast = false;
+	}
+
+	[Command]
+	private void CmdAdd(GameObject enemy)
+	{
+		Character enemyCharacter = enemy.GetComponent<Character>();
+		enemyCharacter.CharacterState.AddState(States.Frosting, _duration, 0, _playerLinks.gameObject, name);
 	}
 }

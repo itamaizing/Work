@@ -45,10 +45,10 @@ public class IceShardProjectile : Projectiles
 			target.Health.TryTakeDamage(ref damage, _skill);
 
 			//target.Health.TryTakeDamage(curDamage, DamageType.Physical, AttackRangeType.RangeAttack);
-			target.CharacterState.CmdAddState(States.Frozen, duration, 30, _dad.gameObject, _skill.name);
+			target.CharacterState.AddState(States.Frozen, duration, 30, _dad.gameObject, _skill.name);
 			if(_talentPlague)
 			{
-				target.CharacterState.CmdAddState(States.Plague, 5, 0, _dad.gameObject, _skill.name);
+				target.CharacterState.AddState(States.Plague, 5, 0, _dad.gameObject, _skill.name);
 			}
 			if(_talentChragesPlague)
 			{

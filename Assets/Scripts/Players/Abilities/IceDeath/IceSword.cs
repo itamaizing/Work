@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections;
 using UnityEngine;
 
@@ -6,13 +7,14 @@ public class IceSword : Skill
 	[SerializeField] private float _damage = 15f;
 	//[SerializeField] private GameObject _basePlayer;
 	[SerializeField] private Character _playerLinks;
-//	[SerializeField] private DeathSpiral _deathSpiral;
+	[SerializeField] private DeathSpiral _deathSpiral;
 	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 
 
 	private int _hitInTheRow = 0;
 	private Character _oldtarget;
 	private Character _target;
+	private float _duration = 3;
 	//private Energy _energy;
 	protected override bool IsCanCast => IsCanCastCheck();
 
@@ -33,6 +35,18 @@ public class IceSword : Skill
 
 	}*/
 
+	protected override IEnumerator PrepareJob()
+	{
+		while (_target == null)
+		{
+			if (Input.GetMouseButton(0))
+			{
+				_target = GetRaycastTarget();
+			}
+			yield return null;
+		}
+	}
+
 	protected override IEnumerator CastJob()
 	{
 		_seriesOfStrikes.MakeHit(_target, AbilityForm.Magic, 0, 0);
@@ -47,20 +61,13 @@ public class IceSword : Skill
 			_oldtarget = _target;
 			Debug.Log("first hit from sword");
 		}
-		yield return null;
-	}
-	protected override IEnumerator PrepareJob()
-	{
-		while (_target == null)
+		if (_hitInTheRow > 2)
 		{
-			if (Input.GetMouseButton(0))
-			{
-				_target = GetRaycastTarget();
-			}
-			yield return null;
+			_deathSpiral.AddCharge();
+			_hitInTheRow = 0;
 		}
 		ApplyDamage();
-
+		CmdAdd(_target.gameObject);
 		yield return null;
 	}
 
@@ -71,7 +78,6 @@ public class IceSword : Skill
 
 	private void ApplyDamage()
 	{
-
 		Damage damage2 = new Damage
 		{
 			Value = _damage,
@@ -80,6 +86,14 @@ public class IceSword : Skill
 		};
 		//_skill.CmdApplyDamage(damage, target.gameObject);
 		CmdApplyDamage(damage2, _target.gameObject);
+		//_target.CharacterState.CmdAddState(States.Cooling, _duration, 0, _playerLinks.gameObject, name);
 		//_target.Health.TryTakeDamage(ref damage2, this);
+	}
+
+	[Command]
+	private void CmdAdd(GameObject enemy)
+	{
+		Character enemyCharacter = enemy.GetComponent<Character>();
+		enemyCharacter.CharacterState.AddState(States.Cooling, _duration, 0, _playerLinks.gameObject, name);
 	}
 }

@@ -9,8 +9,8 @@ public abstract class AutoAttackSkill : Skill
     [SerializeField] private float _attackZoneSize;
     [SerializeField] protected float _attackSpeed = 1f;
 
-    protected bool _isAutoattackMode = true;
     protected Character _target;
+    private bool _isAutoattackMode = true;
     private Coroutine _autoAttackCoroutine;
     private bool _isAttacking = false;
     private Vector2 _lastTargetPosition;
@@ -19,6 +19,7 @@ public abstract class AutoAttackSkill : Skill
     public Character Target { get => _target; }
     public Vector2 LastTargetPosition { get => _lastTargetPosition; }
     public override bool IsPayCostStartCooldown { get => false; }
+    public bool IsAutoattackMode { get => _isAutoattackMode; }
     protected override bool IsCanCast
     {
         get
@@ -65,6 +66,11 @@ public abstract class AutoAttackSkill : Skill
         while (Target == null);
     }
 
+    public void SwitchAutoMode()
+    {
+        _isAutoattackMode = !_isAutoattackMode;
+    }
+
     public void Pause()
     {
         Debug.Log("AutoAttackSkill / Pause");
@@ -106,7 +112,11 @@ public abstract class AutoAttackSkill : Skill
                             CastAction();
 
                             if (_isAutoattackMode == false)
+                            {
                                 ClearData();
+                                yield break;
+                            }
+
                         }
                     }
                 }

@@ -15,7 +15,7 @@ public class StateIcons : MonoBehaviour
     private List<StateIcoItem> _activeEffects = new List<StateIcoItem>();
     private bool _added = false;
 
-    /*private void Update()
+	/*private void Update()
 	{
         //for test
 
@@ -40,7 +40,7 @@ public class StateIcons : MonoBehaviour
 			ActivateIco(States.Frosting, 2, 6);
 		}
 	}*/
-    public void ActivateIco(States state, float timeToDecrease, int stack, bool canStack)
+	public void ActivateIco(States state, float timeToDecrease, int stack, bool canStack)
     {
         if (canStack)
         {
@@ -58,9 +58,9 @@ public class StateIcons : MonoBehaviour
             }
         }
 
-        foreach (var ico in _icons) //instatiating new ico
+        foreach(var ico in _icons) //instatiating new ico
         {
-            if (ico.state == state)
+            if(ico.state == state)
             {
                 var newIco = Instantiate(ico, _spawnPos.transform);
                 newIco.time.Add(timeToDecrease);
@@ -75,31 +75,31 @@ public class StateIcons : MonoBehaviour
             Debug.Log("There is no stateIco " + state.ToString());
             _added = false;
         }
-        /* switch (state)
-         {
-             case States.Stun:
-                 var stun = Instantiate(_stun, _spawnPos.transform);
-                 _activeEffects.Add(stun);
-                 AnimateIco(stun, timeToDecrease, stack);
-                 break;
-             case States.Frozen:
-                 var frozen = Instantiate(_frozen, _spawnPos.transform);
-                 _activeEffects.Add(frozen);
-                 AnimateIco(frozen, timeToDecrease, stack);
-                 break;
-             case States.Frosting:
-                 var frosting = Instantiate(_frozen, _spawnPos.transform);
-                 _activeEffects.Add(frosting);
-                 AnimateIco(frosting, timeToDecrease, stack);
-                 break;
-             case States.Blind:
-                 var blind = Instantiate(_frozen, _spawnPos.transform);
-                 _activeEffects.Add(blind);
-                 AnimateIco(blind, timeToDecrease, stack);
-                 break;
-             default:
-                 break;
-         }*/
+       /* switch (state)
+        {
+            case States.Stun:
+                var stun = Instantiate(_stun, _spawnPos.transform);
+                _activeEffects.Add(stun);
+                AnimateIco(stun, timeToDecrease, stack);
+                break;
+            case States.Frozen:
+				var frozen = Instantiate(_frozen, _spawnPos.transform);
+                _activeEffects.Add(frozen);
+				AnimateIco(frozen, timeToDecrease, stack);
+                break;
+            case States.Frosting:
+				var frosting = Instantiate(_frozen, _spawnPos.transform);
+                _activeEffects.Add(frosting);
+				AnimateIco(frosting, timeToDecrease, stack);
+                break;
+            case States.Blind:
+				var blind = Instantiate(_frozen, _spawnPos.transform);
+                _activeEffects.Add(blind);
+				AnimateIco(blind, timeToDecrease, stack);
+                break;
+            default:
+                break;
+        }*/
     }
 
     private void AnimateIco(StateIcoItem icoItem)
@@ -108,19 +108,19 @@ public class StateIcons : MonoBehaviour
         ico.fillAmount = 0;
         if (icoItem.count == 1)
         {
-            icoItem.Text.gameObject.SetActive(false);
+			icoItem.Text.gameObject.SetActive(false);
             icoItem.count--;
-            ico.DOFillAmount(1, icoItem.time[0]).SetEase(Ease.Linear).OnComplete(() => RemoveItem(icoItem));
-            icoItem.time.Remove(icoItem.time[0]);
-        }
+			ico.DOFillAmount(1, icoItem.time[0]).SetEase(Ease.Linear).OnComplete(() => RemoveItem(icoItem));
+			icoItem.time.Remove(icoItem.time[0]);
+		}
         else
         {
             icoItem.Text.gameObject.SetActive(true);
-            icoItem.Text.text = icoItem.count.ToString();
+			icoItem.Text.text = icoItem.count.ToString();
             icoItem.count--;
-            ico.DOFillAmount(1, icoItem.time[0]).SetEase(Ease.Linear).OnComplete(() => AnimateIco(icoItem));
+			ico.DOFillAmount(1, icoItem.time[0]).SetEase(Ease.Linear).OnComplete(() => AnimateIco(icoItem));
             icoItem.time.Remove(icoItem.time[0]);
-        }
+		}
     }
 
     private void RemoveItem(StateIcoItem icoItem)
@@ -136,30 +136,26 @@ public class StateIcons : MonoBehaviour
     }
 
     //removing item before it ends
-    public void RemoveItemByState(States state)
-    {
-        if (_activeEffects.Count > 0)
+	public void RemoveItemByState(States state)
+	{
+        if(_activeEffects.Count > 0)
+		/*foreach(var item in _activeEffects)
         {
-            for (int i = _activeEffects.Count - 1; i >= 0; i--)
+            if(item.state == state)
             {
-                if (_activeEffects[i].state == state)
-                {
-                    StateIcoItem icoItem = _activeEffects[i];
-                    _activeEffects.Remove(icoItem);
-                    Destroy(icoItem.gameObject);
-                }
-            }
-
-            /*foreach(var item in _activeEffects)
-            {
-                if(item.state == state)
-                {
-                    _activeEffects.Remove(item);
-                    Destroy(item.gameObject);
-                }
-            }*/
-        }
-    }
-
+				_activeEffects.Remove(item);
+                Destroy(item.gameObject);
+			}
+        }*/
+        for(int i = _activeEffects.Count - 1; i >= 0; i--)
+        {
+			if (_activeEffects[i].state == state)
+			{
+                StateIcoItem icoItem = _activeEffects[i];
+				_activeEffects.Remove(icoItem);
+				Destroy(icoItem.gameObject);
+			}
+		}
+	}
 }
 

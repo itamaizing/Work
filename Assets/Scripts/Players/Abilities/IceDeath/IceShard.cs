@@ -11,11 +11,11 @@ public class IceShard : Skill
 	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 
 	private Vector2 _mousePos = Vector2.positiveInfinity;
-	private bool _talentPlague = true;
+	private bool _talentPlague = false;
 	private bool _talentChragesPlague = false;
 	private Energy _energy;
 
-	protected override bool IsCanCast => throw new System.NotImplementedException();
+	protected override bool IsCanCast => true;
 
 	private void Start()
 	{

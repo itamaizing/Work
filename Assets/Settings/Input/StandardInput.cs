@@ -206,6 +206,15 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""MultiTap"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SwitchAutoMode"",
+                    ""type"": ""Button"",
+                    ""id"": ""f54e5d04-26d1-4e01-896f-f076220314c1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -472,6 +481,39 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
                     ""action"": ""Spell16"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""d5e33051-6068-4ea6-85c8-54ce0a28b536"",
+                    ""path"": ""OneModifier(overrideModifiersNeedToBePressedFirst=true)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SwitchAutoMode"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Modifier"",
+                    ""id"": ""c172b242-1a92-487f-bc74-b3633c12faa4"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SwitchAutoMode"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Binding"",
+                    ""id"": ""9b0a6bad-5d24-466c-8339-532c7fe0a714"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SwitchAutoMode"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -500,6 +542,7 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
         m_GameplayMap_Click = m_GameplayMap.FindAction("Click", throwIfNotFound: true);
         m_GameplayMap_AltClick = m_GameplayMap.FindAction("AltClick", throwIfNotFound: true);
         m_GameplayMap_AltDoubleClick = m_GameplayMap.FindAction("AltDoubleClick", throwIfNotFound: true);
+        m_GameplayMap_SwitchAutoMode = m_GameplayMap.FindAction("SwitchAutoMode", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -581,6 +624,7 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_GameplayMap_Click;
     private readonly InputAction m_GameplayMap_AltClick;
     private readonly InputAction m_GameplayMap_AltDoubleClick;
+    private readonly InputAction m_GameplayMap_SwitchAutoMode;
     public struct GameplayMapActions
     {
         private @StandardInput m_Wrapper;
@@ -605,6 +649,7 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
         public InputAction @Click => m_Wrapper.m_GameplayMap_Click;
         public InputAction @AltClick => m_Wrapper.m_GameplayMap_AltClick;
         public InputAction @AltDoubleClick => m_Wrapper.m_GameplayMap_AltDoubleClick;
+        public InputAction @SwitchAutoMode => m_Wrapper.m_GameplayMap_SwitchAutoMode;
         public InputActionMap Get() { return m_Wrapper.m_GameplayMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -674,6 +719,9 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
             @AltDoubleClick.started += instance.OnAltDoubleClick;
             @AltDoubleClick.performed += instance.OnAltDoubleClick;
             @AltDoubleClick.canceled += instance.OnAltDoubleClick;
+            @SwitchAutoMode.started += instance.OnSwitchAutoMode;
+            @SwitchAutoMode.performed += instance.OnSwitchAutoMode;
+            @SwitchAutoMode.canceled += instance.OnSwitchAutoMode;
         }
 
         private void UnregisterCallbacks(IGameplayMapActions instance)
@@ -738,6 +786,9 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
             @AltDoubleClick.started -= instance.OnAltDoubleClick;
             @AltDoubleClick.performed -= instance.OnAltDoubleClick;
             @AltDoubleClick.canceled -= instance.OnAltDoubleClick;
+            @SwitchAutoMode.started -= instance.OnSwitchAutoMode;
+            @SwitchAutoMode.performed -= instance.OnSwitchAutoMode;
+            @SwitchAutoMode.canceled -= instance.OnSwitchAutoMode;
         }
 
         public void RemoveCallbacks(IGameplayMapActions instance)
@@ -777,5 +828,6 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
         void OnClick(InputAction.CallbackContext context);
         void OnAltClick(InputAction.CallbackContext context);
         void OnAltDoubleClick(InputAction.CallbackContext context);
+        void OnSwitchAutoMode(InputAction.CallbackContext context);
     }
 }

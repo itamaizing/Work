@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Samples/Input System/1.6.3/Rebinding UI/Icons/PS4_Dpad_Right.png.meta
 guid: be71706bc979d5240bf156bfdfee0ae6
+========
+guid: 5fc2490d4f2941f4ca46f33e329cf3d7
+>>>>>>>> main:Assets/Samples/Input System/1.6.3/Rebinding UI/Icons/PS4_Dpad_Down.png.meta
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}

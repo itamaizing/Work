@@ -99,11 +99,6 @@ public class IcePuddleObject : Projectiles
 				Debug.LogError("fix");
 				//_dad.Health.SetEvadeAll(3);
 			}
-			//if (_talentActive)
-			//{
-			//	Debug.LogError("fix");
-			//	//_player.Health.SetEvadeAll(3);
-			//}
 			_enemies.Add(target.CharacterState);
 		}
 		//Explode();

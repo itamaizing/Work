@@ -1,7 +1,5 @@
 using Mirror;
 using UnityEngine;
-using System;
-using System.Collections.Generic;
 
 public abstract class AbstractCharacterState
 {
@@ -2967,6 +2965,94 @@ public class CharacterState : NetworkBehaviour
 	}
 
 	public AbstractCharacterState GetState(States state)
+	{
+		foreach (AbstractCharacterState states in currentStates)
+		{
+			Debug.Log(states.State + " on enemy, check for " + state);
+			if (states.State == state)
+			{
+				return states;
+			}
+		}
+		return null;
+	}
+
+	[Command]
+	public void CmdAddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
+	{
+		AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
+		ClientAddState(state, duration, damageToExit, schools, personWhoShooted, skillName);
+	}
+
+	[Command]
+	public void CmdAddState(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
+	{
+		Debug.Log("Add state cmd");
+		AddStateLogic(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
+		ClientAddState(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
+	}
+
+	public void AddState(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
+	{
+		Debug.Log("Add state from server");
+		AddStateLogic(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
+		ClientAddState(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
+	}
+
+	[Command]
+	public void CmdRemoveState(States state)
+	{
+		Debug.Log("Remove state" + state);
+		RemoveStateLogic(state);
+		ClientRemoveState(state);
+	}
+
+	public void RemoveState(States state)
+	{
+		RemoveStateLogic(state);
+		ClientRemoveState(state);
+	}
+
+	public void RemoveState(AbstractCharacterState newState)
+	{
+		if (currentStates.Contains(newState))
+		{
+			//newState.ExitState(this);
+			//_stateIcons.RemoveItemByState(newState.state);
+			currentStates.Remove(newState);
+		}
+	}
+
+	private void RemoveStateLogic(States stateName)
+	{
+		Debug.Log("Remove state logic" + stateName);
+		if (currentStates.Count <= 0) return;
+
+		_stateIcons.RemoveItemByState(stateName);
+		for(int i = currentStates.Count - 1; i >= 0; i --)
+		{
+			if (currentStates[i].State == stateName)
+			{
+				currentStates[i].ExitState();
+			}
+		}
+	}
+
+	[ClientRpc]
+	private void ClientAddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
+	{
+		Debug.Log("Add state rpc");
+		AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
+	}
+
+	[ClientRpc]
+	private void ClientRemoveState(States stateName)
+	{
+		Debug.Log("Remove state client" + stateName);
+		RemoveStateLogic(stateName);
+	}
+
+	private void AddStateLogic(States state, float duration, float damageToExit, Schools school, GameObject personWhoShooted, string skillName)
 	{
 		foreach (AbstractCharacterState states in _currentStates)
 		{

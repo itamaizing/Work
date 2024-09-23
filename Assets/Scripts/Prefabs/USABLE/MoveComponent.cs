@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class MoveComponent : NetworkBehaviour
 {
+	[SerializeField, Range(0, 1)] private float _smoothTime = 0.15f;
+
 	public Vector2 MoveDirection = Vector2.zero;
 	
 	public bool CanMove = false;
@@ -11,14 +13,21 @@ public class MoveComponent : NetworkBehaviour
 	
 	private Rigidbody2D _rigidbody;
 	
+
 	private Vector2 _offset = Vector2.zero;
-	
+
 	private bool _isHero = false;
-	
+
 	private float _defaultSpeed;
 	private float _currentSpeed;
+
+	private Vector2 _dir;
+	private Vector2 _currentVelocity;
+	private Vector2 _currentVelocityTemp;
+
 	public float CurrentSpeed { get => _currentSpeed; }
 	public float DefaultSpeed { get => _defaultSpeed; }
+	
 	public void SetOffset(Vector2 offset)
 	{
 		_offset = offset;
@@ -37,9 +46,16 @@ public class MoveComponent : NetworkBehaviour
 
 		CanMove = true;
 		_isHero = isHero;
+
+		InputHandler.OnPlayerMove += OnMove;
 	}
 
-	public void ChangeMoveSpeed(float value)
+    private void OnDestroy()
+    {
+		InputHandler.OnPlayerMove -= OnMove;
+	}
+
+    public void ChangeMoveSpeed(float value)
 	{
 		_currentSpeed *= value;
 	}
@@ -52,43 +68,37 @@ public class MoveComponent : NetworkBehaviour
 		_currentSpeed = _defaultSpeed;
 	}
 	
+	[Client]
 	void Update()
 	{
-		if (!isLocalPlayer || !CanMove || !IsSelect)
+		if (!CanMove || !IsSelect)
 		{
 			return;
 		}
-		
-		float moveX = Input.GetAxis("Horizontal");
-		float moveY = Input.GetAxis("Vertical");
-		MoveDirection = new Vector2(moveX, moveY);
-		
-		if (MoveDirection.magnitude > 1)
-		{
-			MoveDirection.Normalize();
-		}
+		_currentVelocity = Vector2.SmoothDamp(_currentVelocity, _dir, ref _currentVelocityTemp, _smoothTime);
+		_rigidbody.velocity = _currentVelocity * _currentSpeed;
 	}
 
-	[Client]
-	private void FixedUpdate()
-	{
-		CmdMove(MoveDirection, _currentSpeed);
-	}
-
-	[Command]
-	private void CmdMove(Vector2 movement, float moveSpeed)
-	{
-		_rigidbody.velocity = movement * moveSpeed;
-		
-		RpcMove(_rigidbody.position, moveSpeed);
+	private void OnMove(Vector2 dir)
+    {
+		_dir = dir;
 	}
 
 	[TargetRpc]
-	private void RpcMove(Vector2 position, float moveSpeed)
-	{
-		if (!isLocalPlayer)
-		{
-			_rigidbody.position = Vector2.Lerp(_rigidbody.position, position, Time.fixedDeltaTime * moveSpeed);
-		}
+	public void TargetRpcAddForce(Vector2 vector2)
+    {
+		_rigidbody.AddForce(vector2);
+	}
+
+	[TargetRpc]
+	public void TargetRpcAddTransformPosition(Vector3 vector3)
+    {
+		transform.position += vector3;
+	}
+
+	[TargetRpc]
+	public void TargetRpcSetTransformPosition(Vector3 vector3)
+    {
+		transform.position = vector3;
 	}
 }

@@ -58,6 +58,7 @@ public class FillAmountOverTime : MonoBehaviour
         else
         {
             _duration = duration;
+            gameObject.SetActive(true);
             _fillJob = StartCoroutine(ChangeFillAmountOverTimeCoroutine(_duration, curretTime, startValue, endValue));
         }
     }

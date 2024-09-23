@@ -11,7 +11,7 @@ public enum ResourceType
     Rune
 }
 
-[RequireComponent(typeof(NetworkIdentity))]
+//[RequireComponent(typeof(NetworkIdentity))]
 public abstract class Resource : NetworkBehaviour
 {
     [SerializeField] private ResourceType _resourceType;

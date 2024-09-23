@@ -32,7 +32,7 @@ public class IceCloudProjectile : Projectiles
 		if(collision.TryGetComponent<Character>(out var target))
 		{
 			Debug.Log(collision.name);
-			//target.CharacterState.CmdAddState(States.Plague, 4, 0);
+			target.CharacterState.AddState(States.Plague, 40, 0, _dad.gameObject, _skill.Name);
 			//target.CharacterState.personWhoShoted = _dad;
 
 			float duration = 1 + _energyDad / 20;
