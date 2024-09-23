@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ZoneMappingAttack : Skill
+public class TestZoneMappingAttack : Skill
 {
     private Vector3 _targetPoint = Vector3.positiveInfinity;
 
