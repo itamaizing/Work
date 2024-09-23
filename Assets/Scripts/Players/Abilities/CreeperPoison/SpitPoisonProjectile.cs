@@ -23,7 +23,7 @@ public class SpitPoisonProjectile : NetworkBehaviour
     private bool _isPlayer;
     private bool _isAllies;
     private bool _isEnemy;
-    private bool _talentIsActive;
+    private bool _isActiveHealingSpitPoison;
 
     private void Awake()
     {
@@ -47,7 +47,7 @@ public class SpitPoisonProjectile : NetworkBehaviour
     [Server]
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (_talentIsActive)
+        if (_isActiveHealingSpitPoison)
         {
             if (_isPlayer)
             {
@@ -165,15 +165,15 @@ public class SpitPoisonProjectile : NetworkBehaviour
         Destroy(gameObject);
     }
 
-    public void InitializationProjectile(Character dad, Skill skill, float energy, bool talentIsActive, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
+    public void InitializationProjectile(Character dad, Skill skill, float energy, bool isActiveHealingSpitPoison, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
     {
         _player = dad;
+        _isActiveHealingSpitPoison = isActiveHealingSpitPoison;
         _energyDad = energy;
         _skill = skill;
         _isPlayer = isTargetPlayer;
         _isAllies = isTargetAllies;
         _isEnemy = isTargetEnemy;
-        _talentIsActive = talentIsActive;
     }
 
 }

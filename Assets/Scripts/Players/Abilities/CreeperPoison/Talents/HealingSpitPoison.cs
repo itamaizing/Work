@@ -4,17 +4,18 @@ using UnityEngine;
 
 public class HealingSpitPoison : Talent
 {
-    public bool IsCanTargetHimself;
+    private void Start()
+    {
+        Enter();
+    }
 
     public override void Enter()
     {
         SetActive(true);
-        IsCanTargetHimself = true;
     }
 
     public override void Exit()
     {
         SetActive(false);
-        IsCanTargetHimself = false;
     }
 }

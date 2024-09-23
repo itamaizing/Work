@@ -44,15 +44,19 @@ public class PoisonBall : Skill
     [SerializeField] private VoluminousBall _voluminousBall;
     [SerializeField] private InertialGlands _inertialGlands;
     [SerializeField] private AssasinPoison _assasinPoison;
+    [SerializeField] private FlowOfPoisons _flowOfPoison;
 
     [Header("Ability properties")]
     [SerializeField] private SpitPoison _spitPoison;
     [SerializeField] private PoisonBallProjectile _projectile;
-    [SerializeField] private PoisonCloudDisplay _prefabPoisonDamagingCloud;
-    [SerializeField] private PoisonCloudDisplay _prefabPoisonHealingCloud;
 
-    [SerializeField] private PoisonCloudDisplay _poisonHealingCloud;
-    [SerializeField] private PoisonCloudDisplay _poisonDamagingCloud;
+    #region PoisonCloud
+    [SerializeField] private PoisonDamagingCloudPrefab _poisonDamagingCloudPrefab;
+    [SerializeField] private PoisonHealingCloudPrefab _poisonHealingCloudPrefab;
+    private PoisonDamagingCloudPrefab _poisonDamagingCloud;
+    private PoisonHealingCloudPrefab _poisonHealingCloud;
+    private float _durationPoisonCloud = 6f;
+    #endregion
 
     [SerializeField] private Character _player;
     [SerializeField] private GameObject _arrowPrefab;
@@ -67,7 +71,6 @@ public class PoisonBall : Skill
     private float _fastTimeCast = 0.4f;
     private float _slowTimeCast = 1.8f;
     private float _originalChargeCooldown;
-    private float _durationPoisonCloud = 6f;
     private float _currentStacksAsssasinPoison = 0;
 
     #region BoolVariables
@@ -413,24 +416,6 @@ public class PoisonBall : Skill
 
     private void CheckingActiveTalents()
     {
-        if (_assasinPoison.IsActive)
-        {
-            _currentStacksAsssasinPoison = _assasinPoison.CurrentChargeAssasinPoison;
-            Debug.Log("PoisonBall / CurrentStacksAssasinPoison == " + _currentStacksAsssasinPoison);
-            for (int i = 0; i < _currentStacksAsssasinPoison; i++)
-            {
-                Debug.Log("CycleFor");
-                if (CurrentCharges < _maxCharges)
-                {
-                    _currentStacksAsssasinPoison--;
-                    Debug.Log("PoisonBall / CurrentStacksAssasinPoison == " + _currentStacksAsssasinPoison);
-                    Debug.Log("PoisonBall / _chargeCooldown == " + _chargeCooldown);
-                    float newCooldownTime = _chargeCooldown * 0;
-                    Debug.Log("PoisonBall / newCooldownTime == " + newCooldownTime);
-                    this.IncreaseSetCooldown(newCooldownTime);
-                }
-            }
-        }
 
         _poisonBallInfo.IsActiveWitheringPoison = _witheringPoison.IsActive;
         _poisonBallInfo.IsActiveContinuationAmbush = _continuationAmbush.IsActive;
@@ -472,6 +457,27 @@ public class PoisonBall : Skill
             _continuationAmbush.CanApplyInvisible(true);
         }
 
+        #endregion
+
+        #region AssasinPoisonTalentIsActive
+        if (_assasinPoison.IsActive && _flowOfPoison.IsActive)
+        {
+            _currentStacksAsssasinPoison = _assasinPoison.CurrentChargeAssasinPoison;
+            Debug.Log("PoisonBall / CurrentStacksAssasinPoison == " + _currentStacksAsssasinPoison);
+            for (int i = 0; i < _currentStacksAsssasinPoison; i++)
+            {
+                Debug.Log("CycleFor");
+                if (CurrentCharges < _maxCharges)
+                {
+                    _currentStacksAsssasinPoison--;
+                    Debug.Log("PoisonBall / CurrentStacksAssasinPoison == " + _currentStacksAsssasinPoison);
+                    Debug.Log("PoisonBall / _chargeCooldown == " + _chargeCooldown);
+                    float newCooldownTime = _chargeCooldown * 0;
+                    Debug.Log("PoisonBall / newCooldownTime == " + newCooldownTime);
+                    this.IncreaseSetCooldown(newCooldownTime);
+                }
+            }
+        }
         #endregion
     }
 
@@ -616,7 +622,7 @@ public class PoisonBall : Skill
                 _poisonBallInfo.IsActiveHealingPoisonBall, _poisonBallInfo.IsActiveWitheringPoison, _poisonBallInfo.IsActiveVoluminousBall,
                 _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies);
 
-            CmdApplyCloudPoison(_poisonBallInfo.IsHealingPoisonCloud);
+            CmdApplyPoisonCloud(_poisonBallInfo.IsHealingPoisonCloud, _durationPoisonCloud);
         }
         else
         {
@@ -625,7 +631,7 @@ public class PoisonBall : Skill
                 _poisonBallInfo.IsActiveHealingPoisonBall, _poisonBallInfo.IsActiveWitheringPoison, _poisonBallInfo.IsActiveVoluminousBall,
                 _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies);
 
-            CmdApplyCloudPoison(_poisonBallInfo.IsHealingPoisonCloud);
+            CmdApplyPoisonCloud(_poisonBallInfo.IsHealingPoisonCloud, _durationPoisonCloud);
         }
     }
 
@@ -759,77 +765,82 @@ public class PoisonBall : Skill
     }
 
     [Command]
-    private void CmdApplyCloudPoison(bool isHealingCloud)
+    private void CmdApplyPoisonCloud(bool isHealingCloud, float duration)
     {
-        Debug.Log($"CmdApplyCloudPoison / isHealingCloud = {isHealingCloud}");
-        if (isHealingCloud)
+        Debug.Log("PoisonBall / CmdTestApplyPoisonCloud");
+        if (!isHealingCloud)
         {
-            Debug.Log("CmdHealing Cloud");
-            if (_poisonHealingCloud.PoisonHealingCloud == null)
+            if (_poisonDamagingCloud == null && _poisonDamagingCloudPrefab.PoisonDamageCloud == null)
             {
-             //   Debug.Log("Healing Cloud / if");
-                _player.CharacterState.AddState(States.HealingPoisonCloud, _durationPoisonCloud, 0, _player.gameObject, Name);
+                Debug.Log("PoisonBall / CmdTestApplyPoisonCloud / if (_poisonDamagingCloud == null)");
+                _player.CharacterState.AddState(States.PoisonCloud, duration, 0, _player.gameObject, Name);
 
-                _poisonHealingCloud.PoisonHealingCloud = Instantiate(_prefabPoisonHealingCloud, transform.position, Quaternion.identity);
+                _poisonDamagingCloud = Instantiate(_poisonDamagingCloudPrefab, transform.position, Quaternion.identity);
 
-                SceneManager.MoveGameObjectToScene(_poisonHealingCloud.PoisonHealingCloud.gameObject, _hero.NetworkSettings.MyRoom);
+                _poisonDamagingCloudPrefab.PoisonDamageCloud = _poisonDamagingCloud;
+                Debug.Log("PoisonBall / CmdTestApplyPoisonCloud / _poisonDamagingCloudPrefab.PoisonDamageCloud  = " + _poisonDamagingCloudPrefab.PoisonDamageCloud);
+                SceneManager.MoveGameObjectToScene(_poisonDamagingCloudPrefab.PoisonDamageCloud.gameObject, _hero.NetworkSettings.MyRoom);
 
-                _poisonHealingCloud.PoisonHealingCloud.InitializationPrefab(_player, 6f, 3.5f, 5, isHealingCloud);
-                _poisonHealingCloud.PoisonHealingCloud.AddStack();
+                _poisonDamagingCloudPrefab.PoisonDamageCloud.InitializationProjectile(_player, 5, duration, 3.5f, Name);
+                _poisonDamagingCloudPrefab.PoisonDamageCloud.AddStack();
 
-                NetworkServer.Spawn(_poisonHealingCloud.PoisonHealingCloud.gameObject);
+                NetworkServer.Spawn(_poisonDamagingCloud.gameObject);
+
+                Debug.Log("PoisonBall / CmdTestApplyPoisonCloud / if (_poisonDamagingCloud == null) / _poisonDamagingCloud = " + _poisonDamagingCloud);
             }
             else
             {
-                Debug.Log("CmdHealing Cloud / else");
-                _player.CharacterState.AddState(States.HealingPoisonCloud, _durationPoisonCloud, 0, _player.gameObject, Name);
-                _poisonHealingCloud.PoisonHealingCloud.AddStack();
+                Debug.Log("PoisonBall / CmdTestApplyPoisonCloud / else");
+                _player.CharacterState.AddState(States.PoisonCloud, duration, 0, _player.gameObject, Name);
+                _poisonDamagingCloudPrefab.PoisonDamageCloud.AddStack();
             }
         }
         else
         {
-            Debug.Log("CmdDamaging Cloud");
-            if (_poisonDamagingCloud.PoisonDamagingCloud == null)
+            if (_poisonHealingCloud == null && _poisonHealingCloudPrefab.PoisonHealingCloud == null)
             {
-              //  Debug.Log("Damaging Cloud / if");
-                _player.CharacterState.AddState(States.PoisonCloud, _durationPoisonCloud, 0, _player.gameObject, Name);
+                Debug.Log("PoisonBall / CmdTestApplyPoisonCloud / if (_poisonHealingCloud == null)");
+                _player.CharacterState.AddState(States.HealingPoisonCloud, duration, 0, _player.gameObject, Name);
 
-                _poisonDamagingCloud.PoisonDamagingCloud = Instantiate(_prefabPoisonDamagingCloud, transform.position, Quaternion.identity);
+                _poisonHealingCloud = Instantiate(_poisonHealingCloudPrefab, transform.position, Quaternion.identity);
+                _poisonHealingCloudPrefab.PoisonHealingCloud = _poisonHealingCloud;
+                SceneManager.MoveGameObjectToScene(_poisonHealingCloudPrefab.PoisonHealingCloud.gameObject, _hero.NetworkSettings.MyRoom);
 
-                SceneManager.MoveGameObjectToScene(_poisonDamagingCloud.PoisonDamagingCloud.gameObject, _hero.NetworkSettings.MyRoom);
+                _poisonHealingCloudPrefab.PoisonHealingCloud.InitializationProjectile(_player, 5, duration, 3.5f, Name);
+                _poisonHealingCloudPrefab.PoisonHealingCloud.AddStack();
 
-                _poisonDamagingCloud.PoisonDamagingCloud.InitializationPrefab(_player, 6f, 3.5f, 5, isHealingCloud);
-                _poisonDamagingCloud.PoisonDamagingCloud.AddStack();
+                NetworkServer.Spawn(_poisonHealingCloud.gameObject);
 
-                NetworkServer.Spawn(_poisonDamagingCloud.PoisonDamagingCloud.gameObject);
+                Debug.Log("PoisonBall / CmdTestApplyPoisonCloud / if (_poisonHealingCloud == null) / _poisonHealingCloud = " + _poisonHealingCloud);
             }
             else
             {
-                Debug.Log("CmdDamaging Cloud / else");
-                _player.CharacterState.AddState(States.PoisonCloud, _durationPoisonCloud, 0, _player.gameObject, Name);
-                //Debug.Log("CmdPoisonDamagingCloud / Else / AddStack");
-                _poisonDamagingCloud.PoisonDamagingCloud.AddStack();
+                Debug.Log("PoisonBall / CmdTestApplyPoisonCloud / else");
+                _player.CharacterState.AddState(States.HealingPoisonCloud, duration, 0, _player.gameObject, Name);
+                _poisonHealingCloudPrefab.PoisonHealingCloud.AddStack();
             }
         }
-        RpcApplyCloudPoisons(_poisonDamagingCloud, _poisonHealingCloud, isHealingCloud);
+        RpcApply(_poisonDamagingCloud, _poisonHealingCloud, duration, isHealingCloud);
+    }
+
+    [ClientRpc]
+    private void RpcApply(PoisonDamagingCloudPrefab poisonDamagingCloud, PoisonHealingCloudPrefab poisonHealingCloud, float duration, bool isHealingCloud)
+    {
+        Debug.Log("PoisonBall / RpcApply / poisonDamagingCloud = " + poisonDamagingCloud);
+        if (poisonDamagingCloud != null)
+        {
+            Debug.Log("PoisonBall / RpcApply / if (poisonDamagingCloud != null) = " + poisonDamagingCloud);
+            poisonDamagingCloud.InitializationProjectile(_player, 5, duration, 3.5f, Name);
+            poisonDamagingCloud.AddStack();
+        }
+
+        if (poisonHealingCloud != null && isHealingCloud)
+        {
+            Debug.Log("PoisonBall / RpcApply / if (poisonHealingCloud != null) = " + poisonHealingCloud);
+            poisonHealingCloud.InitializationProjectile(_player, 5, duration, 3.5f, Name);
+            poisonHealingCloud.AddStack();
+        }
     }
 
     #endregion
-
-    [ClientRpc]
-    private void RpcApplyCloudPoisons(PoisonCloudDisplay damageCloud, PoisonCloudDisplay healCloud, bool isHealingCloud)
-    {
-        if (damageCloud != null)
-        {
-            damageCloud.InitializationPrefab(_player, 7f, 3.5f, 5, isHealingCloud);
-            damageCloud.AddStack();
-            Debug.Log("RpcPoisonDamagingCloud / if dmgCloud / AddStack");
-        }
-        if (healCloud != null)
-        {
-            healCloud.InitializationPrefab(_player, 7f, 3.5f, 5, isHealingCloud);
-            healCloud.AddStack();
-            Debug.Log("RpcPoisonHealingCloud / if healCloud / AddStack");
-        }
-    }
 }

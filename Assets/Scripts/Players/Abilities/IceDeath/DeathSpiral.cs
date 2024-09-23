@@ -242,29 +242,6 @@ public class DeathSpiral : Skill
 		}
 	}
 
-	protected override bool TryPayCost()
-	{
-		if (IsHaveResourceOnSkill)
-		{
-			if (_firstShot)
-			{
-				foreach (var skillCost in _skillEnergyCosts)
-				{
-					var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
-					resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
-				}
-				_firstShot= false;
-			}
-			IncreaseSetCooldown(CooldownTime);
-			TryUseCharge();
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-
 	public void TalentMaxCharges(int maxChargesValue)
 	{
 		_maxCharges = maxChargesValue;

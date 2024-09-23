@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections.Generic;
 
 public class Health : Resource, IDamageable, IHealingable
 {
@@ -40,6 +39,12 @@ public class Health : Resource, IDamageable, IHealingable
         _evadeMagDamage = data.GetAttributeValue(AttributeNames.MagicEvade);
         _evadeMeleeDamage = data.GetAttributeValue(AttributeNames.MeleeEvade);
         _evadeRangeDamage = data.GetAttributeValue(AttributeNames.RangeEvade);
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdTryTakeDamage(Damage damage, GameObject skillCanBeNull)
+    {
+        TryTakeDamage(ref damage, null);
     }
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)

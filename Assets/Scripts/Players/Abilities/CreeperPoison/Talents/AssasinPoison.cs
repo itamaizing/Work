@@ -6,6 +6,7 @@ using UnityEngine;
 public class AssasinPoison : Talent
 {
     [SerializeField] public CreeperInvisible _invisibleCreeper;
+    [SerializeField] private FlowOfPoisons _flowOfPoisons;
 
     private int _currentChargePoison;
     private int _maxChargePoison = 3;
@@ -32,7 +33,7 @@ public class AssasinPoison : Talent
 
     private void Update()
     {
-        if (IsActive && _currentChargePoison < 3 && Character.CharacterState.CheckForState(States.CreeperInvisible))
+        if (IsActive && _flowOfPoisons.IsActive && _currentChargePoison < 3 && Character.CharacterState.CheckForState(States.CreeperInvisible))
         {
             Debug.Log("AssasinPoison / currentCharge++");
             _timeAccumulateCharge -= Time.deltaTime;

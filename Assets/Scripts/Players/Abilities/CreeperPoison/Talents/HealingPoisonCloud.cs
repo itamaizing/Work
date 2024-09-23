@@ -5,6 +5,11 @@ using UnityEngine;
 
 public class HealPoisonCloud : Talent
 {
+    private void Start()
+    {
+        Enter();
+    }
+
     public override void Enter()
     {
         SetActive(true);

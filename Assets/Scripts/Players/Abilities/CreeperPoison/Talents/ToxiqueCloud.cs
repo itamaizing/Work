@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class ToxiqueCloud : Talent
 {
+    private void Start()
+    {
+        Enter();
+    }
     public override void Enter()
     {
         SetActive(true);

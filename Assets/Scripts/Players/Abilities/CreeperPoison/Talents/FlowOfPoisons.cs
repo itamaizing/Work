@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealingPoisonBall : Talent
+public class FlowOfPoisons : Talent
 {
     private void Start()
     {

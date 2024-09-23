@@ -1,8 +1,8 @@
 using Mirror;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
+using System;
+using System.Collections.Generic;
+
 public abstract class AbstractCharacterState
 {
 	protected CharacterState _characterState;
@@ -241,7 +241,7 @@ public class InvisibleStateOld : AbstractCharacterState
 
 			if (chanceToBeSeen > 0)
 			{
-				if (Random.value <= chanceToBeSeen)
+				if (UnityEngine.Random.value <= chanceToBeSeen)
 				{
 					//_player.GetComponent<CharacterState>().AddState(new DefaultState(), States.Default);
 					ExitState();
@@ -977,18 +977,28 @@ public class CreeperInvisibleState : AbstractCharacterState
 
 #region CreeperDebuffPoisons
 
-public class EmpathicPoisonsState : AbstractCharacterState
+public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
 {
-    private float _baseEvasionValue = 0.1f;
+    private Character _player;
+	private Resource _playerResource;
+	private DamageType _damageType;
+	private AttackRangeType _attackRangeType;
+
+    private int _currentStacks = 0;
+    private int _maxStacks = 8;
+
+    private float _baseEvasionValue = 0.03f;
     private float _increasedEvasionValue;
-    private float _endEvasionValue;
-    private float _originalEvasionValue;
+	private float _evadeMeleePhysicalDamage;
+	private float _evadeRangePhysicalDamage;
+	private float _originalEvadeMeleeDamage;
+	private float _originalEvadeRangeDamage;
 
-    private float _currentStacks = 0;
-    private float _maxStacks = 3;
+	private float _radiusCloud = 3f;
 
-    private float _timeBetweenToApplyStacks;
-    private float _startTimeBetweentoApplyStacks = 1.0f;
+	private float _timeBeforeReductionDebuff;
+	private float _startTimeBeforeReductionDebuff = 1.0f;
+
     private float _duration;
     private float _baseDuration;
     private float _damageToExit;
@@ -997,21 +1007,30 @@ public class EmpathicPoisonsState : AbstractCharacterState
     private Vector3 _characterPosition;
 
     private bool _isInPoisonCloud;
-    public bool turnOff = false;
-
-    public float RadiusCloud;
-
-    public GameObject Player;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.AbilitySpeed };
+
+    public event Action<float, DamageType> DamageTaken;
+
     public override States State => States.EmpathicPoisons;
     public override StateType Type => StateType.Physical;
     public override List<StatusEffect> Effects => _effects;
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-	{ 
+	{
+		Debug.Log("EmpathicPoison / EnterState");
         _characterState = character;
-        _originalEvasionValue = _characterState.Character.Health.EvadeMeleeDamage;
+		_player = personWhoMadeBuff;
+
+		_timeBeforeReductionDebuff = _startTimeBeforeReductionDebuff;
+
+		_originalEvadeMeleeDamage = _player.Health.EvadeMeleeDamage;
+		_evadeMeleePhysicalDamage = _player.Health.EvadeMeleeDamage;
+
+		_originalEvadeRangeDamage = _player.Health.EvadeRangeDamage;
+		_evadeRangePhysicalDamage = _player.Health.EvadeRangeDamage;
+
+		_player.Health.Shields.Add(this);
 
         _duration = durationToExit;
         _baseDuration = durationToExit;
@@ -1022,31 +1041,86 @@ public class EmpathicPoisonsState : AbstractCharacterState
         }
     }
 
+	public bool TryTakeDamage(ref Damage damage, Skill skill)
+	{
+		Debug.Log("EmpathicPoison / TryTakeDamage");
+		if (_currentStacks > 0)
+		{
+            Debug.Log("EmpathicPoison / if (currentStacks > 0) currentStacks == " + _currentStacks);
+            switch (_damageType)
+			{
+                case DamageType.Physical:
+                    Debug.Log("EmpathicPoison / TryTakeDamage / Case DamageType.Physical");
+                    switch (_attackRangeType)
+					{
+						case AttackRangeType.MeleeAttack:
+                            Debug.Log("EmpathicPoison / TryTakeDamage / Case DamageType.Physical / case AttackRangeType.Melee");
+                            if (UnityEngine.Random.Range(0.0f, 100.0f) <= _evadeMeleePhysicalDamage)
+							{
+                                Debug.Log("EmpathicPoison / TryTakeDamage / case AttackRangeType.Melee / if evadeMeleeDamage");
+                                damage.Value = 0;
+                                return true;
+							}
+							else
+							{
+                                Debug.Log("EmpathicPoison / TryTakeDamage / case AttackRangeType.Melee / else evadeMeleeDamage");
+                                return false;
+							}
+							break;
+
+						case AttackRangeType.RangeAttack:
+                            Debug.Log("EmpathicPoison / TryTakeDamage / Case DamageType.Physical / case AttackRangeType.Range");
+                            if (UnityEngine.Random.Range(0.0f, 100.0f) <= _evadeRangePhysicalDamage)
+                            {
+                                Debug.Log("EmpathicPoison / TryTakeDamage / case AttackRangeType.Range / if evadeRangeDamage");
+                                damage.Value = 0;
+                                return true;
+                            }
+                            else
+                            {
+                                Debug.Log("EmpathicPoison / TryTakeDamage / case AttackRangeType.Range / else evadeRangeDamage");
+                                return false;
+                            }
+                            break;
+
+						default:
+							break;
+                    }
+					break;
+
+				default: 
+					break;
+			}
+		}
+		return true;
+	}
+
     public override void UpdateState()
     {
-        _playerPosition = Player.transform.position;
+        _playerPosition = _player.transform.position;
         _characterPosition = _characterState.transform.position;
 
         _duration -= Time.deltaTime;
-        if (_duration < 0 || turnOff)
+        if (_duration < 0)
         {
             ExitState();
         }
 
-        _timeBetweenToApplyStacks -= Time.deltaTime;
-        if (_timeBetweenToApplyStacks <= 0)
-        {
-            if (_isInPoisonCloud)
-            {
+		_timeBeforeReductionDebuff -= Time.deltaTime;
+		if (_timeBeforeReductionDebuff <= 0)
+		{
+			CheckIfInPoisonCloud(_playerPosition, _characterPosition);
+			if (_isInPoisonCloud)
+			{
                 ReducingChanceOfHittingAtEnemy();
-            }
-            else
-            {
+				_timeBeforeReductionDebuff = _startTimeBeforeReductionDebuff;
+			}
+			else
+			{
                 DecreaseEvasionForCurrentTarget();
+                _timeBeforeReductionDebuff = _startTimeBeforeReductionDebuff;
             }
-            _timeBetweenToApplyStacks = _startTimeBetweentoApplyStacks;
         }
-        CheckIfInPoisonCloud(_playerPosition, _characterPosition);
     }
 
     public override void ExitState()
@@ -1077,25 +1151,26 @@ public class EmpathicPoisonsState : AbstractCharacterState
 
     private void ReducingChanceOfHittingAtEnemy()
     {
-        // Позже будет реализована другая логика.
-        _increasedEvasionValue = _baseEvasionValue * _currentStacks;
-
-        _endEvasionValue = _originalEvasionValue * _increasedEvasionValue;
-
-        _characterState.Character.Health.EvadeMeleeDamage = _originalEvasionValue - _endEvasionValue;
+		if (_currentStacks < _maxStacks)
+		{
+			// Позже будет реализована другая логика.
+			_increasedEvasionValue = _baseEvasionValue * _currentStacks;
+            _evadeMeleePhysicalDamage += _increasedEvasionValue;
+			_evadeRangePhysicalDamage += _increasedEvasionValue;
+		}
     }
 
     private void DecreaseEvasionForCurrentTarget()
     {
-        float reductionPerSecond = _baseEvasionValue * 0.33f;
-        _endEvasionValue = Mathf.Max(_originalEvasionValue, _characterState.Character.Health.EvadeMeleeDamage + reductionPerSecond);
-        _characterState.Character.Health.EvadeMeleeDamage = _endEvasionValue;
+        //float reductionPerSecond = _baseEvasionValue * 0.33f;
+        //_endEvasionValue = Mathf.Max(_originalEvasionValue, _characterState.Character.Health.EvadeMeleeDamage + reductionPerSecond);
+        //_characterState.Character.Health.EvadeMeleeDamage = _endEvasionValue;
     }
 
     private void CheckIfInPoisonCloud(Vector3 playerPos, Vector3 characterPos)
     {
         float distance = Vector3.Distance(playerPos, characterPos);
-        _isInPoisonCloud = distance <= RadiusCloud;
+        _isInPoisonCloud = distance <= _radiusCloud;
     }
 
     private void ResetValues()
@@ -1104,11 +1179,16 @@ public class EmpathicPoisonsState : AbstractCharacterState
         _baseDuration = 0;
         _duration = 0;
 
-        _baseEvasionValue = 0.1f;
+        _baseEvasionValue = 0.03f;
         _increasedEvasionValue = 0;
-        _endEvasionValue = 0;
-        _characterState.Character.Health.EvadeMeleeDamage = _originalEvasionValue;
+		_evadeMeleePhysicalDamage = _originalEvadeMeleeDamage;
+		_evadeRangePhysicalDamage = _originalEvadeRangeDamage;
     }
+
+	public void SetRadiusCloud(float value)
+	{
+		_radiusCloud = 3;
+	}
 }
 
 public class PoisonBoneState : AbstractCharacterState
@@ -1387,7 +1467,7 @@ public class WitheringPoisonState : AbstractCharacterState
 
 		if (_isActiveTalentBindingPoison)
 		{
-			if (Random.Range(0.0f, 1.0f) <= _chanceOfApplyBindingPoison)
+			if (UnityEngine.Random.Range(0.0f, 1.0f) <= _chanceOfApplyBindingPoison)
 			{
 				_characterState.AddState(States.BindingPoison, 10, 0, _player.gameObject, null);
             }
@@ -1569,7 +1649,6 @@ public class PoisonCloudState : AbstractCharacterState
     {
 		//Debug.Log("EnterState PoisonCloud");
         _characterState = character;
-        _toxiqueCloud = _characterState.GetComponentInChildren<ToxiqueCloud>();
 		_player = personWhoMadeBuff;
 
         _duration = durationToExit;
@@ -1577,7 +1656,7 @@ public class PoisonCloudState : AbstractCharacterState
 
 		_timeBetweenAttack = _startTimeBetweenAttack;
 
-		//_empathicPoisons = _player.CharacterState.GetComponent<EmpathicPoisons>();
+		//_empathicPoisons = _player.CharacterState.GetComponent<EmpathicPoisonsState>();
 		//Debug.Log($"_empathicPoisons in PoisonCloud = {_empathicPoisons}");
 
 
@@ -1611,6 +1690,8 @@ public class PoisonCloudState : AbstractCharacterState
                 if (_cloudExplosion == null)
                 {
                     _cloudExplosion = cloudExplosion;
+					_enemiesLayer = _cloudExplosion.TargetsLayers;
+					//Debug.Log("PoisonCloud / enemiesLayer = " + _enemiesLayer.GetType());
 					//Debug.Log($"PoisonCloud / SearchAbilities / cloudExplosion = {_cloudExplosion}");
                 }
             }
@@ -1628,6 +1709,14 @@ public class PoisonCloudState : AbstractCharacterState
 					_capaciousPoisonCloud = capaciousCloud;
                 }
 			}
+			if (talent is ToxiqueCloud toxiqueCloud)
+			{
+				if (_toxiqueCloud == null)
+				{
+					_toxiqueCloud = toxiqueCloud;
+					Debug.Log("ToxiqueCloud = " + _toxiqueCloud);
+				}
+			}
 		}
 	}
 
@@ -1637,7 +1726,7 @@ public class PoisonCloudState : AbstractCharacterState
         if (_timeBetweenAttack <= 0)
         {
 			//Debug.Log("PoisonCloud / timeBetweenAttack <= 0");
-            SearchingEnemies();
+            SearchingEnemies(_enemiesLayer, _characterState.gameObject);
             _timeBetweenAttack = _startTimeBetweenAttack;
         }
 
@@ -1699,34 +1788,37 @@ public class PoisonCloudState : AbstractCharacterState
 		}
     }
 
-    private void SearchingEnemies()
+    private void SearchingEnemies(LayerMask enemyLayer, GameObject player)
     {
 		Debug.Log($"PoisonCloud / SearchingEnemies");
         
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(_characterState.transform.position, _radiusCloud);
-        Debug.Log($"PoisonCloud / SearchingEnemies / after hitEnemies = {hitEnemies}");
-		foreach (Collider2D enemy in hitEnemies)
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(player.transform.position, 4, enemyLayer);
+
+		//Debug.Log($"PoisonCloud / SearchingEnemies / hitEnemies = {hitEnemies.Length}");
+
+ 		foreach (Collider2D enemy in hitEnemies)
 		{
-			if (enemy.CompareTag("Enemies"))
+			//Debug.Log($"PoisonCloud / SearchingEnemies / enemy = {enemy}");
+
+			if (enemy.transform != player.transform)
 			{
-				Debug.Log($"PoisonCloud / SearchingEnemies / enemy = {enemy}");
-				if (enemy.TryGetComponent<Character>(out var target) && enemy.transform != _characterState.transform)
-				{
-					DamageDeal(target);
-					Debug.Log("After TryGetComponent");
-					_timeBetweenAttack = _startTimeBetweenAttack;
-				}
+				DamageDeal(enemy.gameObject);
+
+				//Debug.Log("After TryGetComponent");
 			}
+			_timeBetweenAttack = _startTimeBetweenAttack;
 		}
     }
 
-    private void DamageDeal(Character target)
+    private void DamageDeal(GameObject target)
     {
+		var targetHealth = target.GetComponent<Character>();
         Debug.Log($"PoisonCloud / DamageDeal");
+        //Debug.Log($"PoisonCloud / DamageDeal / targetHealth = {targetHealth}");
         _increasedDamage = _baseDamage * _currentStacks;
-        Debug.Log($"PoisonCloud / DamageDeal / _increasedDamage = {_increasedDamage}");
-        _endDamage = target.Health.MaxValue * _increasedDamage;
-        Debug.Log($"PoisonCloud / DamageDeal / _endDamage = {_endDamage}");
+        //Debug.Log($"PoisonCloud / DamageDeal / _increasedDamage = {_increasedDamage}");
+        _endDamage = targetHealth.Health.MaxValue * _increasedDamage;
+        //Debug.Log($"PoisonCloud / DamageDeal / _endDamage = {_endDamage}");
 
         Damage damage = new Damage()
 		{
@@ -1734,15 +1826,16 @@ public class PoisonCloudState : AbstractCharacterState
 			Type = DamageType.Physical,
 			Range = AttackRangeType.MeleeAttack
 		};
-        Debug.Log($"PoisonCloud / DamageDeal / damage = {damage}");
 
-        target.Health.TryTakeDamage(ref damage, _cloudExplosion);
+        //Debug.Log($"PoisonCloud / DamageDeal / damage = {damage}");
+
+        targetHealth.Health.CmdTryTakeDamage(damage, null);
 
         if (_toxiqueCloud.IsActive)
         {
-			target.CharacterState.CmdAddState(States.EmpathicPoisons, _durationEmpathicPoisons, 0, _player.gameObject, null);
-            _empathicPoisons.Player = _player.gameObject;
-            _empathicPoisons.RadiusCloud = _radiusCloud;
+			Debug.Log("PoisonCloud / DamageDeal / toxiqueCloud Active");
+            targetHealth.CharacterState.AddStateTest(States.EmpathicPoisons, _durationEmpathicPoisons, 0, _player.gameObject, null);
+			//_empathicPoisons.SetRadiusCloud(_radiusCloud);
         }
     }
 
@@ -2519,12 +2612,12 @@ public class Plague : AbstractCharacterState
 		if (_damageTimer <= 0)
 		{
 			_damageTimer = 1;
-			int damage = Random.Range(1, 4);
+			int damage = UnityEngine.Random.Range(1, 4);
 			MakeDamage(damage);
 
 
 			//_health.TryTakeDamage(damage, DamageType.Magical, AttackRangeType.MeleeAttack);
-			if (Random.Range(0, 100) < 50 && _personWhoMadeBuff != null)
+			if (UnityEngine.Random.Range(0, 100) < 50 && _personWhoMadeBuff != null)
 			{
 				/*DeathSpiral deathSpiral = (DeathSpiral)_characterState.personWhoShoted.Abilities.GetAbilityByName("DeathSpiral");
 				if(deathSpiral != null) 
@@ -2534,7 +2627,7 @@ public class Plague : AbstractCharacterState
 				}*/
 			}
 
-			if (Random.Range(0, 5) < 1)
+			if (UnityEngine.Random.Range(0, 5) < 1)
 			{
 				AddState();
 			}
@@ -2901,7 +2994,14 @@ public class CharacterState : NetworkBehaviour
 		ClientAddState(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
 	}
 
-	public void AddState(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
+    public void AddStateTest(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
+    {
+        Debug.Log("Add state from server");
+        AddStateLogic(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
+        //ClientAddState(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
+    }
+
+    public void AddState(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
 	{
 		Debug.Log("Add state from server");
 		AddStateLogic(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);

@@ -14,24 +14,25 @@ public class SpitPoison : Skill
     [SerializeField] private HealingSpitPoison _healingSpitPoison;
     [SerializeField] private HealPoisonCloud _healPoisonCloud;
 
-    [SerializeField] private PoisonCloudDisplay _prefabPoisonDamagingCloud;
-    [SerializeField] private PoisonCloudDisplay _prefabPoisonHealingCloud;
-
-    [SerializeField] private PoisonCloudDisplay _poisonHealingCloud;
-    [SerializeField] private PoisonCloudDisplay _poisonDamagingCloud;
-
     [SerializeField] private SpitPoisonProjectile _projectile;
     [SerializeField] private Character _player;
 
+    #region PoisonCloud
+    [SerializeField] private PoisonDamagingCloudPrefab _poisonDamagingCloudPrefab;
+    [SerializeField] private PoisonHealingCloudPrefab _poisonHealingCloudPrefab;
+    private PoisonDamagingCloudPrefab _poisonDamagingCloud;
+    private PoisonHealingCloudPrefab _poisonHealingCloud;
+    private float _durationPoisonCloud = 6f;
+    #endregion
+
     private float _originalCooldown;
     private float _angleRotation;
-    private float _durationPoisonCloud = 6f;
 
     private Vector3 _mousePos = Vector3.positiveInfinity;
 
     private Character _currentTarget;
 
-    private bool _isActiveTalent;
+    private bool _isActiveHealingSpitPoison;
     private bool _isOriginalTargetEnemy;
     private bool _isOriginalTargetAllies;
     private bool _isOriginalTargetPlayer;
@@ -50,11 +51,11 @@ public class SpitPoison : Skill
     {
        if (_healingSpitPoison.IsActive)
        {
-           _isActiveTalent = _healingSpitPoison.IsActive;
+           _isActiveHealingSpitPoison = _healingSpitPoison.IsActive;
        }
        else
        {
-           _isActiveTalent = _healingSpitPoison.IsActive;
+           _isActiveHealingSpitPoison = _healingSpitPoison.IsActive;
        }
 
         while (_currentTarget == null && float.IsPositiveInfinity(_mousePos.x))
@@ -80,13 +81,19 @@ public class SpitPoison : Skill
 
     protected override void ClearData()
     {
+        _isHealingPoisonCloud = false;
+        _isActiveHealingSpitPoison = false;
+        _isOriginalTargetAllies = false;
+        _isOriginalTargetEnemy = false;
+        _isOriginalTargetPlayer = false;
+
         _currentTarget = null; 
         _mousePos = Vector3.positiveInfinity;
     }
 
     private void CooldownChange()
     {
-        if (_isActiveTalent)
+        if (_isActiveHealingSpitPoison)
         {
             if (_isOriginalTargetAllies || _isOriginalTargetPlayer)
             {
@@ -113,19 +120,19 @@ public class SpitPoison : Skill
 
     private void ChooseTarget()
     {
-      //  Debug.Log("ChooseTarget");
+        Debug.Log("ChooseTarget");
         if (_currentTarget != null)
         {
             if (_currentTarget.gameObject == _player.gameObject)
             {
-               // Debug.Log("Target == Player");
+                Debug.Log("Target == Player");
                 _isOriginalTargetPlayer = true;
                 _isOriginalTargetAllies = false;
                 _isOriginalTargetEnemy = false;
-                if (_healPoisonCloud.IsActive)
+                if (_healPoisonCloud.IsActive && _isActiveHealingSpitPoison)
                 {
                     _isHealingPoisonCloud = true;
-                   // Debug.Log($"ChooseTarget / Player / _isHealingPoisonCloud = {_isHealingPoisonCloud}");
+                    Debug.Log($"ChooseTarget / Player / _isHealingPoisonCloud = {_isHealingPoisonCloud}");
                 }
             }
             else if (_currentTarget.gameObject.layer == LayerMask.NameToLayer("Allies"))
@@ -134,10 +141,13 @@ public class SpitPoison : Skill
                 _isOriginalTargetPlayer = false;
                 _isOriginalTargetAllies = true;
                 _isOriginalTargetEnemy = false;
-                if (_healPoisonCloud.IsActive)
+                if (_isActiveHealingSpitPoison && _isActiveHealingSpitPoison)
                 {
-                    _isHealingPoisonCloud = true;
-                   // Debug.Log($"ChooseTarget / Allies / _isHealingPoisonCloud = {_isHealingPoisonCloud}");
+                    if (_healPoisonCloud.IsActive)
+                    {
+                        _isHealingPoisonCloud = true;
+                        Debug.Log($"ChooseTarget / Allies / _isHealingPoisonCloud = {_isHealingPoisonCloud}");
+                    }
                 }
             }
             else if (_currentTarget.gameObject.layer == LayerMask.NameToLayer("Enemy"))
@@ -146,18 +156,15 @@ public class SpitPoison : Skill
                 _isOriginalTargetPlayer = false;
                 _isOriginalTargetAllies = false;
                 _isOriginalTargetEnemy = true;
-                if (_healPoisonCloud.IsActive)
+                if (_healPoisonCloud.IsActive && _isActiveHealingSpitPoison)
                 {
                     _isHealingPoisonCloud = false;
-                    //Debug.Log($"ChooseTarget / Enemy / _isHealingPoisonCloud = {_isHealingPoisonCloud}");
-
+                    Debug.Log($"ChooseTarget / Enemy / _isHealingPoisonCloud = {_isHealingPoisonCloud}");
                 }
             }
         }
         else
         {
-           // Debug.Log($"Else ChooseTarget / _currentTarget == {_currentTarget}");
-
             _isOriginalTargetPlayer = false;
             _isOriginalTargetAllies = false;
             _isOriginalTargetEnemy = false;
@@ -183,14 +190,16 @@ public class SpitPoison : Skill
         if (_currentTarget != null)
         {
             CmdInstantiateProjectileToTarget(_currentTarget.gameObject, _angleRotation, _player.Stamina.CurrentValue, 
-                _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
-            CmdApplyCloudPoison(_healPoisonCloud.IsActive, _isHealingPoisonCloud);
+                _isActiveHealingSpitPoison, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
+
+            CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
         }
         else
         {
             CmdInstantiateProjectileToPoint(_mousePos, _angleRotation, _player.Stamina.CurrentValue, 
-                _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
-            CmdApplyCloudPoison(_healPoisonCloud.IsActive, _isHealingPoisonCloud);
+                _isActiveHealingSpitPoison, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
+
+            CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
         }
     }
 
@@ -198,7 +207,7 @@ public class SpitPoison : Skill
 
     [Command]
     private void CmdInstantiateProjectileToTarget(GameObject target, float angleRotation, float manaValue, 
-        bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
+        bool isActiveHealingSpitPoison, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
     {
         GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.Euler(0, 0, angleRotation));
 
@@ -206,18 +215,18 @@ public class SpitPoison : Skill
 
         SpitPoisonProjectile projectile = item.GetComponent<SpitPoisonProjectile>();
 
-        projectile.InitializationProjectile(_player, this, manaValue, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies);
+        projectile.InitializationProjectile(_player, this, manaValue, isActiveHealingSpitPoison, isTargetPlayer, isTargetEnemy, isTargetAllies);
 
         projectile.MoveBallToTarget(target.transform.position);
 
         NetworkServer.Spawn(item);
 
-        RpcInstantiateProjectile(target, projectile, manaValue, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies);
+        RpcInstantiateProjectile(target, projectile, manaValue, isActiveHealingSpitPoison, isTargetPlayer, isTargetEnemy, isTargetAllies);
     }
 
     [Command]
     private void CmdInstantiateProjectileToPoint(Vector3 point, float angleRotation, float manaValue, 
-        bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
+        bool isActiveHealingSpitPoison, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
     {
         GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.Euler(0, 0, angleRotation));
 
@@ -225,63 +234,74 @@ public class SpitPoison : Skill
 
         SpitPoisonProjectile projectile = item.GetComponent<SpitPoisonProjectile>();
 
-        projectile.InitializationProjectile(_player, this, _player.Stamina.CurrentValue, _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
+        projectile.InitializationProjectile(_player, this, _player.Stamina.CurrentValue, _isActiveHealingSpitPoison, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
 
         projectile.MoveBallOnMaxDistance(point);
 
         NetworkServer.Spawn(item);
 
-        RpcInstantiateProjectileToPoint(point, projectile, manaValue, isActiveTalent, isTargetPlayer, isTargetEnemy, isTargetAllies);
+        RpcInstantiateProjectileToPoint(point, projectile, manaValue, isActiveHealingSpitPoison, isTargetPlayer, isTargetEnemy, isTargetAllies);
     }
 
     [Command]
-    private void CmdApplyCloudPoison(bool isActiveTalent, bool isHealingCloud)
+    private void CmdApplyPoisonCloud(bool isHealingCloud, float duration)
     {
-        if (isActiveTalent && isHealingCloud)
+        //Debug.Log("SpitPoison / CmdTestApplyPoisonCloud");
+        if (!isHealingCloud)
         {
-            if (_poisonHealingCloud.PoisonHealingCloud == null)
+            if (_poisonDamagingCloud == null && _poisonDamagingCloudPrefab.PoisonDamageCloud == null)
             {
-                _player.CharacterState.AddState(States.HealingPoisonCloud, _durationPoisonCloud, 0, _player.gameObject, Name);
+                //Debug.Log("SpitPoison / CmdTestApplyPoisonCloud / if (_poisonDamagingCloud == null)");
+                _player.CharacterState.AddState(States.PoisonCloud, duration, 0, _player.gameObject, Name);
 
-                _poisonHealingCloud.PoisonHealingCloud = Instantiate(_prefabPoisonHealingCloud, transform.position, Quaternion.identity);
+                _poisonDamagingCloud = Instantiate(_poisonDamagingCloudPrefab, transform.position, Quaternion.identity);
+                _poisonDamagingCloudPrefab.PoisonDamageCloud = _poisonDamagingCloud;
 
-                SceneManager.MoveGameObjectToScene(_poisonHealingCloud.PoisonHealingCloud.gameObject, _hero.NetworkSettings.MyRoom);
+                SceneManager.MoveGameObjectToScene(_poisonDamagingCloudPrefab.PoisonDamageCloud.gameObject, _hero.NetworkSettings.MyRoom);
 
-                _poisonHealingCloud.PoisonHealingCloud.InitializationPrefab(_player, 6f, 3.5f, 5, isHealingCloud);
-                _poisonHealingCloud.PoisonHealingCloud.AddStack();
+                _poisonDamagingCloudPrefab.PoisonDamageCloud.InitializationProjectile(_player, 5, duration, 3.5f, Name);
+                _poisonDamagingCloudPrefab.PoisonDamageCloud.AddStack();
 
-                NetworkServer.Spawn(_poisonHealingCloud.PoisonHealingCloud.gameObject);
+                NetworkServer.Spawn(_poisonDamagingCloud.gameObject);
+
+                //Debug.Log("SpitPoison / CmdTestApplyPoisonCloud / if (_poisonDamagingCloud == null) / _poisonDamagingCloud = " + _poisonDamagingCloud);
             }
             else
             {
-                _player.CharacterState.AddState(States.HealingPoisonCloud, _durationPoisonCloud, 0, _player.gameObject, Name);
-                _poisonHealingCloud.PoisonHealingCloud.AddStack();
+                //Debug.Log("SpitPoison / CmdTestApplyPoisonCloud / else");
+                _player.CharacterState.AddState(States.PoisonCloud, duration, 0, _player.gameObject, Name);
+                _poisonDamagingCloudPrefab.PoisonDamageCloud.AddStack();
             }
         }
         else
         {
-            if (_poisonDamagingCloud.PoisonDamagingCloud == null)
+            if (_poisonHealingCloud == null && _poisonHealingCloudPrefab.PoisonHealingCloud == null)
             {
-                _player.CharacterState.AddState(States.PoisonCloud, _durationPoisonCloud, 0, _player.gameObject, Name);
+                //Debug.Log("SpitPoison / CmdTestApplyPoisonCloud / if (_poisonHealingCloud == null)");
+                _player.CharacterState.AddState(States.HealingPoisonCloud, duration, 0, _player.gameObject, Name);
 
-                _poisonDamagingCloud.PoisonDamagingCloud = Instantiate(_prefabPoisonDamagingCloud, transform.position, Quaternion.identity);
+                _poisonHealingCloud = Instantiate(_poisonHealingCloudPrefab, transform.position, Quaternion.identity);
+                _poisonHealingCloudPrefab.PoisonHealingCloud = _poisonHealingCloud;
 
-                SceneManager.MoveGameObjectToScene(_poisonDamagingCloud.PoisonDamagingCloud.gameObject, _hero.NetworkSettings.MyRoom);
+                SceneManager.MoveGameObjectToScene(_poisonHealingCloudPrefab.PoisonHealingCloud.gameObject, _hero.NetworkSettings.MyRoom);
 
-                _poisonDamagingCloud.PoisonDamagingCloud.InitializationPrefab(_player, 6f, 3.5f, 5, isHealingCloud);
-                _poisonDamagingCloud.PoisonDamagingCloud.AddStack();
+                _poisonHealingCloudPrefab.PoisonHealingCloud.InitializationProjectile(_player, 5, duration, 3.5f, Name);
+                _poisonHealingCloudPrefab.PoisonHealingCloud.AddStack();
 
-                NetworkServer.Spawn(_poisonDamagingCloud.PoisonDamagingCloud.gameObject);
+                NetworkServer.Spawn(_poisonHealingCloud.gameObject);
+
+                //Debug.Log("SpitPoison / CmdTestApplyPoisonCloud / if (_poisonHealingCloud == null) / _poisonHealingCloud = " + _poisonHealingCloud);
             }
             else
             {
-                //Debug.Log("CmdPoisonDamagingCloud / Else / AddStack");
-                _player.CharacterState.AddState(States.PoisonCloud, _durationPoisonCloud, 0, _player.gameObject, Name);
-                _poisonDamagingCloud.PoisonDamagingCloud.AddStack();
+                //Debug.Log("SpitPoison / CmdTestApplyPoisonCloud / else");
+                _player.CharacterState.AddState(States.HealingPoisonCloud, duration, 0, _player.gameObject, Name);
+                _poisonHealingCloudPrefab.PoisonHealingCloud.AddStack();
             }
         }
-        RpcApplyCloudPoisons(_poisonDamagingCloud, _poisonHealingCloud, isActiveTalent, isHealingCloud);
+        RpcApply(_poisonDamagingCloud, _poisonHealingCloud, duration, isHealingCloud);
     }
+
 
     #endregion
 
@@ -291,29 +311,32 @@ public class SpitPoison : Skill
     private void RpcInstantiateProjectile(GameObject target, SpitPoisonProjectile projectile, float manaValue,
         bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
     {
-        projectile.InitializationProjectile(_player, this, _player.Stamina.CurrentValue, _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
+        projectile.InitializationProjectile(_player, this, _player.Stamina.CurrentValue, _isActiveHealingSpitPoison, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
     }
 
     [ClientRpc]
     private void RpcInstantiateProjectileToPoint(Vector3 point, SpitPoisonProjectile projectile, float manaValue,
         bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
     { 
-        projectile.InitializationProjectile(_player, this, _player.Stamina.CurrentValue, _isActiveTalent, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
+        projectile.InitializationProjectile(_player, this, _player.Stamina.CurrentValue, _isActiveHealingSpitPoison, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
     }
 
     [ClientRpc]
-    private void RpcApplyCloudPoisons(PoisonCloudDisplay damageCloud, PoisonCloudDisplay healCloud, bool isActiveTalent, bool isHealingCloud)
+    private void RpcApply(PoisonDamagingCloudPrefab poisonDamagingCloud, PoisonHealingCloudPrefab poisonHealingCloud, float duration, bool isHealingCloud)
     {
-        if (damageCloud != null)
+        //Debug.Log("PoisonBall / RpcApply / poisonDamagingCloud = " + poisonDamagingCloud);
+        if (poisonDamagingCloud != null)
         {
-            damageCloud.InitializationPrefab(_player, 6f, 3.5f, 5, isHealingCloud);
-            damageCloud.AddStack();
-            //Debug.Log("RpcPoisonDamagingCloud / if dmgCloud / AddStack");
+           // Debug.Log("PoisonBall / RpcApply / if (poisonDamagingCloud != null) = " + poisonDamagingCloud);
+            poisonDamagingCloud.InitializationProjectile(_player, 5, duration, 3.5f, Name);
+            poisonDamagingCloud.AddStack();
         }
-        if (healCloud != null)
+
+        if (poisonHealingCloud != null && isHealingCloud)
         {
-            healCloud.InitializationPrefab(_player, 6f, 3.5f, 5, isHealingCloud);
-            healCloud.AddStack();
+           // Debug.Log("PoisonBall / RpcApply / if (poisonHealingCloud != null) = " + poisonHealingCloud);
+            poisonHealingCloud.InitializationProjectile(_player, 5, duration, 3.5f, Name);
+            poisonHealingCloud.AddStack();
         }
     }
 
