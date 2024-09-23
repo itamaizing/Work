@@ -103,6 +103,17 @@ public class TestGameRules : GameRules
     private IEnumerator HandleTeamsAndSpawns(List<Transform> spawnPoints)
     {
         yield return StartCoroutine(SplitTeams(spawnPoints));
+
+        foreach (var playerSettings in _playersSettings)
+        {
+            int spawnIndex = playerSettings.NetworkSettings.TeamIndex - 1;
+            if (_spawnPoints != null && spawnIndex >= 0 && spawnIndex < _spawnPoints.Count)
+            {
+                Transform spawnPoint = _spawnPoints[spawnIndex];
+                playerSettings.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
+            }
+        }
+
         yield return StartCoroutine(SavePositionsAndAssignLayers());
     }
 
