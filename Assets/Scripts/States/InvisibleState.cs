@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,7 +19,7 @@ public class InvisibleState : AbstractCharacterState
 
 		_characterState = character;
 		//_characterState.Health.SetInvincible(true);
-		_characterState.invinsible = true;
+		_characterState.invincible = true;
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
 	}
@@ -41,7 +40,7 @@ public class InvisibleState : AbstractCharacterState
 		if (_characterState.Check(StatusEffect.Others))
 		{
 			//_characterState.Health.SetInvincible(false);
-			_characterState.invinsible = false;
+			_characterState.invincible = false;
 		}
 		_characterState.RemoveState(this);
 	}

@@ -23,6 +23,18 @@ public class MoveComponent : NetworkBehaviour
 	private Vector2 _dir;
 	private Vector2 _currentVelocity;
 	private Vector2 _currentVelocityTemp;
+	
+	public float DefaultSpeed
+	{
+		get => _defaultSpeed;
+		set => _defaultSpeed = value;
+	}
+
+	public float CurrentSpeed
+	{
+		get => _currentSpeed;
+		set => _currentSpeed = value;
+	}
 
 	public void SetOffset(Vector2 offset)
 	{

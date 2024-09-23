@@ -911,7 +911,7 @@ public class Plague : AbstractCharacterState
 				{
 					Debug.Log("ADD CHRAGE");
 					deathSpiral.AddCharge();
-				}*/
+				}
 			}
 
 			if (Random.Range(0, 5) < 1)
@@ -1047,7 +1047,7 @@ public class Curse : AbstractCharacterState
 		/*if (_characterState.personWhoShoted != null)
 		{
 			_personWhoShooted = _characterState.personWhoShoted;
-		}*/
+		}
 		return true;
 	}
 }
@@ -1469,6 +1469,7 @@ public class ReversePolarityState : AbstractCharacterState
 		return false;
 	}
 }
+*/
 
 public class CharacterState : NetworkBehaviour
 {
@@ -1494,12 +1495,13 @@ public class CharacterState : NetworkBehaviour
         [States.NorthernerEndurance] = new NorthernerEndurance(),
         [States.LastBreath] = new LastBreath(),
         [States.MagicBuff] = new MagicBuff(),
-        [States.SpiritEnergy] = new SpiritEnergyState(),
+        /*[States.SpiritEnergy] = new SpiritEnergyState(),
         [States.SpiritHealth] = new SpiritHealthState(),
         [States.TiredSoul] = new TiredSoul(),
         [States.LightShield] = new LightShield(),
         [States.DarkShield] = new DarkShield(),
         [States.ReversePolarity] = new ReversePolarityState()
+        */
     };
 
     public void Initialize(Character hero)
