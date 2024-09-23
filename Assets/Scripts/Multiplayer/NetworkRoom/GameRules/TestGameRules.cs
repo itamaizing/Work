@@ -81,6 +81,12 @@ public class TestGameRules : GameRules
         return count;
     }
 
+    [ClientRpc]
+    private void RpcTeleportPlayer(GameObject player, Vector3 position, Quaternion rotation)
+    {
+        player.transform.SetPositionAndRotation(position, rotation);
+    }
+
     private void RestartRound()
     {
         teamDeaths[1] = 0;
@@ -95,7 +101,8 @@ public class TestGameRules : GameRules
             if (_spawnPoints != null && spawnIndex >= 0 && spawnIndex < _spawnPoints.Count)
             {
                 Transform spawnPoint = _spawnPoints[spawnIndex];
-                playerSettings.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
+
+                RpcTeleportPlayer(playerSettings.gameObject, spawnPoint.position, spawnPoint.rotation);
             }
         }
     }
@@ -103,7 +110,6 @@ public class TestGameRules : GameRules
     private IEnumerator HandleTeamsAndSpawns(List<Transform> spawnPoints)
     {
         yield return StartCoroutine(SplitTeams(spawnPoints));
-
         foreach (var playerSettings in _playersSettings)
         {
             int spawnIndex = playerSettings.NetworkSettings.TeamIndex - 1;
