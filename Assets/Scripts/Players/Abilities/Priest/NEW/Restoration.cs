@@ -10,6 +10,7 @@ public class Restoration : Skill
     [SerializeField] private float lightDuration = 12f;
     [SerializeField] private float healInterval = 4f;
     [SerializeField] private float lightCastTime = 1.2f;
+    [SerializeField] private float effectivenessIncreasePerHeal = 0.1f;
 
     [Header("Restoration (Dark Mode) Settings")]
     [SerializeField] private float damagePerTick = 6f;
@@ -20,13 +21,14 @@ public class Restoration : Skill
 
     public bool isLightMode = true;
     private Character _target;
-
-    protected override bool IsCanCast => IsCanCastCheck();
+    private float _accumulatedEffectiveness = 1f;
+    private float _totalHealedInInterval = 0f;
     
+    protected override bool IsCanCast => IsCanCastCheck();
+
     private bool IsCanCastCheck()
     {
         if (_target == null) return false;
-        
         return Vector3.Distance(transform.position, _target.transform.position) <= Radius;
     }
 
@@ -41,6 +43,14 @@ public class Restoration : Skill
     private void OnDisable()
     {
         OnModeChange -= HandleModeChange;
+        if (_target != null)
+        {
+            var healthComponent = _target.GetComponent<Health>();
+            if (healthComponent != null)
+            {
+                healthComponent.HealTaked -= OnHealTaken;
+            }
+        }
     }
 
     public void SwitchMode()
@@ -70,6 +80,12 @@ public class Restoration : Skill
 
         if (isAlly && TryPayCost())
         {
+            var healthComponent = _target.GetComponent<Health>();
+            if (healthComponent != null)
+            {
+                healthComponent.HealTaked += OnHealTaken;
+            }
+
             StartCoroutine(ApplyHealOverTime(_target));
         }
     }
@@ -85,6 +101,11 @@ public class Restoration : Skill
             StartCoroutine(ApplyDamageOverTime(_target));
         }
     }
+    
+    private void OnHealTaken(float healedAmount)
+    {
+        _totalHealedInInterval += healedAmount;
+    }
 
     private IEnumerator ApplyHealOverTime(Character target)
     {
@@ -95,9 +116,16 @@ public class Restoration : Skill
             float endTime = Time.time + lightDuration;
             while (Time.time < endTime)
             {
-                healthComponent.Heal(healPerTick);
+                float effectiveHeal = healPerTick * _accumulatedEffectiveness;
+                healthComponent.Heal(effectiveHeal);
+                
+                _accumulatedEffectiveness += _totalHealedInInterval * effectivenessIncreasePerHeal;
+                
+                _totalHealedInInterval = 0f;
+
                 yield return new WaitForSeconds(healInterval);
             }
+            healthComponent.HealTaked -= OnHealTaken;
         }
     }
 
@@ -129,7 +157,7 @@ public class Restoration : Skill
         {
             if (Input.GetMouseButton(0))
             {
-                _target = GetRaycastTarget(true);
+                _target = GetRaycastTarget();
             }
             yield return null;
         }
@@ -154,5 +182,11 @@ public class Restoration : Skill
     protected override void ClearData()
     {
         _target = null;
+        ResetAccumulatedEffectiveness();
+    }
+
+    public void ResetAccumulatedEffectiveness()
+    {
+        _accumulatedEffectiveness = 1f;
     }
 }

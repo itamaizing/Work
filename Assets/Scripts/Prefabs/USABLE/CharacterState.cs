@@ -1495,13 +1495,12 @@ public class CharacterState : NetworkBehaviour
         [States.NorthernerEndurance] = new NorthernerEndurance(),
         [States.LastBreath] = new LastBreath(),
         [States.MagicBuff] = new MagicBuff(),
-        /*[States.SpiritEnergy] = new SpiritEnergyState(),
+        [States.SpiritEnergy] = new SpiritEnergyState(),
         [States.SpiritHealth] = new SpiritHealthState(),
         [States.TiredSoul] = new TiredSoul(),
         [States.LightShield] = new LightShield(),
         [States.DarkShield] = new DarkShield(),
         [States.ReversePolarity] = new ReversePolarityState()
-        */
     };
 
     public void Initialize(Character hero)

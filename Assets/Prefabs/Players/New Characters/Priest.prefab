@@ -756,10 +756,26 @@ PrefabInstance:
       propertyPath: unit
       value: 
       objectReference: {fileID: 8266765981491458884, guid: a65fb085861f53d49a1ba04a44eb782a, type: 3}
+    - target: {fileID: 3331720620529543771, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3331720620529543771, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3451745856804208473, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _resource
       value: 
       objectReference: {fileID: 8977740907449216}
+    - target: {fileID: 4250437611048027662, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4250437611048027662, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5188756905167438128, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
@@ -1097,7 +1113,6 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _attackZoneSize: 0
   _attackSpeed: 1
-  _isAutoattackMode: 1
   _damage: 8
   _playerLinks: {fileID: 5889404958618692528}
   _combo: {fileID: 5948793039085152286}
@@ -1147,7 +1162,6 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _attackZoneSize: 0
   _attackSpeed: 1
-  _isAutoattackMode: 1
   _buffDuration: 9
   _healAmount: 2
   _damageAmount: 20
@@ -1268,6 +1282,7 @@ MonoBehaviour:
   lightDuration: 12
   healInterval: 4
   lightCastTime: 1.2
+  effectivenessIncreasePerHeal: 0.1
   damagePerTick: 6
   darkRange: 6
   darkDuration: 12
