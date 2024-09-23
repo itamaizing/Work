@@ -25,7 +25,9 @@ public class NorthernersEndurance : Skill
 
 	protected override IEnumerator CastJob()
 	{
-		Shoot();
+		float boostHp = 0.1f + 0.003f * _energy.CurrentValue;
+		_energy.CmdUse(_energy.CurrentValue);
+		Shoot(boostHp, _target.gameObject);
 		yield return null;
 	}
 
@@ -46,14 +48,14 @@ public class NorthernersEndurance : Skill
 		}
 	}
 
-	//[Command]
-	private void Shoot()
+	[Command]
+	private void Shoot(float boostHp, GameObject targetGm)
 	{
-		//if (_character.RuneComponent.RemoveRune(1, this))
-		{
-			float boostHp = 0.1f + 0.003f * _energy.CurrentValue;
-			_energy.CmdUse(_energy.CurrentValue);
-			_target.CharacterState.CmdAddState(States.NorthernerEndurance, 6, boostHp, _playerLinks.gameObject, name);
-		}
+		Character target = targetGm.GetComponent<Character>();
+
+		/*float boostHp = 0.1f + 0.003f * _energy.CurrentValue;
+		_energy.CmdUse(_energy.CurrentValue);*/
+		target.CharacterState.AddState(States.NorthernerEndurance, 6, boostHp, _playerLinks.gameObject, name);
+		
 	}
 }

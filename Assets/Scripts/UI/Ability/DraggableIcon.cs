@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -5,9 +6,13 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] Image _image;
+
+    [SerializeField] private FillAmountOverTime _cooldown;
+    [SerializeField] private TextMeshProUGUI _chargeCounter;
+    [SerializeField] private Blink _blinkBoxFrame;
 
     private Transform _patentAfterDrag;
     private Skill _skill;
@@ -17,10 +22,21 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public Skill Skill { get => _skill; set => _skill = value; }
     public bool Selected { get => _selected; set => _selected = value; }
 
-    public void Init(Skill skill)
+    public event Action BeginDrag;
+    public event Action EndDrag;
+
+    public void Init(Skill skill, Transform parent)
     {
         _skill = skill;
         _image.sprite = _skill.Icon;
+        PatentAfterDrag = parent;
+
+        SubscribingSkillOnEvents(_skill);
+    }
+
+    private void OnDestroy()
+    {
+        UnsubscribingSkillOnEvents(_skill);
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -30,6 +46,8 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         transform.SetParent(transform.root);
         transform.SetAsLastSibling();
         _image.raycastTarget = false;
+
+        BeginDrag?.Invoke();
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -43,5 +61,86 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         transform.SetAsFirstSibling();
         _image.raycastTarget = true;
         PatentAfterDrag.GetComponent<SkillIcon>().CurrentIcon = this;
+
+        EndDrag?.Invoke();
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        InputHandler.OnSwitchAutoMode += OnClickWithCtrl;
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        InputHandler.OnSwitchAutoMode -= OnClickWithCtrl;
+    }
+
+    private void SubscribingSkillOnEvents(Skill ability)
+    {
+        //ability.CastStreamStarted += OnStartStreaming;
+        //ability.Canceled += OnStopStreaming;
+
+        //ability.CastDeleyStarted += OnStartCastDeley;
+        //ability.Canceled += OnStopCastDeley;
+
+        ability.CooldownStarted += OnStartCooldown;
+        ability.CurrentChargeChanged += OnCurrentChargeText;
+
+        ability.CastStarted += OnCastStarted;
+        ability.CastEnded += OnCastEnded;
+        ability.Canceled += OnCastEnded;
+    }
+
+    private void UnsubscribingSkillOnEvents(Skill ability)
+    {
+        //ability.CastStreamStarted -= OnStartStreaming;
+        //ability.Canceled -= OnStopStreaming;
+
+        //ability.CastDeleyStarted -= OnStartCastDeley;
+        //ability.Canceled -= OnStopCastDeley;
+
+        ability.CooldownStarted -= OnStartCooldown;
+        ability.CurrentChargeChanged -= OnCurrentChargeText;
+
+        ability.CastStarted -= OnCastStarted;
+        ability.CastEnded -= OnCastEnded;
+        ability.Canceled -= OnCastEnded;
+    }
+
+    private void OnClickWithCtrl()
+    {
+        if (Skill is AutoAttackSkill autuAttackSkill)
+        {
+            autuAttackSkill.SwitchAutoMode();
+            Debug.Log("AA mode - " + autuAttackSkill.IsAutoattackMode);
+        }
+    }
+
+    private void OnCastStarted()
+    {
+        _blinkBoxFrame.gameObject.SetActive(true);
+        _blinkBoxFrame.StartBlink(0.5f);
+    }
+
+    private void OnCastEnded()
+    {
+        _blinkBoxFrame.StopBlink();
+        _blinkBoxFrame.gameObject.SetActive(false);
+    }
+
+    private void OnCurrentChargeText(int value)
+    {
+        if (value > 0)
+            _chargeCounter.color = Color.green;
+        else
+            _chargeCounter.color = Color.red;
+
+        _chargeCounter.text = value.ToString();
+    }
+
+    private void OnStartCooldown(float dutarion)
+    {
+        _cooldown.gameObject.SetActive(true);
+        _cooldown.StartFill(dutarion, 1, 0, false);
     }
 }

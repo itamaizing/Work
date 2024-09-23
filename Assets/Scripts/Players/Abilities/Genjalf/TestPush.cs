@@ -3,47 +3,63 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TestPush : TargetAbility
+public class TestPush : Skill
 {
     [SerializeField] private float _pushDistance = 5f;
 
-    private Coroutine _pushJob;
+    private Character _target;
+    private GameObject _tempTarget;
+    private MoveComponent _tempTargetMove;
 
-    protected override void Cancel()
+    protected override bool IsCanCast
     {
-        CmdCancle();
-    }
-
-    protected override void CastAction()
-    {
-        CmdPush(Target.transform);
-    }
-
-    private IEnumerator PushCoroutine(Transform targetTransform, Vector3 targetPosition)
-    {
-        float time = 0;
-
-        while (StreamingDuration > time)
+        get
         {
-            targetTransform.position = Vector2.MoveTowards(targetTransform.position, targetPosition, (_pushDistance * Time.deltaTime) / StreamingDuration);
+            if (_target == null)
+                return false;
 
-            time += Time.deltaTime;
+            return NoObstacles(_target.transform.position, _obstacle) && IsTargetInRadius(Radius, _target.transform); ;
+        }
+    }
+
+    protected override IEnumerator CastJob()
+    {
+        float time = 3;
+
+        while(time > 0)
+        {
+            time -= Time.deltaTime;
+            CmdPush(_target.gameObject, (_target.transform.position - transform.position).normalized * 2 * Time.deltaTime);
+            yield return null;
+        }
+    }
+
+    protected override void ClearData()
+    {
+        _target = null;
+    }
+
+    protected override IEnumerator PrepareJob()
+    {
+        while(_target == null)
+        {
+            if (Input.GetMouseButton(0))
+            {
+                _target = GetRaycastTarget(true);
+                
+            }
             yield return null;
         }
     }
 
     [Command]
-    private void CmdPush(Transform targetTransform)
+    private void CmdPush(GameObject gameObject, Vector2 force)
     {
-        Vector3 dir = (targetTransform.position - transform.position).normalized * _pushDistance;
-        dir += targetTransform.position;
-        _pushJob = StartCoroutine(PushCoroutine(targetTransform, dir));
-    }
-
-    [Command]
-    private void CmdCancle()
-    {
-        if (_pushJob != null)
-            StopCoroutine(_pushJob);
+        if (_tempTarget != gameObject)
+        {
+            _tempTarget = gameObject;
+            _tempTargetMove = gameObject.GetComponent<MoveComponent>();
+        }
+        _tempTargetMove.TargetRpcAddTransformPosition(force);
     }
 }

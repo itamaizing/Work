@@ -12,13 +12,14 @@ public class IcyStream : Skill
 
 	private Vector2 _mousePos = Vector3.positiveInfinity;
 	private Energy _energy;
-	private RuneComponent _rune;
+	//private RuneComponent _rune;
 
 	protected override bool IsCanCast => IsCanCastCheck();
 
 	private bool IsCanCastCheck()
 	{
-		if (_rune.CurrentValue >= 1.5f)
+		return true;
+		/*if (_rune.CurrentValue >= 1.5f)
 		{
 			_rune.CmdUse(1.5f);
 			return true;
@@ -26,7 +27,7 @@ public class IcyStream : Skill
 		else
 		{
 			return false;
-		}
+		}*/
 	}
 
 	private void Start()
@@ -37,13 +38,13 @@ public class IcyStream : Skill
 			{
 				_energy = (Energy)_playerLinks.Resources[i];
 			}
-			if (_playerLinks.Resources[i].Type == ResourceType.Rune)
+			/*if (_playerLinks.Resources[i].Type == ResourceType.Rune)
 			{
 				_rune = (RuneComponent)_playerLinks.Resources[i];
-			}
+			}*/
 		}
-
 	}
+
 	private void Shoot()
 	{
 		Debug.Log("shot");
@@ -60,7 +61,7 @@ public class IcyStream : Skill
 		{
 			usedEnergy = _energy.CurrentValue;
 		}
-		_energy.TryUse(usedEnergy);
+		_energy.CmdUse(usedEnergy);
 		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 1);
 	}
 
@@ -79,7 +80,7 @@ public class IcyStream : Skill
 	[ClientRpc]
 	private void RpcInit(GameObject obj, float manaValue)
 	{
-		obj.GetComponent<IceCloudProjectile>().Init(_playerLinks, manaValue, false, this);
+		obj.GetComponent<IcyStreamProjectile>().Init(_playerLinks, manaValue, false, this);
 	}
 
 	protected override IEnumerator PrepareJob()
