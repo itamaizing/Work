@@ -8,7 +8,8 @@ using Mirror;
 public abstract class Character : NetworkBehaviour
 {
 	[SerializeField] private CharacterData _playerData;
-	[SerializeField] private UserNetworkSettings _networkSettings; 
+	[SerializeField] private UserNetworkSettings _networkSettings;
+	[SerializeField] private SpriteRenderer sr;
 	[SerializeField] private Rigidbody2D rb;
 	[SerializeField] private Level _lvl;
 	[SerializeField] private Health _healthComponent;
@@ -20,7 +21,8 @@ public abstract class Character : NetworkBehaviour
 	[SerializeField] private UIPlayerComponents uiComponent;
 	[SerializeField] private SelectComponent _selectComponent; 
 	[SerializeField] private List<Resource> _resources;
-	
+
+	public SpriteRenderer SR => sr;
 	public CharacterData Data => _playerData;
 	public UserNetworkSettings NetworkSettings => _networkSettings;
 	public Rigidbody2D Rb => rb;
@@ -40,7 +42,7 @@ public abstract class Character : NetworkBehaviour
 
 	public virtual void Initialize()
 	{
-		Move.Initialize(Data.GetAttributeValue(AttributeNames.Speed), Rb , true);
+		Move.Initialize(Data.GetAttributeValue(AttributeNames.Speed), Rb, SR, true);
 		CharacterState.Initialize(this);
 		SelectComponent.Initialize(Move,Abilities,UIComponent);
 		
