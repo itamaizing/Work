@@ -16,7 +16,7 @@ public class FogHideComponent : MonoBehaviour
     }
 
     void CheckIfInFog() {
-        bool infog = FogOfWarManager.INSTANCE.IsPositionInFog(transform.position);
+        bool infog = FogOfWarManager.INSTANCE.IsPositionInFog(new Vector3(transform.position.x, transform.position.z, transform.position.y));
 
         foreach (Renderer renderer in m_RenderersToHide)
         {

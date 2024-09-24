@@ -18,7 +18,7 @@ public class VisionComponent : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        m_Vision.SetPosition(transform.position);
+        m_Vision.SetPosition(new Vector3(transform.position.x, transform.position.z, transform.position.y));
         m_Vision.SetRange(m_VisionRange);
     }
 
