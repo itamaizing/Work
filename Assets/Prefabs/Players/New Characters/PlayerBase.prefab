@@ -379,6 +379,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _resourceType: 0
+  _regenerationDelay: 0
 --- !u!114 &2926669445991704918
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -395,6 +396,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _resourceType: 2
+  _regenerationDelay: 0
   _sumDamageGiven: 0
 --- !u!114 &1057949845680950153
 MonoBehaviour:
@@ -412,6 +414,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _resourceType: 3
+  _regenerationDelay: 0
 --- !u!114 &4715758111818368764
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -480,7 +483,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  unit: {fileID: 8266765981491458884, guid: d321207ef616498478038beb68b111ea, type: 3}
+  _hero: {fileID: 8468544467696250796}
 --- !u!114 &2603903007656169372
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -497,6 +500,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _resourceType: 1
+  _regenerationDelay: 0
 --- !u!114 &7382485661582087661
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -509,6 +513,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 428637f045d35d24696a6e8a4728d7d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!114 &1277432348331439004
 MonoBehaviour:
   m_ObjectHideFlags: 0

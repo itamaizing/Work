@@ -45,7 +45,7 @@ public class TestH3 : Skill
     {
         while (float.IsPositiveInfinity(_targetPoint.x) && _target == null)
         {
-            if (Input.GetMouseButton(0))
+            if (GetMouseButton)
             {
                 _target = GetRaycastTarget();
                 _targetPoint = GetMousePoint();

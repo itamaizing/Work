@@ -12,15 +12,19 @@ public class InputHandler : MonoBehaviour
 
 	private Vector2 _movementVector;
 	private StandardInput _inputActions;
+	private bool _IsClick;
 
 	public Vector2 MovementVector => _movementVector;
 
     public StandardInput InputActions { get => _inputActions; set => _inputActions = value; }
 
-    #region Events
+	#region Events
 
-    public static UnityAction<Vector2> OnPlayerMove = delegate { };
+	public static bool Click { get => Instance._IsClick; }
+
+	public static UnityAction<Vector2> OnPlayerMove = delegate { };
 	public static UnityAction OnClick = delegate { };
+	public static UnityAction OnClickCanceled = delegate { };
 	public static UnityAction OnAltClick = delegate { };
 	public static UnityAction OnDoubleAltClick = delegate { };
 	public static UnityAction OnSwitchAutoMode = delegate { };
@@ -57,13 +61,12 @@ public class InputHandler : MonoBehaviour
 
 
 		//Debug.Log(_inputActions.GameplayMap.Spell3.bindings[0].path);
-		//Debug.Log(_inputActions.GameplayMap.Spell3.GetBindingDisplayString(InputBinding.DisplayStringOptions.DontIncludeInteractions));
-		//Debug.Log(_inputActions.GameplayMap.Move.GetBindingDisplayString(InputBinding.DisplayStringOptions.DontIncludeInteractions));
 
 		#region Events Listeners
 
 		_inputActions.GameplayMap.Move.performed += i => OnPlayerMove?.Invoke(i.ReadValue<Vector2>());
 		_inputActions.GameplayMap.Click.performed += i => OnClick?.Invoke();
+		_inputActions.GameplayMap.Click.canceled += i => OnClickCanceled?.Invoke();
 		_inputActions.GameplayMap.AltClick.performed += i => OnAltClick?.Invoke();
 		_inputActions.GameplayMap.AltDoubleClick.performed += i => OnDoubleAltClick?.Invoke();
 		_inputActions.GameplayMap.SwitchAutoMode.performed += i => OnSwitchAutoMode?.Invoke();
@@ -106,7 +109,8 @@ public class InputHandler : MonoBehaviour
 
 		#endregion
 
-		OnPlayerMove += OnMove;
+		OnClick += SetClickTrue;
+		OnClickCanceled += SetClickFalse;
 	}
 
 	private void OnEnable()
@@ -119,8 +123,13 @@ public class InputHandler : MonoBehaviour
 		_inputActions.Disable();
 	}
 
-	private void OnMove(Vector2 value)
+	private void SetClickTrue()
 	{
-		_movementVector = value;
+		_IsClick = true;
+	}
+
+	private void SetClickFalse()
+	{
+		_IsClick = false;
 	}
 }

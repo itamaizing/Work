@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,11 +10,13 @@ public class SkillPanel : MonoBehaviour
     [SerializeField] private bool _hideUnusedButtons = true;
     [SerializeField] private List<RebindUI> _rebindsUI;
     [SerializeField] private SkillIcon[] _skillIcons;
-
-    [SerializeField] private DraggableIcon _skillIconPref;
+    [SerializeField] private DraggableIcon _draggableIconPref;
     [SerializeField] private FillAmountOverTime _castLine;
     [SerializeField] private QueuePanel _queuePanel;
     [SerializeField] private SelectManager _selectManager;
+    [SerializeField] private GameObject _abilityNameBox;
+    [SerializeField] private TextMeshProUGUI _abilityNameBoxNameText;
+    [SerializeField] private TextMeshProUGUI _abilityNameBoxDescriptionText;
 
     private List<DraggableIcon> _skills = new List<DraggableIcon>();
     private Character _currentCharacter;
@@ -49,6 +52,8 @@ public class SkillPanel : MonoBehaviour
 
     public void Fill(SkillManager abilities)
     {
+        ClearPanel();
+
         if (_playerAbilities != null)
         {
             _playerAbilities.SkillSelected -= OnAbilitySelected;
@@ -62,9 +67,13 @@ public class SkillPanel : MonoBehaviour
         for (int i = 0; i < _playerAbilities.SelectedSkills.Length; i++)
         {
             if (_playerAbilities.SelectedSkills[i] == null)
+            {
+                _skillIcons[i].CurrentIcon = null;
                 continue;
+            }
+                
 
-            var icon = Instantiate(_skillIconPref, _skillIcons[i].transform);
+            var icon = Instantiate(_draggableIconPref, _skillIcons[i].transform);
             icon.Init(_playerAbilities.SelectedSkills[i], _skillIcons[i].transform);
             _skillIcons[i].CurrentIcon = icon;
             icon.transform.SetAsFirstSibling();
@@ -72,6 +81,8 @@ public class SkillPanel : MonoBehaviour
 
             icon.BeginDrag += OnBeginDrag;
             icon.EndDrag += OnEndDrag;
+            icon.PointerEnter += OnPointerEnterIcon;
+            icon.PointerExit += OnPointerExitIcon;
         }
 
         _playerAbilities.SkillSelected += OnAbilitySelected;
@@ -79,6 +90,7 @@ public class SkillPanel : MonoBehaviour
         _playerAbilities.SkillAdded += OnSkillAdded;
         _playerAbilities.SkillRemoved += OnSkillRemoved;
 
+        OnBeginDrag();
         OnEndDrag();
     }
 
@@ -99,6 +111,18 @@ public class SkillPanel : MonoBehaviour
                 item.Show();
             }
         }
+    }
+
+    private void OnPointerEnterIcon(DraggableIcon skill)
+    {
+        _abilityNameBoxNameText.text = skill.Skill.Name;
+        _abilityNameBoxDescriptionText.text = skill.Skill.Description;
+        _abilityNameBox.SetActive(true);
+    }
+
+    private void OnPointerExitIcon(DraggableIcon skill)
+    {
+        _abilityNameBox.SetActive(false);
     }
 
     private void OnBeginDrag()

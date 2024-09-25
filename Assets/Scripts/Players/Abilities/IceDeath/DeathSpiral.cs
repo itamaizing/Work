@@ -205,7 +205,7 @@ public class DeathSpiral : Skill
 	{
 		_firstShot = false;
 		_superCharge = false;
-		_currentChargers--;
+		Chargers--;
 		_inTheRow = true;
 		Vector2 lookDir = _mousePos - (Vector2)_playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
@@ -225,8 +225,8 @@ public class DeathSpiral : Skill
 	public void AddCharge()
 	{
 		Debug.Log("ADDED CHARGE!!!");
-		if(_currentChargers<_maxCharges)
-			_currentChargers++;
+		if(Chargers < _maxCharges)
+			Chargers++;
 	}
 
 	private void Timer()

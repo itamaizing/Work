@@ -43,10 +43,9 @@ public class TestPush : Skill
     {
         while(_target == null)
         {
-            if (Input.GetMouseButton(0))
+            if (GetMouseButton)
             {
                 _target = GetRaycastTarget(true);
-                
             }
             yield return null;
         }

@@ -67,9 +67,8 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] protected bool _isAutoLineRender = true;
 
     protected SkillRenderer _skillRender;
-    protected HeroComponent _hero;
+    protected Character _hero;
     protected bool _isCanCancle = true;
-    protected int _currentChargers;
     protected Coroutine _prepareCoroutine;
     protected Coroutine _castCoroutine;
     protected Coroutine _cooldownJob;
@@ -77,6 +76,7 @@ public abstract class Skill : NetworkBehaviour
     protected Coroutine _castDeleyCoroutine;
     protected Coroutine _castStreamCoroutine;
 
+    private int _currentChargers;
     private float _remainingCooldownTime;
     private StatsBuff _statsBuff = new StatsBuff();
     private Coroutine _actionWrapperForPreparingCoroutine;
@@ -85,16 +85,18 @@ public abstract class Skill : NetworkBehaviour
     private bool _isCasting = false;
     private Transform _tempTargetForDamage;
     private Health _tempHPForDamage;
+    private bool _isClick;
 
+    public bool GetMouseButton { get => _isClick; }
     public bool IsSubjectToGlobalCooldownTime { get => _isSubjectToGlobalCooldownTime; }
-    public HeroComponent Hero { get => _hero; }
+    public Character Hero { get => _hero; }
     public StatsBuff Buff => _statsBuff;
     public string Name => _abilityInfo.Name;
     public string Description => _abilityInfo.Description;
     public Sprite Icon => _abilityInfo.Icon;
     public bool IsCooldowned { get => _remainingCooldownTime <= 0; }
     public virtual bool IsPayCostStartCooldown { get => true; }
-    public int Chargers => _currentChargers;
+    public int Chargers { get => _currentChargers; protected set { _currentChargers = value; CurrentChargeChanged?.Invoke(_currentChargers); } }
     public bool IsHaveCharge => (_currentChargers > 0);
     public float ChargeCooldown => _chargeCooldown;
     public bool IsPreparing => _isPreparing;
@@ -138,7 +140,7 @@ public abstract class Skill : NetworkBehaviour
     protected abstract IEnumerator CastJob();
     protected abstract void ClearData();
 
-    public void Init(SkillRenderer render, HeroComponent hero)
+    public void Init(SkillRenderer render, Character hero)
     {
         _hero = hero;
         _skillRender = render;
@@ -208,6 +210,12 @@ public abstract class Skill : NetworkBehaviour
                 _actionWrapperForPreparingCoroutine = null;
                 _isPreparing = false;
                 StopAutoDraw();
+
+                PreparingCanceled?.Invoke();
+
+                InputHandler.OnClick -= OnClick;
+                InputHandler.OnClickCanceled -= OnClickCanceled;
+                OnClickCanceled();
             }
 
             return true;
@@ -476,7 +484,7 @@ public abstract class Skill : NetworkBehaviour
         }
     }
 
-    private IEnumerator RechargeCoroutine()
+    protected virtual IEnumerator RechargeCoroutine()
     {
         while (_currentChargers < _maxCharges)
         {
@@ -486,7 +494,7 @@ public abstract class Skill : NetworkBehaviour
                 time += Time.deltaTime;
                 yield return null;
             }
-            if(_currentChargers < _maxCharges)
+            if (_currentChargers < _maxCharges)
             {
                 _currentChargers++;
                 CurrentChargeChanged?.Invoke(_currentChargers);
@@ -495,6 +503,16 @@ public abstract class Skill : NetworkBehaviour
                 break;
         }
         _rechargeJob = null;
+    }
+
+    private void OnClick()
+    {
+        _isClick = true;
+    }
+
+    private void OnClickCanceled()
+    {
+        _isClick = false;
     }
 
     private IEnumerator CooldownCoroutine(float cooldownTime)
@@ -554,7 +572,14 @@ public abstract class Skill : NetworkBehaviour
         ClearData();
         StartAutoDraw();
 
+        InputHandler.OnClick += OnClick;
+        InputHandler.OnClickCanceled += OnClickCanceled;
+
         yield return _prepareCoroutine = StartCoroutine(PrepareJob());
+
+        InputHandler.OnClick -= OnClick;
+        InputHandler.OnClickCanceled -= OnClickCanceled;
+        OnClickCanceled();
 
         PreparingSuccess?.Invoke();
         _isPreparing = false;
