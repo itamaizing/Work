@@ -13,7 +13,7 @@ public class Shield : Resource, IDamageable
         _currentValue = maxValue;
         _maxValue = maxValue;
         _regenerationValue = regenValue;
-        _regenerationDelay = regenDelay;
+        _regenerationPeriod = regenDelay;
 
         if (regenValue > 0)
             ClientStartRegenirateJob();

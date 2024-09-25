@@ -53,7 +53,7 @@ public abstract class AutoAttackSkill : Skill
     {
         do
         {
-            if (Input.GetMouseButton(0))
+            if (GetMouseButton)
             {
                 _target = GetRaycastTarget();
             }

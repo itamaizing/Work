@@ -11,21 +11,22 @@ public enum ResourceType
     Rune
 }
 
-//[RequireComponent(typeof(NetworkIdentity))]
 public abstract class Resource : NetworkBehaviour
 {
     [SerializeField] private ResourceType _resourceType;
+    [SerializeField, SyncVar] protected float _regenerationDelay = 0;
     [SyncVar(hook = nameof(HookValueChanged))] protected float _currentValue;
     [SyncVar(hook = nameof(HookMaxValueChanged))] protected float _maxValue;
     [SyncVar] protected float _regenerationValue;
-    [SyncVar] protected float _regenerationDelay;
+    [SyncVar] protected float _regenerationPeriod;
+    
     
     protected Coroutine _regenCoroutine;
 
     public float CurrentValue { get => _currentValue; protected set { _currentValue = value; } }
     public float MaxValue { get => _maxValue; protected set { _maxValue = value; } }
     public float RegenerationValue { get => _regenerationValue;  set { _regenerationValue = value; } }
-    public float RegenerationDelay { get => _regenerationDelay;  set { _regenerationDelay = value; } }
+    public float RegenerationDelay { get => _regenerationPeriod;  set { _regenerationPeriod = value; } }
 
     public ResourceType Type => _resourceType;
 
@@ -37,7 +38,7 @@ public abstract class Resource : NetworkBehaviour
         _currentValue = maxValue;
         _maxValue = maxValue;
         _regenerationValue = regenValue;
-        _regenerationDelay = regenDelay;
+        _regenerationPeriod = regenDelay;
 
         if (regenValue > 0)
             ClientStartRegenirateJob();
@@ -79,8 +80,17 @@ public abstract class Resource : NetworkBehaviour
     {
         while (true)
         {
-            CmdRegen();
-            yield return new WaitForSeconds(_regenerationDelay);
+            if(_currentValue < _maxValue)
+            {
+                yield return new WaitForSeconds(_regenerationDelay);
+
+                while (_currentValue < _maxValue)
+                {
+                    CmdRegen();
+                    yield return new WaitForSeconds(_regenerationPeriod);
+                }
+            }
+            yield return null;
         }
     }
 

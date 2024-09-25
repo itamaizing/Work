@@ -7,7 +7,7 @@ public class HeroComponent : Character
 
     public SpawnComponent SpawnComponent => _spawnComponent;
     public TalentSystem Talents => talents;
-    
+
     public override void Initialize()
     {
         base.Initialize();

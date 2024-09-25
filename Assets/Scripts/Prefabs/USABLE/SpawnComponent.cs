@@ -1,79 +1,74 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Mirror;
+using TMPro.EditorUtilities;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class SpawnComponent : NetworkBehaviour
 {
-    [SerializeField] private GameObject unit;
-    
+    [SerializeField] private Character _hero;
+    [SerializeField] private List<MinionComponent> _minionPrefs;
+
     private readonly List<MinionComponent> _units = new();
 
     public List<MinionComponent> Units => _units;
 
-    private void SpawnUnit(GameObject parent)
-    {
-        if (!isOwned) return;
-        
-        Cmd_SpawnUnit(parent);
-    }
-    
-    [Command]
-    public void Cmd_SpawnUnit(GameObject parent)
-    {
-        var controllable = Instantiate(unit);
-        var contollableMinion = controllable.GetComponent<MinionComponent>();
-        contollableMinion.Initialize();
-        var user = GetComponent<UserNetworkSettings>();
-        
-        SceneManager.MoveGameObjectToScene(controllable, user.MyRoom);
-            
-        _units.Add(contollableMinion);
-            
-        var position = _units.Count + 1 / Positions.unitInGroupPositions.Count;
+    public event Action<MinionComponent> UnitAdded;
+    public event Action<MinionComponent> UnitRemoved;
 
-        controllable.transform.position = (Vector2) parent.transform.position + Positions.unitInGroupPositions[position];
-        
-        NetworkServer.Spawn(controllable , connectionToClient);
-    }
-
-    
-	public void SpawnUnit(Transform transform)
+	public void SpawnUnit(int index, Vector3 position)
 	{
-		var controllable = Instantiate(unit, transform);
-		var contollableMinion = controllable.GetComponent<MinionComponent>();
+        var temp = _minionPrefs[index];
+
+        var contollableMinion = Instantiate(temp, position, Quaternion.identity);
 		contollableMinion.Initialize();
-		var user = GetComponent<UserNetworkSettings>();
 
-		SceneManager.MoveGameObjectToScene(controllable, user.MyRoom);
+		SceneManager.MoveGameObjectToScene(contollableMinion.gameObject, _hero.NetworkSettings.MyRoom);
 
-		_units.Add(contollableMinion);
+        NetworkServer.Spawn(contollableMinion.gameObject, connectionToClient);
 
-		//var position = _units.Count + 1 / Positions.unitInGroupPositions.Count;
+        AddUnit(contollableMinion);
+        TargetRpcUnitAdded(contollableMinion.gameObject);
 
-		//controllable.transform.position = (Vector2)parent.transform.position + Positions.unitInGroupPositions[position];
-
-		NetworkServer.Spawn(controllable, connectionToClient);
-	}
-
-
-	private void RemoveUnit()
-    {
-        Destroy(_units.Last().gameObject);
-        _units.Remove(_units.Last());
+        contollableMinion.Destroyed += OnUnitDestroyed;
     }
 
-    private void Update()
+    private void AddUnit(MinionComponent minion)
     {
-        if (Input.GetKeyDown(KeyCode.Z))
+        _units.Add(minion);
+        UnitAdded?.Invoke(minion);
+    }
+
+	private void OnUnitDestroyed(MinionComponent minion)
+    {
+        _units.Remove(minion);
+        UnitRemoved?.Invoke(minion);
+
+        minion.Destroyed -= OnUnitDestroyed;
+
+        if (isServer)
         {
-            SpawnUnit(this.gameObject);
+            TargetRpcOnUnitDestroyed(minion.gameObject);
         }
-        
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            RemoveUnit();
-        }
+    }
+
+    [Command]
+    public void CmdSpawnUnit(int index, Vector3 position)
+    {
+        SpawnUnit(index, position);
+    }
+
+    [TargetRpc]
+    private void TargetRpcUnitAdded(GameObject minion)
+    {
+        AddUnit(minion.GetComponent<MinionComponent>());
+    }
+
+    [TargetRpc]
+    private void TargetRpcOnUnitDestroyed(GameObject minion)
+    {
+        OnUnitDestroyed(minion.GetComponent<MinionComponent>());
     }
 }

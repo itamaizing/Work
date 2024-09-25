@@ -26,6 +26,12 @@ public class Bar : MonoBehaviour
 
 	public virtual void Init(Resource resource)
     {
+		if(_resource != null)
+        {
+			_resource.ValueChanged -= OnValueChanged;
+			_resource.MaxValueChanged -= OnMaxValueChanged;
+		}
+
 		_resource = resource;
 
 		_currentValue = resource.CurrentValue;
