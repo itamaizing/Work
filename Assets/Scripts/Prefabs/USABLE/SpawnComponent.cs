@@ -11,8 +11,6 @@ public class SpawnComponent : NetworkBehaviour
     [SerializeField] private Character _hero;
     [SerializeField] private List<MinionComponent> _minionPrefs;
 
-    private MinionComponent _tempMin;
-
     private readonly List<MinionComponent> _units = new();
 
     public List<MinionComponent> Units => _units;
@@ -65,7 +63,6 @@ public class SpawnComponent : NetworkBehaviour
     [TargetRpc]
     private void TargetRpcUnitAdded(GameObject minion)
     {
-        Debug.Log(minion);
         AddUnit(minion.GetComponent<MinionComponent>());
     }
 
