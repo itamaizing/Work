@@ -9,10 +9,22 @@ public class TestGameRules : GameRules
     [SerializeField] private bool isRemoveRoom = true;
 
     private TeamsPanel _teams;
+    private int[] teamDeaths = new int[3];
+    private int team1Score = 0;
+    private int team2Score = 0;
 
-    public override void GameStartServer()
+    public override void GameStartServer(List<Transform> spawnPoints)
     {
-        StartCoroutine(SplitIntoTeams());
+        StartCoroutine(HandleTeamsAndSpawns(spawnPoints));
+
+        foreach (var playerSettings in _playersSettings)
+        {
+            var health = playerSettings.NetworkSettings.CachedHealth;
+            if (health != null)
+            {
+                health.Died += () => OnPlayerDeath(playerSettings.gameObject);
+            }
+        }
 
         if (isServer && isRemoveRoom)
             StartCoroutine(CloseJob());
@@ -22,22 +34,98 @@ public class TestGameRules : GameRules
     {
         _teams = FindObjectOfType<TeamsPanel>();
 
-        for (int i = 0; i < _players.Count; i++)
+        foreach (var playerSettings in _playersSettings)
         {
-            if (_players[i].GetComponent<UserNetworkSettings>().TeamIndex == 1)
+            if (playerSettings.NetworkSettings.TeamIndex == 1)
             {
-                _teams.AddInFirstTeam(_players[i].GetComponent<Character>());
+                _teams.AddInFirstTeam(playerSettings.GetComponent<Character>());
             }
             else
             {
-                _teams.AddInSecondTeam(_players[i].GetComponent<Character>());
+                _teams.AddInSecondTeam(playerSettings.GetComponent<Character>());
             }
         }
     }
 
+    public void OnPlayerDeath(GameObject player)
+    {
+        var playerSettings = _playersSettings.Find(p => p.gameObject == player);
+        if (playerSettings == null || playerSettings.NetworkSettings.TeamIndex < 1 || playerSettings.NetworkSettings.TeamIndex > 2) return;
+
+        teamDeaths[playerSettings.NetworkSettings.TeamIndex]++;
+        CheckForRoundEnd();
+    }
+
+    private void CheckForRoundEnd()
+    {
+        if (teamDeaths[1] == GetTeamCount(1) || teamDeaths[2] == GetTeamCount(2))
+        {
+            team2Score += teamDeaths[1] == GetTeamCount(1) ? 1 : 0;
+            team1Score += teamDeaths[2] == GetTeamCount(2) ? 1 : 0;
+
+            Debug.Log($"Round Over! Team 1 Score: {team1Score}, Team 2 Score: {team2Score}");
+            RestartRound();
+        }
+    }
+
+    private int GetTeamCount(int teamIndex)
+    {
+        int count = 0;
+        foreach (var playerSettings in _playersSettings)
+        {
+            if (playerSettings.NetworkSettings.TeamIndex == teamIndex)
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    [ClientRpc]
+    private void RpcTeleportPlayer(GameObject player, Vector3 position, Quaternion rotation)
+    {
+        player.transform.SetPositionAndRotation(position, rotation);
+    }
+
+    private void RestartRound()
+    {
+        teamDeaths[1] = 0;
+        teamDeaths[2] = 0;
+
+        foreach (var playerSettings in _playersSettings)
+        {
+            var health = playerSettings.NetworkSettings.CachedHealth;
+            health?.ResetValue();
+
+            int spawnIndex = playerSettings.NetworkSettings.TeamIndex - 1;
+            if (_spawnPoints != null && spawnIndex >= 0 && spawnIndex < _spawnPoints.Count)
+            {
+                Transform spawnPoint = _spawnPoints[spawnIndex];
+
+                RpcTeleportPlayer(playerSettings.gameObject, spawnPoint.position, spawnPoint.rotation);
+            }
+        }
+    }
+
+    private IEnumerator HandleTeamsAndSpawns(List<Transform> spawnPoints)
+    {
+        yield return StartCoroutine(SplitTeams(spawnPoints));
+        foreach (var playerSettings in _playersSettings)
+        {
+            int spawnIndex = playerSettings.NetworkSettings.TeamIndex - 1;
+            if (_spawnPoints != null && spawnIndex >= 0 && spawnIndex < _spawnPoints.Count)
+            {
+                Transform spawnPoint = _spawnPoints[spawnIndex];
+                playerSettings.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
+            }
+        }
+
+        yield return StartCoroutine(SavePositionsAndAssignLayers());
+    }
+
     private IEnumerator CloseJob()
     {
-        while(_lifeTime > 0)
+        while (_lifeTime > 0)
         {
             _lifeTime -= Time.deltaTime;
             yield return null;

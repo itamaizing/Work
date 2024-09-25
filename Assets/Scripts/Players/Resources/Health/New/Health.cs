@@ -27,9 +27,9 @@ public class Health : Resource, IDamageable, IHealingable
     public event Action<float, DamageType> DamageTaken;
     public event Action Died;
 
-    public override void Initialize(float health , float hpRegen, float hpRegenDelay, CharacterData data)
+    public override void Initialize(float health, float hpRegen, float hpRegenDelay, CharacterData data)
     {
-        base.Initialize(health,hpRegen, hpRegenDelay, data);
+        base.Initialize(health, hpRegen, hpRegenDelay, data);
 
         _defPhysDamage = data.GetAttributeValue(AttributeNames.PhysicResist);
         _defMagDamage = data.GetAttributeValue(AttributeNames.MagicResist);
@@ -53,6 +53,7 @@ public class Health : Resource, IDamageable, IHealingable
         if (TryUse(damage.Value) == false)
         {
             ClientRpcDied();
+            Died?.Invoke();
         }
         ClientRpcDamageTaked(damage.Value, damage.Type);
         _sumDamageTaken += damage.Value;
@@ -129,7 +130,7 @@ public class Health : Resource, IDamageable, IHealingable
 
     protected void UseShields(ref Damage damage, Skill skill)
     {
-        for(int i = 0; i < _shields.Count; i++)
+        for (int i = 0; i < _shields.Count; i++)
         {
             if (_shields[i] != null)
             {
@@ -155,5 +156,10 @@ public class Health : Resource, IDamageable, IHealingable
     private void ClientRpcDied()
     {
         Died?.Invoke();
+    }
+
+    public void ResetValue()
+    {
+        _currentValue = _maxValue;
     }
 }

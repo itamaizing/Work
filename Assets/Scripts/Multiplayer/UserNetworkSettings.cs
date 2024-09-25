@@ -1,5 +1,4 @@
 using Mirror;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,36 +9,74 @@ public class UserNetworkSettings : NetworkBehaviour
     private List<HeroComponent> _enemies = new List<HeroComponent>();
     public readonly SyncList<GameObject> Players = new SyncList<GameObject>();
 
-    private Scene myRoom;
 
     [SyncVar] private byte _teamIndex;
 
-    public int playerNumber;
-    
-    public int scoreIndex;
-    
-    public int matchIndex;
-    
-    public uint score;
+    private Health _cachedHealth;
 
-    public int clientMatchIndex = -1;
+    public byte TeamIndex
+    {
+        get => _teamIndex;
+        set
+        {
+            if (isServer)
+            {
+                _teamIndex = value;
+                TargetUpdateLayers(connectionToClient);
+            }
+        }
+    }
 
-    public byte TeamIndex { get => _teamIndex; set => _teamIndex = value; }
-    public Scene MyRoom { get => myRoom; set => myRoom = value; }
+    public Health CachedHealth
+    {
+        get
+        {
+            if (_cachedHealth == null)
+            {
+                _cachedHealth = GetComponent<Health>();
+            }
+            return _cachedHealth;
+        }
+    }
+
+    [SyncVar] private Vector3 spawnPosition;
+
+    public Scene MyRoom { get; set; }
+
+    public void SetSpawnPosition(Vector3 position)
+    {
+        if (isServer)
+        {
+            spawnPosition = position;
+            RpcUpdatePosition(position);
+        }
+    }
+
+    [ClientRpc]
+    private void RpcUpdatePosition(Vector3 position)
+    {
+        transform.position = position;
+    }
 
     [TargetRpc]
+    public void TargetUpdateLayers(NetworkConnection target)
+    {
+        MarkUpEnemiesOrAllies();
+    }
+
     public void MarkUpEnemiesOrAllies()
     {
         foreach (var item in Players)
         {
-            if(item.GetComponent<UserNetworkSettings>().TeamIndex != _teamIndex)
+
+            if (item.GetComponent<UserNetworkSettings>().TeamIndex != _teamIndex)
             {
-                item.layer = LayerMask.NameToLayer("Enemy");
+                item.gameObject.layer = LayerMask.NameToLayer("Enemy");
                 _enemies.Add(item.GetComponent<HeroComponent>());
             }
             else
             {
-                item.layer = LayerMask.NameToLayer("Allies");
+                item.gameObject.layer = LayerMask.NameToLayer("Allies");
                 _allies.Add(item.GetComponent<HeroComponent>());
             }
         }
