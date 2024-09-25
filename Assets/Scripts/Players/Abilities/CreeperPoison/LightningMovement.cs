@@ -207,19 +207,19 @@ public class LightningMovement : Skill
 
         if (_isTargetBeforePlayerCoroutine != null)
         {
-            StopCoroutine(IsEnemyBeforePlayerJob(_firstLeapPoint, _secondLeapPoint, _rangeLeap, _targetsLayers));
+            StopCoroutine(_isTargetBeforePlayerCoroutine);
             _isTargetBeforePlayerCoroutine = null;
         }
 
         if (_isTargetBehindPlayerCoroutine != null)
         {
-            StopCoroutine(IsEnemyBehindPlayerJob(_firstLeapPoint, _secondLeapPoint, _rangeLeap, _targetsLayers));
+            StopCoroutine(_isTargetBehindPlayerCoroutine);
             _isTargetBehindPlayerCoroutine = null;
         }
 
         if (_applyDamageCoroutine != null)
         {
-            StopCoroutine(ApplyDamageJob(_targetsLayers, _radius));
+            StopCoroutine(_applyDamageCoroutine);
             _applyDamageCoroutine = null;
         }
 
@@ -476,6 +476,7 @@ public class LightningMovement : Skill
                         }
                         else if (_poisonSlap.IsCanDamageDeal)
                         {
+                            Debug.Log("LightningMovement / ApplyDamage / else if poisonSlap");
                             _poisonSlap.DamageDeal(targetCharacter);
                         }
                         else

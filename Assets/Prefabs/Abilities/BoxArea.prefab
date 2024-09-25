@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5003167106728792541}
   - component: {fileID: 2820332119876364873}
   - component: {fileID: 6069098087972325736}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: BoxArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -74,9 +74,9 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_Sprite: {fileID: 21300000, guid: fb226e37a2f81f646bd8e4720170fdcd, type: 3}
-  m_Color: {r: 0.10298407, g: 1, b: 0, a: 1}
+  m_Color: {r: 0.18431377, g: 1, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1

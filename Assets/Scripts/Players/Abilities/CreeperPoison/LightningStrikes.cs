@@ -33,19 +33,19 @@ public class LightningStrikes : AutoAttackSkill
 
     public bool IsUsedLightningStrikes => _isUsedLightningStrikes;
 
-    private void Update()
-    {
-        if (_lightningMovement.IsInMovement)
-        {
-            IsCanDamageDeal = true;
-        }
-    }
-
     public void UseLightningStrikes(Character target)
     {
         _useCoroutine = StartCoroutine(UseAbilityCoroutine(target));
     }
 
+    protected override IEnumerator PrepareJob()
+    {
+        if (_lightningMovement.IsInMovement)
+        {
+            IsCanDamageDeal = true;
+        }
+        return base.PrepareJob();
+    }
     protected override void ClearData()
     {
         Debug.Log("LightningStrikes / ClearData");
@@ -64,7 +64,7 @@ public class LightningStrikes : AutoAttackSkill
     }
 
     protected override void CastAction()
-    {
+    { 
         if (_absoluteAccuracy.IsCanCritLightningStrikes && !_isIncreaseCooldownTime)
         {
             float newCooldownTime = _cooldownTime * _cooldownMultiplier;

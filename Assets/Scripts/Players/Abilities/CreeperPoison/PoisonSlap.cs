@@ -23,7 +23,6 @@ public class PoisonSlap : Skill
     [Header("Talents")]
     [SerializeField] private LightweightSlap _lightweightSlap;
 
-
     #region DisplayArrow
 
     [SerializeField] private GameObject _arrowPrefab;
@@ -378,6 +377,7 @@ public class PoisonSlap : Skill
 
     public void DamageDeal(Character target)
     {
+        Debug.Log("PoisonSlap / DamageDeal ");
         if (target != null) 
         {
             Damage damage = new Damage
@@ -412,22 +412,26 @@ public class PoisonSlap : Skill
     [Command]
     private void CmdPushEnemy(Character target, float distancePush, float durationPush, bool isCanPushTarget) 
     {
+        MoveComponent targetMoveComponent = target.GetComponent<MoveComponent>();
+
         Vector2 directionPush = (target.transform.position - transform.position);
 
         distancePush = ((distancePush * GlobalVariable.cellSize) * durationPush) / GlobalVariable.cellSize;
         if (isCanPushTarget)
         {
-            target.Rb.DOMove((Vector2)target.transform.position + directionPush * distancePush, durationPush).SetEase(Ease.Linear);
+            targetMoveComponent.TargetRpcDoMove((Vector2)target.transform.position + directionPush * distancePush, durationPush);
         }
         else
         {
-            target.Rb.DOMove((Vector2)target.transform.position - directionPush * distancePush, durationPush).SetEase(Ease.Linear);
+            targetMoveComponent.TargetRpcDoMove((Vector2)target.transform.position - directionPush * distancePush, durationPush);
         }
     }
 
     [Command]
     private void CmdPushEnemyInLightningMovement(Character target, float distancePush, float durationPush)
     {
+        MoveComponent targetMoveComponent = target.GetComponent<MoveComponent>();
+
         Vector3 directionPush = (target.transform.position - transform.position).normalized;
         Vector3 perpendicularDirection;
 
@@ -442,7 +446,7 @@ public class PoisonSlap : Skill
 
         distancePush = ((distancePush * GlobalVariable.cellSize) * durationPush) / GlobalVariable.cellSize;
 
-        target.Rb.DOMove(target.transform.position + perpendicularDirection * distancePush, durationPush).SetEase(Ease.Linear);
+        targetMoveComponent.TargetRpcDoMove(target.transform.position + perpendicularDirection * distancePush, durationPush);
     }
 
 
