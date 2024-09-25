@@ -7,7 +7,7 @@ public class BindingPoison : Talent
 {
     private void Start()
     {
-        Enter();
+        //Enter();
     }
     public override void Enter()
     {

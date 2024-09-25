@@ -257,12 +257,14 @@ public class PoisonBallProjectile : NetworkBehaviour
 
         if (_isPushTarget)
         {
-            target.transform.DOMove((Vector2)target.transform.position + directionPush * distancePush, durationPush).SetEase(Ease.Linear);
+            //target.transform.DOMove((Vector2)target.transform.position + directionPush * distancePush, durationPush).SetEase(Ease.Linear);
+            target.GetComponent<MoveComponent>().TargetRpcDoMove((Vector2)target.transform.position + directionPush * distancePush, durationPush);
             Debug.Log($"PoisonBallProjectile / PushEnemy / if (_isPushTarget = {_isPushTarget})");
         }
         else
         {
-            target.transform.DOMove((Vector2)target.transform.position - directionPush * distancePush, durationPush).SetEase(Ease.Linear);
+            //target.transform.DOMove((Vector2)target.transform.position - directionPush * distancePush, durationPush).SetEase(Ease.Linear);
+            target.GetComponent<MoveComponent>().TargetRpcDoMove((Vector2)target.transform.position - directionPush * distancePush, durationPush);
             Debug.Log($"PoisonBallProjectile / PushEnemy / else (_isPushTarget = {_isPushTarget})");
         }
     }

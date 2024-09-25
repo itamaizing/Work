@@ -51,6 +51,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _lineRenderer: {fileID: -1068938911050769858}
+  _moveSpeedDirectionFromPlayer: 4
+  _moveSpeedDirectionToPlayer: 5
 --- !u!120 &-1068938911050769858
 LineRenderer:
   serializedVersion: 2

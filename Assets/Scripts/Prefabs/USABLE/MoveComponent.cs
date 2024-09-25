@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Mirror;
 using UnityEngine;
 
@@ -94,11 +95,43 @@ public class MoveComponent : NetworkBehaviour
 	public void TargetRpcAddTransformPosition(Vector3 vector3)
     {
 		transform.position += vector3;
+		Debug.Log("MoveComponent / TargetRpcAddTransf / transform.position = " + transform.position);
 	}
 
 	[TargetRpc]
 	public void TargetRpcSetTransformPosition(Vector3 vector3)
     {
 		transform.position = vector3;
+	}
+
+    [TargetRpc]
+    public void TargetRpcDoMove(Vector2 pos, float duration)
+    {
+        transform.DOMove(pos, duration);
+    }
+
+	[TargetRpc]
+	public void TargetRpcDoMoveSequence(Vector2 firstPos, Vector2 secondPos, float duration,
+		Character player, bool isTargetBehindPlayer, bool heatedGlandsIsActive)
+	{
+		DG.Tweening.Sequence sequence = DOTween.Sequence();
+
+        sequence.AppendInterval(0.5f);
+
+        sequence.AppendCallback(() => 
+		{
+            if (isTargetBehindPlayer)
+            {
+				transform.DOMove(secondPos, duration).SetEase(Ease.Linear);
+                if (heatedGlandsIsActive)
+                {
+                    player.CharacterState.AddState(States.HeatedGlands, 4, 0, player.gameObject, null);
+                }
+            }
+            else
+            {
+                sequence.Kill();
+            }
+		});
 	}
 }

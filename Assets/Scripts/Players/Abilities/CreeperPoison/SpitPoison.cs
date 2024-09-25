@@ -192,14 +192,14 @@ public class SpitPoison : Skill
             CmdInstantiateProjectileToTarget(_currentTarget.gameObject, _angleRotation, _player.Stamina.CurrentValue, 
                 _isActiveHealingSpitPoison, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
 
-            CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
+            //CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
         }
         else
         {
             CmdInstantiateProjectileToPoint(_mousePos, _angleRotation, _player.Stamina.CurrentValue, 
                 _isActiveHealingSpitPoison, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
 
-            CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
+            //CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
         }
     }
 

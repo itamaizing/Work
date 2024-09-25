@@ -1,4 +1,6 @@
 using Mirror;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class AbstractCharacterState
@@ -18,7 +20,8 @@ public abstract class AbstractCharacterState
 	public abstract bool Stack(float time);
 }
 
-public class DefaultState : AbstractCharacterState
+#region Legacy
+/*public class DefaultState : AbstractCharacterState
 {
 	private List<StatusEffect> _effects = new List<StatusEffect>();
 	public override States State => States.Default;
@@ -155,7 +158,7 @@ public class InvisibleStateOld : AbstractCharacterState
 				}
 			}
 		}
-*/
+
 		if (_characterState.Character.Move.IsMoving)
 		{
 			CheckEnemies();
@@ -2622,7 +2625,7 @@ public class Plague : AbstractCharacterState
 				{
 					Debug.Log("ADD CHRAGE");
 					deathSpiral.AddCharge();
-				}*/
+				}
 			}
 
 			if (UnityEngine.Random.Range(0, 5) < 1)
@@ -2758,7 +2761,7 @@ public class Curse : AbstractCharacterState
 		/*if (_characterState.personWhoShoted != null)
 		{
 			_personWhoShooted = _characterState.personWhoShoted;
-		}*/
+		}
 		return true;
 	}
 }
@@ -2853,6 +2856,8 @@ public class MagicBuff : AbstractCharacterState
 		return true;
 	}
 }
+*/
+#endregion
 
 public class CharacterState : NetworkBehaviour
 {
@@ -2886,7 +2891,7 @@ public class CharacterState : NetworkBehaviour
 		[States.InstantHealingPoison] = new InstantHealingPoisonState(),
 		[States.RegeneratingPoison] = new RegeneratingPoisonState(),
 		[States.HeatedGlands] = new HeatedGlandsState(),
-        #endregion
+        #endregion 
 
 		[States.Immateriality] = new ImmaterialityState(),
 		[States.Stun] = new StunnedState(),
@@ -2966,7 +2971,7 @@ public class CharacterState : NetworkBehaviour
 
 	public AbstractCharacterState GetState(States state)
 	{
-		foreach (AbstractCharacterState states in currentStates)
+		foreach (AbstractCharacterState states in _currentStates)
 		{
 			Debug.Log(states.State + " on enemy, check for " + state);
 			if (states.State == state)
@@ -2997,106 +3002,18 @@ public class CharacterState : NetworkBehaviour
 		Debug.Log("Add state from server");
 		AddStateLogic(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
 		ClientAddState(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
-	}
-
-	[Command]
-	public void CmdRemoveState(States state)
-	{
-		Debug.Log("Remove state" + state);
-		RemoveStateLogic(state);
-		ClientRemoveState(state);
-	}
-
-	public void RemoveState(States state)
-	{
-		RemoveStateLogic(state);
-		ClientRemoveState(state);
-	}
-
-	public void RemoveState(AbstractCharacterState newState)
-	{
-		if (currentStates.Contains(newState))
-		{
-			//newState.ExitState(this);
-			//_stateIcons.RemoveItemByState(newState.state);
-			currentStates.Remove(newState);
-		}
-	}
-
-	private void RemoveStateLogic(States stateName)
-	{
-		Debug.Log("Remove state logic" + stateName);
-		if (currentStates.Count <= 0) return;
-
-		_stateIcons.RemoveItemByState(stateName);
-		for(int i = currentStates.Count - 1; i >= 0; i --)
-		{
-			if (currentStates[i].State == stateName)
-			{
-				currentStates[i].ExitState();
-			}
-		}
-	}
-
-	[ClientRpc]
-	private void ClientAddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
-	{
-		Debug.Log("Add state rpc");
-		AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
-	}
-
-	[ClientRpc]
-	private void ClientRemoveState(States stateName)
-	{
-		Debug.Log("Remove state client" + stateName);
-		RemoveStateLogic(stateName);
-	}
-
-	private void AddStateLogic(States state, float duration, float damageToExit, Schools school, GameObject personWhoShooted, string skillName)
-	{
-		foreach (AbstractCharacterState states in _currentStates)
-		{
-			Debug.Log(states.State + " on enemy, check for " + state);
-			if (states.State == state)
-			{
-				return states;
-			}
-		}
-		return null;
-	}
-
-	[Command]
-	public void CmdAddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
-	{
-		AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
-		ClientAddState(state, duration, damageToExit, schools, personWhoShooted, skillName);
-	}
-
-	[Command]
-	public void CmdAddState(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
-	{
-		Debug.Log("Add state cmd");
-		AddStateLogic(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
-		ClientAddState(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
-	}
+    }
 
     public void AddStateTest(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
     {
         Debug.Log("Add state from server");
         AddStateLogic(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
-        //ClientAddState(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
-    }
-
-    public void AddState(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
-	{
-		Debug.Log("Add state from server");
-		AddStateLogic(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
-		ClientAddState(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
 	}
 
-	[Command]
+    [Command]
 	public void CmdRemoveState(States state)
 	{
+		Debug.Log("Remove state" + state);
 		RemoveStateLogic(state);
 		ClientRemoveState(state);
 	}
@@ -3119,6 +3036,7 @@ public class CharacterState : NetworkBehaviour
 
 	private void RemoveStateLogic(States stateName)
 	{
+		Debug.Log("Remove state logic" + stateName);
 		if (_currentStates.Count <= 0) return;
 
 		_stateIcons.RemoveItemByState(stateName);
@@ -3141,6 +3059,7 @@ public class CharacterState : NetworkBehaviour
 	[ClientRpc]
 	private void ClientRemoveState(States stateName)
 	{
+		Debug.Log("Remove state client" + stateName);
 		RemoveStateLogic(stateName);
 	}
 

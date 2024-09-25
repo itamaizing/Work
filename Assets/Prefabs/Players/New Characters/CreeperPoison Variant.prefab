@@ -184,6 +184,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3307719523220879840, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3307719523220879840, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_Parameters.colorGradient.m_ColorSpace
       value: -1
       objectReference: {fileID: 0}
@@ -225,7 +229,7 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: dfa6db335114f8e498d6358b3d8118ed, type: 3}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.size
-      value: 9
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[0]
@@ -234,35 +238,51 @@ PrefabInstance:
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[1]
       value: 
-      objectReference: {fileID: 8692283665806418931}
+      objectReference: {fileID: 143331137762906477}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[2]
       value: 
-      objectReference: {fileID: 8157482668818343295}
+      objectReference: {fileID: 1565719447917374839}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[3]
       value: 
-      objectReference: {fileID: 143331137762906477}
+      objectReference: {fileID: 4790497256626355497}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[4]
       value: 
-      objectReference: {fileID: 1565719447917374839}
+      objectReference: {fileID: 727315664775304267}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[5]
       value: 
-      objectReference: {fileID: 4790497256626355497}
+      objectReference: {fileID: 8692283665806418931}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[6]
       value: 
-      objectReference: {fileID: 727315664775304267}
+      objectReference: {fileID: 1002733962749832698}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[7]
       value: 
-      objectReference: {fileID: 1002733962749832698}
+      objectReference: {fileID: 9138948894302703476}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[8]
       value: 
+      objectReference: {fileID: 723136540913888850}
+    - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _skills.Array.data[9]
+      value: 
+      objectReference: {fileID: 6824538325734829962}
+    - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _skills.Array.data[10]
+      value: 
       objectReference: {fileID: 5831874253604861112}
+    - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _skills.Array.data[11]
+      value: 
+      objectReference: {fileID: 8157482668818343295}
+    - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _skills.Array.data[12]
+      value: 
+      objectReference: {fileID: 8157482668818343295}
     - target: {fileID: 8468544467696250796, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _collider
       value: 
@@ -1336,7 +1356,7 @@ MonoBehaviour:
   _maxCharges: 0
   _chargeCooldown: 0
   _radius: 10
-  _area: 5
+  _area: 0
   _castLength: 5
   _castWidth: 1
   _isAutoRadiusRender: 0
@@ -1366,7 +1386,9 @@ MonoBehaviour:
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 5e12a4e98f6c3dd42ad804c36ea87337, type: 2}
   _isSubjectToGlobalCooldownTime: 1
-  _skillEnergyCosts: []
+  _skillEnergyCosts:
+  - resourceType: 1
+    resourceCost: 150
   _cooldownTime: 0
   _castDeley: 0
   _abilitySchool: 0
@@ -1387,7 +1409,7 @@ MonoBehaviour:
   _maxCharges: 3
   _chargeCooldown: 14
   _radius: 12
-  _area: 6
+  _area: 0
   _castLength: 6
   _castWidth: 1
   _isAutoRadiusRender: 0
@@ -1429,7 +1451,7 @@ MonoBehaviour:
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 0
-  _cooldownTime: 8
+  _cooldownTime: 0
   _castDeley: 0
   _abilitySchool: 0
   _abilityForm: 0
@@ -1448,13 +1470,13 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 8
+  _radius: 4
   _area: 0
-  _castLength: 4
+  _castLength: 2
   _castWidth: 1
-  _isAutoRadiusRender: 1
+  _isAutoRadiusRender: 0
   _isAutoAreaRender: 0
-  _isAutoLineRender: 1
+  _isAutoLineRender: 0
   _acceleratedSlap: {fileID: 7262619753731106163}
   _superFastScales: {fileID: 2021791018241839671}
   _heatedGlands: {fileID: 8457481688637312902}
@@ -1464,14 +1486,13 @@ MonoBehaviour:
   _line: {fileID: 11400000, guid: 7faf4d32cfcc4f54d967e4d01a0c4b65, type: 2}
   _midPointForLeapPrefab: {fileID: 4589213694028823931}
   _player: {fileID: 362903699018664054}
-  _playerCollider: {fileID: 5334189765432920563}
-  _colorForEnd: {r: 0.99215686, g: 0.029412868, b: 0, a: 1}
-  _colorForStart: {r: 0.27887654, g: 1, b: 0, a: 1}
   _rangeLeap: 4
   _durationLeap: 0.4
   _radiusAttack: 1.15
-  _cooldownAttack: 0.95
+  _cooldownAttack: 1
   IsInMovement: 0
+  _colorForEnd: {r: 0.99215686, g: 0.029412868, b: 0, a: 1}
+  _colorForStart: {r: 0.27887654, g: 1, b: 0, a: 1}
 --- !u!114 &8692283665806418931
 MonoBehaviour:
   m_ObjectHideFlags: 0

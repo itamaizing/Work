@@ -10,19 +10,21 @@ public class GrabTongueProjectile : NetworkBehaviour
 
     private Character _player;
     private Character _target;
+    private CharacterState _targetCharacterState;
+    private MoveComponent _targetMoveComponent;
 
     private Vector3 _startPosition;
     private Vector3 _endPosition;
 
-    private float _moveSpeedDirectionFromPlayer = 20f; // скорость 0.2 клетки в секунду.
-    private float _moveSpeedDirectionToPlayer = 6f; // скорость 0.6 клеток в секунду.
+    private float _moveSpeedDirectionFromPlayer = 0.2f; // скорость 0.2 клетки в секунду.
+    private float _moveSpeedDirectionToPlayer = 1.2f; // скорость 0.6 клеток в секунду.
 
     private Coroutine _toungeToTargetCoroutine;
     private Coroutine _toungeFromPlayerCoroutine;
 
     private void Start()
     {
-        _lineRenderer.positionCount = 2;        
+        _lineRenderer.positionCount = 2;
     }
 
     private void Update()
@@ -40,37 +42,53 @@ public class GrabTongueProjectile : NetworkBehaviour
     private IEnumerator TongueToTarget()
     {
         Debug.Log("GrabTongueProjectile / TongueToTarget work");
-        float elapsedTime = 0f;
-        float distance = Vector2.Distance(_startPosition, _endPosition);
-        float duration = distance / _moveSpeedDirectionFromPlayer;
+        float startTime = Time.time;
+        Vector3 currentPosition = _startPosition;
 
-        while (elapsedTime < duration)
+        while (currentPosition != _endPosition)
         {
-            elapsedTime += Time.deltaTime;
-            _endPosition = Vector2.Lerp(_startPosition, _endPosition, elapsedTime / duration);
+            float time = (Time.time - startTime) / _moveSpeedDirectionFromPlayer;
+            currentPosition = Vector3.Lerp(_startPosition, _endPosition, time);
+            _lineRenderer.SetPosition(1, currentPosition);
             yield return null;
         }
 
-        _toungeFromPlayerCoroutine = StartCoroutine(PullTargetToPlayer(_target, _moveSpeedDirectionToPlayer));
+        _toungeFromPlayerCoroutine = StartCoroutine(PullTargetToPlayer(_moveSpeedDirectionToPlayer, _startPosition));
     }
 
-    private IEnumerator PullTargetToPlayer(Character target, float speed)
+    private IEnumerator PullTargetToPlayer(float speed, Vector3 playerPosition)
     {
-        Debug.Log("GrabTongueProjectile / PullTargetToPlayer work");
-        float elapsedTime = 0f;
-        Vector3 startPosition = target.transform.position;
-        float distance = Vector2.Distance(startPosition, _startPosition);
-        float duration = distance / speed;
+        float startTime = Time.time;
+        float time;
+        Vector3 currentPosition = _endPosition;
 
-        while (elapsedTime < duration)
+        while (currentPosition != _startPosition)
         {
-            elapsedTime += Time.deltaTime;
-            Vector3 newPos = Vector2.Lerp(startPosition, _startPosition, elapsedTime / duration);
-            target.transform.position = newPos;
+            time = (Time.time - startTime) / _moveSpeedDirectionToPlayer;
+            Debug.Log("PullTargetToPlayer / time = " + time);
+            currentPosition = Vector3.Lerp(_endPosition, _startPosition, time);
+            Debug.Log("PullTargetToPlayer / currentPosition = " + currentPosition);
+            Vector3 direction = (_target.transform.position - _startPosition).normalized;
+
+            CmdPullTarget(direction, time);
+            Debug.Log("PullTargetToPlayer / target.transform = " + _target.transform.position);
+
+            _lineRenderer.SetPosition(1, currentPosition);
             yield return null;
         }
 
         DestoryProjectile();
+    }
+
+    [Server]
+    private void CmdPullTarget(Vector3 direction, float time)
+    {
+        if (!_targetCharacterState.CheckForState(States.Immateriality))
+        {
+            _targetCharacterState.AddState(States.Immateriality, time * 1.3f, 0, _player.gameObject, null);
+        }
+
+        _targetMoveComponent.TargetRpcDoMove((Vector3)_target.transform.position - direction * time * 1.2f, time);
     }
 
     private void DestoryProjectile()
@@ -84,7 +102,7 @@ public class GrabTongueProjectile : NetworkBehaviour
         }
         if (_toungeFromPlayerCoroutine != null)
         {
-            StopCoroutine(PullTargetToPlayer(_target, _moveSpeedDirectionToPlayer));
+            StopCoroutine(PullTargetToPlayer(_moveSpeedDirectionToPlayer, _startPosition));
             _toungeFromPlayerCoroutine = null;
         }
     }
@@ -95,6 +113,9 @@ public class GrabTongueProjectile : NetworkBehaviour
         _target = target;
         _startPosition = startPosition;
         _endPosition = endPosition;
+
+        _targetMoveComponent = _target.GetComponent<MoveComponent>();
+        _targetCharacterState = _target.GetComponent<CharacterState>();
 
         _lineRenderer.SetPosition(0, _startPosition);
         _lineRenderer.SetPosition(1, _endPosition);

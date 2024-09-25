@@ -16,7 +16,7 @@ public class GrabTongue : Skill
     private Vector3 _startPosition;
     private Vector3 _endPosition;
 
-    private float _maxDistance = 3f;
+    private float _maxDistance = 10f;
     private bool _isCanAttract;
 
     public bool Enabled;
@@ -132,7 +132,10 @@ public class GrabTongue : Skill
         Debug.Log($"RpcCreate //Projectile = {projectile}, target = {target}");
 
         if (target && projectile != null)
+        {
             Debug.Log("Rpc // after If");
             projectile.GetComponent<GrabTongueProjectile>().InitializationProjectile(_player, target, startPosition, endPosition);
+            projectile.GetComponent<GrabTongueProjectile>().StartTongueAttract();
+        }
     }
 }
