@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
@@ -217,7 +215,7 @@ public class InvisibleStateOld : AbstractCharacterState
 }
 */
 
-public class SpiritEnergyState : AbstractCharacterState
+public class CharacterState : NetworkBehaviour
 {
 	private Character _hero;
 	private List<AbstractCharacterState> currentStates = new List<AbstractCharacterState>();
@@ -227,358 +225,116 @@ public class SpiritEnergyState : AbstractCharacterState
 
 	public Character Character => _hero;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        _characterState = character;
-        _duration = durationToExit;
-        _baseDuration = durationToExit;
-        _stacks = 1;
-
-        ApplyManaRestore();
-        ApplyShieldStrengthIncrease();
-    }
-
-    public override void UpdateState()
-    {
-        _duration -= Time.deltaTime;
-
-        if (_duration <= 0 || _stacks == 0)
-        {
-            ExitState();
-        }
-    }
-
-    public override void ExitState()
-    {
-        ResetShieldStrength();
-
-        _characterState.RemoveState(this);
-    }
-
-    public override bool Stack(float time)
-    {
-        if (_stacks >= MaxStacks)
-        {
-            return false;
-        }
-
-        _stacks++;
-        _duration = Mathf.Max(_duration, time);
-
-        ApplyManaRestore();
-        ApplyShieldStrengthIncrease();
-
-        return true;
-    }
-
-    private void ApplyManaRestore()
-    {
-        _characterState.Character.Resources.FirstOrDefault(o => o.Type == ResourceType.Mana)?.Add(ManaRestorePerStack * _stacks);
-    }
-
-    private void ApplyShieldStrengthIncrease()
-    {
-        if (_stacks == 1)
-        {
-	        
-        }
-        else if (_stacks == 2)
-        {
-	        
-        }
-    }
-
-    private void ResetShieldStrength()
-    {
-        // Reset shield strength to its original value if applicable
-    }
-}
-
-public class SpiritHealthState : AbstractCharacterState
-{
-    private float _baseDuration;
-    private float _duration;
-    private int _stacks;
-    private const int MaxStacks = 2;
-    private const float HealthRestorePerStack = 0.09f; // 9% health restore per stack
-    private const float ManaRestorePerStack = 0.09f; // 9% mana restore per stack
-
-    private List<StatusEffect> _effects = new ();
-
-    public override States State => States.SpiritHealth;
-    public override StateType Type => StateType.Magic;
-    public override List<StatusEffect> Effects => _effects;
-
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        _characterState = character;
-        _duration = durationToExit;
-        _baseDuration = durationToExit;
-        _stacks = 1;
-        
-        ApplyManaRestore();
-    }
-
-    public override void UpdateState()
-    {
-        _duration -= Time.deltaTime;
-
-        if (_duration <= 0 || _stacks == 0)
-        {
-            ExitState();
-        }
-    }
-
-    public override void ExitState()
-    {
-        _characterState.RemoveState(this);
-    }
-
-    public override bool Stack(float time)
-    {
-        if (_stacks >= MaxStacks)
-        {
-            return false;
-        }
-
-        _stacks++;
-        _duration = Mathf.Max(_duration, time);
-
-        ApplyManaRestore();
-
-        return true;
-    }
-
-    private void ApplyManaRestore()
-    {
-        _characterState.Character.Resources.FirstOrDefault(o=>o.Type == ResourceType.Mana)?.Add(ManaRestorePerStack * _stacks);
-    }
-}
-
-public class TiredSoul : AbstractCharacterState
-{
-	private float _duration;
-
-	public override States State => States.TiredSoul;
-	public override StateType Type => StateType.Magic;
-	public override List<StatusEffect> Effects => new List<StatusEffect>();
-
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+	public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
 	{
-		_duration = durationToExit;
-	}
+		[States.Stun] = new StunnedState(),
+		[States.Frozen] = new FrozenState(),
+		[States.Frosting] = new FrostingState(),
+		[States.Cooling] = new Cooling(),
+		[States.Blind] = new BlindnessState(),
+		[States.Invisible] = new InvisibleState(),
+		[States.SchoolDebuff] = new AbilitySchoolDebuff(),
+		[States.Desiccuration] = new Desiccuration(),
+		[States.Plague] = new Plague(),
+		[States.Curse] = new Curse(),
+		[States.NorthernerEndurance] = new NorthernerEndurance(),
+		[States.LastBreath] = new LastBreath(),
+		[States.MagicBuff] = new MagicBuff(),
+	};
 
-	public override void UpdateState()
+	public void Initialize(Character hero)
 	{
-		_duration -= Time.deltaTime;
-		if (_duration <= 0)
+		_hero = hero;
+		/*_health = health;
+		_move = move;
+		_stamina = stamina;*/
+		if (_hero == null)
 		{
-			ExitState();
+			Debug.LogError("No required component in " + name + " " + gameObject.name);
 		}
 	}
 
-	public override void ExitState()
+	private void Update()
 	{
-		_characterState.RemoveState(this);
-	}
-
-	public override bool Stack(float time)
-	{
-		return false;
-	}
-}
-
-public class LightShield : AbstractCharacterState, IDamageable
-{
-	private float _damageAbsorbed;
-	private float _maxAbsorption;
-	private float _duration;
-
-	public event Action<float, DamageType> DamageTaken;
-
-	public override States State => States.LightShield;
-	public override StateType Type => StateType.Immaterial;
-	public override List<StatusEffect> Effects => new List<StatusEffect>();
-
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-	{
-		_duration = durationToExit;
-		_maxAbsorption = damageToExit;
-		_damageAbsorbed = 0;
-	}
-
-	public override void UpdateState()
-	{
-		_duration -= Time.deltaTime;
-		if (_duration <= 0)
+		if (currentStates.Count > 0)
 		{
-			ExitState();
+			for (int i = 0; i < currentStates.Count; i++)
+			{
+				currentStates[i].UpdateState();
+			}
 		}
 	}
 
-	public override void ExitState()
+	public void Dispel(StateType type)
 	{
-		Debug.Log("LightShield state exited.");
-		_characterState.RemoveState(this);
+		foreach (AbstractCharacterState state in currentStates)
+		{
+			if (state.Type == type)
+			{
+				state.ExitState();
+			}
+		}
 	}
 
-	public override bool Stack(float time)
+	public bool Check(StatusEffect effect)
 	{
-		_duration = time;
-		_damageAbsorbed = 0;
+		foreach (AbstractCharacterState state in currentStates)
+		{
+			if (state.Effects.Contains(effect))
+			{
+				return false;
+			}
+		}
 		return true;
 	}
 
-	public bool TryTakeDamage(ref Damage damage, Skill skill)
+	public bool CheckForState(States state)
 	{
-		float damageToAbsorb = Mathf.Min(_maxAbsorption - _damageAbsorbed, damage.Value);
-		_damageAbsorbed += damageToAbsorb;
-		damage.Value -= damageToAbsorb;
-
-		DamageTaken?.Invoke(damageToAbsorb, damage.Type);
-
-		if (_damageAbsorbed >= _maxAbsorption)
+		foreach (AbstractCharacterState states in currentStates)
 		{
-			ExitState();
-			return true;
+			Debug.Log(states.State + " on enemy, check for " + state);
+			if (states.State == state)
+			{
+				return true;
+			}
 		}
-
-		return damage.Value == 0;
-	}
-}
-
-public class DarkShield : AbstractCharacterState
-{
-    private float _damageDebuffDelay = 0.2f;
-    private float _maxDamagePerTick;
-    private float _duration;
-    private Health _healthComponent;
-
-    public override States State => States.DarkShield;
-    public override StateType Type => StateType.Immaterial;
-    public override List<StatusEffect> Effects => new List<StatusEffect>();
-
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        _duration = durationToExit;
-        _maxDamagePerTick = damageToExit;
-        
-        _healthComponent = character.GetComponent<Health>();
-        if (_healthComponent != null)
-        {
-            _healthComponent.DamageTaken += HandleDamageTaken;
-        }
-    }
-
-    public override void ExitState()
-    {
-        if (_healthComponent != null)
-        {
-            _healthComponent.DamageTaken -= HandleDamageTaken;
-        }
-        
-        _characterState.RemoveState(this);
-    }
-
-    private void HandleDamageTaken(float damage, DamageType type)
-    {
-        if (_healthComponent == null) return;
-        
-        _healthComponent.StartCoroutine(ApplyDelayedDamage(damage));
-    }
-
-    private IEnumerator ApplyDelayedDamage(float damage)
-    {
-        yield return new WaitForSeconds(_damageDebuffDelay);
-
-        var damageToApply = Mathf.Min(damage, _maxDamagePerTick);
-        var damageToTake = new Damage { Value = damageToApply };
-        
-        _healthComponent.TryTakeDamage(ref damageToTake, null);
-    }
-
-    public override bool Stack(float time)
-    {
-        _duration = time;
-        return true;
-    }
-
-    public override void UpdateState()
-    {
-	    _duration -= Time.deltaTime;
-	    if (_duration <= 0)
-	    {
-		    ExitState();
-	    }
-    }
-}
-
-public class ReversePolarityState : AbstractCharacterState
-{
-	public override States State => States.ReversePolarity;
-	public override StateType Type => StateType.Immaterial;
-	public override List<StatusEffect> Effects => new List<StatusEffect>();
-
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-	{
-	}
-
-	public override void UpdateState()
-	{
-	}
-
-	public override void ExitState()
-	{
-		_characterState.RemoveState(this);
-	}
-
-	public override bool Stack(float time)
-	{
 		return false;
 	}
-}
-*/
 
-public class CharacterState : NetworkBehaviour
-{
-    private Character _hero;
-    private List<AbstractCharacterState> currentStates = new List<AbstractCharacterState>();
-    [SerializeField] private StateIcons _stateIcons;
+	public AbstractCharacterState GetState(States state)
+	{
+		foreach (AbstractCharacterState states in currentStates)
+		{
+			Debug.Log(states.State + " on enemy, check for " + state);
+			if (states.State == state)
+			{
+				return states;
+			}
+		}
+		return null;
+	}
 
-    public bool invincible = false;
-    public Character Character => _hero;
+	[Command]
+	public void CmdAddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
+	{
+		AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
+		ClientAddState(state, duration, damageToExit, schools, personWhoShooted, skillName);
+	}
 
-    private Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
-    {
-        [States.Stun] = new StunnedState(),
-        [States.Frozen] = new FrozenState(),
-        [States.Frosting] = new FrostingState(),
-        [States.Cooling] = new Cooling(),
-        [States.Blind] = new BlindnessState(),
-        [States.Invisible] = new InvisibleState(),
-        [States.SchoolDebuff] = new AbilitySchoolDebuff(),
-        [States.Desiccuration] = new Desiccuration(),
-        [States.Plague] = new Plague(),
-        [States.Curse] = new Curse(),
-        [States.NorthernerEndurance] = new NorthernerEndurance(),
-        [States.LastBreath] = new LastBreath(),
-        [States.MagicBuff] = new MagicBuff(),
-        [States.SpiritEnergy] = new SpiritEnergyState(),
-        [States.SpiritHealth] = new SpiritHealthState(),
-        [States.TiredSoul] = new TiredSoul(),
-        [States.LightShield] = new LightShield(),
-        [States.DarkShield] = new DarkShield(),
-        [States.ReversePolarity] = new ReversePolarityState()
-    };
+	[Command]
+	public void CmdAddState(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
+	{
+		Debug.Log("Add state cmd");
+		AddStateLogic(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
+		ClientAddState(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
+	}
 
-    public void Initialize(Character hero)
-    {
-        _hero = hero;
-        if (_hero == null)
-        {
-            Debug.LogError("No required component in " + name + " " + gameObject.name);
-        }
-    }
+	public void AddState(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
+	{
+		Debug.Log("Add state from server");
+		AddStateLogic(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
+		ClientAddState(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
+	}
 
 	[Command]
 	public void CmdRemoveState(States state)
@@ -588,52 +344,43 @@ public class CharacterState : NetworkBehaviour
 		ClientRemoveState(state);
 	}
 
-    public void Dispel(StateType type)
-    {
-        foreach (AbstractCharacterState state in currentStates)
-        {
-            if (state.Type == type)
-            {
-                state.ExitState();
-            }
-        }
-    }
+	public void RemoveState(States state)
+	{
+		RemoveStateLogic(state);
+		ClientRemoveState(state);
+	}
 
-    public bool Check(StatusEffect effect)
-    {
-        foreach (AbstractCharacterState state in currentStates)
-        {
-            if (state.Effects.Contains(effect))
-            {
-                return false;
-            }
-        }
-        return true;
-    }
+	public void RemoveState(AbstractCharacterState newState)
+	{
+		if (currentStates.Contains(newState))
+		{
+			//newState.ExitState(this);
+			//_stateIcons.RemoveItemByState(newState.state);
+			currentStates.Remove(newState);
+		}
+	}
 
 	private void RemoveStateLogic(States stateName)
 	{
 		Debug.Log("Remove state logic" + stateName);
 		if (currentStates.Count <= 0) return;
 
-    public AbstractCharacterState GetState(States state)
-    {
-        foreach (AbstractCharacterState states in currentStates)
-        {
-            if (states.State == state)
-            {
-                return states;
-            }
-        }
-        return null;
-    }
+		_stateIcons.RemoveItemByState(stateName);
+		for(int i = currentStates.Count - 1; i >= 0; i --)
+		{
+			if (currentStates[i].State == stateName)
+			{
+				currentStates[i].ExitState();
+			}
+		}
+	}
 
-    [Command]
-    public void CmdAddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
-    {
-        AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
-        ClientAddState(state, duration, damageToExit, schools, personWhoShooted, skillName);
-    }
+	[ClientRpc]
+	private void ClientAddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
+	{
+		Debug.Log("Add state rpc");
+		AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
+	}
 
 	[ClientRpc]
 	private void ClientRemoveState(States stateName)
@@ -642,134 +389,54 @@ public class CharacterState : NetworkBehaviour
 		RemoveStateLogic(stateName);
 	}
 
-    public void AddState(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
-    {
-        AddStateLogic(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
-        ClientAddState(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
-    }
+	private void AddStateLogic(States state, float duration, float damageToExit, Schools school, GameObject personWhoShooted, string skillName)
+	{
+		Debug.Log("Add state logic");
+		if (invinsible)
+			return;
+		if (CheckForState(state))
+		{
+			for(int i = 0; i < currentStates.Count; i++)
+			{
+				if (currentStates[i].State != state) continue;
 
-    [Command]
-    public void CmdRemoveState(States state)
-    {
-        RemoveStateLogic(state);
-        ClientRemoveState(state);
-    }
+				if (currentStates[i].Stack(duration))
+				{
+					_stateIcons.ActivateIco(state, duration, 1, true);
+				}
+				else
+				{
+					CreateState(enumToState[state], state, duration, damageToExit, personWhoShooted, skillName, false);
+					break;
+					//nothing at this time??
+				}
+			}
+		}
+		else
+		{
+			CreateState(enumToState[state], state, duration, damageToExit, personWhoShooted, skillName, false);
 
-    public void RemoveState(States state)
-    {
-        RemoveStateLogic(state);
-        ClientRemoveState(state);
-    }
+			if(school!=Schools.None)
+			{
+				var counterSpell = (AbilitySchoolDebuff)enumToState[state];
+				counterSpell.canceledSchoool = school;
+			}
+		}
+	}
 
-    public void RemoveState(AbstractCharacterState newState)
-    {
-        if (currentStates.Contains(newState))
-        {
-            currentStates.Remove(newState);
-        }
-    }
-
-    private void RemoveStateLogic(States stateName)
-    {
-        if (currentStates.Count <= 0) return;
-
-        _stateIcons.RemoveItemByState(stateName);
-        for (int i = currentStates.Count - 1; i >= 0; i--)
-        {
-            if (currentStates[i].State == stateName)
-            {
-                currentStates[i].ExitState();
-                if (currentStates[i] is IDamageable damageableShield)
-                {
-                    RemoveShield(damageableShield);
-                }
-                currentStates.RemoveAt(i);
-            }
-        }
-    }
-
-    [ClientRpc]
-    private void ClientAddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
-    {
-        AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
-    }
-
-    [ClientRpc]
-    private void ClientRemoveState(States stateName)
-    {
-        RemoveStateLogic(stateName);
-    }
-
-    private void AddStateLogic(States state, float duration, float damageToExit, Schools school, GameObject personWhoShooted, string skillName)
-    {
-        if (invincible) return;
-
-        if (CheckForState(state))
-        {
-            for (int i = 0; i < currentStates.Count; i++)
-            {
-                if (currentStates[i].State == state)
-                {
-                    if (currentStates[i].Stack(duration))
-                    {
-                        _stateIcons.ActivateIco(state, duration, 1, true);
-                    }
-                    else
-                    {
-                        CreateState(enumToState[state], state, duration, damageToExit, personWhoShooted, skillName, false);
-                    }
-                    break;
-                }
-            }
-        }
-        else
-        {
-            CreateState(enumToState[state], state, duration, damageToExit, personWhoShooted, skillName, false);
-            if (enumToState[state] is IDamageable damageableShield)
-            {
-                AddShield(damageableShield);
-            }
-
-            if (school != Schools.None)
-            {
-                var counterSpell = (AbilitySchoolDebuff)enumToState[state];
-                counterSpell.canceledSchoool = school;
-            }
-        }
-    }
-
-    private void CreateState(AbstractCharacterState state, States stateName, float duration, float damageToExit, GameObject personWhoShooted, string skillName, bool stack)
-    {
-        _stateIcons.ActivateIco(stateName, duration, 1, stack);
-        currentStates.Add(state);
-
-        if (personWhoShooted.TryGetComponent<Character>(out var character))
-        {
-            currentStates[^1].EnterState(this, duration, damageToExit, character, skillName);
-        }
-        else
-        {
-            currentStates[^1].EnterState(this, duration, damageToExit, null, skillName);
-        }
-    }
-
-    private void AddShield(IDamageable shield)
-    {
-        var health = _hero.GetComponent<Health>();
-        if (health != null)
-        {
-            health.Shields.Add(shield);
-        }
-    }
-
-    private void RemoveShield(IDamageable shield)
-    {
-        var health = _hero.GetComponent<Health>();
-        if (health != null)
-        {
-            health.Shields.Remove(shield);
-        }
-    }
+	private void CreateState(AbstractCharacterState state, States stateName, float duration, float damageToExit, GameObject personWhoShooted, string skillName, bool stack)
+	{
+		_stateIcons.ActivateIco(stateName, duration, 1, stack);
+		currentStates.Add(state);
+		if (personWhoShooted.TryGetComponent<Character>(out var character))
+		{
+			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit, character, skillName);
+		}
+		else
+		{
+			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit, null, skillName);
+		}
+	}
 }
 
 public enum StateType
@@ -805,19 +472,18 @@ public enum States
 	NorthernerEndurance,
 	LastBreath,
 	MagicBuff,
-	PoisonBone,
-	WitheringPoison,
-	InAir,
-	PoisonCloud,
-	CreeperInvisible,
-	InstantHealingPoison,
-	RegeneratingPoison,
-	HealingPoisonPerSecond,
+	DarkShield,
+	LightShield,
+	TiredSoul,
+	ReversePolarity,
 	SpiritEnergy,
 	SpiritHealth,
-	TiredSoul,
-	LightShield,
-	DarkShield,
-	ReversePolarity
+	CreeperInvisible,
+	PoisonBone,
+	PoisonCloud,
+	InAir,
+	HealingPoisonPerSecond,
+	InstantHealingPoison,
+	WitheringPoison,
+	RegeneratingPoison
 }
-
