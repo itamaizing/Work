@@ -29,6 +29,7 @@ public class DeathSpiralProjectile : Projectiles
 			Explode();
 		}
 	}
+
 	[Server]
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
@@ -85,6 +86,7 @@ public class DeathSpiralProjectile : Projectiles
 		_talentCorpseDeath = destroy;
 		_talentCorpseBoostExplode = boostExplode;
 	}
+
 	public void SetAlive(float hp, Transform transform)
 	{
 		_dad.SpawnComponent.SpawnUnit(transform);

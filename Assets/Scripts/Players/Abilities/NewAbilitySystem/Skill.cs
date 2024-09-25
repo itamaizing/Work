@@ -304,6 +304,17 @@ public abstract class Skill : NetworkBehaviour
         }
     }
 
+    public void DrawDamageZone(Vector3 position)
+    {
+        _skillRender.CmdDrawDamageZone(position, Area, _hero.gameObject);
+    }
+
+    public void StopDamageZone()
+    {
+        _skillRender.CmdStopDrawDamageZone();
+    }
+
+
     protected virtual void StartAutoDraw()
     {
         if (_isAutoRadiusRender)

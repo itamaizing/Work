@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Sprites/Line/electricLine0001.png.meta
 guid: de7ec2a0465f9cb4c92bb7ab7b0338bf
+========
+guid: afabaab96ed10f34f9046479ea945e27
+>>>>>>>> main:Assets/Sprites/Line/electricLine0002.png.meta
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}

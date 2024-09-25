@@ -1,15 +1,20 @@
 using System.Collections;
+using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SkillRenderer : MonoBehaviour
+public class SkillRenderer : NetworkBehaviour
 {
     [SerializeField] private DrawCircle _circle;
     [SerializeField] private CircleArea _areaPref;
+    [SerializeField] private CircleArea _damageZonePref;
     [SerializeField] private AbilityLineRenderer _line;
+    [SerializeField] private Color _colorForAllies = Color.green;
+    [SerializeField] private Color _colorForEnemies = Color.red;
     [SerializeField] private Color _colorForEnd;
     [SerializeField] private Color _colorForStart;
 
+    private CircleArea _tempDamageZone;
     private CircleArea _tempArea;
     private float _lineStartLength;
     private float _lineEndLength;
@@ -18,6 +23,47 @@ public class SkillRenderer : MonoBehaviour
 
     private Coroutine _drawLineCoroutine;
     private Coroutine _drawAreaCoroutine;
+
+    [Command]
+    public void CmdDrawDamageZone(Vector3 position, float radius, GameObject player)
+    {
+        int teamIndex = player.GetComponent<UserNetworkSettings>().TeamIndex;
+        RpcDrawDamageZone(position, radius, player, teamIndex);
+    }
+
+    [ClientRpc]
+    public void RpcDrawDamageZone(Vector3 position, float radius, GameObject player, int teamIndex)
+    {
+        _tempDamageZone = Instantiate(_damageZonePref, position, Quaternion.identity);
+        _tempDamageZone.SetSize(radius);
+
+        var localPlayer = NetworkClient.connection.identity.GetComponent<UserNetworkSettings>();
+        bool isAlly = localPlayer.TeamIndex == teamIndex;
+
+        if (isAlly)
+        {
+            _tempDamageZone.SetColor(_colorForAllies);
+        }
+        else
+        {
+            _tempDamageZone.SetColor(_colorForEnemies);
+        }
+    }
+
+    [Command]
+    public void CmdStopDrawDamageZone()
+    {
+        RpsStopDrawDamageZone();
+    }
+
+    [ClientRpc]
+    public void RpsStopDrawDamageZone()
+    {
+        if (_tempDamageZone != null)
+        {
+            Destroy(_tempDamageZone.gameObject);
+        }
+    }
 
     public void DrawRadius(float radius)
     {

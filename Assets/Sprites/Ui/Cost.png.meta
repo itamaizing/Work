@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/Sprites/Ui/Window_Frame 1.png.meta
-guid: d2aa3b5e71d604343aeae5faa926132f
+<<<<<<<< HEAD:Assets/Sprites/Ui/Button_Background.png.meta
+guid: f7df872907012ca40a332e4ef95a3de5
 ========
 guid: 56ccc070bb785894588c0ad2add807cf
 >>>>>>>> main:Assets/Sprites/Ui/Cost.png.meta
@@ -53,7 +53,7 @@ TextureImporter:
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
-  spriteBorder: {x: 14, y: 14, z: 14, w: 14}
+  spriteBorder: {x: 3, y: 3, z: 3, w: 3}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -76,15 +76,9 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-<<<<<<<< HEAD:Assets/Sprites/Ui/Window_Frame 1.png.meta
-    textureCompression: 2
-    compressionQuality: 100
-    crunchedCompression: 1
-========
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
->>>>>>>> main:Assets/Sprites/Ui/Cost.png.meta
     allowsAlphaSplitting: 0
     overridden: 0
     ignorePlatformSupport: 0
@@ -149,7 +143,7 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
-<<<<<<<< HEAD:Assets/Sprites/Ui/Window_Frame 1.png.meta
+<<<<<<<< HEAD:Assets/Sprites/Ui/Button_Background.png.meta
     internalID: 1537655665
 ========
     internalID: 0

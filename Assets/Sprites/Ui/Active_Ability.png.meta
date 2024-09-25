@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Sprites/Ui/Active_Ability.png.meta
 guid: 83ca62be811ed384cbb8baf58479f27b
+========
+guid: fece2be8e3d9764468e6dec608aabc8c
+>>>>>>>> main:Assets/Sprites/Ui/prew.jpg.meta
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -72,7 +76,11 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
+<<<<<<<< HEAD:Assets/Sprites/Ui/Active_Ability.png.meta
     textureCompression: 2
+========
+    textureCompression: 1
+>>>>>>>> main:Assets/Sprites/Ui/prew.jpg.meta
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -139,7 +147,11 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
+<<<<<<<< HEAD:Assets/Sprites/Ui/Active_Ability.png.meta
     internalID: 1537655665
+========
+    internalID: 0
+>>>>>>>> main:Assets/Sprites/Ui/prew.jpg.meta
     vertices: []
     indices: 
     edges: []

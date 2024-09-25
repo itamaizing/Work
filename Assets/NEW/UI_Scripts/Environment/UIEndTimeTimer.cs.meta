@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/NEW/UI_Scripts/Environment/UIEndTimeTimer.cs.meta
 guid: c55fc905711257849ad97f706667e874
+========
+guid: e5dc923a103a7c248b81209f686cc6a0
+>>>>>>>> main:Assets/NEW/UI_Scripts/Environment/TMProLocalizer.cs.meta
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2

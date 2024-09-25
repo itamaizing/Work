@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/Sprites/Ui/Window_Mask.png.meta
-guid: 15168f87280b7b04d97f52cd162f9507
+<<<<<<<< HEAD:Assets/Sprites/Ui/Active_Ability.png.meta
+guid: 83ca62be811ed384cbb8baf58479f27b
 ========
 guid: fece2be8e3d9764468e6dec608aabc8c
 >>>>>>>> main:Assets/Sprites/Ui/prew.jpg.meta
@@ -52,10 +52,10 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
-  spriteBorder: {x: 13, y: 11, z: 12, w: 12}
+  spritePixelsToUnits: 500
+  spriteBorder: {x: 15, y: 15, z: 15, w: 15}
   spriteGenerateFallbackPhysicsShape: 1
-  alphaUsage: 2
+  alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
   textureType: 8
@@ -76,15 +76,13 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-<<<<<<<< HEAD:Assets/Sprites/Ui/Window_Mask.png.meta
+<<<<<<<< HEAD:Assets/Sprites/Ui/Active_Ability.png.meta
     textureCompression: 2
-    compressionQuality: 100
-    crunchedCompression: 1
 ========
     textureCompression: 1
+>>>>>>>> main:Assets/Sprites/Ui/prew.jpg.meta
     compressionQuality: 50
     crunchedCompression: 0
->>>>>>>> main:Assets/Sprites/Ui/prew.jpg.meta
     allowsAlphaSplitting: 0
     overridden: 0
     ignorePlatformSupport: 0
@@ -149,7 +147,7 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
-<<<<<<<< HEAD:Assets/Sprites/Ui/Window_Mask.png.meta
+<<<<<<<< HEAD:Assets/Sprites/Ui/Active_Ability.png.meta
     internalID: 1537655665
 ========
     internalID: 0

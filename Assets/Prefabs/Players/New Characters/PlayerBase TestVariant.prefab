@@ -72,9 +72,45 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1269213336512054422, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1269213336512054422, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1384998200796471846, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _damageZonePref
+      value: 
+      objectReference: {fileID: 1574982521674352815, guid: 5fb5f6f37d830674cbf46c1a048e80bf, type: 3}
     - target: {fileID: 1521997633048654849, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_Name
       value: PlayerBase TestVariant
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064490018601382089, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064490018601382089, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3331720620529543771, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3331720620529543771, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4250437611048027662, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4250437611048027662, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4328761905627105731, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_AnchorMax.x
@@ -138,7 +174,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.size
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[0]
@@ -156,6 +192,26 @@ PrefabInstance:
       propertyPath: _skills.Array.data[3]
       value: 
       objectReference: {fileID: 1060496967167742842}
+    - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _skills.Array.data[4]
+      value: 
+      objectReference: {fileID: 6038905137268401900}
+    - target: {fileID: 8618050890525431220, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8618050890525431220, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8836867217626735083, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8836867217626735083, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -172,6 +228,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1060496967167742842}
+    - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6038905137268401900}
   m_SourcePrefab: {fileID: 100100000, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
 --- !u!1 &1265575538703830996 stripped
 GameObject:
@@ -363,3 +422,47 @@ MonoBehaviour:
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _pushDistance: 5
+--- !u!114 &6038905137268401900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1265575538703830996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fafd8a80e3c427d438079f29bbdc5d10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _abilityInfo: {fileID: 11400000, guid: 3f2366dd6c4aabe499c9701e0d47053b, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
+  _cooldownTime: 0
+  _castDeley: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 10
+  _area: 4
+  _castLength: 0
+  _castWidth: 0
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 0

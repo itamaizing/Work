@@ -1462,8 +1462,8 @@ MonoBehaviour:
   syncInterval: 0
   Name: 
   Description: 
-  Ico: {fileID: 0}
-  Character: {fileID: 0}
+  ico: {fileID: 0}
+  character: {fileID: 0}
   _absorption: {fileID: 0}
   _ability: {fileID: 0}
 --- !u!114 &6132908872439124335
@@ -1483,8 +1483,8 @@ MonoBehaviour:
   syncInterval: 0
   Name: 
   Description: 
-  Ico: {fileID: 0}
-  Character: {fileID: 0}
+  ico: {fileID: 0}
+  character: {fileID: 0}
   _blockOfIce: {fileID: 0}
   _ability: {fileID: 0}
 --- !u!114 &3881617537315702470
@@ -1504,8 +1504,8 @@ MonoBehaviour:
   syncInterval: 0
   Name: 
   Description: 
-  Ico: {fileID: 0}
-  Character: {fileID: 0}
+  ico: {fileID: 0}
+  character: {fileID: 0}
   _deathSpiral: {fileID: 0}
 --- !u!114 &5171401671337291027
 MonoBehaviour:
@@ -1524,8 +1524,8 @@ MonoBehaviour:
   syncInterval: 0
   Name: 
   Description: 
-  Ico: {fileID: 0}
-  Character: {fileID: 0}
+  ico: {fileID: 0}
+  character: {fileID: 0}
 --- !u!114 &5889404958618692528 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8468544467696250796, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
