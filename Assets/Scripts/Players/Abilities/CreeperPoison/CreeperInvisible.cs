@@ -53,7 +53,6 @@ public class CreeperInvisible : Skill
 
     protected override void ClearData()
     {
-       // Debug.Log("CreeperInvisible / ClearData");
     }
 
     protected override IEnumerator PrepareJob()
@@ -62,34 +61,25 @@ public class CreeperInvisible : Skill
         switch (IsInvisible)
         {
             case false:
-                
-                //_playerUIElements.SetActive(false);
-                //_playerSelectCircle.SetActive(false);
-
                 if (_desireToHide.IsActive && _desireToHide.IsCanApply)
                 {
-                   // Debug.Log("CreeperInvisible / _desireToHide isActive");
                     CmdApplyInvisibleWithTalent(); 
                     CmdReducingTransparencySpritePlayer(_player.gameObject);
                     yield break;
                 }
                 else if (_continuationAmbush.IsActive && _continuationAmbush.IsCanApplyInvisible)
                 {
-                    //Debug.Log("CreeperInvisible / _continuationAmbush isActive");
                     CmdApplyInvisibleWithTalent(); 
                     CmdReducingTransparencySpritePlayer(_player.gameObject);
                     yield break;
                 }
 
-                //Debug.Log("CreeperInvisible / PrepareJob");
                 _checkCurrentHealthPlayerCoroutine = StartCoroutine(CheckCurrentHealthPlayer());
                 yield return _checkEnemiesCoroutine = StartCoroutine(CheckEnemiesAround());
 
                 if (!_isPlayerSeen && !_isDamagedPlayer && !IsInvisible)
                 {
                     _isCanCast = true;
-                    //Debug.Log($"CreeperInvisible / PrepareJob / isPlayerSeen = {_isPlayerSeen} / _isDamagedPlayer = {_isDamagedPlayer}");
-                    //Debug.Log($"CreeperInvisible / PrepareJob / isCanCast = {_isCanCast}");
                 }
                 break;
             case true:
@@ -103,20 +93,15 @@ public class CreeperInvisible : Skill
 
     protected override IEnumerator CastJob()
     {
-        Debug.Log($"CreeperInvisible / CastJob / IsInvisible = {IsInvisible}, IsClick = {_isClickForExitInvisible}, isInvisibleSkill = {_isClickForCastInvisibleSkill}");
         if (IsInvisible && _isClickForExitInvisible)
         {
-           // Debug.Log($"CreeperInvisible / CastJob / if (IsInvisible = {IsInvisible}, isClick = {_isClickForExitInvisible})");
             CmdRemoveInvisible();
             CmdIncreasingTransparencySpritePlayer(_player.gameObject);
-            //_playerUIElements.SetActive(true);
-            //_playerSelectCircle.SetActive(true);
 
             yield break;
         }
         else if (IsInvisible)
         {
-           // Debug.Log($"CreeperInvisible / CastJob / else if (IsInvisible = {IsInvisible}, isCastSkill = {_isClickForCastInvisibleSkill})");
             //Метод для того, чтобы сделать способности невидымим
             if (_transparentPoisons.IsActive)
             {
@@ -126,7 +111,6 @@ public class CreeperInvisible : Skill
         }
         else if (!IsInvisible)
         {
-           // Debug.Log($"CreeperInvisible / CastJob / else (IsInvisible = {IsInvisible})");
             EnteringInvisibleState();
         }
         yield return null;
@@ -134,16 +118,12 @@ public class CreeperInvisible : Skill
 
     public void EnteringInvisibleState()
     {
-        //Debug.Log("CreeperInvisible / EnteringInvisibleState");
-
         CmdApplyInvis(_player.gameObject);
         CmdReducingTransparencySpritePlayer(_player.gameObject);
     }
 
     public void ExitingInvisibleState()
     {
-        //Debug.Log("CreeperInvisible / ExitingInvisibleState");
-
         CmdRemoveInvisible();
         CmdIncreasingTransparencySpritePlayer(_player.gameObject);
     }
@@ -309,7 +289,6 @@ public class CreeperInvisible : Skill
     private void RpcReducingTransparencySpritePlayer(GameObject player, int teamIndex)
     {
         player.GetComponent<Character>().OnPlayerEnterInvisible();
-        Debug.Log("RpcReducingTransparencySpritePlayer");
 
         SpriteRenderer playerSprite = player.GetComponentInChildren<SpriteRenderer>();
 
@@ -321,15 +300,11 @@ public class CreeperInvisible : Skill
         if (isAlly)
         {
             newPlayerSpriteTransparency.a = 0.5f;
-            //newTransparency.a -= 10f * Time.deltaTime;
-            //newTransparency.a = Mathf.Clamp(newTransparency.a, 0.5f, 1f);
             _playerSprite.color = new Color(1f, 1f, 1f, newPlayerSpriteTransparency.a);
         }
         else
         {
             newPlayerSpriteTransparency.a = 0.0f;
-            //newTransparency.a -= 10f * Time.deltaTime;
-            //newTransparency.a = Mathf.Clamp(newTransparency.a, 0f, 1f);
             _playerSprite.color = new Color(1f, 1f, 1f, newPlayerSpriteTransparency.a);
         }
     }
@@ -338,7 +313,6 @@ public class CreeperInvisible : Skill
     private void RpcIncreasingTransparencySpritePlayer(GameObject player, int teamIndex)
     {
         player.GetComponent<Character>().OnPlayerExitInvisible();
-        Debug.Log("RpcReducingTransparencySpritePlayer");
 
         SpriteRenderer playerSprite = player.GetComponentInChildren<SpriteRenderer>();
 
@@ -350,15 +324,11 @@ public class CreeperInvisible : Skill
         if (isAlly)
         {
             newPlayerSpriteTransparency.a = 1f;
-            //newTransparency.a -= 10f * Time.deltaTime;
-            //newTransparency.a = Mathf.Clamp(newTransparency.a, 0.5f, 1f);
             _playerSprite.color = new Color(1f, 1f, 1f, newPlayerSpriteTransparency.a);
         }
         else
         {
             newPlayerSpriteTransparency.a = 1f;
-            //newTransparency.a -= 10f * Time.deltaTime;
-            //newTransparency.a = Mathf.Clamp(newTransparency.a, 0f, 1f);
             _playerSprite.color = new Color(1f, 1f, 1f, newPlayerSpriteTransparency.a);
         }
     }
@@ -374,21 +344,19 @@ public class CreeperInvisible : Skill
     [ClientRpc]
     private void RpcApplyInvisibleWithTalent()
     {
-        //Debug.Log("CreeperInvisible / RpcApplyInvisibleWithTalent");
         IsInvisible = true;
     }
 
     [ClientRpc]
     private void RpcRemoveInvisible()
     {
-        //Debug.Log("CreeperInvisible / RpcRemoveInvisible");
         IsInvisible = false;
 
         if (_releaseFromSecrecy.IsActive)
         {
             _releaseFromSecrecy.ApplyBuff();
         }
-        //Debug.Log($"CreeperInvisible / RpcRemoveInvisible / IsInvisible = {IsInvisible}");
+
         if (_firstStrike.IsActive && !_firstStrike.IsCanIncreaseCrit)
         {
             _firstStrike.SetBoolTrue();
@@ -398,8 +366,7 @@ public class CreeperInvisible : Skill
         {
             IsReadyToThreeHitForPreparingForFightTalent = true;
         }
-        //Debug.Log("CreeperInvisible / RpcRemoveInvisible / _absoluteAccuracy.IsCanCrit = " + _absoluteAccuracy.IsCanCritCreeperStrike); 
-        //Debug.Log("CreeperInvisible / RpcRemoveInvisible / _concentratedPrecision.IsActive = " + _concentratedPrecision.IsActive);
+
         if (_absoluteAccuracy.IsCanCritCreeperStrike)
         {
             if (_concentratedPrecision.IsActive)
@@ -407,9 +374,6 @@ public class CreeperInvisible : Skill
                 float newCooldownTime = _absoluteAccuracy.CooldownTime / _absoluteAccuracy.DecreaseCooldownTime;
 
                 _absoluteAccuracy.IncreaseSetCooldown(newCooldownTime);
-
-               // Debug.Log("CreeperInvisible / IsCanCrit true / new cooldownTime = " + newCooldownTime);
-               // Debug.Log("CreeperInvisible / IsCanCrit true / Absolute Cooldown = " + _absoluteAccuracy.Buff.Cooldown.Multiplier);
             }
 
             _absoluteAccuracy.IsCanCritCreeperStrike = false;

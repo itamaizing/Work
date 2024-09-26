@@ -107,7 +107,7 @@ public class MoveComponent : NetworkBehaviour
     [TargetRpc]
     public void TargetRpcDoMove(Vector2 pos, float duration)
     {
-        transform.DOMove(pos, duration);
+        _rigidbody.DOMove(pos, duration);
     }
 
 	[TargetRpc]
@@ -122,7 +122,7 @@ public class MoveComponent : NetworkBehaviour
 		{
             if (isBool)
             {
-				transform.DOMove(secondPos, duration).SetEase(Ease.Linear);
+				_rigidbody.DOMove(secondPos, duration).SetEase(Ease.Linear);
             }
             else
             {

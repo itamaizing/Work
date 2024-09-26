@@ -9,8 +9,8 @@ using UnityEngine.UI;
 public class HidingUIElements : NetworkBehaviour
 {
     [SerializeField] private Character _player;
-    [SerializeField] private List<Image> _images = new();
-    [SerializeField] private List<TMP_Text> _texts = new();
+    private List<Image> _images = new();
+    private List<TMP_Text> _texts = new();
     
     private bool _isAlly;
 

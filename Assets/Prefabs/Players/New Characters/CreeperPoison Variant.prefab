@@ -255,6 +255,10 @@ PrefabInstance:
       propertyPath: m_Color.a
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3759936847054020137, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4250437611048027662, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -1320,8 +1324,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _player: {fileID: 362903699018664054}
-  _images: []
-  _texts: []
 --- !u!58 &5334189765432920563 stripped
 CircleCollider2D:
   m_CorrespondingSourceObject: {fileID: 4218118007188876841, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
