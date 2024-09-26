@@ -42,7 +42,7 @@ public class HidingUIElements : NetworkBehaviour
             foreach (var image in _images)
             {
                 var newImageTransparency = image.color;
-                newImageTransparency.a = 0.5f;
+                newImageTransparency.a = 1f;
 
                 image.color = new Color(1f, 1f, 1f, newImageTransparency.a);
             }
@@ -50,7 +50,7 @@ public class HidingUIElements : NetworkBehaviour
             foreach (var text in _texts)
             {
                 var newTextTransparency = text.color;
-                newTextTransparency.a = 0.5f;
+                newTextTransparency.a = 1f;
                 text.color = new Color(1f, 1f, 1f, newTextTransparency.a);
             }
         }

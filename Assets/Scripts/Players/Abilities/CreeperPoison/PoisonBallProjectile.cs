@@ -23,17 +23,20 @@ public class PoisonBallProjectile : NetworkBehaviour
     private HealingPoisonBall _healingPoisonBall;
     private FootInstincts _footInstincts;
 
+    private int _currentCountBall;
+
     #region FloatVariables
 
     private float _energyDad;
-    private float _fastMovementSpeed = 0.425f;
-    private float _slowMovementSpeed = 0.85f;
-    private float _distancePush = 1.0f;
+    private float _fastMovementSpeed = 0.1f;
+    private float _slowMovementSpeed = 0.2f;
+    private float _baseDistancePush = 1.0f;
+    private float _distancePush;
     private float _maxDistance = 6f;
     private float _durationPush = 1.2f;
     private float _durationStun = 1.0f;
     private float _currentDamageForPoisonBall = 35f;
-
+    private float _distanceIncreaseMultiplier = 0.5f;
     #endregion
 
     #region BoolVaribales
@@ -60,7 +63,8 @@ public class PoisonBallProjectile : NetworkBehaviour
     private void InitializationComponentsForCountProjectile()
     {
         _poisonBall = _player.GetComponentInChildren<PoisonBall>();
-
+        _currentCountBall = _poisonBall.CurrentCountBall;
+        Debug.Log("PoisonBallProjectile / currentCount = " + _currentCountBall);
         _footInstincts = _poisonBall.FootInstinctsTalent;
     }
 
@@ -202,7 +206,7 @@ public class PoisonBallProjectile : NetworkBehaviour
     {
         while (true)
         {
-            transform.position += direction * (speed * 10f) * Time.deltaTime;
+            transform.position += direction * (speed * 40f) * Time.deltaTime;
             if (Vector3.Distance(transform.position, _player.transform.position) > _maxDistance * GlobalVariable.cellSize)
             {
                 DestroyProjectile();
@@ -233,15 +237,24 @@ public class PoisonBallProjectile : NetworkBehaviour
 
         targetHealth.CharacterState.AddState(States.InAir, _durationStun, 0, _player.gameObject, _skill.Name);
 
-        PushEnemyDependingOnCountProjectile(targetHealth, _durationPush, _distancePush);
+        PushEnemyDependingOnCountProjectile(targetHealth, _durationPush);
 
         Destroy(this.gameObject);
     }
 
-    private void PushEnemyDependingOnCountProjectile(HeroComponent target, float durationPush, float distancePush)
+    private void PushEnemyDependingOnCountProjectile(HeroComponent target, float durationPush)
     {
-        distancePush = 1.0f;
-        PushEnemy(target, durationPush, distancePush);
+        if (_currentCountBall >= 2)
+        {
+            float multiplierPush = _currentCountBall * _distanceIncreaseMultiplier;
+            _distancePush = _baseDistancePush + multiplierPush;
+            Debug.Log("PoisonBallProjectile / if currentBall distancePush = " + _distancePush);
+        }
+        else
+        {
+            _distancePush = _baseDistancePush;
+        }
+        PushEnemy(target, durationPush, _distancePush);
     }
 
     private void PushEnemy(HeroComponent target, float durationPush, float distancePush)

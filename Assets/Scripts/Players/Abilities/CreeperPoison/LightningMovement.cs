@@ -253,6 +253,7 @@ public class LightningMovement : Skill
 
     private Vector3 LimitSecondLeapToMaxDistance(Vector3 startPoint, Vector3 targetPoint, float maxDistance)
     {
+        Vector3 centerTarget;
         Debug.Log("LightningMove / LimitSecondLeap");
 
         if (_isTargetOnEndPointCoroutine == null)
@@ -261,7 +262,14 @@ public class LightningMovement : Skill
         }
 
         Vector3 direction = (targetPoint - startPoint).normalized;
-        Vector3 centerTarget = _target.GetComponent<Character>().Collider.bounds.center;
+        if (_target != null)
+        {
+            centerTarget = _target.GetComponent<Character>().Collider.bounds.center;
+        }
+        else
+        {
+            centerTarget = Vector3.zero;
+        }
 
         bool isPointBehindCenterTarget = Vector2.Distance(startPoint, targetPoint) > Vector2.Distance(startPoint, centerTarget);
 

@@ -61,9 +61,11 @@ public class PoisonBall : Skill
     [SerializeField] private Character _player;
     [SerializeField] private GameObject _arrowPrefab;
 
+    private PoisonBallInfo _poisonBallInfo = new PoisonBallInfo();
+
     private GameObject[] _arrowRenderers = new GameObject[4];
     private Character _currentTarget;
-    private PoisonBallInfo _poisonBallInfo = new PoisonBallInfo();
+
     private Vector3 _firstMousePosition = Vector3.positiveInfinity;
     private Vector3 _secondMousePosition;
     private Vector3 _thirdMousePosition;
@@ -94,6 +96,7 @@ public class PoisonBall : Skill
     public FootInstincts FootInstinctsTalent { get; set; }
     public ContinuationAmbush ContinuationAmbushTalent { get; set; }
     public int CurrentCharges { get => _currentChargers; set => _currentChargers = value; }
+    public int CurrentCountBall { get => _poisonBallInfo.CountProjectiles; }
 
     #endregion
 
@@ -164,13 +167,21 @@ public class PoisonBall : Skill
             if (Input.GetMouseButtonDown(0))
             {
                 _currentTarget = GetRaycastTarget(true);
-                CheckWhoTarget();
-                _firstMousePosition = GetMousePoint();
                 if (_currentTarget != null)
                 {
-                    CreateArrowsParallelToPlayer();
-                    StopAutoDraw();
+                    _isTarget = true;
                 }
+                else
+                {
+                    _isTarget = false;
+                }
+
+                CheckWhoTarget();
+                _firstMousePosition = GetMousePoint();
+
+                CreateArrowsParallelToPlayer();
+                StopAutoDraw();
+
                 _firstClickCompleted = true;
 
             }
@@ -197,7 +208,6 @@ public class PoisonBall : Skill
     {
         if (_secondClickDone && _thirdClickDone)
         {
-            _isTarget = IsTarget();
             ChooseMovementDependingOnCountProjectiles();
         }
     }
@@ -208,13 +218,23 @@ public class PoisonBall : Skill
 
     private void CreateArrowsParallelToPlayer()
     {
-        if (_currentTarget == null || _arrowPrefab == null)
+        if (_arrowPrefab == null)
         {
             Debug.LogError("Arrow Prefab is not assigned or Target is null");
             return;
         }
 
-        Vector3 targetPosition = _currentTarget.transform.position;
+        Vector3 targetPosition;
+
+        if (_isTarget)
+        {
+            targetPosition = _currentTarget.transform.position;
+        }
+        else
+        {
+            targetPosition = _firstMousePosition;
+        }
+
         Vector3 playerPosition = _player.transform.position;
 
         Vector3 directionToTarget = (targetPosition - playerPosition).normalized;
@@ -573,11 +593,6 @@ public class PoisonBall : Skill
                Vector3.Distance(_currentTarget.transform.position, transform.position) <= Radius;
     }
 
-    private bool IsTarget()
-    {
-        return _currentTarget != null;
-    }
-
     #endregion
 
     #region ChooseMoveSpeedProjectile
@@ -678,13 +693,6 @@ public class PoisonBall : Skill
             _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
             _poisonBallInfo.IsActiveTimer = true;
         }
-        else if (_poisonBallInfo.CountProjectiles >= maxCountProjectiles)
-        {
-            _poisonBallInfo.IsActiveTimer = false;
-
-            _poisonBallInfo.CountProjectiles = 0; 
-            _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
-        }
 
         //Debug.Log($"bool isTargetEnemy = {isTargetEnemy}, bool isTargetPlayer = {isTargetPlayer}, bool isTargetAllies = {isTargetAllies}");
 
@@ -701,6 +709,14 @@ public class PoisonBall : Skill
         poisonBallProjectile.MoveBallToTarget(targetOrPoint, isFast);
 
         NetworkServer.Spawn(item);
+
+        if (_poisonBallInfo.CountProjectiles > maxCountProjectiles)
+        {
+            _poisonBallInfo.IsActiveTimer = false;
+
+            _poisonBallInfo.CountProjectiles = 0;
+            _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
+        }
     }
 
     [Command]
@@ -741,13 +757,6 @@ public class PoisonBall : Skill
             _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
             _poisonBallInfo.IsActiveTimer = true;
         }
-        else if (_poisonBallInfo.CountProjectiles >= maxCountProjectiles)
-        {
-            _poisonBallInfo.IsActiveTimer = false;
-
-            _poisonBallInfo.CountProjectiles = 0;
-            _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
-        }
 
         //Debug.Log($"bool isTargetEnemy = {isTargetEnemy}, bool isTargetPlayer = {isTargetPlayer}, bool isTargetAllies = {isTargetAllies}");
 
@@ -762,6 +771,14 @@ public class PoisonBall : Skill
         poisonBallProjectile.MoveBallOnMaxDistance(point, isFast);
 
         NetworkServer.Spawn(item);
+
+        if (_poisonBallInfo.CountProjectiles >= maxCountProjectiles)
+        {
+            _poisonBallInfo.IsActiveTimer = false;
+
+            _poisonBallInfo.CountProjectiles = 0;
+            _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
+        }
     }
 
     [Command]
@@ -814,6 +831,9 @@ public class PoisonBall : Skill
         RpcApply(_poisonDamagingCloud, _poisonHealingCloud, duration, isHealingCloud);
     }
 
+
+    #endregion
+
     [ClientRpc]
     private void RpcApply(PoisonDamagingCloudPrefab poisonDamagingCloud, PoisonHealingCloudPrefab poisonHealingCloud, float duration, bool isHealingCloud)
     {
@@ -829,6 +849,4 @@ public class PoisonBall : Skill
             poisonHealingCloud.AddStack();
         }
     }
-
-    #endregion
 }
