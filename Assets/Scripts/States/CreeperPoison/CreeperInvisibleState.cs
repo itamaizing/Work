@@ -9,11 +9,14 @@ public class CreeperInvisibleState : AbstractCharacterState
     private List<Skill> _skills = new();
     private CreeperInvisible _creeperInvisible;
     private Character _player;
+    private SpriteRenderer _playerSprite;
 
     private float _reductionMoveSpeed = 0.3f;
     private float _originalMoveSpeed;
     private float _increaseStaminaRegen = 0.3f;
     private float _originalStaminaRegen;
+    private float _timeBetweenReducingTransparency;
+    private float _startTimeBetweenReducingTransparency = 0.5f;
 
     private static bool _isIncreasedManaCost = false;
     private bool _isInvisible;
@@ -26,14 +29,17 @@ public class CreeperInvisibleState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        Debug.Log("EnterState CreeperInvisible");
+        //Debug.Log("EnterState CreeperInvisible");
 
         _characterState = character;
         _player = _characterState.Character;
 
+        _playerSprite = _player.GetComponentInChildren<SpriteRenderer>();
+        Debug.Log("EnterState CreeperInvisible / playerSprite = " + _playerSprite);
         _originalMoveSpeed = _player.Move.CurrentSpeed;
         _originalStaminaRegen = _player.Stamina.RegenerationValue;
 
+        _timeBetweenReducingTransparency = _startTimeBetweenReducingTransparency;
         if (_player != null)
         {
             _skills = _player.CharacterState.Character.Abilities.Abilities;
@@ -56,6 +62,13 @@ public class CreeperInvisibleState : AbstractCharacterState
         //Debug.Log($"CreeperInvisible / _isInvisible = {_isInvisible}");
         if (_isInvisible)
         {
+            _timeBetweenReducingTransparency -= Time.deltaTime;
+            if (_timeBetweenReducingTransparency <= 0f)
+            {
+                //ReducingTransparencySprite();
+                _timeBetweenReducingTransparency = _startTimeBetweenReducingTransparency;
+            }
+
             if (!_isPlayerInvisability)
             {
                 ApplyInvisible();
@@ -82,6 +95,15 @@ public class CreeperInvisibleState : AbstractCharacterState
         return false;
     }
 
+    private void ReducingTransparencySprite()
+    {
+        Debug.Log("CreeperInvisible / ReducingTransparencySprite");
+        Color newTransparency = _playerSprite.color;
+        newTransparency.a -= 10f * Time.deltaTime;
+        newTransparency.a = Mathf.Clamp(newTransparency.a, 0.5f, 1f);
+        _playerSprite.color = new Color(1f, 1f, 1f, newTransparency.a);
+    }
+
     private void ApplyInvisible()
     {
         _isPlayerInvisability = true;
@@ -89,19 +111,19 @@ public class CreeperInvisibleState : AbstractCharacterState
         float reductionMoveSpeed = _originalMoveSpeed * _reductionMoveSpeed;
         float endReductionMoveSpeed = _originalMoveSpeed - reductionMoveSpeed;
         _player.Move.SetMoveSpeed(endReductionMoveSpeed);
-        Debug.Log("Player MoveSpeed == " + _player.Move.CurrentSpeed);
+       // Debug.Log("Player MoveSpeed == " + _player.Move.CurrentSpeed);
 
         _player.Stamina.RegenerationValue *= (1 + _increaseStaminaRegen);
-        Debug.Log("Player StaminaRegen == " + _player.Stamina.RegenerationValue);
+        //Debug.Log("Player StaminaRegen == " + _player.Stamina.RegenerationValue);
 
         if (!_isIncreasedManaCost)
         {
             foreach (Skill ability in _skills)
             {
                 ability.Buff.ManaCost.IncreasePercentage(1.3f);
-                Debug.Log("Ability manaCost == " + ability.Buff.ManaCost.Multiplier);
-                Debug.Log("Modified manaCost at ability: " + ability.name + ", Type: " + ability.GetType() + ", ManaCost Value = " + ability.Buff.ManaCost);
-                Debug.Log("IsIncreasedManaCost in Search Abilities== " + _isIncreasedManaCost);
+               // Debug.Log("Ability manaCost == " + ability.Buff.ManaCost.Multiplier);
+               // Debug.Log("Modified manaCost at ability: " + ability.name + ", Type: " + ability.GetType() + ", ManaCost Value = " + ability.Buff.ManaCost);
+                //Debug.Log("IsIncreasedManaCost in Search Abilities== " + _isIncreasedManaCost);
             }
             _isIncreasedManaCost = true;
         }
@@ -110,12 +132,12 @@ public class CreeperInvisibleState : AbstractCharacterState
     private void ResetValues()
     {
         _player.Move.SetDefaultSpeed();
-        Debug.Log("Player MoveSpeed == " + _player.Move.CurrentSpeed);
+       // Debug.Log("Player MoveSpeed == " + _player.Move.CurrentSpeed);
 
         if (_player.Stamina.RegenerationValue != _originalStaminaRegen)
         {
             _player.Stamina.RegenerationValue /= (1 + _increaseStaminaRegen);
-            Debug.Log("Player StaminaRegen == " + _player.Stamina.RegenerationValue);
+            //Debug.Log("Player StaminaRegen == " + _player.Stamina.RegenerationValue);
         }
 
         if (_isIncreasedManaCost)
@@ -123,11 +145,11 @@ public class CreeperInvisibleState : AbstractCharacterState
             foreach (Skill ability in _skills)
             {
                 ability.Buff.ManaCost.ReductionPercentage(1.3f);
-                Debug.Log("Ability manaCost == " + ability.Buff.ManaCost.Multiplier);
-                Debug.Log("Modified manaCost at ability: " + ability.name + ", Type: " + ability.GetType() + ", ManaCost Value = " + ability.Buff.ManaCost);
+               // Debug.Log("Ability manaCost == " + ability.Buff.ManaCost.Multiplier);
+                //Debug.Log("Modified manaCost at ability: " + ability.name + ", Type: " + ability.GetType() + ", ManaCost Value = " + ability.Buff.ManaCost);
             }
             _isIncreasedManaCost = false;
-            Debug.Log("IsIncreasedManaCost in ResetValues == " + _isIncreasedManaCost);
+           // Debug.Log("IsIncreasedManaCost in ResetValues == " + _isIncreasedManaCost);
         }
 
         _isPlayerInvisability = false;

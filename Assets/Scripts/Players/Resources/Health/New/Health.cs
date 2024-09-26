@@ -41,6 +41,11 @@ public class Health : Resource, IDamageable, IHealingable
         _evadeRangeDamage = data.GetAttributeValue(AttributeNames.RangeEvade);
     }
 
+    public void ResetValue()
+    {
+        _currentValue = _maxValue;
+    }
+
     [Command(requiresAuthority = false)]
     public void CmdTryTakeDamage(Damage damage, GameObject skillCanBeNull)
     {

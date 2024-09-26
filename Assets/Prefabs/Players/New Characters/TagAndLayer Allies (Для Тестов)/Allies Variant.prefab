@@ -96,6 +96,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8468544467696250796, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _collider
+      value: 
+      objectReference: {fileID: 4947236489473709562}
     - target: {fileID: 8618050890525431220, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -117,3 +121,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+--- !u!58 &4947236489473709562 stripped
+CircleCollider2D:
+  m_CorrespondingSourceObject: {fileID: 4218118007188876841, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+  m_PrefabInstance: {fileID: 9088790279133445075}
+  m_PrefabAsset: {fileID: 0}

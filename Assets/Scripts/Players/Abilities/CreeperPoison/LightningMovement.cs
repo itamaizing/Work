@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 
 public class LightningMovement : Skill
 {
@@ -28,7 +29,7 @@ public class LightningMovement : Skill
     [SerializeField] private float _rangeLeap;
     [SerializeField] private float _durationLeap;
     [SerializeField] private float _radiusAttack;
-    [SerializeField] private float _cooldownAttack; 
+    [SerializeField] private float _cooldownAttack;
 
     public bool IsInMovement = false;
 
@@ -62,6 +63,7 @@ public class LightningMovement : Skill
     private Coroutine _renderLineForSecondLeapCoroutine;
     private Coroutine _isTargetBeforePlayerCoroutine;
     private Coroutine _isTargetBehindPlayerCoroutine;
+    private Coroutine _isTargetOnEndPointCoroutine;
     private Coroutine _applyDamageCoroutine;
 
     #endregion
@@ -72,12 +74,12 @@ public class LightningMovement : Skill
 
     [SyncVar] private bool _isTargetBeforePlayer = false;
     [SyncVar] private bool _isTargetBehindPlayer = false;
+    [SyncVar] private bool _isTargetOnEndPointSecondLeap = false;
     private bool _isFirstClickDone = false;
     private bool _isSecondClickDone = false;
     private bool _isTarget = false;
     private bool _isAbilityDone = false;
     private bool _heatedGlandsIsActive;
-
     #endregion
 
 
@@ -107,8 +109,8 @@ public class LightningMovement : Skill
         {
             _superFastScales.ResetResistance();
         }
-        
-        if(_firstPointForLeapCoroutine != null)
+
+        if (_firstPointForLeapCoroutine != null)
         {
             StopCoroutine(_firstPointForLeapCoroutine);
             _firstPointForLeapCoroutine = null;
@@ -196,14 +198,17 @@ public class LightningMovement : Skill
     private void ResetBools()
     {
         _targetHitTimes.Clear();
-        //_targetList.Clear();
+        _rangeLeap = 4.0f;
 
         _isTargetBeforePlayer = false;
         _isTargetBehindPlayer = false;
+        _isTargetOnEndPointSecondLeap = false;
 
         IsInMovement = false;
         _poisonSlap.IsCanDamageDeal = false;
         _lightningStrikes.IsCanDamageDeal = false;
+
+        _target = null; 
 
         if (_isTargetBeforePlayerCoroutine != null)
         {
@@ -223,6 +228,12 @@ public class LightningMovement : Skill
             _applyDamageCoroutine = null;
         }
 
+        if (_isTargetOnEndPointCoroutine != null)
+        {
+            StopCoroutine(_isTargetOnEndPointCoroutine);
+            _isTargetOnEndPointCoroutine = null;
+        }
+
         if (_superFastScales.IsActive)
         {
             _superFastScales.ResetResistance();
@@ -234,10 +245,45 @@ public class LightningMovement : Skill
 
     #region CheckMethods
 
-    private Vector3 LimitLeapToMaxDistance(Vector3 startPoint, Vector3 targetPoint, float maxDistance)
+    private Vector3 LimitFirstLeapToMaxDistance(Vector3 startPoint, Vector3 targetPoint, float maxDistance)
     {
         Vector3 direction = (targetPoint - startPoint).normalized;
         return startPoint + direction * maxDistance;
+    }
+
+    private Vector3 LimitSecondLeapToMaxDistance(Vector3 startPoint, Vector3 targetPoint, float maxDistance)
+    {
+        Debug.Log("LightningMove / LimitSecondLeap");
+
+        if (_isTargetOnEndPointCoroutine == null)
+        {
+            _isTargetOnEndPointCoroutine = StartCoroutine(IsTargetOnEndPoint(targetPoint, _targetsLayers));
+        }
+
+        Vector3 direction = (targetPoint - startPoint).normalized;
+        Vector3 centerTarget = _target.GetComponent<Character>().Collider.bounds.center;
+
+        bool isPointBehindCenterTarget = Vector2.Distance(startPoint, targetPoint) > Vector2.Distance(startPoint, centerTarget);
+
+        Debug.Log("isPointBehindCenterTarget = " + isPointBehindCenterTarget);
+        if (_isTargetOnEndPointSecondLeap)
+        {
+            if (isPointBehindCenterTarget)
+            {// Точка прыжка за серединой врага
+                Debug.Log("if >");
+                maxDistance += 1.5f;
+            }
+            else
+            {// Точка прыжка перед серединой врага
+                Debug.Log("else <");
+                maxDistance += 2.3f;
+            }
+            return startPoint + direction * maxDistance;
+        }
+        else
+        {
+            return startPoint + direction * maxDistance;
+        }
     }
 
     private bool CheckCanCast()
@@ -280,32 +326,48 @@ public class LightningMovement : Skill
         }
     }
 
-    private IEnumerator IsEnemyBeforePlayerJob(Vector3 startPos, Vector3 endPos, float rangeLeap, LayerMask enemyLayer)
+    private IEnumerator IsTargetOnEndPoint(Vector2 secondLeap, LayerMask targetLayer)
+    {
+        while (true)
+        {
+            Collider2D hit = Physics2D.OverlapCircle(secondLeap, 1.35f, targetLayer);
+            if (hit != null)
+            {
+                _target = hit.gameObject;
+                _isTargetOnEndPointSecondLeap = true;
+                Debug.Log("IsTargetOnEndPoint = " + _isTargetOnEndPointSecondLeap);
+            }
+            yield return null;
+        }
+    }
+
+    private IEnumerator IsTargetBeforePlayerJob(float rangeLeap, LayerMask targetLayer)
     {
         Vector2 sizeBox = new Vector2(_castLength, _castWidth);
         while (true)
         {
-            Collider2D hit = Physics2D.OverlapBox(transform.position, sizeBox, _angle - 90f, enemyLayer);
+            Collider2D hit = Physics2D.OverlapBox(transform.position, sizeBox, _angle - 90f, targetLayer);
             if (hit != null)
             {
                 _isTargetBeforePlayer = true;
+                Debug.Log("LightningMove / IsTargetBeforePlayer / target = " + _target);
             }
-            
+
             yield return null;
-        }  
+        }
     }
 
-    private IEnumerator IsEnemyBehindPlayerJob(Vector3 startPos, Vector3 endPos, float rangeLeap, LayerMask enemyLayer)
+    private IEnumerator IsTargetBehindPlayerJob(float rangeLeap, LayerMask targetLayer)
     {
         Vector2 sizeBox = new Vector2(_castLength * 1.2f, _castWidth * 1.2f);
-        while (true) 
+        while (true)
         {
-            Collider2D hit = Physics2D.OverlapBox(transform.position, sizeBox, _angle + 90f, enemyLayer);
+            Collider2D hit = Physics2D.OverlapBox(transform.position, sizeBox, _angle + 90f, targetLayer);
             if (hit != null)
             {
                 _isTargetBehindPlayer = true;
             }
-            
+
             yield return null;
         }
     }
@@ -407,7 +469,7 @@ public class LightningMovement : Skill
                 Vector3 rawFirstLeapPoint = GetMousePoint();
 
                 _isFirstClickDone = true;
-                _firstLeapPoint = LimitLeapToMaxDistance(transform.position, rawFirstLeapPoint, _rangeLeap);
+                _firstLeapPoint = LimitFirstLeapToMaxDistance(transform.position, rawFirstLeapPoint, _rangeLeap);
                 Debug.Log("FirstLeapPoint = " + _firstLeapPoint);
             }
             yield return null;
@@ -423,7 +485,7 @@ public class LightningMovement : Skill
                 Vector3 rawSecondLeapPoint = GetMousePoint();
 
                 _isSecondClickDone = true;
-                _secondLeapPoint = LimitLeapToMaxDistance(_firstLeapPoint, rawSecondLeapPoint, _rangeLeap);
+                _secondLeapPoint = LimitSecondLeapToMaxDistance(_firstLeapPoint, rawSecondLeapPoint, _rangeLeap);
             }
             yield return null;
         }
@@ -445,7 +507,7 @@ public class LightningMovement : Skill
     }
 
     private IEnumerator ApplyDamageJob(LayerMask enemiesLayer, float radius)
-    {   
+    {
         while (true)
         {
             Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, radius, enemiesLayer);
@@ -455,7 +517,7 @@ public class LightningMovement : Skill
                 if (item != null)
                 {
                     GameObject target = item.gameObject;
-                    var targetCharacter = item.gameObject.GetComponent<Character>(); 
+                    var targetCharacter = item.gameObject.GetComponent<Character>();
 
                     if (_targetHitTimes.ContainsKey(target))
                     {
@@ -505,7 +567,7 @@ public class LightningMovement : Skill
 
         if (_isTargetBeforePlayerCoroutine == null)
         {
-            _isTargetBeforePlayerCoroutine = StartCoroutine(IsEnemyBeforePlayerJob(_player.transform.position, firstLeapPoint, rangeLeap, _targetsLayers));
+            _isTargetBeforePlayerCoroutine = StartCoroutine(IsTargetBeforePlayerJob(rangeLeap, _targetsLayers));
         }
 
         if (_superFastScales.IsActive)
@@ -524,11 +586,11 @@ public class LightningMovement : Skill
 
         if (_isTargetBeforePlayerCoroutine == null)
         {
-            _isTargetBeforePlayerCoroutine = StartCoroutine(IsEnemyBeforePlayerJob(_player.transform.position, firstLeapPoint, rangeLeap, _targetsLayers));
+            _isTargetBeforePlayerCoroutine = StartCoroutine(IsTargetBeforePlayerJob(rangeLeap, _targetsLayers));
         }
         if (_isTargetBehindPlayerCoroutine == null)
         {
-            _isTargetBehindPlayerCoroutine = StartCoroutine(IsEnemyBehindPlayerJob(_player.transform.position, firstLeapPoint, rangeLeap, _targetsLayers));
+            _isTargetBehindPlayerCoroutine = StartCoroutine(IsTargetBehindPlayerJob(rangeLeap, _targetsLayers));
         }
 
         if (_superFastScales.IsActive)
@@ -557,11 +619,12 @@ public class LightningMovement : Skill
     }
 
     [Command]
-    private void CmdExecuteTwoLeaps(Vector2 firstLeapPoint, Vector2 secondLeapPoint, 
+    private void CmdExecuteTwoLeaps(Vector2 firstLeapPoint, Vector2 secondLeapPoint,
         float durationLeap, float rangeLeap, float timeBuff, bool heatedGlandsIsActive,
         LayerMask enemyLayer)
     {
         MoveComponent playerTransform = _player.GetComponent<MoveComponent>();
+
         _player.CharacterState.AddState(States.Immateriality, (durationLeap * rangeLeap) * 1.25f, 0, _player.gameObject, Name);
 
         _player.Move.enabled = false;
@@ -575,35 +638,28 @@ public class LightningMovement : Skill
 
         leapSequence.AppendInterval(0.5f);
 
-        leapSequence.AppendCallback(() => 
-        { 
-            playerTransform.TargetRpcDoMoveSequence(firstLeapPoint, secondLeapPoint, (durationLeap * rangeLeap / GlobalVariable.cellSize), _player, _isTargetBehindPlayer, heatedGlandsIsActive);
+        leapSequence.AppendCallback(() =>
+        {
+            if (_isTargetOnEndPointSecondLeap)
+            {
+                playerTransform.TargetRpcDoMoveSequence(firstLeapPoint, secondLeapPoint, (durationLeap * rangeLeap / GlobalVariable.cellSize),
+                    _player, _isTargetBehindPlayer);
+
+                if (heatedGlandsIsActive)
+                {
+                    _player.CharacterState.AddState(States.HeatedGlands, 4, 0, _player.gameObject, null);
+                }
+            }
+            else
+            {
+                playerTransform.TargetRpcDoMoveSequence(firstLeapPoint, secondLeapPoint, (durationLeap * rangeLeap / GlobalVariable.cellSize),
+                    _player, _isTargetBehindPlayer);
+                if (heatedGlandsIsActive)
+                {
+                    _player.CharacterState.AddState(States.HeatedGlands, 4, 0, _player.gameObject, null);
+                }
+            }
         });
-
-        //Sequence leapSequence = DOTween.Sequence();
-        //leapSequence.Append(playerTransform.TargetRpcDoMove(firstLeapPoint, durationLeap * rangeLeap / GlobalVariable.cellSize));
-        //if (heatedGlandsIsActive)
-        //{
-        //    _player.CharacterState.AddState(States.HeatedGlands, timeBuff, 0, _player.gameObject, Name);
-        //}
-        //leapSequence.AppendInterval(0.5f);
-        //leapSequence.AppendCallback(() =>
-        //{
-        //    if (_isTargetBehindPlayer)
-        //    {
-        //        playerTransform.TargetRpcDoMove(secondLeapPoint, durationLeap * rangeLeap / GlobalVariable.cellSize);
-        //        if (heatedGlandsIsActive)
-        //        {
-        //            _player.CharacterState.AddState(States.HeatedGlands, timeBuff, 0, _player.gameObject, Name);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        leapSequence.Kill();
-        //    }
-        //});
-
     }
-
-    #endregion
 }
+    #endregion

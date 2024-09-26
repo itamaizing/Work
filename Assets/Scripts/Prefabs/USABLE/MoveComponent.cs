@@ -112,7 +112,7 @@ public class MoveComponent : NetworkBehaviour
 
 	[TargetRpc]
 	public void TargetRpcDoMoveSequence(Vector2 firstPos, Vector2 secondPos, float duration,
-		Character player, bool isTargetBehindPlayer, bool heatedGlandsIsActive)
+		Character player, bool isBool)
 	{
 		DG.Tweening.Sequence sequence = DOTween.Sequence();
 
@@ -120,13 +120,9 @@ public class MoveComponent : NetworkBehaviour
 
         sequence.AppendCallback(() => 
 		{
-            if (isTargetBehindPlayer)
+            if (isBool)
             {
 				transform.DOMove(secondPos, duration).SetEase(Ease.Linear);
-                if (heatedGlandsIsActive)
-                {
-                    player.CharacterState.AddState(States.HeatedGlands, 4, 0, player.gameObject, null);
-                }
             }
             else
             {

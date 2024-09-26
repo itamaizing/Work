@@ -38,7 +38,9 @@ public abstract class Character : NetworkBehaviour
 	public static event Action<Character> ServerOnUnitSpawned;
 	public static event Action<Character> ServerOnUnitDeleted; 
 	public static event Action<Character> AuthorityOnUnitSpawned;
-	public static event Action<Character> AuthorityOnUnitDeleted; 
+	public static event Action<Character> AuthorityOnUnitDeleted;
+	public event Action OnHidingUIElements;
+	public event Action OnRevealingUIElements;
 
 	public virtual void Initialize()
 	{
@@ -116,7 +118,17 @@ public abstract class Character : NetworkBehaviour
 		}
 		AuthorityOnUnitDeleted?.Invoke(this);
 	}
-	
+
+	public void OnPlayerEnterInvisible()
+	{
+		OnHidingUIElements?.Invoke();
+	}
+
+	public void OnPlayerExitInvisible()
+	{
+		OnRevealingUIElements?.Invoke();
+	}
+
 	public Resource TryGetResource(ResourceType type)
 	{
 		return Resources.FirstOrDefault(r => r.Type == type);

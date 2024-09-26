@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2689965527917136218}
+  - component: {fileID: 7295095268466530681}
   m_Layer: 0
   m_Name: SelectStates
   m_TagString: Untagged
@@ -33,6 +34,22 @@ Transform:
   m_Father: {fileID: 795014623008228812}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7295095268466530681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1107802090774456859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 629bb0bb3c3bb6c4bbe4c4d27bae6bdb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _player: {fileID: 8468544467696250796}
 --- !u!1 &1521745553585561164
 GameObject:
   m_ObjectHideFlags: 0
@@ -293,11 +310,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  playerNumber: 0
-  scoreIndex: 0
-  matchIndex: 0
-  score: 0
-  clientMatchIndex: -1
 --- !u!114 &2640449256033852773
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -332,6 +344,7 @@ MonoBehaviour:
   _playerData: {fileID: 11400000, guid: f71e3e6e8b3ca6245b0c37fd016a4039, type: 2}
   _networkSettings: {fileID: -7146587456276821115}
   rb: {fileID: 3759936847054020137}
+  _collider: {fileID: 0}
   _lvl: {fileID: 7382485661582087661}
   _healthComponent: {fileID: 5839731411926097146}
   Stamina: {fileID: 2926669445991704918}
@@ -363,6 +376,7 @@ MonoBehaviour:
   syncInterval: 0
   _stateIcons: {fileID: 2794163301550220692}
   invinsible: 0
+  Invinsible: 0
 --- !u!114 &5839731411926097146
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -509,6 +523,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 428637f045d35d24696a6e8a4728d7d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!114 &1277432348331439004
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -736,9 +753,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22ad95934c7e55b4b8afeb7c627a8f71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _circle: {fileID: 7744485766865188040}
   _areaPref: {fileID: 1574982521674352815, guid: 790fb3857b30c2b4fad4375343a84fad, type: 3}
+  _damageZonePref: {fileID: 0}
   _line: {fileID: 11400000, guid: 7faf4d32cfcc4f54d967e4d01a0c4b65, type: 2}
+  _colorForAllies: {r: 0, g: 1, b: 0, a: 1}
+  _colorForEnemies: {r: 1, g: 0, b: 0, a: 1}
   _colorForEnd: {r: 1, g: 0, b: 0, a: 1}
   _colorForStart: {r: 0, g: 1, b: 0.08237815, a: 1}
 --- !u!114 &7985862907129416471
@@ -1647,6 +1670,7 @@ GameObject:
   - component: {fileID: 4794660105229006765}
   - component: {fileID: 3273370273295811054}
   - component: {fileID: 1447217163559894421}
+  - component: {fileID: 4034377122998514420}
   m_Layer: 5
   m_Name: UI_Container
   m_TagString: Untagged
@@ -1745,6 +1769,24 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 0
+--- !u!114 &4034377122998514420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6237993616369546280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 152b0c48c1a7d3a4eadcb41db7f07a2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _player: {fileID: 8468544467696250796}
+  _images: []
+  _texts: []
 --- !u!1 &6375452786073773945
 GameObject:
   m_ObjectHideFlags: 0
