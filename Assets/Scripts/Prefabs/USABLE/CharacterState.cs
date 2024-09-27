@@ -227,20 +227,36 @@ public class CharacterState : NetworkBehaviour
 
 	public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
 	{
-		[States.Stun] = new StunnedState(),
-		[States.Frozen] = new FrozenState(),
-		[States.Frosting] = new FrostingState(),
-		[States.Cooling] = new Cooling(),
-		[States.Blind] = new BlindnessState(),
-		[States.Invisible] = new InvisibleState(),
-		[States.SchoolDebuff] = new AbilitySchoolDebuff(),
-		[States.Desiccuration] = new Desiccuration(),
-		[States.Plague] = new Plague(),
-		[States.Curse] = new Curse(),
-		[States.NorthernerEndurance] = new NorthernerEndurance(),
-		[States.LastBreath] = new LastBreath(),
-		[States.MagicBuff] = new MagicBuff(),
-	};
+        #region CreeperStates
+        [States.CreeperInvisible] = new CreeperInvisibleState(),
+        [States.PoisonBone] = new PoisonBoneState(),
+        [States.WitheringPoison] = new WitheringPoisonState(),
+        [States.BindingPoison] = new BindingPoisonState(),
+        [States.PoisonCloud] = new PoisonCloudState(),
+        [States.HealingPoisonCloud] = new HealingPoisonCloudState(),
+        [States.EmpathicPoisons] = new EmpathicPoisonsState(),
+        [States.HealingPoisonPerSecond] = new HealingPoisonPerSecondState(),
+        [States.InstantHealingPoison] = new InstantHealingPoisonState(),
+        [States.RegeneratingPoison] = new RegeneratingPoisonState(),
+        [States.HeatedGlands] = new HeatedGlandsState(),
+        #endregion
+
+        [States.Immateriality] = new ImmaterialityState(),
+        [States.Stun] = new StunnedState(),
+        [States.Frozen] = new FrozenState(),
+        [States.Frosting] = new FrostingState(),
+        [States.Cooling] = new Cooling(),
+        [States.InAir] = new InAirState(),
+        [States.Blind] = new BlindnessState(),
+        [States.Invisible] = new InvisibleState(),
+        [States.SchoolDebuff] = new AbilitySchoolDebuff(),
+        [States.Desiccuration] = new Desiccuration(),
+        [States.Plague] = new Plague(),
+        [States.Curse] = new Curse(),
+        [States.NorthernerEndurance] = new NorthernerEndurance(),
+        [States.LastBreath] = new LastBreath(),
+        [States.MagicBuff] = new MagicBuff(),
+    };
 
 	public void Initialize(Character hero)
 	{
@@ -457,7 +473,25 @@ public enum StatusEffect
 }
 public enum States
 {
-	Default,
+    #region CreeperStates
+
+    CreeperInvisible,
+    PoisonBone,
+    WitheringPoison,
+    BindingPoison,
+    PoisonCloud,
+    HealingPoisonCloud,
+    EmpathicPoisons,
+    HealingPoisonPerSecond,
+    InstantHealingPoison,
+    RegeneratingPoison,
+    HeatedGlands,
+
+    #endregion
+
+    Immateriality,
+    InAir,
+    Default,
 	Stun,
 	Frozen,
 	Frosting,

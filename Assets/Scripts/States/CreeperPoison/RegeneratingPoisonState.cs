@@ -1,0 +1,149 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class RegeneratingPoisonState : AbstractCharacterState
+{
+    public bool turnOff = false;
+
+    private List<Talent> _talents = new();
+    private static SurgeTreatment _surgeTreatment;
+
+    private Character _player;
+    private CharacterState _character;
+
+    private int _currentStacks = 0;
+    private int _maxStacks = 5;
+
+    private float _baseHealingValue = 1.0f;
+    private float _endHealingValue;
+    private float _totalHeal;
+
+    private float _timeBetweenHeal;
+    private float _startTimeBetweenHeal = 1.0f;
+
+    private float _duration;
+    private float _baseDuration;
+
+    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.AbilitySpeed };
+
+    public override States State => States.RegeneratingPoison;
+    public override StateType Type => StateType.Physical;
+    public override List<StatusEffect> Effects => _effects;
+
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        _characterState = character;
+        _character = character;
+
+        _duration = durationToExit;
+        _baseDuration = durationToExit;
+
+        if (_currentStacks < _maxStacks)
+        {
+            AddStacks();
+        }
+        Debug.Log("_player in EnterRegenPoisonState == " + _player);
+        if (_player != null)
+        {
+            _talents = _player.CharacterState.Character.GetComponent<HeroComponent>().Talents.Talents;
+            Debug.Log("HealingPoison player == " + _player);
+
+            foreach (Talent talent in _talents)
+            {
+                Debug.Log("Checking talents: " + talent.name + ", Type: " + talent.GetType());
+                if (talent is SurgeTreatment surgeTreatment)
+                {
+                    Debug.Log("if / talents");
+                    if (_surgeTreatment == null)
+                    {
+                        _surgeTreatment = surgeTreatment;
+                        Debug.Log("SurgeTreatment == " + _surgeTreatment);
+                    }
+                }
+            }
+        }
+    }
+
+    public override void UpdateState()
+    {
+        _timeBetweenHeal -= Time.deltaTime;
+        if (_timeBetweenHeal <= 0)
+        {
+            MakeHeal();
+            _timeBetweenHeal = _startTimeBetweenHeal;
+        }
+
+        _duration -= Time.deltaTime;
+        if (_duration < 0 || turnOff)
+        {
+            ExitState();
+        }
+    }
+
+    public override void ExitState()
+    {
+        ResetValues();
+
+        _characterState.RemoveState(this);
+    }
+
+    public override bool Stack(float time)
+    {
+        if (_currentStacks < _maxStacks)
+        {
+            AddStacks();
+            return true;
+        }
+        else
+        {
+            _duration = _baseDuration;
+            return false;
+        }
+    }
+
+    public void AddStacks()
+    {
+        if (_currentStacks < _maxStacks)
+        {
+            _currentStacks++;
+            Debug.Log("if / CurrentStackHealingPoison in AddStacks == " + _currentStacks);
+            _duration = _baseDuration;
+        }
+        else
+        {
+            Debug.Log("else / CurrentStackHealingPoison in AddStacks == " + _currentStacks);
+            _duration = _baseDuration;
+        }
+    }
+
+    private void MakeHeal()
+    {
+        Debug.Log("RegenerationPoison / MakeHeal");
+        _endHealingValue = _currentStacks * _baseHealingValue;
+        _characterState.Character.Health.Heal(_endHealingValue);
+        if (_surgeTreatment != null && _surgeTreatment.IsActive)
+        {
+            _totalHeal += _endHealingValue;
+            Debug.Log("TotalHeal RegenerationPoison == " + _totalHeal);
+        }
+    }
+
+    private void ResetValues()
+    {
+        _currentStacks = 0;
+        _baseDuration = 0;
+        _duration = 0;
+    }
+
+    public void InstantHeal()
+    {
+        if (_surgeTreatment != null)
+        {
+            float totalHeal = _totalHeal;
+            Debug.Log("InstantHeal // totalHeal == " + totalHeal);
+            _character.Character.Health.Heal(totalHeal);
+            _totalHeal = 0;
+        }
+    }
+}

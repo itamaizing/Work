@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Mirror;
 using UnityEngine;
 
@@ -5,26 +6,29 @@ public class MoveComponent : NetworkBehaviour
 {
 	[SerializeField, Range(0, 0.5f)] private float _smoothTime = 0.15f;
 
-	public Vector2 MoveDirection = Vector2.zero;
-	
 	public bool CanMove = false;
 	public bool IsMoving = false;
 	public bool IsSelect = false;
 	
-	private Rigidbody2D _rigidbody;
-
-	private Vector2 _offset = Vector2.zero;
-
-	private bool _isHero = false;
+	public Vector2 MoveDirection = Vector2.zero;
 
 	private float _defaultSpeed = 5;
 	private float _currentSpeed = 5;
+	
+	private bool _isHero = false;
 
+	private Rigidbody2D _rigidbody;
+
+	private Vector2 _offset = Vector2.zero;
 	private Vector2 _dir;
 	private Vector2 _currentVelocity;
 	private Vector2 _currentVelocityTemp;
 
-	public void SetOffset(Vector2 offset)
+    public float CurrentSpeed { get => _currentSpeed; }
+    public float DefaultSpeed { get => _defaultSpeed; }
+
+
+    public void SetOffset(Vector2 offset)
 	{
 		_offset = offset;
 	}
@@ -97,9 +101,30 @@ public class MoveComponent : NetworkBehaviour
 		transform.position += vector3;
 	}
 
-	[TargetRpc]
-	public void TargetRpcSetTransformPosition(Vector3 vector3)
+    [TargetRpc]
+    public void TargetRpcDoMove(Vector2 pos, float duration)
     {
-		transform.position = vector3;
-	}
+        _rigidbody.DOMove(pos, duration);
+    }
+
+    [TargetRpc]
+    public void TargetRpcDoMoveSequence(Vector2 firstPos, Vector2 secondPos, float duration,
+        Character player, bool isBool)
+    {
+        DG.Tweening.Sequence sequence = DOTween.Sequence();
+
+        sequence.AppendInterval(0.5f);
+
+        sequence.AppendCallback(() =>
+        {
+            if (isBool)
+            {
+                _rigidbody.DOMove(secondPos, duration).SetEase(Ease.Linear);
+            }
+            else
+            {
+                sequence.Kill();
+            }
+        });
+    }
 }

@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,99 +6,157 @@ using UnityEngine;
 
 public class SpitPoisonProjectile : NetworkBehaviour
 {
-    [SerializeField] private BonePoison _bonePoisonPrefab;
-    [SerializeField] private Rigidbody2D _rb;
+    [SerializeField] private Rigidbody2D _rbBall;
     [SerializeField] private GameObject _hitEffect;
-    [SerializeField] private float _distance = 5f;
-    [SerializeField] private int _force = 40;
-    private BonePoison _bonePoisonDebuff;
-    private Character _dad;
+    [SerializeField] private Collider2D _colliderBall;
+    [SerializeField] private float _maxDistance = 5f;
+    [SerializeField] private float _speed = 20f;
+
+    private Skill _skill;
+    private Character _player;
     private Vector2 _startPos;
 
     private float _energyDad;
     private float _damage;
+    private float _lifeTimePoisonBoneStacks = 6.0f;
+
+    private bool _isPlayer;
+    private bool _isAllies;
+    private bool _isEnemy;
+    private bool _isActiveHealingSpitPoison;
 
     private void Awake()
     {
-        _startPos = transform.position;
-        _rb.AddForce(transform.up * _force, ForceMode2D.Impulse);
+        //StartCoroutine(DisableCollider());
     }
 
-    private void Update()
+    private IEnumerator DisableCollider()
     {
-        if (Vector2.Distance(transform.position, _startPos) > _distance * GlobalVariable.cellSize)
-        {
-            Explode();
-        }
+        Collider2D projectileCollider = this.gameObject.GetComponent<Collider2D>();
+
+        projectileCollider.enabled = false;
+        Debug.Log($"Before projectileSpitPoisonCollider enabled == {projectileCollider.enabled}");
+
+        yield return new WaitForSeconds(0.2f);
+        Debug.Log("Two seconds passed");
+
+        projectileCollider.enabled = true;
+        Debug.Log($"After projectileSpitPoisonCollider enabled == {projectileCollider.enabled}");
     }
 
     [Server]
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.transform != _dad.transform)
+        if (_isActiveHealingSpitPoison)
         {
-            if (collision.TryGetComponent<HealthComponent>(out var targetHealth))
+            if (_isPlayer)
             {
-                _damage = Random.Range(4.0f, 12.0f);
+                if (collision.gameObject == _player.gameObject)
+                {
+                    Debug.Log($"if (IsPlayer) // RegeneratingPoison.SetPlayer == {_player}");
+                    _player.CharacterState.AddState(States.RegeneratingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
+                    Destroy(gameObject);
+                }
+            }
+            else if (_isAllies)
+            {
+                if (collision.gameObject.layer == LayerMask.NameToLayer("Allies") && collision.gameObject != _player.gameObject)
+                {
+                    if (collision.TryGetComponent<Character>(out var alliesHealth))
+                    {
+                        Debug.Log($"if (IsAllies) // RegeneratingPoison.SetPlayer == {_player}");
+                        alliesHealth.CharacterState.AddState(States.RegeneratingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
+                        Destroy(gameObject);
+                    }
+                }
+                else if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy") && collision.gameObject != _player.gameObject)
+                {
+                    return;
+                }
+            }   
+            else if (_isEnemy)
+            {
+                if (collision.gameObject.transform != _player.transform && collision.gameObject.layer != LayerMask.NameToLayer("Allies"))
+                {
+                    if (collision.TryGetComponent<Character>(out var target))
+                    {
+                        _damage = Random.Range(4.0f, 12.0f);
 
-                DealDamage(targetHealth, _damage, DamageType.Magical, AttackRangeType.RangeAttack);
-                CreateBonePoisonDebuff(targetHealth);
-                //RpcCreateBonePoisonDebuff(targetHealth);
+                        DealDamage(target, _damage, DamageType.Magical, AttackRangeType.RangeAttack);
+                    }
+                }
+                else if (collision.gameObject.layer == LayerMask.NameToLayer("Allies") && collision.gameObject != _player.gameObject)
+                {
+                    return;
+                }
+            }    
+            
+        }
+        else
+        {
+            if (collision.gameObject.transform != _player.transform && collision.gameObject.layer != LayerMask.NameToLayer("Allies"))
+            {
+                if (collision.TryGetComponent<Character>(out var target))
+                {
+                    _damage = Random.Range(4.0f, 12.0f);
+
+                    DealDamage(target, _damage, DamageType.Magical, AttackRangeType.RangeAttack);
+                }
             }
         }
     }
 
-    private void DealDamage(HealthComponent targetHealth, float damage, DamageType damageType, AttackRangeType attackRangeType)
+    public void MoveBallToTarget(Vector3 target)
     {
-        // Chance to apply Blindness
+        float speed = (_speed / 100f) * 5f;
+        _rbBall.DOMove(target, speed * _maxDistance / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(Explode);
+    }
+
+    public void MoveBallOnMaxDistance(Vector3 point)
+    {
+        Vector3 direction = (point - transform.position).normalized;
+
+        StartCoroutine(MoveBallOnMaxDistanceCoroutine(direction, _speed));
+    }
+
+    private IEnumerator MoveBallOnMaxDistanceCoroutine(Vector3 direction, float speed)
+    {
+        while (true)
+        {
+            transform.position += direction * speed * Time.deltaTime;
+            if (Vector3.Distance(transform.position, _player.transform.position) > _maxDistance * GlobalVariable.cellSize)
+            {
+                Explode();
+            }
+            yield return null;
+        }
+    }
+
+    private void DealDamage(Character target, float currentDamage, DamageType damageType, AttackRangeType attackRangeType)
+    {
         float chanceOfBlindness = 0.3f;
         float numbersForChanceOfBlindness = Random.Range(0.0f, 1.0f);
 
-        Energy _energyLink = (Energy)_dad.Stamina;
-        _energyLink.SumDamageMake(damage);
+        Damage damage = new Damage
+        {
+            Value = _skill.Buff.Damage.GetBuffedValue(currentDamage),
+            Type = DamageType.Physical,
+            Range = AttackRangeType.RangeAttack,
+        };
+        target.Health.TryTakeDamage(ref damage, _skill);
 
-        targetHealth.TryTakeDamage(damage, damageType, attackRangeType);
+        target.CharacterState.AddState(States.PoisonBone, _lifeTimePoisonBoneStacks, 0, _player.gameObject, _skill.Name);
 
         if (numbersForChanceOfBlindness <= chanceOfBlindness)
         {
-            //targetHealth.GetComponent<Character>().CharacterState.AddState(new BlindnessState(), 3.0f, 0, States.Blind);
+            target.CharacterState.AddState(States.Blind, 6f, 0, _player.gameObject, _skill.Name);
         }
 
         Explode();
     }
 
-    private void CreateBonePoisonDebuff(HealthComponent targetHealth)
-    {
-        _bonePoisonDebuff = targetHealth.GetComponentInChildren<BonePoison>();
-        if (_bonePoisonDebuff == null)
-        {
-            _bonePoisonDebuff = Instantiate(_bonePoisonPrefab, targetHealth.transform);
-            _bonePoisonDebuff.AddStacks(targetHealth);
-        }
-        else
-        {
-            _bonePoisonDebuff.AddStacks(targetHealth);
-        }
-    }
-
-    [ClientRpc]
-    private void RpcCreateBonePoisonDebuff(HealthComponent targetHealth)
-    {
-        _bonePoisonDebuff = targetHealth.GetComponentInChildren<BonePoison>();
-        if (_bonePoisonDebuff == null)
-        {
-            _bonePoisonDebuff = Instantiate(_bonePoisonPrefab, targetHealth.transform);
-            _bonePoisonDebuff.AddStacks(targetHealth);
-        }
-        else
-        {
-            _bonePoisonDebuff.AddStacks(targetHealth);
-        }
-    }
-
     private void Explode()
     {
-        Debug.Log("Ball is destroy in Explode()");
         if (_hitEffect != null)
         {
             GameObject hitEffect = Instantiate(_hitEffect, transform.position, Quaternion.identity);
@@ -106,9 +165,15 @@ public class SpitPoisonProjectile : NetworkBehaviour
         Destroy(gameObject);
     }
 
-    public void InitializationProjectile(Character dad, float energy)
+    public void InitializationProjectile(Character dad, Skill skill, float energy, bool isActiveHealingSpitPoison, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
     {
-        _dad = dad;
+        _player = dad;
+        _isActiveHealingSpitPoison = isActiveHealingSpitPoison;
         _energyDad = energy;
+        _skill = skill;
+        _isPlayer = isTargetPlayer;
+        _isAllies = isTargetAllies;
+        _isEnemy = isTargetEnemy;
     }
+
 }

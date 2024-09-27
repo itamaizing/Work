@@ -1,0 +1,1718 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &1402048720121234279
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -65063298450455639, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: sceneId
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -65063298450455639, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _assetId
+      value: 950354853
+      objectReference: {fileID: 0}
+    - target: {fileID: 795014623008228812, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 795014623008228812, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 795014623008228812, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 795014623008228812, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 795014623008228812, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 795014623008228812, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 795014623008228812, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 795014623008228812, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 795014623008228812, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 795014623008228812, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 795014623008228812, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1269213336512054422, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1269213336512054422, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1521997633048654849, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_Name
+      value: CreeperPoison Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064490018601382089, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2064490018601382089, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2603903007656169372, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _regenerationDelay
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2926669445991704918, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _regenerationDelay
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3331720620529543771, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3331720620529543771, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3759936847054020137, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4250437611048027662, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4250437611048027662, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5188756905167438128, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5839731411926097146, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _regenerationDelay
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7065627851971222163, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: dfa6db335114f8e498d6358b3d8118ed, type: 3}
+    - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _skills.Array.size
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _skills.Array.data[0]
+      value: 
+      objectReference: {fileID: 2763546955420911548}
+    - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _skills.Array.data[1]
+      value: 
+      objectReference: {fileID: 583144702938448550}
+    - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _skills.Array.data[2]
+      value: 
+      objectReference: {fileID: 802699897452820110}
+    - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _skills.Array.data[3]
+      value: 
+      objectReference: {fileID: 1425385128636028372}
+    - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _skills.Array.data[4]
+      value: 
+      objectReference: {fileID: 5600781172362582590}
+    - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _skills.Array.data[5]
+      value: 
+      objectReference: {fileID: 2091427287765565996}
+    - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _skills.Array.data[6]
+      value: 
+      objectReference: {fileID: 9127317757044389529}
+    - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _skills.Array.data[7]
+      value: 
+      objectReference: {fileID: 3890509659312892104}
+    - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _skills.Array.data[8]
+      value: 
+      objectReference: {fileID: 410387297614010480}
+    - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _skills.Array.data[9]
+      value: 
+      objectReference: {fileID: 1780305081931598845}
+    - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _skills.Array.data[10]
+      value: 
+      objectReference: {fileID: 5270138986041156182}
+    - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _skills.Array.data[11]
+      value: 
+      objectReference: {fileID: 5368158944462154771}
+    - target: {fileID: 8468544467696250796, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _collider
+      value: 
+      objectReference: {fileID: 3025521865943018830}
+    - target: {fileID: 8468544467696250796, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _playerData
+      value: 
+      objectReference: {fileID: 11400000, guid: 47cac5ab51e8b334aafb537b893ada29, type: 2}
+    - target: {fileID: 8618050890525431220, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8618050890525431220, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8836867217626735083, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8836867217626735083, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1107802090774456859, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8364065270567622669}
+    - targetCorrespondingSourceObject: {fileID: 6237993616369546280, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8346955998572245523}
+    - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2763546955420911548}
+    - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 583144702938448550}
+    - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 802699897452820110}
+    - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1425385128636028372}
+    - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5600781172362582590}
+    - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2091427287765565996}
+    - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9127317757044389529}
+    - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3890509659312892104}
+    - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 410387297614010480}
+    - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1780305081931598845}
+    - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5270138986041156182}
+    - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5368158944462154771}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3947504007592891480}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7446444383962772610}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4404074918470353249}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2884345031107975328}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5934849255760096215}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2847152939285646667}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6607662620547331670}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4796853090339011508}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5405598003478097550}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3981511465047695186}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8101473789432663265}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5685245872478298366}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5766639897481413642}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8216519132562782960}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6032423868418649636}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6226770535792628616}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6042324801507634549}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3054480961841619223}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6425516325027218904}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8430420044310233612}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 670101081239158742}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 888128757247546946}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6829439234357718285}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3271863479934341911}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2159678125995542759}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4261495663356130338}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7073961509244296273}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4913710649813641677}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8012403956241020689}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1503475089635759543}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4000357412165628033}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7047097248153235199}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4225491900613752339}
+  m_SourcePrefab: {fileID: 100100000, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+--- !u!1 &490057003142113287 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1565031513079442272, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+  m_PrefabInstance: {fileID: 1402048720121234279}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2763546955420911548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490057003142113287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f30962dd1626e2843a0e7b51a3758ca1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _abilityInfo: {fileID: 11400000, guid: 3f2366dd6c4aabe499c9701e0d47053b, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
+  _cooldownTime: 0
+  _castDeley: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 128
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 2
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 0
+  _isAutoLineRender: 0
+  _attackZoneSize: 2
+  _attackSpeed: 1
+  Enabled: 0
+  _strokesOfAspiration: {fileID: 7073961509244296273}
+  _assasinPoison: {fileID: 4404074918470353249}
+  _desireToHide: {fileID: 3981511465047695186}
+  _firstStrike: {fileID: 5766639897481413642}
+  _feelingOfContinuation: {fileID: 5685245872478298366}
+  _preparingForFight: {fileID: 2159678125995542759}
+  _dad: {fileID: 7418347446368758987}
+  _creeperInvisible: {fileID: 2091427287765565996}
+  _absoluteAccuracy: {fileID: 5368158944462154771}
+--- !u!114 &583144702938448550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490057003142113287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87743b00886f2da409d50bdc896eaa14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _abilityInfo: {fileID: 11400000, guid: 1af7963ead8875042bc84e9fa3cf58e1, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
+  _cooldownTime: 4
+  _castDeley: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 128
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 2
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 0
+  _isAutoLineRender: 0
+  _attackZoneSize: 2
+  _attackSpeed: 1
+  Enabled: 0
+  IsCanDamageDeal: 0
+  _heatedGlands: {fileID: 6425516325027218904}
+  _killersStamina: {fileID: 670101081239158742}
+  _absoluteAccuracy: {fileID: 5368158944462154771}
+  _lightningMovement: {fileID: 5600781172362582590}
+  _creeperStrike: {fileID: 2763546955420911548}
+  _player: {fileID: 7418347446368758987}
+--- !u!114 &802699897452820110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490057003142113287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 443b46751fd3d12488b6c0970233d4ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _abilityInfo: {fileID: 11400000, guid: 899fa83671534eb42b15ae0986749e2c, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
+  _cooldownTime: 1
+  _castDeley: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 10
+  _area: 0
+  _castLength: 5
+  _castWidth: 0.55
+  _isAutoRadiusRender: 0
+  _isAutoAreaRender: 0
+  _isAutoLineRender: 1
+  _healingSpitPoison: {fileID: 3054480961841619223}
+  _healPoisonCloud: {fileID: 6042324801507634549}
+  _projectile: {fileID: 9185291158651071422, guid: 482b668adc1f199488e67f043ae88aa9, type: 3}
+  _player: {fileID: 7418347446368758987}
+  _poisonDamagingCloudPrefab: {fileID: 8376359178360537337, guid: 6684174cfea68c84b9bd06aa086faa01, type: 3}
+  _poisonHealingCloudPrefab: {fileID: -4967518069141830548, guid: 835486046afaafa48885a183fcb94bd6, type: 3}
+  Enabled: 0
+--- !u!114 &1425385128636028372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490057003142113287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89c5bf1bfce941b4790b5007973432f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _abilityInfo: {fileID: 11400000, guid: 5e12a4e98f6c3dd42ad804c36ea87337, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
+  _cooldownTime: 0
+  _castDeley: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 768
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 128
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 12
+  _area: 0
+  _castLength: 6
+  _castWidth: 0.55
+  _isAutoRadiusRender: 0
+  _isAutoAreaRender: 0
+  _isAutoLineRender: 1
+  _footInstincts: {fileID: 6032423868418649636}
+  _healingPoisonBall: {fileID: 6226770535792628616}
+  _healPoisonCloud: {fileID: 6042324801507634549}
+  _witheringPoison: {fileID: 4225491900613752339}
+  _enlargedGlands: {fileID: 8101473789432663265}
+  _continuationAmbush: {fileID: 5405598003478097550}
+  _voluminousBall: {fileID: 7047097248153235199}
+  _inertialGlands: {fileID: 8430420044310233612}
+  _assasinPoison: {fileID: 4404074918470353249}
+  _flowOfPoison: {fileID: 8216519132562782960}
+  _spitPoison: {fileID: 802699897452820110}
+  _projectile: {fileID: 5760352791335105038, guid: e10de4766c6824742936021d88676570, type: 3}
+  _poisonDamagingCloudPrefab: {fileID: 8376359178360537337, guid: 6684174cfea68c84b9bd06aa086faa01, type: 3}
+  _poisonHealingCloudPrefab: {fileID: -4967518069141830548, guid: 835486046afaafa48885a183fcb94bd6, type: 3}
+  _player: {fileID: 7418347446368758987}
+  _arrowPrefab: {fileID: 7504653704119560997, guid: 3a5dc46a6d592b84cbd6cd33fdf012dc, type: 3}
+--- !u!114 &5600781172362582590
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490057003142113287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3937b4f7a865f3b498a887200f7e8325, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0
+  _abilityInfo: {fileID: 11400000, guid: 7d0ee064be7acc0469ab7540e835c7f9, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
+  _cooldownTime: 0
+  _castDeley: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 128
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 4
+  _area: 0
+  _castLength: 2
+  _castWidth: 1
+  _isAutoRadiusRender: 0
+  _isAutoAreaRender: 0
+  _isAutoLineRender: 1
+  _acceleratedSlap: {fileID: 7446444383962772610}
+  _superFastScales: {fileID: 4913710649813641677}
+  _heatedGlands: {fileID: 6425516325027218904}
+  _creeperStrike: {fileID: 2763546955420911548}
+  _lightningStrikes: {fileID: 583144702938448550}
+  _poisonSlap: {fileID: 9127317757044389529}
+  _line: {fileID: 11400000, guid: 7faf4d32cfcc4f54d967e4d01a0c4b65, type: 2}
+  _midPointForLeapPrefab: {fileID: 8912664995247444477, guid: 652dcebd34e17194c8dd52adb384edc4, type: 3}
+  _player: {fileID: 7418347446368758987}
+  _rangeLeap: 4
+  _durationLeap: 0.3
+  _radiusAttack: 1.15
+  _cooldownAttack: 1
+  IsInMovement: 0
+  _colorForEnd: {r: 0.039215688, g: 1, b: 0, a: 1}
+  _colorForStart: {r: 0.039215688, g: 1, b: 0, a: 1}
+--- !u!114 &2091427287765565996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490057003142113287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 124851524d795e742a7bf7705cb85e28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _abilityInfo: {fileID: 11400000, guid: a81ffcd04ca1cad479f49a2f56016a70, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
+  _cooldownTime: 0
+  _castDeley: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _isAutoRadiusRender: 0
+  _isAutoAreaRender: 0
+  _isAutoLineRender: 0
+  IsInvisible: 0
+  IsReadyToThreeHitForPreparingForFightTalent: 0
+  _releaseFromSecrecy: {fileID: 4261495663356130338}
+  _desireToHide: {fileID: 3981511465047695186}
+  _firstStrike: {fileID: 5766639897481413642}
+  _continuationAmbush: {fileID: 5405598003478097550}
+  _transparentPoisons: {fileID: 4000357412165628033}
+  _preparingForFight: {fileID: 2159678125995542759}
+  _concentratedPrecision: {fileID: 6607662620547331670}
+  _absoluteAccuracy: {fileID: 5368158944462154771}
+  _player: {fileID: 7418347446368758987}
+  _playerSprite: {fileID: 8177187794205530612}
+  _selectCircle: {fileID: 4461633737091283459}
+--- !u!114 &9127317757044389529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490057003142113287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16aa558704629304fa1ebd8e98dae16d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _abilityInfo: {fileID: 11400000, guid: 99ddb513034121044845fa2d5c1fd25a, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
+  _cooldownTime: 4
+  _castDeley: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 128
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 0
+  _isAutoLineRender: 0
+  IsCanDamageDeal: 0
+  Enabled: 0
+  _player: {fileID: 7418347446368758987}
+  _poisonBall: {fileID: 1425385128636028372}
+  _creeperStrike: {fileID: 2763546955420911548}
+  _lightningStrikes: {fileID: 583144702938448550}
+  _lightningMovement: {fileID: 5600781172362582590}
+  _lightweightSlap: {fileID: 888128757247546946}
+  _arrowPrefab: {fileID: 7504653704119560997, guid: 3a5dc46a6d592b84cbd6cd33fdf012dc, type: 3}
+--- !u!114 &3890509659312892104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490057003142113287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d19ce5ada878d194385e017efba2fefc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _abilityInfo: {fileID: 11400000, guid: 210da40a0085cd74dbbe0231617f4591, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
+  _cooldownTime: 0
+  _castDeley: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 128
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _isAutoRadiusRender: 0
+  _isAutoAreaRender: 0
+  _isAutoLineRender: 1
+  _player: {fileID: 7418347446368758987}
+  _tongueProjectile: {fileID: 5721942681369797396, guid: 4887b73d8e08c4647b295b2809cf166d, type: 3}
+  Enabled: 0
+--- !u!114 &410387297614010480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490057003142113287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 171d1ae5fdc10c54380015ddae5bd2b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _abilityInfo: {fileID: 11400000, guid: e0a694047bc706b4fb4d88da4b0399dc, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
+  _cooldownTime: 0
+  _castDeley: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _isAutoRadiusRender: 0
+  _isAutoAreaRender: 0
+  _isAutoLineRender: 0
+  _player: {fileID: 7418347446368758987}
+  _poisonBall: {fileID: 1425385128636028372}
+  _spitPoison: {fileID: 802699897452820110}
+  Enabled: 0
+--- !u!114 &1780305081931598845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490057003142113287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a5742b330fadaf458dbf1c67b84e5fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _abilityInfo: {fileID: 11400000, guid: ebeca0253d3207d4cb39a4e352e99b11, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
+  _cooldownTime: 0
+  _castDeley: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _isAutoRadiusRender: 0
+  _isAutoAreaRender: 0
+  _isAutoLineRender: 0
+  _player: {fileID: 7418347446368758987}
+  _creeperStrike: {fileID: 2763546955420911548}
+  Enabled: 0
+--- !u!114 &5270138986041156182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490057003142113287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca9e3d17ec303534f9d0993a5f6a781b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _abilityInfo: {fileID: 11400000, guid: 5dd2210736bee3d4197798d0dd5f05e3, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
+  _cooldownTime: 5
+  _castDeley: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 128
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 0
+  _isAutoLineRender: 0
+  _player: {fileID: 7418347446368758987}
+  Enabled: 0
+--- !u!114 &5368158944462154771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490057003142113287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 577de74e479234741baa9a146b6b5d60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _abilityInfo: {fileID: 11400000, guid: b01cdda0a8d49e24a8cd5c7190f8483b, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
+  _cooldownTime: 0
+  _castDeley: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: 0
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _isAutoRadiusRender: 0
+  _isAutoAreaRender: 0
+  _isAutoLineRender: 0
+  DecreaseCooldownTime: 2
+  _absoluteAccuracyTalent: {fileID: 3947504007592891480}
+  _killersStamina: {fileID: 670101081239158742}
+  _coldBlood: {fileID: 2847152939285646667}
+  _creeperStrike: {fileID: 2763546955420911548}
+  _player: {fileID: 7418347446368758987}
+--- !u!1 &2029619025806748028 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1107802090774456859, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+  m_PrefabInstance: {fileID: 1402048720121234279}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8364065270567622669
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2029619025806748028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c3873768a40b0847b20c510a9414983, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _player: {fileID: 7418347446368758987}
+--- !u!58 &3025521865943018830 stripped
+CircleCollider2D:
+  m_CorrespondingSourceObject: {fileID: 4218118007188876841, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+  m_PrefabInstance: {fileID: 1402048720121234279}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &4461633737091283459 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 3359680783071017316, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+  m_PrefabInstance: {fileID: 1402048720121234279}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5036394122529896271 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6237993616369546280, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+  m_PrefabInstance: {fileID: 1402048720121234279}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8346955998572245523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5036394122529896271}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c3735fa4a4e537429fda1a5cd0e2916, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _player: {fileID: 7418347446368758987}
+--- !u!114 &7418347446368758987 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8468544467696250796, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+  m_PrefabInstance: {fileID: 1402048720121234279}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22d89e8fc912e73459ee8ef407455b14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!212 &8177187794205530612 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 7065627851971222163, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+  m_PrefabInstance: {fileID: 1402048720121234279}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &9054047114055960688 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+  m_PrefabInstance: {fileID: 1402048720121234279}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490057003142113287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73c845a97d0479341a34f6e1275e1107, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &9212067528232202549 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+  m_PrefabInstance: {fileID: 1402048720121234279}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3947504007592891480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7476dd8f7a6cc01418cafeff799dddef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Absolute Accuracy
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+  _absoluteAccuracy: {fileID: 5368158944462154771}
+  _skillManager: {fileID: 9054047114055960688}
+--- !u!114 &7446444383962772610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f92c6b645149246459c1002647b2edc7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Accelerated Slap
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+  _poisonSlap: {fileID: 9127317757044389529}
+--- !u!114 &4404074918470353249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50b1503a081fe6344b1052f91e77c8dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Assasing Poison
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+  _invisibleCreeper: {fileID: 2091427287765565996}
+  _flowOfPoisons: {fileID: 8216519132562782960}
+--- !u!114 &2884345031107975328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12756535ab4e29a4081d2516cc762cc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Binding Poison
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+--- !u!114 &5934849255760096215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c5300110580da641af0fed875db082f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Capacious Poison Cloud
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+--- !u!114 &2847152939285646667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 014d932c20ea61146bd0f731492d3df8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: 
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 0}
+--- !u!114 &6607662620547331670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2933719ee111c6418fdb87f37b33c2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Concentrrated Precision
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+--- !u!114 &4796853090339011508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2235354ba3050c4cbc10549ac8f97ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Consuming Acid
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+--- !u!114 &5405598003478097550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 289ecbfb3bd60a84b9d790ddae6f93b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Continuation Ambush
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+--- !u!114 &3981511465047695186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53106cf7b5e7c7c458698e2157e6e98c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Desire To Hide
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+  _creeperStrike: {fileID: 2763546955420911548}
+  _creeperInvisible: {fileID: 2091427287765565996}
+  IsCanApply: 0
+--- !u!114 &8101473789432663265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92ec258206fbd8842aa13793568cd525, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Enlarged Glands
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+--- !u!114 &5685245872478298366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 034c48fc15844c848a392812c2b435ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Feeling Of Continuation
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+--- !u!114 &5766639897481413642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed722ffdfc3601b4882be52b7a4f0252, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: First Strike
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+  _creeperInvisible: {fileID: 2091427287765565996}
+  _creeperStrike: {fileID: 2763546955420911548}
+  FirstHit: 0
+--- !u!114 &8216519132562782960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df501274d50ae764e81b5aeea25d7451, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Flow of Poisons
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+--- !u!114 &6032423868418649636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12786b5079929c141bf60f09cbf027a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Foot Instincts
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+  _lightningMovement: {fileID: 5600781172362582590}
+--- !u!114 &6226770535792628616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c821030d0696774ba88a7d05e127d8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Healing Poison Ball
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+--- !u!114 &6042324801507634549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43d31da3a0620bd469d47c7183a75a3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Healing Poison Cloud
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+--- !u!114 &3054480961841619223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a356fac3ad6b94e45888cbe90f2b90dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Healing Spit Poison
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+--- !u!114 &6425516325027218904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81419aa55a1ebc3459664e07d0c32e28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Heated Glands
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+--- !u!114 &8430420044310233612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6077aa9b0a97f1e4d99d824c4f97d793, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Inertial Glands
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+--- !u!114 &670101081239158742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66e2e0670c0735c4ebafe9630e9a5631, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Killers Stamina
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+--- !u!114 &888128757247546946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4ceefaec061c884b86df4749352f9ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Lightweight Slap
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+  _creeperStrike: {fileID: 2763546955420911548}
+--- !u!114 &6829439234357718285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a40a9755254f8c140a260181abf099f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: OwnElement
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+  _creeperStrike: {fileID: 2763546955420911548}
+  _enemyLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  _enemiesWithDebuff: []
+  _radiusSearching: 0
+--- !u!114 &3271863479934341911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 455e54af9799d9041b152aa49a0cc446, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Poisons Empathiques
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+--- !u!114 &2159678125995542759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc2a2ba9ba958f14fb2f1721ac3a29af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Preparing For Fight
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+--- !u!114 &4261495663356130338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bace2638066a6b144b4d55c8e5f312e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Release From Secrecy
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+  _creeperInvisible: {fileID: 2091427287765565996}
+  _creeperStrike: {fileID: 2763546955420911548}
+--- !u!114 &7073961509244296273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ba74ffb0d2fcad4f9f653983ae7ab39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Stroke Of Aspiration
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+  _creeperStrike: {fileID: 2763546955420911548}
+  _poisonBall: {fileID: 1425385128636028372}
+  _spitPoison: {fileID: 802699897452820110}
+--- !u!114 &4913710649813641677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c761b26a475aff342b001c2862bedf59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Super Fast Scales
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+--- !u!114 &8012403956241020689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4477dec7cba8ebb4c86ffd270ac71311, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: SurgeTreatment
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+--- !u!114 &1503475089635759543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fa98a282de9a2d40b85e19ed7eb612d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Toxique Cloud
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+--- !u!114 &4000357412165628033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ec6dac149af0a142901c36cb4858fab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Transparent Poisons
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+  _poisonBall: {fileID: 1425385128636028372}
+  _spitPoison: {fileID: 802699897452820110}
+--- !u!114 &7047097248153235199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 559e49f72a29fc34e858b23f9ecf3dac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Voluminous Ball
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+  _poisonBall: {fileID: 1425385128636028372}
+  IncreasedSizeX: 1.2
+  IncreasedSizeY: 1.2
+--- !u!114 &4225491900613752339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75031bf7483530e429756fbe63bca31a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: Withering Poison
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}

@@ -3,84 +3,121 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class LightningStrikes : AutoAttackAbility
+public class LightningStrikes : AutoAttackSkill
 {
-    [SerializeField] CreeperStrike creeperStrike;
+    public bool Enabled;
+    public bool IsCanDamageDeal = false;
 
-    private float _attackSpeedDeacrease = 10f;
-    private float _attackSpeedStrikes;
-    private float originalAttackSpeed;
-    private float _cooldownStrikes;
+    [Header("Talents")]
+    [SerializeField] private HeatedGlands _heatedGlands;
+    [SerializeField] private KillersStamina _killersStamina; 
+    private float _timeBaff = 4f;
+
+    [Header("Abillity Components")]
+    [SerializeField] private AbsoluteAccuracy _absoluteAccuracy;
+    [SerializeField] private LightningMovement _lightningMovement;
+    [SerializeField] private CreeperStrike _creeperStrike;
+    [SerializeField] private Character _player;
+
+    private Character _currentTarget;
+
     private int _countStrikes = 2;
 
-    private bool _enabled = false;
-    private bool _canCast = true;
-    private bool _enemyInRadius = false;
-    public bool _isUsing = false;
+    private float _attackSpeedDeacrease = 0.1f;
+    private float _cooldownMultiplier = 2f;
 
-    private new void Start()
+    private bool _isUsedLightningStrikes = false;
+    private bool _isIncreaseCooldownTime = false;
+
+    private Coroutine _useCoroutine;
+
+    public bool IsUsedLightningStrikes => _isUsedLightningStrikes;
+
+    public void UseLightningStrikes(Character target)
     {
-        creeperStrike = GetComponent<CreeperStrike>();
+        _useCoroutine = StartCoroutine(UseAbilityCoroutine(target));
     }
 
-    private void Update()
+    protected override IEnumerator PrepareJob()
     {
-        Timer();
-
-        if (_cooldownStrikes <= 0 && _isUsing)
+        if (_lightningMovement.IsInMovement)
         {
-            CastAction();
+            IsCanDamageDeal = true;
         }
-        
-        if (Input.GetMouseButtonDown(1))
+        return base.PrepareJob();
+    }
+    protected override void ClearData()
+    {
+        Debug.Log("LightningStrikes / ClearData");
+        base.ClearData();
+
+        if (_useCoroutine != null)
         {
-            Cancel();
+            StopCoroutine(UseAbilityCoroutine(_currentTarget));
+            _useCoroutine = null;
+        }
+
+        if (_isUsedLightningStrikes)
+        {
+            Invoke("ResetUsedLightningStrikes", 2f);
         }
     }
 
     protected override void CastAction()
-    {
-        _isUsing = true;
-        _enabled = true;
-        DecreaseAttackSpeed(_attackSpeedStrikes);
-    }
-    protected override void Cancel()
-    {
-        _enabled = false;
-    }
-
-    public void DecreaseAttackSpeed(float _attackSpeedStrikes)
-    {
-        if (creeperStrike.CurrentTarget != null)
+    { 
+        if (_absoluteAccuracy.IsCanCritLightningStrikes && !_isIncreaseCooldownTime)
         {
-            _enemyInRadius = true;
-            if (_enemyInRadius)
-            {
-                creeperStrike.OriginalAttackSpeed = creeperStrike.AttackSpeed;
-                _attackSpeedStrikes = creeperStrike.CurrentAttackSpeed / _attackSpeedDeacrease;
+            float newCooldownTime = _cooldownTime * _cooldownMultiplier;
+            this.IncreaseSetCooldown(newCooldownTime);
 
-                creeperStrike.ModifyAttackSpeed(_attackSpeedStrikes);
-
-                for (int i = 0; i < _countStrikes; i++)
-                {
-                    StartCoroutine(creeperStrike.UseAbilityCoroutine());
-                }
-            }
+            Debug.Log("Cooldown LightningStrikes == " + _cooldownTime);
+            _isIncreaseCooldownTime = true;
         }
-        creeperStrike.ResetAttackSpeed();
-        _canCast = false;
-        _isUsing = false;
-        _enemyInRadius = false;
-        Cancel();
+        Debug.Log("LightningStrikes / CastAction");
+        _currentTarget = _target;
+        UseLightningStrikes(_currentTarget);
     }
 
-    private void Timer()
+    private void ResetUsedLightningStrikes()
     {
-        _cooldownStrikes = _cooldown;
-        _cooldownStrikes -= Time.deltaTime;
-        if (_cooldownStrikes <= 0)
+        _isUsedLightningStrikes = false;
+        IsCanDamageDeal = false;
+    }
+
+    private IEnumerator UseAbilityCoroutine(Character target)
+    {
+        _isUsedLightningStrikes = true;
+        DecreaseAttackSpeed(target);
+        yield return null;
+    }
+
+    private void DecreaseAttackSpeed(Character target)
+    {
+        if (target != null)
         {
-            _canCast = true;
+            _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_attackSpeedDeacrease);
+
+            for (int i = 0; i < _countStrikes; i++)
+            {
+                _creeperStrike.DealingDamageFromHits(target);
+
+                if (_heatedGlands.IsActive)
+                {
+                    _player.CharacterState.CmdAddState(States.HeatedGlands, _timeBaff, 0, _player.gameObject, Name);
+                }
+
+                _creeperStrike.CurrentCountHit = 0;
+            }
+
+            _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_attackSpeedDeacrease);
+
+            if (_absoluteAccuracy.IsCanCritLightningStrikes)
+            {
+                Debug.Log("if _absoluteAccucary.ISCanCritLightningStrikes");
+                _absoluteAccuracy.IsCanCritLightningStrikes = false;
+                _absoluteAccuracy.IsCanCritCreeperStrike = false;
+                _isIncreaseCooldownTime = false;
+            }
         }
     }
 }

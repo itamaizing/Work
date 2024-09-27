@@ -66,9 +66,9 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] protected bool _isAutoAreaRender = true;
     [SerializeField] protected bool _isAutoLineRender = true;
 
+    protected bool _isCanCancle = true;
     protected SkillRenderer _skillRender;
     protected Character _hero;
-    protected bool _isCanCancle = true;
     protected Coroutine _prepareCoroutine;
     protected Coroutine _castCoroutine;
     protected Coroutine _cooldownJob;

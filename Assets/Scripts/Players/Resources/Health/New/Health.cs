@@ -5,27 +5,33 @@ using UnityEngine;
 
 public class Health : Resource, IDamageable, IHealingable
 {
-    protected float _evadeMeleeDamage;
-    protected float _evadeRangeDamage;
-    protected float _defPhysDamage;
-    protected float _evadeMagDamage;
-    protected float _defMagDamage;
+    [SyncVar(hook = nameof(HookEvadeMeleeDamageChanged))] protected float _evadeMeleeDamage;
+    [SyncVar(hook = nameof(HookEvadeRangeDamageChanged))] protected float _evadeRangeDamage;
+    [SyncVar(hook = nameof(HookEvadeMagDamageChanged))] protected float _evadeMagDamage;
+    [SyncVar(hook = nameof(HookDefPhysDamageChanged))] protected float _defPhysDamage;
+    [SyncVar(hook = nameof(HookDefMagDamageChanged))] protected float _defMagDamage;
 
     private List<IDamageable> _shields = new List<IDamageable>();
     private float _sumDamageTaken = 0;
 
     public float SumDamageTaken { get => _sumDamageTaken; }
-    public float EvadeMeleeDamage { get => _evadeMeleeDamage; }
-    public float EvadeRangeDamage { get => _evadeRangeDamage; }
-    public float DefPhysDamage { get => _defPhysDamage; }
-    public float EvadeMagDamage { get => _evadeMagDamage; }
-    public float DefMagDamage { get => _defMagDamage; }
+    public float EvadeMeleeDamage { get => _evadeMeleeDamage; set => _evadeMeleeDamage = value; }
+    public float EvadeRangeDamage { get => _evadeRangeDamage; set => _evadeRangeDamage = value; }
+    public float EvadeMagDamage { get => _evadeMagDamage; set => _evadeMagDamage = value; }
+    public float DefPhysDamage { get => _defPhysDamage; set => _defPhysDamage = value; }
+    public float DefMagDamage { get => _defMagDamage; set => _defMagDamage = value; }
     public List<IDamageable> Shields { get => _shields; }
 
     public event Action Evaded;
     public event Action<float> HealTaked;
     public event Action<float, DamageType> DamageTaken;
     public event Action Died;
+
+    public event Action<float, float> EvadeMeleeDamageChanged;
+    public event Action<float, float> EvadeRangeDamageChanged;
+    public event Action<float, float> EvadeMagDamageChanged;
+    public event Action<float, float> DefPhysDamageChanged;
+    public event Action<float, float> DefMagDamageChanged;
 
     public override void Initialize(float health, float hpRegen, float hpRegenDelay, CharacterData data)
     {
@@ -76,6 +82,40 @@ public class Health : Resource, IDamageable, IHealingable
     {
         _evadeMagDamage = value;
     }
+
+    public void SetDefMagicDamage(float value)
+    {
+        _defMagDamage = value;
+    }
+
+    #region HookMethods
+
+    protected virtual void HookEvadeMeleeDamageChanged(float oldValue, float newValue)
+    {
+        EvadeMeleeDamageChanged?.Invoke(oldValue, newValue);
+    }
+
+    protected virtual void HookEvadeRangeDamageChanged(float oldValue, float newValue)
+    {
+        EvadeRangeDamageChanged?.Invoke(oldValue, newValue);
+    }
+
+    protected virtual void HookEvadeMagDamageChanged(float oldValue, float newValue)
+    {
+        EvadeMagDamageChanged?.Invoke(oldValue, newValue);
+    }
+
+    protected virtual void HookDefPhysDamageChanged(float oldValue, float newValue)
+    {
+        DefPhysDamageChanged?.Invoke(oldValue, newValue);
+    }
+
+    protected virtual void HookDefMagDamageChanged(float oldValue, float newValue)
+    {
+        DefMagDamageChanged?.Invoke(oldValue, newValue);
+    }
+
+    #endregion
 
     protected bool TryEvade(DamageType damageType, AttackRangeType attackRangeType)
     {

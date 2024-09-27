@@ -10,6 +10,7 @@ public abstract class Character : NetworkBehaviour
 	[SerializeField] private CharacterData _playerData;
 	[SerializeField] private UserNetworkSettings _networkSettings; 
 	[SerializeField] private Rigidbody2D rb;
+	[SerializeField] private Collider2D _collider; 
 	[SerializeField] private Level _lvl;
 	[SerializeField] private Health _healthComponent;
 	public Energy Stamina;
@@ -20,10 +21,13 @@ public abstract class Character : NetworkBehaviour
 	[SerializeField] private UIPlayerComponents uiComponent;
 	[SerializeField] private SelectComponent _selectComponent; 
 	[SerializeField] private List<Resource> _resources;
-	
-	public CharacterData Data => _playerData;
+
+    private bool _isTargetInvisible = true;
+
+    public CharacterData Data => _playerData;
 	public UserNetworkSettings NetworkSettings => _networkSettings;
 	public Rigidbody2D Rb => rb;
+	public Collider2D Collider => _collider;
 	public Health Health => _healthComponent;
 	public Level LVL => _lvl;
 	public MoveComponent Move => _playerMove;
@@ -32,13 +36,17 @@ public abstract class Character : NetworkBehaviour
 	public UIPlayerComponents UIComponent => uiComponent;
 	public SelectComponent SelectComponent => _selectComponent;
 	public List<Resource> Resources => _resources;
-	
-	public static event Action<Character> ServerOnUnitSpawned;
+
+    public bool IsTargetInvisible => _isTargetInvisible;
+
+    public static event Action<Character> ServerOnUnitSpawned;
 	public static event Action<Character> ServerOnUnitDeleted; 
 	public static event Action<Character> AuthorityOnUnitSpawned;
-	public static event Action<Character> AuthorityOnUnitDeleted; 
+	public static event Action<Character> AuthorityOnUnitDeleted;
+    public event Action OnHidingUIElements;
+    public event Action OnRevealingUIElements;
 
-	public virtual void Initialize()
+    public virtual void Initialize()
 	{
 		Move.Initialize(Data.GetAttributeValue(AttributeNames.Speed), Rb , true);
 		CharacterState.Initialize(this);
@@ -114,8 +122,20 @@ public abstract class Character : NetworkBehaviour
 		}
 		AuthorityOnUnitDeleted?.Invoke(this);
 	}
-	
-	public Resource TryGetResource(ResourceType type)
+
+    public void OnPlayerEnterInvisible()
+    {
+        OnHidingUIElements?.Invoke();
+		_isTargetInvisible = true;
+    }
+
+    public void OnPlayerExitInvisible()
+    {
+        OnRevealingUIElements?.Invoke();
+        _isTargetInvisible = false;
+    }
+
+    public Resource TryGetResource(ResourceType type)
 	{
 		return Resources.FirstOrDefault(r => r.Type == type);
 	}

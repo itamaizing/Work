@@ -4,89 +4,341 @@ using System.Collections.Generic;
 using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
+using System.Drawing;
 
-public class SpitPoison : Ability
+public class SpitPoison : Skill
 {
+    [Header("Talents")]
+    [SerializeField] private HealingSpitPoison _healingSpitPoison;
+    [SerializeField] private HealPoisonCloud _healPoisonCloud;
+
     [SerializeField] private SpitPoisonProjectile _projectile;
-    [SerializeField] private Character _playerLinks;
-    private Vector2 _mousePos;
+    [SerializeField] private Character _player;
 
-    private Coroutine _useCoroutine;
-    private Coroutine _shootCoroutine;
-    private Coroutine _mouseDirectionCoroutine;
+    #region PoisonCloud
+    [SerializeField] private PoisonDamagingCloudPrefab _poisonDamagingCloudPrefab;
+    [SerializeField] private PoisonHealingCloudPrefab _poisonHealingCloudPrefab;
+    private PoisonDamagingCloudPrefab _poisonDamagingCloud;
+    private PoisonHealingCloudPrefab _poisonHealingCloud;
+    private float _durationPoisonCloud = 6f;
+    #endregion
 
-    private float _angle;
+    private float _originalCooldown;
+    private float _angleRotation;
 
-    protected override void Cancel()
+    private Vector3 _mousePos = Vector3.positiveInfinity;
+
+    private Character _currentTarget;
+
+    private bool _isActiveHealingSpitPoison;
+    private bool _isOriginalTargetEnemy;
+    private bool _isOriginalTargetAllies;
+    private bool _isOriginalTargetPlayer;
+    private bool _isHealingPoisonCloud = false;
+
+    public bool Enabled;
+
+    protected override bool IsCanCast => CheckCanCast();
+
+    protected void Start()
     {
-
-        if (_useCoroutine != null)
-            StopCoroutine(UseCoroutine());
-
-        if (_shootCoroutine != null)
-            StopCoroutine(CallShootCoroutine());
-
-        if (_mouseDirectionCoroutine != null)
-            StopCoroutine(MouseDirectionCoroutine());
+        _originalCooldown = _cooldownTime;
     }
 
-    protected override void Cast()
+    protected override IEnumerator PrepareJob()
     {
-        _useCoroutine = StartCoroutine(UseCoroutine());
-    }
+       if (_healingSpitPoison.IsActive)
+       {
+           _isActiveHealingSpitPoison = _healingSpitPoison.IsActive;
+       }
+       else
+       {
+           _isActiveHealingSpitPoison = _healingSpitPoison.IsActive;
+       }
 
-    private IEnumerator UseCoroutine()
-    {
-        yield return _mouseDirectionCoroutine = StartCoroutine(MouseDirectionCoroutine());
-        _shootCoroutine = StartCoroutine(CallShootCoroutine());
-    }
-    private IEnumerator MouseDirectionCoroutine()
-    {
-        while (!Input.GetMouseButtonDown(0))
+        while (_currentTarget == null && float.IsPositiveInfinity(_mousePos.x))
         {
+            if (Input.GetMouseButton(0))
+            {
+                _currentTarget = GetRaycastTarget(true);
+                ChooseTarget();
+
+                _mousePos = GetMousePoint();
+                CalculateAngleRotation();
+            }
+            CooldownChange();
             yield return null;
         }
-
-        _mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		Debug.LogError("fix");
-		//Vector2 lookDir = _mousePos - _playerLinks.Rigidbody2D.position;
-		Debug.LogError("fix");
-		//_angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
     }
 
-    private IEnumerator CallShootCoroutine()
+    protected override IEnumerator CastJob()
     {
-        PayCost();
         Shoot();
         yield return null;
     }
 
+    protected override void ClearData()
+    {
+        _isHealingPoisonCloud = false;
+        _isActiveHealingSpitPoison = false;
+        _isOriginalTargetAllies = false;
+        _isOriginalTargetEnemy = false;
+        _isOriginalTargetPlayer = false;
+
+        _currentTarget = null; 
+        _mousePos = Vector3.positiveInfinity;
+    }
+
+    private void CooldownChange()
+    {
+        if (_isActiveHealingSpitPoison)
+        {
+            if (_isOriginalTargetAllies || _isOriginalTargetPlayer)
+            {
+                if (_cooldownTime == _originalCooldown)
+                {
+                    _cooldownTime /= 3;
+                }
+            }
+            else
+            {
+                _cooldownTime = _originalCooldown;
+            }
+        }
+        else
+        {
+            _cooldownTime = _originalCooldown;
+        }
+    }
+    private void CalculateAngleRotation()
+    {
+        Vector3 rotationDirection = _mousePos - _player.transform.position;
+        _angleRotation = Mathf.Atan2(rotationDirection.y, rotationDirection.x) * Mathf.Rad2Deg - 90f;
+    }
+
+    private void ChooseTarget()
+    {
+        Debug.Log("ChooseTarget");
+        if (_currentTarget != null)
+        {
+            if (_currentTarget.gameObject == _player.gameObject)
+            {
+                Debug.Log("Target == Player");
+                _isOriginalTargetPlayer = true;
+                _isOriginalTargetAllies = false;
+                _isOriginalTargetEnemy = false;
+                if (_healPoisonCloud.IsActive && _isActiveHealingSpitPoison)
+                {
+                    _isHealingPoisonCloud = true;
+                    Debug.Log($"ChooseTarget / Player / _isHealingPoisonCloud = {_isHealingPoisonCloud}");
+                }
+            }
+            else if (_currentTarget.gameObject.layer == LayerMask.NameToLayer("Allies"))
+            {
+                Debug.Log("Target == Allies");
+                _isOriginalTargetPlayer = false;
+                _isOriginalTargetAllies = true;
+                _isOriginalTargetEnemy = false;
+                if (_isActiveHealingSpitPoison && _isActiveHealingSpitPoison)
+                {
+                    if (_healPoisonCloud.IsActive)
+                    {
+                        _isHealingPoisonCloud = true;
+                        Debug.Log($"ChooseTarget / Allies / _isHealingPoisonCloud = {_isHealingPoisonCloud}");
+                    }
+                }
+            }
+            else if (_currentTarget.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+            {
+                Debug.Log("Target == Enemy");
+                _isOriginalTargetPlayer = false;
+                _isOriginalTargetAllies = false;
+                _isOriginalTargetEnemy = true;
+                if (_healPoisonCloud.IsActive && _isActiveHealingSpitPoison)
+                {
+                    _isHealingPoisonCloud = false;
+                    Debug.Log($"ChooseTarget / Enemy / _isHealingPoisonCloud = {_isHealingPoisonCloud}");
+                }
+            }
+        }
+        else
+        {
+            _isOriginalTargetPlayer = false;
+            _isOriginalTargetAllies = false;
+            _isOriginalTargetEnemy = false;
+
+            if (_mousePos != Vector3.zero)
+            {
+                _currentTarget = null;
+            }
+        }
+    }
+
+    private bool CheckCanCast()
+    {
+        if (_currentTarget == null)
+            return Vector3.Distance(_mousePos, transform.position) <= Radius;
+
+        return Vector3.Distance(_mousePos, transform.position) <= Radius ||
+               Vector3.Distance(_currentTarget.transform.position, transform.position) <= Radius;
+    }
 
     private void Shoot()
     {
-        CmdInstantiateProjectile(_angle, _playerLinks.Stamina.CurrentValue);
+        if (_currentTarget != null)
+        {
+            CmdInstantiateProjectileToTarget(_currentTarget.gameObject, _angleRotation, _player.Stamina.CurrentValue, 
+                _isActiveHealingSpitPoison, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
 
-        _playerLinks.Stamina.TryUse(_playerLinks.Stamina.CurrentValue);
+            CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
+        }
+        else
+        {
+            CmdInstantiateProjectileToPoint(_mousePos, _angleRotation, _player.Stamina.CurrentValue, 
+                _isActiveHealingSpitPoison, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
 
-        Cancel();
+            CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
+        }
+    }
+
+    #region Command Methods
+
+    [Command]
+    private void CmdInstantiateProjectileToTarget(GameObject target, float angleRotation, float manaValue, 
+        bool isActiveHealingSpitPoison, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
+    {
+        GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.Euler(0, 0, angleRotation));
+
+        SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
+
+        SpitPoisonProjectile projectile = item.GetComponent<SpitPoisonProjectile>();
+
+        projectile.InitializationProjectile(_player, this, manaValue, isActiveHealingSpitPoison, isTargetPlayer, isTargetEnemy, isTargetAllies);
+
+        projectile.MoveBallToTarget(target.transform.position);
+
+        NetworkServer.Spawn(item);
+
+        RpcInstantiateProjectile(target, projectile, manaValue, isActiveHealingSpitPoison, isTargetPlayer, isTargetEnemy, isTargetAllies);
+    }
+
+    [Command]
+    private void CmdInstantiateProjectileToPoint(Vector3 point, float angleRotation, float manaValue, 
+        bool isActiveHealingSpitPoison, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
+    {
+        GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.Euler(0, 0, angleRotation));
+
+        SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
+
+        SpitPoisonProjectile projectile = item.GetComponent<SpitPoisonProjectile>();
+
+        projectile.InitializationProjectile(_player, this, _player.Stamina.CurrentValue, _isActiveHealingSpitPoison, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
+
+        projectile.MoveBallOnMaxDistance(point);
+
+        NetworkServer.Spawn(item);
+
+        RpcInstantiateProjectileToPoint(point, projectile, manaValue, isActiveHealingSpitPoison, isTargetPlayer, isTargetEnemy, isTargetAllies);
+    }
+
+    [Command]
+    private void CmdApplyPoisonCloud(bool isHealingCloud, float duration)
+    {
+        //Debug.Log("SpitPoison / CmdTestApplyPoisonCloud");
+        if (!isHealingCloud)
+        {
+            if (_poisonDamagingCloud == null && _poisonDamagingCloudPrefab.PoisonDamageCloud == null)
+            {
+                //Debug.Log("SpitPoison / CmdTestApplyPoisonCloud / if (_poisonDamagingCloud == null)");
+                _player.CharacterState.AddState(States.PoisonCloud, duration, 0, _player.gameObject, Name);
+
+                _poisonDamagingCloud = Instantiate(_poisonDamagingCloudPrefab, transform.position, Quaternion.identity);
+                _poisonDamagingCloudPrefab.PoisonDamageCloud = _poisonDamagingCloud;
+
+                SceneManager.MoveGameObjectToScene(_poisonDamagingCloudPrefab.PoisonDamageCloud.gameObject, _hero.NetworkSettings.MyRoom);
+
+                _poisonDamagingCloudPrefab.PoisonDamageCloud.InitializationProjectile(_player, 5, duration, 3.5f, Name);
+                _poisonDamagingCloudPrefab.PoisonDamageCloud.AddStack();
+
+                NetworkServer.Spawn(_poisonDamagingCloud.gameObject);
+
+                //Debug.Log("SpitPoison / CmdTestApplyPoisonCloud / if (_poisonDamagingCloud == null) / _poisonDamagingCloud = " + _poisonDamagingCloud);
+            }
+            else
+            {
+                //Debug.Log("SpitPoison / CmdTestApplyPoisonCloud / else");
+                _player.CharacterState.AddState(States.PoisonCloud, duration, 0, _player.gameObject, Name);
+                _poisonDamagingCloudPrefab.PoisonDamageCloud.AddStack();
+            }
+        }
+        else
+        {
+            if (_poisonHealingCloud == null && _poisonHealingCloudPrefab.PoisonHealingCloud == null)
+            {
+                //Debug.Log("SpitPoison / CmdTestApplyPoisonCloud / if (_poisonHealingCloud == null)");
+                _player.CharacterState.AddState(States.HealingPoisonCloud, duration, 0, _player.gameObject, Name);
+
+                _poisonHealingCloud = Instantiate(_poisonHealingCloudPrefab, transform.position, Quaternion.identity);
+                _poisonHealingCloudPrefab.PoisonHealingCloud = _poisonHealingCloud;
+
+                SceneManager.MoveGameObjectToScene(_poisonHealingCloudPrefab.PoisonHealingCloud.gameObject, _hero.NetworkSettings.MyRoom);
+
+                _poisonHealingCloudPrefab.PoisonHealingCloud.InitializationProjectile(_player, 5, duration, 3.5f, Name);
+                _poisonHealingCloudPrefab.PoisonHealingCloud.AddStack();
+
+                NetworkServer.Spawn(_poisonHealingCloud.gameObject);
+
+                //Debug.Log("SpitPoison / CmdTestApplyPoisonCloud / if (_poisonHealingCloud == null) / _poisonHealingCloud = " + _poisonHealingCloud);
+            }
+            else
+            {
+                //Debug.Log("SpitPoison / CmdTestApplyPoisonCloud / else");
+                _player.CharacterState.AddState(States.HealingPoisonCloud, duration, 0, _player.gameObject, Name);
+                _poisonHealingCloudPrefab.PoisonHealingCloud.AddStack();
+            }
+        }
+        RpcApply(_poisonDamagingCloud, _poisonHealingCloud, duration, isHealingCloud);
     }
 
 
-    [Command]
-    private void CmdInstantiateProjectile(float angle, float manaValue)
+    #endregion
+
+    #region ClientRpc Methods
+
+    [ClientRpc]
+    private void RpcInstantiateProjectile(GameObject target, SpitPoisonProjectile projectile, float manaValue,
+        bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
     {
-		Debug.LogError("fix"); 
-		SpitPoisonProjectile projectile = Instantiate(_projectile, _playerLinks.gameObject.transform.position, Quaternion.Euler(0, 0, angle)); // it was Rb postion
-        projectile.InitializationProjectile(_playerLinks, manaValue);
-
-        NetworkServer.Spawn(projectile.gameObject);
-
-        RpcInitialization(projectile.gameObject, manaValue);
+        projectile.InitializationProjectile(_player, this, _player.Stamina.CurrentValue, _isActiveHealingSpitPoison, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
     }
 
     [ClientRpc]
-    private void RpcInitialization(GameObject projectile, float manaValue)
-    {
-        projectile.GetComponent<SpitPoisonProjectile>().InitializationProjectile(_playerLinks, manaValue);
+    private void RpcInstantiateProjectileToPoint(Vector3 point, SpitPoisonProjectile projectile, float manaValue,
+        bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
+    { 
+        projectile.InitializationProjectile(_player, this, _player.Stamina.CurrentValue, _isActiveHealingSpitPoison, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
     }
+
+    [ClientRpc]
+    private void RpcApply(PoisonDamagingCloudPrefab poisonDamagingCloud, PoisonHealingCloudPrefab poisonHealingCloud, float duration, bool isHealingCloud)
+    {
+        //Debug.Log("PoisonBall / RpcApply / poisonDamagingCloud = " + poisonDamagingCloud);
+        if (poisonDamagingCloud != null)
+        {
+           // Debug.Log("PoisonBall / RpcApply / if (poisonDamagingCloud != null) = " + poisonDamagingCloud);
+            poisonDamagingCloud.InitializationProjectile(_player, 5, duration, 3.5f, Name);
+            poisonDamagingCloud.AddStack();
+        }
+
+        if (poisonHealingCloud != null && isHealingCloud)
+        {
+           // Debug.Log("PoisonBall / RpcApply / if (poisonHealingCloud != null) = " + poisonHealingCloud);
+            poisonHealingCloud.InitializationProjectile(_player, 5, duration, 3.5f, Name);
+            poisonHealingCloud.AddStack();
+        }
+    }
+
+    #endregion
 }

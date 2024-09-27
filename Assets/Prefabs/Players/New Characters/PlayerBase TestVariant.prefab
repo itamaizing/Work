@@ -92,6 +92,14 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2603903007656169372, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _regenerationDelay
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2926669445991704918, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _regenerationDelay
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3330577042116454553, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _minionPrefs.Array.size
       value: 1
@@ -156,6 +164,10 @@ PrefabInstance:
       propertyPath: Testskill1
       value: 
       objectReference: {fileID: 4548913901531959567}
+    - target: {fileID: 5839731411926097146, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _regenerationDelay
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6281720076013366462, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -172,6 +184,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7065627851971222163, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: dfa6db335114f8e498d6358b3d8118ed, type: 3}
     - target: {fileID: 7401856161718539709, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: syncDirection
       value: 1

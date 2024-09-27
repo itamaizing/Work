@@ -18,7 +18,6 @@ public abstract class Resource : NetworkBehaviour
     [SyncVar(hook = nameof(HookValueChanged))] protected float _currentValue;
     [SyncVar(hook = nameof(HookMaxValueChanged))] protected float _maxValue;
     [SyncVar] protected float _regenerationValue;
-    [SyncVar] protected float _regenerationPeriod;
     
     
     protected Coroutine _regenCoroutine;
@@ -26,7 +25,7 @@ public abstract class Resource : NetworkBehaviour
     public float CurrentValue { get => _currentValue; protected set { _currentValue = value; } }
     public float MaxValue { get => _maxValue; protected set { _maxValue = value; } }
     public float RegenerationValue { get => _regenerationValue;  set { _regenerationValue = value; } }
-    public float RegenerationDelay { get => _regenerationPeriod;  set { _regenerationPeriod = value; } }
+    public float RegenerationDelay { get => _regenerationDelay;  set { _regenerationDelay = value; } }
 
     public ResourceType Type => _resourceType;
 
@@ -38,7 +37,7 @@ public abstract class Resource : NetworkBehaviour
         _currentValue = maxValue;
         _maxValue = maxValue;
         _regenerationValue = regenValue;
-        _regenerationPeriod = regenDelay;
+        _regenerationDelay = regenDelay;
 
         if (regenValue > 0)
             ClientStartRegenirateJob();
@@ -66,6 +65,21 @@ public abstract class Resource : NetworkBehaviour
         }
     }
 
+    public void ReductionCurrentValue(float value)
+    {
+        _currentValue -= value;
+    }
+
+    public void IncreaseMaxValue(float value)
+    {
+        _maxValue += value;
+    }
+
+    public void ReductionMaxValue(float value)
+    {
+        _maxValue -= value;
+    }
+
     protected virtual void HookValueChanged(float oldValue, float newValue)
     {
         ValueChanged?.Invoke(oldValue, newValue);
@@ -87,7 +101,7 @@ public abstract class Resource : NetworkBehaviour
                 while (_currentValue < _maxValue)
                 {
                     CmdRegen();
-                    yield return new WaitForSeconds(_regenerationPeriod);
+                    yield return new WaitForSeconds(_regenerationDelay);
                 }
             }
             yield return null;
