@@ -7,53 +7,23 @@ using UnityEngine;
 [Serializable]
 public class CharacterData : ScriptableObject
 {
-    [SerializeField] private int _id;
     [SerializeField] private string _name;
     [SerializeField] private string _description;
     [SerializeField] private Sprite _icon;
     [SerializeField] private float _iconSize;
     [SerializeField] private AttributeGroup _attributes;
-    [SerializeField] private List<TalentsGroup> _talents;
-    [SerializeField] private HealthInfo statsInfo;
 
-    public int ID => _id;
     public string Name => _name;
     public string Description => _description;
     public Sprite Icon => _icon;
     public float IconSize => _iconSize;
-    
-    public HealthInfo StatsInfo => statsInfo;
+
     public AttributeGroup Attributes => _attributes;
-    public List<TalentsGroup> Talents => _talents;
-    
-    public void Initialize(int id, string name, AttributeGroup attributeList, List<TalentsGroup> talentsList)
-    {
-        _id = id;
-        _name = name;
-        _attributes = attributeList;
-        _talents = talentsList;
-    }
 
     public float GetAttributeValue(string attributeName)
     {
         var attribute = _attributes.AttributeData.FirstOrDefault(o => o.Name == attributeName);
         return attribute?.DefaultValue ?? 0f;
-    }
-
-    public void SetToDefault()
-    {
-        _id = 10001;
-        _name = "default";
-
-        foreach (var attribute in Attributes.AttributeData)
-        {
-            attribute.Points = 0;
-        }
-
-        foreach (var talent in Talents.SelectMany(talentGroup => talentGroup.TalentsData))
-        {
-            talent.IsOpen = false;
-        }
     }
 }
 
@@ -61,15 +31,15 @@ public static class Positions
 {
     public static List<Vector2> unitInGroupPositions = new()
     {
-        new Vector2(0,0),
+        new Vector2(0, 0),
         new Vector2(0, 3),
         new Vector2(3, 0),
         new Vector2(3, 3),
         new Vector2(0, -3),
         new Vector2(-3, 0),
         new Vector2(-3, -3),
-        new Vector2(3,-3),
-        new Vector2(-3,3)
+        new Vector2(3, -3),
+        new Vector2(-3, 3)
     };
 }
 
@@ -79,10 +49,10 @@ public class Attribute
     public int Id;
     public string Name;
     public int Points;
-    
+
     public float DefaultValue;
     public Sprite Icon;
-    
+
     public bool IsVisible = false;
 
     public Attribute(int id, string name, int points)
@@ -120,8 +90,9 @@ public static class AttributeNames
 
 [Serializable]
 public class AttributeGroup
-{ 
-    [SerializeField] private List<Attribute> attributesGroup = new()
+{
+    [SerializeField]
+    private List<Attribute> attributesGroup = new()
     {
         new Attribute(1001, AttributeNames.Health, 0),
         new Attribute(1002, AttributeNames.Mana, 0),
@@ -145,34 +116,8 @@ public class AttributeGroup
         new Attribute(1020, AttributeNames.PhysicAbsorb, 0),
         new Attribute(1021, AttributeNames.MagicAbsorb, 0)
     };
-    
+
     public List<Attribute> AttributeData => attributesGroup;
-}
-
-[Serializable]
-public class TalentData
-{
-    public int Id;
-    public string Name;
-    public bool IsOpen;
-
-    public Sprite Icon;
-
-    public TalentData(int id, string name, bool isOpen)
-    {
-        Id = id;
-        Name = name;
-        IsOpen = isOpen;
-    }
-}
-
-[Serializable]
-public class TalentsGroup
-{
-    [SerializeField] private string _name;
-    [SerializeField] private List<TalentData> _talentGroup;
-
-    public string Name => _name;
-    public List<TalentData> TalentsData => _talentGroup;
-    public int TalentsCount => TalentsData.Count;
+    public int FreeAttributePointsCount { get; set; }
+    public int UsedAttributePointsCount => attributesGroup.Sum(o => o.Points);
 }

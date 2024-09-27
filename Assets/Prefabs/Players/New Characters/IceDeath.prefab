@@ -1461,9 +1461,11 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: 
-  Description: 
-  ico: {fileID: 0}
+  _data:
+    Name: 
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
   character: {fileID: 0}
   _absorption: {fileID: 0}
   _ability: {fileID: 0}
@@ -1482,9 +1484,11 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: 
-  Description: 
-  ico: {fileID: 0}
+  _data:
+    Name: 
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
   character: {fileID: 0}
   _blockOfIce: {fileID: 0}
   _ability: {fileID: 0}
@@ -1503,9 +1507,11 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: 
-  Description: 
-  ico: {fileID: 0}
+  _data:
+    Name: 
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
   character: {fileID: 0}
   _deathSpiral: {fileID: 0}
 --- !u!114 &5171401671337291027
@@ -1523,9 +1529,11 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: 
-  Description: 
-  ico: {fileID: 0}
+  _data:
+    Name: 
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
   character: {fileID: 0}
 --- !u!114 &5889404958618692528 stripped
 MonoBehaviour:

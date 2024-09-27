@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour
 {
-    public event UnityAction<TalentData> Selected;
+    public event UnityAction<TalentData, bool> Selected;
     
     [ReadOnly,ShowInInspector]
     public UIMenuMainTalentsPanelGroup Owner;
@@ -28,13 +28,14 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour
         activeImage.sprite = talent.Icon;
         nonActiveImage.sprite = talent.Icon;
         _talent = talent;
+        
+        activeState.isActive = _talent.IsOpen;
     }
     
     public void Select()
     {
-        _talent.IsOpen = !_talent.IsOpen;
-        
-        Selected?.Invoke(_talent);
+        Selected?.Invoke(_talent, !_talent.IsOpen);
+        activeState.isActive = _talent.IsOpen;
     }
     
 }
