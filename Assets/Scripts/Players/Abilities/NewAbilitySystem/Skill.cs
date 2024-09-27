@@ -371,7 +371,7 @@ public abstract class Skill : NetworkBehaviour
             if (rayHit.Length > 0 && item.transform.TryGetComponent<Character>(out Character enemy))
             {
                 target = enemy;
-
+                
                 if (isCanTargetHimself == false && target.transform == _hero.Health.transform)
                 {
                     target = null;

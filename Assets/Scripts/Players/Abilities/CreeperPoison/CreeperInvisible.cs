@@ -169,7 +169,7 @@ public class CreeperInvisible : Skill
     private IEnumerator CheckCurrentHealthPlayer()
     {
         float time = _timeWithoutDamage;
-
+        
         while (time > 0f)
         {
             time -= Time.deltaTime;
@@ -234,10 +234,9 @@ public class CreeperInvisible : Skill
     [Command]
     private void CmdApplyInvis(GameObject player)
     {
-        //RpcSpriteRenderer(player);
-        //Debug.Log("CreeperInvisible / CmdApplyInvis");
         IsInvisible = true;
-        //Debug.Log($"CreeperInvisible / CmdApplyInvis / IsInvisible = {IsInvisible}");
+        _player.ChangedBool(false);
+
         RpcApplyInvis();
 
         _player.CharacterState.AddState(States.CreeperInvisible, 0, 0, _player.gameObject, Name);
@@ -247,7 +246,9 @@ public class CreeperInvisible : Skill
     private void CmdApplyInvisibleWithTalent()
     {
        // Debug.Log("CreeperInvisible / CmdApplyInvisibleWithTalent");
-        IsInvisible = true;
+        IsInvisible = true; 
+        _player.ChangedBool(false);
+
         RpcApplyInvisibleWithTalent();
 
         _player.CharacterState.AddState(States.CreeperInvisible, 0, 0, _player.gameObject, Name);
@@ -258,6 +259,8 @@ public class CreeperInvisible : Skill
     {
        // Debug.Log("CreeperInvisible / CmdRemoveInvisible");
         IsInvisible = false;
+        _player.ChangedBool(true);
+
         if (_releaseFromSecrecy.IsActive)
         {
             _releaseFromSecrecy.ApplyBuff();
@@ -337,7 +340,8 @@ public class CreeperInvisible : Skill
     private void RpcApplyInvis()
     {
         //Debug.Log("CreeperInvisible / RpcApplyInvis");
-        IsInvisible = true;
+        IsInvisible = true; 
+        _player.ChangedBool(false);
         //Debug.Log($"CreeperInvisible / RpcApplyInvis / IsInvisible = {IsInvisible}");    
     }
 
@@ -345,12 +349,14 @@ public class CreeperInvisible : Skill
     private void RpcApplyInvisibleWithTalent()
     {
         IsInvisible = true;
+        _player.ChangedBool(false);
     }
 
     [ClientRpc]
     private void RpcRemoveInvisible()
     {
         IsInvisible = false;
+        _player.ChangedBool(true);
 
         if (_releaseFromSecrecy.IsActive)
         {

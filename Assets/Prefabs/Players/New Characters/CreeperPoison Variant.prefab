@@ -1544,7 +1544,7 @@ MonoBehaviour:
   _radius: 12
   _area: 0
   _castLength: 6
-  _castWidth: 1
+  _castWidth: 0.55
   _isAutoRadiusRender: 0
   _isAutoAreaRender: 0
   _isAutoLineRender: 1

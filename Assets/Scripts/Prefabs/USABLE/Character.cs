@@ -7,21 +7,23 @@ using Mirror;
 [RequireComponent(typeof(NetworkIdentity))]
 public abstract class Character : NetworkBehaviour
 {
+	//public RuneComponent RuneComponent;
 	[SerializeField] private CharacterData _playerData;
 	[SerializeField] private UserNetworkSettings _networkSettings; 
 	[SerializeField] private Rigidbody2D rb;
 	[SerializeField] private Collider2D _collider;
 	[SerializeField] private Level _lvl;
 	[SerializeField] private Health _healthComponent;
-	public Energy Stamina;
-	//public RuneComponent RuneComponent;
 	[SerializeField] private MoveComponent _playerMove; 
 	[SerializeField] private SkillManager _abilities;
 	[SerializeField] private CharacterState _characterState;
 	[SerializeField] private UIPlayerComponents uiComponent;
 	[SerializeField] private SelectComponent _selectComponent; 
 	[SerializeField] private List<Resource> _resources;
-	
+	public Energy Stamina;
+
+	private bool _isTargetInvisible = true;
+
 	public CharacterData Data => _playerData;
 	public UserNetworkSettings NetworkSettings => _networkSettings;
 	public Rigidbody2D Rb => rb;
@@ -35,6 +37,8 @@ public abstract class Character : NetworkBehaviour
 	public SelectComponent SelectComponent => _selectComponent;
 	public List<Resource> Resources => _resources;
 	
+	public bool IsTargetInvisible => _isTargetInvisible;
+
 	public static event Action<Character> ServerOnUnitSpawned;
 	public static event Action<Character> ServerOnUnitDeleted; 
 	public static event Action<Character> AuthorityOnUnitSpawned;
@@ -90,6 +94,11 @@ public abstract class Character : NetworkBehaviour
 		Initialize();
 	}
 	
+	public void ChangedBool(bool value)
+	{
+		_isTargetInvisible = value;
+	}
+
 	public override void OnStartServer()
 	{
 		ServerOnUnitSpawned?.Invoke(this);

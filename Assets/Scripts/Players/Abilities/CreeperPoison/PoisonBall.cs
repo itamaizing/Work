@@ -74,6 +74,7 @@ public class PoisonBall : Skill
     private float _slowTimeCast = 1.8f;
     private float _originalChargeCooldown;
     private float _currentStacksAsssasinPoison = 0;
+    private float _baseCastWidth;
 
     #region BoolVariables
 
@@ -85,6 +86,7 @@ public class PoisonBall : Skill
     private bool _firstClickCompleted = false;
     private bool _colorLockedAfterSecondClick = false;
     private bool _colorLockedAfterThirdClick = false;
+    private bool _isBallCanBigger = false;
 
     #endregion
 
@@ -102,6 +104,7 @@ public class PoisonBall : Skill
 
     private void Start()
     {
+        _baseCastWidth = _castWidth;
         _originalChargeCooldown = _chargeCooldown;
 
         _poisonBallInfo.StartTimeBetweenAttack = 3.0f;
@@ -436,7 +439,6 @@ public class PoisonBall : Skill
 
     private void CheckingActiveTalents()
     {
-
         _poisonBallInfo.IsActiveWitheringPoison = _witheringPoison.IsActive;
         _poisonBallInfo.IsActiveContinuationAmbush = _continuationAmbush.IsActive;
         _poisonBallInfo.IsActiveHealingPoisonBall = _healingPoisonBall.IsActive;
@@ -444,6 +446,22 @@ public class PoisonBall : Skill
         _poisonBallInfo.IsActiveEnlargedGlands = _enlargedGlands.IsActive;
         _poisonBallInfo.IsActiveVoluminousBall = _voluminousBall.IsActive;
         _poisonBallInfo.IsActiveInertialGlands = _inertialGlands.IsActive;
+
+        #region VoluminousBallTalentIsActive
+
+        if (_poisonBallInfo.IsActiveVoluminousBall && !_isBallCanBigger)
+        {
+            float multiplier = _baseCastWidth * 0.2f;
+            _castWidth += multiplier;
+            _isBallCanBigger = true;
+        }
+        else if (!_poisonBallInfo.IsActiveVoluminousBall && _isBallCanBigger)
+        {
+            _castWidth = _baseCastWidth;
+            _isBallCanBigger = false;
+        }
+
+        #endregion
 
         #region EnlargedGlandTalentIsActive
 

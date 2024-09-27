@@ -284,7 +284,7 @@ public class LightningMovement : Skill
             else
             {// Точка прыжка перед серединой врага
                 Debug.Log("else <");
-                maxDistance += 2.3f;
+                maxDistance += 3f;
             }
             return startPoint + direction * maxDistance;
         }
