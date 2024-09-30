@@ -9,6 +9,7 @@ public class PoisonBoneState : AbstractCharacterState
 
     private List<Skill> _skills = new();
     private CreeperStrike _creeperStrike;
+    private PoisonBall _poisonBall;
 
     private int _currentStacks = 0;
     private int _maxStacks = 4;
@@ -57,6 +58,15 @@ public class PoisonBoneState : AbstractCharacterState
                         //Debug.Log("CreeperStrike == " + _creeperStrike);
                         _creeperStrike.PoisonBoneStacks(_currentStacks);
                     }
+                }
+                if (ability is PoisonBall poisonBall)
+                {
+                    if (_poisonBall == null)
+                    {
+                        _poisonBall = poisonBall;
+                        _poisonBall.PoisonBoneStacks(_currentStacks);
+                    }
+
                 }
             }
         }

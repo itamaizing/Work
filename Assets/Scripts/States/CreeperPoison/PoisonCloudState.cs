@@ -104,7 +104,7 @@ public class PoisonCloudState : AbstractCharacterState
                 if (_toxiqueCloud == null)
                 {
                     _toxiqueCloud = toxiqueCloud;
-                    Debug.Log("ToxiqueCloud = " + _toxiqueCloud);
+                   // Debug.Log("ToxiqueCloud = " + _toxiqueCloud);
                 }
             }
         }
@@ -180,7 +180,7 @@ public class PoisonCloudState : AbstractCharacterState
 
     private void SearchingEnemies(LayerMask enemyLayer, GameObject player)
     {
-        Debug.Log($"PoisonCloud / SearchingEnemies");
+       // Debug.Log($"PoisonCloud / SearchingEnemies");
 
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(player.transform.position, 4, enemyLayer);
 
@@ -203,7 +203,7 @@ public class PoisonCloudState : AbstractCharacterState
     private void DamageDeal(GameObject target)
     {
         var targetHealth = target.GetComponent<Character>();
-        Debug.Log($"PoisonCloud / DamageDeal");
+      //  Debug.Log($"PoisonCloud / DamageDeal");
         //Debug.Log($"PoisonCloud / DamageDeal / targetHealth = {targetHealth}");
         _increasedDamage = _baseDamage * _currentStacks;
         //Debug.Log($"PoisonCloud / DamageDeal / _increasedDamage = {_increasedDamage}");
@@ -223,7 +223,7 @@ public class PoisonCloudState : AbstractCharacterState
 
         if (_toxiqueCloud.IsActive)
         {
-            Debug.Log("PoisonCloud / DamageDeal / toxiqueCloud Active");
+            //Debug.Log("PoisonCloud / DamageDeal / toxiqueCloud Active");
             ApplyState(targetHealth);
         }
     }
@@ -231,7 +231,7 @@ public class PoisonCloudState : AbstractCharacterState
     [Command]
     private void ApplyState(Character targetHealth)
     {
-        Debug.Log("PoisonCloud / DamageDeal / toxiqueCloud Active");
+       // Debug.Log("PoisonCloud / DamageDeal / toxiqueCloud Active");
         targetHealth.CharacterState.AddState(States.EmpathicPoisons, _durationEmpathicPoisons, 0, _player.gameObject, null);
     }
 

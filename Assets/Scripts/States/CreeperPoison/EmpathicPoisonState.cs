@@ -45,7 +45,7 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        Debug.Log("EmpathicPoison / EnterState");
+      //  Debug.Log("EmpathicPoison / EnterState");
         _characterState = character;
         _player = personWhoMadeBuff;
 
@@ -59,9 +59,9 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
 
         _player.Health.Shields.Add(this);
         _poisonCloud = (PoisonCloudState)_player.CharacterState.GetState(States.PoisonCloud);
-        Debug.Log($"EmpathicPoisons / EnterState / PoisonCloud = {_poisonCloud}");
+      //  Debug.Log($"EmpathicPoisons / EnterState / PoisonCloud = {_poisonCloud}");
         _radiusCloud = _poisonCloud.RadiusCloud;
-        Debug.Log($"EmpathicPoisons / EnterState / PoisonCloud.radiusCloud = {_radiusCloud}");
+      //  Debug.Log($"EmpathicPoisons / EnterState / PoisonCloud.radiusCloud = {_radiusCloud}");
 
         _duration = durationToExit;
         _baseDuration = durationToExit;
@@ -74,42 +74,42 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
-        Debug.Log("EmpathicPoison / TryTakeDamage");
+      //  Debug.Log("EmpathicPoison / TryTakeDamage");
         if (_currentStacks > 0)
         {
-            Debug.Log("EmpathicPoison / if (currentStacks > 0) currentStacks == " + _currentStacks);
+          //  Debug.Log("EmpathicPoison / if (currentStacks > 0) currentStacks == " + _currentStacks);
             switch (_damageType)
             {
                 case DamageType.Physical:
-                    Debug.Log("EmpathicPoison / TryTakeDamage / Case DamageType.Physical");
+                //    Debug.Log("EmpathicPoison / TryTakeDamage / Case DamageType.Physical");
                     switch (_attackRangeType)
                     {
                         case AttackRangeType.MeleeAttack:
-                            Debug.Log("EmpathicPoison / TryTakeDamage / Case DamageType.Physical / case AttackRangeType.Melee");
+                       //     Debug.Log("EmpathicPoison / TryTakeDamage / Case DamageType.Physical / case AttackRangeType.Melee");
                             if (UnityEngine.Random.Range(0.0f, 100.0f) <= _evadeMeleePhysicalDamage)
                             {
-                                Debug.Log("EmpathicPoison / TryTakeDamage / case AttackRangeType.Melee / if evadeMeleeDamage");
+                           //     Debug.Log("EmpathicPoison / TryTakeDamage / case AttackRangeType.Melee / if evadeMeleeDamage");
                                 damage.Value = 0;
                                 return true;
                             }
                             else
                             {
-                                Debug.Log("EmpathicPoison / TryTakeDamage / case AttackRangeType.Melee / else evadeMeleeDamage");
+                             //   Debug.Log("EmpathicPoison / TryTakeDamage / case AttackRangeType.Melee / else evadeMeleeDamage");
                                 return false;
                             }
                             break;
 
                         case AttackRangeType.RangeAttack:
-                            Debug.Log("EmpathicPoison / TryTakeDamage / Case DamageType.Physical / case AttackRangeType.Range");
+                          //  Debug.Log("EmpathicPoison / TryTakeDamage / Case DamageType.Physical / case AttackRangeType.Range");
                             if (UnityEngine.Random.Range(0.0f, 100.0f) <= _evadeRangePhysicalDamage)
                             {
-                                Debug.Log("EmpathicPoison / TryTakeDamage / case AttackRangeType.Range / if evadeRangeDamage");
+                               // Debug.Log("EmpathicPoison / TryTakeDamage / case AttackRangeType.Range / if evadeRangeDamage");
                                 damage.Value = 0;
                                 return true;
                             }
                             else
                             {
-                                Debug.Log("EmpathicPoison / TryTakeDamage / case AttackRangeType.Range / else evadeRangeDamage");
+                              //  Debug.Log("EmpathicPoison / TryTakeDamage / case AttackRangeType.Range / else evadeRangeDamage");
                                 return false;
                             }
                             break;

@@ -188,6 +188,58 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.size
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]
+      value: 
+      objectReference: {fileID: 670101081239158742}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[1]
+      value: 
+      objectReference: {fileID: 3947504007592891480}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[2]
+      value: 
+      objectReference: {fileID: 4261495663356130338}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[3]
+      value: 
+      objectReference: {fileID: 2159678125995542759}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[4]
+      value: 
+      objectReference: {fileID: 3981511465047695186}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[5]
+      value: 
+      objectReference: {fileID: 6042324801507634549}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[6]
+      value: 
+      objectReference: {fileID: 3054480961841619223}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[7]
+      value: 
+      objectReference: {fileID: 6226770535792628616}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[8]
+      value: 
+      objectReference: {fileID: 7446444383962772610}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[9]
+      value: 
+      objectReference: {fileID: 5934849255760096215}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[10]
+      value: 
+      objectReference: {fileID: 1300421091567981635}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[11]
+      value: 
+      objectReference: {fileID: 8101473789432663265}
     - target: {fileID: 8836867217626735083, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -341,6 +393,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4225491900613752339}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1300421091567981635}
   m_SourcePrefab: {fileID: 100100000, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
 --- !u!1 &490057003142113287 stripped
 GameObject:
@@ -541,10 +596,10 @@ MonoBehaviour:
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: 0
-  _isUseCharges: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
+  _isUseCharges: 1
+  _chargesHaveSeparateCooldown: 1
+  _maxCharges: 3
+  _chargeCooldown: 1
   _radius: 12
   _area: 0
   _castLength: 6
@@ -562,6 +617,7 @@ MonoBehaviour:
   _inertialGlands: {fileID: 8430420044310233612}
   _assasinPoison: {fileID: 4404074918470353249}
   _flowOfPoison: {fileID: 8216519132562782960}
+  _volatilityOfPoisons: {fileID: 1300421091567981635}
   _spitPoison: {fileID: 802699897452820110}
   _projectile: {fileID: 5760352791335105038, guid: e10de4766c6824742936021d88676570, type: 3}
   _poisonDamagingCloudPrefab: {fileID: 8376359178360537337, guid: 6684174cfea68c84b9bd06aa086faa01, type: 3}
@@ -1713,6 +1769,25 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   Name: Withering Poison
+  Description: 
+  ico: {fileID: 0}
+  Character: {fileID: 7418347446368758987}
+--- !u!114 &1300421091567981635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212067528232202549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04061dd3ac5482d4f89824a93ca73a15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  Name: 
   Description: 
   ico: {fileID: 0}
   Character: {fileID: 7418347446368758987}

@@ -30,13 +30,15 @@ public class PoisonBallProjectile : NetworkBehaviour
     private float _energyDad;
     private float _fastMovementSpeed = 0.1f;
     private float _slowMovementSpeed = 0.2f;
-    private float _baseDistancePush = 1.0f;
+    private float _baseDistancePush = 1.2f;
     private float _distancePush;
     private float _maxDistance = 6f;
-    private float _durationPush = 1.2f;
+    private float _durationPush = 1.0f;
     private float _durationStun = 1.0f;
     private float _currentDamageForPoisonBall = 35f;
     private float _distanceIncreaseMultiplier = 0.5f;
+    private float _multiplierDistanceFromTalent;
+
     #endregion
 
     #region BoolVaribales
@@ -247,7 +249,7 @@ public class PoisonBallProjectile : NetworkBehaviour
         if (_currentCountBall >= 2)
         {
             float multiplierPush = _currentCountBall * _distanceIncreaseMultiplier;
-            _distancePush = _baseDistancePush + multiplierPush;
+            _distancePush = _baseDistancePush + multiplierPush + _multiplierDistanceFromTalent;
             Debug.Log("PoisonBallProjectile / if currentBall distancePush = " + _distancePush);
         }
         else
@@ -284,7 +286,7 @@ public class PoisonBallProjectile : NetworkBehaviour
 
     #region InitializationProjectiles
 
-    public void InitializationProjectileForPoisonBall(Character dad, float energyDad, Skill skill,
+    public void InitializationProjectileForPoisonBall(Character dad, float energyDad, float multiplierDistance, Skill skill,
         bool isActiveTalentHealingPoisonBall, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies,
         bool isActiveTalentWitheringPoison, bool isPushTarget, bool isActiveVoluminousBall)
     {
@@ -298,6 +300,7 @@ public class PoisonBallProjectile : NetworkBehaviour
         _isActiveHealingPoisonBall = isActiveTalentHealingPoisonBall;
         _isActvieWitheringPoison = isActiveTalentWitheringPoison;
         _isActiveVoluminousBall = isActiveVoluminousBall;
+        _multiplierDistanceFromTalent = multiplierDistance;
 
         #region VoluminousBallTalentIsActvie
 

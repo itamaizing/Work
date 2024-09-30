@@ -27,6 +27,7 @@ public struct PoisonBallInfo : NetworkMessage
     public bool IsActiveEnlargedGlands;
     public bool IsActiveVoluminousBall;
     public bool IsActiveInertialGlands;
+    public bool IsActiveVolatilityOfPoisons;
     public bool IsHealingPoisonCloud;
 }
 
@@ -45,6 +46,7 @@ public class PoisonBall : Skill
     [SerializeField] private InertialGlands _inertialGlands;
     [SerializeField] private AssasinPoison _assasinPoison;
     [SerializeField] private FlowOfPoisons _flowOfPoison;
+    [SerializeField] private VolatilityOfPoisons _volatilityOfPoisons;
 
     [Header("Ability properties")]
     [SerializeField] private SpitPoison _spitPoison;
@@ -70,11 +72,14 @@ public class PoisonBall : Skill
     private Vector3 _secondMousePosition;
     private Vector3 _thirdMousePosition;
 
-    private float _fastTimeCast = 0.4f;
-    private float _slowTimeCast = 1.8f;
+    private int _poisonBoneStacks = 0;
+
+    private float _fastTimeCast = 0.1f;
+    private float _slowTimeCast = 0.1f;
     private float _originalChargeCooldown;
     private float _currentStacksAsssasinPoison = 0;
     private float _baseCastWidth;
+    private float _multiplierForPushDistance;
 
     #region BoolVariables
 
@@ -106,9 +111,10 @@ public class PoisonBall : Skill
         _baseCastWidth = _castWidth;
         _originalChargeCooldown = _chargeCooldown;
 
-        _poisonBallInfo.StartTimeBetweenAttack = 3.0f;
+        _poisonBallInfo.StartTimeBetweenAttack = 15.0f;
         _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
         _poisonBallInfo.MaxCountProjectile = _maxCharges;
+        Debug.Log("Max Charges = " + _maxCharges + " / MaxCountProjectile = " + _poisonBallInfo.MaxCountProjectile);
     }
     
     private void Update()
@@ -215,6 +221,11 @@ public class PoisonBall : Skill
     }
 
     #endregion
+
+    public void PoisonBoneStacks(int poisonBoneStacks)
+    {
+        _poisonBoneStacks = poisonBoneStacks;
+    }
 
     #region ArrowManagement
 
@@ -445,6 +456,21 @@ public class PoisonBall : Skill
         _poisonBallInfo.IsActiveEnlargedGlands = _enlargedGlands.IsActive;
         _poisonBallInfo.IsActiveVoluminousBall = _voluminousBall.IsActive;
         _poisonBallInfo.IsActiveInertialGlands = _inertialGlands.IsActive;
+        _poisonBallInfo.IsActiveVolatilityOfPoisons = _volatilityOfPoisons.IsActive;
+
+        #region
+
+        if (_poisonBallInfo.IsActiveVolatilityOfPoisons && _poisonBoneStacks > 0)
+        {
+            float multiplier = _poisonBoneStacks * 0.1f;
+            _multiplierForPushDistance = multiplier;
+        }
+        else
+        {
+            _multiplierForPushDistance = 0;
+        }
+
+        #endregion
 
         #region VoluminousBallTalentIsActive
 
@@ -650,6 +676,7 @@ public class PoisonBall : Skill
         if (_isTarget)
         {
             CmdCreateProjectileForTarget(_currentTarget.gameObject, _currentTarget.transform.position, _poisonBallInfo.MaxCountProjectile, 
+                _multiplierForPushDistance,
                 _isFast, _isPushTarget,
                 _poisonBallInfo.IsActiveHealingPoisonBall, _poisonBallInfo.IsActiveWitheringPoison, _poisonBallInfo.IsActiveVoluminousBall,
                 _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies);
@@ -658,7 +685,8 @@ public class PoisonBall : Skill
         }
         else
         {
-            CmdCreateProjectileForFlyingMaxDistance(_firstMousePosition, _poisonBallInfo.MaxCountProjectile, 
+            CmdCreateProjectileForFlyingMaxDistance(_firstMousePosition, _poisonBallInfo.MaxCountProjectile,
+                _multiplierForPushDistance,
                 _isFast, _isPushTarget,
                 _poisonBallInfo.IsActiveHealingPoisonBall, _poisonBallInfo.IsActiveWitheringPoison, _poisonBallInfo.IsActiveVoluminousBall,
                 _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies);
@@ -672,7 +700,7 @@ public class PoisonBall : Skill
     #region Command Methods
 
     [Command]
-    private void CmdCreateProjectileForTarget(GameObject target, Vector3 targetOrPoint, int maxCountProjectiles,
+    private void CmdCreateProjectileForTarget(GameObject target, Vector3 targetOrPoint, int maxCountProjectiles, float multiplierForPushDistance,
         bool isFast, bool isPushTarget,
         bool isActiveHealingPoisonBall, bool isActiveWitheringPoison, bool isActiveVoluminousBall,
         bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies)
@@ -680,7 +708,7 @@ public class PoisonBall : Skill
     { 
         CurrentTarget = target;
         FootInstinctsTalent = _footInstincts;
-
+        Debug.Log("CountProjectiles = " + _poisonBallInfo.CountProjectiles);
         if (LastTarget == CurrentTarget)
         {
             _poisonBallInfo.CountProjectiles += 1;
@@ -720,7 +748,7 @@ public class PoisonBall : Skill
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
-        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.CurrentValue, this, isActiveHealingPoisonBall,
+        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.CurrentValue, multiplierForPushDistance, this, isActiveHealingPoisonBall,
             isTargetPlayer, isTargetEnemy, isTargetAllies, isActiveWitheringPoison, isPushTarget, isActiveVoluminousBall);
 
         poisonBallProjectile.MoveBallToTarget(targetOrPoint, isFast);
@@ -737,14 +765,14 @@ public class PoisonBall : Skill
     }
 
     [Command]
-    private void CmdCreateProjectileForFlyingMaxDistance(Vector3 point, int maxCountProjectiles,
+    private void CmdCreateProjectileForFlyingMaxDistance(Vector3 point, int maxCountProjectiles, float multiplierForPushDistance,
         bool isFast, bool isPushTarget,
         bool isActiveHealingPoisonBall, bool isActiveWitheringPoison, bool isActiveVoluminousBall,
         bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies)
     {
         FootInstinctsTalent = _footInstincts;
         CurrentTarget = LastTarget;
-
+        Debug.Log("CountProjectiles = " + _poisonBallInfo.CountProjectiles);
         if (LastTarget == CurrentTarget)
         {
             _poisonBallInfo.CountProjectiles += 1;
@@ -782,7 +810,7 @@ public class PoisonBall : Skill
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
-        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.CurrentValue, this, isActiveHealingPoisonBall,
+        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.CurrentValue, multiplierForPushDistance, this, isActiveHealingPoisonBall,
             isTargetPlayer, isTargetEnemy, isTargetAllies, isActiveWitheringPoison, isPushTarget, isActiveVoluminousBall);
 
         poisonBallProjectile.MoveBallOnMaxDistance(point, isFast);
