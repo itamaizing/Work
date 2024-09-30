@@ -24,26 +24,25 @@ public class ReversePolarity : Skill
         yield return new WaitForSeconds(CastDeley);
 
         SwitchSpells();
-
-        Debug.LogError("fix this plz");
-        //if (Hero.CharacterState.CheckForState(States.ReversePolarity))
-        //{
-        //    RemoveReversePolarityEffect();
-        //}
-        //else
-        //{
-        //    ApplyReversePolarityEffect();
-        //}
+        
+        if (Hero.CharacterState.CheckForState(States.ReversePolarity))
+        {
+            RemoveReversePolarityEffect();
+        }
+        else
+        {
+           ApplyReversePolarityEffect();
+        }
     }
 
     private void ApplyReversePolarityEffect()
     {
-        //Hero.CharacterState.CmdAddState(States.ReversePolarity, 1000f, 0, transform.parent.gameObject, "ReversePolarity");
+        Hero.CharacterState.CmdAddState(States.ReversePolarity, 1000f, 0, transform.parent.gameObject, "ReversePolarity");
     }
 
     private void RemoveReversePolarityEffect()
     {
-        //Hero.CharacterState.CmdRemoveState(States.ReversePolarity);
+        Hero.CharacterState.CmdRemoveState(States.ReversePolarity);
     }
 
     private void SwitchSpells()

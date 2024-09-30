@@ -111,19 +111,19 @@ public class PriestShield : Skill
         var characterState = _target.GetComponent<CharacterState>();
 
         Debug.LogError("fix this state plz");
-        //if (characterState.CheckForState(States.TiredSoul))
-        //{
-        //    Debug.Log("Cannot apply Light Shield. Target has 'TiredSoul' debuff.");
-        //    return;
-        //}
+        if (characterState.CheckForState(States.TiredSoul))
+        {
+            Debug.Log("Cannot apply Light Shield. Target has 'TiredSoul' debuff.");
+            return;
+        }
 
-        //if (TryPayCost(manaCostLight))
-        //{
-        //    characterState.CmdAddState(States.TiredSoul, tiredSoulDuration, 0, _target.gameObject, "TiredSoul");
-        //    characterState.CmdAddState(States.LightShield, lightShieldDuration, absorbAmount, _target.gameObject, "LightShield");
-        //
-        //    Debug.Log("Light Shield applied to " + _target.name);
-        //}
+        if (TryPayCost(manaCostLight))
+        {
+            characterState.CmdAddState(States.TiredSoul, tiredSoulDuration, 0, _target.gameObject, "TiredSoul");
+            characterState.CmdAddState(States.LightShield, lightShieldDuration, absorbAmount, _target.gameObject, "LightShield");
+        
+            Debug.Log("Light Shield applied to " + _target.name);
+        }
     }
 
     private void HandleDarkShield()
@@ -133,7 +133,7 @@ public class PriestShield : Skill
         var characterState = _target.GetComponent<CharacterState>();
         if (TryPayCost(manaCostDark))
         {
-            //characterState.CmdAddState(States.DarkShield, darkShieldDuration, maxDamagePerTick, _target.gameObject, "DarkShield");
+            characterState.CmdAddState(States.DarkShield, darkShieldDuration, maxDamagePerTick, _target.gameObject, "DarkShield");
         }
     }
     

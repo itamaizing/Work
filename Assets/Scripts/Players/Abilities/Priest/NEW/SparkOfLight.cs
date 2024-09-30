@@ -130,7 +130,7 @@ public class SparkOfLight : AutoAttackSkill
         {
             Debug.LogError("fix state");
 
-            //characterState.CmdAddState(States.SpiritEnergy, _buffDuration, 0, target.gameObject, "SparkOfLight");
+            characterState.CmdAddState(States.SpiritEnergy, _buffDuration, 0, target.gameObject, "SparkOfLight");
         }
     }
 
@@ -138,7 +138,7 @@ public class SparkOfLight : AutoAttackSkill
     {
         if (target.TryGetComponent<CharacterState>(out var characterState))
         {
-            //characterState.CmdAddState(States.SpiritHealth, _altBuffDuration, 0, target.gameObject, "SparkOfLight");
+            characterState.CmdAddState(States.SpiritHealth, _altBuffDuration, 0, target.gameObject, "SparkOfLight");
         }
     }
 

@@ -634,7 +634,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -65063298450455639, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _assetId
-      value: 3343527065
+      value: 2399195590
       objectReference: {fileID: 0}
     - target: {fileID: 326124096443825601, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _resource
@@ -841,9 +841,13 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 5758935830089276413}
     - target: {fileID: 8468544467696250796, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: Stamina
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8468544467696250796, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _playerData
       value: 
-      objectReference: {fileID: 11400000, guid: b9f959eacb36c0a43b6a780663e65170, type: 2}
+      objectReference: {fileID: 11400000, guid: 80ce10cdeea490248a7097f9dfbaa541, type: 2}
     - target: {fileID: 8468544467696250796, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _resources.Array.size
       value: 2
@@ -1099,7 +1103,7 @@ MonoBehaviour:
     m_Bits: 0
   _castDuration: 0
   _manaCostRate: 0
-  _skillEnergyCostsByTick: []
+  _manaCostPerTick: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1131,7 +1135,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _abilityInfo: {fileID: 11400000, guid: 186781931331ccf429137bf765b408ab, type: 2}
+  _abilityInfo: {fileID: 11400000, guid: c70dc6b7754bbd34e8a2ddab54f79ffa, type: 2}
   _isSubjectToGlobalCooldownTime: 0
   _skillEnergyCosts: []
   _cooldownTime: 0
@@ -1148,7 +1152,7 @@ MonoBehaviour:
     m_Bits: 128
   _castDuration: 0
   _manaCostRate: 0
-  _skillEnergyCostsByTick: []
+  _manaCostPerTick: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1195,7 +1199,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _abilityInfo: {fileID: 11400000, guid: 7e98cd0fb8d475a46a14ebb1e73942be, type: 2}
+  _abilityInfo: {fileID: 11400000, guid: f28fa17970269584aa1eb1175b7b8c28, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
   - resourceType: 1
@@ -1214,7 +1218,7 @@ MonoBehaviour:
     m_Bits: 128
   _castDuration: 0
   _manaCostRate: 0
-  _skillEnergyCostsByTick: []
+  _manaCostPerTick: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1246,7 +1250,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _abilityInfo: {fileID: 11400000, guid: e2ea17e1f9ee9eb4492b2abdc46910f6, type: 2}
+  _abilityInfo: {fileID: 11400000, guid: f6a7d9be0e6846549936f5928a34fd16, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
   - resourceType: 1
@@ -1265,7 +1269,7 @@ MonoBehaviour:
     m_Bits: 128
   _castDuration: 0
   _manaCostRate: 0
-  _skillEnergyCostsByTick: []
+  _manaCostPerTick: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1304,7 +1308,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _abilityInfo: {fileID: 11400000, guid: 7d474016baf7c764597b4ef52e2eda39, type: 2}
+  _abilityInfo: {fileID: 11400000, guid: edabbac3fc8a8b64886323d05a1ad8de, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
   _cooldownTime: 0
@@ -1321,7 +1325,7 @@ MonoBehaviour:
     m_Bits: 128
   _castDuration: 0
   _manaCostRate: 0
-  _skillEnergyCostsByTick: []
+  _manaCostPerTick: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1366,7 +1370,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _abilityInfo: {fileID: 11400000, guid: 063b82a6e39577245b9ff400f0d5104d, type: 2}
+  _abilityInfo: {fileID: 11400000, guid: f0af27700c8a8434eb05c169391fea3c, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
   - resourceType: 1
@@ -1385,7 +1389,7 @@ MonoBehaviour:
     m_Bits: 0
   _castDuration: 0
   _manaCostRate: 0
-  _skillEnergyCostsByTick: []
+  _manaCostPerTick: 0
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
