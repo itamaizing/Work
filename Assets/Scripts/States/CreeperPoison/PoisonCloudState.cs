@@ -41,7 +41,6 @@ public class PoisonCloudState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        //Debug.Log("EnterState PoisonCloud");
         _characterState = character;
         _player = personWhoMadeBuff;
 
@@ -60,11 +59,6 @@ public class PoisonCloudState : AbstractCharacterState
             SearchTalent();
         }
 
-        if (_capaciousPoisonCloud != null && _capaciousPoisonCloud.IsActive)
-        {
-            _radiusCloud += 1.5f;
-        }
-
         if (_currentStacks < _maxStacks)
         {
             AddStacks();
@@ -81,8 +75,6 @@ public class PoisonCloudState : AbstractCharacterState
                 {
                     _cloudExplosion = cloudExplosion;
                     _enemiesLayer = _cloudExplosion.TargetsLayers;
-                    //Debug.Log("PoisonCloud / enemiesLayer = " + _enemiesLayer.GetType());
-                    //Debug.Log($"PoisonCloud / SearchAbilities / cloudExplosion = {_cloudExplosion}");
                 }
             }
         }
@@ -97,6 +89,10 @@ public class PoisonCloudState : AbstractCharacterState
                 if (_capaciousPoisonCloud == null)
                 {
                     _capaciousPoisonCloud = capaciousCloud;
+                    if (_capaciousPoisonCloud.IsActive)
+                    {
+                        _radiusCloud += 1.5f;
+                    }
                 }
             }
             if (talent is ToxiqueCloud toxiqueCloud)
@@ -104,7 +100,6 @@ public class PoisonCloudState : AbstractCharacterState
                 if (_toxiqueCloud == null)
                 {
                     _toxiqueCloud = toxiqueCloud;
-                   // Debug.Log("ToxiqueCloud = " + _toxiqueCloud);
                 }
             }
         }
@@ -115,7 +110,6 @@ public class PoisonCloudState : AbstractCharacterState
         _timeBetweenAttack -= Time.deltaTime;
         if (_timeBetweenAttack <= 0)
         {
-            //Debug.Log("PoisonCloud / timeBetweenAttack <= 0");
             SearchingEnemies(_enemiesLayer, _characterState.gameObject);
             _timeBetweenAttack = _startTimeBetweenAttack;
         }
@@ -130,7 +124,6 @@ public class PoisonCloudState : AbstractCharacterState
 
     public override void ExitState()
     {
-        //Debug.Log("PoisonCloud / ExitState");
         ResetValues();
 
         _characterState.RemoveState(this);
@@ -138,15 +131,12 @@ public class PoisonCloudState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        //Debug.Log($"PoisonCloud / Stack / currentStacks = {_currentStacks}");
-
         if (_currentStacks < _maxStacks)
         {
             AddStacks();
             if (_cloudExplosion != null)
             {
                 _cloudExplosion.CurrentStacksPoisonCloud(_currentStacks, _radiusCloud);
-                //Debug.Log($"PoisonCloud / Stack / if / CurrentStacks/RadiusCloud = {_currentStacks}, {_radiusCloud}");
             }
             return true;
         }
@@ -156,7 +146,6 @@ public class PoisonCloudState : AbstractCharacterState
             if (_cloudExplosion != null)
             {
                 _cloudExplosion.CurrentStacksPoisonCloud(_currentStacks, _radiusCloud);
-                // Debug.Log($"PoisonCloud / Stack / else / CurrentStacks/RadiusCloud = {_currentStacks}, {_radiusCloud}");
             }
             return false;
         }
@@ -168,47 +157,31 @@ public class PoisonCloudState : AbstractCharacterState
         {
             _currentStacks++;
             _duration = _baseDuration;
-            //Debug.Log("PoisonCloud AddStacks = " + _currentStacks);
-            //  Debug.Log("if / CurrentStackPoisonCloud in AddStacks == " + _currentStacks); 
         }
         else
         {
-            //Debug.Log("else / CurrentStackPoisonCloud in AddStacks == " + _currentStacks);
             _duration = _baseDuration;
         }
     }
 
     private void SearchingEnemies(LayerMask enemyLayer, GameObject player)
     {
-       // Debug.Log($"PoisonCloud / SearchingEnemies");
-
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(player.transform.position, 4, enemyLayer);
-
-        //Debug.Log($"PoisonCloud / SearchingEnemies / hitEnemies = {hitEnemies.Length}");
-
         foreach (Collider2D enemy in hitEnemies)
         {
-            //Debug.Log($"PoisonCloud / SearchingEnemies / enemy = {enemy}");
-
             if (enemy.transform != player.transform)
             {
                 DamageDeal(enemy.gameObject);
-
-                //Debug.Log("After TryGetComponent");
             }
-            _timeBetweenAttack = _startTimeBetweenAttack;
         }
     }
 
     private void DamageDeal(GameObject target)
     {
         var targetHealth = target.GetComponent<Character>();
-      //  Debug.Log($"PoisonCloud / DamageDeal");
-        //Debug.Log($"PoisonCloud / DamageDeal / targetHealth = {targetHealth}");
+
         _increasedDamage = _baseDamage * _currentStacks;
-        //Debug.Log($"PoisonCloud / DamageDeal / _increasedDamage = {_increasedDamage}");
         _endDamage = targetHealth.Health.MaxValue * _increasedDamage;
-        //Debug.Log($"PoisonCloud / DamageDeal / _endDamage = {_endDamage}");
 
         Damage damage = new Damage()
         {
@@ -217,15 +190,13 @@ public class PoisonCloudState : AbstractCharacterState
             Range = AttackRangeType.MeleeAttack
         };
 
-        //Debug.Log($"PoisonCloud / DamageDeal / damage = {damage}");
-
         targetHealth.Health.CmdTryTakeDamage(damage, null);
 
-        if (_toxiqueCloud.IsActive)
-        {
+        //if (_toxiqueCloud.IsActive)
+        //{
             //Debug.Log("PoisonCloud / DamageDeal / toxiqueCloud Active");
-            ApplyState(targetHealth);
-        }
+            //ApplyState(targetHealth);
+        //}
     }
 
     [Command]

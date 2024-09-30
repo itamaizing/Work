@@ -30,7 +30,7 @@ public class AbsoluteAccuracy : Skill
     public bool IsCanCritCreeperStrike { get => _isCanCritCreeperStrike; set => _isCanCritCreeperStrike = value; }
     public bool IsCanCritLightningStrikes { get => _isCanCritLightningStrikes; set => _isCanCritLightningStrikes = value; }
 
-    protected override bool IsCanCast => CheckCanCast();
+    protected override bool IsCanCast { get { return _absoluteAccuracyTalent.IsActive; } }
 
     protected override void ClearData()
     {
@@ -133,14 +133,5 @@ public class AbsoluteAccuracy : Skill
         }
 
         _isCanCritCreeperStrike = true;
-    }
-
-    private bool CheckCanCast()
-    {
-        Debug.Log("CheckCanCast");
-        if (_absoluteAccuracyTalent.IsActive)
-            return true;
-        else
-            return false;
     }
 }

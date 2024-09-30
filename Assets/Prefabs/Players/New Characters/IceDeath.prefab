@@ -347,6 +347,10 @@ PrefabInstance:
       propertyPath: _resourceType
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 1057949845680950153, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _regenerationDelay
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 1269213336512054422, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -379,6 +383,10 @@ PrefabInstance:
       propertyPath: m_FillAmount
       value: 0.623
       objectReference: {fileID: 0}
+    - target: {fileID: 2926669445991704918, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _regenerationDelay
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 3330577042116454553, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: unit
       value: 
@@ -406,6 +414,10 @@ PrefabInstance:
     - target: {fileID: 5188756905167438128, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5839731411926097146, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _regenerationDelay
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6438979173928445253, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_AnchorMax.x
@@ -503,6 +515,10 @@ PrefabInstance:
       propertyPath: _skills.Array.data[12]
       value: 
       objectReference: {fileID: 3132830955119014022}
+    - target: {fileID: 8468544467696250796, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _collider
+      value: 
+      objectReference: {fileID: 2212618935443761717}
     - target: {fileID: 8468544467696250796, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _playerData
       value: 
@@ -650,6 +666,11 @@ MonoBehaviour:
 --- !u!4 &1405194498351086355 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4016452462218772239, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+  m_PrefabInstance: {fileID: 2611259613135651868}
+  m_PrefabAsset: {fileID: 0}
+--- !u!58 &2212618935443761717 stripped
+CircleCollider2D:
+  m_CorrespondingSourceObject: {fileID: 4218118007188876841, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
   m_PrefabInstance: {fileID: 2611259613135651868}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &2532806951459470994 stripped
@@ -1464,7 +1485,7 @@ MonoBehaviour:
   Name: 
   Description: 
   ico: {fileID: 0}
-  character: {fileID: 0}
+  Character: {fileID: 0}
   _absorption: {fileID: 0}
   _ability: {fileID: 0}
 --- !u!114 &6132908872439124335
@@ -1485,7 +1506,7 @@ MonoBehaviour:
   Name: 
   Description: 
   ico: {fileID: 0}
-  character: {fileID: 0}
+  Character: {fileID: 0}
   _blockOfIce: {fileID: 0}
   _ability: {fileID: 0}
 --- !u!114 &3881617537315702470
@@ -1506,7 +1527,7 @@ MonoBehaviour:
   Name: 
   Description: 
   ico: {fileID: 0}
-  character: {fileID: 0}
+  Character: {fileID: 0}
   _deathSpiral: {fileID: 0}
 --- !u!114 &5171401671337291027
 MonoBehaviour:
@@ -1526,7 +1547,7 @@ MonoBehaviour:
   Name: 
   Description: 
   ico: {fileID: 0}
-  character: {fileID: 0}
+  Character: {fileID: 0}
 --- !u!114 &5889404958618692528 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8468544467696250796, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}

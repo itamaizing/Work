@@ -37,8 +37,7 @@ public class SpitPoison : Skill
     private bool _isOriginalTargetAllies;
     private bool _isOriginalTargetPlayer;
     private bool _isHealingPoisonCloud = false;
-
-    public bool Enabled;
+    private bool _isAlly;
 
     protected override bool IsCanCast => CheckCanCast();
 
@@ -209,38 +208,36 @@ public class SpitPoison : Skill
     private void CmdInstantiateProjectileToTarget(GameObject target, float angleRotation, float manaValue, 
         bool isActiveHealingSpitPoison, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
     {
+        PlayerTeamIndex(target);
         GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.Euler(0, 0, angleRotation));
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
         SpitPoisonProjectile projectile = item.GetComponent<SpitPoisonProjectile>();
 
-        projectile.InitializationProjectile(_player, this, manaValue, isActiveHealingSpitPoison, isTargetPlayer, isTargetEnemy, isTargetAllies);
+        projectile.InitializationProjectile(_player, this, manaValue, isActiveHealingSpitPoison, isTargetPlayer, isTargetEnemy, isTargetAllies, _isAlly);
 
         projectile.MoveBallToTarget(target.transform.position);
 
         NetworkServer.Spawn(item);
-
-        RpcInstantiateProjectile(target, projectile, manaValue, isActiveHealingSpitPoison, isTargetPlayer, isTargetEnemy, isTargetAllies);
     }
 
     [Command]
     private void CmdInstantiateProjectileToPoint(Vector3 point, float angleRotation, float manaValue, 
         bool isActiveHealingSpitPoison, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
     {
+        PlayerTeamIndex(_player.gameObject);
         GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.Euler(0, 0, angleRotation));
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
         SpitPoisonProjectile projectile = item.GetComponent<SpitPoisonProjectile>();
 
-        projectile.InitializationProjectile(_player, this, _player.Stamina.CurrentValue, _isActiveHealingSpitPoison, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
+        projectile.InitializationProjectile(_player, this, _player.Stamina.CurrentValue, _isActiveHealingSpitPoison, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies, _isAlly);
 
         projectile.MoveBallOnMaxDistance(point);
 
         NetworkServer.Spawn(item);
-
-        RpcInstantiateProjectileToPoint(point, projectile, manaValue, isActiveHealingSpitPoison, isTargetPlayer, isTargetEnemy, isTargetAllies);
     }
 
     [Command]
@@ -308,20 +305,6 @@ public class SpitPoison : Skill
     #region ClientRpc Methods
 
     [ClientRpc]
-    private void RpcInstantiateProjectile(GameObject target, SpitPoisonProjectile projectile, float manaValue,
-        bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
-    {
-        projectile.InitializationProjectile(_player, this, _player.Stamina.CurrentValue, _isActiveHealingSpitPoison, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
-    }
-
-    [ClientRpc]
-    private void RpcInstantiateProjectileToPoint(Vector3 point, SpitPoisonProjectile projectile, float manaValue,
-        bool isActiveTalent, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
-    { 
-        projectile.InitializationProjectile(_player, this, _player.Stamina.CurrentValue, _isActiveHealingSpitPoison, _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
-    }
-
-    [ClientRpc]
     private void RpcApply(PoisonDamagingCloudPrefab poisonDamagingCloud, PoisonHealingCloudPrefab poisonHealingCloud, float duration, bool isHealingCloud)
     {
         //Debug.Log("PoisonBall / RpcApply / poisonDamagingCloud = " + poisonDamagingCloud);
@@ -338,6 +321,14 @@ public class SpitPoison : Skill
             poisonHealingCloud.InitializationProjectile(_player, 5, duration, 3.5f, Name);
             poisonHealingCloud.AddStack();
         }
+    }
+
+    [ClientRpc]
+    private void PlayerTeamIndex(GameObject target)
+    {
+        int teamIndex = target.GetComponentInParent<UserNetworkSettings>().TeamIndex;
+        var localPlayer = NetworkClient.connection.identity.GetComponent<UserNetworkSettings>();
+        _isAlly = localPlayer.TeamIndex == teamIndex;
     }
 
     #endregion

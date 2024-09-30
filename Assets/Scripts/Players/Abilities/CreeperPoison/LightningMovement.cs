@@ -33,7 +33,7 @@ public class LightningMovement : Skill
 
     public bool IsInMovement = false;
 
-    private GameObject _target;
+    private Character _target;
     private Dictionary<GameObject, float> _targetHitTimes = new Dictionary<GameObject, float>();
     private List<Skill> _skillList = new();
 
@@ -69,6 +69,7 @@ public class LightningMovement : Skill
     #endregion
 
     private float _angle;
+    private float _multiplierLeap;
 
     #region BoolVariables
 
@@ -254,14 +255,15 @@ public class LightningMovement : Skill
     private Vector3 LimitSecondLeapToMaxDistance(Vector3 startPoint, Vector3 targetPoint, float maxDistance)
     {
         Vector3 centerTarget;
+        Vector3 direction = (targetPoint - startPoint).normalized;
         Debug.Log("LightningMove / LimitSecondLeap");
+        Debug.Log("LightningMove / LimitSecondLeap / _target = " + _target);
 
         if (_isTargetOnEndPointCoroutine == null)
         {
             _isTargetOnEndPointCoroutine = StartCoroutine(IsTargetOnEndPoint(targetPoint, _targetsLayers));
         }
 
-        Vector3 direction = (targetPoint - startPoint).normalized;
         if (_target != null)
         {
             centerTarget = _target.GetComponent<Character>().Collider.bounds.center;
@@ -273,19 +275,19 @@ public class LightningMovement : Skill
 
         bool isPointBehindCenterTarget = Vector2.Distance(startPoint, targetPoint) > Vector2.Distance(startPoint, centerTarget);
 
-        Debug.Log("isPointBehindCenterTarget = " + isPointBehindCenterTarget);
         if (_isTargetOnEndPointSecondLeap)
         {
             if (isPointBehindCenterTarget)
             {// Точка прыжка за серединой врага
                 Debug.Log("if >");
-                maxDistance += 1.5f;
+                maxDistance += 1.3f;
             }
             else
             {// Точка прыжка перед серединой врага
                 Debug.Log("else <");
-                maxDistance += 3f;
+                maxDistance += 3.15f;
             }
+            _multiplierLeap = (maxDistance / 10) + 1;
             return startPoint + direction * maxDistance;
         }
         else
@@ -341,7 +343,8 @@ public class LightningMovement : Skill
             Collider2D hit = Physics2D.OverlapCircle(secondLeap, 1.35f, targetLayer);
             if (hit != null)
             {
-                _target = hit.gameObject;
+                _target = hit.gameObject.GetComponent<Character>();
+
                 _isTargetOnEndPointSecondLeap = true;
                 Debug.Log("IsTargetOnEndPoint = " + _isTargetOnEndPointSecondLeap);
             }
@@ -493,6 +496,7 @@ public class LightningMovement : Skill
                 Vector3 rawSecondLeapPoint = GetMousePoint();
 
                 _isSecondClickDone = true;
+                _target = GetRaycastTarget();
                 _secondLeapPoint = LimitSecondLeapToMaxDistance(_firstLeapPoint, rawSecondLeapPoint, _rangeLeap);
             }
             yield return null;
@@ -583,7 +587,7 @@ public class LightningMovement : Skill
             _superFastScales.IncreasingResistance();
         }
 
-        CmdSingleLeap(firstLeapPoint, durationLeap, rangeLeap, _timeBuff, _heatedGlandsIsActive);
+        CmdSingleLeap(firstLeapPoint, durationLeap, rangeLeap, _multiplierLeap, _timeBuff, _heatedGlandsIsActive);
     }
 
     private void ExecuteLeaps(Vector2 firstLeapPoint, Vector2 secondLeapPoint, float durationLeap, float rangeLeap)
@@ -608,7 +612,7 @@ public class LightningMovement : Skill
 
         _applyDamageCoroutine = StartCoroutine(ApplyDamageJob(_targetsLayers, _radiusAttack));
 
-        CmdExecuteTwoLeaps(firstLeapPoint, secondLeapPoint, durationLeap, rangeLeap, _timeBuff, _heatedGlandsIsActive, _targetsLayers);
+        CmdExecuteTwoLeaps(firstLeapPoint, secondLeapPoint, durationLeap, rangeLeap, _multiplierLeap, _timeBuff, _heatedGlandsIsActive, _targetsLayers);
     }
 
     #endregion
@@ -616,10 +620,10 @@ public class LightningMovement : Skill
     #region Command
 
     [Command]
-    private void CmdSingleLeap(Vector2 firstLeapPoint, float durationLeap, float rangeLeap, float timeBuff, bool heatedGlandsIsAcitve)
+    private void CmdSingleLeap(Vector2 firstLeapPoint, float durationLeap, float rangeLeap, float multiplierLeap, float timeBuff, bool heatedGlandsIsAcitve)
     {
         MoveComponent playerTransform = _player.GetComponent<MoveComponent>();
-        _player.CharacterState.AddState(States.Immateriality, (durationLeap * rangeLeap), 0, _player.gameObject, Name);
+        _player.CharacterState.AddState(States.Immateriality, (durationLeap * rangeLeap * multiplierLeap), 0, _player.gameObject, Name);
 
         _player.Move.enabled = false;
 
@@ -628,12 +632,12 @@ public class LightningMovement : Skill
 
     [Command]
     private void CmdExecuteTwoLeaps(Vector2 firstLeapPoint, Vector2 secondLeapPoint,
-        float durationLeap, float rangeLeap, float timeBuff, bool heatedGlandsIsActive,
+        float durationLeap, float rangeLeap, float multiplierLeap, float timeBuff, bool heatedGlandsIsActive,
         LayerMask enemyLayer)
     {
         MoveComponent playerTransform = _player.GetComponent<MoveComponent>();
 
-        _player.CharacterState.AddState(States.Immateriality, (durationLeap * rangeLeap) * 1.25f, 0, _player.gameObject, Name);
+        _player.CharacterState.AddState(States.Immateriality, (durationLeap * rangeLeap * multiplierLeap) * 1.25f, 0, _player.gameObject, Name);
 
         _player.Move.enabled = false;
 

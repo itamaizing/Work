@@ -10,7 +10,7 @@ public class SpitPoisonProjectile : NetworkBehaviour
     [SerializeField] private GameObject _hitEffect;
     [SerializeField] private Collider2D _colliderBall;
     [SerializeField] private float _maxDistance = 5f;
-    [SerializeField] private float _speed = 20f;
+    [SerializeField] private float _speed = 55f;
 
     private Skill _skill;
     private Character _player;
@@ -24,6 +24,7 @@ public class SpitPoisonProjectile : NetworkBehaviour
     private bool _isAllies;
     private bool _isEnemy;
     private bool _isActiveHealingSpitPoison;
+    private bool _isAlly;
 
     private void Awake()
     {
@@ -60,7 +61,7 @@ public class SpitPoisonProjectile : NetworkBehaviour
             }
             else if (_isAllies)
             {
-                if (collision.gameObject.layer == LayerMask.NameToLayer("Allies") && collision.gameObject != _player.gameObject)
+                if (_isAlly && collision.gameObject != _player.gameObject)
                 {
                     if (collision.TryGetComponent<Character>(out var alliesHealth))
                     {
@@ -69,14 +70,14 @@ public class SpitPoisonProjectile : NetworkBehaviour
                         Destroy(gameObject);
                     }
                 }
-                else if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy") && collision.gameObject != _player.gameObject)
+                else if (!_isAlly && collision.gameObject != _player.gameObject)
                 {
                     return;
                 }
             }   
             else if (_isEnemy)
             {
-                if (collision.gameObject.transform != _player.transform && collision.gameObject.layer != LayerMask.NameToLayer("Allies"))
+                if (collision.gameObject.transform != _player.transform && !_isAlly)
                 {
                     if (collision.TryGetComponent<Character>(out var target))
                     {
@@ -85,7 +86,7 @@ public class SpitPoisonProjectile : NetworkBehaviour
                         DealDamage(target, _damage, DamageType.Magical, AttackRangeType.RangeAttack);
                     }
                 }
-                else if (collision.gameObject.layer == LayerMask.NameToLayer("Allies") && collision.gameObject != _player.gameObject)
+                else if (_isAlly && collision.gameObject != _player.gameObject)
                 {
                     return;
                 }
@@ -94,7 +95,7 @@ public class SpitPoisonProjectile : NetworkBehaviour
         }
         else
         {
-            if (collision.gameObject.transform != _player.transform && collision.gameObject.layer != LayerMask.NameToLayer("Allies"))
+            if (collision.gameObject.transform != _player.transform && !_isAlly)
             {
                 if (collision.TryGetComponent<Character>(out var target))
                 {
@@ -165,7 +166,8 @@ public class SpitPoisonProjectile : NetworkBehaviour
         Destroy(gameObject);
     }
 
-    public void InitializationProjectile(Character dad, Skill skill, float energy, bool isActiveHealingSpitPoison, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
+    public void InitializationProjectile(Character dad, Skill skill, float energy,
+        bool isActiveHealingSpitPoison, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies , bool isAlly)
     {
         _player = dad;
         _isActiveHealingSpitPoison = isActiveHealingSpitPoison;
@@ -174,6 +176,7 @@ public class SpitPoisonProjectile : NetworkBehaviour
         _isPlayer = isTargetPlayer;
         _isAllies = isTargetAllies;
         _isEnemy = isTargetEnemy;
+        _isAlly = isAlly;
     }
 
 }

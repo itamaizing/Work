@@ -47,6 +47,7 @@ public class PoisonBallProjectile : NetworkBehaviour
     private bool _isPlayer;
     private bool _isAllies;
     private bool _isEnemy;
+    private bool _isAlly;
     private bool _isActiveHealingPoisonBall;
     private bool _isActvieWitheringPoison;
     private bool _isActiveVoluminousBall;
@@ -66,13 +67,18 @@ public class PoisonBallProjectile : NetworkBehaviour
     {
         _poisonBall = _player.GetComponentInChildren<PoisonBall>();
         _currentCountBall = _poisonBall.CurrentCountBall;
-        Debug.Log("PoisonBallProjectile / currentCount = " + _currentCountBall);
+        //Debug.Log("PoisonBallProjectile / currentCount = " + _currentCountBall);
         _footInstincts = _poisonBall.FootInstinctsTalent;
     }
 
     [Server]
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        Debug.Log("Collision = " + collision.gameObject);
+        Debug.Log("Player = " + _player.gameObject);
+
+        Debug.Log(collision.gameObject == _player.gameObject);
+
         if (_isActiveHealingPoisonBall)
         {
             if (_isPlayer)
@@ -95,7 +101,7 @@ public class PoisonBallProjectile : NetworkBehaviour
             }
             else if (_isAllies)
             {
-                if (collision.gameObject.layer == LayerMask.NameToLayer("Allies") && collision.gameObject != _player.gameObject)
+                if (_isAlly && collision.transform != _player.transform)
                 {
                     if (collision.TryGetComponent<Character>(out var alliesHealth))
                     {
@@ -113,14 +119,14 @@ public class PoisonBallProjectile : NetworkBehaviour
                         Destroy(gameObject);
                     }
                 }
-                else if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy") && collision.gameObject != _player.gameObject)
+                else if (!_isAlly && collision.transform != _player.transform)
                 {
                     return;
                 }
             }
             else if (_isEnemy)
             {
-                if (collision.gameObject.transform != _player.transform && collision.gameObject.layer != LayerMask.NameToLayer("Allies"))
+                if (collision.gameObject != _player.gameObject && !_isAlly)
                 {
                     if (collision.TryGetComponent<HeroComponent>(out var targetHealth))
                     {
@@ -136,14 +142,14 @@ public class PoisonBallProjectile : NetworkBehaviour
                         Destroy(gameObject);
                     }
                 }
-                else if (collision.gameObject.layer == LayerMask.NameToLayer("Allies") && collision.gameObject != _player.gameObject)
+                else if (_isAlly && collision.gameObject != _player.gameObject)
                 {
                     return;
                 }
             }
             else
             {
-                if (collision.gameObject.transform != _player.transform && collision.gameObject.layer != LayerMask.NameToLayer("Allies"))
+                if (collision.gameObject != _player.gameObject && !_isAlly)
                 {
                     if (collision.TryGetComponent<HeroComponent>(out var targetHealth))
                     {
@@ -163,7 +169,7 @@ public class PoisonBallProjectile : NetworkBehaviour
         }
         else
         {
-            if (collision.gameObject.transform != _player.transform && collision.gameObject.layer != LayerMask.NameToLayer("Allies"))
+            if (collision.gameObject != _player.gameObject && !_isAlly)
             {
                 if (collision.TryGetComponent<HeroComponent>(out var targetHealth))
                 {
@@ -287,7 +293,7 @@ public class PoisonBallProjectile : NetworkBehaviour
     #region InitializationProjectiles
 
     public void InitializationProjectileForPoisonBall(Character dad, float energyDad, float multiplierDistance, Skill skill,
-        bool isActiveTalentHealingPoisonBall, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies,
+        bool isActiveTalentHealingPoisonBall, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, bool isAlly,
         bool isActiveTalentWitheringPoison, bool isPushTarget, bool isActiveVoluminousBall)
     {
         _player = dad;
@@ -297,11 +303,11 @@ public class PoisonBallProjectile : NetworkBehaviour
         _isPlayer = isTargetPlayer;
         _isAllies = isTargetAllies;
         _isEnemy = isTargetEnemy;
+        _isAlly = isAlly;
         _isActiveHealingPoisonBall = isActiveTalentHealingPoisonBall;
         _isActvieWitheringPoison = isActiveTalentWitheringPoison;
         _isActiveVoluminousBall = isActiveVoluminousBall;
         _multiplierDistanceFromTalent = multiplierDistance;
-
         #region VoluminousBallTalentIsActvie
 
         if (_isActiveVoluminousBall)
@@ -317,5 +323,6 @@ public class PoisonBallProjectile : NetworkBehaviour
 
         InitializationComponentsForCountProjectile();
     }
+
     #endregion
 }

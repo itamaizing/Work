@@ -17,7 +17,7 @@ public class CreeperStrike : AutoAttackSkill
     [SerializeField] private PreparingForFight _preparingForFight;
 
     [Header("Ability properties")]
-    [SerializeField] private Character _dad;
+    [SerializeField] private Character _player;
     [SerializeField] private CreeperInvisible _creeperInvisible;
     [SerializeField] private AbsoluteAccuracy _absoluteAccuracy;
 
