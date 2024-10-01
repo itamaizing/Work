@@ -106,25 +106,4 @@ public class MoveComponent : NetworkBehaviour
     {
         _rigidbody.DOMove(pos, duration);
     }
-
-    [TargetRpc]
-    public void TargetRpcDoMoveSequence(Vector2 firstPos, Vector2 secondPos, float duration,
-        Character player, bool isBool)
-    {
-        DG.Tweening.Sequence sequence = DOTween.Sequence();
-
-        sequence.AppendInterval(0.5f);
-
-        sequence.AppendCallback(() =>
-        {
-            if (isBool)
-            {
-                _rigidbody.DOMove(secondPos, duration).SetEase(Ease.Linear);
-            }
-            else
-            {
-                sequence.Kill();
-            }
-        });
-    }
 }

@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class AbsoluteAccuracy : Skill
 {
-    public float DecreaseCooldownTime = 2f;
-
     [Header("Talent")]
     [SerializeField] private AbsoluteAccuracyTalent _absoluteAccuracyTalent;
     [SerializeField] private KillersStamina _killersStamina;
@@ -19,13 +17,13 @@ public class AbsoluteAccuracy : Skill
     private Character _target;
     private Vector3 _mousePosition = Vector3.positiveInfinity;
 
-    private float _cooldownWithTalent = 4f;
+    private float _cooldownTimeWithTalent = 4f;
+    private float _decreaseCooldownTime = 2f;
 
     private bool _isPlayer = false;
     private bool _isCanCritCreeperStrike;
     private bool _isCanCritLightningStrikes;
     private bool _isCanCast = false;
-
 
     public bool IsCanCritCreeperStrike { get => _isCanCritCreeperStrike; set => _isCanCritCreeperStrike = value; }
     public bool IsCanCritLightningStrikes { get => _isCanCritLightningStrikes; set => _isCanCritLightningStrikes = value; }
@@ -34,7 +32,6 @@ public class AbsoluteAccuracy : Skill
 
     protected override void ClearData()
     {
-        Debug.Log("AbsoluteAccuracy / ClearData");
         _isCanCast = false;
         _mousePosition = Vector3.positiveInfinity;
         _target = null;
@@ -49,19 +46,14 @@ public class AbsoluteAccuracy : Skill
     {
         _player.CharacterState.CmdAddState(States.Immateriality, 0, 0, _player.gameObject, Name);
 
-        Debug.Log("AbsoluteAccurcay / PrepareJob");
         if (_absoluteAccuracyTalent.IsActive)
         {
-            Debug.Log("AbsoluteAccurcay / PrepareJob / first if == true");
             if (_coldBlood.IsActive)
             {
-                Debug.Log("AbsoluteAccurcay / PrepareJob / second if == true");
                 while (_target == null && float.IsPositiveInfinity(_mousePosition.x))
                 {
-                    Debug.Log("AbsoluteAccurcay / PrepareJob / while start");
-                    if (Input.GetMouseButtonDown(0))
+                    if (GetMouseButton)
                     {
-                        Debug.Log("AbsoluteAccurcay / PrepareJob / Input.GetMouseButtonDown");
                         _target = GetRaycastTarget(true);
                         Debug.Log("AbsoluteAccurcay / PrepareJob / Input.GetMouseButtonDown / target == " + _target);
                         _mousePosition = GetMousePoint();
@@ -80,12 +72,10 @@ public class AbsoluteAccuracy : Skill
                     }
                     yield return null;
                 }
-                Debug.Log("AbsoluteAccurcay / PrepareJob / after while");
                 _isCanCast = true;
             }
             else
             {
-                Debug.Log("AbsoluteAccurcay / PrepareJob / else");
                 yield break;
             }
         }
@@ -104,15 +94,21 @@ public class AbsoluteAccuracy : Skill
         yield return null;
     }
 
+    public void ReducingAbilityCooldown()
+    {
+        float reducingMultiplier = 2f;
+        ReductionSetCooldown(CooldownTime / reducingMultiplier);
+    }
+
     private void UseAbilityWithTalent()
     {
         if (_isPlayer)
         {
-            IncreaseSetCooldown(_cooldownWithTalent);
+            ReductionSetCooldown(_cooldownTimeWithTalent);
             Debug.Log("AbsoluteAccuracy / UseAbilityWithTalent / if _isPlayer == true");
             _player.CharacterState.Dispel(StateType.Physical);
         }
-        else if (!_isPlayer)
+        else
         {
             Debug.Log("AbsoluteAccuracy / UseAbilityWithTalent / else if _isPlayer == false");
             if (_killersStamina.IsActive)

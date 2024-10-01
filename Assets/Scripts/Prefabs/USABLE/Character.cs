@@ -22,7 +22,7 @@ public abstract class Character : NetworkBehaviour
 	[SerializeField] private SelectComponent _selectComponent; 
 	[SerializeField] private List<Resource> _resources;
 
-    private bool _isTargetInvisible = true;
+    private bool _isInvisible = false;
 
     public CharacterData Data => _playerData;
 	public UserNetworkSettings NetworkSettings => _networkSettings;
@@ -37,14 +37,14 @@ public abstract class Character : NetworkBehaviour
 	public SelectComponent SelectComponent => _selectComponent;
 	public List<Resource> Resources => _resources;
 
-    public bool IsTargetInvisible => _isTargetInvisible;
+    public bool IsInvisible { get => _isInvisible; set { _isInvisible = value; } }
 
     public static event Action<Character> ServerOnUnitSpawned;
 	public static event Action<Character> ServerOnUnitDeleted; 
 	public static event Action<Character> AuthorityOnUnitSpawned;
 	public static event Action<Character> AuthorityOnUnitDeleted;
-    public event Action OnHidingUIElements;
-    public event Action OnRevealingUIElements;
+    public event Action OnDisappeared;
+    public event Action OnAppeared;
 
     public virtual void Initialize()
 	{
@@ -125,14 +125,14 @@ public abstract class Character : NetworkBehaviour
 
     public void OnPlayerEnterInvisible()
     {
-        OnHidingUIElements?.Invoke();
-		_isTargetInvisible = true;
+        OnDisappeared?.Invoke();
+		_isInvisible = true;
     }
 
     public void OnPlayerExitInvisible()
     {
-        OnRevealingUIElements?.Invoke();
-        _isTargetInvisible = false;
+        OnAppeared?.Invoke();
+        _isInvisible = false;
     }
 
     public Resource TryGetResource(ResourceType type)

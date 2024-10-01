@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class ConcentratedPrecision : Talent
 {
-
     private void Start()
     {
         Enter();

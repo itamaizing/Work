@@ -28,8 +28,8 @@ public class HidingUIElements : NetworkBehaviour
     {
         if (_player != null)
         {
-            _player.OnHidingUIElements += OnHidingElements;
-            _player.OnRevealingUIElements += OnRevealingElements;
+            _player.OnDisappeared += OnHidingElements;
+            _player.OnAppeared += OnRevealingElements;
         }
     }
 

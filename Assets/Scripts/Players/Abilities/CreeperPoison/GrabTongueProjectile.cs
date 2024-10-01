@@ -16,8 +16,8 @@ public class GrabTongueProjectile : NetworkBehaviour
     private Vector3 _startPosition;
     private Vector3 _endPosition;
 
-    private float _moveSpeedDirectionFromPlayer = 0.2f; // скорость 0.2 клетки в секунду.
-    private float _moveSpeedDirectionToPlayer = 1.2f; // скорость 0.6 клеток в секунду.
+    private float _moveSpeedDirectionFromPlayer = 0.2f; // speed projectile 0.2 cell per second
+    private float _moveSpeedDirectionToPlayer = 1.2f; // speed projectile 0.6 cell per second
 
     private Coroutine _toungeToTargetCoroutine;
     private Coroutine _toungeFromPlayerCoroutine;
@@ -35,13 +35,11 @@ public class GrabTongueProjectile : NetworkBehaviour
 
     public void StartTongueAttract()
     {
-        Debug.Log("GrabTongueProjectile / StartTongueAttract work");
         _toungeToTargetCoroutine = StartCoroutine(TongueToTarget());
     }
 
     private IEnumerator TongueToTarget()
     {
-        Debug.Log("GrabTongueProjectile / TongueToTarget work");
         float startTime = Time.time;
         Vector3 currentPosition = _startPosition;
 
@@ -65,13 +63,11 @@ public class GrabTongueProjectile : NetworkBehaviour
         while (currentPosition != _startPosition)
         {
             time = (Time.time - startTime) / _moveSpeedDirectionToPlayer;
-            Debug.Log("PullTargetToPlayer / time = " + time);
             currentPosition = Vector3.Lerp(_endPosition, _startPosition, time);
-            Debug.Log("PullTargetToPlayer / currentPosition = " + currentPosition);
+
             Vector3 direction = (_target.transform.position - _startPosition).normalized;
 
-            CmdPullTarget(direction, time);
-            Debug.Log("PullTargetToPlayer / target.transform = " + _target.transform.position);
+            PullTarget(direction, time);
 
             _lineRenderer.SetPosition(1, currentPosition);
             yield return null;
@@ -81,7 +77,7 @@ public class GrabTongueProjectile : NetworkBehaviour
     }
 
     [Server]
-    private void CmdPullTarget(Vector3 direction, float time)
+    private void PullTarget(Vector3 direction, float time)
     {
         if (!_targetCharacterState.CheckForState(States.Immateriality))
         {

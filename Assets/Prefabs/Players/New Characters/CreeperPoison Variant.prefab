@@ -1025,7 +1025,6 @@ MonoBehaviour:
   _isAutoRadiusRender: 0
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
-  DecreaseCooldownTime: 2
   _absoluteAccuracyTalent: {fileID: 3947504007592891480}
   _killersStamina: {fileID: 670101081239158742}
   _coldBlood: {fileID: 2847152939285646667}

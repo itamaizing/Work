@@ -21,8 +21,8 @@ public class HidingSelectStates : NetworkBehaviour
     {
         if (_player != null)
         {
-            _player.OnHidingUIElements += OnHidingSelectCircle;
-            _player.OnRevealingUIElements += OnRevealingSelectCircle;
+            _player.OnDisappeared += OnHidingSelectCircle;
+            _player.OnAppeared += OnRevealingSelectCircle;
         }
     }
 

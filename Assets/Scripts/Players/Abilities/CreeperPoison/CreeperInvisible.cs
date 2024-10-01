@@ -377,9 +377,7 @@ public class CreeperInvisible : Skill
         {
             if (_concentratedPrecision.IsActive)
             {
-                float newCooldownTime = _absoluteAccuracy.CooldownTime / _absoluteAccuracy.DecreaseCooldownTime;
-
-                _absoluteAccuracy.IncreaseSetCooldown(newCooldownTime);
+                _absoluteAccuracy.ReducingAbilityCooldown();
             }
 
             _absoluteAccuracy.IsCanCritCreeperStrike = false;
