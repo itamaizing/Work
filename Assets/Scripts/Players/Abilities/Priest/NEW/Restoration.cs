@@ -102,7 +102,7 @@ public class Restoration : Skill
         }
     }
     
-    private void OnHealTaken(float healedAmount)
+    private void OnHealTaken(float healedAmount, Skill skill)
     {
         _totalHealedInInterval += healedAmount;
     }

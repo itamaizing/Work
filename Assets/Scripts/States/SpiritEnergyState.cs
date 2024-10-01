@@ -9,6 +9,7 @@ public class SpiritEnergyState : AbstractCharacterState
     private int _stacks;
     private const int MaxStacks = 2;
     private const float ManaRestorePerStack = 0.09f;
+    private const float BonusManaRestore = 0.05f;
     private const float HealthBonusPerStack = 1f; // Дополнительное здоровье за стак
     private List<StatusEffect> _effects = new ();
 
@@ -32,10 +33,8 @@ public class SpiritEnergyState : AbstractCharacterState
             _healthComponent.HealTaked += OnHealTaked;
             _healthComponent.DamageTaken += OnDamageTaken;
         }
-        
-        //подписка таргета на нанесение урона или лечения(если союзник) и кешбек 5% от value
 
-        ApplyManaRestore();
+        ApplyManaRestore(ManaRestorePerStack * _stacks);
     }
 
     public override void UpdateState()
@@ -69,24 +68,34 @@ public class SpiritEnergyState : AbstractCharacterState
         _stacks++;
         _duration = Mathf.Max(_duration, time);
 
-        ApplyManaRestore();
+        ApplyManaRestore(ManaRestorePerStack * _stacks);
 
         return true;
     }
 
-    private void ApplyManaRestore()
+    private void ApplyManaRestore(float restoreValue)
     {
-        _characterState.Character.Resources.FirstOrDefault(o => o.Type == ResourceType.Mana)?.Add(ManaRestorePerStack * _stacks);
+        _characterState.Character.Resources.FirstOrDefault(o => o.Type == ResourceType.Mana)?.Add(restoreValue);
     }
     
-    private void OnHealTaked(float healAmount)
+    private void OnHealTaked(float healAmount, Skill skill)
     {
         float bonusHeal = HealthBonusPerStack * _stacks;
         _healthComponent.Heal(bonusHeal);
+        
+        if (skill.Hero.CharacterState.CheckForState(States.SpiritEnergy))
+        {
+            ApplyManaRestore(BonusManaRestore * healAmount * _stacks);
+        }
     }
     
-    private void OnDamageTaken(float damageAmount, DamageType damageType)
+    private void OnDamageTaken(float damageAmount, DamageType damageType, Skill skill)
     {
-        ApplyManaRestore();
+        ApplyManaRestore(ManaRestorePerStack * _stacks);
+        
+        if (skill.Hero.CharacterState.CheckForState(States.SpiritEnergy))
+        {
+            ApplyManaRestore(BonusManaRestore * damageAmount * _stacks);
+        }
     }
 }
