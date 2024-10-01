@@ -1357,7 +1357,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
   runInBackground: 1
-  headlessStartMode: 0
+  headlessStartMode: 1
   editorAutoStart: 1
   sendRate: 60
   autoStartServerBuild: 0
@@ -1374,6 +1374,7 @@ MonoBehaviour:
   autoCreatePlayer: 0
   playerSpawnMethod: 0
   spawnPrefabs:
+  - {fileID: 7504653704119560997, guid: 3d2c250adc1c5a94a977f3812c146572, type: 3}
   - {fileID: 2070815445264939164, guid: acf0aa1d343559640b903638c293a6b1, type: 3}
   - {fileID: 4371443321967966874, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
   - {fileID: 4371443321967966874, guid: 0fe4228580ff977419acc74a8f3e1a6f, type: 3}
@@ -1400,6 +1401,8 @@ MonoBehaviour:
   - {fileID: 1240487887479263413, guid: 64886c26381f2c54c85fe43a25e0fb39, type: 3}
   - {fileID: 8442599261096630905, guid: cbfb4777e45b41a4d9cb20bcbfe66715, type: 3}
   - {fileID: 6623607984683778980, guid: d097441cb29bc5a42b2defb1e1f12525, type: 3}
+  - {fileID: 1028301060578645802, guid: 5f0d2df33c41bbf479647e456d3be04d, type: 3}
+  - {fileID: 5015113388474881233, guid: 90bddd395bcc7094c94d88aaa863b7f6, type: 3}
   - {fileID: 1099707679034851779, guid: d490c899d604d2c4dbb3f72e61cacb6e, type: 3}
   - {fileID: 1740845397034949897, guid: e16bc4ff4d2817e46838f2731c3b803a, type: 3}
   - {fileID: 4371443321967966874, guid: d8e8dba9ab53a4743bbdb63cd7b41f6d, type: 3}
@@ -1431,7 +1434,7 @@ MonoBehaviour:
   - {fileID: 1054432932}
   _heroList:
   - {fileID: 5889404958618692528, guid: 9b33d14bd9379d449ad38a13ab6ddde6, type: 3}
-  - {fileID: 5889404958618692528, guid: 687ee907899571945bfa1fa20f4bf534, type: 3}
+  - {fileID: 7988306871063235719, guid: 5f0d2df33c41bbf479647e456d3be04d, type: 3}
   - {fileID: 8468544467696250796, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
   - {fileID: 8191609785747737368, guid: 64886c26381f2c54c85fe43a25e0fb39, type: 3}
   _activeCountModes: 010000000200000003000000

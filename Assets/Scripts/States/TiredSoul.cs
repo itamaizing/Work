@@ -25,6 +25,9 @@ public class TiredSoul : AbstractCharacterState
 
     public override void ExitState()
     {
+        if(!_characterState.CheckForState(States.TiredSoul)) 
+            return;
+        
         _characterState.RemoveState(this);
     }
 
