@@ -15,6 +15,7 @@ public class DarkShield : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
+        _characterState = character;
         _duration = durationToExit;
         _maxDamagePerTick = damageToExit;
         

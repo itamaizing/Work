@@ -360,8 +360,6 @@ public class CharacterState : NetworkBehaviour
 	{
 		if (currentStates.Contains(newState))
 		{
-			//newState.ExitState(this);
-			//_stateIcons.RemoveItemByState(newState.state);
 			currentStates.Remove(newState);
 		}
 	}

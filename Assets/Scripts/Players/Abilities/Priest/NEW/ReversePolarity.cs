@@ -37,7 +37,7 @@ public class ReversePolarity : Skill
 
     private void ApplyReversePolarityEffect()
     {
-        Hero.CharacterState.CmdAddState(States.ReversePolarity, 1000f, 0, transform.parent.gameObject, "ReversePolarity");
+        Hero.CharacterState.CmdAddState(States.ReversePolarity, -1f, 0, transform.parent.gameObject, "ReversePolarity");
     }
 
     private void RemoveReversePolarityEffect()

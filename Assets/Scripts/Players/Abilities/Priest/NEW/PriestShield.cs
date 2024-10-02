@@ -24,7 +24,6 @@ public class PriestShield : Skill
 
     public bool isLightMode = true;
     
-    private bool _isCastOnSelf = false;
     private float _nextAvailableTime;
     private Character _target;
 
@@ -109,8 +108,7 @@ public class PriestShield : Skill
         if (_target == null) return;
 
         var characterState = _target.GetComponent<CharacterState>();
-
-        Debug.LogError("fix this state plz");
+        
         if (characterState.CheckForState(States.TiredSoul))
         {
             Debug.Log("Cannot apply Light Shield. Target has 'TiredSoul' debuff.");
@@ -119,7 +117,7 @@ public class PriestShield : Skill
 
         if (TryPayCost(manaCostLight))
         {
-            characterState.CmdAddState(States.TiredSoul, tiredSoulDuration, 0, _target.gameObject, "TiredSoul");
+            //characterState.CmdAddState(States.TiredSoul, tiredSoulDuration, 0, _target.gameObject, "TiredSoul");
             characterState.CmdAddState(States.LightShield, lightShieldDuration, absorbAmount, _target.gameObject, "LightShield");
         
             Debug.Log("Light Shield applied to " + _target.name);

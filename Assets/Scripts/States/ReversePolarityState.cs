@@ -8,6 +8,7 @@ public class ReversePolarityState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
+        _characterState = character;
     }
 
     public override void UpdateState()

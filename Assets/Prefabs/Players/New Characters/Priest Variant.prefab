@@ -1214,7 +1214,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: DeathSpiralChargeTalent
-    IsOpen: 1
+    IsOpen: 0
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7988306871063235719}
@@ -1280,7 +1280,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: EvadeTalent
-    IsOpen: 1
+    IsOpen: 0
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7988306871063235719}
@@ -1302,7 +1302,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: IceCloudBoostDmgTalent
-    IsOpen: 1
+    IsOpen: 0
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7988306871063235719}

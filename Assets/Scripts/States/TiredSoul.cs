@@ -11,6 +11,7 @@ public class TiredSoul : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
+        _characterState = character;
         _duration = durationToExit;
     }
 
@@ -25,14 +26,12 @@ public class TiredSoul : AbstractCharacterState
 
     public override void ExitState()
     {
-        if(!_characterState.CheckForState(States.TiredSoul)) 
-            return;
-        
         _characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        return false;
+        _duration = time;
+        return true;
     }
 }

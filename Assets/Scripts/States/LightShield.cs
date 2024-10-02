@@ -11,11 +11,12 @@ public class LightShield : AbstractCharacterState, IDamageable
     public event Action<float, DamageType, Skill> DamageTaken;
 
     public override States State => States.LightShield;
-    public override StateType Type => StateType.Immaterial;
+    public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
+        _characterState = character;
         _duration = durationToExit;
         _maxAbsorption = damageToExit;
         _damageAbsorbed = 0;
