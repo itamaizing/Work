@@ -8,7 +8,7 @@ using UnityEngine;
 public class SkillManager : MonoBehaviour
 {
     [SerializeField] private List<Skill> _skills;
-    [SerializeField] private HeroComponent _hero;
+    [SerializeField] private Character _hero;
     [SerializeField] private TalentSystem _talentSystem;
 
     private Skill[] _selectedSkills = new Skill[16];

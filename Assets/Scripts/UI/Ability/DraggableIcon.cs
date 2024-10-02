@@ -24,6 +24,8 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public event Action BeginDrag;
     public event Action EndDrag;
+    public event Action<DraggableIcon> PointerEnter;
+    public event Action<DraggableIcon> PointerExit;
 
     public void Init(Skill skill, Transform parent)
     {
@@ -68,11 +70,15 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void OnPointerEnter(PointerEventData eventData)
     {
         InputHandler.OnSwitchAutoMode += OnClickWithCtrl;
+
+        PointerEnter?.Invoke(this);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         InputHandler.OnSwitchAutoMode -= OnClickWithCtrl;
+
+        PointerExit?.Invoke(this);
     }
 
     private void SubscribingSkillOnEvents(Skill ability)

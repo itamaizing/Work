@@ -20,7 +20,7 @@ public class IcePuddleObject : Projectiles
 	/*
 	 * buff player
 	 * */
-	public override void Init(HeroComponent dad, float timeToDestroy, bool lastHit, Skill skill)
+	public override void Init(Character dad, float timeToDestroy, bool lastHit, Skill skill)
 	{
 		_dad = dad;
 		_skill = skill;

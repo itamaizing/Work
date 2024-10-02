@@ -23,7 +23,7 @@ public class Energy : Resource
         }
 		_timer += Time.deltaTime;
 
-		if(_timer > _regenerationDelay)
+		if(_timer > _regenerationPeriod)
 		{
 			_timer = 0;
 			_canRegen = true;

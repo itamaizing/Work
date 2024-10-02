@@ -14,7 +14,7 @@ public class IceShadowObject : Projectiles
 	 * timer to destroy
 	 * buff player
 	 * */
-	public override void Init(HeroComponent dad, float energy, bool lastHit, Skill skill)
+	public override void Init(Character dad, float energy, bool lastHit, Skill skill)
 	{
 		_skill = skill;
 		_dad = dad;

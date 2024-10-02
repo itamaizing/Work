@@ -178,6 +178,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _resourceType: 0
+  _regenerationDelay: 0
 --- !u!1001 &1155113148529330685
 PrefabInstance:
   m_ObjectHideFlags: 0

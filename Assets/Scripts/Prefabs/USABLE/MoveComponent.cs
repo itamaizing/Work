@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class MoveComponent : NetworkBehaviour
 {
-	[SerializeField, Range(0, 1)] private float _smoothTime = 0.15f;
+	[SerializeField, Range(0, 0.5f)] private float _smoothTime = 0.15f;
 
 	public Vector2 MoveDirection = Vector2.zero;
 	
@@ -18,8 +18,8 @@ public class MoveComponent : NetworkBehaviour
 
 	private bool _isHero = false;
 
-	private float _defaultSpeed;
-	private float _currentSpeed;
+	private float _defaultSpeed = 5;
+	private float _currentSpeed = 5;
 
 	private Vector2 _dir;
 	private Vector2 _currentVelocity;
@@ -69,10 +69,14 @@ public class MoveComponent : NetworkBehaviour
 	[Client]
 	void Update()
 	{
-		if (!CanMove || !IsSelect)
+		if (!CanMove || _rigidbody == null)
 		{
 			return;
 		}
+
+		if (IsSelect == false)
+			_dir = Vector2.zero;
+
 		_currentVelocity = Vector2.SmoothDamp(_currentVelocity, _dir, ref _currentVelocityTemp, _smoothTime);
 		_rigidbody.velocity = _currentVelocity * _currentSpeed;
 	}
@@ -85,7 +89,8 @@ public class MoveComponent : NetworkBehaviour
 
 	private void OnMove(Vector2 dir)
     {
-		_dir = dir;
+		if (IsSelect)
+			_dir = dir;
 	}
 
 	[TargetRpc]

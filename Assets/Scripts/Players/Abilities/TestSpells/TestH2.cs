@@ -60,7 +60,7 @@ public class TestH2 : Skill
     {
         while (_target == null)
         {
-            if (Input.GetMouseButton(0))
+            if (GetMouseButton)
             {
                 _target = GetRaycastTarget(true);
             }
