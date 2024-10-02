@@ -35,6 +35,7 @@ public class PoisonBoneState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
+        Debug.Log("PoisonBone / EnterState");
         _characterState = character;
         _player = personWhoMadeBuff;
 
@@ -104,7 +105,6 @@ public class PoisonBoneState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        Debug.Log("PoisonBone Stacks = " + _currentStacks);
         if (_currentStacks < _maxStacks)
         {
             AddStacks();
@@ -113,7 +113,7 @@ public class PoisonBoneState : AbstractCharacterState
         else
         {
             _duration = _baseDuration;
-            return false;
+            return true;
         }
     }
 
@@ -135,7 +135,6 @@ public class PoisonBoneState : AbstractCharacterState
     [Server]
     private void DamageDeal()
     {
-        Debug.Log("PoisonBone / DamageDeal");
         _endDamage = _currentStacks * _baseDamage;
 
         Damage damage = new Damage

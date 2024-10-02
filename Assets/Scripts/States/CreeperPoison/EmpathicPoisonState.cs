@@ -37,6 +37,8 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.AbilitySpeed };
 
+    public int CurrentStacks { get => _currentStacks; }
+
     public event Action<float, DamageType> DamageTaken;
 
     public override States State => States.EmpathicPoisons;
@@ -45,7 +47,7 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-      //  Debug.Log("EmpathicPoison / EnterState");
+        Debug.Log("EmpathicPoison / EnterState");
         _characterState = character;
         _player = personWhoMadeBuff;
 
@@ -170,7 +172,7 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
         else
         {
             _duration = _baseDuration;
-            return false;
+            return true;
         }
     }
 

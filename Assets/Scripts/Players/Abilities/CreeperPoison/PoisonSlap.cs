@@ -59,12 +59,11 @@ public class PoisonSlap : Skill
 
     #endregion
 
+    #region PrepareAndStartJob
     private void Update()
     {
         UpdateMouseDetection();
     }
-
-    #region PrepareAndStartJob
 
     protected override void ClearData()
     {
@@ -106,7 +105,7 @@ public class PoisonSlap : Skill
         {
             while (_currentTarget == null)
             {
-                if (Input.GetMouseButton(0))
+                if (GetMouseButton)
                 {
                     _currentTarget = GetRaycastTarget();
 

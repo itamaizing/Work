@@ -36,7 +36,7 @@ public class WitheringPoisonState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        //Debug.Log("Withering Enter State");
+        Debug.Log("Withering Enter State");
 
         _characterState = character;
 
@@ -105,7 +105,7 @@ public class WitheringPoisonState : AbstractCharacterState
         else
         {
             _duration = _baseDuration;
-            return false;
+            return true;
         }
     }
 

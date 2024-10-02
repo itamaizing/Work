@@ -6,7 +6,7 @@ public class BindingPoisonState : AbstractCharacterState
 {
     public bool turnOff = false;
 
-    private static int _currentStacks = 0;
+    private int _currentStacks = 0;
     private int _maxStacks = 1;
 
     private float _duration;
@@ -14,15 +14,17 @@ public class BindingPoisonState : AbstractCharacterState
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.AbilitySpeed };
 
+    public int CurrentStacks { get => _currentStacks; }
+
     public override States State => States.BindingPoison;
     public override StateType Type => StateType.Physical;
     public override List<StatusEffect> Effects => _effects;
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
+        Debug.Log($"BindingPoisonState / EnterState");
 
-        //Debug.Log($"BindingPoisonState / EnterState / CharacterManager = {_skillManager}");
+        _characterState = character;
 
         _duration = durationToExit;
         _baseDuration = durationToExit;
@@ -63,7 +65,7 @@ public class BindingPoisonState : AbstractCharacterState
         else
         {
             _duration = _baseDuration;
-            return false;
+            return true;
         }
     }
 

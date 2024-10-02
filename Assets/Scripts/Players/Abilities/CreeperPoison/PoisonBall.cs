@@ -2,6 +2,7 @@ using Mirror;
 using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityEngine;
+using System;
 
 public struct PoisonBallInfo : NetworkMessage
 {
@@ -75,8 +76,8 @@ public class PoisonBall : Skill
 
     private int _poisonBoneStacks = 0;
 
-    private float _fastTimeCast = 0.1f;
-    private float _slowTimeCast = 0.1f;
+    private float _fastTimeCast = 0.4f;
+    private float _slowTimeCast = 1.8f;
     private float _originalChargeCooldown;
     private float _currentStacksAsssasinPoison = 0;
     private float _baseCastWidth;
@@ -98,12 +99,14 @@ public class PoisonBall : Skill
 
     private Coroutine _secondClickCoroutine;
     private Coroutine _thirdClickCoroutine;
+    private Coroutine _mouseDetectionCoroutine;
 
     public GameObject LastTarget { get; set; }
     public GameObject CurrentTarget { get; set; }
     public FootInstincts FootInstinctsTalent { get; set; }
     public ContinuationAmbush ContinuationAmbushTalent { get; set; }
     public int CurrentCountBall { get => _poisonBallInfo.CountProjectiles; }
+
 
     #endregion
 
@@ -115,7 +118,6 @@ public class PoisonBall : Skill
         _poisonBallInfo.StartTimeBetweenAttack = 15.0f;
         _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
         _poisonBallInfo.MaxCountProjectile = _maxCharges;
-        Debug.Log("Max Charges = " + _maxCharges + " / MaxCountProjectile = " + _poisonBallInfo.MaxCountProjectile);
     }
     
     private void Update()
@@ -125,7 +127,6 @@ public class PoisonBall : Skill
         {
             Timer();
         }
-        CheckingActiveTalents();
     }
 
     #region PrepareAndStartJob
@@ -173,9 +174,10 @@ public class PoisonBall : Skill
 
         while (_currentTarget == null && float.IsPositiveInfinity(_firstMousePosition.x))
         {
-            if (Input.GetMouseButtonDown(0))
+            if (GetMouseButton)
             {
                 _currentTarget = GetRaycastTarget(true);
+
                 if (_currentTarget != null)
                 {
                     _isTarget = true;
@@ -459,7 +461,7 @@ public class PoisonBall : Skill
         _poisonBallInfo.IsActiveInertialGlands = _inertialGlands.IsActive;
         _poisonBallInfo.IsActiveVolatilityOfPoisons = _volatilityOfPoisons.IsActive;
 
-        #region
+        #region VolatilityOfPoisonsTalentIsActive
 
         if (_poisonBallInfo.IsActiveVolatilityOfPoisons && _poisonBoneStacks > 0)
         {
@@ -524,24 +526,26 @@ public class PoisonBall : Skill
         #endregion
 
         #region AssasinPoisonTalentIsActive
+
         if (_assasinPoison.IsActive && _flowOfPoison.IsActive)
         {
             _currentStacksAsssasinPoison = _assasinPoison.CurrentChargeAssasinPoison;
-            //Debug.Log("PoisonBall / CurrentStacksAssasinPoison == " + _currentStacksAsssasinPoison);
+            Debug.Log("PoisonBall / CurrentStacksAssasinPoison == " + _currentStacksAsssasinPoison);
             for (int i = 0; i < _currentStacksAsssasinPoison; i++)
             {
-               // Debug.Log("CycleFor");
+                Debug.Log("CycleFor");
                 if (Chargers < _maxCharges)
                 {
                     _currentStacksAsssasinPoison--;
-                   // Debug.Log("PoisonBall / CurrentStacksAssasinPoison == " + _currentStacksAsssasinPoison);
-                   // Debug.Log("PoisonBall / _chargeCooldown == " + _chargeCooldown);
+                    Debug.Log("PoisonBall / CurrentStacksAssasinPoison == " + _currentStacksAsssasinPoison);
+                    Debug.Log("PoisonBall / _chargeCooldown == " + _chargeCooldown);
                     float newCooldownTime = _chargeCooldown * 0;
-                   // Debug.Log("PoisonBall / newCooldownTime == " + newCooldownTime);
+                    Debug.Log("PoisonBall / newCooldownTime == " + newCooldownTime);
                     this.IncreaseSetCooldown(newCooldownTime);
                 }
             }
         }
+
         #endregion
     }
 
@@ -551,7 +555,6 @@ public class PoisonBall : Skill
         {
             if (_currentTarget.gameObject == _player.gameObject)
             {
-                Debug.Log("Target == Player");
                 _poisonBallInfo.IsOriginalTargetPlayer = true;
                 _poisonBallInfo.IsOriginalTargetAllies = false;
                 _poisonBallInfo.IsOriginalTargetEnemy = false;
@@ -567,7 +570,6 @@ public class PoisonBall : Skill
             }
             else if (_currentTarget.gameObject.layer == LayerMask.NameToLayer("Allies"))
             {
-                Debug.Log("Target == Allies");
                 _poisonBallInfo.IsOriginalTargetPlayer = false;
                 _poisonBallInfo.IsOriginalTargetAllies = true;
                 _poisonBallInfo.IsOriginalTargetEnemy = false;
@@ -583,10 +585,13 @@ public class PoisonBall : Skill
             }
             else if (_currentTarget.gameObject.layer == LayerMask.NameToLayer("Enemy"))
             {
-                Debug.Log("Target == Enemies");
                 _poisonBallInfo.IsOriginalTargetPlayer = false;
                 _poisonBallInfo.IsOriginalTargetAllies = false;
                 _poisonBallInfo.IsOriginalTargetEnemy = true;
+                if (_poisonBallInfo.IsActiveHealingPoisonCloud)
+                {
+                    _poisonBallInfo.IsHealingPoisonCloud = false;
+                }
             }
         }
         else
@@ -607,7 +612,6 @@ public class PoisonBall : Skill
             _poisonBallInfo.IsActiveTimer = false;
             _poisonBallInfo.IsProjectileCreate = false;
         }
-        
     }
 
     private void CooldownChange()
@@ -631,10 +635,12 @@ public class PoisonBall : Skill
         //Debug.Log("CheckCanCast PoisonBall");
 
         if (_currentTarget == null)
-            return Vector3.Distance(_firstMousePosition, transform.position) <= Radius;
+            return Vector3.Distance(_firstMousePosition, transform.position) <= Radius && NoObstacles(_firstMousePosition, _obstacle);
 
-        return Vector3.Distance(_firstMousePosition, transform.position) <= Radius ||
-               Vector3.Distance(_currentTarget.transform.position, transform.position) <= Radius;
+        return Vector3.Distance(_firstMousePosition, transform.position) <= Radius &&
+            NoObstacles(_firstMousePosition, _obstacle) ||
+            Vector3.Distance(_currentTarget.transform.position, transform.position) <= Radius && 
+            NoObstacles(_currentTarget.transform.position, _obstacle);
     }
 
     #endregion
@@ -682,7 +688,7 @@ public class PoisonBall : Skill
                 _poisonBallInfo.IsActiveHealingPoisonBall, _poisonBallInfo.IsActiveWitheringPoison, _poisonBallInfo.IsActiveVoluminousBall,
                 _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies);
 
-            //CmdApplyPoisonCloud(_poisonBallInfo.IsHealingPoisonCloud, _durationPoisonCloud);
+            CmdApplyPoisonCloud(_poisonBallInfo.IsHealingPoisonCloud, _durationPoisonCloud);
         }
         else
         {
@@ -692,7 +698,7 @@ public class PoisonBall : Skill
                 _poisonBallInfo.IsActiveHealingPoisonBall, _poisonBallInfo.IsActiveWitheringPoison, _poisonBallInfo.IsActiveVoluminousBall,
                 _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies);
 
-            //CmdApplyPoisonCloud(_poisonBallInfo.IsHealingPoisonCloud, _durationPoisonCloud);
+            CmdApplyPoisonCloud(_poisonBallInfo.IsHealingPoisonCloud, _durationPoisonCloud);
         }
     }
 
@@ -710,7 +716,7 @@ public class PoisonBall : Skill
         PlayerTeamIndex(target);
         CurrentTarget = target;
         FootInstinctsTalent = _footInstincts;
-        Debug.Log("CountProjectiles = " + _poisonBallInfo.CountProjectiles);
+
         if (LastTarget == CurrentTarget)
         {
             _poisonBallInfo.CountProjectiles += 1;
@@ -775,7 +781,7 @@ public class PoisonBall : Skill
         PlayerTeamIndex(_player.gameObject);
         FootInstinctsTalent = _footInstincts;
         CurrentTarget = LastTarget;
-        Debug.Log("CountProjectiles = " + _poisonBallInfo.CountProjectiles);
+
         if (LastTarget == CurrentTarget)
         {
             _poisonBallInfo.CountProjectiles += 1;
@@ -848,9 +854,12 @@ public class PoisonBall : Skill
 
                 NetworkServer.Spawn(_poisonDamagingCloud.gameObject);
 
+                Debug.Log("PoisonBall / CmdApplyPoisonCloud / if / _poisonDamagingCloud = " + _poisonDamagingCloud);
+                Debug.Log("PoisonBall / CmdApplyPoisonCloud / if / _poisonDamagingCloudPrefab.PoisonDamageCloud = " + _poisonDamagingCloudPrefab.PoisonDamageCloud);
             }
             else
             {
+                Debug.Log("PoisonBall / CmdApplyPoisonCloud / else / _poisonDamagingCloud = " + _poisonDamagingCloudPrefab.PoisonDamageCloud);
                 _player.CharacterState.AddState(States.PoisonCloud, duration, 0, _player.gameObject, Name);
                 _poisonDamagingCloudPrefab.PoisonDamageCloud.AddStack();
             }
@@ -876,15 +885,15 @@ public class PoisonBall : Skill
                 _poisonHealingCloudPrefab.PoisonHealingCloud.AddStack();
             }
         }
-        RpcApply(_poisonDamagingCloud, _poisonHealingCloud, duration, isHealingCloud);
+        RpcApply(_poisonDamagingCloudPrefab.PoisonDamageCloud, _poisonHealingCloudPrefab.PoisonHealingCloud, duration, isHealingCloud);
     }
-
 
     #endregion
 
     [ClientRpc]
     private void RpcApply(PoisonDamagingCloudPrefab poisonDamagingCloud, PoisonHealingCloudPrefab poisonHealingCloud, float duration, bool isHealingCloud)
     {
+            Debug.Log("PoisonBall / RpcApply / if (poisonDamagingCloud != null) = " + poisonDamagingCloud);
         if (poisonDamagingCloud != null)
         {
             poisonDamagingCloud.InitializationProjectile(_player, 5, duration, 3.5f, Name);

@@ -19,6 +19,7 @@ public class PoisonCloudState : AbstractCharacterState
 
     private int _currentStacks = 0;
     private int _maxStacks = 5;
+
     private float _radiusCloud = 2.5f;
 
     private float _baseDamage = 0.005f;
@@ -119,7 +120,6 @@ public class PoisonCloudState : AbstractCharacterState
         {
             ExitState();
         }
-
     }
 
     public override void ExitState()
@@ -133,11 +133,7 @@ public class PoisonCloudState : AbstractCharacterState
     {
         if (_currentStacks < _maxStacks)
         {
-            AddStacks();
-            if (_cloudExplosion != null)
-            {
-                _cloudExplosion.CurrentStacksPoisonCloud(_currentStacks, _radiusCloud);
-            }
+            AddStacks(); 
             return true;
         }
         else
@@ -147,7 +143,7 @@ public class PoisonCloudState : AbstractCharacterState
             {
                 _cloudExplosion.CurrentStacksPoisonCloud(_currentStacks, _radiusCloud);
             }
-            return false;
+            return true;
         }
     }
 
@@ -157,10 +153,10 @@ public class PoisonCloudState : AbstractCharacterState
         {
             _currentStacks++;
             _duration = _baseDuration;
-        }
-        else
-        {
-            _duration = _baseDuration;
+            if (_cloudExplosion != null)
+            {
+                _cloudExplosion.CurrentStacksPoisonCloud(_currentStacks, _radiusCloud);
+            }
         }
     }
 

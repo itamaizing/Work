@@ -1,12 +1,13 @@
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
 public class ExplosionPoisonCloud : Skill
 {
     [SerializeField] private Character _player;
-    private List<HeroComponent> _enemies = new();
+    private List<Character> _enemies = new();
 
     private int _currentStacksPoisonCloud;
 
@@ -15,36 +16,30 @@ public class ExplosionPoisonCloud : Skill
     private float _chanceApplyBonePoison = 0.9f;
     private float _radiusExplosion = 4f;
 
-    public bool Enabled;
+    private bool _isExploded = false;
 
+    private Coroutine _searchingEnemiesCoroutine;
     protected override bool IsCanCast => _player.CharacterState.CheckForState(States.PoisonCloud);
 
     protected override IEnumerator PrepareJob()
     {
-        Debug.Log("PrepareJob / Check Nearest Enemies");
-        _enemies.Clear();
-
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(transform.position, _radiusExplosion, _targetsLayers);
-        foreach (Collider2D enemy in hitEnemies)
+        if (_searchingEnemiesCoroutine == null)
         {
-            _enemies.Add(enemy.gameObject.GetComponent<HeroComponent>());
+            Debug.Log("ExplosionPoisonCloud / PrepareJob / searchingEnemies == null");
+            _searchingEnemiesCoroutine = StartCoroutine(SearchingenemiesJob());
         }
-        yield return null;
+
+        while (_enemies.Count < 0)
+        {
+            yield return null;
+        }
     }
 
     protected override IEnumerator CastJob()
     {
-        Debug.Log("CastJob Coroutine");
-        Debug.Log($"Check Player PoisonCloudState == {_player.CharacterState.CheckForState(States.PoisonCloud)}");
-        Debug.Log($"Enemies == {_enemies.Count}");
         if (_player.CharacterState.CheckForState(States.PoisonCloud))
         {
-            TryPayCost();
             ExplosionCloud();
-        }
-        else
-        {
-            ClearData();
         }
 
         yield return null;
@@ -52,18 +47,21 @@ public class ExplosionPoisonCloud : Skill
 
     protected override void ClearData()
     {
-        Debug.Log("Cancel");
-
+        Debug.Log("ExplosionPoisonCloud / ClearData");
+        _isExploded = false;
         _currentDamage = 0;
         _enemies.Clear();
     }
 
     private void ExplosionCloud()
     {
-        Debug.Log("ExplosionCloud");
+        Debug.Log("ExplosionPoisonCloud / ExplosionCloud");
+        
+        _isExploded = true;
 
         _currentDamage = _baseDamage * _currentStacksPoisonCloud;
 
+        Debug.Log("ExplosionPoisonCloud / ExplosionCloud / currentDamage = " + _currentDamage);
         Damage damage = new Damage
         {
             Value = Buff.Damage.GetBuffedValue(_currentDamage),
@@ -71,43 +69,61 @@ public class ExplosionPoisonCloud : Skill
             Range = AttackRangeType.MeleeAttack
         };
 
-        Debug.Log($"CurrentDamage ExplosionCloud == {damage.Value}");
-        foreach (HeroComponent target in _enemies)
+        foreach (Character target in _enemies)
         {
+            Debug.Log("ExplosionPoisonCloud / ExplosionCloud / target = " + target);
             if (target != null)
             {
-
                 CmdApplyDamage(damage, target.gameObject);
 
                 for (int i = 0; i < _currentStacksPoisonCloud; i++)
                 {
                     if (Random.Range(0.0f, 1.0f) <= _chanceApplyBonePoison)
                     {
-                        ApplyPoisonBone(target);
+                        ApplyPoisonBone(target.gameObject);
                     }
                 }
             }
         }
-        ClearData();
+
+        if (_searchingEnemiesCoroutine != null)
+        {
+            StopCoroutine(_searchingEnemiesCoroutine);
+            _searchingEnemiesCoroutine = null;
+        }
+
+        _currentStacksPoisonCloud = 0;
+    }
+
+    private IEnumerator SearchingenemiesJob()
+    {
+        while (!_isExploded)
+        {
+            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(transform.position, _radiusExplosion, _targetsLayers);
+            foreach (Collider2D enemy in hitEnemies)
+            {
+                _enemies.Add(enemy.gameObject.GetComponent<Character>());
+                Debug.Log("ExplosionPoisonCloud / _enemies.Count = " + _enemies.Count);
+            }
+            yield return null;
+        }
     }
 
     public void CurrentStacksPoisonCloud(int currentStacks, float radiusExplosion)
     {
-        Debug.Log("CurrentStacks");
         _currentStacksPoisonCloud = currentStacks;
+        Debug.Log("ExplosionPoisonCloud / _currentStacksPoisonCloud = " + _currentStacksPoisonCloud);
         _radiusExplosion = radiusExplosion;
-        Debug.Log("CloudExplosion currentStacks == " + _currentStacksPoisonCloud);
-        Debug.Log("CloudExplosion _radiusExplosion == " + _radiusExplosion);
     }
 
-    private void ApplyPoisonBone(HeroComponent target)
+    private void ApplyPoisonBone(GameObject target)
     {
-        CmdApplyPoisonBone(target);
+        CmdApplyPoisonBone(target.gameObject);
     }
 
     [Command]
-    private void CmdApplyPoisonBone(HeroComponent target)
+    private void CmdApplyPoisonBone(GameObject target)
     {
-        target.CharacterState.AddState(States.PoisonBone, 6f, 0, _player.gameObject, Name);
+        target.GetComponent<CharacterState>().AddState(States.PoisonBone, 6f, 0, _player.gameObject, Name);
     }
 }

@@ -218,13 +218,14 @@ public class InvisibleStateOld : AbstractCharacterState
 public class CharacterState : NetworkBehaviour
 {
 	private Character _hero;
-	private List<AbstractCharacterState> currentStates = new List<AbstractCharacterState>();
+	private List<AbstractCharacterState> _currentStates = new List<AbstractCharacterState>();
 	[SerializeField] private StateIcons _stateIcons;
 
 	public bool invinsible = false;
 
 	public Character Character => _hero;
 
+	public List<AbstractCharacterState> CurrentStates { get => _currentStates; }
 	public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
 	{
         #region CreeperStates
@@ -272,18 +273,18 @@ public class CharacterState : NetworkBehaviour
 
 	private void Update()
 	{
-		if (currentStates.Count > 0)
+		if (_currentStates.Count > 0)
 		{
-			for (int i = 0; i < currentStates.Count; i++)
+			for (int i = 0; i < _currentStates.Count; i++)
 			{
-				currentStates[i].UpdateState();
+				_currentStates[i].UpdateState();
 			}
 		}
 	}
 
 	public void Dispel(StateType type)
 	{
-		foreach (AbstractCharacterState state in currentStates)
+		foreach (AbstractCharacterState state in _currentStates)
 		{
 			if (state.Type == type)
 			{
@@ -294,7 +295,7 @@ public class CharacterState : NetworkBehaviour
 
 	public bool Check(StatusEffect effect)
 	{
-		foreach (AbstractCharacterState state in currentStates)
+		foreach (AbstractCharacterState state in _currentStates)
 		{
 			if (state.Effects.Contains(effect))
 			{
@@ -306,7 +307,7 @@ public class CharacterState : NetworkBehaviour
 
 	public bool CheckForState(States state)
 	{
-		foreach (AbstractCharacterState states in currentStates)
+		foreach (AbstractCharacterState states in _currentStates)
 		{
 			Debug.Log(states.State + " on enemy, check for " + state);
 			if (states.State == state)
@@ -317,9 +318,30 @@ public class CharacterState : NetworkBehaviour
 		return false;
 	}
 
+	public bool CheckPoisonStates()
+	{
+		var poisonStates = new List<States>
+		{
+			States.PoisonBone,
+			States.WitheringPoison,
+			States.BindingPoison,
+			States.PoisonCloud
+		};
+
+        foreach (AbstractCharacterState state in _currentStates)
+        {
+            if (poisonStates.Contains(state.State))
+            {
+                return true; 
+            }
+        }
+
+        return false;
+    }
+
 	public AbstractCharacterState GetState(States state)
 	{
-		foreach (AbstractCharacterState states in currentStates)
+		foreach (AbstractCharacterState states in _currentStates)
 		{
 			Debug.Log(states.State + " on enemy, check for " + state);
 			if (states.State == state)
@@ -368,25 +390,25 @@ public class CharacterState : NetworkBehaviour
 
 	public void RemoveState(AbstractCharacterState newState)
 	{
-		if (currentStates.Contains(newState))
+		if (_currentStates.Contains(newState))
 		{
 			//newState.ExitState(this);
 			//_stateIcons.RemoveItemByState(newState.state);
-			currentStates.Remove(newState);
+			_currentStates.Remove(newState);
 		}
 	}
 
 	private void RemoveStateLogic(States stateName)
 	{
 		Debug.Log("Remove state logic" + stateName);
-		if (currentStates.Count <= 0) return;
+		if (_currentStates.Count <= 0) return;
 
 		_stateIcons.RemoveItemByState(stateName);
-		for(int i = currentStates.Count - 1; i >= 0; i --)
+		for(int i = _currentStates.Count - 1; i >= 0; i --)
 		{
-			if (currentStates[i].State == stateName)
+			if (_currentStates[i].State == stateName)
 			{
-				currentStates[i].ExitState();
+				_currentStates[i].ExitState();
 			}
 		}
 	}
@@ -412,11 +434,11 @@ public class CharacterState : NetworkBehaviour
 			return;
 		if (CheckForState(state))
 		{
-			for(int i = 0; i < currentStates.Count; i++)
+			for(int i = 0; i < _currentStates.Count; i++)
 			{
-				if (currentStates[i].State != state) continue;
+				if (_currentStates[i].State != state) continue;
 
-				if (currentStates[i].Stack(duration))
+				if (_currentStates[i].Stack(duration))
 				{
 					_stateIcons.ActivateIco(state, duration, 1, true);
 				}
@@ -443,14 +465,14 @@ public class CharacterState : NetworkBehaviour
 	private void CreateState(AbstractCharacterState state, States stateName, float duration, float damageToExit, GameObject personWhoShooted, string skillName, bool stack)
 	{
 		_stateIcons.ActivateIco(stateName, duration, 1, stack);
-		currentStates.Add(state);
+		_currentStates.Add(state);
 		if (personWhoShooted.TryGetComponent<Character>(out var character))
 		{
-			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit, character, skillName);
+			_currentStates[_currentStates.Count - 1].EnterState(this, duration, damageToExit, character, skillName);
 		}
 		else
 		{
-			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit, null, skillName);
+			_currentStates[_currentStates.Count - 1].EnterState(this, duration, damageToExit, null, skillName);
 		}
 	}
 }

@@ -37,7 +37,24 @@ public abstract class Character : NetworkBehaviour
 	public SelectComponent SelectComponent => _selectComponent;
 	public List<Resource> Resources => _resources;
 
-    public bool IsInvisible { get => _isInvisible; set { _isInvisible = value; } }
+    public bool IsInvisible 
+	{ 
+		get => _isInvisible; 
+		
+		set 
+		{ 
+			_isInvisible = value; 
+
+			if (_isInvisible)
+            {
+                OnDisappeared?.Invoke();
+            }
+			else
+			{
+                OnAppeared?.Invoke();
+            }
+		} 
+	}
 
     public static event Action<Character> ServerOnUnitSpawned;
 	public static event Action<Character> ServerOnUnitDeleted; 
@@ -122,18 +139,6 @@ public abstract class Character : NetworkBehaviour
 		}
 		AuthorityOnUnitDeleted?.Invoke(this);
 	}
-
-    public void OnPlayerEnterInvisible()
-    {
-        OnDisappeared?.Invoke();
-		_isInvisible = true;
-    }
-
-    public void OnPlayerExitInvisible()
-    {
-        OnAppeared?.Invoke();
-        _isInvisible = false;
-    }
 
     public Resource TryGetResource(ResourceType type)
 	{

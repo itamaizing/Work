@@ -86,7 +86,7 @@ public class HealingPoisonCloudState : AbstractCharacterState
         else
         {
             _duration = _baseDuration;
-            return false;
+            return true;
         }
     }
 

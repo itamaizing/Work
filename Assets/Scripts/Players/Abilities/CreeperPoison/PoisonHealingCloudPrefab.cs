@@ -8,6 +8,7 @@ public class PoisonHealingCloudPrefab : NetworkBehaviour
     [SerializeField] private ParticleSystem _poisonHealingCloudParticle;
     private ParticleSystem _instancePoisonHealingCloud;
 
+    private PoisonHealingCloudPrefab _poisonHealCloud;
     private Character _player;
 
     private int _currentStacks;
@@ -23,7 +24,7 @@ public class PoisonHealingCloudPrefab : NetworkBehaviour
 
     private Coroutine _lifetimeStacksCoroutine;
     private Coroutine _activateParticlePoisonCloudCoroutine;
-    public PoisonHealingCloudPrefab PoisonHealingCloud { get; set; }
+    public PoisonHealingCloudPrefab PoisonHealingCloud { get => _poisonHealCloud; set => _poisonHealCloud = value; }
 
     private void Update()
     {
@@ -50,24 +51,35 @@ public class PoisonHealingCloudPrefab : NetworkBehaviour
         if (_currentStacks < _maxStacks)
         {
             _currentStacks++;
-            if (_activateParticlePoisonCloudCoroutine == null)
+            if (_activateParticlePoisonCloudCoroutine == null && _poisonHealCloud == null)
             {
                 _activateParticlePoisonCloudCoroutine = StartCoroutine(ActivatePoisonCloud());
             }
             else
             {
                 UpdateInstanceCloud();
+
             }
-            _duration = _baseDuration;
-        }
 
-        if (_lifetimeStacksCoroutine != null)
+            if (_lifetimeStacksCoroutine != null)
+            {
+                StopCoroutine(_lifetimeStacksCoroutine);
+            }
+
+            _lifetimeStacksCoroutine = StartCoroutine(LifeTimeStacks());
+        }
+        else
         {
-            StopCoroutine(_lifetimeStacksCoroutine);
-        }
+            UpdateInstanceCloud();
 
-        _duration = _baseDuration;
-        _lifetimeStacksCoroutine = StartCoroutine(LifeTimeStacks());
+            if (_lifetimeStacksCoroutine != null)
+            {
+                StopCoroutine(_lifetimeStacksCoroutine);
+            }
+
+            _duration = _baseDuration;
+            _lifetimeStacksCoroutine = StartCoroutine(LifeTimeStacks());
+        }
     }
 
     private void InstantiateCloud()
@@ -75,9 +87,6 @@ public class PoisonHealingCloudPrefab : NetworkBehaviour
         if (_instancePoisonHealingCloud == null)
         {
             _instancePoisonHealingCloud = Instantiate(_poisonHealingCloudParticle, _player.transform);
-            _instancePoisonHealingCloud.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-            ParticleSystem.MainModule main = _instancePoisonHealingCloud.main;
-            main.duration = _duration;
             _instancePoisonHealingCloud.Play();
         }
 
@@ -115,8 +124,6 @@ public class PoisonHealingCloudPrefab : NetworkBehaviour
             Destroy(_instancePoisonHealingCloud.gameObject);
             _instancePoisonHealingCloud = null;
 
-            Destroy(gameObject);
-            PoisonHealingCloud = null;
         }
 
         if (_activateParticlePoisonCloudCoroutine != null)
@@ -129,6 +136,8 @@ public class PoisonHealingCloudPrefab : NetworkBehaviour
             StopCoroutine(_lifetimeStacksCoroutine);
             _lifetimeStacksCoroutine = null;
         }
+        Destroy(gameObject);
+        PoisonHealingCloud = null;
     }
 
 

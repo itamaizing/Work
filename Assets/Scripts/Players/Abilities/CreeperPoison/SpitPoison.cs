@@ -59,9 +59,10 @@ public class SpitPoison : Skill
 
         while (_currentTarget == null && float.IsPositiveInfinity(_mousePos.x))
         {
-            if (Input.GetMouseButton(0))
+            if (GetMouseButton)
             {
                 _currentTarget = GetRaycastTarget(true);
+                Debug.Log("PrepareJob / _currentTarget = " + _currentTarget);
                 ChooseTarget();
 
                 _mousePos = GetMousePoint();
@@ -260,11 +261,13 @@ public class SpitPoison : Skill
                 _poisonDamagingCloudPrefab.PoisonDamageCloud.AddStack();
 
                 NetworkServer.Spawn(_poisonDamagingCloud.gameObject);
-
+                Debug.Log("SpitPoison / CmdApplyPoisonCloud / if / _poisonDamagingCloud = " + _poisonDamagingCloud);
+                Debug.Log("SpitPoison / CmdApplyPoisonCloud / if / _poisonDamagingCloudPrefab.PoisonDamageCloud = " + _poisonDamagingCloudPrefab.PoisonDamageCloud);
                 //Debug.Log("SpitPoison / CmdTestApplyPoisonCloud / if (_poisonDamagingCloud == null) / _poisonDamagingCloud = " + _poisonDamagingCloud);
             }
             else
             {
+                Debug.Log("SpitPoison / CmdApplyPoisonCloud / else / _poisonDamagingCloud = " + _poisonDamagingCloudPrefab.PoisonDamageCloud);
                 //Debug.Log("SpitPoison / CmdTestApplyPoisonCloud / else");
                 _player.CharacterState.AddState(States.PoisonCloud, duration, 0, _player.gameObject, Name);
                 _poisonDamagingCloudPrefab.PoisonDamageCloud.AddStack();
@@ -296,7 +299,7 @@ public class SpitPoison : Skill
                 _poisonHealingCloudPrefab.PoisonHealingCloud.AddStack();
             }
         }
-        RpcApply(_poisonDamagingCloud, _poisonHealingCloud, duration, isHealingCloud);
+        RpcApply(_poisonDamagingCloudPrefab.PoisonDamageCloud, _poisonHealingCloudPrefab.PoisonHealingCloud, duration, isHealingCloud);
     }
 
 
@@ -308,9 +311,9 @@ public class SpitPoison : Skill
     private void RpcApply(PoisonDamagingCloudPrefab poisonDamagingCloud, PoisonHealingCloudPrefab poisonHealingCloud, float duration, bool isHealingCloud)
     {
         //Debug.Log("PoisonBall / RpcApply / poisonDamagingCloud = " + poisonDamagingCloud);
+            Debug.Log("SpitPoison / RpcApply / if (poisonDamagingCloud != null) = " + poisonDamagingCloud);
         if (poisonDamagingCloud != null)
         {
-           // Debug.Log("PoisonBall / RpcApply / if (poisonDamagingCloud != null) = " + poisonDamagingCloud);
             poisonDamagingCloud.InitializationProjectile(_player, 5, duration, 3.5f, Name);
             poisonDamagingCloud.AddStack();
         }

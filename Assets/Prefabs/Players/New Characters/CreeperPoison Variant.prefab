@@ -439,14 +439,14 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 2
+  _radius: 3
   _area: 0
   _castLength: 0
   _castWidth: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
-  _attackZoneSize: 2
+  _attackZoneSize: 3
   _attackSpeed: 1
   Enabled: 0
   _strokesOfAspiration: {fileID: 7073961509244296273}
@@ -535,13 +535,13 @@ MonoBehaviour:
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
-  _attackRangeType: 0
+  _attackRangeType: 1
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 768
   _obstacle:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: 0
@@ -980,7 +980,6 @@ MonoBehaviour:
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
   _player: {fileID: 7418347446368758987}
-  Enabled: 0
 --- !u!114 &5368158944462154771
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1056,6 +1055,11 @@ CircleCollider2D:
   m_CorrespondingSourceObject: {fileID: 4218118007188876841, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
   m_PrefabInstance: {fileID: 1402048720121234279}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &3609217776770930877 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2405933287821990874, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+  m_PrefabInstance: {fileID: 1402048720121234279}
+  m_PrefabAsset: {fileID: 0}
 --- !u!212 &4461633737091283459 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 3359680783071017316, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
@@ -1082,6 +1086,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _player: {fileID: 7418347446368758987}
+  _containerIcons: {fileID: 3609217776770930877}
 --- !u!114 &7418347446368758987 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8468544467696250796, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
@@ -1309,9 +1314,6 @@ MonoBehaviour:
   Description: 
   ico: {fileID: 0}
   Character: {fileID: 7418347446368758987}
-  _creeperStrike: {fileID: 2763546955420911548}
-  _creeperInvisible: {fileID: 2091427287765565996}
-  IsCanApply: 0
 --- !u!114 &8101473789432663265
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1569,7 +1571,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   _enemiesWithDebuff: []
-  _radiusSearching: 0
+  _radiusSearching: 5
 --- !u!114 &3271863479934341911
 MonoBehaviour:
   m_ObjectHideFlags: 0

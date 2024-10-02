@@ -14,6 +14,8 @@ public class AssasinPoison : Talent
     private float _timeAccumulateCharge;
     private float _startTimeAccumulateCharge = 3f;
 
+    private Coroutine _accumulateChargesCoroutine;
+
     public int CurrentChargeAssasinPoison { get => _currentChargePoison; set => _currentChargePoison = value; }
 
     private void Start()
@@ -24,26 +26,38 @@ public class AssasinPoison : Talent
     public override void Enter()
     {
         SetActive(true);
+        if (_accumulateChargesCoroutine == null)
+        {
+            _accumulateChargesCoroutine = StartCoroutine(AccumulateCharge());
+        }
     }
 
     public override void Exit()
     {
         SetActive(false);
-    }
-
-    private void Update()
-    {
-        if (IsActive && _flowOfPoisons.IsActive && _currentChargePoison < 3 && Character.CharacterState.CheckForState(States.CreeperInvisible))
+        if (_accumulateChargesCoroutine != null)
         {
-            Debug.Log("AssasinPoison / currentCharge++");
-            _timeAccumulateCharge -= Time.deltaTime;
-            if (_timeAccumulateCharge <= 0)
-            {
-                AccumulateChargePoison();
-            }
+            StopCoroutine(AccumulateCharge());
+            _accumulateChargesCoroutine = null;
         }
     }
     
+    private IEnumerator AccumulateCharge()
+    {
+        while (IsActive)
+        {
+            if (_flowOfPoisons.IsActive && _currentChargePoison < 3 && Character.CharacterState.CheckForState(States.CreeperInvisible))
+            {
+                _timeAccumulateCharge -= Time.deltaTime;
+                if (_timeAccumulateCharge <= 0)
+                {
+                    AccumulateChargePoison();
+                }
+            }
+            yield return null;
+        }
+    }
+
     public void CmdSpendCharge(Character target, float lifeTimePoisonBoneStack)
     {
         if (Character.CharacterState.CheckForState(States.CreeperInvisible))

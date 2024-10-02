@@ -7,14 +7,16 @@ public class HidingSelectStates : NetworkBehaviour
 {
     [SerializeField] private Character _player;
     private List<SpriteRenderer> _renderers = new();
-
+    private Dictionary<SpriteRenderer, Color> _originalSpriteColors = new();
     private bool _isAlly;
 
     private void Awake()
     {
         _renderers.AddRange(GetComponentsInChildren<SpriteRenderer>());
-
-        Debug.Log("HidingSelectStates / renderers.count = " + _renderers.Count);
+        foreach (var renderer in _renderers)
+        {
+            _originalSpriteColors.Add(renderer, renderer.color);
+        }
     }
 
     private void Start()
@@ -34,18 +36,29 @@ public class HidingSelectStates : NetworkBehaviour
         {
             foreach (var sprite in _renderers)
             {
+                Color originalSpriteColor;
+
                 var newSpriteTransparency = sprite.color;
-                newSpriteTransparency.a = 0.4f;
-                sprite.color = new Color(0.035f, 1.0f, 0f, newSpriteTransparency.a);
+                newSpriteTransparency.a = 0.33f;
+                if (sprite != null && _originalSpriteColors.TryGetValue(sprite, out originalSpriteColor))
+                {
+                    sprite.color = new Color(originalSpriteColor.r, originalSpriteColor.g, originalSpriteColor.b, newSpriteTransparency.a);
+                }
             }
         }
         else
         {
             foreach (var sprite in _renderers)
             {
+                Color originalSpriteColor;
+
                 var newSpriteTransparency = sprite.color;
                 newSpriteTransparency.a = 0.0f;
-                sprite.color = new Color(0.035f, 1.0f, 0f, newSpriteTransparency.a);
+
+                if (sprite != null && _originalSpriteColors.TryGetValue(sprite, out originalSpriteColor))
+                {
+                    sprite.color = new Color(originalSpriteColor.r, originalSpriteColor.g, originalSpriteColor.b, newSpriteTransparency.a);
+                }
             }
         }
     }
@@ -56,18 +69,24 @@ public class HidingSelectStates : NetworkBehaviour
         {
             foreach (var sprite in _renderers)
             {
-                var newSpriteTransparency = sprite.color;
-                newSpriteTransparency.a = 0.6667f;
-                sprite.color = new Color(0.035f, 1.0f, 0f, newSpriteTransparency.a);
+                Color originalSpriteColor;
+
+                if (sprite != null && _originalSpriteColors.TryGetValue(sprite, out originalSpriteColor))
+                {
+                    sprite.color = new Color(originalSpriteColor.r, originalSpriteColor.g, originalSpriteColor.b, originalSpriteColor.a);
+                }
             }
         }
         else
         {
             foreach (var sprite in _renderers)
             {
-                var newSpriteTransparency = sprite.color;
-                newSpriteTransparency.a = 0.6667f;
-                sprite.color = new Color(0.035f, 1.0f, 0f, newSpriteTransparency.a);
+                Color originalSpriteColor;
+
+                if (sprite != null && _originalSpriteColors.TryGetValue(sprite, out originalSpriteColor))
+                {
+                    sprite.color = new Color(originalSpriteColor.r, originalSpriteColor.g, originalSpriteColor.b, originalSpriteColor.a);
+                }
             }
         }
     }

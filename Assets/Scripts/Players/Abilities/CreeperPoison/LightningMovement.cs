@@ -150,7 +150,7 @@ public class LightningMovement : Skill
 
         while (_target == null && float.IsPositiveInfinity(_firstLeapPoint.x))
         {
-            if (Input.GetMouseButtonDown(0))
+            if (GetMouseButton)
             {
                 yield return _firstPointForLeapCoroutine = StartCoroutine(FirstVectorForLeap());
                 IsEnemyBeforePlayer();

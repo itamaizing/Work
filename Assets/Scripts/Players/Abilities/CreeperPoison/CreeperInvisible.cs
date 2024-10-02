@@ -40,7 +40,8 @@ public class CreeperInvisible : Skill
     private bool _isClickForCastInvisibleSkill = false;
 
     private Coroutine _checkEnemiesCoroutine;
-    private Coroutine _checkCurrentHealthPlayerCoroutine;
+    private Coroutine _checkCurrentHealthPlayerWithTimerCoroutine;
+    private Coroutine _checkCurrentHealthPlayerWithoutTimerCoroutine;
     private Coroutine _exitFromInvisibleCoroutine;
     private Coroutine _invisibleAbilitiesCoroutine;
 
@@ -74,13 +75,23 @@ public class CreeperInvisible : Skill
                     yield break;
                 }
 
-                _checkCurrentHealthPlayerCoroutine = StartCoroutine(CheckCurrentHealthPlayer());
-                yield return _checkEnemiesCoroutine = StartCoroutine(CheckEnemiesAround());
+                if (_checkCurrentHealthPlayerWithTimerCoroutine == null)
+                {
+                    yield return _checkCurrentHealthPlayerWithTimerCoroutine = StartCoroutine(CheckCurrentHealthPlayerWithTimer());
+                }
+                if (_checkEnemiesCoroutine == null)
+                {
+                    yield return _checkEnemiesCoroutine = StartCoroutine(CheckEnemiesAround());
+                }
+
+                _checkCurrentHealthPlayerWithoutTimerCoroutine = StartCoroutine(CheckCurrentHealthPlayerWithoutTimer());
 
                 if (!_isPlayerSeen && !_isDamagedPlayer && !IsInvisible)
                 {
                     _isCanCast = true;
                 }
+
+
                 break;
             case true:
                 _isCanCast = true;
@@ -112,6 +123,7 @@ public class CreeperInvisible : Skill
         else if (!IsInvisible)
         {
             EnteringInvisibleState();
+            
         }
         yield return null;
     }
@@ -137,15 +149,12 @@ public class CreeperInvisible : Skill
         while (_isPlayerSeen)
         {
             _isEnemy = false;
-            Debug.Log($"CreeperInvisible / CheckEnemies");
             Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(_player.transform.position, _distanceWithoutEnemies, _targetsLayers);
             foreach (Collider2D enemy in hitEnemies)
             {
-                Debug.Log($"CreeperInvisible / CheckEnemies / foreach cycle / enemy = {enemy.name}");
                 if (enemy != null && enemy.CompareTag("Enemies"))
                 {
                     _isEnemy = true;
-                    Debug.Log($"CreeperInvisible / CheckEnemies / in FOR cycle / isEnemy = {_isEnemy}");
                     break;
                 }
             }
@@ -153,12 +162,10 @@ public class CreeperInvisible : Skill
             if (!_isEnemy)
             {
                 _isPlayerSeen = false;
-                Debug.Log($"CreeperInvisible / CheckEnemies / if (!isEnemy) = {_isEnemy} / isPlayerSeen = {_isPlayerSeen}");
             }
             else
             {
                 _isPlayerSeen = true;
-                Debug.Log($"CreeperInvisible / CheckEnemies / else (isEnemy) = {_isEnemy} / isPlayerSeen = {_isPlayerSeen}");
             }
 
             hitEnemies = null;
@@ -166,7 +173,7 @@ public class CreeperInvisible : Skill
         }
     }
 
-    private IEnumerator CheckCurrentHealthPlayer()
+    private IEnumerator CheckCurrentHealthPlayerWithTimer()
     {
         float time = _timeWithoutDamage;
         
@@ -186,12 +193,29 @@ public class CreeperInvisible : Skill
         }
     }
 
+    private IEnumerator CheckCurrentHealthPlayerWithoutTimer()
+    {
+        Debug.Log("CheckCurrentHealthWithTimer");
+        while (_currentHealth == _maxHealth)
+        {
+            _currentHealth = _player.Health.CurrentValue;
+
+            if (_currentHealth < _maxHealth)
+            {
+                Debug.Log("CheckCurrentHealthWithTimer / if (_currentHealth < _maxHealth)");
+                ExitingInvisibleState();
+                break;
+            }
+            yield return null;
+        }
+    }
+
     private IEnumerator ExitFromInvisible()
     {
         Debug.Log("CreeperInvisible / ExitFromInvisibleCoroutine");
         while (!_isClickForExitInvisible)
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButton(0))
             {
                 _isClickForExitInvisible = true;
                 yield break;
@@ -218,6 +242,7 @@ public class CreeperInvisible : Skill
     #endregion
 
     #region CommandMethods
+
     [Command]
     private void CmdReducingTransparencySpritePlayer(GameObject player)
     {
@@ -231,6 +256,7 @@ public class CreeperInvisible : Skill
         int teamIndex = player.GetComponentInParent<UserNetworkSettings>().TeamIndex;
         RpcIncreasingTransparencySpritePlayer(player, teamIndex);
     }
+
     [Command]
     private void CmdApplyInvis(GameObject player)
     {
@@ -267,17 +293,6 @@ public class CreeperInvisible : Skill
         }
         //Debug.Log($"CreeperInvisible / CmdRemoveInvisible / IsInvisible = {IsInvisible}");
 
-        if (_checkEnemiesCoroutine != null)
-        {
-            StopCoroutine(CheckEnemiesAround());
-            _checkEnemiesCoroutine = null;
-        }
-        if (_checkCurrentHealthPlayerCoroutine != null)
-        {
-            StopCoroutine(CheckCurrentHealthPlayer());
-            _checkCurrentHealthPlayerCoroutine = null;
-        }
-
         _isPlayerSeen = true;
         _isDamagedPlayer = false;
 
@@ -291,7 +306,7 @@ public class CreeperInvisible : Skill
     [ClientRpc]
     private void RpcReducingTransparencySpritePlayer(GameObject player, int teamIndex)
     {
-        player.GetComponent<Character>().OnPlayerEnterInvisible();
+        player.GetComponent<Character>().IsInvisible = true;
 
         SpriteRenderer playerSprite = player.GetComponentInChildren<SpriteRenderer>();
 
@@ -315,7 +330,7 @@ public class CreeperInvisible : Skill
     [ClientRpc]
     private void RpcIncreasingTransparencySpritePlayer(GameObject player, int teamIndex)
     {
-        player.GetComponent<Character>().OnPlayerExitInvisible();
+        player.GetComponent<Character>().IsInvisible = false;
 
         SpriteRenderer playerSprite = player.GetComponentInChildren<SpriteRenderer>();
 
@@ -390,10 +405,15 @@ public class CreeperInvisible : Skill
             StopCoroutine(CheckEnemiesAround());
             _checkEnemiesCoroutine = null;
         }
-        if (_checkCurrentHealthPlayerCoroutine != null)
+        if (_checkCurrentHealthPlayerWithTimerCoroutine != null)
         {
-            StopCoroutine(CheckCurrentHealthPlayer());
-            _checkCurrentHealthPlayerCoroutine = null;
+            StopCoroutine(CheckCurrentHealthPlayerWithTimer());
+            _checkCurrentHealthPlayerWithTimerCoroutine = null;
+        }
+        if (_checkCurrentHealthPlayerWithoutTimerCoroutine != null)
+        {
+            StopCoroutine(CheckCurrentHealthPlayerWithoutTimer());
+            _checkCurrentHealthPlayerWithoutTimerCoroutine = null;
         }
         if (_exitFromInvisibleCoroutine != null)
         {
