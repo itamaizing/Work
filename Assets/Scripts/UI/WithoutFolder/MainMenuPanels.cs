@@ -9,7 +9,7 @@ public class MainMenuPanels : MonoBehaviour
 	[SerializeField] private AttributePanel _attributePanel;
 	public void SetPanel(HeroComponent hero)
 	{
-		_talentPanel.Init(hero.Talents);
+		_talentPanel.Init(hero.TalentManager);
 		_abilityMenuPanel.Init(hero.Abilities);
 		_attributePanel.Init(hero);
 	}

@@ -10,6 +10,9 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
     
     [SerializeField] private UIMenuMainAttributesPanelItem _attributeItem;
     [SerializeField] private RectTransform _itemsParent;
+    [SerializeField] private TMProLocalizer _attributesText;
+
+    private AttributeGroup _attributeGroup;
     
     private List<UIMenuMainAttributesPanelItem> _attributes = new ();
 
@@ -17,11 +20,11 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
     {
         if(Owner == null) return;
         
-        var attributeGroup = Owner.GetHero().Data.Attributes;
+        _attributeGroup = Owner.GetHero().Data.Attributes;
         
         ResetPanel();
 
-        foreach (var item in attributeGroup.AttributeData.Where(o=> o.IsVisible))
+        foreach (var item in _attributeGroup.AttributeData.Where(o=> o.IsVisible))
         {
             var attribute = Instantiate(_attributeItem, _itemsParent);
             attribute.Owner = this;
@@ -29,7 +32,7 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
             _attributes.Add(attribute);
         }
         
-        ShowHide(false);
+        UpdateAttributesPoints();
     }
     
     private void ResetPanel()
@@ -49,6 +52,17 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
     public void ShowHide(bool isShow = true)
     {
         _itemsParent.gameObject.SetActive(_itemsParent.gameObject.activeInHierarchy == false && isShow);
+    }
+
+    public void UpdateAttributesPoints()
+    {
+        foreach (var attribute in _attributes)
+        {
+            attribute.UpdateValue();
+        }
+        
+        SaveManager.Instance.LoadAttributePoints();
+        _attributesText.ChangeKey(_attributeGroup.FreeAttributePointsCount);
     }
     
 }

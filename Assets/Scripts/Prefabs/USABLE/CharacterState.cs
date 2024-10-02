@@ -240,6 +240,12 @@ public class CharacterState : NetworkBehaviour
 		[States.NorthernerEndurance] = new NorthernerEndurance(),
 		[States.LastBreath] = new LastBreath(),
 		[States.MagicBuff] = new MagicBuff(),
+		[States.DarkShield] = new DarkShield(),
+		[States.LightShield] = new LightShield(),
+		[States.TiredSoul] = new TiredSoul(),
+		[States.ReversePolarity] = new ReversePolarityState(),
+		[States.SpiritEnergy] = new SpiritEnergyState(),
+		[States.SpiritHealth] = new SpiritHealthState()
 	};
 
 	public void Initialize(Character hero)
@@ -354,8 +360,6 @@ public class CharacterState : NetworkBehaviour
 	{
 		if (currentStates.Contains(newState))
 		{
-			//newState.ExitState(this);
-			//_stateIcons.RemoveItemByState(newState.state);
 			currentStates.Remove(newState);
 		}
 	}
@@ -471,6 +475,12 @@ public enum States
 	Curse,
 	NorthernerEndurance,
 	LastBreath,
-	MagicBuff
+	MagicBuff,
+	DarkShield,
+	LightShield,
+	ReversePolarity,
+	SpiritEnergy,
+	SpiritHealth,
+	TiredSoul
 }
 

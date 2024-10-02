@@ -1,10 +1,11 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using TMPro;
+using System;
+using UnityEngine.UIElements;
+using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class AbilityUiIco : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
@@ -24,10 +25,10 @@ public class AbilityUiIco : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 		Debug.Log("Mouse exit");
 	}
 
-
 	public void Init(Sprite ico, string text)
 	{
 		_ico.sprite = ico;
 		_text.text = text;
 	}
+
 }
