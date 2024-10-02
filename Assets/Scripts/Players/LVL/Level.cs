@@ -3,12 +3,13 @@ using Mirror;
 
 public class Level : NetworkBehaviour
 {
-    [SyncVar] protected int _experienceForNextLVL = 100;
+    [SyncVar] protected int _experienceForNextLVL = 10;
     protected int _additionalToExperienceForNextLVL = 10;
     protected float _multiplierToExperienceForNextLVL = 1;
     private float _multiplierToExperience = 1;
     [SyncVar] private int _experience = 0;
     [SyncVar] private int _value = 1;
+    private int _maxValue = 9;
 
     public int Value { get => _value; protected set { _value = value; LVLUped?.Invoke(_value); } }
     public int Experience { get => _experience; }
@@ -32,12 +33,20 @@ public class Level : NetworkBehaviour
 
         if (expBeyondNecessery >= 0)
         {
-            _value++;
-            LVLUped?.Invoke(_value);
+            LVLUp();
 
             _experience = 0;
             IncreasExperienceForNextLVL();
             AddEXP(expBeyondNecessery);
+        }
+    }
+
+    private void LVLUp()
+    {
+        if(_value + 1 <= _maxValue)
+        {
+            _value++;
+            LVLUped?.Invoke(_value);
         }
     }
 

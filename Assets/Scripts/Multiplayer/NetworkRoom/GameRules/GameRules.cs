@@ -5,15 +5,15 @@ using UnityEngine;
 
 public abstract class GameRules : NetworkBehaviour
 {
-    protected readonly SyncList<GameObject> _players = new SyncList<GameObject>();
-    protected List<Character> _playersSettings = new List<Character>();
+    protected readonly SyncList<GameObject> _playersSyncList = new SyncList<GameObject>();
+    protected List<Character> _players = new List<Character>();
     protected NetworkRoom _room;
     protected List<Transform> _spawnPoints;
 
     [SyncVar(hook = nameof(GameStatusHook))] private bool _isStarted;
     public bool IsStarted { get => _isStarted; set => _isStarted = value; }
 
-    public SyncList<GameObject> Players => _players;
+    public SyncList<GameObject> Players => _playersSyncList;
     public List<Transform> SpawnPoints => _spawnPoints;
 
     public abstract void GameStartServer(List<Transform> spawnPoints);
@@ -25,11 +25,11 @@ public abstract class GameRules : NetworkBehaviour
 
         foreach (var item in _room.Players)
         {
-            _players.Add(item);
+            _playersSyncList.Add(item);
             var playerSettings = item.GetComponent<Character>();
             if (playerSettings != null)
             {
-                _playersSettings.Add(playerSettings);
+                _players.Add(playerSettings);
             }
         }
 
@@ -68,16 +68,16 @@ public abstract class GameRules : NetworkBehaviour
         int team1Count = 0;
         int team2Count = 0;
 
-        for (int i = 0; i < _playersSettings.Count; i++)
+        for (int i = 0; i < _players.Count; i++)
         {
-            var playerSettings = _playersSettings[i];
+            var playerSettings = _players[i];
             byte teamIndex = (byte)(team1Count <= team2Count ? 1 : 2);
             playerSettings.NetworkSettings.TeamIndex = teamIndex;
 
             Transform spawnPoint = spawnPoints[i % spawnPoints.Count];
             if (spawnPoint != null)
             {
-                foreach (var player in _playersSettings)
+                foreach (var player in _players)
                 {
                     playerSettings.NetworkSettings.Players.Add(player.gameObject);
                 }
@@ -97,7 +97,7 @@ public abstract class GameRules : NetworkBehaviour
 
     protected virtual IEnumerator SavePositionsAndAssignLayers()
     {
-        foreach (var item in _playersSettings)
+        foreach (var item in _players)
         {
             if (item != null)
             {
