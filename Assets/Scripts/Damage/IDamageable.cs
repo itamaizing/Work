@@ -6,7 +6,6 @@ public struct Damage : NetworkMessage
     public float Value;
     public DamageType Type;
     public AttackRangeType Range;
-    public Skill DamageableSkill;
 }
 
 public interface IDamageable

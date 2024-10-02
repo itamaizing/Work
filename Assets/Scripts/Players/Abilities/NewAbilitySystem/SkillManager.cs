@@ -155,6 +155,9 @@ public class SkillManager : MonoBehaviour
         if (_selectedSkill != null && _selectedSkill.IsPreparing)
         {
             _selectedSkill.TryCancel();
+
+            if(_selectedSkill is AutoAttackSkill aa)
+                DeselectSkill();
         }
         else if (SkillQueue.IsBusy)
         {
@@ -170,9 +173,7 @@ public class SkillManager : MonoBehaviour
         }
         else if(_selectedSkill != null)
         {
-            SkillDeselected?.Invoke(Array.IndexOf(_selectedSkills, _selectedSkill));
-            UnsubscribingSkillOnEvents(_selectedSkill);
-            _selectedSkill = null;
+            DeselectSkill();
         }
     }
 
@@ -200,8 +201,7 @@ public class SkillManager : MonoBehaviour
         }
         else if (_selectedSkill != _selectedSkills[index])
         {
-            UnsubscribingSkillOnEvents(_selectedSkill);
-            SkillDeselected?.Invoke(Array.IndexOf(_selectedSkills, _selectedSkill));
+            DeselectSkill();
 
             _selectedSkill = _selectedSkills[index];
             SubscribingSkillOnEvents(_selectedSkill);
@@ -209,6 +209,13 @@ public class SkillManager : MonoBehaviour
 
             PrepereSkill();
         }
+    }
+
+    private void DeselectSkill()
+    {
+        SkillDeselected?.Invoke(Array.IndexOf(_selectedSkills, _selectedSkill));
+        UnsubscribingSkillOnEvents(_selectedSkill);
+        _selectedSkill = null;
     }
 
     private void GlobalCooldown()
@@ -236,9 +243,15 @@ public class SkillManager : MonoBehaviour
     private void OnPreperingSuccess()
     {
         if(_selectedSkill is AutoAttackSkill attackSkill)
+        {
             _autoAttackQueue.Add(attackSkill);
+
+            DeselectSkill();
+        }
         else
+        {
             SkillQueue.Add(_selectedSkill);
+        }     
     }
 
     #region legacycode
