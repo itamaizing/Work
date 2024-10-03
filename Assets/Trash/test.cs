@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class test : MonoBehaviour
+public class test1 : MonoBehaviour
 {
     public Collider2D obstacleCollider;
 

@@ -1,104 +1,140 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CleavingBlade_Scorpion : Ability
+public class CleavingBlade_Scorpion : Skill
 {
     [Header("Ability settings")]
-    [SerializeField] private DrawCircle _drawCircleSelf;
-    [SerializeField] private float _damageValue;
-
-    private DrawCircle _circleTarget;
-    private HealthComponent _target;
-    private Coroutine _useJob;
-    private int _counter = 1; // временно вместо бафа
-    protected override void Cancel()
+    [SerializeField] private PassiveCombo_Scorpion _comboCounter;
+    [SerializeField][Range(0, 100)] private float _minDamage = 23f;
+    [SerializeField][Range(0, 100)] private float _maxDamage = 26f;
+    [SyncVar]
+    private int _counter = 1;
+    private Character _target;
+    public float Damage => Random.Range(_minDamage, _maxDamage);
+    protected override bool IsCanCast
     {
-        if (_useJob != null)
-            StopCoroutine(_useJob);
+        get
+        {
+            if (_target != null)
+                return Vector3.Distance(_target.transform.position, transform.position) <= Radius;
 
-        ResetValue();
-
-        if (_circleTarget != null)
-            Destroy(_circleTarget.gameObject);
-    }
-
-    protected override void Cast()
-    {
-        _useJob = StartCoroutine(UseCoroutine());
+            return false;
+        }
     }
 
     private void ResetValue()
     {
-        _drawCircleSelf.Clear();
+
+    }
+
+    private void AttackPassed(bool shouldIncreaseCounter, Transform target)
+    {
+        Debug.LogWarning("CleavingBlade_Scorpion .AttackPassed - Попал");
+        _comboCounter.AddAbility(target, ScorpionAbility.Blade);
+
+        if (shouldIncreaseCounter)
+        {
+            if (_counter == 3)
+            {
+                _counter = 1;
+            }
+            else
+            {
+                _counter++;
+            }
+        }
+        _target.GetComponent<CharacterState>().CmdAddState(States.Bleeding, 6f, 0, _hero.gameObject, name);
+
+        _target = null;
+    }
+    private void AttackMissed()
+    {
+        Debug.LogWarning("CleavingBlade_Scorpion .AttackMissed - Промах");
+        _counter = 1;
+        _comboCounter.ResetCounter();
+
         _target = null;
     }
 
-    private bool IsMouseInRadius()
+    protected override IEnumerator PrepareJob()
     {
-        float distance = Vector3.Distance(
-            new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, transform.position.z),
-            transform.position
-            );
-
-        return distance <= Radius;
-    }
-    private void AttackPassed()
-    {
-        if(_counter == 3)
+        while (_target == null)
         {
-            _counter = 1;
-        }
-        else
-        {
-            _counter++;
-        }
-    }
-    private IEnumerator UseCoroutine()
-    {
-        _drawCircleSelf.Draw(Radius);
-
-        while (_target == null) //выбираем цель
-        {
-            if (Input.GetMouseButtonDown(0) && IsMouseInRadius())
+            if (GetMouseButton)
             {
-                RaycastHit2D[] rayHit = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-                if (rayHit.Length > 0 && rayHit[0].transform.TryGetComponent<HealthComponent>(out HealthComponent enemyHealth))
-                {
-                    _target = enemyHealth;
-                    Debug.LogWarning(_target.name);
-                }
+                _target = GetRaycastTarget(true);
             }
             yield return null;
         }
-        _drawCircleSelf.Clear();
+    }
 
-        IsCanCancle = false;
+    protected override IEnumerator CastJob()
+    {
         float initialCastDelay = CastDeley;
-        if (_counter == 2) CastDeley *= 0.8f;
+        //if (_counter == 2) CastDeley *= 0.8f;
 
-        yield return GetCastDeleyCoroutine();
-
-        CastDeley = initialCastDelay;
-
-        IsCanCancle = true;
-        PayCost();
-
-        if (_target != null && Vector2.Distance(transform.position, _target.transform.position) <= 2f + 0.19f)
+        if(_counter <= 2)
         {
-            float damage = _damageValue;
-            if (_counter == 3)
-            {
-                damage = _damageValue * 2;
-            }
-            if (_target.TryTakeDamage(damage, DamageType.Physical, AttackRangeType.MeleeAttack))
-            {
-                AttackPassed();
-            }
-            else _counter = 1;
+            TryAttack(true, 1f);
         }
-        Debug.LogWarning(_counter);
+        else
+        {
+            TryAttack(false, 0.75f);
+            yield return new WaitForSeconds(0.3f);
+            TryAttack(false, 0.75f);
+            _counter = 1;
+        }
 
-        ResetValue();
+        yield return null;
+    }
+    
+    protected override void ClearData()
+    {
+        //_target = null;
+    }
+
+    private void TryAttack(bool shouldIncreaseCounter, float damageMultiplier)
+    {
+        if (_target != null && Vector2.Distance(transform.position, _target.transform.position) <= 2f + 2f + 0.19f)
+        {
+            Damage damage = new Damage
+            {
+                Value = Buff.Damage.GetBuffedValue(Damage * damageMultiplier),
+                Type = DamageType,
+                Range = AttackRangeType,
+            };
+
+            CmdAttack(damage, _target.gameObject, shouldIncreaseCounter);
+        }
+    }
+
+
+    [Command]
+    private void CmdAttack(Damage damage, GameObject hp, bool shouldIncreaseCounter)
+    {
+        if (_tempTargetForDamage != hp.transform)
+        {
+            _tempTargetForDamage = hp.transform;
+            _tempHPForDamage = hp.GetComponent<Health>();
+        }
+
+        bool result = _tempHPForDamage.TryTakeDamage(ref damage, this);
+        RpcSelfNotifyHitResult(result, shouldIncreaseCounter, _tempTargetForDamage);
+
+    }
+
+    [TargetRpc]
+    private void RpcSelfNotifyHitResult(bool state, bool shouldIncreaseCounter, Transform target)
+    {
+        if (state)
+        {
+            AttackPassed(shouldIncreaseCounter, target);
+        }
+        else
+        {
+            AttackMissed();
+        }
     }
 }

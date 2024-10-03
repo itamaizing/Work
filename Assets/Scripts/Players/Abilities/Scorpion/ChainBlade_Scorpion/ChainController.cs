@@ -1,12 +1,23 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChainController : MonoBehaviour
+public class ChainController : NetworkBehaviour
 {
     private LineRenderer lineRenderer;
-    private Transform _startTarget;
-    private Transform target;
+    
+    public Transform _startTarget = null;
+    public Transform target = null;
+
+    [SyncVar]
+    public float num = 0;
+
+    [SyncVar(hook = nameof(OnTargetChanged))]
+    public uint targetID;
+
+    [SyncVar(hook = nameof(OnTargetChanged2))]
+    public uint parentID;
 
     private void Awake()
     {
@@ -21,16 +32,90 @@ public class ChainController : MonoBehaviour
     public void AssignTarget(Transform startTarget, Transform newTarget)
     {
         lineRenderer.positionCount = 2;
-        lineRenderer.SetPosition(0, startTarget.position);
-        lineRenderer.SetPosition(1, newTarget.position);
         _startTarget = startTarget;
         target = newTarget;
+        lineRenderer.SetPosition(0, target.position);
+        lineRenderer.SetPosition(1, _startTarget.position);
     }
 
-    // Update is called once per frame
     private void Update()
     {
-        lineRenderer.SetPosition(0, _startTarget.position);
-        lineRenderer.SetPosition(1, target.position);
+        if (target != null && _startTarget != null)
+        {
+            lineRenderer.SetPosition(0, target.position);
+            lineRenderer.SetPosition(1, _startTarget.position);
+        }
+
+        //CmdUpdatePos();
+    }
+
+    private void UpdatePos()
+    {
+        if (target != null && _startTarget != null)
+        {
+            lineRenderer.SetPosition(0, target.position);
+            lineRenderer.SetPosition(1, _startTarget.position);
+        }
+    }
+
+    private void OnTargetChanged(uint _, uint newValue)
+    {
+        target = null;
+
+        if (NetworkClient.spawned.TryGetValue(targetID, out NetworkIdentity identity))
+        {
+            if (identity.TryGetComponent<BladeProjectile>(out BladeProjectile blade))
+            {
+                target = blade.ChainLinkPoint;
+            }
+            else
+            {
+                target = identity.transform;
+            }
+            Debug.Log(identity.gameObject.name);
+        }
+        else
+            StartCoroutine(SetTarget());
+    }
+
+    private IEnumerator SetTarget()
+    {
+        while (target == null)
+        {
+            yield return null;
+            if (NetworkClient.spawned.TryGetValue(targetID, out NetworkIdentity identity))
+            {
+                if (identity.TryGetComponent<BladeProjectile>(out BladeProjectile blade))
+                {
+                    target = blade.ChainLinkPoint;
+                }
+                else
+                {
+                    target = identity.transform;
+                }
+            }
+            Debug.Log(identity.gameObject.name);
+        }
+    }
+
+    private void OnTargetChanged2(uint _, uint newValue)
+    {
+        _startTarget = null;
+
+        if (NetworkClient.spawned.TryGetValue(parentID, out NetworkIdentity character))
+            _startTarget = character.transform;
+        else
+            StartCoroutine(SetTarget2());
+    }
+
+    private IEnumerator SetTarget2()
+    {
+        while (_startTarget == null)
+        {
+            yield return null;
+            if (NetworkClient.spawned.TryGetValue(parentID, out NetworkIdentity character))
+                _startTarget = character.transform;
+
+        }
     }
 }

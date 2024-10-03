@@ -8,23 +8,40 @@ public class Sub_LavaPool_Scorpion : MonoBehaviour
     [SerializeField] private float _maxDamagePerTick;
     [SerializeField] private DamageType _damageType;
     [SerializeField] private AttackRangeType _attackRangeType;
+    [SerializeField] private LayerMask _layerMask;
 
     private float _damageValue;
     private float _timeInterval = 1f;
     private float _lifeTime = 3f;
+    private Material _material;
 
     private List<HealthComponent> _enemies = new List<HealthComponent>();
 
+    //private void Start()
+    //{
+    //    _material = GetComponent<SpriteRenderer>().material;        
+    //}
+    private void Start()
+    {
+        _material = GetComponent<SpriteRenderer>().material;
+    }
+    private void Update()
+    {
+        
+        _material.mainTextureOffset = new Vector2(_material.mainTextureOffset.x + 0.01f * Time.deltaTime, _material.mainTextureOffset.y + 0.01f * Time.deltaTime);
+    }
     public void Init()
     {
         _damageType = DamageType.Magical;
         _attackRangeType = AttackRangeType.Inner;
         StartCoroutine(DealDamageOvertime());
-        StartCoroutine(LifeTimeTimer());
+        Destroy(gameObject, _lifeTime);
+        _material = GetComponent<SpriteRenderer>().material;
+        //StartCoroutine(LifeTimeTimer());
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.TryGetComponent<HealthComponent>(out  HealthComponent enemy) && collision.gameObject.CompareTag("Enemies")) 
+        if(collision.TryGetComponent<HealthComponent>(out HealthComponent enemy) /*&& collision.gameObject.layer == _layerMask*/) 
         {
             _enemies.Add(enemy);
         }
@@ -32,7 +49,7 @@ public class Sub_LavaPool_Scorpion : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if(collision.TryGetComponent<HealthComponent>(out HealthComponent enemy) && collision.gameObject.CompareTag("Enemies"))
+        if(collision.TryGetComponent<HealthComponent>(out HealthComponent enemy) && collision.gameObject.layer == 9)
         {
             _enemies.Remove(enemy);
         }
@@ -58,8 +75,13 @@ public class Sub_LavaPool_Scorpion : MonoBehaviour
 
     private IEnumerator LifeTimeTimer()
     {
-        yield return new WaitForSeconds(_lifeTime);
-        Destroy(gameObject);
+        float x =0, y = 0;
+        while (true)
+        {
+            _material.mainTextureOffset = new Vector2(x, y);
+            x++; y++;
+            yield return null;
+        }
     }
 
 }

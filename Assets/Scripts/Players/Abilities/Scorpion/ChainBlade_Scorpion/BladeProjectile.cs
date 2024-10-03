@@ -1,45 +1,76 @@
+using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class BladeProjectile : MonoBehaviour
+public class BladeProjectile : NetworkBehaviour
 {
-    private float throwForce = 10f;
-    private Rigidbody2D _rb;
+    [SerializeField] private BoxCollider2D _collider;
+    [SerializeField] private LayerMask _layerMask;
+    public Transform ChainLinkPoint;
+    private float throwForce = 20f;
+    public Rigidbody2D _rb;
     private float _maxDistance;
     private Vector2 startPosition;
+    private Vector2 _direction;
+    private GameObject _player;
+    [SyncVar] private bool _canPull = true;
+    private ChainbladeType _type;
 
-    public UnityEvent<GameObject> OnHit = new UnityEvent<GameObject>();
+    public UnityEvent<GameObject> OnHit;
 
-
-    public void Init(float maxDistance)
+    public void Init(float maxDistance, Vector2 direction, GameObject player, ChainbladeType type)
     {
         startPosition = transform.position;
         _maxDistance = maxDistance;
-        StartCoroutine(DieOnDistance());
+        _type = type;
+        _direction = direction.normalized;
+        float angle = Mathf.Atan2(_direction.y, _direction.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0, 0, angle - 90);
+        _player = player;
+
+        if(_type == ChainbladeType.Default)
+            Destroy(gameObject, _maxDistance / throwForce);
+
+        if (_type == ChainbladeType.Hook)
+            StartCoroutine(DieOnDistance());
+        //StartCoroutine(DieOnDistance());
     }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.gameObject.layer == 9 && collision.TryGetComponent<HealthComponent>(out HealthComponent enemyhealth))
+        Debug.LogWarning("BladeProjectile. TriggerEnter()!!");
+        if (!_canPull)
+            return;
+        if(collision.gameObject.CompareTag("Obstacle"))
         {
-            enemyhealth.TryTakeDamage(10, DamageType.Physical, AttackRangeType.RangeAttack);
-            SendMessage(collision.gameObject);
+            if (_type == default)
+                Destroy(gameObject);
+            SendInfo(null);
+            _canPull = false;
+
+
+        }
+        if(/*collision.gameObject.layer == _layerMask*/  collision.gameObject.CompareTag("Enemies") && collision.TryGetComponent<Health>(out Health enemyhealth))
+        {
+            //enemyhealth.TryTakeDamage(10, DamageType.Physical, AttackRangeType.RangeAttack);
+            SendInfo(collision.gameObject);
             HitPerfomed();
+            _canPull = false;
         }
     }
-    
 
-    private void SendMessage(GameObject target)
+    private void SendInfo(GameObject target)
     {
-        OnHit.Invoke(target);
+        OnHit?.Invoke(target);
     }
     public void ThrowBlade(Vector2 endPoint)
     {
         _rb = GetComponent<Rigidbody2D>();
-        _rb.AddForce(endPoint.normalized * throwForce, ForceMode2D.Impulse);
+        _rb.AddForce(_direction  * throwForce, ForceMode2D.Impulse);
     }
 
     private void HitPerfomed() 
@@ -48,12 +79,29 @@ public class BladeProjectile : MonoBehaviour
         Destroy(gameObject);
     }
 
-
     private void OnDestroy()
     {
         
     }
-
+    private IEnumerator DieOnTimer()
+    {
+        float lifeTime = _maxDistance / throwForce;
+        while (lifeTime > 0)
+        {
+            lifeTime -= Time.deltaTime;
+            yield return null;
+        }
+        if (_type == ChainbladeType.Hook)
+        {
+            _collider.isTrigger = false;
+            SendInfo(null);
+            // will be destroyed in ChainBlade_Scorpion after returning to parent
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
     private IEnumerator DieOnDistance()
     {
         float distance = Vector2.Distance(transform.position, startPosition);
@@ -62,8 +110,15 @@ public class BladeProjectile : MonoBehaviour
             distance = Vector2.Distance(transform.position, startPosition);
             yield return null;
         }
-
-        OnHit.Invoke(null);
-        Destroy(gameObject);
+        if (_type == ChainbladeType.Hook)
+        {
+            //_collider.isTrigger = false;
+            _canPull = false;
+            SendInfo(null);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 }

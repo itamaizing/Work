@@ -363,6 +363,7 @@ MonoBehaviour:
   _cooldown: {fileID: 4495462042177679745}
   _chargeCounter: {fileID: 6689994835363014263}
   _blinkBoxFrame: {fileID: 7418045440763811608}
+  _autoCastEffectPrefab: {fileID: 2457244515493239830, guid: 98cd52d05be82274fb2e740e6c3b0542, type: 3}
 --- !u!1 &6492581821491612484
 GameObject:
   m_ObjectHideFlags: 0

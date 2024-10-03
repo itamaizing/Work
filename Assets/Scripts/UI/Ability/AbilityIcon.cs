@@ -14,9 +14,13 @@ public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHa
     [SerializeField] private GameObject _abilityNameBox;
     [SerializeField] private TextMeshProUGUI _name;
     [SerializeField] private TextMeshProUGUI _description;
+    [SerializeField] private AutoCastParticles _autoCastEffectPrefab;
+
 
     private FillAmountOverTime _castLine;
     private Skill _ability;
+    private AutoCastParticles _autoCastEffect;
+
 
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -42,6 +46,12 @@ public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHa
             _chargeCounter.enabled = true;
             OnCurrentChargeText(ability.Chargers);
         }
+
+        if (ability is AutoAttackSkill)
+        {
+            _autoCastEffect = Instantiate(_autoCastEffectPrefab, transform);
+        }
+
         SubscribingSkillOnEvents(ability);
     }
 
@@ -124,7 +134,20 @@ public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHa
         _castLine.gameObject.SetActive(false);
         _castLine.Stop();
     }
-    
+
+    private void OnStartAuto()
+    {
+        _autoCastEffect.gameObject.SetActive(true);
+        _autoCastEffect.Play();
+        Debug.LogWarning("OnStartAuto!");
+    }
+
+    private void OnEndAuto()
+    {
+        _autoCastEffect.gameObject.SetActive(false);
+        Debug.LogWarning("OnEndAuto!!!!!!!!!!!!!!!");
+    }
+
     private void SubscribingSkillOnEvents(Skill ability)
     {
         ability.CastStreamStarted += OnStartStreaming;
@@ -134,6 +157,15 @@ public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHa
         ability.Canceled += OnStopCastDeley;
 
         ability.CooldownStarted += OnStartCooldown;
+
+        if (ability is AutoAttackSkill autoAttackSkill)
+        {
+            autoAttackSkill.Canceled += OnEndAuto;
+            autoAttackSkill.CastPaused += OnEndAuto;
+            autoAttackSkill.CastStarted += OnStartAuto;
+            autoAttackSkill.CastContinued += OnStartAuto;
+            //autoAttackSkill.AutoCastEnded +=
+        }
     }
 
     private void UnsubscribingSkillOnEvents(Skill ability)
@@ -145,5 +177,15 @@ public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHa
         ability.Canceled -= OnStopCastDeley;
 
         ability.CooldownStarted -= OnStartCooldown;
+
+        if (ability is AutoAttackSkill autoAttackSkill)
+        {
+            autoAttackSkill.Canceled -= OnEndAuto;
+            autoAttackSkill.CastPaused -= OnEndAuto;
+            autoAttackSkill.CastStarted -= OnStartAuto;
+            autoAttackSkill.CastContinued -= OnStartAuto;
+            //autoAttackSkill.AutoCastEnded -=
+        }
+
     }
 }
