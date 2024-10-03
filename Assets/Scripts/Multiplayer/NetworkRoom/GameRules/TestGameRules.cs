@@ -17,7 +17,7 @@ public class TestGameRules : GameRules
     {
         StartCoroutine(HandleTeamsAndSpawns(spawnPoints));
 
-        foreach (var playerSettings in _playersSettings)
+        foreach (var playerSettings in _players)
         {
             var health = playerSettings.NetworkSettings.CachedHealth;
             if (health != null)
@@ -34,7 +34,7 @@ public class TestGameRules : GameRules
     {
         _teams = FindObjectOfType<TeamsPanel>();
 
-        foreach (var playerSettings in _playersSettings)
+        foreach (var playerSettings in _players)
         {
             if (playerSettings.NetworkSettings.TeamIndex == 1)
             {
@@ -49,7 +49,7 @@ public class TestGameRules : GameRules
 
     public void OnPlayerDeath(GameObject player)
     {
-        var playerSettings = _playersSettings.Find(p => p.gameObject == player);
+        var playerSettings = _players.Find(p => p.gameObject == player);
         if (playerSettings == null || playerSettings.NetworkSettings.TeamIndex < 1 || playerSettings.NetworkSettings.TeamIndex > 2) return;
 
         teamDeaths[playerSettings.NetworkSettings.TeamIndex]++;
@@ -71,7 +71,7 @@ public class TestGameRules : GameRules
     private int GetTeamCount(int teamIndex)
     {
         int count = 0;
-        foreach (var playerSettings in _playersSettings)
+        foreach (var playerSettings in _players)
         {
             if (playerSettings.NetworkSettings.TeamIndex == teamIndex)
             {
@@ -92,7 +92,7 @@ public class TestGameRules : GameRules
         teamDeaths[1] = 0;
         teamDeaths[2] = 0;
 
-        foreach (var playerSettings in _playersSettings)
+        foreach (var playerSettings in _players)
         {
             var health = playerSettings.NetworkSettings.CachedHealth;
             health?.ResetValue();
@@ -110,7 +110,7 @@ public class TestGameRules : GameRules
     private IEnumerator HandleTeamsAndSpawns(List<Transform> spawnPoints)
     {
         yield return StartCoroutine(SplitTeams(spawnPoints));
-        foreach (var playerSettings in _playersSettings)
+        foreach (var playerSettings in _players)
         {
             int spawnIndex = playerSettings.NetworkSettings.TeamIndex - 1;
             if (_spawnPoints != null && spawnIndex >= 0 && spawnIndex < _spawnPoints.Count)

@@ -34,7 +34,6 @@ public class MinionPanel : MonoBehaviour
         {
             foreach (var item in hero.SpawnComponent.Units)
             {
-                Debug.Log(123123123121232);
                 var temp = Instantiate(_minionIconPref, transform);
                 temp.Init(item);
                 _minionIcons.Add(temp);
@@ -66,7 +65,7 @@ public class MinionPanel : MonoBehaviour
         UpdatePanel();
     }
     
-    private void OnUnitRemoved(MinionComponent minion)
+    private void OnUnitRemoved()
     {
         UpdatePanel();
     }
