@@ -138,6 +138,13 @@ public class SkillManager : MonoBehaviour
             InputHandler.OnAltClick -= CancelSkillCast;
 
             InputHandler.OnCast -= SelectSkill;
+
+            if (_selectedSkill != null && _selectedSkill.IsPreparing)
+            {
+                _selectedSkill.TryCancel();
+
+                DeselectSkill();
+            }
         }
     }
 
