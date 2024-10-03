@@ -76,6 +76,8 @@ public abstract class Skill : NetworkBehaviour
     protected Coroutine _rechargeJob;
     protected Coroutine _castDeleyCoroutine;
     protected Coroutine _castStreamCoroutine;
+    protected Transform _tempTargetForDamage;
+    protected Health _tempHPForDamage;
 
     private int _currentChargers;
     private float _remainingCooldownTime;
@@ -84,10 +86,7 @@ public abstract class Skill : NetworkBehaviour
     private Coroutine _actionWrapperForCastCoroutine;
     private bool _isPreparing = false;
     private bool _isCasting = false;
-    private Transform _tempTargetForDamage;
-    private Health _tempHPForDamage;
     private bool _isClick;
-    private Character _tempTarget;
 
     public bool GetMouseButton { get => _isClick; }
     public bool IsSubjectToGlobalCooldownTime { get => _isSubjectToGlobalCooldownTime; }
@@ -171,7 +170,7 @@ public abstract class Skill : NetworkBehaviour
 
     public bool TryCast()
     {
-        if (IsHaveResources && IsCanCast && _isCasting == false && NoObstacles())
+        if (IsHaveResources && IsCanCast && _isCasting == false)
         {
             TryPayCost(IsPayCostStartCooldown);
             _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
@@ -191,7 +190,6 @@ public abstract class Skill : NetworkBehaviour
             ClearData();
 
             CancelCoroutine(_castCoroutine);
-
             if (_actionWrapperForCastCoroutine != null)
             {
                 StopCoroutine(_actionWrapperForCastCoroutine);
@@ -220,8 +218,6 @@ public abstract class Skill : NetworkBehaviour
                 InputHandler.OnClickCanceled -= OnClickCanceled;
                 OnClickCanceled();
             }
-
-            _tempTarget = null;
 
             return true;
         }
@@ -401,7 +397,6 @@ public abstract class Skill : NetworkBehaviour
                 }
             }
         }
-        _tempTarget = target;
         return target;
     }
 
@@ -460,14 +455,6 @@ public abstract class Skill : NetworkBehaviour
     protected bool NoObstacles(Vector3 target, LayerMask obstacle)
     {
         return NoObstacles(target, transform.position, obstacle);
-    }
-    
-    protected bool NoObstacles()
-    {
-        if(_tempTarget != null)
-            return NoObstacles(_tempTarget.transform.position, transform.position, _obstacle);
-
-        return true;
     }
 
     protected Coroutine StartCastDeleyCoroutine()
@@ -571,10 +558,6 @@ public abstract class Skill : NetworkBehaviour
 
         while (time < CastDeley)
         {
-            if(NoObstacles() == false)
-            {
-                TryCancel(true);
-            }
             time += Time.deltaTime;
             yield return null;
         }

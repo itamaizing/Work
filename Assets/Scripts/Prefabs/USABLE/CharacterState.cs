@@ -249,10 +249,11 @@ public class CharacterState : NetworkBehaviour
 		[States.ReversePolarity] = new ReversePolarityState(),
 		[States.SpiritEnergy] = new SpiritEnergyState(),
 		[States.SpiritHealth] = new SpiritHealthState(),
-		[States.SparkTalentHealthBuff] = new SparkTalentHealthState(),
-		[States.DefenseReduction] = new DefenceReductionState(),
-		[States.EmeraldSkin] = new EmeraldSkinState()
-	};
+		[States.ScorchedSoul] = new ScorchedSoul(),
+        [States.Knockdown] = new Knockdown(),
+        [States.IdealEvade] = new IdealEvade(),
+        [States.Bleeding] = new BleedingDebuff(),
+    };
 
 	public void Initialize(Character hero)
 	{
@@ -517,8 +518,10 @@ public enum States
 	SpiritEnergy,
 	SpiritHealth,
 	TiredSoul,
-	SparkTalentHealthBuff,
-	DefenseReduction,
-	EmeraldSkin
+	ScorchedSoul,
+	Knockdown,
+	IdealEvade,
+	Bleeding,
+
 }
 
