@@ -59,7 +59,7 @@ public class UIPlayerComponents : MonoBehaviour
         popupTextPrefab.EndColor = endColor;
     }
 
-    private void OnDamageTaken(float value, DamageType damageType)
+    private void OnDamageTaken(float value, DamageType damageType, Skill skill)
     {
         switch (damageType)
         {

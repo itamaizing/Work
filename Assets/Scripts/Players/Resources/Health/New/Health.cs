@@ -23,8 +23,8 @@ public class Health : Resource, IDamageable, IHealingable
     public List<IDamageable> Shields { get => _shields; }
 
     public event Action Evaded;
-    public event Action<float> HealTaked;
-    public event Action<float, DamageType> DamageTaken;
+    public event Action<float , Skill> HealTaked;
+    public event Action<float, DamageType, Skill> DamageTaken;
     public event Action Died;
 
     public override void Initialize(float health, float hpRegen, float hpRegenDelay, CharacterData data)
@@ -55,7 +55,7 @@ public class Health : Resource, IDamageable, IHealingable
             ClientRpcDied();
             Died?.Invoke();
         }
-        ClientRpcDamageTaked(damage.Value, damage.Type);
+        ClientRpcDamageTaked(damage.Value, damage.Type, skill);
         _sumDamageTaken += damage.Value;
         return true;
     }
@@ -66,10 +66,10 @@ public class Health : Resource, IDamageable, IHealingable
         TryTakeDamage(ref damage, null);
     }
 
-    public void Heal(float value)
+    public void Heal(float value, Skill skill = null)
     {
         Add(value);
-        HealTaked?.Invoke(value);
+        HealTaked?.Invoke(value, skill);
     }
 
     public void SetEvadeMagic(float value)
@@ -147,9 +147,9 @@ public class Health : Resource, IDamageable, IHealingable
     }
 
     [ClientRpc]
-    private void ClientRpcDamageTaked(float damageTaken, DamageType damageType)
+    private void ClientRpcDamageTaked(float damageTaken, DamageType damageType, Skill skill)
     {
-        DamageTaken?.Invoke(damageTaken, damageType);
+        DamageTaken?.Invoke(damageTaken, damageType, skill);
     }
 
     [ClientRpc]
