@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class AbsoluteAccuracy : Skill
+public class ColdBlood: Skill
 {
     [Header("Talent")]
-    [SerializeField] private AbsoluteAccuracyTalent _absoluteAccuracyTalent;
+    [SerializeField] private ColdBloodEnabledTalent _coldBloodEnabledTalent;
+    [SerializeField] private ColdBloodTalent _coldBloodTalent;
     [SerializeField] private KillersStamina _killersStamina;
-    [SerializeField] private ColdBlood _coldBlood;
 
     [Header("Ability Properties")]
     [SerializeField] private CreeperStrike _creeperStrike;
@@ -25,10 +25,12 @@ public class AbsoluteAccuracy : Skill
     private bool _isCanCritLightningStrikes;
     private bool _isCanCast = false;
 
+    private Coroutine _waitingHitFromCreeperStrike;
+
     public bool IsCanCritCreeperStrike { get => _isCanCritCreeperStrike; set => _isCanCritCreeperStrike = value; }
     public bool IsCanCritLightningStrikes { get => _isCanCritLightningStrikes; set => _isCanCritLightningStrikes = value; }
 
-    protected override bool IsCanCast { get { return _absoluteAccuracyTalent.IsActive; } }
+    protected override bool IsCanCast { get { return _coldBloodEnabledTalent.IsActive; } }
 
     protected override void ClearData()
     {
@@ -40,24 +42,30 @@ public class AbsoluteAccuracy : Skill
         {
             _player.CharacterState.CmdRemoveState(States.Immateriality);
         }
+
+        if (_waitingHitFromCreeperStrike != null)
+        {
+            StopCoroutine(_waitingHitFromCreeperStrike);
+            _waitingHitFromCreeperStrike = null;
+        }
     }
 
     protected override IEnumerator PrepareJob()
     {
         _player.CharacterState.CmdAddState(States.Immateriality, 0, 0, _player.gameObject, Name);
 
-        if (_absoluteAccuracyTalent.IsActive)
+        if (_coldBloodEnabledTalent.IsActive)
         {
-            if (_coldBlood.IsActive)
+            if (_coldBloodTalent.IsActive)
             {
                 while (_target == null && float.IsPositiveInfinity(_mousePosition.x))
                 {
                     if (GetMouseButton)
                     {
                         _target = GetRaycastTarget(true);
-                        Debug.Log("AbsoluteAccurcay / PrepareJob / Input.GetMouseButtonDown / target == " + _target);
+                        Debug.Log("ColdBlood / PrepareJob / Input.GetMouseButtonDown / target == " + _target);
                         _mousePosition = GetMousePoint();
-                        Debug.Log("AbsoluteAccurcay / PrepareJob / Input.GetMouseButtonDown / _mousePosition == " + _mousePosition);
+                        Debug.Log("ColdBlood / PrepareJob / Input.GetMouseButtonDown / _mousePosition == " + _mousePosition);
 
                         if (_target != _player)
                         {
@@ -83,7 +91,7 @@ public class AbsoluteAccuracy : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_coldBlood.IsActive)
+        if (_coldBloodTalent.IsActive)
         {
             UseAbilityWithTalent();
         }
@@ -91,7 +99,7 @@ public class AbsoluteAccuracy : Skill
         {
             UseAbilityWithoutTalent();
         }
-        yield return null;
+        yield return _waitingHitFromCreeperStrike = StartCoroutine(WaitingHitFromCreeperStrikeJob());
     }
 
     public void ReducingAbilityCooldown()
@@ -100,17 +108,25 @@ public class AbsoluteAccuracy : Skill
         ReductionSetCooldown(CooldownTime / reducingMultiplier);
     }
 
+    private IEnumerator WaitingHitFromCreeperStrikeJob()
+    {
+        while (!_creeperStrike.IsHit)
+        {
+            yield return null;    
+        }
+    }
+
     private void UseAbilityWithTalent()
     {
         if (_isPlayer)
         {
             ReductionSetCooldown(_cooldownTimeWithTalent);
-            Debug.Log("AbsoluteAccuracy / UseAbilityWithTalent / if _isPlayer == true");
+            Debug.Log("ColdBlood / UseAbilityWithTalent / if _isPlayer == true");
             _player.CharacterState.Dispel(StateType.Physical);
         }
         else
         {
-            Debug.Log("AbsoluteAccuracy / UseAbilityWithTalent / else if _isPlayer == false");
+            Debug.Log("ColdBlood / UseAbilityWithTalent / else if _isPlayer == false");
             if (_killersStamina.IsActive)
             {
                 _isCanCritLightningStrikes = true;
@@ -122,7 +138,7 @@ public class AbsoluteAccuracy : Skill
 
     private void UseAbilityWithoutTalent()
     {
-        Debug.Log("AbsoluteAccuracy / UseAbilityWithoutTalent");
+        Debug.Log("ColdBlood / UseAbilityWithoutTalent");
         if (_killersStamina.IsActive)
         {
             _isCanCritLightningStrikes = true;

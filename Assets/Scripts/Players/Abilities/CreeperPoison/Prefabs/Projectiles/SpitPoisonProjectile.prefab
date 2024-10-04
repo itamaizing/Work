@@ -53,6 +53,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _rbBall: {fileID: 4203435246731193498}
+  _spriteRenderer: {fileID: 7660267703510847846}
   _hitEffect: {fileID: 0}
   _colliderBall: {fileID: 1593443830899751966}
   _maxDistance: 5
@@ -184,7 +185,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneId: 0
-  _assetId: 69187520
+  _assetId: 4232754215
   serverOnly: 0
   visibility: 0
   hasSpawned: 0

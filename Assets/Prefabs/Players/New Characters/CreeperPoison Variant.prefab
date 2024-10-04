@@ -414,7 +414,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f30962dd1626e2843a0e7b51a3758ca1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
+  syncDirection: 1
   syncMode: 0
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 3f2366dd6c4aabe499c9701e0d47053b, type: 2}
@@ -449,6 +449,7 @@ MonoBehaviour:
   _attackZoneSize: 3
   _attackSpeed: 1
   Enabled: 0
+  _releaseFromSecrecy: {fileID: 4261495663356130338}
   _strokesOfAspiration: {fileID: 7073961509244296273}
   _assasinPoison: {fileID: 4404074918470353249}
   _desireToHide: {fileID: 3981511465047695186}
@@ -558,6 +559,7 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _healingSpitPoison: {fileID: 3054480961841619223}
   _healPoisonCloud: {fileID: 6042324801507634549}
+  _transparentPoisons: {fileID: 4000357412165628033}
   _projectile: {fileID: 9185291158651071422, guid: 482b668adc1f199488e67f043ae88aa9, type: 3}
   _player: {fileID: 7418347446368758987}
   _poisonDamagingCloudPrefab: {fileID: 8376359178360537337, guid: 6684174cfea68c84b9bd06aa086faa01, type: 3}
@@ -606,6 +608,7 @@ MonoBehaviour:
   _isAutoRadiusRender: 0
   _isAutoAreaRender: 0
   _isAutoLineRender: 1
+  _transparentPoisons: {fileID: 4000357412165628033}
   _footInstincts: {fileID: 6032423868418649636}
   _healingPoisonBall: {fileID: 6226770535792628616}
   _healPoisonCloud: {fileID: 6042324801507634549}
@@ -619,10 +622,10 @@ MonoBehaviour:
   _volatilityOfPoisons: {fileID: 1300421091567981635}
   _spitPoison: {fileID: 802699897452820110}
   _projectile: {fileID: 5760352791335105038, guid: e10de4766c6824742936021d88676570, type: 3}
-  _poisonDamagingCloudPrefab: {fileID: 8376359178360537337, guid: 6684174cfea68c84b9bd06aa086faa01, type: 3}
-  _poisonHealingCloudPrefab: {fileID: -4967518069141830548, guid: 835486046afaafa48885a183fcb94bd6, type: 3}
   _player: {fileID: 7418347446368758987}
   _arrowPrefab: {fileID: 7504653704119560997, guid: 3a5dc46a6d592b84cbd6cd33fdf012dc, type: 3}
+  _poisonDamagingCloudPrefab: {fileID: 8376359178360537337, guid: 6684174cfea68c84b9bd06aa086faa01, type: 3}
+  _poisonHealingCloudPrefab: {fileID: -4967518069141830548, guid: 835486046afaafa48885a183fcb94bd6, type: 3}
 --- !u!114 &5600781172362582590
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -727,8 +730,6 @@ MonoBehaviour:
   _isAutoRadiusRender: 0
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
-  IsInvisible: 0
-  IsReadyToThreeHitForPreparingForFightTalent: 0
   _releaseFromSecrecy: {fileID: 4261495663356130338}
   _desireToHide: {fileID: 3981511465047695186}
   _firstStrike: {fileID: 5766639897481413642}
@@ -736,10 +737,10 @@ MonoBehaviour:
   _transparentPoisons: {fileID: 4000357412165628033}
   _preparingForFight: {fileID: 2159678125995542759}
   _concentratedPrecision: {fileID: 6607662620547331670}
+  _creeperStrike: {fileID: 2763546955420911548}
   _absoluteAccuracy: {fileID: 5368158944462154771}
   _player: {fileID: 7418347446368758987}
   _playerSprite: {fileID: 8177187794205530612}
-  _selectCircle: {fileID: 4461633737091283459}
 --- !u!114 &9127317757044389529
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -837,9 +838,9 @@ MonoBehaviour:
   _isAutoRadiusRender: 0
   _isAutoAreaRender: 0
   _isAutoLineRender: 1
+  _transparentPoisons: {fileID: 4000357412165628033}
   _player: {fileID: 7418347446368758987}
   _tongueProjectile: {fileID: 5721942681369797396, guid: 4887b73d8e08c4647b295b2809cf166d, type: 3}
-  Enabled: 0
 --- !u!114 &410387297614010480
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1058,11 +1059,6 @@ CircleCollider2D:
 --- !u!1 &3609217776770930877 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2405933287821990874, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
-  m_PrefabInstance: {fileID: 1402048720121234279}
-  m_PrefabAsset: {fileID: 0}
---- !u!212 &4461633737091283459 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 3359680783071017316, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
   m_PrefabInstance: {fileID: 1402048720121234279}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &5036394122529896271 stripped

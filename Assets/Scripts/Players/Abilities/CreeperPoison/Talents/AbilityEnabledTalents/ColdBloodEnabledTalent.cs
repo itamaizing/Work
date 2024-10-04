@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-public class AbsoluteAccuracyTalent : Talent
+public class ColdBloodEnabledTalent : Talent
 {
-    [SerializeField] private AbsoluteAccuracy _absoluteAccuracy;
+    [SerializeField] private ColdBlood _coldBlood;
     [SerializeField] private SkillManager _skillManager;
 
     private void Start()
@@ -16,9 +17,9 @@ public class AbsoluteAccuracyTalent : Talent
     public override void Enter()
     {
         SetActive(true);
-        if (_skillManager.Abilities.Contains(_absoluteAccuracy))
+        if (_skillManager.Abilities.Contains(_coldBlood))
         {
-            _skillManager.AddSkill(_absoluteAccuracy);
+            _skillManager.AddSkill(_coldBlood);
         }
 
     }
@@ -26,14 +27,13 @@ public class AbsoluteAccuracyTalent : Talent
     public override void Exit()
     {
         SetActive(false);
-        if (_skillManager.Abilities.Contains(_absoluteAccuracy))
+        if (_skillManager.Abilities.Contains(_coldBlood))
         {
-            _skillManager.RemoveSkill(_absoluteAccuracy);
+            _skillManager.RemoveSkill(_coldBlood);
         }
         else
         {
-            _skillManager.RemoveSkill(_absoluteAccuracy);
+            _skillManager.RemoveSkill(_coldBlood);
         }
     }
-
 }

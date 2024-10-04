@@ -19,11 +19,11 @@ public class PoisonBallProjectile : NetworkBehaviour
     [SerializeField] private Character _player;
 
     private Skill _skill;
-
     private HealingPoisonBall _healingPoisonBall;
     private FootInstincts _footInstincts;
 
     private int _currentCountBall;
+    [SyncVar] private int _teamIndex;
 
     #region FloatVariables
 
@@ -52,6 +52,7 @@ public class PoisonBallProjectile : NetworkBehaviour
     private bool _isActvieWitheringPoison;
     private bool _isActiveVoluminousBall;
     private bool _isPushTarget;
+    private bool _isPlayerInvisible;
 
     #endregion
 
@@ -59,26 +60,23 @@ public class PoisonBallProjectile : NetworkBehaviour
 
     private void Start()
     {
+        if (isServer && _isPlayerInvisible)
+        {
+            RpcNewTransparencySprite();
+        }
         _durationPush = 1.0f;
-        //InitializationComponentsForCountProjectile();
     }
 
     private void InitializationComponentsForCountProjectile()
     {
         _poisonBall = _player.GetComponentInChildren<PoisonBall>();
         _currentCountBall = _poisonBall.CurrentCountBall;
-        //Debug.Log("PoisonBallProjectile / currentCount = " + _currentCountBall);
         _footInstincts = _poisonBall.FootInstinctsTalent;
     }
 
     [Server]
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("Collision = " + collision.gameObject);
-        Debug.Log("Player = " + _player.gameObject);
-
-        Debug.Log(collision.gameObject == _player.gameObject);
-
         if (_isActiveHealingPoisonBall)
         {
             if (_isPlayer)
@@ -293,21 +291,28 @@ public class PoisonBallProjectile : NetworkBehaviour
     #region InitializationProjectiles
 
     public void InitializationProjectileForPoisonBall(Character dad, float energyDad, float multiplierDistance, Skill skill,
-        bool isActiveTalentHealingPoisonBall, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, bool isAlly,
-        bool isActiveTalentWitheringPoison, bool isPushTarget, bool isActiveVoluminousBall)
+        bool isActiveTalentHealingPoisonBall, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies,
+        bool isActiveTalentWitheringPoison, bool isPushTarget, bool isActiveVoluminousBall, bool isPlayerInvisible)
     {
         _player = dad;
         _energyDad = energyDad;
         _skill = skill;
+
         _isPushTarget = isPushTarget;
         _isPlayer = isTargetPlayer;
         _isAllies = isTargetAllies;
         _isEnemy = isTargetEnemy;
-        _isAlly = isAlly;
+
         _isActiveHealingPoisonBall = isActiveTalentHealingPoisonBall;
         _isActvieWitheringPoison = isActiveTalentWitheringPoison;
         _isActiveVoluminousBall = isActiveVoluminousBall;
+        _isPlayerInvisible = isPlayerInvisible;
+
         _multiplierDistanceFromTalent = multiplierDistance;
+
+        int teamIndex = _player.GetComponentInParent<UserNetworkSettings>().TeamIndex;
+        _teamIndex = teamIndex;
+
         #region VoluminousBallTalentIsActvie
 
         if (_isActiveVoluminousBall)
@@ -324,5 +329,29 @@ public class PoisonBallProjectile : NetworkBehaviour
         InitializationComponentsForCountProjectile();
     }
 
+    [ClientRpc]
+    private void RpcNewTransparencySprite()
+    {
+        var localPlayer = NetworkClient.connection.identity.GetComponent<UserNetworkSettings>();
+        _isAlly = localPlayer.TeamIndex == _teamIndex;
+
+        Color originalColor = _spriteRenderer.color;
+
+        if (_spriteRenderer != null)
+        {
+            if (_isAlly)
+            {
+                Color newTransparencySprite = originalColor;
+                newTransparencySprite.a = 0.5f;
+                _spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, newTransparencySprite.a);
+            }
+            else
+            {
+                Color newTransparencySprite = originalColor;
+                newTransparencySprite.a = 0.0f;
+                _spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, newTransparencySprite.a);
+            }
+        }
+    }    
     #endregion
 }

@@ -27,6 +27,7 @@ public class StrokesOfAspiration : Talent
         if (_creeperStrike.Buff.AttackSpeed.Multiplier < 1.0f)
         {
             _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_timeBetweenAttack);
+            Debug.Log("StrokeOfAspiration / Reduction AttackSpeed = " + _creeperStrike.Buff.AttackSpeed.Multiplier);
         }
     }
 

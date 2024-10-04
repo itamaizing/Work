@@ -8,7 +8,15 @@ public class TransparentPoisons : Talent
     [SerializeField] private PoisonBall _poisonBall;
     [SerializeField] private SpitPoison _spitPoison;
 
-    private float _increaseManaCostValue = 1.3f; 
+    private float _increaseManaCostValue = 1.3f;
+    private bool _isPlayerInvisible;
+
+    public bool IsPlayerInvisible { get => _isPlayerInvisible; }
+
+    private void Start()
+    {
+        Enter();
+    }
 
     public override void Enter()
     {
@@ -20,22 +28,23 @@ public class TransparentPoisons : Talent
         SetActive(false);
     }
 
-    public void IncreaseManaCost()
+    public void IncreaseManaCost(bool isInvisible)
     {
-        CmdIncreaseManaCost();
+        _isPlayerInvisible = isInvisible;
+        CmdIncreaseManaCost(isInvisible);
     }
 
     [Command]
-    private void CmdIncreaseManaCost()
+    private void CmdIncreaseManaCost(bool isInvisible)
     {
         _poisonBall.Buff.ManaCost.IncreasePercentage(_increaseManaCostValue);
         _spitPoison.Buff.ManaCost.IncreasePercentage(_increaseManaCostValue);
 
-        RpcIncreaseManaCost();
+        RpcIncreaseManaCost(isInvisible);
     }
 
     [ClientRpc]
-    private void RpcIncreaseManaCost()
+    private void RpcIncreaseManaCost(bool isInvisible)
     {
         _poisonBall.Buff.ManaCost.IncreasePercentage(_increaseManaCostValue);
         _spitPoison.Buff.ManaCost.IncreasePercentage(_increaseManaCostValue);

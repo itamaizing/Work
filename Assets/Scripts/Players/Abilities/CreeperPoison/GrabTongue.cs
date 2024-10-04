@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class GrabTongue : Skill
 {
+    [SerializeField] private TransparentPoisons _transparentPoisons;
     [SerializeField] private Character _player;
     [SerializeField] private GrabTongueProjectile _tongueProjectile;
     private Character _target;
@@ -18,8 +19,7 @@ public class GrabTongue : Skill
 
     private float _maxDistance = 10f;
     private bool _isCanAttract;
-
-    public bool Enabled;
+    private bool _isPlayerInvisible = false;
 
     protected override bool IsCanCast => CheckCanCast();
 
@@ -33,6 +33,15 @@ public class GrabTongue : Skill
 
     protected override IEnumerator PrepareJob()
     {
+        if (_transparentPoisons.IsActive && _player.IsInvisible)
+        {
+            _isPlayerInvisible = true;
+        }
+        else
+        {
+            _isPlayerInvisible = false;
+        }
+
         _startPosition = _player.transform.position;
 
         while (_target == null)
@@ -105,11 +114,11 @@ public class GrabTongue : Skill
     private void CreateTongueProjectile(Character target, Vector3 startPosition, Vector3 endPosition)
     {
         Debug.Log("CreateTongueProjectile");
-        CmdCreateTongueProjectile(target, startPosition, endPosition);
+        CmdCreateTongueProjectile(target, startPosition, endPosition, _isPlayerInvisible);
     }
 
     [Command]
-    private void CmdCreateTongueProjectile(Character target, Vector3 startPosition, Vector3 endPosition)
+    private void CmdCreateTongueProjectile(Character target, Vector3 startPosition, Vector3 endPosition, bool isPlayerInvisible)
     {
         Debug.Log("CmdCreateTongueProjectile");
         GameObject item = Instantiate(_tongueProjectile.gameObject, transform.position, Quaternion.identity);
@@ -118,23 +127,23 @@ public class GrabTongue : Skill
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
         Debug.Log($"CmdCreate // Projectile = {tongueProjectile}, target = {target}");
-        tongueProjectile.InitializationProjectile(_player, target, startPosition, endPosition);
+        tongueProjectile.InitializationProjectile(_player, target, startPosition, endPosition, isPlayerInvisible);
         tongueProjectile.StartTongueAttract();
 
         NetworkServer.Spawn(item);
 
-        RpcInitializationProjectile(tongueProjectile.gameObject, target, startPosition, endPosition);
+        RpcInitializationProjectile(tongueProjectile.gameObject, target, startPosition, endPosition, isPlayerInvisible);
     }
 
     [ClientRpc]
-    private void RpcInitializationProjectile(GameObject projectile, Character target, Vector3 startPosition, Vector3 endPosition)
+    private void RpcInitializationProjectile(GameObject projectile, Character target, Vector3 startPosition, Vector3 endPosition, bool isPlayerInvisible)
     {
         Debug.Log($"RpcCreate //Projectile = {projectile}, target = {target}");
 
         if (target && projectile != null)
         {
             Debug.Log("Rpc // after If");
-            projectile.GetComponent<GrabTongueProjectile>().InitializationProjectile(_player, target, startPosition, endPosition);
+            projectile.GetComponent<GrabTongueProjectile>().InitializationProjectile(_player, target, startPosition, endPosition, isPlayerInvisible);
             projectile.GetComponent<GrabTongueProjectile>().StartTongueAttract();
         }
     }

@@ -14,7 +14,7 @@ public class LightningStrikes : AutoAttackSkill
     private float _timeBaff = 4f;
 
     [Header("Abillity Components")]
-    [SerializeField] private AbsoluteAccuracy _absoluteAccuracy;
+    [SerializeField] private ColdBlood _coldBlood;
     [SerializeField] private LightningMovement _lightningMovement;
     [SerializeField] private CreeperStrike _creeperStrike;
     [SerializeField] private Character _player;
@@ -65,7 +65,7 @@ public class LightningStrikes : AutoAttackSkill
 
     protected override void CastAction()
     { 
-        if (_absoluteAccuracy.IsCanCritLightningStrikes && !_isIncreaseCooldownTime)
+        if (_coldBlood.IsCanCritLightningStrikes && !_isIncreaseCooldownTime)
         {
             float newCooldownTime = _cooldownTime * _cooldownMultiplier;
             this.IncreaseSetCooldown(newCooldownTime);
@@ -111,11 +111,11 @@ public class LightningStrikes : AutoAttackSkill
 
             _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_attackSpeedDeacrease);
 
-            if (_absoluteAccuracy.IsCanCritLightningStrikes)
+            if (_coldBlood.IsCanCritLightningStrikes)
             {
                 Debug.Log("if _absoluteAccucary.ISCanCritLightningStrikes");
-                _absoluteAccuracy.IsCanCritLightningStrikes = false;
-                _absoluteAccuracy.IsCanCritCreeperStrike = false;
+                _coldBlood.IsCanCritLightningStrikes = false;
+                _coldBlood.IsCanCritCreeperStrike = false;
                 _isIncreaseCooldownTime = false;
             }
         }

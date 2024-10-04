@@ -16,14 +16,23 @@ public class GrabTongueProjectile : NetworkBehaviour
     private Vector3 _startPosition;
     private Vector3 _endPosition;
 
+    private int _teamIndex;
+
     private float _moveSpeedDirectionFromPlayer = 0.2f; // speed projectile 0.2 cell per second
     private float _moveSpeedDirectionToPlayer = 1.2f; // speed projectile 0.6 cell per second
+
+    private bool _isPlayerInvisible;
+    private bool _isAlly;
 
     private Coroutine _toungeToTargetCoroutine;
     private Coroutine _toungeFromPlayerCoroutine;
 
     private void Start()
     {
+        if (isServer && _isPlayerInvisible)
+        {
+            RpcNewTransparencySprite();
+        }
         _lineRenderer.positionCount = 2;
     }
 
@@ -76,7 +85,6 @@ public class GrabTongueProjectile : NetworkBehaviour
         DestoryProjectile();
     }
 
-    [Server]
     private void PullTarget(Vector3 direction, float time)
     {
         if (!_targetCharacterState.CheckForState(States.Immateriality))
@@ -103,17 +111,55 @@ public class GrabTongueProjectile : NetworkBehaviour
         }
     }
 
-    public void InitializationProjectile(Character player, Character target, Vector3 startPosition, Vector3 endPosition)
+    public void InitializationProjectile(Character player, Character target, Vector3 startPosition, Vector3 endPosition, bool isPlayerInvisible)
     {
         _player = player;
         _target = target;
         _startPosition = startPosition;
         _endPosition = endPosition;
 
+        _isPlayerInvisible = isPlayerInvisible;
+
         _targetMoveComponent = _target.GetComponent<MoveComponent>();
         _targetCharacterState = _target.GetComponent<CharacterState>();
 
         _lineRenderer.SetPosition(0, _startPosition);
         _lineRenderer.SetPosition(1, _endPosition);
+    }
+
+    [ClientRpc]
+    private void RpcNewTransparencySprite()
+    {
+        var localPlayer = NetworkClient.connection.identity.GetComponent<UserNetworkSettings>();
+        _isAlly = localPlayer.TeamIndex == _teamIndex;
+
+        Color originalStartColor = _lineRenderer.startColor;
+        Color originalEndColor = _lineRenderer.endColor;
+
+        if (_lineRenderer != null)
+        {
+            if (_isAlly)
+            {
+                Color newTransparencyStartLine = originalStartColor;
+                Color newTransparencyEndLine = originalEndColor;
+
+                newTransparencyStartLine.a = 0.5f;
+                newTransparencyEndLine.a = 0.5f;
+
+                _lineRenderer.startColor = new Color(originalStartColor.r, originalStartColor.g, originalStartColor.b, newTransparencyStartLine.a);
+                _lineRenderer.endColor = new Color(originalEndColor.r, originalEndColor.g, originalEndColor.b, newTransparencyEndLine.a);
+            }
+            else
+            {
+                Color newTransparencyStartLine = originalStartColor;
+                Color newTransparencyEndLine = originalEndColor;
+
+                newTransparencyStartLine.a = 0.0f;
+                newTransparencyEndLine.a = 0.0f;
+
+                _lineRenderer.startColor = new Color(originalStartColor.r, originalStartColor.g, originalStartColor.b, newTransparencyStartLine.a);
+                _lineRenderer.endColor = new Color(originalEndColor.r, originalEndColor.g, originalEndColor.b, newTransparencyEndLine.a);
+            }
+        }
     }
 }

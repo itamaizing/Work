@@ -7,14 +7,17 @@ using UnityEngine;
 public class SpitPoisonProjectile : NetworkBehaviour
 {
     [SerializeField] private Rigidbody2D _rbBall;
+    [SerializeField] private SpriteRenderer _spriteRenderer;
     [SerializeField] private GameObject _hitEffect;
     [SerializeField] private Collider2D _colliderBall;
     [SerializeField] private float _maxDistance = 5f;
-    [SerializeField] private float _speed = 55f;
+    [SerializeField] private float _speed = 1f;
 
     private Skill _skill;
     private Character _player;
     private Vector2 _startPos;
+
+    [SyncVar] private int _teamIndex;
 
     private float _energyDad;
     private float _damage;
@@ -24,25 +27,15 @@ public class SpitPoisonProjectile : NetworkBehaviour
     private bool _isAllies;
     private bool _isEnemy;
     private bool _isActiveHealingSpitPoison;
+    private bool _isPlayerInvisible;
     private bool _isAlly;
 
-    private void Awake()
+    private void Start()
     {
-        //StartCoroutine(DisableCollider());
-    }
-
-    private IEnumerator DisableCollider()
-    {
-        Collider2D projectileCollider = this.gameObject.GetComponent<Collider2D>();
-
-        projectileCollider.enabled = false;
-        Debug.Log($"Before projectileSpitPoisonCollider enabled == {projectileCollider.enabled}");
-
-        yield return new WaitForSeconds(0.2f);
-        Debug.Log("Two seconds passed");
-
-        projectileCollider.enabled = true;
-        Debug.Log($"After projectileSpitPoisonCollider enabled == {projectileCollider.enabled}");
+        if (isServer && _isPlayerInvisible)
+        {
+            RpcNewTransparencySprite();
+        }
     }
 
     [Server]
@@ -54,7 +47,6 @@ public class SpitPoisonProjectile : NetworkBehaviour
             {
                 if (collision.gameObject == _player.gameObject)
                 {
-                    Debug.Log($"if (IsPlayer) // RegeneratingPoison.SetPlayer == {_player}");
                     _player.CharacterState.AddState(States.RegeneratingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
                     Destroy(gameObject);
                 }
@@ -65,7 +57,6 @@ public class SpitPoisonProjectile : NetworkBehaviour
                 {
                     if (collision.TryGetComponent<Character>(out var alliesHealth))
                     {
-                        Debug.Log($"if (IsAllies) // RegeneratingPoison.SetPlayer == {_player}");
                         alliesHealth.CharacterState.AddState(States.RegeneratingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
                         Destroy(gameObject);
                     }
@@ -109,7 +100,7 @@ public class SpitPoisonProjectile : NetworkBehaviour
 
     public void MoveBallToTarget(Vector3 target)
     {
-        float speed = (_speed / 100f) * 5f;
+        float speed = 10f;
         _rbBall.DOMove(target, speed * _maxDistance / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(Explode);
     }
 
@@ -167,16 +158,44 @@ public class SpitPoisonProjectile : NetworkBehaviour
     }
 
     public void InitializationProjectile(Character dad, Skill skill, float energy,
-        bool isActiveHealingSpitPoison, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies , bool isAlly)
+        bool isActiveHealingSpitPoison, bool isPlayerInvisible, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
     {
         _player = dad;
-        _isActiveHealingSpitPoison = isActiveHealingSpitPoison;
         _energyDad = energy;
         _skill = skill;
+
+        _isActiveHealingSpitPoison = isActiveHealingSpitPoison;
+        _isPlayerInvisible = isPlayerInvisible;
         _isPlayer = isTargetPlayer;
         _isAllies = isTargetAllies;
         _isEnemy = isTargetEnemy;
-        _isAlly = isAlly;
+
+        int teamIndex = _player.GetComponentInParent<UserNetworkSettings>().TeamIndex;
+        _teamIndex = teamIndex;
     }
 
+    [ClientRpc]
+    private void RpcNewTransparencySprite()
+    {
+        var localPlayer = NetworkClient.connection.identity.GetComponent<UserNetworkSettings>();
+        _isAlly = localPlayer.TeamIndex == _teamIndex;
+
+        Color originalColor = _spriteRenderer.color;
+
+        if (_spriteRenderer != null)
+        {
+            if (_isAlly)
+            {
+                Color newTransparencySprite = originalColor;
+                newTransparencySprite.a = 0.5f;
+                _spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, newTransparencySprite.a);
+            }
+            else
+            {
+                Color newTransparencySprite = originalColor;
+                newTransparencySprite.a = 0.0f;
+                _spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, newTransparencySprite.a);
+            }
+        }
+    }
 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ColdBlood : Talent
+public class ColdBloodTalent : Talent
 {
     private void Start()
     {

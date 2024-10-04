@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,10 +11,15 @@ public class ReleaseFromSecrecy : Talent
     private int _maxCountBuff = 1;
     private int _currentCountBuff = 0;
 
-    private float _startTimeDurationBuff = 1.0f;
+    private float _startTimeDurationBuff = 3.0f;
     private float _timeDurationBuff;
 
-    private float _attackSpeedIncrease = 0.5f;
+    private float _attackSpeedIncrease = 0.1f;
+
+    private void Start()
+    {
+        Enter();
+    }
 
     public override void Enter()
     {
@@ -43,12 +49,14 @@ public class ReleaseFromSecrecy : Talent
 
     private void IncreaseAttackSpeed()
     {
+        Debug.Log($"ReleaseFromSecrecy / IncreaseAttackSpeed / _creeperStrike.Buff.AttackSpeed = {_creeperStrike.Buff.AttackSpeed.Multiplier}");
         _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_attackSpeedIncrease);
-        Debug.Log($"ReleaseFromSecrecy / ReturnOriginalAttackSpeed / _creeperStrike.Buff.AttackSpeed.Increase = {_creeperStrike.Buff.AttackSpeed.Multiplier}");
+        Debug.Log($"ReleaseFromSecrecy / IncreaseAttackSpeed / _creeperStrike.Buff.AttackSpeed.Increase = {_creeperStrike.Buff.AttackSpeed.Multiplier}");
     }
 
     private void ReturnOriginalAttackSpeed()
     {
+        Debug.Log($"ReleaseFromSecrecy / ReturnOriginalAttackSpeed / _creeperStrike.Buff.AttackSpeed = {_creeperStrike.Buff.AttackSpeed.Multiplier}");
         _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_attackSpeedIncrease);
         Debug.Log($"ReleaseFromSecrecy / ReturnOriginalAttackSpeed / _creeperStrike.Buff.AttackSpeed.Reduction = {_creeperStrike.Buff.AttackSpeed.Multiplier}");
         _timeDurationBuff = _startTimeDurationBuff;

@@ -51,8 +51,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _lineRenderer: {fileID: -1068938911050769858}
-  _moveSpeedDirectionFromPlayer: 4
-  _moveSpeedDirectionToPlayer: 5
 --- !u!120 &-1068938911050769858
 LineRenderer:
   serializedVersion: 2
@@ -170,7 +168,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneId: 0
-  _assetId: 1091966418
+  _assetId: 3383680839
   serverOnly: 0
   visibility: 0
   hasSpawned: 0

@@ -21,6 +21,7 @@ public struct PoisonBallInfo : NetworkMessage
     public bool IsOriginalTargetAllies;
     public bool IsOriginalTargetPlayer;
 
+    public bool IsActiveTransparentPoisons;
     public bool IsActiveWitheringPoison;
     public bool IsActiveContinuationAmbush; 
     public bool IsActiveHealingPoisonBall;
@@ -30,7 +31,6 @@ public struct PoisonBallInfo : NetworkMessage
     public bool IsActiveInertialGlands;
     public bool IsActiveVolatilityOfPoisons;
     public bool IsHealingPoisonCloud;
-    public bool IsAlly;
 }
 
 public class PoisonBall : Skill
@@ -38,6 +38,7 @@ public class PoisonBall : Skill
     #region Variables
 
     [Header("Talents")]
+    [SerializeField] private TransparentPoisons _transparentPoisons;
     [SerializeField] private FootInstincts _footInstincts;
     [SerializeField] private HealingPoisonBall _healingPoisonBall;
     [SerializeField] private HealPoisonCloud _healPoisonCloud;
@@ -53,6 +54,8 @@ public class PoisonBall : Skill
     [Header("Ability properties")]
     [SerializeField] private SpitPoison _spitPoison;
     [SerializeField] private PoisonBallProjectile _projectile;
+    [SerializeField] private Character _player;
+    [SerializeField] private GameObject _arrowPrefab;
 
     #region PoisonCloud
     [SerializeField] private PoisonDamagingCloudPrefab _poisonDamagingCloudPrefab;
@@ -61,9 +64,6 @@ public class PoisonBall : Skill
     private PoisonHealingCloudPrefab _poisonHealingCloud;
     private float _durationPoisonCloud = 6f;
     #endregion
-
-    [SerializeField] private Character _player;
-    [SerializeField] private GameObject _arrowPrefab;
 
     private PoisonBallInfo _poisonBallInfo = new PoisonBallInfo();
 
@@ -94,6 +94,7 @@ public class PoisonBall : Skill
     private bool _colorLockedAfterSecondClick = false;
     private bool _colorLockedAfterThirdClick = false;
     private bool _isBallCanBigger = false;
+    private bool _isPlayerInvisible = false;
 
     #endregion
 
@@ -106,7 +107,6 @@ public class PoisonBall : Skill
     public FootInstincts FootInstinctsTalent { get; set; }
     public ContinuationAmbush ContinuationAmbushTalent { get; set; }
     public int CurrentCountBall { get => _poisonBallInfo.CountProjectiles; }
-
 
     #endregion
 
@@ -452,6 +452,7 @@ public class PoisonBall : Skill
 
     private void CheckingActiveTalents()
     {
+        _poisonBallInfo.IsActiveTransparentPoisons = _transparentPoisons.IsActive;
         _poisonBallInfo.IsActiveWitheringPoison = _witheringPoison.IsActive;
         _poisonBallInfo.IsActiveContinuationAmbush = _continuationAmbush.IsActive;
         _poisonBallInfo.IsActiveHealingPoisonBall = _healingPoisonBall.IsActive;
@@ -460,6 +461,19 @@ public class PoisonBall : Skill
         _poisonBallInfo.IsActiveVoluminousBall = _voluminousBall.IsActive;
         _poisonBallInfo.IsActiveInertialGlands = _inertialGlands.IsActive;
         _poisonBallInfo.IsActiveVolatilityOfPoisons = _volatilityOfPoisons.IsActive;
+
+        #region TransparentPoisonsTalentIsActive
+
+        if (_transparentPoisons.IsActive && _player.IsInvisible)
+        {
+            _isPlayerInvisible = true;
+        }
+        else
+        {
+            _isPlayerInvisible = false;
+        }
+
+        #endregion
 
         #region VolatilityOfPoisonsTalentIsActive
 
@@ -684,7 +698,7 @@ public class PoisonBall : Skill
         {
             CmdCreateProjectileForTarget(_currentTarget.gameObject, _currentTarget.transform.position, _poisonBallInfo.MaxCountProjectile, 
                 _multiplierForPushDistance,
-                _isFast, _isPushTarget,
+                _isFast, _isPushTarget, _isPlayerInvisible,
                 _poisonBallInfo.IsActiveHealingPoisonBall, _poisonBallInfo.IsActiveWitheringPoison, _poisonBallInfo.IsActiveVoluminousBall,
                 _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies);
 
@@ -694,7 +708,7 @@ public class PoisonBall : Skill
         {
             CmdCreateProjectileForFlyingMaxDistance(_firstMousePosition, _poisonBallInfo.MaxCountProjectile,
                 _multiplierForPushDistance,
-                _isFast, _isPushTarget,
+                _isFast, _isPushTarget, _isPlayerInvisible,
                 _poisonBallInfo.IsActiveHealingPoisonBall, _poisonBallInfo.IsActiveWitheringPoison, _poisonBallInfo.IsActiveVoluminousBall,
                 _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies);
 
@@ -708,12 +722,11 @@ public class PoisonBall : Skill
 
     [Command]
     private void CmdCreateProjectileForTarget(GameObject target, Vector3 targetOrPoint, int maxCountProjectiles, float multiplierForPushDistance,
-        bool isFast, bool isPushTarget,
+        bool isFast, bool isPushTarget, bool isPlayerInvisible,
         bool isActiveHealingPoisonBall, bool isActiveWitheringPoison, bool isActiveVoluminousBall,
         bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies)
-        
+
     {
-        PlayerTeamIndex(target);
         CurrentTarget = target;
         FootInstinctsTalent = _footInstincts;
 
@@ -757,7 +770,7 @@ public class PoisonBall : Skill
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
         poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.CurrentValue, multiplierForPushDistance, this, isActiveHealingPoisonBall,
-            isTargetPlayer, isTargetEnemy, isTargetAllies, _poisonBallInfo.IsAlly, isActiveWitheringPoison, isPushTarget, isActiveVoluminousBall);
+            isTargetPlayer, isTargetEnemy, isTargetAllies, isActiveWitheringPoison, isPushTarget, isActiveVoluminousBall, isPlayerInvisible);
 
         poisonBallProjectile.MoveBallToTarget(targetOrPoint, isFast);
 
@@ -774,11 +787,10 @@ public class PoisonBall : Skill
 
     [Command]
     private void CmdCreateProjectileForFlyingMaxDistance(Vector3 point, int maxCountProjectiles, float multiplierForPushDistance,
-        bool isFast, bool isPushTarget,
+        bool isFast, bool isPushTarget, bool isPlayerInvisible,
         bool isActiveHealingPoisonBall, bool isActiveWitheringPoison, bool isActiveVoluminousBall,
         bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies)
     {
-        PlayerTeamIndex(_player.gameObject);
         FootInstinctsTalent = _footInstincts;
         CurrentTarget = LastTarget;
 
@@ -820,7 +832,7 @@ public class PoisonBall : Skill
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
         poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.CurrentValue, multiplierForPushDistance, this, isActiveHealingPoisonBall,
-            isTargetPlayer, isTargetEnemy, isTargetAllies, _poisonBallInfo.IsAlly, isActiveWitheringPoison, isPushTarget, isActiveVoluminousBall);
+            isTargetPlayer, isTargetEnemy, isTargetAllies, isActiveWitheringPoison, isPushTarget, isActiveVoluminousBall, isPlayerInvisible);
 
         poisonBallProjectile.MoveBallOnMaxDistance(point, isFast);
 
@@ -905,13 +917,5 @@ public class PoisonBall : Skill
             poisonHealingCloud.InitializationProjectile(_player, 5, duration, 3.5f, Name);
             poisonHealingCloud.AddStack();
         }
-    }
-
-    [ClientRpc]
-    private void PlayerTeamIndex(GameObject target)
-    {
-        int teamIndex = target.GetComponentInParent<UserNetworkSettings>().TeamIndex;
-        var localPlayer = NetworkClient.connection.identity.GetComponent<UserNetworkSettings>();
-        _poisonBallInfo.IsAlly = localPlayer.TeamIndex == teamIndex;
     }
 }
