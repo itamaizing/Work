@@ -540,6 +540,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3132830955119014022}
     - target: {fileID: 8468544467696250796, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: sr
+      value: 
+      objectReference: {fileID: 5058432783800573583}
+    - target: {fileID: 8468544467696250796, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _playerData
       value: 
       objectReference: {fileID: 11400000, guid: 1382b47eecc788c46b35297311c129c3, type: 2}
@@ -1464,6 +1468,11 @@ MonoBehaviour:
   _deathSpiral: {fileID: 7399292444007859597}
   _playerLinks: {fileID: 5889404958618692528}
   _magDefArea: {fileID: -4164132673907638538, guid: 1de4fb38053221843a7ed6af6a5a4d74, type: 3}
+--- !u!212 &5058432783800573583 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 7065627851971222163, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+  m_PrefabInstance: {fileID: 2611259613135651868}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &5233125259320276558 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
