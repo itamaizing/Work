@@ -102,7 +102,7 @@ public class DeathSpiralProjectile : Projectiles
 		{
 			Damage damage = new Damage
 			{
-				Value = 10,
+				Value = 500,
 				Type = DamageType.Magical,
 				Range = AttackRangeType.RangeAttack,
 			};
