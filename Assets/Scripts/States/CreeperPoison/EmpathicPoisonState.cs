@@ -37,7 +37,8 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.AbilitySpeed };
 
-    public int CurrentStacks { get => _currentStacks; }
+    public int CurrentStacks { get => _currentStacks; set => _currentStacks = value; }
+    public float StacksDuration { get => _duration; }
 
     public event Action<float, DamageType> DamageTaken;
 
@@ -135,6 +136,11 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
 
         _duration -= Time.deltaTime;
         if (_duration < 0)
+        {
+            ExitState();
+        }
+
+        if (_currentStacks <= 0)
         {
             ExitState();
         }

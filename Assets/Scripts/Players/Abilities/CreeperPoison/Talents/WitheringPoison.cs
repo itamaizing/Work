@@ -6,7 +6,7 @@ public class WitheringPoison : Talent
 {
     private void Start()
     {
-        //Enter();
+        Enter();
     }
     public override void Enter()
     {

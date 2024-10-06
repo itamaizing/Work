@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,8 @@ using UnityEngine;
 public class BindingPoisonState : AbstractCharacterState
 {
     public bool turnOff = false;
+
+    private SkillManager _skillManager;
 
     private int _currentStacks = 0;
     private int _maxStacks = 1;
@@ -14,7 +17,8 @@ public class BindingPoisonState : AbstractCharacterState
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.AbilitySpeed };
 
-    public int CurrentStacks { get => _currentStacks; }
+    public int CurrentStacks { get => _currentStacks; set => _currentStacks = value; }
+    public float StacksDuration { get => _duration; }
 
     public override States State => States.BindingPoison;
     public override StateType Type => StateType.Physical;
@@ -26,6 +30,8 @@ public class BindingPoisonState : AbstractCharacterState
 
         _characterState = character;
 
+        _skillManager = _characterState.Character.Abilities;
+
         _duration = durationToExit;
         _baseDuration = durationToExit;
 
@@ -33,11 +39,17 @@ public class BindingPoisonState : AbstractCharacterState
         {
             AddStacks();
         }
+
         BlockingOrCancleingAbility();
     }
 
     public override void UpdateState()
     {
+        if (_currentStacks <= 0)
+        {
+            ExitState();
+        }
+
         //Debug.Log($"BindingPoisonState / UpdateState / CharacterManager = {_skillManager}");
         if (_duration < 0 || turnOff)
         {
@@ -84,18 +96,19 @@ public class BindingPoisonState : AbstractCharacterState
         }
     }
 
+    [ClientRpc]
     private void BlockingOrCancleingAbility()
     {
         Debug.Log("BindingPoison / BlockingOrCancleingAbility");
-        // Debug.Log($"BindingPoisonState / BlockingOrCancleingAbility / CharacterManager = {_skillManager}");
+        Debug.Log($"BindingPoisonState / BlockingOrCancleingAbility / CharacterManager = {_skillManager}");
 
-        _abilities.SkillQueue.TryCancel(true);
-        //Debug.Log($"BindingPoison / BlockingOrCancleingAbility / skillManager.TryCancel = {_skillManager.SkillQueue.TryCancel(true)}");
+        _skillManager.SkillQueue.TryCancel(true);
+            Debug.Log($"BindingPoison / BlockingOrCancleingAbility / skillManager.TryCancel = {_skillManager.SkillQueue.TryCancel(true)}");
 
-        if (!_abilities.SkillQueue.TryCancel(true))
+        if (!_skillManager.SkillQueue.TryCancel(true))
         {
             Debug.Log("BindingPoison / BlockingOrCancleingAbility / TryCancel = false");
-            _abilities.SkillQueue.SkillAdded += OnSkillAdded;
+            _skillManager.SkillQueue.SkillAdded += OnSkillAdded;
             Debug.Log($"BindingPoison / BlockingOrCancleingAbility / after SkillAdded += OnSkillAdded");
         }
         ExitState();
@@ -104,12 +117,10 @@ public class BindingPoisonState : AbstractCharacterState
     private void OnSkillAdded(Skill skill)
     {
         Debug.Log("BindingPoison / OnSkillAdded Start");
-        Debug.Log($"BindingPoison / OnSkillAdded / CurrentSkill = {_abilities.SkillQueue.CurrentSkill}");
+        Debug.Log($"BindingPoison / OnSkillAdded / CurrentSkill = {_skillManager.SkillQueue.CurrentSkill}");
+        _skillManager.SkillQueue.TryCancel(true);
 
-        Debug.Log($"BindingPoison / OnSkillAdded / _skillManager.SkillQueue.TryCancel(true) = {_abilities.SkillQueue.TryCancel(true)}");
-        _abilities.SkillQueue.TryCancel(true);
-
-        _abilities.SkillQueue.SkillAdded -= OnSkillAdded;
+        _skillManager.SkillQueue.SkillAdded -= OnSkillAdded;
         Debug.Log("BindingPoison / OnSkillAdded End");
     }
 

@@ -70,14 +70,10 @@ public abstract class Resource : NetworkBehaviour
         _currentValue -= value;
     }
 
-    public void IncreaseMaxValue(float value)
+    public void ChangedMaxValue(float value)
     {
         _maxValue += value;
-    }
-
-    public void ReductionMaxValue(float value)
-    {
-        _maxValue -= value;
+        
     }
 
     protected virtual void HookValueChanged(float oldValue, float newValue)

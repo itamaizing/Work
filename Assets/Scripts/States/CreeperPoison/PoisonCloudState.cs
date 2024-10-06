@@ -188,18 +188,17 @@ public class PoisonCloudState : AbstractCharacterState
 
         targetHealth.Health.CmdTryTakeDamage(damage, null);
 
-        //if (_toxiqueCloud.IsActive)
-        //{
-            //Debug.Log("PoisonCloud / DamageDeal / toxiqueCloud Active");
-            //ApplyState(targetHealth);
-        //}
+        if (_toxiqueCloud.IsActive)
+        {
+            Debug.Log("PoisonCloud / DamageDeal / toxiqueCloud Active");
+            ApplyState(targetHealth);
+        }
     }
 
-    [Command]
     private void ApplyState(Character targetHealth)
     {
        // Debug.Log("PoisonCloud / DamageDeal / toxiqueCloud Active");
-        targetHealth.CharacterState.AddState(States.EmpathicPoisons, _durationEmpathicPoisons, 0, _player.gameObject, null);
+        targetHealth.CharacterState.CmdAddState(States.EmpathicPoisons, _durationEmpathicPoisons, 0, _player.gameObject, null);
     }
 
     private void ResetValues()

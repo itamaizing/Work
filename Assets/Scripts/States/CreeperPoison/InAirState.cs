@@ -20,16 +20,6 @@ public class InAirState : AbstractCharacterState
         Debug.Log("InAirState / EnterState");
         _characterState = character;
 
-        if (character.TryGetComponent<Character>(out var ability))
-        {
-            _abilities = ability.Abilities;
-            _abilities.SetAbilitiesDisabled();
-        }
-        else
-        {
-            Debug.Log("no ability at " + character.gameObject.name);
-        }
-
         _characterState.Character.Move.CanMove = false;
         _duration = durationToExit;
         _baseDuration = _duration;
@@ -48,14 +38,8 @@ public class InAirState : AbstractCharacterState
 
     public override void ExitState()
     {
-        if (_characterState.Check(StatusEffect.Move))
-        {
-            _characterState.Character.Move.CanMove = true;
-        }
-        if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
-        {
-            _abilities.SetAbilitiesEnabled();
-        }
+        _characterState.Character.Move.CanMove = true;
+        
         _characterState.RemoveState(this);
     }
 

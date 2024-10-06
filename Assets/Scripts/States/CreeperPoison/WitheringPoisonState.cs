@@ -26,7 +26,8 @@ public class WitheringPoisonState : AbstractCharacterState
 
     private bool _isActiveTalentBindingPoison = false;
 
-    public int CurrentStacks { get => _currentStacks; }
+    public int CurrentStacks { get => _currentStacks; set => _currentStacks = value; }
+    public float StacksDuration { get => _duration; }
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.AbilitySpeed };
 
@@ -79,6 +80,11 @@ public class WitheringPoisonState : AbstractCharacterState
         {
             TakeAwayMana();
             _timeBetweenTakeAwayMana = _startTimeBetweenTakeAwayMana;
+        }
+
+        if (_currentStacks <= 0)
+        {
+            ExitState();
         }
 
         _duration -= Time.deltaTime;
@@ -134,7 +140,7 @@ public class WitheringPoisonState : AbstractCharacterState
         {
             if (UnityEngine.Random.Range(0.0f, 1.0f) <= _chanceOfApplyBindingPoison)
             {
-                _characterState.AddState(States.BindingPoison, 10, 0, _player.gameObject, null);
+                //_characterState.AddStateTest(States.BindingPoison, 10, 0, _player.gameObject, null);
             }
         }
 

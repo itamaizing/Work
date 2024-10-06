@@ -2,6 +2,7 @@ using System.Collections;
 using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class PoisonBoneState : AbstractCharacterState
 {
@@ -25,7 +26,8 @@ public class PoisonBoneState : AbstractCharacterState
 
     private Character _player;
 
-    public int CurrentStacks { get => _currentStacks; }
+    public int CurrentStacks { get => _currentStacks; set => _currentStacks = value; }
+    public float StacksDuration { get => _duration; }
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.AbilitySpeed };
 
@@ -81,11 +83,20 @@ public class PoisonBoneState : AbstractCharacterState
 
     public override void UpdateState()
     {
-        _timeBetweenAttack -= Time.deltaTime;
-        if (_timeBetweenAttack <= 0)
+        Debug.Log("PoisonBoneState / update / currentStack = " + _currentStacks);
+        if (_currentStacks <= _maxStacks)
         {
-            DamageDeal();
-            _timeBetweenAttack = _startTimeBetweenAttack;
+            _timeBetweenAttack -= Time.deltaTime;
+            if (_timeBetweenAttack <= 0)
+            {
+                DamageDeal();
+                _timeBetweenAttack = _startTimeBetweenAttack;
+            }
+        }
+
+        if (_currentStacks == 0)
+        {
+            ExitState();
         }
 
         _duration -= Time.deltaTime;
@@ -93,7 +104,6 @@ public class PoisonBoneState : AbstractCharacterState
         {
             ExitState();
         }
-
     }
 
     public override void ExitState()
@@ -117,7 +127,7 @@ public class PoisonBoneState : AbstractCharacterState
         }
     }
 
-    public void AddStacks()
+    private void AddStacks()
     {
         if (_currentStacks < _maxStacks)
         {

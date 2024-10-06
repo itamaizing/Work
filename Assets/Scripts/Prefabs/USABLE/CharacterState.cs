@@ -228,18 +228,19 @@ public class CharacterState : NetworkBehaviour
 	public List<AbstractCharacterState> CurrentStates { get => _currentStates; }
 	public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
 	{
-        #region CreeperStates
-        [States.CreeperInvisible] = new CreeperInvisibleState(),
-        [States.PoisonBone] = new PoisonBoneState(),
-        [States.WitheringPoison] = new WitheringPoisonState(),
-        [States.BindingPoison] = new BindingPoisonState(),
-        [States.PoisonCloud] = new PoisonCloudState(),
-        [States.HealingPoisonCloud] = new HealingPoisonCloudState(),
-        [States.EmpathicPoisons] = new EmpathicPoisonsState(),
-        [States.HealingPoisonPerSecond] = new HealingPoisonPerSecondState(),
-        [States.InstantHealingPoison] = new InstantHealingPoisonState(),
-        [States.RegeneratingPoison] = new RegeneratingPoisonState(),
-        [States.HeatedGlands] = new HeatedGlandsState(),
+		#region CreeperStates
+		[States.CreeperInvisible] = new CreeperInvisibleState(),
+		[States.PoisonBone] = new PoisonBoneState(),
+		[States.WitheringPoison] = new WitheringPoisonState(),
+		[States.BindingPoison] = new BindingPoisonState(),
+		[States.PoisonCloud] = new PoisonCloudState(),
+		[States.HealingPoisonCloud] = new HealingPoisonCloudState(),
+		[States.EmpathicPoisons] = new EmpathicPoisonsState(),
+		[States.HealingPoisonPerSecond] = new HealingPoisonPerSecondState(),
+		[States.InstantHealingPoison] = new InstantHealingPoisonState(),
+		[States.RegeneratingPoison] = new RegeneratingPoisonState(),
+		[States.HeatedGlands] = new HeatedGlandsState(),
+		[States.AbsorptionOfPoison] = new AbsorptionOfPoisonsState(),
         #endregion
 
         [States.Immateriality] = new ImmaterialityState(),
@@ -267,7 +268,7 @@ public class CharacterState : NetworkBehaviour
 		_stamina = stamina;*/
 		if (_hero == null)
 		{
-			Debug.LogError("No required component in " + name + " " + gameObject.name);
+			//Debug.LogError("No required component in " + name + " " + gameObject.name);
 		}
 	}
 
@@ -309,7 +310,7 @@ public class CharacterState : NetworkBehaviour
 	{
 		foreach (AbstractCharacterState states in _currentStates)
 		{
-			Debug.Log(states.State + " on enemy, check for " + state);
+			//Debug.Log(states.State + " on enemy, check for " + state);
 			if (states.State == state)
 			{
 				return true;
@@ -343,7 +344,7 @@ public class CharacterState : NetworkBehaviour
 	{
 		foreach (AbstractCharacterState states in _currentStates)
 		{
-			Debug.Log(states.State + " on enemy, check for " + state);
+			//Debug.Log(states.State + " on enemy, check for " + state);
 			if (states.State == state)
 			{
 				return states;
@@ -362,22 +363,27 @@ public class CharacterState : NetworkBehaviour
 	[Command]
 	public void CmdAddState(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
 	{
-		Debug.Log("Add state cmd");
+		//Debug.Log("Add state cmd");
 		AddStateLogic(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
 		ClientAddState(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
 	}
 
 	public void AddState(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
 	{
-		Debug.Log("Add state from server");
+		//Debug.Log("Add state from server");
 		AddStateLogic(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
 		ClientAddState(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
-	}
+    }
+    public void AddStateTest(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
+    {
+        //Debug.Log("Add state from server");
+        AddStateLogic(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
+    }
 
-	[Command]
+    [Command]
 	public void CmdRemoveState(States state)
 	{
-		Debug.Log("Remove state" + state);
+		//Debug.Log("Remove state" + state);
 		RemoveStateLogic(state);
 		ClientRemoveState(state);
 	}
@@ -400,7 +406,7 @@ public class CharacterState : NetworkBehaviour
 
 	private void RemoveStateLogic(States stateName)
 	{
-		Debug.Log("Remove state logic" + stateName);
+		//Debug.Log("Remove state logic" + stateName);
 		if (_currentStates.Count <= 0) return;
 
 		_stateIcons.RemoveItemByState(stateName);
@@ -416,20 +422,20 @@ public class CharacterState : NetworkBehaviour
 	[ClientRpc]
 	private void ClientAddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
 	{
-		Debug.Log("Add state rpc");
+		//Debug.Log("Add state rpc");
 		AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
 	}
 
 	[ClientRpc]
 	private void ClientRemoveState(States stateName)
 	{
-		Debug.Log("Remove state client" + stateName);
+		//Debug.Log("Remove state client" + stateName);
 		RemoveStateLogic(stateName);
 	}
 
 	private void AddStateLogic(States state, float duration, float damageToExit, Schools school, GameObject personWhoShooted, string skillName)
 	{
-		Debug.Log("Add state logic");
+		//Debug.Log("Add state logic");
 		if (invinsible)
 			return;
 		if (CheckForState(state))
@@ -508,6 +514,7 @@ public enum States
     InstantHealingPoison,
     RegeneratingPoison,
     HeatedGlands,
+	AbsorptionOfPoison,
 
     #endregion
 

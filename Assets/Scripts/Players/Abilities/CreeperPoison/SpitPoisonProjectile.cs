@@ -11,7 +11,7 @@ public class SpitPoisonProjectile : NetworkBehaviour
     [SerializeField] private GameObject _hitEffect;
     [SerializeField] private Collider2D _colliderBall;
     [SerializeField] private float _maxDistance = 5f;
-    [SerializeField] private float _speed = 1f;
+    [SerializeField] private float _speed = 60f;
 
     private Skill _skill;
     private Character _player;
@@ -100,7 +100,7 @@ public class SpitPoisonProjectile : NetworkBehaviour
 
     public void MoveBallToTarget(Vector3 target)
     {
-        float speed = 10f;
+        float speed = (_speed / 100f) * 5f;
         _rbBall.DOMove(target, speed * _maxDistance / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(Explode);
     }
 

@@ -279,6 +279,8 @@ public class PoisonBallProjectile : NetworkBehaviour
             //target.transform.DOMove((Vector2)target.transform.position - directionPush * distancePush, durationPush).SetEase(Ease.Linear);
             target.GetComponent<MoveComponent>().TargetRpcDoMove((Vector2)target.transform.position - directionPush * distancePush, durationPush);
         }
+
+        target.Move.CanMove = true;
     }
 
     private void DestroyProjectile()

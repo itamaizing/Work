@@ -25,7 +25,7 @@ public class ExplosionPoisonCloud : Skill
     {
         if (_searchingEnemiesCoroutine == null)
         {
-            Debug.Log("ExplosionPoisonCloud / PrepareJob / searchingEnemies == null");
+            //Debug.Log("ExplosionPoisonCloud / PrepareJob / searchingEnemies == null");
             _searchingEnemiesCoroutine = StartCoroutine(SearchingenemiesJob());
         }
 
@@ -47,7 +47,7 @@ public class ExplosionPoisonCloud : Skill
 
     protected override void ClearData()
     {
-        Debug.Log("ExplosionPoisonCloud / ClearData");
+        //Debug.Log("ExplosionPoisonCloud / ClearData");
         _isExploded = false;
         _currentDamage = 0;
         _enemies.Clear();
@@ -55,13 +55,13 @@ public class ExplosionPoisonCloud : Skill
 
     private void ExplosionCloud()
     {
-        Debug.Log("ExplosionPoisonCloud / ExplosionCloud");
+        //Debug.Log("ExplosionPoisonCloud / ExplosionCloud");
         
         _isExploded = true;
 
         _currentDamage = _baseDamage * _currentStacksPoisonCloud;
 
-        Debug.Log("ExplosionPoisonCloud / ExplosionCloud / currentDamage = " + _currentDamage);
+       // Debug.Log("ExplosionPoisonCloud / ExplosionCloud / currentDamage = " + _currentDamage);
         Damage damage = new Damage
         {
             Value = Buff.Damage.GetBuffedValue(_currentDamage),
@@ -71,7 +71,7 @@ public class ExplosionPoisonCloud : Skill
 
         foreach (Character target in _enemies)
         {
-            Debug.Log("ExplosionPoisonCloud / ExplosionCloud / target = " + target);
+           // Debug.Log("ExplosionPoisonCloud / ExplosionCloud / target = " + target);
             if (target != null)
             {
                 CmdApplyDamage(damage, target.gameObject);
@@ -103,7 +103,7 @@ public class ExplosionPoisonCloud : Skill
             foreach (Collider2D enemy in hitEnemies)
             {
                 _enemies.Add(enemy.gameObject.GetComponent<Character>());
-                Debug.Log("ExplosionPoisonCloud / _enemies.Count = " + _enemies.Count);
+               // Debug.Log("ExplosionPoisonCloud / _enemies.Count = " + _enemies.Count);
             }
             yield return null;
         }
@@ -112,7 +112,7 @@ public class ExplosionPoisonCloud : Skill
     public void CurrentStacksPoisonCloud(int currentStacks, float radiusExplosion)
     {
         _currentStacksPoisonCloud = currentStacks;
-        Debug.Log("ExplosionPoisonCloud / _currentStacksPoisonCloud = " + _currentStacksPoisonCloud);
+        //Debug.Log("ExplosionPoisonCloud / _currentStacksPoisonCloud = " + _currentStacksPoisonCloud);
         _radiusExplosion = radiusExplosion;
     }
 

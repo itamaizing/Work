@@ -432,6 +432,10 @@ PrefabInstance:
       propertyPath: _skills.Array.data[4]
       value: 
       objectReference: {fileID: 2845114497655706948}
+    - target: {fileID: 8468544467696250796, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _collider
+      value: 
+      objectReference: {fileID: 4513136908747016861}
     - target: {fileID: 8501167094784874398, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -730,3 +734,8 @@ MonoBehaviour:
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 0
+--- !u!58 &4513136908747016861 stripped
+CircleCollider2D:
+  m_CorrespondingSourceObject: {fileID: 4218118007188876841, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+  m_PrefabInstance: {fileID: 299526628755236020}
+  m_PrefabAsset: {fileID: 0}

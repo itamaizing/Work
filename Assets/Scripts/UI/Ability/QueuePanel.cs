@@ -18,7 +18,7 @@ public class QueuePanel : MonoBehaviour
         {
             _skillQueue.SkillAdded -= OnSkillAdded;
             _skillQueue.SkillDeleted -= OnSkillDeleted;
-        }
+        } 
         _skillQueue = queue;
 
         _skillQueue.SkillAdded += OnSkillAdded;

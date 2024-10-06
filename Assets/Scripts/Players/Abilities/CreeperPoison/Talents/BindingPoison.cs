@@ -7,12 +7,12 @@ public class BindingPoison : Talent
 {
     private void Start()
     {
-        //Enter();
+        Enter();
     }
     public override void Enter()
     {
         SetActive(true);
-        CmdSetActive();
+        //CmdSetActive();
         Debug.Log($"BindingPoisonEnter IsActive = {IsActive}");
     }
 
@@ -22,9 +22,9 @@ public class BindingPoison : Talent
         Debug.Log($"BindingPoisonExit IsActive = {IsActive}");
     }
 
-    [Command]
-    private void CmdSetActive()
-    {
-        SetActive(true);
-    }
+    //[Command]
+    //private void CmdSetActive()
+    //{
+    //    SetActive(true);
+    //}
 }

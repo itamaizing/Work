@@ -51,7 +51,7 @@ public class HeatedGlandsState : AbstractCharacterState
 
     public override void ExitState()
     {
-        _playerMana.ReductionMaxValue(_newMaxManaPlayer);
+        _playerMana.ChangedMaxValue(-_newMaxManaPlayer);
 
         _currentStacks = 0;
         _newMaxManaPlayer = 0;
@@ -87,7 +87,7 @@ public class HeatedGlandsState : AbstractCharacterState
         float bonusAmountMana = _amountManaIncreasingValue * _maxManaPlayer;
         Debug.Log("IncreasingMana / bonusMana == " + bonusAmountMana);
 
-        _playerMana.IncreaseMaxValue(bonusAmountMana);
+        _playerMana.ChangedMaxValue(bonusAmountMana);
 
         _newMaxManaPlayer += bonusAmountMana;
         Debug.Log("IncreasingMana / newMaxManaPlayer == " + _newMaxManaPlayer);

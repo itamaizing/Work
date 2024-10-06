@@ -21,14 +21,14 @@ public class OwnElement : Talent
     private float _increasedAttackSpeed = 1.0f;
     private float _maxMinimumAttackSpeed = 0.1f;
 
-    private PoisonBoneState poisonBoneState;
-    private EmpathicPoisonsState empathicPoisonState;
-    private WitheringPoisonState witheringPoisonState;
-    private BindingPoisonState bindingPoisonState;
+    private PoisonBoneState _poisonBoneState;
+    private EmpathicPoisonsState _empathicPoisonState;
+    private WitheringPoisonState _witheringPoisonState;
+    private BindingPoisonState _bindingPoisonState;
 
     private void Start()
     {
-        Enter();
+        //Enter();
         _baseAttackSpeed = _creeperStrike.AttackSpeed;
     }
 
@@ -66,21 +66,21 @@ public class OwnElement : Talent
 
                         _enemiesWithDebuff.Add(target.gameObject);
 
-                        if (bindingPoisonState != null)
+                        if (_bindingPoisonState != null)
                         {
-                            _currentStacksPoison += bindingPoisonState.CurrentStacks;
+                            _currentStacksPoison += _bindingPoisonState.CurrentStacks;
                         }
-                        if (poisonBoneState != null)
+                        if (_poisonBoneState != null)
                         {
-                            _currentStacksPoison += poisonBoneState.CurrentStacks;
+                            _currentStacksPoison += _poisonBoneState.CurrentStacks;
                         }
-                        if (empathicPoisonState != null)
+                        if (_empathicPoisonState != null)
                         {
-                            _currentStacksPoison += empathicPoisonState.CurrentStacks; ;
+                            _currentStacksPoison += _empathicPoisonState.CurrentStacks; ;
                         }
-                        if (witheringPoisonState != null)
+                        if (_witheringPoisonState != null)
                         {
-                            _currentStacksPoison += witheringPoisonState.CurrentStacks;
+                            _currentStacksPoison += _witheringPoisonState.CurrentStacks;
                         }
 
                         for (int i = 0; i < _enemiesWithDebuff.Count; i++)
@@ -134,9 +134,9 @@ public class OwnElement : Talent
 
     private void AdvertisementStates(CharacterState targetWithDebuff)
     {
-        bindingPoisonState = (BindingPoisonState)targetWithDebuff.GetState(States.BindingPoison);
-        poisonBoneState = (PoisonBoneState)targetWithDebuff.GetState(States.PoisonBone);
-        empathicPoisonState = (EmpathicPoisonsState)targetWithDebuff.GetState(States.EmpathicPoisons);
-        witheringPoisonState = (WitheringPoisonState)targetWithDebuff.GetState(States.WitheringPoison);
+        _bindingPoisonState = (BindingPoisonState)targetWithDebuff.GetState(States.BindingPoison);
+        _poisonBoneState = (PoisonBoneState)targetWithDebuff.GetState(States.PoisonBone);
+        _empathicPoisonState = (EmpathicPoisonsState)targetWithDebuff.GetState(States.EmpathicPoisons);
+        _witheringPoisonState = (WitheringPoisonState)targetWithDebuff.GetState(States.WitheringPoison);
     }
 }
