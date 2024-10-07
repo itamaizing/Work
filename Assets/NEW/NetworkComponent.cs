@@ -19,14 +19,15 @@ public class NetworkComponent : NetworkBehaviour
 
     private void ServerHandleUnitSpawn(Character character)
     {
+        if (character == null) return;
         if (character.connectionToClient.connectionId != connectionToClient.connectionId)
         {
             return;
         }
-        
+
         controllableUnits.Add(character);
     }
-    
+
     private void ServerHandleUnitDelete(Character character)
     {
         if (character.connectionToClient.connectionId != connectionToClient.connectionId)
