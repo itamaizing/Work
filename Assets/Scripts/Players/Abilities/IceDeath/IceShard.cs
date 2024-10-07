@@ -71,7 +71,7 @@ public class IceShard : Skill
 	{
 		while (float.IsPositiveInfinity(_mousePos.x))
 		{
-			if (Input.GetMouseButton(0))
+			if (GetMouseButton)
 			{
 				_energy.TryUse(5);
 				_mousePos = GetMousePoint();

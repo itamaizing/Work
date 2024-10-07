@@ -9,6 +9,20 @@ public class IceShardProjectile : Projectiles
 	private Vector2 _startPos;
 	private bool _talentPlague = false;
 	private bool _talentChragesPlague = false;
+	private Damage _damage;
+	private float _curDamage;
+
+
+	private void Start()
+	{
+		_curDamage = 3 + Random.Range(0, 3);
+		_damage = new Damage
+		{
+			Value = _curDamage,
+			Type = DamageType.Physical,
+			Range = AttackRangeType.RangeAttack,
+		};
+	}
 
 	private void Update()
 	{
@@ -26,37 +40,45 @@ public class IceShardProjectile : Projectiles
 		if (collision.gameObject == _dad.gameObject || collision.CompareTag("Ability"))
 			return;
 		//damage, freez etc
-		if (collision.TryGetComponent<Character>(out var target))
+		if (collision.TryGetComponent<IDamageable>(out var damageable))
 		{
-			float duration = 1 + _energyDad / 20;
-			float curDamage = 3 + Random.Range(0, 3);
-			if (target.CharacterState.CheckForState(States.Frozen) && Random.Range(0, 100) < 15)
+			if (damageable is Character target)
 			{
-				curDamage *= 2.2f;
-			}
-			_energy.SumDamageMake(curDamage);
-			Damage damage = new Damage
-			{
-				Value = curDamage,
-				Type = DamageType.Physical,
-				Range = AttackRangeType.RangeAttack,
-			};
-			//_skill.CmdApplyDamage(damage, target.gameObject);
-			target.Health.TryTakeDamage(ref damage, _skill);
+				float duration = 1 + _energyDad / 20;
 
-			//target.Health.TryTakeDamage(curDamage, DamageType.Physical, AttackRangeType.RangeAttack);
-			target.CharacterState.AddState(States.Frozen, duration, 30, _dad.gameObject, _skill.name);
-			if(_talentPlague)
-			{
-				target.CharacterState.AddState(States.Plague, 5, 0, _dad.gameObject, _skill.name);
+				if (target.CharacterState.CheckForState(States.Frozen) && Random.Range(0, 100) < 15)
+				{
+					_curDamage *= 2.2f;
+				}
+				_energy.SumDamageMake(_curDamage);
+
+				//_skill.CmdApplyDamage(damage, target.gameObject);
+				target.Health.TryTakeDamage(ref _damage, _skill);
+
+				//target.Health.TryTakeDamage(curDamage, DamageType.Physical, AttackRangeType.RangeAttack);
+				target.CharacterState.AddState(States.Frozen, duration, 30, _dad.gameObject, _skill.name);
+				if (_talentPlague)
+				{
+					target.CharacterState.AddState(States.Plague, 5, 0, _dad.gameObject, _skill.name);
+				}
+				if (_talentChragesPlague)
+				{
+					//target.CharacterState.personWhoShoted = _dad;
+				}
+				//dad.Stamina.Use(duration * 20);
+				GetComponent<Collider2D>().enabled = false;
 			}
-			if(_talentChragesPlague)
+			else
 			{
-				//target.CharacterState.personWhoShoted = _dad;
+				damageable.TryTakeDamage(ref _damage, _skill);
+				if (_damage.Value <= 0)
+				{
+					Explode();
+				}
+				return;
 			}
-			//dad.Stamina.Use(duration * 20);
-			GetComponent<Collider2D>().enabled = false;
 		}
+		
 		Explode();
 	}
 

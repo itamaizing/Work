@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public abstract class AutoAttackSkill : Skill
@@ -15,7 +16,14 @@ public abstract class AutoAttackSkill : Skill
     private bool _isAttacking = false;
     private Vector2 _lastTargetPosition;
 
-    public float AttackSpeed { get => Buff.AttackSpeed.GetBuffedValue(_attackSpeed); }
+
+	float time = 0;
+	float duration = 1f;
+
+    Color startColor = Color.green;
+    Color endColor = new Color(0, 1, 0, 0f);
+
+	public float AttackSpeed { get => Buff.AttackSpeed.GetBuffedValue(_attackSpeed); }
     public Character Target { get => _target; }
     public Vector2 LastTargetPosition { get => _lastTargetPosition; }
     public override bool IsPayCostStartCooldown { get => false; }
@@ -31,10 +39,31 @@ public abstract class AutoAttackSkill : Skill
         }
     }
 
-    public event Action CastPaused;
-    public event Action CastContinued;
+    private void Update()
+    {
+        if (_target == null)
+        {
+            return;
+        }
 
-    protected abstract void CastAction();
+		if (_isAttacking)
+		{
+			startColor = Color.green;
+			endColor = new Color(0, 1, 0, 0f);
+		}
+        else
+        {
+			startColor = Color.red;
+			endColor = new Color(1, 0, 0, 0f);
+		}
+		float t = Mathf.PingPong(Time.time * duration, 1f);
+		Color currentColor = Color.Lerp(startColor, endColor, t);
+		_target.SelectedCircle.Circle.color = currentColor;
+		_skillRender.DrawRadiusColor(Radius, currentColor);
+	}
+
+
+	protected abstract void CastAction();
 
     protected override IEnumerator CastJob()
     {
@@ -43,6 +72,14 @@ public abstract class AutoAttackSkill : Skill
 
     protected override void ClearData()
     {
+        if (_target != null)
+        {
+            _target.SelectedCircle.Circle.color = Color.green;
+			_target.SelectedCircle.IsActive = false;
+		}
+		_skillRender.SetColor(Color.green);
+
+		
         if (_autoAttackCoroutine != null)
         {
             StopCoroutine(_autoAttackCoroutine);
@@ -59,7 +96,8 @@ public abstract class AutoAttackSkill : Skill
             if (GetMouseButton)
             {
                 _target = GetRaycastTarget();
-            }
+				_target.SelectedCircle.IsActive = true;
+			}
             yield return null;
         }
         while (Target == null);
@@ -76,7 +114,6 @@ public abstract class AutoAttackSkill : Skill
         {
             StopCoroutine(_autoAttackCoroutine);
             _autoAttackCoroutine = null;
-            CastPaused?.Invoke();
         }
         _isAttacking = false;
     }
@@ -86,13 +123,12 @@ public abstract class AutoAttackSkill : Skill
         if (_autoAttackCoroutine == null && Target != null)
         {
             _autoAttackCoroutine = StartCoroutine(AutoAttackJob());
-            CastContinued?.Invoke();
         }
     }
 
     protected virtual IEnumerator AutoAttackJob()
     {
-        while (Target != null)
+		while (Target != null)
         {
             if (IsTargetInRadius(Radius + _attackZoneSize, Target.transform))
             {
@@ -118,7 +154,7 @@ public abstract class AutoAttackSkill : Skill
                         }
                     }
                 }
-            }
+			}
             else
             {
                 _isAttacking = false;
@@ -127,4 +163,18 @@ public abstract class AutoAttackSkill : Skill
         }
         _autoAttackCoroutine = null;
     }
+
+	Color ColourChanging(float fadeStart, float fadeTime, Color objectColor, Color fadeColor)
+	{
+		if (fadeStart < fadeTime)
+		{
+			fadeStart += Time.deltaTime * fadeTime;
+
+			return Color.Lerp(objectColor, fadeColor, fadeStart);
+		}
+        else
+        {
+            return Color.Lerp(objectColor, fadeColor, fadeStart);
+        }
+	}
 }

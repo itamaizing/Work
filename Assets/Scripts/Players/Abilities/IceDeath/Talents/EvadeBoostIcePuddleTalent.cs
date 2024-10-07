@@ -2,17 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FrostingFrozenTalant : Talent
+public class EvadeBoostIcePuddleTalent : Talent
 {
 	[SerializeField] private IcePuddle _icePuddle;
 	public override void Enter()
 	{
-		_icePuddle.SetTalentFrostingFrozen(true);
+		_icePuddle.SetTalentEvadeDadBoost(true);
 	}
 
 	public override void Exit()
 	{
-		_icePuddle.SetTalentFrostingFrozen(true);
+		_icePuddle.SetTalentEvadeDadBoost(false);
 	}
-
 }

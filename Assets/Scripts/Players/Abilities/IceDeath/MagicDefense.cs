@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MagicDefense : Skill
 {
@@ -13,7 +14,6 @@ public class MagicDefense : Skill
 	[SerializeField] private MagicDefenseArea _magDefArea;
 
 	private Character _target;
-	private float _shieldCapacity = 200;
 	private bool _isArea = false;
 	private Vector2 _position = Vector2.positiveInfinity;
 	private Energy _energy;
@@ -23,7 +23,12 @@ public class MagicDefense : Skill
 
 	private bool CheckCanCast()
 	{
-		return Vector3.Distance(_target.transform.position, transform.position) <= Radius;		
+		Debug.Log("Check");
+		//return true;
+		if (_target != null)
+		return Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+
+		return Vector3.Distance(_position, transform.position) <= Radius;
 	}
 
 	private void Start()
@@ -34,53 +39,67 @@ public class MagicDefense : Skill
 			{
 				_energy = (Energy)_playerLinks.Resources[i];
 			}
+			if (_playerLinks.Resources[i].Type == ResourceType.Rune)
+			{
+				_rune = (RuneComponent)_playerLinks.Resources[i];
+			}
 		}
 
 	}
-
-	//[Command]
-	private void ServerAdd(GameObject obj)
+	[Command]
+	private void Shoot(GameObject targetGm)
 	{
-		Character target = obj.GetComponent<Character>();
-		target.CharacterState.CmdAddState(States.MagicBuff, 6, _energy.CurrentValue * 10 + _shieldCapacity, _playerLinks.gameObject, name);
+		Character target = targetGm.GetComponent<Character>();
+
+		/*float boostHp = 0.1f + 0.003f * _energy.CurrentValue;
+		_energy.CmdUse(_energy.CurrentValue);*/
+		target.CharacterState.AddState(States.MagicBuff, 6, 200, _playerLinks.gameObject, name);
+
 	}
 
 	[Command]
-	private void SpawnArea(Vector3 position)
+	private void CmdSpawnArea(Vector3 position)
 	{
 		MagicDefenseArea area = Instantiate(_magDefArea, position, Quaternion.identity);
-		//area.Init(_playerLinks, _energy.CurrentValue, false, this);
-		_energy.TryUse(_energy.CurrentValue);
-		NetworkServer.Spawn(area.gameObject);
+		area.Initialize(600, DamageType.Both);
+		SceneManager.MoveGameObjectToScene(area.gameObject, _hero.NetworkSettings.MyRoom);
 
-		RpcInit(area.gameObject, position);
+		NetworkServer.Spawn(area.gameObject);
+		//RpcInit(area.gameObject, position);
 	}
 	
 
-	[ClientRpc]
+/*	[ClientRpc]
 	private void RpcInit(GameObject area, Vector3 position)
 	{
 		MagicDefenseArea magArea = area.GetComponent<MagicDefenseArea>();
 		//magArea.Init(_playerLinks, _energy.CurrentValue, false, this);
-	}
+	}*/
 
 	protected override IEnumerator PrepareJob()
 	{
 		while(_target == null && Vector2.Distance(_position, transform.position) > Radius)
 		{
-			_target = GetRaycastTarget(transform);
-			_position = GetMousePoint();
-		}
-		if(_deathSpiral.Chargers >= 1 && _plagueAbsorption.Chargers >= 1 && _energy.CurrentValue >= 70 && _rune.CurrentValue >= 1) 
-		{
-
-		}
-		yield return null;
+			Debug.Log("loop");
+			if (GetMouseButton)
+			{
+				_target = GetRaycastTarget(true);
+				_position = GetMousePoint();
+			}
+			yield return null;
+		}		
 	}
 
 	protected override IEnumerator CastJob()
 	{
-
+		if(_target != null) 
+		{
+			Shoot(_target.gameObject);
+		}
+		//else if(_isArea) 
+		{
+			CmdSpawnArea(_position);
+		}
 		yield return null;
 	}
 
@@ -90,42 +109,31 @@ public class MagicDefense : Skill
 		_position = Vector2.positiveInfinity;
 	}
 
-	[Command]
-	private void CmdAddShield()
-	{
-	//	_playerLinks.Health.Shields.Add(_shield);
-		Debug.Log(_playerLinks.Health.Shields.Count);
-	}
-
-	[Command]
-	private void CmdRemoveShield()
-	{
-	//	_playerLinks.Health.Shields.Remove(_shield);
-		Debug.Log(_playerLinks.Health.Shields.Count);
-	}
-
 	protected override bool TryPayCost(List<SkillEnergyCost> skillEnergyCosts, bool startCooldown = true)
 	{
-		if (IsHaveResourceOnSkill)
+		Debug.Log("trypay");
+		if (_target != null)
 		{
-			/*if (_firstShot)
+			if (_deathSpiral.Chargers >= 1 && _plagueAbsorption.Charges >= 1 && _energy.CurrentValue >= 70 && _rune.CurrentValue >= 1)
 			{
-				foreach (var skillCost in _skillEnergyCosts)
-				{
-					var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
-					resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
-				}
-				_firstShot = false;
-			}*/
-			if (startCooldown)
-				IncreaseSetCooldown(CooldownTime);
-
-			TryUseCharge();
+				Debug.Log("Casting");
+				_rune.CmdUse(1);
+				_energy.CmdUse(70);
+				_plagueAbsorption.CmdUseCharge(1);
+				_deathSpiral.CmdUseCharge(1);
+				return true;
+			}
+		}
+		else 
+		if (_deathSpiral.Chargers >= 2 && _plagueAbsorption.Charges >= 2 && _energy.CurrentValue >= 70 && _rune.CurrentValue >= 2)
+		{
+			_isArea = true;
+			_rune.CmdUse(2);
+			_energy.CmdUse(70);
+			_plagueAbsorption.CmdUseCharge(2);
+			_deathSpiral.CmdUseCharge(2);
 			return true;
 		}
-		else
-		{
-			return false;
-		}
+		return true;	
 	}
 }

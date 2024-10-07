@@ -8,8 +8,7 @@ using Mirror;
 public abstract class Character : NetworkBehaviour
 {
 	[SerializeField] private CharacterData _playerData;
-	[SerializeField] private UserNetworkSettings _networkSettings;
-	[SerializeField] private SpriteRenderer sr;
+	[SerializeField] private UserNetworkSettings _networkSettings; 
 	[SerializeField] private Rigidbody2D rb;
 	[SerializeField] private Level _lvl;
 	[SerializeField] private Health _healthComponent;
@@ -21,8 +20,8 @@ public abstract class Character : NetworkBehaviour
 	[SerializeField] private UIPlayerComponents uiComponent;
 	[SerializeField] private SelectComponent _selectComponent; 
 	[SerializeField] private List<Resource> _resources;
+	[SerializeField] private SelectedCircle _selectedCircle;
 
-	public SpriteRenderer SR => sr;
 	public CharacterData Data => _playerData;
 	public UserNetworkSettings NetworkSettings => _networkSettings;
 	public Rigidbody2D Rb => rb;
@@ -34,7 +33,9 @@ public abstract class Character : NetworkBehaviour
 	public UIPlayerComponents UIComponent => uiComponent;
 	public SelectComponent SelectComponent => _selectComponent;
 	public List<Resource> Resources => _resources;
-	
+	public SelectedCircle SelectedCircle => _selectedCircle;
+
+
 	public static event Action<Character> ServerOnUnitSpawned;
 	public static event Action<Character> ServerOnUnitDeleted; 
 	public static event Action<Character> AuthorityOnUnitSpawned;
@@ -42,7 +43,7 @@ public abstract class Character : NetworkBehaviour
 
 	public virtual void Initialize()
 	{
-		Move.Initialize(Data.GetAttributeValue(AttributeNames.Speed), Rb, SR, true);
+		Move.Initialize(Data.GetAttributeValue(AttributeNames.Speed), Rb , true);
 		CharacterState.Initialize(this);
 		SelectComponent.Initialize(Move,Abilities,UIComponent);
 		

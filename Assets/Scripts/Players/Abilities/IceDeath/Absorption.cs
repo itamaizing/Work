@@ -8,7 +8,6 @@ public class Absorption : Skill
 {
 	[SerializeField] private Character _playerLinks;
 	private IcyCorpse _target;
-	private bool _active = false;
 	private Energy _energy;
 
 	protected override bool IsCanCast
@@ -69,9 +68,9 @@ public class Absorption : Skill
 	{
 		Debug.Log(bodyObj.name);
 		IcyCorpse body = bodyObj.GetComponent<IcyCorpse>();
-
+		//NetworkServer.UnSpawn(body.gameObject);
 		//float regen = 0.1f * body.HP + 0.05f * _player.Stamina.Value / 10;
-	_energy.TryUse(_energy.CurrentValue);
+		//_energy.TryUse(_energy.CurrentValue);
 		//_player.Health.AddHeal(regen);
 		body.DestroyCorpse();
 
@@ -81,7 +80,7 @@ public class Absorption : Skill
 	{
 		while (_target == null)
 		{
-			if (Input.GetMouseButton(0))
+			if (GetMouseButton)
 			{
 				_target = (IcyCorpse)GetRaycastTarget();
 			}
@@ -91,6 +90,7 @@ public class Absorption : Skill
 
 	protected override IEnumerator CastJob()
 	{
+		Debug.Log("cast job");
 		CmdAction(_target.gameObject);
 
 		yield return null;

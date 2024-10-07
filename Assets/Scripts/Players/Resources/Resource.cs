@@ -32,8 +32,10 @@ public abstract class Resource : NetworkBehaviour
 
     public event Action<float, float> MaxValueChanged;
     public event Action<float, float> ValueChanged;
+    public event Action<float> PhantomValueShown;
 
-    public virtual void Initialize(float maxValue, float regenValue, float regenDelay, CharacterData data)
+
+	public virtual void Initialize(float maxValue, float regenValue, float regenDelay, CharacterData data)
     {
         _currentValue = maxValue;
         _maxValue = maxValue;
@@ -66,7 +68,12 @@ public abstract class Resource : NetworkBehaviour
         }
     }
 
-    protected virtual void HookValueChanged(float oldValue, float newValue)
+    public void PhantomValueShow(float value)
+    {
+        PhantomValueShown?.Invoke(value);
+    }
+
+	protected virtual void HookValueChanged(float oldValue, float newValue)
     {
         ValueChanged?.Invoke(oldValue, newValue);
     }

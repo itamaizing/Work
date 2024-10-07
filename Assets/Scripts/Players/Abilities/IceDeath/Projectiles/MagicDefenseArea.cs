@@ -18,22 +18,40 @@ public class MagicDefenseArea : Shield
 	{
 		if (collision.TryGetComponent<Character>(out var character))
 		{
+			Debug.Log("added server");
 			character.Health.Shields.Add(this);
-			//character.CharacterState.CmdAddState(States.MagicBuff, 10, _shieldCapacity + _energyDad * 30, _dad.gameObject, _skill.name);
+			TargetRpcAdd(collision.gameObject);
+			//character.CharacterState.AddState(States.MagicBuff, 10, _shieldCapacity, null, name);
 		}
 	}
 
 	[Server]
-
 	private void OnTriggerExit2D(Collider2D collision)
 	{
 		if (collision.TryGetComponent<Character>(out var character))
 		{
+			Debug.Log("remove server");
 			character.Health.Shields.Remove(this);
+			TargetRpcRemove(collision.gameObject);
 			//character.CharacterState.CmdAddState(States.MagicBuff, 10, _shieldCapacity + _energyDad * 30, _dad.gameObject, _skill.name);
 		}
 	}
 
+	[ClientRpc]
+	private void TargetRpcAdd(GameObject target)
+	{
+		Debug.Log("added target");
+		Character character = target.GetComponent<Character>();
+		character.Health.Shields.Add(this);
+	}
+
+	[ClientRpc]
+	private void TargetRpcRemove(GameObject target)
+	{
+		Debug.Log("remove target");
+		Character character = target.GetComponent<Character>();
+		character.Health.Shields.Remove(this);
+	}
 	private IEnumerator DestroyObj()
 	{
 		yield return new WaitForSeconds(10);
