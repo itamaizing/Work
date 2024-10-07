@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.Playables;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -13,10 +14,12 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     [SerializeField] private FillAmountOverTime _cooldown;
     [SerializeField] private TextMeshProUGUI _chargeCounter;
     [SerializeField] private Blink _blinkBoxFrame;
+    [SerializeField] private AutoCastParticles _autoCastEffectPrefab;
 
     private Transform _patentAfterDrag;
     private Skill _skill;
     private bool _selected;
+    private AutoCastParticles _autoCastEffect;
 
     public Transform PatentAfterDrag { get => _patentAfterDrag; set => _patentAfterDrag = value; }
     public Skill Skill { get => _skill; set => _skill = value; }
@@ -32,6 +35,11 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         _skill = skill;
         _image.sprite = _skill.Icon;
         PatentAfterDrag = parent;
+
+        if (skill is AutoAttackSkill)
+        {
+            _autoCastEffect = Instantiate(_autoCastEffectPrefab, transform);
+        }
 
         SubscribingSkillOnEvents(_skill);
     }
@@ -81,6 +89,19 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         PointerExit?.Invoke(this);
     }
 
+    private void OnStartAutoAttack()
+    {
+        _autoCastEffect.gameObject.SetActive(true);
+        _autoCastEffect.Play();
+        Debug.LogWarning("OnStartAuto!");
+    }
+
+    private void OnEndAutoAttack()
+    {
+        _autoCastEffect.gameObject.SetActive(false);
+        Debug.LogWarning("OnEndAuto!!!!!!!!!!!!!!!");
+    }
+
     private void SubscribingSkillOnEvents(Skill ability)
     {
         //ability.CastStreamStarted += OnStartStreaming;
@@ -95,6 +116,15 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         ability.CastStarted += OnCastStarted;
         ability.CastEnded += OnCastEnded;
         ability.Canceled += OnCastEnded;
+
+        if (ability is AutoAttackSkill autoAttackSkill)
+        {
+            autoAttackSkill.Canceled += OnEndAutoAttack;
+            autoAttackSkill.CastPaused += OnEndAutoAttack;
+            autoAttackSkill.CastStarted += OnStartAutoAttack;
+            autoAttackSkill.CastContinued += OnStartAutoAttack;
+            //autoAttackSkill.AutoCastEnded +=
+        }
     }
 
     private void UnsubscribingSkillOnEvents(Skill ability)
@@ -111,6 +141,15 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         ability.CastStarted -= OnCastStarted;
         ability.CastEnded -= OnCastEnded;
         ability.Canceled -= OnCastEnded;
+
+        if (ability is AutoAttackSkill autoAttackSkill)
+        {
+            autoAttackSkill.Canceled -= OnEndAutoAttack;
+            autoAttackSkill.CastPaused -= OnEndAutoAttack;
+            autoAttackSkill.CastStarted -= OnStartAutoAttack;
+            autoAttackSkill.CastContinued -= OnStartAutoAttack;
+            //autoAttackSkill.AutoCastEnded -=
+        }
     }
 
     private void OnClickWithCtrl()

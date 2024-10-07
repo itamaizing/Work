@@ -696,6 +696,7 @@ MonoBehaviour:
   _abilityNameBox: {fileID: 962580426844032932}
   _name: {fileID: 5974402356678565888}
   _description: {fileID: 8578702992132545991}
+  _autoCastEffectPrefab: {fileID: 2457244515493239830, guid: 98cd52d05be82274fb2e740e6c3b0542, type: 3}
 --- !u!61 &1706913480732704821
 BoxCollider2D:
   m_ObjectHideFlags: 0

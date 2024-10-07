@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4972314062421136095}
   - component: {fileID: -8245340431016603970}
   - component: {fileID: 8072426551103348916}
+  - component: {fileID: 7721353371233044629}
   m_Layer: 0
   m_Name: LineChain_Prefab
   m_TagString: Untagged
@@ -45,6 +46,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05eb743cf1c66dd429c822f78f7651ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _startTarget: {fileID: 0}
+  target: {fileID: 0}
+  num: 0
+  me: {fileID: 0}
+  targetID: 0
+  parentID: 0
 --- !u!120 &8072426551103348916
 LineRenderer:
   serializedVersion: 2
@@ -89,7 +99,7 @@ LineRenderer:
   m_SortingOrder: 0
   m_Positions:
   - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
+  - {x: 2, y: 2, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1
@@ -142,10 +152,27 @@ LineRenderer:
     numCapVertices: 0
     alignment: 0
     textureMode: 1
-    textureScale: {x: 0.15, y: 0.6}
+    textureScale: {x: 0.3, y: 1.2}
     shadowBias: 0.5
     generateLightingData: 0
   m_MaskInteraction: 0
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
+--- !u!114 &7721353371233044629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3289486992178106630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  _assetId: 343567601
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0

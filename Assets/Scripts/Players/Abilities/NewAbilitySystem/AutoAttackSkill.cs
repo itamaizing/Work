@@ -1,6 +1,6 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public abstract class AutoAttackSkill : Skill
@@ -30,6 +30,9 @@ public abstract class AutoAttackSkill : Skill
             return NoObstacles(Target.transform.position, _obstacle) && IsTargetInRadius(Radius, Target.transform); ;
         }
     }
+
+    public event Action CastPaused;
+    public event Action CastContinued;
 
     protected abstract void CastAction();
 
@@ -73,6 +76,7 @@ public abstract class AutoAttackSkill : Skill
         {
             StopCoroutine(_autoAttackCoroutine);
             _autoAttackCoroutine = null;
+            CastPaused?.Invoke();
         }
         _isAttacking = false;
     }
@@ -82,6 +86,7 @@ public abstract class AutoAttackSkill : Skill
         if (_autoAttackCoroutine == null && Target != null)
         {
             _autoAttackCoroutine = StartCoroutine(AutoAttackJob());
+            CastContinued?.Invoke();
         }
     }
 

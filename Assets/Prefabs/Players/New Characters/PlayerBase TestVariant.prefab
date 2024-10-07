@@ -204,10 +204,6 @@ PrefabInstance:
       propertyPath: _skills.Array.data[5]
       value: 
       objectReference: {fileID: 1384681329921113506}
-    - target: {fileID: 8468544467696250796, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
-      propertyPath: sr
-      value: 
-      objectReference: {fileID: 7360578308915871271}
     - target: {fileID: 8618050890525431220, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -525,8 +521,3 @@ MonoBehaviour:
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 0
---- !u!212 &7360578308915871271 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 7065627851971222163, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
-  m_PrefabInstance: {fileID: 299526628755236020}
-  m_PrefabAsset: {fileID: 0}
