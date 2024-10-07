@@ -23,10 +23,10 @@ public class VisualRender : MonoBehaviour
        // _icon.sprite = ability.Icon;
 
         _area = Instantiate(_areaPref, transform);
-        _area.SetSize(ability.Area);
+       // _area.SetSize(ability.Area);
 
         _squareArea = Instantiate(_squareAreaPref, transform);
-        _squareArea.SetSize(ability.CastWidth, ability.CastLength);
+        //_squareArea.SetSize(ability.CastWidth, ability.CastLength);
 
         _radius = ability.Radius;
 

@@ -20,8 +20,7 @@ public class PlagueCloud : Projectiles
 		//damage, freez etc
 		if (collision.TryGetComponent<Character>(out var target))
 		{			
-			target.CharacterState.CmdAddState(States.Plague, 4, 0, _dad.gameObject, _skill.name);
-			
+			target.CharacterState.AddState(States.Plague, 4, 0, _dad.gameObject, _skill.name);			
 		}
 		//Explode();
 	}

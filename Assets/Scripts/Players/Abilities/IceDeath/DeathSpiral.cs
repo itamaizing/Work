@@ -2,7 +2,6 @@ using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -28,20 +27,21 @@ public class DeathSpiral : Skill
 	private bool _firstShot = true;
 
 	//private RuneComponent _rune;
+	protected override bool IsCanCast => Chargers > 0;
 
-	protected override bool IsCanCast => true;
-
-	/*private void Start()
-	{
-		for (int i = 0; i < _playerLinks.Resources.Count; i++)
+	private void Start()
+	{		
+		//Chargers = 0;
+		
+		/*for (int i = 0; i < _playerLinks.Resources.Count; i++)
 		{
 			if (_playerLinks.Resources[i].Type == ResourceType.Rune)
 			{
 				_rune = (RuneComponent)_playerLinks.Resources[i];
 			}
-		}
+		}*/
 
-	}*/
+	}
 
 	private void Update()
 	{
@@ -51,7 +51,7 @@ public class DeathSpiral : Skill
 	{
 		while (float.IsPositiveInfinity(_mousePos.x))
 		{
-			if (Input.GetMouseButton(0))
+			if (GetMouseButton)
 			{
 				//_playerLinks.RuneComponent.CmdUse(1);
 				_mousePos = GetMousePoint();
@@ -62,8 +62,9 @@ public class DeathSpiral : Skill
 
 	protected override IEnumerator CastJob()
 	{
-		if(_plagueAbsorption.UseCharge(1))
+		if(_plagueAbsorption.Charges>= 1)
 		{
+			_plagueAbsorption.CmdUseCharge(1);
 			PlagueAbsorptionCharge();
 		}
 		else if (_inTheRow && _talentSecondAttack)
@@ -205,7 +206,6 @@ public class DeathSpiral : Skill
 	{
 		_firstShot = false;
 		_superCharge = false;
-		Chargers--;
 		_inTheRow = true;
 		Vector2 lookDir = _mousePos - (Vector2)_playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
@@ -224,9 +224,10 @@ public class DeathSpiral : Skill
 
 	public void AddCharge()
 	{
-		Debug.Log("ADDED CHARGE!!!");
-		if(Chargers < _maxCharges)
-			Chargers++;
+		if (Chargers < _maxCharges)
+		{
+			Chargers = Chargers + 1;
+		}
 	}
 
 	private void Timer()
@@ -244,27 +245,31 @@ public class DeathSpiral : Skill
 
 	protected override bool TryPayCost(List<SkillEnergyCost> skillEnergyCosts, bool startCooldown = true)
 	{
-		if (IsHaveResourceOnSkill)
+		if (_firstShot && TryUseCharge())
 		{
-			if (_firstShot)
+			foreach (var skillCost in _skillEnergyCosts)
 			{
-				foreach (var skillCost in _skillEnergyCosts)
-				{
-					var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
-					resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
-				}
-				_firstShot= false;
+				var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
+				resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
 			}
-			if (startCooldown)
-				IncreaseSetCooldown(CooldownTime);
+			_firstShot = false;
+		}
+		return true;
+	}
 
-			TryUseCharge();
-			return true;
-		}
-		else
+	[Command]
+	public void CmdUseCharge(int value)
+	{
+		if (Chargers - value >= 0)
 		{
-			return false;
+			Chargers = Chargers - 1;
 		}
+	}
+
+	protected override IEnumerator RechargeCoroutine()
+	{
+		_rechargeJob = null;
+		yield return null;
 	}
 
 	public void TalentMaxCharges(int maxChargesValue)
@@ -305,5 +310,10 @@ public class DeathSpiral : Skill
 	public void TalentCorpseBoostExplode(bool value)
 	{
 		_talentCorpseBoostExplode = value;
+	}
+
+	public void TalentSuperCharge(bool value)
+	{
+		_superCharge = value;
 	}
 }

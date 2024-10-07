@@ -16,9 +16,29 @@ public class DeathSpiralProjectile : Projectiles
 	private bool _talentSuperCharge = false;
 	//private bool _talentCorpseDestroy;
 	private bool _talentCorpseBoostExplode;
+	private float _corpseHp = 10;
+	private float _corpseMaxHp = 30;
+	private Damage _damage;
+	private float _curDamage;
+
 
 	private void Start()
 	{
+		if (_inTheRow)
+		{
+			_curDamage = 10;
+		}
+		else
+		{
+			_curDamage = 20;
+		}
+		_damage = new Damage
+		{
+			Value = _curDamage,
+			Type = DamageType.Magical,
+			Range = AttackRangeType.RangeAttack,
+		};
+
 		startPos = transform.position;
 	}
 
@@ -37,27 +57,49 @@ public class DeathSpiralProjectile : Projectiles
 		if (collision.gameObject == _dad.gameObject)
 			return;
 		//damage, freez etc
-		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject != _dad.gameObject)
+		if (collision.TryGetComponent<IDamageable>(out var damageable) && collision.gameObject != _dad.gameObject)
 		{
-			TalentHit(target);
-			Explode();
-		}
-		if(collision.TryGetComponent<IceShadowObject>(out var shadow))
-		{
-            if (!_talentBoostHPBOdy) 
+			if(damageable is IcyCorpse corpse)
 			{
-				SetAlive(10, shadow.transform);
-				Destroy(shadow.gameObject);
+				corpse.Health.Heal(10);
 			}
-            else
-            {
-				SetAlive(40, shadow.transform);
-				Destroy(shadow.gameObject);
+			else if (damageable is Character target)
+			{
+				TalentHit(target);
+				Explode();
 			}
+			else
+			{
+				damageable.TryTakeDamage(ref _damage, _skill);
+				if (_damage.Value <= 0)
+				{
+					Explode();
+				}
+				return;
+			}
+		}
+
+		/*if (collision.TryGetComponent<Character>(out var target) && collision.gameObject != _dad.gameObject)
+		{
+			
+		}*/
+		if (collision.TryGetComponent<IceShadowObject>(out var shadow))
+		{
+			if (_talentBoostHPBOdy)
+			{
+				_corpseHp = 20;
+			}
+			if (_inTheRow)
+			{
+				_corpseMaxHp = 40;
+			}
+
+			SetAlive(_corpseHp, shadow.transform, _corpseMaxHp);
+			Destroy(shadow.gameObject);
+
 			Explode();
 			Debug.Log(shadow.name + " become alive");
 		}
-
 		//if collision == ice puddle or ice shadow
 		
 	}
@@ -87,11 +129,11 @@ public class DeathSpiralProjectile : Projectiles
 		_talentCorpseBoostExplode = boostExplode;
 	}
 
-	public void SetAlive(float hp, Transform transform)
+	public void SetAlive(float hp, Transform transform, float maxHp)
 	{
-		//_dad.SpawnComponent.SpawnUnit(transform);
-		Debug.LogError("SpawnComponent has been chenged. Plz fix code");
-		//_icyCorpse =  (IcyCorpse)_dad.SpawnComponent.Units.Last();
+		_dad.SpawnComponent.SpawnUnit(0, transform.position);
+		_icyCorpse =  (IcyCorpse)_dad.SpawnComponent.Units.Last();
+		_icyCorpse.InitWithHp(hp, maxHp);
 		_icyCorpse.Talents(_talentCorpseDeath, _talentCorpseBoostExplode);
 		Explode();
 	}
@@ -100,14 +142,8 @@ public class DeathSpiralProjectile : Projectiles
 	{
 		if (_inTheRow)
 		{
-			Damage damage = new Damage
-			{
-				Value = 10,
-				Type = DamageType.Magical,
-				Range = AttackRangeType.RangeAttack,
-			};
 			//_skill.CmdApplyDamage(damage, target.gameObject);
-			target.Health.TryTakeDamage(ref damage, _skill);
+			target.Health.TryTakeDamage(ref _damage, _skill);
 			if(_talentPlague)
 			{
 				target.CharacterState.AddState(States.Plague, 5, 0, _dad.gameObject, _skill.name);
@@ -127,14 +163,8 @@ public class DeathSpiralProjectile : Projectiles
 		}
 		else
 		{
-			Damage damage = new Damage
-			{
-				Value = 20,
-				Type = DamageType.Magical,
-				Range = AttackRangeType.RangeAttack,
-			};
 			//_skill.CmdApplyDamage(damage, target.gameObject);
-			target.Health.TryTakeDamage(ref damage, _skill);
+			target.Health.TryTakeDamage(ref _damage, _skill);
 			if (_talentPlague)
 			{
 				target.CharacterState.AddState(States.Plague, 5, 0, _dad.gameObject, _skill.name);
@@ -149,7 +179,7 @@ public class DeathSpiralProjectile : Projectiles
 			}
 			if (_talentHitState)
 			{
-				StateTalent(target, 20);
+				StateTalent(target, _damage.Value);
 			}
 		}
 	}
@@ -173,6 +203,7 @@ public class DeathSpiralProjectile : Projectiles
 						Type = DamageType.Magical,
 						Range = AttackRangeType.RangeAttack,
 					};
+
 					//_skill.CmdApplyDamage(damage, target.gameObject);
 					target.Health.TryTakeDamage(ref damage2, _skill);
 					enemy.CharacterState.AddState(States.Frosting, 40, 0, _dad.gameObject, _skill.name);

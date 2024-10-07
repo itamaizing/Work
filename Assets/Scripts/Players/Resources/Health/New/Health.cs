@@ -23,7 +23,7 @@ public class Health : Resource, IDamageable, IHealingable
     public List<IDamageable> Shields { get => _shields; }
 
     public event Action Evaded;
-    public event Action<float , Skill> HealTaked;
+    public event Action<float, Skill> HealTaked;
     public event Action<float, DamageType, Skill> DamageTaken;
     public event Action Died;
 
@@ -66,7 +66,13 @@ public class Health : Resource, IDamageable, IHealingable
         TryTakeDamage(ref damage, null);
     }
 
-    public void Heal(float value, Skill skill = null)
+    public void SetHp(float hp, float maxHp)
+    {
+        _currentValue = hp;
+        _maxValue = maxHp;
+    }
+
+	public void Heal(float value, Skill skill = null)
     {
         Add(value);
         HealTaked?.Invoke(value, skill);
@@ -77,7 +83,15 @@ public class Health : Resource, IDamageable, IHealingable
         _evadeMagDamage = value;
     }
 
-    public bool TryEvade(DamageType damageType, AttackRangeType attackRangeType)
+    public void SetEvadeAll(float value)
+    {
+        _evadeMagDamage += value;
+        _evadeMeleeDamage += value;
+        _evadeRangeDamage += value;
+    }    
+
+
+	public bool TryEvade(DamageType damageType, AttackRangeType attackRangeType)
     {
         switch (damageType)
         {
@@ -162,4 +176,9 @@ public class Health : Resource, IDamageable, IHealingable
     {
         _currentValue = _maxValue;
     }
+
+	public void ShowPhantomValue(Damage phantomValue)
+	{
+		PhantomValueShow(phantomValue.Value);
+	}
 }

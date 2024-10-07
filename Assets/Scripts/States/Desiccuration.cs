@@ -50,6 +50,7 @@ public class Desiccuration : AbstractCharacterState
 	public override void ExitState()
 	{
 		Debug.Log("Exiting Desiccuration State");
+		_characterState.RemoveState(this);
 		if (_characterState.Check(StatusEffect.Move))
 		{
 			_characterState.Character.Move.CanMove = true;
@@ -58,7 +59,6 @@ public class Desiccuration : AbstractCharacterState
 		{
 			_abilities.SetAbilitiesEnabled();
 		}
-		_characterState.RemoveState(this);
 	}
 
 	public override bool Stack(float time)

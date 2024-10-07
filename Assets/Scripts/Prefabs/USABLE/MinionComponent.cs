@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MinionComponent : Character
 {
-    private HeroComponent _myHeroParent;
+    protected HeroComponent _myHeroParent;
 
     public event Action<MinionComponent> Destroyed;
     public event Action<MinionComponent> Intercepted;

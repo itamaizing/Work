@@ -14,6 +14,7 @@ public class PlagueAbsorption : Skill
 	private int _charges = 0;
 	//private Energy _energy;
 	//private RuneComponent _rune;
+	public int Charges => _charges;
 
 	protected override bool IsCanCast => IsCanCastCheck();
 
@@ -46,30 +47,20 @@ public class PlagueAbsorption : Skill
 		}
 
 	}*/
-	public bool TryUseCharges(int value)
-	{
-		if(_charges- value >= 0)
-		{
-			return true;
-		}
-		return false;
-	}
-
-	public bool UseCharge(int value)
+	[Command]
+	public void CmdUseCharge(int value)
 	{
 		if (_charges - value >= 0)
 		{
 			_charges-= value;
-			return true;
 		}
-		return false;
 	}
 
 	protected override IEnumerator PrepareJob()
 	{
 		while (_target == null && _charges <= 0)
 		{
-			if (Input.GetMouseButton(0))
+			if (GetMouseButton)
 			{
 				//Debug.Log("CHECK FOR TEst@@");
 				_target = GetRaycastTarget();

@@ -41,6 +41,7 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] protected List<SkillEnergyCost> _skillEnergyCosts;
     [SerializeField] protected float _cooldownTime;
     [SerializeField] protected float _castDeley;
+    [SerializeField] protected float _damageValue;
     [SerializeField] private Schools _abilitySchool;
     [SerializeField] private AbilityForm _abilityForm;
     [SerializeField] private DamageType _damageType;
@@ -111,6 +112,7 @@ public abstract class Skill : NetworkBehaviour
     public float Area { get => Buff.Area.GetBuffedValue(_area); protected set => _area = value; }
     public float CastLength { get => Buff.Area.GetBuffedValue(_castLength); protected set => _castLength = value; }
     public float CastWidth { get => Buff.Area.GetBuffedValue(_castWidth); protected set => _castWidth = value; }
+    public float Damage  { get => Buff.Damage.GetBuffedValue(_damageValue); protected set => _damageValue = value; }
     public bool IsUseCharges { get => _isUseCharges; }
     public LayerMask TargetsLayers { get => _targetsLayers; protected set => _targetsLayers = value; }
     public Schools School { get => _abilitySchool; protected set => _abilitySchool = value; }
@@ -318,7 +320,7 @@ public abstract class Skill : NetworkBehaviour
 
     public void DrawDamageZone(Vector3 position)
     {
-        _skillRender.CmdDrawDamageZone(position, Area, _hero.gameObject);
+        _skillRender.CmdDrawDamageZone(position, Area, _damageValue, _hero.gameObject);
     }
 
     public void StopDamageZone()
@@ -329,14 +331,21 @@ public abstract class Skill : NetworkBehaviour
 
     protected virtual void StartAutoDraw()
     {
-        if (_isAutoRadiusRender)
+		/*Damage damage = new Damage
+		{
+			Value = Damage,
+			Type = DamageType.Physical,
+			Range = AttackRangeType.RangeAttack,
+		};*/
+
+		if (_isAutoRadiusRender)
             _skillRender.DrawRadius(Radius);
 
         if (_isAutoAreaRender)
-            _skillRender.DrawArea(Area, TargetsLayers);
+            _skillRender.DrawArea(Area, Damage, TargetsLayers);
 
         if (_isAutoLineRender)
-            _skillRender.DrawLine(CastLength, CastWidth, TargetsLayers);
+            _skillRender.DrawLine(CastLength, CastWidth, Damage, TargetsLayers);
     }
 
     protected virtual void StopAutoDraw()

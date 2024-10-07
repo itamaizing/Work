@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Mirror;
 using UnityEngine;
 
@@ -102,4 +103,10 @@ public class MoveComponent : NetworkBehaviour
     {
 		transform.position = vector3;
 	}
+	[TargetRpc]
+	public void TargetRpcDoMove(Vector3 vector3, float duration)
+	{
+		_rigidbody.DOMove(vector3, duration);
+	}
+	
 }
