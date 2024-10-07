@@ -6,11 +6,20 @@ using UnityEngine;
 public class IceCloudProjectile : Projectiles
 {	
 	private Vector2 _startPos;
+	private Damage _damage;
 	private bool _boostDmg;
+	private float _curDamage;
 
 	private void Start()
 	{
 		_startPos = transform.position;
+		_curDamage = 10 + _energyDad / 4;
+		_damage = new Damage
+		{
+			Value = _curDamage,
+			Type = DamageType.Physical,
+			Range = AttackRangeType.RangeAttack,
+		};
 	}
 
 	private void Update()
@@ -29,50 +38,56 @@ public class IceCloudProjectile : Projectiles
 		if (collision.gameObject == _dad.gameObject)
 			return;
 
-		if(collision.TryGetComponent<Character>(out var target))
+		if(collision.TryGetComponent<IDamageable>(out var damageable))
 		{
-			Debug.Log(collision.name);
-			target.CharacterState.AddState(States.Plague, 40, 0, _dad.gameObject, _skill.Name);
-			//target.CharacterState.personWhoShoted = _dad;
-
-			float duration = 1 + _energyDad / 20;
-			float curDamage = 10 + _energyDad / 4;
-
-			if (target.CharacterState.CheckForState(States.Frozen) && _boostDmg)
+			if (damageable is Character target)
 			{
-				curDamage *= 1.4f;
-				Debug.Log("NEW DAMAGE");
-			}
-			
-			_energy.SumDamageMake(curDamage);			
-			Damage damage = new Damage
-			{
-				Value = curDamage,
-				Type = DamageType.Physical,
-				Range = AttackRangeType.RangeAttack,
-			};
-			//_skill.CmdApplyDamage(damage, target.gameObject);
-			target.Health.TryTakeDamage(ref damage, _skill);
+				Debug.Log(collision.name);
+				target.CharacterState.AddState(States.Plague, 40, 0, _dad.gameObject, _skill.Name);
+				//target.CharacterState.personWhoShoted = _dad;
+
+				float duration = 1 + _energyDad / 20;
+
+				if (target.CharacterState.CheckForState(States.Frozen) && _boostDmg)
+				{
+					_curDamage *= 1.4f;
+					Debug.Log("NEW DAMAGE");
+				}
+
+				_energy.SumDamageMake(_curDamage);
+				
+				//_skill.CmdApplyDamage(damage, target.gameObject);
+				target.Health.TryTakeDamage(ref _damage, _skill);
 
 
-			target.CharacterState.AddState(States.Frozen, duration, 30, _dad.gameObject, _skill.name);
+				target.CharacterState.AddState(States.Frozen, duration, 30, _dad.gameObject, _skill.name);
 
-			//talents???
-			if (_dad.Health.EvadeMagDamage >=20)
-			{
-				_dad.Health.SetEvadeMagic(5);
+				//talents???
+				if (_dad.Health.EvadeMagDamage >= 20)
+				{
+					_dad.Health.SetEvadeMagic(5);
+				}
+				else
+				{
+					_dad.Health.SetEvadeMagic(20);
+				}
+
+				//dad.Stamina.Use(duration * 20);
+				//damage
+				GetComponent<Collider2D>().enabled = false;
+				Explode();
 			}
 			else
 			{
-				_dad.Health.SetEvadeMagic(20);
+				damageable.TryTakeDamage(ref _damage, _skill);
+				if (_damage.Value <= 0)
+				{
+					Explode();
+				}
+				return;
 			}
-
-			//dad.Stamina.Use(duration * 20);
-			//damage
-			GetComponent<Collider2D>().enabled = false;
-			Explode();
 		}
-		
+		Explode();
 	}
 
 	private void Explode()

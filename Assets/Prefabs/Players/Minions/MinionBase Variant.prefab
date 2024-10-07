@@ -186,6 +186,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 550b3daa2900e4d448f45b2c0a260552, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2615518641016830594 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9081349754013333447, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+  m_PrefabInstance: {fileID: 6506398698450439493}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d37dcef6f152524f82c5c9cfc5288fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &3601015822794147039 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7760335386463111578, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
@@ -263,6 +274,7 @@ MonoBehaviour:
   _selectComponent: {fileID: 1600587165924517407}
   _resources:
   - {fileID: 811135994550571455}
+  _selectedCircle: {fileID: 2615518641016830594}
 --- !u!50 &7955227764842124140 stripped
 Rigidbody2D:
   m_CorrespondingSourceObject: {fileID: 3759936847054020137, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}

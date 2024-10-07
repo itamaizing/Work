@@ -66,6 +66,7 @@ public class FrostingState : AbstractCharacterState
 	public override void ExitState()
 	{
 		Debug.Log("Exiting Frosting State");
+		_characterState.RemoveState(this);
 		if (_characterState.Check(StatusEffect.Move))
 		{
 			_characterState.Character.Move.CanMove = true;
@@ -80,7 +81,6 @@ public class FrostingState : AbstractCharacterState
 				}
 			}
 		}
-		_characterState.RemoveState(this);
 	}
 
 	public override bool Stack(float time)

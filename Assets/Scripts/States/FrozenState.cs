@@ -59,6 +59,7 @@ public class FrozenState : AbstractCharacterState
 		Debug.Log("Exiting Frozen State");
 
 		//character.GetAbilityManager().ToggleAbility(true);//turn on abilities
+		_characterState.RemoveState(this);
 		if (_characterState.Check(StatusEffect.Move))
 		{
 			_characterState.Character.Move.CanMove = true;
@@ -67,7 +68,6 @@ public class FrozenState : AbstractCharacterState
 		{
 			_abilities.SetAbilitiesEnabled();
 		}
-		_characterState.RemoveState(this);
 	}
 
 	public override bool Stack(float time)

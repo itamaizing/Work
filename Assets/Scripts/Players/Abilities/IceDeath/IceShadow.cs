@@ -1,5 +1,7 @@
 using Mirror;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -67,8 +69,6 @@ public class IceShadow : Skill
 
 	protected override IEnumerator CastJob()
 	{
-		//if (_playerLinks.RuneComponent.RemoveRune(1, this))
-		//_playerLinks.RuneComponent.CmdUse(1);
 		Shoot();
 		yield return null;
 	}
@@ -77,23 +77,6 @@ public class IceShadow : Skill
 	{
 		
 	}
-
-	/*protected override void Cast()
-	{
-		PayCost();
-		if(_talentEvade &&  _evaded) 
-		{
-			Shoot();
-		}
-		//else //if (_playerLinks.RuneComponent.RemoveRune(1, this))
-		{
-			Shoot();
-		}
-		//else
-		{
-			TryCancel();
-		}
-	}*/
 
 	private void Shoot()
 	{
@@ -150,25 +133,29 @@ public class IceShadow : Skill
 		_evaded = false;
 	}
 
-	
-	/*private Vector3 InstantiatePoint()
-{
-	Vector3 mousePosition = Input.mousePosition;
-	//mousePosition.z = 10f; // Set this to the distance from the camera to the object
-	Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
-	float distance = Vector3.Distance(gameObject.transform.position, worldPosition);
-	//Vector3 spawnPos;
-	if(distance <= _radius) 
+	protected override bool TryPayCost(List<SkillEnergyCost> skillEnergyCosts, bool startCooldown = true)
 	{
-		return worldPosition;
-	}
-	else
-	{
-		Vector3 direction = (worldPosition - gameObject.transform.position).normalized;
-		Vector3 spawnPosition = gameObject.transform.position + direction * _radius;
-		return spawnPosition;
-	}
+		if (IsHaveResourceOnSkill)
+		{
+			if (!_evaded || _talentEvade)
+			{
+				foreach (var skillCost in _skillEnergyCosts)
+				{
+					var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
+					resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
+				}
+				_evaded = false;
+			}
+			if (startCooldown)
+				IncreaseSetCooldown(CooldownTime);
 
-}*/
+			TryUseCharge();
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 }
 

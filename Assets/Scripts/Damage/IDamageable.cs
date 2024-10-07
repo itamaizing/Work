@@ -1,5 +1,8 @@
 using Mirror;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public struct Damage : NetworkMessage
 {
@@ -11,5 +14,8 @@ public struct Damage : NetworkMessage
 public interface IDamageable
 {
     public event Action<float, DamageType, Skill> DamageTaken;
-    public bool TryTakeDamage(ref Damage damage, Skill skill);
+	//public event Action<float> PhantomValueShown;
+	public bool TryTakeDamage(ref Damage damage, Skill skill);
+    public void ShowPhantomValue(Damage phantomValue);
+
 }

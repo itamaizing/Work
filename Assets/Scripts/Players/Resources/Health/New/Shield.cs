@@ -23,7 +23,12 @@ public class Shield : Resource, IDamageable
         _isBreaksDown = isBreaksDown;
     }
 
-    public bool TryTakeDamage(ref Damage damage, Skill skill)
+	public void ShowPhantomValue(Damage phantomValue)
+	{
+		throw new NotImplementedException();
+	}
+
+	public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
         if(_absorptionDamageType == DamageType.Both || _absorptionDamageType == damage.Type)
         {

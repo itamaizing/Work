@@ -14,7 +14,7 @@ public class IceShadowObject : Projectiles
 	 * timer to destroy
 	 * buff player
 	 * */
-	public override void Init(Character dad, float energy, bool lastHit, Skill skill)
+	public override void Init(HeroComponent dad, float energy, bool lastHit, Skill skill)
 	{
 		_skill = skill;
 		_dad = dad;
@@ -37,7 +37,7 @@ public class IceShadowObject : Projectiles
 			return;
 		}
 	}
-	//[Server]
+	[Server]
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		if(_dad == null) return;
@@ -54,7 +54,7 @@ public class IceShadowObject : Projectiles
 		{
 			float duration = 2 + _energyDad / 20;
 
-			target.CharacterState.CmdAddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
+			target.CharacterState.AddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
 			//GetComponent<Collider2D>().enabled = false;
 			//Destroy(gameObject);
 			if(_lastHit)
@@ -64,7 +64,7 @@ public class IceShadowObject : Projectiles
 				{
 					if (enemy.TryGetComponent<Character>(out var newTatget) && collision.gameObject != _dad.gameObject)
 					{
-						newTatget.CharacterState.CmdAddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
+						newTatget.CharacterState.AddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
 					}
 
 

@@ -38,12 +38,12 @@ public class InvisibleState : AbstractCharacterState
 	public override void ExitState()
 	{
 		Debug.Log("Exiting Invisible State");
+		_characterState.RemoveState(this);
 		if (_characterState.Check(StatusEffect.Others))
 		{
 			//_characterState.Health.SetInvincible(false);
 			_characterState.invinsible = false;
 		}
-		_characterState.RemoveState(this);
 	}
 
 	public override bool Stack(float time)

@@ -60,4 +60,9 @@ public class LightShield : AbstractCharacterState, IDamageable
 
         return damage.Value == 0;
     }
+
+	public void ShowPhantomValue(Damage phantomValue)
+	{
+		throw new NotImplementedException();
+	}
 }

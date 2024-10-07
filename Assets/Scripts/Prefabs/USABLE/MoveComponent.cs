@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Mirror;
 using UnityEngine;
 
@@ -12,7 +13,6 @@ public class MoveComponent : NetworkBehaviour
 	public bool IsSelect = false;
 	
 	private Rigidbody2D _rigidbody;
-	private SpriteRenderer _spriteRenderer;
 
 	private Vector2 _offset = Vector2.zero;
 
@@ -30,14 +30,13 @@ public class MoveComponent : NetworkBehaviour
 		_offset = offset;
 	}
 
-	public void Initialize(float speed, Rigidbody2D rb, SpriteRenderer spriteRenderer, bool isHero = false)
+	public void Initialize(float speed, Rigidbody2D rb , bool isHero = false)
 	{
 		_defaultSpeed = speed;
 
 		_rigidbody = rb;
 		_rigidbody.isKinematic = false;
-		_spriteRenderer = spriteRenderer;
-
+		
 		SetDefaultSpeed();
 
 		MoveDirection = Vector2.zero;
@@ -81,12 +80,6 @@ public class MoveComponent : NetworkBehaviour
 		_rigidbody.velocity = _currentVelocity * _currentSpeed;
 	}
 
-	void LateUpdate()
-	{
-		if (isLocalPlayer) CmdRotateAndScalePlayer(_dir);
-	}
-
-
 	private void OnMove(Vector2 dir)
     {
 		if (IsSelect)
@@ -110,39 +103,10 @@ public class MoveComponent : NetworkBehaviour
     {
 		transform.position = vector3;
 	}
-
-
-	[Command]
-	private void CmdRotateAndScalePlayer(Vector2 direction)
+	[TargetRpc]
+	public void TargetRpcDoMove(Vector3 vector3, float duration)
 	{
-		RpcRotateAndScalePlayer(direction);
+		_rigidbody.DOMove(vector3, duration);
 	}
-
-
-	[ClientRpc]
-	private void RpcRotateAndScalePlayer(Vector2 direction)
-	{
-		if (direction == Vector2.zero) return;
-		float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-		Quaternion targetRotation = Quaternion.Euler(0, 0, targetAngle);
-		_spriteRenderer.transform.rotation = Quaternion.Slerp(_spriteRenderer.transform.rotation, targetRotation, Time.deltaTime * 10f);
-		_spriteRenderer.flipX = direction.x < 0;
-
-		if (direction.x >= 0)
-		{
-			SetPlayerOrientation(new Vector3(-1f, 1f, 1f), false, false);
-		}
-		else
-		{
-			SetPlayerOrientation(new Vector3(1f, 1f, 1f), true, true);
-		}
-	}
-
-
-	private void SetPlayerOrientation(Vector3 scale, bool flipX, bool flipY)
-	{
-		_spriteRenderer.transform.localScale = scale;
-		_spriteRenderer.flipX = flipX;
-		_spriteRenderer.flipY = flipY;
-	}
+	
 }

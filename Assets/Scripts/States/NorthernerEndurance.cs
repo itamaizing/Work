@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,7 +14,7 @@ public class NorthernerEndurance : AbstractCharacterState
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		_characterState = character;
+		_characterState = character;	
 		_health = character.Character.Health;
 		//_health.BoostHpBonus(damageToExit);
 		_durationToExit = durationToExit;
@@ -23,6 +24,7 @@ public class NorthernerEndurance : AbstractCharacterState
 	public override void UpdateState()
 	{
 		_durationToExit -= Time.deltaTime;
+		Debug.Log("Frozen State");
 		if (_durationToExit < 0)
 		{
 			ExitState();
@@ -31,8 +33,10 @@ public class NorthernerEndurance : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		//_health.BoostHpReverse(_damageToExit);
+		Debug.Log("Frozen State exit");
 		_characterState.RemoveState(this);
+		
+		//_health.BoostHpReverse(_damageToExit);
 	}
 
 	public override bool Stack(float time)

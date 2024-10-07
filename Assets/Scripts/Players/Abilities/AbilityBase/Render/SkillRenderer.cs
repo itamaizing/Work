@@ -25,17 +25,17 @@ public class SkillRenderer : NetworkBehaviour
     private Coroutine _drawAreaCoroutine;
 
     [Command]
-    public void CmdDrawDamageZone(Vector3 position, float radius, GameObject player)
+    public void CmdDrawDamageZone(Vector3 position, float radius, float damage, GameObject player)
     {
         int teamIndex = player.GetComponent<UserNetworkSettings>().TeamIndex;
-        RpcDrawDamageZone(position, radius, player, teamIndex);
+        RpcDrawDamageZone(position, radius, damage, player, teamIndex);
     }
 
     [ClientRpc]
-    public void RpcDrawDamageZone(Vector3 position, float radius, GameObject player, int teamIndex)
+    public void RpcDrawDamageZone(Vector3 position, float radius, float damage, GameObject player, int teamIndex)
     {
         _tempDamageZone = Instantiate(_damageZonePref, position, Quaternion.identity);
-        _tempDamageZone.SetSize(radius);
+        _tempDamageZone.SetSize(radius, damage);
 
         var localPlayer = NetworkClient.connection.identity.GetComponent<UserNetworkSettings>();
         bool isAlly = localPlayer.TeamIndex == teamIndex;
@@ -75,12 +75,23 @@ public class SkillRenderer : NetworkBehaviour
         _circle.Clear();
     }
 
-    public void DrawArea(float rarius, LayerMask layerMask, CircleArea area = null)
+    public void DrawRadiusColor(float radius, Color color) 
+    {
+        _circle.SetColor(color);
+        _circle.Draw(radius);
+    }
+
+    public void SetColor(Color color)
+    {
+        _circle.SetColor(color);
+    }
+
+    public void DrawArea(float rarius, float damage, LayerMask layerMask, CircleArea area = null)
     {
         if (area == null)
             area = _areaPref;
 
-        _drawAreaCoroutine = StartCoroutine(DrawAreaJob(rarius, layerMask, area));
+        _drawAreaCoroutine = StartCoroutine(DrawAreaJob(rarius, damage, layerMask, area));
     }
 
     public void StopDrawArea()
@@ -92,12 +103,12 @@ public class SkillRenderer : NetworkBehaviour
             Destroy(_tempArea.gameObject);
     }
 
-    public void DrawLine(float length, float width, LayerMask layerMask, AbilityLineRenderer line = null)
+    public void DrawLine(float length, float width, float damage, LayerMask layerMask, AbilityLineRenderer line = null)
     {
         if (line == null)
             line = _line;
 
-        _drawLineCoroutine = StartCoroutine(DrawLineJob(length, width, layerMask, line));
+        _drawLineCoroutine = StartCoroutine(DrawLineJob(length, width, damage, layerMask, line));
     }
 
     public void StopDrawLine()
@@ -119,7 +130,7 @@ public class SkillRenderer : NetworkBehaviour
         transform.rotation = Quaternion.Euler(0, 0, angle - 90);
     }
 
-    private IEnumerator DrawLineJob(float length, float width, LayerMask layerMask, AbilityLineRenderer line)
+    private IEnumerator DrawLineJob(float length, float width, float damage,  LayerMask layerMask, AbilityLineRenderer line)
     {
         _lineStartImage = Instantiate(line.Start, transform);
         _lineEndImage = Instantiate(line.End, transform);
@@ -142,24 +153,24 @@ public class SkillRenderer : NetworkBehaviour
             {
                 float distance = Vector2.Distance(transform.position, rayHit.transform.position);
 
-                _lineStartImage.SetSize(width, distance / 2 + 0.3f);
-                _lineEndImage.SetSize(width, length);
+                _lineStartImage.SetSize(width, distance / 2 + 0.3f, damage);
+                _lineEndImage.SetSize(width, length, damage);
             }
             else
             {
-                _lineStartImage.SetSize(width, length);
-                _lineEndImage.SetSize(width, length);
+                _lineStartImage.SetSize(width, length, damage);
+                _lineEndImage.SetSize(width, length, damage);
             }
             yield return null;
         }
     }
 
-    private IEnumerator DrawAreaJob(float radius, LayerMask layerMask, CircleArea areaPref)
+    private IEnumerator DrawAreaJob(float radius, float damage, LayerMask layerMask, CircleArea areaPref)
     {
         Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, 0);
 
         _tempArea = Instantiate(areaPref, mouse, Quaternion.identity);
-        _tempArea.SetSize(radius);
+        _tempArea.SetSize(radius, damage);
 
         while (true)
         {
