@@ -7,15 +7,20 @@ using UnityEngine.SceneManagement;
 public class IcyCorpse : MinionComponent
 {
 	[SerializeField] private PlagueCloud _cloud;
-	private HeroComponent _dad;
     private bool _talentDestroy = false;
 	private bool _talentBoostExplode = false;
+	private float _hp = 10;
+	private float _maxHp = 30;
 
-	/*public void InitWithHp(float hp, float maxHp)
+	private void Start()
 	{
-		Health.CurrentValue = hp;
-		Health.MaxValue = maxHp;
-	}*/
+		Health.SetHp(_hp, _maxHp);
+	}
+	public void InitWithHp(float hp, float maxHp)
+	{
+		_hp = hp;
+		_maxHp = maxHp;
+	}
 
     public void DestroyCorpse()
     {
@@ -30,7 +35,7 @@ public class IcyCorpse : MinionComponent
 			}
 			foreach (Collider2D collider in colliders)
 			{
-				if (collider.TryGetComponent<Character>(out var enemy) && collider.gameObject != gameObject && collider.gameObject != _dad.gameObject)
+				if (collider.TryGetComponent<Character>(out var enemy) && collider.gameObject != gameObject && collider.gameObject != _myHeroParent.gameObject)
 				{
 					Damage damage2 = new Damage
 					{
@@ -47,22 +52,23 @@ public class IcyCorpse : MinionComponent
 					}
 				}
 			}
-			if (_dad != null)
+			if (_myHeroParent != null)
 			{
 				Debug.Log("create cloud");
 				Shoot();
 			}
-			Destroy(gameObject);
+			
 		}
-       // _heroParent.
-    }
+		Destroy(gameObject);
+		// _heroParent.
+	}
 
 	//[Command]
 	private void Shoot()
 	{
 		PlagueCloud projectile = Instantiate(_cloud, gameObject.transform.position, Quaternion.Euler(0, 0, 0));
-		SceneManager.MoveGameObjectToScene(projectile.gameObject, _dad.NetworkSettings.MyRoom);
-		projectile.Init(_dad, 0, false, null);
+		SceneManager.MoveGameObjectToScene(projectile.gameObject, _myHeroParent.NetworkSettings.MyRoom);
+		projectile.Init(_myHeroParent, 0, false, null);
 		
 		//projectile.TalentBoostHp(_talentBoostHPBOdy);
 		//projectile.TalentHitState(_talentHitState);
@@ -75,7 +81,7 @@ public class IcyCorpse : MinionComponent
 	[ClientRpc]
 	private void RpcInit(GameObject obj)
 	{
-		obj.GetComponent<DeathSpiralProjectile>().Init(_dad, 0, false, null);
+		obj.GetComponent<DeathSpiralProjectile>().Init(_myHeroParent, 0, false, null);
 	}
 
 	public void Talents(bool destroy, bool boostExplode)

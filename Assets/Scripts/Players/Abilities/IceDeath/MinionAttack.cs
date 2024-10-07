@@ -7,7 +7,7 @@ public class MinionAttack : AutoAttackSkill
 	[SerializeField] private float _abilityCooldown = 1.6f; //cooldown between shots
 	private float _cooldownTimer = 1.6f;
 	private bool _isReadyToShot = true;
-
+	private float _speedBoost = 1;
 	
 	private void CheckEnemy()
 	{
@@ -61,5 +61,14 @@ public class MinionAttack : AutoAttackSkill
 			PhysicAttackType = AttackRangeType.MeleeAttack,
 		};
 		_target.Health.TryTakeDamage(ref damage, this);
+	}
+
+	public void TalentBoostSpeed(float speed)
+	{
+		_speedBoost *= speed;
+	}
+	public void TalentReduceSpeed(float speed)
+	{
+		_speedBoost /= speed;
 	}
 }

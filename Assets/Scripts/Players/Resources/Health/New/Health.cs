@@ -179,4 +179,9 @@ public class Health : Resource, IDamageable, IHealingable
     {
         _currentValue = _maxValue;
     }
+
+	public void ShowPhantomValue(Damage phantomValue)
+	{
+		PhantomValueShow(phantomValue.Value);
+	}
 }

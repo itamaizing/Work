@@ -161,9 +161,9 @@ public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHa
         if (ability is AutoAttackSkill autoAttackSkill)
         {
             autoAttackSkill.Canceled += OnEndAuto;
-            autoAttackSkill.CastPaused += OnEndAuto;
+            //autoAttackSkill.CastPaused += OnEndAuto;
             autoAttackSkill.CastStarted += OnStartAuto;
-            autoAttackSkill.CastContinued += OnStartAuto;
+            //autoAttackSkill.CastContinued += OnStartAuto;
             //autoAttackSkill.AutoCastEnded +=
         }
     }
@@ -181,9 +181,9 @@ public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHa
         if (ability is AutoAttackSkill autoAttackSkill)
         {
             autoAttackSkill.Canceled -= OnEndAuto;
-            autoAttackSkill.CastPaused -= OnEndAuto;
+           // autoAttackSkill.CastPaused -= OnEndAuto;
             autoAttackSkill.CastStarted -= OnStartAuto;
-            autoAttackSkill.CastContinued -= OnStartAuto;
+           // autoAttackSkill.CastContinued -= OnStartAuto;
             //autoAttackSkill.AutoCastEnded -=
         }
 

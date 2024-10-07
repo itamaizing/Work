@@ -19,7 +19,8 @@ public abstract class Character : NetworkBehaviour
 	[SerializeField] private SelectComponent _selectComponent;
 	[SerializeField] private DamageTracker _damageTracker;
 	[SerializeField] private List<Resource> _resources;
-	
+	[SerializeField] private SelectedCircle _selectedCircle;
+
 	public CharacterData Data => _playerData;
 	public UserNetworkSettings NetworkSettings => _networkSettings;
 	public Rigidbody2D Rb => rb;
@@ -32,7 +33,9 @@ public abstract class Character : NetworkBehaviour
 	public SelectComponent SelectComponent => _selectComponent;
 	public DamageTracker DamageTracker => _damageTracker;
 	public List<Resource> Resources => _resources;
-	
+	public SelectedCircle SelectedCircle => _selectedCircle;
+
+
 	public static event Action<Character> ServerOnUnitSpawned;
 	public static event Action<Character> ServerOnUnitDeleted; 
 	public static event Action<Character> AuthorityOnUnitSpawned;

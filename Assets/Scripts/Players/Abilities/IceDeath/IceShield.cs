@@ -15,26 +15,62 @@ public class IceShield : Skill
 
 	private bool _active = false;
 	private float _timer = 1f;
-	private float _delay = 1f;
 	private Energy _energy;
 
 	protected override bool IsCanCast => true;
+
+	private void Start()
+	{
+		for (int i = 0; i < _playerLinks.Resources.Count; i++)
+		{
+			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
+			{
+				_energy = (Energy)_playerLinks.Resources[i];
+			}
+		}
+	}
+
+	private void Update()
+	{
+		if (!_active) return;
+
+		_timer -= Time.deltaTime;
+		if (_timer <= 0)
+		{
+			_timer = 1;
+			if (_energy != null)
+			{
+				_energy.CmdUse(1);
+
+				if (_energy.CurrentValue <= 0)
+				{
+					_active = false;
+					_shield.gameObject.SetActive(_active);
+					_shield.SetActive(_active);
+					CmdRemoveShield();
+				}
+			}
+
+		}
+	}
 
 	private void Shoot() 
 	{
 		_active = !_active;
 		Debug.Log(_playerLinks.Health.Shields.Count);
+
+		_shield.gameObject.SetActive(_active);
+		_shield.SetActive(_active);
+		
 		if (_active) 
 		{
-			_shield.gameObject.SetActive(true);
-			_playerLinks.Move.ChangeMoveSpeed(0.8f);
 			CmdAddShield();
+			_playerLinks.Move.ChangeMoveSpeed(0.8f);			
 		}
 		else
 		{
-			_shield.gameObject.SetActive(false);
-			_playerLinks.Move.ChangeMoveSpeed(1.25f);
 			CmdRemoveShield();
+			_playerLinks.Move.ChangeMoveSpeed(1.25f);
 		}
 	}
 
@@ -76,15 +112,34 @@ public class IceShield : Skill
 	[Command]
 	private void CmdAddShield()
 	{
+		_shield.gameObject.SetActive(true);
+		_shield.SetActive(true);
+		_shield.Initialize(1000, DamageType.Both, 0.9f);
 		_playerLinks.Health.Shields.Add(_shield);
-		Debug.Log(_playerLinks.Health.Shields.Count);
+		ClientRpcSwitchShield(true);
 	}
 
 	[Command]
 	private void CmdRemoveShield()
 	{
+		_shield.gameObject.SetActive(false);
+		_shield.SetActive(false);
 		_playerLinks.Health.Shields.Remove(_shield);
-		Debug.Log(_playerLinks.Health.Shields.Count);
+		ClientRpcSwitchShield(false);
 	}
+
+	[ClientRpc]
+	private void ClientRpcSwitchShield(bool value)
+	{
+		_shield.gameObject.SetActive(value);
+		_shield.SetActive(value);
+	}
+
+	/*[ClientRpc]
+	private void ClientRpcRemoveShield()
+	{
+		_shield.gameObject.SetActive(false);
+		_shield.SetActive(false);
+	}*/
 }
 

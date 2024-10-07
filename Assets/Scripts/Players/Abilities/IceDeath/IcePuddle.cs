@@ -132,7 +132,7 @@ public class IcePuddle : Skill
 		{
 			PlacePuddle();
 			_preViewPuddle.SetActive(true);
-			if (Input.GetMouseButtonDown(0))
+			if (GetMouseButton)
 			{
 				if (_secondPoind)
 				{
@@ -159,6 +159,7 @@ public class IcePuddle : Skill
 
 	protected override void ClearData()
 	{
+		_secondPoind = false;
 		_shooted = false;
 		_preViewPuddle.SetActive(false);
 	}
@@ -185,7 +186,7 @@ public class IcePuddle : Skill
 	{
 		IcePuddleObject projectile = Instantiate(_puddle, position, Quaternion.Euler(0, 0, angle));
 		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
-		projectile.Init(_hero, manaValue, lastHit, this);
+		projectile.Init(_playerLinks, manaValue, lastHit, this);
 		projectile.SetTalents(_talentEvadeDadBoost, _talentFrostingFrozen);
 
 		NetworkServer.Spawn(projectile.gameObject);
@@ -196,7 +197,7 @@ public class IcePuddle : Skill
 	[ClientRpc]
 	private void RpcInit(GameObject obj, float manaValue, bool lastHit)
 	{
-		obj.GetComponent<IcePuddleObject>().Init(_hero, manaValue, lastHit, this);
+		obj.GetComponent<IcePuddleObject>().Init(_playerLinks, manaValue, lastHit, this);
 	}
 
 	private Vector3 InstantiatePoint()

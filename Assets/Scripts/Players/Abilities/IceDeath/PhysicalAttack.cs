@@ -1,4 +1,5 @@
 using DG.Tweening;
+using Mirror;
 using UnityEngine;
 
 public class PhysicalAttack : AutoAttackSkill
@@ -12,8 +13,7 @@ public class PhysicalAttack : AutoAttackSkill
 	private bool _talentActive = false;
 	private Energy _energy;
 	private RuneComponent _rune;
-
-	public Character Target2 => _curTarget;
+	private float _multiplier = 1;
 
 	private void Start()
 	{
@@ -37,28 +37,28 @@ public class PhysicalAttack : AutoAttackSkill
 	}
 	private void Hit(Character enemy)
 	{
-		if (_curTarget == enemy && _energy.TryUse(5))
+		if (_curTarget == enemy && _energy.CurrentValue >= 5)
 		{
-			Buff.AttackSpeed.ReductionPercentage(1 + _combo.GetMultipliedSpeed() / 100);
-
-
+			//_energy.CmdUse(5);
+			Buff.AttackSpeed.IncreasePercentage(_multiplier);
 			float curDamage = _damage + Random.Range(0, 2);
+			
 			if(_combo.MakeHit(enemy, AbilityForm.Physical, 0, curDamage))
 			{
+				Debug.Log("Last hit");
 				LastHit();
 			}
-			Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed()/100); // ?
+			_multiplier = 1 + _combo.GetMultipliedSpeed() / 100;
+			Buff.AttackSpeed.ReductionPercentage(_multiplier); // ?
 
 			Damage damage = new Damage
 			{
 				Value = curDamage,
 				Type = DamageType.Physical,
-				PhysicAttackType = AttackRangeType.MeleeAttack,
+				Range = AttackRangeType.MeleeAttack,
 			};
-			ApplyDamage(damage, enemy.gameObject);
+			CmdApplyDamage(damage, enemy.gameObject);
 
-			//enemy.Health.TryTakeDamage(ref damage, this);
-			//ApplyDamage(enemy.Health, curDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
 			if(enemy.CharacterState.CheckForState(States.Frozen))
 			{
 				curDamage *= 1.4f;
@@ -67,7 +67,8 @@ public class PhysicalAttack : AutoAttackSkill
 		}
 		else
 		{
-			Buff.AttackSpeed.ReductionPercentage(1 + _combo.GetMultipliedSpeed() / 100);
+			Buff.AttackSpeed.IncreasePercentage(_multiplier);
+			
 			Debug.Log("lose streak to another enemy");
 			_curTarget = enemy;
 
@@ -82,12 +83,11 @@ public class PhysicalAttack : AutoAttackSkill
 			{
 				Value = curDamage,
 				Type = DamageType.Physical,
-				PhysicAttackType = AttackRangeType.MeleeAttack,
+				Range = AttackRangeType.MeleeAttack,
 			};
-			ApplyDamage(damage, enemy.gameObject);
-			//ApplyDamage(enemy.Health, curDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
-
-			Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed()/100); // ?
+			CmdApplyDamage(damage, enemy.gameObject);
+			_multiplier = 1 + _combo.GetMultipliedSpeed() / 100;
+			Buff.AttackSpeed.ReductionPercentage(_multiplier); // ?
 		}
 
 		if (Random.Range(0, 100) <2 && _talentActive)
@@ -97,15 +97,16 @@ public class PhysicalAttack : AutoAttackSkill
 	}
 	private void LastHit()
 	{
-		if (_energy.TryUse(10))
+		if (_energy.CurrentValue >= 10)
 		{
+			//_energy.CmdUse(10);
 			Damage damage = new Damage
 			{
 				Value = _damage * 0.5f,
 				Type = DamageType.Physical,
-				PhysicAttackType = AttackRangeType.MeleeAttack,
+				Range = AttackRangeType.MeleeAttack,
 			};
-			ApplyDamage(damage, _curTarget.gameObject);
+			CmdApplyDamage(damage, _curTarget.gameObject);
 			//_curTarget.Health.TryTakeDamage(_damage * .5f, DamageType.Physical, AttackRangeType.MeleeAttack);
 			float curDamage = _damage * .5f;
 			_energy.SumDamageMake(curDamage);
@@ -120,19 +121,21 @@ public class PhysicalAttack : AutoAttackSkill
 
 	private void PushBackEnemy(Character enemy)
 	{
-		/*Debug.Log("Push");
-		Vector2 pushPos = (_dad.Rb.position - enemy.Rb.position).normalized;
-		Vector2 endPos = -pushPos * 2;
-		//enemy.PlayerMove.CanMove = false;
-		//Debug.DrawLine(enemy.Rb.position, enemy.Rb.position + endPos * 10, Color.red, Mathf.Infinity);
-		if (CheckObstacleBetween(enemy.Rb.position, endPos))
+		Vector2 lookDir = (_target.transform.position - _playerLinks.transform.position).normalized;
+		Vector2 jumpPos = lookDir * 4 + (Vector2)_target.transform.position;
+		if (!CheckObstacleBetween(_playerLinks.transform.position, jumpPos))
 		{
-			enemy.Rb.DOMove(_jumpPos, 1).SetEase(Ease.Linear);
+			CmdPush(_target.gameObject, jumpPos);
+			//прыгать до препятствия
 		}
-		else
-		{
-			enemy.Rb.DOMove(enemy.Rb.position + endPos, 1).SetEase(Ease.Linear);
-		}*/
+	}
+
+	[Command]
+	private void CmdPush(GameObject gameObject, Vector2 force)
+	{
+		MoveComponent tempTargetMove = gameObject.GetComponent<MoveComponent>();
+		
+		tempTargetMove.TargetRpcDoMove(force, 0.5f);
 	}
 
 	private bool CheckObstacleBetween(Vector3 start, Vector3 end)
