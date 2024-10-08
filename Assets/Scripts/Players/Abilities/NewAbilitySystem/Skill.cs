@@ -646,6 +646,46 @@ public abstract class Skill : NetworkBehaviour
         _castCoroutine = null;
     }
 
+    public void ResetSkillState()
+    {
+        _remainingCooldownTime = 0;
+        if (_cooldownJob != null)
+        {
+            StopCoroutine(_cooldownJob);
+            _cooldownJob = null;
+        }
+        CooldownEnded?.Invoke();
+
+        if (_castDeleyCoroutine != null)
+        {
+            StopCoroutine(_castDeleyCoroutine);
+            _castDeleyCoroutine = null;
+        }
+        CastDeleyEnded?.Invoke();
+
+        _isPreparing = false;
+        _isCasting = false;
+
+        if (_isUseCharges)
+        {
+            _currentChargers = _maxCharges;
+            CurrentChargeChanged?.Invoke(_currentChargers);
+        }
+
+        if (_castStreamCoroutine != null)
+        {
+            StopCoroutine(_castStreamCoroutine);
+            _castStreamCoroutine = null;
+        }
+        CastStreamEnded?.Invoke();
+
+        CancelCoroutine(_castCoroutine);
+        CancelCoroutine(_actionWrapperForPreparingCoroutine);
+        CancelCoroutine(_actionWrapperForCastCoroutine);
+        ClearData();
+    }
+
+
     [Command]
     protected void CmdApplyDamage(Damage damage, GameObject hp)
     {

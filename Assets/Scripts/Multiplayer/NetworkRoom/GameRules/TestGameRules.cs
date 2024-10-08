@@ -133,6 +133,14 @@ public class TestGameRules : GameRules
             var runeComponent = playerSettings.GetComponent<RuneComponent>();
             runeComponent?.ResetValue();
 
+            var skills = playerSettings.Abilities.Abilities;
+
+            foreach (var skill in skills)
+            {
+                Debug.Log("—брос");
+                skill.ResetSkillState();
+            }
+
             int spawnIndex = playerSettings.NetworkSettings.TeamIndex - 1;
             if (_spawnPoints != null && spawnIndex >= 0 && spawnIndex < _spawnPoints.Count)
             {
