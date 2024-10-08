@@ -18,6 +18,7 @@ public class CameraZoom : MonoBehaviour
     private void Update()
     {
         float scrollDelta = Input.mouseScrollDelta.y;
+        Debug.Log(scrollDelta);
         
         if (scrollDelta != 0)
         {
