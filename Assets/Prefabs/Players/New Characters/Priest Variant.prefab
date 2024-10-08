@@ -493,7 +493,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.size
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.size
@@ -515,6 +515,14 @@ PrefabInstance:
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[3]
       value: 
       objectReference: {fileID: 24027694760612637}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[4]
+      value: 
+      objectReference: {fileID: 7822286041854294174}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[5]
+      value: 
+      objectReference: {fileID: 7235850582899544624}
     - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[0]
       value: 
@@ -569,6 +577,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       insertIndex: -1
       addedObject: {fileID: 24027694760612637}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7822286041854294174}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7235850582899544624}
   m_SourcePrefab: {fileID: 100100000, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
 --- !u!224 &973525489940312097 stripped
 RectTransform:
@@ -692,7 +706,6 @@ MonoBehaviour:
   _altManaCostDamage:
   - resourceType: 1
     resourceCost: 2
-  isLightMode: 1
 --- !u!114 &8016413266984540064
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -995,7 +1008,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: PhyscialDamagePriestShieldTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: a
     Icon: {fileID: 21300000, guid: 09e359aa32a9ff04ea7bbdf596fa2faa, type: 3}
   character: {fileID: 7988306871063235719}
@@ -1017,7 +1030,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: SpellActivatePriestShieldTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: a
     Icon: {fileID: 21300000, guid: ae29ded27bedede4eaa0a76e40eeffe8, type: 3}
   character: {fileID: 7988306871063235719}
@@ -1039,7 +1052,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: HealPriestShieldTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 21300000, guid: d98277b1f14b3c84e906db928f1d5fff, type: 3}
   character: {fileID: 7988306871063235719}
@@ -1061,11 +1074,55 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: DarkMagicDamagePriestShieldTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 21300000, guid: e412ffe984e989d42b1b73851bd11bb4, type: 3}
   character: {fileID: 7988306871063235719}
   _priestShield: {fileID: 876236832379195446}
+--- !u!114 &7822286041854294174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8644870519239594361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f637c2dc0db141558c3cee051e6309ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _data:
+    Name: LowHealthSparkOfLightTalent
+    IsOpen: 1
+    Description: 
+    Icon: {fileID: 21300000, guid: d34409cc09b236d4da56a95d24acd358, type: 3}
+  character: {fileID: 7988306871063235719}
+  _sparkOfLight: {fileID: 1115342882969983666}
+--- !u!114 &7235850582899544624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8644870519239594361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75c2687a283a4cb8b036a31815d7787e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _data:
+    Name: HealthBoostSparkOfLightTalent
+    IsOpen: 1
+    Description: 
+    Icon: {fileID: 21300000, guid: b7ba9882ed5f32f40a9cd054221db12c, type: 3}
+  character: {fileID: 7988306871063235719}
+  _sparkOfLight: {fileID: 1115342882969983666}
 --- !u!1001 &2510796882220387456
 PrefabInstance:
   m_ObjectHideFlags: 0

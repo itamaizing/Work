@@ -368,15 +368,19 @@ public class CharacterState : NetworkBehaviour
 
 	private void RemoveStateLogic(States stateName)
 	{
-		Debug.Log("Remove state logic" + stateName);
 		if (currentStates.Count <= 0) return;
 
 		_stateIcons.RemoveItemByState(stateName);
-		for(int i = currentStates.Count - 1; i >= 0; i --)
+		for (int i = currentStates.Count - 1; i >= 0; i--)
 		{
 			if (currentStates[i].State == stateName)
 			{
 				currentStates[i].ExitState();
+				if (currentStates[i] is IDamageable damageableShield)
+				{
+					RemoveShield(damageableShield);
+				}
+				currentStates.RemoveAt(i);
 			}
 		}
 	}
@@ -395,34 +399,40 @@ public class CharacterState : NetworkBehaviour
 		RemoveStateLogic(stateName);
 	}
 
-	private void AddStateLogic(States state, float duration, float damageToExit, Schools school, GameObject personWhoShooted, string skillName)
+	private void AddStateLogic(States state, float duration, float damageToExit, Schools school,
+		GameObject personWhoShooted, string skillName)
 	{
-		Debug.Log("Add state logic");
-		if (invinsible)
-			return;
+		if (invinsible) return;
+
 		if (CheckForState(state))
 		{
-			for(int i = 0; i < currentStates.Count; i++)
+			for (int i = 0; i < currentStates.Count; i++)
 			{
-				if (currentStates[i].State != state) continue;
+				if (currentStates[i].State == state)
+				{
+					if (currentStates[i].Stack(duration))
+					{
+						_stateIcons.ActivateIco(state, duration, 1, true);
+					}
+					else
+					{
+						CreateState(enumToState[state], state, duration, damageToExit, personWhoShooted, skillName,
+							false);
+					}
 
-				if (currentStates[i].Stack(duration))
-				{
-					_stateIcons.ActivateIco(state, duration, 1, true);
-				}
-				else
-				{
-					CreateState(enumToState[state], state, duration, damageToExit, personWhoShooted, skillName, false);
 					break;
-					//nothing at this time??
 				}
 			}
 		}
 		else
 		{
 			CreateState(enumToState[state], state, duration, damageToExit, personWhoShooted, skillName, false);
+			if (enumToState[state] is IDamageable damageableShield)
+			{
+				AddShield(damageableShield);
+			}
 
-			if(school!=Schools.None)
+			if (school != Schools.None)
 			{
 				var counterSpell = (AbilitySchoolDebuff)enumToState[state];
 				counterSpell.canceledSchoool = school;
@@ -441,6 +451,24 @@ public class CharacterState : NetworkBehaviour
 		else
 		{
 			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit, null, skillName);
+		}
+	}
+	
+	private void AddShield(IDamageable shield)
+	{
+		var health = _hero.GetComponent<Health>();
+		if (health != null)
+		{
+			health.Shields.Add(shield);
+		}
+	}
+
+	private void RemoveShield(IDamageable shield)
+	{
+		var health = _hero.GetComponent<Health>();
+		if (health != null)
+		{
+			health.Shields.Remove(shield);
 		}
 	}
 }
