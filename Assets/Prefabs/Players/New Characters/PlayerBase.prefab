@@ -136,6 +136,7 @@ GameObject:
   - component: {fileID: 2603903007656169372}
   - component: {fileID: 7382485661582087661}
   - component: {fileID: 1277432348331439004}
+  - component: {fileID: 3960147183823053714}
   m_Layer: 9
   m_Name: PlayerBase
   m_TagString: Allies
@@ -329,12 +330,12 @@ MonoBehaviour:
   rb: {fileID: 3759936847054020137}
   _lvl: {fileID: 7382485661582087661}
   _healthComponent: {fileID: 5839731411926097146}
-  Stamina: {fileID: 2926669445991704918}
   _playerMove: {fileID: 5665079937663656764}
   _abilities: {fileID: 7985862907129416471}
   _characterState: {fileID: 7760335386463111578}
   uiComponent: {fileID: 4715758111818368764}
   _selectComponent: {fileID: 5511617219408767834}
+  _damageTracker: {fileID: 3960147183823053714}
   _resources:
   - {fileID: 5839731411926097146}
   - {fileID: 2603903007656169372}
@@ -547,6 +548,21 @@ MonoBehaviour:
   positionSensitivity: 0.01
   rotationSensitivity: 0.01
   scaleSensitivity: 0.01
+--- !u!114 &3960147183823053714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1521997633048654849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f9c63c6a7dd64748ac13474f5a6e770, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &1565031513079442272
 GameObject:
   m_ObjectHideFlags: 0
@@ -765,6 +781,7 @@ MonoBehaviour:
   _skills: []
   _hero: {fileID: 8468544467696250796}
   _talentSystem: {fileID: 8675175310089954536}
+  _damageTracker: {fileID: 0}
 --- !u!1 &2339943645575800385
 GameObject:
   m_ObjectHideFlags: 0

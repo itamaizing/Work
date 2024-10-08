@@ -76,7 +76,8 @@ public class FlashOfLight : Skill
         var healthComponent = target.GetComponent<Health>();
         if (healthComponent != null)
         {
-            healthComponent.Heal(_healAmount);
+            var heal = new Heal { Value = _healAmount };
+            healthComponent.Heal(ref heal);
         }
     }
     
@@ -86,10 +87,10 @@ public class FlashOfLight : Skill
         {
             Value = _damageAmount,
             Type = DamageType.Magical,
-            Range = AttackRangeType.RangeAttack
+            PhysicAttackType = AttackRangeType.RangeAttack
         };
 
-        CmdApplyDamage(damage, target.gameObject);
+        ApplyDamage(damage, target.gameObject);
     }
     
     protected override IEnumerator PrepareJob()

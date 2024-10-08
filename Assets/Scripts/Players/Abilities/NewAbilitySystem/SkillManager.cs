@@ -19,7 +19,6 @@ public class SkillManager : MonoBehaviour
     private SkillQueue _skillQueue;
     private AutoAttackQueue _autoAttackQueue;
     private Skill _selectedSkill;
-
     public TalentSystem TalentSystem => _talentSystem;
     public List<Skill> Abilities => _skills;
     public SkillQueue SkillQueue { get => _skillQueue; }

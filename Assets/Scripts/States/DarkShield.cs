@@ -51,6 +51,7 @@ public class DarkShield : AbstractCharacterState
         var damageToTake = new Damage { Value = damageToApply };
         
         _healthComponent.TryTakeDamage(ref damageToTake, null);
+        _healthComponent.GetComponent<Character>().DamageTracker.AddDamage(damageToTake);
     }
 
     public override bool Stack(float time)

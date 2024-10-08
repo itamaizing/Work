@@ -81,7 +81,10 @@ public class SpiritEnergyState : AbstractCharacterState
     private void OnHealTaked(float healAmount, Skill skill)
     {
         float bonusHeal = HealthBonusPerStack * _stacks;
-        _healthComponent.Heal(bonusHeal);
+        var heal = new Heal { Value = bonusHeal };
+        
+        _healthComponent.Heal(ref heal);
+        _healthComponent.GetComponent<Character>().DamageTracker.AddHeal(heal);
         
         if (skill.Hero.CharacterState.CheckForState(States.SpiritEnergy))
         {

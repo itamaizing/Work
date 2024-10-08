@@ -245,7 +245,9 @@ public class CharacterState : NetworkBehaviour
 		[States.TiredSoul] = new TiredSoul(),
 		[States.ReversePolarity] = new ReversePolarityState(),
 		[States.SpiritEnergy] = new SpiritEnergyState(),
-		[States.SpiritHealth] = new SpiritHealthState()
+		[States.SpiritHealth] = new SpiritHealthState(),
+		[States.SparkTalentHealthBuff] = new SparkTalentHealthState(),
+		[States.DefenseReduction] = new DefenceReductionState()
 	};
 
 	public void Initialize(Character hero)
@@ -481,6 +483,8 @@ public enum States
 	ReversePolarity,
 	SpiritEnergy,
 	SpiritHealth,
-	TiredSoul
+	TiredSoul,
+	SparkTalentHealthBuff,
+	DefenseReduction
 }
 

@@ -117,7 +117,9 @@ public class Restoration : Skill
             while (Time.time < endTime)
             {
                 float effectiveHeal = healPerTick * _accumulatedEffectiveness;
-                healthComponent.Heal(effectiveHeal);
+                
+                var heal = new Heal { Value = effectiveHeal };
+                healthComponent.Heal(ref heal);
                 
                 _accumulatedEffectiveness += _totalHealedInInterval * effectivenessIncreasePerHeal;
                 
@@ -142,10 +144,10 @@ public class Restoration : Skill
                 {
                     Value = Buff.Damage.GetBuffedValue(damagePerTick),
                     Type = DamageType.Magical,
-                    Range = AttackRangeType.RangeAttack
+                    PhysicAttackType = AttackRangeType.RangeAttack
                 };
                 
-                CmdApplyDamage(damage, target.gameObject);
+                ApplyDamage(damage, target.gameObject);
                 yield return new WaitForSeconds(damageInterval);
             }
         }

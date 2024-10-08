@@ -40,7 +40,7 @@ public class Health : Resource, IDamageable, IHealingable
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
-        if (TryEvade(damage.Type, damage.Range))
+        if (TryEvade(damage.Type, damage.PhysicAttackType))
         {
             Evaded?.Invoke();
             return false;
@@ -66,15 +66,20 @@ public class Health : Resource, IDamageable, IHealingable
         TryTakeDamage(ref damage, null);
     }
 
-    public void Heal(float value, Skill skill = null)
+    public void Heal(ref Heal heal, Skill skill = null)
     {
-        Add(value);
-        HealTaked?.Invoke(value, skill);
+        Add(heal.Value);
+        HealTaked?.Invoke(heal.Value, skill);
     }
 
     public void SetEvadeMagic(float value)
     {
         _evadeMagDamage = value;
+    }
+
+    public void SetPhysicDef(float value)
+    {
+        _defPhysDamage = value;
     }
 
     protected bool TryEvade(DamageType damageType, AttackRangeType attackRangeType)

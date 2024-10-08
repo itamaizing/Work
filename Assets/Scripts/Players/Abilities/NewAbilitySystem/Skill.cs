@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Timers;
 using UnityEngine;
 
 [Serializable]
@@ -562,14 +563,7 @@ public abstract class Skill : NetworkBehaviour
         while (time < CastStreamDuration)
         {
             time += _manaCostRate;
-            if (_hero.Stamina.CurrentValue >= _manaCostPerTick)
-            {
-                _hero.Stamina.TryUse(_manaCostPerTick);
-            }
-            else
-            {
-                TryCancel(true);
-            }
+            if (!TryPayCost()) TryCancel() ;
             yield return new WaitForSeconds(_manaCostRate);
         }
         _castStreamCoroutine = null;
@@ -619,15 +613,42 @@ public abstract class Skill : NetworkBehaviour
 
         _castCoroutine = null;
     }
-
-    [Command]
-    protected void CmdApplyDamage(Damage damage, GameObject hp)
+    
+    protected void ApplyDamage(Damage damage, GameObject hp)
     {
         if (_tempTargetForDamage != hp.transform)
         {
             _tempTargetForDamage = hp.transform;
             _tempHPForDamage = hp.GetComponent<Health>();
         }
-        _tempHPForDamage.TryTakeDamage(ref damage, this);
+        
+        Hero.DamageTracker.AddDamage(damage);
+        
+        CmdApplyDamage(damage, hp);
+    }
+
+    protected void ApplyHeal(Heal heal, GameObject hp)
+    {
+        if (_tempTargetForDamage != hp.transform)
+        {
+            _tempTargetForDamage = hp.transform;
+            _tempHPForDamage = hp.GetComponent<Health>();
+        }
+        
+        Hero.DamageTracker.AddHeal(heal);
+        
+        CmdApplyHeal(heal, hp);
+    }
+
+    [Command]
+    private void CmdApplyDamage(Damage damage, GameObject hp)
+    {
+        hp.GetComponent<Health>().TryTakeDamage(ref damage, this);
+    }
+    
+    [Command]
+    private void CmdApplyHeal(Heal heal, GameObject hp)
+    {
+        hp.GetComponent<Health>().Heal(ref heal, this);
     }
 }

@@ -104,7 +104,7 @@ public class DeathSpiralProjectile : Projectiles
 			{
 				Value = 10,
 				Type = DamageType.Magical,
-				Range = AttackRangeType.RangeAttack,
+				PhysicAttackType = AttackRangeType.RangeAttack,
 			};
 			//_skill.CmdApplyDamage(damage, target.gameObject);
 			target.Health.TryTakeDamage(ref damage, _skill);
@@ -131,7 +131,7 @@ public class DeathSpiralProjectile : Projectiles
 			{
 				Value = 20,
 				Type = DamageType.Magical,
-				Range = AttackRangeType.RangeAttack,
+				PhysicAttackType = AttackRangeType.RangeAttack,
 			};
 			//_skill.CmdApplyDamage(damage, target.gameObject);
 			target.Health.TryTakeDamage(ref damage, _skill);
@@ -171,7 +171,7 @@ public class DeathSpiralProjectile : Projectiles
 					{
 						Value = damage/2,
 						Type = DamageType.Magical,
-						Range = AttackRangeType.RangeAttack,
+						PhysicAttackType = AttackRangeType.RangeAttack,
 					};
 					//_skill.CmdApplyDamage(damage, target.gameObject);
 					target.Health.TryTakeDamage(ref damage2, _skill);
@@ -197,7 +197,7 @@ public class DeathSpiralProjectile : Projectiles
 					{
 						Value = damage/2,
 						Type = DamageType.Magical,
-						Range = AttackRangeType.RangeAttack,
+						PhysicAttackType = AttackRangeType.RangeAttack,
 					};
 					//_skill.CmdApplyDamage(damage, target.gameObject);
 					target.Health.TryTakeDamage(ref damage2, _skill);

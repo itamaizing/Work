@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 public class SparkOfLight : AutoAttackSkill
 {
-    [Header("Spark Of Light Settings")] 
+    [Header("Spark Of Light Settings")]
     [SerializeField] private float _buffDuration = 9f;
     [SerializeField] private float _healAmount = 2f;
     [SerializeField] private float _damageAmount = 20f;
@@ -18,11 +19,26 @@ public class SparkOfLight : AutoAttackSkill
     [SerializeField] private float _altBuffDuration = 5f;
     [SerializeField] private float _altDamageAmount = 2f;
     [SerializeField] private List<SkillEnergyCost> _altManaCostDamage;
-    
-    public bool isLightMode = true;
 
-    public event Action OnModeChange;
+    public bool IsLightMode { get; private set; } = true;
+
+    private bool _healthBoostActive = false;
+    private bool _lowHealthTalentActive = false;
+    private const float LowHealthThreshold = 0.25f;
+    private const float BonusDamageMultiplier = 1.25f;
+    private const float HealthBoostPercentage = 0.25f;
+    private const float HealthBoostDuration = 2f;
+    private const float DefenseReductionPercentage = 0.25f;
+    private const float DefenseDebuffDuration = 2f;
+
+    public void EnableTalentPhysicalShieldBoost(bool value) => _healthBoostActive = value;
+    public void EnableLowHealthTalent(bool value) => _lowHealthTalentActive = value;
     
+    private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
+    private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
+    
+    public event Action OnModeChange;
+
     private void OnEnable()
     {
         OnModeChange += HandleModeChange;
@@ -36,25 +52,25 @@ public class SparkOfLight : AutoAttackSkill
 
     public void SwitchMode()
     {
-        isLightMode = !isLightMode;
+        IsLightMode = !IsLightMode;
         OnModeChange?.Invoke();
     }
-    
+
     private void HandleModeChange()
     {
         UpdateMode();
     }
-    
+
     private void UpdateMode()
     {
-        School = isLightMode ? Schools.Light : Schools.Dark;
+        School = IsLightMode ? Schools.Light : Schools.Dark;
     }
-    
+
     protected override void CastAction()
     {
         if (_target == null) return;
 
-        if (isLightMode)
+        if (IsLightMode)
         {
             HandleDefaultMode();
         }
@@ -64,17 +80,21 @@ public class SparkOfLight : AutoAttackSkill
         }
     }
 
+    private bool IsTargetBelowHealthThreshold(Character target)
+    {
+        var healthComponent = target.GetComponent<Health>();
+        return healthComponent != null && healthComponent.CurrentValue <= healthComponent.MaxValue * LowHealthThreshold;
+    }
+
     private void HandleDefaultMode()
     {
-        bool isAlly = _target.gameObject.layer == LayerMask.NameToLayer("Allies");
-        bool isEnemy = _target.gameObject.layer == LayerMask.NameToLayer("Enemy");
-
-        if (isAlly && TryPayCost(_manaCostHeal))
+        if (IsAllyTarget(_target) && TryPayCost(_manaCostHeal))
         {
             Heal(_target);
             ApplySpiritEnergyBuff(_target);
+            ApplyHealthBuff(_target);
         }
-        else if (isEnemy && TryPayCost(_manaCostDamage))
+        else if (IsEnemyTarget(_target) && TryPayCost(_manaCostDamage))
         {
             Damage(_target);
         }
@@ -82,12 +102,13 @@ public class SparkOfLight : AutoAttackSkill
 
     private void HandleAlternativeMode()
     {
-        bool isEnemy = _target.gameObject.layer == LayerMask.NameToLayer("Enemy");
-
-        if (isEnemy && TryPayCost(_altManaCostDamage))
+        if (IsEnemyTarget(_target) && TryPayCost(_altManaCostDamage))
         {
             ApplyDamageInAltMode(_target);
-            ApplySpiritHealthBuff(_target);
+            if (_lowHealthTalentActive && IsTargetBelowHealthThreshold(_target))
+            {
+                ApplyDefenseDebuff(_target);
+            }
         }
     }
 
@@ -96,50 +117,59 @@ public class SparkOfLight : AutoAttackSkill
         var healthComponent = target.GetComponent<Health>();
         if (healthComponent != null)
         {
-            healthComponent.Heal(_healAmount);
+            var heal = new Heal { Value = _healAmount };
+            healthComponent.Heal(ref heal);
         }
     }
 
     private void Damage(Character target)
     {
-        Damage damage = new Damage
-        {
-            Value = Buff.Damage.GetBuffedValue(_damageAmount),
-            Type = DamageType.Magical,
-            Range = AttackRangeType.RangeAttack
-        };
-
-        CmdApplyDamage(damage, target.gameObject);
+        ApplyDamage(CreateDamage(_damageAmount), target.gameObject);
     }
 
     private void ApplyDamageInAltMode(Character target)
     {
-        Damage damage = new Damage
+        float damageAmount = _altDamageAmount;
+        if (_lowHealthTalentActive && IsTargetBelowHealthThreshold(target))
         {
-            Value = _altDamageAmount,
-            Type = DamageType.Magical,
-            Range = AttackRangeType.RangeAttack
-        };
+            damageAmount *= BonusDamageMultiplier;
+        }
 
-        CmdApplyDamage(damage, target.gameObject);
+        ApplyDamage(CreateDamage(damageAmount), target.gameObject);
+    }
+
+    private Damage CreateDamage(float amount)
+    {
+        return new Damage
+        {
+            Value = Buff.Damage.GetBuffedValue(amount),
+            Type = DamageType.Magical,
+            PhysicAttackType = AttackRangeType.RangeAttack
+        };
     }
 
     private void ApplySpiritEnergyBuff(Character target)
     {
-        if (target.TryGetComponent<CharacterState>(out var characterState))
-        {
-            Debug.LogError("fix state");
-
-            characterState.CmdAddState(States.SpiritEnergy, _buffDuration, 0, target.gameObject, "SparkOfLight");
-        }
+        CmdAddBuff(States.SpiritEnergy, _buffDuration, 0, target.gameObject, name);
     }
 
-    private void ApplySpiritHealthBuff(Character target)
+    private void ApplyHealthBuff(Character target)
     {
-        if (target.TryGetComponent<CharacterState>(out var characterState))
-        {
-            characterState.CmdAddState(States.SpiritHealth, _altBuffDuration, 0, target.gameObject, "SparkOfLight");
-        }
+        if (!_healthBoostActive) return;
+
+        CmdAddBuff(States.SparkTalentHealthBuff, HealthBoostDuration, HealthBoostPercentage, target.gameObject, name);
+    }
+
+    private void ApplyDefenseDebuff(Character target)
+    {
+        CmdAddBuff(States.DefenseReduction, DefenseDebuffDuration, DefenseReductionPercentage, target.gameObject, name);
+    }
+
+    [Command]
+    private void CmdAddBuff(States state, float duration, float modifier, GameObject target, string skillName)
+    {
+        var characterState = target.GetComponent<CharacterState>();
+        characterState?.AddState(state, duration, modifier, target, skillName);
     }
 
     protected override void ClearData()

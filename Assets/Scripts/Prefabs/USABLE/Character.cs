@@ -12,13 +12,12 @@ public abstract class Character : NetworkBehaviour
 	[SerializeField] private Rigidbody2D rb;
 	[SerializeField] private Level _lvl;
 	[SerializeField] private Health _healthComponent;
-	public Energy Stamina;
-	//public RuneComponent RuneComponent;
 	[SerializeField] private MoveComponent _playerMove; 
 	[SerializeField] private SkillManager _abilities;
 	[SerializeField] private CharacterState _characterState;
 	[SerializeField] private UIPlayerComponents uiComponent;
-	[SerializeField] private SelectComponent _selectComponent; 
+	[SerializeField] private SelectComponent _selectComponent;
+	[SerializeField] private DamageTracker _damageTracker;
 	[SerializeField] private List<Resource> _resources;
 	
 	public CharacterData Data => _playerData;
@@ -31,6 +30,7 @@ public abstract class Character : NetworkBehaviour
 	public CharacterState CharacterState => _characterState;
 	public UIPlayerComponents UIComponent => uiComponent;
 	public SelectComponent SelectComponent => _selectComponent;
+	public DamageTracker DamageTracker => _damageTracker;
 	public List<Resource> Resources => _resources;
 	
 	public static event Action<Character> ServerOnUnitSpawned;

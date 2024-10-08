@@ -53,9 +53,9 @@ public class PhysicalAttack : AutoAttackSkill
 			{
 				Value = curDamage,
 				Type = DamageType.Physical,
-				Range = AttackRangeType.MeleeAttack,
+				PhysicAttackType = AttackRangeType.MeleeAttack,
 			};
-			CmdApplyDamage(damage, enemy.gameObject);
+			ApplyDamage(damage, enemy.gameObject);
 
 			//enemy.Health.TryTakeDamage(ref damage, this);
 			//ApplyDamage(enemy.Health, curDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
@@ -82,9 +82,9 @@ public class PhysicalAttack : AutoAttackSkill
 			{
 				Value = curDamage,
 				Type = DamageType.Physical,
-				Range = AttackRangeType.MeleeAttack,
+				PhysicAttackType = AttackRangeType.MeleeAttack,
 			};
-			CmdApplyDamage(damage, enemy.gameObject);
+			ApplyDamage(damage, enemy.gameObject);
 			//ApplyDamage(enemy.Health, curDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
 
 			Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed()/100); // ?
@@ -103,9 +103,9 @@ public class PhysicalAttack : AutoAttackSkill
 			{
 				Value = _damage * 0.5f,
 				Type = DamageType.Physical,
-				Range = AttackRangeType.MeleeAttack,
+				PhysicAttackType = AttackRangeType.MeleeAttack,
 			};
-			CmdApplyDamage(damage, _curTarget.gameObject);
+			ApplyDamage(damage, _curTarget.gameObject);
 			//_curTarget.Health.TryTakeDamage(_damage * .5f, DamageType.Physical, AttackRangeType.MeleeAttack);
 			float curDamage = _damage * .5f;
 			_energy.SumDamageMake(curDamage);

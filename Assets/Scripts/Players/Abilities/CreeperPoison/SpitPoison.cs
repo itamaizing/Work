@@ -1,6 +1,7 @@
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -64,9 +65,9 @@ public class SpitPoison : Ability
 
     private void Shoot()
     {
-        CmdInstantiateProjectile(_angle, _playerLinks.Stamina.CurrentValue);
+        CmdInstantiateProjectile(_angle, _playerLinks.Resources.FirstOrDefault()!.CurrentValue);
 
-        _playerLinks.Stamina.TryUse(_playerLinks.Stamina.CurrentValue);
+        _playerLinks.Resources.FirstOrDefault()?.TryUse(_playerLinks.Resources.FirstOrDefault()!.CurrentValue);
 
         Cancel();
     }

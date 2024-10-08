@@ -39,7 +39,7 @@ public class IceShardProjectile : Projectiles
 			{
 				Value = curDamage,
 				Type = DamageType.Physical,
-				Range = AttackRangeType.RangeAttack,
+				PhysicAttackType = AttackRangeType.RangeAttack,
 			};
 			//_skill.CmdApplyDamage(damage, target.gameObject);
 			target.Health.TryTakeDamage(ref damage, _skill);
