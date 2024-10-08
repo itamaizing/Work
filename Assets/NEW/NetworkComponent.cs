@@ -3,10 +3,11 @@ using Mirror;
 
 public class NetworkComponent : NetworkBehaviour
 {
-    public List<Character> controllableUnits;
+    public List<Character> controllableUnits = new List<Character>();
 
     public override void OnStartServer()
     {
+        controllableUnits = new List<Character>();
         Character.ServerOnUnitSpawned += ServerHandleUnitSpawn;
         Character.ServerOnUnitDeleted += ServerHandleUnitDelete;
     }
@@ -20,20 +21,28 @@ public class NetworkComponent : NetworkBehaviour
     private void ServerHandleUnitSpawn(Character character)
     {
         if (character == null) return;
-        if (character.connectionToClient.connectionId != connectionToClient.connectionId)
-        {
-            return;
-        }
+
+        if (character.connectionToClient == null) return;
+
+        if (character.connectionToClient.connectionId != connectionToClient.connectionId) return;
+
+        if (controllableUnits == null) return;
 
         controllableUnits.Add(character);
     }
 
+
     private void ServerHandleUnitDelete(Character character)
     {
-        if (character.connectionToClient.connectionId != connectionToClient.connectionId)
+        if (character == null) return;
+        if (controllableUnits == null) return;
+
+        if (character.connectionToClient != null &&
+            character.connectionToClient.connectionId != connectionToClient.connectionId)
         {
             return;
         }
+
         controllableUnits.Remove(character);
     }
 

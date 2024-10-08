@@ -646,6 +646,12 @@ public abstract class Skill : NetworkBehaviour
         _castCoroutine = null;
     }
 
+    [ClientRpc]
+    public void RpcResetSkillState()
+    {
+        ResetSkillState();
+    }
+
     public void ResetSkillState()
     {
         _remainingCooldownTime = 0;

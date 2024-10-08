@@ -137,8 +137,8 @@ public class TestGameRules : GameRules
 
             foreach (var skill in skills)
             {
-                Debug.Log("—брос");
                 skill.ResetSkillState();
+                skill.RpcResetSkillState();
             }
 
             int spawnIndex = playerSettings.NetworkSettings.TeamIndex - 1;
