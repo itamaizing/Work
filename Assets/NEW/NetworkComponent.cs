@@ -3,10 +3,11 @@ using Mirror;
 
 public class NetworkComponent : NetworkBehaviour
 {
-    public List<Character> controllableUnits;
+    public List<Character> controllableUnits = new List<Character>();
 
     public override void OnStartServer()
     {
+        controllableUnits = new List<Character>();
         Character.ServerOnUnitSpawned += ServerHandleUnitSpawn;
         Character.ServerOnUnitDeleted += ServerHandleUnitDelete;
     }
@@ -19,29 +20,42 @@ public class NetworkComponent : NetworkBehaviour
 
     private void ServerHandleUnitSpawn(Character character)
     {
-        if (character.connectionToClient.connectionId != connectionToClient.connectionId)
-        {
-            return;
-        }
-        
+        if (character == null) return;
+
+        if (character.connectionToClient == null) return;
+
+        if (character.connectionToClient.connectionId != connectionToClient.connectionId) return;
+
+        if (controllableUnits == null) return;
+
         controllableUnits.Add(character);
     }
-    
+
+
     private void ServerHandleUnitDelete(Character character)
     {
-        if (character.connectionToClient.connectionId != connectionToClient.connectionId)
+        if (character == null || controllableUnits == null) return;
+
+        if (character.connectionToClient != null &&
+            character.connectionToClient.connectionId != connectionToClient.connectionId)
         {
             return;
         }
-        controllableUnits.Remove(character);
+
+        if (controllableUnits.Contains(character))
+        {
+            controllableUnits.Remove(character);
+        }
+        else
+        {
+            return;
+        }
     }
+
 
     public override void OnStartClient()
     {
-        if (!isClientOnly)
-        {
-            return;
-        }
+        if (!isClientOnly) return;
 
         Character.AuthorityOnUnitSpawned += AuthorityHandleUnitSpawn;
         Character.AuthorityOnUnitDeleted += AuthorityHandleUnitDelete;
@@ -50,14 +64,12 @@ public class NetworkComponent : NetworkBehaviour
 
     public override void OnStopClient()
     {
-        if (!isClientOnly)
-        {
-            return;
-        }
-        Character.AuthorityOnUnitSpawned -= AuthorityHandleUnitSpawn; 
+        if (!isClientOnly) return;
+
+        Character.AuthorityOnUnitSpawned -= AuthorityHandleUnitSpawn;
         Character.AuthorityOnUnitDeleted -= AuthorityHandleUnitDelete;
     }
-    
+
     private void AuthorityHandleUnitSpawn(Character character)
     {
         if (!isOwned)
@@ -66,7 +78,7 @@ public class NetworkComponent : NetworkBehaviour
         }
         controllableUnits.Add(character);
     }
-    
+
     private void AuthorityHandleUnitDelete(Character character)
     {
         if (!isOwned)

@@ -3,11 +3,11 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public enum ResourceType 
+public enum ResourceType
 {
-    Health, 
-    Mana, 
-    Energy, 
+    Health,
+    Mana,
+    Energy,
     Rune
 }
 
@@ -19,14 +19,14 @@ public abstract class Resource : NetworkBehaviour
     [SyncVar(hook = nameof(HookMaxValueChanged))] protected float _maxValue;
     [SyncVar] protected float _regenerationValue;
     [SyncVar] protected float _regenerationPeriod;
-    
-    
+
+
     protected Coroutine _regenCoroutine;
 
     public float CurrentValue { get => _currentValue; protected set { _currentValue = value; } }
     public float MaxValue { get => _maxValue; protected set { _maxValue = value; } }
-    public float RegenerationValue { get => _regenerationValue;  set { _regenerationValue = value; } }
-    public float RegenerationDelay { get => _regenerationPeriod;  set { _regenerationPeriod = value; } }
+    public float RegenerationValue { get => _regenerationValue; set { _regenerationValue = value; } }
+    public float RegenerationDelay { get => _regenerationPeriod; set { _regenerationPeriod = value; } }
 
     public ResourceType Type => _resourceType;
 
@@ -35,7 +35,7 @@ public abstract class Resource : NetworkBehaviour
     public event Action<float> PhantomValueShown;
 
 
-	public virtual void Initialize(float maxValue, float regenValue, float regenDelay, CharacterData data)
+    public virtual void Initialize(float maxValue, float regenValue, float regenDelay, CharacterData data)
     {
         _currentValue = maxValue;
         _maxValue = maxValue;
@@ -56,7 +56,7 @@ public abstract class Resource : NetworkBehaviour
 
     public virtual bool TryUse(float value)
     {
-        if(_currentValue - value >= 0)
+        if (_currentValue - value >= 0)
         {
             CurrentValue -= value;
             return true;
@@ -73,7 +73,12 @@ public abstract class Resource : NetworkBehaviour
         PhantomValueShown?.Invoke(value);
     }
 
-	protected virtual void HookValueChanged(float oldValue, float newValue)
+    public void ResetValue()
+    {
+        _currentValue = _maxValue;
+    }
+
+    protected virtual void HookValueChanged(float oldValue, float newValue)
     {
         ValueChanged?.Invoke(oldValue, newValue);
     }
@@ -87,7 +92,7 @@ public abstract class Resource : NetworkBehaviour
     {
         while (true)
         {
-            if(_currentValue < _maxValue)
+            if (_currentValue < _maxValue)
             {
                 yield return new WaitForSeconds(_regenerationDelay);
 

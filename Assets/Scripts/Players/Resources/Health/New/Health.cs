@@ -72,7 +72,7 @@ public class Health : Resource, IDamageable, IHealingable
         _maxValue = maxHp;
     }
 
-	public void Heal(float value, Skill skill = null)
+    public void Heal(float value, Skill skill = null)
     {
         Add(value);
         HealTaked?.Invoke(value, skill);
@@ -88,10 +88,10 @@ public class Health : Resource, IDamageable, IHealingable
         _evadeMagDamage += value;
         _evadeMeleeDamage += value;
         _evadeRangeDamage += value;
-    }    
+    }
 
 
-	public bool TryEvade(DamageType damageType, AttackRangeType attackRangeType)
+    public bool TryEvade(DamageType damageType, AttackRangeType attackRangeType)
     {
         switch (damageType)
         {
@@ -172,13 +172,8 @@ public class Health : Resource, IDamageable, IHealingable
         Died?.Invoke();
     }
 
-    public void ResetValue()
+    public void ShowPhantomValue(Damage phantomValue)
     {
-        _currentValue = _maxValue;
+        PhantomValueShow(phantomValue.Value);
     }
-
-	public void ShowPhantomValue(Damage phantomValue)
-	{
-		PhantomValueShow(phantomValue.Value);
-	}
 }
