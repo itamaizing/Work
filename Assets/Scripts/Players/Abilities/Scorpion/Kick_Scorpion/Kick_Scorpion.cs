@@ -20,7 +20,7 @@ public class Kick_Scorpion : AutoAttackSkill
     private Coroutine _hitsInRowCoroutine;
     private Character _lastTarget = null;
 
-    public float Damage => Random.Range(_minDamage, _maxDamage);
+    public float DamageRange => Random.Range(_minDamage, _maxDamage);
 
     protected override void CastAction()
     {
@@ -43,7 +43,7 @@ public class Kick_Scorpion : AutoAttackSkill
         {
             Damage damage = new Damage
             {
-                Value = Buff.Damage.GetBuffedValue(Damage),
+                Value = Buff.Damage.GetBuffedValue(DamageRange),
                 Type = DamageType,
                 Range = AttackRangeType,
             };
