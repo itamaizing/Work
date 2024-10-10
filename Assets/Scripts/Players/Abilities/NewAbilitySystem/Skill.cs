@@ -343,7 +343,6 @@ public abstract class Skill : NetworkBehaviour
         _skillRender.CmdStopDrawDamageZone();
     }
 
-
     protected virtual void StartAutoDraw()
     {
 		Damage damage = new Damage
@@ -568,6 +567,37 @@ public abstract class Skill : NetworkBehaviour
         }
 	}
 
+    protected Vector2 ShiftLeftclick()
+    {
+		switch (_skillType)
+		{
+			case SkillType.Target:
+                //auto attack mode
+                return GetCloserTargets(Camera.main.ScreenToWorldPoint(Input.mousePosition), 100)[0].transform.position;
+			case SkillType.Projectile:
+				return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			case SkillType.Zone:
+				return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			default:
+				return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		}
+	}
+
+	protected Vector2 CtrlLeftClick()
+	{
+		switch (_skillType)
+		{
+			case SkillType.Target:
+				return GetClosestTarget();
+			case SkillType.Projectile:
+				return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			case SkillType.Zone:
+				return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			default:
+				return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		}
+	}
+
     protected Vector2 GetClosestTarget()
     {
 		Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, 100);
@@ -594,21 +624,6 @@ public abstract class Skill : NetworkBehaviour
     {
         return _hero.transform.position;
     }
-
-	protected Vector2 CtrlLeftClick()
-	{
-		switch (_skillType)
-		{
-			case SkillType.Target:
-				return GetClosestTarget();
-			case SkillType.Projectile:
-				return Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			case SkillType.Zone:
-				return Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			default:
-				return Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		}
-	}
 
 	private void OnClick()
     {
