@@ -96,7 +96,9 @@ public abstract class AutoAttackSkill : Skill
             if (GetMouseButton)
             {
                 _target = GetRaycastTarget();
-				_target.SelectedCircle.IsActive = true;
+
+                if(_target != null)
+				    _target.SelectedCircle.IsActive = true;
 			}
             yield return null;
         }
