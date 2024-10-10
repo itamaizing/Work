@@ -49,7 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 466379c09c984d94093f72bd7d2d9e6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
+  syncDirection: 1
   syncMode: 0
   syncInterval: 0
   _rbBall: {fileID: 4203435246731193498}
@@ -57,7 +57,7 @@ MonoBehaviour:
   _hitEffect: {fileID: 0}
   _colliderBall: {fileID: 1593443830899751966}
   _maxDistance: 5
-  _speed: 5
+  _speed: 2
 --- !u!50 &4203435246731193498
 Rigidbody2D:
   serializedVersion: 4

@@ -1,6 +1,7 @@
 using Mirror;
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Health : Resource, IDamageable, IHealingable
@@ -13,7 +14,6 @@ public class Health : Resource, IDamageable, IHealingable
 
     private List<IDamageable> _shields = new List<IDamageable>();
     private float _sumDamageTaken = 0;
-
     public float SumDamageTaken { get => _sumDamageTaken; }
     public float EvadeMeleeDamage { get => _evadeMeleeDamage; set => _evadeMeleeDamage = value; }
     public float EvadeRangeDamage { get => _evadeRangeDamage; set => _evadeRangeDamage = value; }
@@ -46,7 +46,7 @@ public class Health : Resource, IDamageable, IHealingable
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
-        if (TryEvade(damage.Type, damage.Range))
+        if (TryEvade(damage.Type, damage.Range) == true)
         {
             Evaded?.Invoke();
             return false;

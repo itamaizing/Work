@@ -293,11 +293,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  playerNumber: 0
-  scoreIndex: 0
-  matchIndex: 0
-  score: 0
-  clientMatchIndex: -1
 --- !u!114 &2640449256033852773
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -332,6 +327,7 @@ MonoBehaviour:
   _playerData: {fileID: 11400000, guid: f71e3e6e8b3ca6245b0c37fd016a4039, type: 2}
   _networkSettings: {fileID: -7146587456276821115}
   rb: {fileID: 3759936847054020137}
+  _collider: {fileID: 0}
   _lvl: {fileID: 7382485661582087661}
   _healthComponent: {fileID: 5839731411926097146}
   Stamina: {fileID: 2926669445991704918}
@@ -449,10 +445,10 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _smoothTime: 0.15
-  MoveDirection: {x: 0, y: 0}
   CanMove: 1
   IsMoving: 0
   IsSelect: 0
+  MoveDirection: {x: 0, y: 0}
 --- !u!114 &5511617219408767834
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -484,6 +480,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _hero: {fileID: 8468544467696250796}
+  _minionPrefs: []
 --- !u!114 &2603903007656169372
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -743,9 +740,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22ad95934c7e55b4b8afeb7c627a8f71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _circle: {fileID: 7744485766865188040}
   _areaPref: {fileID: 1574982521674352815, guid: 790fb3857b30c2b4fad4375343a84fad, type: 3}
+  _damageZonePref: {fileID: 0}
   _line: {fileID: 11400000, guid: 7faf4d32cfcc4f54d967e4d01a0c4b65, type: 2}
+  _colorForAllies: {r: 0, g: 1, b: 0, a: 1}
+  _colorForEnemies: {r: 1, g: 0, b: 0, a: 1}
   _colorForEnd: {r: 1, g: 0, b: 0, a: 1}
   _colorForStart: {r: 0, g: 1, b: 0.08237815, a: 1}
 --- !u!114 &7985862907129416471

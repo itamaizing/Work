@@ -86,7 +86,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2926669445991704918, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _regenerationDelay
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3331720620529543771, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_AnchorMax.x
@@ -99,6 +99,10 @@ PrefabInstance:
     - target: {fileID: 3759936847054020137, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_CollisionDetection
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4218118007188876841, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_UsedByEffector
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4250437611048027662, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_AnchorMax.x
@@ -171,11 +175,7 @@ PrefabInstance:
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[11]
       value: 
-      objectReference: {fileID: 562433115667629869}
-    - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
-      propertyPath: _skills.Array.data[12]
-      value: 
-      objectReference: {fileID: 562433115667629869}
+      objectReference: {fileID: 6976349184378944770}
     - target: {fileID: 8468544467696250796, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _collider
       value: 
@@ -297,7 +297,7 @@ PrefabInstance:
       addedObject: {fileID: 5270138986041156182}
     - targetCorrespondingSourceObject: {fileID: 1565031513079442272, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 562433115667629869}
+      addedObject: {fileID: 6976349184378944770}
     - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3947504007592891480}
@@ -462,7 +462,7 @@ MonoBehaviour:
   _preparingForFight: {fileID: 2159678125995542759}
   _creeperInvisible: {fileID: 2091427287765565996}
   _coldBlood: {fileID: 0}
-  _absorptionOfPoisons: {fileID: 562433115667629869}
+  _absorptionOfPoisons: {fileID: 0}
   _player: {fileID: 7418347446368758987}
 --- !u!114 &583144702938448550
 MonoBehaviour:
@@ -535,11 +535,13 @@ MonoBehaviour:
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 899fa83671534eb42b15ae0986749e2c, type: 2}
   _isSubjectToGlobalCooldownTime: 1
-  _skillEnergyCosts: []
+  _skillEnergyCosts:
+  - resourceType: 2
+    resourceCost: 10
   _cooldownTime: 1
   _castDeley: 0
-  _abilitySchool: 0
-  _abilityForm: 0
+  _abilitySchool: 7
+  _abilityForm: 1
   _damageType: 0
   _attackRangeType: 1
   _targetsLayers:
@@ -589,10 +591,10 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
-  _abilitySchool: 0
-  _abilityForm: 0
+  _abilitySchool: 7
+  _abilityForm: 1
   _damageType: 0
-  _attackRangeType: 0
+  _attackRangeType: 1
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -685,7 +687,7 @@ MonoBehaviour:
   _midPointForLeapPrefab: {fileID: 8912664995247444477, guid: 652dcebd34e17194c8dd52adb384edc4, type: 3}
   _player: {fileID: 7418347446368758987}
   _rangeLeap: 4
-  _durationLeap: 0.3
+  _durationLeap: 1
   _radiusAttack: 1.15
   _cooldownAttack: 1
   IsInMovement: 0
@@ -743,7 +745,7 @@ MonoBehaviour:
   _preparingForFight: {fileID: 2159678125995542759}
   _concentratedPrecision: {fileID: 6607662620547331670}
   _creeperStrike: {fileID: 2763546955420911548}
-  _coldBlood: {fileID: 0}
+  _coldBlood: {fileID: 6976349184378944770}
   _player: {fileID: 7418347446368758987}
   _playerSprite: {fileID: 8177187794205530612}
 --- !u!114 &9127317757044389529
@@ -986,7 +988,7 @@ MonoBehaviour:
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
   _player: {fileID: 7418347446368758987}
---- !u!114 &562433115667629869
+--- !u!114 &6976349184378944770
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -995,18 +997,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 490057003142113287}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d557cb1ce89d9a41aed0e0c1c004183, type: 3}
+  m_Script: {fileID: 11500000, guid: 577de74e479234741baa9a146b6b5d60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _abilityInfo: {fileID: 11400000, guid: 65739a9ef35d180498531bc3c7cff2e8, type: 2}
+  _abilityInfo: {fileID: 11400000, guid: b01cdda0a8d49e24a8cd5c7190f8483b, type: 2}
   _isSubjectToGlobalCooldownTime: 1
-  _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 0
-  _cooldownTime: 18
+  _skillEnergyCosts: []
+  _cooldownTime: 0
   _castDeley: 0
   _abilitySchool: 0
   _abilityForm: 0
@@ -1029,12 +1029,14 @@ MonoBehaviour:
   _area: 0
   _castLength: 0
   _castWidth: 0
-  _isAutoRadiusRender: 0
-  _isAutoAreaRender: 0
-  _isAutoLineRender: 0
-  _player: {fileID: 7418347446368758987}
-  _lightningMovement: {fileID: 5600781172362582590}
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 1
+  _coldBloodEnabledTalent: {fileID: 3947504007592891480}
+  _coldBloodTalent: {fileID: 2847152939285646667}
+  _killersStamina: {fileID: 670101081239158742}
   _creeperStrike: {fileID: 2763546955420911548}
+  _player: {fileID: 7418347446368758987}
 --- !u!1 &2029619025806748028 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1107802090774456859, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}

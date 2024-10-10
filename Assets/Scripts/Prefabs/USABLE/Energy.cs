@@ -38,6 +38,7 @@ public class Energy : Resource
 			CurrentValue = _maxValue;
 		}
 	}
+
 	public override bool TryUse(float EnergyValue)
 	{
 		if(EnergyValue > CurrentValue) 

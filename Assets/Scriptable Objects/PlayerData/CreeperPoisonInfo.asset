@@ -28,7 +28,7 @@ MonoBehaviour:
     - Id: 1002
       Name: Mana
       Points: 0
-      DefaultValue: 777
+      DefaultValue: 0
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1003
@@ -64,7 +64,7 @@ MonoBehaviour:
     - Id: 1008
       Name: EnergyRegen
       Points: 0
-      DefaultValue: 0
+      DefaultValue: 5
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1009
@@ -88,7 +88,7 @@ MonoBehaviour:
     - Id: 1012
       Name: EnergyRegenDelay
       Points: 0
-      DefaultValue: 0
+      DefaultValue: 1
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1013

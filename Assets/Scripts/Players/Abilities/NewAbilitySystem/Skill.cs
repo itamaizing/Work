@@ -397,8 +397,8 @@ public abstract class Skill : NetworkBehaviour
         foreach (var item in collider)
         {
             if (collider.Length > 0 && item.transform.TryGetComponent<Character>(out Character enemy))
-            {
-                if (isCanTargetHimself == false && targets[targets.Count - 1].transform == _hero.Health.transform)
+            {   
+                if (isCanTargetHimself == false && item.transform == _hero.Health.transform)
                 {
                     continue;
                 }

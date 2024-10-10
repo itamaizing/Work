@@ -12,6 +12,11 @@ public class StrokesOfAspiration : Talent
     private const float _timeBetweenAttack = 0.1f;
     private const float _decreaseCooldownTime = 0.3f;
 
+    private void Start()
+    {
+        Enter();
+    }
+
     public override void Enter()
     {
         SetActive(true);

@@ -1358,6 +1358,8 @@ MonoBehaviour:
   - {fileID: 8348125526146625898, guid: 4887b73d8e08c4647b295b2809cf166d, type: 3}
   - {fileID: 4932658458029131548, guid: 72bf53dfa1624064fa5072a77d9ba7f1, type: 3}
   - {fileID: 4371443321967966874, guid: 8fec45e4e7a73734f926c26ecfe03de4, type: 3}
+  - {fileID: 2472115145849368300, guid: 40b2d6645c84feb49895f89cf122f51d, type: 3}
+  - {fileID: 7929939097525754646, guid: 6d4e598214ad8194197d8c3a24b69465, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -1382,6 +1384,7 @@ MonoBehaviour:
   - {fileID: 703476162737808616, guid: a800248a2dfeba14882a374be23095ef, type: 3}
   - {fileID: 5889404958618692528, guid: 9b33d14bd9379d449ad38a13ab6ddde6, type: 3}
   - {fileID: 8191609785747737368, guid: 64886c26381f2c54c85fe43a25e0fb39, type: 3}
+  - {fileID: 4816563771718579521, guid: 40b2d6645c84feb49895f89cf122f51d, type: 3}
   _activeCountModes: 010000000200000003000000
   _activeMainModes: 0000000001000000
 --- !u!4 &1710071150

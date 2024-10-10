@@ -37,7 +37,8 @@ public class ImmaterialityState : AbstractCharacterState
 
     public override void ExitState()
     {
-        _player.Collider.enabled = true;
+        //_player.Collider.enabled = true; 
+        _player.Rb.isKinematic = false;
         _duration = 0;
         _baseDuration = 0;
         _characterState.RemoveState(this);
@@ -53,7 +54,8 @@ public class ImmaterialityState : AbstractCharacterState
         if (_player != null)
         {
             Debug.Log("DisabledCollider if player != null / _player.collider == " + _player.Collider);
-            _player.Collider.enabled = false;
+            _player.Rb.isKinematic = true;
+            //_player.Collider.enabled = false;
         }
     }
 }

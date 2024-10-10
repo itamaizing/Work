@@ -75,7 +75,6 @@ public class CreeperStrike : AutoAttackSkill
 
     public void DealingDamageFromHits(Character target)
     {
-        
         _currentDamage = Random.Range(7.0f, 11.0f);
         float _currentChanceOfCriticalStrike = Random.Range(0.0f, 1.0f);
 
@@ -195,6 +194,8 @@ public class CreeperStrike : AutoAttackSkill
             criticalDamage *= (multiplyDamage * firstStrikeTalentMultiplyDamage);
             _firstStrike.ReturnBoolFalse();
         }
+        /*
+         * ITS NEEDED
         //else if (_coldBlood.IsCanCritCreeperStrike && _poisonBoneStacks == 0)
         //{
         //    if (!target.CharacterState.CheckPoisonStates())
@@ -213,6 +214,7 @@ public class CreeperStrike : AutoAttackSkill
         //        _coldBlood.IsCanCritCreeperStrike = false;
         //    }
         //}
+        */
         else
         {
             criticalDamage *= multiplyDamage;
@@ -227,6 +229,8 @@ public class CreeperStrike : AutoAttackSkill
 
     private void DealCriticalDamage(Character currentTarget, float criticalDamage)
     {
+        /*
+         * ITS NEEDED
         //if (_coldBlood.IsCanCritCreeperStrike || _coldBlood.IsCanCritLightningStrikes)
         //{
         //    criticalDamage = CalculateCriticalDamage(currentTarget, criticalDamage);
@@ -235,7 +239,7 @@ public class CreeperStrike : AutoAttackSkill
         {
             criticalDamage = CalculateCriticalDamage(currentTarget, criticalDamage);
         }
-
+        */
         Damage critDamage = new Damage
         {
             Value = Buff.Damage.GetBuffedValue(criticalDamage),

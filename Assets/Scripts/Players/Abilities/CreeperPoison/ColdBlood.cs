@@ -122,7 +122,7 @@ public class ColdBlood: Skill
         {
             ReductionSetCooldown(_cooldownTimeWithTalent);
             Debug.Log("ColdBlood / UseAbilityWithTalent / if _isPlayer == true");
-            _player.CharacterState.Dispel(StateType.Physical);
+            _player.CharacterState.DispelOneState(StateType.Physical);
         }
         else
         {

@@ -44,13 +44,11 @@ public class SkillQueue : MonoBehaviour
     {
         if (_currentSkill != null)
         {
-            Debug.Log("SkillQueue / TryCancel / if != null");
             _currentSkill.TryCancel(foceCancel);
             return true;
         }
         else if (IsEmpty == false)
         {
-            Debug.Log("SkillQueue / TryCancel / else if IsEmpty == false");
             RemoveFromQueue();
             return true;
         }

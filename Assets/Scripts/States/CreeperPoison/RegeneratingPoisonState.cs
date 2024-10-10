@@ -10,7 +10,6 @@ public class RegeneratingPoisonState : AbstractCharacterState
     private static SurgeTreatment _surgeTreatment;
 
     private Character _player;
-    private CharacterState _character;
 
     private int _currentStacks = 0;
     private int _maxStacks = 5;
@@ -34,15 +33,11 @@ public class RegeneratingPoisonState : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _characterState = character;
-        _character = character;
+        _player = _characterState.Character;
 
         _duration = durationToExit;
         _baseDuration = durationToExit;
 
-        if (_currentStacks < _maxStacks)
-        {
-            AddStacks();
-        }
         Debug.Log("_player in EnterRegenPoisonState == " + _player);
         if (_player != null)
         {
@@ -62,6 +57,11 @@ public class RegeneratingPoisonState : AbstractCharacterState
                     }
                 }
             }
+        }
+
+        if (_currentStacks < _maxStacks)
+        {
+            AddStacks();
         }
     }
 
@@ -121,7 +121,7 @@ public class RegeneratingPoisonState : AbstractCharacterState
     {
         Debug.Log("RegenerationPoison / MakeHeal");
         _endHealingValue = _currentStacks * _baseHealingValue;
-        _characterState.Character.Health.Heal(_endHealingValue);
+        _player.Health.Heal(_endHealingValue);
         if (_surgeTreatment != null && _surgeTreatment.IsActive)
         {
             _totalHeal += _endHealingValue;
@@ -142,7 +142,7 @@ public class RegeneratingPoisonState : AbstractCharacterState
         {
             float totalHeal = _totalHeal;
             Debug.Log("InstantHeal // totalHeal == " + totalHeal);
-            _character.Character.Health.Heal(totalHeal);
+            _player.Health.Heal(totalHeal);
             _totalHeal = 0;
         }
     }

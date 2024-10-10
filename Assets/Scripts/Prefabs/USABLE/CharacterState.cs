@@ -241,6 +241,10 @@ public class CharacterState : NetworkBehaviour
 		[States.RegeneratingPoison] = new RegeneratingPoisonState(),
 		[States.HeatedGlands] = new HeatedGlandsState(),
 		[States.AbsorptionOfPoison] = new AbsorptionOfPoisonsState(),
+		#endregion
+
+		#region Carrigan
+		[States.Bleeding] = new BleedingState(),
         #endregion
 
         [States.Immateriality] = new ImmaterialityState(),
@@ -283,13 +287,25 @@ public class CharacterState : NetworkBehaviour
 		}
 	}
 
-	public void Dispel(StateType type)
+	public void DispelAllState(StateType type)
+	{
+        foreach (AbstractCharacterState state in _currentStates)
+        {
+            if (state.Type == type)
+            {
+                state.ExitState();
+            }
+        }
+    }
+
+	public void DispelOneState(StateType type)
 	{
 		foreach (AbstractCharacterState state in _currentStates)
 		{
 			if (state.Type == type)
 			{
 				state.ExitState();
+				break;
 			}
 		}
 	}
@@ -516,6 +532,10 @@ public enum States
     HeatedGlands,
 	AbsorptionOfPoison,
 
+    #endregion
+
+    #region Carrigan
+	Bleeding,
     #endregion
 
     Immateriality,

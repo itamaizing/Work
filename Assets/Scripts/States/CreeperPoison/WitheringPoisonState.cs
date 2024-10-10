@@ -140,7 +140,7 @@ public class WitheringPoisonState : AbstractCharacterState
         {
             if (UnityEngine.Random.Range(0.0f, 1.0f) <= _chanceOfApplyBindingPoison)
             {
-                //_characterState.AddStateTest(States.BindingPoison, 10, 0, _player.gameObject, null);
+                _characterState.AddStateTest(States.BindingPoison, 10, 0, _player.gameObject, null);
             }
         }
 

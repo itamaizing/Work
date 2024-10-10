@@ -96,7 +96,7 @@ public class BindingPoisonState : AbstractCharacterState
         }
     }
 
-    [ClientRpc]
+    [TargetRpc]
     private void BlockingOrCancleingAbility()
     {
         Debug.Log("BindingPoison / BlockingOrCancleingAbility");

@@ -10,14 +10,14 @@ public class SpitPoisonProjectile : NetworkBehaviour
     [SerializeField] private SpriteRenderer _spriteRenderer;
     [SerializeField] private GameObject _hitEffect;
     [SerializeField] private Collider2D _colliderBall;
-    [SerializeField] private float _maxDistance = 5f;
-    [SerializeField] private float _speed = 60f;
+    [SerializeField] private float _maxDistance;
+    [SerializeField] private float _speed;
 
     private Skill _skill;
     private Character _player;
     private Vector2 _startPos;
 
-    [SyncVar] private int _teamIndex;
+    private int _teamIndex;
 
     private float _energyDad;
     private float _damage;
@@ -41,12 +41,15 @@ public class SpitPoisonProjectile : NetworkBehaviour
     [Server]
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        RpcIsAlly();
+        Debug.Log("OnTrigger / IsAlly = " + _isAlly);
         if (_isActiveHealingSpitPoison)
         {
             if (_isPlayer)
             {
                 if (collision.gameObject == _player.gameObject)
                 {
+                    Debug.Log("Player");
                     _player.CharacterState.AddState(States.RegeneratingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
                     Destroy(gameObject);
                 }
@@ -57,6 +60,7 @@ public class SpitPoisonProjectile : NetworkBehaviour
                 {
                     if (collision.TryGetComponent<Character>(out var alliesHealth))
                     {
+                        Debug.Log("Allies");
                         alliesHealth.CharacterState.AddState(States.RegeneratingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
                         Destroy(gameObject);
                     }
@@ -198,4 +202,21 @@ public class SpitPoisonProjectile : NetworkBehaviour
             }
         }
     }
+
+    [ClientRpc]
+    private void RpcIsAlly()
+    {
+        var localPlayer = NetworkClient.connection.identity.GetComponent<UserNetworkSettings>();
+        _isAlly = localPlayer.TeamIndex == _teamIndex;
+        CmdIsAlly(_isAlly);
+        Debug.Log("RpcIsAlly / isAlly = " + _isAlly);
+    }
+
+    [Command]
+    private void CmdIsAlly(bool isAlly)
+    {
+        _isAlly = isAlly;
+        Debug.Log("CmdIsAlly / isAlly = " + _isAlly);
+    }
+
 }

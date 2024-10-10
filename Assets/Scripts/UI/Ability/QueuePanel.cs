@@ -27,8 +27,11 @@ public class QueuePanel : MonoBehaviour
 
     private void OnSkillDeleted(Skill obj)
     {
-        var temp = _skillsIcon.Dequeue();
-        Destroy(temp.gameObject);
+        if (_skillsIcon != null && _skillsIcon.Count > 0)
+        {
+            var temp = _skillsIcon.Dequeue();
+            Destroy(temp.gameObject);
+        }
     }
 
     private void OnSkillAdded(Skill skill)
