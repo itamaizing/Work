@@ -1107,7 +1107,7 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
-  _damageValue2: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -1161,7 +1161,7 @@ MonoBehaviour:
     resourceCost: 10
   _cooldownTime: 0
   _castDeley: 0
-  _damageValue2: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -1211,7 +1211,7 @@ MonoBehaviour:
     resourceCost: 1
   _cooldownTime: 0
   _castDeley: 0
-  _damageValue2: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -1261,7 +1261,7 @@ MonoBehaviour:
     resourceCost: 1
   _cooldownTime: 0
   _castDeley: 0
-  _damageValue2: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -1314,7 +1314,7 @@ MonoBehaviour:
     resourceCost: 2
   _cooldownTime: 0
   _castDeley: 0
-  _damageValue2: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -1368,7 +1368,7 @@ MonoBehaviour:
     resourceCost: 10
   _cooldownTime: 0
   _castDeley: 0
-  _damageValue2: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -1417,7 +1417,7 @@ MonoBehaviour:
     resourceCost: 1
   _cooldownTime: 0
   _castDeley: 2.5
-  _damageValue2: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -1465,7 +1465,7 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
-  _damageValue2: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -1515,7 +1515,7 @@ MonoBehaviour:
     resourceCost: 10
   _cooldownTime: 0
   _castDeley: 0
-  _damageValue2: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -1566,7 +1566,7 @@ MonoBehaviour:
     resourceCost: 3
   _cooldownTime: 0
   _castDeley: 0
-  _damageValue2: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -1615,7 +1615,7 @@ MonoBehaviour:
     resourceCost: 1.5
   _cooldownTime: 0
   _castDeley: 0
-  _damageValue2: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -1663,7 +1663,7 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
-  _damageValue2: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -1713,7 +1713,7 @@ MonoBehaviour:
     resourceCost: 1
   _cooldownTime: 0
   _castDeley: 0
-  _damageValue2: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -1761,7 +1761,7 @@ MonoBehaviour:
     resourceCost: 1
   _cooldownTime: 0
   _castDeley: 0
-  _damageValue2: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -1811,7 +1811,7 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
-  _damageValue2: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -1862,7 +1862,7 @@ MonoBehaviour:
     resourceCost: 1
   _cooldownTime: 0
   _castDeley: 0
-  _damageValue2: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
