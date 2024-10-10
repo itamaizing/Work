@@ -223,8 +223,8 @@ public class CharacterState : NetworkBehaviour
 
 	public bool invinsible = false;
 
-	public Character Character => _hero;
 	public List<AbstractCharacterState> CurrentStates => currentStates;
+	public Character Character => _hero;
 
 	public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
 	{

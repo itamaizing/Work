@@ -112,7 +112,7 @@ public abstract class Skill : NetworkBehaviour
     public float Area { get => Buff.Area.GetBuffedValue(_area); protected set => _area = value; }
     public float CastLength { get => Buff.Area.GetBuffedValue(_castLength); protected set => _castLength = value; }
     public float CastWidth { get => Buff.Area.GetBuffedValue(_castWidth); protected set => _castWidth = value; }
-    public float Damage { get => Buff.Damage.GetBuffedValue(_damageValue); protected set => _damageValue = value; }
+    public float Damage  { get => Buff.Damage.GetBuffedValue(_damageValue); protected set => _damageValue = value; }
     public bool IsUseCharges { get => _isUseCharges; }
     public LayerMask TargetsLayers { get => _targetsLayers; protected set => _targetsLayers = value; }
     public Schools School { get => _abilitySchool; protected set => _abilitySchool = value; }
@@ -328,16 +328,17 @@ public abstract class Skill : NetworkBehaviour
         _skillRender.CmdStopDrawDamageZone();
     }
 
+
     protected virtual void StartAutoDraw()
     {
-        /*Damage damage = new Damage
+		/*Damage damage = new Damage
 		{
 			Value = Damage,
 			Type = DamageType.Physical,
 			Range = AttackRangeType.RangeAttack,
 		};*/
 
-        if (_isAutoRadiusRender)
+		if (_isAutoRadiusRender)
             _skillRender.DrawRadius(Radius);
 
         if (_isAutoAreaRender)
@@ -699,6 +700,8 @@ public abstract class Skill : NetworkBehaviour
         CancelCoroutine(_actionWrapperForCastCoroutine);
         ClearData();
     }
+
+
 
     [Command]
     protected void CmdApplyDamage(Damage damage, GameObject hp)

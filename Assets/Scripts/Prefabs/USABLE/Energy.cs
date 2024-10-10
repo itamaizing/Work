@@ -17,13 +17,13 @@ public class Energy : Resource
 			ClientStartRegenirateJob();
 			return;
 		}
-		else
-		{
+        else
+        {
 			ClientStopRegenerateJob();
-		}
+        }
 		_timer += Time.deltaTime;
 
-		if (_timer > _regenerationPeriod)
+		if(_timer > _regenerationPeriod)
 		{
 			_timer = 0;
 			_canRegen = true;
@@ -40,7 +40,7 @@ public class Energy : Resource
 	}
 	public override bool TryUse(float EnergyValue)
 	{
-		if (EnergyValue > CurrentValue)
+		if(EnergyValue > CurrentValue) 
 		{
 			Debug.Log("too much");
 			return false;
@@ -80,7 +80,7 @@ public class Energy : Resource
 	public void SumDamageMake(float damage)
 	{
 		_sumDamageGiven += damage;
-		while (_sumDamageGiven >= 10)
+		while(_sumDamageGiven >= 10 ) 
 		{
 			Add(1);
 			_sumDamageGiven -= 10;

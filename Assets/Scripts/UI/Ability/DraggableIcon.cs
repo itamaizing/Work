@@ -122,9 +122,9 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         if (ability is AutoAttackSkill autoAttackSkill)
         {
             autoAttackSkill.Canceled += OnEndAutoAttack;
-            // autoAttackSkill.CastPaused += OnEndAutoAttack;
+           // autoAttackSkill.CastPaused += OnEndAutoAttack;
             autoAttackSkill.CastStarted += OnStartAutoAttack;
-            // autoAttackSkill.CastContinued += OnStartAutoAttack;
+           // autoAttackSkill.CastContinued += OnStartAutoAttack;
             //autoAttackSkill.AutoCastEnded +=
         }
     }
@@ -149,9 +149,9 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         if (ability is AutoAttackSkill autoAttackSkill)
         {
             autoAttackSkill.Canceled -= OnEndAutoAttack;
-            // autoAttackSkill.CastPaused -= OnEndAutoAttack;
+           // autoAttackSkill.CastPaused -= OnEndAutoAttack;
             autoAttackSkill.CastStarted -= OnStartAutoAttack;
-            // autoAttackSkill.CastContinued -= OnStartAutoAttack;
+           // autoAttackSkill.CastContinued -= OnStartAutoAttack;
             //autoAttackSkill.AutoCastEnded -=
         }
     }
