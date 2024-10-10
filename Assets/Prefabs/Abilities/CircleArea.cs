@@ -8,7 +8,7 @@ public class CircleArea : MonoBehaviour
     [SerializeField] SpriteRenderer _sprite;
 
     private bool _isConcernsEnemy;
-    private float _damage;
+    private Damage _damage;
     /*private Damage _zeroDamage;
 
 	private void Start()
@@ -23,7 +23,7 @@ public class CircleArea : MonoBehaviour
 
 	public bool IsConcernsEnemy { get => _isConcernsEnemy; set => _isConcernsEnemy = value; }
 
-    public void SetSize(float size, float damage)
+    public void SetSize(float size, Damage damage)
     {
         _sprite.size = new Vector2(size, size);
         _colider.radius = size / 2f;
@@ -44,7 +44,7 @@ public class CircleArea : MonoBehaviour
         }
         if(collision.TryGetComponent<Health>(out var hpEnemy) && collision.transform != transform.parent)
         {
-            hpEnemy.PhantomValueShow(_damage);
+            hpEnemy.ShowPhantomValue(_damage);
         }
     }
 
@@ -57,7 +57,9 @@ public class CircleArea : MonoBehaviour
         }
 		if (collision.TryGetComponent<Health>(out var hpEnemy) && collision.transform != transform.parent)
 		{
-			hpEnemy.PhantomValueShow(0);
+			Damage damage = _damage;
+			damage.Value = 0;
+			hpEnemy.ShowPhantomValue(damage);
 		}
 	}
 }

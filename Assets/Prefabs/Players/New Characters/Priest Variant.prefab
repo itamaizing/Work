@@ -659,10 +659,12 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -708,10 +710,12 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0.8
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -774,10 +778,12 @@ MonoBehaviour:
     resourceCost: 30
   _cooldownTime: 9
   _castDeley: 1.8
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 1
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -825,10 +831,12 @@ MonoBehaviour:
     resourceCost: 4
   _cooldownTime: 9
   _castDeley: 1.2
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 1
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -881,10 +889,12 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 2
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -945,10 +955,12 @@ MonoBehaviour:
     resourceCost: 20
   _cooldownTime: 0
   _castDeley: 1.5
+  _damageValue: 0
   _abilitySchool: 7
   _abilityForm: 0
   _damageType: 3
   _attackRangeType: 2
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -1079,7 +1091,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: BlockOfIceTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: A a a a a a
     Icon: {fileID: 21300000, guid: 1528fdab5129db143969848ac9d45298, type: 3}
   character: {fileID: 7988306871063235719}
@@ -1102,7 +1114,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: AbsotptionTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: B b b b b b
     Icon: {fileID: 21300000, guid: 02a620129ceab05499a5576ff306c13a, type: 3}
   character: {fileID: 7988306871063235719}
@@ -1125,7 +1137,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: ChargesPlagueTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7988306871063235719}
@@ -1148,7 +1160,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: ComboSpeedTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7988306871063235719}
@@ -1170,7 +1182,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: CorpseDeathTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7988306871063235719}
@@ -1192,7 +1204,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: DeathSpiralBoostHpBodyTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7988306871063235719}
@@ -1214,7 +1226,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: DeathSpiralChargeTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7988306871063235719}
@@ -1236,7 +1248,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: DeathSpiralHitTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7988306871063235719}
@@ -1258,7 +1270,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: DeathSpiralSecondAttackTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7988306871063235719}
@@ -1280,7 +1292,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: EvadeTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7988306871063235719}
@@ -1302,7 +1314,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: IceCloudBoostDmgTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7988306871063235719}
@@ -1324,7 +1336,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: IcePuddleTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7988306871063235719}

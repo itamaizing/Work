@@ -7,16 +7,22 @@ using UnityEngine.UIElements;
 
 public class TalentColumn : MonoBehaviour
 {
-	[SerializeField] private GameObject[] _content;
+	/*[SerializeField] private GameObject[] _content;
 	[SerializeField] private TextMeshProUGUI[] _talentContentName;
 	[SerializeField] private TalentButton[] _buttons1;
 	[SerializeField] private TextMeshProUGUI _column1;
 	[SerializeField] private TalentButton[] _buttons2;
 	[SerializeField] private TextMeshProUGUI _column2;
 	[SerializeField] private TalentButton[] _buttons3;
-	[SerializeField] private TextMeshProUGUI _column3;
+	[SerializeField] private TextMeshProUGUI _column3;*/
 	[SerializeField] private TalentSystem _system;
 	[SerializeField] private AttributePanel _attributePanel;
+
+	[SerializeField] private TalentContent _talentContent;
+	[SerializeField] private GroupButton _groupButton;
+
+	private List<TalentContent> _groups = new List<TalentContent>();
+	private List <GroupButton> _groupButtons = new List<GroupButton>();
 
 	private int _bonus = 0;
 	private int _bonus2 = 0;
@@ -25,28 +31,50 @@ public class TalentColumn : MonoBehaviour
 	public void OnContentShow(int id)
 	{
 		//_content[id].SetActive(!_content[id].activeSelf);
-		for (int i = 0; i < _content.Length; i++)
+		for (int i = 0; i < _groups.Count; i++)
 		{
 			if (i == id)
 			{
-				_content[i].SetActive(!_content[id].activeSelf);
+				_groups[i].gameObject.SetActive(!_groups[id].gameObject.activeSelf);
 			}
 			else
 			{
-				_content[i].SetActive(false);
+				_groups[i].gameObject.SetActive(false);
 			}
 		}
 	}
 	public void Init(TalentSystem system)
 	{
-		_system = system;
+
+	}
+	public void Start()
+	{
+		//_system = system;
 		int count = 0;
-		if (_buttons1.Length != _system.Talents.Count)
+		/*if (_buttons1.Length != _system.Talents.Count)
 		{
 			Debug.Log("not equal counts in TalentColumn");
 			return;
+		}*/
+		for(int i = 0; i < _system.Talents.Count; i++) //(TalentsGroup group in _system.Talents) 
+		{
+			int row = i;
+
+			var item = Instantiate(_talentContent, transform);
+			_groups.Add(item);
+			item.Initialize(_system.Talents[i]);
+			for(int j = 0; j < item.Talents.Count; j++)
+			{
+				int id = j;
+				item.Talents[j].button.onClick.AddListener(() => SwitchTalent(row, id, !_system.Talents[row].TalentsData[id].Data.IsOpen));
+			}
+
+			var button = Instantiate(_groupButton, transform);
+			_groupButtons.Add(button);
+			
+			button.button.onClick.AddListener(() => OnContentShow(row));
 		}
-		for (int i = 0; i < _buttons1.Length; i++)
+		/*for (int i = 0; i < _buttons1.Length; i++)
 		{
 			_buttons1[i].ico.sprite = _system.Talents[0].TalentsData[i].Data.Icon;
 			_buttons1[i].talentName.text = _system.Talents[0].TalentsData[i].Data.Name + i;
@@ -66,18 +94,18 @@ public class TalentColumn : MonoBehaviour
 			int id = i;
 			_buttons1[i].button.onClick.AddListener(() => { SwitchTalent(id, 0, !_system.Talents[0].TalentsData[id].Data.IsOpen); });
 			//_buttons1[i].SwitchBorders();
-		}
-		_column1.text = count.ToString();
+		}*/
+		//_column1.text = count.ToString();
 	}
 
-	private void SwitchTalent(int id, int row, bool value)
+	private void SwitchTalent(int row, int id, bool value)
 	{
 		Debug.Log(id);
-		_system.SetActive(id, row, value);
-		_buttons1[id].SwitchBorders(value);
+		_system.SetActive(row, id, value);
+		_groups[row].Talents[id].SwitchBorders(value);
 		Debug.Log("switch");
 
-		_column1.text = _system.GetActiveTalentCount().ToString();
+		//_column1.text = _system.GetActiveTalentCount().ToString();
 
 		if (_attributePanel == null)
 		{

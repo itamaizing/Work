@@ -11,12 +11,11 @@ public class UIMenuMainGameTypesPanelMainTypeItem : MonoBehaviour
     
     [SerializeField] private TMProLocalizer _itemTitle;
 
-    private MainGameMode _itemMode;
+    [SerializeField] private MainGameMode _itemMode;
     
-    public void Fill(MainGameMode modeName)
+    public void Fill()
     {
-        _itemTitle.Localize(modeName.ToString());
-        _itemMode = modeName;
+        _itemTitle.Localize(_itemMode.ToString());
     }
 
     public void Select()
