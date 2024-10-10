@@ -340,6 +340,7 @@ MonoBehaviour:
   - {fileID: 5839731411926097146}
   - {fileID: 2603903007656169372}
   - {fileID: 2926669445991704918}
+  _selectedCircle: {fileID: 9081349754013333447}
   talentManager: {fileID: 8675175310089954536}
   _spawnComponent: {fileID: 3330577042116454553}
 --- !u!114 &7760335386463111578
@@ -760,7 +761,7 @@ MonoBehaviour:
   syncInterval: 0
   _circle: {fileID: 7744485766865188040}
   _areaPref: {fileID: 1574982521674352815, guid: 790fb3857b30c2b4fad4375343a84fad, type: 3}
-  _damageZonePref: {fileID: 0}
+  _damageZonePref: {fileID: 1574982521674352815, guid: 5fb5f6f37d830674cbf46c1a048e80bf, type: 3}
   _line: {fileID: 11400000, guid: 7faf4d32cfcc4f54d967e4d01a0c4b65, type: 2}
   _colorForAllies: {r: 0, g: 1, b: 0, a: 1}
   _colorForEnemies: {r: 1, g: 0, b: 0, a: 1}
@@ -1904,6 +1905,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d37dcef6f152524f82c5c9cfc5288fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _circle: {fileID: 3359680783071017316}
 --- !u!1 &7186804111393055927
 GameObject:
   m_ObjectHideFlags: 0

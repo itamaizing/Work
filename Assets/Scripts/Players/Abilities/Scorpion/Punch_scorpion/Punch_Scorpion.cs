@@ -7,7 +7,7 @@ public class Punch_Scorpion : AutoAttackSkill
     [Header("Ability settings")]
     [SerializeField] private Character _playerLinks;
     [SerializeField] private PassiveCombo_Scorpion _comboCounter;
-    [SerializeField] private float _damageValue = 9f;
+    //[SerializeField] private float _damageValue = 9f;
 
     private Character _lastTarget = null;
 
