@@ -26,11 +26,11 @@ public class DeathSpiralProjectile : Projectiles
 	{
 		if (_inTheRow)
 		{
-			_curDamage = 600;
+			_curDamage = 10;
 		}
 		else
 		{
-			_curDamage = 700;
+			_curDamage = 20;
 		}
 		_damage = new Damage
 		{
