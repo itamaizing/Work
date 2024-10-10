@@ -19,7 +19,7 @@ public class BlockOfIceProjectile : Projectiles
 	private void Start()
 	{
 		_curDamage = 20 + Random.Range(0, 10);
-		Damage damage = new Damage
+		_damage = new Damage
 		{
 			Value = _curDamage,
 			Type = DamageType.Magical,

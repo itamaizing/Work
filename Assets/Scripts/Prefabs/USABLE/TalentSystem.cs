@@ -111,8 +111,10 @@ public class TalentSystem : NetworkBehaviour
     {
     }
 
-    public void SetActive(int id, int row, bool value)
+    public void SetActive(int row, int id, bool value)
     {
+        _talents[row].TalentsData[id].SetActive(value);
+
     }
 
     [Command]

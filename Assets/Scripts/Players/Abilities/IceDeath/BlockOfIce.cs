@@ -48,6 +48,7 @@ public class BlockOfIce : Skill
 		//_playerLinks.Stamina.Use(_playerLinks.Stamina.Value);
 		//Cancel();
 	}
+
 	[Command]
 	private void CmdCreateProjecttile(float angle)
 	{

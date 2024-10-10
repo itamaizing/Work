@@ -16,13 +16,13 @@ public class UIMenuMainWindow : MonoBehaviour
 
     public void UI_StartClient()
     {
-        MultiplayerManager.Instance.StartClient();
+        ServerManager.Instance.StartClient();
     }
 
     void Show()
     {
-        _charactersPanel.Owner = this;
-        _charactersPanel.Show();
+		_charactersPanel.Owner = this;
+		_charactersPanel.Show();
 
         _gameTypesPanel.Owner = this;
         _gameTypesPanel.Show();
@@ -36,8 +36,8 @@ public class UIMenuMainWindow : MonoBehaviour
     public void SetHero(HeroComponent hero)
     {
         var currentHero = hero;
-        
-        SaveManager.Instance.SetHero(currentHero);
+
+		SaveManager.Instance.SetHero(currentHero);
         currentHero.Initialize();
         UpdateCharacterPanels();
     }
@@ -56,7 +56,7 @@ public class UIMenuMainWindow : MonoBehaviour
         return _charactersPanel.CurrentHero;
     }
 
-    public void UpdateCharacterPanels()
+    private void UpdateCharacterPanels()
     {
         _abilitiesPanel.Owner = this;
         _abilitiesPanel.Show();

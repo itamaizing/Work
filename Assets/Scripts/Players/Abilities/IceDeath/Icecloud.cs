@@ -94,7 +94,7 @@ public class Icecloud : Skill
 		while (float.IsPositiveInfinity(_mousePos.x))
 		{
 			if (GetMouseButton)
-			{				
+			{			
 				_mousePos = GetMousePoint();
 			}
 			yield return null;

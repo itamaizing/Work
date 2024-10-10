@@ -25,14 +25,14 @@ public class SkillRenderer : NetworkBehaviour
     private Coroutine _drawAreaCoroutine;
 
     [Command]
-    public void CmdDrawDamageZone(Vector3 position, float radius, float damage, GameObject player)
+    public void CmdDrawDamageZone(Vector3 position, float radius, Damage damage, GameObject player)
     {
         int teamIndex = player.GetComponent<UserNetworkSettings>().TeamIndex;
         RpcDrawDamageZone(position, radius, damage, player, teamIndex);
     }
 
     [ClientRpc]
-    public void RpcDrawDamageZone(Vector3 position, float radius, float damage, GameObject player, int teamIndex)
+    public void RpcDrawDamageZone(Vector3 position, float radius, Damage damage, GameObject player, int teamIndex)
     {
         _tempDamageZone = Instantiate(_damageZonePref, position, Quaternion.identity);
         _tempDamageZone.SetSize(radius, damage);
@@ -86,7 +86,7 @@ public class SkillRenderer : NetworkBehaviour
         _circle.SetColor(color);
     }
 
-    public void DrawArea(float rarius, float damage, LayerMask layerMask, CircleArea area = null)
+    public void DrawArea(float rarius, Damage damage, LayerMask layerMask, CircleArea area = null)
     {
         if (area == null)
             area = _areaPref;
@@ -103,7 +103,7 @@ public class SkillRenderer : NetworkBehaviour
             Destroy(_tempArea.gameObject);
     }
 
-    public void DrawLine(float length, float width, float damage, LayerMask layerMask, AbilityLineRenderer line = null)
+    public void DrawLine(float length, float width, Damage damage, LayerMask layerMask, AbilityLineRenderer line = null)
     {
         if (line == null)
             line = _line;
@@ -130,7 +130,7 @@ public class SkillRenderer : NetworkBehaviour
         transform.rotation = Quaternion.Euler(0, 0, angle - 90);
     }
 
-    private IEnumerator DrawLineJob(float length, float width, float damage,  LayerMask layerMask, AbilityLineRenderer line)
+    private IEnumerator DrawLineJob(float length, float width, Damage damage,  LayerMask layerMask, AbilityLineRenderer line)
     {
         _lineStartImage = Instantiate(line.Start, transform);
         _lineEndImage = Instantiate(line.End, transform);
@@ -165,7 +165,7 @@ public class SkillRenderer : NetworkBehaviour
         }
     }
 
-    private IEnumerator DrawAreaJob(float radius, float damage, LayerMask layerMask, CircleArea areaPref)
+    private IEnumerator DrawAreaJob(float radius, Damage damage, LayerMask layerMask, CircleArea areaPref)
     {
         Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, 0);
 
