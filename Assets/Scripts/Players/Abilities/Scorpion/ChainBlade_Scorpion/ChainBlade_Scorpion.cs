@@ -31,7 +31,7 @@ public class ChainBlade_Scorpion : Skill
     private GameObject _tempTarget;
     private MoveComponent _tempTargetMove;
 
-    public float Damage => Random.Range(_minDamage, _maxDamage);
+    public float DamageRange => Random.Range(_minDamage, _maxDamage);
 
     protected override bool IsCanCast
     {
@@ -96,7 +96,7 @@ public class ChainBlade_Scorpion : Skill
 
             Damage damage = new Damage
             {
-                Value = Buff.Damage.GetBuffedValue(Damage),
+                Value = Buff.Damage.GetBuffedValue(DamageRange),
                 Type = DamageType,
                 Range = AttackRangeType,
             };
