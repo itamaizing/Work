@@ -28,6 +28,7 @@ public class InputHandler : MonoBehaviour
 	public static UnityAction OnAltClick = delegate { };
 	public static UnityAction OnDoubleAltClick = delegate { };
 	public static UnityAction OnSwitchAutoMode = delegate { };
+	public static UnityAction OnShiftLeftMouse = delegate { };
 	public static UnityAction<float> ScrollMouse = delegate { };
 
 	public static UnityAction OnFirstAbility = delegate { };
@@ -71,6 +72,7 @@ public class InputHandler : MonoBehaviour
 		_inputActions.GameplayMap.AltClick.performed += i => OnAltClick?.Invoke();
 		_inputActions.GameplayMap.AltDoubleClick.performed += i => OnDoubleAltClick?.Invoke();
 		_inputActions.GameplayMap.SwitchAutoMode.performed += i => OnSwitchAutoMode?.Invoke();
+		_inputActions.GameplayMap.ShiftMouse.performed += i => OnShiftLeftMouse?.Invoke();
 		_inputActions.GameplayMap.ScrollMouse.performed += i => ScrollMouse?.Invoke(i.ReadValue<float>());
 
 		// spells 1-2-3-4-5-6-7-8
