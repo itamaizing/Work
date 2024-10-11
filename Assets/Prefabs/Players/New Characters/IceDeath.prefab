@@ -2036,7 +2036,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: AbsotptionTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -2059,7 +2059,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: BlockOfIceTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -2082,7 +2082,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: ChargesPlagueTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -2105,7 +2105,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: ComboSpeedTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -2127,7 +2127,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: CorpseDeathTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -2149,7 +2149,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: DeathSpiralBoostHpBodyTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -2171,7 +2171,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: DeathSpiralChargeTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -2193,7 +2193,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: DeathSpiralHitTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -2215,7 +2215,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: DeathSpiralSecondAttackTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -2237,7 +2237,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: DeathSpiralTalents
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -2260,7 +2260,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: EvadeTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}

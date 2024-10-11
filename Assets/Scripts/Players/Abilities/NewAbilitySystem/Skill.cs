@@ -96,6 +96,8 @@ public abstract class Skill : NetworkBehaviour
     private bool _isPreparing = false;
     private bool _isCasting = false;
     private bool _isClick;
+    private bool _isShiftClick;
+    private bool _isCtrlClick;
 
     public bool GetMouseButton { get => _isClick; }
     public bool IsSubjectToGlobalCooldownTime { get => _isSubjectToGlobalCooldownTime; }
@@ -552,6 +554,22 @@ public abstract class Skill : NetworkBehaviour
         _rechargeJob = null;
     }
 
+    /*private void Actions()
+    {
+        if(_isClick)
+        {
+            return LeftClick();
+        }
+        if(_isShiftClick)
+        {
+            return ShiftLeftClick();
+        }
+        if(_isCtrlClick)
+        {
+            return CtrlLeftClick();
+		}
+    }    */
+
     protected Vector2 LeftClick()
     {
         switch (_skillType)
@@ -635,7 +653,27 @@ public abstract class Skill : NetworkBehaviour
         _isClick = false;
     }
 
-    private IEnumerator CooldownCoroutine(float cooldownTime)
+    private void OnShiftClick()
+    {
+        _isShiftClick = true;
+    }
+
+	private void OnShiftCancled()
+	{
+		_isShiftClick = false;
+	}
+
+    private void OnCtrlClick()
+    {
+        _isCtrlClick = true;
+    }
+
+    private void OnCtlCancled()
+    {
+        _isCtrlClick = false;
+    }
+
+	private IEnumerator CooldownCoroutine(float cooldownTime)
     {
         CooldownStarted?.Invoke(cooldownTime);
         _remainingCooldownTime = cooldownTime;
@@ -743,4 +781,26 @@ public abstract class Skill : NetworkBehaviour
         }
         _tempHPForDamage.TryTakeDamage(ref damage, this);
     }
+
+    private void SubscribeClickEvents()
+    {
+		InputHandler.OnClick += OnClick;
+        InputHandler.OnShiftLeftMouse += OnShiftClick;
+        InputHandler.OnSwitchAutoMode += OnCtrlClick;
+
+        //cancelled
+
+		InputHandler.OnClickCanceled += OnClickCanceled;
+	}
+
+	private void UnSubscribeClickEvents()
+	{
+		InputHandler.OnClick -= OnClick;
+		InputHandler.OnShiftLeftMouse -= OnShiftClick;
+		InputHandler.OnSwitchAutoMode -= OnCtrlClick;
+
+		//cancelled
+
+		InputHandler.OnClickCanceled -= OnClickCanceled;
+	}
 }
