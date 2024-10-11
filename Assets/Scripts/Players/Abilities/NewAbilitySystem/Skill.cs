@@ -560,7 +560,7 @@ public abstract class Skill : NetworkBehaviour
         _rechargeJob = null;
     }
 
-    protected TargetToShot Actions()
+    protected TargetToShot GetTarget()
     {
 		TargetToShot target = new TargetToShot();
 
