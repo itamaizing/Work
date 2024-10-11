@@ -106,7 +106,7 @@ public abstract class Skill : NetworkBehaviour
     private bool _isShiftClick;
     private bool _isCtrlClick;
 
-    public bool GetMouseButton { get => _isClick; }
+    public bool GetMouseButton { get => _isClick || _isShiftClick || _isCtrlClick; }
     public bool IsSubjectToGlobalCooldownTime { get => _isSubjectToGlobalCooldownTime; }
     public Character Hero { get => _hero; }
     public StatsBuff Buff => _statsBuff;
