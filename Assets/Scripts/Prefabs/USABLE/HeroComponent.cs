@@ -12,6 +12,7 @@ public class HeroComponent : Character
     public override void Initialize()
     {
         base.Initialize();
+        //SaveManager.Instance.SetHero(this);
         TalentManager.Initialize();
     }
 }

@@ -12,6 +12,13 @@ public class SkillEnergyCost
     public float resourceCost;
 }
 
+public struct TargetToShot
+{
+    public Vector2 Position;
+    public Character character;
+}
+
+
 public enum Schools
 {
     Light,
@@ -228,9 +235,8 @@ public abstract class Skill : NetworkBehaviour
 
                 PreparingCanceled?.Invoke();
 
-                InputHandler.OnClick -= OnClick;
-                InputHandler.OnClickCanceled -= OnClickCanceled;
-                OnClickCanceled();
+				UnSubscribeClickEvents();
+				OnClickCanceled();
             }
 
             _tempTarget = null;
@@ -554,9 +560,11 @@ public abstract class Skill : NetworkBehaviour
         _rechargeJob = null;
     }
 
-    /*private void Actions()
+    private TargetToShot Actions()
     {
-        if(_isClick)
+		TargetToShot target = new TargetToShot();
+
+		if (_isClick)
         {
             return LeftClick();
         }
@@ -568,52 +576,75 @@ public abstract class Skill : NetworkBehaviour
         {
             return CtrlLeftClick();
 		}
-    }    */
 
-    protected Vector2 LeftClick()
+        return target;
+    }    
+
+    protected TargetToShot LeftClick()
     {
+        TargetToShot target = new TargetToShot();
         switch (_skillType)
         {
             case SkillType.Target:
-                return GetClosestTarget();
+                target.character = GetCloserTargets(transform.position, 100)[0];
+                break; 
             case SkillType.Projectile:
-				return GetClosestTarget();
+				target.character = GetCloserTargets(transform.position, 100)[0];
+				break;
 			case SkillType.Zone:
-                return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				break;
             default:
-                return Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        }
+				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				break;
+		}
+        return target;
 	}
 
-    protected Vector2 ShiftLeftclick()
+    protected TargetToShot ShiftLeftClick()
     {
-		switch (_skillType)
+		TargetToShot target = new TargetToShot();
+		/*switch (_skillType)
 		{
 			case SkillType.Target:
-                //auto attack mode
-                return GetCloserTargets(Camera.main.ScreenToWorldPoint(Input.mousePosition), 100)[0].transform.position;
+				//auto attack mode
+				target.Position = GetCloserTargets(transform.position, 100)[0];
+                break;
 			case SkillType.Projectile:
-				return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				break;
 			case SkillType.Zone:
-				return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				break;
 			default:
-				return Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		}
+				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				break;
+		}*/
+        target.Position = transform.position;
+        target.character = _hero;
+
+		return target;
 	}
 
-	protected Vector2 CtrlLeftClick()
+	protected TargetToShot CtrlLeftClick()
 	{
+		TargetToShot target = new TargetToShot();
 		switch (_skillType)
 		{
 			case SkillType.Target:
-				return GetClosestTarget();
+				target.character = GetCloserTargets(transform.position, 100)[0];
+                break;
 			case SkillType.Projectile:
-				return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				break;
 			case SkillType.Zone:
-				return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				break;
 			default:
-				return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				break;
 		}
+		return target;
 	}
 
     protected Vector2 GetClosestTarget()
@@ -638,10 +669,6 @@ public abstract class Skill : NetworkBehaviour
 
 	}
 
-    protected Vector2 ShiftLeftClick()
-    {
-        return _hero.transform.position;
-    }
 
 	private void OnClick()
     {
@@ -734,14 +761,13 @@ public abstract class Skill : NetworkBehaviour
         ClearData();
         StartAutoDraw();
 
-        InputHandler.OnClick += OnClick;
-        InputHandler.OnClickCanceled += OnClickCanceled;
+        SubscribeClickEvents();
 
-        yield return _prepareCoroutine = StartCoroutine(PrepareJob());
+		yield return _prepareCoroutine = StartCoroutine(PrepareJob());
 
-        InputHandler.OnClick -= OnClick;
-        InputHandler.OnClickCanceled -= OnClickCanceled;
-        OnClickCanceled();
+        UnSubscribeClickEvents();
+
+		OnClickCanceled();
 
         PreparingSuccess?.Invoke();
         _isPreparing = false;
@@ -791,6 +817,9 @@ public abstract class Skill : NetworkBehaviour
         //cancelled
 
 		InputHandler.OnClickCanceled += OnClickCanceled;
+        InputHandler.OnShiftLeftMouseCanceled += OnShiftCancled;
+        InputHandler.OnSwitchAutoModeCanceled += OnCtlCancled;
+        
 	}
 
 	private void UnSubscribeClickEvents()
@@ -802,5 +831,8 @@ public abstract class Skill : NetworkBehaviour
 		//cancelled
 
 		InputHandler.OnClickCanceled -= OnClickCanceled;
+		InputHandler.OnShiftLeftMouseCanceled -= OnShiftCancled;
+		InputHandler.OnSwitchAutoModeCanceled -= OnCtlCancled;
+
 	}
 }
