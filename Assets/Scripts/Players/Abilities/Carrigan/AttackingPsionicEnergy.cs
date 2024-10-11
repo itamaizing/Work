@@ -8,6 +8,7 @@ public class AttackingPsionicEnergy : Energy
     [SerializeField] private BasePsionicEnergy _basePsionicEnergy;
 
     private float _maxAttackingPsiEnergy = 30f;
+    private float _maxValueEnergyBar = 100f;
     private float _currentAttackingPsiEnergy;
 
     private float _timeAttackingPsiEnergy;
@@ -30,13 +31,13 @@ public class AttackingPsionicEnergy : Energy
         if (_currentAttackingPsiEnergy > _maxAttackingPsiEnergy)
         {
             CurrentValue = _maxAttackingPsiEnergy;
-            _basePsionicEnergy.CurrentPsiEnergy -= CurrentValue;
         }
         else
         {
             CurrentValue = _currentAttackingPsiEnergy;
-            _basePsionicEnergy.CurrentPsiEnergy -= CurrentValue;
         }
+
+        _basePsionicEnergy.ReducingPsiEnergy(CurrentValue);
 
         RpcAttackingPsiEnergyChanged(true, CurrentValue);
 
@@ -48,69 +49,24 @@ public class AttackingPsionicEnergy : Energy
         }
 
         _attackingPsiEnergyCoroutine = StartCoroutine(AttackingPsiEnergyJob());
-        /*
-        _timeAttackingPsiEnergy = _startTimeAttackingPsiEnergy;
-
-        _isAttackingPsiServer = true;
-
-        if (_isAttackingPsiServer && CurrentValue < _maxAttackingPsiEnergy)
-        {
-            if (_maxAttackingPsiEnergy > _basePsionicEnergy.CurrentPsiEnergy)
-            {
-                CurrentValue += _basePsionicEnergy.CurrentPsiEnergy;
-
-                if (CurrentValue > _maxAttackingPsiEnergy)
-                {
-                    CurrentValue = _maxAttackingPsiEnergy;
-                }
-
-                _basePsionicEnergy.CurrentPsiEnergy = 0;
-                Debug.Log("AttackingPsiEnergy / if > curPsiEnergy / CurrentValue = " + CurrentValue);
-            }
-            else
-            {
-                CurrentValue += _maxAttackingPsiEnergy;
-
-                if (CurrentValue > _maxAttackingPsiEnergy)
-                {
-                    CurrentValue = _maxAttackingPsiEnergy;
-                }
-
-                _basePsionicEnergy.CurrentPsiEnergy -= CurrentValue;
-                Debug.Log("AttackingPsiEnergy / else / CurrentValue = " + CurrentValue);
-            }
-
-            RpcAttackingPsiEnergyChanged(_isAttackingPsiServer, CurrentValue);
-
-            if (_attackingPsiEnergyCoroutine != null)
-            {
-                StopCoroutine(_attackingPsiEnergyCoroutine);
-                _attackingPsiEnergyCoroutine = null;
-                _timeAttackingPsiEnergy = _startTimeAttackingPsiEnergy;
-            }
-
-            _attackingPsiEnergyCoroutine = StartCoroutine(AttackingPsiEnergyJob());
-        }
-        */
     }
 
     private void Start()
     {
-        MaxValue = 100f;
-        Debug.Log("AttackingPsiEnergy / MaxValue = " + MaxValue);
+        MaxValue = _maxValueEnergyBar;
     }
 
     private IEnumerator AttackingPsiEnergyJob()
     {
         while (_timeAttackingPsiEnergy > 0)
         {
-            Debug.Log("AttackingPsiEnergy / AttackingPsiEnergyJob");
             _timeAttackingPsiEnergy -= Time.deltaTime;
-            if (_timeAttackingPsiEnergy < 0)
+            if (_timeAttackingPsiEnergy < 0 || CurrentValue <= 0)
             {
-                RpcAttackingPsiEnergyChanged(false, 0f);
-
                 CurrentValue = 0;
+                _currentAttackingPsiEnergy = 0;
+
+                RpcAttackingPsiEnergyChanged(false, 0f);
 
                 yield break;
             }   
@@ -124,10 +80,6 @@ public class AttackingPsionicEnergy : Energy
         _isAttackingPsiClient = isAttackingPsionicEnergy;
 
         _currentAttackingPsiEnergy = currentAttackingPsiEnergy;
-
-        _basePsionicEnergy.CurrentPsiEnergy -= _currentAttackingPsiEnergy;
-
-        Debug.Log("AttackingPsiEnergy / _currentAttackingPsiEnergy = " + _currentAttackingPsiEnergy);
     }
 
     

@@ -8,11 +8,14 @@ public class CheliceraStrike : AutoAttackSkill
 {
     [SerializeField] private Character _player;
     [SerializeField] private BasePsionicEnergy _basePsionicEnergy;
+    [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
+    [SerializeField] private JumpWithChelicera _jumpWithChelicera;
 
     private Damage _dealDamage;
 
     private float _baseDamage;
     private float _criticalDamage;
+    private float _additionalDamageFromSkill;
 
     private float _chanceCritDamage;
     private float _chanceApplyBleeding = 0.15f;
@@ -26,8 +29,9 @@ public class CheliceraStrike : AutoAttackSkill
         DamageDeal(_target.gameObject);
     }
 
-    public void DealDamage(GameObject target)
+    public void DealDamage(GameObject target, float additionalDamage)
     {
+        _additionalDamageFromSkill = additionalDamage;
         DamageDeal(target);
     }
 
@@ -37,16 +41,21 @@ public class CheliceraStrike : AutoAttackSkill
 
         _baseDamage = Random.Range(11f, 13f);
         _chanceCritDamage = Random.Range(0.16f, 0.5f);
-        float _currentChanceCritDamage = Random.Range(0f, 1f);
-        float _currentChanceToApplyBleeding = Random.Range(0f, 1f);
+        float chanceCritValue = Random.Range(0f, 1f);
+        float chanceBleedingValue = Random.Range(0f, 1f);
 
+        if (_jumpWithChelicera.IsJumpDone)
+        {
+            float bonusDamage = _baseDamage * _additionalDamageFromSkill;
+            _baseDamage += bonusDamage;
+        }
 
-        if (_currentChanceToApplyBleeding <= _chanceApplyBleeding)
+        if (chanceBleedingValue <= _chanceApplyBleeding)
         {
             targetCharacter.CharacterState.CmdAddState(States.Bleeding, _durationBleeding, 0, _player.gameObject, null);
         }
 
-        if (_currentChanceCritDamage <= _chanceCritDamage)
+        if (chanceCritValue <= _chanceCritDamage)
         {
             _criticalDamage = CriticalDamageDeal(targetCharacter, _baseDamage);
         }
@@ -58,15 +67,16 @@ public class CheliceraStrike : AutoAttackSkill
             Range = AttackRangeType.MeleeAttack,
         };
 
-        if (_basePsionicEnergy.IsAttackingPsiEnergyActive && target != null)
+        if (_attackingPsionicEnergy.IsAttackingPsiEnergy && target != null)
         {
             DamageDealWithAttackingPsionicEnergy(target, _dealDamage.Value);
         }
         else
         {
             CmdApplyDamage(_dealDamage, target);
+            CmdIncreaseEnergy(_dealDamage.Value);
         }
-        _basePsionicEnergy.Add(_dealDamage.Value);
+
         _criticalDamage = 0f;
         _dealDamage.Value = 0f;
     }
@@ -93,23 +103,23 @@ public class CheliceraStrike : AutoAttackSkill
         _dealDamageWithAttackingPsiCoroutine = StartCoroutine(SearchingEnemiesAroundTarget(target, currentDamage));
     }
 
-    private IEnumerator SearchingEnemiesAroundTarget(GameObject target, float currentDamage)
+    private IEnumerator SearchingEnemiesAroundTarget(GameObject target, float baseDamage)
     {
         Character targetCharacter = target.GetComponent<Character>();
 
         #region DealDamageVariables
         float radiusAttack = 5.0f; // Then make it 1.0f
-        float baseDamage = _basePsionicEnergy.CurrentAttackingPsiEnergy;
+        float additionalDamage = _attackingPsionicEnergy.CurrentAttackingPsiEnergy;
         float multiplierDamageByMainTarget = 0.3f;
         float percentageDamageToNearestEnemies = 0.5f;
         #endregion
 
-        if (baseDamage > 10 && baseDamage < 20)
+        if (additionalDamage > 10 && additionalDamage < 20)
         {
             targetCharacter.CharacterState.DispelOneState(StateType.Magic);
         }
 
-        while (_basePsionicEnergy.IsAttackingPsiEnergyActive)
+        while (_attackingPsionicEnergy.IsAttackingPsiEnergy)
         {
             Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(targetCharacter.transform.position, radiusAttack, _targetsLayers);
             foreach (var item in hitEnemies)
@@ -120,11 +130,11 @@ public class CheliceraStrike : AutoAttackSkill
 
                 if (item != null && item.gameObject != _player.gameObject)
                 {
-                    if (baseDamage > 20 && baseDamage < 30)
+                    if (additionalDamage > 20 && additionalDamage < 30)
                     {
                         itemCharacter.CharacterState.DispelOneState(StateType.Magic);
                     }
-                    else if (baseDamage >= 30)
+                    else if (additionalDamage >= 30)
                     {
                         itemCharacter.CharacterState.DispelOneState(StateType.Magic);
 
@@ -134,7 +144,7 @@ public class CheliceraStrike : AutoAttackSkill
                     #region DamageDeal
                     Damage damageNearestEnemy = new Damage()
                     {
-                        Value = (currentDamage + baseDamage) * percentageDamageToNearestEnemies,
+                        Value = (baseDamage + additionalDamage) * percentageDamageToNearestEnemies,
                         Type = DamageType.Physical,
                         Range = AttackRangeType.MeleeAttack,
                     };
@@ -142,19 +152,36 @@ public class CheliceraStrike : AutoAttackSkill
 
                     Damage damageMainTarget = new Damage()
                     {
-                        Value = currentDamage + (baseDamage * multiplierDamageByMainTarget),
+                        Value = baseDamage + (additionalDamage * multiplierDamageByMainTarget),
                         Type = DamageType.Physical,
                         Range = AttackRangeType.MeleeAttack,
                     };
                     CmdApplyDamage(damageMainTarget, targetCharacter.gameObject);
                     #endregion
 
-                    yield break;
+                    CmdUseAttackingEnergy(additionalDamage);
+
                 }
+
+                if (_dealDamageWithAttackingPsiCoroutine != null)
+                {
+                    StopCoroutine(_dealDamageWithAttackingPsiCoroutine);
+                    _dealDamageWithAttackingPsiCoroutine = null;
+                }
+
+                yield break;
             }
             
             yield return null;
         }
+    }
+
+    #region CommandMethods
+
+    [Command]
+    private void CmdIncreaseEnergy(float value)
+    {
+        _basePsionicEnergy.IncreasePsiEnergy(value);
     }
 
     [Command]
@@ -167,4 +194,11 @@ public class CheliceraStrike : AutoAttackSkill
         targetMove.TargetRpcDoMove((Vector2)targetMove.transform.position + direction * distancePush, durationPush);
     }
 
+    [Command]
+    private void CmdUseAttackingEnergy(float value)
+    {
+        _attackingPsionicEnergy.CurrentAttackingPsiEnergy -= value;
+    }
+
+    #endregion
 }

@@ -23,7 +23,6 @@ public class BasePsionicEnergy : Energy, IDamageable
     private Coroutine _absorptionTimeCoroutine;
 
     public float CurrentPsiEnergy { get => CurrentValue; set => CurrentValue = value; }
-    public float CurrentAttackingPsiEnergy { get => _attackingPsionicEnergy.CurrentAttackingPsiEnergy; set => _attackingPsionicEnergy.CurrentAttackingPsiEnergy = value; }
     public bool IsAttackingPsiEnergyActive { get => _attackingPsionicEnergy.IsAttackingPsiEnergy; }
 
     public event Action<float, DamageType> DamageTaken;
@@ -74,6 +73,11 @@ public class BasePsionicEnergy : Energy, IDamageable
         _absorptionTimeCoroutine = StartCoroutine(AbsorptionTimeJob());
     }
 
+    public void ReducingPsiEnergy(float reducingValue)
+    {
+        CurrentValue -= reducingValue;
+    }
+
     private void Start()
     {
         _maxPsiEnergy = _player.Health.MaxValue;
@@ -89,7 +93,7 @@ public class BasePsionicEnergy : Energy, IDamageable
         while (_timeAbsorptionDamage > 0)
         {
             _timeAbsorptionDamage -= Time.deltaTime;
-            if (_timeAbsorptionDamage < 0)
+            if (_timeAbsorptionDamage < 0 || CurrentValue <= 0)
             {
                 CurrentValue = 0;
                 _isInternalPsiEnergy = false;

@@ -11,7 +11,8 @@ public class GrabTentacles : Skill
 
     [SerializeField] private Character _player;
     [SerializeField] private BasePsionicEnergy _psionicEnergy;
-    [SerializeField] private GrabTentaclesObject _projectile;
+    [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
+    [SerializeField] private GrabTentaclesPrefab _tentaclesPrefab;
 
     private Vector3 _firstTentaclesPoint = Vector3.positiveInfinity;
     private Vector3 _secondTentaclesPoint;
@@ -64,6 +65,7 @@ public class GrabTentacles : Skill
     protected override IEnumerator PrepareJob()
     {
         _castDeley = _delayCast;
+
         while (_target == null && float.IsPositiveInfinity(_firstTentaclesPoint.x))
         {
             if (GetMouseButton)
@@ -176,7 +178,7 @@ public class GrabTentacles : Skill
                 }
                 else
                 {
-                    _secondTentaclesPoint = _pointForSearchingTargets;
+                    _secondTentaclesPoint = GetMousePoint();
                 }
 
                 _isSecondPointDone = true;
@@ -201,8 +203,8 @@ public class GrabTentacles : Skill
     [Command]
     private void CmdInstantiateTentacles(GameObject player, GameObject target, Vector3 pointInstantiate, Vector3 endPoint)
     {
-        GameObject item = Instantiate(_projectile.gameObject, pointInstantiate, Quaternion.identity);
-        GrabTentaclesObject projectile = item.GetComponent<GrabTentaclesObject>();
+        GameObject item = Instantiate(_tentaclesPrefab.gameObject, pointInstantiate, Quaternion.identity);
+        GrabTentaclesPrefab projectile = item.GetComponent<GrabTentaclesPrefab>();
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
@@ -211,5 +213,14 @@ public class GrabTentacles : Skill
         projectile.StartTentaclesGrab();
 
         NetworkServer.Spawn(item);
+
+        RpcInstantiateTentacles(projectile.gameObject, player, target, pointInstantiate, endPoint);
+    }
+
+    [ClientRpc]
+    private void RpcInstantiateTentacles(GameObject projectile, GameObject player, GameObject target, Vector3 instantiatePoint, Vector3 endPoint)
+    {
+        projectile.GetComponent<GrabTentaclesPrefab>().InitializationProjectile(player, target, instantiatePoint, endPoint);
+        projectile.GetComponent<GrabTentaclesPrefab>().StartTentaclesGrab();
     }
 }

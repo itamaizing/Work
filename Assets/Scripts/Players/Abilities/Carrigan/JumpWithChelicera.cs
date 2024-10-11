@@ -16,13 +16,16 @@ public class JumpWithChelicera : Skill
     private Vector3 _mousePosition = Vector3.positiveInfinity;
 
     private float _delayBeforeJump = 0.3f;
-
+    private float _minDistance = 0.1f;
     private float _baseIncreasedDamage = 0.05f;
     private float _maxIncreasedDamage = 0.2f;
     private float _increaseDamageStandingStill = 0.1f;
+    private float _additionalDamageInProcentage;
 
     private bool _isTarget = false;
-    //private Coroutine
+    private bool _isJumpDone = false;
+
+    public bool IsJumpDone { get => _isJumpDone; set => _isJumpDone = value; }
 
     protected override bool IsCanCast => CheckCanCast();
 
@@ -35,6 +38,8 @@ public class JumpWithChelicera : Skill
 
     protected override IEnumerator PrepareJob()
     {
+        _castDeley = _delayBeforeJump;
+
         while (_target == null && float.IsPositiveInfinity(_mousePosition.x))
         {
             if (GetMouseButton)
@@ -55,8 +60,6 @@ public class JumpWithChelicera : Skill
     {
         if (_isTarget)
         {
-            _castDeley = _delayBeforeJump;
-            StartCastDeleyCoroutine();
             ExecuteJump();
         }
          yield return null;  
@@ -74,22 +77,65 @@ public class JumpWithChelicera : Skill
 
     private void ExecuteJump()
     {
+        _isJumpDone = true;
+
+        float distanceBetweenPlayerAndTarget = Vector2.Distance(_target.transform.position, _player.transform.position);
+
+        float normalizedDistance = NormalizeDistance(distanceBetweenPlayerAndTarget);
+
+        if (normalizedDistance < _minDistance)
+        {
+            _additionalDamageInProcentage = _increaseDamageStandingStill;
+        }
+        else if (normalizedDistance >= _distanceJump)
+        {
+            _additionalDamageInProcentage = _maxIncreasedDamage;
+        }
+        else
+        {
+            int wholeValues = Mathf.FloorToInt(normalizedDistance);
+
+            _additionalDamageInProcentage = wholeValues * _baseIncreasedDamage;
+
+            _additionalDamageInProcentage = Mathf.Clamp(_additionalDamageInProcentage, _baseIncreasedDamage, _maxIncreasedDamage);
+        }
+
         Vector3 direction = (_target.transform.position - transform.position).normalized;
-        CmdExecuteJump(_player.gameObject, _target.gameObject, direction);
+
+        CmdExecuteJump(_player.gameObject, _target.gameObject, direction, _additionalDamageInProcentage);
+
+        Invoke("ResetBool", 1f);
+    }
+
+    private float NormalizeDistance(float distance)
+    {
+        float minDistance = 2.2f;
+        float maxDistance = 8f;
+        float newMaxDistance = _distanceJump;
+        float newMinDistance = _minDistance;
+
+        float normizedDistance = (distance - minDistance) / (maxDistance - minDistance) * (newMaxDistance - newMinDistance) + newMinDistance;
+
+        return normizedDistance;
+    }
+
+    private void ResetBool()
+    {
+        _isJumpDone = false;
     }
 
     [Command]
-    private void CmdExecuteJump(GameObject player, GameObject target, Vector3 direction)
+    private void CmdExecuteJump(GameObject player, GameObject target, Vector3 direction, float additionalDamage)
     {
         MoveComponent playerMove = player.GetComponent<MoveComponent>();
 
-        playerMove.TargetRpcDoMove((Vector3)_player.transform.position + direction * _distanceJump, _durationJump);
-        DamageDeal(target);
+        playerMove.TargetRpcDoMove((Vector3)_player.transform.position + direction * (_distanceJump * GlobalVariable.cellSize), _durationJump);
+        DamageDeal(target, additionalDamage);
     }
 
     [ClientRpc]
-    private void DamageDeal(GameObject target)
+    private void DamageDeal(GameObject target, float additionalDamage)
     {
-        _cheliceraeStrike.DealDamage(target);
+        _cheliceraeStrike.DealDamage(target, additionalDamage);
     }
 }

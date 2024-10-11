@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GrabTentaclesObject : NetworkBehaviour
+public class GrabTentaclesPrefab : NetworkBehaviour
 {
     [SerializeField] private LineRenderer _lineRenderer;
     [SerializeField] private Character _player;
@@ -15,10 +15,14 @@ public class GrabTentaclesObject : NetworkBehaviour
 
     private float _startSpeed = 2f;
 
-    private float _baseSpeed = 0.05f;
-    private float _increasedSpeed = 0.05f;
-    private float _baseDurationGrabbing = 0.1f;
+    private float _baseSpeed = 5f;
+    private float _increasedSpeed = 10f;
+    private float _baseDurationGrabbing = 0.1f;     
+                                                    //private float _baseSpeed = 0.05f;
+                                                    //private float _increasedSpeed = 0.05f;
+                                                    //private float _baseDurationGrabbing = 0.1f;
     private float _reductionSpeed = 2f;
+
 
     private bool _isGrabTarget = false;
 
@@ -83,40 +87,39 @@ public class GrabTentaclesObject : NetworkBehaviour
     {
         float startTime = Time.time;
         Vector3 currentPosition = _pointInstantiate;
-        Debug.Log("GrabTentaclesProjectile / TentaclesToTargetJob");
         while (currentPosition != _endPosition)
         {
             float time = (Time.time - startTime) / _startSpeed;
-            Debug.Log("GrabTentaclesProjectile / TentaclesToTargetJob / while / time == " + time);
             currentPosition = Vector3.Lerp(_pointInstantiate, _endPosition, time);
             _lineRenderer.SetPosition(1, currentPosition);
             yield return null;
         }
-        Debug.Log("GrabTentaclesProjectile / TentaclesToTargetJob / after while");
         _tentaclesToPlayer = StartCoroutine(TentaclesToPlayerJob());
+        
     }
 
     private IEnumerator TentaclesToPlayerJob()
     {
         float startTime = Time.time;
         Vector3 currentPosition = _endPosition;
-        Debug.Log("GrabTentaclesProjectile / TentaclesToPlayerJob");
         while (currentPosition != _pointInstantiate)
         {
             float time = (Time.time - startTime) / _baseSpeed;
             _lifetime -= Time.deltaTime;
-
             currentPosition = Vector3.Lerp(_endPosition, _pointInstantiate, time);
-
-            Vector3 direction = (_target.transform.position - _pointInstantiate).normalized;
-            PullTarget(direction, time);
 
             _lineRenderer.SetPosition(1, currentPosition);
 
-            _baseSpeed += _increasedSpeed;
+            if (isServer)
+            {
+                Vector3 direction = (_target.transform.position - _pointInstantiate).normalized;
+                PullTarget(direction, time);
+            }
+
 
             if (_lifetime <= 0)
             {
+                Debug.Log("GrabTentaclesProjectile / TentaclesToPlayerJob / lifeTime = 0");
                 DestroyProjectile();
             }
 

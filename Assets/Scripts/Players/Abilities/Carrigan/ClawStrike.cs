@@ -23,14 +23,13 @@ public class ClawStrike : AutoAttackSkill
 
     private void DamageDeal()
     {
-        if (_basePsionicEnergy.IsAttackingPsiEnergyActive)
+        if (_attackingPsionicEnergy.IsAttackingPsiEnergy)
         {
-            _additionalDamage = _basePsionicEnergy.CurrentAttackingPsiEnergy;
+            _additionalDamage = _attackingPsionicEnergy.CurrentAttackingPsiEnergy;
 
             if (_additionalDamage > 10 && _additionalDamage < 20)
             {
                 _target.CharacterState.DispelOneState(StateType.Magic);
-                CmdChargeAttackingEnergy(_additionalDamage);
             }
             else if (_additionalDamage > 20 && _additionalDamage < 30)
             {
@@ -39,7 +38,6 @@ public class ClawStrike : AutoAttackSkill
                 {
                     _target.CharacterState.DispelOneState(StateType.Magic);
                 }
-                CmdChargeAttackingEnergy(_additionalDamage);
             }
             else if (_additionalDamage == 30)
             {
@@ -48,7 +46,6 @@ public class ClawStrike : AutoAttackSkill
                 {
                     _target.CharacterState.DispelOneState(StateType.Magic);
                 }
-                CmdChargeAttackingEnergy(_additionalDamage);
             }
 
             _damage = new Damage
@@ -57,6 +54,8 @@ public class ClawStrike : AutoAttackSkill
                 Type = DamageType.Physical,
                 Range = AttackRangeType.MeleeAttack
             };
+
+            CmdUseAttackingEnergy(_additionalDamage);
 
             CmdApplyDamage(_damage, _target.gameObject);
 
@@ -87,7 +86,7 @@ public class ClawStrike : AutoAttackSkill
     }
 
     [Command]
-    private void CmdChargeAttackingEnergy(float value)
+    private void CmdUseAttackingEnergy(float value)
     {
         _attackingPsionicEnergy.CurrentAttackingPsiEnergy -= value;
     }

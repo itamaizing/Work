@@ -473,6 +473,10 @@ PrefabInstance:
       propertyPath: m_Direction
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4218118007188876841, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_Radius
+      value: 1.09
+      objectReference: {fileID: 0}
     - target: {fileID: 4250437611048027662, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -779,6 +783,8 @@ MonoBehaviour:
   _attackSpeed: 1.4
   _player: {fileID: 4816563771718579521}
   _basePsionicEnergy: {fileID: 7144085950291812728}
+  _attackingPsionicEnergy: {fileID: 6634476114892092548}
+  _jumpWithChelicera: {fileID: 7884280902038037986}
 --- !u!114 &7884280902038037986
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -816,7 +822,7 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 4
+  _radius: 8
   _area: 0
   _castLength: 0
   _castWidth: 0
@@ -864,8 +870,8 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 4
-  _area: 3
+  _radius: 8
+  _area: 1.5
   _castLength: 0
   _castWidth: 0
   _isAutoRadiusRender: 1
@@ -874,7 +880,8 @@ MonoBehaviour:
   _circle: {fileID: 6640698035003076133}
   _player: {fileID: 4816563771718579521}
   _psionicEnergy: {fileID: 7144085950291812728}
-  _projectile: {fileID: 4903900167096769343, guid: 6d4e598214ad8194197d8c3a24b69465, type: 3}
+  _attackingPsionicEnergy: {fileID: 6634476114892092548}
+  _tentaclesPrefab: {fileID: 4903900167096769343, guid: 6d4e598214ad8194197d8c3a24b69465, type: 3}
 --- !u!114 &1267250220242981936
 MonoBehaviour:
   m_ObjectHideFlags: 0
