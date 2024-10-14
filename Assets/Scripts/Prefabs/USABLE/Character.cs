@@ -20,7 +20,9 @@ public abstract class Character : NetworkBehaviour
 	[SerializeField] private DamageTracker _damageTracker;
 	[SerializeField] private List<Resource> _resources;
 	[SerializeField] private SelectedCircle _selectedCircle;
+	[SerializeField] private SpawnComponent _spawnComponent;
 
+	public SpawnComponent SpawnComponent => _spawnComponent;
 	public CharacterData Data => _playerData;
 	public UserNetworkSettings NetworkSettings => _networkSettings;
 	public Rigidbody2D Rb => rb;
