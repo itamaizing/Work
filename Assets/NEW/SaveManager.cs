@@ -197,7 +197,9 @@ public class SaveManager : MonoBehaviour
 
     private IEnumerator KOSTIL()
     {
-        yield return new WaitForSeconds(0.2f);
+		Debug.Log("TODO HERE " + name);
+
+		yield return new WaitForSeconds(0.2f);
 		_character.TalentManager.Initialize();
 	}
 

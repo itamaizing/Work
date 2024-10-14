@@ -41,6 +41,8 @@ public class UIMenuMainWindow : MonoBehaviour
 
     private void OnCharacterSelected(Character character)
     {
+        Debug.Log("TODO HERE " + name);
+
         _charactersPanel.SetHero((HeroComponent)character);
        // _currentHero = (HeroComponent)character;
 		SaveManager.Instance.SetHero((HeroComponent)character);
