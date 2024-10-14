@@ -87,11 +87,11 @@ public class PoisonBallProjectile : NetworkBehaviour
 
                     if (_isFast)
                     {
-                        _player.CharacterState.CmdAddState(States.HealingPoisonPerSecond, 6.0f, 0, _player.gameObject, _skill.Name);
+                        _player.CharacterState.AddState(States.HealingPoisonPerSecond, 6.0f, 0, _player.gameObject, _skill.Name);
                     }
                     else
                     {
-                        _player.CharacterState.CmdAddState(States.InstantHealingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
+                        _player.CharacterState.AddState(States.InstantHealingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
                     }
 
                     Destroy(gameObject);
@@ -107,11 +107,11 @@ public class PoisonBallProjectile : NetworkBehaviour
 
                         if (_isFast)
                         {
-                            alliesHealth.CharacterState.CmdAddState(States.HealingPoisonPerSecond, 6.0f, 0, _player.gameObject, _skill.Name);
+                            alliesHealth.CharacterState.AddState(States.HealingPoisonPerSecond, 6.0f, 0, _player.gameObject, _skill.Name);
                         }
                         else
                         {
-                            alliesHealth.CharacterState.CmdAddState(States.InstantHealingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
+                            alliesHealth.CharacterState.AddState(States.InstantHealingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
                         }
 
                         Destroy(gameObject);

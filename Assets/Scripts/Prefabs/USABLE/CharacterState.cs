@@ -12,6 +12,7 @@ public abstract class AbstractCharacterState
 	public abstract States State { get; }
 	public abstract StateType Type { get; }
 	public abstract List<StatusEffect> Effects { get; }
+	public abstract float CurrentValue { get; set; }
 
 	public abstract void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName);
 	public abstract void UpdateState();
@@ -28,7 +29,9 @@ public class DefaultState : AbstractCharacterState
 
 	public override List<StatusEffect> Effects => _effects;
 
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override float CurrentValue { get; set; }
+
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 
 	}
@@ -245,6 +248,7 @@ public class CharacterState : NetworkBehaviour
 
 		#region Carrigan
 		[States.Bleeding] = new BleedingState(),
+		[States.ReducingHealing] = new ReducingHealingState(),
         #endregion
 
         [States.Immateriality] = new ImmaterialityState(),
@@ -310,16 +314,58 @@ public class CharacterState : NetworkBehaviour
 		}
 	}
 
+	public bool TEST_CheckStateType(StateType type)
+	{
+        foreach (AbstractCharacterState state in _currentStates)
+        {
+            if (state.Type == type)
+            {
+                return true;
+            }
+        }
+		return false;
+    }
+
+	public List<AbstractCharacterState> TEST_GetStatesOnEffectAndType(StatusEffect effect, StateType type)
+	{
+		List<AbstractCharacterState> currentStates = new();
+
+		if (Check(effect) && TEST_CheckStateType(type))
+		{
+			foreach (AbstractCharacterState state in _currentStates)
+			{
+				if (state.Effects.Contains(effect) && state.Type == type)
+				{
+					currentStates.Add(state);
+				}
+			}
+
+			if (currentStates.Count > 0)
+			{
+				return currentStates;
+            }
+			else
+			{
+				return null;
+			}
+		}
+		else
+		{
+            return null;
+		}
+	}
+
 	public bool Check(StatusEffect effect)
 	{
 		foreach (AbstractCharacterState state in _currentStates)
 		{
 			if (state.Effects.Contains(effect))
-			{
-				return false;
+            {
+                //Debug.Log("StatusEffect on Target = " + effect);
+                return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	public bool CheckForState(States state)
@@ -329,7 +375,7 @@ public class CharacterState : NetworkBehaviour
 			//Debug.Log(states.State + " on enemy, check for " + state);
 			if (states.State == state)
 			{
-				return true;
+                return true;
 			}
 		}
 		return false;
@@ -379,7 +425,7 @@ public class CharacterState : NetworkBehaviour
 	[Command]
 	public void CmdAddState(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
 	{
-		//Debug.Log("Add state cmd");
+		Debug.Log("Add state cmd");
 		AddStateLogic(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
 		ClientAddState(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
 	}
@@ -451,7 +497,7 @@ public class CharacterState : NetworkBehaviour
 
 	private void AddStateLogic(States state, float duration, float damageToExit, Schools school, GameObject personWhoShooted, string skillName)
 	{
-		//Debug.Log("Add state logic");
+		Debug.Log("Add state logic");
 		if (invinsible)
 			return;
 		if (CheckForState(state))
@@ -508,13 +554,23 @@ public enum StateType
 
 public enum StatusEffect
 {
+    Others,
 	Move,
 	MoveSpeed,
 	Ability,
 	AbilitySchool,
 	AbilitySpeed,
-	Others
+    Absorptions,
+    Poison,
+    Healing,
+    Freezing,
+    Stunning,
+    Invisible,
+    Strengthening, // For all State increasing/reduction Health/Mana/other values
+    Immateriality,
+    ReducingEfficiency,
 }
+
 public enum States
 {
     #region CreeperStates
@@ -536,6 +592,7 @@ public enum States
 
     #region Carrigan
 	Bleeding,
+	ReducingHealing,
     #endregion
 
     Immateriality,

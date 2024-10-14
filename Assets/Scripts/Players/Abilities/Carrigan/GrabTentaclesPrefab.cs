@@ -31,7 +31,6 @@ public class GrabTentaclesPrefab : NetworkBehaviour
     public void InitializationProjectile(GameObject player, GameObject target, Vector3 pointInstantiate, Vector3 endPosition, 
         bool isAttackingPsiEnergy, float currentDamage)
     {
-        Debug.Log("GrabTentaclesProjectile / InitializationProjectile");
 
         Character playerCharacter = player.GetComponent<Character>();
         Character targetCharacter = target.GetComponent<Character>();
@@ -50,7 +49,6 @@ public class GrabTentaclesPrefab : NetworkBehaviour
 
     public void StartTentaclesGrab()
     {
-        Debug.Log("GrabTentaclesProjectile / StartTentaclesGrab");
 
         _tentaclesToTarget = StartCoroutine(TentaclesToTargetJob());
     }
@@ -63,13 +61,11 @@ public class GrabTentaclesPrefab : NetworkBehaviour
 
     private void PullTarget(Character target, Vector3 direction, float duration)
     {
-        Debug.Log("GrabTentaclesProjectile / PullTarget");
         target.Move.TargetRpcDoMove((Vector3)target.transform.position - direction * duration, duration);
     }
 
     private void DestroyProjectile()
     {
-        Debug.Log("GrabTentaclesProjectile / DestroyProjectile");
 
         Destroy(gameObject);
 
@@ -89,16 +85,13 @@ public class GrabTentaclesPrefab : NetworkBehaviour
     {
         float startTime = Time.time;
         Vector3 currentPosition = _pointInstantiate;
-        Debug.Log("GrabTentaclesProjectile / TentaclesToTargetJob");
         while (currentPosition != _endPosition)
         {
             float time = (Time.time - startTime) / _startSpeed;
-            Debug.Log("GrabTentaclesProjectile / TentaclesToTargetJob / while / time == " + time);
             currentPosition = Vector3.Lerp(_pointInstantiate, _endPosition, time);
             _lineRenderer.SetPosition(1, currentPosition);
             yield return null;
         }
-        Debug.Log("GrabTentaclesProjectile / TentaclesToTargetJob / after while");
         _tentaclesToPlayer = StartCoroutine(TentaclesToPlayerJob());
         
     }
@@ -112,13 +105,11 @@ public class GrabTentaclesPrefab : NetworkBehaviour
 
         List<Character> targetsToPull = new List<Character>(_enemiesOnPath) { _target };
 
-        Debug.Log("GrabTentaclesProjectile / TentaclesToPlayerJob / _pointInstantiate = " + _pointInstantiate);
         while (currentPosition != _pointInstantiate)
         {
             if (baseTime < 0)
             {
                 _baseSpeed += _increasedSpeed;
-                Debug.Log("GrabTentaclesProjectile / TentaclesToPlayerJob / _baseSpeed = " + _baseSpeed);
                 baseTime = 0.1f;
             }
 
@@ -157,7 +148,6 @@ public class GrabTentaclesPrefab : NetworkBehaviour
 
             if (_lifetime <= 0)
             {
-                Debug.Log("GrabTentaclesProjectile / TentaclesToPlayerJob / lifeTime = 0");
                 DestroyProjectile();
             }
 

@@ -7,8 +7,8 @@ public class MagicBuff : AbstractCharacterState
 	private Character _character;
 	private float _durationToExit;
 	private float _shieldCapacity;
-
-	public override States State => States.MagicBuff;
+    public override float CurrentValue { get; set; }
+    public override States State => States.MagicBuff;
 	public override StateType Type => StateType.Magic;
 	public override List<StatusEffect> Effects => throw new System.NotImplementedException();
 

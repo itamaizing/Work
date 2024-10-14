@@ -16,8 +16,8 @@ public class HeatedGlandsState : AbstractCharacterState
     private Character _player;
     private Resource _playerMana;
 
-    private List<StatusEffect> _effects = new List<StatusEffect>();
-
+    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Strengthening };
+    public override float CurrentValue { get; set; }
     public override States State => States.HeatedGlands;
     public override StateType Type => StateType.Physical;
     public override List<StatusEffect> Effects => _effects;

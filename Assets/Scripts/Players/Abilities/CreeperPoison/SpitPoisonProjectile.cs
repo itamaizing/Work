@@ -104,7 +104,8 @@ public class SpitPoisonProjectile : NetworkBehaviour
 
     public void MoveBallToTarget(Vector3 target)
     {
-        float speed = (_speed / 100f) * 5f;
+        float dividerSpeed = 100f;
+        float speed = (_speed / dividerSpeed);
         _rbBall.DOMove(target, speed * _maxDistance / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(Explode);
     }
 

@@ -870,14 +870,14 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 8
+  _radius: 6
   _area: 1.5
   _castLength: 0
   _castWidth: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 0
-  _circle: {fileID: 6640698035003076133}
+  _circlePrefab: {fileID: 3625754994445852326, guid: 85951acbe6ccb6540b1476612c5f4dc4, type: 3}
   _player: {fileID: 4816563771718579521}
   _psionicEnergy: {fileID: 7144085950291812728}
   _attackingPsionicEnergy: {fileID: 6634476114892092548}
@@ -937,17 +937,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 22d89e8fc912e73459ee8ef407455b14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &6640698035003076133 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7744485766865188040, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
-  m_PrefabInstance: {fileID: 3986124822356646637}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2515705378777018765}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6527aa781683d1643a6540f0c1b1306c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &7375607216082306583 stripped

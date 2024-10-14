@@ -22,10 +22,10 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
     private float _baseDuration;
 
     private Character _player;
-    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.AbilitySpeed };
-
+    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Healing };
+    public override float CurrentValue { get => _currentHealingValue; set => _currentHealingValue = value; }
     public override States State => States.HealingPoisonPerSecond;
-    public override StateType Type => StateType.Physical;
+    public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
@@ -49,7 +49,6 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
         {
             if (_currentStack < _maxStack)
             {
-                Debug.Log($"HealingPoisonPerSecond / UpdateState / _baseHealingValue = {_baseHealingValue}");
                 MakeHeal();
             }
             else

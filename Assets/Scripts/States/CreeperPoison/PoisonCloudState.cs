@@ -33,9 +33,9 @@ public class PoisonCloudState : AbstractCharacterState
     private float _baseDuration;
     private float _durationEmpathicPoisons = 5f;
 
-    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.AbilitySpeed };
-
+    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
     public float RadiusCloud { get => _radiusCloud; }
+    public override float CurrentValue { get; set; }
     public override States State => States.PoisonCloud;
     public override StateType Type => StateType.Physical;
     public override List<StatusEffect> Effects => _effects;

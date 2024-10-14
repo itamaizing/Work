@@ -7,12 +7,14 @@ using UnityEngine.SceneManagement;
 public class GrabTentacles : Skill
 {
     #region Variables
-    [SerializeField] private DrawCircle _circle;
+    [SerializeField] private DrawCircle _circlePrefab;
 
     [SerializeField] private Character _player;
     [SerializeField] private BasePsionicEnergy _psionicEnergy;
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
     [SerializeField] private GrabTentaclesPrefab _tentaclesPrefab;
+
+    private DrawCircle _circleOnTarget;
 
     private Vector3 _firstTentaclesPoint = Vector3.positiveInfinity;
     private Vector3 _secondTentaclesPoint;
@@ -24,7 +26,7 @@ public class GrabTentacles : Skill
     private float _delayCast = 1.2f;
     private float _baseDamage;
 
-    private bool _isAttckingPsiEnergyActive = false;
+    private bool _isAttackingPsiEnergyActive = false;
     private bool _isTargetChoose = false;
     private bool _isTarget = false;
     private bool _isFirstPointDone = false;
@@ -41,7 +43,7 @@ public class GrabTentacles : Skill
 
     protected override void ClearData()
     {
-        _isAttckingPsiEnergyActive = false;
+        _isAttackingPsiEnergyActive = false;
         _isTargetChoose = false;
         _isTarget = false;
         _isFirstPointDone = false;
@@ -101,15 +103,20 @@ public class GrabTentacles : Skill
     private bool CheckCanCast()
     {
         if (_target == null)
-            return Vector3.Distance(_firstTentaclesPoint, _player.transform.position) <= Radius;
+        {
+            return Vector3.Distance(_firstTentaclesPoint, _player.transform.position) <= Radius && NoObstacles(_firstTentaclesPoint, _obstacle);
+        }
+        else if (_target != null)
+        {
+            return Vector3.Distance(_firstTentaclesPoint, _player.transform.position) <= Radius && NoObstacles(_firstTentaclesPoint, _obstacle) 
+                && Vector3.Distance(_secondTentaclesPoint, _target.transform.position) <= Radius && NoObstacles(_secondTentaclesPoint, _obstacle);
+        }
+        else
+        {
+            return Vector3.Distance(_firstTentaclesPoint, _player.transform.position) <= Radius && NoObstacles(_firstTentaclesPoint, _obstacle) 
+                && Vector3.Distance(_secondTentaclesPoint, _player.transform.position) <= Radius && NoObstacles(_firstTentaclesPoint, _obstacle);
 
-        return Vector3.Distance(_firstTentaclesPoint, _player.transform.position) <= Radius &&
-               Vector3.Distance(_secondTentaclesPoint, _player.transform.position) <= Radius;
-    }
-
-    private void DrawRadius(float radius)
-    {
-        _circle.Draw(radius);
+        }
     }
 
     private IEnumerator SearchTargetsJob()
@@ -149,9 +156,13 @@ public class GrabTentacles : Skill
                 }
                 else if (_target != null)
                 {
+                    _skillRender.StopDrawRadius();
+
                     _firstTentaclesPoint = _target.transform.position;
                     _isTarget = true;
                     _isFirstPointTarget = true;
+
+                    DrawCircleOnTarget(_target.transform, Radius);
                 }
 
                 _isFirstPointDone = true;
@@ -188,66 +199,106 @@ public class GrabTentacles : Skill
             }
             yield return null;
         }
+
+        if (_circleOnTarget != null)
+        {
+            ClearCircleOnTarget();
+        }
+    }
+    #endregion
+
+    #region CircleOnTargetDraw
+    private void DrawCircleOnTarget(Transform targetTransform, float radius)
+    {
+        _circleOnTarget = Instantiate(_circlePrefab, targetTransform);
+        _circleOnTarget.Draw(radius);
+    }
+
+    private void ClearCircleOnTarget()
+    {
+        _circleOnTarget.Clear();
+        Destroy(_circleOnTarget);
+        _circleOnTarget = null;
     }
     #endregion
 
     private void InstantiateTentacles()
     {
-        if (_attackingPsionicEnergy.IsAttackingPsiEnergy)
-        {
-            _baseDamage = _attackingPsionicEnergy.CurrentAttackingPsiEnergy;
-            _isAttckingPsiEnergyActive = true;
-
-            if (_baseDamage > 10 && _baseDamage < 20)
-            {
-                _target.CharacterState.DispelOneState(StateType.Magic);
-            }
-            else if (_baseDamage > 20 && _baseDamage < 30)
-            {
-
-            }
-            else if (_baseDamage == 30)
-            {
-
-            }
-            CmdUseAttackingEnergy(_baseDamage);
-        }
-        else
-        {
-            _baseDamage = 0;
-            _isAttckingPsiEnergyActive = false;
-        }
-
+        _isAttackingPsiEnergyActive = _attackingPsionicEnergy.IsAttackingPsiEnergy;
+        _baseDamage = _attackingPsionicEnergy.CurrentAttackingPsiEnergy;        
+        
         if (_isFirstPointTarget)
         {
-            CmdInstantiateTentacles(_player.gameObject, _target.gameObject, _secondTentaclesPoint, _firstTentaclesPoint, _isAttckingPsiEnergyActive, _baseDamage);
+            CmdInstantiateTentacles(_player.gameObject, _target.gameObject, _secondTentaclesPoint, _firstTentaclesPoint, _isAttackingPsiEnergyActive, _baseDamage);
         }
         else
         {
-            CmdInstantiateTentacles(_player.gameObject, _target.gameObject, _firstTentaclesPoint, _secondTentaclesPoint, _isAttckingPsiEnergyActive, _baseDamage);
+            CmdInstantiateTentacles(_player.gameObject, _target.gameObject, _firstTentaclesPoint, _secondTentaclesPoint, _isAttackingPsiEnergyActive, _baseDamage);
         }
     }
     
     [Command]
     private void CmdInstantiateTentacles(GameObject player, GameObject target, Vector3 pointInstantiate, Vector3 endPoint,
-        bool isAttackingPsienergyActive, float currentDamage)
+        bool isAttackingPsiEnergyActive, float currentDamage)
     {
+        CharacterState targetCharacterState = target.GetComponent<CharacterState>();
+        ReducingHealingState reducingHealingState;
+        if (isAttackingPsiEnergyActive)
+        {
+            Debug.Log("GrabTentacles / baseDamage = " + currentDamage);
+
+            if (currentDamage > 10 && currentDamage < 20)
+            {
+                Debug.Log("GrabTentacles / if < 20");
+
+                targetCharacterState.DispelOneState(StateType.Magic);
+            }
+            else if (currentDamage > 20 && currentDamage < 30)
+            {
+                Debug.Log("GrabTentacles / else if > 20");
+
+                targetCharacterState.AddState(States.ReducingHealing, 6.0f, 0f, _player.gameObject, null);
+                reducingHealingState = (ReducingHealingState)targetCharacterState.GetState(States.ReducingHealing);
+                if (reducingHealingState != null)
+                {
+                    //reducingHealingState.CurrentValue = 0.4f;
+                    Debug.Log("GrabTentacles / else if > 20 / CurrentValue = " + reducingHealingState.CurrentValue);
+                }
+            }
+            else if (currentDamage == 30)
+            {
+                Debug.Log("GrabTentacles / else if == 30");
+                targetCharacterState.AddState(States.ReducingHealing, 6.0f, 0f, _player.gameObject, null);
+                reducingHealingState = (ReducingHealingState)targetCharacterState.GetState(States.ReducingHealing);
+                if (reducingHealingState != null)
+                {
+                    //reducingHealingState.CurrentValue = 0.8f; 
+                    Debug.Log("GrabTentacles / else if == 30 / CurrentValue = " + reducingHealingState.CurrentValue);
+                }
+            }
+            UseAttackingEnergy(currentDamage);
+        }
+        else
+        {
+            currentDamage = 0;
+            isAttackingPsiEnergyActive = false;
+        }
+
         GameObject item = Instantiate(_tentaclesPrefab.gameObject, pointInstantiate, Quaternion.identity);
         GrabTentaclesPrefab projectile = item.GetComponent<GrabTentaclesPrefab>();
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
-        projectile.InitializationProjectile(player, target, pointInstantiate, endPoint, isAttackingPsienergyActive, currentDamage);
+        projectile.InitializationProjectile(player, target, pointInstantiate, endPoint, isAttackingPsiEnergyActive, currentDamage);
 
         projectile.StartTentaclesGrab();
 
         NetworkServer.Spawn(item);
 
-        RpcInstantiateTentacles(projectile.gameObject, player, target, pointInstantiate, endPoint, isAttackingPsienergyActive, currentDamage);
+        RpcInstantiateTentacles(projectile.gameObject, player, target, pointInstantiate, endPoint, isAttackingPsiEnergyActive, currentDamage);
     }
 
-    [Command]
-    private void CmdUseAttackingEnergy(float value)
+    private void UseAttackingEnergy(float value)
     {
         _attackingPsionicEnergy.CurrentAttackingPsiEnergy -= value;
     }

@@ -23,6 +23,7 @@ public class CreeperInvisibleState : AbstractCharacterState
     private bool _isPlayerInvisability;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.AbilitySpeed };
+    public override float CurrentValue { get; set; }
     public override States State => States.CreeperInvisible;
     public override StateType Type => StateType.Physical;
     public override List<StatusEffect> Effects => _effects;

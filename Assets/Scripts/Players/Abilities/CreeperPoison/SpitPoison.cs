@@ -196,10 +196,10 @@ public class SpitPoison : Skill
     private bool CheckCanCast()
     {
         if (_currentTarget == null)
-            return Vector3.Distance(_mousePos, transform.position) <= Radius;
+            return Vector3.Distance(_mousePos, transform.position) <= Radius && NoObstacles(_mousePos, _obstacle);
 
-        return Vector3.Distance(_mousePos, transform.position) <= Radius ||
-               Vector3.Distance(_currentTarget.transform.position, transform.position) <= Radius;
+        return Vector3.Distance(_mousePos, transform.position) <= Radius && NoObstacles(_mousePos, _obstacle) ||
+               Vector3.Distance(_currentTarget.transform.position, transform.position) <= Radius && NoObstacles(_currentTarget.transform.position, _obstacle);
     }
 
     private void Shoot()

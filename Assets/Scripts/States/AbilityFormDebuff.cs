@@ -12,8 +12,8 @@ public class AbilityFormDebuff : AbstractCharacterState
 	public bool canCancel = false;
 
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.AbilitySchool };
-
-	public override States State => States.FormDebuf;
+    public override float CurrentValue { get; set; }
+    public override States State => States.FormDebuf;
 	public override StateType Type => StateType.Immaterial;
 	public override List<StatusEffect> Effects => _effects;
 

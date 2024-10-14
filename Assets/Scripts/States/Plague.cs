@@ -9,7 +9,8 @@ public class Plague : AbstractCharacterState
 	private float _durationToExit = 0f;
 	private float _damageTimer = 1f;
 	public int GetStack => _stack;
-	public override States State => States.Plague;
+    public override float CurrentValue { get; set; }
+    public override States State => States.Plague;
 	public override StateType Type => StateType.Magic;
 	public override List<StatusEffect> Effects => new List<StatusEffect>();
 

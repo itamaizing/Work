@@ -8,11 +8,10 @@ public class ImmaterialityState : AbstractCharacterState
     private float _baseDuration;
     private Character _player;
 
-    private List<StatusEffect> _effects = new List<StatusEffect>();
+    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Immateriality };
+    public override float CurrentValue { get; set; }
     public override States State => States.Immateriality;
-
-    public override StateType Type => StateType.Physical;
-
+    public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => _effects;
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)

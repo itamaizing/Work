@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,6 +16,7 @@ public class BleedingState : AbstractCharacterState
     private float _startTimeBetweenAttack = 1.0f;
 
     private List<StatusEffect> _effects = new List<StatusEffect>();
+    public override float CurrentValue { get; set; }
     public override States State => States.Bleeding;
 
     public override StateType Type => StateType.Physical;
@@ -59,6 +61,7 @@ public class BleedingState : AbstractCharacterState
         return true;
     }
 
+    [Server]
     private void BleedingDamage()
     {
         Damage damage = new Damage()

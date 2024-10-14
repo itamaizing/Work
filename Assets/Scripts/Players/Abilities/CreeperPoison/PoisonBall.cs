@@ -640,10 +640,6 @@ public class PoisonBall : Skill
         }
     }
 
-    #endregion
-
-    #region BooleanMethods
-
     private bool CheckCanCast()
     {
         //Debug.Log("CheckCanCast PoisonBall");
@@ -655,6 +651,7 @@ public class PoisonBall : Skill
             NoObstacles(_firstMousePosition, _obstacle) ||
             Vector3.Distance(_currentTarget.transform.position, transform.position) <= Radius && 
             NoObstacles(_currentTarget.transform.position, _obstacle);
+
     }
 
     #endregion

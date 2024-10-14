@@ -535,9 +535,7 @@ MonoBehaviour:
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 899fa83671534eb42b15ae0986749e2c, type: 2}
   _isSubjectToGlobalCooldownTime: 1
-  _skillEnergyCosts:
-  - resourceType: 2
-    resourceCost: 10
+  _skillEnergyCosts: []
   _cooldownTime: 1
   _castDeley: 0
   _abilitySchool: 7

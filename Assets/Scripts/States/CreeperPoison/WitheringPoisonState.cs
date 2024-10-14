@@ -29,8 +29,8 @@ public class WitheringPoisonState : AbstractCharacterState
     public int CurrentStacks { get => _currentStacks; set => _currentStacks = value; }
     public float StacksDuration { get => _duration; }
 
-    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.AbilitySpeed };
-
+    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
+    public override float CurrentValue { get; set; }
     public override States State => States.WitheringPoison;
     public override StateType Type => StateType.Physical;
     public override List<StatusEffect> Effects => _effects;

@@ -10,8 +10,8 @@ public class Desiccuration : AbstractCharacterState
 	private float _damageToExit;
 
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.Ability };
-
-	public override States State => States.Desiccuration;
+    public override float CurrentValue { get; set; }
+    public override States State => States.Desiccuration;
 	public override StateType Type => StateType.Physical;
 	public override List<StatusEffect> Effects => _effects;
 

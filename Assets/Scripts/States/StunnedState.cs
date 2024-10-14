@@ -10,8 +10,8 @@ public class StunnedState : AbstractCharacterState
 	private float _duration;
 
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.Ability };
-
-	public override States State => States.Stun;
+    public override float CurrentValue { get; set; }
+    public override States State => States.Stun;
 	public override StateType Type => StateType.Physical;
 	public override List<StatusEffect> Effects => _effects;
 

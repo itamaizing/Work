@@ -8,8 +8,8 @@ public class InvisibleState : AbstractCharacterState
 	private float _baseDuration;
 	private float _duration;
 	private List<StatusEffect> _effects = new List<StatusEffect>();
-
-	public override States State => States.Invisible;
+    public override float CurrentValue { get; set; }
+    public override States State => States.Invisible;
 	public override StateType Type => StateType.Magic;
 	public override List<StatusEffect> Effects => _effects;
 

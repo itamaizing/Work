@@ -25,7 +25,9 @@ public class HealingPoisonCloudState : AbstractCharacterState
 
     private Character _player;
 
-    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.AbilitySpeed };
+    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Healing };
+
+    public override float CurrentValue { get => _baseHeal; set => _baseHeal = value; }
 
     public override States State => States.HealingPoisonCloud;
     public override StateType Type => StateType.Physical;

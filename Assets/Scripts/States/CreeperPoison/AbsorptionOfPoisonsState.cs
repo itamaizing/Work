@@ -17,7 +17,8 @@ public class AbsorptionOfPoisonsState : AbstractCharacterState
     private float _duration;
     private float _baseDuration;
 
-    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.AbilitySpeed };
+    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Absorptions };
+    public override float CurrentValue { get; set; }
 
     public override States State => States.AbsorptionOfPoison;
     public override StateType Type => StateType.Physical;

@@ -35,13 +35,14 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
 
     private bool _isInPoisonCloud;
 
-    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.AbilitySpeed };
+    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
 
     public int CurrentStacks { get => _currentStacks; set => _currentStacks = value; }
     public float StacksDuration { get => _duration; }
 
     public event Action<float, DamageType> DamageTaken;
 
+    public override float CurrentValue { get; set; }
     public override States State => States.EmpathicPoisons;
     public override StateType Type => StateType.Physical;
     public override List<StatusEffect> Effects => _effects;
