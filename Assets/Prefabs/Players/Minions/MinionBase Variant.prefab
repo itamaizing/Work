@@ -141,6 +141,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1521997633048654849, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5057588370632335486}
+    - targetCorrespondingSourceObject: {fileID: 1521997633048654849, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -8627725890336188976}
   m_SourcePrefab: {fileID: 100100000, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
 --- !u!114 &811135994550571455 stripped
 MonoBehaviour:
@@ -275,6 +278,24 @@ MonoBehaviour:
   _resources:
   - {fileID: 811135994550571455}
   _selectedCircle: {fileID: 2615518641016830594}
+  _spawnComponent: {fileID: -8627725890336188976}
+--- !u!114 &-8627725890336188976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5716308091942369604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25397801c5beb30488b57202e0ad634f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _hero: {fileID: 5057588370632335486}
+  _minionPrefs: []
 --- !u!50 &7955227764842124140 stripped
 Rigidbody2D:
   m_CorrespondingSourceObject: {fileID: 3759936847054020137, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
