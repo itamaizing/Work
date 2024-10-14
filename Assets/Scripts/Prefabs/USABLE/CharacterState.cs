@@ -12,7 +12,7 @@ public abstract class AbstractCharacterState
 	public abstract States State { get; }
 	public abstract StateType Type { get; }
 	public abstract List<StatusEffect> Effects { get; }
-	public abstract float CurrentValue { get; set; }
+	public abstract float TEST_ChangeableValue { get; set; }
 
 	public abstract void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName);
 	public abstract void UpdateState();
@@ -29,7 +29,7 @@ public class DefaultState : AbstractCharacterState
 
 	public override List<StatusEffect> Effects => _effects;
 
-    public override float CurrentValue { get; set; }
+    public override float TEST_ChangeableValue { get; set; }
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
@@ -460,7 +460,7 @@ public class CharacterState : NetworkBehaviour
 	{
 		if (_currentStates.Contains(newState))
 		{
-			currentStates.Remove(newState);
+			_currentStates.Remove(newState);
 		}
 	}
 
@@ -589,7 +589,7 @@ public enum States
     #endregion
 
     #region Carrigan
-	Bleeding,
+	BleedingCarrigan,
 	ReducingHealing,
     #endregion
 

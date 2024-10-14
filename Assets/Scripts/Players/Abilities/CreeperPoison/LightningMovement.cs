@@ -138,9 +138,9 @@ public class LightningMovement : Skill
         StopAutoDraw();
         _renderLineForFirstLeapCoroutine = StartCoroutine(RenderLineForFirstLeapJob(_castLength, _castWidth, _line, transform));
 
-        if (_heatedGlands.IsActive)
+        if (_heatedGlands.Data.IsOpen)
         {
-            _heatedGlandsIsActive = _heatedGlands.IsActive;
+            _heatedGlandsIsActive = _heatedGlands.Data.IsOpen;
         }
 
         while (_target == null && float.IsPositiveInfinity(_firstLeapPoint.x))
@@ -229,7 +229,7 @@ public class LightningMovement : Skill
             _isTargetOnEndPointCoroutine = null;
         }
 
-        if (_superFastScales.IsActive)
+        if (_superFastScales.Data.IsOpen)
         {
             _superFastScales.ResetResistance();
         }
@@ -402,8 +402,15 @@ public class LightningMovement : Skill
             RotateAtMouse(_lineStartImageForFirstLeap.transform);
             RotateAtMouse(_lineEndImageForFirstLeap.transform);
 
-            _lineStartImageForFirstLeap.SetSize(width, length);
-            _lineEndImageForFirstLeap.SetSize(width, length);
+            Damage damage = new Damage
+            {
+                Value = 0f,
+                Type = DamageType.Physical,
+                Range = AttackRangeType.MeleeAttack,
+            };
+
+            _lineStartImageForFirstLeap.SetSize(width, length, damage);
+            _lineEndImageForFirstLeap.SetSize(width, length, damage);
 
             yield return null;
         }
@@ -424,8 +431,15 @@ public class LightningMovement : Skill
             RotateAtMouse(_lineStartImageForSecondLeap.transform);
             RotateAtMouse(_lineEndImageForSecondLeap.transform);
 
-            _lineStartImageForSecondLeap.SetSize(width, length);
-            _lineEndImageForSecondLeap.SetSize(width, length);
+            Damage damage = new Damage
+            {
+                Value = 0f,
+                Type = DamageType.Physical,
+                Range = AttackRangeType.MeleeAttack,
+            };
+
+            _lineStartImageForSecondLeap.SetSize(width, length, damage);
+            _lineEndImageForSecondLeap.SetSize(width, length, damage);
 
             yield return null;
         }
@@ -572,7 +586,7 @@ public class LightningMovement : Skill
             _isTargetBeforePlayerCoroutine = StartCoroutine(IsTargetBeforePlayerJob(_rangeLeap, _targetsLayers));
         }
 
-        if (_superFastScales.IsActive)
+        if (_superFastScales.Data.IsOpen)
         {
             _superFastScales.IncreasingResistance();
         }
@@ -597,7 +611,7 @@ public class LightningMovement : Skill
             _isTargetBehindPlayerCoroutine = StartCoroutine(IsTargetBehindPlayerJob(_rangeLeap, _targetsLayers));
         }
 
-        if (_superFastScales.IsActive)
+        if (_superFastScales.Data.IsOpen)
         {
             _superFastScales.IncreasingResistance();
         }

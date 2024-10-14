@@ -125,7 +125,7 @@ public class SpitPoison : Skill
                 _isOriginalTargetPlayer = true;
                 _isOriginalTargetAllies = false;
                 _isOriginalTargetEnemy = false;
-                if (_healPoisonCloud.IsActive && _isActiveHealingSpitPoison)
+                if (_healPoisonCloud.Data.IsOpen && _isActiveHealingSpitPoison)
                 {
                     _isHealingPoisonCloud = true;
                     Debug.Log($"ChooseTarget / Player / _isHealingPoisonCloud = {_isHealingPoisonCloud}");
@@ -139,7 +139,7 @@ public class SpitPoison : Skill
                 _isOriginalTargetEnemy = false;
                 if (_isActiveHealingSpitPoison && _isActiveHealingSpitPoison)
                 {
-                    if (_healPoisonCloud.IsActive)
+                    if (_healPoisonCloud.Data.IsOpen)
                     {
                         _isHealingPoisonCloud = true;
                         Debug.Log($"ChooseTarget / Allies / _isHealingPoisonCloud = {_isHealingPoisonCloud}");
@@ -152,7 +152,7 @@ public class SpitPoison : Skill
                 _isOriginalTargetPlayer = false;
                 _isOriginalTargetAllies = false;
                 _isOriginalTargetEnemy = true;
-                if (_healPoisonCloud.IsActive && _isActiveHealingSpitPoison)
+                if (_healPoisonCloud.Data.IsOpen && _isActiveHealingSpitPoison)
                 {
                     _isHealingPoisonCloud = false;
                     Debug.Log($"ChooseTarget / Enemy / _isHealingPoisonCloud = {_isHealingPoisonCloud}");
@@ -174,7 +174,7 @@ public class SpitPoison : Skill
 
     private void CheckActiveTalents()
     {
-        if (_transparentPoisons.IsActive && _player.IsInvisible)
+        if (_transparentPoisons.Data.IsOpen && _player.IsInvisible)
         {
             _isPlayerInvisible = true;
         }
@@ -183,13 +183,13 @@ public class SpitPoison : Skill
             _isPlayerInvisible = false;
         }
 
-        if (_healingSpitPoison.IsActive)
+        if (_healingSpitPoison.Data.IsOpen)
         {
-            _isActiveHealingSpitPoison = _healingSpitPoison.IsActive;
+            _isActiveHealingSpitPoison = _healingSpitPoison.Data.IsOpen;
         }
         else
         {
-            _isActiveHealingSpitPoison = _healingSpitPoison.IsActive;
+            _isActiveHealingSpitPoison = _healingSpitPoison.Data.IsOpen;
         }
     }
 

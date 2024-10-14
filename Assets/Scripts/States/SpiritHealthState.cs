@@ -12,7 +12,7 @@ public class SpiritHealthState : AbstractCharacterState
     private const float ManaRestorePerStack = 0.09f; // 9% mana restore per stack
 
     private List<StatusEffect> _effects = new ();
-
+    public override float TEST_ChangeableValue { get; set; }
     public override States State => States.SpiritHealth;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;

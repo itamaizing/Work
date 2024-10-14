@@ -6,6 +6,8 @@ public class Knockdown : AbstractCharacterState
 {
     private float _baseDuration;
     private float _duration;
+
+    public override float TEST_ChangeableValue { get; set; }
     public override States State => States.Knockdown;
 
     public override StateType Type => StateType.Physical;

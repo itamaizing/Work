@@ -27,7 +27,7 @@ public class HealingPoisonCloudState : AbstractCharacterState
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Healing };
 
-    public override float CurrentValue { get => _baseHeal; set => _baseHeal = value; }
+    public override float TEST_ChangeableValue { get => _baseHeal; set => _baseHeal = value; }
 
     public override States State => States.HealingPoisonCloud;
     public override StateType Type => StateType.Physical;

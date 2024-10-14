@@ -30,7 +30,7 @@ public class ColdBlood: Skill
     public bool IsCanCritCreeperStrike { get => _isCanCritCreeperStrike; set => _isCanCritCreeperStrike = value; }
     public bool IsCanCritLightningStrikes { get => _isCanCritLightningStrikes; set => _isCanCritLightningStrikes = value; }
 
-    protected override bool IsCanCast { get { return _coldBloodEnabledTalent.IsActive; } }
+    protected override bool IsCanCast { get { return _coldBloodEnabledTalent.Data.IsOpen; } }
 
     protected override void ClearData()
     {
@@ -54,9 +54,9 @@ public class ColdBlood: Skill
     {
         _player.CharacterState.CmdAddState(States.Immateriality, 0, 0, _player.gameObject, Name);
 
-        if (_coldBloodEnabledTalent.IsActive)
+        if (_coldBloodEnabledTalent.Data.IsOpen)
         {
-            if (_coldBloodTalent.IsActive)
+            if (_coldBloodTalent.Data.IsOpen)
             {
                 while (_target == null && float.IsPositiveInfinity(_mousePosition.x))
                 {
@@ -91,7 +91,7 @@ public class ColdBlood: Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_coldBloodTalent.IsActive)
+        if (_coldBloodTalent.Data.IsOpen)
         {
             UseAbilityWithTalent();
         }
@@ -127,7 +127,7 @@ public class ColdBlood: Skill
         else
         {
             Debug.Log("ColdBlood / UseAbilityWithTalent / else if _isPlayer == false");
-            if (_killersStamina.IsActive)
+            if (_killersStamina.Data.IsOpen)
             {
                 _isCanCritLightningStrikes = true;
             }
@@ -139,7 +139,7 @@ public class ColdBlood: Skill
     private void UseAbilityWithoutTalent()
     {
         Debug.Log("ColdBlood / UseAbilityWithoutTalent");
-        if (_killersStamina.IsActive)
+        if (_killersStamina.Data.IsOpen)
         {
             _isCanCritLightningStrikes = true;
         }

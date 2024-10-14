@@ -9,6 +9,7 @@ public class DarkShield : AbstractCharacterState
     private float _duration;
     private Health _healthComponent;
 
+    public override float TEST_ChangeableValue { get; set; }
     public override States State => States.DarkShield;
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => new List<StatusEffect>();

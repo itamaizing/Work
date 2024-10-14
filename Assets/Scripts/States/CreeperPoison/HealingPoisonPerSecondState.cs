@@ -23,7 +23,7 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
 
     private Character _player;
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Healing };
-    public override float CurrentValue { get => _currentHealingValue; set => _currentHealingValue = value; }
+    public override float TEST_ChangeableValue { get => _currentHealingValue; set => _currentHealingValue = value; }
     public override States State => States.HealingPoisonPerSecond;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;

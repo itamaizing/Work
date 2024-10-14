@@ -16,7 +16,7 @@ public class SuperFastScales : Talent
     public override void Enter()
     {
         SetActive(true);
-        _baseDefMagDamage = Character.Health.DefMagDamage;
+        _baseDefMagDamage = character.Health.DefMagDamage;
     }
 
     public override void Exit()
@@ -37,13 +37,13 @@ public class SuperFastScales : Talent
     [Command]
     private void CmdIncreasingResistance()
     {
-        _baseDefMagDamage = Character.Health.DefMagDamage;
+        _baseDefMagDamage = character.Health.DefMagDamage;
         Debug.Log("BaseMagDamage = " + _baseDefMagDamage);
 
-        if (Character.Health.EvadeMagDamage < 100f)
+        if (character.Health.EvadeMagDamage < 100f)
         {
-            Character.Health.EvadeMagDamage += _increaseResistanceToMagicDamage;
-            Debug.Log($"Increased EvadeMagDamage == {Character.Health.EvadeMagDamage}");
+            character.Health.EvadeMagDamage += _increaseResistanceToMagicDamage;
+            Debug.Log($"Increased EvadeMagDamage == {character.Health.EvadeMagDamage}");
         }
     }
 
@@ -51,8 +51,8 @@ public class SuperFastScales : Talent
     private void CmdResetResistance()
     {
         Debug.Log("Reset baseMagDamage = " + _baseDefMagDamage);
-        Character.Health.EvadeMagDamage = _baseDefMagDamage;
-        Debug.Log($"Reset EvadeMagDamage == {Character.Health.EvadeMagDamage}");
+        character.Health.EvadeMagDamage = _baseDefMagDamage;
+        Debug.Log($"Reset EvadeMagDamage == {character.Health.EvadeMagDamage}");
     }
 
 }

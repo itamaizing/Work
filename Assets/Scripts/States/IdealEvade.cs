@@ -7,6 +7,8 @@ public class IdealEvade : AbstractCharacterState
     private float _baseDuration;
     private float _duration;
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
+
+    public override float TEST_ChangeableValue { get; set; }
     public override States State => States.IdealEvade;
 
     public override StateType Type => StateType.Immaterial;

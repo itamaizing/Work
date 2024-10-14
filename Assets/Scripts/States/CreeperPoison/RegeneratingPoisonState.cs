@@ -26,7 +26,7 @@ public class RegeneratingPoisonState : AbstractCharacterState
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Healing };
 
-    public override float CurrentValue { get => _baseHealingValue; set => _baseHealingValue = value; }
+    public override float TEST_ChangeableValue { get => _baseHealingValue; set => _baseHealingValue = value; }
     public override States State => States.RegeneratingPoison;
     public override StateType Type => StateType.Physical;
     public override List<StatusEffect> Effects => _effects;
@@ -42,7 +42,7 @@ public class RegeneratingPoisonState : AbstractCharacterState
         Debug.Log("_player in EnterRegenPoisonState == " + _player);
         if (_player != null)
         {
-            _talents = _player.CharacterState.Character.GetComponent<HeroComponent>().Talents.Talents;
+            _talents = _player.CharacterState.Character.GetComponent<HeroComponent>().TalentManager.ActiveTalents;
             Debug.Log("HealingPoison player == " + _player);
 
             foreach (Talent talent in _talents)
@@ -123,7 +123,7 @@ public class RegeneratingPoisonState : AbstractCharacterState
         Debug.Log("RegenerationPoison / MakeHeal");
         _endHealingValue = _currentStacks * _baseHealingValue;
         _player.Health.Heal(_endHealingValue);
-        if (_surgeTreatment != null && _surgeTreatment.IsActive)
+        if (_surgeTreatment != null && _surgeTreatment.Data.IsOpen)
         {
             _totalHeal += _endHealingValue;
             Debug.Log("TotalHeal RegenerationPoison == " + _totalHeal);

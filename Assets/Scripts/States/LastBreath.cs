@@ -6,7 +6,7 @@ public class LastBreath : AbstractCharacterState
 {
 	private Character _character;
 	private float _durationToExit = 0;
-    public override float CurrentValue { get; set; }
+    public override float TEST_ChangeableValue { get; set; }
     public override States State => States.LastBreath;
 	public override StateType Type => StateType.Magic;
 	public override List<StatusEffect> Effects => throw new System.NotImplementedException();

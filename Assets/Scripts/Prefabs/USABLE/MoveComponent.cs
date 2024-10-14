@@ -99,9 +99,15 @@ public class MoveComponent : NetworkBehaviour
 	public void TargetRpcAddTransformPosition(Vector3 vector3)
     {
 		transform.position += vector3;
-	}
+    }
 
-	[TargetRpc]
+    [TargetRpc]
+    public void TargetRpcSetTransformPosition(Vector3 vector3)
+    {
+        transform.position = vector3;
+    }
+
+    [TargetRpc]
 	public void TargetRpcDoMove(Vector3 vector3, float duration)
 	{
 		_rigidbody.DOMove(vector3, duration);

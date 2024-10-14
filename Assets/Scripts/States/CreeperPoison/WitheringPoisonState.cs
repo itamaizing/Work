@@ -30,7 +30,7 @@ public class WitheringPoisonState : AbstractCharacterState
     public float StacksDuration { get => _duration; }
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
-    public override float CurrentValue { get; set; }
+    public override float TEST_ChangeableValue { get; set; }
     public override States State => States.WitheringPoison;
     public override StateType Type => StateType.Physical;
     public override List<StatusEffect> Effects => _effects;
@@ -50,7 +50,7 @@ public class WitheringPoisonState : AbstractCharacterState
         //Debug.Log("player in WitheringPoisonState == " + _player);
         if (_player != null)
         {
-            _talents = _player.CharacterState.Character.GetComponent<HeroComponent>().Talents.Talents;
+            _talents = _player.CharacterState.Character.GetComponent<HeroComponent>().TalentManager.ActiveTalents;
             //Debug.Log("WitheringPoisonState Talent == " + _talents);
 
             foreach (Talent talent in _talents)
@@ -61,7 +61,7 @@ public class WitheringPoisonState : AbstractCharacterState
                     if (_bindingPoison == null)
                     {
                         _bindingPoison = bindingPoison;
-                        _isActiveTalentBindingPoison = _bindingPoison.IsActive;
+                        _isActiveTalentBindingPoison = _bindingPoison.Data.IsOpen;
                     }
                 }
             }

@@ -16,7 +16,7 @@ public class BindingPoisonState : AbstractCharacterState
     private float _baseDuration;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
-    public override float CurrentValue { get; set; }
+    public override float TEST_ChangeableValue { get; set; }
 
     public int CurrentStacks { get => _currentStacks; set => _currentStacks = value; }
     public float StacksDuration { get => _duration; }

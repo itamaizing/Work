@@ -67,13 +67,13 @@ public class CreeperInvisible : Skill
         switch (_isInvisible)
         {
             case false:
-                if (_desireToHide.IsActive && _desireToHide.IsCanApply)
+                if (_desireToHide.Data.IsOpen && _desireToHide.IsCanApply)
                 {
                     CmdApplyInvisibleWithTalent(); 
                     CmdReducingTransparencySpritePlayer(_player.gameObject);
                     yield break;
                 }
-                else if (_continuationAmbush.IsActive && _continuationAmbush.IsCanApplyInvisible)
+                else if (_continuationAmbush.Data.IsOpen && _continuationAmbush.IsCanApplyInvisible)
                 {
                     CmdApplyInvisibleWithTalent(); 
                     CmdReducingTransparencySpritePlayer(_player.gameObject);
@@ -121,7 +121,7 @@ public class CreeperInvisible : Skill
             yield break;
         }
 
-        if (_isInvisible && _transparentPoisons.IsActive)
+        if (_isInvisible && _transparentPoisons.Data.IsOpen)
         {
             //Метод для того, чтобы сделать способности невидымим
             _transparentPoisons.IncreaseManaCost(_isInvisible);
@@ -284,7 +284,7 @@ public class CreeperInvisible : Skill
     [Command]
     private void CmdRemoveInvisible(bool creeperStrikeIsHit)
     {
-        if (_releaseFromSecrecy.IsActive && creeperStrikeIsHit)
+        if (_releaseFromSecrecy.Data.IsOpen && creeperStrikeIsHit)
         {
             _releaseFromSecrecy.ApplyBuff();
         }
@@ -365,24 +365,24 @@ public class CreeperInvisible : Skill
     private void RpcRemoveInvisible(bool creeperStrikeIsHit)
     {
         _isInvisible = false;
-        if (_releaseFromSecrecy.IsActive && creeperStrikeIsHit)
+        if (_releaseFromSecrecy.Data.IsOpen && creeperStrikeIsHit)
         {
             _releaseFromSecrecy.ApplyBuff();
         }
 
-        if (_firstStrike.IsActive && !_firstStrike.IsCanIncreaseCrit)
+        if (_firstStrike.Data.IsOpen && !_firstStrike.IsCanIncreaseCrit)
         {
             _firstStrike.SetBoolTrue();
         }
 
-        if (_preparingForFight.IsActive)
+        if (_preparingForFight.Data.IsOpen)
         {
             _isReadyToThreeHitForPreparingForFightTalent = true;
         }
 
         if (_coldBlood.IsCanCritCreeperStrike)
         {
-            if (_concentratedPrecision.IsActive)
+            if (_concentratedPrecision.Data.IsOpen)
             {
                 _coldBlood.ReducingAbilityCooldown();
             }

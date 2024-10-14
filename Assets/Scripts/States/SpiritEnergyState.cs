@@ -12,7 +12,7 @@ public class SpiritEnergyState : AbstractCharacterState
     private const float BonusManaRestore = 0.05f;
     private const float HealthBonusPerStack = 1f; // Дополнительное здоровье за стак
     private List<StatusEffect> _effects = new ();
-
+    public override float TEST_ChangeableValue { get; set; }
     public override States State => States.SpiritEnergy;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;

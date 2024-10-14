@@ -25,7 +25,7 @@ public class BasePsionicEnergy : Energy, IDamageable
     public float CurrentPsiEnergy { get => CurrentValue; set => CurrentValue = value; }
     public bool IsAttackingPsiEnergyActive { get => _attackingPsionicEnergy.IsAttackingPsiEnergy; }
 
-    public event Action<float, DamageType> DamageTaken;
+    public event Action<float, DamageType, Skill> DamageTaken;
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
@@ -49,6 +49,11 @@ public class BasePsionicEnergy : Energy, IDamageable
         {
             return false;
         }
+    }
+
+    public void ShowPhantomValue(Damage damage)
+    {
+
     }
 
     public void ActivateAttackingEnergy()

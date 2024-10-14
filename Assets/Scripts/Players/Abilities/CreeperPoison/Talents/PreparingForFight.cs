@@ -18,7 +18,7 @@ public class PreparingForFight : Talent
     public override void Enter()
     {
         SetActive(true);
-        _player = Character;
+        _player = character;
         _playerMana = _player.TryGetResource(ResourceType.Mana);
     }
 

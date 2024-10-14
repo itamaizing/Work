@@ -101,7 +101,7 @@ public class LightningStrikes : AutoAttackSkill
             {
                 _creeperStrike.DealingDamageFromHits(target);
 
-                if (_heatedGlands.IsActive)
+                if (_heatedGlands.Data.IsOpen)
                 {
                     _player.CharacterState.CmdAddState(States.HeatedGlands, _timeBaff, 0, _player.gameObject, Name);
                 }

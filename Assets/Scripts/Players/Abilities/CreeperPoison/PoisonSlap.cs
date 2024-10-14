@@ -129,7 +129,7 @@ public class PoisonSlap : Skill
         {
             if (_poisonBall.Chargers != 0)
             {
-                if ((_lightweightSlap.IsActive && _creeperStrike.IsTwoHit) || (_lightweightSlap.IsActive && _lightningStrikes.IsUsedLightningStrikes))
+                if ((_lightweightSlap.Data.IsOpen && _creeperStrike.IsTwoHit) || (_lightweightSlap.Data.IsOpen && _lightningStrikes.IsUsedLightningStrikes))
                 {
                     yield break;
                 }

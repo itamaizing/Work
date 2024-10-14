@@ -96,7 +96,7 @@ public class CreeperStrike : AutoAttackSkill
             _absorptionOfPoisons.CheckTargetWithDebuffs(target.gameObject);
         }
 
-        if (_strokesOfAspiration.IsActive && _currentCountHit == 2)
+        if (_strokesOfAspiration.Data.IsOpen && _currentCountHit == 2)
         {
             if (_lastTarget == target)
             {
@@ -108,7 +108,7 @@ public class CreeperStrike : AutoAttackSkill
             }
         }
 
-        if (_desireToHide.IsActive)
+        if (_desireToHide.Data.IsOpen)
         {
             _countHitForDesireToHideTalent++;
 
@@ -119,12 +119,12 @@ public class CreeperStrike : AutoAttackSkill
             }
         }
 
-        if (_releaseFromSecrecy.IsActive && _creeperInvisible.IsInvisible)
+        if (_releaseFromSecrecy.Data.IsOpen && _creeperInvisible.IsInvisible)
         {
             _creeperInvisible.ExitingInvisibleState();
         }
 
-        if (_assasinPoison.IsActive)
+        if (_assasinPoison.Data.IsOpen)
         {
             if (_assasinPoison.CurrentChargeAssasinPoison > 0)
             {
@@ -133,7 +133,7 @@ public class CreeperStrike : AutoAttackSkill
         }
 
 
-        if (_preparingForFight.IsActive && _creeperInvisible.IsReadyToThreeHitForPreparingForFightTalent)
+        if (_preparingForFight.Data.IsOpen && _creeperInvisible.IsReadyToThreeHitForPreparingForFightTalent)
         {
             _countCurrentHitForPreparingForFight++;
 
@@ -166,7 +166,7 @@ public class CreeperStrike : AutoAttackSkill
             CmdApplyDamage(damage, target.gameObject);
         }
 
-        if (_firstStrike.IsActive)
+        if (_firstStrike.Data.IsOpen)
         {
             _firstStrike.FirstHit = false;
         }
@@ -189,7 +189,7 @@ public class CreeperStrike : AutoAttackSkill
             }
         }
 
-        if (_firstStrike.IsActive && _firstStrike.IsCanIncreaseCrit && _firstStrike.FirstHit)
+        if (_firstStrike.Data.IsOpen && _firstStrike.IsCanIncreaseCrit && _firstStrike.FirstHit)
         {
             criticalDamage *= (multiplyDamage * firstStrikeTalentMultiplyDamage);
             _firstStrike.ReturnBoolFalse();
@@ -249,7 +249,7 @@ public class CreeperStrike : AutoAttackSkill
 
         CmdApplyDamage(critDamage, currentTarget.gameObject);
 
-        if (_feelingOfContinuation.IsActive)
+        if (_feelingOfContinuation.Data.IsOpen)
         { 
             _feelingOfContinuation.IncreaseRegenerationMana(criticalDamage);
         }

@@ -10,7 +10,7 @@ public class FrostingState : AbstractCharacterState
 	private float _damageToExit;
 
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.AbilitySpeed };
-    public override float CurrentValue { get; set; }
+    public override float TEST_ChangeableValue { get; set; }
     public override States State => States.Frosting;
 	public override StateType Type => StateType.Magic;
 	public override List<StatusEffect> Effects => _effects;

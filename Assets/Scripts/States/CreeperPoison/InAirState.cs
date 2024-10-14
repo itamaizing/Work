@@ -12,7 +12,7 @@ public class InAirState : AbstractCharacterState
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move };
 
-    public override float CurrentValue { get; set; }
+    public override float TEST_ChangeableValue { get; set; }
     public override States State => States.InAir;
     public override StateType Type => StateType.Physical;
     public override List<StatusEffect> Effects => _effects;

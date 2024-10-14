@@ -33,7 +33,7 @@ public class GrabTongue : Skill
 
     protected override IEnumerator PrepareJob()
     {
-        if (_transparentPoisons.IsActive && _player.IsInvisible)
+        if (_transparentPoisons.Data.IsOpen && _player.IsInvisible)
         {
             _isPlayerInvisible = true;
         }

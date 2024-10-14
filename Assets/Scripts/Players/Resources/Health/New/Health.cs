@@ -94,6 +94,13 @@ public class Health : Resource, IDamageable, IHealingable
         _defMagDamage = value;
     }
 
+    public void SetEvadeAll(float value)
+    {
+        _evadeMagDamage += value;
+        _evadeMeleeDamage += value;
+        _evadeRangeDamage += value;
+    }
+
     #region HookMethods
 
     protected virtual void HookEvadeMeleeDamageChanged(float oldValue, float newValue)

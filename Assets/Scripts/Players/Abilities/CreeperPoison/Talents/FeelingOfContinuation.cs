@@ -25,7 +25,7 @@ public class FeelingOfContinuation : Talent
     public override void Enter()
     {
         SetActive(true);
-        _player = Character;
+        _player = character;
         _originalRegenerationMana = _player.TryGetResource(ResourceType.Mana).RegenerationValue;
     }
 

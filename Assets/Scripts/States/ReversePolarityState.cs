@@ -2,6 +2,7 @@ using System.Collections.Generic;
 
 public class ReversePolarityState : AbstractCharacterState
 {
+    public override float TEST_ChangeableValue { get; set; }
     public override States State => States.ReversePolarity;
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => new List<StatusEffect>();

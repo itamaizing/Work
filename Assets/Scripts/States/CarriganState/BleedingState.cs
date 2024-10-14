@@ -16,7 +16,7 @@ public class BleedingState : AbstractCharacterState
     private float _startTimeBetweenAttack = 1.0f;
 
     private List<StatusEffect> _effects = new List<StatusEffect>();
-    public override float CurrentValue { get; set; }
+    public override float TEST_ChangeableValue { get; set; }
     public override States State => States.Bleeding;
 
     public override StateType Type => StateType.Physical;

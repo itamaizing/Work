@@ -19,7 +19,7 @@ public class ReducingHealingState : AbstractCharacterState
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.ReducingEfficiency };
 
-    public override float CurrentValue { get => _baseReductionHealingValues; set => _baseReductionHealingValues = value; }
+    public override float TEST_ChangeableValue { get => _baseReductionHealingValues; set => _baseReductionHealingValues = value; }
     public override States State => States.ReducingHealing;
     public override StateType Type => StateType.Physical;
     public override List<StatusEffect> Effects => _effects;
@@ -27,7 +27,7 @@ public class ReducingHealingState : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         Debug.Log("ReducingHealingState / EnterState");
-        Debug.Log("ReducingHealingState / EnterState / ReductionValue = " + CurrentValue);
+        Debug.Log("ReducingHealingState / EnterState / ReductionValue = " + TEST_ChangeableValue);
         _characterState = character;
 
         _duration = durationToExit;
@@ -41,7 +41,7 @@ public class ReducingHealingState : AbstractCharacterState
         _delayBeforeChecking -= Time.deltaTime;
         if (_delayBeforeChecking <= 0)
         {
-            if (CurrentValue > 0)
+            if (TEST_ChangeableValue > 0)
             {
                 UdpatingDictionaries();
 
@@ -79,11 +79,11 @@ public class ReducingHealingState : AbstractCharacterState
         {
             foreach (var healingState in healingStates)
             {
-                _newHealingStatesValues[healingState] = healingState.CurrentValue;
+                _newHealingStatesValues[healingState] = healingState.TEST_ChangeableValue;
 
                 if (!_oldHealingStatesValues.ContainsKey(healingState))
                 {
-                    _oldHealingStatesValues[healingState] = healingState.CurrentValue;
+                    _oldHealingStatesValues[healingState] = healingState.TEST_ChangeableValue;
                 }
             }
 
@@ -123,13 +123,13 @@ public class ReducingHealingState : AbstractCharacterState
             {
                 // Пересчет значения с учетом снижения
                 float reductionHealingValue = newHealingValue * _baseReductionHealingValues;
-                state.CurrentValue = newHealingValue - reductionHealingValue;
-                Debug.Log($"State.CurrentValue = " + state.CurrentValue);
+                state.TEST_ChangeableValue = newHealingValue - reductionHealingValue;
+                Debug.Log($"State.CurrentValue = " + state.TEST_ChangeableValue);
 
                 // Обновляем старое значение в словаре
-                _oldHealingStatesValues[state] = state.CurrentValue;
+                _oldHealingStatesValues[state] = state.TEST_ChangeableValue;
 
-                Debug.Log($"ReducingHealingState / ReductionHealing / newValue: {state.CurrentValue}, oldValue: {oldHealingValue}");
+                Debug.Log($"ReducingHealingState / ReductionHealing / newValue: {state.TEST_ChangeableValue}, oldValue: {oldHealingValue}");
             }
         }
     }

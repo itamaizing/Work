@@ -40,9 +40,9 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
     public int CurrentStacks { get => _currentStacks; set => _currentStacks = value; }
     public float StacksDuration { get => _duration; }
 
-    public event Action<float, DamageType> DamageTaken;
+    public event Action<float, DamageType, Skill> DamageTaken;
 
-    public override float CurrentValue { get; set; }
+    public override float TEST_ChangeableValue { get; set; }
     public override States State => States.EmpathicPoisons;
     public override StateType Type => StateType.Physical;
     public override List<StatusEffect> Effects => _effects;
@@ -74,6 +74,11 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
         {
             AddStacks();
         }
+    }
+
+    public void ShowPhantomValue(Damage value)
+    {
+
     }
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)

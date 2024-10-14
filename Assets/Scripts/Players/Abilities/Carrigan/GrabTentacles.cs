@@ -262,7 +262,7 @@ public class GrabTentacles : Skill
                 if (reducingHealingState != null)
                 {
                     //reducingHealingState.CurrentValue = 0.4f;
-                    Debug.Log("GrabTentacles / else if > 20 / CurrentValue = " + reducingHealingState.CurrentValue);
+                    Debug.Log("GrabTentacles / else if > 20 / CurrentValue = " + reducingHealingState.TEST_ChangeableValue);
                 }
             }
             else if (currentDamage == 30)
@@ -273,7 +273,7 @@ public class GrabTentacles : Skill
                 if (reducingHealingState != null)
                 {
                     //reducingHealingState.CurrentValue = 0.8f; 
-                    Debug.Log("GrabTentacles / else if == 30 / CurrentValue = " + reducingHealingState.CurrentValue);
+                    Debug.Log("GrabTentacles / else if == 30 / CurrentValue = " + reducingHealingState.TEST_ChangeableValue);
                 }
             }
             UseAttackingEnergy(currentDamage);

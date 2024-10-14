@@ -35,7 +35,7 @@ public class PoisonCloudState : AbstractCharacterState
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
     public float RadiusCloud { get => _radiusCloud; }
-    public override float CurrentValue { get; set; }
+    public override float TEST_ChangeableValue { get; set; }
     public override States State => States.PoisonCloud;
     public override StateType Type => StateType.Physical;
     public override List<StatusEffect> Effects => _effects;
@@ -53,7 +53,7 @@ public class PoisonCloudState : AbstractCharacterState
         if (_player != null)
         {
             _skills = _player.CharacterState.Character.Abilities.Abilities;
-            _talents = _player.CharacterState.Character.GetComponent<HeroComponent>().Talents.Talents;
+            _talents = _player.CharacterState.Character.GetComponent<HeroComponent>().TalentManager.ActiveTalents;
 
             SearchAbilities();
 
@@ -90,7 +90,7 @@ public class PoisonCloudState : AbstractCharacterState
                 if (_capaciousPoisonCloud == null)
                 {
                     _capaciousPoisonCloud = capaciousCloud;
-                    if (_capaciousPoisonCloud.IsActive)
+                    if (_capaciousPoisonCloud.Data.IsOpen)
                     {
                         _radiusCloud += 1.5f;
                     }
@@ -188,7 +188,7 @@ public class PoisonCloudState : AbstractCharacterState
 
         targetHealth.Health.CmdTryTakeDamage(damage, null);
 
-        if (_toxiqueCloud.IsActive)
+        if (_toxiqueCloud.Data.IsOpen)
         {
             Debug.Log("PoisonCloud / DamageDeal / toxiqueCloud Active");
             ApplyState(targetHealth);

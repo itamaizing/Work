@@ -452,19 +452,19 @@ public class PoisonBall : Skill
 
     private void CheckingActiveTalents()
     {
-        _poisonBallInfo.IsActiveTransparentPoisons = _transparentPoisons.IsActive;
-        _poisonBallInfo.IsActiveWitheringPoison = _witheringPoison.IsActive;
-        _poisonBallInfo.IsActiveContinuationAmbush = _continuationAmbush.IsActive;
-        _poisonBallInfo.IsActiveHealingPoisonBall = _healingPoisonBall.IsActive;
-        _poisonBallInfo.IsActiveHealingPoisonCloud = _healPoisonCloud.IsActive;
-        _poisonBallInfo.IsActiveEnlargedGlands = _enlargedGlands.IsActive;
-        _poisonBallInfo.IsActiveVoluminousBall = _voluminousBall.IsActive;
-        _poisonBallInfo.IsActiveInertialGlands = _inertialGlands.IsActive;
-        _poisonBallInfo.IsActiveVolatilityOfPoisons = _volatilityOfPoisons.IsActive;
+        _poisonBallInfo.IsActiveTransparentPoisons = _transparentPoisons.Data.IsOpen;
+        _poisonBallInfo.IsActiveWitheringPoison = _witheringPoison.Data.IsOpen;
+        _poisonBallInfo.IsActiveContinuationAmbush = _continuationAmbush.Data.IsOpen;
+        _poisonBallInfo.IsActiveHealingPoisonBall = _healingPoisonBall.Data.IsOpen;
+        _poisonBallInfo.IsActiveHealingPoisonCloud = _healPoisonCloud.Data.IsOpen;
+        _poisonBallInfo.IsActiveEnlargedGlands = _enlargedGlands.Data.IsOpen;
+        _poisonBallInfo.IsActiveVoluminousBall = _voluminousBall.Data.IsOpen;
+        _poisonBallInfo.IsActiveInertialGlands = _inertialGlands.Data.IsOpen;
+        _poisonBallInfo.IsActiveVolatilityOfPoisons = _volatilityOfPoisons.Data.IsOpen;
 
         #region TransparentPoisonsTalentIsActive
 
-        if (_transparentPoisons.IsActive && _player.IsInvisible)
+        if (_transparentPoisons.Data.IsOpen && _player.IsInvisible)
         {
             _isPlayerInvisible = true;
         }
@@ -541,7 +541,7 @@ public class PoisonBall : Skill
 
         #region AssasinPoisonTalentIsActive
 
-        if (_assasinPoison.IsActive && _flowOfPoison.IsActive)
+        if (_assasinPoison.Data.IsOpen && _flowOfPoison.Data.IsOpen)
         {
             _currentStacksAsssasinPoison = _assasinPoison.CurrentChargeAssasinPoison;
             Debug.Log("PoisonBall / CurrentStacksAssasinPoison == " + _currentStacksAsssasinPoison);

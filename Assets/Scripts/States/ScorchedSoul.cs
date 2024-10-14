@@ -7,6 +7,7 @@ public class ScorchedSoul : AbstractCharacterState
 {
     private float _duration;
     private int _currentStacks = 1;
+    public override float TEST_ChangeableValue { get; set; }
     public override States State => States.ScorchedSoul;
 
     public override StateType Type => StateType.Immaterial;

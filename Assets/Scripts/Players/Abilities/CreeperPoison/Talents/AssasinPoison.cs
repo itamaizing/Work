@@ -44,9 +44,9 @@ public class AssasinPoison : Talent
     
     private IEnumerator AccumulateCharge()
     {
-        while (IsActive)
+        while (Data.IsOpen)
         {
-            if (_flowOfPoisons.IsActive && _currentChargePoison < 3 && Character.CharacterState.CheckForState(States.CreeperInvisible))
+            if (_flowOfPoisons.Data.IsOpen && _currentChargePoison < 3 && character.CharacterState.CheckForState(States.CreeperInvisible))
             {
                 _timeAccumulateCharge -= Time.deltaTime;
                 if (_timeAccumulateCharge <= 0)
@@ -60,11 +60,11 @@ public class AssasinPoison : Talent
 
     public void CmdSpendCharge(Character target, float lifeTimePoisonBoneStack)
     {
-        if (Character.CharacterState.CheckForState(States.CreeperInvisible))
+        if (character.CharacterState.CheckForState(States.CreeperInvisible))
         {
             if (_currentChargePoison > 0)
             {
-                target.CharacterState.CmdAddState(States.PoisonBone, lifeTimePoisonBoneStack, 0, Character.gameObject, null);
+                target.CharacterState.CmdAddState(States.PoisonBone, lifeTimePoisonBoneStack, 0, character.gameObject, null);
                 _currentChargePoison--;
             }
         }

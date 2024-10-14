@@ -7,6 +7,7 @@ public class BleedingDebuff : AbstractCharacterState
     private float _duration;
     private float _baseDuration;
     private float timer = 0;
+    public override float TEST_ChangeableValue { get; set; }
     public override States State => States.Bleeding;
     
     public override StateType Type => StateType.Physical;

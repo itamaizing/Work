@@ -30,14 +30,14 @@ public abstract class Character : NetworkBehaviour
 	public Rigidbody2D Rb => rb;
 	public Collider2D Collider => _collider;
 	public Health Health => _healthComponent;
-	public Level LVL => _lvl;
+	public Level LVL => _lvl; 
 	public MoveComponent Move => _playerMove;
 	public SkillManager Abilities => _abilities;
 	public CharacterState CharacterState => _characterState;
 	public UIPlayerComponents UIComponent => uiComponent;
 	public SelectComponent SelectComponent => _selectComponent;
 	public List<Resource> Resources => _resources;
-
+    public SelectedCircle SelectedCircle => _selectedCircle;
     public bool IsInvisible 
 	{ 
 		get => _isInvisible; 
