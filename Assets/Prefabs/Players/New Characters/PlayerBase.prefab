@@ -766,6 +766,7 @@ MonoBehaviour:
   _skills: []
   _hero: {fileID: 8468544467696250796}
   _talentSystem: {fileID: 8675175310089954536}
+  _skillRenderer: {fileID: 1384998200796471846}
 --- !u!1 &2339943645575800385
 GameObject:
   m_ObjectHideFlags: 0

@@ -67,6 +67,7 @@ public class SkillRenderer : NetworkBehaviour
 
     public void DrawRadius(float radius)
     {
+        Debug.Log(_circle + " circel ");
         _circle.Draw(radius);
     }
 

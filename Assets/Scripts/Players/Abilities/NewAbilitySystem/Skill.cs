@@ -359,7 +359,9 @@ public abstract class Skill : NetworkBehaviour
 			Type = DamageType,
 			Range = AttackRangeType,
 		};
-
+        Debug.Log(_skillRender + " Skill render\n ");
+        Debug.Log(Radius + " \n ");
+       // Debug.Log(Radiu + " \n ");
 		if (_isAutoRadiusRender)
             _skillRender.DrawRadius(Radius);
 
