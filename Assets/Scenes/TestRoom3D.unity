@@ -561,13 +561,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1933390431}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1ffe2aee1de10bc498553ab3a5f0e708, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   zoomSpeed: 1
-  minSize: 3
+  minSize: 1
   maxSize: 17
 --- !u!114 &1933390439
 MonoBehaviour:
@@ -581,7 +581,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dc7d74e934f28f46ba9a2c6025e9ac7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 0.02
+  moveSpeed: 10
+  fastMoveSpeed: 30
+  rotationSpeed: 0.25
 --- !u!1001 &926972779798317980
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -696,7 +698,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8392424285459083217, guid: 22bbacc9f2fe48d418ea72035b235a60, type: 3}
       propertyPath: orthographic
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8642224241720766290, guid: 22bbacc9f2fe48d418ea72035b235a60, type: 3}
       propertyPath: m_IsActive

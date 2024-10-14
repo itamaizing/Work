@@ -1,35 +1,74 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraMoveNew : MonoBehaviour
 {
-    public float moveSpeed = 0.1f;
+    public float moveSpeed = 5f;
+    public float fastMoveSpeed = 10;
+    public float rotationSpeed = 0.1f;
 
-    private Camera _camera;
     private Vector3 lastMousePosition;
+    private Vector3 initialPosition;
+    private Quaternion initialRotation;
 
     private void Start()
     {
-        _camera = GetComponent<Camera>();
+        initialPosition = transform.position;
+        initialRotation = transform.rotation;
     }
 
     private void Update()
     {
-        if (Input.GetMouseButton(2))
+        HandleMovement();
+        HandleRotation();
+        HandleResetPosition();
+    }
+
+    private void HandleMovement()
+    {
+        float moveSpeedCurrent = Input.GetKey(KeyCode.LeftShift) ? fastMoveSpeed : moveSpeed;
+
+        float moveX = Input.GetAxis("Horizontal");
+        float moveZ = Input.GetAxis("Vertical");
+
+        float moveY = 0f;
+        if (Input.GetKey(KeyCode.Q))
         {
-            Vector3 mousePosition = Input.mousePosition;
+            moveY = -1f;
+        }
+        else if (Input.GetKey(KeyCode.E))
+        {
+            moveY = 1f;
+        }
 
-            if (Input.GetMouseButtonDown(2))
-            {
-                lastMousePosition = mousePosition;
-            }
+        Vector3 movement = new Vector3(moveX, moveY, moveZ) * moveSpeedCurrent * Time.deltaTime;
+        transform.Translate(movement, Space.Self);
+    }
 
-            Vector3 deltaMousePosition = lastMousePosition - mousePosition;
+    private void HandleRotation()
+    {
+        if (Input.GetMouseButton(1))
+        {
+            Vector3 mouseDelta = Input.mousePosition - lastMousePosition;
 
-            _camera.transform.position += new Vector3(deltaMousePosition.x * moveSpeed, 0, deltaMousePosition.y * moveSpeed);
+            transform.Rotate(Vector3.up, mouseDelta.x * rotationSpeed, Space.World);
 
-            lastMousePosition = mousePosition;
+            transform.Rotate(Vector3.right, -mouseDelta.y * rotationSpeed, Space.Self);
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            lastMousePosition = Input.mousePosition;
+        }
+
+        lastMousePosition = Input.mousePosition;
+    }
+
+    private void HandleResetPosition()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            transform.position = initialPosition;
+            transform.rotation = initialRotation;
         }
     }
 }
