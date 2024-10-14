@@ -9,10 +9,16 @@ public class UIMenuMainWindow : MonoBehaviour
     [SerializeField] private UIMenuMainGameTypesPanel _gameTypesPanel;
     [SerializeField] private UIMenuMainSavesPanel _savesPanel;
 
-    private void Start()
+	[SerializeField] private SelectManager _selectManager;
+
+   // private HeroComponent _currentHero;
+
+	private void Start()
     {
         Show();
-    }
+        _selectManager.CharacterSelected += OnCharacterSelected;
+
+	}
 
     public void UI_StartClient()
     {
@@ -32,6 +38,14 @@ public class UIMenuMainWindow : MonoBehaviour
         
         UpdateCharacterPanels();
     }
+
+    private void OnCharacterSelected(Character character)
+    {
+        _charactersPanel.SetHero((HeroComponent)character);
+       // _currentHero = (HeroComponent)character;
+		SaveManager.Instance.SetHero((HeroComponent)character);
+		UpdateCharacterPanels();
+	}
 
     public void SetHero(HeroComponent hero)
     {

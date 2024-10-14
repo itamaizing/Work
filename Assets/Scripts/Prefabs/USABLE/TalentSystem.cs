@@ -108,8 +108,13 @@ public class TalentSystem : NetworkBehaviour
             {
                 talent.Enter();
             }
+            else
+            {
+                talent.Exit();
+            }
         }
     }
+
     public void AddPoints(int value)
     {
     }

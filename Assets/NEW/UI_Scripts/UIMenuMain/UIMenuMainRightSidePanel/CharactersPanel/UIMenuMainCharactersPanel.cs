@@ -42,4 +42,9 @@ public class UIMenuMainCharactersPanel : MonoBehaviour
         Owner.SetHero(hero);
         ServerManager.Instance.SetPlayer(hero);
     }
+
+    public void SetHero(HeroComponent hero)
+    {
+        _currentHero = hero;
+    }
 }
