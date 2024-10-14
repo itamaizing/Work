@@ -359,7 +359,9 @@ public abstract class Skill : NetworkBehaviour
 			Type = DamageType,
 			Range = AttackRangeType,
 		};
-
+        Debug.Log(_skillRender + " Skill render\n ");
+        Debug.Log(Radius + " \n ");
+       // Debug.Log(Radiu + " \n ");
 		if (_isAutoRadiusRender)
             _skillRender.DrawRadius(Radius);
 
@@ -586,10 +588,10 @@ public abstract class Skill : NetworkBehaviour
         switch (_skillType)
         {
             case SkillType.Target:
-                target.character = GetCloserTargets(transform.position, 100)[0];
-                break; 
+                target.character = GetClosestTargets();
+				break; 
             case SkillType.Projectile:
-				target.character = GetCloserTargets(transform.position, 100)[0];
+				target.character = GetClosestTargets();
 				break;
 			case SkillType.Zone:
 				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -632,9 +634,10 @@ public abstract class Skill : NetworkBehaviour
 		switch (_skillType)
 		{
 			case SkillType.Target:
-				target.character = GetCloserTargets(transform.position, 100)[0];
-                break;
+                target.character = GetClosestTargets();
+				break;
 			case SkillType.Projectile:
+                Debug.Log("TEST");
 				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 				break;
 			case SkillType.Zone:
@@ -668,7 +671,29 @@ public abstract class Skill : NetworkBehaviour
         else return Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
 	}
+	protected Character GetClosestTargets()
+	{
+		Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, 100);
+		Vector2 closest = Vector2.positiveInfinity;
+        Character enemys = null;
+		foreach (Collider2D collider in enemyDetected)
+		{
+			if (collider.gameObject != _hero.gameObject)
 
+				if (collider.TryGetComponent<Character>(out var enemy))
+				{
+					if (Vector2.Distance(collider.transform.position, transform.position) < Vector2.Distance(closest, transform.position))
+					{
+                        enemys = enemy;
+						closest = collider.transform.position;
+						Debug.Log(enemy);
+					}
+				}
+		}
+        if (Vector2.Distance(closest, transform.position) < 100) return enemys;
+        else return null;
+
+	}
 
 	private void OnClick()
     {

@@ -789,7 +789,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.size
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[0]
@@ -798,27 +798,27 @@ PrefabInstance:
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[1]
       value: 
-      objectReference: {fileID: 5010563057206509916}
+      objectReference: {fileID: 5120720823893537476}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[2]
       value: 
-      objectReference: {fileID: 7399292444007859597}
+      objectReference: {fileID: 7561422758841233583}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[3]
       value: 
-      objectReference: {fileID: 5457379887385446469}
+      objectReference: {fileID: 6870347913229280057}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[4]
       value: 
-      objectReference: {fileID: 6870347913229280057}
+      objectReference: {fileID: 6884647884784008272}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[5]
       value: 
-      objectReference: {fileID: 6884647884784008272}
+      objectReference: {fileID: 6342019075777602023}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[6]
       value: 
-      objectReference: {fileID: 6342019075777602023}
+      objectReference: {fileID: 7602457161793523920}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[7]
       value: 
@@ -1431,7 +1431,7 @@ MonoBehaviour:
   _manaCostPerTick: 0
   _isUseCharges: 1
   _chargesHaveSeparateCooldown: 0
-  _maxCharges: 3
+  _maxCharges: 1
   _chargeCooldown: 0
   _radius: 0
   _area: 0
@@ -1775,7 +1775,7 @@ MonoBehaviour:
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 1
-  _skillType: 0
+  _skillType: 1
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 4294967295
