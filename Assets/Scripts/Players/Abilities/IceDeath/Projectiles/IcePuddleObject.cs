@@ -1,4 +1,5 @@
 using DG.Tweening;
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,13 +15,14 @@ public class IcePuddleObject : Projectiles
 	//[SerializeField] private Rigidbody2D _rb;
 
 	private float _timeToDestroy = 0;
+	private float _curEvade = 0;
 	private bool _talentEvadeDadBoost = false;
 	private bool _talentFrostingFrozen = false;
 	private List<CharacterState> _enemies = new List<CharacterState>();
 	/*
 	 * buff player
 	 * */
-	public override void Init(Character dad, float timeToDestroy, bool lastHit, Skill skill)
+	public override void Init(HeroComponent dad, float timeToDestroy, bool lastHit, Skill skill)
 	{
 		_dad = dad;
 		_skill = skill;
@@ -33,14 +35,16 @@ public class IcePuddleObject : Projectiles
 			transform.localScale = Vector3.one * 1.7f;
 		}
 
-		StartCoroutine(DestroyShadow());
+		StartCoroutine(DestroyPuddle());
 		StartCoroutine(StartFade());
 	}
+
 	public void SetTalents(bool talentEvadeDadBoost, bool talentFrostingFrozen)
 	{
 		_talentEvadeDadBoost= talentEvadeDadBoost;
 		_talentFrostingFrozen= talentFrostingFrozen;
 	}
+
 	private void Start()
 	{
 		_spriteRenderer.DOFade(1, 1);
@@ -59,12 +63,14 @@ public class IcePuddleObject : Projectiles
 		{
 			if (_talentEvadeDadBoost)
 			{
-				Debug.LogError("fix");
-				//_dad.Health.SetEvadeAll(-3);
+				//Debug.LogError("fix");
+				_curEvade = -3;
+				_dad.Health.SetEvadeAll(-3);
 			}
 		}
 	}
 
+	[Server]
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		if(!_initialized) return;
@@ -88,16 +94,17 @@ public class IcePuddleObject : Projectiles
 				duration += _energy.CurrentValue / 5;
 				_energy.UseAllEnergy();
 			}
-			target.CharacterState.CmdAddState(States.Frosting, duration, 0, _dad.gameObject, _skill.name);
+			target.CharacterState.AddState(States.Frosting, duration, 0, _dad.gameObject, _skill.name);
 
 			if (_talentFrostingFrozen)
 			{
-				target.CharacterState.CmdAddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
+				target.CharacterState.AddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
 			}
 			if (_talentEvadeDadBoost)
 			{
-				Debug.LogError("fix");
-				//_dad.Health.SetEvadeAll(3);
+				//Debug.LogError("fix");
+				_curEvade = 3;
+				_dad.Health.SetEvadeAll(3);
 			}
 			_enemies.Add(target.CharacterState);
 		}
@@ -120,9 +127,10 @@ public class IcePuddleObject : Projectiles
 		Destroy(gameObject);
 	}
 
-	private IEnumerator DestroyShadow()
+	private IEnumerator DestroyPuddle()
 	{
 		yield return new WaitForSeconds(_timeToDestroy);
+		_dad.Health.SetEvadeAll(-_curEvade);
 		Destroy(gameObject);
 		//turn off energy boost
 		//destroy

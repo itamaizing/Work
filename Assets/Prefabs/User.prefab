@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3487738048728825133}
   - component: {fileID: 2882084758674362090}
   - component: {fileID: 7867935557654783031}
+  - component: {fileID: 3591680617573005670}
   m_Layer: 0
   m_Name: User
   m_TagString: Untagged
@@ -31,7 +32,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2882084758674362090
 MonoBehaviour:
@@ -62,3 +63,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 396e7aac79ebe634d8ae11de6d883173, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+--- !u!114 &3591680617573005670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8763643763125113918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87acd7cec6a9d62458374f8785ca2430, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  controllableUnits: []

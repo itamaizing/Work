@@ -5,11 +5,25 @@ public class BoxArea : MonoBehaviour
     [SerializeField] BoxCollider2D _colider;
     [SerializeField] SpriteRenderer _sprite;
 
-    public void SetSize(float width, float length)
+    private Damage _damage;
+	/*private Damage _zeroDamage;
+
+	private void Start()
+	{
+		_zeroDamage = new Damage
+		{
+			Value = 0,
+			Type = DamageType.Physical,
+			Range = AttackRangeType.RangeAttack,
+		};
+	}*/
+
+	public void SetSize(float width, float length, Damage damage)
     {
         _sprite.size = new Vector2(width, length);
         _colider.size = new Vector2(width, length);
         _colider.offset = new Vector2(0, length / 2);
+        _damage = damage;
     }
 
     public void SetColor(Color color)
@@ -23,7 +37,11 @@ public class BoxArea : MonoBehaviour
         {
             // deistvie s enemy
         }
-    }
+		if (collision.TryGetComponent<Health>(out var hpEnemy) && collision.transform != transform.parent)
+		{
+			hpEnemy.ShowPhantomValue(_damage);
+		}
+	}
 
     private void OnTriggerExit2D(Collider2D collision)
     {
@@ -31,5 +49,11 @@ public class BoxArea : MonoBehaviour
         {
             // bezdeistvie s enemy
         }
-    }
+		if (collision.TryGetComponent<Health>(out var hpEnemy) && collision.transform != transform.parent)
+		{
+            Damage damage = _damage;
+            damage.Value = 0;
+			hpEnemy.ShowPhantomValue(damage);
+		}
+	}
 }

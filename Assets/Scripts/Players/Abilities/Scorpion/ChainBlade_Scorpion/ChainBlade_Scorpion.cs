@@ -1,143 +1,212 @@
-using Players.Abilities.Genjalf.Fireworks_Ability;
+using Mirror;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
 
-public class ChainBlade_Scorpion : Ability
+public enum ChainbladeType
+{
+    Default,
+    Hook
+}
+public class ChainBlade_Scorpion : Skill
 {
     [Header("Ability settings")]
-    [SerializeField] private CastLine _castlinePrefab;
-    private CastLine _castLine;
+    [SerializeField][Range(0, 100)] private float _minDamage = 3f;
+    [SerializeField][Range(0, 100)] private float _maxDamage = 5f;
+    [SerializeField] private Character _playerLinks;
+    [SerializeField] private NetworkIdentity _playerIdentity;
 
-    [SerializeField] private DrawCircle _drawCircleSelf;
     [SerializeField] private float _range;
     [SerializeField] private ChainController _chainPrefab;
     private ChainController _chain;
 
-    [SerializeField] private BladeProjectile _bladePrefab;
+    [SerializeField] private GameObject _projectilePrefab;
+    private GameObject _projectile;
     private BladeProjectile _blade;
-
-    private DrawCircle _circleTarget;
-    private MoveComponent _target;
-    private Coroutine _useJob;
 
     private GameObject enemy;
     private bool bladeDestroyed = false;
-    private bool isAlternativeCast = false;
+    private ChainbladeType _type;
 
-    protected override void Cancel()
+    private GameObject _tempTarget;
+    private MoveComponent _tempTargetMove;
+
+    public float DamageRange => Random.Range(_minDamage, _maxDamage);
+
+    protected override bool IsCanCast
     {
-        if (_useJob != null)
-            StopCoroutine(_useJob);
-
-        ResetValue();
-
-        if (_circleTarget != null)
-            Destroy(_circleTarget.gameObject);
-
-
+        get
+        {
+            return true;
+        }
     }
 
-    protected override void Cast()
+    private IEnumerator PullEnemy(GameObject enemy)
     {
-        _useJob = StartCoroutine(UseCoroutine());
+        float distance = Vector2.Distance(transform.position, enemy.transform.position);
+        enemy.GetComponent<MoveComponent>().CanMove = false;
+
+        while (distance >= 2.5f)
+        {
+            Debug.Log("Pulling");
+            //enemy.transform.position = Vector2.MoveTowards(enemy.transform.position, transform.position, 10f * Time.deltaTime);
+
+            Pull(enemy, (/*enemy.transform.position - transform.position*/transform.position - enemy.transform.position).normalized * 10f * Time.deltaTime);
+            distance = Vector2.Distance(transform.position, enemy.transform.position);
+
+            yield return null;
+        }
+        enemy.GetComponent<Character>().Move.CanMove = true;
+        Destroy(_chain.gameObject);
+    }
+
+    private IEnumerator ReturnBlade(Transform bladeTransform, GameObject chainGameObject)
+    {
+        _hero.Move.CanMove = true;
+        //_blade._rb.isKinematic = true;
+        //_blade._rb.velocity = (transform.position - _projectile.transform.position).normalized * 20f;
+
+        while (Vector2.Distance(transform.position, bladeTransform.position) > 2.9f)
+        {
+            /*_blade*/bladeTransform.GetComponent<BladeProjectile>()._rb.velocity = (transform.position - bladeTransform.position).normalized * 20f;
+            yield return null;
+        }
+          
+        Destroy(chainGameObject);
+        Destroy(bladeTransform.gameObject);
+    }
+
+    [Command]
+    private void CmdCreateProjectile(float maxDistance, Vector2 direction, GameObject parent, ChainbladeType type)
+    {
+        //blade spawn
+        _projectile = Instantiate(_projectilePrefab, transform.position, Quaternion.identity);
+        SceneManager.MoveGameObjectToScene(_projectile, _hero.NetworkSettings.MyRoom);
+
+        _blade = _projectile.GetComponent<BladeProjectile>();
+        _blade.Init(maxDistance, direction, parent, type);
+
+        NetworkServer.Spawn(_projectile);
+
+        //Damage
+        _projectile.GetComponent<BladeProjectile>().OnHit.AddListener(target =>
+        {
+            if (target == null)
+                return;
+
+            Damage damage = new Damage
+            {
+                Value = Buff.Damage.GetBuffedValue(DamageRange),
+                Type = DamageType,
+                Range = AttackRangeType,
+            };
+
+            //CmdApplyDamage(damage, target.gameObject);
+            DealDamage(damage, target.gameObject);
+        });
+
+        //Hook
+        if (type == ChainbladeType.Hook)
+        {
+            _hero.Move.CanMove = false;
+            _projectile.GetComponent<BladeProjectile>().OnHit.AddListener(target =>
+            {
+                if (target != null)
+                {
+                    enemy = target;
+                    _chain.targetID = enemy.GetComponent<NetworkIdentity>().netId;
+                    NetworkServer.Destroy(_blade.gameObject);
+                    StartCoroutine(PullEnemy(enemy));
+                }
+                else
+                {
+                    StartCoroutine(ReturnBlade(_projectile.transform, _chain.gameObject));
+                }
+                bladeDestroyed = true;
+            });
+
+            //chain spawn
+            GameObject item = Instantiate(_chainPrefab.gameObject);
+            SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
+            _chain = item.GetComponent<ChainController>();
+            
+            NetworkServer.Spawn(item);
+            _chain.targetID = _blade.netId;
+            _chain.parentID = _playerLinks.GetComponent<NetworkIdentity>().netId;
+        }
+    }
+
+    [Command]
+    private void CmdThrowBlade(Vector2 direction)
+    {
+        _projectile.GetComponent<BladeProjectile>().ThrowBlade(direction);
     }
 
     private void ResetValue()
     {
         bladeDestroyed = false;
-        _drawCircleSelf.Clear();
-        _target = null;
-        if(_castLine != null)
-        {
-            Destroy(_castLine.gameObject);
-        }
+        _hero.Move.CanMove = true;
     }
 
-    private bool IsMouseInRadius()
+    protected override IEnumerator PrepareJob()
     {
-        float distance = Vector3.Distance(
-            new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, transform.position.z),
-            transform.position
-            );
+        while(true)
+        {
+            if (GetMouseButton)
+            {
+                break;
+            }
+            yield return null;
+        }
 
-        return distance <= Radius;
+        if (_playerLinks.Stamina.CurrentValue >= 40)
+        {
+            _type = ChainbladeType.Hook;
+            _skillEnergyCosts[0].resourceCost = 40;
+        }
+        else
+        {
+            _type = ChainbladeType.Default;
+            _skillEnergyCosts[0].resourceCost = 10;
+        }
+
+        yield return null;
     }
 
-    private IEnumerator UseCoroutine()
+    protected override IEnumerator CastJob()
+    {
+        Vector2 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+
+        CmdCreateProjectile(8f, dir, this.gameObject, _type); // <--- event hit is here
+
+        CmdThrowBlade(dir);
+
+        yield return null;
+    }
+
+    protected override void ClearData()
     {
         
-            _castLine = Instantiate(_castlinePrefab, transform);
-            _drawCircleSelf.Draw(Radius);
-            bool isCliked = false;
+    }
 
-            while (isCliked == false) //выбираем цель
-            {
-                if (Input.GetMouseButtonDown(0) && IsMouseInRadius())
-                {
-                    isCliked = true;
-                }
-                _castLine.RotateAtMouse();
-                yield return null;
-            }
-            Vector2 castLineEndPoint = _castLine.targetPoint.transform.position - transform.position;
-            Destroy(_castLine.gameObject);
-            _drawCircleSelf.Clear();
-
-            IsCanCancle = false;
-            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-            //yield return GetCastDeleyCoroutine();
-
-            _blade = Instantiate(_bladePrefab, transform.position, Quaternion.identity);
-            _chain = Instantiate(_chainPrefab);
-            _chain.AssignTarget(transform ,_blade.transform);
-            _blade.Init(8f);
-            _blade.ThrowBlade(/*mousePosition - transform.position*/ castLineEndPoint);
-            _blade.OnHit.AddListener(target => 
-            { enemy = target; 
-                if (target != null) isAlternativeCast = true;
-                if (target == null) Destroy(_chain.gameObject); 
-                else _chain.AssignTarget(transform, enemy.transform);
-                bladeDestroyed = true;
-            }); // подписка на метод, получаем цель в которую попали. Отписка автоматическая при уничтожении префаба будет
-            IsCanCancle = true;
-            while (!bladeDestroyed)
-            {
-                yield return null;
-            }
-
-            Debug.LogWarning("Закончилось");
-
-            IsCanCancle = true;
-            //PayCost(); // не могу дважды потратить ману, тк после этого можно опять юзать абилку и багуется
-
-        //альтернативный каст
-
-        if (isAlternativeCast)
+    private void  DealDamage(Damage damage, GameObject hp)
+    {
+        if (_tempTargetForDamage != hp.transform)
         {
-            IsCanCancle = false;
-            PlayerMove.CanMove = false;
-
-            float distance = Vector2.Distance(transform.position, enemy.transform.position);
-            enemy.GetComponent<MoveComponent>().CanMove = false;
-
-            while (distance >= 2f)
-            {
-                enemy.transform.position = Vector2.MoveTowards(enemy.transform.position, transform.position, 10f * Time.deltaTime);
-                distance = Vector2.Distance(transform.position, enemy.transform.position);
-                yield return null;
-
-            }
-            enemy.GetComponent<MoveComponent>().CanMove = true;
-            Destroy(_chain.gameObject);
-            isAlternativeCast = false;
-            PlayerMove.CanMove = true;
-            //PayCost();
+            _tempTargetForDamage = hp.transform;
+            _tempHPForDamage = hp.GetComponent<Health>();
         }
-        PayCost();
-        ResetValue();
+        _tempHPForDamage.TryTakeDamage(ref damage, this);
+    }
 
+
+    private void Pull(GameObject gameObject, Vector2 force) // called in [command]
+    {
+        if (_tempTarget != gameObject)
+        {
+            _tempTarget = gameObject;
+            _tempTargetMove = gameObject.GetComponent<MoveComponent>();
+        }
+        _tempTargetMove.TargetRpcAddTransformPosition(force);
     }
 }

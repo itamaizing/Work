@@ -48,6 +48,7 @@ public class StunnedState : AbstractCharacterState
 	public override void ExitState()
 	{
 		Debug.Log("Exiting Stunned State");
+		_characterState.RemoveState(this);
 		if (_characterState.Check(StatusEffect.Move))
 		{
 			_characterState.Character.Move.CanMove = true;
@@ -56,7 +57,6 @@ public class StunnedState : AbstractCharacterState
 		{
 			_abilities.SetAbilitiesEnabled();
 		}
-		_characterState.RemoveState(this);
 	}
 
 	public override bool Stack(float time)

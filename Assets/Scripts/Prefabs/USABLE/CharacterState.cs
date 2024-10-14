@@ -460,9 +460,7 @@ public class CharacterState : NetworkBehaviour
 	{
 		if (_currentStates.Contains(newState))
 		{
-			//newState.ExitState(this);
-			//_stateIcons.RemoveItemByState(newState.state);
-			_currentStates.Remove(newState);
+			currentStates.Remove(newState);
 		}
 	}
 
@@ -611,6 +609,17 @@ public enum States
 	Curse,
 	NorthernerEndurance,
 	LastBreath,
-	MagicBuff
+	MagicBuff,
+	DarkShield,
+	LightShield,
+	ReversePolarity,
+	SpiritEnergy,
+	SpiritHealth,
+	TiredSoul,
+	ScorchedSoul,
+	Knockdown,
+	IdealEvade,
+	Bleeding,
+
 }
 

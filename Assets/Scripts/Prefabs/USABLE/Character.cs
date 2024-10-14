@@ -21,10 +21,11 @@ public abstract class Character : NetworkBehaviour
 	[SerializeField] private UIPlayerComponents uiComponent;
 	[SerializeField] private SelectComponent _selectComponent; 
 	[SerializeField] private List<Resource> _resources;
+	[SerializeField] private SelectedCircle _selectedCircle;
 
     private bool _isInvisible = false;
 
-    public CharacterData Data => _playerData;
+	public CharacterData Data => _playerData;
 	public UserNetworkSettings NetworkSettings => _networkSettings;
 	public Rigidbody2D Rb => rb;
 	public Collider2D Collider => _collider;

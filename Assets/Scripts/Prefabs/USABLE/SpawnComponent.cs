@@ -16,9 +16,9 @@ public class SpawnComponent : NetworkBehaviour
     public List<MinionComponent> Units => _units;
 
     public event Action<MinionComponent> UnitAdded;
-    public event Action<MinionComponent> UnitRemoved;
+    public event Action UnitRemoved;
 
-	public void SpawnUnit(int index, Vector3 position)
+    public void SpawnUnit(int index, Vector3 position)
 	{
         var temp = _minionPrefs[index];
 
@@ -30,28 +30,28 @@ public class SpawnComponent : NetworkBehaviour
         NetworkServer.Spawn(contollableMinion.gameObject, connectionToClient);
 
         AddUnit(contollableMinion);
-        TargetRpcUnitAdded(contollableMinion.gameObject);
-
-        contollableMinion.Destroyed += OnUnitDestroyed;
     }
 
-    private void AddUnit(MinionComponent minion)
+    public void AddUnit(MinionComponent minion)
     {
         _units.Add(minion);
         UnitAdded?.Invoke(minion);
+
+        minion.Destroyed += OnUnitDestroyed;
+        minion.Intercepted += OnUnitDestroyed;
+
+        ClientRpcUnitAdded(minion.gameObject);
     }
 
-	private void OnUnitDestroyed(MinionComponent minion)
+    private void OnUnitDestroyed(MinionComponent minion)
     {
         _units.Remove(minion);
-        UnitRemoved?.Invoke(minion);
+        UnitRemoved?.Invoke();
 
         minion.Destroyed -= OnUnitDestroyed;
+        minion.Intercepted -= OnUnitDestroyed;
 
-        if (isServer)
-        {
-            TargetRpcOnUnitDestroyed(minion.gameObject);
-        }
+        ClientRpcOnUnitDestroyed(minion.gameObject);
     }
 
     [Command]
@@ -60,15 +60,33 @@ public class SpawnComponent : NetworkBehaviour
         SpawnUnit(index, position);
     }
 
-    [TargetRpc]
-    private void TargetRpcUnitAdded(GameObject minion)
+    [ClientRpc]
+    private void ClientRpcUnitAdded(GameObject minion)
     {
-        AddUnit(minion.GetComponent<MinionComponent>());
+        var minionTemp = minion.GetComponent<MinionComponent>();
+        _units.Add(minionTemp);
+        UnitAdded?.Invoke(minionTemp);
     }
 
-    [TargetRpc]
-    private void TargetRpcOnUnitDestroyed(GameObject minion)
+    [ClientRpc]
+    private void ClientRpcOnUnitDestroyed(GameObject minion)
     {
-        OnUnitDestroyed(minion.GetComponent<MinionComponent>());
+        if (minion != null)
+        {
+            _units.Remove(minion.GetComponent<MinionComponent>());
+        }
+        else
+        {
+            for (int i = 0; i < _units.Count; i++)
+            {
+                if(_units[i] == null)
+                {
+                    _units.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
+
+        UnitRemoved?.Invoke();
     }
 }

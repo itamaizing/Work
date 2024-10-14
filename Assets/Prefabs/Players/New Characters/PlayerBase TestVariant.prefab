@@ -525,10 +525,12 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _cooldownTime: 2
   _castDeley: 1
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 1
   _damageType: 0
   _attackRangeType: 0
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -570,10 +572,12 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -617,10 +621,12 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _cooldownTime: 5
   _castDeley: 1
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -665,10 +671,12 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _cooldownTime: 6
   _castDeley: 3
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -710,10 +718,12 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _cooldownTime: 3
   _castDeley: 3
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0

@@ -6,7 +6,7 @@ public class Shield : Resource, IDamageable
     protected float _percentageAbsorption = 1;
     protected bool _isBreaksDown = true;
 
-    public event Action<float, DamageType> DamageTaken;
+    public event Action<float, DamageType, Skill> DamageTaken;
 
     public void Initialize(float maxValue, DamageType damageType, float percentageAbsorption = 1, bool isBreaksDown = true, float regenValue = 0, float regenDelay = 0)
     {
@@ -23,7 +23,12 @@ public class Shield : Resource, IDamageable
         _isBreaksDown = isBreaksDown;
     }
 
-    public bool TryTakeDamage(ref Damage damage, Skill skill)
+	public void ShowPhantomValue(Damage phantomValue)
+	{
+		throw new NotImplementedException();
+	}
+
+	public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
         if(_absorptionDamageType == DamageType.Both || _absorptionDamageType == damage.Type)
         {
@@ -32,13 +37,13 @@ public class Shield : Resource, IDamageable
 
             if (TryUse(absorptionDamage))
             {
-                DamageTaken?.Invoke(absorptionDamage, damage.Type);
+                DamageTaken?.Invoke(absorptionDamage, damage.Type, skill);
                 damage.Value = damage.Value - absorptionDamage;
                 return true;
             }
             else
             {
-                DamageTaken?.Invoke(damage.Value - remainingDamage, damage.Type);
+                DamageTaken?.Invoke(damage.Value - remainingDamage, damage.Type, skill);
                 damage.Value = remainingDamage;
 
                 if (_isBreaksDown)

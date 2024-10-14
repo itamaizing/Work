@@ -5,58 +5,34 @@ using Players.Abilities.Genjalf.Shield_Ability;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using Mirror;
 
-public class IceRolling : Ability
+public class IceRolling : Skill
 {
 	[Header("Ability properties")]
-	//[SerializeField] private Rigidbody2D _rb;
-	//[SerializeField] private RuneComponent _rune;
+
 	[SerializeField] private Character _playerLinks;
 	[SerializeField] private float _jumprange = 2f;
 	[SerializeField] private float _durationOfJump = 0.3f;
-	[SerializeField] private LayerMask _obstacleLayerMask;
-	//[SerializeField] private GameObject _croosFire;
 
-	private Vector2 _mousePos;
+	private Vector2 _mousePos = Vector2.positiveInfinity;
 	private Vector2 _jumpPos;
 	private Vector2 _lookDir;
-	//private float _angle;
-	private bool _canJump = true;
-	private bool _enabled = false;
-	[SerializeField] private int _jumpCount = 4;
+	private Energy _energy;
 
-	private void Update()
+	protected override bool IsCanCast => true;
+
+	private void Start()
 	{
-		if(!_enabled) return;
-
-
-		if (Input.GetMouseButtonDown(0))
+		for (int i = 0; i < _playerLinks.Resources.Count; i++)
 		{
-			//PayCost();
-			/*if (_playerLinks.RuneComponent.RemoveRune(1, this))
+			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
 			{
-				Jump();
+				_energy = (Energy)_playerLinks.Resources[i];
 			}
-			else
-			{
-				Cancel();
-			}*/
 		}
-		if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
-		{
-			Cancel();
-		}
-	}
-	protected override void Cast()
-	{
-		_enabled = true;		
-	}
 
-	protected override void Cancel()
-	{
-		_enabled = false;
 	}
-
 	/*private void Jump()
 	{
 		if (_canJump )
@@ -97,22 +73,19 @@ public class IceRolling : Ability
 	*/
 	private void AfterJump()
 	{
-		Debug.Log("can jump");
-		PlayerMove.CanMove = true;
-		_canJump = true;
-		//_enabled = false;
-		_isReady = true;
-		_jumpCount = 4;
+		//_jumpCount = 4;
+		_mousePos = Vector2.positiveInfinity;
+		_lookDir = Vector2.zero;
+		_jumpPos = Vector2.zero;
 	}
 
 	private bool CheckObstacleBetween(Vector3 start, Vector3 end)
 	{
-		//РџСЂРѕРІРµСЂРєР° РЅР° РЅР°Р»РёС‡РёРµ РїСЂРµРїСЏС‚СЃС‚РІРёСЏ
 		Vector2 direction = (end - start).normalized;
 		float distance = Vector2.Distance(start, end);
 
 		RaycastHit2D[] hits =
-			Physics2D.BoxCastAll(start, new Vector2(2f, 2f), 0f, direction, distance, _obstacleLayerMask);
+			Physics2D.BoxCastAll(start, new Vector2(2f, 2f), 0f, direction, distance, _obstacle);
 
 		foreach (RaycastHit2D hit in hits)
 		{
@@ -125,40 +98,39 @@ public class IceRolling : Ability
 
 	private void Jump()
 	{
-		if (_canJump)
-		{
-			_enabled = true;
-			_isReady = false;
-			PlayerMove.CanMove = false;
-			_canJump = false;
-			float actualJumpRange = _jumprange;
+		float actualJumpRange = _jumprange * GlobalVariable.cellSize;
 
-			_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			//_lookDir = (_mousePos - _playerLinks.Rigidbody2D.position).normalized;
-			Debug.Log("jump");
-			actualJumpRange *= GlobalVariable.cellSize;
-			Vector2 jumpPos = _lookDir * actualJumpRange + (Vector2)PlayerMove.transform.position;
-		/*	if (CheckObstacleBetween(_playerLinks.Rigidbody2D.position, jumpPos))
+		_lookDir = (_mousePos - (Vector2)_playerLinks.transform.position).normalized;
+		Vector2 jumpPos = _lookDir * actualJumpRange + (Vector2)_playerLinks.transform.position;
+		if (CheckObstacleBetween(_playerLinks.transform.position, jumpPos))
+		{
+			CmdPush(_jumpPos);
+			//прыгать до препятствия
+		}
+		else
+		{
+			for (int i = 0; i < 2; i++)
 			{
-				Debug.Log("Обнаружено препятствие:");
-				//прыгать до препятствия
-				_playerLinks.Rigidbody2D.DOMove(_jumpPos, _durationOfJump * actualJumpRange / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(AfterJump);
+				actualJumpRange += 2;
+				Vector2 jumpPos2 = _lookDir * actualJumpRange + (Vector2)_playerLinks.transform.position;
+				if (_energy.CurrentValue >= 5 && !CheckObstacleBetween(_playerLinks.transform.position, jumpPos2))
+				{
+					_energy.CmdUse(5);
+					jumpPos = jumpPos2;
+				}
 			}
-			else
-			{
-				_playerLinks.Rigidbody2D.DOMove(jumpPos, _durationOfJump * actualJumpRange / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(NextJump);
-			}*/
+			CmdPush(jumpPos);
 		}
 	}
 
-	private void NextJump()
+	/*private void NextJump()
 	{
-		if(_jumpCount > 0 && Mana.TryUse(5))
+		if(_jumpCount > 0)
 		{
 			Debug.Log("jump " + _jumpCount);
 			_jumpCount--;
-			Vector2 jumpPos = _lookDir + (Vector2)PlayerMove.transform.position;
-			/*if (CheckObstacleBetween(_playerLinks.Rigidbody2D.position, jumpPos))
+			Vector2 jumpPos = _lookDir + (Vector2)_playerLinks.transform.position;
+			if (CheckObstacleBetween(_playerLinks.transform.position, jumpPos))
 			{
 				Debug.Log("Обнаружено препятствие:");
 				//прыгать до препятствия
@@ -167,11 +139,40 @@ public class IceRolling : Ability
 			else
 			{
 				//_playerLinks.Rigidbody2D.DOMove(jumpPos, _durationOfJump / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(NextJump);
-			}*/
+			}
 		}
 		else
 		{
-			AfterJump();
+			//AfterJump();
 		}
+	}*/
+
+	protected override IEnumerator PrepareJob()
+	{
+		while (float.IsPositiveInfinity(_mousePos.x))
+		{
+			if (GetMouseButton)
+			{
+				_mousePos = GetMousePoint();
+			}
+			yield return null;
+		}
+	}
+
+	protected override IEnumerator CastJob()
+	{
+		Jump();
+		yield return null;
+	}
+
+	protected override void ClearData()
+	{
+		AfterJump();
+	}
+
+	[Command]
+	private void CmdPush(Vector2 force)
+	{
+		_playerLinks.Move.TargetRpcDoMove(force, _durationOfJump);
 	}
 }

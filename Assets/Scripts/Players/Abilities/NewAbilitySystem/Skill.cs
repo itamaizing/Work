@@ -12,6 +12,13 @@ public class SkillEnergyCost
     public float resourceCost;
 }
 
+public struct TargetToShot
+{
+    public Vector2 Position;
+    public Character character;
+}
+
+
 public enum Schools
 {
     Light,
@@ -31,6 +38,13 @@ public enum AbilityForm
     Physical
 }
 
+public enum SkillType
+{
+    Target,
+    Projectile,
+    Zone
+}
+
 public abstract class Skill : NetworkBehaviour
 {
     [Header("AbilitiesInfo")]
@@ -41,10 +55,12 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] protected List<SkillEnergyCost> _skillEnergyCosts;
     [SerializeField] protected float _cooldownTime;
     [SerializeField] protected float _castDeley;
+    [SerializeField] protected float _damageValue;
     [SerializeField] private Schools _abilitySchool;
     [SerializeField] private AbilityForm _abilityForm;
     [SerializeField] private DamageType _damageType;
     [SerializeField] private AttackRangeType _attackRangeType;
+    [SerializeField] private SkillType _skillType;
     [SerializeField] protected LayerMask _targetsLayers;
     [SerializeField] protected LayerMask _obstacle;
     [Header("Streaming settings")]
@@ -75,6 +91,9 @@ public abstract class Skill : NetworkBehaviour
     protected Coroutine _rechargeJob;
     protected Coroutine _castDeleyCoroutine;
     protected Coroutine _castStreamCoroutine;
+    protected Transform _tempTargetForDamage;
+    protected Health _tempHPForDamage;
+    protected Character _tempTarget;
 
     private int _currentChargers;
     private float _remainingCooldownTime;
@@ -83,11 +102,11 @@ public abstract class Skill : NetworkBehaviour
     private Coroutine _actionWrapperForCastCoroutine;
     private bool _isPreparing = false;
     private bool _isCasting = false;
-    private Transform _tempTargetForDamage;
-    private Health _tempHPForDamage;
     private bool _isClick;
+    private bool _isShiftClick;
+    private bool _isCtrlClick;
 
-    public bool GetMouseButton { get => _isClick; }
+    public bool GetMouseButton { get => _isClick || _isShiftClick || _isCtrlClick; }
     public bool IsSubjectToGlobalCooldownTime { get => _isSubjectToGlobalCooldownTime; }
     public Character Hero { get => _hero; }
     public StatsBuff Buff => _statsBuff;
@@ -102,20 +121,22 @@ public abstract class Skill : NetworkBehaviour
     public bool IsPreparing => _isPreparing;
     public bool IsHaveResourceOnSkill { get => CheckResourcesOnSkill(); }
     public bool IsHaveResources { get => IsHaveResourceOnSkill && IsCooldowned && IsHaveCharge; }
-    public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); }
-    public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); }
+    public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); protected set => _cooldownTime = value; }
+    public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); protected set => _castDeley = value; }
     public bool IsCasting { get => _isCasting; }
     public float CastStreamDuration { get => _castDuration; }
     public float Radius { get => Buff.Radius.GetBuffedValue(_radius); protected set => _radius = value; }
     public float Area { get => Buff.Area.GetBuffedValue(_area); protected set => _area = value; }
     public float CastLength { get => Buff.Area.GetBuffedValue(_castLength); protected set => _castLength = value; }
     public float CastWidth { get => Buff.Area.GetBuffedValue(_castWidth); protected set => _castWidth = value; }
+    public virtual float Damage  { get => Buff.Damage.GetBuffedValue(_damageValue); protected set => _damageValue = value; }
     public bool IsUseCharges { get => _isUseCharges; }
-    public LayerMask TargetsLayers => _targetsLayers;
-    public Schools School => _abilitySchool;
+    public LayerMask TargetsLayers { get => _targetsLayers; protected set => _targetsLayers = value; }
+    public Schools School { get => _abilitySchool; protected set => _abilitySchool = value; }
     public AbilityForm AbilityForm => _abilityForm;
     public DamageType DamageType => _damageType;
     public AttackRangeType AttackRangeType => _attackRangeType;
+    public SkillType SkillType => _skillType;
 
     public event Action<int> CurrentChargeChanged;
     public event Action<float> CooldownStarted;
@@ -169,7 +190,7 @@ public abstract class Skill : NetworkBehaviour
 
     public bool TryCast()
     {
-        if (IsHaveResources && IsCanCast && _isCasting == false)
+        if (IsHaveResources && IsCanCast && _isCasting == false && NoObstacles())
         {
             TryPayCost(IsPayCostStartCooldown);
             _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
@@ -189,6 +210,7 @@ public abstract class Skill : NetworkBehaviour
             ClearData();
 
             CancelCoroutine(_castCoroutine);
+
             if (_actionWrapperForCastCoroutine != null)
             {
                 StopCoroutine(_actionWrapperForCastCoroutine);
@@ -213,10 +235,11 @@ public abstract class Skill : NetworkBehaviour
 
                 PreparingCanceled?.Invoke();
 
-                InputHandler.OnClick -= OnClick;
-                InputHandler.OnClickCanceled -= OnClickCanceled;
-                OnClickCanceled();
+				UnSubscribeClickEvents();
+				OnClickCanceled();
             }
+
+            _tempTarget = null;
 
             return true;
         }
@@ -253,11 +276,11 @@ public abstract class Skill : NetworkBehaviour
         foreach (var skillCost in _skillEnergyCosts)
         {
             var currentResourceValue = _hero.Resources.Where(r => r.Type == skillCost.resourceType).Sum(r => r.CurrentValue);
-        
+
             if (currentResourceValue < Buff.ManaCost.GetBuffedValue(skillCost.resourceCost))
             {
                 float shortage = Buff.ManaCost.GetBuffedValue(skillCost.resourceCost) - currentResourceValue;
-                
+
                 switch (skillCost.resourceType)
                 {
                     case ResourceType.Health:
@@ -300,11 +323,11 @@ public abstract class Skill : NetworkBehaviour
 
     public void DeductMaxChargeCount()
     {
-        if(_maxCharges - 1 > 0)
+        if (_maxCharges - 1 > 0)
         {
             _maxCharges -= 1;
 
-            if(_currentChargers > _maxCharges)
+            if (_currentChargers > _maxCharges)
             {
                 _currentChargers -= 1;
                 CurrentChargeChanged?.Invoke(_currentChargers);
@@ -314,7 +337,13 @@ public abstract class Skill : NetworkBehaviour
 
     public void DrawDamageZone(Vector3 position)
     {
-        _skillRender.CmdDrawDamageZone(position, Area, _hero.gameObject);
+		Damage damage = new Damage
+		{
+			Value = Damage,
+			Type = DamageType,
+			Range = AttackRangeType,
+		};
+		_skillRender.CmdDrawDamageZone(position, Area, damage, _hero.gameObject);
     }
 
     public void StopDamageZone()
@@ -322,17 +351,23 @@ public abstract class Skill : NetworkBehaviour
         _skillRender.CmdStopDrawDamageZone();
     }
 
-
     protected virtual void StartAutoDraw()
     {
-        if (_isAutoRadiusRender)
+		Damage damage = new Damage
+		{
+			Value = Damage,
+			Type = DamageType,
+			Range = AttackRangeType,
+		};
+
+		if (_isAutoRadiusRender)
             _skillRender.DrawRadius(Radius);
 
         if (_isAutoAreaRender)
-            _skillRender.DrawArea(Area, TargetsLayers);
+            _skillRender.DrawArea(Area, damage, TargetsLayers);
 
         if (_isAutoLineRender)
-            _skillRender.DrawLine(CastLength, CastWidth, TargetsLayers);
+            _skillRender.DrawLine(CastLength, CastWidth, damage, TargetsLayers);
     }
 
     protected virtual void StopAutoDraw()
@@ -363,7 +398,7 @@ public abstract class Skill : NetworkBehaviour
             return false;
         }
     }
-    
+
     protected virtual bool TryPayCost(bool startCooldown = true)
     {
         return TryPayCost(_skillEnergyCosts, startCooldown);
@@ -386,6 +421,7 @@ public abstract class Skill : NetworkBehaviour
                 }
             }
         }
+        _tempTarget = target;
         return target;
     }
 
@@ -444,6 +480,14 @@ public abstract class Skill : NetworkBehaviour
     protected bool NoObstacles(Vector3 target, LayerMask obstacle)
     {
         return NoObstacles(target, transform.position, obstacle);
+    }
+
+    protected bool NoObstacles()
+    {
+        if (_tempTarget != null)
+            return NoObstacles(_tempTarget.transform.position, transform.position, _obstacle);
+
+        return true;
     }
 
     protected Coroutine StartCastDeleyCoroutine()
@@ -516,7 +560,117 @@ public abstract class Skill : NetworkBehaviour
         _rechargeJob = null;
     }
 
-    private void OnClick()
+    protected TargetToShot GetTarget()
+    {
+		TargetToShot target = new TargetToShot();
+
+		if (_isClick)
+        {
+            return LeftClick();
+        }
+        if(_isShiftClick)
+        {
+            return ShiftLeftClick();
+        }
+        if(_isCtrlClick)
+        {
+            return CtrlLeftClick();
+		}
+
+        return target;
+    }    
+
+    protected TargetToShot LeftClick()
+    {
+        TargetToShot target = new TargetToShot();
+        switch (_skillType)
+        {
+            case SkillType.Target:
+                target.character = GetCloserTargets(transform.position, 100)[0];
+                break; 
+            case SkillType.Projectile:
+				target.character = GetCloserTargets(transform.position, 100)[0];
+				break;
+			case SkillType.Zone:
+				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				break;
+            default:
+				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				break;
+		}
+        return target;
+	}
+
+    protected TargetToShot ShiftLeftClick()
+    {
+		TargetToShot target = new TargetToShot();
+		/*switch (_skillType)
+		{
+			case SkillType.Target:
+				//auto attack mode
+				target.Position = GetCloserTargets(transform.position, 100)[0];
+                break;
+			case SkillType.Projectile:
+				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				break;
+			case SkillType.Zone:
+				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				break;
+			default:
+				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				break;
+		}*/
+        target.Position = transform.position;
+        target.character = _hero;
+
+		return target;
+	}
+
+	protected TargetToShot CtrlLeftClick()
+	{
+		TargetToShot target = new TargetToShot();
+		switch (_skillType)
+		{
+			case SkillType.Target:
+				target.character = GetCloserTargets(transform.position, 100)[0];
+                break;
+			case SkillType.Projectile:
+				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				break;
+			case SkillType.Zone:
+				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				break;
+			default:
+				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				break;
+		}
+		return target;
+	}
+
+    protected Vector2 GetClosestTarget()
+    {
+		Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, 100);
+        Vector2 closest = Vector2.positiveInfinity;
+        foreach (Collider2D collider in enemyDetected)
+        {
+            if (collider.gameObject != _hero.gameObject)
+            
+            if(collider.TryGetComponent<Character>(out var enemy))
+            {
+                if(Vector2.Distance(collider.transform.position, transform.position) < Vector2.Distance(closest, transform.position))
+                {
+                    closest = collider.transform.position;
+                    Debug.Log(enemy);
+                }
+            }
+        }
+        if(Vector2.Distance(closest, transform.position) < 100)   return closest;
+        else return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+	}
+
+
+	private void OnClick()
     {
         _isClick = true;
     }
@@ -526,7 +680,27 @@ public abstract class Skill : NetworkBehaviour
         _isClick = false;
     }
 
-    private IEnumerator CooldownCoroutine(float cooldownTime)
+    private void OnShiftClick()
+    {
+        _isShiftClick = true;
+    }
+
+	private void OnShiftCancled()
+	{
+		_isShiftClick = false;
+	}
+
+    private void OnCtrlClick()
+    {
+        _isCtrlClick = true;
+    }
+
+    private void OnCtlCancled()
+    {
+        _isCtrlClick = false;
+    }
+
+	private IEnumerator CooldownCoroutine(float cooldownTime)
     {
         CooldownStarted?.Invoke(cooldownTime);
         _remainingCooldownTime = cooldownTime;
@@ -547,6 +721,10 @@ public abstract class Skill : NetworkBehaviour
 
         while (time < CastDeley)
         {
+            if (NoObstacles() == false)
+            {
+                TryCancel(true);
+            }
             time += Time.deltaTime;
             yield return null;
         }
@@ -583,14 +761,13 @@ public abstract class Skill : NetworkBehaviour
         ClearData();
         StartAutoDraw();
 
-        InputHandler.OnClick += OnClick;
-        InputHandler.OnClickCanceled += OnClickCanceled;
+        SubscribeClickEvents();
 
-        yield return _prepareCoroutine = StartCoroutine(PrepareJob());
+		yield return _prepareCoroutine = StartCoroutine(PrepareJob());
 
-        InputHandler.OnClick -= OnClick;
-        InputHandler.OnClickCanceled -= OnClickCanceled;
-        OnClickCanceled();
+        UnSubscribeClickEvents();
+
+		OnClickCanceled();
 
         PreparingSuccess?.Invoke();
         _isPreparing = false;
@@ -630,4 +807,32 @@ public abstract class Skill : NetworkBehaviour
         }
         _tempHPForDamage.TryTakeDamage(ref damage, this);
     }
+
+    private void SubscribeClickEvents()
+    {
+		InputHandler.OnClick += OnClick;
+        InputHandler.OnShiftLeftMouse += OnShiftClick;
+        InputHandler.OnSwitchAutoMode += OnCtrlClick;
+
+        //cancelled
+
+		InputHandler.OnClickCanceled += OnClickCanceled;
+        InputHandler.OnShiftLeftMouseCanceled += OnShiftCancled;
+        InputHandler.OnSwitchAutoModeCanceled += OnCtlCancled;
+        
+	}
+
+	private void UnSubscribeClickEvents()
+	{
+		InputHandler.OnClick -= OnClick;
+		InputHandler.OnShiftLeftMouse -= OnShiftClick;
+		InputHandler.OnSwitchAutoMode -= OnCtrlClick;
+
+		//cancelled
+
+		InputHandler.OnClickCanceled -= OnClickCanceled;
+		InputHandler.OnShiftLeftMouseCanceled -= OnShiftCancled;
+		InputHandler.OnSwitchAutoModeCanceled -= OnCtlCancled;
+
+	}
 }

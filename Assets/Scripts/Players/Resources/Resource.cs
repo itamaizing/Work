@@ -31,16 +31,22 @@ public abstract class Resource : NetworkBehaviour
 
     public event Action<float, float> MaxValueChanged;
     public event Action<float, float> ValueChanged;
+    public event Action<float> PhantomValueShown;
 
-    public virtual void Initialize(float maxValue, float regenValue, float regenDelay, CharacterData data)
+	private void Awake()
+	{
+		ClientStartRegenirateJob();
+	}
+
+	public virtual void Initialize(float maxValue, float regenValue, float regenDelay, CharacterData data)
     {
         _currentValue = maxValue;
         _maxValue = maxValue;
         _regenerationValue = regenValue;
         _regenerationDelay = regenDelay;
 
-        if (regenValue > 0)
-            ClientStartRegenirateJob();
+        /*if (regenValue > 0)
+            ClientStartRegenirateJob();*/
     }
 
     public virtual void Add(float value)
@@ -80,8 +86,12 @@ public abstract class Resource : NetworkBehaviour
         _maxValue += value;
         
     }
+    public void PhantomValueShow(float value)
+    {
+        PhantomValueShown?.Invoke(value);
+    }
 
-    protected virtual void HookValueChanged(float oldValue, float newValue)
+	protected virtual void HookValueChanged(float oldValue, float newValue)
     {
         ValueChanged?.Invoke(oldValue, newValue);
     }
@@ -95,6 +105,8 @@ public abstract class Resource : NetworkBehaviour
     {
         while (true)
         {
+            if (_regenerationValue < 0) yield return null;
+
             if(_currentValue < _maxValue)
             {
                 yield return new WaitForSeconds(_regenerationDelay);

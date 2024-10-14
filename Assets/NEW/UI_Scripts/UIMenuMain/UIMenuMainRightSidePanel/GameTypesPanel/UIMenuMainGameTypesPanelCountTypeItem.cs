@@ -10,13 +10,11 @@ public class UIMenuMainGameTypesPanelCountTypeItem : MonoBehaviour
     public UIMenuMainGameTypesPanel Owner;
     
     [SerializeField] private TMProLocalizer _itemTitle;
-
-    private GameMode _itemMode;
+    [SerializeField] private GameMode _itemMode;
     
-    public void Fill(GameMode modeName)
+    public void Fill()
     {
-        _itemTitle.Localize(modeName.ToString());
-        _itemMode = modeName;
+        _itemTitle.Localize(_itemMode.ToString());
     }
 
     public void Select()

@@ -1,101 +1,83 @@
-using System.Collections;
-using System.Collections.Generic;
+using Mirror;
+using System.Linq.Expressions;
 using UnityEngine;
 
-public class Punch_Scorpion : Ability
+public class Punch_Scorpion : AutoAttackSkill
 {
     [Header("Ability settings")]
-    [SerializeField] private DrawCircle _drawCircleSelf;
-    [SerializeField] private Counter_ScorchedSoul_Baff _comboCounterPrefab;
-    [SerializeField] private float _damageValue = 9f;
-    private Counter_ScorchedSoul_Baff _comboCounterBaff;
+    [SerializeField] private Character _playerLinks;
+    [SerializeField] private PassiveCombo_Scorpion _comboCounter;
+    //[SerializeField] private float _damageValue = 9f;
 
-    private DrawCircle _circleTarget;
-    private HealthComponent _target;
-    private Coroutine _useJob;
+    private Character _lastTarget = null;
 
-    protected override void Cancel()
+    protected override void CastAction()
     {
-        if (_useJob != null)
-            StopCoroutine(_useJob);
-
-        ResetValue();
-
-        if (_circleTarget != null)
-            Destroy(_circleTarget.gameObject);
-    }
-
-    protected override void Cast()
-    {
-        _useJob = StartCoroutine(UseCoroutine());
-    }
-
-    private void ResetValue()
-    {
-        _drawCircleSelf.Clear();
-        _target = null;
-    }
-
-    private bool IsMouseInRadius()
-    {
-        float distance = Vector3.Distance(
-            new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, transform.position.z),
-            transform.position
-            );
-
-        return distance <= Radius;
-    }
-
-    private void AttackPassed()
-    {
-        Debug.LogWarning("ÐŸÐ¾Ð¿Ð°Ð»");
-
-        if (_comboCounterBaff == null) // Ð·Ð°Ð³Ð»ÑƒÑˆÐºÐ°, Ð¶Ð´Ñƒ Ð½Ð¾Ð²ÑƒÑŽ Ð±Ð°Ð·Ñƒ Ð¿Ð¾Ð´ Ð±Ð°Ñ„Ñ‹
+        if (_lastTarget != null && _lastTarget != _target) //ñáðîñ
         {
-            _comboCounterBaff = Instantiate(_comboCounterPrefab, PlayerMove.transform);
-            Debug.LogWarning(_comboCounterBaff.CurrentStacks);
+            _comboCounter.ResetCounter();
+        }
+        Debug.Log(transform.position);
+        Debug.Log(_target.transform.position);
+
+        //Vector3 closestEnemyPoint = _target.gameObject.GetComponent<CircleCollider2D>().ClosestPoint(transform.position);
+        //Vector3 closestMyPoint = transform.parent.parent.GetComponent<CircleCollider2D>().ClosestPoint(_target.transform.position);
+
+
+        if (Vector2.Distance(LastTargetPosition, _target.transform.position) <= 2f)
+        {
+            Debug.Log("Äîñòàòî÷íîå ðàññòîÿíèå");
+
+            Damage damage = new Damage   
+            {
+                Value = Buff.Damage.GetBuffedValue(_damageValue),
+                Type = DamageType,
+                Range = AttackRangeType,
+            };
+
+            CmdAttack(damage, _target.gameObject);
+        }
+        else Debug.LogWarning("ñëèøêîì äàëåêî");
+        _lastTarget = _target;
+
+    }
+    private void AttackPassed(Transform target)
+    {
+        Debug.LogWarning("Punch_Scorppion .AttackPassed - Ïîïàë");
+
+        _comboCounter.AddAbility(target, ScorpionAbility.Punch);
+    }
+    private void AttackMissed()
+    {
+        Debug.LogWarning("Punch_Scorppion .AttackMissed -Ïðîìàõ");
+
+        _comboCounter.ResetCounter();
+    }
+
+    [Command]
+    private void CmdAttack(Damage damage, GameObject hp)
+    {
+        if (_tempTargetForDamage != hp.transform)
+        {
+            _tempTargetForDamage = hp.transform;
+            _tempHPForDamage = hp.GetComponent<Health>();
+        }
+
+        bool result = _tempHPForDamage.TryTakeDamage(ref damage, this);
+        RpcSelfNotifyHitResult(result, _tempTargetForDamage);
+
+    }
+
+    [TargetRpc]
+    private void RpcSelfNotifyHitResult(bool state,Transform target)
+    {
+        if (state)
+        {
+            AttackPassed(target);
         }
         else
         {
-            _comboCounterBaff.AddStack();
-            Debug.LogWarning(_comboCounterBaff.CurrentStacks);
+            AttackMissed();
         }
-    }
-
-
-    private IEnumerator UseCoroutine()
-    {
-        _drawCircleSelf.Draw(Radius);
-
-        while (_target == null) //Ð²Ñ‹Ð±Ð¸Ñ€Ð°ÐµÐ¼ Ñ†ÐµÐ»ÑŒ
-        {
-            if (Input.GetMouseButtonDown(0) && IsMouseInRadius())
-            {
-                RaycastHit2D[] rayHit = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-                if (rayHit.Length > 0 && rayHit[0].transform.TryGetComponent<HealthComponent>(out HealthComponent enemyHealth))
-                {
-                    _target = enemyHealth;
-                }
-            }
-            yield return null;
-        }
-        _drawCircleSelf.Clear();
-
-        IsCanCancle = false;
-
-        yield return GetCastDeleyCoroutine();
-
-        IsCanCancle = true;
-        PayCost();
-
-        if (Vector2.Distance(transform.position, _target.transform.position) <= 2f + 0.19f)
-        {
-            if (_target.TryTakeDamage(_damageValue, DamageType.Physical, AttackRangeType.MeleeAttack))
-            {
-                AttackPassed();
-            }
-        }    
-
-        ResetValue();
     }
 }

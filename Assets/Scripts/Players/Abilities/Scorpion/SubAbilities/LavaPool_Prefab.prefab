@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 2243568547910431239}
   - component: {fileID: -2264597709402221480}
   - component: {fileID: -9129607761780744881}
-  m_Layer: 0
+  - component: {fileID: 3345878185080889854}
+  m_Layer: 2
   m_Name: LavaPool_Prefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28,11 +29,11 @@ Transform:
   m_GameObject: {fileID: 2727763618182580105}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 9, y: 9, z: 9}
+  m_LocalScale: {x: 4, y: 4, z: 4}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 22
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2243568547910431239
 MonoBehaviour:
@@ -50,6 +51,9 @@ MonoBehaviour:
   _maxDamagePerTick: 3
   _damageType: 0
   _attackRangeType: 2
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!212 &-2264597709402221480
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -88,11 +92,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: f6ce8e1696a398e4a8a7e64df7d7639e, type: 3}
-  m_Color: {r: 1, g: 0.13886034, b: 0.09811318, a: 1}
+  m_SortingLayerID: -2062941157
+  m_SortingLayer: -1
+  m_SortingOrder: 1
+  m_Sprite: {fileID: -2413806693520163455, guid: ebe73ca9363db456bacf42c025bb4847, type: 3}
+  m_Color: {r: 0.5188679, g: 0.020215632, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -136,4 +140,21 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.35
+  m_Radius: 0.5
+--- !u!114 &3345878185080889854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2727763618182580105}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  _assetId: 4040297077
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0

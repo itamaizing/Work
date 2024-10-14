@@ -23,8 +23,8 @@ public class Health : Resource, IDamageable, IHealingable
     public List<IDamageable> Shields { get => _shields; }
 
     public event Action Evaded;
-    public event Action<float> HealTaked;
-    public event Action<float, DamageType> DamageTaken;
+    public event Action<float, Skill> HealTaked;
+    public event Action<float, DamageType, Skill> DamageTaken;
     public event Action Died;
 
     public event Action<float, float> EvadeMeleeDamageChanged;
@@ -61,7 +61,7 @@ public class Health : Resource, IDamageable, IHealingable
             ClientRpcDied();
             Died?.Invoke();
         }
-        ClientRpcDamageTaked(damage.Value, damage.Type);
+        ClientRpcDamageTaked(damage.Value, damage.Type, skill);
         _sumDamageTaken += damage.Value;
         return true;
     }
@@ -72,10 +72,16 @@ public class Health : Resource, IDamageable, IHealingable
         TryTakeDamage(ref damage, null);
     }
 
-    public void Heal(float value)
+    public void SetHp(float hp, float maxHp)
+    {
+        _currentValue = hp;
+        _maxValue = maxHp;
+    }
+
+	public void Heal(float value, Skill skill = null)
     {
         Add(value);
-        HealTaked?.Invoke(value);
+        HealTaked?.Invoke(value, skill);
     }
 
     public void SetEvadeMagic(float value)
@@ -187,9 +193,9 @@ public class Health : Resource, IDamageable, IHealingable
     }
 
     [ClientRpc]
-    private void ClientRpcDamageTaked(float damageTaken, DamageType damageType)
+    private void ClientRpcDamageTaked(float damageTaken, DamageType damageType, Skill skill)
     {
-        DamageTaken?.Invoke(damageTaken, damageType);
+        DamageTaken?.Invoke(damageTaken, damageType, skill);
     }
 
     [ClientRpc]
@@ -202,4 +208,19 @@ public class Health : Resource, IDamageable, IHealingable
     {
         _currentValue = _maxValue;
     }
+
+	public void ShowPhantomValue(Damage phantomValue)
+	{
+        float curDamage = phantomValue.Value;
+        if(phantomValue.Type == DamageType.Physical)
+        {
+            curDamage *= 1 -_defPhysDamage;
+        }
+        if(phantomValue.Type == DamageType.Magical)
+        {
+            curDamage *= 1 -_defMagDamage;
+        }
+
+		PhantomValueShow(curDamage);
+	}
 }

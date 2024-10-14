@@ -48,11 +48,11 @@ public class AbilitySchoolDebuff : AbstractCharacterState
 	public override void ExitState()
 	{
 		Debug.Log("Exiting AbilitySchoolDebuff State");
+		_characterState.RemoveState(this);
 		if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
 		{
 			_abilities.SwitchAvaliable(canceledSchoool, true);
 		}
-		_characterState.RemoveState(this);
 	}
 
 	public override bool Stack(float time)

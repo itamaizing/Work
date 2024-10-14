@@ -1,11 +1,8 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 public interface IHealingable
 {
-    public event Action<float> HealTaked;
+    public event Action<float, Skill> HealTaked;
 
-    public void Heal(float value);
+    public void Heal(float value, Skill skill);
 }

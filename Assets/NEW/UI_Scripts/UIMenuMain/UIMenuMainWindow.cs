@@ -7,6 +7,7 @@ public class UIMenuMainWindow : MonoBehaviour
     [SerializeField] private UIMenuMainTalentsPanel _talentsPanel;
     [SerializeField] private UIMenuMainCharactersPanel _charactersPanel;
     [SerializeField] private UIMenuMainGameTypesPanel _gameTypesPanel;
+    [SerializeField] private UIMenuMainSavesPanel _savesPanel;
 
     private void Start()
     {
@@ -15,16 +16,19 @@ public class UIMenuMainWindow : MonoBehaviour
 
     public void UI_StartClient()
     {
-        MultiplayerManager.Instance.StartClient();
+        ServerManager.Instance.StartClient();
     }
 
     void Show()
     {
-        _charactersPanel.Owner = this;
-        _charactersPanel.Show();
+		_charactersPanel.Owner = this;
+		_charactersPanel.Show();
 
         _gameTypesPanel.Owner = this;
         _gameTypesPanel.Show();
+
+        _savesPanel.Owner = this;
+        _savesPanel.Show();
         
         UpdateCharacterPanels();
     }
@@ -32,19 +36,18 @@ public class UIMenuMainWindow : MonoBehaviour
     public void SetHero(HeroComponent hero)
     {
         var currentHero = hero;
-        
-        /*var heroData = SaveManager.Instance.SelectHero(hero.Data.ID);
-        
-        if (heroData != null)
-        {
-            currentHero.Initialize();
-        }
-        else
-        {
-            SaveManager.Instance.AddHeroToSave(hero);
-            currentHero.Initialize();
-        }*/
+
+		SaveManager.Instance.SetHero(currentHero);
         currentHero.Initialize();
+        UpdateCharacterPanels();
+    }
+
+    public void SetHeroSaveIndex(int index)
+    {
+        SaveManager.Instance.SetSaveIndex(index);
+        SaveManager.Instance.LoadAttributes();
+        SaveManager.Instance.LoadTalents();
+
         UpdateCharacterPanels();
     }
 
@@ -53,7 +56,7 @@ public class UIMenuMainWindow : MonoBehaviour
         return _charactersPanel.CurrentHero;
     }
 
-    public void UpdateCharacterPanels()
+    private void UpdateCharacterPanels()
     {
         _abilitiesPanel.Owner = this;
         _abilitiesPanel.Show();
@@ -63,5 +66,10 @@ public class UIMenuMainWindow : MonoBehaviour
 
         _talentsPanel.Owner = this;
         _talentsPanel.Show();
+    }
+
+    public void UpdateAttributes()
+    {
+        _attributesPanel.UpdateAttributesPoints();
     }
 }

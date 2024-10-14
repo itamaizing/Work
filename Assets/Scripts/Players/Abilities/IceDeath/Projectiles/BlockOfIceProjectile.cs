@@ -7,6 +7,8 @@ using UnityEngine;
 public class BlockOfIceProjectile : Projectiles
 {
 	private Vector2 startPos;
+	private Damage _damage;
+	private float _curDamage;
 
 	public void Init(GameObject dad)
 	{
@@ -16,6 +18,13 @@ public class BlockOfIceProjectile : Projectiles
 	}
 	private void Start()
 	{
+		_curDamage = 20 + Random.Range(0, 10);
+		_damage = new Damage
+		{
+			Value = _curDamage,
+			Type = DamageType.Magical,
+			Range = AttackRangeType.RangeAttack,
+		};
 		Debug.Log("bullet");
 		startPos = transform.position;
 		//_rb.AddForce(transform.up * _force, ForceMode2D.Impulse);
@@ -38,33 +47,40 @@ public class BlockOfIceProjectile : Projectiles
 		if (collision.gameObject == _dad.gameObject || collision.CompareTag("Ability"))
 			return;
 		//damage, freez etc
-		if (collision.TryGetComponent<Character>(out var target))
+		if (collision.TryGetComponent<IDamageable>(out var damageable))
 		{
-			//float duration = 1 + dad.Runes.Value / 20;
-			float duration = 9;
-			//target.CharacterState.energy = dad.Runes;
-			float curDamage = 20 + Random.Range(0, 10);
-			if (target.CharacterState.CheckForState(States.Frozen))
+			if (damageable is Character target)
 			{
-				curDamage *= 1.4f;
+				//float duration = 1 + dad.Runes.Value / 20;
+				float duration = 9;
+				//target.CharacterState.energy = dad.Runes;
+				
+				if (target.CharacterState.CheckForState(States.Frozen))
+				{
+					_curDamage *= 1.4f;
+				}
+				_energy.SumDamageMake(_curDamage);
+
+				
+				//_skill.CmdApplyDamage(damage, target.gameObject);
+				target.Health.TryTakeDamage(ref _damage, _skill);
+
+				//target.CharacterState.AddState(new Cooling(), duration, 0, States.Cooling);
+				target.CharacterState.AddState(States.Cooling, duration, 0, _dad.gameObject, _skill.name);
+
+				//dad.Runes.Use(duration * 20);
+				//damage
+				GetComponent<Collider2D>().enabled = false;
 			}
-			_energy.SumDamageMake(curDamage);
-
-			Damage damage = new Damage
+			else
 			{
-				Value = curDamage,
-				Type = DamageType.Magical,
-				Range = AttackRangeType.RangeAttack,
-			};
-			//_skill.CmdApplyDamage(damage, target.gameObject);
-			target.Health.TryTakeDamage(ref damage, _skill);
-
-			//target.CharacterState.AddState(new Cooling(), duration, 0, States.Cooling);
-			target.CharacterState.AddState(States.Cooling, duration, 0, _dad.gameObject, _skill.name);
-
-			//dad.Runes.Use(duration * 20);
-			//damage
-			GetComponent<Collider2D>().enabled = false;
+				damageable.TryTakeDamage(ref _damage, _skill);
+				if (_damage.Value <= 0)
+				{
+					Explode();
+				}
+				return;
+			}
 		}
 		Explode();
 	}

@@ -67,7 +67,15 @@ public class StateIcons : MonoBehaviour
                 newIco.time.Add(timeToDecrease);
                 newIco.count = stack;
                 _activeEffects.Add(newIco);
-                AnimateIco(newIco);
+                if (timeToDecrease < 0)
+                {
+	                AnimateIco(newIco, true);    
+                }
+                else
+                {
+	                AnimateIco(newIco); 
+                }
+                
                 _added = true;
             }
         }
@@ -103,8 +111,10 @@ public class StateIcons : MonoBehaviour
         }*/
     }
 
-    private void AnimateIco(StateIcoItem icoItem)
+    private void AnimateIco(StateIcoItem icoItem, bool isAnimationNotNeed = false)
     {
+	    if(isAnimationNotNeed) return;
+	    
         Image ico = icoItem.FadeFront;
         ico.fillAmount = 0;
         if (icoItem.count == 1)

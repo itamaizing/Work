@@ -31,7 +31,7 @@ public class IceShard : Skill
 
 	private void Shoot()
 	{
-		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		//_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		Vector2 lookDir = _mousePos - (Vector2)_playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
 		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 3);
@@ -71,10 +71,10 @@ public class IceShard : Skill
 	{
 		while (float.IsPositiveInfinity(_mousePos.x))
 		{
-			if (Input.GetMouseButton(0))
+			if (GetMouseButton)
 			{
 				_energy.TryUse(5);
-				_mousePos = GetMousePoint();
+				_mousePos = LeftClick().Position;
 			}
 			yield return null;
 		}

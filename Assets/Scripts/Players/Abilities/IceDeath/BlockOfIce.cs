@@ -48,6 +48,7 @@ public class BlockOfIce : Skill
 		//_playerLinks.Stamina.Use(_playerLinks.Stamina.Value);
 		//Cancel();
 	}
+
 	[Command]
 	private void CmdCreateProjecttile(float angle)
 	{
@@ -70,7 +71,7 @@ public class BlockOfIce : Skill
 	{
 		while (float.IsPositiveInfinity(_mousePos.x))
 		{
-			if (Input.GetMouseButton(0))
+			if (GetMouseButton)
 			{
 				_mousePos = GetMousePoint();
 			}

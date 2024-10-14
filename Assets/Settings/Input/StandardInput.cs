@@ -215,6 +215,24 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ShiftMouse"",
+                    ""type"": ""Button"",
+                    ""id"": ""44eeeadf-ff68-4132-9eb6-ad11777daf47"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ScrollMouse"",
+                    ""type"": ""Value"",
+                    ""id"": ""56c07c89-6e78-47f8-b932-70b5db00d2fb"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -496,7 +514,7 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""Modifier"",
                     ""id"": ""c172b242-1a92-487f-bc74-b3633c12faa4"",
-                    ""path"": ""<Mouse>/leftButton"",
+                    ""path"": ""<Keyboard>/ctrl"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -507,11 +525,77 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""Binding"",
                     ""id"": ""9b0a6bad-5d24-466c-8339-532c7fe0a714"",
-                    ""path"": ""<Keyboard>/ctrl"",
+                    ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""SwitchAutoMode"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""5beb35e5-391f-4ec7-8cb9-8a8a077b74ed"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ScrollMouse"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""cb192214-2d32-4867-9e53-e77c17ae05a4"",
+                    ""path"": ""<Mouse>/scroll/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ScrollMouse"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""705ed161-a4e2-4d36-91bd-16646c0a709c"",
+                    ""path"": ""<Mouse>/scroll/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ScrollMouse"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""9479e03f-3c70-4523-ab21-cb1060d3420a"",
+                    ""path"": ""OneModifier(overrideModifiersNeedToBePressedFirst=true)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShiftMouse"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Modifier"",
+                    ""id"": ""8c3d2e27-5ce9-4ba2-bb92-0267f969b6c2"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShiftMouse"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Binding"",
+                    ""id"": ""a87490d1-8f08-49d5-9e9f-742014deb4f1"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShiftMouse"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 }
@@ -543,6 +627,8 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
         m_GameplayMap_AltClick = m_GameplayMap.FindAction("AltClick", throwIfNotFound: true);
         m_GameplayMap_AltDoubleClick = m_GameplayMap.FindAction("AltDoubleClick", throwIfNotFound: true);
         m_GameplayMap_SwitchAutoMode = m_GameplayMap.FindAction("SwitchAutoMode", throwIfNotFound: true);
+        m_GameplayMap_ShiftMouse = m_GameplayMap.FindAction("ShiftMouse", throwIfNotFound: true);
+        m_GameplayMap_ScrollMouse = m_GameplayMap.FindAction("ScrollMouse", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -625,6 +711,8 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_GameplayMap_AltClick;
     private readonly InputAction m_GameplayMap_AltDoubleClick;
     private readonly InputAction m_GameplayMap_SwitchAutoMode;
+    private readonly InputAction m_GameplayMap_ShiftMouse;
+    private readonly InputAction m_GameplayMap_ScrollMouse;
     public struct GameplayMapActions
     {
         private @StandardInput m_Wrapper;
@@ -650,6 +738,8 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
         public InputAction @AltClick => m_Wrapper.m_GameplayMap_AltClick;
         public InputAction @AltDoubleClick => m_Wrapper.m_GameplayMap_AltDoubleClick;
         public InputAction @SwitchAutoMode => m_Wrapper.m_GameplayMap_SwitchAutoMode;
+        public InputAction @ShiftMouse => m_Wrapper.m_GameplayMap_ShiftMouse;
+        public InputAction @ScrollMouse => m_Wrapper.m_GameplayMap_ScrollMouse;
         public InputActionMap Get() { return m_Wrapper.m_GameplayMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -722,6 +812,12 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
             @SwitchAutoMode.started += instance.OnSwitchAutoMode;
             @SwitchAutoMode.performed += instance.OnSwitchAutoMode;
             @SwitchAutoMode.canceled += instance.OnSwitchAutoMode;
+            @ShiftMouse.started += instance.OnShiftMouse;
+            @ShiftMouse.performed += instance.OnShiftMouse;
+            @ShiftMouse.canceled += instance.OnShiftMouse;
+            @ScrollMouse.started += instance.OnScrollMouse;
+            @ScrollMouse.performed += instance.OnScrollMouse;
+            @ScrollMouse.canceled += instance.OnScrollMouse;
         }
 
         private void UnregisterCallbacks(IGameplayMapActions instance)
@@ -789,6 +885,12 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
             @SwitchAutoMode.started -= instance.OnSwitchAutoMode;
             @SwitchAutoMode.performed -= instance.OnSwitchAutoMode;
             @SwitchAutoMode.canceled -= instance.OnSwitchAutoMode;
+            @ShiftMouse.started -= instance.OnShiftMouse;
+            @ShiftMouse.performed -= instance.OnShiftMouse;
+            @ShiftMouse.canceled -= instance.OnShiftMouse;
+            @ScrollMouse.started -= instance.OnScrollMouse;
+            @ScrollMouse.performed -= instance.OnScrollMouse;
+            @ScrollMouse.canceled -= instance.OnScrollMouse;
         }
 
         public void RemoveCallbacks(IGameplayMapActions instance)
@@ -829,5 +931,7 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
         void OnAltClick(InputAction.CallbackContext context);
         void OnAltDoubleClick(InputAction.CallbackContext context);
         void OnSwitchAutoMode(InputAction.CallbackContext context);
+        void OnShiftMouse(InputAction.CallbackContext context);
+        void OnScrollMouse(InputAction.CallbackContext context);
     }
 }

@@ -50,6 +50,7 @@ public class Cooling : AbstractCharacterState
 	public override void ExitState()
 	{
 		Debug.Log("Exiting cooling State");
+		_characterState.RemoveState(this);
 		if (_characterState.Check(StatusEffect.MoveSpeed))
 		{
 			_characterState.Character.Move.SetDefaultSpeed();
@@ -59,7 +60,6 @@ public class Cooling : AbstractCharacterState
 		{
 			//return speed of attact
 		}
-		_characterState.RemoveState(this);
 	}
 
 	public override bool Stack(float time)

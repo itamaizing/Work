@@ -1,101 +1,113 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class Kick_Scorpion : Ability
+public class Kick_Scorpion : AutoAttackSkill
 {
     [Header("Ability settings")]
-    [SerializeField] private DrawCircle _drawCircleSelf;
+    [SerializeField] private Character _playerLinks;
     [SerializeField] private Sub_LavaPool_Scorpion _pool;
-    [SerializeField] private Counter_ScorchedSoul_Baff _comboCounterPrefab;
-    [SerializeField] private float _damageValue = 15f; // потом сделать разброс 10-15
-    private Counter_ScorchedSoul_Baff _newprefab;
+    [SerializeField] private PassiveCombo_Scorpion _comboCounter;
+    [SerializeField][Range(0, 100)] private float _minDamage = 10f;
+    [SerializeField][Range(0, 100)] private float _maxDamage = 15f;
 
-    private DrawCircle _circleTarget;
-    private HealthComponent _target;
-    private Coroutine _useJob;
+    [Header("Debug info")] 
 
-    protected override void Cancel()
+    [SerializeField][Range(0f, 1f)] private float _debuffApplyChance = 0.1f;
+    [SerializeField][ReadOnly] private byte _counterRow = 1;
+
+    private Coroutine _hitsInRowCoroutine;
+    private Character _lastTarget = null;
+
+    public float DamageRange => Random.Range(_minDamage, _maxDamage);
+
+    protected override void CastAction()
     {
-        if (_useJob != null)
-            StopCoroutine(_useJob);
-
-        ResetValue();
-
-        if (_circleTarget != null)
-            Destroy(_circleTarget.gameObject);
-    }
-    private void AttackPassed()
-    {
-        if (_newprefab == null) // заглушка, жду новую базу под бафы
+        if (_lastTarget != null && _lastTarget != _target) //�����
         {
-            _newprefab = Instantiate(_comboCounterPrefab, PlayerMove.transform);
+            _comboCounter.ResetCounter();
+            //_playerLinks.Combo_Player.RemoveAll();
+        }
+
+        if (_hitsInRowCoroutine != null)
+        {
+            StopCoroutine(_hitsInRowCoroutine);
+            _hitsInRowCoroutine = null;
+        }
+
+        Debug.Log(transform.position);
+        Debug.Log(_target.transform.position);
+
+        if (Vector2.Distance(LastTargetPosition, _target.transform.position) <= 2f)
+        {
+            Damage damage = new Damage
+            {
+                Value = Buff.Damage.GetBuffedValue(DamageRange),
+                Type = DamageType,
+                Range = AttackRangeType,
+            };
+            CmdAttack(damage, _target.gameObject);
+        }
+        _lastTarget = _target;
+    }
+    private void AttackPassed(Transform target)
+    {
+        Debug.LogWarning("Kick_Scorpion .AttackPassed - �����");
+
+        _comboCounter.AddAbility(target, ScorpionAbility.Kick);
+
+        _counterRow *= 2;
+        _hitsInRowCoroutine = StartCoroutine(HitsInRowTimer());
+
+        if (Random.value <= Mathf.Clamp01(_debuffApplyChance * _counterRow))
+        {
+            //CmdApplyDebuff(_target.transform);
+            _target.GetComponent<CharacterState>().CmdAddState(States.Knockdown, 6f, 0, _hero.gameObject, name);
+            _counterRow = 1;
+        }
+    }
+    private void AttackMissed()
+    {
+        Debug.LogWarning("Kick_Scorpion .AttackMissed - ������");
+
+        _comboCounter.ResetCounter();
+    }
+
+
+    private IEnumerator HitsInRowTimer()
+    {
+        yield return new WaitForSeconds(CastDeley + 1f);
+
+        _counterRow = 1;
+
+        _hitsInRowCoroutine = null;
+    }
+
+    [Command]
+    private void CmdAttack(Damage damage, GameObject hp)
+    {
+        if (_tempTargetForDamage != hp.transform)
+        {
+            _tempTargetForDamage = hp.transform;
+            _tempHPForDamage = hp.GetComponent<Health>();
+        }
+
+        bool result = _tempHPForDamage.TryTakeDamage(ref damage, this);
+        RpcSelfNotifyHitResult(result, _tempTargetForDamage);
+
+    }
+
+    [TargetRpc]
+    private void RpcSelfNotifyHitResult(bool state, Transform target)
+    {
+        if (state)
+        {
+            AttackPassed(target);
         }
         else
         {
-            if (_newprefab.CurrentStacks == 2)
-            {
-                Instantiate(_pool, _target.transform.position, Quaternion.identity).Init();
-            }
-            _newprefab.AddStack();
+            AttackMissed();
         }
-        Debug.LogWarning(_newprefab.CurrentStacks);
-    }
-    protected override void Cast()
-    {
-        _useJob = StartCoroutine(UseCoroutine());
-    }
-
-    private void ResetValue()
-    {
-        _drawCircleSelf.Clear();
-        _target = null;
-        PlayerMove.CanMove = true;
-    }
-
-    private bool IsMouseInRadius()
-    {
-        float distance = Vector3.Distance(
-            new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, transform.position.z),
-            transform.position
-            );
-
-        return distance <= Radius;
-    }
-
-    private IEnumerator UseCoroutine()
-    {
-        _drawCircleSelf.Draw(Radius);
-
-        while (_target == null) //выбираем цель
-        {
-            if (Input.GetMouseButtonDown(0) && IsMouseInRadius())
-            {
-                RaycastHit2D[] rayHit = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-                if (rayHit.Length > 0 && rayHit[0].transform.TryGetComponent<HealthComponent>(out HealthComponent enemyHealth))
-                {
-                    _target = enemyHealth;
-                }
-            }
-            yield return null;
-        }
-        _drawCircleSelf.Clear();
-
-        PlayerMove.CanMove = false;
-        IsCanCancle = false;
-
-        yield return GetCastDeleyCoroutine();
-
-        IsCanCancle = true;
-        PayCost();
-
-        if (Vector2.Distance(transform.position, _target.transform.position) <= 2f + 0.19f)
-        {
-            if (_target.TryTakeDamage(_damageValue, DamageType.Physical, AttackRangeType.MeleeAttack))
-            {
-                AttackPassed();
-            }
-        }
-        ResetValue();
     }
 }
