@@ -74,7 +74,7 @@ public class IceShard : Skill
 			if (GetMouseButton)
 			{
 				_energy.TryUse(5);
-				_mousePos = LeftClick();
+				_mousePos = GetTarget().Position;
 			}
 			yield return null;
 		}

@@ -789,7 +789,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.size
-      value: 7
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[0]
@@ -798,31 +798,31 @@ PrefabInstance:
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[1]
       value: 
-      objectReference: {fileID: 5010563057206509916}
+      objectReference: {fileID: 5120720823893537476}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[2]
       value: 
-      objectReference: {fileID: 7399292444007859597}
+      objectReference: {fileID: 7561422758841233583}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[3]
       value: 
-      objectReference: {fileID: 6342019075777602023}
+      objectReference: {fileID: 6870347913229280057}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[4]
       value: 
-      objectReference: {fileID: 5457379887385446469}
+      objectReference: {fileID: 6884647884784008272}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[5]
       value: 
-      objectReference: {fileID: 6870347913229280057}
+      objectReference: {fileID: 6342019075777602023}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[6]
       value: 
-      objectReference: {fileID: 6884647884784008272}
+      objectReference: {fileID: 7602457161793523920}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[7]
       value: 
-      objectReference: {fileID: 6884647884784008272}
+      objectReference: {fileID: 7602457161793523920}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[8]
       value: 
@@ -1431,7 +1431,7 @@ MonoBehaviour:
   _manaCostPerTick: 0
   _isUseCharges: 1
   _chargesHaveSeparateCooldown: 0
-  _maxCharges: 3
+  _maxCharges: 1
   _chargeCooldown: 0
   _radius: 0
   _area: 0
@@ -1775,7 +1775,7 @@ MonoBehaviour:
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 1
-  _skillType: 0
+  _skillType: 1
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -2036,13 +2036,13 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: AbsotptionTalent
     IsOpen: 0
     Description: 
-    Icon: {fileID: 0}
-  character: {fileID: 0}
-  _absorption: {fileID: 0}
-  _ability: {fileID: 0}
+    Icon: {fileID: 21300000, guid: cae2f0cb798243a46842fb23151acbf4, type: 3}
+  character: {fileID: 5889404958618692528}
+  _absorption: {fileID: 6342019075777602023}
+  _ability: {fileID: 5399379209622425355}
 --- !u!114 &6132908872439124335
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2059,13 +2059,13 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: BlockOfIceTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
-  character: {fileID: 0}
-  _blockOfIce: {fileID: 0}
-  _ability: {fileID: 0}
+  character: {fileID: 5889404958618692528}
+  _blockOfIce: {fileID: 7602457161793523920}
+  _ability: {fileID: 5399379209622425355}
 --- !u!114 &5321383494044629016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2082,7 +2082,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: ChargesPlagueTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -2105,7 +2105,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: ComboSpeedTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -2127,7 +2127,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: CorpseDeathTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -2149,7 +2149,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: DeathSpiralBoostHpBodyTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -2171,7 +2171,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: DeathSpiralChargeTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -2193,7 +2193,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: DeathSpiralHitTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -2215,7 +2215,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: DeathSpiralSecondAttackTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -2237,7 +2237,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: DeathSpiralTalents
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -2260,7 +2260,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: EvadeTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}

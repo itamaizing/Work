@@ -103,8 +103,17 @@ public class TalentSystem : NetworkBehaviour
         foreach (var talent in _talents.SelectMany(talentsGroup => talentsGroup.TalentsData))
         {
             talent.Data.Name = talent.GetType().Name;
+            if(talent.Data.IsOpen)
+            {
+                talent.Enter();
+            }
+            else
+            {
+                talent.Exit();
+            }
         }
     }
+
     public void AddPoints(int value)
     {
     }
@@ -112,7 +121,6 @@ public class TalentSystem : NetworkBehaviour
     public void SetActive(int row, int id, bool value)
     {
         _talents[row].TalentsData[id].SetActive(value);
-
     }
 
     [Command]

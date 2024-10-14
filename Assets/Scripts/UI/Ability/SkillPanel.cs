@@ -199,13 +199,15 @@ public class SkillPanel : MonoBehaviour
 
     private void OnSkillAdded(Skill skill)
     {
-        //UpdatePanel();
-    }
+		Fill(_playerAbilities);
+		//UpdatePanel();
+	}
 
     private void OnSkillRemoved(Skill skill)
     {
-        //UpdatePanel();
-    }
+        Fill(_playerAbilities);
+		//UpdatePanel();
+	}
 
     public void UpdateKeys()
     {
