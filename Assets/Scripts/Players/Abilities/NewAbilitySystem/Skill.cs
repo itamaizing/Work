@@ -93,8 +93,8 @@ public abstract class Skill : NetworkBehaviour
     protected Coroutine _castStreamCoroutine;
     protected Transform _tempTargetForDamage;
     protected Health _tempHPForDamage;
-    protected Character _tempTarget;
 
+    private Character _tempTarget;
     private int _currentChargers;
     private float _remainingCooldownTime;
     private StatsBuff _statsBuff = new StatsBuff();
