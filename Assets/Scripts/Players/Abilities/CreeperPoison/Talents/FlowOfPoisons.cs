@@ -4,10 +4,6 @@ using UnityEngine;
 
 public class FlowOfPoisons : Talent
 {
-    private void Start()
-    {
-        Enter();
-    }
 
     public override void Enter()
     {

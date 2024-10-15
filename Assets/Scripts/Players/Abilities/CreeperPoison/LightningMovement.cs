@@ -30,7 +30,7 @@ public class LightningMovement : Skill
     [SerializeField] private float _durationLeap;
     [SerializeField] private float _radiusAttack;
     [SerializeField] private float _cooldownAttack;
-
+    [SerializeField] private float _invtervalBetweenLeaps;
     public bool IsInMovement = false;
 
     private Character _target;
@@ -70,7 +70,6 @@ public class LightningMovement : Skill
 
     private float _angle;
     private float _multiplierLeap;
-    private float _invtervalBetweenLeaps = 0.5f;
 
     #region BoolVariables
 
@@ -523,7 +522,7 @@ public class LightningMovement : Skill
         StopRenderLine();
     }
 
-    private IEnumerator ApplyDamageJob(LayerMask enemiesLayer, float radius)
+    private IEnumerator ApplyDamageJob(LayerMask enemiesLayer, float radius, float duration)
     {
         while (true)
         {
@@ -551,11 +550,11 @@ public class LightningMovement : Skill
                     {
                         if (_lightningStrikes.IsCanDamageDeal)
                         {
-                            _lightningStrikes.UseLightningStrikes(targetCharacter);
+                            _lightningStrikes.UseLightningStrikesOfLightningMovement(targetCharacter, duration);
                         }
                         else if (_poisonSlap.IsCanDamageDeal)
                         {
-                            _poisonSlap.DamageDeal(targetCharacter);
+                            _poisonSlap.DamageDealOfLightningMovement(targetCharacter, duration);
                         }
                         else
                         {
@@ -616,7 +615,7 @@ public class LightningMovement : Skill
             _superFastScales.IncreasingResistance();
         }
 
-        _applyDamageCoroutine = StartCoroutine(ApplyDamageJob(_targetsLayers, _radiusAttack));
+        _applyDamageCoroutine = StartCoroutine(ApplyDamageJob(_targetsLayers, _radiusAttack, _durationLeap * _rangeLeap));
 
         _player.CharacterState.CmdAddState(States.Immateriality, (_durationLeap * _rangeLeap * _multiplierLeap), 0, _player.gameObject, Name);
 

@@ -18,11 +18,6 @@ public class DesireToHide : Talent
     private Coroutine _rechargeApplicationInvisibleCoroutine;
     public bool IsCanApply { get => _isCanApply; }
 
-    private void Start()
-    {
-        //Enter();
-    }
-
     public override void Enter()
     {
         SetActive(true);

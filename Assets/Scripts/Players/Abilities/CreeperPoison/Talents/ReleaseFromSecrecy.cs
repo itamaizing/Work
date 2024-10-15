@@ -16,11 +16,6 @@ public class ReleaseFromSecrecy : Talent
 
     private float _attackSpeedIncrease = 0.1f;
 
-    private void Start()
-    {
-        Enter();
-    }
-
     public override void Enter()
     {
         SetActive(true);

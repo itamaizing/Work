@@ -70,6 +70,8 @@ public class CreeperStrike : AutoAttackSkill
     {
         Debug.Log("UseAbilityCoroutine CreeperStrike");
         DealingDamageFromHits(CurrentTarget);
+        var localPlayer = NetworkClient.connection.identity.GetComponent<UserNetworkSettings>();
+        Debug.Log("UseAbilityCoroutine CreeperStrike / localPlayer = " + localPlayer);
         yield return null;
     }
 

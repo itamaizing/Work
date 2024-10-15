@@ -4,11 +4,6 @@ using UnityEngine;
 
 public class HealingPoisonBall : Talent
 {
-    private void Start()
-    {
-        Enter();
-    }
-
     public override void Enter()
     {
         SetActive(true);

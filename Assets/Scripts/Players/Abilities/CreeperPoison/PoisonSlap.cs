@@ -374,9 +374,27 @@ public class PoisonSlap : Skill
 
     #region DamageDealAndPushTargetMethods
 
-    public void DamageDeal(Character target)
+    private void DamageDeal(Character target)
     {
         Debug.Log("PoisonSlap / DamageDeal ");
+        if (target != null)
+        {
+            Damage damage = new Damage
+            {
+                Value = _baseDamage,
+                Type = DamageType.Physical,
+                Range = AttackRangeType.MeleeAttack
+            };
+
+            CmdApplyDamage(damage, target.gameObject);
+
+            PushTarget(target, _distancePush, _durationPush, _isPushTargetAllowed);
+        }
+    }
+
+    public void DamageDealOfLightningMovement(Character target, float duration)
+    {
+        Debug.Log("PoisonSlap / DamageDealOfLinghtningMovement ");
         if (target != null) 
         {
             Damage damage = new Damage
@@ -390,6 +408,13 @@ public class PoisonSlap : Skill
 
             PushTarget(target, _distancePush, _durationPush, _isPushTargetAllowed);
         }
+
+        Invoke("UseRecharge", duration);
+    }
+
+    private void UseRecharge()
+    {
+        TryPayCost();
     }
 
     private void PushTarget(Character target, float distancePush, float durationPush, bool isCanPushTarget)

@@ -631,6 +631,10 @@ PrefabInstance:
       propertyPath: _resourceType
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 1057949845680950153, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _regenerationDelay
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 1107802090774456859, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -682,6 +686,10 @@ PrefabInstance:
     - target: {fileID: 2800782367266392627, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_FillAmount
       value: 0.728
+      objectReference: {fileID: 0}
+    - target: {fileID: 2926669445991704918, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _regenerationDelay
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 3330577042116454553, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: unit
@@ -741,6 +749,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5813731290149758240, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5839731411926097146, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _regenerationDelay
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6237993616369546280, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}

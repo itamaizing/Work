@@ -33,9 +33,20 @@ public class LightningStrikes : AutoAttackSkill
 
     public bool IsUsedLightningStrikes => _isUsedLightningStrikes;
 
-    public void UseLightningStrikes(Character target)
+    public void UseLightningStrikesOfLightningMovement(Character target, float duration)
     {
         _useCoroutine = StartCoroutine(UseAbilityCoroutine(target));
+        Invoke("UseRecharge", duration);
+    }
+
+    private void UseRecharge()
+    {
+        TryPayCost();
+        if (_useCoroutine != null)
+        {
+            StopCoroutine(_useCoroutine);
+            _useCoroutine = null;
+        }
     }
 
     protected override IEnumerator PrepareJob()
@@ -75,7 +86,7 @@ public class LightningStrikes : AutoAttackSkill
         }
         Debug.Log("LightningStrikes / CastAction");
         _currentTarget = _target;
-        UseLightningStrikes(_currentTarget);
+        _useCoroutine = StartCoroutine(UseAbilityCoroutine(_currentTarget));
     }
 
     private void ResetUsedLightningStrikes()
@@ -120,4 +131,6 @@ public class LightningStrikes : AutoAttackSkill
             }
         }
     }
+
+
 }

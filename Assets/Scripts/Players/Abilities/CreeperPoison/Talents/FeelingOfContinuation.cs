@@ -17,11 +17,6 @@ public class FeelingOfContinuation : Talent
 
     private Coroutine _manaRegenerationCoroutine;
 
-    private void Start()
-    {
-        //Enter();
-    }
-
     public override void Enter()
     {
         SetActive(true);

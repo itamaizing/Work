@@ -10,11 +10,6 @@ public class PreparingForFight : Talent
     private float _maxManaPlayer;
     private float _manaRecoveryMultiplier = 0.01f;
 
-    private void Start()
-    {
-        //Enter();
-    }
-
     public override void Enter()
     {
         SetActive(true);

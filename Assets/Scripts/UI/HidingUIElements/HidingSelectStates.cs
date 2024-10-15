@@ -95,6 +95,8 @@ public class HidingSelectStates : NetworkBehaviour
     {
         int teamIndex = player.GetComponentInParent<UserNetworkSettings>().TeamIndex;
         var localPlayer = NetworkClient.connection.identity.GetComponent<UserNetworkSettings>();
-        _isAlly = localPlayer.TeamIndex == teamIndex;
+        
+        if (localPlayer != null)
+            _isAlly = localPlayer.TeamIndex == teamIndex;
     }
 }

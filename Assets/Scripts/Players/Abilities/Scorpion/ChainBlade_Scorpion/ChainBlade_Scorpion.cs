@@ -28,7 +28,7 @@ public class ChainBlade_Scorpion : Skill
     private bool bladeDestroyed = false;
     private ChainbladeType _type;
 
-    private GameObject _tempTarget;
+    private GameObject _tempTarget1;
     private MoveComponent _tempTargetMove;
 
     public float DamageRange => Random.Range(_minDamage, _maxDamage);
@@ -202,9 +202,9 @@ public class ChainBlade_Scorpion : Skill
 
     private void Pull(GameObject gameObject, Vector2 force) // called in [command]
     {
-        if (_tempTarget != gameObject)
+        if (_tempTarget1 != gameObject)
         {
-            _tempTarget = gameObject;
+            _tempTarget1 = gameObject;
             _tempTargetMove = gameObject.GetComponent<MoveComponent>();
         }
         _tempTargetMove.TargetRpcAddTransformPosition(force);

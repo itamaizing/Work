@@ -4,18 +4,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpitPoisonProjectile : NetworkBehaviour
+public class SpitPoisonProjectile : Test_Projectile
 {
-    [SerializeField] private Rigidbody2D _rbBall;
-    [SerializeField] private SpriteRenderer _spriteRenderer;
-    [SerializeField] private GameObject _hitEffect;
-    [SerializeField] private Collider2D _colliderBall;
-    [SerializeField] private float _maxDistance;
-    [SerializeField] private float _speed;
-
     private Skill _skill;
-    private Character _player;
-    private Vector2 _startPos;
 
     private int _teamIndex;
 
@@ -28,21 +19,18 @@ public class SpitPoisonProjectile : NetworkBehaviour
     private bool _isEnemy;
     private bool _isActiveHealingSpitPoison;
     private bool _isPlayerInvisible;
-    private bool _isAlly;
 
     private void Start()
     {
         if (isServer && _isPlayerInvisible)
         {
-            RpcNewTransparencySprite();
+            RpcNewTransparencySprite(_player.gameObject);
         }
     }
 
     [Server]
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        RpcIsAlly();
-        Debug.Log("OnTrigger / IsAlly = " + _isAlly);
         if (_isActiveHealingSpitPoison)
         {
             if (_isPlayer)
@@ -56,7 +44,7 @@ public class SpitPoisonProjectile : NetworkBehaviour
             }
             else if (_isAllies)
             {
-                if (_isAlly && collision.gameObject != _player.gameObject)
+                if (collision.gameObject != _player.gameObject)
                 {
                     if (collision.TryGetComponent<Character>(out var alliesHealth))
                     {
@@ -65,38 +53,57 @@ public class SpitPoisonProjectile : NetworkBehaviour
                         Destroy(gameObject);
                     }
                 }
-                else if (!_isAlly && collision.gameObject != _player.gameObject)
+                else if (!_isEnemy && collision.gameObject != _player.gameObject)
                 {
                     return;
                 }
             }   
             else if (_isEnemy)
             {
-                if (collision.gameObject.transform != _player.transform && !_isAlly)
+                if (collision.transform != _player.transform)
                 {
                     if (collision.TryGetComponent<Character>(out var target))
                     {
+                        _target = target;
                         _damage = Random.Range(4.0f, 12.0f);
 
-                        DealDamage(target, _damage, DamageType.Magical, AttackRangeType.RangeAttack);
+                        DamageDeal();
                     }
                 }
-                else if (_isAlly && collision.gameObject != _player.gameObject)
+                else if (!_isAllies && collision.gameObject != _player.gameObject)
                 {
                     return;
                 }
-            }    
-            
+            }
+            else
+            {
+                if (collision.gameObject != _player.gameObject)
+                {
+                    if (collision.transform != _player.transform)
+                    {
+                        if (collision.TryGetComponent<Character>(out var target))
+                        {
+                            _target = target;
+
+                            _damage = Random.Range(4.0f, 12.0f);
+
+                            DamageDeal();
+                        }
+                    }
+                }
+            }
         }
         else
         {
-            if (collision.gameObject.transform != _player.transform && !_isAlly)
+            if (collision.transform != _player.transform)
             {
                 if (collision.TryGetComponent<Character>(out var target))
-                {
+                { 
+                    _target = target;
+
                     _damage = Random.Range(4.0f, 12.0f);
 
-                    DealDamage(target, _damage, DamageType.Magical, AttackRangeType.RangeAttack);
+                    DamageDeal();
                 }
             }
         }
@@ -104,62 +111,35 @@ public class SpitPoisonProjectile : NetworkBehaviour
 
     public void MoveBallToTarget(Vector3 target)
     {
-        float dividerSpeed = 100f;
-        float speed = (_speed / dividerSpeed);
-        _rbBall.DOMove(target, speed * _maxDistance / GlobalVariable.cellSize).SetEase(Ease.Linear).OnComplete(Explode);
+        MoveToTarget(target, _speed);
     }
 
     public void MoveBallOnMaxDistance(Vector3 point)
     {
-        Vector3 direction = (point - transform.position).normalized;
-
-        StartCoroutine(MoveBallOnMaxDistanceCoroutine(direction, _speed));
+        MoveToPoint(point, _speed);
     }
 
-    private IEnumerator MoveBallOnMaxDistanceCoroutine(Vector3 direction, float speed)
-    {
-        while (true)
-        {
-            transform.position += direction * speed * Time.deltaTime;
-            if (Vector3.Distance(transform.position, _player.transform.position) > _maxDistance * GlobalVariable.cellSize)
-            {
-                Explode();
-            }
-            yield return null;
-        }
-    }
-
-    private void DealDamage(Character target, float currentDamage, DamageType damageType, AttackRangeType attackRangeType)
+    public override void DamageDeal()
     {
         float chanceOfBlindness = 0.3f;
         float numbersForChanceOfBlindness = Random.Range(0.0f, 1.0f);
 
-        Damage damage = new Damage
+        Damage _baseDamage = new Damage
         {
-            Value = _skill.Buff.Damage.GetBuffedValue(currentDamage),
+            Value = _skill.Buff.Damage.GetBuffedValue(_damage),
             Type = DamageType.Physical,
             Range = AttackRangeType.RangeAttack,
         };
-        target.Health.TryTakeDamage(ref damage, _skill);
+        _target.Health.TryTakeDamage(ref _baseDamage, _skill);
 
-        target.CharacterState.AddState(States.PoisonBone, _lifeTimePoisonBoneStacks, 0, _player.gameObject, _skill.Name);
+        _target.CharacterState.AddState(States.PoisonBone, _lifeTimePoisonBoneStacks, 0, _player.gameObject, _skill.Name);
 
         if (numbersForChanceOfBlindness <= chanceOfBlindness)
         {
-            target.CharacterState.AddState(States.Blind, 6f, 0, _player.gameObject, _skill.Name);
+            _target.CharacterState.AddState(States.Blind, 6f, 0, _player.gameObject, _skill.Name);
         }
 
-        Explode();
-    }
-
-    private void Explode()
-    {
-        if (_hitEffect != null)
-        {
-            GameObject hitEffect = Instantiate(_hitEffect, transform.position, Quaternion.identity);
-            Destroy(hitEffect, 5f);
-        }
-        Destroy(gameObject);
+        DestroyProjectile();
     }
 
     public void InitializationProjectile(Character dad, Skill skill, float energy,
@@ -175,49 +155,30 @@ public class SpitPoisonProjectile : NetworkBehaviour
         _isAllies = isTargetAllies;
         _isEnemy = isTargetEnemy;
 
-        int teamIndex = _player.GetComponentInParent<UserNetworkSettings>().TeamIndex;
-        _teamIndex = teamIndex;
+
     }
 
     [ClientRpc]
-    private void RpcNewTransparencySprite()
+    private void RpcNewTransparencySprite(GameObject player)
     {
-        var localPlayer = NetworkClient.connection.identity.GetComponent<UserNetworkSettings>();
-        _isAlly = localPlayer.TeamIndex == _teamIndex;
+        int playerLayer = player.layer;
 
-        Color originalColor = _spriteRenderer.color;
+        Color originalColor = _projectileSprite.color;
 
-        if (_spriteRenderer != null)
+        if (_projectileSprite != null)
         {
-            if (_isAlly)
+            if (playerLayer == LayerMask.NameToLayer("Allies"))
             {
                 Color newTransparencySprite = originalColor;
                 newTransparencySprite.a = 0.5f;
-                _spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, newTransparencySprite.a);
+                _projectileSprite.color = new Color(originalColor.r, originalColor.g, originalColor.b, newTransparencySprite.a);
             }
-            else
+            else if (playerLayer == LayerMask.NameToLayer("Enemy"))
             {
                 Color newTransparencySprite = originalColor;
                 newTransparencySprite.a = 0.0f;
-                _spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, newTransparencySprite.a);
+                _projectileSprite.color = new Color(originalColor.r, originalColor.g, originalColor.b, newTransparencySprite.a);
             }
         }
     }
-
-    [ClientRpc]
-    private void RpcIsAlly()
-    {
-        var localPlayer = NetworkClient.connection.identity.GetComponent<UserNetworkSettings>();
-        _isAlly = localPlayer.TeamIndex == _teamIndex;
-        CmdIsAlly(_isAlly);
-        Debug.Log("RpcIsAlly / isAlly = " + _isAlly);
-    }
-
-    [Command]
-    private void CmdIsAlly(bool isAlly)
-    {
-        _isAlly = isAlly;
-        Debug.Log("CmdIsAlly / isAlly = " + _isAlly);
-    }
-
 }

@@ -18,11 +18,6 @@ public class AssasinPoison : Talent
 
     public int CurrentChargeAssasinPoison { get => _currentChargePoison; set => _currentChargePoison = value; }
 
-    private void Start()
-    {
-        Enter();
-    }
-
     public override void Enter()
     {
         SetActive(true);

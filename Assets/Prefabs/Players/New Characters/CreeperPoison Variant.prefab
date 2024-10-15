@@ -244,6 +244,162 @@ PrefabInstance:
       propertyPath: _talents.Array.data[11]
       value: 
       objectReference: {fileID: 8101473789432663265}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[1]._id
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._name
+      value: "\u0422\u0430\u043B\u0430\u043D\u0442\u044B"
+      objectReference: {fileID: 0}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[1]._name
+      value: "\u0422\u0430\u043B\u0430\u043D\u0442\u044B"
+      objectReference: {fileID: 0}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.size
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.size
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[0]
+      value: 
+      objectReference: {fileID: 3947504007592891480}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[1]
+      value: 
+      objectReference: {fileID: 7446444383962772610}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[2]
+      value: 
+      objectReference: {fileID: 4404074918470353249}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[3]
+      value: 
+      objectReference: {fileID: 2884345031107975328}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[4]
+      value: 
+      objectReference: {fileID: 5934849255760096215}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[5]
+      value: 
+      objectReference: {fileID: 2847152939285646667}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[6]
+      value: 
+      objectReference: {fileID: 6607662620547331670}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[7]
+      value: 
+      objectReference: {fileID: 4796853090339011508}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[8]
+      value: 
+      objectReference: {fileID: 5405598003478097550}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[9]
+      value: 
+      objectReference: {fileID: 3981511465047695186}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[0]
+      value: 
+      objectReference: {fileID: 670101081239158742}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[1]
+      value: 
+      objectReference: {fileID: 888128757247546946}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[2]
+      value: 
+      objectReference: {fileID: 6829439234357718285}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[3]
+      value: 
+      objectReference: {fileID: 2159678125995542759}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[4]
+      value: 
+      objectReference: {fileID: 4261495663356130338}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[5]
+      value: 
+      objectReference: {fileID: 7073961509244296273}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[6]
+      value: 
+      objectReference: {fileID: 4913710649813641677}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[7]
+      value: 
+      objectReference: {fileID: 8012403956241020689}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[8]
+      value: 
+      objectReference: {fileID: 1503475089635759543}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[9]
+      value: 
+      objectReference: {fileID: 4000357412165628033}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[10]
+      value: 
+      objectReference: {fileID: 8101473789432663265}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[11]
+      value: 
+      objectReference: {fileID: 5685245872478298366}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[12]
+      value: 
+      objectReference: {fileID: 5766639897481413642}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[13]
+      value: 
+      objectReference: {fileID: 8216519132562782960}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[14]
+      value: 
+      objectReference: {fileID: 6032423868418649636}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[15]
+      value: 
+      objectReference: {fileID: 6226770535792628616}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[16]
+      value: 
+      objectReference: {fileID: 6042324801507634549}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[17]
+      value: 
+      objectReference: {fileID: 3054480961841619223}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[18]
+      value: 
+      objectReference: {fileID: 6425516325027218904}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[19]
+      value: 
+      objectReference: {fileID: 8430420044310233612}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[10]
+      value: 
+      objectReference: {fileID: 7047097248153235199}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[11]
+      value: 
+      objectReference: {fileID: 4225491900613752339}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[12]
+      value: 
+      objectReference: {fileID: 1300421091567981635}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[14]
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 8836867217626735083, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -369,9 +525,6 @@ PrefabInstance:
       addedObject: {fileID: 6829439234357718285}
     - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3271863479934341911}
-    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 2159678125995542759}
     - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       insertIndex: -1
@@ -426,10 +579,12 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -484,10 +639,12 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _cooldownTime: 4
   _castDeley: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -501,20 +658,20 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 2
+  _radius: 2.5
   _area: 0
   _castLength: 0
   _castWidth: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
-  _attackZoneSize: 2
+  _attackZoneSize: 2.5
   _attackSpeed: 1
   Enabled: 0
   IsCanDamageDeal: 0
   _heatedGlands: {fileID: 6425516325027218904}
   _killersStamina: {fileID: 670101081239158742}
-  _coldBlood: {fileID: 0}
+  _coldBlood: {fileID: 6976349184378944770}
   _lightningMovement: {fileID: 5600781172362582590}
   _creeperStrike: {fileID: 2763546955420911548}
   _player: {fileID: 7418347446368758987}
@@ -538,10 +695,12 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _cooldownTime: 1
   _castDeley: 0
+  _damageValue: 0
   _abilitySchool: 7
   _abilityForm: 1
   _damageType: 0
   _attackRangeType: 1
+  _skillType: 1
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -589,10 +748,12 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
+  _damageValue: 0
   _abilitySchool: 7
   _abilityForm: 1
   _damageType: 0
   _attackRangeType: 1
+  _skillType: 1
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -625,8 +786,9 @@ MonoBehaviour:
   _assasinPoison: {fileID: 4404074918470353249}
   _flowOfPoison: {fileID: 8216519132562782960}
   _volatilityOfPoisons: {fileID: 1300421091567981635}
+  _projectileSize: 1.2
   _spitPoison: {fileID: 802699897452820110}
-  _projectile: {fileID: 5760352791335105038, guid: e10de4766c6824742936021d88676570, type: 3}
+  _projectile: {fileID: 5760352791335105038, guid: d097441cb29bc5a42b2defb1e1f12525, type: 3}
   _player: {fileID: 7418347446368758987}
   _arrowPrefab: {fileID: 7504653704119560997, guid: 3a5dc46a6d592b84cbd6cd33fdf012dc, type: 3}
   _poisonDamagingCloudPrefab: {fileID: 8376359178360537337, guid: 6684174cfea68c84b9bd06aa086faa01, type: 3}
@@ -651,10 +813,12 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
-  _abilitySchool: 0
-  _abilityForm: 0
-  _damageType: 0
+  _damageValue: 0
+  _abilitySchool: 7
+  _abilityForm: 2
+  _damageType: 3
   _attackRangeType: 0
+  _skillType: 2
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -685,9 +849,10 @@ MonoBehaviour:
   _midPointForLeapPrefab: {fileID: 8912664995247444477, guid: 652dcebd34e17194c8dd52adb384edc4, type: 3}
   _player: {fileID: 7418347446368758987}
   _rangeLeap: 4
-  _durationLeap: 1
+  _durationLeap: 0.3
   _radiusAttack: 1.15
   _cooldownAttack: 1
+  _invtervalBetweenLeaps: 0.5
   IsInMovement: 0
   _colorForEnd: {r: 0.039215688, g: 1, b: 0, a: 1}
   _colorForStart: {r: 0.039215688, g: 1, b: 0, a: 1}
@@ -711,10 +876,12 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -766,10 +933,12 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _cooldownTime: 4
   _castDeley: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -819,10 +988,12 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -866,10 +1037,12 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -914,10 +1087,12 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -961,10 +1136,12 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _cooldownTime: 5
   _castDeley: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -1006,10 +1183,12 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -1135,11 +1314,15 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: Absolute Accuracy
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
-  _coldBlood: {fileID: 0}
+  _data:
+    Name: ColdBloodEnabledTalent
+    IsOpen: 0
+    Description: "\u0414\u0430\u0435\u0442 \u0432\u043E\u0437\u043C\u043E\u0436\u043D\u043E\u0441\u0442\u044C
+      \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u0442\u044C \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C
+      Cold Blood"
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
+  _coldBlood: {fileID: 6976349184378944770}
   _skillManager: {fileID: 9054047114055960688}
 --- !u!114 &7446444383962772610
 MonoBehaviour:
@@ -1156,10 +1339,14 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: Accelerated Slap
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: AcceleratedSlap
+    IsOpen: 0
+    Description: "\u0412\u043E \u0432\u0440\u0435\u043C\u044F \u043F\u0440\u0438\u043C\u0435\u043D\u0435\u043D\u0438\u0435
+      LightningMovement \u0441\u043D\u0438\u0436\u0430\u0435\u0442 \u043F\u0435\u0440\u0435\u0437\u0430\u0440\u044F\u0434\u043A\u0443
+      Poison Slap \u0432 2 \u0440\u0430\u0437\u0430"
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
   _poisonSlap: {fileID: 9127317757044389529}
 --- !u!114 &4404074918470353249
 MonoBehaviour:
@@ -1176,10 +1363,16 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: Assasing Poison
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: AssasinPoison
+    IsOpen: 0
+    Description: "\u041F\u043E\u043A\u0430 \u0432 \u043D\u0435\u0432\u0438\u0434\u0438\u043C\u043E\u0441\u0442\u0438,
+      \u043D\u0430\u043A\u0430\u043F\u043B\u0438\u0432\u0430\u0435\u0442 \u043C\u0430\u043A\u0441
+      3 \u0437\u0430\u0440\u044F\u0434\u0430 \u044F\u0434\u0430 \u0438 \u0440\u0430\u0441\u0445\u043E\u0434\u0443\u0435\u0442
+      \u043A\u0430\u0436\u0434\u044B\u0439 \u0438\u0437 \u043D\u0438\u0445 \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u044F
+      CreeperStrike"
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
   _invisibleCreeper: {fileID: 2091427287765565996}
   _flowOfPoisons: {fileID: 8216519132562782960}
 --- !u!114 &2884345031107975328
@@ -1197,10 +1390,14 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: Binding Poison
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: BindingPoison
+    IsOpen: 0
+    Description: "\u0417\u0430\u043F\u0440\u0435\u0449\u0430\u0435\u0442 \u043A\u0430\u0441\u0442\u043E\u0432\u0430\u0442\u044C
+      \u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0435\u0435 \u0437\u0430\u043A\u043B\u0438\u043D\u0430\u043D\u0438\u0435.
+      \u041F\u0440\u0435\u0440\u044B\u0432\u0430\u0435\u0442 \u043F\u043E\u0442\u043E\u043A\u043E\u0432\u043E\u0435"
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
 --- !u!114 &5934849255760096215
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1216,10 +1413,14 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: Capacious Poison Cloud
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: CapaciousPoisonCloud
+    IsOpen: 0
+    Description: "\u0423\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442
+      \u0440\u0430\u0434\u0438\u0443\u0441 \u043E\u0431\u043B\u0430\u043A\u0430 \u043D\u0430
+      1.5 \u0435\u0434\u0438\u043D\u0438\u0446\u044B"
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
 --- !u!114 &2847152939285646667
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1235,10 +1436,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: 
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 0}
+  _data:
+    Name: ColdBloodTalent
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
 --- !u!114 &6607662620547331670
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1254,10 +1457,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: Concentrrated Precision
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: ConcentratedPrecision
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
 --- !u!114 &4796853090339011508
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1273,10 +1478,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: Consuming Acid
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: ConsumingAcid
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
 --- !u!114 &5405598003478097550
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1292,10 +1499,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: Continuation Ambush
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: ContinuationAmbush
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
 --- !u!114 &3981511465047695186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1311,10 +1520,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: Desire To Hide
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: DesireToHide
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
 --- !u!114 &8101473789432663265
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1330,10 +1541,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: Enlarged Glands
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: EnlargedGlands
+    IsOpen: 1
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
 --- !u!114 &5685245872478298366
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1349,10 +1562,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: Feeling Of Continuation
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: FeelingOfContinuation
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
 --- !u!114 &5766639897481413642
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1368,10 +1583,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: First Strike
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: FirstStrike
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
   _creeperInvisible: {fileID: 2091427287765565996}
   _creeperStrike: {fileID: 2763546955420911548}
   FirstHit: 0
@@ -1390,10 +1607,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: Flow of Poisons
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: FlowOfPoisons
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
 --- !u!114 &6032423868418649636
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1409,10 +1628,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: Foot Instincts
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: FootInstincts
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
   _lightningMovement: {fileID: 5600781172362582590}
 --- !u!114 &6226770535792628616
 MonoBehaviour:
@@ -1429,10 +1650,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: Healing Poison Ball
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: HealingPoisonBall
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
 --- !u!114 &6042324801507634549
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1448,10 +1671,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: Healing Poison Cloud
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: HealPoisonCloud
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
 --- !u!114 &3054480961841619223
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1467,10 +1692,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: Healing Spit Poison
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: HealingSpitPoison
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
 --- !u!114 &6425516325027218904
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1486,10 +1713,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: Heated Glands
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: HeatedGlands
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
 --- !u!114 &8430420044310233612
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1505,10 +1734,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: Inertial Glands
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: InertialGlands
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
 --- !u!114 &670101081239158742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1524,10 +1755,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: Killers Stamina
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: KillersStamina
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
 --- !u!114 &888128757247546946
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1543,10 +1776,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: Lightweight Slap
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: LightweightSlap
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
   _creeperStrike: {fileID: 2763546955420911548}
 --- !u!114 &6829439234357718285
 MonoBehaviour:
@@ -1563,35 +1798,18 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: OwnElement
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: OwnElement
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
   _creeperStrike: {fileID: 2763546955420911548}
   _enemyLayer:
     serializedVersion: 2
     m_Bits: 256
   _enemiesWithDebuff: []
   _radiusSearching: 5
---- !u!114 &3271863479934341911
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9212067528232202549}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 455e54af9799d9041b152aa49a0cc446, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  Name: Poisons Empathiques
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
 --- !u!114 &2159678125995542759
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1607,10 +1825,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: Preparing For Fight
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: PreparingForFight
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
 --- !u!114 &4261495663356130338
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1626,10 +1846,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: Release From Secrecy
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: ReleaseFromSecrecy
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
   _creeperInvisible: {fileID: 2091427287765565996}
   _creeperStrike: {fileID: 2763546955420911548}
 --- !u!114 &7073961509244296273
@@ -1647,10 +1869,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: Stroke Of Aspiration
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: StrokesOfAspiration
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
   _creeperStrike: {fileID: 2763546955420911548}
   _poisonBall: {fileID: 1425385128636028372}
   _spitPoison: {fileID: 802699897452820110}
@@ -1669,10 +1893,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: Super Fast Scales
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: SuperFastScales
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
 --- !u!114 &8012403956241020689
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1688,10 +1914,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: SurgeTreatment
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: SurgeTreatment
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
 --- !u!114 &1503475089635759543
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1707,10 +1935,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: Toxique Cloud
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: ToxiqueCloud
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
 --- !u!114 &4000357412165628033
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1726,10 +1956,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: Transparent Poisons
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: TransparentPoisons
+    IsOpen: 1
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
   _poisonBall: {fileID: 1425385128636028372}
   _spitPoison: {fileID: 802699897452820110}
 --- !u!114 &7047097248153235199
@@ -1747,10 +1979,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: Voluminous Ball
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: VoluminousBall
+    IsOpen: 1
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
   _poisonBall: {fileID: 1425385128636028372}
   IncreasedSizeX: 1.2
   IncreasedSizeY: 1.2
@@ -1769,10 +2003,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: Withering Poison
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: WitheringPoison
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}
 --- !u!114 &1300421091567981635
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1788,7 +2024,9 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Name: 
-  Description: 
-  ico: {fileID: 0}
-  Character: {fileID: 7418347446368758987}
+  _data:
+    Name: VolatilityOfPoisons
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 7418347446368758987}

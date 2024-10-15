@@ -5,10 +5,6 @@ using UnityEngine;
 
 public class BindingPoison : Talent
 {
-    private void Start()
-    {
-        //Enter();
-    }
     public override void Enter()
     {
         SetActive(true);

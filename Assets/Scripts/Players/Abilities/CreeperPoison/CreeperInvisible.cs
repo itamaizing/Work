@@ -247,15 +247,13 @@ public class CreeperInvisible : Skill
     [Command]
     private void CmdReducingTransparencySpritePlayer(GameObject player)
     {
-        int teamIndex = player.GetComponentInParent<UserNetworkSettings>().TeamIndex;
-        RpcReducingTransparencySpritePlayer(player, teamIndex);
+        RpcReducingTransparencySpritePlayer(player);
     }
 
     [Command]
     private void CmdIncreasingTransparencySpritePlayer(GameObject player)
     {
-        int teamIndex = player.GetComponentInParent<UserNetworkSettings>().TeamIndex;
-        RpcIncreasingTransparencySpritePlayer(player, teamIndex);
+        RpcIncreasingTransparencySpritePlayer(player);
     }
 
     [Command]
@@ -272,9 +270,7 @@ public class CreeperInvisible : Skill
     [Command]
     private void CmdApplyInvisibleWithTalent()
     {
-       // Debug.Log("CreeperInvisible / CmdApplyInvisibleWithTalent");
-        _isInvisible = true; 
-        //_player.ChangedBool(false);
+       _isInvisible = true; 
 
         RpcApplyInvisibleWithTalent();
 
@@ -301,7 +297,7 @@ public class CreeperInvisible : Skill
     #region RpcMethods
 
     [ClientRpc]
-    private void RpcReducingTransparencySpritePlayer(GameObject player, int teamIndex)
+    private void RpcReducingTransparencySpritePlayer(GameObject player)
     {
         player.GetComponent<Character>().IsInvisible = true;
 
@@ -309,15 +305,14 @@ public class CreeperInvisible : Skill
 
         Color newPlayerSpriteTransparency = playerSprite.color;
 
-        var localPlayer = NetworkClient.connection.identity.GetComponent<UserNetworkSettings>();
-        bool isAlly = localPlayer.TeamIndex == teamIndex;
-        
-        if (isAlly)
+        int playerLayer = player.layer;
+
+        if (playerLayer == LayerMask.NameToLayer("Allies"))
         {
             newPlayerSpriteTransparency.a = 0.5f;
             _playerSprite.color = new Color(1f, 1f, 1f, newPlayerSpriteTransparency.a);
         }
-        else
+        else if (playerLayer == LayerMask.NameToLayer("Enemy"))
         {
             newPlayerSpriteTransparency.a = 0.0f;
             _playerSprite.color = new Color(1f, 1f, 1f, newPlayerSpriteTransparency.a);
@@ -325,7 +320,7 @@ public class CreeperInvisible : Skill
     }
 
     [ClientRpc]
-    private void RpcIncreasingTransparencySpritePlayer(GameObject player, int teamIndex)
+    private void RpcIncreasingTransparencySpritePlayer(GameObject player)
     {
         player.GetComponent<Character>().IsInvisible = false;
 
@@ -333,15 +328,14 @@ public class CreeperInvisible : Skill
 
         Color newPlayerSpriteTransparency = playerSprite.color;
 
-        var localPlayer = NetworkClient.connection.identity.GetComponent<UserNetworkSettings>();
-        bool isAlly = localPlayer.TeamIndex == teamIndex;
+        int playerLayer = player.layer;
 
-        if (isAlly)
+        if (playerLayer == LayerMask.NameToLayer("Allies"))
         {
             newPlayerSpriteTransparency.a = 1f;
             _playerSprite.color = new Color(1f, 1f, 1f, newPlayerSpriteTransparency.a);
         }
-        else
+        else if (playerLayer == LayerMask.NameToLayer("Enemy"))
         {
             newPlayerSpriteTransparency.a = 1f;
             _playerSprite.color = new Color(1f, 1f, 1f, newPlayerSpriteTransparency.a);

@@ -8,11 +8,6 @@ public class SuperFastScales : Talent
     private float _increaseResistanceToMagicDamage = 90f;
     private float _baseDefMagDamage;
 
-    private void Start()
-    {
-        Enter();
-    }
-
     public override void Enter()
     {
         SetActive(true);

@@ -4,13 +4,6 @@ using UnityEngine;
 
 public class HeatedGlands : Talent
 {
-
-    //private void Start()
-    //{
-    //    //Enter();
-    //    //Debug.Log("HeatedGlands Started");
-    //}
-
     public override void Enter()
     {
         SetActive(true);

@@ -9,11 +9,6 @@ public class VoluminousBall : Talent
     public float IncreasedSizeX = 1.2f;
     public float IncreasedSizeY = 1.2f;
 
-    private void Start()
-    {
-        //Enter();
-    }
-
     public override void Enter()
     {
         SetActive(true);

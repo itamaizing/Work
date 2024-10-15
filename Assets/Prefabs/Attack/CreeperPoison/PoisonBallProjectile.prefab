@@ -35,7 +35,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &-9037394795196072516
 Rigidbody2D:
@@ -79,11 +79,18 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _hitEffect: {fileID: 0}
-  _spriteRenderer: {fileID: 1376465542260136675}
-  _collider: {fileID: 4712967696769287591}
-  _rbBall: {fileID: -9037394795196072516}
-  _dad: {fileID: 0}
+  _projectileSprite: {fileID: 1376465542260136675}
+  _projectileCollider: {fileID: 4712967696769287591}
+  _projectileRigidbody: {fileID: -9037394795196072516}
+  _speed: 0
+  _maxDistanceFlying: 6
+  _transformBall: {fileID: 744895182535649991}
+  _damage: 35
+  _baseDistancePush: 1.2
+  _baseDurationPush: 1
+  _durationInAir: 1
+  _fastMovementSpeed: 0.1
+  _slowMovementSpeed: 0.2
 --- !u!58 &4712967696769287591
 CircleCollider2D:
   m_ObjectHideFlags: 0

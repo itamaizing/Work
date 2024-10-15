@@ -3,11 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class VolatilityOfPoisons : Talent
-{
-    private void Start()
-    {
-        Enter();
-    }
+{ 
     public override void Enter()
     {
         SetActive(true);

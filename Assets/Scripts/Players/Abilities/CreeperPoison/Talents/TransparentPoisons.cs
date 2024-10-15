@@ -13,11 +13,6 @@ public class TransparentPoisons : Talent
 
     public bool IsPlayerInvisible { get => _isPlayerInvisible; }
 
-    private void Start()
-    {
-        Enter();
-    }
-
     public override void Enter()
     {
         SetActive(true);

@@ -28,7 +28,6 @@ public class OwnElement : Talent
 
     private void Start()
     {
-        //Enter();
         _baseAttackSpeed = _creeperStrike.AttackSpeed;
     }
 

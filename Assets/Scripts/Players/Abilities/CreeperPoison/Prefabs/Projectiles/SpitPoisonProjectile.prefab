@@ -52,12 +52,11 @@ MonoBehaviour:
   syncDirection: 1
   syncMode: 0
   syncInterval: 0
-  _rbBall: {fileID: 4203435246731193498}
-  _spriteRenderer: {fileID: 7660267703510847846}
-  _hitEffect: {fileID: 0}
-  _colliderBall: {fileID: 1593443830899751966}
-  _maxDistance: 5
-  _speed: 18
+  _projectileSprite: {fileID: 7660267703510847846}
+  _projectileCollider: {fileID: 1593443830899751966}
+  _projectileRigidbody: {fileID: 4203435246731193498}
+  _speed: 0.2
+  _maxDistanceFlying: 6
 --- !u!50 &4203435246731193498
 Rigidbody2D:
   serializedVersion: 4
