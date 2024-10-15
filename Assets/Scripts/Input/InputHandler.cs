@@ -32,6 +32,7 @@ public class InputHandler : MonoBehaviour
 	public static UnityAction OnShiftLeftMouse = delegate { };
 	public static UnityAction OnShiftLeftMouseCanceled = delegate { };
 	public static UnityAction<float> ScrollMouse = delegate { };
+	public static UnityAction ShowMenu = delegate { };
 
 	public static UnityAction OnFirstAbility = delegate { };
 	public static UnityAction OnSecondAbility = delegate { };
@@ -78,6 +79,7 @@ public class InputHandler : MonoBehaviour
 		_inputActions.GameplayMap.ShiftMouse.performed += i => OnShiftLeftMouse?.Invoke();
 		_inputActions.GameplayMap.ShiftMouse.canceled += i => OnShiftLeftMouseCanceled?.Invoke();
 		_inputActions.GameplayMap.ScrollMouse.performed += i => ScrollMouse?.Invoke(i.ReadValue<float>());
+		_inputActions.GameplayMap.ShowMenu.performed += i => ShowMenu?.Invoke();
 
 		// spells 1-2-3-4-5-6-7-8
 		_inputActions.GameplayMap.Spell1.performed += i => OnFirstAbility?.Invoke();

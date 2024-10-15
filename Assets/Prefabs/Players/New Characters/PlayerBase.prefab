@@ -341,8 +341,8 @@ MonoBehaviour:
   - {fileID: 2603903007656169372}
   - {fileID: 2926669445991704918}
   _selectedCircle: {fileID: 9081349754013333447}
-  talentManager: {fileID: 8675175310089954536}
   _spawnComponent: {fileID: 3330577042116454553}
+  talentManager: {fileID: 8675175310089954536}
 --- !u!114 &7760335386463111578
 MonoBehaviour:
   m_ObjectHideFlags: 0
