@@ -87,6 +87,11 @@ public abstract class Resource : NetworkBehaviour
         MaxValueChanged?.Invoke(oldValue, newValue);
     }
 
+    public void ResetValue()
+    {
+        _currentValue = _maxValue;
+    }
+
     private IEnumerator RegenerateJob()
     {
         while (true)

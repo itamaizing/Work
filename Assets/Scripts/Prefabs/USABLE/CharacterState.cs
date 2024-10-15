@@ -226,6 +226,7 @@ public class CharacterState : NetworkBehaviour
 
 	public bool invinsible = false;
 
+	public List<AbstractCharacterState> CurrentStates => currentStates;
 	public Character Character => _hero;
 
 	public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
@@ -250,10 +251,10 @@ public class CharacterState : NetworkBehaviour
 		[States.SpiritEnergy] = new SpiritEnergyState(),
 		[States.SpiritHealth] = new SpiritHealthState(),
 		[States.ScorchedSoul] = new ScorchedSoul(),
-        [States.Knockdown] = new Knockdown(),
-        [States.IdealEvade] = new IdealEvade(),
-        [States.Bleeding] = new BleedingDebuff(),
-    };
+		[States.Knockdown] = new Knockdown(),
+		[States.IdealEvade] = new IdealEvade(),
+		[States.Bleeding] = new BleedingDebuff(),
+	};
 
 	public void Initialize(Character hero)
 	{
@@ -524,4 +525,3 @@ public enum States
 	Bleeding,
 
 }
-

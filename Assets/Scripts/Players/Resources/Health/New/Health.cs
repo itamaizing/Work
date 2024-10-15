@@ -175,11 +175,6 @@ public class Health : Resource, IDamageable, IHealingable
         Died?.Invoke();
     }
 
-    public void ResetValue()
-    {
-        _currentValue = _maxValue;
-    }
-
 	public void ShowPhantomValue(Damage phantomValue)
 	{
         float curDamage = phantomValue.Value;
