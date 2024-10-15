@@ -186,13 +186,13 @@ public class DeathSpiral : Skill
 					if (_inTheRow)
 					{
 						var heal = new Heal { Value = 10 };
-						_playerLinks.Health.Heal(ref heal);
+						_playerLinks.Health.Heal(ref heal,name);
 						return;
 					}
 					else
 					{
 						var heal = new Heal { Value = 20 };
-						_playerLinks.Health.Heal(ref heal);
+						_playerLinks.Health.Heal(ref heal,name);
 						return;
 					}
 				}

@@ -55,7 +55,7 @@ public abstract class AutoAttackSkill : Skill
         {
             if (GetMouseButton)
             {
-                _target = GetRaycastTarget();
+                _target = GetRaycastTarget(true);
             }
             yield return null;
         }

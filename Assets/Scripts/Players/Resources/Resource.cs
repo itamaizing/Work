@@ -46,10 +46,10 @@ public abstract class Resource : NetworkBehaviour
 
     public virtual void Add(float value)
     {
-        if (MaxValue >= _currentValue + value)
-            CurrentValue += value;
+        if (_maxValue >= _currentValue + value)
+            _currentValue += value;
         else
-            CurrentValue = _maxValue;
+            _currentValue = _maxValue;
     }
 
     public virtual bool TryUse(float value)

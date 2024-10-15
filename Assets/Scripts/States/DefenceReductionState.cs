@@ -9,7 +9,7 @@ public class DefenceReductionState : AbstractCharacterState
 
     private List<StatusEffect> _effects = new ();
 
-    public override States State => States.SpiritHealth;
+    public override States State => States.DefenseReduction;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 

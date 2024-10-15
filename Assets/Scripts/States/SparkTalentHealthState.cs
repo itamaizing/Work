@@ -4,17 +4,19 @@ using UnityEngine;
 
 public class SparkTalentHealthState : AbstractCharacterState
 {
+    private Skill skill;
     private float _healthBuffActiveTime = 2f;
     private float _healthBoostPercentage = 0.25f;
 
     private List<StatusEffect> _effects = new ();
 
-    public override States State => States.SpiritHealth;
+    public override States State => States.SparkTalentHealthBuff;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
+        skill = personWhoMadeBuff.Abilities.Abilities.FirstOrDefault(o => o.name == skillName);
         _characterState = character;
         _healthBuffActiveTime = durationToExit;
         _healthBoostPercentage = damageToExit;
@@ -44,13 +46,17 @@ public class SparkTalentHealthState : AbstractCharacterState
 
     private void ApplyBuff()
     {
-        var heal = _characterState.Character.Health.CurrentValue * _healthBoostPercentage;
-        _characterState.Character.Health.Add(heal);
+        var healValue = _characterState.Character.Health.CurrentValue * _healthBoostPercentage;
+        var heal = new Heal { Value = healValue };
+        
+        skill.ApplyHeal(heal, _characterState.gameObject, nameof(States.SpiritEnergy));  
     }
 
     private void RemoveBuff()
     {
-        var heal = -_characterState.Character.Health.CurrentValue * _healthBoostPercentage;
-        _characterState.Character.Health.Add(heal);
+        var healValue = _characterState.Character.Health.CurrentValue * _healthBoostPercentage;
+        var heal = new Heal { Value = -healValue };
+        
+        skill.ApplyHeal(heal, _characterState.gameObject, nameof(States.SpiritEnergy));  
     }
 }

@@ -493,7 +493,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.size
-      value: 8
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.size
@@ -532,9 +532,21 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 289920117479732749}
     - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[8]
+      value: 
+      objectReference: {fileID: 1147168004765282515}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[9]
+      value: 
+      objectReference: {fileID: 5711027217446253889}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[0]
       value: 
       objectReference: {fileID: 7641699545836838851, guid: 687ee907899571945bfa1fa20f4bf534, type: 3}
+    - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[10]
+      value: 
+      objectReference: {fileID: 339410252932268630}
     - target: {fileID: 8836867217626735083, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -600,6 +612,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       insertIndex: -1
       addedObject: {fileID: 289920117479732749}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1147168004765282515}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5711027217446253889}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 339410252932268630}
   m_SourcePrefab: {fileID: 100100000, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
 --- !u!224 &973525489940312097 stripped
 RectTransform:
@@ -705,10 +726,10 @@ MonoBehaviour:
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _attackZoneSize: 0
-  _attackSpeed: 1
+  _attackSpeed: 2
   _buffDuration: 9
   _healAmount: 2
-  _damageAmount: 20
+  _damageAmount: 2
   _castTime: 0.8
   _range: 4
   _manaCostHeal:
@@ -723,6 +744,8 @@ MonoBehaviour:
   _altManaCostDamage:
   - resourceType: 1
     resourceCost: 2
+  _flashOfLight: {fileID: 8016413266984540064}
+  IsLightMode: 1
 --- !u!114 &8016413266984540064
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1215,7 +1238,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: EmeraldSkinActiveTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 21300000, guid: 0df2be162515e5f45a7803b8871e7725, type: 3}
   character: {fileID: 7988306871063235719}
@@ -1238,11 +1261,77 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: EmeraldLightMagicBoostTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 21300000, guid: 9417efc47083f4a1598c1966a6345cdb, type: 3}
   character: {fileID: 7988306871063235719}
   _emeraldSkin: {fileID: 8837464695628258599}
+--- !u!114 &1147168004765282515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8644870519239594361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e6003a02a1a4513adfcc943d80c205a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _data:
+    Name: ManaRestoreBoostTalent
+    IsOpen: 1
+    Description: 
+    Icon: {fileID: 21300000, guid: 18a436a2dc16eb24a9f5c7c559b3906d, type: 3}
+  character: {fileID: 7988306871063235719}
+  _sparkOfLight: {fileID: 1115342882969983666}
+--- !u!114 &5711027217446253889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8644870519239594361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a611bf8a46d4845a7aaa5896e747398, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _data:
+    Name: CooldownReduceFlashOfLighttalent
+    IsOpen: 1
+    Description: 
+    Icon: {fileID: 21300000, guid: 20af4d25b37c89a4ab20f317d1c7cf17, type: 3}
+  character: {fileID: 7988306871063235719}
+  _flashOfLight: {fileID: 8016413266984540064}
+--- !u!114 &339410252932268630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8644870519239594361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d86f92f9ce4b47339b7ba91a2c21ac65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _data:
+    Name: HealingBuffTalent
+    IsOpen: 1
+    Description: 
+    Icon: {fileID: 21300000, guid: c958be7c2aec0f04f9ee64f294e9848b, type: 3}
+  character: {fileID: 7988306871063235719}
+  _sparkOfLight: {fileID: 1115342882969983666}
 --- !u!1001 &2510796882220387456
 PrefabInstance:
   m_ObjectHideFlags: 0

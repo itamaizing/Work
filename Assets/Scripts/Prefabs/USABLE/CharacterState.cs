@@ -9,6 +9,9 @@ public abstract class AbstractCharacterState
 	protected Health _health;
 	protected Character _personWhoMadeBuff;
 
+	public int CurrentStacksCount = 0;
+	public int MaxStacksCount = 0;
+
 	public abstract States State { get; }
 	public abstract StateType Type { get; }
 	public abstract List<StatusEffect> Effects { get; }
@@ -376,11 +379,13 @@ public class CharacterState : NetworkBehaviour
 		{
 			if (currentStates[i].State == stateName)
 			{
-				currentStates[i].ExitState();
 				if (currentStates[i] is IDamageable damageableShield)
 				{
 					RemoveShield(damageableShield);
 				}
+				
+				currentStates[i].ExitState();
+				
 				currentStates.RemoveAt(i);
 			}
 		}
@@ -405,20 +410,18 @@ public class CharacterState : NetworkBehaviour
 	{
 		if (invinsible) return;
 
+		Debug.Log(state);
+
 		if (CheckForState(state))
 		{
 			for (int i = 0; i < currentStates.Count; i++)
 			{
 				if (currentStates[i].State == state)
 				{
-					if (currentStates[i].Stack(duration))
+					if (currentStates[i].CurrentStacksCount < currentStates[i].MaxStacksCount)
 					{
+						currentStates[i].Stack(duration);
 						_stateIcons.ActivateIco(state, duration, 1, true);
-					}
-					else
-					{
-						CreateState(enumToState[state], state, duration, damageToExit, personWhoShooted, skillName,
-							false);
 					}
 
 					break;
@@ -428,6 +431,7 @@ public class CharacterState : NetworkBehaviour
 		else
 		{
 			CreateState(enumToState[state], state, duration, damageToExit, personWhoShooted, skillName, false);
+
 			if (enumToState[state] is IDamageable damageableShield)
 			{
 				AddShield(damageableShield);

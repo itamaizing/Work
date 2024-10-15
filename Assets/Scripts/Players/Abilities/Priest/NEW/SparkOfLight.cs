@@ -19,20 +19,31 @@ public class SparkOfLight : AutoAttackSkill
     [SerializeField] private float _altBuffDuration = 5f;
     [SerializeField] private float _altDamageAmount = 2f;
     [SerializeField] private List<SkillEnergyCost> _altManaCostDamage;
+    [SerializeField] private FlashOfLight _flashOfLight;
 
-    public bool IsLightMode { get; private set; } = true;
+    public bool IsLightMode = true;
 
     private bool _healthBoostActive = false;
     private bool _lowHealthTalentActive = false;
+    private bool _manaRestoreBoostTalent = false;
+    private bool _healingBuffTalentActive = false;
+    
     private const float LowHealthThreshold = 0.25f;
     private const float BonusDamageMultiplier = 1.25f;
     private const float HealthBoostPercentage = 0.25f;
     private const float HealthBoostDuration = 2f;
     private const float DefenseReductionPercentage = 0.25f;
     private const float DefenseDebuffDuration = 2f;
+    
+    private float _healingBuffDuration = 5f;
+    private float _tickHealingBonus = 2f;
+    private int _healingBonusStacks = 0;
+    private float _lastFlashOfLightCastTime = 0f;
 
     public void EnableTalentPhysicalShieldBoost(bool value) => _healthBoostActive = value;
     public void EnableLowHealthTalent(bool value) => _lowHealthTalentActive = value;
+    public void EnableManaRestoreBoostTalent(bool value) => _manaRestoreBoostTalent = value;
+    public void EnableHealingBuffTalent(bool value) => _healingBuffTalentActive = value;
     
     private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
     private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
@@ -41,12 +52,14 @@ public class SparkOfLight : AutoAttackSkill
 
     private void OnEnable()
     {
+        _flashOfLight.CastEnded += HandleLastTimeFlashOfLightCast;
         OnModeChange += HandleModeChange;
         UpdateMode();
     }
 
     private void OnDisable()
     {
+        _flashOfLight.CastEnded -= HandleLastTimeFlashOfLightCast;
         OnModeChange -= HandleModeChange;
     }
 
@@ -59,6 +72,11 @@ public class SparkOfLight : AutoAttackSkill
     private void HandleModeChange()
     {
         UpdateMode();
+    }
+
+    private void HandleLastTimeFlashOfLightCast()
+    {
+        _lastFlashOfLightCastTime = Time.time;
     }
 
     private void UpdateMode()
@@ -105,6 +123,8 @@ public class SparkOfLight : AutoAttackSkill
         if (IsEnemyTarget(_target) && TryPayCost(_altManaCostDamage))
         {
             ApplyDamageInAltMode(_target);
+            ApplySpiritHealthBuff(_target);
+            
             if (_lowHealthTalentActive && IsTargetBelowHealthThreshold(_target))
             {
                 ApplyDefenseDebuff(_target);
@@ -114,12 +134,21 @@ public class SparkOfLight : AutoAttackSkill
 
     private void Heal(Character target)
     {
-        var healthComponent = target.GetComponent<Health>();
-        if (healthComponent != null)
+        var isBonusActive = _healingBuffTalentActive && Time.time < _lastFlashOfLightCastTime + _healingBuffDuration;
+        
+        if (isBonusActive)
         {
-            var heal = new Heal { Value = _healAmount };
-            healthComponent.Heal(ref heal);
+            _healingBonusStacks++;
         }
+        else
+        {
+            _healingBonusStacks = 0;
+        }
+        
+        var bonus = isBonusActive ? _tickHealingBonus * _healingBonusStacks : 0;
+        
+        var heal = new Heal { Value = _healAmount + bonus };
+        ApplyHeal(heal, target.gameObject, name);
     }
 
     private void Damage(Character target)
@@ -150,7 +179,14 @@ public class SparkOfLight : AutoAttackSkill
 
     private void ApplySpiritEnergyBuff(Character target)
     {
-        CmdAddBuff(States.SpiritEnergy, _buffDuration, 0, target.gameObject, name);
+        var talentActive = _manaRestoreBoostTalent ? 1 : 0;
+        CmdAddBuff(States.SpiritEnergy, _buffDuration, talentActive, target.gameObject, name);
+    }
+
+    private void ApplySpiritHealthBuff(Character target)
+    {
+        var talentActive = _manaRestoreBoostTalent ? 1 : 0;
+        CmdAddBuff(States.SpiritHealth, _altBuffDuration, talentActive, target.gameObject, name);
     }
 
     private void ApplyHealthBuff(Character target)
@@ -169,7 +205,7 @@ public class SparkOfLight : AutoAttackSkill
     private void CmdAddBuff(States state, float duration, float modifier, GameObject target, string skillName)
     {
         var characterState = target.GetComponent<CharacterState>();
-        characterState?.AddState(state, duration, modifier, target, skillName);
+        characterState.AddState(state, duration, modifier, target, skillName);
     }
 
     protected override void ClearData()

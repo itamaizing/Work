@@ -189,6 +189,7 @@ public class PriestShield : Skill
     public void EnableHealingBoost(bool value)
     {
         _talentHealingBoostActive = value;
+        if(Hero == null || Hero.DamageTracker == null) return;
         Hero.DamageTracker.RemoveOldLocalEntries();
     }
 

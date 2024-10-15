@@ -237,6 +237,16 @@ public abstract class Skill : NetworkBehaviour
 
         _cooldownJob = StartCoroutine(CooldownCoroutine(time));
     }
+    
+    public void DecreaseSetCooldown(float time)
+    {
+        var timeToSet = _remainingCooldownTime - time <= 0 ? _remainingCooldownTime - time : 0;
+
+        if (_cooldownJob != null)
+            StopCoroutine(_cooldownJob);
+
+        _cooldownJob = StartCoroutine(CooldownCoroutine(timeToSet));
+    }
 
     public void ReductionSetCooldown(float time)
     {
@@ -614,7 +624,7 @@ public abstract class Skill : NetworkBehaviour
         _castCoroutine = null;
     }
     
-    protected void ApplyDamage(Damage damage, GameObject hp)
+    public void ApplyDamage(Damage damage, GameObject hp)
     {
         if (_tempTargetForDamage != hp.transform)
         {
@@ -624,10 +634,10 @@ public abstract class Skill : NetworkBehaviour
         
         Hero.DamageTracker.AddDamage(damage);
         
-        CmdApplyDamage(damage, hp);
+        CmdApplyDamage(damage, hp, this);
     }
 
-    protected void ApplyHeal(Heal heal, GameObject hp)
+    public void ApplyHeal(Heal heal, GameObject hp, string sourceName)
     {
         if (_tempTargetForDamage != hp.transform)
         {
@@ -637,18 +647,18 @@ public abstract class Skill : NetworkBehaviour
         
         Hero.DamageTracker.AddHeal(heal);
         
-        CmdApplyHeal(heal, hp);
+        CmdApplyHeal(heal, hp, this, sourceName);
     }
 
     [Command]
-    private void CmdApplyDamage(Damage damage, GameObject hp)
+    private void CmdApplyDamage(Damage damage, GameObject hp, Skill skill)
     {
-        hp.GetComponent<Health>().TryTakeDamage(ref damage, this);
+        hp.GetComponent<Health>().TryTakeDamage(ref damage, skill);
     }
     
     [Command]
-    private void CmdApplyHeal(Heal heal, GameObject hp)
+    private void CmdApplyHeal(Heal heal, GameObject hp, Skill skill, string sourceName)
     {
-        hp.GetComponent<Health>().Heal(ref heal, this);
+        hp.GetComponent<Health>().Heal(ref heal, sourceName, skill);
     }
 }

@@ -8,7 +8,7 @@ public struct Heal : NetworkMessage
 }
 public interface IHealingable
 {
-    public event Action<float, Skill> HealTaked;
+    public event Action<float, Skill,string > HealTaked;
 
-    public void Heal(ref Heal value, Skill skill);
+    public void Heal(ref Heal value, string sourceName, Skill skill);
 }

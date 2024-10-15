@@ -3,6 +3,7 @@ using Mirror;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public abstract class Talent : NetworkBehaviour
 {
@@ -103,6 +104,7 @@ public class TalentSystem : NetworkBehaviour
         foreach (var talent in _talents.SelectMany(talentsGroup => talentsGroup.TalentsData))
         {
             talent.Data.Name = talent.GetType().Name;
+            if(talent.Data.IsOpen && SceneManager.GetActiveScene().buildIndex == 3) talent.Enter();
         }
     }
     public void AddPoints(int value)

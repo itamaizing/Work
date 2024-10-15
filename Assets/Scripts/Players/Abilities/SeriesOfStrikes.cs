@@ -212,7 +212,7 @@ public class SeriesOfStrikes : MonoBehaviour
 		if(target.CharacterState.CheckForState(States.Curse))
 		{
 			var heal = new Heal { Value = damage * 0.2f };
-			_playerLinks.Health.Heal(ref heal);
+			_playerLinks.Health.Heal(ref heal,name);
 		}
 	}
 }
