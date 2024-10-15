@@ -1231,7 +1231,7 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _attackZoneSize: 0
   _attackSpeed: 1
-  _damage: 100
+  _damage: 8
   _playerLinks: {fileID: 5889404958618692528}
   _combo: {fileID: 5948793039085152286}
 --- !u!114 &5120720823893537476

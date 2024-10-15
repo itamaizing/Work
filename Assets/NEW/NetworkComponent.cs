@@ -20,21 +20,22 @@ public class NetworkComponent : NetworkBehaviour
 
     private void ServerHandleUnitSpawn(Character character)
     {
-        if (character == null) return;
+        if (character == null || connectionToClient == null || controllableUnits == null)
+            return;
 
-        if (character.connectionToClient == null) return;
+        if (character.connectionToClient == null)
+            return;
 
-        if (character.connectionToClient.connectionId != connectionToClient.connectionId) return;
-
-        if (controllableUnits == null) return;
+        if (character.connectionToClient.connectionId != connectionToClient.connectionId)
+            return;
 
         controllableUnits.Add(character);
     }
 
-
     private void ServerHandleUnitDelete(Character character)
     {
-        if (character == null || controllableUnits == null) return;
+        if (character == null || controllableUnits == null)
+            return;
 
         if (character.connectionToClient != null &&
             character.connectionToClient.connectionId != connectionToClient.connectionId)
@@ -46,12 +47,7 @@ public class NetworkComponent : NetworkBehaviour
         {
             controllableUnits.Remove(character);
         }
-        else
-        {
-            return;
-        }
     }
-
 
     public override void OnStartClient()
     {
@@ -59,7 +55,6 @@ public class NetworkComponent : NetworkBehaviour
 
         Character.AuthorityOnUnitSpawned += AuthorityHandleUnitSpawn;
         Character.AuthorityOnUnitDeleted += AuthorityHandleUnitDelete;
-
     }
 
     public override void OnStopClient()
@@ -72,19 +67,13 @@ public class NetworkComponent : NetworkBehaviour
 
     private void AuthorityHandleUnitSpawn(Character character)
     {
-        if (!isOwned)
-        {
-            return;
-        }
+        if (!isOwned) return;
         controllableUnits.Add(character);
     }
 
     private void AuthorityHandleUnitDelete(Character character)
     {
-        if (!isOwned)
-        {
-            return;
-        }
+        if (!isOwned) return;
         controllableUnits.Remove(character);
     }
 }
