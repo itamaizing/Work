@@ -877,8 +877,6 @@ public abstract class Skill : NetworkBehaviour
         ClearData();
     }
 
-
-
     [Command]
     protected void CmdApplyDamage(Damage damage, GameObject hp)
     {
@@ -896,6 +894,8 @@ public abstract class Skill : NetworkBehaviour
         InputHandler.OnShiftLeftMouse += OnShiftClick;
         InputHandler.OnSwitchAutoMode += OnCtrlClick;
 
+        //cancelled
+
         InputHandler.OnClickCanceled += OnClickCanceled;
         InputHandler.OnShiftLeftMouseCanceled += OnShiftCancled;
         InputHandler.OnSwitchAutoModeCanceled += OnCtlCancled;
@@ -907,6 +907,8 @@ public abstract class Skill : NetworkBehaviour
         InputHandler.OnClick -= OnClick;
         InputHandler.OnShiftLeftMouse -= OnShiftClick;
         InputHandler.OnSwitchAutoMode -= OnCtrlClick;
+
+        //cancelled
 
         InputHandler.OnClickCanceled -= OnClickCanceled;
         InputHandler.OnShiftLeftMouseCanceled -= OnShiftCancled;
