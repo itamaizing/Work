@@ -27,27 +27,17 @@ public class SkillRenderer : NetworkBehaviour
     [Command]
     public void CmdDrawDamageZone(Vector3 position, float radius, Damage damage, GameObject player)
     {
-        int teamIndex = player.GetComponent<UserNetworkSettings>().TeamIndex;
-        RpcDrawDamageZone(position, radius, damage, player, teamIndex);
+        RpcDrawDamageZone(position, radius, damage, player);
     }
 
     [ClientRpc]
-    public void RpcDrawDamageZone(Vector3 position, float radius, Damage damage, GameObject player, int teamIndex)
+    public void RpcDrawDamageZone(Vector3 position, float radius, Damage damage, GameObject player)
     {
         _tempDamageZone = Instantiate(_damageZonePref, position, Quaternion.identity);
         _tempDamageZone.SetSize(radius, damage);
 
-        var localPlayer = NetworkClient.connection.identity.GetComponent<UserNetworkSettings>();
-        bool isAlly = localPlayer.TeamIndex == teamIndex;
-
-        if (isAlly)
-        {
-            _tempDamageZone.SetColor(_colorForAllies);
-        }
-        else
-        {
-            _tempDamageZone.SetColor(_colorForEnemies);
-        }
+        Color zoneColor = player.layer == LayerMask.NameToLayer("Allies") ? _colorForAllies : _colorForEnemies;
+        _tempDamageZone.SetColor(zoneColor);
     }
 
     [Command]
