@@ -13,4 +13,11 @@ public class MinionIcon : MonoBehaviour
         _playerHp.Init(character.Health);
         _playerMana.Init(character.Stamina);
     }
+
+    public void Init(Character character, Sprite icon)
+    {
+        Init(character);
+
+        _playerIcon.sprite = icon;
+    }
 }

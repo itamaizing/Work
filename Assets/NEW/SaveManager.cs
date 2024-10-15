@@ -1,9 +1,11 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class SaveManager : MonoBehaviour
 {
+    
     private static SaveManager _instance;
     public static SaveManager Instance => _instance;
 
@@ -188,7 +190,18 @@ public class SaveManager : MonoBehaviour
 
         PlayerPrefs.SetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_" + talentGroup.Name + "_" + talent.Data.Name, isTalentActive);
         PlayerPrefs.Save();
-    }
+
+        StartCoroutine(KOSTIL());
+		//_character.TalentManager.Initialize();
+	}
+
+    private IEnumerator KOSTIL()
+    {
+		Debug.Log("TODO HERE " + name);
+
+		yield return new WaitForSeconds(0.2f);
+		_character.TalentManager.Initialize();
+	}
 
     public void LoadTalent(int idGroup, string idTalent)
     {

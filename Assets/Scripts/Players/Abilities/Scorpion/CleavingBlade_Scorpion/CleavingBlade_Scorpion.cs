@@ -12,7 +12,7 @@ public class CleavingBlade_Scorpion : Skill
     [SyncVar]
     private int _counter = 1;
     private Character _target;
-    public float Damage => Random.Range(_minDamage, _maxDamage);
+    public float DamageRange => Random.Range(_minDamage, _maxDamage);
     protected override bool IsCanCast
     {
         get
@@ -101,7 +101,7 @@ public class CleavingBlade_Scorpion : Skill
         {
             Damage damage = new Damage
             {
-                Value = Buff.Damage.GetBuffedValue(Damage * damageMultiplier),
+                Value = Buff.Damage.GetBuffedValue(DamageRange * damageMultiplier),
                 Type = DamageType,
                 Range = AttackRangeType,
             };

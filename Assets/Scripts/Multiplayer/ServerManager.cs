@@ -3,29 +3,40 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class ServerManager : NetworkBehaviour
 {
     [SerializeField] private List<NetworkRoomsManager> _managers;
-    [SerializeField] private HeroSelectPanel _heroSelectPanel;
-    [SerializeField] private GameModeSelectPanel _gameModeSelectPanel;
-    [SerializeField] private Button _startButton;
+    [SerializeField] private List<HeroComponent> _heroList;
+    
+    private static ServerManager _instance;
+    private int _currentHeroIndex = 0;
+    private GameMode _currentGameMode = GameMode.GM1vs1;
+    
+    public static ServerManager Instance => _instance;
+    public List<HeroComponent> HeroList => _heroList;
 
-    private void Awake()
+    public void Awake()
     {
-        _startButton.onClick.AddListener(AddPlayer);
+        if (_instance != null)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            _instance = this;
+        }
     }
-
-    private void AddPlayer()
+    
+    public void StartClient()
     {
-        AddPlayer(User.Instance.gameObject, _heroSelectPanel.SelectedHeroIndex, _gameModeSelectPanel.GameMode);
+        AddPlayer(User.Instance.gameObject, _currentHeroIndex, _currentGameMode);
     }
 
     [Command(requiresAuthority = false)]
-    private void AddPlayer(GameObject user, int CharacterIndex, GameMode gameMode)
+    private void AddPlayer(GameObject user, int characterIndex, GameMode gameMode)
     {
-        StartCoroutine(AddPlayerInRoomJob(user, CharacterIndex, gameMode));
+        StartCoroutine(AddPlayerInRoomJob(user, characterIndex, gameMode));
     }
 
     private int GetManagerIndex(GameMode mode)
@@ -39,9 +50,9 @@ public class ServerManager : NetworkBehaviour
         return -37;
     }
 
-    private IEnumerator AddPlayerInRoomJob(GameObject user, int CharacterIndex, GameMode gameMode)
+    private IEnumerator AddPlayerInRoomJob(GameObject user, int characterIndex, GameMode gameMode)
     {
-        GameObject player = Instantiate(_heroSelectPanel.HeroList[CharacterIndex].gameObject);
+        GameObject player = Instantiate(_heroList[characterIndex].gameObject);
         NetworkServer.Spawn(player, user);
 
         int index = GetManagerIndex(gameMode);
@@ -50,5 +61,14 @@ public class ServerManager : NetworkBehaviour
 
         user.GetComponent<User>().connectionToClient.Send(new SceneMessage { sceneName = _managers[index].Scene, sceneOperation = SceneOperation.LoadAdditive });
         SceneManager.MoveGameObjectToScene(user, SceneManager.GetSceneAt(SceneManager.sceneCount - 1));
+    }
+    
+    public void SetPlayer(HeroComponent hero)
+    {
+        _currentHeroIndex = _heroList.IndexOf(hero);
+    }
+    public void SetMode(GameMode mode)
+    {
+        _currentGameMode = mode;
     }
 }

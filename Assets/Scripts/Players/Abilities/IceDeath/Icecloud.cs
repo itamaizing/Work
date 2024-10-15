@@ -10,6 +10,7 @@ public class Icecloud : Skill
 	[SerializeField] private SeriesOfStrikes _combo;
 
 	private Vector2 _mousePos = Vector3.positiveInfinity;
+	
 	//private bool _enabled;
 	private bool _boostDmg;
 	private Energy _energy;
@@ -94,8 +95,8 @@ public class Icecloud : Skill
 		while (float.IsPositiveInfinity(_mousePos.x))
 		{
 			if (GetMouseButton)
-			{				
-				_mousePos = GetMousePoint();
+			{			
+				_mousePos = GetTarget().character.transform.position;
 			}
 			yield return null;
 		}

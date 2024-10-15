@@ -107,8 +107,8 @@ public class Bar : MonoBehaviour
 				_preViewValue = _currentValue;
 				//_currentValue = newValue;
 
-				_bar.value = newValue / _maxValue;
-				_barPlus.value = _preViewValue / _maxValue;
+				//_bar.value = newValue / _maxValue;
+				_barPlus.value = newValue / _maxValue;
 			}
 		}
 		// fading bar

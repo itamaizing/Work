@@ -19,7 +19,7 @@ public class UIMenuMainCharactersPanel : MonoBehaviour
     {
         if(Owner == null) return;
         
-        var charactersGroup = MultiplayerManager.Instance.HeroList;
+        var charactersGroup = ServerManager.Instance.HeroList;
 
         foreach (var item in charactersGroup)
         {
@@ -40,6 +40,13 @@ public class UIMenuMainCharactersPanel : MonoBehaviour
     {
         _currentHero = hero;
         Owner.SetHero(hero);
-        MultiplayerManager.Instance.SetPlayer(MultiplayerManager.Instance.HeroList.IndexOf(hero));
+        ServerManager.Instance.SetPlayer(hero);
+    }
+
+    public void SetHero(HeroComponent hero)
+    {
+		Debug.Log("TODO HERE " + name);
+
+		_currentHero = hero;
     }
 }
