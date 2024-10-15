@@ -157,7 +157,7 @@ public class TestGameRules : GameRules
         var runeComponent = playerSettings.GetComponent<RuneComponent>();
         runeComponent?.ResetValueRune();
 
-        CancelActiveSkills(playerSettings);
+        //CancelActiveSkills(playerSettings);
 
         var characterState = playerSettings.CharacterState;
         if (characterState != null)
