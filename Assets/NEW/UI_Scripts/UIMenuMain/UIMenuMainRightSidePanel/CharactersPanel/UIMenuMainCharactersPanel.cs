@@ -45,7 +45,7 @@ public class UIMenuMainCharactersPanel : MonoBehaviour
 
     public void SetHero(HeroComponent hero)
     {
-		Debug.Log("TODO HERE " + name);
+		Debug.Log(hero);
 
 		_currentHero = hero;
     }
