@@ -413,6 +413,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2603903007656169372, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: _regenerationDelay
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2779532571435370552, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_IsActive
       value: 1

@@ -23,6 +23,7 @@ public class GrabTentacles : Skill
     private Character _target;
     private List<Character> _targets = new();
 
+    private int _playerLayer;
     private float _delayCast = 1.2f;
     private float _baseDamage;
 
@@ -69,6 +70,8 @@ public class GrabTentacles : Skill
 
     protected override IEnumerator PrepareJob()
     {
+        _playerLayer = _player.gameObject.layer;
+
         _castDeley = _delayCast;
 
         while (_target == null && float.IsPositiveInfinity(_firstTentaclesPoint.x))
@@ -149,12 +152,7 @@ public class GrabTentacles : Skill
             {
                 yield return _searchTargetsCoroutine = StartCoroutine(SearchTargetsJob());
 
-                if (_target == null)
-                {
-                    _firstTentaclesPoint = _pointForSearchingTargets;
-                    _isFirstPointTarget = false;
-                }
-                else if (_target != null)
+                if (_target != null)
                 {
                     _skillRender.StopDrawRadius();
 
@@ -163,6 +161,15 @@ public class GrabTentacles : Skill
                     _isFirstPointTarget = true;
 
                     DrawCircleOnTarget(_target.transform, Radius);
+                }
+                else if (_target != null && _target.gameObject.layer == _playerLayer)
+                {
+                    TryCancel(true);
+                }
+                else
+                {
+                    _firstTentaclesPoint = _pointForSearchingTargets;
+                    _isFirstPointTarget = false;
                 }
 
                 _isFirstPointDone = true;
@@ -187,14 +194,24 @@ public class GrabTentacles : Skill
                 if (_target == null && !_isTarget && !_isFirstPointTarget)
                 {
                     yield return _searchTargetsCoroutine = StartCoroutine(SearchTargetsJob());
-                    _secondTentaclesPoint = _target.transform.position;
-                    _isTarget = true;
+
+                    if (_target != null && _target.gameObject.layer == _playerLayer || _target == null)
+                    {
+                        TryCancel(true);
+                    }
+                    else
+                    {
+                        _secondTentaclesPoint = _target.transform.position;
+                        _isTarget = true;
+                    }
+                }
+                else if (_target != null && _target.gameObject.layer == _playerLayer)
+                {
                 }
                 else
                 {
                     _secondTentaclesPoint = GetMousePoint();
                 }
-
                 _isSecondPointDone = true;
             }
             yield return null;

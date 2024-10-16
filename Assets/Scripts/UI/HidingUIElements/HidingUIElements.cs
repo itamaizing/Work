@@ -16,7 +16,7 @@ public class HidingUIElements : NetworkBehaviour
     private Dictionary<Image, Color> _originalImageColors = new();
     private Dictionary<TMP_Text, Color> _originalTextColors = new();
 
-    private bool _isAlly;
+    private int _playerLayer;
 
     private void Awake()
     {
@@ -46,7 +46,7 @@ public class HidingUIElements : NetworkBehaviour
     {
         PlayerTeamIndex(_player.gameObject);
 
-        if (_isAlly)
+        if (_playerLayer == LayerMask.NameToLayer("Allies"))
         {
             foreach (var image in _images)
             {
@@ -74,7 +74,7 @@ public class HidingUIElements : NetworkBehaviour
                 }
             }
         }
-        else
+        else if (_playerLayer == LayerMask.NameToLayer("Enemy"))
         {
             foreach (var image in _images)
             {
@@ -107,7 +107,7 @@ public class HidingUIElements : NetworkBehaviour
 
     private void OnRevealingElements()
     {
-        if (_isAlly)
+        if (_playerLayer == LayerMask.NameToLayer("Allies"))
         {
             foreach (var image in _images)
             {
@@ -129,7 +129,7 @@ public class HidingUIElements : NetworkBehaviour
                 }
             }
         }
-        else
+        else if (_playerLayer == LayerMask.NameToLayer("Enemy"))
         {
             foreach (var image in _images)
             {
@@ -156,10 +156,6 @@ public class HidingUIElements : NetworkBehaviour
 
     private void PlayerTeamIndex(GameObject player)
     {
-        int teamIndex = player.GetComponentInParent<UserNetworkSettings>().TeamIndex;
-        var localPlayer = NetworkClient.connection.identity.GetComponent<UserNetworkSettings>();
-
-        if (localPlayer != null) 
-            _isAlly = localPlayer.TeamIndex == teamIndex;
+        _playerLayer = player.layer;
     }
 }

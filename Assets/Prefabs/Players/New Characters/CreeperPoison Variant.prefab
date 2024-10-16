@@ -1652,7 +1652,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: HealingPoisonBall
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7418347446368758987}
@@ -1694,7 +1694,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: HealingSpitPoison
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7418347446368758987}

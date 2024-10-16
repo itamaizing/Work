@@ -570,6 +570,7 @@ public class PoisonBall : Skill
         {
             if (_currentTarget.gameObject == _player.gameObject)
             {
+                Debug.Log("CurrentTarget = player ");
                 _poisonBallInfo.IsOriginalTargetPlayer = true;
                 _poisonBallInfo.IsOriginalTargetAllies = false;
                 _poisonBallInfo.IsOriginalTargetEnemy = false;

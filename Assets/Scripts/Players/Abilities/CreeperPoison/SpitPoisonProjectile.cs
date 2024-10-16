@@ -8,7 +8,7 @@ public class SpitPoisonProjectile : Test_Projectile
 {
     private Skill _skill;
 
-    private int _teamIndex;
+    private int _playerLayer;
 
     private float _energyDad;
     private float _damage;
@@ -26,6 +26,10 @@ public class SpitPoisonProjectile : Test_Projectile
         {
             RpcNewTransparencySprite(_player.gameObject);
         }
+        else if (isServer)
+        {
+            LayerDefinition(_player.gameObject);
+        }
     }
 
     [Server]
@@ -37,18 +41,16 @@ public class SpitPoisonProjectile : Test_Projectile
             {
                 if (collision.gameObject == _player.gameObject)
                 {
-                    Debug.Log("Player");
                     _player.CharacterState.AddState(States.RegeneratingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
                     Destroy(gameObject);
                 }
             }
             else if (_isAllies)
             {
-                if (collision.gameObject != _player.gameObject)
+                if (collision.gameObject != _player.gameObject && _playerLayer == LayerMask.NameToLayer("Allies"))
                 {
                     if (collision.TryGetComponent<Character>(out var alliesHealth))
                     {
-                        Debug.Log("Allies");
                         alliesHealth.CharacterState.AddState(States.RegeneratingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
                         Destroy(gameObject);
                     }
@@ -60,7 +62,7 @@ public class SpitPoisonProjectile : Test_Projectile
             }   
             else if (_isEnemy)
             {
-                if (collision.transform != _player.transform)
+                if (collision.transform != _player.transform && _playerLayer != LayerMask.NameToLayer("Enemy"))
                 {
                     if (collision.TryGetComponent<Character>(out var target))
                     {
@@ -77,7 +79,7 @@ public class SpitPoisonProjectile : Test_Projectile
             }
             else
             {
-                if (collision.gameObject != _player.gameObject)
+                if (collision.gameObject != _player.gameObject && _playerLayer != LayerMask.NameToLayer("Enemy"))
                 {
                     if (collision.transform != _player.transform)
                     {
@@ -95,7 +97,7 @@ public class SpitPoisonProjectile : Test_Projectile
         }
         else
         {
-            if (collision.transform != _player.transform)
+            if (collision.transform != _player.transform && _playerLayer != LayerMask.NameToLayer("Enemy"))
             {
                 if (collision.TryGetComponent<Character>(out var target))
                 { 
@@ -161,24 +163,36 @@ public class SpitPoisonProjectile : Test_Projectile
     [ClientRpc]
     private void RpcNewTransparencySprite(GameObject player)
     {
-        int playerLayer = player.layer;
-
         Color originalColor = _projectileSprite.color;
 
         if (_projectileSprite != null)
         {
-            if (playerLayer == LayerMask.NameToLayer("Allies"))
+            if (_playerLayer == LayerMask.NameToLayer("Allies"))
             {
                 Color newTransparencySprite = originalColor;
                 newTransparencySprite.a = 0.5f;
                 _projectileSprite.color = new Color(originalColor.r, originalColor.g, originalColor.b, newTransparencySprite.a);
             }
-            else if (playerLayer == LayerMask.NameToLayer("Enemy"))
+            else if (_playerLayer == LayerMask.NameToLayer("Enemy"))
             {
                 Color newTransparencySprite = originalColor;
                 newTransparencySprite.a = 0.0f;
                 _projectileSprite.color = new Color(originalColor.r, originalColor.g, originalColor.b, newTransparencySprite.a);
             }
         }
+    }
+
+    [Server]
+    private void LayerDefinition(GameObject player)
+    {
+        _playerLayer = player.layer;
+
+        RpcLayerDefinition(player.layer);
+    }
+
+    [ClientRpc]
+    private void RpcLayerDefinition(int layer)
+    {
+        _playerLayer = layer;
     }
 }

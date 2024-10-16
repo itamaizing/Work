@@ -23,7 +23,6 @@ public class PoisonBallProjectile : Test_Projectile
     private HealingPoisonBall _healingPoisonBall;
     private FootInstincts _footInstincts;
 
-    [SyncVar] private int _teamIndex;
     private int _currentCountBall;
     private int _playerLayer;
 
@@ -58,11 +57,17 @@ public class PoisonBallProjectile : Test_Projectile
         {
             RpcNewTransparencySprite(_player.gameObject);
         }
+        else if (isServer)
+        {
+            LayerDefinition(_player.gameObject);
+        }
+
     }
 
     [Server]
     private void OnTriggerEnter2D(Collider2D collision)
     {
+
         if (_isActiveHealingPoisonBall)
         {
             if (_isPlayer)
@@ -83,7 +88,7 @@ public class PoisonBallProjectile : Test_Projectile
             }
             else if (_isAllies)
             {
-                if (collision.transform != _player.transform)
+                if (collision.transform != _player.transform && _playerLayer == LayerMask.NameToLayer("Allies"))
                 {
                     if (collision.TryGetComponent<Character>(out var alliesHealth))
                     {
@@ -99,19 +104,18 @@ public class PoisonBallProjectile : Test_Projectile
                         DestroyProjectile();
                     }
                 }
-                else if (!_isAlly && collision.transform != _player.transform)
+                else if (!_isEnemy && collision.transform != _player.transform)
                 {
                     return;
                 }
             }
             else if (_isEnemy)
             {
-                if (collision.gameObject != _player.gameObject && !_isAlly)
+                if (collision.gameObject != _player.gameObject && _playerLayer != LayerMask.NameToLayer("Enemy"))
                 {
                     if (collision.TryGetComponent<Character>(out var targetHealth))
                     {
                         _target = targetHealth;
-
                         DamageDeal();
 
                         if (_footInstincts.Data.IsOpen)
@@ -122,14 +126,14 @@ public class PoisonBallProjectile : Test_Projectile
                         _poisonBall.LastTarget = targetHealth.gameObject;
                     }
                 }
-                else if (collision.gameObject != _player.gameObject)
+                else if (_isAlly && collision.gameObject != _player.gameObject)
                 {
                     return;
                 }
             }
             else
             {
-                if (collision.gameObject != _player.gameObject)
+                if (collision.gameObject != _player.gameObject && _playerLayer != LayerMask.NameToLayer("Enemy"))
                 {
                     if (collision.TryGetComponent<Character>(out var targetHealth))
                     {
@@ -149,7 +153,7 @@ public class PoisonBallProjectile : Test_Projectile
         }
         else
         {
-            if (collision.gameObject != _player.gameObject && !_isAlly)
+            if (collision.gameObject != _player.gameObject && _playerLayer != LayerMask.NameToLayer("Enemy"))
             {
                 if (collision.TryGetComponent<Character>(out var targetHealth))
                 {
@@ -264,9 +268,6 @@ public class PoisonBallProjectile : Test_Projectile
         _player = dad;
         _skill = skill;
 
-        _playerLayer = _player.GetComponent<GameObject>().layer;
-        Debug.Log("PoisonBallProj / playerLayer = " + _playerLayer);
-
         InitializationNumericVariables(energyDad, multiplierDistance);
 
         InitializationBoolVariables(isActiveTalentHealingPoisonBall, 
@@ -295,8 +296,6 @@ public class PoisonBallProjectile : Test_Projectile
     {
         _energyDad = energyDad;
         _multiplierDistanceFromTalent = multiplierDistance;
-        int teamIndex = _player.GetComponentInParent<UserNetworkSettings>().TeamIndex;
-        _teamIndex = teamIndex;
     }
 
     private void InitializationBoolVariables(bool isActiveTalentHealingPoisonBall, bool isTargetPlayer, 
@@ -313,7 +312,6 @@ public class PoisonBallProjectile : Test_Projectile
         _isActvieWitheringPoison = isActiveTalentWitheringPoison;
         _isActiveVoluminousBall = isActiveVoluminousBall;
         _isPlayerInvisible = isPlayerInvisible;
-        Debug.Log("PoisonBallProjectile / isPlayerInvisible = " + _isPlayerInvisible);
     }
 
     private void InitializationComponentsForCountProjectile()
@@ -326,19 +324,17 @@ public class PoisonBallProjectile : Test_Projectile
     [ClientRpc]
     private void RpcNewTransparencySprite(GameObject player)
     {
-        int playerLayer = player.layer;
-
         Color originalColor = _projectileSprite.color;
 
         if (_projectileSprite != null)
         {
-            if (playerLayer == LayerMask.NameToLayer("Allies"))
+            if (_playerLayer == LayerMask.NameToLayer("Allies"))
             {
                 Color newTransparencySprite = originalColor;
                 newTransparencySprite.a = 0.5f;
                 _projectileSprite.color = new Color(originalColor.r, originalColor.g, originalColor.b, newTransparencySprite.a);
             }
-            else if (playerLayer == LayerMask.NameToLayer("Enemy"))
+            else if (_playerLayer == LayerMask.NameToLayer("Enemy"))
             {
                 Color newTransparencySprite = originalColor;
                 newTransparencySprite.a = 0.0f;
@@ -346,5 +342,20 @@ public class PoisonBallProjectile : Test_Projectile
             }
         }
     }
+
+    [Server]
+    private void LayerDefinition(GameObject player)
+    {
+        _playerLayer = player.layer;
+
+        RpcLayerDefinition(player.layer);
+    }
+
+    [ClientRpc]
+    private void RpcLayerDefinition(int layer)
+    {
+        _playerLayer = layer;
+    }
+
     #endregion
 }

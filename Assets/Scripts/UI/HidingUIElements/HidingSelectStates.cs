@@ -8,7 +8,7 @@ public class HidingSelectStates : NetworkBehaviour
     [SerializeField] private Character _player;
     private List<SpriteRenderer> _renderers = new();
     private Dictionary<SpriteRenderer, Color> _originalSpriteColors = new();
-    private bool _isAlly;
+    private int _playerLayer;
 
     private void Awake()
     {
@@ -32,7 +32,7 @@ public class HidingSelectStates : NetworkBehaviour
     {
         PlayerTeamIndex(_player.gameObject);
 
-        if (_isAlly)
+        if (_playerLayer == LayerMask.NameToLayer("Allies"))
         {
             foreach (var sprite in _renderers)
             {
@@ -46,7 +46,7 @@ public class HidingSelectStates : NetworkBehaviour
                 }
             }
         }
-        else
+        else if (_playerLayer == LayerMask.NameToLayer("Enemy"))
         {
             foreach (var sprite in _renderers)
             {
@@ -65,7 +65,7 @@ public class HidingSelectStates : NetworkBehaviour
 
     private void OnRevealingSelectCircle()
     {
-        if (_isAlly)
+        if (_playerLayer == LayerMask.NameToLayer("Allies"))
         {
             foreach (var sprite in _renderers)
             {
@@ -77,7 +77,7 @@ public class HidingSelectStates : NetworkBehaviour
                 }
             }
         }
-        else
+        else if (_playerLayer == LayerMask.NameToLayer("Enemy"))
         {
             foreach (var sprite in _renderers)
             {
@@ -93,10 +93,6 @@ public class HidingSelectStates : NetworkBehaviour
 
     private void PlayerTeamIndex(GameObject player)
     {
-        int teamIndex = player.GetComponentInParent<UserNetworkSettings>().TeamIndex;
-        var localPlayer = NetworkClient.connection.identity.GetComponent<UserNetworkSettings>();
-        
-        if (localPlayer != null)
-            _isAlly = localPlayer.TeamIndex == teamIndex;
+        _playerLayer = player.layer;
     }
 }
