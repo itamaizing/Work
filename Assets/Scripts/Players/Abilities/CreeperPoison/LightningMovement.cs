@@ -11,7 +11,6 @@ public class LightningMovement : Skill
     #region Variables
 
     [Header("Talents")]
-    [SerializeField] private AcceleratedSlap _acceleratedSlap;
     [SerializeField] private SuperFastScales _superFastScales;
     [SerializeField] private HeatedGlands _heatedGlands;
     private float _timeBuff = 4f;

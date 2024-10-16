@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4db219e2a0b6a648befa165334af915, type: 3}
   m_Name: CreeperPoisonInfo
   m_EditorClassIdentifier: 
-  _id: 0
   _name: CreeperPoison
   _description: c c c
   _icon: {fileID: 21300000, guid: dfa6db335114f8e498d6358b3d8118ed, type: 3}
@@ -28,7 +27,7 @@ MonoBehaviour:
     - Id: 1002
       Name: Mana
       Points: 0
-      DefaultValue: 0
+      DefaultValue: 777
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1003
@@ -82,13 +81,13 @@ MonoBehaviour:
     - Id: 1011
       Name: ManaRegenDelay
       Points: 0
-      DefaultValue: 2
+      DefaultValue: 1
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1012
       Name: EnergyRegenDelay
       Points: 0
-      DefaultValue: 1
+      DefaultValue: 2
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1013
@@ -145,5 +144,3 @@ MonoBehaviour:
       DefaultValue: 5
       Icon: {fileID: 0}
       IsVisible: 0
-  _talents: []
-  statsInfo: {fileID: 11400000, guid: c3a7cc3569f730144936c7d492a97e83, type: 2}

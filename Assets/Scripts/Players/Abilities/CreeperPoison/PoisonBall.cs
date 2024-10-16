@@ -178,7 +178,7 @@ public class PoisonBall : Skill
             if (GetMouseButton)
             {
                 _currentTarget = GetRaycastTarget(true);
-
+                Debug.Log("PoisonBall / currentTarget = " + _currentTarget);   
                 if (_currentTarget != null)
                 {
                     _isTarget = true;

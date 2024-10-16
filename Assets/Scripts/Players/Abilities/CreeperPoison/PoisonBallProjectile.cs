@@ -53,13 +53,13 @@ public class PoisonBallProjectile : Test_Projectile
 
     private void Start()
     {
+        if (isServer)
+        {
+            LayerDefinition(_player.gameObject);
+        }
         if (isServer && _isPlayerInvisible)
         {
             RpcNewTransparencySprite(_player.gameObject);
-        }
-        else if (isServer)
-        {
-            LayerDefinition(_player.gameObject);
         }
 
     }

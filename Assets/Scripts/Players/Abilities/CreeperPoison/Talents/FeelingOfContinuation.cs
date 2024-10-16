@@ -12,6 +12,8 @@ public class FeelingOfContinuation : Talent
     private float _maxMana;
     private float _currentMana;
     private float _originalRegenerationMana;
+    private float _baseTimeRegenMana;
+    private float _reductionTimeRegenMana;
 
     private Character _player;
 
@@ -22,6 +24,7 @@ public class FeelingOfContinuation : Talent
         SetActive(true);
         _player = character;
         _originalRegenerationMana = _player.TryGetResource(ResourceType.Mana).RegenerationValue;
+        _baseTimeRegenMana = _player.TryGetResource(ResourceType.Mana).RegenerationDelay;
     }
 
     public override void Exit()
@@ -32,6 +35,10 @@ public class FeelingOfContinuation : Talent
     public void IncreaseRegenerationMana(float playerCriticalDamage)
     {
         _remainingManaValue = playerCriticalDamage;
+        _reductionTimeRegenMana = _baseTimeRegenMana / 2;
+
+        _player.TryGetResource(ResourceType.Mana).RegenerationDelay = _reductionTimeRegenMana;
+
         if (_manaRegenerationCoroutine == null)
         {
             _manaRegenerationCoroutine = StartCoroutine(ManaRegenerationJob(_remainingManaValue));
@@ -40,33 +47,36 @@ public class FeelingOfContinuation : Talent
 
     private IEnumerator ManaRegenerationJob(float remainingManaValue)
     {
+        float time = _reductionTimeRegenMana;
         float boostManaRegen = _originalRegenerationMana * _manaRegenerationMultiplier;
         _player.TryGetResource(ResourceType.Mana).RegenerationValue = boostManaRegen;
 
-        while (remainingManaValue > 0)
+
+        while (time > 0)
         {
-            remainingManaValue -= boostManaRegen;
-            Debug.Log("RemainingManaValue = " + remainingManaValue);
-            _maxMana = _player.TryGetResource(ResourceType.Mana).MaxValue;
-            _currentMana = _player.TryGetResource(ResourceType.Mana).CurrentValue;
-            Debug.Log("_maxMana = " + _maxMana);
-            Debug.Log("_currentMana = " + _currentMana);
-
-            if (_currentMana >= _maxMana)
+            time -= Time.deltaTime;
+            if (remainingManaValue > 0)
             {
-                Debug.Log("If (currentMana > maxMana)");
-                _currentMana = _maxMana;
-                yield break;
-            }
+                remainingManaValue -= boostManaRegen;
 
+                _maxMana = _player.TryGetResource(ResourceType.Mana).MaxValue;
+                _currentMana = _player.TryGetResource(ResourceType.Mana).CurrentValue;
+
+                if (_currentMana >= _maxMana)
+                {
+                    _currentMana = _maxMana;
+                    yield break;
+                }
+                time = _reductionTimeRegenMana;
+            }
             yield return null;
         }
-
         CancelCoroutine(_manaRegenerationCoroutine);
     }
 
     private void CancelCoroutine(Coroutine coroutine)
     {
+        _player.TryGetResource(ResourceType.Mana).RegenerationDelay = _baseTimeRegenMana;
         StopCoroutine(coroutine);
         _manaRegenerationCoroutine = null;
     }

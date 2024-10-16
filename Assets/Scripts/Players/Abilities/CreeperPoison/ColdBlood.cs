@@ -34,10 +34,12 @@ public class ColdBlood: Skill
 
     protected override void ClearData()
     {
+        Debug.Log("ColdBlood / ClearData");
         _isCanCast = false;
         _mousePosition = Vector3.positiveInfinity;
         _target = null;
         _isPlayer = false;
+
         if (_player.CharacterState.CheckForState(States.Immateriality))
         {
             _player.CharacterState.CmdRemoveState(States.Immateriality);
@@ -52,40 +54,38 @@ public class ColdBlood: Skill
 
     protected override IEnumerator PrepareJob()
     {
-        _player.CharacterState.CmdAddState(States.Immateriality, 0, 0, _player.gameObject, Name);
-
-        if (_coldBloodEnabledTalent.Data.IsOpen)
+        if (_coldBloodTalent.Data.IsOpen)
         {
-            if (_coldBloodTalent.Data.IsOpen)
+            while (_target == null && float.IsPositiveInfinity(_mousePosition.x))
             {
-                while (_target == null && float.IsPositiveInfinity(_mousePosition.x))
+                if (GetMouseButton)
                 {
-                    if (GetMouseButton)
-                    {
-                        _target = GetRaycastTarget(true);
-                        Debug.Log("ColdBlood / PrepareJob / Input.GetMouseButtonDown / target == " + _target);
-                        _mousePosition = GetMousePoint();
-                        Debug.Log("ColdBlood / PrepareJob / Input.GetMouseButtonDown / _mousePosition == " + _mousePosition);
+                    _target = GetRaycastTarget(true);
+                    Debug.Log("ColdBlood / PrepareJob / Input.GetMouseButtonDown / target == " + _target);
 
-                        if (_target != _player)
-                        {
-                            _isPlayer = false;
-                            Debug.Log("Target != player / Target == " + _target);
-                        }
-                        else if (_target == _player)
-                        {
-                            _isPlayer = true;
-                            Debug.Log("Target == player / Target == " + _target);
-                        }
+                    if (_target != _player)
+                    {
+                        _isPlayer = false;
+                        Debug.Log("Target != player / Target == " + _target);
                     }
-                    yield return null;
+                    if (_target == _player)
+                    { 
+                        _isPlayer = true;
+                        Debug.Log("Target == player / Target == " + _target);
+                    }
+
+                    _mousePosition = GetMousePoint();
+                    Debug.Log("ColdBlood / PrepareJob / Input.GetMouseButtonDown / _mousePosition == " + _mousePosition);
+
+                    _player.CharacterState.CmdAddState(States.Immateriality, 0, 0, _player.gameObject, Name);
                 }
-                _isCanCast = true;
+                yield return null;
             }
-            else
-            {
-                yield break;
-            }
+            _isCanCast = true;
+        }
+        else
+        {
+            yield break;
         }
     }
 

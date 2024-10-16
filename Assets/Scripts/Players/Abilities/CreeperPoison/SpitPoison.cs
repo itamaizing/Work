@@ -58,7 +58,6 @@ public class SpitPoison : Skill
             if (GetMouseButton)
             {
                 _currentTarget = GetRaycastTarget(true);
-                Debug.Log("PrepareJob / _currentTarget = " + _currentTarget);
                 ChooseTarget();
 
                 _mousePos = GetMousePoint();
@@ -116,24 +115,20 @@ public class SpitPoison : Skill
 
     private void ChooseTarget()
     {
-        Debug.Log("ChooseTarget");
         if (_currentTarget != null)
         {
             if (_currentTarget.gameObject == _player.gameObject)
             {
-                Debug.Log("Target == Player");
                 _isOriginalTargetPlayer = true;
                 _isOriginalTargetAllies = false;
                 _isOriginalTargetEnemy = false;
                 if (_healPoisonCloud.Data.IsOpen && _isActiveHealingSpitPoison)
                 {
                     _isHealingPoisonCloud = true;
-                    Debug.Log($"ChooseTarget / Player / _isHealingPoisonCloud = {_isHealingPoisonCloud}");
                 }
             }
             else if (_currentTarget.gameObject.layer == LayerMask.NameToLayer("Allies"))
             {
-                Debug.Log("Target == Allies");
                 _isOriginalTargetPlayer = false;
                 _isOriginalTargetAllies = true;
                 _isOriginalTargetEnemy = false;
@@ -142,20 +137,17 @@ public class SpitPoison : Skill
                     if (_healPoisonCloud.Data.IsOpen)
                     {
                         _isHealingPoisonCloud = true;
-                        Debug.Log($"ChooseTarget / Allies / _isHealingPoisonCloud = {_isHealingPoisonCloud}");
                     }
                 }
             }
             else if (_currentTarget.gameObject.layer == LayerMask.NameToLayer("Enemy"))
             {
-                Debug.Log("Target == Enemy");
                 _isOriginalTargetPlayer = false;
                 _isOriginalTargetAllies = false;
                 _isOriginalTargetEnemy = true;
                 if (_healPoisonCloud.Data.IsOpen && _isActiveHealingSpitPoison)
                 {
                     _isHealingPoisonCloud = false;
-                    Debug.Log($"ChooseTarget / Enemy / _isHealingPoisonCloud = {_isHealingPoisonCloud}");
                 }
             }
         }

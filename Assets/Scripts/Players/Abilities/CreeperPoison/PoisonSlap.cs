@@ -15,12 +15,14 @@ public class PoisonSlap : Skill
     [SerializeField] private Character _player;
 
     [Header("Abilities")]
+
     [SerializeField] private PoisonBall _poisonBall;
     [SerializeField] private CreeperStrike _creeperStrike;
     [SerializeField] private LightningStrikes _lightningStrikes;
     [SerializeField] private LightningMovement _lightningMovement;
 
     [Header("Talents")]
+    [SerializeField] private AcceleratedSlap _acceleratedSlap;
     [SerializeField] private LightweightSlap _lightweightSlap;
 
     #region DisplayArrow
@@ -414,7 +416,16 @@ public class PoisonSlap : Skill
 
     private void UseRecharge()
     {
+        float baseCooldownTime = _cooldownTime;
+
+        if (_acceleratedSlap.Data.IsOpen)
+        {
+            _cooldownTime /= 2;
+        }
+
         TryPayCost();
+
+        _cooldownTime = baseCooldownTime;
     }
 
     private void PushTarget(Character target, float distancePush, float durationPush, bool isCanPushTarget)

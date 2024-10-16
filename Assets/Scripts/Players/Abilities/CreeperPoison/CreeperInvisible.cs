@@ -359,7 +359,7 @@ public class CreeperInvisible : Skill
     private void RpcRemoveInvisible(bool creeperStrikeIsHit)
     {
         _isInvisible = false;
-        if (_releaseFromSecrecy.Data.IsOpen && creeperStrikeIsHit)
+        if (_releaseFromSecrecy.Data.IsOpen)
         {
             _releaseFromSecrecy.ApplyBuff();
         }
