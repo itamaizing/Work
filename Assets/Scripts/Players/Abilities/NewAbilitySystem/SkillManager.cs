@@ -216,10 +216,10 @@ public class SkillManager : MonoBehaviour
         {
             SkillQueue.TryCancel();
         }
-        else if(_selectedSkill != null)
+        /*else if(_selectedSkill != null)
         {
             DeselectSkill();
-        }
+        }*/ // not need now, but not deleted
     }
 
     private void OnCastSelect(int index)
