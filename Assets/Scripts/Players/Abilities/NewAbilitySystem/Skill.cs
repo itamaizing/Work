@@ -494,7 +494,13 @@ public abstract class Skill : NetworkBehaviour
 
     protected Coroutine StartCastDeleyCoroutine()
     {
-        _castDeleyCoroutine = StartCoroutine(CastDeleyJob());
+        _castDeleyCoroutine = StartCoroutine(CastDeleyJob(CastDeley));
+        return _castDeleyCoroutine;
+    }
+    
+    protected Coroutine StartCastDeleyCoroutine(float time)
+    {
+        _castDeleyCoroutine = StartCoroutine(CastDeleyJob(time));
         return _castDeleyCoroutine;
     }
 
@@ -739,12 +745,12 @@ public abstract class Skill : NetworkBehaviour
         _cooldownJob = null;
     }
 
-    private IEnumerator CastDeleyJob()
+    private IEnumerator CastDeleyJob(float delayTime)
     {
-        CastDeleyStarted?.Invoke(CastDeley);
+        CastDeleyStarted?.Invoke(delayTime);
         float time = 0;
 
-        while (time < CastDeley)
+        while (time < delayTime)
         {
             if (NoObstacles() == false)
             {

@@ -9,6 +9,7 @@ public abstract class AutoAttackSkill : Skill
     [Header("AutoAttack settings")]
     [SerializeField] private float _attackZoneSize;
     [SerializeField] protected float _attackSpeed = 1f;
+    [SerializeField] protected float _chargeAttackDelay;
 
     protected Character _target;
     private bool _isAutoattackMode = true;
@@ -95,7 +96,7 @@ public abstract class AutoAttackSkill : Skill
         {
             if (GetMouseButton)
             {
-                _target = GetRaycastTarget();
+                _target = GetRaycastTarget(true);
 
                 if(_target != null)
 				    _target.SelectedCircle.IsActive = true;
@@ -140,6 +141,7 @@ public abstract class AutoAttackSkill : Skill
                 if (_isAttacking && NoObstacles(Target.transform.position, _obstacle))
                 {
                     _lastTargetPosition = Target.transform.position;
+                    yield return StartCastDeleyCoroutine(_chargeAttackDelay);
                     yield return new WaitForSeconds(AttackSpeed);
                     if (IsTargetInRadius(Radius + _attackZoneSize, Target.transform) && NoObstacles(Target.transform.position, _obstacle) && IsCooldowned)
                     {
