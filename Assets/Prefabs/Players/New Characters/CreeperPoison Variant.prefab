@@ -101,6 +101,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3987928797297298683}
     - target: {fileID: 3759936847054020137, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      propertyPath: m_BodyType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3759936847054020137, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: m_CollisionDetection
       value: 1
       objectReference: {fileID: 0}
@@ -882,7 +886,7 @@ MonoBehaviour:
   _damageValue: 0
   _abilitySchool: 7
   _abilityForm: 2
-  _damageType: 3
+  _damageType: 1
   _attackRangeType: 0
   _skillType: 2
   _targetsLayers:
@@ -1392,7 +1396,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: Explosion Cloud Enabled
+    Name: ExplosionCloudEnabled
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -1643,7 +1647,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: EnlargedGlands
-    IsOpen: 1
+    IsOpen: 0
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7418347446368758987}
@@ -1752,7 +1756,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: HealingPoisonBall
-    IsOpen: 1
+    IsOpen: 0
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7418347446368758987}
@@ -1794,7 +1798,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: HealingSpitPoison
-    IsOpen: 1
+    IsOpen: 0
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7418347446368758987}
@@ -2081,7 +2085,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: VoluminousBall
-    IsOpen: 1
+    IsOpen: 0
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7418347446368758987}

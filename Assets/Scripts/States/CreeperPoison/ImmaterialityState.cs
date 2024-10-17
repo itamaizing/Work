@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,6 +22,7 @@ public class ImmaterialityState : AbstractCharacterState
         Debug.Log("enterState Immateriality");
         _duration = durationToExit;
         _baseDuration = _duration;
+        Debug.Log("duration = " + _duration);
 
         DisabledCollider();
     }
@@ -36,8 +38,7 @@ public class ImmaterialityState : AbstractCharacterState
 
     public override void ExitState()
     {
-        //_player.Collider.enabled = true; 
-        _player.Rb.isKinematic = false;
+        TargetRpcResetPlayerComponents();
         _duration = 0;
         _baseDuration = 0;
         _characterState.RemoveState(this);
@@ -52,9 +53,31 @@ public class ImmaterialityState : AbstractCharacterState
     {
         if (_player != null)
         {
-            Debug.Log("DisabledCollider if player != null / _player.collider == " + _player.Collider);
-            _player.Rb.isKinematic = true;
-            //_player.Collider.enabled = false;
+            TargetRpcDisbledCollider();
         }
+    }
+
+
+    [ClientRpc]
+    private void TargetRpcDisbledCollider()
+    {
+        if (_player != null)
+        {
+            Debug.Log("DisableCollider");
+            _player.Rb.isKinematic = true;
+            _player.Collider.isTrigger = true;
+            _player.Collider.enabled = false;
+        }
+    }
+
+    [ClientRpc]
+    private void TargetRpcResetPlayerComponents()
+    {
+        Debug.Log("EnabledCollider");
+        _player.Collider.isTrigger = false;
+        _player.Rb.isKinematic = false;
+        _player.Collider.enabled = true;
+
+
     }
 }

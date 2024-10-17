@@ -130,6 +130,51 @@ public class LightningMovement : Skill
         }
     }
 
+    private void ResetBools()
+    {
+        _targetHitTimes.Clear();
+        _rangeLeap = 4.0f;
+
+        _isTargetBeforePlayer = false;
+        _isTargetBehindPlayer = false;
+        _isTargetOnEndPointSecondLeap = false;
+
+        IsInMovement = false;
+        _poisonSlap.IsCanDamageDeal = false;
+        _lightningStrikes.IsCanDamageDeal = false;
+
+        _target = null; 
+
+        if (_isTargetBeforePlayerCoroutine != null)
+        {
+            StopCoroutine(_isTargetBeforePlayerCoroutine);
+            _isTargetBeforePlayerCoroutine = null;
+        }
+
+        if (_isTargetBehindPlayerCoroutine != null)
+        {
+            StopCoroutine(_isTargetBehindPlayerCoroutine);
+            _isTargetBehindPlayerCoroutine = null;
+        }
+
+        if (_applyDamageCoroutine != null)
+        {
+            StopCoroutine(_applyDamageCoroutine);
+            _applyDamageCoroutine = null;
+        }
+
+        if (_isTargetOnEndPointCoroutine != null)
+        {
+            StopCoroutine(_isTargetOnEndPointCoroutine);
+            _isTargetOnEndPointCoroutine = null;
+        }
+
+        if (_superFastScales.Data.IsOpen)
+        {
+            _superFastScales.ResetResistance();
+        }
+
+    }
 
     protected override IEnumerator PrepareJob()
     {
@@ -188,51 +233,6 @@ public class LightningMovement : Skill
         yield return null;
     }
 
-    private void ResetBools()
-    {
-        _targetHitTimes.Clear();
-        _rangeLeap = 4.0f;
-
-        _isTargetBeforePlayer = false;
-        _isTargetBehindPlayer = false;
-        _isTargetOnEndPointSecondLeap = false;
-
-        IsInMovement = false;
-        _poisonSlap.IsCanDamageDeal = false;
-        _lightningStrikes.IsCanDamageDeal = false;
-
-        _target = null; 
-
-        if (_isTargetBeforePlayerCoroutine != null)
-        {
-            StopCoroutine(_isTargetBeforePlayerCoroutine);
-            _isTargetBeforePlayerCoroutine = null;
-        }
-
-        if (_isTargetBehindPlayerCoroutine != null)
-        {
-            StopCoroutine(_isTargetBehindPlayerCoroutine);
-            _isTargetBehindPlayerCoroutine = null;
-        }
-
-        if (_applyDamageCoroutine != null)
-        {
-            StopCoroutine(_applyDamageCoroutine);
-            _applyDamageCoroutine = null;
-        }
-
-        if (_isTargetOnEndPointCoroutine != null)
-        {
-            StopCoroutine(_isTargetOnEndPointCoroutine);
-            _isTargetOnEndPointCoroutine = null;
-        }
-
-        if (_superFastScales.Data.IsOpen)
-        {
-            _superFastScales.ResetResistance();
-        }
-
-    }
 
     #endregion
 
@@ -246,12 +246,13 @@ public class LightningMovement : Skill
 
     private Vector3 LimitSecondLeapToMaxDistance(Vector3 startPoint, Vector3 targetPoint, float maxDistance)
     {
+        Debug.Log("LimitSecondLeap");
         Vector3 centerTarget;
 
         Vector3 direction = (targetPoint - startPoint).normalized;
 
         float dividerForMultiplier = 10f;
-        float coefficientForMultiplier = 1f;
+        float coefficientForMultiplier = 0.5f;
 
         if (_isTargetOnEndPointCoroutine == null)
         {
@@ -282,10 +283,12 @@ public class LightningMovement : Skill
                 maxDistance += 2.8f;
             }
             _multiplierLeap = (maxDistance / dividerForMultiplier) + coefficientForMultiplier;
+            Debug.Log("MultiplierLeap = " + _multiplierLeap);
             return startPoint + direction * maxDistance;
         }
         else
         {
+            _multiplierLeap = (maxDistance / dividerForMultiplier) + coefficientForMultiplier;
             return startPoint + direction * maxDistance;
         }
     }
@@ -332,6 +335,7 @@ public class LightningMovement : Skill
     {
         while (true)
         {
+            Debug.Log("IsTargetOnEndPoint");
             Collider2D hit = Physics2D.OverlapCircle(secondLeap, 1.35f, targetLayer);
             if (hit != null)
             {
@@ -386,7 +390,6 @@ public class LightningMovement : Skill
 
     private IEnumerator RenderLineForFirstLeapJob(float length, float width, AbilityLineRenderer line, Transform lineTransform)
     {
-        Debug.Log("RenderLine length = " + length + "; width = " + width);
         Transform transformLine = lineTransform;
 
         _lineStartImageForFirstLeap = Instantiate(line.Start, transformLine);
