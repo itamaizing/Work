@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class TestController : MonoBehaviour
@@ -75,15 +76,17 @@ public class TestController : MonoBehaviour
 		{
 			return;
 		}
+
 		_currentVelocity = Vector3.SmoothDamp(_currentVelocity, _dir, ref _currentVelocityTemp, _smoothTime); // Move from camera
-		//_rigidbody.velocity = _currentVelocity * _currentSpeed;
 
 		var camDir = Camera.main.transform.TransformDirection(_currentVelocity);
+
 		camDir = Quaternion.AngleAxis(-Camera.main.transform.eulerAngles.x, Camera.main.transform.TransformVector(Vector3.right)) * camDir;
+
 		_rigidbody.velocity = camDir * _currentSpeed;
 
 
-		/*
+		
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit;
 		if(Physics.Raycast(ray, out hit))
@@ -91,21 +94,21 @@ public class TestController : MonoBehaviour
 			var transformRotate = transform.eulerAngles;
 			transform.LookAt(hit.point);
 			transform.eulerAngles = (new Vector3(transformRotate.x, transform.eulerAngles.y, transformRotate.z));
-		}*/
+		}
 
-		var mousePos = Input.mousePosition; // dir from curcore - player for anim
-		var playerPos = Camera.main.WorldToScreenPoint(transform.position);
+		//var mousePos = Input.mousePosition; // dir from curcore - player for anim
+		//var playerPos = Camera.main.WorldToScreenPoint(transform.position);
 
-		var dir = mousePos - playerPos;
+		//var dir = mousePos - playerPos;
 
-		var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+		//var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+		//transform.rotation = Quaternion.AngleAxis(-angle + Camera.main.transform.eulerAngles.y + 90, Vector3.up);
 
-		transform.rotation = Quaternion.AngleAxis(-angle + 90, Vector3.up);
-		var animDir = transform.InverseTransformPoint(transform.position + _currentVelocity);
+		var animDir = transform.InverseTransformPoint(transform.position + camDir);
 		_anim.SetFloat("Y", animDir.z);
 		_anim.SetFloat("X", animDir.x);
 
-		transform.rotation = Quaternion.AngleAxis(-angle + Camera.main.transform.eulerAngles.y + 90, Vector3.up);
+		
 	}
 
 	private void OnMove(Vector2 dir)
