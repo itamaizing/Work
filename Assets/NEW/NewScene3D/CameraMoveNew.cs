@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class CameraMoveNew : MonoBehaviour
 {
+    public TestController Target;
+
     public float moveSpeed = 5f;
     public float fastMoveSpeed = 10;
     public float rotationSpeed = 0.1f;
@@ -16,8 +18,11 @@ public class CameraMoveNew : MonoBehaviour
         initialRotation = transform.rotation;
     }
 
-    private void Update()
+    private void LateUpdate()
     {
+
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
+            return;
         HandleMovement();
         HandleRotation();
         HandleResetPosition();
@@ -27,10 +32,11 @@ public class CameraMoveNew : MonoBehaviour
     {
         float moveSpeedCurrent = Input.GetKey(KeyCode.LeftShift) ? fastMoveSpeed : moveSpeed;
 
-        float moveX = Input.GetAxis("Horizontal");
-        float moveZ = Input.GetAxis("Vertical");
+        float moveX = 0;
+        float moveZ = 0;
 
         float moveY = 0f;
+
         if (Input.GetKey(KeyCode.Q))
         {
             moveY = -1f;
@@ -39,6 +45,25 @@ public class CameraMoveNew : MonoBehaviour
         {
             moveY = 1f;
         }
+        
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            moveZ = 1f;
+        }
+        else if (Input.GetKey(KeyCode.DownArrow))
+        {
+            moveZ = -1f;
+        }
+        
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            moveX = 1f;
+        }
+        else if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            moveX = -1f;
+        }
+
 
         Vector3 movement = new Vector3(moveX, moveY, moveZ) * moveSpeedCurrent * Time.deltaTime;
         transform.Translate(movement, Space.Self);
