@@ -88,10 +88,9 @@ public class TestController : MonoBehaviour
 		RaycastHit hit;
 		if(Physics.Raycast(ray, out hit))
         {
-			var transformRotate = transform.rotation;
-			//transform.LookAt(hit.point);
-			transform.Rotate(Quaternion.LookRotation(transform.position - hit.point, Vector3.forward));
-			transform.Rotate()
+			var transformRotate = transform.eulerAngles;
+			transform.LookAt(hit.point);
+			transform.eulerAngles = (new Vector3(transformRotate.x, transform.eulerAngles.y, transformRotate.z));
 		}*/
 
 		var mousePos = Input.mousePosition; // dir from curcore - player for anim
@@ -101,12 +100,12 @@ public class TestController : MonoBehaviour
 
 		var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
-		transform.rotation = Quaternion.AngleAxis(-angle + Camera.main.transform.eulerAngles.y + 90, Vector3.up);
-
-		var animDir = transform.InverseTransformPoint(_currentVelocity + transform.position);
-
+		transform.rotation = Quaternion.AngleAxis(-angle + 90, Vector3.up);
+		var animDir = transform.InverseTransformPoint(transform.position + _currentVelocity);
 		_anim.SetFloat("Y", animDir.z);
 		_anim.SetFloat("X", animDir.x);
+
+		transform.rotation = Quaternion.AngleAxis(-angle + Camera.main.transform.eulerAngles.y + 90, Vector3.up);
 	}
 
 	private void OnMove(Vector2 dir)
