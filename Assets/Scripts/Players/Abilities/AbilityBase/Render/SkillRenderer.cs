@@ -36,15 +36,8 @@ public class SkillRenderer : NetworkBehaviour
         _tempDamageZone = Instantiate(_damageZonePref, position, Quaternion.identity);
         _tempDamageZone.SetSize(radius, damage);
 
-        int playerLayer = player.layer;
-        if (playerLayer == LayerMask.NameToLayer("Allies"))
-        {
-            _tempDamageZone.SetColor(_colorForAllies);
-        }
-        else if (playerLayer == LayerMask.NameToLayer("Enemy"))
-        {
-            _tempDamageZone.SetColor(_colorForEnemies);
-        }
+        Color zoneColor = player.layer == LayerMask.NameToLayer("Allies") ? _colorForAllies : _colorForEnemies;
+        _tempDamageZone.SetColor(zoneColor);
     }
 
     [Command]
@@ -64,6 +57,7 @@ public class SkillRenderer : NetworkBehaviour
 
     public void DrawRadius(float radius)
     {
+        Debug.Log(_circle + " circel ");
         _circle.Draw(radius);
     }
 

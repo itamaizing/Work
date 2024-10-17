@@ -25,6 +25,9 @@ public abstract class Character : NetworkBehaviour
 
     private bool _isInvisible = false;
 
+	[SerializeField] private SpawnComponent _spawnComponent;
+
+	public SpawnComponent SpawnComponent => _spawnComponent;
 	public CharacterData Data => _playerData;
 	public UserNetworkSettings NetworkSettings => _networkSettings;
 	public Rigidbody2D Rb => rb;

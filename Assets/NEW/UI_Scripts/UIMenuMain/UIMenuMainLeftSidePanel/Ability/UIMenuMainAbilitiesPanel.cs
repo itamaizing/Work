@@ -18,9 +18,18 @@ public class UIMenuMainAbilitiesPanel : MonoBehaviour
     public void Show()
     {
         if(Owner == null) return;
-        
+
+        if (_abilitiesComponent != null)
+        {
+            _abilitiesComponent.SkillAdded -= UpdatePanel;
+            _abilitiesComponent.SkillRemoved -= UpdatePanel;
+        }
+
         _abilitiesComponent = Owner.GetHero().Abilities;
-        
+
+        _abilitiesComponent.SkillAdded += UpdatePanel;
+        _abilitiesComponent.SkillRemoved += UpdatePanel;
+
         ResetPanel();
 
         foreach (var item in _abilitiesComponent.Abilities)
@@ -56,5 +65,10 @@ public class UIMenuMainAbilitiesPanel : MonoBehaviour
     public void HideTooltip()
     {
         _abilityInfo.gameObject.SetActive(false);
+    }
+
+    private void UpdatePanel(Skill skill)
+    {
+        Show();
     }
 }

@@ -10,9 +10,13 @@ public class MinionComponent : Character
     public event Action<MinionComponent> Destroyed;
     public event Action<MinionComponent> Intercepted;
 
-    public override void Initialize()
+    public virtual void SetAuthority(NetworkConnectionToClient con)
     {
-        base.Initialize();
+        var temp = GetComponent<NetworkIdentity>();
+        temp.RemoveClientAuthority();
+        temp.AssignClientAuthority(con);
+
+        Intercepted?.Invoke(this);
     }
 
     public void SetAuthority(NetworkConnectionToClient con)

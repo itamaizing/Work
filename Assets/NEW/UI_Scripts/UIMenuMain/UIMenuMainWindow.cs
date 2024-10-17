@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class UIMenuMainWindow : MonoBehaviour
@@ -8,15 +9,48 @@ public class UIMenuMainWindow : MonoBehaviour
     [SerializeField] private UIMenuMainCharactersPanel _charactersPanel;
     [SerializeField] private UIMenuMainGameTypesPanel _gameTypesPanel;
     [SerializeField] private UIMenuMainSavesPanel _savesPanel;
+    [SerializeField] private GameObject _uIMenuMainRightPanel;
+    [SerializeField] private List<GameObject> _otherUIs;
 
-    private void Start()
+	[SerializeField] private SelectManager _selectManager;
+
+   // private HeroComponent _currentHero;
+
+	private void Start()
     {
         Show();
+        _selectManager.CharacterSelected += OnCharacterSelected;
+        InputHandler.ShowMenu += SwithActiveAtriutTalantUI;
     }
 
     public void UI_StartClient()
     {
         ServerManager.Instance.StartClient();
+        DisableUI();
+    }
+
+    public void DisableUI()
+    {
+        _uIMenuMainRightPanel.SetActive(false);
+        gameObject.SetActive(false);
+
+        foreach (var item in _otherUIs)
+        {
+            item.SetActive(true);
+        }
+    }
+
+    public void EnableAtriutTalantUI()
+    {
+        gameObject.SetActive(true);
+    }
+
+    public void SwithActiveAtriutTalantUI()
+    {
+        if (gameObject.active)
+            gameObject.SetActive(false);
+        else
+            gameObject.SetActive(true);
     }
 
     void Show()
@@ -32,6 +66,16 @@ public class UIMenuMainWindow : MonoBehaviour
         
         UpdateCharacterPanels();
     }
+
+    private void OnCharacterSelected(Character character)
+    {
+        Debug.Log("TODO HERE " + name);
+
+        _charactersPanel.SetHero((HeroComponent)character);
+       // _currentHero = (HeroComponent)character;
+		SaveManager.Instance.SetHero((HeroComponent)character);
+		UpdateCharacterPanels();
+	}
 
     public void SetHero(HeroComponent hero)
     {

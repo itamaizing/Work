@@ -327,7 +327,6 @@ MonoBehaviour:
   _playerData: {fileID: 11400000, guid: f71e3e6e8b3ca6245b0c37fd016a4039, type: 2}
   _networkSettings: {fileID: -7146587456276821115}
   rb: {fileID: 3759936847054020137}
-  _collider: {fileID: 0}
   _lvl: {fileID: 7382485661582087661}
   _healthComponent: {fileID: 5839731411926097146}
   Stamina: {fileID: 2926669445991704918}
@@ -341,8 +340,8 @@ MonoBehaviour:
   - {fileID: 2603903007656169372}
   - {fileID: 2926669445991704918}
   _selectedCircle: {fileID: 9081349754013333447}
-  talentManager: {fileID: 8675175310089954536}
   _spawnComponent: {fileID: 3330577042116454553}
+  talentManager: {fileID: 8675175310089954536}
 --- !u!114 &7760335386463111578
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -376,7 +375,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _resourceType: 0
-  _regenerationDelay: 1
+  _regenerationDelay: 0
 --- !u!114 &2926669445991704918
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -393,7 +392,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _resourceType: 2
-  _regenerationDelay: 1
+  _regenerationDelay: 0
   _sumDamageGiven: 0
 --- !u!114 &1057949845680950153
 MonoBehaviour:
@@ -446,10 +445,10 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _smoothTime: 0.15
+  MoveDirection: {x: 0, y: 0}
   CanMove: 1
   IsMoving: 0
   IsSelect: 0
-  MoveDirection: {x: 0, y: 0}
 --- !u!114 &5511617219408767834
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -498,7 +497,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _resourceType: 1
-  _regenerationDelay: 1
+  _regenerationDelay: 0
 --- !u!114 &7382485661582087661
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -767,6 +766,7 @@ MonoBehaviour:
   _skills: []
   _hero: {fileID: 8468544467696250796}
   _talentSystem: {fileID: 8675175310089954536}
+  _skillRenderer: {fileID: 1384998200796471846}
 --- !u!1 &2339943645575800385
 GameObject:
   m_ObjectHideFlags: 0

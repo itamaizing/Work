@@ -226,6 +226,7 @@ public class CharacterState : NetworkBehaviour
 
 	public bool invinsible = false;
 
+	public List<AbstractCharacterState> CurrentStates => currentStates;
 	public Character Character => _hero;
 
 	public List<AbstractCharacterState> CurrentStates { get => _currentStates; }
@@ -266,6 +267,16 @@ public class CharacterState : NetworkBehaviour
         [States.NorthernerEndurance] = new NorthernerEndurance(),
         [States.LastBreath] = new LastBreath(),
         [States.MagicBuff] = new MagicBuff(),
+		[States.DarkShield] = new DarkShield(),
+		[States.LightShield] = new LightShield(),
+		[States.TiredSoul] = new TiredSoul(),
+		[States.ReversePolarity] = new ReversePolarityState(),
+		[States.SpiritEnergy] = new SpiritEnergyState(),
+		[States.SpiritHealth] = new SpiritHealthState(),
+		[States.ScorchedSoul] = new ScorchedSoul(),
+		[States.Knockdown] = new Knockdown(),
+		[States.IdealEvade] = new IdealEvade(),
+		[States.Bleeding] = new BleedingDebuff(),
     };
 
 	public void Initialize(Character hero)
@@ -520,7 +531,7 @@ public class CharacterState : NetworkBehaviour
 		{
 			CreateState(enumToState[state], state, duration, damageToExit, personWhoShooted, skillName, false);
 
-			if(school!=Schools.None)
+			if (school != Schools.None)
 			{
 				var counterSpell = (AbilitySchoolDebuff)enumToState[state];
 				counterSpell.canceledSchoool = school;
@@ -623,3 +634,4 @@ public enum States
 
 }
 
+}
