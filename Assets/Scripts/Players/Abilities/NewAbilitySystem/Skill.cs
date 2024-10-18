@@ -352,7 +352,6 @@ public abstract class Skill : NetworkBehaviour
 		{
 			Value = Damage,
 			Type = DamageType,
-			Range = AttackRangeType,
 		};
 		_skillRender.CmdDrawDamageZone(position, Area, damage, _hero.gameObject);
     }
@@ -368,7 +367,6 @@ public abstract class Skill : NetworkBehaviour
 		{
 			Value = Damage,
 			Type = DamageType,
-			Range = AttackRangeType,
 		};
         Debug.Log(_skillRender + " Skill render\n ");
         Debug.Log(Radius + " \n ");
@@ -887,18 +885,21 @@ public abstract class Skill : NetworkBehaviour
         ClearData();
     }
 
-    [Command]
-    protected void CmdApplyDamage(Damage damage, GameObject hp)
+    public void ApplyDamage(Damage damage, GameObject target)
     {
-        if (_tempTargetForDamage != hp.transform)
+        if (_tempTargetForDamage != target.transform)
         {
-            _tempTargetForDamage = hp.transform;
-            _tempHPForDamage = hp.GetComponent<Health>();
+            _tempTargetForDamage = target.transform;
+            _tempHPForDamage = target.GetComponent<Health>();
         }
         
         Hero.DamageTracker.AddDamage(damage);
-        
-        CmdApplyDamage(damage, hp, this);
+    }
+    
+    [Command]
+    protected void CmdApplyDamage(Damage damage, GameObject hp)
+    {
+        hp.GetComponent<Health>().TryTakeDamage(ref damage, this);
     }
 
     public void ApplyHeal(Heal heal, GameObject hp, string sourceName)
@@ -912,12 +913,6 @@ public abstract class Skill : NetworkBehaviour
         Hero.DamageTracker.AddHeal(heal);
         
         CmdApplyHeal(heal, hp, this, sourceName);
-    }
-
-    [Command]
-    private void CmdApplyDamage(Damage damage, GameObject hp, Skill skill)
-    {
-        hp.GetComponent<Health>().TryTakeDamage(ref damage, skill);
     }
     
     [Command]

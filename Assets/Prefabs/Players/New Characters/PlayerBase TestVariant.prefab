@@ -347,6 +347,7 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _attackZoneSize: 4
   _attackSpeed: 0.5
+  _chargeAttackDelay: 0
   _damage: 4
 --- !u!114 &4972498942525129522
 MonoBehaviour:

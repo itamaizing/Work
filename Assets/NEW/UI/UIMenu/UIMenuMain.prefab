@@ -1783,7 +1783,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &4617109056742588145
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1819,6 +1819,11 @@ MonoBehaviour:
   _charactersPanel: {fileID: 7743626275626283349}
   _gameTypesPanel: {fileID: 999487289898236878}
   _savesPanel: {fileID: 1373766362794902644}
+  _uIMenuMainRightPanel: {fileID: 3479555841513392269}
+  _otherUIs:
+  - {fileID: 0}
+  - {fileID: 0}
+  _selectManager: {fileID: 0}
 --- !u!1 &4886050882005158969
 GameObject:
   m_ObjectHideFlags: 0

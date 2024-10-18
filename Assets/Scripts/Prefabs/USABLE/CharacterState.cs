@@ -254,6 +254,9 @@ public class CharacterState : NetworkBehaviour
 		[States.Knockdown] = new Knockdown(),
 		[States.IdealEvade] = new IdealEvade(),
 		[States.Bleeding] = new BleedingDebuff(),
+		[States.EmeraldSkin] = new EmeraldSkinState(),
+		[States.DefenseReduction] = new DefenceReductionState(),
+		[States.SparkTalentHealthBuff] = new SparkTalentHealthState()
 	};
 
 	public void Initialize(Character hero)
@@ -524,4 +527,7 @@ public enum States
 	IdealEvade,
 	Bleeding,
 
+	EmeraldSkin,
+	SparkTalentHealthBuff,
+	DefenseReduction
 }

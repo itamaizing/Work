@@ -88,6 +88,21 @@ public class Health : Resource, IDamageable, IHealingable
         _defMagDamage = value;
     }
 
+    public void SetEvadeAll(float value)
+    {
+        _defPhysDamage += value;
+        _defMagDamage += value;
+        _evadeMagDamage += value;
+        _evadeMeleeDamage += value;
+        _evadeRangeDamage += value;
+    }
+
+    public void SetHp(float current, float max)
+    {
+        CurrentValue = current;
+        MaxValue = max;
+    }
+
     protected bool TryEvade(DamageType damageType, AttackRangeType attackRangeType)
     {
         switch (damageType)
