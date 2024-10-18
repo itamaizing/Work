@@ -894,6 +894,8 @@ public abstract class Skill : NetworkBehaviour
         }
         
         Hero.DamageTracker.AddDamage(damage);
+        
+        CmdApplyDamage(damage,target);
     }
     
     [Command]
