@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d8548505a2c5104980a6fa13739ca3d, type: 3}
   m_Name: EmeraldSkin
   m_EditorClassIdentifier: 
-  _name: Reverse Polarity
+  _name: Emerald Skin
   _description: 
-  _icon: {fileID: 21300000, guid: e1eafea04aee5fa44b72a54b898c488c, type: 3}
+  _icon: {fileID: 21300000, guid: b9bbf5c2b27ebf24bb5b8fc8ca6079b8, type: 3}
