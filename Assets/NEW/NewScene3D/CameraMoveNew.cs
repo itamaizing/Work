@@ -18,8 +18,40 @@ public class CameraMoveNew : MonoBehaviour
         initialRotation = transform.rotation;
     }
 
+    public Transform player;
+    public Vector3 offset;
+    public float smoothSpeed = 0.125f; // Скорость плавного перемещения
+    public float minDistance = 2f; // Минимальное расстояние от игрока
+
+
+    private Vector3 _velocity; // Переменная для плавного движения
+
+    void FixedUpdate()
+    {
+
+    }
+
     private void LateUpdate()
     {
+        if (player == null) return;
+
+        // Расчет расстояния от камеры до игрока
+        Vector3 direction = player.position - transform.position;
+        float distance = direction.magnitude;
+
+        // Если расстояние меньше минимального, то корректируем положение
+        if (distance < minDistance)
+        {
+            direction = direction.normalized * minDistance;
+        }
+
+
+        // Вычисление новой позиции камеры
+        Vector3 targetPosition = player.position + offset;
+
+        // Плавное перемещение камеры
+        transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref _velocity, smoothSpeed);
+
 
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
             return;

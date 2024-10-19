@@ -10,6 +10,7 @@ public class TestController : MonoBehaviour
 	[SerializeField] private Animator _anim;
 	[SerializeField] private float _currentSpeed = 5;
 	[SerializeField] private float tempTest = 90;
+	[SerializeField] private Camera cam;
 
 	public Vector3 MoveDirection = Vector3.zero;
 
@@ -79,15 +80,16 @@ public class TestController : MonoBehaviour
 
 		_currentVelocity = Vector3.SmoothDamp(_currentVelocity, _dir, ref _currentVelocityTemp, _smoothTime); // Move from camera
 
-		var camDir = Camera.main.transform.TransformDirection(_currentVelocity);
+		var camDir = cam.transform.TransformDirection(_currentVelocity);
 
-		camDir = Quaternion.AngleAxis(-Camera.main.transform.eulerAngles.x, Camera.main.transform.TransformVector(Vector3.right)) * camDir;
+		camDir = Quaternion.AngleAxis(-cam.transform.eulerAngles.x, cam.transform.TransformVector(Vector3.right)) * camDir;
 
 		_rigidbody.velocity = camDir * _currentSpeed;
 
 
 		
-		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+		Debug.DrawRay(cam.transform.position, ray.direction);
 		RaycastHit hit;
 		if(Physics.Raycast(ray, out hit))
         {

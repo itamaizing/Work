@@ -8,6 +8,9 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/SigIn&LogIn.unity
     guid: fd43ad7e772c9aa409c655512810f93a
+  - enabled: 1
+    path: Assets/BruteForce/Scenes/Sand/URPSand/03_SandSetupURP.unity
+    guid: a5408663e557490468905f6e0231ba82
   - enabled: 0
     path: Assets/Scenes/MainMenu.unity
     guid: 0ef4eaeadea665141a482c0ed073c484
@@ -29,7 +32,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Test_Scene.unity
     guid: 28243e02398c0974899e5f72c57bfff5
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/TestRoom3D.unity
     guid: 5841babc680b68c42a0e6fd33f6c37d6
   m_configObjects: {}
