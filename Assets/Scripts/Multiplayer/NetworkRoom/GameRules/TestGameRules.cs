@@ -23,6 +23,16 @@ public class TestGameRules : GameRules
             if (health != null)
             {
                 health.Died += () => OnPlayerDeath(playerSettings.gameObject);
+                health.Died += () => ResetPlayerState(playerSettings);
+            }
+
+            var runeComponent = playerSettings.GetComponent<RuneComponent>();
+            if (runeComponent != null)
+            {
+                if (health != null)
+                {
+                    health.Died += runeComponent.ResetValue;
+                }
             }
 
             var runeComponent = playerSettings.GetComponent<RuneComponent>();
@@ -63,6 +73,16 @@ public class TestGameRules : GameRules
 
         teamDeaths[playerSettings.NetworkSettings.TeamIndex]++;
         CheckForRoundEnd();
+    }
+
+    private void CancelActiveSkills(Character playerSettings)
+    {
+        var skills = playerSettings.Abilities.Abilities;
+        foreach (var skill in skills)
+        {
+            skill.RpcCancelActiveSkill();
+            skill.RpcResetSkillState();
+        }
     }
 
     private void CheckForRoundEnd()
@@ -127,8 +147,7 @@ public class TestGameRules : GameRules
 
         foreach (var playerSettings in _players)
         {
-            var health = playerSettings.NetworkSettings.CachedHealth;
-            health?.ResetValue();
+            ResetPlayerState(playerSettings);
 
             var runeComponent = playerSettings.GetComponent<RuneComponent>();
             runeComponent?.ResetValue();
@@ -141,6 +160,34 @@ public class TestGameRules : GameRules
             }
         }
     }
+
+    private void ResetPlayerState(Character playerSettings)
+    {
+        var health = playerSettings.Health;
+        health?.ResetValue();
+
+        var runeComponent = playerSettings.GetComponent<RuneComponent>();
+        runeComponent?.ResetValueRune();
+
+        //CancelActiveSkills(playerSettings);
+
+        var characterState = playerSettings.CharacterState;
+        if (characterState != null)
+        {
+            var statesCopy = new List<AbstractCharacterState>(characterState.CurrentStates);
+            foreach (var state in statesCopy)
+            {
+                characterState.RemoveState(state.State);
+            }
+        }
+
+        var energy = playerSettings.Stamina;
+        if (energy != null)
+        {
+            energy.ResetValue();
+        }
+    }
+
 
     private IEnumerator HandleTeamsAndSpawns(List<Transform> spawnPoints)
     {

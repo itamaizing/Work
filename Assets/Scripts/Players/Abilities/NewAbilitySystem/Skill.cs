@@ -12,6 +12,13 @@ public class SkillEnergyCost
     public float resourceCost;
 }
 
+public struct TargetToShot
+{
+    public Vector2 Position;
+    public Character character;
+}
+
+
 public enum Schools
 {
     Light,
@@ -31,6 +38,13 @@ public enum AbilityForm
     Physical
 }
 
+public enum SkillType
+{
+    Target,
+    Projectile,
+    Zone
+}
+
 public abstract class Skill : NetworkBehaviour
 {
     [Header("AbilitiesInfo")]
@@ -46,6 +60,7 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] private AbilityForm _abilityForm;
     [SerializeField] private DamageType _damageType;
     [SerializeField] private AttackRangeType _attackRangeType;
+    [SerializeField] private SkillType _skillType;
     [SerializeField] protected LayerMask _targetsLayers;
     [SerializeField] protected LayerMask _obstacle;
     [Header("Streaming settings")]
@@ -79,6 +94,7 @@ public abstract class Skill : NetworkBehaviour
     protected Transform _tempTargetForDamage;
     protected Health _tempHPForDamage;
 
+    private Character _tempTarget;
     private int _currentChargers;
     private float _remainingCooldownTime;
     private StatsBuff _statsBuff = new StatsBuff();
@@ -87,9 +103,10 @@ public abstract class Skill : NetworkBehaviour
     private bool _isPreparing = false;
     private bool _isCasting = false;
     private bool _isClick;
-    private Character _tempTarget;
+    private bool _isShiftClick;
+    private bool _isCtrlClick;
 
-    public bool GetMouseButton { get => _isClick; }
+    public bool GetMouseButton { get => _isClick || _isShiftClick || _isCtrlClick; }
     public bool IsSubjectToGlobalCooldownTime { get => _isSubjectToGlobalCooldownTime; }
     public Character Hero { get => _hero; }
     public StatsBuff Buff => _statsBuff;
@@ -112,13 +129,14 @@ public abstract class Skill : NetworkBehaviour
     public float Area { get => Buff.Area.GetBuffedValue(_area); protected set => _area = value; }
     public float CastLength { get => Buff.Area.GetBuffedValue(_castLength); protected set => _castLength = value; }
     public float CastWidth { get => Buff.Area.GetBuffedValue(_castWidth); protected set => _castWidth = value; }
-    public float Damage  { get => Buff.Damage.GetBuffedValue(_damageValue); protected set => _damageValue = value; }
+    public virtual float Damage  { get => Buff.Damage.GetBuffedValue(_damageValue); protected set => _damageValue = value; }
     public bool IsUseCharges { get => _isUseCharges; }
     public LayerMask TargetsLayers { get => _targetsLayers; protected set => _targetsLayers = value; }
     public Schools School { get => _abilitySchool; protected set => _abilitySchool = value; }
     public AbilityForm AbilityForm => _abilityForm;
     public DamageType DamageType => _damageType;
     public AttackRangeType AttackRangeType => _attackRangeType;
+    public SkillType SkillType => _skillType;
 
     public event Action<int> CurrentChargeChanged;
     public event Action<float> CooldownStarted;
@@ -217,9 +235,8 @@ public abstract class Skill : NetworkBehaviour
 
                 PreparingCanceled?.Invoke();
 
-                InputHandler.OnClick -= OnClick;
-                InputHandler.OnClickCanceled -= OnClickCanceled;
-                OnClickCanceled();
+				UnSubscribeClickEvents();
+				OnClickCanceled();
             }
 
             _tempTarget = null;
@@ -320,7 +337,13 @@ public abstract class Skill : NetworkBehaviour
 
     public void DrawDamageZone(Vector3 position)
     {
-        _skillRender.CmdDrawDamageZone(position, Area, _damageValue, _hero.gameObject);
+		Damage damage = new Damage
+		{
+			Value = Damage,
+			Type = DamageType,
+			Range = AttackRangeType,
+		};
+		_skillRender.CmdDrawDamageZone(position, Area, damage, _hero.gameObject);
     }
 
     public void StopDamageZone()
@@ -328,24 +351,25 @@ public abstract class Skill : NetworkBehaviour
         _skillRender.CmdStopDrawDamageZone();
     }
 
-
     protected virtual void StartAutoDraw()
     {
-		/*Damage damage = new Damage
+		Damage damage = new Damage
 		{
 			Value = Damage,
-			Type = DamageType.Physical,
-			Range = AttackRangeType.RangeAttack,
-		};*/
-
+			Type = DamageType,
+			Range = AttackRangeType,
+		};
+        Debug.Log(_skillRender + " Skill render\n ");
+        Debug.Log(Radius + " \n ");
+       // Debug.Log(Radiu + " \n ");
 		if (_isAutoRadiusRender)
             _skillRender.DrawRadius(Radius);
 
         if (_isAutoAreaRender)
-            _skillRender.DrawArea(Area, Damage, TargetsLayers);
+            _skillRender.DrawArea(Area, damage, TargetsLayers);
 
         if (_isAutoLineRender)
-            _skillRender.DrawLine(CastLength, CastWidth, Damage, TargetsLayers);
+            _skillRender.DrawLine(CastLength, CastWidth, damage, TargetsLayers);
     }
 
     protected virtual void StopAutoDraw()
@@ -470,7 +494,13 @@ public abstract class Skill : NetworkBehaviour
 
     protected Coroutine StartCastDeleyCoroutine()
     {
-        _castDeleyCoroutine = StartCoroutine(CastDeleyJob());
+        _castDeleyCoroutine = StartCoroutine(CastDeleyJob(CastDeley));
+        return _castDeleyCoroutine;
+    }
+    
+    protected Coroutine StartCastDeleyCoroutine(float time)
+    {
+        _castDeleyCoroutine = StartCoroutine(CastDeleyJob(time));
         return _castDeleyCoroutine;
     }
 
@@ -538,7 +568,140 @@ public abstract class Skill : NetworkBehaviour
         _rechargeJob = null;
     }
 
-    private void OnClick()
+    protected TargetToShot GetTarget()
+    {
+		TargetToShot target = new TargetToShot();
+
+		if (_isClick)
+        {
+            return LeftClick();
+        }
+        if(_isShiftClick)
+        {
+            return ShiftLeftClick();
+        }
+        if(_isCtrlClick)
+        {
+            return CtrlLeftClick();
+		}
+
+        return target;
+    }    
+
+    protected TargetToShot LeftClick()
+    {
+        TargetToShot target = new TargetToShot();
+        switch (_skillType)
+        {
+            case SkillType.Target:
+                target.character = GetClosestTargets();
+				break; 
+            case SkillType.Projectile:
+				target.character = GetClosestTargets();
+				break;
+			case SkillType.Zone:
+				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				break;
+            default:
+				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				break;
+		}
+        return target;
+	}
+
+    protected TargetToShot ShiftLeftClick()
+    {
+		TargetToShot target = new TargetToShot();
+		/*switch (_skillType)
+		{
+			case SkillType.Target:
+				//auto attack mode
+				target.Position = GetCloserTargets(transform.position, 100)[0];
+                break;
+			case SkillType.Projectile:
+				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				break;
+			case SkillType.Zone:
+				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				break;
+			default:
+				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				break;
+		}*/
+        target.Position = transform.position;
+        target.character = _hero;
+
+		return target;
+	}
+
+	protected TargetToShot CtrlLeftClick()
+	{
+		TargetToShot target = new TargetToShot();
+		switch (_skillType)
+		{
+			case SkillType.Target:
+                target.character = GetClosestTargets();
+				break;
+			case SkillType.Projectile:
+                Debug.Log("TEST");
+				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				break;
+			case SkillType.Zone:
+				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				break;
+			default:
+				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				break;
+		}
+		return target;
+	}
+
+    protected Vector2 GetClosestTarget()
+    {
+		Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, 100);
+        Vector2 closest = Vector2.positiveInfinity;
+        foreach (Collider2D collider in enemyDetected)
+        {
+            if (collider.gameObject != _hero.gameObject)
+            
+            if(collider.TryGetComponent<Character>(out var enemy))
+            {
+                if(Vector2.Distance(collider.transform.position, transform.position) < Vector2.Distance(closest, transform.position))
+                {
+                    closest = collider.transform.position;
+                    Debug.Log(enemy);
+                }
+            }
+        }
+        if(Vector2.Distance(closest, transform.position) < 100)   return closest;
+        else return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+	}
+	protected Character GetClosestTargets()
+	{
+		Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, 100);
+		Vector2 closest = Vector2.positiveInfinity;
+        Character enemys = null;
+		foreach (Collider2D collider in enemyDetected)
+		{
+			if (collider.gameObject != _hero.gameObject)
+
+				if (collider.TryGetComponent<Character>(out var enemy))
+				{
+					if (Vector2.Distance(collider.transform.position, transform.position) < Vector2.Distance(closest, transform.position))
+					{
+                        enemys = enemy;
+						closest = collider.transform.position;
+						Debug.Log(enemy);
+					}
+				}
+		}
+        if (Vector2.Distance(closest, transform.position) < 100) return enemys;
+        else return null;
+
+	}
+
+	private void OnClick()
     {
         _isClick = true;
     }
@@ -548,7 +711,27 @@ public abstract class Skill : NetworkBehaviour
         _isClick = false;
     }
 
-    private IEnumerator CooldownCoroutine(float cooldownTime)
+    private void OnShiftClick()
+    {
+        _isShiftClick = true;
+    }
+
+	private void OnShiftCancled()
+	{
+		_isShiftClick = false;
+	}
+
+    private void OnCtrlClick()
+    {
+        _isCtrlClick = true;
+    }
+
+    private void OnCtlCancled()
+    {
+        _isCtrlClick = false;
+    }
+
+	private IEnumerator CooldownCoroutine(float cooldownTime)
     {
         CooldownStarted?.Invoke(cooldownTime);
         _remainingCooldownTime = cooldownTime;
@@ -562,12 +745,12 @@ public abstract class Skill : NetworkBehaviour
         _cooldownJob = null;
     }
 
-    private IEnumerator CastDeleyJob()
+    private IEnumerator CastDeleyJob(float delayTime)
     {
-        CastDeleyStarted?.Invoke(CastDeley);
+        CastDeleyStarted?.Invoke(delayTime);
         float time = 0;
 
-        while (time < CastDeley)
+        while (time < delayTime)
         {
             if (NoObstacles() == false)
             {
@@ -609,14 +792,13 @@ public abstract class Skill : NetworkBehaviour
         ClearData();
         StartAutoDraw();
 
-        InputHandler.OnClick += OnClick;
-        InputHandler.OnClickCanceled += OnClickCanceled;
+        SubscribeClickEvents();
 
-        yield return _prepareCoroutine = StartCoroutine(PrepareJob());
+		yield return _prepareCoroutine = StartCoroutine(PrepareJob());
 
-        InputHandler.OnClick -= OnClick;
-        InputHandler.OnClickCanceled -= OnClickCanceled;
-        OnClickCanceled();
+        UnSubscribeClickEvents();
+
+		OnClickCanceled();
 
         PreparingSuccess?.Invoke();
         _isPreparing = false;
@@ -646,6 +828,61 @@ public abstract class Skill : NetworkBehaviour
         _castCoroutine = null;
     }
 
+    [ClientRpc]
+    public void RpcResetSkillState()
+    {
+        ResetSkillState();
+    }
+
+    [ClientRpc]
+    public void RpcCancelActiveSkill()
+    {
+        if (_isPreparing || _isCasting)
+        {
+            TryCancel(true);
+        }
+    }
+
+    public void ResetSkillState()
+    {
+        _remainingCooldownTime = 0;
+
+        if (_cooldownJob != null)
+        {
+            StopCoroutine(_cooldownJob);
+            _cooldownJob = null;
+        }
+        CooldownEnded?.Invoke();
+
+        if (_castDeleyCoroutine != null)
+        {
+            StopCoroutine(_castDeleyCoroutine);
+            _castDeleyCoroutine = null;
+        }
+        CastDeleyEnded?.Invoke();
+
+        _isPreparing = false;
+        _isCasting = false;
+
+        if (_isUseCharges)
+        {
+            _currentChargers = _maxCharges;
+            CurrentChargeChanged?.Invoke(_currentChargers);
+        }
+
+        if (_castStreamCoroutine != null)
+        {
+            StopCoroutine(_castStreamCoroutine);
+            _castStreamCoroutine = null;
+        }
+        CastStreamEnded?.Invoke();
+
+        CancelCoroutine(_castCoroutine);
+        CancelCoroutine(_actionWrapperForPreparingCoroutine);
+        CancelCoroutine(_actionWrapperForCastCoroutine);
+        ClearData();
+    }
+
     [Command]
     protected void CmdApplyDamage(Damage damage, GameObject hp)
     {
@@ -656,4 +893,32 @@ public abstract class Skill : NetworkBehaviour
         }
         _tempHPForDamage.TryTakeDamage(ref damage, this);
     }
+
+    private void SubscribeClickEvents()
+    {
+		InputHandler.OnClick += OnClick;
+        InputHandler.OnShiftLeftMouse += OnShiftClick;
+        InputHandler.OnSwitchAutoMode += OnCtrlClick;
+
+        //cancelled
+
+		InputHandler.OnClickCanceled += OnClickCanceled;
+        InputHandler.OnShiftLeftMouseCanceled += OnShiftCancled;
+        InputHandler.OnSwitchAutoModeCanceled += OnCtlCancled;
+        
+	}
+
+	private void UnSubscribeClickEvents()
+	{
+		InputHandler.OnClick -= OnClick;
+		InputHandler.OnShiftLeftMouse -= OnShiftClick;
+		InputHandler.OnSwitchAutoMode -= OnCtrlClick;
+
+		//cancelled
+
+		InputHandler.OnClickCanceled -= OnClickCanceled;
+		InputHandler.OnShiftLeftMouseCanceled -= OnShiftCancled;
+		InputHandler.OnSwitchAutoModeCanceled -= OnCtlCancled;
+
+	}
 }

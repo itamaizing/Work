@@ -5,7 +5,7 @@ public class BoxArea : MonoBehaviour
     [SerializeField] BoxCollider2D _colider;
     [SerializeField] SpriteRenderer _sprite;
 
-    private float _damage;
+    private Damage _damage;
 	/*private Damage _zeroDamage;
 
 	private void Start()
@@ -18,7 +18,7 @@ public class BoxArea : MonoBehaviour
 		};
 	}*/
 
-	public void SetSize(float width, float length, float damage)
+	public void SetSize(float width, float length, Damage damage)
     {
         _sprite.size = new Vector2(width, length);
         _colider.size = new Vector2(width, length);
@@ -39,7 +39,7 @@ public class BoxArea : MonoBehaviour
         }
 		if (collision.TryGetComponent<Health>(out var hpEnemy) && collision.transform != transform.parent)
 		{
-			hpEnemy.PhantomValueShow(_damage);
+			hpEnemy.ShowPhantomValue(_damage);
 		}
 	}
 
@@ -51,7 +51,9 @@ public class BoxArea : MonoBehaviour
         }
 		if (collision.TryGetComponent<Health>(out var hpEnemy) && collision.transform != transform.parent)
 		{
-			hpEnemy.PhantomValueShow(0);
+            Damage damage = _damage;
+            damage.Value = 0;
+			hpEnemy.ShowPhantomValue(damage);
 		}
 	}
 }

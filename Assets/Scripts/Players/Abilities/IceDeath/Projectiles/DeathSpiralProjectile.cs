@@ -26,11 +26,11 @@ public class DeathSpiralProjectile : Projectiles
 	{
 		if (_inTheRow)
 		{
-			_curDamage = 10;
+			_curDamage = 100;
 		}
 		else
 		{
-			_curDamage = 20;
+			_curDamage = 200;
 		}
 		_damage = new Damage
 		{
@@ -62,6 +62,7 @@ public class DeathSpiralProjectile : Projectiles
 			if(damageable is IcyCorpse corpse)
 			{
 				corpse.Health.Heal(10);
+				Explode();
 			}
 			else if (damageable is Character target)
 			{
@@ -77,6 +78,7 @@ public class DeathSpiralProjectile : Projectiles
 				}
 				return;
 			}
+			Explode();
 		}
 
 		/*if (collision.TryGetComponent<Character>(out var target) && collision.gameObject != _dad.gameObject)
@@ -101,7 +103,7 @@ public class DeathSpiralProjectile : Projectiles
 			Debug.Log(shadow.name + " become alive");
 		}
 		//if collision == ice puddle or ice shadow
-		
+		//
 	}
 
 	private void Explode()

@@ -223,6 +223,7 @@ public class CharacterState : NetworkBehaviour
 
 	public bool invinsible = false;
 
+	public List<AbstractCharacterState> CurrentStates => currentStates;
 	public Character Character => _hero;
 
 	public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
@@ -247,10 +248,10 @@ public class CharacterState : NetworkBehaviour
 		[States.SpiritEnergy] = new SpiritEnergyState(),
 		[States.SpiritHealth] = new SpiritHealthState(),
 		[States.ScorchedSoul] = new ScorchedSoul(),
-        [States.Knockdown] = new Knockdown(),
-        [States.IdealEvade] = new IdealEvade(),
-        [States.Bleeding] = new BleedingDebuff(),
-    };
+		[States.Knockdown] = new Knockdown(),
+		[States.IdealEvade] = new IdealEvade(),
+		[States.Bleeding] = new BleedingDebuff(),
+	};
 
 	public void Initialize(Character hero)
 	{
@@ -374,7 +375,7 @@ public class CharacterState : NetworkBehaviour
 		if (currentStates.Count <= 0) return;
 
 		_stateIcons.RemoveItemByState(stateName);
-		for(int i = currentStates.Count - 1; i >= 0; i --)
+		for (int i = currentStates.Count - 1; i >= 0; i--)
 		{
 			if (currentStates[i].State == stateName)
 			{
@@ -404,7 +405,7 @@ public class CharacterState : NetworkBehaviour
 			return;
 		if (CheckForState(state))
 		{
-			for(int i = 0; i < currentStates.Count; i++)
+			for (int i = 0; i < currentStates.Count; i++)
 			{
 				if (currentStates[i].State != state) continue;
 
@@ -424,7 +425,7 @@ public class CharacterState : NetworkBehaviour
 		{
 			CreateState(enumToState[state], state, duration, damageToExit, personWhoShooted, skillName, false);
 
-			if(school!=Schools.None)
+			if (school != Schools.None)
 			{
 				var counterSpell = (AbilitySchoolDebuff)enumToState[state];
 				counterSpell.canceledSchoool = school;
@@ -492,4 +493,3 @@ public enum States
 	Bleeding,
 
 }
-

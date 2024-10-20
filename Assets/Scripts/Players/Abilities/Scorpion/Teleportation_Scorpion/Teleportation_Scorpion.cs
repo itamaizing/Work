@@ -16,8 +16,8 @@ public class Teleportation_Scorpion : Skill, ICanConsumeComboPoints
     [SerializeField] private float _offset = 2.1f;
     private Character _target;
 
-    private GameObject _tempTarget;
-    private MoveComponent _tempTargetMove;
+    //private GameObject _tempTarget;
+    //private MoveComponent _tempTargetMove;
 
     [SerializeField] private ConsumeCombo_Scorpion consumeCombo_Scorpion;
 

@@ -86,8 +86,8 @@ public class IceCloudProjectile : Projectiles
 				}
 				return;
 			}
+			Explode();
 		}
-		Explode();
 	}
 
 	private void Explode()

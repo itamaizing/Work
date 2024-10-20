@@ -28,8 +28,20 @@ public class SelectManager : MonoBehaviour
     private void Update()
     {
         if (_contoller == null)
-        { 
+        {
+            if (NetworkClient.connection == null || NetworkClient.connection.identity == null)
+            {
+                return;
+            }
+
             _contoller = NetworkClient.connection.identity.GetComponent<NetworkComponent>();
+
+            if (_contoller == null)
+            {
+                Debug.LogWarning("NetworkComponent not found on client identity.");
+                return;
+            }
+
             _canContollUnits = _contoller.controllableUnits;
         }
         

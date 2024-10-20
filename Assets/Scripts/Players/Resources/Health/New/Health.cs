@@ -17,8 +17,8 @@ public class Health : Resource, IDamageable, IHealingable
     public float SumDamageTaken { get => _sumDamageTaken; }
     public float EvadeMeleeDamage { get => _evadeMeleeDamage; }
     public float EvadeRangeDamage { get => _evadeRangeDamage; }
-    public float DefPhysDamage { get => _defPhysDamage; }
     public float EvadeMagDamage { get => _evadeMagDamage; }
+    public float DefPhysDamage { get => _defPhysDamage; }
     public float DefMagDamage { get => _defMagDamage; }
     public List<IDamageable> Shields { get => _shields; }
 
@@ -172,13 +172,18 @@ public class Health : Resource, IDamageable, IHealingable
         Died?.Invoke();
     }
 
-    public void ResetValue()
-    {
-        _currentValue = _maxValue;
-    }
-
 	public void ShowPhantomValue(Damage phantomValue)
 	{
-		PhantomValueShow(phantomValue.Value);
+        float curDamage = phantomValue.Value;
+        if(phantomValue.Type == DamageType.Physical)
+        {
+            curDamage *= 1 -_defPhysDamage;
+        }
+        if(phantomValue.Type == DamageType.Magical)
+        {
+            curDamage *= 1 -_defMagDamage;
+        }
+
+		PhantomValueShow(curDamage);
 	}
 }

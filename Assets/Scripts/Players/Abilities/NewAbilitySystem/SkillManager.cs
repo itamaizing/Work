@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(SkillRenderer))]
 [RequireComponent(typeof(SkillQueue))]
@@ -10,11 +12,11 @@ public class SkillManager : MonoBehaviour
     [SerializeField] private List<Skill> _skills;
     [SerializeField] private Character _hero;
     [SerializeField] private TalentSystem _talentSystem;
+    [SerializeField]private SkillRenderer _skillRenderer;
 
     private Skill[] _selectedSkills = new Skill[16];
     private List<AutoAttackSkill> _autoAttackSkills = new List<AutoAttackSkill>();
     private List<Skill> _simpleSkills = new List<Skill>();
-    private SkillRenderer _skillRenderer;
     private float _globalCooldownTime = .5f;
     private SkillQueue _skillQueue;
     private AutoAttackQueue _autoAttackQueue;
@@ -32,13 +34,14 @@ public class SkillManager : MonoBehaviour
 
     private void Awake()
     {
-        _skillRenderer = GetComponent<SkillRenderer>();
+        InputHandler.ScrollMouse += ScrollMouse;
+       // _skillRenderer = GetComponent<SkillRenderer>();
         _skillQueue = GetComponent<SkillQueue>();
         _autoAttackQueue = GetComponent<AutoAttackQueue>();
 
         foreach (var item in _skills)
         {
-            AddSkill(item);
+            SkillInit(item);
         }
 
         for (int i = 0; i < 16; i++)
@@ -50,46 +53,82 @@ public class SkillManager : MonoBehaviour
         }
     }
 
-    public void AddSkill(Skill skill)
+	private void ScrollMouse(float value)
+	{
+        if (_selectedSkill == null) return;
+        
+		var index = Array.IndexOf(_selectedSkills, _selectedSkill);
+
+		if (value > 0)
+        {            
+            if(index - 1 < 0)
+            {
+                index = _skills.Count;
+				Debug.Log("min");
+			}
+			SelectSkill(index - 1);
+			Debug.Log("Mousescroll down");
+		}
+        if(value < 0)
+        {
+			if (index >= _skills.Count)
+			{
+                index = 0;
+				Debug.Log("max");
+			}
+			SelectSkill(index + 1);
+			Debug.Log("Mousescroll up");
+		}
+       
+	}
+
+	public void AddSkill(Skill skill)
     {
-        if(_skills.Contains(skill) == false)
-            _skills.Add(skill);
+        if (_skills.Contains(skill)) return;
 
-        for (int i = 0; i < _selectedSkills.Length; i++)
-        {
-            if(_selectedSkills[i] == null)
-            {
-                _selectedSkills[i] = skill;
-                break;
-            }
-        }
-
-        skill.Init(_skillRenderer, _hero);
-
-        if (skill is AutoAttackSkill attackSkill)
-        {
-            _autoAttackSkills.Add(attackSkill);
-        }
-        else
-        {
-            _simpleSkills.Add(skill);
-            skill.CastStarted += GlobalCooldown;
-        }
-
-        foreach (var simpleSkill in _simpleSkills)
-        {
-            foreach (var autoAttackSkill in _autoAttackSkills)
-            {
-                simpleSkill.CastStarted += autoAttackSkill.Pause;
-                simpleSkill.CastEnded += autoAttackSkill.Continue;
-            }
-        }
-
-        SkillAdded?.Invoke(skill);
+        _skills.Add(skill);
+        SkillInit(skill); 
     }
+
+    private void SkillInit(Skill skill)
+    {
+		for (int i = 0; i < _selectedSkills.Length; i++)
+		{
+			if (_selectedSkills[i] == null)
+			{
+				_selectedSkills[i] = skill;
+				break;
+			}
+		}
+
+		skill.Init(_skillRenderer, _hero);
+
+		if (skill is AutoAttackSkill attackSkill)
+		{
+			_autoAttackSkills.Add(attackSkill);
+		}
+		else
+		{
+			_simpleSkills.Add(skill);
+			skill.CastStarted += GlobalCooldown;
+		}
+
+		foreach (var simpleSkill in _simpleSkills)
+		{
+			foreach (var autoAttackSkill in _autoAttackSkills)
+			{
+				simpleSkill.CastStarted += autoAttackSkill.Pause;
+				simpleSkill.CastEnded += autoAttackSkill.Continue;
+			}
+		}
+
+		SkillAdded?.Invoke(skill);
+	}
 
     public void RemoveSkill(Skill skill)
     {
+        if (!_skills.Contains(skill)) return;
+
         foreach (var simpleSkill in _simpleSkills)
         {
             foreach (var autoAttackSkill in _autoAttackSkills)
@@ -131,14 +170,14 @@ public class SkillManager : MonoBehaviour
             InputHandler.OnClick += PrepereSkill;
             InputHandler.OnAltClick += CancelSkillCast;
 
-            InputHandler.OnCast += SelectSkill;
+            InputHandler.OnCast += OnCastSelect;
         }
         else
         {
             InputHandler.OnClick -= PrepereSkill;
             InputHandler.OnAltClick -= CancelSkillCast;
 
-            InputHandler.OnCast -= SelectSkill;
+            InputHandler.OnCast -= OnCastSelect;
 
             if (_selectedSkill != null && _selectedSkill.IsPreparing)
             {
@@ -178,25 +217,32 @@ public class SkillManager : MonoBehaviour
         {
             SkillQueue.TryCancel();
         }
-        else if(_selectedSkill != null)
+        /*else if(_selectedSkill != null)
         {
             DeselectSkill();
-        }
+        }*/ // not need now, but not deleted
     }
 
-    private void SelectSkill(int index)
+    private void OnCastSelect(int index)
+    {
+        if (SelectSkill(index))
+        {
+            PrepereSkill();
+        }
+	}
+
+    private bool SelectSkill(int index)
     {
         if (_selectedSkills[index] == null)
-            return;
+            return false;
 
         if (_selectedSkill != null && _selectedSkill.IsPreparing == true)
-            return;
+            return false;
 
         if (_selectedSkill == _selectedSkills[index])
         {
             SkillSelected?.Invoke(index);
 
-            PrepereSkill();
         }
         else if (_selectedSkill == null)
         {
@@ -204,7 +250,6 @@ public class SkillManager : MonoBehaviour
             SubscribingSkillOnEvents(_selectedSkill);
             SkillSelected?.Invoke(index);
 
-            PrepereSkill();
         }
         else if (_selectedSkill != _selectedSkills[index])
         {
@@ -212,10 +257,9 @@ public class SkillManager : MonoBehaviour
 
             _selectedSkill = _selectedSkills[index];
             SubscribingSkillOnEvents(_selectedSkill);
-            SkillSelected?.Invoke(index);
-
-            PrepereSkill();
+            SkillSelected?.Invoke(index);            
         }
+        return true;
     }
 
     private void DeselectSkill()

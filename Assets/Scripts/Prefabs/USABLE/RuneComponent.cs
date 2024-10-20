@@ -78,7 +78,7 @@ public class RuneComponent : Resource
         }
     }
 
-    public void ResetValue()
+    public void ResetValueRune()
     {
         _currentValue = _maxValue;
         _abilities.Clear();

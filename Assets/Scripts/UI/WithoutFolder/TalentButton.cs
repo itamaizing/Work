@@ -22,6 +22,13 @@ public class TalentButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
 	private Material _mat;
 
+	public void Init(Sprite ico, string name, string descriprion)
+	{
+		this.ico.sprite = ico;
+		talentName.text = name;
+		talentDescription.text = descriprion;
+	}
+
 	public void OnPointerEnter(PointerEventData eventData)
 	{
 		backLight.DOFade(1, 0.2f);

@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class HeroSelectPanel : MonoBehaviour
 {
-    [SerializeField] private List<HeroComponent> _heroList;
+	public UIMenuMainWindow Owner;
+	[SerializeField] private List<HeroComponent> _heroList;
     [SerializeField] private PlayerSelectionIcon _iconPref;
 
     private HeroComponent _selectedHero;
@@ -29,5 +30,6 @@ public class HeroSelectPanel : MonoBehaviour
     private void OnCharacterSelected(HeroComponent hero)
     {
         _selectedHero = hero;
-    }
+		Owner.SetHero(hero);
+	}
 }

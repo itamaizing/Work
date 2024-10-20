@@ -120,6 +120,14 @@ PrefabInstance:
       propertyPath: m_SortingLayer
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 1426856629045943036, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+      propertyPath: m_Size.x
+      value: 6.86
+      objectReference: {fileID: 0}
+    - target: {fileID: 1426856629045943036, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+      propertyPath: m_Size.y
+      value: 1.58
+      objectReference: {fileID: 0}
     - target: {fileID: 1521997633048654849, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
       propertyPath: m_Name
       value: PlayerTest Variant
@@ -219,6 +227,14 @@ PrefabInstance:
     - target: {fileID: 6791969768364216469, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
       propertyPath: _skills.Array.data[0]
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6974810850626055898, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+      propertyPath: m_Size.x
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 6974810850626055898, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+      propertyPath: m_Size.y
+      value: 6.4
       objectReference: {fileID: 0}
     - target: {fileID: 7000184432333105671, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
       propertyPath: m_Enabled
@@ -364,9 +380,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22ad95934c7e55b4b8afeb7c627a8f71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _circle: {fileID: 771352717599252324}
   _areaPref: {fileID: 1574982521674352815, guid: 790fb3857b30c2b4fad4375343a84fad, type: 3}
+  _damageZonePref: {fileID: 0}
   _line: {fileID: 11400000, guid: 7faf4d32cfcc4f54d967e4d01a0c4b65, type: 2}
+  _colorForAllies: {r: 0, g: 1, b: 0, a: 1}
+  _colorForEnemies: {r: 1, g: 0, b: 0, a: 1}
   _colorForEnd: {r: 1, g: 0, b: 0, a: 1}
   _colorForStart: {r: 0.0025007725, g: 1, b: 0, a: 1}
 --- !u!114 &719519892971730700
@@ -427,11 +449,15 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 44ef9f5c61bd03a4a9d02045a6dfb776, type: 2}
-  _manaCost: 1
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
   _cooldownTime: 1
   _castDeley: 3
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -469,11 +495,15 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: 1f2a5a037601fdd438b17c4c4917caaa, type: 2}
-  _manaCost: 0
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -494,7 +524,6 @@ MonoBehaviour:
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
-  _attackManaCost: 1
   _attackZoneSize: 3
   _attackSpeed: 0.5
   _damage: 5
@@ -514,11 +543,15 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _abilityInfo: {fileID: 11400000, guid: d225c810085a24647a426dd4b47a9983, type: 2}
-  _manaCost: 5
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768

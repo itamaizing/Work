@@ -114,6 +114,8 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         ability.CastEnded += OnCastEnded;
         ability.Canceled += OnCastEnded;
 
+        ability.CooldownEnded += OnStopCooldown;
+
         if (ability is AutoAttackSkill autoAttackSkill)
         {
             autoAttackSkill.Canceled += OnEndAutoAttack;
@@ -139,6 +141,8 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         ability.CastEnded -= OnCastEnded;
         ability.Canceled -= OnCastEnded;
 
+        ability.CooldownEnded -= OnStopCooldown;
+
         if (ability is AutoAttackSkill autoAttackSkill)
         {
             autoAttackSkill.Canceled -= OnEndAutoAttack;
@@ -147,6 +151,11 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
            // autoAttackSkill.CastContinued -= OnStartAutoAttack;
             //autoAttackSkill.AutoCastEnded -=
         }
+    }
+
+    private void OnStopCooldown()
+    {
+        _cooldown.Stop();
     }
 
     private void OnClickWithCtrl()
