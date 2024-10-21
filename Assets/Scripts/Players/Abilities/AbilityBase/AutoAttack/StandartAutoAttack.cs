@@ -1,6 +1,3 @@
-using Mirror;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class StandartAutoAttack : AutoAttackSkill
@@ -15,6 +12,6 @@ public class StandartAutoAttack : AutoAttackSkill
             Type = DamageType,
             PhysicAttackType = AttackRangeType,
         };
-        ApplyDamage(damage, _target.gameObject);
+        CmdApplyDamage(damage, _target.gameObject);
     }
 }

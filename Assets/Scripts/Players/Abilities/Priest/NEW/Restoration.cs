@@ -119,7 +119,7 @@ public class Restoration : Skill
                 float effectiveHeal = healPerTick * _accumulatedEffectiveness;
                 
                 var heal = new Heal { Value = effectiveHeal };
-                ApplyHeal(heal, healthComponent.gameObject, name);
+                CmdApplyHeal(heal, healthComponent.gameObject, this, name);
                 
                 _accumulatedEffectiveness += _totalHealedInInterval * effectivenessIncreasePerHeal;
                 
@@ -147,7 +147,7 @@ public class Restoration : Skill
                     PhysicAttackType = AttackRangeType.RangeAttack
                 };
                 
-                ApplyDamage(damage, target.gameObject);
+                CmdApplyDamage(damage, target.gameObject);
                 yield return new WaitForSeconds(damageInterval);
             }
         }

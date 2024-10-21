@@ -85,7 +85,7 @@ public class IceSword : Skill
 			PhysicAttackType = AttackRangeType.RangeAttack,
 		};
 		//_skill.CmdApplyDamage(damage, target.gameObject);
-		ApplyDamage(damage2, _target.gameObject);
+		CmdApplyDamage(damage2, _target.gameObject);
 		//_target.CharacterState.CmdAddState(States.Cooling, _duration, 0, _playerLinks.gameObject, name);
 		//_target.Health.TryTakeDamage(ref damage2, this);
 	}

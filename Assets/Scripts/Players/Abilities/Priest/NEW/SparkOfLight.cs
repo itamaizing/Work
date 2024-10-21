@@ -114,7 +114,7 @@ public class SparkOfLight : AutoAttackSkill
         }
         else if (IsEnemyTarget(_target) && TryPayCost(_manaCostDamage))
         {
-            Damage(_target);
+            DamageCast(_target);
         }
     }
 
@@ -148,12 +148,12 @@ public class SparkOfLight : AutoAttackSkill
         var bonus = isBonusActive ? _tickHealingBonus * _healingBonusStacks : 0;
         
         var heal = new Heal { Value = _healAmount + bonus };
-        ApplyHeal(heal, target.gameObject, name);
+        CmdApplyHeal(heal, target.gameObject, this, name);
     }
 
-    private void Damage(Character target)
+    private void DamageCast(Character target)
     {
-        ApplyDamage(CreateDamage(_damageAmount), target.gameObject);
+        CmdApplyDamage(CreateDamage(_damageAmount), target.gameObject);
     }
 
     private void ApplyDamageInAltMode(Character target)
@@ -163,8 +163,8 @@ public class SparkOfLight : AutoAttackSkill
         {
             damageAmount *= BonusDamageMultiplier;
         }
-
-        ApplyDamage(CreateDamage(damageAmount), target.gameObject);
+        
+        CmdApplyDamage(CreateDamage(damageAmount), target.gameObject);
     }
 
     private Damage CreateDamage(float amount)

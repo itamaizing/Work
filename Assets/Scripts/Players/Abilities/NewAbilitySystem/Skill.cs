@@ -895,7 +895,14 @@ public abstract class Skill : NetworkBehaviour
         ClearData();
     }
 
-    public void ApplyDamage(Damage damage, GameObject target)
+    private void ApplyDamage(Damage damage, GameObject target)
+    {
+        Hero.DamageTracker.AddDamage(damage);
+        target.GetComponent<Health>().TryTakeDamage(ref damage, this);
+    }
+    
+    [Command]
+    public void CmdApplyDamage(Damage damage, GameObject target)
     {
         if (_tempTargetForDamage != target.transform)
         {
@@ -903,34 +910,25 @@ public abstract class Skill : NetworkBehaviour
             _tempHPForDamage = target.GetComponent<Health>();
         }
         
-        Hero.DamageTracker.AddDamage(damage);
-        
-        CmdApplyDamage(damage,target);
+        ApplyDamage(damage, target);
+    }
+
+    private void ApplyHeal(Heal heal, GameObject hp, Skill skill, string sourceName)
+    {
+        hp.GetComponent<Health>().Heal(ref heal, sourceName, skill);
+        Hero.DamageTracker.AddHeal(heal);
     }
     
     [Command]
-    protected void CmdApplyDamage(Damage damage, GameObject hp)
-    {
-        hp.GetComponent<Health>().TryTakeDamage(ref damage, this);
-    }
-
-    public void ApplyHeal(Heal heal, GameObject hp, string sourceName)
+    public void CmdApplyHeal(Heal heal, GameObject hp, Skill skill, string sourceName)
     {
         if (_tempTargetForDamage != hp.transform)
         {
             _tempTargetForDamage = hp.transform;
             _tempHPForDamage = hp.GetComponent<Health>();
         }
-        
-        Hero.DamageTracker.AddHeal(heal);
-        
-        CmdApplyHeal(heal, hp, this, sourceName);
-    }
-    
-    [Command]
-    private void CmdApplyHeal(Heal heal, GameObject hp, Skill skill, string sourceName)
-    {
-        hp.GetComponent<Health>().Heal(ref heal, sourceName, skill);
+
+        ApplyHeal(heal, hp, skill, sourceName);
     }
 
     private void SubscribeClickEvents()

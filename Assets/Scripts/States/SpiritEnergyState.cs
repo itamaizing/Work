@@ -96,7 +96,7 @@ public class SpiritEnergyState : AbstractCharacterState
         
         if (sourceName != nameof(States.SpiritEnergy))
         {
-            skill.ApplyHeal(heal, _healthComponent.gameObject, nameof(States.SpiritEnergy));   
+            skill.CmdApplyHeal(heal, _healthComponent.gameObject, null, nameof(States.SpiritEnergy));   
         }
         
         if (skill.Hero.CharacterState.CheckForState(States.SpiritEnergy))

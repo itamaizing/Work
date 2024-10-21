@@ -743,7 +743,7 @@ MonoBehaviour:
   _chargeAttackDelay: 0
   _buffDuration: 9
   _healAmount: 2
-  _damageAmount: 2
+  _damageAmount: 20
   _castTime: 0.8
   _range: 4
   _manaCostHeal:

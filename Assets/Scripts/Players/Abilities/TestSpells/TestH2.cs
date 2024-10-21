@@ -32,7 +32,7 @@ public class TestH2 : Skill
             Type = DamageType,
             PhysicAttackType = AttackRangeType,
         };
-        ApplyDamage(damage, _target.gameObject);
+        CmdApplyDamage(damage, _target.gameObject);
 
         var deley = new WaitForSeconds(_spawnDeley); ;
 

@@ -99,7 +99,7 @@ public class FlashOfLight : Skill
         if (healthComponent != null)
         {
             var heal = new Heal { Value = _healAmount };
-            ApplyHeal(heal, healthComponent.gameObject, name);
+            CmdApplyHeal(heal, healthComponent.gameObject, this, name);
         }
     }
     
@@ -112,7 +112,7 @@ public class FlashOfLight : Skill
             PhysicAttackType = AttackRangeType.RangeAttack
         };
 
-        ApplyDamage(damage, target.gameObject);
+        CmdApplyDamage(damage, target.gameObject);
     }
     
     private void ReduceCooldowns()

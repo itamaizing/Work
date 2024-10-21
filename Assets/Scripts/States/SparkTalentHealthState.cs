@@ -49,7 +49,7 @@ public class SparkTalentHealthState : AbstractCharacterState
         var healValue = _characterState.Character.Health.CurrentValue * _healthBoostPercentage;
         var heal = new Heal { Value = healValue };
         
-        skill.ApplyHeal(heal, _characterState.gameObject, nameof(States.SpiritEnergy));  
+        skill.CmdApplyHeal(heal, _characterState.gameObject, null, nameof(States.SpiritEnergy));  
     }
 
     private void RemoveBuff()
@@ -57,6 +57,6 @@ public class SparkTalentHealthState : AbstractCharacterState
         var healValue = _characterState.Character.Health.CurrentValue * _healthBoostPercentage;
         var heal = new Heal { Value = -healValue };
         
-        skill.ApplyHeal(heal, _characterState.gameObject, nameof(States.SpiritEnergy));  
+        skill.CmdApplyHeal(heal, _characterState.gameObject, null, nameof(States.SpiritEnergy));  
     }
 }
