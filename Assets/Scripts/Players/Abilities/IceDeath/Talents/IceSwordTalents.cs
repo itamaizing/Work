@@ -8,11 +8,11 @@ public class IceSwordTalents : Talent
 	[SerializeField] private SkillManager _ability;
 	public override void Enter()
 	{
-		_ability.AddSkill(_iceSword);
+		_ability.ActivateSkill(_iceSword);
 	}
 
 	public override void Exit()
 	{
-		_ability.RemoveSkill(_iceSword);
+		_ability.DeactivateSkill(_iceSword);
 	}
 }

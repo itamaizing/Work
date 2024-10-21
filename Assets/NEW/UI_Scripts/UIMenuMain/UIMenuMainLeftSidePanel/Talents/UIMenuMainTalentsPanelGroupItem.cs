@@ -16,13 +16,6 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour
     
     private TalentData _talent;
 
-    private void Update()
-    {
-        if(_talent == null) return;
-        
-        activeState.isActive = _talent.IsOpen;
-    }
-
     public void Fill(TalentData talent)
     {
         activeImage.sprite = talent.Icon;

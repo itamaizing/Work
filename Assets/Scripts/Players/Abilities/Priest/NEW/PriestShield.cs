@@ -170,7 +170,6 @@ public class PriestShield : Skill
         if (value) return;
         
         _damagePerTickBonus = 0;
-        Hero.DamageTracker.RemoveOldLocalEntries();
     }
 
     private void ApplyDarkMagicBoost()
@@ -189,7 +188,9 @@ public class PriestShield : Skill
     public void EnableHealingBoost(bool value)
     {
         _talentHealingBoostActive = value;
+        
         if(Hero == null || Hero.DamageTracker == null) return;
+        
         Hero.DamageTracker.RemoveOldLocalEntries();
     }
 

@@ -7,12 +7,12 @@ public class EmeraldSkinActiveTalent : Talent
 	
 	public override void Enter()
 	{
-		_ability.AddSkill(_emeraldSkin);
+		_ability.ActivateSkill(_emeraldSkin);
 	}
 
 	public override void Exit()
 	{
-		_ability.RemoveSkill(_emeraldSkin);
+		_ability.DeactivateSkill(_emeraldSkin);
 	}
 }
 

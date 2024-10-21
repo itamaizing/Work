@@ -369,6 +369,11 @@ public class CharacterState : NetworkBehaviour
 
 	public void RemoveState(AbstractCharacterState newState)
 	{
+		if (newState is IDamageable damageableShield)
+		{
+			RemoveShield(damageableShield);
+		}
+		
 		if (currentStates.Contains(newState))
 		{
 			currentStates.Remove(newState);
@@ -469,6 +474,7 @@ public class CharacterState : NetworkBehaviour
 		var health = _hero.GetComponent<Health>();
 		if (health != null)
 		{
+			Debug.Log("Add Shield By " + shield);
 			health.Shields.Add(shield);
 		}
 	}
@@ -478,6 +484,7 @@ public class CharacterState : NetworkBehaviour
 		var health = _hero.GetComponent<Health>();
 		if (health != null)
 		{
+			Debug.Log("Remove Shield By " + shield);
 			health.Shields.Remove(shield);
 		}
 	}

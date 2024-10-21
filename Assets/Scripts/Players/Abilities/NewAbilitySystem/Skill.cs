@@ -3,7 +3,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Timers;
 using UnityEngine;
 
 [Serializable]
@@ -48,6 +47,10 @@ public enum SkillType
 
 public abstract class Skill : NetworkBehaviour
 {
+    [Header("Talent State")]
+    [SerializeField] protected bool _isTalentSpell = false;
+    [SerializeField] protected bool _isSkillActive = true;
+    
     [Header("AbilitiesInfo")]
     [SerializeField] private AbilityInfo _abilityInfo;
     [Header("Main Settings")]
@@ -106,6 +109,13 @@ public abstract class Skill : NetworkBehaviour
     private bool _isClick;
     private bool _isShiftClick;
     private bool _isCtrlClick;
+
+    public bool IsTalentSpell => _isTalentSpell;
+    public bool IsSkillActive
+    {
+        get => _isSkillActive;
+        set => _isSkillActive = value;
+    }
 
     public bool GetMouseButton { get => _isClick || _isShiftClick || _isCtrlClick; }
     public bool IsSubjectToGlobalCooldownTime { get => _isSubjectToGlobalCooldownTime; }
