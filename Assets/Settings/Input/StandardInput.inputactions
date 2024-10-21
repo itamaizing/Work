@@ -211,6 +211,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "ShowMenu",
+                    "type": "Button",
+                    "id": "112bcf04-8e2c-4c22-aefc-7382a08ded0c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -576,6 +585,17 @@
                     "action": "ShiftMouse",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "adc473ee-2cf3-4d8c-ac0e-63c0e54c9528",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShowMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }
