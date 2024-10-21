@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Mirror;
 using UnityEngine;
 
@@ -14,6 +15,8 @@ public class UIMenuMainCharactersPanel : MonoBehaviour
     public HeroComponent CurrentHero => _currentHero;
     
     private List<UIMenuMainCharactersPanelItem> _characters = new();
+
+    private UIMenuMainCharactersPanelItem _spawnedCharacter;
     
     public void Show()
     {
@@ -40,13 +43,17 @@ public class UIMenuMainCharactersPanel : MonoBehaviour
     {
         _currentHero = hero;
         Owner.SetHero(hero);
+        
         ServerManager.Instance.SetPlayer(hero);
     }
 
     public void SetHero(HeroComponent hero)
     {
-		Debug.Log(hero);
-
-		_currentHero = hero;
+        var character = Instantiate(_characterItem, _itemsParent);
+        character.Owner = this;
+        character.Fill(hero);
+        character.Selected += OnPlayerSelected;
+        _spawnedCharacter = character;
+        _spawnedCharacter.Select();
     }
 }

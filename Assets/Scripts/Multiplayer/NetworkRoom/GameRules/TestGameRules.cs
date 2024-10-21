@@ -1,6 +1,7 @@
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class TestGameRules : GameRules
@@ -169,7 +170,7 @@ public class TestGameRules : GameRules
             }
         }
 
-        var energy = playerSettings.Stamina;
+        var energy = playerSettings.Resources.First(o => o.Type == ResourceType.Mana);
         if (energy != null)
         {
             energy.ResetValue();

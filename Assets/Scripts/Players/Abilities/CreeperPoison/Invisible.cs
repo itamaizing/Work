@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -73,11 +74,11 @@ public class Invisible : Ability
         if (!_enemyIsSees && !_isUsing)
         {
             _isUsing = true;
-            // уменьшаем скорость передвижения на 30%
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ 30%
             moveSpeedDecrease = 1 - reduceMoveSpeed;
             _playerLinks.Move.ChangeMoveSpeed(moveSpeedDecrease);
-            // Увеличиваем реген энергии на 30%
-            increaseEnergy = _playerLinks.Stamina.RegenerationValue * (1 + increaseEnergyRegen);
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ 30%
+            increaseEnergy = _playerLinks.Resources.FirstOrDefault()!.RegenerationValue * (1 + increaseEnergyRegen);
         }
         else if (_enemyIsSees && _isUsing)
         {
@@ -93,11 +94,11 @@ public class Invisible : Ability
     {
         if (_isUsing)
         {
-            // 1.1285715f - число, чтобы вернуть скорость к стандартному значению
+            // 1.1285715f - пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             moveSpeedDecrease = 1.1285715f + reduceMoveSpeed;
             _playerLinks.Move.ChangeMoveSpeed(moveSpeedDecrease);
-            // Уменьшаем реген энергии на 30%
-            increaseEnergy = _playerLinks.Stamina.RegenerationValue / (1 + increaseEnergyRegen);
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ 30%
+            increaseEnergy = _playerLinks.Resources.FirstOrDefault()!.RegenerationValue / (1 + increaseEnergyRegen);
             _isUsing = false;
         }
     }

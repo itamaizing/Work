@@ -14,8 +14,6 @@ public class UIMenuMainWindow : MonoBehaviour
 
 	[SerializeField] private SelectManager _selectManager;
 
-   // private HeroComponent _currentHero;
-
 	private void Start()
     {
         Show();
@@ -47,10 +45,7 @@ public class UIMenuMainWindow : MonoBehaviour
 
     public void SwithActiveAtriutTalantUI()
     {
-        if (gameObject.active)
-            gameObject.SetActive(false);
-        else
-            gameObject.SetActive(true);
+        gameObject.SetActive(!gameObject.active);
     }
 
     void Show()
@@ -69,10 +64,7 @@ public class UIMenuMainWindow : MonoBehaviour
 
     private void OnCharacterSelected(Character character)
     {
-        Debug.Log("TODO HERE " + name);
-
         _charactersPanel.SetHero((HeroComponent)character);
-       // _currentHero = (HeroComponent)character;
 		SaveManager.Instance.SetHero((HeroComponent)character);
 		UpdateCharacterPanels();
 	}

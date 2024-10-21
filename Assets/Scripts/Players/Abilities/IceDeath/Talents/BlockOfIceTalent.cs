@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BlockOfIceTalent : Talent
@@ -8,12 +6,12 @@ public class BlockOfIceTalent : Talent
 	[SerializeField] private SkillManager _ability;
 	public override void Enter()
 	{
-		_ability.AddSkill(_blockOfIce);
+		_ability.ActivateSkill(_blockOfIce);
 	}
 
 	public override void Exit()
 	{
-		_ability.RemoveSkill(_blockOfIce);
+		_ability.DeactivateSkill(_blockOfIce);
 	}
 }
 

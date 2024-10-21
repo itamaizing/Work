@@ -41,7 +41,7 @@ public class IcyCorpse : MinionComponent
 					{
 						Value = damage / 2,
 						Type = DamageType.Magical,
-						Range = AttackRangeType.RangeAttack,
+						PhysicAttackType = AttackRangeType.RangeAttack,
 					};
 					//_skill.CmdApplyDamage(damage, target.gameObject);
 					enemy.Health.TryTakeDamage(ref damage2, null);

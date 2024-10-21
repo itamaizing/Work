@@ -23,7 +23,7 @@ public class Health : Resource, IDamageable, IHealingable
     public List<IDamageable> Shields { get => _shields; }
 
     public event Action Evaded;
-    public event Action<float, Skill> HealTaked;
+    public event Action<float , Skill , string> HealTaked;
     public event Action<float, DamageType, Skill> DamageTaken;
     public event Action Died;
 
@@ -40,7 +40,7 @@ public class Health : Resource, IDamageable, IHealingable
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
-        if (TryEvade(damage.Type, damage.Range))
+        if (TryEvade(damage.Type, damage.PhysicAttackType))
         {
             Evaded?.Invoke();
             return false;
@@ -66,16 +66,11 @@ public class Health : Resource, IDamageable, IHealingable
         TryTakeDamage(ref damage, null);
     }
 
-    public void SetHp(float hp, float maxHp)
+    public void Heal(ref Heal heal, string sourceName, Skill skill = null)
     {
-        _currentValue = hp;
-        _maxValue = maxHp;
-    }
-
-	public void Heal(float value, Skill skill = null)
-    {
-        Add(value);
-        HealTaked?.Invoke(value, skill);
+        //ClientRpcHealTaked(heal.Value, skill, sourceName);
+        Add(heal.Value);
+        HealTaked?.Invoke(heal.Value, skill, sourceName);
     }
 
     public void SetEvadeMagic(float value)
@@ -83,15 +78,32 @@ public class Health : Resource, IDamageable, IHealingable
         _evadeMagDamage = value;
     }
 
+    public void SetPhysicDef(float value)
+    {
+        _defPhysDamage = value;
+    }
+
+    public void SetMagicDef(float value)
+    {
+        _defMagDamage = value;
+    }
+
     public void SetEvadeAll(float value)
     {
+        _defPhysDamage += value;
+        _defMagDamage += value;
         _evadeMagDamage += value;
         _evadeMeleeDamage += value;
         _evadeRangeDamage += value;
-    }    
+    }
 
+    public void SetHp(float current, float max)
+    {
+        CurrentValue = current;
+        MaxValue = max;
+    }
 
-	public bool TryEvade(DamageType damageType, AttackRangeType attackRangeType)
+    protected bool TryEvade(DamageType damageType, AttackRangeType attackRangeType)
     {
         switch (damageType)
         {
@@ -164,6 +176,12 @@ public class Health : Resource, IDamageable, IHealingable
     private void ClientRpcDamageTaked(float damageTaken, DamageType damageType, Skill skill)
     {
         DamageTaken?.Invoke(damageTaken, damageType, skill);
+    }
+    
+    [ClientRpc]
+    private void ClientRpcHealTaked(float healTaken, Skill skill, string sourceName)
+    {
+        HealTaked?.Invoke(healTaken, skill, sourceName);
     }
 
     [ClientRpc]

@@ -1,6 +1,7 @@
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PoisonBall : TargetOrAreaAbility
@@ -121,7 +122,7 @@ public class PoisonBall : TargetOrAreaAbility
         GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
         PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>();
 
-        poisonBallProjectile.InitializationProjectile(_playerLinks.transform, _playerLinks.Stamina.CurrentValue);
+        poisonBallProjectile.InitializationProjectile(_playerLinks.transform, _playerLinks.Resources.FirstOrDefault()!.CurrentValue);
         poisonBallProjectile.MoveBallToTarget(targetOrPoint, isFast);
 
         NetworkServer.Spawn(item);

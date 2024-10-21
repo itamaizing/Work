@@ -157,6 +157,7 @@ public abstract class AutoAttackSkill : Skill
 
                         }
                     }
+                    yield return new WaitForSeconds(AttackSpeed);
                 }
 			}
             else
