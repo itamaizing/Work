@@ -14,18 +14,4 @@ public class MinionIcon : MonoBehaviour
         _playerHp.Init(character.Health);
         _playerMana.Init(character.Resources.FirstOrDefault(o=>o.Type == ResourceType.Mana));
     }
-
-    public void Init(Character character, Sprite icon)
-    {
-        Init(character);
-
-        _playerIcon.sprite = icon;
-    }
-
-    public void Init(Character character, Sprite icon)
-    {
-        Init(character);
-
-        _playerIcon.sprite = icon;
-    }
 }
