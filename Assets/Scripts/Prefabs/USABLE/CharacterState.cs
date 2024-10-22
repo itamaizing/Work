@@ -318,6 +318,19 @@ public class CharacterState : NetworkBehaviour
 		}
 		return false;
 	}
+	
+	public int CheckStateStacks(States state)
+	{
+		foreach (AbstractCharacterState states in currentStates)
+		{
+			Debug.Log(states.State + " on enemy, check for " + state);
+			if (states.State == state)
+			{
+				return states.CurrentStacksCount;
+			}
+		}
+		return 0;
+	}
 
 	public AbstractCharacterState GetState(States state)
 	{
@@ -432,6 +445,11 @@ public class CharacterState : NetworkBehaviour
 					{
 						currentStates[i].Stack(duration);
 						_stateIcons.ActivateIco(state, duration, 1, true);
+					}
+					else if(currentStates[i].MaxStacksCount == 0)
+					{
+						currentStates[i].Stack(duration);
+						_stateIcons.ActivateIco(state, duration, 0, true);
 					}
 
 					break;

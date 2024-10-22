@@ -13,6 +13,8 @@ public class TiredSoul : AbstractCharacterState
     {
         _characterState = character;
         _duration = durationToExit;
+        CurrentStacksCount = 0;
+        MaxStacksCount = 1;
     }
 
     public override void UpdateState()
@@ -31,6 +33,7 @@ public class TiredSoul : AbstractCharacterState
 
     public override bool Stack(float time)
     {
+        CurrentStacksCount++;
         _duration = time;
         return true;
     }

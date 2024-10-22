@@ -48,6 +48,10 @@ public class PriestShield : Skill
     private const float MaxHealingBoostPercentage = 0.5f;
     private const float HealingBoostPerUnit = 1f;
     private const float HealingUnit = 10f;
+    
+    //---------------- Talent 5 (Tired Soul Evade)
+    private bool _talentTiredSoulActive = false;
+    private const float TiredSoulEffectPercentage = 0.5f;
 
     private float _absorbBonus = 0;
     private float _damagePerTickBonus = 0;
@@ -205,6 +209,13 @@ public class PriestShield : Skill
         _absorbBonus += boostAmount;
         Debug.Log($"Healing boost applied. Healing: {healingAmount}, Boost: {boostAmount}");
     }
+    
+    //---------------- Talent 5 Logic: Healing Boost ----------------
+    
+    public void EnableTiredSoulEvade(bool value)
+    {
+        _talentTiredSoulActive = value;
+    }
 
     protected override IEnumerator PrepareJob()
     {
@@ -246,12 +257,17 @@ public class PriestShield : Skill
         if (_target == null) return;
 
         if (!TryPayCost(manaCostLight)) return;
+
+        var duration = _talentTiredSoulActive ? lightShieldDuration * TiredSoulEffectPercentage : lightShieldDuration;
+        var absorbDamage = _talentTiredSoulActive
+            ? (absorbAmount + _absorbBonus) * TiredSoulEffectPercentage
+            : absorbAmount + _absorbBonus;
         
         ApplyDisciplineBoost();
         ApplyDarkMagicBoost();
         ApplyHealingBoost();
 
-        CmdAddDebaff(States.LightShield, States.TiredSoul, lightShieldDuration, tiredSoulDuration, absorbAmount + _absorbBonus, _target.gameObject, name);
+        CmdAddDebaff(States.LightShield, States.TiredSoul, lightShieldDuration, duration, absorbDamage, _target.gameObject, name);
         Debug.Log("Light Shield applied to " + _target.name);
     }
 
@@ -266,18 +282,26 @@ public class PriestShield : Skill
     }
 
     [Command]
-    private void CmdAddDebaff(States lightState, States tiredState, float duration, float tiredDuration, float damageToExit, GameObject target, string skillName)
+    private void CmdAddDebaff(States lightState, States tiredState, float duration, float tiredDuration,
+        float damageToExit, GameObject target, string skillName)
     {
         var characterState = target.GetComponent<CharacterState>();
-        if (characterState.CheckForState(States.TiredSoul))
+
+        if (!_talentTiredSoulActive && characterState.CheckForState(States.TiredSoul))
         {
             Debug.Log("Cannot apply Light Shield, target is tired.");
             return;
         }
-
-        characterState.AddState(lightState, duration, damageToExit, target, skillName);
-        characterState.AddState(tiredState, tiredDuration, damageToExit, target, skillName);
-    }
+        
+        if ((_talentTiredSoulActive && characterState.CheckForState(States.TiredSoul) &&
+            characterState.CheckStateStacks(States.TiredSoul) < 1) ||
+            !characterState.CheckForState(States.TiredSoul))
+        {
+                characterState.AddState(lightState, duration, damageToExit, target, skillName); 
+        }
+        
+        characterState.AddState(tiredState, tiredDuration, damageToExit, target, skillName);    
+}
 
     [Command]
     private void CmdAddBaff(States darkState, float duration, float damagePerTick, GameObject target, string skillName)

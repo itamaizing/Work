@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class LightShield : AbstractCharacterState, IDamageable
 {
     private float _damageAbsorbed;
-    private float _maxAbsorption = 20f;
+    private float _maxAbsorption;
     private float _duration;
-    private bool _isTalentActive = false;
+    
+    private bool _isBMTalentActive = false;
 
     public event Action<float, DamageType, Skill> DamageTaken;
 
@@ -15,12 +17,21 @@ public class LightShield : AbstractCharacterState, IDamageable
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
-    public override void EnterState(CharacterState character, float durationToExit, float isTalentActive, Character personWhoMadeBuff, string skillName)
+    public override void EnterState(CharacterState character, float durationToExit, float maxDamageAbsorbed, Character personWhoMadeBuff, string skillName)
     {
         _characterState = character;
         _duration = durationToExit;
-        _isTalentActive = isTalentActive > 0;
         _damageAbsorbed = 0;
+        _maxAbsorption = maxDamageAbsorbed;
+
+        var priestShield = _characterState.Character.Abilities.Abilities.FirstOrDefault(o => o.name == skillName);
+
+        if (priestShield != null)
+        {
+            _isBMTalentActive = priestShield;
+        }
+
+        DamageTaken += DamageEnemiesInRadius;
     }
 
     public override void UpdateState()
@@ -35,6 +46,7 @@ public class LightShield : AbstractCharacterState, IDamageable
     public override void ExitState()
     {
         Debug.Log("LightShield state exited.");
+        DamageTaken -= DamageEnemiesInRadius;
         _characterState.RemoveState(this);
     }
 
@@ -51,15 +63,6 @@ public class LightShield : AbstractCharacterState, IDamageable
         _damageAbsorbed += damageToAbsorb;
         damage.Value -= damageToAbsorb;
         
-        var damageToTake = new Damage { Value = damageToAbsorb };
-        var targets = GetCloserTargets(_characterState.transform.position, 10f);
-            
-        foreach (var target in targets)
-        {
-            target.Health.CmdTryTakeDamage(damageToTake, null);
-            target.GetComponent<Character>().DamageTracker.AddDamage(damageToTake);
-        }
-        
         _characterState.GetComponent<Character>().DamageTracker.AddDamage(damage);
         DamageTaken?.Invoke(damageToAbsorb, damage.Type, skill);
         
@@ -71,24 +74,24 @@ public class LightShield : AbstractCharacterState, IDamageable
         return damage.Value == 0;
     }
     
-    private List<Character> GetCloserTargets(Vector3 position, float radius)
+    private void DamageEnemiesInRadius(float damage, DamageType type, Skill skill)
     {
-        List<Character> targets = new List<Character>();
+        if(!_isBMTalentActive) return;
         
         var enemyLayerMask = LayerMask.GetMask("Enemy");
         
-        var colliders = Physics2D.OverlapCircleAll(position, radius);
+        var colliders = Physics2D.OverlapCircleAll(_characterState.transform.position, 10f, enemyLayerMask);
         
         foreach (var item in colliders)
         {
-            Debug.Log(item.name);
             if (item.transform.TryGetComponent(out Character enemy))
             {
-                targets.Add(enemy);
+                var damageToTake = new Damage { Value = damage };
+                
+                enemy.Health.CmdTryTakeDamage(damageToTake, null);
+                enemy.GetComponent<Character>().DamageTracker.AddDamage(damageToTake);
             }
         }
-
-        return targets;
     }
 
 	public void ShowPhantomValue(Damage phantomValue)
