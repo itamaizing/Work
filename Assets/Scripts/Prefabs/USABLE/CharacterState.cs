@@ -256,7 +256,8 @@ public class CharacterState : NetworkBehaviour
 		[States.Bleeding] = new BleedingDebuff(),
 		[States.EmeraldSkin] = new EmeraldSkinState(),
 		[States.DefenseReduction] = new DefenceReductionState(),
-		[States.SparkTalentHealthBuff] = new SparkTalentHealthState()
+		[States.SparkTalentHealthBuff] = new SparkTalentHealthState(),
+		[States.SelfHarm] = new SelfHarmState()
 	};
 
 	public void Initialize(Character hero)
@@ -369,15 +370,14 @@ public class CharacterState : NetworkBehaviour
 
 	public void RemoveState(AbstractCharacterState newState)
 	{
+		if (!currentStates.Contains(newState)) return;
+		
 		if (newState is IDamageable damageableShield)
 		{
 			RemoveShield(damageableShield);
 		}
-		
-		if (currentStates.Contains(newState))
-		{
-			currentStates.Remove(newState);
-		}
+			
+		currentStates.Remove(newState);
 	}
 
 	private void RemoveStateLogic(States stateName)
@@ -536,5 +536,6 @@ public enum States
 
 	EmeraldSkin,
 	SparkTalentHealthBuff,
-	DefenseReduction
+	DefenseReduction,
+	SelfHarm
 }

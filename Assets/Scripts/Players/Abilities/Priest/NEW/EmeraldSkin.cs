@@ -8,7 +8,6 @@ public class EmeraldSkin : Skill
     [SerializeField] private float _buffDuration = 2f;
     
     //---------------- Talent 1 (Light Magic Boost)
-    private bool _lightMagicTalentBoostActive = false;
     private int _lightMagicTalentBoostActiveToBuff = 0;
 
     protected override bool IsCanCast => CanCastCheck();
@@ -38,7 +37,6 @@ public class EmeraldSkin : Skill
     //---------------- Talent 1 Logic: Physical Shield Boost ----------------
     public void EnableTalentLightMagicBoost(bool value)
     {
-        _lightMagicTalentBoostActive = value;
         _lightMagicTalentBoostActiveToBuff = value ? 1 : 0;
     }
     
@@ -56,6 +54,5 @@ public class EmeraldSkin : Skill
 
     protected override void ClearData()
     {
-        // Очистка данных после применения
     }
 }

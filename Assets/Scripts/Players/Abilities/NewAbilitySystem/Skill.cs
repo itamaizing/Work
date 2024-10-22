@@ -152,8 +152,8 @@ public abstract class Skill : NetworkBehaviour
     public event Action<int> CurrentChargeChanged;
     public event Action<float> CooldownStarted;
     public event Action CooldownEnded;
-    public event Action PreparingStarted;
-    public event Action PreparingSuccess;
+    public event Action<Skill> PreparingStarted;
+    public event Action<Skill> PreparingSuccess;
     public event Action PreparingCanceled;
     public event Action<float> CastDeleyStarted;
     public event Action CastDeleyEnded;
@@ -455,7 +455,7 @@ public abstract class Skill : NetworkBehaviour
         {
             if (collider.Length > 0 && item.transform.TryGetComponent<Character>(out Character enemy))
             {
-                if (isCanTargetHimself == false && targets[targets.Count - 1].transform == _hero.Health.transform)
+                if (isCanTargetHimself == false && targets[^1].transform == _hero.Health.transform)
                 {
                     continue;
                 }
@@ -799,7 +799,7 @@ public abstract class Skill : NetworkBehaviour
 
     private IEnumerator ActionWrapperForPreparingJob()
     {
-        PreparingStarted?.Invoke();
+        PreparingStarted?.Invoke(this);
         _isPreparing = true;
         ClearData();
         StartAutoDraw();
@@ -812,7 +812,7 @@ public abstract class Skill : NetworkBehaviour
 
 		OnClickCanceled();
 
-        PreparingSuccess?.Invoke();
+        PreparingSuccess?.Invoke(this);
         _isPreparing = false;
         StopAutoDraw();
 

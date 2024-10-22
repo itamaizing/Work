@@ -165,7 +165,7 @@ GameObject:
   - component: {fileID: 5156584200369461278}
   - component: {fileID: 7378013951281155230}
   m_Layer: 5
-  m_Name: EmeraldLightMagic
+  m_Name: SelfHarm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -222,7 +222,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 4d204b10aa40d5b428155fa7dcba983f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e412ffe984e989d42b1b73851bd11bb4, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -248,7 +248,7 @@ MonoBehaviour:
   border: {fileID: 303272373181814531}
   Text: {fileID: 690565960642161371}
   count: 1
-  state: 25
+  state: 28
   time: []
 --- !u!1 &6859609466393667985
 GameObject:

@@ -283,7 +283,7 @@ public class SkillManager : MonoBehaviour
         skill.PreparingSuccess -= OnPreperingSuccess;
     }
 
-    private void OnPreperingSuccess()
+    private void OnPreperingSuccess(Skill skill)
     {
         if(_selectedSkill is AutoAttackSkill attackSkill)
         {
