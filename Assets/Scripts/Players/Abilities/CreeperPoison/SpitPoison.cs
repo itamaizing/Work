@@ -1,6 +1,7 @@
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -214,6 +215,10 @@ public class SpitPoison : Skill
             CmdInstantiateProjectileToPoint(_mousePos, _angleRotation, _player.Stamina.CurrentValue, 
                 _isActiveHealingSpitPoison, _isPlayerInvisible,
                 _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
+                
+            CmdInstantiateProjectile(_angle, _playerLinks.Resources.FirstOrDefault()!.CurrentValue);
+
+            _playerLinks.Resources.FirstOrDefault()?.TryUse(_playerLinks.Resources.FirstOrDefault()!.CurrentValue);
 
             //CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
         }

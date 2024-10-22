@@ -32,7 +32,7 @@ public class UIMenuMainAbilitiesPanel : MonoBehaviour
 
         ResetPanel();
 
-        foreach (var item in _abilitiesComponent.Abilities)
+        foreach (var item in _abilitiesComponent.DefaultSkills)
         {
             var abilityIcon = Instantiate(_abilityItem, _itemsParent);
             abilityIcon.Owner = this;

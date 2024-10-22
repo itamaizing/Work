@@ -110,7 +110,7 @@ public class Plague : AbstractCharacterState
 		{
 			Value = damages,
 			Type = DamageType.Magical,
-			Range = AttackRangeType.RangeAttack,
+			PhysicAttackType = AttackRangeType.RangeAttack,
 		};
 		//_characterState.Character.Health.TryUse(10);
 		Character charac = gm.gameObject.GetComponent<Character>();

@@ -10,6 +10,8 @@ public class DarkShield : AbstractCharacterState
     private Health _healthComponent;
 
     public override float TEST_ChangeableValue { get; set; }
+    private Coroutine _damageCoroutine;
+
     public override States State => States.DarkShield;
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
@@ -31,6 +33,12 @@ public class DarkShield : AbstractCharacterState
     {
         if (_healthComponent != null)
         {
+            if (_damageCoroutine != null)
+            {
+                _healthComponent.StopCoroutine(_damageCoroutine);
+                _damageCoroutine = null;
+            }
+
             _healthComponent.DamageTaken -= HandleDamageTaken;
         }
         
@@ -39,19 +47,26 @@ public class DarkShield : AbstractCharacterState
 
     private void HandleDamageTaken(float damage, DamageType type, Skill skill)
     {
-        if (_healthComponent == null) return;
+        if (_healthComponent == null || skill == null) return;
+
+        if (_damageCoroutine != null)
+        {
+            _healthComponent.StopCoroutine(_damageCoroutine);
+            _damageCoroutine = null;
+        }
         
-        _healthComponent.StartCoroutine(ApplyDelayedDamage(damage));
+        _damageCoroutine = _healthComponent.StartCoroutine(ApplyDelayedDamage(damage));
     }
 
     private IEnumerator ApplyDelayedDamage(float damage)
     {
         yield return new WaitForSeconds(_damageDebuffDelay);
-
+        
         var damageToApply = Mathf.Min(damage, _maxDamagePerTick);
         var damageToTake = new Damage { Value = damageToApply };
         
-        _healthComponent.TryTakeDamage(ref damageToTake, null);
+        _healthComponent.CmdTryTakeDamage(damageToTake, null);
+        _healthComponent.GetComponent<Character>().DamageTracker.AddDamage(damageToTake);
     }
 
     public override bool Stack(float time)

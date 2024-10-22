@@ -1,6 +1,8 @@
 using Mirror;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using System;
 
@@ -771,6 +773,7 @@ public class PoisonBall : Skill
         poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.CurrentValue, multiplierForPushDistance, projectileSize, this, isActiveHealingPoisonBall,
             isTargetPlayer, isTargetEnemy, isTargetAllies, isActiveWitheringPoison, isPushTarget, isActiveVoluminousBall, isPlayerInvisible, poisonBoneStack);
 
+        poisonBallProjectile.InitializationProjectile(_playerLinks.transform, _playerLinks.Resources.FirstOrDefault()!.CurrentValue);
         poisonBallProjectile.MoveBallToTarget(targetOrPoint, isFast);
 
         NetworkServer.Spawn(item);

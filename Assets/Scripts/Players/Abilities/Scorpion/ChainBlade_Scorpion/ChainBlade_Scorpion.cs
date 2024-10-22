@@ -1,5 +1,6 @@
 using Mirror;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -98,7 +99,6 @@ public class ChainBlade_Scorpion : Skill
             {
                 Value = Buff.Damage.GetBuffedValue(DamageRange),
                 Type = DamageType,
-                Range = AttackRangeType,
             };
 
             //CmdApplyDamage(damage, target.gameObject);
@@ -159,7 +159,7 @@ public class ChainBlade_Scorpion : Skill
             yield return null;
         }
 
-        if (_playerLinks.Stamina.CurrentValue >= 40)
+        if (_playerLinks.Resources.First(o=>o.Type == ResourceType.Mana || o.Type == ResourceType.Energy).CurrentValue >= 40)
         {
             _type = ChainbladeType.Hook;
             _skillEnergyCosts[0].resourceCost = 40;

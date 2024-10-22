@@ -6,10 +6,9 @@ public class SpiritHealthState : AbstractCharacterState
 {
     private float _baseDuration;
     private float _duration;
-    private int _stacks;
-    private const int MaxStacks = 2;
-    private const float HealthRestorePerStack = 0.09f; // 9% health restore per stack
-    private const float ManaRestorePerStack = 0.09f; // 9% mana restore per stack
+    private bool _isTalentActive = false;
+    private const float ManaRestorePerStack = 0.09f;
+    private const float BuffedManaRestorePerStack = 0.18f;
 
     private List<StatusEffect> _effects = new ();
     public override float TEST_ChangeableValue { get; set; }
@@ -22,18 +21,25 @@ public class SpiritHealthState : AbstractCharacterState
         _characterState = character;
         _duration = durationToExit;
         _baseDuration = durationToExit;
-        _stacks = 1;
-        
+        _isTalentActive = damageToExit > 0;
+        CurrentStacksCount++;
+        MaxStacksCount = 2;
         ApplyManaRestore();
     }
 
     public override void UpdateState()
     {
         _duration -= Time.deltaTime;
-
-        if (_duration <= 0 || _stacks == 0)
+        
+        if (_duration <= _baseDuration * (CurrentStacksCount - 1) && CurrentStacksCount > 0)
         {
-            ExitState();
+            CurrentStacksCount--;
+            _duration = _baseDuration * CurrentStacksCount;
+
+            if (CurrentStacksCount == 0)
+            {
+                ExitState();
+            }
         }
     }
 
@@ -44,21 +50,20 @@ public class SpiritHealthState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        if (_stacks >= MaxStacks)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            return false;
+            CurrentStacksCount++;
+            _duration += time;
+            _duration = Mathf.Min(_duration, _baseDuration * CurrentStacksCount);
+            ApplyManaRestore();
         }
-
-        _stacks++;
-        _duration = Mathf.Max(_duration, time);
-
-        ApplyManaRestore();
 
         return true;
     }
 
     private void ApplyManaRestore()
     {
-        _characterState.Character.Resources.FirstOrDefault(o=>o.Type == ResourceType.Mana)?.Add(ManaRestorePerStack * _stacks);
+        var manaRestoreValue = _isTalentActive ? BuffedManaRestorePerStack : ManaRestorePerStack;
+        _characterState.Character.Resources.FirstOrDefault(o=>o.Type == ResourceType.Mana)?.Add(manaRestoreValue * CurrentStacksCount);
     }
 }

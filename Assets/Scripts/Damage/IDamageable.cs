@@ -8,7 +8,10 @@ public struct Damage : NetworkMessage
 {
     public float Value;
     public DamageType Type;
-    public AttackRangeType Range;
+    public Schools School;
+    public AbilityForm Form;
+    public AttackRangeType PhysicAttackType;
+    public Skill DamageableSkill;
 }
 
 public interface IDamageable

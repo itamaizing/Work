@@ -13,13 +13,12 @@ public abstract class Character : NetworkBehaviour
 	[SerializeField] private Collider2D _collider; 
 	[SerializeField] private Level _lvl;
 	[SerializeField] private Health _healthComponent;
-	public Energy Stamina;
-	//public RuneComponent RuneComponent;
 	[SerializeField] private MoveComponent _playerMove; 
 	[SerializeField] private SkillManager _abilities;
 	[SerializeField] private CharacterState _characterState;
 	[SerializeField] private UIPlayerComponents uiComponent;
-	[SerializeField] private SelectComponent _selectComponent; 
+	[SerializeField] private SelectComponent _selectComponent;
+	[SerializeField] private DamageTracker _damageTracker;
 	[SerializeField] private List<Resource> _resources;
 	[SerializeField] private SelectedCircle _selectedCircle;
 
@@ -39,6 +38,7 @@ public abstract class Character : NetworkBehaviour
 	public CharacterState CharacterState => _characterState;
 	public UIPlayerComponents UIComponent => uiComponent;
 	public SelectComponent SelectComponent => _selectComponent;
+	public DamageTracker DamageTracker => _damageTracker;
 	public List<Resource> Resources => _resources;
     public SelectedCircle SelectedCircle => _selectedCircle;
     public bool IsInvisible 

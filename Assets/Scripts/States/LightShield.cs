@@ -49,7 +49,8 @@ public class LightShield : AbstractCharacterState, IDamageable
         float damageToAbsorb = Mathf.Min(_maxAbsorption - _damageAbsorbed, damage.Value);
         _damageAbsorbed += damageToAbsorb;
         damage.Value -= damageToAbsorb;
-
+        
+        _characterState.GetComponent<Character>().DamageTracker.AddDamage(damage);
         DamageTaken?.Invoke(damageToAbsorb, damage.Type, skill);
 
         if (_damageAbsorbed >= _maxAbsorption)

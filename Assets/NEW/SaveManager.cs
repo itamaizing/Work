@@ -139,6 +139,8 @@ public class SaveManager : MonoBehaviour
 
         var points = talentGroup.BonusAttributePoints(talent.Data.Name, !isActive);
 
+        talent.Data.IsOpen = isActive;
+
         if (isActive)
         {
             SaveAttributePoints(points);
@@ -190,17 +192,6 @@ public class SaveManager : MonoBehaviour
 
         PlayerPrefs.SetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_" + talentGroup.Name + "_" + talent.Data.Name, isTalentActive);
         PlayerPrefs.Save();
-
-        StartCoroutine(KOSTIL());
-		//_character.TalentManager.Initialize();
-	}
-
-    private IEnumerator KOSTIL()
-    {
-		Debug.Log("TODO HERE " + name);
-
-		yield return new WaitForSeconds(0.2f);
-		_character.TalentManager.Initialize();
 	}
 
     public void LoadTalent(int idGroup, string idTalent)
@@ -211,7 +202,9 @@ public class SaveManager : MonoBehaviour
         if (groupTemp == null || talentTemp == null) return;
 
         var isActive = PlayerPrefs.GetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_" + groupTemp.Name + "_" + talentTemp.Data.Name, 0);
+        
         talentTemp.Data.IsOpen = isActive == 1;
+        groupTemp.SetActive(talentTemp.Data, isActive == 1);
     }
 
     public void LoadTalents()
@@ -229,7 +222,9 @@ public class SaveManager : MonoBehaviour
                 if (talentTemp == null) return;
 
                 int isActive = PlayerPrefs.GetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_" + groupTemp.Name + "_" + talentTemp.Data.Name, 0);
+                
                 talent.Data.IsOpen = isActive == 1;
+                groupTemp.SetActive(talentTemp.Data, isActive == 1);
             }
         }
     }
@@ -255,7 +250,9 @@ public class SaveManager : MonoBehaviour
                 if (talentTemp == null) return;
 
                 var isActive = PlayerPrefs.GetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_" + groupTemp.Name + "_" + talentTemp.Data.Name, 0);
+                
                 talent.Data.IsOpen = isActive == 1;
+                groupTemp.SetActive(talentTemp.Data, isActive == 1);
             }
         }
     }

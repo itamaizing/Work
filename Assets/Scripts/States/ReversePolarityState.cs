@@ -18,7 +18,6 @@ public class ReversePolarityState : AbstractCharacterState
 
     public override void ExitState()
     {
-        _characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

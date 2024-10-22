@@ -2,6 +2,7 @@ using DG.Tweening;
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class SpitPoisonProjectile : Test_Projectile
@@ -146,6 +147,9 @@ public class SpitPoisonProjectile : Test_Projectile
             Range = AttackRangeType.RangeAttack,
         };
         _target.Health.TryTakeDamage(ref _baseDamage, _skill);
+        
+        Energy _energyLink = (Energy)_dad.Resources.FirstOrDefault();
+        if (_energyLink != null) _energyLink.SumDamageMake(damage);
 
         _target.CharacterState.AddState(States.PoisonBone, _lifeTimePoisonBoneStacks, 0, _player.gameObject, _skill.Name);
 

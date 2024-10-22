@@ -24,7 +24,7 @@ public class Kick_Scorpion : AutoAttackSkill
 
     protected override void CastAction()
     {
-        if (_lastTarget != null && _lastTarget != _target) //сброс
+        if (_lastTarget != null && _lastTarget != _target) //пїЅпїЅпїЅпїЅпїЅ
         {
             _comboCounter.ResetCounter();
             //_playerLinks.Combo_Player.RemoveAll();
@@ -45,7 +45,6 @@ public class Kick_Scorpion : AutoAttackSkill
             {
                 Value = Buff.Damage.GetBuffedValue(DamageRange),
                 Type = DamageType,
-                Range = AttackRangeType,
             };
             CmdAttack(damage, _target.gameObject);
         }
@@ -53,7 +52,7 @@ public class Kick_Scorpion : AutoAttackSkill
     }
     private void AttackPassed(Transform target)
     {
-        Debug.LogWarning("Kick_Scorpion .AttackPassed - Попал");
+        Debug.LogWarning("Kick_Scorpion .AttackPassed - пїЅпїЅпїЅпїЅпїЅ");
 
         _comboCounter.AddAbility(target, ScorpionAbility.Kick);
 
@@ -69,7 +68,7 @@ public class Kick_Scorpion : AutoAttackSkill
     }
     private void AttackMissed()
     {
-        Debug.LogWarning("Kick_Scorpion .AttackMissed - Промах");
+        Debug.LogWarning("Kick_Scorpion .AttackMissed - пїЅпїЅпїЅпїЅпїЅпїЅ");
 
         _comboCounter.ResetCounter();
     }

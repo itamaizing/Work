@@ -6,12 +6,15 @@ public class SpiritEnergyState : AbstractCharacterState
 {
     private float _baseDuration;
     private float _duration;
-    private int _stacks;
-    private const int MaxStacks = 2;
+    private bool _isTalentActive = false;
+    
     private const float ManaRestorePerStack = 0.09f;
+    private const float BuffedManaRestorePerStack = 0.18f;
     private const float BonusManaRestore = 0.05f;
-    private const float HealthBonusPerStack = 1f; // Дополнительное здоровье за стак
+    private const float BuffedBonusManaRestore = 0.1f;
+    private const float HealthBonusPerStack = 1f;
     private List<StatusEffect> _effects = new ();
+
     public override float TEST_ChangeableValue { get; set; }
     public override States State => States.SpiritEnergy;
     public override StateType Type => StateType.Magic;
@@ -24,7 +27,9 @@ public class SpiritEnergyState : AbstractCharacterState
         _characterState = character;
         _duration = durationToExit;
         _baseDuration = durationToExit;
-        _stacks = 1;
+        CurrentStacksCount++;
+        MaxStacksCount = 2;
+        _isTalentActive = damageToExit > 0;
         
         _healthComponent = character.GetComponent<Health>();
 
@@ -34,16 +39,23 @@ public class SpiritEnergyState : AbstractCharacterState
             _healthComponent.DamageTaken += OnDamageTaken;
         }
 
-        ApplyManaRestore(ManaRestorePerStack * _stacks);
+        var manaRestoreValue = _isTalentActive ? BuffedManaRestorePerStack : ManaRestorePerStack;
+        ApplyManaRestore(manaRestoreValue * CurrentStacksCount);
     }
 
     public override void UpdateState()
     {
         _duration -= Time.deltaTime;
-
-        if (_duration <= 0 || _stacks == 0)
+        
+        if (_duration <= _baseDuration * (CurrentStacksCount - 1) && CurrentStacksCount > 0)
         {
-            ExitState();
+            CurrentStacksCount--;
+            _duration = _baseDuration * CurrentStacksCount;
+
+            if (CurrentStacksCount == 0)
+            {
+                ExitState();
+            }
         }
     }
 
@@ -54,22 +66,21 @@ public class SpiritEnergyState : AbstractCharacterState
             _healthComponent.HealTaked -= OnHealTaked;
             _healthComponent.DamageTaken -= OnDamageTaken;
         }
-
+        
         _characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        if (_stacks >= MaxStacks)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            return false;
+            CurrentStacksCount++;
+            _duration += time;
+            _duration = Mathf.Min(_duration, _baseDuration * CurrentStacksCount);
+            var manaRestoreValue = _isTalentActive ? BuffedManaRestorePerStack : ManaRestorePerStack;
+            ApplyManaRestore(manaRestoreValue * CurrentStacksCount);
         }
-
-        _stacks++;
-        _duration = Mathf.Max(_duration, time);
-
-        ApplyManaRestore(ManaRestorePerStack * _stacks);
-
+        
         return true;
     }
 
@@ -78,24 +89,32 @@ public class SpiritEnergyState : AbstractCharacterState
         _characterState.Character.Resources.FirstOrDefault(o => o.Type == ResourceType.Mana)?.Add(restoreValue);
     }
     
-    private void OnHealTaked(float healAmount, Skill skill)
+    private void OnHealTaked(float healAmount, Skill skill, string sourceName)
     {
-        float bonusHeal = HealthBonusPerStack * _stacks;
-        _healthComponent.Heal(bonusHeal);
+        float bonusHeal = HealthBonusPerStack * CurrentStacksCount;
+        var heal = new Heal { Value = bonusHeal };
+        
+        if (sourceName != nameof(States.SpiritEnergy))
+        {
+            skill.CmdApplyHeal(heal, _healthComponent.gameObject, null, nameof(States.SpiritEnergy));   
+        }
         
         if (skill.Hero.CharacterState.CheckForState(States.SpiritEnergy))
         {
-            ApplyManaRestore(BonusManaRestore * healAmount * _stacks);
+            var manaRestoreBonusValue = _isTalentActive ? BuffedBonusManaRestore : BonusManaRestore;
+            ApplyManaRestore(manaRestoreBonusValue * healAmount * CurrentStacksCount);
         }
     }
     
     private void OnDamageTaken(float damageAmount, DamageType damageType, Skill skill)
     {
-        ApplyManaRestore(ManaRestorePerStack * _stacks);
+        var manaRestoreValue = _isTalentActive ? BuffedManaRestorePerStack : ManaRestorePerStack;
+        ApplyManaRestore(manaRestoreValue * CurrentStacksCount);
         
         if (skill.Hero.CharacterState.CheckForState(States.SpiritEnergy))
         {
-            ApplyManaRestore(BonusManaRestore * damageAmount * _stacks);
+            var manaRestoreBonusValue = _isTalentActive ? BuffedBonusManaRestore : BonusManaRestore;
+            ApplyManaRestore(manaRestoreBonusValue * damageAmount * CurrentStacksCount);
         }
     }
 }
