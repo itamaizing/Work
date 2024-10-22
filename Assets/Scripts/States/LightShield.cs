@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class LightShield : AbstractCharacterState, IDamageable
 {
+    private BladeMailPriestTalent _bladeMailPriestTalent;
+    
     private float _damageAbsorbed;
     private float _maxAbsorption;
     private float _duration;
@@ -23,13 +24,8 @@ public class LightShield : AbstractCharacterState, IDamageable
         _duration = durationToExit;
         _damageAbsorbed = 0;
         _maxAbsorption = maxDamageAbsorbed;
-
-        var priestShield = _characterState.Character.Abilities.Abilities.FirstOrDefault(o => o.name == skillName);
-
-        if (priestShield != null)
-        {
-            _isBMTalentActive = priestShield;
-        }
+        
+        SearchTalent();
 
         DamageTaken += DamageEnemiesInRadius;
     }
@@ -37,6 +33,9 @@ public class LightShield : AbstractCharacterState, IDamageable
     public override void UpdateState()
     {
         _duration -= Time.deltaTime;
+        
+        Debug.Log(_duration);
+        
         if (_duration <= 0 || _damageAbsorbed >= _maxAbsorption)
         {
             ExitState();
@@ -54,7 +53,7 @@ public class LightShield : AbstractCharacterState, IDamageable
     {
         _duration = time;
         _damageAbsorbed = 0;
-        return true;
+        return false;
     }
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
@@ -98,4 +97,19 @@ public class LightShield : AbstractCharacterState, IDamageable
 	{
 		throw new NotImplementedException();
 	}
+    
+    private void SearchTalent()
+    {
+        foreach (var talent in _characterState.Character.Abilities.TalesntSystem.ActiveTalents)
+        {
+            if (talent is BladeMailPriestTalent bladeMailPriestTalent)
+            {
+                if (_bladeMailPriestTalent == null)
+                {
+                    _bladeMailPriestTalent = bladeMailPriestTalent;
+                   _isBMTalentActive = _bladeMailPriestTalent.Data.IsOpen;
+                }
+            }
+        }
+    }
 }

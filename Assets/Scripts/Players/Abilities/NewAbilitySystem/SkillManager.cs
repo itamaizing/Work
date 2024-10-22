@@ -58,20 +58,16 @@ public class SkillManager : MonoBehaviour
             if(index - 1 < 0)
             {
                 index = _skills.Count;
-				Debug.Log("min");
 			}
 			SelectSkill(index - 1);
-			Debug.Log("Mousescroll down");
 		}
         if(value < 0)
         {
 			if (index >= _skills.Count)
 			{
                 index = 0;
-				Debug.Log("max");
 			}
 			SelectSkill(index + 1);
-			Debug.Log("Mousescroll up");
 		}
        
 	}

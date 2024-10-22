@@ -286,22 +286,33 @@ public class PriestShield : Skill
         float damageToExit, GameObject target, string skillName)
     {
         var characterState = target.GetComponent<CharacterState>();
-
+        
         if (!_talentTiredSoulActive && characterState.CheckForState(States.TiredSoul))
         {
-            Debug.Log("Cannot apply Light Shield, target is tired.");
+            Debug.Log("Cannot apply Light Shield, target is tired and talent is inactive.");
             return;
         }
         
-        if ((_talentTiredSoulActive && characterState.CheckForState(States.TiredSoul) &&
-            characterState.CheckStateStacks(States.TiredSoul) < 1) ||
-            !characterState.CheckForState(States.TiredSoul))
+        if (_talentTiredSoulActive)
         {
-                characterState.AddState(lightState, duration, damageToExit, target, skillName); 
+            if (characterState.CheckForState(States.TiredSoul))
+            {
+                if (characterState.CheckStateStacks(States.TiredSoul) >= 1)
+                {
+                    Debug.Log("TiredSoul has 1 or more stacks, exiting.");
+                    return;
+                }
+            }
+            
+            characterState.AddState(lightState, duration, damageToExit, target, skillName); 
+            characterState.AddState(tiredState, tiredDuration, damageToExit, target, skillName); 
         }
-        
-        characterState.AddState(tiredState, tiredDuration, damageToExit, target, skillName);    
-}
+        else
+        {
+            characterState.AddState(lightState, duration, damageToExit, target, skillName);
+            characterState.AddState(tiredState, tiredDuration, damageToExit, target, skillName); 
+        }
+    }
 
     [Command]
     private void CmdAddBaff(States darkState, float duration, float damagePerTick, GameObject target, string skillName)

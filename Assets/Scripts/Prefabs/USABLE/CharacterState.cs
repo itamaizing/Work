@@ -443,13 +443,13 @@ public class CharacterState : NetworkBehaviour
 				{
 					if (currentStates[i].CurrentStacksCount < currentStates[i].MaxStacksCount)
 					{
-						currentStates[i].Stack(duration);
-						_stateIcons.ActivateIco(state, duration, 1, true);
+						var canStack = currentStates[i].Stack(duration);
+						_stateIcons.ActivateIco(state, duration, 1, canStack);
 					}
-					else if(currentStates[i].MaxStacksCount == 0)
+					else if(currentStates[i].MaxStacksCount == 0 || currentStates[i].CurrentStacksCount == currentStates[i].MaxStacksCount )
 					{
-						currentStates[i].Stack(duration);
-						_stateIcons.ActivateIco(state, duration, 0, true);
+						var canStack = currentStates[i].Stack(duration); 
+						_stateIcons.ActivateIco(state, duration, 0, canStack);
 					}
 
 					break;
