@@ -74,7 +74,7 @@ public class FireBreath_Scorpion : Skill, ICanConsumeComboPoints
         _fireBreath = obj.GetComponent<FireBreath_Prefab>();
 
         Follow();
-        Debug.Log("FireBreath присвоен");
+        Debug.Log("FireBreath пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
     }
 
     [Command]
@@ -171,7 +171,6 @@ public class FireBreath_Scorpion : Skill, ICanConsumeComboPoints
                     {
                         Value = Buff.Damage.GetBuffedValue(damageValue * scale * damageScale),
                         Type = DamageType,
-                        Range = AttackRangeType,
                     };
                     CmdApplyDamage(damage, _enemies[i].gameObject);
                     _enemiesDikt[_enemies[i]] *= 2;

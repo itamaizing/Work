@@ -1452,8 +1452,10 @@ MonoBehaviour:
   - {fileID: 572863233}
   - {fileID: 572863238}
   _heroList:
+  - {fileID: 7988306871063235719, guid: 5f0d2df33c41bbf479647e456d3be04d, type: 3}
   - {fileID: 5889404958618692528, guid: 9b33d14bd9379d449ad38a13ab6ddde6, type: 3}
   - {fileID: 8468544467696250796, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+  - {fileID: 8191609785747737368, guid: 64886c26381f2c54c85fe43a25e0fb39, type: 3}
   - {fileID: 8191609785747737368, guid: 64886c26381f2c54c85fe43a25e0fb39, type: 3}
 --- !u!114 &572863236
 MonoBehaviour:
@@ -2165,21 +2167,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1559230635589990854, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
-      propertyPath: _otherUI
-      value: 
-      objectReference: {fileID: 5828110622248289198}
-    - target: {fileID: 1559230635589990854, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
       propertyPath: _selectManager
       value: 
       objectReference: {fileID: 2068080534}
-    - target: {fileID: 1559230635589990854, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
-      propertyPath: _otherUIs.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1559230635589990854, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
-      propertyPath: _uIMenuMainRightPanel
-      value: 
-      objectReference: {fileID: 747109161}
     - target: {fileID: 1559230635589990854, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
       propertyPath: _otherUIs.Array.data[0]
       value: 
@@ -2444,10 +2434,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: UIMenuMain
       objectReference: {fileID: 0}
-    - target: {fileID: 4609920808532616243, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4917926538003864170, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2596,10 +2582,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8485883700475333304, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
-      propertyPath: m_PresetInfoIsWorld
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8911577129873546843, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2701,11 +2683,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
---- !u!1 &747109161 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3479555841513392269, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
-  m_PrefabInstance: {fileID: 747109160}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &755777009
 PrefabInstance:
   m_ObjectHideFlags: 0

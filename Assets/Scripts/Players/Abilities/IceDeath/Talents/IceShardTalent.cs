@@ -8,11 +8,11 @@ public class IceShardTalent : Talent
 	[SerializeField] private SkillManager _ability;
 	public override void Enter()
 	{
-		_ability.AddSkill(_iceShard);
+		_ability.ActivateSkill(_iceShard);
 	}
 
 	public override void Exit()
 	{
-		_ability.RemoveSkill(_iceShard);
+		_ability.DeactivateSkill(_iceShard);
 	}
 }

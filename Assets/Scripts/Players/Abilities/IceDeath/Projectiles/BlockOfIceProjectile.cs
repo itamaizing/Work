@@ -23,7 +23,6 @@ public class BlockOfIceProjectile : Projectiles
 		{
 			Value = _curDamage,
 			Type = DamageType.Magical,
-			Range = AttackRangeType.RangeAttack,
 		};
 		Debug.Log("bullet");
 		startPos = transform.position;

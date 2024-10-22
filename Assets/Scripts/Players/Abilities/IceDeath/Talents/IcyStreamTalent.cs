@@ -8,11 +8,11 @@ public class IcyStreamTalent : Talent
 	[SerializeField] private SkillManager _ability;
 	public override void Enter()
 	{
-		_ability.AddSkill(_icyStream);
+		_ability.ActivateSkill(_icyStream);
 	}
 
 	public override void Exit()
 	{
-		_ability.RemoveSkill(_icyStream);
+		_ability.DeactivateSkill(_icyStream);
 	}
 }

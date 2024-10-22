@@ -8,11 +8,11 @@ public class DeathSpiralTalents : Talent
 	[SerializeField] private SkillManager _ability;
 	public override void Enter()
 	{
-		_ability.AddSkill(_deathSpiral);
+		_ability.ActivateSkill(_deathSpiral);
 	}
 
 	public override void Exit()
 	{
-		_ability.RemoveSkill(_deathSpiral);
+		_ability.DeactivateSkill(_deathSpiral);
 	}
 }

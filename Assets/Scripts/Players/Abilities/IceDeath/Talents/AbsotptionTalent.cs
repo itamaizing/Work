@@ -8,12 +8,12 @@ public class AbsotptionTalent : Talent
 	[SerializeField] private SkillManager _ability;
 	public override void Enter()
 	{
-		_ability.AddSkill(_absorption);
+		_ability.ActivateSkill(_absorption);
 	}
 
 	public override void Exit()
 	{
-		_ability.RemoveSkill(_absorption);
+		_ability.DeactivateSkill(_absorption);
 	}
 
 	private void Update()

@@ -96,7 +96,7 @@ public abstract class AutoAttackSkill : Skill
         {
             if (GetMouseButton)
             {
-                _target = GetRaycastTarget(true);
+                _target = GetRaycastTarget();
 
                 if(_target != null)
 				    _target.SelectedCircle.IsActive = true;
@@ -157,6 +157,7 @@ public abstract class AutoAttackSkill : Skill
 
                         }
                     }
+                    yield return new WaitForSeconds(AttackSpeed);
                 }
 			}
             else

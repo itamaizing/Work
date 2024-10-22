@@ -2,6 +2,7 @@ using Mirror;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class UIMenuMainCharactersPanelItem : MonoBehaviour, IPointerEnterHandler,IPointerExitHandler
@@ -13,14 +14,14 @@ public class UIMenuMainCharactersPanelItem : MonoBehaviour, IPointerEnterHandler
     
     [SerializeField] private Image _icon;
 
-    private HeroComponent _currentHero;
+    public HeroComponent CurrentHero;
     private Vector3 _increasedScale = new Vector3(1.3f, 1.3f, 1);
     private Vector3 _standardScale = new Vector3(1f, 1f, 1);
     
     public void Fill(HeroComponent hero)
     {
         _icon.sprite = hero.Data.Icon;
-        _currentHero = hero;
+        CurrentHero = hero;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -35,6 +36,6 @@ public class UIMenuMainCharactersPanelItem : MonoBehaviour, IPointerEnterHandler
 
     public void Select()
     {
-        Selected?.Invoke(_currentHero);
+        Selected?.Invoke(CurrentHero);
     }
 }
