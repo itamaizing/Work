@@ -22,10 +22,11 @@ public class PoisonBallProjectile : Test_Projectile
     private Skill _skill;
     private HealingPoisonBall _healingPoisonBall;
     private FootInstincts _footInstincts;
+    private RestorationOfGlands _restorationOfGlands;
 
     private int _currentCountBall;
+    private int _poisonBoneStack;
     private int _playerLayer;
-
     #region FloatVariables
     private float _newDistancePush;
     private float _energyDad;
@@ -42,7 +43,7 @@ public class PoisonBallProjectile : Test_Projectile
     private bool _isEnemy;
     private bool _isAlly;
     private bool _isActiveHealingPoisonBall;
-    private bool _isActvieWitheringPoison;
+    private bool _isActiveWitheringPoison;
     private bool _isActiveVoluminousBall;
     private bool _isPushTarget;
     private bool _isPlayerInvisible;
@@ -207,9 +208,14 @@ public class PoisonBallProjectile : Test_Projectile
 
         _target.Health.TryTakeDamage(ref _baseDamage, _skill);
 
-        if (_isActvieWitheringPoison)
+        if (_isActiveWitheringPoison)
         {
             _target.CharacterState.AddState(States.WitheringPoison, 6f, 0, _player.gameObject, _skill.Name);
+        }
+
+        if (_restorationOfGlands.Data.IsOpen && _poisonBoneStack > 0 && _target.CharacterState.CheckForState(States.PoisonBone))
+        {
+            TargetRpcReductionCooldown();
         }
 
         _target.CharacterState.AddState(States.InAir, _durationInAir, 0, _player.gameObject, _skill.Name);
@@ -263,12 +269,12 @@ public class PoisonBallProjectile : Test_Projectile
         bool isActiveTalentHealingPoisonBall, bool isTargetPlayer, 
         bool isTargetEnemy, bool isTargetAllies,
         bool isActiveTalentWitheringPoison, bool isPushTarget, 
-        bool isActiveVoluminousBall, bool isPlayerInvisible)
+        bool isActiveVoluminousBall, bool isPlayerInvisible, int poisonBoneStack)
     {
         _player = dad;
         _skill = skill;
 
-        InitializationNumericVariables(energyDad, multiplierDistance);
+        InitializationNumericVariables(energyDad, multiplierDistance, poisonBoneStack);
 
         InitializationBoolVariables(isActiveTalentHealingPoisonBall, 
             isTargetPlayer, isTargetEnemy, isTargetAllies, 
@@ -292,10 +298,11 @@ public class PoisonBallProjectile : Test_Projectile
         }
     }
 
-    private void InitializationNumericVariables(float energyDad, float multiplierDistance)
+    private void InitializationNumericVariables(float energyDad, float multiplierDistance, int poisonBoneStack)
     {
         _energyDad = energyDad;
         _multiplierDistanceFromTalent = multiplierDistance;
+        _poisonBoneStack = poisonBoneStack;
     }
 
     private void InitializationBoolVariables(bool isActiveTalentHealingPoisonBall, bool isTargetPlayer, 
@@ -309,7 +316,7 @@ public class PoisonBallProjectile : Test_Projectile
         _isEnemy = isTargetEnemy;
 
         _isActiveHealingPoisonBall = isActiveTalentHealingPoisonBall;
-        _isActvieWitheringPoison = isActiveTalentWitheringPoison;
+        _isActiveWitheringPoison = isActiveTalentWitheringPoison;
         _isActiveVoluminousBall = isActiveVoluminousBall;
         _isPlayerInvisible = isPlayerInvisible;
     }
@@ -319,6 +326,20 @@ public class PoisonBallProjectile : Test_Projectile
         _poisonBall = _player.GetComponentInChildren<PoisonBall>();
         _currentCountBall = _poisonBall.CurrentCountBall;
         _footInstincts = _poisonBall.FootInstinctsTalent;
+        _restorationOfGlands = _poisonBall.RestorationOfGlandsTalent;
+        Debug.Log("PoisonBallProjectile / restorationOfGlands = " + _restorationOfGlands);
+    }
+
+    private void TargetRpcReductionCooldown()
+    {
+        float baseChanceOfRestorationOfGlands = 0.1f;
+        float chanceRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
+
+        if (Random.Range(0f, 1f) <= chanceRestorationOfGlands)
+        {
+            Debug.Log("SpitPoisonProj / If RestorationOfGlands.IsActive = true");
+            _restorationOfGlands.ReductionCooldown();
+        }
     }
 
     [ClientRpc]

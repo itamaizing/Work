@@ -6,9 +6,12 @@ using UnityEngine;
 
 public class SpitPoisonProjectile : Test_Projectile
 {
+    private SpitPoison _spitPoison;
+    private RestorationOfGlands _restorationOfGlands;
     private Skill _skill;
 
     private int _playerLayer;
+    private int _poisonBoneStack;
 
     private float _energyDad;
     private float _damage;
@@ -24,12 +27,22 @@ public class SpitPoisonProjectile : Test_Projectile
     {
         if (isServer)
         {
+            InitializationComponents();
+
             LayerDefinition(_player.gameObject);
         }
         if (isServer && _isPlayerInvisible)
         {
             RpcNewTransparencySprite(_player.gameObject);
         }
+    }
+
+    private void InitializationComponents()
+    {
+        _spitPoison = _player.GetComponentInChildren<SpitPoison>();
+        Debug.Log("SpitPoisonProj / SpitPoison = " + _spitPoison);
+        _restorationOfGlands = _spitPoison.RestorationOfGlandsTalent;
+        Debug.Log("SpitPoisonProj / RestorationOfGlands = " + _restorationOfGlands);
     }
 
     [Server]
@@ -136,6 +149,12 @@ public class SpitPoisonProjectile : Test_Projectile
 
         _target.CharacterState.AddState(States.PoisonBone, _lifeTimePoisonBoneStacks, 0, _player.gameObject, _skill.Name);
 
+        if (_restorationOfGlands.Data.IsOpen && _poisonBoneStack > 0 && _target.CharacterState.CheckForState(States.PoisonBone))
+        {
+            Debug.Log("SpitPoisProj / if Restoration = true");
+            TargetRpcReductionCooldown();
+        }
+
         if (numbersForChanceOfBlindness <= chanceOfBlindness)
         {
             _target.CharacterState.AddState(States.Blind, 6f, 0, _player.gameObject, _skill.Name);
@@ -145,19 +164,33 @@ public class SpitPoisonProjectile : Test_Projectile
     }
 
     public void InitializationProjectile(Character dad, Skill skill, float energy,
-        bool isActiveHealingSpitPoison, bool isPlayerInvisible, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
+        bool isActiveHealingSpitPoison, bool isPlayerInvisible, 
+        bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, int poisonBoneStack)
     {
         _player = dad;
         _energyDad = energy;
         _skill = skill;
+
+        _poisonBoneStack = poisonBoneStack;
 
         _isActiveHealingSpitPoison = isActiveHealingSpitPoison;
         _isPlayerInvisible = isPlayerInvisible;
         _isPlayer = isTargetPlayer;
         _isAllies = isTargetAllies;
         _isEnemy = isTargetEnemy;
+    }
 
+    private void TargetRpcReductionCooldown()
+    {
+        float baseChanceOfRestorationOfGlands = 0.1f;
+        float chanceRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
+        Debug.Log("SpitPoisProj / chanceRestoration = " + chanceRestorationOfGlands);
 
+        if (Random.Range(0f, 1f) <= chanceRestorationOfGlands)
+        {
+            Debug.Log("SpitPoisonProj / If RestorationOfGlands.IsActive = true");
+            _restorationOfGlands.ReductionCooldown();
+        }
     }
 
     [ClientRpc]

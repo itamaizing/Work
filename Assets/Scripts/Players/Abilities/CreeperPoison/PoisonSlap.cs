@@ -22,6 +22,7 @@ public class PoisonSlap : Skill
     [SerializeField] private LightningMovement _lightningMovement;
 
     [Header("Talents")]
+    [SerializeField] private RestorationOfGlands _restorationOfGlands;
     [SerializeField] private AcceleratedSlap _acceleratedSlap;
     [SerializeField] private LightweightSlap _lightweightSlap;
 
@@ -40,6 +41,8 @@ public class PoisonSlap : Skill
     private Vector3 _firstMousePosition = Vector3.positiveInfinity;
     private Vector3 _secondMousePosition;
 
+    private int _poisonBoneStack;
+
     private float _creeperStrikeCastSpeedMultiplier = 0.5f; // Уменьшение скорости каста на 50%
     private float _lightningStrikesCastSpeedMultiplier = 0.0f;  // Уменьшение скорости каста на 100%
     private float _baseTimeCast = 1.6f;
@@ -56,6 +59,8 @@ public class PoisonSlap : Skill
     private bool _secondClickDone;
     private bool _isIncreasedCastSpeedFromCreeperStrike = false;
     private bool _isIncreasedCastSpeedFromLightningStrike = false;
+
+    public int PoisonBoneStack { get => _poisonBoneStack; set => _poisonBoneStack = value; }
 
     protected override bool IsCanCast => CheckCanCast();
 
@@ -389,6 +394,18 @@ public class PoisonSlap : Skill
             };
 
             CmdApplyDamage(damage, target.gameObject);
+
+            if (target.CharacterState.CheckForState(States.PoisonBone) && _restorationOfGlands && _poisonBoneStack > 0)
+            {
+                float baseChanceOfRestorationOfGlands = 0.1f;
+                float chanceOfRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
+
+                if (Random.Range(0f, 1f) <= chanceOfRestorationOfGlands)
+                {
+                    Debug.Log("CreeperStrike / restorationOfGlands");
+                    _restorationOfGlands.ReductionCooldown();
+                }
+            }
 
             PushTarget(target, _distancePush, _durationPush, _isPushTargetAllowed);
         }

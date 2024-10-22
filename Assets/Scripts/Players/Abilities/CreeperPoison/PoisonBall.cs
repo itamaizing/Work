@@ -38,6 +38,7 @@ public class PoisonBall : Skill
     #region Variables
 
     [Header("Talents")]
+    [SerializeField] private RestorationOfGlands _restorationOfGlands;
     [SerializeField] private TransparentPoisons _transparentPoisons;
     [SerializeField] private FootInstincts _footInstincts;
     [SerializeField] private HealingPoisonBall _healingPoisonBall;
@@ -106,8 +107,10 @@ public class PoisonBall : Skill
     public GameObject LastTarget { get; set; }
     public GameObject CurrentTarget { get; set; }
     public FootInstincts FootInstinctsTalent { get; set; }
+    public RestorationOfGlands RestorationOfGlandsTalent { get; set; }
     public ContinuationAmbush ContinuationAmbushTalent { get; set; }
     public int CurrentCountBall { get => _poisonBallInfo.CountProjectiles; }
+    public int PoisonBoneStack { get => _poisonBoneStacks; set => _poisonBoneStacks = value; }
 
     #endregion
 
@@ -225,11 +228,6 @@ public class PoisonBall : Skill
     }
 
     #endregion
-
-    public void PoisonBoneStacks(int poisonBoneStacks)
-    {
-        _poisonBoneStacks = poisonBoneStacks;
-    }
 
     #region ArrowManagement
 
@@ -699,7 +697,7 @@ public class PoisonBall : Skill
                 _multiplierForPushDistance, _projectileSize,
                 _isFast, _isPushTarget, _isPlayerInvisible,
                 _poisonBallInfo.IsActiveHealingPoisonBall, _poisonBallInfo.IsActiveWitheringPoison, _poisonBallInfo.IsActiveVoluminousBall,
-                _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies);
+                _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies, PoisonBoneStack);
 
             //CmdApplyPoisonCloud(_poisonBallInfo.IsHealingPoisonCloud, _durationPoisonCloud);
         }
@@ -709,7 +707,7 @@ public class PoisonBall : Skill
                 _multiplierForPushDistance, _projectileSize,
                 _isFast, _isPushTarget, _isPlayerInvisible,
                 _poisonBallInfo.IsActiveHealingPoisonBall, _poisonBallInfo.IsActiveWitheringPoison, _poisonBallInfo.IsActiveVoluminousBall,
-                _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies);
+                _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies, PoisonBoneStack);
 
             //CmdApplyPoisonCloud(_poisonBallInfo.IsHealingPoisonCloud, _durationPoisonCloud);
         }
@@ -724,11 +722,12 @@ public class PoisonBall : Skill
         float multiplierForPushDistance, float projectileSize,
         bool isFast, bool isPushTarget, bool isPlayerInvisible,
         bool isActiveHealingPoisonBall, bool isActiveWitheringPoison, bool isActiveVoluminousBall,
-        bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies)
+        bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies, int poisonBoneStack)
 
     {
         CurrentTarget = target;
         FootInstinctsTalent = _footInstincts;
+        RestorationOfGlandsTalent = _restorationOfGlands;
 
         if (LastTarget == CurrentTarget)
         {
@@ -770,7 +769,7 @@ public class PoisonBall : Skill
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
         poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.CurrentValue, multiplierForPushDistance, projectileSize, this, isActiveHealingPoisonBall,
-            isTargetPlayer, isTargetEnemy, isTargetAllies, isActiveWitheringPoison, isPushTarget, isActiveVoluminousBall, isPlayerInvisible);
+            isTargetPlayer, isTargetEnemy, isTargetAllies, isActiveWitheringPoison, isPushTarget, isActiveVoluminousBall, isPlayerInvisible, poisonBoneStack);
 
         poisonBallProjectile.MoveBallToTarget(targetOrPoint, isFast);
 
@@ -790,8 +789,9 @@ public class PoisonBall : Skill
         float multiplierForPushDistance, float projectileSize,
         bool isFast, bool isPushTarget, bool isPlayerInvisible,
         bool isActiveHealingPoisonBall, bool isActiveWitheringPoison, bool isActiveVoluminousBall,
-        bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies)
+        bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies, int poisonBoneStack)
     {
+        RestorationOfGlandsTalent = _restorationOfGlands;
         FootInstinctsTalent = _footInstincts;
         CurrentTarget = LastTarget;
 
@@ -833,7 +833,7 @@ public class PoisonBall : Skill
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
         poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.CurrentValue, multiplierForPushDistance, projectileSize, this, isActiveHealingPoisonBall,
-            isTargetPlayer, isTargetEnemy, isTargetAllies, isActiveWitheringPoison, isPushTarget, isActiveVoluminousBall, isPlayerInvisible);
+            isTargetPlayer, isTargetEnemy, isTargetAllies, isActiveWitheringPoison, isPushTarget, isActiveVoluminousBall, isPlayerInvisible, poisonBoneStack);
 
         poisonBallProjectile.MoveBallOnMaxDistance(point, isFast);
 

@@ -226,7 +226,6 @@ public class CharacterState : NetworkBehaviour
 
 	public bool invinsible = false;
 
-	public List<AbstractCharacterState> CurrentStates => currentStates;
 	public Character Character => _hero;
 
 	public List<AbstractCharacterState> CurrentStates { get => _currentStates; }
@@ -631,7 +630,5 @@ public enum States
 	Knockdown,
 	IdealEvade,
 	Bleeding,
-
-}
 
 }

@@ -122,6 +122,7 @@ public abstract class Skill : NetworkBehaviour
     public bool IsHaveResourceOnSkill { get => CheckResourcesOnSkill(); }
     public bool IsHaveResources { get => IsHaveResourceOnSkill && IsCooldowned && IsHaveCharge; }
     public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); protected set => _cooldownTime = value; }
+    public float RemainingCooldownTime { get => _remainingCooldownTime; protected set => _remainingCooldownTime = value; }
     public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); protected set => _castDeley = value; }
     public bool IsCasting { get => _isCasting; }
     public float CastStreamDuration { get => _castDuration; }
@@ -251,7 +252,7 @@ public abstract class Skill : NetworkBehaviour
 
     public void IncreaseSetCooldown(float time)
     {
-        if (time < _remainingCooldownTime)
+        if (time < RemainingCooldownTime)
             return;
 
         if (_cooldownJob != null)
@@ -262,7 +263,7 @@ public abstract class Skill : NetworkBehaviour
 
     public void ReductionSetCooldown(float time)
     {
-        if (time > _remainingCooldownTime)
+        if (time > RemainingCooldownTime)
             return;
 
         if (_cooldownJob != null)
@@ -302,7 +303,7 @@ public abstract class Skill : NetworkBehaviour
         }
 
         if (IsCooldowned == false)
-            MassageNotCooldowned?.Invoke(_remainingCooldownTime);
+            MassageNotCooldowned?.Invoke(RemainingCooldownTime);
 
         if (IsHaveCharge == false)
             MassageHaventCharge?.Invoke();
@@ -728,11 +729,11 @@ public abstract class Skill : NetworkBehaviour
 	private IEnumerator CooldownCoroutine(float cooldownTime)
     {
         CooldownStarted?.Invoke(cooldownTime);
-        _remainingCooldownTime = cooldownTime;
+        RemainingCooldownTime = cooldownTime;
 
-        while (_remainingCooldownTime > 0)
+        while (RemainingCooldownTime > 0)
         {
-            _remainingCooldownTime -= Time.deltaTime;
+            RemainingCooldownTime -= Time.deltaTime;
             yield return null;
         }
         CooldownEnded?.Invoke();
@@ -839,7 +840,7 @@ public abstract class Skill : NetworkBehaviour
 
     public void ResetSkillState()
     {
-        _remainingCooldownTime = 0;
+        RemainingCooldownTime = 0;
 
         if (_cooldownJob != null)
         {

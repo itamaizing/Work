@@ -19,15 +19,6 @@ public class MinionComponent : Character
         Intercepted?.Invoke(this);
     }
 
-    public void SetAuthority(NetworkConnectionToClient con)
-    {
-        var temp = GetComponent<NetworkIdentity>();
-        temp.RemoveClientAuthority();
-        temp.AssignClientAuthority(con);
-
-        Intercepted?.Invoke(this);
-    }
-
     private void OnDestroy()
     {
         Destroyed?.Invoke(this);

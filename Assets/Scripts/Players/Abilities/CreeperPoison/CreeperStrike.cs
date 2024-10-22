@@ -9,11 +9,12 @@ public class CreeperStrike : AutoAttackSkill
     public bool Enabled;
 
     [Header("Talents")]
+    [SerializeField] private RestorationOfGlands _restorationOfGlands;
     [SerializeField] private ReleaseFromSecrecy _releaseFromSecrecy;
     [SerializeField] private StrokesOfAspiration _strokesOfAspiration;
     [SerializeField] private AssasinPoison _assasinPoison;
     [SerializeField] private DesireToHide _desireToHide;
-    [SerializeField] private FirstStrike _firstStrike;
+    //[SerializeField] private FirstStrike _firstStrike;
     [SerializeField] private FeelingOfContinuation _feelingOfContinuation;
     [SerializeField] private PreparingForFight _preparingForFight;
 
@@ -31,13 +32,13 @@ public class CreeperStrike : AutoAttackSkill
     private int _countHitForDesireToHideTalent = 0;
     private int _countCurrentHitForPreparingForFight = 0;
 
-    private int _poisonBoneStacks = 0;
+    private int _poisonBoneStack = 0;
 
     private float _currentDamage;
     private float _multiplyCritDamage = 1.5f;
     private float _lifeTimePoisonBoneStacks = 6.0f;
-    private float chanceOfCriticalStrike = 0.9f;
-    
+    private float _chanceOfCriticalStrike = 0.9f;
+
     private bool _isTwoHit = false;
     private bool _isHit = false;
 
@@ -45,6 +46,7 @@ public class CreeperStrike : AutoAttackSkill
 
     public int CurrentCountHit { get => _currentCountHit; set => _currentCountHit = value; }
     public int CountHitForReleaseFromSecrecyTalent { get => _countHitForDesireToHideTalent; set => _countHitForDesireToHideTalent = value; }
+    public int PoisonBoneStack { get => _poisonBoneStack; set => _poisonBoneStack = value; }
     public bool IsTwoHit { get => _isTwoHit; set => _isTwoHit = value; }
     public bool IsHit { get => _isHit; set => _isHit = value; }
     public Character CurrentTarget { get => _target; }
@@ -73,6 +75,8 @@ public class CreeperStrike : AutoAttackSkill
 
     public void DealingDamageFromHits(Character target)
     {
+        Debug.Log("CreeperStrike / _poisonBoneStack = " + _poisonBoneStack + " && PoisonBoneStack = " + PoisonBoneStack);
+
         _currentDamage = Random.Range(7.0f, 11.0f);
         float _currentChanceOfCriticalStrike = Random.Range(0.0f, 1.0f);
 
@@ -102,6 +106,19 @@ public class CreeperStrike : AutoAttackSkill
             else
             {
                 _lastTarget = target;
+            }
+        }
+
+        if (_restorationOfGlands.Data.IsOpen && _poisonBoneStack > 0)
+        {
+            Debug.Log("CreeperStrike / if == true");
+            float baseChanceOfRestorationOfGlands = 0.1f;
+            float chanceOfRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
+
+            if (Random.Range(0f, 1f) <= chanceOfRestorationOfGlands)
+            {
+                Debug.Log("CreeperStrike / restorationOfGlands");
+                _restorationOfGlands.ReductionCooldown();
             }
         }
 
@@ -143,11 +160,11 @@ public class CreeperStrike : AutoAttackSkill
             }
         }
 
-        //if (_coldBlood.IsCanCritCreeperStrike || _coldBlood.IsCanCritLightningStrikes)
-        //{
-        //    DealCriticalDamage(target, _currentDamage);
-        //}
-        if (_currentChanceOfCriticalStrike <= chanceOfCriticalStrike)
+        if (_coldBlood.IsCanCritCreeperStrike || _coldBlood.IsCanCritLightningStrikes)
+        {
+            DealCriticalDamage(target, _currentDamage);
+        }
+        if (_currentChanceOfCriticalStrike <= _chanceOfCriticalStrike)
         {
             DealCriticalDamage(target, _currentDamage);
         }
@@ -163,10 +180,10 @@ public class CreeperStrike : AutoAttackSkill
             CmdApplyDamage(damage, target.gameObject);
         }
 
-        if (_firstStrike.Data.IsOpen)
-        {
-            _firstStrike.FirstHit = false;
-        }
+        //if (_firstStrike.Data.IsOpen)
+        //{
+        //    _firstStrike.FirstHit = false;
+        //}
 
         _isHit = false;
     }
@@ -178,20 +195,20 @@ public class CreeperStrike : AutoAttackSkill
         float firstStrikeTalentMultiplyDamage = 5.0f;
         float absoluteAccucaryMultiplyDamage = 2.5f;
 
-        if (_poisonBoneStacks > 0)
+        if (_poisonBoneStack > 0)
         {
-            for (int i = 0; i < _poisonBoneStacks; i++)
+            for (int i = 0; i < _poisonBoneStack; i++)
             {
                 multiplyDamage += 0.5f;
             }
         }
 
-        if (_firstStrike.Data.IsOpen && _firstStrike.IsCanIncreaseCrit && _firstStrike.FirstHit)
-        {
-            criticalDamage *= (multiplyDamage * firstStrikeTalentMultiplyDamage);
-            _firstStrike.ReturnBoolFalse();
-        }
-        else if (_coldBlood.IsCanCritCreeperStrike && _poisonBoneStacks == 0)
+        //if (_firstStrike.Data.IsOpen && _firstStrike.IsCanIncreaseCrit && _firstStrike.FirstHit)
+        //{
+        //    criticalDamage *= (multiplyDamage * firstStrikeTalentMultiplyDamage);
+        //    _firstStrike.ReturnBoolFalse();
+        //}
+        if (_coldBlood.IsCanCritCreeperStrike && _poisonBoneStack == 0)
         {
             if (!target.CharacterState.CheckPoisonStates())
             {
@@ -214,11 +231,6 @@ public class CreeperStrike : AutoAttackSkill
             criticalDamage *= multiplyDamage;
         }
         return criticalDamage;
-    }
-
-    public void PoisonBoneStacks(int poisonBoneStacks)
-    {
-        _poisonBoneStacks = poisonBoneStacks;
     }
 
     private void DealCriticalDamage(Character currentTarget, float criticalDamage)

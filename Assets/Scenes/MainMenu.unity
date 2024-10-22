@@ -1452,6 +1452,7 @@ MonoBehaviour:
   - {fileID: 572863233}
   - {fileID: 572863238}
   _heroList:
+  - {fileID: 7418347446368758987, guid: 4c3c788ff06ea9f48abda93ece76c4e3, type: 3}
   - {fileID: 5889404958618692528, guid: 9b33d14bd9379d449ad38a13ab6ddde6, type: 3}
   - {fileID: 8468544467696250796, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
   - {fileID: 8191609785747737368, guid: 64886c26381f2c54c85fe43a25e0fb39, type: 3}
