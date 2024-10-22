@@ -34,15 +34,6 @@ public class TestGameRules : GameRules
                     health.Died += runeComponent.ResetValue;
                 }
             }
-
-            var runeComponent = playerSettings.GetComponent<RuneComponent>();
-            if (runeComponent != null)
-            {
-                if (health != null)
-                {
-                    health.Died += runeComponent.ResetValue;
-                }
-            }
         }
 
         if (isServer && isRemoveRoom)
@@ -148,9 +139,6 @@ public class TestGameRules : GameRules
         foreach (var playerSettings in _players)
         {
             ResetPlayerState(playerSettings);
-
-            var runeComponent = playerSettings.GetComponent<RuneComponent>();
-            runeComponent?.ResetValue();
 
             int spawnIndex = playerSettings.NetworkSettings.TeamIndex - 1;
             if (_spawnPoints != null && spawnIndex >= 0 && spawnIndex < _spawnPoints.Count)
