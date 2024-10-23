@@ -13,7 +13,7 @@ public class ColdBloodEnabledTalent : Talent
         SetActive(true);
         if (!_skillManager.Abilities.Contains(_coldBlood))
         {
-            _skillManager.AddSkill(_coldBlood);
+            _skillManager.ActivateSkill(_coldBlood);
         }
     }
 
@@ -22,7 +22,7 @@ public class ColdBloodEnabledTalent : Talent
         SetActive(false);
         if (_skillManager.Abilities.Contains(_coldBlood))
         {
-            _skillManager.RemoveSkill(_coldBlood);
+            _skillManager.DeactivateSkill(_coldBlood);
         }
     }
 }

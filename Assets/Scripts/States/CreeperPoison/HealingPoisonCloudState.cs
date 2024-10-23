@@ -127,7 +127,13 @@ public class HealingPoisonCloudState : AbstractCharacterState
     {
         _increasedHeal = _baseHeal * _currentStacks;
         _endHeal = targetHealth.Health.MaxValue * _increasedHeal;
-        targetHealth.Health.Heal(_endHeal);
+        Heal heal = new Heal
+        {
+            Value = _endHeal,
+            DamageableSkill = null,
+        };
+        targetHealth.Health.Heal(ref heal, null);
+        targetHealth.DamageTracker.AddHeal(heal);
     }
 
     private void ResetValues()

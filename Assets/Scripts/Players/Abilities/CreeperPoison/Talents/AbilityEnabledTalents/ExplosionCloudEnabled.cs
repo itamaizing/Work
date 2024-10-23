@@ -12,7 +12,7 @@ public class ExplosionCloudEnabled : Talent
         SetActive(true);
         if (!_skillManager.Abilities.Contains(_explosionCloud))
         {
-            _skillManager.AddSkill(_explosionCloud);
+            _skillManager.ActivateSkill(_explosionCloud);
         }
     }
 
@@ -21,7 +21,7 @@ public class ExplosionCloudEnabled : Talent
         SetActive(false);
         if (_skillManager.Abilities.Contains(_explosionCloud))
         {
-            _skillManager.RemoveSkill(_explosionCloud);
+            _skillManager.DeactivateSkill(_explosionCloud);
         }
     }
 }

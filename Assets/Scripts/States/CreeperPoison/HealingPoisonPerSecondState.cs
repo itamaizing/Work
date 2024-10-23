@@ -81,7 +81,13 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
         _currentHealingValue += 1.0f;
 
         Debug.Log($"HealingPoisonPerSecond / MakeHeal / _currentHealingValue = {_currentHealingValue}");
+        Heal heal = new Heal
+        {
+            Value = _baseHealingValue,
+            DamageableSkill = null,
+        };
 
-        _characterState.Character.Health.Heal(_currentHealingValue);
+        _characterState.Character.Health.Heal(ref heal, null);
+        _characterState.Character.DamageTracker.AddHeal(heal);
     }
 }

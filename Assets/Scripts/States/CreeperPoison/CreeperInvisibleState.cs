@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class CreeperInvisibleState : AbstractCharacterState
@@ -38,7 +39,7 @@ public class CreeperInvisibleState : AbstractCharacterState
         _playerSprite = _player.GetComponentInChildren<SpriteRenderer>();
         Debug.Log("EnterState CreeperInvisible / playerSprite = " + _playerSprite);
         _originalMoveSpeed = _player.Move.CurrentSpeed;
-        _originalStaminaRegen = _player.Stamina.RegenerationValue;
+        _originalStaminaRegen = _player.Resources.FirstOrDefault()!.RegenerationValue;
 
         _timeBetweenReducingTransparency = _startTimeBetweenReducingTransparency;
         if (_player != null)
@@ -114,7 +115,7 @@ public class CreeperInvisibleState : AbstractCharacterState
         _player.Move.SetMoveSpeed(endReductionMoveSpeed);
         // Debug.Log("Player MoveSpeed == " + _player.Move.CurrentSpeed);
 
-        _player.Stamina.RegenerationValue *= (1 + _increaseStaminaRegen);
+       _player.Resources.FirstOrDefault()!.RegenerationValue *= (1 + _increaseStaminaRegen);
         //Debug.Log("Player StaminaRegen == " + _player.Stamina.RegenerationValue);
 
         if (!_isIncreasedManaCost)
@@ -135,9 +136,9 @@ public class CreeperInvisibleState : AbstractCharacterState
         _player.Move.SetDefaultSpeed();
         // Debug.Log("Player MoveSpeed == " + _player.Move.CurrentSpeed);
 
-        if (_player.Stamina.RegenerationValue != _originalStaminaRegen)
+        if (_player.Resources.FirstOrDefault()!.RegenerationValue != _originalStaminaRegen)
         {
-            _player.Stamina.RegenerationValue /= (1 + _increaseStaminaRegen);
+            _player.Resources.FirstOrDefault()!.RegenerationValue /= (1 + _increaseStaminaRegen);
             //Debug.Log("Player StaminaRegen == " + _player.Stamina.RegenerationValue);
         }
 

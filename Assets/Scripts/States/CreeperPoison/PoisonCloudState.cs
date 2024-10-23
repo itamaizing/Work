@@ -183,15 +183,16 @@ public class PoisonCloudState : AbstractCharacterState
         {
             Value = _endDamage,
             Type = DamageType.Physical,
-            Range = AttackRangeType.MeleeAttack
+            PhysicAttackType = AttackRangeType.Inner,
         };
 
         targetHealth.Health.CmdTryTakeDamage(damage, null);
+        targetHealth.DamageTracker.AddDamage(damage);
 
         if (_toxiqueCloud.Data.IsOpen)
         {
             Debug.Log("PoisonCloud / DamageDeal / toxiqueCloud Active");
-            ApplyState(targetHealth);
+            //ApplyState(targetHealth);
         }
     }
 

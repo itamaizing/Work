@@ -9,7 +9,7 @@ public class RegeneratingPoisonState : AbstractCharacterState
     private List<Talent> _talents = new();
     private static SurgeTreatment _surgeTreatment;
 
-    private Character _player;
+    private Character _playerWithTalent;
 
     private int _currentStacks = 0;
     private int _maxStacks = 5;
@@ -34,16 +34,16 @@ public class RegeneratingPoisonState : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _characterState = character;
-        _player = _characterState.Character;
+        _playerWithTalent = personWhoMadeBuff;
 
         _duration = durationToExit;
         _baseDuration = durationToExit;
 
-        Debug.Log("_player in EnterRegenPoisonState == " + _player);
-        if (_player != null)
+        Debug.Log("_player in EnterRegenPoisonState == " + _playerWithTalent);
+        if (_playerWithTalent != null)
         {
-            _talents = _player.CharacterState.Character.GetComponent<HeroComponent>().TalentManager.ActiveTalents;
-            Debug.Log("HealingPoison player == " + _player);
+            _talents = _playerWithTalent.CharacterState.Character.GetComponent<HeroComponent>().TalentManager.ActiveTalents;
+            Debug.Log("HealingPoison player == " + _playerWithTalent);
 
             foreach (Talent talent in _talents)
             {
@@ -122,7 +122,16 @@ public class RegeneratingPoisonState : AbstractCharacterState
     {
         Debug.Log("RegenerationPoison / MakeHeal");
         _endHealingValue = _currentStacks * _baseHealingValue;
-        _player.Health.Heal(_endHealingValue);
+
+        Heal heal = new Heal
+        {
+            Value = _endHealingValue,
+            DamageableSkill = null,
+        };
+
+        _characterState.Character.Health.Heal(ref heal, null);
+        _characterState.Character.DamageTracker.AddHeal(heal);
+
         if (_surgeTreatment != null && _surgeTreatment.Data.IsOpen)
         {
             _totalHeal += _endHealingValue;
@@ -142,8 +151,18 @@ public class RegeneratingPoisonState : AbstractCharacterState
         if (_surgeTreatment != null)
         {
             float totalHeal = _totalHeal;
-            Debug.Log("InstantHeal // totalHeal == " + totalHeal);
-            _player.Health.Heal(totalHeal);
+            Debug.Log("InstantHeal // totalHeal == " + totalHeal); 
+
+            Heal heal = new Heal
+            {
+                Value = totalHeal,
+                DamageableSkill = null,
+            };
+
+
+            _characterState.Character.Health.Heal(ref heal, null);
+            _characterState.Character.DamageTracker.AddHeal(heal);
+
             _totalHeal = 0;
         }
     }

@@ -363,8 +363,8 @@ public abstract class Skill : NetworkBehaviour
 		{
 			Value = Damage,
 			Type = DamageType,
-			Range = AttackRangeType,
-		};
+            PhysicAttackType = AttackRangeType,
+        };
 		_skillRender.CmdDrawDamageZone(position, Area, damage, _hero.gameObject);
     }
 
@@ -379,7 +379,7 @@ public abstract class Skill : NetworkBehaviour
 		{
 			Value = Damage,
 			Type = DamageType,
-			Range = AttackRangeType,
+			PhysicAttackType = AttackRangeType,
 		};
         Debug.Log(_skillRender + " Skill render\n ");
         Debug.Log(Radius + " \n ");

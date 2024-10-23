@@ -105,7 +105,13 @@ public class InstantHealingPoisonState : AbstractCharacterState
 
     private void MakeHeal()
     {
-        _characterState.Character.Health.Heal(_baseHealingValue);
+        Heal heal = new Heal
+        {
+            Value = _baseHealingValue,
+            DamageableSkill = null,
+        };
+        _characterState.Character.Health.Heal(ref heal, null);
+        _characterState.Character.DamageTracker.AddHeal(heal);
         //if (_surgeTreatment != null && _surgeTreatment.IsActive)
         //{
         //	_totalHealed += _baseHealingValue;

@@ -11,13 +11,11 @@ public class ContinuationAmbush : Talent
     public override void Enter()
     {
         SetActive(true);
-        CmdSetActive(true);
     }
 
     public override void Exit()
     {
         SetActive(false);
-        CmdSetActive(false);
     }
 
     public void CanApplyInvisible(bool isCanApplyInvisible)
@@ -34,12 +32,6 @@ public class ContinuationAmbush : Talent
         _isCanApplyInvisible = false;
         Debug.Log($"CanNotApplyInvisible / isCanApply = {_isCanApplyInvisible}");
         RpcCanNotApplyInvisible(false);
-    }
-
-    [Command]
-    private void CmdSetActive(bool isActive)
-    {
-        SetActive(isActive);
     }
 
     [ClientRpc]

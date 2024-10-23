@@ -137,7 +137,6 @@ public class GrabTentaclesPrefab : NetworkBehaviour
                         {
                             Value = _damage,
                             Type = DamageType.Magical,
-                            Range = AttackRangeType.Inner,
                         };
 
                         enemy.Health.TryTakeDamage(ref damage, null);

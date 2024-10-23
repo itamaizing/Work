@@ -204,7 +204,7 @@ public class SpitPoison : Skill
     {
         if (_currentTarget != null)
         {
-            CmdInstantiateProjectileToTarget(_currentTarget.gameObject, _angleRotation, _player.Stamina.CurrentValue, 
+            CmdInstantiateProjectileToTarget(_currentTarget.gameObject, _angleRotation, _player.Resources.FirstOrDefault()!.CurrentValue, 
                 _isActiveHealingSpitPoison, _isPlayerInvisible,
                 _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
 
@@ -212,16 +212,14 @@ public class SpitPoison : Skill
         }
         else
         {
-            CmdInstantiateProjectileToPoint(_mousePos, _angleRotation, _player.Stamina.CurrentValue, 
+            CmdInstantiateProjectileToPoint(_mousePos, _angleRotation, _player.Resources.FirstOrDefault()!.CurrentValue, 
                 _isActiveHealingSpitPoison, _isPlayerInvisible,
                 _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
                 
-            CmdInstantiateProjectile(_angle, _playerLinks.Resources.FirstOrDefault()!.CurrentValue);
-
-            _playerLinks.Resources.FirstOrDefault()?.TryUse(_playerLinks.Resources.FirstOrDefault()!.CurrentValue);
-
             //CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
         }
+
+        _player.Resources.FirstOrDefault()?.TryUse(_player.Resources.FirstOrDefault()!.CurrentValue);
         _player.Move.CanMove = true;
     }
 
@@ -241,7 +239,7 @@ public class SpitPoison : Skill
 
         SpitPoisonProjectile projectile = item.GetComponent<SpitPoisonProjectile>();
 
-        projectile.InitializationProjectile(_player, this, manaValue, 
+        projectile.InitializationProjectile(_player, this, _player.Resources.FirstOrDefault()!.CurrentValue, 
             isActiveHealingSpitPoison, isPlayerInvisible, 
             isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack);
 
@@ -264,7 +262,7 @@ public class SpitPoison : Skill
 
         SpitPoisonProjectile projectile = item.GetComponent<SpitPoisonProjectile>();
 
-        projectile.InitializationProjectile(_player, this, _player.Stamina.CurrentValue, 
+        projectile.InitializationProjectile(_player, this, _player.Resources.FirstOrDefault()!.CurrentValue, 
             isActiveHealingSpitPoison, isPlayerInvisible, 
             isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack);
 

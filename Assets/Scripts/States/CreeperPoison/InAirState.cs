@@ -19,7 +19,6 @@ public class InAirState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        Debug.Log("InAirState / EnterState");
         _characterState = character;
 
         _characterState.Character.Move.CanMove = false;

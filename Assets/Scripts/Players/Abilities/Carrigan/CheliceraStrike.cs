@@ -64,7 +64,7 @@ public class CheliceraStrike : AutoAttackSkill
         {
             Value = _baseDamage + _criticalDamage,
             Type = DamageType.Physical,
-            Range = AttackRangeType.MeleeAttack,
+            PhysicAttackType = AttackRangeType.MeleeAttack,
         };
 
         if (_attackingPsionicEnergy.IsAttackingPsiEnergy && target != null)
@@ -146,7 +146,7 @@ public class CheliceraStrike : AutoAttackSkill
                     {
                         Value = (baseDamage + additionalDamage) * percentageDamageToNearestEnemies,
                         Type = DamageType.Physical,
-                        Range = AttackRangeType.MeleeAttack,
+                        PhysicAttackType = AttackRangeType.MeleeAttack,
                     };
                     CmdApplyDamage(damageNearestEnemy, item.gameObject);
 
@@ -154,7 +154,7 @@ public class CheliceraStrike : AutoAttackSkill
                     {
                         Value = baseDamage + (additionalDamage * multiplierDamageByMainTarget),
                         Type = DamageType.Physical,
-                        Range = AttackRangeType.MeleeAttack,
+                        PhysicAttackType = AttackRangeType.MeleeAttack,
                     };
                     CmdApplyDamage(damageMainTarget, targetCharacter.gameObject);
                     #endregion

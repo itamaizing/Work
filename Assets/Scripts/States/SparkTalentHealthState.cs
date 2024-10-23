@@ -10,6 +10,7 @@ public class SparkTalentHealthState : AbstractCharacterState
 
     private List<StatusEffect> _effects = new ();
 
+    public override float TEST_ChangeableValue { get; set; }
     public override States State => States.SparkTalentHealthBuff;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;

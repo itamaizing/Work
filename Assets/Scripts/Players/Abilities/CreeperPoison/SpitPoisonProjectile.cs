@@ -144,12 +144,11 @@ public class SpitPoisonProjectile : Test_Projectile
         {
             Value = _skill.Buff.Damage.GetBuffedValue(_damage),
             Type = DamageType.Physical,
-            Range = AttackRangeType.RangeAttack,
+            PhysicAttackType = AttackRangeType.RangeAttack,
         };
-        _target.Health.TryTakeDamage(ref _baseDamage, _skill);
         
-        Energy _energyLink = (Energy)_dad.Resources.FirstOrDefault();
-        if (_energyLink != null) _energyLink.SumDamageMake(damage);
+        _target.Health.TryTakeDamage(ref _baseDamage, _skill);
+        _target.DamageTracker.AddDamage(_baseDamage);
 
         _target.CharacterState.AddState(States.PoisonBone, _lifeTimePoisonBoneStacks, 0, _player.gameObject, _skill.Name);
 
@@ -164,7 +163,7 @@ public class SpitPoisonProjectile : Test_Projectile
             _target.CharacterState.AddState(States.Blind, 6f, 0, _player.gameObject, _skill.Name);
         }
 
-        DestroyProjectile();
+        DestroyProjectile();        
     }
 
     public void InitializationProjectile(Character dad, Skill skill, float energy,

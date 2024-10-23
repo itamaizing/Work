@@ -52,7 +52,7 @@ public class ClawStrike : AutoAttackSkill
             {
                 Value = _baseDamage + _additionalDamage,
                 Type = DamageType.Physical,
-                Range = AttackRangeType.MeleeAttack
+                PhysicAttackType = AttackRangeType.MeleeAttack,
             };
 
             CmdUseAttackingEnergy(_additionalDamage);
@@ -69,7 +69,7 @@ public class ClawStrike : AutoAttackSkill
             {
                 Value = _baseDamage,
                 Type = DamageType.Physical,
-                Range = AttackRangeType.MeleeAttack
+                PhysicAttackType = AttackRangeType.MeleeAttack,
             };
             CmdApplyDamage(_damage, _target.gameObject);
 

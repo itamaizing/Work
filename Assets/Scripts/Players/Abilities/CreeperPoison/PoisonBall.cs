@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
@@ -410,39 +410,94 @@ public class PoisonBall : Skill
         }
     }
 
+    private void SetArrowVisibility(int arrowIndex, bool isVisible)
+    {
+        if (arrowIndex >= 0 && arrowIndex < _arrowRenderers.Length && _arrowRenderers[arrowIndex] != null)
+        {
+            var lineRenderer = _arrowRenderers[arrowIndex].GetComponent<LineRenderer>();
+            if (lineRenderer != null)
+            {
+                Color startColor = lineRenderer.startColor;
+                Color endColor = lineRenderer.endColor;
+
+                // ���� ������� ������, ������������� ����� �� 1, ����� �� 0 (������������)
+                startColor.a = isVisible ? 1f : 0f;
+                endColor.a = isVisible ? 1f : 0f;
+
+                lineRenderer.startColor = startColor;
+                lineRenderer.endColor = endColor;
+            }
+        }
+    }
+
     #endregion
 
     #region Update Method for Mouse Movement Detection
 
     private void UpdateMouseDetection()
     {
+        // �������� ������� ������� ����
+        Vector3 currentMousePosition = GetMousePoint();
+
+        // ����������� ��� ������ ���� �������
         if (_firstClickCompleted && !_secondClickDone)
         {
-            Vector3 currentMousePosition = GetMousePoint();
-            if (currentMousePosition.x < _firstMousePosition.x)
-            {
-                SetArrowColor(0, Color.green);
-                SetArrowColor(1, Color.red);
-            }
-            else
-            {
-                SetArrowColor(0, Color.red);
-                SetArrowColor(1, Color.green);
-            }
+            UpdateArrowHighlight(0, 1, currentMousePosition);
         }
 
+        // ����������� ��� ������ ���� �������
         if (_secondClickDone && !_colorLockedAfterSecondClick && !_colorLockedAfterThirdClick)
         {
-            Vector3 currentMousePosition = GetMousePoint();
-            if (currentMousePosition.x < _secondMousePosition.x)
+            UpdateArrowHighlight(2, 3, currentMousePosition);
+        }
+    }
+
+    // ����� ��� ���������� ��������� �������
+    private void UpdateArrowHighlight(int index1, int index2, Vector3 currentMousePosition)
+    {
+        Vector3 arrowPosition1 = _arrowRenderers[index1].transform.position;
+        Vector3 arrowPosition2 = _arrowRenderers[index2].transform.position;
+
+        // ���������� ����������� ������� ������������ �������� ��������� ����
+        Vector3 direction1 = (arrowPosition1 - currentMousePosition).normalized;
+
+        // ��������� ���������� ������� ������������ ���� X � Y
+        bool isHorizontal = Mathf.Abs(direction1.x) > Mathf.Abs(direction1.y);
+
+        if (isHorizontal)
+        {
+            // ��������� �������� ���� �� ����������� (����� ��� ������)
+            if (Input.GetAxis("Mouse X") > 0)
             {
-                SetArrowColor(2, Color.green);
-                SetArrowColor(3, Color.red);
+                // ���� �������� ������, �������� �������, ������� ���������� ������
+                SetArrowColor(index1, Color.green);
+                SetArrowVisibility(index1, true);
+                SetArrowVisibility(index2, false);
             }
-            else
+            else if (Input.GetAxis("Mouse X") < 0)
             {
-                SetArrowColor(2, Color.red);
-                SetArrowColor(3, Color.green);
+                // ���� �������� �����, �������� �������, ������� ���������� �����
+                SetArrowColor(index2, Color.green);
+                SetArrowVisibility(index2, true);
+                SetArrowVisibility(index1, false);
+            }
+        }
+        else
+        {
+            // ��������� �������� ���� �� ��������� (����� ��� ����)
+            if (Input.GetAxis("Mouse Y") > 0)
+            {
+                // ���� �������� �����, �������� ������� �������
+                SetArrowColor(index1, Color.green);
+                SetArrowVisibility(index1, true);
+                SetArrowVisibility(index2, false);
+            }
+            else if (Input.GetAxis("Mouse Y") < 0)
+            {
+                // ���� �������� ����, �������� ������ �������
+                SetArrowColor(index2, Color.green);
+                SetArrowVisibility(index2, true);
+                SetArrowVisibility(index1, false);
             }
         }
     }
@@ -770,10 +825,9 @@ public class PoisonBall : Skill
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
-        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.CurrentValue, multiplierForPushDistance, projectileSize, this, isActiveHealingPoisonBall,
+        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Resources.FirstOrDefault()!.CurrentValue, multiplierForPushDistance, projectileSize, this, isActiveHealingPoisonBall,
             isTargetPlayer, isTargetEnemy, isTargetAllies, isActiveWitheringPoison, isPushTarget, isActiveVoluminousBall, isPlayerInvisible, poisonBoneStack);
 
-        poisonBallProjectile.InitializationProjectile(_playerLinks.transform, _playerLinks.Resources.FirstOrDefault()!.CurrentValue);
         poisonBallProjectile.MoveBallToTarget(targetOrPoint, isFast);
 
         NetworkServer.Spawn(item);
@@ -835,7 +889,7 @@ public class PoisonBall : Skill
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
-        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Stamina.CurrentValue, multiplierForPushDistance, projectileSize, this, isActiveHealingPoisonBall,
+        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Resources.FirstOrDefault()!.CurrentValue, multiplierForPushDistance, projectileSize, this, isActiveHealingPoisonBall,
             isTargetPlayer, isTargetEnemy, isTargetAllies, isActiveWitheringPoison, isPushTarget, isActiveVoluminousBall, isPlayerInvisible, poisonBoneStack);
 
         poisonBallProjectile.MoveBallOnMaxDistance(point, isFast);

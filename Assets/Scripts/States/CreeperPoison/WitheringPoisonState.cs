@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class WitheringPoisonState : AbstractCharacterState
@@ -134,7 +135,7 @@ public class WitheringPoisonState : AbstractCharacterState
     {
         Debug.Log("WitheringPoison / TakeAwayMana");
         float takeAwayMana = _currentStacks * _baseValueTakeAwayMana;
-        _endValueTakeAwayMana = _characterState.Character.Stamina.CurrentValue * takeAwayMana;
+        _endValueTakeAwayMana = _characterState.Character.Resources.FirstOrDefault(r => r.Type == ResourceType.Mana)!.CurrentValue * takeAwayMana;
 
         if (_isActiveTalentBindingPoison)
         {
@@ -144,7 +145,7 @@ public class WitheringPoisonState : AbstractCharacterState
             }
         }
 
-        _characterState.Character.Stamina.ReductionCurrentValue(_endValueTakeAwayMana);
+        _characterState.Character.Resources.FirstOrDefault(r => r.Type == ResourceType.Mana)!.ReductionCurrentValue(_endValueTakeAwayMana);
     }
 
     private void ResetValues()

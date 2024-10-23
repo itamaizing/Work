@@ -27,8 +27,6 @@ public class BindingPoisonState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        Debug.Log($"BindingPoisonState / EnterState");
-
         _characterState = character;
 
         _skillManager = _characterState.Character.Abilities;
@@ -100,29 +98,20 @@ public class BindingPoisonState : AbstractCharacterState
     [TargetRpc]
     private void BlockingOrCancleingAbility()
     {
-        Debug.Log("BindingPoison / BlockingOrCancleingAbility");
-        Debug.Log($"BindingPoisonState / BlockingOrCancleingAbility / CharacterManager = {_skillManager}");
-
         _skillManager.SkillQueue.TryCancel(true);
-            Debug.Log($"BindingPoison / BlockingOrCancleingAbility / skillManager.TryCancel = {_skillManager.SkillQueue.TryCancel(true)}");
 
         if (!_skillManager.SkillQueue.TryCancel(true))
         {
-            Debug.Log("BindingPoison / BlockingOrCancleingAbility / TryCancel = false");
             _skillManager.SkillQueue.SkillAdded += OnSkillAdded;
-            Debug.Log($"BindingPoison / BlockingOrCancleingAbility / after SkillAdded += OnSkillAdded");
         }
         ExitState();
     }
 
     private void OnSkillAdded(Skill skill)
     {
-        Debug.Log("BindingPoison / OnSkillAdded Start");
-        Debug.Log($"BindingPoison / OnSkillAdded / CurrentSkill = {_skillManager.SkillQueue.CurrentSkill}");
         _skillManager.SkillQueue.TryCancel(true);
 
         _skillManager.SkillQueue.SkillAdded -= OnSkillAdded;
-        Debug.Log("BindingPoison / OnSkillAdded End");
     }
 
     private void ResetValues()

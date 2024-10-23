@@ -28,6 +28,7 @@ public class PoisonBallProjectile : Test_Projectile
     private int _currentCountBall;
     private int _poisonBoneStack;
     private int _playerLayer;
+
     #region FloatVariables
     private float _newDistancePush;
     private float _energyDad;
@@ -204,10 +205,11 @@ public class PoisonBallProjectile : Test_Projectile
         {
             Value = _skill.Buff.Damage.GetBuffedValue(_damage),
             Type = DamageType.Physical,
-            Range = AttackRangeType.RangeAttack,
+            PhysicAttackType = AttackRangeType.RangeAttack,
         };
 
         _target.Health.TryTakeDamage(ref _baseDamage, _skill);
+        _target.DamageTracker.AddDamage(_baseDamage);
 
         if (_isActiveWitheringPoison)
         {

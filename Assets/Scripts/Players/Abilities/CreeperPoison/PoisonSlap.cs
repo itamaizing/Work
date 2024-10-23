@@ -390,10 +390,11 @@ public class PoisonSlap : Skill
             {
                 Value = _baseDamage,
                 Type = DamageType.Physical,
-                Range = AttackRangeType.MeleeAttack
+                PhysicAttackType = AttackRangeType.MeleeAttack,
             };
 
             CmdApplyDamage(damage, target.gameObject);
+            target.DamageTracker.AddDamage(damage);
 
             if (target.CharacterState.CheckForState(States.PoisonBone) && _restorationOfGlands && _poisonBoneStack > 0)
             {
@@ -420,10 +421,11 @@ public class PoisonSlap : Skill
             {
                 Value = _baseDamage,
                 Type = DamageType.Physical,
-                Range = AttackRangeType.MeleeAttack
+                PhysicAttackType = AttackRangeType.MeleeAttack,
             };
 
             CmdApplyDamage(damage, target.gameObject);
+            target.DamageTracker.AddDamage(damage);
 
             PushTarget(target, _distancePush, _durationPush, _isPushTargetAllowed);
         }

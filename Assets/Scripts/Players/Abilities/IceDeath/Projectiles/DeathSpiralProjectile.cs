@@ -36,8 +36,8 @@ public class DeathSpiralProjectile : Projectiles
 		{
 			Value = _curDamage,
 			Type = DamageType.Magical,
-			Range = AttackRangeType.RangeAttack,
-		};
+            PhysicAttackType = AttackRangeType.RangeAttack,
+        };
 
 		startPos = transform.position;
 	}

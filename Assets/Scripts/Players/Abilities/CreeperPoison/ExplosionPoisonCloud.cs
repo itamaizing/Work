@@ -66,7 +66,6 @@ public class ExplosionPoisonCloud : Skill
         {
             Value = Buff.Damage.GetBuffedValue(_currentDamage),
             Type = DamageType.Physical,
-            Range = AttackRangeType.MeleeAttack
         };
 
         foreach (Character target in _enemies)
@@ -75,6 +74,7 @@ public class ExplosionPoisonCloud : Skill
             if (target != null)
             {
                 CmdApplyDamage(damage, target.gameObject);
+                target.DamageTracker.AddDamage(damage);
 
                 for (int i = 0; i < _currentStacksPoisonCloud; i++)
                 {

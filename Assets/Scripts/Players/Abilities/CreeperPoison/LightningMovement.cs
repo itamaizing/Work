@@ -407,7 +407,7 @@ public class LightningMovement : Skill
             {
                 Value = 0f,
                 Type = DamageType.Physical,
-                Range = AttackRangeType.MeleeAttack,
+                PhysicAttackType = AttackRangeType.MeleeAttack,
             };
 
             _lineStartImageForFirstLeap.SetSize(width, length, damage);
@@ -436,7 +436,7 @@ public class LightningMovement : Skill
             {
                 Value = 0f,
                 Type = DamageType.Physical,
-                Range = AttackRangeType.MeleeAttack,
+                PhysicAttackType = AttackRangeType.MeleeAttack,
             };
 
             _lineStartImageForSecondLeap.SetSize(width, length, damage);

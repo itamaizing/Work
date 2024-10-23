@@ -24,11 +24,4 @@ public class AbsotptionTalent : Talent
 		}
 	}
 
-	private void Update()
-	{
-		if(Input.GetKeyUp(KeyCode.R)) 
-		{
-			//Enter();
-		}
-	}
 }
