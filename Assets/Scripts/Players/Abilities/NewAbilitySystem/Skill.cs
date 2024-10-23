@@ -446,7 +446,7 @@ public abstract class Skill : NetworkBehaviour
         return target;
     }
 
-    protected List<Character> GetCloserTargets(Vector3 position, float radius, bool isCanTargetHimself = false)
+    public List<Character> GetCloserTargets(Vector3 position, float radius, bool isCanTargetHimself = false)
     {
         List<Character> targets = new List<Character>();
         Collider2D[] collider = Physics2D.OverlapCircleAll(position, radius, TargetsLayers);

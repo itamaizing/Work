@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 public class LightShield : AbstractCharacterState, IDamageable
@@ -9,6 +10,7 @@ public class LightShield : AbstractCharacterState, IDamageable
     private float _damageAbsorbed;
     private float _maxAbsorption;
     private float _duration;
+    private string _skillName;
     
     private bool _isBMTalentActive = false;
 
@@ -24,6 +26,7 @@ public class LightShield : AbstractCharacterState, IDamageable
         _duration = durationToExit;
         _damageAbsorbed = 0;
         _maxAbsorption = maxDamageAbsorbed;
+        _skillName = skillName;
         
         SearchTalent();
 
@@ -33,7 +36,6 @@ public class LightShield : AbstractCharacterState, IDamageable
     public override void UpdateState()
     {
         _duration -= Time.deltaTime;
-        
         Debug.Log(_duration);
         
         if (_duration <= 0 || _damageAbsorbed >= _maxAbsorption)
@@ -75,21 +77,17 @@ public class LightShield : AbstractCharacterState, IDamageable
     
     private void DamageEnemiesInRadius(float damage, DamageType type, Skill skill)
     {
-        if(!_isBMTalentActive) return;
-        
-        var enemyLayerMask = LayerMask.GetMask("Enemy");
-        
-        var colliders = Physics2D.OverlapCircleAll(_characterState.transform.position, 10f, enemyLayerMask);
-        
-        foreach (var item in colliders)
+        foreach (var obj in NetworkServer.spawned.Values)
         {
-            if (item.transform.TryGetComponent(out Character enemy))
-            {
-                var damageToTake = new Damage { Value = damage };
-                
-                enemy.Health.CmdTryTakeDamage(damageToTake, null);
-                enemy.GetComponent<Character>().DamageTracker.AddDamage(damageToTake);
-            }
+            if (!obj.TryGetComponent(out Character enemy)) continue;
+            
+            var distance = Vector3.Distance(_characterState.transform.position, enemy.transform.position); 
+            if (distance > 10f || distance <= 0.25f) continue;
+            
+            var damageToTake = new Damage { Value = damage };
+
+            enemy.Health.TryTakeDamage(ref damageToTake, null);
+            enemy.DamageTracker.AddDamage(damageToTake);
         }
     }
 

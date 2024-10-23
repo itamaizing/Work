@@ -258,8 +258,9 @@ public class PriestShield : Skill
 
         if (!TryPayCost(manaCostLight)) return;
 
-        var duration = _talentTiredSoulActive ? lightShieldDuration * TiredSoulEffectPercentage : lightShieldDuration;
-        var absorbDamage = _talentTiredSoulActive
+        var characterState = _target.GetComponent<CharacterState>();
+        var duration = _talentTiredSoulActive && characterState.CheckForState(States.TiredSoul) ? lightShieldDuration * TiredSoulEffectPercentage : lightShieldDuration;
+        var absorbDamage = _talentTiredSoulActive && characterState.CheckForState(States.TiredSoul)
             ? (absorbAmount + _absorbBonus) * TiredSoulEffectPercentage
             : absorbAmount + _absorbBonus;
         
@@ -267,7 +268,7 @@ public class PriestShield : Skill
         ApplyDarkMagicBoost();
         ApplyHealingBoost();
 
-        CmdAddDebaff(States.LightShield, States.TiredSoul, lightShieldDuration, duration, absorbDamage, _target.gameObject, name);
+        CmdAddDebaff(States.LightShield, States.TiredSoul, duration, tiredSoulDuration, absorbDamage, _target.gameObject, name);
         Debug.Log("Light Shield applied to " + _target.name);
     }
 
@@ -286,31 +287,43 @@ public class PriestShield : Skill
         float damageToExit, GameObject target, string skillName)
     {
         var characterState = target.GetComponent<CharacterState>();
-        
-        if (!_talentTiredSoulActive && characterState.CheckForState(States.TiredSoul))
+
+        if (!_talentTiredSoulActive)
         {
-            Debug.Log("Cannot apply Light Shield, target is tired and talent is inactive.");
-            return;
-        }
-        
-        if (_talentTiredSoulActive)
-        {
-            if (characterState.CheckForState(States.TiredSoul))
+            if (characterState.CheckForState(tiredState))
             {
-                if (characterState.CheckStateStacks(States.TiredSoul) >= 1)
-                {
-                    Debug.Log("TiredSoul has 1 or more stacks, exiting.");
-                    return;
-                }
+                Debug.Log("Cannot apply Light Shield, target already has TiredSoul and talent is inactive.");
+                return;
             }
             
-            characterState.AddState(lightState, duration, damageToExit, target, skillName); 
-            characterState.AddState(tiredState, tiredDuration, damageToExit, target, skillName); 
+            Debug.Log("Talent is inactive, applying LightShield and TiredSoul.");
+            characterState.AddState(lightState, duration, damageToExit, target, skillName);
+            characterState.AddState(tiredState, tiredDuration, damageToExit, target, skillName);
         }
         else
         {
-            characterState.AddState(lightState, duration, damageToExit, target, skillName);
-            characterState.AddState(tiredState, tiredDuration, damageToExit, target, skillName); 
+            if (characterState.CheckForState(tiredState))
+            {
+                int tiredSoulStacks = characterState.CheckStateStacks(tiredState);
+                
+                Debug.Log($"Talent is active. TiredSoul stacks: {tiredSoulStacks}");
+                
+                if (tiredSoulStacks >= 2)
+                {
+                    Debug.Log("TiredSoul has 2 or more stacks, exiting without applying LightShield.");
+                    return;
+                }
+                
+                Debug.Log("TiredSoul has less than 2 stacks, applying LightShield and TiredSoul.");
+                characterState.AddState(lightState, duration, damageToExit, target, skillName);
+                characterState.AddState(tiredState, tiredDuration, damageToExit, target, skillName);
+            }
+            else
+            {
+                Debug.Log("Talent is active, but target does not have TiredSoul. Applying LightShield and TiredSoul.");
+                characterState.AddState(lightState, duration, damageToExit, target, skillName);
+                characterState.AddState(tiredState, tiredDuration, damageToExit, target, skillName);
+            }
         }
     }
 
