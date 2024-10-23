@@ -41,6 +41,10 @@ public class ChainBlade_Scorpion : Skill
         }
     }
 
+    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+
+    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+
     private IEnumerator PullEnemy(GameObject enemy)
     {
         float distance = Vector2.Distance(transform.position, enemy.transform.position);

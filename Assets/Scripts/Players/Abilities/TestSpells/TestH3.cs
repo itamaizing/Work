@@ -13,6 +13,10 @@ public class TestH3 : Skill
 
     protected override bool IsCanCast { get => CheckCanCast(); }
 
+    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+
+    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+
     private bool CheckCanCast()
     {
         if (_target == null)

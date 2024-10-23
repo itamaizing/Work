@@ -10,6 +10,10 @@ public class ReversePolarity : Skill
 
     protected override bool IsCanCast => true;
 
+    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+
+    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+
     protected override IEnumerator PrepareJob()
     {
         yield break;

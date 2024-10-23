@@ -12,7 +12,7 @@ public class MoveComponent : NetworkBehaviour
 	public bool IsMoving = false;
 	public bool IsSelect = false;
 	
-	private Rigidbody2D _rigidbody;
+	private Rigidbody _rigidbody;
 
 	private Vector2 _offset = Vector2.zero;
 
@@ -30,7 +30,7 @@ public class MoveComponent : NetworkBehaviour
 		_offset = offset;
 	}
 
-	public void Initialize(float speed, Rigidbody2D rb , bool isHero = false)
+	public void Initialize(float speed, Rigidbody rb , bool isHero = false)
 	{
 		_defaultSpeed = speed;
 

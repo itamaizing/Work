@@ -94,7 +94,6 @@ public abstract class Skill : NetworkBehaviour
     protected Transform _tempTargetForDamage;
     protected Health _tempHPForDamage;
 
-    private readonly int _animCancled = Animator.StringToHash("Cancled");
     private Character _tempTarget;
     private int _currentChargers;
     private float _remainingCooldownTime;
@@ -255,7 +254,7 @@ public abstract class Skill : NetworkBehaviour
             }
 
             _tempTarget = null;
-            _hero.Animator.SetTrigger(_animCancled);
+            _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
 
             return true;
         }

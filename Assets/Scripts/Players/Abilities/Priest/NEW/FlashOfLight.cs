@@ -17,7 +17,11 @@ public class FlashOfLight : Skill
     private Character _target;
     
     protected override bool IsCanCast => IsCanCastCheck();
-    
+
+    protected override int AnimTriggerCastDelay => throw new NotImplementedException();
+
+    protected override int AnimTriggerCast => throw new NotImplementedException();
+
     public event Action OnModeChange;
     
     private void OnEnable()

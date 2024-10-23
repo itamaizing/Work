@@ -24,6 +24,10 @@ public class TestH2 : Skill
         }
     }
 
+    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+
+    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+
     protected override IEnumerator CastJob()
     {
         Damage damage = new Damage

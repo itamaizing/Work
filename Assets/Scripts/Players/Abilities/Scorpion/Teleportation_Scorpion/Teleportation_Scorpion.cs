@@ -38,6 +38,10 @@ public class Teleportation_Scorpion : Skill, ICanConsumeComboPoints
         }
     }
 
+    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+
+    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+
     protected void Start()
     {
         _minRadius = Radius;

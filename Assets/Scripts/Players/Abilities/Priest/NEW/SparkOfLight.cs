@@ -21,6 +21,10 @@ public class SparkOfLight : AutoAttackSkill
     
     public bool isLightMode = true;
 
+    protected override int AnimTriggerCastDelay => throw new NotImplementedException();
+
+    protected override int AnimTriggerCast => throw new NotImplementedException();
+
     public event Action OnModeChange;
     
     private void OnEnable()

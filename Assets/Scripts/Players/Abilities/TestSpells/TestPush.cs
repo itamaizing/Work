@@ -22,6 +22,10 @@ public class TestPush : Skill
         }
     }
 
+    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+
+    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+
     protected override IEnumerator CastJob()
     {
         float time = 3;
