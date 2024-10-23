@@ -64,10 +64,12 @@ public class UIMenuMainWindow : MonoBehaviour
 
     private void OnCharacterSelected(Character character)
     {
-        _charactersPanel.SetHero((HeroComponent)character);
-		SaveManager.Instance.SetHero((HeroComponent)character);
-		UpdateCharacterPanels();
-	}
+        if (character is not HeroComponent component) return;
+        
+        _charactersPanel.SetHero(component);
+        SaveManager.Instance.SetHero(component);
+        UpdateCharacterPanels();
+    }
 
     public void SetHero(HeroComponent hero)
     {
