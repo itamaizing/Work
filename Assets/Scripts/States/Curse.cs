@@ -8,6 +8,7 @@ public class Curse : AbstractCharacterState
 	private float _durationToExit = 0;
 
 	public override States State => States.Curse;
+	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 	public override StateType Type => StateType.Magic;
 	public override List<StatusEffect> Effects => throw new System.NotImplementedException();
 

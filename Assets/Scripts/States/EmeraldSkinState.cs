@@ -17,6 +17,7 @@ public class EmeraldSkinState : AbstractCharacterState
     private List<StatusEffect> _effects = new();
 
     public override States State => States.EmeraldSkin;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 

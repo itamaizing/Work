@@ -1012,7 +1012,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _isTalentSpell: 1
-  _isSkillActive: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: cfe5dc2162037314eb434ca77d72908b, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
@@ -1140,7 +1140,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: PhyscialDamagePriestShieldTalent
-    IsOpen: 1
+    IsOpen: 0
     Description: a
     Icon: {fileID: 21300000, guid: 09e359aa32a9ff04ea7bbdf596fa2faa, type: 3}
   character: {fileID: 7988306871063235719}
@@ -1162,7 +1162,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: SpellActivatePriestShieldTalent
-    IsOpen: 1
+    IsOpen: 0
     Description: a
     Icon: {fileID: 21300000, guid: ae29ded27bedede4eaa0a76e40eeffe8, type: 3}
   character: {fileID: 7988306871063235719}
@@ -1184,7 +1184,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: HealPriestShieldTalent
-    IsOpen: 1
+    IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: d98277b1f14b3c84e906db928f1d5fff, type: 3}
   character: {fileID: 7988306871063235719}
@@ -1206,7 +1206,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: DarkMagicDamagePriestShieldTalent
-    IsOpen: 1
+    IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: e412ffe984e989d42b1b73851bd11bb4, type: 3}
   character: {fileID: 7988306871063235719}
@@ -1228,7 +1228,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: LowHealthSparkOfLightTalent
-    IsOpen: 1
+    IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: d34409cc09b236d4da56a95d24acd358, type: 3}
   character: {fileID: 7988306871063235719}
@@ -1250,7 +1250,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: HealthBoostSparkOfLightTalent
-    IsOpen: 1
+    IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: b7ba9882ed5f32f40a9cd054221db12c, type: 3}
   character: {fileID: 7988306871063235719}
@@ -1272,7 +1272,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: EmeraldSkinActiveTalent
-    IsOpen: 1
+    IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: 0df2be162515e5f45a7803b8871e7725, type: 3}
   character: {fileID: 7988306871063235719}
@@ -1295,7 +1295,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: EmeraldLightMagicBoostTalent
-    IsOpen: 1
+    IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: 9417efc47083f4a1598c1966a6345cdb, type: 3}
   character: {fileID: 7988306871063235719}
@@ -1317,7 +1317,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: ManaRestoreBoostTalent
-    IsOpen: 1
+    IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: 18a436a2dc16eb24a9f5c7c559b3906d, type: 3}
   character: {fileID: 7988306871063235719}
@@ -1339,7 +1339,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: CooldownReduceFlashOfLighttalent
-    IsOpen: 1
+    IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: 20af4d25b37c89a4ab20f317d1c7cf17, type: 3}
   character: {fileID: 7988306871063235719}
@@ -1361,7 +1361,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: HealingBuffTalent
-    IsOpen: 1
+    IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: c958be7c2aec0f04f9ee64f294e9848b, type: 3}
   character: {fileID: 7988306871063235719}

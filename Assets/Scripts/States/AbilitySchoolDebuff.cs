@@ -13,6 +13,7 @@ public class AbilitySchoolDebuff : AbstractCharacterState
 
 	public override States State => States.SchoolDebuff;
 	public override StateType Type => StateType.Immaterial;
+	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 	public override List<StatusEffect> Effects => _effects;
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)

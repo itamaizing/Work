@@ -12,6 +12,7 @@ public class StunnedState : AbstractCharacterState
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.Ability };
 
 	public override States State => States.Stun;
+	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 	public override StateType Type => StateType.Physical;
 	public override List<StatusEffect> Effects => _effects;
 

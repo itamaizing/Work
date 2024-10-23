@@ -8,6 +8,7 @@ public class NorthernerEndurance : AbstractCharacterState
 	private float _durationToExit;
 	private float _damageToExit;
 
+	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 	public override States State => States.NorthernerEndurance;
 	public override StateType Type => StateType.Magic;
 	public override List<StatusEffect> Effects => throw new System.NotImplementedException();

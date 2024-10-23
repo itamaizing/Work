@@ -12,6 +12,7 @@ public class DarkShield : AbstractCharacterState
     private Coroutine _damageCoroutine;
 
     public override States State => States.DarkShield;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 

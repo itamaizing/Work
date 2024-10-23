@@ -10,7 +10,7 @@ public class BleedingDebuff : AbstractCharacterState
     public override States State => States.Bleeding;
     
     public override StateType Type => StateType.Physical;
-    
+    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => throw new System.NotImplementedException();
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)

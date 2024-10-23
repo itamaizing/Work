@@ -14,6 +14,7 @@ public abstract class AbstractCharacterState
 
 	public abstract States State { get; }
 	public abstract StateType Type { get; }
+	public abstract BaffDebaff BaffDebaff { get; }
 	public abstract List<StatusEffect> Effects { get; }
 
 	public abstract void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName);
@@ -30,6 +31,8 @@ public class DefaultState : AbstractCharacterState
 	public override StateType Type => StateType.Physical;
 
 	public override List<StatusEffect> Effects => _effects;
+
+	public override BaffDebaff BaffDebaff => BaffDebaff;
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
@@ -537,4 +540,10 @@ public enum States
 	EmeraldSkin,
 	SparkTalentHealthBuff,
 	DefenseReduction
+}
+
+public enum BaffDebaff
+{
+	Baff,
+	Debaff,
 }

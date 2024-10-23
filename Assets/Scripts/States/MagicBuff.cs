@@ -10,7 +10,7 @@ public class MagicBuff : AbstractCharacterState, IDamageable
 	private float _shieldCapacity;
 
 	public event Action<float, DamageType, Skill> DamageTaken;
-
+	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 	public override States State => States.MagicBuff;
 	public override StateType Type => StateType.Magic;
 	public override List<StatusEffect> Effects => throw new System.NotImplementedException();

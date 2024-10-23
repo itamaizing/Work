@@ -7,7 +7,7 @@ public class Knockdown : AbstractCharacterState
     private float _baseDuration;
     private float _duration;
     public override States State => States.Knockdown;
-
+    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override StateType Type => StateType.Physical;
 
     public override List<StatusEffect> Effects => throw new System.NotImplementedException();

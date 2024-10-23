@@ -26,6 +26,7 @@ public class Health : Resource, IDamageable, IHealingable
     public event Action<float , Skill , string> HealTaked;
     public event Action<float, DamageType, Skill> DamageTaken;
     public event Action Died;
+    public event Action<float, float> OnShieldValuesChanged;
 
     public override void Initialize(float health, float hpRegen, float hpRegenDelay, CharacterData data)
     {
@@ -170,6 +171,18 @@ public class Health : Resource, IDamageable, IHealingable
             _shields.RemoveAt(i);
             i--;
         }
+    }
+
+    public void UpdateShieldValues(float absorbed, float maxAbsorption)
+    {
+        if (isServer)
+        ClientRpcUpdateShieldValues(absorbed, maxAbsorption);
+    }
+
+    [ClientRpc]
+    public void ClientRpcUpdateShieldValues(float absorbed, float maxAbsorption)
+    {
+        OnShieldValuesChanged?.Invoke(absorbed, maxAbsorption);
     }
 
     [ClientRpc]

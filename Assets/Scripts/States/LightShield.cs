@@ -9,7 +9,7 @@ public class LightShield : AbstractCharacterState, IDamageable
     private float _duration;
 
     public event Action<float, DamageType, Skill> DamageTaken;
-
+    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.LightShield;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
@@ -20,6 +20,8 @@ public class LightShield : AbstractCharacterState, IDamageable
         _duration = durationToExit;
         _maxAbsorption = damageToExit;
         _damageAbsorbed = 0;
+
+        UpdateShieldValues();
     }
 
     public override void UpdateState()
@@ -35,6 +37,7 @@ public class LightShield : AbstractCharacterState, IDamageable
     {
         Debug.Log("LightShield state exited.");
         _characterState.RemoveState(this);
+        ResetCharacterShieldValues();
     }
 
     public override bool Stack(float time)
@@ -53,6 +56,8 @@ public class LightShield : AbstractCharacterState, IDamageable
         _characterState.GetComponent<Character>().DamageTracker.AddDamage(damage);
         DamageTaken?.Invoke(damageToAbsorb, damage.Type, skill);
 
+        UpdateShieldValues();
+
         if (_damageAbsorbed >= _maxAbsorption)
         {
             ExitState();
@@ -62,7 +67,20 @@ public class LightShield : AbstractCharacterState, IDamageable
         return damage.Value == 0;
     }
 
-	public void ShowPhantomValue(Damage phantomValue)
+    public void UpdateShieldValues()
+    {
+        if (_characterState.Character.Health != null)
+        {
+            _characterState.Character.Health.UpdateShieldValues(_damageAbsorbed, _maxAbsorption);
+        }
+    }
+
+    private void ResetCharacterShieldValues()
+    {
+        _characterState.Character.Health.UpdateShieldValues(0, 0);
+    }
+
+    public void ShowPhantomValue(Damage phantomValue)
 	{
 		throw new NotImplementedException();
 	}

@@ -14,6 +14,7 @@ public class Cooling : AbstractCharacterState
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.MoveSpeed, StatusEffect.AbilitySpeed };
 
 	public override States State => States.Cooling;
+	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 	public override StateType Type => StateType.Physical;
 	public override List<StatusEffect> Effects => _effects;
 

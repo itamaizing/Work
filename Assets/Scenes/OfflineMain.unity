@@ -1400,6 +1400,14 @@ PrefabInstance:
       propertyPath: _data.Icon
       value: 
       objectReference: {fileID: 21300000, guid: 9ea72647c24be493ba6f15a9cd2a24ae, type: 3}
+    - target: {fileID: 208131440327593519, guid: 9b33d14bd9379d449ad38a13ab6ddde6, type: 3}
+      propertyPath: m_FillAmount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 495873336624385818, guid: 9b33d14bd9379d449ad38a13ab6ddde6, type: 3}
+      propertyPath: _shieldBar
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 721042721531735623, guid: 9b33d14bd9379d449ad38a13ab6ddde6, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -1415,6 +1423,10 @@ PrefabInstance:
     - target: {fileID: 2216220393511584274, guid: 9b33d14bd9379d449ad38a13ab6ddde6, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2999980899504989128, guid: 9b33d14bd9379d449ad38a13ab6ddde6, type: 3}
+      propertyPath: m_Value
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3401760737656553936, guid: 9b33d14bd9379d449ad38a13ab6ddde6, type: 3}
       propertyPath: m_RootOrder

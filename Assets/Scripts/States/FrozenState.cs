@@ -12,6 +12,7 @@ public class FrozenState : AbstractCharacterState
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.Ability };
 
 	public override States State => States.Frozen;
+	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 	public override StateType Type => StateType.Magic;
 	public override List<StatusEffect> Effects => _effects;
 

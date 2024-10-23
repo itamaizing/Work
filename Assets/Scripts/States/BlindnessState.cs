@@ -13,6 +13,7 @@ public class BlindnessState : AbstractCharacterState
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
 
 	public override States State => States.Blind;
+	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 	public override StateType Type => StateType.Physical;
 	public override List<StatusEffect> Effects => _effects;
 
