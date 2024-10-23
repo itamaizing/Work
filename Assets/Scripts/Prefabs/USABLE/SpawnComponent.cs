@@ -73,7 +73,7 @@ public class SpawnComponent : NetworkBehaviour
         minion.Destroyed += OnUnitDestroyed;
         minion.Intercepted += OnUnitDestroyed;
 
-        //ClientRpcUnitAdded(minion.gameObject);
+        ClientRpcUnitAdded(minion.gameObject);
     }
 
     private void OnUnitDestroyed(MinionComponent minion)
