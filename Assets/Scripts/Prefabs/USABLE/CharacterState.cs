@@ -525,17 +525,18 @@ public class CharacterState : NetworkBehaviour
 	{
 		if (invinsible) return;
 
-		Debug.Log(state);
+		//Debug.Log(state);
 
 		if (CheckForState(state))
 		{
 			for (int i = 0; i < currentStates.Count; i++)
 			{
-				if (currentStates[i].State == state)
+                if (currentStates[i].State == state)
 				{
-					if (currentStates[i].CurrentStacksCount < currentStates[i].MaxStacksCount)
+                    if (currentStates[i].CurrentStacksCount < currentStates[i].MaxStacksCount)
 					{
 						currentStates[i].Stack(duration);
+
 						_stateIcons.ActivateIco(state, duration, 1, true);
 					}
 
@@ -544,8 +545,8 @@ public class CharacterState : NetworkBehaviour
 			}
 		}
 		else
-		{
-			CreateState(enumToState[state], state, duration, damageToExit, personWhoShooted, skillName, false);
+        {
+            CreateState(enumToState[state], state, duration, damageToExit, personWhoShooted, skillName, false);
 
 			if (enumToState[state] is IDamageable damageableShield)
 			{

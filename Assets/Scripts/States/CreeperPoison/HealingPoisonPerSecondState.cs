@@ -8,7 +8,6 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
     //private SurgeTreatment _surgeTreatment;
     public bool turnOff = false;
 
-    private int _currentStack = 0;
     private int _maxStack = 6;
 
     private float _baseHealingValue;
@@ -33,6 +32,8 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
         Debug.Log("HealingPoisonPerSecond / EnterState");
         Debug.Log("HealingPoisonPerSecond / EveryState = NewState");
 
+        MaxStacksCount = _maxStack;
+
         _characterState = character;
         _player = personWhoMadeBuff;
 
@@ -47,7 +48,7 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
         _timeBetweenHeal -= Time.deltaTime;
         if (_timeBetweenHeal <= 0)
         {
-            if (_currentStack < _maxStack)
+            if (CurrentStacksCount < _maxStack)
             {
                 MakeHeal();
             }
@@ -72,7 +73,18 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        Debug.Log("HealingPoisonPerSecond / Stack");
+        //if (CurrentStacksCount < MaxStacksCount)
+        //{
+        //    Debug.Log("HealingPoisonPerSecond / Stack / if");
+        //    CurrentStacksCount++;
+        //    _duration = _baseDuration;
+        //    return true;
+        //}
+        //else
+        //{
+        //    _duration = _baseDuration;
+        //    return true;
+        //}
         return false;
     }
 

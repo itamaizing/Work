@@ -11,7 +11,6 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
     private DamageType _damageType;
     private AttackRangeType _attackRangeType;
 
-    private int _currentStacks = 0;
     private int _maxStacks = 8;
 
     private float _baseEvasionValue = 0.03f;
@@ -37,7 +36,7 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
 
-    public int CurrentStacks { get => _currentStacks; set => _currentStacks = value; }
+    public int CurrentStacks { get => CurrentStacksCount; set => CurrentStacksCount = value; }
     public float StacksDuration { get => _duration; }
 
     public event Action<float, DamageType, Skill> DamageTaken;
@@ -52,6 +51,8 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
         Debug.Log("EmpathicPoison / EnterState");
         _characterState = character;
         _player = personWhoMadeBuff;
+
+        MaxStacksCount = _maxStacks;
 
         _timeBeforeReductionDebuff = _startTimeBeforeReductionDebuff;
 
@@ -70,7 +71,7 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
         _duration = durationToExit;
         _baseDuration = durationToExit;
 
-        if (_currentStacks < _maxStacks)
+        if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks();
         }
@@ -84,7 +85,7 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
       //  Debug.Log("EmpathicPoison / TryTakeDamage");
-        if (_currentStacks > 0)
+        if (CurrentStacksCount > 0)
         {
           //  Debug.Log("EmpathicPoison / if (currentStacks > 0) currentStacks == " + _currentStacks);
             switch (_damageType)
@@ -146,7 +147,7 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
             ExitState();
         }
 
-        if (_currentStacks <= 0)
+        if (CurrentStacksCount <= 0)
         {
             ExitState();
         }
@@ -176,7 +177,7 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
 
     public override bool Stack(float time)
     {
-        if (_currentStacks < _maxStacks)
+        if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks();
             return true;
@@ -190,15 +191,15 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
 
     private void AddStacks()
     {
-        _currentStacks++;
+        CurrentStacksCount++;
         _duration = _baseDuration;
     }
 
     private void ReducingChanceOfHittingAtEnemy()
     {
-        if (_currentStacks < _maxStacks)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            _increasedEvasionValue = _baseEvasionValue * _currentStacks;
+            _increasedEvasionValue = _baseEvasionValue * CurrentStacksCount;
             _evadeMeleePhysicalDamage += _increasedEvasionValue;
             _evadeRangePhysicalDamage += _increasedEvasionValue;
         }
@@ -219,7 +220,7 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
 
     private void ResetValues()
     {
-        _currentStacks = 0;
+        CurrentStacksCount = 0;
         _baseDuration = 0;
         _duration = 0;
 

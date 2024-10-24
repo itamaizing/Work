@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class HeatedGlandsState : AbstractCharacterState
 {
-    private int _currentStacks;
     private int _maxStacks = 10;
 
     private float _duration;
@@ -24,6 +23,8 @@ public class HeatedGlandsState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
+        MaxStacksCount = _maxStacks;
+
         _characterState = character;
         _player = personWhoMadeBuff;
         _playerMana = _player.TryGetResource(ResourceType.Mana);
@@ -33,7 +34,7 @@ public class HeatedGlandsState : AbstractCharacterState
 
         _maxManaPlayer = _playerMana.MaxValue;
 
-        if (_currentStacks < _maxStacks)
+        if (CurrentStacksCount < MaxStacksCount)
         {
             AddStack();
         }
@@ -53,7 +54,7 @@ public class HeatedGlandsState : AbstractCharacterState
     {
         _playerMana.ChangedMaxValue(-_newMaxManaPlayer);
 
-        _currentStacks = 0;
+        CurrentStacksCount = 0;
         _newMaxManaPlayer = 0;
 
         _characterState.RemoveState(this);
@@ -61,7 +62,7 @@ public class HeatedGlandsState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        if (_currentStacks < _maxStacks)
+        if (CurrentStacksCount < MaxStacksCount)
         {
             AddStack();
             return true;
@@ -75,7 +76,7 @@ public class HeatedGlandsState : AbstractCharacterState
 
     private void AddStack()
     {
-        _currentStacks++;
+        CurrentStacksCount++;
         _duration = _baseDuration;
         IncreasingAmountManaValue();
     }

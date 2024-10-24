@@ -12,7 +12,6 @@ public class WitheringPoisonState : AbstractCharacterState
     private BindingPoison _bindingPoison;
     private Character _player;
 
-    private int _currentStacks = 0;
     private int _maxStacks = 3;
 
     private float _timeBetweenTakeAwayMana;
@@ -27,7 +26,7 @@ public class WitheringPoisonState : AbstractCharacterState
 
     private bool _isActiveTalentBindingPoison = false;
 
-    public int CurrentStacks { get => _currentStacks; set => _currentStacks = value; }
+    public int CurrentStacks { get => CurrentStacksCount; set => CurrentStacksCount = value; }
     public float StacksDuration { get => _duration; }
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
@@ -40,8 +39,9 @@ public class WitheringPoisonState : AbstractCharacterState
     {
         Debug.Log("Withering Enter State");
 
-        _characterState = character;
+        MaxStacksCount = _maxStacks;
 
+        _characterState = character;
 
         _duration = durationToExit;
         _baseDuration = durationToExit;
@@ -68,7 +68,7 @@ public class WitheringPoisonState : AbstractCharacterState
             }
         }
 
-        if (_currentStacks < _maxStacks)
+        if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks();
         }
@@ -83,7 +83,7 @@ public class WitheringPoisonState : AbstractCharacterState
             _timeBetweenTakeAwayMana = _startTimeBetweenTakeAwayMana;
         }
 
-        if (_currentStacks <= 0)
+        if (CurrentStacksCount <= 0)
         {
             ExitState();
         }
@@ -104,7 +104,7 @@ public class WitheringPoisonState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        if (_currentStacks < _maxStacks)
+        if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks();
             return true;
@@ -118,9 +118,9 @@ public class WitheringPoisonState : AbstractCharacterState
 
     public void AddStacks()
     {
-        if (_currentStacks < _maxStacks)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            _currentStacks++;
+            CurrentStacksCount++;
             //Debug.Log("if / CurrentStackPoisonBone in AddStacks == " + _currentStacks);
             _duration = _baseDuration;
         }
@@ -134,7 +134,7 @@ public class WitheringPoisonState : AbstractCharacterState
     private void TakeAwayMana()
     {
         Debug.Log("WitheringPoison / TakeAwayMana");
-        float takeAwayMana = _currentStacks * _baseValueTakeAwayMana;
+        float takeAwayMana = CurrentStacksCount * _baseValueTakeAwayMana;
         _endValueTakeAwayMana = _characterState.Character.Resources.FirstOrDefault(r => r.Type == ResourceType.Mana)!.CurrentValue * takeAwayMana;
 
         if (_isActiveTalentBindingPoison)
@@ -150,7 +150,7 @@ public class WitheringPoisonState : AbstractCharacterState
 
     private void ResetValues()
     {
-        _currentStacks = 0;
+        CurrentStacksCount = 0;
         _baseDuration = 0;
         _duration = 0;
         _endValueTakeAwayMana = 0;

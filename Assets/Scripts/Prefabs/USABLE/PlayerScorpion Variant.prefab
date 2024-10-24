@@ -432,6 +432,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 51519140f6e8bfd40b0a056b10d4703a, type: 3}
     - target: {fileID: 8468544467696250796, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+      propertyPath: rb
+      value: 
+      objectReference: {fileID: 1893061623834370162}
+    - target: {fileID: 8468544467696250796, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+      propertyPath: _collider
+      value: 
+      objectReference: {fileID: 1504687001108418674}
+    - target: {fileID: 8468544467696250796, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
       propertyPath: _abilities
       value: 
       objectReference: {fileID: 5129516513260827569}
@@ -507,6 +515,16 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 8114492155057300791}
   m_SourcePrefab: {fileID: 100100000, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+--- !u!58 &1504687001108418674 stripped
+CircleCollider2D:
+  m_CorrespondingSourceObject: {fileID: 4218118007188876841, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+  m_PrefabInstance: {fileID: 3344058102438493787}
+  m_PrefabAsset: {fileID: 0}
+--- !u!50 &1893061623834370162 stripped
+Rigidbody2D:
+  m_CorrespondingSourceObject: {fileID: 3759936847054020137, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+  m_PrefabInstance: {fileID: 3344058102438493787}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2693168752211098519 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 795014623008228812, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
@@ -544,6 +562,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _resourceType: 0
+  _regenerationDelay: 0
   _comboBar: {fileID: 8721276541738851717}
 --- !u!1 &4310051491449181499 stripped
 GameObject:
@@ -565,15 +584,19 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: c41e05ae8c15c48499aa896fb305ad06, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 1.1
+  _damageValue: 9
   _abilitySchool: 6
   _abilityForm: 2
   _damageType: 0
   _attackRangeType: 0
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -596,9 +619,9 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _attackZoneSize: 0
   _attackSpeed: 1
+  _chargeAttackDelay: 0
   _playerLinks: {fileID: 6624279876201255415}
   _comboCounter: {fileID: 2003327244310208542}
-  _damageValue: 9
 --- !u!114 &5292920839251346238
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -614,15 +637,19 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: c86ba2dc4b3fc8a4fbb00ca788a0822c, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 1.3
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -645,6 +672,7 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _attackZoneSize: 0
   _attackSpeed: 1
+  _chargeAttackDelay: 0
   _playerLinks: {fileID: 0}
   _pool: {fileID: 0}
   _comboCounter: {fileID: 2003327244310208542}
@@ -667,6 +695,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 674d1ee282701154a88a87e00fa5f772, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
@@ -674,10 +704,12 @@ MonoBehaviour:
     resourceCost: 20
   _cooldownTime: 0
   _castDeley: 1.2
+  _damageValue: 0
   _abilitySchool: 6
   _abilityForm: 2
   _damageType: 0
   _attackRangeType: 0
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -716,15 +748,19 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: f954632b892f43143bbee3c9ddaa45aa, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0.25
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -745,6 +781,8 @@ MonoBehaviour:
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
+  _minDamage: 3
+  _maxDamage: 5
   _playerLinks: {fileID: 6624279876201255415}
   _playerIdentity: {fileID: 5868368874506747378}
   _range: 0
@@ -765,15 +803,19 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: dfeae01f5016d594abbb890b8c058c58, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
+  _damageValue: 0
   _abilitySchool: 2
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -822,15 +864,19 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 4ac214b92b88f1f43b4b3f39e43659fd, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0.1
+  _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -856,10 +902,10 @@ MonoBehaviour:
   _minRadius: 0
   _baseManaCost: 20
   _manaCostPerTile: 5
-  _offset: 2.1
   _layerMask:
     serializedVersion: 2
     m_Bits: 896
+  _offset: 2.1
   consumeCombo_Scorpion: {fileID: 7735291714700427697}
   <Notifier>k__BackingField: {fileID: 7735291714700427697}
 --- !u!114 &7735291714700427697
@@ -877,15 +923,19 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: b328702add621d74aa0b38841fc59c46, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
+  _damageValue: 0
   _abilitySchool: 7
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -946,9 +996,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22ad95934c7e55b4b8afeb7c627a8f71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _circle: {fileID: 4965506185713127239}
   _areaPref: {fileID: 1574982521674352815, guid: 790fb3857b30c2b4fad4375343a84fad, type: 3}
+  _damageZonePref: {fileID: 0}
   _line: {fileID: 11400000, guid: 7faf4d32cfcc4f54d967e4d01a0c4b65, type: 2}
+  _colorForAllies: {r: 0, g: 1, b: 0, a: 1}
+  _colorForEnemies: {r: 1, g: 0, b: 0, a: 1}
   _colorForEnd: {r: 1, g: 0, b: 0, a: 1}
   _colorForStart: {r: 0.176651, g: 1, b: 0, a: 1}
 --- !u!114 &2525180634462433127
@@ -997,6 +1053,7 @@ MonoBehaviour:
   - {fileID: 7735291714700427697}
   _hero: {fileID: 6624279876201255415}
   _talentSystem: {fileID: 8114492155057300791}
+  _skillRenderer: {fileID: 0}
 --- !u!114 &8114492155057300791
 MonoBehaviour:
   m_ObjectHideFlags: 0

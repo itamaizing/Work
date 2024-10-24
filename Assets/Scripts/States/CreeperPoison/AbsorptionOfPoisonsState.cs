@@ -7,8 +7,6 @@ public class AbsorptionOfPoisonsState : AbstractCharacterState
 {
     private Character _player;
 
-    private int _currentStack = 1;
-
     private float _maxHealth;
     private float _baseHealthIncrease = 0.1f;
     private float _increasedHealth;
@@ -49,7 +47,7 @@ public class AbsorptionOfPoisonsState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        _currentStack++;
+        CurrentStacksCount++;
         _duration = _baseDuration;
         IncreaseHealth();
         return true;
@@ -67,7 +65,7 @@ public class AbsorptionOfPoisonsState : AbstractCharacterState
     private void IncreaseHealth()
     {
         Debug.Log("IncreaseHealth");
-        float increasingValue = _currentStack * _baseHealthIncrease;
+        float increasingValue = CurrentStacksCount * _baseHealthIncrease;
         Debug.Log("IncreaseHealth / increasingValue = " + increasingValue);
         _increasedHealth = _maxHealth * increasingValue;
         Debug.Log("IncreaseHealth / _increasedHealth = " + _increasedHealth);
@@ -79,7 +77,7 @@ public class AbsorptionOfPoisonsState : AbstractCharacterState
     private void ResetValues()
     {
         _allIncreasedHealth = 0;
-        _currentStack = 0;
+        CurrentStacksCount = 0;
         _duration = 0;
         _baseHealthIncrease = 0.1f;
         _increasedHealth = 0;

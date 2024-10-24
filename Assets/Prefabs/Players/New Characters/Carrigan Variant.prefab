@@ -700,6 +700,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 765319b3012015244871f2ff2dd5d443, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
@@ -735,6 +737,7 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _attackZoneSize: 2.5
   _attackSpeed: 1.2
+  _chargeAttackDelay: 0
   _player: {fileID: 4816563771718579521}
   _basePsionicEnergy: {fileID: 7144085950291812728}
   _attackingPsionicEnergy: {fileID: 6634476114892092548}
@@ -754,6 +757,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 4677a70ef508b8640afed4026d9df6ba, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
@@ -789,6 +794,7 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _attackZoneSize: 2.5
   _attackSpeed: 1.4
+  _chargeAttackDelay: 0
   _player: {fileID: 4816563771718579521}
   _basePsionicEnergy: {fileID: 7144085950291812728}
   _attackingPsionicEnergy: {fileID: 6634476114892092548}
@@ -808,6 +814,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: ca5ff545a29724646a72801386834fcd, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
@@ -858,6 +866,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 64adb39c9aeb55842b2c329cfc3052e3, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
@@ -909,6 +919,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 557d21df99e93d645ab43f6a3cc1a296, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []

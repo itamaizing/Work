@@ -9,7 +9,6 @@ public class HealingPoisonCloudState : AbstractCharacterState
     //private List<Skill> _skills = new();
     //private List<Talent> _talents = new();
 
-    private int _currentStacks = 0;
     private int _maxStacks = 5;
     private float _radiusCloud = 3.5f;
 
@@ -41,7 +40,9 @@ public class HealingPoisonCloudState : AbstractCharacterState
         _duration = durationToExit;
         _baseDuration = durationToExit;
 
-        if (_currentStacks < _maxStacks)
+        MaxStacksCount = _maxStacks;
+
+        if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks();
         }
@@ -80,7 +81,7 @@ public class HealingPoisonCloudState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        if (_currentStacks < _maxStacks)
+        if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks();
             return true;
@@ -94,9 +95,9 @@ public class HealingPoisonCloudState : AbstractCharacterState
 
     public void AddStacks()
     {
-        if (_currentStacks < _maxStacks)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            _currentStacks++;
+            CurrentStacksCount++;
             _duration = _baseDuration;
             //Debug.Log("if / CurrentStackPoisonCloud in AddStacks == " + _currentStacks); 
         }
@@ -125,7 +126,7 @@ public class HealingPoisonCloudState : AbstractCharacterState
 
     private void ApplyHealing(HeroComponent targetHealth)
     {
-        _increasedHeal = _baseHeal * _currentStacks;
+        _increasedHeal = _baseHeal * CurrentStacksCount;
         _endHeal = targetHealth.Health.MaxValue * _increasedHeal;
         Heal heal = new Heal
         {
@@ -138,7 +139,7 @@ public class HealingPoisonCloudState : AbstractCharacterState
 
     private void ResetValues()
     {
-        _currentStacks = 0;
+        CurrentStacksCount = 0;
         _baseDuration = 0;
         _duration = 0;
         _endHeal = 0;

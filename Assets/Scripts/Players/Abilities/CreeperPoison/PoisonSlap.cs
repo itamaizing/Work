@@ -116,9 +116,10 @@ public class PoisonSlap : Skill
                 {
                     _currentTarget = GetRaycastTarget();
 
-                    _firstMousePosition = GetMousePoint();
                     if (_currentTarget != null)
                     {
+
+                        _firstMousePosition = _currentTarget.transform.position;
                         CreateArrowsParallelToPlayer();
                         StopAutoDraw();
                     }
@@ -158,7 +159,6 @@ public class PoisonSlap : Skill
         else
         {
             _castDeley = _baseTimeCast;
-            yield return StartCastDeleyCoroutine();
 
             ChooseDirectionPush(_currentTarget);
 
@@ -356,11 +356,11 @@ public class PoisonSlap : Skill
         float _timeCastFromCreeperStrike = _baseTimeCast * _creeperStrikeCastSpeedMultiplier;
 
         _castDeley = _timeCastFromCreeperStrike;
-        yield return StartCastDeleyCoroutine();
 
         ChooseDirectionPush(_currentTarget);
 
         DamageDeal(_currentTarget);
+        yield return null;
     }
 
     private IEnumerator CastSpeedFromLightningStrikes()
@@ -370,11 +370,12 @@ public class PoisonSlap : Skill
         float _timeCastFromLightningStrikes = _baseTimeCast * _lightningStrikesCastSpeedMultiplier;
 
         _castDeley = _timeCastFromLightningStrikes;
-        yield return StartCastDeleyCoroutine();
 
         ChooseDirectionPush(_currentTarget);
 
         DamageDeal(_currentTarget);
+
+        yield return null;
     }
 
     #endregion

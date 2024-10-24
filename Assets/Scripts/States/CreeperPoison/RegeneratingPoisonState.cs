@@ -11,7 +11,6 @@ public class RegeneratingPoisonState : AbstractCharacterState
 
     private Character _playerWithTalent;
 
-    private int _currentStacks = 0;
     private int _maxStacks = 5;
 
     private float _baseHealingValue = 1.0f;
@@ -33,6 +32,8 @@ public class RegeneratingPoisonState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
+        MaxStacksCount = _maxStacks;
+
         _characterState = character;
         _playerWithTalent = personWhoMadeBuff;
 
@@ -60,7 +61,7 @@ public class RegeneratingPoisonState : AbstractCharacterState
             }
         }
 
-        if (_currentStacks < _maxStacks)
+        if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks();
         }
@@ -91,7 +92,7 @@ public class RegeneratingPoisonState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        if (_currentStacks < _maxStacks)
+        if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks();
             return true;
@@ -105,15 +106,15 @@ public class RegeneratingPoisonState : AbstractCharacterState
 
     public void AddStacks()
     {
-        if (_currentStacks < _maxStacks)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            _currentStacks++;
-            Debug.Log("if / CurrentStackHealingPoison in AddStacks == " + _currentStacks);
+            CurrentStacksCount++;
+            Debug.Log("if / CurrentStackHealingPoison in AddStacks == " + CurrentStacksCount);
             _duration = _baseDuration;
         }
         else
         {
-            Debug.Log("else / CurrentStackHealingPoison in AddStacks == " + _currentStacks);
+            Debug.Log("else / CurrentStackHealingPoison in AddStacks == " + CurrentStacksCount);
             _duration = _baseDuration;
         }
     }
@@ -121,7 +122,7 @@ public class RegeneratingPoisonState : AbstractCharacterState
     private void MakeHeal()
     {
         Debug.Log("RegenerationPoison / MakeHeal");
-        _endHealingValue = _currentStacks * _baseHealingValue;
+        _endHealingValue = CurrentStacksCount * _baseHealingValue;
 
         Heal heal = new Heal
         {
@@ -141,7 +142,7 @@ public class RegeneratingPoisonState : AbstractCharacterState
 
     private void ResetValues()
     {
-        _currentStacks = 0;
+        CurrentStacksCount = 0;
         _baseDuration = 0;
         _duration = 0;
     }
@@ -158,7 +159,6 @@ public class RegeneratingPoisonState : AbstractCharacterState
                 Value = totalHeal,
                 DamageableSkill = null,
             };
-
 
             _characterState.Character.Health.Heal(ref heal, null);
             _characterState.Character.DamageTracker.AddHeal(heal);

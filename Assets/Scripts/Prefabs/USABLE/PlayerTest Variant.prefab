@@ -249,9 +249,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 9000200958661223933}
     - target: {fileID: 8468544467696250796, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+      propertyPath: rb
+      value: 
+      objectReference: {fileID: 6059840829050384465}
+    - target: {fileID: 8468544467696250796, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
       propertyPath: _minion
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 8468544467696250796, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+      propertyPath: _collider
+      value: 
+      objectReference: {fileID: 6538338794835378257}
     - target: {fileID: 8468544467696250796, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
       propertyPath: _abilities
       value: 
@@ -363,6 +371,16 @@ SpriteMask:
   m_CorrespondingSourceObject: {fileID: 5628641952758793102, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
   m_PrefabInstance: {fileID: 6932477457714540152}
   m_PrefabAsset: {fileID: 0}
+--- !u!50 &6059840829050384465 stripped
+Rigidbody2D:
+  m_CorrespondingSourceObject: {fileID: 3759936847054020137, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+  m_PrefabInstance: {fileID: 6932477457714540152}
+  m_PrefabAsset: {fileID: 0}
+--- !u!58 &6538338794835378257 stripped
+CircleCollider2D:
+  m_CorrespondingSourceObject: {fileID: 4218118007188876841, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
+  m_PrefabInstance: {fileID: 6932477457714540152}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8470426861222888728 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1565031513079442272, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
@@ -433,6 +451,7 @@ MonoBehaviour:
   - {fileID: 6478478900417536801}
   _hero: {fileID: 1563676885133033940}
   _talentSystem: {fileID: 1752307623473760912}
+  _skillRenderer: {fileID: 0}
 --- !u!114 &3836582496103541675
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -448,6 +467,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 44ef9f5c61bd03a4a9d02045a6dfb776, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
@@ -458,6 +479,7 @@ MonoBehaviour:
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -494,6 +516,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 1f2a5a037601fdd438b17c4c4917caaa, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
@@ -504,6 +528,7 @@ MonoBehaviour:
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -526,6 +551,7 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _attackZoneSize: 3
   _attackSpeed: 0.5
+  _chargeAttackDelay: 0
   _damage: 5
 --- !u!114 &8018020115234758208
 MonoBehaviour:
@@ -542,6 +568,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: d225c810085a24647a426dd4b47a9983, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
@@ -552,6 +580,7 @@ MonoBehaviour:
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
+  _skillType: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768

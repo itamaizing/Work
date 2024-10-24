@@ -17,7 +17,6 @@ public class PoisonCloudState : AbstractCharacterState
     private Character _player;
     private LayerMask _enemiesLayer;
 
-    private int _currentStacks = 0;
     private int _maxStacks = 5;
 
     private float _radiusCloud = 2.5f;
@@ -42,6 +41,8 @@ public class PoisonCloudState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
+        MaxStacksCount = _maxStacks;
+
         _characterState = character;
         _player = personWhoMadeBuff;
 
@@ -60,7 +61,7 @@ public class PoisonCloudState : AbstractCharacterState
             SearchTalent();
         }
 
-        if (_currentStacks < _maxStacks)
+        if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks();
         }
@@ -131,7 +132,7 @@ public class PoisonCloudState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        if (_currentStacks < _maxStacks)
+        if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks(); 
             return true;
@@ -141,7 +142,7 @@ public class PoisonCloudState : AbstractCharacterState
             _duration = _baseDuration;
             if (_cloudExplosion != null)
             {
-                _cloudExplosion.CurrentStacksPoisonCloud(_currentStacks, _radiusCloud);
+                _cloudExplosion.CurrentStacksPoisonCloud(CurrentStacksCount, _radiusCloud);
             }
             return true;
         }
@@ -149,13 +150,13 @@ public class PoisonCloudState : AbstractCharacterState
 
     public void AddStacks()
     {
-        if (_currentStacks < _maxStacks)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            _currentStacks++;
+            CurrentStacksCount++;
             _duration = _baseDuration;
             if (_cloudExplosion != null)
             {
-                _cloudExplosion.CurrentStacksPoisonCloud(_currentStacks, _radiusCloud);
+                _cloudExplosion.CurrentStacksPoisonCloud(CurrentStacksCount, _radiusCloud);
             }
         }
     }
@@ -176,7 +177,7 @@ public class PoisonCloudState : AbstractCharacterState
     {
         var targetHealth = target.GetComponent<Character>();
 
-        _increasedDamage = _baseDamage * _currentStacks;
+        _increasedDamage = _baseDamage * CurrentStacksCount;
         _endDamage = targetHealth.Health.MaxValue * _increasedDamage;
 
         Damage damage = new Damage()
@@ -204,7 +205,7 @@ public class PoisonCloudState : AbstractCharacterState
 
     private void ResetValues()
     {
-        _currentStacks = 0;
+        CurrentStacksCount = 0;
         _baseDuration = 0;
         _duration = 0;
         _endDamage = 0;

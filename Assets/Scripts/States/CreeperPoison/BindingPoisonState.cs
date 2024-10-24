@@ -9,7 +9,6 @@ public class BindingPoisonState : AbstractCharacterState
 
     private SkillManager _skillManager;
 
-    private int _currentStacks = 0;
     private int _maxStacks = 1;
 
     private float _duration;
@@ -18,7 +17,7 @@ public class BindingPoisonState : AbstractCharacterState
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
     public override float TEST_ChangeableValue { get; set; }
 
-    public int CurrentStacks { get => _currentStacks; set => _currentStacks = value; }
+    public int CurrentStacks { get => CurrentStacksCount; set => CurrentStacksCount = value; }
     public float StacksDuration { get => _duration; }
 
     public override States State => States.BindingPoison;
@@ -33,8 +32,9 @@ public class BindingPoisonState : AbstractCharacterState
 
         _duration = durationToExit;
         _baseDuration = durationToExit;
+        MaxStacksCount = _maxStacks;
 
-        if (_currentStacks < _maxStacks)
+        if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks();
         }
@@ -44,7 +44,7 @@ public class BindingPoisonState : AbstractCharacterState
 
     public override void UpdateState()
     {
-        if (_currentStacks <= 0)
+        if (CurrentStacksCount <= 0)
         {
             ExitState();
         }
@@ -68,7 +68,7 @@ public class BindingPoisonState : AbstractCharacterState
     public override bool Stack(float time)
     {
         //Debug.Log($"BindingPoisonState / Stack / CharacterManager = {_skillManager}");
-        if (_currentStacks < _maxStacks)
+        if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks();
             return true;
@@ -82,9 +82,9 @@ public class BindingPoisonState : AbstractCharacterState
 
     public void AddStacks()
     {
-        if (_currentStacks < _maxStacks)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            _currentStacks++;
+            CurrentStacksCount++;
             //Debug.Log("if / CurrentStackPoisonBone in AddStacks == " + _currentStacks);
             _duration = _baseDuration;
         }
@@ -116,7 +116,7 @@ public class BindingPoisonState : AbstractCharacterState
 
     private void ResetValues()
     {
-        _currentStacks = 0;
+        CurrentStacksCount = 0;
         _baseDuration = 0;
         _duration = 0;
     }

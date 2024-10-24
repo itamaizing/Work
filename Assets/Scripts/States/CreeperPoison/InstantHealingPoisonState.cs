@@ -35,6 +35,8 @@ public class InstantHealingPoisonState : AbstractCharacterState
     {
         Debug.Log("InstantHealingPoison / EnterState");
 
+        MaxStacksCount = _maxStacks;
+
         _characterState = character;
 
         _duration = durationToExit;
@@ -43,7 +45,7 @@ public class InstantHealingPoisonState : AbstractCharacterState
 
         //Debug.Log("_player == " + _player);
 
-        if (_currentStacks < _maxStacks)
+        if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks();
         }
@@ -99,7 +101,7 @@ public class InstantHealingPoisonState : AbstractCharacterState
     public void AddStacks()
     {
         Debug.Log("InstantHealingPoison / AddStacks");
-        _currentStacks++;
+        CurrentStacksCount++;
         _duration = _baseDuration;
     }
 
