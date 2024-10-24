@@ -280,10 +280,6 @@ public class CreeperInvisible : Skill
     [Command]
     private void CmdRemoveInvisible(bool creeperStrikeIsHit)
     {
-        if (_releaseFromSecrecy.Data.IsOpen && creeperStrikeIsHit)
-        {
-            _releaseFromSecrecy.ApplyBuff();
-        }
         // Debug.Log("CreeperInvisible / CmdRemoveInvisible");
         _isInvisible = false;
         _isPlayerSeen = true;

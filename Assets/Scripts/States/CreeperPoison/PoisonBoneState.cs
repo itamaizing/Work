@@ -14,7 +14,7 @@ public class PoisonBoneState : AbstractCharacterState
     private SpitPoison _spitPoison;
     private PoisonSlap _poisonSlap;
 
-    private int _maxStacks = 4;
+    private int _maxStacks = 1000;
 
     private float _timeBetweenAttack;
     private float _startTimeBetweenAttack = 1f;
@@ -150,7 +150,7 @@ public class PoisonBoneState : AbstractCharacterState
         {
             Debug.Log("PoisonBoneState / Stack / else ");
 
-            _duration = _baseDuration;
+            AddStacks();
             UpdatePoisonBoneStackAtSkills();
             return true;
         }

@@ -8,7 +8,7 @@ public class SpeedOfReptile : Skill
     [SerializeField] private Character _player;
     [SerializeField] private CreeperStrike _creeperStrike;
 
-    private float _duration = 3f;
+    private float _duration = 15f;
     private float _increaseMoveSpeed = 2f;
     private float _increaseAttackSpeed = 2f;
     private float _increaseEvasion = 2f;

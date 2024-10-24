@@ -100,7 +100,10 @@ public class OwnElement : Talent
             if (_currentAllStacks == 0)
             {
                 if (_creeperStrike.AttackSpeed != _baseAttackSpeed)
+                {
                     ResetAttackSpeed();
+                    Debug.Log("OwnElement / if CurrentAllStacks == 0");
+                }
                 _increasedAttackSpeed = _baseAttackSpeed;
             }
             yield return null;
@@ -123,6 +126,7 @@ public class OwnElement : Talent
 
     private void ResetAttackSpeed()
     {
+        Debug.Log("OwnElement / ResetAttackSpeed");
         if (_creeperStrike.AttackSpeed < _baseAttackSpeed)
         {
             float attackSpeed = _creeperStrike.AttackSpeed;

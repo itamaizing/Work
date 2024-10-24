@@ -57,13 +57,13 @@ MonoBehaviour:
     - Id: 1007
       Name: ManaRegen
       Points: 0
-      DefaultValue: 4
+      DefaultValue: 1
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1008
       Name: EnergyRegen
       Points: 0
-      DefaultValue: 5
+      DefaultValue: 1
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1009

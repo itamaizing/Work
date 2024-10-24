@@ -150,7 +150,7 @@ public class SpitPoisonProjectile : Test_Projectile
         _target.Health.TryTakeDamage(ref _baseDamage, _skill);
         _target.DamageTracker.AddDamage(_baseDamage);
 
-        _target.CharacterState.AddState(States.PoisonBone, _lifeTimePoisonBoneStacks, 0, _player.gameObject, _skill.Name);
+        _target.CharacterState.AddState(States.PoisonBone, 100f, 0, _player.gameObject, _skill.Name);
 
         if (_restorationOfGlands.Data.IsOpen && _poisonBoneStack > 0 && _target.CharacterState.CheckForState(States.PoisonBone))
         {
