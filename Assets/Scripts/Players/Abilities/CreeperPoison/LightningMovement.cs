@@ -67,6 +67,7 @@ public class LightningMovement : Skill
 
     #endregion
 
+    private float _baseRangeLeap;
     private float _angle;
     private float _multiplierLeap;
 
@@ -133,7 +134,7 @@ public class LightningMovement : Skill
     private void ResetBools()
     {
         _targetHitTimes.Clear();
-        _rangeLeap = 4.0f;
+        _rangeLeap = _baseRangeLeap;
 
         _isTargetBeforePlayer = false;
         _isTargetBehindPlayer = false;
@@ -178,6 +179,8 @@ public class LightningMovement : Skill
 
     protected override IEnumerator PrepareJob()
     {
+        _baseRangeLeap = _rangeLeap;
+
         StopAutoDraw();
         _renderLineForFirstLeapCoroutine = StartCoroutine(RenderLineForFirstLeapJob(_castLength, _castWidth, _line, transform));
 
@@ -246,7 +249,6 @@ public class LightningMovement : Skill
 
     private Vector3 LimitSecondLeapToMaxDistance(Vector3 startPoint, Vector3 targetPoint, float maxDistance)
     {
-        Debug.Log("LimitSecondLeap");
         Vector3 centerTarget;
 
         Vector3 direction = (targetPoint - startPoint).normalized;
@@ -283,7 +285,6 @@ public class LightningMovement : Skill
                 maxDistance += 2.8f;
             }
             _multiplierLeap = (maxDistance / dividerForMultiplier) + coefficientForMultiplier;
-            Debug.Log("MultiplierLeap = " + _multiplierLeap);
             return startPoint + direction * maxDistance;
         }
         else
@@ -295,11 +296,13 @@ public class LightningMovement : Skill
 
     private bool CheckCanCast()
     {
-        if (_target == null)
-            return Vector3.Distance(_firstLeapPoint, transform.position) <= Radius;
+        if (_isFirstClickDone && !_isTarget)
+        {
+            return Vector3.Distance(transform.position, _firstLeapPoint) <= Radius && NoObstacles(_firstLeapPoint, _obstacle);
+        }
 
-        return Vector3.Distance(_firstLeapPoint, transform.position) <= Radius ||
-               Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+        return Vector3.Distance(transform.position, _firstLeapPoint) <= Radius && NoObstacles(_firstLeapPoint, _obstacle) ||
+               Vector3.Distance(transform.position, _secondLeapPoint) <= Radius && NoObstacles(_secondLeapPoint, _obstacle);
     }
 
     private bool IsObstacle(Vector3 startPos, Vector3 endPos)
@@ -333,10 +336,11 @@ public class LightningMovement : Skill
 
     private IEnumerator IsTargetOnEndPoint(Vector2 secondLeap, LayerMask targetLayer)
     {
+        float radiusChecking = 1.35f;
+
         while (true)
         {
-            Debug.Log("IsTargetOnEndPoint");
-            Collider2D hit = Physics2D.OverlapCircle(secondLeap, 1.35f, targetLayer);
+            Collider2D hit = Physics2D.OverlapCircle(secondLeap, radiusChecking, targetLayer);
             if (hit != null)
             {
                 _target = hit.gameObject.GetComponent<Character>();
@@ -350,9 +354,11 @@ public class LightningMovement : Skill
     private IEnumerator IsTargetBeforePlayerJob(float rangeLeap, LayerMask targetLayer)
     {
         Vector2 sizeBox = new Vector2(_castLength, _castWidth);
+        float offset = 90f;
+
         while (true)
         {
-            Collider2D hit = Physics2D.OverlapBox(transform.position, sizeBox, _angle - 90f, targetLayer);
+            Collider2D hit = Physics2D.OverlapBox(transform.position, sizeBox, _angle - offset, targetLayer);
             if (hit != null)
             {
                 _isTargetBeforePlayer = true;
@@ -364,7 +370,7 @@ public class LightningMovement : Skill
 
     private IEnumerator IsTargetBehindPlayerJob(float rangeLeap, LayerMask targetLayer)
     {
-        Vector2 sizeBox = new Vector2(_castLength * 1.2f, _castWidth * 1.2f);
+        Vector2 sizeBox = new Vector2(_castLength - 1.5f, _castWidth * 1.2f);
         while (true)
         {
             Collider2D hit = Physics2D.OverlapBox(transform.position, sizeBox, _angle + 90f, targetLayer);
@@ -461,17 +467,21 @@ public class LightningMovement : Skill
         }
 
         if (_lineStartImageForFirstLeap != null)
+        {
             Destroy(_lineStartImageForFirstLeap.gameObject);
-
+        }
         if (_lineEndImageForFirstLeap != null)
+        {
             Destroy(_lineEndImageForFirstLeap.gameObject);
-
+        }
         if (_lineStartImageForSecondLeap != null)
+        {
             Destroy(_lineStartImageForSecondLeap.gameObject);
-
+        }
         if (_lineEndImageForSecondLeap != null)
+        {
             Destroy(_lineEndImageForSecondLeap.gameObject);
-
+        }
     }
 
     #endregion
@@ -530,7 +540,10 @@ public class LightningMovement : Skill
         {
             Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, radius, enemiesLayer);
 
-            foreach (Collider2D item in hits)
+            Vector2 sizeBox = new Vector2(_castWidth, _castLength);
+            Collider2D[] hitsBox = Physics2D.OverlapBoxAll(transform.position, sizeBox, _angle, enemiesLayer);
+
+            foreach (Collider2D item in hitsBox)
             {
                 if (item != null)
                 {
@@ -545,8 +558,8 @@ public class LightningMovement : Skill
                         }
                     }
 
-                    bool isAtFirstLeapEnd = Vector2.Distance(target.transform.position, _firstLeapPoint) < 0.1f;
-                    bool isAtSecondLeapStart = Vector2.Distance(target.transform.position, _secondLeapPoint) < 0.1f;
+                    bool isAtFirstLeapEnd = Vector2.Distance(_player.transform.position, _firstLeapPoint) < 0.1f;
+                    bool isAtSecondLeapStart = Vector2.Distance(_player.transform.position, _secondLeapPoint) < 0.1f;
 
                     if (!isAtFirstLeapEnd && !isAtSecondLeapStart)
                     {
@@ -554,7 +567,7 @@ public class LightningMovement : Skill
                         {
                             _lightningStrikes.UseLightningStrikesOfLightningMovement(targetCharacter, duration);
                         }
-                        else if (_poisonSlap.IsCanDamageDeal)
+                        else if (_poisonSlap.IsCanDamageDeal && _poisonSlap.RemainingCooldownTime <= 0)
                         {
                             _poisonSlap.DamageDealOfLightningMovement(targetCharacter, duration);
                         }
@@ -663,6 +676,9 @@ public class LightningMovement : Skill
         bool heatedGlandsIsActive,
         LayerMask enemyLayer)
     {
+        float deductible = 0.12f;
+        interval = (rangeLeap * (durationLeap / GlobalVariable.cellSize)) - deductible;
+        Debug.Log("Interval = " + interval);
         Character playerRigidbody = player.GetComponent<Character>(); 
 
         Sequence leapSequence = DOTween.Sequence();

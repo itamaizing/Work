@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class OwnElement : Talent
 {
+    //[SerializeField] private Test_AttackSpeedChangedSystem _attackSpeedChangedSystem;
     [SerializeField] private CreeperStrike _creeperStrike;
     [SerializeField] private LayerMask _enemyLayer;
     [SerializeField] private List<GameObject> _enemiesWithDebuff = new();
@@ -21,10 +22,14 @@ public class OwnElement : Talent
     private float _increasedAttackSpeed = 1.0f;
     private float _maxMinimumAttackSpeed = 0.1f;
 
+    private bool _isCanResetAttackSpeed = false;
+
     private PoisonBoneState _poisonBoneState;
     private EmpathicPoisonsState _empathicPoisonState;
     private WitheringPoisonState _witheringPoisonState;
     private BindingPoisonState _bindingPoisonState;
+
+    private Coroutine _searchingDebuffOnEnemeies;
 
     private void Start()
     {
@@ -34,13 +39,23 @@ public class OwnElement : Talent
     public override void Enter()
     {
         SetActive(true);
-        StartCoroutine(SearchingDebuffOnEnemy());
+        StartSearchingEnemies();
     }
 
     public override void Exit()
     {
-        StopCoroutine(SearchingDebuffOnEnemy());
+        if (_searchingDebuffOnEnemeies != null)
+        {
+            StopCoroutine(_searchingDebuffOnEnemeies);
+            _searchingDebuffOnEnemeies = null;
+        }
+
         SetActive(false);
+    }
+
+    private void StartSearchingEnemies()
+    {
+        _searchingDebuffOnEnemeies = StartCoroutine(SearchingDebuffOnEnemy());
     }
 
     private IEnumerator SearchingDebuffOnEnemy()
@@ -97,14 +112,14 @@ public class OwnElement : Talent
                     _previousAllStacks = _currentAllStacks;
                 }
             }
-            if (_currentAllStacks == 0)
+            if (_currentAllStacks == 0 && _isCanResetAttackSpeed)
             {
                 if (_creeperStrike.AttackSpeed != _baseAttackSpeed)
                 {
                     ResetAttackSpeed();
-                    Debug.Log("OwnElement / if CurrentAllStacks == 0");
                 }
                 _increasedAttackSpeed = _baseAttackSpeed;
+                _isCanResetAttackSpeed = false;
             }
             yield return null;
         }
@@ -120,6 +135,7 @@ public class OwnElement : Talent
                 _increasedAttackSpeed = _baseAttackSpeed - (_previousAllStacks * _baseIncreaseAttackSpeed);
 
                 _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_increasedAttackSpeed);
+                _isCanResetAttackSpeed = true;
             }
         }
     }

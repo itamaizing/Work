@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class LightningStrikes : AutoAttackSkill
 {
-    public bool Enabled;
     public bool IsCanDamageDeal = false;
 
     [Header("Talents")]
@@ -36,12 +35,11 @@ public class LightningStrikes : AutoAttackSkill
     public void UseLightningStrikesOfLightningMovement(Character target, float duration)
     {
         _useCoroutine = StartCoroutine(UseAbilityCoroutine(target));
-        Invoke("UseRecharge", duration);
     }
 
     private void UseRecharge()
     {
-        TryPayCost();
+        TryPayCost(true);
         if (_useCoroutine != null)
         {
             StopCoroutine(_useCoroutine);
@@ -57,9 +55,9 @@ public class LightningStrikes : AutoAttackSkill
         }
         return base.PrepareJob();
     }
+
     protected override void ClearData()
     {
-        Debug.Log("LightningStrikes / ClearData");
         base.ClearData();
 
         if (_useCoroutine != null)
@@ -70,7 +68,7 @@ public class LightningStrikes : AutoAttackSkill
 
         if (_isUsedLightningStrikes)
         {
-            Invoke("ResetUsedLightningStrikes", 2f);
+            Invoke("ResetUsedLightningStrikes", 1.3f);
         }
     }
 
@@ -81,10 +79,8 @@ public class LightningStrikes : AutoAttackSkill
             float newCooldownTime = _cooldownTime * _cooldownMultiplier;
             this.IncreaseSetCooldown(newCooldownTime);
 
-            Debug.Log("Cooldown LightningStrikes == " + _cooldownTime);
             _isIncreaseCooldownTime = true;
         }
-        Debug.Log("LightningStrikes / CastAction");
         _currentTarget = _target;
         _useCoroutine = StartCoroutine(UseAbilityCoroutine(_currentTarget));
     }
@@ -92,7 +88,6 @@ public class LightningStrikes : AutoAttackSkill
     private void ResetUsedLightningStrikes()
     {
         _isUsedLightningStrikes = false;
-        IsCanDamageDeal = false;
     }
 
     private IEnumerator UseAbilityCoroutine(Character target)
@@ -124,10 +119,15 @@ public class LightningStrikes : AutoAttackSkill
 
             if (_coldBlood.IsCanCritLightningStrikes)
             {
-                Debug.Log("if _absoluteAccucary.ISCanCritLightningStrikes");
                 _coldBlood.IsCanCritLightningStrikes = false;
                 _coldBlood.IsCanCritCreeperStrike = false;
                 _isIncreaseCooldownTime = false;
+            }
+
+            if (_lightningMovement.IsInMovement)
+            {
+                IsCanDamageDeal = false;
+                UseRecharge();
             }
         }
     }

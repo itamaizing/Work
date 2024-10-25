@@ -10,7 +10,6 @@ public class PoisonSlap : Skill
     #region Variables
 
     public bool IsCanDamageDeal = false;
-    public bool Enabled;
 
     [SerializeField] private Character _player;
 
@@ -59,6 +58,7 @@ public class PoisonSlap : Skill
     private bool _secondClickDone;
     private bool _isIncreasedCastSpeedFromCreeperStrike = false;
     private bool _isIncreasedCastSpeedFromLightningStrike = false;
+    private bool _isCanCast = true;
 
     public int PoisonBoneStack { get => _poisonBoneStack; set => _poisonBoneStack = value; }
 
@@ -384,7 +384,6 @@ public class PoisonSlap : Skill
 
     private void DamageDeal(Character target)
     {
-        Debug.Log("PoisonSlap / DamageDeal ");
         if (target != null)
         {
             Damage damage = new Damage
@@ -415,8 +414,7 @@ public class PoisonSlap : Skill
 
     public void DamageDealOfLightningMovement(Character target, float duration)
     {
-        Debug.Log("PoisonSlap / DamageDealOfLinghtningMovement ");
-        if (target != null) 
+        if (target != null)
         {
             Damage damage = new Damage
             {
@@ -430,8 +428,7 @@ public class PoisonSlap : Skill
 
             PushTarget(target, _distancePush, _durationPush, _isPushTargetAllowed);
         }
-
-        Invoke("UseRecharge", duration);
+        UseRecharge();
     }
 
     private void UseRecharge()
@@ -442,10 +439,10 @@ public class PoisonSlap : Skill
         {
             _cooldownTime /= 2;
         }
-
-        TryPayCost();
-
         _cooldownTime = baseCooldownTime;
+        
+        IsCanDamageDeal = false;
+        TryPayCost(true);
     }
 
     private void PushTarget(Character target, float distancePush, float durationPush, bool isCanPushTarget)

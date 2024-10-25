@@ -728,7 +728,6 @@ MonoBehaviour:
   _attackZoneSize: 2.5
   _attackSpeed: 1
   _chargeAttackDelay: 0
-  Enabled: 0
   IsCanDamageDeal: 0
   _heatedGlands: {fileID: 6425516325027218904}
   _killersStamina: {fileID: 670101081239158742}
@@ -921,8 +920,8 @@ MonoBehaviour:
   _midPointForLeapPrefab: {fileID: 8912664995247444477, guid: 652dcebd34e17194c8dd52adb384edc4, type: 3}
   _player: {fileID: 7418347446368758987}
   _rangeLeap: 4
-  _durationLeap: 0.3
-  _radiusAttack: 1.15
+  _durationLeap: 0.4
+  _radiusAttack: 1
   _cooldownAttack: 1
   _invtervalBetweenLeaps: 0.5
   IsInMovement: 0
@@ -1036,7 +1035,6 @@ MonoBehaviour:
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
   IsCanDamageDeal: 0
-  Enabled: 0
   _player: {fileID: 7418347446368758987}
   _poisonBall: {fileID: 1425385128636028372}
   _creeperStrike: {fileID: 2763546955420911548}
@@ -1411,7 +1409,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: AcceleratedSlap
-    IsOpen: 1
+    IsOpen: 0
     Description: "\u0412\u043E \u0432\u0440\u0435\u043C\u044F \u043F\u0440\u0438\u043C\u0435\u043D\u0435\u043D\u0438\u0435
       LightningMovement \u0441\u043D\u0438\u0436\u0430\u0435\u0442 \u043F\u0435\u0440\u0435\u0437\u0430\u0440\u044F\u0434\u043A\u0443
       Poison Slap \u0432 2 \u0440\u0430\u0437\u0430"
@@ -1634,7 +1632,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: FeelingOfContinuation
-    IsOpen: 1
+    IsOpen: 0
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7418347446368758987}
@@ -1846,7 +1844,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: OwnElement
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7418347446368758987}
@@ -1855,7 +1853,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   _enemiesWithDebuff: []
-  _radiusSearching: 5
+  _radiusSearching: 1.5
 --- !u!114 &2159678125995542759
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1894,7 +1892,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: ReleaseFromSecrecy
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7418347446368758987}
@@ -1983,7 +1981,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: TransparentPoisons
-    IsOpen: 1
+    IsOpen: 0
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7418347446368758987}
