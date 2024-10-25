@@ -17,10 +17,6 @@ public class TestDispel : Skill
             if (GetMouseButton)
             {
                 _target = GetRaycastTarget();
-                if (_target != null)
-                {
-                    Debug.Log($"Öåëü âûáðàíà: {_target.name}");
-                }
             }
             yield return null;
         }
@@ -77,18 +73,6 @@ public class TestDispel : Skill
                 }
             }
         }
-    }
-
-    private Character GetRaycastTarget()
-    {
-        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero, 100f, TargetsLayers);
-
-        if (hit.collider != null && hit.collider.TryGetComponent(out Character target))
-        {
-            return target;
-        }
-        return null;
     }
 
     //private void ApplyDamage(float damage, DamageType damageType, Character target)

@@ -9,7 +9,7 @@ public class LightShield : AbstractCharacterState, IDamageable
     private float _duration;
 
     public event Action<float, DamageType, Skill> DamageTaken;
-    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override States State => States.LightShield;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => new List<StatusEffect>();

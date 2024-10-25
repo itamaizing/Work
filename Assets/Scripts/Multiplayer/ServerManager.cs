@@ -30,7 +30,14 @@ public class ServerManager : NetworkBehaviour
     
     public void StartClient()
     {
-        AddPlayer(User.Instance.gameObject, _currentHeroIndex, _currentGameMode);
+        if (User.Instance != null)
+        {
+            AddPlayer(User.Instance.gameObject, _currentHeroIndex, _currentGameMode);
+        }
+        else
+        {
+            Debug.LogWarning("User instance is null. Cannot start client.");
+        }
     }
 
     [Command(requiresAuthority = false)]

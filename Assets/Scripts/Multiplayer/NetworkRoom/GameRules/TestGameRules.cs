@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TestGameRules : GameRules
 {
@@ -85,8 +86,37 @@ public class TestGameRules : GameRules
             team1Score += teamDeaths[2] == GetTeamCount(2) ? 1 : 0;
 
             Debug.Log($"Round Over! Team 1 Score: {team1Score}, Team 2 Score: {team2Score}");
-            RestartRound();
+            if (team1Score >= 2 || team2Score >= 2)
+            {
+                EndGame();
+            }
+            else
+            {
+                RestartRound();
+            }
         }
+    }
+
+    private void EndGame()
+    {
+        if (isServer)
+        {
+            RpcSpawnLocalUser();
+            RpcReturnToOfflineScene();
+            StartCoroutine(CloseRoomJob());
+        }
+    }
+
+    [ClientRpc]
+    private void RpcSpawnLocalUser()
+    {
+        NetworkManager.singleton.GetComponent<NetworkManager>().SpawnLocalUser();
+    }
+
+    [ClientRpc]
+    private void RpcReturnToOfflineScene()
+    {
+        SceneManager.LoadScene(1);
     }
 
     private int GetTeamCount(int teamIndex)
@@ -170,12 +200,14 @@ public class TestGameRules : GameRules
             }
         }
 
-        var energy = playerSettings.Resources.First(o => o.Type == ResourceType.Mana);
-        if (energy != null)
-        {
-            energy.ResetValue();
-        }
+        //var energy = playerSettings.Resources.First(o => o.Type == ResourceType.Mana);
+        //if (energy != null)
+        //{
+        //    energy.ResetValue();
+        //}
     }
+
+
 
 
     private IEnumerator HandleTeamsAndSpawns(List<Transform> spawnPoints)

@@ -55,7 +55,7 @@ public class NorthernersEndurance : Skill
 
 		/*float boostHp = 0.1f + 0.003f * _energy.CurrentValue;
 		_energy.CmdUse(_energy.CurrentValue);*/
-		target.CharacterState.AddState(States.NorthernerEndurance, 6, boostHp, _playerLinks.gameObject, name);
+		target.CharacterState.AddState(States.LightShield, 50, 300, _playerLinks.gameObject, name);
 
 	}
 }
