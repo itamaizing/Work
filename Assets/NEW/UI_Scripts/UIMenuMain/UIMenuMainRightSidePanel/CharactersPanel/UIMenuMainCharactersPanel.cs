@@ -43,7 +43,10 @@ public class UIMenuMainCharactersPanel : MonoBehaviour
     {
         _currentHero = hero;
         Owner.SetHero(hero);
-        
+
+        LevelPlayer.Instance.SetHero(hero);
+        LevelPlayer.Instance.LogLevelInfo();
+
         ServerManager.Instance.SetPlayer(hero);
     }
 

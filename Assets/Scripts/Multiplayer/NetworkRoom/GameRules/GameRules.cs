@@ -111,6 +111,11 @@ public abstract class GameRules : NetworkBehaviour
 
     protected IEnumerator CloseRoomJob()
     {
-        yield return StartCoroutine(_room.UnloadRoomJob());
+        yield return new WaitForSeconds(1f);
+
+        if (_room != null)
+        {
+            yield return _room.UnloadRoomJob();
+        }
     }
 }

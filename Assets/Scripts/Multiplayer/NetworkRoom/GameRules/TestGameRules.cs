@@ -101,22 +101,26 @@ public class TestGameRules : GameRules
     {
         if (isServer)
         {
-            RpcSpawnLocalUser();
-            RpcReturnToOfflineScene();
+            int experienceReward = team1Score >= 2 ? 20 : 5;
+            LevelPlayer.Instance.AddExperience(experienceReward);
+            RpcCloseRoomOnClients();
             StartCoroutine(CloseRoomJob());
         }
     }
 
     [ClientRpc]
-    private void RpcSpawnLocalUser()
+    private void RpcCloseRoomOnClients()
     {
-        NetworkManager.singleton.GetComponent<NetworkManager>().SpawnLocalUser();
+        StartCoroutine(CloseRoomOnClientAndLoadMainMenu());
     }
 
-    [ClientRpc]
-    private void RpcReturnToOfflineScene()
+    private IEnumerator CloseRoomOnClientAndLoadMainMenu()
     {
-        SceneManager.LoadScene(1);
+        yield return StartCoroutine(CloseRoomJob());
+
+        SceneManager.LoadScene("MainMenu");
+
+        NetworkManager.singleton.GetComponent<NetworkManager>().SpawnLocalUser();
     }
 
     private int GetTeamCount(int teamIndex)
@@ -206,9 +210,6 @@ public class TestGameRules : GameRules
         //    energy.ResetValue();
         //}
     }
-
-
-
 
     private IEnumerator HandleTeamsAndSpawns(List<Transform> spawnPoints)
     {
