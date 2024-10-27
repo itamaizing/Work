@@ -29,13 +29,13 @@ public class SelectComponent : NetworkBehaviour
         }
     }
 
-    //[Client]
+    [Client]
     private void Awake()
     {
         Units.Add(this);
     }
 
-    //[Client]
+    [Client]
     private void OnDestroy()
     {
         Units.Remove(this);
@@ -48,10 +48,10 @@ public class SelectComponent : NetworkBehaviour
         _uiComponent = uiComponent;
     } 
     
-    //[Client] 
+    [Client] 
     public void Select()
     {
-        //if(!isOwned) return;
+        if(!isOwned) return;
         
         _uiComponent.ChangeSelection(true);
         _abilitiesComponent.SetAbilitiesPanelSelect(true);
@@ -61,10 +61,10 @@ public class SelectComponent : NetworkBehaviour
 
         OnSelect?.Invoke();
     }
-    //[Client]
+    [Client]
     public void Deselect()
     {
-        //if(!isOwned) return;
+        if(!isOwned) return;
         
         _uiComponent.ChangeSelection(false);
         _abilitiesComponent.SetAbilitiesPanelSelect(false);

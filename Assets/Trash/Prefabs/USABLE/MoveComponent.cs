@@ -8,7 +8,7 @@ public class MoveComponent : NetworkBehaviour
 	[SerializeField] private float _currentSpeed = 5;
 	[SerializeField] private Animator _anim;
 
-	public Vector2 MoveDirection = Vector2.zero;
+	public Vector3 MoveDirection = Vector3.zero;
 	
 	public bool CanMove = false;
 	public bool IsMoving = false;
@@ -16,22 +16,16 @@ public class MoveComponent : NetworkBehaviour
 	
 	private Rigidbody _rigidbody;
 
-	private Vector2 _offset = Vector2.zero;
+	private Vector3 _offset = Vector3.zero;
 
 	private bool _isHero = false;
 
 	private float _defaultSpeed = 5;
 	private Camera _camera;
 
-	private Vector2 _dir;
-	private Vector2 _currentVelocity;
-	private Vector2 _currentVelocityTemp;
-
-    private void Start()
-    {
-		if(_camera == null)
-			_camera = Camera.main;
-	}
+	private Vector3 _dir;
+	private Vector3 _currentVelocity;
+	private Vector3 _currentVelocityTemp;
 
     public void SetOffset(Vector2 offset)
 	{
@@ -43,7 +37,6 @@ public class MoveComponent : NetworkBehaviour
 		_defaultSpeed = speed;
 
 		_rigidbody = rb;
-		_rigidbody.isKinematic = false;
 		
 		SetDefaultSpeed();
 
@@ -76,22 +69,46 @@ public class MoveComponent : NetworkBehaviour
 	[Client]
 	void Update()
 	{
-		if (!CanMove || _rigidbody == null)
+		if (!CanMove || _rigidbody == null || _camera == null)
 		{
+			_camera = Camera.main;
 			return;
 		}
-
+		/*
 		if (IsSelect == false)
 			_dir = Vector2.zero;
 
-		_currentVelocity = Vector2.SmoothDamp(_currentVelocity, _dir, ref _currentVelocityTemp, _smoothTime);
-		_rigidbody.velocity = _currentVelocity * _currentSpeed;
+		_currentVelocity = Vector3.SmoothDamp(_currentVelocity, _dir, ref _currentVelocityTemp, _smoothTime); // Move from camera
+
+		var camDir = _camera.transform.TransformDirection(_currentVelocity);
+
+		camDir = Quaternion.AngleAxis(-_camera.transform.eulerAngles.x, _camera.transform.TransformVector(Vector3.right)) * camDir;
+
+		_rigidbody.velocity = camDir * _currentSpeed;
+
+
+
+		Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
+		Debug.DrawRay(_camera.transform.position, ray.direction);
+		RaycastHit hit;
+		if (Physics.Raycast(ray, out hit))
+		{
+			var transformRotate = transform.eulerAngles;
+			transform.LookAt(hit.point);
+			transform.eulerAngles = (new Vector3(transformRotate.x, transform.eulerAngles.y, transformRotate.z));
+		}
+
+
+		var animDir = transform.InverseTransformPoint(transform.position + camDir);
+		_anim.SetFloat("Y", animDir.z);
+		_anim.SetFloat("X", animDir.x);
+		*/
 	}
 
 	private void OnMove(Vector2 dir)
     {
 		if (IsSelect)
-			_dir = dir;
+			_dir = new Vector3(dir.x, 0, dir.y);
 	}
 
 	[TargetRpc]

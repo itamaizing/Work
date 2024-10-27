@@ -10,7 +10,8 @@ public class UIMenuMainWindow : MonoBehaviour
     [SerializeField] private UIMenuMainGameTypesPanel _gameTypesPanel;
     [SerializeField] private UIMenuMainSavesPanel _savesPanel;
     [SerializeField] private GameObject _uIMenuMainRightPanel;
-    [SerializeField] private List<GameObject> _otherUIs;
+    [SerializeField] private List<GameObject> _otherUisForEnavled;
+    [SerializeField] private List<GameObject> _otherUisDisebled;
 
 	[SerializeField] private SelectManager _selectManager;
 
@@ -34,9 +35,14 @@ public class UIMenuMainWindow : MonoBehaviour
         _uIMenuMainRightPanel.SetActive(false);
         gameObject.SetActive(false);
 
-        foreach (var item in _otherUIs)
+        foreach (var item in _otherUisForEnavled)
         {
             item.SetActive(true);
+        }
+
+        foreach (var item in _otherUisDisebled)
+        {
+            item.SetActive(false);
         }
     }
 

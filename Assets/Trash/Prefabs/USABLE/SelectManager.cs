@@ -24,10 +24,10 @@ public class SelectManager : MonoBehaviour
         _dragBox.SetSelectManager(this);
     }
         
-    //[ClientCallback]
+    [ClientCallback]
     private void Update()
     {
-        /*if (_contoller == null)
+        if (_contoller == null)
         {
             if (NetworkClient.connection == null || NetworkClient.connection.identity == null)
             {
@@ -43,7 +43,7 @@ public class SelectManager : MonoBehaviour
             }
 
             _canContollUnits = _contoller.controllableUnits;
-        }*/
+        }
         
         if (Input.GetMouseButtonDown(0) && Input.GetKey(KeyCode.LeftShift))
         {
@@ -103,7 +103,7 @@ public class SelectManager : MonoBehaviour
         {
             Debug.Log(0);
 
-            //if(!_canContollUnits.Contains(character)) return;
+            if(!_canContollUnits.Contains(character)) return;
 
             Debug.Log(1);
 
