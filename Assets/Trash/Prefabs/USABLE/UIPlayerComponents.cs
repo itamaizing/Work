@@ -14,11 +14,6 @@ public class UIPlayerComponents : MonoBehaviour
     private Color _magDamageColor = Color.blue;
     private Color _physDamageColor = Color.red;
 
-    /* public void Initialize(PlayerAbilities playerAbilities,MoveComponent playerMove,StaminaComponent staminaComponent , HealthComponent healthComponent)
-     {
-         playerAbilities.Initialize(playerMove, staminaComponent, healthComponent);
-     }
-     */ //Why is initialization of this component necessary at all? Moreover, the UI should not initialize the logic
     private void Awake()
     {
         _character.Health.DamageTaken += OnDamageTaken;

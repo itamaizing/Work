@@ -24,10 +24,10 @@ public class SelectManager : MonoBehaviour
         _dragBox.SetSelectManager(this);
     }
         
-    [ClientCallback]
+    //[ClientCallback]
     private void Update()
     {
-        if (_contoller == null)
+        /*if (_contoller == null)
         {
             if (NetworkClient.connection == null || NetworkClient.connection.identity == null)
             {
@@ -43,7 +43,7 @@ public class SelectManager : MonoBehaviour
             }
 
             _canContollUnits = _contoller.controllableUnits;
-        }
+        }*/
         
         if (Input.GetMouseButtonDown(0) && Input.GetKey(KeyCode.LeftShift))
         {
@@ -101,19 +101,25 @@ public class SelectManager : MonoBehaviour
 
         public void SelectInArea(Character character)
         {
-            if(!_canContollUnits.Contains(character)) return;
-            
+            Debug.Log(0);
+
+            //if(!_canContollUnits.Contains(character)) return;
+
+            Debug.Log(1);
+
             if (!SelectedControllableUnits.Contains(character))
             {
                 SelectedControllableUnits.Add(character);
                 character.SelectComponent.Select();
                 CharacterSelected?.Invoke(character);
+                Debug.Log(3);
             }
             else
             {
                 SelectedControllableUnits.Remove(character);
                 character.SelectComponent.Deselect();
                 CharacterDeselected?.Invoke(character);
+                Debug.Log(4);
             }
 
             SelectedControllableUnits.FirstOrDefault()!.SelectComponent.IsCurrentPlayer = true;

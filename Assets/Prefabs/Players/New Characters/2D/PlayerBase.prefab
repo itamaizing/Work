@@ -328,6 +328,7 @@ MonoBehaviour:
   _networkSettings: {fileID: -7146587456276821115}
   rb: {fileID: 3759936847054020137}
   _lvl: {fileID: 7382485661582087661}
+  _animator: {fileID: 0}
   _healthComponent: {fileID: 5839731411926097146}
   Stamina: {fileID: 2926669445991704918}
   _playerMove: {fileID: 5665079937663656764}
@@ -445,6 +446,9 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _smoothTime: 0.15
+  _currentSpeed: 5
+  _camera: {fileID: 0}
+  _anim: {fileID: 0}
   MoveDirection: {x: 0, y: 0}
   CanMove: 1
   IsMoving: 0

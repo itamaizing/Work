@@ -1,11 +1,12 @@
 using Mirror;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class SelectComponent : NetworkBehaviour
 {
-    private readonly UnityEvent _onSelect = null;
-    private readonly UnityEvent _onDeselect = null;
+    public static List<SelectComponent> Units = new();
     
     private MoveComponent _moveComponent;
     private SkillManager _abilitiesComponent;
@@ -14,6 +15,9 @@ public class SelectComponent : NetworkBehaviour
     private bool _isCurrentPLayer;
 
     public Vector3 OffsetInGroup { get; set; }
+
+    public event Action OnSelect;
+    public event Action OnDeselect;
 
     public bool IsCurrentPlayer
     {
@@ -25,6 +29,18 @@ public class SelectComponent : NetworkBehaviour
         }
     }
 
+    //[Client]
+    private void Awake()
+    {
+        Units.Add(this);
+    }
+
+    //[Client]
+    private void OnDestroy()
+    {
+        Units.Remove(this);
+    }
+
     public void Initialize(MoveComponent move, SkillManager abilitiesComponent,UIPlayerComponents uiComponent)
     {
         _moveComponent = move;
@@ -32,31 +48,31 @@ public class SelectComponent : NetworkBehaviour
         _uiComponent = uiComponent;
     } 
     
-    [Client] 
+    //[Client] 
     public void Select()
     {
-        if(!isOwned) return;
+        //if(!isOwned) return;
         
         _uiComponent.ChangeSelection(true);
         _abilitiesComponent.SetAbilitiesPanelSelect(true);
         _abilitiesComponent.OnSelect(true);
         _moveComponent.SetOffset(OffsetInGroup);
         _moveComponent.IsSelect = true;
-        
-        _onSelect?.Invoke();
+
+        OnSelect?.Invoke();
     }
-    [Client]
+    //[Client]
     public void Deselect()
     {
-        if(!isOwned) return;
+        //if(!isOwned) return;
         
         _uiComponent.ChangeSelection(false);
         _abilitiesComponent.SetAbilitiesPanelSelect(false);
         _abilitiesComponent.OnSelect(false);
         _moveComponent.SetOffset(OffsetInGroup);
         _moveComponent.IsSelect = false;
-        
-        _onDeselect?.Invoke();
+
+        OnDeselect?.Invoke();
     }
     
 }

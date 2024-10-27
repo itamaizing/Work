@@ -1,12 +1,13 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BoxSelector : MonoBehaviour
 {
-    [SerializeField] private Transform selectionAreaTransform; 
-    private Vector3 _startPosition;
-    
-    private SelectManager _selectManager;
+    [SerializeField] private Image _selectionArea;
 
+    private Vector2 _startPosition;
+    private Vector2 _endPosition;
+    private SelectManager _selectManager;
     private bool _isDrawing;
 
     public void SetSelectManager(SelectManager selectManager)
@@ -17,20 +18,19 @@ public class BoxSelector : MonoBehaviour
     public void StartDraw()
     {
         _isDrawing = true;
-        _startPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        _startPosition.z = 0f;
+        _startPosition = Input.mousePosition;
     }
     public void Draw()
     {
-        Vector3 currentMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        _endPosition = Input.mousePosition;
         
-        Vector3 lowerLeft = new Vector3(Mathf.Min(_startPosition.x, currentMousePosition.x),
-            (Mathf.Min(_startPosition.y, currentMousePosition.y)));
-        Vector3 upperRight = new Vector3(Mathf.Max(_startPosition.x, currentMousePosition.x), 
-            (Mathf.Max(_startPosition.y, currentMousePosition.y)));
-        
-        selectionAreaTransform.position = lowerLeft;
-        selectionAreaTransform.localScale = upperRight - lowerLeft;
+        Vector2 min = Vector2.Min(_startPosition, _endPosition);
+        Vector2 max = Vector2.Max(_startPosition, _endPosition);
+
+        _selectionArea.rectTransform.anchoredPosition = min;
+
+        Vector2 size = max - min;
+        _selectionArea.rectTransform.sizeDelta = size;
     }
 
     public void StopDraw()
@@ -41,16 +41,21 @@ public class BoxSelector : MonoBehaviour
             return;
         }
         
-        var colliders =  Physics2D.OverlapAreaAll(_startPosition, Camera.main.ScreenToWorldPoint(Input.mousePosition));
-        
         _selectManager.DeselectAll();
-        
-        foreach (Collider2D collider in colliders)
+
+        Vector2 min = Vector2.Min(_startPosition, _endPosition);
+        Vector2 max = Vector2.Max(_startPosition, _endPosition);
+        Vector2 size = max - min;
+
+        Rect rect = new Rect(min, size);
+
+        foreach (SelectComponent unit in SelectComponent.Units)
         {
-            var character = collider.GetComponent<Character>();
-            
-            if (character != null)
+            Vector2 positionInScreen = Camera.main.WorldToScreenPoint(unit.transform.position);
+
+            if (rect.Contains(positionInScreen))
             {
+                var character = unit.GetComponent<Character>();
                 _selectManager.SelectInArea(character);
             }
         }

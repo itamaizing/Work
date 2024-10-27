@@ -5,6 +5,8 @@ using UnityEngine;
 public class MoveComponent : NetworkBehaviour
 {
 	[SerializeField, Range(0, 0.5f)] private float _smoothTime = 0.15f;
+	[SerializeField] private float _currentSpeed = 5;
+	[SerializeField] private Animator _anim;
 
 	public Vector2 MoveDirection = Vector2.zero;
 	
@@ -19,13 +21,19 @@ public class MoveComponent : NetworkBehaviour
 	private bool _isHero = false;
 
 	private float _defaultSpeed = 5;
-	private float _currentSpeed = 5;
+	private Camera _camera;
 
 	private Vector2 _dir;
 	private Vector2 _currentVelocity;
 	private Vector2 _currentVelocityTemp;
 
-	public void SetOffset(Vector2 offset)
+    private void Start()
+    {
+		if(_camera == null)
+			_camera = Camera.main;
+	}
+
+    public void SetOffset(Vector2 offset)
 	{
 		_offset = offset;
 	}

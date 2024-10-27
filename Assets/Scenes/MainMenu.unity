@@ -1455,7 +1455,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _gameMode: 2
-  _scene: Assets/Scenes/TestRoom.unity
+  _scene: Assets/Scenes/TestRoom3D.unity
   _maxPlayers: 4
   _gameRulesPref: {fileID: 2624942693930062612, guid: 9c3ab8f1c5352c34ea72aeec43bb21be, type: 3}
 --- !u!114 &572863234
@@ -1474,7 +1474,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _gameMode: 1
-  _scene: Assets/Scenes/TestRoom.unity
+  _scene: Assets/Scenes/TestRoom3D.unity
   _maxPlayers: 2
   _gameRulesPref: {fileID: 2624942693930062612, guid: 9c3ab8f1c5352c34ea72aeec43bb21be, type: 3}
 --- !u!114 &572863235
@@ -1548,7 +1548,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _gameMode: 3
-  _scene: Assets/Scenes/TestRoom.unity
+  _scene: Assets/Scenes/TestRoom3D.unity
   _maxPlayers: 6
   _gameRulesPref: {fileID: 2624942693930062612, guid: 9c3ab8f1c5352c34ea72aeec43bb21be, type: 3}
 --- !u!1 &598556766
@@ -5476,7 +5476,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f06df8003bd2b447bb98efacd0993dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectionAreaTransform: {fileID: 2086229060}
+  _selectionArea: {fileID: 0}
 --- !u!4 &2086229060
 Transform:
   m_ObjectHideFlags: 0
