@@ -1,17 +1,16 @@
 using UnityEngine;
 
-public class LevelPlayer : MonoBehaviour
+public class LevelPlayerManager : MonoBehaviour
 {
-    private static LevelPlayer _instance;
-    public static LevelPlayer Instance => _instance;
+    private static LevelPlayerManager _instance;
+    public static LevelPlayerManager Instance => _instance;
 
     private HeroComponent _character;
     private int _currentSaveGroup = 0;
 
-    [SerializeField] private int currentLevel = 1;
-    [SerializeField] private int currentExperience = 0;
-    [SerializeField] private int experienceForNextLevel = 10;
-    [SerializeField] private bool resetSaveData = false;
+    private int currentLevel = 1;
+    private int currentExperience = 0;
+    private int experienceForNextLevel = 10;
 
     private int additionalExperienceForNextLevel = 10;
     private float multiplierToExperienceForNextLevel = 1.2f;
@@ -25,19 +24,11 @@ public class LevelPlayer : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        // Проверка на необходимость сброса данных при старте
-        if (resetSaveData)
-        {
-            ResetSaveData();
-        }
-    }
-
     public void SetHero(HeroComponent hero)
     {
         _character = hero;
         LoadLevelData();
+        DisplayCurrentHeroLevelInfo();
     }
 
     public void SetSaveIndex(int index)
@@ -87,30 +78,11 @@ public class LevelPlayer : MonoBehaviour
         currentLevel = PlayerPrefs.GetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_Level", 1);
         currentExperience = PlayerPrefs.GetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_Experience", 0);
         experienceForNextLevel = PlayerPrefs.GetInt(_character.Data.Name + "_Group" + _currentSaveGroup + "_ExperienceForNextLevel", 10);
-        LogLevelInfo();
     }
 
-    public void LogLevelInfo()
+    public void DisplayCurrentHeroLevelInfo()
     {
-        Debug.Log($"Персонаж: {_character.Data.Name}");
-        Debug.Log($"Текущий уровень: {currentLevel}");
-        Debug.Log($"Текущий опыт: {currentExperience}");
-        Debug.Log($"Необходимый опыт для следующего уровня: {experienceForNextLevel}");
-    }
-
-    public void ResetSaveData()
-    {
-        if (_character != null)
-        {
-            PlayerPrefs.DeleteKey(_character.Data.Name + "_Group" + _currentSaveGroup + "_Level");
-            PlayerPrefs.DeleteKey(_character.Data.Name + "_Group" + _currentSaveGroup + "_Experience");
-            PlayerPrefs.DeleteKey(_character.Data.Name + "_Group" + _currentSaveGroup + "_ExperienceForNextLevel");
-
-            currentLevel = 1;
-            currentExperience = 0;
-            experienceForNextLevel = 10;
-
-            Debug.Log($"Данные сохранения для персонажа {_character.Data.Name} сброшены.");
-        }
+        if (_character == null) return;
+        Debug.Log($"Character: {_character.Data.Name} | Level: {currentLevel} | Experience: {currentExperience}/{experienceForNextLevel}");
     }
 }

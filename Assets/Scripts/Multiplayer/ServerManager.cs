@@ -8,11 +8,11 @@ public class ServerManager : NetworkBehaviour
 {
     [SerializeField] private List<NetworkRoomsManager> _managers;
     [SerializeField] private List<HeroComponent> _heroList;
-    
+
     private static ServerManager _instance;
     private int _currentHeroIndex = 0;
     private GameMode _currentGameMode = GameMode.GM1vs1;
-    
+
     public static ServerManager Instance => _instance;
     public List<HeroComponent> HeroList => _heroList;
 
@@ -27,17 +27,10 @@ public class ServerManager : NetworkBehaviour
             _instance = this;
         }
     }
-    
+
     public void StartClient()
     {
-        if (User.Instance != null)
-        {
-            AddPlayer(User.Instance.gameObject, _currentHeroIndex, _currentGameMode);
-        }
-        else
-        {
-            Debug.LogWarning("User instance is null. Cannot start client.");
-        }
+        AddPlayer(User.Instance.gameObject, _currentHeroIndex, _currentGameMode);
     }
 
     [Command(requiresAuthority = false)]
@@ -69,10 +62,11 @@ public class ServerManager : NetworkBehaviour
         user.GetComponent<User>().connectionToClient.Send(new SceneMessage { sceneName = _managers[index].Scene, sceneOperation = SceneOperation.LoadAdditive });
         SceneManager.MoveGameObjectToScene(user, SceneManager.GetSceneAt(SceneManager.sceneCount - 1));
     }
-    
+
     public void SetPlayer(HeroComponent hero)
     {
         _currentHeroIndex = _heroList.IndexOf(hero);
+        LevelPlayerManager.Instance.SetHero(hero);
     }
     public void SetMode(GameMode mode)
     {

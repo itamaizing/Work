@@ -34,7 +34,12 @@ public class NetworkRoomsManager : NetworkBehaviour
 			case GameMode.GM3vs3:
 				_maxPlayers = 6;
 				break;
-        }
+
+			case GameMode.GMMAXVsMAX:
+				_maxPlayers = 2;
+
+				break;
+		}
     }
 
     public IEnumerator AddPlayerJob(GameObject player)
@@ -74,6 +79,7 @@ public enum GameMode
 	GM2vs2,
 	GM3vs3,
 	GMAllvsAll,
+	GMMAXVsMAX,
 	None
 }
 

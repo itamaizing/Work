@@ -5,23 +5,23 @@ using UnityEngine;
 
 public class UIMenuMainCharactersPanel : MonoBehaviour
 {
-    [ReadOnly,ShowInInspector]
+    [ReadOnly, ShowInInspector]
     public UIMenuMainWindow Owner;
-    
+
     [SerializeField] private UIMenuMainCharactersPanelItem _characterItem;
     [SerializeField] private RectTransform _itemsParent;
-    
+
     private HeroComponent _currentHero;
     public HeroComponent CurrentHero => _currentHero;
-    
+
     private List<UIMenuMainCharactersPanelItem> _characters = new();
 
     private UIMenuMainCharactersPanelItem _spawnedCharacter;
-    
+
     public void Show()
     {
-        if(Owner == null) return;
-        
+        if (Owner == null) return;
+
         var charactersGroup = ServerManager.Instance.HeroList;
 
         foreach (var item in charactersGroup)
@@ -35,7 +35,7 @@ public class UIMenuMainCharactersPanel : MonoBehaviour
 
         if (_currentHero == null)
         {
-            _characters[0].Select();   
+            _characters[0].Select();
         }
     }
 
@@ -43,9 +43,6 @@ public class UIMenuMainCharactersPanel : MonoBehaviour
     {
         _currentHero = hero;
         Owner.SetHero(hero);
-
-        LevelPlayer.Instance.SetHero(hero);
-        LevelPlayer.Instance.LogLevelInfo();
 
         ServerManager.Instance.SetPlayer(hero);
     }

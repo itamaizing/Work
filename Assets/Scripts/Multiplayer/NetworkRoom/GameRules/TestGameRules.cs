@@ -102,7 +102,8 @@ public class TestGameRules : GameRules
         if (isServer)
         {
             int experienceReward = team1Score >= 2 ? 20 : 5;
-            LevelPlayer.Instance.AddExperience(experienceReward);
+            LevelPlayerManager.Instance.AddExperience(experienceReward);
+            if (team1Score >= 2 || team2Score >= 2) BottleUserManager.Instance.AddBottleVolume();
             RpcCloseRoomOnClients();
             StartCoroutine(CloseRoomJob());
         }
