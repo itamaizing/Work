@@ -26,6 +26,16 @@ public class TestH3 : Skill
                Vector3.Distance(_target.transform.position, transform.position) <= Radius;
     }
 
+    public void AnimCastH3()
+    {
+        AnimStartCastCoroutine();
+    }
+
+    public void AnimH3End()
+    {
+        AnimCastEnded();
+    }
+
     protected override IEnumerator CastJob()
     {
         if (_target != null)

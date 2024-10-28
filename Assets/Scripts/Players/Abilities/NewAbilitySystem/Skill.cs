@@ -178,16 +178,6 @@ public abstract class Skill : NetworkBehaviour
             _currentChargers = 1;
     }
 
-    public virtual void AnimStartCastCoroutine()
-    {
-        _castCoroutine = StartCoroutine(CastJob());
-    }
-
-    public void AnimCastEnded()
-    {
-        _isPlayCastAnim = false;
-    }
-
     public bool TryPreparing()
     {
         if (_isPreparing == false && _isCasting == false)
@@ -364,6 +354,16 @@ public abstract class Skill : NetworkBehaviour
     public void StopDamageZone()
     {
         _skillRender.CmdStopDrawDamageZone();
+    }
+
+    protected void AnimStartCastCoroutine()
+    {
+        _castCoroutine = StartCoroutine(CastJob());
+    }
+
+    protected void AnimCastEnded()
+    {
+        _isPlayCastAnim = false;
     }
 
     protected virtual void StartAutoDraw()
@@ -848,6 +848,7 @@ public abstract class Skill : NetworkBehaviour
         }
         else
         {
+            _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
             yield return _castCoroutine = StartCoroutine(CastJob());
         }
 
