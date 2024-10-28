@@ -408,8 +408,6 @@ public class CharacterState : NetworkBehaviour
 				}
 				
 				currentStates[i].ExitState();
-				
-				currentStates.RemoveAt(i);
 			}
 		}
 	}

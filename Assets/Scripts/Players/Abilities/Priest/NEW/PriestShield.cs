@@ -171,7 +171,7 @@ public class PriestShield : Skill
     {
         _talentDarkMagicBoostActive = value;
         
-        if (value) return;
+        if (_talentDarkMagicBoostActive) return;
         
         _damagePerTickBonus = 0;
     }

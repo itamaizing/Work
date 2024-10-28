@@ -273,11 +273,11 @@ public abstract class Skill : NetworkBehaviour
     
     public void DecreaseSetCooldown(float time)
     {
-        var timeToSet = _remainingCooldownTime - time <= 0 ? _remainingCooldownTime - time : 0;
-
+        var timeToSet = _remainingCooldownTime - time > 0 ? _remainingCooldownTime - time : 0;
+        
         if (_cooldownJob != null)
             StopCoroutine(_cooldownJob);
-
+        
         _cooldownJob = StartCoroutine(CooldownCoroutine(timeToSet));
     }
 

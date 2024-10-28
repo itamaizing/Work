@@ -20,9 +20,11 @@ public class Restoration : Skill
     [SerializeField] private float darkCastTime = 1.2f;
 
     public bool isLightMode = true;
-    private Character _target;
     private float _accumulatedEffectiveness = 1f;
     private float _totalHealedInInterval = 0f;
+    
+    private Character _target;
+    public Character Target => _target;
     
     protected override bool IsCanCast => IsCanCastCheck();
 
