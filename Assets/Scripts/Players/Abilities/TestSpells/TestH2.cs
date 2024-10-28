@@ -24,9 +24,19 @@ public class TestH2 : Skill
         }
     }
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("H2CastDelay");
 
-    protected override int AnimTriggerCast => 0;
+    protected override int AnimTriggerCast => Animator.StringToHash("H2Cast");
+
+    public override void AnimStartCastCoroutine()
+    {
+        base.AnimStartCastCoroutine();
+    }
+
+    public void HELP()
+    {
+
+    }
 
     protected override IEnumerator CastJob()
     {

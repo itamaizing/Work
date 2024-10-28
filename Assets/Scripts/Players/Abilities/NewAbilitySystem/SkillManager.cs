@@ -4,7 +4,6 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Events;
 
-[RequireComponent(typeof(SkillRenderer))]
 [RequireComponent(typeof(SkillQueue))]
 [RequireComponent(typeof(AutoAttackQueue))]
 public class SkillManager : MonoBehaviour

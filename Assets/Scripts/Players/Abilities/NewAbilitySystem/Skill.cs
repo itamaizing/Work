@@ -94,7 +94,7 @@ public abstract class Skill : NetworkBehaviour
     protected Transform _tempTargetForDamage;
     protected Health _tempHPForDamage;
 
-    private Character _tempTarget;
+    private Character _tempTargetbase;
     private int _currentChargers;
     private float _remainingCooldownTime;
     private StatsBuff _statsBuff = new StatsBuff();
@@ -178,6 +178,16 @@ public abstract class Skill : NetworkBehaviour
             _currentChargers = 1;
     }
 
+    public virtual void AnimStartCastCoroutine()
+    {
+        _castCoroutine = StartCoroutine(CastJob());
+    }
+
+    public void AnimCastEnded()
+    {
+        _isPlayCastAnim = false;
+    }
+
     public bool TryPreparing()
     {
         if (_isPreparing == false && _isCasting == false)
@@ -203,16 +213,6 @@ public abstract class Skill : NetworkBehaviour
         {
             return false;
         }
-    }
-
-    public Coroutine StartCastCoroutine()
-    {
-        return _castCoroutine = StartCoroutine(CastJob());
-    }
-
-    public void AnimationCastEnded()
-    {
-        _isPlayCastAnim = false;
     }
 
     public bool TryCancel(bool foceCancel = false)
@@ -253,7 +253,7 @@ public abstract class Skill : NetworkBehaviour
 				OnClickCanceled();
             }
 
-            _tempTarget = null;
+            _tempTargetbase = null;
             _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
 
             return true;
@@ -441,7 +441,7 @@ public abstract class Skill : NetworkBehaviour
                 }
             }
         }
-        _tempTarget = target;
+        _tempTargetbase = target;
         return target;
     }
 
@@ -504,8 +504,8 @@ public abstract class Skill : NetworkBehaviour
 
     protected bool NoObstacles()
     {
-        if (_tempTarget != null)
-            return NoObstacles(_tempTarget.transform.position, transform.position, _obstacle);
+        if (_tempTargetbase != null)
+            return NoObstacles(_tempTargetbase.transform.position, transform.position, _obstacle);
 
         return true;
     }

@@ -15,7 +15,7 @@ public class TestH3 : Skill
 
     protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => 0;
+    protected override int AnimTriggerCast => Animator.StringToHash("H3Cast");
 
     private bool CheckCanCast()
     {
