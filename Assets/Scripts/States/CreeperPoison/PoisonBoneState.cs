@@ -39,12 +39,12 @@ public class PoisonBoneState : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         Debug.Log("PoisonBone / EnterState");
+        MaxStacksCount = _maxStacks;
         _characterState = character;
         _player = personWhoMadeBuff;
 
         _duration = durationToExit;
         _baseDuration = durationToExit;
-        MaxStacksCount = _maxStacks;
 
         if (CurrentStacksCount < MaxStacksCount)
         {

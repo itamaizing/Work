@@ -98,27 +98,19 @@ public class AbsorptionOfPoisons : Skill
 
                 if (_poisonBone != null && _poisonBone.CurrentStacks > 0)
                 {
-                    Debug.Log("AbsorptionOfPoisons / CmdCheckTargetWithDebuffs / _poisonBone != null");
                     poisonDurations[_poisonBone] = _poisonBone.StacksDuration;
-
                 }
                 if (_empathicPoison != null && _empathicPoison.CurrentStacks > 0)
                 {
-                    Debug.Log("AbsorptionOfPoisons / CmdCheckTargetWithDebuffs / _empathicPoison != null");
                     poisonDurations[_empathicPoison] = _empathicPoison.StacksDuration;
-
                 }
                 if (_witheringPoison != null && _witheringPoison.CurrentStacks > 0)
                 {
-                    Debug.Log("AbsorptionOfPoisons / CmdCheckTargetWithDebuffs / _witheringPoison != null");
                     poisonDurations[_witheringPoison] = _witheringPoison.StacksDuration;
-
                 }
                 if (_bindingPoison != null && _bindingPoison.CurrentStacks > 0)
                 {
-                    Debug.Log("AbsorptionOfPoisons / CmdCheckTargetWithDebuffs / _bindingPoison != null");
                     poisonDurations[_bindingPoison] = _bindingPoison.StacksDuration;
-
                 }
 
                 if (poisonDurations.Count > 0)
@@ -127,27 +119,19 @@ public class AbsorptionOfPoisons : Skill
 
                     if (stateWithMinDuration is PoisonBoneState poisonBoneState)
                     {
-                        Debug.Log("AbsorptionOfPoisons / CmdCheckTargetWithDebuffs / poisonBoneState / stateWithMinDuration = " + stateWithMinDuration);
                         poisonBoneState.CurrentStacks--;
-                        Debug.Log("AbsorptionOfPoisons / CmdCheckTargetWithDebuffs / poisonBoneState.CurrentStacks = " + poisonBoneState.CurrentStacks);
                     }
                     else if (stateWithMinDuration is EmpathicPoisonsState empathicPoisonsState)
                     {
-                        Debug.Log("AbsorptionOfPoisons / CmdCheckTargetWithDebuffs / empathicPoisonsState / stateWithMinDuration = " + stateWithMinDuration);
                         empathicPoisonsState.CurrentStacks--;
-                        Debug.Log("AbsorptionOfPoisons / CmdCheckTargetWithDebuffs / empathicPoisonsState.CurrentStacks = " + empathicPoisonsState.CurrentStacks);
                     }
                     else if (stateWithMinDuration is WitheringPoisonState witheringPoisonState)
                     {
-                        Debug.Log("AbsorptionOfPoisons / CmdCheckTargetWithDebuffs / witheringPoisonState / stateWithMinDuration = " + stateWithMinDuration);
                         witheringPoisonState.CurrentStacks--;
-                        Debug.Log("AbsorptionOfPoisons / CmdCheckTargetWithDebuffs / witheringPoisonState.CurrentStacks = " + witheringPoisonState.CurrentStacks);
                     }
                     else if (stateWithMinDuration is BindingPoisonState bindingPoisonState)
                     {
-                        Debug.Log("AbsorptionOfPoisons / CmdCheckTargetWithDebuffs / bindingPoisonState / stateWithMinDuration = " + stateWithMinDuration);
                         bindingPoisonState.CurrentStacks--;
-                        Debug.Log("AbsorptionOfPoisons / CmdCheckTargetWithDebuffs / bindingPoisonState.CurrentStacks = " + bindingPoisonState.CurrentStacks);
                     }
                 }
 

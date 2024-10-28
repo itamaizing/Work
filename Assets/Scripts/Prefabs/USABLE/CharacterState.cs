@@ -533,12 +533,9 @@ public class CharacterState : NetworkBehaviour
 			{
                 if (currentStates[i].State == state)
 				{
-                    if (currentStates[i].CurrentStacksCount < currentStates[i].MaxStacksCount)
-					{
-						currentStates[i].Stack(duration);
+					currentStates[i].Stack(duration);
 
-						_stateIcons.ActivateIco(state, duration, 1, true);
-					}
+					_stateIcons.ActivateIco(state, duration, 1, true);
 
 					break;
 				}

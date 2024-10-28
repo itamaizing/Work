@@ -1844,7 +1844,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: OwnElement
-    IsOpen: 1
+    IsOpen: 0
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7418347446368758987}
@@ -1892,7 +1892,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: ReleaseFromSecrecy
-    IsOpen: 1
+    IsOpen: 0
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7418347446368758987}
