@@ -423,8 +423,11 @@ public abstract class Skill : NetworkBehaviour
 
     protected Character GetRaycastTarget(bool isCanTargetHimself = false)
     {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit[] rayHit = Physics.RaycastAll(ray);
+
+
         Character target = null;
-        RaycastHit[] rayHit = Physics.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 99, TargetsLayers);
 
         foreach (var item in rayHit)
         {
@@ -529,17 +532,20 @@ public abstract class Skill : NetworkBehaviour
 
     protected bool IsMouseInRadius(float radius)
     {
-        float distance = Vector3.Distance(
-            new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, transform.position.z),
-            transform.position
-            );
+        float distance = Vector3.Distance(GetMousePoint(), transform.position);
 
         return distance <= radius;
     }
 
-    protected Vector2 GetMousePoint()
+    protected Vector3 GetMousePoint()
     {
-        return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            return hit.point;
+        }
+        return Vector3.zero;
     }
 
     protected bool TryUseCharge()

@@ -13,9 +13,9 @@ public class TestH3 : Skill
 
     protected override bool IsCanCast { get => CheckCanCast(); }
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+    protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+    protected override int AnimTriggerCast => 0;
 
     private bool CheckCanCast()
     {
@@ -54,6 +54,8 @@ public class TestH3 : Skill
                 _target = GetRaycastTarget();
                 _targetPoint = GetMousePoint();
             }
+            Debug.Log(_target);
+            Debug.Log(_targetPoint);
             yield return null;
         }
     }

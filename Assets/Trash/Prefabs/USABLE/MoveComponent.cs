@@ -74,9 +74,12 @@ public class MoveComponent : NetworkBehaviour
 			_camera = Camera.main;
 			return;
 		}
-		/*
+		
 		if (IsSelect == false)
+        {
 			_dir = Vector2.zero;
+		}
+			
 
 		_currentVelocity = Vector3.SmoothDamp(_currentVelocity, _dir, ref _currentVelocityTemp, _smoothTime); // Move from camera
 
@@ -86,23 +89,22 @@ public class MoveComponent : NetworkBehaviour
 
 		_rigidbody.velocity = camDir * _currentSpeed;
 
-
-
-		Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
-		Debug.DrawRay(_camera.transform.position, ray.direction);
-		RaycastHit hit;
-		if (Physics.Raycast(ray, out hit))
-		{
-			var transformRotate = transform.eulerAngles;
-			transform.LookAt(hit.point);
-			transform.eulerAngles = (new Vector3(transformRotate.x, transform.eulerAngles.y, transformRotate.z));
+		if(IsSelect == true)
+        {
+			Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
+			RaycastHit hit;
+			if (Physics.Raycast(ray, out hit))
+			{
+				var transformRotate = transform.eulerAngles;
+				transform.LookAt(hit.point);
+				transform.eulerAngles = (new Vector3(transformRotate.x, transform.eulerAngles.y, transformRotate.z));
+			}
 		}
-
 
 		var animDir = transform.InverseTransformPoint(transform.position + camDir);
 		_anim.SetFloat("Y", animDir.z);
 		_anim.SetFloat("X", animDir.x);
-		*/
+		
 	}
 
 	private void OnMove(Vector2 dir)

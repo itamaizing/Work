@@ -134,7 +134,7 @@ public class SkillRenderer : NetworkBehaviour
             RotateAtMouse(_lineStartImage.transform);
             RotateAtMouse(_lineEndImage.transform);
 
-            Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, 0);
+            Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, 0, Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
             var vector = (mouse - transform.position);
             var dir = vector.normalized;
 
@@ -158,14 +158,14 @@ public class SkillRenderer : NetworkBehaviour
 
     private IEnumerator DrawAreaJob(float radius, Damage damage, LayerMask layerMask, CircleArea areaPref)
     {
-        Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, 0);
+        Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x,0 , Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
 
         _tempArea = Instantiate(areaPref, mouse, Quaternion.identity);
         _tempArea.SetSize(radius, damage);
 
         while (true)
         {
-            mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, 0);
+            mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x,0 , Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
             _tempArea.transform.position = mouse;
             yield return null;
         }
