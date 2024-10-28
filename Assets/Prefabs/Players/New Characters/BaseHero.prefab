@@ -5210,6 +5210,7 @@ GameObject:
   - component: {fileID: 2361216367366023055}
   - component: {fileID: 2033979471161655476}
   - component: {fileID: 8505203594987819018}
+  - component: {fileID: 3389994900111398297}
   - component: {fileID: 2325131165822693477}
   - component: {fileID: 6438771747420870763}
   - component: {fileID: 5630810179120932799}
@@ -5412,6 +5413,23 @@ MonoBehaviour:
   positionSensitivity: 0.01
   rotationSensitivity: 0.01
   scaleSensitivity: 0.01
+--- !u!114 &3389994900111398297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8423443208040621164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f6f3bf89aa97405989c802ba270f815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0
+  clientAuthority: 1
+  animator: {fileID: 8658026411023210807}
 --- !u!114 &2325131165822693477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5463,6 +5481,7 @@ MonoBehaviour:
   rb: {fileID: 2201725961568704641}
   _lvl: {fileID: 8892991801291212352}
   _animator: {fileID: 8658026411023210807}
+  _networkAnimator: {fileID: 3389994900111398297}
   _healthComponent: {fileID: 5834951345091717418}
   Stamina: {fileID: 3919103737457224534}
   _playerMove: {fileID: 8569747795464636412}

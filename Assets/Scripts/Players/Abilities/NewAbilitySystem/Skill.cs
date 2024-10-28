@@ -244,7 +244,9 @@ public abstract class Skill : NetworkBehaviour
             }
 
             _tempTargetbase = null;
+
             _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
+            _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
 
             return true;
         }
@@ -769,7 +771,9 @@ public abstract class Skill : NetworkBehaviour
     private IEnumerator CastDeleyJob(float delayTime)
     {
         CastDeleyStarted?.Invoke(delayTime);
+
         _hero.Animator.SetTrigger(AnimTriggerCastDelay);
+        _hero.NetworkAnimator.SetTrigger(AnimTriggerCastDelay);
 
         float time = 0;
 
@@ -844,11 +848,15 @@ public abstract class Skill : NetworkBehaviour
         if(AnimTriggerCast != 0)
         {
             _isPlayCastAnim = true;
+
             _hero.Animator.SetTrigger(AnimTriggerCast);
+            _hero.NetworkAnimator.SetTrigger(AnimTriggerCast);
         }
         else
         {
             _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
+            _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
+
             yield return _castCoroutine = StartCoroutine(CastJob());
         }
 

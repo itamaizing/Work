@@ -69,10 +69,14 @@ public class MoveComponent : NetworkBehaviour
 	[Client]
 	void Update()
 	{
-		if (!CanMove || _rigidbody == null || _camera == null)
+		if (!CanMove || _rigidbody == null || isOwned == false)
 		{
-			_camera = Camera.main;
 			return;
+		}
+
+        if (_camera == null)
+        {
+			_camera = Camera.main;
 		}
 		
 		if (IsSelect == false)

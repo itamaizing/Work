@@ -12,6 +12,7 @@ public abstract class Character : NetworkBehaviour
 	[SerializeField] private Rigidbody rb;
 	[SerializeField] private Level _lvl;
 	[SerializeField] private Animator _animator;
+	[SerializeField] private NetworkAnimator _networkAnimator;
 	[SerializeField] private Health _healthComponent;
 	public Energy Stamina;
 	//public RuneComponent RuneComponent;
@@ -38,6 +39,7 @@ public abstract class Character : NetworkBehaviour
 	public List<Resource> Resources => _resources;
 	public SelectedCircle SelectedCircle => _selectedCircle;
     public Animator Animator => _animator;
+    public NetworkAnimator NetworkAnimator => _networkAnimator;
 
     public static event Action<Character> ServerOnUnitSpawned;
 	public static event Action<Character> ServerOnUnitDeleted; 
