@@ -48,9 +48,9 @@ public class BottleUserManager : MonoBehaviour
         _currentUser = user;
     }
 
-    public void AddBottleVolume()
+    public void AddBottleVolume(float amount = BottleFillStep)
     {
-        _currentBottleVolume += BottleFillStep;
+        _currentBottleVolume += amount;
 
         if (_currentBottleVolume >= 1f)
         {
@@ -59,6 +59,17 @@ public class BottleUserManager : MonoBehaviour
         }
 
         SaveBottleData();
+    }
+
+    public bool TryUseBottle()
+    {
+        if (_currentBottles > 0)
+        {
+            _currentBottles--;
+            SaveBottleData();
+            return true;
+        }
+        return false;
     }
 
     public int GetCurrentBottles() => _currentBottles;
@@ -79,7 +90,7 @@ public class BottleUserManager : MonoBehaviour
 
     public void LogBottleInfoOnClient()
     {
-        Debug.Log($"Количество бутылей: {_currentBottles}");
-        Debug.Log($"Объем текущего бутыля: {_currentBottleVolume * 100}%");
+        Debug.Log($"Number of bottles: {_currentBottles}");
+        Debug.Log($"The volume of the current bottle: {_currentBottleVolume * 100}%");
     }
 }

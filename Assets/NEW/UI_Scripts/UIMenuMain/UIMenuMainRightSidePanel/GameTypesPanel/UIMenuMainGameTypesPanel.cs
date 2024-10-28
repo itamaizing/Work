@@ -16,8 +16,11 @@ public class UIMenuMainGameTypesPanel : MonoBehaviour
     private List<UIMenuMainGameTypesPanelMainTypeItem> _mainGameTypes = new();
     private List<UIMenuMainGameTypesPanelCountTypeItem> _countGameTypes = new();
 
+    public GameMode SelectedGameMode { get; private set; }
 
-	public void Show()
+    public List<UIMenuMainGameTypesPanelCountTypeItem> GameTypeCountTypeItems => gameTypeCountTypeItem;
+
+    public void Show()
     {
         if(Owner == null) return;
 
@@ -38,11 +41,12 @@ public class UIMenuMainGameTypesPanel : MonoBehaviour
 		 }
 	}
 
-	private void OnCountModeSelected(GameMode mode)
+    private void OnCountModeSelected(GameMode mode)
     {
+        SelectedGameMode = mode;
         ServerManager.Instance.SetMode(mode);
     }
-    
+
     public void OnMainModeSelected(MainGameMode mode)
     {
         

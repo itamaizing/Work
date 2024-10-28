@@ -5,13 +5,13 @@ using UnityEngine.Events;
 public class UIMenuMainGameTypesPanelCountTypeItem : MonoBehaviour
 {
     public event UnityAction<GameMode> Selected;
-    
-    [ReadOnly,ShowInInspector]
+
+    [ReadOnly, ShowInInspector]
     public UIMenuMainGameTypesPanel Owner;
-    
+
     [SerializeField] private TMProLocalizer _itemTitle;
     [SerializeField] private GameMode _itemMode;
-    
+
     public void Fill()
     {
         _itemTitle.Localize(_itemMode.ToString());

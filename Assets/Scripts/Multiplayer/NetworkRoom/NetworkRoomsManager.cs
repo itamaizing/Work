@@ -35,7 +35,7 @@ public class NetworkRoomsManager : NetworkBehaviour
 				_maxPlayers = 6;
 				break;
 
-			case GameMode.GMMAXVsMAX:
+			case GameMode.GM1vs1MaximumMode:
 				_maxPlayers = 2;
 
 				break;
@@ -47,7 +47,7 @@ public class NetworkRoomsManager : NetworkBehaviour
 		if (_rooms.Count <= 0 || _rooms[^1].IsHaveSlot == false)
         {
 			NetworkRoom room = new NetworkRoom();
-			room.Init(_scene, _maxPlayers);
+			room.Init(_scene, _maxPlayers, _gameMode);
 
 			_rooms.Add(room);
 
@@ -79,7 +79,7 @@ public enum GameMode
 	GM2vs2,
 	GM3vs3,
 	GMAllvsAll,
-	GMMAXVsMAX,
+	GM1vs1MaximumMode,
 	None
 }
 

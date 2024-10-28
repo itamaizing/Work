@@ -13,6 +13,7 @@ public class ServerManager : NetworkBehaviour
     private int _currentHeroIndex = 0;
     private GameMode _currentGameMode = GameMode.GM1vs1;
 
+    public GameMode CurrentGameMode => _currentGameMode;
     public static ServerManager Instance => _instance;
     public List<HeroComponent> HeroList => _heroList;
 

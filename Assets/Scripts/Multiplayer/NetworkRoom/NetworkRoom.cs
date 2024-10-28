@@ -13,6 +13,7 @@ public class NetworkRoom
     private Scene _currentRoom;
     private bool _isLoaded;
 
+    public GameMode GameMode { get; private set; }
     public bool IsHaveSlot { get => _maxNumPlayers > _players.Count; }
     public int NumOfFreeSlots { get => _maxNumPlayers - _players.Count; }
     public List<GameObject> Players => _players;
@@ -22,8 +23,9 @@ public class NetworkRoom
     public event UnityAction<NetworkRoom> SlotsEnded;
     public event UnityAction<NetworkRoom> RoomClosed;
 
-    public void Init(string scene, int maxNumPlayers)
+    public void Init(string scene, int maxNumPlayers, GameMode gameMode)
     {
+        GameMode = gameMode;
         _scene = scene;
         _maxNumPlayers = maxNumPlayers;
         _players = new List<GameObject>();

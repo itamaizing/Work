@@ -99,14 +99,50 @@ public class TestGameRules : GameRules
 
     private void EndGame()
     {
-        if (isServer)
+        if (!isServer) return;
+
+        GameMode currentMode = ServerManager.Instance.CurrentGameMode;
+        bool isMaxLevel = LevelPlayerManager.Instance.GetCurrentLevel() >= 9;
+        bool isVictory = team1Score >= 2;
+
+        switch (currentMode)
         {
-            int experienceReward = team1Score >= 2 ? 20 : 5;
-            LevelPlayerManager.Instance.AddExperience(experienceReward);
-            if (team1Score >= 2 || team2Score >= 2) BottleUserManager.Instance.AddBottleVolume();
-            RpcCloseRoomOnClients();
-            StartCoroutine(CloseRoomJob());
+            case GameMode.GM1vs1MaximumMode:
+                if (isVictory)
+                {
+                    if (isMaxLevel)
+                    {
+                        BottleUserManager.Instance.AddBottleVolume(1f / 3f);
+                    }
+                    else
+                    {
+                        LevelPlayerManager.Instance.AddExperience(6);
+                        BottleUserManager.Instance.AddBottleVolume(1f / 3f);
+                    }
+                }
+                else if (!isMaxLevel)
+                {
+                    LevelPlayerManager.Instance.AddExperience(2);
+                }
+                break;
+
+            default:
+                if (isVictory)
+                {
+                    if (isMaxLevel)
+                    {
+                        BottleUserManager.Instance.AddBottleVolume(1f / 3f);
+                    }
+                    else
+                    {
+                        LevelPlayerManager.Instance.AddExperience(2);
+                    }
+                }
+                break;
         }
+
+        RpcCloseRoomOnClients();
+        StartCoroutine(CloseRoomJob());
     }
 
     [ClientRpc]
