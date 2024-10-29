@@ -9,6 +9,9 @@ public abstract class AbstractCharacterState
 	protected Health _health;
 	protected Character _personWhoMadeBuff;
 
+	public int CurrentStacksCount = 0;
+	public int MaxStacksCount = 0;
+
 	public abstract States State { get; }
 	public abstract StateType Type { get; }
 	public abstract List<StatusEffect> Effects { get; }
@@ -251,6 +254,9 @@ public class CharacterState : NetworkBehaviour
 		[States.Knockdown] = new Knockdown(),
 		[States.IdealEvade] = new IdealEvade(),
 		[States.Bleeding] = new BleedingDebuff(),
+		[States.EmeraldSkin] = new EmeraldSkinState(),
+		[States.DefenseReduction] = new DefenceReductionState(),
+		[States.SparkTalentHealthBuff] = new SparkTalentHealthState()
 	};
 
 	public void Initialize(Character hero)
@@ -363,6 +369,11 @@ public class CharacterState : NetworkBehaviour
 
 	public void RemoveState(AbstractCharacterState newState)
 	{
+		if (newState is IDamageable damageableShield)
+		{
+			RemoveShield(damageableShield);
+		}
+		
 		if (currentStates.Contains(newState))
 		{
 			currentStates.Remove(newState);
@@ -371,7 +382,6 @@ public class CharacterState : NetworkBehaviour
 
 	private void RemoveStateLogic(States stateName)
 	{
-		Debug.Log("Remove state logic" + stateName);
 		if (currentStates.Count <= 0) return;
 
 		_stateIcons.RemoveItemByState(stateName);
@@ -379,7 +389,14 @@ public class CharacterState : NetworkBehaviour
 		{
 			if (currentStates[i].State == stateName)
 			{
+				if (currentStates[i] is IDamageable damageableShield)
+				{
+					RemoveShield(damageableShield);
+				}
+				
 				currentStates[i].ExitState();
+				
+				currentStates.RemoveAt(i);
 			}
 		}
 	}
@@ -398,32 +415,37 @@ public class CharacterState : NetworkBehaviour
 		RemoveStateLogic(stateName);
 	}
 
-	private void AddStateLogic(States state, float duration, float damageToExit, Schools school, GameObject personWhoShooted, string skillName)
+	private void AddStateLogic(States state, float duration, float damageToExit, Schools school,
+		GameObject personWhoShooted, string skillName)
 	{
-		Debug.Log("Add state logic");
-		if (invinsible)
-			return;
+		if (invinsible) return;
+
+		Debug.Log(state);
+
 		if (CheckForState(state))
 		{
 			for (int i = 0; i < currentStates.Count; i++)
 			{
-				if (currentStates[i].State != state) continue;
+				if (currentStates[i].State == state)
+				{
+					if (currentStates[i].CurrentStacksCount < currentStates[i].MaxStacksCount)
+					{
+						currentStates[i].Stack(duration);
+						_stateIcons.ActivateIco(state, duration, 1, true);
+					}
 
-				if (currentStates[i].Stack(duration))
-				{
-					_stateIcons.ActivateIco(state, duration, 1, true);
-				}
-				else
-				{
-					CreateState(enumToState[state], state, duration, damageToExit, personWhoShooted, skillName, false);
 					break;
-					//nothing at this time??
 				}
 			}
 		}
 		else
 		{
 			CreateState(enumToState[state], state, duration, damageToExit, personWhoShooted, skillName, false);
+
+			if (enumToState[state] is IDamageable damageableShield)
+			{
+				AddShield(damageableShield);
+			}
 
 			if (school != Schools.None)
 			{
@@ -444,6 +466,26 @@ public class CharacterState : NetworkBehaviour
 		else
 		{
 			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit, null, skillName);
+		}
+	}
+	
+	private void AddShield(IDamageable shield)
+	{
+		var health = _hero.GetComponent<Health>();
+		if (health != null)
+		{
+			Debug.Log("Add Shield By " + shield);
+			health.Shields.Add(shield);
+		}
+	}
+
+	private void RemoveShield(IDamageable shield)
+	{
+		var health = _hero.GetComponent<Health>();
+		if (health != null)
+		{
+			Debug.Log("Remove Shield By " + shield);
+			health.Shields.Remove(shield);
 		}
 	}
 }
@@ -492,4 +534,7 @@ public enum States
 	IdealEvade,
 	Bleeding,
 
+	EmeraldSkin,
+	SparkTalentHealthBuff,
+	DefenseReduction
 }

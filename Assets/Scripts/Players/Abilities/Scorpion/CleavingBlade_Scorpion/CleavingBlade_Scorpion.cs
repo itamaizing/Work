@@ -107,7 +107,6 @@ public class CleavingBlade_Scorpion : Skill
             {
                 Value = Buff.Damage.GetBuffedValue(DamageRange * damageMultiplier),
                 Type = DamageType,
-                Range = AttackRangeType,
             };
 
             CmdAttack(damage, _target.gameObject, shouldIncreaseCounter);

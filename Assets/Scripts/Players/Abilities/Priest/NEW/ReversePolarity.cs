@@ -1,4 +1,5 @@
 using System.Collections;
+using Mirror;
 using UnityEngine;
 
 public class ReversePolarity : Skill
@@ -41,12 +42,26 @@ public class ReversePolarity : Skill
 
     private void ApplyReversePolarityEffect()
     {
-        Hero.CharacterState.CmdAddState(States.ReversePolarity, -1f, 0, transform.parent.gameObject, "ReversePolarity");
+        CmdAddBaff(States.ReversePolarity, -1f, 0, transform.parent.gameObject, "ReversePolarity");
     }
 
     private void RemoveReversePolarityEffect()
     {
-        Hero.CharacterState.CmdRemoveState(States.ReversePolarity);
+        CmdRemoveBuff(States.ReversePolarity, Hero.gameObject);
+    }
+    
+    [Command]
+    private void CmdAddBaff(States darkState, float duration, float damagePerTick, GameObject target, string skillName)
+    {
+        var characterState = target.GetComponent<CharacterState>();
+        characterState.AddState(darkState, duration, damagePerTick, target, skillName);
+    }
+    
+    [Command]
+    private void CmdRemoveBuff(States state, GameObject target)
+    {
+        var characterState = target.GetComponent<CharacterState>();
+        characterState.RemoveState(state);
     }
 
     private void SwitchSpells()

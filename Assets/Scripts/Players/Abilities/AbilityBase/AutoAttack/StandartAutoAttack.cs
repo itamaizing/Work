@@ -1,6 +1,3 @@
-using Mirror;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class StandartAutoAttack : AutoAttackSkill
@@ -17,7 +14,7 @@ public class StandartAutoAttack : AutoAttackSkill
         {
             Value = Buff.Damage.GetBuffedValue(_damage),
             Type = DamageType,
-            Range = AttackRangeType,
+            PhysicAttackType = AttackRangeType,
         };
         CmdApplyDamage(damage, _target.gameObject);
     }

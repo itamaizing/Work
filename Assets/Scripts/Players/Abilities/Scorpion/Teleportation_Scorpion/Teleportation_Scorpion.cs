@@ -1,5 +1,6 @@
 using Mirror;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 public class Teleportation_Scorpion : Skill, ICanConsumeComboPoints
@@ -12,7 +13,7 @@ public class Teleportation_Scorpion : Skill, ICanConsumeComboPoints
     [SerializeField] private int _baseManaCost;
     [SerializeField] private int _manaCostPerTile = 5;
     [SerializeField] private LayerMask _layerMask;
-    [Tooltip("Указывать размер модели всех персонажей, можно с небольшим запасом")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
     [SerializeField] private float _offset = 2.1f;
     private Character _target;
 
@@ -78,14 +79,14 @@ public class Teleportation_Scorpion : Skill, ICanConsumeComboPoints
             float angle = 0f;
             Vector3 newPosition;
 
-            while (angle != 180) // полный круг, тк идем сразу в две стороны
+            while (angle != 180) // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             {
                 angle += 5;
 
                 newPosition = _target.transform.position + Quaternion.Euler(0, 0, angle) * offset;
                 if (!Physics2D.OverlapCircle(newPosition, _offset /2 , _layerMask))
                 {
-                    Debug.Log($"Place was found with offset angle {angle}°");
+                    Debug.Log($"Place was found with offset angle {angle}пїЅ");
                     teleportPosition = newPosition;
                     return newPosition;
                 }
@@ -93,7 +94,7 @@ public class Teleportation_Scorpion : Skill, ICanConsumeComboPoints
                 newPosition = _target.transform.position + Quaternion.Euler(0, 0, angle) * offset;
                 if (!Physics2D.OverlapCircle(newPosition, _offset / 2, _layerMask))
                 {
-                    Debug.Log($"Place was found with offset angle {angle}°");
+                    Debug.Log($"Place was found with offset angle {angle}пїЅ");
                     teleportPosition = newPosition;
                     return newPosition;
                 }
@@ -106,15 +107,15 @@ public class Teleportation_Scorpion : Skill, ICanConsumeComboPoints
     }
     private float GetCurrentRadius()
     {
-        return _minRadius + 1f * (int)(CalculateCurrentScale() / _manaCostPerTile); // изначальный r + 1 клетка за 5 маны (сейчас по 0.2 клетки за 1 ману, если надо будет поправить, быстро меняется)
+        return _minRadius + 1f * (int)(CalculateCurrentScale() / _manaCostPerTile); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ r + 1 пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ 5 пїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ 0.2 пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ 1 пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ)
     }
-    private int CalculateCurrentScale() // свободная мана без учета изначальной стоимости
+    private int CalculateCurrentScale() // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     {
         //_hero.Stamina.Value
         //_mana.value;
-        if(_hero.Stamina.CurrentValue >= _baseManaCost)
+        if(_hero.Resources.First(o=>o.Type == ResourceType.Mana || o.Type == ResourceType.Energy).CurrentValue >= _baseManaCost)
         {
-            return (int)((_hero.Stamina.CurrentValue - _baseManaCost) / 1);
+            return (int)((_hero.Resources.First(o=>o.Type == ResourceType.Mana || o.Type == ResourceType.Energy).CurrentValue - _baseManaCost) / 1);
         }
 
         return 0;
@@ -124,7 +125,7 @@ public class Teleportation_Scorpion : Skill, ICanConsumeComboPoints
         int dist = (int)Mathf.Ceil(distance);
 
         if (dist <= 2) return _baseManaCost;
-        else return (int)Mathf.Clamp(_baseManaCost + (dist - 2) * _manaCostPerTile, 0, _playerLinks.Stamina.MaxValue);
+        else return (int)Mathf.Clamp(_baseManaCost + (dist - 2) * _manaCostPerTile, 0, _playerLinks.Resources.First(o=>o.Type == ResourceType.Mana || o.Type == ResourceType.Energy).MaxValue);
 
     }
 

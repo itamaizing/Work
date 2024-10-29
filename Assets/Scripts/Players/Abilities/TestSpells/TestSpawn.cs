@@ -16,10 +16,8 @@ public class TestSpawn : Skill
 
     protected override IEnumerator CastJob()
     {
-        if(Hero is HeroComponent hero)
-        {
-            hero.SpawnComponent.CmdSpawnUnit(0, _position);
-        }
+        Hero.SpawnComponent.CmdSpawnUnit(0, _position);
+        
         yield return null;
     }
 

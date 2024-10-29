@@ -62,7 +62,7 @@ public class MinionAttack : AutoAttackSkill
 		{
 			Value = 1 + Random.Range(0, 2),
 			Type = DamageType.Physical,
-			Range = AttackRangeType.MeleeAttack,
+			PhysicAttackType = AttackRangeType.MeleeAttack,
 		};
 		_target.Health.TryTakeDamage(ref damage, this);
 	}

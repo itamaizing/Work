@@ -7,7 +7,7 @@ public class Restoration : Skill
     [Header("Restoration (Light Mode) Settings")]
     [SerializeField] private float healPerTick = 6f;
     [SerializeField] private float lightRange = 4f;
-    [SerializeField] private float lightDuration = 12f;
+    [SerializeField] private float lightDuration = 12.1f;
     [SerializeField] private float healInterval = 4f;
     [SerializeField] private float lightCastTime = 1.2f;
     [SerializeField] private float effectivenessIncreasePerHeal = 0.1f;
@@ -15,7 +15,7 @@ public class Restoration : Skill
     [Header("Restoration (Dark Mode) Settings")]
     [SerializeField] private float damagePerTick = 6f;
     [SerializeField] private float darkRange = 6f;
-    [SerializeField] private float darkDuration = 12f;
+    [SerializeField] private float darkDuration = 12.1f;
     [SerializeField] private float damageInterval = 3f;
     [SerializeField] private float darkCastTime = 1.2f;
 
@@ -106,7 +106,7 @@ public class Restoration : Skill
         }
     }
     
-    private void OnHealTaken(float healedAmount, Skill skill)
+    private void OnHealTaken(float healedAmount, Skill skill, string sourceName)
     {
         _totalHealedInInterval += healedAmount;
     }
@@ -121,7 +121,9 @@ public class Restoration : Skill
             while (Time.time < endTime)
             {
                 float effectiveHeal = healPerTick * _accumulatedEffectiveness;
-                healthComponent.Heal(effectiveHeal);
+                
+                var heal = new Heal { Value = effectiveHeal };
+                CmdApplyHeal(heal, healthComponent.gameObject, this, name);
                 
                 _accumulatedEffectiveness += _totalHealedInInterval * effectivenessIncreasePerHeal;
                 
@@ -146,7 +148,7 @@ public class Restoration : Skill
                 {
                     Value = Buff.Damage.GetBuffedValue(damagePerTick),
                     Type = DamageType.Magical,
-                    Range = AttackRangeType.RangeAttack
+                    PhysicAttackType = AttackRangeType.RangeAttack
                 };
                 
                 CmdApplyDamage(damage, target.gameObject);
@@ -189,7 +191,7 @@ public class Restoration : Skill
         ResetAccumulatedEffectiveness();
     }
 
-    public void ResetAccumulatedEffectiveness()
+    private void ResetAccumulatedEffectiveness()
     {
         _accumulatedEffectiveness = 1f;
     }

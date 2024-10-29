@@ -14,13 +14,12 @@ public abstract class Character : NetworkBehaviour
 	[SerializeField] private Animator _animator;
 	[SerializeField] private NetworkAnimator _networkAnimator;
 	[SerializeField] private Health _healthComponent;
-	public Energy Stamina;
-	//public RuneComponent RuneComponent;
 	[SerializeField] private MoveComponent _playerMove; 
 	[SerializeField] private SkillManager _abilities;
 	[SerializeField] private CharacterState _characterState;
 	[SerializeField] private UIPlayerComponents uiComponent;
-	[SerializeField] private SelectComponent _selectComponent; 
+	[SerializeField] private SelectComponent _selectComponent;
+	[SerializeField] private DamageTracker _damageTracker;
 	[SerializeField] private List<Resource> _resources;
 	[SerializeField] private SelectedCircle _selectedCircle;
 	[SerializeField] private SpawnComponent _spawnComponent;
@@ -36,6 +35,7 @@ public abstract class Character : NetworkBehaviour
 	public CharacterState CharacterState => _characterState;
 	public UIPlayerComponents UIComponent => uiComponent;
 	public SelectComponent SelectComponent => _selectComponent;
+	public DamageTracker DamageTracker => _damageTracker;
 	public List<Resource> Resources => _resources;
 	public SelectedCircle SelectedCircle => _selectedCircle;
     public Animator Animator => _animator;

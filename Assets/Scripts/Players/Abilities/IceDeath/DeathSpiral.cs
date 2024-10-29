@@ -13,6 +13,7 @@ public class DeathSpiral : Skill
 	[SerializeField] private SpawnComponent _spawnComponent;
 	[SerializeField] private PlagueAbsorption _plagueAbsorption;
 
+	private Heal _heal;
 	private float _timer = 1f;
 	private Vector2 _mousePos = Vector3.positiveInfinity;
 	private bool _superCharge = false;
@@ -189,12 +190,14 @@ public class DeathSpiral : Skill
 				{
 					if (_inTheRow)
 					{
-						_playerLinks.Health.Heal(10);
+						var heal = new Heal { Value = 10 };
+						_playerLinks.Health.Heal(ref heal,name);
 						return;
 					}
 					else
 					{
-						_playerLinks.Health.Heal(20);
+						var heal = new Heal { Value = 20 };
+						_playerLinks.Health.Heal(ref heal,name);
 						return;
 					}
 				}

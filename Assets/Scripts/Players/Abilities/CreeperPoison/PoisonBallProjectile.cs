@@ -2,6 +2,7 @@ using DG.Tweening;
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PoisonBallProjectile : NetworkBehaviour
@@ -90,7 +91,7 @@ public class PoisonBallProjectile : NetworkBehaviour
     #region Making Damage
     private void DealDamage(HealthComponent targetHealth, float currentDamage, DamageType damageType, AttackRangeType attackRangeType)
     {
-        Energy _energyLink = (Energy)_dad.GetComponent<Character>().Stamina;
+        Energy _energyLink = (Energy)_dad.GetComponent<Character>().Resources.FirstOrDefault();
         _energyLink.SumDamageMake(currentDamage);
 
         targetHealth.TryTakeDamage(currentDamage, damageType, attackRangeType);

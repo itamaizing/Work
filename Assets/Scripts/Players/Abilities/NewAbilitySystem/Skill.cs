@@ -47,6 +47,10 @@ public enum SkillType
 
 public abstract class Skill : NetworkBehaviour
 {
+    [Header("Talent State")]
+    [SerializeField] protected bool _isTalentSpell = false;
+    [SerializeField] protected bool _isSkillActive = true;
+    
     [Header("AbilitiesInfo")]
     [SerializeField] private AbilityInfo _abilityInfo;
     [Header("Main Settings")]
@@ -106,6 +110,13 @@ public abstract class Skill : NetworkBehaviour
     private bool _isShiftClick;
     private bool _isCtrlClick;
     private bool _isPlayCastAnim;
+
+    public bool IsTalentSpell => _isTalentSpell;
+    public bool IsSkillActive
+    {
+        get => _isSkillActive;
+        set => _isSkillActive = value;
+    }
 
     public bool GetMouseButton { get => _isClick || _isShiftClick || _isCtrlClick; }
     public bool IsSubjectToGlobalCooldownTime { get => _isSubjectToGlobalCooldownTime; }
@@ -266,6 +277,16 @@ public abstract class Skill : NetworkBehaviour
 
         _cooldownJob = StartCoroutine(CooldownCoroutine(time));
     }
+    
+    public void DecreaseSetCooldown(float time)
+    {
+        var timeToSet = _remainingCooldownTime - time <= 0 ? _remainingCooldownTime - time : 0;
+
+        if (_cooldownJob != null)
+            StopCoroutine(_cooldownJob);
+
+        _cooldownJob = StartCoroutine(CooldownCoroutine(timeToSet));
+    }
 
     public void ReductionSetCooldown(float time)
     {
@@ -348,7 +369,6 @@ public abstract class Skill : NetworkBehaviour
 		{
 			Value = Damage,
 			Type = DamageType,
-			Range = AttackRangeType,
 		};
 		_skillRender.CmdDrawDamageZone(position, Area, damage, _hero.gameObject);
     }
@@ -374,7 +394,6 @@ public abstract class Skill : NetworkBehaviour
 		{
 			Value = Damage,
 			Type = DamageType,
-			Range = AttackRangeType,
 		};
         Debug.Log(_skillRender + " Skill render\n ");
         Debug.Log(Radius + " \n ");
@@ -798,14 +817,7 @@ public abstract class Skill : NetworkBehaviour
         while (time < CastStreamDuration)
         {
             time += _manaCostRate;
-            if (_hero.Stamina.CurrentValue >= _manaCostPerTick)
-            {
-                _hero.Stamina.TryUse(_manaCostPerTick);
-            }
-            else
-            {
-                TryCancel(true);
-            }
+            if (!TryPayCost()) TryCancel() ;
             yield return new WaitForSeconds(_manaCostRate);
         }
         _castStreamCoroutine = null;
@@ -928,15 +940,40 @@ public abstract class Skill : NetworkBehaviour
         ClearData();
     }
 
+    private void ApplyDamage(Damage damage, GameObject target)
+    {
+        Hero.DamageTracker.AddDamage(damage);
+        target.GetComponent<Health>().TryTakeDamage(ref damage, this);
+    }
+    
     [Command]
-    protected void CmdApplyDamage(Damage damage, GameObject hp)
+    public void CmdApplyDamage(Damage damage, GameObject target)
+    {
+        if (_tempTargetForDamage != target.transform)
+        {
+            _tempTargetForDamage = target.transform;
+            _tempHPForDamage = target.GetComponent<Health>();
+        }
+        
+        ApplyDamage(damage, target);
+    }
+
+    private void ApplyHeal(Heal heal, GameObject hp, Skill skill, string sourceName)
+    {
+        hp.GetComponent<Health>().Heal(ref heal, sourceName, skill);
+        Hero.DamageTracker.AddHeal(heal);
+    }
+    
+    [Command]
+    public void CmdApplyHeal(Heal heal, GameObject hp, Skill skill, string sourceName)
     {
         if (_tempTargetForDamage != hp.transform)
         {
             _tempTargetForDamage = hp.transform;
             _tempHPForDamage = hp.GetComponent<Health>();
         }
-        _tempHPForDamage.TryTakeDamage(ref damage, this);
+
+        ApplyHeal(heal, hp, skill, sourceName);
     }
 
     private void SubscribeClickEvents()

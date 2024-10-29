@@ -18,7 +18,6 @@ public class IceCloudProjectile : Projectiles
 		{
 			Value = _curDamage,
 			Type = DamageType.Physical,
-			Range = AttackRangeType.RangeAttack,
 		};
 	}
 

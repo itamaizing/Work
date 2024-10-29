@@ -59,7 +59,6 @@ public class PhysicalAttack : AutoAttackSkill
 			{
 				Value = curDamage,
 				Type = DamageType.Physical,
-				Range = AttackRangeType.MeleeAttack,
 			};
 			CmdApplyDamage(damage, enemy.gameObject);
 
@@ -87,7 +86,6 @@ public class PhysicalAttack : AutoAttackSkill
 			{
 				Value = curDamage,
 				Type = DamageType.Physical,
-				Range = AttackRangeType.MeleeAttack,
 			};
 			CmdApplyDamage(damage, enemy.gameObject);
 			_multiplier = 1 + _combo.GetMultipliedSpeed() / 100;
@@ -108,7 +106,6 @@ public class PhysicalAttack : AutoAttackSkill
 			{
 				Value = _damage * 0.5f,
 				Type = DamageType.Physical,
-				Range = AttackRangeType.MeleeAttack,
 			};
 			CmdApplyDamage(damage, _curTarget.gameObject);
 			//_curTarget.Health.TryTakeDamage(_damage * .5f, DamageType.Physical, AttackRangeType.MeleeAttack);

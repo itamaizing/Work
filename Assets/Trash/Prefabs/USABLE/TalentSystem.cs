@@ -84,6 +84,23 @@ public class TalentsGroup
 
         return bonus;
     }
+    
+    public void SetActive(TalentData data, bool isActive)
+    {
+        var talent = TalentsData.FirstOrDefault(a => a.Data == data);
+        if(talent == null) return;
+        
+        talent.SetActive(isActive);
+
+        if (isActive)
+        {
+            talent.Enter();   
+        }
+        else
+        {
+            talent.Exit();
+        }
+    }
 }
 
 public class TalentSystem : NetworkBehaviour
@@ -216,7 +233,6 @@ public class TalentSystem : NetworkBehaviour
 
     public void Add(Talent talent)
     {
-        // _activeTalents.Add(talent);
         talent.Enter();
         talent.SetActive(true);
     }
@@ -225,7 +241,6 @@ public class TalentSystem : NetworkBehaviour
     {
         talent.Exit();
         talent.SetActive(false);
-        // _activeTalents.Remove(talent);
     }
 
     public int GetActiveTalentCount()

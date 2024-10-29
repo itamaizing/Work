@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -20,12 +20,13 @@ public class SkillManager : MonoBehaviour
     private SkillQueue _skillQueue;
     private AutoAttackQueue _autoAttackQueue;
     private Skill _selectedSkill;
-
-    public TalentSystem TalentSystem => _talentSystem;
-    public List<Skill> Abilities => _skills;
+    public TalentSystem TalesntSystem => _talentSystem;
     public SkillQueue SkillQueue { get => _skillQueue; }
     public Skill[] SelectedSkills { get => _selectedSkills; }
 
+    public IEnumerable<Skill> DefaultSkills => _skills.Where(o => o.IsTalentSpell == false);
+    public IEnumerable<Skill> TalentsSkills => _skills.Where(o => o.IsTalentSpell);
+    public List<Skill> Abilities => _skills;
     public event Action<int> SkillSelected;
     public event Action<int> SkillDeselected;
     public event Action<Skill> SkillAdded;
@@ -34,21 +35,14 @@ public class SkillManager : MonoBehaviour
     private void Awake()
     {
         InputHandler.ScrollMouse += ScrollMouse;
-       // _skillRenderer = GetComponent<SkillRenderer>();
+
         _skillQueue = GetComponent<SkillQueue>();
         _autoAttackQueue = GetComponent<AutoAttackQueue>();
 
         foreach (var item in _skills)
         {
+            AddToSkillLists(item);
             SkillInit(item);
-        }
-
-        for (int i = 0; i < 16; i++)
-        {
-            if (_skills.Count > i)
-                _selectedSkills[i] = _skills[i];
-            else
-                _selectedSkills[i] = null;
         }
     }
 
@@ -81,77 +75,75 @@ public class SkillManager : MonoBehaviour
        
 	}
 
-	public void AddSkill(Skill skill)
+    private void AddToSkillLists(Skill skill)
     {
-        if (_skills.Contains(skill)) return;
-
-        _skills.Add(skill);
-        SkillInit(skill); 
+        if (skill is AutoAttackSkill attackSkill)
+        {
+            _autoAttackSkills.Add(attackSkill);
+        }
+        else
+        {
+            _simpleSkills.Add(skill);
+            skill.CastStarted += GlobalCooldown;
+        }
     }
 
     private void SkillInit(Skill skill)
     {
-		for (int i = 0; i < _selectedSkills.Length; i++)
-		{
-			if (_selectedSkills[i] == null)
-			{
-				_selectedSkills[i] = skill;
-				break;
-			}
-		}
-
-		skill.Init(_skillRenderer, _hero);
-
-		if (skill is AutoAttackSkill attackSkill)
-		{
-			_autoAttackSkills.Add(attackSkill);
-		}
-		else
-		{
-			_simpleSkills.Add(skill);
-			skill.CastStarted += GlobalCooldown;
-		}
-
-		foreach (var simpleSkill in _simpleSkills)
-		{
-			foreach (var autoAttackSkill in _autoAttackSkills)
-			{
-				simpleSkill.CastStarted += autoAttackSkill.Pause;
-				simpleSkill.CastEnded += autoAttackSkill.Continue;
-			}
-		}
-
-		SkillAdded?.Invoke(skill);
-	}
-
-    public void RemoveSkill(Skill skill)
-    {
-        if (!_skills.Contains(skill)) return;
+        skill.Init(_skillRenderer, _hero);
 
         foreach (var simpleSkill in _simpleSkills)
         {
             foreach (var autoAttackSkill in _autoAttackSkills)
             {
-                simpleSkill.CastStarted -= autoAttackSkill.Pause;
-                simpleSkill.CastEnded -= autoAttackSkill.Continue;
+                simpleSkill.CastStarted += autoAttackSkill.Pause;
+                simpleSkill.CastEnded += autoAttackSkill.Continue;
             }
         }
+        
+        ToggleSkillActivation(skill);
+    }
 
-        if (skill is AutoAttackSkill attackSkill)
+    public void ActivateSkill(Skill skill)
+    {
+        for (int i = 0; i < _selectedSkills.Length; i++)
         {
-            _autoAttackSkills.Remove(attackSkill);
+            if (_selectedSkills[i] == null && !_selectedSkills.Contains(skill))
+            {
+                _selectedSkills[i] = skill;
+                break;
+            }
+        }
+        
+        skill.IsSkillActive = true;
+        SkillAdded?.Invoke(skill);
+    }
+
+    public void DeactivateSkill(Skill skill)
+    {
+        for (int i = 0; i < _selectedSkills.Length; i++)
+        {
+            if (_selectedSkills[i] == skill && _selectedSkills.Contains(skill))
+            {
+                _selectedSkills[i] = null;
+                break;
+            }
+        }
+        
+        skill.IsSkillActive = false;
+        SkillRemoved?.Invoke(skill);
+    }
+
+    private void ToggleSkillActivation(Skill skill)
+    {
+        if (skill.IsSkillActive)
+        {
+            ActivateSkill(skill);
         }
         else
         {
-            _simpleSkills.Remove(skill);
-            skill.CastStarted -= GlobalCooldown;
+            DeactivateSkill(skill);
         }
-        _skills.Remove(skill);
-
-        var index = Array.IndexOf(_selectedSkills, skill);
-        _selectedSkills[index] = null;
-
-        SkillRemoved?.Invoke(skill);
     }
 
     public void SetAbilitiesCoolDown(float time)

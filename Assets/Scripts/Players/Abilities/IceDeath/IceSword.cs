@@ -86,7 +86,7 @@ public class IceSword : Skill
 		{
 			Value = _damage,
 			Type = DamageType.Physical,
-			Range = AttackRangeType.RangeAttack,
+			PhysicAttackType = AttackRangeType.RangeAttack,
 		};
 		//_skill.CmdApplyDamage(damage, target.gameObject);
 		CmdApplyDamage(damage2, _target.gameObject);
