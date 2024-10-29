@@ -78,7 +78,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 9.2, y: 9.2}
+  m_Size: {x: 4.5, y: 3.2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -232,7 +232,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  target: {fileID: 3270493855239363353, guid: d490c899d604d2c4dbb3f72e61cacb6e, type: 3}
+  target: {fileID: 8903762149178614652}
   syncPosition: 1
   syncRotation: 0
   syncScale: 0

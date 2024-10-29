@@ -11,9 +11,9 @@ public class Punch_Scorpion : AutoAttackSkill
 
     private Character _lastTarget = null;
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+    protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+    protected override int AnimTriggerAutoAttack => throw new System.NotImplementedException();
 
     protected override void CastAction()
     {

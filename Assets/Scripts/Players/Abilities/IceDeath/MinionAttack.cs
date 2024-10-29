@@ -9,9 +9,8 @@ public class MinionAttack : AutoAttackSkill
 	private bool _isReadyToShot = true;
 	private float _speedBoost = 1;
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
-
-    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerAutoAttack => throw new System.NotImplementedException();
 
     private void CheckEnemy()
 	{

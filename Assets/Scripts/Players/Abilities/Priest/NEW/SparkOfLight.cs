@@ -48,10 +48,9 @@ public class SparkOfLight : AutoAttackSkill
     private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
     private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
-    protected override int AnimTriggerCastDelay => throw new NotImplementedException();
+    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerAutoAttack => throw new NotImplementedException();
 
-    protected override int AnimTriggerCast => throw new NotImplementedException();
-    
     public event Action OnModeChange;
 
     private void OnEnable()

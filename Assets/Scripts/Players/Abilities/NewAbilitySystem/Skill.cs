@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [Serializable]
@@ -97,6 +98,7 @@ public abstract class Skill : NetworkBehaviour
     protected Coroutine _castStreamCoroutine;
     protected Transform _tempTargetForDamage;
     protected Health _tempHPForDamage;
+    protected bool _isPlayCastAnim;
 
     private Character _tempTargetbase;
     private int _currentChargers;
@@ -109,7 +111,6 @@ public abstract class Skill : NetworkBehaviour
     private bool _isClick;
     private bool _isShiftClick;
     private bool _isCtrlClick;
-    private bool _isPlayCastAnim;
 
     public bool IsTalentSpell => _isTalentSpell;
     public bool IsSkillActive
@@ -383,7 +384,7 @@ public abstract class Skill : NetworkBehaviour
         _castCoroutine = StartCoroutine(CastJob());
     }
 
-    protected void AnimCastEnded()
+    protected virtual void AnimCastEnded()
     {
         _isPlayCastAnim = false;
     }
@@ -863,6 +864,11 @@ public abstract class Skill : NetworkBehaviour
 
             _hero.Animator.SetTrigger(AnimTriggerCast);
             _hero.NetworkAnimator.SetTrigger(AnimTriggerCast);
+
+            while (_isPlayCastAnim)
+            {
+                yield return null;
+            }
         }
         else
         {
@@ -872,17 +878,18 @@ public abstract class Skill : NetworkBehaviour
             yield return _castCoroutine = StartCoroutine(CastJob());
         }
 
-        while (_isPlayCastAnim)
-        {
-            yield return null;
-        }
-
         CastEnded?.Invoke();
         _isCasting = false;
 
         ClearData();
 
         _castCoroutine = null;
+    }
+
+    private IEnumerator CancelCoroutine()
+    {
+        yield return new WaitForNextFrameUnit();
+
     }
 
     [ClientRpc]

@@ -15,9 +15,9 @@ public class PhysicalAttack : AutoAttackSkill
 	private RuneComponent _rune;
 	private float _multiplier = 1;
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+    protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+    protected override int AnimTriggerAutoAttack => throw new System.NotImplementedException();
 
     private void Start()
 	{

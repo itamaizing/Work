@@ -8,7 +8,7 @@ public abstract class AutoAttackSkill : Skill
 {
     [Header("AutoAttack settings")]
     [SerializeField] private float _attackZoneSize;
-    [SerializeField] protected float _attackSpeed = 1f;
+    [SerializeField] protected float _attackDelay = 0f;
     [SerializeField] protected float _chargeAttackDelay;
 
     protected Character _target;
@@ -16,15 +16,16 @@ public abstract class AutoAttackSkill : Skill
     private Coroutine _autoAttackCoroutine;
     private bool _isAttacking = false;
     private Vector2 _lastTargetPosition;
+    private bool _isPlayCastAnimAA;
 
 
-	float time = 0;
+    float time = 0;
 	float duration = 1f;
 
     Color startColor = Color.green;
     Color endColor = new Color(0, 1, 0, 0f);
 
-	public float AttackSpeed { get => Buff.AttackSpeed.GetBuffedValue(_attackSpeed); }
+	public float AttackDelay { get => Buff.AttackSpeed.GetBuffedValue(_attackDelay); }
     public Character Target { get => _target; }
     public Vector2 LastTargetPosition { get => _lastTargetPosition; }
     public override bool IsPayCostStartCooldown { get => false; }
@@ -39,6 +40,10 @@ public abstract class AutoAttackSkill : Skill
             return NoObstacles(Target.transform.position, _obstacle) && IsTargetInRadius(Radius, Target.transform); ;
         }
     }
+
+    protected override int AnimTriggerCast => 0;
+
+    protected abstract int AnimTriggerAutoAttack { get; }
 
     private void Update()
     {
@@ -129,6 +134,17 @@ public abstract class AutoAttackSkill : Skill
         }
     }
 
+    protected void AnimCastAction()
+    {
+        CastAction();
+    }
+
+    protected override void AnimCastEnded()
+    {
+        base.AnimCastEnded();
+        _isPlayCastAnimAA = false;
+    }
+
     protected virtual IEnumerator AutoAttackJob()
     {
 		while (Target != null)
@@ -141,23 +157,46 @@ public abstract class AutoAttackSkill : Skill
                 if (_isAttacking && NoObstacles(Target.transform.position, _obstacle))
                 {
                     _lastTargetPosition = Target.transform.position;
-                    yield return StartCastDeleyCoroutine(_chargeAttackDelay);
-                    yield return new WaitForSeconds(AttackSpeed);
+
+                    if(_chargeAttackDelay > 0)
+                        yield return StartCastDeleyCoroutine(_chargeAttackDelay);
+
+                    //yield return new WaitForSeconds(AttackSpeed);
+
                     if (IsTargetInRadius(Radius + _attackZoneSize, Target.transform) && NoObstacles(Target.transform.position, _obstacle) && IsCooldowned)
                     {
                         if (TryPayCost(true))
                         {
-                            CastAction();
+                            if(AnimTriggerAutoAttack != 0)
+                            {
+                                _isPlayCastAnimAA = true;
+                                _hero.Animator.SetTrigger(AnimTriggerAutoAttack);
+                                _hero.NetworkAnimator.SetTrigger(AnimTriggerAutoAttack);
+
+                                while (_isPlayCastAnimAA)
+                                {
+                                    if((IsTargetInRadius(Radius + _attackZoneSize, Target.transform) && NoObstacles(Target.transform.position, _obstacle) && IsCooldowned) == false)
+                                    {
+                                        _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
+                                        _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
+                                        _isPlayCastAnimAA = false;
+                                    }
+                                    yield return null;
+                                }
+                            }
+                            else
+                            {
+                                CastAction();
+                            }
 
                             if (_isAutoattackMode == false)
                             {
                                 ClearData();
                                 yield break;
                             }
-
                         }
                     }
-                    yield return new WaitForSeconds(AttackSpeed);
+                    yield return new WaitForSeconds(AttackDelay);
                 }
 			}
             else
