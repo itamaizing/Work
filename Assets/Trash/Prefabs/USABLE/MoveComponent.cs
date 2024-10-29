@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Mirror;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -24,9 +25,11 @@ public class MoveComponent : NetworkBehaviour
 	private float _defaultSpeed = 5;
 	private Camera _camera;
 
+	private bool _isLookAtCursor = true;
 	private Vector3 _dir;
 	private Vector3 _currentVelocity;
 	private Vector3 _currentVelocityTemp;
+	private Coroutine _lookAtTransformJob;
 
     public void SetOffset(Vector2 offset)
 	{
@@ -52,6 +55,28 @@ public class MoveComponent : NetworkBehaviour
     private void OnDestroy()
     {
 		InputHandler.OnPlayerMove -= OnMove;
+	}
+
+	public void LookAtPosition(Vector3 position)
+    {
+		_isLookAtCursor = false;
+
+		var transformRotate = transform.eulerAngles;
+		transform.LookAt(position);
+		transform.eulerAngles = (new Vector3(transformRotate.x, transform.eulerAngles.y, transformRotate.z));
+	}
+
+	public void LookAtTransform(Transform transform)
+    {
+		_lookAtTransformJob = StartCoroutine(lookAtTransformCoroutine(transform));
+    }
+
+	public void StopLookAt()
+    {
+		if(_lookAtTransformJob != null)
+			StopCoroutine(_lookAtTransformJob);
+
+		_isLookAtCursor = true;
 	}
 
     public void ChangeMoveSpeed(float value)
@@ -107,7 +132,7 @@ public class MoveComponent : NetworkBehaviour
 
 	private void RotateAtCursor()
     {
-		if (IsSelect == true)
+		if (IsSelect == true && _isLookAtCursor == true)
 		{
 			Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hit;
@@ -126,6 +151,12 @@ public class MoveComponent : NetworkBehaviour
 		if (IsSelect)
 			_dir = new Vector3(dir.x, 0, dir.y);
 	}
+
+	private IEnumerator lookAtTransformCoroutine(Transform transform)
+    {
+		LookAtPosition(transform.position);
+		yield return null;
+    }
 
 	[TargetRpc]
 	public void TargetRpcAddForce(Vector2 vector2)
