@@ -117,6 +117,9 @@ public class MoveComponent : NetworkBehaviour
 			_dir = Vector2.zero;
 		}
 
+		if (_camera == null)
+			return;
+
 		_currentVelocity = Vector3.SmoothDamp(_currentVelocity, _dir, ref _currentVelocityTemp, _smoothTime); // Move from camera
 
 		var camDir = _camera.transform.TransformDirection(_currentVelocity);

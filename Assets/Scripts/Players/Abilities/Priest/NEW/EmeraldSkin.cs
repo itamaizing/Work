@@ -13,6 +13,10 @@ public class EmeraldSkin : Skill
 
     protected override bool IsCanCast => CanCastCheck();
 
+    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+
+    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+
     private bool CanCastCheck()
     {
         return !Hero.CharacterState.CheckForState(States.ReversePolarity);
