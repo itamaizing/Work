@@ -4,6 +4,10 @@ public class StandartAutoAttack : AutoAttackSkill
 {
     [SerializeField] private float _damage;
 
+    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+
+    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+
     protected override void CastAction()
     {
         Damage damage = new Damage

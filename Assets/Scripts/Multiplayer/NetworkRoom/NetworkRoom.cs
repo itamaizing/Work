@@ -30,7 +30,7 @@ public class NetworkRoom
     }
 
     [Server]
-    public IEnumerator LoadRoomJob(LocalPhysicsMode physicsMode = LocalPhysicsMode.Physics2D)
+    public IEnumerator LoadRoomJob(LocalPhysicsMode physicsMode = LocalPhysicsMode.Physics3D)
     {
         if (!_isLoaded)
         {

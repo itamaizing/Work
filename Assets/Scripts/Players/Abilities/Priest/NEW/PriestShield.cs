@@ -57,6 +57,10 @@ public class PriestShield : Skill
 
     protected override bool IsCanCast => IsCanCastCheck();
 
+    protected override int AnimTriggerCastDelay => throw new NotImplementedException();
+
+    protected override int AnimTriggerCast => throw new NotImplementedException();
+
     private bool IsCanCastCheck()
     {
         if (_target == null || Time.time < _nextAvailableTime) return false;

@@ -35,7 +35,7 @@ public class DrawCircle : MonoBehaviour
             float x = Mathf.Sin(Mathf.Deg2Rad * angle) * radius;
             float y = Mathf.Cos(Mathf.Deg2Rad * angle) * radius;
 
-            lineRenderer.SetPosition(i, new Vector3(x, y, 0f));
+            lineRenderer.SetPosition(i, new Vector3(x, 0, y));
 
             angle += angleIncrement;
         }

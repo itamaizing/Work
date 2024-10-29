@@ -26,6 +26,10 @@ public class Restoration : Skill
     
     protected override bool IsCanCast => IsCanCastCheck();
 
+    protected override int AnimTriggerCastDelay => throw new NotImplementedException();
+
+    protected override int AnimTriggerCast => throw new NotImplementedException();
+
     private bool IsCanCastCheck()
     {
         if (_target == null) return false;

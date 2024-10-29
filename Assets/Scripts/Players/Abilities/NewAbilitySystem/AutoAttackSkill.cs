@@ -59,7 +59,7 @@ public abstract class AutoAttackSkill : Skill
 		}
 		float t = Mathf.PingPong(Time.time * duration, 1f);
 		Color currentColor = Color.Lerp(startColor, endColor, t);
-		_target.SelectedCircle.Circle.color = currentColor;
+		//_target.SelectedCircle.Circle.color = currentColor;
 		_skillRender.DrawRadiusColor(Radius, currentColor);
 	}
 
@@ -75,7 +75,7 @@ public abstract class AutoAttackSkill : Skill
     {
         if (_target != null)
         {
-            _target.SelectedCircle.Circle.color = Color.green;
+            //_target.SelectedCircle.Circle.color = Color.green;
 			_target.SelectedCircle.IsActive = false;
 		}
 		_skillRender.SetColor(Color.green);

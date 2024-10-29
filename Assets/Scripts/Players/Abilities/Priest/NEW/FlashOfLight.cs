@@ -25,6 +25,10 @@ public class FlashOfLight : Skill
     public event Action OnModeChange;
     
     protected override bool IsCanCast => IsCanCastCheck();
+
+    protected override int AnimTriggerCastDelay => throw new NotImplementedException();
+
+    protected override int AnimTriggerCast => throw new NotImplementedException();
     
     private bool IsCanCastCheck()
     {

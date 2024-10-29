@@ -6,9 +6,13 @@ using UnityEngine.SceneManagement;
 
 public class TestSpawn : Skill
 {
-    private Vector2 _position;
+    private Vector3 _position;
 
     protected override bool IsCanCast => true;
+
+    protected override int AnimTriggerCastDelay => 0;
+
+    protected override int AnimTriggerCast => 0;
 
     protected override IEnumerator CastJob()
     {
@@ -24,7 +28,7 @@ public class TestSpawn : Skill
 
     protected override IEnumerator PrepareJob()
     {
-        while(_position == Vector2.zero)
+        while(_position == Vector3.zero)
         {
             if (GetMouseButton)
             {

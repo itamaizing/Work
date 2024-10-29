@@ -18,7 +18,11 @@ public class PlagueAbsorption : Skill
 
 	protected override bool IsCanCast => IsCanCastCheck();
 
-	private bool IsCanCastCheck()
+    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+
+    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+
+    private bool IsCanCastCheck()
 	{
 		if(_target == null) return false;
 		return true;

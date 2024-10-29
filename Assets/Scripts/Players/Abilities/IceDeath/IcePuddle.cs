@@ -30,7 +30,12 @@ public class IcePuddle : Skill
 	private Energy _energy;
 
 	protected override bool IsCanCast { get => CheckCanCast(); }
-	private bool CheckCanCast()
+
+    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+
+    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+
+    private bool CheckCanCast()
 	{
 		if (Vector3.Distance(_preViewPuddle.transform.position, transform.position) <= Radius)
 		{

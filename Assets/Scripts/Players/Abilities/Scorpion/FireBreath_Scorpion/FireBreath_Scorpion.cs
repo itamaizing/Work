@@ -34,6 +34,10 @@ public class FireBreath_Scorpion : Skill, ICanConsumeComboPoints
 
     protected override bool IsCanCast { get { return true; } }
 
+    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+
+    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+
     private void Follow()
     {
         StartCoroutine(RotCor());

@@ -19,6 +19,10 @@ public class ConsumeCombo_Scorpion : Skill
 
     protected override bool IsCanCast { get { return true; } }
 
+    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+
+    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+
     protected override void Awake()
     { 
         base.Awake();

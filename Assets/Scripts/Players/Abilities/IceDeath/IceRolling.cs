@@ -22,7 +22,11 @@ public class IceRolling : Skill
 
 	protected override bool IsCanCast => true;
 
-	private void Start()
+    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+
+    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+
+    private void Start()
 	{
 		for (int i = 0; i < _playerLinks.Resources.Count; i++)
 		{
