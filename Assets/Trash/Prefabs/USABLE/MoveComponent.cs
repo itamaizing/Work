@@ -123,7 +123,7 @@ public class MoveComponent : NetworkBehaviour
 
 		camDir = Quaternion.AngleAxis(-_camera.transform.eulerAngles.x, _camera.transform.TransformVector(Vector3.right)) * camDir;
 
-		_rigidbody.velocity = camDir * _currentSpeed;
+		_rigidbody.velocity = new Vector3(camDir.x * _currentSpeed, _rigidbody.velocity.y, camDir.z * _currentSpeed);
 
 		var animDir = transform.InverseTransformPoint(transform.position + camDir);
 		_anim.SetFloat(HashAnimPlayer.VelocityZ, animDir.z);
@@ -159,9 +159,9 @@ public class MoveComponent : NetworkBehaviour
     }
 
 	[TargetRpc]
-	public void TargetRpcAddForce(Vector2 vector2)
+	public void TargetRpcAddForce(Vector3 vector3)
     {
-		_rigidbody.AddForce(vector2);
+		_rigidbody.AddForce(vector3);
 	}
 
 	[TargetRpc]
