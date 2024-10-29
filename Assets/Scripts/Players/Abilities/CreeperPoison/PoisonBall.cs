@@ -141,7 +141,7 @@ public class PoisonBall : Skill
 
     public void PayCostPoisonBall()
     {
-        TryPayCost();
+        TryPayCost(true);
     }
 
     protected override void ClearData()

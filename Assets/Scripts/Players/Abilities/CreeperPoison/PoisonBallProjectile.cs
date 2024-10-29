@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
+using System.Security.Cryptography;
 
 public class PoisonBallProjectile : Test_Projectile
 {
@@ -54,18 +55,7 @@ public class PoisonBallProjectile : Test_Projectile
 
     #endregion
 
-    private void Start()
-    {
-        if (isServer)
-        {
-            LayerDefinition(_player.gameObject);
-        }
-        if (isServer && _isPlayerInvisible)
-        {
-            RpcNewTransparencySprite(_player.gameObject);
-        }
-
-    }
+    #region OnTriggerEnter
 
     [Server]
     private void OnTriggerEnter2D(Collider2D collision)
@@ -175,6 +165,8 @@ public class PoisonBallProjectile : Test_Projectile
         }
     }
 
+    #endregion
+
     #region MovementBall
 
     public void MoveBallToTarget(Vector3 target, bool isFast)
@@ -218,7 +210,7 @@ public class PoisonBallProjectile : Test_Projectile
 
         if (_restorationOfGlands.Data.IsOpen && _poisonBoneStack > 0 && _target.CharacterState.CheckForState(States.PoisonBone))
         {
-            TargetRpcReductionCooldown();
+            ReductionCooldownFromRestorationOfGlands();
         }
 
         _target.CharacterState.AddState(States.InAir, _durationInAir, 0, _player.gameObject, _skill.Name);
@@ -262,6 +254,17 @@ public class PoisonBallProjectile : Test_Projectile
         target.Move.CanMove = true;
     }
 
+    private void ReductionCooldownFromRestorationOfGlands()
+    {
+        float baseChanceOfRestorationOfGlands = 0.1f;
+        float chanceRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
+
+        if (Random.Range(0f, 1f) <= chanceRestorationOfGlands)
+        {
+            Debug.Log("SpitPoisonProj / If RestorationOfGlands.IsActive = true");
+            _restorationOfGlands.ReductionCooldown();
+        }
+    }
     #endregion
 
     #region InitializationProjectiles
@@ -286,6 +289,7 @@ public class PoisonBallProjectile : Test_Projectile
 
         CheckActiveTalent(sizeBallWithTalent);
 
+        Invoke("TransparentProjectileOnServer", 0.15f);
         InitializationComponentsForCountProjectile();
     }
 
@@ -333,37 +337,23 @@ public class PoisonBallProjectile : Test_Projectile
         Debug.Log("PoisonBallProjectile / restorationOfGlands = " + _restorationOfGlands);
     }
 
-    private void TargetRpcReductionCooldown()
-    {
-        float baseChanceOfRestorationOfGlands = 0.1f;
-        float chanceRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
+    #endregion
 
-        if (Random.Range(0f, 1f) <= chanceRestorationOfGlands)
+    #region ServerMethods
+    [Server]
+    private void TransparentProjectileOnServer()
+    {
+        Debug.Log("PoisonBallProj / TransparentProjectileOnServer / isServer = " + isServer);
+
+        if (isServer)
         {
-            Debug.Log("SpitPoisonProj / If RestorationOfGlands.IsActive = true");
-            _restorationOfGlands.ReductionCooldown();
+            LayerDefinition(_player.gameObject);
         }
-    }
-
-    [ClientRpc]
-    private void RpcNewTransparencySprite(GameObject player)
-    {
-        Color originalColor = _projectileSprite.color;
-
-        if (_projectileSprite != null)
+        if (isServer && _isPlayerInvisible)
         {
-            if (_playerLayer == LayerMask.NameToLayer("Allies"))
-            {
-                Color newTransparencySprite = originalColor;
-                newTransparencySprite.a = 0.5f;
-                _projectileSprite.color = new Color(originalColor.r, originalColor.g, originalColor.b, newTransparencySprite.a);
-            }
-            else if (_playerLayer == LayerMask.NameToLayer("Enemy"))
-            {
-                Color newTransparencySprite = originalColor;
-                newTransparencySprite.a = 0.0f;
-                _projectileSprite.color = new Color(originalColor.r, originalColor.g, originalColor.b, newTransparencySprite.a);
-            }
+            Debug.Log("isServer && _isPlayerInvisible / _player = " + _player);
+
+            RpcNewTransparencySprite(_player.gameObject);
         }
     }
 
@@ -374,12 +364,37 @@ public class PoisonBallProjectile : Test_Projectile
 
         RpcLayerDefinition(player.layer);
     }
+    #endregion
+
+    #region ClientRpcMethods
+    [ClientRpc]
+    private void RpcNewTransparencySprite(GameObject player)
+    {
+        Color originalColor = _projectileSprite.color;
+
+        if (_projectileSprite != null)
+        {
+            if (player.layer == LayerMask.NameToLayer("Allies"))
+            {
+                Color newTransparencySprite = originalColor;
+                newTransparencySprite.a = 0.5f;
+                _projectileSprite.color = new Color(originalColor.r, originalColor.g, originalColor.b, newTransparencySprite.a);
+            }
+            else if (player.layer == LayerMask.NameToLayer("Enemy"))
+            {
+                Color newTransparencySprite = originalColor;
+                newTransparencySprite.a = 0.0f;
+                _projectileSprite.color = new Color(originalColor.r, originalColor.g, originalColor.b, newTransparencySprite.a);
+            }
+        }
+    }
+
 
     [ClientRpc]
     private void RpcLayerDefinition(int layer)
     {
         _playerLayer = layer;
     }
-
     #endregion
+
 }

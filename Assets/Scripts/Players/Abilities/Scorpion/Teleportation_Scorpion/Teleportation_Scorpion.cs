@@ -22,7 +22,7 @@ public class Teleportation_Scorpion : Skill, ICanConsumeComboPoints
 
     [SerializeField] private ConsumeCombo_Scorpion consumeCombo_Scorpion;
 
-    [field: Header("Test Combo_Upgrade")]
+    [field: Header("TransparentProjectileOnServer Combo_Upgrade")]
 
     [field: SerializeField]
     public ConsumeCombo_Scorpion Notifier { get; set; }

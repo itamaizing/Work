@@ -141,13 +141,6 @@ public class TalentSystem : NetworkBehaviour
     }
 
     [Command]
-    public void CmdAdd(Talent talent)
-    {
-        Add(talent);
-        RpcAdd(talent);
-    }
-
-    [Command]
     public void CmdEnterAll()
     {
         EnterAll();
@@ -197,12 +190,6 @@ public class TalentSystem : NetworkBehaviour
     private void RpcRemoveAll()
     {
         ExitAll();
-    }
-
-    [ClientRpc]
-    public void RpcAdd(Talent talent)
-    {
-        Add(talent);
     }
 
     public void EnterAll()

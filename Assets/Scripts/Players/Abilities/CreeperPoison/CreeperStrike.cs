@@ -37,7 +37,7 @@ public class CreeperStrike : AutoAttackSkill
     private float _currentDamage;
     private float _multiplyCritDamage = 1.5f;
     private float _lifeTimePoisonBoneStacks = 6.0f;
-    private float _chanceOfCriticalStrike = 0.9f;
+    private float _chanceOfCriticalStrike = 0.05f;
 
     private bool _isTwoHit = false;
     private bool _isHit = false;
@@ -75,8 +75,6 @@ public class CreeperStrike : AutoAttackSkill
 
     public void DealingDamageFromHits(Character target)
     {
-        Debug.Log("CreeperStrike / _poisonBoneStack = " + _poisonBoneStack + " && PoisonBoneStack = " + PoisonBoneStack);
-
         _currentDamage = Random.Range(7.0f, 11.0f);
         float _currentChanceOfCriticalStrike = Random.Range(0.0f, 1.0f);
 
@@ -146,12 +144,11 @@ public class CreeperStrike : AutoAttackSkill
             }
         }
 
-
         if (_preparingForFight.Data.IsOpen && _creeperInvisible.IsReadyToThreeHitForPreparingForFightTalent)
         {
             _countCurrentHitForPreparingForFight++;
 
-            _preparingForFight.IncreaseManaRegeneration();
+            CmdPreparingForFight(_player.gameObject);
 
             if (_countCurrentHitForPreparingForFight == 3)
             {
@@ -164,12 +161,14 @@ public class CreeperStrike : AutoAttackSkill
         {
             DealCriticalDamage(target, _currentDamage);
         }
+
         if (_currentChanceOfCriticalStrike <= _chanceOfCriticalStrike)
         {
             DealCriticalDamage(target, _currentDamage);
         }
         else
         {
+
             Damage damage = new Damage
             {
                 Value = Buff.Damage.GetBuffedValue(_currentDamage),
@@ -258,14 +257,24 @@ public class CreeperStrike : AutoAttackSkill
 
         if (_feelingOfContinuation.Data.IsOpen)
         {
-            CmdFeelingOfContinuation(critDamage.Value);
+            CmdFeelingOfContinuation(_player.gameObject, critDamage.Value);
         }
     }
 
     [Command]
-    private void CmdFeelingOfContinuation(float criticalDamage)
+    private void CmdFeelingOfContinuation(GameObject player, float criticalDamage)
     {
-        _feelingOfContinuation.IncreaseRegenerationMana(criticalDamage);
+        Character playerCharacter = player.GetComponent<Character>();
+
+        _feelingOfContinuation.IncreaseRegenerationMana(playerCharacter, criticalDamage);
     }
 
+    [Command]
+    private void CmdPreparingForFight(GameObject player)
+    {
+        Debug.Log("CreeperStrike / CmdPreparingForFight");
+        Character playerCharacter = player.GetComponent<Character>();
+
+        _preparingForFight.IncreaseManaRegeneration(playerCharacter);
+    }
 }

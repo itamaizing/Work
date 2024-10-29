@@ -29,14 +29,14 @@ public class RestorationOfGlands : Talent
 
     public void ReductionCooldown()
     {
-        if (isServer)
-        {
+        //if (isServer)
+        //{
             TargetRpcReduction();
-        }
-        else
-        {
+       // }
+        //else
+        //{
             ReductionCooldownNotServer();
-        }
+        //}
     }
 
     private void ReductionCooldownNotServer()

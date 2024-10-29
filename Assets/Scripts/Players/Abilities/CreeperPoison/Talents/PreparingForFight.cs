@@ -5,16 +5,12 @@ using UnityEngine;
 
 public class PreparingForFight : Talent
 {
-    private Character _player;
-    private Resource _playerMana;
     private float _maxManaPlayer;
     private float _manaRecoveryMultiplier = 0.01f;
 
     public override void Enter()
     {
         SetActive(true);
-        _player = character;
-        _playerMana = _player.TryGetResource(ResourceType.Mana);
     }
 
     public override void Exit()
@@ -22,14 +18,17 @@ public class PreparingForFight : Talent
         SetActive(false);
     }
 
-    public void IncreaseManaRegeneration()
+    public void IncreaseManaRegeneration(Character player)
     {
-        _maxManaPlayer = _playerMana.MaxValue;
-        float updatedManaRecoveryValue = _maxManaPlayer * _manaRecoveryMultiplier;
-        Debug.Log("PlayerManaValue before AddMana = " + _playerMana.CurrentValue);
+        Resource playerMana = player.TryGetResource(ResourceType.Mana);
+        _maxManaPlayer = playerMana.MaxValue;
 
-        _playerMana.Add(updatedManaRecoveryValue);
-        Debug.Log("PlayerManaValue after AddMana = " + _playerMana.CurrentValue);
+        float updatedManaRecoveryValue = _maxManaPlayer * _manaRecoveryMultiplier;
+        Debug.Log("updatedManaRecoveryValue = " + updatedManaRecoveryValue);
+        Debug.Log("PlayerManaValue before AddMana = " + playerMana.CurrentValue);
+
+        playerMana.Add(updatedManaRecoveryValue);
+        Debug.Log("PlayerManaValue after AddMana = " + playerMana.CurrentValue);
     }
 
 }

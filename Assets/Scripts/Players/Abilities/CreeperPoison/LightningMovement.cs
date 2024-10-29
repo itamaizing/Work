@@ -600,11 +600,6 @@ public class LightningMovement : Skill
             _isTargetBeforePlayerCoroutine = StartCoroutine(IsTargetBeforePlayerJob(_rangeLeap, _targetsLayers));
         }
 
-        if (_superFastScales.Data.IsOpen)
-        {
-            _superFastScales.IncreasingResistance();
-        }
-
         _player.CharacterState.CmdAddState(States.Immateriality, (_durationLeap * _rangeLeap * _multiplierLeap), 0, _player.gameObject, Name);
 
         CmdSingleLeap(firstLeapPoint, _durationLeap, _rangeLeap, _multiplierLeap, _timeBuff, _heatedGlandsIsActive);
@@ -648,10 +643,16 @@ public class LightningMovement : Skill
         float durationLeap, float rangeLeap, float multiplierLeap, float timeBuff, 
         bool heatedGlandsIsAcitve)
     {
+        if (_superFastScales.Data.IsOpen)
+        {
+            Debug.Log("LightningMovement / superFastScales Active");
+            _superFastScales.IncreasingResistance();
+        }
+
         _player.Move.enabled = false;
 
         MoveComponent playerTransform = _player.GetComponent<MoveComponent>();
-
+        
         playerTransform.TargetRpcDoMove(firstLeapPoint, (durationLeap * rangeLeap / GlobalVariable.cellSize));
     }
 
@@ -662,6 +663,12 @@ public class LightningMovement : Skill
         LayerMask enemyLayer)
     {
         _player.Move.enabled = false;
+
+        if (_superFastScales.Data.IsOpen)
+        {
+            Debug.Log("LightningMovement / superFastScales Active");
+            _superFastScales.IncreasingResistance();
+        }
 
         TargetRpcExecuteLeaps(_player.gameObject, firstLeapPoint, secondLeapPoint, 
             durationLeap, rangeLeap, multiplierLeap, timeBuff, interval,

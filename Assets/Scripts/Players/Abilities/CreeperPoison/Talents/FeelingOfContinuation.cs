@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class FeelingOfContinuation : Talent
 {
-    private float _manaRegenerationMultiplier = 2f;
+    private float _reductionTimeManaRegenMultiplier = 20f;
     private float _remainingManaValue;
 
     private float _maxMana;
@@ -15,16 +15,12 @@ public class FeelingOfContinuation : Talent
     private float _baseTimeRegenMana;
     private float _reductionTimeRegenMana;
 
-    private Character _player;
-
     private Coroutine _manaRegenerationCoroutine;
 
     public override void Enter()
     {
         SetActive(true);
-        _player = character;
-        _originalRegenerationMana = _player.TryGetResource(ResourceType.Mana).RegenerationValue;
-        _baseTimeRegenMana = _player.TryGetResource(ResourceType.Mana).RegenerationDelay;
+        _baseTimeRegenMana = character.TryGetResource(ResourceType.Mana).RegenerationDelay;
     }
 
     public override void Exit()
@@ -32,53 +28,51 @@ public class FeelingOfContinuation : Talent
         SetActive(false);
     }
 
-    public void IncreaseRegenerationMana(float playerCriticalDamage)
+    public void IncreaseRegenerationMana(Character player, float playerCriticalDamage)
     {
+        _originalRegenerationMana = player.TryGetResource(ResourceType.Mana).RegenerationValue;
+
         _remainingManaValue = playerCriticalDamage;
-        _reductionTimeRegenMana = _baseTimeRegenMana / 2;
 
-        _player.TryGetResource(ResourceType.Mana).RegenerationDelay = _reductionTimeRegenMana;
-
-        if (_manaRegenerationCoroutine == null)
+        if (_manaRegenerationCoroutine != null)
         {
-            _manaRegenerationCoroutine = StartCoroutine(ManaRegenerationJob(_remainingManaValue));
+            StopCoroutine(_manaRegenerationCoroutine);
+            _manaRegenerationCoroutine = null;
+            _reductionTimeRegenMana = _baseTimeRegenMana;
         }
+
+        _reductionTimeRegenMana = _baseTimeRegenMana / _reductionTimeManaRegenMultiplier;
+        player.TryGetResource(ResourceType.Mana).RegenerationDelay = _reductionTimeRegenMana;
+
+        _manaRegenerationCoroutine = StartCoroutine(ManaRegenerationJob(player, _remainingManaValue));
     }
 
-    private IEnumerator ManaRegenerationJob(float remainingManaValue)
+    private IEnumerator ManaRegenerationJob(Character player, float remainingManaValue)
     {
-        float time = _reductionTimeRegenMana;
-        float boostManaRegen = _originalRegenerationMana * _manaRegenerationMultiplier;
-        _player.TryGetResource(ResourceType.Mana).RegenerationValue = boostManaRegen;
-
-
-        while (time > 0)
+        while (remainingManaValue > 0)
         {
-            time -= Time.deltaTime;
-            if (remainingManaValue > 0)
+            yield return new WaitForSeconds(_reductionTimeRegenMana);
+
+            remainingManaValue -= _originalRegenerationMana;
+
+            _maxMana = player.TryGetResource(ResourceType.Mana).MaxValue;
+            _currentMana = player.TryGetResource(ResourceType.Mana).CurrentValue;
+
+            if (_currentMana >= _maxMana)
             {
-                remainingManaValue -= boostManaRegen;
-
-                _maxMana = _player.TryGetResource(ResourceType.Mana).MaxValue;
-                _currentMana = _player.TryGetResource(ResourceType.Mana).CurrentValue;
-
-                if (_currentMana >= _maxMana)
-                {
-                    _currentMana = _maxMana;
-                    yield break;
-                }
-                time = _reductionTimeRegenMana;
+                _currentMana = _maxMana;
+                CancelCoroutine(player, _manaRegenerationCoroutine);
+                yield break;
             }
-            yield return null;
         }
-        CancelCoroutine(_manaRegenerationCoroutine);
+        CancelCoroutine(player, _manaRegenerationCoroutine);
     }
 
-    private void CancelCoroutine(Coroutine coroutine)
+    private void CancelCoroutine(Character player, Coroutine coroutine)
     {
-        _player.TryGetResource(ResourceType.Mana).RegenerationDelay = _baseTimeRegenMana;
+        player.TryGetResource(ResourceType.Mana).RegenerationDelay = _baseTimeRegenMana;
+
         StopCoroutine(coroutine);
         _manaRegenerationCoroutine = null;
     }
-
 }

@@ -66,7 +66,7 @@ public class Authorization : MonoBehaviour
     {
         if(data[LOGIN] == "test" && data[LOGIN] == "test")
         {
-            Debug.Log("Test user");
+            Debug.Log("TransparentProjectileOnServer user");
             _networkManager.StartClient();
             return true;
         }

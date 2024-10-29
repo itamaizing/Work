@@ -103,6 +103,11 @@ public class PoisonSlap : Skill
 
     protected override IEnumerator PrepareJob()
     {
+        if (!_poisonBall.IsHaveCharge)
+        {
+            yield break;
+        }
+
         if (_lightningMovement.IsInMovement)
         {
             IsCanDamageDeal = true;
@@ -118,7 +123,6 @@ public class PoisonSlap : Skill
 
                     if (_currentTarget != null)
                     {
-
                         _firstMousePosition = _currentTarget.transform.position;
                         CreateArrowsParallelToPlayer();
                         StopAutoDraw();
@@ -135,35 +139,29 @@ public class PoisonSlap : Skill
     {
         if (_currentTarget != null)
         {
-            if (_poisonBall.Chargers != 0)
+            if (!(_lightweightSlap.Data.IsOpen && _creeperStrike.IsTwoHit) || !(_lightweightSlap.Data.IsOpen && _lightningStrikes.IsUsedLightningStrikes))
             {
-                if ((_lightweightSlap.Data.IsOpen && _creeperStrike.IsTwoHit) || (_lightweightSlap.Data.IsOpen && _lightningStrikes.IsUsedLightningStrikes))
-                {
-                    yield break;
-                }
-                else
-                {
-                    _poisonBall.PayCostPoisonBall();
-                }
+                _poisonBall.PayCostPoisonBall();
+            }
+            
+            if (_creeperStrike.IsTwoHit && !_isIncreasedCastSpeedFromLightningStrike)
+            {
+                _castSpeedFromCreeperStrikeCoroutine = StartCoroutine(CastSpeedFromCreeperStrike());
+            }
+            else if (_lightningStrikes.IsUsedLightningStrikes && !_isIncreasedCastSpeedFromCreeperStrike)
+            {
+                _castSpeedFromLightningStrikesCoroutine = StartCoroutine(CastSpeedFromLightningStrikes());
+            }
+            else
+            {
+                _castDeley = _baseTimeCast;
+
+                ChooseDirectionPush(_currentTarget);
+
+                DamageDeal(_currentTarget);
             }
         }
-
-        if (_creeperStrike.IsTwoHit && !_isIncreasedCastSpeedFromLightningStrike)
-        {
-            _castSpeedFromCreeperStrikeCoroutine = StartCoroutine(CastSpeedFromCreeperStrike());
-        }
-        else if (_lightningStrikes.IsUsedLightningStrikes && !_isIncreasedCastSpeedFromCreeperStrike)
-        {
-            _castSpeedFromLightningStrikesCoroutine = StartCoroutine(CastSpeedFromLightningStrikes());
-        }
-        else
-        {
-            _castDeley = _baseTimeCast;
-
-            ChooseDirectionPush(_currentTarget);
-
-            DamageDeal(_currentTarget);
-        }
+        yield return null;
     }
 
     #endregion

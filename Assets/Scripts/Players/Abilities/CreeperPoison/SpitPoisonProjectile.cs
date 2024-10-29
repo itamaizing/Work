@@ -7,6 +7,8 @@ using UnityEngine;
 
 public class SpitPoisonProjectile : Test_Projectile
 {
+    #region Variables
+
     private SpitPoison _spitPoison;
     private RestorationOfGlands _restorationOfGlands;
     private Skill _skill;
@@ -24,27 +26,9 @@ public class SpitPoisonProjectile : Test_Projectile
     private bool _isActiveHealingSpitPoison;
     private bool _isPlayerInvisible;
 
-    private void Start()
-    {
-        if (isServer)
-        {
-            InitializationComponents();
+    #endregion
 
-            LayerDefinition(_player.gameObject);
-        }
-        if (isServer && _isPlayerInvisible)
-        {
-            RpcNewTransparencySprite(_player.gameObject);
-        }
-    }
-
-    private void InitializationComponents()
-    {
-        _spitPoison = _player.GetComponentInChildren<SpitPoison>();
-        Debug.Log("SpitPoisonProj / SpitPoison = " + _spitPoison);
-        _restorationOfGlands = _spitPoison.RestorationOfGlandsTalent;
-        Debug.Log("SpitPoisonProj / RestorationOfGlands = " + _restorationOfGlands);
-    }
+    #region OnTriggerEnter2D
 
     [Server]
     private void OnTriggerEnter2D(Collider2D collision)
@@ -125,6 +109,10 @@ public class SpitPoisonProjectile : Test_Projectile
         }
     }
 
+    #endregion
+
+    #region MoveMethods
+
     public void MoveBallToTarget(Vector3 target)
     {
         MoveToTarget(target, _speed);
@@ -134,6 +122,9 @@ public class SpitPoisonProjectile : Test_Projectile
     {
         MoveToPoint(point, _speed);
     }
+    #endregion
+
+    #region DamageMethods
 
     public override void DamageDeal()
     {
@@ -155,7 +146,7 @@ public class SpitPoisonProjectile : Test_Projectile
         if (_restorationOfGlands.Data.IsOpen && _poisonBoneStack > 0 && _target.CharacterState.CheckForState(States.PoisonBone))
         {
             Debug.Log("SpitPoisProj / if Restoration = true");
-            TargetRpcReductionCooldown();
+            ReductionCooldownFromRestorationOfGlands();
         }
 
         if (numbersForChanceOfBlindness <= chanceOfBlindness)
@@ -166,24 +157,7 @@ public class SpitPoisonProjectile : Test_Projectile
         DestroyProjectile();        
     }
 
-    public void InitializationProjectile(Character dad, Skill skill, float energy,
-        bool isActiveHealingSpitPoison, bool isPlayerInvisible, 
-        bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, int poisonBoneStack)
-    {
-        _player = dad;
-        _energyDad = energy;
-        _skill = skill;
-
-        _poisonBoneStack = poisonBoneStack;
-
-        _isActiveHealingSpitPoison = isActiveHealingSpitPoison;
-        _isPlayerInvisible = isPlayerInvisible;
-        _isPlayer = isTargetPlayer;
-        _isAllies = isTargetAllies;
-        _isEnemy = isTargetEnemy;
-    }
-
-    private void TargetRpcReductionCooldown()
+    private void ReductionCooldownFromRestorationOfGlands()
     {
         float baseChanceOfRestorationOfGlands = 0.1f;
         float chanceRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
@@ -196,25 +170,55 @@ public class SpitPoisonProjectile : Test_Projectile
         }
     }
 
-    [ClientRpc]
-    private void RpcNewTransparencySprite(GameObject player)
-    {
-        Color originalColor = _projectileSprite.color;
+    #endregion
 
-        if (_projectileSprite != null)
+    #region InitializationMethods
+
+    public void InitializationProjectile(Character dad, Skill skill, float energy,
+        bool isActiveHealingSpitPoison, bool isPlayerInvisible, 
+        bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, int poisonBoneStack)
+    {
+        _player = dad;
+        Debug.Log("InitProj in SpitPoison / player = " + _player);
+        _energyDad = energy;
+        _skill = skill;
+
+        _poisonBoneStack = poisonBoneStack;
+
+        _isActiveHealingSpitPoison = isActiveHealingSpitPoison;
+        _isPlayerInvisible = isPlayerInvisible;
+        _isPlayer = isTargetPlayer;
+        _isAllies = isTargetAllies;
+        _isEnemy = isTargetEnemy;
+
+        Invoke("TransparentProjectileOnServer", 0.1f);
+        InitializationComponents();
+    }
+
+    private void InitializationComponents()
+    {
+        _spitPoison = _player.GetComponentInChildren<SpitPoison>();
+        Debug.Log("SpitPoisonProj / SpitPoison = " + _spitPoison);
+        _restorationOfGlands = _spitPoison.RestorationOfGlandsTalent;
+        Debug.Log("SpitPoisonProj / RestorationOfGlands = " + _restorationOfGlands);
+    }
+
+    #endregion
+
+    #region ServerMethods
+
+    [Server]
+    private void TransparentProjectileOnServer()
+    {
+        Debug.Log("SpitPoisonProj / TransparentProjectileOnServer / isServer = " + isServer);
+        if (isServer)
         {
-            if (_playerLayer == LayerMask.NameToLayer("Allies"))
-            {
-                Color newTransparencySprite = originalColor;
-                newTransparencySprite.a = 0.5f;
-                _projectileSprite.color = new Color(originalColor.r, originalColor.g, originalColor.b, newTransparencySprite.a);
-            }
-            else if (_playerLayer == LayerMask.NameToLayer("Enemy"))
-            {
-                Color newTransparencySprite = originalColor;
-                newTransparencySprite.a = 0.0f;
-                _projectileSprite.color = new Color(originalColor.r, originalColor.g, originalColor.b, newTransparencySprite.a);
-            }
+            LayerDefinition(_player.gameObject);
+        }
+        if (isServer && _isPlayerInvisible)
+        {
+            Debug.Log("isServer && _isPlayerInvisible / _player = " + _player);
+            RpcNewTransparencySprite(_player.gameObject);
         }
     }
 
@@ -226,9 +230,39 @@ public class SpitPoisonProjectile : Test_Projectile
         RpcLayerDefinition(player.layer);
     }
 
+    #endregion
+
+    #region ClientRpcMethods
+
+    [ClientRpc]
+    private void RpcNewTransparencySprite(GameObject player)
+    {
+        Color originalColor = _projectileSprite.color;
+
+        if (_projectileSprite != null)
+        {
+            if (player.layer == LayerMask.NameToLayer("Allies"))
+            {
+                Color newTransparencySprite = originalColor;
+                newTransparencySprite.a = 0.5f;
+                _projectileSprite.color = new Color(originalColor.r, originalColor.g, originalColor.b, newTransparencySprite.a);
+            }
+            else if (player.layer == LayerMask.NameToLayer("Enemy"))
+            {
+                Color newTransparencySprite = originalColor;
+                newTransparencySprite.a = 0.0f;
+                _projectileSprite.color = new Color(originalColor.r, originalColor.g, originalColor.b, newTransparencySprite.a);
+            }
+        }
+    }
+
+
     [ClientRpc]
     private void RpcLayerDefinition(int layer)
     {
         _playerLayer = layer;
     }
+
+    #endregion
 }
+

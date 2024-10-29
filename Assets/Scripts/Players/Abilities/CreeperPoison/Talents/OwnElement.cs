@@ -23,6 +23,7 @@ public class OwnElement : Talent
     private float _maxMinimumAttackSpeed = 0.1f;
 
     private bool _isCanResetAttackSpeed = false;
+    private bool _isTargetNearby = false;
 
     private PoisonBoneState _poisonBoneState;
     private EmpathicPoisonsState _empathicPoisonState;
@@ -66,10 +67,14 @@ public class OwnElement : Talent
             _currentPoisonOnEnemy = 0;
             _currentStacksPoison = 0;
             _currentAllStacks = 0;
+            _isTargetNearby = false;
 
             Collider2D[] enemies = Physics2D.OverlapCircleAll(transform.position, _radiusSearching, _enemyLayer);
+            
             if (enemies != null)
             {
+                _isTargetNearby = true;
+
                 foreach (Collider2D target in enemies)
                 {
                     var targetWithDebuff = target.GetComponent<CharacterState>();
@@ -112,7 +117,7 @@ public class OwnElement : Talent
                     _previousAllStacks = _currentAllStacks;
                 }
             }
-            if (_currentAllStacks == 0 && _isCanResetAttackSpeed)
+            if (_currentAllStacks == 0 && _isCanResetAttackSpeed || !_isTargetNearby)
             {
                 if (_creeperStrike.AttackSpeed != _baseAttackSpeed)
                 {
@@ -129,20 +134,21 @@ public class OwnElement : Talent
     {
         if (_currentAllStacks > 0)
         {
-            if (_increasedAttackSpeed > _maxMinimumAttackSpeed)
-            {
-                ResetAttackSpeed();
-                _increasedAttackSpeed = _baseAttackSpeed - (_previousAllStacks * _baseIncreaseAttackSpeed);
+            ResetAttackSpeed();
+            _increasedAttackSpeed = _baseAttackSpeed - (_currentAllStacks * _baseIncreaseAttackSpeed);
 
-                _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_increasedAttackSpeed);
-                _isCanResetAttackSpeed = true;
+            if (_increasedAttackSpeed < _maxMinimumAttackSpeed)
+            {
+                _increasedAttackSpeed = 0.1f;
             }
+
+            _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_increasedAttackSpeed);
+            _isCanResetAttackSpeed = true;
         }
     }
 
     private void ResetAttackSpeed()
     {
-        Debug.Log("OwnElement / ResetAttackSpeed");
         if (_creeperStrike.AttackSpeed < _baseAttackSpeed)
         {
             float attackSpeed = _creeperStrike.AttackSpeed;

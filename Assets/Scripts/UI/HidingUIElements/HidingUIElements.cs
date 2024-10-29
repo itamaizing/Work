@@ -44,7 +44,7 @@ public class HidingUIElements : NetworkBehaviour
 
     private void OnHidingElements()
     {
-        PlayerTeamIndex(_player.gameObject);
+        PlayerLayer(_player.gameObject);
 
         if (_playerLayer == LayerMask.NameToLayer("Allies"))
         {
@@ -154,7 +154,7 @@ public class HidingUIElements : NetworkBehaviour
         }
     }
 
-    private void PlayerTeamIndex(GameObject player)
+    private void PlayerLayer(GameObject player)
     {
         _playerLayer = player.layer;
     }
