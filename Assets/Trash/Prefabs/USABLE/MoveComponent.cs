@@ -1,6 +1,7 @@
 using DG.Tweening;
 using Mirror;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class MoveComponent : NetworkBehaviour
 {
@@ -69,21 +70,27 @@ public class MoveComponent : NetworkBehaviour
 	[Client]
 	void Update()
 	{
-		if (!CanMove || _rigidbody == null || isOwned == false)
+		if (isOwned == false)
+			return;
+
+		if (_camera == null)
+			_camera = Camera.main;
+
+		Move();
+		RotateAtCursor();
+	}
+
+	private void Move()
+    {
+		if (!CanMove || _rigidbody == null)
 		{
 			return;
 		}
 
-        if (_camera == null)
-        {
-			_camera = Camera.main;
-		}
-		
 		if (IsSelect == false)
-        {
+		{
 			_dir = Vector2.zero;
 		}
-			
 
 		_currentVelocity = Vector3.SmoothDamp(_currentVelocity, _dir, ref _currentVelocityTemp, _smoothTime); // Move from camera
 
@@ -93,10 +100,18 @@ public class MoveComponent : NetworkBehaviour
 
 		_rigidbody.velocity = camDir * _currentSpeed;
 
-		if(IsSelect == true)
-        {
+		var animDir = transform.InverseTransformPoint(transform.position + camDir);
+		_anim.SetFloat(HashAnimPlayer.VelocityZ, animDir.z);
+		_anim.SetFloat(HashAnimPlayer.VelocityX, animDir.x);
+	}
+
+	private void RotateAtCursor()
+    {
+		if (IsSelect == true)
+		{
 			Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hit;
+
 			if (Physics.Raycast(ray, out hit))
 			{
 				var transformRotate = transform.eulerAngles;
@@ -104,11 +119,6 @@ public class MoveComponent : NetworkBehaviour
 				transform.eulerAngles = (new Vector3(transformRotate.x, transform.eulerAngles.y, transformRotate.z));
 			}
 		}
-
-		var animDir = transform.InverseTransformPoint(transform.position + camDir);
-		_anim.SetFloat("Y", animDir.z);
-		_anim.SetFloat("X", animDir.x);
-		
 	}
 
 	private void OnMove(Vector2 dir)
