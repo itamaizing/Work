@@ -33,7 +33,7 @@ public class Sub_LavaPool_Scorpion : MonoBehaviour
     public void Init()
     {
         _damageType = DamageType.Magical;
-        _attackRangeType = AttackRangeType.Inner;
+        _attackRangeType = AttackRangeType.MeleeAttack;
         StartCoroutine(DealDamageOvertime());
         Destroy(gameObject, _lifeTime);
         _material = GetComponent<SpriteRenderer>().material;

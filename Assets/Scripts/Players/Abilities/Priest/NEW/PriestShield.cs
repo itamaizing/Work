@@ -122,11 +122,11 @@ public class PriestShield : Skill
         }
     }
 
-    private void HandleDamageTaken(float damage, DamageType damageType, Skill skill)
+    private void HandleDamageTaken(Damage damage, Skill skill)
     {
-        if (!_talentPhysicalShieldBoostActive || damageType != DamageType.Physical) return;
+        if (!_talentPhysicalShieldBoostActive || damage.Type != DamageType.Physical) return;
 
-        _physicalDamageAccumulated += damage;
+        _physicalDamageAccumulated += damage.Value;
         UpdatePhysicalDamageAccumulation();
     }
 

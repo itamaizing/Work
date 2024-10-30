@@ -186,9 +186,9 @@ public class HealthComponent : NetworkBehaviour
                     damageValue -= (damageValue * _defPhysDamage / 100);
                     return damageValue - _absorbPhysDamage;
 
-                case AttackRangeType.Inner:
+                /*case AttackRangeType.Inner:
                     hitSuccessed = true;
-                    return damageValue - _absorbPhysDamage;
+                    return damageValue - _absorbPhysDamage;*/
 
                 default:
                     hitSuccessed = false;

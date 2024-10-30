@@ -8,7 +8,7 @@ public class LightShield : AbstractCharacterState, IDamageable
     private float _maxAbsorption;
     private float _duration;
 
-    public event Action<float, DamageType, Skill> DamageTaken;
+    public event Action<Damage, Skill> DamageTaken;
 
     public override States State => States.LightShield;
     public override StateType Type => StateType.Magic;
@@ -51,7 +51,17 @@ public class LightShield : AbstractCharacterState, IDamageable
         damage.Value -= damageToAbsorb;
         
         _characterState.GetComponent<Character>().DamageTracker.AddDamage(damage);
-        DamageTaken?.Invoke(damageToAbsorb, damage.Type, skill);
+
+        var tempDamage = new Damage
+        {
+            Form = damage.Form,
+            PhysicAttackType = damage.PhysicAttackType,
+            School = damage.School,
+            Type = damage.Type,
+            Value = damageToAbsorb,
+        };
+
+        DamageTaken?.Invoke(tempDamage, skill);
 
         if (_damageAbsorbed >= _maxAbsorption)
         {

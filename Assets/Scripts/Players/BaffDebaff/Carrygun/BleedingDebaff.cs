@@ -17,7 +17,7 @@ public class BleedingDebaff : BaseEffect
     void Start()
     {
         DamageType = DamageType.Physical;
-        AttackRangeType = AttackRangeType.Inner;
+        AttackRangeType = AttackRangeType.MeleeAttack;
         Timer = Time.time;
         Type = EffectType.Debuff;
         twoMeleeAttackComponent = FindObjectOfType<TwoMeleeAttack>();

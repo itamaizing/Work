@@ -1,5 +1,6 @@
 using Mirror;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,24 +11,27 @@ public class Health : Resource, IDamageable, IHealingable
 
     protected float _evadeMeleeDamage;
     protected float _evadeRangeDamage;
+    protected float _resistMagDamage;
+
     protected float _defPhysDamage;
-    protected float _evadeMagDamage;
     protected float _defMagDamage;
 
     private List<IDamageable> _shields = new List<IDamageable>();
     private float _sumDamageTaken = 0;
+    private Coroutine _dOTDamageAnimJob;
+    private float _dOTDamageAnimDuration = 0.1f;
 
     public float SumDamageTaken { get => _sumDamageTaken; }
     public float EvadeMeleeDamage { get => _evadeMeleeDamage; }
     public float EvadeRangeDamage { get => _evadeRangeDamage; }
-    public float EvadeMagDamage { get => _evadeMagDamage; }
+    public float ResistMagDamage { get => _resistMagDamage; }
     public float DefPhysDamage { get => _defPhysDamage; }
     public float DefMagDamage { get => _defMagDamage; }
     public List<IDamageable> Shields { get => _shields; }
 
     public event Action Evaded;
     public event Action<float , Skill , string> HealTaked;
-    public event Action<float, DamageType, Skill> DamageTaken;
+    public event Action<Damage, Skill> DamageTaken;
     public event Action Died;
 
     public override void Initialize(float health, float hpRegen, float hpRegenDelay, CharacterData data)
@@ -36,7 +40,7 @@ public class Health : Resource, IDamageable, IHealingable
 
         _defPhysDamage = data.GetAttributeValue(AttributeNames.PhysicResist);
         _defMagDamage = data.GetAttributeValue(AttributeNames.MagicResist);
-        _evadeMagDamage = data.GetAttributeValue(AttributeNames.MagicEvade);
+        _resistMagDamage = data.GetAttributeValue(AttributeNames.MagicEvade);
         _evadeMeleeDamage = data.GetAttributeValue(AttributeNames.MeleeEvade);
         _evadeRangeDamage = data.GetAttributeValue(AttributeNames.RangeEvade);
     }
@@ -48,6 +52,9 @@ public class Health : Resource, IDamageable, IHealingable
             Evaded?.Invoke();
             return false;
         }
+        
+        Defence(ref damage);
+
         UseShields(ref damage, skill);
 
         if (damage.Value == 0)
@@ -58,7 +65,7 @@ public class Health : Resource, IDamageable, IHealingable
             ClientRpcDied();
             Died?.Invoke();
         }
-        ClientRpcDamageTaked(damage.Value, damage.Type, skill);
+        ClientRpcDamageTaked(damage, skill);
         _sumDamageTaken += damage.Value;
         return true;
     }
@@ -78,7 +85,7 @@ public class Health : Resource, IDamageable, IHealingable
 
     public void SetEvadeMagic(float value)
     {
-        _evadeMagDamage = value;
+        _resistMagDamage = value;
     }
 
     public void SetPhysicDef(float value)
@@ -95,7 +102,7 @@ public class Health : Resource, IDamageable, IHealingable
     {
         _defPhysDamage += value;
         _defMagDamage += value;
-        _evadeMagDamage += value;
+        _resistMagDamage += value;
         _evadeMeleeDamage += value;
         _evadeRangeDamage += value;
     }
@@ -112,7 +119,7 @@ public class Health : Resource, IDamageable, IHealingable
         {
             case DamageType.Magical:
 
-                if (UnityEngine.Random.Range(0, 100) <= _evadeMagDamage)
+                if (UnityEngine.Random.Range(0, 100) <= _resistMagDamage)
                     return true;
                 else
                     return false;
@@ -175,12 +182,31 @@ public class Health : Resource, IDamageable, IHealingable
         }
     }
 
-    [ClientRpc]
-    private void ClientRpcDamageTaked(float damageTaken, DamageType damageType, Skill skill)
+    private void Defence(ref Damage damage)
     {
-        DamageTaken?.Invoke(damageTaken, damageType, skill);
+        if (damage.Type == DamageType.Physical)
+        {
+            damage.Value *= 1 - _defPhysDamage;
+        }
+        else if (damage.Type == DamageType.Magical)
+        {
+            damage.Value *= 1 - _defMagDamage;
+        }
+    }
+
+    private IEnumerator DOTDamageAnimCoroutine()
+    {
+        var tempSpeed = _animator.speed;
+        _animator.speed = _animator.speed * 0f;
+        yield return new WaitForSecondsRealtime(_dOTDamageAnimDuration);
+        _animator.speed = tempSpeed;
+    }
+
+    [ClientRpc]
+    private void ClientRpcDamageTaked(Damage damage, Skill skill)
+    {
+        DamageTaken?.Invoke(damage, skill);
         _animator.SetTrigger(HashAnimPlayer.TakeDamage);
-        //_netAnimator.SetTrigger(HashAnimPlayer.TakeDamage);
     }
     
     [ClientRpc]
