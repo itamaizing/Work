@@ -11,9 +11,13 @@ public class Punch_Scorpion : AutoAttackSkill
 
     private Character _lastTarget = null;
 
+    protected override int AnimTriggerCastDelay => 0;
+
+    protected override int AnimTriggerAutoAttack => throw new System.NotImplementedException();
+
     protected override void CastAction()
     {
-        if (_lastTarget != null && _lastTarget != _target) //сброс
+        if (_lastTarget != null && _lastTarget != _target) //пїЅпїЅпїЅпїЅпїЅ
         {
             _comboCounter.ResetCounter();
         }
@@ -26,30 +30,29 @@ public class Punch_Scorpion : AutoAttackSkill
 
         if (Vector2.Distance(LastTargetPosition, _target.transform.position) <= 2f)
         {
-            Debug.Log("Достаточное расстояние");
+            Debug.Log("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
 
             Damage damage = new Damage   
             {
                 Value = Buff.Damage.GetBuffedValue(_damageValue),
                 Type = DamageType,
-                Range = AttackRangeType,
             };
 
             CmdAttack(damage, _target.gameObject);
         }
-        else Debug.LogWarning("слишком далеко");
+        else Debug.LogWarning("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ");
         _lastTarget = _target;
 
     }
     private void AttackPassed(Transform target)
     {
-        Debug.LogWarning("Punch_Scorppion .AttackPassed - Попал");
+        Debug.LogWarning("Punch_Scorppion .AttackPassed - пїЅпїЅпїЅпїЅпїЅ");
 
         _comboCounter.AddAbility(target, ScorpionAbility.Punch);
     }
     private void AttackMissed()
     {
-        Debug.LogWarning("Punch_Scorppion .AttackMissed -Промах");
+        Debug.LogWarning("Punch_Scorppion .AttackMissed -пїЅпїЅпїЅпїЅпїЅпїЅ");
 
         _comboCounter.ResetCounter();
     }

@@ -20,7 +20,6 @@ public class IceShardProjectile : Projectiles
 		{
 			Value = _curDamage,
 			Type = DamageType.Physical,
-			Range = AttackRangeType.RangeAttack,
 		};
 	}
 

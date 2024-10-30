@@ -18,7 +18,11 @@ public class IceSword : Skill
 	//private Energy _energy;
 	protected override bool IsCanCast => IsCanCastCheck();
 
-	private bool IsCanCastCheck()
+    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+
+    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+
+    private bool IsCanCastCheck()
 	{
 		return true;
 	}
@@ -82,7 +86,7 @@ public class IceSword : Skill
 		{
 			Value = _damage,
 			Type = DamageType.Physical,
-			Range = AttackRangeType.RangeAttack,
+			PhysicAttackType = AttackRangeType.RangeAttack,
 		};
 		//_skill.CmdApplyDamage(damage, target.gameObject);
 		CmdApplyDamage(damage2, _target.gameObject);

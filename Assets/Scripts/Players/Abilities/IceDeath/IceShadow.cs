@@ -23,7 +23,11 @@ public class IceShadow : Skill
 
 	protected override bool IsCanCast => IsCanCastCheck();
 
-	private bool IsCanCastCheck()
+    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+
+    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+
+    private bool IsCanCastCheck()
 	{
 		return true;
 		/*if (_rune.CurrentValue >= 1)

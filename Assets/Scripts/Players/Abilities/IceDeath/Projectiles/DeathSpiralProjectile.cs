@@ -36,7 +36,6 @@ public class DeathSpiralProjectile : Projectiles
 		{
 			Value = _curDamage,
 			Type = DamageType.Magical,
-			Range = AttackRangeType.RangeAttack,
 		};
 
 		startPos = transform.position;
@@ -62,7 +61,8 @@ public class DeathSpiralProjectile : Projectiles
 		{
 			/*if(damageable is IcyCorpse corpse)
 			{
-				corpse.Health.Heal(10);
+				var heal = new Heal { Value = 10 };
+				corpse.Health.Heal(ref heal, name);
 				Explode();
 			}*/
 			//else if (damageable is Character target)
@@ -205,7 +205,6 @@ public class DeathSpiralProjectile : Projectiles
 					{
 						Value = damage/2,
 						Type = DamageType.Magical,
-						Range = AttackRangeType.RangeAttack,
 					};
 
 					//_skill.CmdApplyDamage(damage, target.gameObject);
@@ -232,7 +231,6 @@ public class DeathSpiralProjectile : Projectiles
 					{
 						Value = damage/2,
 						Type = DamageType.Magical,
-						Range = AttackRangeType.RangeAttack,
 					};
 					//_skill.CmdApplyDamage(damage, target.gameObject);
 					target.Health.TryTakeDamage(ref damage2, _skill);

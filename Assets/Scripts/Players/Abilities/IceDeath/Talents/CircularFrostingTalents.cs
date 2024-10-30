@@ -8,11 +8,11 @@ public class CircularFrostingTalents : Talent
 	[SerializeField] private SkillManager _ability;
 	public override void Enter()
 	{
-		_ability.AddSkill(_circularFrosting);
+		_ability.ActivateSkill(_circularFrosting);
 	}
 
 	public override void Exit()
 	{
-		_ability.RemoveSkill(_circularFrosting);
+		_ability.DeactivateSkill(_circularFrosting);
 	}
 }

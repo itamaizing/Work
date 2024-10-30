@@ -27,27 +27,17 @@ public class SkillRenderer : NetworkBehaviour
     [Command]
     public void CmdDrawDamageZone(Vector3 position, float radius, Damage damage, GameObject player)
     {
-        int teamIndex = player.GetComponent<UserNetworkSettings>().TeamIndex;
-        RpcDrawDamageZone(position, radius, damage, player, teamIndex);
+        RpcDrawDamageZone(position, radius, damage, player);
     }
 
     [ClientRpc]
-    public void RpcDrawDamageZone(Vector3 position, float radius, Damage damage, GameObject player, int teamIndex)
+    public void RpcDrawDamageZone(Vector3 position, float radius, Damage damage, GameObject player)
     {
         _tempDamageZone = Instantiate(_damageZonePref, position, Quaternion.identity);
         _tempDamageZone.SetSize(radius, damage);
 
-        var localPlayer = NetworkClient.connection.identity.GetComponent<UserNetworkSettings>();
-        bool isAlly = localPlayer.TeamIndex == teamIndex;
-
-        if (isAlly)
-        {
-            _tempDamageZone.SetColor(_colorForAllies);
-        }
-        else
-        {
-            _tempDamageZone.SetColor(_colorForEnemies);
-        }
+        Color zoneColor = player.layer == LayerMask.NameToLayer("Allies") ? _colorForAllies : _colorForEnemies;
+        _tempDamageZone.SetColor(zoneColor);
     }
 
     [Command]
@@ -144,7 +134,7 @@ public class SkillRenderer : NetworkBehaviour
             RotateAtMouse(_lineStartImage.transform);
             RotateAtMouse(_lineEndImage.transform);
 
-            Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, 0);
+            Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, 0, Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
             var vector = (mouse - transform.position);
             var dir = vector.normalized;
 
@@ -168,14 +158,14 @@ public class SkillRenderer : NetworkBehaviour
 
     private IEnumerator DrawAreaJob(float radius, Damage damage, LayerMask layerMask, CircleArea areaPref)
     {
-        Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, 0);
+        Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x,0 , Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
 
         _tempArea = Instantiate(areaPref, mouse, Quaternion.identity);
         _tempArea.SetSize(radius, damage);
 
         while (true)
         {
-            mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, 0);
+            mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x,0 , Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
             _tempArea.transform.position = mouse;
             yield return null;
         }

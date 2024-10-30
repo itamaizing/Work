@@ -24,13 +24,17 @@ public class TestH2 : Skill
         }
     }
 
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("H2CastDelay");
+
+    protected override int AnimTriggerCast => 0;
+
     protected override IEnumerator CastJob()
     {
         Damage damage = new Damage
         {
             Value = Buff.Damage.GetBuffedValue(_damage),
             Type = DamageType,
-            Range = AttackRangeType,
+            PhysicAttackType = AttackRangeType,
         };
         CmdApplyDamage(damage, _target.gameObject);
 

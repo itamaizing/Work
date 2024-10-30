@@ -1,8 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
-using UnityEditor.Playables;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -117,6 +114,8 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         ability.CastEnded += OnCastEnded;
         ability.Canceled += OnCastEnded;
 
+        ability.CooldownEnded += OnStopCooldown;
+
         if (ability is AutoAttackSkill autoAttackSkill)
         {
             autoAttackSkill.Canceled += OnEndAutoAttack;
@@ -142,6 +141,8 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         ability.CastEnded -= OnCastEnded;
         ability.Canceled -= OnCastEnded;
 
+        ability.CooldownEnded -= OnStopCooldown;
+
         if (ability is AutoAttackSkill autoAttackSkill)
         {
             autoAttackSkill.Canceled -= OnEndAutoAttack;
@@ -150,6 +151,11 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
            // autoAttackSkill.CastContinued -= OnStartAutoAttack;
             //autoAttackSkill.AutoCastEnded -=
         }
+    }
+
+    private void OnStopCooldown()
+    {
+        _cooldown.Stop();
     }
 
     private void OnClickWithCtrl()

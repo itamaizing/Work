@@ -34,6 +34,10 @@ public class FireBreath_Scorpion : Skill, ICanConsumeComboPoints
 
     protected override bool IsCanCast { get { return true; } }
 
+    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+
+    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+
     private void Follow()
     {
         StartCoroutine(RotCor());
@@ -74,7 +78,7 @@ public class FireBreath_Scorpion : Skill, ICanConsumeComboPoints
         _fireBreath = obj.GetComponent<FireBreath_Prefab>();
 
         Follow();
-        Debug.Log("FireBreath присвоен");
+        Debug.Log("FireBreath пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
     }
 
     [Command]
@@ -171,7 +175,6 @@ public class FireBreath_Scorpion : Skill, ICanConsumeComboPoints
                     {
                         Value = Buff.Damage.GetBuffedValue(damageValue * scale * damageScale),
                         Type = DamageType,
-                        Range = AttackRangeType,
                     };
                     CmdApplyDamage(damage, _enemies[i].gameObject);
                     _enemiesDikt[_enemies[i]] *= 2;

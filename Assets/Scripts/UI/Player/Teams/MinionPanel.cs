@@ -8,7 +8,7 @@ public class MinionPanel : MonoBehaviour
     [SerializeField] private MinionIcon _minionIconPref;
 
     private List<MinionIcon> _minionIcons = new List<MinionIcon>();
-    private HeroComponent _hero;
+    private Character _hero;
 
     private void Start()
     {
@@ -30,18 +30,15 @@ public class MinionPanel : MonoBehaviour
 
     private void OnCharacterSelected(Character character)
     {
-        if(character is HeroComponent hero)
+        foreach (var item in character.SpawnComponent.Units)
         {
-            foreach (var item in hero.SpawnComponent.Units)
-            {
-                var temp = Instantiate(_minionIconPref, transform);
-                temp.Init(item);
-                _minionIcons.Add(temp);
-            }
-            _hero = hero;
-            _hero.SpawnComponent.UnitAdded += OnUnitAdded;
-            _hero.SpawnComponent.UnitRemoved += OnUnitRemoved;
+            var temp = Instantiate(_minionIconPref, transform);
+            temp.Init(item);
+            _minionIcons.Add(temp);
         }
+        _hero = character;
+        _hero.SpawnComponent.UnitAdded += OnUnitAdded;
+        _hero.SpawnComponent.UnitRemoved += OnUnitRemoved;
     }
 
     private void OnCharacterDeselected(Character character)

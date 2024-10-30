@@ -233,13 +233,22 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""ShowMenu"",
+                    ""type"": ""Button"",
+                    ""id"": ""112bcf04-8e2c-4c22-aefc-7382a08ded0c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
                 {
                     ""name"": ""2D Vector"",
                     ""id"": ""2d0c6642-bf07-4434-a7d6-bb22213037bc"",
-                    ""path"": ""2DVector"",
+                    ""path"": ""2DVector(mode=1)"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -598,6 +607,17 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
                     ""action"": ""ShiftMouse"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""adc473ee-2cf3-4d8c-ac0e-63c0e54c9528"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShowMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -629,6 +649,7 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
         m_GameplayMap_SwitchAutoMode = m_GameplayMap.FindAction("SwitchAutoMode", throwIfNotFound: true);
         m_GameplayMap_ShiftMouse = m_GameplayMap.FindAction("ShiftMouse", throwIfNotFound: true);
         m_GameplayMap_ScrollMouse = m_GameplayMap.FindAction("ScrollMouse", throwIfNotFound: true);
+        m_GameplayMap_ShowMenu = m_GameplayMap.FindAction("ShowMenu", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -713,6 +734,7 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_GameplayMap_SwitchAutoMode;
     private readonly InputAction m_GameplayMap_ShiftMouse;
     private readonly InputAction m_GameplayMap_ScrollMouse;
+    private readonly InputAction m_GameplayMap_ShowMenu;
     public struct GameplayMapActions
     {
         private @StandardInput m_Wrapper;
@@ -740,6 +762,7 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
         public InputAction @SwitchAutoMode => m_Wrapper.m_GameplayMap_SwitchAutoMode;
         public InputAction @ShiftMouse => m_Wrapper.m_GameplayMap_ShiftMouse;
         public InputAction @ScrollMouse => m_Wrapper.m_GameplayMap_ScrollMouse;
+        public InputAction @ShowMenu => m_Wrapper.m_GameplayMap_ShowMenu;
         public InputActionMap Get() { return m_Wrapper.m_GameplayMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -818,6 +841,9 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
             @ScrollMouse.started += instance.OnScrollMouse;
             @ScrollMouse.performed += instance.OnScrollMouse;
             @ScrollMouse.canceled += instance.OnScrollMouse;
+            @ShowMenu.started += instance.OnShowMenu;
+            @ShowMenu.performed += instance.OnShowMenu;
+            @ShowMenu.canceled += instance.OnShowMenu;
         }
 
         private void UnregisterCallbacks(IGameplayMapActions instance)
@@ -891,6 +917,9 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
             @ScrollMouse.started -= instance.OnScrollMouse;
             @ScrollMouse.performed -= instance.OnScrollMouse;
             @ScrollMouse.canceled -= instance.OnScrollMouse;
+            @ShowMenu.started -= instance.OnShowMenu;
+            @ShowMenu.performed -= instance.OnShowMenu;
+            @ShowMenu.canceled -= instance.OnShowMenu;
         }
 
         public void RemoveCallbacks(IGameplayMapActions instance)
@@ -933,5 +962,6 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
         void OnSwitchAutoMode(InputAction.CallbackContext context);
         void OnShiftMouse(InputAction.CallbackContext context);
         void OnScrollMouse(InputAction.CallbackContext context);
+        void OnShowMenu(InputAction.CallbackContext context);
     }
 }

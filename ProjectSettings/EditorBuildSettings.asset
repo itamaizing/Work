@@ -21,6 +21,9 @@ EditorBuildSettings:
     path: Assets/Scenes/TestRoom.unity
     guid: 9bd2d787582525d47a5d723a6f395ab0
   - enabled: 1
+    path: Assets/Scenes/TestRoom3D.unity
+    guid: 5841babc680b68c42a0e6fd33f6c37d6
+  - enabled: 1
     path: Assets/Scenes/Offline.unity
     guid: c4e5ffe05550985408872da986cdd213
   - enabled: 1

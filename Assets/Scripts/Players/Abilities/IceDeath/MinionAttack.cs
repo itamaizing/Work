@@ -8,8 +8,11 @@ public class MinionAttack : AutoAttackSkill
 	private float _cooldownTimer = 1.6f;
 	private bool _isReadyToShot = true;
 	private float _speedBoost = 1;
-	
-	private void CheckEnemy()
+
+    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerAutoAttack => throw new System.NotImplementedException();
+
+    private void CheckEnemy()
 	{
         if (!_isReadyToShot)
         {
@@ -58,7 +61,7 @@ public class MinionAttack : AutoAttackSkill
 		{
 			Value = 1 + Random.Range(0, 2),
 			Type = DamageType.Physical,
-			Range = AttackRangeType.MeleeAttack,
+			PhysicAttackType = AttackRangeType.MeleeAttack,
 		};
 		_target.Health.TryTakeDamage(ref damage, this);
 	}

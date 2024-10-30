@@ -8,7 +8,7 @@ public class TestPush : Skill
     [SerializeField] private float _pushDistance = 5f;
 
     private Character _target;
-    private GameObject _tempTarget;
+    private GameObject _tempTarget1;
     private MoveComponent _tempTargetMove;
 
     protected override bool IsCanCast
@@ -21,6 +21,10 @@ public class TestPush : Skill
             return NoObstacles(_target.transform.position, _obstacle) && IsTargetInRadius(Radius, _target.transform); ;
         }
     }
+
+    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+
+    protected override int AnimTriggerCast => throw new System.NotImplementedException();
 
     protected override IEnumerator CastJob()
     {
@@ -54,9 +58,9 @@ public class TestPush : Skill
     [Command]
     private void CmdPush(GameObject gameObject, Vector2 force)
     {
-        if (_tempTarget != gameObject)
+        if (_tempTarget1 != gameObject)
         {
-            _tempTarget = gameObject;
+            _tempTarget1 = gameObject;
             _tempTargetMove = gameObject.GetComponent<MoveComponent>();
         }
         _tempTargetMove.TargetRpcAddTransformPosition(force);

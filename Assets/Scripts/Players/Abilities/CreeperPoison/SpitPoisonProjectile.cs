@@ -1,6 +1,7 @@
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class SpitPoisonProjectile : NetworkBehaviour
@@ -53,8 +54,8 @@ public class SpitPoisonProjectile : NetworkBehaviour
         float chanceOfBlindness = 0.3f;
         float numbersForChanceOfBlindness = Random.Range(0.0f, 1.0f);
 
-        Energy _energyLink = (Energy)_dad.Stamina;
-        _energyLink.SumDamageMake(damage);
+        Energy _energyLink = (Energy)_dad.Resources.FirstOrDefault();
+        if (_energyLink != null) _energyLink.SumDamageMake(damage);
 
         targetHealth.TryTakeDamage(damage, damageType, attackRangeType);
 

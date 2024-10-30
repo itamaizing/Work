@@ -114,7 +114,7 @@ Transform:
   m_GameObject: {fileID: 5195731727944466540}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.034313865, y: -10.228694, z: 0.31577134}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1709583338081856755}
@@ -195,9 +195,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3e4e82926022c346a7f7a6e640675fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dad: {fileID: 0}
-  _rb: {fileID: -53743584304020754}
   _hitEffect: {fileID: 0}
+  _spriteRenderer: {fileID: 0}
+  _rb: {fileID: -53743584304020754}
   _force: 30
   _distance: 5
 --- !u!114 &-780911811811319846

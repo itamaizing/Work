@@ -24,6 +24,10 @@ public class CleavingBlade_Scorpion : Skill
         }
     }
 
+    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+
+    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+
     private void ResetValue()
     {
 
@@ -103,7 +107,6 @@ public class CleavingBlade_Scorpion : Skill
             {
                 Value = Buff.Damage.GetBuffedValue(DamageRange * damageMultiplier),
                 Type = DamageType,
-                Range = AttackRangeType,
             };
 
             CmdAttack(damage, _target.gameObject, shouldIncreaseCounter);

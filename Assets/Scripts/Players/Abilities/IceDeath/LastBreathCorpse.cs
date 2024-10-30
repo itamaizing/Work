@@ -12,10 +12,14 @@ public class LastBreathCorpse : Skill
 
 	protected override bool IsCanCast => true;
 
-	//private float _cooldown = 12;
-	
+    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
 
-	private void Update()
+    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+
+    //private float _cooldown = 12;
+
+
+    private void Update()
 	{
 		if (!_isAvaliable)
 		{

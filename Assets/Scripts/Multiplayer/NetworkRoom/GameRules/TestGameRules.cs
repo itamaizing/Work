@@ -1,6 +1,7 @@
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class TestGameRules : GameRules
@@ -23,6 +24,16 @@ public class TestGameRules : GameRules
             if (health != null)
             {
                 health.Died += () => OnPlayerDeath(playerSettings.gameObject);
+                health.Died += () => ResetPlayerState(playerSettings);
+            }
+
+            var runeComponent = playerSettings.GetComponent<RuneComponent>();
+            if (runeComponent != null)
+            {
+                if (health != null)
+                {
+                    health.Died += runeComponent.ResetValue;
+                }
             }
         }
 
@@ -54,6 +65,16 @@ public class TestGameRules : GameRules
 
         teamDeaths[playerSettings.NetworkSettings.TeamIndex]++;
         CheckForRoundEnd();
+    }
+
+    private void CancelActiveSkills(Character playerSettings)
+    {
+        var skills = playerSettings.Abilities.Abilities;
+        foreach (var skill in skills)
+        {
+            skill.RpcCancelActiveSkill();
+            skill.RpcResetSkillState();
+        }
     }
 
     private void CheckForRoundEnd()
@@ -92,20 +113,70 @@ public class TestGameRules : GameRules
         teamDeaths[1] = 0;
         teamDeaths[2] = 0;
 
+        if (isServer)
+        {
+            List<NetworkIdentity> objectsToRemove = new List<NetworkIdentity>();
+
+            foreach (var networkIdentity in NetworkServer.spawned.Values)
+            {
+                bool isPlayer = _players.Exists(player => player.gameObject == networkIdentity.gameObject);
+                bool isTestGameRules = networkIdentity.GetComponent<TestGameRules>() != null;
+
+                if (networkIdentity != null && !isPlayer && !isTestGameRules)
+                {
+                    objectsToRemove.Add(networkIdentity);
+                }
+            }
+
+            foreach (var networkIdentity in objectsToRemove)
+            {
+                if (networkIdentity != null && networkIdentity.isServer)
+                {
+                    NetworkServer.Destroy(networkIdentity.gameObject);
+                }
+            }
+        }
+
         foreach (var playerSettings in _players)
         {
-            var health = playerSettings.NetworkSettings.CachedHealth;
-            health?.ResetValue();
+            ResetPlayerState(playerSettings);
 
             int spawnIndex = playerSettings.NetworkSettings.TeamIndex - 1;
             if (_spawnPoints != null && spawnIndex >= 0 && spawnIndex < _spawnPoints.Count)
             {
                 Transform spawnPoint = _spawnPoints[spawnIndex];
-
                 RpcTeleportPlayer(playerSettings.gameObject, spawnPoint.position, spawnPoint.rotation);
             }
         }
     }
+
+    private void ResetPlayerState(Character playerSettings)
+    {
+        var health = playerSettings.Health;
+        health?.ResetValue();
+
+        var runeComponent = playerSettings.GetComponent<RuneComponent>();
+        runeComponent?.ResetValueRune();
+
+        //CancelActiveSkills(playerSettings);
+
+        var characterState = playerSettings.CharacterState;
+        if (characterState != null)
+        {
+            var statesCopy = new List<AbstractCharacterState>(characterState.CurrentStates);
+            foreach (var state in statesCopy)
+            {
+                characterState.RemoveState(state.State);
+            }
+        }
+
+        var energy = playerSettings.Resources.First(o => o.Type == ResourceType.Mana);
+        if (energy != null)
+        {
+            energy.ResetValue();
+        }
+    }
+
 
     private IEnumerator HandleTeamsAndSpawns(List<Transform> spawnPoints)
     {
