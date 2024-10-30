@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class Health : Resource, IDamageable, IHealingable
 {
+    [SerializeField] private Animator _animator;
+    [SerializeField] private NetworkAnimator _netAnimator;
+
     protected float _evadeMeleeDamage;
     protected float _evadeRangeDamage;
     protected float _defPhysDamage;
@@ -176,6 +179,8 @@ public class Health : Resource, IDamageable, IHealingable
     private void ClientRpcDamageTaked(float damageTaken, DamageType damageType, Skill skill)
     {
         DamageTaken?.Invoke(damageTaken, damageType, skill);
+        _animator.SetTrigger(HashAnimPlayer.TakeDamage);
+        //_netAnimator.SetTrigger(HashAnimPlayer.TakeDamage);
     }
     
     [ClientRpc]
