@@ -789,7 +789,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.size
-      value: 5
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[0]
@@ -822,7 +822,7 @@ PrefabInstance:
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[7]
       value: 
-      objectReference: {fileID: 7602457161793523920}
+      objectReference: {fileID: 7399292444007859597}
     - target: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _skills.Array.data[8]
       value: 
@@ -958,7 +958,7 @@ PrefabInstance:
     - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[2]
       value: 
-      objectReference: {fileID: 5321383494044629016}
+      objectReference: {fileID: 6605868118836334314}
     - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[3]
       value: 
@@ -966,7 +966,7 @@ PrefabInstance:
     - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[0]
       value: 
-      objectReference: {fileID: 8127114478096184070}
+      objectReference: {fileID: 1992368682997357272}
     - target: {fileID: 8675175310089954536, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[1]
       value: 
@@ -1107,6 +1107,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5275994280583962027}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1992368682997357272}
+    - targetCorrespondingSourceObject: {fileID: 7828036230296040018, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8907998787515413489}
   m_SourcePrefab: {fileID: 100100000, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
 --- !u!114 &722151420503682181 stripped
 MonoBehaviour:
@@ -1431,7 +1437,7 @@ MonoBehaviour:
   _manaCostPerTick: 0
   _isUseCharges: 1
   _chargesHaveSeparateCooldown: 0
-  _maxCharges: 1
+  _maxCharges: 3
   _chargeCooldown: 0
   _radius: 0
   _area: 0
@@ -2032,12 +2038,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dec7b5ee5b05ace449dc2e299285714a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: AbsotptionTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 21300000, guid: cae2f0cb798243a46842fb23151acbf4, type: 3}
   character: {fileID: 5889404958618692528}
@@ -2055,12 +2058,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cac4d75947c835a46a9470e7a3314f9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: BlockOfIceTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 5889404958618692528}
@@ -2078,12 +2078,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef3281e13df09d54f9de8cf5af0ad2e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: ChargesPlagueTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 5889404958618692528}
@@ -2101,12 +2098,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68e09165400dd0f4f870e917440254f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: ComboSpeedTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 5889404958618692528}
@@ -2123,12 +2117,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 239492719588ede4282bc72e2e5d4db4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: CorpseDeathTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 5889404958618692528}
@@ -2145,12 +2136,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa34309b83e32b14a8be1343f7cdc735, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: DeathSpiralBoostHpBodyTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 5889404958618692528}
@@ -2167,12 +2155,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a061051b8d7f0cb41b88956b2f699100, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: DeathSpiralChargeTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 5889404958618692528}
@@ -2189,12 +2174,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecf905159e54578419ce29e11df4d8c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: DeathSpiralHitTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 5889404958618692528}
@@ -2211,12 +2193,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afda86d1107377040aaf99140732e879, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: DeathSpiralSecondAttackTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 5889404958618692528}
@@ -2233,12 +2212,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44d6cbf7f68e2fe42b7465394dc177d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: DeathSpiralTalents
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 5889404958618692528}
@@ -2256,16 +2232,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc3274442b37e5140b1715fdb4f052d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: EvadeTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 5889404958618692528}
   _iceShadow: {fileID: 5010563057206509916}
+--- !u!114 &1992368682997357272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5233125259320276558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfdf750a61a3af749b800ddb5ec29381, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    Name: PlagueTalent
+    IsOpen: 1
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 5889404958618692528}
+  _deathSpiral: {fileID: 7399292444007859597}
+--- !u!114 &8907998787515413489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5233125259320276558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f14dcddc0af08d4c99e2db5ed684e3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    Name: 
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 0}
+  _iceShard: {fileID: 0}
 --- !u!114 &5399379209622425355 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7985862907129416471, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}

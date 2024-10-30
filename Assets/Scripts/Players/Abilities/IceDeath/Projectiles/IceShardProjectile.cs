@@ -67,6 +67,7 @@ public class IceShardProjectile : Projectiles
 				}
 				//dad.Stamina.Use(duration * 20);
 				GetComponent<Collider2D>().enabled = false;
+				Explode();
 			}
 			else
 			{
