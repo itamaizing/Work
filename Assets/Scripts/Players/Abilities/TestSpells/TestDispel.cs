@@ -58,21 +58,19 @@ public class TestDispel : Skill
             return;
         }
 
-        foreach (var state in new List<AbstractCharacterState>(targetState.CurrentStates))
-        {
-            if (state != null)
-            {
-                if (targetTeamIndex == playerTeamIndex && state.BaffDebaff == BaffDebaff.Debaff)
-                {
-                    targetState.RemoveState(state.State);
-                }
+        targetState.DispelStates(targetTeamIndex, playerTeamIndex);
+    }
 
-                else if (targetTeamIndex != playerTeamIndex && state.BaffDebaff == BaffDebaff.Baff)
-                {
-                    targetState.RemoveState(state.State);
-                }
-            }
+    private Character GetRaycastTarget()
+    {
+        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero, 100f, TargetsLayers);
+
+        if (hit.collider != null && hit.collider.TryGetComponent(out Character target))
+        {
+            return target;
         }
+        return null;
     }
 
     //private void ApplyDamage(float damage, DamageType damageType, Character target)

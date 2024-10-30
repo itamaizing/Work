@@ -7,7 +7,6 @@ public class BottleUserManager : MonoBehaviour
     public static BottleUserManager Instance => _instance;
 
     private const int MaxBottles = 99;
-    private const float BottleFillStep = 1f / 3f;
 
     private int _currentBottles = 0;
     private float _currentBottleVolume = 0f;
@@ -48,7 +47,7 @@ public class BottleUserManager : MonoBehaviour
         _currentUser = user;
     }
 
-    public void AddBottleVolume(float amount = BottleFillStep)
+    public void AddBottleVolume(float amount)
     {
         _currentBottleVolume += amount;
 

@@ -67,7 +67,7 @@ public class ServerManager : NetworkBehaviour
     public void SetPlayer(HeroComponent hero)
     {
         _currentHeroIndex = _heroList.IndexOf(hero);
-        LevelPlayerManager.Instance.SetHero(hero);
+        LevelCharacterManager.Instance.SetHero(hero);
     }
     public void SetMode(GameMode mode)
     {

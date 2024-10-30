@@ -229,6 +229,7 @@ public class CharacterState : NetworkBehaviour
 
 	public bool invinsible = false;
 
+	public StateIcons StateIcons => _stateIcons;
 	public List<AbstractCharacterState> CurrentStates => currentStates;
 	public Character Character => _hero;
 
@@ -295,6 +296,30 @@ public class CharacterState : NetworkBehaviour
 			}
 		}
 	}
+
+	public void DispelStates(int targetTeamIndex, int playerTeamIndex)
+	{
+		List<AbstractCharacterState> statesToRemove = new List<AbstractCharacterState>();
+
+		foreach (var state in currentStates)
+		{
+			if (state != null)
+			{
+				if ((targetTeamIndex == playerTeamIndex && state.BaffDebaff == BaffDebaff.Debaff) ||
+					(targetTeamIndex != playerTeamIndex && state.BaffDebaff == BaffDebaff.Baff))
+				{
+					statesToRemove.Add(state);
+				}
+			}
+		}
+
+		foreach (var state in statesToRemove)
+		{
+			state.ExitState();
+			currentStates.Remove(state);
+		}
+	}
+
 
 	public bool Check(StatusEffect effect)
 	{
@@ -383,8 +408,9 @@ public class CharacterState : NetworkBehaviour
 		}
 	}
 
-	private void RemoveStateLogic(States stateName)
+		private void RemoveStateLogic(States stateName)
 	{
+		Debug.Log("Remove state logic" + stateName);
 		if (currentStates.Count <= 0) return;
 
 		_stateIcons.RemoveItemByState(stateName);
@@ -392,17 +418,11 @@ public class CharacterState : NetworkBehaviour
 		{
 			if (currentStates[i].State == stateName)
 			{
-				if (currentStates[i] is IDamageable damageableShield)
-				{
-					RemoveShield(damageableShield);
-				}
-				
 				currentStates[i].ExitState();
-				
-				currentStates.RemoveAt(i);
 			}
 		}
 	}
+
 
 	[ClientRpc]
 	private void ClientAddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)

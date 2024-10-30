@@ -149,7 +149,7 @@ public class StateIcons : MonoBehaviour
     //removing item before it ends
 	public void RemoveItemByState(States state)
 	{
-        if(_activeEffects.Count > 0)
+        //if(_activeEffects.Count > 0)
 		/*foreach(var item in _activeEffects)
         {
             if(item.state == state)

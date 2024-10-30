@@ -102,7 +102,7 @@ public class TestGameRules : GameRules
         if (!isServer) return;
 
         GameMode currentMode = ServerManager.Instance.CurrentGameMode;
-        bool isMaxLevel = LevelPlayerManager.Instance.GetCurrentLevel() >= 9;
+        bool isMaxLevel = LevelCharacterManager.Instance.GetCurrentLevel() >= 9;
         bool isVictory = team1Score >= 2;
 
         switch (currentMode)
@@ -116,13 +116,13 @@ public class TestGameRules : GameRules
                     }
                     else
                     {
-                        LevelPlayerManager.Instance.AddExperience(6);
+                        LevelCharacterManager.Instance.AddExperience(6);
                         BottleUserManager.Instance.AddBottleVolume(1f / 3f);
                     }
                 }
                 else if (!isMaxLevel)
                 {
-                    LevelPlayerManager.Instance.AddExperience(2);
+                    LevelCharacterManager.Instance.AddExperience(2);
                 }
                 break;
 
@@ -135,7 +135,7 @@ public class TestGameRules : GameRules
                     }
                     else
                     {
-                        LevelPlayerManager.Instance.AddExperience(2);
+                        LevelCharacterManager.Instance.AddExperience(2);
                     }
                 }
                 break;
