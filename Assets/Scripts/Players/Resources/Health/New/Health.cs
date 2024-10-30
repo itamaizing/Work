@@ -148,7 +148,7 @@ public class Health : Resource, IDamageable, IHealingable
                     return true;
                 else
                     return false;
-
+                
                 break;
 
             case DamageType.Physical:
@@ -223,11 +223,6 @@ public class Health : Resource, IDamageable, IHealingable
     private void ClientRpcDied()
     {
         Died?.Invoke();
-    }
-
-    public void ResetValue()
-    {
-        _currentValue = _maxValue;
     }
 
 	public void ShowPhantomValue(Damage phantomValue)

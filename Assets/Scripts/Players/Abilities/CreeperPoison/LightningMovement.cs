@@ -587,6 +587,30 @@ public class LightningMovement : Skill
 
     #endregion
 
+    #region EvadeLogic
+
+    private void OnEnabled()
+    {
+        Debug.Log("LightningMovement / OnEnabled");
+        _player.Health.Evaded += EvadeMagDamage;
+    }
+
+    private void OnDisabled()
+    {
+        _player.Health.Evaded -= EvadeMagDamage;
+    }
+
+    private void EvadeMagDamage()
+    {
+        Damage damage = new Damage
+        {
+            Value = 0f,
+        };
+        _player.Health.TryTakeDamage(ref damage, null);
+    }
+
+    #endregion
+
     #region Leaps
     private void SingleLeap(Vector2 firstLeapPoint)
     {
@@ -646,6 +670,7 @@ public class LightningMovement : Skill
         if (_superFastScales.Data.IsOpen)
         {
             Debug.Log("LightningMovement / superFastScales Active");
+            OnEnabled();
             _superFastScales.IncreasingResistance();
         }
 
@@ -666,6 +691,7 @@ public class LightningMovement : Skill
 
         if (_superFastScales.Data.IsOpen)
         {
+            OnEnabled();
             Debug.Log("LightningMovement / superFastScales Active");
             _superFastScales.IncreasingResistance();
         }

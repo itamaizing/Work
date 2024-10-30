@@ -53,7 +53,6 @@ public class BasePsionicEnergy : Energy, IDamageable
 
     public void ShowPhantomValue(Damage damage)
     {
-
     }
 
     public void ActivateAttackingEnergy()

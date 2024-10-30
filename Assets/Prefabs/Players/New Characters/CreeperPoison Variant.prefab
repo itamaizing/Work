@@ -2001,7 +2001,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: TransparentPoisons
-    IsOpen: 1
+    IsOpen: 0
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7418347446368758987}
