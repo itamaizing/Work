@@ -27,7 +27,10 @@ protected override void CastAction()
         {
             Value = Buff.Damage.GetBuffedValue(_damage),
             Type = DamageType,
+            School = School,
+            Form = AbilityForm,
             PhysicAttackType = AttackRangeType,
+
         };
         CmdApplyDamage(damage, _target.gameObject);
     }

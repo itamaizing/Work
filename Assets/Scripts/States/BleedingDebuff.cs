@@ -63,6 +63,6 @@ public class BleedingDebuff : AbstractCharacterState
     private void DealDamage()
     {
         Debug.LogWarning("Bleeding .DealDamage()");
-        _characterState.GetComponent<HealthComponent>().CmdTryTakeDamage(Random.Range(1, 3), DamageType.Magical, AttackRangeType.Inner);
+        _characterState.GetComponent<HealthComponent>().CmdTryTakeDamage(Random.Range(1, 3), DamageType.Magical, AttackRangeType.MeleeAttack);
     }
 }

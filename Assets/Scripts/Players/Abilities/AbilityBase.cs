@@ -22,13 +22,14 @@ public enum AttackRangeType
 {
 	MeleeAttack,
 	RangeAttack,
-	Inner
 }
 
 public enum DamageType
 {
 	Magical,
 	Physical,
+	DOTPhys,
+	DOTMag,
 	Both,
 	None
 }

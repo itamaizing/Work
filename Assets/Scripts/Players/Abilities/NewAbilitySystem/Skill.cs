@@ -36,7 +36,7 @@ public enum AbilityForm
 {
     Spell,
     Magic,
-    Physical
+    Physical,
 }
 
 public enum SkillType

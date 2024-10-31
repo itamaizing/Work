@@ -62,7 +62,7 @@ public class IceCloudProjectile : Projectiles
 				target.CharacterState.AddState(States.Frozen, duration, 30, _dad.gameObject, _skill.name);
 
 				//talents???
-				if (_dad.Health.EvadeMagDamage >= 20)
+				if (_dad.Health.ResistMagDamage >= 20)
 				{
 					_dad.Health.SetEvadeMagic(5);
 				}

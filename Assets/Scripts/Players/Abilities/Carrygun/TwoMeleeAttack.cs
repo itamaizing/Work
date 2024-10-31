@@ -349,7 +349,7 @@ public class TwoMeleeAttack : AbilityBase
     {
         yield return new WaitForSeconds(0.1f);
         // Нанесение урона основной цели
-        _targetHealth.TryTakeDamage(activePsionica * 0.3f, DamageType.Magical, AttackRangeType.Inner);
+        _targetHealth.TryTakeDamage(activePsionica * 0.3f, DamageType.Magical, AttackRangeType.MeleeAttack);
     }
 
     private IEnumerator DamageEnemiesCooldown(float activePsionica, Collider2D collider)

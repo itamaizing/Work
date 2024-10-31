@@ -107,7 +107,7 @@ public class SpiritEnergyState : AbstractCharacterState
         }
     }
     
-    private void OnDamageTaken(float damageAmount, DamageType damageType, Skill skill)
+    private void OnDamageTaken(Damage damage, Skill skill)
     {
         var manaRestoreValue = _isTalentActive ? BuffedManaRestorePerStack : ManaRestorePerStack;
         ApplyManaRestore(manaRestoreValue * CurrentStacksCount);
@@ -115,7 +115,7 @@ public class SpiritEnergyState : AbstractCharacterState
         if (skill.Hero.CharacterState.CheckForState(States.SpiritEnergy))
         {
             var manaRestoreBonusValue = _isTalentActive ? BuffedBonusManaRestore : BonusManaRestore;
-            ApplyManaRestore(manaRestoreBonusValue * damageAmount * CurrentStacksCount);
+            ApplyManaRestore(manaRestoreBonusValue * damage.Value * CurrentStacksCount);
         }
     }
 }

@@ -71,7 +71,8 @@ public class MoveComponent : NetworkBehaviour
 
 	public void LookAtTransform(Transform transform)
     {
-		_lookAtTransformJob = StartCoroutine(lookAtTransformCoroutine(transform));
+		_isLookAtCursor = false;
+		_lookAtTransformJob = StartCoroutine(LookAtTransformCoroutine(transform));
     }
 
 	public void StopLookAt()
@@ -158,10 +159,13 @@ public class MoveComponent : NetworkBehaviour
 			_dir = new Vector3(dir.x, 0, dir.y);
 	}
 
-	private IEnumerator lookAtTransformCoroutine(Transform transform)
+	private IEnumerator LookAtTransformCoroutine(Transform transform)
     {
-		LookAtPosition(transform.position);
-		yield return null;
+		while (!_isLookAtCursor)
+        {
+			LookAtPosition(transform.position);
+			yield return null;
+		}
     }
 
 	[TargetRpc]

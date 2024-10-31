@@ -33,11 +33,11 @@ public class EmbryonDebuff : MonoBehaviour
     {
         for (int i = 0; i < _duration; i++)
         {
-            _target.GetComponent<HealthComponent>().TryTakeDamage(_damage, DamageType.Physical, AttackRangeType.Inner);
+            _target.GetComponent<HealthComponent>().TryTakeDamage(_damage, DamageType.Physical, AttackRangeType.MeleeAttack);
             _damageReduction = Mathf.Min(_damageReduction + 0.1f, 0.3f);
             yield return new WaitForSeconds(1f);
         }
-        _target.GetComponent<HealthComponent>().TryTakeDamage(_finalDamage, DamageType.Physical, AttackRangeType.Inner);
+        _target.GetComponent<HealthComponent>().TryTakeDamage(_finalDamage, DamageType.Physical, AttackRangeType.MeleeAttack);
 
         GameObject newScrader = Instantiate(scraderPrefab);
 

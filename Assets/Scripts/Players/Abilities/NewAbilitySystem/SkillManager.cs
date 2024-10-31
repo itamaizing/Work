@@ -11,7 +11,7 @@ public class SkillManager : MonoBehaviour
     [SerializeField] private List<Skill> _skills;
     [SerializeField] private Character _hero;
     [SerializeField] private TalentSystem _talentSystem;
-    [SerializeField]private SkillRenderer _skillRenderer;
+    [SerializeField] private SkillRenderer _skillRenderer;
 
     private Skill[] _selectedSkills = new Skill[16];
     private List<AutoAttackSkill> _autoAttackSkills = new List<AutoAttackSkill>();

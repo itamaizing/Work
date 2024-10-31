@@ -54,20 +54,20 @@ public class UIPlayerComponents : MonoBehaviour
         popupTextPrefab.EndColor = endColor;
     }
 
-    private void OnDamageTaken(float value, DamageType damageType, Skill skill)
+    private void OnDamageTaken(Damage damage, Skill skill)
     {
-        switch (damageType)
+        switch (damage.Type)
         {
             case DamageType.Magical:
-                ShowPopupValue(-value, _magDamageColor, _magDamageColor);
+                ShowPopupValue(-damage.Value, _magDamageColor, _magDamageColor);
                 break;
 
             case DamageType.Physical:
-                ShowPopupValue(-value, _physDamageColor, _physDamageColor);
+                ShowPopupValue(-damage.Value, _physDamageColor, _physDamageColor);
                 break;
 
             default:
-                ShowPopupValue(-value, _physDamageColor, _physDamageColor);
+                ShowPopupValue(-damage.Value, _physDamageColor, _physDamageColor);
                 break;
         }
     }
