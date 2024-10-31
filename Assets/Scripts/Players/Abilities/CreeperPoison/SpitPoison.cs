@@ -69,6 +69,7 @@ public class SpitPoison : Skill
                 ChooseTarget();
 
                 _mousePos = GetMousePoint();
+                Debug.Log("SpitPoison / PRepareJob / _mousePos = " + _mousePos); 
                 CalculateAngleRotation();
             }
             CooldownChange();
@@ -150,6 +151,7 @@ public class SpitPoison : Skill
             }
             else if (_currentTarget.gameObject.layer == LayerMask.NameToLayer("Enemy"))
             {
+                Debug.Log("else if / Target");
                 _isOriginalTargetPlayer = false;
                 _isOriginalTargetAllies = false;
                 _isOriginalTargetEnemy = true;
@@ -235,7 +237,7 @@ public class SpitPoison : Skill
         RestorationOfGlandsTalent = _restorationOfGlands;
         Debug.Log("SpitPoison / CmdInstTarget / RestorationOfGlandsTalent = " + RestorationOfGlandsTalent);
 
-        GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.Euler(0, 0, angleRotation));
+        GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
@@ -258,7 +260,7 @@ public class SpitPoison : Skill
         RestorationOfGlandsTalent = _restorationOfGlands;
         Debug.Log("SpitPoison / CmdInstPoint / RestorationOfGlandsTalent = " + RestorationOfGlandsTalent);
 
-        GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.Euler(0, 0, angleRotation));
+        GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
@@ -324,7 +326,6 @@ public class SpitPoison : Skill
         }
         RpcApply(_poisonDamagingCloudPrefab.PoisonDamageCloud, _poisonHealingCloudPrefab.PoisonHealingCloud, duration, isHealingCloud);
     }
-
 
     #endregion
 

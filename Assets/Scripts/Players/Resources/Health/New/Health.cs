@@ -6,25 +6,32 @@ using UnityEngine;
 
 public class Health : Resource, IDamageable, IHealingable
 {
+    [SerializeField] private Animator _animator;
+    [SerializeField] private NetworkAnimator _netAnimator;
+
     [SyncVar(hook = nameof(HookEvadeMeleeDamageChanged))] protected float _evadeMeleeDamage;
     [SyncVar(hook = nameof(HookEvadeRangeDamageChanged))] protected float _evadeRangeDamage;
-    [SyncVar(hook = nameof(HookEvadeMagDamageChanged))] protected float _evadeMagDamage;
+    [SyncVar(hook = nameof(HookEvadeMagDamageChanged))] protected float _resistMagDamage;
     [SyncVar(hook = nameof(HookDefPhysDamageChanged))] protected float _defPhysDamage;
     [SyncVar(hook = nameof(HookDefMagDamageChanged))] protected float _defMagDamage;
 
     private List<IDamageable> _shields = new List<IDamageable>();
     private float _sumDamageTaken = 0;
+    private Coroutine _dOTDamageAnimJob;
+    private float _dOTDamageAnimDuration = 0.1f;
+
+
     public float SumDamageTaken { get => _sumDamageTaken; }
     public float EvadeMeleeDamage { get => _evadeMeleeDamage; set => _evadeMeleeDamage = value; }
     public float EvadeRangeDamage { get => _evadeRangeDamage; set => _evadeRangeDamage = value; }
-    public float EvadeMagDamage { get => _evadeMagDamage; set => _evadeMagDamage = value; }
+    public float ResistMagDamage { get => _resistMagDamage; set => _resistMagDamage = value; }
     public float DefPhysDamage { get => _defPhysDamage; set => _defPhysDamage = value; }
     public float DefMagDamage { get => _defMagDamage; set => _defMagDamage = value; }
     public List<IDamageable> Shields { get => _shields; }
 
     public event Action Evaded;
     public event Action<float, Skill, string> HealTaked;
-    public event Action<float, DamageType, Skill> DamageTaken;
+    public event Action<Damage, Skill> DamageTaken;
     public event Action Died;
 
     public event Action<float, float> EvadeMeleeDamageChanged;

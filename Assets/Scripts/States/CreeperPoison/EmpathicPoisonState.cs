@@ -39,7 +39,7 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
     public int CurrentStacks { get => CurrentStacksCount; set => CurrentStacksCount = value; }
     public float StacksDuration { get => _duration; }
 
-    public event Action<float, DamageType, Skill> DamageTaken;
+    public event Action<Damage, Skill> DamageTaken;
 
     public override float TEST_ChangeableValue { get; set; }
     public override States State => States.EmpathicPoisons;

@@ -173,7 +173,6 @@ public class PoisonBoneState : AbstractCharacterState
         {
             Value = _endDamage,
             Type = DamageType.Magical,
-            PhysicAttackType = AttackRangeType.Inner,
         };
 
         _characterState.Character.Health.TryTakeDamage(ref damage, _creeperStrike);

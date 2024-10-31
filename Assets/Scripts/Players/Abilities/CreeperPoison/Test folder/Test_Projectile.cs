@@ -23,20 +23,27 @@ public abstract class Test_Projectile : NetworkBehaviour
     
     public void MoveToPoint(Vector3 point, float speed)
     {
+        Debug.Log("MoveTOPoint / speed = " + speed);
+        Debug.Log("MoveTOPoint / point = " + point);
         _maxDistanceFlying *= GlobalVariable.cellSize;
 
         Vector3 direction = (point - _player.transform.position).normalized;
 
-        Vector3 finalPoint = _player.transform.position + direction * _maxDistanceFlying;
+        Vector3 finalPoint = _player.transform.position + (direction * _maxDistanceFlying);
+        finalPoint.y = _player.transform.position.y;
 
-        _projectileRigidbody.DOMove(finalPoint, (_maxDistanceFlying * speed)).SetEase(Ease.Linear).OnComplete(DestroyProjectile);
+        float duration = _maxDistanceFlying / speed;
+
+        transform.DOMove(finalPoint, duration).SetEase(Ease.Linear).OnComplete(DestroyProjectile);
     }
 
     public void MoveToTarget(Vector3 targetPos, float speed)
     {
         _maxDistanceFlying *= GlobalVariable.cellSize;
 
-        _projectileRigidbody.DOMove(targetPos, (_maxDistanceFlying * speed)).SetEase(Ease.Linear).OnComplete(DestroyProjectile);
+        float duration = _maxDistanceFlying / speed;
+
+        transform.DOMove(targetPos, duration).SetEase(Ease.Linear).OnComplete(DestroyProjectile);
     }
 
     public void DestroyProjectile()
@@ -44,5 +51,4 @@ public abstract class Test_Projectile : NetworkBehaviour
         Destroy(gameObject);
         _target = null;
     }
-
 }

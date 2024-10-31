@@ -90,7 +90,7 @@ public class PoisonBall : Skill
     #region BoolVariables
 
     private bool _isPushTarget;
-    private bool _isTarget;
+    private bool _isTarget = false;
     private bool _isFast;
     private bool _secondClickDone = false;
     private bool _thirdClickDone = false;
@@ -189,10 +189,6 @@ public class PoisonBall : Skill
                 if (_currentTarget != null)
                 {
                     _isTarget = true;
-                }
-                else
-                {
-                    _isTarget = false;
                 }
 
                 CheckWhoTarget();
@@ -368,7 +364,7 @@ public class PoisonBall : Skill
                 _secondMousePosition = GetMousePoint();
                 if (_currentTarget != null)
                 {
-                    if (_secondMousePosition.x < _firstMousePosition.x)
+                    if (_secondMousePosition.x < _firstMousePosition.x && _secondMousePosition.z < _firstMousePosition.z)
                     {
                         DarkenArrowColor(0, 0.8f);
                         DarkenArrowColor(1, 0f);
@@ -727,13 +723,13 @@ public class PoisonBall : Skill
     private void ChooseSpeed()
     {
         _isFast = _isTarget
-            ? Vector2.Distance(_player.transform.position, _secondMousePosition) > Vector2.Distance(_player.transform.position, _currentTarget.transform.position)
-            : Vector2.Distance(_player.transform.position, _secondMousePosition) > Vector2.Distance(_player.transform.position, _firstMousePosition);
+            ? Vector3.Distance(_player.transform.position, _secondMousePosition) > Vector3.Distance(_player.transform.position, _currentTarget.transform.position)
+            : Vector3.Distance(_player.transform.position, _secondMousePosition) > Vector3.Distance(_player.transform.position, _firstMousePosition);
     }
 
     private void ChooseDirectionPush()
     {
-        _isPushTarget = Vector2.Distance(_player.transform.position, _thirdMousePosition) > Vector2.Distance(_player.transform.position, _secondMousePosition);
+        _isPushTarget = Vector3.Distance(_player.transform.position, _thirdMousePosition) > Vector3.Distance(_player.transform.position, _secondMousePosition);
     }
 
     private IEnumerator TimeCastForFastMoveProjectile()

@@ -271,7 +271,7 @@ public class LightningMovement : Skill
             centerTarget = Vector3.zero;
         }
 
-        bool isPointBehindCenterTarget = Vector2.Distance(startPoint, targetPoint) > Vector2.Distance(startPoint, centerTarget);
+        bool isPointBehindCenterTarget = Vector3.Distance(startPoint, targetPoint) > Vector3.Distance(startPoint, centerTarget);
 
         if (_isTargetOnEndPointSecondLeap)
         {
@@ -308,13 +308,21 @@ public class LightningMovement : Skill
 
     private bool IsObstacle(Vector3 startPos, Vector3 endPos)
     {
-        RaycastHit2D hitObstacle = Physics2D.Linecast(startPos, endPos, _obstacle);
-        if (hitObstacle.collider != null)
+        Vector3 direction = (startPos - endPos).normalized;
+
+        RaycastHit[] hitObstacle = Physics.RaycastAll(startPos, direction, _rangeLeap, _obstacle);
+        foreach(RaycastHit hit in hitObstacle)
         {
-            _firstLeapPointIfIsObstacle = hitObstacle.point;
-            _secondLeapPointIfIsObstacle = hitObstacle.point;
+            if (hit.collider != null)
+            {
+                _firstLeapPointIfIsObstacle = hit.point;
+                _secondLeapPointIfIsObstacle = hit.point;
+            }
+
+            return true;
         }
-        return hitObstacle.collider != null;
+
+        return false;
     }
 
     private void IsEnemyBeforePlayer()
@@ -322,9 +330,9 @@ public class LightningMovement : Skill
         float castLengthMultiplier = 4f;
         float castWidthMultiplier = 1.55f;
 
-        Vector2 sizeBox = new Vector2(_castLength * castLengthMultiplier, _castWidth * castWidthMultiplier);
+        Vector3 sizeBox = new Vector3(_castLength * castLengthMultiplier, _castWidth * castWidthMultiplier);
 
-        Collider2D hit = Physics2D.OverlapBox(transform.position, sizeBox, _angle, _targetsLayers);
+        Collider[] hit = Physics.OverlapBox(transform.position, sizeBox, Quaternion.Euler(0, 0, _angle), _targetsLayers);
         if (hit != null)
         {
             _isTarget = true;
@@ -335,18 +343,24 @@ public class LightningMovement : Skill
         }
     }
 
-    private IEnumerator IsTargetOnEndPoint(Vector2 secondLeap, LayerMask targetLayer)
+    private IEnumerator IsTargetOnEndPoint(Vector3 secondLeap, LayerMask targetLayer)
     {
         float radiusChecking = 1.35f;
+        Vector3 direction = (secondLeap - transform.position).normalized;
 
         while (true)
         {
-            Collider2D hit = Physics2D.OverlapCircle(secondLeap, radiusChecking, targetLayer);
-            if (hit != null)
+            Ray ray = new Ray(transform.position, direction);
+            RaycastHit hitInfo;
+
+            bool isHit = Physics.SphereCast(ray, radiusChecking, out hitInfo, targetLayer);
+
+            if (isHit)
             {
-                _target = hit.gameObject.GetComponent<Character>();
+                _target = hitInfo.collider.gameObject.GetComponent<Character>();
 
                 _isTargetOnEndPointSecondLeap = true;
+                yield break;
             }
             yield return null;
         }
@@ -354,12 +368,11 @@ public class LightningMovement : Skill
 
     private IEnumerator IsTargetBeforePlayerJob(float rangeLeap, LayerMask targetLayer)
     {
-        Vector2 sizeBox = new Vector2(_castLength, _castWidth);
-        float offset = 90f;
+        Vector3 sizeBox = new Vector3(_castLength, _castWidth);
 
         while (true)
         {
-            Collider2D hit = Physics2D.OverlapBox(transform.position, sizeBox, _angle - offset, targetLayer);
+            Collider[] hit = Physics.OverlapBox(transform.position, sizeBox, Quaternion.Euler(0, 0, _angle), targetLayer);
             if (hit != null)
             {
                 _isTargetBeforePlayer = true;
@@ -371,10 +384,10 @@ public class LightningMovement : Skill
 
     private IEnumerator IsTargetBehindPlayerJob(float rangeLeap, LayerMask targetLayer)
     {
-        Vector2 sizeBox = new Vector2(_castLength - 1.5f, _castWidth * 1.2f);
+        Vector3 sizeBox = new Vector3(_castLength - 1.5f, _castWidth * 1.2f);
         while (true)
         {
-            Collider2D hit = Physics2D.OverlapBox(transform.position, sizeBox, _angle + 90f, targetLayer);
+            Collider[] hit = Physics.OverlapBox(transform.position, sizeBox, Quaternion.Euler(0, 0, _angle + 180f), targetLayer);
             if (hit != null)
             {
                 _isTargetBehindPlayer = true;
@@ -392,7 +405,7 @@ public class LightningMovement : Skill
     {
         Vector3 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
         _angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0, 0, _angle - 90f);
+        transform.rotation = Quaternion.Euler(0, 0, _angle - 180f);
     }
 
     private IEnumerator RenderLineForFirstLeapJob(float length, float width, AbilityLineRenderer line, Transform lineTransform)
@@ -630,7 +643,7 @@ public class LightningMovement : Skill
         CmdSingleLeap(firstLeapPoint, _durationLeap, _rangeLeap, _multiplierLeap, _timeBuff, _heatedGlandsIsActive);
     }
 
-    private void ExecuteLeaps(Vector2 firstLeapPoint, Vector2 secondLeapPoint)
+    private void ExecuteLeaps(Vector3 firstLeapPoint, Vector3 secondLeapPoint)
     {
         _isAbilityDone = true;
         IsInMovement = true;
@@ -664,7 +677,7 @@ public class LightningMovement : Skill
     #region Command
 
     [Command]
-    private void CmdSingleLeap(Vector2 firstLeapPoint, 
+    private void CmdSingleLeap(Vector3 firstLeapPoint, 
         float durationLeap, float rangeLeap, float multiplierLeap, float timeBuff, 
         bool heatedGlandsIsAcitve)
     {
@@ -683,7 +696,7 @@ public class LightningMovement : Skill
     }
 
     [Command]
-    private void CmdExecuteTwoLeaps(Vector2 firstLeapPoint, Vector2 secondLeapPoint,
+    private void CmdExecuteTwoLeaps(Vector3 firstLeapPoint, Vector2 secondLeapPoint,
         float durationLeap, float rangeLeap, float multiplierLeap, float timeBuff, float interval,
         bool heatedGlandsIsActive,
         LayerMask enemyLayer)
@@ -705,7 +718,7 @@ public class LightningMovement : Skill
     #endregion
 
     [TargetRpc]
-    private void TargetRpcExecuteLeaps(GameObject player, Vector2 firstLeapPoint, Vector2 secondLeapPoint,
+    private void TargetRpcExecuteLeaps(GameObject player, Vector3 firstLeapPoint, Vector3 secondLeapPoint,
         float durationLeap, float rangeLeap, float multiplierLeap, float timeBuff, float interval,
         bool heatedGlandsIsActive,
         LayerMask enemyLayer)

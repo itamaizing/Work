@@ -24,17 +24,17 @@ public class SuperFastScales : Talent
         _baseDefMagDamage = character.Health.DefMagDamage;
         Debug.Log("BaseMagDamage = " + _baseDefMagDamage);
 
-        if (character.Health.EvadeMagDamage < 100f)
+        if (character.Health.ResistMagDamage < 100f)
         {
-            character.Health.EvadeMagDamage = _increaseResistanceToMagicDamage;
-            Debug.Log($"Increased EvadeMagDamage == {character.Health.EvadeMagDamage}");
+            character.Health.ResistMagDamage = _increaseResistanceToMagicDamage;
+            Debug.Log($"Increased ResistMagDamage == {character.Health.ResistMagDamage}");
         }
     }
 
     public void ResetResistance()
     {
         Debug.Log("Reset baseMagDamage = " + _baseDefMagDamage);
-        character.Health.EvadeMagDamage = _baseDefMagDamage;
-        Debug.Log($"Reset EvadeMagDamage == {character.Health.EvadeMagDamage}");
+        character.Health.ResistMagDamage = _baseDefMagDamage;
+        Debug.Log($"Reset ResistMagDamage == {character.Health.ResistMagDamage}");
     }
 }

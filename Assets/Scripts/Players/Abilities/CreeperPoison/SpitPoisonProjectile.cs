@@ -3,6 +3,7 @@ using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SpitPoisonProjectile : Test_Projectile
@@ -28,86 +29,99 @@ public class SpitPoisonProjectile : Test_Projectile
 
     #endregion
 
-    #region OnTriggerEnter2D
+    #region OnTriggerEnter
 
     [Server]
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if (_isActiveHealingSpitPoison)
-        {
-            if (_isPlayer)
-            {
-                if (collision.gameObject == _player.gameObject)
-                {
-                    _player.CharacterState.AddState(States.RegeneratingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
-                    Destroy(gameObject);
-                }
-            }
-            else if (_isAllies)
-            {
-                if (collision.gameObject != _player.gameObject && _playerLayer == LayerMask.NameToLayer("Allies"))
-                {
-                    if (collision.TryGetComponent<Character>(out var alliesHealth))
-                    {
-                        alliesHealth.CharacterState.AddState(States.RegeneratingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
-                        Destroy(gameObject);
-                    }
-                }
-                else if (!_isEnemy && collision.gameObject != _player.gameObject)
-                {
-                    return;
-                }
-            }   
-            else if (_isEnemy)
-            {
-                if (collision.transform != _player.transform && _playerLayer != LayerMask.NameToLayer("Enemy"))
-                {
-                    if (collision.TryGetComponent<Character>(out var target))
-                    {
-                        _target = target;
-                        _damage = Random.Range(4.0f, 12.0f);
+        Debug.Log("Collision.name = " + other.name);
 
-                        DamageDeal();
-                    }
-                }
-                else if (!_isAllies && collision.gameObject != _player.gameObject)
-                {
-                    return;
-                }
-            }
-            else
-            {
-                if (collision.gameObject != _player.gameObject && _playerLayer != LayerMask.NameToLayer("Enemy"))
-                {
-                    if (collision.transform != _player.transform)
-                    {
-                        if (collision.TryGetComponent<Character>(out var target))
-                        {
-                            _target = target;
-
-                            _damage = Random.Range(4.0f, 12.0f);
-
-                            DamageDeal();
-                        }
-                    }
-                }
-            }
-        }
-        else
-        {
-            if (collision.transform != _player.transform && _playerLayer != LayerMask.NameToLayer("Enemy"))
-            {
-                if (collision.TryGetComponent<Character>(out var target))
-                { 
-                    _target = target;
-
-                    _damage = Random.Range(4.0f, 12.0f);
-
-                    DamageDeal();
-                }
-            }
-        }
     }
+
+    //[Server]
+    //private void OnTriggerEnter(Collider collision)
+    //{
+    //    Debug.Log("Collision.name = " +  collision.name);
+
+    //    if (_isActiveHealingSpitPoison)
+    //    {
+    //        if (_isPlayer)
+    //        {
+    //            if (collision.gameObject == _player.gameObject)
+    //            {
+    //                _player.CharacterState.AddState(States.RegeneratingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
+    //                Destroy(gameObject);
+    //            }
+    //        }
+    //        else if (_isAllies)
+    //        {
+    //            if (collision.gameObject != _player.gameObject && _playerLayer == LayerMask.NameToLayer("Allies"))
+    //            {
+    //                if (collision.TryGetComponent<Character>(out var alliesHealth))
+    //                {
+    //                    alliesHealth.CharacterState.AddState(States.RegeneratingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
+    //                    Destroy(gameObject);
+    //                }
+    //            }
+    //            else if (!_isEnemy && collision.gameObject != _player.gameObject)
+    //            {
+    //                return;
+    //            }
+    //        }   
+    //        else if (_isEnemy)
+    //        {
+    //            if (collision.transform != _player.transform && _playerLayer != LayerMask.NameToLayer("Enemy"))
+    //            {
+    //                if (collision.TryGetComponent<Character>(out var target))
+    //                {
+    //                    _target = target;
+    //                    _damage = Random.Range(4.0f, 12.0f);
+
+    //                    DamageDeal();
+    //                }
+    //            }
+    //            else if (!_isAllies && collision.gameObject != _player.gameObject)
+    //            {
+    //                return;
+    //            }
+    //        }
+    //        else
+    //        {
+    //            if (collision.gameObject != _player.gameObject && _playerLayer != LayerMask.NameToLayer("Enemy"))
+    //            {
+    //                if (collision.transform != _player.transform)
+    //                {
+    //                    if (collision.TryGetComponent<Character>(out var target))
+    //                    {
+    //                        _target = target;
+
+    //                        _damage = Random.Range(4.0f, 12.0f);
+
+    //                        DamageDeal();
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    }
+    //    else
+    //    {
+    //        Debug.Log("OnTrigger / else / enemy ");
+    //        if (collision.gameObject != null)
+    //        {
+    //            if (collision.transform != _player.transform && _playerLayer != LayerMask.NameToLayer("Enemy"))
+    //            {
+    //                if (collision.TryGetComponent<Character>(out var target))
+    //                {
+    //                    _target = target;
+
+    //                    _damage = Random.Range(4.0f, 12.0f);
+
+    //                    DamageDeal();
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
 
     #endregion
 
@@ -115,11 +129,15 @@ public class SpitPoisonProjectile : Test_Projectile
 
     public void MoveBallToTarget(Vector3 target)
     {
+        Debug.Log("SpitPoisonProj / MoveBallToTarget / Start");
+
         MoveToTarget(target, _speed);
     }
 
     public void MoveBallOnMaxDistance(Vector3 point)
     {
+        Debug.Log("SpitPoisonProj / MoveBallOnMaxDistance / point = " + point);
+
         MoveToPoint(point, _speed);
     }
     #endregion

@@ -184,7 +184,6 @@ public class PoisonCloudState : AbstractCharacterState
         {
             Value = _endDamage,
             Type = DamageType.Physical,
-            PhysicAttackType = AttackRangeType.Inner,
         };
 
         targetHealth.Health.CmdTryTakeDamage(damage, null);

@@ -73,7 +73,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2201725961568704641, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Mass
-      value: 0.1
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2201725961568704641, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_UseGravity
@@ -115,6 +115,10 @@ PrefabInstance:
       propertyPath: _skills.Array.data[4]
       value: 
       objectReference: {fileID: 5246557041890453261}
+    - target: {fileID: 5590339039165547173, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _stateIcons
+      value: 
+      objectReference: {fileID: 7930975987946287740}
     - target: {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _rb
       value: 
@@ -123,6 +127,10 @@ PrefabInstance:
       propertyPath: _collider
       value: 
       objectReference: {fileID: 1625680939628165366}
+    - target: {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _playerData
+      value: 
+      objectReference: {fileID: 11400000, guid: 47cac5ab51e8b334aafb537b893ada29, type: 2}
     - target: {fileID: 5653443088679015109, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -419,7 +427,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: ColdBloodEnabledTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -465,7 +473,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: AcceleratedSlap
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -487,7 +495,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: AssasinPoison
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -510,7 +518,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: BindingPoison
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -552,7 +560,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: ColdBloodTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -678,7 +686,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: FeelingOfContinuation
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -890,7 +898,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: OwnElement
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -938,7 +946,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: PreparingForFight
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -959,7 +967,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: ReleaseFromSecrecy
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -1031,7 +1039,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: SuperFastScales
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -1094,7 +1102,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _data:
-    Name: 
+    Name: TransparentPoisons
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -1197,6 +1205,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 22d89e8fc912e73459ee8ef407455b14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7930975987946287740 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7862468949918363200, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 219943549773077564}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89bb8792cc67dea4487caae7c8fb0dfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &8641125146119960656 stripped

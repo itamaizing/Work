@@ -16,12 +16,131 @@ MonoBehaviour:
   _description: c c c
   _icon: {fileID: 21300000, guid: dfa6db335114f8e498d6358b3d8118ed, type: 3}
   _iconSize: 0
-  _health: 777
-  _healthInfo: {fileID: 11400000, guid: c3a7cc3569f730144936c7d492a97e83, type: 2}
-  _stamina: 777
-  _moveSpeed: 5
-  _defaultHealthRegen: 4
-  _defaultStaminaRegen: 4
-  _defaultRegenDelay: 2
-  _defaultStaminaRegenDalay: 2
-  _visionRadius: 5
+  _attributes:
+    attributesGroup:
+    - Id: 1001
+      Name: Health
+      Points: 0
+      DefaultValue: 777
+      Icon: {fileID: 0}
+      IsVisible: 0
+    - Id: 1002
+      Name: Mana
+      Points: 0
+      DefaultValue: 777
+      Icon: {fileID: 0}
+      IsVisible: 0
+    - Id: 1003
+      Name: Energy
+      Points: 0
+      DefaultValue: 0
+      Icon: {fileID: 0}
+      IsVisible: 0
+    - Id: 1004
+      Name: Rune
+      Points: 0
+      DefaultValue: 0
+      Icon: {fileID: 0}
+      IsVisible: 0
+    - Id: 1005
+      Name: Speed
+      Points: 0
+      DefaultValue: 5
+      Icon: {fileID: 0}
+      IsVisible: 0
+    - Id: 1006
+      Name: HPRegen
+      Points: 0
+      DefaultValue: 2
+      Icon: {fileID: 0}
+      IsVisible: 0
+    - Id: 1007
+      Name: ManaRegen
+      Points: 0
+      DefaultValue: 1
+      Icon: {fileID: 0}
+      IsVisible: 0
+    - Id: 1008
+      Name: EnergyRegen
+      Points: 0
+      DefaultValue: 0
+      Icon: {fileID: 0}
+      IsVisible: 0
+    - Id: 1009
+      Name: RuneRegen
+      Points: 0
+      DefaultValue: 0
+      Icon: {fileID: 0}
+      IsVisible: 0
+    - Id: 1010
+      Name: HPRegenDelay
+      Points: 0
+      DefaultValue: 1
+      Icon: {fileID: 0}
+      IsVisible: 0
+    - Id: 1011
+      Name: ManaRegenDelay
+      Points: 0
+      DefaultValue: 1
+      Icon: {fileID: 0}
+      IsVisible: 0
+    - Id: 1012
+      Name: EnergyRegenDelay
+      Points: 0
+      DefaultValue: 0
+      Icon: {fileID: 0}
+      IsVisible: 0
+    - Id: 1013
+      Name: RuneRegenDelay
+      Points: 0
+      DefaultValue: 0
+      Icon: {fileID: 0}
+      IsVisible: 0
+    - Id: 1014
+      Name: VisionRadius
+      Points: 0
+      DefaultValue: 5
+      Icon: {fileID: 0}
+      IsVisible: 0
+    - Id: 1015
+      Name: PhysicResist
+      Points: 0
+      DefaultValue: 1
+      Icon: {fileID: 0}
+      IsVisible: 0
+    - Id: 1016
+      Name: MagicResist
+      Points: 0
+      DefaultValue: 1
+      Icon: {fileID: 0}
+      IsVisible: 0
+    - Id: 1017
+      Name: MeleeEvade
+      Points: 0
+      DefaultValue: 1
+      Icon: {fileID: 0}
+      IsVisible: 0
+    - Id: 1018
+      Name: RangeEvade
+      Points: 0
+      DefaultValue: 1
+      Icon: {fileID: 0}
+      IsVisible: 0
+    - Id: 1019
+      Name: MagicEvade
+      Points: 0
+      DefaultValue: 1
+      Icon: {fileID: 0}
+      IsVisible: 0
+    - Id: 1020
+      Name: PhysicAbsorb
+      Points: 0
+      DefaultValue: 1
+      Icon: {fileID: 0}
+      IsVisible: 0
+    - Id: 1021
+      Name: MagicAbsorb
+      Points: 0
+      DefaultValue: 1
+      Icon: {fileID: 0}
+      IsVisible: 0

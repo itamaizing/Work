@@ -68,7 +68,6 @@ public class BleedingState : AbstractCharacterState
         {
             Value = _baseDamage,
             Type = DamageType.Physical,
-            PhysicAttackType = AttackRangeType.Inner,
         };
 
         _target.Health.TryTakeDamage(ref damage, null);

@@ -19,6 +19,7 @@ public class PoisonBallProjectile : Test_Projectile
     [SerializeField] private float _durationInAir;
     [SerializeField] private float _fastMovementSpeed;
     [SerializeField] private float _slowMovementSpeed;
+    [SerializeField] private float _baseSizeBall;
     
     private PoisonBall _poisonBall;
     private Skill _skill;
@@ -33,7 +34,6 @@ public class PoisonBallProjectile : Test_Projectile
     #region FloatVariables
     private float _newDistancePush;
     private float _energyDad;
-    private float _baseSizeBall = 1.0f;
     private float _distanceIncreaseMultiplier = 0.5f;
     private float _multiplierDistanceFromTalent;
     #endregion
@@ -180,9 +180,12 @@ public class PoisonBallProjectile : Test_Projectile
 
     public void MoveBallOnMaxDistance(Vector3 point, bool isFast)
     {
+        Debug.Log("PoisonBallProjectile / MoveBallOnMaxDistance");
         _isFast = isFast;
 
         float speed = isFast ? _fastMovementSpeed : _slowMovementSpeed;
+        Debug.Log("PoisonBallProjectile / MoveBallOnMaxDistance / speed = " + speed);
+        Debug.Log("PoisonBallProjectile / MoveBallOnMaxDistance / point = " + point);
 
         MoveToPoint(point, speed);
     }
@@ -236,19 +239,19 @@ public class PoisonBallProjectile : Test_Projectile
 
     private void PushEnemy(Character target, float durationPush, float newDistancePush)
     {
-        Vector2 directionPush = (target.transform.position - transform.position);
+        Vector3 directionPush = (target.transform.position - transform.position);
 
         newDistancePush = ((newDistancePush * GlobalVariable.cellSize) * durationPush) / GlobalVariable.cellSize;
 
         if (_isPushTarget)
         {
             //target.transform.DOMove((Vector2)target.transform.position + directionPush * distancePush, durationPush).SetEase(Ease.Linear);
-            target.GetComponent<MoveComponent>().TargetRpcDoMove((Vector2)target.transform.position + directionPush * newDistancePush, durationPush);
+            target.GetComponent<MoveComponent>().TargetRpcDoMove((Vector3)target.transform.position + directionPush * newDistancePush, durationPush);
         }
         else
         {
             //target.transform.DOMove((Vector2)target.transform.position - directionPush * distancePush, durationPush).SetEase(Ease.Linear);
-            target.GetComponent<MoveComponent>().TargetRpcDoMove((Vector2)target.transform.position - directionPush * newDistancePush, durationPush);
+            target.GetComponent<MoveComponent>().TargetRpcDoMove((Vector3)target.transform.position - directionPush * newDistancePush, durationPush);
         }
 
         target.Move.CanMove = true;
@@ -297,11 +300,11 @@ public class PoisonBallProjectile : Test_Projectile
     {
         if (_isActiveVoluminousBall)
         {
-            _transformBall.localScale = new Vector2(sizeBallWithTalent, sizeBallWithTalent);
+            _transformBall.localScale = new Vector3(sizeBallWithTalent, sizeBallWithTalent, sizeBallWithTalent);
         }
         else
         {
-            _transformBall.localScale = new Vector2(_baseSizeBall, _baseSizeBall);
+            _transformBall.localScale = new Vector3(_baseSizeBall, _baseSizeBall, _baseSizeBall);
         }
     }
 
@@ -340,6 +343,7 @@ public class PoisonBallProjectile : Test_Projectile
     #endregion
 
     #region ServerMethods
+
     [Server]
     private void TransparentProjectileOnServer()
     {
@@ -364,6 +368,7 @@ public class PoisonBallProjectile : Test_Projectile
 
         RpcLayerDefinition(player.layer);
     }
+
     #endregion
 
     #region ClientRpcMethods
