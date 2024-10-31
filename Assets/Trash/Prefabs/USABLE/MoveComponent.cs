@@ -69,6 +69,10 @@ public class MoveComponent : NetworkBehaviour
 	public void LookAtTransform(Transform transform)
     {
 		_isLookAtCursor = false;
+
+		if (_lookAtTransformJob != null)
+			StopCoroutine(_lookAtTransformJob);
+
 		_lookAtTransformJob = StartCoroutine(LookAtTransformCoroutine(transform));
     }
 
