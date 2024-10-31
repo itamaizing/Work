@@ -11,7 +11,8 @@ public class FrozenState : AbstractCharacterState
 
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.Ability };
 
-	public override States State => States.Frozen;
+    public override float TEST_ChangeableValue { get; set; }
+    public override States State => States.Frozen;
 	public override StateType Type => StateType.Magic;
 	public override List<StatusEffect> Effects => _effects;
 

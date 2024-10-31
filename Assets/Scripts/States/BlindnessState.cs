@@ -12,7 +12,8 @@ public class BlindnessState : AbstractCharacterState
 
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
 
-	public override States State => States.Blind;
+    public override float TEST_ChangeableValue { get; set; }
+    public override States State => States.Blind;
 	public override StateType Type => StateType.Physical;
 	public override List<StatusEffect> Effects => _effects;
 

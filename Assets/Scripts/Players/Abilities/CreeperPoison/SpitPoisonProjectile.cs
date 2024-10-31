@@ -1,115 +1,268 @@
+using DG.Tweening;
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class SpitPoisonProjectile : NetworkBehaviour
+public class SpitPoisonProjectile : Test_Projectile
 {
-    [SerializeField] private BonePoison _bonePoisonPrefab;
-    [SerializeField] private Rigidbody2D _rb;
-    [SerializeField] private GameObject _hitEffect;
-    [SerializeField] private float _distance = 5f;
-    [SerializeField] private int _force = 40;
-    private BonePoison _bonePoisonDebuff;
-    private Character _dad;
-    private Vector2 _startPos;
+    #region Variables
+
+    private SpitPoison _spitPoison;
+    private RestorationOfGlands _restorationOfGlands;
+    private Skill _skill;
+
+    private int _playerLayer;
+    private int _poisonBoneStack;
 
     private float _energyDad;
     private float _damage;
+    private float _lifeTimePoisonBoneStacks = 6.0f;
 
-    private void Awake()
-    {
-        _startPos = transform.position;
-        _rb.AddForce(transform.up * _force, ForceMode2D.Impulse);
-    }
+    private bool _isPlayer;
+    private bool _isAllies;
+    private bool _isEnemy;
+    private bool _isActiveHealingSpitPoison;
+    private bool _isPlayerInvisible;
 
-    private void Update()
-    {
-        if (Vector2.Distance(transform.position, _startPos) > _distance * GlobalVariable.cellSize)
-        {
-            Explode();
-        }
-    }
+    #endregion
+
+    #region OnTriggerEnter2D
 
     [Server]
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.transform != _dad.transform)
+        if (_isActiveHealingSpitPoison)
         {
-            if (collision.TryGetComponent<HealthComponent>(out var targetHealth))
+            if (_isPlayer)
             {
-                _damage = Random.Range(4.0f, 12.0f);
+                if (collision.gameObject == _player.gameObject)
+                {
+                    _player.CharacterState.AddState(States.RegeneratingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
+                    Destroy(gameObject);
+                }
+            }
+            else if (_isAllies)
+            {
+                if (collision.gameObject != _player.gameObject && _playerLayer == LayerMask.NameToLayer("Allies"))
+                {
+                    if (collision.TryGetComponent<Character>(out var alliesHealth))
+                    {
+                        alliesHealth.CharacterState.AddState(States.RegeneratingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
+                        Destroy(gameObject);
+                    }
+                }
+                else if (!_isEnemy && collision.gameObject != _player.gameObject)
+                {
+                    return;
+                }
+            }   
+            else if (_isEnemy)
+            {
+                if (collision.transform != _player.transform && _playerLayer != LayerMask.NameToLayer("Enemy"))
+                {
+                    if (collision.TryGetComponent<Character>(out var target))
+                    {
+                        _target = target;
+                        _damage = Random.Range(4.0f, 12.0f);
 
-                DealDamage(targetHealth, _damage, DamageType.Magical, AttackRangeType.RangeAttack);
-                CreateBonePoisonDebuff(targetHealth);
-                //RpcCreateBonePoisonDebuff(targetHealth);
+                        DamageDeal();
+                    }
+                }
+                else if (!_isAllies && collision.gameObject != _player.gameObject)
+                {
+                    return;
+                }
+            }
+            else
+            {
+                if (collision.gameObject != _player.gameObject && _playerLayer != LayerMask.NameToLayer("Enemy"))
+                {
+                    if (collision.transform != _player.transform)
+                    {
+                        if (collision.TryGetComponent<Character>(out var target))
+                        {
+                            _target = target;
+
+                            _damage = Random.Range(4.0f, 12.0f);
+
+                            DamageDeal();
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (collision.transform != _player.transform && _playerLayer != LayerMask.NameToLayer("Enemy"))
+            {
+                if (collision.TryGetComponent<Character>(out var target))
+                { 
+                    _target = target;
+
+                    _damage = Random.Range(4.0f, 12.0f);
+
+                    DamageDeal();
+                }
             }
         }
     }
 
-    private void DealDamage(HealthComponent targetHealth, float damage, DamageType damageType, AttackRangeType attackRangeType)
+    #endregion
+
+    #region MoveMethods
+
+    public void MoveBallToTarget(Vector3 target)
     {
-        // Chance to apply Blindness
+        MoveToTarget(target, _speed);
+    }
+
+    public void MoveBallOnMaxDistance(Vector3 point)
+    {
+        MoveToPoint(point, _speed);
+    }
+    #endregion
+
+    #region DamageMethods
+
+    public override void DamageDeal()
+    {
         float chanceOfBlindness = 0.3f;
         float numbersForChanceOfBlindness = Random.Range(0.0f, 1.0f);
 
-        Energy _energyLink = (Energy)_dad.Resources.FirstOrDefault();
-        if (_energyLink != null) _energyLink.SumDamageMake(damage);
+        Damage _baseDamage = new Damage
+        {
+            Value = _skill.Buff.Damage.GetBuffedValue(_damage),
+            Type = DamageType.Physical,
+            PhysicAttackType = AttackRangeType.RangeAttack,
+        };
+        
+        _target.Health.TryTakeDamage(ref _baseDamage, _skill);
+        _target.DamageTracker.AddDamage(_baseDamage);
 
-        targetHealth.TryTakeDamage(damage, damageType, attackRangeType);
+        _target.CharacterState.AddState(States.PoisonBone, _lifeTimePoisonBoneStacks, 0, _player.gameObject, _skill.Name);
+
+        if (_restorationOfGlands.Data.IsOpen && _poisonBoneStack > 0 && _target.CharacterState.CheckForState(States.PoisonBone))
+        {
+            Debug.Log("SpitPoisProj / if Restoration = true");
+            ReductionCooldownFromRestorationOfGlands();
+        }
 
         if (numbersForChanceOfBlindness <= chanceOfBlindness)
         {
-            //targetHealth.GetComponent<Character>().CharacterState.AddState(new BlindnessState(), 3.0f, 0, States.Blind);
+            _target.CharacterState.AddState(States.Blind, 6f, 0, _player.gameObject, _skill.Name);
         }
 
-        Explode();
+        DestroyProjectile();        
     }
 
-    private void CreateBonePoisonDebuff(HealthComponent targetHealth)
+    private void ReductionCooldownFromRestorationOfGlands()
     {
-        _bonePoisonDebuff = targetHealth.GetComponentInChildren<BonePoison>();
-        if (_bonePoisonDebuff == null)
+        float baseChanceOfRestorationOfGlands = 0.1f;
+        float chanceRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
+        Debug.Log("SpitPoisProj / chanceRestoration = " + chanceRestorationOfGlands);
+
+        if (Random.Range(0f, 1f) <= chanceRestorationOfGlands)
         {
-            _bonePoisonDebuff = Instantiate(_bonePoisonPrefab, targetHealth.transform);
-            _bonePoisonDebuff.AddStacks(targetHealth);
-        }
-        else
-        {
-            _bonePoisonDebuff.AddStacks(targetHealth);
+            Debug.Log("SpitPoisonProj / If RestorationOfGlands.IsActive = true");
+            _restorationOfGlands.ReductionCooldown();
         }
     }
+
+    #endregion
+
+    #region InitializationMethods
+
+    public void InitializationProjectile(Character dad, Skill skill, float energy,
+        bool isActiveHealingSpitPoison, bool isPlayerInvisible, 
+        bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, int poisonBoneStack)
+    {
+        _player = dad;
+        Debug.Log("InitProj in SpitPoison / player = " + _player);
+        _energyDad = energy;
+        _skill = skill;
+
+        _poisonBoneStack = poisonBoneStack;
+
+        _isActiveHealingSpitPoison = isActiveHealingSpitPoison;
+        _isPlayerInvisible = isPlayerInvisible;
+        _isPlayer = isTargetPlayer;
+        _isAllies = isTargetAllies;
+        _isEnemy = isTargetEnemy;
+
+        Invoke("TransparentProjectileOnServer", 0.1f);
+        InitializationComponents();
+    }
+
+    private void InitializationComponents()
+    {
+        _spitPoison = _player.GetComponentInChildren<SpitPoison>();
+        Debug.Log("SpitPoisonProj / SpitPoison = " + _spitPoison);
+        _restorationOfGlands = _spitPoison.RestorationOfGlandsTalent;
+        Debug.Log("SpitPoisonProj / RestorationOfGlands = " + _restorationOfGlands);
+    }
+
+    #endregion
+
+    #region ServerMethods
+
+    [Server]
+    private void TransparentProjectileOnServer()
+    {
+        Debug.Log("SpitPoisonProj / TransparentProjectileOnServer / isServer = " + isServer);
+        if (isServer)
+        {
+            LayerDefinition(_player.gameObject);
+        }
+        if (isServer && _isPlayerInvisible)
+        {
+            Debug.Log("isServer && _isPlayerInvisible / _player = " + _player);
+            RpcNewTransparencySprite(_player.gameObject);
+        }
+    }
+
+    [Server]
+    private void LayerDefinition(GameObject player)
+    {
+        _playerLayer = player.layer;
+
+        RpcLayerDefinition(player.layer);
+    }
+
+    #endregion
+
+    #region ClientRpcMethods
 
     [ClientRpc]
-    private void RpcCreateBonePoisonDebuff(HealthComponent targetHealth)
+    private void RpcNewTransparencySprite(GameObject player)
     {
-        _bonePoisonDebuff = targetHealth.GetComponentInChildren<BonePoison>();
-        if (_bonePoisonDebuff == null)
+        Color originalColor = _projectileRenderer.material.color;
+
+        if (_projectileRenderer != null)
         {
-            _bonePoisonDebuff = Instantiate(_bonePoisonPrefab, targetHealth.transform);
-            _bonePoisonDebuff.AddStacks(targetHealth);
-        }
-        else
-        {
-            _bonePoisonDebuff.AddStacks(targetHealth);
+            if (player.layer == LayerMask.NameToLayer("Allies"))
+            {
+                Color newTransparencySprite = originalColor;
+                newTransparencySprite.a = 0.5f;
+                _projectileRenderer.material.color = new Color(originalColor.r, originalColor.g, originalColor.b, newTransparencySprite.a);
+            }
+            else if (player.layer == LayerMask.NameToLayer("Enemy"))
+            {
+                Color newTransparencySprite = originalColor;
+                newTransparencySprite.a = 0.0f;
+                _projectileRenderer.material.color = new Color(originalColor.r, originalColor.g, originalColor.b, newTransparencySprite.a);
+            }
         }
     }
 
-    private void Explode()
+
+    [ClientRpc]
+    private void RpcLayerDefinition(int layer)
     {
-        Debug.Log("Ball is destroy in Explode()");
-        if (_hitEffect != null)
-        {
-            GameObject hitEffect = Instantiate(_hitEffect, transform.position, Quaternion.identity);
-            Destroy(hitEffect, 5f);
-        }
-        Destroy(gameObject);
+        _playerLayer = layer;
     }
 
-    public void InitializationProjectile(Character dad, float energy)
-    {
-        _dad = dad;
-        _energyDad = energy;
-    }
+    #endregion
 }
+

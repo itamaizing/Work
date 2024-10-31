@@ -13,7 +13,8 @@ public class Cooling : AbstractCharacterState
 
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.MoveSpeed, StatusEffect.AbilitySpeed };
 
-	public override States State => States.Cooling;
+    public override float TEST_ChangeableValue { get; set; }
+    public override States State => States.Cooling;
 	public override StateType Type => StateType.Physical;
 	public override List<StatusEffect> Effects => _effects;
 

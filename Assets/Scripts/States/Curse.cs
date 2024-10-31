@@ -7,7 +7,8 @@ public class Curse : AbstractCharacterState
 	private Character _personWhoShooted;
 	private float _durationToExit = 0;
 
-	public override States State => States.Curse;
+    public override float TEST_ChangeableValue { get; set; }
+    public override States State => States.Curse;
 	public override StateType Type => StateType.Magic;
 	public override List<StatusEffect> Effects => throw new System.NotImplementedException();
 

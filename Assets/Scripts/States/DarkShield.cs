@@ -11,6 +11,7 @@ public class DarkShield : AbstractCharacterState
 
     private Coroutine _damageCoroutine;
 
+    public override float TEST_ChangeableValue { get; set; }
     public override States State => States.DarkShield;
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => new List<StatusEffect>();

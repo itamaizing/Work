@@ -72,6 +72,22 @@ public abstract class Resource : NetworkBehaviour
         }
     }
 
+    public void IncreaseCurrentValue(float value)
+    {
+        _currentValue += value;
+    }
+
+    public void ReductionCurrentValue(float value)
+    {
+        _currentValue -= value;
+    }
+
+    public void ChangedMaxValue(float value)
+    {
+        _maxValue += value;
+
+    }
+
     public void PhantomValueShow(float value)
     {
         PhantomValueShown?.Invoke(value);

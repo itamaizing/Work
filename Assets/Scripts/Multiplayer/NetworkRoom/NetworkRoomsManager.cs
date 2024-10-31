@@ -52,7 +52,7 @@ public class NetworkRoomsManager : NetworkBehaviour
 			yield return StartCoroutine(_rooms[^1].LoadRoomJob());
 		}
 
-		_rooms[^1].TryAddPlayerInRoom(player);
+        _rooms[^1].TryAddPlayerInRoom(player);
 	}
 
 	private void OnRoomSlotsEnded(NetworkRoom room)

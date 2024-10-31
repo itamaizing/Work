@@ -8,7 +8,8 @@ public class NorthernerEndurance : AbstractCharacterState
 	private float _durationToExit;
 	private float _damageToExit;
 
-	public override States State => States.NorthernerEndurance;
+    public override float TEST_ChangeableValue { get; set; }
+    public override States State => States.NorthernerEndurance;
 	public override StateType Type => StateType.Magic;
 	public override List<StatusEffect> Effects => throw new System.NotImplementedException();
 
