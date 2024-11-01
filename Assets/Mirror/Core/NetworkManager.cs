@@ -10,7 +10,7 @@ namespace Mirror
     public enum PlayerSpawnMethod { Random, RoundRobin }
     public enum NetworkManagerMode { Offline, ServerOnly, ClientOnly, Host }
     public enum HeadlessStartOptions { DoNothing, AutoStartServer, AutoStartClient }
-
+   
     [DisallowMultipleComponent]
     [AddComponentMenu("Network/Network Manager")]
     [HelpURL("https://mirror-networking.gitbook.io/docs/components/network-manager")]

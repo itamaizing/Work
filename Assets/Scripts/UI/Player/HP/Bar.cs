@@ -22,9 +22,12 @@ public class Bar : MonoBehaviour
     [SerializeField] protected TMP_Text _barText;
 
     protected float _currentValue;
+    protected float _healthBarTarget;
     protected float _maxValue;
     protected float _preViewValue;
     private Health _health;
+
+    private bool ShieldActive = false;
 
     public virtual void Init(Resource resource)
     {
@@ -41,7 +44,7 @@ public class Bar : MonoBehaviour
         _preViewValue = resource.CurrentValue;
         _maxValue = resource.MaxValue;
 
-        UpdateBar();
+         UpdateBar();
 
         _resource.ValueChanged += OnValueChanged;
         _resource.PhantomValueShown += PreviewChange;
@@ -50,6 +53,7 @@ public class Bar : MonoBehaviour
         _health = resource as Health;
         if (_health != null)
         {
+            _health.ShieldDeactivated += OnShieldDeactivated;
             _health.OnShieldValuesChanged += UpdateShieldBar;
         }
 
@@ -73,13 +77,23 @@ public class Bar : MonoBehaviour
 
         if (_health != null)
         {
+            _health.ShieldDeactivated -= OnShieldDeactivated;
             _health.OnShieldValuesChanged -= UpdateShieldBar;
         }
     }
 
+    public virtual void UpdateBarWithShield(float healthBarTarget)
+    {
+        _bar.value = _healthBarTarget;
+
+        if (_showText)
+            _barText.text = Mathf.RoundToInt(_currentValue).ToString();
+
+        StartCoroutine(DisappearBar());
+    }
+
     public virtual void UpdateBar()
     {
-        // Обновляем значение основной полоски в зависимости от текущего здоровья
         _bar.value = _currentValue / _maxValue;
 
         if (_showText)
@@ -91,26 +105,42 @@ public class Bar : MonoBehaviour
     private void OnValueChanged(float oldValue, float newValue)
     {
         _currentValue = newValue;
-        UpdateBar();
-        if (_shieldBar != null) UpdateShieldVisual();
+
+        if (_shieldBar != null)
+        {
+            UpdateShieldVisual();
+            if (ShieldActive) UpdateBarWithShield(_healthBarTarget);
+            else UpdateBar();
+        }
+
+        else UpdateBar();
     }
 
     private void OnMaxValueChanged(float oldValue, float newValue)
     {
         _maxValue = newValue;
-        UpdateBar();
-        if (_shieldBar != null) UpdateShieldVisual();
+
+        if (_shieldBar != null)
+        {
+            UpdateShieldVisual();
+            if (ShieldActive) UpdateBarWithShield(_healthBarTarget);
+            else UpdateBar();
+        }
+
+        else UpdateBar();
     }
 
     private IEnumerator DisappearBar()
     {
         yield return new WaitForSeconds(_timeToDisappear);
-        _barMinus.DOValue(_currentValue / _maxValue, _disappearSpeed);
+        if (ShieldActive) _barMinus.DOValue(_healthBarTarget, _disappearSpeed);
+        else _barMinus.DOValue(_currentValue / _maxValue, _disappearSpeed);
     }
 
     public void PreviewChange(float damage)
     {
         float newValue = _currentValue - damage;
+
         if (_barPlus != null)
         {
             if (newValue < _currentValue)
@@ -131,9 +161,19 @@ public class Bar : MonoBehaviour
     {
         if (_shieldBar != null)
         {
-            float healthBarTarget = (_currentValue - (maxAbsorption - absorbed)) / _maxValue;
-            _bar.DOValue(healthBarTarget, _disappearSpeed);
-            _barMinus.DOValue(healthBarTarget, _disappearSpeed);
+            if (absorbed < maxAbsorption)
+            {
+                _healthBarTarget = (_currentValue - (maxAbsorption - absorbed)) / _maxValue;
+                _bar.DOValue(_healthBarTarget, _disappearSpeed);
+                _barMinus.DOValue(_healthBarTarget, _disappearSpeed);
+                ShieldActive = true;
+            }
+
+            else
+            {
+                ShieldActive = false;
+                UpdateBar();
+            }  
         }
     }
 
@@ -143,5 +183,11 @@ public class Bar : MonoBehaviour
         {
             _shieldBar.value = _currentValue / _maxValue;
         }
+    }
+
+    private void OnShieldDeactivated()
+    {
+        ShieldActive = false;
+        UpdateBar();
     }
 }

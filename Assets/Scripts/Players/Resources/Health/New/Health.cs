@@ -13,6 +13,7 @@ public class Health : Resource, IDamageable, IHealingable
 
     private List<IDamageable> _shields = new List<IDamageable>();
     private float _sumDamageTaken = 0;
+    private float _totalMaxAbsorption = 0;
 
     public float SumDamageTaken { get => _sumDamageTaken; }
     public float EvadeMeleeDamage { get => _evadeMeleeDamage; }
@@ -21,12 +22,14 @@ public class Health : Resource, IDamageable, IHealingable
     public float DefPhysDamage { get => _defPhysDamage; }
     public float DefMagDamage { get => _defMagDamage; }
     public List<IDamageable> Shields { get => _shields; }
+    public float TotalMaxAbsorption { get => _totalMaxAbsorption; set => _totalMaxAbsorption = value; }
 
     public event Action Evaded;
-    public event Action<float , Skill , string> HealTaked;
+    public event Action<float, Skill, string> HealTaked;
     public event Action<float, DamageType, Skill> DamageTaken;
     public event Action Died;
     public event Action<float, float> OnShieldValuesChanged;
+    public event Action ShieldDeactivated;
 
     public override void Initialize(float health, float hpRegen, float hpRegenDelay, CharacterData data)
     {
@@ -176,7 +179,13 @@ public class Health : Resource, IDamageable, IHealingable
     public void UpdateShieldValues(float absorbed, float maxAbsorption)
     {
         if (isServer)
-        ClientRpcUpdateShieldValues(absorbed, maxAbsorption);
+            ClientRpcUpdateShieldValues(absorbed, maxAbsorption);
+    }
+
+    public void ResetShieldValues()
+    {
+        Debug.Log("Cнятие щита");
+        ShieldDeactivated?.Invoke();
     }
 
     [ClientRpc]
@@ -190,7 +199,7 @@ public class Health : Resource, IDamageable, IHealingable
     {
         DamageTaken?.Invoke(damageTaken, damageType, skill);
     }
-    
+
     [ClientRpc]
     private void ClientRpcHealTaked(float healTaken, Skill skill, string sourceName)
     {
@@ -203,18 +212,18 @@ public class Health : Resource, IDamageable, IHealingable
         Died?.Invoke();
     }
 
-	public void ShowPhantomValue(Damage phantomValue)
-	{
+    public void ShowPhantomValue(Damage phantomValue)
+    {
         float curDamage = phantomValue.Value;
-        if(phantomValue.Type == DamageType.Physical)
+        if (phantomValue.Type == DamageType.Physical)
         {
-            curDamage *= 1 -_defPhysDamage;
+            curDamage *= 1 - _defPhysDamage;
         }
-        if(phantomValue.Type == DamageType.Magical)
+        if (phantomValue.Type == DamageType.Magical)
         {
-            curDamage *= 1 -_defMagDamage;
+            curDamage *= 1 - _defMagDamage;
         }
 
-		PhantomValueShow(curDamage);
-	}
+        PhantomValueShow(curDamage);
+    }
 }

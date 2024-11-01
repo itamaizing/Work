@@ -2,16 +2,14 @@ using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 
-public class NorthernersEndurance : Skill
+public class LightShiledSkill : Skill
 {
 	[SerializeField] private Character _playerLinks;
 	private Character _target;
 	private Energy _energy;
 
 	protected override bool IsCanCast => true;
-
 	private void Start()
 	{
 		for (int i = 0; i < _playerLinks.Resources.Count; i++)
@@ -56,7 +54,7 @@ public class NorthernersEndurance : Skill
 
 		/*float boostHp = 0.1f + 0.003f * _energy.CurrentValue;
 		_energy.CmdUse(_energy.CurrentValue);*/
-		target.CharacterState.AddState(States.NorthernerEndurance, 6, boostHp, _playerLinks.gameObject, name);
+		target.CharacterState.AddState(States.LightShield, 10, 100, _playerLinks.gameObject, name);
 
 	}
 }

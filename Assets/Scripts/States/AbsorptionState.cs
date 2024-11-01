@@ -1,8 +1,9 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LightShield : AbstractCharacterState, IDamageable
+public class AbsorptionState : AbstractCharacterState, IDamageable
 {
     private float _damageAbsorbed;
     private float _maxAbsorption;
@@ -21,7 +22,6 @@ public class LightShield : AbstractCharacterState, IDamageable
         _maxAbsorption = damageToExit;
         _damageAbsorbed = 0;
         _characterState.Character.Health.TotalMaxAbsorption += _maxAbsorption;
-
 
         UpdateShieldValues();
     }
@@ -84,7 +84,7 @@ public class LightShield : AbstractCharacterState, IDamageable
         _characterState.Character.Health.UpdateShieldValues(0, _characterState.Character.Health.TotalMaxAbsorption);
 
         if (_characterState.Character.Health.TotalMaxAbsorption <= 0)
-        _characterState.Character.Health.ResetShieldValues();
+            _characterState.Character.Health.ResetShieldValues();
     }
 
     public void ShowPhantomValue(Damage phantomValue)

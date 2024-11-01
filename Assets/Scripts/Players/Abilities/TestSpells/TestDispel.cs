@@ -52,6 +52,12 @@ public class TestDispel : Skill
     [Command]
     private void CmdRemoveState(CharacterState targetState, int targetTeamIndex, int playerTeamIndex)
     {
+        ClientRpcRemoveState(targetState, targetTeamIndex, playerTeamIndex);
+    }
+
+    [ClientRpc]
+    private void ClientRpcRemoveState(CharacterState targetState, int targetTeamIndex, int playerTeamIndex)
+    {
         if (targetState == null)
         {
             Debug.LogError("Target state is null. Cannot remove state.");
