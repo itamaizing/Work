@@ -562,6 +562,7 @@ public class CharacterState : NetworkBehaviour
     {
         _stateIcons.ActivateIco(stateName, duration, 1, stack);
         currentStates.Add(state);
+
         if (personWhoShooted.TryGetComponent<Character>(out var character))
         {
             currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit, character, skillName);

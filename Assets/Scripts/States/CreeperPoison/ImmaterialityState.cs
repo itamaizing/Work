@@ -64,9 +64,7 @@ public class ImmaterialityState : AbstractCharacterState
         if (_player != null)
         {
             Debug.Log("DisableCollider");
-            _player.Rb.isKinematic = true;
             _player.Collider.isTrigger = true;
-            _player.Collider.enabled = false;
         }
     }
 
@@ -75,9 +73,5 @@ public class ImmaterialityState : AbstractCharacterState
     {
         Debug.Log("EnabledCollider");
         _player.Collider.isTrigger = false;
-        _player.Rb.isKinematic = false;
-        _player.Collider.enabled = true;
-
-
     }
 }

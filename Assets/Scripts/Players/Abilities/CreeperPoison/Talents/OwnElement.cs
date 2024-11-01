@@ -136,6 +136,12 @@ public class OwnElement : Talent
         {
             ResetAttackSpeed();
             _increasedAttackSpeed = _baseAttackSpeed - (_currentAllStacks * _baseIncreaseAttackSpeed);
+            
+            /*
+             * Rework
+                float a = 0.9f;
+                float r = 0.9f * 0.9f = 0.81f;
+            */
 
             if (_increasedAttackSpeed < _maxMinimumAttackSpeed)
             {
