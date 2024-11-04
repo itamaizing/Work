@@ -22,6 +22,7 @@ public class BindingPoisonState : AbstractCharacterState
 
     public override States State => States.BindingPoison;
     public override StateType Type => StateType.Physical;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)

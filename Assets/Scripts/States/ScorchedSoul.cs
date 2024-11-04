@@ -11,6 +11,7 @@ public class ScorchedSoul : AbstractCharacterState
     public override States State => States.ScorchedSoul;
 
     public override StateType Type => StateType.Immaterial;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
 
     public override List<StatusEffect> Effects => throw new System.NotImplementedException();
 

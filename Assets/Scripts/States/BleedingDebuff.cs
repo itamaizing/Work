@@ -9,9 +9,8 @@ public class BleedingDebuff : AbstractCharacterState
     private float timer = 0;
     public override float TEST_ChangeableValue { get; set; }
     public override States State => States.Bleeding;
-    
+    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override StateType Type => StateType.Physical;
-    
     public override List<StatusEffect> Effects => throw new System.NotImplementedException();
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)

@@ -18,8 +18,8 @@ public class BleedingState : AbstractCharacterState
     private List<StatusEffect> _effects = new List<StatusEffect>();
     public override float TEST_ChangeableValue { get; set; }
     public override States State => States.Bleeding;
-
     public override StateType Type => StateType.Physical;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
 
     public override List<StatusEffect> Effects => _effects;
 

@@ -116,7 +116,7 @@ public class CheliceraStrike : AutoAttackSkill
 
         if (additionalDamage > 10 && additionalDamage < 20)
         {
-            targetCharacter.CharacterState.DispelOneState(StateType.Magic);
+            targetCharacter.CharacterState.DispelStates(StateType.Magic, targetCharacter.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
         }
 
         while (_attackingPsionicEnergy.IsAttackingPsiEnergy)
@@ -132,11 +132,11 @@ public class CheliceraStrike : AutoAttackSkill
                 {
                     if (additionalDamage > 20 && additionalDamage < 30)
                     {
-                        itemCharacter.CharacterState.DispelOneState(StateType.Magic);
+                        targetCharacter.CharacterState.DispelStates(StateType.Magic, targetCharacter.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
                     }
                     else if (additionalDamage >= 30)
                     {
-                        itemCharacter.CharacterState.DispelOneState(StateType.Magic);
+                        targetCharacter.CharacterState.DispelStates(StateType.Magic, targetCharacter.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
 
                         CmdPushTargets(item.gameObject, direction);
                     }

@@ -18,9 +18,6 @@ public class ReleaseFromSecrecy : Talent
     private float _currentAttackSpeed;
     private float _attackSpeedIncrease = 0.1f;
 
-    private bool _isCanIncreaseAttackSpeed = true;
-    private bool _isIncreasedAttackSpeed = false;
-
     private Coroutine _increasingAttackSpeedCoroutine;
 
     public override void Enter()
@@ -51,46 +48,22 @@ public class ReleaseFromSecrecy : Talent
 
     private IEnumerator IncreasingAttackSpeedJob()
     {
-        float baseAttackSpeed = _creeperStrike.Buff.AttackSpeed.Multiplier;
+        IncreaseAttackSpeed();
 
-        while (_timeDurationBuff > 0)
-        {
-            _timeDurationBuff -= Time.deltaTime;
+        yield return new WaitForSeconds(_timeDurationBuff);
 
-            if (_currentAttackSpeed != _creeperStrike.Buff.AttackSpeed.Multiplier)
-            {
-                _currentAttackSpeed = _creeperStrike.Buff.AttackSpeed.Multiplier;
-
-                _isCanIncreaseAttackSpeed = true;
-                _isIncreasedAttackSpeed = false;
-            }
-
-            if (_isCanIncreaseAttackSpeed)
-            {
-                IncreaseAttackSpeed();
-
-                _isCanIncreaseAttackSpeed = false;
-                _isIncreasedAttackSpeed = true;
-            }
-            yield return null;
-        }
-
-        if (_isIncreasedAttackSpeed || _currentAttackSpeed != baseAttackSpeed)
-        {
-            Debug.Log("if IsIncrease || curAtckSpd != bseAtckSpd");
-            
-            ReturnOriginalAttackSpeed();
-        }
-
+        ReturnOriginalAttackSpeed();
+        
         StopCoroutine(_increasingAttackSpeedCoroutine);
         _increasingAttackSpeedCoroutine = null;
+
+        yield return null;
     }
 
     private void IncreaseAttackSpeed()
     {
         Debug.Log($"ReleaseFromSecrecy / IncreaseAttackSpeed / _creeperStrike.Buff.AttackSpeed = {_creeperStrike.Buff.AttackSpeed.Multiplier}");
         _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_attackSpeedIncrease);
-        _currentAttackSpeed = _creeperStrike.Buff.AttackSpeed.Multiplier;
         Debug.Log($"ReleaseFromSecrecy / IncreaseAttackSpeed / _currentAttackSpeed = {_currentAttackSpeed}");
         Debug.Log($"ReleaseFromSecrecy / IncreaseAttackSpeed / _creeperStrike.Buff.AttackSpeed.Increase = {_creeperStrike.Buff.AttackSpeed.Multiplier}");
     }
@@ -98,14 +71,11 @@ public class ReleaseFromSecrecy : Talent
     private void ReturnOriginalAttackSpeed()
     {
         Debug.Log($"ReleaseFromSecrecy / ReturnOriginalAttackSpeed / _creeperStrike.Buff.AttackSpeed = {_creeperStrike.Buff.AttackSpeed.Multiplier}");
-        _currentAttackSpeed = _creeperStrike.Buff.AttackSpeed.Multiplier;
-        _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_currentAttackSpeed);
+        _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_attackSpeedIncrease);
         Debug.Log($"ReleaseFromSecrecy / IncreaseAttackSpeed / _currentAttackSpeed = {_currentAttackSpeed}");
         Debug.Log($"ReleaseFromSecrecy / ReturnOriginalAttackSpeed / _creeperStrike.Buff.AttackSpeed.Reduction = {_creeperStrike.Buff.AttackSpeed.Multiplier}");
         _timeDurationBuff = _startTimeDurationBuff;
         _currentCountBuff = 0;
-
-        _isIncreasedAttackSpeed = false;
     }
 
 }

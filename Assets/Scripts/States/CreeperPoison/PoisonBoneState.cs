@@ -33,7 +33,8 @@ public class PoisonBoneState : AbstractCharacterState
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
     public override float TEST_ChangeableValue { get; set; }
     public override States State => States.PoisonBone;
-    public override StateType Type => StateType.Physical;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
+    public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)

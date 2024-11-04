@@ -11,6 +11,8 @@ public class Knockdown : AbstractCharacterState
     public override States State => States.Knockdown;
 
     public override StateType Type => StateType.Physical;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
+
 
     public override List<StatusEffect> Effects => throw new System.NotImplementedException();
 

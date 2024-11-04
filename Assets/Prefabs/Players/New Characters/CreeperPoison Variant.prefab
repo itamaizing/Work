@@ -1864,7 +1864,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: OwnElement
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7418347446368758987}
@@ -1873,7 +1873,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   _enemiesWithDebuff: []
-  _radiusSearching: 1.5
+  _radiusSearching: 2.5
 --- !u!114 &2159678125995542759
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1912,7 +1912,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: ReleaseFromSecrecy
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7418347446368758987}
@@ -1959,7 +1959,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: SuperFastScales
-    IsOpen: 1
+    IsOpen: 0
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7418347446368758987}

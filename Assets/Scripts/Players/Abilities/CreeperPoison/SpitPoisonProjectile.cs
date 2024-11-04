@@ -106,6 +106,17 @@ public class SpitPoisonProjectile : Test_Projectile
                     DamageDeal();
                 }
             }
+            else if (collision.transform == _player.transform && _playerLayer != LayerMask.NameToLayer("Allies"))
+            {
+                if (collision.TryGetComponent<Character>(out var target))
+                {
+                    _target = target;
+
+                    _damage = Random.Range(4.0f, 12.0f);
+
+                    DamageDeal();
+                }
+            }
         }
     }
 

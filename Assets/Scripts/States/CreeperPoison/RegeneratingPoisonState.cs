@@ -28,6 +28,7 @@ public class RegeneratingPoisonState : AbstractCharacterState
     public override float TEST_ChangeableValue { get => _baseHealingValue; set => _baseHealingValue = value; }
     public override States State => States.RegeneratingPoison;
     public override StateType Type => StateType.Physical;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)

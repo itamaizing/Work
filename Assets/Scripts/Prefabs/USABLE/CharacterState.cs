@@ -14,7 +14,8 @@ public abstract class AbstractCharacterState
 
 	public abstract States State { get; }
 	public abstract StateType Type { get; }
-	public abstract List<StatusEffect> Effects { get; }
+    public abstract BaffDebaff BaffDebaff { get; }
+    public abstract List<StatusEffect> Effects { get; }
 	public abstract float TEST_ChangeableValue { get; set; }
 
 	public abstract void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName);
@@ -27,10 +28,9 @@ public class DefaultState : AbstractCharacterState
 {
 	private List<StatusEffect> _effects = new List<StatusEffect>();
 	public override States State => States.Default;
-
 	public override StateType Type => StateType.Physical;
-
-	public override List<StatusEffect> Effects => _effects;
+	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
+    public override List<StatusEffect> Effects => _effects;
 
     public override float TEST_ChangeableValue { get; set; }
 
@@ -307,30 +307,67 @@ public class CharacterState : NetworkBehaviour
 		}
 	}
 
-	public void DispelAllState(StateType type)
-	{
-        foreach (AbstractCharacterState state in currentStates)
-        {
-            if (state.Type == type)
+    #region TestMethods
+
+    public void DispelStates(StateType type, int targetTeamIndex, int playerTeamIndex, bool isDispelOneState = false)
+    {
+		if (!isDispelOneState)
+		{
+			List<AbstractCharacterState> statesToRemove = new List<AbstractCharacterState>();
+
+			foreach (var state in currentStates)
+			{
+				if (state != null && state.Type == type)
+				{
+					if ((targetTeamIndex == playerTeamIndex && state.BaffDebaff == BaffDebaff.Debaff) ||
+						(targetTeamIndex != playerTeamIndex && state.BaffDebaff == BaffDebaff.Baff))
+					{ 
+						statesToRemove.Add(state);
+					}
+				}
+			}
+			foreach (var state in statesToRemove)
+			{
+				state.ExitState();
+				currentStates.Remove(state);
+			}
+		}
+		else
+		{
+            foreach (AbstractCharacterState state in currentStates)
             {
-                state.ExitState();
+                if (state.Type == type)
+                {
+                    state.ExitState();
+                    break;
+                }
             }
         }
     }
 
-	public void DispelOneState(StateType type)
-	{
-		foreach (AbstractCharacterState state in currentStates)
-		{
-			if (state.Type == type)
-			{
-				state.ExitState();
-				break;
-			}
-		}
-	}
 
-	public bool TEST_CheckStateType(StateType type)
+	public bool CheckPoisonStates()
+	{
+		var poisonStates = new List<States>
+		{
+			States.PoisonBone,
+			States.WitheringPoison,
+			States.BindingPoison,
+			States.PoisonCloud
+		};
+
+        foreach (AbstractCharacterState state in currentStates)
+        {
+            if (poisonStates.Contains(state.State))
+            {
+                return true; 
+            }
+        }
+
+        return false;
+    }
+
+    public bool TEST_CheckStateType(StateType type)
 	{
         foreach (AbstractCharacterState state in currentStates)
         {
@@ -371,6 +408,8 @@ public class CharacterState : NetworkBehaviour
 		}
 	}
 
+    #endregion
+
 	public bool Check(StatusEffect effect)
 	{
 		foreach (AbstractCharacterState state in currentStates)
@@ -397,26 +436,6 @@ public class CharacterState : NetworkBehaviour
 		return false;
 	}
 
-	public bool CheckPoisonStates()
-	{
-		var poisonStates = new List<States>
-		{
-			States.PoisonBone,
-			States.WitheringPoison,
-			States.BindingPoison,
-			States.PoisonCloud
-		};
-
-        foreach (AbstractCharacterState state in currentStates)
-        {
-            if (poisonStates.Contains(state.State))
-            {
-                return true; 
-            }
-        }
-
-        return false;
-    }
 
 	public AbstractCharacterState GetState(States state)
 	{
@@ -543,6 +562,19 @@ public class CharacterState : NetworkBehaviour
 		}
 		else
         {
+			AbstractCharacterState stateForResist = enumToState[state];
+			Health characterHealth = _hero.Health;
+			float chanceDodgeMagDamage = Random.Range(0f, 100f);
+
+			if (stateForResist.Type == StateType.Magic)
+			{
+				if (chanceDodgeMagDamage <= characterHealth.EvadeMagDamage)
+				{
+					Debug.Log("CharacterState / DodgeMagDamage");
+					return;
+				}
+			}
+			
             CreateState(enumToState[state], state, duration, damageToExit, personWhoShooted, skillName, false);
 
 			if (enumToState[state] is IDamageable damageableShield)
@@ -674,4 +706,9 @@ public enum States
 	EmeraldSkin,
 	SparkTalentHealthBuff,
 	DefenseReduction
+}
+public enum BaffDebaff
+{
+    Baff,
+    Debaff,
 }

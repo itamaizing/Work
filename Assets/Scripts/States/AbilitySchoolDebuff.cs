@@ -12,7 +12,8 @@ public class AbilitySchoolDebuff : AbstractCharacterState
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.AbilitySchool };
     public override float TEST_ChangeableValue { get; set; }
     public override States State => States.SchoolDebuff;
-	public override StateType Type => StateType.Immaterial;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
+    public override StateType Type => StateType.Immaterial;
 	public override List<StatusEffect> Effects => _effects;
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)

@@ -258,8 +258,10 @@ public class GrabTentacles : Skill
     private void CmdInstantiateTentacles(GameObject player, GameObject target, Vector3 pointInstantiate, Vector3 endPoint,
         bool isAttackingPsiEnergyActive, float currentDamage)
     {
-        CharacterState targetCharacterState = target.GetComponent<CharacterState>();
+
+        Character targetCharacter = target.GetComponent<Character>();
         ReducingHealingState reducingHealingState;
+
         if (isAttackingPsiEnergyActive)
         {
             Debug.Log("GrabTentacles / baseDamage = " + currentDamage);
@@ -268,14 +270,14 @@ public class GrabTentacles : Skill
             {
                 Debug.Log("GrabTentacles / if < 20");
 
-                targetCharacterState.DispelOneState(StateType.Magic);
+                targetCharacter.CharacterState.DispelStates(StateType.Magic, targetCharacter.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
             }
             else if (currentDamage > 20 && currentDamage < 30)
             {
                 Debug.Log("GrabTentacles / else if > 20");
 
-                targetCharacterState.AddState(States.ReducingHealing, 6.0f, 0f, _player.gameObject, null);
-                reducingHealingState = (ReducingHealingState)targetCharacterState.GetState(States.ReducingHealing);
+                targetCharacter.CharacterState.AddState(States.ReducingHealing, 6.0f, 0f, _player.gameObject, null);
+                reducingHealingState = (ReducingHealingState)targetCharacter.CharacterState.GetState(States.ReducingHealing);
                 if (reducingHealingState != null)
                 {
                     //reducingHealingState.CurrentValue = 0.4f;
@@ -285,8 +287,8 @@ public class GrabTentacles : Skill
             else if (currentDamage == 30)
             {
                 Debug.Log("GrabTentacles / else if == 30");
-                targetCharacterState.AddState(States.ReducingHealing, 6.0f, 0f, _player.gameObject, null);
-                reducingHealingState = (ReducingHealingState)targetCharacterState.GetState(States.ReducingHealing);
+                targetCharacter.CharacterState.AddState(States.ReducingHealing, 6.0f, 0f, _player.gameObject, null);
+                reducingHealingState = (ReducingHealingState)targetCharacter.CharacterState.GetState(States.ReducingHealing);
                 if (reducingHealingState != null)
                 {
                     //reducingHealingState.CurrentValue = 0.8f; 

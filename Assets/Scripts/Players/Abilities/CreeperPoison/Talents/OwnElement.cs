@@ -19,8 +19,9 @@ public class OwnElement : Talent
 
     private float _baseIncreaseAttackSpeed = 0.1f;
     private float _baseAttackSpeed;
-    private float _increasedAttackSpeed = 1.0f;
-    private float _maxMinimumAttackSpeed = 0.1f;
+    private float _increasedAttackSpeed;
+    private float _newAttackSpeed = 1.0f;
+    private float _maxMinimumAttackSpeed = 0.34f;
 
     private bool _isCanResetAttackSpeed = false;
     private bool _isTargetNearby = false;
@@ -73,10 +74,10 @@ public class OwnElement : Talent
             
             if (enemies != null)
             {
-                _isTargetNearby = true;
-
                 foreach (Collider2D target in enemies)
                 {
+                    _isTargetNearby = true;
+
                     var targetWithDebuff = target.GetComponent<CharacterState>();
 
                     if (targetWithDebuff.CheckPoisonStates())
@@ -117,14 +118,12 @@ public class OwnElement : Talent
                     _previousAllStacks = _currentAllStacks;
                 }
             }
-            if (_currentAllStacks == 0 && _isCanResetAttackSpeed || !_isTargetNearby)
+            if (_currentAllStacks == 0 || !_isTargetNearby)
             {
-                if (_creeperStrike.AttackSpeed != _baseAttackSpeed)
+                if (_creeperStrike.AttackSpeed < _baseAttackSpeed)
                 {
                     ResetAttackSpeed();
                 }
-                _increasedAttackSpeed = _baseAttackSpeed;
-                _isCanResetAttackSpeed = false;
             }
             yield return null;
         }
@@ -134,27 +133,42 @@ public class OwnElement : Talent
     {
         if (_currentAllStacks > 0)
         {
-            ResetAttackSpeed();
-            _increasedAttackSpeed = _baseAttackSpeed - (_currentAllStacks * _baseIncreaseAttackSpeed);
+            if (_newAttackSpeed > _maxMinimumAttackSpeed) 
+            { 
+                Debug.Log("OwnElement / IncreaseAttackSpeed / Before Increased CreeperStrike AttackSpeed = " + _creeperStrike.AttackSpeed);
+                _increasedAttackSpeed = _baseAttackSpeed - (_currentAllStacks * _baseIncreaseAttackSpeed);
+                Debug.Log("OwnElement / IncreaseAttackSpeed / Before Increased _increasedAttackSpeed = " + _increasedAttackSpeed);
+                _newAttackSpeed *= _increasedAttackSpeed;
+                Debug.Log("OwnElement / IncreaseAttackSpeed / Before Increased _newAttackSpeed = " + _newAttackSpeed);
 
-            if (_increasedAttackSpeed < _maxMinimumAttackSpeed)
-            {
-                _increasedAttackSpeed = 0.1f;
+                if (_creeperStrike.AttackSpeed > _maxMinimumAttackSpeed)
+                {
+                    _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_newAttackSpeed);
+                    Debug.Log("OwnElement / IncreaseAttackSpeed / After Increased CreeperStrike AttackSpeed = " + _creeperStrike.AttackSpeed);
+                }
+
             }
-
-            _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_increasedAttackSpeed);
-            _isCanResetAttackSpeed = true;
         }
     }
 
     private void ResetAttackSpeed()
     {
-        if (_creeperStrike.AttackSpeed < _baseAttackSpeed)
-        {
-            float attackSpeed = _creeperStrike.AttackSpeed;
+        Debug.Log("OwnElement / ResetAttackSpeed / Before Reset CreeperStrike AttackSpeed = " + _creeperStrike.AttackSpeed);
+        Debug.Log("OwnElement / ResetAttackSpeed / Before Reset _newAttackSpeed = " + _newAttackSpeed);
+        Debug.Log("OwnElement / ResetAttackSpeed / Before Reset _increasedAttackSpeed = " + _increasedAttackSpeed);
 
-            _creeperStrike.Buff.AttackSpeed.ReductionPercentage(attackSpeed);
+        if (_creeperStrike.AttackSpeed < _baseAttackSpeed && _newAttackSpeed < 0.99f)
+        {
+            _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_newAttackSpeed);
+            _newAttackSpeed /= _increasedAttackSpeed;
+            _increasedAttackSpeed += 0.1f;
+
+            Debug.Log("OwnElement / ResetAttackSpeed / After Reset _newAttackSpeed = " + _newAttackSpeed);
+            Debug.Log("OwnElement / ResetAttackSpeed / After Reset _increasedAttackSpeed = " + _increasedAttackSpeed);
+            Debug.Log("OwnElement / ResetAttackSpeed / After Reset CreeperStrike AttackSpeed = " + _creeperStrike.AttackSpeed);
         }
+
+        
     }
 
     private void AdvertisementStates(CharacterState targetWithDebuff)
