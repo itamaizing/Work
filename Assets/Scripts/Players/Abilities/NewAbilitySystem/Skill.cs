@@ -28,6 +28,7 @@ public enum Schools
     Air,
     Earth,
     Physical,
+    Discipline,
     None
 }
 
@@ -895,10 +896,10 @@ public abstract class Skill : NetworkBehaviour
         ClearData();
     }
 
-    private void ApplyDamage(Damage damage, GameObject target)
+    public void ApplyDamage(Damage damage, GameObject target)
     {
-        Hero.DamageTracker.AddDamage(damage);
         target.GetComponent<Health>().TryTakeDamage(ref damage, this);
+        Hero.DamageTracker.AddDamage(damage, isServerRequest: isServer);
     }
     
     [Command]
@@ -913,10 +914,10 @@ public abstract class Skill : NetworkBehaviour
         ApplyDamage(damage, target);
     }
 
-    private void ApplyHeal(Heal heal, GameObject hp, Skill skill, string sourceName)
+    public void ApplyHeal(Heal heal, GameObject hp, Skill skill, string sourceName)
     {
         hp.GetComponent<Health>().Heal(ref heal, sourceName, skill);
-        Hero.DamageTracker.AddHeal(heal);
+        Hero.DamageTracker.AddHeal(heal, isServerRequest: isServer);
     }
     
     [Command]

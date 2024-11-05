@@ -30,13 +30,13 @@ public class LightShield : AbstractCharacterState, IDamageable
         
         SearchTalent();
 
+        Debug.Log("Shield HP - " + _maxAbsorption);
         DamageTaken += DamageEnemiesInRadius;
     }
 
     public override void UpdateState()
     {
         _duration -= Time.deltaTime;
-        Debug.Log(_duration);
         
         if (_duration <= 0 || _damageAbsorbed >= _maxAbsorption)
         {
@@ -67,6 +67,8 @@ public class LightShield : AbstractCharacterState, IDamageable
         _characterState.GetComponent<Character>().DamageTracker.AddDamage(damage);
         DamageTaken?.Invoke(damageToAbsorb, damage.Type, skill);
         
+        Debug.Log("Shield HP - " + damageToAbsorb);
+        
         if (_damageAbsorbed >= _maxAbsorption)
         {
             return true;
@@ -84,7 +86,11 @@ public class LightShield : AbstractCharacterState, IDamageable
             var distance = Vector3.Distance(_characterState.transform.position, enemy.transform.position); 
             if (distance > 10f || distance <= 0.25f) continue;
             
-            var damageToTake = new Damage { Value = damage };
+            var damageToTake = new Damage
+            {
+                Type = type,
+                Value = damage * 0.2f
+            };
 
             enemy.Health.TryTakeDamage(ref damageToTake, null);
             enemy.DamageTracker.AddDamage(damageToTake);

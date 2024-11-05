@@ -1,16 +1,15 @@
-using Mirror;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class UIMenuMainAttributesPanelItem : MonoBehaviour
 {
-    [ReadOnly,ShowInInspector]
-    public UIMenuMainAttributesPanel Owner;
-    
     [SerializeField] private Image _icon;
     [SerializeField] private TMProLocalizer _attributeValue;
 
     private Attribute _currentAttribute;
+    
+    public event UnityAction OnValueChange;
 
     public void Fill(Attribute attribute)
     {
@@ -25,7 +24,8 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour
         SaveManager.Instance.LoadAttribute(_currentAttribute.Id);
         
         _attributeValue.ChangeKey(_currentAttribute.Points);
-        Owner.UpdateAttributesPoints();
+        
+        OnValueChange?.Invoke();
     }
 
     public void Reduce()
@@ -36,7 +36,8 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour
         SaveManager.Instance.LoadAttribute(_currentAttribute.Id);
         
         _attributeValue.ChangeKey(_currentAttribute.Points);
-        Owner.UpdateAttributesPoints();
+        
+        OnValueChange?.Invoke();
     }
 
     public void UpdateValue()

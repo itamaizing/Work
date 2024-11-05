@@ -129,6 +129,9 @@ public class Restoration : Skill
 
                 yield return new WaitForSeconds(healInterval);
             }
+
+            _target = null;
+            ResetAccumulatedEffectiveness();
             healthComponent.HealTaked -= OnHealTaken;
         }
     }
@@ -146,7 +149,9 @@ public class Restoration : Skill
                 {
                     Value = Buff.Damage.GetBuffedValue(damagePerTick),
                     Type = DamageType.Magical,
-                    PhysicAttackType = AttackRangeType.RangeAttack
+                    PhysicAttackType = AttackRangeType.RangeAttack,
+                    School = this.School,
+                    DamageableSkill = this,
                 };
                 
                 CmdApplyDamage(damage, target.gameObject);
@@ -185,8 +190,6 @@ public class Restoration : Skill
 
     protected override void ClearData()
     {
-        _target = null;
-        ResetAccumulatedEffectiveness();
     }
 
     private void ResetAccumulatedEffectiveness()

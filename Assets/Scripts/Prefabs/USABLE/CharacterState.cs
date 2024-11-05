@@ -310,7 +310,6 @@ public class CharacterState : NetworkBehaviour
 	{
 		foreach (AbstractCharacterState states in currentStates)
 		{
-			Debug.Log(states.State + " on enemy, check for " + state);
 			if (states.State == state)
 			{
 				return true;
@@ -406,8 +405,8 @@ public class CharacterState : NetworkBehaviour
 				{
 					RemoveShield(damageableShield);
 				}
-				
-				currentStates[i].ExitState();
+
+				currentStates.Remove(currentStates[i]);
 			}
 		}
 	}

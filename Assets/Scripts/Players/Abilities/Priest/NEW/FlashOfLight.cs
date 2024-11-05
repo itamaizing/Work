@@ -20,7 +20,7 @@ public class FlashOfLight : Skill
     private bool _isСooldownTalentActive = false;
     private float _talentCooldown = 5f;
     private float _lastTalentTime = -5f;
-    private float _cooldownReduction = 0.5f;
+    private float _cooldownReduction = 5f;
     
     public event Action OnModeChange;
     
@@ -107,9 +107,11 @@ public class FlashOfLight : Skill
     {
         Damage damage = new Damage
         {
-            Value = _damageAmount,
-            Type = DamageType.Magical,
-            PhysicAttackType = AttackRangeType.RangeAttack
+            Value = Buff.Damage.GetBuffedValue(_damageAmount),
+            Type = DamageType.Physical,
+            PhysicAttackType = AttackRangeType.RangeAttack,
+            School = this.School,
+            DamageableSkill = this,
         };
 
         CmdApplyDamage(damage, target.gameObject);

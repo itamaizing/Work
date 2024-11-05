@@ -4,7 +4,7 @@ using UnityEngine;
 public class SelfHarmState : AbstractCharacterState
 {
     private const float CastTimeReductionMultiplier = 0.5f;
-    private const float StackIncreasePerHit = 5f;
+    private const float StackIncreasePerHit = 50f;
     private float _currentStackChance = 0f;  
     
     private List<StatusEffect> _effects = new ();

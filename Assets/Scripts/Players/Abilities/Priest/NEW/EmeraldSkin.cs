@@ -42,7 +42,7 @@ public class EmeraldSkin : Skill
     
     private void ApplyEmeraldSkinBuff()
     {
-        CmdAddBuff(States.EmeraldSkin, _buffDuration, _lightMagicTalentBoostActiveToBuff, Hero.gameObject, name);
+        CmdAddBuff(States.EmeraldSkin, _buffDuration, _lightMagicTalentBoostActiveToBuff, Hero.gameObject, Name);
     }
 
     [Command]

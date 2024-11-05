@@ -141,8 +141,7 @@ public abstract class AutoAttackSkill : Skill
                 if (_isAttacking && NoObstacles(Target.transform.position, _obstacle))
                 {
                     _lastTargetPosition = Target.transform.position;
-                    yield return StartCastDeleyCoroutine(_chargeAttackDelay);
-                    yield return new WaitForSeconds(AttackSpeed);
+                    
                     if (IsTargetInRadius(Radius + _attackZoneSize, Target.transform) && NoObstacles(Target.transform.position, _obstacle) && IsCooldowned)
                     {
                         if (TryPayCost(true))
@@ -157,6 +156,8 @@ public abstract class AutoAttackSkill : Skill
 
                         }
                     }
+                    
+                    yield return StartCastDeleyCoroutine(_chargeAttackDelay);
                     yield return new WaitForSeconds(AttackSpeed);
                 }
 			}

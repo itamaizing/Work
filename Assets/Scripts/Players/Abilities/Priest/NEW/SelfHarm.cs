@@ -7,7 +7,6 @@ public class SelfHarm : Skill
     public void ActivateTalent(bool isActive)
     { 
         IsSkillActive = isActive;
-        //proverka na servere li mi
         StartCoroutine(CastJob());
     }
     protected override bool IsCanCast => false;
@@ -33,7 +32,7 @@ public class SelfHarm : Skill
 
     private void ApplyEffect()
     {
-        CmdAddBaff(States.SelfHarm, -1f, 0, Hero.gameObject, name);
+        CmdAddBaff(States.SelfHarm, -1f, 0, Hero.gameObject, Name);
     }
     
     private void RemoveEffect()

@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class SaveManager : MonoBehaviour
 {
-    
     private static SaveManager _instance;
     public static SaveManager Instance => _instance;
 
@@ -194,7 +193,7 @@ public class SaveManager : MonoBehaviour
         PlayerPrefs.Save();
 	}
 
-    public void LoadTalent(int idGroup, string idTalent)
+    public void LoadTalent(int idGroup, string idTalent, bool needActivate)
     {
         var groupTemp = _character.TalentManager.Talents.FirstOrDefault(o => o.ID == idGroup);
         var talentTemp = groupTemp?.TalentsData.FirstOrDefault(o => o.Data.Name == idTalent);
@@ -205,6 +204,11 @@ public class SaveManager : MonoBehaviour
         
         talentTemp.Data.IsOpen = isActive == 1;
         groupTemp.SetActive(talentTemp.Data, isActive == 1);
+
+        if (needActivate)
+        {
+            groupTemp.ActiveTalent(talentTemp.Data, isActive == 1);
+        }
     }
 
     public void LoadTalents()

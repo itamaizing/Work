@@ -37,8 +37,10 @@ public class TiredSoul : AbstractCharacterState
 
     public override void ExitState()
     {
-        Debug.Log("TiredSoul exit");
-        _characterState.RemoveState(this);
+       if(!_characterState.CheckForState(States.TiredSoul)) 
+           return;
+       
+       _characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

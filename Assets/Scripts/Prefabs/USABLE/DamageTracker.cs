@@ -8,52 +8,50 @@ public class DamageTracker : NetworkBehaviour
     private List<DamageEntry> _localDamageEntries = new List<DamageEntry>();
     private List<HealEntry> _localHealEntries = new List<HealEntry>();
 
-    private readonly SyncList<DamageEntry> _damageEntries = new SyncList<DamageEntry>();
-    private readonly SyncList<HealEntry> _healEntries = new SyncList<HealEntry>();
+    public SyncList<DamageEntry> _damageEntries = new SyncList<DamageEntry>();
+    public SyncList<HealEntry> _healEntries = new SyncList<HealEntry>();
 
     public List<DamageEntry> GetLocalDamageEntries => _localDamageEntries;
     public List<HealEntry> GetLocalHealEntries => _localHealEntries;
     
-    public void AddDamage(Damage damage)
+    public void AddDamage(Damage damage, bool isServerRequest = false)
     {
-        if (isOwned)
+        if (!isServerRequest)
         {
-            _localDamageEntries.Add(new DamageEntry(damage, Time.time));
-            Debug.Log($"[DamageTracker] Local Damage added: {damage.Value}, Time: {Time.time}, School: {damage.School}");
-            
             CmdAddDamage(damage);
         }
+        
+        _damageEntries.Add(new DamageEntry(damage, Time.time));
+        Debug.Log($"[DamageTracker] Damage added: {damage.Value}, Time: {Time.time}, School: {damage.School}");
     }
     
     [Command]
     private void CmdAddDamage(Damage damage)
     {
-        _damageEntries.Add(new DamageEntry(damage, Time.time));
-        Debug.Log($"[DamageTracker] Damage added on server: {damage.Value}, Time: {Time.time}, School: {damage.School}");
+        AddDamage(damage, true);
     }
-    
-    public void AddHeal(Heal heal)
-    {
-        if (isOwned)
-        {
-            _localHealEntries.Add(new HealEntry(heal, Time.time));
-            Debug.Log($"[DamageTracker] Local Heal added: {heal.Value}, Time: {Time.time}");
 
+    public void AddHeal(Heal heal, bool isServerRequest = false)
+    {
+        if (!isServerRequest)
+        {
             CmdAddHeal(heal);
         }
+        
+        _healEntries.Add(new HealEntry(heal, Time.time));
+        Debug.Log($"[DamageTracker] Heal added: {heal.Value}, Time: {Time.time}");
     }
     
     [Command]
     private void CmdAddHeal(Heal heal)
     {
-        _healEntries.Add(new HealEntry(heal, Time.time));
-        Debug.Log($"[DamageTracker] Heal added on server: {heal.Value}, Time: {Time.time}");
+        AddHeal(heal, true);
     }
     
     public float GetLocalDamageInTime(Schools school, float time)
     {
         RemoveOldLocalEntries();
-        return _localDamageEntries.Where(o => o.Damage.School == school)
+        return _damageEntries.Where(o => o.Damage.School == school)
             .Where(o => o.Time >= Time.time - time)
             .Sum(o => o.Damage.Value);
     }
@@ -61,7 +59,7 @@ public class DamageTracker : NetworkBehaviour
     public float GetLocalHealInTime(float time)
     {
         RemoveOldLocalEntries();
-        return _localHealEntries
+        return _healEntries
             .Where(o => o.Time >= Time.time - time)
             .Sum(o => o.Heal.Value);
     }

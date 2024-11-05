@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class UIMenuMainGameTypesPanel : MonoBehaviour
 {
-    [ReadOnly,ShowInInspector]
-    public UIMenuMainWindow Owner;
-    
     [SerializeField] private List<UIMenuMainGameTypesPanelMainTypeItem> gameTypeMainTypeItem;
     [SerializeField] private List<UIMenuMainGameTypesPanelCountTypeItem> gameTypeCountTypeItem;
 
@@ -19,11 +16,8 @@ public class UIMenuMainGameTypesPanel : MonoBehaviour
 
 	public void Show()
     {
-        if(Owner == null) return;
-
 		 foreach (var item in gameTypeMainTypeItem)
 		 {
-			 item.Owner = this;
 			 item.Fill();
 			 item.Selected += OnMainModeSelected;
 			 _mainGameTypes.Add(item);
@@ -31,7 +25,6 @@ public class UIMenuMainGameTypesPanel : MonoBehaviour
 
 		 foreach (var item in gameTypeCountTypeItem)
 		 {
-			 item.Owner = this;
 			 item.Fill();
 			 item.Selected += OnCountModeSelected;
 			 _countGameTypes.Add(item);

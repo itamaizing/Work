@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
@@ -11,64 +12,93 @@ public class ReversePolarity : Skill
 
     protected override bool IsCanCast => true;
 
-    protected override IEnumerator PrepareJob()
+    private void OnEnable()
     {
-        yield break;
-    }
-
-    protected override IEnumerator CastJob()
-    {
-        if (Hero == null || Hero.CharacterState == null || !IsCanCast) yield break;
+        /*sparkOfLight.CastEnded += RemoveReversePolarityEffect;
+        flashOfLight.CastEnded += RemoveReversePolarityEffect;
+        restoration.CastEnded += RemoveReversePolarityEffect;
+        priestShield.CastEnded += RemoveReversePolarityEffect;
         
-        if (!TryPayCost()) yield break;
-
-        yield return new WaitForSeconds(CastDeley);
-
-        SwitchSpells();
-        
-        if (Hero.CharacterState.CheckForState(States.ReversePolarity))
-        {
-            RemoveReversePolarityEffect();
-        }
-        else
-        {
-           ApplyReversePolarityEffect();
-        }
+        sparkOfLight.CastEnded += SwitchSpells;
+        flashOfLight.CastEnded += SwitchSpells;
+        restoration.CastEnded += SwitchSpells;
+        priestShield.CastEnded += SwitchSpells;
+        */
     }
 
-    private void ApplyReversePolarityEffect()
+    private void OnDisable()
     {
-        CmdAddBaff(States.ReversePolarity, -1f, 0, transform.parent.gameObject, "ReversePolarity");
-    }
+/*
+sparkOfLight.CastEnded -= RemoveReversePolarityEffect;
+flashOfLight.CastEnded -= RemoveReversePolarityEffect;
+restoration.CastEnded -= RemoveReversePolarityEffect;
+priestShield.CastEnded -= RemoveReversePolarityEffect;
 
-    private void RemoveReversePolarityEffect()
-    {
-        CmdRemoveBuff(States.ReversePolarity, Hero.gameObject);
-    }
-    
-    [Command]
-    private void CmdAddBaff(States darkState, float duration, float damagePerTick, GameObject target, string skillName)
-    {
-        var characterState = target.GetComponent<CharacterState>();
-        characterState.AddState(darkState, duration, damagePerTick, target, skillName);
-    }
-    
-    [Command]
-    private void CmdRemoveBuff(States state, GameObject target)
-    {
-        var characterState = target.GetComponent<CharacterState>();
-        characterState.RemoveState(state);
-    }
+sparkOfLight.CastEnded -= SwitchSpells;
+flashOfLight.CastEnded -= SwitchSpells;
+restoration.CastEnded -= SwitchSpells;
+priestShield.CastEnded -= SwitchSpells;
+*/
+}
 
-    private void SwitchSpells()
-    {
-        sparkOfLight.SwitchMode();
-        flashOfLight.SwitchMode();
-        restoration.SwitchMode();
-        priestShield.SwitchMode();
-    }
+protected override IEnumerator PrepareJob()
+{
+yield break;
+}
 
-    protected override void ClearData()
-    {
-    }
+protected override IEnumerator CastJob()
+{
+if (Hero == null || Hero.CharacterState == null || !IsCanCast) yield break;
+
+if (!TryPayCost()) yield break;
+
+yield return new WaitForSeconds(CastDeley);
+
+SwitchSpells();
+
+if (Hero.CharacterState.CheckForState(States.ReversePolarity))
+{
+    RemoveReversePolarityEffect();
+}
+else
+{
+   ApplyReversePolarityEffect();
+}
+}
+
+private void ApplyReversePolarityEffect()
+{
+CmdAddBaff(States.ReversePolarity, -1f, 0, transform.parent.gameObject, Name);
+}
+
+private void RemoveReversePolarityEffect()
+{
+CmdRemoveBuff(States.ReversePolarity, Hero.gameObject);
+}
+
+[Command]
+private void CmdAddBaff(States darkState, float duration, float damagePerTick, GameObject target, string skillName)
+{
+var characterState = target.GetComponent<CharacterState>();
+characterState.AddState(darkState, duration, damagePerTick, target, skillName);
+}
+
+[Command]
+private void CmdRemoveBuff(States state, GameObject target)
+{
+var characterState = target.GetComponent<CharacterState>();
+characterState.RemoveState(state);
+}
+
+private void SwitchSpells()
+{
+sparkOfLight.SwitchMode();
+flashOfLight.SwitchMode();
+restoration.SwitchMode();
+priestShield.SwitchMode();
+}
+
+protected override void ClearData()
+{
+}
 }

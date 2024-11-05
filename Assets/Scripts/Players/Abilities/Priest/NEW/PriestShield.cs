@@ -76,7 +76,7 @@ public class PriestShield : Skill
 
         Hero.Health.DamageTaken += HandleDamageTaken;
 
-        foreach (var skill in Hero.Abilities.Abilities.Where(skill => skill.AbilityForm == AbilityForm.Magic))
+        foreach (var skill in Hero.Abilities.Abilities.Where(skill => skill.School == Schools.Discipline))
         {
             skill.CastEnded += AddDisciplineStack;
         }
@@ -87,7 +87,7 @@ public class PriestShield : Skill
         OnModeChange -= HandleModeChange;
         Hero.Health.DamageTaken -= HandleDamageTaken;
 
-        foreach (var skill in Hero.Abilities.Abilities.Where(skill => skill.AbilityForm == AbilityForm.Magic))
+        foreach (var skill in Hero.Abilities.Abilities.Where(skill => skill.School == Schools.Discipline))
         {
             skill.CastEnded -= AddDisciplineStack;
         }
@@ -157,10 +157,12 @@ public class PriestShield : Skill
 
     private void ApplyDisciplineBoost()
     {
+        Debug.Log(_disciplineShieldBoostActive);
+        Debug.Log(_disciplineStacks);
         if (_disciplineShieldBoostActive && _disciplineStacks > 0)
         {
             var boostPercentage = DisciplineBoostPercentage * _disciplineStacks;
-            absorbAmount *= (1 + boostPercentage);
+            _absorbBonus += absorbAmount * boostPercentage;
             Debug.Log($"Applied discipline boost. Boost percentage: {boostPercentage * 100}%");
             _disciplineStacks = 0;
         }
@@ -227,6 +229,7 @@ public class PriestShield : Skill
 
                 if (_target == transform.GetComponentInParent<Character>())
                 {
+                    _absorbBonus = 0;
                     CastDeley = selfCastTime;
                 }
             }
@@ -239,7 +242,7 @@ public class PriestShield : Skill
         if (_target == null || !IsCanCast) yield break;
 
         _nextAvailableTime = Time.time + CooldownTime;
-
+        
         if (isLightMode)
         {
             HandleLightShield();
@@ -257,18 +260,21 @@ public class PriestShield : Skill
         if (_target == null) return;
 
         if (!TryPayCost(manaCostLight)) return;
-
+        
+        ApplyDisciplineBoost(); // todo ??
+        
+        ApplyDarkMagicBoost();
+        ApplyHealingBoost();
+        
         var characterState = _target.GetComponent<CharacterState>();
         var duration = _talentTiredSoulActive && characterState.CheckForState(States.TiredSoul) ? lightShieldDuration * TiredSoulEffectPercentage : lightShieldDuration;
         var absorbDamage = _talentTiredSoulActive && characterState.CheckForState(States.TiredSoul)
             ? (absorbAmount + _absorbBonus) * TiredSoulEffectPercentage
             : absorbAmount + _absorbBonus;
         
-        ApplyDisciplineBoost();
-        ApplyDarkMagicBoost();
-        ApplyHealingBoost();
+        Debug.Log(_absorbBonus);
 
-        CmdAddDebaff(States.LightShield, States.TiredSoul, duration, tiredSoulDuration, absorbDamage, _target.gameObject, name);
+        CmdAddDebaff(States.LightShield, States.TiredSoul, duration, tiredSoulDuration, absorbDamage, _target.gameObject, Name);
         Debug.Log("Light Shield applied to " + _target.name);
     }
 
@@ -278,7 +284,7 @@ public class PriestShield : Skill
 
         if (!TryPayCost(manaCostDark)) return;
 
-        CmdAddBaff(States.DarkShield, darkShieldDuration, maxDamagePerTick + _damagePerTickBonus, _target.gameObject, name);
+        CmdAddBaff(States.DarkShield, darkShieldDuration, maxDamagePerTick + _damagePerTickBonus, _target.gameObject, Name);
         Debug.Log("Dark Shield applied to " + _target.name);
     }
 

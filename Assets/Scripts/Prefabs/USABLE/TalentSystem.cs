@@ -91,7 +91,13 @@ public class TalentsGroup
         if(talent == null) return;
         
         talent.SetActive(isActive);
+    }
 
+    public void ActiveTalent(TalentData data, bool isActive)
+    {
+        var talent = TalentsData.FirstOrDefault(a => a.Data == data);
+        if(talent == null) return;
+        
         if (isActive)
         {
             talent.Enter();   

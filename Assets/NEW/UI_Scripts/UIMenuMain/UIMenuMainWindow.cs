@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class UIMenuMainWindow : MonoBehaviour
@@ -9,16 +8,20 @@ public class UIMenuMainWindow : MonoBehaviour
     [SerializeField] private UIMenuMainCharactersPanel _charactersPanel;
     [SerializeField] private UIMenuMainGameTypesPanel _gameTypesPanel;
     [SerializeField] private UIMenuMainSavesPanel _savesPanel;
-    [SerializeField] private GameObject _uIMenuMainRightPanel;
-    [SerializeField] private List<GameObject> _otherUIs;
-
-	[SerializeField] private SelectManager _selectManager;
 
 	private void Start()
     {
         Show();
-        _selectManager.CharacterSelected += OnCharacterSelected;
-        InputHandler.ShowMenu += SwithActiveAtriutTalantUI;
+    }
+
+    private void OnEnable()
+    {
+        _charactersPanel.OnHeroChanged += SetHero;
+    }
+
+    private void OnDisable()
+    {
+        _charactersPanel.OnHeroChanged -= SetHero;
     }
 
     public void UI_StartClient()
@@ -27,54 +30,28 @@ public class UIMenuMainWindow : MonoBehaviour
         DisableUI();
     }
 
-    public void DisableUI()
+     private void DisableUI()
     {
-        _uIMenuMainRightPanel.SetActive(false);
         gameObject.SetActive(false);
-
-        foreach (var item in _otherUIs)
-        {
-            item.SetActive(true);
-        }
-    }
-
-    public void EnableAtriutTalantUI()
-    {
-        gameObject.SetActive(true);
-    }
-
-    public void SwithActiveAtriutTalantUI()
-    {
-        gameObject.SetActive(!gameObject.active);
     }
 
     void Show()
     {
-		_charactersPanel.Owner = this;
 		_charactersPanel.Show();
-
-        _gameTypesPanel.Owner = this;
         _gameTypesPanel.Show();
-
-        _savesPanel.Owner = this;
         _savesPanel.Show();
         
         UpdateCharacterPanels();
     }
-
-    private void OnCharacterSelected(Character character)
-    {
-        _charactersPanel.SetHero((HeroComponent)character);
-		SaveManager.Instance.SetHero((HeroComponent)character);
-		UpdateCharacterPanels();
-	}
 
     public void SetHero(HeroComponent hero)
     {
         var currentHero = hero;
 
 		SaveManager.Instance.SetHero(currentHero);
-        currentHero.Initialize();
+        ServerManager.Instance.SetPlayer(hero);
+        
+        //currentHero.Initialize();
         UpdateCharacterPanels();
     }
 
@@ -87,25 +64,19 @@ public class UIMenuMainWindow : MonoBehaviour
         UpdateCharacterPanels();
     }
 
-    public HeroComponent GetHero()
+    private HeroComponent GetHero()
     {
         return _charactersPanel.CurrentHero;
     }
 
     private void UpdateCharacterPanels()
     {
-        _abilitiesPanel.Owner = this;
-        _abilitiesPanel.Show();
+        var hero = GetHero();
+        
+        _abilitiesPanel.Show(hero.Abilities);
+        
+        _attributesPanel.Show(hero.Data.Attributes);
 
-        _attributesPanel.Owner = this;
-        _attributesPanel.Show();
-
-        _talentsPanel.Owner = this;
-        _talentsPanel.Show();
-    }
-
-    public void UpdateAttributes()
-    {
-        _attributesPanel.UpdateAttributesPoints();
+        _talentsPanel.Show(hero.TalentManager, false);
     }
 }
