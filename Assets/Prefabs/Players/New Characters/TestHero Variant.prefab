@@ -916,6 +916,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TestHero Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_TagString
+      value: Allies
+      objectReference: {fileID: 0}
     - target: {fileID: 8464766807629527278, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0.0000071525565
@@ -1218,7 +1222,7 @@ MonoBehaviour:
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
-  _skillType: 0
+  _skillType: 1
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768

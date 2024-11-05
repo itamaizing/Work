@@ -61,7 +61,10 @@ public class TestH3 : Skill
         {
             if (GetMouseButton)
             {
-                _target = GetRaycastTarget();
+                _target = GetTarget().character;
+                _targetPoint = GetTarget().Position;
+
+				_target = GetRaycastTarget();
                 _targetPoint = GetMousePoint();
             }
             Debug.Log(_target);
