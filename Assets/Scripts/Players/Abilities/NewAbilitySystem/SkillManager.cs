@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(SkillQueue))]
+[RequireComponent(typeof(AutoSkillQueue))]
 [RequireComponent(typeof(AutoAttackQueue))]
 public class SkillManager : MonoBehaviour
 {
@@ -15,17 +16,20 @@ public class SkillManager : MonoBehaviour
 
     private Skill[] _selectedSkills = new Skill[16];
     private List<AutoAttackSkill> _autoAttackSkills = new List<AutoAttackSkill>();
+    private List<AutoSkill> _autoSkills = new List<AutoSkill>();
     private List<Skill> _simpleSkills = new List<Skill>();
     private float _globalCooldownTime = .5f;
     private SkillQueue _skillQueue;
+    private AutoSkillQueue _autoSkillQueue;
     private AutoAttackQueue _autoAttackQueue;
     private Skill _selectedSkill;
+
     public TalentSystem TalesntSystem => _talentSystem;
     public SkillQueue SkillQueue { get => _skillQueue; }
     public Skill[] SelectedSkills { get => _selectedSkills; }
-
     public IEnumerable<Skill> DefaultSkills => _skills.Where(o => o.IsTalentSpell == false);
     public IEnumerable<Skill> TalentsSkills => _skills.Where(o => o.IsTalentSpell);
+
     public List<Skill> Abilities => _skills;
     public event Action<int> SkillSelected;
     public event Action<int> SkillDeselected;
@@ -38,6 +42,9 @@ public class SkillManager : MonoBehaviour
 
         _skillQueue = GetComponent<SkillQueue>();
         _autoAttackQueue = GetComponent<AutoAttackQueue>();
+        _autoSkillQueue = GetComponent<AutoSkillQueue>();
+
+        _autoSkillQueue.SkillActivated += AutoSkillUsed;
 
         foreach (var item in _skills)
         {
@@ -80,6 +87,11 @@ public class SkillManager : MonoBehaviour
         if (skill is AutoAttackSkill attackSkill)
         {
             _autoAttackSkills.Add(attackSkill);
+        }
+        else if (skill is AutoSkill autoSkill)
+        {
+            _autoSkills.Add(autoSkill);
+            skill.CastStarted += GlobalCooldown;
         }
         else
         {
@@ -304,6 +316,17 @@ public class SkillManager : MonoBehaviour
         {
             SkillQueue.Add(_selectedSkill);
         }     
+    }
+
+    private void AutoSkillUsed(Skill skill)
+    {
+        foreach (var item in _skills)
+        {
+            if(item != skill)
+            {
+                item.TryCancel(true);
+            }
+        }
     }
 
     #region legacycode
