@@ -1510,7 +1510,7 @@ MonoBehaviour:
   _chargeCooldown: 0
   _radius: 6
   _area: 0
-  _castLength: 3
+  _castLength: 6
   _castWidth: 1
   _isAutoRadiusRender: 0
   _isAutoAreaRender: 0
@@ -1523,7 +1523,7 @@ MonoBehaviour:
   _line: {fileID: 11400000, guid: 7faf4d32cfcc4f54d967e4d01a0c4b65, type: 2}
   _midPointForLeapPrefab: {fileID: 725440263505209625}
   _player: {fileID: 5560201130496293763}
-  _rangeLeap: 6
+  _rangeLeap: 3
   _durationLeap: 0.4
   _radiusAttack: 1
   _cooldownAttack: 1

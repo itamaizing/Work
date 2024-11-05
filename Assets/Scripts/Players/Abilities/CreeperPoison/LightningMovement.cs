@@ -342,7 +342,11 @@ public class LightningMovement : Skill
 
           #endregion */
 
-        Quaternion lookRotation = RotateAtMouse(transform, 0, 0, 0);
+        Vector3 dir = transform.forward;
+        Quaternion lookRotation = Quaternion.LookRotation(dir);
+
+
+        Debug.Log("LightningMovement / IsEnemyBeforePlayer / lookRotation = " + lookRotation);
 
         Collider[] hit = Physics.OverlapBox(transform.position, sizeBox, lookRotation, _targetsLayers);
         if (hit.Length > 0)
@@ -390,9 +394,11 @@ public class LightningMovement : Skill
 
     private IEnumerator IsTargetBeforePlayerJob(float rangeLeap, LayerMask targetLayer)
     {
-        Vector3 sizeBox = new Vector3(_castLength / 2, 1f / 2, _castWidth / 2);
+        Vector3 sizeBox = new Vector3((_castLength * 1.5f) / 2, 1f / 2, (_castWidth * 1.3f) / 2);
 
-        Quaternion lookRotation = RotateAtMouse(transform, 0f, 0, 0);
+        Vector3 dir = transform.forward;
+        Quaternion lookRotation = Quaternion.LookRotation(dir);
+        Debug.Log("LightningMovement / IsTargetBeforePlayerJob (Coroutine) / lookRotation = " + lookRotation);
 
         while (true)
         {
@@ -410,10 +416,11 @@ public class LightningMovement : Skill
 
     private IEnumerator IsTargetBehindPlayerJob(float rangeLeap, LayerMask targetLayer)
     {
-        Vector3 sizeBox = new Vector3((_castLength - 1.5f) / 2, 1f / 2, (_castWidth * 1.2f) / 2);
+        Vector3 sizeBox = new Vector3((_castLength - 1.5f) / 2, 1f / 2, (_castWidth * 1.2f));
 
-        Quaternion lookRotation = RotateAtMouse(transform, 0f, 0, 0);
-
+        Vector3 dir = -transform.forward;
+        Quaternion lookRotation = Quaternion.LookRotation(dir);
+        Debug.Log("LightningMovement / IsTargetBehindPlayerJob (Coroutine) / lookRotation = " + lookRotation);
         while (true)
         {
             Collider[] hit = Physics.OverlapBox(transform.position, sizeBox, lookRotation, targetLayer);
@@ -431,7 +438,22 @@ public class LightningMovement : Skill
 
     #region RenderingLine
 
-    private Quaternion RotateAtMouse(Transform transform, float rotationX, float rotationY, float rotationZ)
+    private Quaternion DirectionBox(Transform transform)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            Vector3 direction = hit.point - transform.position;
+            direction.y = 0;
+
+            Quaternion lookRotation = Quaternion.LookRotation(direction);
+            return lookRotation;
+        }
+
+        return Quaternion.identity;
+    }
+
+    private Quaternion RotateAtMouse(Transform transform)
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit))
@@ -440,7 +462,7 @@ public class LightningMovement : Skill
             dir.y = 0;
 
             Quaternion lookRotation = Quaternion.LookRotation(dir);         
-            Quaternion tiltRotation = Quaternion.Euler(rotationX, rotationY, rotationZ);
+            Quaternion tiltRotation = Quaternion.Euler(90f, 0f, 0f);
 
             transform.rotation = lookRotation * tiltRotation;
         }
@@ -460,17 +482,17 @@ public class LightningMovement : Skill
 
         while (!_isFirstClickDone)
         {
-            RotateAtMouse(_lineStartImageForFirstLeap.transform, 90f, 0.4f, 0);
-            RotateAtMouse(_lineEndImageForFirstLeap.transform, 90f, 0.4f, 0);
+            RotateAtMouse(_lineStartImageForFirstLeap.transform);
+            RotateAtMouse(_lineEndImageForFirstLeap.transform);
 
             Damage damage = new Damage
             {
                 Value = 0f,
             };
 
-            _lineStartImageForFirstLeap.SetSize(width, length, damage);
-            _lineEndImageForFirstLeap.SetSize(width, length, damage);
-
+            _lineStartImageForFirstLeap.SetSize(width, length / 2, damage);
+            _lineEndImageForFirstLeap.SetSize(width, length / 2, damage);
+            Debug.Log("LightningMovement / RenderLineFirstVector");
             yield return null;
         }
     }
@@ -487,17 +509,17 @@ public class LightningMovement : Skill
 
         while (!_isSecondClickDone)
         {
-            RotateAtMouse(_lineStartImageForSecondLeap.transform, 90f, 0.4f, 0);
-            RotateAtMouse(_lineEndImageForSecondLeap.transform, 90f, 0.4f, 0);
+            RotateAtMouse(_lineStartImageForSecondLeap.transform);
+            RotateAtMouse(_lineEndImageForSecondLeap.transform);
 
             Damage damage = new Damage
             {
                 Value = 0f,
             };
 
-            _lineStartImageForSecondLeap.SetSize(width, length, damage);
-            _lineEndImageForSecondLeap.SetSize(width, length, damage);
-
+            _lineStartImageForSecondLeap.SetSize(width, length / 2, damage);
+            _lineEndImageForSecondLeap.SetSize(width, length / 2, damage);
+            Debug.Log("LightningMovement / RenderLineSecondVector");
             yield return null;
         }
     }
@@ -574,7 +596,7 @@ public class LightningMovement : Skill
         }
     }
 
-    private IEnumerator MidpointForRenderingSecondLeap(Vector2 firstLeapPoint)
+    private IEnumerator MidpointForRenderingSecondLeap(Vector3 firstLeapPoint)
     {
         Debug.Log("LightningMovement / MidpointForRenderingSecondLeap");
         Vector3 originalPoint = firstLeapPoint;
@@ -594,12 +616,14 @@ public class LightningMovement : Skill
     {
         while (true)
         {
-            Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, radius, enemiesLayer);
+            //Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, radius, enemiesLayer);
 
-            Vector2 sizeBox = new Vector2(_castWidth, _castLength);
-            Collider2D[] hitsBox = Physics2D.OverlapBoxAll(transform.position, sizeBox, _angle, enemiesLayer);
+            //Vector2 sizeBox = new Vector2(_castWidth, _castLength);
+            //Collider2D[] hitsBox = Physics2D.OverlapBoxAll(transform.position, sizeBox, _angle, enemiesLayer);
 
-            foreach (Collider2D item in hitsBox)
+            Collider[] hits = Physics.OverlapSphere(transform.position, radius, enemiesLayer);
+
+            foreach (Collider item in hits)
             {
                 if (item != null)
                 {
@@ -680,7 +704,7 @@ public class LightningMovement : Skill
             _isTargetBeforePlayerCoroutine = StartCoroutine(IsTargetBeforePlayerJob(_rangeLeap, _targetsLayers));
         }
 
-        _player.CharacterState.CmdAddState(States.Immateriality, 1f/*(_durationLeap * _rangeLeap * _multiplierLeap)*/, 0, _player.gameObject, Name);
+        _player.CharacterState.CmdAddState(States.Immateriality, _durationLeap, 0, _player.gameObject, Name);
 
         CmdSingleLeap(firstLeapPoint, _durationLeap, _rangeLeap, _multiplierLeap, _timeBuff, _heatedGlandsIsActive);
     }
@@ -707,7 +731,7 @@ public class LightningMovement : Skill
 
         _applyDamageCoroutine = StartCoroutine(ApplyDamageJob(_targetsLayers, _radiusAttack, _durationLeap * _rangeLeap));
 
-        //_player.CharacterState.CmdAddState(States.Immateriality, (_durationLeap * _rangeLeap * _multiplierLeap), 0, _player.gameObject, Name);
+        _player.CharacterState.CmdAddState(States.Immateriality, (_durationLeap * _multiplierLeap), 0, _player.gameObject, Name);
 
         CmdExecuteTwoLeaps(firstLeapPoint, secondLeapPoint, 
             _durationLeap, _rangeLeap, _multiplierLeap, _timeBuff, _invtervalBetweenLeaps,
@@ -746,8 +770,6 @@ public class LightningMovement : Skill
     {
         Debug.Log("LightningMovement / CmdExecuteTwoLeaps");
         _player.Move.enabled = false;
-
-        _player.CharacterState.AddState(States.Immateriality, 1f /*(_durationLeap * _rangeLeap * _multiplierLeap)*/, 0, _player.gameObject, Name);
 
         if (_superFastScales.Data.IsOpen)
         {
