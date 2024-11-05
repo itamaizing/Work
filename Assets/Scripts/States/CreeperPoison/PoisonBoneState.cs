@@ -177,7 +177,7 @@ public class PoisonBoneState : AbstractCharacterState
             PhysicAttackType = AttackRangeType.Inner,
         };
 
-        _characterState.Character.Health.TryTakeDamage(ref damage, _creeperStrike);
+        _characterState.Character.Health.TryTakeDamage(ref damage, null);
         _characterState.Character.DamageTracker.AddDamage(damage);
     }
 

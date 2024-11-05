@@ -540,7 +540,7 @@ public class CharacterState : NetworkBehaviour
 	}
 
 	private void AddStateLogic(States state, float duration, float damageToExit, Schools school,
-		GameObject personWhoShooted, string skillName)
+		GameObject personWhoShooted, string skillName, bool isCanDodgeMagDamage = false)
 	{
 		if (invinsible) return;
 
@@ -562,19 +562,19 @@ public class CharacterState : NetworkBehaviour
 		}
 		else
         {
-			AbstractCharacterState stateForResist = enumToState[state];
-			Health characterHealth = _hero.Health;
-			float chanceDodgeMagDamage = Random.Range(0f, 100f);
-
-			if (stateForResist.Type == StateType.Magic)
+			if (!isCanDodgeMagDamage)
 			{
-				if (chanceDodgeMagDamage <= characterHealth.EvadeMagDamage)
+				AbstractCharacterState newState = enumToState[state];
+				Health characterHealth = _hero.Health;
+				float chanceDodgeMagDamage = Random.Range(0f, 100f);
+
+				if (newState.Type == StateType.Magic && chanceDodgeMagDamage <= characterHealth.EvadeMagDamage)
 				{
 					Debug.Log("CharacterState / DodgeMagDamage");
 					return;
 				}
 			}
-			
+
             CreateState(enumToState[state], state, duration, damageToExit, personWhoShooted, skillName, false);
 
 			if (enumToState[state] is IDamageable damageableShield)
