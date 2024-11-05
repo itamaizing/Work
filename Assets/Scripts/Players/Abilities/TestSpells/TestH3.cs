@@ -64,8 +64,6 @@ public class TestH3 : Skill
                 _target = GetRaycastTarget();
                 _targetPoint = GetMousePoint();
             }
-            Debug.Log(_target);
-            Debug.Log(_targetPoint);
             yield return null;
         }
     }

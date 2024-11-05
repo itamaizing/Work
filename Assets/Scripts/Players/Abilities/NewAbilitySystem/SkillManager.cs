@@ -228,29 +228,39 @@ public class SkillManager : MonoBehaviour
             return false;
 
         if (_selectedSkill != null && _selectedSkill.IsPreparing == true)
+        {
+            if (_selectedSkill != _selectedSkills[index])
+            {
+                _selectedSkill.TryCancel(true);
+
+                DeselectSkill();
+                SetSelectSkill(_selectedSkills[index]);
+            }
             return false;
+        }
 
         if (_selectedSkill == _selectedSkills[index])
         {
             SkillSelected?.Invoke(index);
-
         }
         else if (_selectedSkill == null)
         {
-            _selectedSkill = _selectedSkills[index];
-            SubscribingSkillOnEvents(_selectedSkill);
-            SkillSelected?.Invoke(index);
+            SetSelectSkill(_selectedSkills[index]);
 
         }
         else if (_selectedSkill != _selectedSkills[index])
         {
             DeselectSkill();
-
-            _selectedSkill = _selectedSkills[index];
-            SubscribingSkillOnEvents(_selectedSkill);
-            SkillSelected?.Invoke(index);            
+            SetSelectSkill(_selectedSkills[index]);
         }
         return true;
+    }
+
+    private void SetSelectSkill(Skill skill)
+    {
+        _selectedSkill = skill;
+        SubscribingSkillOnEvents(_selectedSkill);
+        SkillSelected?.Invoke(Array.IndexOf(_selectedSkills, skill));
     }
 
     private void DeselectSkill()
