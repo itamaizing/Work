@@ -44,7 +44,7 @@ public class DarkShield : AbstractCharacterState
         _characterState.RemoveState(this);
     }
 
-    private void HandleDamageTaken(float damage, DamageType type, Skill skill)
+    private void HandleDamageTaken(Damage damage, Skill skill)
     {
         if (_healthComponent == null || skill == null) return;
 
@@ -54,7 +54,7 @@ public class DarkShield : AbstractCharacterState
             _damageCoroutine = null;
         }
         
-        _damageCoroutine = _healthComponent.StartCoroutine(ApplyDelayedDamage(damage));
+        _damageCoroutine = _healthComponent.StartCoroutine(ApplyDelayedDamage(damage.Value));
     }
 
     private IEnumerator ApplyDelayedDamage(float damage)

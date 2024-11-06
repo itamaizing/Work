@@ -30,7 +30,11 @@ public class DeathSpiral : Skill
 	//private RuneComponent _rune;
 	protected override bool IsCanCast => Chargers > 0;
 
-	private void Start()
+    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+
+    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+
+    private void Start()
 	{		
 		//Chargers = 0;
 		

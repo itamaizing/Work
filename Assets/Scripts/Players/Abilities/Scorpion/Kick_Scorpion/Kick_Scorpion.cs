@@ -22,6 +22,10 @@ public class Kick_Scorpion : AutoAttackSkill
 
     public float DamageRange => Random.Range(_minDamage, _maxDamage);
 
+    protected override int AnimTriggerCastDelay => 0;
+
+    protected override int AnimTriggerAutoAttack => throw new System.NotImplementedException();
+
     protected override void CastAction()
     {
         if (_lastTarget != null && _lastTarget != _target) //�����

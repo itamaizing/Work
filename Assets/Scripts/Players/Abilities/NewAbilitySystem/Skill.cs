@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [Serializable]
@@ -36,7 +37,7 @@ public enum AbilityForm
 {
     Spell,
     Magic,
-    Physical
+    Physical,
 }
 
 public enum SkillType
@@ -98,8 +99,9 @@ public abstract class Skill : NetworkBehaviour
     protected Coroutine _castStreamCoroutine;
     protected Transform _tempTargetForDamage;
     protected Health _tempHPForDamage;
+    protected bool _isPlayCastAnim;
 
-    private Character _tempTarget;
+    private Character _tempTargetbase;
     private int _currentChargers;
     private float _remainingCooldownTime;
     private StatsBuff _statsBuff = new StatsBuff();
@@ -141,7 +143,7 @@ public abstract class Skill : NetworkBehaviour
     public float Area { get => Buff.Area.GetBuffedValue(_area); protected set => _area = value; }
     public float CastLength { get => Buff.Area.GetBuffedValue(_castLength); protected set => _castLength = value; }
     public float CastWidth { get => Buff.Area.GetBuffedValue(_castWidth); protected set => _castWidth = value; }
-    public virtual float Damage  { get => Buff.Damage.GetBuffedValue(_damageValue); protected set => _damageValue = value; }
+    public virtual float Damage { get => Buff.Damage.GetBuffedValue(_damageValue); protected set => _damageValue = value; }
     public bool IsUseCharges { get => _isUseCharges; }
     public LayerMask TargetsLayers { get => _targetsLayers; protected set => _targetsLayers = value; }
     public Schools School { get => _abilitySchool; protected set => _abilitySchool = value; }
@@ -167,6 +169,8 @@ public abstract class Skill : NetworkBehaviour
     public event Action MassageHaventCharge;
     public event Action<float> MassageNotCooldowned;
 
+    protected abstract int AnimTriggerCastDelay { get; }
+    protected abstract int AnimTriggerCast { get; }
     protected abstract bool IsCanCast { get; }
 
     protected abstract IEnumerator PrepareJob();
@@ -220,6 +224,7 @@ public abstract class Skill : NetworkBehaviour
         {
             Canceled?.Invoke();
             ClearData();
+            _isPlayCastAnim = false;
 
             CancelCoroutine(_castCoroutine);
 
@@ -251,7 +256,10 @@ public abstract class Skill : NetworkBehaviour
 				OnClickCanceled();
             }
 
-            _tempTarget = null;
+            _tempTargetbase = null;
+
+            _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
+            _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
 
             return true;
         }
@@ -372,6 +380,16 @@ public abstract class Skill : NetworkBehaviour
         _skillRender.CmdStopDrawDamageZone();
     }
 
+    protected void AnimStartCastCoroutine()
+    {
+        _castCoroutine = StartCoroutine(CastJob());
+    }
+
+    protected virtual void AnimCastEnded()
+    {
+        _isPlayCastAnim = false;
+    }
+
     protected virtual void StartAutoDraw()
     {
 		Damage damage = new Damage
@@ -428,8 +446,11 @@ public abstract class Skill : NetworkBehaviour
 
     protected Character GetRaycastTarget(bool isCanTargetHimself = false)
     {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit[] rayHit = Physics.RaycastAll(ray);
+
+
         Character target = null;
-        RaycastHit2D[] rayHit = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 99, TargetsLayers);
 
         foreach (var item in rayHit)
         {
@@ -443,14 +464,14 @@ public abstract class Skill : NetworkBehaviour
                 }
             }
         }
-        _tempTarget = target;
+        _tempTargetbase = target;
         return target;
     }
 
     public List<Character> GetCloserTargets(Vector3 position, float radius, bool isCanTargetHimself = false)
     {
         List<Character> targets = new List<Character>();
-        Collider2D[] collider = Physics2D.OverlapCircleAll(position, radius, TargetsLayers);
+        Collider[] collider = Physics.OverlapSphere(position, radius, TargetsLayers);
 
         foreach (var item in collider)
         {
@@ -491,7 +512,7 @@ public abstract class Skill : NetworkBehaviour
         var dir = vector.normalized;
         float distance = vector.magnitude;
 
-        RaycastHit2D[] rayHit = Physics2D.RaycastAll(point, dir, distance, obstacle);
+        RaycastHit[] rayHit = Physics.RaycastAll(point, dir, distance, obstacle);
 
         if (rayHit.Length > 0)
             return false;
@@ -506,8 +527,8 @@ public abstract class Skill : NetworkBehaviour
 
     protected bool NoObstacles()
     {
-        if (_tempTarget != null)
-            return NoObstacles(_tempTarget.transform.position, transform.position, _obstacle);
+        if (_tempTargetbase != null)
+            return NoObstacles(_tempTargetbase.transform.position, transform.position, _obstacle);
 
         return true;
     }
@@ -534,17 +555,20 @@ public abstract class Skill : NetworkBehaviour
 
     protected bool IsMouseInRadius(float radius)
     {
-        float distance = Vector3.Distance(
-            new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, transform.position.z),
-            transform.position
-            );
+        float distance = Vector3.Distance(GetMousePoint(), transform.position);
 
         return distance <= radius;
     }
 
-    protected Vector2 GetMousePoint()
+    protected Vector3 GetMousePoint()
     {
-        return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            return hit.point;
+        }
+        return Vector3.zero;
     }
 
     protected bool TryUseCharge()
@@ -768,6 +792,10 @@ public abstract class Skill : NetworkBehaviour
     private IEnumerator CastDeleyJob(float delayTime)
     {
         CastDeleyStarted?.Invoke(delayTime);
+
+        _hero.Animator.SetTrigger(AnimTriggerCastDelay);
+        _hero.NetworkAnimator.SetTrigger(AnimTriggerCastDelay);
+
         float time = 0;
 
         while (time < delayTime)
@@ -831,7 +859,25 @@ public abstract class Skill : NetworkBehaviour
         if (_castDuration > 0)
             StartCoroutine(CastStreamJob());
 
-        yield return _castCoroutine = StartCoroutine(CastJob());
+        if(AnimTriggerCast != 0)
+        {
+            _isPlayCastAnim = true;
+
+            _hero.Animator.SetTrigger(AnimTriggerCast);
+            _hero.NetworkAnimator.SetTrigger(AnimTriggerCast);
+
+            while (_isPlayCastAnim)
+            {
+                yield return null;
+            }
+        }
+        else
+        {
+            _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
+            _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
+
+            yield return _castCoroutine = StartCoroutine(CastJob());
+        }
 
         CastEnded?.Invoke();
         _isCasting = false;
@@ -839,6 +885,12 @@ public abstract class Skill : NetworkBehaviour
         ClearData();
 
         _castCoroutine = null;
+    }
+
+    private IEnumerator CancelCoroutine()
+    {
+        yield return new WaitForNextFrameUnit();
+
     }
 
     [ClientRpc]

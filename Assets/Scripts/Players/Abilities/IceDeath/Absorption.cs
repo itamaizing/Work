@@ -15,7 +15,11 @@ public class Absorption : Skill
 		get { return _target != null; }
 	}
 
-	/*private void Update()
+    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+
+    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+
+    /*private void Update()
 	{
 		if(!_active) return;
 
@@ -38,7 +42,7 @@ public class Absorption : Skill
 			_active = false;
 		}
 	}*/
-	private void Start()
+    private void Start()
 	{
 		for (int i = 0; i < _playerLinks.Resources.Count; i++)
 		{

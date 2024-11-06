@@ -40,6 +40,10 @@ public class Bar : MonoBehaviour
 		_preViewValue = resource.CurrentValue;
 		_maxValue = resource.MaxValue;
 
+		Debug.Log(_currentValue);
+		Debug.Log(_preViewValue);
+		Debug.Log(_maxValue);
+
 		UpdateBar();
 
 		_resource.ValueChanged += OnValueChanged;
@@ -52,6 +56,12 @@ public class Bar : MonoBehaviour
         if (_resource != null)
 			Init(_resource);
     }
+
+    private void OnEnable()
+    {
+		if (_resource != null)
+			Init(_resource);
+	}
 
     private void OnDestroy()
     {

@@ -21,7 +21,11 @@ public class MagicDefense : Skill
 
 	protected override bool IsCanCast => CheckCanCast();
 
-	private bool CheckCanCast()
+    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+
+    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+
+    private bool CheckCanCast()
 	{
 		Debug.Log("Check");
 		//return true;

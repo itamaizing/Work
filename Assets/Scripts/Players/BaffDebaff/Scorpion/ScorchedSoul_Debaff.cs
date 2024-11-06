@@ -11,7 +11,7 @@ public class ScorchedSoul_Debaff : BaseEffect
 
     private float _damageValue;
     private DamageType _damageType = DamageType.Magical;
-    private AttackRangeType _attackRangeType = AttackRangeType.Inner;
+    private AttackRangeType _attackRangeType = AttackRangeType.MeleeAttack;
 
     private void AddStack()
     {

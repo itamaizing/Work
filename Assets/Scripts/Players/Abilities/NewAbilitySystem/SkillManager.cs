@@ -3,29 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-[RequireComponent(typeof(SkillRenderer))]
 [RequireComponent(typeof(SkillQueue))]
+[RequireComponent(typeof(AutoSkillQueue))]
 [RequireComponent(typeof(AutoAttackQueue))]
 public class SkillManager : MonoBehaviour
 {
     [SerializeField] private List<Skill> _skills;
     [SerializeField] private Character _hero;
     [SerializeField] private TalentSystem _talentSystem;
-    [SerializeField]private SkillRenderer _skillRenderer;
+    [SerializeField] private SkillRenderer _skillRenderer;
 
     private Skill[] _selectedSkills = new Skill[16];
     private List<AutoAttackSkill> _autoAttackSkills = new List<AutoAttackSkill>();
+    private List<AutoSkill> _autoSkills = new List<AutoSkill>();
     private List<Skill> _simpleSkills = new List<Skill>();
     private float _globalCooldownTime = .5f;
     private SkillQueue _skillQueue;
+    private AutoSkillQueue _autoSkillQueue;
     private AutoAttackQueue _autoAttackQueue;
     private Skill _selectedSkill;
+
     public TalentSystem TalesntSystem => _talentSystem;
     public SkillQueue SkillQueue { get => _skillQueue; }
     public Skill[] SelectedSkills { get => _selectedSkills; }
-
     public IEnumerable<Skill> DefaultSkills => _skills.Where(o => o.IsTalentSpell == false);
     public IEnumerable<Skill> TalentsSkills => _skills.Where(o => o.IsTalentSpell);
+
     public List<Skill> Abilities => _skills;
     public event Action<int> SkillSelected;
     public event Action<int> SkillDeselected;
@@ -38,6 +41,9 @@ public class SkillManager : MonoBehaviour
 
         _skillQueue = GetComponent<SkillQueue>();
         _autoAttackQueue = GetComponent<AutoAttackQueue>();
+        _autoSkillQueue = GetComponent<AutoSkillQueue>();
+
+        _autoSkillQueue.SkillActivated += AutoSkillUsed;
 
         foreach (var item in _skills)
         {
@@ -76,6 +82,11 @@ public class SkillManager : MonoBehaviour
         if (skill is AutoAttackSkill attackSkill)
         {
             _autoAttackSkills.Add(attackSkill);
+        }
+        else if (skill is AutoSkill autoSkill)
+        {
+            _autoSkills.Add(autoSkill);
+            skill.CastStarted += GlobalCooldown;
         }
         else
         {
@@ -224,29 +235,39 @@ public class SkillManager : MonoBehaviour
             return false;
 
         if (_selectedSkill != null && _selectedSkill.IsPreparing == true)
+        {
+            if (_selectedSkill != _selectedSkills[index])
+            {
+                _selectedSkill.TryCancel(true);
+
+                DeselectSkill();
+                SetSelectSkill(_selectedSkills[index]);
+            }
             return false;
+        }
 
         if (_selectedSkill == _selectedSkills[index])
         {
             SkillSelected?.Invoke(index);
-
         }
         else if (_selectedSkill == null)
         {
-            _selectedSkill = _selectedSkills[index];
-            SubscribingSkillOnEvents(_selectedSkill);
-            SkillSelected?.Invoke(index);
+            SetSelectSkill(_selectedSkills[index]);
 
         }
         else if (_selectedSkill != _selectedSkills[index])
         {
             DeselectSkill();
-
-            _selectedSkill = _selectedSkills[index];
-            SubscribingSkillOnEvents(_selectedSkill);
-            SkillSelected?.Invoke(index);            
+            SetSelectSkill(_selectedSkills[index]);
         }
         return true;
+    }
+
+    private void SetSelectSkill(Skill skill)
+    {
+        _selectedSkill = skill;
+        SubscribingSkillOnEvents(_selectedSkill);
+        SkillSelected?.Invoke(Array.IndexOf(_selectedSkills, skill));
     }
 
     private void DeselectSkill()
@@ -290,6 +311,17 @@ public class SkillManager : MonoBehaviour
         {
             SkillQueue.Add(_selectedSkill);
         }     
+    }
+
+    private void AutoSkillUsed(Skill skill)
+    {
+        foreach (var item in _skills)
+        {
+            if(item != skill)
+            {
+                item.TryCancel(true);
+            }
+        }
     }
 
     #region legacycode

@@ -12,10 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4db219e2a0b6a648befa165334af915, type: 3}
   m_Name: TestInfo
   m_EditorClassIdentifier: 
-  _id: 10
   _name: GENA
   _description: golden ball heat trick
-  _icon: {fileID: 21300000, guid: 48c94a024989bf74d9081978b98b6040, type: 3}
+  _icon: {fileID: 21300000, guid: 177e9214fe839c641b100e52e7032b0c, type: 3}
   _iconSize: 0
   _attributes:
     attributesGroup:
@@ -145,5 +144,3 @@ MonoBehaviour:
       DefaultValue: 0
       Icon: {fileID: 0}
       IsVisible: 0
-  _talents: []
-  statsInfo: {fileID: 0}

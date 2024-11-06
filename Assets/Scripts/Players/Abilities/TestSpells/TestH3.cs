@@ -13,6 +13,10 @@ public class TestH3 : Skill
 
     protected override bool IsCanCast { get => CheckCanCast(); }
 
+    protected override int AnimTriggerCastDelay => 0;
+
+    protected override int AnimTriggerCast => Animator.StringToHash("H3Cast");
+
     private bool CheckCanCast()
     {
         if (_target == null)
@@ -20,6 +24,16 @@ public class TestH3 : Skill
 
         return Vector3.Distance(_targetPoint, transform.position) <= Radius ||
                Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+    }
+
+    public void AnimCastH3()
+    {
+        AnimStartCastCoroutine();
+    }
+
+    public void AnimH3End()
+    {
+        AnimCastEnded();
     }
 
     protected override IEnumerator CastJob()
