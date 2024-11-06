@@ -18,9 +18,9 @@ public class Icecloud : Skill
 
 	protected override bool IsCanCast => IsCanCastCheck();
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+    protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+    protected override int AnimTriggerCast => 0;
 
     private bool IsCanCastCheck()
 	{
@@ -99,8 +99,8 @@ public class Icecloud : Skill
 		while (float.IsPositiveInfinity(_mousePos.x))
 		{
 			if (GetMouseButton)
-			{			
-				_mousePos = GetTarget().character.transform.position;
+			{
+				_mousePos = GetTarget().Position;
 			}
 			yield return null;
 		}

@@ -56,20 +56,21 @@ public class DeathSpiralProjectile : Projectiles
 		if (collision.gameObject == _dad.gameObject)
 			return;
 		//damage, freez etc
-		if (collision.TryGetComponent<IDamageable>(out var damageable) && collision.gameObject != _dad.gameObject)
+		//if (collision.TryGetComponent<IDamageable>(out var damageable) && collision.gameObject != _dad.gameObject)
+		if (collision.TryGetComponent<Character>(out var target))
 		{
-			if(damageable is IcyCorpse corpse)
+			/*if(damageable is IcyCorpse corpse)
 			{
 				var heal = new Heal { Value = 10 };
 				corpse.Health.Heal(ref heal, name);
 				Explode();
-			}
-			else if (damageable is Character target)
+			}*/
+			//else if (damageable is Character target)
 			{
 				TalentHit(target);
 				Explode();
 			}
-			else
+			/*else
 			{
 				damageable.TryTakeDamage(ref _damage, _skill);
 				if (_damage.Value <= 0)
@@ -77,7 +78,7 @@ public class DeathSpiralProjectile : Projectiles
 					Explode();
 				}
 				return;
-			}
+			}*/
 			Explode();
 		}
 
@@ -188,6 +189,7 @@ public class DeathSpiralProjectile : Projectiles
 
 	private void StateTalent(Character target, float damage)
 	{
+		Debug.Log("ENTERed talent state hit");
 		if (target.CharacterState.CheckForState(States.Frozen))
 		{
 			target.CharacterState.RemoveState(States.Frozen);
@@ -197,7 +199,7 @@ public class DeathSpiralProjectile : Projectiles
 
 			foreach (Collider2D collider in colliders)
 			{
-				if (collider.TryGetComponent<Character>(out var enemy) && collider.gameObject != _dad && collider.gameObject != target.gameObject)
+				if (collider.TryGetComponent<Character>(out var enemy) &&  collider.gameObject != target.gameObject ) //collider.gameObject != _dad &&)
 				{
 					Damage damage2 = new Damage
 					{

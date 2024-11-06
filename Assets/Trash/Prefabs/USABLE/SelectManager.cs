@@ -14,7 +14,7 @@ public class SelectManager : MonoBehaviour
     public List<Character> SelectedControllableUnits { get; } = new();
 
     private int _currentUnitNumber;
-    
+
     public event Action<Character> CharacterSelected;
     public event Action<Character> CharacterDeselected;
 
@@ -23,7 +23,7 @@ public class SelectManager : MonoBehaviour
         _dragBox.gameObject.SetActive(false);
         _dragBox.SetSelectManager(this);
     }
-        
+
     [ClientCallback]
     private void Update()
     {
@@ -44,38 +44,38 @@ public class SelectManager : MonoBehaviour
 
             _canContollUnits = _contoller.controllableUnits;
         }
-        
-        if (Input.GetMouseButtonDown(0) && Input.GetKey(KeyCode.LeftShift))
+
+        if (Input.GetMouseButtonDown(0) && Input.GetKey(KeyCode.LeftAlt))
         {
             _dragBox.gameObject.SetActive(true);
             _dragBox.StartDraw();
         }
-        if (Input.GetMouseButton(0) && Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetMouseButton(0) && Input.GetKey(KeyCode.LeftAlt))
         {
             _dragBox.Draw();
         }
 
-        if (Input.GetMouseButtonUp(0) && Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetMouseButtonUp(0) && Input.GetKey(KeyCode.LeftAlt))
         {
             _dragBox.StopDraw();
         }
 
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-            if(SelectedControllableUnits.Count <= 0) return;
-            
+            if (SelectedControllableUnits.Count <= 0) return;
+
             foreach (var unit in SelectedControllableUnits)
             {
                 unit.SelectComponent.IsCurrentPlayer = false;
             }
-            
-            _currentUnitNumber = (_currentUnitNumber+1) % SelectedControllableUnits.Count;
+
+            _currentUnitNumber = (_currentUnitNumber + 1) % SelectedControllableUnits.Count;
             SelectedControllableUnits[_currentUnitNumber].SelectComponent.IsCurrentPlayer = true;
         }
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            if(SelectedControllableUnits.Count <= 1) return;
+            if (SelectedControllableUnits.Count <= 1) return;
 
             var center = CalculateCenterPoint();
             bool[] sectorOccupied = new bool[SelectedControllableUnits.Count];
@@ -89,96 +89,96 @@ public class SelectManager : MonoBehaviour
         }
     }
 
-        public void SelectOnClick(Character character)
+    public void SelectOnClick(Character character)
+    {
+        DeselectAll();
+
+        if (!_canContollUnits.Contains(character)) return;
+
+        SelectedControllableUnits.Add(character);
+        character.SelectComponent.Select();
+    }
+
+    public void SelectInArea(Character character)
+    {
+        Debug.Log(0);
+
+        if (!_canContollUnits.Contains(character)) return;
+
+        Debug.Log(1);
+
+        if (!SelectedControllableUnits.Contains(character))
         {
-            DeselectAll();
-            
-            if(!_canContollUnits.Contains(character)) return;
-            
             SelectedControllableUnits.Add(character);
             character.SelectComponent.Select();
+            CharacterSelected?.Invoke(character);
+            Debug.Log(3);
         }
-
-        public void SelectInArea(Character character)
+        else
         {
-            Debug.Log(0);
-
-            if(!_canContollUnits.Contains(character)) return;
-
-            Debug.Log(1);
-
-            if (!SelectedControllableUnits.Contains(character))
-            {
-                SelectedControllableUnits.Add(character);
-                character.SelectComponent.Select();
-                CharacterSelected?.Invoke(character);
-                Debug.Log(3);
-            }
-            else
-            {
-                SelectedControllableUnits.Remove(character);
-                character.SelectComponent.Deselect();
-                CharacterDeselected?.Invoke(character);
-                Debug.Log(4);
-            }
-
-            SelectedControllableUnits.FirstOrDefault()!.SelectComponent.IsCurrentPlayer = true;
-            _currentUnitNumber = 0;
+            SelectedControllableUnits.Remove(character);
+            character.SelectComponent.Deselect();
+            CharacterDeselected?.Invoke(character);
+            Debug.Log(4);
         }
 
-        public void Deselect(Character character)
+        SelectedControllableUnits.FirstOrDefault()!.SelectComponent.IsCurrentPlayer = true;
+        _currentUnitNumber = 0;
+    }
+
+    public void Deselect(Character character)
+    {
+        if (SelectedControllableUnits.Contains(character))
         {
-            if (SelectedControllableUnits.Contains(character))
-            {
-                SelectedControllableUnits.Remove(character);
-                CharacterDeselected?.Invoke(character);
-            }
+            SelectedControllableUnits.Remove(character);
+            CharacterDeselected?.Invoke(character);
         }
-        public void DeselectAll()
+    }
+    public void DeselectAll()
+    {
+        foreach (var character in SelectedControllableUnits)
         {
-            foreach (var character in SelectedControllableUnits)
-            {
-                character.SelectComponent.Deselect();
-                CharacterDeselected?.Invoke(character);
-            }
-            SelectedControllableUnits.Clear();
+            character.SelectComponent.Deselect();
+            CharacterDeselected?.Invoke(character);
         }
-        
-        private Vector3 CalculateCenterPoint()
+        SelectedControllableUnits.Clear();
+    }
+
+    private Vector3 CalculateCenterPoint()
+    {
+        Vector3 sum = Vector3.zero;
+
+        foreach (var character in SelectedControllableUnits)
         {
-            Vector3 sum = Vector3.zero;
-            
-            foreach (var character in SelectedControllableUnits)
-            {
-                sum += character.transform.position;
-            }
-            
-            return sum / SelectedControllableUnits.Count;
+            sum += character.transform.position;
         }
-        
-        private int DetermineOffset(Vector3 characterPosition, Vector3 centerPoint, bool[] sectorOccupied, out Vector3 offset)
+
+        return sum / SelectedControllableUnits.Count;
+    }
+
+    private int DetermineOffset(Vector3 characterPosition, Vector3 centerPoint, bool[] sectorOccupied, out Vector3 offset)
+    {
+        Vector3 direction = characterPosition - centerPoint;
+        float angle = Mathf.Atan2(direction.y, direction.x);
+
+        int sectorCount = sectorOccupied.Length;
+        float sectorAngle = 2 * Mathf.PI / sectorCount;
+        int sector = Mathf.FloorToInt((angle + Mathf.PI) / sectorAngle);
+        int initialSector = sector;
+
+        while (sectorOccupied[sector % sectorCount])
         {
-            Vector3 direction = characterPosition - centerPoint;
-            float angle = Mathf.Atan2(direction.y, direction.x);
-
-            int sectorCount = sectorOccupied.Length;
-            float sectorAngle = 2 * Mathf.PI / sectorCount;
-            int sector = Mathf.FloorToInt((angle + Mathf.PI) / sectorAngle);
-            int initialSector = sector;
-
-            while (sectorOccupied[sector % sectorCount])
+            sector = (sector + 1) % sectorCount;
+            if (sector == initialSector)
             {
-                sector = (sector + 1) % sectorCount;
-                if (sector == initialSector)
-                {
-                    offset = Vector3.zero;
-                    return -1;
-                }
+                offset = Vector3.zero;
+                return -1;
             }
-
-            float sectorCenterAngle = sector * sectorAngle - Mathf.PI + sectorAngle / 2;
-
-            offset = new Vector3(Mathf.Cos(sectorCenterAngle), Mathf.Sin(sectorCenterAngle), 0) * 3f;
-            return sector;
         }
+
+        float sectorCenterAngle = sector * sectorAngle - Mathf.PI + sectorAngle / 2;
+
+        offset = new Vector3(Mathf.Cos(sectorCenterAngle), Mathf.Sin(sectorCenterAngle), 0) * 3f;
+        return sector;
+    }
 }

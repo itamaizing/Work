@@ -2,6 +2,8 @@ using System.Collections;
 using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
+using UnityEngine.UIElements;
 
 public class SkillRenderer : NetworkBehaviour
 {
@@ -23,6 +25,11 @@ public class SkillRenderer : NetworkBehaviour
 
     private Coroutine _drawLineCoroutine;
     private Coroutine _drawAreaCoroutine;
+    private Coroutine _drawClosestTargetCoroutine;
+
+
+    
+    private Character _tempTarget;
 
     [Command]
     public void CmdDrawDamageZone(Vector3 position, float radius, Damage damage, GameObject player)
@@ -114,6 +121,22 @@ public class SkillRenderer : NetworkBehaviour
             Destroy(_lineEndImage.gameObject);
     }
 
+    public void DrawClosestTarget(float radius, LayerMask TargetsLayers, Character player)
+    {
+		_drawClosestTargetCoroutine = StartCoroutine(DrawClosestTargetJob(radius, TargetsLayers, player));
+    }
+
+    public void StopDrawClosestTarget()
+    {
+		if (_drawClosestTargetCoroutine != null)
+			StopCoroutine(_drawClosestTargetCoroutine);
+
+        if(_tempTarget != null)
+        {
+            _tempTarget.SelectedCircle.SwitchClostestTarget(false);
+		}
+	}
+
     private void RotateAtMouse(Transform transform)
     {
         Vector3 dir = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
@@ -170,4 +193,64 @@ public class SkillRenderer : NetworkBehaviour
             yield return null;
         }
     }
+
+    private IEnumerator DrawClosestTargetJob(float radius, LayerMask TargetsLayers, Character player)
+    {
+        while (true)
+        {
+            List<Character> targets = new List<Character>();
+            Collider[] collider = Physics.OverlapSphere(transform.position, radius + 500);
+
+            foreach (var item in collider)
+            {
+                if (collider.Length > 0 && item.transform.TryGetComponent<Character>(out Character enemy))
+                {
+                    if (enemy == player)
+                    {
+                        continue;
+                    }
+                    targets.Add(enemy);
+                }
+            }
+            targets = targets.OrderBy(character => Vector3.Distance(character.transform.position, gameObject.transform.position)).ToList();
+            if (targets.Count > 0)
+            {
+				foreach (var target in targets)
+				{
+					if (Vector3.Distance(target.transform.position, transform.position) <= radius)
+					{
+						target.SelectedCircle.SwitchStroke(true);
+						target.SelectedCircle.SetColorTarget(Color.green);
+					}
+					else
+					{
+						target.SelectedCircle.SwitchStroke(false);
+					}
+				}
+
+				if (_tempTarget != null)
+                {
+                    if (Vector3.Distance(_tempTarget.transform.position, transform.position) > Vector3.Distance(targets[0].transform.position, transform.position))
+                    {
+                        _tempTarget.SelectedCircle.SwitchClostestTarget(false);
+                        _tempTarget = targets[0];
+                    }
+                }
+
+                _tempTarget = targets[0];
+                _tempTarget.SelectedCircle.SwitchClostestTarget(true);
+
+                if (Vector3.Distance(_tempTarget.transform.position, transform.position) <= radius)
+                {
+                    _tempTarget.SelectedCircle.SetColorTarget(Color.green);
+                }
+                else
+                {
+                    _tempTarget.SelectedCircle.SetColorTarget(Color.red);
+                }
+            }
+			yield return null;
+		}
+		//yield return null;
+	}
 }
