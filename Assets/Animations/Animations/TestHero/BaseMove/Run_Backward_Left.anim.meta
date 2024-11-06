@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Animations/Animations/TestHero/BaseMove/Run_Backward_Left.anim.meta
 guid: cdb59a00bf874964fb9715fad47dabde
+========
+guid: fe214a58ce060b5478b6eeab16973803
+>>>>>>>> main:Assets/Animations/Animations/TestHero/BaseMove/Run_Forward.anim.meta
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 7400000

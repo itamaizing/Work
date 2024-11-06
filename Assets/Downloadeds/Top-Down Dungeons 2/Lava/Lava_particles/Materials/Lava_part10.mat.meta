@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Downloadeds/Top-Down Dungeons 2/Lava/Lava_particles/Materials/Lava_part10.mat.meta
 guid: 4a36cb8d99b352d448ef3432e51eb5f0
+========
+guid: c3916e08660c8ea4295f1f268fca3f72
+>>>>>>>> main:Assets/Materials/greyScaleMat.mat.meta
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 2100000

@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Animations/Controller.meta
 guid: 980f593538f3fa24999425fd7802369f
+========
+guid: 1a1fbd0d68f334b418f945706ebbeb9d
+>>>>>>>> main:Assets/Animations/Animations/TestHero.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

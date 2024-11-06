@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Textures/TestHero/Textures/Fair Red.psd.meta
 guid: eaa36ddc915a0964e9f5386f50ee886e
+========
+guid: bbdac3614bd1c164681a2639e5acc687
+>>>>>>>> main:Assets/Textures/TestHero/Textures/Fair Purple.psd.meta
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}

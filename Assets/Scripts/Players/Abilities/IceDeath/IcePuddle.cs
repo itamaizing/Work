@@ -273,7 +273,7 @@ public class IcePuddle : Skill
 			_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			Vector2 lookDir = _mousePos - (Vector2)_hero.transform.position;
 			_angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
-			_preViewPuddle.transform.rotation = Quaternion.Euler(0, 0, _angle);
+			_preViewPuddle.transform.rotation = Quaternion.Euler(90, 0, _angle);
 			_preViewPuddle.transform.position = InstantiatePoint();
 		}
 		else
@@ -286,7 +286,7 @@ public class IcePuddle : Skill
 			if (!_crutch)
 			{
 				_angle3 = _angle2;
-				_preViewPuddle.transform.rotation = Quaternion.Euler(0, 0, _angle2);
+				_preViewPuddle.transform.rotation = Quaternion.Euler(90, 0, _angle2);
 			}
 		}
 	}

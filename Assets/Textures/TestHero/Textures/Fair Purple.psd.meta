@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Textures/TestHero/Textures/Fair Purple.psd.meta
 guid: bbdac3614bd1c164681a2639e5acc687
+========
+guid: e498208cbbaee524fa757418db6c9d17
+>>>>>>>> main:Assets/Textures/TestHero/Textures/Fair Blue.psd.meta
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -61,7 +65,11 @@ TextureImporter:
   compressionQualitySet: 0
   textureFormatSet: 0
   ignorePngGamma: 0
+<<<<<<<< HEAD:Assets/Textures/TestHero/Textures/Fair Purple.psd.meta
   applyGammaDecoding: 0
+========
+  applyGammaDecoding: 1
+>>>>>>>> main:Assets/Textures/TestHero/Textures/Fair Blue.psd.meta
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform

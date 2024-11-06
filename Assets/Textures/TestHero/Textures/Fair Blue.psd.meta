@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Textures/TestHero/Textures/Fair Blue.psd.meta
 guid: e498208cbbaee524fa757418db6c9d17
+========
+guid: 1db1981936e01d946bfb4dce15e88961
+>>>>>>>> main:Assets/Textures/TestHero/Textures/Fair Black.psd.meta
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -61,7 +65,11 @@ TextureImporter:
   compressionQualitySet: 0
   textureFormatSet: 0
   ignorePngGamma: 0
+<<<<<<<< HEAD:Assets/Textures/TestHero/Textures/Fair Blue.psd.meta
   applyGammaDecoding: 1
+========
+  applyGammaDecoding: 0
+>>>>>>>> main:Assets/Textures/TestHero/Textures/Fair Black.psd.meta
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform

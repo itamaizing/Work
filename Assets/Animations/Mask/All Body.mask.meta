@@ -1,8 +1,15 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Animations/Mask/All Body.mask.meta
 guid: a87f38a6a9195b445a0b6191d2f73d5b
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 31900000
+========
+guid: e564237eb5f2ab04d806f91f9d106cf9
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+>>>>>>>> main:Assets/Animations/Animations/TestHero/BaseMove/Run_Backward_Right.anim.meta
   userData: 
   assetBundleName: 
   assetBundleVariant: 
