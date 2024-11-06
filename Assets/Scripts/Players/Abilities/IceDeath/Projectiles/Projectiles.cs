@@ -8,7 +8,7 @@ public class Projectiles : MonoBehaviour
 {
 	[SerializeField] protected GameObject _hitEffect;
 	[SerializeField] protected SpriteRenderer _spriteRenderer;
-	[SerializeField] protected Rigidbody2D _rb;
+	[SerializeField] protected Rigidbody _rb;
 	[SerializeField] protected float _force = 0;
 	[SerializeField] protected float _distance = 5;
 	protected HeroComponent _dad;
@@ -25,7 +25,7 @@ public class Projectiles : MonoBehaviour
 		_initialized = true;
 		_lastHit = lastHit;
 		_skill = skill;
-		_rb.AddForce(transform.up * _force, ForceMode2D.Impulse);
+		_rb.AddForce(transform.up * _force, ForceMode.Impulse);
 		for (int i = 0; i < _dad.Resources.Count; i++)
 		{
 			if (_dad.Resources[i].Type == ResourceType.Energy)

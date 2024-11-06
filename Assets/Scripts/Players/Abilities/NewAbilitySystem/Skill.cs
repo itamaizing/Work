@@ -500,6 +500,8 @@ public abstract class Skill : NetworkBehaviour
             }
         }
         targets = targets.OrderBy(character => Vector3.Distance(character.transform.position, gameObject.transform.position)).ToList();
+        if (targets.Count <= 0) return null;
+
         return targets;
     }
 

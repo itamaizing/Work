@@ -31,7 +31,7 @@ public class IceCloudProjectile : Projectiles
 	}
 
 	[Server]
-	private void OnTriggerEnter2D(Collider2D collision)
+	private void OnTriggerEnter(Collider collision)
 	{
 		if (_dad == null) return;
 		if (collision.gameObject == _dad.gameObject)
@@ -57,8 +57,8 @@ public class IceCloudProjectile : Projectiles
 
 				_energy.SumDamageMake(_curDamage);
 				
-				//_skill.CmdApplyDamage(damage, target.gameObject);
-				target.Health.TryTakeDamage(ref _damage, _skill);
+				_skill.CmdApplyDamage(_damage, target.gameObject);
+				//target.Health.TryTakeDamage(ref _damage, _skill);
 
 
 				target.CharacterState.AddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
