@@ -463,9 +463,12 @@ public abstract class Skill : NetworkBehaviour
     protected Character GetRaycastTarget(bool isCanTargetHimself = false)
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit[] rayHit = Physics.RaycastAll(ray);
+        RaycastHit[] rayHit = Physics.RaycastAll(ray,100f, TargetsLayers);
 
-
+        foreach (var hit in rayHit)
+        {
+            Debug.Log(hit.collider.gameObject.name);
+        }
         Character target = null;
 
         foreach (var item in rayHit)
@@ -661,7 +664,7 @@ public abstract class Skill : NetworkBehaviour
 		switch (_skillType)
         {
             case SkillType.Target:
-                target.character = GetCloserTargets(transform.position, 100)[0];
+                target.character = GetRaycastTarget(true);
 				break; 
             case SkillType.Projectile:
 				target.character = GetCloserTargets(transform.position, 100)[0];

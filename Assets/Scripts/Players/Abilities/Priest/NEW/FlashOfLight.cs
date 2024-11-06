@@ -26,8 +26,8 @@ public class FlashOfLight : Skill
     
     protected override bool IsCanCast => IsCanCastCheck();
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("CastDelay");
-    protected override int AnimTriggerCast =>  Animator.StringToHash("Cast");
+    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCast => 0;
     
     private bool IsCanCastCheck()
     {
@@ -51,16 +51,6 @@ public class FlashOfLight : Skill
     private void OnDisable()
     {
         OnModeChange -= HandleModeChange;
-    }
-    
-    public void AnimCastFlashOfLight()
-    {
-        AnimStartCastCoroutine();
-    }
-
-    public void AnimCastFlashOfLightEnd()
-    {
-        AnimCastEnded();
     }
 
     public void SwitchMode()
@@ -144,7 +134,7 @@ public class FlashOfLight : Skill
         {
             if (Input.GetMouseButton(0))
             {
-                _target = GetRaycastTarget(true);
+                _target = GetTarget().character;
             }
             yield return null;
         }

@@ -61,8 +61,8 @@ public class PriestShield : Skill
 
     protected override bool IsCanCast => IsCanCastCheck();
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("CastDelay");
-    protected override int AnimTriggerCast =>  Animator.StringToHash("Cast");
+    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCast => 0;
 
     private bool IsCanCastCheck()
     {
@@ -94,16 +94,6 @@ public class PriestShield : Skill
         {
             skill.CastEnded -= AddDisciplineStack;
         }
-    }
-
-    public void AnimCastPriestShield()
-    {
-        AnimStartCastCoroutine();
-    }
-
-    public void AnimCastPriestShieldEnd()
-    {
-        AnimCastEnded();
     }
     
     public void SwitchMode()

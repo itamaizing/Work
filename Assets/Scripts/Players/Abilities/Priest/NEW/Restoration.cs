@@ -28,8 +28,8 @@ public class Restoration : Skill
     
     protected override bool IsCanCast => IsCanCastCheck();
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("CastDelay");
-    protected override int AnimTriggerCast =>  Animator.StringToHash("Cast");
+    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCast => 0;
 
     private bool IsCanCastCheck()
     {
@@ -58,15 +58,6 @@ public class Restoration : Skill
         }
     }
     
-    public void AnimCastRestoration()
-    {
-        AnimStartCastCoroutine();
-    }
-
-    public void AnimCastRestorationEnd()
-    {
-        AnimCastEnded();
-    }
 
     public void SwitchMode()
     {

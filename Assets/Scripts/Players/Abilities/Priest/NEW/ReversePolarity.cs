@@ -9,19 +9,9 @@ public class ReversePolarity : Skill
     [SerializeField] private Restoration restoration;
     [SerializeField] private PriestShield priestShield;
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("CastDelay");
-    protected override int AnimTriggerCast =>  Animator.StringToHash("Cast");
+    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => true;
-    
-    public void AnimCastSoulReversePolarity()
-    {
-        AnimStartCastCoroutine();
-    }
-
-    public void AnimCastReversePolarityEnd()
-    {
-        AnimCastEnded();
-    }
 
     private void OnEnable()
     {
@@ -68,7 +58,7 @@ public class ReversePolarity : Skill
 
     private void ApplyReversePolarityEffect()
     {
-    CmdAddBaff(States.ReversePolarity, -1f, 0, transform.parent.gameObject, Name);
+    CmdAddBaff(States.ReversePolarity, -1f, 0, transform.gameObject, Name);
     }
 
     private void RemoveReversePolarityEffect()

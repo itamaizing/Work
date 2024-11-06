@@ -1204,6 +1204,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.35732237
       objectReference: {fileID: 0}
+    - target: {fileID: 9112855932003537409, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -1611,7 +1615,7 @@ MonoBehaviour:
   _abilitySchool: 0
   _abilityForm: 1
   _damageType: 0
-  _attackRangeType: 2
+  _attackRangeType: 1
   _skillType: 0
   _targetsLayers:
     serializedVersion: 2
@@ -1931,9 +1935,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f62e60b957abac740bfda42461a9b551, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: PhyscialDamagePriestShieldTalent
     IsOpen: 0
@@ -1953,9 +1954,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e73b85722fd1f94697e138f4cb5b3b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: SpellActivatePriestShieldTalent
     IsOpen: 0
@@ -1975,9 +1973,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 815543414bfe4a0e97dd6a33c9467c7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: HealPriestShieldTalent
     IsOpen: 0
@@ -1997,9 +1992,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0a0478624ca447a87bcd7970b410a0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: DarkMagicDamagePriestShieldTalent
     IsOpen: 0
@@ -2019,9 +2011,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f637c2dc0db141558c3cee051e6309ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: LowHealthSparkOfLightTalent
     IsOpen: 0
@@ -2041,9 +2030,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75c2687a283a4cb8b036a31815d7787e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: HealthBoostSparkOfLightTalent
     IsOpen: 0
@@ -2063,9 +2049,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36039400dcf1438cba80c24aff5f41fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: EmeraldSkinActiveTalent
     IsOpen: 0
@@ -2086,9 +2069,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09c89bc75006499da14ebf463472a91e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: EmeraldLightMagicBoostTalent
     IsOpen: 0
@@ -2108,9 +2088,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e6003a02a1a4513adfcc943d80c205a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: ManaRestoreBoostTalent
     IsOpen: 0
@@ -2130,9 +2107,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a611bf8a46d4845a7aaa5896e747398, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: CooldownReduceFlashOfLighttalent
     IsOpen: 0
@@ -2152,9 +2126,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d86f92f9ce4b47339b7ba91a2c21ac65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: HealingBuffTalent
     IsOpen: 0
@@ -2174,9 +2145,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 253526e68ad595449af4ba49d6010ede, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: SelfHarmTalent
     IsOpen: 0
@@ -2196,9 +2164,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12e47cbbf0ec496382ce1785a1f52e47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: BladeMailPriestTalent
     IsOpen: 1
@@ -2217,9 +2182,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfb1099aa4b744c6a9486d1d1e1484f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: TiredSoulPriestTalent
     IsOpen: 1
@@ -2239,9 +2201,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 253526e68ad595449af4ba49d6010ede, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: SelfHarmTalent
     IsOpen: 1
@@ -2261,9 +2220,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a68a42edf2d4cb3b513e6578984a344, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: SoulAidActiveTalent
     IsOpen: 1
@@ -2284,9 +2240,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b28df2f668885e47bd02a337da14afe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: DispelTiredSoulTalent
     IsOpen: 1
@@ -2306,9 +2259,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cd43e0ebbfc479e8276c5b33c6530cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: CooldownReduceSoulAidTalent
     IsOpen: 1
@@ -2328,9 +2278,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25faff45e6ce444408d58ac5a18be5c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: DoubleRangeSoulAid
     IsOpen: 1
