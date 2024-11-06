@@ -10,9 +10,19 @@ public class SelfHarm : Skill
         StartCoroutine(CastJob());
     }
 
-    protected override int AnimTriggerCastDelay { get; }
-    protected override int AnimTriggerCast { get; }
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("CastDelay");
+    protected override int AnimTriggerCast =>  Animator.StringToHash("Cast");
     protected override bool IsCanCast => false;
+    
+    public void AnimCastSelfHarm()
+    {
+        AnimStartCastCoroutine();
+    }
+
+    public void AnimCastSelfHarmEnd()
+    {
+        AnimCastEnded();
+    }
 
     protected override IEnumerator PrepareJob()
     {

@@ -9,9 +9,19 @@ public class ReversePolarity : Skill
     [SerializeField] private Restoration restoration;
     [SerializeField] private PriestShield priestShield;
 
-    protected override int AnimTriggerCastDelay { get; }
-    protected override int AnimTriggerCast { get; }
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("CastDelay");
+    protected override int AnimTriggerCast =>  Animator.StringToHash("Cast");
     protected override bool IsCanCast => true;
+    
+    public void AnimCastSoulReversePolarity()
+    {
+        AnimStartCastCoroutine();
+    }
+
+    public void AnimCastReversePolarityEnd()
+    {
+        AnimCastEnded();
+    }
 
     private void OnEnable()
     {

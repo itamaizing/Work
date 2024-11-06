@@ -26,9 +26,8 @@ public class FlashOfLight : Skill
     
     protected override bool IsCanCast => IsCanCastCheck();
 
-    protected override int AnimTriggerCastDelay => throw new NotImplementedException();
-
-    protected override int AnimTriggerCast => throw new NotImplementedException();
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("CastDelay");
+    protected override int AnimTriggerCast =>  Animator.StringToHash("Cast");
     
     private bool IsCanCastCheck()
     {
@@ -52,6 +51,16 @@ public class FlashOfLight : Skill
     private void OnDisable()
     {
         OnModeChange -= HandleModeChange;
+    }
+    
+    public void AnimCastFlashOfLight()
+    {
+        AnimStartCastCoroutine();
+    }
+
+    public void AnimCastFlashOfLightEnd()
+    {
+        AnimCastEnded();
     }
 
     public void SwitchMode()

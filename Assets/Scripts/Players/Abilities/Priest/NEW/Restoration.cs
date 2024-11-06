@@ -28,9 +28,8 @@ public class Restoration : Skill
     
     protected override bool IsCanCast => IsCanCastCheck();
 
-    protected override int AnimTriggerCastDelay => throw new NotImplementedException();
-
-    protected override int AnimTriggerCast => throw new NotImplementedException();
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("CastDelay");
+    protected override int AnimTriggerCast =>  Animator.StringToHash("Cast");
 
     private bool IsCanCastCheck()
     {
@@ -57,6 +56,16 @@ public class Restoration : Skill
                 healthComponent.HealTaked -= OnHealTaken;
             }
         }
+    }
+    
+    public void AnimCastRestoration()
+    {
+        AnimStartCastCoroutine();
+    }
+
+    public void AnimCastRestorationEnd()
+    {
+        AnimCastEnded();
     }
 
     public void SwitchMode()

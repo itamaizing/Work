@@ -31,8 +31,8 @@ public class SoulAid : Skill
         _priestShield.CastEnded -= ReduceCooldown;
     }
 
-    protected override int AnimTriggerCastDelay { get; }
-    protected override int AnimTriggerCast { get; }
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("CastDelay");
+    protected override int AnimTriggerCast =>  Animator.StringToHash("Cast");
 
     protected override bool IsCanCast
     {
@@ -41,6 +41,16 @@ public class SoulAid : Skill
             var isTargetInRadius = IsTargetInRadius(_defaultRadius, _target.transform) || IsTargetHaveRestoration() && IsTargetInRadius(_largeRadius, _target.transform);
             return isTargetInRadius && IsTargetHaveTiredSoul();
         }
+    }
+    
+    public void AnimCastSoulAid()
+    {
+        AnimStartCastCoroutine();
+    }
+
+    public void AnimCastSoulAidEnd()
+    {
+        AnimCastEnded();
     }
 
     protected override IEnumerator CastJob()

@@ -12,13 +12,22 @@ public class EmeraldSkin : Skill
 
     protected override bool IsCanCast => CanCastCheck();
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
-
-    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("CastDelay");
+    protected override int AnimTriggerCast =>  Animator.StringToHash("Cast");
 
     private bool CanCastCheck()
     {
         return !Hero.CharacterState.CheckForState(States.ReversePolarity);
+    }
+    
+    public void AnimCastEmeraldSkin()
+    {
+        AnimStartCastCoroutine();
+    }
+
+    public void AnimCastEmeraldSkinEnd()
+    {
+        AnimCastEnded();
     }
 
     protected override IEnumerator PrepareJob()
