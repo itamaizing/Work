@@ -6,6 +6,7 @@ public class HashAnimPlayer : MonoBehaviour
 {
     // triggers
     public static readonly int AnimCancled = Animator.StringToHash("Cancled");
+    public static readonly int TakeDamage = Animator.StringToHash("TakeDamage");
 
     //float
     public static readonly int VelocityX = Animator.StringToHash("X");

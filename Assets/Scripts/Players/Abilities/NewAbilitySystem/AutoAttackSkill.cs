@@ -93,6 +93,7 @@ public abstract class AutoAttackSkill : Skill
         }
         _isAttacking = false;
         _target = null;
+        _hero.Move.StopLookAt();
     }
 
     protected override IEnumerator PrepareJob()
@@ -109,6 +110,8 @@ public abstract class AutoAttackSkill : Skill
             yield return null;
         }
         while (Target == null);
+
+        _hero.Move.LookAtTransform(Target.transform);
     }
 
     public void SwitchAutoMode()
