@@ -1536,7 +1536,7 @@ MonoBehaviour:
   _heroList:
   - {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
   - {fileID: 4534754468497973439, guid: ff1c8ecb71d19674e8778e3d04716b40, type: 3}
-  - {fileID: 4680195360504961954, guid: e09ea965088bf55438851a51f1f51848, type: 3}
+  - {fileID: 4374618947117916461, guid: f7c4989fc7d96e64e898c577137242d1, type: 3}
 --- !u!114 &572863236
 MonoBehaviour:
   m_ObjectHideFlags: 0
