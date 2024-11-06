@@ -17,11 +17,13 @@ public class UIMenuMainWindow : MonoBehaviour
     private void OnEnable()
     {
         _charactersPanel.OnHeroChanged += SetHero;
+        _savesPanel.OnSelect += SetHeroSaveIndex;
     }
 
     private void OnDisable()
     {
         _charactersPanel.OnHeroChanged -= SetHero;
+        _savesPanel.OnSelect -= SetHeroSaveIndex;
     }
 
     public void UI_StartClient()
@@ -50,8 +52,7 @@ public class UIMenuMainWindow : MonoBehaviour
 
 		SaveManager.Instance.SetHero(currentHero);
         ServerManager.Instance.SetPlayer(hero);
-        
-        //currentHero.Initialize();
+
         UpdateCharacterPanels();
     }
 

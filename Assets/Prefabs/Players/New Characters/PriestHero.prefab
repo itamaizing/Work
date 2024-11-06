@@ -733,6 +733,10 @@ PrefabInstance:
       value: -0.047796004
       objectReference: {fileID: 0}
     - target: {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _playerData
+      value: 
+      objectReference: {fileID: 11400000, guid: 80ce10cdeea490248a7097f9dfbaa541, type: 2}
+    - target: {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _resources.Array.size
       value: 4
       objectReference: {fileID: 0}
@@ -798,7 +802,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.size
-      value: 19
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[0]
@@ -859,21 +863,17 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[14]
       value: 
-      objectReference: {fileID: 2969723644945335160}
+      objectReference: {fileID: 6884934802079251823}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[15]
       value: 
-      objectReference: {fileID: 6884934802079251823}
+      objectReference: {fileID: 7357773734673534914}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[16]
       value: 
-      objectReference: {fileID: 7357773734673534914}
-    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[17]
-      value: 
       objectReference: {fileID: 4487192289763849279}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[18]
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[17]
       value: 
       objectReference: {fileID: 10600401575572123}
     - target: {fileID: 6397899444093627911, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -1329,9 +1329,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 471872757579073010}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2969723644945335160}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6884934802079251823}
@@ -2189,25 +2186,6 @@ MonoBehaviour:
     Icon: {fileID: 21300000, guid: 9f42d22003c5e8f439093da05407f78f, type: 3}
   character: {fileID: 4534754468497973439}
   _priestShield: {fileID: 9090548113051291277}
---- !u!114 &2969723644945335160
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 253526e68ad595449af4ba49d6010ede, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _data:
-    Name: SelfHarmTalent
-    IsOpen: 1
-    Description: 
-    Icon: {fileID: 21300000, guid: 00cbafab1f11fa740ad8987ca9c19ca6, type: 3}
-  character: {fileID: 4534754468497973439}
-  _selfHarm: {fileID: 8367263716856475010}
 --- !u!114 &6884934802079251823
 MonoBehaviour:
   m_ObjectHideFlags: 0
