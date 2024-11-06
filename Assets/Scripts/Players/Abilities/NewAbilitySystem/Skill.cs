@@ -492,7 +492,7 @@ public abstract class Skill : NetworkBehaviour
         {
             if (collider.Length > 0 && item.transform.TryGetComponent<Character>(out Character enemy))
             {
-                if (isCanTargetHimself == false && targets[targets.Count - 1].transform == _hero.Health.transform)
+                if (isCanTargetHimself == false && enemy.transform == _hero.Health.transform)
                 {
                     continue;
                 }
@@ -660,10 +660,10 @@ public abstract class Skill : NetworkBehaviour
 		switch (_skillType)
         {
             case SkillType.Target:
-                target.character = GetCloserTargets(transform.position, 100)[0];
+                target.character = GetCloserTargets(transform.position, 1000)[0];
 				break; 
             case SkillType.Projectile:
-				target.character = GetCloserTargets(transform.position, 100)[0];
+				target.character = GetCloserTargets(transform.position, 1000)[0];
 				break;
 			case SkillType.Zone:
 				if (Physics.Raycast(ray, out hit))
@@ -716,7 +716,7 @@ public abstract class Skill : NetworkBehaviour
 		switch (_skillType)
 		{
 			case SkillType.Target:
-                target.character = GetCloserTargets(transform.position, 100)[0];
+                target.character = GetCloserTargets(transform.position, 1000)[0];
 				break;
 			case SkillType.Projectile:          
 				if (Physics.Raycast(ray, out hit))

@@ -25,7 +25,7 @@ public class Projectiles : MonoBehaviour
 		_initialized = true;
 		_lastHit = lastHit;
 		_skill = skill;
-		_rb.AddForce(transform.up * _force, ForceMode.Impulse);
+		_rb.AddForce(transform.forward * _force, ForceMode.Impulse);
 		for (int i = 0; i < _dad.Resources.Count; i++)
 		{
 			if (_dad.Resources[i].Type == ResourceType.Energy)
