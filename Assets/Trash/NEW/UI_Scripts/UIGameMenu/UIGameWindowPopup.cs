@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class UIGameWindow : MonoBehaviour
+public class UIGameWindowPopup : MonoBehaviour
 {
     [SerializeField] private UIMenuMainAttributesPanel _attributesPanel;
     [SerializeField] private UIMenuMainTalentsPanel _talentsPanel;

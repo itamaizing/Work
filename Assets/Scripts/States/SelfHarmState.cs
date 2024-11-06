@@ -68,9 +68,9 @@ public class SelfHarmState : AbstractCharacterState
         return false;
     }
 
-    private void OnDamageTaken(float damageAmount, DamageType damageType, Skill skill)
+    private void OnDamageTaken(Damage damage, Skill skill)
     {
-        if (damageType != DamageType.Physical) return;
+        if (damage.Type != DamageType.Physical) return;
         
         _currentStackChance += StackIncreasePerHit;
         _currentStackChance = Mathf.Clamp(_currentStackChance, 0, 100);

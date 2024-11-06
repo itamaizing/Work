@@ -9,6 +9,9 @@ public class SelfHarm : Skill
         IsSkillActive = isActive;
         StartCoroutine(CastJob());
     }
+
+    protected override int AnimTriggerCastDelay { get; }
+    protected override int AnimTriggerCast { get; }
     protected override bool IsCanCast => false;
 
     protected override IEnumerator PrepareJob()

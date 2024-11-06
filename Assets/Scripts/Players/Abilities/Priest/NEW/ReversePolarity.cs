@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
@@ -10,6 +9,8 @@ public class ReversePolarity : Skill
     [SerializeField] private Restoration restoration;
     [SerializeField] private PriestShield priestShield;
 
+    protected override int AnimTriggerCastDelay { get; }
+    protected override int AnimTriggerCast { get; }
     protected override bool IsCanCast => true;
 
     private void OnEnable()
@@ -28,77 +29,66 @@ public class ReversePolarity : Skill
 
     private void OnDisable()
     {
-/*
-sparkOfLight.CastEnded -= RemoveReversePolarityEffect;
-flashOfLight.CastEnded -= RemoveReversePolarityEffect;
-restoration.CastEnded -= RemoveReversePolarityEffect;
-priestShield.CastEnded -= RemoveReversePolarityEffect;
+        
+    }
+    protected override IEnumerator PrepareJob()
+    {
+    yield break;
+    }
 
-sparkOfLight.CastEnded -= SwitchSpells;
-flashOfLight.CastEnded -= SwitchSpells;
-restoration.CastEnded -= SwitchSpells;
-priestShield.CastEnded -= SwitchSpells;
-*/
-}
+    protected override IEnumerator CastJob()
+    {
+    if (Hero == null || Hero.CharacterState == null || !IsCanCast) yield break;
 
-protected override IEnumerator PrepareJob()
-{
-yield break;
-}
+    if (!TryPayCost()) yield break;
 
-protected override IEnumerator CastJob()
-{
-if (Hero == null || Hero.CharacterState == null || !IsCanCast) yield break;
+    yield return new WaitForSeconds(CastDeley);
 
-if (!TryPayCost()) yield break;
+    SwitchSpells();
 
-yield return new WaitForSeconds(CastDeley);
+    if (Hero.CharacterState.CheckForState(States.ReversePolarity))
+    {
+        RemoveReversePolarityEffect();
+    }
+    else
+    {
+       ApplyReversePolarityEffect();
+    }
+    }
 
-SwitchSpells();
+    private void ApplyReversePolarityEffect()
+    {
+    CmdAddBaff(States.ReversePolarity, -1f, 0, transform.parent.gameObject, Name);
+    }
 
-if (Hero.CharacterState.CheckForState(States.ReversePolarity))
-{
-    RemoveReversePolarityEffect();
-}
-else
-{
-   ApplyReversePolarityEffect();
-}
-}
+    private void RemoveReversePolarityEffect()
+    {
+    CmdRemoveBuff(States.ReversePolarity, Hero.gameObject);
+    }
 
-private void ApplyReversePolarityEffect()
-{
-CmdAddBaff(States.ReversePolarity, -1f, 0, transform.parent.gameObject, Name);
-}
+    [Command]
+    private void CmdAddBaff(States darkState, float duration, float damagePerTick, GameObject target, string skillName)
+    {
+    var characterState = target.GetComponent<CharacterState>();
+    characterState.AddState(darkState, duration, damagePerTick, target, skillName);
+    }
 
-private void RemoveReversePolarityEffect()
-{
-CmdRemoveBuff(States.ReversePolarity, Hero.gameObject);
-}
+    [Command]
+    private void CmdRemoveBuff(States state, GameObject target)
+    {
+    var characterState = target.GetComponent<CharacterState>();
+    characterState.RemoveState(state);
+    }
 
-[Command]
-private void CmdAddBaff(States darkState, float duration, float damagePerTick, GameObject target, string skillName)
-{
-var characterState = target.GetComponent<CharacterState>();
-characterState.AddState(darkState, duration, damagePerTick, target, skillName);
-}
+    private void SwitchSpells()
+    {
+    sparkOfLight.SwitchMode();
+    flashOfLight.SwitchMode();
+    restoration.SwitchMode();
+    priestShield.SwitchMode();
+    }
 
-[Command]
-private void CmdRemoveBuff(States state, GameObject target)
-{
-var characterState = target.GetComponent<CharacterState>();
-characterState.RemoveState(state);
-}
-
-private void SwitchSpells()
-{
-sparkOfLight.SwitchMode();
-flashOfLight.SwitchMode();
-restoration.SwitchMode();
-priestShield.SwitchMode();
-}
-
-protected override void ClearData()
-{
-}
+    protected override void ClearData()
+    {
+    }
 }

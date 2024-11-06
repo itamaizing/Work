@@ -128,6 +128,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
   _skillIcons:
   - {fileID: 6728297872124838783}
   - {fileID: 6862259538837744573}
@@ -2262,11 +2263,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4616701032425328212, guid: afaedc870fef4684cb94d3dfafd27acd, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 4616701032425328212, guid: afaedc870fef4684cb94d3dfafd27acd, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 10
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 4616701032425328212, guid: afaedc870fef4684cb94d3dfafd27acd, type: 3}
       propertyPath: m_LocalPosition.x

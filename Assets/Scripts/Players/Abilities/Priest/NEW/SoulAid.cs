@@ -31,6 +31,9 @@ public class SoulAid : Skill
         _priestShield.CastEnded -= ReduceCooldown;
     }
 
+    protected override int AnimTriggerCastDelay { get; }
+    protected override int AnimTriggerCast { get; }
+
     protected override bool IsCanCast
     {
         get

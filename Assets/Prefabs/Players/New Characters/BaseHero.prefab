@@ -5229,9 +5229,10 @@ GameObject:
   - component: {fileID: 5664092922881533538}
   - component: {fileID: 971057160995198890}
   - component: {fileID: 5188294081543664110}
-  m_Layer: 0
+  - component: {fileID: 7701207856488633784}
+  m_Layer: 9
   m_Name: BaseHero
-  m_TagString: Untagged
+  m_TagString: Allies
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5540,7 +5541,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _stateIcons: {fileID: 0}
+  _stateIcons: {fileID: 7875684509955136938, guid: e5b733c903c6d9143af357e086455e86, type: 3}
   invinsible: 0
 --- !u!114 &5834951345091717418
 MonoBehaviour:
@@ -5740,6 +5741,18 @@ MonoBehaviour:
   _hero: {fileID: 5630810179120932799}
   _talentSystem: {fileID: 5950354320950511597}
   _skillRenderer: {fileID: 6214007637544752149}
+--- !u!114 &7701207856488633784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8423443208040621164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8529c4355f63304281f497141304f73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8519182947698867192
 GameObject:
   m_ObjectHideFlags: 0

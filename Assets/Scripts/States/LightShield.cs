@@ -85,7 +85,7 @@ public class LightShield : AbstractCharacterState, IDamageable
         return damage.Value == 0;
     }
     
-    private void DamageEnemiesInRadius(float damage, DamageType type, Skill skill)
+    private void DamageEnemiesInRadius(Damage damage, Skill skill)
     {
         foreach (var obj in NetworkServer.spawned.Values)
         {
@@ -94,14 +94,17 @@ public class LightShield : AbstractCharacterState, IDamageable
             var distance = Vector3.Distance(_characterState.transform.position, enemy.transform.position); 
             if (distance > 10f || distance <= 0.25f) continue;
             
-            var damageToTake = new Damage
+            var tempDamage = new Damage
             {
-                Type = type,
-                Value = damage * 0.2f
+                Form = damage.Form,
+                PhysicAttackType = damage.PhysicAttackType,
+                School = damage.School,
+                Type = damage.Type,
+                Value = damage.Value * 0.2f
             };
 
-            enemy.Health.TryTakeDamage(ref damageToTake, null);
-            enemy.DamageTracker.AddDamage(damageToTake);
+            enemy.Health.TryTakeDamage(ref tempDamage, null);
+            enemy.DamageTracker.AddDamage(tempDamage);
         }
     }
 
