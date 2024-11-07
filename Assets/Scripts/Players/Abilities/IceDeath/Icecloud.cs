@@ -54,8 +54,6 @@ public class Icecloud : Skill
 	{
 		Buff.AttackSpeed.ReductionPercentage(1 + _combo.GetMultipliedSpeed() / 100);
 
-		//_playerLinks.RuneComponent.SwitchMultiplier(true);
-		//_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
 		if( _combo.MakeHit(null, AbilityForm.Magic, 1, 0))
@@ -67,7 +65,6 @@ public class Icecloud : Skill
 		Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);
 
 		CmdCreateProjecttile(angle, _energy.CurrentValue);
-		//_energy.TryUse(_energy.CurrentValue);
 		ClearData();
 	}
 

@@ -6,7 +6,7 @@ using Mirror;
 
 public class IceShardProjectile : Projectiles
 {
-	private Vector2 _startPos;
+	private Vector3 _startPos;
 	private bool _talentPlague = false;
 	private bool _talentChragesPlague = false;
 	private Damage _damage;
@@ -26,14 +26,14 @@ public class IceShardProjectile : Projectiles
 	private void Update()
 	{
 		_spriteRenderer.DOFade(0, 1);
-		if (Vector2.Distance(transform.position, _startPos) > _distance * GlobalVariable.cellSize)
+		if (Vector3.Distance(transform.position, _startPos) > _distance * GlobalVariable.cellSize)
 		{
 			Explode();
 		}
 	}
 
 	[Server]
-	private void OnTriggerEnter2D(Collider2D collision)
+	private void OnTriggerEnter(Collider collision)
 	{
 		if (_dad == null) return;
 		if (collision.gameObject == _dad.gameObject || collision.CompareTag("Ability"))
@@ -41,7 +41,7 @@ public class IceShardProjectile : Projectiles
 		//damage, freez etc
 		if (collision.TryGetComponent<IDamageable>(out var damageable))
 		{
-			if (damageable is Character target)
+			if (collision.TryGetComponent<Character>(out var target))
 			{
 				float duration = 1 + _energyDad / 20;
 
@@ -65,7 +65,7 @@ public class IceShardProjectile : Projectiles
 					//target.CharacterState.personWhoShoted = _dad;
 				}
 				//dad.Stamina.Use(duration * 20);
-				GetComponent<Collider2D>().enabled = false;
+				GetComponent<Collider>().enabled = false;
 				Explode();
 			}
 			else
@@ -77,9 +77,8 @@ public class IceShardProjectile : Projectiles
 				}
 				return;
 			}
-		}
-		
-		Explode();
+			Explode();
+		}	
 	}
 
 	private void Explode()

@@ -6,16 +6,10 @@ using UnityEngine;
 
 public class BlockOfIceProjectile : Projectiles
 {
-	private Vector2 startPos;
+	private Vector3 startPos;
 	private Damage _damage;
 	private float _curDamage;
 
-	public void Init(GameObject dad)
-	{
-		_dad = dad.GetComponent<HeroComponent>();
-		Debug.Log("bullet");
-		_initialized = true;
-	}
 	private void Start()
 	{
 		_curDamage = 20 + Random.Range(0, 10);
@@ -26,7 +20,6 @@ public class BlockOfIceProjectile : Projectiles
 		};
 		Debug.Log("bullet");
 		startPos = transform.position;
-		//_rb.AddForce(transform.up * _force, ForceMode2D.Impulse);
 	}
 
 	private void Update()
@@ -40,7 +33,7 @@ public class BlockOfIceProjectile : Projectiles
 	}
 
 	[Server]
-	private void OnTriggerEnter2D(Collider2D collision)
+	private void OnTriggerEnter(Collider collision)
 	{
 		if (!_initialized || _dad == null) return;
 		if (collision.gameObject == _dad.gameObject || collision.CompareTag("Ability"))
@@ -48,7 +41,7 @@ public class BlockOfIceProjectile : Projectiles
 		//damage, freez etc
 		if (collision.TryGetComponent<IDamageable>(out var damageable))
 		{
-			if (damageable is Character target)
+			if (collision.TryGetComponent<Character>(out var target))
 			{
 				//float duration = 1 + dad.Runes.Value / 20;
 				float duration = 9;
@@ -69,7 +62,7 @@ public class BlockOfIceProjectile : Projectiles
 
 				//dad.Runes.Use(duration * 20);
 				//damage
-				GetComponent<Collider2D>().enabled = false;
+				GetComponent<Collider>().enabled = false;
 			}
 			else
 			{
@@ -80,8 +73,8 @@ public class BlockOfIceProjectile : Projectiles
 				}
 				return;
 			}
-		}
-		Explode();
+			Explode();
+		}		
 	}
 
 	private void Explode()

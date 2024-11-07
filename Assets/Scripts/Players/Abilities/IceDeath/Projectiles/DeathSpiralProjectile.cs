@@ -6,7 +6,7 @@ public class DeathSpiralProjectile : Projectiles
 {
 	private IcyCorpse _icyCorpse;
 
-	private Vector2 startPos;
+	private Vector3 startPos;
 	private bool _inTheRow = false;
 	private bool _talentBoostHPBOdy = false;
 	private bool _talentHitState = true;
@@ -43,14 +43,14 @@ public class DeathSpiralProjectile : Projectiles
 
 	private void Update()
 	{
-		if (Vector2.Distance(transform.position, startPos) > _distance * GlobalVariable.cellSize)
+		if (Vector3.Distance(transform.position, startPos) > _distance * GlobalVariable.cellSize)
 		{
 			Explode();
 		}
 	}
 
 	[Server]
-	private void OnTriggerEnter2D(Collider2D collision)
+	private void OnTriggerEnter(Collider collision)
 	{
 		if (_dad == null) return;
 		if (collision.gameObject == _dad.gameObject)
@@ -81,11 +81,6 @@ public class DeathSpiralProjectile : Projectiles
 			}*/
 			Explode();
 		}
-
-		/*if (collision.TryGetComponent<Character>(out var target) && collision.gameObject != _dad.gameObject)
-		{
-			
-		}*/
 		if (collision.TryGetComponent<IceShadowObject>(out var shadow))
 		{
 			if (_talentBoostHPBOdy)
@@ -98,7 +93,8 @@ public class DeathSpiralProjectile : Projectiles
 			}
 
 			SetAlive(_corpseHp, shadow.transform, _corpseMaxHp);
-			Destroy(shadow.gameObject);
+			shadow.Explode();
+			//Destroy(shadow.gameObject);
 
 			Explode();
 			Debug.Log(shadow.name + " become alive");
@@ -135,9 +131,9 @@ public class DeathSpiralProjectile : Projectiles
 	public void SetAlive(float hp, Transform transform, float maxHp)
 	{
 		_dad.SpawnComponent.SpawnUnit(0, transform.position);
-		_icyCorpse =  (IcyCorpse)_dad.SpawnComponent.Units.Last();
+		/*_icyCorpse =  (IcyCorpse)_dad.SpawnComponent.Units.Last();
 		_icyCorpse.InitWithHp(hp, maxHp);
-		_icyCorpse.Talents(_talentCorpseDeath, _talentCorpseBoostExplode);
+		_icyCorpse.Talents(_talentCorpseDeath, _talentCorpseBoostExplode);*/
 		Explode();
 	}
 

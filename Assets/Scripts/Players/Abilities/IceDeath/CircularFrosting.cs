@@ -17,9 +17,9 @@ public class CircularFrosting : Skill
 
 	protected override bool IsCanCast => true;
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+	protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+    protected override int AnimTriggerCast => 0;
 
     private void Start()
 	{
@@ -51,7 +51,7 @@ public class CircularFrosting : Skill
 
 	private void CreateSmoke()
 	{
-		Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, Radius);
+		Collider[] enemyDetected = Physics.OverlapSphere(transform.position, Radius);
 		if (_energy.CurrentValue >= 30)
 		{
 			_duration = _baseDuration + 3;
@@ -64,7 +64,7 @@ public class CircularFrosting : Skill
 		}
 		foreach (var enemy in enemyDetected) 
 		{
-			//Debug.Log(enemy);
+			Debug.Log(enemy);
 			if (enemy.TryGetComponent<Character>(out var enemyCharacter))
 			{
 				if (enemyCharacter != _playerLinks)

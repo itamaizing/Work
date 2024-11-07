@@ -27,7 +27,7 @@ public class IceShadowObject : Projectiles
 		timeToDestroy += timeToAdd;
 	}
 
-	private void OnTriggerExit2D(Collider2D collision)
+	private void OnTriggerExit(Collider collision)
 	{
 		if (collision.gameObject == _dad && _healthPlayer != null)
 		{
@@ -38,7 +38,7 @@ public class IceShadowObject : Projectiles
 		}
 	}
 	[Server]
-	private void OnTriggerEnter2D(Collider2D collision)
+	private void OnTriggerEnter(Collider collision)
 	{
 		if(_dad == null) return;
 		/*if (collision.gameObject == _dad.gameObject)
@@ -59,7 +59,7 @@ public class IceShadowObject : Projectiles
 			//Destroy(gameObject);
 			if(_lastHit)
 			{
-				Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, 3);
+				Collider[] enemyDetected = Physics.OverlapSphere(transform.position, 3);
 				foreach (var enemy in enemyDetected) 
 				{
 					if (enemy.TryGetComponent<Character>(out var newTatget) && collision.gameObject != _dad.gameObject)
@@ -83,7 +83,7 @@ public class IceShadowObject : Projectiles
 		}
 
 		//_healthPlayer.SetBoostRegen(0);
-		Debug.LogError("SetBoostRegen has been deleted");
+		//Debug.LogError("SetBoostRegen has been deleted");
 
 		Destroy(gameObject);
 	}

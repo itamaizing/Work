@@ -17,8 +17,7 @@ public class PhysicalAttack : AutoAttackSkill
 
     protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerAutoAttack => throw new System.NotImplementedException();
-
+	protected override int AnimTriggerAutoAttack => 0;
     private void Start()
 	{
 		for (int i = 0; i < _playerLinks.Resources.Count; i++)
@@ -122,8 +121,8 @@ public class PhysicalAttack : AutoAttackSkill
 
 	private void PushBackEnemy(Character enemy)
 	{
-		Vector2 lookDir = (_target.transform.position - _playerLinks.transform.position).normalized;
-		Vector2 jumpPos = lookDir * 4 + (Vector2)_target.transform.position;
+		Vector3 lookDir = (_target.transform.position - _playerLinks.transform.position).normalized;
+		Vector3 jumpPos = lookDir * 4 + _target.transform.position;
 		if (!CheckObstacleBetween(_playerLinks.transform.position, jumpPos))
 		{
 			CmdPush(_target.gameObject, jumpPos);
@@ -143,7 +142,7 @@ public class PhysicalAttack : AutoAttackSkill
 	{
 		//Проверка на наличие препятствия
 		Vector2 direction = (end - start).normalized;
-		float distance = Vector2.Distance(start, end);
+		float distance = Vector3.Distance(start, end);
 
 		RaycastHit2D[] hits =
 			Physics2D.BoxCastAll(start, new Vector2(1f, 1f), 0f, direction, distance, _obstacle);

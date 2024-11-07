@@ -10,15 +10,15 @@ public class BlockOfIce : Skill
 	[SerializeField] private BlockOfIceProjectile _iceArrow;
 	[SerializeField] private HeroComponent _playerLinks;
 	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
-	private Vector2 _mousePos;
+	private Vector3 _mousePos;
 	private Energy _energy;
 	//private RuneComponent _rune;
 
 	protected override bool IsCanCast => IsCanCastCheck();
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+    protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+    protected override int AnimTriggerCast => 0;
 
     private bool IsCanCastCheck()
 	{
@@ -33,30 +33,22 @@ public class BlockOfIce : Skill
 			{
 				_energy = (Energy)_playerLinks.Resources[i];
 			}
-			/*if (_playerLinks.Resources[i].Type == ResourceType.Rune)
-			{
-				_rune = (RuneComponent)_playerLinks.Resources[i];
-			}*/
 		}
-
 	}
 
 	private void Shoot()
 	{
 		Debug.Log("shot");
-		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		Vector2 lookDir = _mousePos - (Vector2)_playerLinks.transform.position;
-		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
+		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
+		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
 		CmdCreateProjecttile(angle);
 		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0);
-		//_playerLinks.Stamina.Use(_playerLinks.Stamina.Value);
-		//Cancel();
 	}
 
 	[Command]
 	private void CmdCreateProjecttile(float angle)
 	{
-		BlockOfIceProjectile projectile = Instantiate(_iceArrow, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
+		BlockOfIceProjectile projectile = Instantiate(_iceArrow, gameObject.transform.position, Quaternion.Euler(0, -angle, 0));
 		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
 		projectile.Init(_playerLinks, _energy.CurrentValue, false, this);
 
@@ -75,9 +67,13 @@ public class BlockOfIce : Skill
 	{
 		while (float.IsPositiveInfinity(_mousePos.x))
 		{
-			if (GetMouseButton)
+			if (GetTarget().character == null)
 			{
-				_mousePos = GetMousePoint();
+				_mousePos = GetTarget().Position;
+			}
+			else
+			{
+				_mousePos = GetTarget().character.transform.position;
 			}
 			yield return null;
 		}
