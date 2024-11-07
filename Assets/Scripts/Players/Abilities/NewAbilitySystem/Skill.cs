@@ -500,7 +500,9 @@ public abstract class Skill : NetworkBehaviour
             }
         }
         targets = targets.OrderBy(character => Vector3.Distance(character.transform.position, gameObject.transform.position)).ToList();
-        if (targets.Count <= 0) return null;
+
+        if (targets.Count <= 0)
+            return null;
 
         return targets;
     }
@@ -657,13 +659,22 @@ public abstract class Skill : NetworkBehaviour
         TargetToShot target = new TargetToShot();
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit;
-		switch (_skillType)
+
+        var closerTargets = GetCloserTargets(transform.position, 1000);
+        Character closerTarget = null;
+
+        if (closerTargets != null && closerTargets.Count > 0)
+        {
+            closerTarget = GetCloserTargets(transform.position, 1000)[0];
+        }
+
+        switch (_skillType)
         {
             case SkillType.Target:
-                target.character = GetCloserTargets(transform.position, 1000)[0];
+                target.character = closerTarget;
 				break; 
             case SkillType.Projectile:
-				target.character = GetCloserTargets(transform.position, 1000)[0];
+				target.character = closerTarget;
 				break;
 			case SkillType.Zone:
 				if (Physics.Raycast(ray, out hit))
