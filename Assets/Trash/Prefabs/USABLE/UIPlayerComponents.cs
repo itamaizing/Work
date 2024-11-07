@@ -41,7 +41,7 @@ public class UIPlayerComponents : MonoBehaviour
             value = 1;
         }
         popupTextPrefab = Instantiate(PopupText, DamageSpawn.position, Quaternion.identity,transform);
-        popupTextPrefab.PopupText.text = (value > 0 ? "+" : "") + value.ToString("0.0");
+        popupTextPrefab.PopupText.text = (value > 0 ? "+" : "") + value.ToString("0");
         popupTextPrefab.StartColor = startColor;
         popupTextPrefab.EndColor = endColor;
     }
