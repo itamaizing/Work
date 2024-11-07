@@ -27,9 +27,12 @@ public class Health : Resource, IDamageable, IHealingable
     public event Action Evaded;
     public event Action<float, Skill, string> HealTaked;
     public event Action<float, DamageType, Skill> DamageTaken;
+    public event Action<float> HealthRegenerated;
     public event Action Died;
     public event Action<float, float> OnShieldValuesChanged;
+    public event Action<float> OnShieldAdd;
     public event Action ShieldDeactivated;
+    public event Action<float, DamageType, Skill> ShieldDamageTaken;
 
     public override void Initialize(float health, float hpRegen, float hpRegenDelay, CharacterData data)
     {
@@ -75,6 +78,7 @@ public class Health : Resource, IDamageable, IHealingable
         //ClientRpcHealTaked(heal.Value, skill, sourceName);
         Add(heal.Value);
         HealTaked?.Invoke(heal.Value, skill, sourceName);
+        HealthRegenerated?.Invoke(heal.Value);
     }
 
     public void SetEvadeMagic(float value)
@@ -184,14 +188,20 @@ public class Health : Resource, IDamageable, IHealingable
 
     public void ResetShieldValues()
     {
-        Debug.Log("Cнятие щита");
         ShieldDeactivated?.Invoke();
+    }
+
+    [ClientRpc]
+    public void ClientRpcInvokeShieldDamageTaken(float damageTaken, DamageType damageType, Skill skill)
+    {
+        ShieldDamageTaken?.Invoke(damageTaken, damageType, skill);
     }
 
     [ClientRpc]
     public void ClientRpcUpdateShieldValues(float absorbed, float maxAbsorption)
     {
         OnShieldValuesChanged?.Invoke(absorbed, maxAbsorption);
+        OnShieldAdd?.Invoke(maxAbsorption);
     }
 
     [ClientRpc]

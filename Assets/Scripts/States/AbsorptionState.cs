@@ -11,9 +11,11 @@ public class AbsorptionState : AbstractCharacterState, IDamageable
 
     public event Action<float, DamageType, Skill> DamageTaken;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
-    public override States State => States.LightShield;
+    public override States State => States.Absorption;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
+
+    public override float TEST_ChangeableValue { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
@@ -37,17 +39,16 @@ public class AbsorptionState : AbstractCharacterState, IDamageable
 
     public override void ExitState()
     {
-        Debug.Log("LightShield state exited.");
+        Debug.Log("Absorption state exited.");
         _characterState.RemoveState(this);
         ResetCharacterShieldValues();
-        _characterState.GetComponent<StateIcons>()?.RemoveItemByState(State);
     }
 
     public override bool Stack(float time)
     {
-        _duration = time;
-        _damageAbsorbed = 0;
-        return true;
+        //_duration = time;
+        //_damageAbsorbed = 0;
+        return false;
     }
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
@@ -58,6 +59,8 @@ public class AbsorptionState : AbstractCharacterState, IDamageable
 
         _characterState.GetComponent<Character>().DamageTracker.AddDamage(damage);
         DamageTaken?.Invoke(damageToAbsorb, damage.Type, skill);
+
+        _characterState.Character.Health.ClientRpcInvokeShieldDamageTaken(damageToAbsorb, damage.Type, skill);
 
         UpdateShieldValues();
 
@@ -84,7 +87,8 @@ public class AbsorptionState : AbstractCharacterState, IDamageable
         _characterState.Character.Health.UpdateShieldValues(0, _characterState.Character.Health.TotalMaxAbsorption);
 
         if (_characterState.Character.Health.TotalMaxAbsorption <= 0)
-            _characterState.Character.Health.ResetShieldValues();
+        Debug.Log($"TotalMaxAbsorption :{ _characterState.Character.Health.TotalMaxAbsorption}");
+        _characterState.Character.Health.ResetShieldValues();
     }
 
     public void ShowPhantomValue(Damage phantomValue)

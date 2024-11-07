@@ -13,7 +13,7 @@ public class IceCloudProjectile : Projectiles
 	private void Start()
 	{
 		_startPos = transform.position;
-		_curDamage = 25 + _energyDad / 4;
+		_curDamage = 100 + _energyDad / 4;
 		_damage = new Damage
 		{
 			Value = _curDamage,

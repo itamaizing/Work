@@ -80,6 +80,7 @@ public enum GameMode
 	GM3vs3,
 	GMAllvsAll,
 	GM1vs1MaximumMode,
+	Battlegrounds,
 	None
 }
 

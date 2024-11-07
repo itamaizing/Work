@@ -5,56 +5,45 @@ using UnityEngine;
 
 public class LightShiledSkill : Skill
 {
-	[SerializeField] private Character _playerLinks;
-	private Character _target;
-	private Energy _energy;
+    [SerializeField] private Character _playerLinks;
+    private Character _target;
 
-	protected override bool IsCanCast => true;
-	private void Start()
-	{
-		for (int i = 0; i < _playerLinks.Resources.Count; i++)
-		{
-			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)_playerLinks.Resources[i];
-			}
-		}
+    protected override bool IsCanCast => IsHaveCharge && _target != null;
 
-	}
+    protected override IEnumerator PrepareJob()
+    {
+        while (_target == null)
+        {
+            if (GetMouseButton)
+            {
+                _target = GetRaycastTarget(true);
+            }
+            yield return null;
+        }
+    }
 
-	protected override IEnumerator CastJob()
-	{
-		float boostHp = 0.1f + 0.003f * _energy.CurrentValue;
-		_energy.CmdUse(_energy.CurrentValue);
-		Shoot(boostHp, _target.gameObject);
-		yield return null;
-	}
+    protected override IEnumerator CastJob()
+    {
+        if (_target != null)
+        {
+            CmdApplyAbsorptionState(_target.gameObject);
+            TryUseCharge();
+        }
+        yield return null;
+    }
 
-	protected override void ClearData()
-	{
-		_target = null;
-	}
+    protected override void ClearData()
+    {
+        _target = null;
+    }
 
-	protected override IEnumerator PrepareJob()
-	{
-		while (_target == null)
-		{
-			if (GetMouseButton)
-			{
-				_target = GetRaycastTarget(true);
-			}
-			yield return null;
-		}
-	}
-
-	[Command]
-	private void Shoot(float boostHp, GameObject targetGm)
-	{
-		Character target = targetGm.GetComponent<Character>();
-
-		/*float boostHp = 0.1f + 0.003f * _energy.CurrentValue;
-		_energy.CmdUse(_energy.CurrentValue);*/
-		target.CharacterState.AddState(States.LightShield, 10, 100, _playerLinks.gameObject, name);
-
-	}
+    [Command]
+    private void CmdApplyAbsorptionState(GameObject targetGameObject)
+    {
+        var targetCharacter = targetGameObject.GetComponent<Character>();
+        if (targetCharacter != null)
+        {
+            targetCharacter.CharacterState.AddState(States.LightShield, 20, 100, _playerLinks.gameObject, name);
+        }
+    }
 }

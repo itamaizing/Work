@@ -134,7 +134,7 @@ public abstract class Resource : NetworkBehaviour
     }
 
     [Command]
-    protected void CmdRegen()
+    protected virtual void CmdRegen()
     {
         Add(_regenerationValue);
     }

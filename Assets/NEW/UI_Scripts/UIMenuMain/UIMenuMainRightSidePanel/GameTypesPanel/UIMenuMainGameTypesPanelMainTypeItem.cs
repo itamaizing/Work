@@ -21,5 +21,6 @@ public class UIMenuMainGameTypesPanelMainTypeItem : MonoBehaviour
     public void Select()
     {
         Selected?.Invoke(_itemMode);
+        Debug.Log(_itemMode);
     }
 }

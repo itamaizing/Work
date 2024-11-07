@@ -14,6 +14,8 @@ public class LightShield : AbstractCharacterState, IDamageable
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
+    public override float TEST_ChangeableValue { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _characterState = character;
@@ -40,24 +42,26 @@ public class LightShield : AbstractCharacterState, IDamageable
         Debug.Log("LightShield state exited.");
         _characterState.RemoveState(this);
         ResetCharacterShieldValues();
-        _characterState.GetComponent<StateIcons>()?.RemoveItemByState(State);
     }
 
     public override bool Stack(float time)
     {
-        _duration = time;
-        _damageAbsorbed = 0;
-        return true;
+        //_duration = time;
+        //_damageAbsorbed = 0;
+        return false;
     }
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
+        Debug.Log($"Урон по стостоянию: {_damageAbsorbed}");
         float damageToAbsorb = Mathf.Min(_characterState.Character.Health.TotalMaxAbsorption - _damageAbsorbed, damage.Value);
         _damageAbsorbed += damageToAbsorb;
         damage.Value -= damageToAbsorb;
 
         _characterState.GetComponent<Character>().DamageTracker.AddDamage(damage);
         DamageTaken?.Invoke(damageToAbsorb, damage.Type, skill);
+
+        _characterState.Character.Health.ClientRpcInvokeShieldDamageTaken(damageToAbsorb, damage.Type, skill);
 
         UpdateShieldValues();
 
@@ -85,6 +89,7 @@ public class LightShield : AbstractCharacterState, IDamageable
 
         if (_characterState.Character.Health.TotalMaxAbsorption <= 0)
         _characterState.Character.Health.ResetShieldValues();
+        _maxAbsorption = 0;
     }
 
     public void ShowPhantomValue(Damage phantomValue)

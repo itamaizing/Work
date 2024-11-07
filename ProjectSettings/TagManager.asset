@@ -13,6 +13,8 @@ TagManager:
   - Baff
   - TentaclePrefab
   - Ability
+  - Team_1
+  - Team_2
   layers:
   - Default
   - TransparentFX
