@@ -253,7 +253,7 @@ PrefabInstance:
     - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _minionPrefs.Array.data[0]
       value: 
-      objectReference: {fileID: 5098791485279102217, guid: d2460f9c7d78d8145801d5b3ad0d5d20, type: 3}
+      objectReference: {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
     - target: {fileID: 891583693850145175, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
