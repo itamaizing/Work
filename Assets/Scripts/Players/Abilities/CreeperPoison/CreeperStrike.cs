@@ -161,8 +161,7 @@ public class CreeperStrike : AutoAttackSkill
         {
             DealCriticalDamage(target, _currentDamage);
         }
-
-        if (_currentChanceOfCriticalStrike <= _chanceOfCriticalStrike)
+        else if (_currentChanceOfCriticalStrike <= _chanceOfCriticalStrike)
         {
             DealCriticalDamage(target, _currentDamage);
         }

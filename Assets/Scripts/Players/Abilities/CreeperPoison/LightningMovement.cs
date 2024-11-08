@@ -639,7 +639,7 @@ public class LightningMovement : Skill
 
         CmdExecuteTwoLeaps(firstLeapPoint, secondLeapPoint, 
             _durationLeap, _rangeLeap, _multiplierLeap, _timeBuff, _invtervalBetweenLeaps,
-            _heatedGlandsIsActive, _superFastScalesIsActive, _targetsLayers);
+            _heatedGlandsIsActive, _superFastScalesIsActive, _targetsLayers, _target.gameObject);
     }
 
     #endregion
@@ -654,7 +654,7 @@ public class LightningMovement : Skill
         if (superFastScalesIsActive)
         {
             Debug.Log("LightningMovement / superFastScales Active");
-            _superFastScales.IncreasingResistance();
+            _superFastScales.IncreasingResistance(null);
         }
 
         _player.Move.enabled = false;
@@ -668,14 +668,15 @@ public class LightningMovement : Skill
     private void CmdExecuteTwoLeaps(Vector2 firstLeapPoint, Vector2 secondLeapPoint,
         float durationLeap, float rangeLeap, float multiplierLeap, float timeBuff, float interval,
         bool heatedGlandsIsActive, bool superFastScalesIsActive,
-        LayerMask enemyLayer)
+        LayerMask enemyLayer, GameObject target)
     {
+        Character targetCharacter = target.GetComponent<Character>();
         _player.Move.enabled = false;
 
         if (superFastScalesIsActive)
         {
             Debug.Log("LightningMovement / superFastScales Active");
-            _superFastScales.IncreasingResistance();
+            _superFastScales.IncreasingResistance(targetCharacter);
         }
 
         TargetRpcExecuteLeaps(_player.gameObject, firstLeapPoint, secondLeapPoint, 

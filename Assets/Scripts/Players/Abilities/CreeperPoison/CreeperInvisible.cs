@@ -43,8 +43,6 @@ public class CreeperInvisible : Skill
     private bool _isCreeperStrikeIsHit;
     private bool _isEnemy;
 
-    private bool _isCanResetBools;
-
     private Coroutine _checkEnemiesCoroutine;
     private Coroutine _exitFromInvisibleCoroutine;
 
@@ -73,14 +71,12 @@ public class CreeperInvisible : Skill
             case false:
                 if (_desireToHide.Data.IsOpen && _desireToHide.IsCanApply)
                 {
-                    CmdApplyInvisibleWithTalent(); 
-                    CmdReducingTransparencySpritePlayer(_player.gameObject);
+                    CmdApplyInvis(_player.gameObject);
                     yield break;
                 }
                 if (_continuationAmbush.Data.IsOpen && _continuationAmbush.IsCanApplyInvisible)
                 {
-                    CmdApplyInvisibleWithTalent(); 
-                    CmdReducingTransparencySpritePlayer(_player.gameObject);
+                    CmdApplyInvis(_player.gameObject);
                     yield break;
                 }
 
@@ -146,14 +142,12 @@ public class CreeperInvisible : Skill
     public void EnteringInvisibleState()
     {
         CmdApplyInvis(_player.gameObject);
-        CmdReducingTransparencySpritePlayer(_player.gameObject);
     }
 
     public void ExitingInvisibleState()
     {
         _isCreeperStrikeIsHit = _creeperStrike.IsHit;
-        CmdRemoveInvisible(_isCreeperStrikeIsHit);
-        CmdIncreasingTransparencySpritePlayer(_player.gameObject);
+        CmdRemoveInvisible(_player.gameObject,_isCreeperStrikeIsHit);
     }
 
     #endregion
@@ -190,13 +184,13 @@ public class CreeperInvisible : Skill
         while (_isPlayerSeen)
         {
             _isEnemy = false;
+
             Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(_player.transform.position, _distanceWithoutEnemies, _targetsLayers);
-            Debug.Log("hitEnemies = " + hitEnemies.Length);
+
             foreach (Collider2D enemy in hitEnemies)
             {
                 if (enemy != null)
                 {
-                    Debug.Log("Enemy = " + enemy.name);
                     _isEnemy = true;
                     break;
                 }
@@ -227,8 +221,7 @@ public class CreeperInvisible : Skill
 
                 if (_isInvisible && _isCanExitInvisible)
                 {
-                    CmdRemoveInvisible(_isCreeperStrikeIsHit);
-                    CmdIncreasingTransparencySpritePlayer(_player.gameObject);
+                    CmdRemoveInvisible(_player.gameObject, _isCreeperStrikeIsHit);
                 }
 
                 yield break;
@@ -242,44 +235,26 @@ public class CreeperInvisible : Skill
     #region CommandMethods
 
     [Command]
-    private void CmdReducingTransparencySpritePlayer(GameObject player)
-    {
-        RpcReducingTransparencySpritePlayer(player);
-    }
-
-    [Command]
-    private void CmdIncreasingTransparencySpritePlayer(GameObject player)
-    {
-        RpcIncreasingTransparencySpritePlayer(player);
-    }
-
-    [Command]
     private void CmdApplyInvis(GameObject player)
     {
         _isInvisible = true;
 
         RpcApplyInvis();
 
-        _player.CharacterState.AddState(States.CreeperInvisible, 0, 0, _player.gameObject, Name);
-    }
-
-    [Command]
-    private void CmdApplyInvisibleWithTalent()
-    {
-       _isInvisible = true; 
-
-        RpcApplyInvisibleWithTalent();
+        RpcReducingTransparencySpritePlayer(player);
 
         _player.CharacterState.AddState(States.CreeperInvisible, 0, 0, _player.gameObject, Name);
     }
 
     [Command]
-    private void CmdRemoveInvisible(bool creeperStrikeIsHit)
+    private void CmdRemoveInvisible(GameObject player, bool creeperStrikeIsHit)
     {
         // Debug.Log("CreeperInvisible / CmdRemoveInvisible");
         _isInvisible = false;
         _isPlayerSeen = true;
         _isDamagedPlayer = false;
+
+        RpcIncreasingTransparencySpritePlayer(player);
 
         RpcRemoveInvisible(creeperStrikeIsHit);
     }
@@ -338,12 +313,6 @@ public class CreeperInvisible : Skill
     private void RpcApplyInvis()
     {
         _isInvisible = true; 
-    }
-
-    [ClientRpc]
-    private void RpcApplyInvisibleWithTalent()
-    {
-        _isInvisible = true;
     }
 
     [ClientRpc]

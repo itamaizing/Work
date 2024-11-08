@@ -21,10 +21,8 @@ public class OwnElement : Talent
     private float _baseIncreaseAttackSpeed = 0.1f;
     private float _baseAttackSpeed;
     private float _increasedAttackSpeed;
-    private float _newAttackSpeed = 1.0f;
     private float _maxMinimumAttackSpeed = 0.1f;
 
-    private bool _isCanResetAttackSpeed = false;
     private bool _isTargetNearby = false;
 
     private PoisonBoneState _poisonBoneState;
@@ -65,7 +63,6 @@ public class OwnElement : Talent
         while (Data.IsOpen)
         {
             _enemiesWithDebuff.Clear();
-            _currentPoisonOnEnemy = 0;
             _currentStacksPoison = 0;
             _currentAllStacks = 0;
             _isTargetNearby = false;
@@ -103,29 +100,27 @@ public class OwnElement : Talent
                             _currentStacksPoison += _witheringPoisonState.CurrentStacks;
                         }
 
-                        for (int i = 0; i < _enemiesWithDebuff.Count; i++)
-                        {
-                            _currentPoisonOnEnemy = _enemiesWithDebuff.Count;
-                        }
                     }
                 }
 
-
-                _currentAllStacks = _currentPoisonOnEnemy + _currentStacksPoison;
+                _currentAllStacks += _currentStacksPoison;
 
                 if (_currentAllStacks != _previousAllStacks)
                 {
-                    for (_currentStacksAtckSpeed = _currentStacksAtckSpeed; _currentStacksAtckSpeed < _currentAllStacks;)
+                    while (_currentStacksAtckSpeed < _currentAllStacks)
                     {
-                        Debug.Log("OwnElement / Cycle For / _currentStacksAtckSpeed = " + _currentStacksAtckSpeed);
-                        IncreaseAttackSpeed();
-                        _previousAllStacks = _currentAllStacks;
+                        if (_currentAllStacks > 0  && _creeperStrike.AttackSpeed > _maxMinimumAttackSpeed)
+                        {
+                            IncreaseAttackSpeed();
+                            _previousAllStacks = _currentAllStacks;
+                        }
                     }
+                    yield return null;
                 }
             }
-            if (_currentAllStacks != _currentStacksAtckSpeed && _currentAllStacks == 0 || !_isTargetNearby)
+            if (_currentAllStacks != _currentStacksAtckSpeed && _currentAllStacks == 0 || _currentAllStacks < _previousAllStacks)
             {
-                for (_currentStacksAtckSpeed = _currentStacksAtckSpeed; _currentStacksAtckSpeed > _currentAllStacks;)
+                while (_currentStacksAtckSpeed > _currentAllStacks)
                 {
                     ResetAttackSpeed();
                 }
@@ -137,49 +132,20 @@ public class OwnElement : Talent
 
     private void IncreaseAttackSpeed() 
     { 
-        if (_currentAllStacks > 0 && _newAttackSpeed > _maxMinimumAttackSpeed) 
-        { 
-            _currentStacksAtckSpeed++;
+        _currentStacksAtckSpeed++;
 
-            Debug.Log("OwnElement / IncreaseAttackSpeed / Before Increased CreeperStrike AttackSpeed = " + _creeperStrike.AttackSpeed);
+        _increasedAttackSpeed = _baseAttackSpeed - _baseIncreaseAttackSpeed;
 
-            _increasedAttackSpeed = _baseAttackSpeed - _baseIncreaseAttackSpeed;
-            Debug.Log("OwnElement / IncreaseAttackSpeed / Before Increased increasedAttackSpeed = " + _increasedAttackSpeed); 
-
-            _newAttackSpeed *= _increasedAttackSpeed;
-            _newAttackSpeed = RoundToDecimal(_newAttackSpeed, 10f);  
-
-            Debug.Log("OwnElement / IncreaseAttackSpeed / Before Increased _newAttackSpeed = " + _newAttackSpeed);
-
-            _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_newAttackSpeed); 
-            Debug.Log("OwnElement / IncreaseAttackSpeed / After Increased CreeperStrike AttackSpeed = " + _creeperStrike.AttackSpeed);
-        } 
+        _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_increasedAttackSpeed); 
     } 
 
     private void ResetAttackSpeed()
     {
-        Debug.Log("OwnElement / ResetAttackSpeed / Before Reset CreeperStrike AttackSpeed = " + _creeperStrike.AttackSpeed);
-        Debug.Log("OwnElement / ResetAttackSpeed / Before Reset _newAttackSpeed = " + _newAttackSpeed);
-        Debug.Log("OwnElement / ResetAttackSpeed / Before Reset _increasedAttackSpeed = " + _increasedAttackSpeed);
-
-        _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_newAttackSpeed);
-        _newAttackSpeed /= _increasedAttackSpeed;
-        _newAttackSpeed = RoundToDecimal(_newAttackSpeed, 10f);
-
-        _currentStacksAtckSpeed--;
-        Debug.Log("OwnElement / ResetAttackSpeed / After Reset _newAttackSpeed = " + _newAttackSpeed);
-        Debug.Log("OwnElement / ResetAttackSpeed / After Reset _increasedAttackSpeed = " + _increasedAttackSpeed);
-        Debug.Log("OwnElement / ResetAttackSpeed / After Reset CreeperStrike AttackSpeed = " + _creeperStrike.AttackSpeed);
-        
-    }
-
-    private float RoundToDecimal(float value, float multiplier)
-    {
-        float value1 = value * multiplier;
-        Debug.Log("OwnElement / RoundToDecimal / value1 = " + value1);
-        int value2 = Mathf.RoundToInt(value1);
-        Debug.Log("OwnElement / RoundToDecimal / value2 = " + value2);
-        return value2 / multiplier;
+        if (_creeperStrike.AttackSpeed < _baseAttackSpeed)
+        {
+            _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_increasedAttackSpeed);
+            _currentStacksAtckSpeed--;
+        }
     }
 
     private void AdvertisementStates(CharacterState targetWithDebuff)

@@ -12,11 +12,11 @@ public class ReleaseFromSecrecy : Talent
     private int _maxCountBuff = 1;
     private int _currentCountBuff = 0;
 
-    private float _startTimeDurationBuff = 2f;
+    private float _startTimeDurationBuff = 7f;
     private float _timeDurationBuff;
 
     private float _currentAttackSpeed;
-    private float _attackSpeedIncrease = 0.1f;
+    private float _attackSpeedIncrease = 0.5f;
 
     private Coroutine _increasingAttackSpeedCoroutine;
 
