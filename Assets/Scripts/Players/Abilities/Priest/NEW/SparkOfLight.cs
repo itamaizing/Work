@@ -178,7 +178,7 @@ public class SparkOfLight : AutoAttackSkill
             Type = DamageType.Magical,
             PhysicAttackType = AttackRangeType.RangeAttack,
             School = this.School,
-            DamageableSkill = this,
+            //DamageableSkill = this,
         };
     }
 

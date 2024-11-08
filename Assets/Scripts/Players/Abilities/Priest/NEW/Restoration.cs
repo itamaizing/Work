@@ -155,7 +155,7 @@ public class Restoration : Skill
                     Type = DamageType.Magical,
                     PhysicAttackType = AttackRangeType.RangeAttack,
                     School = this.School,
-                    DamageableSkill = this,
+                    //DamageableSkill = this,
                 };
                 
                 CmdApplyDamage(damage, target.gameObject);

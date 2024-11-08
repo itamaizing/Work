@@ -114,7 +114,7 @@ public class FlashOfLight : Skill
             Type = DamageType.Physical,
             PhysicAttackType = AttackRangeType.RangeAttack,
             School = this.School,
-            DamageableSkill = this,
+            //DamageableSkill = this,
         };
 
         CmdApplyDamage(damage, target.gameObject);
