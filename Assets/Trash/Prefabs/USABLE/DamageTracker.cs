@@ -22,6 +22,7 @@ public class DamageTracker : NetworkBehaviour
         }
         
         _damageEntries.Add(new DamageEntry(damage, Time.time));
+        RemoveOldServerEntries();
         Debug.Log($"[DamageTracker] Damage added: {damage.Value}, Time: {Time.time}, School: {damage.School}");
     }
     
@@ -29,6 +30,7 @@ public class DamageTracker : NetworkBehaviour
     private void CmdAddDamage(Damage damage)
     {
         AddDamage(damage, true);
+        Debug.Log($"[DamageTracker] Damage added: {damage.Value}, Time: {Time.time}, School: {damage.School}");
     }
 
     public void AddHeal(Heal heal, bool isServerRequest = false)
@@ -39,6 +41,7 @@ public class DamageTracker : NetworkBehaviour
         }
         
         _healEntries.Add(new HealEntry(heal, Time.time));
+        RemoveOldServerEntries();
         Debug.Log($"[DamageTracker] Heal added: {heal.Value}, Time: {Time.time}");
     }
     
@@ -46,6 +49,7 @@ public class DamageTracker : NetworkBehaviour
     private void CmdAddHeal(Heal heal)
     {
         AddHeal(heal, true);
+        Debug.Log($"[DamageTracker] Heal added: {heal.Value}, Time: {Time.time}");
     }
     
     public float GetLocalDamageInTime(Schools school, float time)
@@ -68,6 +72,16 @@ public class DamageTracker : NetworkBehaviour
     {
         _localDamageEntries.RemoveAll(o => Time.time - o.Time > timeLimit);
         _localHealEntries.RemoveAll(o => Time.time - o.Time > timeLimit);
+        
+        Debug.Log("[DamageTracker] Local Entries Removed");
+    }
+
+    public void RemoveOldServerEntries(float timeLimit = 10f)
+    {
+        _damageEntries.RemoveAll(o => Time.time - o.Time > timeLimit);
+        _healEntries.RemoveAll(o => Time.time - o.Time > timeLimit);
+        
+        Debug.Log("[DamageTracker] Server Entries Removed");
     }
 }
 

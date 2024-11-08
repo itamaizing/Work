@@ -60,7 +60,7 @@ public class SelectManager : MonoBehaviour
             _dragBox.StopDraw();
         }
 
-        if (Input.GetKeyDown(KeyCode.Tab))
+       /* if (Input.GetKeyDown(KeyCode.Tab))
         {
             if (SelectedControllableUnits.Count <= 0) return;
 
@@ -87,6 +87,7 @@ public class SelectManager : MonoBehaviour
                 character.Move.SetOffset(offset);
             }
         }
+        */
     }
 
     public void SelectOnClick(Character character)

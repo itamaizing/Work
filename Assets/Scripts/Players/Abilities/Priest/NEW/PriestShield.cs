@@ -129,14 +129,17 @@ public class PriestShield : Skill
     {
         if (!_talentPhysicalShieldBoostActive || damage.Type != DamageType.Physical) return;
 
-        _physicalDamageAccumulated += damage.Value;
-        UpdatePhysicalDamageAccumulation();
+        float boostUnits = Mathf.Floor(damage.Value * DisciplineBoostPercentage);
+        float boostAmount = Mathf.Min(absorbAmount + boostUnits, absorbAmount * MaxDarkMagicBoostPercentage);
+
+        _absorbBonus += boostAmount;
+        Debug.Log($"Physical boost applied. Damage: {boostAmount}, Boost: {boostAmount}");
     }
 
     private void UpdatePhysicalDamageAccumulation()
     {
         var amountBonus = Mathf.Min(_physicalDamageAccumulated * PhysicalBoostPerDamageUnit, absorbAmount * MaxPhysicalBoostPercentage);
-        _absorbBonus = amountBonus;
+        _absorbBonus += amountBonus;
     }
 
     //---------------- Talent 2 Logic: Discipline Shield Boost ----------------
@@ -160,8 +163,6 @@ public class PriestShield : Skill
 
     private void ApplyDisciplineBoost()
     {
-        Debug.Log(_disciplineShieldBoostActive);
-        Debug.Log(_disciplineStacks);
         if (_disciplineShieldBoostActive && _disciplineStacks > 0)
         {
             var boostPercentage = DisciplineBoostPercentage * _disciplineStacks;

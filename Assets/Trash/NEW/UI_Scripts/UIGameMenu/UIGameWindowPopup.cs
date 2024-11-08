@@ -24,8 +24,9 @@ public class UIGameWindowPopup : MonoBehaviour
     
     private void OnCharacterSelected(Character character)
     {
-        _currentHero = character as HeroComponent;
+        if (character is not HeroComponent hero) return;
         
+        _currentHero = hero;
         SaveManager.Instance.SetHero(_currentHero);
         UpdateCharacterPanels();
     }
