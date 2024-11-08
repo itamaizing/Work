@@ -9,18 +9,11 @@ public class BindingPoison : Talent
     {
         SetActive(true);
         //CmdSetActive();
-        Debug.Log($"BindingPoisonEnter IsActive = {Data.IsOpen}");
     }
 
     public override void Exit()
     {
         SetActive(false);
-        Debug.Log($"BindingPoisonExit IsActive = {Data.IsOpen}");
     }
 
-    //[Command]
-    //private void CmdSetActive()
-    //{
-    //    SetActive(true);
-    //}
 }

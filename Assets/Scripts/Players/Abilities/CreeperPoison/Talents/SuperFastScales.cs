@@ -27,7 +27,7 @@ public class SuperFastScales : Talent
         if (character.Health.EvadeMagDamage < 100f)
         {
             character.Health.EvadeMagDamage = _increaseResistanceToMagicDamage;
-            Debug.Log($"Increased EvadeMagDamage == {character.Health.EvadeMagDamage}");
+            Debug.Log($"Increased ResistMagDamage == {character.Health.EvadeMagDamage}");
         }
     }
 
@@ -35,6 +35,6 @@ public class SuperFastScales : Talent
     {
         Debug.Log("Reset baseMagDamage = " + _baseDefMagDamage);
         character.Health.EvadeMagDamage = _baseDefMagDamage;
-        Debug.Log($"Reset EvadeMagDamage == {character.Health.EvadeMagDamage}");
+        Debug.Log($"Reset ResistMagDamage == {character.Health.EvadeMagDamage}");
     }
 }

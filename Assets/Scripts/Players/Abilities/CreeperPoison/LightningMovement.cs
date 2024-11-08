@@ -81,6 +81,8 @@ public class LightningMovement : Skill
     private bool _isTarget = false;
     private bool _isAbilityDone = false;
     private bool _heatedGlandsIsActive;
+    private bool _superFastScalesIsActive;
+
     #endregion
 
     public float RadiusAttacks => _radiusAttack;
@@ -187,6 +189,11 @@ public class LightningMovement : Skill
         if (_heatedGlands.Data.IsOpen)
         {
             _heatedGlandsIsActive = _heatedGlands.Data.IsOpen;
+        }
+
+        if (_superFastScales.Data.IsOpen)
+        {
+            _superFastScalesIsActive = _superFastScales.Data.IsOpen;
         }
 
         while (_target == null && float.IsPositiveInfinity(_firstLeapPoint.x))
@@ -587,30 +594,6 @@ public class LightningMovement : Skill
 
     #endregion
 
-    #region EvadeLogic
-
-    private void OnEnabled()
-    {
-        Debug.Log("LightningMovement / OnEnabled");
-        _player.Health.Evaded += EvadeMagDamage;
-    }
-
-    private void OnDisabled()
-    {
-        _player.Health.Evaded -= EvadeMagDamage;
-    }
-
-    private void EvadeMagDamage()
-    {
-        Damage damage = new Damage
-        {
-            Value = 0f,
-        };
-        _player.Health.TryTakeDamage(ref damage, null);
-    }
-
-    #endregion
-
     #region Leaps
     private void SingleLeap(Vector2 firstLeapPoint)
     {
@@ -624,9 +607,12 @@ public class LightningMovement : Skill
             _isTargetBeforePlayerCoroutine = StartCoroutine(IsTargetBeforePlayerJob(_rangeLeap, _targetsLayers));
         }
 
-        _player.CharacterState.CmdAddState(States.Immateriality, (_durationLeap * _rangeLeap * _multiplierLeap), 0, _player.gameObject, Name);
+        if (!_player.CharacterState.CheckForState(States.Immateriality))
+        {
+            _player.CharacterState.CmdAddState(States.Immateriality, (_durationLeap * _rangeLeap * _multiplierLeap), 0, _player.gameObject, Name);
+        }
 
-        CmdSingleLeap(firstLeapPoint, _durationLeap, _rangeLeap, _multiplierLeap, _timeBuff, _heatedGlandsIsActive);
+        CmdSingleLeap(firstLeapPoint, _durationLeap, _rangeLeap, _multiplierLeap, _timeBuff, _heatedGlandsIsActive, _superFastScalesIsActive);
     }
 
     private void ExecuteLeaps(Vector2 firstLeapPoint, Vector2 secondLeapPoint)
@@ -644,18 +630,16 @@ public class LightningMovement : Skill
             _isTargetBehindPlayerCoroutine = StartCoroutine(IsTargetBehindPlayerJob(_rangeLeap, _targetsLayers));
         }
 
-        if (_superFastScales.Data.IsOpen)
-        {
-            _superFastScales.IncreasingResistance();
-        }
-
         _applyDamageCoroutine = StartCoroutine(ApplyDamageJob(_targetsLayers, _radiusAttack, _durationLeap * _rangeLeap));
 
-        _player.CharacterState.CmdAddState(States.Immateriality, (_durationLeap * _rangeLeap * _multiplierLeap), 0, _player.gameObject, Name);
+        if (!_player.CharacterState.CheckForState(States.Immateriality))
+        {
+            _player.CharacterState.CmdAddState(States.Immateriality, (_durationLeap * _rangeLeap * _multiplierLeap), 0, _player.gameObject, Name);
+        }
 
         CmdExecuteTwoLeaps(firstLeapPoint, secondLeapPoint, 
             _durationLeap, _rangeLeap, _multiplierLeap, _timeBuff, _invtervalBetweenLeaps,
-            _heatedGlandsIsActive, _targetsLayers);
+            _heatedGlandsIsActive, _superFastScalesIsActive, _targetsLayers);
     }
 
     #endregion
@@ -665,12 +649,11 @@ public class LightningMovement : Skill
     [Command]
     private void CmdSingleLeap(Vector2 firstLeapPoint, 
         float durationLeap, float rangeLeap, float multiplierLeap, float timeBuff, 
-        bool heatedGlandsIsAcitve)
+        bool heatedGlandsIsAcitve, bool superFastScalesIsActive)
     {
-        if (_superFastScales.Data.IsOpen)
+        if (superFastScalesIsActive)
         {
             Debug.Log("LightningMovement / superFastScales Active");
-            OnEnabled();
             _superFastScales.IncreasingResistance();
         }
 
@@ -684,14 +667,13 @@ public class LightningMovement : Skill
     [Command]
     private void CmdExecuteTwoLeaps(Vector2 firstLeapPoint, Vector2 secondLeapPoint,
         float durationLeap, float rangeLeap, float multiplierLeap, float timeBuff, float interval,
-        bool heatedGlandsIsActive,
+        bool heatedGlandsIsActive, bool superFastScalesIsActive,
         LayerMask enemyLayer)
     {
         _player.Move.enabled = false;
 
-        if (_superFastScales.Data.IsOpen)
+        if (superFastScalesIsActive)
         {
-            OnEnabled();
             Debug.Log("LightningMovement / superFastScales Active");
             _superFastScales.IncreasingResistance();
         }

@@ -35,7 +35,7 @@ public struct PoisonBallInfo : NetworkMessage
     public bool IsHealingPoisonCloud;
 }
 
-public class PoisonBall : Skill
+public class PoisonBall : Skill, IAltAbility
 {
     #region Variables
 
@@ -113,7 +113,11 @@ public class PoisonBall : Skill
     public ContinuationAmbush ContinuationAmbushTalent { get; set; }
     public int CurrentCountBall { get => _poisonBallInfo.CountProjectiles; }
     public int PoisonBoneStack { get => _poisonBoneStacks; set => _poisonBoneStacks = value; }
+    public bool IsAltAbility { get; set; }
 
+    public event Action ResetAbilityParameters;
+    public event Action AbilityChange;
+    
     #endregion
 
     private void Start()
@@ -171,7 +175,7 @@ public class PoisonBall : Skill
         {
             StopCoroutine(_thirdClickCoroutine);
             _thirdClickCoroutine = null;
-        }
+        } 
     }
 
     protected override IEnumerator PrepareJob()
@@ -217,6 +221,8 @@ public class PoisonBall : Skill
         ChooseWhichProjectileCreate();
 
         ClearArrows();
+
+        ResetAbilityParameters?.Invoke();
 
         yield return null;
     }
@@ -518,6 +524,7 @@ public class PoisonBall : Skill
         _poisonBallInfo.IsActiveInertialGlands = _inertialGlands.Data.IsOpen;
         _poisonBallInfo.IsActiveVolatilityOfPoisons = _volatilityOfPoisons.Data.IsOpen;
 
+        /*
         #region TransparentPoisonsTalentIsActive
 
         if (_transparentPoisons.Data.IsOpen && _player.IsInvisible)
@@ -530,6 +537,7 @@ public class PoisonBall : Skill
         }
 
         #endregion
+        */
 
         #region VolatilityOfPoisonsTalentIsActive
 
@@ -752,7 +760,7 @@ public class PoisonBall : Skill
         {
             CmdCreateProjectileForTarget(_currentTarget.gameObject, _currentTarget.transform.position, _poisonBallInfo.MaxCountProjectile, 
                 _multiplierForPushDistance, _projectileSize,
-                _isFast, _isPushTarget, _isPlayerInvisible,
+                _isFast, _isPushTarget, IsAltAbility,
                 _poisonBallInfo.IsActiveHealingPoisonBall, _poisonBallInfo.IsActiveWitheringPoison, _poisonBallInfo.IsActiveVoluminousBall,
                 _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies, PoisonBoneStack);
 
@@ -762,7 +770,7 @@ public class PoisonBall : Skill
         {
             CmdCreateProjectileForFlyingMaxDistance(_firstMousePosition, _poisonBallInfo.MaxCountProjectile,
                 _multiplierForPushDistance, _projectileSize,
-                _isFast, _isPushTarget, _isPlayerInvisible,
+                _isFast, _isPushTarget, IsAltAbility,
                 _poisonBallInfo.IsActiveHealingPoisonBall, _poisonBallInfo.IsActiveWitheringPoison, _poisonBallInfo.IsActiveVoluminousBall,
                 _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies, PoisonBoneStack);
 

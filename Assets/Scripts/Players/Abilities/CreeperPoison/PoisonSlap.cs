@@ -431,16 +431,18 @@ public class PoisonSlap : Skill
 
     private void UseRecharge()
     {
+        Debug.Log("UseRecharge");
         float baseCooldownTime = _cooldownTime;
 
         if (_acceleratedSlap.Data.IsOpen)
         {
             _cooldownTime /= 2;
         }
-        _cooldownTime = baseCooldownTime;
         
         IsCanDamageDeal = false;
         TryPayCost(true);
+
+        _cooldownTime = baseCooldownTime;
     }
 
     private void PushTarget(Character target, float distancePush, float durationPush, bool isCanPushTarget)

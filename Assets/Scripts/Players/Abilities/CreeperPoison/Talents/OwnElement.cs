@@ -16,12 +16,13 @@ public class OwnElement : Talent
     private int _currentStacksPoison;
     private int _currentAllStacks;
     private int _previousAllStacks;
+    private int _currentStacksAtckSpeed;
 
     private float _baseIncreaseAttackSpeed = 0.1f;
     private float _baseAttackSpeed;
     private float _increasedAttackSpeed;
     private float _newAttackSpeed = 1.0f;
-    private float _maxMinimumAttackSpeed = 0.34f;
+    private float _maxMinimumAttackSpeed = 0.1f;
 
     private bool _isCanResetAttackSpeed = false;
     private bool _isTargetNearby = false;
@@ -36,12 +37,11 @@ public class OwnElement : Talent
     private void Start()
     {
         _baseAttackSpeed = _creeperStrike.AttackSpeed;
+        StartSearchingEnemies();
     }
-
     public override void Enter()
     {
         SetActive(true);
-        StartSearchingEnemies();
     }
 
     public override void Exit()
@@ -110,46 +110,51 @@ public class OwnElement : Talent
                     }
                 }
 
+
                 _currentAllStacks = _currentPoisonOnEnemy + _currentStacksPoison;
 
                 if (_currentAllStacks != _previousAllStacks)
                 {
-                    IncreaseAttackSpeed();
-                    _previousAllStacks = _currentAllStacks;
+                    for (_currentStacksAtckSpeed = _currentStacksAtckSpeed; _currentStacksAtckSpeed < _currentAllStacks;)
+                    {
+                        Debug.Log("OwnElement / Cycle For / _currentStacksAtckSpeed = " + _currentStacksAtckSpeed);
+                        IncreaseAttackSpeed();
+                        _previousAllStacks = _currentAllStacks;
+                    }
                 }
             }
-            if (_currentAllStacks == 0 || !_isTargetNearby)
+            if (_currentAllStacks != _currentStacksAtckSpeed && _currentAllStacks == 0 || !_isTargetNearby)
             {
-                if (_creeperStrike.AttackSpeed < _baseAttackSpeed)
+                for (_currentStacksAtckSpeed = _currentStacksAtckSpeed; _currentStacksAtckSpeed > _currentAllStacks;)
                 {
                     ResetAttackSpeed();
                 }
+                _previousAllStacks = 0;
             }
-            yield return null;
+            yield return new WaitForSeconds(0.1f);
         }
     }
 
-    private void IncreaseAttackSpeed()
-    {
-        if (_currentAllStacks > 0)
-        {
-            if (_newAttackSpeed > _maxMinimumAttackSpeed) 
-            { 
-                Debug.Log("OwnElement / IncreaseAttackSpeed / Before Increased CreeperStrike AttackSpeed = " + _creeperStrike.AttackSpeed);
-                _increasedAttackSpeed = _baseAttackSpeed - (_currentAllStacks * _baseIncreaseAttackSpeed);
-                Debug.Log("OwnElement / IncreaseAttackSpeed / Before Increased _increasedAttackSpeed = " + _increasedAttackSpeed);
-                _newAttackSpeed *= _increasedAttackSpeed;
-                Debug.Log("OwnElement / IncreaseAttackSpeed / Before Increased _newAttackSpeed = " + _newAttackSpeed);
+    private void IncreaseAttackSpeed() 
+    { 
+        if (_currentAllStacks > 0 && _newAttackSpeed > _maxMinimumAttackSpeed) 
+        { 
+            _currentStacksAtckSpeed++;
 
-                if (_creeperStrike.AttackSpeed > _maxMinimumAttackSpeed)
-                {
-                    _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_newAttackSpeed);
-                    Debug.Log("OwnElement / IncreaseAttackSpeed / After Increased CreeperStrike AttackSpeed = " + _creeperStrike.AttackSpeed);
-                }
+            Debug.Log("OwnElement / IncreaseAttackSpeed / Before Increased CreeperStrike AttackSpeed = " + _creeperStrike.AttackSpeed);
 
-            }
-        }
-    }
+            _increasedAttackSpeed = _baseAttackSpeed - _baseIncreaseAttackSpeed;
+            Debug.Log("OwnElement / IncreaseAttackSpeed / Before Increased increasedAttackSpeed = " + _increasedAttackSpeed); 
+
+            _newAttackSpeed *= _increasedAttackSpeed;
+            _newAttackSpeed = RoundToDecimal(_newAttackSpeed, 10f);  
+
+            Debug.Log("OwnElement / IncreaseAttackSpeed / Before Increased _newAttackSpeed = " + _newAttackSpeed);
+
+            _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_newAttackSpeed); 
+            Debug.Log("OwnElement / IncreaseAttackSpeed / After Increased CreeperStrike AttackSpeed = " + _creeperStrike.AttackSpeed);
+        } 
+    } 
 
     private void ResetAttackSpeed()
     {
@@ -157,18 +162,24 @@ public class OwnElement : Talent
         Debug.Log("OwnElement / ResetAttackSpeed / Before Reset _newAttackSpeed = " + _newAttackSpeed);
         Debug.Log("OwnElement / ResetAttackSpeed / Before Reset _increasedAttackSpeed = " + _increasedAttackSpeed);
 
-        if (_creeperStrike.AttackSpeed < _baseAttackSpeed && _newAttackSpeed < 0.99f)
-        {
-            _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_newAttackSpeed);
-            _newAttackSpeed /= _increasedAttackSpeed;
-            _increasedAttackSpeed += 0.1f;
+        _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_newAttackSpeed);
+        _newAttackSpeed /= _increasedAttackSpeed;
+        _newAttackSpeed = RoundToDecimal(_newAttackSpeed, 10f);
 
-            Debug.Log("OwnElement / ResetAttackSpeed / After Reset _newAttackSpeed = " + _newAttackSpeed);
-            Debug.Log("OwnElement / ResetAttackSpeed / After Reset _increasedAttackSpeed = " + _increasedAttackSpeed);
-            Debug.Log("OwnElement / ResetAttackSpeed / After Reset CreeperStrike AttackSpeed = " + _creeperStrike.AttackSpeed);
-        }
-
+        _currentStacksAtckSpeed--;
+        Debug.Log("OwnElement / ResetAttackSpeed / After Reset _newAttackSpeed = " + _newAttackSpeed);
+        Debug.Log("OwnElement / ResetAttackSpeed / After Reset _increasedAttackSpeed = " + _increasedAttackSpeed);
+        Debug.Log("OwnElement / ResetAttackSpeed / After Reset CreeperStrike AttackSpeed = " + _creeperStrike.AttackSpeed);
         
+    }
+
+    private float RoundToDecimal(float value, float multiplier)
+    {
+        float value1 = value * multiplier;
+        Debug.Log("OwnElement / RoundToDecimal / value1 = " + value1);
+        int value2 = Mathf.RoundToInt(value1);
+        Debug.Log("OwnElement / RoundToDecimal / value2 = " + value2);
+        return value2 / multiplier;
     }
 
     private void AdvertisementStates(CharacterState targetWithDebuff)

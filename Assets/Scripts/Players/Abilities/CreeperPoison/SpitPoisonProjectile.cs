@@ -18,7 +18,7 @@ public class SpitPoisonProjectile : Test_Projectile
 
     private float _energyDad;
     private float _damage;
-    private float _lifeTimePoisonBoneStacks = 6.0f;
+    private float _lifeTimePoisonBoneStacks = 20.0f;
 
     private bool _isPlayer;
     private bool _isAllies;
@@ -106,17 +106,18 @@ public class SpitPoisonProjectile : Test_Projectile
                     DamageDeal();
                 }
             }
-            else if (collision.transform == _player.transform && _playerLayer != LayerMask.NameToLayer("Allies"))
-            {
-                if (collision.TryGetComponent<Character>(out var target))
-                {
-                    _target = target;
+            //For test evade magic damage
+            //else if (collision.transform == _player.transform && _playerLayer != LayerMask.NameToLayer("Allies"))
+            //{
+            //    if (collision.TryGetComponent<Character>(out var target))
+            //    {
+            //        _target = target;
 
-                    _damage = Random.Range(4.0f, 12.0f);
+            //        _damage = Random.Range(4.0f, 12.0f);
 
-                    DamageDeal();
-                }
-            }
+            //        DamageDeal();
+            //    }
+            //}
         }
     }
 
@@ -145,7 +146,7 @@ public class SpitPoisonProjectile : Test_Projectile
         Damage _baseDamage = new Damage
         {
             Value = _skill.Buff.Damage.GetBuffedValue(_damage),
-            Type = DamageType.Physical,
+            Type = DamageType.Magical,
             PhysicAttackType = AttackRangeType.RangeAttack,
         };
         

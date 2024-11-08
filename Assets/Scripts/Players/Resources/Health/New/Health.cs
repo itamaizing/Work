@@ -23,7 +23,7 @@ public class Health : Resource, IDamageable, IHealingable
     public List<IDamageable> Shields { get => _shields; }
 
     public event Action Evaded;
-     public event Action<float , Skill , string> HealTaked;
+    public event Action<float , Skill , string> HealTaked;
     public event Action<float, DamageType, Skill> DamageTaken;
     public event Action Died;
 

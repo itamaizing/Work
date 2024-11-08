@@ -15,7 +15,6 @@ public class TransparentPoisons : Talent
 
     public override void Enter()
     {
-        Debug.Log("TransparentPoisons / Enter");
         SetActive(true);
     }
 

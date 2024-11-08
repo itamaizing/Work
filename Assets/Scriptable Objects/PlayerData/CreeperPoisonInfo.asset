@@ -81,7 +81,7 @@ MonoBehaviour:
     - Id: 1011
       Name: ManaRegenDelay
       Points: 0
-      DefaultValue: 1
+      DefaultValue: 2
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1012
@@ -129,7 +129,7 @@ MonoBehaviour:
     - Id: 1019
       Name: MagicEvade
       Points: 0
-      DefaultValue: 90
+      DefaultValue: 0
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1020

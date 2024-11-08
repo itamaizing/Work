@@ -82,7 +82,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2603903007656169372, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _regenerationDelay
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2926669445991704918, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
       propertyPath: _regenerationDelay
@@ -781,8 +781,8 @@ MonoBehaviour:
   _castDeley: 0
   _damageValue: 0
   _abilitySchool: 5
-  _abilityForm: 2
-  _damageType: 1
+  _abilityForm: 1
+  _damageType: 0
   _attackRangeType: 1
   _skillType: 1
   _targetsLayers:
@@ -834,7 +834,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
   - resourceType: 1
-    resourceCost: 20
+    resourceCost: 0
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
@@ -977,10 +977,10 @@ MonoBehaviour:
   _skillType: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   _obstacle:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: 0
@@ -1002,6 +1002,9 @@ MonoBehaviour:
   _transparentPoisons: {fileID: 4000357412165628033}
   _preparingForFight: {fileID: 2159678125995542759}
   _concentratedPrecision: {fileID: 6607662620547331670}
+  _altAbilities:
+  - {fileID: 802699897452820110}
+  - {fileID: 1425385128636028372}
   _creeperStrike: {fileID: 2763546955420911548}
   _coldBlood: {fileID: 6976349184378944770}
   _player: {fileID: 7418347446368758987}
@@ -1404,7 +1407,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: ColdBloodEnabledTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0414\u0430\u0435\u0442 \u0432\u043E\u0437\u043C\u043E\u0436\u043D\u043E\u0441\u0442\u044C
       \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u0442\u044C \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C
       Cold Blood"
@@ -1429,7 +1432,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: AcceleratedSlap
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0412\u043E \u0432\u0440\u0435\u043C\u044F \u043F\u0440\u0438\u043C\u0435\u043D\u0435\u043D\u0438\u0435
       LightningMovement \u0441\u043D\u0438\u0436\u0430\u0435\u0442 \u043F\u0435\u0440\u0435\u0437\u0430\u0440\u044F\u0434\u043A\u0443
       Poison Slap \u0432 2 \u0440\u0430\u0437\u0430"
@@ -1526,7 +1529,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: ColdBloodTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7418347446368758987}
@@ -1652,7 +1655,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: FeelingOfContinuation
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7418347446368758987}
@@ -1891,7 +1894,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: PreparingForFight
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7418347446368758987}
@@ -1959,7 +1962,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: SuperFastScales
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7418347446368758987}
@@ -2001,7 +2004,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: TransparentPoisons
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 7418347446368758987}
