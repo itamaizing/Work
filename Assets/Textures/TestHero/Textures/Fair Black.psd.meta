@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Textures/TestHero/Textures/Fair Black.psd.meta
 guid: 1db1981936e01d946bfb4dce15e88961
+========
+guid: 5b3fac18af38dde409746975d220925e
+>>>>>>>> PriestTalents2:Assets/Textures/TestHero/Textures/Fair White.psd.meta
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}

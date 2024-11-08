@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d8548505a2c5104980a6fa13739ca3d, type: 3}
   m_Name: SparkOfLight
   m_EditorClassIdentifier: 
-  _name: 
+  _name: SparkOfLight
   _description: 
-  _icon: {fileID: 0}
+  _icon: {fileID: 21300000, guid: 428dcd7a870198e46b6ad8210ced5702, type: 3}

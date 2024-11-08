@@ -60,7 +60,7 @@ public class SelectManager : MonoBehaviour
             _dragBox.StopDraw();
         }
 
-        if (Input.GetKeyDown(KeyCode.Tab))
+       /* if (Input.GetKeyDown(KeyCode.Tab))
         {
             if (SelectedControllableUnits.Count <= 0) return;
 
@@ -87,6 +87,7 @@ public class SelectManager : MonoBehaviour
                 character.Move.SetOffset(offset);
             }
         }
+        */
     }
 
     public void SelectOnClick(Character character)
@@ -101,25 +102,20 @@ public class SelectManager : MonoBehaviour
 
     public void SelectInArea(Character character)
     {
-        Debug.Log(0);
-
+        Debug.Log("Select " + character.name);
         if (!_canContollUnits.Contains(character)) return;
-
-        Debug.Log(1);
-
+        
         if (!SelectedControllableUnits.Contains(character))
         {
             SelectedControllableUnits.Add(character);
             character.SelectComponent.Select();
             CharacterSelected?.Invoke(character);
-            Debug.Log(3);
         }
         else
         {
             SelectedControllableUnits.Remove(character);
             character.SelectComponent.Deselect();
             CharacterDeselected?.Invoke(character);
-            Debug.Log(4);
         }
 
         SelectedControllableUnits.FirstOrDefault()!.SelectComponent.IsCurrentPlayer = true;
@@ -139,6 +135,7 @@ public class SelectManager : MonoBehaviour
         foreach (var character in SelectedControllableUnits)
         {
             character.SelectComponent.Deselect();
+            Debug.Log("Deselect " + character.name);
             CharacterDeselected?.Invoke(character);
         }
         SelectedControllableUnits.Clear();

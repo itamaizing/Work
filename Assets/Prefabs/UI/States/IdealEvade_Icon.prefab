@@ -376,12 +376,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 6194549458725586224}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98bc1956ffad571439f483e0701d5ec0, type: 3}
+  m_Script: {fileID: 11500000, guid: cdd7b897492acd84fbc2b580e2284188, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   FadeFront: {fileID: 8110079681703881912}
   border: {fileID: 8016512512855021257}
   Text: {fileID: 7124779414521309969}
   count: 1
-  state: 16
+  state: 23
   time: []
