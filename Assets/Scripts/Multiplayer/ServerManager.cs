@@ -8,6 +8,8 @@ public class ServerManager : NetworkBehaviour
 {
     [SerializeField] private List<NetworkRoomsManager> _managers;
     [SerializeField] private List<HeroComponent> _heroList;
+
+    [SerializeField] private GameObject _menuEnv;
     
     private static ServerManager _instance;
     private int _currentHeroIndex = 0;
@@ -26,10 +28,12 @@ public class ServerManager : NetworkBehaviour
         {
             _instance = this;
         }
+        _menuEnv.gameObject.SetActive(true);
     }
     
     public void StartClient()
     {
+        _menuEnv.gameObject.SetActive(false);
         AddPlayer(User.Instance.gameObject, _currentHeroIndex, _currentGameMode);
     }
 

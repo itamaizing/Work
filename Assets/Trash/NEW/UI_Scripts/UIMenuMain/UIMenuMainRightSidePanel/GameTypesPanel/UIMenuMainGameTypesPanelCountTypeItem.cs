@@ -6,9 +6,6 @@ public class UIMenuMainGameTypesPanelCountTypeItem : MonoBehaviour
 {
     public event UnityAction<GameMode> Selected;
     
-    [ReadOnly,ShowInInspector]
-    public UIMenuMainGameTypesPanel Owner;
-    
     [SerializeField] private TMProLocalizer _itemTitle;
     [SerializeField] private GameMode _itemMode;
     

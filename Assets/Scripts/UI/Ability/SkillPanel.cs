@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -13,7 +11,6 @@ public class SkillPanel : MonoBehaviour
     [SerializeField] private DraggableIcon _draggableIconPref;
     [SerializeField] private FillAmountOverTime _castLine;
     [SerializeField] private QueuePanel _queuePanel;
-    [SerializeField] private SelectManager _selectManager;
     [SerializeField] private GameObject _abilityNameBox;
     [SerializeField] private TextMeshProUGUI _abilityNameBoxNameText;
     [SerializeField] private TextMeshProUGUI _abilityNameBoxDescriptionText;
@@ -32,8 +29,6 @@ public class SkillPanel : MonoBehaviour
         {
             item.updateBindingUIEvent.AddListener(OnRebindSpellKeys);
         }
-        _selectManager.CharacterSelected += OnCharacterSelected;
-        _selectManager.CharacterDeselected += OnCharacterDeselected;
 
         for (int i = 0; i < _skillIcons.Length; i++)
         {
@@ -42,12 +37,6 @@ public class SkillPanel : MonoBehaviour
         }
 
         InputHandler.OnCast += SelectSkill;
-    }
-
-    private void OnDestroy()
-    {
-        _selectManager.CharacterSelected -= OnCharacterSelected;
-        _selectManager.CharacterDeselected -= OnCharacterDeselected;
     }
 
     public void Fill(SkillManager abilities)
@@ -155,7 +144,7 @@ public class SkillPanel : MonoBehaviour
         _playerAbilities.SelectedSkills[index] = skill;
     }
 
-    private void OnCharacterSelected(Character character)
+    public void OnCharacterSelected(Character character)
     {
         if (character != null && character != _currentCharacter)
         {
@@ -166,7 +155,7 @@ public class SkillPanel : MonoBehaviour
         }
     }
 
-    private void OnCharacterDeselected(Character character)
+    public void OnCharacterDeselected(Character character)
     {
         if (character != null && character == _currentCharacter)
         {
