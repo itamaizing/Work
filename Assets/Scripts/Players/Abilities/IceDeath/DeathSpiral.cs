@@ -16,6 +16,7 @@ public class DeathSpiral : Skill
 	private Heal _heal;
 	private float _timer = 1f;
 	private Vector3 _mousePos = Vector3.positiveInfinity;
+	private GameObject _target;
 	private bool _superCharge = false;
 	private bool _inTheRow = false;
 	private bool _talentSecondAttack = false;
@@ -27,26 +28,11 @@ public class DeathSpiral : Skill
 	private bool _talentCorpseBoostExplode;
 	private bool _firstShot = true;
 
-	//private RuneComponent _rune;
 	protected override bool IsCanCast => Chargers > 0;
 
     protected override int AnimTriggerCastDelay => 0;
 
     protected override int AnimTriggerCast => 0;
-
-    private void Start()
-	{		
-		//Chargers = 0;
-		
-		/*for (int i = 0; i < _playerLinks.Resources.Count; i++)
-		{
-			if (_playerLinks.Resources[i].Type == ResourceType.Rune)
-			{
-				_rune = (RuneComponent)_playerLinks.Resources[i];
-			}
-		}*/
-
-	}
 
 	private void Update()
 	{
@@ -54,20 +40,12 @@ public class DeathSpiral : Skill
 	}
 	protected override IEnumerator PrepareJob()
 	{
-		while (float.IsPositiveInfinity(_mousePos.x))
+		while (_target == null)
 		{
-			/*if (GetMouseButton)
+			if (GetTarget().character != null)
 			{
-				//_playerLinks.RuneComponent.CmdUse(1);
-				_mousePos = GetMousePoint();
-			}*/
-			if (GetTarget().character == null)
-			{
-				_mousePos = GetTarget().Position;
-			}
-			else
-			{
-				_mousePos = GetTarget().character.transform.position;
+				_target = GetTarget().character.gameObject;
+				Debug.Log(_target + " target name ");
 			}
 			yield return null;
 		}
@@ -92,6 +70,7 @@ public class DeathSpiral : Skill
 	}
 	protected override void ClearData()
 	{
+		_target = null;
 		_mousePos = Vector3.positiveInfinity;
 	}
 
@@ -157,27 +136,29 @@ public class DeathSpiral : Skill
 	}*/
 
 	[Command]
-	private void Shoot(float angle, bool inTheRow)
-	{		
+	private void Shoot(float angle, bool inTheRow, GameObject target)
+	{
+		Debug.Log(target + " target name ");
 		DeathSpiralProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, -angle, 0));
 		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
 		projectile.Init(_playerLinks, 0, false, this);
+		projectile.SetTarget(target);
 		projectile.Talents(_talentBoostHPBOdy, _talentHitState, inTheRow, _talentPlague, _talentChragesPlague, _superCharge);
 		projectile.Talents(_talentCorpseDeath, _talentCorpseBoostExplode);
-		//projectile.TalentBoostHp(_talentBoostHPBOdy);
-		//projectile.TalentHitState(_talentHitState);
 
 		NetworkServer.Spawn(projectile.gameObject);
 
-		RpcInit(projectile.gameObject);
+		RpcInit(projectile.gameObject, target);
 		_superCharge = false;
 	}
 
 	[ClientRpc]
-	private void RpcInit(GameObject obj)
+	private void RpcInit(GameObject obj, GameObject target)
 	{
+		Debug.Log(target + " target name ");
 		DeathSpiralProjectile projectile = obj.GetComponent<DeathSpiralProjectile>();
 		projectile.Init(_playerLinks, 0, false, this);
+		projectile.SetTarget(target);
 		projectile.Talents(_talentBoostHPBOdy, _talentHitState, _inTheRow, _talentPlague, _talentChragesPlague, _superCharge);
 		projectile.Talents(_talentCorpseDeath, _talentCorpseBoostExplode);
 		_superCharge = false;
@@ -214,7 +195,7 @@ public class DeathSpiral : Skill
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
 		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0);
-		Shoot(angle, _inTheRow);
+		Shoot(angle, _inTheRow, _target);
 	}
 
 	private void BasicShoot()
@@ -225,7 +206,7 @@ public class DeathSpiral : Skill
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
 		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0);
-		Shoot(angle, _inTheRow);
+		Shoot(angle, _inTheRow, _target);
 	}
 
 	private void SecondAttact()
@@ -234,7 +215,7 @@ public class DeathSpiral : Skill
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
 		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0);
-		Shoot(angle, _inTheRow);
+		Shoot(angle, _inTheRow, _target);
 	}
 
 	public void AddCharge()

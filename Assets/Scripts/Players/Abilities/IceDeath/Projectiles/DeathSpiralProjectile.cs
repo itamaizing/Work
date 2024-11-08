@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Mirror;
 using System.Linq;
 using UnityEngine;
@@ -21,6 +22,10 @@ public class DeathSpiralProjectile : Projectiles
 	private Damage _damage;
 	private float _curDamage;
 
+	public void SetTarget(GameObject  target)
+	{
+		_rb.DOMove(target.transform.position, 0.5f);
+	}
 
 	private void Start()
 	{

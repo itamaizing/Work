@@ -791,6 +791,8 @@ public abstract class Skill : NetworkBehaviour
 	private void OnClick()
     {
         _isClick = true;
+        _isShiftClick = false;
+        _isCtrlClick = false;
     }
 
     private void OnClickCanceled()
@@ -801,6 +803,8 @@ public abstract class Skill : NetworkBehaviour
     private void OnShiftClick()
     {
         _isShiftClick = true;
+        _isClick = false;
+        _isCtrlClick = false;
     }
 
 	private void OnShiftCancled()
@@ -811,6 +815,8 @@ public abstract class Skill : NetworkBehaviour
     private void OnCtrlClick()
     {
         _isCtrlClick = true;
+        _isShiftClick = false;
+        _isClick = false;
     }
 
     private void OnCtlCancled()
