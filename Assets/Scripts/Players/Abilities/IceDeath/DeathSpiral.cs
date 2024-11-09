@@ -44,6 +44,8 @@ public class DeathSpiral : Skill
 		{
 			if (GetTarget().character != null)
 			{
+				// FIND SHADOW!
+
 				_target = GetTarget().character.gameObject;
 				Debug.Log(_target + " target name ");
 			}
@@ -162,6 +164,33 @@ public class DeathSpiral : Skill
 		projectile.Talents(_talentBoostHPBOdy, _talentHitState, _inTheRow, _talentPlague, _talentChragesPlague, _superCharge);
 		projectile.Talents(_talentCorpseDeath, _talentCorpseBoostExplode);
 		_superCharge = false;
+	}
+
+	private Character GetRaycastTargetShadow(bool isCanTargetHimself = false)
+	{
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		RaycastHit[] rayHit = Physics.RaycastAll(ray, 100f, TargetsLayers);
+
+		foreach (var hit in rayHit)
+		{
+			Debug.Log(hit.collider.gameObject.name);
+		}
+		Character target = null;
+
+		foreach (var item in rayHit)
+		{
+			if (rayHit.Length > 0 && item.transform.TryGetComponent<Character>(out Character enemy))
+			{
+				target = enemy;
+
+				if (isCanTargetHimself == false && target.transform == _hero.Health.transform)
+				{
+					target = null;
+				}
+			}
+		}
+		//_tempTargetbase = target;
+		return target;
 	}
 
 	private void PlagueAbsorptionCharge()

@@ -24,6 +24,12 @@ public class IceSword : Skill
 
     private bool IsCanCastCheck()
 	{
+		if (_target == null) return false;
+
+		if (Vector3.Distance(_target.transform.position, transform.position) > Radius)
+		{
+			return false;
+		}
 		return true;
 	}
 

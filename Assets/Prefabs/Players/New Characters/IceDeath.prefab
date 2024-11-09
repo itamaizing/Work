@@ -328,7 +328,7 @@ PrefabInstance:
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.data[0]
       value: 
-      objectReference: {fileID: 752221787785051408}
+      objectReference: {fileID: 7407653808177717906}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.data[1]
       value: 
@@ -352,7 +352,7 @@ PrefabInstance:
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.data[6]
       value: 
-      objectReference: {fileID: 8854865153303019716}
+      objectReference: {fileID: 2727420570257355857}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.data[7]
       value: 
@@ -364,7 +364,7 @@ PrefabInstance:
     - target: {fileID: 5590339039165547173, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _stateIcons
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 829006267482502751}
     - target: {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _playerData
       value: 
@@ -1153,6 +1153,17 @@ MonoBehaviour:
   _playerLinks: {fileID: 4374618947117916461}
   _jumprange: 2
   _durationOfJump: 0.3
+--- !u!114 &829006267482502751 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 8255499196023441042}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89bb8792cc67dea4487caae7c8fb0dfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &953822609278007364 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
