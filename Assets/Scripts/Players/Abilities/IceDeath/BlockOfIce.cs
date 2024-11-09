@@ -66,8 +66,7 @@ public class BlockOfIce : Skill
 	protected override IEnumerator PrepareJob()
 	{
 		while (float.IsPositiveInfinity(_mousePos.x))
-		{
-			
+		{			
 			if (GetMouseButton)
 			{
 				if (GetTarget().character == null)

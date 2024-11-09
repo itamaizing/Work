@@ -806,32 +806,44 @@ public abstract class Skill : NetworkBehaviour
 	private void OnClick()
     {
         _isClick = true;
-    }
+        _isShiftClick = false;
+		_isCtrlClick = false;
+	}
 
     private void OnClickCanceled()
     {
-        _isClick = false;
-    }
+		_isCtrlClick = false;
+		_isClick = false;
+		_isShiftClick = false;
+	}
 
     private void OnShiftClick()
     {
         _isShiftClick = true;
+        _isCtrlClick = false;
+        _isClick = false;
     }
 
-	private void OnShiftCancled()
+	/*private void OnShiftCancled()
 	{
+		_isCtrlClick = false;
+		_isClick = false;
 		_isShiftClick = false;
-	}
+	}*/
 
     private void OnCtrlClick()
     {
         _isCtrlClick = true;
+        _isClick = false;
+        _isShiftClick = false;
     }
 
-    private void OnCtlCancled()
+    /*private void OnCtlCancled()
     {
         _isCtrlClick = false;
-    }
+		_isClick = false;
+		_isShiftClick = false;
+	}*/
 
 	private IEnumerator CooldownCoroutine(float cooldownTime)
     {
@@ -1051,8 +1063,8 @@ public abstract class Skill : NetworkBehaviour
         //cancelled
 
 		InputHandler.OnClickCanceled += OnClickCanceled;
-        InputHandler.OnShiftLeftMouseCanceled += OnShiftCancled;
-        InputHandler.OnSwitchAutoModeCanceled += OnCtlCancled;
+        InputHandler.OnShiftLeftMouseCanceled += OnClickCanceled;
+        InputHandler.OnSwitchAutoModeCanceled += OnClickCanceled;
         
 	}
 
@@ -1065,8 +1077,8 @@ public abstract class Skill : NetworkBehaviour
 		//cancelled
 
 		InputHandler.OnClickCanceled -= OnClickCanceled;
-		InputHandler.OnShiftLeftMouseCanceled -= OnShiftCancled;
-		InputHandler.OnSwitchAutoModeCanceled -= OnCtlCancled;
+		InputHandler.OnShiftLeftMouseCanceled -= OnClickCanceled;
+		InputHandler.OnSwitchAutoModeCanceled -= OnClickCanceled;
 
 	}
 }

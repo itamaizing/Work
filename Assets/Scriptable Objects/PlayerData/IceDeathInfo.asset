@@ -29,7 +29,7 @@ MonoBehaviour:
       Points: 0
       DefaultValue: 100
       Icon: {fileID: 0}
-      IsVisible: 0
+      IsVisible: 1
     - Id: 1003
       Name: Energy
       Points: 0
