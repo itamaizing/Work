@@ -119,7 +119,7 @@ GameObject:
   m_Component:
   - component: {fileID: 795014623008228812}
   - component: {fileID: 3759936847054020137}
-  - component: {fileID: 4218118007188876841}
+  - component: {fileID: 9098721504457599736}
   - component: {fileID: -65063298450455639}
   - component: {fileID: -5027009403038136984}
   - component: {fileID: -7146587456276821115}
@@ -192,7 +192,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!58 &4218118007188876841
+--- !u!58 &9098721504457599736
 CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -208,7 +208,7 @@ CircleCollider2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_LayerOverridePriority: 1
+  m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -224,9 +224,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.027881742}
+  m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 1.0994574
+  m_Radius: 1
 --- !u!114 &-65063298450455639
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2255,7 +2255,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 704795987884427103, guid: e5b733c903c6d9143af357e086455e86, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 2.59
       objectReference: {fileID: 0}
     - target: {fileID: 704795987884427103, guid: e5b733c903c6d9143af357e086455e86, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2289,38 +2289,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3830031760113648994, guid: e5b733c903c6d9143af357e086455e86, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 2.191
-      objectReference: {fileID: 0}
     - target: {fileID: 7703766091663909860, guid: e5b733c903c6d9143af357e086455e86, type: 3}
       propertyPath: m_Name
       value: StateIcons
       objectReference: {fileID: 0}
-    - target: {fileID: 7703766091663909860, guid: e5b733c903c6d9143af357e086455e86, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7875684509955136938, guid: e5b733c903c6d9143af357e086455e86, type: 3}
-      propertyPath: _icons.Array.size
-      value: 19
-      objectReference: {fileID: 0}
-    - target: {fileID: 7875684509955136938, guid: e5b733c903c6d9143af357e086455e86, type: 3}
-      propertyPath: _icons.Array.data[15]
-      value: 
-      objectReference: {fileID: 943178309112352084, guid: 3fcafa59b3f8e604dadb9db1d306cb76, type: 3}
-    - target: {fileID: 7875684509955136938, guid: e5b733c903c6d9143af357e086455e86, type: 3}
-      propertyPath: _icons.Array.data[16]
-      value: 
-      objectReference: {fileID: 943178309112352084, guid: 8503f998e4dd3b440935be566a6b29dd, type: 3}
-    - target: {fileID: 7875684509955136938, guid: e5b733c903c6d9143af357e086455e86, type: 3}
-      propertyPath: _icons.Array.data[17]
-      value: 
-      objectReference: {fileID: 943178309112352084, guid: 87ed8a963e7bfaf4bb4d8365d66ef728, type: 3}
-    - target: {fileID: 7875684509955136938, guid: e5b733c903c6d9143af357e086455e86, type: 3}
-      propertyPath: _icons.Array.data[18]
-      value: 
-      objectReference: {fileID: 943178309112352084, guid: ffc57359873e545419b7bac01e94e8e6, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

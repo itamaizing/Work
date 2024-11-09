@@ -256,7 +256,8 @@ public class CharacterState : NetworkBehaviour
 		[States.Bleeding] = new BleedingDebuff(),
 		[States.EmeraldSkin] = new EmeraldSkinState(),
 		[States.DefenseReduction] = new DefenceReductionState(),
-		[States.SparkTalentHealthBuff] = new SparkTalentHealthState()
+		[States.SparkTalentHealthBuff] = new SparkTalentHealthState(),
+		[States.SelfHarm] = new SelfHarmState()
 	};
 
 	public void Initialize(Character hero)
@@ -309,13 +310,25 @@ public class CharacterState : NetworkBehaviour
 	{
 		foreach (AbstractCharacterState states in currentStates)
 		{
-			Debug.Log(states.State + " on enemy, check for " + state);
 			if (states.State == state)
 			{
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	public int CheckStateStacks(States state)
+	{
+		foreach (AbstractCharacterState states in currentStates)
+		{
+			Debug.Log(states.State + " on enemy, check for " + state);
+			if (states.State == state)
+			{
+				return states.CurrentStacksCount;
+			}
+		}
+		return 0;
 	}
 
 	public AbstractCharacterState GetState(States state)
@@ -369,15 +382,14 @@ public class CharacterState : NetworkBehaviour
 
 	public void RemoveState(AbstractCharacterState newState)
 	{
+		if (!currentStates.Contains(newState)) return;
+		
 		if (newState is IDamageable damageableShield)
 		{
 			RemoveShield(damageableShield);
 		}
-		
-		if (currentStates.Contains(newState))
-		{
-			currentStates.Remove(newState);
-		}
+			
+		currentStates.Remove(newState);
 	}
 
 	private void RemoveStateLogic(States stateName)
@@ -393,10 +405,8 @@ public class CharacterState : NetworkBehaviour
 				{
 					RemoveShield(damageableShield);
 				}
-				
-				currentStates[i].ExitState();
-				
-				currentStates.RemoveAt(i);
+
+				currentStates.Remove(currentStates[i]);
 			}
 		}
 	}
@@ -430,8 +440,13 @@ public class CharacterState : NetworkBehaviour
 				{
 					if (currentStates[i].CurrentStacksCount < currentStates[i].MaxStacksCount)
 					{
-						currentStates[i].Stack(duration);
-						_stateIcons.ActivateIco(state, duration, 1, true);
+						var canStack = currentStates[i].Stack(duration);
+						_stateIcons.ActivateIco(state, duration, 1, canStack);
+					}
+					else if(currentStates[i].MaxStacksCount == 0 || currentStates[i].CurrentStacksCount == currentStates[i].MaxStacksCount )
+					{
+						var canStack = currentStates[i].Stack(duration); 
+						_stateIcons.ActivateIco(state, duration, 0, canStack);
 					}
 
 					break;
@@ -536,5 +551,6 @@ public enum States
 
 	EmeraldSkin,
 	SparkTalentHealthBuff,
-	DefenseReduction
+	DefenseReduction,
+	SelfHarm
 }

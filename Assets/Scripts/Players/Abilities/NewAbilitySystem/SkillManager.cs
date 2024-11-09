@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Events;
 
 [RequireComponent(typeof(SkillQueue))]
 [RequireComponent(typeof(AutoSkillQueue))]
@@ -64,20 +63,16 @@ public class SkillManager : MonoBehaviour
             if(index - 1 < 0)
             {
                 index = _skills.Count;
-				Debug.Log("min");
 			}
 			SelectSkill(index - 1);
-			Debug.Log("Mousescroll down");
 		}
         if(value < 0)
         {
 			if (index >= _skills.Count)
 			{
                 index = 0;
-				Debug.Log("max");
 			}
 			SelectSkill(index + 1);
-			Debug.Log("Mousescroll up");
 		}
        
 	}
@@ -304,7 +299,7 @@ public class SkillManager : MonoBehaviour
         skill.PreparingSuccess -= OnPreperingSuccess;
     }
 
-    private void OnPreperingSuccess()
+    private void OnPreperingSuccess(Skill skill)
     {
         if(_selectedSkill is AutoAttackSkill attackSkill)
         {

@@ -1,16 +1,11 @@
-using Mirror;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class UIMenuMainCharactersPanelItem : MonoBehaviour, IPointerEnterHandler,IPointerExitHandler
 {
     public event UnityAction<HeroComponent> Selected;
-    
-    [ReadOnly,ShowInInspector]
-    public UIMenuMainCharactersPanel Owner;
     
     [SerializeField] private Image _icon;
 

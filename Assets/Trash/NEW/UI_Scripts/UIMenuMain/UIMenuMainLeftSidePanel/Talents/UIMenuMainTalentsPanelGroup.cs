@@ -1,24 +1,28 @@
 using System.Collections.Generic;
 using System.Linq;
-using Mirror;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class UIMenuMainTalentsPanelGroup : MonoBehaviour
 {
-    [ReadOnly,ShowInInspector]
-    public UIMenuMainTalentsPanel Owner;
-    
     [SerializeField] private UIMenuMainTalentsPanelGroupItem _talentPrefab;
     [SerializeField] private TMProLocalizer _title;
     [SerializeField] private TMProLocalizer _talentsCount;
     [SerializeField] private RectTransform _itemsParent;
 
+    private bool _isGameUI = false;
+    public event UnityAction OnShowPanelGroup;
+
     private List<UIMenuMainTalentsPanelGroupItem> _talents = new ();
 
     private TalentsGroup _talentsGroup;
+    private UIMenuMainAttributesPanel _attributesPanel;
 
-    public void SetPanel(TalentsGroup talentsGroup)
+    public void SetPanel(TalentsGroup talentsGroup, UIMenuMainAttributesPanel attributesPanel, bool isGameUI)
     {
+        _isGameUI = isGameUI;
+        
+        _attributesPanel = attributesPanel;
         _talentsGroup = talentsGroup;
         _title.Localize(talentsGroup.Name);
 
@@ -36,6 +40,14 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
             _talents.Add(talent);
         }
     }
+    
+    private void OnDisable()
+    {
+        foreach (var talent in _talents)
+        {
+            talent.Selected -= OnTalentSelected;
+        }
+    }
 
     void UpdateActiveTalentsCount()
     {
@@ -46,24 +58,22 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
     void OnTalentSelected(TalentData talent, bool isOpen)
     { 
         SaveManager.Instance.SaveTalent(_talentsGroup.ID, talent.Name, isOpen);
-        SaveManager.Instance.LoadTalent(_talentsGroup.ID, talent.Name);
+        SaveManager.Instance.LoadTalent(_talentsGroup.ID, talent.Name, _isGameUI);
 
         UpdateActiveTalentsCount();
-        Owner.Owner.UpdateAttributes();
+        _attributesPanel.UpdateAttributesPoints();
     }
 
     public void Show()
     {
-        if(Owner == null) return;
-
         if (_itemsParent.gameObject.activeInHierarchy == false)
         {
-            Owner.HidePanels();
             _itemsParent.gameObject.SetActive(true);
+            OnShowPanelGroup?.Invoke();
         }
         else
         {
-            Owner.HidePanels();
+            OnShowPanelGroup?.Invoke();
         }
     }
     

@@ -8,14 +8,12 @@ public class EmeraldSkin : Skill
     [SerializeField] private float _buffDuration = 2f;
     
     //---------------- Talent 1 (Light Magic Boost)
-    private bool _lightMagicTalentBoostActive = false;
     private int _lightMagicTalentBoostActiveToBuff = 0;
 
     protected override bool IsCanCast => CanCastCheck();
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
-
-    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCast => 0;
 
     private bool CanCastCheck()
     {
@@ -42,13 +40,12 @@ public class EmeraldSkin : Skill
     //---------------- Talent 1 Logic: Physical Shield Boost ----------------
     public void EnableTalentLightMagicBoost(bool value)
     {
-        _lightMagicTalentBoostActive = value;
         _lightMagicTalentBoostActiveToBuff = value ? 1 : 0;
     }
     
     private void ApplyEmeraldSkinBuff()
     {
-        CmdAddBuff(States.EmeraldSkin, _buffDuration, _lightMagicTalentBoostActiveToBuff, Hero.gameObject, name);
+        CmdAddBuff(States.EmeraldSkin, _buffDuration, _lightMagicTalentBoostActiveToBuff, Hero.gameObject, Name);
     }
 
     [Command]
@@ -60,6 +57,5 @@ public class EmeraldSkin : Skill
 
     protected override void ClearData()
     {
-        // Очистка данных после применения
     }
 }

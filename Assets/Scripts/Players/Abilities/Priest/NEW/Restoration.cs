@@ -20,15 +20,16 @@ public class Restoration : Skill
     [SerializeField] private float darkCastTime = 1.2f;
 
     public bool isLightMode = true;
-    private Character _target;
     private float _accumulatedEffectiveness = 1f;
     private float _totalHealedInInterval = 0f;
     
+    private Character _target;
+    public Character Target => _target;
+    
     protected override bool IsCanCast => IsCanCastCheck();
 
-    protected override int AnimTriggerCastDelay => throw new NotImplementedException();
-
-    protected override int AnimTriggerCast => throw new NotImplementedException();
+    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCast => 0;
 
     private bool IsCanCastCheck()
     {
@@ -56,6 +57,7 @@ public class Restoration : Skill
             }
         }
     }
+    
 
     public void SwitchMode()
     {
@@ -131,6 +133,9 @@ public class Restoration : Skill
 
                 yield return new WaitForSeconds(healInterval);
             }
+
+            _target = null;
+            ResetAccumulatedEffectiveness();
             healthComponent.HealTaked -= OnHealTaken;
         }
     }
@@ -148,7 +153,9 @@ public class Restoration : Skill
                 {
                     Value = Buff.Damage.GetBuffedValue(damagePerTick),
                     Type = DamageType.Magical,
-                    PhysicAttackType = AttackRangeType.RangeAttack
+                    PhysicAttackType = AttackRangeType.RangeAttack,
+                    School = this.School,
+                    //DamageableSkill = this,
                 };
                 
                 CmdApplyDamage(damage, target.gameObject);
@@ -187,8 +194,6 @@ public class Restoration : Skill
 
     protected override void ClearData()
     {
-        _target = null;
-        ResetAccumulatedEffectiveness();
     }
 
     private void ResetAccumulatedEffectiveness()

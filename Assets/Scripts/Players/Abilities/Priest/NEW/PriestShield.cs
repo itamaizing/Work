@@ -48,6 +48,10 @@ public class PriestShield : Skill
     private const float MaxHealingBoostPercentage = 0.5f;
     private const float HealingBoostPerUnit = 1f;
     private const float HealingUnit = 10f;
+    
+    //---------------- Talent 5 (Tired Soul Evade)
+    private bool _talentTiredSoulActive = false;
+    private const float TiredSoulEffectPercentage = 0.5f;
 
     private float _absorbBonus = 0;
     private float _damagePerTickBonus = 0;
@@ -57,9 +61,8 @@ public class PriestShield : Skill
 
     protected override bool IsCanCast => IsCanCastCheck();
 
-    protected override int AnimTriggerCastDelay => throw new NotImplementedException();
-
-    protected override int AnimTriggerCast => throw new NotImplementedException();
+    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCast => 0;
 
     private bool IsCanCastCheck()
     {
@@ -76,7 +79,7 @@ public class PriestShield : Skill
 
         Hero.Health.DamageTaken += HandleDamageTaken;
 
-        foreach (var skill in Hero.Abilities.Abilities.Where(skill => skill.AbilityForm == AbilityForm.Magic))
+        foreach (var skill in Hero.Abilities.Abilities.Where(skill => skill.School == Schools.Discipline))
         {
             skill.CastEnded += AddDisciplineStack;
         }
@@ -87,12 +90,12 @@ public class PriestShield : Skill
         OnModeChange -= HandleModeChange;
         Hero.Health.DamageTaken -= HandleDamageTaken;
 
-        foreach (var skill in Hero.Abilities.Abilities.Where(skill => skill.AbilityForm == AbilityForm.Magic))
+        foreach (var skill in Hero.Abilities.Abilities.Where(skill => skill.School == Schools.Discipline))
         {
             skill.CastEnded -= AddDisciplineStack;
         }
     }
-
+    
     public void SwitchMode()
     {
         isLightMode = !isLightMode;
@@ -126,14 +129,17 @@ public class PriestShield : Skill
     {
         if (!_talentPhysicalShieldBoostActive || damage.Type != DamageType.Physical) return;
 
-        _physicalDamageAccumulated += damage.Value;
-        UpdatePhysicalDamageAccumulation();
+        float boostUnits = Mathf.Floor(damage.Value * DisciplineBoostPercentage);
+        float boostAmount = Mathf.Min(absorbAmount + boostUnits, absorbAmount * MaxDarkMagicBoostPercentage);
+
+        _absorbBonus += boostAmount;
+        Debug.Log($"Physical boost applied. Damage: {boostAmount}, Boost: {boostAmount}");
     }
 
     private void UpdatePhysicalDamageAccumulation()
     {
         var amountBonus = Mathf.Min(_physicalDamageAccumulated * PhysicalBoostPerDamageUnit, absorbAmount * MaxPhysicalBoostPercentage);
-        _absorbBonus = amountBonus;
+        _absorbBonus += amountBonus;
     }
 
     //---------------- Talent 2 Logic: Discipline Shield Boost ----------------
@@ -160,7 +166,7 @@ public class PriestShield : Skill
         if (_disciplineShieldBoostActive && _disciplineStacks > 0)
         {
             var boostPercentage = DisciplineBoostPercentage * _disciplineStacks;
-            absorbAmount *= (1 + boostPercentage);
+            _absorbBonus += absorbAmount * boostPercentage;
             Debug.Log($"Applied discipline boost. Boost percentage: {boostPercentage * 100}%");
             _disciplineStacks = 0;
         }
@@ -171,7 +177,7 @@ public class PriestShield : Skill
     {
         _talentDarkMagicBoostActive = value;
         
-        if (value) return;
+        if (_talentDarkMagicBoostActive) return;
         
         _damagePerTickBonus = 0;
     }
@@ -209,6 +215,13 @@ public class PriestShield : Skill
         _absorbBonus += boostAmount;
         Debug.Log($"Healing boost applied. Healing: {healingAmount}, Boost: {boostAmount}");
     }
+    
+    //---------------- Talent 5 Logic: Healing Boost ----------------
+    
+    public void EnableTiredSoulEvade(bool value)
+    {
+        _talentTiredSoulActive = value;
+    }
 
     protected override IEnumerator PrepareJob()
     {
@@ -220,6 +233,7 @@ public class PriestShield : Skill
 
                 if (_target == transform.GetComponentInParent<Character>())
                 {
+                    _absorbBonus = 0;
                     CastDeley = selfCastTime;
                 }
             }
@@ -232,7 +246,7 @@ public class PriestShield : Skill
         if (_target == null || !IsCanCast) yield break;
 
         _nextAvailableTime = Time.time + CooldownTime;
-
+        
         if (isLightMode)
         {
             HandleLightShield();
@@ -251,11 +265,20 @@ public class PriestShield : Skill
 
         if (!TryPayCost(manaCostLight)) return;
         
-        ApplyDisciplineBoost();
+        ApplyDisciplineBoost(); // todo ??
+        
         ApplyDarkMagicBoost();
         ApplyHealingBoost();
+        
+        var characterState = _target.GetComponent<CharacterState>();
+        var duration = _talentTiredSoulActive && characterState.CheckForState(States.TiredSoul) ? lightShieldDuration * TiredSoulEffectPercentage : lightShieldDuration;
+        var absorbDamage = _talentTiredSoulActive && characterState.CheckForState(States.TiredSoul)
+            ? (absorbAmount + _absorbBonus) * TiredSoulEffectPercentage
+            : absorbAmount + _absorbBonus;
+        
+        Debug.Log(_absorbBonus);
 
-        CmdAddDebaff(States.LightShield, States.TiredSoul, lightShieldDuration, tiredSoulDuration, absorbAmount + _absorbBonus, _target.gameObject, name);
+        CmdAddDebaff(States.LightShield, States.TiredSoul, duration, tiredSoulDuration, absorbDamage, _target.gameObject, Name);
         Debug.Log("Light Shield applied to " + _target.name);
     }
 
@@ -265,22 +288,53 @@ public class PriestShield : Skill
 
         if (!TryPayCost(manaCostDark)) return;
 
-        CmdAddBaff(States.DarkShield, darkShieldDuration, maxDamagePerTick + _damagePerTickBonus, _target.gameObject, name);
+        CmdAddBaff(States.DarkShield, darkShieldDuration, maxDamagePerTick + _damagePerTickBonus, _target.gameObject, Name);
         Debug.Log("Dark Shield applied to " + _target.name);
     }
 
     [Command]
-    private void CmdAddDebaff(States lightState, States tiredState, float duration, float tiredDuration, float damageToExit, GameObject target, string skillName)
+    private void CmdAddDebaff(States lightState, States tiredState, float duration, float tiredDuration,
+        float damageToExit, GameObject target, string skillName)
     {
         var characterState = target.GetComponent<CharacterState>();
-        if (characterState.CheckForState(States.TiredSoul))
-        {
-            Debug.Log("Cannot apply Light Shield, target is tired.");
-            return;
-        }
 
-        characterState.AddState(lightState, duration, damageToExit, target, skillName);
-        characterState.AddState(tiredState, tiredDuration, damageToExit, target, skillName);
+        if (!_talentTiredSoulActive)
+        {
+            if (characterState.CheckForState(tiredState))
+            {
+                Debug.Log("Cannot apply Light Shield, target already has TiredSoul and talent is inactive.");
+                return;
+            }
+            
+            Debug.Log("Talent is inactive, applying LightShield and TiredSoul.");
+            characterState.AddState(lightState, duration, damageToExit, target, skillName);
+            characterState.AddState(tiredState, tiredDuration, damageToExit, target, skillName);
+        }
+        else
+        {
+            if (characterState.CheckForState(tiredState))
+            {
+                int tiredSoulStacks = characterState.CheckStateStacks(tiredState);
+                
+                Debug.Log($"Talent is active. TiredSoul stacks: {tiredSoulStacks}");
+                
+                if (tiredSoulStacks >= 2)
+                {
+                    Debug.Log("TiredSoul has 2 or more stacks, exiting without applying LightShield.");
+                    return;
+                }
+                
+                Debug.Log("TiredSoul has less than 2 stacks, applying LightShield and TiredSoul.");
+                characterState.AddState(lightState, duration, damageToExit, target, skillName);
+                characterState.AddState(tiredState, tiredDuration, damageToExit, target, skillName);
+            }
+            else
+            {
+                Debug.Log("Talent is active, but target does not have TiredSoul. Applying LightShield and TiredSoul.");
+                characterState.AddState(lightState, duration, damageToExit, target, skillName);
+                characterState.AddState(tiredState, tiredDuration, damageToExit, target, skillName);
+            }
+        }
     }
 
     [Command]
