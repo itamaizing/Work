@@ -288,7 +288,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.size
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.data[0]
@@ -317,7 +317,7 @@ PrefabInstance:
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.data[6]
       value: 
-      objectReference: {fileID: 8918194537379249446}
+      objectReference: {fileID: 8854865153303019716}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.data[7]
       value: 
@@ -357,6 +357,10 @@ PrefabInstance:
     - target: {fileID: 8492809262968261936, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8569747795464636412, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _currentSpeed
+      value: 3.5
       objectReference: {fileID: 0}
     - target: {fileID: 8630238717969952997, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_AnchorMax.x
@@ -715,7 +719,7 @@ MonoBehaviour:
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
-  _skillType: 0
+  _skillType: 1
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0

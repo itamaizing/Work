@@ -648,7 +648,7 @@ public abstract class Skill : NetworkBehaviour
 			Debug.Log("Ctrl + Left click");
 			return CtrlLeftClick();
 		}
-
+        Debug.LogError("Somethink went wrong! Check ur target!");
         return target;
     }    
 

@@ -67,13 +67,18 @@ public class BlockOfIce : Skill
 	{
 		while (float.IsPositiveInfinity(_mousePos.x))
 		{
-			if (GetTarget().character == null)
+			
+			if (GetMouseButton)
 			{
-				_mousePos = GetTarget().Position;
-			}
-			else
-			{
-				_mousePos = GetTarget().character.transform.position;
+				if (GetTarget().character == null)
+				{
+					_mousePos = GetTarget().Position;
+				}
+				else
+				{
+					_mousePos = GetTarget().character.transform.position;
+				}
+				Debug.Log(_mousePos);
 			}
 			yield return null;
 		}
