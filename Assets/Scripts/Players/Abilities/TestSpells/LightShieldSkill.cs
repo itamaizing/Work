@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LightShiledSkill : Skill
+public class LightShieldSkill : Skill
 {
     [SerializeField] private Character _playerLinks;
     private Character _target;

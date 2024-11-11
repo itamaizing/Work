@@ -6,6 +6,7 @@ public class LightShield : AbstractCharacterState, IDamageable
 {
     private float _damageAbsorbed;
     private float _maxAbsorption;
+    private float _curentAbsorption;
     private float _duration;
 
     public event Action<float, DamageType, Skill> DamageTaken;
@@ -21,9 +22,10 @@ public class LightShield : AbstractCharacterState, IDamageable
         _characterState = character;
         _duration = durationToExit;
         _maxAbsorption = damageToExit;
+        _curentAbsorption = _maxAbsorption;
         _damageAbsorbed = 0;
         _characterState.Character.Health.TotalMaxAbsorption += _maxAbsorption;
-
+        _characterState.Character.Health.AddShieldValues(_maxAbsorption);
 
         UpdateShieldValues();
     }
@@ -48,6 +50,7 @@ public class LightShield : AbstractCharacterState, IDamageable
     {
         //_duration = time;
         //_damageAbsorbed = 0;
+        CurrentStacksCount += 1;
         return false;
     }
 
@@ -57,6 +60,7 @@ public class LightShield : AbstractCharacterState, IDamageable
         float damageToAbsorb = Mathf.Min(_characterState.Character.Health.TotalMaxAbsorption - _damageAbsorbed, damage.Value);
         _damageAbsorbed += damageToAbsorb;
         damage.Value -= damageToAbsorb;
+        _curentAbsorption = _maxAbsorption - _damageAbsorbed;
 
         _characterState.GetComponent<Character>().DamageTracker.AddDamage(damage);
         DamageTaken?.Invoke(damageToAbsorb, damage.Type, skill);
@@ -84,12 +88,10 @@ public class LightShield : AbstractCharacterState, IDamageable
 
     private void ResetCharacterShieldValues()
     {
-        _characterState.Character.Health.TotalMaxAbsorption -= _maxAbsorption;
+        _characterState.Character.Health.TotalMaxAbsorption -= _curentAbsorption + _damageAbsorbed;
         _characterState.Character.Health.UpdateShieldValues(0, _characterState.Character.Health.TotalMaxAbsorption);
-
-        if (_characterState.Character.Health.TotalMaxAbsorption <= 0)
-        _characterState.Character.Health.ResetShieldValues();
-        _maxAbsorption = 0;
+        if (_characterState.Character.Health.TotalMaxAbsorption <= 0) _characterState.Character.Health.ResetShieldValues();
+        _characterState.Character.Health.AddShieldValues(-_curentAbsorption);
     }
 
     public void ShowPhantomValue(Damage phantomValue)

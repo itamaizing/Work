@@ -186,6 +186,12 @@ public class Health : Resource, IDamageable, IHealingable
             ClientRpcUpdateShieldValues(absorbed, maxAbsorption);
     }
 
+    public void AddShieldValues(float maxAbsorption)
+    {
+        if (isServer)
+            ClientRpcAddShieldValues(maxAbsorption);
+    }
+
     public void ResetShieldValues()
     {
         ShieldDeactivated?.Invoke();
@@ -201,6 +207,11 @@ public class Health : Resource, IDamageable, IHealingable
     public void ClientRpcUpdateShieldValues(float absorbed, float maxAbsorption)
     {
         OnShieldValuesChanged?.Invoke(absorbed, maxAbsorption);
+    }
+
+    [ClientRpc]
+    public void ClientRpcAddShieldValues(float maxAbsorption)
+    {
         OnShieldAdd?.Invoke(maxAbsorption);
     }
 

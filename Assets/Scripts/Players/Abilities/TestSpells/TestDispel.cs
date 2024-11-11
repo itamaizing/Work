@@ -1,4 +1,5 @@
 ﻿using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -42,7 +43,7 @@ public class TestDispel : Skill
     [Command]
     private void CmdDispelState(CharacterState targetState, int targetTeamIndex, int playerTeamIndex)
     {
-        targetState.ServerDispelStates(StateType.Magic, targetTeamIndex, playerTeamIndex, true);
+        targetState.DispelStates(StateType.Magic, targetTeamIndex, playerTeamIndex, true);
     }
 
     private Character GetRaycastTarget()

@@ -47,7 +47,7 @@ public class DefaultState : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		_characterState.StateIcons?.DeactivateIcon(State);
+		_characterState.StateIcons?.DeactivateIcon();
 		_characterState.RemoveState(this);
 	}
 
@@ -312,9 +312,9 @@ public class CharacterState : NetworkBehaviour
 
 	#region TestMethods
 
-	[Server]
-	public void ServerDispelStates(StateType type, int targetTeamIndex, int playerTeamIndex, bool isDispelOneState)
+	public void DispelStates(StateType type, int targetTeamIndex, int playerTeamIndex, bool isDispelOneState)
 	{
+
 		if (currentStates.Count == 0) return;
 
 		List<AbstractCharacterState> statesToRemove = new List<AbstractCharacterState>();
@@ -327,9 +327,18 @@ public class CharacterState : NetworkBehaviour
 				((targetTeamIndex == playerTeamIndex && state.BaffDebaff == BaffDebaff.Debaff) ||
 				 (targetTeamIndex != playerTeamIndex && state.BaffDebaff == BaffDebaff.Baff)))
 			{
-				statesToRemove.Add(state);
+				if (state.CurrentStacksCount > 1)
+				{
+					state.CurrentStacksCount--;
+					ClientRpcRemoveIconCount();
+				}
+				else
+				{
+					statesToRemove.Add(state);
+					if (isDispelOneState) break;
+				}
 
-				if (isDispelOneState) break;
+				break;
 			}
 		}
 
@@ -339,11 +348,17 @@ public class CharacterState : NetworkBehaviour
 			currentStates.Remove(state);
 		}
 
-		RpcUpdateClientStates(statesToRemove.Select(s => s.State).ToList());
+		ClientRpcUpdateClientStates(statesToRemove.Select(s => s.State).ToList());
 	}
 
 	[ClientRpc]
-	private void RpcUpdateClientStates(List<States> removedStates)
+	private void ClientRpcRemoveIconCount()
+	{
+		StateIcons?.RemoveIconCount();
+	}
+
+	[ClientRpc]
+	private void ClientRpcUpdateClientStates(List<States> removedStates)
 	{
 		foreach (var stateName in removedStates)
 		{
@@ -521,7 +536,7 @@ public class CharacterState : NetworkBehaviour
 		if (currentStates.Contains(newState))
 		{
 			currentStates.Remove(newState);
-			_stateIcons?.DeactivateIcon(newState.State);
+			_stateIcons?.DeactivateIcon();
 		}
 	}
 
