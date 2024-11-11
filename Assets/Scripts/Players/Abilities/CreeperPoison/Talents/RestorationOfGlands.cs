@@ -29,14 +29,7 @@ public class RestorationOfGlands : Talent
 
     public void ReductionCooldown()
     {
-        //if (isServer)
-        //{
-            TargetRpcReduction();
-       // }
-        //else
-        //{
-            ReductionCooldownNotServer();
-        //}
+        ReductionCooldownNotServer();
     }
 
     private void ReductionCooldownNotServer()
@@ -57,27 +50,5 @@ public class RestorationOfGlands : Talent
         _spitPoison.ReductionSetCooldown(reducingCooldownSpitPoison);
 
         _poisonBall.ReductionSetCooldown(reducingCooldownPoisonBall);
-    }
-
-    [TargetRpc]
-    private void TargetRpcReduction()
-    {
-        Debug.Log("RestorationOfGlands / TargetRpcReduction");
-        float baseCooldownSpitPoison = _spitPoison.RemainingCooldownTime;
-        float baseCooldownPoisonBall = _poisonBall.CooldownTime;
-
-        float procentageCoolwonTimeSpitPoison = baseCooldownSpitPoison * _baseProcentageReduction;
-        Debug.Log("RestorationOfGlands / TargetRpcReduction / procentageCooldownSpit = " + procentageCoolwonTimeSpitPoison);
-        float procentageCoolwonTimePoisonBall = baseCooldownPoisonBall * _baseProcentageReduction;
-        Debug.Log("RestorationOfGlands / TargetRpcReduction / procentageCooldownPoisonBall = " + procentageCoolwonTimePoisonBall);
-
-        float reducingCooldownSpitPoison = _spitPoison.CooldownTime - procentageCoolwonTimeSpitPoison;
-        Debug.Log("RestorationOfGlands / TargetRpcReduction / reducingCooldownSpitPoison = " + reducingCooldownSpitPoison);
-        float reducingCooldownPoisonBall = _poisonBall.CooldownTime - procentageCoolwonTimePoisonBall;
-        Debug.Log("RestorationOfGlands / TargetRpcReduction / reducingCooldownPoisonBall = " + reducingCooldownPoisonBall);
-        _spitPoison.ReductionSetCooldown(reducingCooldownSpitPoison);
-
-        _poisonBall.ReductionSetCooldown(reducingCooldownPoisonBall);
-
     }
 }

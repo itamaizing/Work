@@ -29,6 +29,7 @@ public class InstantHealingPoisonState : AbstractCharacterState
     public override float TEST_ChangeableValue { get => _baseHealingValue; set => _baseHealingValue = value; }
     public override States State => States.InstantHealingPoison;
     public override StateType Type => StateType.Physical;
+    public override BuffDebuff BuffDebuff => BuffDebuff.Buff;
     public override List<StatusEffect> Effects => _effects;
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)

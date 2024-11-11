@@ -13,6 +13,8 @@ public class Knockdown : AbstractCharacterState
 
     public override StateType Type => StateType.Physical;
 
+    public override BuffDebuff BuffDebuff => BuffDebuff.Debuff;
+
     public override List<StatusEffect> Effects => throw new System.NotImplementedException();
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)

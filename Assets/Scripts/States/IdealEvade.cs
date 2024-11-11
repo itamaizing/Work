@@ -14,6 +14,8 @@ public class IdealEvade : AbstractCharacterState
 
     public override StateType Type => StateType.Immaterial;
 
+    public override BuffDebuff BuffDebuff => BuffDebuff.Buff;
+
     public override List<StatusEffect> Effects => _effects;
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)

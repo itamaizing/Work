@@ -31,14 +31,14 @@ public class ClawStrike : AutoAttackSkill
 
             if (_additionalDamage > 10 && _additionalDamage < 20)
             {
-                _target.CharacterState.DispelOneState(StateType.Magic);
+                _target.CharacterState.DispelStates(StateType.Magic, _target.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
             }
             else if (_additionalDamage > 20 && _additionalDamage < 30)
             {
                 _maxCountDispelState = 2;
                 for (int i = 0; i < _maxCountDispelState; i++)
                 {
-                    _target.CharacterState.DispelOneState(StateType.Magic);
+                    _target.CharacterState.DispelStates(StateType.Magic, _target.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
                 }
             }
             else if (_additionalDamage == 30)
@@ -46,7 +46,7 @@ public class ClawStrike : AutoAttackSkill
                 _maxCountDispelState = 3;
                 for (int i = 0; i < _maxCountDispelState; i++)
                 {
-                    _target.CharacterState.DispelOneState(StateType.Magic);
+                    _target.CharacterState.DispelStates(StateType.Magic, _target.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
                 }
             }
 

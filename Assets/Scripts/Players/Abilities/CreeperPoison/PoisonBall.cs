@@ -35,7 +35,7 @@ public struct PoisonBallInfo : NetworkMessage
     public bool IsHealingPoisonCloud;
 }
 
-public class PoisonBall : Skill
+public class PoisonBall : Skill, IAltAbility
 {
     #region Variables
 
@@ -113,9 +113,13 @@ public class PoisonBall : Skill
     public ContinuationAmbush ContinuationAmbushTalent { get; set; }
     public int CurrentCountBall { get => _poisonBallInfo.CountProjectiles; }
     public int PoisonBoneStack { get => _poisonBoneStacks; set => _poisonBoneStacks = value; }
-
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
+    public bool IsAltAbility { get; set; }
+
+    public event Action ResetAbilityParameters;
+    public event Action AbilityChange;
+
     #endregion
 
     private void Start()
@@ -127,7 +131,7 @@ public class PoisonBall : Skill
         _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
         _poisonBallInfo.MaxCountProjectile = _maxCharges;
     }
-    
+
     private void Update()
     {
         UpdateMouseDetection();
@@ -185,10 +189,14 @@ public class PoisonBall : Skill
             if (GetMouseButton)
             {
                 _currentTarget = GetRaycastTarget(true);
-                Debug.Log("PoisonBall / currentTarget = " + _currentTarget);   
+                Debug.Log("PoisonBall / currentTarget = " + _currentTarget);
                 if (_currentTarget != null)
                 {
                     _isTarget = true;
+                }
+                else
+                {
+                    _isTarget = false;
                 }
 
                 CheckWhoTarget();
@@ -215,6 +223,8 @@ public class PoisonBall : Skill
         ChooseWhichProjectileCreate();
 
         ClearArrows();
+
+        ResetAbilityParameters?.Invoke();
 
         yield return null;
     }
@@ -364,7 +374,7 @@ public class PoisonBall : Skill
                 _secondMousePosition = GetMousePoint();
                 if (_currentTarget != null)
                 {
-                    if (_secondMousePosition.x < _firstMousePosition.x && _secondMousePosition.z < _firstMousePosition.z)
+                    if (_secondMousePosition.x < _firstMousePosition.x)
                     {
                         DarkenArrowColor(0, 0.8f);
                         DarkenArrowColor(1, 0f);
@@ -516,6 +526,7 @@ public class PoisonBall : Skill
         _poisonBallInfo.IsActiveInertialGlands = _inertialGlands.Data.IsOpen;
         _poisonBallInfo.IsActiveVolatilityOfPoisons = _volatilityOfPoisons.Data.IsOpen;
 
+        /*
         #region TransparentPoisonsTalentIsActive
 
         if (_transparentPoisons.Data.IsOpen && _player.IsInvisible)
@@ -528,6 +539,7 @@ public class PoisonBall : Skill
         }
 
         #endregion
+        */
 
         #region VolatilityOfPoisonsTalentIsActive
 
@@ -704,7 +716,7 @@ public class PoisonBall : Skill
 
         return Vector3.Distance(_firstMousePosition, transform.position) <= Radius &&
             NoObstacles(_firstMousePosition, _obstacle) ||
-            Vector3.Distance(_currentTarget.transform.position, transform.position) <= Radius && 
+            Vector3.Distance(_currentTarget.transform.position, transform.position) <= Radius &&
             NoObstacles(_currentTarget.transform.position, _obstacle);
 
     }
@@ -723,13 +735,13 @@ public class PoisonBall : Skill
     private void ChooseSpeed()
     {
         _isFast = _isTarget
-            ? Vector3.Distance(_player.transform.position, _secondMousePosition) > Vector3.Distance(_player.transform.position, _currentTarget.transform.position)
-            : Vector3.Distance(_player.transform.position, _secondMousePosition) > Vector3.Distance(_player.transform.position, _firstMousePosition);
+            ? Vector2.Distance(_player.transform.position, _secondMousePosition) > Vector2.Distance(_player.transform.position, _currentTarget.transform.position)
+            : Vector2.Distance(_player.transform.position, _secondMousePosition) > Vector2.Distance(_player.transform.position, _firstMousePosition);
     }
 
     private void ChooseDirectionPush()
     {
-        _isPushTarget = Vector3.Distance(_player.transform.position, _thirdMousePosition) > Vector3.Distance(_player.transform.position, _secondMousePosition);
+        _isPushTarget = Vector2.Distance(_player.transform.position, _thirdMousePosition) > Vector2.Distance(_player.transform.position, _secondMousePosition);
     }
 
     private IEnumerator TimeCastForFastMoveProjectile()
@@ -748,9 +760,9 @@ public class PoisonBall : Skill
     {
         if (_isTarget)
         {
-            CmdCreateProjectileForTarget(_currentTarget.gameObject, _currentTarget.transform.position, _poisonBallInfo.MaxCountProjectile, 
+            CmdCreateProjectileForTarget(_currentTarget.gameObject, _currentTarget.transform.position, _poisonBallInfo.MaxCountProjectile,
                 _multiplierForPushDistance, _projectileSize,
-                _isFast, _isPushTarget, _isPlayerInvisible,
+                _isFast, _isPushTarget, IsAltAbility,
                 _poisonBallInfo.IsActiveHealingPoisonBall, _poisonBallInfo.IsActiveWitheringPoison, _poisonBallInfo.IsActiveVoluminousBall,
                 _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies, PoisonBoneStack);
 
@@ -760,7 +772,7 @@ public class PoisonBall : Skill
         {
             CmdCreateProjectileForFlyingMaxDistance(_firstMousePosition, _poisonBallInfo.MaxCountProjectile,
                 _multiplierForPushDistance, _projectileSize,
-                _isFast, _isPushTarget, _isPlayerInvisible,
+                _isFast, _isPushTarget, IsAltAbility,
                 _poisonBallInfo.IsActiveHealingPoisonBall, _poisonBallInfo.IsActiveWitheringPoison, _poisonBallInfo.IsActiveVoluminousBall,
                 _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies, PoisonBoneStack);
 
@@ -773,7 +785,7 @@ public class PoisonBall : Skill
     #region Command Methods
 
     [Command]
-    private void CmdCreateProjectileForTarget(GameObject target, Vector3 targetOrPoint, int maxCountProjectiles, 
+    private void CmdCreateProjectileForTarget(GameObject target, Vector3 targetOrPoint, int maxCountProjectiles,
         float multiplierForPushDistance, float projectileSize,
         bool isFast, bool isPushTarget, bool isPlayerInvisible,
         bool isActiveHealingPoisonBall, bool isActiveWitheringPoison, bool isActiveVoluminousBall,
@@ -816,10 +828,10 @@ public class PoisonBall : Skill
 
         //Debug.Log($"bool isTargetEnemy = {isTargetEnemy}, bool isTargetPlayer = {isTargetPlayer}, bool isTargetAllies = {isTargetAllies}");
 
-       // Debug.Log($"_poisonBallInfo.HealingBall = {_poisonBallInfo.IsActiveHealingPoisonBall}");
+        // Debug.Log($"_poisonBallInfo.HealingBall = {_poisonBallInfo.IsActiveHealingPoisonBall}");
 
         GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
-        PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>(); 
+        PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>();
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
@@ -883,7 +895,7 @@ public class PoisonBall : Skill
         //Debug.Log($"bool isTargetEnemy = {isTargetEnemy}, bool isTargetPlayer = {isTargetPlayer}, bool isTargetAllies = {isTargetAllies}");
 
         GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
-        PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>(); 
+        PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>();
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
@@ -961,7 +973,7 @@ public class PoisonBall : Skill
     [ClientRpc]
     private void RpcApply(PoisonDamagingCloudPrefab poisonDamagingCloud, PoisonHealingCloudPrefab poisonHealingCloud, float duration, bool isHealingCloud)
     {
-            Debug.Log("PoisonBall / RpcApply / if (poisonDamagingCloud != null) = " + poisonDamagingCloud);
+        Debug.Log("PoisonBall / RpcApply / if (poisonDamagingCloud != null) = " + poisonDamagingCloud);
         if (poisonDamagingCloud != null)
         {
             poisonDamagingCloud.InitializationProjectile(_player, 5, duration, 3.5f, Name);

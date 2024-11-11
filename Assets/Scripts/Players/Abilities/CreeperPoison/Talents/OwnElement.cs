@@ -16,13 +16,13 @@ public class OwnElement : Talent
     private int _currentStacksPoison;
     private int _currentAllStacks;
     private int _previousAllStacks;
+    private int _currentStacksAtckSpeed;
 
     private float _baseIncreaseAttackSpeed = 0.1f;
     private float _baseAttackSpeed;
-    private float _increasedAttackSpeed = 1.0f;
+    private float _increasedAttackSpeed;
     private float _maxMinimumAttackSpeed = 0.1f;
 
-    private bool _isCanResetAttackSpeed = false;
     private bool _isTargetNearby = false;
 
     private PoisonBoneState _poisonBoneState;
@@ -35,12 +35,11 @@ public class OwnElement : Talent
     private void Start()
     {
         _baseAttackSpeed = _creeperStrike.AttackDelay;
+        StartSearchingEnemies();
     }
-
     public override void Enter()
     {
         SetActive(true);
-        StartSearchingEnemies();
     }
 
     public override void Exit()
@@ -64,19 +63,18 @@ public class OwnElement : Talent
         while (Data.IsOpen)
         {
             _enemiesWithDebuff.Clear();
-            _currentPoisonOnEnemy = 0;
             _currentStacksPoison = 0;
             _currentAllStacks = 0;
             _isTargetNearby = false;
 
             Collider2D[] enemies = Physics2D.OverlapCircleAll(transform.position, _radiusSearching, _enemyLayer);
-            
+
             if (enemies != null)
             {
-                _isTargetNearby = true;
-
                 foreach (Collider2D target in enemies)
                 {
+                    _isTargetNearby = true;
+
                     var targetWithDebuff = target.GetComponent<CharacterState>();
 
                     if (targetWithDebuff.CheckPoisonStates())
@@ -102,64 +100,51 @@ public class OwnElement : Talent
                             _currentStacksPoison += _witheringPoisonState.CurrentStacks;
                         }
 
-                        for (int i = 0; i < _enemiesWithDebuff.Count; i++)
-                        {
-                            _currentPoisonOnEnemy = _enemiesWithDebuff.Count;
-                        }
                     }
                 }
 
-                _currentAllStacks = _currentPoisonOnEnemy + _currentStacksPoison;
+                _currentAllStacks += _currentStacksPoison;
 
                 if (_currentAllStacks != _previousAllStacks)
                 {
-                    IncreaseAttackSpeed();
-                    _previousAllStacks = _currentAllStacks;
+                    while (_currentStacksAtckSpeed < _currentAllStacks)
+                    {
+                        if (_currentAllStacks > 0 && _creeperStrike.AttackDelay > _maxMinimumAttackSpeed)
+                        {
+                            IncreaseAttackSpeed();
+                            _previousAllStacks = _currentAllStacks;
+                        }
+                    }
+                    yield return null;
                 }
             }
-            if (_currentAllStacks == 0 && _isCanResetAttackSpeed || !_isTargetNearby)
+            if (_currentAllStacks != _currentStacksAtckSpeed && _currentAllStacks == 0 || _currentAllStacks < _previousAllStacks)
             {
-                if (_creeperStrike.AttackDelay != _baseAttackSpeed)
+                while (_currentStacksAtckSpeed > _currentAllStacks)
                 {
                     ResetAttackSpeed();
                 }
-                _increasedAttackSpeed = _baseAttackSpeed;
-                _isCanResetAttackSpeed = false;
+                _previousAllStacks = 0;
             }
-            yield return null;
+            yield return new WaitForSeconds(0.1f);
         }
     }
 
     private void IncreaseAttackSpeed()
     {
-        if (_currentAllStacks > 0)
-        {
-            ResetAttackSpeed();
-            _increasedAttackSpeed = _baseAttackSpeed - (_currentAllStacks * _baseIncreaseAttackSpeed);
-            
-            /*
-             * Rework
-                float a = 0.9f;
-                float r = 0.9f * 0.9f = 0.81f;
-            */
+        _currentStacksAtckSpeed++;
 
-            if (_increasedAttackSpeed < _maxMinimumAttackSpeed)
-            {
-                _increasedAttackSpeed = 0.1f;
-            }
+        _increasedAttackSpeed = _baseAttackSpeed - _baseIncreaseAttackSpeed;
 
-            _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_increasedAttackSpeed);
-            _isCanResetAttackSpeed = true;
-        }
+        _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_increasedAttackSpeed);
     }
 
     private void ResetAttackSpeed()
     {
         if (_creeperStrike.AttackDelay < _baseAttackSpeed)
         {
-            float attackSpeed = _creeperStrike.AttackDelay;
-
-            _creeperStrike.Buff.AttackSpeed.ReductionPercentage(attackSpeed);
+            _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_increasedAttackSpeed);
+            _currentStacksAtckSpeed--;
         }
     }
 

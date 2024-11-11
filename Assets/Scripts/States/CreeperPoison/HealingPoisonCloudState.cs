@@ -30,6 +30,7 @@ public class HealingPoisonCloudState : AbstractCharacterState
 
     public override States State => States.HealingPoisonCloud;
     public override StateType Type => StateType.Physical;
+    public override BuffDebuff BuffDebuff => BuffDebuff.Buff;
     public override List<StatusEffect> Effects => _effects;
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)

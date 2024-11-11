@@ -10,7 +10,8 @@ public class ScorchedSoul : AbstractCharacterState
 
     public override float TEST_ChangeableValue { get; set; }
     public override States State => States.ScorchedSoul;
-    public override StateType Type => StateType.Immaterial;
+    public override StateType Type => StateType.Immaterial; 
+    public override BuffDebuff BuffDebuff => BuffDebuff.Debuff;
     public override List<StatusEffect> Effects => throw new System.NotImplementedException();
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)

@@ -21,6 +21,7 @@ public class SpiritEnergyState : AbstractCharacterState
     public override float TEST_ChangeableValue { get; set; }
     public override States State => States.SpiritEnergy;
     public override StateType Type => StateType.Magic;
+    public override BuffDebuff BuffDebuff => BuffDebuff.Buff;
     public override List<StatusEffect> Effects => _effects;
 
     private Health _healthComponent;

@@ -14,6 +14,7 @@ public abstract class AbstractCharacterState
 
     public abstract States State { get; }
     public abstract StateType Type { get; }
+    public abstract BuffDebuff BuffDebuff { get; }
     public abstract List<StatusEffect> Effects { get; }
     public abstract float TEST_ChangeableValue { get; set; }
 
@@ -29,6 +30,7 @@ public class DefaultState : AbstractCharacterState
     public override States State => States.Default;
 
     public override StateType Type => StateType.Physical;
+    public override BuffDebuff BuffDebuff => BuffDebuff.Buff; 
 
     public override List<StatusEffect> Effects => _effects;
 
@@ -234,8 +236,10 @@ public class CharacterState : NetworkBehaviour
     public List<AbstractCharacterState> CurrentStates { get => currentStates; }
 
 	public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
-	{        
+	{
         #region CreeperStates
+        [States.InAir] = new InAirState(),
+        [States.Immateriality] = new ImmaterialityState(),
         [States.CreeperInvisible] = new CreeperInvisibleState(),
         [States.PoisonBone] = new PoisonBoneState(),
         [States.WitheringPoison] = new WitheringPoisonState(),
@@ -249,6 +253,7 @@ public class CharacterState : NetworkBehaviour
         [States.HeatedGlands] = new HeatedGlandsState(),
         [States.AbsorptionOfPoison] = new AbsorptionOfPoisonsState(),
         #endregion
+
 		[States.Stun] = new StunnedState(),
 		[States.Frozen] = new FrozenState(),
 		[States.Frosting] = new FrostingState(),
@@ -275,7 +280,7 @@ public class CharacterState : NetworkBehaviour
 		[States.EmeraldSkin] = new EmeraldSkinState(),
 		[States.DefenseReduction] = new DefenceReductionState(),
 		[States.SparkTalentHealthBuff] = new SparkTalentHealthState(),
-		[States.SelfHarm] = new SelfHarmState()
+		[States.SelfHarm] = new SelfHarmState(),
 
         #region Carrigan
         [States.Bleeding] = new BleedingState(),
@@ -306,27 +311,62 @@ public class CharacterState : NetworkBehaviour
         }
     }
 
-    public void DispelAllState(StateType type)
+    public void DispelStates(StateType type, int targetTeamIndex, int playerTeamIndex, bool isDispelOneState = false)
     {
-        foreach (AbstractCharacterState state in currentStates)
+        if (!isDispelOneState)
         {
-            if (state.Type == type)
+            List<AbstractCharacterState> statesToRemove = new List<AbstractCharacterState>();
+
+            foreach (var state in currentStates)
+            {
+                if (state != null && state.Type == type)
+                {
+                    if ((targetTeamIndex == playerTeamIndex && state.BuffDebuff == BuffDebuff.Debuff) ||
+                        (targetTeamIndex != playerTeamIndex && state.BuffDebuff == BuffDebuff.Buff))
+                    {
+                        statesToRemove.Add(state);
+                    }
+                }
+            }
+            foreach (var state in statesToRemove)
             {
                 state.ExitState();
+                currentStates.Remove(state);
+            }
+        }
+        else
+        {
+            foreach (AbstractCharacterState state in currentStates)
+            {
+                if (state.Type == type)
+                {
+                    state.ExitState();
+                    break;
+                }
             }
         }
     }
 
-    public void DispelOneState(StateType type)
+
+    public bool CheckPoisonStates()
     {
+        var poisonStates = new List<States>
+        {
+            States.PoisonBone,
+            States.WitheringPoison,
+            States.BindingPoison,
+            States.PoisonCloud
+        };
+
         foreach (AbstractCharacterState state in currentStates)
         {
-            if (state.Type == type)
+            if (poisonStates.Contains(state.State))
             {
-                state.ExitState();
-                break;
+                return true;
             }
         }
+
+        return false;
     }
 
     public bool TEST_CheckStateType(StateType type)
@@ -340,19 +380,6 @@ public class CharacterState : NetworkBehaviour
         }
         return false;
     }
-	
-	public int CheckStateStacks(States state)
-	{
-		foreach (AbstractCharacterState states in currentStates)
-		{
-			Debug.Log(states.State + " on enemy, check for " + state);
-			if (states.State == state)
-			{
-				return states.CurrentStacksCount;
-			}
-		}
-		return 0;
-	}
 
     public List<AbstractCharacterState> TEST_GetStatesOnEffectAndType(StatusEffect effect, StateType type)
     {
@@ -383,6 +410,19 @@ public class CharacterState : NetworkBehaviour
         }
     }
 
+    public int CheckStateStacks(States state)
+	{
+		foreach (AbstractCharacterState states in currentStates)
+		{
+			Debug.Log(states.State + " on enemy, check for " + state);
+			if (states.State == state)
+			{
+				return states.CurrentStacksCount;
+			}
+		}
+		return 0;
+	}
+
     public bool Check(StatusEffect effect)
     {
         foreach (AbstractCharacterState state in currentStates)
@@ -406,27 +446,6 @@ public class CharacterState : NetworkBehaviour
                 return true;
             }
         }
-        return false;
-    }
-
-    public bool CheckPoisonStates()
-    {
-        var poisonStates = new List<States>
-        {
-            States.PoisonBone,
-            States.WitheringPoison,
-            States.BindingPoison,
-            States.PoisonCloud
-        };
-
-        foreach (AbstractCharacterState state in currentStates)
-        {
-            if (poisonStates.Contains(state.State))
-            {
-                return true;
-            }
-        }
-
         return false;
     }
 
@@ -533,7 +552,7 @@ public class CharacterState : NetworkBehaviour
     }
 
     private void AddStateLogic(States state, float duration, float damageToExit, Schools school,
-        GameObject personWhoShooted, string skillName)
+        GameObject personWhoShooted, string skillName, bool isCanDodgeMagDamage = false)
     {
         if (invinsible) return;
 
@@ -545,9 +564,16 @@ public class CharacterState : NetworkBehaviour
             {
                 if (currentStates[i].State == state)
                 {
-                    currentStates[i].Stack(duration);
-
-                    _stateIcons.ActivateIco(state, duration, 1, true);
+                    if (currentStates[i].CurrentStacksCount < currentStates[i].MaxStacksCount)
+                    {
+                        var canStack = currentStates[i].Stack(duration);
+                        _stateIcons.ActivateIco(state, duration, 1, canStack);
+                    }
+                    else if (currentStates[i].MaxStacksCount == 0 || currentStates[i].CurrentStacksCount == currentStates[i].MaxStacksCount)
+                    {
+                        var canStack = currentStates[i].Stack(duration);
+                        _stateIcons.ActivateIco(state, duration, 0, canStack);
+                    }
 
                     break;
                 }
@@ -555,6 +581,19 @@ public class CharacterState : NetworkBehaviour
         }
         else
         {
+            if (!isCanDodgeMagDamage)
+            {
+                AbstractCharacterState newState = enumToState[state];
+                Health characterHealth = _hero.Health;
+                float chanceDodgeMagDamage = Random.Range(0f, 100f);
+
+                if (newState.Type == StateType.Magic && chanceDodgeMagDamage <= characterHealth.ResistMagDamage)
+                {
+                    Debug.Log("CharacterState / DodgeMagDamage");
+                    return;
+                }
+            }
+
             CreateState(enumToState[state], state, duration, damageToExit, personWhoShooted, skillName, false);
 
             if (enumToState[state] is IDamageable damageableShield)
@@ -686,9 +725,12 @@ public enum States
 
     EmeraldSkin,
     SparkTalentHealthBuff,
-    DefenseReduction
-	EmeraldSkin,
-	SparkTalentHealthBuff,
-	DefenseReduction,
+    DefenseReduction,
 	SelfHarm
+}
+
+public enum BuffDebuff
+{
+    Buff,
+    Debuff,
 }

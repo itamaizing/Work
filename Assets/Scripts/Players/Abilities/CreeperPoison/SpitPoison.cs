@@ -8,8 +8,9 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
 using System.Drawing;
+using System;
 
-public class SpitPoison : Skill
+public class SpitPoison : Skill, IAltAbility
 {
     [Header("Talents")]
     [SerializeField] private RestorationOfGlands _restorationOfGlands;
@@ -46,10 +47,16 @@ public class SpitPoison : Skill
     private bool _isOriginalTargetAllies;
     private bool _isOriginalTargetPlayer;
 
-    public RestorationOfGlands RestorationOfGlandsTalent { get; set; }
-    public int PoisonBoneStack { get => _poisonBoneStack; set => _poisonBoneStack = value; }
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
+    public bool IsAltAbility { get; set; }
+
+    public RestorationOfGlands RestorationOfGlandsTalent { get; set; }
+    public int PoisonBoneStack { get => _poisonBoneStack; set => _poisonBoneStack = value; }
+
+    public event Action ResetAbilityParameters;
+    public event Action AbilityChange;
+
     protected override bool IsCanCast => CheckCanCast();
 
     protected void Start()
@@ -69,7 +76,6 @@ public class SpitPoison : Skill
                 ChooseTarget();
 
                 _mousePos = GetMousePoint();
-                Debug.Log("SpitPoison / PRepareJob / _mousePos = " + _mousePos); 
                 CalculateAngleRotation();
             }
             CooldownChange();
@@ -80,6 +86,9 @@ public class SpitPoison : Skill
     protected override IEnumerator CastJob()
     {
         Shoot();
+
+        ResetAbilityParameters?.Invoke();
+
         yield return null;
     }
 
@@ -91,7 +100,7 @@ public class SpitPoison : Skill
         _isOriginalTargetEnemy = false;
         _isOriginalTargetPlayer = false;
 
-        _currentTarget = null; 
+        _currentTarget = null;
         _mousePos = Vector3.positiveInfinity;
     }
 
@@ -151,7 +160,6 @@ public class SpitPoison : Skill
             }
             else if (_currentTarget.gameObject.layer == LayerMask.NameToLayer("Enemy"))
             {
-                Debug.Log("else if / Target");
                 _isOriginalTargetPlayer = false;
                 _isOriginalTargetAllies = false;
                 _isOriginalTargetEnemy = true;
@@ -176,6 +184,7 @@ public class SpitPoison : Skill
 
     private void CheckActiveTalents()
     {
+        /*
         if (_transparentPoisons.Data.IsOpen && _player.IsInvisible)
         {
             _isPlayerInvisible = true;
@@ -184,6 +193,7 @@ public class SpitPoison : Skill
         {
             _isPlayerInvisible = false;
         }
+        */
 
         if (_healingSpitPoison.Data.IsOpen)
         {
@@ -208,18 +218,18 @@ public class SpitPoison : Skill
     {
         if (_currentTarget != null)
         {
-            CmdInstantiateProjectileToTarget(_currentTarget.gameObject, _angleRotation, _player.Resources.FirstOrDefault()!.CurrentValue, 
-                _isActiveHealingSpitPoison, _isPlayerInvisible,
+            CmdInstantiateProjectileToTarget(_currentTarget.gameObject, _angleRotation, _player.Resources.FirstOrDefault()!.CurrentValue,
+                _isActiveHealingSpitPoison, IsAltAbility,
                 _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
 
             //CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
         }
         else
         {
-            CmdInstantiateProjectileToPoint(_mousePos, _angleRotation, _player.Resources.FirstOrDefault()!.CurrentValue, 
-                _isActiveHealingSpitPoison, _isPlayerInvisible,
+            CmdInstantiateProjectileToPoint(_mousePos, _angleRotation, _player.Resources.FirstOrDefault()!.CurrentValue,
+                _isActiveHealingSpitPoison, IsAltAbility,
                 _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
-                
+
             //CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
         }
 
@@ -230,21 +240,21 @@ public class SpitPoison : Skill
     #region Command Methods
 
     [Command]
-    private void CmdInstantiateProjectileToTarget(GameObject target, float angleRotation, float manaValue, 
-        bool isActiveHealingSpitPoison, bool isPlayerInvisible, 
+    private void CmdInstantiateProjectileToTarget(GameObject target, float angleRotation, float manaValue,
+        bool isActiveHealingSpitPoison, bool isPlayerInvisible,
         bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
     {
         RestorationOfGlandsTalent = _restorationOfGlands;
         Debug.Log("SpitPoison / CmdInstTarget / RestorationOfGlandsTalent = " + RestorationOfGlandsTalent);
 
-        GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
+        GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.Euler(0, 0, angleRotation));
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
         SpitPoisonProjectile projectile = item.GetComponent<SpitPoisonProjectile>();
 
-        projectile.InitializationProjectile(_player, this, _player.Resources.FirstOrDefault()!.CurrentValue, 
-            isActiveHealingSpitPoison, isPlayerInvisible, 
+        projectile.InitializationProjectile(_player, this, _player.Resources.FirstOrDefault()!.CurrentValue,
+            isActiveHealingSpitPoison, isPlayerInvisible,
             isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack);
 
         projectile.MoveBallToTarget(target.transform.position);
@@ -253,21 +263,21 @@ public class SpitPoison : Skill
     }
 
     [Command]
-    private void CmdInstantiateProjectileToPoint(Vector3 point, float angleRotation, float manaValue, 
-        bool isActiveHealingSpitPoison, bool isPlayerInvisible, 
+    private void CmdInstantiateProjectileToPoint(Vector3 point, float angleRotation, float manaValue,
+        bool isActiveHealingSpitPoison, bool isPlayerInvisible,
         bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
     {
         RestorationOfGlandsTalent = _restorationOfGlands;
         Debug.Log("SpitPoison / CmdInstPoint / RestorationOfGlandsTalent = " + RestorationOfGlandsTalent);
 
-        GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
+        GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.Euler(0, 0, angleRotation));
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
         SpitPoisonProjectile projectile = item.GetComponent<SpitPoisonProjectile>();
 
-        projectile.InitializationProjectile(_player, this, _player.Resources.FirstOrDefault()!.CurrentValue, 
-            isActiveHealingSpitPoison, isPlayerInvisible, 
+        projectile.InitializationProjectile(_player, this, _player.Resources.FirstOrDefault()!.CurrentValue,
+            isActiveHealingSpitPoison, isPlayerInvisible,
             isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack);
 
         projectile.MoveBallOnMaxDistance(point);
@@ -326,6 +336,7 @@ public class SpitPoison : Skill
         }
         RpcApply(_poisonDamagingCloudPrefab.PoisonDamageCloud, _poisonHealingCloudPrefab.PoisonHealingCloud, duration, isHealingCloud);
     }
+
 
     #endregion
 

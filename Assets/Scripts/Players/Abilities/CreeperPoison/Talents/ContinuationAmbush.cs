@@ -22,7 +22,6 @@ public class ContinuationAmbush : Talent
     {
         Debug.Log("CanApplyInvisible");
         _isCanApplyInvisible = isCanApplyInvisible;
-        RpcApplyInvisible(_isCanApplyInvisible);
         Invoke("CanNotApplyInvisible", 1.0f);
     }
 
@@ -31,21 +30,5 @@ public class ContinuationAmbush : Talent
         Debug.Log("CanNotApplyInvisible");
         _isCanApplyInvisible = false;
         Debug.Log($"CanNotApplyInvisible / isCanApply = {_isCanApplyInvisible}");
-        RpcCanNotApplyInvisible(false);
-    }
-
-    [ClientRpc]
-    private void RpcApplyInvisible(bool isCanApplyInvisible)
-    {
-        Debug.Log("RpcCanApplyInvisible");
-        _isCanApplyInvisible = isCanApplyInvisible;
-    }
-
-    [ClientRpc]
-    private void RpcCanNotApplyInvisible(bool isCanApplyInvisible)
-    {
-        Debug.Log("RpcCanNotApplyInvisible");
-        _isCanApplyInvisible = isCanApplyInvisible; 
-        Debug.Log($"RpcCanNotApplyInvisible / isCanApply = {_isCanApplyInvisible}");
     }
 }
