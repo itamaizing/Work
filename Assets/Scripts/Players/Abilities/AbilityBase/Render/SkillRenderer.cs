@@ -26,10 +26,11 @@ public class SkillRenderer : NetworkBehaviour
     private Coroutine _drawLineCoroutine;
     private Coroutine _drawAreaCoroutine;
     private Coroutine _drawClosestTargetCoroutine;
-
-
     
     private Character _tempTarget;
+
+
+    public CircleArea TempDamageZone => _tempDamageZone;
 
     [Command]
     public void CmdDrawDamageZone(Vector3 position, float radius, Damage damage, GameObject player)
