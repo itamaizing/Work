@@ -9,14 +9,14 @@ public class SkillRenderer : NetworkBehaviour
 {
     [SerializeField] private DrawCircle _circle;
     [SerializeField] private CircleArea _areaPref;
-    [SerializeField] private CircleArea _damageZonePref;
+    [SerializeField] private SphereArea _damageZonePref;
     [SerializeField] private AbilityLineRenderer _line;
     [SerializeField] private Color _colorForAllies = Color.green;
     [SerializeField] private Color _colorForEnemies = Color.red;
     [SerializeField] private Color _colorForEnd;
     [SerializeField] private Color _colorForStart;
 
-    private CircleArea _tempDamageZone;
+    private SphereArea _tempDamageZone;
     private CircleArea _tempArea;
     private float _lineStartLength;
     private float _lineEndLength;
@@ -27,9 +27,9 @@ public class SkillRenderer : NetworkBehaviour
     private Coroutine _drawAreaCoroutine;
     private Coroutine _drawClosestTargetCoroutine;
 
+	public SphereArea TempDamageZone => _tempDamageZone;
 
-    
-    private Character _tempTarget;
+	private Character _tempTarget;
 
     [Command]
     public void CmdDrawDamageZone(Vector3 position, float radius, Damage damage, GameObject player)

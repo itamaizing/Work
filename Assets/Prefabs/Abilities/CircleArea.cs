@@ -5,7 +5,8 @@ using UnityEngine;
 public class CircleArea : MonoBehaviour
 {
     [SerializeField] CircleCollider2D _colider;
-    [SerializeField] SpriteRenderer _sprite;
+	//[SerializeField] private Collider _collider3d;
+	[SerializeField] SpriteRenderer _sprite;
 
     private bool _isConcernsEnemy;
     private Damage _damage;
@@ -28,7 +29,7 @@ public class CircleArea : MonoBehaviour
         _sprite.size = new Vector2(size, size);
         _colider.radius = size / 2f;
         _damage = damage;
-    }
+	}
 
     public void SetColor(Color color)
     {

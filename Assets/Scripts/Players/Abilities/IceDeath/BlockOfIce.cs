@@ -69,6 +69,8 @@ public class BlockOfIce : Skill
 		{			
 			if (GetMouseButton)
 			{
+				//if (GetTarget() == null) yield return null;
+
 				if (GetTarget().character == null)
 				{
 					_mousePos = GetTarget().Position;

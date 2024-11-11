@@ -42,12 +42,17 @@ public class DeathSpiral : Skill
 	{
 		while (_target == null)
 		{
-			if (GetTarget().character != null)
+			if (GetMouseButton)
 			{
-				// FIND SHADOW!
+				if (GetTarget() == null) continue; 
 
-				_target = GetTarget().character.gameObject;
-				Debug.Log(_target + " target name ");
+				if (GetTarget().character != null)
+				{
+					// FIND SHADOW!
+
+					_target = GetTarget().character.gameObject;
+					Debug.Log(_target + " target name ");
+				}
 			}
 			yield return null;
 		}

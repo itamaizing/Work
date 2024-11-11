@@ -242,6 +242,15 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Press"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SpaceMouse"",
+                    ""type"": ""Button"",
+                    ""id"": ""b70078f0-91e3-4ada-8895-f72efad55c5a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -618,6 +627,39 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
                     ""action"": ""ShowMenu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""f92e639c-e487-4c3e-87a1-3be633068231"",
+                    ""path"": ""OneModifier(overrideModifiersNeedToBePressedFirst=true)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SpaceMouse"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Modifier"",
+                    ""id"": ""46aa35e6-d059-4b96-afdb-ea738eb4377b"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SpaceMouse"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Binding"",
+                    ""id"": ""b731d84c-18e0-4525-bfb4-0b24e2420ce1"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SpaceMouse"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -650,6 +692,7 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
         m_GameplayMap_ShiftMouse = m_GameplayMap.FindAction("ShiftMouse", throwIfNotFound: true);
         m_GameplayMap_ScrollMouse = m_GameplayMap.FindAction("ScrollMouse", throwIfNotFound: true);
         m_GameplayMap_ShowMenu = m_GameplayMap.FindAction("ShowMenu", throwIfNotFound: true);
+        m_GameplayMap_SpaceMouse = m_GameplayMap.FindAction("SpaceMouse", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -735,6 +778,7 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_GameplayMap_ShiftMouse;
     private readonly InputAction m_GameplayMap_ScrollMouse;
     private readonly InputAction m_GameplayMap_ShowMenu;
+    private readonly InputAction m_GameplayMap_SpaceMouse;
     public struct GameplayMapActions
     {
         private @StandardInput m_Wrapper;
@@ -763,6 +807,7 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
         public InputAction @ShiftMouse => m_Wrapper.m_GameplayMap_ShiftMouse;
         public InputAction @ScrollMouse => m_Wrapper.m_GameplayMap_ScrollMouse;
         public InputAction @ShowMenu => m_Wrapper.m_GameplayMap_ShowMenu;
+        public InputAction @SpaceMouse => m_Wrapper.m_GameplayMap_SpaceMouse;
         public InputActionMap Get() { return m_Wrapper.m_GameplayMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -844,6 +889,9 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
             @ShowMenu.started += instance.OnShowMenu;
             @ShowMenu.performed += instance.OnShowMenu;
             @ShowMenu.canceled += instance.OnShowMenu;
+            @SpaceMouse.started += instance.OnSpaceMouse;
+            @SpaceMouse.performed += instance.OnSpaceMouse;
+            @SpaceMouse.canceled += instance.OnSpaceMouse;
         }
 
         private void UnregisterCallbacks(IGameplayMapActions instance)
@@ -920,6 +968,9 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
             @ShowMenu.started -= instance.OnShowMenu;
             @ShowMenu.performed -= instance.OnShowMenu;
             @ShowMenu.canceled -= instance.OnShowMenu;
+            @SpaceMouse.started -= instance.OnSpaceMouse;
+            @SpaceMouse.performed -= instance.OnSpaceMouse;
+            @SpaceMouse.canceled -= instance.OnSpaceMouse;
         }
 
         public void RemoveCallbacks(IGameplayMapActions instance)
@@ -963,5 +1014,6 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
         void OnShiftMouse(InputAction.CallbackContext context);
         void OnScrollMouse(InputAction.CallbackContext context);
         void OnShowMenu(InputAction.CallbackContext context);
+        void OnSpaceMouse(InputAction.CallbackContext context);
     }
 }
