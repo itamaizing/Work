@@ -616,11 +616,6 @@ public class LightningMovement : Skill
     {
         while (true)
         {
-            //Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, radius, enemiesLayer);
-
-            //Vector2 sizeBox = new Vector2(_castWidth, _castLength);
-            //Collider2D[] hitsBox = Physics2D.OverlapBoxAll(transform.position, sizeBox, _angle, enemiesLayer);
-
             Collider[] hits = Physics.OverlapSphere(transform.position, radius, enemiesLayer);
 
             foreach (Collider item in hits)
@@ -724,18 +719,13 @@ public class LightningMovement : Skill
             _isTargetBehindPlayerCoroutine = StartCoroutine(IsTargetBehindPlayerJob(_rangeLeap, _targetsLayers));
         }
 
-        if (_superFastScales.Data.IsOpen)
-        {
-            _superFastScales.IncreasingResistance();
-        }
-
         _applyDamageCoroutine = StartCoroutine(ApplyDamageJob(_targetsLayers, _radiusAttack, _durationLeap * _rangeLeap));
 
         _player.CharacterState.CmdAddState(States.Immateriality, (_durationLeap * _multiplierLeap), 0, _player.gameObject, Name);
 
         CmdExecuteTwoLeaps(firstLeapPoint, secondLeapPoint, 
             _durationLeap, _rangeLeap, _multiplierLeap, _timeBuff, _invtervalBetweenLeaps,
-            _heatedGlandsIsActive, _targetsLayers);
+            _heatedGlandsIsActive, _targetsLayers, _target.gameObject);
     }
 
     #endregion
@@ -747,15 +737,14 @@ public class LightningMovement : Skill
         float durationLeap, float rangeLeap, float multiplierLeap, float timeBuff, 
         bool heatedGlandsIsAcitve)
     {
-        Debug.Log("LightningMovement / CmdSingleLeap");
-        if (_superFastScales.Data.IsOpen)
-        {
-            Debug.Log("LightningMovement / superFastScales Active");
-            OnEnabled();
-            _superFastScales.IncreasingResistance();
-        }
 
         _player.Move.enabled = false;
+
+        if (_superFastScales.Data.IsOpen)
+        {
+            OnEnabled();
+            _superFastScales.IncreasingResistance(null);
+        }
 
         MoveComponent playerTransform = _player.GetComponent<MoveComponent>();
         
@@ -766,16 +755,15 @@ public class LightningMovement : Skill
     private void CmdExecuteTwoLeaps(Vector3 firstLeapPoint, Vector2 secondLeapPoint,
         float durationLeap, float rangeLeap, float multiplierLeap, float timeBuff, float interval,
         bool heatedGlandsIsActive,
-        LayerMask enemyLayer)
+        LayerMask enemyLayer, GameObject target)
     {
-        Debug.Log("LightningMovement / CmdExecuteTwoLeaps");
+        Character targetCharacter = target.GetComponent<Character>();
         _player.Move.enabled = false;
 
         if (_superFastScales.Data.IsOpen)
         {
             OnEnabled();
-            Debug.Log("LightningMovement / superFastScales Active");
-            _superFastScales.IncreasingResistance();
+            _superFastScales.IncreasingResistance(targetCharacter);
         }
 
         TargetRpcExecuteLeaps(_player.gameObject, firstLeapPoint, secondLeapPoint, 
@@ -791,12 +779,8 @@ public class LightningMovement : Skill
         bool heatedGlandsIsActive,
         LayerMask enemyLayer)
     {
-        Debug.Log("LightningMovement / TargetRpcExecuteLeaps");
-        Debug.Log("LightningMovement / TargetRpcExecuteLeaps / firstLeapPoint = " + firstLeapPoint);
-        Debug.Log("LightningMovement / TargetRpcExecuteLeaps / secondLeapPoint = " + secondLeapPoint);
         float deductible = 0.12f;
         interval = (rangeLeap * (durationLeap / GlobalVariable.cellSize)) - deductible;
-        Debug.Log("LightningMovement / TargetRpcExecuteLeaps / interval = " + interval);
         Character playerRigidbody = player.GetComponent<Character>(); 
 
         Sequence leapSequence = DOTween.Sequence();
@@ -804,14 +788,11 @@ public class LightningMovement : Skill
         leapSequence.AppendCallback(() =>
         {
             playerRigidbody.Rb.DOMove(firstLeapPoint, (durationLeap * rangeLeap / GlobalVariable.cellSize));
-            Debug.Log("LightningMovement / TargetRpcExecuteLeaps / first Sequence");
         }).AppendInterval(interval);
 
         leapSequence.AppendCallback(() =>
         {
             playerRigidbody.Rb.DOMove(secondLeapPoint, (durationLeap * rangeLeap / GlobalVariable.cellSize));
-            Debug.Log("LightningMovement / TargetRpcExecuteLeaps / second Sequence");
-
             if (heatedGlandsIsActive)
             {
                 _player.CharacterState.AddState(States.HeatedGlands, 4, 0, _player.gameObject, null);

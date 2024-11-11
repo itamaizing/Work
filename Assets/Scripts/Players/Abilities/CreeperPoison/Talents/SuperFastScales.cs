@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class SuperFastScales : Talent
 {
+    private float _chanceOfDispelMagStates = 0.9f;
     private float _increaseResistanceToMagicDamage = 90f;
     private float _baseDefMagDamage;
 
@@ -19,8 +20,15 @@ public class SuperFastScales : Talent
         SetActive(false);
     }
 
-    public void IncreasingResistance()
+    public void IncreasingResistance(Character target)
     {
+        if (Random.Range(0.0f, 1.0f) <= _chanceOfDispelMagStates)
+        {
+            Debug.Log("SuperFastScales / DispelMageStates");
+            if (target != null)
+                character.CharacterState.DispelStates(StateType.Magic, target.NetworkSettings.TeamIndex, character.NetworkSettings.TeamIndex);
+        }
+
         _baseDefMagDamage = character.Health.DefMagDamage;
         Debug.Log("BaseMagDamage = " + _baseDefMagDamage);
 

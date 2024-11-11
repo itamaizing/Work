@@ -67,11 +67,11 @@ public class OwnElement : Talent
             _currentAllStacks = 0;
             _isTargetNearby = false;
 
-            Collider2D[] enemies = Physics2D.OverlapCircleAll(transform.position, _radiusSearching, _enemyLayer);
+            Collider[] enemies = Physics.OverlapSphere(transform.position, _radiusSearching, _enemyLayer);
 
             if (enemies != null)
             {
-                foreach (Collider2D target in enemies)
+                foreach (Collider target in enemies)
                 {
                     _isTargetNearby = true;
 
@@ -137,6 +137,7 @@ public class OwnElement : Talent
         _increasedAttackSpeed = _baseAttackSpeed - _baseIncreaseAttackSpeed;
 
         _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_increasedAttackSpeed);
+        Debug.Log("OwnElement / IncreaseAttackSpeed / CurrentattackSpeed = " + _creeperStrike.AttackDelay);
     }
 
     private void ResetAttackSpeed()

@@ -93,7 +93,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.size
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.data[0]
@@ -115,10 +115,14 @@ PrefabInstance:
       propertyPath: _skills.Array.data[4]
       value: 
       objectReference: {fileID: 5246557041890453261}
+    - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _skills.Array.data[5]
+      value: 
+      objectReference: {fileID: 1737191631964824437}
     - target: {fileID: 5590339039165547173, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _stateIcons
       value: 
-      objectReference: {fileID: 7930975987946287740}
+      objectReference: {fileID: 8799243637973134577}
     - target: {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _rb
       value: 
@@ -149,52 +153,52 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.size
-      value: 12
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[0]
       value: 
-      objectReference: {fileID: 8217273048718757324}
+      objectReference: {fileID: 5739315053137242685}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[1]
       value: 
-      objectReference: {fileID: 5739315053137242685}
+      objectReference: {fileID: 3000660281403338168}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[2]
       value: 
-      objectReference: {fileID: 3000660281403338168}
+      objectReference: {fileID: 4139564304395353676}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[3]
       value: 
-      objectReference: {fileID: 4139564304395353676}
+      objectReference: {fileID: 3379942782498301808}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[4]
       value: 
-      objectReference: {fileID: 3379942782498301808}
+      objectReference: {fileID: 4297146135176945923}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[5]
       value: 
-      objectReference: {fileID: 4297146135176945923}
+      objectReference: {fileID: 6481945075527068323}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[6]
       value: 
-      objectReference: {fileID: 6481945075527068323}
+      objectReference: {fileID: 3499405661049862048}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[7]
       value: 
-      objectReference: {fileID: 3499405661049862048}
+      objectReference: {fileID: 9013115207424962608}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[8]
       value: 
-      objectReference: {fileID: 9013115207424962608}
+      objectReference: {fileID: 3499405661049862048}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[9]
       value: 
-      objectReference: {fileID: 3499405661049862048}
+      objectReference: {fileID: 3703492777688133874}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[10]
       value: 
-      objectReference: {fileID: 1520381461956624863}
+      objectReference: {fileID: 3703492777688133874}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[11]
       value: 
@@ -405,6 +409,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8412145673821603884}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8080289307232760449}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!1 &605281494638859046 stripped
 GameObject:
@@ -423,9 +430,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7476dd8f7a6cc01418cafeff799dddef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: ColdBloodEnabledTalent
     IsOpen: 0
@@ -446,9 +450,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb4b31b7f8124494ca6b230d7a10db64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: 
     IsOpen: 0
@@ -469,9 +470,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f92c6b645149246459c1002647b2edc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: AcceleratedSlap
     IsOpen: 0
@@ -491,9 +489,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50b1503a081fe6344b1052f91e77c8dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: AssasinPoison
     IsOpen: 0
@@ -514,9 +509,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12756535ab4e29a4081d2516cc762cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: BindingPoison
     IsOpen: 0
@@ -535,9 +527,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c5300110580da641af0fed875db082f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: 
     IsOpen: 0
@@ -556,9 +545,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 014d932c20ea61146bd0f731492d3df8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: ColdBloodTalent
     IsOpen: 0
@@ -577,9 +563,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2933719ee111c6418fdb87f37b33c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: 
     IsOpen: 0
@@ -598,9 +581,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2235354ba3050c4cbc10549ac8f97ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: 
     IsOpen: 0
@@ -619,9 +599,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 289ecbfb3bd60a84b9d790ddae6f93b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: 
     IsOpen: 0
@@ -640,9 +617,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53106cf7b5e7c7c458698e2157e6e98c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: 
     IsOpen: 0
@@ -661,9 +635,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92ec258206fbd8842aa13793568cd525, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: 
     IsOpen: 0
@@ -682,9 +653,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 034c48fc15844c848a392812c2b435ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: FeelingOfContinuation
     IsOpen: 0
@@ -703,9 +671,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df501274d50ae764e81b5aeea25d7451, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: 
     IsOpen: 0
@@ -724,9 +689,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12786b5079929c141bf60f09cbf027a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: 
     IsOpen: 0
@@ -746,9 +708,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c821030d0696774ba88a7d05e127d8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: 
     IsOpen: 0
@@ -767,9 +726,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43d31da3a0620bd469d47c7183a75a3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: 
     IsOpen: 0
@@ -788,9 +744,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a356fac3ad6b94e45888cbe90f2b90dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: 
     IsOpen: 0
@@ -809,9 +762,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81419aa55a1ebc3459664e07d0c32e28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: 
     IsOpen: 0
@@ -830,9 +780,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6077aa9b0a97f1e4d99d824c4f97d793, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: 
     IsOpen: 0
@@ -851,9 +798,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66e2e0670c0735c4ebafe9630e9a5631, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: 
     IsOpen: 0
@@ -872,9 +816,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4ceefaec061c884b86df4749352f9ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: 
     IsOpen: 0
@@ -894,9 +835,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a40a9755254f8c140a260181abf099f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: OwnElement
     IsOpen: 0
@@ -908,7 +846,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   _enemiesWithDebuff: []
-  _radiusSearching: 3
+  _radiusSearching: 5
 --- !u!114 &932422235658822982
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -921,9 +859,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 455e54af9799d9041b152aa49a0cc446, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: 
     IsOpen: 0
@@ -942,9 +877,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc2a2ba9ba958f14fb2f1721ac3a29af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: PreparingForFight
     IsOpen: 0
@@ -963,9 +895,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bace2638066a6b144b4d55c8e5f312e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: ReleaseFromSecrecy
     IsOpen: 0
@@ -986,9 +915,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44885ace6d5113a4d83008cdc5ee6a6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: 
     IsOpen: 0
@@ -1011,9 +937,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ba74ffb0d2fcad4f9f653983ae7ab39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: 
     IsOpen: 0
@@ -1035,9 +958,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c761b26a475aff342b001c2862bedf59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: SuperFastScales
     IsOpen: 0
@@ -1056,9 +976,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4477dec7cba8ebb4c86ffd270ac71311, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: 
     IsOpen: 0
@@ -1077,9 +994,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fa98a282de9a2d40b85e19ed7eb612d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: 
     IsOpen: 0
@@ -1098,9 +1012,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ec6dac149af0a142901c36cb4858fab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: TransparentPoisons
     IsOpen: 0
@@ -1121,9 +1032,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04061dd3ac5482d4f89824a93ca73a15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: 
     IsOpen: 0
@@ -1142,9 +1050,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 559e49f72a29fc34e858b23f9ecf3dac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: 
     IsOpen: 0
@@ -1166,15 +1071,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75031bf7483530e429756fbe63bca31a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _data:
     Name: 
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 5560201130496293763}
+--- !u!114 &8080289307232760449
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 605281494638859046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed722ffdfc3601b4882be52b7a4f0252, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    Name: 
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 5560201130496293763}
+  _creeperInvisible: {fileID: 1737191631964824437}
+  _creeperStrike: {fileID: 5603002030722705376}
+  FirstHit: 0
 --- !u!136 &1625680939628165366 stripped
 CapsuleCollider:
   m_CorrespondingSourceObject: {fileID: 1550066538247365834, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -1205,17 +1128,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 22d89e8fc912e73459ee8ef407455b14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &7930975987946287740 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7862468949918363200, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-  m_PrefabInstance: {fileID: 219943549773077564}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 89bb8792cc67dea4487caae7c8fb0dfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &8641125146119960656 stripped
@@ -1280,6 +1192,7 @@ MonoBehaviour:
   _strokesOfAspiration: {fileID: 1802247840864847558}
   _assasinPoison: {fileID: 3499405661049862048}
   _desireToHide: {fileID: 8083768453248628398}
+  _firstStrike: {fileID: 8080289307232760449}
   _feelingOfContinuation: {fileID: 5739315053137242685}
   _preparingForFight: {fileID: 3703492777688133874}
   _creeperInvisible: {fileID: 1737191631964824437}
@@ -1581,13 +1494,14 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _releaseFromSecrecy: {fileID: 4297146135176945923}
   _desireToHide: {fileID: 8083768453248628398}
-  _firstStrike: {fileID: 0}
+  _firstStrike: {fileID: 8080289307232760449}
   _continuationAmbush: {fileID: 7367470875435194460}
   _transparentPoisons: {fileID: 4139564304395353676}
   _preparingForFight: {fileID: 3703492777688133874}
   _concentratedPrecision: {fileID: 7212452297224864224}
   _creeperStrike: {fileID: 5603002030722705376}
   _coldBlood: {fileID: 1990362504558455005}
+  _altAbilities: []
   _player: {fileID: 5560201130496293763}
   _playerRenderer: {fileID: 9118050710263656736}
 --- !u!114 &8401732055610715995
@@ -1801,6 +1715,17 @@ MonoBehaviour:
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
   _player: {fileID: 5560201130496293763}
+--- !u!114 &8799243637973134577 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 219943549773077564}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89bb8792cc67dea4487caae7c8fb0dfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &8980354838078202602 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

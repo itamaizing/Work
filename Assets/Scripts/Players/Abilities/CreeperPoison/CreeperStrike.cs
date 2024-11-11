@@ -14,7 +14,7 @@ public class CreeperStrike : AutoAttackSkill
     [SerializeField] private StrokesOfAspiration _strokesOfAspiration;
     [SerializeField] private AssasinPoison _assasinPoison;
     [SerializeField] private DesireToHide _desireToHide;
-    //[SerializeField] private FirstStrike _firstStrike;
+    [SerializeField] private FirstStrike _firstStrike;
     [SerializeField] private FeelingOfContinuation _feelingOfContinuation;
     [SerializeField] private PreparingForFight _preparingForFight;
 
@@ -181,13 +181,12 @@ public class CreeperStrike : AutoAttackSkill
             };
 
             CmdApplyDamage(damage, target.gameObject);
-            target.DamageTracker.AddDamage(damage);
         }
 
-        //if (_firstStrike.Data.IsOpen)
-        //{
-        //    _firstStrike.FirstHit = false;
-        //}
+        if (_firstStrike.Data.IsOpen)
+        {
+            _firstStrike.FirstHit = false;
+        }
 
         _isHit = false;
     }
@@ -207,11 +206,11 @@ public class CreeperStrike : AutoAttackSkill
             }
         }
 
-        //if (_firstStrike.Data.IsOpen && _firstStrike.IsCanIncreaseCrit && _firstStrike.FirstHit)
-        //{
-        //    criticalDamage *= (multiplyDamage * firstStrikeTalentMultiplyDamage);
-        //    _firstStrike.ReturnBoolFalse();
-        //}
+        if (_firstStrike.Data.IsOpen && _firstStrike.IsCanIncreaseCrit && _firstStrike.FirstHit)
+        {
+            criticalDamage *= (multiplyDamage * firstStrikeTalentMultiplyDamage);
+            _firstStrike.ReturnBoolFalse();
+        }
         if (_coldBlood.IsCanCritCreeperStrike && _poisonBoneStack == 0)
         {
             if (!target.CharacterState.CheckPoisonStates())
@@ -257,7 +256,6 @@ public class CreeperStrike : AutoAttackSkill
         };
 
         CmdApplyDamage(critDamage, currentTarget.gameObject);
-        currentTarget.DamageTracker.AddDamage(critDamage);
 
         if (_feelingOfContinuation.Data.IsOpen)
         {
