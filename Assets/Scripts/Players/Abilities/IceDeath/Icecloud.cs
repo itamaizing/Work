@@ -9,7 +9,7 @@ public class Icecloud : Skill
 	[SerializeField] private HeroComponent _playerLinks;
 	[SerializeField] private SeriesOfStrikes _combo;
 
-	private Vector2 _mousePos = Vector3.positiveInfinity;
+	private Vector3 _mousePos = Vector3.positiveInfinity;
 	
 	//private bool _enabled;
 	private bool _boostDmg;
@@ -18,9 +18,9 @@ public class Icecloud : Skill
 
 	protected override bool IsCanCast => IsCanCastCheck();
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+    protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+    protected override int AnimTriggerCast => 0;
 
     private bool IsCanCastCheck()
 	{
@@ -56,8 +56,8 @@ public class Icecloud : Skill
 
 		//_playerLinks.RuneComponent.SwitchMultiplier(true);
 		//_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		Vector2 lookDir = _mousePos - (Vector2)_playerLinks.transform.position;
-		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
+		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
+		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
 		if( _combo.MakeHit(null, AbilityForm.Magic, 1, 0))
 		{
 			Debug.LogError("some talents i guess in ice cloud");
@@ -74,7 +74,7 @@ public class Icecloud : Skill
 	[Command]
 	private void CmdCreateProjecttile(float angle, float manaValue)
 	{
-		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
+		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, -angle, 0));
 		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
 		projectile.Init(_playerLinks, manaValue, false, this);	
 
@@ -99,8 +99,15 @@ public class Icecloud : Skill
 		while (float.IsPositiveInfinity(_mousePos.x))
 		{
 			if (GetMouseButton)
-			{			
-				_mousePos = GetTarget().character.transform.position;
+			{
+				if (GetTarget().character == null)
+				{
+					_mousePos = GetTarget().Position;
+				}
+				else
+				{
+					_mousePos = GetTarget().character.transform.position;
+				}
 			}
 			yield return null;
 		}

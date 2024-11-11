@@ -232,8 +232,9 @@ public class CharacterState : NetworkBehaviour
     public Character Character => _hero;
 
     public List<AbstractCharacterState> CurrentStates { get => currentStates; }
-    public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
-    {
+
+	public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
+	{        
         #region CreeperStates
         [States.CreeperInvisible] = new CreeperInvisibleState(),
         [States.PoisonBone] = new PoisonBoneState(),
@@ -248,41 +249,39 @@ public class CharacterState : NetworkBehaviour
         [States.HeatedGlands] = new HeatedGlandsState(),
         [States.AbsorptionOfPoison] = new AbsorptionOfPoisonsState(),
         #endregion
+		[States.Stun] = new StunnedState(),
+		[States.Frozen] = new FrozenState(),
+		[States.Frosting] = new FrostingState(),
+		[States.Cooling] = new Cooling(),
+		[States.Blind] = new BlindnessState(),
+		[States.Invisible] = new InvisibleState(),
+		[States.SchoolDebuff] = new AbilitySchoolDebuff(),
+		[States.Desiccuration] = new Desiccuration(),
+		[States.Plague] = new Plague(),
+		[States.Curse] = new Curse(),
+		[States.NorthernerEndurance] = new NorthernerEndurance(),
+		[States.LastBreath] = new LastBreath(),
+		[States.MagicBuff] = new MagicBuff(),
+		[States.DarkShield] = new DarkShield(),
+		[States.LightShield] = new LightShield(),
+		[States.TiredSoul] = new TiredSoul(),
+		[States.ReversePolarity] = new ReversePolarityState(),
+		[States.SpiritEnergy] = new SpiritEnergyState(),
+		[States.SpiritHealth] = new SpiritHealthState(),
+		[States.ScorchedSoul] = new ScorchedSoul(),
+		[States.Knockdown] = new Knockdown(),
+		[States.IdealEvade] = new IdealEvade(),
+		[States.Bleeding] = new BleedingDebuff(),
+		[States.EmeraldSkin] = new EmeraldSkinState(),
+		[States.DefenseReduction] = new DefenceReductionState(),
+		[States.SparkTalentHealthBuff] = new SparkTalentHealthState(),
+		[States.SelfHarm] = new SelfHarmState()
 
         #region Carrigan
         [States.Bleeding] = new BleedingState(),
         [States.ReducingHealing] = new ReducingHealingState(),
         #endregion
-
-        [States.Immateriality] = new ImmaterialityState(),
-        [States.Stun] = new StunnedState(),
-        [States.Frozen] = new FrozenState(),
-        [States.Frosting] = new FrostingState(),
-        [States.Cooling] = new Cooling(),
-        [States.InAir] = new InAirState(),
-        [States.Blind] = new BlindnessState(),
-        [States.Invisible] = new InvisibleState(),
-        [States.SchoolDebuff] = new AbilitySchoolDebuff(),
-        [States.Desiccuration] = new Desiccuration(),
-        [States.Plague] = new Plague(),
-        [States.Curse] = new Curse(),
-        [States.NorthernerEndurance] = new NorthernerEndurance(),
-        [States.LastBreath] = new LastBreath(),
-        [States.MagicBuff] = new MagicBuff(),
-        [States.DarkShield] = new DarkShield(),
-        [States.LightShield] = new LightShield(),
-        [States.TiredSoul] = new TiredSoul(),
-        [States.ReversePolarity] = new ReversePolarityState(),
-        [States.SpiritEnergy] = new SpiritEnergyState(),
-        [States.SpiritHealth] = new SpiritHealthState(),
-        [States.ScorchedSoul] = new ScorchedSoul(),
-        [States.Knockdown] = new Knockdown(),
-        [States.IdealEvade] = new IdealEvade(),
-        [States.Bleeding] = new BleedingDebuff(),
-        [States.EmeraldSkin] = new EmeraldSkinState(),
-        [States.DefenseReduction] = new DefenceReductionState(),
-        [States.SparkTalentHealthBuff] = new SparkTalentHealthState()
-    };
+	};
 
     public void Initialize(Character hero)
     {
@@ -341,6 +340,19 @@ public class CharacterState : NetworkBehaviour
         }
         return false;
     }
+	
+	public int CheckStateStacks(States state)
+	{
+		foreach (AbstractCharacterState states in currentStates)
+		{
+			Debug.Log(states.State + " on enemy, check for " + state);
+			if (states.State == state)
+			{
+				return states.CurrentStacksCount;
+			}
+		}
+		return 0;
+	}
 
     public List<AbstractCharacterState> TEST_GetStatesOnEffectAndType(StatusEffect effect, StateType type)
     {
@@ -675,4 +687,8 @@ public enum States
     EmeraldSkin,
     SparkTalentHealthBuff,
     DefenseReduction
+	EmeraldSkin,
+	SparkTalentHealthBuff,
+	DefenseReduction,
+	SelfHarm
 }

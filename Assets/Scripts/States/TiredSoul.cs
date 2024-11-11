@@ -4,6 +4,7 @@ using UnityEngine;
 public class TiredSoul : AbstractCharacterState
 {
     private float _duration;
+    private float _baseDuration;
 
     public override float TEST_ChangeableValue { get; set; }
     public override States State => States.TiredSoul;
@@ -14,25 +15,43 @@ public class TiredSoul : AbstractCharacterState
     {
         _characterState = character;
         _duration = durationToExit;
+        _baseDuration = durationToExit;
+        CurrentStacksCount++;
+        MaxStacksCount = 2;
     }
 
     public override void UpdateState()
     {
         _duration -= Time.deltaTime;
-        if (_duration <= 0)
+        
+        if (_duration <= _baseDuration * (CurrentStacksCount - 1) && CurrentStacksCount > 0)
         {
-            ExitState();
+            CurrentStacksCount--;
+            _duration = _baseDuration * CurrentStacksCount;
+
+            if (CurrentStacksCount == 0)
+            {
+                ExitState();
+            }
         }
     }
 
     public override void ExitState()
     {
-        _characterState.RemoveState(this);
+       if(!_characterState.CheckForState(States.TiredSoul)) 
+           return;
+       
+       _characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        _duration = time;
+        if (CurrentStacksCount < MaxStacksCount)
+        {
+            CurrentStacksCount++;
+            _duration += time;
+            _duration = Mathf.Min(_duration, _baseDuration * CurrentStacksCount);
+        }
         return true;
     }
 }

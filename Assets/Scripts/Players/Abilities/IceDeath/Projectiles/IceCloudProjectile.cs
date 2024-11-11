@@ -30,8 +30,9 @@ public class IceCloudProjectile : Projectiles
 		}
 	}
 
+
 	[Server]
-	private void OnTriggerEnter2D(Collider2D collision)
+	private void OnTriggerEnter(Collider collision)
 	{
 		if (_dad == null) return;
 		if (collision.gameObject == _dad.gameObject)
@@ -39,13 +40,13 @@ public class IceCloudProjectile : Projectiles
 
 		if(collision.TryGetComponent<IDamageable>(out var damageable))
 		{
-			if (damageable is Character target)
+			if (collision.TryGetComponent<Character>(out var target) && target != _dad)
+			//if (damageable is HeroComponent target)
 			{
-				Debug.Log(collision.name);
-				target.CharacterState.AddState(States.Plague, 40, 0, _dad.gameObject, _skill.Name);
-				//target.CharacterState.personWhoShoted = _dad;
+				
+				//target.CharacterState.AddState(States.Plague, 40, 0, _dad.gameObject, _skill.Name);
 
-				float duration = 1 + _energyDad / 20;
+				float duration = 100 + _energyDad / 20;
 
 				if (target.CharacterState.CheckForState(States.Frozen) && _boostDmg)
 				{
@@ -55,11 +56,11 @@ public class IceCloudProjectile : Projectiles
 
 				_energy.SumDamageMake(_curDamage);
 				
-				//_skill.CmdApplyDamage(damage, target.gameObject);
+				//_skill.CmdApplyDamage(_damage, target.gameObject);
 				target.Health.TryTakeDamage(ref _damage, _skill);
 
 
-				target.CharacterState.AddState(States.Frozen, duration, 30, _dad.gameObject, _skill.name);
+				target.CharacterState.AddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
 
 				//talents???
 				if (_dad.Health.ResistMagDamage >= 20)
@@ -73,7 +74,7 @@ public class IceCloudProjectile : Projectiles
 
 				//dad.Stamina.Use(duration * 20);
 				//damage
-				GetComponent<Collider2D>().enabled = false;
+				GetComponent<Collider>().enabled = false;
 				Explode();
 			}
 			else

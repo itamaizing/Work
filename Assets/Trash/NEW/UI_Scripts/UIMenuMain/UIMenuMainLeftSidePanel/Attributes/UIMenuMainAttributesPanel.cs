@@ -1,13 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Mirror;
 using UnityEngine;
 
 public class UIMenuMainAttributesPanel : MonoBehaviour
 {
-    [ReadOnly,ShowInInspector]
-    public UIMenuMainWindow Owner;
-    
     [SerializeField] private UIMenuMainAttributesPanelItem _attributeItem;
     [SerializeField] private RectTransform _itemsParent;
     [SerializeField] private TMProLocalizer _attributesText;
@@ -16,25 +13,31 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
     
     private List<UIMenuMainAttributesPanelItem> _attributes = new ();
 
-    public void Show()
+    public void Show(AttributeGroup attributeGroup)
     {
-        if(Owner == null) return;
-        
-        _attributeGroup = Owner.GetHero().Data.Attributes;
+        _attributeGroup = attributeGroup;
         
         ResetPanel();
 
         foreach (var item in _attributeGroup.AttributeData.Where(o=> o.IsVisible))
         {
             var attribute = Instantiate(_attributeItem, _itemsParent);
-            attribute.Owner = this;
             attribute.Fill(item);
+            attribute.OnValueChange += UpdateAttributesPoints;
             _attributes.Add(attribute);
         }
         
         UpdateAttributesPoints();
     }
-    
+
+    private void OnDisable()
+    {
+        foreach (var attribute in _attributes)
+        {
+            attribute.OnValueChange -= UpdateAttributesPoints;
+        }
+    }
+
     private void ResetPanel()
     {
         if (_attributes.Count > 0)

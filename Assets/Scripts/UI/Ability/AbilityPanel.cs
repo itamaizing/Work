@@ -78,6 +78,7 @@ public class AbilityPanel : MonoBehaviour
 
     private void OnCharacterSelected(Character character)
     {
+        Debug.Log(character);
         if (character != null && character != _currentCharacter)
         {
             gameObject.SetActive(true);
@@ -89,6 +90,7 @@ public class AbilityPanel : MonoBehaviour
 
     private void OnCharacterDeselected(Character character)
     {
+        Debug.Log(character);
         if (character != null && character == _currentCharacter)
         {
             ClearPanel();

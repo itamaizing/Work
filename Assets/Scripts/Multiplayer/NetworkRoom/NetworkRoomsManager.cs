@@ -60,7 +60,7 @@ public class NetworkRoomsManager : NetworkBehaviour
 		GameRules rules = Instantiate(_gameRulesPref);
 		room.GameStart(rules);
     }
-
+	
 	private void OnRoomClosed(NetworkRoom room)
     {
 		_rooms.Remove(room);

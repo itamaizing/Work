@@ -1,6 +1,7 @@
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,8 +13,9 @@ public class TestH2 : Skill
     [SerializeField] private float _spawnDeley;
 
     private Character _target;
+	private Vector3 _targetPoint;
 
-    protected override bool IsCanCast
+	protected override bool IsCanCast
     {
         get
         {
@@ -66,7 +68,10 @@ public class TestH2 : Skill
         {
             if (GetMouseButton)
             {
-                _target = GetRaycastTarget(true);
+				//_target = GetTarget().character;
+				_targetPoint = GetTarget().Position;
+                UnityEngine.Debug.Log(_targetPoint);
+				_target = GetRaycastTarget(true);
             }
             yield return null;
         }

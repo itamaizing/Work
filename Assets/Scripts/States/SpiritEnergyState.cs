@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SpiritEnergyState : AbstractCharacterState
 {
+    private Skill _skill;
+    
     private float _baseDuration;
     private float _duration;
     private bool _isTalentActive = false;
@@ -25,6 +27,7 @@ public class SpiritEnergyState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
+        _skill = personWhoMadeBuff.Abilities.Abilities.FirstOrDefault(o => o.Name == skillName);
         _characterState = character;
         _duration = durationToExit;
         _baseDuration = durationToExit;
@@ -93,14 +96,20 @@ public class SpiritEnergyState : AbstractCharacterState
     private void OnHealTaked(float healAmount, Skill skill, string sourceName)
     {
         float bonusHeal = HealthBonusPerStack * CurrentStacksCount;
+        var currentSkill = skill;
+
+        if (currentSkill == null)
+        {
+            currentSkill = _skill;
+        }
         var heal = new Heal { Value = bonusHeal };
         
         if (sourceName != nameof(States.SpiritEnergy))
         {
-            skill.CmdApplyHeal(heal, _healthComponent.gameObject, null, nameof(States.SpiritEnergy));   
+            currentSkill.CmdApplyHeal(heal, _healthComponent.gameObject, null, nameof(States.SpiritEnergy));   
         }
         
-        if (skill.Hero.CharacterState.CheckForState(States.SpiritEnergy))
+        if (currentSkill.Hero.CharacterState.CheckForState(States.SpiritEnergy))
         {
             var manaRestoreBonusValue = _isTalentActive ? BuffedBonusManaRestore : BonusManaRestore;
             ApplyManaRestore(manaRestoreBonusValue * healAmount * CurrentStacksCount);

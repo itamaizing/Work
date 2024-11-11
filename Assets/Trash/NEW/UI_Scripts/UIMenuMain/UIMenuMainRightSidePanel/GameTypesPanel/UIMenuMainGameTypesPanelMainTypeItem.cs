@@ -6,9 +6,6 @@ public class UIMenuMainGameTypesPanelMainTypeItem : MonoBehaviour
 {
     public event UnityAction<MainGameMode> Selected;
     
-    [ReadOnly,ShowInInspector]
-    public UIMenuMainGameTypesPanel Owner;
-    
     [SerializeField] private TMProLocalizer _itemTitle;
 
     [SerializeField] private MainGameMode _itemMode;

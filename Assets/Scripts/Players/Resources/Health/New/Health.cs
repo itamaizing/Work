@@ -148,7 +148,7 @@ public class Health : Resource, IDamageable, IHealingable
         MaxValue = max;
     }
 
-    protected bool TryEvade(DamageType damageType, AttackRangeType attackRangeType)
+    public bool TryEvade(DamageType damageType, AttackRangeType attackRangeType)
     {
         switch (damageType)
         {

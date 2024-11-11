@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FrozenState : AbstractCharacterState
 {
-	public bool turnOff = false;
+	//public bool turnOff = false;
 	private float _duration;
 	private float _baseDuration;
 	private float _damageToExit;
@@ -49,7 +49,7 @@ public class FrozenState : AbstractCharacterState
 	public override void UpdateState()
 	{
 		_duration -= Time.deltaTime;
-		if (_characterState.Character.Health.SumDamageTaken >= _damageToExit || _duration < 0 || turnOff)
+		if (_characterState.Character.Health.SumDamageTaken >= _damageToExit || _duration <= 0 )//|| turnOff)
 		{
 			ExitState();
 		}

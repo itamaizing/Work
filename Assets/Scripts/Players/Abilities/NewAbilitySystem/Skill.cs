@@ -15,7 +15,7 @@ public class SkillEnergyCost
 
 public struct TargetToShot
 {
-    public Vector2 Position;
+    public Vector3 Position;
     public Character character;
 }
 
@@ -29,6 +29,7 @@ public enum Schools
     Air,
     Earth,
     Physical,
+    Discipline,
     None
 }
 
@@ -155,8 +156,8 @@ public abstract class Skill : NetworkBehaviour
     public event Action<int> CurrentChargeChanged;
     public event Action<float> CooldownStarted;
     public event Action CooldownEnded;
-    public event Action PreparingStarted;
-    public event Action PreparingSuccess;
+    public event Action<Skill> PreparingStarted;
+    public event Action<Skill> PreparingSuccess;
     public event Action PreparingCanceled;
     public event Action<float> CastDeleyStarted;
     public event Action CastDeleyEnded;
@@ -282,11 +283,11 @@ public abstract class Skill : NetworkBehaviour
     
     public void DecreaseSetCooldown(float time)
     {
-        var timeToSet = _remainingCooldownTime - time <= 0 ? _remainingCooldownTime - time : 0;
-
+        var timeToSet = _remainingCooldownTime - time > 0 ? _remainingCooldownTime - time : 0;
+        
         if (_cooldownJob != null)
             StopCoroutine(_cooldownJob);
-
+        
         _cooldownJob = StartCoroutine(CooldownCoroutine(timeToSet));
     }
 
@@ -408,6 +409,15 @@ public abstract class Skill : NetworkBehaviour
 
         if (_isAutoLineRender)
             _skillRender.DrawLine(CastLength, CastWidth, damage, TargetsLayers);
+
+        if (true)
+        {
+            /* Debug.Log("DRAAAAAAAAAAW");
+             Character enemy = GetCloserTargets(transform.position, Radius)[0];
+             Debug.Log(enemy.name);
+             enemy.SelectedCircle.IsActive = true;*/
+            _skillRender.DrawClosestTarget(Radius, TargetsLayers, _hero);
+        }
     }
 
     protected virtual void StopAutoDraw()
@@ -415,7 +425,14 @@ public abstract class Skill : NetworkBehaviour
         _skillRender.StopDrawRadius();
         _skillRender.StopDrawArea();
         _skillRender.StopDrawLine();
-    }
+        _skillRender.StopDrawClosestTarget();
+
+		/*if (true)
+		{
+			Character enemy = GetCloserTargets(transform.position, Radius)[0];
+			enemy.SelectedCircle.IsActive = false;
+		}*/
+	}
 
     protected virtual bool TryPayCost(List<SkillEnergyCost> skillEnergyCosts, bool startCooldown = true)
     {
@@ -447,9 +464,12 @@ public abstract class Skill : NetworkBehaviour
     protected Character GetRaycastTarget(bool isCanTargetHimself = false)
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit[] rayHit = Physics.RaycastAll(ray);
+        RaycastHit[] rayHit = Physics.RaycastAll(ray,100f, TargetsLayers);
 
-
+        foreach (var hit in rayHit)
+        {
+            Debug.Log(hit.collider.gameObject.name);
+        }
         Character target = null;
 
         foreach (var item in rayHit)
@@ -468,7 +488,7 @@ public abstract class Skill : NetworkBehaviour
         return target;
     }
 
-    protected List<Character> GetCloserTargets(Vector3 position, float radius, bool isCanTargetHimself = false)
+    public List<Character> GetCloserTargets(Vector3 position, float radius, bool isCanTargetHimself = false)
     {
         List<Character> targets = new List<Character>();
         Collider[] collider = Physics.OverlapSphere(position, radius, TargetsLayers);
@@ -477,7 +497,7 @@ public abstract class Skill : NetworkBehaviour
         {
             if (collider.Length > 0 && item.transform.TryGetComponent<Character>(out Character enemy))
             {
-                if (isCanTargetHimself == false && targets[targets.Count - 1].transform == _hero.Health.transform)
+                if (isCanTargetHimself == false && enemy.transform == _hero.Health.transform)
                 {
                     continue;
                 }
@@ -485,6 +505,10 @@ public abstract class Skill : NetworkBehaviour
             }
         }
         targets = targets.OrderBy(character => Vector3.Distance(character.transform.position, gameObject.transform.position)).ToList();
+
+        if (targets.Count <= 0)
+            return null;
+
         return targets;
     }
 
@@ -618,15 +642,18 @@ public abstract class Skill : NetworkBehaviour
 
 		if (_isClick)
         {
+            Debug.Log("Left click");
             return LeftClick();
         }
         if(_isShiftClick)
         {
-            return ShiftLeftClick();
+			Debug.Log("Shift + Left click");
+			return ShiftLeftClick();
         }
         if(_isCtrlClick)
         {
-            return CtrlLeftClick();
+			Debug.Log("Ctrl + Left click");
+			return CtrlLeftClick();
 		}
 
         return target;
@@ -635,19 +662,38 @@ public abstract class Skill : NetworkBehaviour
     protected TargetToShot LeftClick()
     {
         TargetToShot target = new TargetToShot();
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		RaycastHit hit;
+
+        var closerTargets = GetCloserTargets(transform.position, 1000);
+        Character closerTarget = null;
+
+        if (closerTargets != null && closerTargets.Count > 0)
+        {
+            closerTarget = GetCloserTargets(transform.position, 1000)[0];
+        }
+
         switch (_skillType)
         {
             case SkillType.Target:
-                target.character = GetClosestTargets();
+                target.character = closerTarget;
 				break; 
             case SkillType.Projectile:
-				target.character = GetClosestTargets();
+				target.character = closerTarget;
 				break;
 			case SkillType.Zone:
-				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				if (Physics.Raycast(ray, out hit))
+				{
+					Debug.Log(hit.point);
+				}
+				target.Position = hit.point;
 				break;
             default:
-				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				if (Physics.Raycast(ray, out hit))
+				{
+					Debug.Log(hit.point);
+				}
+				target.Position = hit.point;
 				break;
 		}
         return target;
@@ -681,26 +727,39 @@ public abstract class Skill : NetworkBehaviour
 	protected TargetToShot CtrlLeftClick()
 	{
 		TargetToShot target = new TargetToShot();
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		RaycastHit hit;
 		switch (_skillType)
 		{
 			case SkillType.Target:
-                target.character = GetClosestTargets();
+                target.character = GetCloserTargets(transform.position, 1000)[0];
 				break;
-			case SkillType.Projectile:
-                Debug.Log("TEST");
-				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			case SkillType.Projectile:          
+				if (Physics.Raycast(ray, out hit))
+				{
+					Debug.Log(hit.point);
+				}
+                target.Position = hit.point;
 				break;
 			case SkillType.Zone:
-				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				if (Physics.Raycast(ray, out hit))
+				{
+					Debug.Log(hit.point);
+				}
+				target.Position = hit.point;
 				break;
 			default:
-				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				if (Physics.Raycast(ray, out hit))
+				{
+					Debug.Log(hit.point);
+				}
+				target.Position = hit.point;
 				break;
 		}
 		return target;
 	}
 
-    protected Vector2 GetClosestTarget()
+   /* protected Vector2 GetClosestTarget()
     {
 		Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, 100);
         Vector2 closest = Vector2.positiveInfinity;
@@ -720,7 +779,8 @@ public abstract class Skill : NetworkBehaviour
         if(Vector2.Distance(closest, transform.position) < 100)   return closest;
         else return Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-	}
+	}*/
+
 	protected Character GetClosestTargets()
 	{
 		Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, 100);
@@ -742,7 +802,6 @@ public abstract class Skill : NetworkBehaviour
 		}
         if (Vector2.Distance(closest, transform.position) < 100) return enemys;
         else return null;
-
 	}
 
 	private void OnClick()
@@ -828,7 +887,7 @@ public abstract class Skill : NetworkBehaviour
 
     private IEnumerator ActionWrapperForPreparingJob()
     {
-        PreparingStarted?.Invoke();
+        PreparingStarted?.Invoke(this);
         _isPreparing = true;
         ClearData();
         StartAutoDraw();
@@ -841,7 +900,7 @@ public abstract class Skill : NetworkBehaviour
 
 		OnClickCanceled();
 
-        PreparingSuccess?.Invoke();
+        PreparingSuccess?.Invoke(this);
         _isPreparing = false;
         StopAutoDraw();
 
@@ -948,10 +1007,10 @@ public abstract class Skill : NetworkBehaviour
         ClearData();
     }
 
-    private void ApplyDamage(Damage damage, GameObject target)
+    public void ApplyDamage(Damage damage, GameObject target)
     {
-        Hero.DamageTracker.AddDamage(damage);
         target.GetComponent<Health>().TryTakeDamage(ref damage, this);
+        Hero.DamageTracker.AddDamage(damage, isServerRequest: isServer);
     }
     
     [Command]
@@ -966,10 +1025,10 @@ public abstract class Skill : NetworkBehaviour
         ApplyDamage(damage, target);
     }
 
-    private void ApplyHeal(Heal heal, GameObject hp, Skill skill, string sourceName)
+    public void ApplyHeal(Heal heal, GameObject hp, Skill skill, string sourceName)
     {
         hp.GetComponent<Health>().Heal(ref heal, sourceName, skill);
-        Hero.DamageTracker.AddHeal(heal);
+        Hero.DamageTracker.AddHeal(heal, isServerRequest: isServer);
     }
     
     [Command]

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public abstract class Talent : NetworkBehaviour
+public abstract class Talent : MonoBehaviour
 {
     [SerializeField]
     private TalentData _data;
@@ -91,7 +91,13 @@ public class TalentsGroup
         if(talent == null) return;
         
         talent.SetActive(isActive);
+    }
 
+    public void ActiveTalent(TalentData data, bool isActive)
+    {
+        var talent = TalentsData.FirstOrDefault(a => a.Data == data);
+        if(talent == null) return;
+        
         if (isActive)
         {
             talent.Enter();   
@@ -115,6 +121,7 @@ public class TalentSystem : NetworkBehaviour
 
     public List<Talent> ActiveTalents => Talents.SelectMany(o => o.TalentsData).Where(a => a.Data.IsOpen).ToList();
 
+   // [Command]
     public void Initialize()
     {
         foreach (var talent in _talents.SelectMany(talentsGroup => talentsGroup.TalentsData))
@@ -129,9 +136,26 @@ public class TalentSystem : NetworkBehaviour
                 talent.Exit();
             }
         }
+        //Initialize2();
     }
+ /*   [ClientRpc]
+	public void Initialize2()
+	{
+		foreach (var talent in _talents.SelectMany(talentsGroup => talentsGroup.TalentsData))
+		{
+			talent.Data.Name = talent.GetType().Name;
+			if (talent.Data.IsOpen)
+			{
+				talent.Enter();
+			}
+			else
+			{
+				talent.Exit();
+			}
+		}
+	}*/
 
-    public void AddPoints(int value)
+	public void AddPoints(int value)
     {
     }
 
@@ -140,12 +164,12 @@ public class TalentSystem : NetworkBehaviour
         _talents[row].TalentsData[id].SetActive(value);
     }
 
-    [Command]
+    /*[Command]
     public void CmdAdd(Talent talent)
     {
         Add(talent);
         RpcAdd(talent);
-    }
+    }*/
 
     [Command]
     public void CmdEnterAll()
@@ -199,11 +223,11 @@ public class TalentSystem : NetworkBehaviour
         ExitAll();
     }
 
-    [ClientRpc]
+   /* [ClientRpc]
     public void RpcAdd(Talent talent)
     {
         Add(talent);
-    }
+    }*/
 
     public void EnterAll()
     {

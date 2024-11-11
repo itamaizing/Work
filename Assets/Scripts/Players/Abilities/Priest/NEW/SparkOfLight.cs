@@ -49,7 +49,7 @@ public class SparkOfLight : AutoAttackSkill
     private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
     protected override int AnimTriggerCastDelay => 0;
-    protected override int AnimTriggerAutoAttack => throw new NotImplementedException();
+    protected override int AnimTriggerAutoAttack => 0;
 
     public event Action OnModeChange;
 
@@ -113,7 +113,7 @@ public class SparkOfLight : AutoAttackSkill
         {
             Heal(_target);
             ApplySpiritEnergyBuff(_target);
-            ApplyHealthBuff(_target);
+            //ApplyHealthBuff(_target);
         }
         else if (IsEnemyTarget(_target) && TryPayCost(_manaCostDamage))
         {
@@ -151,7 +151,7 @@ public class SparkOfLight : AutoAttackSkill
         var bonus = isBonusActive ? _tickHealingBonus * _healingBonusStacks : 0;
         
         var heal = new Heal { Value = _healAmount + bonus };
-        CmdApplyHeal(heal, target.gameObject, this, name);
+        CmdApplyHeal(heal, target.gameObject, this, Name);
     }
 
     private void DamageCast(Character target)
@@ -176,32 +176,34 @@ public class SparkOfLight : AutoAttackSkill
         {
             Value = Buff.Damage.GetBuffedValue(amount),
             Type = DamageType.Magical,
-            PhysicAttackType = AttackRangeType.RangeAttack
+            PhysicAttackType = AttackRangeType.RangeAttack,
+            School = this.School,
+            //DamageableSkill = this,
         };
     }
 
     private void ApplySpiritEnergyBuff(Character target)
     {
         var talentActive = _manaRestoreBoostTalent ? 1 : 0;
-        CmdAddBuff(States.SpiritEnergy, _buffDuration, talentActive, target.gameObject, name);
+        CmdAddBuff(States.SpiritEnergy, _buffDuration, talentActive, target.gameObject, Name);
     }
 
     private void ApplySpiritHealthBuff(Character target)
     {
         var talentActive = _manaRestoreBoostTalent ? 1 : 0;
-        CmdAddBuff(States.SpiritHealth, _altBuffDuration, talentActive, target.gameObject, name);
+        CmdAddBuff(States.SpiritHealth, _altBuffDuration, talentActive, target.gameObject, Name);
     }
 
     private void ApplyHealthBuff(Character target)
     {
         if (!_healthBoostActive) return;
 
-        CmdAddBuff(States.SparkTalentHealthBuff, HealthBoostDuration, HealthBoostPercentage, target.gameObject, name);
+        CmdAddBuff(States.SparkTalentHealthBuff, HealthBoostDuration, HealthBoostPercentage, target.gameObject, Name);
     }
 
     private void ApplyDefenseDebuff(Character target)
     {
-        CmdAddBuff(States.DefenseReduction, DefenseDebuffDuration, DefenseReductionPercentage, target.gameObject, name);
+        CmdAddBuff(States.DefenseReduction, DefenseDebuffDuration, DefenseReductionPercentage, target.gameObject, Name);
     }
 
     [Command]
