@@ -7,6 +7,7 @@ public class Shield : Resource, IDamageable
     protected bool _isBreaksDown = true;
 
     public event Action<Damage, Skill> DamageTaken;
+    public event Action<float, DamageType, Skill> DamageTakenType;
 
     public void Initialize(float maxValue, DamageType damageType, float percentageAbsorption = 1, bool isBreaksDown = true, float regenValue = 0, float regenDelay = 0)
     {
@@ -23,14 +24,14 @@ public class Shield : Resource, IDamageable
         _isBreaksDown = isBreaksDown;
     }
 
-	public void ShowPhantomValue(Damage phantomValue)
-	{
-		throw new NotImplementedException();
-	}
-
-	public bool TryTakeDamage(ref Damage damage, Skill skill)
+    public void ShowPhantomValue(Damage phantomValue)
     {
-        if(_absorptionDamageType == DamageType.Both || _absorptionDamageType == damage.Type)
+        throw new NotImplementedException();
+    }
+
+    public bool TryTakeDamage(ref Damage damage, Skill skill)
+    {
+        if (_absorptionDamageType == DamageType.Both || _absorptionDamageType == damage.Type)
         {
             float absorptionDamage = damage.Value * _percentageAbsorption;
             float remainingDamage = damage.Value - CurrentValue;

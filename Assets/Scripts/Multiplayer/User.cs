@@ -8,11 +8,17 @@ public class User : NetworkBehaviour
     public static User Instance;
 
     [Client]
-    private void Awake()
+    private void Start()
     {
-        if (Instance != null)
-            Debug.LogError("2 Users on client?!");
+        if (Instance == null && isOwned)
+            Instance = this;
+    }
 
-        Instance = this;
+    public override void OnStartClient()
+    {
+        if (!isLocalPlayer)
+        {
+            return;
+        }
     }
 }

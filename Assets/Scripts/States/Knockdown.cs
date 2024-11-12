@@ -9,8 +9,10 @@ public class Knockdown : AbstractCharacterState
     public override States State => States.Knockdown;
 
     public override StateType Type => StateType.Physical;
-
+    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => throw new System.NotImplementedException();
+
+    public override float TEST_ChangeableValue { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {

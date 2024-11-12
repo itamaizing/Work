@@ -6,7 +6,6 @@ using UnityEngine;
 public class ShotIntoSky : Skill
 {
     [SerializeField] private SkillRenderer skillRenderer;
-    [SerializeField] private float damage;
     [SerializeField] private float minDamage;
     [SerializeField] private float maxDamage;
     [SerializeField] private float delay;
@@ -24,7 +23,7 @@ public class ShotIntoSky : Skill
 
     private void Start()
     {
-        damage = Random.Range(minDamage, maxDamage + 1);
+       Damage = Random.Range(minDamage, maxDamage + 1);
     }
 
     protected override IEnumerator PrepareJob()
@@ -64,10 +63,9 @@ public class ShotIntoSky : Skill
 
             foreach (var hitCollider in hitColliders)
             {
-                HeroComponent enemy = hitCollider.GetComponent<HeroComponent>();
-                if (enemy != null)
+                if (hitCollider.TryGetComponent<HeroComponent>(out HeroComponent enemy))
                 {
-                    float finalDamage = CalculateDamage(damage);
+                    float finalDamage = CalculateDamage(Damage);
                     ApplyDamage(finalDamage, DamageType.Magical, enemy);
 
                     if (Random.Range(0f, 100f) <= stunChance)
@@ -78,6 +76,12 @@ public class ShotIntoSky : Skill
                             CmdAddState(targetState);
                         }
                     }
+                }
+
+                else if  (hitCollider.TryGetComponent<Object>(out Object target))
+                {
+                    float finalDamage = CalculateDamage(Damage);
+                    ApplyDamage(finalDamage, DamageType.Magical, target);
                 }
             }
         }
@@ -111,6 +115,24 @@ public class ShotIntoSky : Skill
         };
 
         CmdApplyDamage(_damage, target.gameObject);
+    }
+
+    private void ApplyDamage(float damage, DamageType damageType, Object target)
+    {
+        Damage _damage = new Damage
+        {
+            Value = damage,
+            Type = DamageType.Physical,
+            PhysicAttackType = AttackRangeType.RangeAttack,
+        };
+
+        CmdTryTakeDamage(target, _damage, null);
+    }
+
+    [Command]
+    private void CmdTryTakeDamage(Object target, Damage damage, Skill skill)
+    {
+        target.ObjectHealth.TryTakeDamage(ref damage, null);
     }
 
     protected override void ClearData()

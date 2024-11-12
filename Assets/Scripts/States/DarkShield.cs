@@ -11,16 +11,19 @@ public class DarkShield : AbstractCharacterState
 
     private Coroutine _damageCoroutine;
 
+    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.DarkShield;
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
+
+    public override float TEST_ChangeableValue { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _characterState = character;
         _duration = durationToExit;
         _maxDamagePerTick = damageToExit;
-        
+
         _healthComponent = character.GetComponent<Health>();
         if (_healthComponent != null)
         {
@@ -40,7 +43,7 @@ public class DarkShield : AbstractCharacterState
 
             _healthComponent.DamageTaken -= HandleDamageTaken;
         }
-        
+
         _characterState.RemoveState(this);
     }
 
@@ -53,17 +56,17 @@ public class DarkShield : AbstractCharacterState
             _healthComponent.StopCoroutine(_damageCoroutine);
             _damageCoroutine = null;
         }
-        
+
         _damageCoroutine = _healthComponent.StartCoroutine(ApplyDelayedDamage(damage.Value));
     }
 
     private IEnumerator ApplyDelayedDamage(float damage)
     {
         yield return new WaitForSeconds(_damageDebuffDelay);
-        
+
         var damageToApply = Mathf.Min(damage, _maxDamagePerTick);
         var damageToTake = new Damage { Value = damageToApply };
-        
+
         _healthComponent.CmdTryTakeDamage(damageToTake, null);
         _healthComponent.GetComponent<Character>().DamageTracker.AddDamage(damageToTake, isServerRequest: true);
     }

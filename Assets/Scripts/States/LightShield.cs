@@ -1,44 +1,42 @@
 using System;
 using System.Collections.Generic;
-using Mirror;
 using UnityEngine;
 
 public class LightShield : AbstractCharacterState, IDamageable
 {
-    private BladeMailPriestTalent _bladeMailPriestTalent;
-    
     private float _damageAbsorbed;
     private float _maxAbsorption;
+    private float _curentAbsorption;
     private float _duration;
-    private string _skillName;
-    
-    private bool _isBMTalentActive = false;
 
     public event Action<Damage, Skill> DamageTaken;
-
+    public event Action<float, DamageType, Skill> DamageTakenType;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.LightShield;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
-    public override void EnterState(CharacterState character, float durationToExit, float maxDamageAbsorbed, Character personWhoMadeBuff, string skillName)
+    public override float TEST_ChangeableValue { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+    //public override float TEST_ChangeableValue { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _characterState = character;
         _duration = durationToExit;
+        _maxAbsorption = damageToExit;
+        _curentAbsorption = _maxAbsorption;
         _damageAbsorbed = 0;
-        _maxAbsorption = maxDamageAbsorbed;
-        _skillName = skillName;
-        
-        SearchTalent();
+        _characterState.Character.Health.TotalMaxAbsorption += _maxAbsorption;
+        _characterState.Character.Health.AddShieldValues(_maxAbsorption);
 
-        Debug.Log("Shield HP - " + _maxAbsorption);
-        DamageTaken += DamageEnemiesInRadius;
+        UpdateShieldValues();
     }
 
     public override void UpdateState()
     {
         _duration -= Time.deltaTime;
-        
-        if (_duration <= 0 || _damageAbsorbed >= _maxAbsorption)
+        if (_duration <= 0)
         {
             ExitState();
         }
@@ -47,84 +45,60 @@ public class LightShield : AbstractCharacterState, IDamageable
     public override void ExitState()
     {
         Debug.Log("LightShield state exited.");
-        DamageTaken -= DamageEnemiesInRadius;
         _characterState.RemoveState(this);
+        ResetCharacterShieldValues();
     }
 
     public override bool Stack(float time)
     {
-        _duration = time;
-        _damageAbsorbed = 0;
+        //_duration = time;
+        //_damageAbsorbed = 0;
+        CurrentStacksCount += 1;
         return false;
     }
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
-        float damageToAbsorb = Mathf.Min(_maxAbsorption - _damageAbsorbed, damage.Value);
+        Debug.Log($"Урон по стостоянию: {_damageAbsorbed}");
+        float damageToAbsorb = Mathf.Min(_characterState.Character.Health.TotalMaxAbsorption - _damageAbsorbed, damage.Value);
         _damageAbsorbed += damageToAbsorb;
         damage.Value -= damageToAbsorb;
-        
+        _curentAbsorption = _maxAbsorption - _damageAbsorbed;
+
         _characterState.GetComponent<Character>().DamageTracker.AddDamage(damage);
+        DamageTakenType?.Invoke(damageToAbsorb, damage.Type, skill);
 
-        var tempDamage = new Damage
-        {
-            Form = damage.Form,
-            PhysicAttackType = damage.PhysicAttackType,
-            School = damage.School,
-            Type = damage.Type,
-            Value = damageToAbsorb,
-        };
+        _characterState.Character.Health.ClientRpcInvokeShieldDamageTaken(damageToAbsorb, damage.Type, skill);
 
-        DamageTaken?.Invoke(tempDamage, skill);
+        UpdateShieldValues();
 
         if (_damageAbsorbed >= _maxAbsorption)
         {
+            ExitState();
             return true;
         }
 
         return damage.Value == 0;
     }
-    
-    private void DamageEnemiesInRadius(Damage damage, Skill skill)
-    {
-        foreach (var obj in NetworkServer.spawned.Values)
-        {
-            if (!obj.TryGetComponent(out Character enemy)) continue;
-            
-            var distance = Vector3.Distance(_characterState.transform.position, enemy.transform.position); 
-            if (distance > 10f || distance <= 0.25f) continue;
-            
-            var tempDamage = new Damage
-            {
-                Form = damage.Form,
-                PhysicAttackType = damage.PhysicAttackType,
-                School = damage.School,
-                Type = damage.Type,
-                Value = damage.Value * 0.2f
-            };
 
-            enemy.Health.TryTakeDamage(ref tempDamage, null);
-            enemy.DamageTracker.AddDamage(tempDamage);
+    public void UpdateShieldValues()
+    {
+        if (_characterState.Character.Health != null)
+        {
+            _characterState.Character.Health.UpdateShieldValues(_damageAbsorbed, _characterState.Character.Health.TotalMaxAbsorption);
         }
     }
 
-	public void ShowPhantomValue(Damage phantomValue)
-	{
-		throw new NotImplementedException();
-	}
-    
-    private void SearchTalent()
+    private void ResetCharacterShieldValues()
     {
-        foreach (var talent in _characterState.Character.Abilities.TalesntSystem.ActiveTalents)
-        {
-            if (talent is BladeMailPriestTalent bladeMailPriestTalent)
-            {
-                if (_bladeMailPriestTalent == null)
-                {
-                    _bladeMailPriestTalent = bladeMailPriestTalent;
-                   _isBMTalentActive = _bladeMailPriestTalent.Data.IsOpen;
-                }
-            }
-        }
+        _characterState.Character.Health.TotalMaxAbsorption -= _curentAbsorption + _damageAbsorbed;
+        _characterState.Character.Health.UpdateShieldValues(0, _characterState.Character.Health.TotalMaxAbsorption);
+        if (_characterState.Character.Health.TotalMaxAbsorption <= 0) _characterState.Character.Health.ResetShieldValues();
+        _characterState.Character.Health.AddShieldValues(-_curentAbsorption);
+    }
+
+    public void ShowPhantomValue(Damage phantomValue)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -1,5 +1,6 @@
 using Mirror;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public abstract class AbstractCharacterState
@@ -14,7 +15,9 @@ public abstract class AbstractCharacterState
 
 	public abstract States State { get; }
 	public abstract StateType Type { get; }
+	public abstract BaffDebaff BaffDebaff { get; }
 	public abstract List<StatusEffect> Effects { get; }
+	public abstract float TEST_ChangeableValue { get; set; }
 
 	public abstract void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName);
 	public abstract void UpdateState();
@@ -26,10 +29,11 @@ public class DefaultState : AbstractCharacterState
 {
 	private List<StatusEffect> _effects = new List<StatusEffect>();
 	public override States State => States.Default;
-
 	public override StateType Type => StateType.Physical;
-
+	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 	public override List<StatusEffect> Effects => _effects;
+
+	public override float TEST_ChangeableValue { get; set; }
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
@@ -43,7 +47,8 @@ public class DefaultState : AbstractCharacterState
 
 	public override void ExitState()
 	{
-
+		_characterState.StateIcons?.DeactivateIcon();
+		_characterState.RemoveState(this);
 	}
 
 	public override bool Stack(float time)
@@ -226,15 +231,37 @@ public class CharacterState : NetworkBehaviour
 
 	public bool invinsible = false;
 
-	public List<AbstractCharacterState> CurrentStates => currentStates;
 	public Character Character => _hero;
 
+	public StateIcons StateIcons => _stateIcons;
+	public List<AbstractCharacterState> CurrentStates { get => currentStates; }
 	public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
 	{
+		//[States.CreeperInvisible] = new CreeperInvisibleState(),
+		//[States.PoisonBone] = new PoisonBoneState(),
+		//[States.WitheringPoison] = new WitheringPoisonState(),
+		//[States.BindingPoison] = new BindingPoisonState(),
+		//[States.PoisonCloud] = new PoisonCloudState(),
+		//[States.HealingPoisonCloud] = new HealingPoisonCloudState(),
+		//[States.EmpathicPoisons] = new EmpathicPoisonsState(),
+		//[States.HealingPoisonPerSecond] = new HealingPoisonPerSecondState(),
+		//[States.InstantHealingPoison] = new InstantHealingPoisonState(),
+		//[States.RegeneratingPoison] = new RegeneratingPoisonState(),
+		//[States.HeatedGlands] = new HeatedGlandsState(),
+		//[States.AbsorptionOfPoison] = new AbsorptionOfPoisonsState(),
+		//#endregion
+
+		//#region Carrigan
+		//[States.Bleeding] = new BleedingState(),
+		//[States.ReducingHealing] = new ReducingHealingState(),
+		//#endregion
+
+		//[States.Immateriality] = new ImmaterialityState(),
 		[States.Stun] = new StunnedState(),
 		[States.Frozen] = new FrozenState(),
 		[States.Frosting] = new FrostingState(),
 		[States.Cooling] = new Cooling(),
+		//[States.InAir] = new InAirState(),
 		[States.Blind] = new BlindnessState(),
 		[States.Invisible] = new InvisibleState(),
 		[States.SchoolDebuff] = new AbilitySchoolDebuff(),
@@ -257,7 +284,8 @@ public class CharacterState : NetworkBehaviour
 		[States.EmeraldSkin] = new EmeraldSkinState(),
 		[States.DefenseReduction] = new DefenceReductionState(),
 		[States.SparkTalentHealthBuff] = new SparkTalentHealthState(),
-		[States.SelfHarm] = new SelfHarmState()
+		[States.SelfHarm] = new SelfHarmState(),
+		[States.Absorption] = new AbsorptionState()
 	};
 
 	public void Initialize(Character hero)
@@ -268,7 +296,7 @@ public class CharacterState : NetworkBehaviour
 		_stamina = stamina;*/
 		if (_hero == null)
 		{
-			Debug.LogError("No required component in " + name + " " + gameObject.name);
+			//Debug.LogError("No required component in " + name + " " + gameObject.name);
 		}
 	}
 
@@ -283,16 +311,140 @@ public class CharacterState : NetworkBehaviour
 		}
 	}
 
-	public void Dispel(StateType type)
+	#region TestMethods
+
+	public void DispelStates(StateType type, int targetTeamIndex, int playerTeamIndex, bool isDispelOneState)
+	{
+
+		if (currentStates.Count == 0) return;
+
+		List<AbstractCharacterState> statesToRemove = new List<AbstractCharacterState>();
+
+		for (int i = currentStates.Count - 1; i >= 0; i--)
+		{
+			AbstractCharacterState state = currentStates[i];
+
+			if (state.Type == type &&
+				((targetTeamIndex == playerTeamIndex && state.BaffDebaff == BaffDebaff.Debaff) ||
+				 (targetTeamIndex != playerTeamIndex && state.BaffDebaff == BaffDebaff.Baff)))
+			{
+				if (state.CurrentStacksCount > 1)
+				{
+					state.CurrentStacksCount--;
+					ClientRpcRemoveIconCount();
+				}
+				else
+				{
+					statesToRemove.Add(state);
+					if (isDispelOneState) break;
+				}
+
+				break;
+			}
+		}
+
+		foreach (var state in statesToRemove)
+		{
+			state.ExitState();
+			currentStates.Remove(state);
+		}
+
+		ClientRpcUpdateClientStates(statesToRemove.Select(s => s.State).ToList());
+	}
+
+	[ClientRpc]
+	private void ClientRpcRemoveIconCount()
+	{
+		StateIcons?.RemoveIconCount();
+	}
+
+	[ClientRpc]
+	private void ClientRpcUpdateClientStates(List<States> removedStates)
+	{
+		foreach (var stateName in removedStates)
+		{
+			RemoveStateLocally(stateName);
+		}
+	}
+
+	private void RemoveStateLocally(States stateName)
+	{
+		var statesCopy = new List<AbstractCharacterState>(currentStates);
+
+		foreach (var state in statesCopy)
+		{
+			if (state.State == stateName)
+			{
+				state.ExitState();
+				currentStates.Remove(state);
+				break;
+			}
+		}
+	}
+
+	public bool CheckPoisonStates()
+	{
+		var poisonStates = new List<States>
+		{
+			States.PoisonBone,
+			States.WitheringPoison,
+			States.BindingPoison,
+			States.PoisonCloud
+		};
+
+		foreach (AbstractCharacterState state in currentStates)
+		{
+			if (poisonStates.Contains(state.State))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public bool TEST_CheckStateType(StateType type)
 	{
 		foreach (AbstractCharacterState state in currentStates)
 		{
 			if (state.Type == type)
 			{
-				state.ExitState();
+				return true;
 			}
 		}
+		return false;
 	}
+
+	public List<AbstractCharacterState> TEST_GetStatesOnEffectAndType(StatusEffect effect, StateType type)
+	{
+		List<AbstractCharacterState> currentStates = new();
+
+		if (Check(effect) && TEST_CheckStateType(type))
+		{
+			foreach (AbstractCharacterState state in this.currentStates)
+			{
+				if (state.Effects.Contains(effect) && state.Type == type)
+				{
+					currentStates.Add(state);
+				}
+			}
+
+			if (currentStates.Count > 0)
+			{
+				return currentStates;
+			}
+			else
+			{
+				return null;
+			}
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	#endregion
 
 	public bool Check(StatusEffect effect)
 	{
@@ -300,16 +452,18 @@ public class CharacterState : NetworkBehaviour
 		{
 			if (state.Effects.Contains(effect))
 			{
-				return false;
+				//Debug.Log("StatusEffect on Target = " + effect);
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	public bool CheckForState(States state)
 	{
 		foreach (AbstractCharacterState states in currentStates)
 		{
+			//Debug.Log(states.State + " on enemy, check for " + state);
 			if (states.State == state)
 			{
 				return true;
@@ -317,7 +471,7 @@ public class CharacterState : NetworkBehaviour
 		}
 		return false;
 	}
-	
+
 	public int CheckStateStacks(States state)
 	{
 		foreach (AbstractCharacterState states in currentStates)
@@ -335,7 +489,7 @@ public class CharacterState : NetworkBehaviour
 	{
 		foreach (AbstractCharacterState states in currentStates)
 		{
-			Debug.Log(states.State + " on enemy, check for " + state);
+			//Debug.Log(states.State + " on enemy, check for " + state);
 			if (states.State == state)
 			{
 				return states;
@@ -361,15 +515,20 @@ public class CharacterState : NetworkBehaviour
 
 	public void AddState(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
 	{
-		Debug.Log("Add state from server");
+		//Debug.Log("Add state from server");
 		AddStateLogic(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
 		ClientAddState(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
+	}
+	public void AddStateTest(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
+	{
+		//Debug.Log("Add state from server");
+		AddStateLogic(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
 	}
 
 	[Command]
 	public void CmdRemoveState(States state)
 	{
-		Debug.Log("Remove state" + state);
+		//Debug.Log("Remove state" + state);
 		RemoveStateLogic(state);
 		ClientRemoveState(state);
 	}
@@ -382,21 +541,22 @@ public class CharacterState : NetworkBehaviour
 
 	public void RemoveState(AbstractCharacterState newState)
 	{
-		if (!currentStates.Contains(newState)) return;
-		
 		if (newState is IDamageable damageableShield)
 		{
 			RemoveShield(damageableShield);
 		}
-			
-		currentStates.Remove(newState);
+
+		if (currentStates.Contains(newState))
+		{
+			currentStates.Remove(newState);
+			_stateIcons?.DeactivateIcon();
+		}
 	}
 
 	private void RemoveStateLogic(States stateName)
 	{
 		if (currentStates.Count <= 0) return;
 
-		_stateIcons.RemoveItemByState(stateName);
 		for (int i = currentStates.Count - 1; i >= 0; i--)
 		{
 			if (currentStates[i].State == stateName)
@@ -406,7 +566,9 @@ public class CharacterState : NetworkBehaviour
 					RemoveShield(damageableShield);
 				}
 
-				currentStates.Remove(currentStates[i]);
+				currentStates[i].ExitState();
+
+				currentStates.RemoveAt(i);
 			}
 		}
 	}
@@ -414,14 +576,14 @@ public class CharacterState : NetworkBehaviour
 	[ClientRpc]
 	private void ClientAddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
 	{
-		Debug.Log("Add state rpc");
+		//Debug.Log("Add state rpc");
 		AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
 	}
 
 	[ClientRpc]
 	private void ClientRemoveState(States stateName)
 	{
-		Debug.Log("Remove state client" + stateName);
+		//Debug.Log("Remove state client" + stateName);
 		RemoveStateLogic(stateName);
 	}
 
@@ -430,7 +592,7 @@ public class CharacterState : NetworkBehaviour
 	{
 		if (invinsible) return;
 
-		Debug.Log(state);
+		//Debug.Log(state);
 
 		if (CheckForState(state))
 		{
@@ -438,16 +600,9 @@ public class CharacterState : NetworkBehaviour
 			{
 				if (currentStates[i].State == state)
 				{
-					if (currentStates[i].CurrentStacksCount < currentStates[i].MaxStacksCount)
-					{
-						var canStack = currentStates[i].Stack(duration);
-						_stateIcons.ActivateIco(state, duration, 1, canStack);
-					}
-					else if(currentStates[i].MaxStacksCount == 0 || currentStates[i].CurrentStacksCount == currentStates[i].MaxStacksCount )
-					{
-						var canStack = currentStates[i].Stack(duration); 
-						_stateIcons.ActivateIco(state, duration, 0, canStack);
-					}
+					currentStates[i].Stack(duration);
+
+					_stateIcons.ActivateIco(state, duration, 1, true);
 
 					break;
 				}
@@ -455,6 +610,19 @@ public class CharacterState : NetworkBehaviour
 		}
 		else
 		{
+			AbstractCharacterState stateForResist = enumToState[state];
+			Health characterHealth = _hero.Health;
+			float chanceDodgeMagDamage = Random.Range(0f, 100f);
+
+			if (stateForResist.Type == StateType.Magic)
+			{
+				if (chanceDodgeMagDamage <= characterHealth.EvadeMagDamage)
+				{
+					Debug.Log("CharacterState / DodgeMagDamage");
+					return;
+				}
+			}
+
 			CreateState(enumToState[state], state, duration, damageToExit, personWhoShooted, skillName, false);
 
 			if (enumToState[state] is IDamageable damageableShield)
@@ -483,7 +651,7 @@ public class CharacterState : NetworkBehaviour
 			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit, null, skillName);
 		}
 	}
-	
+
 	private void AddShield(IDamageable shield)
 	{
 		var health = _hero.GetComponent<Health>();
@@ -503,6 +671,18 @@ public class CharacterState : NetworkBehaviour
 			health.Shields.Remove(shield);
 		}
 	}
+
+	public void RemoveStateByType(States state)
+	{
+		foreach (var activeState in currentStates)
+		{
+			if (activeState.State == state)
+			{
+				activeState.ExitState();
+				break;
+			}
+		}
+	}
 }
 
 public enum StateType
@@ -514,15 +694,49 @@ public enum StateType
 
 public enum StatusEffect
 {
+	Others,
 	Move,
 	MoveSpeed,
 	Ability,
 	AbilitySchool,
 	AbilitySpeed,
-	Others
+	Absorptions,
+	Poison,
+	Healing,
+	Freezing,
+	Stunning,
+	Invisible,
+	Strengthening, // For all State increasing/reduction Health/Mana/other values
+	Immateriality,
+	ReducingEfficiency,
 }
+
 public enum States
 {
+	#region CreeperStates
+
+	CreeperInvisible,
+	PoisonBone,
+	WitheringPoison,
+	BindingPoison,
+	PoisonCloud,
+	HealingPoisonCloud,
+	EmpathicPoisons,
+	HealingPoisonPerSecond,
+	InstantHealingPoison,
+	RegeneratingPoison,
+	HeatedGlands,
+	AbsorptionOfPoison,
+
+	#endregion
+
+	#region Carrigan
+	BleedingCarrigan,
+	ReducingHealing,
+	#endregion
+
+	Immateriality,
+	InAir,
 	Default,
 	Stun,
 	Frozen,
@@ -548,9 +762,14 @@ public enum States
 	Knockdown,
 	IdealEvade,
 	Bleeding,
-
+	Absorption,
 	EmeraldSkin,
 	SparkTalentHealthBuff,
 	DefenseReduction,
 	SelfHarm
+}
+public enum BaffDebaff
+{
+	Baff,
+	Debaff,
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TestGameRules : GameRules
 {
@@ -85,8 +86,78 @@ public class TestGameRules : GameRules
             team1Score += teamDeaths[2] == GetTeamCount(2) ? 1 : 0;
 
             Debug.Log($"Round Over! Team 1 Score: {team1Score}, Team 2 Score: {team2Score}");
-            RestartRound();
+            if (team1Score >= 2 || team2Score >= 2)
+            {
+                EndGame();
+            }
+            else
+            {
+                RestartRound();
+            }
         }
+    }
+
+    private void EndGame()
+    {
+        if (!isServer) return;
+
+        GameMode currentMode = ServerManager.Instance.CurrentGameMode;
+        bool isMaxLevel = LevelCharacterManager.Instance.GetCurrentLevel() >= 9;
+        bool isVictory = team1Score >= 2;
+
+        switch (currentMode)
+        {
+            case GameMode.GM1vs1MaximumMode:
+                if (isVictory)
+                {
+                    if (isMaxLevel)
+                    {
+                        BottleUserManager.Instance.AddBottleVolume(1f / 3f);
+                    }
+                    else
+                    {
+                        LevelCharacterManager.Instance.AddExperience(6);
+                        BottleUserManager.Instance.AddBottleVolume(1f / 3f);
+                    }
+                }
+                else if (!isMaxLevel)
+                {
+                    LevelCharacterManager.Instance.AddExperience(2);
+                }
+                break;
+
+            default:
+                if (isVictory)
+                {
+                    if (isMaxLevel)
+                    {
+                        BottleUserManager.Instance.AddBottleVolume(1f / 3f);
+                    }
+                    else
+                    {
+                        LevelCharacterManager.Instance.AddExperience(2);
+                    }
+                }
+                break;
+        }
+
+        RpcCloseRoomOnClients();
+        StartCoroutine(CloseRoomJob());
+    }
+
+    [ClientRpc]
+    private void RpcCloseRoomOnClients()
+    {
+        StartCoroutine(CloseRoomOnClientAndLoadMainMenu());
+    }
+
+    private IEnumerator CloseRoomOnClientAndLoadMainMenu()
+    {
+        yield return StartCoroutine(CloseRoomJob());
+
+        SceneManager.LoadScene("MainMenu");
+
+        NetworkManager.singleton.GetComponent<NetworkManager>().SpawnLocalUser();
     }
 
     private int GetTeamCount(int teamIndex)
@@ -170,13 +241,12 @@ public class TestGameRules : GameRules
             }
         }
 
-        var energy = playerSettings.Resources.First(o => o.Type == ResourceType.Mana);
-        if (energy != null)
-        {
-            energy.ResetValue();
-        }
+        //var energy = playerSettings.Resources.First(o => o.Type == ResourceType.Mana);
+        //if (energy != null)
+        //{
+        //    energy.ResetValue();
+        //}
     }
-
 
     private IEnumerator HandleTeamsAndSpawns(List<Transform> spawnPoints)
     {
