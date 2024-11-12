@@ -51,11 +51,11 @@ public class IcePuddleObject : Projectiles
 	}
 
 
-	private void OnTriggerExit2D(Collider2D collision)
+	private void OnTriggerExit(Collider collision)
 	{
 		if (collision.gameObject == _dad.gameObject && _healthComponent != null)
 		{
-			Debug.LogError("fix");
+			//Debug.LogError("fix");
 			//_healthComponent.SetBoostRegen2(0);
 			return;
 		}
@@ -71,12 +71,13 @@ public class IcePuddleObject : Projectiles
 	}
 
 	[Server]
-	private void OnTriggerEnter2D(Collider2D collision)
+	private void OnTriggerEnter(Collider collision)
 	{
 		if(!_initialized) return;
+		Debug.Log(collision.name);
 		if (collision.gameObject == _dad.gameObject)
 		{
-			Debug.LogError("fix");
+			//Debug.LogError("fix");
 			//_healthComponent.SetBoostRegen2(0.01f);
 			return;
 		}
@@ -138,7 +139,7 @@ public class IcePuddleObject : Projectiles
 	private IEnumerator StartFade()
 	{
 		yield return new WaitForSeconds(_timeToDestroy-2);
-		_spriteRenderer.DOFade(0, 2);
+		//_spriteRenderer.DOFade(0, 2);
 		//turn off energy boost
 		//destroy
 	}

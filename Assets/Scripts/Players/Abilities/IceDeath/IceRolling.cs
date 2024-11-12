@@ -15,9 +15,9 @@ public class IceRolling : Skill
 	[SerializeField] private float _jumprange = 2f;
 	[SerializeField] private float _durationOfJump = 0.3f;
 
-	private Vector2 _mousePos = Vector2.positiveInfinity;
-	private Vector2 _jumpPos;
-	private Vector2 _lookDir;
+	private Vector3 _mousePos = Vector2.positiveInfinity;
+	private Vector3 _jumpPos;
+	private Vector3 _lookDir;
 	private Energy _energy;
 
 	protected override bool IsCanCast => true;
@@ -78,20 +78,20 @@ public class IceRolling : Skill
 	private void AfterJump()
 	{
 		//_jumpCount = 4;
-		_mousePos = Vector2.positiveInfinity;
-		_lookDir = Vector2.zero;
-		_jumpPos = Vector2.zero;
+		_mousePos = Vector3.positiveInfinity;
+		_lookDir = Vector3.zero;
+		_jumpPos = Vector3.zero;
 	}
 
 	private bool CheckObstacleBetween(Vector3 start, Vector3 end)
 	{
-		Vector2 direction = (end - start).normalized;
-		float distance = Vector2.Distance(start, end);
+		Vector3 direction = (end - start).normalized;
+		float distance = Vector3.Distance(start, end);
 
-		RaycastHit2D[] hits =
-			Physics2D.BoxCastAll(start, new Vector2(2f, 2f), 0f, direction, distance, _obstacle);
+		RaycastHit[] hits =
+			Physics.BoxCastAll(start, new Vector2(2f, 2f), direction, Quaternion.identity, distance, _obstacle);
 
-		foreach (RaycastHit2D hit in hits)
+		foreach (RaycastHit hit in hits)
 		{
 			_jumpPos = hits[0].point - direction*1.2f;
 			return true;
@@ -104,8 +104,9 @@ public class IceRolling : Skill
 	{
 		float actualJumpRange = _jumprange * GlobalVariable.cellSize;
 
-		_lookDir = (_mousePos - (Vector2)_playerLinks.transform.position).normalized;
-		Vector2 jumpPos = _lookDir * actualJumpRange + (Vector2)_playerLinks.transform.position;
+		_lookDir = (_mousePos - _playerLinks.transform.position).normalized;
+		//_lookDir = gameObject.transform.rotation.eulerAngles.normalized;
+		Vector3 jumpPos = _lookDir * actualJumpRange + _playerLinks.transform.position;
 		if (CheckObstacleBetween(_playerLinks.transform.position, jumpPos))
 		{
 			CmdPush(_jumpPos);
@@ -116,7 +117,7 @@ public class IceRolling : Skill
 			for (int i = 0; i < 2; i++)
 			{
 				actualJumpRange += 2;
-				Vector2 jumpPos2 = _lookDir * actualJumpRange + (Vector2)_playerLinks.transform.position;
+				Vector3 jumpPos2 = _lookDir * actualJumpRange + _playerLinks.transform.position;
 				if (_energy.CurrentValue >= 5 && !CheckObstacleBetween(_playerLinks.transform.position, jumpPos2))
 				{
 					_energy.CmdUse(5);
@@ -175,7 +176,7 @@ public class IceRolling : Skill
 	}
 
 	[Command]
-	private void CmdPush(Vector2 force)
+	private void CmdPush(Vector3 force)
 	{
 		_playerLinks.Move.TargetRpcDoMove(force, _durationOfJump);
 	}
