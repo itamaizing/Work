@@ -18,7 +18,7 @@ public class StandartAutoAttack : AutoAttackSkill
         AnimCastEnded();
     }
 
-protected override void CastAction()
+    protected override void CastAction()
     {
         if (_target == null)
             return;

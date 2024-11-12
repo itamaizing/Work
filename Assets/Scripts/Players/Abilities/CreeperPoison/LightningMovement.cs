@@ -325,30 +325,20 @@ public class LightningMovement : Skill
         return false;
     }
 
+    #region CheckTarget
+
     private void IsEnemyBeforePlayer()
     {
         float castLengthMultiplier = 4f;
         float castWidthMultiplier = 1.55f;
 
         Vector3 sizeBox = new Vector3(_castLength * castLengthMultiplier, 1f, _castWidth * castWidthMultiplier);
-
-        /*  #region LookRotation
-
-          Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-          if (Physics.Raycast(ray, out RaycastHit hit))
-          {
-              Vector3 direction = 
-          }
-
-          #endregion */
-
         Vector3 dir = transform.forward;
         Quaternion lookRotation = Quaternion.LookRotation(dir);
 
-
         Debug.Log("LightningMovement / IsEnemyBeforePlayer / lookRotation = " + lookRotation);
 
-        Collider[] hit = Physics.OverlapBox(transform.position, sizeBox, lookRotation, _targetsLayers);
+        Collider[] hit = Physics.OverlapBox(_player.transform.position, sizeBox, lookRotation, _targetsLayers);
         if (hit.Length > 0)
         {
             Debug.Log("LightningMovement / IsEnemyBeforePlayer / hit = " + hit.Length);
@@ -362,31 +352,28 @@ public class LightningMovement : Skill
         }
     }
 
-    private IEnumerator IsTargetOnEndPoint(Vector3 secondLeap, LayerMask targetLayer)
+    private IEnumerator IsTargetOnEndPoint(Vector3 secondLeapPoint, LayerMask targetLayer)
     {
         Debug.Log("LightningMovement / IsTargetOnEndPoint");
 
         float radiusChecking = 1.35f;
-        Vector3 direction = (secondLeap - transform.position).normalized;
+        Vector3 direction = (secondLeapPoint - _player.transform.position).normalized;
 
         while (true)
         {
-            Ray ray = new Ray(transform.position, direction);
-            RaycastHit hitInfo;
 
-            bool isHit = Physics.SphereCast(ray, radiusChecking, out hitInfo, targetLayer);
-            Debug.Log("LightningMovement / IsTargetOnEndPoint / isHit = " + isHit);
-            Debug.Log("LightningMovement / IsTargetOnEndPoint / hitInfo = " + hitInfo.collider.name);
- 
-            if (isHit)
+            Collider[] enemies = Physics.OverlapSphere(_firstLeapPoint, radiusChecking, targetLayer);
+            if (enemies.Length > 0)
             {
-                _target = hitInfo.collider.gameObject.GetComponent<Character>();
-
-                _isTargetOnEndPointSecondLeap = true;
-
-                Debug.Log("LightningMovement / IsTargetOnEndPoint / if (isHit) / _target = " + _target + " / _isTargetOnEndPointSecondLeap = " + _isTargetOnEndPointSecondLeap);
-
-                yield break;
+                foreach (Collider target in enemies)
+                {
+                    if (target != null)
+                    {
+                        _target = target.GetComponent<Character>();
+                        _isTargetOnEndPointSecondLeap = true;
+                        Debug.Log("LightningMovement / IsTargetOnEndPoint / if (target != null) / target = " + target + " / _isTargetOnEndPointSecondLeap = " + _isTargetOnEndPointSecondLeap);
+                    }
+                }
             }
             yield return null;
         }
@@ -402,7 +389,7 @@ public class LightningMovement : Skill
 
         while (true)
         {
-            Collider[] hitsForward = Physics.OverlapBox(transform.position, sizeBox, lookRotation, targetLayer);
+            Collider[] hitsForward = Physics.OverlapBox(_player.transform.position, sizeBox, lookRotation, targetLayer);
             if (hitsForward.Length > 0)
             {
                 _isTargetBeforePlayer = true;
@@ -423,7 +410,7 @@ public class LightningMovement : Skill
         Debug.Log("LightningMovement / IsTargetBehindPlayerJob (Coroutine) / lookRotation = " + lookRotation);
         while (true)
         {
-            Collider[] hit = Physics.OverlapBox(transform.position, sizeBox, lookRotation, targetLayer);
+            Collider[] hit = Physics.OverlapBox(_player.transform.position, sizeBox, lookRotation, targetLayer);
             if (hit.Length > 0)
             {
                 _isTargetBehindPlayer = true;
@@ -434,24 +421,12 @@ public class LightningMovement : Skill
         }
     }
 
+
+    #endregion
+
     #endregion
 
     #region RenderingLine
-
-    private Quaternion DirectionBox(Transform transform)
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit))
-        {
-            Vector3 direction = hit.point - transform.position;
-            direction.y = 0;
-
-            Quaternion lookRotation = Quaternion.LookRotation(direction);
-            return lookRotation;
-        }
-
-        return Quaternion.identity;
-    }
 
     private Quaternion RotateAtMouse(Transform transform)
     {
@@ -569,6 +544,7 @@ public class LightningMovement : Skill
                 Vector3 rawFirstLeapPoint = GetMousePoint();
 
                 _isFirstClickDone = true;
+                _target = GetRaycastTarget();
                 _firstLeapPoint = LimitFirstLeapToMaxDistance(transform.position, rawFirstLeapPoint, _rangeLeap);
                 _firstLeapPoint.y = _player.transform.position.y;
                 Debug.Log("LightningMovement / FirstPoint = " + _firstLeapPoint);
@@ -586,7 +562,6 @@ public class LightningMovement : Skill
                 Vector3 rawSecondLeapPoint = GetMousePoint();
 
                 _isSecondClickDone = true;
-                _target = GetRaycastTarget();
                 _secondLeapPoint = LimitSecondLeapToMaxDistance(_firstLeapPoint, rawSecondLeapPoint, _rangeLeap);
                 _secondLeapPoint.y = _player.transform.position.y;
 
@@ -616,7 +591,7 @@ public class LightningMovement : Skill
     {
         while (true)
         {
-            Collider[] hits = Physics.OverlapSphere(transform.position, radius, enemiesLayer);
+            Collider[] hits = Physics.OverlapSphere(_player.transform.position, radius, enemiesLayer);
 
             foreach (Collider item in hits)
             {
@@ -633,8 +608,8 @@ public class LightningMovement : Skill
                         }
                     }
 
-                    bool isAtFirstLeapEnd = Vector2.Distance(_player.transform.position, _firstLeapPoint) < 0.1f;
-                    bool isAtSecondLeapStart = Vector2.Distance(_player.transform.position, _secondLeapPoint) < 0.1f;
+                    bool isAtFirstLeapEnd = Vector3.Distance(_player.transform.position, _firstLeapPoint) < 0.1f;
+                    bool isAtSecondLeapStart = Vector3.Distance(_player.transform.position, _secondLeapPoint) < 0.1f;
 
                     if (!isAtFirstLeapEnd && !isAtSecondLeapStart)
                     {
@@ -709,7 +684,9 @@ public class LightningMovement : Skill
         _isAbilityDone = true;
         IsInMovement = true;
         _player.Move.enabled = false;
-
+        Debug.Log("LightningMovement / _target = " + _target);
+        Debug.Log("LightningMovement / firstLeapPoint = " + firstLeapPoint);
+        Debug.Log("LightningMovement / secondLeapPoint = " + secondLeapPoint);
         if (_isTargetBeforePlayerCoroutine == null)
         {
             _isTargetBeforePlayerCoroutine = StartCoroutine(IsTargetBeforePlayerJob(_rangeLeap, _targetsLayers));

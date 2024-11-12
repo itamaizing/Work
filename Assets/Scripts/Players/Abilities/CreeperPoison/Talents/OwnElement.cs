@@ -37,6 +37,7 @@ public class OwnElement : Talent
         _baseAttackSpeed = _creeperStrike.AttackDelay;
         StartSearchingEnemies();
     }
+
     public override void Enter()
     {
         SetActive(true);
@@ -55,10 +56,10 @@ public class OwnElement : Talent
 
     private void StartSearchingEnemies()
     {
-        _searchingDebuffOnEnemeies = StartCoroutine(SearchingDebuffOnEnemy());
+        _searchingDebuffOnEnemeies = StartCoroutine(SearchingDebuffOnEnemy(_enemyLayer));
     }
 
-    private IEnumerator SearchingDebuffOnEnemy()
+    private IEnumerator SearchingDebuffOnEnemy(LayerMask enemyLayer)
     {
         while (Data.IsOpen)
         {
@@ -67,12 +68,14 @@ public class OwnElement : Talent
             _currentAllStacks = 0;
             _isTargetNearby = false;
 
-            Collider[] enemies = Physics.OverlapSphere(transform.position, _radiusSearching, _enemyLayer);
-
+            Collider[] enemies = Physics.OverlapSphere(character.transform.position, _radiusSearching, enemyLayer);
+            Debug.Log("OwnElement / Coroutine / enemies = " + enemies.Length);
             if (enemies != null)
             {
                 foreach (Collider target in enemies)
                 {
+                    Debug.Log("OwnElement / Coroutine / target = " + target.name);
+
                     _isTargetNearby = true;
 
                     var targetWithDebuff = target.GetComponent<CharacterState>();

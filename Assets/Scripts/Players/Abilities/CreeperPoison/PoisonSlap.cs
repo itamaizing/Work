@@ -124,7 +124,7 @@ public class PoisonSlap : Skill
 
                     if (_currentTarget != null)
                     {
-                        _firstMousePosition = _currentTarget.transform.position;
+                        _firstMousePosition = GetMousePoint();
                         CreateArrowsParallelToPlayer();
                         StopAutoDraw();
                     }
@@ -174,12 +174,12 @@ public class PoisonSlap : Skill
         if (_currentTarget == null)
             return false;
 
-        return Vector2.Distance(_player.transform.position, _currentTarget.transform.position) <= Radius;
+        return Vector3.Distance(_player.transform.position, _currentTarget.transform.position) <= Radius;
     }
 
     private void ChooseDirectionPush(Character target)
     {
-        _isPushTargetAllowed = Vector2.Distance(_player.transform.position, _secondMousePosition) > Vector2.Distance(_player.transform.position, target.transform.position);
+        _isPushTargetAllowed = Vector3.Distance(_player.transform.position, _secondMousePosition) > Vector3.Distance(_player.transform.position, target.transform.position);
     }
 
     #endregion
@@ -304,7 +304,7 @@ public class PoisonSlap : Skill
         if (_firstClickDone && !_secondClickDone)
         {
             Vector3 currentMousePosition = GetMousePoint();
-            if (currentMousePosition.x < _firstMousePosition.x)
+            if (currentMousePosition.x < _firstMousePosition.x && currentMousePosition.z < _firstMousePosition.z)
             {
                 SetArrowColor(0, Color.green);
                 SetArrowColor(1, Color.red);
@@ -331,7 +331,7 @@ public class PoisonSlap : Skill
                 _secondMousePosition = GetMousePoint();
                 if (_currentTarget != null)
                 {
-                    if (_secondMousePosition.x < _firstMousePosition.x)
+                    if (_secondMousePosition.x < _firstMousePosition.x && _secondMousePosition.z < _firstMousePosition.z)
                     {
                         DarkenArrowColor(0, 0.8f);
                         DarkenArrowColor(1, 0f);

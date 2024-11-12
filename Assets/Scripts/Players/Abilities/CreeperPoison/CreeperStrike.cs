@@ -51,9 +51,18 @@ public class CreeperStrike : AutoAttackSkill
     public bool IsHit { get => _isHit; set => _isHit = value; }
     public Character CurrentTarget { get => _target; }
 
-    protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
-    protected override int AnimTriggerAutoAttack => 0;
+    protected override int AnimTriggerAutoAttack => Animator.StringToHash("CreeperStrikeAttacking");
+
+    public void AnimCreeperStrikeCast()
+    {
+        AnimCastAction();
+    }
+
+    public void AnimCreeperStrikeEnded()
+    {
+        AnimCastEnded();
+    }
 
     protected override void ClearData()
     {
