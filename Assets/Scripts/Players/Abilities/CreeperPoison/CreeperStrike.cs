@@ -86,8 +86,15 @@ public class CreeperStrike : AutoAttackSkill
         yield return null;
     }
 
+    public void SetTarget(Character target)
+    {
+        _target = target;
+    }
+
     public void DealingDamageFromHits(Character target)
     {
+        if (target == null) _target = target;
+
         _currentDamage = Random.Range(7.0f, 11.0f);
         float _currentChanceOfCriticalStrike = Random.Range(0.0f, 1.0f);
 
@@ -110,13 +117,13 @@ public class CreeperStrike : AutoAttackSkill
 
         if (_strokesOfAspiration.Data.IsOpen && _currentCountHit == 2)
         {
-            if (_lastTarget == target)
+            if (_lastTarget == _target)
             {
                 _strokesOfAspiration.UseTalentStrokesOfAspiration();
             }
             else
             {
-                _lastTarget = target;
+                _lastTarget = _target;
             }
         }
 
@@ -172,12 +179,12 @@ public class CreeperStrike : AutoAttackSkill
 
         if (_coldBlood.IsCanCritCreeperStrike || _coldBlood.IsCanCritLightningStrikes)
         {
-            DealCriticalDamage(target, _currentDamage);
+            DealCriticalDamage(_target, _currentDamage);
         }
 
         if (_currentChanceOfCriticalStrike <= _chanceOfCriticalStrike)
         {
-            DealCriticalDamage(target, _currentDamage);
+            DealCriticalDamage(_target, _currentDamage);
         }
         else
         {
@@ -189,7 +196,7 @@ public class CreeperStrike : AutoAttackSkill
                 PhysicAttackType = AttackRangeType.MeleeAttack,
             };
 
-            CmdApplyDamage(damage, target.gameObject);
+            CmdApplyDamage(damage, _target.gameObject);
         }
 
         if (_firstStrike.Data.IsOpen)

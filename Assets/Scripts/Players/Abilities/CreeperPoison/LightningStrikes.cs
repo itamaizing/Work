@@ -31,9 +31,19 @@ public class LightningStrikes : AutoAttackSkill
     private Coroutine _useCoroutine;
 
     public bool IsUsedLightningStrikes => _isUsedLightningStrikes;
-    protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
-    protected override int AnimTriggerAutoAttack => 0;
+    protected override int AnimTriggerAutoAttack => Animator.StringToHash("LightningStrikesAttacking");
+
+    public void AnimLightningStrikesAttack()
+    {
+        _creeperStrike.AnimCreeperStrikeCast();
+    }    
+
+    public void AnimLightningStrikesEnd()
+    {
+        _creeperStrike.AnimCreeperStrikeEnded();
+    }
+
     public void UseLightningStrikesOfLightningMovement(Character target, float duration)
     {
         _useCoroutine = StartCoroutine(UseAbilityCoroutine(target));
@@ -107,7 +117,9 @@ public class LightningStrikes : AutoAttackSkill
 
             for (int i = 0; i < _countStrikes; i++)
             {
-                _creeperStrike.DealingDamageFromHits(target);
+                _creeperStrike.SetTarget(target);
+
+                //_creeperStrike.DealingDamageFromHits(target);
 
                 if (_heatedGlands.Data.IsOpen)
                 {
