@@ -239,19 +239,24 @@ public class PoisonBallProjectile : Test_Projectile
 
     private void PushEnemy(Character target, float durationPush, float newDistancePush)
     {
+        MoveComponent targetMove = target.GetComponent<MoveComponent>();
         Vector3 directionPush = (target.transform.position - transform.position);
 
         newDistancePush = ((newDistancePush * GlobalVariable.cellSize) * durationPush) / GlobalVariable.cellSize;
 
         if (_isPushTarget)
         {
+            Vector3 finalPoint = targetMove.transform.position + directionPush;
+            finalPoint.y = 0;
             //target.transform.DOMove((Vector2)target.transform.position + directionPush * distancePush, durationPush).SetEase(Ease.Linear);
-            target.GetComponent<MoveComponent>().TargetRpcDoMove((Vector3)target.transform.position + directionPush * newDistancePush, durationPush);
+            targetMove.TargetRpcDoMove(finalPoint * newDistancePush, durationPush);
         }
         else
         {
+            Vector3 finalPoint = targetMove.transform.position - directionPush;
+            finalPoint.y = 0;
             //target.transform.DOMove((Vector2)target.transform.position - directionPush * distancePush, durationPush).SetEase(Ease.Linear);
-            target.GetComponent<MoveComponent>().TargetRpcDoMove((Vector3)target.transform.position - directionPush * newDistancePush, durationPush);
+            targetMove.TargetRpcDoMove(finalPoint * newDistancePush, durationPush);
         }
 
         target.Move.CanMove = true;

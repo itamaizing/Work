@@ -279,21 +279,21 @@ public class CreeperInvisible : Skill
     {
         player.GetComponent<Character>().IsInvisible = true;
 
-        SpriteRenderer playerSprite = player.GetComponentInChildren<SpriteRenderer>();
+        MeshRenderer playerSprite = player.GetComponentInChildren<MeshRenderer>();
 
-        Color newPlayerSpriteTransparency = playerSprite.color;
+        Color newPlayerSpriteTransparency = playerSprite.material.color;
 
         int playerLayer = player.layer;
 
         if (playerLayer == LayerMask.NameToLayer("Allies"))
         {
             newPlayerSpriteTransparency.a = 0.5f;
-            _playerRenderer.material.color = new Color(1f, 1f, 1f, newPlayerSpriteTransparency.a);
+            _playerRenderer.material.color = new Color(playerSprite.material.color.r, playerSprite.material.color.g, playerSprite.material.color.b, newPlayerSpriteTransparency.a);
         }
         else if (playerLayer == LayerMask.NameToLayer("Enemy"))
         {
             newPlayerSpriteTransparency.a = 0.0f;
-            _playerRenderer.material.color = new Color(1f, 1f, 1f, newPlayerSpriteTransparency.a);
+            _playerRenderer.material.color = new Color(playerSprite.material.color.r, playerSprite.material.color.g, playerSprite.material.color.b, newPlayerSpriteTransparency.a);
         }
     }
 
@@ -302,21 +302,21 @@ public class CreeperInvisible : Skill
     {
         player.GetComponent<Character>().IsInvisible = false;
 
-        SpriteRenderer playerSprite = player.GetComponentInChildren<SpriteRenderer>();
+        MeshRenderer playerSprite = player.GetComponentInChildren<MeshRenderer>();
 
-        Color newPlayerSpriteTransparency = playerSprite.color;
+        Color newPlayerSpriteTransparency = playerSprite.material.color;
 
         int playerLayer = player.layer;
 
         if (playerLayer == LayerMask.NameToLayer("Allies"))
         {
             newPlayerSpriteTransparency.a = 1f;
-            _playerRenderer.material.color = new Color(1f, 1f, 1f, newPlayerSpriteTransparency.a);
+            _playerRenderer.material.color = new Color(playerSprite.material.color.r, playerSprite.material.color.g, playerSprite.material.color.b, newPlayerSpriteTransparency.a);
         }
         else if (playerLayer == LayerMask.NameToLayer("Enemy"))
         {
             newPlayerSpriteTransparency.a = 1f;
-            _playerRenderer.material.color = new Color(1f, 1f, 1f, newPlayerSpriteTransparency.a);
+            _playerRenderer.material.color = new Color(playerSprite.material.color.r, playerSprite.material.color.g, playerSprite.material.color.b, newPlayerSpriteTransparency.a);
         }
     }
 

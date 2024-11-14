@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.TextCore.LowLevel;
 
 public class CreeperStrike : AutoAttackSkill
 {
@@ -21,6 +22,7 @@ public class CreeperStrike : AutoAttackSkill
     [Header("Abilities")]
     [SerializeField] private CreeperInvisible _creeperInvisible;
     [SerializeField] private ColdBlood _coldBlood;
+    [SerializeField] private LightningStrikes _lightningStrikes;
     //[SerializeField] private AbsorptionOfPoisons _absorptionOfPoisons;
 
     [Header("Ability properties")]
@@ -49,18 +51,20 @@ public class CreeperStrike : AutoAttackSkill
     public int PoisonBoneStack { get => _poisonBoneStack; set => _poisonBoneStack = value; }
     public bool IsTwoHit { get => _isTwoHit; set => _isTwoHit = value; }
     public bool IsHit { get => _isHit; set => _isHit = value; }
-    public Character CurrentTarget { get => _target; }
+    public Character CurrentTarget { get => _target; set => _target = value; }
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerAutoAttack => Animator.StringToHash("CreeperStrikeAttacking");
 
     public void AnimCreeperStrikeCast()
     {
+        Debug.Log("AnimCreeperStrikeCast");
         AnimCastAction();
     }
 
     public void AnimCreeperStrikeEnded()
     {
+        Debug.Log("AnimCreeperStrikeCastEnded");
         AnimCastEnded();
     }
 
@@ -86,15 +90,8 @@ public class CreeperStrike : AutoAttackSkill
         yield return null;
     }
 
-    public void SetTarget(Character target)
+    public void DealingDamageFromHits(Character target, bool isUsingLightningStrikes = false)
     {
-        _target = target;
-    }
-
-    public void DealingDamageFromHits(Character target)
-    {
-        if (target == null) _target = target;
-
         _currentDamage = Random.Range(7.0f, 11.0f);
         float _currentChanceOfCriticalStrike = Random.Range(0.0f, 1.0f);
 
@@ -103,6 +100,7 @@ public class CreeperStrike : AutoAttackSkill
 
         if (_currentCountHit == 2)
         {
+            // Make here coroutine, which will start timer
             if (!_isTwoHit)
             {
                 _isTwoHit = true;
@@ -181,8 +179,7 @@ public class CreeperStrike : AutoAttackSkill
         {
             DealCriticalDamage(_target, _currentDamage);
         }
-
-        if (_currentChanceOfCriticalStrike <= _chanceOfCriticalStrike)
+        else if (_currentChanceOfCriticalStrike <= _chanceOfCriticalStrike)
         {
             DealCriticalDamage(_target, _currentDamage);
         }
@@ -205,6 +202,11 @@ public class CreeperStrike : AutoAttackSkill
         }
 
         _isHit = false;
+
+        if (isUsingLightningStrikes)
+        {
+            TryPayCost(true);
+        }
     }
 
     private float CalculateCriticalDamage(Character target, float baseDamage)

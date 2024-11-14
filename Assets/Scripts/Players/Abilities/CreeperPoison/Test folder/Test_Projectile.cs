@@ -39,9 +39,12 @@ public abstract class Test_Projectile : NetworkBehaviour
     {
         _maxDistanceFlying *= GlobalVariable.cellSize;
 
+        Vector3 finalPoint = targetPos;
+        finalPoint.y = _player.transform.position.y;
+
         float duration = speed / _maxDistanceFlying;
 
-        transform.DOMove(targetPos, duration).SetEase(Ease.Linear).OnComplete(DestroyProjectile);
+        transform.DOMove(finalPoint, duration).SetEase(Ease.Linear).OnComplete(DestroyProjectile);
     }
 
     public void DestroyProjectile()

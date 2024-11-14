@@ -42,23 +42,20 @@ public class PoisonSlap : Skill
 
     private int _poisonBoneStack;
 
-    private float _creeperStrikeCastSpeedMultiplier = 0.5f; // Уменьшение скорости каста на 50%
-    private float _lightningStrikesCastSpeedMultiplier = 0.0f;  // Уменьшение скорости каста на 100%
+    private float _creeperStrikeCastSpeedMultiplier = 0.5f; // Decrease CastTime on 50%
+    private float _lightningStrikesCastSpeedMultiplier = 0.0f;  // Decrease CastTime on 100%
     private float _baseTimeCast = 1.6f;
     private float _baseDamage = 30f;
     private float _distancePush = 3.0f;
     private float _durationPush = 1.0f;
 
     private Coroutine _secondMouseClickCoroutine;
-    private Coroutine _castSpeedFromCreeperStrikeCoroutine;
-    private Coroutine _castSpeedFromLightningStrikesCoroutine;
 
     private bool _isPushTargetAllowed;
     private bool _firstClickDone = false;
     private bool _secondClickDone;
-    private bool _isIncreasedCastSpeedFromCreeperStrike = false;
-    private bool _isIncreasedCastSpeedFromLightningStrike = false;
-    private bool _isCanCast = true;
+    private bool _isUsedPoisonBallCharger = true;
+    private bool _isCanBreak = false;
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
     public int PoisonBoneStack { get => _poisonBoneStack; set => _poisonBoneStack = value; }
@@ -68,6 +65,7 @@ public class PoisonSlap : Skill
     #endregion
 
     #region PrepareAndStartJob
+
     private void Update()
     {
         UpdateMouseDetection();
@@ -83,31 +81,22 @@ public class PoisonSlap : Skill
         _firstClickDone = false;
         _secondClickDone = false;
         _isPushTargetAllowed = false;
+        _isUsedPoisonBallCharger = true;
+        _isCanBreak = false;
 
         _currentTarget = null;
         _castDeley = 0;
 
-        _isIncreasedCastSpeedFromCreeperStrike = false;
-        _isIncreasedCastSpeedFromLightningStrike = false;
-
-        if (_castSpeedFromCreeperStrikeCoroutine != null)
+        if (_secondMouseClickCoroutine != null)
         {
-            StopCoroutine(CastSpeedFromCreeperStrike());
-            _castSpeedFromCreeperStrikeCoroutine = null;
-        }
-        if (_castSpeedFromLightningStrikesCoroutine != null)
-        {
-            StopCoroutine(CastSpeedFromLightningStrikes());
-            _castSpeedFromLightningStrikesCoroutine = null;
+            StopCoroutine(_secondMouseClickCoroutine);
+            _secondMouseClickCoroutine = null;
         }
     }
 
     protected override IEnumerator PrepareJob()
     {
-        if (!_poisonBall.IsHaveCharge)
-        {
-            yield break;
-        }
+        if (!_poisonBall.IsHaveCharge && !_lightweightSlap.Data.IsOpen) yield break;
 
         if (_lightningMovement.IsInMovement)
         {
@@ -121,47 +110,67 @@ public class PoisonSlap : Skill
                 if (GetMouseButton)
                 {
                     _currentTarget = GetRaycastTarget();
+                    Debug.Log("PoisonSlap / PrepareJob / _currentTarget = " + _currentTarget);
 
                     if (_currentTarget != null)
                     {
                         _firstMousePosition = GetMousePoint();
+
                         CreateArrowsParallelToPlayer();
+
                         StopAutoDraw();
+
+                        _firstClickDone = true;
+
                     }
-                    _firstClickDone = true;
                 }
                 yield return null;
             }
+
+            if (_lightweightSlap.Data.IsOpen && _creeperStrike.IsTwoHit)
+            {
+                CastSpeedFromCreeperStrike();
+                _isUsedPoisonBallCharger = false;
+                Debug.Log("PoisonSlap / PrepareJob / CreeperStrike.IsTwoHit / if ");
+            }
+            else if (_lightweightSlap.Data.IsOpen && _lightningStrikes.IsUsedLightningStrikes)
+            {
+                CastSpeedFromLightningStrikes();
+                _isUsedPoisonBallCharger = false;
+                Debug.Log("PoisonSlap / PrepareJob / LightningStrike.IsUsedLightningStrikes / else if ");
+            }
+            else if (_lightweightSlap.Data.IsOpen && (!_creeperStrike.IsTwoHit || !_lightningStrikes.IsUsedLightningStrikes))
+            {
+                Debug.Log("PoisonSlap / PrepareJob / else if");
+                _isCanBreak = true;
+                yield break;
+            }
+            else
+            {
+                _isUsedPoisonBallCharger = true;
+                _castDeley = _baseTimeCast;
+                Debug.Log("PoisonSlap / PrepareJob / else / castDeley = " + _castDeley);
+            }
+
+            if (_isCanBreak) yield break;
+
+            yield return _secondMouseClickCoroutine = StartCoroutine(SecondClick());
         }
-        yield return _secondMouseClickCoroutine = StartCoroutine(SecondClick());
+
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_currentTarget != null)
+        if (_isUsedPoisonBallCharger)
         {
-            if (!(_lightweightSlap.Data.IsOpen && _creeperStrike.IsTwoHit) || !(_lightweightSlap.Data.IsOpen && _lightningStrikes.IsUsedLightningStrikes))
-            {
-                _poisonBall.PayCostPoisonBall();
-            }
-            
-            if (_creeperStrike.IsTwoHit && !_isIncreasedCastSpeedFromLightningStrike)
-            {
-                _castSpeedFromCreeperStrikeCoroutine = StartCoroutine(CastSpeedFromCreeperStrike());
-            }
-            else if (_lightningStrikes.IsUsedLightningStrikes && !_isIncreasedCastSpeedFromCreeperStrike)
-            {
-                _castSpeedFromLightningStrikesCoroutine = StartCoroutine(CastSpeedFromLightningStrikes());
-            }
-            else
-            {
-                _castDeley = _baseTimeCast;
-
-                ChooseDirectionPush(_currentTarget);
-
-                DamageDeal(_currentTarget);
-            }
+            Debug.Log("PoisonSlap / CastJob / if (isUsedPoisonBallCharger)");
+            _poisonBall.PayCostPoisonBall();
         }
+
+        ChooseDirectionPush(_currentTarget);
+
+        DamageDeal(_currentTarget);
+
         yield return null;
     }
 
@@ -347,34 +356,23 @@ public class PoisonSlap : Skill
         }
     }
 
-    private IEnumerator CastSpeedFromCreeperStrike()
+    private void CastSpeedFromCreeperStrike()
     {
         _creeperStrike.IsTwoHit = false;
-        _isIncreasedCastSpeedFromCreeperStrike = true;
+        Debug.Log("PoisonSlap / CastSpeedFromCreeperStrike / IsTwoHit = " + _creeperStrike.IsTwoHit);
 
         float _timeCastFromCreeperStrike = _baseTimeCast * _creeperStrikeCastSpeedMultiplier;
 
         _castDeley = _timeCastFromCreeperStrike;
-
-        ChooseDirectionPush(_currentTarget);
-
-        DamageDeal(_currentTarget);
-        yield return null;
+        Debug.Log("PoisonSlap / CastSpeedFromCreeperStrike / castDeley = " + _castDeley);
     }
 
-    private IEnumerator CastSpeedFromLightningStrikes()
+    private void CastSpeedFromLightningStrikes()
     {
-        _isIncreasedCastSpeedFromLightningStrike = true;
-
         float _timeCastFromLightningStrikes = _baseTimeCast * _lightningStrikesCastSpeedMultiplier;
 
         _castDeley = _timeCastFromLightningStrikes;
-
-        ChooseDirectionPush(_currentTarget);
-
-        DamageDeal(_currentTarget);
-
-        yield return null;
+        Debug.Log("PoisonSlap / CastSpeedFromLightningStrikes / castDeley = " + _castDeley);
     }
 
     #endregion

@@ -10,6 +10,14 @@ using UnityEngine.SceneManagement;
 using System.Drawing;
 using System;
 
+public struct SpitPoisonSpawnPointInfo : NetworkMessage
+{
+    public float SpawnPointX;
+    public float SpawnPointY;
+    public float SpawnPointZ;
+}
+
+
 public class SpitPoison : Skill, IAltAbility
 {
     [Header("Talents")]
@@ -21,6 +29,7 @@ public class SpitPoison : Skill, IAltAbility
     [Header("Ability Properties")]
     [SerializeField] private SpitPoisonProjectile _projectile;
     [SerializeField] private Character _player;
+    [SerializeField] private GameObject _spawnPoint;
 
     #region PoisonCloud
     [SerializeField] private PoisonDamagingCloudPrefab _poisonDamagingCloudPrefab;
@@ -30,14 +39,16 @@ public class SpitPoison : Skill, IAltAbility
     private float _durationPoisonCloud = 6f;
     #endregion
 
-    private int _poisonBoneStack = 0;
-
-    private float _originalCooldown;
-    private float _angleRotation;
+    private SpitPoisonSpawnPointInfo _spawnPointInfo = new SpitPoisonSpawnPointInfo();
 
     private Vector3 _mousePos = Vector3.positiveInfinity;
 
     private Character _currentTarget;
+
+    private int _poisonBoneStack = 0;
+
+    private float _originalCooldown;
+    private float _angleRotation;
 
     private bool _isActiveHealingSpitPoison;
     private bool _isHealingPoisonCloud = false;
@@ -72,6 +83,16 @@ public class SpitPoison : Skill, IAltAbility
     protected void Start()
     {
         _originalCooldown = _cooldownTime;
+    }
+    [Command]
+    private void SetSpawnPoint(float spawnPointX, float spawnPointY, float spawnPointZ)
+    {
+        _spawnPointInfo.SpawnPointX = spawnPointX;
+        Debug.Log("SpitPoison / SpawnPointX = " + spawnPointX);
+        _spawnPointInfo.SpawnPointY = spawnPointY;
+        Debug.Log("SpitPoison / SpawnPointY = " + spawnPointY);
+        _spawnPointInfo.SpawnPointZ = spawnPointZ;
+        Debug.Log("SpitPoison / SpawnPointZ = " + spawnPointZ);
     }
 
     protected override IEnumerator PrepareJob()
@@ -194,17 +215,6 @@ public class SpitPoison : Skill, IAltAbility
 
     private void CheckActiveTalents()
     {
-        /*
-        if (_transparentPoisons.Data.IsOpen && _player.IsInvisible)
-        {
-            _isPlayerInvisible = true;
-        }
-        else
-        {
-            _isPlayerInvisible = false;
-        }
-        */
-
         if (_healingSpitPoison.Data.IsOpen)
         {
             _isActiveHealingSpitPoison = _healingSpitPoison.Data.IsOpen;
@@ -228,6 +238,7 @@ public class SpitPoison : Skill, IAltAbility
     {
         if (_currentTarget != null)
         {
+            SetSpawnPoint(_spawnPoint.transform.position.x, _spawnPoint.transform.position.y, _spawnPoint.transform.position.z);
             CmdInstantiateProjectileToTarget(_currentTarget.gameObject, _angleRotation, _player.Resources.FirstOrDefault()!.CurrentValue,
                 _isActiveHealingSpitPoison, IsAltAbility,
                 _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
@@ -236,10 +247,10 @@ public class SpitPoison : Skill, IAltAbility
         }
         else
         {
+            SetSpawnPoint(_spawnPoint.transform.position.x, _spawnPoint.transform.position.y, _spawnPoint.transform.position.z);
             CmdInstantiateProjectileToPoint(_mousePos, _angleRotation, _player.Resources.FirstOrDefault()!.CurrentValue,
                 _isActiveHealingSpitPoison, IsAltAbility,
                 _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
-
             //CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
         }
 
@@ -257,7 +268,9 @@ public class SpitPoison : Skill, IAltAbility
         RestorationOfGlandsTalent = _restorationOfGlands;
         Debug.Log("SpitPoison / CmdInstTarget / RestorationOfGlandsTalent = " + RestorationOfGlandsTalent);
 
-        GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.Euler(0, 0, angleRotation));
+        Vector3 spawnPosition = new Vector3 (_spawnPointInfo.SpawnPointX, _spawnPointInfo.SpawnPointY, _spawnPointInfo.SpawnPointZ);
+        Debug.Log("SpitPoison / CreateProj / SpawnPosition = " + spawnPosition);
+        GameObject item = Instantiate(_projectile.gameObject, spawnPosition, Quaternion.identity);
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
@@ -280,7 +293,10 @@ public class SpitPoison : Skill, IAltAbility
         RestorationOfGlandsTalent = _restorationOfGlands;
         Debug.Log("SpitPoison / CmdInstPoint / RestorationOfGlandsTalent = " + RestorationOfGlandsTalent);
 
-        GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.Euler(0, 0, angleRotation));
+        Vector3 spawnPosition = new Vector3(_spawnPointInfo.SpawnPointX, _spawnPointInfo.SpawnPointY, _spawnPointInfo.SpawnPointZ);
+        Debug.Log("SpitPoison / CreateProj / SpawnPosition = " + spawnPosition);
+
+        GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 

@@ -14,10 +14,6 @@ public struct PoisonBallInfo : NetworkMessage
     public float TimeBetweenAttack;
     public float StartTimeBetweenAttack;
 
-    public float SpawnPointX;
-    public float SpawnPointY;
-    public float SpawnPointZ;
-
     public bool IsProjectileCreate;
     public bool IsActiveTimer;
     public bool IsThreeProjectileOnOnetarget;
@@ -37,6 +33,13 @@ public struct PoisonBallInfo : NetworkMessage
     public bool IsActiveInertialGlands;
     public bool IsActiveVolatilityOfPoisons;
     public bool IsHealingPoisonCloud;
+}
+
+public struct PoisonBallSpawnPointInfo : NetworkMessage
+{
+    public float SpawnPointX;
+    public float SpawnPointY;
+    public float SpawnPointZ;
 }
 
 public class PoisonBall : Skill, IAltAbility
@@ -75,6 +78,7 @@ public class PoisonBall : Skill, IAltAbility
     #endregion
 
     private PoisonBallInfo _poisonBallInfo = new PoisonBallInfo();
+    private PoisonBallSpawnPointInfo _spawnPointInfo = new PoisonBallSpawnPointInfo();
 
     private GameObject[] _arrowRenderers = new GameObject[4];
     private Character _currentTarget;
@@ -139,10 +143,6 @@ public class PoisonBall : Skill, IAltAbility
         _poisonBallInfo.StartTimeBetweenAttack = 15.0f;
         _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
         _poisonBallInfo.MaxCountProjectile = _maxCharges;
-
-        _poisonBallInfo.SpawnPointX = _spawnPoint.transform.position.x;
-        _poisonBallInfo.SpawnPointY = _spawnPoint.transform.position.y;
-        _poisonBallInfo.SpawnPointZ = _spawnPoint.transform.position.z;
     }
 
     private void Update()
@@ -157,10 +157,8 @@ public class PoisonBall : Skill, IAltAbility
     private float GetAnimationClipLength()
     {
         RuntimeAnimatorController animController = _player.Animator.runtimeAnimatorController;
-        Debug.Log("AnimController = " + animController);
         foreach (var clip in animController.animationClips)
         {
-            Debug.Log("Clip.name = " + clip.name + " clip.speed = " + clip.apparentSpeed);
             if (clip.name == "PoisonBallCastAnimation")
             {
                 return clip.length;
@@ -169,12 +167,14 @@ public class PoisonBall : Skill, IAltAbility
         return -1f;
     }
 
+
     #region PrepareAndStartJob
 
 
     public void PayCostPoisonBall()
     {
         TryPayCost(true);
+        Debug.Log("PoisonBall Charge = " + Chargers);
     }
 
     protected override void ClearData()
@@ -213,7 +213,8 @@ public class PoisonBall : Skill, IAltAbility
     protected override IEnumerator PrepareJob()
     {
         _animTime = GetAnimationClipLength();
-        Debug.Log("_animTime = " + _animTime);
+
+        SetSpawnPointPosition(_spawnPoint.transform.position.x, _spawnPoint.transform.position.y, _spawnPoint.transform.position.z);
         CheckingActiveTalents();
 
         while (_currentTarget == null && float.IsPositiveInfinity(_firstMousePosition.x))
@@ -855,7 +856,9 @@ public class PoisonBall : Skill, IAltAbility
         //Debug.Log($"bool isTargetEnemy = {isTargetEnemy}, bool isTargetPlayer = {isTargetPlayer}, bool isTargetAllies = {isTargetAllies}");
 
         // Debug.Log($"_poisonBallInfo.HealingBall = {_poisonBallInfo.IsActiveHealingPoisonBall}");
-        Vector3 spawnPosition = new Vector3(_poisonBallInfo.SpawnPointX, _poisonBallInfo.SpawnPointY, _poisonBallInfo.SpawnPointZ);
+
+        Vector3 spawnPosition = new Vector3(_spawnPointInfo.SpawnPointX, _spawnPointInfo.SpawnPointY, _spawnPointInfo.SpawnPointZ);
+
         GameObject item = Instantiate(_projectile.gameObject, spawnPosition, Quaternion.identity);
         PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>();
 
@@ -920,7 +923,8 @@ public class PoisonBall : Skill, IAltAbility
 
         //Debug.Log($"bool isTargetEnemy = {isTargetEnemy}, bool isTargetPlayer = {isTargetPlayer}, bool isTargetAllies = {isTargetAllies}");
 
-        Vector3 spawnPosition = new Vector3(_poisonBallInfo.SpawnPointX, _poisonBallInfo.SpawnPointY, _poisonBallInfo.SpawnPointZ);
+        Vector3 spawnPosition = new Vector3(_spawnPointInfo.SpawnPointX, _spawnPointInfo.SpawnPointY, _spawnPointInfo.SpawnPointZ);
+
         GameObject item = Instantiate(_projectile.gameObject, spawnPosition, Quaternion.identity);
         PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>();
 
@@ -980,7 +984,7 @@ public class PoisonBall : Skill, IAltAbility
                 _poisonHealingCloud = Instantiate(_poisonHealingCloudPrefab, transform.position, Quaternion.identity);
                 _poisonHealingCloudPrefab.PoisonHealingCloud = _poisonHealingCloud;
                 SceneManager.MoveGameObjectToScene(_poisonHealingCloudPrefab.PoisonHealingCloud.gameObject, _hero.NetworkSettings.MyRoom);
-
+                 
                 _poisonHealingCloudPrefab.PoisonHealingCloud.InitializationProjectile(_player, 5, duration, 3.5f, Name);
                 _poisonHealingCloudPrefab.PoisonHealingCloud.AddStack();
 
@@ -993,6 +997,17 @@ public class PoisonBall : Skill, IAltAbility
             }
         }
         RpcApply(_poisonDamagingCloudPrefab.PoisonDamageCloud, _poisonHealingCloudPrefab.PoisonHealingCloud, duration, isHealingCloud);
+    }
+
+    [Command]
+    private void SetSpawnPointPosition(float spawnPointX, float spawnPointY, float spawnPointZ)
+    {
+        _spawnPointInfo.SpawnPointX = spawnPointX;
+        Debug.Log("SpitPoison / SpawnPointX = " + spawnPointX);
+        _spawnPointInfo.SpawnPointY = spawnPointY;
+        Debug.Log("SpitPoison / SpawnPointY = " + spawnPointY);
+        _spawnPointInfo.SpawnPointZ = spawnPointZ;
+        Debug.Log("SpitPoison / SpawnPointZ = " + spawnPointZ);
     }
 
     #endregion
