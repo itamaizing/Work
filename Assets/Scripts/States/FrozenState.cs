@@ -18,6 +18,7 @@ public class FrozenState : AbstractCharacterState
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		Debug.Log("Entering Frozen State");
+		
 		_characterState = character;
 		_duration = durationToExit;
 		if (damageToExit == 0)
@@ -30,6 +31,7 @@ public class FrozenState : AbstractCharacterState
 		}
 
 		_characterState.Character.Move.CanMove = false;
+		_characterState.Character.Move.LookAtTransform(_characterState.gameObject.transform);
 
 		if (character.TryGetComponent<Character>(out var ability))
 		{
@@ -63,6 +65,7 @@ public class FrozenState : AbstractCharacterState
 		if (_characterState.Check(StatusEffect.Move))
 		{
 			_characterState.Character.Move.CanMove = true;
+			_characterState.Character.Move.StopLookAt();
 		}
 		if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
 		{

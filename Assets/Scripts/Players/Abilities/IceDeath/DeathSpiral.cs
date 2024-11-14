@@ -44,8 +44,7 @@ public class DeathSpiral : Skill
 		{
 			if (GetMouseButton)
 			{
-				if (GetTarget() == null) continue; 
-
+				if (GetTarget() != null) 
 				if (GetTarget().character != null)
 				{
 					// FIND SHADOW!

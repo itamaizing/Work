@@ -1,9 +1,11 @@
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class BoxArea : MonoBehaviour
 {
     [SerializeField] BoxCollider2D _colider;
     [SerializeField] SpriteRenderer _sprite;
+    [SerializeField] private DecalProjector  _projector;
 
     private Damage _damage;
 	/*private Damage _zeroDamage;
@@ -20,9 +22,12 @@ public class BoxArea : MonoBehaviour
 
 	public void SetSize(float width, float length, Damage damage)
     {
-        _sprite.size = new Vector2(width, length);
+        /*_sprite.size = new Vector2(width, length);
         _colider.size = new Vector2(width, length);
-        _colider.offset = new Vector2(0, length / 2);
+        _colider.offset = new Vector2(0, length / 2);*/
+        gameObject.transform.localScale = new Vector3(width, length, 0);
+        _projector.size = new Vector2(width, length);
+        _projector.pivot = new Vector3(0, length/2, 0.01f);
         _damage = damage;
     }
 

@@ -98,14 +98,16 @@ public class Icecloud : Skill
 			if (GetMouseButton)
 			{
 				//if(GetTarget()  == null) yield return null;
-
-				if (GetTarget().character == null)
+				if (GetTarget() != null)
 				{
-					_mousePos = GetTarget().Position;
-				}
-				else
-				{
-					_mousePos = GetTarget().character.transform.position;
+					if (GetTarget().character == null)
+					{
+						_mousePos = GetTarget().Position;
+					}
+					else
+					{
+						_mousePos = GetTarget().character.transform.position;
+					}
 				}
 			}
 			yield return null;

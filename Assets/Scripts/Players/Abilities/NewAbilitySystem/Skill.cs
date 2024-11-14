@@ -702,7 +702,7 @@ public abstract class Skill : NetworkBehaviour
 				target.Position = hit.point;
 				break;
 		}
-        return null;
+        return target;
 	}
 
     protected TargetToShot ShiftLeftClick()
@@ -770,7 +770,7 @@ public abstract class Skill : NetworkBehaviour
 				target.Position = hit.point;
 				break;
 		}
-		return null;
+		return target;
 	}
 
 	protected TargetToShot SpaceLeftClick()

@@ -8,17 +8,14 @@ using UnityEngine.Serialization;
 
 public class IcePuddleObject : Projectiles
 {
-	//[HideInInspector] public FrostingFrozenTalant talant;
-
-	//[FormerlySerializedAs("energyPlayer")]  private Energy _energy;
 	[FormerlySerializedAs("healthPlayer")]  private Health _healthComponent;
-	//[SerializeField] private Rigidbody2D _rb;
 
 	private float _timeToDestroy = 0;
 	private float _curEvade = 0;
 	private bool _talentEvadeDadBoost = false;
 	private bool _talentFrostingFrozen = false;
 	private List<CharacterState> _enemies = new List<CharacterState>();
+	private List<EnemyToState> _targets;
 	/*
 	 * buff player
 	 * */
@@ -34,9 +31,32 @@ public class IcePuddleObject : Projectiles
 		{
 			transform.localScale = Vector3.one * 1.7f;
 		}
+		for (int i = 0; i < _dad.Resources.Count; i++)
+		{
+			if (_dad.Resources[i].Type == ResourceType.Energy)
+			{
+				_energy = (Energy)_dad.Resources[i];
+			}
+		}
+
 
 		StartCoroutine(DestroyPuddle());
 		StartCoroutine(StartFade());
+	}
+
+	private void Update()
+	{
+		if (_targets.Count <= 0) return;
+
+		for(int i = 0; i < _targets.Count; i++)
+		{
+			_targets[i].duration -= Time.deltaTime;
+			if (_targets[i].duration < 0 )
+			{
+				_targets[i].enemy.CharacterState.AddState(States.Frosting, _targets[i].duration, 0, _dad.gameObject, _skill.name);
+				_targets.Remove(_targets[i]);
+			}
+		}
 	}
 
 	public void SetTalents(bool talentEvadeDadBoost, bool talentFrostingFrozen)
@@ -61,6 +81,14 @@ public class IcePuddleObject : Projectiles
 		}
 		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject != _dad.gameObject)
 		{
+			for(int i = 0; i < _targets.Count; i++) 
+			{
+				if (_targets[i].enemy == target)
+				{
+					_targets.Remove(_targets[i]);
+				}
+			}
+
 			if (_talentEvadeDadBoost)
 			{
 				//Debug.LogError("fix");
@@ -74,15 +102,16 @@ public class IcePuddleObject : Projectiles
 	private void OnTriggerEnter(Collider collision)
 	{
 		if(!_initialized) return;
-		Debug.Log(collision.name);
+		//Debug.Log(collision.name);
 		if (collision.gameObject == _dad.gameObject)
 		{
 			//Debug.LogError("fix");
 			//_healthComponent.SetBoostRegen2(0.01f);
 			return;
 		}
-		if (collision.TryGetComponent<Character>(out var target) && _energy != null && collision.gameObject != _dad.gameObject)
+		if (collision.TryGetComponent<Character>(out var target) && _energy != null)
 		{
+			Debug.Log(target.name);
 			float duration = 3;
 			//target.CharacterState.energy = energy;
 			if (_energy.CurrentValue / 5 > 4)
@@ -95,7 +124,11 @@ public class IcePuddleObject : Projectiles
 				duration += _energy.CurrentValue / 5;
 				_energy.UseAllEnergy();
 			}
-			target.CharacterState.AddState(States.Frosting, duration, 0, _dad.gameObject, _skill.name);
+
+			EnemyToState enemy = new EnemyToState();
+			enemy.enemy = target;
+			enemy.duration = duration;
+			//target.CharacterState.AddState(States.Frosting, duration, 0, _dad.gameObject, _skill.name);
 
 			if (_talentFrostingFrozen)
 			{
@@ -143,4 +176,17 @@ public class IcePuddleObject : Projectiles
 		//turn off energy boost
 		//destroy
 	}
+
+	private IEnumerator AddStateToEnemy(Character enemy, float duration)
+	{
+		yield return new WaitForSeconds(1);
+		enemy.CharacterState.AddState(States.Frosting, duration, 0, _dad.gameObject, _skill.name);
+	}
+}
+
+public class EnemyToState
+{
+	public Character enemy;
+	public float time = 1;
+	public float duration = 1;
 }

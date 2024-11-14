@@ -5880,7 +5880,7 @@ MonoBehaviour:
   syncInterval: 0
   _circle: {fileID: 1629212415153807048}
   _areaPref: {fileID: 1574982521674352815, guid: 790fb3857b30c2b4fad4375343a84fad, type: 3}
-  _damageZonePref: {fileID: 1574982521674352815, guid: 5fb5f6f37d830674cbf46c1a048e80bf, type: 3}
+  _damageZonePref: {fileID: 6076937102363889602, guid: 586443d303441854fbd96bcd57e8ccc6, type: 3}
   _line: {fileID: 11400000, guid: 7faf4d32cfcc4f54d967e4d01a0c4b65, type: 2}
   _colorForAllies: {r: 0, g: 1, b: 0, a: 1}
   _colorForEnemies: {r: 1, g: 0, b: 0, a: 1}

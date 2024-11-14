@@ -66,10 +66,9 @@ public class IceShadowObject : Projectiles
 					{
 						newTatget.CharacterState.AddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
 					}
-
-
 				}
 			}
+			Explode();
 		}
 		//Explode();
 	}

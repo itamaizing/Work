@@ -56,7 +56,7 @@ public class IceShower : Skill
 
 	private void ApplyDamageToEnemiesInZone()
 	{
-		SphereArea damageZone = skillRenderer.TempDamageZone;
+		CircleArea damageZone = skillRenderer.TempDamageZone;
 
 		if (damageZone != null)
 		{

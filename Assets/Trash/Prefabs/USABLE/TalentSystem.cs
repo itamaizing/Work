@@ -129,11 +129,13 @@ public class TalentSystem : NetworkBehaviour
             talent.Data.Name = talent.GetType().Name;
             if(talent.Data.IsOpen)
             {
-                talent.Enter();
+				Debug.Log("Talent activated on init " + talent.name);
+				talent.Enter();
             }
             else
             {
-                talent.Exit();
+				Debug.Log("Talent DEactivated on init " + talent.name);
+				talent.Exit();
             }
         }
         //Initialize2();
@@ -164,13 +166,6 @@ public class TalentSystem : NetworkBehaviour
         _talents[row].TalentsData[id].SetActive(value);
     }
 
-    /*[Command]
-    public void CmdAdd(Talent talent)
-    {
-        Add(talent);
-        RpcAdd(talent);
-    }*/
-
     [Command]
     public void CmdEnterAll()
     {
@@ -188,14 +183,12 @@ public class TalentSystem : NetworkBehaviour
     [Command]
     public void CmdAdd(int id, int row)
     {
-
         RpcAdd(id, row);
     }
 
     [Command]
     public void CmdRemove(int id, int row)
     {
-
         RpcRemove(id, row);
     }
 
@@ -223,11 +216,6 @@ public class TalentSystem : NetworkBehaviour
         ExitAll();
     }
 
-   /* [ClientRpc]
-    public void RpcAdd(Talent talent)
-    {
-        Add(talent);
-    }*/
 
     public void EnterAll()
     {
