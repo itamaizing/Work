@@ -100,7 +100,8 @@ public class TalentsGroup
         
         if (isActive)
         {
-            talent.Enter();   
+			Debug.Log("Talent activated on init " + talent.GetType().Name);
+			talent.Enter();   
         }
         else
         {
@@ -129,12 +130,12 @@ public class TalentSystem : NetworkBehaviour
             talent.Data.Name = talent.GetType().Name;
             if(talent.Data.IsOpen)
             {
-				Debug.Log("Talent activated on init " + talent.name);
+				Debug.Log("Talent activated on init " + talent.GetType().Name);
 				talent.Enter();
             }
             else
             {
-				Debug.Log("Talent DEactivated on init " + talent.name);
+				Debug.Log("Talent DEactivated on init " + talent.GetType().Name);
 				talent.Exit();
             }
         }

@@ -6,7 +6,7 @@ public class BlockOfIceTalent : Talent
 	[SerializeField] private SkillManager _ability;
 	public override void Enter()
 	{
-		Debug.Log("Talent activated " + name);
+		Debug.Log("Talent activated " + GetType().Name);
 		_ability.ActivateSkill(_blockOfIce);
 	}
 
