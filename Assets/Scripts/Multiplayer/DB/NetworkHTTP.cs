@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class NetworkHTTP : MonoBehaviour
 {
@@ -29,6 +30,14 @@ public class NetworkHTTP : MonoBehaviour
 
     private IEnumerator PostJob(string uri, Dictionary<string, string> data, Action<string> success, Action<string> error = null)
     {
-        yield return null;
+        using (UnityWebRequest www = UnityWebRequest.Post(uri, data))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success)
+                error?.Invoke(www.error);
+            else
+                success?.Invoke(www.downloadHandler.text);
+        }
     }
 }

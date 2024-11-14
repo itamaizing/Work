@@ -53,8 +53,10 @@ public class Authorization : MonoBehaviour
     {
         if(int.TryParse(data, out int id))
         {
+            Debug.Log(id);
             _id = id;
             Successed?.Invoke(id);
+            _networkManager.StartClient();
         }
         else
         {

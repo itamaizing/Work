@@ -3223,7 +3223,7 @@ MonoBehaviour:
     m_Options:
     - m_Text: localhost
       m_Image: {fileID: 0}
-    - m_Text: http://147.45.141.9/
+    - m_Text: Server
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
