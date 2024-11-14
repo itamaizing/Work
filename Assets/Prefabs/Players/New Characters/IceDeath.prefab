@@ -1665,7 +1665,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _isTalentSpell: 0
-  _isSkillActive: 0
+  _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: a04aa234cf7b9fb41b6cd8c068b72528, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
@@ -2304,7 +2304,7 @@ MonoBehaviour:
   syncInterval: 0
   _data:
     Name: AbsotptionTalent
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: 21300000, guid: cae2f0cb798243a46842fb23151acbf4, type: 3}
   character: {fileID: 5889404958618692528}

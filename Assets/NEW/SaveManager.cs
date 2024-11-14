@@ -229,6 +229,18 @@ public class SaveManager : MonoBehaviour
         }
     }
 
+    public void ResetAllTalents(HeroComponent hero)
+    {
+        SetHero(hero);
+        foreach (var talentGroup in _character.TalentManager.Talents)
+        {
+            foreach (var talent in talentGroup.TalentsData)
+            {
+                SaveTalent(talentGroup.ID, talent.Data.Name, false);
+            }
+        }
+    }
+
     private void LoadHeroData()
     {
         foreach (var attribute in _character.Data.Attributes.AttributeData)

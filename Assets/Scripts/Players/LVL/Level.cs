@@ -1,5 +1,6 @@
 using System;
 using Mirror;
+using UnityEngine;
 
 public class Level : NetworkBehaviour
 {
@@ -27,6 +28,7 @@ public class Level : NetworkBehaviour
         value = (int)(value * _multiplierToExperience);
 
         _experience += value;
+        Debug.Log($"Игрок {name}: уровень {_value} : {_experience} опыта");
         EXPAdded?.Invoke(value);
 
         var expBeyondNecessery = _experience - _experienceForNextLVL;

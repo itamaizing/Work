@@ -8,10 +8,12 @@ public abstract class Talent : NetworkBehaviour
 {
     [SerializeField]
     private TalentData _data;
+    private TalentSystem _talentSystem;
 
     public Character character;
 
     public TalentData Data => _data;
+    public TalentSystem TalentSystem => _talentSystem;
 
     public abstract void Enter();
 
@@ -111,6 +113,7 @@ public class TalentSystem : NetworkBehaviour
     private int _points = 10;
 
     public TalentColumn Panel => _panel;
+    public int Points { get => _points; set => _points = value; }
     public List<TalentsGroup> Talents => _talents;
 
     public List<Talent> ActiveTalents => Talents.SelectMany(o => o.TalentsData).Where(a => a.Data.IsOpen).ToList();
@@ -131,8 +134,10 @@ public class TalentSystem : NetworkBehaviour
         }
     }
 
-    public void AddPoints(int value)
+    [ClientRpc]
+    public void ClientRpcAddPoints()
     {
+        Points += 10;
     }
 
     public void SetActive(int row, int id, bool value)
@@ -229,6 +234,12 @@ public class TalentSystem : NetworkBehaviour
                 _points++;
             }
         }
+    }
+
+    [ClientRpc]
+    public void ClientRpcResetTalentPoints()
+    {
+      Points = 1;
     }
 
     public void Add(Talent talent)

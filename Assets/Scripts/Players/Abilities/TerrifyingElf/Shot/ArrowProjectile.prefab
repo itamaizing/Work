@@ -257,8 +257,8 @@ MonoBehaviour:
   _speed: 30
   duration: 0
   physicDamage: 0
-  minDamage: 20
-  maxDamage: 25
+  minDamage: 200
+  maxDamage: 300
   _selfDestroyInEndPoint: 1
   _ArrowDark: 0
   _lifeTime: 1

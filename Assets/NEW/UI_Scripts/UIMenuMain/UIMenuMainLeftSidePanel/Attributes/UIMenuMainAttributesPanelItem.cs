@@ -30,7 +30,7 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour
 
     public void Reduce()
     {
-        if(_currentAttribute.Points <= 0) return;
+        if(_currentAttribute.Points <= 0 || SaveManager.Instance.LoadAttributePoints() == 0) return;
         
         SaveManager.Instance.ChangeAttribute(_currentAttribute.Id,-1);
         SaveManager.Instance.LoadAttribute(_currentAttribute.Id);

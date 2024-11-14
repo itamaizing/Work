@@ -17,16 +17,38 @@ public class TestGameRulesBattlegrounds : GameRules
 
         foreach (var playerSettings in _players)
         {
+            if (playerSettings is HeroComponent heroComponent)
+            {
+                heroComponent.TalentManager.ClientRpcResetTalentPoints();
+                SaveManager.Instance.ResetAllTalents(heroComponent);
+            }
+
             var health = playerSettings.NetworkSettings.CachedHealth;
             if (health != null)
             {
                 health.Died += () => OnPlayerDeath(playerSettings);
                 health.Died += () => RespawnPlayer(playerSettings);
                 health.Died += () => ResetPlayerState(playerSettings);
+
+                playerSettings.LVL.LVLUped += (newLevel) => OnPlayerLevelUp(newLevel, playerSettings);
             }
         }
 
         SubscribeToTowerDeaths();
+    }
+
+    private void OnPlayerLevelUp(int newLevel, Character playerSettings)
+    {
+        int playerTeamIndex = playerSettings.NetworkSettings.TeamIndex;
+
+        foreach (var player in _players)
+        {
+            if (player.NetworkSettings.TeamIndex == playerTeamIndex && player is HeroComponent heroComponent)
+            {
+                heroComponent.TalentManager.ClientRpcAddPoints();
+                Debug.Log($"Player in Team {playerTeamIndex} received 1 talent point due to level up.");
+            }
+        }
     }
 
     protected override void GameStartClient()
@@ -72,6 +94,17 @@ public class TestGameRulesBattlegrounds : GameRules
     private void OnPlayerDeath(Character playerSettings)
     {
         Debug.Log($"Player from Team {playerSettings.NetworkSettings.TeamIndex} died.");
+
+        int enemyTeamIndex = playerSettings.NetworkSettings.TeamIndex == 1 ? 2 : 1;
+
+        foreach (var player in _players)
+        {
+            if (player.NetworkSettings.TeamIndex == enemyTeamIndex)
+            {
+                player.LVL.AddEXP(5);
+                Debug.Log($"Player from Team {enemyTeamIndex} received 5 experience points.");
+            }
+        }
     }
 
     private void ResetPlayerState(Character playerSettings)

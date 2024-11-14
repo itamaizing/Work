@@ -27,8 +27,20 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour
     
     public void Select()
     {
+        if (TalentPoints())
+        {
+            Debug.Log("There are not enough talent points to activate!");
+            return;
+        }
+
+        Owner.Owner.Owner.GetHero().TalentManager.Points--;
         Selected?.Invoke(_talent, !_talent.IsOpen);
         activeState.isActive = _talent.IsOpen;
     }
     
+
+    private bool TalentPoints()
+    {
+        return Owner.Owner.Owner.GetHero().TalentManager.Points <= 0;
+    }
 }
