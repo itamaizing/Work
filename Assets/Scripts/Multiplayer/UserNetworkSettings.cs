@@ -8,11 +8,12 @@ public class UserNetworkSettings : NetworkBehaviour
     private List<HeroComponent> _allies = new List<HeroComponent>();
     private List<HeroComponent> _enemies = new List<HeroComponent>();
     public readonly SyncList<GameObject> Players = new SyncList<GameObject>();
-
+    private Health _cachedHealth;
+    [SyncVar] private Vector3 spawnPosition;
 
     [SyncVar] private byte _teamIndex;
 
-    private Health _cachedHealth;
+    public Scene MyRoom { get; set; }
 
     public byte TeamIndex
     {
@@ -39,9 +40,6 @@ public class UserNetworkSettings : NetworkBehaviour
         }
     }
 
-    [SyncVar] private Vector3 spawnPosition;
-
-    public Scene MyRoom { get; set; }
 
     public void SetSpawnPosition(Vector3 position)
     {
