@@ -19,7 +19,6 @@ public class PoisonBallProjectile : Test_Projectile
     [SerializeField] private float _durationInAir;
     [SerializeField] private float _fastMovementSpeed;
     [SerializeField] private float _slowMovementSpeed;
-    [SerializeField] private float _baseSizeBall;
     
     private PoisonBall _poisonBall;
     private Skill _skill;
@@ -33,7 +32,6 @@ public class PoisonBallProjectile : Test_Projectile
 
     #region FloatVariables
     private float _newDistancePush;
-    private float _energyDad;
     private float _distanceIncreaseMultiplier = 0.5f;
     private float _multiplierDistanceFromTalent;
     #endregion
@@ -41,13 +39,17 @@ public class PoisonBallProjectile : Test_Projectile
     #region BoolVaribales
 
     private bool _isFast;
+
     private bool _isPlayer;
     private bool _isAllies;
     private bool _isEnemy;
     private bool _isAlly;
+
     private bool _isActiveHealingPoisonBall;
     private bool _isActiveWitheringPoison;
     private bool _isActiveVoluminousBall;
+    private bool _isActiveBallEffect;
+
     private bool _isPushTarget;
     private bool _isPlayerInvisible;
 
@@ -60,7 +62,6 @@ public class PoisonBallProjectile : Test_Projectile
     [Server]
     private void OnTriggerEnter(Collider collision)
     {
-
         if (_isActiveHealingPoisonBall)
         {
             if (_isPlayer)
@@ -218,7 +219,10 @@ public class PoisonBallProjectile : Test_Projectile
 
         _target.CharacterState.AddState(States.InAir, _durationInAir, 0, _player.gameObject, _skill.Name);
 
-        PushEnemyDependingOnCountProjectile(_target, _baseDurationPush);
+        if (_isActiveBallEffect)
+        { 
+            PushEnemyDependingOnCountProjectile(_target, _baseDurationPush);
+        }
         
         DestroyProjectile();
     }
@@ -248,14 +252,14 @@ public class PoisonBallProjectile : Test_Projectile
         {
             Vector3 finalPoint = targetMove.transform.position + directionPush;
             finalPoint.y = 0;
-            //target.transform.DOMove((Vector2)target.transform.position + directionPush * distancePush, durationPush).SetEase(Ease.Linear);
+
             targetMove.TargetRpcDoMove(finalPoint * newDistancePush, durationPush);
         }
         else
         {
             Vector3 finalPoint = targetMove.transform.position - directionPush;
             finalPoint.y = 0;
-            //target.transform.DOMove((Vector2)target.transform.position - directionPush * distancePush, durationPush).SetEase(Ease.Linear);
+
             targetMove.TargetRpcDoMove(finalPoint * newDistancePush, durationPush);
         }
 
@@ -277,59 +281,59 @@ public class PoisonBallProjectile : Test_Projectile
 
     #region InitializationProjectiles
 
-    public void InitializationProjectileForPoisonBall(Character dad, float energyDad, 
-        float multiplierDistance, float sizeBallWithTalent,
-        Skill skill,
-        bool isActiveTalentHealingPoisonBall, bool isTargetPlayer, 
-        bool isTargetEnemy, bool isTargetAllies,
-        bool isActiveTalentWitheringPoison, bool isPushTarget, 
-        bool isActiveVoluminousBall, bool isPlayerInvisible, int poisonBoneStack)
+    public void InitializationProjectileForPoisonBall(Character dad, Skill skill,
+        float multiplierDistance, int poisonBoneStack,
+        bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies,
+        bool isActiveTalentHealingPoisonBall, bool isActiveTalentWitheringPoison, 
+        bool isActiveVoluminousBall, bool isActiveBallEffect,
+        bool isPushTarget, bool isPlayerInvisible)
     {
         _player = dad;
         _skill = skill;
 
-        InitializationNumericVariables(energyDad, multiplierDistance, poisonBoneStack);
+        InitializationNumericVariables(multiplierDistance, poisonBoneStack);
 
-        InitializationBoolVariables(isActiveTalentHealingPoisonBall, 
-            isTargetPlayer, isTargetEnemy, isTargetAllies, 
-            isActiveTalentWitheringPoison, isPushTarget, 
-            isActiveVoluminousBall, isPlayerInvisible);
+        InitializationBoolVariables(isTargetPlayer, isTargetEnemy, isTargetAllies,
+            isPushTarget, isPlayerInvisible,
+            isActiveTalentHealingPoisonBall, isActiveTalentWitheringPoison, 
+            isActiveVoluminousBall, isActiveBallEffect);
 
-        CheckActiveTalent(sizeBallWithTalent);
+        CheckActiveTalent();
 
         Invoke("TransparentProjectileOnServer", 0.15f);
         InitializationComponentsForCountProjectile();
     }
 
-    private void CheckActiveTalent(float sizeBallWithTalent)
+    private void CheckActiveTalent()
     {
         if (_isActiveVoluminousBall)
         {
-            _transformBall.localScale = new Vector3(sizeBallWithTalent, sizeBallWithTalent, sizeBallWithTalent);
-        }
-        else
-        {
-            _transformBall.localScale = new Vector3(_baseSizeBall, _baseSizeBall, _baseSizeBall);
-        }
+            float newScaleX = _transformBall.localScale.x * 1.2f;
+            float newScaleY = _transformBall.localScale.y * 1.2f;
+            float newScaleZ = _transformBall.localScale.z * 1.2f;
+
+            _transformBall.localScale = new Vector3(newScaleX, newScaleY, newScaleZ);
+        } 
     }
 
-    private void InitializationNumericVariables(float energyDad, float multiplierDistance, int poisonBoneStack)
+    private void InitializationNumericVariables(float multiplierDistance, int poisonBoneStack)
     {
-        _energyDad = energyDad;
         _multiplierDistanceFromTalent = multiplierDistance;
         _poisonBoneStack = poisonBoneStack;
     }
 
-    private void InitializationBoolVariables(bool isActiveTalentHealingPoisonBall, bool isTargetPlayer, 
-        bool isTargetEnemy, bool isTargetAllies,
-        bool isActiveTalentWitheringPoison, bool isPushTarget, 
-        bool isActiveVoluminousBall, bool isPlayerInvisible)
+    private void InitializationBoolVariables(
+        bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, 
+        bool isPushTarget, bool isPlayerInvisible,
+        bool isActiveTalentHealingPoisonBall, bool isActiveTalentWitheringPoison, 
+        bool isActiveVoluminousBall, bool isActiveBallEffect)
     {
         _isPushTarget = isPushTarget;
         _isPlayer = isTargetPlayer;
         _isAllies = isTargetAllies;
         _isEnemy = isTargetEnemy;
 
+        _isActiveBallEffect = isActiveBallEffect;
         _isActiveHealingPoisonBall = isActiveTalentHealingPoisonBall;
         _isActiveWitheringPoison = isActiveTalentWitheringPoison;
         _isActiveVoluminousBall = isActiveVoluminousBall;
@@ -342,7 +346,6 @@ public class PoisonBallProjectile : Test_Projectile
         _currentCountBall = _poisonBall.CurrentCountBall;
         _footInstincts = _poisonBall.FootInstinctsTalent;
         _restorationOfGlands = _poisonBall.RestorationOfGlandsTalent;
-        Debug.Log("PoisonBallProjectile / restorationOfGlands = " + _restorationOfGlands);
     }
 
     #endregion
@@ -352,16 +355,12 @@ public class PoisonBallProjectile : Test_Projectile
     [Server]
     private void TransparentProjectileOnServer()
     {
-        Debug.Log("PoisonBallProj / TransparentProjectileOnServer / isServer = " + isServer);
-
         if (isServer)
         {
             LayerDefinition(_player.gameObject);
         }
         if (isServer && _isPlayerInvisible)
         {
-            Debug.Log("isServer && _isPlayerInvisible / _player = " + _player);
-
             RpcNewTransparencySprite(_player.gameObject);
         }
     }
@@ -377,6 +376,7 @@ public class PoisonBallProjectile : Test_Projectile
     #endregion
 
     #region ClientRpcMethods
+
     [ClientRpc]
     private void RpcNewTransparencySprite(GameObject player)
     {
@@ -398,7 +398,6 @@ public class PoisonBallProjectile : Test_Projectile
             }
         }
     }
-
 
     [ClientRpc]
     private void RpcLayerDefinition(int layer)

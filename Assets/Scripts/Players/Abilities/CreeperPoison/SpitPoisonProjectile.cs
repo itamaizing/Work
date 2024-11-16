@@ -202,7 +202,7 @@ public class SpitPoisonProjectile : Test_Projectile
         _isAllies = isTargetAllies;
         _isEnemy = isTargetEnemy;
 
-        Invoke("TransparentProjectileOnServer", 0.1f);
+        Invoke("TransparentProjectileOnServer", 0.15f);
         InitializationComponents();
     }
 

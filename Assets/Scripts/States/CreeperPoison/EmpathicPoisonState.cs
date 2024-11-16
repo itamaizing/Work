@@ -66,16 +66,16 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
 
         _player.Health.Shields.Add(this);
         _poisonCloud = (PoisonCloudState)_player.CharacterState.GetState(States.PoisonCloud);
-      //  Debug.Log($"EmpathicPoisons / EnterState / PoisonCloud = {_poisonCloud}");
+        Debug.Log($"EmpathicPoisons / EnterState / PoisonCloud = {_poisonCloud}");
         _radiusCloud = _poisonCloud.RadiusCloud;
-      //  Debug.Log($"EmpathicPoisons / EnterState / PoisonCloud.radiusCloud = {_radiusCloud}");
+        Debug.Log($"EmpathicPoisons / EnterState / PoisonCloud.radiusCloud = {_radiusCloud}");
 
         _duration = durationToExit;
         _baseDuration = durationToExit;
 
         if (CurrentStacksCount < MaxStacksCount)
         {
-            AddStacks();
+            CurrentStacksCount++;
         }
     }
 
@@ -86,7 +86,7 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
-      //  Debug.Log("EmpathicPoison / TryTakeDamage");
+        Debug.Log("EmpathicPoison / TryTakeDamage");
         if (CurrentStacksCount > 0)
         {
           //  Debug.Log("EmpathicPoison / if (currentStacks > 0) currentStacks == " + _currentStacks);
@@ -140,6 +140,7 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
 
     public override void UpdateState()
     {
+        Debug.Log("EmpathicPoison / UpdateState");
         _playerPosition = _player.transform.position;
         _characterPosition = _characterState.transform.position;
 
@@ -179,9 +180,11 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
 
     public override bool Stack(float time)
     {
+        Debug.Log("EmpathicPoison / Stack");
         if (CurrentStacksCount < MaxStacksCount)
         {
-            AddStacks();
+            CurrentStacksCount++;
+            _duration = _baseDuration;
             return true;
         }
         else
@@ -189,12 +192,6 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
             _duration = _baseDuration;
             return true;
         }
-    }
-
-    private void AddStacks()
-    {
-        CurrentStacksCount++;
-        _duration = _baseDuration;
     }
 
     private void ReducingChanceOfHittingAtEnemy()

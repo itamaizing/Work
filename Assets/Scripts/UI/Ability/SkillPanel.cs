@@ -227,7 +227,7 @@ public class SkillPanel : MonoBehaviour
 
     private void SelectSkill(int arg0)
     {
-        Debug.Log(arg0);
+        //Debug.Log(arg0);
     }
 
     #endregion

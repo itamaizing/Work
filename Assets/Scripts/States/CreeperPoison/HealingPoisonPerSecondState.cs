@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -42,6 +43,7 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
 
         _duration = durationToExit;
         _baseDuration = durationToExit;
+        _timeBetweenHeal = _startTimeBetweenHeal;
     }
 
     public override void UpdateState()
@@ -76,7 +78,7 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
     {
         //if (CurrentStacksCount < MaxStacksCount)
         //{
-        //    Debug.Log("HealingPoisonPerSecond / Stack / if");
+        //    Debug.Log("HealingPoisonPerSecond / Stack / if / CurrentStacksCount = " + CurrentStacksCount);
         //    CurrentStacksCount++;
         //    _duration = _baseDuration;
         //    return true;
@@ -89,6 +91,7 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
         return false;
     }
 
+    [Server]
     private void MakeHeal()
     {
         _currentHealingValue += 1.0f;
@@ -96,11 +99,12 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
         Debug.Log($"HealingPoisonPerSecond / MakeHeal / _currentHealingValue = {_currentHealingValue}");
         Heal heal = new Heal
         {
-            Value = _baseHealingValue,
+            Value = _currentHealingValue,
             DamageableSkill = null,
         };
+        Debug.Log($"HealingPoisonPerSecond / MakeHeal / heal.value = {heal.Value}");
 
         _characterState.Character.Health.Heal(ref heal, null);
-        _characterState.Character.DamageTracker.AddHeal(heal);
+        _characterState.Character.DamageTracker.AddHeal(heal, true);
     }
 }

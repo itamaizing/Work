@@ -65,19 +65,13 @@ public class ExplosionPoisonCloud : Skill
         _currentDamage = _baseDamage * _currentStacksPoisonCloud;
 
        // Debug.Log("ExplosionPoisonCloud / ExplosionCloud / currentDamage = " + _currentDamage);
-        Damage damage = new Damage
-        {
-            Value = Buff.Damage.GetBuffedValue(_currentDamage),
-            Type = DamageType.Physical,
-        };
 
         foreach (Character target in _enemies)
         {
            // Debug.Log("ExplosionPoisonCloud / ExplosionCloud / target = " + target);
             if (target != null)
             {
-                CmdApplyDamage(damage, target.gameObject);
-                target.DamageTracker.AddDamage(damage);
+                CmdDamageDeal(target, _currentDamage);
 
                 for (int i = 0; i < _currentStacksPoisonCloud; i++)
                 {
@@ -102,11 +96,11 @@ public class ExplosionPoisonCloud : Skill
     {
         while (!_isExploded)
         {
-            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(transform.position, _radiusExplosion, _targetsLayers);
-            foreach (Collider2D enemy in hitEnemies)
+            Collider[] hitEnemies = Physics.OverlapSphere(transform.position, _radiusExplosion, _targetsLayers);
+            foreach (Collider enemy in hitEnemies)
             {
+               Debug.Log("ExplosionPoisonCloud / _enemy = " + enemy);
                 _enemies.Add(enemy.gameObject.GetComponent<Character>());
-               // Debug.Log("ExplosionPoisonCloud / _enemies.Count = " + _enemies.Count);
             }
             yield return null;
         }
@@ -122,6 +116,18 @@ public class ExplosionPoisonCloud : Skill
     private void ApplyPoisonBone(GameObject target)
     {
         CmdApplyPoisonBone(target.gameObject);
+    }
+
+    [Command]
+    private void CmdDamageDeal(Character target , float currentDamage)
+    {
+        Damage damage = new Damage
+        {
+            Value = Buff.Damage.GetBuffedValue(currentDamage),
+            Type = DamageType.Physical,
+        };
+        
+        ApplyDamage(damage, target.gameObject);
     }
 
     [Command]

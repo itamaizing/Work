@@ -6,6 +6,7 @@ using System.Linq;
 using UnityEngine;
 using System;
 
+[Serializable]
 public struct PoisonBallInfo : NetworkMessage
 {
     public int CountProjectiles;
@@ -23,16 +24,21 @@ public struct PoisonBallInfo : NetworkMessage
     public bool IsOriginalTargetAllies;
     public bool IsOriginalTargetPlayer;
 
+    public bool IsHealingPoisonCloud;
+}
+
+public struct PoisonBallActiveTalentsInfo : NetworkMessage
+{
     public bool IsActiveTransparentPoisons;
     public bool IsActiveWitheringPoison;
-    public bool IsActiveContinuationAmbush; 
+    public bool IsActiveContinuationAmbush;
     public bool IsActiveHealingPoisonBall;
     public bool IsActiveHealingPoisonCloud;
     public bool IsActiveEnlargedGlands;
     public bool IsActiveVoluminousBall;
     public bool IsActiveInertialGlands;
     public bool IsActiveVolatilityOfPoisons;
-    public bool IsHealingPoisonCloud;
+    public bool IsActiveBallEffect;
 }
 
 public struct PoisonBallSpawnPointInfo : NetworkMessage
@@ -60,6 +66,7 @@ public class PoisonBall : Skill, IAltAbility
     [SerializeField] private AssasinPoison _assasinPoison;
     [SerializeField] private FlowOfPoisons _flowOfPoison;
     [SerializeField] private VolatilityOfPoisons _volatilityOfPoisons;
+    [SerializeField] private BallEffect _ballEffect;
 
     [Header("Ability properties")]
     [SerializeField] private SpitPoison _spitPoison;
@@ -67,7 +74,6 @@ public class PoisonBall : Skill, IAltAbility
     [SerializeField] private Character _player;
     [SerializeField] private GameObject _arrowPrefab;
     [SerializeField] private GameObject _spawnPoint;
-    [SerializeField] private float _projectileSize;
     
     #region PoisonCloud
     [SerializeField] private PoisonDamagingCloudPrefab _poisonDamagingCloudPrefab;
@@ -79,6 +85,7 @@ public class PoisonBall : Skill, IAltAbility
 
     private PoisonBallInfo _poisonBallInfo = new PoisonBallInfo();
     private PoisonBallSpawnPointInfo _spawnPointInfo = new PoisonBallSpawnPointInfo();
+    private PoisonBallActiveTalentsInfo _activeTalentsInfo = new PoisonBallActiveTalentsInfo();
 
     private GameObject[] _arrowRenderers = new GameObject[4];
     private Character _currentTarget;
@@ -147,6 +154,17 @@ public class PoisonBall : Skill, IAltAbility
 
     private void Update()
     {
+        #region InertialGlandTalentIsActive
+        Debug.Log($"PoisonBall / _activeTalentsInfo.IsActiveInertialGlands = {_activeTalentsInfo.IsActiveInertialGlands} && _poisonBallInfo.IsThreeProjectileOnOnetarget = {_poisonBallInfo.IsThreeProjectileOnOnetarget}");
+        if (_activeTalentsInfo.IsActiveInertialGlands && _poisonBallInfo.IsThreeProjectileOnOnetarget)
+        {
+            Debug.Log("PoisonBall / InertialGlandsIsActive");
+            float newRemainingTime = 0.0f;
+            _spitPoison.ReductionSetCooldown(newRemainingTime);
+        }
+
+        #endregion
+
         UpdateMouseDetection();
         if (_poisonBallInfo.IsActiveTimer)
         {
@@ -212,9 +230,6 @@ public class PoisonBall : Skill, IAltAbility
 
     protected override IEnumerator PrepareJob()
     {
-        _animTime = GetAnimationClipLength();
-
-        SetSpawnPointPosition(_spawnPoint.transform.position.x, _spawnPoint.transform.position.y, _spawnPoint.transform.position.z);
         CheckingActiveTalents();
 
         while (_currentTarget == null && float.IsPositiveInfinity(_firstMousePosition.x))
@@ -244,6 +259,10 @@ public class PoisonBall : Skill, IAltAbility
             CooldownChange();
             yield return null;
         }
+
+        _animTime = GetAnimationClipLength();
+
+        SetSpawnPointPosition(_spawnPoint.transform.position.x, _spawnPoint.transform.position.y, _spawnPoint.transform.position.z);
 
         yield return _secondClickCoroutine = StartCoroutine(SecondClick());
         yield return _thirdClickCoroutine = StartCoroutine(ThirdClick());
@@ -541,19 +560,21 @@ public class PoisonBall : Skill, IAltAbility
 
     private void CheckingActiveTalents()
     {
-        _poisonBallInfo.IsActiveTransparentPoisons = _transparentPoisons.Data.IsOpen;
-        _poisonBallInfo.IsActiveWitheringPoison = _witheringPoison.Data.IsOpen;
-        _poisonBallInfo.IsActiveContinuationAmbush = _continuationAmbush.Data.IsOpen;
-        _poisonBallInfo.IsActiveHealingPoisonBall = _healingPoisonBall.Data.IsOpen;
-        _poisonBallInfo.IsActiveHealingPoisonCloud = _healPoisonCloud.Data.IsOpen;
-        _poisonBallInfo.IsActiveEnlargedGlands = _enlargedGlands.Data.IsOpen;
-        _poisonBallInfo.IsActiveVoluminousBall = _voluminousBall.Data.IsOpen;
-        _poisonBallInfo.IsActiveInertialGlands = _inertialGlands.Data.IsOpen;
-        _poisonBallInfo.IsActiveVolatilityOfPoisons = _volatilityOfPoisons.Data.IsOpen;
+
+        _activeTalentsInfo.IsActiveTransparentPoisons = _transparentPoisons.Data.IsOpen;
+        _activeTalentsInfo.IsActiveWitheringPoison = _witheringPoison.Data.IsOpen;
+        _activeTalentsInfo.IsActiveContinuationAmbush = _continuationAmbush.Data.IsOpen;
+        _activeTalentsInfo.IsActiveHealingPoisonBall = _healingPoisonBall.Data.IsOpen;
+        _activeTalentsInfo.IsActiveHealingPoisonCloud = _healPoisonCloud.Data.IsOpen;
+        _activeTalentsInfo.IsActiveEnlargedGlands = _enlargedGlands.Data.IsOpen;
+        _activeTalentsInfo.IsActiveVoluminousBall = _voluminousBall.Data.IsOpen;
+        _activeTalentsInfo.IsActiveInertialGlands = _inertialGlands.Data.IsOpen;
+        _activeTalentsInfo.IsActiveVolatilityOfPoisons = _volatilityOfPoisons.Data.IsOpen;
+        _activeTalentsInfo.IsActiveBallEffect = _ballEffect.Data.IsOpen;
 
         #region VolatilityOfPoisonsTalentIsActive
 
-        if (_poisonBallInfo.IsActiveVolatilityOfPoisons && _poisonBoneStacks > 0)
+        if (_activeTalentsInfo.IsActiveVolatilityOfPoisons && _poisonBoneStacks > 0)
         {
             float multiplier = _poisonBoneStacks * 0.1f;
             _multiplierForPushDistance = multiplier;
@@ -567,13 +588,13 @@ public class PoisonBall : Skill, IAltAbility
 
         #region VoluminousBallTalentIsActive
 
-        if (_poisonBallInfo.IsActiveVoluminousBall && !_isBallCanBigger)
+        if (_activeTalentsInfo.IsActiveVoluminousBall && !_isBallCanBigger)
         {
             float multiplier = _baseCastWidth * 0.2f;
             _castWidth += multiplier;
             _isBallCanBigger = true;
         }
-        else if (!_poisonBallInfo.IsActiveVoluminousBall && _isBallCanBigger)
+        else if (!_activeTalentsInfo.IsActiveVoluminousBall && _isBallCanBigger)
         {
             _castWidth = _baseCastWidth;
             _isBallCanBigger = false;
@@ -583,12 +604,12 @@ public class PoisonBall : Skill, IAltAbility
 
         #region EnlargedGlandTalentIsActive
 
-        if (_poisonBallInfo.IsActiveEnlargedGlands && _maxCharges == 3)
+        if (_activeTalentsInfo.IsActiveEnlargedGlands && _maxCharges == 3)
         {
             AddMaxChargeCount();
             _poisonBallInfo.MaxCountProjectile = _maxCharges;
         }
-        else if (!_poisonBallInfo.IsActiveEnlargedGlands && _maxCharges >= 4)
+        else if (!_activeTalentsInfo.IsActiveEnlargedGlands && _maxCharges >= 4)
         {
             DeductMaxChargeCount();
             _poisonBallInfo.MaxCountProjectile = _maxCharges;
@@ -596,19 +617,9 @@ public class PoisonBall : Skill, IAltAbility
 
         #endregion
 
-        #region InertialGlandTalentIsActive
-
-        if (_poisonBallInfo.IsActiveInertialGlands && _poisonBallInfo.IsThreeProjectileOnOnetarget)
-        {
-            float newRemainingTime = 0.0f;
-            _spitPoison.ReductionSetCooldown(newRemainingTime);
-        }
-
-        #endregion
-
         #region ContinuationAmbushTalentIsActive
 
-        if (_poisonBallInfo.IsActiveContinuationAmbush && _poisonBallInfo.IsCanApplyInvisible)
+        if (_activeTalentsInfo.IsActiveContinuationAmbush && _poisonBallInfo.IsCanApplyInvisible)
         {
             _continuationAmbush.CanApplyInvisible(true);
         }
@@ -650,7 +661,7 @@ public class PoisonBall : Skill, IAltAbility
                 _poisonBallInfo.IsOriginalTargetAllies = false;
                 _poisonBallInfo.IsOriginalTargetEnemy = false;
 
-                if (_poisonBallInfo.IsActiveHealingPoisonCloud)
+                if (_activeTalentsInfo.IsActiveHealingPoisonCloud)
                 {
                     _poisonBallInfo.IsHealingPoisonCloud = true;
                 }
@@ -661,11 +672,12 @@ public class PoisonBall : Skill, IAltAbility
             }
             else if (_currentTarget.gameObject.layer == LayerMask.NameToLayer("Allies"))
             {
+                Debug.Log("CurrentTarget = allies ");
                 _poisonBallInfo.IsOriginalTargetPlayer = false;
                 _poisonBallInfo.IsOriginalTargetAllies = true;
                 _poisonBallInfo.IsOriginalTargetEnemy = false;
 
-                if (_poisonBallInfo.IsActiveHealingPoisonCloud)
+                if (_activeTalentsInfo.IsActiveHealingPoisonCloud)
                 {
                     _poisonBallInfo.IsHealingPoisonCloud = true;
                 }
@@ -676,10 +688,12 @@ public class PoisonBall : Skill, IAltAbility
             }
             else if (_currentTarget.gameObject.layer == LayerMask.NameToLayer("Enemy"))
             {
+                Debug.Log("CurrentTarget = enemy ");
                 _poisonBallInfo.IsOriginalTargetPlayer = false;
                 _poisonBallInfo.IsOriginalTargetAllies = false;
                 _poisonBallInfo.IsOriginalTargetEnemy = true;
-                if (_poisonBallInfo.IsActiveHealingPoisonCloud)
+
+                if (_activeTalentsInfo.IsActiveHealingPoisonCloud)
                 {
                     _poisonBallInfo.IsHealingPoisonCloud = false;
                 }
@@ -699,6 +713,7 @@ public class PoisonBall : Skill, IAltAbility
 
         if (_poisonBallInfo.TimeBetweenAttack < 0)
         {
+            Debug.Log("PoisonBall / Timer if ");
             _poisonBallInfo.CountProjectiles = 0;
             _poisonBallInfo.IsActiveTimer = false;
             _poisonBallInfo.IsProjectileCreate = false;
@@ -707,7 +722,7 @@ public class PoisonBall : Skill, IAltAbility
 
     private void CooldownChange()
     {
-        if (_poisonBallInfo.IsActiveHealingPoisonBall && (_poisonBallInfo.IsOriginalTargetAllies || _poisonBallInfo.IsOriginalTargetPlayer))
+        if (_activeTalentsInfo.IsActiveHealingPoisonBall && (_poisonBallInfo.IsOriginalTargetAllies || _poisonBallInfo.IsOriginalTargetPlayer))
         {
             _chargeCooldown = _originalChargeCooldown / 2;
         }
@@ -787,23 +802,29 @@ public class PoisonBall : Skill, IAltAbility
     {
         if (_isTarget)
         {
-            CmdCreateProjectileForTarget(_currentTarget.gameObject, _currentTarget.transform.position, _poisonBallInfo.MaxCountProjectile,
-                _multiplierForPushDistance, _projectileSize,
-                _isFast, _isPushTarget, IsAltAbility,
-                _poisonBallInfo.IsActiveHealingPoisonBall, _poisonBallInfo.IsActiveWitheringPoison, _poisonBallInfo.IsActiveVoluminousBall,
-                _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies, PoisonBoneStack);
+            _player.CharacterState.CmdAddState(States.PoisonCloud, _durationPoisonCloud, 0, _player.gameObject, Name);
 
-            //CmdApplyPoisonCloud(_poisonBallInfo.IsHealingPoisonCloud, _durationPoisonCloud);
+            CmdCreateProjectileForTarget(_currentTarget.gameObject, _currentTarget.transform.position, 
+                _poisonBallInfo.MaxCountProjectile, _multiplierForPushDistance, PoisonBoneStack,
+                _isFast, _isPushTarget, IsAltAbility,
+                _activeTalentsInfo.IsActiveHealingPoisonBall, _activeTalentsInfo.IsActiveWitheringPoison, _activeTalentsInfo.IsActiveVoluminousBall, _activeTalentsInfo.IsActiveBallEffect,
+                _activeTalentsInfo.IsActiveInertialGlands, _activeTalentsInfo.IsActiveContinuationAmbush, 
+                _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies);
+
+            CmdApplyPoisonCloud(_poisonBallInfo.IsHealingPoisonCloud, _durationPoisonCloud);
         }
         else
         {
-            CmdCreateProjectileForFlyingMaxDistance(_firstMousePosition, _poisonBallInfo.MaxCountProjectile,
-                _multiplierForPushDistance, _projectileSize,
-                _isFast, _isPushTarget, IsAltAbility,
-                _poisonBallInfo.IsActiveHealingPoisonBall, _poisonBallInfo.IsActiveWitheringPoison, _poisonBallInfo.IsActiveVoluminousBall,
-                _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies, PoisonBoneStack);
+            _player.CharacterState.CmdAddState(States.PoisonCloud, _durationPoisonCloud, 0, _player.gameObject, Name);
 
-            //CmdApplyPoisonCloud(_poisonBallInfo.IsHealingPoisonCloud, _durationPoisonCloud);
+            CmdCreateProjectileForFlyingMaxDistance(_firstMousePosition, 
+                _poisonBallInfo.MaxCountProjectile, _multiplierForPushDistance, PoisonBoneStack,
+                _isFast, _isPushTarget, IsAltAbility,
+                _activeTalentsInfo.IsActiveHealingPoisonBall, _activeTalentsInfo.IsActiveWitheringPoison, _activeTalentsInfo.IsActiveVoluminousBall, _activeTalentsInfo.IsActiveBallEffect,
+                _activeTalentsInfo.IsActiveInertialGlands, _activeTalentsInfo.IsActiveContinuationAmbush,
+                _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies);
+
+            CmdApplyPoisonCloud(_poisonBallInfo.IsHealingPoisonCloud, _durationPoisonCloud);
         }
     }
 
@@ -812,13 +833,16 @@ public class PoisonBall : Skill, IAltAbility
     #region Command Methods
 
     [Command]
-    private void CmdCreateProjectileForTarget(GameObject target, Vector3 targetOrPoint, int maxCountProjectiles,
-        float multiplierForPushDistance, float projectileSize,
+    private void CmdCreateProjectileForTarget(GameObject target, Vector3 targetOrPoint, 
+        int maxCountProjectiles, float multiplierForPushDistance, int poisonBoneStack,
         bool isFast, bool isPushTarget, bool isPlayerInvisible,
-        bool isActiveHealingPoisonBall, bool isActiveWitheringPoison, bool isActiveVoluminousBall,
-        bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies, int poisonBoneStack)
+        bool isActiveHealingPoisonBall, bool isActiveWitheringPoison, bool isActiveVoluminousBall, bool isActiveBallEffect,
+        bool isActiveInertialGlands, bool isActiveContinuationAmbush,
+        bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies)
 
     {
+        Debug.Log("CmdCreateProjTarget / IsActiveInertialGlands = " + isActiveInertialGlands);
+        Debug.Log("CmdCreateProjTarget / IsActiveContinuationAmbush = " + isActiveContinuationAmbush);
         CurrentTarget = target;
         FootInstinctsTalent = _footInstincts;
         RestorationOfGlandsTalent = _restorationOfGlands;
@@ -836,13 +860,13 @@ public class PoisonBall : Skill, IAltAbility
             _poisonBallInfo.CountProjectiles = 1;
             _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
         }
-
-        if (_poisonBallInfo.CountProjectiles >= 3 && _poisonBallInfo.IsActiveInertialGlands)
+        if (_poisonBallInfo.CountProjectiles >= 3 && isActiveInertialGlands)
         {
             _poisonBallInfo.IsThreeProjectileOnOnetarget = true;
+            Debug.Log("CmdCreateProjTarget / IsThreeProjectileOnOneTarget = " + _poisonBallInfo.IsThreeProjectileOnOnetarget);
         }
 
-        if (_poisonBallInfo.CountProjectiles >= 4 && _poisonBallInfo.IsActiveContinuationAmbush)
+        if (_poisonBallInfo.CountProjectiles >= 4 && isActiveContinuationAmbush)
         {
             _poisonBallInfo.IsCanApplyInvisible = true;
         }
@@ -864,8 +888,12 @@ public class PoisonBall : Skill, IAltAbility
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
-        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Resources.FirstOrDefault()!.CurrentValue, multiplierForPushDistance, projectileSize, this, isActiveHealingPoisonBall,
-            isTargetPlayer, isTargetEnemy, isTargetAllies, isActiveWitheringPoison, isPushTarget, isActiveVoluminousBall, isPlayerInvisible, poisonBoneStack);
+        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, this, 
+            multiplierForPushDistance, poisonBoneStack,
+            isTargetPlayer, isTargetEnemy, isTargetAllies,
+            isActiveHealingPoisonBall, isActiveWitheringPoison, isActiveVoluminousBall, isActiveBallEffect,
+            isPushTarget, isPlayerInvisible
+            );
 
         poisonBallProjectile.MoveBallToTarget(targetOrPoint, isFast);
 
@@ -881,12 +909,15 @@ public class PoisonBall : Skill, IAltAbility
     }
 
     [Command]
-    private void CmdCreateProjectileForFlyingMaxDistance(Vector3 point, int maxCountProjectiles,
-        float multiplierForPushDistance, float projectileSize,
+    private void CmdCreateProjectileForFlyingMaxDistance(Vector3 point, 
+        int maxCountProjectiles, float multiplierForPushDistance, int poisonBoneStack,
         bool isFast, bool isPushTarget, bool isPlayerInvisible,
-        bool isActiveHealingPoisonBall, bool isActiveWitheringPoison, bool isActiveVoluminousBall,
-        bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies, int poisonBoneStack)
+        bool isActiveHealingPoisonBall, bool isActiveWitheringPoison, bool isActiveVoluminousBall, bool isActiveBallEffect,
+        bool isActiveInertialGlands, bool isActiveContinuationAmbush,
+        bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies)
     {
+        Debug.Log("CmdCreateProjPoint / IsActiveInertialGlands = " + isActiveInertialGlands);
+        Debug.Log("CmdCreateProjPoint / IsActiveContinuationAmbush = " + isActiveContinuationAmbush);
         RestorationOfGlandsTalent = _restorationOfGlands;
         FootInstinctsTalent = _footInstincts;
         CurrentTarget = LastTarget;
@@ -905,12 +936,12 @@ public class PoisonBall : Skill, IAltAbility
             _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
         }
 
-        if (_poisonBallInfo.CountProjectiles >= 3 && _poisonBallInfo.IsActiveInertialGlands)
+        if (_poisonBallInfo.CountProjectiles >= 3 && isActiveInertialGlands)
         {
             _poisonBallInfo.IsThreeProjectileOnOnetarget = true;
         }
 
-        if (_poisonBallInfo.CountProjectiles >= 4 && _poisonBallInfo.IsActiveContinuationAmbush)
+        if (_poisonBallInfo.CountProjectiles >= 4 && isActiveContinuationAmbush)
         {
             _poisonBallInfo.IsCanApplyInvisible = true;
         }
@@ -930,8 +961,12 @@ public class PoisonBall : Skill, IAltAbility
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
-        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, _player.Resources.FirstOrDefault()!.CurrentValue, multiplierForPushDistance, projectileSize, this, isActiveHealingPoisonBall,
-            isTargetPlayer, isTargetEnemy, isTargetAllies, isActiveWitheringPoison, isPushTarget, isActiveVoluminousBall, isPlayerInvisible, poisonBoneStack);
+        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, this,
+            multiplierForPushDistance, poisonBoneStack,
+            isTargetPlayer, isTargetEnemy, isTargetAllies,
+            isActiveHealingPoisonBall, isActiveWitheringPoison, isActiveVoluminousBall, isActiveBallEffect,
+            isPushTarget, isPlayerInvisible
+            );
 
         poisonBallProjectile.MoveBallOnMaxDistance(point, isFast);
 
@@ -953,7 +988,7 @@ public class PoisonBall : Skill, IAltAbility
         {
             if (_poisonDamagingCloud == null && _poisonDamagingCloudPrefab.PoisonDamageCloud == null)
             {
-                _player.CharacterState.AddState(States.PoisonCloud, duration, 0, _player.gameObject, Name);
+                //_player.CharacterState.AddState(States.PoisonCloud, duration, 0, _player.gameObject, Name);
 
                 _poisonDamagingCloud = Instantiate(_poisonDamagingCloudPrefab, _player.transform.position, Quaternion.identity);
 
@@ -965,12 +1000,12 @@ public class PoisonBall : Skill, IAltAbility
 
                 NetworkServer.Spawn(_poisonDamagingCloud.gameObject);
 
-                Debug.Log("PoisonBall / CmdApplyPoisonCloud / if / _poisonDamagingCloud = " + _poisonDamagingCloud);
-                Debug.Log("PoisonBall / CmdApplyPoisonCloud / if / _poisonDamagingCloudPrefab.PoisonDamageCloud = " + _poisonDamagingCloudPrefab.PoisonDamageCloud);
+                //Debug.Log("PoisonBall / CmdApplyPoisonCloud / if / _poisonDamagingCloud = " + _poisonDamagingCloud);
+                //Debug.Log("PoisonBall / CmdApplyPoisonCloud / if / _poisonDamagingCloudPrefab.PoisonDamageCloud = " + _poisonDamagingCloudPrefab.PoisonDamageCloud);
             }
             else
             {
-                Debug.Log("PoisonBall / CmdApplyPoisonCloud / else / _poisonDamagingCloud = " + _poisonDamagingCloudPrefab.PoisonDamageCloud);
+                //Debug.Log("PoisonBall / CmdApplyPoisonCloud / else / _poisonDamagingCloud = " + _poisonDamagingCloudPrefab.PoisonDamageCloud);
                 _player.CharacterState.AddState(States.PoisonCloud, duration, 0, _player.gameObject, Name);
                 _poisonDamagingCloudPrefab.PoisonDamageCloud.AddStack();
             }
@@ -999,23 +1034,61 @@ public class PoisonBall : Skill, IAltAbility
         RpcApply(_poisonDamagingCloudPrefab.PoisonDamageCloud, _poisonHealingCloudPrefab.PoisonHealingCloud, duration, isHealingCloud);
     }
 
+    /*
+    [Command]
+    private void CmdCheckActiveTalents(bool transparentPoisonsActive, bool witheringPoisonActive,
+        bool contAmbushActive, bool healingBallActive, bool healingCloudActive,
+        bool enlargedGlandsActive, bool voluminousBallActive, bool inertialGlandsActive, bool volatilityPoisonsActive, bool ballEffectActive)
+    {
+        _activeTalentsInfo.IsActiveTransparentPoisons = transparentPoisonsActive;
+        _activeTalentsInfo.IsActiveWitheringPoison = witheringPoisonActive;
+        _activeTalentsInfo.IsActiveContinuationAmbush = contAmbushActive;
+        _activeTalentsInfo.IsActiveHealingPoisonBall = healingBallActive;
+        _activeTalentsInfo.IsActiveHealingPoisonCloud = healingCloudActive;
+        _activeTalentsInfo.IsActiveEnlargedGlands = enlargedGlandsActive;
+        _activeTalentsInfo.IsActiveVoluminousBall = voluminousBallActive;
+        _activeTalentsInfo.IsActiveInertialGlands = inertialGlandsActive;
+        _activeTalentsInfo.IsActiveVolatilityOfPoisons = volatilityPoisonsActive;
+        _activeTalentsInfo.IsActiveBallEffect = ballEffectActive;
+
+        RpcCheckActiveTalents(transparentPoisonsActive, witheringPoisonActive, contAmbushActive, healingBallActive, healingCloudActive, 
+            enlargedGlandsActive, voluminousBallActive, inertialGlandsActive, volatilityPoisonsActive, ballEffectActive);
+    }
+    */
+
     [Command]
     private void SetSpawnPointPosition(float spawnPointX, float spawnPointY, float spawnPointZ)
     {
         _spawnPointInfo.SpawnPointX = spawnPointX;
-        Debug.Log("SpitPoison / SpawnPointX = " + spawnPointX);
         _spawnPointInfo.SpawnPointY = spawnPointY;
-        Debug.Log("SpitPoison / SpawnPointY = " + spawnPointY);
         _spawnPointInfo.SpawnPointZ = spawnPointZ;
-        Debug.Log("SpitPoison / SpawnPointZ = " + spawnPointZ);
     }
 
     #endregion
 
+    /*
+    [ClientRpc]
+    private void RpcCheckActiveTalents(bool transparentPoisonsActive, bool witheringPoisonActive,
+    bool contAmbushActive, bool healingBallActive, bool healingCloudActive,
+    bool enlargedGlandsActive, bool voluminousBallActive, bool inertialGlandsActive, bool volatilityPoisonsActive, bool ballEffectActive)
+    {
+        _activeTalentsInfo.IsActiveTransparentPoisons = transparentPoisonsActive;
+        _activeTalentsInfo.IsActiveWitheringPoison = witheringPoisonActive;
+        _activeTalentsInfo.IsActiveContinuationAmbush = contAmbushActive;
+        _activeTalentsInfo.IsActiveHealingPoisonBall = healingBallActive;
+        _activeTalentsInfo.IsActiveHealingPoisonCloud = healingCloudActive;
+        _activeTalentsInfo.IsActiveEnlargedGlands = enlargedGlandsActive;
+        _activeTalentsInfo.IsActiveVoluminousBall = voluminousBallActive;
+        _activeTalentsInfo.IsActiveInertialGlands = inertialGlandsActive;
+        _activeTalentsInfo.IsActiveVolatilityOfPoisons = volatilityPoisonsActive;
+        _activeTalentsInfo.IsActiveBallEffect = ballEffectActive;
+    }
+    */
+
     [ClientRpc]
     private void RpcApply(PoisonDamagingCloudPrefab poisonDamagingCloud, PoisonHealingCloudPrefab poisonHealingCloud, float duration, bool isHealingCloud)
     {
-        Debug.Log("PoisonBall / RpcApply / if (poisonDamagingCloud != null) = " + poisonDamagingCloud);
+        //Debug.Log("PoisonBall / RpcApply / if (poisonDamagingCloud != null) = " + poisonDamagingCloud);
         if (poisonDamagingCloud != null)
         {
             poisonDamagingCloud.InitializationProjectile(_player, 5, duration, 3.5f, Name);

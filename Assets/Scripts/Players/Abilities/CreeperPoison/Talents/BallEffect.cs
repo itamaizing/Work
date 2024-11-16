@@ -1,9 +1,8 @@
-using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ToxiqueCloud : Talent
+public class BallEffect : Talent
 {
     public override void Enter()
     {

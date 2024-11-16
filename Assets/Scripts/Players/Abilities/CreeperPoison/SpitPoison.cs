@@ -84,16 +84,7 @@ public class SpitPoison : Skill, IAltAbility
     {
         _originalCooldown = _cooldownTime;
     }
-    [Command]
-    private void SetSpawnPoint(float spawnPointX, float spawnPointY, float spawnPointZ)
-    {
-        _spawnPointInfo.SpawnPointX = spawnPointX;
-        Debug.Log("SpitPoison / SpawnPointX = " + spawnPointX);
-        _spawnPointInfo.SpawnPointY = spawnPointY;
-        Debug.Log("SpitPoison / SpawnPointY = " + spawnPointY);
-        _spawnPointInfo.SpawnPointZ = spawnPointZ;
-        Debug.Log("SpitPoison / SpawnPointZ = " + spawnPointZ);
-    }
+
 
     protected override IEnumerator PrepareJob()
     {
@@ -104,6 +95,7 @@ public class SpitPoison : Skill, IAltAbility
             if (GetMouseButton)
             {
                 _currentTarget = GetRaycastTarget(true);
+                Debug.Log("SpitPoison / currentTarget = " + _currentTarget);
                 ChooseTarget();
 
                 _mousePos = GetMousePoint();
@@ -239,19 +231,22 @@ public class SpitPoison : Skill, IAltAbility
         if (_currentTarget != null)
         {
             SetSpawnPoint(_spawnPoint.transform.position.x, _spawnPoint.transform.position.y, _spawnPoint.transform.position.z);
+
             CmdInstantiateProjectileToTarget(_currentTarget.gameObject, _angleRotation, _player.Resources.FirstOrDefault()!.CurrentValue,
                 _isActiveHealingSpitPoison, IsAltAbility,
                 _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
 
-            //CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
+            CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
         }
         else
         {
             SetSpawnPoint(_spawnPoint.transform.position.x, _spawnPoint.transform.position.y, _spawnPoint.transform.position.z);
+
             CmdInstantiateProjectileToPoint(_mousePos, _angleRotation, _player.Resources.FirstOrDefault()!.CurrentValue,
                 _isActiveHealingSpitPoison, IsAltAbility,
                 _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
-            //CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
+
+            CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
         }
 
         _player.Resources.FirstOrDefault()?.TryUse(_player.Resources.FirstOrDefault()!.CurrentValue);
@@ -261,15 +256,22 @@ public class SpitPoison : Skill, IAltAbility
     #region Command Methods
 
     [Command]
+    private void SetSpawnPoint(float spawnPointX, float spawnPointY, float spawnPointZ)
+    {
+        _spawnPointInfo.SpawnPointX = spawnPointX;
+        _spawnPointInfo.SpawnPointY = spawnPointY;
+        _spawnPointInfo.SpawnPointZ = spawnPointZ;
+    }
+
+    [Command]
     private void CmdInstantiateProjectileToTarget(GameObject target, float angleRotation, float manaValue,
         bool isActiveHealingSpitPoison, bool isPlayerInvisible,
         bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
     {
         RestorationOfGlandsTalent = _restorationOfGlands;
-        Debug.Log("SpitPoison / CmdInstTarget / RestorationOfGlandsTalent = " + RestorationOfGlandsTalent);
 
         Vector3 spawnPosition = new Vector3 (_spawnPointInfo.SpawnPointX, _spawnPointInfo.SpawnPointY, _spawnPointInfo.SpawnPointZ);
-        Debug.Log("SpitPoison / CreateProj / SpawnPosition = " + spawnPosition);
+
         GameObject item = Instantiate(_projectile.gameObject, spawnPosition, Quaternion.identity);
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
@@ -291,10 +293,8 @@ public class SpitPoison : Skill, IAltAbility
         bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
     {
         RestorationOfGlandsTalent = _restorationOfGlands;
-        Debug.Log("SpitPoison / CmdInstPoint / RestorationOfGlandsTalent = " + RestorationOfGlandsTalent);
 
         Vector3 spawnPosition = new Vector3(_spawnPointInfo.SpawnPointX, _spawnPointInfo.SpawnPointY, _spawnPointInfo.SpawnPointZ);
-        Debug.Log("SpitPoison / CreateProj / SpawnPosition = " + spawnPosition);
 
         GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
 

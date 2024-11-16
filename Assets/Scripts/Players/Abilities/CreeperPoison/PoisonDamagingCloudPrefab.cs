@@ -50,8 +50,8 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
 
     public void AddStack()
     {
-        Debug.Log("PoisonDamagingCloud / AddStack");
-        Debug.Log("PoisonDamagingCloud / AddStack / currentStacks = " + _currentStacks);
+        //Debug.Log("PoisonDamagingCloud / AddStack");
+        //Debug.Log("PoisonDamagingCloud / AddStack / currentStacks = " + _currentStacks);
         if (_currentStacks < _maxStacks)
         {
             _currentStacks++;

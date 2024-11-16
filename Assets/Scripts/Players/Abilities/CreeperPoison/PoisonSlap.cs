@@ -96,7 +96,45 @@ public class PoisonSlap : Skill
 
     protected override IEnumerator PrepareJob()
     {
-        if (!_poisonBall.IsHaveCharge && !_lightweightSlap.Data.IsOpen) yield break;
+        switch (_lightweightSlap.Data.IsOpen)
+        {
+            case true:
+                if (_creeperStrike.IsTwoHit)
+                {
+                    CastSpeedFromCreeperStrike();
+                    _isUsedPoisonBallCharger = false;
+                }
+                else if (_lightningStrikes.IsUsedLightningStrikes)
+                {
+                    CastSpeedFromLightningStrikes();
+                    _isUsedPoisonBallCharger = false;
+                }
+                else
+                {
+                    _isUsedPoisonBallCharger = true;
+                    _castDeley = _baseTimeCast;
+                }
+                break;
+
+            case false:
+                if (_creeperStrike.IsTwoHit)
+                {
+                    CastSpeedFromCreeperStrike();
+                }
+                else if (_lightningStrikes.IsUsedLightningStrikes)
+                {
+                    CastSpeedFromLightningStrikes();
+                }
+                else
+                {
+                    _isUsedPoisonBallCharger = true;
+                    _castDeley = _baseTimeCast;
+                }
+                break;
+        }
+
+        if (!_poisonBall.IsHaveCharge && _isUsedPoisonBallCharger) yield break;
+        
 
         if (_lightningMovement.IsInMovement)
         {
@@ -110,7 +148,6 @@ public class PoisonSlap : Skill
                 if (GetMouseButton)
                 {
                     _currentTarget = GetRaycastTarget();
-                    Debug.Log("PoisonSlap / PrepareJob / _currentTarget = " + _currentTarget);
 
                     if (_currentTarget != null)
                     {
@@ -123,47 +160,19 @@ public class PoisonSlap : Skill
                         _firstClickDone = true;
 
                     }
+
                 }
                 yield return null;
             }
 
-            if (_lightweightSlap.Data.IsOpen && _creeperStrike.IsTwoHit)
-            {
-                CastSpeedFromCreeperStrike();
-                _isUsedPoisonBallCharger = false;
-                Debug.Log("PoisonSlap / PrepareJob / CreeperStrike.IsTwoHit / if ");
-            }
-            else if (_lightweightSlap.Data.IsOpen && _lightningStrikes.IsUsedLightningStrikes)
-            {
-                CastSpeedFromLightningStrikes();
-                _isUsedPoisonBallCharger = false;
-                Debug.Log("PoisonSlap / PrepareJob / LightningStrike.IsUsedLightningStrikes / else if ");
-            }
-            else if (_lightweightSlap.Data.IsOpen && (!_creeperStrike.IsTwoHit || !_lightningStrikes.IsUsedLightningStrikes))
-            {
-                Debug.Log("PoisonSlap / PrepareJob / else if");
-                _isCanBreak = true;
-                yield break;
-            }
-            else
-            {
-                _isUsedPoisonBallCharger = true;
-                _castDeley = _baseTimeCast;
-                Debug.Log("PoisonSlap / PrepareJob / else / castDeley = " + _castDeley);
-            }
-
-            if (_isCanBreak) yield break;
-
             yield return _secondMouseClickCoroutine = StartCoroutine(SecondClick());
         }
-
     }
 
     protected override IEnumerator CastJob()
     {
         if (_isUsedPoisonBallCharger)
         {
-            Debug.Log("PoisonSlap / CastJob / if (isUsedPoisonBallCharger)");
             _poisonBall.PayCostPoisonBall();
         }
 
@@ -391,7 +400,6 @@ public class PoisonSlap : Skill
             };
 
             CmdApplyDamage(damage, target.gameObject);
-            target.DamageTracker.AddDamage(damage);
 
             if (target.CharacterState.CheckForState(States.PoisonBone) && _restorationOfGlands && _poisonBoneStack > 0)
             {
@@ -421,7 +429,18 @@ public class PoisonSlap : Skill
             };
 
             CmdApplyDamage(damage, target.gameObject);
-            target.DamageTracker.AddDamage(damage);
+
+            if (target.CharacterState.CheckForState(States.PoisonBone) && _restorationOfGlands && _poisonBoneStack > 0)
+            {
+                float baseChanceOfRestorationOfGlands = 0.1f;
+                float chanceOfRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
+
+                if (Random.Range(0f, 1f) <= chanceOfRestorationOfGlands)
+                {
+                    Debug.Log("CreeperStrike / restorationOfGlands");
+                    _restorationOfGlands.ReductionCooldown();
+                }
+            }
 
             PushTarget(target, _distancePush, _durationPush, _isPushTargetAllowed);
         }

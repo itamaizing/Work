@@ -40,9 +40,9 @@ public class Bar : MonoBehaviour
 		_preViewValue = resource.CurrentValue;
 		_maxValue = resource.MaxValue;
 
-		Debug.Log(_currentValue);
-		Debug.Log(_preViewValue);
-		Debug.Log(_maxValue);
+		//Debug.Log(_currentValue);
+		//Debug.Log(_preViewValue);
+		//Debug.Log(_maxValue);
 
 		UpdateBar();
 
