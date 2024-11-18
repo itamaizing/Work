@@ -26,6 +26,9 @@ public class PoisonCloudState : AbstractCharacterState
     private float _timeBetweenAttack;
     private float _startTimeBetweenAttack = 1f;
 
+    private float _timeBetweenApplyEmpathicPoisons;
+    private float _startTimeBetweenApplyEmpathicPoisons = 4f;
+
     private float _duration;
     private float _baseDuration;
     private float _durationEmpathicPoisons = 5f;
@@ -50,6 +53,7 @@ public class PoisonCloudState : AbstractCharacterState
         _baseDuration = durationToExit;
 
         _timeBetweenAttack = _startTimeBetweenAttack;
+        _timeBetweenApplyEmpathicPoisons = _startTimeBetweenApplyEmpathicPoisons;
 
         if (_player != null)
         {
@@ -115,6 +119,8 @@ public class PoisonCloudState : AbstractCharacterState
     public override void UpdateState()
     {
         _timeBetweenAttack -= Time.deltaTime;
+        _timeBetweenApplyEmpathicPoisons -= Time.deltaTime;
+
         if (_timeBetweenAttack <= 0)
         {
             Debug.Log("PoisonCloudState / UpdateState in timeBetweenAttack ");
@@ -140,7 +146,6 @@ public class PoisonCloudState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        Debug.Log("PoisonCloudState / Stack");
         if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks(); 
@@ -159,7 +164,6 @@ public class PoisonCloudState : AbstractCharacterState
 
     public void AddStacks()
     {
-        Debug.Log("PoisonCloudState / AddStacks");
         if (CurrentStacksCount < MaxStacksCount)
         {
             CurrentStacksCount++;
@@ -177,7 +181,6 @@ public class PoisonCloudState : AbstractCharacterState
         Debug.Log("PoisonCloudState / SearchingEnemies");
 
         Collider[] hitEnemies = Physics.OverlapSphere(player.transform.position, _radiusCloud, enemyLayer);
-        Debug.Log("PoisonCloudState / SearchingEnemies / hitEnemies = " + hitEnemies.Length);
 
         foreach (Collider enemy in hitEnemies)
         {
@@ -185,8 +188,6 @@ public class PoisonCloudState : AbstractCharacterState
 
             if (enemy.transform != player.transform)
             {
-                Debug.Log("PoisonCloudState / SearchingEnemies / foreach / if / enemy != player");
-
                 DamageDeal(enemy.gameObject);
             }
         }
@@ -210,17 +211,15 @@ public class PoisonCloudState : AbstractCharacterState
         targetHealth.Health.CmdTryTakeDamage(damage, null);
         //targetHealth.DamageTracker.AddDamage(damage, true);
 
-        if (_toxiqueCloud.Data.IsOpen)
+        if (_toxiqueCloud != null && _toxiqueCloud.Data.IsOpen)
         {
-            Debug.Log("PoisonCloud / DamageDeal / toxiqueCloud Active");
-            targetHealth.CharacterState.AddStateTest(States.EmpathicPoisons, _durationEmpathicPoisons, 0, _player.gameObject, null);
+            if (_timeBetweenApplyEmpathicPoisons <= 0)
+            {
+                Debug.Log("PoisonCloud / DamageDeal / toxiqueCloud Active");
+                targetHealth.CharacterState.AddStateTest(States.EmpathicPoisons, _durationEmpathicPoisons, 0, _player.gameObject, null);
+                _timeBetweenApplyEmpathicPoisons = _startTimeBetweenApplyEmpathicPoisons;
+            }
         }
-    }
-
-    private void ApplyState(Character targetHealth)
-    {
-        Debug.Log("PoisonCloud / DamageDeal / toxiqueCloud Active");
-        targetHealth.CharacterState.CmdAddState(States.EmpathicPoisons, _durationEmpathicPoisons, 0, _player.gameObject, null);
     }
 
     private void ResetValues()

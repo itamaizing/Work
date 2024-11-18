@@ -6,7 +6,6 @@ using System.Linq;
 using UnityEngine;
 using System;
 
-[Serializable]
 public struct PoisonBallInfo : NetworkMessage
 {
     public int CountProjectiles;
@@ -116,7 +115,8 @@ public class PoisonBall : Skill, IAltAbility
     private bool _colorLockedAfterSecondClick = false;
     private bool _colorLockedAfterThirdClick = false;
     private bool _isBallCanBigger = false;
-    private bool _isPlayerInvisible = false;
+    private bool _isThreeProjectileOnOneTarget = false;
+    private bool _isCanApplyInvisible = false;
 
     #endregion
 
@@ -155,10 +155,10 @@ public class PoisonBall : Skill, IAltAbility
     private void Update()
     {
         #region InertialGlandTalentIsActive
-        Debug.Log($"PoisonBall / _activeTalentsInfo.IsActiveInertialGlands = {_activeTalentsInfo.IsActiveInertialGlands} && _poisonBallInfo.IsThreeProjectileOnOnetarget = {_poisonBallInfo.IsThreeProjectileOnOnetarget}");
-        if (_activeTalentsInfo.IsActiveInertialGlands && _poisonBallInfo.IsThreeProjectileOnOnetarget)
+        Debug.Log("PoisonBall / InertialGlandsIsActive / IsThreeProjectileOnOnetarget = " + _isThreeProjectileOnOneTarget);
+        Debug.Log("PoisonBall / InertialGlandsIsActive / _activeTalentsInfo.IsActiveInertialGlands = " + _activeTalentsInfo.IsActiveInertialGlands);
+        if (_activeTalentsInfo.IsActiveInertialGlands && _isThreeProjectileOnOneTarget)
         {
-            Debug.Log("PoisonBall / InertialGlandsIsActive");
             float newRemainingTime = 0.0f;
             _spitPoison.ReductionSetCooldown(newRemainingTime);
         }
@@ -192,7 +192,6 @@ public class PoisonBall : Skill, IAltAbility
     public void PayCostPoisonBall()
     {
         TryPayCost(true);
-        Debug.Log("PoisonBall Charge = " + Chargers);
     }
 
     protected override void ClearData()
@@ -237,7 +236,6 @@ public class PoisonBall : Skill, IAltAbility
             if (GetMouseButton)
             {
                 _currentTarget = GetRaycastTarget(true);
-                Debug.Log("PoisonBall / currentTarget = " + _currentTarget);
                 if (_currentTarget != null)
                 {
                     _isTarget = true;
@@ -297,7 +295,6 @@ public class PoisonBall : Skill, IAltAbility
     {
         if (_arrowPrefab == null)
         {
-            Debug.LogError("Arrow Prefab is not assigned or Target is null");
             return;
         }
 
@@ -619,7 +616,7 @@ public class PoisonBall : Skill, IAltAbility
 
         #region ContinuationAmbushTalentIsActive
 
-        if (_activeTalentsInfo.IsActiveContinuationAmbush && _poisonBallInfo.IsCanApplyInvisible)
+        if (_activeTalentsInfo.IsActiveContinuationAmbush && _isCanApplyInvisible)
         {
             _continuationAmbush.CanApplyInvisible(true);
         }
@@ -717,6 +714,8 @@ public class PoisonBall : Skill, IAltAbility
             _poisonBallInfo.CountProjectiles = 0;
             _poisonBallInfo.IsActiveTimer = false;
             _poisonBallInfo.IsProjectileCreate = false;
+            _poisonBallInfo.IsThreeProjectileOnOnetarget = false;
+            _poisonBallInfo.IsCanApplyInvisible = false;
         }
     }
 
@@ -802,8 +801,6 @@ public class PoisonBall : Skill, IAltAbility
     {
         if (_isTarget)
         {
-            _player.CharacterState.CmdAddState(States.PoisonCloud, _durationPoisonCloud, 0, _player.gameObject, Name);
-
             CmdCreateProjectileForTarget(_currentTarget.gameObject, _currentTarget.transform.position, 
                 _poisonBallInfo.MaxCountProjectile, _multiplierForPushDistance, PoisonBoneStack,
                 _isFast, _isPushTarget, IsAltAbility,
@@ -815,8 +812,6 @@ public class PoisonBall : Skill, IAltAbility
         }
         else
         {
-            _player.CharacterState.CmdAddState(States.PoisonCloud, _durationPoisonCloud, 0, _player.gameObject, Name);
-
             CmdCreateProjectileForFlyingMaxDistance(_firstMousePosition, 
                 _poisonBallInfo.MaxCountProjectile, _multiplierForPushDistance, PoisonBoneStack,
                 _isFast, _isPushTarget, IsAltAbility,
@@ -841,8 +836,8 @@ public class PoisonBall : Skill, IAltAbility
         bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies)
 
     {
-        Debug.Log("CmdCreateProjTarget / IsActiveInertialGlands = " + isActiveInertialGlands);
-        Debug.Log("CmdCreateProjTarget / IsActiveContinuationAmbush = " + isActiveContinuationAmbush);
+        Debug.Log("PoisonBall / CmdCreateProjTarget / _poisonBallInfo.CountProjectiles = " + _poisonBallInfo.CountProjectiles);
+
         CurrentTarget = target;
         FootInstinctsTalent = _footInstincts;
         RestorationOfGlandsTalent = _restorationOfGlands;
@@ -860,15 +855,17 @@ public class PoisonBall : Skill, IAltAbility
             _poisonBallInfo.CountProjectiles = 1;
             _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
         }
+
         if (_poisonBallInfo.CountProjectiles >= 3 && isActiveInertialGlands)
         {
             _poisonBallInfo.IsThreeProjectileOnOnetarget = true;
-            Debug.Log("CmdCreateProjTarget / IsThreeProjectileOnOneTarget = " + _poisonBallInfo.IsThreeProjectileOnOnetarget);
+            RpcIsThreeProjectileOnOneTarget(_poisonBallInfo.IsThreeProjectileOnOnetarget);
         }
 
         if (_poisonBallInfo.CountProjectiles >= 4 && isActiveContinuationAmbush)
         {
             _poisonBallInfo.IsCanApplyInvisible = true;
+            RpcIsCanApplyInvisible(_poisonBallInfo.IsCanApplyInvisible);
         }
 
         if (_poisonBallInfo.CountProjectiles < maxCountProjectiles && LastTarget == CurrentTarget)
@@ -903,8 +900,10 @@ public class PoisonBall : Skill, IAltAbility
         {
             _poisonBallInfo.IsActiveTimer = false;
 
-            _poisonBallInfo.CountProjectiles = 0;
+            _poisonBallInfo.CountProjectiles = 1;
             _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
+            _poisonBallInfo.IsThreeProjectileOnOnetarget = false;
+            _poisonBallInfo.IsCanApplyInvisible = false;
         }
     }
 
@@ -916,8 +915,8 @@ public class PoisonBall : Skill, IAltAbility
         bool isActiveInertialGlands, bool isActiveContinuationAmbush,
         bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies)
     {
-        Debug.Log("CmdCreateProjPoint / IsActiveInertialGlands = " + isActiveInertialGlands);
-        Debug.Log("CmdCreateProjPoint / IsActiveContinuationAmbush = " + isActiveContinuationAmbush);
+        Debug.Log("PoisonBall / CmdCreateProjPoint / _poisonBallInfo.CountProjectiles = " + _poisonBallInfo.CountProjectiles);
+
         RestorationOfGlandsTalent = _restorationOfGlands;
         FootInstinctsTalent = _footInstincts;
         CurrentTarget = LastTarget;
@@ -939,11 +938,13 @@ public class PoisonBall : Skill, IAltAbility
         if (_poisonBallInfo.CountProjectiles >= 3 && isActiveInertialGlands)
         {
             _poisonBallInfo.IsThreeProjectileOnOnetarget = true;
+            RpcIsThreeProjectileOnOneTarget(_poisonBallInfo.IsThreeProjectileOnOnetarget);
         }
 
         if (_poisonBallInfo.CountProjectiles >= 4 && isActiveContinuationAmbush)
         {
             _poisonBallInfo.IsCanApplyInvisible = true;
+            RpcIsCanApplyInvisible(_poisonBallInfo.IsCanApplyInvisible);
         }
 
         if (_poisonBallInfo.CountProjectiles < maxCountProjectiles && LastTarget == CurrentTarget)
@@ -976,8 +977,10 @@ public class PoisonBall : Skill, IAltAbility
         {
             _poisonBallInfo.IsActiveTimer = false;
 
-            _poisonBallInfo.CountProjectiles = 0;
+            _poisonBallInfo.CountProjectiles = 1;
             _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
+            _poisonBallInfo.IsThreeProjectileOnOnetarget = false;
+            _poisonBallInfo.IsCanApplyInvisible = false;
         }
     }
 
@@ -988,7 +991,7 @@ public class PoisonBall : Skill, IAltAbility
         {
             if (_poisonDamagingCloud == null && _poisonDamagingCloudPrefab.PoisonDamageCloud == null)
             {
-                //_player.CharacterState.AddState(States.PoisonCloud, duration, 0, _player.gameObject, Name);
+                _player.CharacterState.AddState(States.PoisonCloud, duration, 0, _player.gameObject, Name);
 
                 _poisonDamagingCloud = Instantiate(_poisonDamagingCloudPrefab, _player.transform.position, Quaternion.identity);
 
@@ -1100,5 +1103,17 @@ public class PoisonBall : Skill, IAltAbility
             poisonHealingCloud.InitializationProjectile(_player, 5, duration, 3.5f, Name);
             poisonHealingCloud.AddStack();
         }
+    }
+
+    [TargetRpc]
+    private void RpcIsThreeProjectileOnOneTarget(bool isThreePorjectileOnOneTarget)
+    {
+        _isThreeProjectileOnOneTarget = isThreePorjectileOnOneTarget;
+    }    
+
+    [TargetRpc]
+    private void RpcIsCanApplyInvisible(bool isCanApplyInvisible)
+    {
+        _isCanApplyInvisible = isCanApplyInvisible;
     }
 }

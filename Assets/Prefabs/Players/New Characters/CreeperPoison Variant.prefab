@@ -3925,11 +3925,11 @@ PrefabInstance:
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.data[4]
       value: 
-      objectReference: {fileID: 3492382198071822728}
+      objectReference: {fileID: 5246557041890453261}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.data[5]
       value: 
-      objectReference: {fileID: 1737191631964824437}
+      objectReference: {fileID: 3492382198071822728}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.data[6]
       value: 
@@ -5554,7 +5554,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 899fa83671534eb42b15ae0986749e2c, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
-  _cooldownTime: 1
+  _cooldownTime: 20
   _castDeley: 0
   _damageValue: 0
   _abilitySchool: 5
@@ -5701,13 +5701,13 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 12
+  _radius: 8
   _area: 0
-  _castLength: 12
+  _castLength: 8
   _castWidth: 1
   _isAutoRadiusRender: 0
   _isAutoAreaRender: 0
-  _isAutoLineRender: 1
+  _isAutoLineRender: 0
   _superFastScales: {fileID: 3379942782498301808}
   _heatedGlands: {fileID: 6681501723384602305}
   _creeperStrike: {fileID: 5603002030722705376}
@@ -5716,11 +5716,11 @@ MonoBehaviour:
   _line: {fileID: 11400000, guid: 7faf4d32cfcc4f54d967e4d01a0c4b65, type: 2}
   _midPointForLeapPrefab: {fileID: 5653061961631815317}
   _player: {fileID: 5560201130496293763}
-  _rangeLeap: 6
-  _durationLeap: 1.4
+  _rangeLeap: 4
+  _durationLeap: 0.4
   _radiusAttack: 1
   _cooldownAttack: 1
-  _invtervalBetweenLeaps: 0
+  _invtervalBetweenLeaps: 0.5
   IsInMovement: 0
   _colorForEnd: {r: 0.28207174, g: 1, b: 0.04150939, a: 1}
   _colorForStart: {r: 0.22260165, g: 1, b: 0, a: 1}

@@ -86,126 +86,130 @@ public class CreeperStrike : AutoAttackSkill
 
     private IEnumerator UseAbilityCoroutine()
     {
-        DealingDamageFromHits(CurrentTarget);
+        Debug.Log("CreeperStrike / CurrentTarget = " + CurrentTarget);
+        DealingDamageFromHits(CurrentTarget, false);
         yield return null;
     }
 
     public void DealingDamageFromHits(Character target, bool isUsingLightningStrikes = false)
     {
-        _currentDamage = Random.Range(7.0f, 11.0f);
-        float _currentChanceOfCriticalStrike = Random.Range(0.0f, 1.0f);
-
-        _isHit = true;
-        _currentCountHit++;
-
-        if (_currentCountHit == 2)
+        if (target != null)
         {
-            // Make here coroutine, which will start timer
-            if (!_isTwoHit)
+            _currentDamage = Random.Range(7.0f, 11.0f);
+            float _currentChanceOfCriticalStrike = Random.Range(0.0f, 1.0f);
+
+            _isHit = true;
+            _currentCountHit++;
+
+            if (_currentCountHit == 2)
             {
-                _isTwoHit = true;
+                // Make here coroutine, which will start timer
+                if (!_isTwoHit)
+                {
+                    _isTwoHit = true;
+                }
+                _currentCountHit = 0;
             }
-            _currentCountHit = 0;
-        }
 
-        //if (_absorptionOfPoisons != null && _absorptionOfPoisons.IsWorking)
-        //{
-        //    _absorptionOfPoisons.CheckTargetWithDebuffs(target.gameObject);
-        //}
+            //if (_absorptionOfPoisons != null && _absorptionOfPoisons.IsWorking)
+            //{
+            //    _absorptionOfPoisons.CheckTargetWithDebuffs(target.gameObject);
+            //}
 
-        if (_strokesOfAspiration.Data.IsOpen && _currentCountHit == 2)
-        {
-            if (_lastTarget == _target)
+            if (_strokesOfAspiration.Data.IsOpen && _currentCountHit == 2)
             {
-                _strokesOfAspiration.UseTalentStrokesOfAspiration();
+                if (_lastTarget == target)
+                {
+                    _strokesOfAspiration.UseTalentStrokesOfAspiration();
+                }
+                else
+                {
+                    _lastTarget = target;
+                }
+            }
+
+            if (_restorationOfGlands.Data.IsOpen && _poisonBoneStack > 0)
+            {
+                Debug.Log("CreeperStrike / if == true");
+                float baseChanceOfRestorationOfGlands = 0.1f;
+                float chanceOfRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
+
+                if (Random.Range(0f, 1f) <= chanceOfRestorationOfGlands)
+                {
+                    Debug.Log("CreeperStrike / restorationOfGlands");
+                    _restorationOfGlands.ReductionCooldown();
+                }
+            }
+
+            if (_desireToHide.Data.IsOpen)
+            {
+                _countHitForDesireToHideTalent++;
+
+                if (_countHitForDesireToHideTalent == 5)
+                {
+                    _desireToHide.IsCanApplyInvisible();
+                    _countHitForDesireToHideTalent = 0;
+                }
+            }
+
+            if (_releaseFromSecrecy.Data.IsOpen && _creeperInvisible.IsInvisible)
+            {
+                _creeperInvisible.ExitingInvisibleState();
+            }
+
+            if (_assasinPoison.Data.IsOpen)
+            {
+                if (_assasinPoison.CurrentChargeAssasinPoison > 0)
+                {
+                    _assasinPoison.CmdSpendCharge(CurrentTarget, _lifeTimePoisonBoneStacks);
+                }
+            }
+
+            if (_preparingForFight.Data.IsOpen && _creeperInvisible.IsReadyToThreeHitForPreparingForFightTalent)
+            {
+                _countCurrentHitForPreparingForFight++;
+
+                CmdPreparingForFight(_player.gameObject);
+
+                if (_countCurrentHitForPreparingForFight == 3)
+                {
+                    _countCurrentHitForPreparingForFight = 0;
+                    _creeperInvisible.IsReadyToThreeHitForPreparingForFightTalent = false;
+                }
+            }
+
+            if (_coldBlood.IsCanCritCreeperStrike || _coldBlood.IsCanCritLightningStrikes)
+            {
+                DealCriticalDamage(target, _currentDamage);
+            }
+            else if (_currentChanceOfCriticalStrike <= _chanceOfCriticalStrike)
+            {
+                DealCriticalDamage(target, _currentDamage);
             }
             else
             {
-                _lastTarget = _target;
+
+                Damage damage = new Damage
+                {
+                    Value = Buff.Damage.GetBuffedValue(_currentDamage),
+                    Type = DamageType.Physical,
+                    PhysicAttackType = AttackRangeType.MeleeAttack,
+                };
+
+                CmdDamageDeal(damage, target.gameObject);
             }
-        }
 
-        if (_restorationOfGlands.Data.IsOpen && _poisonBoneStack > 0)
-        {
-            Debug.Log("CreeperStrike / if == true");
-            float baseChanceOfRestorationOfGlands = 0.1f;
-            float chanceOfRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
-
-            if (Random.Range(0f, 1f) <= chanceOfRestorationOfGlands)
+            if (_firstStrike.Data.IsOpen)
             {
-                Debug.Log("CreeperStrike / restorationOfGlands");
-                _restorationOfGlands.ReductionCooldown();
+                _firstStrike.FirstHit = false;
             }
-        }
 
-        if (_desireToHide.Data.IsOpen)
-        {
-            _countHitForDesireToHideTalent++;
+            _isHit = false;
 
-            if (_countHitForDesireToHideTalent == 5)
+            if (isUsingLightningStrikes)
             {
-                _desireToHide.IsCanApplyInvisible();
-                _countHitForDesireToHideTalent = 0;
+                TryPayCost(true);
             }
-        }
-
-        if (_releaseFromSecrecy.Data.IsOpen && _creeperInvisible.IsInvisible)
-        {
-            _creeperInvisible.ExitingInvisibleState();
-        }
-
-        if (_assasinPoison.Data.IsOpen)
-        {
-            if (_assasinPoison.CurrentChargeAssasinPoison > 0)
-            {
-                _assasinPoison.CmdSpendCharge(CurrentTarget, _lifeTimePoisonBoneStacks);
-            }
-        }
-
-        if (_preparingForFight.Data.IsOpen && _creeperInvisible.IsReadyToThreeHitForPreparingForFightTalent)
-        {
-            _countCurrentHitForPreparingForFight++;
-
-            CmdPreparingForFight(_player.gameObject);
-
-            if (_countCurrentHitForPreparingForFight == 3)
-            {
-                _countCurrentHitForPreparingForFight = 0;
-                _creeperInvisible.IsReadyToThreeHitForPreparingForFightTalent = false;
-            }
-        }
-
-        if (_coldBlood.IsCanCritCreeperStrike || _coldBlood.IsCanCritLightningStrikes)
-        {
-            DealCriticalDamage(_target, _currentDamage);
-        }
-        else if (_currentChanceOfCriticalStrike <= _chanceOfCriticalStrike)
-        {
-            DealCriticalDamage(_target, _currentDamage);
-        }
-        else
-        {
-
-            Damage damage = new Damage
-            {
-                Value = Buff.Damage.GetBuffedValue(_currentDamage),
-                Type = DamageType.Physical,
-                PhysicAttackType = AttackRangeType.MeleeAttack,
-            };
-
-            CmdApplyDamage(damage, _target.gameObject);
-        }
-
-        if (_firstStrike.Data.IsOpen)
-        {
-            _firstStrike.FirstHit = false;
-        }
-
-        _isHit = false;
-
-        if (isUsingLightningStrikes)
-        {
-            TryPayCost(true);
         }
     }
 
@@ -296,5 +300,11 @@ public class CreeperStrike : AutoAttackSkill
         Character playerCharacter = player.GetComponent<Character>();
 
         _preparingForFight.IncreaseManaRegeneration(playerCharacter);
+    }
+
+    [Command]
+    private void CmdDamageDeal(Damage damage, GameObject target)
+    {
+        ApplyDamage(damage, target.gameObject);
     }
 }

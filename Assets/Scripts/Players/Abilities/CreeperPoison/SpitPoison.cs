@@ -17,7 +17,6 @@ public struct SpitPoisonSpawnPointInfo : NetworkMessage
     public float SpawnPointZ;
 }
 
-
 public class SpitPoison : Skill, IAltAbility
 {
     [Header("Talents")]
@@ -85,9 +84,9 @@ public class SpitPoison : Skill, IAltAbility
         _originalCooldown = _cooldownTime;
     }
 
-
     protected override IEnumerator PrepareJob()
     {
+        SetSpawnPoint(_spawnPoint.transform.position.x, _spawnPoint.transform.position.y, _spawnPoint.transform.position.z);
         CheckActiveTalents();
 
         while (_currentTarget == null && float.IsPositiveInfinity(_mousePos.x))
@@ -95,7 +94,7 @@ public class SpitPoison : Skill, IAltAbility
             if (GetMouseButton)
             {
                 _currentTarget = GetRaycastTarget(true);
-                Debug.Log("SpitPoison / currentTarget = " + _currentTarget);
+
                 ChooseTarget();
 
                 _mousePos = GetMousePoint();
@@ -173,7 +172,7 @@ public class SpitPoison : Skill, IAltAbility
                 _isOriginalTargetPlayer = false;
                 _isOriginalTargetAllies = true;
                 _isOriginalTargetEnemy = false;
-                if (_isActiveHealingSpitPoison && _isActiveHealingSpitPoison)
+                if (_isActiveHealingSpitPoison && _healPoisonCloud.Data.IsOpen)
                 {
                     if (_healPoisonCloud.Data.IsOpen)
                     {
@@ -230,26 +229,21 @@ public class SpitPoison : Skill, IAltAbility
     {
         if (_currentTarget != null)
         {
-            SetSpawnPoint(_spawnPoint.transform.position.x, _spawnPoint.transform.position.y, _spawnPoint.transform.position.z);
-
             CmdInstantiateProjectileToTarget(_currentTarget.gameObject, _angleRotation, _player.Resources.FirstOrDefault()!.CurrentValue,
                 _isActiveHealingSpitPoison, IsAltAbility,
                 _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
 
-            CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
+            //CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
         }
         else
         {
-            SetSpawnPoint(_spawnPoint.transform.position.x, _spawnPoint.transform.position.y, _spawnPoint.transform.position.z);
-
             CmdInstantiateProjectileToPoint(_mousePos, _angleRotation, _player.Resources.FirstOrDefault()!.CurrentValue,
                 _isActiveHealingSpitPoison, IsAltAbility,
                 _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
 
-            CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
+            //CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
         }
 
-        _player.Resources.FirstOrDefault()?.TryUse(_player.Resources.FirstOrDefault()!.CurrentValue);
         _player.Move.CanMove = true;
     }
 
@@ -296,7 +290,7 @@ public class SpitPoison : Skill, IAltAbility
 
         Vector3 spawnPosition = new Vector3(_spawnPointInfo.SpawnPointX, _spawnPointInfo.SpawnPointY, _spawnPointInfo.SpawnPointZ);
 
-        GameObject item = Instantiate(_projectile.gameObject, transform.position, Quaternion.identity);
+        GameObject item = Instantiate(_projectile.gameObject, spawnPosition, Quaternion.identity);
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 

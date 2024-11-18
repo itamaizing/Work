@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions.Must;
+using UnityEngine.UIElements;
 
 public class LightningMovement : Skill
 {
@@ -95,6 +96,8 @@ public class LightningMovement : Skill
 
     protected override void ClearData()
     {
+        _target = null;
+
         _player.Move.enabled = true;
 
         _isFirstClickDone = false;
@@ -118,6 +121,11 @@ public class LightningMovement : Skill
         {
             StopCoroutine(_secondPointForLeapCoroutine);
             _secondPointForLeapCoroutine = null;
+        }
+
+        if (_midPointForLeap != null)
+        {
+            Destroy(_midPointForLeap.gameObject);
         }
 
         if (_midPointForLeapCoroutine != null)
@@ -260,7 +268,7 @@ public class LightningMovement : Skill
 
         if (_isTargetOnEndPointCoroutine == null)
         {
-            _isTargetOnEndPointCoroutine = StartCoroutine(IsTargetOnEndPoint(targetPoint, _targetsLayers));
+            _isTargetOnEndPointCoroutine = StartCoroutine(IsTargetOnEndPoint(targetPoint));
         }
 
         if (_target != null)
@@ -329,19 +337,12 @@ public class LightningMovement : Skill
 
     private void IsEnemyBeforePlayer()
     {
-        float castLengthMultiplier = 4f;
-        float castWidthMultiplier = 1.55f;
-
-        Vector3 sizeBox = new Vector3(_castLength * castLengthMultiplier, 1f, _castWidth * castWidthMultiplier);
-        Vector3 dir = transform.forward;
-        Quaternion lookRotation = Quaternion.LookRotation(dir);
-
-        Debug.Log("LightningMovement / IsEnemyBeforePlayer / lookRotation = " + lookRotation);
-
-        Collider[] hit = Physics.OverlapBox(_player.transform.position, sizeBox, lookRotation, _targetsLayers);
+        Vector3 sizeBox = new Vector3((_castWidth * 2) / 2, 1f / 2, _castLength / 2);
+        Debug.Log("SizeBox = " + sizeBox);
+        Vector3 forwardPosition = _player.transform.position + transform.forward / 1.5f;
+        Collider[] hit = Physics.OverlapBox(forwardPosition, sizeBox, transform.rotation, _targetsLayers);
         if (hit.Length > 0)
         {
-            Debug.Log("LightningMovement / IsEnemyBeforePlayer / hit = " + hit.Length);
             _isTarget = true;
             Debug.Log("LightningMovement / IsEnemyBeforePlayer / isTarget = true");
         }
@@ -352,7 +353,7 @@ public class LightningMovement : Skill
         }
     }
 
-    private IEnumerator IsTargetOnEndPoint(Vector3 secondLeapPoint, LayerMask targetLayer)
+    private IEnumerator IsTargetOnEndPoint(Vector3 secondLeapPoint)
     {
         Debug.Log("LightningMovement / IsTargetOnEndPoint");
 
@@ -361,8 +362,7 @@ public class LightningMovement : Skill
 
         while (true)
         {
-
-            Collider[] enemies = Physics.OverlapSphere(_firstLeapPoint, radiusChecking, targetLayer);
+            Collider[] enemies = Physics.OverlapSphere(_firstLeapPoint, radiusChecking, _targetsLayers);
             if (enemies.Length > 0)
             {
                 foreach (Collider target in enemies)
@@ -379,17 +379,17 @@ public class LightningMovement : Skill
         }
     }
 
-    private IEnumerator IsTargetBeforePlayerJob(float rangeLeap, LayerMask targetLayer)
+    private IEnumerator IsTargetBeforePlayerJob()
     {
-        Vector3 sizeBox = new Vector3((_castLength * 1.5f) / 2, 1f / 2, (_castWidth * 1.3f) / 2);
+        float multiplierBoxForward = 4f;
+        float multiplierCastWidth = 1.1f;
 
-        Vector3 dir = transform.forward;
-        Quaternion lookRotation = Quaternion.LookRotation(dir);
-        Debug.Log("LightningMovement / IsTargetBeforePlayerJob (Coroutine) / lookRotation = " + lookRotation);
-
+        Vector3 sizeBox = new Vector3(_castLength / 2, 1f / 2, (_castWidth * multiplierCastWidth) / 2);
+        Vector3 forwardPosition = transform.position + transform.forward * (_rangeLeap / 2);
+        
         while (true)
         {
-            Collider[] hitsForward = Physics.OverlapBox(_player.transform.position, sizeBox, lookRotation, targetLayer);
+            Collider[] hitsForward = Physics.OverlapBox(forwardPosition, sizeBox, transform.rotation, _targetsLayers);
             if (hitsForward.Length > 0)
             {
                 _isTargetBeforePlayer = true;
@@ -401,16 +401,17 @@ public class LightningMovement : Skill
         }
     }
 
-    private IEnumerator IsTargetBehindPlayerJob(float rangeLeap, LayerMask targetLayer)
+    private IEnumerator IsTargetBehindPlayerJob()
     {
-        Vector3 sizeBox = new Vector3((_castLength - 1.5f) / 2, 1f / 2, (_castWidth * 1.2f));
+        float multiplierBoxForward = 4f;
+        float multiplierCastWidth = 1.1f;
 
-        Vector3 dir = -transform.forward;
-        Quaternion lookRotation = Quaternion.LookRotation(dir);
-        Debug.Log("LightningMovement / IsTargetBehindPlayerJob (Coroutine) / lookRotation = " + lookRotation);
+        Vector3 sizeBox = new Vector3(_castLength / 2, 1f / 2, (_castWidth * multiplierCastWidth) / 2);
+        Vector3 forwardPosition = transform.position - transform.forward * (_rangeLeap / 2);
+
         while (true)
         {
-            Collider[] hit = Physics.OverlapBox(_player.transform.position, sizeBox, lookRotation, targetLayer);
+            Collider[] hit = Physics.OverlapBox(forwardPosition, sizeBox, transform.rotation, _targetsLayers);
             if (hit.Length > 0)
             {
                 _isTargetBehindPlayer = true;
@@ -420,7 +421,6 @@ public class LightningMovement : Skill
             yield return null;
         }
     }
-
 
     #endregion
 
@@ -645,15 +645,11 @@ public class LightningMovement : Skill
 
         _player.Move.enabled = false;
 
-        if (_isTargetBeforePlayerCoroutine == null)
-        {
-            _isTargetBeforePlayerCoroutine = StartCoroutine(IsTargetBeforePlayerJob(_rangeLeap, _targetsLayers));
-        }
-
         _player.CharacterState.CmdAddState(States.Immateriality, _durationLeap, 0, _player.gameObject, Name);
 
         CmdSingleLeap(firstLeapPoint, _durationLeap, _rangeLeap, _multiplierLeap, _timeBuff, _heatedGlandsIsActive);
     }
+
 
     private void ExecuteLeaps(Vector3 firstLeapPoint, Vector3 secondLeapPoint)
     {
@@ -665,11 +661,11 @@ public class LightningMovement : Skill
         Debug.Log("LightningMovement / secondLeapPoint = " + secondLeapPoint);
         if (_isTargetBeforePlayerCoroutine == null)
         {
-            _isTargetBeforePlayerCoroutine = StartCoroutine(IsTargetBeforePlayerJob(_rangeLeap, _targetsLayers));
+            _isTargetBeforePlayerCoroutine = StartCoroutine(IsTargetBeforePlayerJob());
         }
         if (_isTargetBehindPlayerCoroutine == null)
         {
-            _isTargetBehindPlayerCoroutine = StartCoroutine(IsTargetBehindPlayerJob(_rangeLeap, _targetsLayers));
+            _isTargetBehindPlayerCoroutine = StartCoroutine(IsTargetBehindPlayerJob());
         }
 
         _applyDamageCoroutine = StartCoroutine(ApplyDamageJob(_targetsLayers, _radiusAttack, _durationLeap * _rangeLeap));

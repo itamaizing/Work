@@ -59,7 +59,7 @@ public class LightningStrikes : AutoAttackSkill
         {
             if (clip.name == "LightningStrikesAttack")
             {
-                Debug.Log("CreeperStrike / Clip.Name = " + clip.name);
+                Debug.Log("LightningStrikes / Clip.Name = " + clip.name);
                 return clip.length;
             }
         }

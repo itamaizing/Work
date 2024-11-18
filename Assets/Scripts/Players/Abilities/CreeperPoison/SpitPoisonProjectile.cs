@@ -99,20 +99,19 @@ public class SpitPoisonProjectile : Test_Projectile
         else
         {
             Debug.Log("OnTrigger / else / enemy ");
-            if (collision.gameObject != null)
+
+            if (collision.transform != _player.transform && _playerLayer != LayerMask.NameToLayer("Enemy"))
             {
-                if (collision.transform != _player.transform && _playerLayer != LayerMask.NameToLayer("Enemy"))
+                if (collision.TryGetComponent<Character>(out var target))
                 {
-                    if (collision.TryGetComponent<Character>(out var target))
-                    {
-                        _target = target;
+                    _target = target;
+                    Debug.Log("OnTrigger / else / _target = " + _target);
+                    _damage = Random.Range(4.0f, 12.0f);
 
-                        _damage = Random.Range(4.0f, 12.0f);
-
-                        DamageDeal();
-                    }
+                    DamageDeal();
                 }
             }
+            
         }
     }
 
@@ -237,7 +236,7 @@ public class SpitPoisonProjectile : Test_Projectile
     private void LayerDefinition(GameObject player)
     {
         _playerLayer = player.layer;
-
+        Debug.Log("SpitPoison / Server / playerLayer = " + _playerLayer);
         RpcLayerDefinition(player.layer);
     }
 
@@ -272,6 +271,7 @@ public class SpitPoisonProjectile : Test_Projectile
     private void RpcLayerDefinition(int layer)
     {
         _playerLayer = layer;
+        Debug.Log("SpitPoison / Client / playerLayer = " + _playerLayer);
     }
 
     #endregion
