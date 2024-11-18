@@ -16,6 +16,31 @@ public class SpawnComponent : NetworkBehaviour
     public event Action<MinionComponent> UnitAdded;
     public event Action UnitRemoved;
 
+    #region test
+    [SerializeField] private MinionComponent _enemy;
+    [SerializeField] private MinionComponent _alies;
+
+    [Command]
+    public void CmdSpawnUnitEnemy()
+    {
+        var controllableMinion = Instantiate(_enemy, Vector3.back, Quaternion.identity);
+        controllableMinion.Initialize();
+        SceneManager.MoveGameObjectToScene(controllableMinion.gameObject, _hero.NetworkSettings.MyRoom);
+        NetworkServer.Spawn(controllableMinion.gameObject, connectionToClient);
+        AddUnit(controllableMinion);
+    }
+    [Command]
+    public void CmdSpawnUnitAlies()
+    {
+        var temp = _alies;
+        var controllableMinion = Instantiate(temp, Vector3.forward, Quaternion.identity);
+        controllableMinion.Initialize();
+        SceneManager.MoveGameObjectToScene(controllableMinion.gameObject, _hero.NetworkSettings.MyRoom);
+        NetworkServer.Spawn(controllableMinion.gameObject, connectionToClient);
+        AddUnit(controllableMinion);
+    }
+    #endregion
+
     public void SpawnUnit(int index, Vector3 position)
     {
         if (index < 0 || index >= _minionPrefs.Count)
