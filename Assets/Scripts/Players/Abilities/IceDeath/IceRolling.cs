@@ -12,14 +12,14 @@ public class IceRolling : Skill
 	[Header("Ability properties")]
 
 	[SerializeField] private Character _playerLinks;
-	[SerializeField] private float _jumprange = 2f;
+	[SerializeField] private float _jumprange = 5f;
 	[SerializeField] private float _durationOfJump = 0.3f;
 
 	private Vector3 _mousePos = Vector2.positiveInfinity;
 	private Vector3 _jumpPos;
 	private Vector3 _lookDir;
 	private Energy _energy;
-	private float TEMPFLOAT = 1;
+	//private float TEMPFLOAT = 1;
 
 	protected override bool IsCanCast => true;
 
@@ -38,6 +38,23 @@ public class IceRolling : Skill
 		}
 
 	}
+
+	private float GetJumpRange() 
+	{
+		float range = _jumprange;
+		float energyCost = 1; 
+		for(int i = 0; i < 10; i++)
+		{
+			if(_energy.CurrentValue >= energyCost)
+			{
+				range+=0.2F;
+				energyCost += 1;
+			}
+		}
+
+		return range;
+	}
+
 	/*private void Jump()
 	{
 		if (_canJump )
@@ -103,7 +120,7 @@ public class IceRolling : Skill
 
 	private void Jump()
 	{
-		float actualJumpRange = _jumprange * GlobalVariable.cellSize;
+		float actualJumpRange = _jumprange;
 
 		_lookDir = (_mousePos - _playerLinks.transform.position).normalized;
 		//_lookDir = gameObject.transform.rotation.eulerAngles.normalized;
@@ -115,13 +132,13 @@ public class IceRolling : Skill
 		}
 		else
 		{
-			for (int i = 0; i < 2; i++)
+			for (int i = 0; i < 10; i++)
 			{
-				actualJumpRange += 2;
+				actualJumpRange += 0.2f;
 				Vector3 jumpPos2 = _lookDir * actualJumpRange + _playerLinks.transform.position;
 				if (_energy.CurrentValue >= 5 && !CheckObstacleBetween(_playerLinks.transform.position, jumpPos2))
 				{
-					_energy.CmdUse(5);
+					_energy.CmdUse(1);
 					jumpPos = jumpPos2;
 				}
 			}
@@ -169,9 +186,8 @@ public class IceRolling : Skill
 		while (true)
 		{
 			yield return new WaitForSeconds(time);
-			Debug.Log("TEEEEEEEEEEEEst");
-			_skillRender.SetSizeBox(2, TEMPFLOAT);
-			TEMPFLOAT += time;
+
+			_skillRender.SetSizeBox(1, GetJumpRange());			
 		}
 	}
 

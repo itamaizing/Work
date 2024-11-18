@@ -345,6 +345,10 @@ PrefabInstance:
       propertyPath: _resource
       value: 
       objectReference: {fileID: 4968060632445955524}
+    - target: {fileID: 3919103737457224534, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _regenerationDelay
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.size
       value: 13
@@ -401,6 +405,10 @@ PrefabInstance:
       propertyPath: _skills.Array.data[12]
       value: 
       objectReference: {fileID: 3296930317622393649}
+    - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _skills.Array.data[13]
+      value: 
+      objectReference: {fileID: 2727420570257355857}
     - target: {fileID: 5590339039165547173, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _stateIcons
       value: 
@@ -808,7 +816,7 @@ MonoBehaviour:
     resourceCost: 10
   _cooldownTime: 0
   _castDeley: 0
-  _damageValue: 0
+  _damageValue: 100
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -970,7 +978,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 6e603452e81f85842b595b2c7f0d472d, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
-  - resourceType: 3
+  - resourceType: 2
     resourceCost: 1
   _cooldownTime: 0
   _castDeley: 0

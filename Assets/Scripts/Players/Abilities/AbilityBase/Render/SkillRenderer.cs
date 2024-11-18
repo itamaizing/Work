@@ -19,12 +19,12 @@ public class SkillRenderer : NetworkBehaviour
     //private SphereArea _tempDamageZone;
     private CircleArea _tempArea;
     private float _lineStartLength;
-    private float _lineEndLength;
+   // private float _lineEndLength;
     private float _boxLength;
     private float _boxWidth;
     private float _circleRadius;
     private BoxArea _lineStartImage;
-    private BoxArea _lineEndImage;
+    //private BoxArea _lineEndImage;
 
     private Coroutine _drawLineCoroutine;
     private Coroutine _drawAreaCoroutine;
@@ -133,8 +133,8 @@ public class SkillRenderer : NetworkBehaviour
         if (_lineStartImage != null)
             Destroy(_lineStartImage.gameObject);
 
-        if (_lineEndImage != null)
-            Destroy(_lineEndImage.gameObject);
+     /*   if (_lineEndImage != null)
+            Destroy(_lineEndImage.gameObject);*/
     }
 
     public void DrawClosestTarget(float radius, LayerMask TargetsLayers, Character player)
@@ -182,21 +182,24 @@ public class SkillRenderer : NetworkBehaviour
 
     private IEnumerator DrawLineJob(float length, float width, Damage damage,  LayerMask layerMask, AbilityLineRenderer line)
     {
+        _boxLength = length;
+        _boxWidth = width;
         _lineStartImage = Instantiate(line.Start, transform);
-        _lineEndImage = Instantiate(line.End, transform);
+		_lineStartImage.SetSize(_boxWidth, _boxLength, damage);
+		//  _lineEndImage = Instantiate(line.End, transform);
 
-        _lineStartImage.SetColor(_colorForStart);
-        _lineEndImage.SetColor(_colorForEnd);
+		_lineStartImage.SetColor(_colorForStart);
+      //  _lineEndImage.SetColor(_colorForEnd);
 
         while (true)
         {
             RotateAtMouse(_lineStartImage.transform);
-            RotateAtMouse(_lineEndImage.transform);
+            //RotateAtMouse(_lineEndImage.transform);
 
 			//_lineStartImage.SetSize(width, length, damage);
 			_lineStartImage.SetSize(_boxWidth, _boxLength, damage);
 			//_lineEndImage.SetSize(width, length, damage);
-			_lineEndImage.SetSize(_boxWidth, _boxLength, damage);
+		//	_lineEndImage.SetSize(_boxWidth, _boxLength, damage);
 
 			/*Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, 0, Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
             var vector = (mouse - transform.position);

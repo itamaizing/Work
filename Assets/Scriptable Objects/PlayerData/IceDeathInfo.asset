@@ -87,7 +87,7 @@ MonoBehaviour:
     - Id: 1012
       Name: EnergyRegenDelay
       Points: 0
-      DefaultValue: 0.2
+      DefaultValue: 2
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1013

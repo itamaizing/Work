@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 
 public class CircleArea : MonoBehaviour
 {
-    [SerializeField] CircleCollider2D _colider;
+    [SerializeField] SphereCollider _colider;
 	//[SerializeField] private Collider _collider3d;
 	[SerializeField] SpriteRenderer _sprite;
 	[SerializeField] private DecalProjector _projector;
@@ -43,7 +43,7 @@ public class CircleArea : MonoBehaviour
         _sprite.color = color;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter(Collider collision)
     {
         if (_sprite.size != Vector2.zero && collision.transform != transform.parent && collision.transform.TryGetComponent(out UIPlayerComponents enemy))
         {
@@ -56,7 +56,7 @@ public class CircleArea : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    private void OnTriggerExit(Collider collision)
     {
         if (_sprite.size != Vector2.zero && collision.transform != transform.parent && collision.transform.TryGetComponent(out UIPlayerComponents enemy))
         {

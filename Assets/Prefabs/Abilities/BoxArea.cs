@@ -3,7 +3,7 @@ using UnityEngine.Rendering.Universal;
 
 public class BoxArea : MonoBehaviour
 {
-    [SerializeField] BoxCollider2D _colider;
+    [SerializeField] BoxCollider _colider;
     [SerializeField] SpriteRenderer _sprite;
     [SerializeField] private DecalProjector  _projector;
 
@@ -25,7 +25,7 @@ public class BoxArea : MonoBehaviour
         /*_sprite.size = new Vector2(width, length);
         _colider.size = new Vector2(width, length);
         _colider.offset = new Vector2(0, length / 2);*/
-        gameObject.transform.localScale = new Vector3(width, length, 0);
+        gameObject.transform.localScale = new Vector3(width, length, 1);
         _projector.size = new Vector2(width, length);
         _projector.pivot = new Vector3(0, length/2, 0.01f);
         _damage = damage;
@@ -36,19 +36,21 @@ public class BoxArea : MonoBehaviour
         _sprite.color = color;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter(Collider collision)
     {
+       
         if(collision.transform != transform.parent && collision.transform.TryGetComponent(out Character enemy))
         {
             // deistvie s enemy
         }
 		if (collision.TryGetComponent<Health>(out var hpEnemy) && collision.transform != transform.parent)
 		{
+			Debug.Log("ENTER " + collision.name +"  / " + _damage.Value);
 			hpEnemy.ShowPhantomValue(_damage);
 		}
 	}
 
-    private void OnTriggerExit2D(Collider2D collision)
+    private void OnTriggerExit(Collider collision)
     {
         if (collision.transform != transform.parent && collision.transform.TryGetComponent(out Character enemy))
         {
@@ -56,8 +58,9 @@ public class BoxArea : MonoBehaviour
         }
 		if (collision.TryGetComponent<Health>(out var hpEnemy) && collision.transform != transform.parent)
 		{
-            Damage damage = _damage;
+			Damage damage = _damage;
             damage.Value = 0;
+			Debug.Log("Exit " + collision.name + "  / " + damage.Value);
 			hpEnemy.ShowPhantomValue(damage);
 		}
 	}
