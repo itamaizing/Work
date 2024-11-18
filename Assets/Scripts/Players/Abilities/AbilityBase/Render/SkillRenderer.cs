@@ -20,6 +20,9 @@ public class SkillRenderer : NetworkBehaviour
     private CircleArea _tempArea;
     private float _lineStartLength;
     private float _lineEndLength;
+    private float _boxLength;
+    private float _boxWidth;
+    private float _circleRadius;
     private BoxArea _lineStartImage;
     private BoxArea _lineEndImage;
 
@@ -95,12 +98,13 @@ public class SkillRenderer : NetworkBehaviour
         _circle.SetColor(color);
     }
 
-    public void DrawArea(float rarius, Damage damage, LayerMask layerMask, CircleArea area = null)
+    public void DrawArea(float radius, Damage damage, LayerMask layerMask, CircleArea area = null)
     {
         if (area == null)
             area = _areaPref;
 
-        _drawAreaCoroutine = StartCoroutine(DrawAreaJob(rarius, damage, layerMask, area));
+        _circleRadius = radius;
+        _drawAreaCoroutine = StartCoroutine(DrawAreaJob(radius, damage, layerMask, area));
     }
 
     public void StopDrawArea()
@@ -116,7 +120,8 @@ public class SkillRenderer : NetworkBehaviour
     {
         if (line == null)
             line = _line;
-
+        _boxWidth = length;
+        _boxWidth = width;
         _drawLineCoroutine = StartCoroutine(DrawLineJob(length, width, damage, layerMask, line));
     }
 
@@ -148,6 +153,17 @@ public class SkillRenderer : NetworkBehaviour
 		}
 	}
 
+    public void SetSizeBox(float width, float lenght)
+    {
+        _boxWidth = width;
+        _boxLength = lenght;
+    }
+
+    public void SetRadiusArea(float radiusArea)
+    {
+        _circleRadius = radiusArea;
+    }
+
     private void RotateAtMouse(Transform transform)
     {
 		Vector3 worldPosition = Vector3.zero;
@@ -177,8 +193,10 @@ public class SkillRenderer : NetworkBehaviour
             RotateAtMouse(_lineStartImage.transform);
             RotateAtMouse(_lineEndImage.transform);
 
-			_lineStartImage.SetSize(width, length, damage);
-			_lineEndImage.SetSize(width, length, damage);
+			//_lineStartImage.SetSize(width, length, damage);
+			_lineStartImage.SetSize(_boxWidth, _boxLength, damage);
+			//_lineEndImage.SetSize(width, length, damage);
+			_lineEndImage.SetSize(_boxWidth, _boxLength, damage);
 
 			/*Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, 0, Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
             var vector = (mouse - transform.position);
@@ -218,7 +236,7 @@ public class SkillRenderer : NetworkBehaviour
 		Vector3 mouse = new Vector3(worldPosition.x, 0 , worldPosition.z);
 
         _tempArea = Instantiate(areaPref, mouse, Quaternion.Euler(90, 0, 0));
-        _tempArea.SetSize(radius, damage);
+        _tempArea.SetSize(_circleRadius, damage);
 
         while (true)
         {

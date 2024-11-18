@@ -87,6 +87,7 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] protected bool _isAutoRadiusRender = true;
     [SerializeField] protected bool _isAutoAreaRender = true;
     [SerializeField] protected bool _isAutoLineRender = true;
+    [SerializeField] protected bool _isDynamicRenderer = false;
 
     protected SkillRenderer _skillRender;
     protected Character _hero;
@@ -97,6 +98,7 @@ public abstract class Skill : NetworkBehaviour
     protected Coroutine _rechargeJob;
     protected Coroutine _castDeleyCoroutine;
     protected Coroutine _castStreamCoroutine;
+    protected Coroutine _dynamicRendererJob;
     protected Transform _tempTargetForDamage;
     protected Health _tempHPForDamage;
     protected bool _isPlayCastAnim;
@@ -227,6 +229,10 @@ public abstract class Skill : NetworkBehaviour
             ClearData();
             _isPlayCastAnim = false;
 
+            if(_dynamicRendererJob != null)
+            {
+                StopCoroutine(_dynamicRendererJob);
+            }
             CancelCoroutine(_castCoroutine);
 
             if (_actionWrapperForCastCoroutine != null)
@@ -391,7 +397,12 @@ public abstract class Skill : NetworkBehaviour
         _isPlayCastAnim = false;
     }
 
-    protected virtual void StartAutoDraw()
+	protected virtual IEnumerator DynamicRendererJob(float time = 0.2f)
+	{
+        yield return null; //new WaitForSeconds(time);
+	}
+
+	protected virtual void StartAutoDraw()
     {
 		Damage damage = new Damage
 		{
@@ -872,6 +883,11 @@ public abstract class Skill : NetworkBehaviour
 		_isSpaceClick = true;
 	}
 
+	private void StartDynamicRenderer()
+	{
+		 _dynamicRendererJob = StartCoroutine(DynamicRendererJob());
+	}
+
 	private IEnumerator CooldownCoroutine(float cooldownTime)
     {
         CooldownStarted?.Invoke(cooldownTime);
@@ -929,6 +945,11 @@ public abstract class Skill : NetworkBehaviour
         _isPreparing = true;
         ClearData();
         StartAutoDraw();
+
+        if(_isDynamicRenderer)
+        {
+            StartDynamicRenderer();
+		}
 
         SubscribeClickEvents();
 

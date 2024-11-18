@@ -19,6 +19,7 @@ public class IceRolling : Skill
 	private Vector3 _jumpPos;
 	private Vector3 _lookDir;
 	private Energy _energy;
+	private float TEMPFLOAT = 1;
 
 	protected override bool IsCanCast => true;
 
@@ -161,6 +162,16 @@ public class IceRolling : Skill
 				_mousePos = GetMousePoint();
 			}
 			yield return null;
+		}
+	}
+	protected override IEnumerator DynamicRendererJob(float time = 0.2f)
+	{
+		while (true)
+		{
+			yield return new WaitForSeconds(time);
+			Debug.Log("TEEEEEEEEEEEEst");
+			_skillRender.SetSizeBox(2, TEMPFLOAT);
+			TEMPFLOAT += time;
 		}
 	}
 
