@@ -1279,14 +1279,6 @@ namespace Mirror
             OnClientConnect();
         }
 
-        public void SpawnLocalUser()
-        {
-            if (NetworkClient.localPlayer == null && SceneManager.GetActiveScene().name == "MainMenu")
-            {
-                NetworkClient.AddPlayer();
-            }
-        }
-
         // Transport callback, invoked after client fully disconnected.
         // the call order should always be:
         //   Disconnect() -> ask Transport -> Transport.OnDisconnected -> Cleanup

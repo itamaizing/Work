@@ -10,7 +10,7 @@ namespace Players.Abilities.Genjalf.Shield_Ability
         public void SetMaxValueShield(float shield)
         {
             _slider = GetComponent<Slider>();
-            
+
             if (_slider != null)
             {
                 _slider.maxValue = shield;

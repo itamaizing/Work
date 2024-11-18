@@ -603,7 +603,7 @@ public class CharacterState : NetworkBehaviour
 
 			if (stateForResist.Type == StateType.Magic)
 			{
-				if (chanceDodgeMagDamage <= characterHealth.EvadeMagDamage)
+				if (chanceDodgeMagDamage <= characterHealth.ResistMagDamage)
 				{
 					Debug.Log("CharacterState / DodgeMagDamage");
 					return;

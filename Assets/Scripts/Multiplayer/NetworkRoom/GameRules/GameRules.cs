@@ -17,6 +17,7 @@ public abstract class GameRules : NetworkBehaviour
     public List<Transform> SpawnPoints => _spawnPoints;
 
     public abstract void GameStartServer(List<Transform> spawnPoints);
+    protected abstract void UnsubscribeFromAllEvents();
     protected abstract void GameStartClient();
 
     public void Init(NetworkRoom room)
@@ -111,6 +112,8 @@ public abstract class GameRules : NetworkBehaviour
 
     protected IEnumerator CloseRoomJob()
     {
+        UnsubscribeFromAllEvents();
+
         yield return new WaitForSeconds(1f);
 
         if (_room != null)

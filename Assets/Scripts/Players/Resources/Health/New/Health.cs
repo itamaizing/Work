@@ -8,7 +8,7 @@ public class Health : Resource, IDamageable, IHealingable
     protected float _evadeMeleeDamage;
     protected float _evadeRangeDamage;
     protected float _defPhysDamage;
-    protected float _evadeMagDamage;
+    protected float _resistMagDamage;
     protected float _defMagDamage;
 
     private List<IDamageable> _shields = new List<IDamageable>();
@@ -18,7 +18,7 @@ public class Health : Resource, IDamageable, IHealingable
     public float SumDamageTaken { get => _sumDamageTaken; }
     public float EvadeMeleeDamage { get => _evadeMeleeDamage; }
     public float EvadeRangeDamage { get => _evadeRangeDamage; }
-    public float EvadeMagDamage { get => _evadeMagDamage; }
+    public float ResistMagDamage { get => _resistMagDamage; }
     public float DefPhysDamage { get => _defPhysDamage; }
     public float DefMagDamage { get => _defMagDamage; }
     public List<IDamageable> Shields { get => _shields; }
@@ -40,7 +40,7 @@ public class Health : Resource, IDamageable, IHealingable
 
         _defPhysDamage = data.GetAttributeValue(AttributeNames.PhysicResist);
         _defMagDamage = data.GetAttributeValue(AttributeNames.MagicResist);
-        _evadeMagDamage = data.GetAttributeValue(AttributeNames.MagicEvade);
+        _resistMagDamage = data.GetAttributeValue(AttributeNames.MagicEvade);
         _evadeMeleeDamage = data.GetAttributeValue(AttributeNames.MeleeEvade);
         _evadeRangeDamage = data.GetAttributeValue(AttributeNames.RangeEvade);
     }
@@ -83,7 +83,7 @@ public class Health : Resource, IDamageable, IHealingable
 
     public void SetEvadeMagic(float value)
     {
-        _evadeMagDamage = value;
+        _resistMagDamage = value;
     }
 
     public void SetPhysicDef(float value)
@@ -100,7 +100,7 @@ public class Health : Resource, IDamageable, IHealingable
     {
         _defPhysDamage += value;
         _defMagDamage += value;
-        _evadeMagDamage += value;
+        _resistMagDamage += value;
         _evadeMeleeDamage += value;
         _evadeRangeDamage += value;
     }
@@ -117,7 +117,7 @@ public class Health : Resource, IDamageable, IHealingable
         {
             case DamageType.Magical:
 
-                if (UnityEngine.Random.Range(0, 100) <= _evadeMagDamage)
+                if (UnityEngine.Random.Range(0, 100) <= _resistMagDamage)
                     return true;
                 else
                     return false;

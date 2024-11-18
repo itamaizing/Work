@@ -49,7 +49,7 @@ namespace Players.Abilities.Genjalf.Shield_Ability
         {
             if (_shieldBar.transform.gameObject.activeSelf)
             {
-                _shieldBar.SetShieldValue(_currentAbAmount);
+               // _shieldBar.SetShieldValue(_currentAbAmount);
             }
 
             UpdateTextCharge();
@@ -130,7 +130,7 @@ namespace Players.Abilities.Genjalf.Shield_Ability
 
             _currentAbAmount = _soShieldData.AbsorptionAmount;
             _shieldBar.transform.gameObject.SetActive(true);
-            _shieldBar.SetMaxValueShield(_soShieldData.AbsorptionAmount);
+           // _shieldBar.SetMaxValueShield(_soShieldData.AbsorptionAmount);
 
             _iconAbility.GetComponent<SpriteRenderer>().enabled = false;
             _isGlobalCooldown = false;

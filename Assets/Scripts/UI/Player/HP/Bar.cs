@@ -44,7 +44,7 @@ public class Bar : MonoBehaviour
         _preViewValue = resource.CurrentValue;
         _maxValue = resource.MaxValue;
 
-         UpdateBar();
+        UpdateBar();
 
         _resource.ValueChanged += OnValueChanged;
         _resource.PhantomValueShown += PreviewChange;
@@ -173,7 +173,7 @@ public class Bar : MonoBehaviour
             {
                 ShieldActive = false;
                 UpdateBar();
-            }  
+            }
         }
     }
 

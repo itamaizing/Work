@@ -1397,6 +1397,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6422357710070074154}
   - component: {fileID: 7512182246530332364}
+  - component: {fileID: 7142525667976976649}
   m_Layer: 5
   m_Name: BarShield
   m_TagString: Untagged
@@ -1418,13 +1419,13 @@ RectTransform:
   m_Children:
   - {fileID: 5902476620047436305}
   - {fileID: 8367809980784335724}
-  m_Father: {fileID: 4534828357936478814}
+  m_Father: {fileID: 1646297468163658506}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0.012500048, y: 2}
+  m_SizeDelta: {x: -3.9750004, y: -6.3}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7512182246530332364
 MonoBehaviour:
@@ -1473,10 +1474,33 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &7142525667976976649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5366428106695186910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bf7cd651d824606af8da351eb2efe4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _resource: {fileID: 0}
+  _bar: {fileID: 7512182246530332364}
+  _barMinus: {fileID: 0}
+  _barPlus: {fileID: 0}
+  _timeToDisapear: 0.2
+  _disapearSpeed: 0.5
+  _timeToShow: 0.2
+  _ShowSpeed: 0.5
+  _showText: 1
+  _barText: {fileID: 0}
+  _shieldBar: {fileID: 7512182246530332364}
 --- !u!1 &5822600342638098146
 GameObject:
   m_ObjectHideFlags: 0
@@ -1823,6 +1847,7 @@ RectTransform:
   m_Children:
   - {fileID: 4777511981966016353}
   - {fileID: 3734994995015683585}
+  - {fileID: 6422357710070074154}
   - {fileID: 4534828357936478814}
   - {fileID: 5188756905167438128}
   - {fileID: 1795504062288236322}
@@ -2387,7 +2412,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 0
+  m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
@@ -2797,10 +2822,7 @@ PrefabInstance:
       objectReference: {fileID: 7512182246530332364}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 7701301239079888858, guid: 8f0fa40e85ca19945835320293912095, type: 3}
-      insertIndex: 1
-      addedObject: {fileID: 6422357710070074154}
+    m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8f0fa40e85ca19945835320293912095, type: 3}
 --- !u!114 &4238549290451122472 stripped
