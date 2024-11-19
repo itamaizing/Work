@@ -1131,10 +1131,8 @@ MonoBehaviour:
   - {fileID: 2335912879836011194, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
   - {fileID: 300637093874885484, guid: 61bdf690f5f8e144aba9494df44f0657, type: 3}
   - {fileID: 3540451634781876253, guid: f7c4989fc7d96e64e898c577137242d1, type: 3}
-  - {fileID: 5092039644404945080, guid: 4147e16f95a99db4b9dfd4e71a529053, type: 3}
-  - {fileID: 300637093874885484, guid: 952e07a142342914da338d08e1041c34, type: 3}
-  - {fileID: 8859527807384012395, guid: e444badf466360e41a896340462c6a62, type: 3}
-  - {fileID: 5951033593581366366, guid: 2ae4dc3e896cc6040afe290737e398a9, type: 3}
+  - {fileID: 6574354902101684496, guid: 7b9b3846886e951459b231848c918b55, type: 3}
+  - {fileID: 8693088928271248166, guid: a981efc231a79eb4abf597c61aabb12f, type: 3}
   - {fileID: 8763643763125113918, guid: 7ca7e11552419974da01f50646019b88, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
@@ -3228,7 +3226,7 @@ MonoBehaviour:
     m_Options:
     - m_Text: localhost
       m_Image: {fileID: 0}
-    - m_Text: http://147.45.141.9/
+    - m_Text: Server
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
