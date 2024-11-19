@@ -128,7 +128,7 @@ public class CreeperStrike : AutoAttackSkill
                 }
             }
 
-            if (_restorationOfGlands.Data.IsOpen && _poisonBoneStack > 0)
+            if (_restorationOfGlands.Data.IsOpen && _poisonBoneStack > 0 && target.CharacterState.CheckForState(States.PoisonBone))
             {
                 Debug.Log("CreeperStrike / if == true");
                 float baseChanceOfRestorationOfGlands = 0.1f;

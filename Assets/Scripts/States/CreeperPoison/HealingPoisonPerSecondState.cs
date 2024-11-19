@@ -5,8 +5,9 @@ using UnityEngine;
 
 public class HealingPoisonPerSecondState : AbstractCharacterState
 {
-    //private List<Talent> _talents = new();
-    //private SurgeTreatment _surgeTreatment;
+    private List<Talent> _talents = new();
+    private SurgeTreatment _surgeTreatment;
+
     public bool turnOff = false;
 
     private int _maxStack = 6;

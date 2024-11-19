@@ -154,16 +154,7 @@ public class PoisonBall : Skill, IAltAbility
 
     private void Update()
     {
-        #region InertialGlandTalentIsActive
-        Debug.Log("PoisonBall / InertialGlandsIsActive / IsThreeProjectileOnOnetarget = " + _isThreeProjectileOnOneTarget);
-        Debug.Log("PoisonBall / InertialGlandsIsActive / _activeTalentsInfo.IsActiveInertialGlands = " + _activeTalentsInfo.IsActiveInertialGlands);
-        if (_activeTalentsInfo.IsActiveInertialGlands && _isThreeProjectileOnOneTarget)
-        {
-            float newRemainingTime = 0.0f;
-            _spitPoison.ReductionSetCooldown(newRemainingTime);
-        }
-
-        #endregion
+        InertialGlandsReductionCooldown();
 
         UpdateMouseDetection();
         if (_poisonBallInfo.IsActiveTimer)
@@ -554,6 +545,21 @@ public class PoisonBall : Skill, IAltAbility
     #endregion
 
     #region CheckingMethods
+
+    private void InertialGlandsReductionCooldown()
+    {
+        #region InertialGlandTalentIsActive
+
+        Debug.Log("PoisonBall / InertialGlandsIsActive / IsThreeProjectileOnOnetarget = " + _isThreeProjectileOnOneTarget);
+        Debug.Log("PoisonBall / InertialGlandsIsActive / _activeTalentsInfo.IsActiveInertialGlands = " + _activeTalentsInfo.IsActiveInertialGlands);
+        if (_activeTalentsInfo.IsActiveInertialGlands && _isThreeProjectileOnOneTarget)
+        {
+            float newRemainingTime = 0.0f;
+            _spitPoison.ReductionSetCooldown(newRemainingTime);
+        }
+
+        #endregion
+    }
 
     private void CheckingActiveTalents()
     {

@@ -2024,37 +2024,6 @@ Transform:
   m_Father: {fileID: 8149627103147011094}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &5653061961631815317
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1247171340451274132}
-  m_Layer: 0
-  m_Name: MidPointForLeap
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1247171340451274132
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5653061961631815317}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 8980354838078202602}
-  m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5725575381314157519
 GameObject:
   m_ObjectHideFlags: 0
@@ -3306,6 +3275,14 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.08892037
       objectReference: {fileID: 0}
+    - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _minionPrefs.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _minionPrefs.Array.data[0]
+      value: 
+      objectReference: {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
     - target: {fileID: 556128977287844779, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.0404512
@@ -4040,7 +4017,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.size
-      value: 9
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[0]
@@ -4121,7 +4098,7 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[9]
       value: 
-      objectReference: {fileID: 5739315053137242685}
+      objectReference: {fileID: 9013115207424962608}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[10]
       value: 
@@ -4130,6 +4107,10 @@ PrefabInstance:
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[11]
       value: 
       objectReference: {fileID: 3703492777688133874}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[10]
+      value: 
+      objectReference: {fileID: 2292270509749100553}
     - target: {fileID: 6397899444093627911, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.1387713
@@ -4526,9 +4507,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: 0
       addedObject: {fileID: 4109359953868151571}
-    - targetCorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1247171340451274132}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
@@ -5474,7 +5452,7 @@ MonoBehaviour:
   _preparingForFight: {fileID: 3703492777688133874}
   _creeperInvisible: {fileID: 1737191631964824437}
   _coldBlood: {fileID: 1990362504558455005}
-  _lightningStrikes: {fileID: 0}
+  _lightningStrikes: {fileID: 5444387995332797581}
   _player: {fileID: 5560201130496293763}
 --- !u!114 &5444387995332797581
 MonoBehaviour:
@@ -5714,7 +5692,7 @@ MonoBehaviour:
   _lightningStrikes: {fileID: 5444387995332797581}
   _poisonSlap: {fileID: 8401732055610715995}
   _line: {fileID: 11400000, guid: 7faf4d32cfcc4f54d967e4d01a0c4b65, type: 2}
-  _midPointForLeapPrefab: {fileID: 5653061961631815317}
+  _midPointForLeapPrefab: {fileID: 7291474295570291711, guid: 7c9723416fc78a44e883c9b89e22c104, type: 3}
   _player: {fileID: 5560201130496293763}
   _rangeLeap: 4
   _durationLeap: 0.4

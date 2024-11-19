@@ -22,6 +22,7 @@ public class WitheringPoisonState : AbstractCharacterState
 
     private float _baseValueTakeAwayMana = 0.03f;
     private float _endValueTakeAwayMana;
+    private float _baseChanceOfApplyBindingPoison = 0.03f;
     private float _chanceOfApplyBindingPoison = 0.9f;
 
     private bool _isActiveTalentBindingPoison = false;
@@ -49,15 +50,12 @@ public class WitheringPoisonState : AbstractCharacterState
 
         _player = personWhoMadeBuff;
 
-        //Debug.Log("player in WitheringPoisonState == " + _player);
         if (_player != null)
         {
             _talents = _player.CharacterState.Character.GetComponent<HeroComponent>().TalentManager.ActiveTalents;
-            //Debug.Log("WitheringPoisonState Talent == " + _talents);
 
             foreach (Talent talent in _talents)
             {
-                //Debug.Log("Checking talents: " + talent.name + ", Type: " + talent.GetType());
                 if (talent is BindingPoison bindingPoison)
                 {
                     if (_bindingPoison == null)
@@ -137,12 +135,13 @@ public class WitheringPoisonState : AbstractCharacterState
         Debug.Log("WitheringPoison / TakeAwayMana");
         float takeAwayMana = CurrentStacksCount * _baseValueTakeAwayMana;
         _endValueTakeAwayMana = _characterState.Character.Resources.FirstOrDefault(r => r.Type == ResourceType.Mana)!.CurrentValue * takeAwayMana;
+        //_chanceOfApplyBindingPoison *= _baseChanceOfApplyBindingPoison;
 
-        if (_isActiveTalentBindingPoison)
+        if (_bindingPoison != null && _isActiveTalentBindingPoison)
         {
             if (UnityEngine.Random.Range(0.0f, 1.0f) <= _chanceOfApplyBindingPoison)
             {
-                _characterState.AddStateTest(States.BindingPoison, 10, 0, _player.gameObject, null);
+                _characterState.AddStateTest(States.BindingPoison, 10f, 0, _player.gameObject, null);
             }
         }
 
@@ -156,6 +155,7 @@ public class WitheringPoisonState : AbstractCharacterState
         _duration = 0;
         _endValueTakeAwayMana = 0;
         _baseValueTakeAwayMana = 1f;
+        _chanceOfApplyBindingPoison = 0f;
         _timeBetweenTakeAwayMana = _startTimeBetweenTakeAwayMana;
     }
 }

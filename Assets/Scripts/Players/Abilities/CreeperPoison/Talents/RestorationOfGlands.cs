@@ -38,17 +38,18 @@ public class RestorationOfGlands : Talent
         float baseCooldownSpitPoison = _spitPoison.RemainingCooldownTime;
         float baseCooldownPoisonBall = _poisonBall.CooldownTime;
 
-        float procentageCoolwonTimeSpitPoison = baseCooldownSpitPoison * _baseProcentageReduction;
-        Debug.Log("RestorationOfGlands / ReductionCooldownNotServer / procentageCooldownSpit = " + procentageCoolwonTimeSpitPoison);
-        float procentageCoolwonTimePoisonBall = baseCooldownPoisonBall * _baseProcentageReduction;
-        Debug.Log("RestorationOfGlands / ReductionCooldownNotServer / procentageCooldownPoisonBall = " + procentageCoolwonTimePoisonBall);
+        float procentageCooldownTimeSpitPoison = baseCooldownSpitPoison * _baseProcentageReduction;
+        Debug.Log("RestorationOfGlands / ReductionCooldownNotServer / procentageCooldownSpit = " + procentageCooldownTimeSpitPoison);
+        //float procentageCooldownTimePoisonBall = baseCooldownPoisonBall * _baseProcentageReduction;
+        //Debug.Log("RestorationOfGlands / ReductionCooldownNotServer / procentageCooldownPoisonBall = " + procentageCooldownTimePoisonBall);
 
-        float reducingCooldownSpitPoison = _spitPoison.CooldownTime - procentageCoolwonTimeSpitPoison;
+        float reducingCooldownSpitPoison = _spitPoison.RemainingCooldownTime - procentageCooldownTimeSpitPoison;
         Debug.Log("RestorationOfGlands / ReductionCooldownNotServer / reducingCooldownSpitPoison = " + reducingCooldownSpitPoison);
-        float reducingCooldownPoisonBall = _poisonBall.CooldownTime - procentageCoolwonTimePoisonBall;
-        Debug.Log("RestorationOfGlands / ReductionCooldownNotServer / reducingCooldownPoisonBall = " + reducingCooldownPoisonBall);
+        //float reducingCooldownPoisonBall = _poisonBall.CooldownTime - procentageCooldownTimePoisonBall;
+        //Debug.Log("RestorationOfGlands / ReductionCooldownNotServer / reducingCooldownPoisonBall = " + reducingCooldownPoisonBall);
+
         _spitPoison.ReductionSetCooldown(reducingCooldownSpitPoison);
 
-        _poisonBall.ReductionSetCooldown(reducingCooldownPoisonBall);
+        //_poisonBall.ReductionSetCooldown(reducingCooldownPoisonBall);
     }
 }

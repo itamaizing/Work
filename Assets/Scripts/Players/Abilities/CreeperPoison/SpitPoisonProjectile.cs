@@ -34,8 +34,6 @@ public class SpitPoisonProjectile : Test_Projectile
     [Server]
     private void OnTriggerEnter(Collider collision)
     {
-        Debug.Log("Collision.name = " +  collision.name);
-
         if (_isActiveHealingSpitPoison)
         {
             if (_isPlayer)
@@ -98,14 +96,12 @@ public class SpitPoisonProjectile : Test_Projectile
         }
         else
         {
-            Debug.Log("OnTrigger / else / enemy ");
-
             if (collision.transform != _player.transform && _playerLayer != LayerMask.NameToLayer("Enemy"))
             {
                 if (collision.TryGetComponent<Character>(out var target))
                 {
                     _target = target;
-                    Debug.Log("OnTrigger / else / _target = " + _target);
+
                     _damage = Random.Range(4.0f, 12.0f);
 
                     DamageDeal();
@@ -155,7 +151,6 @@ public class SpitPoisonProjectile : Test_Projectile
 
         if (_restorationOfGlands.Data.IsOpen && _poisonBoneStack > 0 && _target.CharacterState.CheckForState(States.PoisonBone))
         {
-            Debug.Log("SpitPoisProj / if Restoration = true");
             ReductionCooldownFromRestorationOfGlands();
         }
 
@@ -169,15 +164,7 @@ public class SpitPoisonProjectile : Test_Projectile
 
     private void ReductionCooldownFromRestorationOfGlands()
     {
-        float baseChanceOfRestorationOfGlands = 0.1f;
-        float chanceRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
-        Debug.Log("SpitPoisProj / chanceRestoration = " + chanceRestorationOfGlands);
-
-        if (Random.Range(0f, 1f) <= chanceRestorationOfGlands)
-        {
-            Debug.Log("SpitPoisonProj / If RestorationOfGlands.IsActive = true");
-            _restorationOfGlands.ReductionCooldown();
-        }
+        RpcReductionCooldown();
     }
 
     #endregion
@@ -189,7 +176,6 @@ public class SpitPoisonProjectile : Test_Projectile
         bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, int poisonBoneStack)
     {
         _player = dad;
-        Debug.Log("InitProj in SpitPoison / player = " + _player);
         _energyDad = energy;
         _skill = skill;
 
@@ -208,9 +194,7 @@ public class SpitPoisonProjectile : Test_Projectile
     private void InitializationComponents()
     {
         _spitPoison = _player.GetComponentInChildren<SpitPoison>();
-        Debug.Log("SpitPoisonProj / SpitPoison = " + _spitPoison);
         _restorationOfGlands = _spitPoison.RestorationOfGlandsTalent;
-        Debug.Log("SpitPoisonProj / RestorationOfGlands = " + _restorationOfGlands);
     }
 
     #endregion
@@ -220,14 +204,12 @@ public class SpitPoisonProjectile : Test_Projectile
     [Server]
     private void TransparentProjectileOnServer()
     {
-        Debug.Log("SpitPoisonProj / TransparentProjectileOnServer / isServer = " + isServer);
         if (isServer)
         {
             LayerDefinition(_player.gameObject);
         }
         if (isServer && _isPlayerInvisible)
         {
-            Debug.Log("isServer && _isPlayerInvisible / _player = " + _player);
             RpcNewTransparencySprite(_player.gameObject);
         }
     }
@@ -236,7 +218,6 @@ public class SpitPoisonProjectile : Test_Projectile
     private void LayerDefinition(GameObject player)
     {
         _playerLayer = player.layer;
-        Debug.Log("SpitPoison / Server / playerLayer = " + _playerLayer);
         RpcLayerDefinition(player.layer);
     }
 
@@ -271,9 +252,19 @@ public class SpitPoisonProjectile : Test_Projectile
     private void RpcLayerDefinition(int layer)
     {
         _playerLayer = layer;
-        Debug.Log("SpitPoison / Client / playerLayer = " + _playerLayer);
     }
 
+    [ClientRpc]
+    private void RpcReductionCooldown()
+    {
+        float baseChanceOfRestorationOfGlands = 0.1f;
+        float chanceRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
+
+        if (Random.Range(0f, 1f) <= chanceRestorationOfGlands)
+        {
+            _restorationOfGlands.ReductionCooldown();
+        }
+    }   
     #endregion
 }
 

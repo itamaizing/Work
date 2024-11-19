@@ -28,6 +28,7 @@ public class BindingPoisonState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
+        Debug.Log("BindingPoisonState / EnterState");
         _characterState = character;
 
         _skillManager = _characterState.Character.Abilities;

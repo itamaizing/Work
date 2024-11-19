@@ -50,6 +50,7 @@ public class PoisonBoneState : AbstractCharacterState
         if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks();
+            UpdatePoisonBoneStackAtSkills();
         }
 
     }
@@ -59,7 +60,7 @@ public class PoisonBoneState : AbstractCharacterState
         if (_player != null)
         {
             _skills = _player.GetComponent<CharacterState>().Character.Abilities.Abilities;
-            //Debug.Log("PoisonBone player == " + _player);
+            Debug.Log("PoisonBone player == " + _player);
 
             foreach (Skill ability in _skills)
             {
@@ -188,5 +189,6 @@ public class PoisonBoneState : AbstractCharacterState
         _endDamage = 0;
         _baseDamage = 1f;
         _timeBetweenAttack = _startTimeBetweenAttack;
+        UpdatePoisonBoneStackAtSkills();
     }
 }
