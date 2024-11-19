@@ -1131,19 +1131,9 @@ MonoBehaviour:
   - {fileID: 2335912879836011194, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
   - {fileID: 300637093874885484, guid: 61bdf690f5f8e144aba9494df44f0657, type: 3}
   - {fileID: 3540451634781876253, guid: f7c4989fc7d96e64e898c577137242d1, type: 3}
-  - {fileID: 8641125146119960656, guid: 4c3c788ff06ea9f48abda93ece76c4e3, type: 3}
-  - {fileID: 6347752350262042581, guid: d10a25cf2830b5b41bb095e04b6d10ea, type: 3}
-  - {fileID: 7929939097525754646, guid: 6d4e598214ad8194197d8c3a24b69465, type: 3}
-  - {fileID: 714847031615486253, guid: 9701a3a53a66bca409933231ce707963, type: 3}
-  - {fileID: 2533957208652230379, guid: 6684174cfea68c84b9bd06aa086faa01, type: 3}
-  - {fileID: 4205563866588798259, guid: ff5bdaae9e318e24f9c919195723e299, type: 3}
-  - {fileID: 2533957208652230379, guid: 835486046afaafa48885a183fcb94bd6, type: 3}
-  - {fileID: 5382334446915612032, guid: 9c1c083091a0ef54b9b6a0a097bb7a04, type: 3}
-  - {fileID: 5849233703298331004, guid: 482b668adc1f199488e67f043ae88aa9, type: 3}
-  - {fileID: 8348125526146625898, guid: 4887b73d8e08c4647b295b2809cf166d, type: 3}
-  - {fileID: 6162022432026438507, guid: 093409daf5f183d4493788550d4c1998, type: 3}
-  - {fileID: 5436283022787822548, guid: d03eafd0f467d4248978ac4ba9e4e6c7, type: 3}
-  - {fileID: 8018401014893134539, guid: 47ac5fcdd2b921f4db28121c7ebf3c3b, type: 3}
+  - {fileID: 6574354902101684496, guid: 7b9b3846886e951459b231848c918b55, type: 3}
+  - {fileID: 8693088928271248166, guid: a981efc231a79eb4abf597c61aabb12f, type: 3}
+  - {fileID: 8763643763125113918, guid: 7ca7e11552419974da01f50646019b88, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -3236,7 +3226,7 @@ MonoBehaviour:
     m_Options:
     - m_Text: localhost
       m_Image: {fileID: 0}
-    - m_Text: http://147.45.141.9/
+    - m_Text: Server
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
