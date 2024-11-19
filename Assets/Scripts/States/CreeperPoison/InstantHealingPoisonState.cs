@@ -4,19 +4,16 @@ using UnityEngine;
 
 public class InstantHealingPoisonState : AbstractCharacterState
 {
-    //private List<Talent> _talents = new();
-    //private SurgeTreatment _surgeTreatment;
-    public bool turnOff = false;
+    /* For PoisonBall Ability */
 
     private Character _player;
+    private HealingPoisonPerSecondState _healingPoisonPerSecondState;
 
-    private int _currentStacks = 0;
     private int _maxStacks = 1;
 
     private float _baseHealingValue = 14.0f;
-    private float _healingValuePerSecond;
 
-    private float _totalHealed = 0.0f;
+    private float _totalHealed;
 
     private float _timeBetweenHeal;
     private float _startTimeBetweenHeal = 1.0f;
@@ -43,8 +40,6 @@ public class InstantHealingPoisonState : AbstractCharacterState
         _duration = durationToExit;
         _baseDuration = durationToExit;
         _player = personWhoMadeBuff;
-
-        //Debug.Log("_player == " + _player);
 
         if (CurrentStacksCount < MaxStacksCount)
         {
@@ -83,7 +78,7 @@ public class InstantHealingPoisonState : AbstractCharacterState
         }
 
         _duration -= Time.deltaTime;
-        if (_duration < 0 || turnOff)
+        if (_duration < 0)
         {
             ExitState();
         }
@@ -108,24 +103,27 @@ public class InstantHealingPoisonState : AbstractCharacterState
 
     private void MakeHeal()
     {
+        if (_characterState.CheckForState(States.HealingPoisonPerSecond))
+        {
+            _healingPoisonPerSecondState = (HealingPoisonPerSecondState)_characterState.GetState(States.HealingPoisonPerSecond);
+            float multiplierHealValue = _healingPoisonPerSecondState.TotalHealValue;
+            Debug.Log("IntstantHealing / MakeHeal / if / multiplierHealValue = " + multiplierHealValue);
+            _totalHealed = _baseHealingValue + multiplierHealValue;
+            Debug.Log("IntstantHealing / MakeHeal / if / baseHeal = 14f / _totalHealed = " + _totalHealed);
+        }
+        else
+        {
+            _totalHealed = _baseHealingValue;
+            Debug.Log("IntstantHealing / MakeHeal / else / baseHeal = 14f / _totalHealed = " + _totalHealed);
+        }
+
         Heal heal = new Heal
         {
-            Value = _baseHealingValue,
+            Value = _totalHealed,
             DamageableSkill = null,
         };
+
         _characterState.Character.Health.Heal(ref heal, null);
-        _characterState.Character.DamageTracker.AddHeal(heal);
-        //if (_surgeTreatment != null && _surgeTreatment.IsActive)
-        //{
-        //	_totalHealed += _baseHealingValue;
-        //	Debug.Log("TotalHeal == " + _totalHealed);
-        //}
     }
 
-    //private void InstantHeal()
-    //{
-    //      Debug.Log("Instant Heal Method");
-    //     _characterState.Health.AddHeal(_totalHealed);
-    //      _totalHealed = 0.0f;
-    //}
 }

@@ -11,6 +11,7 @@ using System.Security.Cryptography;
 public class PoisonBallProjectile : Test_Projectile
 {
     #region Variables
+
     [Header("PoisonBallProjectile Parameters")]
     [SerializeField] private Transform _transformBall;
     [SerializeField] private float _damage;
@@ -22,9 +23,6 @@ public class PoisonBallProjectile : Test_Projectile
     
     private PoisonBall _poisonBall;
     private Skill _skill;
-    private HealingPoisonBall _healingPoisonBall;
-    private FootInstincts _footInstincts;
-    private RestorationOfGlands _restorationOfGlands;
 
     private int _currentCountBall;
     private int _poisonBoneStack;
@@ -45,6 +43,7 @@ public class PoisonBallProjectile : Test_Projectile
     private bool _isEnemy;
     private bool _isAlly;
 
+    private bool _isActiveFootInstincts;
     private bool _isActiveHealingPoisonBall;
     private bool _isActiveWitheringPoison;
     private bool _isActiveVoluminousBall;
@@ -112,9 +111,9 @@ public class PoisonBallProjectile : Test_Projectile
                         _target = targetHealth;
                         DamageDeal();
 
-                        if (_footInstincts.Data.IsOpen)
+                        if (_isActiveFootInstincts)
                         {
-                            _footInstincts.ReductionCooldownLightningMovement();
+                            RpcReductionCooldownAtFootInstincts(_player.gameObject);
                         }
 
                         _poisonBall.LastTarget = targetHealth.gameObject;
@@ -135,9 +134,9 @@ public class PoisonBallProjectile : Test_Projectile
 
                         DamageDeal();
 
-                        if (_footInstincts.Data.IsOpen)
+                        if (_isActiveFootInstincts)
                         {
-                            _footInstincts.ReductionCooldownLightningMovement();
+                            RpcReductionCooldownAtFootInstincts(_player.gameObject);
                         }
 
                         _poisonBall.LastTarget = targetHealth.gameObject;
@@ -154,10 +153,10 @@ public class PoisonBallProjectile : Test_Projectile
                     _target = targetHealth;
 
                     DamageDeal();
-                    
-                    if (_footInstincts.Data.IsOpen)
+
+                    if (_isActiveFootInstincts)
                     {
-                        _footInstincts.ReductionCooldownLightningMovement();
+                        RpcReductionCooldownAtFootInstincts(_player.gameObject);
                     }
 
                     _poisonBall.LastTarget = targetHealth.gameObject;
@@ -212,10 +211,10 @@ public class PoisonBallProjectile : Test_Projectile
             _target.CharacterState.AddState(States.WitheringPoison, 6f, 0, _player.gameObject, _skill.Name);
         }
 
-        if (_restorationOfGlands.Data.IsOpen && _poisonBoneStack > 0 && _target.CharacterState.CheckForState(States.PoisonBone))
-        {
-            ReductionCooldownFromRestorationOfGlands();
-        }
+        //if (_restorationOfGlands.Data.IsOpen && _poisonBoneStack > 0 && _target.CharacterState.CheckForState(States.PoisonBone))
+        //{
+        //    ReductionCooldownFromRestorationOfGlands();
+        //}
 
         _target.CharacterState.AddState(States.InAir, _durationInAir, 0, _player.gameObject, _skill.Name);
 
@@ -274,7 +273,7 @@ public class PoisonBallProjectile : Test_Projectile
         if (Random.Range(0f, 1f) <= chanceRestorationOfGlands)
         {
             Debug.Log("SpitPoisonProj / If RestorationOfGlands.IsActive = true");
-            _restorationOfGlands.ReductionCooldown();
+            //_restorationOfGlands.ReductionCooldown();
         }
     }
     #endregion
@@ -284,6 +283,7 @@ public class PoisonBallProjectile : Test_Projectile
     public void InitializationProjectileForPoisonBall(Character dad, Skill skill,
         float multiplierDistance, int poisonBoneStack,
         bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies,
+        bool isActiveFootInstincts,
         bool isActiveTalentHealingPoisonBall, bool isActiveTalentWitheringPoison, 
         bool isActiveVoluminousBall, bool isActiveBallEffect,
         bool isPushTarget, bool isPlayerInvisible)
@@ -295,6 +295,7 @@ public class PoisonBallProjectile : Test_Projectile
 
         InitializationBoolVariables(isTargetPlayer, isTargetEnemy, isTargetAllies,
             isPushTarget, isPlayerInvisible,
+            isActiveFootInstincts,
             isActiveTalentHealingPoisonBall, isActiveTalentWitheringPoison, 
             isActiveVoluminousBall, isActiveBallEffect);
 
@@ -325,6 +326,7 @@ public class PoisonBallProjectile : Test_Projectile
     private void InitializationBoolVariables(
         bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, 
         bool isPushTarget, bool isPlayerInvisible,
+        bool isActiveFootInstincts,
         bool isActiveTalentHealingPoisonBall, bool isActiveTalentWitheringPoison, 
         bool isActiveVoluminousBall, bool isActiveBallEffect)
     {
@@ -333,6 +335,7 @@ public class PoisonBallProjectile : Test_Projectile
         _isAllies = isTargetAllies;
         _isEnemy = isTargetEnemy;
 
+        _isActiveFootInstincts = isActiveFootInstincts;
         _isActiveBallEffect = isActiveBallEffect;
         _isActiveHealingPoisonBall = isActiveTalentHealingPoisonBall;
         _isActiveWitheringPoison = isActiveTalentWitheringPoison;
@@ -344,8 +347,7 @@ public class PoisonBallProjectile : Test_Projectile
     {
         _poisonBall = _player.GetComponentInChildren<PoisonBall>();
         _currentCountBall = _poisonBall.CurrentCountBall;
-        _footInstincts = _poisonBall.FootInstinctsTalent;
-        _restorationOfGlands = _poisonBall.RestorationOfGlandsTalent;
+        //_restorationOfGlands = _poisonBall.RestorationOfGlandsTalent;
     }
 
     #endregion
@@ -404,6 +406,15 @@ public class PoisonBallProjectile : Test_Projectile
     {
         _playerLayer = layer;
     }
+
+    [ClientRpc]
+    private void RpcReductionCooldownAtFootInstincts(GameObject player)
+    {
+        var footInstincts = player.GetComponentInChildren<FootInstincts>();
+
+        footInstincts.ReductionCooldownLightningMovement();
+    }
+
     #endregion
 
 }

@@ -5,10 +5,7 @@ using UnityEngine;
 
 public class RegeneratingPoisonState : AbstractCharacterState
 {
-    public bool turnOff = false;
-
-    private List<Talent> _talents = new();
-    private static SurgeTreatment _surgeTreatment;
+    /* For SpitPoison Ability */
 
     private Character _playerWithTalent;
 
@@ -16,7 +13,6 @@ public class RegeneratingPoisonState : AbstractCharacterState
 
     private float _baseHealingValue = 1.0f;
     private float _endHealingValue;
-    private float _totalHeal;
 
     private float _timeBetweenHeal;
     private float _startTimeBetweenHeal = 1.0f;
@@ -42,27 +38,6 @@ public class RegeneratingPoisonState : AbstractCharacterState
         _duration = durationToExit;
         _baseDuration = durationToExit;
 
-        Debug.Log("_player in EnterRegenPoisonState == " + _playerWithTalent);
-        if (_playerWithTalent != null)
-        {
-            _talents = _playerWithTalent.CharacterState.Character.GetComponent<HeroComponent>().TalentManager.ActiveTalents;
-            Debug.Log("HealingPoison player == " + _playerWithTalent);
-
-            foreach (Talent talent in _talents)
-            {
-                Debug.Log("Checking talents: " + talent.name + ", Type: " + talent.GetType());
-                if (talent is SurgeTreatment surgeTreatment)
-                {
-                    Debug.Log("if / talents");
-                    if (_surgeTreatment == null)
-                    {
-                        _surgeTreatment = surgeTreatment;
-                        Debug.Log("SurgeTreatment == " + _surgeTreatment);
-                    }
-                }
-            }
-        }
-
         if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks();
@@ -79,7 +54,7 @@ public class RegeneratingPoisonState : AbstractCharacterState
         }
 
         _duration -= Time.deltaTime;
-        if (_duration < 0 || turnOff)
+        if (_duration < 0)
         {
             ExitState();
         }
@@ -133,13 +108,7 @@ public class RegeneratingPoisonState : AbstractCharacterState
         };
 
         _characterState.Character.Health.Heal(ref heal, null);
-        _characterState.Character.DamageTracker.AddHeal(heal);
-
-        if (_surgeTreatment != null && _surgeTreatment.Data.IsOpen)
-        {
-            _totalHeal += _endHealingValue;
-            Debug.Log("TotalHeal RegenerationPoison == " + _totalHeal);
-        }
+        //_characterState.Character.DamageTracker.AddHeal(heal);
     }
 
     private void ResetValues()
@@ -147,25 +116,5 @@ public class RegeneratingPoisonState : AbstractCharacterState
         CurrentStacksCount = 0;
         _baseDuration = 0;
         _duration = 0;
-    }
-
-    public void InstantHeal()
-    {
-        if (_surgeTreatment != null)
-        {
-            float totalHeal = _totalHeal;
-            Debug.Log("InstantHeal // totalHeal == " + totalHeal); 
-
-            Heal heal = new Heal
-            {
-                Value = totalHeal,
-                DamageableSkill = null,
-            };
-
-            _characterState.Character.Health.Heal(ref heal, null);
-            _characterState.Character.DamageTracker.AddHeal(heal);
-
-            _totalHeal = 0;
-        }
     }
 }

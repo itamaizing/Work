@@ -25,6 +25,7 @@ public class SpitPoisonProjectile : Test_Projectile
     private bool _isAllies;
     private bool _isEnemy;
     private bool _isActiveHealingSpitPoison;
+    private bool _isActiveEatingAcid;
     private bool _isPlayerInvisible;
 
     #endregion
@@ -151,7 +152,7 @@ public class SpitPoisonProjectile : Test_Projectile
 
         if (_restorationOfGlands.Data.IsOpen && _poisonBoneStack > 0 && _target.CharacterState.CheckForState(States.PoisonBone))
         {
-            ReductionCooldownFromRestorationOfGlands();
+            //ReductionCooldownFromRestorationOfGlands();
         }
 
         if (numbersForChanceOfBlindness <= chanceOfBlindness)
@@ -172,7 +173,7 @@ public class SpitPoisonProjectile : Test_Projectile
     #region InitializationMethods
 
     public void InitializationProjectile(Character dad, Skill skill, float energy,
-        bool isActiveHealingSpitPoison, bool isPlayerInvisible, 
+        bool isActiveHealingSpitPoison, bool isActiveEatingAcid, bool isPlayerInvisible, 
         bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, int poisonBoneStack)
     {
         _player = dad;
@@ -182,6 +183,7 @@ public class SpitPoisonProjectile : Test_Projectile
         _poisonBoneStack = poisonBoneStack;
 
         _isActiveHealingSpitPoison = isActiveHealingSpitPoison;
+        _isActiveEatingAcid = isActiveEatingAcid;
         _isPlayerInvisible = isPlayerInvisible;
         _isPlayer = isTargetPlayer;
         _isAllies = isTargetAllies;

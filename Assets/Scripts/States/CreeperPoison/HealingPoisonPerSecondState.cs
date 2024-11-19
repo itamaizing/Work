@@ -4,16 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class HealingPoisonPerSecondState : AbstractCharacterState
-{
-    private List<Talent> _talents = new();
-    private SurgeTreatment _surgeTreatment;
+{    
+    /* For PoisonBall Ability */
 
-    public bool turnOff = false;
+    private int _maxStack = 7;
 
-    private int _maxStack = 6;
-
-    private float _baseHealingValue;
-    private float _totalHealed = 0.0f;
     private float _currentHealingValue;
 
     private float _timeBetweenHeal;
@@ -23,7 +18,11 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
     private float _baseDuration;
 
     private Character _player;
+
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Healing };
+
+    public float TotalHealValue { get => _currentHealingValue;}
+
     public override float TEST_ChangeableValue { get => _currentHealingValue; set => _currentHealingValue = value; }
     public override States State => States.HealingPoisonPerSecond;
     public override StateType Type => StateType.Magic;
@@ -33,7 +32,6 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         Debug.Log("HealingPoisonPerSecond / EnterState");
-        Debug.Log("HealingPoisonPerSecond / EveryState = NewState");
 
         MaxStacksCount = _maxStack;
 
@@ -56,15 +54,12 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
             {
                 MakeHeal();
             }
-            else
-            {
-                return;
-            }
+
             _timeBetweenHeal = _startTimeBetweenHeal;
         }
 
         _duration -= Time.deltaTime;
-        if (_duration < 0 || turnOff)
+        if (_duration < 0)
         {
             ExitState();
         }
@@ -77,18 +72,6 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        //if (CurrentStacksCount < MaxStacksCount)
-        //{
-        //    Debug.Log("HealingPoisonPerSecond / Stack / if / CurrentStacksCount = " + CurrentStacksCount);
-        //    CurrentStacksCount++;
-        //    _duration = _baseDuration;
-        //    return true;
-        //}
-        //else
-        //{
-        //    _duration = _baseDuration;
-        //    return true;
-        //}
         return false;
     }
 
@@ -106,6 +89,6 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
         Debug.Log($"HealingPoisonPerSecond / MakeHeal / heal.value = {heal.Value}");
 
         _characterState.Character.Health.Heal(ref heal, null);
-        _characterState.Character.DamageTracker.AddHeal(heal, true);
+        //_characterState.Character.DamageTracker.AddHeal(heal, true);
     }
 }

@@ -3282,7 +3282,7 @@ PrefabInstance:
     - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _minionPrefs.Array.data[0]
       value: 
-      objectReference: {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+      objectReference: {fileID: 4699909658046791957, guid: a981efc231a79eb4abf597c61aabb12f, type: 3}
     - target: {fileID: 556128977287844779, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.0404512
@@ -4017,7 +4017,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.size
-      value: 11
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[0]
@@ -4058,7 +4058,7 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[9]
       value: 
-      objectReference: {fileID: 3499405661049862048}
+      objectReference: {fileID: 3123823521537486777}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[0]
       value: 
@@ -4111,6 +4111,10 @@ PrefabInstance:
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[10]
       value: 
       objectReference: {fileID: 2292270509749100553}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[11]
+      value: 
+      objectReference: {fileID: 8412145673821603884}
     - target: {fileID: 6397899444093627911, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.1387713

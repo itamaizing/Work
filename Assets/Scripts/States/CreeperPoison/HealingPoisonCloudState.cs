@@ -135,7 +135,7 @@ public class HealingPoisonCloudState : AbstractCharacterState
             DamageableSkill = null,
         };
         targetHealth.Health.Heal(ref heal, null);
-        targetHealth.DamageTracker.AddHeal(heal);
+        //targetHealth.DamageTracker.AddHeal(heal);
     }
 
     private void ResetValues()
