@@ -49,6 +49,18 @@ public class Bar : MonoBehaviour
 		_resource.ValueChanged += OnValueChanged;
 		_resource.PhantomValueShown += PreviewChange;
 		_resource.MaxValueChanged += OnMaxValueChanged;
+
+		_health = resource as Health;
+		if (_health != null)
+		{
+			_health.ShieldDeactivated += OnShieldDeactivated;
+			_health.OnShieldValuesChanged += UpdateShieldBar;
+		}
+
+		if (_shieldBar != null)
+		{
+			UpdateShieldVisual();
+		}
 	}
 
     private void Start()
@@ -68,9 +80,25 @@ public class Bar : MonoBehaviour
 		_resource.ValueChanged -= OnValueChanged;
 		_resource.PhantomValueShown -= PreviewChange;
 		_resource.MaxValueChanged -= OnMaxValueChanged;
+
+		if (_health != null)
+		{
+			_health.ShieldDeactivated -= OnShieldDeactivated;
+			_health.OnShieldValuesChanged -= UpdateShieldBar;
+		}
 	}
 
-    public virtual void UpdateBar()
+	public virtual void UpdateBarWithShield(float healthBarTarget)
+	{
+		_bar.value = _healthBarTarget;
+
+		if (_showText)
+			_barText.text = Mathf.RoundToInt(_currentValue).ToString();
+
+		StartCoroutine(DisapearBar());
+	}
+
+	public virtual void UpdateBar()
 	{
 		_bar.value = _currentValue / _maxValue;
 
@@ -83,18 +111,35 @@ public class Bar : MonoBehaviour
 	private void OnValueChanged(float oldValue, float newValue)
     {
         _currentValue = newValue;
+
+		if (_shieldBar != null)
+		{
+			UpdateShieldVisual();
+			if (ShieldActive) UpdateBarWithShield(_healthBarTarget);
+			else UpdateBar();
+		}
+
 		UpdateBar();
 	}
     
     private void OnMaxValueChanged(float oldValue, float newValue)
     {
         _maxValue = newValue;
+
+		if (_shieldBar != null)
+		{
+			UpdateShieldVisual();
+			if (ShieldActive) UpdateBarWithShield(_healthBarTarget);
+			else UpdateBar();
+		}
+
 		UpdateBar();
 	}
 
 	private IEnumerator DisapearBar()
 	{
 		yield return new WaitForSeconds(_timeToDisapear);
+		if (ShieldActive) _barMinus.DOValue(_healthBarTarget, _disapearSpeed);
 		_barMinus.DOValue(_currentValue / _maxValue, _disapearSpeed);
 	}
 
@@ -103,6 +148,7 @@ public class Bar : MonoBehaviour
 		float newValue = _currentValue - damage;
 		//Debug.Log(newValue + " new " + _currentValue + " cur " + _maxValue + " max" );
 		//Debug.Log(_barPlus + " name: "+ name);
+
 		if (_barPlus != null)
 		{
 			if (newValue < _currentValue)
@@ -123,5 +169,39 @@ public class Bar : MonoBehaviour
 		}
 		// fading bar
 		//_currentValue 
+	}
+
+	private void UpdateShieldBar(float absorbed, float maxAbsorption)
+	{
+		if (_shieldBar != null)
+		{
+			if (absorbed < maxAbsorption)
+			{
+				_healthBarTarget = (_currentValue - (maxAbsorption - absorbed)) / _maxValue;
+				_bar.DOValue(_healthBarTarget, _disapearSpeed);
+				_barMinus.DOValue(_healthBarTarget, _disapearSpeed);
+				ShieldActive = true;
+			}
+
+			else
+			{
+				ShieldActive = false;
+				UpdateBar();
+			}
+		}
+	}
+
+	private void UpdateShieldVisual()
+	{
+		if (_shieldBar != null)
+		{
+			_shieldBar.value = _currentValue / _maxValue;
+		}
+	}
+
+	private void OnShieldDeactivated()
+	{
+		ShieldActive = false;
+		UpdateBar();
 	}
 }

@@ -1,5 +1,6 @@
 using Mirror;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using System.Linq;
 using UnityEngine;
 
@@ -47,8 +48,7 @@ public class DefaultState : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		_characterState.StateIcons?.DeactivateIcon();
-		_characterState.RemoveState(this);
+
 	}
 
 	public override bool Stack(float time)
@@ -586,78 +586,66 @@ public class CharacterState : NetworkBehaviour
 	}
 
 	private void AddStateLogic(States state, float duration, float damageToExit, Schools school,
-		GameObject personWhoShooted, string skillName)
+	GameObject personWhoShooted, string skillName)
 	{
 		if (invinsible) return;
 
-		if (CheckForState(state))
-		{
-			for (int i = 0; i < currentStates.Count; i++)
-			{
-				if (currentStates[i].State == state)
-				{
-					currentStates[i].Stack(duration);
-					_stateIcons.ActivateIco(state, duration, 1, true);
-
-					var stateToMove = currentStates[i];
-					currentStates.RemoveAt(i);
-					currentStates.Add(stateToMove);
-
-					break;
-				}
-			}
-		}
-		else
-		{
-			AbstractCharacterState stateForResist = enumToState[state];
-			Health characterHealth = _hero.Health;
-			float chanceDodgeMagDamage = Random.Range(0f, 100f);
-
-			if (stateForResist.Type == StateType.Magic)
-			{
-				if (chanceDodgeMagDamage <= characterHealth.ResistMagDamage)
-				{
-					Debug.Log("CharacterState / DodgeMagDamage");
-					return;
-				}
-			}
-
-			CreateState(enumToState[state], state, duration, damageToExit, personWhoShooted, skillName, false);
-
-			if (enumToState[state] is IDamageable damageableShield)
-			{
-				AddShield(damageableShield);
-			}
-
-			if (school != Schools.None)
-			{
-				var counterSpell = (AbilitySchoolDebuff)enumToState[state];
-				counterSpell.canceledSchoool = school;
-			}
-		}
-
-		UpdateStatesOrder(state);
-	}
-
-	private void UpdateStatesOrder(States updatedState)
-	{
+		// Если состояние уже есть, добавляем стаки и перемещаем в конец списка
 		for (int i = 0; i < currentStates.Count; i++)
 		{
-			if (currentStates[i].State == updatedState)
+			if (currentStates[i].State == state)
 			{
-				var stateToMove = currentStates[i];
-				currentStates.RemoveAt(i);
-				currentStates.Add(stateToMove);
-				break;
+				currentStates[i].Stack(duration); // Увеличиваем длительность
+				_stateIcons.ActivateIco(state, duration, 1, true); // Обновляем UI
+
+				// Перемещаем текущее состояние в конец списка
+				MoveStateToEnd(i);
+				return;
 			}
 		}
 
-		currentStates.Sort((state1, state2) =>
+		// Если состояние отсутствует, создаем новое
+		AbstractCharacterState stateInstance = enumToState[state];
+		Health characterHealth = _hero.Health;
+		float chanceDodgeMagDamage = Random.Range(0f, 100f);
+
+		// Проверка на сопротивление магическому урону
+		if (stateInstance.Type == StateType.Magic && chanceDodgeMagDamage <= characterHealth.ResistMagDamage)
 		{
-			if (state1.State == updatedState) return 1;
-			if (state2.State == updatedState) return -1;
-			return 0;
-		});
+			Debug.Log("CharacterState / DodgeMagDamage");
+			return;
+		}
+
+		// Создаем новое состояние и добавляем в конец списка
+		CreateState(stateInstance, state, duration, damageToExit, personWhoShooted, skillName, false);
+
+		// Если состояние — щит, добавляем его в Health
+		if (stateInstance is IDamageable damageableShield)
+		{
+			AddShield(damageableShield);
+		}
+
+		// Если нужно указать школу заклинаний, обновляем контрспелл
+		if (school != Schools.None)
+		{
+			var counterSpell = (AbilitySchoolDebuff)stateInstance;
+			counterSpell.canceledSchoool = school;
+		}
+	}
+
+	private void MoveStateToEnd(int index)
+	{
+		if (index < 0 || index >= currentStates.Count)
+			return;
+
+		// Сохраняем ссылку на состояние
+		var state = currentStates[index];
+
+		// Удаляем элемент из текущей позиции
+		currentStates.RemoveAt(index);
+
+		// Добавляем его в конец списка
+		currentStates.Add(state);
 	}
 
 	private void CreateState(AbstractCharacterState state, States stateName, float duration, float damageToExit, GameObject personWhoShooted, string skillName, bool stack)

@@ -63,25 +63,22 @@ public class ShotIntoSky : Skill
 
             foreach (var hitCollider in hitColliders)
             {
-                if (hitCollider.TryGetComponent<HeroComponent>(out HeroComponent enemy))
-                {
-                    float finalDamage = CalculateDamage(Damage);
-                    ApplyDamage(finalDamage, DamageType.Magical, enemy);
-
-                    if (Random.Range(0f, 100f) <= stunChance)
-                    {
-                        var targetState = enemy.CharacterState;
-                        if (targetState != null)
-                        {
-                            CmdAddState(targetState);
-                        }
-                    }
-                }
-
-                else if  (hitCollider.TryGetComponent<Object>(out Object target))
+                if (hitCollider.TryGetComponent<IDamageable>(out IDamageable target))
                 {
                     float finalDamage = CalculateDamage(Damage);
                     ApplyDamage(finalDamage, DamageType.Magical, target);
+
+                    if (Random.Range(0f, 100f) <= stunChance)
+                    {
+                        if (target is Character character)
+                        {
+                            var targetState = character.CharacterState;
+                            if (targetState != null)
+                            {
+                                CmdAddState(targetState);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -105,34 +102,28 @@ public class ShotIntoSky : Skill
         return baseDamage;
     }
 
-    private void ApplyDamage(float damage, DamageType damageType, Character target)
+    private void ApplyDamage(float damage, DamageType damageType, IDamageable target)
     {
         Damage _damage = new Damage
         {
             Value = damage,
-            Type = DamageType.Physical,
+            Type = damageType,
             PhysicAttackType = AttackRangeType.RangeAttack,
         };
 
-        CmdApplyDamage(_damage, target.gameObject);
-    }
-
-    private void ApplyDamage(float damage, DamageType damageType, Object target)
-    {
-        Damage _damage = new Damage
+        if (target is Component targetComponent)
         {
-            Value = damage,
-            Type = DamageType.Physical,
-            PhysicAttackType = AttackRangeType.RangeAttack,
-        };
-
-        CmdTryTakeDamage(target, _damage, null);
+            CmdApplyDamage(targetComponent.gameObject, _damage, null);
+        }
     }
 
     [Command]
-    private void CmdTryTakeDamage(Object target, Damage damage, Skill skill)
+    private void CmdApplyDamage(GameObject targetObject, Damage damage, Skill skill)
     {
-        target.ObjectHealth.TryTakeDamage(ref damage, null);
+        if (targetObject != null && targetObject.TryGetComponent<IDamageable>(out IDamageable target))
+        {
+            target.TryTakeDamage(ref damage, skill);
+        }
     }
 
     protected override void ClearData()
