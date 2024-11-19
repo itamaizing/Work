@@ -308,7 +308,7 @@ PrefabInstance:
     - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _minionPrefs.Array.data[0]
       value: 
-      objectReference: {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+      objectReference: {fileID: 5098791485279102217, guid: d2460f9c7d78d8145801d5b3ad0d5d20, type: 3}
     - target: {fileID: 891583693850145175, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -451,7 +451,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentGroup.Array.size
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[0]
@@ -492,15 +492,15 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentGroup.Array.data[0]
       value: 
-      objectReference: {fileID: 4463242237023860430}
+      objectReference: {fileID: 3657159837731672594}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentGroup.Array.data[1]
       value: 
-      objectReference: {fileID: 3657159837731672594}
+      objectReference: {fileID: 2328616262099685549}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentGroup.Array.data[2]
       value: 
-      objectReference: {fileID: 2328616262099685549}
+      objectReference: {fileID: 3608745426577503531}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentGroup.Array.data[3]
       value: 
@@ -755,9 +755,9 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: f6b63db1fe9a8db4b86632917e246e69, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
-  _cooldownTime: 1.4
+  _cooldownTime: 0
   _castDeley: 0
-  _damageValue: 0
+  _damageValue: 8
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -785,9 +785,8 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _attackZoneSize: 0
-  _attackDelay: 0
+  _attackDelay: 1.4
   _chargeAttackDelay: 0
-  _damage: 8
   _playerLinks: {fileID: 4374618947117916461}
   _combo: {fileID: 161199462986225237}
 --- !u!114 &752221787785051408

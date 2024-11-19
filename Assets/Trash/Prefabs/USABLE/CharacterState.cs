@@ -1,5 +1,6 @@
 using Mirror;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 
 public abstract class AbstractCharacterState
@@ -388,7 +389,7 @@ public class CharacterState : NetworkBehaviour
 		{
 			RemoveShield(damageableShield);
 		}
-			
+		_stateIcons.RemoveItemByState(newState.State);
 		currentStates.Remove(newState);
 	}
 

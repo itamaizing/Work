@@ -44,14 +44,15 @@ public class DeathSpiral : Skill
 		{
 			if (GetMouseButton)
 			{
-				if (GetTarget() != null) 
-				if (GetTarget().character != null)
+				if (GetTarget() != null)
 				{
-					// FIND SHADOW!
-
-					_target = GetTarget().character.gameObject;
-					Debug.Log(_target + " target name ");
+					if (GetTarget().character != null)
+						_target = GetTarget().character.gameObject;
 				}
+				if (GetRaycastTargetShadow() != null)
+				{
+					_target = GetRaycastTargetShadow();					
+				}			
 			}
 			yield return null;
 		}
@@ -170,7 +171,7 @@ public class DeathSpiral : Skill
 		_superCharge = false;
 	}
 
-	private Character GetRaycastTargetShadow(bool isCanTargetHimself = false)
+	private GameObject GetRaycastTargetShadow(bool isCanTargetHimself = false)
 	{
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit[] rayHit = Physics.RaycastAll(ray, 100f, TargetsLayers);
@@ -179,18 +180,23 @@ public class DeathSpiral : Skill
 		{
 			Debug.Log(hit.collider.gameObject.name);
 		}
-		Character target = null;
+		GameObject target = null;
 
 		foreach (var item in rayHit)
 		{
 			if (rayHit.Length > 0 && item.transform.TryGetComponent<Character>(out Character enemy))
 			{
-				target = enemy;
+				target = enemy.gameObject;
 
 				if (isCanTargetHimself == false && target.transform == _hero.Health.transform)
 				{
 					target = null;
 				}
+			}
+
+			if(rayHit.Length > 0 && item.transform.TryGetComponent<IceShadowObject>(out IceShadowObject shadow))
+			{
+				target = shadow.gameObject;
 			}
 		}
 		//_tempTargetbase = target;

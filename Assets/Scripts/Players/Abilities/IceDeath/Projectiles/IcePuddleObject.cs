@@ -14,8 +14,8 @@ public class IcePuddleObject : Projectiles
 	private float _curEvade = 0;
 	private bool _talentEvadeDadBoost = false;
 	private bool _talentFrostingFrozen = false;
-	private List<CharacterState> _enemies = new List<CharacterState>();
-	private List<EnemyToState> _targets;
+	//private List<CharacterState> _enemies = new List<CharacterState>();
+	private List<EnemyToState> _targets = new List<EnemyToState>();
 	/*
 	 * buff player
 	 * */
@@ -40,20 +40,27 @@ public class IcePuddleObject : Projectiles
 		}
 
 
-		StartCoroutine(DestroyPuddle());
+		//StartCoroutine(DestroyPuddle());
 		StartCoroutine(StartFade());
 	}
 
 	private void Update()
 	{
+		_timeToDestroy -= Time.deltaTime;
+		if(_timeToDestroy < 0) 
+		{
+			Explode();
+		}
+
 		if (_targets.Count <= 0) return;
 
 		for(int i = 0; i < _targets.Count; i++)
 		{
-			_targets[i].duration -= Time.deltaTime;
-			if (_targets[i].duration < 0 )
+			_targets[i].time -= Time.deltaTime;
+			if (_targets[i].time < 0 )
 			{
-				_targets[i].enemy.CharacterState.AddState(States.Frosting, _targets[i].duration, 0, _dad.gameObject, _skill.name);
+				//_targets[i].enemy.CharacterState.AddState(States.Frosting, _targets[i].duration, 0, _dad.gameObject, _skill.name);
+				_targets[i].enemy.CharacterState.AddState(States.Frosting, _timeToDestroy, 0, _dad.gameObject, _skill.name);
 				_targets.Remove(_targets[i]);
 			}
 		}
@@ -70,7 +77,7 @@ public class IcePuddleObject : Projectiles
 		_spriteRenderer.DOFade(1, 1);
 	}
 
-
+	[Server]
 	private void OnTriggerExit(Collider collision)
 	{
 		if (collision.gameObject == _dad.gameObject && _healthComponent != null)
@@ -112,18 +119,8 @@ public class IcePuddleObject : Projectiles
 		if (collision.TryGetComponent<Character>(out var target) && _energy != null)
 		{
 			Debug.Log(target.name);
-			float duration = 3;
+			float duration = _timeToDestroy;
 			//target.CharacterState.energy = energy;
-			if (_energy.CurrentValue / 5 > 4)
-			{
-				duration += 4;
-				_energy.TryUse(20);
-			}
-			else
-			{
-				duration += _energy.CurrentValue / 5;
-				_energy.UseAllEnergy();
-			}
 
 			EnemyToState enemy = new EnemyToState();
 			enemy.enemy = target;
@@ -140,7 +137,7 @@ public class IcePuddleObject : Projectiles
 				_curEvade = 3;
 				_dad.Health.SetEvadeAll(3);
 			}
-			_enemies.Add(target.CharacterState);
+			_targets.Add(enemy);
 		}
 		//Explode();
 	}
@@ -153,10 +150,10 @@ public class IcePuddleObject : Projectiles
 		}
 		Debug.LogError("fix");
 		//_healthComponent.SetBoostRegen2(0);
-		foreach (var target in _enemies)
+		for(int i = _targets.Count - 1; i >= 0; i--) 
 		{
-			target.CmdRemoveState(States.Frosting); 
-			_enemies.Remove(target);
+			_targets[i].enemy.CharacterState.CmdRemoveState(States.Frosting);
+			_targets.Remove(_targets[i]);
 		}
 		Destroy(gameObject);
 	}
@@ -187,6 +184,6 @@ public class IcePuddleObject : Projectiles
 public class EnemyToState
 {
 	public Character enemy;
-	public float time = 1;
+	public float time = 0.5f;
 	public float duration = 1;
 }

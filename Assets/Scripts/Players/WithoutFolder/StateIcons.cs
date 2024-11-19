@@ -168,5 +168,29 @@ public class StateIcons : MonoBehaviour
 			}
 		}
 	}
+
+	public void RemoveIconCount()
+	{
+		for (int i = _activeEffects.Count - 1; i >= 0; i--)
+		{
+			if (_activeEffects[i].count > 0)
+			{
+				_activeEffects[i].count -= 1;
+				_activeEffects[i].Text.text = _activeEffects[i].count.ToString();
+				break;
+			}
+		}
+	}
+
+	public void DeactivateIcon()
+	{
+		for (int i = _activeEffects.Count - 1; i >= 0; i--)
+		{
+			_activeEffects[i].FadeFront.fillAmount = 0;
+			Destroy(_activeEffects[i].gameObject);
+			_activeEffects.RemoveAt(i);
+			break;
+		}
+	}
 }
 

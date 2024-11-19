@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PhysicalAttack : AutoAttackSkill
 {
-	[SerializeField] private float _damage = 8f;
+	//[SerializeField] private float _damage = 8f;
 	[SerializeField] private HeroComponent _playerLinks;
 	[SerializeField] private SeriesOfStrikes _combo;
 
@@ -40,11 +40,12 @@ public class PhysicalAttack : AutoAttackSkill
 	}
 	private void Hit(Character enemy)
 	{
+		//Debug.Log(AttackS)
 		if (_curTarget == enemy && _energy.CurrentValue >= 5)
 		{
 			//_energy.CmdUse(5);
 			Buff.AttackSpeed.IncreasePercentage(_multiplier);
-			float curDamage = _damage + Random.Range(0, 2);
+			float curDamage = _damageValue + Random.Range(0, 2);
 			
 			if(_combo.MakeHit(enemy, AbilityForm.Physical, 0, curDamage))
 			{
@@ -66,6 +67,7 @@ public class PhysicalAttack : AutoAttackSkill
 				curDamage *= 1.4f;
 			}
 			_energy.SumDamageMake(curDamage);
+			_energy.CmdUse(5);
 		}
 		else
 		{
@@ -74,9 +76,7 @@ public class PhysicalAttack : AutoAttackSkill
 			Debug.Log("lose streak to another enemy");
 			_curTarget = enemy;
 
-			//AttackSpeed *= (1 - _combo.GetMultipliedSpeed()); // error
-
-			float curDamage = _damage + Random.Range(0, 2);
+			float curDamage = _damageValue + Random.Range(0, 2);
 			_energy.SumDamageMake(curDamage);
 
 			_combo.MakeHit(enemy, AbilityForm.Physical, 0, curDamage);
@@ -103,12 +103,12 @@ public class PhysicalAttack : AutoAttackSkill
 			//_energy.CmdUse(10);
 			Damage damage = new Damage
 			{
-				Value = _damage * 0.5f,
+				Value = _damageValue * 0.5f,
 				Type = DamageType.Physical,
 			};
 			CmdApplyDamage(damage, _curTarget.gameObject);
 			//_curTarget.Health.TryTakeDamage(_damage * .5f, DamageType.Physical, AttackRangeType.MeleeAttack);
-			float curDamage = _damage * .5f;
+			float curDamage = _damageValue * .5f;
 			_energy.SumDamageMake(curDamage);
 			_curTarget.CharacterState.CmdAddState(States.Stun, 1.5f, 0, _playerLinks.gameObject, name);
 			PushBackEnemy(_curTarget);
