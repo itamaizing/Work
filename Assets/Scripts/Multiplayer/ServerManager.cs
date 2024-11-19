@@ -47,7 +47,6 @@ public class ServerManager : NetworkBehaviour
             if (_managers[i].GameMode == mode)
                 return i;
         }
-        Debug.LogError("manager not found");
         return -37;
     }
 
@@ -62,13 +61,33 @@ public class ServerManager : NetworkBehaviour
 
         user.GetComponent<User>().connectionToClient.Send(new SceneMessage { sceneName = _managers[index].Scene, sceneOperation = SceneOperation.LoadAdditive });
         SceneManager.MoveGameObjectToScene(user, SceneManager.GetSceneAt(SceneManager.sceneCount - 1));
+
+        if (!user.activeSelf)
+        {
+            user.SetActive(true);
+        }
     }
 
     public void SetPlayer(HeroComponent hero)
     {
-        _currentHeroIndex = _heroList.IndexOf(hero);
-        LevelCharacterManager.Instance.SetHero(hero);
+        if (hero == null)
+        {
+            return;
+        }
+
+        _currentHeroIndex = _heroList.FindIndex(h => h.Data.Name == hero.Data.Name);
+
+        if (_currentHeroIndex == -1)
+        {
+            return;
+        }
+
+        if (User.LevelCharacterManager.Instance != null)
+        {
+            User.LevelCharacterManager.Instance.SetHero(hero);
+        }
     }
+
     public void SetMode(GameMode mode)
     {
         _currentGameMode = mode;

@@ -33,7 +33,7 @@ public class UIMenuMainCharactersPanel : MonoBehaviour
             _characters.Add(character);
         }
 
-        if (_currentHero == null)
+        if (_currentHero == null && _characters.Count > 0)
         {
             _characters[0].Select();
         }
@@ -44,7 +44,10 @@ public class UIMenuMainCharactersPanel : MonoBehaviour
         _currentHero = hero;
         Owner.SetHero(hero);
 
-        ServerManager.Instance.SetPlayer(hero);
+        if (ServerManager.Instance != null)
+        {
+            ServerManager.Instance.SetPlayer(hero);
+        }
     }
 
     public void SetHero(HeroComponent hero)

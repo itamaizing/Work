@@ -25,13 +25,13 @@ public class UIMenuMainWindow : MonoBehaviour
     {
         if (_gameTypesPanel.SelectedGameMode == GameMode.GM1vs1MaximumMode)
         {
-            if (BottleUserManager.Instance.GetCurrentBottles() < 1)
+            if (User.BottleUserManager.Instance.GetCurrentBottles() < 1)
             {
                 Debug.Log("Недостаточно бутылей для входа в GM1vs1MaximumMode.");
                 return;
             }
 
-            BottleUserManager.Instance.TryUseBottle();
+            User.BottleUserManager.Instance.TryUseBottle();
         }
 
         ServerManager.Instance.StartClient();

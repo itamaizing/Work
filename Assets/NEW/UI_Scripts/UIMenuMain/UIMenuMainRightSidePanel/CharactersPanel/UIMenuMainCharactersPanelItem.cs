@@ -37,5 +37,9 @@ public class UIMenuMainCharactersPanelItem : MonoBehaviour, IPointerEnterHandler
     public void Select()
     {
         Selected?.Invoke(CurrentHero);
+        if (ServerManager.Instance != null)
+        {
+            ServerManager.Instance.SetPlayer(CurrentHero);
+        }
     }
 }

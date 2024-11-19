@@ -106,7 +106,7 @@ public class TestGameRules : GameRules
         if (!isServer) return;
 
         GameMode currentMode = ServerManager.Instance.CurrentGameMode;
-        bool isMaxLevel = LevelCharacterManager.Instance.GetCurrentLevel() >= LevelCharacterManager.Instance.MaxLevel;
+        bool isMaxLevel = User.LevelCharacterManager.Instance.GetCurrentLevel() >= User.LevelCharacterManager.Instance.MaxLevel;
         bool isVictory = team1Score >= maxScore;
 
         switch (currentMode)
@@ -116,17 +116,17 @@ public class TestGameRules : GameRules
                 {
                     if (isMaxLevel)
                     {
-                        BottleUserManager.Instance.AddBottleVolume(bottleVolumePerWin);
+                        User.BottleUserManager.Instance.AddBottleVolume(bottleVolumePerWin);
                     }
                     else
                     {
-                        LevelCharacterManager.Instance.AddExperience(experiencePerWin);
-                        BottleUserManager.Instance.AddBottleVolume(bottleVolumePerWin);
+                        User.LevelCharacterManager.Instance.AddExperience(experiencePerWin);
+                        User.BottleUserManager.Instance.AddBottleVolume(bottleVolumePerWin);
                     }
                 }
                 else if (!isMaxLevel)
                 {
-                    LevelCharacterManager.Instance.AddExperience(experiencePerLoss);
+                    User.LevelCharacterManager.Instance.AddExperience(experiencePerLoss);
                 }
                 break;
 
@@ -135,11 +135,11 @@ public class TestGameRules : GameRules
                 {
                     if (isMaxLevel)
                     {
-                        BottleUserManager.Instance.AddBottleVolume(bottleVolumePerWin);
+                        User.BottleUserManager.Instance.AddBottleVolume(bottleVolumePerWin);
                     }
                     else
                     {
-                        LevelCharacterManager.Instance.AddExperience(experiencePerLoss);
+                        User.LevelCharacterManager.Instance.AddExperience(experiencePerLoss);
                     }
                 }
                 break;
@@ -162,8 +162,9 @@ public class TestGameRules : GameRules
             {
                 bool isPlayer = _players.Exists(player => player.gameObject == networkIdentity.gameObject);
                 bool isTestGameRules = networkIdentity.GetComponent<TestGameRules>() != null;
+                bool isUser = networkIdentity.GetComponent<User>() != null;
 
-                if (networkIdentity != null && !isPlayer && !isTestGameRules)
+                if (networkIdentity != null && !isPlayer && !isTestGameRules && !isUser)
                 {
                     objectsToRemove.Add(networkIdentity);
                 }

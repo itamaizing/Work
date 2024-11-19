@@ -154,8 +154,8 @@ public class TestGameRulesBattlegrounds : GameRules
 
         if (isTeam1Winner || isTeam2Winner)
         {
-            LevelCharacterManager.Instance.AddExperience(_experienceForWin);
-            BottleUserManager.Instance.AddBottleVolume(_bottleVolumeForWin);
+            User.LevelCharacterManager.Instance.AddExperience(_experienceForWin);
+            User.BottleUserManager.Instance.AddBottleVolume(_bottleVolumeForWin);
         }
 
         RpcCloseRoomOnClients();
