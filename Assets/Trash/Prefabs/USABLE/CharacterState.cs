@@ -576,14 +576,12 @@ public class CharacterState : NetworkBehaviour
 	[ClientRpc]
 	private void ClientAddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
 	{
-		//Debug.Log("Add state rpc");
 		AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
 	}
 
 	[ClientRpc]
 	private void ClientRemoveState(States stateName)
 	{
-		//Debug.Log("Remove state client" + stateName);
 		RemoveStateLogic(stateName);
 	}
 
@@ -592,8 +590,6 @@ public class CharacterState : NetworkBehaviour
 	{
 		if (invinsible) return;
 
-		//Debug.Log(state);
-
 		if (CheckForState(state))
 		{
 			for (int i = 0; i < currentStates.Count; i++)
@@ -601,8 +597,11 @@ public class CharacterState : NetworkBehaviour
 				if (currentStates[i].State == state)
 				{
 					currentStates[i].Stack(duration);
-
 					_stateIcons.ActivateIco(state, duration, 1, true);
+
+					var stateToMove = currentStates[i];
+					currentStates.RemoveAt(i);
+					currentStates.Add(stateToMove);
 
 					break;
 				}
@@ -616,7 +615,7 @@ public class CharacterState : NetworkBehaviour
 
 			if (stateForResist.Type == StateType.Magic)
 			{
-				if (chanceDodgeMagDamage <= characterHealth.EvadeMagDamage)
+				if (chanceDodgeMagDamage <= characterHealth.ResistMagDamage)
 				{
 					Debug.Log("CharacterState / DodgeMagDamage");
 					return;
@@ -636,6 +635,29 @@ public class CharacterState : NetworkBehaviour
 				counterSpell.canceledSchoool = school;
 			}
 		}
+
+		UpdateStatesOrder(state);
+	}
+
+	private void UpdateStatesOrder(States updatedState)
+	{
+		for (int i = 0; i < currentStates.Count; i++)
+		{
+			if (currentStates[i].State == updatedState)
+			{
+				var stateToMove = currentStates[i];
+				currentStates.RemoveAt(i);
+				currentStates.Add(stateToMove);
+				break;
+			}
+		}
+
+		currentStates.Sort((state1, state2) =>
+		{
+			if (state1.State == updatedState) return 1;
+			if (state2.State == updatedState) return -1;
+			return 0;
+		});
 	}
 
 	private void CreateState(AbstractCharacterState state, States stateName, float duration, float damageToExit, GameObject personWhoShooted, string skillName, bool stack)

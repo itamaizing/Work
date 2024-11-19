@@ -8,7 +8,14 @@ public class TestGameRulesBattlegrounds : GameRules
 {
     private List<GameObject> _towerTeam1;
     private List<GameObject> _towerTeam2;
+
+    [Header("Game Settings")]
     [SerializeField] private float _lifeTime = 10f;
+    [SerializeField] private int _experienceForKill = 5;
+    [SerializeField] private int _experienceForWin = 3;
+    [SerializeField] private float _bottleVolumeForWin = 1f / 3f;
+
+    [SerializeField] private bool isRemoveRoom = true;
 
     public override void GameStartServer(List<Transform> spawnPoints)
     {
@@ -17,16 +24,38 @@ public class TestGameRulesBattlegrounds : GameRules
 
         foreach (var playerSettings in _players)
         {
+            //if (playerSettings is HeroComponent heroComponent)
+            //{
+            //    heroComponent.TalentManager.ClientRpcResetTalentPoints();
+            //    SaveManager.Instance.ResetAllTalents(heroComponent);
+            //}
+
             var health = playerSettings.NetworkSettings.CachedHealth;
             if (health != null)
             {
                 health.Died += () => OnPlayerDeath(playerSettings);
                 health.Died += () => RespawnPlayer(playerSettings);
                 health.Died += () => ResetPlayerState(playerSettings);
+
+                playerSettings.LVL.LVLUped += (newLevel) => OnPlayerLevelUp(playerSettings);
             }
         }
 
         SubscribeToTowerDeaths();
+    }
+
+    private void OnPlayerLevelUp(Character playerSettings)
+    {
+        int playerTeamIndex = playerSettings.NetworkSettings.TeamIndex;
+
+        //foreach (var player in _players)
+        //{
+        //    if (player.NetworkSettings.TeamIndex == playerTeamIndex && player is HeroComponent heroComponent)
+        //    {
+        //        heroComponent.TalentManager.ClientRpcAddPoints();
+        //        Debug.Log($"Player in Team {playerTeamIndex} received 1 talent point due to level up.");
+        //    }
+        //}
     }
 
     protected override void GameStartClient()
@@ -40,7 +69,6 @@ public class TestGameRulesBattlegrounds : GameRules
         {
             _towerTeam1 = new List<GameObject>(towerTeam.TowerTeam_1);
             _towerTeam2 = new List<GameObject>(towerTeam.TowerTeam_2);
-            Debug.Log("Towers find");
         }
 
         if (_towerTeam1.Count == 0 || _towerTeam2.Count == 0)
@@ -73,6 +101,16 @@ public class TestGameRulesBattlegrounds : GameRules
     private void OnPlayerDeath(Character playerSettings)
     {
         Debug.Log($"Player from Team {playerSettings.NetworkSettings.TeamIndex} died.");
+
+        int enemyTeamIndex = playerSettings.NetworkSettings.TeamIndex == 1 ? 2 : 1;
+
+        foreach (var player in _players)
+        {
+            if (player.NetworkSettings.TeamIndex == enemyTeamIndex)
+            {
+                player.LVL.AddEXP(_experienceForKill);
+            }
+        }
     }
 
     private void ResetPlayerState(Character playerSettings)
@@ -104,15 +142,8 @@ public class TestGameRulesBattlegrounds : GameRules
         }
     }
 
-    [ClientRpc]
-    private void RpcTeleportPlayer(GameObject player, Vector3 position, Quaternion rotation)
-    {
-        player.transform.SetPositionAndRotation(position, rotation);
-    }
-
     private void OnTowerDestroyed(int teamIndex)
     {
-        Debug.Log($"Team Tower {teamIndex} destroyed!");
         EndGame(teamIndex);
     }
 
@@ -121,19 +152,67 @@ public class TestGameRulesBattlegrounds : GameRules
         bool isTeam1Winner = losingTeamIndex == 2;
         bool isTeam2Winner = losingTeamIndex == 1;
 
-        if (isTeam1Winner)
+        if (isTeam1Winner || isTeam2Winner)
         {
-            LevelCharacterManager.Instance.AddExperience(3);
-            BottleUserManager.Instance.AddBottleVolume(1f / 3f);
-        }
-        else if (isTeam2Winner)
-        {
-            LevelCharacterManager.Instance.AddExperience(3);
-            BottleUserManager.Instance.AddBottleVolume(1f / 3f);
+            LevelCharacterManager.Instance.AddExperience(_experienceForWin);
+            BottleUserManager.Instance.AddBottleVolume(_bottleVolumeForWin);
         }
 
         RpcCloseRoomOnClients();
         StartCoroutine(CloseRoomJob());
+    }
+
+    protected override void UnsubscribeFromAllEvents()
+    {
+        foreach (var playerSettings in _players)
+        {
+            var health = playerSettings.NetworkSettings.CachedHealth;
+            if (health != null)
+            {
+                health.Died -= () => OnPlayerDeath(playerSettings);
+                health.Died -= () => RespawnPlayer(playerSettings);
+                health.Died -= () => ResetPlayerState(playerSettings);
+            }
+
+            var runeComponent = playerSettings.GetComponent<RuneComponent>();
+            if (runeComponent != null && health != null)
+            {
+                health.Died -= runeComponent.ResetValue;
+            }
+
+            playerSettings.LVL.LVLUped -= (newLevel) => OnPlayerLevelUp(playerSettings);
+        }
+
+        if (_towerTeam1 != null)
+        {
+            foreach (var tower in _towerTeam1)
+            {
+                var objectHealth = tower.GetComponent<ObjectHealth>();
+                if (objectHealth != null)
+                {
+                    objectHealth.OnDeath -= () => OnTowerDestroyed(1);
+                }
+            }
+        }
+
+        if (_towerTeam2 != null)
+        {
+            foreach (var tower in _towerTeam2)
+            {
+                var objectHealth = tower.GetComponent<ObjectHealth>();
+                if (objectHealth != null)
+                {
+                    objectHealth.OnDeath -= () => OnTowerDestroyed(2);
+                }
+            }
+        }
+    }
+
+
+    [ClientRpc]
+    private void RpcTeleportPlayer(GameObject player, Vector3 position, Quaternion rotation)
+    {
+        player.transform.SetPositionAndRotation(position, rotation);
     }
 
     [ClientRpc]
@@ -146,7 +225,6 @@ public class TestGameRulesBattlegrounds : GameRules
     {
         yield return StartCoroutine(CloseRoomJob());
         SceneManager.LoadScene("MainMenu");
-        NetworkManager.singleton.GetComponent<NetworkManager>().SpawnLocalUser();
     }
 
     private IEnumerator HandleTeamsAndSpawns(List<Transform> spawnPoints)
@@ -160,8 +238,6 @@ public class TestGameRulesBattlegrounds : GameRules
                 Transform spawnPoint = _spawnPoints[spawnIndex];
                 playerSettings.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
             }
-
-            Debug.Log($"Team: {playerSettings.NetworkSettings.TeamIndex}");
         }
 
         yield return StartCoroutine(SavePositionsAndAssignLayers());
@@ -174,6 +250,7 @@ public class TestGameRulesBattlegrounds : GameRules
             _lifeTime -= Time.deltaTime;
             yield return null;
         }
+
         StartCoroutine(CloseRoomJob());
     }
 }

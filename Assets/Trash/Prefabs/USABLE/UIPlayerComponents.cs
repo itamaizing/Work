@@ -27,7 +27,7 @@ public class UIPlayerComponents : MonoBehaviour
      */ //Why is initialization of this component necessary at all? Moreover, the UI should not initialize the logic
     private void Awake()
     {
-        _character.Health.DamageTakenType += OnDamageTaken;
+        _character.Health.DamageTaken += OnDamageTaken;
         _character.Health.ShieldDamageTaken += OnShieldDamageTaken;
         _character.Health.HealthRegenerated += OnHealthRegenerated;
         _character.Health.OnShieldAdd += OnShieldAdded;
@@ -117,7 +117,7 @@ public class UIPlayerComponents : MonoBehaviour
         ShowPopupValueRegen(regenAmount, _regenColor, _regenColor);
     }
 
-    private void OnDamageTaken(float value, DamageType damageType, Skill skill)
+    private void OnDamageTaken(float value, Damage damage, Skill skill)
     {
         ShowPopupValue(-value, _physDamageColor, _physDamageColor);
     }

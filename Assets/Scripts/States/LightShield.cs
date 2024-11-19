@@ -9,8 +9,7 @@ public class LightShield : AbstractCharacterState, IDamageable
     private float _curentAbsorption;
     private float _duration;
 
-    public event Action<Damage, Skill> DamageTaken;
-    public event Action<float, DamageType, Skill> DamageTakenType;
+    public event Action<float, Damage, Skill> DamageTaken;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.LightShield;
     public override StateType Type => StateType.Magic;
@@ -66,7 +65,7 @@ public class LightShield : AbstractCharacterState, IDamageable
         _curentAbsorption = _maxAbsorption - _damageAbsorbed;
 
         _characterState.GetComponent<Character>().DamageTracker.AddDamage(damage);
-        DamageTakenType?.Invoke(damageToAbsorb, damage.Type, skill);
+        DamageTaken?.Invoke(damageToAbsorb, damage, skill);
 
         _characterState.Character.Health.ClientRpcInvokeShieldDamageTaken(damageToAbsorb, damage.Type, skill);
 

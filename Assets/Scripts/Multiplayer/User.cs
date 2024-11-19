@@ -30,7 +30,7 @@ public class User : NetworkBehaviour
 
     public override void OnStartClient()
     {
-        if (isLocalPlayer && Instance == null)
+        if (isLocalPlayer && Instance == null && isOwned)
         {
             Instance = this;
         }

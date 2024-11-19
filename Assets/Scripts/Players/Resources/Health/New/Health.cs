@@ -12,7 +12,6 @@ public class Health : Resource, IDamageable, IHealingable
     protected float _evadeMeleeDamage;
     protected float _evadeRangeDamage;
     protected float _resistMagDamage;
-    protected float _evadeMagDamage;
 
     protected float _defPhysDamage;
     protected float _defMagDamage;
@@ -26,7 +25,6 @@ public class Health : Resource, IDamageable, IHealingable
     public float SumDamageTaken { get => _sumDamageTaken; }
     public float EvadeMeleeDamage { get => _evadeMeleeDamage; }
     public float EvadeRangeDamage { get => _evadeRangeDamage; }
-    public float EvadeMagDamage { get => _evadeMagDamage; }
     public float ResistMagDamage { get => _resistMagDamage; }
     public float DefPhysDamage { get => _defPhysDamage; }
     public float DefMagDamage { get => _defMagDamage; }
@@ -35,8 +33,7 @@ public class Health : Resource, IDamageable, IHealingable
 
     public event Action Evaded;
     public event Action<float , Skill , string> HealTaked;
-    public event Action<Damage, Skill> DamageTaken;
-    public event Action<float, DamageType, Skill> DamageTakenType;
+    public event Action<float , Damage, Skill> DamageTaken;
     public event Action<float> HealthRegenerated;
     public event Action Died;
     public event Action<float, float> OnShieldValuesChanged;
@@ -75,7 +72,7 @@ public class Health : Resource, IDamageable, IHealingable
             ClientRpcDied();
             Died?.Invoke();
         }
-        ClientRpcDamageTaked(damage, skill);
+        ClientRpcDamage(damage, skill);
         _sumDamageTaken += damage.Value;
         return true;
     }
@@ -230,9 +227,9 @@ public class Health : Resource, IDamageable, IHealingable
     }
 
     [ClientRpc]
-    public void ClientRpcInvokeShieldDamageTaken(float damageTaken, DamageType damageType, Skill skill)
+    public void ClientRpcInvokeShieldDamageTaken(float value, DamageType damageType, Skill skill)
     {
-        ShieldDamageTaken?.Invoke(damageTaken, damageType, skill);
+        ShieldDamageTaken?.Invoke(value, damageType, skill);
     }
 
     [ClientRpc]
@@ -248,9 +245,9 @@ public class Health : Resource, IDamageable, IHealingable
     }
 
     [ClientRpc]
-    private void ClientRpcDamageTaked(Damage damage, Skill skill)
+    private void ClientRpcDamage(Damage damage, Skill skill)
     {
-        DamageTaken?.Invoke(damage, skill);
+        DamageTaken?.Invoke(damage.Value, damage, skill);
         _animator.SetTrigger(HashAnimPlayer.TakeDamage);
     }
     

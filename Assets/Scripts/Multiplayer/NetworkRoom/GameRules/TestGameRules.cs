@@ -7,8 +7,15 @@ using UnityEngine.SceneManagement;
 
 public class TestGameRules : GameRules
 {
+    [Header("Game Settings")]
     [SerializeField] private float _lifeTime = 10f;
     [SerializeField] private bool isRemoveRoom = true;
+
+    [Header("Team Settings")]
+    [SerializeField] private int maxScore = 2;
+    [SerializeField] private int experiencePerWin = 6;
+    [SerializeField] private int experiencePerLoss = 2;
+    [SerializeField] private float bottleVolumePerWin = 1f / 3f;
 
     private TeamsPanel _teams;
     private int[] teamDeaths = new int[3];
@@ -37,9 +44,6 @@ public class TestGameRules : GameRules
                 }
             }
         }
-
-        if (isServer && isRemoveRoom)
-            StartCoroutine(CloseJob());
     }
 
     protected override void GameStartClient()
@@ -86,7 +90,7 @@ public class TestGameRules : GameRules
             team1Score += teamDeaths[2] == GetTeamCount(2) ? 1 : 0;
 
             Debug.Log($"Round Over! Team 1 Score: {team1Score}, Team 2 Score: {team2Score}");
-            if (team1Score >= 2 || team2Score >= 2)
+            if (team1Score >= maxScore || team2Score >= maxScore)
             {
                 EndGame();
             }
@@ -102,8 +106,8 @@ public class TestGameRules : GameRules
         if (!isServer) return;
 
         GameMode currentMode = ServerManager.Instance.CurrentGameMode;
-        bool isMaxLevel = LevelCharacterManager.Instance.GetCurrentLevel() >= 9;
-        bool isVictory = team1Score >= 2;
+        bool isMaxLevel = LevelCharacterManager.Instance.GetCurrentLevel() >= LevelCharacterManager.Instance.MaxLevel;
+        bool isVictory = team1Score >= maxScore;
 
         switch (currentMode)
         {
@@ -112,17 +116,17 @@ public class TestGameRules : GameRules
                 {
                     if (isMaxLevel)
                     {
-                        BottleUserManager.Instance.AddBottleVolume(1f / 3f);
+                        BottleUserManager.Instance.AddBottleVolume(bottleVolumePerWin);
                     }
                     else
                     {
-                        LevelCharacterManager.Instance.AddExperience(6);
-                        BottleUserManager.Instance.AddBottleVolume(1f / 3f);
+                        LevelCharacterManager.Instance.AddExperience(experiencePerWin);
+                        BottleUserManager.Instance.AddBottleVolume(bottleVolumePerWin);
                     }
                 }
                 else if (!isMaxLevel)
                 {
-                    LevelCharacterManager.Instance.AddExperience(2);
+                    LevelCharacterManager.Instance.AddExperience(experiencePerLoss);
                 }
                 break;
 
@@ -131,52 +135,18 @@ public class TestGameRules : GameRules
                 {
                     if (isMaxLevel)
                     {
-                        BottleUserManager.Instance.AddBottleVolume(1f / 3f);
+                        BottleUserManager.Instance.AddBottleVolume(bottleVolumePerWin);
                     }
                     else
                     {
-                        LevelCharacterManager.Instance.AddExperience(2);
+                        LevelCharacterManager.Instance.AddExperience(experiencePerLoss);
                     }
                 }
                 break;
         }
 
         RpcCloseRoomOnClients();
-        StartCoroutine(CloseRoomJob());
-    }
-
-    [ClientRpc]
-    private void RpcCloseRoomOnClients()
-    {
-        StartCoroutine(CloseRoomOnClientAndLoadMainMenu());
-    }
-
-    private IEnumerator CloseRoomOnClientAndLoadMainMenu()
-    {
-        yield return StartCoroutine(CloseRoomJob());
-
-        SceneManager.LoadScene("MainMenu");
-
-        NetworkManager.singleton.GetComponent<NetworkManager>().SpawnLocalUser();
-    }
-
-    private int GetTeamCount(int teamIndex)
-    {
-        int count = 0;
-        foreach (var playerSettings in _players)
-        {
-            if (playerSettings.NetworkSettings.TeamIndex == teamIndex)
-            {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    [ClientRpc]
-    private void RpcTeleportPlayer(GameObject player, Vector3 position, Quaternion rotation)
-    {
-        player.transform.SetPositionAndRotation(position, rotation);
+        StartCoroutine(CloseJob());
     }
 
     private void RestartRound()
@@ -192,8 +162,9 @@ public class TestGameRules : GameRules
             {
                 bool isPlayer = _players.Exists(player => player.gameObject == networkIdentity.gameObject);
                 bool isTestGameRules = networkIdentity.GetComponent<TestGameRules>() != null;
+                bool isUser = networkIdentity.GetComponent<User>() != null;
 
-                if (networkIdentity != null && !isPlayer && !isTestGameRules)
+                if (networkIdentity != null && !isPlayer && !isTestGameRules && !isUser)
                 {
                     objectsToRemove.Add(networkIdentity);
                 }
@@ -229,8 +200,6 @@ public class TestGameRules : GameRules
         var runeComponent = playerSettings.GetComponent<RuneComponent>();
         runeComponent?.ResetValueRune();
 
-        //CancelActiveSkills(playerSettings);
-
         var characterState = playerSettings.CharacterState;
         if (characterState != null)
         {
@@ -240,12 +209,77 @@ public class TestGameRules : GameRules
                 characterState.RemoveState(state.State);
             }
         }
+    }
 
-        //var energy = playerSettings.Resources.First(o => o.Type == ResourceType.Mana);
-        //if (energy != null)
-        //{
-        //    energy.ResetValue();
-        //}
+    private int GetTeamCount(int teamIndex)
+    {
+        int count = 0;
+        foreach (var playerSettings in _players)
+        {
+            if (playerSettings.NetworkSettings.TeamIndex == teamIndex)
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    protected override void UnsubscribeFromAllEvents()
+    {
+        foreach (var playerSettings in _players)
+        {
+            var health = playerSettings.NetworkSettings.CachedHealth;
+            if (health != null)
+            {
+                health.Died -= () => OnPlayerDeath(playerSettings.gameObject);
+                health.Died -= () => ResetPlayerState(playerSettings);
+            }
+
+            var runeComponent = playerSettings.GetComponent<RuneComponent>();
+            if (runeComponent != null && health != null)
+            {
+                health.Died -= runeComponent.ResetValue;
+            }
+        }
+
+        if (isServer)
+        {
+            List<NetworkIdentity> objectsToRemove = new List<NetworkIdentity>();
+
+            foreach (var networkIdentity in NetworkServer.spawned.Values)
+            {
+                var healthComponent = networkIdentity.GetComponent<Health>();
+                if (healthComponent != null)
+                {
+                    healthComponent.Died -= () => OnPlayerDeath(networkIdentity.gameObject);
+                }
+
+                bool isPlayer = _players.Exists(player => player.gameObject == networkIdentity.gameObject);
+                if (!isPlayer)
+                {
+                    objectsToRemove.Add(networkIdentity);
+                }
+            }
+        }
+    }
+
+    [ClientRpc]
+    private void RpcTeleportPlayer(GameObject player, Vector3 position, Quaternion rotation)
+    {
+        player.transform.SetPositionAndRotation(position, rotation);
+    }
+
+    [ClientRpc]
+    private void RpcCloseRoomOnClients()
+    {
+        StartCoroutine(CloseRoomOnClientAndLoadMainMenu());
+    }
+
+    private IEnumerator CloseRoomOnClientAndLoadMainMenu()
+    {
+        yield return StartCoroutine(CloseJob());
+
+        SceneManager.LoadScene("MainMenu");
     }
 
     private IEnumerator HandleTeamsAndSpawns(List<Transform> spawnPoints)
@@ -271,6 +305,7 @@ public class TestGameRules : GameRules
             _lifeTime -= Time.deltaTime;
             yield return null;
         }
+
         StartCoroutine(CloseRoomJob());
     }
 }

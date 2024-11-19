@@ -10,8 +10,8 @@ public class Bar : MonoBehaviour
 {
 	[CanBeNull]
 	[SerializeField] private Resource _resource;
-
-    [SerializeField] protected Slider _bar;
+	[SerializeField] private Slider _shieldBar;
+	[SerializeField] protected Slider _bar;
 	[SerializeField] protected Slider _barMinus;
 	[SerializeField] protected Slider _barPlus;
 	[SerializeField] protected float _timeToDisapear = 0.2f;
@@ -22,8 +22,12 @@ public class Bar : MonoBehaviour
 	[SerializeField] protected TMP_Text _barText;
 
 	protected float _currentValue;
+	protected float _healthBarTarget;
 	protected float _maxValue;
 	protected float _preViewValue;
+	private Health _health;
+
+	private bool ShieldActive = false;
 
 	public virtual void Init(Resource resource)
     {

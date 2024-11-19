@@ -70,7 +70,7 @@ public class SelfHarmState : AbstractCharacterState
         return false;
     }
 
-    private void OnDamageTaken(Damage damage, Skill skill)
+    private void OnDamageTaken(float value, Damage damage, Skill skill)
     {
         if (damage.Type != DamageType.Physical) return;
         
