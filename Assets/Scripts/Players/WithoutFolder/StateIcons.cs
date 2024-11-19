@@ -121,7 +121,7 @@ public class StateIcons : MonoBehaviour
         {
 			icoItem.Text.gameObject.SetActive(false);
             icoItem.count--;
-			ico.DOFillAmount(1, icoItem.time[0]).SetEase(Ease.Linear).OnComplete(() => RemoveItem(icoItem));
+            ico.DOFillAmount(1, icoItem.time[0]).SetEase(Ease.Linear);
 			icoItem.time.Remove(icoItem.time[0]);
 		}
         else
@@ -150,14 +150,6 @@ public class StateIcons : MonoBehaviour
 	public void RemoveItemByState(States state)
 	{
         if(_activeEffects.Count > 0)
-		/*foreach(var item in _activeEffects)
-        {
-            if(item.state == state)
-            {
-				_activeEffects.Remove(item);
-                Destroy(item.gameObject);
-			}
-        }*/
         for(int i = _activeEffects.Count - 1; i >= 0; i--)
         {
 			if (_activeEffects[i].state == state)

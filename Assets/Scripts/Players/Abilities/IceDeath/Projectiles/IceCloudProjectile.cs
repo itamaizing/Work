@@ -46,7 +46,7 @@ public class IceCloudProjectile : Projectiles
 				
 				//target.CharacterState.AddState(States.Plague, 40, 0, _dad.gameObject, _skill.Name);
 
-				float duration = 100 + _energyDad / 20;
+				float duration = _energyDad / 20;
 
 				if (target.CharacterState.CheckForState(States.Frozen) && _boostDmg)
 				{

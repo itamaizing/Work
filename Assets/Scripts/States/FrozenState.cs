@@ -18,9 +18,10 @@ public class FrozenState : AbstractCharacterState
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		Debug.Log("Entering Frozen State");
-		
+		//MaxStacksCount = 5;
 		_characterState = character;
 		_duration = durationToExit;
+		_baseDuration = durationToExit;
 		if (damageToExit == 0)
 		{
 			_damageToExit = 10000;
