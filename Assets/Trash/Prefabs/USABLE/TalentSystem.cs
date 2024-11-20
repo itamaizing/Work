@@ -13,7 +13,12 @@ public abstract class Talent : MonoBehaviour
 
     public TalentData Data => _data;
 
-    public abstract void Enter();
+	private void OnValidate()
+	{
+		_data.Name = GetType().Name;
+	}
+
+	public abstract void Enter();
 
     public abstract void Exit();
 
@@ -26,15 +31,24 @@ public abstract class Talent : MonoBehaviour
 [Serializable]
 public class TalentData
 {
-    public string Name;
+    private string _name;
     public bool IsOpen;
 
     public string Description = string.Empty;
     public Sprite Icon;
 
+    public string Name
+    {
+        get { return _name; }
+        set
+        {
+            Debug.Log(value);
+            _name = value;
+        }
+    }
     public TalentData(string name, bool isOpen)
     {
-        Name = name;
+       // Name = name;
         IsOpen = isOpen;
     }
 }

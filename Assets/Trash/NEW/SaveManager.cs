@@ -12,14 +12,14 @@ public class PlayerPrefsSaveData : ISaveData
 {
     public void SaveInt(string key, int value)
     {
-        Debug.Log("SAVED TALENTS  " + key + value);
+       // Debug.Log("SAVED TALENTS  " + key + value);
         PlayerPrefs.SetInt(key, value);
         PlayerPrefs.Save();
     }
 
     public int LoadInt(string key, int defaultValue = 0)
     {
-		Debug.Log("Load TALENTS  " + key + defaultValue + " loaded: "+ PlayerPrefs.GetInt(key, defaultValue));
+		//Debug.Log("Load TALENTS  " + key + defaultValue + " loaded: "+ PlayerPrefs.GetInt(key, defaultValue));
 		return PlayerPrefs.GetInt(key, defaultValue);
     }
 
