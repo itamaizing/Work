@@ -160,6 +160,8 @@ public class PoisonBall : Skill, IAltAbility
     {
         InertialGlandsReductionCooldown();
 
+        ContinuationAmbushApplyInvisible();
+
         UpdateMouseDetection();
         if (_poisonBallInfo.IsActiveTimer)
         {
@@ -572,6 +574,14 @@ public class PoisonBall : Skill, IAltAbility
 
     #region CheckingMethods
 
+    private void ContinuationAmbushApplyInvisible()
+    {
+        if (_activeTalentsInfo.IsActiveContinuationAmbush && _isCanApplyInvisible)
+        {
+            _continuationAmbush.CanApplyInvisible(true);
+        }
+    }
+
     private void InertialGlandsReductionCooldown()
     {
         #region InertialGlandTalentIsActive
@@ -641,15 +651,6 @@ public class PoisonBall : Skill, IAltAbility
         {
             DeductMaxChargeCount();
             _poisonBallInfo.MaxCountProjectile = _maxCharges;
-        }
-
-        #endregion
-
-        #region ContinuationAmbushTalentIsActive
-
-        if (_activeTalentsInfo.IsActiveContinuationAmbush && _isCanApplyInvisible)
-        {
-            _continuationAmbush.CanApplyInvisible(true);
         }
 
         #endregion
