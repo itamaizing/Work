@@ -20,12 +20,17 @@ public class CrutchForLoading : MonoBehaviour
 
 	private void OnLoaded(Scene scene, LoadSceneMode loadSceneMode)
 	{
+		if (this == null) return;
 		StartCoroutine(LoadedJob());
 	}
 
 	private IEnumerator LoadedJob()
     {
 		yield return new WaitForFixedUpdate();
-		transform.position = Vector3.up;
-    }
+
+		if (this != null && transform != null)
+		{
+			transform.position = Vector3.up;
+		}
+	}
 }

@@ -119,7 +119,7 @@ public class Bar : MonoBehaviour
 			else UpdateBar();
 		}
 
-		UpdateBar();
+		else UpdateBar();
 	}
     
     private void OnMaxValueChanged(float oldValue, float newValue)
@@ -140,7 +140,7 @@ public class Bar : MonoBehaviour
 	{
 		yield return new WaitForSeconds(_timeToDisapear);
 		if (ShieldActive) _barMinus.DOValue(_healthBarTarget, _disapearSpeed);
-		_barMinus.DOValue(_currentValue / _maxValue, _disapearSpeed);
+		else _barMinus.DOValue(_currentValue / _maxValue, _disapearSpeed);
 	}
 
 	public void PreviewChange(float damage)

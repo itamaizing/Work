@@ -15,7 +15,7 @@ public class TestGameRules : GameRules
     [SerializeField] private int maxScore = 2;
     [SerializeField] private int experiencePerWin = 6;
     [SerializeField] private int experiencePerLoss = 2;
-    [SerializeField] private float bottleVolumePerWin = 1f / 3f;
+    [SerializeField] private float bottleVolumePerWin = 0.33f;
 
     private TeamsPanel _teams;
     private int[] teamDeaths = new int[3];
@@ -105,8 +105,13 @@ public class TestGameRules : GameRules
     {
         if (!isServer) return;
 
+        var user = User.Instance ?? FindObjectOfType<User>();
+
+        var bottleManager = BottleUserManager.Instance;
+        var levelManager = LevelCharacterManager.Instance;
+
         GameMode currentMode = ServerManager.Instance.CurrentGameMode;
-        bool isMaxLevel = LevelCharacterManager.Instance.GetCurrentLevel() >= LevelCharacterManager.Instance.MaxLevel;
+        bool isMaxLevel = levelManager.GetCurrentLevel() >= LevelCharacterManager.Instance.MaxLevel;
         bool isVictory = team1Score >= maxScore;
 
         switch (currentMode)
@@ -116,17 +121,17 @@ public class TestGameRules : GameRules
                 {
                     if (isMaxLevel)
                     {
-                        BottleUserManager.Instance.AddBottleVolume(bottleVolumePerWin);
+                        bottleManager.AddBottleVolume(bottleVolumePerWin);
                     }
                     else
                     {
-                        LevelCharacterManager.Instance.AddExperience(experiencePerWin);
-                        BottleUserManager.Instance.AddBottleVolume(bottleVolumePerWin);
+                        levelManager.AddExperience(experiencePerWin);
+                        bottleManager.AddBottleVolume(bottleVolumePerWin);
                     }
                 }
                 else if (!isMaxLevel)
                 {
-                    LevelCharacterManager.Instance.AddExperience(experiencePerLoss);
+                    levelManager.AddExperience(experiencePerLoss);
                 }
                 break;
 
@@ -135,18 +140,18 @@ public class TestGameRules : GameRules
                 {
                     if (isMaxLevel)
                     {
-                        BottleUserManager.Instance.AddBottleVolume(bottleVolumePerWin);
+                        bottleManager.AddBottleVolume(bottleVolumePerWin);
                     }
                     else
                     {
-                        LevelCharacterManager.Instance.AddExperience(experiencePerLoss);
+                        levelManager.AddExperience(experiencePerLoss);
                     }
                 }
                 break;
         }
 
         RpcCloseRoomOnClients();
-        StartCoroutine(CloseJob());
+        StartCoroutine(CloseRoomJob());
     }
 
     private void RestartRound()
@@ -277,7 +282,7 @@ public class TestGameRules : GameRules
 
     private IEnumerator CloseRoomOnClientAndLoadMainMenu()
     {
-        yield return StartCoroutine(CloseJob());
+        yield return StartCoroutine(CloseRoomJob());
 
         SceneManager.LoadScene("MainMenu");
     }

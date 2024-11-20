@@ -781,8 +781,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1692478515}
   - component: {fileID: 1692478514}
-  - component: {fileID: 1692478517}
-  - component: {fileID: 1692478516}
   m_Layer: 0
   m_Name: SaveManager
   m_TagString: Untagged
@@ -817,30 +815,6 @@ Transform:
   m_Father: {fileID: 1934487493}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1692478516
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1692478513}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46815a7e0aece524c930ac81f4a99761, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1692478517
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1692478513}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7cd35d3b036a864b88d52bfbd303396, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1934487492
 GameObject:
   m_ObjectHideFlags: 0

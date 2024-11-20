@@ -1421,8 +1421,8 @@ MonoBehaviour:
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   skillRenderer: {fileID: 2807589928063243029}
-  minDamage: 100
-  maxDamage: 200
+  minDamage: 500
+  maxDamage: 700
   delay: 3
   criticalChance: 30
   stunChance: 30

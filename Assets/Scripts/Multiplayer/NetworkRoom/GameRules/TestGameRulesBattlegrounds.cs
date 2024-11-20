@@ -13,7 +13,7 @@ public class TestGameRulesBattlegrounds : GameRules
     [SerializeField] private float _lifeTime = 10f;
     [SerializeField] private int _experienceForKill = 5;
     [SerializeField] private int _experienceForWin = 3;
-    [SerializeField] private float _bottleVolumeForWin = 1f / 3f;
+    [SerializeField] private float _bottleVolumeForWin = 0.33f;
 
     [SerializeField] private bool isRemoveRoom = true;
 
@@ -152,10 +152,15 @@ public class TestGameRulesBattlegrounds : GameRules
         bool isTeam1Winner = losingTeamIndex == 2;
         bool isTeam2Winner = losingTeamIndex == 1;
 
+        var user = User.Instance ?? FindObjectOfType<User>();
+
+        var bottleManager = BottleUserManager.Instance;
+        var levelManager = LevelCharacterManager.Instance;
+
         if (isTeam1Winner || isTeam2Winner)
         {
-            LevelCharacterManager.Instance.AddExperience(_experienceForWin);
-            BottleUserManager.Instance.AddBottleVolume(_bottleVolumeForWin);
+            levelManager.AddExperience(_experienceForWin);
+            bottleManager.AddBottleVolume(_bottleVolumeForWin);
         }
 
         RpcCloseRoomOnClients();
