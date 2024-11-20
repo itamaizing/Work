@@ -5028,6 +5028,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9200225510825688790}
+  - component: {fileID: 2642994550808720876}
   - component: {fileID: 8658026411023210807}
   - component: {fileID: 2201725961568704641}
   - component: {fileID: 1550066538247365834}
@@ -5082,6 +5083,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2642994550808720876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8423443208040621164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9759b053ffeb30479460982fb62a912, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Hero: {fileID: 5630810179120932799}
 --- !u!95 &8658026411023210807
 Animator:
   serializedVersion: 5
@@ -5488,6 +5502,8 @@ MonoBehaviour:
   syncInterval: 0
   _hero: {fileID: 5630810179120932799}
   _minionPrefs: []
+  _enemy: {fileID: 4699909658046791957, guid: a981efc231a79eb4abf597c61aabb12f, type: 3}
+  _alies: {fileID: 7107151143229053731, guid: 7b9b3846886e951459b231848c918b55, type: 3}
 --- !u!114 &8892991801291212352
 MonoBehaviour:
   m_ObjectHideFlags: 0

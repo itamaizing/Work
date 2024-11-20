@@ -387,6 +387,7 @@ public abstract class Skill : NetworkBehaviour
         _skillRender.CmdStopDrawDamageZone();
     }
 
+    [ClientCallback]
     protected void AnimStartCastCoroutine()
     {
         _castCoroutine = StartCoroutine(CastJob());
