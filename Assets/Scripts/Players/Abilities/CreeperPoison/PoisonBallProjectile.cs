@@ -20,7 +20,7 @@ public class PoisonBallProjectile : Test_Projectile
     [SerializeField] private float _durationInAir;
     [SerializeField] private float _fastMovementSpeed;
     [SerializeField] private float _slowMovementSpeed;
-    
+
     private PoisonBall _poisonBall;
     private Skill _skill;
 
@@ -44,6 +44,7 @@ public class PoisonBallProjectile : Test_Projectile
     private bool _isAlly;
 
     private bool _isActiveFootInstincts;
+    private bool _isActiveRestorationOfGlands;
     private bool _isActiveHealingPoisonBall;
     private bool _isActiveWitheringPoison;
     private bool _isActiveVoluminousBall;
@@ -267,15 +268,9 @@ public class PoisonBallProjectile : Test_Projectile
 
     private void ReductionCooldownFromRestorationOfGlands()
     {
-        float baseChanceOfRestorationOfGlands = 0.1f;
-        float chanceRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
-
-        if (Random.Range(0f, 1f) <= chanceRestorationOfGlands)
-        {
-            Debug.Log("SpitPoisonProj / If RestorationOfGlands.IsActive = true");
-            //_restorationOfGlands.ReductionCooldown();
-        }
+        RpcReductionCooldownFromRestorationOfGlands(_player.gameObject);
     }
+
     #endregion
 
     #region InitializationProjectiles
@@ -283,7 +278,7 @@ public class PoisonBallProjectile : Test_Projectile
     public void InitializationProjectileForPoisonBall(Character dad, Skill skill,
         float multiplierDistance, int poisonBoneStack,
         bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies,
-        bool isActiveFootInstincts,
+        bool isActiveFootInstincts, bool isActiveRestorationOfGlands,
         bool isActiveTalentHealingPoisonBall, bool isActiveTalentWitheringPoison, 
         bool isActiveVoluminousBall, bool isActiveBallEffect,
         bool isPushTarget, bool isPlayerInvisible)
@@ -295,13 +290,14 @@ public class PoisonBallProjectile : Test_Projectile
 
         InitializationBoolVariables(isTargetPlayer, isTargetEnemy, isTargetAllies,
             isPushTarget, isPlayerInvisible,
-            isActiveFootInstincts,
+            isActiveFootInstincts, isActiveRestorationOfGlands,
             isActiveTalentHealingPoisonBall, isActiveTalentWitheringPoison, 
             isActiveVoluminousBall, isActiveBallEffect);
 
         CheckActiveTalent();
 
         Invoke("TransparentProjectileOnServer", 0.15f);
+
         InitializationComponentsForCountProjectile();
     }
 
@@ -326,7 +322,7 @@ public class PoisonBallProjectile : Test_Projectile
     private void InitializationBoolVariables(
         bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, 
         bool isPushTarget, bool isPlayerInvisible,
-        bool isActiveFootInstincts,
+        bool isActiveFootInstincts, bool isActiveRestorationOfGlands,
         bool isActiveTalentHealingPoisonBall, bool isActiveTalentWitheringPoison, 
         bool isActiveVoluminousBall, bool isActiveBallEffect)
     {
@@ -336,6 +332,7 @@ public class PoisonBallProjectile : Test_Projectile
         _isEnemy = isTargetEnemy;
 
         _isActiveFootInstincts = isActiveFootInstincts;
+        _isActiveRestorationOfGlands = isActiveRestorationOfGlands;
         _isActiveBallEffect = isActiveBallEffect;
         _isActiveHealingPoisonBall = isActiveTalentHealingPoisonBall;
         _isActiveWitheringPoison = isActiveTalentWitheringPoison;
@@ -347,7 +344,6 @@ public class PoisonBallProjectile : Test_Projectile
     {
         _poisonBall = _player.GetComponentInChildren<PoisonBall>();
         _currentCountBall = _poisonBall.CurrentCountBall;
-        //_restorationOfGlands = _poisonBall.RestorationOfGlandsTalent;
     }
 
     #endregion
@@ -415,6 +411,20 @@ public class PoisonBallProjectile : Test_Projectile
         footInstincts.ReductionCooldownLightningMovement();
     }
 
+    [ClientRpc]
+    private void RpcReductionCooldownFromRestorationOfGlands(GameObject player)
+    {
+        var restorationOfGlands = player.GetComponentInChildren<RestorationOfGlands>();
+
+        float baseChanceOfRestorationOfGlands = 0.1f;
+        float chanceRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
+
+        if (Random.Range(0f, 1f) <= chanceRestorationOfGlands)
+        {
+            Debug.Log("SpitPoisonProj / If RestorationOfGlands.IsActive = true");
+            restorationOfGlands.ReductionCooldown();
+        }
+    }
     #endregion
 
 }
