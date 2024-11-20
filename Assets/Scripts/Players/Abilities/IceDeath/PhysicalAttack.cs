@@ -122,7 +122,7 @@ public class PhysicalAttack : AutoAttackSkill
 	private void PushBackEnemy(Character enemy)
 	{
 		Vector3 lookDir = (_target.transform.position - _playerLinks.transform.position).normalized;
-		Vector3 jumpPos = lookDir * 4 + _target.transform.position;
+		Vector3 jumpPos = lookDir * 1 + _target.transform.position;
 		if (!CheckObstacleBetween(_playerLinks.transform.position, jumpPos))
 		{
 			CmdPush(_target.gameObject, jumpPos);

@@ -63,7 +63,7 @@ MonoBehaviour:
     - Id: 1008
       Name: EnergyRegen
       Points: 0
-      DefaultValue: 2
+      DefaultValue: 0
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1009
