@@ -41,7 +41,7 @@ public class SpitPoisonProjectile : Test_Projectile
             {
                 if (collision.gameObject == _player.gameObject)
                 {
-                    _player.CharacterState.AddState(States.RegeneratingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
+                    _player.CharacterState.AddState(States.RegeneratingPoison, 4.0f, 0, _player.gameObject, _skill.Name);
                     Destroy(gameObject);
                 }
             }
@@ -51,7 +51,7 @@ public class SpitPoisonProjectile : Test_Projectile
                 {
                     if (collision.TryGetComponent<Character>(out var alliesHealth))
                     {
-                        alliesHealth.CharacterState.AddState(States.RegeneratingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
+                        alliesHealth.CharacterState.AddState(States.RegeneratingPoison, 4.0f, 0, _player.gameObject, _skill.Name);
                         Destroy(gameObject);
                     }
                 }

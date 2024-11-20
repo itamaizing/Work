@@ -24,7 +24,7 @@ public class SpitPoison : Skill, IAltAbility
     [SerializeField] private HealingSpitPoison _healingSpitPoison;
     [SerializeField] private HealPoisonCloud _healPoisonCloud;
     [SerializeField] private TransparentPoisons _transparentPoisons;
-    [SerializeField] private EatingAcid _eatingAcid;
+    //[SerializeField] private EatingAcid _eatingAcid;
 
     [Header("Ability Properties")]
     [SerializeField] private SpitPoisonProjectile _projectile;
@@ -58,6 +58,7 @@ public class SpitPoison : Skill, IAltAbility
     private bool _isOriginalTargetEnemy;
     private bool _isOriginalTargetAllies;
     private bool _isOriginalTargetPlayer;
+    private bool _isAbilityActive = false;
 
     public bool IsAltAbility { get; set; }
 
@@ -87,9 +88,15 @@ public class SpitPoison : Skill, IAltAbility
         _originalCooldown = _cooldownTime;
     }
 
+    private void Update()
+    {
+        if (_isAbilityActive)
+            SetSpawnPoint(_spawnPoint.transform.position.x, _spawnPoint.transform.position.y, _spawnPoint.transform.position.z);
+    }
+
     protected override IEnumerator PrepareJob()
     {
-        SetSpawnPoint(_spawnPoint.transform.position.x, _spawnPoint.transform.position.y, _spawnPoint.transform.position.z);
+        _isAbilityActive = true;
         CheckActiveTalents();
 
         while (_currentTarget == null && float.IsPositiveInfinity(_mousePos.x))
@@ -124,6 +131,7 @@ public class SpitPoison : Skill, IAltAbility
         _isOriginalTargetAllies = false;
         _isOriginalTargetEnemy = false;
         _isOriginalTargetPlayer = false;
+        _isAbilityActive = false;
 
         _currentTarget = null;
         _mousePos = Vector3.positiveInfinity;
@@ -209,7 +217,7 @@ public class SpitPoison : Skill, IAltAbility
 
     private void CheckActiveTalents()
     {
-        _isActiveEatingAcid = _eatingAcid.Data.IsOpen;
+        //_isActiveEatingAcid = _eatingAcid.Data.IsOpen;
         _isActiveHealingSpitPoison = _healingSpitPoison.Data.IsOpen;
     }
 

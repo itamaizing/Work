@@ -11,6 +11,22 @@ public class Test_OverlapSphereSkill : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override bool IsCanCast => true;
 
+    private void Update()
+    {
+        Collider[] targets = Physics.OverlapSphere(_player.transform.position, Radius, _targetsLayers);
+        if (targets.Length > 0)
+        {
+            foreach (Collider target in targets)
+            {
+                Debug.Log("TestSkill / CastJob / target.name = " + target.name);
+                Damage damage = new Damage
+                {
+                    Value = 20f,
+                };
+                target.GetComponent<Character>().Health.CmdTryTakeDamage(damage, null);
+            }
+        }
+    }
 
     protected override void ClearData()
     {
@@ -19,24 +35,14 @@ public class Test_OverlapSphereSkill : Skill
 
     protected override IEnumerator PrepareJob()
     {
-        while (!Input.GetMouseButtonDown(2))
-        {
-            Collider[] targets = Physics.OverlapSphere(_player.transform.position, Radius, _targetsLayers);
-            if (targets.Length > 0)
-            {
-                foreach (Collider target in targets)
-                {
-                    Debug.Log("TestSkill / CastJob / target.name = " + target.name);
-                }
-            }
-            yield return null;
-        }
+        yield return null;
+
     }
 
     protected override IEnumerator CastJob()
     {
 
-            yield return null;
+            yield return new WaitForSeconds(1f);
         
     }
 

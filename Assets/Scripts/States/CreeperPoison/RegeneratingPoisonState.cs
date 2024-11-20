@@ -1,4 +1,5 @@
 
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -40,7 +41,7 @@ public class RegeneratingPoisonState : AbstractCharacterState
 
         if (CurrentStacksCount < MaxStacksCount)
         {
-            AddStacks();
+            CurrentStacksCount++;
         }
     }
 
@@ -71,31 +72,18 @@ public class RegeneratingPoisonState : AbstractCharacterState
     {
         if (CurrentStacksCount < MaxStacksCount)
         {
-            AddStacks();
-            return true;
-        }
-        else
-        {
-            _duration = _baseDuration;
-            return true;
-        }
-    }
-
-    public void AddStacks()
-    {
-        if (CurrentStacksCount < MaxStacksCount)
-        {
             CurrentStacksCount++;
-            Debug.Log("if / CurrentStackHealingPoison in AddStacks == " + CurrentStacksCount);
             _duration = _baseDuration;
+            return true;
         }
         else
         {
-            Debug.Log("else / CurrentStackHealingPoison in AddStacks == " + CurrentStacksCount);
             _duration = _baseDuration;
+            return true;
         }
     }
 
+    [Server]
     private void MakeHeal()
     {
         Debug.Log("RegenerationPoison / MakeHeal");
@@ -106,6 +94,7 @@ public class RegeneratingPoisonState : AbstractCharacterState
             Value = _endHealingValue,
             DamageableSkill = null,
         };
+        Debug.Log("RegenerationPoison / MakeHeal / heal.Value = " + heal.Value);
 
         _characterState.Character.Health.Heal(ref heal, null);
         //_characterState.Character.DamageTracker.AddHeal(heal);
@@ -114,6 +103,7 @@ public class RegeneratingPoisonState : AbstractCharacterState
     private void ResetValues()
     {
         CurrentStacksCount = 0;
+        _endHealingValue = 0;
         _baseDuration = 0;
         _duration = 0;
     }

@@ -107,6 +107,7 @@ public class PoisonBall : Skill, IAltAbility
 
     #region BoolVariables
 
+    private bool _isAbilityActive = false;
     private bool _isPushTarget;
     private bool _isTarget = false;
     private bool _isFast;
@@ -124,6 +125,7 @@ public class PoisonBall : Skill, IAltAbility
     private Coroutine _secondClickCoroutine;
     private Coroutine _thirdClickCoroutine;
     private Coroutine _mouseDetectionCoroutine;
+    private Coroutine _lookAtPositionCoroutine;
 
     public GameObject LastTarget { get; set; }
     public GameObject CurrentTarget { get; set; }
@@ -162,6 +164,9 @@ public class PoisonBall : Skill, IAltAbility
         {
             Timer();
         }
+
+        if (_isAbilityActive)
+            SetSpawnPointPosition(_spawnPoint.transform.position.x, _spawnPoint.transform.position.y, _spawnPoint.transform.position.z);
     }
 
     private float GetAnimationClipLength()
@@ -194,6 +199,7 @@ public class PoisonBall : Skill, IAltAbility
         _isTarget = false;
         _secondClickDone = false;
         _thirdClickDone = false;
+        _isAbilityActive = false;
 
         _currentTarget = null;
 
@@ -217,10 +223,17 @@ public class PoisonBall : Skill, IAltAbility
             StopCoroutine(_thirdClickCoroutine);
             _thirdClickCoroutine = null;
         }
+
+        if (_lookAtPositionCoroutine != null)
+        {
+            StopCoroutine(_lookAtPositionCoroutine);
+            _lookAtPositionCoroutine = null;
+        }
     }
 
     protected override IEnumerator PrepareJob()
     {
+        _isAbilityActive = true;
         CheckingActiveTalents();
 
         while (_currentTarget == null && float.IsPositiveInfinity(_firstMousePosition.x))
@@ -228,31 +241,31 @@ public class PoisonBall : Skill, IAltAbility
             if (GetMouseButton)
             {
                 _currentTarget = GetRaycastTarget(true);
+
+                CheckWhoTarget();
+                _firstMousePosition = GetMousePoint();
+
                 if (_currentTarget != null)
                 {
+                    _player.Move.LookAtTransform(_currentTarget.transform);
                     _isTarget = true;
                 }
                 else
                 {
-                    _isTarget = false;
+                    _lookAtPositionCoroutine = StartCoroutine(LookAtPositionJob());
+                    _isTarget = false;    
                 }
-
-                CheckWhoTarget();
-                _firstMousePosition = GetMousePoint();
 
                 CreateArrowsParallelToPlayer();
                 StopAutoDraw();
 
                 _firstClickCompleted = true;
-
             }
             CooldownChange();
             yield return null;
         }
 
         _animTime = GetAnimationClipLength();
-
-        SetSpawnPointPosition(_spawnPoint.transform.position.x, _spawnPoint.transform.position.y, _spawnPoint.transform.position.z);
 
         yield return _secondClickCoroutine = StartCoroutine(SecondClick());
         yield return _thirdClickCoroutine = StartCoroutine(ThirdClick());
@@ -268,7 +281,18 @@ public class PoisonBall : Skill, IAltAbility
 
         ResetAbilityParameters?.Invoke();
 
+        _player.Move.StopLookAt();
+         
         yield return null;
+    }
+
+    private IEnumerator LookAtPositionJob()
+    {
+        while (_isAbilityActive)
+        {
+            _player.Move.LookAtPosition(_firstMousePosition);
+            yield return null;
+        }
     }
 
     private void UseAbility()
@@ -764,14 +788,21 @@ public class PoisonBall : Skill, IAltAbility
 
     private void ChooseSpeed()
     {
-        _isFast = _isTarget
-            ? Vector2.Distance(_player.transform.position, _secondMousePosition) > Vector2.Distance(_player.transform.position, _currentTarget.transform.position)
-            : Vector2.Distance(_player.transform.position, _secondMousePosition) > Vector2.Distance(_player.transform.position, _firstMousePosition);
+        if (_isTarget && _currentTarget.gameObject != _player.gameObject)
+        {
+            Debug.Log("PoisonBall / ChooseSpeed / if / _isFast = " + _isFast);
+            _isFast = Vector3.Distance(_player.transform.position, _secondMousePosition) > Vector3.Distance(_player.transform.position, _currentTarget.transform.position);
+        }
+        else
+        {
+            Debug.Log("PoisonBall / ChooseSpeed / else / _isFast = " + _isFast);
+            _isFast = Vector3.Distance(_player.transform.position, _secondMousePosition) > Vector3.Distance(_player.transform.position, _firstMousePosition);
+        }
     }
 
     private void ChooseDirectionPush()
     {
-        _isPushTarget = Vector2.Distance(_player.transform.position, _thirdMousePosition) > Vector2.Distance(_player.transform.position, _secondMousePosition);
+        _isPushTarget = Vector3.Distance(_player.transform.position, _thirdMousePosition) > Vector3.Distance(_player.transform.position, _secondMousePosition);
     }
 
     private IEnumerator TimeCastForFastMoveProjectile()
@@ -836,7 +867,7 @@ public class PoisonBall : Skill, IAltAbility
     #region Command Methods
 
     [Command]
-    private void CmdCreateProjectileForTarget(GameObject target, Vector3 targetOrPoint, 
+    private void CmdCreateProjectileForTarget(GameObject target, Vector3 targetPosition, 
         int maxCountProjectiles, float multiplierForPushDistance, int poisonBoneStack,
         bool isFast, bool isPushTarget, bool isPlayerInvisible,
         bool isActiveFootInstincts,
@@ -902,7 +933,7 @@ public class PoisonBall : Skill, IAltAbility
             isPushTarget, isPlayerInvisible
             );
 
-        poisonBallProjectile.MoveBallToTarget(targetOrPoint, isFast);
+        poisonBallProjectile.MoveBallToTarget(targetPosition, isFast);
 
         NetworkServer.Spawn(item);
 
@@ -926,6 +957,7 @@ public class PoisonBall : Skill, IAltAbility
         bool isActiveInertialGlands, bool isActiveContinuationAmbush,
         bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies)
     {
+        _player.Health.ReductionCurrentValue(100f);
         Debug.Log("PoisonBall / CmdCreateProjPoint / _poisonBallInfo.CountProjectiles = " + _poisonBallInfo.CountProjectiles);
 
         RestorationOfGlandsTalent = _restorationOfGlands;

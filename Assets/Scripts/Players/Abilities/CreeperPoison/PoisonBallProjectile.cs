@@ -69,11 +69,11 @@ public class PoisonBallProjectile : Test_Projectile
                 {
                     if (_isFast)
                     {
-                        _player.CharacterState.AddState(States.HealingPoisonPerSecond, 6.0f, 0, _player.gameObject, _skill.Name);
+                        _player.CharacterState.AddState(States.HealingPoisonPerSecond, 7.0f, 0, _player.gameObject, _skill.Name);
                     }
                     else
                     {
-                        _player.CharacterState.AddState(States.InstantHealingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
+                        _player.CharacterState.AddState(States.InstantHealingPoison, 0, 0, _player.gameObject, _skill.Name);
                     }
 
                     DestroyProjectile();
@@ -87,11 +87,11 @@ public class PoisonBallProjectile : Test_Projectile
                     {
                         if (_isFast)
                         {
-                            alliesHealth.CharacterState.AddState(States.HealingPoisonPerSecond, 6.0f, 0, _player.gameObject, _skill.Name);
+                            alliesHealth.CharacterState.AddState(States.HealingPoisonPerSecond, 7.0f, 0, _player.gameObject, _skill.Name);
                         }
                         else
                         {
-                            alliesHealth.CharacterState.AddState(States.InstantHealingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
+                            alliesHealth.CharacterState.AddState(States.InstantHealingPoison, 0, 0, _player.gameObject, _skill.Name);
                         }
 
                         DestroyProjectile();

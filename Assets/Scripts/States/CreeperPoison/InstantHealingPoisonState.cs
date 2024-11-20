@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -40,48 +41,11 @@ public class InstantHealingPoisonState : AbstractCharacterState
         _duration = durationToExit;
         _baseDuration = durationToExit;
         _player = personWhoMadeBuff;
-
-        if (CurrentStacksCount < MaxStacksCount)
-        {
-            AddStacks();
-        }
-        //Debug.Log($"SetPlayer in EnterHealingPoisonState == {_player}");
-
-        //if (_player != null)
-        //{
-        //	_talents = _player.CharacterState.Character.TalentSystem.Talents;
-        //	Debug.Log("HealingPoison player == " + _player);
-
-        //	foreach (Talent talent in _talents)
-        //	{
-        //		Debug.Log("Checking talents: " + talent.name + ", Type: " + talent.GetType());
-        //		if (talent is SurgeTreatment surgeTreatment)
-        //		{
-        //			Debug.Log("if / talents");
-        //			if (_surgeTreatment == null)
-        //			{
-        //				_surgeTreatment = surgeTreatment;
-        //				Debug.Log("SurgeTreatment == " + _surgeTreatment);
-        //			}
-        //		}
-        //	}
-        //}
     }
 
     public override void UpdateState()
     {
-        _timeBetweenHeal -= Time.deltaTime;
-        if (_timeBetweenHeal <= 0)
-        {
-            MakeHeal();
-            _timeBetweenHeal = _startTimeBetweenHeal;
-        }
-
-        _duration -= Time.deltaTime;
-        if (_duration < 0)
-        {
-            ExitState();
-        }
+        MakeHeal();
     }
 
     public override void ExitState()
@@ -94,13 +58,7 @@ public class InstantHealingPoisonState : AbstractCharacterState
         return false;
     }
 
-    public void AddStacks()
-    {
-        Debug.Log("InstantHealingPoison / AddStacks");
-        CurrentStacksCount++;
-        _duration = _baseDuration;
-    }
-
+    [Server]
     private void MakeHeal()
     {
         if (_characterState.CheckForState(States.HealingPoisonPerSecond))
@@ -124,6 +82,8 @@ public class InstantHealingPoisonState : AbstractCharacterState
         };
 
         _characterState.Character.Health.Heal(ref heal, null);
+
+        ExitState();
     }
 
 }

@@ -71,7 +71,7 @@ public class LightningMovement : Skill
 
     private float _baseRangeLeap;
     private float _angle;
-    private float _multiplierLeap;
+    private float _multiplierLeap = 1f;
 
     #region BoolVariables
 
@@ -155,8 +155,6 @@ public class LightningMovement : Skill
         IsInMovement = false;
         _poisonSlap.IsCanDamageDeal = false;
         _lightningStrikes.IsCanDamageDeal = false;
-
-        _target = null; 
 
         if (_isTargetBeforePlayerCoroutine != null)
         {
@@ -352,9 +350,14 @@ public class LightningMovement : Skill
         Vector3 sizeBox = new Vector3(_castWidth / 2, 1f / 2, _castLength / 2);
         Vector3 forwardPosition = _player.transform.position + transform.forward / 1.5f;
 
-        Collider[] hit = Physics.OverlapBox(forwardPosition, sizeBox, transform.rotation, _targetsLayers);
-        if (hit.Length > 0)
+        Collider[] hits = Physics.OverlapBox(forwardPosition, sizeBox, transform.rotation, _targetsLayers);
+        if (hits.Length > 0)
         {
+            foreach (Collider collider in hits)
+            {
+                Debug.Log("Collider.name = " + collider.gameObject.name);
+                _target = collider.gameObject.GetComponent<Character>();
+            }
             _isTarget = true;
         }
         else
@@ -550,11 +553,8 @@ public class LightningMovement : Skill
                 Vector3 rawFirstLeapPoint = GetMousePoint();
 
                 _isFirstClickDone = true;
-                _target = GetRaycastTarget();
                 _firstLeapPoint = LimitFirstLeapToMaxDistance(transform.position, rawFirstLeapPoint, _rangeLeap);
                 _firstLeapPoint.y = 0;
-
-                Debug.DrawLine(_player.transform.position, _firstLeapPoint, Color.yellow, 100f);
             }
             yield return null;
         }
@@ -571,8 +571,6 @@ public class LightningMovement : Skill
                 _isSecondClickDone = true;
                 _secondLeapPoint = LimitSecondLeapToMaxDistance(_firstLeapPoint, rawSecondLeapPoint, _rangeLeap);
                 _secondLeapPoint.y = 0;
-
-                Debug.DrawLine(_firstLeapPoint, _secondLeapPoint, Color.yellow, 100f);
             }
             yield return null;
         }
@@ -652,33 +650,33 @@ public class LightningMovement : Skill
 
         _player.Move.enabled = false;
 
-        _player.CharacterState.CmdAddState(States.Immateriality, _durationLeap, 0, _player.gameObject, Name);
-
         CmdSingleLeap(firstLeapPoint, _durationLeap, _rangeLeap);
     }
 
     private void ExecuteLeaps(Vector3 firstLeapPoint, Vector3 secondLeapPoint)
     {
-        _isAbilityDone = true;
-        IsInMovement = true;
-        _player.Move.enabled = false;
-
-        if (_isTargetBeforePlayerCoroutine == null)
+        if (_target != null)
         {
-            _isTargetBeforePlayerCoroutine = StartCoroutine(IsTargetBeforePlayerJob());
+            _isAbilityDone = true;
+            IsInMovement = true;
+            _player.Move.enabled = false;
+
+            if (_isTargetBeforePlayerCoroutine == null)
+            {
+                _isTargetBeforePlayerCoroutine = StartCoroutine(IsTargetBeforePlayerJob());
+            }
+            if (_isTargetBehindPlayerCoroutine == null)
+            {
+                _isTargetBehindPlayerCoroutine = StartCoroutine(IsTargetBehindPlayerJob());
+            }
+
+            _applyDamageCoroutine = StartCoroutine(ApplyDamageJob(_targetsLayers, _radiusAttack, _durationLeap * _rangeLeap));
+
+            CmdExecuteTwoLeaps(firstLeapPoint, secondLeapPoint,
+                _durationLeap, _rangeLeap, _multiplierLeap, _timeBuff, _invtervalBetweenLeaps,
+                _heatedGlandsIsActive, _targetsLayers, _target.gameObject);
         }
-        if (_isTargetBehindPlayerCoroutine == null)
-        {
-            _isTargetBehindPlayerCoroutine = StartCoroutine(IsTargetBehindPlayerJob());
-        }
 
-        _applyDamageCoroutine = StartCoroutine(ApplyDamageJob(_targetsLayers, _radiusAttack, _durationLeap * _rangeLeap));
-
-        _player.CharacterState.CmdAddState(States.Immateriality, (_durationLeap * _multiplierLeap), 0, _player.gameObject, Name);
-
-        CmdExecuteTwoLeaps(firstLeapPoint, secondLeapPoint, 
-            _durationLeap, _rangeLeap, _multiplierLeap, _timeBuff, _invtervalBetweenLeaps,
-            _heatedGlandsIsActive, _targetsLayers, _target.gameObject);
     }
 
     #endregion
@@ -697,6 +695,8 @@ public class LightningMovement : Skill
 
         MoveComponent playerTransform = _player.GetComponent<MoveComponent>();
         
+        _player.CharacterState.AddState(States.Immateriality, _durationLeap, 0, _player.gameObject, Name);
+
         playerTransform.TargetRpcDoMove(firstLeapPoint, (durationLeap * rangeLeap / GlobalVariable.cellSize));
     }
 
@@ -727,6 +727,8 @@ public class LightningMovement : Skill
         bool heatedGlandsIsActive,
         LayerMask enemyLayer)
     {
+        _player.CharacterState.CmdAddState(States.Immateriality, (_durationLeap * _multiplierLeap), 0, _player.gameObject, Name);
+
         float deductible = 0.12f;
         interval = (rangeLeap * (durationLeap / GlobalVariable.cellSize)) - deductible;
         Character playerRigidbody = player.GetComponent<Character>(); 
