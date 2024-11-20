@@ -1395,6 +1395,7 @@ MonoBehaviour:
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
+  _isDynamicRenderer: 0
   _attackZoneSize: 1
   _attackDelay: 0
   _chargeAttackDelay: 0
@@ -1447,6 +1448,7 @@ MonoBehaviour:
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
+  _isDynamicRenderer: 0
   _attackZoneSize: 0
   _attackDelay: 0
   _chargeAttackDelay: 0
@@ -1519,6 +1521,7 @@ MonoBehaviour:
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
+  _isDynamicRenderer: 0
   _healAmount: 35
   _lightRange: 4
   _damageAmount: 35
@@ -1574,6 +1577,7 @@ MonoBehaviour:
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
+  _isDynamicRenderer: 0
   healPerTick: 6
   lightRange: 4
   lightDuration: 12
@@ -1634,6 +1638,7 @@ MonoBehaviour:
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
+  _isDynamicRenderer: 0
   lightShieldDuration: 18
   tiredSoulDuration: 12
   selfCastTime: 0.6
@@ -1701,6 +1706,7 @@ MonoBehaviour:
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
+  _isDynamicRenderer: 0
   sparkOfLight: {fileID: 683463177557245195}
   flashOfLight: {fileID: 2650038749754245899}
   restoration: {fileID: 4087625883292875692}
@@ -1755,6 +1761,7 @@ MonoBehaviour:
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
+  _isDynamicRenderer: 0
   _buffDuration: 5
 --- !u!114 &8367263716856475010
 MonoBehaviour:
@@ -1804,6 +1811,7 @@ MonoBehaviour:
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
+  _isDynamicRenderer: 0
 --- !u!114 &3096350181652607353
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1854,6 +1862,7 @@ MonoBehaviour:
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
+  _isDynamicRenderer: 0
   _speed: 0.0015
   _cooldownReduceValue: 5
   _defaultRadius: 4

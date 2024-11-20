@@ -8,7 +8,6 @@ public class AbsotptionTalent : Talent
 	[SerializeField] private SkillManager _ability;
 	public override void Enter()
 	{
-		Debug.Log("Talent activated " + name);
 		_ability.ActivateSkill(_absorption);
 	}
 

@@ -71,7 +71,7 @@ public class TalentsGroup
                 activeCount++;
             }
         }
-        Debug.Log(activeCount);
+        //Debug.Log(activeCount);
         activeCount = isDecrease ? activeCount - 1 : activeCount;
 
         bonus += row switch
@@ -122,7 +122,7 @@ public class TalentSystem : NetworkBehaviour
 
     public List<Talent> ActiveTalents => Talents.SelectMany(o => o.TalentsData).Where(a => a.Data.IsOpen).ToList();
 
-   // [Command]
+    //[Command]
     public void Initialize()
     {
         foreach (var talent in _talents.SelectMany(talentsGroup => talentsGroup.TalentsData))
@@ -139,9 +139,9 @@ public class TalentSystem : NetworkBehaviour
 				talent.Exit();
             }
         }
-        //Initialize2();
+        Initialize2();
     }
- /*   [ClientRpc]
+    [Command]
 	public void Initialize2()
 	{
 		foreach (var talent in _talents.SelectMany(talentsGroup => talentsGroup.TalentsData))
@@ -156,7 +156,7 @@ public class TalentSystem : NetworkBehaviour
 				talent.Exit();
 			}
 		}
-	}*/
+	}
 
 	public void AddPoints(int value)
     {

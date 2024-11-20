@@ -27,6 +27,7 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour
     
     public void Select()
     {
+        Debug.Log("Talent selected in talent " +  _talent);
         Selected?.Invoke(_talent, !_talent.IsOpen);
         activeState.isActive = _talent.IsOpen;
     }
