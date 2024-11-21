@@ -42,7 +42,7 @@ public class BlockOfIce : Skill
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
 		CmdCreateProjecttile(angle);
-		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0);
+		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0, 0);
 	}
 
 	[Command]

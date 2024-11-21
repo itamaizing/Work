@@ -42,7 +42,7 @@ public class TalentData
         get { return _name; }
         set
         {
-            Debug.Log(value);
+            //Debug.Log(value);
             _name = value;
         }
     }
@@ -114,7 +114,7 @@ public class TalentsGroup
         
         if (isActive)
         {
-			Debug.Log("Talent activated on init " + talent.GetType().Name);
+			//Debug.Log("Talent activated on init " + talent.GetType().Name);
 			talent.Enter();   
         }
         else
@@ -144,12 +144,12 @@ public class TalentSystem : NetworkBehaviour
             talent.Data.Name = talent.GetType().Name;
             if(talent.Data.IsOpen)
             {
-				Debug.Log("Talent activated on init " + talent.GetType().Name);
+				//Debug.Log("Talent activated on init " + talent.GetType().Name);
 				talent.Enter();
             }
             else
             {
-				Debug.Log("Talent DEactivated on init " + talent.GetType().Name);
+				//Debug.Log("Talent DEactivated on init " + talent.GetType().Name);
 				talent.Exit();
             }
         }

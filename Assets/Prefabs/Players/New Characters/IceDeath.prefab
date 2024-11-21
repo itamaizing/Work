@@ -93,6 +93,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34b82f8aca52397488312b641ea61379, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _hitEffect: {fileID: 0}
   _spriteRenderer: {fileID: 0}
   _rb: {fileID: 0}

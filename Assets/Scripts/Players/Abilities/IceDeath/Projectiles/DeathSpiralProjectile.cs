@@ -148,7 +148,7 @@ public class DeathSpiralProjectile : Projectiles
 		{
 			//_skill.CmdApplyDamage(damage, target.gameObject);
 			target.Health.TryTakeDamage(ref _damage, _skill);
-			if(_talentPlague)
+			if (_talentPlague)
 			{
 				target.CharacterState.AddState(States.Plague, 5, 0, _dad.gameObject, _skill.name);
 			}
@@ -186,6 +186,7 @@ public class DeathSpiralProjectile : Projectiles
 				StateTalent(target, _damage.Value);
 			}
 		}
+		TargetRpcDamgeMake(_curDamage);
 	}
 
 	private void StateTalent(Character target, float damage)

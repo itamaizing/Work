@@ -40,60 +40,70 @@ public class PhysicalAttack : AutoAttackSkill
 	}
 	private void Hit(Character enemy)
 	{
-		//Debug.Log(AttackS)
+		Debug.Log(_energy.CurrentValue + " Current value");
 		if (_curTarget == enemy && _energy.CurrentValue >= 5)
 		{
 			//_energy.CmdUse(5);
 			Buff.AttackSpeed.IncreasePercentage(_multiplier);
 			float curDamage = _damageValue + Random.Range(0, 2);
-			
-			if(_combo.MakeHit(enemy, AbilityForm.Physical, 0, curDamage))
+
+			if ( _energy.CurrentValue >= 5)
 			{
-				Debug.Log("Last hit");
-				LastHit();
+				if (_combo.MakeHit(enemy, AbilityForm.Physical, 0, 5, curDamage))
+				{
+					Debug.Log("Last hit");
+					LastHit();
+				}
 			}
-			_multiplier = 1 + _combo.GetMultipliedSpeed() / 100;
-			Buff.AttackSpeed.ReductionPercentage(_multiplier); // ?
+			_multiplier = 1 + _combo.GetMultipliedSpeed() / 100;			
+			Buff.AttackSpeed.ReductionPercentage(_multiplier);
 
 			Damage damage = new Damage
 			{
 				Value = curDamage,
 				Type = DamageType.Physical,
 			};
-			CmdApplyDamage(damage, enemy.gameObject);
 
-			if(enemy.CharacterState.CheckForState(States.Frozen))
+
+			if (enemy.CharacterState.CheckForState(States.Frozen))
 			{
 				curDamage *= 1.4f;
 			}
 			_energy.SumDamageMake(curDamage);
+			_rune.SumDamageMake(curDamage);
 			_energy.CmdUse(5);
+			CmdApplyDamage(damage, enemy.gameObject);
 		}
 		else
-		{
+		{			
 			Buff.AttackSpeed.IncreasePercentage(_multiplier);
-			
-			Debug.Log("lose streak to another enemy");
+			_multiplier = 1;
+			Debug.Log("lose streak to another enemy or no energy");
 			_curTarget = enemy;
 
 			float curDamage = _damageValue + Random.Range(0, 2);
 			_energy.SumDamageMake(curDamage);
+			_rune.SumDamageMake(curDamage);
 
-			_combo.MakeHit(enemy, AbilityForm.Physical, 0, curDamage);
-
+			_combo.MakeHit(enemy, AbilityForm.Physical, 0, 0, curDamage);
+			
+			if (_energy.CurrentValue >= 5)
+			{
+				_energy.CmdUse(5);
+				_multiplier = 1 + _combo.GetMultipliedSpeed() / 100;
+				Buff.AttackSpeed.ReductionPercentage(_multiplier); // ?
+			}
 			Damage damage = new Damage
 			{
 				Value = curDamage,
 				Type = DamageType.Physical,
 			};
 			CmdApplyDamage(damage, enemy.gameObject);
-			_multiplier = 1 + _combo.GetMultipliedSpeed() / 100;
-			Buff.AttackSpeed.ReductionPercentage(_multiplier); // ?
 		}
 
 		if (Random.Range(0, 100) <2 && _talentActive)
 		{
-			_rune.Add(1);
+			_rune.CmdAdd(1);
 		}
 	}
 	private void LastHit()
@@ -110,13 +120,24 @@ public class PhysicalAttack : AutoAttackSkill
 			//_curTarget.Health.TryTakeDamage(_damage * .5f, DamageType.Physical, AttackRangeType.MeleeAttack);
 			float curDamage = _damageValue * .5f;
 			_energy.SumDamageMake(curDamage);
-			_curTarget.CharacterState.CmdAddState(States.Stun, 1.5f, 0, _playerLinks.gameObject, name);
+			_rune.SumDamageMake(curDamage);
+			//_curTarget.CharacterState.CmdAddState(States.Stun, 1.5f, 0, _playerLinks.gameObject, name);
+			CmdState(_curTarget.gameObject);
 			PushBackEnemy(_curTarget);
 			//отбрасывание 			
 		}
-		_energy.Add(_energy.MaxValue*0.4f);
+		//_energy.Add(_energy.MaxValue*0.4f);
 		_curTarget = null;
 	}
+
+	[Command]
+	private void CmdState(GameObject enemy)
+	{
+		Character enemyChar = enemy.GetComponent<Character>();
+		enemyChar.CharacterState.AddState(States.Stun, 1.5f, 0, _playerLinks.gameObject, name);
+		Debug.Log("added state");
+	}
+
 
 
 	private void PushBackEnemy(Character enemy)

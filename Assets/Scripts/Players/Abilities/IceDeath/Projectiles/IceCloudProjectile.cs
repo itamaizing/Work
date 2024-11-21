@@ -54,8 +54,7 @@ public class IceCloudProjectile : Projectiles
 					Debug.Log("NEW DAMAGE");
 				}
 
-				_energy.SumDamageMake(_curDamage);
-				
+				TargetRpcDamgeMake(_curDamage);				
 				//_skill.CmdApplyDamage(_damage, target.gameObject);
 				target.Health.TryTakeDamage(ref _damage, _skill);
 
@@ -71,8 +70,15 @@ public class IceCloudProjectile : Projectiles
 				{
 					_dad.Health.SetEvadeMagic(20);
 				}
-
-				//dad.Stamina.Use(duration * 20);
+				for (int i = 0; i < _dad.Resources.Count; i++)
+				{
+					if (_dad.Resources[i].Type == ResourceType.Energy)
+					{
+						_energy = (Energy)_dad.Resources[i];
+					}
+				}
+				_energy.TryUse(_energyDad);
+				ClientUse(_energyDad, _energy.gameObject);
 				//damage
 				GetComponent<Collider>().enabled = false;
 				Explode();
@@ -88,6 +94,20 @@ public class IceCloudProjectile : Projectiles
 			}
 			Explode();
 		}
+	}
+
+	//[ClientRpc]
+	private void ClientUse(float value, GameObject player)
+	{
+		/*Energy energy = null;
+		for (int i = 0; i < _dad.Resources.Count; i++)
+		{
+			if (_dad.Resources[i].Type == ResourceType.Energy)
+			{
+				energy = (Energy)_dad.Resources[i];
+			}
+		}
+		energy.TryUse(value);*/
 	}
 
 	private void Explode()

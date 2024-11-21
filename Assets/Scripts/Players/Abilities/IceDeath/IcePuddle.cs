@@ -41,7 +41,7 @@ public class IcePuddle : Skill
 		if (Vector3.Distance(_preViewPuddle.transform.position, transform.position) <= Radius)
 		{
 			_enabled = true;
-			_lastHit = _seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0);
+			_lastHit = _seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0, 0);
 			if (_lastHit && _talentPuddleSize)
 				_preViewPuddle.transform.localScale = Vector3.one * 1.7f;
 
@@ -341,7 +341,7 @@ public class IcePuddle : Skill
 
 		Buff.AttackSpeed.ReductionPercentage(1 + _seriesOfStrikes.GetMultipliedSpeed() / 100);
 
-		_lastHit = _seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0);
+		//_lastHit = _seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0);
 
 		Buff.AttackSpeed.IncreasePercentage(1 + _seriesOfStrikes.GetMultipliedSpeed() / 100);
 

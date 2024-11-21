@@ -38,8 +38,6 @@ public class IcePuddleObject : Projectiles
 				_energy = (Energy)_dad.Resources[i];
 			}
 		}
-
-
 		//StartCoroutine(DestroyPuddle());
 		StartCoroutine(StartFade());
 	}
@@ -59,7 +57,6 @@ public class IcePuddleObject : Projectiles
 			_targets[i].time -= Time.deltaTime;
 			if (_targets[i].time < 0 )
 			{
-				//_targets[i].enemy.CharacterState.AddState(States.Frosting, _targets[i].duration, 0, _dad.gameObject, _skill.name);
 				_targets[i].enemy.CharacterState.AddState(States.Frosting, _timeToDestroy, 0, _dad.gameObject, _skill.name);
 				_targets.Remove(_targets[i]);
 			}
@@ -80,10 +77,9 @@ public class IcePuddleObject : Projectiles
 	[Server]
 	private void OnTriggerExit(Collider collision)
 	{
-		if (collision.gameObject == _dad.gameObject && _healthComponent != null)
+		if (collision.gameObject == _dad.gameObject)
 		{
-			//Debug.LogError("fix");
-			//_healthComponent.SetBoostRegen2(0);
+			_dad.Health.DecreaseRegen(0.01f);
 			return;
 		}
 		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject != _dad.gameObject)
@@ -98,7 +94,6 @@ public class IcePuddleObject : Projectiles
 
 			if (_talentEvadeDadBoost)
 			{
-				//Debug.LogError("fix");
 				_curEvade = -3;
 				_dad.Health.SetEvadeAll(-3);
 			}
@@ -109,23 +104,20 @@ public class IcePuddleObject : Projectiles
 	private void OnTriggerEnter(Collider collision)
 	{
 		if(!_initialized) return;
-		//Debug.Log(collision.name);
+
 		if (collision.gameObject == _dad.gameObject)
 		{
-			//Debug.LogError("fix");
-			//_healthComponent.SetBoostRegen2(0.01f);
+			_dad.Health.DecreaseRegen(0.01f);
 			return;
 		}
 		if (collision.TryGetComponent<Character>(out var target) && _energy != null)
 		{
 			Debug.Log(target.name);
 			float duration = _timeToDestroy;
-			//target.CharacterState.energy = energy;
 
 			EnemyToState enemy = new EnemyToState();
 			enemy.enemy = target;
 			enemy.duration = duration;
-			//target.CharacterState.AddState(States.Frosting, duration, 0, _dad.gameObject, _skill.name);
 
 			if (_talentFrostingFrozen)
 			{
@@ -139,7 +131,7 @@ public class IcePuddleObject : Projectiles
 			}
 			_targets.Add(enemy);
 		}
-		//Explode();
+
 	}
 	private void Explode()
 	{

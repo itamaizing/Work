@@ -40,20 +40,18 @@ public class Energy : Resource
 	}
 	public override bool TryUse(float EnergyValue)
 	{
-		if(EnergyValue > CurrentValue) 
+		if(EnergyValue > _currentValue) 
 		{
-			Debug.Log("too much");
 			return false;
 		}
-		Debug.Log("energy used " + EnergyValue);
 		_canRegen = false;
 		_timer = 0;
 
-		CurrentValue -= EnergyValue;
+		_currentValue -= EnergyValue;
 
-		if (CurrentValue <= 0)
+		if (_currentValue <= 0)
 		{
-			CurrentValue = 0;
+			_currentValue = 0;
 		}
 		return true;
 	}
@@ -79,10 +77,12 @@ public class Energy : Resource
 
 	public void SumDamageMake(float damage)
 	{
+		Debug.Log("SUM DAMAGE MAKE Energy" + damage);
+
 		_sumDamageGiven += damage;
 		while(_sumDamageGiven >= 10 ) 
 		{
-			Add(1);
+			CmdAdd(1);
 			_sumDamageGiven -= 10;
 		}
 	}

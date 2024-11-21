@@ -52,14 +52,17 @@ public class CircularFrosting : Skill
 	private void CreateSmoke()
 	{
 		Collider[] enemyDetected = Physics.OverlapSphere(transform.position, Radius);
+		float usedEnergy = 0;
 		if (_energy.CurrentValue >= 30)
 		{
 			_duration = _baseDuration + 3;
+			usedEnergy = 30;
 			_energy.CmdUse(30);
 		}
 		else
 		{
 			_duration = _baseDuration + _energy.CurrentValue / 10;
+			usedEnergy = _energy.CurrentValue;
 			_energy.CmdUse(_energy.CurrentValue);
 		}
 		foreach (var enemy in enemyDetected) 
@@ -69,7 +72,7 @@ public class CircularFrosting : Skill
 			{
 				if (enemyCharacter != _playerLinks)
 				{
-					_seriesOfStrikes.MakeHit(enemyCharacter, AbilityForm.Magic, 1, 0);
+					_seriesOfStrikes.MakeHit(enemyCharacter, AbilityForm.Magic, 1, usedEnergy, 0);
 					CmdAdd(enemy.gameObject);
 					//enemyCharacter.CharacterState.CmdAddState(States.Frosting, _duration, 0, _playerLinks.gameObject, name);
 				}

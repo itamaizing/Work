@@ -43,25 +43,19 @@ public class BlockOfIceProjectile : Projectiles
 		{
 			if (collision.TryGetComponent<Character>(out var target))
 			{
-				//float duration = 1 + dad.Runes.Value / 20;
 				float duration = 9;
-				//target.CharacterState.energy = dad.Runes;
 				
 				if (target.CharacterState.CheckForState(States.Frozen))
 				{
 					_curDamage *= 1.4f;
 				}
-				_energy.SumDamageMake(_curDamage);
+				//_energy.SumDamageMake(_curDamage);
+				//_rune.SumDamageMake(curDamage);
+				TargetRpcDamgeMake(_curDamage);
 
-				
-				//_skill.CmdApplyDamage(damage, target.gameObject);
 				target.Health.TryTakeDamage(ref _damage, _skill);
-
-				//target.CharacterState.AddState(new Cooling(), duration, 0, States.Cooling);
+;
 				target.CharacterState.AddState(States.Cooling, duration, 0, _dad.gameObject, _skill.name);
-
-				//dad.Runes.Use(duration * 20);
-				//damage
 				GetComponent<Collider>().enabled = false;
 			}
 			else
@@ -76,6 +70,8 @@ public class BlockOfIceProjectile : Projectiles
 			Explode();
 		}		
 	}
+
+	
 
 	private void Explode()
 	{

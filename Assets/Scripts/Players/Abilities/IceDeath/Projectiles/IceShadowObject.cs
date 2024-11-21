@@ -29,11 +29,11 @@ public class IceShadowObject : Projectiles
 
 	private void OnTriggerExit(Collider collision)
 	{
-		if (collision.gameObject == _dad && _healthPlayer != null)
+		if (collision.gameObject == _dad.gameObject)
 		{
-			//_healthPlayer.SetBoostRegen(0);
+			_dad.Health.DecreaseRegen(0.01f);
+			//_healthPlayer.SetBoostRegen(0.01f);
 			//Debug.LogError("setboost in hp has been deleted");
-
 			return;
 		}
 	}
@@ -41,12 +41,13 @@ public class IceShadowObject : Projectiles
 	private void OnTriggerEnter(Collider collision)
 	{
 		if(_dad == null) return;
-		/*if (collision.gameObject == _dad.gameObject)
+		if (collision.gameObject == _dad.gameObject)
 		{
+			_dad.Health.IncreaseRegen(0.01f);
 			//_healthPlayer.SetBoostRegen(0.01f);
 			//Debug.LogError("setboost in hp has been deleted");
 		}
-		if(collision.TryGetComponent<IcePuddleObject>(out var obj)) 
+		/*if(collision.TryGetComponent<IcePuddleObject>(out var obj)) 
 		{
 			//attact speed increase
 		}*/

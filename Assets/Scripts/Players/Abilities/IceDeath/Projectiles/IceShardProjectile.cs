@@ -49,7 +49,7 @@ public class IceShardProjectile : Projectiles
 				{
 					_curDamage *= 2.2f;
 				}
-				_energy.SumDamageMake(_curDamage);
+				TargetRpcDamgeMake(_curDamage);
 
 				//_skill.CmdApplyDamage(damage, target.gameObject);
 				target.Health.TryTakeDamage(ref _damage, _skill);

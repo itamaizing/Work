@@ -15,7 +15,9 @@ public class IceSword : Skill
 	private Character _oldtarget;
 	private Character _target;
 	private float _duration = 3;
-	//private Energy _energy;
+	private Energy _energy;
+	private RuneComponent _rune;
+
 	protected override bool IsCanCast => IsCanCastCheck();
 
     protected override int AnimTriggerCastDelay => 0;
@@ -33,7 +35,7 @@ public class IceSword : Skill
 		return true;
 	}
 
-	/*private void Start()
+	private void Start()
 	{
 		for (int i = 0; i < _playerLinks.Resources.Count; i++)
 		{
@@ -41,9 +43,13 @@ public class IceSword : Skill
 			{
 				_energy = (Energy)_playerLinks.Resources[i];
 			}
+			if (_playerLinks.Resources[i].Type == ResourceType.Rune)
+			{
+				_rune = (RuneComponent)_playerLinks.Resources[i];
+			}
 		}
 
-	}*/
+	}
 
 	protected override IEnumerator PrepareJob()
 	{
@@ -59,7 +65,7 @@ public class IceSword : Skill
 
 	protected override IEnumerator CastJob()
 	{
-		_seriesOfStrikes.MakeHit(_target, AbilityForm.Magic, 0, 0);
+		_seriesOfStrikes.MakeHit(_target, AbilityForm.Magic, 0, 10, 0);
 		if (_target == _oldtarget)
 		{
 			_hitInTheRow++;
@@ -96,6 +102,9 @@ public class IceSword : Skill
 		};
 		//_skill.CmdApplyDamage(damage, target.gameObject);
 		CmdApplyDamage(damage2, _target.gameObject);
+
+		_energy.SumDamageMake(_damage);
+		_rune.SumDamageMake(_damage);
 		//_target.CharacterState.CmdAddState(States.Cooling, _duration, 0, _playerLinks.gameObject, name);
 		//_target.Health.TryTakeDamage(ref damage2, this);
 	}

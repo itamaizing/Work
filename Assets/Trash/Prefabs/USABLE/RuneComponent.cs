@@ -5,7 +5,8 @@ using UnityEngine;
 public class RuneComponent : Resource
 {
     private List<AbilityTimer> _abilities = new List<AbilityTimer>();
-    private bool _disableMultiplier = false;
+	[SerializeField] private float _sumDamageGiven = 0;
+	private bool _disableMultiplier = false;
 
     /*private void Update()
     {
@@ -84,6 +85,18 @@ public class RuneComponent : Resource
         _abilities.Clear();
         _disableMultiplier = false;
     }
+
+	public void SumDamageMake(float damage)
+	{
+        Debug.Log("SUM DAMAGE MAKE Rune" + damage);
+
+		_sumDamageGiven += damage;
+		while (_sumDamageGiven >= 50)
+		{
+			CmdAdd(1);
+			_sumDamageGiven -= 50;
+		}
+	}
 }
 
 public class AbilityTimer

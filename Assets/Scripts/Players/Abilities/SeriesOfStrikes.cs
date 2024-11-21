@@ -58,7 +58,7 @@ public class SeriesOfStrikes : MonoBehaviour
 		}
 		return _speedMultiplier * Mathf.Pow(2, maxCount);
 	}
-	public bool MakeHit(Character target, AbilityForm form, float usedRuneValue, float damage)
+	public bool MakeHit(Character target, AbilityForm form, float usedRuneValue, float usedEnergy, float damage)
 	{
 		if (target != null)
 		{
@@ -74,14 +74,15 @@ public class SeriesOfStrikes : MonoBehaviour
 				_isInTheRow = true;
 				_curTarget = target;
 				_seriesOfStrikes[i].usedRune += usedRuneValue;
+				_seriesOfStrikes[i].usedEnergy += usedEnergy;
 				_seriesOfStrikes[i].hitCount++;
 				_timer = _baseTimer;
 
-				Debug.Log("Hit from " + _seriesOfStrikes[i] + " #" + _seriesOfStrikes[i].hitCount);
+				Debug.Log("Hit from " + _seriesOfStrikes[i] + " #" + _seriesOfStrikes[i].hitCount + usedEnergy);
 
 				if (_seriesOfStrikes[i].hitCount >= _seriesOfStrikes[i].formList.Count)
 				{
-					LastHit(_seriesOfStrikes[i].usedRune, 0);
+					LastHit(_seriesOfStrikes[i].usedRune, _seriesOfStrikes[i].usedEnergy);
 					return true;
 				}
 			}
@@ -177,13 +178,10 @@ public class SeriesOfStrikes : MonoBehaviour
 		}
 	}
 
-	private void LastHit(float usedRune, float UsedEnergy)
+	private void LastHit(float usedRune, float usedEnergy)
 	{
-
-		Debug.Log("LAST HIT + " + usedRune * 2);
-		_rune.Add(usedRune * 2 + 0.5f);
-		//_player
-		//_energy.SeriesOfStrikeBoost();
+		_rune.CmdAdd(usedRune * 2 + 0.5f);
+		_energy.CmdAdd(usedEnergy * 0.4f);
 
 		for (int i = 0; i < _seriesOfStrikes.Count; i++)
 		{
@@ -196,7 +194,7 @@ public class SeriesOfStrikes : MonoBehaviour
 		_sumPhisDamage += damage;
 		while( _sumPhisDamage >= 50 ) 
 		{
-			_rune.Add(0.5f);
+			_rune.CmdAdd(0.5f);
 			_sumPhisDamage -= 50;
 		}
 	}

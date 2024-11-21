@@ -65,7 +65,7 @@ public class IcyStream : Skill
 			usedEnergy = _energy.CurrentValue;
 		}
 		_energy.CmdUse(usedEnergy);
-		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 1);
+		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, usedEnergy, 1);
 	}
 
 	[Command]

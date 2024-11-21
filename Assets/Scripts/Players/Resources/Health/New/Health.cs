@@ -235,4 +235,14 @@ public class Health : Resource, IDamageable, IHealingable
 
 		PhantomValueShow(curDamage);
 	}
+
+    public void IncreaseRegen(float percentValue)
+    {
+        _regenerationValue *= percentValue;
+    }
+
+    public void DecreaseRegen(float  percentageValue) 
+    {
+        _regenerationValue /= percentageValue;
+    }
 }

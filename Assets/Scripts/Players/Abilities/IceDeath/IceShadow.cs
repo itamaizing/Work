@@ -87,7 +87,7 @@ public class IceShadow : Skill
 		Buff.AttackSpeed.ReductionPercentage(1 + _combo.GetMultipliedSpeed() / 100);
 		/*IceShadowObject projectileGm = Instantiate(_shadow, gameObject.transform.position, Quaternion.identity);
 		projectileGm.Init(_playerLinks.gameObject ,Mana.Value);*/
-		_lastHit = _combo.MakeHit(null, AbilityForm.Magic, 1, 0);
+		_lastHit = _combo.MakeHit(null, AbilityForm.Magic, 1, _manaUsed, 0);
 
 		Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);
 
