@@ -7,8 +7,8 @@ using UnityEngine.UIElements;
 public class MoveComponent : NetworkBehaviour
 {
 	[SerializeField, Range(0, 0.5f)] private float _smoothTime = 0.15f;
-	[SerializeField] private float _currentSpeed = 5;
-	[SerializeField] private Animator _anim;
+	[SerializeField] protected float _currentSpeed = 5;
+	[SerializeField] protected Animator _anim;
 
 	public Vector3 MoveDirection = Vector3.zero;
 	
@@ -110,7 +110,7 @@ public class MoveComponent : NetworkBehaviour
 		RotateAtCursor();
 	}
 
-	private void Move()
+	protected virtual void Move()
     {
 		if (!CanMove || _rigidbody == null)
 		{
@@ -138,7 +138,7 @@ public class MoveComponent : NetworkBehaviour
 		_anim.SetFloat(HashAnimPlayer.VelocityX, animDir.x);
 	}
 
-	private void RotateAtCursor()
+	protected virtual void RotateAtCursor()
     {
 		if (IsSelect == true && _isLookAtCursor == true)
 		{
