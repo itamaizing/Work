@@ -46,7 +46,7 @@ public class IceCloudProjectile : Projectiles
 				
 				//target.CharacterState.AddState(States.Plague, 40, 0, _dad.gameObject, _skill.Name);
 
-				float duration = _energyDad / 20;
+				float duration = 100+ _energyDad / 20;
 
 				if (target.CharacterState.CheckForState(States.Frozen) && _boostDmg)
 				{
@@ -59,7 +59,7 @@ public class IceCloudProjectile : Projectiles
 				target.Health.TryTakeDamage(ref _damage, _skill);
 
 
-				target.CharacterState.AddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
+				target.CharacterState.AddState(States.Frozen, duration, 30, _dad.gameObject, _skill.name);
 
 				//talents???
 				if (_dad.Health.ResistMagDamage >= 20)
