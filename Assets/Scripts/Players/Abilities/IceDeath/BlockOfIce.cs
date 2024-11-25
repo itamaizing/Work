@@ -71,16 +71,21 @@ public class BlockOfIce : Skill
 			{
 				//if (GetTarget() == null) yield return null;
 
-				if (GetTarget().character == null)
+				if (GetTarget().isCharater)
 				{
-				//	_mousePos = GetTarget().Position;
-					_mousePos = GetMousePoint();
+					if (GetTarget().character == null)
+					{
+						//_mousePos = GetTarget().Position;
+					}
+					else
+					{
+						_mousePos = GetTarget().character.transform.position;
+					}
 				}
 				else
 				{
-					_mousePos = GetTarget().character.transform.position;
+					_mousePos = GetTarget().Position;
 				}
-				Debug.Log(_mousePos);
 			}
 			yield return null;
 		}

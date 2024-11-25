@@ -17,6 +17,7 @@ public class TargetToShot
 {
     public Vector3 Position;
     public Character character;
+    public bool isCharater = false;
 }
 
 
@@ -694,9 +695,11 @@ public abstract class Skill : NetworkBehaviour
         {
             case SkillType.Target:
                 target.character = closerTarget;
+                target.isCharater = true;
 				break; 
             case SkillType.Projectile:
 				target.character = closerTarget;
+				target.isCharater = true;
 				break;
 			case SkillType.Zone:
 				if (Physics.Raycast(ray, out hit))
@@ -705,6 +708,7 @@ public abstract class Skill : NetworkBehaviour
 				}
                 if(Vector3.Distance(hit.point, transform.position) <= Radius)
 				    target.Position = hit.point;
+				target.isCharater = false;
 				break;
             default:
 				if (Physics.Raycast(ray, out hit))
@@ -712,6 +716,7 @@ public abstract class Skill : NetworkBehaviour
 					Debug.Log(hit.point);
 				}
 				target.Position = hit.point;
+				target.isCharater = false;
 				break;
 		}
         return target;
@@ -759,6 +764,7 @@ public abstract class Skill : NetworkBehaviour
 		{
 			case SkillType.Target:
 				target.character = closerTarget;
+				target.isCharater = true;
 				break;
 			case SkillType.Projectile:          
 				if (Physics.Raycast(ray, out hit))
@@ -766,6 +772,7 @@ public abstract class Skill : NetworkBehaviour
 					Debug.Log(hit.point);
 				}
                 target.Position = hit.point;
+				target.isCharater = false;
 				break;
 			case SkillType.Zone:
 				if (Physics.Raycast(ray, out hit))
@@ -773,6 +780,7 @@ public abstract class Skill : NetworkBehaviour
 					Debug.Log(hit.point);
 				}
 				target.Position = hit.point;
+				target.isCharater = false;
 				break;
 			default:
 				if (Physics.Raycast(ray, out hit))
@@ -780,6 +788,7 @@ public abstract class Skill : NetworkBehaviour
 					Debug.Log(hit.point);
 				}
 				target.Position = hit.point;
+				target.isCharater = false;
 				break;
 		}
 		return target;
@@ -796,7 +805,7 @@ public abstract class Skill : NetworkBehaviour
 			closerTarget = GetCloserTargets(transform.position, 1000)[0];
 		}
         target.character = closerTarget;
-
+		target.isCharater = true;
 		return target;
 	}
 	/* protected Vector2 GetClosestTarget()
