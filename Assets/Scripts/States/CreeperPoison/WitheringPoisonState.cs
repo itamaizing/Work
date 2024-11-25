@@ -1,12 +1,10 @@
-using System.Collections;
+using Mirror;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class WitheringPoisonState : AbstractCharacterState
 {
-    public bool turnOff = false;
-
     private List<Skill> _skills = new();
     private List<Talent> _talents = new();
     private BindingPoison _bindingPoison;
@@ -20,7 +18,7 @@ public class WitheringPoisonState : AbstractCharacterState
     private float _duration;
     private float _baseDuration;
 
-    private float _baseValueTakeAwayMana = 0.03f;
+    private float _baseValueTakeAwayMana = 0.003f;
     private float _endValueTakeAwayMana;
     private float _baseChanceOfApplyBindingPoison = 0.03f;
     private float _chanceOfApplyBindingPoison = 0.9f;
@@ -39,8 +37,6 @@ public class WitheringPoisonState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        Debug.Log("Withering Enter State");
-
         MaxStacksCount = _maxStacks;
 
         _characterState = character;
@@ -88,7 +84,7 @@ public class WitheringPoisonState : AbstractCharacterState
         }
 
         _duration -= Time.deltaTime;
-        if (_duration < 0 || turnOff)
+        if (_duration < 0)
         {
             ExitState();
         }
@@ -120,22 +116,22 @@ public class WitheringPoisonState : AbstractCharacterState
         if (CurrentStacksCount < MaxStacksCount)
         {
             CurrentStacksCount++;
-            //Debug.Log("if / CurrentStackPoisonBone in AddStacks == " + _currentStacks);
             _duration = _baseDuration;
         }
         else
         {
-            //Debug.Log("else / CurrentStackPoisonBone in AddStacks == " + _currentStacks);
             _duration = _baseDuration;
         }
     }
 
+    [Server]
     private void TakeAwayMana()
     {
-        Debug.Log("WitheringPoison / TakeAwayMana");
         float takeAwayMana = CurrentStacksCount * _baseValueTakeAwayMana;
+
         _endValueTakeAwayMana = _characterState.Character.Resources.FirstOrDefault(r => r.Type == ResourceType.Mana)!.CurrentValue * takeAwayMana;
-        //_chanceOfApplyBindingPoison *= _baseChanceOfApplyBindingPoison;
+
+        _chanceOfApplyBindingPoison *= _baseChanceOfApplyBindingPoison;
 
         if (_bindingPoison != null && _isActiveTalentBindingPoison)
         {

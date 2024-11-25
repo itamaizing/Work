@@ -100,16 +100,20 @@ public abstract class AutoAttackSkill : Skill
     {
         do
         {
+            Debug.Log("AutoAttackSkill / PrepareJob / target = " + _target);
             if (GetMouseButton)
             {
                 _target = GetRaycastTarget();
 
-                if(_target != null)
+
+                if (_target != null)
 				    _target.SelectedCircle.IsActive = true;
 			}
             yield return null;
         }
         while (Target == null);
+
+        Debug.Log("AutoAttackSkill / PrepareJob / end cycle");
 
         _hero.Move.LookAtTransform(Target.transform);
     }

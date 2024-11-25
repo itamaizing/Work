@@ -1,7 +1,5 @@
 using Mirror;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class InstantHealingPoisonState : AbstractCharacterState
 {
@@ -32,8 +30,6 @@ public class InstantHealingPoisonState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        Debug.Log("InstantHealingPoison / EnterState");
-
         MaxStacksCount = _maxStacks;
 
         _characterState = character;
@@ -65,14 +61,11 @@ public class InstantHealingPoisonState : AbstractCharacterState
         {
             _healingPoisonPerSecondState = (HealingPoisonPerSecondState)_characterState.GetState(States.HealingPoisonPerSecond);
             float multiplierHealValue = _healingPoisonPerSecondState.TotalHealValue;
-            Debug.Log("IntstantHealing / MakeHeal / if / multiplierHealValue = " + multiplierHealValue);
             _totalHealed = _baseHealingValue + multiplierHealValue;
-            Debug.Log("IntstantHealing / MakeHeal / if / baseHeal = 14f / _totalHealed = " + _totalHealed);
         }
         else
         {
             _totalHealed = _baseHealingValue;
-            Debug.Log("IntstantHealing / MakeHeal / else / baseHeal = 14f / _totalHealed = " + _totalHealed);
         }
 
         Heal heal = new Heal

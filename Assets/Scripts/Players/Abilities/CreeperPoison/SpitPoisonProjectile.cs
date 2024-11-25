@@ -14,7 +14,7 @@ public class SpitPoisonProjectile : Test_Projectile
 
     private float _energyDad;
     private float _damage;
-    private float _lifeTimePoisonBoneStacks = 6.0f;
+    private float _lifeTimePoisonBoneStacks = 60.0f;
 
     private bool _isPlayer;
     private bool _isAllies;

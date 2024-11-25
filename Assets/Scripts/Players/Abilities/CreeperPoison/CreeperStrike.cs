@@ -24,6 +24,8 @@ public class CreeperStrike : AutoAttackSkill
 
     [Header("Ability properties")]
     [SerializeField] private Character _player;
+    [SerializeField] private float _multiplyCritDamage = 1.5f;
+    [SerializeField ]private float _chanceOfCriticalStrike = 0.05f;
 
     private Character _lastTarget;
 
@@ -34,9 +36,7 @@ public class CreeperStrike : AutoAttackSkill
     private int _poisonBoneStack = 0;
 
     private float _currentDamage;
-    private float _multiplyCritDamage = 15f;
     private float _lifeTimePoisonBoneStacks = 6.0f;
-    private float _chanceOfCriticalStrike = 0.9f;
 
     private bool _isTwoHit = false;
     private bool _isHit = false;
@@ -90,7 +90,7 @@ public class CreeperStrike : AutoAttackSkill
 
     public void DamageDeal(Character target, bool isUsingLightningStrikes = false)
     {
-        Debug.Log("CreeperStrike / DamageDeal");
+        Debug.Log("CreeperStrike / DamageDeal / target = " + target);
 
         if (target != null)
         {
@@ -130,7 +130,7 @@ public class CreeperStrike : AutoAttackSkill
             if (_restorationOfGlands.Data.IsOpen && _poisonBoneStack > 0 && target.CharacterState.CheckForState(States.PoisonBone))
             {
                 Debug.Log("CreeperStrike / if == true");
-                float baseChanceOfRestorationOfGlands = 0.1f;
+                float baseChanceOfRestorationOfGlands = 0.9f;
                 float chanceOfRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
 
                 if (Random.Range(0f, 1f) <= chanceOfRestorationOfGlands)
@@ -217,7 +217,7 @@ public class CreeperStrike : AutoAttackSkill
         float criticalDamage = baseDamage;
         float multiplyDamage = _multiplyCritDamage;
         float firstStrikeTalentMultiplyDamage = 5.0f;
-        float absoluteAccucaryMultiplyDamage = 2.5f;
+        float coldBloodMultiplyDamage = 2.5f;
 
         if (_poisonBoneStack > 0)
         {
@@ -239,16 +239,14 @@ public class CreeperStrike : AutoAttackSkill
                 _coldBlood.ReducingAbilityCooldown();
             }
 
-            criticalDamage *= absoluteAccucaryMultiplyDamage;
+            criticalDamage *= coldBloodMultiplyDamage;
 
             if (_creeperInvisible.IsInvisible)
             {
                 _creeperInvisible.ExitingInvisibleState();
             }
-            else
-            {
-                _coldBlood.IsCanCritCreeperStrike = false;
-            }
+
+            _coldBlood.IsCanCritCreeperStrike = false;
         }
         else
         {

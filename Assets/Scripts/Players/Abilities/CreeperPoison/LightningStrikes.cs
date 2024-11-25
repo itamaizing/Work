@@ -43,7 +43,7 @@ public class LightningStrikes : AutoAttackSkill
 
     public void UseLightningStrikesOfLightningMovement()
     { 
-        _currentTarget = _lightningMovement.Target;
+        //AnimLightningStrikesCast();
     }
 
     private float GetClipLength()
@@ -66,6 +66,7 @@ public class LightningStrikes : AutoAttackSkill
             _animTime = GetClipLength();
             IsCanDamageDeal = true;
             IncreaseAnimSpeed();
+            _target = _lightningMovement.Target;
         }
 
         return base.PrepareJob();
@@ -100,8 +101,6 @@ public class LightningStrikes : AutoAttackSkill
     {
         Debug.Log("LightningStrikes / CastAction");
 
-        _target = _currentTarget;
-
         if (_coldBlood.IsCanCritLightningStrikes && _isIncreaseCooldownTime == false)
         {
             float newCooldownTime = _cooldownTime * _cooldownMultiplier;
@@ -110,14 +109,15 @@ public class LightningStrikes : AutoAttackSkill
             _isIncreaseCooldownTime = true;
         }
 
-        //if (_currentTarget == null)
-        //    _currentTarget = _target;
+        if (_currentTarget == null)
+            _currentTarget = _target;
 
         DamageDeal();
     }
 
     private void IncreaseAnimSpeed()
     {
+        // Изменить в аниматоре скорость через Анимация -> параметр -> multiplier
         if (_animTime > 0)
         {
             float multiplier = _lightningMovement.DurationLeap;

@@ -11,6 +11,7 @@ public class LightningMovement : Skill
     [Header("Talents")]
     [SerializeField] private SuperFastScales _superFastScales;
     [SerializeField] private HeatedGlands _heatedGlands;
+    [SerializeField] private LightningFastPoisonSlap _lightningFastPoisonSlap;
     private float _timeBuff = 4f;
 
     [Header("Abilities Player")]
@@ -153,7 +154,6 @@ public class LightningMovement : Skill
         _isTargetOnEndPointSecondLeap = false;
 
         _isInMovement = false;
-        _poisonSlap.IsCanDamageDeal = false;
         _lightningStrikes.IsCanDamageDeal = false;
 
         if (_isTargetBeforePlayerCoroutine != null)
@@ -606,7 +606,7 @@ public class LightningMovement : Skill
 
                            _lightningStrikes.UseLightningStrikesOfLightningMovement();
                         }
-                        else if (_poisonSlap.IsCanDamageDeal)
+                        else if (_lightningFastPoisonSlap.Data.IsOpen && _poisonSlap.IsCanDamageDeal)
                         {
                             Debug.Log("LightningMovement / ApplyDamage / else if (_poisonSlap)");
                             _poisonSlap.UsePoisonSlapOfLightningMovement();

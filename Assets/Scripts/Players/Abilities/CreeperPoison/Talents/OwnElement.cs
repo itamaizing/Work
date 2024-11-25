@@ -1,18 +1,14 @@
-using Org.BouncyCastle.Asn1.X509;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class OwnElement : Talent
 {
-    //[SerializeField] private Test_AttackSpeedChangedSystem _attackSpeedChangedSystem;
     [SerializeField] private CreeperStrike _creeperStrike;
     [SerializeField] private LayerMask _enemyLayer;
     [SerializeField] private List<GameObject> _enemiesWithDebuff = new();
     [SerializeField] private float _radiusSearching;
 
-    private int _currentPoisonOnEnemy;
     private int _currentStacksPoison;
     private int _currentAllStacks;
     private int _previousAllStacks;
@@ -23,8 +19,6 @@ public class OwnElement : Talent
     private float _increasedAttackSpeed;
     private float _maxMinimumAttackSpeed = 0.1f;
 
-    private bool _isTargetNearby = false;
-
     private PoisonBoneState _poisonBoneState;
     private EmpathicPoisonsState _empathicPoisonState;
     private WitheringPoisonState _witheringPoisonState;
@@ -32,15 +26,13 @@ public class OwnElement : Talent
 
     private Coroutine _searchingDebuffOnEnemeies;
 
-    private void Start()
-    {
-        _baseAttackSpeed = _creeperStrike.AttackDelay;
-        StartSearchingEnemies();
-    }
-
     public override void Enter()
     {
         SetActive(true);
+
+        _baseAttackSpeed = _creeperStrike.AttackDelay;
+
+        StartSearchingEnemies();
     }
 
     public override void Exit()
@@ -66,18 +58,13 @@ public class OwnElement : Talent
             _enemiesWithDebuff.Clear();
             _currentStacksPoison = 0;
             _currentAllStacks = 0;
-            _isTargetNearby = false;
 
             Collider[] enemies = Physics.OverlapSphere(character.transform.position, _radiusSearching, enemyLayer);
-            //Debug.Log("OwnElement / Coroutine / enemies = " + enemies.Length);
+
             if (enemies != null)
             {
                 foreach (Collider target in enemies)
                 {
-                   // Debug.Log("OwnElement / Coroutine / target = " + target.name);
-
-                    _isTargetNearby = true;
-
                     var targetWithDebuff = target.GetComponent<CharacterState>();
 
                     if (targetWithDebuff.CheckPoisonStates())
@@ -140,7 +127,7 @@ public class OwnElement : Talent
         _increasedAttackSpeed = _baseAttackSpeed - _baseIncreaseAttackSpeed;
 
         _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_increasedAttackSpeed);
-        //Debug.Log("OwnElement / IncreaseAttackSpeed / CurrentattackSpeed = " + _creeperStrike.AttackDelay);
+        Debug.Log("OwnElement / IncreaseAttackSpeed / CurrentAttackSpeed = " + _creeperStrike.AttackDelay);
     }
 
     private void ResetAttackSpeed()
@@ -148,6 +135,7 @@ public class OwnElement : Talent
         if (_creeperStrike.AttackDelay < _baseAttackSpeed)
         {
             _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_increasedAttackSpeed);
+            Debug.Log("OwnElement / ResetAttackSpeed / CurrentAttackSpeed = " + _creeperStrike.AttackDelay);
             _currentStacksAtckSpeed--;
         }
     }

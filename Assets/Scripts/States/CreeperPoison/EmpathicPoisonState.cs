@@ -7,8 +7,8 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
 {
     private PoisonCloudState _poisonCloud;
     private Character _player;
-    private Resource _playerResource;
     private DamageType _damageType;
+    private Resource _playerResource;
     private AttackRangeType _attackRangeType;
 
     private int _maxStacks = 8;

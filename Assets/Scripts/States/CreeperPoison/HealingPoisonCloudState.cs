@@ -1,14 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class HealingPoisonCloudState : AbstractCharacterState
 {
-    public bool turnOff = false;
-
-    //private List<Skill> _skills = new();
-    //private List<Talent> _talents = new();
-
     private int _maxStacks = 5;
     private float _radiusCloud = 3.5f;
 
@@ -47,12 +41,6 @@ public class HealingPoisonCloudState : AbstractCharacterState
         {
             AddStacks();
         }
-
-        //if (_player != null)
-        //{
-        //    _skills = _player.CharacterState.Character.Abilities.Abilities;
-        //    Debug.Log("PoisonCloud player == " + _player);
-        //}
     }
 
     public override void UpdateState()
@@ -66,7 +54,7 @@ public class HealingPoisonCloudState : AbstractCharacterState
         }
 
         _duration -= Time.deltaTime;
-        if (_duration < 0 || turnOff)
+        if (_duration < 0)
         {
             ExitState();
         }
@@ -100,11 +88,9 @@ public class HealingPoisonCloudState : AbstractCharacterState
         {
             CurrentStacksCount++;
             _duration = _baseDuration;
-            //Debug.Log("if / CurrentStackPoisonCloud in AddStacks == " + _currentStacks); 
         }
         else
         {
-            //Debug.Log("else / CurrentStackPoisonCloud in AddStacks == " + _currentStacks);
             _duration = _baseDuration;
         }
     }

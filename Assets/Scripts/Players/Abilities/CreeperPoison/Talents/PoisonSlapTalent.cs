@@ -1,4 +1,4 @@
-public class ToxiqueCloud : Talent
+public class PoisonSlapTalent : Talent
 {
     public override void Enter()
     {

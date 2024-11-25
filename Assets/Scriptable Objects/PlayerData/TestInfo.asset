@@ -129,7 +129,7 @@ MonoBehaviour:
     - Id: 1019
       Name: MagicEvade
       Points: 0
-      DefaultValue: 0
+      DefaultValue: 90
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1020

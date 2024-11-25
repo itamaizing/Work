@@ -1,8 +1,6 @@
-using System.Collections;
 using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 
 public class PoisonBoneState : AbstractCharacterState
 {
@@ -33,13 +31,12 @@ public class PoisonBoneState : AbstractCharacterState
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
     public override float TEST_ChangeableValue { get; set; }
     public override States State => States.PoisonBone;
-    public override StateType Type => StateType.Physical;
+    public override StateType Type => StateType.Magic;
     public override BuffDebuff BuffDebuff => BuffDebuff.Debuff;
     public override List<StatusEffect> Effects => _effects;
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        Debug.Log("PoisonBone / EnterState");
         MaxStacksCount = _maxStacks;
         _characterState = character;
         _player = personWhoMadeBuff;
@@ -52,7 +49,6 @@ public class PoisonBoneState : AbstractCharacterState
             AddStacks();
             UpdatePoisonBoneStackAtSkills();
         }
-
     }
 
     private void UpdatePoisonBoneStackAtSkills()    
@@ -60,7 +56,6 @@ public class PoisonBoneState : AbstractCharacterState
         if (_player != null)
         {
             _skills = _player.GetComponent<CharacterState>().Character.Abilities.Abilities;
-            Debug.Log("PoisonBone player == " + _player);
 
             foreach (Skill ability in _skills)
             {
@@ -70,7 +65,6 @@ public class PoisonBoneState : AbstractCharacterState
                     {
                         _creeperStrike = creeperStrike;
                         _creeperStrike.PoisonBoneStack = CurrentStacksCount;
-                        Debug.Log("PoisonBoneState / _creeperStrike.PoisonBoneStack = " + _creeperStrike.PoisonBoneStack);
                     }
                 }
                 if (ability is SpitPoison spitPoison)
@@ -79,8 +73,6 @@ public class PoisonBoneState : AbstractCharacterState
                     {
                         _spitPoison = spitPoison;
                         _spitPoison.PoisonBoneStack = CurrentStacksCount;
-                        Debug.Log("PoisonBoneState / _spitPoison.PoisonBoneStack = " + _spitPoison.PoisonBoneStack);
-
                     }
                 }
                 if (ability is PoisonBall poisonBall)
@@ -89,8 +81,6 @@ public class PoisonBoneState : AbstractCharacterState
                     {
                         _poisonBall = poisonBall;
                         _poisonBall.PoisonBoneStack = CurrentStacksCount;
-                        Debug.Log("PoisonBoneState / _poisonBall.PoisonBoneStack = " + _poisonBall.PoisonBoneStack);
-
                     }
                 }
                 if (ability is PoisonSlap poisonSlap)
@@ -99,8 +89,6 @@ public class PoisonBoneState : AbstractCharacterState
                     {
                         _poisonSlap = poisonSlap;
                         _poisonSlap.PoisonBoneStack = CurrentStacksCount;
-                        Debug.Log("PoisonBoneState / _poisonSlap.PoisonBoneStack = " + _poisonSlap.PoisonBoneStack);
-
                     }
                 }
             }
@@ -142,16 +130,12 @@ public class PoisonBoneState : AbstractCharacterState
     {
         if (CurrentStacksCount < MaxStacksCount)
         {
-            Debug.Log("PoisonBoneState / Stack / if ");
-
             AddStacks();
             UpdatePoisonBoneStackAtSkills();
             return true;
         }
         else
         {
-            Debug.Log("PoisonBoneState / Stack / else ");
-
             _duration = _baseDuration;
             UpdatePoisonBoneStackAtSkills();
             return true;
@@ -161,9 +145,7 @@ public class PoisonBoneState : AbstractCharacterState
     private void AddStacks()
     {
         CurrentStacksCount++;
-        Debug.Log("if / CurrentStackPoisonBone in AddStacks == " + CurrentStacksCount);
         _duration = _baseDuration;
-        Debug.Log("PoisonBoneState / AddStacks");
     }
 
     [Server]

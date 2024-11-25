@@ -1,5 +1,4 @@
 using Mirror;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -31,8 +30,6 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        Debug.Log("HealingPoisonPerSecond / EnterState");
-
         MaxStacksCount = _maxStack;
 
         _characterState = character;
@@ -80,13 +77,11 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
     {
         _currentHealingValue += 1.0f;
 
-        Debug.Log($"HealingPoisonPerSecond / MakeHeal / _currentHealingValue = {_currentHealingValue}");
         Heal heal = new Heal
         {
             Value = _currentHealingValue,
             DamageableSkill = null,
         };
-        Debug.Log($"HealingPoisonPerSecond / MakeHeal / heal.value = {heal.Value}");
 
         _characterState.Character.Health.Heal(ref heal, null);
         //_characterState.Character.DamageTracker.AddHeal(heal, true);

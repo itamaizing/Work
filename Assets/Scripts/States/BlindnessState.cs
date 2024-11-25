@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class BlindnessState : AbstractCharacterState
 {
-	public bool turnOff = false;
-
-	//private CharacterState _characterState;
 	private float _duration;
 	private float _baseDuration;
 
@@ -18,27 +15,17 @@ public class BlindnessState : AbstractCharacterState
     public override BuffDebuff BuffDebuff => BuffDebuff.Debuff;
     public override List<StatusEffect> Effects => _effects;
 
-	//private PlayerAbilities _abilities;
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		Debug.Log("Entering Stunned State");
+		//Debug.Log("Entering Stunned State");
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
 		_characterState = character;
-		if (character.TryGetComponent<Character>(out var ability))
-		{
-			_abilities = ability.Abilities;
-			_abilities.SetAbilitiesDisabled();
-		}
-		else
-		{
-			Debug.Log("no ability at " + character.gameObject.name);
-		}
 	}
 
 	public override void UpdateState()
 	{
-		Debug.Log("Updating Stunned State");
+		//Debug.Log("Updating Stunned State");
 		_duration -= Time.deltaTime;
 		if (_duration < 0)
 		{
@@ -48,12 +35,8 @@ public class BlindnessState : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		Debug.Log("Exiting Stunned State");
+		//Debug.Log("Exiting Stunned State");
 		_characterState.RemoveState(this);
-		if (_characterState.Check(StatusEffect.Ability))
-		{
-			_abilities.SetAbilitiesEnabled();
-		}
 	}
 
 	public override bool Stack(float time)

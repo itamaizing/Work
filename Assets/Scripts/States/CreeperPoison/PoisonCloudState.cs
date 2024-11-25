@@ -1,5 +1,4 @@
 using Mirror;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,7 +26,7 @@ public class PoisonCloudState : AbstractCharacterState
     private float _startTimeBetweenAttack = 1f;
 
     private float _timeBetweenApplyEmpathicPoisons;
-    private float _startTimeBetweenApplyEmpathicPoisons = 4f;
+    private float _startTimeBetweenApplyEmpathicPoisons = 2f;
 
     private float _duration;
     private float _baseDuration;
@@ -43,7 +42,6 @@ public class PoisonCloudState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        Debug.Log("PoisonCloudState / enter");
         MaxStacksCount = _maxStacks;
 
         _characterState = character;
@@ -73,7 +71,6 @@ public class PoisonCloudState : AbstractCharacterState
 
     private void SearchAbilities()
     {
-        Debug.Log("PoisonCloudState / SearchAbilities");
         foreach (Skill ability in _skills)
         {
             if (ability is ExplosionPoisonCloud cloudExplosion)
@@ -92,7 +89,6 @@ public class PoisonCloudState : AbstractCharacterState
 
     private void SearchTalent()
     {
-        Debug.Log("PoisonCloudState / SearchTalent");
         foreach (Talent talent in _talents)
         {
             if (talent is CapaciousPoisonCloud capaciousCloud)
@@ -100,6 +96,7 @@ public class PoisonCloudState : AbstractCharacterState
                 if (_capaciousPoisonCloud == null)
                 {
                     _capaciousPoisonCloud = capaciousCloud;
+
                     if (_capaciousPoisonCloud.Data.IsOpen)
                     {
                         _radiusCloud += 1.5f;
@@ -119,17 +116,18 @@ public class PoisonCloudState : AbstractCharacterState
     public override void UpdateState()
     {
         _timeBetweenAttack -= Time.deltaTime;
+
         _timeBetweenApplyEmpathicPoisons -= Time.deltaTime;
 
         if (_timeBetweenAttack <= 0)
         {
-            Debug.Log("PoisonCloudState / UpdateState in timeBetweenAttack ");
-
             SearchingEnemies(_enemiesLayer, _characterState.gameObject);
+
             _timeBetweenAttack = _startTimeBetweenAttack;
         }
 
         _duration -= Time.deltaTime;
+
         if (_duration < 0)
         {
             ExitState();
@@ -138,7 +136,6 @@ public class PoisonCloudState : AbstractCharacterState
 
     public override void ExitState()
     {
-        Debug.Log("PoisonCloudState / ExitState");
         ResetValues();
 
         _characterState.RemoveState(this);
@@ -178,14 +175,10 @@ public class PoisonCloudState : AbstractCharacterState
     [ClientRpc]
     private void SearchingEnemies(LayerMask enemyLayer, GameObject player)
     {
-        Debug.Log("PoisonCloudState / SearchingEnemies");
-
         Collider[] hitEnemies = Physics.OverlapSphere(player.transform.position, _radiusCloud, enemyLayer);
 
         foreach (Collider enemy in hitEnemies)
         {
-            Debug.Log("PoisonCloudState / SearchingEnemies / foreach / enemy = " + enemy);
-
             if (enemy.transform != player.transform)
             {
                 DamageDeal(enemy.gameObject);
@@ -196,7 +189,6 @@ public class PoisonCloudState : AbstractCharacterState
     [Command]
     private void DamageDeal(GameObject target)
     {
-        Debug.Log("PoisonCloudState / DamageDeal");
         var targetHealth = target.GetComponent<Character>();
 
         _increasedDamage = _baseDamage * CurrentStacksCount;
@@ -215,7 +207,6 @@ public class PoisonCloudState : AbstractCharacterState
         {
             if (_timeBetweenApplyEmpathicPoisons <= 0)
             {
-                Debug.Log("PoisonCloud / DamageDeal / toxiqueCloud Active");
                 targetHealth.CharacterState.AddStateTest(States.EmpathicPoisons, _durationEmpathicPoisons, 0, _player.gameObject, null);
                 _timeBetweenApplyEmpathicPoisons = _startTimeBetweenApplyEmpathicPoisons;
             }

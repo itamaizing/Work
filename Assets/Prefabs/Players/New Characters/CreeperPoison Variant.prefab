@@ -4002,6 +4002,10 @@ PrefabInstance:
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.data[7]
       value: 
+      objectReference: {fileID: 3492382198071822728}
+    - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _skills.Array.data[8]
+      value: 
       objectReference: {fileID: 1990362504558455005}
     - target: {fileID: 5338308959782739855, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4130,7 +4134,7 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[2]
       value: 
-      objectReference: {fileID: 3000660281403338168}
+      objectReference: {fileID: 2843863998030194419}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[3]
       value: 
@@ -4146,7 +4150,7 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[6]
       value: 
-      objectReference: {fileID: 6481945075527068323}
+      objectReference: {fileID: 8466451480708158390}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[7]
       value: 
@@ -4154,7 +4158,7 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[8]
       value: 
-      objectReference: {fileID: 5786312610606554023}
+      objectReference: {fileID: 6481945075527068323}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[9]
       value: 
@@ -4162,43 +4166,43 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[0]
       value: 
-      objectReference: {fileID: 1936417780718833872}
+      objectReference: {fileID: 1946619425185991550}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[1]
       value: 
-      objectReference: {fileID: 7530215349823145969}
+      objectReference: {fileID: 2292270509749100553}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[2]
       value: 
-      objectReference: {fileID: 2843863998030194419}
+      objectReference: {fileID: 8276828102507670664}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[3]
       value: 
-      objectReference: {fileID: 8276828102507670664}
+      objectReference: {fileID: 7530215349823145969}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[4]
       value: 
-      objectReference: {fileID: 5306690424688200949}
+      objectReference: {fileID: 7367470875435194460}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[5]
       value: 
-      objectReference: {fileID: 8412145673821603884}
+      objectReference: {fileID: 9186483103951006081}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[6]
       value: 
-      objectReference: {fileID: 4098318919779109202}
+      objectReference: {fileID: 888833705572263781}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[7]
       value: 
-      objectReference: {fileID: 1335095074300630590}
+      objectReference: {fileID: 8412145673821603884}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[8]
       value: 
-      objectReference: {fileID: 9186483103951006081}
+      objectReference: {fileID: 4098318919779109202}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[9]
       value: 
-      objectReference: {fileID: 888833705572263781}
+      objectReference: {fileID: 1335095074300630590}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[10]
       value: 
@@ -4210,15 +4214,15 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[10]
       value: 
-      objectReference: {fileID: 9013115207424962608}
+      objectReference: {fileID: 1936417780718833872}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[11]
       value: 
-      objectReference: {fileID: 2292270509749100553}
+      objectReference: {fileID: 5306690424688200949}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[12]
       value: 
-      objectReference: {fileID: 7367470875435194460}
+      objectReference: {fileID: 9013115207424962608}
     - target: {fileID: 6014421791596732533, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -4777,9 +4781,6 @@ PrefabInstance:
       addedObject: {fileID: 1936417780718833872}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3000660281403338168}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 3499405661049862048}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
@@ -4834,6 +4835,9 @@ PrefabInstance:
       addedObject: {fileID: 1530526272900225081}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 8466451480708158390}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 2843863998030194419}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
@@ -4880,6 +4884,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8276828102507670664}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1946619425185991550}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!1 &605281494638859046 stripped
 GameObject:
@@ -4944,25 +4951,6 @@ MonoBehaviour:
   character: {fileID: 5560201130496293763}
   _explosionCloud: {fileID: 3492382198071822728}
   _skillManager: {fileID: 5408225586063027666}
---- !u!114 &3000660281403338168
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 605281494638859046}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f92c6b645149246459c1002647b2edc7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _data:
-    Name: AcceleratedSlap
-    IsOpen: 1
-    Description: 
-    Icon: {fileID: 0}
-  character: {fileID: 5560201130496293763}
-  _poisonSlap: {fileID: 8401732055610715995}
 --- !u!114 &3499405661049862048
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5145,6 +5133,7 @@ MonoBehaviour:
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 5560201130496293763}
+  _reductionTimeManaRegenMultiplier: 2
 --- !u!114 &6208233929521022695
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5290,6 +5279,24 @@ MonoBehaviour:
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 5560201130496293763}
+--- !u!114 &8466451480708158390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 605281494638859046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6d7143b48612b848a767afea3ec30b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    Name: Lightning Fast Poison Slap
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 5560201130496293763}
 --- !u!114 &2843863998030194419
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5308,7 +5315,6 @@ MonoBehaviour:
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 5560201130496293763}
-  _creeperStrike: {fileID: 5603002030722705376}
 --- !u!114 &6481945075527068323
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5603,6 +5609,24 @@ MonoBehaviour:
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 5560201130496293763}
+--- !u!114 &1946619425185991550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 605281494638859046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8b26e5a8ab297e468e63ce741d628bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    Name: Poison Slap Talent
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+  character: {fileID: 5560201130496293763}
 --- !u!136 &1625680939628165366 stripped
 CapsuleCollider:
   m_CorrespondingSourceObject: {fileID: 1550066538247365834, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -5704,6 +5728,8 @@ MonoBehaviour:
   _coldBlood: {fileID: 1990362504558455005}
   _lightningStrikes: {fileID: 5444387995332797581}
   _player: {fileID: 5560201130496293763}
+  _multiplyCritDamage: 1.5
+  _chanceOfCriticalStrike: 0.05
 --- !u!114 &5444387995332797581
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5781,10 +5807,8 @@ MonoBehaviour:
   _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 899fa83671534eb42b15ae0986749e2c, type: 2}
   _isSubjectToGlobalCooldownTime: 1
-  _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 50
-  _cooldownTime: 2
+  _skillEnergyCosts: []
+  _cooldownTime: 20
   _castDeley: 0
   _damageValue: 0
   _abilitySchool: 5
@@ -5940,6 +5964,7 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _superFastScales: {fileID: 3379942782498301808}
   _heatedGlands: {fileID: 6681501723384602305}
+  _lightningFastPoisonSlap: {fileID: 8466451480708158390}
   _creeperStrike: {fileID: 5603002030722705376}
   _lightningStrikes: {fileID: 5444387995332797581}
   _poisonSlap: {fileID: 8401732055610715995}
@@ -6061,15 +6086,15 @@ MonoBehaviour:
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
-  IsCanDamageDeal: 0
   _player: {fileID: 5560201130496293763}
   _poisonBall: {fileID: 3449707227377537885}
   _creeperStrike: {fileID: 5603002030722705376}
   _lightningStrikes: {fileID: 5444387995332797581}
   _lightningMovement: {fileID: 5246557041890453261}
   _restorationOfGlands: {fileID: 2292270509749100553}
-  _acceleratedSlap: {fileID: 3000660281403338168}
+  _lightningFastPoisonSlap: {fileID: 8466451480708158390}
   _lightweightSlap: {fileID: 2843863998030194419}
+  _poisonSlapTalent: {fileID: 1946619425185991550}
   _arrowPrefab: {fileID: 7504653704119560997, guid: 3d2c250adc1c5a94a977f3812c146572, type: 3}
 --- !u!114 &5355608940456125184
 MonoBehaviour:
@@ -6137,12 +6162,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: b01cdda0a8d49e24a8cd5c7190f8483b, type: 2}
   _isSubjectToGlobalCooldownTime: 0
   _skillEnergyCosts: []
-  _cooldownTime: 0
+  _cooldownTime: 10
   _castDeley: 0
   _damageValue: 0
   _abilitySchool: 0
@@ -6190,8 +6215,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 5dd2210736bee3d4197798d0dd5f05e3, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []

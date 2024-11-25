@@ -1,8 +1,3 @@
-using Mirror;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class InertialGlands : Talent
 {
     public override void Enter()

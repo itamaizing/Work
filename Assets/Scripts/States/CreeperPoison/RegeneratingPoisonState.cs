@@ -1,6 +1,5 @@
 
 using Mirror;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -86,7 +85,6 @@ public class RegeneratingPoisonState : AbstractCharacterState
     [Server]
     private void MakeHeal()
     {
-        Debug.Log("RegenerationPoison / MakeHeal");
         _endHealingValue = CurrentStacksCount * _baseHealingValue;
 
         Heal heal = new Heal
@@ -94,7 +92,6 @@ public class RegeneratingPoisonState : AbstractCharacterState
             Value = _endHealingValue,
             DamageableSkill = null,
         };
-        Debug.Log("RegenerationPoison / MakeHeal / heal.Value = " + heal.Value);
 
         _characterState.Character.Health.Heal(ref heal, null);
         //_characterState.Character.DamageTracker.AddHeal(heal);

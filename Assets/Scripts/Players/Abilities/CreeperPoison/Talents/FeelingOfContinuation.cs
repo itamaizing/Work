@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class FeelingOfContinuation : Talent
 {
-    private float _reductionTimeManaRegenMultiplier = 2f;
+    [SerializeField] private float _reductionTimeManaRegenMultiplier = 2f;
     private float _remainingManaValue;
 
     private float _maxMana;

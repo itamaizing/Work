@@ -1,12 +1,9 @@
 using Mirror;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class BindingPoisonState : AbstractCharacterState
 {
-    public bool turnOff = false;
-
     private SkillManager _skillManager;
 
     private int _maxStacks = 1;
@@ -53,7 +50,7 @@ public class BindingPoisonState : AbstractCharacterState
         }
 
         //Debug.Log($"BindingPoisonState / UpdateState / CharacterManager = {_skillManager}");
-        if (_duration < 0 || turnOff)
+        if (_duration < 0)
         {
             ExitState();
         }

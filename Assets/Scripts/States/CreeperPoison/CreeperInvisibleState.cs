@@ -1,12 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class CreeperInvisibleState : AbstractCharacterState
 {
-    public bool turnOff = false;
-
     private List<Skill> _skills = new();
     private CreeperInvisible _creeperInvisible;
     private Character _player;
@@ -32,13 +29,10 @@ public class CreeperInvisibleState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        //Debug.Log("EnterState CreeperInvisible");
-
         _characterState = character;
         _player = _characterState.Character;
 
         _playerSprite = _player.GetComponentInChildren<SpriteRenderer>();
-        Debug.Log("EnterState CreeperInvisible / playerSprite = " + _playerSprite);
         _originalMoveSpeed = _player.Move.DefaultSpeed;
         _originalStaminaRegen = _player.Resources.FirstOrDefault()!.RegenerationValue;
 
@@ -62,7 +56,7 @@ public class CreeperInvisibleState : AbstractCharacterState
     public override void UpdateState()
     {
         _isInvisible = _creeperInvisible.IsInvisible;
-        //Debug.Log($"CreeperInvisible / _isInvisible = {_isInvisible}");
+
         if (_isInvisible)
         {
             _timeBetweenReducingTransparency -= Time.deltaTime;
@@ -100,10 +94,12 @@ public class CreeperInvisibleState : AbstractCharacterState
 
     private void ReducingTransparencySprite()
     {
-        Debug.Log("CreeperInvisible / ReducingTransparencySprite");
         Color newTransparency = _playerSprite.color;
+
         newTransparency.a -= 10f * Time.deltaTime;
+
         newTransparency.a = Mathf.Clamp(newTransparency.a, 0.5f, 1f);
+
         _playerSprite.color = new Color(1f, 1f, 1f, newTransparency.a);
     }
 
@@ -112,7 +108,9 @@ public class CreeperInvisibleState : AbstractCharacterState
         _isPlayerInvisability = true;
 
         float reductionMoveSpeed = _originalMoveSpeed * _reductionMoveSpeed;
+
         float endReductionMoveSpeed = _originalMoveSpeed - reductionMoveSpeed;
+
         _player.Move.SetMoveSpeed(endReductionMoveSpeed);
         // Debug.Log("Player MoveSpeed == " + _player.Move.CurrentSpeed);
 

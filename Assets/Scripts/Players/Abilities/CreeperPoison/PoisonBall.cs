@@ -588,6 +588,7 @@ public class PoisonBall : Skill, IAltAbility
         {
             float newRemainingTime = 0.0f;
             _spitPoison.ReductionSetCooldown(newRemainingTime);
+            _isThreeProjectileOnOneTarget = false;
         }
 
         #endregion

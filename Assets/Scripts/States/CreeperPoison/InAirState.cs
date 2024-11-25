@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,7 +20,7 @@ public class InAirState : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _characterState = character;
-
+        Debug.Log("InAirState / EnterState");
         _characterState.Character.Move.CanMove = false;
         _duration = durationToExit;
         _baseDuration = _duration;

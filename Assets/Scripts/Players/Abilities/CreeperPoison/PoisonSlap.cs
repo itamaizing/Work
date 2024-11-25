@@ -6,7 +6,7 @@ public class PoisonSlap : Skill
 {
     #region Variables
 
-    public bool IsCanDamageDeal = false;
+    private bool _isCanDamageDeal = false;
 
     [SerializeField] private Character _player;
 
@@ -19,8 +19,9 @@ public class PoisonSlap : Skill
 
     [Header("Talents")]
     [SerializeField] private RestorationOfGlands _restorationOfGlands;
-    [SerializeField] private AcceleratedSlap _acceleratedSlap;
+    [SerializeField] private LightningFastPoisonSlap _lightningFastPoisonSlap;
     [SerializeField] private LightweightSlap _lightweightSlap;
+    [SerializeField] private PoisonSlapTalent _poisonSlapTalent;
 
     #region DisplayArrow
 
@@ -57,6 +58,7 @@ public class PoisonSlap : Skill
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
     public int PoisonBoneStack { get => _poisonBoneStack; set => _poisonBoneStack = value; }
+    public bool IsCanDamageDeal { get => _isCanDamageDeal; }
 
     protected override bool IsCanCast => CheckCanCast();
 
@@ -116,22 +118,24 @@ public class PoisonSlap : Skill
     {
         if (_lightningMovement.IsInMovement)
         {
-            IsCanDamageDeal = true;
+            _isCanDamageDeal = true;
             Debug.Log("PoisonSlap / if inMovement / isCanDamageDeal = " + IsCanDamageDeal);
             yield break;
         }
 
-        switch (_lightweightSlap.Data.IsOpen)
+        switch (_poisonSlapTalent.Data.IsOpen)
         {
             case true:
                 if (_creeperStrike.IsTwoHit)
                 {
                     CastSpeedFromCreeperStrike();
+                    Debug.Log("PoisonSlap / ActiveTalent / creeperStrike TwoHit");
                     _isUsedPoisonBallCharger = false;
                 }
                 else if (_lightningStrikes.IsUsedLightningStrikes)
                 {
                     CastSpeedFromLightningStrikes();
+                    Debug.Log("PoisonSlap / ActiveTalent / LightningStrikes TwoHit");
                     _isUsedPoisonBallCharger = false;
                 }
                 else
@@ -471,12 +475,12 @@ public class PoisonSlap : Skill
     {
         float baseCooldownTime = _cooldownTime;
 
-        if (_acceleratedSlap.Data.IsOpen)
+        if (_lightweightSlap.Data.IsOpen)
         {
             _cooldownTime /= 2;
         }
         
-        IsCanDamageDeal = false;
+        _isCanDamageDeal = false;
         TryPayCost(true);
 
         _cooldownTime = baseCooldownTime;

@@ -2,7 +2,6 @@ using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class CreeperInvisible : Skill
 {
@@ -74,17 +73,6 @@ public class CreeperInvisible : Skill
         switch (_isInvisible)
         {
             case false:
-                if (_desireToHide.Data.IsOpen && _desireToHide.IsCanApply)
-                {
-                    CmdApplyInvis(_player.gameObject);
-                    yield break;
-                }
-                if (_continuationAmbush.Data.IsOpen && _continuationAmbush.IsCanApplyInvisible)
-                {
-                    CmdApplyInvis(_player.gameObject);
-                    yield break;
-                }
-
                 if (_checkEnemiesCoroutine == null)
                 {
                     yield return _checkEnemiesCoroutine = StartCoroutine(CheckEnemiesAround());
@@ -125,8 +113,26 @@ public class CreeperInvisible : Skill
             }
             CmdTransparentPoisonsIncreaseManaCots();
         }
+
+        if (_desireToHide.Data.IsOpen && _desireToHide.IsCanApply)
+        {
+            Debug.Log("CreeperInvisible / desireToHide");
+
+            CmdApplyInvis(_player.gameObject);
+            yield break;
+        }
+        else if (_continuationAmbush.Data.IsOpen && _continuationAmbush.IsCanApplyInvisible)
+        {
+            Debug.Log("CreeperInvisible / continuationAmbushTalent");
+            CmdApplyInvis(_player.gameObject);
+            yield break;
+        }
         else if (!_isInvisible)
         {
+            Debug.Log("CreeperInvisible / else if (invisible)");
+
+            yield return new WaitForSeconds(10f);
+
             EnteringInvisibleState();
         }
         yield return null;

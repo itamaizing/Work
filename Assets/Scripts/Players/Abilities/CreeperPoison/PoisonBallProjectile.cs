@@ -1,12 +1,5 @@
-using DG.Tweening;
 using Mirror;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
-using System.Security.Cryptography;
 
 public class PoisonBallProjectile : Test_Projectile
 {
@@ -14,6 +7,7 @@ public class PoisonBallProjectile : Test_Projectile
 
     [Header("PoisonBallProjectile Parameters")]
     [SerializeField] private Transform _transformBall;
+    [SerializeField] private float _baseSizeBall;
     [SerializeField] private float _damage;
     [SerializeField] private float _baseDistancePush;
     [SerializeField] private float _baseDurationPush;
@@ -244,23 +238,25 @@ public class PoisonBallProjectile : Test_Projectile
     private void PushEnemy(Character target, float durationPush, float newDistancePush)
     {
         MoveComponent targetMove = target.GetComponent<MoveComponent>();
-        Vector3 directionPush = (target.transform.position - transform.position);
+        Vector3 directionPush = (_transformBall.transform.position - targetMove.transform.position);
 
-        newDistancePush = ((newDistancePush * GlobalVariable.cellSize) * durationPush) / GlobalVariable.cellSize;
+        newDistancePush = (newDistancePush * durationPush) / GlobalVariable.cellSize;
 
+        Debug.Log("PoisonBallProjectile / isPushTarget = " + _isPushTarget);
+        
         if (_isPushTarget)
         {
-            Vector3 finalPoint = targetMove.transform.position + directionPush;
+            Vector3 finalPoint = targetMove.transform.position - directionPush * newDistancePush;
             finalPoint.y = 0;
 
-            targetMove.TargetRpcDoMove(finalPoint * newDistancePush, durationPush);
+            targetMove.TargetRpcDoMove(finalPoint, durationPush);
         }
         else
         {
-            Vector3 finalPoint = targetMove.transform.position - directionPush;
+            Vector3 finalPoint = targetMove.transform.position + directionPush * newDistancePush;
             finalPoint.y = 0;
 
-            targetMove.TargetRpcDoMove(finalPoint * newDistancePush, durationPush);
+            targetMove.TargetRpcDoMove(finalPoint, durationPush);
         }
 
         target.Move.CanMove = true;
@@ -283,34 +279,38 @@ public class PoisonBallProjectile : Test_Projectile
         bool isActiveVoluminousBall, bool isActiveBallEffect,
         bool isPushTarget, bool isPlayerInvisible)
     {
+        CheckActiveTalentVoluminousBall(isActiveVoluminousBall);
+
+        InitializationBoolVariables(isTargetPlayer, isTargetEnemy, isTargetAllies, isPlayerInvisible,
+            isActiveFootInstincts, isActiveRestorationOfGlands,
+            isActiveTalentHealingPoisonBall, isActiveTalentWitheringPoison, isActiveBallEffect);
+
         _player = dad;
         _skill = skill;
-
-        InitializationNumericVariables(multiplierDistance, poisonBoneStack);
-
-        InitializationBoolVariables(isTargetPlayer, isTargetEnemy, isTargetAllies,
-            isPushTarget, isPlayerInvisible,
-            isActiveFootInstincts, isActiveRestorationOfGlands,
-            isActiveTalentHealingPoisonBall, isActiveTalentWitheringPoison, 
-            isActiveVoluminousBall, isActiveBallEffect);
-
-        CheckActiveTalent();
+        _isPushTarget = isPushTarget;
 
         Invoke("TransparentProjectileOnServer", 0.15f);
+
+        InitializationNumericVariables(multiplierDistance, poisonBoneStack);
 
         InitializationComponentsForCountProjectile();
     }
 
-    private void CheckActiveTalent()
+    private void CheckActiveTalentVoluminousBall(bool isActiveVoluminousBall)
     {
-        if (_isActiveVoluminousBall)
+        if (isActiveVoluminousBall)
         {
-            float newScaleX = _transformBall.localScale.x * 1.2f;
-            float newScaleY = _transformBall.localScale.y * 1.2f;
-            float newScaleZ = _transformBall.localScale.z * 1.2f;
+            float multiplierSize = 1.2f;
+            float newScaleX = _transformBall.localScale.x * multiplierSize;
+            float newScaleY = _transformBall.localScale.y * multiplierSize;
+            float newScaleZ = _transformBall.localScale.z * multiplierSize;
 
             _transformBall.localScale = new Vector3(newScaleX, newScaleY, newScaleZ);
         } 
+        else
+        {
+            _transformBall.localScale = new Vector3(_baseSizeBall, _baseSizeBall, _baseSizeBall);
+        }
     }
 
     private void InitializationNumericVariables(float multiplierDistance, int poisonBoneStack)
@@ -321,12 +321,10 @@ public class PoisonBallProjectile : Test_Projectile
 
     private void InitializationBoolVariables(
         bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, 
-        bool isPushTarget, bool isPlayerInvisible,
-        bool isActiveFootInstincts, bool isActiveRestorationOfGlands,
-        bool isActiveTalentHealingPoisonBall, bool isActiveTalentWitheringPoison, 
-        bool isActiveVoluminousBall, bool isActiveBallEffect)
+        bool isPlayerInvisible,bool isActiveFootInstincts, 
+        bool isActiveRestorationOfGlands, bool isActiveTalentHealingPoisonBall, 
+        bool isActiveTalentWitheringPoison, bool isActiveBallEffect)
     {
-        _isPushTarget = isPushTarget;
         _isPlayer = isTargetPlayer;
         _isAllies = isTargetAllies;
         _isEnemy = isTargetEnemy;
@@ -336,7 +334,6 @@ public class PoisonBallProjectile : Test_Projectile
         _isActiveBallEffect = isActiveBallEffect;
         _isActiveHealingPoisonBall = isActiveTalentHealingPoisonBall;
         _isActiveWitheringPoison = isActiveTalentWitheringPoison;
-        _isActiveVoluminousBall = isActiveVoluminousBall;
         _isPlayerInvisible = isPlayerInvisible;
     }
 

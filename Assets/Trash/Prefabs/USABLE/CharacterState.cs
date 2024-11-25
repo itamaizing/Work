@@ -347,7 +347,6 @@ public class CharacterState : NetworkBehaviour
         }
     }
 
-
     public bool CheckPoisonStates()
     {
         var poisonStates = new List<States>
@@ -483,6 +482,7 @@ public class CharacterState : NetworkBehaviour
         AddStateLogic(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
         ClientAddState(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
     }
+
     public void AddStateTest(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
     {
         //Debug.Log("Add state from server");
@@ -585,7 +585,7 @@ public class CharacterState : NetworkBehaviour
             {
                 AbstractCharacterState newState = enumToState[state];
                 Health characterHealth = _hero.Health;
-                float chanceDodgeMagDamage = Random.Range(0f, 100f);
+                float chanceDodgeMagDamage = 90f;
 
                 if (newState.Type == StateType.Magic && chanceDodgeMagDamage <= characterHealth.ResistMagDamage)
                 {

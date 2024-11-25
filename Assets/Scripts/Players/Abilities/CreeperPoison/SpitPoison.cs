@@ -1,13 +1,8 @@
 using Mirror;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
-using System.Drawing;
 using System;
 
 public struct SpitPoisonSpawnPointInfo : NetworkMessage
@@ -32,11 +27,13 @@ public class SpitPoison : Skill, IAltAbility
     [SerializeField] private GameObject _spawnPoint;
 
     #region PoisonCloud
+
     [SerializeField] private PoisonDamagingCloudPrefab _poisonDamagingCloudPrefab;
     [SerializeField] private PoisonHealingCloudPrefab _poisonHealingCloudPrefab;
     private PoisonDamagingCloudPrefab _poisonDamagingCloud;
     private PoisonHealingCloudPrefab _poisonHealingCloud;
     private float _durationPoisonCloud = 6f;
+
     #endregion
 
     private SpitPoisonSpawnPointInfo _spawnPointInfo = new SpitPoisonSpawnPointInfo();
@@ -97,6 +94,9 @@ public class SpitPoison : Skill, IAltAbility
     protected override IEnumerator PrepareJob()
     {
         _isAbilityActive = true;
+
+        CooldownChange();
+
         CheckActiveTalents();
 
         while (_currentTarget == null && float.IsPositiveInfinity(_mousePos.x))
@@ -110,7 +110,6 @@ public class SpitPoison : Skill, IAltAbility
                 _mousePos = GetMousePoint();
                 CalculateAngleRotation();
             }
-            CooldownChange();
             yield return null;
         }
     }
