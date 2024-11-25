@@ -5055,6 +5055,7 @@ GameObject:
   - component: {fileID: 971057160995198890}
   - component: {fileID: 5188294081543664110}
   - component: {fileID: 7701207856488633784}
+  - component: {fileID: 798753633736636440}
   m_Layer: 9
   m_Name: BaseHero
   m_TagString: Allies
@@ -5593,6 +5594,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8529c4355f63304281f497141304f73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!208 &798753633736636440
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8423443208040621164}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 0
+  m_Extents: {x: 0.54, y: 1, z: 0.54}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 0
+  m_Center: {x: 0, y: 1, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &8519182947698867192
 GameObject:
   m_ObjectHideFlags: 0

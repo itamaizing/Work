@@ -9,6 +9,7 @@ public class MoveComponent : NetworkBehaviour
 	[SerializeField, Range(0, 0.5f)] private float _smoothTime = 0.15f;
 	[SerializeField] protected float _currentSpeed = 5;
 	[SerializeField] protected Animator _anim;
+	protected float _animMultiplier;
 
 	public Vector3 MoveDirection = Vector3.zero;
 	
@@ -134,8 +135,9 @@ public class MoveComponent : NetworkBehaviour
 		_rigidbody.velocity = new Vector3(camDir.x * _currentSpeed, _rigidbody.velocity.y, camDir.z * _currentSpeed);
 
 		var animDir = transform.InverseTransformPoint(transform.position + camDir);
-		_anim.SetFloat(HashAnimPlayer.VelocityZ, animDir.z);
-		_anim.SetFloat(HashAnimPlayer.VelocityX, animDir.x);
+		_animMultiplier = 0.1f * _rigidbody.velocity.magnitude + 0.5f;
+		_anim.SetFloat(HashAnimPlayer.VelocityZ, animDir.z * _animMultiplier);
+		_anim.SetFloat(HashAnimPlayer.VelocityX, animDir.x * _animMultiplier);
 	}
 
 	protected virtual void RotateAtCursor()

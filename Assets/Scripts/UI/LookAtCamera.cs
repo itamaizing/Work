@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LookAtCamera : MonoBehaviour
 {
-    private void Update()
+    private void LateUpdate()
     {
         if(Camera.main != null)
         {
