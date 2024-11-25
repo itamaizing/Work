@@ -18,8 +18,6 @@ public class Health : Resource, IDamageable, IHealingable
 
     private List<IDamageable> _shields = new List<IDamageable>();
     private float _sumDamageTaken = 0;
-    private Coroutine _dOTDamageAnimJob;
-    private float _dOTDamageAnimDuration = 0.1f;
 
     public float SumDamageTaken { get => _sumDamageTaken; }
     public float EvadeMeleeDamage { get => _evadeMeleeDamage; }
@@ -194,13 +192,6 @@ public class Health : Resource, IDamageable, IHealingable
         }
     }
 
-    private IEnumerator DOTDamageAnimCoroutine()
-    {
-        var tempSpeed = _animator.speed;
-        _animator.speed = _animator.speed * 0f;
-        yield return new WaitForSecondsRealtime(_dOTDamageAnimDuration);
-        _animator.speed = tempSpeed;
-    }
 
     [ClientRpc]
     private void ClientRpcDamageTaked(Damage damage, Skill skill)

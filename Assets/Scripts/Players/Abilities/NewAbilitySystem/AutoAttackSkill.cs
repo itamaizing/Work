@@ -98,7 +98,7 @@ public abstract class AutoAttackSkill : Skill
 
     protected override IEnumerator PrepareJob()
     {
-        do
+        while (Target == null)
         {
             if (GetMouseButton)
             {
@@ -109,7 +109,7 @@ public abstract class AutoAttackSkill : Skill
 			}
             yield return null;
         }
-        while (Target == null);
+
 
         _hero.Move.LookAtTransform(Target.transform);
     }
