@@ -79,7 +79,7 @@ public class IcePuddleObject : Projectiles
 	{
 		if (collision.gameObject == _dad.gameObject)
 		{
-			_dad.Health.DecreaseRegen(0.01f);
+			_dad.Health.DecreaseRegen(1.01f);
 			return;
 		}
 		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject != _dad.gameObject)
@@ -107,7 +107,7 @@ public class IcePuddleObject : Projectiles
 
 		if (collision.gameObject == _dad.gameObject)
 		{
-			_dad.Health.DecreaseRegen(0.01f);
+			_dad.Health.DecreaseRegen(1.01f);
 			return;
 		}
 		if (collision.TryGetComponent<Character>(out var target) && _energy != null)

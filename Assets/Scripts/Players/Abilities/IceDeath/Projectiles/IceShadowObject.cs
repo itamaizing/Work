@@ -31,7 +31,7 @@ public class IceShadowObject : Projectiles
 	{
 		if (collision.gameObject == _dad.gameObject)
 		{
-			_dad.Health.DecreaseRegen(0.01f);
+			_dad.Health.DecreaseRegen(1.01f);
 			//_healthPlayer.SetBoostRegen(0.01f);
 			//Debug.LogError("setboost in hp has been deleted");
 			return;
@@ -43,7 +43,7 @@ public class IceShadowObject : Projectiles
 		if(_dad == null) return;
 		if (collision.gameObject == _dad.gameObject)
 		{
-			_dad.Health.IncreaseRegen(0.01f);
+			_dad.Health.IncreaseRegen(1.01f);
 			//_healthPlayer.SetBoostRegen(0.01f);
 			//Debug.LogError("setboost in hp has been deleted");
 		}

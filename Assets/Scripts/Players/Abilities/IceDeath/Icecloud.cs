@@ -64,7 +64,7 @@ public class Icecloud : Skill
 
 		Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);
 
-		CmdCreateProjecttile(angle, _energy.CurrentValue-10);
+		CmdCreateProjecttile(angle, _energy.CurrentValue);
 		ClearData();
 	}
 

@@ -5,16 +5,12 @@ using UnityEngine;
 
 public class IceShower : Skill
 {
-	[SerializeField] private SkillRenderer skillRenderer;
-	[SerializeField] private float damage;
-	[SerializeField] private float minDamage;
-	[SerializeField] private float maxDamage;
-	[SerializeField] private float delay;
-	private Vector3 _targetPoint = Vector3.positiveInfinity;
+	[SerializeField] private SkillRenderer _skillRenderer;
+	[SerializeField] private HeroComponent _playerLinks;
+	[SerializeField] private SeriesOfStrikes _combo;
 
-	[SerializeField, Range(0f, 100f)] private float criticalChance = 30f;
-	[SerializeField, Range(0f, 100f)] private float stunChance = 30f;
-	private const float CriticalMultiplier = 2.4f;
+	private Vector3 _targetPoint = Vector3.positiveInfinity;
+	private Energy _energy;
 
 	protected override bool IsCanCast => true;
 
@@ -24,7 +20,18 @@ public class IceShower : Skill
 
 	private void Start()
 	{
-		damage = Random.Range(minDamage, maxDamage + 1);
+		for (int i = 0; i < _playerLinks.Resources.Count; i++)
+		{
+			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
+			{
+				_energy = (Energy)_playerLinks.Resources[i];
+			}
+			/*if (_playerLinks.Resources[i].Type == ResourceType.Rune)
+			{
+				_rune = (RuneComponent)_playerLinks.Resources[i];
+			}*/
+		}
+		
 	}
 
 	protected override IEnumerator PrepareJob()
@@ -48,15 +55,14 @@ public class IceShower : Skill
 	{
 		DrawDamageZone(_targetPoint);
 
-		yield return new WaitForSeconds(delay);
-
 		ApplyDamageToEnemiesInZone();
 		StopDamageZone();
+		yield return null;
 	}
 
 	private void ApplyDamageToEnemiesInZone()
 	{
-		CircleArea damageZone = skillRenderer.TempDamageZone;
+		CircleArea damageZone = _skillRenderer.TempDamageZone;
 
 		if (damageZone != null)
 		{
@@ -67,16 +73,13 @@ public class IceShower : Skill
 				HeroComponent enemy = hitCollider.GetComponent<HeroComponent>();
 				if (enemy != null)
 				{
-					float finalDamage = CalculateDamage(damage);
-					ApplyDamage(finalDamage, DamageType.Magical, enemy);
+					_damageValue = 10 + _energy.CurrentValue / 4;
+					ApplyDamage(_damageValue, DamageType.Magical, enemy);
 
-					if (Random.Range(0f, 100f) <= stunChance)
+					var targetState = enemy.CharacterState;
+					if (targetState != null)
 					{
-						var targetState = enemy.CharacterState;
-						if (targetState != null)
-						{
-							CmdAddState(targetState);
-						}
+						CmdAddState(targetState);
 					}
 				}
 			}
@@ -86,10 +89,10 @@ public class IceShower : Skill
 	[Command]
 	private void CmdAddState(CharacterState targetState)
 	{
-		targetState.AddState(States.Stun, 2.0f, 0, Hero.gameObject, this.name);
+		targetState.AddState(States.Frozen, 2.0f, 0, Hero.gameObject, this.name);
 	}
 
-	private float CalculateDamage(float baseDamage)
+	/*private float CalculateDamage(float baseDamage)
 	{
 		bool isCriticalHit = Random.Range(0f, 100f) <= criticalChance;
 
@@ -99,7 +102,7 @@ public class IceShower : Skill
 		}
 
 		return baseDamage;
-	}
+	}*/
 
 	private void ApplyDamage(float damage, DamageType damageType, Character target)
 	{

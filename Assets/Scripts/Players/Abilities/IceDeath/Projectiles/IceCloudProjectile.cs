@@ -77,7 +77,8 @@ public class IceCloudProjectile : Projectiles
 						_energy = (Energy)_dad.Resources[i];
 					}
 				}
-				_energy.TryUse(_energyDad);
+				//_energy.TryUse(_energyDad);
+				_energy.UseAllEnergy();
 				ClientUse(_energyDad, _energy.gameObject);
 				//damage
 				GetComponent<Collider>().enabled = false;

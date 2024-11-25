@@ -328,6 +328,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 997066533675989817, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.017000198
+      objectReference: {fileID: 0}
     - target: {fileID: 2118694835348996693, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -344,6 +348,10 @@ PrefabInstance:
       propertyPath: _assetId
       value: 1059567037
       objectReference: {fileID: 0}
+    - target: {fileID: 2584694462126127171, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.017000198
+      objectReference: {fileID: 0}
     - target: {fileID: 2622564488409335896, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _resource
       value: 
@@ -351,6 +359,38 @@ PrefabInstance:
     - target: {fileID: 3919103737457224534, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _regenerationDelay
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4225063940596180889, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4225063940596180889, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4225063940596180889, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4225063940596180889, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4225063940596180889, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 2.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4225063940596180889, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0.34642005
+      objectReference: {fileID: 0}
+    - target: {fileID: 4225063940596180889, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4225063940596180889, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.727
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.size
@@ -412,6 +452,10 @@ PrefabInstance:
       propertyPath: _skills.Array.data[13]
       value: 
       objectReference: {fileID: 2727420570257355857}
+    - target: {fileID: 5230403314913317377, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.021900177
+      objectReference: {fileID: 0}
     - target: {fileID: 5590339039165547173, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _stateIcons
       value: 
@@ -584,6 +628,10 @@ PrefabInstance:
       propertyPath: _damageZonePref
       value: 
       objectReference: {fileID: 6076937102363889602, guid: 586443d303441854fbd96bcd57e8ccc6, type: 3}
+    - target: {fileID: 8137406360974725213, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_Value
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Name
       value: IceDeath
@@ -1046,7 +1094,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 6e603452e81f85842b595b2c7f0d472d, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
-  - resourceType: 2
+  - resourceType: 3
     resourceCost: 1
   _cooldownTime: 0
   _castDeley: 0
@@ -1480,10 +1528,12 @@ MonoBehaviour:
   _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 38820b50da942334d897308f02cfbecd, type: 2}
   _isSubjectToGlobalCooldownTime: 1
-  _skillEnergyCosts: []
+  _skillEnergyCosts:
+  - resourceType: 3
+    resourceCost: 1
   _cooldownTime: 0
   _castDeley: 0
-  _damageValue: 5
+  _damageValue: 10
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -1510,13 +1560,9 @@ MonoBehaviour:
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
-  skillRenderer: {fileID: 2643045369493803655}
-  damage: 5
-  minDamage: 5
-  maxDamage: 10
-  delay: 0
-  criticalChance: 30
-  stunChance: 30
+  _skillRenderer: {fileID: 2643045369493803655}
+  _playerLinks: {fileID: 4374618947117916461}
+  _combo: {fileID: 161199462986225237}
 --- !u!114 &3296930317622393649
 MonoBehaviour:
   m_ObjectHideFlags: 0

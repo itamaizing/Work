@@ -73,7 +73,8 @@ public class BlockOfIce : Skill
 
 				if (GetTarget().character == null)
 				{
-					_mousePos = GetTarget().Position;
+				//	_mousePos = GetTarget().Position;
+					_mousePos = GetMousePoint();
 				}
 				else
 				{
