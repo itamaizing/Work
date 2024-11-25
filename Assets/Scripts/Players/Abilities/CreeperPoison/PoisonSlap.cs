@@ -1,8 +1,5 @@
-using DG.Tweening;
 using Mirror;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
 
 public class PoisonSlap : Skill
@@ -48,6 +45,7 @@ public class PoisonSlap : Skill
     private float _baseDamage = 30f;
     private float _distancePush = 3.0f;
     private float _durationPush = 1.0f;
+    private float _minTimeCooldown = 0.2f;
 
     private Coroutine _secondMouseClickCoroutine;
 
@@ -69,6 +67,26 @@ public class PoisonSlap : Skill
     private void Update()
     {
         UpdateMouseDetection();
+    }
+
+    public void AnimPoisonSlapCast()
+    {
+
+    }
+
+    public void AnimPoisonSlapCastEnded()
+    {
+
+    }
+
+    public void UsePoisonSlapOfLightningMovement()
+    {
+        if (RemainingCooldownTime > _minTimeCooldown)
+            return;
+        
+        _currentTarget = _lightningMovement.Target;
+        Debug.Log("PoisonSlap / UsePoisonSlapLightning / _currentTarget = " + _currentTarget);
+        DamageDealOfLightningMovement();
     }
 
     protected override void ClearData()
@@ -96,6 +114,13 @@ public class PoisonSlap : Skill
 
     protected override IEnumerator PrepareJob()
     {
+        if (_lightningMovement.IsInMovement)
+        {
+            IsCanDamageDeal = true;
+            Debug.Log("PoisonSlap / if inMovement / isCanDamageDeal = " + IsCanDamageDeal);
+            yield break;
+        }
+
         switch (_lightweightSlap.Data.IsOpen)
         {
             case true:
@@ -133,12 +158,8 @@ public class PoisonSlap : Skill
                 break;
         }
 
-        if (!_poisonBall.IsHaveCharge && _isUsedPoisonBallCharger) yield break;
-        
-
-        if (_lightningMovement.IsInMovement)
+        if (_poisonBall.IsHaveCharge == false && _isUsedPoisonBallCharger)
         {
-            IsCanDamageDeal = true;
             yield break;
         }
         else
@@ -417,9 +438,9 @@ public class PoisonSlap : Skill
         }
     }
 
-    public void DamageDealOfLightningMovement(Character target, float duration)
+    public void DamageDealOfLightningMovement()
     {
-        if (target != null)
+        if (_currentTarget != null)
         {
             Damage damage = new Damage
             {
@@ -428,21 +449,20 @@ public class PoisonSlap : Skill
                 PhysicAttackType = AttackRangeType.MeleeAttack,
             };
 
-            CmdApplyDamage(damage, target.gameObject);
+            CmdApplyDamage(damage, _currentTarget.gameObject);
 
-            if (target.CharacterState.CheckForState(States.PoisonBone) && _restorationOfGlands && _poisonBoneStack > 0)
+            if (_currentTarget.CharacterState.CheckForState(States.PoisonBone) && _restorationOfGlands && _poisonBoneStack > 0)
             {
                 float baseChanceOfRestorationOfGlands = 0.1f;
                 float chanceOfRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
 
                 if (Random.Range(0f, 1f) <= chanceOfRestorationOfGlands)
                 {
-                    Debug.Log("CreeperStrike / restorationOfGlands");
                     _restorationOfGlands.ReductionCooldown();
                 }
             }
 
-            PushTarget(target, _distancePush, _durationPush, _isPushTargetAllowed);
+            PushTarget(_currentTarget, _distancePush, _durationPush, _isPushTargetAllowed);
         }
         UseRecharge();
     }
@@ -455,10 +475,11 @@ public class PoisonSlap : Skill
         {
             _cooldownTime /= 2;
         }
-        _cooldownTime = baseCooldownTime;
         
         IsCanDamageDeal = false;
         TryPayCost(true);
+
+        _cooldownTime = baseCooldownTime;
     }
 
     private void PushTarget(Character target, float distancePush, float durationPush, bool isCanPushTarget)

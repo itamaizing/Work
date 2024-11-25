@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class LightningStrikes : AutoAttackSkill
@@ -20,13 +18,9 @@ public class LightningStrikes : AutoAttackSkill
 
     private Character _currentTarget;
 
-    private int _countStrikes = 2;
-    private int _countHit = 0;
-
     private float _animTime;
-    private float _attackSpeed = 0.1f;
     private float _cooldownMultiplier = 2f;
-
+    
     private bool _isUsedLightningStrikes = false;
     private bool _isIncreaseCooldownTime = false;
 
@@ -47,9 +41,9 @@ public class LightningStrikes : AutoAttackSkill
         AnimCastEnded();
     }
 
-    public void UseLightningStrikesOfLightningMovement(Character target, float duration)
-    {
-        _useCoroutine = StartCoroutine(UseAbilityCoroutine(target));
+    public void UseLightningStrikesOfLightningMovement()
+    { 
+        _currentTarget = _lightningMovement.Target;
     }
 
     private float GetClipLength()
@@ -59,35 +53,30 @@ public class LightningStrikes : AutoAttackSkill
         {
             if (clip.name == "LightningStrikesAttack")
             {
-                Debug.Log("LightningStrikes / Clip.Name = " + clip.name);
                 return clip.length;
             }
         }
         return -1f;
     }
 
-    private void UseRecharge()
-    {
-        TryPayCost(true);
-        if (_useCoroutine != null)
-        {
-            StopCoroutine(_useCoroutine);
-            _useCoroutine = null;
-        }
-    }
-
     protected override IEnumerator PrepareJob()
     {
         if (_lightningMovement.IsInMovement)
         {
+            _animTime = GetClipLength();
             IsCanDamageDeal = true;
+            IncreaseAnimSpeed();
         }
+
         return base.PrepareJob();
     }
 
     protected override void ClearData()
     {
         base.ClearData();
+
+        if (_animTime > 0)
+            _player.Animator.speed = _animTime;
 
         if (_useCoroutine != null)
         {
@@ -109,18 +98,33 @@ public class LightningStrikes : AutoAttackSkill
 
     protected override void CastAction()
     {
-        _attackDelay = _attackSpeed;
-        _animTime = GetClipLength();
+        Debug.Log("LightningStrikes / CastAction");
 
-        if (_coldBlood.IsCanCritLightningStrikes && !_isIncreaseCooldownTime)
+        _target = _currentTarget;
+
+        if (_coldBlood.IsCanCritLightningStrikes && _isIncreaseCooldownTime == false)
         {
             float newCooldownTime = _cooldownTime * _cooldownMultiplier;
             this.IncreaseSetCooldown(newCooldownTime);
 
             _isIncreaseCooldownTime = true;
         }
-        _currentTarget = _target;
-        _useCoroutine = StartCoroutine(UseAbilityCoroutine(_currentTarget));
+
+        //if (_currentTarget == null)
+        //    _currentTarget = _target;
+
+        DamageDeal();
+    }
+
+    private void IncreaseAnimSpeed()
+    {
+        if (_animTime > 0)
+        {
+            float multiplier = _lightningMovement.DurationLeap;
+            float animTimeMultiplier = _animTime / multiplier - 1f;
+
+            _player.Animator.speed = animTimeMultiplier;
+        }
     }
 
     private void ResetUsedLightningStrikes()
@@ -128,28 +132,18 @@ public class LightningStrikes : AutoAttackSkill
         _isUsedLightningStrikes = false;
     }
 
-    private IEnumerator UseAbilityCoroutine(Character target)
+    private void DamageDeal()
     {
-        _isUsedLightningStrikes = true;
+        Debug.Log("LightningStrikes / DamageDeal");
 
-        if (_damageDealCoroutine == null) 
-            _damageDealCoroutine = StartCoroutine(DecreaseAttackSpeed(target));
+        //_creeperStrike.CurrentTarget = _currentTarget;
+        _creeperStrike.DamageDeal(_currentTarget);
 
-        yield return null;
-    }
+        if (_lightningMovement.IsInMovement)
+        {
+            IsCanDamageDeal = false;
+        }
 
-    private IEnumerator DecreaseAttackSpeed(Character target)
-    {
-        _creeperStrike.CurrentTarget = target;
-        _countHit = 0;
-        yield return null;
-        //_creeperStrike.CurrentCountHit = 0;
-
-        //if (_lightningMovement.IsInMovement)
-        //{
-        //    IsCanDamageDeal = false;
-        //    UseRecharge();
-        //}
-
+        _creeperStrike.CurrentCountHit = 0;
     }
 }

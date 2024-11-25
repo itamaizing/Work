@@ -1,5 +1,4 @@
 using Mirror;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,10 +19,8 @@ public class ImmaterialityState : AbstractCharacterState
     {
         _characterState = character;
         _player = _characterState.Character;
-        Debug.Log("enterState Immateriality");
         _duration = durationToExit;
         _baseDuration = _duration;
-        Debug.Log("duration = " + _duration);
 
         DisabledCollider();
     }
@@ -64,7 +61,6 @@ public class ImmaterialityState : AbstractCharacterState
     {
         if (_player != null)
         {
-            Debug.Log("DisableCollider");
             _player.Collider.isTrigger = true;
         }
     }
@@ -72,7 +68,6 @@ public class ImmaterialityState : AbstractCharacterState
     [ClientRpc]
     private void TargetRpcResetPlayerComponents()
     {
-        Debug.Log("EnabledCollider");
         _player.Collider.isTrigger = false;
     }
 }

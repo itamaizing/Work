@@ -1,13 +1,12 @@
-using Mirror;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ReleaseFromSecrecy : Talent
 {
-   // [SerializeField] private Test_AttackSpeedChangedSystem _attackSpeedChangedSystem;
     [SerializeField] private CreeperInvisible _creeperInvisible;
     [SerializeField] private CreeperStrike _creeperStrike;
+
+    [SerializeField] private float _attackSpeedIncrease = 0.3f;
 
     private int _maxCountBuff = 1;
     private int _currentCountBuff = 0;
@@ -16,7 +15,6 @@ public class ReleaseFromSecrecy : Talent
     private float _timeDurationBuff;
 
     private float _currentAttackSpeed;
-    private float _attackSpeedIncrease = 0.5f;
 
     private Coroutine _increasingAttackSpeedCoroutine;
 
@@ -77,6 +75,4 @@ public class ReleaseFromSecrecy : Talent
         _timeDurationBuff = _startTimeDurationBuff;
         _currentCountBuff = 0;
     }
-
-
 }

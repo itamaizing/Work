@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class ColdBlood : Skill
@@ -18,12 +16,10 @@ public class ColdBlood : Skill
     private Vector3 _mousePosition = Vector3.positiveInfinity;
 
     private float _cooldownTimeWithTalent = 4f;
-    private float _decreaseCooldownTime = 2f;
 
     private bool _isPlayer = false;
     private bool _isCanCritCreeperStrike;
     private bool _isCanCritLightningStrikes;
-    private bool _isCanCast = false;
 
     private Coroutine _waitingHitFromCreeperStrike;
     protected override int AnimTriggerCast => 0;
@@ -31,12 +27,11 @@ public class ColdBlood : Skill
     public bool IsCanCritCreeperStrike { get => _isCanCritCreeperStrike; set => _isCanCritCreeperStrike = value; }
     public bool IsCanCritLightningStrikes { get => _isCanCritLightningStrikes; set => _isCanCritLightningStrikes = value; }
 
-    protected override bool IsCanCast { get { return _coldBloodEnabledTalent.Data.IsOpen; } }
+    protected override bool IsCanCast { get => _coldBloodEnabledTalent.Data.IsOpen; }
 
     protected override void ClearData()
     {
         Debug.Log("ColdBlood / ClearData");
-        _isCanCast = false;
         _mousePosition = Vector3.positiveInfinity;
         _target = null;
         _isPlayer = false;
@@ -82,7 +77,6 @@ public class ColdBlood : Skill
                 }
                 yield return null;
             }
-            _isCanCast = true;
         }
         else
         {

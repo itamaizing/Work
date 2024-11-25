@@ -139,6 +139,7 @@ public abstract class AutoAttackSkill : Skill
 
     protected void AnimCastAction()
     {
+        Debug.Log("AutoAttackSkill / AnimCastAction");
         CastAction();
     }
 

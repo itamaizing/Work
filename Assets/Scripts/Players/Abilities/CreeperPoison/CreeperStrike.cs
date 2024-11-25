@@ -1,9 +1,6 @@
 using Mirror;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.TextCore.LowLevel;
 
 public class CreeperStrike : AutoAttackSkill
 {
@@ -37,9 +34,9 @@ public class CreeperStrike : AutoAttackSkill
     private int _poisonBoneStack = 0;
 
     private float _currentDamage;
-    private float _multiplyCritDamage = 1.5f;
+    private float _multiplyCritDamage = 15f;
     private float _lifeTimePoisonBoneStacks = 6.0f;
-    private float _chanceOfCriticalStrike = 0.05f;
+    private float _chanceOfCriticalStrike = 0.9f;
 
     private bool _isTwoHit = false;
     private bool _isHit = false;
@@ -87,12 +84,14 @@ public class CreeperStrike : AutoAttackSkill
     private IEnumerator UseAbilityCoroutine()
     {
         Debug.Log("CreeperStrike / CurrentTarget = " + CurrentTarget);
-        DealingDamageFromHits(CurrentTarget, false);
+        DamageDeal(CurrentTarget, false);
         yield return null;
     }
 
-    public void DealingDamageFromHits(Character target, bool isUsingLightningStrikes = false)
+    public void DamageDeal(Character target, bool isUsingLightningStrikes = false)
     {
+        Debug.Log("CreeperStrike / DamageDeal");
+
         if (target != null)
         {
             _currentDamage = Random.Range(7.0f, 11.0f);

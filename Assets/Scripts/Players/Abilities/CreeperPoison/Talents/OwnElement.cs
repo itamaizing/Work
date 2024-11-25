@@ -69,12 +69,12 @@ public class OwnElement : Talent
             _isTargetNearby = false;
 
             Collider[] enemies = Physics.OverlapSphere(character.transform.position, _radiusSearching, enemyLayer);
-            Debug.Log("OwnElement / Coroutine / enemies = " + enemies.Length);
+            //Debug.Log("OwnElement / Coroutine / enemies = " + enemies.Length);
             if (enemies != null)
             {
                 foreach (Collider target in enemies)
                 {
-                    Debug.Log("OwnElement / Coroutine / target = " + target.name);
+                   // Debug.Log("OwnElement / Coroutine / target = " + target.name);
 
                     _isTargetNearby = true;
 
@@ -140,7 +140,7 @@ public class OwnElement : Talent
         _increasedAttackSpeed = _baseAttackSpeed - _baseIncreaseAttackSpeed;
 
         _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_increasedAttackSpeed);
-        Debug.Log("OwnElement / IncreaseAttackSpeed / CurrentattackSpeed = " + _creeperStrike.AttackDelay);
+        //Debug.Log("OwnElement / IncreaseAttackSpeed / CurrentattackSpeed = " + _creeperStrike.AttackDelay);
     }
 
     private void ResetAttackSpeed()

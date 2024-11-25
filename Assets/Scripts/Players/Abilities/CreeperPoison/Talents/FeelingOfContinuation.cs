@@ -1,12 +1,9 @@
-using Mirror;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FeelingOfContinuation : Talent
 {
-    private float _reductionTimeManaRegenMultiplier = 20f;
+    private float _reductionTimeManaRegenMultiplier = 2f;
     private float _remainingManaValue;
 
     private float _maxMana;
@@ -20,7 +17,6 @@ public class FeelingOfContinuation : Talent
     public override void Enter()
     {
         SetActive(true);
-        _baseTimeRegenMana = character.TryGetResource(ResourceType.Mana).RegenerationDelay;
     }
 
     public override void Exit()
@@ -30,6 +26,8 @@ public class FeelingOfContinuation : Talent
 
     public void IncreaseRegenerationMana(Character player, float playerCriticalDamage)
     {
+        _baseTimeRegenMana = character.TryGetResource(ResourceType.Mana).RegenerationDelay;
+
         _originalRegenerationMana = player.TryGetResource(ResourceType.Mana).RegenerationValue;
 
         _remainingManaValue = playerCriticalDamage;
@@ -61,18 +59,18 @@ public class FeelingOfContinuation : Talent
             if (_currentMana >= _maxMana)
             {
                 _currentMana = _maxMana;
-                CancelCoroutine(player, _manaRegenerationCoroutine);
+                CancelCoroutine(player);
                 yield break;
             }
         }
-        CancelCoroutine(player, _manaRegenerationCoroutine);
+        CancelCoroutine(player);
     }
 
-    private void CancelCoroutine(Character player, Coroutine coroutine)
+    private void CancelCoroutine(Character player)
     {
-        player.TryGetResource(ResourceType.Mana).RegenerationDelay = _baseTimeRegenMana;
-
-        StopCoroutine(coroutine);
+        StopCoroutine(_manaRegenerationCoroutine);
         _manaRegenerationCoroutine = null;
+
+        player.TryGetResource(ResourceType.Mana).RegenerationDelay = _baseTimeRegenMana;
     }
 }

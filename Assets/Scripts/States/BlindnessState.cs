@@ -40,7 +40,7 @@ public class BlindnessState : AbstractCharacterState
 	{
 		Debug.Log("Updating Stunned State");
 		_duration -= Time.deltaTime;
-		if (_duration < 0 || turnOff)
+		if (_duration < 0)
 		{
 			ExitState();
 		}
@@ -58,15 +58,7 @@ public class BlindnessState : AbstractCharacterState
 
 	public override bool Stack(float time)
 	{
-		if (_baseDuration > time)
-		{
-			return false;
-		}
-		else
-		{
-			_duration = time;
-			return true;
-		}
-
+		_duration = _baseDuration;
+		return true;
 	}
 }

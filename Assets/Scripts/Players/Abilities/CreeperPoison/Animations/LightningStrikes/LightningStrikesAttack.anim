@@ -73990,22 +73990,8 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.53333336
-    functionName: AnimCreeperStrikeCast
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
   - time: 0.7
-    functionName: AnimCreeperStrikeEnded
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
-  - time: 0.73333335
-    functionName: AnimCreeperStrikeCast
+    functionName: AnimLightningStrikesCast
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
@@ -74013,13 +73999,6 @@ AnimationClip:
     messageOptions: 0
   - time: 0.96666664
     functionName: AnimLightningStrikesEnd
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
-  - time: 0.96666664
-    functionName: AnimCreeperStrikeEnded
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

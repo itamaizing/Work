@@ -267,7 +267,7 @@ public class CreeperInvisible : Skill
     [Command]
     private void CmdTransparentPoisonsIncreaseManaCots()
     {
-        _transparentPoisons.IncreaseManaCost();
+        //_transparentPoisons.IncreaseManaCost();
     }
 
     #endregion
@@ -277,47 +277,48 @@ public class CreeperInvisible : Skill
     [ClientRpc]
     private void RpcReducingTransparencySpritePlayer(GameObject player)
     {
-        player.GetComponent<Character>().IsInvisible = true;
+        //player.GetComponent<Character>().IsInvisible = true;
 
-        MeshRenderer playerSprite = player.GetComponentInChildren<MeshRenderer>();
+        //MeshRenderer playerSprite = player.GetComponentInChildren<MeshRenderer>();
 
-        Color newPlayerSpriteTransparency = playerSprite.material.color;
+        //Color newPlayerSpriteTransparency = playerSprite.material.color;
+            
 
-        int playerLayer = player.layer;
+        //int playerLayer = player.layer;
 
-        if (playerLayer == LayerMask.NameToLayer("Allies"))
-        {
-            newPlayerSpriteTransparency.a = 0.5f;
-            _playerRenderer.material.color = new Color(playerSprite.material.color.r, playerSprite.material.color.g, playerSprite.material.color.b, newPlayerSpriteTransparency.a);
-        }
-        else if (playerLayer == LayerMask.NameToLayer("Enemy"))
-        {
-            newPlayerSpriteTransparency.a = 0.0f;
-            _playerRenderer.material.color = new Color(playerSprite.material.color.r, playerSprite.material.color.g, playerSprite.material.color.b, newPlayerSpriteTransparency.a);
-        }
+        //if (playerLayer == LayerMask.NameToLayer("Allies"))
+        //{
+        //    newPlayerSpriteTransparency.a = 0.5f;
+        //    _playerRenderer.material.color = new Color(playerSprite.material.color.r, playerSprite.material.color.g, playerSprite.material.color.b, newPlayerSpriteTransparency.a);
+        //}
+        //else if (playerLayer == LayerMask.NameToLayer("Enemy"))
+        //{
+        //    newPlayerSpriteTransparency.a = 0.0f;
+        //    _playerRenderer.material.color = new Color(playerSprite.material.color.r, playerSprite.material.color.g, playerSprite.material.color.b, newPlayerSpriteTransparency.a);
+        //}
     }
 
     [ClientRpc]
     private void RpcIncreasingTransparencySpritePlayer(GameObject player)
     {
-        player.GetComponent<Character>().IsInvisible = false;
+        //player.GetComponent<Character>().IsInvisible = false;
 
-        MeshRenderer playerSprite = player.GetComponentInChildren<MeshRenderer>();
+        //MeshRenderer playerSprite = player.GetComponentInChildren<MeshRenderer>();
 
-        Color newPlayerSpriteTransparency = playerSprite.material.color;
+        //Color newPlayerSpriteTransparency = playerSprite.material.color;
 
-        int playerLayer = player.layer;
+        //int playerLayer = player.layer;
 
-        if (playerLayer == LayerMask.NameToLayer("Allies"))
-        {
-            newPlayerSpriteTransparency.a = 1f;
-            _playerRenderer.material.color = new Color(playerSprite.material.color.r, playerSprite.material.color.g, playerSprite.material.color.b, newPlayerSpriteTransparency.a);
-        }
-        else if (playerLayer == LayerMask.NameToLayer("Enemy"))
-        {
-            newPlayerSpriteTransparency.a = 1f;
-            _playerRenderer.material.color = new Color(playerSprite.material.color.r, playerSprite.material.color.g, playerSprite.material.color.b, newPlayerSpriteTransparency.a);
-        }
+        //if (playerLayer == LayerMask.NameToLayer("Allies"))
+        //{
+        //    newPlayerSpriteTransparency.a = 1f;
+        //    _playerRenderer.material.color = new Color(playerSprite.material.color.r, playerSprite.material.color.g, playerSprite.material.color.b, newPlayerSpriteTransparency.a);
+        //}
+        //else if (playerLayer == LayerMask.NameToLayer("Enemy"))
+        //{
+        //    newPlayerSpriteTransparency.a = 1f;
+        //    _playerRenderer.material.color = new Color(playerSprite.material.color.r, playerSprite.material.color.g, playerSprite.material.color.b, newPlayerSpriteTransparency.a);
+        //}
     }
 
     [ClientRpc]
