@@ -11,6 +11,7 @@ public class IceShower : Skill
 
 	private Vector3 _targetPoint = Vector3.positiveInfinity;
 	private Energy _energy;
+	private float _duration = 2;
 
 	protected override bool IsCanCast => true;
 
@@ -66,6 +67,7 @@ public class IceShower : Skill
 
 		if (damageZone != null)
 		{
+			Debug.Log("TEST");
 			Collider[] hitColliders = Physics.OverlapSphere(damageZone.transform.position, Area, TargetsLayers);
 
 			foreach (var hitCollider in hitColliders)
@@ -79,7 +81,8 @@ public class IceShower : Skill
 					var targetState = enemy.CharacterState;
 					if (targetState != null)
 					{
-						CmdAddState(targetState);
+						_duration = 100 + _energy.CurrentValue / 20;
+						CmdAddState(targetState, _duration, 0);
 					}
 				}
 			}
@@ -87,9 +90,10 @@ public class IceShower : Skill
 	}
 
 	[Command]
-	private void CmdAddState(CharacterState targetState)
+	private void CmdAddState(CharacterState targetState, float duration, float damageToExit)
 	{
-		targetState.AddState(States.Frozen, 2.0f, 0, Hero.gameObject, this.name);
+
+		targetState.AddState(States.Frozen, duration, 0, Hero.gameObject, this.name);
 	}
 
 	/*private float CalculateDamage(float baseDamage)
@@ -112,7 +116,7 @@ public class IceShower : Skill
 			Type = DamageType.Physical,
 			PhysicAttackType = AttackRangeType.RangeAttack,
 		};
-
+		Debug.Log("DAMAGE");
 		CmdApplyDamage(_damage, target.gameObject);
 	}
 

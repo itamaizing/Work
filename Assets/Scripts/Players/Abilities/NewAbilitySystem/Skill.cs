@@ -1085,7 +1085,8 @@ public abstract class Skill : NetworkBehaviour
     [Command]
     public void CmdApplyDamage(Damage damage, GameObject target)
     {
-        if (_tempTargetForDamage != target.transform)
+		Debug.Log("DAMAGE");
+		if (_tempTargetForDamage != target.transform)
         {
             _tempTargetForDamage = target.transform;
             _tempHPForDamage = target.GetComponent<Health>();

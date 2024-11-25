@@ -7,6 +7,7 @@ public class Cooling : AbstractCharacterState
 	public bool turnOff = false;
 	private float _duration;
 	private float _baseDuration;
+	private float _damageOnStart;
 	private float _damageToExit;
 	private float _curAbilityDebuf = 0.1f;
 	private float _curSpeedDebuf = 0.05f;
@@ -32,6 +33,7 @@ public class Cooling : AbstractCharacterState
 		}
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
+		_damageOnStart = _characterState.Character.Health.SumDamageTaken;
 
 		_characterState.Character.Move.ChangeMoveSpeed(1 - _curSpeedDebuf);
 		//decrease speed of attact and movement
@@ -41,7 +43,7 @@ public class Cooling : AbstractCharacterState
 	public override void UpdateState()
 	{
 		_duration -= Time.deltaTime;
-		if (_characterState.Character.Health.SumDamageTaken >= _damageToExit || _duration < 0 || turnOff)
+		if (_characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || _duration < 0 || turnOff)
 		{
 			ExitState();
 		}

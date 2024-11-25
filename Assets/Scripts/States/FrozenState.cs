@@ -8,6 +8,7 @@ public class FrozenState : AbstractCharacterState
 	private float _duration;
 	private float _baseDuration;
 	private float _damageToExit;
+	private float _damageOnStart = 0;
 
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.Ability };
 
@@ -30,7 +31,7 @@ public class FrozenState : AbstractCharacterState
 		{
 			_damageToExit = damageToExit;
 		}
-
+		_damageOnStart = _characterState.Character.Health.SumDamageTaken;
 		_characterState.Character.Move.CanMove = false;
 		_characterState.Character.Move.LookAtTransform(_characterState.gameObject.transform);
 
@@ -51,7 +52,7 @@ public class FrozenState : AbstractCharacterState
 	public override void UpdateState()
 	{
 		_duration -= Time.deltaTime;
-		if (_characterState.Character.Health.SumDamageTaken >= _damageToExit || _duration <= 0 )//|| turnOff)
+		if (_characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || _duration <= 0 )//|| turnOff)
 		{
 			ExitState();
 		}
