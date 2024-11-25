@@ -10,28 +10,27 @@ public class IcyStream : Skill
 	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 	private bool _talent = false;
 
-	private Vector2 _mousePos = Vector3.positiveInfinity;
+	private Vector3 _mousePos = Vector3.positiveInfinity;
 	private Energy _energy;
+	private Character _target = null;
 	//private RuneComponent _rune;
 
 	protected override bool IsCanCast => IsCanCastCheck();
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+    protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+    protected override int AnimTriggerCast => 0;
 
     private bool IsCanCastCheck()
 	{
-		return true;
-		/*if (_rune.CurrentValue >= 1.5f)
+		if(_target != null)
 		{
-			_rune.CmdUse(1.5f);
-			return true;
+			if(Vector3.Distance(_target.transform.position, _playerLinks.transform.position) > Radius)
+			{
+				return false;
+			}
 		}
-		else
-		{
-			return false;
-		}*/
+		return true;
 	}
 
 	private void Start()
@@ -42,10 +41,6 @@ public class IcyStream : Skill
 			{
 				_energy = (Energy)_playerLinks.Resources[i];
 			}
-			/*if (_playerLinks.Resources[i].Type == ResourceType.Rune)
-			{
-				_rune = (RuneComponent)_playerLinks.Resources[i];
-			}*/
 		}
 	}
 
@@ -53,9 +48,13 @@ public class IcyStream : Skill
 	{
 		Debug.Log("shot");
 		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		Vector2 lookDir = _mousePos - (Vector2)_playerLinks.transform.position;
-		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
+		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
+		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
 		CmdCreateProjecttile(angle);
+
+		_projectile.gameObject.SetActive(true);
+		_projectile.Init(_playerLinks, _energy.CurrentValue, _talent, this);
+
 		float usedEnergy = 0;
 		if (_energy.CurrentValue >= 40)
 		{
@@ -66,34 +65,47 @@ public class IcyStream : Skill
 			usedEnergy = _energy.CurrentValue;
 		}
 		_energy.CmdUse(usedEnergy);
-		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 1);
+		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, usedEnergy, 1);
 	}
 
 	[Command]
 	private void CmdCreateProjecttile(float angle)
 	{
-		IcyStreamProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
+		_projectile.gameObject.SetActive(true);
+		_projectile.Init(_playerLinks, _energy.CurrentValue, _talent, this);
+
+		/*IcyStreamProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, -angle, 0));
 		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
 		projectile.Init(_playerLinks, _energy.CurrentValue, _talent, this); //its talent bool, no last hit 
 
-		NetworkServer.Spawn(projectile.gameObject);
+		NetworkServer.Spawn(projectile.gameObject);*/
 
-		RpcInit(projectile.gameObject, _energy.CurrentValue);
+		RpcInit(_projectile.gameObject, _energy.CurrentValue);
 	}
 
 	[ClientRpc]
 	private void RpcInit(GameObject obj, float manaValue)
 	{
-		obj.GetComponent<IcyStreamProjectile>().Init(_playerLinks, manaValue, false, this);
+		//obj.gameObject.SetActive(true);
+		//obj.GetComponent<IcyStreamProjectile>().Init(_playerLinks, manaValue, false, this);
 	}
 
 	protected override IEnumerator PrepareJob()
 	{
+		//while (_target == null)
 		while (float.IsPositiveInfinity(_mousePos.x))
 		{
 			if (GetMouseButton)
 			{
 				_mousePos = GetMousePoint();
+				/*if (GetTarget() != null)
+				{
+					if (GetTarget().character != null)
+					{
+						_target = GetTarget().character;
+					}
+				}*/
+				//_mousePos = GetMousePoint();
 			}
 			yield return null;
 		}
@@ -107,7 +119,17 @@ public class IcyStream : Skill
 
 	protected override void ClearData()
 	{
+		_target = null;
+		StartCoroutine(TurnOff());
+		//_projectile.gameObject.SetActive(false);
+		//_projectile.Init(_playerLinks, _energy.CurrentValue, _talent, this);
 		_mousePos = Vector3.positiveInfinity;
+	}
+
+	private IEnumerator TurnOff()
+	{
+		yield return new WaitForSeconds(3);
+		_projectile.gameObject.SetActive(false);
 	}
 
 	public void Talent(bool value)

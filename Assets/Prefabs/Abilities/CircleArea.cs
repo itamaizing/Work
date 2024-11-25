@@ -1,13 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.UIElements;
 
 public class CircleArea : MonoBehaviour
 {
-    [SerializeField] CircleCollider2D _colider;
-    [SerializeField] SpriteRenderer _sprite;
+    [SerializeField] SphereCollider _colider;
+	//[SerializeField] private Collider _collider3d;
+	[SerializeField] SpriteRenderer _sprite;
+	[SerializeField] private DecalProjector _projector;
 
-    private bool _isConcernsEnemy;
+	private bool _isConcernsEnemy;
     private Damage _damage;
     /*private Damage _zeroDamage;
 
@@ -25,17 +29,21 @@ public class CircleArea : MonoBehaviour
 
     public void SetSize(float size, Damage damage)
     {
-        _sprite.size = new Vector2(size, size);
-        _colider.radius = size / 2f;
-        _damage = damage;
-    }
+        /*_sprite.size = new Vector2(size, size);
+        _colider.radius = size / 2f;*/
+		_damage = damage;
+
+		gameObject.transform.localScale = new Vector3(size, size, 0);
+		_projector.size = new Vector2(size, size);
+		//_projector.pivot = new Vector3(0, size / 2, 0.01f);
+	}
 
     public void SetColor(Color color)
     {
         _sprite.color = color;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter(Collider collision)
     {
         if (_sprite.size != Vector2.zero && collision.transform != transform.parent && collision.transform.TryGetComponent(out UIPlayerComponents enemy))
         {
@@ -48,7 +56,7 @@ public class CircleArea : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    private void OnTriggerExit(Collider collision)
     {
         if (_sprite.size != Vector2.zero && collision.transform != transform.parent && collision.transform.TryGetComponent(out UIPlayerComponents enemy))
         {

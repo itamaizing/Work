@@ -9,27 +9,31 @@ public class SkillRenderer : NetworkBehaviour
 {
     [SerializeField] private DrawCircle _circle;
     [SerializeField] private CircleArea _areaPref;
-    [SerializeField] private CircleArea _damageZonePref;
+    [SerializeField] private SphereArea _damageZonePref;
     [SerializeField] private AbilityLineRenderer _line;
     [SerializeField] private Color _colorForAllies = Color.green;
     [SerializeField] private Color _colorForEnemies = Color.red;
     [SerializeField] private Color _colorForEnd;
     [SerializeField] private Color _colorForStart;
 
-    private CircleArea _tempDamageZone;
+    //private SphereArea _tempDamageZone;
     private CircleArea _tempArea;
     private float _lineStartLength;
-    private float _lineEndLength;
+   // private float _lineEndLength;
+    private float _boxLength;
+    private float _boxWidth;
+    private float _circleRadius;
     private BoxArea _lineStartImage;
-    private BoxArea _lineEndImage;
+    //private BoxArea _lineEndImage;
 
     private Coroutine _drawLineCoroutine;
     private Coroutine _drawAreaCoroutine;
     private Coroutine _drawClosestTargetCoroutine;
 
+	//public SphereArea TempDamageZone => _tempDamageZone;
+	public CircleArea TempDamageZone => _tempArea;
 
-    
-    private Character _tempTarget;
+	private Character _tempTarget;
 
     [Command]
     public void CmdDrawDamageZone(Vector3 position, float radius, Damage damage, GameObject player)
@@ -40,12 +44,18 @@ public class SkillRenderer : NetworkBehaviour
     [ClientRpc]
     public void RpcDrawDamageZone(Vector3 position, float radius, Damage damage, GameObject player)
     {
-        _tempDamageZone = Instantiate(_damageZonePref, position, Quaternion.identity);
-        _tempDamageZone.SetSize(radius, damage);
+		/* _tempDamageZone = Instantiate(_damageZonePref, position, Quaternion.identity);
+		 _tempDamageZone.SetSize(radius, damage);
 
-        Color zoneColor = player.layer == LayerMask.NameToLayer("Allies") ? _colorForAllies : _colorForEnemies;
-        _tempDamageZone.SetColor(zoneColor);
-    }
+		 Color zoneColor = player.layer == LayerMask.NameToLayer("Allies") ? _colorForAllies : _colorForEnemies;
+		 _tempDamageZone.SetColor(zoneColor);*/
+
+		_tempArea = Instantiate(_areaPref, position, Quaternion.identity);
+		_tempArea.SetSize(radius, damage);
+
+		Color zoneColor = player.layer == LayerMask.NameToLayer("Allies") ? _colorForAllies : _colorForEnemies;
+		_tempArea.SetColor(zoneColor);
+	}
 
     [Command]
     public void CmdStopDrawDamageZone()
@@ -56,11 +66,15 @@ public class SkillRenderer : NetworkBehaviour
     [ClientRpc]
     public void RpsStopDrawDamageZone()
     {
-        if (_tempDamageZone != null)
-        {
-            Destroy(_tempDamageZone.gameObject);
-        }
-    }
+		/* if (_tempDamageZone != null)
+		 {
+			 Destroy(_tempDamageZone.gameObject);
+		 }*/
+		if (_tempArea != null)
+		{
+			Destroy(_tempArea.gameObject);
+		}
+	}
 
     public void DrawRadius(float radius)
     {
@@ -84,12 +98,13 @@ public class SkillRenderer : NetworkBehaviour
         _circle.SetColor(color);
     }
 
-    public void DrawArea(float rarius, Damage damage, LayerMask layerMask, CircleArea area = null)
+    public void DrawArea(float radius, Damage damage, LayerMask layerMask, CircleArea area = null)
     {
         if (area == null)
             area = _areaPref;
 
-        _drawAreaCoroutine = StartCoroutine(DrawAreaJob(rarius, damage, layerMask, area));
+        _circleRadius = radius;
+        _drawAreaCoroutine = StartCoroutine(DrawAreaJob(radius, damage, layerMask, area));
     }
 
     public void StopDrawArea()
@@ -105,7 +120,8 @@ public class SkillRenderer : NetworkBehaviour
     {
         if (line == null)
             line = _line;
-
+        _boxWidth = length;
+        _boxWidth = width;
         _drawLineCoroutine = StartCoroutine(DrawLineJob(length, width, damage, layerMask, line));
     }
 
@@ -117,8 +133,8 @@ public class SkillRenderer : NetworkBehaviour
         if (_lineStartImage != null)
             Destroy(_lineStartImage.gameObject);
 
-        if (_lineEndImage != null)
-            Destroy(_lineEndImage.gameObject);
+     /*   if (_lineEndImage != null)
+            Destroy(_lineEndImage.gameObject);*/
     }
 
     public void DrawClosestTarget(float radius, LayerMask TargetsLayers, Character player)
@@ -137,29 +153,59 @@ public class SkillRenderer : NetworkBehaviour
 		}
 	}
 
+    public void SetSizeBox(float width, float lenght)
+    {
+        _boxWidth = width;
+        _boxLength = lenght;
+    }
+
+    public void SetRadiusArea(float radiusArea)
+    {
+        _circleRadius = radiusArea;
+    }
+
     private void RotateAtMouse(Transform transform)
     {
-        Vector3 dir = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
-        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0, 0, angle - 90);
+		Vector3 worldPosition = Vector3.zero;
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		RaycastHit hit;
+		if (Physics.Raycast(ray, out hit))
+		{
+			worldPosition = hit.point;
+		}
+
+		//Vector3 dir = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
+		Vector3 dir = worldPosition - gameObject.transform.position;
+		float angle = Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(90, - angle + 90, 0);
     }
 
     private IEnumerator DrawLineJob(float length, float width, Damage damage,  LayerMask layerMask, AbilityLineRenderer line)
     {
+        _boxLength = length;
+        _boxWidth = width;
         _lineStartImage = Instantiate(line.Start, transform);
-        _lineEndImage = Instantiate(line.End, transform);
+		_lineStartImage.SetSize(_boxWidth, _boxLength, damage);
+		//  _lineEndImage = Instantiate(line.End, transform);
 
-        _lineStartImage.SetColor(_colorForStart);
-        _lineEndImage.SetColor(_colorForEnd);
+		_lineStartImage.SetColor(_colorForStart);
+      //  _lineEndImage.SetColor(_colorForEnd);
 
         while (true)
         {
             RotateAtMouse(_lineStartImage.transform);
-            RotateAtMouse(_lineEndImage.transform);
+            //RotateAtMouse(_lineEndImage.transform);
 
-            Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, 0, Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
+			//_lineStartImage.SetSize(width, length, damage);
+			_lineStartImage.SetSize(_boxWidth, _boxLength, damage);
+			//_lineEndImage.SetSize(width, length, damage);
+		//	_lineEndImage.SetSize(_boxWidth, _boxLength, damage);
+
+			/*Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, 0, Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
             var vector = (mouse - transform.position);
             var dir = vector.normalized;
+
+
 
             RaycastHit2D rayHit = Physics2D.Raycast(transform.position, dir, length * 2, layerMask);
 
@@ -174,21 +220,36 @@ public class SkillRenderer : NetworkBehaviour
             {
                 _lineStartImage.SetSize(width, length, damage);
                 _lineEndImage.SetSize(width, length, damage);
-            }
+            }*/
             yield return null;
         }
     }
 
     private IEnumerator DrawAreaJob(float radius, Damage damage, LayerMask layerMask, CircleArea areaPref)
     {
-        Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x,0 , Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
+		Vector3 worldPosition = Vector3.zero;
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		RaycastHit hit;
+		if (Physics.Raycast(ray, out hit))
+		{
+			worldPosition = hit.point;
+		}
 
-        _tempArea = Instantiate(areaPref, mouse, Quaternion.identity);
-        _tempArea.SetSize(radius, damage);
+		//Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x,0 , Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
+		Vector3 mouse = new Vector3(worldPosition.x, 0 , worldPosition.z);
+
+        _tempArea = Instantiate(areaPref, mouse, Quaternion.Euler(90, 0, 0));
+        _tempArea.SetSize(_circleRadius, damage);
 
         while (true)
         {
-            mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x,0 , Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
+            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			if (Physics.Raycast(ray, out hit))
+			{
+				worldPosition = hit.point;
+			}
+			// mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x,0 , Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
+			mouse = new Vector3(worldPosition.x, 0 , worldPosition.z);
             _tempArea.transform.position = mouse;
             yield return null;
         }

@@ -1,5 +1,6 @@
 using Mirror;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 
 public abstract class AbstractCharacterState
@@ -354,14 +355,14 @@ public class CharacterState : NetworkBehaviour
 	[Command]
 	public void CmdAddState(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
 	{
-		Debug.Log("Add state cmd");
+		//Debug.Log("Add state cmd");
 		AddStateLogic(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
 		ClientAddState(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
 	}
 
 	public void AddState(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
 	{
-		Debug.Log("Add state from server");
+		//Debug.Log("Add state from server");
 		AddStateLogic(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
 		ClientAddState(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
 	}
@@ -369,7 +370,7 @@ public class CharacterState : NetworkBehaviour
 	[Command]
 	public void CmdRemoveState(States state)
 	{
-		Debug.Log("Remove state" + state);
+		//Debug.Log("Remove state" + state);
 		RemoveStateLogic(state);
 		ClientRemoveState(state);
 	}
@@ -388,7 +389,7 @@ public class CharacterState : NetworkBehaviour
 		{
 			RemoveShield(damageableShield);
 		}
-			
+		_stateIcons.RemoveItemByState(newState.State);
 		currentStates.Remove(newState);
 	}
 
@@ -414,14 +415,14 @@ public class CharacterState : NetworkBehaviour
 	[ClientRpc]
 	private void ClientAddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
 	{
-		Debug.Log("Add state rpc");
+		//Debug.Log("Add state rpc");
 		AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
 	}
 
 	[ClientRpc]
 	private void ClientRemoveState(States stateName)
 	{
-		Debug.Log("Remove state client" + stateName);
+		//Debug.Log("Remove state client" + stateName);
 		RemoveStateLogic(stateName);
 	}
 
@@ -430,7 +431,7 @@ public class CharacterState : NetworkBehaviour
 	{
 		if (invinsible) return;
 
-		Debug.Log(state);
+		//Debug.Log(state);
 
 		if (CheckForState(state))
 		{
@@ -489,7 +490,7 @@ public class CharacterState : NetworkBehaviour
 		var health = _hero.GetComponent<Health>();
 		if (health != null)
 		{
-			Debug.Log("Add Shield By " + shield);
+			//Debug.Log("Add Shield By " + shield);
 			health.Shields.Add(shield);
 		}
 	}
@@ -499,7 +500,7 @@ public class CharacterState : NetworkBehaviour
 		var health = _hero.GetComponent<Health>();
 		if (health != null)
 		{
-			Debug.Log("Remove Shield By " + shield);
+			//Debug.Log("Remove Shield By " + shield);
 			health.Shields.Remove(shield);
 		}
 	}

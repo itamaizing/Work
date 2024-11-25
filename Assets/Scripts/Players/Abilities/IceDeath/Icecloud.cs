@@ -54,11 +54,9 @@ public class Icecloud : Skill
 	{
 		Buff.AttackSpeed.ReductionPercentage(1 + _combo.GetMultipliedSpeed() / 100);
 
-		//_playerLinks.RuneComponent.SwitchMultiplier(true);
-		//_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
-		if( _combo.MakeHit(null, AbilityForm.Magic, 1, 0))
+		if( _combo.MakeHit(null, AbilityForm.Magic, 1, 0, 0))
 		{
 			Debug.LogError("some talents i guess in ice cloud");
 			//_playerLinks.RuneComponent.IceCloudBonus();
@@ -67,7 +65,6 @@ public class Icecloud : Skill
 		Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);
 
 		CmdCreateProjecttile(angle, _energy.CurrentValue);
-		//_energy.TryUse(_energy.CurrentValue);
 		ClearData();
 	}
 
@@ -100,13 +97,21 @@ public class Icecloud : Skill
 		{
 			if (GetMouseButton)
 			{
-				if (GetTarget().character == null)
+				//if(GetTarget()  == null) yield return null;
+				if (GetTarget().isCharater)
 				{
-					_mousePos = GetTarget().Position;
+					if (GetTarget().character == null)
+					{
+						//_mousePos = GetTarget().Position;
+					}
+					else
+					{
+						_mousePos = GetTarget().character.transform.position;
+					}
 				}
 				else
 				{
-					_mousePos = GetTarget().character.transform.position;
+					_mousePos = GetTarget().Position;
 				}
 			}
 			yield return null;
