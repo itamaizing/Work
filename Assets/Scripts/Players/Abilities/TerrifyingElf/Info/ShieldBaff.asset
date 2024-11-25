@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5d8548505a2c5104980a6fa13739ca3d, type: 3}
-  m_Name: TestShieldBaff
+  m_Name: ShieldBaff
   m_EditorClassIdentifier: 
-  _name: Test Shield Baff
+  _name: Shield Baff
   _description: 
   _icon: {fileID: 895465403, guid: f9ea880ea649f354180df2d001164022, type: 3}

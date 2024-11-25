@@ -8,7 +8,7 @@ public class ObjectHealth : Resource, IDamageable
     [SerializeField] private ObjectBar _objectBar;
 
     public event Action OnDeath;
-    public event Action<float, Damage, Skill> DamageTaken;
+    public event Action<Damage, Skill> DamageTaken;
     public event Action<float, DamageType, Skill> DamageTakenType;
 
     [SyncVar(hook = nameof(OnHealthChanged))]

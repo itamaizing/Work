@@ -15,7 +15,7 @@ public struct Damage : NetworkMessage
 
 public interface IDamageable
 {
-    public event Action<float, Damage, Skill> DamageTaken;
+    public event Action<Damage, Skill> DamageTaken;
     //public event Action<float> PhantomValueShown;
     public bool TryTakeDamage(ref Damage damage, Skill skill);
     public void ShowPhantomValue(Damage phantomValue);

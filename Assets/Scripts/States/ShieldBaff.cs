@@ -1,9 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AbsorptionState : AbstractCharacterState, IDamageable
+public class ShieldBaff : AbstractCharacterState, IDamageable
 {
     private float _damageAbsorbed;
     private float _maxAbsorption;
@@ -12,11 +11,13 @@ public class AbsorptionState : AbstractCharacterState, IDamageable
 
     public event Action<Damage, Skill> DamageTaken;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
-    public override States State => States.Absorption;
+    public override States State => States.ShieldBaff;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
     public override float TEST_ChangeableValue { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+    //public override float TEST_ChangeableValue { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
@@ -42,7 +43,7 @@ public class AbsorptionState : AbstractCharacterState, IDamageable
 
     public override void ExitState()
     {
-        Debug.Log("Absorption state exited.");
+        Debug.Log("LightShield state exited.");
         _characterState.RemoveState(this);
         ResetCharacterShieldValues();
     }

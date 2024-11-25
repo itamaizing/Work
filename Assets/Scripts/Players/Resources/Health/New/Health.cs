@@ -33,7 +33,7 @@ public class Health : Resource, IDamageable, IHealingable
 
     public event Action Evaded;
     public event Action<float , Skill , string> HealTaked;
-    public event Action<float , Damage, Skill> DamageTaken;
+    public event Action<Damage, Skill> DamageTaken;
     public event Action<float> HealthRegenerated;
     public event Action Died;
     public event Action<float, float> OnShieldValuesChanged;
@@ -247,7 +247,7 @@ public class Health : Resource, IDamageable, IHealingable
     [ClientRpc]
     private void ClientRpcDamage(Damage damage, Skill skill)
     {
-        DamageTaken?.Invoke(damage.Value, damage, skill);
+        DamageTaken?.Invoke(damage, skill);
         _animator.SetTrigger(HashAnimPlayer.TakeDamage);
     }
     

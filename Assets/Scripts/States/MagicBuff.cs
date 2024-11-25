@@ -9,7 +9,7 @@ public class MagicBuff : AbstractCharacterState, IDamageable
 	private float _durationToExit;
 	private float _shieldCapacity;
 
-	public event Action<float, Damage, Skill> DamageTaken;
+	public event Action<Damage, Skill> DamageTaken;
 	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 	public override States State => States.MagicBuff;
 	public override StateType Type => StateType.Magic;

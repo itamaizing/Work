@@ -47,7 +47,7 @@ public class DarkShield : AbstractCharacterState
         _characterState.RemoveState(this);
     }
 
-    private void HandleDamageTaken(float value, Damage damage, Skill skill)
+    private void HandleDamageTaken(Damage damage, Skill skill)
     {
         if (_healthComponent == null || skill == null) return;
 

@@ -285,7 +285,8 @@ public class CharacterState : NetworkBehaviour
 		[States.DefenseReduction] = new DefenceReductionState(),
 		[States.SparkTalentHealthBuff] = new SparkTalentHealthState(),
 		[States.SelfHarm] = new SelfHarmState(),
-		[States.Absorption] = new AbsorptionState()
+		[States.Absorption] = new AbsorptionState(),
+		[States.ShieldBaff] = new ShieldBaff()
 	};
 
 	public void Initialize(Character hero)
@@ -776,7 +777,8 @@ public enum States
 	EmeraldSkin,
 	SparkTalentHealthBuff,
 	DefenseReduction,
-	SelfHarm
+	SelfHarm,
+	ShieldBaff
 }
 public enum BaffDebaff
 {

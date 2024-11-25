@@ -1287,7 +1287,7 @@ MonoBehaviour:
   syncInterval: 0
   _isTalentSpell: 0
   _isSkillActive: 1
-  _abilityInfo: {fileID: 11400000, guid: e296d8c82d5fa0c4a8d076c31a6c15db, type: 2}
+  _abilityInfo: {fileID: 11400000, guid: f3b3711a47856e14a86f5c3d5a547ce3, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
   _cooldownTime: 0
@@ -1421,8 +1421,8 @@ MonoBehaviour:
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   skillRenderer: {fileID: 2807589928063243029}
-  minDamage: 500
-  maxDamage: 700
+  minDamage: 5
+  maxDamage: 10
   delay: 3
   criticalChance: 30
   stunChance: 30

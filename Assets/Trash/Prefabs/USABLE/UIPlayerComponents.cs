@@ -117,9 +117,9 @@ public class UIPlayerComponents : MonoBehaviour
         ShowPopupValueRegen(regenAmount, _regenColor, _regenColor);
     }
 
-    private void OnDamageTaken(float value, Damage damage, Skill skill)
+    private void OnDamageTaken(Damage damage, Skill skill)
     {
-        ShowPopupValue(-value, _physDamageColor, _physDamageColor);
+        ShowPopupValue(-damage.Value, _physDamageColor, _physDamageColor);
     }
 
     private void OnShieldDamageTaken(float damageTaken, DamageType damageType, Skill skill)

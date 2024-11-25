@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LightShieldSkill : Skill
+public class ShieldBaffSkill : Skill
 {
     [SerializeField] private Character _playerLinks;
     private Character _target;
@@ -47,7 +47,7 @@ public class LightShieldSkill : Skill
         var targetCharacter = targetGameObject.GetComponent<Character>();
         if (targetCharacter != null)
         {
-            targetCharacter.CharacterState.AddState(States.LightShield, 20, 100, _playerLinks.gameObject, name);
+            targetCharacter.CharacterState.AddState(States.ShieldBaff, 20, 100, _playerLinks.gameObject, name);
         }
     }
 }
