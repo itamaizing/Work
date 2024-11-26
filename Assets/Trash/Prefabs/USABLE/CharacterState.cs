@@ -349,7 +349,7 @@ public class CharacterState : NetworkBehaviour
 			currentStates.Remove(state);
 		}
 
-		ClientRpcUpdateClientStates(statesToRemove.Select(s => s.State).ToList());
+		//ClientRpcUpdateClientStates(statesToRemove.Select(s => s.State).ToList());
 	}
 
 	[ClientRpc]

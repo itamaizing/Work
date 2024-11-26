@@ -186,8 +186,19 @@ public class StateIcons : MonoBehaviour
 			break;
 		}
 	}
-}
+	private void MoveIcoToEnd(int index)
+	{
+		if (index < 0 || index >= _activeEffects.Count) return;
 
+		var ico = _activeEffects[index];
+		_activeEffects.RemoveAt(index);
+		_activeEffects.Add(ico);
+
+		// ��������� ������� �����������
+		ico.transform.SetAsLastSibling();
+	}
+}
+/*
     public void RemoveIconCount()
     {
         for (int i = _activeEffects.Count - 1; i >= 0; i--)
@@ -212,15 +223,5 @@ public class StateIcons : MonoBehaviour
         }
     }
 
-    private void MoveIcoToEnd(int index)
-    {
-        if (index < 0 || index >= _activeEffects.Count) return;
-
-        var ico = _activeEffects[index];
-        _activeEffects.RemoveAt(index);
-        _activeEffects.Add(ico);
-
-        // ��������� ������� �����������
-        ico.transform.SetAsLastSibling();
-    }
-}
+   
+}*/
