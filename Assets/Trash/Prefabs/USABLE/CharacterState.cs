@@ -14,7 +14,7 @@ public abstract class AbstractCharacterState
 
     public abstract States State { get; }
     public abstract StateType Type { get; }
-    public abstract BuffDebuff BuffDebuff { get; }
+    public abstract BaffDebaff BaffDebaff { get; }
     public abstract List<StatusEffect> Effects { get; }
     public abstract float TEST_ChangeableValue { get; set; }
 
@@ -30,7 +30,7 @@ public class DefaultState : AbstractCharacterState
     public override States State => States.Default;
 
     public override StateType Type => StateType.Physical;
-    public override BuffDebuff BuffDebuff => BuffDebuff.Buff; 
+    public override BaffDebaff BaffDebaff => BaffDebaff.Baff; 
 
     public override List<StatusEffect> Effects => _effects;
 
@@ -321,8 +321,8 @@ public class CharacterState : NetworkBehaviour
             {
                 if (state != null && state.Type == type)
                 {
-                    if ((targetTeamIndex == playerTeamIndex && state.BuffDebuff == BuffDebuff.Debuff) ||
-                        (targetTeamIndex != playerTeamIndex && state.BuffDebuff == BuffDebuff.Buff))
+                    if ((targetTeamIndex == playerTeamIndex && state.BaffDebaff == BaffDebaff.Debaff) ||
+                        (targetTeamIndex != playerTeamIndex && state.BaffDebaff == BaffDebaff.Baff))
                     {
                         statesToRemove.Add(state);
                     }
@@ -729,8 +729,8 @@ public enum States
 	SelfHarm
 }
 
-public enum BuffDebuff
+public enum BaffDebaff
 {
-    Buff,
-    Debuff,
+    Baff,
+    Debaff,
 }

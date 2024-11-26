@@ -14,7 +14,7 @@ public class IdealEvade : AbstractCharacterState
 
     public override StateType Type => StateType.Immaterial;
 
-    public override BuffDebuff BuffDebuff => BuffDebuff.Buff;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 
     public override List<StatusEffect> Effects => _effects;
 

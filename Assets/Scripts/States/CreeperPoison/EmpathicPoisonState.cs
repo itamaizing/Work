@@ -44,7 +44,7 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
     public override float TEST_ChangeableValue { get; set; }
     public override States State => States.EmpathicPoisons;
     public override StateType Type => StateType.Physical; 
-    public override BuffDebuff BuffDebuff => BuffDebuff.Debuff;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
 
     public override List<StatusEffect> Effects => _effects;
 

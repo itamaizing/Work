@@ -13,7 +13,7 @@ public class Knockdown : AbstractCharacterState
 
     public override StateType Type => StateType.Physical;
 
-    public override BuffDebuff BuffDebuff => BuffDebuff.Debuff;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
 
     public override List<StatusEffect> Effects => throw new System.NotImplementedException();
 

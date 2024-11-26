@@ -16,7 +16,7 @@ public class AbilityFormDebuff : AbstractCharacterState
     public override float TEST_ChangeableValue { get; set; }
     public override States State => States.FormDebuf;
 	public override StateType Type => StateType.Immaterial;
-    public override BuffDebuff BuffDebuff => BuffDebuff.Debuff;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
 
     public override List<StatusEffect> Effects => _effects;
 

@@ -12,7 +12,7 @@ public class DefenceReductionState : AbstractCharacterState
     public override float TEST_ChangeableValue { get; set; }
     public override States State => States.DefenseReduction;
     public override StateType Type => StateType.Magic;
-    public override BuffDebuff BuffDebuff => BuffDebuff.Debuff;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
 
     public override List<StatusEffect> Effects => _effects;
 
