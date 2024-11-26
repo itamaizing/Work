@@ -10,13 +10,14 @@ public class MagicBuff : AbstractCharacterState, IDamageable
 	private float _shieldCapacity;
 
 	public event Action<Damage, Skill> DamageTaken;
-
+	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 	public override States State => States.MagicBuff;
 	public override StateType Type => StateType.Magic;
 	public override List<StatusEffect> Effects => throw new System.NotImplementedException();
 
+    public override float TEST_ChangeableValue { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		_characterState = character;
 		_character = character.Character;
