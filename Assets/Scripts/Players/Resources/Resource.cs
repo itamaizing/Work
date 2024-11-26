@@ -92,6 +92,12 @@ public abstract class Resource : NetworkBehaviour
         _currentValue = _maxValue;
     }
 
+    public void ChangedMaxValue(float value)
+    {
+        _maxValue += value;
+
+    }
+
     private IEnumerator RegenerateJob()
     {
         while (true)

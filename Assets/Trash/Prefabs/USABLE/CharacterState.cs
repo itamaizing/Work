@@ -314,7 +314,7 @@ public class CharacterState : NetworkBehaviour
 
 	#region TestMethods
 
-	public void DispelStates(StateType type, int targetTeamIndex, int playerTeamIndex, bool isDispelOneState)
+	public void DispelStates(StateType type, int targetTeamIndex, int playerTeamIndex, bool isDispelOneState = false)
 	{
 
 		if (currentStates.Count == 0) return;

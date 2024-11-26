@@ -140,6 +140,7 @@ public abstract class Skill : NetworkBehaviour
     public bool IsHaveResourceOnSkill { get => CheckResourcesOnSkill(); }
     public bool IsHaveResources { get => IsHaveResourceOnSkill && IsCooldowned && IsHaveCharge; }
     public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); protected set => _cooldownTime = value; }
+    public float RemainingCooldownTime { get => _remainingCooldownTime; }
     public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); protected set => _castDeley = value; }
     public bool IsCasting { get => _isCasting; }
     public float CastStreamDuration { get => _castDuration; }

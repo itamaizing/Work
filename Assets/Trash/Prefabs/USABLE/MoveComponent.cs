@@ -31,6 +31,9 @@ public class MoveComponent : NetworkBehaviour
 	private Vector3 _currentVelocityTemp;
 	private Coroutine _lookAtTransformJob;
 
+    public float CurrentSpeed { get => _currentSpeed; }
+    public float DefaultSpeed { get => _defaultSpeed; }
+
     public void SetOffset(Vector2 offset)
 	{
 		_offset = offset;

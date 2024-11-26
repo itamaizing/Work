@@ -10,6 +10,7 @@ public abstract class Character : NetworkBehaviour
 	[SerializeField] private CharacterData _playerData;
 	[SerializeField] private UserNetworkSettings _networkSettings; 
 	[SerializeField] private Rigidbody rb;
+	[SerializeField] private Collider _collider;
 	[SerializeField] private Level _lvl;
 	[SerializeField] private Animator _animator;
 	[SerializeField] private NetworkAnimator _networkAnimator;
@@ -24,10 +25,13 @@ public abstract class Character : NetworkBehaviour
 	[SerializeField] private SelectedCircle _selectedCircle;
 	[SerializeField] private SpawnComponent _spawnComponent;
 
+	private bool _isInvisible;
+
 	public SpawnComponent SpawnComponent => _spawnComponent;
 	public CharacterData Data => _playerData;
 	public UserNetworkSettings NetworkSettings => _networkSettings;
 	public Rigidbody Rb => rb;
+	public Collider Collider => _collider;
 	public Health Health => _healthComponent;
 	public Level LVL => _lvl;
 	public MoveComponent Move => _playerMove;
@@ -40,13 +44,32 @@ public abstract class Character : NetworkBehaviour
 	public SelectedCircle SelectedCircle => _selectedCircle;
     public Animator Animator => _animator;
     public NetworkAnimator NetworkAnimator => _networkAnimator;
+    public bool IsInvisible
+    {
+        get => _isInvisible;
+
+        set
+        {
+            _isInvisible = value;
+
+            if (_isInvisible)
+            {
+                OnDisappeared?.Invoke();
+            }
+            else
+            {
+                OnAppeared?.Invoke();
+            }
+        }
+    }
 
     public static event Action<Character> ServerOnUnitSpawned;
 	public static event Action<Character> ServerOnUnitDeleted; 
 	public static event Action<Character> AuthorityOnUnitSpawned;
-	public static event Action<Character> AuthorityOnUnitDeleted; 
-
-	public virtual void Initialize()
+	public static event Action<Character> AuthorityOnUnitDeleted;
+    public event Action OnDisappeared;
+    public event Action OnAppeared;
+    public virtual void Initialize()
 	{
 		Move.Initialize(Data.GetAttributeValue(AttributeNames.Speed), Rb , true);
 		CharacterState.Initialize(this);

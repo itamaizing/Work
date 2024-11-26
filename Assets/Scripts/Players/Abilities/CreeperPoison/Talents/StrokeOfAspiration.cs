@@ -1,0 +1,43 @@
+using UnityEngine;
+
+public class StrokesOfAspiration : Talent
+{
+    [SerializeField] private CreeperStrike _creeperStrike;
+
+    [SerializeField] private PoisonBall _poisonBall;
+    [SerializeField] private SpitPoison _spitPoison;
+
+    private const float _timeBetweenAttack = 0.1f;
+    private const float _decreaseCooldownTime = 0.3f;
+    public override void Enter()
+    {
+        SetActive(true);
+        if (_creeperStrike.Buff.AttackSpeed.Multiplier > _timeBetweenAttack)
+        {
+            _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_timeBetweenAttack);
+        }
+    }
+
+    public override void Exit()
+    {
+        SetActive(false);
+        if (_creeperStrike.Buff.AttackSpeed.Multiplier < 1.0f)
+        {
+            _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_timeBetweenAttack);
+            Debug.Log("StrokeOfAspiration / Reduction AttackSpeed = " + _creeperStrike.Buff.AttackSpeed.Multiplier);
+        }
+    }
+
+    public void UseTalentStrokesOfAspiration()
+    {
+        Debug.Log($"StrokesOfAspiration / UseTalentStrokesOfAspiration / after updateRemainingCooldownTimeForSpitPoison = {_spitPoison.CooldownTime}");
+        float updateRemainingCooldownTimeForSpitPoison = _spitPoison.CooldownTime - _decreaseCooldownTime;
+        _spitPoison.ReductionSetCooldown(updateRemainingCooldownTimeForSpitPoison);
+        Debug.Log($"StrokesOfAspiration / UseTalentStrokesOfAspiration / before updateRemainingCooldownTimeForSpitPoison = {_spitPoison.CooldownTime}");
+
+        //float updateRemainingCooldownTimeForPoisonBall = _poisonBall.RemainingCooldownCharges - _decreaseCooldownTime;
+        //_poisonBall.ReductionSetCooldown(updateRemainingCooldownTimeForPoisonBall);
+        //Debug.Log("ReductinCooldown SpitPoison == " + updateRemainingCooldownTimeForPoisonBall);
+        //Debug.Log("SpitPoison Cooldown == " + _poisonBall.RemainingCooldownCharges);
+    }
+}
