@@ -1,6 +1,6 @@
 using Mirror;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
+using System.Linq;
 using UnityEngine;
 
 public abstract class AbstractCharacterState
@@ -349,7 +349,7 @@ public class CharacterState : NetworkBehaviour
 			currentStates.Remove(state);
 		}
 
-		//ClientRpcUpdateClientStates(statesToRemove.Select(s => s.State).ToList());
+		ClientRpcUpdateClientStates(statesToRemove.Select(s => s.State).ToList());
 	}
 
 	[ClientRpc]
