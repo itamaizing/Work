@@ -30,6 +30,23 @@ public class IcyStreamProjectile : Projectiles
 		_rb.DOMove(transform.up * _distance * GlobalVariable.cellSize, _timer).OnComplete(Explode);
 	}*/
 
+	public override void Init(HeroComponent dad, float energy, bool lastHit, Skill skill)
+	{
+		_dad = dad;
+		_energyDad = energy;
+		_initialized = true;
+		_lastHit = lastHit;
+		_skill = skill;
+		for (int i = 0; i < _dad.Resources.Count; i++)
+		{
+			if (_dad.Resources[i].Type == ResourceType.Energy)
+			{
+				_energy = (Energy)_dad.Resources[i];
+			}
+		}
+		Debug.Log("bullet init");
+	}
+
 	private void Update()
 	{
 		Timer();
@@ -37,7 +54,7 @@ public class IcyStreamProjectile : Projectiles
 	}
 
 	[Server]
-	private void OnTriggerEnter2D(Collider2D collision)
+	private void OnTriggerEnter(Collider collision)
 	{
 		if (!_initialized || _dad == null) return;
 		if (collision.gameObject == _dad.gameObject)
@@ -59,9 +76,10 @@ public class IcyStreamProjectile : Projectiles
 
 			target.CharacterState.AddState(States.Cooling, _durationOfDebuff, 0, _dad.gameObject, _skill.name);
 		}
+		Debug.Log("check collider");
 		//Explode();
 	}
-	private void OnTriggerExit2D(Collider2D collision)
+	private void OnTriggerExit(Collider collision)
 	{
 		if (collision.gameObject == _dad.gameObject || collision.CompareTag("Ability"))
 			return;

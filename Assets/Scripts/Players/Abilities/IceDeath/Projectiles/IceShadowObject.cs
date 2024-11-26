@@ -27,26 +27,27 @@ public class IceShadowObject : Projectiles
 		timeToDestroy += timeToAdd;
 	}
 
-	private void OnTriggerExit2D(Collider2D collision)
+	private void OnTriggerExit(Collider collision)
 	{
-		if (collision.gameObject == _dad && _healthPlayer != null)
+		if (collision.gameObject == _dad.gameObject)
 		{
-			//_healthPlayer.SetBoostRegen(0);
+			_dad.Health.DecreaseRegen(1.01f);
+			//_healthPlayer.SetBoostRegen(0.01f);
 			//Debug.LogError("setboost in hp has been deleted");
-
 			return;
 		}
 	}
 	[Server]
-	private void OnTriggerEnter2D(Collider2D collision)
+	private void OnTriggerEnter(Collider collision)
 	{
 		if(_dad == null) return;
-		/*if (collision.gameObject == _dad.gameObject)
+		if (collision.gameObject == _dad.gameObject)
 		{
+			_dad.Health.IncreaseRegen(1.01f);
 			//_healthPlayer.SetBoostRegen(0.01f);
 			//Debug.LogError("setboost in hp has been deleted");
 		}
-		if(collision.TryGetComponent<IcePuddleObject>(out var obj)) 
+		/*if(collision.TryGetComponent<IcePuddleObject>(out var obj)) 
 		{
 			//attact speed increase
 		}*/
@@ -59,17 +60,16 @@ public class IceShadowObject : Projectiles
 			//Destroy(gameObject);
 			if(_lastHit)
 			{
-				Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, 3);
+				Collider[] enemyDetected = Physics.OverlapSphere(transform.position, 3);
 				foreach (var enemy in enemyDetected) 
 				{
 					if (enemy.TryGetComponent<Character>(out var newTatget) && collision.gameObject != _dad.gameObject)
 					{
 						newTatget.CharacterState.AddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
 					}
-
-
 				}
 			}
+			Explode();
 		}
 		//Explode();
 	}
@@ -83,7 +83,7 @@ public class IceShadowObject : Projectiles
 		}
 
 		//_healthPlayer.SetBoostRegen(0);
-		Debug.LogError("SetBoostRegen has been deleted");
+		//Debug.LogError("SetBoostRegen has been deleted");
 
 		Destroy(gameObject);
 	}

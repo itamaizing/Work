@@ -7,6 +7,7 @@ public class FrostingState : AbstractCharacterState
 	public bool turnOff = false;
 	private float _duration;
 	private float _baseDuration;
+	private float _damageOnStart;
 	private float _damageToExit;
 
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.AbilitySpeed };
@@ -33,6 +34,7 @@ public class FrostingState : AbstractCharacterState
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
 
+		_damageOnStart = _characterState.Character.Health.SumDamageTaken;
 		_characterState.Character.Move.CanMove = false;
 
 		//decrease speed
@@ -59,7 +61,7 @@ public class FrostingState : AbstractCharacterState
 	public override void UpdateState()
 	{
 		_duration -= Time.deltaTime;
-		if (_characterState.Character.Health.SumDamageTaken >= _damageToExit || _duration < 0 || turnOff)
+		if (_characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || _duration < 0 || turnOff)
 		{
 			ExitState();
 		}

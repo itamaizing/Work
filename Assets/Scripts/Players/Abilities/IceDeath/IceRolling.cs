@@ -12,19 +12,20 @@ public class IceRolling : Skill
 	[Header("Ability properties")]
 
 	[SerializeField] private Character _playerLinks;
-	[SerializeField] private float _jumprange = 2f;
+	[SerializeField] private float _jumprange = 5f;
 	[SerializeField] private float _durationOfJump = 0.3f;
 
-	private Vector2 _mousePos = Vector2.positiveInfinity;
-	private Vector2 _jumpPos;
-	private Vector2 _lookDir;
+	private Vector3 _mousePos = Vector2.positiveInfinity;
+	private Vector3 _jumpPos;
+	private Vector3 _lookDir;
 	private Energy _energy;
+	//private float TEMPFLOAT = 1;
 
 	protected override bool IsCanCast => true;
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+	protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+    protected override int AnimTriggerCast => 0;
 
     private void Start()
 	{
@@ -37,6 +38,23 @@ public class IceRolling : Skill
 		}
 
 	}
+
+	private float GetJumpRange() 
+	{
+		float range = _jumprange;
+		float energyCost = 1; 
+		for(int i = 0; i < 10; i++)
+		{
+			if(_energy.CurrentValue >= energyCost)
+			{
+				range+=0.2F;
+				energyCost += 1;
+			}
+		}
+
+		return range;
+	}
+
 	/*private void Jump()
 	{
 		if (_canJump )
@@ -78,20 +96,20 @@ public class IceRolling : Skill
 	private void AfterJump()
 	{
 		//_jumpCount = 4;
-		_mousePos = Vector2.positiveInfinity;
-		_lookDir = Vector2.zero;
-		_jumpPos = Vector2.zero;
+		_mousePos = Vector3.positiveInfinity;
+		_lookDir = Vector3.zero;
+		_jumpPos = Vector3.zero;
 	}
 
 	private bool CheckObstacleBetween(Vector3 start, Vector3 end)
 	{
-		Vector2 direction = (end - start).normalized;
-		float distance = Vector2.Distance(start, end);
+		Vector3 direction = (end - start).normalized;
+		float distance = Vector3.Distance(start, end);
 
-		RaycastHit2D[] hits =
-			Physics2D.BoxCastAll(start, new Vector2(2f, 2f), 0f, direction, distance, _obstacle);
+		RaycastHit[] hits =
+			Physics.BoxCastAll(start, new Vector2(2f, 2f), direction, Quaternion.identity, distance, _obstacle);
 
-		foreach (RaycastHit2D hit in hits)
+		foreach (RaycastHit hit in hits)
 		{
 			_jumpPos = hits[0].point - direction*1.2f;
 			return true;
@@ -102,10 +120,11 @@ public class IceRolling : Skill
 
 	private void Jump()
 	{
-		float actualJumpRange = _jumprange * GlobalVariable.cellSize;
+		float actualJumpRange = _jumprange;
 
-		_lookDir = (_mousePos - (Vector2)_playerLinks.transform.position).normalized;
-		Vector2 jumpPos = _lookDir * actualJumpRange + (Vector2)_playerLinks.transform.position;
+		_lookDir = (_mousePos - _playerLinks.transform.position).normalized;
+		//_lookDir = gameObject.transform.rotation.eulerAngles.normalized;
+		Vector3 jumpPos = _lookDir * actualJumpRange + _playerLinks.transform.position;
 		if (CheckObstacleBetween(_playerLinks.transform.position, jumpPos))
 		{
 			CmdPush(_jumpPos);
@@ -113,13 +132,13 @@ public class IceRolling : Skill
 		}
 		else
 		{
-			for (int i = 0; i < 2; i++)
+			for (int i = 0; i < 10; i++)
 			{
-				actualJumpRange += 2;
-				Vector2 jumpPos2 = _lookDir * actualJumpRange + (Vector2)_playerLinks.transform.position;
+				actualJumpRange += 0.2f;
+				Vector3 jumpPos2 = _lookDir * actualJumpRange + _playerLinks.transform.position;
 				if (_energy.CurrentValue >= 5 && !CheckObstacleBetween(_playerLinks.transform.position, jumpPos2))
 				{
-					_energy.CmdUse(5);
+					_energy.CmdUse(1);
 					jumpPos = jumpPos2;
 				}
 			}
@@ -162,6 +181,15 @@ public class IceRolling : Skill
 			yield return null;
 		}
 	}
+	protected override IEnumerator DynamicRendererJob(float time = 0.2f)
+	{
+		while (true)
+		{
+			yield return new WaitForSeconds(time);
+
+			_skillRender.SetSizeBox(1, GetJumpRange());			
+		}
+	}
 
 	protected override IEnumerator CastJob()
 	{
@@ -175,7 +203,7 @@ public class IceRolling : Skill
 	}
 
 	[Command]
-	private void CmdPush(Vector2 force)
+	private void CmdPush(Vector3 force)
 	{
 		_playerLinks.Move.TargetRpcDoMove(force, _durationOfJump);
 	}

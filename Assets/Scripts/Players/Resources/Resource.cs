@@ -52,7 +52,7 @@ public abstract class Resource : NetworkBehaviour
 
     public virtual void Add(float value)
     {
-        if (_maxValue >= _currentValue + value)
+		if (_maxValue >= _currentValue + value)
             _currentValue += value;
         else
             _currentValue = _maxValue;
@@ -115,7 +115,14 @@ public abstract class Resource : NetworkBehaviour
     [Command]
     public void CmdUse(float value)
     {
+        //Debug.Log(value + " try " + _currentValue);
         TryUse(value);
+    }
+
+    [Command]
+    public void CmdAdd(float value)
+    {
+        Add(value);
     }
 
     [ClientCallback]

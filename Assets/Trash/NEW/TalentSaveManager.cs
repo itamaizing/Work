@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class TalentSaveManager
 {
-    private readonly ISaveData _saveData;
-    private readonly SaveManager _saveManager;
+    private ISaveData _saveData;
+    private SaveManager _saveManager;
 
     public TalentSaveManager(ISaveData saveData, SaveManager saveManager)
     {
@@ -31,9 +31,10 @@ public class TalentSaveManager
         {
             HandleDeactivation(points);
         }
+        Debug.Log("SHOULD " + isActive + " TALENT " + $"{character.Data.Name}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}");
 
         _saveData.SaveInt($"{character.Data.Name}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}", isTalentActive);
-    }
+	}
 
     private void HandleDeactivation(int points)
     {
@@ -60,6 +61,7 @@ public class TalentSaveManager
         if (talentGroup == null || talent == null) return;
 
         int isActive = _saveData.LoadInt($"{character.Data.Name}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}", 0);
+       
         talent.Data.IsOpen = isActive == 1;
         talentGroup.SetActive(talent.Data, isActive == 1);
     }
@@ -81,7 +83,8 @@ public class TalentSaveManager
         {
             foreach (var talent in talentGroup.TalentsData)
             {
-                int isActive = _saveData.LoadInt($"{character.Data.Name}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}", 0);
+				int isActive = _saveData.LoadInt($"{character.Data.Name}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}", 0);
+				//int isActive = _saveData.LoadInt($"{character.Data.Name}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}", talent.Data.IsOpen ? 1 : 0);
                 talent.Data.IsOpen = isActive == 1;
             }
         }

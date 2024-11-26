@@ -17,7 +17,7 @@ public class Health : Resource, IDamageable, IHealingable
     protected float _defMagDamage;
 
     private List<IDamageable> _shields = new List<IDamageable>();
-    private float _sumDamageTaken = 0;
+	[SyncVar] private float _sumDamageTaken = 0;
     private Coroutine _dOTDamageAnimJob;
     private float _dOTDamageAnimDuration = 0.1f;
     private float _totalMaxAbsorption = 0;
@@ -277,4 +277,14 @@ public class Health : Resource, IDamageable, IHealingable
 
 		PhantomValueShow(curDamage);
 	}
+
+    public void IncreaseRegen(float percentValue)
+    {
+        _regenerationValue *= percentValue;
+    }
+
+    public void DecreaseRegen(float  percentageValue) 
+    {
+        _regenerationValue /= percentageValue;
+    }
 }

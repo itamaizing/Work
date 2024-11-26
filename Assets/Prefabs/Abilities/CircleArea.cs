@@ -1,66 +1,73 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.UIElements;
 
 public class CircleArea : MonoBehaviour
 {
-    [SerializeField] private Collider _collider;
-    [SerializeField] private MeshRenderer _meshRenderer;
+    [SerializeField] SphereCollider _colider;
+	//[SerializeField] private Collider _collider3d;
+	[SerializeField] SpriteRenderer _sprite;
+	[SerializeField] private DecalProjector _projector;
 
-    private bool _isConcernsEnemy;
+	private bool _isConcernsEnemy;
     private Damage _damage;
+    /*private Damage _zeroDamage;
 
-    public bool IsConcernsEnemy { get => _isConcernsEnemy; set => _isConcernsEnemy = value; }
+	private void Start()
+	{
+		_zeroDamage = new Damage
+		{
+			Value = 0,
+			Type = DamageType.Physical,
+			Range = AttackRangeType.RangeAttack,
+		};
+	}*/
+
+	public bool IsConcernsEnemy { get => _isConcernsEnemy; set => _isConcernsEnemy = value; }
 
     public void SetSize(float size, Damage damage)
     {
-        transform.localScale = new Vector3(size, size, size);
-        _damage = damage;
+        /*_sprite.size = new Vector2(size, size);
+        _colider.radius = size / 2f;*/
+		_damage = damage;
 
-        if (_collider is SphereCollider sphereCollider)
-        {
-            sphereCollider.radius = size / 2f;
-        }
-    }
+		gameObject.transform.localScale = new Vector3(size, size, 0);
+		_projector.size = new Vector2(size, size);
+		//_projector.pivot = new Vector3(0, size / 2, 0.01f);
+	}
 
     public void SetColor(Color color)
     {
-        _meshRenderer.material.color = color;
+        _sprite.color = color;
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider collision)
     {
-        if (_collider.bounds.size != Vector3.zero && other.transform != transform.parent)
+        if (_sprite.size != Vector2.zero && collision.transform != transform.parent && collision.transform.TryGetComponent(out UIPlayerComponents enemy))
         {
-            if (other.TryGetComponent(out UIPlayerComponents enemy))
-            {
-                _isConcernsEnemy = true;
-                enemy.ChangeSelection(true);
-            }
-
-            if (other.TryGetComponent(out Health hpEnemy))
-            {
-                hpEnemy.ShowPhantomValue(_damage);
-            }
+            _isConcernsEnemy = true;
+            enemy.ChangeSelection(true);
+        }
+        if(collision.TryGetComponent<Health>(out var hpEnemy) && collision.transform != transform.parent)
+        {
+            hpEnemy.ShowPhantomValue(_damage);
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    private void OnTriggerExit(Collider collision)
     {
-        if (_collider.bounds.size != Vector3.zero && other.transform != transform.parent)
+        if (_sprite.size != Vector2.zero && collision.transform != transform.parent && collision.transform.TryGetComponent(out UIPlayerComponents enemy))
         {
-            if (other.TryGetComponent(out UIPlayerComponents enemy))
-            {
-                _isConcernsEnemy = false;
-                enemy.ChangeSelection(false);
-            }
-
-            if (other.TryGetComponent(out Health hpEnemy))
-            {
-                Damage zeroDamage = _damage;
-                zeroDamage.Value = 0;
-                hpEnemy.ShowPhantomValue(zeroDamage);
-            }
+            _isConcernsEnemy = false;
+            enemy.ChangeSelection(false);
         }
-    }
+		if (collision.TryGetComponent<Health>(out var hpEnemy) && collision.transform != transform.parent)
+		{
+			Damage damage = _damage;
+			damage.Value = 0;
+			hpEnemy.ShowPhantomValue(damage);
+		}
+	}
 }

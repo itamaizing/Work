@@ -15,7 +15,8 @@ public class DeathSpiral : Skill
 
 	private Heal _heal;
 	private float _timer = 1f;
-	private Vector2 _mousePos = Vector3.positiveInfinity;
+	private Vector3 _mousePos = Vector3.positiveInfinity;
+	private GameObject _target;
 	private bool _superCharge = false;
 	private bool _inTheRow = false;
 	private bool _talentSecondAttack = false;
@@ -27,26 +28,11 @@ public class DeathSpiral : Skill
 	private bool _talentCorpseBoostExplode;
 	private bool _firstShot = true;
 
-	//private RuneComponent _rune;
 	protected override bool IsCanCast => Chargers > 0;
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+    protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => throw new System.NotImplementedException();
-
-    private void Start()
-	{		
-		//Chargers = 0;
-		
-		/*for (int i = 0; i < _playerLinks.Resources.Count; i++)
-		{
-			if (_playerLinks.Resources[i].Type == ResourceType.Rune)
-			{
-				_rune = (RuneComponent)_playerLinks.Resources[i];
-			}
-		}*/
-
-	}
+    protected override int AnimTriggerCast => 0;
 
 	private void Update()
 	{
@@ -54,12 +40,19 @@ public class DeathSpiral : Skill
 	}
 	protected override IEnumerator PrepareJob()
 	{
-		while (float.IsPositiveInfinity(_mousePos.x))
+		while (_target == null)
 		{
 			if (GetMouseButton)
 			{
-				//_playerLinks.RuneComponent.CmdUse(1);
-				_mousePos = GetMousePoint();
+				if (GetTarget() != null)
+				{
+					if (GetTarget().character != null)
+						_target = GetTarget().character.gameObject;
+				}
+				if (GetRaycastTargetShadow() != null)
+				{
+					_target = GetRaycastTargetShadow();					
+				}			
 			}
 			yield return null;
 		}
@@ -84,6 +77,7 @@ public class DeathSpiral : Skill
 	}
 	protected override void ClearData()
 	{
+		_target = null;
 		_mousePos = Vector3.positiveInfinity;
 	}
 
@@ -149,30 +143,64 @@ public class DeathSpiral : Skill
 	}*/
 
 	[Command]
-	private void Shoot(float angle, bool inTheRow)
-	{		
-		DeathSpiralProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
+	private void Shoot(float angle, bool inTheRow, GameObject target)
+	{
+		Debug.Log(target + " target name ");
+		DeathSpiralProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, -angle, 0));
 		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
 		projectile.Init(_playerLinks, 0, false, this);
+		projectile.SetTarget(target);
 		projectile.Talents(_talentBoostHPBOdy, _talentHitState, inTheRow, _talentPlague, _talentChragesPlague, _superCharge);
 		projectile.Talents(_talentCorpseDeath, _talentCorpseBoostExplode);
-		//projectile.TalentBoostHp(_talentBoostHPBOdy);
-		//projectile.TalentHitState(_talentHitState);
 
 		NetworkServer.Spawn(projectile.gameObject);
 
-		RpcInit(projectile.gameObject);
+		RpcInit(projectile.gameObject, target);
 		_superCharge = false;
 	}
 
 	[ClientRpc]
-	private void RpcInit(GameObject obj)
+	private void RpcInit(GameObject obj, GameObject target)
 	{
+		Debug.Log(target + " target name ");
 		DeathSpiralProjectile projectile = obj.GetComponent<DeathSpiralProjectile>();
 		projectile.Init(_playerLinks, 0, false, this);
+		projectile.SetTarget(target);
 		projectile.Talents(_talentBoostHPBOdy, _talentHitState, _inTheRow, _talentPlague, _talentChragesPlague, _superCharge);
 		projectile.Talents(_talentCorpseDeath, _talentCorpseBoostExplode);
 		_superCharge = false;
+	}
+
+	private GameObject GetRaycastTargetShadow(bool isCanTargetHimself = false)
+	{
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		RaycastHit[] rayHit = Physics.RaycastAll(ray, 100f, TargetsLayers);
+
+		foreach (var hit in rayHit)
+		{
+			Debug.Log(hit.collider.gameObject.name);
+		}
+		GameObject target = null;
+
+		foreach (var item in rayHit)
+		{
+			if (rayHit.Length > 0 && item.transform.TryGetComponent<Character>(out Character enemy))
+			{
+				target = enemy.gameObject;
+
+				if (isCanTargetHimself == false && target.transform == _hero.Health.transform)
+				{
+					target = null;
+				}
+			}
+
+			if(rayHit.Length > 0 && item.transform.TryGetComponent<IceShadowObject>(out IceShadowObject shadow))
+			{
+				target = shadow.gameObject;
+			}
+		}
+		//_tempTargetbase = target;
+		return target;
 	}
 
 	private void PlagueAbsorptionCharge()
@@ -180,7 +208,7 @@ public class DeathSpiral : Skill
 		_superCharge = true;
 		_inTheRow = true;
 
-		RaycastHit2D[] rayHit = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 99, _targetsLayers);
+		RaycastHit[] rayHit = Physics.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 99, _targetsLayers);
 
 		foreach (var item in rayHit)
 		{
@@ -203,10 +231,10 @@ public class DeathSpiral : Skill
 				}
 			}
 		}
-		Vector2 lookDir = _mousePos - (Vector2)_playerLinks.transform.position;
-		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
-		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0);
-		Shoot(angle, _inTheRow);
+		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
+		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
+		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0, 0);
+		Shoot(angle, _inTheRow, _target);
 	}
 
 	private void BasicShoot()
@@ -214,19 +242,19 @@ public class DeathSpiral : Skill
 		_firstShot = false;
 		_superCharge = false;
 		_inTheRow = true;
-		Vector2 lookDir = _mousePos - (Vector2)_playerLinks.transform.position;
-		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
-		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0);
-		Shoot(angle, _inTheRow);
+		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
+		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
+		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0, 0);
+		Shoot(angle, _inTheRow, _target);
 	}
 
 	private void SecondAttact()
 	{
 		_superCharge = false;
-		Vector2 lookDir = _mousePos - (Vector2)_playerLinks.transform.position;
-		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
-		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0);
-		Shoot(angle, _inTheRow);
+		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
+		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
+		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0, 0);
+		Shoot(angle, _inTheRow, _target);
 	}
 
 	public void AddCharge()

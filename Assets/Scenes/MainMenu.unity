@@ -248,7 +248,6 @@ GameObject:
   - component: {fileID: 317970578}
   - component: {fileID: 317970581}
   - component: {fileID: 317970582}
-  - component: {fileID: 317970583}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -389,19 +388,6 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
---- !u!114 &317970583
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 317970577}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f14319b7811e08459531c42c2c56110, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  panSpeed: 5
 --- !u!1 &393237322
 GameObject:
   m_ObjectHideFlags: 0
@@ -629,7 +615,6 @@ GameObject:
   - component: {fileID: 572863234}
   - component: {fileID: 572863233}
   - component: {fileID: 572863238}
-  - component: {fileID: 572863239}
   m_Layer: 0
   m_Name: RoonManager
   m_TagString: Untagged
@@ -694,12 +679,11 @@ MonoBehaviour:
   - {fileID: 572863234}
   - {fileID: 572863233}
   - {fileID: 572863238}
-  - {fileID: 572863239}
   _heroList:
   - {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
   - {fileID: 4534754468497973439, guid: ff1c8ecb71d19674e8778e3d04716b40, type: 3}
   - {fileID: 4534754468497973439, guid: 61bdf690f5f8e144aba9494df44f0657, type: 3}
-  - {fileID: 4534754468497973439, guid: 952e07a142342914da338d08e1041c34, type: 3}
+  - {fileID: 4374618947117916461, guid: f7c4989fc7d96e64e898c577137242d1, type: 3}
   _menuEnv: {fileID: 228420900}
 --- !u!114 &572863236
 MonoBehaviour:
@@ -752,25 +736,6 @@ MonoBehaviour:
   _scene: Assets/Scenes/TestRoom3D.unity
   _maxPlayers: 6
   _gameRulesPref: {fileID: 2624942693930062612, guid: 9c3ab8f1c5352c34ea72aeec43bb21be, type: 3}
---- !u!114 &572863239
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 572863232}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 029dfd1dbddeef94289b197cea74ffd4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _gameMode: 6
-  _scene: Assets/Scenes/TestRoom3DBG.unity
-  _maxPlayers: 2
-  _gameRulesPref: {fileID: 2955064748104778921, guid: 2ae4dc3e896cc6040afe290737e398a9, type: 3}
 --- !u!1 &1692478513
 GameObject:
   m_ObjectHideFlags: 0
@@ -1348,10 +1313,6 @@ PrefabInstance:
     - target: {fileID: 3375934164819897406, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3452035026179060688, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
-      propertyPath: _itemMode
-      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3490994561379499172, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
       propertyPath: m_AnchorMax.y

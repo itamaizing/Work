@@ -56,8 +56,9 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
     }
 
     void OnTalentSelected(TalentData talent, bool isOpen)
-    { 
-        SaveManager.Instance.SaveTalent(_talentsGroup.ID, talent.Name, isOpen);
+    {
+		Debug.Log("Talent selected in MAIN" + talent);
+		SaveManager.Instance.SaveTalent(_talentsGroup.ID, talent.Name, isOpen);
         SaveManager.Instance.LoadTalent(_talentsGroup.ID, talent.Name, _isGameUI);
 
         UpdateActiveTalentsCount();
@@ -68,8 +69,8 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
     {
         if (_itemsParent.gameObject.activeInHierarchy == false)
         {
-            _itemsParent.gameObject.SetActive(true);
             OnShowPanelGroup?.Invoke();
+            _itemsParent.gameObject.SetActive(true);
         }
         else
         {

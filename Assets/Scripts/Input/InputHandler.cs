@@ -31,6 +31,8 @@ public class InputHandler : MonoBehaviour
 	public static UnityAction OnSwitchAutoModeCanceled = delegate { };
 	public static UnityAction OnShiftLeftMouse = delegate { };
 	public static UnityAction OnShiftLeftMouseCanceled = delegate { };
+	public static UnityAction OnSpacetLeftMouse = delegate { };
+	public static UnityAction OnSpacetLeftMouseCanceled = delegate { };
 	public static UnityAction<float> ScrollMouse = delegate { };
 	public static UnityAction ShowMenu = delegate { };
 
@@ -78,6 +80,8 @@ public class InputHandler : MonoBehaviour
 		_inputActions.GameplayMap.SwitchAutoMode.canceled += i => OnSwitchAutoModeCanceled?.Invoke();
 		_inputActions.GameplayMap.ShiftMouse.performed += i => OnShiftLeftMouse?.Invoke();
 		_inputActions.GameplayMap.ShiftMouse.canceled += i => OnShiftLeftMouseCanceled?.Invoke();
+		_inputActions.GameplayMap.SpaceMouse.performed += i => OnSpacetLeftMouse?.Invoke();
+		_inputActions.GameplayMap.SpaceMouse.canceled += i => OnSpacetLeftMouseCanceled?.Invoke();
 		_inputActions.GameplayMap.ScrollMouse.performed += i => ScrollMouse?.Invoke(i.ReadValue<float>());
 		_inputActions.GameplayMap.ShowMenu.performed += i => ShowMenu?.Invoke();
 

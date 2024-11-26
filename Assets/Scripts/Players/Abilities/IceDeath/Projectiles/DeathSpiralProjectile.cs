@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Mirror;
 using System.Linq;
 using UnityEngine;
@@ -6,7 +7,7 @@ public class DeathSpiralProjectile : Projectiles
 {
 	private IcyCorpse _icyCorpse;
 
-	private Vector2 startPos;
+	private Vector3 startPos;
 	private bool _inTheRow = false;
 	private bool _talentBoostHPBOdy = false;
 	private bool _talentHitState = true;
@@ -21,6 +22,10 @@ public class DeathSpiralProjectile : Projectiles
 	private Damage _damage;
 	private float _curDamage;
 
+	public void SetTarget(GameObject  target)
+	{
+		_rb.DOMove(target.transform.position, 0.5f);
+	}
 
 	private void Start()
 	{
@@ -43,14 +48,14 @@ public class DeathSpiralProjectile : Projectiles
 
 	private void Update()
 	{
-		if (Vector2.Distance(transform.position, startPos) > _distance * GlobalVariable.cellSize)
+		if (Vector3.Distance(transform.position, startPos) > _distance * GlobalVariable.cellSize)
 		{
 			Explode();
 		}
 	}
 
 	[Server]
-	private void OnTriggerEnter2D(Collider2D collision)
+	private void OnTriggerEnter(Collider collision)
 	{
 		if (_dad == null) return;
 		if (collision.gameObject == _dad.gameObject)
@@ -81,11 +86,6 @@ public class DeathSpiralProjectile : Projectiles
 			}*/
 			Explode();
 		}
-
-		/*if (collision.TryGetComponent<Character>(out var target) && collision.gameObject != _dad.gameObject)
-		{
-			
-		}*/
 		if (collision.TryGetComponent<IceShadowObject>(out var shadow))
 		{
 			if (_talentBoostHPBOdy)
@@ -98,7 +98,8 @@ public class DeathSpiralProjectile : Projectiles
 			}
 
 			SetAlive(_corpseHp, shadow.transform, _corpseMaxHp);
-			Destroy(shadow.gameObject);
+			shadow.Explode();
+			//Destroy(shadow.gameObject);
 
 			Explode();
 			Debug.Log(shadow.name + " become alive");
@@ -135,9 +136,9 @@ public class DeathSpiralProjectile : Projectiles
 	public void SetAlive(float hp, Transform transform, float maxHp)
 	{
 		_dad.SpawnComponent.SpawnUnit(0, transform.position);
-		_icyCorpse =  (IcyCorpse)_dad.SpawnComponent.Units.Last();
+		/*_icyCorpse =  (IcyCorpse)_dad.SpawnComponent.Units.Last();
 		_icyCorpse.InitWithHp(hp, maxHp);
-		_icyCorpse.Talents(_talentCorpseDeath, _talentCorpseBoostExplode);
+		_icyCorpse.Talents(_talentCorpseDeath, _talentCorpseBoostExplode);*/
 		Explode();
 	}
 
@@ -147,7 +148,7 @@ public class DeathSpiralProjectile : Projectiles
 		{
 			//_skill.CmdApplyDamage(damage, target.gameObject);
 			target.Health.TryTakeDamage(ref _damage, _skill);
-			if(_talentPlague)
+			if (_talentPlague)
 			{
 				target.CharacterState.AddState(States.Plague, 5, 0, _dad.gameObject, _skill.name);
 			}
@@ -185,6 +186,7 @@ public class DeathSpiralProjectile : Projectiles
 				StateTalent(target, _damage.Value);
 			}
 		}
+		TargetRpcDamgeMake(_curDamage);
 	}
 
 	private void StateTalent(Character target, float damage)
