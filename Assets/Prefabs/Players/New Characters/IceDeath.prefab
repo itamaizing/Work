@@ -260,6 +260,10 @@ PrefabInstance:
       propertyPath: m_Offset.z
       value: 0.7
       objectReference: {fileID: 0}
+    - target: {fileID: 6857165054064679936, guid: c543d7786e879d14cb91ce31839db008, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8842404529923409551, guid: c543d7786e879d14cb91ce31839db008, type: 3}
       propertyPath: m_Name
       value: IcePuddlePreview

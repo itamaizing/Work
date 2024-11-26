@@ -11,6 +11,7 @@ public class CircleArea : MonoBehaviour
 	[SerializeField] SpriteRenderer _sprite;
 	[SerializeField] private DecalProjector _projector;
 
+	private List<Health> _enemies = new List<Health>();
 	private bool _isConcernsEnemy;
     private Damage _damage;
     /*private Damage _zeroDamage;
@@ -53,6 +54,7 @@ public class CircleArea : MonoBehaviour
         if(collision.TryGetComponent<Health>(out var hpEnemy) && collision.transform != transform.parent)
         {
             hpEnemy.ShowPhantomValue(_damage);
+			_enemies.Add(hpEnemy);
         }
     }
 
@@ -68,6 +70,31 @@ public class CircleArea : MonoBehaviour
 			Damage damage = _damage;
 			damage.Value = 0;
 			hpEnemy.ShowPhantomValue(damage);
+			_enemies.Remove(hpEnemy);
 		}
+	}
+
+	private void OnDestroy()
+	{
+		if (_enemies.Count > 0)
+			for (int i = _enemies.Count - 1; i >= 0; i--)
+			{
+				Damage damage = _damage;
+				damage.Value = 0;
+				_enemies[i].ShowPhantomValue(damage);
+				_enemies.Remove(_enemies[i]);
+			}
+	}
+
+	private void OnDisable()
+	{
+		if (_enemies.Count > 0)
+			for (int i = _enemies.Count - 1; i >= 0; i--)
+			{
+				Damage damage = _damage;
+				damage.Value = 0;
+				_enemies[i].ShowPhantomValue(damage);
+				_enemies.Remove(_enemies[i]);
+			}
 	}
 }

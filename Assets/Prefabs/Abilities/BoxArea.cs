@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -7,6 +8,7 @@ public class BoxArea : MonoBehaviour
     [SerializeField] SpriteRenderer _sprite;
     [SerializeField] private DecalProjector  _projector;
 
+    private List<Health> _enemies = new List<Health>();
     private Damage _damage;
 	/*private Damage _zeroDamage;
 
@@ -46,6 +48,7 @@ public class BoxArea : MonoBehaviour
 		if (collision.TryGetComponent<Health>(out var hpEnemy) && collision.transform != transform.parent)
 		{
 			Debug.Log("ENTER " + collision.name +"  / " + _damage.Value);
+            _enemies.Add(hpEnemy);
 			hpEnemy.ShowPhantomValue(_damage);
 		}
 	}
@@ -62,6 +65,31 @@ public class BoxArea : MonoBehaviour
             damage.Value = 0;
 			Debug.Log("Exit " + collision.name + "  / " + damage.Value);
 			hpEnemy.ShowPhantomValue(damage);
+			_enemies.Remove(hpEnemy);
 		}
+	}
+
+	private void OnDestroy()
+	{
+		if (_enemies.Count > 0)
+			for (int i = _enemies.Count - 1; i >= 0; i--)
+			{
+				Damage damage = _damage;
+				damage.Value = 0;
+				_enemies[i].ShowPhantomValue(damage);
+				_enemies.Remove(_enemies[i]);
+			}
+	}
+
+	private void OnDisable()
+	{
+		if (_enemies.Count > 0)
+			for (int i = _enemies.Count - 1; i >= 0; i--)
+			{
+				Damage damage = _damage;
+				damage.Value = 0;
+				_enemies[i].ShowPhantomValue(damage);
+				_enemies.Remove(_enemies[i]);
+			}
 	}
 }

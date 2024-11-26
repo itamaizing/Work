@@ -146,9 +146,7 @@ public class Bar : MonoBehaviour
 	public void PreviewChange(float damage)
 	{
 		float newValue = _currentValue - damage;
-		//Debug.Log(newValue + " new " + _currentValue + " cur " + _maxValue + " max" );
-		//Debug.Log(_barPlus + " name: "+ name);
-
+		Debug.Log(newValue + " new " + _currentValue + " cur " + _maxValue + " max" );
 		if (_barPlus != null)
 		{
 			if (newValue < _currentValue)
@@ -163,7 +161,7 @@ public class Bar : MonoBehaviour
 				_preViewValue = _currentValue;
 				//_currentValue = newValue;
 
-				//_bar.value = newValue / _maxValue;
+				_bar.value = _currentValue / _maxValue;
 				_barPlus.value = newValue / _maxValue;
 			}
 		}
