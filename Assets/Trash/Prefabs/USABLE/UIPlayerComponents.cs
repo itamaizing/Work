@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections;
 using UnityEngine;
 
@@ -20,11 +21,6 @@ public class UIPlayerComponents : MonoBehaviour
     private float popupSpawnDelay = 0.2f;
     private bool canSpawnPopup = true;
 
-    /* public void Initialize(PlayerAbilities playerAbilities,MoveComponent playerMove,StaminaComponent staminaComponent , HealthComponent healthComponent)
-     {
-         playerAbilities.Initialize(playerMove, staminaComponent, healthComponent);
-     }
-     */ //Why is initialization of this component necessary at all? Moreover, the UI should not initialize the logic
     private void Awake()
     {
         _character.Health.DamageTaken += OnDamageTaken;
@@ -50,13 +46,14 @@ public class UIPlayerComponents : MonoBehaviour
 
     public void ShowPopupValue(float value, Color startColor, Color endColor)
     {
-        if (value is > 0 and < 1)
+        int intValue = value > 0 ? Mathf.CeilToInt(value) : Mathf.FloorToInt(value);
+        if (intValue == 0 && value != 0)
         {
-            value = 1;
+            intValue = value > 0 ? 1 : -1;
         }
         if (canSpawnPopup)
         {
-            StartCoroutine(SpawnPopupWithDelay((value > 0 ? "+" : "") + value.ToString("0.0"), startColor, endColor));
+            StartCoroutine(SpawnPopupWithDelay((intValue > 0 ? "+" : "") + intValue, startColor, endColor));
         }
     }
 
@@ -82,13 +79,14 @@ public class UIPlayerComponents : MonoBehaviour
 
     public void ShowPopupValueRegen(float value, Color startColor, Color endColor)
     {
-        if (value is > 0 and < 1)
+        int intValue = value > 0 ? Mathf.CeilToInt(value) : Mathf.FloorToInt(value);
+        if (intValue == 0 && value != 0)
         {
-            value = 1;
+            intValue = value > 0 ? 1 : -1;
         }
         if (canSpawnPopup)
         {
-            StartCoroutine(SpawnPopupWithDelayRegen((value > 0 ? "+" : "-") + value.ToString("0.0"), startColor, endColor));
+            StartCoroutine(SpawnPopupWithDelayRegen((intValue > 0 ? "+" : "-") + intValue, startColor, endColor));
         }
     }
 

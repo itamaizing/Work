@@ -13,7 +13,7 @@ public class TestGameRulesBattlegrounds : GameRules
     [SerializeField] private float _lifeTime = 10f;
     [SerializeField] private int _experienceForKill = 5;
     [SerializeField] private int _experienceForWin = 3;
-    [SerializeField] private float _bottleVolumeForWin = 0.33f;
+    [SerializeField] private float _bottleVolumeForWin = 1f / 3f;
 
     [SerializeField] private bool isRemoveRoom = true;
 
@@ -159,6 +159,7 @@ public class TestGameRulesBattlegrounds : GameRules
 
         if (isTeam1Winner || isTeam2Winner)
         {
+            Debug.Log("Раунд завершен");
             levelManager.AddExperience(_experienceForWin);
             bottleManager.AddBottleVolume(_bottleVolumeForWin);
         }

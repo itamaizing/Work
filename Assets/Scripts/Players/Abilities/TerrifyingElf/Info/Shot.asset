@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Shot
   _description: 
-  _icon: {fileID: 21300000, guid: ed3edc3e30b9d58418470c1607b5591b, type: 3}
+  _icon: {fileID: 21300000, guid: 696a03d50f8133541b4b40710335eae9, type: 3}
