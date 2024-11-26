@@ -8,10 +8,12 @@ public class ScorchedSoul : AbstractCharacterState
     private float _duration;
     private int _currentStacks = 1;
     public override States State => States.ScorchedSoul;
-
+    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override StateType Type => StateType.Immaterial;
 
     public override List<StatusEffect> Effects => throw new System.NotImplementedException();
+
+    public override float TEST_ChangeableValue { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {

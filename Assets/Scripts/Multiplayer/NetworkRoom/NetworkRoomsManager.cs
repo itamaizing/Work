@@ -22,7 +22,7 @@ public class NetworkRoomsManager : NetworkBehaviour
         base.OnValidate();
 
 		switch (_gameMode)
-        {
+		{
 			case GameMode.GM1vs1:
 				_maxPlayers = 2;
 				break;
@@ -34,8 +34,13 @@ public class NetworkRoomsManager : NetworkBehaviour
 			case GameMode.GM3vs3:
 				_maxPlayers = 6;
 				break;
-        }
-    }
+
+			case GameMode.GM1vs1MaximumMode:
+				_maxPlayers = 2;
+
+				break;
+		}
+	}
 
     public IEnumerator AddPlayerJob(GameObject player)
     {
@@ -74,6 +79,8 @@ public enum GameMode
 	GM2vs2,
 	GM3vs3,
 	GMAllvsAll,
+	GM1vs1MaximumMode,
+	Battlegrounds,
 	None
 }
 
