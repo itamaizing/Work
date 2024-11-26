@@ -62,7 +62,6 @@ public class MoveComponent : NetworkBehaviour
 
 	public void LookAtPosition(Vector3 position)
     {
-		Debug.Log("LookAtPosition");
 		_isLookAtCursor = false;
 
 		var transformRotate = transform.eulerAngles;
@@ -168,7 +167,6 @@ public class MoveComponent : NetworkBehaviour
     {
 		while (!_isLookAtCursor)
         {
-			Debug.Log("LookAtTransformCoroutine");
 			LookAtPosition(transform.position);
 			yield return null;
 		}

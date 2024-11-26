@@ -959,7 +959,7 @@ public class PoisonBall : Skill, IAltAbility
         bool isActiveInertialGlands, bool isActiveContinuationAmbush,
         bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies)
     {
-        _player.Health.ReductionCurrentValue(100f);
+        _player.Health.Add(-100f);
         Debug.Log("PoisonBall / CmdCreateProjPoint / _poisonBallInfo.CountProjectiles = " + _poisonBallInfo.CountProjectiles);
 
         RestorationOfGlandsTalent = _restorationOfGlands;

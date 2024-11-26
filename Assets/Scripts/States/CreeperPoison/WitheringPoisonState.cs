@@ -141,7 +141,7 @@ public class WitheringPoisonState : AbstractCharacterState
             }
         }
 
-        _characterState.Character.Resources.FirstOrDefault(r => r.Type == ResourceType.Mana)!.ReductionCurrentValue(_endValueTakeAwayMana);
+        _characterState.Character.Resources.FirstOrDefault(r => r.Type == ResourceType.Mana)!.Add(-_endValueTakeAwayMana);
     }
 
     private void ResetValues()

@@ -84,7 +84,6 @@ public class Health : Resource, IDamageable, IHealingable
 
     public void Heal(ref Heal heal, string sourceName, Skill skill = null)
     {
-        Debug.Log("Health / Heal / heal.value = " + heal.Value);
         //ClientRpcHealTaked(heal.Value, skill, sourceName);
         Add(heal.Value);
         HealTaked?.Invoke(heal.Value, skill, sourceName);

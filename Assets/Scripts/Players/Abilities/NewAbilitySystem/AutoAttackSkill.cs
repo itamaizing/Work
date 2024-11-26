@@ -100,7 +100,6 @@ public abstract class AutoAttackSkill : Skill
     {
         do
         {
-            Debug.Log("AutoAttackSkill / PrepareJob / target = " + _target);
             if (GetMouseButton)
             {
                 _target = GetRaycastTarget();
@@ -112,8 +111,6 @@ public abstract class AutoAttackSkill : Skill
             yield return null;
         }
         while (Target == null);
-
-        Debug.Log("AutoAttackSkill / PrepareJob / end cycle");
 
         _hero.Move.LookAtTransform(Target.transform);
     }
@@ -143,7 +140,6 @@ public abstract class AutoAttackSkill : Skill
 
     protected void AnimCastAction()
     {
-        Debug.Log("AutoAttackSkill / AnimCastAction");
         CastAction();
     }
 

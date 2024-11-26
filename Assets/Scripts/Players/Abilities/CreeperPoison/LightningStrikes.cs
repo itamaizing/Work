@@ -77,7 +77,7 @@ public class LightningStrikes : AutoAttackSkill
         base.ClearData();
 
         if (_animTime > 0)
-            _player.Animator.speed = _animTime;
+            _player.Animator.SetFloat("LightningStrikesMultiplierSpeedAnimation", _animTime);
 
         if (_useCoroutine != null)
         {
@@ -123,7 +123,7 @@ public class LightningStrikes : AutoAttackSkill
             float multiplier = _lightningMovement.DurationLeap;
             float animTimeMultiplier = _animTime / multiplier - 1f;
 
-            _player.Animator.speed = animTimeMultiplier;
+            _player.Animator.SetFloat("LightningStrikesMultiplierSpeedAnimation", animTimeMultiplier);
         }
     }
 
