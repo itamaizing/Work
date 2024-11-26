@@ -358,16 +358,16 @@ public class CharacterState : NetworkBehaviour
 		StateIcons?.RemoveIconCount();
 	}
 
-	[ClientRpc]
-	private void ClientRpcUpdateClientStates(List<States> removedStates)
-	{
-		foreach (var stateName in removedStates)
-		{
-			RemoveStateLocally(stateName);
-		}
-	}
+    [ClientRpc]
+    private void ClientRpcUpdateClientStates(List<States> removedStates)
+    {
+        foreach (var stateName in removedStates)
+        {
+            RemoveStateLocally(stateName);
+        }
+    }
 
-	private void RemoveStateLocally(States stateName)
+    private void RemoveStateLocally(States stateName)
 	{
 		var statesCopy = new List<AbstractCharacterState>(currentStates);
 

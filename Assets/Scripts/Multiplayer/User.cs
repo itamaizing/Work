@@ -60,15 +60,15 @@ public class User : NetworkBehaviour
         }
     }
 
-    //private void OnDestroy()
-    //{
-    //    if (Instance == this)
-    //    {
-    //        BottleUserManager.Instance?.Dispose();
-    //        LevelCharacterManager.Instance?.Dispose();
-    //        Instance = null;
-    //    }
-    //}
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            BottleUserManager.Instance?.Dispose();
+            LevelCharacterManager.Instance?.Dispose();
+            Instance = null;
+        }
+    }
 
     private void InitializeManagers()
     {
@@ -102,7 +102,6 @@ public class BottleUserManager
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (scene.name == mainMenuSceneName)
@@ -114,6 +113,8 @@ public class BottleUserManager
     public void SetUser(string user)
     {
         _currentUser = user;
+        Debug.Log($"Current user set to: {_currentUser}");
+        LoadBottleData();
     }
 
     public void AddBottleVolume(float amount)
@@ -145,15 +146,31 @@ public class BottleUserManager
 
     private void SaveBottleData()
     {
+        if (string.IsNullOrEmpty(_currentUser))
+        {
+            Debug.LogWarning("Cannot save bottle data: User not set.");
+            return;
+        }
+
         PlayerPrefs.SetInt(_currentUser + "_Bottles", _currentBottles);
         PlayerPrefs.SetFloat(_currentUser + "_BottleVolume", _currentBottleVolume);
         PlayerPrefs.Save();
+
+        Debug.Log($"Bottle data saved for {_currentUser}. Bottles: {_currentBottles}, Volume: {_currentBottleVolume}");
     }
 
     private void LoadBottleData()
     {
+        if (string.IsNullOrEmpty(_currentUser))
+        {
+            Debug.LogWarning("Cannot load bottle data: User not set.");
+            return;
+        }
+
         _currentBottles = PlayerPrefs.GetInt(_currentUser + "_Bottles", 0);
         _currentBottleVolume = PlayerPrefs.GetFloat(_currentUser + "_BottleVolume", 0f);
+
+        Debug.Log($"Bottle data loaded for {_currentUser}. Bottles: {_currentBottles}, Volume: {_currentBottleVolume}");
     }
 
     public void LogBottleInfoOnClient()
@@ -276,8 +293,6 @@ public class LevelCharacterManager
         _currentLevel = 1;
         _currentExperience = 0;
         _experienceForNextLevel = 100;
-
-        Debug.Log($"Сохраненные данные уровня и опыта для персонажа {_character.Data.Name} были сброшены.");
     }
 
     public void DisplayCurrentHeroLevelInfo()
@@ -286,4 +301,3 @@ public class LevelCharacterManager
         Debug.Log($"Character: {_character.Data.Name} | Level: {_currentLevel} | Experience: {_currentExperience}/{_experienceForNextLevel}");
     }
 }
-

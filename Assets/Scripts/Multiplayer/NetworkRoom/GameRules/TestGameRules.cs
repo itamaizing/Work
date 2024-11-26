@@ -15,7 +15,7 @@ public class TestGameRules : GameRules
     [SerializeField] private int maxScore = 2;
     [SerializeField] private int experiencePerWin = 6;
     [SerializeField] private int experiencePerLoss = 2;
-    [SerializeField] private float bottleVolumePerWin = 0.33f;
+    [SerializeField] private float bottleVolumePerWin = 1f / 3f;
 
     private TeamsPanel _teams;
     private int[] teamDeaths = new int[3];
@@ -129,10 +129,7 @@ public class TestGameRules : GameRules
                         bottleManager.AddBottleVolume(bottleVolumePerWin);
                     }
                 }
-                else if (!isMaxLevel)
-                {
-                    levelManager.AddExperience(experiencePerLoss);
-                }
+
                 break;
 
             default:
@@ -145,6 +142,7 @@ public class TestGameRules : GameRules
                     else
                     {
                         levelManager.AddExperience(experiencePerLoss);
+                        bottleManager.AddBottleVolume(bottleVolumePerWin);
                     }
                 }
                 break;

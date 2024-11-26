@@ -66,29 +66,28 @@ public class ShotIntoSky : Skill
                 if (hitCollider.TryGetComponent<IDamageable>(out IDamageable target))
                 {
                     float finalDamage = CalculateDamage(Damage);
-                    ApplyDamage(finalDamage, DamageType.Magical, target);
 
-                    if (Random.Range(0f, 100f) <= stunChance)
+                    if (hitCollider.TryGetComponent<UserNetworkSettings>(out var targetSettings))
                     {
-                        if (target is Character character)
+                        if (targetSettings.TeamIndex != Hero.NetworkSettings.TeamIndex)
                         {
-                            var targetState = character.CharacterState;
-                            if (targetState != null)
-                            {
-                                CmdAddState(targetState);
-                            }
+                            ApplyDamage(finalDamage, DamageType.Magical, target);
                         }
+                    }
+                    else
+                    {
+                        ApplyDamage(finalDamage, DamageType.Magical, target);
                     }
                 }
             }
         }
     }
 
-    [Command]
-    private void CmdAddState(CharacterState targetState)
-    {
-        targetState.AddState(States.Stun, 2.0f, 0, Hero.gameObject, this.name);
-    }
+    //[Command]
+    //private void CmdAddState(CharacterState targetState)
+    //{
+    //    targetState.AddState(States.Stun, 2.0f, 0, Hero.gameObject, this.name);
+    //}
 
     private float CalculateDamage(float baseDamage)
     {
