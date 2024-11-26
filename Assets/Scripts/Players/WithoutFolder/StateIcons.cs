@@ -52,9 +52,11 @@ public class StateIcons : MonoBehaviour
                 {
                     ico.count += stack;
                     ico.time.Add(timeToDecrease);
-                    ico.Text.text = ico.count.ToString();
-                    ico.Text.gameObject.SetActive(true);
-
+                    if (ico.count > 0)
+                    {
+                        ico.Text.text = ico.count.ToString();
+                        ico.Text.gameObject.SetActive(true);
+                    }
                     MoveIcoToEnd(i);
                     return;
                 }

@@ -98,7 +98,7 @@ public class SelectManager : MonoBehaviour
 
         SelectedControllableUnits.Add(character);
         character.SelectComponent.Select();
-    }
+	}
 
     public void SelectInArea(Character character)
     {

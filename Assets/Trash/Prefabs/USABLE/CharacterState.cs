@@ -594,7 +594,7 @@ public class CharacterState : NetworkBehaviour
 			if (currentStates[i].State == state)
 			{
 				currentStates[i].Stack(duration); // Увеличиваем длительность
-				_stateIcons.ActivateIco(state, duration, 1, true); // Обновляем UI
+				_stateIcons.ActivateIco(state, duration, 1, currentStates[i].Stack(duration)); // Обновляем UI
 
 				// Перемещаем текущее состояние в конец списка
 				MoveStateToEnd(i);
