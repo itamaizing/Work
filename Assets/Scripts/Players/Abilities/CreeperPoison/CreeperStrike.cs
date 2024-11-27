@@ -197,27 +197,23 @@ public class CreeperStrike : AutoAttackSkill
     {
         float time = duration;
 
+        _isTwoHit = true;
+
+        _lightningStrikes.IsUsedLightningStrikes = isUsingLightningStrikes;
+
+
         while (time > 0)
         {
             time -= Time.deltaTime;
             
             if (time <= 0)
             {
-                if (!_isTwoHit)
-                {
-                    _isTwoHit = true;
-                }
-                else if (isUsingLightningStrikes)
-                {
-                    _lightningStrikes.IsUsedLightningStrikes = isUsingLightningStrikes;
-                }
+                _isTwoHit = false;
+                _lightningStrikes.IsUsedLightningStrikes = false;
             }
 
             yield return null;
         }
-
-        _isTwoHit = false;
-        _lightningStrikes.IsUsedLightningStrikes = false;
 
         StopCoroutine(_timerForTwoHitVariableCoroutine);
         _timerForTwoHitVariableCoroutine = null;

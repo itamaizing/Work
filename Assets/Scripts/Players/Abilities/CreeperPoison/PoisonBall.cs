@@ -189,8 +189,11 @@ public class PoisonBall : Skill, IAltAbility
         if (_animTime > 0)
             _player.Animator.SetFloat("PoisonBallMultiplierSpeedAnimation", _baseMultiplierAnimationSpeed);
 
-        float timerForCancelCoroutine = 0.5f;
-        Invoke("CancelCoroutine", timerForCancelCoroutine);
+        if (_isAbilityActive)
+        {
+            float timerForCancelCoroutine = 0.2f;
+            Invoke("CancelCoroutine", timerForCancelCoroutine);
+        }
 
         ClearArrows();
 
@@ -300,12 +303,6 @@ public class PoisonBall : Skill, IAltAbility
 
     private void CancelCoroutine()
     {
-        if (_checkingTalentsCoroutine != null)
-        {
-            StopCoroutine(_checkingTalentsCoroutine);
-            _checkingTalentsCoroutine = null;
-        }
-
         if (_setSpawnPointCoroutine != null)
         {
             StopCoroutine(_setSpawnPointCoroutine);
@@ -328,12 +325,6 @@ public class PoisonBall : Skill, IAltAbility
         {
             StopCoroutine(_thirdClickCoroutine);
             _thirdClickCoroutine = null;
-        }
-
-        if (_mouseDetectionCoroutine != null)
-        {
-            StopCoroutine(_mouseDetectionCoroutine);
-            _mouseDetectionCoroutine = null;
         }
 
         if (_lookAtPositionCoroutine != null)
@@ -952,7 +943,6 @@ public class PoisonBall : Skill, IAltAbility
         bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies)
 
     {
-        Debug.Log("PoisonBall / CmdCreateProjTarget / _poisonBallInfo.CountProjectiles = " + _poisonBallInfo.CountProjectiles);
 
         CurrentTarget = target;
         FootInstinctsTalent = _footInstincts;
@@ -971,6 +961,7 @@ public class PoisonBall : Skill, IAltAbility
             _poisonBallInfo.CountProjectiles = 1;
             _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
         }
+        Debug.Log("PoisonBall / CmdCreateProjTarget / _poisonBallInfo.CountProjectiles = " + _poisonBallInfo.CountProjectiles);
 
         if (_poisonBallInfo.CountProjectiles >= 3 && isActiveInertialGlands)
         {
@@ -1032,7 +1023,6 @@ public class PoisonBall : Skill, IAltAbility
     {
         _player.Health.Add(-100f);
 
-        Debug.Log("PoisonBall / CmdCreateProjPoint / _poisonBallInfo.CountProjectiles = " + _poisonBallInfo.CountProjectiles);
 
         RestorationOfGlandsTalent = _restorationOfGlands;
         FootInstinctsTalent = _footInstincts;
@@ -1052,6 +1042,7 @@ public class PoisonBall : Skill, IAltAbility
             _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
         }
 
+        Debug.Log("PoisonBall / CmdCreateProjPoint / _poisonBallInfo.CountProjectiles = " + _poisonBallInfo.CountProjectiles);
         if (_poisonBallInfo.CountProjectiles >= 3 && isActiveInertialGlands)
         {
             _poisonBallInfo.IsThreeProjectileOnOnetarget = true;

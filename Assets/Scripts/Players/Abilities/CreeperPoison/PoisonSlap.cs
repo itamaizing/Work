@@ -113,7 +113,6 @@ public class PoisonSlap : Skill
         if (_lightningMovement.IsInMovement)
         {
             _isCanDamageDeal = true;
-            Debug.Log("PoisonSlap / if inMovement / isCanDamageDeal = " + IsCanDamageDeal);
             yield break;
         }
 
@@ -123,13 +122,11 @@ public class PoisonSlap : Skill
                 if (_creeperStrike.IsTwoHit)
                 {
                     CastSpeedFromCreeperStrike();
-                    Debug.Log("PoisonSlap / ActiveTalent / creeperStrike TwoHit");
                     _isUsedPoisonBallCharger = false;
                 }
                 else if (_lightningStrikes.IsUsedLightningStrikes)
                 {
                     CastSpeedFromLightningStrikes();
-                    Debug.Log("PoisonSlap / ActiveTalent / LightningStrikes TwoHit");
                     _isUsedPoisonBallCharger = false;
                 }
                 else
@@ -427,7 +424,6 @@ public class PoisonSlap : Skill
 
                 if (Random.Range(0f, 1f) <= chanceOfRestorationOfGlands)
                 {
-                    Debug.Log("CreeperStrike / restorationOfGlands");
                     _restorationOfGlands.ReductionCooldown();
                 }
             }

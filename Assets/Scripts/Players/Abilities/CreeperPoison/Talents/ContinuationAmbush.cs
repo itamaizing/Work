@@ -17,15 +17,12 @@ public class ContinuationAmbush : Talent
 
     public void CanApplyInvisible(bool isCanApplyInvisible)
     {
-        Debug.Log("CanApplyInvisible");
         _isCanApplyInvisible = isCanApplyInvisible;
-        Invoke("CanNotApplyInvisible", 1.0f);
+        Invoke("CanNotApplyInvisible", 4.0f);
     }
 
     private void CanNotApplyInvisible()
     {
-        Debug.Log("CanNotApplyInvisible");
         _isCanApplyInvisible = false;
-        Debug.Log($"CanNotApplyInvisible / isCanApply = {_isCanApplyInvisible}");
     }
 }

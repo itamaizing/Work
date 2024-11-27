@@ -39,7 +39,7 @@ public class ExplosionPoisonCloud : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_player.CharacterState.CheckForState(States.PoisonCloud))
+        if (_enemies.Count > 0 && _player.CharacterState.CheckForState(States.PoisonCloud))
         {
             ExplosionCloud();
         }
@@ -57,17 +57,17 @@ public class ExplosionPoisonCloud : Skill
 
     private void ExplosionCloud()
     {
-        //Debug.Log("ExplosionPoisonCloud / ExplosionCloud");
+        Debug.Log("ExplosionPoisonCloud / ExplosionCloud");
         
         _isExploded = true;
 
         _currentDamage = _baseDamage * _currentStacksPoisonCloud;
 
-       // Debug.Log("ExplosionPoisonCloud / ExplosionCloud / currentDamage = " + _currentDamage);
+       Debug.Log("ExplosionPoisonCloud / ExplosionCloud / currentDamage = " + _currentDamage);
 
         foreach (Character target in _enemies)
         {
-           // Debug.Log("ExplosionPoisonCloud / ExplosionCloud / target = " + target);
+            Debug.Log("ExplosionPoisonCloud / ExplosionCloud / target = " + target);
             if (target != null)
             {
                 CmdDamageDeal(target, _currentDamage);
@@ -108,7 +108,7 @@ public class ExplosionPoisonCloud : Skill
     public void CurrentStacksPoisonCloud(int currentStacks, float radiusExplosion)
     {
         _currentStacksPoisonCloud = currentStacks;
-        //Debug.Log("ExplosionPoisonCloud / _currentStacksPoisonCloud = " + _currentStacksPoisonCloud);
+        Debug.Log("ExplosionPoisonCloud / _currentStacksPoisonCloud = " + _currentStacksPoisonCloud);
         _radiusExplosion = radiusExplosion;
     }
 

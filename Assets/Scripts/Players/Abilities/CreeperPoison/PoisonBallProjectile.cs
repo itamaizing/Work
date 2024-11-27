@@ -199,7 +199,7 @@ public class PoisonBallProjectile : Test_Projectile
         };
 
         _target.Health.TryTakeDamage(ref _baseDamage, _skill);
-        _target.DamageTracker.AddDamage(_baseDamage, isServerRequest: isServer);
+        //_target.DamageTracker.AddDamage(_baseDamage, isServerRequest: isServer);
 
         if (_isActiveWitheringPoison)
         {

@@ -3283,6 +3283,10 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._id
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._name
       value: "\u0420\u0435\u043F\u0442\u0438\u043B\u0438\u044F"
       objectReference: {fileID: 0}
@@ -3734,8 +3738,8 @@ MonoBehaviour:
   _coldBlood: {fileID: 4616268591970552908}
   _lightningStrikes: {fileID: 734640227586387152}
   _player: {fileID: 2483674839823445686}
-  _multiplyCritDamage: 12
-  _chanceOfCriticalStrike: 0.9
+  _multiplyCritDamage: 1.5
+  _chanceOfCriticalStrike: 0.05
 --- !u!114 &734640227586387152
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3814,7 +3818,7 @@ MonoBehaviour:
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 50
-  _cooldownTime: 2
+  _cooldownTime: 20
   _castDeley: 0
   _damageValue: 0
   _abilitySchool: 0
@@ -4176,7 +4180,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _isTalentSpell: 0
-  _isSkillActive: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: b01cdda0a8d49e24a8cd5c7190f8483b, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
@@ -4229,8 +4233,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 5dd2210736bee3d4197798d0dd5f05e3, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
