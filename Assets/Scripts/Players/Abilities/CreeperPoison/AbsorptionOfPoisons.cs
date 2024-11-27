@@ -7,7 +7,6 @@ public class AbsorptionOfPoisons : Skill
 {
     [SerializeField] private Character _player;
     [SerializeField] private LightningMovement _lightningMovement;
-    [SerializeField] private CreeperStrike _creeperStrike;
 
     private Dictionary<int, float> _stacks = new();
 
@@ -86,13 +85,12 @@ public class AbsorptionOfPoisons : Skill
     {
         if (target != null)
         {
-
             Character targetWithDebuffs = target.GetComponent<Character>();
 
-            AdvertisementStates(targetWithDebuffs.CharacterState);
-
-            if (targetWithDebuffs.CharacterState.CheckPoisonStates())
+            if (targetWithDebuffs.CharacterState.Check(StatusEffect.Poison))
             {
+                AdvertisementStates(targetWithDebuffs.CharacterState);
+
                 Dictionary<AbstractCharacterState, float> poisonDurations = new();
 
                 if (_poisonBone != null && _poisonBone.CurrentStacks > 0)

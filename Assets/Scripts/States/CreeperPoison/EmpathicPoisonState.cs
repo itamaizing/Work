@@ -40,8 +40,6 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
     public float StacksDuration { get => _duration; }
 
     public event Action<Damage, Skill> DamageTaken;
-
-    public override float TEST_ChangeableValue { get; set; }
     public override States State => States.EmpathicPoisons;
     public override StateType Type => StateType.Physical; 
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
@@ -50,7 +48,6 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        Debug.Log("EmpathicPoison / EnterState");
         _characterState = character;
         _player = personWhoMadeBuff;
 
@@ -66,9 +63,7 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
 
         _player.Health.Shields.Add(this);
         _poisonCloud = (PoisonCloudState)_player.CharacterState.GetState(States.PoisonCloud);
-        Debug.Log($"EmpathicPoisons / EnterState / PoisonCloud = {_poisonCloud}");
         _radiusCloud = _poisonCloud.RadiusCloud;
-        Debug.Log($"EmpathicPoisons / EnterState / PoisonCloud.radiusCloud = {_radiusCloud}");
 
         _duration = durationToExit;
         _baseDuration = durationToExit;
@@ -86,7 +81,6 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
-        Debug.Log("EmpathicPoison / TryTakeDamage");
         if (CurrentStacksCount > 0)
         {
           //  Debug.Log("EmpathicPoison / if (currentStacks > 0) currentStacks == " + _currentStacks);
@@ -140,7 +134,6 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
 
     public override void UpdateState()
     {
-        Debug.Log("EmpathicPoison / UpdateState");
         _playerPosition = _player.transform.position;
         _characterPosition = _characterState.transform.position;
 
@@ -180,7 +173,6 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
 
     public override bool Stack(float time)
     {
-        Debug.Log("EmpathicPoison / Stack");
         if (CurrentStacksCount < MaxStacksCount)
         {
             CurrentStacksCount++;

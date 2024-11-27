@@ -113,7 +113,7 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
     private IEnumerator LifeTimeStacks()
     {
         float time = _duration;
-        Debug.Log("Time = " + time);
+
         while (time > 0)
         {
             time -= Time.deltaTime;

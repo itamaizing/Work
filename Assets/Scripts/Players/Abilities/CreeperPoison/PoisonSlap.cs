@@ -46,7 +46,6 @@ public class PoisonSlap : Skill
     private float _baseDamage = 30f;
     private float _distancePush = 3.0f;
     private float _durationPush = 1.0f;
-    private float _minTimeCooldown = 0.2f;
 
     private Coroutine _secondMouseClickCoroutine;
 
@@ -54,7 +53,6 @@ public class PoisonSlap : Skill
     private bool _firstClickDone = false;
     private bool _secondClickDone;
     private bool _isUsedPoisonBallCharger = true;
-    private bool _isCanBreak = false;
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
     public int PoisonBoneStack { get => _poisonBoneStack; set => _poisonBoneStack = value; }
@@ -83,9 +81,6 @@ public class PoisonSlap : Skill
 
     public void UsePoisonSlapOfLightningMovement()
     {
-        if (RemainingCooldownTime > _minTimeCooldown)
-            return;
-        
         _currentTarget = _lightningMovement.Target;
         Debug.Log("PoisonSlap / UsePoisonSlapLightning / _currentTarget = " + _currentTarget);
         DamageDealOfLightningMovement();
@@ -102,7 +97,6 @@ public class PoisonSlap : Skill
         _secondClickDone = false;
         _isPushTargetAllowed = false;
         _isUsedPoisonBallCharger = true;
-        _isCanBreak = false;
 
         _currentTarget = null;
         _castDeley = 0;

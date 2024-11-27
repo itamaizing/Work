@@ -103,21 +103,23 @@ public class PoisonBall : Skill, IAltAbility
     private float _multiplierForPushDistance;
     private float _animTime;
     private float _baseAnimTime = 1f;
+    private float _baseMultiplierAnimationSpeed = 1f;
 
     #region BoolVariables
 
-    private bool _isAbilityActive = false;
+    private bool _isAbilityActive;
+    private bool _isCanCheckActiveTalents = true;
     private bool _isPushTarget;
-    private bool _isTarget = false;
+    private bool _isTarget;
     private bool _isFast;
-    private bool _secondClickDone = false;
-    private bool _thirdClickDone = false;
-    private bool _firstClickCompleted = false;
-    private bool _colorLockedAfterSecondClick = false;
-    private bool _colorLockedAfterThirdClick = false;
-    private bool _isBallCanBigger = false;
-    private bool _isThreeProjectileOnOneTarget = false;
-    private bool _isCanApplyInvisible = false;
+    private bool _secondClickDone;
+    private bool _thirdClickDone;
+    private bool _firstClickCompleted;
+    private bool _colorLockedAfterSecondClick;
+    private bool _colorLockedAfterThirdClick;
+    private bool _isBallCanBigger;
+    private bool _isThreeProjectileOnOneTarget;
+    private bool _isCanApplyInvisible;
 
     #endregion
 
@@ -125,12 +127,12 @@ public class PoisonBall : Skill, IAltAbility
     private Coroutine _thirdClickCoroutine;
     private Coroutine _mouseDetectionCoroutine;
     private Coroutine _lookAtPositionCoroutine;
+    private Coroutine _checkingTalentsCoroutine;
 
     public GameObject LastTarget { get; set; }
     public GameObject CurrentTarget { get; set; }
     public FootInstincts FootInstinctsTalent { get; set; }
     public RestorationOfGlands RestorationOfGlandsTalent { get; set; }
-    public ContinuationAmbush ContinuationAmbushTalent { get; set; }
     public int CurrentCountBall { get => _poisonBallInfo.CountProjectiles; }
     public int PoisonBoneStack { get => _poisonBoneStacks; set => _poisonBoneStacks = value; }
     public bool IsAltAbility { get; set; }
@@ -156,11 +158,8 @@ public class PoisonBall : Skill, IAltAbility
 
     private void Update()
     {
-        InertialGlandsReductionCooldown();
-
-        ContinuationAmbushApplyInvisible();
-
         UpdateMouseDetection();
+
         if (_poisonBallInfo.IsActiveTimer)
         {
             Timer();
@@ -186,7 +185,6 @@ public class PoisonBall : Skill, IAltAbility
 
     #region PrepareAndStartJob
 
-
     public void PayCostPoisonBall()
     {
         TryPayCost(true);
@@ -195,12 +193,12 @@ public class PoisonBall : Skill, IAltAbility
     protected override void ClearData()
     {
         if (_animTime > 0)
-            _player.Animator.speed = _baseAnimTime;
+            _player.Animator.SetFloat("PoisonBallMultiplierSpeedAnimation", _baseMultiplierAnimationSpeed);
 
-        _isTarget = false;
-        _secondClickDone = false;
-        _thirdClickDone = false;
-        _isAbilityActive = false;
+        float timerForCancelCoroutine = 1f;
+        Invoke("CancelCoroutine", timerForCancelCoroutine);
+
+        ClearArrows();
 
         _currentTarget = null;
 
@@ -208,8 +206,10 @@ public class PoisonBall : Skill, IAltAbility
         _secondMousePosition = Vector3.zero;
         _thirdMousePosition = Vector3.zero;
 
-        ClearArrows();
-
+        _isTarget = false;
+        _secondClickDone = false;
+        _thirdClickDone = false;
+        _isAbilityActive = false;
         _firstClickCompleted = false;
         _colorLockedAfterSecondClick = false;
         _colorLockedAfterThirdClick = false;
@@ -230,11 +230,15 @@ public class PoisonBall : Skill, IAltAbility
             StopCoroutine(_lookAtPositionCoroutine);
             _lookAtPositionCoroutine = null;
         }
+
     }
 
     protected override IEnumerator PrepareJob()
     {
         _isAbilityActive = true;
+
+        _checkingTalentsCoroutine = StartCoroutine(CheckingActiveTalentsJob());
+
         CheckingActiveTalents();
 
         while (_currentTarget == null && float.IsPositiveInfinity(_firstMousePosition.x))
@@ -301,6 +305,15 @@ public class PoisonBall : Skill, IAltAbility
         if (_secondClickDone && _thirdClickDone)
         {
             ChooseMovementDependingOnCountProjectiles();
+        }
+    }
+
+    private void CancelCoroutine()
+    {
+        if (_checkingTalentsCoroutine != null)
+        {
+            StopCoroutine(_checkingTalentsCoroutine);
+            _checkingTalentsCoroutine = null;
         }
     }
 
@@ -553,13 +566,13 @@ public class PoisonBall : Skill, IAltAbility
         }
         else
         {
-            if (Input.GetAxis("Mouse Z") > 0)
+            if (Input.GetAxis("Mouse Y") > 0)
             {
                 SetArrowColor(index1, Color.green);
                 SetArrowVisibility(index1, true);
                 SetArrowVisibility(index2, false);
             }
-            else if (Input.GetAxis("Mouse Z") < 0)
+            else if (Input.GetAxis("Mouse Y") < 0)
             {
                 SetArrowColor(index2, Color.green);
                 SetArrowVisibility(index2, true);
@@ -582,16 +595,23 @@ public class PoisonBall : Skill, IAltAbility
 
     private void InertialGlandsReductionCooldown()
     {
-        #region InertialGlandTalentIsActive
-
         if (_activeTalentsInfo.IsActiveInertialGlands && _isThreeProjectileOnOneTarget)
         {
             float newRemainingTime = 0.0f;
             _spitPoison.ReductionSetCooldown(newRemainingTime);
             _isThreeProjectileOnOneTarget = false;
         }
+    }
 
-        #endregion
+    private IEnumerator CheckingActiveTalentsJob()
+    {
+        while (_isCanCheckActiveTalents)
+        {
+            InertialGlandsReductionCooldown();
+            ContinuationAmbushApplyInvisible();
+
+            yield return null;
+        }
     }
 
     private void CheckingActiveTalents()
@@ -684,7 +704,6 @@ public class PoisonBall : Skill, IAltAbility
         {
             if (_currentTarget.gameObject == _player.gameObject)
             {
-                Debug.Log("CurrentTarget = player ");
                 _poisonBallInfo.IsOriginalTargetPlayer = true;
                 _poisonBallInfo.IsOriginalTargetAllies = false;
                 _poisonBallInfo.IsOriginalTargetEnemy = false;
@@ -700,7 +719,6 @@ public class PoisonBall : Skill, IAltAbility
             }
             else if (_currentTarget.gameObject.layer == LayerMask.NameToLayer("Allies"))
             {
-                Debug.Log("CurrentTarget = allies ");
                 _poisonBallInfo.IsOriginalTargetPlayer = false;
                 _poisonBallInfo.IsOriginalTargetAllies = true;
                 _poisonBallInfo.IsOriginalTargetEnemy = false;
@@ -716,7 +734,6 @@ public class PoisonBall : Skill, IAltAbility
             }
             else if (_currentTarget.gameObject.layer == LayerMask.NameToLayer("Enemy"))
             {
-                Debug.Log("CurrentTarget = enemy ");
                 _poisonBallInfo.IsOriginalTargetPlayer = false;
                 _poisonBallInfo.IsOriginalTargetAllies = false;
                 _poisonBallInfo.IsOriginalTargetEnemy = true;
@@ -791,12 +808,10 @@ public class PoisonBall : Skill, IAltAbility
     {
         if (_isTarget && _currentTarget.gameObject != _player.gameObject)
         {
-            Debug.Log("PoisonBall / ChooseSpeed / if / _isFast = " + _isFast);
             _isFast = Vector3.Distance(_player.transform.position, _secondMousePosition) > Vector3.Distance(_player.transform.position, _currentTarget.transform.position);
         }
         else
         {
-            Debug.Log("PoisonBall / ChooseSpeed / else / _isFast = " + _isFast);
             _isFast = Vector3.Distance(_player.transform.position, _secondMousePosition) > Vector3.Distance(_player.transform.position, _firstMousePosition);
         }
     }
@@ -812,9 +827,10 @@ public class PoisonBall : Skill, IAltAbility
 
         if (_animTime > 0)
         {
-            float multiplierAnimTime = 0.812f;
+            float multiplierAnimTime = 0.8f;
             float animTimeMultiplier = _animTime / _castDeley - multiplierAnimTime;
-            _player.Animator.speed = animTimeMultiplier;
+
+            _player.Animator.SetFloat("PoisonBallMultiplierSpeedAnimation", animTimeMultiplier);
         }
 
         yield return null;
@@ -829,7 +845,7 @@ public class PoisonBall : Skill, IAltAbility
             float multiplierAnimTime = 3.7f;
             float animTimeMultiplier = _animTime / _castDeley - multiplierAnimTime;
 
-            _player.Animator.speed = animTimeMultiplier;
+            _player.Animator.SetFloat("PoisonBallMultiplierSpeedAnimation", animTimeMultiplier);
         }
 
         yield return null;
@@ -916,10 +932,6 @@ public class PoisonBall : Skill, IAltAbility
             _poisonBallInfo.IsActiveTimer = true;
         }
 
-        //Debug.Log($"bool isTargetEnemy = {isTargetEnemy}, bool isTargetPlayer = {isTargetPlayer}, bool isTargetAllies = {isTargetAllies}");
-
-        // Debug.Log($"_poisonBallInfo.HealingBall = {_poisonBallInfo.IsActiveHealingPoisonBall}");
-
         Vector3 spawnPosition = new Vector3(_spawnPointInfo.SpawnPointX, _spawnPointInfo.SpawnPointY, _spawnPointInfo.SpawnPointZ);
 
         GameObject item = Instantiate(_projectile.gameObject, spawnPosition, Quaternion.identity);
@@ -960,6 +972,7 @@ public class PoisonBall : Skill, IAltAbility
         bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies)
     {
         _player.Health.Add(-100f);
+
         Debug.Log("PoisonBall / CmdCreateProjPoint / _poisonBallInfo.CountProjectiles = " + _poisonBallInfo.CountProjectiles);
 
         RestorationOfGlandsTalent = _restorationOfGlands;
@@ -997,8 +1010,6 @@ public class PoisonBall : Skill, IAltAbility
             _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
             _poisonBallInfo.IsActiveTimer = true;
         }
-
-        //Debug.Log($"bool isTargetEnemy = {isTargetEnemy}, bool isTargetPlayer = {isTargetPlayer}, bool isTargetAllies = {isTargetAllies}");
 
         Vector3 spawnPosition = new Vector3(_spawnPointInfo.SpawnPointX, _spawnPointInfo.SpawnPointY, _spawnPointInfo.SpawnPointZ);
 

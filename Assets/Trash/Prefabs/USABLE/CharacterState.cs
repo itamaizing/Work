@@ -18,9 +18,8 @@ public abstract class AbstractCharacterState
 	public abstract StateType Type { get; }
 	public abstract BaffDebaff BaffDebaff { get; }
 	public abstract List<StatusEffect> Effects { get; }
-	public abstract float TEST_ChangeableValue { get; set; }
 
-	public abstract void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName);
+    public abstract void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName);
 	public abstract void UpdateState();
 	public abstract void ExitState();
 	public abstract bool Stack(float time);
@@ -34,9 +33,7 @@ public class DefaultState : AbstractCharacterState
 	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 	public override List<StatusEffect> Effects => _effects;
 
-	public override float TEST_ChangeableValue { get; set; }
-
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 
 	}
@@ -56,172 +53,6 @@ public class DefaultState : AbstractCharacterState
 		return false;
 	}
 }
-/*
-public class InvisibleStateOld : AbstractCharacterState
-{
-	private Renderer[] childRenderers;
-	private GameObject _player;
-
-	private List<GameObject> _enemies = new List<GameObject>();
-
-	private float lastCheckTime;
-	private float checkInterval = 1f;
-	private List<StatusEffect> _effects = new List<StatusEffect>();
-
-	public override States State => States.Invisible;
-	public override StateType Type => StateType.Magic;
-	public override List<StatusEffect> Effects => _effects;
-
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-	{
-		Debug.Log("Entering Invisible State");
-		_characterState = character;
-		_player = character.gameObject;
-	}
-
-	public override void UpdateState()
-	{
-		Debug.Log("Updating Invisible State");
-
-		childRenderers = _characterState.GetComponentsInChildren<Renderer>();
-/*
-		if (_select.SelectedObject.CompareTag("Enemies") && _characterState.gameObject.CompareTag("Allies") ||
-			_select.SelectedObject.CompareTag("Allies") && _characterState.gameObject.CompareTag("Enemies"))
-		{
-
-			// ��������� ��������� ������� ��������� Renderer
-			foreach (Renderer renderer in childRenderers)
-			{
-				if (renderer != null)
-				{
-					renderer.enabled = false;
-				}
-			}
-		}
-		else
-		{
-			foreach (Renderer renderer in childRenderers)
-			{
-				if (renderer != null)
-				{
-					renderer.enabled = true;
-				}
-			}
-		}
-
-		if (_characterState.Character.Move.IsMoving)
-		{
-			CheckEnemies();
-			//��� � ������� ��������� ��������� � ���� ���� ���������
-			if (_enemies.Count > 0 && Time.time - lastCheckTime >= checkInterval)
-			{
-				CheckDistance();
-				lastCheckTime = Time.time;
-			}
-		}
-	}
-
-	private void CheckEnemies()
-	{
-		int otherPlayersLayer = LayerMask.NameToLayer("OtherPlayers");
-		string enemiesTag = "Enemies";
-		float radius = 3f * 1.94f;
-
-		Collider2D[] colliders = Physics2D.OverlapCircleAll(_player.transform.position, radius, 1 << otherPlayersLayer);
-
-		foreach (Collider2D collider in colliders)
-		{
-			if (collider.CompareTag(enemiesTag))
-			{
-				//����������� �����
-				Vector2 enemyMovementDirection = collider.GetComponent<MoveComponent>().MoveDirection * radius;
-
-				// ������ �� ����� �� ������
-				Vector2 playerToEnemy = _player.transform.position - collider.transform.position;
-
-				// ���������, ��������� �� ����� ������� �����
-				float dotProduct = Vector3.Dot(playerToEnemy.normalized, enemyMovementDirection);
-
-				if (dotProduct > 0)
-				{
-					_enemies.Add(collider.gameObject);
-				}
-			}
-		}
-	}
-
-	private void CheckDistance()
-	{
-		foreach (GameObject enemy in _enemies)
-		{
-			Vector2 enemyMovementDirection = enemy.GetComponent<MoveComponent>().MoveDirection;
-			Vector2 playerToEnemy = _player.transform.position - enemy.transform.position;
-
-			// ������� ���������������� ������ � ������� ����������� ����� � ��� �����
-			Vector2 perpendicularVector = Vector3.ProjectOnPlane(playerToEnemy, enemyMovementDirection);
-			float perpendicularDistance = perpendicularVector.magnitude;
-
-			// ������� �������� ������� playerToEnemy �� ������ ����������� ����� � �� �����
-			float projection = Vector2.Dot(playerToEnemy, enemyMovementDirection);
-			float projectionLength = Mathf.Abs(projection);
-
-			float chanceToBeSeen = 0;
-
-			if (projectionLength <= 1.94f * 1.5f)
-			{
-				if (perpendicularDistance <= 1.94f * 0.5f)
-				{
-					chanceToBeSeen = 0.8f;
-				}
-				else if (perpendicularDistance <= 1.94f * 1.5f && perpendicularDistance > 1.94f * 0.5f)
-				{
-					chanceToBeSeen = 0.7f;
-				}
-			}
-			else if (projectionLength <= 1.94f * 2.5f && projectionLength > 1.94f * 1.5f)
-			{
-				if (perpendicularDistance <= 1.94f * 0.5f)
-				{
-					chanceToBeSeen = 0.3f;
-				}
-				else if (perpendicularDistance <= 1.94f * 1.5f && perpendicularDistance > 1.94f * 0.5f)
-				{
-					chanceToBeSeen = 0.2f;
-				}
-			}
-
-			if (chanceToBeSeen > 0)
-			{
-				if (Random.value <= chanceToBeSeen)
-				{
-					//_player.GetComponent<CharacterState>().AddState(new DefaultState(), States.Default);
-					ExitState();
-				}
-			}
-		}
-	}
-
-	public override void ExitState()
-	{
-		Debug.Log("Exiting Invisible State");
-		// ��� ������ �� ��������� ���������� ��������� �������� Renderer
-		if (childRenderers != null)
-		{
-			foreach (Renderer renderer in childRenderers)
-			{
-				if (renderer != null)
-				{
-					renderer.enabled = true;
-				}
-			}
-		}
-	}
-	public override bool Stack(float time)
-	{
-		return false;
-	}
-}
-*/
 
 public class CharacterState : NetworkBehaviour
 {
@@ -237,31 +68,32 @@ public class CharacterState : NetworkBehaviour
 	public List<AbstractCharacterState> CurrentStates { get => currentStates; }
 	public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
 	{
-		//[States.CreeperInvisible] = new CreeperInvisibleState(),
-		//[States.PoisonBone] = new PoisonBoneState(),
-		//[States.WitheringPoison] = new WitheringPoisonState(),
-		//[States.BindingPoison] = new BindingPoisonState(),
-		//[States.PoisonCloud] = new PoisonCloudState(),
-		//[States.HealingPoisonCloud] = new HealingPoisonCloudState(),
-		//[States.EmpathicPoisons] = new EmpathicPoisonsState(),
-		//[States.HealingPoisonPerSecond] = new HealingPoisonPerSecondState(),
-		//[States.InstantHealingPoison] = new InstantHealingPoisonState(),
-		//[States.RegeneratingPoison] = new RegeneratingPoisonState(),
-		//[States.HeatedGlands] = new HeatedGlandsState(),
-		//[States.AbsorptionOfPoison] = new AbsorptionOfPoisonsState(),
-		//#endregion
+        #region CreeperPoisonStates
+        [States.CreeperInvisible] = new CreeperInvisibleState(),
+		[States.PoisonBone] = new PoisonBoneState(),
+		[States.WitheringPoison] = new WitheringPoisonState(),
+		[States.BindingPoison] = new BindingPoisonState(),
+		[States.PoisonCloud] = new PoisonCloudState(),
+		[States.HealingPoisonCloud] = new HealingPoisonCloudState(),
+		[States.EmpathicPoisons] = new EmpathicPoisonsState(),
+		[States.HealingPoisonPerSecond] = new HealingPoisonPerSecondState(),
+		[States.InstantHealingPoison] = new InstantHealingPoisonState(),
+		[States.RegeneratingPoison] = new RegeneratingPoisonState(),
+		[States.HeatedGlands] = new HeatedGlandsState(),
+		[States.AbsorptionOfPoison] = new AbsorptionOfPoisonsState(),
+		#endregion
 
-		//#region Carrigan
-		//[States.Bleeding] = new BleedingState(),
-		//[States.ReducingHealing] = new ReducingHealingState(),
-		//#endregion
+		#region CarriganStates
+		[States.Bleeding] = new BleedingState(),
+		[States.ReducingHealing] = new ReducingHealingState(),
+		#endregion
 
-		//[States.Immateriality] = new ImmaterialityState(),
+		[States.Immateriality] = new ImmaterialityState(),
 		[States.Stun] = new StunnedState(),
 		[States.Frozen] = new FrozenState(),
 		[States.Frosting] = new FrostingState(),
 		[States.Cooling] = new Cooling(),
-		//[States.InAir] = new InAirState(),
+		[States.InAir] = new InAirState(),
 		[States.Blind] = new BlindnessState(),
 		[States.Invisible] = new InvisibleState(),
 		[States.SchoolDebuff] = new AbilitySchoolDebuff(),
@@ -404,7 +236,7 @@ public class CharacterState : NetworkBehaviour
 		return false;
 	}
 
-	public bool TEST_CheckStateType(StateType type)
+	public bool CheckStateType(StateType type)
 	{
 		foreach (AbstractCharacterState state in currentStates)
 		{
@@ -420,7 +252,7 @@ public class CharacterState : NetworkBehaviour
 	{
 		List<AbstractCharacterState> currentStates = new();
 
-		if (Check(effect) && TEST_CheckStateType(type))
+		if (Check(effect) && CheckStateType(type))
 		{
 			foreach (AbstractCharacterState state in this.currentStates)
 			{
@@ -453,7 +285,7 @@ public class CharacterState : NetworkBehaviour
 		{
 			if (state.Effects.Contains(effect))
 			{
-				//Debug.Log("StatusEffect on Target = " + effect);
+				Debug.Log("StatusEffect on Target = " + effect);
 				return true;
 			}
 		}
@@ -587,7 +419,7 @@ public class CharacterState : NetworkBehaviour
 	}
 
 	private void AddStateLogic(States state, float duration, float damageToExit, Schools school,
-	GameObject personWhoShooted, string skillName)
+	GameObject personWhoShooted, string skillName, bool isCanDodgeMagState = false)
 	{
 		if (invinsible) return;
 
@@ -610,11 +442,14 @@ public class CharacterState : NetworkBehaviour
 		Health characterHealth = _hero.Health;
 		float chanceDodgeMagDamage = Random.Range(0f, 100f);
 
-		// Проверка на сопротивление магическому урону
-		if (stateInstance.Type == StateType.Magic && chanceDodgeMagDamage <= characterHealth.ResistMagDamage)
+		if (isCanDodgeMagState)
 		{
-			Debug.Log("CharacterState / DodgeMagDamage");
-			return;
+			// Проверка на сопротивление магическому урону
+			if (stateInstance.Type == StateType.Magic && chanceDodgeMagDamage <= characterHealth.ResistMagDamage)
+			{
+				Debug.Log("CharacterState / DodgeMagDamage");
+				return;
+			}
 		}
 
 		// Создаем новое состояние и добавляем в конец списка

@@ -14,8 +14,6 @@ public class AbsorptionOfPoisonsState : AbstractCharacterState
     private float _baseDuration;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Absorptions };
-    public override float TEST_ChangeableValue { get; set; }
-
     public override States State => States.AbsorptionOfPoison;
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;

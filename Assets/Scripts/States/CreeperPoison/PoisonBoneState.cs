@@ -29,7 +29,6 @@ public class PoisonBoneState : AbstractCharacterState
     public float StacksDuration { get => _duration; }
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
-    public override float TEST_ChangeableValue { get; set; }
     public override States State => States.PoisonBone;
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;

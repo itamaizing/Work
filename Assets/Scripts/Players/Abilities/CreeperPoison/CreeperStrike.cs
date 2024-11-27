@@ -1,10 +1,9 @@
 using Mirror;
-using System.Collections;
 using UnityEngine;
 
 public class CreeperStrike : AutoAttackSkill
 {
-    public bool Enabled;
+    #region Variables
 
     [Header("Talents")]
     [SerializeField] private RestorationOfGlands _restorationOfGlands;
@@ -32,7 +31,6 @@ public class CreeperStrike : AutoAttackSkill
     private int _currentCountHit = 0;
     private int _countHitForDesireToHideTalent = 0;
     private int _countCurrentHitForPreparingForFight = 0;
-
     private int _poisonBoneStack = 0;
 
     private float _currentDamage;
@@ -40,8 +38,6 @@ public class CreeperStrike : AutoAttackSkill
 
     private bool _isTwoHit = false;
     private bool _isHit = false;
-
-    private Coroutine _useAbilityCoroutine;
 
     public int CurrentCountHit { get => _currentCountHit; set => _currentCountHit = value; }
     public int CountHitForReleaseFromSecrecyTalent { get => _countHitForDesireToHideTalent; set => _countHitForDesireToHideTalent = value; }
@@ -53,45 +49,27 @@ public class CreeperStrike : AutoAttackSkill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerAutoAttack => Animator.StringToHash("CreeperStrikeAttacking");
 
+    #endregion
+
+    #region CastAbility
+
     public void AnimCreeperStrikeCast()
     {
-        Debug.Log("AnimCreeperStrikeCast");
         AnimCastAction();
     }
 
     public void AnimCreeperStrikeEnded()
     {
-        Debug.Log("AnimCreeperStrikeCastEnded");
         AnimCastEnded();
-    }
-
-    protected override void ClearData()
-    {
-        base.ClearData();
-
-        if (_useAbilityCoroutine != null)
-        {
-            StopCoroutine(UseAbilityCoroutine());
-            _useAbilityCoroutine = null;
-        }
     }
 
     protected override void CastAction()
     {
-        _useAbilityCoroutine = StartCoroutine(UseAbilityCoroutine());
-    }
-
-    private IEnumerator UseAbilityCoroutine()
-    {
-        Debug.Log("CreeperStrike / CurrentTarget = " + CurrentTarget);
         DamageDeal(CurrentTarget, false);
-        yield return null;
     }
 
     public void DamageDeal(Character target, bool isUsingLightningStrikes = false)
     {
-        Debug.Log("CreeperStrike / DamageDeal / target = " + target);
-
         if (target != null)
         {
             _currentDamage = Random.Range(7.0f, 11.0f);
@@ -212,6 +190,10 @@ public class CreeperStrike : AutoAttackSkill
         }
     }
 
+    #endregion
+
+    #region CalculateCriticalDamage
+
     private float CalculateCriticalDamage(Character target, float baseDamage)
     {
         float criticalDamage = baseDamage;
@@ -234,7 +216,7 @@ public class CreeperStrike : AutoAttackSkill
         }
         if (_coldBlood.IsCanCritCreeperStrike && _poisonBoneStack == 0)
         {
-            if (!target.CharacterState.CheckPoisonStates())
+            if (target.CharacterState.Check(StatusEffect.Poison))
             {
                 _coldBlood.ReducingAbilityCooldown();
             }
@@ -282,6 +264,10 @@ public class CreeperStrike : AutoAttackSkill
         }
     }
 
+    #endregion
+
+    #region CommandMethods
+
     [Command]
     private void CmdFeelingOfContinuation(GameObject player, float criticalDamage)
     {
@@ -293,7 +279,6 @@ public class CreeperStrike : AutoAttackSkill
     [Command]
     private void CmdPreparingForFight(GameObject player)
     {
-        Debug.Log("CreeperStrike / CmdPreparingForFight");
         Character playerCharacter = player.GetComponent<Character>();
 
         _preparingForFight.IncreaseManaRegeneration(playerCharacter);
@@ -304,4 +289,7 @@ public class CreeperStrike : AutoAttackSkill
     {
         ApplyDamage(damage, target.gameObject);
     }
+
+    #endregion
+
 }

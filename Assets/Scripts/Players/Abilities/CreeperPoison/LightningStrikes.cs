@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class LightningStrikes : AutoAttackSkill
 {
-    public bool IsCanDamageDeal = false;
-
+    /*
     [Header("Talents")]
     [SerializeField] private HeatedGlands _heatedGlands;
     [SerializeField] private KillersStamina _killersStamina; 
     private float _timeBaff = 4f;
+    */
 
     [Header("Abillity Components")]
     [SerializeField] private ColdBlood _coldBlood;
@@ -20,16 +20,17 @@ public class LightningStrikes : AutoAttackSkill
 
     private float _animTime;
     private float _cooldownMultiplier = 2f;
-    
+    private float _baseMultiplierAnimationSpeed = 1f;
+
     private bool _isUsedLightningStrikes = false;
     private bool _isIncreaseCooldownTime = false;
-
-    private Coroutine _useCoroutine;
-    private Coroutine _damageDealCoroutine;
+    private bool _isCanDamageDeal = false;
 
     public bool IsUsedLightningStrikes => _isUsedLightningStrikes;
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerAutoAttack => Animator.StringToHash("LightningStrikesAttacking");
+
+    public bool IsCanDamageDeal { get => _isCanDamageDeal; set => _isCanDamageDeal = value; }
 
     public void AnimLightningStrikesCast()
     {
@@ -46,59 +47,26 @@ public class LightningStrikes : AutoAttackSkill
         //AnimLightningStrikesCast();
     }
 
-    private float GetClipLength()
-    {
-        RuntimeAnimatorController animController = _player.Animator.runtimeAnimatorController;
-        foreach (var clip in animController.animationClips)
-        {
-            if (clip.name == "LightningStrikesAttack")
-            {
-                return clip.length;
-            }
-        }
-        return -1f;
-    }
 
     protected override IEnumerator PrepareJob()
     {
         if (_lightningMovement.IsInMovement)
         {
-            _animTime = GetClipLength();
-            IsCanDamageDeal = true;
-            IncreaseAnimSpeed();
+            Debug.Log("LightningStrikes / PrepareJob");
+            _isCanDamageDeal = true;
             _target = _lightningMovement.Target;
         }
-
         return base.PrepareJob();
-    }
-
-    protected override void ClearData()
-    {
-        base.ClearData();
-
-        if (_animTime > 0)
-            _player.Animator.SetFloat("LightningStrikesMultiplierSpeedAnimation", _animTime);
-
-        if (_useCoroutine != null)
-        {
-            StopCoroutine(_useCoroutine);
-            _useCoroutine = null;
-        }
-
-        if (_damageDealCoroutine != null)
-        {
-            StopCoroutine(_damageDealCoroutine); 
-            _damageDealCoroutine = null;
-        }
-
-        if (_isUsedLightningStrikes)
-        {
-            Invoke("ResetUsedLightningStrikes", 1.3f);
-        }
     }
 
     protected override void CastAction()
     {
+        if (_lightningMovement.IsInMovement)
+        {
+            _animTime = GetClipLength();
+            IncreaseAnimSpeed();
+        }
+
         Debug.Log("LightningStrikes / CastAction");
 
         if (_coldBlood.IsCanCritLightningStrikes && _isIncreaseCooldownTime == false)
@@ -115,21 +83,28 @@ public class LightningStrikes : AutoAttackSkill
         DamageDeal();
     }
 
+    private float GetClipLength()
+    {
+        RuntimeAnimatorController animController = _player.Animator.runtimeAnimatorController;
+        foreach (var clip in animController.animationClips)
+        {
+            if (clip.name == "LightningStrikesAttack")
+            {
+                return clip.length;
+            }
+        }
+        return -1f;
+    }
+
     private void IncreaseAnimSpeed()
     {
-        // Изменить в аниматоре скорость через Анимация -> параметр -> multiplier
         if (_animTime > 0)
         {
             float multiplier = _lightningMovement.DurationLeap;
-            float animTimeMultiplier = _animTime / multiplier - 1f;
-
+            float animTimeMultiplier = _animTime / multiplier;
+            Debug.Log("LightningStrikes / multiplier = " + animTimeMultiplier);
             _player.Animator.SetFloat("LightningStrikesMultiplierSpeedAnimation", animTimeMultiplier);
         }
-    }
-
-    private void ResetUsedLightningStrikes()
-    {
-        _isUsedLightningStrikes = false;
     }
 
     private void DamageDeal()
@@ -137,11 +112,11 @@ public class LightningStrikes : AutoAttackSkill
         Debug.Log("LightningStrikes / DamageDeal");
 
         //_creeperStrike.CurrentTarget = _currentTarget;
-        _creeperStrike.DamageDeal(_currentTarget);
+        _creeperStrike.DamageDeal(_currentTarget, true);
 
         if (_lightningMovement.IsInMovement)
         {
-            IsCanDamageDeal = false;
+            _isCanDamageDeal = false;
         }
 
         _creeperStrike.CurrentCountHit = 0;

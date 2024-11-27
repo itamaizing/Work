@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class PreparingForFight : Talent
 {
+    [SerializeField] private float _manaRecoveryMultiplier = 0.01f;
     private float _maxManaPlayer;
-    private float _manaRecoveryMultiplier = 0.01f;
 
     public override void Enter()
     {

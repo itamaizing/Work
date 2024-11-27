@@ -10,8 +10,6 @@ public class InAirState : AbstractCharacterState
     private float _damageToExit;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move };
-
-    public override float TEST_ChangeableValue { get; set; }
     public override States State => States.InAir;
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
@@ -20,7 +18,6 @@ public class InAirState : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _characterState = character;
-        Debug.Log("InAirState / EnterState");
         _characterState.Character.Move.CanMove = false;
         _duration = durationToExit;
         _baseDuration = _duration;

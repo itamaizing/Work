@@ -34,7 +34,6 @@ public class PoisonCloudState : AbstractCharacterState
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
     public float RadiusCloud { get => _radiusCloud; }
-    public override float TEST_ChangeableValue { get; set; }
     public override States State => States.PoisonCloud;
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;

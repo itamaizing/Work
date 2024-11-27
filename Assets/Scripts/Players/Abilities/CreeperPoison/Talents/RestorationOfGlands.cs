@@ -25,12 +25,6 @@ public class RestorationOfGlands : Talent
 
     public void ReductionCooldown()
     {
-        ReductionCooldownNotServer();
-    }
-
-    private void ReductionCooldownNotServer()
-    {
-        Debug.Log("RestorationOfGlands / ReductionCooldownNotServer");
         float baseCooldownSpitPoison = _spitPoison.RemainingCooldownTime;
         float baseCooldownPoisonBall = _poisonBall.CooldownTime;
 

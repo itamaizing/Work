@@ -413,7 +413,7 @@ Transform:
   m_GameObject: {fileID: 999804148986965912}
   m_LocalRotation: {x: 0.000000081460335, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 0.13, y: 0.13, z: 0.13}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6704999249552801136}
@@ -2133,7 +2133,7 @@ Transform:
   m_GameObject: {fileID: 6341501777328686196}
   m_LocalRotation: {x: -0.000000037748936, y: 0.0000000071272854, z: -0.0000000020102577, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 0.13, y: 0.13, z: 0.13}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7768458203742401868}
@@ -3232,7 +3232,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.size
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.data[0]
@@ -3258,6 +3258,10 @@ PrefabInstance:
       propertyPath: _skills.Array.data[5]
       value: 
       objectReference: {fileID: 6857802422684928800}
+    - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _skills.Array.data[6]
+      value: 
+      objectReference: {fileID: 8577860281443816807}
     - target: {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _collider
       value: 
@@ -3383,6 +3387,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 5171473258833548568}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[12]
+      value: 
+      objectReference: {fileID: 5171473258833548568}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[10]
       value: 
       objectReference: {fileID: 7911949278660004525}
@@ -3395,8 +3403,20 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 6655130097210696168}
     - target: {fileID: 8363628837774109459, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8363628837774109459, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8363628837774109459, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8363628837774109459, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.592
+      value: 2.01
       objectReference: {fileID: 0}
     - target: {fileID: 8363628837774109459, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3691,7 +3711,7 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 0
+  _radius: 2
   _area: 0
   _castLength: 0
   _castWidth: 0
@@ -3699,10 +3719,9 @@ MonoBehaviour:
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
-  _attackZoneSize: 0
+  _attackZoneSize: 1
   _attackDelay: 1
   _chargeAttackDelay: 0
-  Enabled: 0
   _restorationOfGlands: {fileID: 4842090196846643040}
   _releaseFromSecrecy: {fileID: 8956422096455632753}
   _strokesOfAspiration: {fileID: 669497223903059834}
@@ -3715,8 +3734,8 @@ MonoBehaviour:
   _coldBlood: {fileID: 4616268591970552908}
   _lightningStrikes: {fileID: 734640227586387152}
   _player: {fileID: 2483674839823445686}
-  _multiplyCritDamage: 1.5
-  _chanceOfCriticalStrike: 0.05
+  _multiplyCritDamage: 12
+  _chanceOfCriticalStrike: 0.9
 --- !u!114 &734640227586387152
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3758,7 +3777,7 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 0
+  _radius: 2
   _area: 0
   _castLength: 0
   _castWidth: 0
@@ -3766,12 +3785,9 @@ MonoBehaviour:
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
-  _attackZoneSize: 0
+  _attackZoneSize: 2
   _attackDelay: 0
   _chargeAttackDelay: 0
-  IsCanDamageDeal: 0
-  _heatedGlands: {fileID: 1021941095658075913}
-  _killersStamina: {fileID: 906682272319433437}
   _coldBlood: {fileID: 4616268591970552908}
   _lightningMovement: {fileID: 7013613396998518356}
   _creeperStrike: {fileID: 6745892867125186241}
@@ -3795,8 +3811,10 @@ MonoBehaviour:
   _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 899fa83671534eb42b15ae0986749e2c, type: 2}
   _isSubjectToGlobalCooldownTime: 1
-  _skillEnergyCosts: []
-  _cooldownTime: 5
+  _skillEnergyCosts:
+  - resourceType: 1
+    resourceCost: 50
+  _cooldownTime: 2
   _castDeley: 0
   _damageValue: 0
   _abilitySchool: 0
@@ -3817,7 +3835,7 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 0
+  _radius: 12
   _area: 0
   _castLength: 6
   _castWidth: 1
@@ -3875,7 +3893,7 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 1
   _maxCharges: 3
   _chargeCooldown: 14
-  _radius: 0
+  _radius: 12
   _area: 0
   _castLength: 6
   _castWidth: 0.55
@@ -3945,9 +3963,9 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 10
+  _radius: 8
   _area: 0
-  _castLength: 5
+  _castLength: 8
   _castWidth: 1
   _isAutoRadiusRender: 0
   _isAutoAreaRender: 0
@@ -3962,7 +3980,7 @@ MonoBehaviour:
   _line: {fileID: 11400000, guid: 7faf4d32cfcc4f54d967e4d01a0c4b65, type: 2}
   _midPointForLeapPrefab: {fileID: 7291474295570291711, guid: 7c9723416fc78a44e883c9b89e22c104, type: 3}
   _player: {fileID: 2483674839823445686}
-  _rangeLeap: 5
+  _rangeLeap: 4
   _durationLeap: 0.4
   _radiusAttack: 1.15
   _cooldownAttack: 1
@@ -4073,7 +4091,7 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 4
+  _radius: 3
   _area: 0
   _castLength: 0
   _castWidth: 0
@@ -4142,7 +4160,6 @@ MonoBehaviour:
   _isDynamicRenderer: 0
   _player: {fileID: 2483674839823445686}
   _lightningMovement: {fileID: 7013613396998518356}
-  _creeperStrike: {fileID: 6745892867125186241}
 --- !u!114 &4616268591970552908
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4736,11 +4753,8 @@ MonoBehaviour:
   _enemyLayer:
     serializedVersion: 2
     m_Bits: 256
-  _enemiesWithDebuff:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  _radiusSearching: 0
+  _enemiesWithDebuff: []
+  _radiusSearching: 5
 --- !u!114 &7622086693644051710
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4792,6 +4806,7 @@ MonoBehaviour:
     Description: 
     Icon: {fileID: 0}
   character: {fileID: 2483674839823445686}
+  _manaRecoveryMultiplier: 0.1
 --- !u!114 &8956422096455632753
 MonoBehaviour:
   m_ObjectHideFlags: 0

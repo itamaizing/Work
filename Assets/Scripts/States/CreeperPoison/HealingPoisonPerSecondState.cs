@@ -22,7 +22,6 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
 
     public float TotalHealValue { get => _currentHealingValue;}
 
-    public override float TEST_ChangeableValue { get => _currentHealingValue; set => _currentHealingValue = value; }
     public override States State => States.HealingPoisonPerSecond;
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;

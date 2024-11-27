@@ -353,7 +353,6 @@ public class LightningMovement : Skill
         {
             foreach (Collider collider in hits)
             {
-                Debug.Log("Collider.name = " + collider.gameObject.name);
                 _target = collider.gameObject.GetComponent<Character>();
             }
             _isTarget = true;
@@ -600,21 +599,20 @@ public class LightningMovement : Skill
 
                     if (!isAtFirstLeapEnd && !isAtSecondLeapStart)
                     {
+                        float minTimeCooldown = 0.2f;
+
                         if (_lightningStrikes.IsCanDamageDeal)
                         {
-                            Debug.Log("LightningMovement / ApplyDamage / if lightningStrike");
+                            Debug.Log("LightningMovement / ApplyDamage / if lightningStrike / isCanDamageDeal = " + _lightningStrikes.IsCanDamageDeal);
 
                            _lightningStrikes.UseLightningStrikesOfLightningMovement();
                         }
-                        else if (_lightningFastPoisonSlap.Data.IsOpen && _poisonSlap.IsCanDamageDeal)
+                        else if (_lightningFastPoisonSlap.Data.IsOpen && _poisonSlap.IsCanDamageDeal && _poisonSlap.RemainingCooldownTime <= minTimeCooldown)
                         {
-                            Debug.Log("LightningMovement / ApplyDamage / else if (_poisonSlap)");
                             _poisonSlap.UsePoisonSlapOfLightningMovement();
                         }
                         else
                         {
-                            Debug.Log("LightningMovement / ApplyDamage / else");
-
                            _creeperStrike.DamageDeal(targetCharacter);
                         }
 

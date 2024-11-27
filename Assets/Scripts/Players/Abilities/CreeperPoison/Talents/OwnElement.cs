@@ -53,6 +53,7 @@ public class OwnElement : Talent
 
     private IEnumerator SearchingDebuffOnEnemy(LayerMask enemyLayer)
     {
+        Debug.Log("OwnElement / SearchingDebuffOnEnemy");
         while (Data.IsOpen)
         {
             _enemiesWithDebuff.Clear();
@@ -67,8 +68,10 @@ public class OwnElement : Talent
                 {
                     var targetWithDebuff = target.GetComponent<CharacterState>();
 
-                    if (targetWithDebuff.CheckPoisonStates())
+                    if (targetWithDebuff.Check(StatusEffect.Poison))
                     {
+                        Debug.Log("OwnElement / SearchingDebuffOnEnemy / targetWithDebuff");
+
                         AdvertisementStates(targetWithDebuff);
 
                         _enemiesWithDebuff.Add(target.gameObject);
@@ -143,8 +146,12 @@ public class OwnElement : Talent
     private void AdvertisementStates(CharacterState targetWithDebuff)
     {
         _bindingPoisonState = (BindingPoisonState)targetWithDebuff.GetState(States.BindingPoison);
+        Debug.Log("OwnElement / AdvertisementStates / _bindingPoisonState = " + _bindingPoisonState);
         _poisonBoneState = (PoisonBoneState)targetWithDebuff.GetState(States.PoisonBone);
+        Debug.Log("OwnElement / AdvertisementStates / _poisonBoneState = " + _poisonBoneState);
         _empathicPoisonState = (EmpathicPoisonsState)targetWithDebuff.GetState(States.EmpathicPoisons);
+        Debug.Log("OwnElement / AdvertisementStates / _empathicPoisonState = " + _empathicPoisonState);
         _witheringPoisonState = (WitheringPoisonState)targetWithDebuff.GetState(States.WitheringPoison);
+        Debug.Log("OwnElement / AdvertisementStates / _witheringPoisonState = " + _witheringPoisonState);
     }
 }
