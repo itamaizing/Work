@@ -69,11 +69,11 @@ public class FrostingState : AbstractCharacterState
 	{
 		Debug.Log("Exiting Frosting State");
 		_characterState.RemoveState(this);
-		if (_characterState.Check(StatusEffect.Move))
+		if (!_characterState.Check(StatusEffect.Move))
 		{
 			_characterState.Character.Move.CanMove = true;
 		}
-		if (_characterState.Check(StatusEffect.AbilitySpeed))
+		if (!_characterState.Check(StatusEffect.AbilitySpeed))
 		{
 			foreach (var abil in _abilities.Abilities)
 			{

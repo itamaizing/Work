@@ -51,7 +51,7 @@ public class AbilitySchoolDebuff : AbstractCharacterState
 	{
 		Debug.Log("Exiting AbilitySchoolDebuff State");
 		_characterState.RemoveState(this);
-		if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
+		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null)
 		{
 			_abilities.SwitchAvaliable(canceledSchoool, true);
 		}

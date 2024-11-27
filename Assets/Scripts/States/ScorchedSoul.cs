@@ -40,7 +40,7 @@ public class ScorchedSoul : AbstractCharacterState
     {
         Debug.Log("Exiting ScorchedSoulDebuff State");
 
-        if (_characterState.Check(StatusEffect.AbilitySpeed))
+        if (!_characterState.Check(StatusEffect.AbilitySpeed))
         {
             //return cast speed
             if (_characterState.TryGetComponent<SkillManager>(out SkillManager abilities))

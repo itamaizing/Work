@@ -39,7 +39,7 @@ public class InvisibleState : AbstractCharacterState
 	{
 		Debug.Log("Exiting Invisible State");
 		_characterState.RemoveState(this);
-		if (_characterState.Check(StatusEffect.Others))
+		if (!_characterState.Check(StatusEffect.Others))
 		{
 			//_characterState.Health.SetInvincible(false);
 			_characterState.invinsible = false;

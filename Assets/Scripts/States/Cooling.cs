@@ -54,12 +54,12 @@ public class Cooling : AbstractCharacterState
 	{
 		Debug.Log("Exiting cooling State");
 		_characterState.RemoveState(this);
-		if (_characterState.Check(StatusEffect.MoveSpeed))
+		if (!_characterState.Check(StatusEffect.MoveSpeed))
 		{
 			_characterState.Character.Move.SetDefaultSpeed();
 			//_characterState.Move.CanMove = true;
 		}
-		if (_characterState.Check(StatusEffect.AbilitySpeed))
+		if (!_characterState.Check(StatusEffect.AbilitySpeed))
 		{
 			//return speed of attact
 		}

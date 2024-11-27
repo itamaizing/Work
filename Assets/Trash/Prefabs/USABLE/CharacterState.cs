@@ -266,7 +266,26 @@ public class CharacterState : NetworkBehaviour
 		[States.EmeraldSkin] = new EmeraldSkinState(),
 		[States.DefenseReduction] = new DefenceReductionState(),
 		[States.SparkTalentHealthBuff] = new SparkTalentHealthState(),
-		[States.SelfHarm] = new SelfHarmState()
+		[States.SelfHarm] = new SelfHarmState(),
+		#region CreeperPoisonStates
+		/*[States.CreeperInvisible] = new CreeperInvisibleState(),
+		[States.PoisonBone] = new PoisonBoneState(),
+		[States.WitheringPoison] = new WitheringPoisonState(),
+		[States.BindingPoison] = new BindingPoisonState(),
+		[States.PoisonCloud] = new PoisonCloudState(),
+		[States.HealingPoisonCloud] = new HealingPoisonCloudState(),
+		[States.EmpathicPoisons] = new EmpathicPoisonsState(),
+		[States.HealingPoisonPerSecond] = new HealingPoisonPerSecondState(),
+		[States.InstantHealingPoison] = new InstantHealingPoisonState(),
+		[States.RegeneratingPoison] = new RegeneratingPoisonState(),
+		[States.HeatedGlands] = new HeatedGlandsState(),
+		[States.AbsorptionOfPoison] = new AbsorptionOfPoisonsState(),
+		#endregion
+
+		#region CarriganStates
+		[States.Bleeding] = new BleedingState(),
+		[States.ReducingHealing] = new ReducingHealingState(),*/
+		#endregion
 	};
 
 	public void Initialize(Character hero)
@@ -309,10 +328,10 @@ public class CharacterState : NetworkBehaviour
 		{
 			if (state.Effects.Contains(effect))
 			{
-				return false;
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	public bool CheckForState(States state)
@@ -447,7 +466,7 @@ public class CharacterState : NetworkBehaviour
 		RemoveStateLogic(stateName);
 	}
 
-	private void AddStateLogic(States state, float duration, float damageToExit, Schools school,
+	/*private void AddStateLogic(States state, float duration, float damageToExit, Schools school,
 		GameObject personWhoShooted, string skillName)
 	{
 		if (invinsible) return;
@@ -489,6 +508,63 @@ public class CharacterState : NetworkBehaviour
 				var counterSpell = (AbilitySchoolDebuff)enumToState[state];
 				counterSpell.canceledSchoool = school;
 			}
+		}
+	}*/
+
+
+	private void AddStateLogic(States state, float duration, float damageToExit, Schools school, GameObject personWhoShooted, string skillName, bool isCanDodgeMagState = false)
+	{
+		if (invinsible) return;
+
+		// Если состояние уже есть, добавляем стаки и перемещаем в конец списка
+		for (int i = 0; i < currentStates.Count; i++)
+		{
+			if (currentStates[i].State == state)
+			{
+				if (currentStates[i].CurrentStacksCount < currentStates[i].MaxStacksCount)
+				{
+					var canStack = currentStates[i].Stack(duration);
+					_stateIcons.ActivateIco(state, duration, 1, canStack);
+				}
+				else if (currentStates[i].MaxStacksCount == 0 || currentStates[i].CurrentStacksCount == currentStates[i].MaxStacksCount)
+				{
+					var canStack = currentStates[i].Stack(duration);
+					_stateIcons.ActivateIco(state, duration, 0, canStack);
+				}
+				MoveStateToEnd(i);
+				return;
+			}
+		}
+
+		// Если состояние отсутствует, создаем новое
+		AbstractCharacterState stateInstance = enumToState[state];
+		Health characterHealth = _hero.Health;
+		float chanceDodgeMagDamage = Random.Range(0f, 100f);
+
+		if (!isCanDodgeMagState)
+		{
+			// Проверка на сопротивление магическому урону
+			if (stateInstance.Type == StateType.Magic && chanceDodgeMagDamage <= characterHealth.ResistMagDamage)
+			{
+				Debug.Log("CharacterState / DodgeMagDamage");
+				return;
+			}
+		}
+
+		// Создаем новое состояние и добавляем в конец списка
+		CreateState(stateInstance, state, duration, damageToExit, personWhoShooted, skillName, false);
+
+		// Если состояние — щит, добавляем его в Health
+		if (stateInstance is IDamageable damageableShield)
+		{
+			AddShield(damageableShield);
+		}
+
+		// Если нужно указать школу заклинаний, обновляем контрспелл
+		if (school != Schools.None)
+		{
+			var counterSpell = (AbilitySchoolDebuff)stateInstance;
+			counterSpell.canceledSchoool = school;
 		}
 	}
 
@@ -573,7 +649,21 @@ public class CharacterState : NetworkBehaviour
 	{
 		_stateIcons?.RemoveIconCount();
 	}
-	
+
+	private void MoveStateToEnd(int index)
+	{
+		if (index < 0 || index >= currentStates.Count)
+			return;
+
+		// Сохраняем ссылку на состояние
+		var state = currentStates[index];
+
+		// Удаляем элемент из текущей позиции
+		currentStates.RemoveAt(index);
+
+		// Добавляем его в конец списка
+		currentStates.Add(state);
+	}
 }
 
 public enum StateType

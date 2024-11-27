@@ -49,7 +49,7 @@ public class BlindnessState : AbstractCharacterState
 	{
 		Debug.Log("Exiting Stunned State");
 		_characterState.RemoveState(this);
-		if (_characterState.Check(StatusEffect.Ability))
+		if (!_characterState.Check(StatusEffect.Ability))
 		{
 			_abilities.SetAbilitiesEnabled();
 		}
