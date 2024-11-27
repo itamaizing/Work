@@ -12,7 +12,7 @@ public class IceShower : Skill
 	private Vector3 _targetPoint = Vector3.positiveInfinity;
 	private Energy _energy;
 	private float _duration = 2;
-
+	private float _damageToexit = 1;
 	protected override bool IsCanCast => true;
 
 	protected override int AnimTriggerCastDelay => 0;
@@ -82,7 +82,7 @@ public class IceShower : Skill
 					if (targetState != null)
 					{
 						_duration = 100 + _energy.CurrentValue / 20;
-						CmdAddState(targetState, _duration, 0);
+						CmdAddState(targetState, _duration, _damageToexit);
 					}
 				}
 			}
@@ -92,8 +92,8 @@ public class IceShower : Skill
 	[Command]
 	private void CmdAddState(CharacterState targetState, float duration, float damageToExit)
 	{
+		targetState.AddState(States.Frozen, duration, damageToExit, Hero.gameObject, this.name);
 
-		targetState.AddState(States.Frozen, duration, 0, Hero.gameObject, this.name);
 	}
 
 	/*private float CalculateDamage(float baseDamage)
@@ -124,4 +124,16 @@ public class IceShower : Skill
 	{
 		_targetPoint = Vector3.positiveInfinity;
 	}
+
+	public void TalentBoostFrozenState(bool value)
+	{
+		if(value)
+		{
+			_damageToexit = 30;
+		}
+        else
+        {
+			_damageToexit = 1;
+        }
+    }
 }

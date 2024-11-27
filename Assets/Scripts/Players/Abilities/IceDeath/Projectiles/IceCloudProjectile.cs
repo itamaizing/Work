@@ -9,6 +9,7 @@ public class IceCloudProjectile : Projectiles
 	private Damage _damage;
 	private bool _boostDmg;
 	private float _curDamage;
+	private float _damageToExit = 1;
 
 	private void Start()
 	{
@@ -59,7 +60,7 @@ public class IceCloudProjectile : Projectiles
 				target.Health.TryTakeDamage(ref _damage, _skill);
 
 
-				target.CharacterState.AddState(States.Frozen, duration, 30, _dad.gameObject, _skill.name);
+				target.CharacterState.AddState(States.Frozen, duration, _damageToExit, _dad.gameObject, _skill.name);
 
 				//talents???
 				if (_dad.Health.ResistMagDamage >= 20)
@@ -121,8 +122,16 @@ public class IceCloudProjectile : Projectiles
 		Destroy(gameObject);
 	}
 
-	public void TalentBoostDmg(bool value)
+	public void Talent(bool value, bool frozenState)
 	{
 		_boostDmg = value;
+		if(frozenState)
+		{
+			_damageToExit = 30;
+		}
+		else
+		{
+			_damageToExit = 1;
+		}
 	}
 }

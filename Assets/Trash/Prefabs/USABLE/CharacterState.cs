@@ -17,7 +17,7 @@ public abstract class AbstractCharacterState
 	public abstract StateType Type { get; }
 	public abstract BaffDebaff BaffDebaff { get; }
 	public abstract List<StatusEffect> Effects { get; }
-	public abstract float TEST_ChangeableValue { get; set; }
+	
 
 	public abstract void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName);
 	public abstract void UpdateState();
@@ -32,8 +32,6 @@ public class DefaultState : AbstractCharacterState
 	public override StateType Type => StateType.Physical;
 	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 	public override List<StatusEffect> Effects => _effects;
-
-	public override float TEST_ChangeableValue { get; set; }
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
@@ -55,6 +53,12 @@ public class DefaultState : AbstractCharacterState
 		return false;
 	}
 }
+
+public abstract class HealStates : AbstractCharacterState
+{
+	public float TEST_ChangeableValue { get; set; }
+}
+
 /*
 public class InvisibleStateOld : AbstractCharacterState
 {
@@ -335,6 +339,17 @@ public class CharacterState : NetworkBehaviour
 		}
 		return 0;
 	}
+	public bool CheckStateType(StateType type)
+	{
+		foreach (AbstractCharacterState state in currentStates)
+		{
+			if (state.Type == type)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public AbstractCharacterState GetState(States state)
 	{
@@ -410,11 +425,13 @@ public class CharacterState : NetworkBehaviour
 				{
 					RemoveShield(damageableShield);
 				}
-
+				currentStates[i].ExitState();
 				currentStates.Remove(currentStates[i]);
+
 			}
 		}
 	}
+
 
 	[ClientRpc]
 	private void ClientAddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
@@ -508,6 +525,55 @@ public class CharacterState : NetworkBehaviour
 			health.Shields.Remove(shield);
 		}
 	}
+
+	public void DispelStates(StateType type, int targetTeamIndex, int playerTeamIndex, bool isDispelOneState = false)
+	{
+
+		if (currentStates.Count == 0) return;
+
+		List<AbstractCharacterState> statesToRemove = new List<AbstractCharacterState>();
+
+		for (int i = currentStates.Count - 1; i >= 0; i--)
+		{
+			AbstractCharacterState state = currentStates[i];
+
+			if (state.Type == type &&
+				((targetTeamIndex == playerTeamIndex && state.BaffDebaff == BaffDebaff.Debaff) ||
+				 (targetTeamIndex != playerTeamIndex && state.BaffDebaff == BaffDebaff.Baff)))
+			{
+				if (state.CurrentStacksCount > 1)
+				{
+					state.CurrentStacksCount--;
+					ClientRpcRemoveIconCount();
+				}
+				else
+				{
+					statesToRemove.Add(state);
+					if (isDispelOneState) break;
+				}
+
+				break;
+			}
+		}
+
+		foreach (var state in statesToRemove)
+		{
+			CmdRemoveState(state.State);
+			//state.ExitState();
+			//currentStates.Remove(state);
+			//RemoveStateLogic(state.State);
+		}
+
+		//RemoveStateLogic(statesToRemove.Select(s => s.State).ToList());
+	}
+
+
+	[ClientRpc]
+	private void ClientRpcRemoveIconCount()
+	{
+		_stateIcons?.RemoveIconCount();
+	}
+	
 }
 
 public enum StateType

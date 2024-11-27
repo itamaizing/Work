@@ -2,16 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IceCloudBoostDmgTalent : Talent
+public class FrozenStateTalent : Talent
 {
+	[SerializeField] private IceShower _iceShower;
 	[SerializeField] private IceCloud _iceCloud;
+
 	public override void Enter()
 	{
-		_iceCloud.TalentBoostDmg(true);
+		_iceShower.TalentBoostFrozenState(true);
 	}
 
 	public override void Exit()
 	{
-		_iceCloud.TalentBoostDmg(false);
+		_iceShower.TalentBoostFrozenState(false);
 	}
 }
