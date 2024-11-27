@@ -11,6 +11,7 @@ public class SkillRenderer : NetworkBehaviour
     [SerializeField] private CircleArea _areaPref;
     [SerializeField] private SphereArea _damageZonePref;
     [SerializeField] private AbilityLineRenderer _line;
+    [SerializeField] private LayerMask _layerMask;
     [SerializeField] private Color _colorForAllies = Color.green;
     [SerializeField] private Color _colorForEnemies = Color.red;
     [SerializeField] private Color _colorForEnd;
@@ -169,7 +170,7 @@ public class SkillRenderer : NetworkBehaviour
 		Vector3 worldPosition = Vector3.zero;
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit;
-		if (Physics.Raycast(ray, out hit))
+		if (Physics.Raycast(ray, out hit, _layerMask))
 		{
 			worldPosition = hit.point;
 		}
@@ -244,7 +245,7 @@ public class SkillRenderer : NetworkBehaviour
         while (true)
         {
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			if (Physics.Raycast(ray, out hit))
+			if (Physics.Raycast(ray, out hit, _layerMask))
 			{
 				worldPosition = hit.point;
 			}

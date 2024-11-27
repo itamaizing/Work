@@ -18,7 +18,6 @@ public class Cooling : AbstractCharacterState
 	public override StateType Type => StateType.Physical;
 	public override List<StatusEffect> Effects => _effects;
 
-    public override float TEST_ChangeableValue { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
@@ -55,12 +54,12 @@ public class Cooling : AbstractCharacterState
 	{
 		Debug.Log("Exiting cooling State");
 		_characterState.RemoveState(this);
-		if (_characterState.Check(StatusEffect.MoveSpeed))
+		if (!_characterState.Check(StatusEffect.MoveSpeed))
 		{
 			_characterState.Character.Move.SetDefaultSpeed();
 			//_characterState.Move.CanMove = true;
 		}
-		if (_characterState.Check(StatusEffect.AbilitySpeed))
+		if (!_characterState.Check(StatusEffect.AbilitySpeed))
 		{
 			//return speed of attact
 		}

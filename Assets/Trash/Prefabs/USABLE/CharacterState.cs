@@ -17,7 +17,7 @@ public abstract class AbstractCharacterState
 	public abstract StateType Type { get; }
 	public abstract BaffDebaff BaffDebaff { get; }
 	public abstract List<StatusEffect> Effects { get; }
-	public abstract float TEST_ChangeableValue { get; set; }
+	
 
 	public abstract void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName);
 	public abstract void UpdateState();
@@ -32,8 +32,6 @@ public class DefaultState : AbstractCharacterState
 	public override StateType Type => StateType.Physical;
 	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 	public override List<StatusEffect> Effects => _effects;
-
-	public override float TEST_ChangeableValue { get; set; }
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
@@ -55,6 +53,12 @@ public class DefaultState : AbstractCharacterState
 		return false;
 	}
 }
+
+public abstract class HealStates : AbstractCharacterState
+{
+	public float TEST_ChangeableValue { get; set; }
+}
+
 /*
 public class InvisibleStateOld : AbstractCharacterState
 {
@@ -262,7 +266,26 @@ public class CharacterState : NetworkBehaviour
 		[States.EmeraldSkin] = new EmeraldSkinState(),
 		[States.DefenseReduction] = new DefenceReductionState(),
 		[States.SparkTalentHealthBuff] = new SparkTalentHealthState(),
-		[States.SelfHarm] = new SelfHarmState()
+		[States.SelfHarm] = new SelfHarmState(),
+		#region CreeperPoisonStates
+		/*[States.CreeperInvisible] = new CreeperInvisibleState(),
+		[States.PoisonBone] = new PoisonBoneState(),
+		[States.WitheringPoison] = new WitheringPoisonState(),
+		[States.BindingPoison] = new BindingPoisonState(),
+		[States.PoisonCloud] = new PoisonCloudState(),
+		[States.HealingPoisonCloud] = new HealingPoisonCloudState(),
+		[States.EmpathicPoisons] = new EmpathicPoisonsState(),
+		[States.HealingPoisonPerSecond] = new HealingPoisonPerSecondState(),
+		[States.InstantHealingPoison] = new InstantHealingPoisonState(),
+		[States.RegeneratingPoison] = new RegeneratingPoisonState(),
+		[States.HeatedGlands] = new HeatedGlandsState(),
+		[States.AbsorptionOfPoison] = new AbsorptionOfPoisonsState(),
+		#endregion
+
+		#region CarriganStates
+		[States.Bleeding] = new BleedingState(),
+		[States.ReducingHealing] = new ReducingHealingState(),*/
+		#endregion
 	};
 
 	public void Initialize(Character hero)
@@ -305,10 +328,10 @@ public class CharacterState : NetworkBehaviour
 		{
 			if (state.Effects.Contains(effect))
 			{
-				return false;
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	public bool CheckForState(States state)
@@ -334,6 +357,17 @@ public class CharacterState : NetworkBehaviour
 			}
 		}
 		return 0;
+	}
+	public bool CheckStateType(StateType type)
+	{
+		foreach (AbstractCharacterState state in currentStates)
+		{
+			if (state.Type == type)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public AbstractCharacterState GetState(States state)
@@ -410,11 +444,13 @@ public class CharacterState : NetworkBehaviour
 				{
 					RemoveShield(damageableShield);
 				}
-
+				currentStates[i].ExitState();
 				currentStates.Remove(currentStates[i]);
+
 			}
 		}
 	}
+
 
 	[ClientRpc]
 	private void ClientAddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
@@ -430,7 +466,7 @@ public class CharacterState : NetworkBehaviour
 		RemoveStateLogic(stateName);
 	}
 
-	private void AddStateLogic(States state, float duration, float damageToExit, Schools school,
+	/*private void AddStateLogic(States state, float duration, float damageToExit, Schools school,
 		GameObject personWhoShooted, string skillName)
 	{
 		if (invinsible) return;
@@ -473,6 +509,63 @@ public class CharacterState : NetworkBehaviour
 				counterSpell.canceledSchoool = school;
 			}
 		}
+	}*/
+
+
+	private void AddStateLogic(States state, float duration, float damageToExit, Schools school, GameObject personWhoShooted, string skillName, bool isCanDodgeMagState = false)
+	{
+		if (invinsible) return;
+
+		// Если состояние уже есть, добавляем стаки и перемещаем в конец списка
+		for (int i = 0; i < currentStates.Count; i++)
+		{
+			if (currentStates[i].State == state)
+			{
+				if (currentStates[i].CurrentStacksCount < currentStates[i].MaxStacksCount)
+				{
+					var canStack = currentStates[i].Stack(duration);
+					_stateIcons.ActivateIco(state, duration, 1, canStack);
+				}
+				else if (currentStates[i].MaxStacksCount == 0 || currentStates[i].CurrentStacksCount == currentStates[i].MaxStacksCount)
+				{
+					var canStack = currentStates[i].Stack(duration);
+					_stateIcons.ActivateIco(state, duration, 0, canStack);
+				}
+				MoveStateToEnd(i);
+				return;
+			}
+		}
+
+		// Если состояние отсутствует, создаем новое
+		AbstractCharacterState stateInstance = enumToState[state];
+		Health characterHealth = _hero.Health;
+		float chanceDodgeMagDamage = Random.Range(0f, 100f);
+
+		if (!isCanDodgeMagState)
+		{
+			// Проверка на сопротивление магическому урону
+			if (stateInstance.Type == StateType.Magic && chanceDodgeMagDamage <= characterHealth.ResistMagDamage)
+			{
+				Debug.Log("CharacterState / DodgeMagDamage");
+				return;
+			}
+		}
+
+		// Создаем новое состояние и добавляем в конец списка
+		CreateState(stateInstance, state, duration, damageToExit, personWhoShooted, skillName, false);
+
+		// Если состояние — щит, добавляем его в Health
+		if (stateInstance is IDamageable damageableShield)
+		{
+			AddShield(damageableShield);
+		}
+
+		// Если нужно указать школу заклинаний, обновляем контрспелл
+		if (school != Schools.None)
+		{
+			var counterSpell = (AbilitySchoolDebuff)stateInstance;
+			counterSpell.canceledSchoool = school;
+		}
 	}
 
 	private void CreateState(AbstractCharacterState state, States stateName, float duration, float damageToExit, GameObject personWhoShooted, string skillName, bool stack)
@@ -507,6 +600,69 @@ public class CharacterState : NetworkBehaviour
 			//Debug.Log("Remove Shield By " + shield);
 			health.Shields.Remove(shield);
 		}
+	}
+
+	public void DispelStates(StateType type, int targetTeamIndex, int playerTeamIndex, bool isDispelOneState = false)
+	{
+
+		if (currentStates.Count == 0) return;
+
+		List<AbstractCharacterState> statesToRemove = new List<AbstractCharacterState>();
+
+		for (int i = currentStates.Count - 1; i >= 0; i--)
+		{
+			AbstractCharacterState state = currentStates[i];
+
+			if (state.Type == type &&
+				((targetTeamIndex == playerTeamIndex && state.BaffDebaff == BaffDebaff.Debaff) ||
+				 (targetTeamIndex != playerTeamIndex && state.BaffDebaff == BaffDebaff.Baff)))
+			{
+				if (state.CurrentStacksCount > 1)
+				{
+					state.CurrentStacksCount--;
+					ClientRpcRemoveIconCount();
+				}
+				else
+				{
+					statesToRemove.Add(state);
+					if (isDispelOneState) break;
+				}
+
+				break;
+			}
+		}
+
+		foreach (var state in statesToRemove)
+		{
+			CmdRemoveState(state.State);
+			//state.ExitState();
+			//currentStates.Remove(state);
+			//RemoveStateLogic(state.State);
+		}
+
+		//RemoveStateLogic(statesToRemove.Select(s => s.State).ToList());
+	}
+
+
+	[ClientRpc]
+	private void ClientRpcRemoveIconCount()
+	{
+		_stateIcons?.RemoveIconCount();
+	}
+
+	private void MoveStateToEnd(int index)
+	{
+		if (index < 0 || index >= currentStates.Count)
+			return;
+
+		// Сохраняем ссылку на состояние
+		var state = currentStates[index];
+
+		// Удаляем элемент из текущей позиции
+		currentStates.RemoveAt(index);
+
+		// Добавляем его в конец списка
+		currentStates.Add(state);
 	}
 }
 
