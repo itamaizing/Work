@@ -1,4 +1,6 @@
 using Mirror;
+using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CreeperStrike : AutoAttackSkill
@@ -39,6 +41,8 @@ public class CreeperStrike : AutoAttackSkill
     private bool _isTwoHit = false;
     private bool _isHit = false;
 
+    private Coroutine _timerForTwoHitVariableCoroutine;
+
     public int CurrentCountHit { get => _currentCountHit; set => _currentCountHit = value; }
     public int CountHitForReleaseFromSecrecyTalent { get => _countHitForDesireToHideTalent; set => _countHitForDesireToHideTalent = value; }
     public int PoisonBoneStack { get => _poisonBoneStack; set => _poisonBoneStack = value; }
@@ -78,14 +82,15 @@ public class CreeperStrike : AutoAttackSkill
             _isHit = true;
             _currentCountHit++;
 
-            if (_currentCountHit == 2)
+            if (_currentCountHit == 2 || isUsingLightningStrikes)
             {
-                // Make here coroutine, which will start timer
-                if (!_isTwoHit)
+                if (_timerForTwoHitVariableCoroutine != null)
                 {
-                    _isTwoHit = true;
+                    StopCoroutine(_timerForTwoHitVariableCoroutine);
+                    _timerForTwoHitVariableCoroutine = null;
                 }
-                _currentCountHit = 0;
+
+                _timerForTwoHitVariableCoroutine = StartCoroutine(TimerForTwoHit(isUsingLightningStrikes));
             }
 
             //if (_absorptionOfPoisons != null && _absorptionOfPoisons.IsWorking)
@@ -182,14 +187,41 @@ public class CreeperStrike : AutoAttackSkill
             }
 
             _isHit = false;
-
-            if (isUsingLightningStrikes)
-            {
-                TryPayCost(true);
-            }
         }
     }
 
+    private IEnumerator TimerForTwoHit(bool isUsingLightningStrikes) 
+    {
+        float time = 2f;
+
+        while (time > 0)
+        {
+            Debug.Log("CreeperStrike / TimerForTwoHit");
+            time -= Time.deltaTime;
+            
+            if (time <= 0)
+            {
+                if (!_isTwoHit)
+                {
+                    _isTwoHit = true;
+                }
+                else if (isUsingLightningStrikes)
+                {
+                    _lightningStrikes.IsUsedLightningStrikes = isUsingLightningStrikes;
+                }
+
+                _currentCountHit = 0;
+            }
+
+            yield return null;
+        }
+
+        _isTwoHit = false;
+        _lightningStrikes.IsUsedLightningStrikes = false;
+
+        StopCoroutine(_timerForTwoHitVariableCoroutine);
+        _timerForTwoHitVariableCoroutine = null;
+    }
     #endregion
 
     #region CalculateCriticalDamage

@@ -107,19 +107,25 @@ public class PoisonBall : Skill, IAltAbility
 
     #region BoolVariables
 
-    private bool _isAbilityActive;
     private bool _isCanCheckActiveTalents = true;
-    private bool _isPushTarget;
-    private bool _isTarget;
-    private bool _isFast;
+    private bool _isCanSetSpawnPoint = true;
+    private bool _isCanCheckTimerActive = true;
+    private bool _isCanApplyInvisible;
+
+    private bool _firstClickDone;
     private bool _secondClickDone;
     private bool _thirdClickDone;
-    private bool _firstClickCompleted;
-    private bool _colorLockedAfterSecondClick;
-    private bool _colorLockedAfterThirdClick;
+
+    private bool _isTarget;
+    private bool _isPushTarget;
+
+    private bool _isFast;
     private bool _isBallCanBigger;
     private bool _isThreeProjectileOnOneTarget;
-    private bool _isCanApplyInvisible;
+
+    private bool _isAbilityActive;
+    private bool _colorLockedAfterSecondClick;
+    private bool _colorLockedAfterThirdClick;
 
     #endregion
 
@@ -128,6 +134,8 @@ public class PoisonBall : Skill, IAltAbility
     private Coroutine _mouseDetectionCoroutine;
     private Coroutine _lookAtPositionCoroutine;
     private Coroutine _checkingTalentsCoroutine;
+    private Coroutine _setSpawnPointCoroutine;
+    private Coroutine _checkTimerActiveCoroutine;
 
     public GameObject LastTarget { get; set; }
     public GameObject CurrentTarget { get; set; }
@@ -156,19 +164,6 @@ public class PoisonBall : Skill, IAltAbility
         _poisonBallInfo.MaxCountProjectile = _maxCharges;
     }
 
-    private void Update()
-    {
-        UpdateMouseDetection();
-
-        if (_poisonBallInfo.IsActiveTimer)
-        {
-            Timer();
-        }
-
-        if (_isAbilityActive)
-            SetSpawnPointPosition(_spawnPoint.transform.position.x, _spawnPoint.transform.position.y, _spawnPoint.transform.position.z);
-    }
-
     private float GetAnimationClipLength()
     {
         RuntimeAnimatorController animController = _player.Animator.runtimeAnimatorController;
@@ -182,7 +177,6 @@ public class PoisonBall : Skill, IAltAbility
         return -1f;
     }
 
-
     #region PrepareAndStartJob
 
     public void PayCostPoisonBall()
@@ -195,7 +189,7 @@ public class PoisonBall : Skill, IAltAbility
         if (_animTime > 0)
             _player.Animator.SetFloat("PoisonBallMultiplierSpeedAnimation", _baseMultiplierAnimationSpeed);
 
-        float timerForCancelCoroutine = 1f;
+        float timerForCancelCoroutine = 0.5f;
         Invoke("CancelCoroutine", timerForCancelCoroutine);
 
         ClearArrows();
@@ -210,34 +204,16 @@ public class PoisonBall : Skill, IAltAbility
         _secondClickDone = false;
         _thirdClickDone = false;
         _isAbilityActive = false;
-        _firstClickCompleted = false;
+        _firstClickDone = false;
         _colorLockedAfterSecondClick = false;
         _colorLockedAfterThirdClick = false;
-
-        if (_secondClickCoroutine != null)
-        {
-            StopCoroutine(_secondClickCoroutine);
-            _secondClickCoroutine = null;
-        }
-        if (_thirdClickCoroutine != null)
-        {
-            StopCoroutine(_thirdClickCoroutine);
-            _thirdClickCoroutine = null;
-        }
-
-        if (_lookAtPositionCoroutine != null)
-        {
-            StopCoroutine(_lookAtPositionCoroutine);
-            _lookAtPositionCoroutine = null;
-        }
-
     }
 
     protected override IEnumerator PrepareJob()
     {
         _isAbilityActive = true;
 
-        _checkingTalentsCoroutine = StartCoroutine(CheckingActiveTalentsJob());
+        StartCoroutine();
 
         CheckingActiveTalents();
 
@@ -264,7 +240,7 @@ public class PoisonBall : Skill, IAltAbility
                 CreateArrowsParallelToPlayer();
                 StopAutoDraw();
 
-                _firstClickCompleted = true;
+                _firstClickDone = true;
             }
             CooldownChange();
             yield return null;
@@ -291,6 +267,82 @@ public class PoisonBall : Skill, IAltAbility
         yield return null;
     }
 
+    private void UseAbility()
+    {
+        if (_secondClickDone && _thirdClickDone)
+        {
+            ChooseMovementDependingOnCountProjectiles();
+        }
+    }
+
+    private void StartCoroutine()
+    {
+        if (_setSpawnPointCoroutine == null)
+        {
+            _setSpawnPointCoroutine = StartCoroutine(SetSpawnPointJob());
+        }
+
+        if (_mouseDetectionCoroutine == null)
+        { 
+            _mouseDetectionCoroutine = StartCoroutine(UpdateMouseDetectionJob());
+        }
+        
+        if (_checkingTalentsCoroutine == null)
+        { 
+            _checkingTalentsCoroutine = StartCoroutine(CheckingActiveTalentsJob());
+        }
+
+        if (_checkTimerActiveCoroutine == null)
+        { 
+            _checkTimerActiveCoroutine = StartCoroutine(CheckTimerActiveJob());
+        }  
+    }
+
+    private void CancelCoroutine()
+    {
+        if (_checkingTalentsCoroutine != null)
+        {
+            StopCoroutine(_checkingTalentsCoroutine);
+            _checkingTalentsCoroutine = null;
+        }
+
+        if (_setSpawnPointCoroutine != null)
+        {
+            StopCoroutine(_setSpawnPointCoroutine);
+            _setSpawnPointCoroutine = null;
+        }       
+        
+        if (_mouseDetectionCoroutine != null)
+        {
+            StopCoroutine(_mouseDetectionCoroutine);
+            _mouseDetectionCoroutine = null;
+        }
+
+        if (_secondClickCoroutine != null)
+        {
+            StopCoroutine(_secondClickCoroutine);
+            _secondClickCoroutine = null;
+        }
+
+        if (_thirdClickCoroutine != null)
+        {
+            StopCoroutine(_thirdClickCoroutine);
+            _thirdClickCoroutine = null;
+        }
+
+        if (_mouseDetectionCoroutine != null)
+        {
+            StopCoroutine(_mouseDetectionCoroutine);
+            _mouseDetectionCoroutine = null;
+        }
+
+        if (_lookAtPositionCoroutine != null)
+        {
+            StopCoroutine(_lookAtPositionCoroutine);
+            _lookAtPositionCoroutine = null;
+        }
+    }
+
     private IEnumerator LookAtPositionJob()
     {
         while (_isAbilityActive)
@@ -300,20 +352,26 @@ public class PoisonBall : Skill, IAltAbility
         }
     }
 
-    private void UseAbility()
+    private IEnumerator CheckTimerActiveJob()
     {
-        if (_secondClickDone && _thirdClickDone)
+        while (_isCanCheckTimerActive)
         {
-            ChooseMovementDependingOnCountProjectiles();
+            if (_poisonBallInfo.IsActiveTimer)
+            {
+                Timer();
+            }
+
+            yield return null;
         }
     }
 
-    private void CancelCoroutine()
+    private IEnumerator SetSpawnPointJob()
     {
-        if (_checkingTalentsCoroutine != null)
+        while (_isCanSetSpawnPoint)
         {
-            StopCoroutine(_checkingTalentsCoroutine);
-            _checkingTalentsCoroutine = null;
+            SetSpawnPointPosition(_spawnPoint.transform.position.x, _spawnPoint.transform.position.y, _spawnPoint.transform.position.z);
+
+            yield return null;
         }
     }
 
@@ -521,25 +579,27 @@ public class PoisonBall : Skill, IAltAbility
 
     #region Update Method for Mouse Movement Detection
 
-    private void UpdateMouseDetection()
+    private IEnumerator UpdateMouseDetectionJob()
     {
-        // �������� ������� ������� ����
-        Vector3 currentMousePosition = GetMousePoint();
-
-        // ����������� ��� ������ ���� �������
-        if (_firstClickCompleted && !_secondClickDone)
+        while (_thirdClickDone == false) 
         {
-            UpdateArrowHighlight(0, 1, currentMousePosition);
-        }
 
-        // ����������� ��� ������ ���� �������
-        if (_secondClickDone && !_colorLockedAfterSecondClick && !_colorLockedAfterThirdClick)
-        {
-            UpdateArrowHighlight(2, 3, currentMousePosition);
+            Vector3 currentMousePosition = GetMousePoint();
+
+            if (_firstClickDone && !_secondClickDone)
+            {
+                UpdateArrowHighlight(0, 1, currentMousePosition);
+            }
+
+            if (_secondClickDone && !_colorLockedAfterSecondClick && !_colorLockedAfterThirdClick)
+            {
+                UpdateArrowHighlight(2, 3, currentMousePosition);
+            }
+
+            yield return null;
         }
     }
 
-    // ����� ��� ���������� ��������� �������
     private void UpdateArrowHighlight(int index1, int index2, Vector3 currentMousePosition)
     {
         Vector3 arrowPosition1 = _arrowRenderers[index1].transform.position;
@@ -758,7 +818,6 @@ public class PoisonBall : Skill, IAltAbility
 
         if (_poisonBallInfo.TimeBetweenAttack < 0)
         {
-            Debug.Log("PoisonBall / Timer if ");
             _poisonBallInfo.CountProjectiles = 0;
             _poisonBallInfo.IsActiveTimer = false;
             _poisonBallInfo.IsProjectileCreate = false;

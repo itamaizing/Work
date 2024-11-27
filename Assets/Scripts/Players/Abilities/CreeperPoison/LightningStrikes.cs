@@ -20,17 +20,17 @@ public class LightningStrikes : AutoAttackSkill
 
     private float _animTime;
     private float _cooldownMultiplier = 2f;
-    private float _baseMultiplierAnimationSpeed = 1f;
 
     private bool _isUsedLightningStrikes = false;
     private bool _isIncreaseCooldownTime = false;
     private bool _isCanDamageDeal = false;
 
-    public bool IsUsedLightningStrikes => _isUsedLightningStrikes;
+    public bool IsUsedLightningStrikes { get => _isUsedLightningStrikes; set => _isUsedLightningStrikes = value; }
+    public bool IsCanDamageDeal { get => _isCanDamageDeal; set => _isCanDamageDeal = value; }
+
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerAutoAttack => Animator.StringToHash("LightningStrikesAttacking");
 
-    public bool IsCanDamageDeal { get => _isCanDamageDeal; set => _isCanDamageDeal = value; }
 
     public void AnimLightningStrikesCast()
     {

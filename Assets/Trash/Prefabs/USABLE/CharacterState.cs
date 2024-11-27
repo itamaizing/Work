@@ -248,35 +248,6 @@ public class CharacterState : NetworkBehaviour
 		return false;
 	}
 
-	public List<AbstractCharacterState> TEST_GetStatesOnEffectAndType(StatusEffect effect, StateType type)
-	{
-		List<AbstractCharacterState> currentStates = new();
-
-		if (Check(effect) && CheckStateType(type))
-		{
-			foreach (AbstractCharacterState state in this.currentStates)
-			{
-				if (state.Effects.Contains(effect) && state.Type == type)
-				{
-					currentStates.Add(state);
-				}
-			}
-
-			if (currentStates.Count > 0)
-			{
-				return currentStates;
-			}
-			else
-			{
-				return null;
-			}
-		}
-		else
-		{
-			return null;
-		}
-	}
-
 	#endregion
 
 	public bool Check(StatusEffect effect)

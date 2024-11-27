@@ -45,10 +45,9 @@ public class SpitPoison : Skill, IAltAbility
     private int _poisonBoneStack = 0;
 
     private float _originalCooldown;
-    private float _angleRotation;
 
     private bool _isActiveHealingSpitPoison;
-    private bool _isActiveEatingAcid;
+    private bool _isActiveRestorationOfGlands;
     private bool _isHealingPoisonCloud = false;
     private bool _isPlayerInvisible = false;
 
@@ -57,10 +56,9 @@ public class SpitPoison : Skill, IAltAbility
     private bool _isOriginalTargetPlayer;
     private bool _isAbilityActive = false;
 
+    private Coroutine _setSpawnPointCoroutine;
+
     public bool IsAltAbility { get; set; }
-
-    public RestorationOfGlands RestorationOfGlandsTalent { get; set; }
-
     public int PoisonBoneStack { get => _poisonBoneStack; set => _poisonBoneStack = value; }
 
     public event Action ResetAbilityParameters;
@@ -70,15 +68,15 @@ public class SpitPoison : Skill, IAltAbility
     protected override int AnimTriggerCastDelay => 0;
     protected override bool IsCanCast => CheckCanCast();
 
-    //public void AnimSpitPoisonCast()
-    //{
-    //    AnimStartCastCoroutine();
-    //}   
+    public void AnimSpitPoisonCast()
+    {
+        AnimStartCastCoroutine();
+    }   
 
-    //public void AnimSpitPoisonCastEnd()
-    //{
-    //    AnimCastEnded();
-    //}
+    public void AnimSpitPoisonCastEnd()
+    {
+        AnimCastEnded();
+    }
 
     protected void Start()
     {
@@ -95,6 +93,9 @@ public class SpitPoison : Skill, IAltAbility
     {
         _isAbilityActive = true;
 
+        if (_setSpawnPointCoroutine == null)
+            _setSpawnPointCoroutine = StartCoroutine(SetSpawnPointJob());
+
         CooldownChange();
 
         CheckActiveTalents();
@@ -108,7 +109,6 @@ public class SpitPoison : Skill, IAltAbility
                 ChooseTarget();
 
                 _mousePos = GetMousePoint();
-                CalculateAngleRotation();
             }
             yield return null;
         }
@@ -125,15 +125,40 @@ public class SpitPoison : Skill, IAltAbility
 
     protected override void ClearData()
     {
+        _isAbilityActive = false;
+
         _isHealingPoisonCloud = false;
         _isActiveHealingSpitPoison = false;
+
         _isOriginalTargetAllies = false;
         _isOriginalTargetEnemy = false;
         _isOriginalTargetPlayer = false;
-        _isAbilityActive = false;
 
         _currentTarget = null;
+
         _mousePos = Vector3.positiveInfinity;
+    }
+
+    private IEnumerator SetSpawnPointJob()
+    {
+        while (_isAbilityActive)
+        {
+            SetSpawnPoint(_spawnPoint.transform.position.x, _spawnPoint.transform.position.y, _spawnPoint.transform.position.z);
+
+            yield return null;
+        }
+
+        StopCoroutine(_setSpawnPointCoroutine);
+        _setSpawnPointCoroutine = null;
+    }
+
+    private bool CheckCanCast()
+    {
+        if (_currentTarget == null)
+            return Vector3.Distance(_mousePos, transform.position) <= Radius && NoObstacles(_mousePos, _obstacle);
+
+        return Vector3.Distance(_mousePos, transform.position) <= Radius && NoObstacles(_mousePos, _obstacle) ||
+               Vector3.Distance(_currentTarget.transform.position, transform.position) <= Radius && NoObstacles(_currentTarget.transform.position, _obstacle);
     }
 
     private void CooldownChange()
@@ -157,10 +182,12 @@ public class SpitPoison : Skill, IAltAbility
             _cooldownTime = _originalCooldown;
         }
     }
-    private void CalculateAngleRotation()
+
+    private void CheckActiveTalents()
     {
-        Vector3 rotationDirection = _mousePos - _player.transform.position;
-        _angleRotation = Mathf.Atan2(rotationDirection.y, rotationDirection.x) * Mathf.Rad2Deg - 90f;
+        //_isActiveEatingAcid = _eatingAcid.Data.IsOpen;
+        _isActiveHealingSpitPoison = _healingSpitPoison.Data.IsOpen;
+        _isActiveRestorationOfGlands = _restorationOfGlands.Data.IsOpen;
     }
 
     private void ChooseTarget()
@@ -214,35 +241,20 @@ public class SpitPoison : Skill, IAltAbility
         }
     }
 
-    private void CheckActiveTalents()
-    {
-        //_isActiveEatingAcid = _eatingAcid.Data.IsOpen;
-        _isActiveHealingSpitPoison = _healingSpitPoison.Data.IsOpen;
-    }
-
-    private bool CheckCanCast()
-    {
-        if (_currentTarget == null)
-            return Vector3.Distance(_mousePos, transform.position) <= Radius && NoObstacles(_mousePos, _obstacle);
-
-        return Vector3.Distance(_mousePos, transform.position) <= Radius && NoObstacles(_mousePos, _obstacle) ||
-               Vector3.Distance(_currentTarget.transform.position, transform.position) <= Radius && NoObstacles(_currentTarget.transform.position, _obstacle);
-    }
-
     private void Shoot()
     {
         if (_currentTarget != null)
         {
-            CmdInstantiateProjectileToTarget(_currentTarget.gameObject, _angleRotation, _player.Resources.FirstOrDefault()!.CurrentValue,
-                _isActiveHealingSpitPoison, _isActiveEatingAcid, IsAltAbility,
+            CmdInstantiateProjectileToTarget(_currentTarget.gameObject, _player.Resources.FirstOrDefault()!.CurrentValue,
+                _isActiveHealingSpitPoison, _isActiveRestorationOfGlands, IsAltAbility,
                 _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
 
             //CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
         }
         else
         {
-            CmdInstantiateProjectileToPoint(_mousePos, _angleRotation, _player.Resources.FirstOrDefault()!.CurrentValue,
-                _isActiveHealingSpitPoison, _isActiveEatingAcid, IsAltAbility,
+            CmdInstantiateProjectileToPoint(_mousePos, _player.Resources.FirstOrDefault()!.CurrentValue,
+                _isActiveHealingSpitPoison, _isActiveRestorationOfGlands, IsAltAbility,
                 _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
 
             //CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
@@ -262,12 +274,10 @@ public class SpitPoison : Skill, IAltAbility
     }
 
     [Command]
-    private void CmdInstantiateProjectileToTarget(GameObject target, float angleRotation, float manaValue,
-        bool isActiveHealingSpitPoison, bool isActiveEatingAcid, bool isPlayerInvisible,
+    private void CmdInstantiateProjectileToTarget(GameObject target, float manaValue,
+        bool isActiveHealingSpitPoison, bool isActiveRestorationOfGlands, bool isPlayerInvisible,
         bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
     {
-        RestorationOfGlandsTalent = _restorationOfGlands;
-
         Vector3 spawnPosition = new Vector3 (_spawnPointInfo.SpawnPointX, _spawnPointInfo.SpawnPointY, _spawnPointInfo.SpawnPointZ);
 
         GameObject item = Instantiate(_projectile.gameObject, spawnPosition, Quaternion.identity);
@@ -277,7 +287,7 @@ public class SpitPoison : Skill, IAltAbility
         SpitPoisonProjectile projectile = item.GetComponent<SpitPoisonProjectile>();
 
         projectile.InitializationProjectile(_player, this, _player.Resources.FirstOrDefault()!.CurrentValue,
-            isActiveHealingSpitPoison, isActiveEatingAcid, isPlayerInvisible,
+            isActiveHealingSpitPoison, isActiveRestorationOfGlands, isPlayerInvisible,
             isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack);
 
         projectile.MoveBallToTarget(target.transform.position);
@@ -286,12 +296,10 @@ public class SpitPoison : Skill, IAltAbility
     }
 
     [Command]
-    private void CmdInstantiateProjectileToPoint(Vector3 point, float angleRotation, float manaValue,
-        bool isActiveHealingSpitPoison, bool isActiveEatingAcid, bool isPlayerInvisible,
+    private void CmdInstantiateProjectileToPoint(Vector3 point, float manaValue,
+        bool isActiveHealingSpitPoison, bool isActiveRestorationOfGlands, bool isPlayerInvisible,
         bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
     {
-        RestorationOfGlandsTalent = _restorationOfGlands;
-
         Vector3 spawnPosition = new Vector3(_spawnPointInfo.SpawnPointX, _spawnPointInfo.SpawnPointY, _spawnPointInfo.SpawnPointZ);
 
         GameObject item = Instantiate(_projectile.gameObject, spawnPosition, Quaternion.identity);
@@ -301,7 +309,7 @@ public class SpitPoison : Skill, IAltAbility
         SpitPoisonProjectile projectile = item.GetComponent<SpitPoisonProjectile>();
 
         projectile.InitializationProjectile(_player, this, _player.Resources.FirstOrDefault()!.CurrentValue,
-            isActiveHealingSpitPoison, isActiveEatingAcid, isPlayerInvisible,
+            isActiveHealingSpitPoison, isActiveRestorationOfGlands, isPlayerInvisible,
             isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack);
 
         projectile.MoveBallOnMaxDistance(point);

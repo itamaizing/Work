@@ -6,7 +6,6 @@ public class SpitPoisonProjectile : Test_Projectile
     #region Variables
 
     private SpitPoison _spitPoison;
-    private RestorationOfGlands _restorationOfGlands;
     private Skill _skill;
 
     private int _playerLayer;
@@ -20,6 +19,7 @@ public class SpitPoisonProjectile : Test_Projectile
     private bool _isAllies;
     private bool _isEnemy;
     private bool _isActiveHealingSpitPoison;
+    private bool _isActiveRestorationOfGlands;
     private bool _isActiveEatingAcid;
     private bool _isPlayerInvisible;
 
@@ -145,7 +145,7 @@ public class SpitPoisonProjectile : Test_Projectile
 
         _target.CharacterState.AddState(States.PoisonBone, _lifeTimePoisonBoneStacks, 0, _player.gameObject, _skill.Name);
 
-        if (_restorationOfGlands.Data.IsOpen && _poisonBoneStack > 0 && _target.CharacterState.CheckForState(States.PoisonBone))
+        if (_isActiveRestorationOfGlands && _poisonBoneStack > 0 && _target.CharacterState.CheckForState(States.PoisonBone))
         {
             //ReductionCooldownFromRestorationOfGlands();
         }
@@ -157,18 +157,16 @@ public class SpitPoisonProjectile : Test_Projectile
 
         DestroyProjectile();        
     }
-
     private void ReductionCooldownFromRestorationOfGlands()
     {
-        RpcReductionCooldown();
+        RpcReductionCooldownFromRestorationOfGlands(_player.gameObject);
     }
-
     #endregion
 
     #region InitializationMethods
 
     public void InitializationProjectile(Character dad, Skill skill, float energy,
-        bool isActiveHealingSpitPoison, bool isActiveEatingAcid, bool isPlayerInvisible, 
+        bool isActiveHealingSpitPoison, bool isActiveRestorationOfGlands, bool isPlayerInvisible, 
         bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, int poisonBoneStack)
     {
         _player = dad;
@@ -176,9 +174,8 @@ public class SpitPoisonProjectile : Test_Projectile
         _skill = skill;
 
         _poisonBoneStack = poisonBoneStack;
-
+        _isActiveRestorationOfGlands = isActiveRestorationOfGlands;
         _isActiveHealingSpitPoison = isActiveHealingSpitPoison;
-        _isActiveEatingAcid = isActiveEatingAcid;
         _isPlayerInvisible = isPlayerInvisible;
         _isPlayer = isTargetPlayer;
         _isAllies = isTargetAllies;
@@ -191,7 +188,6 @@ public class SpitPoisonProjectile : Test_Projectile
     private void InitializationComponents()
     {
         _spitPoison = _player.GetComponentInChildren<SpitPoison>();
-        _restorationOfGlands = _spitPoison.RestorationOfGlandsTalent;
     }
 
     #endregion
@@ -252,16 +248,19 @@ public class SpitPoisonProjectile : Test_Projectile
     }
 
     [ClientRpc]
-    private void RpcReductionCooldown()
+    private void RpcReductionCooldownFromRestorationOfGlands(GameObject player)
     {
+        var restorationOfGlands = player.GetComponentInChildren<RestorationOfGlands>();
+
         float baseChanceOfRestorationOfGlands = 0.1f;
         float chanceRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
 
         if (Random.Range(0f, 1f) <= chanceRestorationOfGlands)
         {
-            _restorationOfGlands.ReductionCooldown();
+            Debug.Log("SpitPoisonProj / If RestorationOfGlands.IsActive = true");
+            restorationOfGlands.ReductionCooldown();
         }
-    }   
+    }
     #endregion
 }
 

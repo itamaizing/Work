@@ -5,7 +5,7 @@ public class ReducingHealingState : AbstractCharacterState
 {
     private AbstractCharacterState _state;
 
-    private float _baseReductionHealingValues = 0.8f;
+    private float _baseReductionHealingValues;
     private float _duration;
     private float _baseDuration;
 
@@ -17,11 +17,13 @@ public class ReducingHealingState : AbstractCharacterState
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.ReducingEfficiency };
 
+    public float BaseReductionHealingValue { get => _baseReductionHealingValues; set => _baseReductionHealingValues = value; }
+
     public override States State => States.ReducingHealing;
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
-
+    
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         Debug.Log("ReducingHealingState / EnterState");
@@ -35,29 +37,12 @@ public class ReducingHealingState : AbstractCharacterState
 
     public override void UpdateState()
     {
-        _delayBeforeChecking -= Time.deltaTime;
-        if (_delayBeforeChecking <= 0)
-        {
 
-                UdpatingDictionaries();
-
-                ReductionHealing();
-           
-            _delayBeforeChecking = _startDelayBeforeChecking;
-        }
-
-        _duration -= Time.deltaTime;
-        if (_duration <= 0)
-        {
-            ExitState();
-        }
     }
 
     public override void ExitState()
     {
-        _newHealingStatesValues.Clear();
-        _oldHealingStatesValues.Clear();
-        _characterState.RemoveState(this);
+
     }
 
     public override bool Stack(float time)
@@ -67,66 +52,38 @@ public class ReducingHealingState : AbstractCharacterState
 
     private void UdpatingDictionaries()
     {
-        _newHealingStatesValues.Clear();
-
-        //List<AbstractCharacterState> healingStates = _characterState.TEST_GetStatesOnEffectAndType(StatusEffect.Healing, StateType.Magic);
-
-        //if (healingStates != null)
-        //{
-        //    foreach (var healingState in healingStates)
-        //    {
-        //        _newHealingStatesValues[healingState] = healingState.TEST_ChangeableValue;
-
-        //        if (!_oldHealingStatesValues.ContainsKey(healingState))
-        //        {
-        //            _oldHealingStatesValues[healingState] = healingState.TEST_ChangeableValue;
-        //        }
-        //    }
-
-
-        //    var statesToRemove = new List<AbstractCharacterState>();
-        //    foreach (var state in _oldHealingStatesValues.Keys)
-        //    {
-        //        if (!healingStates.Contains(state))
-        //        {
-        //            statesToRemove.Add(state);
-        //        }
-        //    }
-        //    foreach (var state in statesToRemove)
-        //    {
-        //        _oldHealingStatesValues.Remove(state);
-        //        _newHealingStatesValues.Remove(state);
-        //    }
-        //}
     }
 
     private void ReductionHealing()
     {
-        //List<AbstractCharacterState> healingStates = new();
-        //Debug.Log("ReducingHealingState / ReductionHealing");
+    }
 
-        //_characterState.TEST_GetStatesOnEffectAndType(StatusEffect.Healing, StateType.Magic);
+    private List<AbstractCharacterState> TEST_GetStatesOnEffectAndType(StatusEffect effect, StateType type)
+    {
+        List<AbstractCharacterState> currentStates = new();
 
-        //foreach (var stateEntry in _newHealingStatesValues)
-        //{
-        //    AbstractCharacterState state = stateEntry.Key;
-        //    Debug.Log("ReducingHealingState / ReductionHealing / state = " + state);
-        //    float newHealingValue = stateEntry.Value;
-        //    float oldHealingValue = _oldHealingStatesValues[state];
+        if (_characterState.Check(effect) && _characterState.CheckStateType(type))
+        {
+            foreach (AbstractCharacterState state in _characterState.CurrentStates)
+            {
+                if (state.Effects.Contains(effect) && state.Type == type)
+                {
+                    currentStates.Add(state);
+                }
+            }
 
-        //    // ≈сли новое значение отличаетс€ от старого, пересчитываем
-        //    if (newHealingValue != oldHealingValue)
-        //    {
-        //        // ѕересчет значени€ с учетом снижени€
-        //        float reductionHealingValue = newHealingValue * _baseReductionHealingValues;
-        //        state.TEST_ChangeableValue = newHealingValue - reductionHealingValue;
-        //        Debug.Log($"State.CurrentValue = " + state.TEST_ChangeableValue);
-
-        //        // ќбновл€ем старое значение в словаре
-        //        _oldHealingStatesValues[state] = state.TEST_ChangeableValue;
-
-        //        Debug.Log($"ReducingHealingState / ReductionHealing / newValue: {state.TEST_ChangeableValue}, oldValue: {oldHealingValue}");
-        //    }
-        //}
+            if (currentStates.Count > 0)
+            {
+                return currentStates;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        else
+        {
+            return null;
+        }
     }
 }
