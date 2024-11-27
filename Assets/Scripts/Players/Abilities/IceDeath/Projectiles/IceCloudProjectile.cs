@@ -78,7 +78,6 @@ public class IceCloudProjectile : Projectiles
 				//_energy.TryUse(_energyDad);
 				_energy.UseAllEnergy();
 				ClientUse(_energyDad, _energy.gameObject);
-				//Debug.Log(target.Health.SumDamageTaken + " _damageOnStart In Cloud ");
 				target.CharacterState.AddState(States.Frozen, duration, target.Health.SumDamageTaken + _damageToExit, _dad.gameObject, _skill.name);
 				//damage
 				GetComponent<Collider>().enabled = false;

@@ -32,7 +32,6 @@ public class FrozenState : AbstractCharacterState
 			_damageToExit = damageToExit;
 		}
 		_damageOnStart = _characterState.Character.Health.SumDamageTaken;
-		Debug.Log(_damageOnStart + " _damageOnstart");
 		_characterState.Character.Move.CanMove = false;
 		_characterState.Character.Move.LookAtTransform(_characterState.gameObject.transform);
 
@@ -56,7 +55,6 @@ public class FrozenState : AbstractCharacterState
 		if (_characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || _duration <= 0 )//|| turnOff)
 		{
 			ExitState();
-			Debug.Log(_characterState.Character.Health.SumDamageTaken + " _damageOnExit " + _damageOnStart + " damage on start");
 		}
 	}
 
@@ -64,7 +62,6 @@ public class FrozenState : AbstractCharacterState
 	{
 		Debug.Log("Exiting Frozen State");
 
-		//character.GetAbilityManager().ToggleAbility(true);//turn on abilities
 		_characterState.RemoveState(this);
 		if (!_characterState.Check(StatusEffect.Move))
 		{

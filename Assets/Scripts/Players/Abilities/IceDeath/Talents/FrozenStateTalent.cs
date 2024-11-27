@@ -10,10 +10,12 @@ public class FrozenStateTalent : Talent
 	public override void Enter()
 	{
 		_iceShower.TalentBoostFrozenState(true);
+		_iceCloud.TalentBoostFrozenState(true);
 	}
 
 	public override void Exit()
 	{
 		_iceShower.TalentBoostFrozenState(false);
+		_iceCloud.TalentBoostFrozenState(false);
 	}
 }
