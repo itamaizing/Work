@@ -118,7 +118,5 @@ public class LightningStrikes : AutoAttackSkill
         {
             _isCanDamageDeal = false;
         }
-
-        _creeperStrike.CurrentCountHit = 0;
     }
 }

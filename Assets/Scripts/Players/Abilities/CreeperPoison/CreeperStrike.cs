@@ -82,15 +82,18 @@ public class CreeperStrike : AutoAttackSkill
             _isHit = true;
             _currentCountHit++;
 
-            if (_currentCountHit == 2 || isUsingLightningStrikes)
+            if (_currentCountHit == 2 || isUsingLightningStrikes && _currentCountHit == 2)
             {
+                float time = 10f;
+
                 if (_timerForTwoHitVariableCoroutine != null)
                 {
                     StopCoroutine(_timerForTwoHitVariableCoroutine);
-                    _timerForTwoHitVariableCoroutine = null;
                 }
 
-                _timerForTwoHitVariableCoroutine = StartCoroutine(TimerForTwoHit(isUsingLightningStrikes));
+                _timerForTwoHitVariableCoroutine = StartCoroutine(TimerForTwoHit(time, isUsingLightningStrikes));
+                
+                _currentCountHit = 0;
             }
 
             //if (_absorptionOfPoisons != null && _absorptionOfPoisons.IsWorking)
@@ -190,13 +193,12 @@ public class CreeperStrike : AutoAttackSkill
         }
     }
 
-    private IEnumerator TimerForTwoHit(bool isUsingLightningStrikes) 
+    private IEnumerator TimerForTwoHit(float duration, bool isUsingLightningStrikes)
     {
-        float time = 2f;
+        float time = duration;
 
         while (time > 0)
         {
-            Debug.Log("CreeperStrike / TimerForTwoHit");
             time -= Time.deltaTime;
             
             if (time <= 0)
@@ -209,8 +211,6 @@ public class CreeperStrike : AutoAttackSkill
                 {
                     _lightningStrikes.IsUsedLightningStrikes = isUsingLightningStrikes;
                 }
-
-                _currentCountHit = 0;
             }
 
             yield return null;
