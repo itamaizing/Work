@@ -413,7 +413,7 @@ public class CharacterState : NetworkBehaviour
 		Health characterHealth = _hero.Health;
 		float chanceDodgeMagDamage = Random.Range(0f, 100f);
 
-		if (isCanDodgeMagState)
+		if (!isCanDodgeMagState)
 		{
 			// Проверка на сопротивление магическому урону
 			if (stateInstance.Type == StateType.Magic && chanceDodgeMagDamage <= characterHealth.ResistMagDamage)

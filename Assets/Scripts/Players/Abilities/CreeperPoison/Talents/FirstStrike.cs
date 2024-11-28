@@ -9,6 +9,7 @@ public class FirstStrike : Talent
 
     public bool FirstHit = false;
     public bool IsCanIncreaseCrit { get => _isCanIncreaseCrit; set => _isCanIncreaseCrit = value; }
+
     public override void Enter()
     {
         SetActive(true);
@@ -19,16 +20,15 @@ public class FirstStrike : Talent
         SetActive(false);
     }
 
-    public bool SetBoolTrue()
+    public void SetBoolTrue()
     {
         _isCanIncreaseCrit = true;
         FirstHit = true;
 
         Debug.Log($"FirstStrike / SetBoolTrue / IsCanCrit = {_isCanIncreaseCrit} | FirstHit = {FirstHit}");
-        return _isCanIncreaseCrit && FirstHit;
     }
 
-    public bool ReturnBoolFalse()
+    public void ReturnBoolFalse()
     {
         if (_isCanIncreaseCrit)
         {
@@ -36,6 +36,5 @@ public class FirstStrike : Talent
             FirstHit = false;
             Debug.Log($"FirstStrike / ReturnBoolFalse / IsCanCrit = {_isCanIncreaseCrit} | FirstHit = {FirstHit}");
         }
-        return _isCanIncreaseCrit;
     }
 }

@@ -11,8 +11,9 @@ public class ColdBlood : Skill
 
     [Header("Ability Properties")]
     [SerializeField] private CreeperStrike _creeperStrike;
+    [SerializeField] private LightningStrikes _lightningStrikes;
     [SerializeField] private Character _player;
-    [SerializeField] private float _reducingCooldwonMultiplier = 2f;
+    [SerializeField] private float _reducingCooldownMultiplier = 2f;
 
     private Character _target;
     private Vector3 _mousePosition = Vector3.positiveInfinity;
@@ -26,9 +27,9 @@ public class ColdBlood : Skill
 
     private Coroutine _waitingHitFromCreeperStrike;
 
-    public bool IndomitableTalentIsACtive { get => _indomitable.Data.IsOpen; }
-    public bool ColdBloodTalentIsActive { get => _coldBloodTalent.Data.IsOpen; }
-    public bool KillersStaminaTalentIsActive { get => _killersStamina.Data.IsOpen; }
+    public Indomitable IndomitableTalent { get => _indomitable; }
+    public ColdBloodTalent ColdBloodTalent { get => _coldBloodTalent; }
+    public KillersStamina KillersStaminaTalent { get => _killersStamina; }
     public bool IsCanCritCreeperStrike { get => _isCanCritCreeperStrike; set => _isCanCritCreeperStrike = value; }
     public bool IsCanCritLightningStrikes { get => _isCanCritLightningStrikes; set => _isCanCritLightningStrikes = value; }
 
@@ -36,8 +37,10 @@ public class ColdBlood : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override bool IsCanCast { get => _coldBloodEnabledTalent.Data.IsOpen; }
 
-    private new void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+
         _baseCooldownTime = CooldownTime;    
     }
 
@@ -62,7 +65,7 @@ public class ColdBlood : Skill
 
     protected override IEnumerator PrepareJob()
     {
-        if (_coldBloodTalent.Data.IsOpen)
+        if (_indomitable.Data.IsOpen)
         {
             while (_target == null && float.IsPositiveInfinity(_mousePosition.x))
             {
@@ -98,7 +101,7 @@ public class ColdBlood : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_coldBloodTalent.Data.IsOpen)
+        if (_indomitable.Data.IsOpen)
         {
             UseAbilityWithTalent();
         }
@@ -117,13 +120,13 @@ public class ColdBlood : Skill
     { 
         if (RemainingCooldownTime > 0)
         {
-            float reducingMultiplier = _reducingCooldwonMultiplier;
+            float reducingMultiplier = _reducingCooldownMultiplier;
             float newCooldownTime = RemainingCooldownTime / reducingMultiplier;
             ReductionSetCooldown(newCooldownTime);
         }
         else
         {
-            float reducingMultiplier = _reducingCooldwonMultiplier;
+            float reducingMultiplier = _reducingCooldownMultiplier;
             CooldownTime /= reducingMultiplier;
         }
     }

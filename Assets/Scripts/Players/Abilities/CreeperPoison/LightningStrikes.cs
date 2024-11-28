@@ -3,12 +3,11 @@ using UnityEngine;
 
 public class LightningStrikes : AutoAttackSkill
 {
-    /*
     [Header("Talents")]
     [SerializeField] private HeatedGlands _heatedGlands;
     [SerializeField] private KillersStamina _killersStamina; 
     private float _timeBaff = 4f;
-    */
+    
 
     [Header("Abillity Components")]
     [SerializeField] private ColdBlood _coldBlood;
@@ -20,17 +19,26 @@ public class LightningStrikes : AutoAttackSkill
 
     private float _animTime;
     private float _cooldownMultiplier = 2f;
+    private float _heatedGlandsDuration = 4f;
+    private float _baseCooldownTime;
 
     private bool _isUsedLightningStrikes = false;
     private bool _isIncreaseCooldownTime = false;
     private bool _isCanDamageDeal = false;
 
+    public float BaseCooldownTime { get => _baseCooldownTime; }
     public bool IsUsedLightningStrikes { get => _isUsedLightningStrikes; set => _isUsedLightningStrikes = value; }
     public bool IsCanDamageDeal { get => _isCanDamageDeal; set => _isCanDamageDeal = value; }
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerAutoAttack => Animator.StringToHash("LightningStrikesAttacking");
 
+    protected override void Awake()
+    {
+        base.Awake();
+
+        _baseCooldownTime = CooldownTime;
+    }
 
     public void AnimLightningStrikesCast()
     {
@@ -71,10 +79,14 @@ public class LightningStrikes : AutoAttackSkill
 
         if (_coldBlood.IsCanCritLightningStrikes && _isIncreaseCooldownTime == false)
         {
-            float newCooldownTime = _cooldownTime * _cooldownMultiplier;
-            this.IncreaseSetCooldown(newCooldownTime);
+            float newCooldownTime = _baseCooldownTime * _cooldownMultiplier;
+            CooldownTime = newCooldownTime;
 
             _isIncreaseCooldownTime = true;
+        }
+        else
+        {
+            CooldownTime = _baseCooldownTime;
         }
 
         if (_currentTarget == null)
@@ -110,13 +122,19 @@ public class LightningStrikes : AutoAttackSkill
     private void DamageDeal()
     {
         Debug.Log("LightningStrikes / DamageDeal");
-
-        //_creeperStrike.CurrentTarget = _currentTarget;
         _creeperStrike.DamageDeal(_currentTarget, true);
+
+        if (_heatedGlands.Data.IsOpen)
+            _player.CharacterState.CmdAddState(States.HeatedGlands, _heatedGlandsDuration, 0, _player.gameObject, null);
 
         if (_lightningMovement.IsInMovement)
         {
             _isCanDamageDeal = false;
+        }
+
+        if (_coldBlood.IsCanCritLightningStrikes && _isIncreaseCooldownTime == true)
+        {
+            _isIncreaseCooldownTime = false;
         }
     }
 }

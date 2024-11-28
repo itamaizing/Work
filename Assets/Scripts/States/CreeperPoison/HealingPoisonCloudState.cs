@@ -1,10 +1,11 @@
+using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class HealingPoisonCloudState : AbstractCharacterState
 {
     private int _maxStacks = 5;
-    private float _radiusCloud = 3.5f;
+    private float _radiusCloud = 2.5f;
 
     private float _baseHeal = 0.005f;
     private float _increasedHeal;
@@ -16,6 +17,7 @@ public class HealingPoisonCloudState : AbstractCharacterState
     private static float _duration;
     private static float _baseDuration;
 
+    private LayerMask _alliesLayer;
     private Character _player;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Healing };
@@ -35,6 +37,9 @@ public class HealingPoisonCloudState : AbstractCharacterState
 
         MaxStacksCount = _maxStacks;
 
+        _alliesLayer = 9;
+
+        Debug.Log("HealingPoisonCloudState / alliesLayer = " + _alliesLayer.value);
         if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks();
@@ -47,7 +52,7 @@ public class HealingPoisonCloudState : AbstractCharacterState
         _timeBetweenHeal -= Time.deltaTime;
         if (_timeBetweenHeal <= 0)
         {
-            SearchingEnemies();
+            RpcSearchingEnemies(_alliesLayer, _player.gameObject);
             _timeBetweenHeal = _startTimeBetweenHeal;
         }
 
@@ -93,32 +98,46 @@ public class HealingPoisonCloudState : AbstractCharacterState
         }
     }
 
-    private void SearchingEnemies()
+    [ClientRpc]
+    private void RpcSearchingEnemies(LayerMask alliesLayer, GameObject player)
     {
-        Collider2D[] hitAllies = Physics2D.OverlapCircleAll(_characterState.transform.position, _radiusCloud);
-        foreach (Collider2D alliesOrPlayer in hitAllies)
+        Collider[] hitsAllies = Physics.OverlapSphere(player.transform.position, _radiusCloud, alliesLayer);
+
+        foreach (Collider alliesOrPlayer in hitsAllies)
         {
-            if (alliesOrPlayer.CompareTag("Allies"))
+            Debug.Log("HealingPoisonCloud / SearchingEnemies / alliesOrPlayer = " + alliesOrPlayer.name);
+            if (alliesOrPlayer != null)
             {
-                if (alliesOrPlayer.TryGetComponent<HeroComponent>(out var target))
+                if (alliesOrPlayer.TryGetComponent<Character>(out var target))
                 {
-                    ApplyHealing(target);
+                    Debug.Log("HealingPoisonCloud / SearchingEnemies / if TryGetComponent");
+                    CmdApplyHealing(target.gameObject);
+
                     _timeBetweenHeal = _startTimeBetweenHeal;
                 }
             }
         }
     }
 
-    private void ApplyHealing(HeroComponent targetHealth)
+    [Command]
+    private void CmdApplyHealing(GameObject target)
     {
+        Character targetCharacter = target.GetComponent<Character>();
+
         _increasedHeal = _baseHeal * CurrentStacksCount;
-        _endHeal = targetHealth.Health.MaxValue * _increasedHeal;
+        _endHeal = targetCharacter.Health.MaxValue * _increasedHeal;
+
+        Debug.Log("HealingPoisonCloud / CmdApplyHealing / endHeal = " + _endHeal);
+
         Heal heal = new Heal
         {
             Value = _endHeal,
             DamageableSkill = null,
         };
-        targetHealth.Health.Heal(ref heal, null);
+
+        Debug.Log("HealingPoisonCloud / CmdApplyHealing / heal = " + heal);
+
+        targetCharacter.Health.Heal(ref heal, null);
         //targetHealth.DamageTracker.AddHeal(heal);
     }
 

@@ -57,14 +57,7 @@ public class CreeperInvisibleState : AbstractCharacterState
         _isInvisible = _creeperInvisible.IsInvisible;
 
         if (_isInvisible)
-        {
-            _timeBetweenReducingTransparency -= Time.deltaTime;
-            if (_timeBetweenReducingTransparency <= 0f)
-            {
-                //ReducingTransparencySprite();
-                _timeBetweenReducingTransparency = _startTimeBetweenReducingTransparency;
-            }
-
+        { 
             if (!_isPlayerInvisability)
             {
                 ApplyInvisible();
@@ -89,17 +82,6 @@ public class CreeperInvisibleState : AbstractCharacterState
     public override bool Stack(float time)
     {
         return false;
-    }
-
-    private void ReducingTransparencySprite()
-    {
-        Color newTransparency = _playerSprite.color;
-
-        newTransparency.a -= 10f * Time.deltaTime;
-
-        newTransparency.a = Mathf.Clamp(newTransparency.a, 0.5f, 1f);
-
-        _playerSprite.color = new Color(1f, 1f, 1f, newTransparency.a);
     }
 
     private void ApplyInvisible()

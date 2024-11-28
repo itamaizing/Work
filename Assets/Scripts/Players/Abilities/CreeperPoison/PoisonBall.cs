@@ -122,6 +122,7 @@ public class PoisonBall : Skill, IAltAbility
     private bool _isFast;
     private bool _isBallCanBigger;
     private bool _isThreeProjectileOnOneTarget;
+    private bool _isCanConvertPoisonInCharge;
 
     private bool _isAbilityActive;
     private bool _colorLockedAfterSecondClick;
@@ -143,6 +144,7 @@ public class PoisonBall : Skill, IAltAbility
     public RestorationOfGlands RestorationOfGlandsTalent { get; set; }
     public int CurrentCountBall { get => _poisonBallInfo.CountProjectiles; }
     public int PoisonBoneStack { get => _poisonBoneStacks; set => _poisonBoneStacks = value; }
+    public bool IsCanConvertPoisonInCharge { get => _isCanConvertPoisonInCharge; set => _isCanConvertPoisonInCharge = value; }
     public bool IsAltAbility { get; set; }
 
     protected override int AnimTriggerCast => 0;
@@ -654,12 +656,29 @@ public class PoisonBall : Skill, IAltAbility
         }
     }
 
+    private void FlowOfPoisonConvertCharge()
+    {
+        if (_assasinPoison.Data.IsOpen && _flowOfPoison.Data.IsOpen && IsCanConvertPoisonInCharge)
+        {
+            if (Chargers < _maxCharges)
+            {
+                Debug.Log("PoisonBall / _chargeCooldown == " + _chargeCooldown);
+                float newCooldownTime = 0f;
+                Debug.Log("PoisonBall / newCooldownTime == " + newCooldownTime);
+                this.IncreaseSetCooldown(newCooldownTime);
+            }
+
+            _isCanConvertPoisonInCharge = false;
+        }
+    }
+
     private IEnumerator CheckingActiveTalentsJob()
     {
         while (_isCanCheckActiveTalents)
         {
             InertialGlandsReductionCooldown();
             ContinuationAmbushApplyInvisible();
+            FlowOfPoisonConvertCharge();
 
             yield return null;
         }
@@ -721,29 +740,6 @@ public class PoisonBall : Skill, IAltAbility
         {
             DeductMaxChargeCount();
             _poisonBallInfo.MaxCountProjectile = _maxCharges;
-        }
-
-        #endregion
-
-        #region AssasinPoisonTalentIsActive
-
-        if (_assasinPoison.Data.IsOpen && _flowOfPoison.Data.IsOpen)
-        {
-            _currentStacksAsssasinPoison = _assasinPoison.CurrentChargeAssasinPoison;
-            Debug.Log("PoisonBall / CurrentStacksAssasinPoison == " + _currentStacksAsssasinPoison);
-            for (int i = 0; i < _currentStacksAsssasinPoison; i++)
-            {
-                Debug.Log("CycleFor");
-                if (Chargers < _maxCharges)
-                {
-                    _currentStacksAsssasinPoison--;
-                    Debug.Log("PoisonBall / CurrentStacksAssasinPoison == " + _currentStacksAsssasinPoison);
-                    Debug.Log("PoisonBall / _chargeCooldown == " + _chargeCooldown);
-                    float newCooldownTime = 0f;
-                    Debug.Log("PoisonBall / newCooldownTime == " + newCooldownTime);
-                    this.IncreaseSetCooldown(newCooldownTime);
-                }
-            }
         }
 
         #endregion

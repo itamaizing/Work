@@ -18,9 +18,10 @@ public class CreeperStrike : AutoAttackSkill
     [SerializeField] private PreparingForFight _preparingForFight;
 
     [Header("Abilities")]
+    [SerializeField] private LightningStrikes _lightningStrikes;
+    [SerializeField] private PoisonBall _poisonBall;
     [SerializeField] private CreeperInvisible _creeperInvisible;
     [SerializeField] private ColdBlood _coldBlood;
-    [SerializeField] private LightningStrikes _lightningStrikes;
     //[SerializeField] private AbsorptionOfPoisons _absorptionOfPoisons;
 
     [Header("Ability properties")]
@@ -83,19 +84,6 @@ public class CreeperStrike : AutoAttackSkill
             _isHit = true;
             _currentCountHit++;
 
-            if (_currentCountHit == 2 || isUsingLightningStrikes && _currentCountHit == 2)
-            {
-                float time = 10f;
-
-                if (_timerForTwoHitVariableCoroutine != null)
-                {
-                    StopCoroutine(_timerForTwoHitVariableCoroutine);
-                }
-
-                _timerForTwoHitVariableCoroutine = StartCoroutine(TimerForTwoHit(time, isUsingLightningStrikes));
-                
-                _currentCountHit = 0;
-            }
 
             //if (_absorptionOfPoisons != null && _absorptionOfPoisons.IsWorking)
             //{
@@ -112,13 +100,11 @@ public class CreeperStrike : AutoAttackSkill
                     {
                         _strokesOfAspiration.UseTalentStrokesOfAspiration();
                     }
-                    else
-                    {
-                        _lastTarget = target;
-                    }
 
                     _currentHitForStrokesOfAspiration = 0;
                 }
+
+                _lastTarget = target;
             }
 
             if (_restorationOfGlands.Data.IsOpen && _poisonBoneStack > 0 && target.CharacterState.CheckForState(States.PoisonBone))
@@ -154,7 +140,9 @@ public class CreeperStrike : AutoAttackSkill
             {
                 if (_assasinPoison.CurrentChargeAssasinPoison > 0)
                 {
-                    _assasinPoison.CmdSpendCharge(CurrentTarget, _lifeTimePoisonBoneStacks);
+                    _assasinPoison.CmdSpendCharge();
+                    _poisonBall.IsCanConvertPoisonInCharge = true;
+                    CmdApplyPoisonBone(target.gameObject);
                 }
             }
 
@@ -176,8 +164,7 @@ public class CreeperStrike : AutoAttackSkill
                 if (_player.IsInvisible)
                     _creeperInvisible.ExitingInvisible();
 
-
-                DealCriticalDamage(target, _currentDamage);
+                DealCriticalDamage(target, _currentDamage, true);
             }
             else if (_currentChanceOfCriticalStrike <= _chanceOfCriticalStrike)
             {
@@ -198,7 +185,26 @@ public class CreeperStrike : AutoAttackSkill
 
             if (_firstStrike.Data.IsOpen)
             {
-                _firstStrike.FirstHit = false;
+                _firstStrike.ReturnBoolFalse();
+            }
+
+            if (_currentCountHit == 2 || isUsingLightningStrikes && _currentCountHit == 2)
+            {
+                float time = 10f;
+
+                if (_timerForTwoHitVariableCoroutine != null)
+                {
+                    StopCoroutine(_timerForTwoHitVariableCoroutine);
+                }
+
+                _timerForTwoHitVariableCoroutine = StartCoroutine(TimerForTwoHit(time, isUsingLightningStrikes));
+                
+                _currentCountHit = 0;
+
+                if (_coldBlood.IsCanCritLightningStrikes)
+                {
+                    _coldBlood.IsCanCritLightningStrikes = false;
+                }
             }
 
             _isHit = false;
@@ -212,7 +218,6 @@ public class CreeperStrike : AutoAttackSkill
         _isTwoHit = true;
 
         _lightningStrikes.IsUsedLightningStrikes = isUsingLightningStrikes;
-
 
         while (time > 0)
         {
@@ -254,30 +259,37 @@ public class CreeperStrike : AutoAttackSkill
             criticalDamage *= (multiplyDamage * firstStrikeTalentMultiplyDamage);
             _firstStrike.ReturnBoolFalse();
         }
-        if (_coldBlood.IsCanCritCreeperStrike && _poisonBoneStack == 0)
+        else if (_coldBlood.IsCanCritCreeperStrike || _coldBlood.IsCanCritLightningStrikes)
         {
-            if (_coldBlood.KillersStaminaTalentIsActive)
+            float endCriticalDamage = coldBloodMultiplyDamage + multiplyDamage;
+
+            if (_lightningStrikes.IsUsedLightningStrikes)
+            {
+                _coldBlood.IsCanCritCreeperStrike = false;
+            }
+            else
+            {
+                _coldBlood.IsCanCritCreeperStrike = false;
                 _coldBlood.IsCanCritLightningStrikes = false;
+            }
 
-            _coldBlood.IsCanCritCreeperStrike = false;
-
-            criticalDamage *= coldBloodMultiplyDamage;
+            criticalDamage *= endCriticalDamage;
         }
         else
         {
             criticalDamage *= multiplyDamage;
         }
+
         return criticalDamage;
     }
 
-    private void DealCriticalDamage(Character currentTarget, float criticalDamage)
+    private void DealCriticalDamage(Character currentTarget, float criticalDamage, bool isTalentCritDamage = false)
     {
-        if (_coldBlood.IsCanCritCreeperStrike || _coldBlood.IsCanCritLightningStrikes)
+        if (isTalentCritDamage)
         {
             criticalDamage = CalculateCriticalDamage(currentTarget, criticalDamage);
         }
-         
-        if (currentTarget.CharacterState.CheckForState(States.PoisonBone))
+        else if (currentTarget.CharacterState.CheckForState(States.PoisonBone))
         {
             criticalDamage = CalculateCriticalDamage(currentTarget, criticalDamage);
         }
@@ -315,6 +327,14 @@ public class CreeperStrike : AutoAttackSkill
         Character playerCharacter = player.GetComponent<Character>();
 
         _preparingForFight.IncreaseManaRegeneration(playerCharacter);
+    }
+
+    [Command]
+    private void CmdApplyPoisonBone(GameObject target)
+    {
+        Character targetCharacter = target.GetComponent<Character>();
+
+        targetCharacter.CharacterState.AddState(States.PoisonBone, _lifeTimePoisonBoneStacks, 0, _player.gameObject, null);
     }
 
     [Command]

@@ -67,8 +67,8 @@ public class LightningMovement : Skill
     #endregion
 
     private float _baseRangeLeap;
-    private float _angle;
     private float _multiplierLeap = 1f;
+    private float _heatedGlandsDuration = 4f;
 
     #region BoolVariables
 
@@ -635,7 +635,7 @@ public class LightningMovement : Skill
 
         _player.Move.enabled = false;
 
-        CmdSingleLeap(firstLeapPoint, _durationLeap, _rangeLeap);
+        CmdSingleLeap(firstLeapPoint, _durationLeap, _rangeLeap, _heatedGlandsDuration, _heatedGlandsIsActive);
     }
 
     private void ExecuteLeaps(Vector3 firstLeapPoint, Vector3 secondLeapPoint)
@@ -652,7 +652,7 @@ public class LightningMovement : Skill
             }
 
             CmdExecuteTwoLeaps(firstLeapPoint, secondLeapPoint,
-                _durationLeap, _rangeLeap, _multiplierLeap, _timeBuff, _invtervalBetweenLeaps,
+                _durationLeap, _rangeLeap, _multiplierLeap, _timeBuff, _invtervalBetweenLeaps, _heatedGlandsDuration,
                 _heatedGlandsIsActive, _targetsLayers, _target.gameObject);
         }
 
@@ -663,13 +663,19 @@ public class LightningMovement : Skill
     #region Command
 
     [Command]
-    private void CmdSingleLeap(Vector3 firstLeapPoint, float durationLeap, float rangeLeap)
+    private void CmdSingleLeap(Vector3 firstLeapPoint, float durationLeap, float rangeLeap, float heatedGlandsDuration, 
+        bool heatedGlandsIsActive)
     {
         _player.Move.enabled = false;
 
         if (_superFastScales.Data.IsOpen)
         {
             _superFastScales.IncreasingResistance(null);
+        }
+
+        if (heatedGlandsIsActive)
+        {
+            _player.CharacterState.AddState(States.HeatedGlands, heatedGlandsDuration, 0, _player.gameObject, null);
         }
 
         MoveComponent playerTransform = _player.GetComponent<MoveComponent>();
@@ -681,7 +687,7 @@ public class LightningMovement : Skill
 
     [Command]
     private void CmdExecuteTwoLeaps(Vector3 firstLeapPoint, Vector3 secondLeapPoint,
-        float durationLeap, float rangeLeap, float multiplierLeap, float timeBuff, float interval,
+        float durationLeap, float rangeLeap, float multiplierLeap, float timeBuff, float interval, float heatedGlandsDuration,
         bool heatedGlandsIsActive,
         LayerMask enemyLayer, GameObject target)
     {
@@ -694,7 +700,7 @@ public class LightningMovement : Skill
         }
 
         TargetRpcExecuteLeaps(_player.gameObject, firstLeapPoint, secondLeapPoint, 
-            durationLeap, rangeLeap, multiplierLeap, timeBuff, interval,
+            durationLeap, rangeLeap, multiplierLeap, timeBuff, interval, heatedGlandsDuration,
             heatedGlandsIsActive, enemyLayer);
     }
 
@@ -702,30 +708,37 @@ public class LightningMovement : Skill
 
     [TargetRpc]
     private void TargetRpcExecuteLeaps(GameObject player, Vector3 firstLeapPoint, Vector3 secondLeapPoint,
-        float durationLeap, float rangeLeap, float multiplierLeap, float timeBuff, float interval,
+        float durationLeap, float rangeLeap, float multiplierLeap, float timeBuff, float interval, float heatedGlandsDuration,
         bool heatedGlandsIsActive,
         LayerMask enemyLayer)
     {
         _player.CharacterState.CmdAddState(States.Immateriality, (_durationLeap * _multiplierLeap), 0, _player.gameObject, Name);
 
-        float deductible = 0.12f;
         interval = (rangeLeap * (durationLeap / GlobalVariable.cellSize));
+
         Character playerRigidbody = player.GetComponent<Character>(); 
 
         Sequence leapSequence = DOTween.Sequence();
 
         leapSequence.AppendCallback(() =>
         {
+            if (heatedGlandsIsActive)
+            {
+                _player.CharacterState.CmdAddState(States.HeatedGlands, heatedGlandsDuration, 0, _player.gameObject, null);
+            }
+
             playerRigidbody.Rb.DOMove(firstLeapPoint, (durationLeap * rangeLeap / GlobalVariable.cellSize));
+
         }).AppendInterval(interval);
 
         leapSequence.AppendCallback(() =>
         {
-            playerRigidbody.Rb.DOMove(secondLeapPoint, (durationLeap * rangeLeap / GlobalVariable.cellSize));
             if (heatedGlandsIsActive)
             {
-                _player.CharacterState.AddState(States.HeatedGlands, 4, 0, _player.gameObject, null);
+                _player.CharacterState.CmdAddState(States.HeatedGlands, heatedGlandsDuration, 0, _player.gameObject, null);
             }
+
+            playerRigidbody.Rb.DOMove(secondLeapPoint, (durationLeap * rangeLeap / GlobalVariable.cellSize));
         });
     }
 }

@@ -128,9 +128,9 @@ public class CreeperInvisible : Skill
         }
         else if (!_isInvisible)
         {
-            Debug.Log("CreeperInvisible / else if (invisible)");
-
             yield return new WaitForSeconds(10f);
+
+            Debug.Log("CreeperInvisible / else if (invisible)");
 
             EnteringInvisible();
         }
@@ -354,11 +354,11 @@ public class CreeperInvisible : Skill
             _isReadyToThreeHitForPreparingForFightTalent = true;
         }
 
-        if (_coldBlood.ColdBloodTalentIsActive)
+        if (_coldBlood.ColdBloodTalent != null && _coldBlood.ColdBloodTalent.Data.IsOpen)
         {
             _coldBlood.ReducingAbilityCooldown();
         }
-
+        
         #region CancleCoroutines
 
         if (_checkEnemiesCoroutine != null)

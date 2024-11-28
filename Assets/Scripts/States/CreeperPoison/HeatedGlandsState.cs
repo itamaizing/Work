@@ -1,15 +1,17 @@
+using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class HeatedGlandsState : AbstractCharacterState
 {
-    private int _maxStacks = 10;
+    private int _maxStacks = 7;
 
     private float _duration;
     private float _baseDuration;
-    private float _amountManaIncreasingValue = 0.02f;
-    private float _newMaxManaPlayer;
-    private float _maxManaPlayer;
+
+    private float _baseManaRegenIncrease = 0.3f;
+    private float _allManaRegenIncrease;
+    private float _baseManaRegen;
 
     private Character _player;
     private Resource _playerMana;
@@ -22,6 +24,8 @@ public class HeatedGlandsState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
+        Debug.Log("HeatedGlands / EnterState");
+
         MaxStacksCount = _maxStacks;
 
         _characterState = character;
@@ -31,13 +35,13 @@ public class HeatedGlandsState : AbstractCharacterState
         _duration = durationToExit;
         _baseDuration = _duration;
 
-        _maxManaPlayer = _playerMana.MaxValue;
+        _baseManaRegen = _player.TryGetResource(ResourceType.Mana).RegenerationValue;
 
         if (CurrentStacksCount < MaxStacksCount)
         {
-            AddStack();
+            CurrentStacksCount++;
+            IncreasingManaRegeneration();
         }
-
     }
 
     public override void UpdateState()
@@ -51,10 +55,11 @@ public class HeatedGlandsState : AbstractCharacterState
 
     public override void ExitState()
     {
-        _playerMana.ChangedMaxValue(-_newMaxManaPlayer);
+        _player.TryGetResource(ResourceType.Mana).RegenerationValue = _baseManaRegen;
+        
+        _allManaRegenIncrease = 0;
 
         CurrentStacksCount = 0;
-        _newMaxManaPlayer = 0;
 
         _characterState.RemoveState(this);
     }
@@ -63,35 +68,31 @@ public class HeatedGlandsState : AbstractCharacterState
     {
         if (CurrentStacksCount < MaxStacksCount)
         {
-            AddStack();
+            CurrentStacksCount++;
+
+            _duration = _baseDuration;
+
+            IncreasingManaRegeneration();
+
             return true;
         }
         else
         {
             _duration = _baseDuration;
+
             return true;
         }
     }
 
-    private void AddStack()
+    [Server]
+    private void IncreasingManaRegeneration()
     {
-        CurrentStacksCount++;
-        _duration = _baseDuration;
-        IncreasingAmountManaValue();
-    }
+        _allManaRegenIncrease += _baseManaRegenIncrease;
+        Debug.Log("HeatedGlands / IncreasingManaRegen / _allManaRegenIncrease = " + _allManaRegenIncrease);
+        float increasingManaRegen = _baseManaRegen * _allManaRegenIncrease;
+        Debug.Log("HeatedGlands / IncreasingManaRegen / increasingManaRegen = " + increasingManaRegen);
+        _player.TryGetResource(ResourceType.Mana).RegenerationValue = increasingManaRegen;
+        Debug.Log("HeatedGlands / IncreasingManaRegen / player current ManaRegen = " + _player.TryGetResource(ResourceType.Mana).RegenerationValue);
 
-    private void IncreasingAmountManaValue()
-    {
-        Debug.Log("HeatedGlands / IncreasingAmountManaValue");
-
-        float bonusAmountMana = _amountManaIncreasingValue * _maxManaPlayer;
-        Debug.Log("IncreasingMana / bonusMana == " + bonusAmountMana);
-
-        _playerMana.ChangedMaxValue(bonusAmountMana);
-
-        _newMaxManaPlayer += bonusAmountMana;
-        Debug.Log("IncreasingMana / newMaxManaPlayer == " + _newMaxManaPlayer);
-
-        Debug.Log("IncreasingMana / MaxManaPlayer after +bonusMana == " + _playerMana.MaxValue);
     }
 }

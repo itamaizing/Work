@@ -62,8 +62,6 @@ public class PoisonCloudState : AbstractCharacterState
             SearchTalent();
         }
 
-        Debug.Log("PoisonCloudState / EnterState / radiusCloud = " + _radiusCloud);
-
         if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks();
@@ -124,7 +122,7 @@ public class PoisonCloudState : AbstractCharacterState
 
         if (_timeBetweenAttack <= 0)
         {
-            SearchingEnemies(_enemiesLayer, _characterState.gameObject);
+            RpcSearchingEnemies(_enemiesLayer, _characterState.gameObject);
 
             _timeBetweenAttack = _startTimeBetweenAttack;
         }
@@ -176,7 +174,7 @@ public class PoisonCloudState : AbstractCharacterState
     }
 
     [ClientRpc]
-    private void SearchingEnemies(LayerMask enemyLayer, GameObject player)
+    private void RpcSearchingEnemies(LayerMask enemyLayer, GameObject player)
     {
         Collider[] hitEnemies = Physics.OverlapSphere(player.transform.position, _radiusCloud, enemyLayer);
 
@@ -184,13 +182,13 @@ public class PoisonCloudState : AbstractCharacterState
         {
             if (enemy.transform != player.transform)
             {
-                DamageDeal(enemy.gameObject);
+                CmdDamageDeal(enemy.gameObject);
             }
         }
     }
 
     [Command]
-    private void DamageDeal(GameObject target)
+    private void CmdDamageDeal(GameObject target)
     {
         var targetHealth = target.GetComponent<Character>();
 

@@ -4,7 +4,6 @@ using UnityEngine;
 public class AssasinPoison : Talent
 {
     [SerializeField] public CreeperInvisible _invisibleCreeper;
-    [SerializeField] private FlowOfPoisons _flowOfPoisons;
 
     private int _currentChargePoison;
     private int _maxChargePoison = 3;
@@ -39,7 +38,7 @@ public class AssasinPoison : Talent
     {
         while (Data.IsOpen)
         {
-            if (_flowOfPoisons.Data.IsOpen && _currentChargePoison < 3 && character.CharacterState.CheckForState(States.CreeperInvisible))
+            if (_currentChargePoison < 3 && character.CharacterState.CheckForState(States.CreeperInvisible))
             {
                 _timeAccumulateCharge -= Time.deltaTime;
                 if (_timeAccumulateCharge <= 0)
@@ -51,13 +50,12 @@ public class AssasinPoison : Talent
         }
     }
 
-    public void CmdSpendCharge(Character target, float lifeTimePoisonBoneStack)
+    public void CmdSpendCharge()
     {
         if (character.CharacterState.CheckForState(States.CreeperInvisible))
         {
             if (_currentChargePoison > 0)
             {
-                target.CharacterState.CmdAddState(States.PoisonBone, lifeTimePoisonBoneStack, 0, character.gameObject, null);
                 _currentChargePoison--;
             }
         }
@@ -68,9 +66,7 @@ public class AssasinPoison : Talent
         if (_currentChargePoison < _maxChargePoison)
         {
             _currentChargePoison++;
-            Debug.Log("AssasinPoison / AccumulateChargePoison / CurrentChargePoison == " + _currentChargePoison);
             _timeAccumulateCharge = _startTimeAccumulateCharge;
-            Debug.Log("AssasinPoison / AccumulateChargePoison / timeAccumulateCharge == " + _timeAccumulateCharge);
         }
     }
 
