@@ -198,9 +198,9 @@ public class ChainBlade_Scorpion : Skill
         if (_tempTargetForDamage != hp.transform)
         {
             _tempTargetForDamage = hp.transform;
-            _tempHPForDamage = hp.GetComponent<Health>();
+            _tempForDamage = hp.GetComponent<IDamageable>();
         }
-        _tempHPForDamage.TryTakeDamage(ref damage, this);
+        _tempForDamage.TryTakeDamage(ref damage, this);
     }
 
 
