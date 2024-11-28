@@ -13,7 +13,12 @@ public abstract class Talent : MonoBehaviour
 
     public TalentData Data => _data;
 
-    public abstract void Enter();
+	private void OnValidate()
+	{
+		_data.Name = GetType().Name;
+	}
+
+	public abstract void Enter();
 
     public abstract void Exit();
 
@@ -26,15 +31,24 @@ public abstract class Talent : MonoBehaviour
 [Serializable]
 public class TalentData
 {
-    public string Name;
+    private string _name;
     public bool IsOpen;
 
     public string Description = string.Empty;
     public Sprite Icon;
 
+    public string Name
+    {
+        get { return _name; }
+        set
+        {
+            //Debug.Log(value);
+            _name = value;
+        }
+    }
     public TalentData(string name, bool isOpen)
     {
-        Name = name;
+       // Name = name;
         IsOpen = isOpen;
     }
 }
@@ -71,7 +85,7 @@ public class TalentsGroup
                 activeCount++;
             }
         }
-        Debug.Log(activeCount);
+        //Debug.Log(activeCount);
         activeCount = isDecrease ? activeCount - 1 : activeCount;
 
         bonus += row switch
@@ -100,7 +114,8 @@ public class TalentsGroup
         
         if (isActive)
         {
-            talent.Enter();   
+			//Debug.Log("Talent activated on init " + talent.GetType().Name);
+			talent.Enter();   
         }
         else
         {
@@ -121,7 +136,7 @@ public class TalentSystem : NetworkBehaviour
 
     public List<Talent> ActiveTalents => Talents.SelectMany(o => o.TalentsData).Where(a => a.Data.IsOpen).ToList();
 
-   // [Command]
+    //[Command]
     public void Initialize()
     {
         foreach (var talent in _talents.SelectMany(talentsGroup => talentsGroup.TalentsData))
@@ -129,16 +144,18 @@ public class TalentSystem : NetworkBehaviour
             talent.Data.Name = talent.GetType().Name;
             if(talent.Data.IsOpen)
             {
-                talent.Enter();
+				//Debug.Log("Talent activated on init " + talent.GetType().Name);
+				talent.Enter();
             }
             else
             {
-                talent.Exit();
+				//Debug.Log("Talent DEactivated on init " + talent.GetType().Name);
+				talent.Exit();
             }
         }
-        //Initialize2();
+        Initialize2();
     }
- /*   [ClientRpc]
+    [Command]
 	public void Initialize2()
 	{
 		foreach (var talent in _talents.SelectMany(talentsGroup => talentsGroup.TalentsData))
@@ -153,7 +170,7 @@ public class TalentSystem : NetworkBehaviour
 				talent.Exit();
 			}
 		}
-	}*/
+	}
 
 	public void AddPoints(int value)
     {
@@ -163,13 +180,6 @@ public class TalentSystem : NetworkBehaviour
     {
         _talents[row].TalentsData[id].SetActive(value);
     }
-
-    /*[Command]
-    public void CmdAdd(Talent talent)
-    {
-        Add(talent);
-        RpcAdd(talent);
-    }*/
 
     [Command]
     public void CmdEnterAll()
@@ -188,14 +198,12 @@ public class TalentSystem : NetworkBehaviour
     [Command]
     public void CmdAdd(int id, int row)
     {
-
         RpcAdd(id, row);
     }
 
     [Command]
     public void CmdRemove(int id, int row)
     {
-
         RpcRemove(id, row);
     }
 
@@ -223,11 +231,6 @@ public class TalentSystem : NetworkBehaviour
         ExitAll();
     }
 
-   /* [ClientRpc]
-    public void RpcAdd(Talent talent)
-    {
-        Add(talent);
-    }*/
 
     public void EnterAll()
     {

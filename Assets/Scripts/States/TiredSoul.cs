@@ -6,6 +6,7 @@ public class TiredSoul : AbstractCharacterState
     private float _duration;
     private float _baseDuration;
 
+    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.TiredSoul;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => new List<StatusEffect>();

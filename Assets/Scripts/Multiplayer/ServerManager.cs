@@ -14,7 +14,8 @@ public class ServerManager : NetworkBehaviour
     private static ServerManager _instance;
     private int _currentHeroIndex = 0;
     private GameMode _currentGameMode = GameMode.GM1vs1;
-    
+
+    public GameMode CurrentGameMode => _currentGameMode;
     public static ServerManager Instance => _instance;
     public List<HeroComponent> HeroList => _heroList;
 
@@ -70,6 +71,11 @@ public class ServerManager : NetworkBehaviour
     public void SetPlayer(HeroComponent hero)
     {
         _currentHeroIndex = _heroList.IndexOf(hero);
+
+        if (LevelCharacterManager.Instance != null)
+        {
+            LevelCharacterManager.Instance.SetHero(hero);
+        }
     }
     public void SetMode(GameMode mode)
     {

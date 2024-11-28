@@ -8,7 +8,7 @@ public class DefenceReductionState : AbstractCharacterState
     private float _defaultPhysDef = 0;
 
     private List<StatusEffect> _effects = new ();
-
+    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.DefenseReduction;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;

@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Icecloud : Skill
+public class IceCloud : Skill
 {
 	[SerializeField] private IceCloudProjectile _projectile;
 	[SerializeField] private HeroComponent _playerLinks;
@@ -14,6 +14,8 @@ public class Icecloud : Skill
 	//private bool _enabled;
 	private bool _boostDmg;
 	private Energy _energy;
+	private bool _frozwenTalent;
+
 	//private RuneComponent _rune;
 
 	protected override bool IsCanCast => IsCanCastCheck();
@@ -54,11 +56,9 @@ public class Icecloud : Skill
 	{
 		Buff.AttackSpeed.ReductionPercentage(1 + _combo.GetMultipliedSpeed() / 100);
 
-		//_playerLinks.RuneComponent.SwitchMultiplier(true);
-		//_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
-		if( _combo.MakeHit(null, AbilityForm.Magic, 1, 0))
+		if( _combo.MakeHit(null, AbilityForm.Magic, 1, 0, 0))
 		{
 			Debug.LogError("some talents i guess in ice cloud");
 			//_playerLinks.RuneComponent.IceCloudBonus();
@@ -67,7 +67,6 @@ public class Icecloud : Skill
 		Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);
 
 		CmdCreateProjecttile(angle, _energy.CurrentValue);
-		//_energy.TryUse(_energy.CurrentValue);
 		ClearData();
 	}
 
@@ -76,7 +75,8 @@ public class Icecloud : Skill
 	{
 		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, -angle, 0));
 		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
-		projectile.Init(_playerLinks, manaValue, false, this);	
+		projectile.Init(_playerLinks, manaValue, false, this);
+		projectile.Talent(_boostDmg, _frozwenTalent);
 
 		NetworkServer.Spawn(projectile.gameObject);
 
@@ -94,19 +94,32 @@ public class Icecloud : Skill
 		_boostDmg = value;
 	}
 
+	public void TalentBoostFrozenState(bool value)
+	{
+		_frozwenTalent = value;
+	}
+
 	protected override IEnumerator PrepareJob()
 	{
 		while (float.IsPositiveInfinity(_mousePos.x))
 		{
 			if (GetMouseButton)
 			{
-				if (GetTarget().character == null)
+				//if(GetTarget()  == null) yield return null;
+				if (GetTarget().isCharater)
 				{
-					_mousePos = GetTarget().Position;
+					if (GetTarget().character == null)
+					{
+						//_mousePos = GetTarget().Position;
+					}
+					else
+					{
+						_mousePos = GetTarget().character.transform.position;
+					}
 				}
 				else
 				{
-					_mousePos = GetTarget().character.transform.position;
+					_mousePos = GetTarget().Position;
 				}
 			}
 			yield return null;

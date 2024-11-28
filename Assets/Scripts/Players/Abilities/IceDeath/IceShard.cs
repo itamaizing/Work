@@ -10,16 +10,16 @@ public class IceShard : Skill
 	[SerializeField] private HeroComponent _playerLinks;
 	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 
-	private Vector2 _mousePos = Vector2.positiveInfinity;
+	private Vector3 _mousePos = Vector2.positiveInfinity;
 	private bool _talentPlague = false;
 	private bool _talentChragesPlague = false;
 	private Energy _energy;
 
 	protected override bool IsCanCast => true;
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+    protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+    protected override int AnimTriggerCast => 0;
 
     private void Start()
 	{
@@ -35,10 +35,9 @@ public class IceShard : Skill
 
 	private void Shoot()
 	{
-		//_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		Vector2 lookDir = _mousePos - (Vector2)_playerLinks.transform.position;
-		float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
-		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 3);
+		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
+		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
+		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 5, 3);
 
 		CmdCreateProjecttile(angle, _energy.CurrentValue);
 	}
@@ -46,7 +45,7 @@ public class IceShard : Skill
 	[Command]
 	private void CmdCreateProjecttile(float angle, float manaValue)
 	{
-		IceShardProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, 0, angle));
+		IceShardProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, -angle, 0));
 		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
 		projectile.Init(_playerLinks, manaValue, false, this);
 		projectile.Talents(_talentPlague, _talentChragesPlague);
@@ -73,12 +72,19 @@ public class IceShard : Skill
 
 	protected override IEnumerator PrepareJob()
 	{
+		Debug.Log("MOUSE POS " + float.IsPositiveInfinity(_mousePos.x));
 		while (float.IsPositiveInfinity(_mousePos.x))
 		{
 			if (GetMouseButton)
 			{
-				_energy.TryUse(5);
-				_mousePos = GetTarget().Position;
+				if (GetTarget().character == null)
+				{
+					_mousePos = GetTarget().Position;
+				}
+				else
+				{
+					_mousePos = GetTarget().character.transform.position;
+				}
 			}
 			yield return null;
 		}
@@ -92,6 +98,7 @@ public class IceShard : Skill
 
 	protected override void ClearData()
 	{
+		Debug.Log("CLEARED");
 		_mousePos = Vector2.positiveInfinity;
 	}
 }

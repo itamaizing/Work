@@ -7,15 +7,16 @@ public class FrostingState : AbstractCharacterState
 	public bool turnOff = false;
 	private float _duration;
 	private float _baseDuration;
+	private float _damageOnStart;
 	private float _damageToExit;
 
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.AbilitySpeed };
-
+	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 	public override States State => States.Frosting;
 	public override StateType Type => StateType.Magic;
 	public override List<StatusEffect> Effects => _effects;
 
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		Debug.Log("Entering Frosting State");
 		_characterState = character;
@@ -31,6 +32,7 @@ public class FrostingState : AbstractCharacterState
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
 
+		_damageOnStart = _characterState.Character.Health.SumDamageTaken;
 		_characterState.Character.Move.CanMove = false;
 
 		//decrease speed
@@ -57,7 +59,7 @@ public class FrostingState : AbstractCharacterState
 	public override void UpdateState()
 	{
 		_duration -= Time.deltaTime;
-		if (_characterState.Character.Health.SumDamageTaken >= _damageToExit || _duration < 0 || turnOff)
+		if (_characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || _duration < 0 || turnOff)
 		{
 			ExitState();
 		}
@@ -67,11 +69,11 @@ public class FrostingState : AbstractCharacterState
 	{
 		Debug.Log("Exiting Frosting State");
 		_characterState.RemoveState(this);
-		if (_characterState.Check(StatusEffect.Move))
+		if (!_characterState.Check(StatusEffect.Move))
 		{
 			_characterState.Character.Move.CanMove = true;
 		}
-		if (_characterState.Check(StatusEffect.AbilitySpeed))
+		if (!_characterState.Check(StatusEffect.AbilitySpeed))
 		{
 			foreach (var abil in _abilities.Abilities)
 			{

@@ -10,8 +10,9 @@ public class Curse : AbstractCharacterState
 	public override States State => States.Curse;
 	public override StateType Type => StateType.Magic;
 	public override List<StatusEffect> Effects => throw new System.NotImplementedException();
+	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		_characterState = character;
 		_durationToExit = durationToExit;

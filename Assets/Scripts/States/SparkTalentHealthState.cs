@@ -9,7 +9,7 @@ public class SparkTalentHealthState : AbstractCharacterState
     private float _healthBoostPercentage = 0.25f;
 
     private List<StatusEffect> _effects = new ();
-
+    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.SparkTalentHealthBuff;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;

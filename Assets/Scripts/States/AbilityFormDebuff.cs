@@ -12,12 +12,12 @@ public class AbilityFormDebuff : AbstractCharacterState
 	public bool canCancel = false;
 
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.AbilitySchool };
-
+	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 	public override States State => States.FormDebuf;
 	public override StateType Type => StateType.Immaterial;
 	public override List<StatusEffect> Effects => _effects;
 
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		Debug.Log("Entering AbilityFormDebuff State");
 		_characterState = character;
@@ -51,7 +51,7 @@ public class AbilityFormDebuff : AbstractCharacterState
 	{
 		Debug.Log("Exiting AbilityFormDebuff State");
 		_characterState.RemoveState(this);
-		if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
+		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null)
 		{
 			_abilities.SwitchAvaliable(canceledForm, true);
 		}

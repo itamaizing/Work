@@ -10,8 +10,9 @@ public class LastBreath : AbstractCharacterState
 	public override States State => States.LastBreath;
 	public override StateType Type => StateType.Magic;
 	public override List<StatusEffect> Effects => throw new System.NotImplementedException();
+	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		_character = character.Character;
 		_abilities = _character.Abilities;

@@ -500,6 +500,14 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0.29832584
       objectReference: {fileID: 0}
+    - target: {fileID: 3540905251162376194, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3540905251162376194, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3624054685066338121, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.030096373
@@ -1196,6 +1204,7 @@ MonoBehaviour:
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
+  _isDynamicRenderer: 0
   _projectile: {fileID: 3436609779166928419, guid: d490c899d604d2c4dbb3f72e61cacb6e, type: 3}
 --- !u!114 &7470037727588752420
 MonoBehaviour:
@@ -1247,6 +1256,7 @@ MonoBehaviour:
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 0
+  _isDynamicRenderer: 0
   _projectile: {fileID: 3436609779166928419, guid: d490c899d604d2c4dbb3f72e61cacb6e, type: 3}
   _damage: 50
   _projectileCount: 8
@@ -1299,6 +1309,7 @@ MonoBehaviour:
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
+  _isDynamicRenderer: 0
 --- !u!114 &7442031059852679175
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1347,6 +1358,7 @@ MonoBehaviour:
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
+  _isDynamicRenderer: 0
   _attackZoneSize: 1
   _attackDelay: 0
   _chargeAttackDelay: 0

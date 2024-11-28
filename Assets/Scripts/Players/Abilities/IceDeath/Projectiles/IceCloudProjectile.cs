@@ -9,6 +9,7 @@ public class IceCloudProjectile : Projectiles
 	private Damage _damage;
 	private bool _boostDmg;
 	private float _curDamage;
+	private float _damageToExit = 1;
 
 	private void Start()
 	{
@@ -46,7 +47,7 @@ public class IceCloudProjectile : Projectiles
 				
 				//target.CharacterState.AddState(States.Plague, 40, 0, _dad.gameObject, _skill.Name);
 
-				float duration = 100 + _energyDad / 20;
+				float duration = 100+ _energyDad / 20;
 
 				if (target.CharacterState.CheckForState(States.Frozen) && _boostDmg)
 				{
@@ -54,13 +55,9 @@ public class IceCloudProjectile : Projectiles
 					Debug.Log("NEW DAMAGE");
 				}
 
-				_energy.SumDamageMake(_curDamage);
-				
+				TargetRpcDamgeMake(_curDamage);				
 				//_skill.CmdApplyDamage(_damage, target.gameObject);
 				target.Health.TryTakeDamage(ref _damage, _skill);
-
-
-				target.CharacterState.AddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
 
 				//talents???
 				if (_dad.Health.ResistMagDamage >= 20)
@@ -71,8 +68,17 @@ public class IceCloudProjectile : Projectiles
 				{
 					_dad.Health.SetEvadeMagic(20);
 				}
-
-				//dad.Stamina.Use(duration * 20);
+				for (int i = 0; i < _dad.Resources.Count; i++)
+				{
+					if (_dad.Resources[i].Type == ResourceType.Energy)
+					{
+						_energy = (Energy)_dad.Resources[i];
+					}
+				}
+				//_energy.TryUse(_energyDad);
+				_energy.UseAllEnergy();
+				ClientUse(_energyDad, _energy.gameObject);
+				target.CharacterState.AddState(States.Frozen, duration, target.Health.SumDamageTaken + _damageToExit, _dad.gameObject, _skill.name);
 				//damage
 				GetComponent<Collider>().enabled = false;
 				Explode();
@@ -90,6 +96,20 @@ public class IceCloudProjectile : Projectiles
 		}
 	}
 
+	//[ClientRpc]
+	private void ClientUse(float value, GameObject player)
+	{
+		/*Energy energy = null;
+		for (int i = 0; i < _dad.Resources.Count; i++)
+		{
+			if (_dad.Resources[i].Type == ResourceType.Energy)
+			{
+				energy = (Energy)_dad.Resources[i];
+			}
+		}
+		energy.TryUse(value);*/
+	}
+
 	private void Explode()
 	{
 		if (_hitEffect != null)
@@ -100,8 +120,16 @@ public class IceCloudProjectile : Projectiles
 		Destroy(gameObject);
 	}
 
-	public void TalentBoostDmg(bool value)
+	public void Talent(bool value, bool frozenState)
 	{
 		_boostDmg = value;
+		if(frozenState)
+		{
+			_damageToExit = 30;
+		}
+		else
+		{
+			_damageToExit = 1;
+		}
 	}
 }

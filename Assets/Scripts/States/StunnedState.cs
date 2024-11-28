@@ -10,12 +10,13 @@ public class StunnedState : AbstractCharacterState
 	private float _duration;
 
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.Ability };
-
+	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 	public override States State => States.Stun;
 	public override StateType Type => StateType.Physical;
 	public override List<StatusEffect> Effects => _effects;
 
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		Debug.Log("Entering Stunned State");
 
@@ -49,11 +50,11 @@ public class StunnedState : AbstractCharacterState
 	{
 		Debug.Log("Exiting Stunned State");
 		_characterState.RemoveState(this);
-		if (_characterState.Check(StatusEffect.Move))
+		if (!_characterState.Check(StatusEffect.Move))
 		{
 			_characterState.Character.Move.CanMove = true;
 		}
-		if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
+		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null)
 		{
 			_abilities.SetAbilitiesEnabled();
 		}

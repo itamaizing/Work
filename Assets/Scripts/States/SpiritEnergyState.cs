@@ -17,7 +17,7 @@ public class SpiritEnergyState : AbstractCharacterState
     private const float HealthBonusPerStack = 1f;
     
     private List<StatusEffect> _effects = new ();
-
+    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.SpiritEnergy;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
@@ -114,12 +114,12 @@ public class SpiritEnergyState : AbstractCharacterState
             ApplyManaRestore(manaRestoreBonusValue * healAmount * CurrentStacksCount);
         }
     }
-    
+
     private void OnDamageTaken(Damage damage, Skill skill)
     {
         var manaRestoreValue = _isTalentActive ? BuffedManaRestorePerStack : ManaRestorePerStack;
         ApplyManaRestore(manaRestoreValue * CurrentStacksCount);
-        
+
         if (skill.Hero.CharacterState.CheckForState(States.SpiritEnergy))
         {
             var manaRestoreBonusValue = _isTalentActive ? BuffedBonusManaRestore : BonusManaRestore;

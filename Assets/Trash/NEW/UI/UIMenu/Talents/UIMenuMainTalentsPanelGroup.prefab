@@ -690,7 +690,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d6ec3d64f213a24085ff765b9909318, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Owner: {fileID: 0}
   _talentPrefab: {fileID: 2672727632175960302, guid: 510b4e8c337444949a7ad57db51d9034, type: 3}
   _title: {fileID: 4831562950713950126}
   _talentsCount: {fileID: 2289309715589204459}

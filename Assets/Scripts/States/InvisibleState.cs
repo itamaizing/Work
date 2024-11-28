@@ -8,12 +8,12 @@ public class InvisibleState : AbstractCharacterState
 	private float _baseDuration;
 	private float _duration;
 	private List<StatusEffect> _effects = new List<StatusEffect>();
-
+	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 	public override States State => States.Invisible;
 	public override StateType Type => StateType.Magic;
 	public override List<StatusEffect> Effects => _effects;
 
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		Debug.Log("Entering Invisible State");
 		//effects.Add(StatusEffect.Others);
@@ -39,7 +39,7 @@ public class InvisibleState : AbstractCharacterState
 	{
 		Debug.Log("Exiting Invisible State");
 		_characterState.RemoveState(this);
-		if (_characterState.Check(StatusEffect.Others))
+		if (!_characterState.Check(StatusEffect.Others))
 		{
 			//_characterState.Health.SetInvincible(false);
 			_characterState.invinsible = false;

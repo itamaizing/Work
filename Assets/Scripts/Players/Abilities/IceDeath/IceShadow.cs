@@ -23,9 +23,9 @@ public class IceShadow : Skill
 
 	protected override bool IsCanCast => IsCanCastCheck();
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+    protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+    protected override int AnimTriggerCast => 0;
 
     private bool IsCanCastCheck()
 	{
@@ -87,7 +87,7 @@ public class IceShadow : Skill
 		Buff.AttackSpeed.ReductionPercentage(1 + _combo.GetMultipliedSpeed() / 100);
 		/*IceShadowObject projectileGm = Instantiate(_shadow, gameObject.transform.position, Quaternion.identity);
 		projectileGm.Init(_playerLinks.gameObject ,Mana.Value);*/
-		_lastHit = _combo.MakeHit(null, AbilityForm.Magic, 1, 0);
+		_lastHit = _combo.MakeHit(null, AbilityForm.Magic, 1, _manaUsed, 0);
 
 		Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);
 

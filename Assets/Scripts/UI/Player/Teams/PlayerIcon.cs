@@ -9,11 +9,11 @@ public class PlayerIcon : MonoBehaviour
     [SerializeField] private Bar _playerHp;
     [SerializeField] private Bar _playerMana;
 
-    public void Init(Character character)
+	public void Init(Character character)
     {
         _playerIcon.sprite = character.Data.Icon;
         _playerHp.Init(character.Health);
-        _playerMana.Init(character.Resources.FirstOrDefault(o=>o.Type == ResourceType.Mana));
+       // _playerMana.Init(character.Resources.FirstOrDefault(o=>o.Type == ResourceType.Mana));
     }
 
     public void OnCharacterSelected(Character character)
@@ -22,7 +22,7 @@ public class PlayerIcon : MonoBehaviour
 
         _playerIcon.sprite = character.Data.Icon;
         _playerHp.Init(character.Health);
-        _playerMana.Init(character.Resources.FirstOrDefault(o=>o.Type == ResourceType.Mana));
+        //_playerMana.Init(character.Resources.FirstOrDefault(o=>o.Type == ResourceType.Mana));
     }
 
     public void OnCharacterDeselected(Character character)

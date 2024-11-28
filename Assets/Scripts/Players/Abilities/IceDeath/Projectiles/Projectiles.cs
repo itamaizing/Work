@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class Projectiles : MonoBehaviour
+public class Projectiles : NetworkBehaviour
 {
 	[SerializeField] protected GameObject _hitEffect;
 	[SerializeField] protected SpriteRenderer _spriteRenderer;
@@ -14,6 +14,7 @@ public class Projectiles : MonoBehaviour
 	protected HeroComponent _dad;
 	protected Skill _skill;
 	protected Energy _energy;
+	protected RuneComponent _rune;
 	protected bool _initialized = false;
 	protected float _energyDad = 0;
 	protected bool _lastHit = false;
@@ -32,18 +33,20 @@ public class Projectiles : MonoBehaviour
 			{
 				_energy = (Energy)_dad.Resources[i];
 			}
+			if (_dad.Resources[i].Type == ResourceType.Rune)
+			{
+				_rune = (RuneComponent)_dad.Resources[i];
+			}
 		}
 		Debug.Log("bullet init");
 	}
 
-	/*[Server]	
-	private void OnTriggerEnter2D(Collider2D collision)
+	[ClientRpc]
+	protected void TargetRpcDamgeMake(float value)
 	{
-		Shot(collision);
+		Debug.Log("CLIENT RPC");
+		_energy.SumDamageMake(value);
+		_rune.SumDamageMake(value);
 	}
 
-	protected virtual void Shot(Collider2D collision)
-	{
-
-	}*/
 }

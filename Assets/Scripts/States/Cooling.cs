@@ -7,17 +7,19 @@ public class Cooling : AbstractCharacterState
 	public bool turnOff = false;
 	private float _duration;
 	private float _baseDuration;
+	private float _damageOnStart;
 	private float _damageToExit;
 	private float _curAbilityDebuf = 0.1f;
 	private float _curSpeedDebuf = 0.05f;
 
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.MoveSpeed, StatusEffect.AbilitySpeed };
-
+	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 	public override States State => States.Cooling;
 	public override StateType Type => StateType.Physical;
 	public override List<StatusEffect> Effects => _effects;
 
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		Debug.Log("Entering cooling State");
 		_characterState = character;
@@ -32,6 +34,7 @@ public class Cooling : AbstractCharacterState
 		}
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
+		_damageOnStart = _characterState.Character.Health.SumDamageTaken;
 
 		_characterState.Character.Move.ChangeMoveSpeed(1 - _curSpeedDebuf);
 		//decrease speed of attact and movement
@@ -41,7 +44,7 @@ public class Cooling : AbstractCharacterState
 	public override void UpdateState()
 	{
 		_duration -= Time.deltaTime;
-		if (_characterState.Character.Health.SumDamageTaken >= _damageToExit || _duration < 0 || turnOff)
+		if (_characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || _duration < 0 || turnOff)
 		{
 			ExitState();
 		}
@@ -51,12 +54,12 @@ public class Cooling : AbstractCharacterState
 	{
 		Debug.Log("Exiting cooling State");
 		_characterState.RemoveState(this);
-		if (_characterState.Check(StatusEffect.MoveSpeed))
+		if (!_characterState.Check(StatusEffect.MoveSpeed))
 		{
 			_characterState.Character.Move.SetDefaultSpeed();
 			//_characterState.Move.CanMove = true;
 		}
-		if (_characterState.Check(StatusEffect.AbilitySpeed))
+		if (!_characterState.Check(StatusEffect.AbilitySpeed))
 		{
 			//return speed of attact
 		}

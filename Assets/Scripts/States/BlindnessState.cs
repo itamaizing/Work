@@ -11,13 +11,14 @@ public class BlindnessState : AbstractCharacterState
 	private float _baseDuration;
 
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
-
+	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 	public override States State => States.Blind;
 	public override StateType Type => StateType.Physical;
 	public override List<StatusEffect> Effects => _effects;
 
-	//private PlayerAbilities _abilities;
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+
+    //private PlayerAbilities _abilities;
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		Debug.Log("Entering Stunned State");
 		_duration = durationToExit;
@@ -48,7 +49,7 @@ public class BlindnessState : AbstractCharacterState
 	{
 		Debug.Log("Exiting Stunned State");
 		_characterState.RemoveState(this);
-		if (_characterState.Check(StatusEffect.Ability))
+		if (!_characterState.Check(StatusEffect.Ability))
 		{
 			_abilities.SetAbilitiesEnabled();
 		}

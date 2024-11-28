@@ -8,7 +8,7 @@ public class SelfHarmState : AbstractCharacterState
     private float _currentStackChance = 0f;  
     
     private List<StatusEffect> _effects = new ();
-
+    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.SpiritEnergy;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;

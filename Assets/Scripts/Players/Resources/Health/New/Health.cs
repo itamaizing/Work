@@ -17,7 +17,10 @@ public class Health : Resource, IDamageable, IHealingable
     protected float _defMagDamage;
 
     private List<IDamageable> _shields = new List<IDamageable>();
-    private float _sumDamageTaken = 0;
+	[SyncVar] private float _sumDamageTaken = 0;
+    private Coroutine _dOTDamageAnimJob;
+    private float _dOTDamageAnimDuration = 0.1f;
+    private float _totalMaxAbsorption = 0;
 
     public float SumDamageTaken { get => _sumDamageTaken; }
     public float EvadeMeleeDamage { get => _evadeMeleeDamage; }
@@ -26,11 +29,17 @@ public class Health : Resource, IDamageable, IHealingable
     public float DefPhysDamage { get => _defPhysDamage; }
     public float DefMagDamage { get => _defMagDamage; }
     public List<IDamageable> Shields { get => _shields; }
+    public float TotalMaxAbsorption { get => _totalMaxAbsorption; set => _totalMaxAbsorption = value; }
 
     public event Action Evaded;
     public event Action<float , Skill , string> HealTaked;
     public event Action<Damage, Skill> DamageTaken;
+    public event Action<float> HealthRegenerated;
     public event Action Died;
+    public event Action<float, float> OnShieldValuesChanged;
+    public event Action<float> OnShieldAdd;
+    public event Action ShieldDeactivated;
+    public event Action<float, DamageType, Skill> ShieldDamageTaken;
 
     public override void Initialize(float health, float hpRegen, float hpRegenDelay, CharacterData data)
     {
@@ -63,7 +72,7 @@ public class Health : Resource, IDamageable, IHealingable
             ClientRpcDied();
             Died?.Invoke();
         }
-        ClientRpcDamageTaked(damage, skill);
+        ClientRpcDamage(damage, skill);
         _sumDamageTaken += damage.Value;
         return true;
     }
@@ -192,9 +201,51 @@ public class Health : Resource, IDamageable, IHealingable
         }
     }
 
+    private IEnumerator DOTDamageAnimCoroutine()
+    {
+        var tempSpeed = _animator.speed;
+        _animator.speed = _animator.speed * 0f;
+        yield return new WaitForSecondsRealtime(_dOTDamageAnimDuration);
+        _animator.speed = tempSpeed;
+    }
+
+    public void UpdateShieldValues(float absorbed, float maxAbsorption)
+    {
+        if (isServer)
+            ClientRpcUpdateShieldValues(absorbed, maxAbsorption);
+    }
+
+    public void AddShieldValues(float maxAbsorption)
+    {
+        if (isServer)
+            ClientRpcAddShieldValues(maxAbsorption);
+    }
+
+    public void ResetShieldValues()
+    {
+        ShieldDeactivated?.Invoke();
+    }
 
     [ClientRpc]
-    private void ClientRpcDamageTaked(Damage damage, Skill skill)
+    public void ClientRpcInvokeShieldDamageTaken(float value, DamageType damageType, Skill skill)
+    {
+        ShieldDamageTaken?.Invoke(value, damageType, skill);
+    }
+
+    [ClientRpc]
+    public void ClientRpcUpdateShieldValues(float absorbed, float maxAbsorption)
+    {
+        OnShieldValuesChanged?.Invoke(absorbed, maxAbsorption);
+    }
+
+    [ClientRpc]
+    public void ClientRpcAddShieldValues(float maxAbsorption)
+    {
+        OnShieldAdd?.Invoke(maxAbsorption);
+    }
+
+    [ClientRpc]
+    private void ClientRpcDamage(Damage damage, Skill skill)
     {
         DamageTaken?.Invoke(damage, skill);
         _animator.SetTrigger(HashAnimPlayer.TakeDamage);
@@ -226,4 +277,14 @@ public class Health : Resource, IDamageable, IHealingable
 
 		PhantomValueShow(curDamage);
 	}
+
+    public void IncreaseRegen(float percentValue)
+    {
+        _regenerationValue *= percentValue;
+    }
+
+    public void DecreaseRegen(float  percentageValue) 
+    {
+        _regenerationValue /= percentageValue;
+    }
 }

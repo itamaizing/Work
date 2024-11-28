@@ -10,7 +10,7 @@ public class IdealEvade : AbstractCharacterState
     public override States State => States.IdealEvade;
 
     public override StateType Type => StateType.Immaterial;
-
+    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
@@ -29,7 +29,7 @@ public class IdealEvade : AbstractCharacterState
     {
         Debug.Log("Exiting IdealEvadeBuff State");
 
-        if (_characterState.Check(StatusEffect.Others))
+        if (!_characterState.Check(StatusEffect.Others))
         {
             //return evade chance
         }
