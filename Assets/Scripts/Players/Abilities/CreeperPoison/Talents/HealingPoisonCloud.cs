@@ -1,4 +1,4 @@
-public class HealPoisonCloud : Talent
+public class HealingPoisonCloud : Talent
 {
     public override void Enter()
     {

@@ -9,13 +9,14 @@ public class DesireToHide : Talent
     private float _timeForApplicationInvisible;
     private float _startTimeForApplicationInvisible = 2.0f;
 
-    private bool _isCanApply = false;
+    private bool _isCanApplyInvisible = false;
     private bool _isCanStartApplicationCoroutine = false;
     private bool _isRecharged = false;
 
     private Coroutine _applicationInvisibleCoroutine;
     private Coroutine _rechargeApplicationInvisibleCoroutine;
-    public bool IsCanApply { get => _isCanApply; }
+
+    public bool IsCanApplyInvisible { get => _isCanApplyInvisible; }
 
     public override void Enter()
     {
@@ -28,9 +29,9 @@ public class DesireToHide : Talent
         SetActive(false);
     }
 
-    public void IsCanApplyInvisible()
+    public void ApplyInvisible()
     {
-        _isCanApply = true;
+        _isCanApplyInvisible = true;
 
         if (_applicationInvisibleCoroutine == null)
         {
@@ -40,7 +41,7 @@ public class DesireToHide : Talent
 
     private void StopCoroutine()
     {
-        _isCanApply = false;
+        _isCanApplyInvisible = false;
         _timeForApplicationInvisible = _startTimeForApplicationInvisible;
 
         if (_rechargeApplicationInvisibleCoroutine != null)
@@ -67,7 +68,7 @@ public class DesireToHide : Talent
 
         if (_isCanStartApplicationCoroutine)
         {
-            while (_isCanApply)
+            while (_isCanApplyInvisible)
             {
                 _timeForApplicationInvisible -= Time.deltaTime;
                 Debug.Log("DesireToHide / IsCanApplyInvisible");

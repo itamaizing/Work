@@ -56,7 +56,7 @@ public class PoisonBall : Skill, IAltAbility
     [SerializeField] private TransparentPoisons _transparentPoisons;
     [SerializeField] private FootInstincts _footInstincts;
     [SerializeField] private HealingPoisonBall _healingPoisonBall;
-    [SerializeField] private HealPoisonCloud _healPoisonCloud;
+    [SerializeField] private HealingPoisonCloud _healPoisonCloud;
     [SerializeField] private WitheringPoison _witheringPoison;
     [SerializeField] private EnlargedGlands _enlargedGlands;
     [SerializeField] private ContinuationAmbush _continuationAmbush;
@@ -739,7 +739,7 @@ public class PoisonBall : Skill, IAltAbility
                     _currentStacksAsssasinPoison--;
                     Debug.Log("PoisonBall / CurrentStacksAssasinPoison == " + _currentStacksAsssasinPoison);
                     Debug.Log("PoisonBall / _chargeCooldown == " + _chargeCooldown);
-                    float newCooldownTime = _chargeCooldown * 0;
+                    float newCooldownTime = 0f;
                     Debug.Log("PoisonBall / newCooldownTime == " + newCooldownTime);
                     this.IncreaseSetCooldown(newCooldownTime);
                 }

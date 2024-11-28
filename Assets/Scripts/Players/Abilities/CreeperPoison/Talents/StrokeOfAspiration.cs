@@ -8,7 +8,7 @@ public class StrokesOfAspiration : Talent
     [SerializeField] private SpitPoison _spitPoison;
 
     private const float _timeBetweenAttack = 0.1f;
-    private const float _decreaseCooldownTime = 0.3f;
+    private const float _decreaseCooldownTime = 3.3f;
     public override void Enter()
     {
         SetActive(true);
@@ -30,10 +30,10 @@ public class StrokesOfAspiration : Talent
 
     public void UseTalentStrokesOfAspiration()
     {
-        Debug.Log($"StrokesOfAspiration / UseTalentStrokesOfAspiration / after updateRemainingCooldownTimeForSpitPoison = {_spitPoison.CooldownTime}");
-        float updateRemainingCooldownTimeForSpitPoison = _spitPoison.CooldownTime - _decreaseCooldownTime;
+        Debug.Log($"StrokesOfAspiration / UseTalentStrokesOfAspiration / after updateRemainingCooldownTimeForSpitPoison = {_spitPoison.RemainingCooldownTime}");
+        float updateRemainingCooldownTimeForSpitPoison = _spitPoison.RemainingCooldownTime - _decreaseCooldownTime;
         _spitPoison.ReductionSetCooldown(updateRemainingCooldownTimeForSpitPoison);
-        Debug.Log($"StrokesOfAspiration / UseTalentStrokesOfAspiration / before updateRemainingCooldownTimeForSpitPoison = {_spitPoison.CooldownTime}");
+        Debug.Log($"StrokesOfAspiration / UseTalentStrokesOfAspiration / before updateRemainingCooldownTimeForSpitPoison = {_spitPoison.RemainingCooldownTime}");
 
         //float updateRemainingCooldownTimeForPoisonBall = _poisonBall.RemainingCooldownCharges - _decreaseCooldownTime;
         //_poisonBall.ReductionSetCooldown(updateRemainingCooldownTimeForPoisonBall);

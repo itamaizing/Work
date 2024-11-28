@@ -62,6 +62,8 @@ public class PoisonCloudState : AbstractCharacterState
             SearchTalent();
         }
 
+        Debug.Log("PoisonCloudState / EnterState / radiusCloud = " + _radiusCloud);
+
         if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks();
@@ -98,7 +100,9 @@ public class PoisonCloudState : AbstractCharacterState
 
                     if (_capaciousPoisonCloud.Data.IsOpen)
                     {
-                        _radiusCloud += 1.5f;
+                        float multiplierRadiusCloud = 1.5f;
+
+                        _radiusCloud += multiplierRadiusCloud;
                     }
                 }
             }

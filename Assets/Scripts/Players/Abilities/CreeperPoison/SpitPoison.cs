@@ -17,7 +17,7 @@ public class SpitPoison : Skill, IAltAbility
     [Header("Talents")]
     [SerializeField] private RestorationOfGlands _restorationOfGlands;
     [SerializeField] private HealingSpitPoison _healingSpitPoison;
-    [SerializeField] private HealPoisonCloud _healPoisonCloud;
+    [SerializeField] private HealingPoisonCloud _healPoisonCloud;
     [SerializeField] private TransparentPoisons _transparentPoisons;
     //[SerializeField] private EatingAcid _eatingAcid;
 

@@ -5,29 +5,41 @@ public class ColdBlood : Skill
 {
     [Header("Talent")]
     [SerializeField] private ColdBloodEnabledTalent _coldBloodEnabledTalent;
+    [SerializeField] private Indomitable _indomitable;
     [SerializeField] private ColdBloodTalent _coldBloodTalent;
     [SerializeField] private KillersStamina _killersStamina;
 
     [Header("Ability Properties")]
     [SerializeField] private CreeperStrike _creeperStrike;
     [SerializeField] private Character _player;
+    [SerializeField] private float _reducingCooldwonMultiplier = 2f;
 
     private Character _target;
     private Vector3 _mousePosition = Vector3.positiveInfinity;
 
     private float _cooldownTimeWithTalent = 4f;
+    private float _baseCooldownTime;
 
     private bool _isPlayer = false;
     private bool _isCanCritCreeperStrike;
     private bool _isCanCritLightningStrikes;
 
     private Coroutine _waitingHitFromCreeperStrike;
-    protected override int AnimTriggerCast => 0;
-    protected override int AnimTriggerCastDelay => 0;
+
+    public bool IndomitableTalentIsACtive { get => _indomitable.Data.IsOpen; }
+    public bool ColdBloodTalentIsActive { get => _coldBloodTalent.Data.IsOpen; }
+    public bool KillersStaminaTalentIsActive { get => _killersStamina.Data.IsOpen; }
     public bool IsCanCritCreeperStrike { get => _isCanCritCreeperStrike; set => _isCanCritCreeperStrike = value; }
     public bool IsCanCritLightningStrikes { get => _isCanCritLightningStrikes; set => _isCanCritLightningStrikes = value; }
 
+    protected override int AnimTriggerCast => 0;
+    protected override int AnimTriggerCastDelay => 0;
     protected override bool IsCanCast { get => _coldBloodEnabledTalent.Data.IsOpen; }
+
+    private new void Awake()
+    {
+        _baseCooldownTime = CooldownTime;    
+    }
 
     protected override void ClearData()
     {
@@ -94,13 +106,26 @@ public class ColdBlood : Skill
         {
             UseAbilityWithoutTalent();
         }
+
+        if (CooldownTime != _baseCooldownTime)
+            CooldownTime = _baseCooldownTime;
+
         yield return _waitingHitFromCreeperStrike = StartCoroutine(WaitingHitFromCreeperStrikeJob());
     }
 
     public void ReducingAbilityCooldown()
-    {
-        float reducingMultiplier = 2f;
-        ReductionSetCooldown(CooldownTime / reducingMultiplier);
+    { 
+        if (RemainingCooldownTime > 0)
+        {
+            float reducingMultiplier = _reducingCooldwonMultiplier;
+            float newCooldownTime = RemainingCooldownTime / reducingMultiplier;
+            ReductionSetCooldown(newCooldownTime);
+        }
+        else
+        {
+            float reducingMultiplier = _reducingCooldwonMultiplier;
+            CooldownTime /= reducingMultiplier;
+        }
     }
 
     private IEnumerator WaitingHitFromCreeperStrikeJob()

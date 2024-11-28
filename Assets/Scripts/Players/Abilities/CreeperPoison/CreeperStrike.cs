@@ -31,6 +31,7 @@ public class CreeperStrike : AutoAttackSkill
     private Character _lastTarget;
 
     private int _currentCountHit = 0;
+    private int _currentHitForStrokesOfAspiration = 0;
     private int _countHitForDesireToHideTalent = 0;
     private int _countCurrentHitForPreparingForFight = 0;
     private int _poisonBoneStack = 0;
@@ -101,15 +102,22 @@ public class CreeperStrike : AutoAttackSkill
             //    _absorptionOfPoisons.CheckTargetWithDebuffs(target.gameObject);
             //}
 
-            if (_strokesOfAspiration.Data.IsOpen && _currentCountHit == 2)
+            if (_strokesOfAspiration.Data.IsOpen)
             {
-                if (_lastTarget == target)
+                _currentHitForStrokesOfAspiration++;
+
+                if (_currentHitForStrokesOfAspiration == 2)
                 {
-                    _strokesOfAspiration.UseTalentStrokesOfAspiration();
-                }
-                else
-                {
-                    _lastTarget = target;
+                    if (_lastTarget == target)
+                    {
+                        _strokesOfAspiration.UseTalentStrokesOfAspiration();
+                    }
+                    else
+                    {
+                        _lastTarget = target;
+                    }
+
+                    _currentHitForStrokesOfAspiration = 0;
                 }
             }
 
@@ -132,14 +140,14 @@ public class CreeperStrike : AutoAttackSkill
 
                 if (_countHitForDesireToHideTalent == 5)
                 {
-                    _desireToHide.IsCanApplyInvisible();
+                    _desireToHide.ApplyInvisible();
                     _countHitForDesireToHideTalent = 0;
                 }
             }
 
             if (_releaseFromSecrecy.Data.IsOpen && _creeperInvisible.IsInvisible)
             {
-                _creeperInvisible.ExitingInvisibleState();
+                _creeperInvisible.ExitingInvisible();
             }
 
             if (_assasinPoison.Data.IsOpen)
@@ -165,6 +173,10 @@ public class CreeperStrike : AutoAttackSkill
 
             if (_coldBlood.IsCanCritCreeperStrike || _coldBlood.IsCanCritLightningStrikes)
             {
+                if (_player.IsInvisible)
+                    _creeperInvisible.ExitingInvisible();
+
+
                 DealCriticalDamage(target, _currentDamage);
             }
             else if (_currentChanceOfCriticalStrike <= _chanceOfCriticalStrike)
@@ -244,19 +256,12 @@ public class CreeperStrike : AutoAttackSkill
         }
         if (_coldBlood.IsCanCritCreeperStrike && _poisonBoneStack == 0)
         {
-            if (target.CharacterState.Check(StatusEffect.Poison))
-            {
-                _coldBlood.ReducingAbilityCooldown();
-            }
-
-            criticalDamage *= coldBloodMultiplyDamage;
-
-            if (_creeperInvisible.IsInvisible)
-            {
-                _creeperInvisible.ExitingInvisibleState();
-            }
+            if (_coldBlood.KillersStaminaTalentIsActive)
+                _coldBlood.IsCanCritLightningStrikes = false;
 
             _coldBlood.IsCanCritCreeperStrike = false;
+
+            criticalDamage *= coldBloodMultiplyDamage;
         }
         else
         {

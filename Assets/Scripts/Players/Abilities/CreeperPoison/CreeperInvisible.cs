@@ -14,7 +14,6 @@ public class CreeperInvisible : Skill
     [SerializeField] private ContinuationAmbush _continuationAmbush;
     [SerializeField] private TransparentPoisons _transparentPoisons;
     [SerializeField] private PreparingForFight _preparingForFight;
-    [SerializeField] private ConcentratedPrecision _concentratedPrecision;
 
     [Header("Ability")]
     [SerializeField] private CreeperStrike _creeperStrike;
@@ -114,7 +113,7 @@ public class CreeperInvisible : Skill
             CmdTransparentPoisonsIncreaseManaCots();
         }
 
-        if (_desireToHide.Data.IsOpen && _desireToHide.IsCanApply)
+        if (_desireToHide.Data.IsOpen && _desireToHide.IsCanApplyInvisible)
         {
             Debug.Log("CreeperInvisible / desireToHide");
 
@@ -133,7 +132,7 @@ public class CreeperInvisible : Skill
 
             yield return new WaitForSeconds(10f);
 
-            EnteringInvisibleState();
+            EnteringInvisible();
         }
         yield return null;
     }
@@ -150,12 +149,12 @@ public class CreeperInvisible : Skill
         _spitPoison.ResetAbilityParameters -= OnResetPoisonBall;
     }
 
-    public void EnteringInvisibleState()
+    public void EnteringInvisible()
     {
         CmdApplyInvis(_player.gameObject);
     }
 
-    public void ExitingInvisibleState()
+    public void ExitingInvisible()
     {
         _isCreeperStrikeIsHit = _creeperStrike.IsHit;
         CmdRemoveInvisible(_player.gameObject, _isCreeperStrikeIsHit);
@@ -183,7 +182,7 @@ public class CreeperInvisible : Skill
 
         if (_currentHealth < _maxHealth)
         {
-            ExitingInvisibleState();
+            ExitingInvisible();
             return;
         }
     }
@@ -252,7 +251,7 @@ public class CreeperInvisible : Skill
 
         RpcApplyInvis();
 
-        RpcReducingTransparencySpritePlayer(player);
+        //RpcReducingTransparencySpritePlayer(player);
 
         _player.CharacterState.AddState(States.CreeperInvisible, 0, 0, _player.gameObject, Name);
     }
@@ -265,7 +264,7 @@ public class CreeperInvisible : Skill
         _isPlayerSeen = true;
         _isDamagedPlayer = false;
 
-        RpcIncreasingTransparencySpritePlayer(player);
+        //RpcIncreasingTransparencySpritePlayer(player);
 
         RpcRemoveInvisible(creeperStrikeIsHit);
     }
@@ -280,52 +279,54 @@ public class CreeperInvisible : Skill
 
     #region RpcMethods
 
+    /* These Methods make the player invisible
     [ClientRpc]
     private void RpcReducingTransparencySpritePlayer(GameObject player)
     {
-        //player.GetComponent<Character>().IsInvisible = true;
+        player.GetComponent<Character>().IsInvisible = true;
 
-        //MeshRenderer playerSprite = player.GetComponentInChildren<MeshRenderer>();
+        MeshRenderer playerSprite = player.GetComponentInChildren<MeshRenderer>();
 
-        //Color newPlayerSpriteTransparency = playerSprite.material.color;
-            
+        Color newPlayerSpriteTransparency = playerSprite.material.color;
+          
 
-        //int playerLayer = player.layer;
+        int playerLayer = player.layer;
 
-        //if (playerLayer == LayerMask.NameToLayer("Allies"))
-        //{
-        //    newPlayerSpriteTransparency.a = 0.5f;
-        //    _playerRenderer.material.color = new Color(playerSprite.material.color.r, playerSprite.material.color.g, playerSprite.material.color.b, newPlayerSpriteTransparency.a);
-        //}
-        //else if (playerLayer == LayerMask.NameToLayer("Enemy"))
-        //{
-        //    newPlayerSpriteTransparency.a = 0.0f;
-        //    _playerRenderer.material.color = new Color(playerSprite.material.color.r, playerSprite.material.color.g, playerSprite.material.color.b, newPlayerSpriteTransparency.a);
-        //}
+        if (playerLayer == LayerMask.NameToLayer("Allies"))
+        {
+            newPlayerSpriteTransparency.a = 0.5f;
+            _playerRenderer.material.color = new Color(playerSprite.material.color.r, playerSprite.material.color.g, playerSprite.material.color.b, newPlayerSpriteTransparency.a);
+        }
+        else if (playerLayer == LayerMask.NameToLayer("Enemy"))
+        {
+            newPlayerSpriteTransparency.a = 0.0f;
+            _playerRenderer.material.color = new Color(playerSprite.material.color.r, playerSprite.material.color.g, playerSprite.material.color.b, newPlayerSpriteTransparency.a);
+        }
     }
 
     [ClientRpc]
     private void RpcIncreasingTransparencySpritePlayer(GameObject player)
     {
-        //player.GetComponent<Character>().IsInvisible = false;
+        player.GetComponent<Character>().IsInvisible = false;
 
-        //MeshRenderer playerSprite = player.GetComponentInChildren<MeshRenderer>();
+        MeshRenderer playerSprite = player.GetComponentInChildren<MeshRenderer>();
 
-        //Color newPlayerSpriteTransparency = playerSprite.material.color;
+        Color newPlayerSpriteTransparency = playerSprite.material.color;
 
-        //int playerLayer = player.layer;
+        int playerLayer = player.layer;
 
-        //if (playerLayer == LayerMask.NameToLayer("Allies"))
-        //{
-        //    newPlayerSpriteTransparency.a = 1f;
-        //    _playerRenderer.material.color = new Color(playerSprite.material.color.r, playerSprite.material.color.g, playerSprite.material.color.b, newPlayerSpriteTransparency.a);
-        //}
-        //else if (playerLayer == LayerMask.NameToLayer("Enemy"))
-        //{
-        //    newPlayerSpriteTransparency.a = 1f;
-        //    _playerRenderer.material.color = new Color(playerSprite.material.color.r, playerSprite.material.color.g, playerSprite.material.color.b, newPlayerSpriteTransparency.a);
-        //}
+        if (playerLayer == LayerMask.NameToLayer("Allies"))
+        {
+            newPlayerSpriteTransparency.a = 1f;
+            _playerRenderer.material.color = new Color(playerSprite.material.color.r, playerSprite.material.color.g, playerSprite.material.color.b, newPlayerSpriteTransparency.a);
+        }
+        else if (playerLayer == LayerMask.NameToLayer("Enemy"))
+        {
+            newPlayerSpriteTransparency.a = 1f;
+            _playerRenderer.material.color = new Color(playerSprite.material.color.r, playerSprite.material.color.g, playerSprite.material.color.b, newPlayerSpriteTransparency.a);
+        }
     }
+    */
 
     [ClientRpc]
     private void RpcApplyInvis()
@@ -337,6 +338,7 @@ public class CreeperInvisible : Skill
     private void RpcRemoveInvisible(bool creeperStrikeIsHit)
     {
         _isInvisible = false;
+
         if (_releaseFromSecrecy.Data.IsOpen)
         {
             _releaseFromSecrecy.ApplyBuff();
@@ -352,13 +354,9 @@ public class CreeperInvisible : Skill
             _isReadyToThreeHitForPreparingForFightTalent = true;
         }
 
-        if (_coldBlood.IsCanCritCreeperStrike)
+        if (_coldBlood.ColdBloodTalentIsActive)
         {
-            if (_concentratedPrecision.Data.IsOpen)
-            {
-                _coldBlood.ReducingAbilityCooldown();
-            }
-            _coldBlood.IsCanCritCreeperStrike = false;
+            _coldBlood.ReducingAbilityCooldown();
         }
 
         #region CancleCoroutines

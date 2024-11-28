@@ -2,31 +2,20 @@ using UnityEngine;
 
 public class SpeedOfReptileTalent : Talent
 {
-    [SerializeField] private SpeedOfReptile _speedOfReptile;
-    [SerializeField] private SkillManager _ability;
+    [SerializeField] SpeedOfReptile _speedOfReptile;
+    [SerializeField] private SkillManager _skillManager;
 
     public override void Enter()
     {
-        if (_ability.Abilities.Contains(_speedOfReptile))
-        {
-            _speedOfReptile.enabled = true;
-        }
-        else
-        {
-            //_ability.AddAbility(_speedOfReptile);
-        }
+        SetActive(true);
+        _skillManager.ActivateSkill(_speedOfReptile);
+
     }
 
     public override void Exit()
     {
-        if (_ability.Abilities.Contains(_speedOfReptile))
-        {
-            //_ability.RemoveAbility(_speedOfReptile);
-            _speedOfReptile.enabled = false;
-        }
-        else
-        {
-            _speedOfReptile.enabled = false;
-        }
+        SetActive(false);
+        _skillManager.DeactivateSkill(_speedOfReptile);
+
     }
 }

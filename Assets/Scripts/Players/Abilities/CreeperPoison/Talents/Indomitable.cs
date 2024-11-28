@@ -1,4 +1,4 @@
-public class ConcentratedPrecision : Talent
+public class Indomitable : Talent
 {
     public override void Enter()
     {
@@ -9,5 +9,4 @@ public class ConcentratedPrecision : Talent
     {
         SetActive(false);
     }
-
 }
