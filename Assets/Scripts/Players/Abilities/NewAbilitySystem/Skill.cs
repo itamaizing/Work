@@ -101,7 +101,8 @@ public abstract class Skill : NetworkBehaviour
     protected Coroutine _castStreamCoroutine;
     protected Coroutine _dynamicRendererJob;
     protected Transform _tempTargetForDamage;
-    protected Health _tempHPForDamage;
+    protected IDamageable _tempForDamage;
+    protected IHealingable _tempForHealing;
     protected bool _isPlayCastAnim;
 
     private Character _tempTargetbase;
@@ -491,7 +492,7 @@ public abstract class Skill : NetworkBehaviour
             {
                 target = enemy;
 
-                if (isCanTargetHimself == false && target.transform == _hero.Health.transform)
+                if (isCanTargetHimself == false && target.transform == _hero.transform)
                 {
                     target = null;
                 }
@@ -510,7 +511,7 @@ public abstract class Skill : NetworkBehaviour
         {
             if (collider.Length > 0 && item.transform.TryGetComponent<Character>(out Character enemy))
             {
-                if (isCanTargetHimself == false && enemy.transform == _hero.Health.transform)
+                if (isCanTargetHimself == false && enemy.transform == _hero.transform)
                 {
                     continue;
                 }
@@ -916,6 +917,7 @@ public abstract class Skill : NetworkBehaviour
     {
         CastDeleyStarted?.Invoke(delayTime);
 
+        Hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, Buff.CastSpeed.Multiplier);
         _hero.Animator.SetTrigger(AnimTriggerCastDelay);
         _hero.NetworkAnimator.SetTrigger(AnimTriggerCastDelay);
 
@@ -989,8 +991,10 @@ public abstract class Skill : NetworkBehaviour
 
         if(AnimTriggerCast != 0)
         {
+            
             _isPlayCastAnim = true;
 
+            Hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, Buff.CastSpeed.Multiplier);
             _hero.Animator.SetTrigger(AnimTriggerCast);
             _hero.NetworkAnimator.SetTrigger(AnimTriggerCast);
 
@@ -1078,18 +1082,17 @@ public abstract class Skill : NetworkBehaviour
 
     public void ApplyDamage(Damage damage, GameObject target)
     {
-        target.GetComponent<Health>().TryTakeDamage(ref damage, this);
+        target.GetComponent<IDamageable>().TryTakeDamage(ref damage, this);
         Hero.DamageTracker.AddDamage(damage, isServerRequest: isServer);
     }
     
     [Command]
     public void CmdApplyDamage(Damage damage, GameObject target)
     {
-		Debug.Log("DAMAGE");
 		if (_tempTargetForDamage != target.transform)
         {
             _tempTargetForDamage = target.transform;
-            _tempHPForDamage = target.GetComponent<Health>();
+            _tempForDamage = target.GetComponent<IDamageable>();
         }
         
         ApplyDamage(damage, target);
@@ -1097,7 +1100,7 @@ public abstract class Skill : NetworkBehaviour
 
     public void ApplyHeal(Heal heal, GameObject hp, Skill skill, string sourceName)
     {
-        hp.GetComponent<Health>().Heal(ref heal, sourceName, skill);
+        hp.GetComponent<IHealingable>().Heal(ref heal, sourceName, skill);
         Hero.DamageTracker.AddHeal(heal, isServerRequest: isServer);
     }
     
@@ -1107,7 +1110,7 @@ public abstract class Skill : NetworkBehaviour
         if (_tempTargetForDamage != hp.transform)
         {
             _tempTargetForDamage = hp.transform;
-            _tempHPForDamage = hp.GetComponent<Health>();
+            _tempForHealing = hp.GetComponent<IHealingable>();
         }
 
         ApplyHeal(heal, hp, skill, sourceName);

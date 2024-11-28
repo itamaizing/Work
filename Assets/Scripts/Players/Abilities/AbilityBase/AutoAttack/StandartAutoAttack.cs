@@ -3,6 +3,7 @@ using UnityEngine;
 public class StandartAutoAttack : AutoAttackSkill
 {
     [SerializeField] private float _damage;
+    [SerializeField] private float _animSpeed = 1;
 
     protected override int AnimTriggerCastDelay => 0;
 
@@ -22,6 +23,8 @@ protected override void CastAction()
     {
         if (_target == null)
             return;
+
+        Buff.AttackSpeed.IncreasePercentage(_animSpeed);
 
         Damage damage = new Damage
         {

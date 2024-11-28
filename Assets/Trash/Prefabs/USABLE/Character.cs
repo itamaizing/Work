@@ -5,7 +5,7 @@ using UnityEngine;
 using Mirror;
 
 [RequireComponent(typeof(NetworkIdentity))]
-public abstract class Character : NetworkBehaviour
+public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
 {
 	[SerializeField] private CharacterData _playerData;
 	[SerializeField] private UserNetworkSettings _networkSettings; 
@@ -44,9 +44,11 @@ public abstract class Character : NetworkBehaviour
     public static event Action<Character> ServerOnUnitSpawned;
 	public static event Action<Character> ServerOnUnitDeleted; 
 	public static event Action<Character> AuthorityOnUnitSpawned;
-	public static event Action<Character> AuthorityOnUnitDeleted; 
+	public static event Action<Character> AuthorityOnUnitDeleted;
+    public event Action<Damage, Skill> DamageTaken;
+    public event Action<float, Skill, string> HealTaked;
 
-	public virtual void Initialize()
+    public virtual void Initialize()
 	{
 		Move.Initialize(Data.GetAttributeValue(AttributeNames.Speed), Rb , true);
 		CharacterState.Initialize(this);
@@ -101,7 +103,6 @@ public abstract class Character : NetworkBehaviour
 
 	public override void OnStopServer()
 	{
-        
 		ServerOnUnitDeleted?.Invoke(this);
 	}
 
@@ -126,5 +127,20 @@ public abstract class Character : NetworkBehaviour
 	public Resource TryGetResource(ResourceType type)
 	{
 		return Resources.FirstOrDefault(r => r.Type == type);
+	}
+
+    public bool TryTakeDamage(ref Damage damage, Skill skill)
+    {
+		return Health.TryTakeDamage(ref damage, skill);
+    }
+
+    public void ShowPhantomValue(Damage phantomValue)
+    {
+		Health.ShowPhantomValue(phantomValue);
+	}
+
+    public void Heal(ref Heal value, string sourceName, Skill skill)
+    {
+		Health.Heal(ref value, sourceName, skill);
 	}
 }

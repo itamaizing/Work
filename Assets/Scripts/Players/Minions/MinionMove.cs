@@ -12,7 +12,6 @@ public class MinionMove : MoveComponent
         _agent.speed = _currentSpeed;
 
         var animDir = transform.InverseTransformPoint(_agent.velocity + transform.position);
-        Debug.Log(animDir);
         _anim.SetFloat(HashAnimPlayer.VelocityZ, animDir.z);
         _anim.SetFloat(HashAnimPlayer.VelocityX, animDir.x);
     }
