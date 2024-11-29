@@ -53,7 +53,7 @@ public abstract class Skill : NetworkBehaviour
     [Header("Talent State")]
     [SerializeField] protected bool _isTalentSpell = false;
     [SerializeField] protected bool _isSkillActive = true;
-    
+
     [Header("AbilitiesInfo")]
     [SerializeField] private AbilityInfo _abilityInfo;
     [Header("Main Settings")]
@@ -117,6 +117,8 @@ public abstract class Skill : NetworkBehaviour
     private bool _isShiftClick;
     private bool _isCtrlClick;
     private bool _isSpaceClick;
+    private List<float> _remainingCooldownTimeChargers;
+    private Coroutine _currentChargeCooldownJob;
 
     public bool IsTalentSpell => _isTalentSpell;
     public bool IsSkillActive
@@ -137,10 +139,12 @@ public abstract class Skill : NetworkBehaviour
     public int Chargers { get => _currentChargers; protected set { _currentChargers = value; CurrentChargeChanged?.Invoke(_currentChargers); } }
     public bool IsHaveCharge => (_currentChargers > 0);
     public float ChargeCooldown => _chargeCooldown;
+    public List<float> RemainingCooldownTimeCharge { get => _remainingCooldownTimeChargers; }
     public bool IsPreparing => _isPreparing;
     public bool IsHaveResourceOnSkill { get => CheckResourcesOnSkill(); }
     public bool IsHaveResources { get => IsHaveResourceOnSkill && IsCooldowned && IsHaveCharge; }
     public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); protected set => _cooldownTime = value; }
+    public float RemainingCooldownTime { get => _remainingCooldownTime; }
     public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); protected set => _castDeley = value; }
     public bool IsCasting { get => _isCasting; }
     public float CastStreamDuration { get => _castDuration; }
@@ -191,7 +195,10 @@ public abstract class Skill : NetworkBehaviour
     protected virtual void Awake()
     {
         if (_isUseCharges)
+        {
             _currentChargers = _maxCharges;
+            _remainingCooldownTimeChargers = new List<float>(new float[_maxCharges]);
+        }
         else
             _currentChargers = 1;
     }
@@ -231,7 +238,7 @@ public abstract class Skill : NetworkBehaviour
             ClearData();
             _isPlayCastAnim = false;
 
-            if(_dynamicRendererJob != null)
+            if (_dynamicRendererJob != null)
             {
                 StopCoroutine(_dynamicRendererJob);
             }
@@ -261,8 +268,8 @@ public abstract class Skill : NetworkBehaviour
 
                 PreparingCanceled?.Invoke();
 
-				UnSubscribeClickEvents();
-				OnClickCanceled();
+                UnSubscribeClickEvents();
+                OnClickCanceled();
             }
 
             _tempTargetbase = null;
@@ -288,14 +295,14 @@ public abstract class Skill : NetworkBehaviour
 
         _cooldownJob = StartCoroutine(CooldownCoroutine(time));
     }
-    
+
     public void DecreaseSetCooldown(float time)
     {
         var timeToSet = _remainingCooldownTime - time > 0 ? _remainingCooldownTime - time : 0;
-        
+
         if (_cooldownJob != null)
             StopCoroutine(_cooldownJob);
-        
+
         _cooldownJob = StartCoroutine(CooldownCoroutine(timeToSet));
     }
 
@@ -356,7 +363,11 @@ public abstract class Skill : NetworkBehaviour
     public void AddMaxChargeCount()
     {
         _maxCharges += 1;
+
+        _remainingCooldownTimeChargers.Add(0);
+
         _currentChargers += 1;
+
         CurrentChargeChanged?.Invoke(_currentChargers);
     }
 
@@ -365,6 +376,8 @@ public abstract class Skill : NetworkBehaviour
         if (_maxCharges - 1 > 0)
         {
             _maxCharges -= 1;
+
+            _remainingCooldownTimeChargers.RemoveAt(_remainingCooldownTimeChargers.Count - 1);
 
             if (_currentChargers > _maxCharges)
             {
@@ -376,12 +389,12 @@ public abstract class Skill : NetworkBehaviour
 
     public void DrawDamageZone(Vector3 position)
     {
-		Damage damage = new Damage
-		{
-			Value = Damage,
-			Type = DamageType,
-		};
-		_skillRender.CmdDrawDamageZone(position, Area, damage, _hero.gameObject);
+        Damage damage = new Damage
+        {
+            Value = Damage,
+            Type = DamageType,
+        };
+        _skillRender.CmdDrawDamageZone(position, Area, damage, _hero.gameObject);
     }
 
     public void StopDamageZone()
@@ -400,22 +413,22 @@ public abstract class Skill : NetworkBehaviour
         _isPlayCastAnim = false;
     }
 
-	protected virtual IEnumerator DynamicRendererJob(float time = 0.2f)
-	{
-        yield return null; //new WaitForSeconds(time);
-	}
-
-	protected virtual void StartAutoDraw()
+    protected virtual IEnumerator DynamicRendererJob(float time = 0.2f)
     {
-		Damage damage = new Damage
-		{
-			Value = Damage,
-			Type = DamageType,
-		};
+        yield return null; //new WaitForSeconds(time);
+    }
+
+    protected virtual void StartAutoDraw()
+    {
+        Damage damage = new Damage
+        {
+            Value = Damage,
+            Type = DamageType,
+        };
         Debug.Log(_skillRender + " Skill render\n ");
         Debug.Log(Radius + " \n ");
-       // Debug.Log(Radiu + " \n ");
-		if (_isAutoRadiusRender)
+        // Debug.Log(Radiu + " \n ");
+        if (_isAutoRadiusRender)
             _skillRender.DrawRadius(Radius);
 
         if (_isAutoAreaRender)
@@ -441,12 +454,12 @@ public abstract class Skill : NetworkBehaviour
         _skillRender.StopDrawLine();
         _skillRender.StopDrawClosestTarget();
 
-		/*if (true)
+        /*if (true)
 		{
 			Character enemy = GetCloserTargets(transform.position, Radius)[0];
 			enemy.SelectedCircle.IsActive = false;
 		}*/
-	}
+    }
 
     protected virtual bool TryPayCost(List<SkillEnergyCost> skillEnergyCosts, bool startCooldown = true)
     {
@@ -478,7 +491,7 @@ public abstract class Skill : NetworkBehaviour
     protected Character GetRaycastTarget(bool isCanTargetHimself = false)
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit[] rayHit = Physics.RaycastAll(ray,100f, TargetsLayers);
+        RaycastHit[] rayHit = Physics.RaycastAll(ray, 100f, TargetsLayers);
 
         foreach (var hit in rayHit)
         {
@@ -576,7 +589,7 @@ public abstract class Skill : NetworkBehaviour
         _castDeleyCoroutine = StartCoroutine(CastDeleyJob(CastDeley));
         return _castDeleyCoroutine;
     }
-    
+
     protected Coroutine StartCastDeleyCoroutine(float time)
     {
         _castDeleyCoroutine = StartCoroutine(CastDeleyJob(time));
@@ -609,6 +622,21 @@ public abstract class Skill : NetworkBehaviour
         return Vector3.zero;
     }
 
+    public void ReductionCooldownTimeCharge(float time)
+    {
+        for (int i = 0; i < _maxCharges; i++)
+        {
+            if (time > _remainingCooldownTimeChargers[i])
+                return;
+
+            if (_currentChargeCooldownJob != null)
+                StopCoroutine(_currentChargeCooldownJob);
+
+            _currentChargeCooldownJob = StartCoroutine(RechargeOneChargeCoroutine(i, time));
+        }
+    }
+
+
     protected bool TryUseCharge()
     {
         if (_isUseCharges == false)
@@ -619,8 +647,22 @@ public abstract class Skill : NetworkBehaviour
             _currentChargers--;
             CurrentChargeChanged?.Invoke(_currentChargers);
 
-            if (_rechargeJob == null || _chargesHaveSeparateCooldown)
+            if (_rechargeJob == null && !_chargesHaveSeparateCooldown)
+            {
                 _rechargeJob = StartCoroutine(RechargeCoroutine());
+            }
+            else if (_rechargeJob == null && _chargesHaveSeparateCooldown)
+            {
+                for (int i = 0; i < _maxCharges; i++)
+                {
+                    if (_remainingCooldownTimeChargers[i] <= 0)
+                    {
+                        _currentChargeCooldownJob = StartCoroutine(RechargeOneChargeCoroutine(i, ChargeCooldown));
+                        break;
+                    }
+                }
+            }
+
             return true;
         }
         else
@@ -628,6 +670,24 @@ public abstract class Skill : NetworkBehaviour
             return false;
         }
     }
+
+    private IEnumerator RechargeOneChargeCoroutine(int indexCharge, float time)
+    {
+        _remainingCooldownTimeChargers[indexCharge] = time;
+
+        while (_remainingCooldownTimeChargers[indexCharge] > 0)
+        {
+            _remainingCooldownTimeChargers[indexCharge] -= Time.deltaTime;
+
+            yield return null;
+        }
+
+        if (_currentChargers < _maxCharges)
+            _currentChargers++;
+        
+        CurrentChargeChanged?.Invoke(_currentChargers);
+    }
+
 
     protected virtual IEnumerator RechargeCoroutine()
     {
@@ -652,37 +712,37 @@ public abstract class Skill : NetworkBehaviour
 
     protected TargetToShot GetTarget()
     {
-		TargetToShot target = new TargetToShot();
+        TargetToShot target = new TargetToShot();
 
-		if (_isClick)
+        if (_isClick)
         {
             Debug.Log("Left click");
             return LeftClick();
         }
-        if(_isShiftClick)
+        if (_isShiftClick)
         {
-			Debug.Log("Shift + Left click");
-			return ShiftLeftClick();
+            Debug.Log("Shift + Left click");
+            return ShiftLeftClick();
         }
-        if(_isCtrlClick)
+        if (_isCtrlClick)
         {
-			Debug.Log("Ctrl + Left click");
-			return CtrlLeftClick();
-		}
-        if(_isSpaceClick)
+            Debug.Log("Ctrl + Left click");
+            return CtrlLeftClick();
+        }
+        if (_isSpaceClick)
         {
-			Debug.Log("Space + Left click");
+            Debug.Log("Space + Left click");
             return SpaceLeftClick();
-		}
+        }
 
         return null;
-    }    
+    }
 
     protected TargetToShot LeftClick()
     {
         TargetToShot target = new TargetToShot();
-		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
 
         var closerTargets = GetCloserTargets(transform.position, 1000);
         Character closerTarget = null;
@@ -697,36 +757,36 @@ public abstract class Skill : NetworkBehaviour
             case SkillType.Target:
                 target.character = closerTarget;
                 target.isCharater = true;
-				break; 
+                break;
             case SkillType.Projectile:
-				target.character = closerTarget;
-				target.isCharater = true;
-				break;
-			case SkillType.Zone:
-				if (Physics.Raycast(ray, out hit))
-				{
-					Debug.Log(hit.point);
-				}
-                if(Vector3.Distance(hit.point, transform.position) <= Radius)
-				    target.Position = hit.point;
-				target.isCharater = false;
-				break;
+                target.character = closerTarget;
+                target.isCharater = true;
+                break;
+            case SkillType.Zone:
+                if (Physics.Raycast(ray, out hit))
+                {
+                    Debug.Log(hit.point);
+                }
+                if (Vector3.Distance(hit.point, transform.position) <= Radius)
+                    target.Position = hit.point;
+                target.isCharater = false;
+                break;
             default:
-				if (Physics.Raycast(ray, out hit))
-				{
-					Debug.Log(hit.point);
-				}
-				target.Position = hit.point;
-				target.isCharater = false;
-				break;
-		}
+                if (Physics.Raycast(ray, out hit))
+                {
+                    Debug.Log(hit.point);
+                }
+                target.Position = hit.point;
+                target.isCharater = false;
+                break;
+        }
         return target;
-	}
+    }
 
     protected TargetToShot ShiftLeftClick()
     {
-		TargetToShot target = new TargetToShot();
-		/*switch (_skillType)
+        TargetToShot target = new TargetToShot();
+        /*switch (_skillType)
 		{
 			case SkillType.Target:
 				//auto attack mode
@@ -745,71 +805,71 @@ public abstract class Skill : NetworkBehaviour
         target.Position = transform.position;
         target.character = _hero;
 
-		return target;
-	}
+        return target;
+    }
 
-	protected TargetToShot CtrlLeftClick()
-	{
-		TargetToShot target = new TargetToShot();
-		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		RaycastHit hit;
+    protected TargetToShot CtrlLeftClick()
+    {
+        TargetToShot target = new TargetToShot();
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
 
-		var closerTargets = GetCloserTargets(transform.position, 1000);
-		Character closerTarget = null;
+        var closerTargets = GetCloserTargets(transform.position, 1000);
+        Character closerTarget = null;
 
-		if (closerTargets != null && closerTargets.Count > 0)
-		{
-			closerTarget = GetCloserTargets(transform.position, 1000)[0];
-		}
-		switch (_skillType)
-		{
-			case SkillType.Target:
-				target.character = closerTarget;
-				target.isCharater = true;
-				break;
-			case SkillType.Projectile:          
-				if (Physics.Raycast(ray, out hit))
-				{
-					Debug.Log(hit.point);
-				}
+        if (closerTargets != null && closerTargets.Count > 0)
+        {
+            closerTarget = GetCloserTargets(transform.position, 1000)[0];
+        }
+        switch (_skillType)
+        {
+            case SkillType.Target:
+                target.character = closerTarget;
+                target.isCharater = true;
+                break;
+            case SkillType.Projectile:
+                if (Physics.Raycast(ray, out hit))
+                {
+                    Debug.Log(hit.point);
+                }
                 target.Position = hit.point;
-				target.isCharater = false;
-				break;
-			case SkillType.Zone:
-				if (Physics.Raycast(ray, out hit))
-				{
-					Debug.Log(hit.point);
-				}
-				target.Position = hit.point;
-				target.isCharater = false;
-				break;
-			default:
-				if (Physics.Raycast(ray, out hit))
-				{
-					Debug.Log(hit.point);
-				}
-				target.Position = hit.point;
-				target.isCharater = false;
-				break;
-		}
-		return target;
-	}
+                target.isCharater = false;
+                break;
+            case SkillType.Zone:
+                if (Physics.Raycast(ray, out hit))
+                {
+                    Debug.Log(hit.point);
+                }
+                target.Position = hit.point;
+                target.isCharater = false;
+                break;
+            default:
+                if (Physics.Raycast(ray, out hit))
+                {
+                    Debug.Log(hit.point);
+                }
+                target.Position = hit.point;
+                target.isCharater = false;
+                break;
+        }
+        return target;
+    }
 
-	protected TargetToShot SpaceLeftClick()
-	{
-		TargetToShot target = new TargetToShot();
-		var closerTargets = GetCloserTargets(transform.position, 1000);
-		Character closerTarget = null;
+    protected TargetToShot SpaceLeftClick()
+    {
+        TargetToShot target = new TargetToShot();
+        var closerTargets = GetCloserTargets(transform.position, 1000);
+        Character closerTarget = null;
 
-		if (closerTargets != null && closerTargets.Count > 0)
-		{
-			closerTarget = GetCloserTargets(transform.position, 1000)[0];
-		}
+        if (closerTargets != null && closerTargets.Count > 0)
+        {
+            closerTarget = GetCloserTargets(transform.position, 1000)[0];
+        }
         target.character = closerTarget;
-		target.isCharater = true;
-		return target;
-	}
-	/* protected Vector2 GetClosestTarget()
+        target.isCharater = true;
+        return target;
+    }
+    /* protected Vector2 GetClosestTarget()
 	 {
 		 Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, 100);
 		 Vector2 closest = Vector2.positiveInfinity;
@@ -831,75 +891,75 @@ public abstract class Skill : NetworkBehaviour
 
 	 }*/
 
-	protected Character GetClosestTargets()
-	{
-		Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, 100);
-		Vector2 closest = Vector2.positiveInfinity;
+    protected Character GetClosestTargets()
+    {
+        Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, 100);
+        Vector2 closest = Vector2.positiveInfinity;
         Character enemys = null;
-		foreach (Collider2D collider in enemyDetected)
-		{
-			if (collider.gameObject != _hero.gameObject)
+        foreach (Collider2D collider in enemyDetected)
+        {
+            if (collider.gameObject != _hero.gameObject)
 
-				if (collider.TryGetComponent<Character>(out var enemy))
-				{
-					if (Vector2.Distance(collider.transform.position, transform.position) < Vector2.Distance(closest, transform.position))
-					{
+                if (collider.TryGetComponent<Character>(out var enemy))
+                {
+                    if (Vector2.Distance(collider.transform.position, transform.position) < Vector2.Distance(closest, transform.position))
+                    {
                         enemys = enemy;
-						closest = collider.transform.position;
-						Debug.Log(enemy);
-					}
-				}
-		}
+                        closest = collider.transform.position;
+                        Debug.Log(enemy);
+                    }
+                }
+        }
         if (Vector2.Distance(closest, transform.position) < 100) return enemys;
         else return null;
-	}
+    }
 
-	private void OnClick()
+    private void OnClick()
     {
         _isClick = true;
-		_isCtrlClick = false;
+        _isCtrlClick = false;
         _isShiftClick = false;
-		_isSpaceClick = false;
-	}
+        _isSpaceClick = false;
+    }
 
     private void OnClickCanceled()
     {
-		_isClick = false;
-		_isCtrlClick = false;
-		_isShiftClick = false;
+        _isClick = false;
+        _isCtrlClick = false;
+        _isShiftClick = false;
         _isSpaceClick = false;
-	}
+    }
 
     private void OnShiftClick()
     {
         _isClick = false;
         _isCtrlClick = false;
         _isShiftClick = true;
-		_isSpaceClick = false;
-	}
+        _isSpaceClick = false;
+    }
 
     private void OnCtrlClick()
     {
         _isClick = false;
         _isCtrlClick = true;
         _isShiftClick = false;
-		_isSpaceClick = false;
-	}
+        _isSpaceClick = false;
+    }
 
     private void OnSpaceClick()
     {
-		_isClick = false;
-		_isCtrlClick = false;
-		_isShiftClick = false;
-		_isSpaceClick = true;
-	}
+        _isClick = false;
+        _isCtrlClick = false;
+        _isShiftClick = false;
+        _isSpaceClick = true;
+    }
 
-	private void StartDynamicRenderer()
-	{
-		 _dynamicRendererJob = StartCoroutine(DynamicRendererJob());
-	}
+    private void StartDynamicRenderer()
+    {
+        _dynamicRendererJob = StartCoroutine(DynamicRendererJob());
+    }
 
-	private IEnumerator CooldownCoroutine(float cooldownTime)
+    private IEnumerator CooldownCoroutine(float cooldownTime)
     {
         CooldownStarted?.Invoke(cooldownTime);
         _remainingCooldownTime = cooldownTime;
@@ -944,7 +1004,7 @@ public abstract class Skill : NetworkBehaviour
         while (time < CastStreamDuration)
         {
             time += _manaCostRate;
-            if (!TryPayCost()) TryCancel() ;
+            if (!TryPayCost()) TryCancel();
             yield return new WaitForSeconds(_manaCostRate);
         }
         _castStreamCoroutine = null;
@@ -958,18 +1018,18 @@ public abstract class Skill : NetworkBehaviour
         ClearData();
         StartAutoDraw();
 
-        if(_isDynamicRenderer)
+        if (_isDynamicRenderer)
         {
             StartDynamicRenderer();
-		}
+        }
 
         SubscribeClickEvents();
 
-		yield return _prepareCoroutine = StartCoroutine(PrepareJob());
+        yield return _prepareCoroutine = StartCoroutine(PrepareJob());
 
         UnSubscribeClickEvents();
 
-		OnClickCanceled();
+        OnClickCanceled();
 
         PreparingSuccess?.Invoke(this);
         _isPreparing = false;
@@ -989,9 +1049,9 @@ public abstract class Skill : NetworkBehaviour
         if (_castDuration > 0)
             StartCoroutine(CastStreamJob());
 
-        if(AnimTriggerCast != 0)
+        if (AnimTriggerCast != 0)
         {
-            
+
             _isPlayCastAnim = true;
 
             Hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, Buff.CastSpeed.Multiplier);
@@ -1085,16 +1145,16 @@ public abstract class Skill : NetworkBehaviour
         target.GetComponent<IDamageable>().TryTakeDamage(ref damage, this);
         Hero.DamageTracker.AddDamage(damage, isServerRequest: isServer);
     }
-    
+
     [Command]
     public void CmdApplyDamage(Damage damage, GameObject target)
     {
-		if (_tempTargetForDamage != target.transform)
+        if (_tempTargetForDamage != target.transform)
         {
             _tempTargetForDamage = target.transform;
             _tempForDamage = target.GetComponent<IDamageable>();
         }
-        
+
         ApplyDamage(damage, target);
     }
 
@@ -1103,7 +1163,7 @@ public abstract class Skill : NetworkBehaviour
         hp.GetComponent<IHealingable>().Heal(ref heal, sourceName, skill);
         Hero.DamageTracker.AddHeal(heal, isServerRequest: isServer);
     }
-    
+
     [Command]
     public void CmdApplyHeal(Heal heal, GameObject hp, Skill skill, string sourceName)
     {
@@ -1118,33 +1178,33 @@ public abstract class Skill : NetworkBehaviour
 
     private void SubscribeClickEvents()
     {
-		InputHandler.OnClick += OnClick;
+        InputHandler.OnClick += OnClick;
         InputHandler.OnShiftLeftMouse += OnShiftClick;
         InputHandler.OnSwitchAutoMode += OnCtrlClick;
         InputHandler.OnSpacetLeftMouse += OnSpaceClick;
 
         //cancelled
 
-		InputHandler.OnClickCanceled += OnClickCanceled;
+        InputHandler.OnClickCanceled += OnClickCanceled;
         InputHandler.OnShiftLeftMouseCanceled += OnClickCanceled;
         InputHandler.OnSwitchAutoModeCanceled += OnClickCanceled;
         InputHandler.OnSpacetLeftMouseCanceled += OnClickCanceled;
-        
-	}
 
-	private void UnSubscribeClickEvents()
-	{
-		InputHandler.OnClick -= OnClick;
-		InputHandler.OnShiftLeftMouse -= OnShiftClick;
-		InputHandler.OnSwitchAutoMode -= OnCtrlClick;
-		InputHandler.OnSpacetLeftMouse -= OnSpaceClick;
+    }
 
-		//cancelled
+    private void UnSubscribeClickEvents()
+    {
+        InputHandler.OnClick -= OnClick;
+        InputHandler.OnShiftLeftMouse -= OnShiftClick;
+        InputHandler.OnSwitchAutoMode -= OnCtrlClick;
+        InputHandler.OnSpacetLeftMouse -= OnSpaceClick;
 
-		InputHandler.OnClickCanceled -= OnClickCanceled;
-		InputHandler.OnShiftLeftMouseCanceled -= OnClickCanceled;
-		InputHandler.OnSwitchAutoModeCanceled -= OnClickCanceled;
-		InputHandler.OnSpacetLeftMouseCanceled -= OnClickCanceled;
+        //cancelled
 
-	}
+        InputHandler.OnClickCanceled -= OnClickCanceled;
+        InputHandler.OnShiftLeftMouseCanceled -= OnClickCanceled;
+        InputHandler.OnSwitchAutoModeCanceled -= OnClickCanceled;
+        InputHandler.OnSpacetLeftMouseCanceled -= OnClickCanceled;
+
+    }
 }
