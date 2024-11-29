@@ -1176,8 +1176,8 @@ MonoBehaviour:
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 10
-  _cooldownTime: 3
-  _castDeley: 1
+  _cooldownTime: 1
+  _castDeley: 0.5
   _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
@@ -1193,10 +1193,10 @@ MonoBehaviour:
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: 0
-  _isUseCharges: 0
+  _isUseCharges: 1
   _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
+  _maxCharges: 3
+  _chargeCooldown: 3
   _radius: 5
   _area: 2
   _castLength: 5
@@ -1206,6 +1206,7 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _projectile: {fileID: 3436609779166928419, guid: d490c899d604d2c4dbb3f72e61cacb6e, type: 3}
+  _animSpeed: 1
 --- !u!114 &7470037727588752420
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1228,8 +1229,8 @@ MonoBehaviour:
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 30
-  _cooldownTime: 5
-  _castDeley: 3
+  _cooldownTime: 0
+  _castDeley: 1
   _damageValue: 50
   _abilitySchool: 0
   _abilityForm: 0
@@ -1245,10 +1246,10 @@ MonoBehaviour:
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: 0
-  _isUseCharges: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
+  _isUseCharges: 1
+  _chargesHaveSeparateCooldown: 1
+  _maxCharges: 3
+  _chargeCooldown: 5
   _radius: 7
   _area: 3
   _castLength: 0
@@ -1363,3 +1364,4 @@ MonoBehaviour:
   _attackDelay: 0
   _chargeAttackDelay: 0
   _damage: 5
+  _animSpeed: 1
