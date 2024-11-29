@@ -11,4 +11,6 @@ public class HashAnimPlayer : MonoBehaviour
     //float
     public static readonly int VelocityX = Animator.StringToHash("X");
     public static readonly int VelocityZ = Animator.StringToHash("Y");
+
+    public static readonly int CastSpeed = Animator.StringToHash("CastSpeed");
 }

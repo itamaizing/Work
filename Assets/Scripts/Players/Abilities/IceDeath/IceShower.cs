@@ -12,7 +12,7 @@ public class IceShower : Skill
 	private Vector3 _targetPoint = Vector3.positiveInfinity;
 	private Energy _energy;
 	private float _duration = 2;
-
+	private float _damageToexit = 1;
 	protected override bool IsCanCast => true;
 
 	protected override int AnimTriggerCastDelay => 0;
@@ -54,21 +54,29 @@ public class IceShower : Skill
 
 	protected override IEnumerator CastJob()
 	{
-		DrawDamageZone(_targetPoint);
+		//DrawDamageZone(_targetPoint);
 
 		ApplyDamageToEnemiesInZone();
-		StopDamageZone();
+		//StopDamageZone();
 		yield return null;
 	}
 
 	private void ApplyDamageToEnemiesInZone()
 	{
-		CircleArea damageZone = _skillRenderer.TempDamageZone;
+		//CircleArea damageZone = _skillRenderer.TempDamageZone;
 
-		if (damageZone != null)
+		//if (damageZone != null)
 		{
 			Debug.Log("TEST");
-			Collider[] hitColliders = Physics.OverlapSphere(damageZone.transform.position, Area, TargetsLayers);
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			RaycastHit hit;
+			Vector3 worldPos = transform.position;
+
+			if (Physics.Raycast(ray, out hit))
+			{
+				worldPos = hit.point;
+			}
+			Collider[] hitColliders = Physics.OverlapSphere(worldPos, Area, TargetsLayers);
 
 			foreach (var hitCollider in hitColliders)
 			{
@@ -82,7 +90,9 @@ public class IceShower : Skill
 					if (targetState != null)
 					{
 						_duration = 100 + _energy.CurrentValue / 20;
-						CmdAddState(targetState, _duration, 0);
+						_damageToexit +=  _damageValue;
+						Debug.Log(_damageToexit + " damageTo Exit");
+						CmdAddState(targetState, _duration, _damageToexit);
 					}
 				}
 			}
@@ -92,8 +102,9 @@ public class IceShower : Skill
 	[Command]
 	private void CmdAddState(CharacterState targetState, float duration, float damageToExit)
 	{
+		Debug.Log(damageToExit + " damageTo Exit");
+		targetState.AddState(States.Frozen, duration, damageToExit, Hero.gameObject, this.name);
 
-		targetState.AddState(States.Frozen, duration, 0, Hero.gameObject, this.name);
 	}
 
 	/*private float CalculateDamage(float baseDamage)
@@ -124,4 +135,16 @@ public class IceShower : Skill
 	{
 		_targetPoint = Vector3.positiveInfinity;
 	}
+
+	public void TalentBoostFrozenState(bool value)
+	{
+		if(value)
+		{
+			_damageToexit = 30;
+		}
+        else
+        {
+			_damageToexit = 1;
+        }
+    }
 }

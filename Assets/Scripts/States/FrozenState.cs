@@ -62,14 +62,13 @@ public class FrozenState : AbstractCharacterState
 	{
 		Debug.Log("Exiting Frozen State");
 
-		//character.GetAbilityManager().ToggleAbility(true);//turn on abilities
 		_characterState.RemoveState(this);
-		if (_characterState.Check(StatusEffect.Move))
+		if (!_characterState.Check(StatusEffect.Move))
 		{
 			_characterState.Character.Move.CanMove = true;
 			_characterState.Character.Move.StopLookAt();
 		}
-		if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
+		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null)
 		{
 			_abilities.SetAbilitiesEnabled();
 		}

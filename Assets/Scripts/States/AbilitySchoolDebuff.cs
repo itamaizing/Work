@@ -15,6 +15,8 @@ public class AbilitySchoolDebuff : AbstractCharacterState
 	public override StateType Type => StateType.Immaterial;
 	public override List<StatusEffect> Effects => _effects;
 
+  
+
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		Debug.Log("Entering AbilitySchoolDebuff State");
@@ -49,7 +51,7 @@ public class AbilitySchoolDebuff : AbstractCharacterState
 	{
 		Debug.Log("Exiting AbilitySchoolDebuff State");
 		_characterState.RemoveState(this);
-		if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
+		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null)
 		{
 			_abilities.SwitchAvaliable(canceledSchoool, true);
 		}

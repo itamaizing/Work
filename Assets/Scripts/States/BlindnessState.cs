@@ -16,6 +16,7 @@ public class BlindnessState : AbstractCharacterState
 	public override StateType Type => StateType.Physical;
 	public override List<StatusEffect> Effects => _effects;
 
+
     //private PlayerAbilities _abilities;
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
@@ -48,7 +49,7 @@ public class BlindnessState : AbstractCharacterState
 	{
 		Debug.Log("Exiting Stunned State");
 		_characterState.RemoveState(this);
-		if (_characterState.Check(StatusEffect.Ability))
+		if (!_characterState.Check(StatusEffect.Ability))
 		{
 			_abilities.SetAbilitiesEnabled();
 		}

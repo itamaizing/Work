@@ -44,6 +44,18 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2201725961568704641, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_Interpolate
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2201725961568704641, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_IsKinematic
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2201725961568704641, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2361216367366023055, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: sceneId
       value: 0
@@ -72,10 +84,6 @@ PrefabInstance:
       propertyPath: _skills.Array.data[0]
       value: 
       objectReference: {fileID: 3939151455996886053}
-    - target: {fileID: 5590339039165547173, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: _stateIcons
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 5653443088679015109, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -152,6 +160,7 @@ PrefabInstance:
     - {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
     - {fileID: 2642994550808720876, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
     - {fileID: 8569747795464636412, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+    - {fileID: 798753633736636440, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -332,6 +341,7 @@ MonoBehaviour:
   _isAutoRadiusRender: 0
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
+  _isDynamicRenderer: 0
   _agent: {fileID: 1780925315992858912}
 --- !u!114 &3097324644064452792 stripped
 MonoBehaviour:

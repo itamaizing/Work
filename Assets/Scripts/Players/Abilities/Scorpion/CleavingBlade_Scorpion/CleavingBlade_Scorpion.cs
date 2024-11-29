@@ -120,10 +120,10 @@ public class CleavingBlade_Scorpion : Skill
         if (_tempTargetForDamage != hp.transform)
         {
             _tempTargetForDamage = hp.transform;
-            _tempHPForDamage = hp.GetComponent<Health>();
+            _tempForDamage = hp.GetComponent<IDamageable>();
         }
 
-        bool result = _tempHPForDamage.TryTakeDamage(ref damage, this);
+        bool result = _tempForDamage.TryTakeDamage(ref damage, this);
         RpcSelfNotifyHitResult(result, shouldIncreaseCounter, _tempTargetForDamage);
 
     }

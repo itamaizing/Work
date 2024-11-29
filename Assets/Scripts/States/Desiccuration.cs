@@ -51,11 +51,11 @@ public class Desiccuration : AbstractCharacterState
 	{
 		Debug.Log("Exiting Desiccuration State");
 		_characterState.RemoveState(this);
-		if (_characterState.Check(StatusEffect.Move))
+		if (!_characterState.Check(StatusEffect.Move))
 		{
 			_characterState.Character.Move.CanMove = true;
 		}
-		if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
+		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null)
 		{
 			_abilities.SetAbilitiesEnabled();
 		}

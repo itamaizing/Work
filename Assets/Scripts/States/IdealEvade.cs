@@ -29,7 +29,7 @@ public class IdealEvade : AbstractCharacterState
     {
         Debug.Log("Exiting IdealEvadeBuff State");
 
-        if (_characterState.Check(StatusEffect.Others))
+        if (!_characterState.Check(StatusEffect.Others))
         {
             //return evade chance
         }

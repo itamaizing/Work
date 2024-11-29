@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class IceCloudBoostDmgTalent : Talent
 {
-	[SerializeField] private Icecloud _iceCloud;
+	[SerializeField] private IceCloud _iceCloud;
 	public override void Enter()
 	{
 		_iceCloud.TalentBoostDmg(true);

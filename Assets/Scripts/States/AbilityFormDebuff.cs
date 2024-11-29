@@ -51,7 +51,7 @@ public class AbilityFormDebuff : AbstractCharacterState
 	{
 		Debug.Log("Exiting AbilityFormDebuff State");
 		_characterState.RemoveState(this);
-		if (_characterState.Check(StatusEffect.Ability) && _abilities != null)
+		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null)
 		{
 			_abilities.SwitchAvaliable(canceledForm, true);
 		}

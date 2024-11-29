@@ -45,7 +45,8 @@ public class Dispel : Skill
     [Command]
     private void CmdDispelState(CharacterState targetState, int targetTeamIndex, int playerTeamIndex)
     {
-        targetState.DispelStates(StateType.Magic, targetTeamIndex, playerTeamIndex, true);
+        Debug.LogError("No method in Dispel, character state");
+      //  targetState.DispelStates(StateType.Magic, targetTeamIndex, playerTeamIndex, true);
     }
 
     private Character GetNearestTargetInRadius()
