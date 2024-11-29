@@ -117,7 +117,7 @@ public abstract class Skill : NetworkBehaviour
     private bool _isShiftClick;
     private bool _isCtrlClick;
     private bool _isSpaceClick;
-    private float[] _remainingCooldownTimeChargers;
+    private List<float> _remainingCooldownTimeChargers;
     private Coroutine _currentChargeCooldownJob;
 
     public bool IsTalentSpell => _isTalentSpell;
@@ -139,6 +139,7 @@ public abstract class Skill : NetworkBehaviour
     public int Chargers { get => _currentChargers; protected set { _currentChargers = value; CurrentChargeChanged?.Invoke(_currentChargers); } }
     public bool IsHaveCharge => (_currentChargers > 0);
     public float ChargeCooldown => _chargeCooldown;
+    public List<float> RemainingCooldownTimeCharge { get => _remainingCooldownTimeChargers; }
     public bool IsPreparing => _isPreparing;
     public bool IsHaveResourceOnSkill { get => CheckResourcesOnSkill(); }
     public bool IsHaveResources { get => IsHaveResourceOnSkill && IsCooldowned && IsHaveCharge; }
@@ -196,7 +197,7 @@ public abstract class Skill : NetworkBehaviour
         if (_isUseCharges)
         {
             _currentChargers = _maxCharges;
-            _remainingCooldownTimeChargers = new float[_maxCharges];
+            _remainingCooldownTimeChargers = new List<float>(new float[_maxCharges]);
         }
         else
             _currentChargers = 1;
@@ -362,7 +363,11 @@ public abstract class Skill : NetworkBehaviour
     public void AddMaxChargeCount()
     {
         _maxCharges += 1;
+
+        _remainingCooldownTimeChargers.Add(0);
+
         _currentChargers += 1;
+
         CurrentChargeChanged?.Invoke(_currentChargers);
     }
 
@@ -371,6 +376,8 @@ public abstract class Skill : NetworkBehaviour
         if (_maxCharges - 1 > 0)
         {
             _maxCharges -= 1;
+
+            _remainingCooldownTimeChargers.RemoveAt(_remainingCooldownTimeChargers.Count - 1);
 
             if (_currentChargers > _maxCharges)
             {
@@ -619,8 +626,6 @@ public abstract class Skill : NetworkBehaviour
     {
         for (int i = 0; i < _maxCharges; i++)
         {
-            Debug.Log("Restart Cooldown Charge / currentCharge = " + _currentChargers);
-
             if (time > _remainingCooldownTimeChargers[i])
                 return;
 
@@ -628,7 +633,6 @@ public abstract class Skill : NetworkBehaviour
                 StopCoroutine(_currentChargeCooldownJob);
 
             _currentChargeCooldownJob = StartCoroutine(RechargeOneChargeCoroutine(i, time));
-            Debug.Log("Restart Cooldown Charge work");
         }
     }
 
@@ -653,7 +657,6 @@ public abstract class Skill : NetworkBehaviour
                 {
                     if (_remainingCooldownTimeChargers[i] <= 0)
                     {
-                        Debug.Log("Start separate cooldownJob");
                         _currentChargeCooldownJob = StartCoroutine(RechargeOneChargeCoroutine(i, ChargeCooldown));
                         break;
                     }
@@ -671,23 +674,18 @@ public abstract class Skill : NetworkBehaviour
     private IEnumerator RechargeOneChargeCoroutine(int indexCharge, float time)
     {
         _remainingCooldownTimeChargers[indexCharge] = time;
-        Debug.Log("Skill / RechargeOneChargeCoroutine / remainingCooldownTimeChargers = " + _remainingCooldownTimeChargers[indexCharge]);
 
         while (_remainingCooldownTimeChargers[indexCharge] > 0)
         {
             _remainingCooldownTimeChargers[indexCharge] -= Time.deltaTime;
-            Debug.Log("Skill / RechargeOneChargeCoroutine / remainingCooldownTimeChargers - deltaTime = " + _remainingCooldownTimeChargers[indexCharge]);
-
-            if (_remainingCooldownTimeChargers[indexCharge] <= 0)
-            {
-                _currentChargers++;
-                Debug.Log("Skill / RechargeOneChargeCoroutine / if time <= 0 / currentChargers++ = " + _currentChargers);
-
-                CurrentChargeChanged?.Invoke(_currentChargers);
-            }
 
             yield return null;
         }
+
+        if (_currentChargers < _maxCharges)
+            _currentChargers++;
+        
+        CurrentChargeChanged?.Invoke(_currentChargers);
     }
 
 
