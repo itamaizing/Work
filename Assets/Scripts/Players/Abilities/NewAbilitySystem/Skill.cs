@@ -137,6 +137,7 @@ public abstract class Skill : NetworkBehaviour
     public int Chargers { get => _currentChargers; protected set { _currentChargers = value; CurrentChargeChanged?.Invoke(_currentChargers); } }
     public bool IsHaveCharge => (_currentChargers > 0);
     public float ChargeCooldown => _chargeCooldown;
+    public float[] RemainingCooldownTimeCharge { get => _remainingCooldownTimeChargers; }
     public bool IsPreparing => _isPreparing;
     public bool IsHaveResourceOnSkill { get => CheckResourcesOnSkill(); }
     public bool IsHaveResources { get => IsHaveResourceOnSkill && IsCooldowned && IsHaveCharge; }
@@ -627,13 +628,15 @@ public abstract class Skill : NetworkBehaviour
                 return;
 
             if (_currentChargeCooldownJob != null)
-                StopCoroutine(_currentChargeCooldownJob);
+            {
+                StopCoroutine(_currentChargeCooldownJob); 
+                Debug.Log("Restart Cooldown Charge StopCoroutine");
+            }
 
             _currentChargeCooldownJob = StartCoroutine(RechargeOneChargeCoroutine(i, time));
             Debug.Log("Restart Cooldown Charge work");
         }
     }
-
 
     protected bool TryUseCharge()
     {
@@ -678,20 +681,17 @@ public abstract class Skill : NetworkBehaviour
         while (_remainingCooldownTimeChargers[indexCharge] > 0)
         {
             _remainingCooldownTimeChargers[indexCharge] -= Time.deltaTime;
-            Debug.Log("Skill / RechargeOneChargeCoroutine / remainingCooldownTimeChargers - deltaTime = " + _remainingCooldownTimeChargers[indexCharge]);
-
-            if (_remainingCooldownTimeChargers[indexCharge] <= 0)
-            {
-                _currentChargers++;
-                Debug.Log("Skill / RechargeOneChargeCoroutine / if time <= 0 / currentChargers++ = " + _currentChargers);
-
-                CurrentChargeChanged?.Invoke(_currentChargers);
-            }
+            Debug.Log("Skill / RechargeOneChargeCoroutine / remainingCooldownTimeChargers - deltaTime = " + 1);
 
             yield return null;
         }
-    }
 
+        _currentChargers++;
+        Debug.Log("Skill / RechargeOneChargeCoroutine / if time <= 0 / currentChargers++ = " + _currentChargers);
+
+        CurrentChargeChanged?.Invoke(_currentChargers);
+            
+    }
 
     protected virtual IEnumerator RechargeCoroutine()
     {

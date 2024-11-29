@@ -24,21 +24,25 @@ public class StrokesOfAspiration : Talent
         if (_creeperStrike.Buff.AttackSpeed.Multiplier < 1.0f)
         {
             _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_timeBetweenAttack);
-            Debug.Log("StrokeOfAspiration / Reduction AttackSpeed = " + _creeperStrike.Buff.AttackSpeed.Multiplier);
+            //Debug.Log("StrokeOfAspiration / Reduction AttackSpeed = " + _creeperStrike.Buff.AttackSpeed.Multiplier);
         }
     }
 
     public void UseTalentStrokesOfAspiration()
     {
-        Debug.Log($"StrokesOfAspiration / UseTalentStrokesOfAspiration / after updateRemainingCooldownTimeForSpitPoison = {_spitPoison.RemainingCooldownTime}");
+        //Debug.Log($"StrokesOfAspiration / UseTalentStrokesOfAspiration / after updateRemainingCooldownTimeForSpitPoison = {_spitPoison.RemainingCooldownTime}");
         float updateRemainingCooldownTimeForSpitPoison = _spitPoison.RemainingCooldownTime - _decreaseCooldownTime;
         _spitPoison.ReductionSetCooldown(updateRemainingCooldownTimeForSpitPoison);
-        Debug.Log($"StrokesOfAspiration / UseTalentStrokesOfAspiration / before updateRemainingCooldownTimeForSpitPoison = {_spitPoison.RemainingCooldownTime}");
+        //Debug.Log($"StrokesOfAspiration / UseTalentStrokesOfAspiration / before updateRemainingCooldownTimeForSpitPoison = {_spitPoison.RemainingCooldownTime}");
 
-        _poisonBall.ReductionCooldownTimeCharge(5f);
-        //float updateRemainingCooldownTimeForPoisonBall = _poisonBall.RemainingCooldownCharges - _decreaseCooldownTime;
-        //_poisonBall.ReductionSetCooldown(updateRemainingCooldownTimeForPoisonBall);
-        //Debug.Log("ReductinCooldown SpitPoison == " + updateRemainingCooldownTimeForPoisonBall);
-        //Debug.Log("SpitPoison Cooldown == " + _poisonBall.RemainingCooldownCharges);
+        for (int i = 0; i < _poisonBall.RemainingCooldownTimeCharge.Length; i++)
+        {
+            if (_poisonBall.RemainingCooldownTimeCharge[i] > 0)
+            {
+                float updateRemainingCooldownTimeForPoisonBall = _poisonBall.RemainingCooldownTimeCharge[i] - _decreaseCooldownTime;
+                _poisonBall.ReductionCooldownTimeCharge(updateRemainingCooldownTimeForPoisonBall);
+                Debug.Log($"StrokesOfAspiration / UseTalentStrokesOfAspiration / before updateRemainingCooldownTimeForSpitPoison = {_poisonBall.RemainingCooldownTimeCharge[i]}");
+            }
+        }
     }
 }
