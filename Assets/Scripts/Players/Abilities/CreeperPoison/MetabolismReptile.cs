@@ -1,76 +1,101 @@
+using Mirror;
 using System.Collections;
+using UnityEditor.Tilemaps;
 using UnityEngine;
 
 public class MetabolismReptile : Skill
 {
     [SerializeField] private Character _player;
+    [SerializeField] private MetabolismReptileTalent _metabolismReptileTalent; 
 
     [SerializeField] private PoisonBall _poisonBall;
     [SerializeField] private SpitPoison _spitPoison; 
  
-    private float _duration = 3f;
+    [SerializeField] private float _duration = 3f;
 
     private float _originalHpRegen;
     private float _increaseHealthRegen = 2f;
     private float _increaseCastTime = 2f;
     private float _increaseCooldownTime = 2f;
 
-    private bool _isCanCast = true;
-    public bool Enabled;
-
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
 
-    protected override bool IsCanCast => _isCanCast;
+    protected override bool IsCanCast => _metabolismReptileTalent.Data.IsOpen;
+
+    private void Start()
+    {
+        _originalHpRegen = _player.Health.RegenerationValue;
+    }
 
     protected override IEnumerator PrepareJob()
     {
-        Debug.Log("MetabolismReptile / PrepareJob");
-        _originalHpRegen = _player.Health.RegenerationValue;
         yield return null;
     }
 
     protected override IEnumerator CastJob()
     {
-        Debug.Log("MetabolismReptile / CastJob");
-        IncreaseValues();
+        ApplyBuff();
+
         yield return null;
     }
 
     protected override void ClearData()
     {
-        Debug.Log("MetabolismReptile / ClearData");
     }
 
-    private void IncreaseValues()
+    private void ApplyBuff()
     {
-        Debug.Log("MetabolismReptile / IncreaseValues");
+        CmdIncreaseHealthRegen(_player.gameObject, _originalHpRegen, _increaseHealthRegen);
 
-        float increasedHpRegen = _originalHpRegen * _increaseHealthRegen;
-        _player.Health.RegenerationValue = increasedHpRegen;
-        Debug.Log("HpRegen / IncreaseValues == " + _player.Health.RegenerationValue);
+        ReductionCooldownAndCastTimeSpells();
 
-        Debug.Log($"MetabolismReptile / IncreaseValues / after newRemainingCooldownForSpitPoison = {_spitPoison.CooldownTime}");
+        Invoke("RemoveBuff", _duration);
+    }
+
+    private void RemoveBuff()
+    {
+        CmdRemoveHpRegen(_player.gameObject, _originalHpRegen);
+
+        ResetCastTimeToBase();
+    }
+
+    private void ReductionCooldownAndCastTimeSpells()
+    {
         float newRemainingCooldownForSpitPoison = _spitPoison.CooldownTime / _increaseCooldownTime;
         _spitPoison.ReductionSetCooldown(newRemainingCooldownForSpitPoison);
-        Debug.Log($"MetabolismReptile / IncreaseValues / before newRemainingCooldownForSpitPoison = {_spitPoison.CooldownTime}");
+
         //Сделать потом уменьшение кулдаунов зарядов для PoisonBall
 
         _poisonBall.Buff.CastSpeed.ReductionPercentage(_increaseCastTime);
         _spitPoison.Buff.CastSpeed.ReductionPercentage(_increaseCastTime);
-
-        Invoke("ResetValues", _duration);
     }
 
-    private void ResetValues()
+    private void ResetCastTimeToBase()
     {
-        Debug.Log("MetabolismReptile / IncreaseValues");
-        _player.Health.RegenerationValue = _originalHpRegen;
-        Debug.Log("HpRegen / ResetValues == " + _player.Health.RegenerationValue);
-
         _poisonBall.Buff.CastSpeed.IncreasePercentage(_increaseCastTime);
         _spitPoison.Buff.CastSpeed.IncreasePercentage(_increaseCastTime);
-        _isCanCast = true;
     }
 
+    #region CommandMethods
+
+    [Command]
+    private void CmdIncreaseHealthRegen(GameObject player, float originalHpRegen, float increaseHealthRegen)
+    {
+        Character playerCharacter = player.GetComponent<Character>();
+
+        float increasedHpRegen = originalHpRegen * increaseHealthRegen;
+        playerCharacter.Health.RegenerationValue = increasedHpRegen;
+    }
+
+    [Command]
+    private void CmdRemoveHpRegen(GameObject player, float originalHealthRegen)
+    {
+
+        Character playerCharacter = player.GetComponent<Character>();
+
+        playerCharacter.Health.RegenerationValue = originalHealthRegen;
+    }
+
+    #endregion
 }

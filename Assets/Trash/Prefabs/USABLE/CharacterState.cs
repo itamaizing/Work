@@ -267,8 +267,8 @@ public class CharacterState : NetworkBehaviour
 		[States.DefenseReduction] = new DefenceReductionState(),
 		[States.SparkTalentHealthBuff] = new SparkTalentHealthState(),
 		[States.SelfHarm] = new SelfHarmState(),
-		#region CreeperPoisonStates
-		/*[States.CreeperInvisible] = new CreeperInvisibleState(),
+		[States.Immateriality] = new ImmaterialityState(),
+		[States.CreeperInvisible] = new CreeperInvisibleState(),
 		[States.PoisonBone] = new PoisonBoneState(),
 		[States.WitheringPoison] = new WitheringPoisonState(),
 		[States.BindingPoison] = new BindingPoisonState(),
@@ -280,12 +280,8 @@ public class CharacterState : NetworkBehaviour
 		[States.RegeneratingPoison] = new RegeneratingPoisonState(),
 		[States.HeatedGlands] = new HeatedGlandsState(),
 		[States.AbsorptionOfPoison] = new AbsorptionOfPoisonsState(),
-		#endregion
-
-		#region CarriganStates
 		[States.Bleeding] = new BleedingState(),
-		[States.ReducingHealing] = new ReducingHealingState(),*/
-		#endregion
+		[States.ReducingHealing] = new ReducingHealingState(),
 	};
 
 	public void Initialize(Character hero)
@@ -694,8 +690,6 @@ public enum StatusEffect
 
 public enum States
 {
-	#region CreeperStates
-
 	CreeperInvisible,
 	PoisonBone,
 	WitheringPoison,
@@ -708,14 +702,8 @@ public enum States
 	RegeneratingPoison,
 	HeatedGlands,
 	AbsorptionOfPoison,
-
-	#endregion
-
-	#region Carrigan
 	BleedingCarrigan,
 	ReducingHealing,
-	#endregion
-
 	Immateriality,
 	InAir,
 	Default,

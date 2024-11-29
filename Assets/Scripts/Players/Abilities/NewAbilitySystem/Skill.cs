@@ -183,6 +183,10 @@ public abstract class Skill : NetworkBehaviour
     protected abstract IEnumerator CastJob();
     protected abstract void ClearData();
 
+    private float[] _remainingCooldownTimeChargers;
+
+    private Coroutine _currentChargeCooldownJob;
+
     public void Init(SkillRenderer render, Character hero)
     {
         _hero = hero;
@@ -192,7 +196,10 @@ public abstract class Skill : NetworkBehaviour
     protected virtual void Awake()
     {
         if (_isUseCharges)
+        {
             _currentChargers = _maxCharges;
+            _remainingCooldownTimeChargers = new float[_maxCharges];
+        }
         else
             _currentChargers = 1;
     }
@@ -610,6 +617,24 @@ public abstract class Skill : NetworkBehaviour
         return Vector3.zero;
     }
 
+    public void ReductionCooldownTimeCharge(float time)
+    {
+        for (int i = 0; i < _maxCharges; i++)
+        {
+            Debug.Log("Restart Cooldown Charge / currentCharge = " + _currentChargers);
+
+            if (time > _remainingCooldownTimeChargers[i])
+                return;
+
+            if (_currentChargeCooldownJob != null)
+                StopCoroutine(_currentChargeCooldownJob);
+
+            _currentChargeCooldownJob = StartCoroutine(RechargeOneChargeCoroutine(i, time));
+            Debug.Log("Restart Cooldown Charge work");
+        }
+    }
+
+
     protected bool TryUseCharge()
     {
         if (_isUseCharges == false)
@@ -620,8 +645,23 @@ public abstract class Skill : NetworkBehaviour
             _currentChargers--;
             CurrentChargeChanged?.Invoke(_currentChargers);
 
-            if (_rechargeJob == null || _chargesHaveSeparateCooldown)
+            if (_rechargeJob == null && !_chargesHaveSeparateCooldown)
+            {
                 _rechargeJob = StartCoroutine(RechargeCoroutine());
+            }
+            else if (_rechargeJob == null && _chargesHaveSeparateCooldown)
+            {
+                for (int i = 0; i < _maxCharges; i++)
+                {
+                    if (_remainingCooldownTimeChargers[i] <= 0)
+                    {
+                        Debug.Log("Start separate cooldownJob");
+                        _currentChargeCooldownJob = StartCoroutine(RechargeOneChargeCoroutine(i, ChargeCooldown));
+                        break;
+                    }
+                }
+            }
+
             return true;
         }
         else
@@ -629,6 +669,29 @@ public abstract class Skill : NetworkBehaviour
             return false;
         }
     }
+
+    private IEnumerator RechargeOneChargeCoroutine(int indexCharge, float time)
+    {
+        _remainingCooldownTimeChargers[indexCharge] = time;
+        Debug.Log("Skill / RechargeOneChargeCoroutine / remainingCooldownTimeChargers = " + _remainingCooldownTimeChargers[indexCharge]);
+
+        while (_remainingCooldownTimeChargers[indexCharge] > 0)
+        {
+            _remainingCooldownTimeChargers[indexCharge] -= Time.deltaTime;
+            Debug.Log("Skill / RechargeOneChargeCoroutine / remainingCooldownTimeChargers - deltaTime = " + _remainingCooldownTimeChargers[indexCharge]);
+
+            if (_remainingCooldownTimeChargers[indexCharge] <= 0)
+            {
+                _currentChargers++;
+                Debug.Log("Skill / RechargeOneChargeCoroutine / if time <= 0 / currentChargers++ = " + _currentChargers);
+
+                CurrentChargeChanged?.Invoke(_currentChargers);
+            }
+
+            yield return null;
+        }
+    }
+
 
     protected virtual IEnumerator RechargeCoroutine()
     {

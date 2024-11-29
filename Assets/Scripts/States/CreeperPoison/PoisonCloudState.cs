@@ -68,52 +68,6 @@ public class PoisonCloudState : AbstractCharacterState
         }
     }
 
-    private void SearchAbilities()
-    {
-        foreach (Skill ability in _skills)
-        {
-            if (ability is ExplosionPoisonCloud cloudExplosion)
-            {
-                if (_cloudExplosion == null)
-                {
-                    _cloudExplosion = cloudExplosion;
-                }
-            }
-            if (ability is PoisonBall poisonBall)
-            {
-                _enemiesLayer = poisonBall.TargetsLayers;
-            }
-        }
-    }
-
-    private void SearchTalent()
-    {
-        foreach (Talent talent in _talents)
-        {
-            if (talent is CapaciousPoisonCloud capaciousCloud)
-            {
-                if (_capaciousPoisonCloud == null)
-                {
-                    _capaciousPoisonCloud = capaciousCloud;
-
-                    if (_capaciousPoisonCloud.Data.IsOpen)
-                    {
-                        float multiplierRadiusCloud = 1.5f;
-
-                        _radiusCloud += multiplierRadiusCloud;
-                    }
-                }
-            }
-            if (talent is ToxiqueCloud toxiqueCloud)
-            {
-                if (_toxiqueCloud == null)
-                {
-                    _toxiqueCloud = toxiqueCloud;
-                }
-            }
-        }
-    }
-
     public override void UpdateState()
     {
         _timeBetweenAttack -= Time.deltaTime;
@@ -173,6 +127,53 @@ public class PoisonCloudState : AbstractCharacterState
         }
     }
 
+    private void SearchAbilities()
+    {
+        foreach (Skill ability in _skills)
+        {
+            if (ability is ExplosionPoisonCloud cloudExplosion)
+            {
+                if (_cloudExplosion == null)
+                {
+                    _cloudExplosion = cloudExplosion;
+                }
+            }
+            if (ability is CreeperStrike creeperStrike)
+            {
+                _enemiesLayer = creeperStrike.TargetsLayers;
+            }
+            
+        }
+    }
+
+    private void SearchTalent()
+    {
+        foreach (Talent talent in _talents)
+        {
+            if (talent is CapaciousPoisonCloud capaciousCloud)
+            {
+                if (_capaciousPoisonCloud == null)
+                {
+                    _capaciousPoisonCloud = capaciousCloud;
+
+                    if (_capaciousPoisonCloud.Data.IsOpen)
+                    {
+                        float multiplierRadiusCloud = 1.5f;
+
+                        _radiusCloud += multiplierRadiusCloud;
+                    }
+                }
+            }
+            if (talent is ToxiqueCloud toxiqueCloud)
+            {
+                if (_toxiqueCloud == null)
+                {
+                    _toxiqueCloud = toxiqueCloud;
+                }
+            }
+        }
+    }
+
     [ClientRpc]
     private void RpcSearchingEnemies(LayerMask enemyLayer, GameObject player)
     {
@@ -182,6 +183,7 @@ public class PoisonCloudState : AbstractCharacterState
         {
             if (enemy.transform != player.transform)
             {
+                Debug.Log("PoisonCloudState / enemy = " + enemy.name);
                 CmdDamageDeal(enemy.gameObject);
             }
         }
@@ -190,26 +192,29 @@ public class PoisonCloudState : AbstractCharacterState
     [Command]
     private void CmdDamageDeal(GameObject target)
     {
-        var targetHealth = target.GetComponent<Character>();
-
-        _increasedDamage = _baseDamage * CurrentStacksCount;
-        _endDamage = targetHealth.Health.MaxValue * _increasedDamage;
-
-        Damage damage = new Damage()
+        if (target != null)
         {
-            Value = _endDamage,
-            Type = DamageType.Physical,
-        };
+            var targetHealth = target.GetComponent<Character>();
 
-        targetHealth.Health.CmdTryTakeDamage(damage, null);
-        //targetHealth.DamageTracker.AddDamage(damage, true);
+            _increasedDamage = _baseDamage * CurrentStacksCount;
+            _endDamage = targetHealth.Health.MaxValue * _increasedDamage;
 
-        if (_toxiqueCloud != null && _toxiqueCloud.Data.IsOpen)
-        {
-            if (_timeBetweenApplyEmpathicPoisons <= 0)
+            Damage damage = new Damage()
             {
-                targetHealth.CharacterState.AddStateTest(States.EmpathicPoisons, _durationEmpathicPoisons, 0, _player.gameObject, null);
-                _timeBetweenApplyEmpathicPoisons = _startTimeBetweenApplyEmpathicPoisons;
+                Value = _endDamage,
+                Type = DamageType.Physical,
+            };
+
+            targetHealth.Health.CmdTryTakeDamage(damage, null);
+            //targetHealth.DamageTracker.AddDamage(damage, true);
+
+            if (_toxiqueCloud != null && _toxiqueCloud.Data.IsOpen)
+            {
+                if (_timeBetweenApplyEmpathicPoisons <= 0)
+                {
+                    targetHealth.CharacterState.AddState(States.EmpathicPoisons, _durationEmpathicPoisons, 0, _player.gameObject, null);
+                    _timeBetweenApplyEmpathicPoisons = _startTimeBetweenApplyEmpathicPoisons;
+                }
             }
         }
     }

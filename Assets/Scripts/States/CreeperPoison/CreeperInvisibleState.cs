@@ -131,7 +131,7 @@ public class CreeperInvisibleState : AbstractCharacterState
                 //Debug.Log("Modified manaCost at ability: " + ability.name + ", Type: " + ability.GetType() + ", ManaCost Value = " + ability.Buff.ManaCost);
             }
             _isIncreasedManaCost = false;
-            // Debug.Log("IsIncreasedManaCost in ResetValues == " + _isIncreasedManaCost);
+            // Debug.Log("IsIncreasedManaCost in RemoveBuff == " + _isIncreasedManaCost);
         }
 
         _isPlayerInvisability = false;

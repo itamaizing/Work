@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class HealingPoisonCloudState : AbstractCharacterState
 {
+
     private int _maxStacks = 5;
     private float _radiusCloud = 2.5f;
 
@@ -20,6 +21,7 @@ public class HealingPoisonCloudState : AbstractCharacterState
     private LayerMask _alliesLayer;
     private Character _player;
 
+    private List<Skill> _skills = new();
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Healing };
 
     public override States State => States.HealingPoisonCloud;
@@ -36,10 +38,14 @@ public class HealingPoisonCloudState : AbstractCharacterState
         _baseDuration = durationToExit;
 
         MaxStacksCount = _maxStacks;
+        
+        if (_player != null)
+        {
+            _skills = _player.CharacterState.Character.Abilities.Abilities;
 
-        _alliesLayer = 9;
+            SearchAbilities();
+        }
 
-        Debug.Log("HealingPoisonCloudState / alliesLayer = " + _alliesLayer.value);
         if (CurrentStacksCount < MaxStacksCount)
         {
             AddStacks();
@@ -98,6 +104,21 @@ public class HealingPoisonCloudState : AbstractCharacterState
         }
     }
 
+    private void SearchAbilities()
+    {
+        foreach (Skill ability in _skills)
+        {
+            if (ability is CreeperInvisible creeperInvisible)
+            {
+                if (creeperInvisible != null)
+                {
+                    _alliesLayer = creeperInvisible.TargetsLayers;
+                }
+            }
+
+        }
+    }
+
     [ClientRpc]
     private void RpcSearchingEnemies(LayerMask alliesLayer, GameObject player)
     {
@@ -105,12 +126,10 @@ public class HealingPoisonCloudState : AbstractCharacterState
 
         foreach (Collider alliesOrPlayer in hitsAllies)
         {
-            Debug.Log("HealingPoisonCloud / SearchingEnemies / alliesOrPlayer = " + alliesOrPlayer.name);
             if (alliesOrPlayer != null)
             {
                 if (alliesOrPlayer.TryGetComponent<Character>(out var target))
                 {
-                    Debug.Log("HealingPoisonCloud / SearchingEnemies / if TryGetComponent");
                     CmdApplyHealing(target.gameObject);
 
                     _timeBetweenHeal = _startTimeBetweenHeal;
@@ -127,15 +146,11 @@ public class HealingPoisonCloudState : AbstractCharacterState
         _increasedHeal = _baseHeal * CurrentStacksCount;
         _endHeal = targetCharacter.Health.MaxValue * _increasedHeal;
 
-        Debug.Log("HealingPoisonCloud / CmdApplyHealing / endHeal = " + _endHeal);
-
         Heal heal = new Heal
         {
             Value = _endHeal,
             DamageableSkill = null,
         };
-
-        Debug.Log("HealingPoisonCloud / CmdApplyHealing / heal = " + heal);
 
         targetCharacter.Health.Heal(ref heal, null);
         //targetHealth.DamageTracker.AddHeal(heal);
