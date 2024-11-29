@@ -66,6 +66,7 @@ public class AssasinPoison : Talent
         if (_currentChargePoison < _maxChargePoison)
         {
             _currentChargePoison++;
+            Debug.Log("Accumulate AssasinPoison Charge = " + _currentChargePoison);
             _timeAccumulateCharge = _startTimeAccumulateCharge;
         }
     }

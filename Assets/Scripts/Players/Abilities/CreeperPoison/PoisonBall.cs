@@ -98,7 +98,6 @@ public class PoisonBall : Skill, IAltAbility
     private float _fastTimeCast = 0.4f;
     private float _slowTimeCast = 1.8f;
     private float _originalChargeCooldown;
-    private float _currentStacksAsssasinPoison = 0;
     private float _baseCastWidth;
     private float _multiplierForPushDistance;
     private float _animTime;
@@ -122,7 +121,6 @@ public class PoisonBall : Skill, IAltAbility
     private bool _isFast;
     private bool _isBallCanBigger;
     private bool _isThreeProjectileOnOneTarget;
-    private bool _isCanConvertPoisonInCharge;
 
     private bool _isAbilityActive;
     private bool _colorLockedAfterSecondClick;
@@ -144,7 +142,6 @@ public class PoisonBall : Skill, IAltAbility
     public RestorationOfGlands RestorationOfGlandsTalent { get; set; }
     public int CurrentCountBall { get => _poisonBallInfo.CountProjectiles; }
     public int PoisonBoneStack { get => _poisonBoneStacks; set => _poisonBoneStacks = value; }
-    public bool IsCanConvertPoisonInCharge { get => _isCanConvertPoisonInCharge; set => _isCanConvertPoisonInCharge = value; }
     public bool IsAltAbility { get; set; }
 
     protected override int AnimTriggerCast => 0;
@@ -390,19 +387,22 @@ public class PoisonBall : Skill, IAltAbility
         }
     }
 
-    private void FlowOfPoisonConvertCharge()
+    public void FlowOfPoisonConvertCharge()
     {
-        if (_assasinPoison.Data.IsOpen && _flowOfPoison.Data.IsOpen && IsCanConvertPoisonInCharge)
+        if (_assasinPoison.Data.IsOpen && _flowOfPoison.Data.IsOpen)
         {
-            if (Chargers < _maxCharges)
+            for (int i = 0; i < RemainingCooldownTimeCharge.Count; i++)
             {
-                Debug.Log("PoisonBall / _chargeCooldown == " + _chargeCooldown);
-                float newCooldownTime = 0f;
-                Debug.Log("PoisonBall / newCooldownTime == " + newCooldownTime);
-                this.IncreaseSetCooldown(newCooldownTime);
-            }
+                if (RemainingCooldownTimeCharge[i] > 0)
+                {
+                    if (_assasinPoison.CurrentChargeAssasinPoison > 0)
+                    {
+                        float newCooldownTime = 1f;
 
-            _isCanConvertPoisonInCharge = false;
+                        ReductionCooldownTimeCharge(newCooldownTime);
+                    }
+                }
+            }
         }
     }
 
@@ -412,7 +412,6 @@ public class PoisonBall : Skill, IAltAbility
         {
             InertialGlandsReductionCooldown();
             ContinuationAmbushApplyInvisible();
-            FlowOfPoisonConvertCharge();
 
             yield return null;
         }

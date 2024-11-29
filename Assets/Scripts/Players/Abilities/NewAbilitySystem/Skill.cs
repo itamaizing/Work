@@ -622,6 +622,20 @@ public abstract class Skill : NetworkBehaviour
         return Vector3.zero;
     }
 
+    public void IncreaseCooldownTimeCharge(float time)
+    {
+        for (int i = 0; i < _maxCharges; i++)
+        {
+            if (time < _remainingCooldownTimeChargers[i])
+                return;
+
+            if (_currentChargeCooldownJob != null)
+                StopCoroutine(_currentChargeCooldownJob);
+
+            _currentChargeCooldownJob = StartCoroutine(RechargeOneChargeCoroutine(i, time));
+        }
+    }
+
     public void ReductionCooldownTimeCharge(float time)
     {
         for (int i = 0; i < _maxCharges; i++)
@@ -633,9 +647,9 @@ public abstract class Skill : NetworkBehaviour
                 StopCoroutine(_currentChargeCooldownJob);
 
             _currentChargeCooldownJob = StartCoroutine(RechargeOneChargeCoroutine(i, time));
+            Debug.Log("ReductionCooldwonCharge");
         }
     }
-
 
     protected bool TryUseCharge()
     {
@@ -684,7 +698,7 @@ public abstract class Skill : NetworkBehaviour
 
         if (_currentChargers < _maxCharges)
             _currentChargers++;
-        
+
         CurrentChargeChanged?.Invoke(_currentChargers);
     }
 
