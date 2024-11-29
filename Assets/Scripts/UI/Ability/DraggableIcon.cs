@@ -33,6 +33,12 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         _image.sprite = _skill.Icon;
         PatentAfterDrag = parent;
 
+        if(_skill.IsUseCharges == true)
+        {
+            _chargeCounter.gameObject.SetActive(true);
+            OnCurrentChargeChanged(_skill.Chargers);
+        }
+
         if (skill is AutoAttackSkill)
         {
             _autoCastEffect = Instantiate(_autoCastEffectPrefab, transform);
@@ -108,7 +114,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         //ability.Canceled += OnStopCastDeley;
 
         ability.CooldownStarted += OnStartCooldown;
-        ability.CurrentChargeChanged += OnCurrentChargeText;
+        ability.CurrentChargeChanged += OnCurrentChargeChanged;
 
         ability.CastStarted += OnCastStarted;
         ability.CastEnded += OnCastEnded;
@@ -135,7 +141,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         //ability.Canceled -= OnStopCastDeley;
 
         ability.CooldownStarted -= OnStartCooldown;
-        ability.CurrentChargeChanged -= OnCurrentChargeText;
+        ability.CurrentChargeChanged -= OnCurrentChargeChanged;
 
         ability.CastStarted -= OnCastStarted;
         ability.CastEnded -= OnCastEnded;
@@ -179,7 +185,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         _blinkBoxFrame.gameObject.SetActive(false);
     }
 
-    private void OnCurrentChargeText(int value)
+    private void OnCurrentChargeChanged(int value)
     {
         if (value > 0)
             _chargeCounter.color = Color.green;
