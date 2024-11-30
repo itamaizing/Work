@@ -47,8 +47,9 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
 	public static event Action<Character> AuthorityOnUnitDeleted;
     public event Action<Damage, Skill> DamageTaken;
     public event Action<float, Skill, string> HealTaked;
+	public event Action<Character> Died;
 
-    public virtual void Initialize()
+	public virtual void Initialize()
 	{
 		Move.Initialize(Data.GetAttributeValue(AttributeNames.Speed), Rb , true);
 		CharacterState.Initialize(this);
@@ -89,6 +90,8 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
 					Data);
 			}
 		}
+
+		Health.Died += OnDied;
 	}
 	
 	private void Start()
@@ -143,4 +146,9 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
     {
 		Health.Heal(ref value, sourceName, skill);
 	}
+
+	private void OnDied()
+    {
+		Died?.Invoke(this);
+    }
 }

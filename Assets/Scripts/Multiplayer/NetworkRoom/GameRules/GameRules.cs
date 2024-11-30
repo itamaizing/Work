@@ -5,6 +5,8 @@ using UnityEngine;
 
 public abstract class GameRules : NetworkBehaviour
 {
+    [SerializeField] private int _expValue = 10;
+
     protected readonly SyncList<GameObject> _playersSyncList = new SyncList<GameObject>();
     protected List<Character> _players = new List<Character>();
     protected NetworkRoom _room;
@@ -24,15 +26,8 @@ public abstract class GameRules : NetworkBehaviour
     {
         _room = room;
 
-        foreach (var item in _room.Players)
-        {
-            _playersSyncList.Add(item);
-            var playerSettings = item.GetComponent<Character>();
-            if (playerSettings != null)
-            {
-                _players.Add(playerSettings);
-            }
-        }
+        AddAllPlayersInList();
+        SubscribingOnPlayerEvents();
 
         StartCoroutine(WaitForSceneAndFindSpawnPoints());
     }
@@ -113,12 +108,58 @@ public abstract class GameRules : NetworkBehaviour
     protected IEnumerator CloseRoomJob()
     {
         UnsubscribeFromAllEvents();
+        UnsubscribingOnPlayerEvents();
 
         yield return new WaitForSeconds(1f);
 
         if (_room != null)
         {
             yield return _room.UnloadRoomJob();
+        }
+    }
+
+    protected virtual void OnPlayerDied(Character character)
+    {
+        AddExpForEnemy(character);
+    }
+
+    protected virtual void AddExpForEnemy(Character character)
+    {
+        foreach (var player in _players)
+        {
+            if(character.NetworkSettings.TeamIndex != player.NetworkSettings.TeamIndex)
+            {
+                player.LVL.AddEXP(_expValue);
+            }
+        }
+    }
+
+    private void AddAllPlayersInList()
+    {
+        foreach (var item in _room.Players)
+        {
+            _playersSyncList.Add(item);
+            var playerSettings = item.GetComponent<Character>();
+            if (playerSettings != null)
+            {
+                _players.Add(playerSettings);
+            }
+        }
+    }
+
+    private void SubscribingOnPlayerEvents()
+    {
+        foreach (var item in _players)
+        {
+            item.Died += OnPlayerDied;
+        }
+    }
+    
+    private void UnsubscribingOnPlayerEvents()
+    {
+        foreach (var item in _players)
+        {
+            item.Died -= OnPlayerDied;
         }
     }
 }
