@@ -11,7 +11,6 @@ public class ColdBlood : Skill
 
     [Header("Ability Properties")]
     [SerializeField] private CreeperStrike _creeperStrike;
-    [SerializeField] private LightningStrikes _lightningStrikes;
     [SerializeField] private Character _player;
     [SerializeField] private float _reducingCooldownMultiplier = 2f;
 

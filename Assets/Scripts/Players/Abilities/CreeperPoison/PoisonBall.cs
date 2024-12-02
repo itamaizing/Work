@@ -73,7 +73,6 @@ public class PoisonBall : Skill, IAltAbility
     [SerializeField] private Character _player;
     [SerializeField] private GameObject _arrowPrefab;
     [SerializeField] private GameObject _spawnPoint;
-    
     #region PoisonCloud
     [SerializeField] private PoisonDamagingCloudPrefab _poisonDamagingCloudPrefab;
     [SerializeField] private PoisonHealingCloudPrefab _poisonHealingCloudPrefab;
@@ -235,8 +234,12 @@ public class PoisonBall : Skill, IAltAbility
                 }
                 else
                 {
-                    _lookAtPositionCoroutine = StartCoroutine(LookAtPositionJob());
-                    _isTarget = false;    
+                    if (IsHaveCharge)
+                    {
+                        _lookAtPositionCoroutine = StartCoroutine(LookAtPositionJob());
+
+                        _isTarget = false;    
+                    }
                 }
 
                 CreateArrowsParallelToPlayer();
@@ -1081,7 +1084,7 @@ public class PoisonBall : Skill, IAltAbility
                 _poisonDamagingCloudPrefab.PoisonDamageCloud = _poisonDamagingCloud;
                 SceneManager.MoveGameObjectToScene(_poisonDamagingCloudPrefab.PoisonDamageCloud.gameObject, _hero.NetworkSettings.MyRoom);
 
-                _poisonDamagingCloudPrefab.PoisonDamageCloud.InitializationProjectile(_player, 5, duration, 3.5f, Name);
+                _poisonDamagingCloudPrefab.PoisonDamageCloud.InitializationProjectile(_player,duration);
                 _poisonDamagingCloudPrefab.PoisonDamageCloud.AddStack();
 
                 NetworkServer.Spawn(_poisonDamagingCloud.gameObject);
@@ -1106,7 +1109,7 @@ public class PoisonBall : Skill, IAltAbility
                 _poisonHealingCloudPrefab.PoisonHealingCloud = _poisonHealingCloud;
                 SceneManager.MoveGameObjectToScene(_poisonHealingCloudPrefab.PoisonHealingCloud.gameObject, _hero.NetworkSettings.MyRoom);
                  
-                _poisonHealingCloudPrefab.PoisonHealingCloud.InitializationProjectile(_player, 5, duration, 3.5f, Name);
+                _poisonHealingCloudPrefab.PoisonHealingCloud.InitializationProjectile(_player, duration);
                 _poisonHealingCloudPrefab.PoisonHealingCloud.AddStack();
 
                 NetworkServer.Spawn(_poisonHealingCloud.gameObject);
@@ -1120,28 +1123,6 @@ public class PoisonBall : Skill, IAltAbility
         RpcApply(_poisonDamagingCloudPrefab.PoisonDamageCloud, _poisonHealingCloudPrefab.PoisonHealingCloud, duration, isHealingCloud);
     }
 
-    /*
-    [Command]
-    private void CmdCheckActiveTalents(bool transparentPoisonsActive, bool witheringPoisonActive,
-        bool contAmbushActive, bool healingBallActive, bool healingCloudActive,
-        bool enlargedGlandsActive, bool voluminousBallActive, bool inertialGlandsActive, bool volatilityPoisonsActive, bool ballEffectActive)
-    {
-        _activeTalentsInfo.IsActiveTransparentPoisons = transparentPoisonsActive;
-        _activeTalentsInfo.IsActiveWitheringPoison = witheringPoisonActive;
-        _activeTalentsInfo.IsActiveContinuationAmbush = contAmbushActive;
-        _activeTalentsInfo.IsActiveHealingPoisonBall = healingBallActive;
-        _activeTalentsInfo.IsActiveHealingPoisonCloud = healingCloudActive;
-        _activeTalentsInfo.IsActiveEnlargedGlands = enlargedGlandsActive;
-        _activeTalentsInfo.IsActiveVoluminousBall = voluminousBallActive;
-        _activeTalentsInfo.IsActiveInertialGlands = inertialGlandsActive;
-        _activeTalentsInfo.IsActiveVolatilityOfPoisons = volatilityPoisonsActive;
-        _activeTalentsInfo.IsActiveBallEffect = ballEffectActive;
-
-        RpcCheckActiveTalents(transparentPoisonsActive, witheringPoisonActive, contAmbushActive, healingBallActive, healingCloudActive, 
-            enlargedGlandsActive, voluminousBallActive, inertialGlandsActive, volatilityPoisonsActive, ballEffectActive);
-    }
-    */
-
     [Command]
     private void SetSpawnPointPosition(float spawnPointX, float spawnPointY, float spawnPointZ)
     {
@@ -1152,38 +1133,19 @@ public class PoisonBall : Skill, IAltAbility
 
     #endregion
 
-    /*
-    [ClientRpc]
-    private void RpcCheckActiveTalents(bool transparentPoisonsActive, bool witheringPoisonActive,
-    bool contAmbushActive, bool healingBallActive, bool healingCloudActive,
-    bool enlargedGlandsActive, bool voluminousBallActive, bool inertialGlandsActive, bool volatilityPoisonsActive, bool ballEffectActive)
-    {
-        _activeTalentsInfo.IsActiveTransparentPoisons = transparentPoisonsActive;
-        _activeTalentsInfo.IsActiveWitheringPoison = witheringPoisonActive;
-        _activeTalentsInfo.IsActiveContinuationAmbush = contAmbushActive;
-        _activeTalentsInfo.IsActiveHealingPoisonBall = healingBallActive;
-        _activeTalentsInfo.IsActiveHealingPoisonCloud = healingCloudActive;
-        _activeTalentsInfo.IsActiveEnlargedGlands = enlargedGlandsActive;
-        _activeTalentsInfo.IsActiveVoluminousBall = voluminousBallActive;
-        _activeTalentsInfo.IsActiveInertialGlands = inertialGlandsActive;
-        _activeTalentsInfo.IsActiveVolatilityOfPoisons = volatilityPoisonsActive;
-        _activeTalentsInfo.IsActiveBallEffect = ballEffectActive;
-    }
-    */
-
-    [ClientRpc]
+    [TargetRpc]
     private void RpcApply(PoisonDamagingCloudPrefab poisonDamagingCloud, PoisonHealingCloudPrefab poisonHealingCloud, float duration, bool isHealingCloud)
     {
         //Debug.Log("PoisonBall / RpcApply / if (poisonDamagingCloud != null) = " + poisonDamagingCloud);
         if (poisonDamagingCloud != null)
         {
-            poisonDamagingCloud.InitializationProjectile(_player, 5, duration, 3.5f, Name);
+            poisonDamagingCloud.InitializationProjectile(_player, duration);
             poisonDamagingCloud.AddStack();
         }
 
         if (poisonHealingCloud != null && isHealingCloud)
         {
-            poisonHealingCloud.InitializationProjectile(_player, 5, duration, 3.5f, Name);
+            poisonHealingCloud.InitializationProjectile(_player, duration);
             poisonHealingCloud.AddStack();
         }
     }

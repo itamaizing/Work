@@ -7,19 +7,15 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
     [SerializeField] private ParticleSystem _poisonDamagingCloudParticle;
     private ParticleSystem _instancePoisonDamagingCloud;
 
-    private PoisonDamagingCloudPrefab _poisonDamageCloud;
-    private Character _player;
-
+    [SerializeField] private int _maxStacks = 5;
     private int _currentStacks;
-    private int _maxStacks;
 
+    [SerializeField] private float _radiusCloud;
     private float _baseDuration;
     private float _duration;
-    private float _radiusCloud;
 
-    private string _skillName;
-
-    private bool _isHealingCloud;
+    private PoisonDamagingCloudPrefab _poisonDamageCloud;
+    private Character _player;
 
     private Coroutine _lifetimeStacksCoroutine;
     private Coroutine _activateParticlePoisonCloudCoroutine;
@@ -34,16 +30,12 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
         }
     }
 
-    public void InitializationProjectile(Character player, int maxStacks, float duration, float radiusCloud, string name)
+    public void InitializationProjectile(Character player, float duration)
     {
         _player = player;
         
-        _maxStacks = maxStacks;
         _duration = duration;
         _baseDuration = duration;
-        _radiusCloud = radiusCloud;
-        _isHealingCloud = false;
-        _skillName = name;
     }
 
     public void AddStack()
@@ -53,6 +45,7 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
         if (_currentStacks < _maxStacks)
         {
             _currentStacks++;
+
             if (_activateParticlePoisonCloudCoroutine == null && _poisonDamageCloud == null)
             {
                 _activateParticlePoisonCloudCoroutine = StartCoroutine(ActivatePoisonCloud());
@@ -125,6 +118,7 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
             StopCoroutine(_activateParticlePoisonCloudCoroutine);
             _activateParticlePoisonCloudCoroutine = null;
         }
+
         if (_lifetimeStacksCoroutine != null)
         {
             StopCoroutine(_lifetimeStacksCoroutine);

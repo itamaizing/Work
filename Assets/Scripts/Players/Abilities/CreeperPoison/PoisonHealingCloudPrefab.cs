@@ -7,19 +7,15 @@ public class PoisonHealingCloudPrefab : NetworkBehaviour
     [SerializeField] private ParticleSystem _poisonHealingCloudParticle;
     private ParticleSystem _instancePoisonHealingCloud;
 
-    private PoisonHealingCloudPrefab _poisonHealCloud;
-    private Character _player;
-
+    [SerializeField] private int _maxStacks = 5;
     private int _currentStacks;
-    private int _maxStacks;
 
+    [SerializeField] private float _radiusCloud;
     private float _baseDuration;
     private float _duration;
-    private float _radiusCloud;
 
-    private string _skillName;
-
-    private bool _isHealingCloud;
+    private PoisonHealingCloudPrefab _poisonHealCloud;
+    private Character _player;
 
     private Coroutine _lifetimeStacksCoroutine;
     private Coroutine _activateParticlePoisonCloudCoroutine;
@@ -33,16 +29,12 @@ public class PoisonHealingCloudPrefab : NetworkBehaviour
         }
     }
 
-    public void InitializationProjectile(Character player, int maxStacks, float duration, float radiusCloud, string name)
+    public void InitializationProjectile(Character player, float duration)
     {
         _player = player;
 
-        _maxStacks = maxStacks;
         _duration = duration;
         _baseDuration = duration;
-        _radiusCloud = radiusCloud;
-        _isHealingCloud = false;
-        _skillName = name;
     }
 
     public void AddStack()
