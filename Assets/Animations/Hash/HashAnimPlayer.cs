@@ -7,8 +7,9 @@ public class HashAnimPlayer : MonoBehaviour
     // triggers
     public static readonly int AnimCancled = Animator.StringToHash("Cancled");
     public static readonly int TakeDamage = Animator.StringToHash("TakeDamage");
-    public static readonly int Die = Animator.StringToHash("Die");
-    public static readonly int Revival = Animator.StringToHash("Revival");
+
+    //bool
+    public static readonly int IsDead = Animator.StringToHash("Die");
 
     //float
     public static readonly int VelocityX = Animator.StringToHash("X");

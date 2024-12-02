@@ -96,7 +96,7 @@ public class TestGameRules : GameRules
             }
             else
             {
-                RestartRound();
+                //RestartRound();
             }
         }
     }
@@ -197,7 +197,7 @@ public class TestGameRules : GameRules
 
     private void ResetPlayerState(Character player)
     {
-        player.ServerResetAll();
+        //player.ServerResetAll();
 
         /*
         var health = playerSettings.Health;

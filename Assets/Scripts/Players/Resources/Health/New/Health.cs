@@ -253,7 +253,7 @@ public class Health : Resource, IDamageable, IHealingable
     private void ClientRpcDied()
     {
         Died?.Invoke();
-        _animator.SetTrigger(HashAnimPlayer.Die);
+        _animator.SetBool(HashAnimPlayer.IsDead, true);
     }
 
 	public void ShowPhantomValue(Damage phantomValue)

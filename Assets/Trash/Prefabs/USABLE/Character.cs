@@ -60,7 +60,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
 
         if (_collider == null)
         {
-			Debug.LogError("Fill in field Collider on prefab");
+			Debug.LogError("Fill in field Collider on prefab " + gameObject.name);
         }
     }
 
@@ -120,20 +120,21 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
 		RpcResetAll();
 	}
 
-	private void ResetAll()
-    {
-		_isDead = false;
-		_animator.SetTrigger(HashAnimPlayer.Revival);
-		_collider.enabled = true;
-		_rigidbody.isKinematic = false;
-	}
-
-	[ClientRpc]
-	private void RpcResetAll()
-    {
+#if UNITY_EDITOR
+	/*
+	[ContextMenu(nameof(ResetAll))]
+	private void ResetAllTest()
+	{
 		ResetAll();
 	}
-
+	*/
+	[ContextMenu(nameof(ResetAll))]
+	private void ServerResetAllTest()
+	{
+		ResetAll();
+		RpcResetAll();
+	}
+#endif
 
 	public override void OnStartServer()
 	{
@@ -183,15 +184,40 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
 		Health.Heal(ref value, sourceName, skill);
 	}
 
-    private void OnDied()
+	protected virtual void OnDied()
     {
 		Died?.Invoke(this);
 
 		_isDead = true;
-		_animator.SetTrigger(HashAnimPlayer.Die);
+		_animator.SetBool(HashAnimPlayer.IsDead, true);
 		_collider.enabled = false;
 		_rigidbody.isKinematic = true;
+		_playerMove.enabled = false;
+		_abilities.CancleAllSkills();
+
+		foreach (var item in _resources)
+        {
+			item.enabled = false;
+        }
+
 		DeleteStates();
+	}
+
+	protected virtual void ResetAll()
+	{
+		_isDead = false;
+		_animator.SetBool(HashAnimPlayer.IsDead, false);
+		_collider.enabled = true;
+		_rigidbody.isKinematic = false;
+		_playerMove.enabled = true;
+
+		foreach (var item in _resources)
+		{
+			item.enabled = true;
+
+			if(isServer)
+				item.ResetValue();
+		}
 	}
 
 	private void DeleteStates()
@@ -214,5 +240,11 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
 	private void ClientRpcOnDied()
     {
 		OnDied();
+	}
+
+	[ClientRpc]
+	private void RpcResetAll()
+	{
+		ResetAll();
 	}
 }
