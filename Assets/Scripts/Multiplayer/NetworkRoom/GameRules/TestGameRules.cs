@@ -198,7 +198,6 @@ public class TestGameRules : GameRules
     private void ResetPlayerState(Character player)
     {
         //player.ServerResetAll();
-
         /*
         var health = playerSettings.Health;
         health?.ResetValue();
