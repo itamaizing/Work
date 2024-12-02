@@ -118,7 +118,7 @@ public abstract class Skill : NetworkBehaviour
     private bool _isCtrlClick;
     private bool _isSpaceClick;
     private List<float> _remainingCooldownTimeChargers;
-    private Coroutine _currentChargeCooldownJob;
+    private List<Coroutine> _currentChargeCooldownJob;
 
     public bool IsTalentSpell => _isTalentSpell;
     public bool IsSkillActive
@@ -198,6 +198,7 @@ public abstract class Skill : NetworkBehaviour
         {
             _currentChargers = _maxCharges;
             _remainingCooldownTimeChargers = new List<float>(new float[_maxCharges]);
+            _currentChargeCooldownJob = new List<Coroutine>(new Coroutine[_maxCharges]);
         }
         else
             _currentChargers = 1;
@@ -622,27 +623,34 @@ public abstract class Skill : NetworkBehaviour
         return Vector3.zero;
     }
 
-    public void IncreaseCooldownTimeCharge(int chargeIndex, float time)
+    public void IncreaseCooldownTimeCharge(float time)
     {
-        if (time < _remainingCooldownTimeChargers[chargeIndex])
-            return;
+        for (int i = 0; i < RemainingCooldownTimeCharge.Count; i++)
+        {
+            if (time < _remainingCooldownTimeChargers[i])
+                return;
 
-        if (_currentChargeCooldownJob != null)
-            StopCoroutine(_currentChargeCooldownJob);
+            if (_currentChargeCooldownJob[i] != null)
+                StopCoroutine(_currentChargeCooldownJob[i]);
 
-        _currentChargeCooldownJob = StartCoroutine(RechargeOneChargeCoroutine(chargeIndex, time));
+            Debug.Log("TestRecharge / ReductionCooldownCharge");
+            _currentChargeCooldownJob[i] = StartCoroutine(RechargeOneChargeCoroutine(i, time));
+        }
     }
 
-    public void ReductionCooldownTimeCharge(int chargeIndex, float time)
+    public void ReductionCooldownTimeCharge(float time)
     {
-        if (time > _remainingCooldownTimeChargers[chargeIndex])
-            return;
+        for (int i = 0; i < RemainingCooldownTimeCharge.Count; i++)
+        {
+            if (time > _remainingCooldownTimeChargers[i])
+                return;
 
-        if (_currentChargeCooldownJob != null)
-            StopCoroutine(_currentChargeCooldownJob);
+            if (_currentChargeCooldownJob[i] != null)
+                StopCoroutine(_currentChargeCooldownJob[i]);
 
-        Debug.Log("TestRecharge / ReductionCooldownCharge");
-        _currentChargeCooldownJob = StartCoroutine(RechargeOneChargeCoroutine(chargeIndex, time));
+            Debug.Log("TestRecharge / ReductionCooldownCharge");
+            _currentChargeCooldownJob[i] = StartCoroutine(RechargeOneChargeCoroutine(i, time));
+        }
     }
 
     protected bool TryUseCharge()
@@ -665,7 +673,7 @@ public abstract class Skill : NetworkBehaviour
                 {
                     if (_remainingCooldownTimeChargers[i] <= 0)
                     {
-                        _currentChargeCooldownJob = StartCoroutine(RechargeOneChargeCoroutine(i, ChargeCooldown));
+                        _currentChargeCooldownJob[i] = StartCoroutine(RechargeOneChargeCoroutine(i, ChargeCooldown));
                         break;
                     }
                 }
