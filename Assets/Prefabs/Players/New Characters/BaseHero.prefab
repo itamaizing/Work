@@ -5553,7 +5553,7 @@ MonoBehaviour:
   syncInterval: 0
   _playerData: {fileID: 11400000, guid: f71e3e6e8b3ca6245b0c37fd016a4039, type: 2}
   _networkSettings: {fileID: 2325131165822693477}
-  rb: {fileID: 2201725961568704641}
+  _rigidbody: {fileID: 2201725961568704641}
   _lvl: {fileID: 8892991801291212352}
   _animator: {fileID: 8658026411023210807}
   _networkAnimator: {fileID: 3389994900111398297}

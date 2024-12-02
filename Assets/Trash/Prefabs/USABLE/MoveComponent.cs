@@ -127,7 +127,7 @@ public class MoveComponent : NetworkBehaviour
 		_isFly = true;
 	}
 
-	[Client]
+	[ClientCallback]
 	void Update()
 	{
 		if (isOwned == false)

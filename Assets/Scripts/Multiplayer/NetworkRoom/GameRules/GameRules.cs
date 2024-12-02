@@ -5,7 +5,7 @@ using UnityEngine;
 
 public abstract class GameRules : NetworkBehaviour
 {
-    [SerializeField] private int _expValue = 10;
+    [SerializeField] private int _expValuePerPlayer = 10;
 
     protected readonly SyncList<GameObject> _playersSyncList = new SyncList<GameObject>();
     protected List<Character> _players = new List<Character>();
@@ -21,6 +21,7 @@ public abstract class GameRules : NetworkBehaviour
     public abstract void GameStartServer(List<Transform> spawnPoints);
     protected abstract void UnsubscribeFromAllEvents();
     protected abstract void GameStartClient();
+    protected abstract void OnPlayerDied(Character character);
 
     public void Init(NetworkRoom room)
     {
@@ -118,19 +119,35 @@ public abstract class GameRules : NetworkBehaviour
         }
     }
 
-    protected virtual void OnPlayerDied(Character character)
+    protected virtual void AddExpForAllEnemy(Character character)
     {
-        AddExpForEnemy(character);
+        if(character is HeroComponent)
+        {
+            foreach (var player in _players)
+            {
+                if (character.NetworkSettings.TeamIndex != player.NetworkSettings.TeamIndex)
+                {
+                    player.LVL.AddEXP(_expValuePerPlayer);
+                }
+            }
+        }
+        else if(character is MinionComponent minion)
+        {
+            foreach (var player in _players)
+            {
+                if (character.NetworkSettings.TeamIndex != player.NetworkSettings.TeamIndex)
+                {
+                    player.LVL.AddEXP(minion.ExpForDieKill);
+                }
+            }
+        }
     }
 
-    protected virtual void AddExpForEnemy(Character character)
+    protected virtual void ResetAllPlayers()
     {
         foreach (var player in _players)
         {
-            if(character.NetworkSettings.TeamIndex != player.NetworkSettings.TeamIndex)
-            {
-                player.LVL.AddEXP(_expValue);
-            }
+            player.ServerResetAll();
         }
     }
 

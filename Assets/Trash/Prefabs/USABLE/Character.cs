@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Mirror;
+using Org.BouncyCastle.Pqc.Crypto.Lms;
 
 [RequireComponent(typeof(NetworkIdentity))]
 public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
 {
 	[SerializeField] private CharacterData _playerData;
 	[SerializeField] private UserNetworkSettings _networkSettings; 
-	[SerializeField] private Rigidbody rb;
+	[SerializeField] private Rigidbody _rigidbody;
+	[SerializeField] private Collider _collider;
 	[SerializeField] private Level _lvl;
 	[SerializeField] private Animator _animator;
 	[SerializeField] private NetworkAnimator _networkAnimator;
@@ -24,10 +26,12 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
 	[SerializeField] private SelectedCircle _selectedCircle;
 	[SerializeField] private SpawnComponent _spawnComponent;
 
+	private bool _isDead = false;
+
 	public SpawnComponent SpawnComponent => _spawnComponent;
 	public CharacterData Data => _playerData;
 	public UserNetworkSettings NetworkSettings => _networkSettings;
-	public Rigidbody Rb => rb;
+	public Rigidbody Rigidbody => _rigidbody;
 	public Health Health => _healthComponent;
 	public Level LVL => _lvl;
 	public MoveComponent Move => _playerMove;
@@ -40,6 +44,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
 	public SelectedCircle SelectedCircle => _selectedCircle;
     public Animator Animator => _animator;
     public NetworkAnimator NetworkAnimator => _networkAnimator;
+    public bool IsDead => _isDead;
 
     public static event Action<Character> ServerOnUnitSpawned;
 	public static event Action<Character> ServerOnUnitDeleted; 
@@ -49,9 +54,19 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
     public event Action<float, Skill, string> HealTaked;
 	public event Action<Character> Died;
 
-	public virtual void Initialize()
+    protected override void OnValidate()
+    {
+		base.OnValidate();
+
+        if (_collider == null)
+        {
+			Debug.LogError("Fill in field Collider on prefab");
+        }
+    }
+
+    public virtual void Initialize()
 	{
-		Move.Initialize(Data.GetAttributeValue(AttributeNames.Speed), Rb , true);
+		Move.Initialize(Data.GetAttributeValue(AttributeNames.Speed), Rigidbody , true);
 		CharacterState.Initialize(this);
 		SelectComponent.Initialize(Move,Abilities,UIComponent);
 		
@@ -90,15 +105,36 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
 					Data);
 			}
 		}
-
-		Health.Died += OnDied;
+		Health.Died += CmdOnDied;
 	}
 	
 	private void Start()
 	{
 		Initialize();
 	}
-	
+
+	[Server]
+	public void ServerResetAll()
+    {
+		ResetAll();
+		RpcResetAll();
+	}
+
+	private void ResetAll()
+    {
+		_isDead = false;
+		_animator.SetTrigger(HashAnimPlayer.Revival);
+		_collider.enabled = true;
+		_rigidbody.isKinematic = false;
+	}
+
+	[ClientRpc]
+	private void RpcResetAll()
+    {
+		ResetAll();
+	}
+
+
 	public override void OnStartServer()
 	{
 		ServerOnUnitSpawned?.Invoke(this);
@@ -147,8 +183,36 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
 		Health.Heal(ref value, sourceName, skill);
 	}
 
-	private void OnDied()
+    private void OnDied()
     {
 		Died?.Invoke(this);
-    }
+
+		_isDead = true;
+		_animator.SetTrigger(HashAnimPlayer.Die);
+		_collider.enabled = false;
+		_rigidbody.isKinematic = true;
+		DeleteStates();
+	}
+
+	private void DeleteStates()
+    {
+		var statesCopy = new List<AbstractCharacterState>(_characterState.CurrentStates);
+		foreach (var state in statesCopy)
+		{
+			_characterState.RemoveState(state.State);
+		}
+	}
+
+	[Command]
+	private void CmdOnDied()
+    {
+		OnDied();
+		ClientRpcOnDied();
+	}
+
+	[ClientRpc]
+	private void ClientRpcOnDied()
+    {
+		OnDied();
+	}
 }

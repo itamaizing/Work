@@ -195,8 +195,11 @@ public class TestGameRules : GameRules
         }
     }
 
-    private void ResetPlayerState(Character playerSettings)
+    private void ResetPlayerState(Character player)
     {
+        player.ServerResetAll();
+
+        /*
         var health = playerSettings.Health;
         health?.ResetValue();
 
@@ -212,6 +215,7 @@ public class TestGameRules : GameRules
                 characterState.RemoveState(state.State);
             }
         }
+        */
     }
 
     private int GetTeamCount(int teamIndex)
@@ -310,5 +314,10 @@ public class TestGameRules : GameRules
         }
 
         StartCoroutine(CloseRoomJob());
+    }
+
+    protected override void OnPlayerDied(Character character)
+    {
+        AddExpForAllEnemy(character);
     }
 }

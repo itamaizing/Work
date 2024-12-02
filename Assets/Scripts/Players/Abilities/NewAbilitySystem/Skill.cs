@@ -218,7 +218,7 @@ public abstract class Skill : NetworkBehaviour
 
     public bool TryCast()
     {
-        if (IsHaveResources && IsCanCast && _isCasting == false && NoObstacles())
+        if (IsHaveResources && IsCanCast && _isCasting == false && NoObstacles() && Hero.IsDead == false)
         {
             TryPayCost(IsPayCostStartCooldown);
             _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());

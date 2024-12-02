@@ -259,4 +259,9 @@ public class TestGameRulesBattlegrounds : GameRules
 
         StartCoroutine(CloseRoomJob());
     }
+
+    protected override void OnPlayerDied(Character character)
+    {
+        throw new System.NotImplementedException();
+    }
 }
