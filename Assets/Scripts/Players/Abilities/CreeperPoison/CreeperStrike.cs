@@ -138,13 +138,7 @@ public class CreeperStrike : AutoAttackSkill
 
             if (_assasinPoison.Data.IsOpen)
             {
-                if (_assasinPoison.CurrentChargeAssasinPoison > 0)
-                {
-                    _assasinPoison.CmdSpendCharge();
-                    Debug.Log("CreeperStrike / CmdSpendCharge");
-                    _poisonBall.FlowOfPoisonConvertCharge();
-                    CmdApplyPoisonBone(target.gameObject);
-                }
+                _assasinPoison.SpendCharge(target, _lifeTimePoisonBoneStacks);
             }
 
             if (_preparingForFight.Data.IsOpen && _creeperInvisible.IsReadyToThreeHitForPreparingForFightTalent)

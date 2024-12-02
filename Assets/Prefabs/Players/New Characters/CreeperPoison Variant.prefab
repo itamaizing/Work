@@ -4131,6 +4131,7 @@ MonoBehaviour:
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
+  _assasinPoison: {fileID: 2670175960346610552}
   _releaseFromSecrecy: {fileID: 8956422096455632753}
   _desireToHide: {fileID: 3554378721606904662}
   _firstStrike: {fileID: 3977639836372592197}
@@ -4556,6 +4557,11 @@ MonoBehaviour:
     Icon: {fileID: 0}
   character: {fileID: 2483674839823445686}
   _invisibleCreeper: {fileID: 6857802422684928800}
+  _poisonBall: {fileID: 4719927588574066064}
+  _flowOfPoisons: {fileID: 7479210999919987957}
+  _maxChargePoison: 3
+  _startTimeAccumulateCharge: 3
+  _startTimeForRemoveCharges: 4
 --- !u!114 &4592644736387742539
 MonoBehaviour:
   m_ObjectHideFlags: 0

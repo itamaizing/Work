@@ -39,9 +39,12 @@ public class StrokesOfAspiration : Talent
         {
             if (_poisonBall.RemainingCooldownTimeCharge[i] > 0)
             {
-                float updateRemainingCooldownTimeForPoisonBall = _poisonBall.RemainingCooldownTimeCharge[i] - _decreaseCooldownTime;
-                _poisonBall.ReductionCooldownTimeCharge(updateRemainingCooldownTimeForPoisonBall);
+                //float updateRemainingCooldownTimeForPoisonBall = _poisonBall.RemainingCooldownTimeCharge[i] - _decreaseCooldownTime;
+                float updateRemainingCooldownTimeForPoisonBall = 5f;
+                _poisonBall.ReductionCooldownTimeCharge(i, updateRemainingCooldownTimeForPoisonBall);
+
                 Debug.Log($"StrokesOfAspiration / UseTalentStrokesOfAspiration / before updateRemainingCooldownTimeForSpitPoison = {_poisonBall.RemainingCooldownTimeCharge[i]}");
+                break;
             }
         }
     }

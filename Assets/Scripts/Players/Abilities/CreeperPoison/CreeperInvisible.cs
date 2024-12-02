@@ -8,6 +8,7 @@ public class CreeperInvisible : Skill
     #region Variables
 
     [Header("Talents")]
+    [SerializeField] private AssasinPoison _assasinPoison;
     [SerializeField] private ReleaseFromSecrecy _releaseFromSecrecy;
     [SerializeField] private DesireToHide _desireToHide;
     [SerializeField] private FirstStrike _firstStrike;
@@ -339,25 +340,25 @@ public class CreeperInvisible : Skill
     {
         _isInvisible = false;
 
-        if (_releaseFromSecrecy.Data.IsOpen)
-        {
+        if (_assasinPoison != null && _assasinPoison.Data.IsOpen)
+            _assasinPoison.RemoveAllCharges();
+        
+
+        if (_releaseFromSecrecy != null && _releaseFromSecrecy.Data.IsOpen)
             _releaseFromSecrecy.ApplyBuff();
-        }
+        
 
-        if (_firstStrike.Data.IsOpen && !_firstStrike.IsCanIncreaseCrit)
-        {
+        if (_firstStrike != null && _firstStrike.Data.IsOpen && !_firstStrike.IsCanIncreaseCrit)
             _firstStrike.SetBoolTrue();
-        }
+        
 
-        if (_preparingForFight.Data.IsOpen)
-        {
+        if (_preparingForFight != null && _preparingForFight.Data.IsOpen)
             _isReadyToThreeHitForPreparingForFightTalent = true;
-        }
+            
 
         if (_coldBlood.ColdBloodTalent != null && _coldBlood.ColdBloodTalent.Data.IsOpen)
-        {
             _coldBlood.ReducingAbilityCooldown();
-        }
+        
         
         #region CancleCoroutines
 

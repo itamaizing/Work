@@ -387,25 +387,6 @@ public class PoisonBall : Skill, IAltAbility
         }
     }
 
-    public void FlowOfPoisonConvertCharge()
-    {
-        if (_assasinPoison.Data.IsOpen && _flowOfPoison.Data.IsOpen)
-        {
-            for (int i = 0; i < RemainingCooldownTimeCharge.Count; i++)
-            {
-                if (RemainingCooldownTimeCharge[i] > 0)
-                {
-                    if (_assasinPoison.CurrentChargeAssasinPoison > 0)
-                    {
-                        float newCooldownTime = 1f;
-
-                        ReductionCooldownTimeCharge(newCooldownTime);
-                    }
-                }
-            }
-        }
-    }
-
     private IEnumerator CheckingActiveTalentsJob()
     {
         while (_isCanCheckActiveTalents)
