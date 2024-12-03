@@ -26,11 +26,10 @@ public class CrutchForLoading : MonoBehaviour
 
 	private IEnumerator LoadedJob()
     {
-		yield return new WaitForFixedUpdate();
-
 		if (this != null && transform != null)
 		{
 			transform.position = Vector3.up;
 		}
+		yield return null;
 	}
 }

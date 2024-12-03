@@ -177,6 +177,17 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 3939151455996886053}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+--- !u!114 &9867471196679094 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6102323606527726944, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 6092456140968476374}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86614592001be724c8e1f0d3a24c0c75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &321208861123123196 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5834951345091717418, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -232,7 +243,8 @@ MonoBehaviour:
   syncInterval: 0
   _playerData: {fileID: 11400000, guid: 6d4bdd627c946744396722e0bd4dd7d5, type: 2}
   _networkSettings: {fileID: 8415053888924651187}
-  rb: {fileID: 5333065205538383447}
+  _rigidbody: {fileID: 5333065205538383447}
+  _collider: {fileID: 4687739072136256028}
   _lvl: {fileID: 3451587424398751894}
   _animator: {fileID: 3218874933856675809}
   _networkAnimator: {fileID: 8901205174980455247}
@@ -248,6 +260,8 @@ MonoBehaviour:
   - {fileID: 8550944225159128354}
   _selectedCircle: {fileID: 4163371236763689060}
   _spawnComponent: {fileID: 5963193180723515438}
+  _expForDieKill: 5
+  _navMeshAgent: {fileID: 1780925315992858912}
 --- !u!195 &1780925315992858912
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -288,6 +302,7 @@ MonoBehaviour:
   _smoothTime: 0.15
   _currentSpeed: 5
   _anim: {fileID: 3218874933856675809}
+  _flyChecker: {fileID: 9867471196679094}
   MoveDirection: {x: 0, y: 0, z: 0}
   CanMove: 0
   IsMoving: 0
@@ -381,6 +396,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d37dcef6f152524f82c5c9cfc5288fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!136 &4687739072136256028 stripped
+CapsuleCollider:
+  m_CorrespondingSourceObject: {fileID: 1550066538247365834, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 6092456140968476374}
+  m_PrefabAsset: {fileID: 0}
 --- !u!54 &5333065205538383447 stripped
 Rigidbody:
   m_CorrespondingSourceObject: {fileID: 2201725961568704641, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

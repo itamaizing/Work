@@ -5,6 +5,8 @@ using UnityEngine;
 
 public abstract class GameRules : NetworkBehaviour
 {
+    [SerializeField] private int _expValuePerPlayer = 10;
+
     protected readonly SyncList<GameObject> _playersSyncList = new SyncList<GameObject>();
     protected List<Character> _players = new List<Character>();
     protected NetworkRoom _room;
@@ -19,20 +21,14 @@ public abstract class GameRules : NetworkBehaviour
     public abstract void GameStartServer(List<Transform> spawnPoints);
     protected abstract void UnsubscribeFromAllEvents();
     protected abstract void GameStartClient();
+    protected abstract void OnPlayerDied(Character character);
 
     public void Init(NetworkRoom room)
     {
         _room = room;
 
-        foreach (var item in _room.Players)
-        {
-            _playersSyncList.Add(item);
-            var playerSettings = item.GetComponent<Character>();
-            if (playerSettings != null)
-            {
-                _players.Add(playerSettings);
-            }
-        }
+        AddAllPlayersInList();
+        SubscribingOnPlayerEvents();
 
         StartCoroutine(WaitForSceneAndFindSpawnPoints());
     }
@@ -113,12 +109,74 @@ public abstract class GameRules : NetworkBehaviour
     protected IEnumerator CloseRoomJob()
     {
         UnsubscribeFromAllEvents();
+        UnsubscribingOnPlayerEvents();
 
         yield return new WaitForSeconds(1f);
 
         if (_room != null)
         {
             yield return _room.UnloadRoomJob();
+        }
+    }
+
+    protected virtual void AddExpForAllEnemy(Character character)
+    {
+        if(character is HeroComponent)
+        {
+            foreach (var player in _players)
+            {
+                if (character.NetworkSettings.TeamIndex != player.NetworkSettings.TeamIndex)
+                {
+                    player.LVL.AddEXP(_expValuePerPlayer);
+                }
+            }
+        }
+        else if(character is MinionComponent minion)
+        {
+            foreach (var player in _players)
+            {
+                if (character.NetworkSettings.TeamIndex != player.NetworkSettings.TeamIndex)
+                {
+                    player.LVL.AddEXP(minion.ExpForDieKill);
+                }
+            }
+        }
+    }
+
+    protected virtual void ResetAllPlayers()
+    {
+        foreach (var player in _players)
+        {
+            player.ServerResetAll();
+        }
+    }
+
+    private void AddAllPlayersInList()
+    {
+        foreach (var item in _room.Players)
+        {
+            _playersSyncList.Add(item);
+            var playerSettings = item.GetComponent<Character>();
+            if (playerSettings != null)
+            {
+                _players.Add(playerSettings);
+            }
+        }
+    }
+
+    private void SubscribingOnPlayerEvents()
+    {
+        foreach (var item in _players)
+        {
+            item.Died += OnPlayerDied;
+        }
+    }
+    
+    private void UnsubscribingOnPlayerEvents()
+    {
+        foreach (var item in _players)
+        {
+            item.Died -= OnPlayerDied;
         }
     }
 }

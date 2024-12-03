@@ -52,6 +52,26 @@ public class SkillManager : MonoBehaviour
         }
     }
 
+    public void CancleAllSkills()
+    {
+        while(_selectedSkill != null && _selectedSkill.IsPreparing)
+        {
+            CancelSkillCast();
+        }
+        while (SkillQueue.IsBusy)
+        {
+            CancelSkillCast();
+        }
+        while (_autoAttackQueue.IsBusy)
+        {
+            CancelSkillCast();
+        }
+        while (SkillQueue.IsEmpty == false)
+        {
+            CancelSkillCast();
+        }
+    }
+
 	private void ScrollMouse(float value)
 	{
         if (_selectedSkill == null) return;

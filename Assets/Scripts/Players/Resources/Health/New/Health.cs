@@ -201,14 +201,6 @@ public class Health : Resource, IDamageable, IHealingable
         }
     }
 
-    private IEnumerator DOTDamageAnimCoroutine()
-    {
-        var tempSpeed = _animator.speed;
-        _animator.speed = _animator.speed * 0f;
-        yield return new WaitForSecondsRealtime(_dOTDamageAnimDuration);
-        _animator.speed = tempSpeed;
-    }
-
     public void UpdateShieldValues(float absorbed, float maxAbsorption)
     {
         if (isServer)
@@ -261,6 +253,7 @@ public class Health : Resource, IDamageable, IHealingable
     private void ClientRpcDied()
     {
         Died?.Invoke();
+        _animator.SetBool(HashAnimPlayer.IsDead, true);
     }
 
 	public void ShowPhantomValue(Damage phantomValue)

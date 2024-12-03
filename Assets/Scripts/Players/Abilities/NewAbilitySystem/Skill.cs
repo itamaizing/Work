@@ -118,7 +118,7 @@ public abstract class Skill : NetworkBehaviour
     private bool _isCtrlClick;
     private bool _isSpaceClick;
     private List<float> _remainingCooldownTimeChargers;
-    private Coroutine _currentChargeCooldownJob;
+    private List<Coroutine> _currentChargeCooldownJob;
 
     public bool IsTalentSpell => _isTalentSpell;
     public bool IsSkillActive
@@ -198,6 +198,7 @@ public abstract class Skill : NetworkBehaviour
         {
             _currentChargers = _maxCharges;
             _remainingCooldownTimeChargers = new List<float>(new float[_maxCharges]);
+            _currentChargeCooldownJob = new List<Coroutine>(new Coroutine[_maxCharges]);
         }
         else
             _currentChargers = 1;
@@ -218,7 +219,7 @@ public abstract class Skill : NetworkBehaviour
 
     public bool TryCast()
     {
-        if (IsHaveResources && IsCanCast && _isCasting == false && NoObstacles())
+        if (IsHaveResources && IsCanCast && _isCasting == false && NoObstacles() && Hero.IsDead == false)
         {
             TryPayCost(IsPayCostStartCooldown);
             _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
@@ -371,6 +372,35 @@ public abstract class Skill : NetworkBehaviour
         CurrentChargeChanged?.Invoke(_currentChargers);
     }
 
+    public void ReductionCooldownForAllCharges(float reductionTime, float reductionPercentage = 0)
+    {
+        for (int i = 0; i < RemainingCooldownTimeCharge.Count; i++)
+        {
+            var time = _remainingCooldownTimeChargers[i] - reductionTime - (_remainingCooldownTimeChargers[i] * reductionPercentage);
+            ReductionCooldownForCharge(i, time);
+        }
+    }
+
+    public void ReductionCooldownCharges(float reductionTime)
+    {
+        float time;
+        for (int i = 0; i < RemainingCooldownTimeCharge.Count; i++)
+        {
+            time = _remainingCooldownTimeChargers[i] - reductionTime;
+
+            if(time <= 0)
+            {
+                ReductionCooldownForCharge(i, reductionTime);
+                reductionTime = reductionTime - _remainingCooldownTimeChargers[i];
+            }
+            else
+            {
+                ReductionCooldownForCharge(i, reductionTime);
+                break;
+            }
+        }
+    }
+
     public void DeductMaxChargeCount()
     {
         if (_maxCharges - 1 > 0)
@@ -425,9 +455,7 @@ public abstract class Skill : NetworkBehaviour
             Value = Damage,
             Type = DamageType,
         };
-        Debug.Log(_skillRender + " Skill render\n ");
-        Debug.Log(Radius + " \n ");
-        // Debug.Log(Radiu + " \n ");
+
         if (_isAutoRadiusRender)
             _skillRender.DrawRadius(Radius);
 
@@ -622,20 +650,21 @@ public abstract class Skill : NetworkBehaviour
         return Vector3.zero;
     }
 
-    public void ReductionCooldownTimeCharge(float time)
+    /*
+    public void IncreaseCooldownTimeCharge(float time)
     {
-        for (int i = 0; i < _maxCharges; i++)
+        for (int i = 0; i < RemainingCooldownTimeCharge.Count; i++)
         {
-            if (time > _remainingCooldownTimeChargers[i])
+            if (time < _remainingCooldownTimeChargers[i])
                 return;
 
-            if (_currentChargeCooldownJob != null)
-                StopCoroutine(_currentChargeCooldownJob);
+            if (_currentChargeCooldownJob[i] != null)
+                StopCoroutine(_currentChargeCooldownJob[i]);
 
-            _currentChargeCooldownJob = StartCoroutine(RechargeOneChargeCoroutine(i, time));
+            _currentChargeCooldownJob[i] = StartCoroutine(RechargeOneChargeCoroutine(i, time));
         }
     }
-
+    */
 
     protected bool TryUseCharge()
     {
@@ -647,7 +676,7 @@ public abstract class Skill : NetworkBehaviour
             _currentChargers--;
             CurrentChargeChanged?.Invoke(_currentChargers);
 
-            if (_rechargeJob == null && !_chargesHaveSeparateCooldown)
+            if (_rechargeJob == null && _chargesHaveSeparateCooldown == false)
             {
                 _rechargeJob = StartCoroutine(RechargeCoroutine());
             }
@@ -657,7 +686,7 @@ public abstract class Skill : NetworkBehaviour
                 {
                     if (_remainingCooldownTimeChargers[i] <= 0)
                     {
-                        _currentChargeCooldownJob = StartCoroutine(RechargeOneChargeCoroutine(i, ChargeCooldown));
+                        _currentChargeCooldownJob[i] = StartCoroutine(RechargeOneChargeCoroutine(i, ChargeCooldown));
                         break;
                     }
                 }
@@ -671,23 +700,24 @@ public abstract class Skill : NetworkBehaviour
         }
     }
 
-    private IEnumerator RechargeOneChargeCoroutine(int indexCharge, float time)
+    private IEnumerator RechargeOneChargeCoroutine(int chargeIndex, float time)
     {
-        _remainingCooldownTimeChargers[indexCharge] = time;
+        _remainingCooldownTimeChargers[chargeIndex] = time;
 
-        while (_remainingCooldownTimeChargers[indexCharge] > 0)
+        while (_remainingCooldownTimeChargers[chargeIndex] > 0)
         {
-            _remainingCooldownTimeChargers[indexCharge] -= Time.deltaTime;
+            _remainingCooldownTimeChargers[chargeIndex] -= Time.deltaTime;
 
             yield return null;
         }
 
         if (_currentChargers < _maxCharges)
+        {
             _currentChargers++;
-        
-        CurrentChargeChanged?.Invoke(_currentChargers);
-    }
+            CurrentChargeChanged?.Invoke(_currentChargers);
+        }
 
+    }
 
     protected virtual IEnumerator RechargeCoroutine()
     {
@@ -704,8 +734,6 @@ public abstract class Skill : NetworkBehaviour
                 _currentChargers++;
                 CurrentChargeChanged?.Invoke(_currentChargers);
             }
-            if (_chargesHaveSeparateCooldown)
-                break;
         }
         _rechargeJob = null;
     }
@@ -716,22 +744,18 @@ public abstract class Skill : NetworkBehaviour
 
         if (_isClick)
         {
-            Debug.Log("Left click");
             return LeftClick();
         }
         if (_isShiftClick)
         {
-            Debug.Log("Shift + Left click");
             return ShiftLeftClick();
         }
         if (_isCtrlClick)
         {
-            Debug.Log("Ctrl + Left click");
             return CtrlLeftClick();
         }
         if (_isSpaceClick)
         {
-            Debug.Log("Space + Left click");
             return SpaceLeftClick();
         }
 
@@ -954,6 +978,18 @@ public abstract class Skill : NetworkBehaviour
         _isSpaceClick = true;
     }
 
+    private void ReductionCooldownForCharge(int index, float reductionTime)
+    {
+        var tempTime = reductionTime;
+        if (tempTime > _remainingCooldownTimeChargers[index])
+            return;
+
+        if (_currentChargeCooldownJob[index] != null)
+            StopCoroutine(_currentChargeCooldownJob[index]);
+
+        _currentChargeCooldownJob[index] = StartCoroutine(RechargeOneChargeCoroutine(index, tempTime));
+    }
+
     private void StartDynamicRenderer()
     {
         _dynamicRendererJob = StartCoroutine(DynamicRendererJob());
@@ -1082,7 +1118,6 @@ public abstract class Skill : NetworkBehaviour
     private IEnumerator CancelCoroutine()
     {
         yield return new WaitForNextFrameUnit();
-
     }
 
     [ClientRpc]
