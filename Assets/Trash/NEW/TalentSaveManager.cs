@@ -67,7 +67,7 @@ public class TalentSaveManager
 
         if(needActive)
         {
-            talentGroup.ActiveTalent(talent.Data, isActive == 1);
+            talentGroup.CmdActiveTalent(talent.Data, isActive == 1);
         }
     }
 

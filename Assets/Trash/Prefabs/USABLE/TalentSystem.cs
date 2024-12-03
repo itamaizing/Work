@@ -107,14 +107,28 @@ public class TalentsGroup
         talent.SetActive(isActive);
     }
 
+    [Command]
+    public void CmdActiveTalent(TalentData data, bool isActive)
+    {
+		ActiveTalent(data, isActive);
+        ClientActivateTalent(data, isActive);
+	}
+
+    [ClientRpc]
+    public void ClientActivateTalent(TalentData data, bool isActive)
+    {
+        ActiveTalent(data, isActive);
+    }
+
     public void ActiveTalent(TalentData data, bool isActive)
     {
-        var talent = TalentsData.FirstOrDefault(a => a.Data == data);
+		Debug.Log("Talent " + isActive+  " on ");
+		var talent = TalentsData.FirstOrDefault(a => a.Data == data);
         if(talent == null) return;
         
         if (isActive)
         {
-			//Debug.Log("Talent activated on init " + talent.GetType().Name);
+		//	Debug.Log("Talent activated on init " + talent.GetType().Name);
 			talent.Enter();   
         }
         else
