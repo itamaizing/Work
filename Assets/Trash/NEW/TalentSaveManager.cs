@@ -64,6 +64,11 @@ public class TalentSaveManager
        
         talent.Data.IsOpen = isActive == 1;
         talentGroup.SetActive(talent.Data, isActive == 1);
+
+        if(needActive)
+        {
+            talentGroup.ActiveTalent(talent.Data, isActive == 1);
+        }
     }
 
     public void SaveAllTalents(HeroComponent character, int saveGroup)
