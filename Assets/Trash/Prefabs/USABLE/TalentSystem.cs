@@ -110,6 +110,7 @@ public class TalentsGroup
     [Command]
     public void CmdActiveTalent(TalentData data, bool isActive)
     {
+        Debug.Log("CMD TALENT");
 		ActiveTalent(data, isActive);
         ClientActivateTalent(data, isActive);
 	}
@@ -117,12 +118,13 @@ public class TalentsGroup
     [ClientRpc]
     public void ClientActivateTalent(TalentData data, bool isActive)
     {
-        ActiveTalent(data, isActive);
+		Debug.Log("CLIENT TALENT");
+		ActiveTalent(data, isActive);
     }
 
     public void ActiveTalent(TalentData data, bool isActive)
     {
-		Debug.Log("Talent " + isActive+  " on ");
+		Debug.Log("Talent " + isActive+  " on " + data.Name);
 		var talent = TalentsData.FirstOrDefault(a => a.Data == data);
         if(talent == null) return;
         
@@ -150,9 +152,10 @@ public class TalentSystem : NetworkBehaviour
 
     public List<Talent> ActiveTalents => Talents.SelectMany(o => o.TalentsData).Where(a => a.Data.IsOpen).ToList();
 
-    //[Command]
+   // [Command]
     public void Initialize()
     {
+        Debug.Log("TALENTS INIT");
         foreach (var talent in _talents.SelectMany(talentsGroup => talentsGroup.TalentsData))
         {
             talent.Data.Name = talent.GetType().Name;
@@ -167,9 +170,10 @@ public class TalentSystem : NetworkBehaviour
 				talent.Exit();
             }
         }
-        Initialize2();
+       // Initialize2();
     }
-    [Command]
+
+    [ClientRpc]
 	public void Initialize2()
 	{
 		foreach (var talent in _talents.SelectMany(talentsGroup => talentsGroup.TalentsData))

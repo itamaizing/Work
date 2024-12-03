@@ -1,3 +1,4 @@
+using Mirror;
 using System.Linq;
 using UnityEngine;
 
@@ -22,7 +23,7 @@ public class TalentSaveManager
 
         var points = talentGroup.BonusAttributePoints(talent.Data.Name, !isActive);
         talent.Data.IsOpen = isActive;
-        
+
         if (isActive)
         {
             _saveManager.SaveAttributePoints(points);
@@ -34,7 +35,7 @@ public class TalentSaveManager
         Debug.Log("SHOULD " + isActive + " TALENT " + $"{character.Data.Name}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}");
 
         _saveData.SaveInt($"{character.Data.Name}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}", isTalentActive);
-	}
+    }
 
     private void HandleDeactivation(int points)
     {
@@ -61,17 +62,35 @@ public class TalentSaveManager
         if (talentGroup == null || talent == null) return;
 
         int isActive = _saveData.LoadInt($"{character.Data.Name}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}", 0);
-       
+
         talent.Data.IsOpen = isActive == 1;
         talentGroup.SetActive(talent.Data, isActive == 1);
 
-        if(needActive)
+        if (needActive)
         {
-            talentGroup.CmdActiveTalent(talent.Data, isActive == 1);
-        }
+            // talentGroup.CmdActiveTalent(talent.Data, isActive == 1);
+            CmdActiveTalent(talentGroup, talent.Data, isActive == 1);
+
+		}
     }
 
-    public void SaveAllTalents(HeroComponent character, int saveGroup)
+    [Command]
+    private void CmdActiveTalent(TalentsGroup group, TalentData data, bool isActive)
+    {
+		Debug.Log("CMD TALENT");
+        group.ActiveTalent(data, isActive);
+		group.ClientActivateTalent(data, isActive);
+		//ClientActiveTalent(group, data, isActive);
+	}
+
+    [ClientRpc]
+	private void ClientActiveTalent(TalentsGroup group, TalentData data, bool isActive)
+	{
+		Debug.Log("CLIENT TALENT");
+		group.ActiveTalent(data, isActive);
+	}
+
+	public void SaveAllTalents(HeroComponent character, int saveGroup)
     {
         foreach (var talentGroup in character.TalentManager.Talents)
         {
