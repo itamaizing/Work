@@ -455,9 +455,7 @@ public abstract class Skill : NetworkBehaviour
             Value = Damage,
             Type = DamageType,
         };
-        Debug.Log(_skillRender + " Skill render\n ");
-        Debug.Log(Radius + " \n ");
-        // Debug.Log(Radiu + " \n ");
+
         if (_isAutoRadiusRender)
             _skillRender.DrawRadius(Radius);
 
@@ -704,7 +702,6 @@ public abstract class Skill : NetworkBehaviour
 
     private IEnumerator RechargeOneChargeCoroutine(int chargeIndex, float time)
     {
-        Debug.Log("TestRecharge / RechargeOneChargeCoroutine / chargeIndex = " + chargeIndex);
         _remainingCooldownTimeChargers[chargeIndex] = time;
 
         while (_remainingCooldownTimeChargers[chargeIndex] > 0)
@@ -716,7 +713,6 @@ public abstract class Skill : NetworkBehaviour
 
         if (_currentChargers < _maxCharges)
         {
-            Debug.Log("TestRecharge / RechargeOneChargeCoroutine / if (_currentChagers < _maxCharges)");
             _currentChargers++;
             CurrentChargeChanged?.Invoke(_currentChargers);
         }
@@ -748,22 +744,18 @@ public abstract class Skill : NetworkBehaviour
 
         if (_isClick)
         {
-            Debug.Log("Left click");
             return LeftClick();
         }
         if (_isShiftClick)
         {
-            Debug.Log("Shift + Left click");
             return ShiftLeftClick();
         }
         if (_isCtrlClick)
         {
-            Debug.Log("Ctrl + Left click");
             return CtrlLeftClick();
         }
         if (_isSpaceClick)
         {
-            Debug.Log("Space + Left click");
             return SpaceLeftClick();
         }
 

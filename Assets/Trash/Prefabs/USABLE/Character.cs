@@ -121,13 +121,6 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
 	}
 
 #if UNITY_EDITOR
-	/*
-	[ContextMenu(nameof(ResetAll))]
-	private void ResetAllTest()
-	{
-		ResetAll();
-	}
-	*/
 	[ContextMenu(nameof(ResetAll))]
 	private void ServerResetAllTest()
 	{

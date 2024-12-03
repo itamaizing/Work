@@ -18,6 +18,7 @@ public class Level : NetworkBehaviour
 
     public event Action<int> EXPAdded;
     public event Action<int> LVLUped;
+    public event Action<int> EXPForNextLVLChanged;
 
     public void AddEXP(int value)
     {
@@ -28,6 +29,7 @@ public class Level : NetworkBehaviour
 
         _experience += value;
         EXPAdded?.Invoke(value);
+        RpcUpdateInfo(_value, _experience, _experienceForNextLVL);
 
         var expBeyondNecessery = _experience - _experienceForNextLVL;
 
@@ -47,11 +49,22 @@ public class Level : NetworkBehaviour
         {
             _value++;
             LVLUped?.Invoke(_value);
+            RpcUpdateInfo(_value, _experience, _experienceForNextLVL);
         }
     }
 
     private void IncreasExperienceForNextLVL()
     {
         _experienceForNextLVL = (int)(_experienceForNextLVL * _multiplierToExperienceForNextLVL) + _additionalToExperienceForNextLVL;
+        EXPForNextLVLChanged?.Invoke(_experienceForNextLVL);
+        RpcUpdateInfo(_value, _experience, _experienceForNextLVL);
+    }
+
+    [ClientRpc]
+    private void RpcUpdateInfo(int value, int experience, int experienceForNextLVL)
+    {
+        LVLUped?.Invoke(value);
+        EXPAdded?.Invoke(experience);
+        EXPForNextLVLChanged?.Invoke(experienceForNextLVL);
     }
 }

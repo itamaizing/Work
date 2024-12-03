@@ -35,8 +35,6 @@ public class SkillPanel : MonoBehaviour
             _skillIcons[i].Init(i);
             _skillIcons[i].CurrentSkillChenged += SkillChenged;
         }
-
-        InputHandler.OnCast += SelectSkill;
     }
 
     public void Fill(SkillManager abilities)
@@ -222,13 +220,4 @@ public class SkillPanel : MonoBehaviour
     {
         UpdateKeys();
     }
-
-    #region Debug
-
-    private void SelectSkill(int arg0)
-    {
-        Debug.Log(arg0);
-    }
-
-    #endregion
 }

@@ -25,25 +25,6 @@ public class TestGameRules : GameRules
     public override void GameStartServer(List<Transform> spawnPoints)
     {
         StartCoroutine(HandleTeamsAndSpawns(spawnPoints));
-
-        foreach (var playerSettings in _players)
-        {
-            var health = playerSettings.NetworkSettings.CachedHealth;
-            if (health != null)
-            {
-                health.Died += () => OnPlayerDeath(playerSettings.gameObject);
-                health.Died += () => ResetPlayerState(playerSettings);
-            }
-
-            var runeComponent = playerSettings.GetComponent<RuneComponent>();
-            if (runeComponent != null)
-            {
-                if (health != null)
-                {
-                    health.Died += runeComponent.ResetValue;
-                }
-            }
-        }
     }
 
     protected override void GameStartClient()
@@ -54,17 +35,18 @@ public class TestGameRules : GameRules
         {
             if (playerSettings.NetworkSettings.TeamIndex == 1)
             {
-                _teams.AddInFirstTeam(playerSettings.GetComponent<Character>());
+                _teams.AddInFirstTeam(playerSettings);
             }
             else
             {
-                _teams.AddInSecondTeam(playerSettings.GetComponent<Character>());
+                _teams.AddInSecondTeam(playerSettings);
             }
         }
     }
 
-    public void OnPlayerDeath(GameObject player)
+    protected override void OnPlayerDied(Character player)
     {
+        AddExpForAllEnemy(player);
         var playerSettings = _players.Find(p => p.gameObject == player);
         if (playerSettings == null || playerSettings.NetworkSettings.TeamIndex < 1 || playerSettings.NetworkSettings.TeamIndex > 2) return;
 
@@ -232,34 +214,12 @@ public class TestGameRules : GameRules
 
     protected override void UnsubscribeFromAllEvents()
     {
-        foreach (var playerSettings in _players)
-        {
-            var health = playerSettings.NetworkSettings.CachedHealth;
-            if (health != null)
-            {
-                health.Died -= () => OnPlayerDeath(playerSettings.gameObject);
-                health.Died -= () => ResetPlayerState(playerSettings);
-            }
-
-            var runeComponent = playerSettings.GetComponent<RuneComponent>();
-            if (runeComponent != null && health != null)
-            {
-                health.Died -= runeComponent.ResetValue;
-            }
-        }
-
         if (isServer)
         {
             List<NetworkIdentity> objectsToRemove = new List<NetworkIdentity>();
 
             foreach (var networkIdentity in NetworkServer.spawned.Values)
             {
-                var healthComponent = networkIdentity.GetComponent<Health>();
-                if (healthComponent != null)
-                {
-                    healthComponent.Died -= () => OnPlayerDeath(networkIdentity.gameObject);
-                }
-
                 bool isPlayer = _players.Exists(player => player.gameObject == networkIdentity.gameObject);
                 if (!isPlayer)
                 {
@@ -313,10 +273,5 @@ public class TestGameRules : GameRules
         }
 
         StartCoroutine(CloseRoomJob());
-    }
-
-    protected override void OnPlayerDied(Character character)
-    {
-        AddExpForAllEnemy(character);
     }
 }
