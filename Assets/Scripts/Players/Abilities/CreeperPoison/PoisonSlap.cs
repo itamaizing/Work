@@ -27,9 +27,7 @@ public class PoisonSlap : Skill
 
     [SerializeField] private GameObject _arrowPrefab;
 
-    private GameObject[] _arrowRenderers = new GameObject[2]; 
-    private bool _colorLockedAfterSecondClick = false;
-    private bool _colorLockedAfterThirdClick = false;
+    private GameObject[] _arrowRenderers = new GameObject[2];
 
     #endregion
 
@@ -231,89 +229,38 @@ public class PoisonSlap : Skill
         Vector3 targetPosition = _currentTarget.transform.position;
         Vector3 playerPosition = _player.transform.position;
 
+        targetPosition.y = playerPosition.y = 0.8f;
+
         Vector3 directionToTarget = (targetPosition - playerPosition).normalized;
 
-        Vector3 perpendicularDirection = Vector3.Cross(directionToTarget, Vector3.forward).normalized;
+        Vector3[] spawnPositions = new Vector3[2]
+       {
+        targetPosition + directionToTarget * 0.5f,
+        targetPosition - directionToTarget * 0.5f
+       };
 
-        _arrowRenderers[0] = Instantiate(_arrowPrefab, targetPosition + directionToTarget, Quaternion.identity);
-        _arrowRenderers[1] = Instantiate(_arrowPrefab, targetPosition - directionToTarget, Quaternion.identity);
+        Quaternion[] rotations = new Quaternion[2]
+      {
+        Quaternion.LookRotation(playerPosition - spawnPositions[0]),
+        Quaternion.LookRotation(spawnPositions[1] - playerPosition),
+      };
 
-        SetArrowDirections(perpendicularDirection);
-        SetArrowColors(Color.red);
-    }
-
-    private void SetArrowDirections(Vector3 perpendicularDirection)
-    {
         for (int i = 0; i < _arrowRenderers.Length; i++)
         {
-            var arrow = _arrowRenderers[i];
-            if (arrow != null)
-            {
-                var drawArrow = arrow.GetComponent<DrawArrow>();
-                if (drawArrow != null)
-                {
-                    Vector3 startPoint = arrow.transform.position - perpendicularDirection * 0.5f;
-                    Vector3 endPoint = arrow.transform.position + perpendicularDirection * 0.5f;
-
-                    if (i % 2 == 0)
-                    {
-                        drawArrow.DrawCurvedArrow(startPoint, endPoint, true);
-                    }
-                    else
-                    {
-                        drawArrow.DrawCurvedArrow(startPoint, endPoint, false);
-                    }
-                }
-            }
+            _arrowRenderers[i] = Instantiate(_arrowPrefab, spawnPositions[i], rotations[i]);
+            RotateArrowChild(_arrowRenderers[i], -90);
+            _arrowRenderers[i]?.SetActive(false);
         }
     }
 
-    private void SetArrowColors(Color color)
+    private void RotateArrowChild(GameObject arrow, float zRotation)
     {
-        foreach (var arrow in _arrowRenderers)
-        {
-            if (arrow != null)
-            {
-                var lineRenderer = arrow.GetComponent<LineRenderer>();
-                if (lineRenderer != null)
-                {
-                    lineRenderer.startColor = color;
-                    lineRenderer.endColor = color;
-                }
-            }
-        }
-    }
+        if (arrow == null) return;
 
-    private void SetArrowColor(int arrowIndex, Color color)
-    {
-        if (_arrowRenderers[arrowIndex] != null)
-        {
-            var lineRenderer = _arrowRenderers[arrowIndex].GetComponent<LineRenderer>();
-            if (lineRenderer != null)
-            {
-                lineRenderer.startColor = color;
-                lineRenderer.endColor = color;
-            }
-        }
-    }
+        Transform childArrow = arrow.transform.GetChild(0);
+        float currentXRotation = childArrow.localEulerAngles.x;
 
-    private void DarkenArrowColor(int arrowIndex, float alpha)
-    {
-        if (_arrowRenderers[arrowIndex] != null)
-        {
-            var lineRenderer = _arrowRenderers[arrowIndex].GetComponent<LineRenderer>();
-            if (lineRenderer != null)
-            {
-                Color startColor = lineRenderer.startColor;
-                Color endColor = lineRenderer.endColor;
-
-                startColor.a = alpha;
-                endColor.a = alpha;
-
-                lineRenderer.startColor = startColor;
-                lineRenderer.endColor = endColor;
-            }
-        }
+        childArrow.localRotation = Quaternion.Euler(currentXRotation, 0, zRotation);
     }
 
     private void ClearArrows()
@@ -325,8 +272,14 @@ public class PoisonSlap : Skill
                 Destroy(arrow);
             }
         }
+    }
 
-        Debug.Log("Arrows cleared.");
+    private void SetArrowVisibility(int arrowIndex, bool isVisible)
+    {
+        if (arrowIndex >= 0 && arrowIndex < _arrowRenderers.Length && _arrowRenderers[arrowIndex] != null)
+        {
+            _arrowRenderers[arrowIndex].SetActive(isVisible);
+        }
     }
 
     #endregion
@@ -338,15 +291,16 @@ public class PoisonSlap : Skill
         if (_firstClickDone && !_secondClickDone)
         {
             Vector3 currentMousePosition = GetMousePoint();
+
             if (currentMousePosition.x < _firstMousePosition.x && currentMousePosition.z < _firstMousePosition.z)
             {
-                SetArrowColor(0, Color.green);
-                SetArrowColor(1, Color.red);
+                SetArrowVisibility(0, true);
+                SetArrowVisibility(1, false);
             }
             else
             {
-                SetArrowColor(0, Color.red);
-                SetArrowColor(1, Color.green);
+                SetArrowVisibility(1, true);
+                SetArrowVisibility(0, false);
             }
         }
     }
@@ -363,18 +317,11 @@ public class PoisonSlap : Skill
             {
                 _secondClickDone = true;
                 _secondMousePosition = GetMousePoint();
+
                 if (_currentTarget != null)
                 {
-                    if (_secondMousePosition.x < _firstMousePosition.x && _secondMousePosition.z < _firstMousePosition.z)
-                    {
-                        DarkenArrowColor(0, 0.8f);
-                        DarkenArrowColor(1, 0f);
-                    }
-                    else
-                    {
-                        DarkenArrowColor(0, 0f);
-                        DarkenArrowColor(1, 0.8f);
-                    }
+                    SetArrowVisibility(0, false);
+                    SetArrowVisibility(1, false);
                 }
             }
             yield return null;
@@ -469,7 +416,7 @@ public class PoisonSlap : Skill
         {
             _cooldownTime /= 2;
         }
-        
+
         _isCanDamageDeal = false;
         TryPayCost(true);
 
@@ -478,14 +425,14 @@ public class PoisonSlap : Skill
 
     private void PushTarget(Character target, float distancePush, float durationPush, bool isCanPushTarget)
     {
-       if (_lightningMovement.IsInMovement)
-       {
+        if (_lightningMovement.IsInMovement)
+        {
             CmdPushEnemyInLightningMovement(target, distancePush, durationPush);
-       }
-       else
-       {
+        }
+        else
+        {
             CmdPushEnemy(target, distancePush, durationPush, isCanPushTarget);
-       }
+        }
     }
 
     #endregion
@@ -493,7 +440,7 @@ public class PoisonSlap : Skill
     #region CommandMethods
 
     [Command]
-    private void CmdPushEnemy(Character target, float distancePush, float durationPush, bool isCanPushTarget) 
+    private void CmdPushEnemy(Character target, float distancePush, float durationPush, bool isCanPushTarget)
     {
         MoveComponent targetMoveComponent = target.GetComponent<MoveComponent>();
 

@@ -73,6 +73,7 @@ public class PoisonBall : Skill, IAltAbility
     [SerializeField] private Character _player;
     [SerializeField] private GameObject _arrowPrefab;
     [SerializeField] private GameObject _spawnPoint;
+
     #region PoisonCloud
     [SerializeField] private PoisonDamagingCloudPrefab _poisonDamagingCloudPrefab;
     [SerializeField] private PoisonHealingCloudPrefab _poisonHealingCloudPrefab;
@@ -122,8 +123,6 @@ public class PoisonBall : Skill, IAltAbility
     private bool _isThreeProjectileOnOneTarget;
 
     private bool _isAbilityActive;
-    private bool _colorLockedAfterSecondClick;
-    private bool _colorLockedAfterThirdClick;
 
     #endregion
 
@@ -206,8 +205,6 @@ public class PoisonBall : Skill, IAltAbility
         _thirdClickDone = false;
         _isAbilityActive = false;
         _firstClickDone = false;
-        _colorLockedAfterSecondClick = false;
-        _colorLockedAfterThirdClick = false;
     }
 
     protected override IEnumerator PrepareJob()
@@ -220,7 +217,7 @@ public class PoisonBall : Skill, IAltAbility
 
         while (_currentTarget == null && float.IsPositiveInfinity(_firstMousePosition.x))
         {
-            if (GetMouseButton)
+            if (Input.GetMouseButtonDown(0))
             {
                 _currentTarget = GetRaycastTarget(true);
 
@@ -234,19 +231,23 @@ public class PoisonBall : Skill, IAltAbility
                 }
                 else
                 {
-                    if (IsHaveCharge)
-                    {
-                        _lookAtPositionCoroutine = StartCoroutine(LookAtPositionJob());
-
-                        _isTarget = false;    
-                    }
+                    _lookAtPositionCoroutine = StartCoroutine(LookAtPositionJob());
+                    _isTarget = false;
                 }
 
-                CreateArrowsParallelToPlayer();
-                StopAutoDraw();
+                if (_arrowRenderers[0] == null)
+                {
+                    CreateArrowsParallelToPlayer();
+                }
+
+                _arrowRenderers[0]?.SetActive(true);
+                _arrowRenderers[1]?.SetActive(true);
+                _arrowRenderers[2]?.SetActive(false);
+                _arrowRenderers[3]?.SetActive(false);
 
                 _firstClickDone = true;
             }
+
             CooldownChange();
             yield return null;
         }
@@ -254,6 +255,7 @@ public class PoisonBall : Skill, IAltAbility
         _animTime = GetAnimationClipLength();
 
         yield return _secondClickCoroutine = StartCoroutine(SecondClick());
+
         yield return _thirdClickCoroutine = StartCoroutine(ThirdClick());
 
         UseAbility();
@@ -268,7 +270,7 @@ public class PoisonBall : Skill, IAltAbility
         ResetAbilityParameters?.Invoke();
 
         _player.Move.StopLookAt();
-         
+
         yield return null;
     }
 
@@ -288,19 +290,19 @@ public class PoisonBall : Skill, IAltAbility
         }
 
         if (_mouseDetectionCoroutine == null)
-        { 
+        {
             _mouseDetectionCoroutine = StartCoroutine(UpdateMouseDetectionJob());
         }
-        
+
         if (_checkingTalentsCoroutine == null)
-        { 
+        {
             _checkingTalentsCoroutine = StartCoroutine(CheckingActiveTalentsJob());
         }
 
         if (_checkTimerActiveCoroutine == null)
-        { 
+        {
             _checkTimerActiveCoroutine = StartCoroutine(CheckTimerActiveJob());
-        }  
+        }
     }
 
     private void CancelCoroutine()
@@ -309,8 +311,8 @@ public class PoisonBall : Skill, IAltAbility
         {
             StopCoroutine(_setSpawnPointCoroutine);
             _setSpawnPointCoroutine = null;
-        }       
-        
+        }
+
         if (_mouseDetectionCoroutine != null)
         {
             StopCoroutine(_mouseDetectionCoroutine);
@@ -630,7 +632,7 @@ public class PoisonBall : Skill, IAltAbility
         }
         else
         {
-            CmdCreateProjectileForFlyingMaxDistance(_firstMousePosition, 
+            CmdCreateProjectileForFlyingMaxDistance(_firstMousePosition,
                 _poisonBallInfo.MaxCountProjectile, _multiplierForPushDistance, PoisonBoneStack,
                 _isFast, _isPushTarget, IsAltAbility,
                 _activeTalentsInfo.IsActiveFootInstincts, _activeTalentsInfo.IsActiveRestorationOfGlands,
@@ -650,106 +652,57 @@ public class PoisonBall : Skill, IAltAbility
     {
         if (_arrowPrefab == null)
         {
+            Debug.LogError("Arrow Prefab is not assigned!");
             return;
         }
 
-        Vector3 targetPosition;
-
-        if (_isTarget)
-        {
-            targetPosition = _currentTarget.transform.position;
-        }
-        else
-        {
-            targetPosition = _firstMousePosition;
-        }
-
+        Vector3 targetPosition = _currentTarget != null ? _currentTarget.transform.position : _firstMousePosition;
         Vector3 playerPosition = _player.transform.position;
+
+        targetPosition.y = playerPosition.y = 0.8f;
 
         Vector3 directionToTarget = (targetPosition - playerPosition).normalized;
 
-        Vector3 perpendicularDirection = Vector3.Cross(directionToTarget, Vector3.forward).normalized;
+        Vector3[] spawnPositions = new Vector3[4]
+        {
+        targetPosition + directionToTarget,
+        targetPosition - directionToTarget,
+        targetPosition + directionToTarget * 1.5f,
+        targetPosition - directionToTarget * 1.5f
+        };
 
-        _arrowRenderers[0] = Instantiate(_arrowPrefab, targetPosition + directionToTarget, Quaternion.identity);
-        _arrowRenderers[1] = Instantiate(_arrowPrefab, targetPosition - directionToTarget, Quaternion.identity);
-        _arrowRenderers[2] = Instantiate(_arrowPrefab, targetPosition + directionToTarget * 1.5f, Quaternion.identity);
-        _arrowRenderers[3] = Instantiate(_arrowPrefab, targetPosition - directionToTarget * 1.5f, Quaternion.identity);
+        Quaternion[] rotations = new Quaternion[4]
+        {
+        Quaternion.LookRotation(playerPosition - spawnPositions[0]),
+        Quaternion.LookRotation(spawnPositions[1] - playerPosition),
+        Quaternion.LookRotation(playerPosition - spawnPositions[2]),
+        Quaternion.LookRotation(spawnPositions[3] - playerPosition)
+        };
 
-        SetArrowDirections(perpendicularDirection);
-        SetArrowColors(Color.red);
-    }
-
-    private void SetArrowDirections(Vector3 perpendicularDirection)
-    {
         for (int i = 0; i < _arrowRenderers.Length; i++)
         {
-            var arrow = _arrowRenderers[i];
-            if (arrow != null)
-            {
-                var drawArrow = arrow.GetComponent<DrawArrow>();
-                if (drawArrow != null)
-                {
-                    Vector3 startPoint = arrow.transform.position - perpendicularDirection * 0.5f;
-                    Vector3 endPoint = arrow.transform.position + perpendicularDirection * 0.5f;
-
-                    if (i % 2 == 0)
-                    {
-                        drawArrow.DrawCurvedArrow(startPoint, endPoint, true);
-                    }
-                    else
-                    {
-                        drawArrow.DrawCurvedArrow(startPoint, endPoint, false);
-                    }
-                }
-            }
+            _arrowRenderers[i] = Instantiate(_arrowPrefab, spawnPositions[i], rotations[i]);
+            RotateArrowChild(_arrowRenderers[i], -90);
+            _arrowRenderers[i]?.SetActive(false);
         }
     }
 
-    private void SetArrowColors(Color color)
+    private void RotateArrowChild(GameObject arrow, float zRotation)
     {
-        foreach (var arrow in _arrowRenderers)
-        {
-            if (arrow != null)
-            {
-                var lineRenderer = arrow.GetComponent<LineRenderer>();
-                if (lineRenderer != null)
-                {
-                    lineRenderer.startColor = color;
-                    lineRenderer.endColor = color;
-                }
-            }
-        }
+        if (arrow == null) return;
+
+        Transform childArrow = arrow.transform.GetChild(0);
+        float currentXRotation = childArrow.localEulerAngles.x;
+
+        childArrow.localRotation = Quaternion.Euler(currentXRotation, 0, zRotation);
     }
 
-    private void SetArrowColor(int arrowIndex, Color color)
+
+    private void SetArrowVisibility(int arrowIndex, bool isVisible)
     {
-        if (_arrowRenderers[arrowIndex] != null)
+        if (arrowIndex >= 0 && arrowIndex < _arrowRenderers.Length && _arrowRenderers[arrowIndex] != null)
         {
-            var lineRenderer = _arrowRenderers[arrowIndex].GetComponent<LineRenderer>();
-            if (lineRenderer != null)
-            {
-                lineRenderer.startColor = color;
-                lineRenderer.endColor = color;
-            }
-        }
-    }
-
-    private void DarkenArrowColor(int arrowIndex, float alpha)
-    {
-        if (_arrowRenderers[arrowIndex] != null)
-        {
-            var lineRenderer = _arrowRenderers[arrowIndex].GetComponent<LineRenderer>();
-            if (lineRenderer != null)
-            {
-                Color startColor = lineRenderer.startColor;
-                Color endColor = lineRenderer.endColor;
-
-                startColor.a = alpha;
-                endColor.a = alpha;
-
-                lineRenderer.startColor = startColor;
-                lineRenderer.endColor = endColor;
-            }
+            _arrowRenderers[arrowIndex].SetActive(isVisible);
         }
     }
 
@@ -762,6 +715,7 @@ public class PoisonBall : Skill, IAltAbility
                 Destroy(arrow);
             }
         }
+        Debug.Log("Arrows cleared.");
     }
 
     #endregion
@@ -776,17 +730,19 @@ public class PoisonBall : Skill, IAltAbility
             {
                 _secondClickDone = true;
                 _secondMousePosition = GetMousePoint();
+
                 if (_currentTarget != null)
                 {
-                    if (_secondMousePosition.x < _firstMousePosition.x && _secondMousePosition.z < _firstMousePosition.z)
+                    Vector3 currentMousePosition = GetMousePoint();
+                    if (currentMousePosition.x < _secondMousePosition.x && currentMousePosition.z < _secondMousePosition.z)
                     {
-                        DarkenArrowColor(0, 0.8f);
-                        DarkenArrowColor(1, 0f);
+                        SetArrowVisibility(1, true);
+                        SetArrowVisibility(3, false);
                     }
                     else
                     {
-                        DarkenArrowColor(0, 0f);
-                        DarkenArrowColor(1, 0.8f);
+                        SetArrowVisibility(3, true);
+                        SetArrowVisibility(1, false);
                     }
                 }
             }
@@ -802,43 +758,8 @@ public class PoisonBall : Skill, IAltAbility
             {
                 _thirdClickDone = true;
                 _thirdMousePosition = GetMousePoint();
-
-                if (_currentTarget != null)
-                {
-                    if (_thirdMousePosition.x < _secondMousePosition.x && _thirdMousePosition.z < _secondMousePosition.z)
-                    {
-                        DarkenArrowColor(2, 0.8f);
-                        DarkenArrowColor(3, 0f);
-                    }
-                    else
-                    {
-                        DarkenArrowColor(2, 0f);
-                        DarkenArrowColor(3, 0.8f);
-                    }
-                }
-                _colorLockedAfterThirdClick = true;
             }
             yield return null;
-        }
-    }
-
-    private void SetArrowVisibility(int arrowIndex, bool isVisible)
-    {
-        if (arrowIndex >= 0 && arrowIndex < _arrowRenderers.Length && _arrowRenderers[arrowIndex] != null)
-        {
-            var lineRenderer = _arrowRenderers[arrowIndex].GetComponent<LineRenderer>();
-            if (lineRenderer != null)
-            {
-                Color startColor = lineRenderer.startColor;
-                Color endColor = lineRenderer.endColor;
-
-                // ���� ������� ������, ������������� ����� �� 1, ����� �� 0 (������������)
-                startColor.a = isVisible ? 1f : 0f;
-                endColor.a = isVisible ? 1f : 0f;
-
-                lineRenderer.startColor = startColor;
-                lineRenderer.endColor = endColor;
-            }
         }
     }
 
@@ -848,7 +769,7 @@ public class PoisonBall : Skill, IAltAbility
 
     private IEnumerator UpdateMouseDetectionJob()
     {
-        while (_thirdClickDone == false) 
+        while (_thirdClickDone == false)
         {
 
             Vector3 currentMousePosition = GetMousePoint();
@@ -858,7 +779,7 @@ public class PoisonBall : Skill, IAltAbility
                 UpdateArrowHighlight(0, 1, currentMousePosition);
             }
 
-            if (_secondClickDone && !_colorLockedAfterSecondClick && !_colorLockedAfterThirdClick)
+            if (_secondClickDone)
             {
                 UpdateArrowHighlight(2, 3, currentMousePosition);
             }
@@ -869,24 +790,21 @@ public class PoisonBall : Skill, IAltAbility
 
     private void UpdateArrowHighlight(int index1, int index2, Vector3 currentMousePosition)
     {
-        Vector3 arrowPosition1 = _arrowRenderers[index1].transform.position;
-        Vector3 arrowPosition2 = _arrowRenderers[index2].transform.position;
+        Vector3 arrowPosition = _arrowRenderers[index1].transform.position;
 
-        Vector3 direction1 = (arrowPosition1 - currentMousePosition).normalized;
+        Vector3 direction = (arrowPosition - currentMousePosition).normalized;
 
-        bool isHorizontal = Mathf.Abs(direction1.x) > Mathf.Abs(direction1.z);
+        bool isHorizontal = Mathf.Abs(direction.x) > Mathf.Abs(direction.z);
 
         if (isHorizontal)
         {
             if (Input.GetAxis("Mouse X") > 0)
             {
-                SetArrowColor(index1, Color.green);
                 SetArrowVisibility(index1, true);
                 SetArrowVisibility(index2, false);
             }
             else if (Input.GetAxis("Mouse X") < 0)
             {
-                SetArrowColor(index2, Color.green);
                 SetArrowVisibility(index2, true);
                 SetArrowVisibility(index1, false);
             }
@@ -895,13 +813,11 @@ public class PoisonBall : Skill, IAltAbility
         {
             if (Input.GetAxis("Mouse Y") > 0)
             {
-                SetArrowColor(index1, Color.green);
                 SetArrowVisibility(index1, true);
                 SetArrowVisibility(index2, false);
             }
             else if (Input.GetAxis("Mouse Y") < 0)
             {
-                SetArrowColor(index2, Color.green);
                 SetArrowVisibility(index2, true);
                 SetArrowVisibility(index1, false);
             }
@@ -913,7 +829,7 @@ public class PoisonBall : Skill, IAltAbility
     #region Command Methods
 
     [Command]
-    private void CmdCreateProjectileForTarget(GameObject target, Vector3 targetPosition, 
+    private void CmdCreateProjectileForTarget(GameObject target, Vector3 targetPosition,
         int maxCountProjectiles, float multiplierForPushDistance, int poisonBoneStack,
         bool isFast, bool isPushTarget, bool isPlayerInvisible,
         bool isActiveFootInstincts, bool isActiveRestorationOfGlands,
@@ -968,7 +884,7 @@ public class PoisonBall : Skill, IAltAbility
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
-        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, this, 
+        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, this,
             multiplierForPushDistance, poisonBoneStack,
             isTargetPlayer, isTargetEnemy, isTargetAllies,
             isActiveFootInstincts, isActiveRestorationOfGlands,
@@ -992,7 +908,7 @@ public class PoisonBall : Skill, IAltAbility
     }
 
     [Command]
-    private void CmdCreateProjectileForFlyingMaxDistance(Vector3 point, 
+    private void CmdCreateProjectileForFlyingMaxDistance(Vector3 point,
         int maxCountProjectiles, float multiplierForPushDistance, int poisonBoneStack,
         bool isFast, bool isPushTarget, bool isPlayerInvisible,
         bool isActiveFootInstincts, bool isActiveRestorationOfGlands,
@@ -1084,7 +1000,7 @@ public class PoisonBall : Skill, IAltAbility
                 _poisonDamagingCloudPrefab.PoisonDamageCloud = _poisonDamagingCloud;
                 SceneManager.MoveGameObjectToScene(_poisonDamagingCloudPrefab.PoisonDamageCloud.gameObject, _hero.NetworkSettings.MyRoom);
 
-                _poisonDamagingCloudPrefab.PoisonDamageCloud.InitializationProjectile(_player,duration);
+                _poisonDamagingCloudPrefab.PoisonDamageCloud.InitializationProjectile(_player, duration);
                 _poisonDamagingCloudPrefab.PoisonDamageCloud.AddStack();
 
                 NetworkServer.Spawn(_poisonDamagingCloud.gameObject);
@@ -1108,7 +1024,7 @@ public class PoisonBall : Skill, IAltAbility
                 _poisonHealingCloud = Instantiate(_poisonHealingCloudPrefab, transform.position, Quaternion.identity);
                 _poisonHealingCloudPrefab.PoisonHealingCloud = _poisonHealingCloud;
                 SceneManager.MoveGameObjectToScene(_poisonHealingCloudPrefab.PoisonHealingCloud.gameObject, _hero.NetworkSettings.MyRoom);
-                 
+
                 _poisonHealingCloudPrefab.PoisonHealingCloud.InitializationProjectile(_player, duration);
                 _poisonHealingCloudPrefab.PoisonHealingCloud.AddStack();
 
@@ -1123,6 +1039,28 @@ public class PoisonBall : Skill, IAltAbility
         RpcApply(_poisonDamagingCloudPrefab.PoisonDamageCloud, _poisonHealingCloudPrefab.PoisonHealingCloud, duration, isHealingCloud);
     }
 
+    /*
+    [Command]
+    private void CmdCheckActiveTalents(bool transparentPoisonsActive, bool witheringPoisonActive,
+        bool contAmbushActive, bool healingBallActive, bool healingCloudActive,
+        bool enlargedGlandsActive, bool voluminousBallActive, bool inertialGlandsActive, bool volatilityPoisonsActive, bool ballEffectActive)
+    {
+        _activeTalentsInfo.IsActiveTransparentPoisons = transparentPoisonsActive;
+        _activeTalentsInfo.IsActiveWitheringPoison = witheringPoisonActive;
+        _activeTalentsInfo.IsActiveContinuationAmbush = contAmbushActive;
+        _activeTalentsInfo.IsActiveHealingPoisonBall = healingBallActive;
+        _activeTalentsInfo.IsActiveHealingPoisonCloud = healingCloudActive;
+        _activeTalentsInfo.IsActiveEnlargedGlands = enlargedGlandsActive;
+        _activeTalentsInfo.IsActiveVoluminousBall = voluminousBallActive;
+        _activeTalentsInfo.IsActiveInertialGlands = inertialGlandsActive;
+        _activeTalentsInfo.IsActiveVolatilityOfPoisons = volatilityPoisonsActive;
+        _activeTalentsInfo.IsActiveBallEffect = ballEffectActive;
+
+        RpcCheckActiveTalents(transparentPoisonsActive, witheringPoisonActive, contAmbushActive, healingBallActive, healingCloudActive, 
+            enlargedGlandsActive, voluminousBallActive, inertialGlandsActive, volatilityPoisonsActive, ballEffectActive);
+    }
+    */
+
     [Command]
     private void SetSpawnPointPosition(float spawnPointX, float spawnPointY, float spawnPointZ)
     {
@@ -1133,7 +1071,26 @@ public class PoisonBall : Skill, IAltAbility
 
     #endregion
 
-    [TargetRpc]
+    /*
+    [ClientRpc]
+    private void RpcCheckActiveTalents(bool transparentPoisonsActive, bool witheringPoisonActive,
+    bool contAmbushActive, bool healingBallActive, bool healingCloudActive,
+    bool enlargedGlandsActive, bool voluminousBallActive, bool inertialGlandsActive, bool volatilityPoisonsActive, bool ballEffectActive)
+    {
+        _activeTalentsInfo.IsActiveTransparentPoisons = transparentPoisonsActive;
+        _activeTalentsInfo.IsActiveWitheringPoison = witheringPoisonActive;
+        _activeTalentsInfo.IsActiveContinuationAmbush = contAmbushActive;
+        _activeTalentsInfo.IsActiveHealingPoisonBall = healingBallActive;
+        _activeTalentsInfo.IsActiveHealingPoisonCloud = healingCloudActive;
+        _activeTalentsInfo.IsActiveEnlargedGlands = enlargedGlandsActive;
+        _activeTalentsInfo.IsActiveVoluminousBall = voluminousBallActive;
+        _activeTalentsInfo.IsActiveInertialGlands = inertialGlandsActive;
+        _activeTalentsInfo.IsActiveVolatilityOfPoisons = volatilityPoisonsActive;
+        _activeTalentsInfo.IsActiveBallEffect = ballEffectActive;
+    }
+    */
+
+    [ClientRpc]
     private void RpcApply(PoisonDamagingCloudPrefab poisonDamagingCloud, PoisonHealingCloudPrefab poisonHealingCloud, float duration, bool isHealingCloud)
     {
         //Debug.Log("PoisonBall / RpcApply / if (poisonDamagingCloud != null) = " + poisonDamagingCloud);
@@ -1154,7 +1111,7 @@ public class PoisonBall : Skill, IAltAbility
     private void RpcIsThreeProjectileOnOneTarget(bool isThreePorjectileOnOneTarget)
     {
         _isThreeProjectileOnOneTarget = isThreePorjectileOnOneTarget;
-    }    
+    }
 
     [TargetRpc]
     private void RpcIsCanApplyInvisible(bool isCanApplyInvisible)

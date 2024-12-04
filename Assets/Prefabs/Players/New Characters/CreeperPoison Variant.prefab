@@ -4013,7 +4013,7 @@ MonoBehaviour:
   _spitPoison: {fileID: 4992365342693795224}
   _projectile: {fileID: 4167531903339531822, guid: 093409daf5f183d4493788550d4c1998, type: 3}
   _player: {fileID: 2483674839823445686}
-  _arrowPrefab: {fileID: 7504653704119560997, guid: 3d2c250adc1c5a94a977f3812c146572, type: 3}
+  _arrowPrefab: {fileID: 7504653704119560997, guid: bc01ef0a119629945958526e596df4ec, type: 3}
   _spawnPoint: {fileID: 6943497228995655184}
   _poisonDamagingCloudPrefab: {fileID: 8376359178360537337, guid: 6684174cfea68c84b9bd06aa086faa01, type: 3}
   _poisonHealingCloudPrefab: {fileID: -4967518069141830548, guid: 835486046afaafa48885a183fcb94bd6, type: 3}
@@ -4203,7 +4203,7 @@ MonoBehaviour:
   _lightningFastPoisonSlap: {fileID: 8212853566004444967}
   _lightweightSlap: {fileID: 2610884127245588383}
   _poisonSlapTalent: {fileID: 6814445713881600515}
-  _arrowPrefab: {fileID: 7504653704119560997, guid: 3d2c250adc1c5a94a977f3812c146572, type: 3}
+  _arrowPrefab: {fileID: 7504653704119560997, guid: bc01ef0a119629945958526e596df4ec, type: 3}
 --- !u!114 &7910504212405209002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4309,7 +4309,6 @@ MonoBehaviour:
   _coldBloodTalent: {fileID: 7656356298655330948}
   _killersStamina: {fileID: 906682272319433437}
   _creeperStrike: {fileID: 6745892867125186241}
-  _lightningStrikes: {fileID: 734640227586387152}
   _player: {fileID: 2483674839823445686}
   _reducingCooldownMultiplier: 2
 --- !u!114 &4939275121847811319
