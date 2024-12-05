@@ -30,41 +30,26 @@ public class TestGameRules : GameRules
 
     protected override void GameStartClient()
     {
-        _teams = FindObjectOfType<TeamsPanel>();
 
-        foreach (var playerSettings in _players)
-        {
-            if (playerSettings.NetworkSettings.TeamIndex == 1)
-            {
-                _teams.AddInFirstTeam(playerSettings);
-            }
-            else
-            {
-                _teams.AddInSecondTeam(playerSettings);
-            }
-        }
     }
 
     protected override void OnPlayerDied(Character player)
     {
         AddExpForAllEnemy(player);
         StartCoroutine(RevivalPlayerCoroutine(player));
+        AddScorePoint(player.NetworkSettings.TeamIndex);
 
-        switch (player.NetworkSettings.TeamIndex)
+        if(_team1Score >= _teamMaxScore || _team2Score >= _teamMaxScore)
         {
-            case 1:
-                _team1Score++;
-                SetSource(1, _team1Score);
-                break;
-
-            case 2:
-                _team2Score++;
-                SetSource(2, _team2Score);
-                break;
-
-            default:
-                Debug.LogError("Not found");
-                break;
+            if (_team1Score > _team2Score)
+            {
+                RpcShowWinner(1);
+            }
+            else
+            {
+                RpcShowWinner(2);
+            }
+            EndGame();
         }
         /*
         var playerSettings = _players.Find(p => p.gameObject == player);
@@ -73,6 +58,26 @@ public class TestGameRules : GameRules
         teamDeaths[playerSettings.NetworkSettings.TeamIndex]++;
         CheckForRoundEnd();
         */
+    }
+
+    private void AddScorePoint(int teamIndex)
+    {
+        switch (teamIndex)
+        {
+            case 2:
+                _team1Score++;
+                RpcSetSource(1, _team1Score);
+                break;
+
+            case 1:
+                _team2Score++;
+                RpcSetSource(2, _team2Score);
+                break;
+
+            default:
+                Debug.LogError("Not found");
+                break;
+        }
     }
 
     private void CancelActiveSkills(Character playerSettings)

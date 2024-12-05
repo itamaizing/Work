@@ -12,12 +12,13 @@ public abstract class GameRules : NetworkBehaviour
 
     protected readonly SyncList<GameObject> _playersSyncList = new SyncList<GameObject>();
     protected List<Character> _players = new List<Character>();
+    [SyncVar]
     protected NetworkRoom _room;
 
     protected HeroSpawnManager _spawnPoints;
     protected GameManager _gameManager;
 
-    [SyncVar(hook = nameof(GameStatusHook))] private bool _isStarted;
+    [SyncVar] private bool _isStarted;
     public bool IsStarted { get => _isStarted; set => _isStarted = value; }
 
     public SyncList<GameObject> Players => _playersSyncList;
@@ -35,7 +36,7 @@ public abstract class GameRules : NetworkBehaviour
         AddAllPlayersInList();
         SubscribingOnPlayerEvents();
 
-        StartCoroutine(WaitForSceneAndFindSpawnPoints());
+        StartCoroutine(WaitForSceneAndFindGameManager());
     }
 
     public override void OnStartClient()
@@ -45,16 +46,8 @@ public abstract class GameRules : NetworkBehaviour
     }
 
     //perhaps this method only works on the first client, it's strange
-    protected virtual void GameStatusHook(bool oldValue, bool newValue)
-    {
-        if (newValue)
-        {
-            GameStartClient();
-            //perhaps this method only works on the first client, it's strange
-        }
-    }
 
-    protected virtual IEnumerator WaitForSceneAndFindSpawnPoints()
+    protected virtual IEnumerator WaitForSceneAndFindGameManager()
     {
         while (!_room.IsLoaded)
         {
@@ -94,9 +87,14 @@ public abstract class GameRules : NetworkBehaviour
             playerSettings.NetworkSettings.SetSpawnPosition(spawnPoints.GetRandomPoint(teamIndex-1));
 
             if (teamIndex == 1)
+            {
                 team1Count++;
+            }   
             else
+            {
                 team2Count++;
+            }
+                
         }
 
         yield return null;
@@ -153,16 +151,16 @@ public abstract class GameRules : NetworkBehaviour
         }
     }
 
-    protected virtual void SetSource(int teamIndex, int source)
-    {
-        _gameManager.SourceUI.SetSource(teamIndex, source);
-        RpcSetSource(teamIndex, source);
-    }
-
     [ClientRpc]
     protected virtual void RpcSetSource(int teamIndex, int source)
     {
         _gameManager.SourceUI.SetSource(teamIndex, source);
+    }
+
+    [ClientRpc]
+    protected virtual void RpcShowWinner(int teamIndex)
+    {
+        _gameManager.SourceUI.ShowWinner(teamIndex);
     }
 
     protected virtual void ResetAllPlayers()
@@ -188,7 +186,9 @@ public abstract class GameRules : NetworkBehaviour
 
     protected IEnumerator RevivalPlayerCoroutine(Character player)
     {
-        yield return new WaitForSecondsRealtime(_baseTimeForRevival + _AddTimeForRevival * player.LVL.Value);
+        float time = _baseTimeForRevival + _AddTimeForRevival * player.LVL.Value;
+        RpcStartReviveTimer(player.gameObject, time);
+        yield return new WaitForSecondsRealtime(time);
         player.ServerResetAll();
         MovePlayerInSpawn(player);
     }
@@ -226,14 +226,40 @@ public abstract class GameRules : NetworkBehaviour
     {
         while(_gameManager == null)
         {
-            FindGameManager();
             yield return new WaitForSecondsRealtime(0.5f);
+            FindGameManager();
         }
+        foreach (var item in _playersSyncList)
+        {
+            var playerSettings = item.GetComponent<Character>();
+            if (playerSettings != null)
+            {
+                _players.Add(playerSettings);
+            }
+        }
+        foreach (var playerSettings in _players)
+        {
+            if (playerSettings.NetworkSettings.TeamIndex == 1)
+            {
+                _gameManager.TeamsPanel.AddInFirstTeam(playerSettings);
+            }
+            else
+            {
+                _gameManager.TeamsPanel.AddInSecondTeam(playerSettings);
+            }
+        }
+        GameStartClient();
     }
 
     [ClientRpc]
     protected void RpcTeleportPlayer(GameObject player, Vector3 position, Quaternion rotation)
     {
         player.transform.SetPositionAndRotation(position, rotation);
+    }
+
+    [ClientRpc]
+    protected void RpcStartReviveTimer(GameObject character, float time)
+    {
+        _gameManager.TeamsPanel.StartReviveTimer(character.GetComponent<Character>(), time);
     }
 }
