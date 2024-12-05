@@ -12,15 +12,27 @@ public class SourceUI : MonoBehaviour
     private string _teamName1 = "Light: ";
     private string _teamName2 = "Dark: ";
 
-    public void UpdateSource(int teamIndex, int source)
+    private void Start()
     {
+        _teamText1.text = _teamName1 + 0;
+        _teamText2.text = _teamName2 + 0;
+    }
+
+    public void SetSource(int teamIndex, int source)
+    {
+        //Debug.LogError(teamIndex);
+        //Debug.LogError(source);
         switch (teamIndex)
         {
             case 1:
+                //Debug.LogError(_teamName1 + source);
                 _teamText1.text = _teamName1 + source;
+                //Debug.LogError(_teamText1.text);
                 break;
             case 2:
+                //Debug.LogError(_teamName2 + source);
                 _teamText2.text = _teamName2 + source;
+                //Debug.LogError(_teamText2.text);
                 break;
 
             default:
