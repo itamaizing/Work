@@ -99,6 +99,7 @@ public class CharacterState : NetworkBehaviour
 		[States.DefenseReduction] = new DefenceReductionState(),
 		[States.SparkTalentHealthBuff] = new SparkTalentHealthState(),
 		[States.SelfHarm] = new SelfHarmState(),
+		[States.InAir] = new InAirState(),
 		[States.Immateriality] = new ImmaterialityState(),
 		[States.CreeperInvisible] = new CreeperInvisibleState(),
 		[States.PoisonBone] = new PoisonBoneState(),
