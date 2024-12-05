@@ -8,11 +8,11 @@ public class CorpsePuddleSpeedTalent : Talent
 
 	public override void Enter()
 	{
-		_minoinAttact.TalentBoostSpeed(1.5f);
+		//_minoinAttact.TalentBoostSpeed(1.5f);
 	}
 
 	public override void Exit()
 	{
-		_minoinAttact.TalentReduceSpeed(1.5f);
+		//_minoinAttact.TalentReduceSpeed(1.5f);
 	}
 }
