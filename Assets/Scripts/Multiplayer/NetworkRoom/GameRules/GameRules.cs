@@ -162,10 +162,6 @@ public abstract class GameRules : NetworkBehaviour
     [ClientRpc]
     protected virtual void RpcSetSource(int teamIndex, int source)
     {
-        Debug.LogError(_gameManager);
-        Debug.LogError(_gameManager.SourceUI);
-        Debug.LogError(teamIndex);
-        Debug.LogError(source);
         _gameManager.SourceUI.SetSource(teamIndex, source);
     }
 
