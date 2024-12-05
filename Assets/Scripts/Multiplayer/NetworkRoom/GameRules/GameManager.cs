@@ -1,0 +1,12 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class GameManager : MonoBehaviour
+{
+    [SerializeField] private HeroSpawnManager _heroSpawnManager;
+    [SerializeField] private SourceUI _sourceUI;
+
+    public HeroSpawnManager HeroSpawnManager { get => _heroSpawnManager; }
+    public SourceUI SourceUI { get => _sourceUI; set => _sourceUI = value; }
+}

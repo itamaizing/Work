@@ -6,19 +6,23 @@ using UnityEngine;
 public abstract class GameRules : NetworkBehaviour
 {
     [SerializeField] private int _expValuePerPlayer = 10;
+    [SerializeField] private float _baseTimeForRevival = 5;
+    [SerializeField] private float _AddTimeForRevival = 1;
 
     protected readonly SyncList<GameObject> _playersSyncList = new SyncList<GameObject>();
     protected List<Character> _players = new List<Character>();
     protected NetworkRoom _room;
-    protected List<Transform> _spawnPoints;
+
+    protected HeroSpawnManager _spawnPoints;
+    protected GameManager _gameManager;
 
     [SyncVar(hook = nameof(GameStatusHook))] private bool _isStarted;
     public bool IsStarted { get => _isStarted; set => _isStarted = value; }
 
     public SyncList<GameObject> Players => _playersSyncList;
-    public List<Transform> SpawnPoints => _spawnPoints;
+    public HeroSpawnManager SpawnPoints => _spawnPoints;
 
-    public abstract void GameStartServer(List<Transform> spawnPoints);
+    public abstract void GameStartServer(HeroSpawnManager spawnPoints);
     protected abstract void UnsubscribeFromAllEvents();
     protected abstract void GameStartClient();
     protected abstract void OnPlayerDied(Character character);
@@ -48,19 +52,20 @@ public abstract class GameRules : NetworkBehaviour
             yield return null;
         }
 
-        FindSpawnPoints();
+        FindGameManager();
     }
 
-    protected void FindSpawnPoints()
+    protected void FindGameManager()
     {
-        var spawnPointContainer = FindObjectOfType<SpawnPointsContainer>();
-        if (spawnPointContainer != null)
+        var gameManager = FindObjectOfType<GameManager>();
+        if (gameManager != null)
         {
-            _spawnPoints = spawnPointContainer.GetSpawnPoints();
+            _gameManager = gameManager;
+            _spawnPoints = _gameManager.HeroSpawnManager;
         }
     }
 
-    protected virtual IEnumerator SplitTeams(List<Transform> spawnPoints)
+    protected virtual IEnumerator SplitTeams(HeroSpawnManager spawnPoints)
     {
         int team1Count = 0;
         int team2Count = 0;
@@ -71,17 +76,13 @@ public abstract class GameRules : NetworkBehaviour
             byte teamIndex = (byte)(team1Count <= team2Count ? 1 : 2);
             playerSettings.NetworkSettings.TeamIndex = teamIndex;
 
-            Transform spawnPoint = spawnPoints[i % spawnPoints.Count];
-            if (spawnPoint != null)
+            foreach (var player in _players)
             {
-                foreach (var player in _players)
-                {
-                    playerSettings.NetworkSettings.Players.Add(player.gameObject);
-                }
-
-                playerSettings.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
-                playerSettings.NetworkSettings.SetSpawnPosition(spawnPoint.position);
+                playerSettings.NetworkSettings.Players.Add(player.gameObject);
             }
+
+            playerSettings.transform.SetPositionAndRotation(spawnPoints.GetRandomPoint(teamIndex-1), spawnPoints.GetRotate(teamIndex-1));
+            playerSettings.NetworkSettings.SetSpawnPosition(spawnPoints.GetRandomPoint(teamIndex-1));
 
             if (teamIndex == 1)
                 team1Count++;
@@ -151,6 +152,26 @@ public abstract class GameRules : NetworkBehaviour
         }
     }
 
+    protected virtual void MoveAllPlayersInSpawnPoint()
+    {
+        foreach (var player in _players)
+        {
+            MovePlayerInSpawn(player);
+        }
+    }
+
+    protected void MovePlayerInSpawn(Character player)
+    {
+        RpcTeleportPlayer(player.gameObject, _spawnPoints.GetRandomPoint(player.NetworkSettings.TeamIndex - 1), _spawnPoints.GetRotate(player.NetworkSettings.TeamIndex - 1));
+    }
+
+    protected IEnumerator RevivalPlayerCoroutine(Character player)
+    {
+        yield return new WaitForSecondsRealtime(_baseTimeForRevival + _AddTimeForRevival * player.LVL.Value);
+        player.ServerResetAll();
+        MovePlayerInSpawn(player);
+    }
+
     private void AddAllPlayersInList()
     {
         foreach (var item in _room.Players)
@@ -178,5 +199,11 @@ public abstract class GameRules : NetworkBehaviour
         {
             item.Died -= OnPlayerDied;
         }
+    }
+
+    [ClientRpc]
+    protected void RpcTeleportPlayer(GameObject player, Vector3 position, Quaternion rotation)
+    {
+        player.transform.SetPositionAndRotation(position, rotation);
     }
 }

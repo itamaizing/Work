@@ -22,7 +22,7 @@ public class TestGameRules : GameRules
     private int team1Score = 0;
     private int team2Score = 0;
 
-    public override void GameStartServer(List<Transform> spawnPoints)
+    public override void GameStartServer(HeroSpawnManager spawnPoints)
     {
         StartCoroutine(HandleTeamsAndSpawns(spawnPoints));
     }
@@ -47,11 +47,14 @@ public class TestGameRules : GameRules
     protected override void OnPlayerDied(Character player)
     {
         AddExpForAllEnemy(player);
+        /*
         var playerSettings = _players.Find(p => p.gameObject == player);
         if (playerSettings == null || playerSettings.NetworkSettings.TeamIndex < 1 || playerSettings.NetworkSettings.TeamIndex > 2) return;
 
         teamDeaths[playerSettings.NetworkSettings.TeamIndex]++;
         CheckForRoundEnd();
+        */
+        StartCoroutine(RevivalPlayerCoroutine(player));
     }
 
     private void CancelActiveSkills(Character playerSettings)
@@ -169,10 +172,10 @@ public class TestGameRules : GameRules
             ResetPlayerState(playerSettings);
 
             int spawnIndex = playerSettings.NetworkSettings.TeamIndex - 1;
-            if (_spawnPoints != null && spawnIndex >= 0 && spawnIndex < _spawnPoints.Count)
+
+            if (_spawnPoints != null)
             {
-                Transform spawnPoint = _spawnPoints[spawnIndex];
-                RpcTeleportPlayer(playerSettings.gameObject, spawnPoint.position, spawnPoint.rotation);
+                RpcTeleportPlayer(playerSettings.gameObject, _spawnPoints.GetRandomPoint(spawnIndex), _spawnPoints.GetRotate(spawnIndex));
             }
         }
     }
@@ -230,12 +233,6 @@ public class TestGameRules : GameRules
     }
 
     [ClientRpc]
-    private void RpcTeleportPlayer(GameObject player, Vector3 position, Quaternion rotation)
-    {
-        player.transform.SetPositionAndRotation(position, rotation);
-    }
-
-    [ClientRpc]
     private void RpcCloseRoomOnClients()
     {
         StartCoroutine(CloseRoomOnClientAndLoadMainMenu());
@@ -248,16 +245,15 @@ public class TestGameRules : GameRules
         SceneManager.LoadScene("MainMenu");
     }
 
-    private IEnumerator HandleTeamsAndSpawns(List<Transform> spawnPoints)
+    private IEnumerator HandleTeamsAndSpawns(HeroSpawnManager spawnPoints)
     {
         yield return StartCoroutine(SplitTeams(spawnPoints));
         foreach (var playerSettings in _players)
         {
             int spawnIndex = playerSettings.NetworkSettings.TeamIndex - 1;
-            if (_spawnPoints != null && spawnIndex >= 0 && spawnIndex < _spawnPoints.Count)
+            if (_spawnPoints != null)
             {
-                Transform spawnPoint = _spawnPoints[spawnIndex];
-                playerSettings.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
+                playerSettings.transform.SetPositionAndRotation(_spawnPoints.GetRandomPoint(spawnIndex), _spawnPoints.GetRotate(spawnIndex));
             }
         }
 

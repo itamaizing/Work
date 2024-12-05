@@ -26,9 +26,11 @@ public class CrutchForLoading : MonoBehaviour
 
 	private IEnumerator LoadedJob()
     {
+		yield return new WaitForFixedUpdate();
 		if (this != null && transform != null)
 		{
-			transform.position = Vector3.up;
+			transform.position = transform.position + Vector3.up;
+			SceneManager.sceneLoaded -= OnLoaded;
 		}
 		yield return null;
 	}
