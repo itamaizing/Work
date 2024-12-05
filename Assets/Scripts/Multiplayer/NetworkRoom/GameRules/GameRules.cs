@@ -12,8 +12,10 @@ public abstract class GameRules : NetworkBehaviour
 
     protected readonly SyncList<GameObject> _playersSyncList = new SyncList<GameObject>();
     protected List<Character> _players = new List<Character>();
-    [SyncVar]
+
     protected NetworkRoom _room;
+
+    [SyncVar]protected string _roomName;
 
     protected HeroSpawnManager _spawnPoints;
     protected GameManager _gameManager;
@@ -32,6 +34,7 @@ public abstract class GameRules : NetworkBehaviour
     public void Init(NetworkRoom room)
     {
         _room = room;
+        _roomName = _room.SceneName;
 
         AddAllPlayersInList();
         SubscribingOnPlayerEvents();
@@ -45,7 +48,10 @@ public abstract class GameRules : NetworkBehaviour
         StartCoroutine(FoundGameManagerCorounite());
     }
 
-    //perhaps this method only works on the first client, it's strange
+    protected virtual void EndGame()
+    {
+        StartCoroutine(CloseRoomJob());
+    }
 
     protected virtual IEnumerator WaitForSceneAndFindGameManager()
     {
@@ -119,12 +125,13 @@ public abstract class GameRules : NetworkBehaviour
         UnsubscribeFromAllEvents();
         UnsubscribingOnPlayerEvents();
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSecondsRealtime(5f);
 
-        if (_room != null)
-        {
-            yield return _room.UnloadRoomJob();
-        }
+        RpcCloseRoomOnClients();
+
+        yield return new WaitForSecondsRealtime(15f);
+
+        yield return _room.UnloadRoomJob();
     }
 
     protected virtual void AddExpForAllEnemy(Character character)
@@ -149,18 +156,6 @@ public abstract class GameRules : NetworkBehaviour
                 }
             }
         }
-    }
-
-    [ClientRpc]
-    protected virtual void RpcSetSource(int teamIndex, int source)
-    {
-        _gameManager.SourceUI.SetSource(teamIndex, source);
-    }
-
-    [ClientRpc]
-    protected virtual void RpcShowWinner(int teamIndex)
-    {
-        _gameManager.SourceUI.ShowWinner(teamIndex);
     }
 
     protected virtual void ResetAllPlayers()
@@ -261,5 +256,24 @@ public abstract class GameRules : NetworkBehaviour
     protected void RpcStartReviveTimer(GameObject character, float time)
     {
         _gameManager.TeamsPanel.StartReviveTimer(character.GetComponent<Character>(), time);
+    }
+
+    [ClientRpc]
+    protected virtual void RpcSetSource(int teamIndex, int source)
+    {
+        _gameManager.SourceUI.SetSource(teamIndex, source);
+    }
+
+    [ClientRpc]
+    protected virtual void RpcShowWinner(int teamIndex)
+    {
+        _gameManager.SourceUI.ShowWinner(teamIndex);
+    }
+
+    [ClientRpc]
+    protected void RpcCloseRoomOnClients()
+    {
+        ServerManager.Instance.EnableMenu();
+        SceneManager.UnloadSceneAsync(_roomName);
     }
 }

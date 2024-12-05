@@ -109,6 +109,7 @@ public class TestGameRules : GameRules
         }
     }
 
+    /*
     private void EndGame()
     {
         if (!isServer) return;
@@ -159,6 +160,7 @@ public class TestGameRules : GameRules
         RpcCloseRoomOnClients();
         StartCoroutine(CloseRoomJob());
     }
+    */
 
     private void RestartRound()
     {
@@ -255,11 +257,6 @@ public class TestGameRules : GameRules
         }
     }
 
-    [ClientRpc]
-    private void RpcCloseRoomOnClients()
-    {
-        StartCoroutine(CloseRoomOnClientAndLoadMainMenu());
-    }
 
     private IEnumerator CloseRoomOnClientAndLoadMainMenu()
     {

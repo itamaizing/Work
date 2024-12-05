@@ -18,8 +18,8 @@ public class SourceUI : MonoBehaviour
 
     private void Start()
     {
-        _teamText1.text = _teamName1 + 0;
-        _teamText2.text = _teamName2 + 0;
+        _teamText1.text = _teamName1 + ": " + 0;
+        _teamText2.text = _teamName2 + ": " + 0;
     }
 
     public void SetSource(int teamIndex, int source)
