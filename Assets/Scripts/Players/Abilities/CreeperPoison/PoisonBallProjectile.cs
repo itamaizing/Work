@@ -289,6 +289,8 @@ public class PoisonBallProjectile : Test_Projectile
         _skill = skill;
         _isPushTarget = isPushTarget;
 
+        _isPlayerInvisible = isPlayerInvisible;
+
         Invoke("TransparentProjectileOnServer", 0.15f);
 
         InitializationNumericVariables(multiplierDistance, poisonBoneStack);
@@ -334,7 +336,6 @@ public class PoisonBallProjectile : Test_Projectile
         _isActiveBallEffect = isActiveBallEffect;
         _isActiveHealingPoisonBall = isActiveTalentHealingPoisonBall;
         _isActiveWitheringPoison = isActiveTalentWitheringPoison;
-        _isPlayerInvisible = isPlayerInvisible;
     }
 
     private void InitializationComponentsForCountProjectile()
@@ -356,7 +357,7 @@ public class PoisonBallProjectile : Test_Projectile
         }
         if (isServer && _isPlayerInvisible)
         {
-            RpcNewTransparencySprite(_player.gameObject);
+            RpcNewTransparencySprite(_player.gameObject, this.gameObject);
         }
     }
 
@@ -373,11 +374,12 @@ public class PoisonBallProjectile : Test_Projectile
     #region ClientRpcMethods
 
     [ClientRpc]
-    private void RpcNewTransparencySprite(GameObject player)
+    private void RpcNewTransparencySprite(GameObject player, GameObject projectile)
     {
-        Color originalColor = _projectileRenderer.material.color;
+        MeshRenderer projectileMaterial = projectile.GetComponent<MeshRenderer>();
+        Color originalColor = projectileMaterial.material.color;
 
-        if (_projectileRenderer != null)
+        if (projectileMaterial != null)
         {
             if (player.layer == LayerMask.NameToLayer("Allies"))
             {

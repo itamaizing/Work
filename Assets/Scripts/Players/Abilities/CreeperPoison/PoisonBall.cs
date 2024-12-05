@@ -856,7 +856,6 @@ public class PoisonBall : Skill, IAltAbility
             _poisonBallInfo.CountProjectiles = 1;
             _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
         }
-        Debug.Log("PoisonBall / CmdCreateProjTarget / _poisonBallInfo.CountProjectiles = " + _poisonBallInfo.CountProjectiles);
 
         if (_poisonBallInfo.CountProjectiles >= 3 && isActiveInertialGlands)
         {
@@ -866,7 +865,6 @@ public class PoisonBall : Skill, IAltAbility
 
         if (_poisonBallInfo.CountProjectiles >= 4 && isActiveContinuationAmbush)
         {
-            Debug.Log("PoisonBallCmd / CanApplyInvisible true / contAmbushActive = " + isActiveContinuationAmbush);
             _poisonBallInfo.IsCanApplyInvisible = true;
             RpcIsCanApplyInvisible(_poisonBallInfo.IsCanApplyInvisible);
         }
@@ -918,7 +916,6 @@ public class PoisonBall : Skill, IAltAbility
     {
         _player.Health.Add(-100f);
 
-
         RestorationOfGlandsTalent = _restorationOfGlands;
         FootInstinctsTalent = _footInstincts;
         CurrentTarget = LastTarget;
@@ -937,7 +934,6 @@ public class PoisonBall : Skill, IAltAbility
             _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
         }
 
-        Debug.Log("PoisonBall / CmdCreateProjPoint / _poisonBallInfo.CountProjectiles = " + _poisonBallInfo.CountProjectiles);
         if (_poisonBallInfo.CountProjectiles >= 3 && isActiveInertialGlands)
         {
             _poisonBallInfo.IsThreeProjectileOnOnetarget = true;
@@ -1039,28 +1035,6 @@ public class PoisonBall : Skill, IAltAbility
         RpcApply(_poisonDamagingCloudPrefab.PoisonDamageCloud, _poisonHealingCloudPrefab.PoisonHealingCloud, duration, isHealingCloud);
     }
 
-    /*
-    [Command]
-    private void CmdCheckActiveTalents(bool transparentPoisonsActive, bool witheringPoisonActive,
-        bool contAmbushActive, bool healingBallActive, bool healingCloudActive,
-        bool enlargedGlandsActive, bool voluminousBallActive, bool inertialGlandsActive, bool volatilityPoisonsActive, bool ballEffectActive)
-    {
-        _activeTalentsInfo.IsActiveTransparentPoisons = transparentPoisonsActive;
-        _activeTalentsInfo.IsActiveWitheringPoison = witheringPoisonActive;
-        _activeTalentsInfo.IsActiveContinuationAmbush = contAmbushActive;
-        _activeTalentsInfo.IsActiveHealingPoisonBall = healingBallActive;
-        _activeTalentsInfo.IsActiveHealingPoisonCloud = healingCloudActive;
-        _activeTalentsInfo.IsActiveEnlargedGlands = enlargedGlandsActive;
-        _activeTalentsInfo.IsActiveVoluminousBall = voluminousBallActive;
-        _activeTalentsInfo.IsActiveInertialGlands = inertialGlandsActive;
-        _activeTalentsInfo.IsActiveVolatilityOfPoisons = volatilityPoisonsActive;
-        _activeTalentsInfo.IsActiveBallEffect = ballEffectActive;
-
-        RpcCheckActiveTalents(transparentPoisonsActive, witheringPoisonActive, contAmbushActive, healingBallActive, healingCloudActive, 
-            enlargedGlandsActive, voluminousBallActive, inertialGlandsActive, volatilityPoisonsActive, ballEffectActive);
-    }
-    */
-
     [Command]
     private void SetSpawnPointPosition(float spawnPointX, float spawnPointY, float spawnPointZ)
     {
@@ -1070,25 +1044,6 @@ public class PoisonBall : Skill, IAltAbility
     }
 
     #endregion
-
-    /*
-    [ClientRpc]
-    private void RpcCheckActiveTalents(bool transparentPoisonsActive, bool witheringPoisonActive,
-    bool contAmbushActive, bool healingBallActive, bool healingCloudActive,
-    bool enlargedGlandsActive, bool voluminousBallActive, bool inertialGlandsActive, bool volatilityPoisonsActive, bool ballEffectActive)
-    {
-        _activeTalentsInfo.IsActiveTransparentPoisons = transparentPoisonsActive;
-        _activeTalentsInfo.IsActiveWitheringPoison = witheringPoisonActive;
-        _activeTalentsInfo.IsActiveContinuationAmbush = contAmbushActive;
-        _activeTalentsInfo.IsActiveHealingPoisonBall = healingBallActive;
-        _activeTalentsInfo.IsActiveHealingPoisonCloud = healingCloudActive;
-        _activeTalentsInfo.IsActiveEnlargedGlands = enlargedGlandsActive;
-        _activeTalentsInfo.IsActiveVoluminousBall = voluminousBallActive;
-        _activeTalentsInfo.IsActiveInertialGlands = inertialGlandsActive;
-        _activeTalentsInfo.IsActiveVolatilityOfPoisons = volatilityPoisonsActive;
-        _activeTalentsInfo.IsActiveBallEffect = ballEffectActive;
-    }
-    */
 
     [ClientRpc]
     private void RpcApply(PoisonDamagingCloudPrefab poisonDamagingCloud, PoisonHealingCloudPrefab poisonHealingCloud, float duration, bool isHealingCloud)

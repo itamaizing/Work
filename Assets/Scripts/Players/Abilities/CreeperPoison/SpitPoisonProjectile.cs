@@ -172,11 +172,11 @@ public class SpitPoisonProjectile : Test_Projectile
         _player = dad;
         _energyDad = energy;
         _skill = skill;
+        _isPlayerInvisible = isPlayerInvisible;
 
         _poisonBoneStack = poisonBoneStack;
         _isActiveRestorationOfGlands = isActiveRestorationOfGlands;
         _isActiveHealingSpitPoison = isActiveHealingSpitPoison;
-        _isPlayerInvisible = isPlayerInvisible;
         _isPlayer = isTargetPlayer;
         _isAllies = isTargetAllies;
         _isEnemy = isTargetEnemy;
@@ -203,7 +203,7 @@ public class SpitPoisonProjectile : Test_Projectile
         }
         if (isServer && _isPlayerInvisible)
         {
-            RpcNewTransparencySprite(_player.gameObject);
+            RpcNewTransparencySprite(_player.gameObject, this.gameObject);
         }
     }
 
@@ -219,11 +219,12 @@ public class SpitPoisonProjectile : Test_Projectile
     #region ClientRpcMethods
 
     [ClientRpc]
-    private void RpcNewTransparencySprite(GameObject player)
+    private void RpcNewTransparencySprite(GameObject player, GameObject projectile)
     {
-        Color originalColor = _projectileRenderer.material.color;
+        MeshRenderer projectileMaterial = projectile.GetComponent<MeshRenderer>();
+        Color originalColor = projectileMaterial.material.color;
 
-        if (_projectileRenderer != null)
+        if (projectileMaterial != null)
         {
             if (player.layer == LayerMask.NameToLayer("Allies"))
             {

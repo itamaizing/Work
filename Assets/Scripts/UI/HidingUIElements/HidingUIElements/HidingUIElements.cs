@@ -1,8 +1,6 @@
 using Mirror;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -30,6 +28,7 @@ public class HidingUIElements : NetworkBehaviour
         foreach (var text in _texts)
         {
             _originalTextColors.Add(text, text.color);
+
         }
     }
 
@@ -87,6 +86,7 @@ public class HidingUIElements : NetworkBehaviour
                 {
                     image.color = new Color(originalColorImage.r, originalColorImage.g, originalColorImage.b, newImageTransparency.a);
                 }
+
             }
 
             foreach (var text in _texts)
@@ -117,6 +117,7 @@ public class HidingUIElements : NetworkBehaviour
                 {
                     image.color = new Color(originalColorImage.r, originalColorImage.g, originalColorImage.b, originalColorImage.a);
                 }
+
             }
 
             foreach (var text in _texts)
@@ -127,6 +128,7 @@ public class HidingUIElements : NetworkBehaviour
                 {
                     text.color = new Color(originalColorText.r, originalColorText.g, originalColorText.b, originalColorText.a);
                 }
+
             }
         }
         else if (_playerLayer == LayerMask.NameToLayer("Enemy"))
@@ -139,6 +141,7 @@ public class HidingUIElements : NetworkBehaviour
                 {
                     image.color = new Color(originalColorImage.r, originalColorImage.g, originalColorImage.b, originalColorImage.a);
                 }
+
             }
 
             foreach (var text in _texts)
@@ -149,6 +152,7 @@ public class HidingUIElements : NetworkBehaviour
                 {
                     text.color = new Color(originalColorText.r, originalColorText.g, originalColorText.b, originalColorText.a);
                 }
+
             }
             _containerIcons.SetActive(true);
         }

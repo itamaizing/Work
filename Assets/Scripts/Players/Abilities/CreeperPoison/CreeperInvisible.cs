@@ -26,11 +26,11 @@ public class CreeperInvisible : Skill
     [Header("Ability Properties")]
     [SerializeField] private Character _player;
     [SerializeField] private SkinnedMeshRenderer _playerRenderer;
-
+    
     private SpitPoison _spitPoison;
     private PoisonBall _poisonBall;
 
-    private float _maxHealth;
+    private float _previousHealth;
     private float _currentHealth;
     private float _distanceWithoutEnemies = 6f;
 
@@ -67,8 +67,6 @@ public class CreeperInvisible : Skill
     protected override IEnumerator PrepareJob()
     {
         ResetAltAbility();
-
-        _maxHealth = _player.Health.CurrentValue;
 
         switch (_isInvisible)
         {
@@ -129,7 +127,7 @@ public class CreeperInvisible : Skill
         }
         else if (!_isInvisible)
         {
-            yield return new WaitForSeconds(10f);
+            yield return new WaitForSeconds(5f);
 
             Debug.Log("CreeperInvisible / else if (invisible)");
 
@@ -180,12 +178,15 @@ public class CreeperInvisible : Skill
     private void CheckCurrentHealthPlayer()
     {
         _currentHealth = _player.Health.CurrentValue;
+        Debug.Log("_currentHealth = " + _currentHealth);
 
-        if (_currentHealth < _maxHealth)
+        if (_currentHealth < _previousHealth)
         {
             ExitingInvisible();
-            return;
         }
+
+        _previousHealth = _currentHealth;
+        Debug.Log("PreviousHealth = " + _previousHealth);
     }
 
     #region Coroutines
@@ -196,9 +197,9 @@ public class CreeperInvisible : Skill
         {
             _isEnemy = false;
 
-            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(_player.transform.position, _distanceWithoutEnemies, _targetsLayers);
+            Collider[] hitEnemies = Physics.OverlapSphere(_player.transform.position, _distanceWithoutEnemies, _targetsLayers);
 
-            foreach (Collider2D enemy in hitEnemies)
+            foreach (Collider enemy in hitEnemies)
             {
                 if (enemy != null)
                 {
@@ -224,7 +225,7 @@ public class CreeperInvisible : Skill
 
     private IEnumerator ExitFromInvisible()
     {
-        while (!_isCanExitInvisible)
+        while (_isCanExitInvisible == false)
         {
             if (Input.GetMouseButton(2))
             {
@@ -252,7 +253,7 @@ public class CreeperInvisible : Skill
 
         RpcApplyInvis();
 
-        //RpcReducingTransparencySpritePlayer(player);
+        RpcMakeTransparentMaterialsPlayer(player);
 
         _player.CharacterState.AddState(States.CreeperInvisible, 0, 0, _player.gameObject, Name);
     }
@@ -260,12 +261,11 @@ public class CreeperInvisible : Skill
     [Command]
     private void CmdRemoveInvisible(GameObject player, bool creeperStrikeIsHit)
     {
-        // Debug.Log("CreeperInvisible / CmdRemoveInvisible");
         _isInvisible = false;
         _isPlayerSeen = true;
         _isDamagedPlayer = false;
 
-        //RpcIncreasingTransparencySpritePlayer(player);
+        RpcReturnTransparencyMaterialsPlayer(player);
 
         RpcRemoveInvisible(creeperStrikeIsHit);
     }
@@ -273,61 +273,105 @@ public class CreeperInvisible : Skill
     [Command]
     private void CmdTransparentPoisonsIncreaseManaCots()
     {
-        //_transparentPoisons.IncreaseManaCost();
+        _transparentPoisons.IncreaseManaCost();
     }
 
     #endregion
 
     #region RpcMethods
 
-    /* These Methods make the player invisible
     [ClientRpc]
-    private void RpcReducingTransparencySpritePlayer(GameObject player)
+    private void RpcMakeTransparentMaterialsPlayer(GameObject player)
     {
+        var playerLayer = player.layer;
+
         player.GetComponent<Character>().IsInvisible = true;
 
-        MeshRenderer playerSprite = player.GetComponentInChildren<MeshRenderer>();
+        SkinnedMeshRenderer playerRenderer = player.GetComponentInChildren<SkinnedMeshRenderer>();
+        Dictionary<Material, Color> playerMaterial = new Dictionary<Material, Color>();
 
-        Color newPlayerSpriteTransparency = playerSprite.material.color;
-          
-
-        int playerLayer = player.layer;
+        foreach (Material materialPlayer in playerRenderer.materials)
+        {
+            if (playerMaterial.ContainsKey(materialPlayer) == false)
+                playerMaterial.Add(materialPlayer, materialPlayer.color);
+        }
 
         if (playerLayer == LayerMask.NameToLayer("Allies"))
         {
-            newPlayerSpriteTransparency.a = 0.5f;
-            _playerRenderer.material.color = new Color(playerSprite.material.color.r, playerSprite.material.color.g, playerSprite.material.color.b, newPlayerSpriteTransparency.a);
+            foreach (Material mat in playerRenderer.materials)
+            {
+                if (mat != null && playerMaterial.TryGetValue(mat, out Color matColor))
+                {
+                    var matColorAlpha = matColor;
+                    matColorAlpha.a = 0.5f;
+
+                    mat.color = new Color(matColor.r, matColor.g, matColor.b, matColorAlpha.a);
+                }
+            }
         }
         else if (playerLayer == LayerMask.NameToLayer("Enemy"))
         {
-            newPlayerSpriteTransparency.a = 0.0f;
-            _playerRenderer.material.color = new Color(playerSprite.material.color.r, playerSprite.material.color.g, playerSprite.material.color.b, newPlayerSpriteTransparency.a);
+            foreach (Material mat in playerRenderer.materials)
+            {
+                if (mat != null && playerMaterial.TryGetValue(mat, out Color matColor))
+                {
+                    var matColorAlpha = matColor;
+                    matColorAlpha.a = 0.0f;
+
+                    mat.color = new Color(matColor.r, matColor.g, matColor.b, matColorAlpha.a);
+                }
+            }
         }
+
+        playerMaterial.Clear();
     }
 
     [ClientRpc]
-    private void RpcIncreasingTransparencySpritePlayer(GameObject player)
+    private void RpcReturnTransparencyMaterialsPlayer(GameObject player)
     {
-        player.GetComponent<Character>().IsInvisible = false;
+        var playerLayer = player.layer;
 
-        MeshRenderer playerSprite = player.GetComponentInChildren<MeshRenderer>();
+        player.GetComponent<Character>().IsInvisible = true;
 
-        Color newPlayerSpriteTransparency = playerSprite.material.color;
+        SkinnedMeshRenderer playerRenderer = player.GetComponentInChildren<SkinnedMeshRenderer>();
+        Dictionary<Material, Color> playerMaterial = new Dictionary<Material, Color>();
 
-        int playerLayer = player.layer;
+        foreach (Material materialPlayer in playerRenderer.materials)
+        {
+            if (playerMaterial.ContainsKey(materialPlayer) == false)
+                playerMaterial.Add(materialPlayer, materialPlayer.color);
+        }
 
         if (playerLayer == LayerMask.NameToLayer("Allies"))
         {
-            newPlayerSpriteTransparency.a = 1f;
-            _playerRenderer.material.color = new Color(playerSprite.material.color.r, playerSprite.material.color.g, playerSprite.material.color.b, newPlayerSpriteTransparency.a);
+            foreach (Material mat in playerRenderer.materials)
+            {
+                if (mat != null && playerMaterial.TryGetValue(mat, out Color matColor))
+                {
+                    var matColorAlpha = matColor;
+                    matColorAlpha.a = 1f;
+
+                    mat.color = new Color(matColor.r, matColor.g, matColor.b, matColorAlpha.a);
+                }
+            }
         }
         else if (playerLayer == LayerMask.NameToLayer("Enemy"))
         {
-            newPlayerSpriteTransparency.a = 1f;
-            _playerRenderer.material.color = new Color(playerSprite.material.color.r, playerSprite.material.color.g, playerSprite.material.color.b, newPlayerSpriteTransparency.a);
+            foreach (Material mat in playerRenderer.materials)
+            {
+                if (mat != null && playerMaterial.TryGetValue(mat, out Color matColor))
+                {
+                    var matColorAlpha = matColor;
+                    matColorAlpha.a = 1f;
+
+                    mat.color = new Color(matColor.r, matColor.g, matColor.b, matColorAlpha.a);
+                }
+            }
         }
+
+        playerMaterial.Clear();
     }
-    */
+    
 
     [ClientRpc]
     private void RpcApplyInvis()
