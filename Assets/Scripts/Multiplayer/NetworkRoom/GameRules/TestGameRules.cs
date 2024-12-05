@@ -12,15 +12,16 @@ public class TestGameRules : GameRules
     [SerializeField] private bool isRemoveRoom = true;
 
     [Header("Team Settings")]
-    [SerializeField] private int maxScore = 2;
     [SerializeField] private int experiencePerWin = 6;
     [SerializeField] private int experiencePerLoss = 2;
     [SerializeField] private float bottleVolumePerWin = 1f / 3f;
 
-    private TeamsPanel _teams;
-    private int[] teamDeaths = new int[3];
-    private int team1Score = 0;
-    private int team2Score = 0;
+    private TeamsPanel _teams; // need rework
+    private int[] _teamDeaths = new int[3];
+
+    private int _teamMaxScore = 2;
+    private int _team1Score = 0;
+    private int _team2Score = 0;
 
     public override void GameStartServer(HeroSpawnManager spawnPoints)
     {
@@ -47,6 +48,24 @@ public class TestGameRules : GameRules
     protected override void OnPlayerDied(Character player)
     {
         AddExpForAllEnemy(player);
+        StartCoroutine(RevivalPlayerCoroutine(player));
+
+        switch (player.NetworkSettings.TeamIndex)
+        {
+            case 1:
+                _team1Score++;
+                SetSource(1, _team1Score);
+                break;
+
+            case 2:
+                _team2Score++;
+                SetSource(2, _team2Score);
+                break;
+
+            default:
+                Debug.LogError("Not found");
+                break;
+        }
         /*
         var playerSettings = _players.Find(p => p.gameObject == player);
         if (playerSettings == null || playerSettings.NetworkSettings.TeamIndex < 1 || playerSettings.NetworkSettings.TeamIndex > 2) return;
@@ -54,7 +73,6 @@ public class TestGameRules : GameRules
         teamDeaths[playerSettings.NetworkSettings.TeamIndex]++;
         CheckForRoundEnd();
         */
-        StartCoroutine(RevivalPlayerCoroutine(player));
     }
 
     private void CancelActiveSkills(Character playerSettings)
@@ -69,13 +87,13 @@ public class TestGameRules : GameRules
 
     private void CheckForRoundEnd()
     {
-        if (teamDeaths[1] == GetTeamCount(1) || teamDeaths[2] == GetTeamCount(2))
+        if (_teamDeaths[1] == GetTeamCount(1) || _teamDeaths[2] == GetTeamCount(2))
         {
-            team2Score += teamDeaths[1] == GetTeamCount(1) ? 1 : 0;
-            team1Score += teamDeaths[2] == GetTeamCount(2) ? 1 : 0;
+            _team2Score += _teamDeaths[1] == GetTeamCount(1) ? 1 : 0;
+            _team1Score += _teamDeaths[2] == GetTeamCount(2) ? 1 : 0;
 
-            Debug.Log($"Round Over! Team 1 Score: {team1Score}, Team 2 Score: {team2Score}");
-            if (team1Score >= maxScore || team2Score >= maxScore)
+            Debug.Log($"Round Over! Team 1 Score: {_team1Score}, Team 2 Score: {_team2Score}");
+            if (_team1Score >= _teamMaxScore || _team2Score >= _teamMaxScore)
             {
                 EndGame();
             }
@@ -97,7 +115,7 @@ public class TestGameRules : GameRules
 
         GameMode currentMode = ServerManager.Instance.CurrentGameMode;
         bool isMaxLevel = levelManager.GetCurrentLevel() >= LevelCharacterManager.Instance.MaxLevel;
-        bool isVictory = team1Score >= maxScore;
+        bool isVictory = _team1Score >= _teamMaxScore;
 
         switch (currentMode)
         {
@@ -139,8 +157,8 @@ public class TestGameRules : GameRules
 
     private void RestartRound()
     {
-        teamDeaths[1] = 0;
-        teamDeaths[2] = 0;
+        _teamDeaths[1] = 0;
+        _teamDeaths[2] = 0;
 
         if (isServer)
         {

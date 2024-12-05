@@ -2,6 +2,7 @@ using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public abstract class GameRules : NetworkBehaviour
 {
@@ -37,11 +38,19 @@ public abstract class GameRules : NetworkBehaviour
         StartCoroutine(WaitForSceneAndFindSpawnPoints());
     }
 
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        StartCoroutine(FoundGameManagerCorounite());
+    }
+
+    //perhaps this method only works on the first client, it's strange
     protected virtual void GameStatusHook(bool oldValue, bool newValue)
     {
         if (newValue)
         {
             GameStartClient();
+            //perhaps this method only works on the first client, it's strange
         }
     }
 
@@ -144,6 +153,22 @@ public abstract class GameRules : NetworkBehaviour
         }
     }
 
+    protected virtual void SetSource(int teamIndex, int source)
+    {
+        _gameManager.SourceUI.SetSource(teamIndex, source);
+        RpcSetSource(teamIndex, source);
+    }
+
+    [ClientRpc]
+    protected virtual void RpcSetSource(int teamIndex, int source)
+    {
+        Debug.LogError(_gameManager);
+        Debug.LogError(_gameManager.SourceUI);
+        Debug.LogError(teamIndex);
+        Debug.LogError(source);
+        _gameManager.SourceUI.SetSource(teamIndex, source);
+    }
+
     protected virtual void ResetAllPlayers()
     {
         foreach (var player in _players)
@@ -198,6 +223,15 @@ public abstract class GameRules : NetworkBehaviour
         foreach (var item in _players)
         {
             item.Died -= OnPlayerDied;
+        }
+    }
+
+    private IEnumerator FoundGameManagerCorounite()
+    {
+        while(_gameManager == null)
+        {
+            FindGameManager();
+            yield return new WaitForSecondsRealtime(0.5f);
         }
     }
 
