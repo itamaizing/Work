@@ -3,6 +3,7 @@ using Mirror;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 public abstract class Talent : MonoBehaviour
 {
@@ -107,37 +108,37 @@ public class TalentsGroup
         talent.SetActive(isActive);
     }
 
-    [Command]
+  /*  [Command]
     public void CmdActiveTalent(TalentData data, bool isActive)
     {
-        Debug.Log("CMD TALENT");
+      //  Debug.Log("CMD TALENT");
 		ActiveTalent(data, isActive);
-        ClientActivateTalent(data, isActive);
+        //ClientActivateTalent(data, isActive);
 	}
 
     [ClientRpc]
     public void ClientActivateTalent(TalentData data, bool isActive)
     {
-		Debug.Log("CLIENT TALENT");
+		//Debug.Log("CLIENT TALENT");
 		ActiveTalent(data, isActive);
     }
-
+    
     public void ActiveTalent(TalentData data, bool isActive)
     {
-		Debug.Log("Talent " + isActive+  " on " + data.Name);
+		Debug.Log("Talent " + isActive+  " on " + data.Name + " TEEEEEEEEST");
 		var talent = TalentsData.FirstOrDefault(a => a.Data == data);
         if(talent == null) return;
         
         if (isActive)
         {
-		//	Debug.Log("Talent activated on init " + talent.GetType().Name);
+		//	Debug.Log("Talent activated " + talent.GetType().Name);
 			talent.Enter();   
         }
         else
         {
             talent.Exit();
         }
-    }
+    }*/
 }
 
 public class TalentSystem : NetworkBehaviour
@@ -199,7 +200,32 @@ public class TalentSystem : NetworkBehaviour
         _talents[row].TalentsData[id].SetActive(value);
     }
 
+    public void SwitchTalent(int id, string talentName, bool isActive)
+    {
+        Debug.Log("ENTER TALETNS");
+		var talentGroup = Talents.FirstOrDefault(o => o.ID == id);
+		var talent = talentGroup?.TalentsData.FirstOrDefault(o => o.Data.Name == talentName);
+
+        if (isActive)
+            talent.Enter();
+        else
+            talent.Exit();
+	}
+
     [Command]
+    public void CmdSwitchTalent(int id, string talentName, bool isActive)
+    {
+		SwitchTalent(id, talentName, isActive);
+		ClientSwitchTalent(id, talentName, isActive);
+	}
+
+    [ClientRpc]
+	public void ClientSwitchTalent(int id, string talentName, bool isActive)
+	{
+		SwitchTalent(id, talentName, isActive);
+	}
+
+	[Command]
     public void CmdEnterAll()
     {
         EnterAll();

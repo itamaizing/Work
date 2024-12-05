@@ -68,13 +68,15 @@ public class TalentSaveManager
 
         if (needActive)
         {
-            // talentGroup.CmdActiveTalent(talent.Data, isActive == 1);
-            CmdActiveTalent(talentGroup, talent.Data, isActive == 1);
+            character.TalentManager.CmdSwitchTalent(idGroup, idTalent, isActive == 1);
+			// talentGroup.CmdActiveTalent(talent.Data, isActive == 1);
+			//talentGroup.ClientActivateTalent(talent.Data, isActive == 1);
+			//CmdActiveTalent(talentGroup, talent.Data, isActive == 1);
 
 		}
     }
 
-    [Command]
+  /*  [Command]
     private void CmdActiveTalent(TalentsGroup group, TalentData data, bool isActive)
     {
 		Debug.Log("CMD TALENT");
@@ -88,7 +90,7 @@ public class TalentSaveManager
 	{
 		Debug.Log("CLIENT TALENT");
 		group.ActiveTalent(data, isActive);
-	}
+	}*/
 
 	public void SaveAllTalents(HeroComponent character, int saveGroup)
     {
