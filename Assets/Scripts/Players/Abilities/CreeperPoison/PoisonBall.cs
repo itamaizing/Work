@@ -129,7 +129,6 @@ public class PoisonBall : Skill, IAltAbility
     private Coroutine _secondClickCoroutine;
     private Coroutine _thirdClickCoroutine;
     private Coroutine _mouseDetectionCoroutine;
-    private Coroutine _lookAtPositionCoroutine;
     private Coroutine _checkingTalentsCoroutine;
     private Coroutine _setSpawnPointCoroutine;
     private Coroutine _checkTimerActiveCoroutine;
@@ -150,6 +149,11 @@ public class PoisonBall : Skill, IAltAbility
     public event Action AbilityChange;
 
     #endregion
+
+    public void PayCostPoisonBall()
+    {
+        TryPayCost(true);
+    }
 
     private void Start()
     {
@@ -175,11 +179,6 @@ public class PoisonBall : Skill, IAltAbility
     }
 
     #region PrepareAndStartJob
-
-    public void PayCostPoisonBall()
-    {
-        TryPayCost(true);
-    }
 
     protected override void ClearData()
     {
@@ -231,7 +230,6 @@ public class PoisonBall : Skill, IAltAbility
                 }
                 else
                 {
-                    _lookAtPositionCoroutine = StartCoroutine(LookAtPositionJob());
                     _isTarget = false;
                 }
 
@@ -329,21 +327,6 @@ public class PoisonBall : Skill, IAltAbility
         {
             StopCoroutine(_thirdClickCoroutine);
             _thirdClickCoroutine = null;
-        }
-
-        if (_lookAtPositionCoroutine != null)
-        {
-            StopCoroutine(_lookAtPositionCoroutine);
-            _lookAtPositionCoroutine = null;
-        }
-    }
-
-    private IEnumerator LookAtPositionJob()
-    {
-        while (_isAbilityActive)
-        {
-            _player.Move.LookAtPosition(_firstMousePosition);
-            yield return null;
         }
     }
 

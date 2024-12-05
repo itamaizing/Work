@@ -166,15 +166,6 @@ public class CreeperInvisible : Skill
         CheckCurrentHealthPlayer();
     }
 
-    private void ResetAltAbility()
-    {
-        if (_spitPoison != null && _poisonBall != null)
-        {
-            _spitPoison.IsAltAbility = false;
-            _poisonBall.IsAltAbility = false;
-        }
-    }
-
     private void CheckCurrentHealthPlayer()
     {
         _currentHealth = _player.Health.CurrentValue;
@@ -182,11 +173,21 @@ public class CreeperInvisible : Skill
 
         if (_currentHealth < _previousHealth)
         {
-            ExitingInvisible();
+            if (isServer == false)
+                ExitingInvisible();
         }
 
         _previousHealth = _currentHealth;
         Debug.Log("PreviousHealth = " + _previousHealth);
+    }
+
+    private void ResetAltAbility()
+    {
+        if (_spitPoison != null && _poisonBall != null)
+        {
+            _spitPoison.IsAltAbility = false;
+            _poisonBall.IsAltAbility = false;
+        }
     }
 
     #region Coroutines
