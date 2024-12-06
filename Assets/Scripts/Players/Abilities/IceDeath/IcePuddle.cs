@@ -194,13 +194,12 @@ public class IcePuddle : Skill
 	}*/
 
 	[Command]
-	private void CmdCreateProjecttile(float angle, float manaValue, Vector3 position, bool lastHit)
+	private void CmdCreateProjecttile(float angle, float manaValue, Vector3 position, bool lastHit, bool talentEvade, bool talentFrostingFrozen)
 	{
 		IcePuddleObject projectile = Instantiate(_puddle, position, Quaternion.Euler(-90, -angle, 0));
 		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
 		projectile.Init(_playerLinks, manaValue, lastHit, this);
-		projectile.SetTalents(_talentEvadeDadBoost, _talentFrostingFrozen);
-
+		projectile.SetTalents(talentEvade, talentFrostingFrozen);
 		NetworkServer.Spawn(projectile.gameObject);
 
 		RpcInit(projectile.gameObject, manaValue, lastHit);
@@ -274,6 +273,7 @@ public class IcePuddle : Skill
 		var direction = (worldPosition - gameObject.transform.position).normalized;
 		return transform.position + direction * length;*/
 	}
+
 	private void Timer()
 	{
 		if(_lastHit) 
@@ -345,8 +345,7 @@ public class IcePuddle : Skill
 
 		Buff.AttackSpeed.IncreasePercentage(1 + _seriesOfStrikes.GetMultipliedSpeed() / 100);
 
-		Debug.Log("test spawn");
-		CmdCreateProjecttile(_angle3, _timeToDestroy, _preViewPuddle.transform.position, _lastHit);
+		CmdCreateProjecttile(_angle3, _timeToDestroy, _preViewPuddle.transform.position, _lastHit, _talentEvadeDadBoost, _talentFrostingFrozen);
 	}
 
 	public void SetTalentPuddleSize(bool active)

@@ -201,6 +201,7 @@ public class SeriesOfStrikes : MonoBehaviour
 
 	public void TalentBoostMultiplier(float multiplier)
 	{
+		
 		_speedMultiplier = multiplier;
 	}
 

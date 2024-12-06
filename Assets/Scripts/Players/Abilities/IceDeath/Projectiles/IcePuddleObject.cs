@@ -91,11 +91,12 @@ public class IcePuddleObject : Projectiles
 					_targets.Remove(_targets[i]);
 				}
 			}
-
+			Debug.Log(_talentEvadeDadBoost + " Talent");
 			if (_talentEvadeDadBoost)
 			{
-				_curEvade = -3;
-				_dad.Health.SetEvadeAll(-3);
+				SetEvade(_dad.gameObject, -_curEvade);
+				_curEvade = 0;
+				//_dad.Health.SetEvadeAll(-3);
 			}
 		}
 	}
@@ -123,11 +124,14 @@ public class IcePuddleObject : Projectiles
 			{
 				target.CharacterState.AddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
 			}
+
+			Debug.Log(_talentEvadeDadBoost + " Talent");
 			if (_talentEvadeDadBoost)
 			{
-				//Debug.LogError("fix");
+				Debug.Log("EVADEBOOST SERVER");
 				_curEvade = 3;
-				_dad.Health.SetEvadeAll(3);
+				SetEvade(_dad.gameObject, _curEvade);
+				//_dad.Health.SetEvadeAll(3);
 			}
 			_targets.Add(enemy);
 		}
@@ -140,9 +144,10 @@ public class IcePuddleObject : Projectiles
 			GameObject hitEffect = Instantiate(_hitEffect, transform.position, Quaternion.identity);
 			Destroy(hitEffect, 5f);
 		}
-		Debug.LogError("fix");
-		//_healthComponent.SetBoostRegen2(0);
-		for(int i = _targets.Count - 1; i >= 0; i--) 
+		SetEvade(_dad.gameObject, -_curEvade);
+		_curEvade = 0;
+		//_dad.Health.SetEvadeAll(-_curEvade);
+		for (int i = _targets.Count - 1; i >= 0; i--) 
 		{
 			_targets[i].enemy.CharacterState.CmdRemoveState(States.Frosting);
 			_targets.Remove(_targets[i]);
@@ -158,6 +163,7 @@ public class IcePuddleObject : Projectiles
 		//turn off energy boost
 		//destroy
 	}
+
 	private IEnumerator StartFade()
 	{
 		yield return new WaitForSeconds(_timeToDestroy-2);
@@ -170,6 +176,22 @@ public class IcePuddleObject : Projectiles
 	{
 		yield return new WaitForSeconds(1);
 		enemy.CharacterState.AddState(States.Frosting, duration, 0, _dad.gameObject, _skill.name);
+	}
+
+	[ClientRpc]
+	private void ClientRpcSetEvade(GameObject player, float value)
+	{
+		Debug.Log(value + " EVADERPC");
+		var health = player.GetComponent<Health>();
+		health.SetEvadeAll(value);
+	}
+	private void SetEvade(GameObject player, float value)
+	{
+		Debug.Log(value + " EVADE");
+		var health = player.GetComponent<Health>();
+		health.SetEvadeAll(value);
+
+		ClientRpcSetEvade(player, value);
 	}
 }
 
