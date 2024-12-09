@@ -169,7 +169,6 @@ public class CreeperInvisible : Skill
     private void CheckCurrentHealthPlayer()
     {
         _currentHealth = _player.Health.CurrentValue;
-        Debug.Log("_currentHealth = " + _currentHealth);
 
         if (_currentHealth < _previousHealth)
         {
@@ -178,7 +177,6 @@ public class CreeperInvisible : Skill
         }
 
         _previousHealth = _currentHealth;
-        Debug.Log("PreviousHealth = " + _previousHealth);
     }
 
     private void ResetAltAbility()

@@ -65,6 +65,10 @@ public class PoisonBoneState : AbstractCharacterState
                         _creeperStrike = creeperStrike;
                         _creeperStrike.PoisonBoneStack = CurrentStacksCount;
                     }
+                    else
+                    {
+                        _creeperStrike.PoisonBoneStack = CurrentStacksCount;
+                    }
                 }
                 if (ability is SpitPoison spitPoison)
                 {

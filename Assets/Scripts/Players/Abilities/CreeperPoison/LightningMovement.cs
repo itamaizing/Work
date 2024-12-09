@@ -37,6 +37,7 @@ public class LightningMovement : Skill
 
     private Vector3 _firstLeapPoint = Vector3.positiveInfinity;
     private Vector3 _secondLeapPoint;
+    private Vector3 _startPosition;
     private Vector3 _firstLeapPointIfIsObstacle;
     private Vector3 _secondLeapPointIfIsObstacle;
 
@@ -66,9 +67,14 @@ public class LightningMovement : Skill
 
     #endregion
 
+    private float _animTime;
+    private float _baseAnimationMultiplierSpeed = 1f;
     private float _baseRangeLeap;
     private float _multiplierLeap = 1f;
     private float _heatedGlandsDuration = 4f;
+    private float _radiusChecking = 1.5f;
+    private float _baseCooldownTime;
+    private float _reducingCooldownMultiplier = 2f;
 
     #region BoolVariables
 
@@ -88,13 +94,24 @@ public class LightningMovement : Skill
     public float DurationLeap => _durationLeap;
     public bool IsInMovement { get => _isInMovement; }
     public Character Target { get => _targetForApplyDamage; }
-    protected override int AnimTriggerCast => 0;
+
+    protected override int AnimTriggerCast => Animator.StringToHash("LightningMovementCastAnim");
     protected override int AnimTriggerCastDelay => 0;
     protected override bool IsCanCast => CheckCanCast();
 
     #endregion
 
     #region PrepareAndStartJob
+
+    public void AnimLightningMovementCast()
+    {
+        AnimStartCastCoroutine();
+    }
+
+    public void AnimLightningMovementCastEnd()
+    {
+            AnimCastEnded();
+    }
 
     protected override void ClearData()
     {
@@ -108,6 +125,7 @@ public class LightningMovement : Skill
 
         _firstLeapPoint = Vector3.positiveInfinity;
         _secondLeapPoint = Vector3.zero;
+        _startPosition = Vector3.zero;
         _firstLeapPointIfIsObstacle = Vector3.zero;
         _secondLeapPointIfIsObstacle = Vector3.zero;
 
@@ -142,6 +160,70 @@ public class LightningMovement : Skill
             _isAbilityDone = false;
             Invoke("ResetBools", timer);
         }
+    }
+
+    protected override IEnumerator PrepareJob()
+    {
+        ReturnCooldown();
+
+        _baseRangeLeap = _rangeLeap;
+
+        StopAutoDraw();
+        _renderLineForFirstLeapCoroutine = StartCoroutine(RenderLineForFirstLeapJob(_castLength, _castWidth, _line));
+
+        if (_heatedGlands.Data.IsOpen)
+        {
+            _heatedGlandsIsActive = _heatedGlands.Data.IsOpen;
+        }
+
+        while (_target == null && float.IsPositiveInfinity(_firstLeapPoint.z))
+        {
+            if (GetMouseButton)
+            {
+                yield return _firstPointForLeapCoroutine = StartCoroutine(FirstVectorForLeap());
+                IsEnemyBeforePlayer();
+
+                if (_isFirstClickDone && _isTarget)
+                {
+                    yield return _midPointForLeapCoroutine = StartCoroutine(MidpointForRenderingSecondLeap(_firstLeapPoint));
+                }
+            }
+            yield return null;
+        }
+    }
+
+    protected override IEnumerator CastJob()
+    {
+        if (_isFirstClickDone && !_isTarget)
+        {
+            if (IsObstacle(transform.position, _firstLeapPoint))
+            {
+                _firstLeapPoint = _firstLeapPointIfIsObstacle;
+            }
+
+            SingleLeap(_firstLeapPoint);
+        }
+        else if (_isFirstClickDone && _isSecondClickDone && _isTarget)
+        {
+            _applyDamageCoroutine = StartCoroutine(ApplyDamageJob(_targetsLayers, _radiusAttack, _durationLeap * _rangeLeap));
+
+            if (IsObstacle(transform.position, _firstLeapPoint))
+            {
+                _firstLeapPoint = _firstLeapPointIfIsObstacle;
+                SingleLeap(_firstLeapPoint);
+            }
+            else
+            {
+                if (IsObstacle(_firstLeapPoint, _secondLeapPoint))
+                {
+                    _secondLeapPoint = _secondLeapPointIfIsObstacle;
+                }
+
+                ExecuteLeaps(_firstLeapPoint, _secondLeapPoint);
+            }
+        }
+
+        yield return null;
     }
 
     private void ResetBools()
@@ -181,67 +263,33 @@ public class LightningMovement : Skill
 
     }
 
-    protected override IEnumerator PrepareJob()
+    private void ReducingCooldown()
     {
-        _baseRangeLeap = _rangeLeap;
+        _baseCooldownTime = _cooldownTime;
 
-        StopAutoDraw();
-        _renderLineForFirstLeapCoroutine = StartCoroutine(RenderLineForFirstLeapJob(_castLength, _castWidth, _line));
+        _cooldownTime /= _reducingCooldownMultiplier;
 
-        if (_heatedGlands.Data.IsOpen)
-        {
-            _heatedGlandsIsActive = _heatedGlands.Data.IsOpen;
-        }
-
-        while (_target == null && float.IsPositiveInfinity(_firstLeapPoint.z))
-        {
-            if (GetMouseButton)
-            {
-                yield return _firstPointForLeapCoroutine = StartCoroutine(FirstVectorForLeap());
-                IsEnemyBeforePlayer();
-
-                if (_isFirstClickDone && _isTarget)
-                {
-                    yield return _midPointForLeapCoroutine = StartCoroutine(MidpointForRenderingSecondLeap(_firstLeapPoint));
-                }
-            }
-            yield return null;
-        }
-
+        Debug.Log("Reducing cooldownTime = " + _cooldownTime);
     }
 
-    protected override IEnumerator CastJob()
+    private void ReturnCooldown()
     {
-        if (_isFirstClickDone && !_isTarget)
+        _cooldownTime = _baseCooldownTime;
+
+        Debug.Log("Return cooldownTime = " + _cooldownTime);
+    }
+
+    private float GetAnimationClipLength()
+    {
+        RuntimeAnimatorController animController = _player.Animator.runtimeAnimatorController;
+        foreach (var clip in animController.animationClips)
         {
-            if (IsObstacle(transform.position, _firstLeapPoint))
+            if (clip.name == "LightningMovementCastAnim")
             {
-                _firstLeapPoint = _firstLeapPointIfIsObstacle;
-            }
-
-            SingleLeap(_firstLeapPoint);
-        }
-        else if (_isFirstClickDone && _isSecondClickDone && _isTarget)
-        {
-            _applyDamageCoroutine = StartCoroutine(ApplyDamageJob(_targetsLayers, _radiusAttack, _durationLeap * _rangeLeap));
-
-            if (IsObstacle(transform.position, _firstLeapPoint))
-            {
-                _firstLeapPoint = _firstLeapPointIfIsObstacle;
-                SingleLeap(_firstLeapPoint);
-            }
-            else
-            {
-                if (IsObstacle(_firstLeapPoint, _secondLeapPoint))
-                {
-                    _secondLeapPoint = _secondLeapPointIfIsObstacle;
-                }
-
-                ExecuteLeaps(_firstLeapPoint, _secondLeapPoint);
+                return clip.length;
             }
         }
-
-        yield return null;
+        return -1f;
     }
 
     #endregion
@@ -259,42 +307,40 @@ public class LightningMovement : Skill
 
     private Vector3 LimitSecondLeapToMaxDistance(Vector3 startPoint, Vector3 targetPoint, float maxDistance)
     {
-        Vector3 centerTarget;
+        Vector3 centerTarget = Vector3.zero;
         Vector3 newPoint;
 
         Vector3 direction = (targetPoint - startPoint).normalized;
 
+        float multiplierDistance = 1.08f;
         float dividerForMultiplier = 10f;
-        float coefficientForMultiplier = 0.5f;
 
         if (_isTargetOnEndPointCoroutine == null)
         {
             _isTargetOnEndPointCoroutine = StartCoroutine(IsTargetOnEndPoint());
         }
 
-        if (_target != null)
-        {
-            centerTarget = _target.GetComponent<Character>().Collider.bounds.center;
-        }
-        else
-        {
-            centerTarget = Vector3.zero;
-        }
-
-        bool isPointBehindCenterTarget = Vector3.Distance(startPoint, targetPoint) > Vector3.Distance(startPoint, centerTarget);
-
         if (_isTargetOnEndPointSecondLeap)
         {
-            if (isPointBehindCenterTarget)
-            {// Точка прыжка за серединой врага
-                maxDistance += 1.5f;
-            }
-            else
-            {// Точка прыжка перед серединой врага
-                maxDistance += 2.8f;
+            if (_target != null)
+            {
+                centerTarget = _target.GetComponent<Character>().Collider.bounds.center;
             }
 
-            _multiplierLeap = (maxDistance / dividerForMultiplier) + coefficientForMultiplier;
+            bool isPointBehindCenterTarget = Vector3.Distance(startPoint, targetPoint) > Vector3.Distance(startPoint, centerTarget);
+
+            if (isPointBehindCenterTarget)
+            {
+                maxDistance *= multiplierDistance;
+            }
+            else
+            {
+                maxDistance /= multiplierDistance;
+            }
+
+            _multiplierLeap = maxDistance / dividerForMultiplier;
+
+            Debug.Log("MultiplierLeap = " + _multiplierLeap);
 
             newPoint = startPoint + (direction * maxDistance);
             newPoint.y = 0;
@@ -303,12 +349,9 @@ public class LightningMovement : Skill
         }
         else
         {
-            _multiplierLeap = (maxDistance / dividerForMultiplier) + coefficientForMultiplier;
+            _multiplierLeap = maxDistance / dividerForMultiplier;
 
-            newPoint = startPoint + (direction * maxDistance);
-            newPoint.y = 0;
-
-            return newPoint;
+            return startPoint;
         }
     }
 
@@ -365,9 +408,9 @@ public class LightningMovement : Skill
 
     private IEnumerator IsTargetOnEndPoint()
     {
-        while (true)
+        while (_isAbilityDone == false)
         {
-            Collider[] enemies = Physics.OverlapSphere(_firstLeapPoint, _radiusAttack, _targetsLayers);
+            Collider[] enemies = Physics.OverlapSphere(_firstLeapPoint, _radiusChecking, _targetsLayers);
             if (enemies.Length > 0)
             {
                 foreach (Collider target in enemies)
@@ -535,6 +578,8 @@ public class LightningMovement : Skill
                 _isFirstClickDone = true;
                 _firstLeapPoint = LimitFirstLeapToMaxDistance(transform.position, rawFirstLeapPoint, _rangeLeap);
                 _firstLeapPoint.y = 0;
+
+                _startPosition = _player.transform.position;
             }
             yield return null;
         }
@@ -547,6 +592,11 @@ public class LightningMovement : Skill
             if (Input.GetMouseButtonDown(0))
             {
                 Vector3 rawSecondLeapPoint = GetMousePoint();
+
+                if (Vector3.Distance(rawSecondLeapPoint, _startPosition) <= 1f)
+                {
+                    ReducingCooldown();
+                }
 
                 _isSecondClickDone = true;
                 _secondLeapPoint = LimitSecondLeapToMaxDistance(_firstLeapPoint, rawSecondLeapPoint, _rangeLeap);

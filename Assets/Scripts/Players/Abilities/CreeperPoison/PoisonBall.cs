@@ -101,7 +101,6 @@ public class PoisonBall : Skill, IAltAbility
     private float _baseCastWidth;
     private float _multiplierForPushDistance;
     private float _animTime;
-    private float _baseAnimTime = 1f;
     private float _baseMultiplierAnimationSpeed = 1f;
 
     #region BoolVariables
