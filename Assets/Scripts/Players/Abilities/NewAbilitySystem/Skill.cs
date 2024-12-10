@@ -412,6 +412,7 @@ public abstract class Skill : NetworkBehaviour
     protected virtual void AnimCastEnded()
     {
         _isPlayCastAnim = false;
+        Debug.Log("Skill / isPlayCastAnim = " + _isPlayCastAnim);
     }
 
     protected virtual IEnumerator DynamicRendererJob(float time = 0.2f)
