@@ -66,7 +66,6 @@ public class LightningMovement : Skill
     private Coroutine _applyDamageCoroutine;
     private Coroutine _timerForEndCastCoroutine;
 
-
     #endregion
 
     private float _animTime;
@@ -206,7 +205,7 @@ public class LightningMovement : Skill
             yield return null;
         }
 
-        //SetAnimMultiplierSpeed();
+        SetAnimMultiplierSpeed();
         _player.Animator.applyRootMotion = true;
 
         AnimLightningMovementCast();
@@ -306,7 +305,7 @@ public class LightningMovement : Skill
         if (_animTime > 0)
         {
             float multiplierSpeed = _durationLeap;
-            float animMultiplierSpeed = _animTime / multiplierSpeed + 1f;
+            float animMultiplierSpeed = _animTime / multiplierSpeed;
             Debug.Log("AnimMultiplierSpeed = " + animMultiplierSpeed);
             _player.Animator.SetFloat("LightningMovementMultiplierSpeedAnimation", animMultiplierSpeed);
         }
@@ -791,7 +790,7 @@ public class LightningMovement : Skill
         
         _player.CharacterState.AddState(States.Immateriality, _durationLeap, 0, _player.gameObject, Name);
 
-        StartTimerCoroutine(durationLeap);
+        StartTimerCoroutine(durationLeap + 0.2f);
 
         playerTransform.TargetRpcDoMove(firstLeapPoint, (durationLeap * rangeLeap / GlobalVariable.cellSize));
     }
@@ -846,10 +845,11 @@ public class LightningMovement : Skill
                 playerCharacter.CharacterState.CmdAddState(States.HeatedGlands, heatedGlandsDuration, 0, _player.gameObject, null);
             }
 
-            player.transform.LookAt(firstLeapPoint);
+            playerCharacter.transform.LookAt(firstLeapPoint);
 
-            playerCharacter.Rb.DOMove(firstLeapPoint, (durationLeap * rangeLeap / GlobalVariable.cellSize));
+            playerCharacter.Rb.DOMove(firstLeapPoint, (durationLeap * rangeLeap / GlobalVariable.cellSize)).SetEase(Ease.OutSine);
             Debug.Log("LightningMovement / RpcTwoLeaps / first Callback");
+
         }).AppendInterval(interval);
 
         leapSequence.AppendCallback(() =>
@@ -859,13 +859,13 @@ public class LightningMovement : Skill
                 playerCharacter.CharacterState.CmdAddState(States.HeatedGlands, heatedGlandsDuration, 0, _player.gameObject, null);
             }
 
-            player.transform.LookAt(secondLeapPoint);
+            playerCharacter.transform.LookAt(secondLeapPoint);
 
-            playerCharacter.Rb.DOMove(secondLeapPoint, (durationLeap * rangeLeap / GlobalVariable.cellSize));
+            playerCharacter.Rb.DOMove(secondLeapPoint, (durationLeap * rangeLeap / GlobalVariable.cellSize)).SetEase(Ease.OutSine);
             Debug.Log("LightningMovement / RpcTwoLeaps / second Callback");
 
             if (_timerForEndCastCoroutine == null)
-                _timerForEndCastCoroutine = StartCoroutine(TimerForEndCast(durationLeap));
+                _timerForEndCastCoroutine = StartCoroutine(TimerForEndCast(durationLeap + multiplierLeap));
         });
     }
 }
