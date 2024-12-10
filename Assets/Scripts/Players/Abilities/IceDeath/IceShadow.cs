@@ -141,7 +141,16 @@ public class IceShadow : Skill
 	{
 		if (IsHaveResourceOnSkill)
 		{
-			if (!_evaded || _talentEvade)
+			if (_evaded && _talentEvade)
+			{
+				/*foreach (var skillCost in _skillEnergyCosts)
+				{
+					var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
+					resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
+				}*/
+				_evaded = false;
+			}
+			else
 			{
 				foreach (var skillCost in _skillEnergyCosts)
 				{
@@ -150,6 +159,7 @@ public class IceShadow : Skill
 				}
 				_evaded = false;
 			}
+
 			if (startCooldown)
 				IncreaseSetCooldown(CooldownTime);
 

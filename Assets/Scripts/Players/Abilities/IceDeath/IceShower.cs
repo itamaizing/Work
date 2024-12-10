@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class IceShower : Skill
 {
+	[SerializeField] private IceShowerProjectile _projectile;
 	[SerializeField] private SkillRenderer _skillRenderer;
 	[SerializeField] private HeroComponent _playerLinks;
 	[SerializeField] private SeriesOfStrikes _combo;
@@ -13,6 +15,9 @@ public class IceShower : Skill
 	private Energy _energy;
 	private float _duration = 2;
 	private float _damageToexit = 1;
+	private bool _frozwenTalent;
+	private bool _boostDmg;
+
 	protected override bool IsCanCast => true;
 
 	protected override int AnimTriggerCastDelay => 0;
@@ -56,12 +61,50 @@ public class IceShower : Skill
 	{
 		//DrawDamageZone(_targetPoint);
 
-		ApplyDamageToEnemiesInZone();
+		//ApplyDamageToEnemiesInZone();
 		//StopDamageZone();
+		Shoot();
 		yield return null;
 	}
 
-	private void ApplyDamageToEnemiesInZone()
+	private void Shoot()
+	{
+		Buff.AttackSpeed.ReductionPercentage(1 + _combo.GetMultipliedSpeed() / 100);
+
+		//Vector3 lookDir = _mousePos - _playerLinks.transform.position;
+		//float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
+		if (_combo.MakeHit(null, AbilityForm.Magic, 1, 0, 0))
+		{
+			Debug.LogError("some talents i guess in ice cloud");
+			//_playerLinks.RuneComponent.IceCloudBonus();
+		}
+
+		Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);
+		_targetPoint.y += 5;
+		CmdCreateProjecttile(_targetPoint, _energy.CurrentValue);
+		ClearData();
+	}
+
+	[Command]
+	private void CmdCreateProjecttile(Vector3 position, float manaValue)
+	{
+		IceShowerProjectile projectile = Instantiate(_projectile, position, Quaternion.Euler(0, 0, 0));
+		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
+		projectile.Init(_playerLinks, manaValue, false, this);
+		projectile.Talent(_boostDmg, _frozwenTalent);
+
+		NetworkServer.Spawn(projectile.gameObject);
+
+		RpcInit(projectile.gameObject, manaValue);
+	}
+
+	[ClientRpc]
+	private void RpcInit(GameObject obj, float manaValue)
+	{
+		obj.GetComponent<IceShowerProjectile>().Init(_playerLinks, manaValue, false, this);
+	}
+
+	/*private void ApplyDamageToEnemiesInZone()
 	{
 		//CircleArea damageZone = _skillRenderer.TempDamageZone;
 
@@ -107,7 +150,7 @@ public class IceShower : Skill
 
 	}
 
-	/*private float CalculateDamage(float baseDamage)
+	private float CalculateDamage(float baseDamage)
 	{
 		bool isCriticalHit = Random.Range(0f, 100f) <= criticalChance;
 
@@ -117,7 +160,7 @@ public class IceShower : Skill
 		}
 
 		return baseDamage;
-	}*/
+	}
 
 	private void ApplyDamage(float damage, DamageType damageType, Character target)
 	{
@@ -129,14 +172,14 @@ public class IceShower : Skill
 		};
 		Debug.Log("DAMAGE");
 		CmdApplyDamage(_damage, target.gameObject);
-	}
+	}*/
 
 	protected override void ClearData()
 	{
 		_targetPoint = Vector3.positiveInfinity;
 	}
 
-	public void TalentBoostFrozenState(bool value)
+	/*public void TalentBoostFrozenState(bool value)
 	{
 		if(value)
 		{
@@ -146,5 +189,15 @@ public class IceShower : Skill
         {
 			_damageToexit = 1;
         }
-    }
+    }*/
+
+	public void TalentBoostDmg(bool value)
+	{
+		_boostDmg = value;
+	}
+
+	public void TalentBoostFrozenState(bool value)
+	{
+		_frozwenTalent = value;
+	}
 }

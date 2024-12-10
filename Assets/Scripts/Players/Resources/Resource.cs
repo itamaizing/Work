@@ -33,6 +33,7 @@ public abstract class Resource : NetworkBehaviour
     public event Action<float, float> MaxValueChanged;
     public event Action<float, float> ValueChanged;
     public event Action<float> PhantomValueShown;
+    public event Action<Color> ChangedBarColor;
 
 	private void Awake()
 	{
@@ -75,6 +76,11 @@ public abstract class Resource : NetworkBehaviour
     public void PhantomValueShow(float value)
     {
         PhantomValueShown?.Invoke(value);
+    }
+
+    public void ChangeBarColor(Color color)
+    {
+        ChangedBarColor?.Invoke(color);
     }
 
 	protected virtual void HookValueChanged(float oldValue, float newValue)

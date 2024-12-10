@@ -20,6 +20,7 @@ public class Bar : MonoBehaviour
 	[SerializeField] protected float _ShowSpeed = 0.5f;
 	[SerializeField] protected bool _showText = true;
 	[SerializeField] protected TMP_Text _barText;
+	[SerializeField] protected Image _barImage;
 
 	protected float _currentValue;
 	protected float _healthBarTarget;
@@ -36,6 +37,7 @@ public class Bar : MonoBehaviour
 			_resource.ValueChanged -= OnValueChanged;
 			_resource.PhantomValueShown -= PreviewChange;
 			_resource.MaxValueChanged -= OnMaxValueChanged;
+			_resource.ChangedBarColor -= OnChangeBarColor;
 		}
 
 		_resource = resource;
@@ -49,6 +51,7 @@ public class Bar : MonoBehaviour
 		_resource.ValueChanged += OnValueChanged;
 		_resource.PhantomValueShown += PreviewChange;
 		_resource.MaxValueChanged += OnMaxValueChanged;
+		_resource.ChangedBarColor += OnChangeBarColor;
 
 		_health = resource as Health;
 		if (_health != null)
@@ -77,14 +80,25 @@ public class Bar : MonoBehaviour
 
     private void OnDestroy()
     {
-		_resource.ValueChanged -= OnValueChanged;
-		_resource.PhantomValueShown -= PreviewChange;
-		_resource.MaxValueChanged -= OnMaxValueChanged;
-
+		if (_resource != null)
+		{
+			_resource.ValueChanged -= OnValueChanged;
+			_resource.PhantomValueShown -= PreviewChange;
+			_resource.MaxValueChanged -= OnMaxValueChanged;
+			_resource.ChangedBarColor -= OnChangeBarColor;
+		}
 		if (_health != null)
 		{
 			_health.ShieldDeactivated -= OnShieldDeactivated;
 			_health.OnShieldValuesChanged -= UpdateShieldBar;
+		}
+	}
+
+	private void Update()
+	{
+		if(Input.GetKeyDown(KeyCode.O))
+		{
+			OnChangeBarColor(Color.red);
 		}
 	}
 
@@ -201,5 +215,11 @@ public class Bar : MonoBehaviour
 	{
 		ShieldActive = false;
 		UpdateBar();
+	}
+
+	private void OnChangeBarColor(Color color)
+	{
+		if(_barImage != null)
+			_barImage.color = color;
 	}
 }

@@ -37,7 +37,18 @@ public class DeathSpiral : Skill
 	private void Update()
 	{
 		Timer();
+
+		if(Input.GetKeyDown(KeyCode.P))
+		{
+			AddCharge();
+		}
 	}
+
+	protected override void Awake()
+	{
+		Chargers = 0;
+	}
+
 	protected override IEnumerator PrepareJob()
 	{
 		while (_target == null)
@@ -250,6 +261,7 @@ public class DeathSpiral : Skill
 
 	private void SecondAttact()
 	{
+		Debug.Log("SECOND ATTACK");
 		_superCharge = false;
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
@@ -309,6 +321,7 @@ public class DeathSpiral : Skill
 
 	public void TalentMaxCharges(int maxChargesValue)
 	{
+		//if()
 		_maxCharges = maxChargesValue;
 	}
 
