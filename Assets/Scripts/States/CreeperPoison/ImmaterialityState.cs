@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class ImmaterialityState : AbstractCharacterState
 {
+    private int _defualtPlayerLayer;
+    private int _newPlayerLayer;
+
     private float _duration;
-    private float _baseDuration;
     private Character _player;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Immateriality };
@@ -19,7 +21,12 @@ public class ImmaterialityState : AbstractCharacterState
         _characterState = character;
         _player = _characterState.Character;
         _duration = durationToExit;
-        _baseDuration = _duration;
+        _defualtPlayerLayer = _characterState.gameObject.layer;
+
+        _newPlayerLayer = LayerMask.NameToLayer("LightningMovement");
+        Debug.Log("NewPlayerLayer = " + _newPlayerLayer);
+
+        Debug.Log("Duration DisabledCollider = " + _duration);
 
         DisabledCollider();
     }
@@ -37,7 +44,6 @@ public class ImmaterialityState : AbstractCharacterState
     {
         TargetRpcResetPlayerComponents();
         _duration = 0;
-        _baseDuration = 0;
         _characterState.RemoveState(this);
     }
 
@@ -60,13 +66,22 @@ public class ImmaterialityState : AbstractCharacterState
     {
         if (_player != null)
         {
-            _player.Collider.isTrigger = true;
+            Debug.Log("DisabledCollider");
+            //_player.Collider.isTrigger = true;
+            _player.gameObject.layer = _newPlayerLayer;
+            Debug.Log("DisabledCollider / _player.gameObject.layer = " + _player.gameObject.layer);
+
         }
     }
 
     [ClientRpc]
     private void TargetRpcResetPlayerComponents()
     {
-        _player.Collider.isTrigger = false;
+        Debug.Log("EnabledCollider");
+
+        //_player.Collider.isTrigger = false;
+        _player.gameObject.layer = _defualtPlayerLayer;
+        Debug.Log("EnabledCollider / _player.gameObject.layer = " + _player.gameObject.layer);
+
     }
 }
