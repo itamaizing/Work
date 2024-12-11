@@ -6,9 +6,7 @@ public class LightningStrikes : AutoAttackSkill
     [Header("Talents")]
     [SerializeField] private HeatedGlands _heatedGlands;
     [SerializeField] private KillersStamina _killersStamina; 
-    private float _timeBaff = 4f;
     
-
     [Header("Abillity Components")]
     [SerializeField] private ColdBlood _coldBlood;
     [SerializeField] private LightningMovement _lightningMovement;
@@ -55,13 +53,11 @@ public class LightningStrikes : AutoAttackSkill
         //AnimLightningStrikesCast();
     }
 
-
     protected override IEnumerator PrepareJob()
     {
         if (_lightningMovement.IsInMovement)
         {
             Debug.Log("LightningStrikes / PrepareJob");
-            _isCanDamageDeal = true;
             _target = _lightningMovement.Target;
         }
         return base.PrepareJob();
@@ -124,13 +120,10 @@ public class LightningStrikes : AutoAttackSkill
         Debug.Log("LightningStrikes / DamageDeal");
         _creeperStrike.DamageDeal(_currentTarget, true);
 
+       _isCanDamageDeal = false;
+
         if (_heatedGlands.Data.IsOpen)
             _player.CharacterState.CmdAddState(States.HeatedGlands, _heatedGlandsDuration, 0, _player.gameObject, null);
-
-        if (_lightningMovement.IsInMovement)
-        {
-            _isCanDamageDeal = false;
-        }
 
         if (_coldBlood.IsCanCritLightningStrikes && _isIncreaseCooldownTime == true)
         {

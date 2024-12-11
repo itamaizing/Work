@@ -90,12 +90,14 @@ public class LightningMovement : Skill
     private bool _heatedGlandsIsActive;
     private bool _isInMovement = false;
     private bool _cooldownHasChange;
+    private bool _isCanCastAbilities;
 
     #endregion
 
     public float RadiusAttacks => _radiusAttack;
     public float DurationLeap => _durationLeap;
     public bool IsInMovement { get => _isInMovement; }
+    public bool IsCanCastAbilities { get => _isCanCastAbilities; }
     public Character Target { get => _targetForAbility; }
 
     protected override int AnimTriggerCast => Animator.StringToHash("LightningMovementCastAnim");
@@ -248,14 +250,14 @@ public class LightningMovement : Skill
     private void ResetBools()
     {
         Debug.Log("ResetBools");
-        _targetsCanBeHit.Clear();
         _rangeLeap = _baseRangeLeap;
+
+        _isCanCastAbilities = false;
 
         _isTargetBeforePlayer = false;
         _isTargetBehindPlayer = false;
         _isTargetOnEndPointSecondLeap = false;
 
-        _isInMovement = false;
         _lightningStrikes.IsCanDamageDeal = false;
 
         if (_isTargetBeforePlayerCoroutine != null)
@@ -684,6 +686,8 @@ public class LightningMovement : Skill
             {
                 if (item != null)
                 {
+                    _isCanCastAbilities = true;
+
                     bool targetCanBeHit = true;
 
                     Character targetCharacter = item.gameObject.GetComponent<Character>();
@@ -694,6 +698,7 @@ public class LightningMovement : Skill
 
                     if (_targetsCanBeHit[targetCharacter] == true)
                     {
+                        Debug.Log("ApplyDamageJob / Start / _targetCanBeHit = true / isCanCastAbilities = " + _isCanCastAbilities);
                         if (_lightningStrikes.IsCanDamageDeal)
                         {
                             _lightningStrikes.UseLightningStrikesOfLightningMovement();
@@ -707,6 +712,8 @@ public class LightningMovement : Skill
                             _creeperStrike.DamageDeal(targetCharacter);
                         }
 
+                        _isCanCastAbilities = false;
+                        Debug.Log("ApplyDamageJob / End / _targetCanBeHit = false / isCanCastAbilities = " + _isCanCastAbilities);
                         targetCanBeHit = false;
 
                         _targetsCanBeHit[targetCharacter] = targetCanBeHit;
@@ -728,10 +735,16 @@ public class LightningMovement : Skill
 
         AnimLightningMovementCastEnd();
 
+        Debug.Log("TimerForEndCast");
+
         if (_animTime > 0)
             _player.Animator.SetFloat("LightningMovementMultiplierSpeedAnimation", _baseAnimationMultiplierSpeed);
 
         _player.Animator.applyRootMotion = false;
+
+        _targetsCanBeHit.Clear();
+        _isInMovement = false;
+
         StopCoroutine(_timerForEndCastCoroutine);
         _timerForEndCastCoroutine = null;
     }
@@ -876,7 +889,7 @@ public class LightningMovement : Skill
             playerCharacter.Rb.DOMove(secondLeapPoint, (durationLeap * rangeLeap / GlobalVariable.cellSize)).SetEase(Ease.OutSine);
 
             if (_timerForEndCastCoroutine == null)
-                _timerForEndCastCoroutine = StartCoroutine(TimerForEndCast(durationLeap + multiplierDistanceLeap));
+                _timerForEndCastCoroutine = StartCoroutine(TimerForEndCast(durationLeap + multiplierDistanceLeap + 0.1f));
         });
     }
 
