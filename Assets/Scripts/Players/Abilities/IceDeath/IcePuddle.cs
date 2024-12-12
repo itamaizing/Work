@@ -1,13 +1,16 @@
 using Mirror;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class IcePuddle : Skill
 {
 	[SerializeField] private IcePuddleObject _puddle;
 	[SerializeField] private GameObject _preViewPuddle;
 	[SerializeField] private GameObject _lowePoint;
+	[SerializeField] private DecalProjector _puddleProjector;
 	//[SerializeField] private FrostingFrozenTalant _frostingFrozenTalant;
 	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 	[SerializeField] private float _timeToDestroy = 3f;
@@ -42,8 +45,10 @@ public class IcePuddle : Skill
 		{
 			_enabled = true;
 			_lastHit = _seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0, 0);
-			if (_lastHit && _talentPuddleSize)
-				_preViewPuddle.transform.localScale = Vector3.one * 1.7f;
+			//if (_lastHit && _talentPuddleSize)
+			//_puddleProjector.size = new Vector2(2 * 1.7f, 1 * 1.7f);
+			//_puddleProjector.pivot = new Vector3(0, 1.7f / 2, 0.01f);
+			//_preViewPuddle.transform.localScale = Vector3.one * 1.7f;
 
 			_preViewPuddle.SetActive(true);
 		}
@@ -328,8 +333,6 @@ public class IcePuddle : Skill
 
 	private void Shoot()
 	{
-		//_move.LookAtTransform(gameObject.transform);
-
 		_shooted = true;
 		int timeToAdd = (int)_energy.CurrentValue / 5;
 		if (timeToAdd > 4)
@@ -337,15 +340,15 @@ public class IcePuddle : Skill
 
 		_timeToDestroy += timeToAdd;
 		_energy.CmdUse(timeToAdd * 5);
-		//puddle.talant = _frostingFrozenTalant;
 
 		Buff.AttackSpeed.ReductionPercentage(1 + _seriesOfStrikes.GetMultipliedSpeed() / 100);
 
-		//_lastHit = _seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0);
+		//_lastHit = _seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0, 0);
+
 
 		Buff.AttackSpeed.IncreasePercentage(1 + _seriesOfStrikes.GetMultipliedSpeed() / 100);
 
-		CmdCreateProjecttile(_angle3, _timeToDestroy, _preViewPuddle.transform.position, _lastHit, _talentEvadeDadBoost, _talentFrostingFrozen);
+		CmdCreateProjecttile(_angle3, _timeToDestroy, _preViewPuddle.transform.position, _lastHit && _talentPuddleSize, _talentEvadeDadBoost, _talentFrostingFrozen);
 	}
 
 	public void SetTalentPuddleSize(bool active)

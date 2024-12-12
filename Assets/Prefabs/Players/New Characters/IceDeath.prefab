@@ -292,6 +292,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 6675036097227726169, guid: c543d7786e879d14cb91ce31839db008, type: 3}
   m_PrefabInstance: {fileID: 4463720291218696257}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8501273535939213796 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5190617138190012837, guid: c543d7786e879d14cb91ce31839db008, type: 3}
+  m_PrefabInstance: {fileID: 4463720291218696257}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &8255499196023441042
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -554,15 +565,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.size
-      value: 8
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.size
-      value: 8
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentGroup.Array.size
-      value: 9
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[0]
@@ -583,15 +594,15 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[4]
       value: 
-      objectReference: {fileID: 5381118281897419454}
+      objectReference: {fileID: 3154696692720995832}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[5]
       value: 
-      objectReference: {fileID: 3154696692720995832}
+      objectReference: {fileID: 6893431754607574067}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[6]
       value: 
-      objectReference: {fileID: 6893431754607574067}
+      objectReference: {fileID: 3578257149657295738}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[7]
       value: 
@@ -615,19 +626,19 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[3]
       value: 
-      objectReference: {fileID: 2328616262099685549}
+      objectReference: {fileID: 4463242237023860430}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[4]
       value: 
-      objectReference: {fileID: 4463242237023860430}
+      objectReference: {fileID: 5823059975068948014}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[5]
       value: 
-      objectReference: {fileID: 278077312809845584}
+      objectReference: {fileID: 7039159314510102493}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[6]
       value: 
-      objectReference: {fileID: 5823059975068948014}
+      objectReference: {fileID: 6592819210509660275}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[7]
       value: 
@@ -655,19 +666,19 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentGroup.Array.data[4]
       value: 
-      objectReference: {fileID: 2371240912728414510}
+      objectReference: {fileID: 5168066210719430093}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentGroup.Array.data[5]
       value: 
-      objectReference: {fileID: 6516741300808676205}
+      objectReference: {fileID: 4597768051946118393}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentGroup.Array.data[6]
       value: 
-      objectReference: {fileID: 7260990487251533330}
+      objectReference: {fileID: 4597768051946118393}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentGroup.Array.data[7]
       value: 
-      objectReference: {fileID: 5168066210719430093}
+      objectReference: {fileID: 4597768051946118393}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentGroup.Array.data[8]
       value: 
@@ -1118,6 +1129,7 @@ MonoBehaviour:
   _puddle: {fileID: -4751265457872843896, guid: 49b94ed23b9d6a447b459769dcbb348d, type: 3}
   _preViewPuddle: {fileID: 5135469058462379726}
   _lowePoint: {fileID: 7012153009348031768}
+  _puddleProjector: {fileID: 8501273535939213796}
   _seriesOfStrikes: {fileID: 161199462986225237}
   _timeToDestroy: 3
   _playerLinks: {fileID: 4374618947117916461}

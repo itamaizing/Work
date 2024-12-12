@@ -101,9 +101,10 @@ public class PhysicalAttack : AutoAttackSkill
 			CmdApplyDamage(damage, enemy.gameObject);
 		}
 
-		if (Random.Range(0, 100) <2 && _talentActive)
+		if (Random.Range(0, 100) < 2 && _talentActive)
 		{
 			_rune.CmdAdd(1);
+			//Debug.Log(_rune.CurrentValue + " REGEN Current value");
 		}
 	}
 	private void LastHit()

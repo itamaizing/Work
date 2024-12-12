@@ -39,24 +39,24 @@ public class IceShard : Skill
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
 		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 5, 3);
 
-		CmdCreateProjecttile(angle, _energy.CurrentValue);
+		CmdCreateProjecttile(angle, _energy.CurrentValue, _talentPlague, _talentChragesPlague);
 	}
 
 	[Command]
-	private void CmdCreateProjecttile(float angle, float manaValue)
+	private void CmdCreateProjecttile(float angle, float manaValue, bool talentPlague, bool talentChargesPlague)
 	{
 		IceShardProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, -angle, 0));
 		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
 		projectile.Init(_playerLinks, manaValue, false, this);
-		projectile.Talents(_talentPlague, _talentChragesPlague);
+		projectile.Talents(talentPlague, talentChargesPlague);
 
 		NetworkServer.Spawn(projectile.gameObject);
 
-		RpcInit(projectile.gameObject, manaValue);
+		RpcInit(projectile.gameObject, manaValue, talentPlague, talentChargesPlague);
 	}
 
 	[ClientRpc]
-	private void RpcInit(GameObject obj, float manaValue)
+	private void RpcInit(GameObject obj, float manaValue, bool talentPlague, bool talentChargesPlague)
 	{
 		obj.GetComponent<IceShardProjectile>().Init(_playerLinks, manaValue, false, this);
 	}
