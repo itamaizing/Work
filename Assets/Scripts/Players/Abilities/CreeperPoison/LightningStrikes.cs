@@ -48,16 +48,15 @@ public class LightningStrikes : AutoAttackSkill
         AnimCastEnded();
     }
 
-    public void UseLightningStrikesOfLightningMovement()
-    { 
-        //AnimLightningStrikesCast();
-    }
-
     protected override IEnumerator PrepareJob()
     {
         if (_lightningMovement.IsInMovement)
         {
+            _animTime = GetClipLength();
+            IncreaseAnimSpeed();
+
             Debug.Log("LightningStrikes / PrepareJob");
+
             _target = _lightningMovement.Target;
         }
         return base.PrepareJob();
@@ -108,7 +107,7 @@ public class LightningStrikes : AutoAttackSkill
     {
         if (_animTime > 0)
         {
-            float multiplier = _lightningMovement.DurationLeap;
+            float multiplier = _lightningMovement.DurationLeap - 0.1f;
             float animTimeMultiplier = _animTime / multiplier;
             Debug.Log("LightningStrikes / multiplier = " + animTimeMultiplier);
             _player.Animator.SetFloat("LightningStrikesMultiplierSpeedAnimation", animTimeMultiplier);

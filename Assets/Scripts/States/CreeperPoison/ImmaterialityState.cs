@@ -24,9 +24,6 @@ public class ImmaterialityState : AbstractCharacterState
         _defualtPlayerLayer = _characterState.gameObject.layer;
 
         _newPlayerLayer = LayerMask.NameToLayer("LightningMovement");
-        Debug.Log("NewPlayerLayer = " + _newPlayerLayer);
-
-        Debug.Log("Duration DisabledCollider = " + _duration);
 
         DisabledCollider();
     }
@@ -66,22 +63,13 @@ public class ImmaterialityState : AbstractCharacterState
     {
         if (_player != null)
         {
-            Debug.Log("DisabledCollider");
-            //_player.Collider.isTrigger = true;
             _player.gameObject.layer = _newPlayerLayer;
-            Debug.Log("DisabledCollider / _player.gameObject.layer = " + _player.gameObject.layer);
-
         }
     }
 
     [ClientRpc]
     private void TargetRpcResetPlayerComponents()
     {
-        Debug.Log("EnabledCollider");
-
-        //_player.Collider.isTrigger = false;
         _player.gameObject.layer = _defualtPlayerLayer;
-        Debug.Log("EnabledCollider / _player.gameObject.layer = " + _player.gameObject.layer);
-
     }
 }

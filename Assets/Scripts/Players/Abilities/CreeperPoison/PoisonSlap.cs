@@ -111,45 +111,11 @@ public class PoisonSlap : Skill
         if (_lightningMovement.IsInMovement)
         {
             _isCanDamageDeal = true;
+            SwitchPayCost();
             yield break;
         }
 
-        switch (_poisonSlapTalent.Data.IsOpen)
-        {
-            case true:
-                if (_creeperStrike.IsTwoHit)
-                {
-                    CastSpeedFromCreeperStrike();
-                    _isUsedPoisonBallCharger = false;
-                }
-                else if (_lightningStrikes.IsUsedLightningStrikes)
-                {
-                    CastSpeedFromLightningStrikes();
-                    _isUsedPoisonBallCharger = false;
-                }
-                else
-                {
-                    _isUsedPoisonBallCharger = true;
-                    _castDeley = _baseTimeCast;
-                }
-                break;
-
-            case false:
-                if (_creeperStrike.IsTwoHit)
-                {
-                    CastSpeedFromCreeperStrike();
-                }
-                else if (_lightningStrikes.IsUsedLightningStrikes)
-                {
-                    CastSpeedFromLightningStrikes();
-                }
-                else
-                {
-                    _isUsedPoisonBallCharger = true;
-                    _castDeley = _baseTimeCast;
-                }
-                break;
-        }
+        SwitchPayCost();
 
         if (_poisonBall.IsHaveCharge == false && _isUsedPoisonBallCharger)
         {
@@ -197,6 +163,45 @@ public class PoisonSlap : Skill
         yield return null;
     }
 
+    private void SwitchPayCost()
+    {
+        switch (_poisonSlapTalent.Data.IsOpen)
+        {
+            case true:
+                if (_creeperStrike.IsTwoHit)
+                {
+                    CastSpeedFromCreeperStrike();
+                    _isUsedPoisonBallCharger = false;
+                }
+                else if (_lightningStrikes.IsUsedLightningStrikes)
+                {
+                    CastSpeedFromLightningStrikes();
+                    _isUsedPoisonBallCharger = false;
+                }
+                else
+                {
+                    _isUsedPoisonBallCharger = true;
+                    _castDeley = _baseTimeCast;
+                }
+                break;
+
+            case false:
+                if (_creeperStrike.IsTwoHit)
+                {
+                    CastSpeedFromCreeperStrike();
+                }
+                else if (_lightningStrikes.IsUsedLightningStrikes)
+                {
+                    CastSpeedFromLightningStrikes();
+                }
+                else
+                {
+                    _isUsedPoisonBallCharger = true;
+                    _castDeley = _baseTimeCast;
+                }
+                break;
+        }
+    }
     #endregion
 
     #region CalculationsDistances
@@ -381,6 +386,11 @@ public class PoisonSlap : Skill
 
     public void DamageDealOfLightningMovement()
     {
+        if (_isUsedPoisonBallCharger)
+        {
+            _poisonBall.PayCostPoisonBall();
+        }
+
         if (_currentTarget != null)
         {
             Damage damage = new Damage

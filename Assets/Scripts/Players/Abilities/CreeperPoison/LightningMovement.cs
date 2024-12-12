@@ -65,6 +65,7 @@ public class LightningMovement : Skill
     private Coroutine _isTargetOnEndPointCoroutine;
     private Coroutine _applyDamageCoroutine;
     private Coroutine _timerForEndCastCoroutine;
+    private Coroutine _resetBoolsTimerCoroutine;
 
     #endregion
 
@@ -168,7 +169,15 @@ public class LightningMovement : Skill
         if (_isAbilityDone)
         {
             float timer = (_durationLeap * _rangeLeap) * 1.1f;
-            Invoke("ResetBools", timer);
+            _isAbilityDone = false;
+            
+            if (_resetBoolsTimerCoroutine != null)
+            {
+                StopCoroutine(ResetBoolsJob(timer));
+                _resetBoolsTimerCoroutine = null;
+            }
+
+            _resetBoolsTimerCoroutine = StartCoroutine(ResetBoolsJob(timer));
         }
     }
 
@@ -245,8 +254,14 @@ public class LightningMovement : Skill
         yield return null;
     }
 
-    private void ResetBools()
+    private IEnumerator ResetBoolsJob(float time)
     {
+        while (time > 0)
+        {
+            time -= Time.deltaTime;
+            yield return null;
+        }
+
         Debug.Log("ResetBools");
         _targetsCanBeHit.Clear();
         _rangeLeap = _baseRangeLeap;
@@ -256,7 +271,6 @@ public class LightningMovement : Skill
         _isTargetOnEndPointSecondLeap = false;
 
         _isInMovement = false;
-        _lightningStrikes.IsCanDamageDeal = false;
 
         if (_isTargetBeforePlayerCoroutine != null)
         {
@@ -459,7 +473,7 @@ public class LightningMovement : Skill
 
     private IEnumerator IsTargetOnEndPoint()
     {
-        while (_isAbilityDone == false)
+        while (true)
         {
             Collider[] enemies = Physics.OverlapSphere(_firstLeapPoint, _radiusChecking, _targetsLayers);
             if (enemies.Length > 0)
@@ -687,23 +701,28 @@ public class LightningMovement : Skill
                     bool targetCanBeHit = true;
 
                     Character targetCharacter = item.gameObject.GetComponent<Character>();
-                    _targetForAbility = targetCharacter;
 
                     if (_targetsCanBeHit.ContainsKey(targetCharacter) == false)
+                    {
                         _targetsCanBeHit.Add(targetCharacter, targetCanBeHit);
+                        Debug.Log("LightningMovementa / ApplyDamageJob / if (ContainsKey == false)");
+                    }
 
                     if (_targetsCanBeHit[targetCharacter] == true)
                     {
-                        if (_lightningStrikes.IsCanDamageDeal)
+                        _targetForAbility = targetCharacter;
+
+                        if (_lightningFastPoisonSlap.Data.IsOpen && _poisonSlap.IsCanDamageDeal && _poisonSlap.RemainingCooldownTime <= minTimeCooldown)
                         {
-                            _lightningStrikes.UseLightningStrikesOfLightningMovement();
-                        }
-                        else if (_lightningFastPoisonSlap.Data.IsOpen && _poisonSlap.IsCanDamageDeal && _poisonSlap.RemainingCooldownTime <= minTimeCooldown)
-                        {
+                            Debug.Log("LightningMovementa / ApplyDamageJob / if (true) / if poisonSlap");
+
+                            // Один раз каждому врагу. Тратит заряд Шара яда.
                             _poisonSlap.UsePoisonSlapOfLightningMovement();
                         }
                         else
                         {
+                            Debug.Log("LightningMovementa / ApplyDamageJob / if (true) / else creeperStrike");
+                            // наносится всегда
                             _creeperStrike.DamageDeal(targetCharacter);
                         }
 
@@ -726,14 +745,17 @@ public class LightningMovement : Skill
             yield return null;
         }
 
+        _isInMovement = false;
         AnimLightningMovementCastEnd();
 
         if (_animTime > 0)
             _player.Animator.SetFloat("LightningMovementMultiplierSpeedAnimation", _baseAnimationMultiplierSpeed);
 
         _player.Animator.applyRootMotion = false;
+
         StopCoroutine(_timerForEndCastCoroutine);
         _timerForEndCastCoroutine = null;
+        Debug.Log("LightningMovementa / TimerForEndCast");
     }
 
     #endregion

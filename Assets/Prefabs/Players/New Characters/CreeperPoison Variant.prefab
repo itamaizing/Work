@@ -4227,9 +4227,9 @@ MonoBehaviour:
   _isTalentSpell: 0
   _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 99ddb513034121044845fa2d5c1fd25a, type: 2}
-  _isSubjectToGlobalCooldownTime: 1
+  _isSubjectToGlobalCooldownTime: 0
   _skillEnergyCosts: []
-  _cooldownTime: 10
+  _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
   _abilitySchool: 0
