@@ -1,6 +1,7 @@
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,12 +13,17 @@ public abstract class GameRules : NetworkBehaviour
 
     protected readonly SyncList<GameObject> _playersSyncList = new SyncList<GameObject>();
     protected List<Character> _players = new List<Character>();
+
     protected NetworkRoom _room;
+
+    [SyncVar]protected string _roomName;
 
     protected HeroSpawnManager _spawnPoints;
     protected GameManager _gameManager;
 
-    [SyncVar(hook = nameof(GameStatusHook))] private bool _isStarted;
+    [SyncVar] private bool _isStarted;
+    private float _disconnectDelayClient = 6f;
+    private float _disconnectDelayServer = 5f;
     public bool IsStarted { get => _isStarted; set => _isStarted = value; }
 
     public SyncList<GameObject> Players => _playersSyncList;
@@ -31,11 +37,12 @@ public abstract class GameRules : NetworkBehaviour
     public void Init(NetworkRoom room)
     {
         _room = room;
+        _roomName = _room.SceneName;
 
         AddAllPlayersInList();
         SubscribingOnPlayerEvents();
 
-        StartCoroutine(WaitForSceneAndFindSpawnPoints());
+        StartCoroutine(FindServerGameManager());
     }
 
     public override void OnStartClient()
@@ -44,17 +51,19 @@ public abstract class GameRules : NetworkBehaviour
         StartCoroutine(FoundGameManagerCorounite());
     }
 
-    //perhaps this method only works on the first client, it's strange
-    protected virtual void GameStatusHook(bool oldValue, bool newValue)
+    public void CloseRoomOnClient()
     {
-        if (newValue)
-        {
-            GameStartClient();
-            //perhaps this method only works on the first client, it's strange
-        }
+        ServerManager.Instance.EnableMenu();
+        SceneManager.UnloadSceneAsync(_roomName);
+        Destroy(gameObject);
     }
 
-    protected virtual IEnumerator WaitForSceneAndFindSpawnPoints()
+    protected virtual void EndGame()
+    {
+        StartCoroutine(CloseRoomJob());
+    }
+
+    protected virtual IEnumerator FindServerGameManager()
     {
         while (!_room.IsLoaded)
         {
@@ -94,9 +103,14 @@ public abstract class GameRules : NetworkBehaviour
             playerSettings.NetworkSettings.SetSpawnPosition(spawnPoints.GetRandomPoint(teamIndex-1));
 
             if (teamIndex == 1)
+            {
                 team1Count++;
+            }   
             else
+            {
                 team2Count++;
+            }
+                
         }
 
         yield return null;
@@ -121,12 +135,13 @@ public abstract class GameRules : NetworkBehaviour
         UnsubscribeFromAllEvents();
         UnsubscribingOnPlayerEvents();
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSecondsRealtime(_disconnectDelayClient);
 
-        if (_room != null)
-        {
-            yield return _room.UnloadRoomJob();
-        }
+        RpcCloseRoomOnClients();
+
+        yield return new WaitForSecondsRealtime(_disconnectDelayServer);
+
+        yield return _room.UnloadRoomJob();
     }
 
     protected virtual void AddExpForAllEnemy(Character character)
@@ -153,22 +168,6 @@ public abstract class GameRules : NetworkBehaviour
         }
     }
 
-    protected virtual void SetSource(int teamIndex, int source)
-    {
-        _gameManager.SourceUI.SetSource(teamIndex, source);
-        RpcSetSource(teamIndex, source);
-    }
-
-    [ClientRpc]
-    protected virtual void RpcSetSource(int teamIndex, int source)
-    {
-        Debug.LogError(_gameManager);
-        Debug.LogError(_gameManager.SourceUI);
-        Debug.LogError(teamIndex);
-        Debug.LogError(source);
-        _gameManager.SourceUI.SetSource(teamIndex, source);
-    }
-
     protected virtual void ResetAllPlayers()
     {
         foreach (var player in _players)
@@ -192,7 +191,9 @@ public abstract class GameRules : NetworkBehaviour
 
     protected IEnumerator RevivalPlayerCoroutine(Character player)
     {
-        yield return new WaitForSecondsRealtime(_baseTimeForRevival + _AddTimeForRevival * player.LVL.Value);
+        float time = _baseTimeForRevival + _AddTimeForRevival * player.LVL.Value;
+        RpcStartReviveTimer(player.gameObject, time);
+        yield return new WaitForSecondsRealtime(time);
         player.ServerResetAll();
         MovePlayerInSpawn(player);
     }
@@ -230,14 +231,59 @@ public abstract class GameRules : NetworkBehaviour
     {
         while(_gameManager == null)
         {
-            FindGameManager();
             yield return new WaitForSecondsRealtime(0.5f);
+            FindGameManager();
         }
+
+        foreach (var item in _playersSyncList)
+        {
+            var playerSettings = item.GetComponent<Character>();
+            if (playerSettings != null)
+            {
+                _players.Add(playerSettings);
+            }
+        }
+        foreach (var playerSettings in _players)
+        {
+            if (playerSettings.NetworkSettings.TeamIndex == 1)
+            {
+                _gameManager.TeamsPanel.AddInFirstTeam(playerSettings);
+            }
+            else
+            {
+                _gameManager.TeamsPanel.AddInSecondTeam(playerSettings);
+            }
+        }
+        GameStartClient();
     }
 
     [ClientRpc]
     protected void RpcTeleportPlayer(GameObject player, Vector3 position, Quaternion rotation)
     {
         player.transform.SetPositionAndRotation(position, rotation);
+    }
+
+    [ClientRpc]
+    protected void RpcStartReviveTimer(GameObject character, float time)
+    {
+        _gameManager.TeamsPanel.StartReviveTimer(character.GetComponent<Character>(), time);
+    }
+
+    [ClientRpc]
+    protected virtual void RpcSetSource(int teamIndex, int source)
+    {
+        _gameManager.SourceUI.SetSource(teamIndex, source);
+    }
+
+    [ClientRpc]
+    protected virtual void RpcShowWinner(int teamIndex)
+    {
+        _gameManager.SourceUI.ShowWinner(teamIndex);
+    }
+
+    [ClientRpc]
+    protected void RpcCloseRoomOnClients()
+    {
+        CloseRoomOnClient();
     }
 }

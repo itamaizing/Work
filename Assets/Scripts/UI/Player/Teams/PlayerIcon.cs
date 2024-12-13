@@ -6,11 +6,17 @@ public class PlayerIcon : MonoBehaviour
 {
     [SerializeField] private GameObject _icon;
     [SerializeField] private Image _playerIcon;
+    [SerializeField] private ReviveVisualUI _reviveVisual;
     [SerializeField] private Bar _playerHp;
     [SerializeField] private Bar _playerMana;
 
-	public void Init(Character character)
+    private Character _character;
+
+    public Character Character { get => _character; }
+
+    public void Init(Character character)
     {
+        _character = character;
         UpdateInfo(character);
     }
 
@@ -24,6 +30,11 @@ public class PlayerIcon : MonoBehaviour
     public void OnCharacterDeselected(Character character)
     {
         _icon.SetActive(false);
+    }
+
+    public void StartReviveTimer(float time)
+    {
+        _reviveVisual.StartTimer(time);
     }
 
     protected virtual void UpdateInfo(Character character)

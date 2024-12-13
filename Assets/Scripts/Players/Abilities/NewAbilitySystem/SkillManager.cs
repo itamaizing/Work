@@ -292,7 +292,12 @@ public class SkillManager : MonoBehaviour
 
     private void DeselectSkill()
     {
-        SkillDeselected?.Invoke(Array.IndexOf(_selectedSkills, _selectedSkill));
+        int index = Array.IndexOf(_selectedSkills, _selectedSkill);
+
+        if (index == -1)
+            return;
+
+        SkillDeselected?.Invoke(index);
         UnsubscribingSkillOnEvents(_selectedSkill);
         _selectedSkill = null;
     }

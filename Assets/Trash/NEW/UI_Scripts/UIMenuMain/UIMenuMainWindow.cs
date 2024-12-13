@@ -29,12 +29,6 @@ public class UIMenuMainWindow : MonoBehaviour
     public void UI_StartClient()
     {
         ServerManager.Instance.StartClient();
-        DisableUI();
-    }
-
-     private void DisableUI()
-    {
-        gameObject.SetActive(false);
     }
 
     void Show()

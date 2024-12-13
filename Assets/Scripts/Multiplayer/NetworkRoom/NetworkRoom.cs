@@ -17,6 +17,7 @@ public class NetworkRoom
     public int NumOfFreeSlots { get => _maxNumPlayers - _players.Count; }
     public List<GameObject> Players => _players;
     public Scene Scene => _currentRoom;
+    public string SceneName => _scene;
     public bool IsLoaded => _isLoaded;
 
     public event UnityAction<NetworkRoom> SlotsEnded;
