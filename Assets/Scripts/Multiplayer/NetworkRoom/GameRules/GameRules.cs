@@ -1,6 +1,7 @@
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -21,6 +22,8 @@ public abstract class GameRules : NetworkBehaviour
     protected GameManager _gameManager;
 
     [SyncVar] private bool _isStarted;
+    private float _disconnectDelayClient = 6f;
+    private float _disconnectDelayServer = 5f;
     public bool IsStarted { get => _isStarted; set => _isStarted = value; }
 
     public SyncList<GameObject> Players => _playersSyncList;
@@ -39,7 +42,7 @@ public abstract class GameRules : NetworkBehaviour
         AddAllPlayersInList();
         SubscribingOnPlayerEvents();
 
-        StartCoroutine(WaitForSceneAndFindGameManager());
+        StartCoroutine(FindServerGameManager());
     }
 
     public override void OnStartClient()
@@ -48,12 +51,19 @@ public abstract class GameRules : NetworkBehaviour
         StartCoroutine(FoundGameManagerCorounite());
     }
 
+    public void CloseRoomOnClient()
+    {
+        ServerManager.Instance.EnableMenu();
+        SceneManager.UnloadSceneAsync(_roomName);
+        Destroy(gameObject);
+    }
+
     protected virtual void EndGame()
     {
         StartCoroutine(CloseRoomJob());
     }
 
-    protected virtual IEnumerator WaitForSceneAndFindGameManager()
+    protected virtual IEnumerator FindServerGameManager()
     {
         while (!_room.IsLoaded)
         {
@@ -125,11 +135,11 @@ public abstract class GameRules : NetworkBehaviour
         UnsubscribeFromAllEvents();
         UnsubscribingOnPlayerEvents();
 
-        yield return new WaitForSecondsRealtime(5f);
+        yield return new WaitForSecondsRealtime(_disconnectDelayClient);
 
         RpcCloseRoomOnClients();
 
-        yield return new WaitForSecondsRealtime(15f);
+        yield return new WaitForSecondsRealtime(_disconnectDelayServer);
 
         yield return _room.UnloadRoomJob();
     }
@@ -224,6 +234,7 @@ public abstract class GameRules : NetworkBehaviour
             yield return new WaitForSecondsRealtime(0.5f);
             FindGameManager();
         }
+
         foreach (var item in _playersSyncList)
         {
             var playerSettings = item.GetComponent<Character>();
@@ -273,7 +284,6 @@ public abstract class GameRules : NetworkBehaviour
     [ClientRpc]
     protected void RpcCloseRoomOnClients()
     {
-        ServerManager.Instance.EnableMenu();
-        SceneManager.UnloadSceneAsync(_roomName);
+        CloseRoomOnClient();
     }
 }
