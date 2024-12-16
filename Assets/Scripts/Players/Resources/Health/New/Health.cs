@@ -9,12 +9,11 @@ public class Health : Resource, IDamageable, IHealingable
     [SerializeField] private Animator _animator;
     [SerializeField] private NetworkAnimator _netAnimator;
 
-    protected float _evadeMeleeDamage;
-    protected float _evadeRangeDamage;
-    protected float _resistMagDamage;
-
-    protected float _defPhysDamage;
-    protected float _defMagDamage;
+    [SyncVar(hook = nameof(HookEvadeMeleeDamageChanged))] protected float _evadeMeleeDamage;
+    [SyncVar(hook = nameof(HookEvadeRangeDamageChanged))] protected float _evadeRangeDamage;
+    [SyncVar(hook = nameof(HookEvadeMagDamageChanged))] protected float _resistMagDamage;
+    [SyncVar(hook = nameof(HookDefPhysDamageChanged))] protected float _defPhysDamage;
+    [SyncVar(hook = nameof(HookDefMagDamageChanged))] protected float _defMagDamage;
 
     private List<IDamageable> _shields = new List<IDamageable>();
 	[SyncVar] private float _sumDamageTaken = 0;
@@ -23,13 +22,13 @@ public class Health : Resource, IDamageable, IHealingable
     private float _totalMaxAbsorption = 0;
 
     public float SumDamageTaken { get => _sumDamageTaken; }
-    public float EvadeMeleeDamage { get => _evadeMeleeDamage; }
-    public float EvadeRangeDamage { get => _evadeRangeDamage; }
-    public float ResistMagDamage { get => _resistMagDamage; }
-    public float DefPhysDamage { get => _defPhysDamage; }
-    public float DefMagDamage { get => _defMagDamage; }
-    public List<IDamageable> Shields { get => _shields; }
+    public float EvadeMeleeDamage { get => _evadeMeleeDamage; set => _evadeMeleeDamage = value; }
+    public float EvadeRangeDamage { get => _evadeRangeDamage; set => _evadeRangeDamage = value; }
+    public float ResistMagDamage { get => _resistMagDamage; set => _resistMagDamage = value; }
+    public float DefPhysDamage { get => _defPhysDamage; set => _defPhysDamage = value; }
+    public float DefMagDamage { get => _defMagDamage; set => _defMagDamage = value; }
     public float TotalMaxAbsorption { get => _totalMaxAbsorption; set => _totalMaxAbsorption = value; }
+    public List<IDamageable> Shields { get => _shields; }
 
     public event Action Evaded;
     public event Action<float , Skill , string> HealTaked;
@@ -40,6 +39,11 @@ public class Health : Resource, IDamageable, IHealingable
     public event Action<float> OnShieldAdd;
     public event Action ShieldDeactivated;
     public event Action<float, DamageType, Skill> ShieldDamageTaken;
+    public event Action<float, float> EvadeMeleeDamageChanged;
+    public event Action<float, float> EvadeRangeDamageChanged;
+    public event Action<float, float> EvadeMagDamageChanged;
+    public event Action<float, float> DefPhysDamageChanged;
+    public event Action<float, float> DefMagDamageChanged;
 
     public override void Initialize(float health, float hpRegen, float hpRegenDelay, CharacterData data)
     {
@@ -119,6 +123,35 @@ public class Health : Resource, IDamageable, IHealingable
         CurrentValue = current;
         MaxValue = max;
     }
+
+    #region HookMethods
+
+    protected virtual void HookEvadeMeleeDamageChanged(float oldValue, float newValue)
+    {
+        EvadeMeleeDamageChanged?.Invoke(oldValue, newValue);
+    }
+
+    protected virtual void HookEvadeRangeDamageChanged(float oldValue, float newValue)
+    {
+        EvadeRangeDamageChanged?.Invoke(oldValue, newValue);
+    }
+
+    protected virtual void HookEvadeMagDamageChanged(float oldValue, float newValue)
+    {
+        EvadeMagDamageChanged?.Invoke(oldValue, newValue);
+    }
+
+    protected virtual void HookDefPhysDamageChanged(float oldValue, float newValue)
+    {
+        DefPhysDamageChanged?.Invoke(oldValue, newValue);
+    }
+
+    protected virtual void HookDefMagDamageChanged(float oldValue, float newValue)
+    {
+        DefMagDamageChanged?.Invoke(oldValue, newValue);
+    }
+
+    #endregion
 
     public bool TryEvade(DamageType damageType, AttackRangeType attackRangeType)
     {

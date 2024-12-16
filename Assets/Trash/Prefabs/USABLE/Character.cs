@@ -26,11 +26,13 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
 	[SerializeField] private SelectedCircle _selectedCircle;
 	[SerializeField] private SpawnComponent _spawnComponent;
 
+	private bool _isInvisible;
 	private bool _isDead = false;
 
 	public SpawnComponent SpawnComponent => _spawnComponent;
 	public CharacterData Data => _playerData;
 	public UserNetworkSettings NetworkSettings => _networkSettings;
+	public Collider Collider => _collider;
 	public Rigidbody Rigidbody => _rigidbody;
 	public Health Health => _healthComponent;
 	public Level LVL => _lvl;
@@ -44,12 +46,32 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
 	public SelectedCircle SelectedCircle => _selectedCircle;
     public Animator Animator => _animator;
     public NetworkAnimator NetworkAnimator => _networkAnimator;
+    public bool IsInvisible
+    {
+        get => _isInvisible;
+
+        set
+        {
+            _isInvisible = value;
+
+            if (_isInvisible)
+            {
+                OnDisappeared?.Invoke();
+            }
+            else
+            {
+                OnAppeared?.Invoke();
+            }
+        }
+    }
     public bool IsDead => _isDead;
 
     public static event Action<Character> ServerOnUnitSpawned;
 	public static event Action<Character> ServerOnUnitDeleted; 
 	public static event Action<Character> AuthorityOnUnitSpawned;
 	public static event Action<Character> AuthorityOnUnitDeleted;
+    public event Action OnDisappeared;
+    public event Action OnAppeared;
     public event Action<Damage, Skill> DamageTaken;
     public event Action<float, Skill, string> HealTaked;
 	public event Action<Character> Died;

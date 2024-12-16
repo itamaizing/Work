@@ -38,6 +38,9 @@ public class MoveComponent : NetworkBehaviour
 	private bool _isFly;
 
 	public bool IsFly => _isFly;
+	public float DefaultSpeed => _defaultSpeed;
+	public float CurrentSpeed => _currentSpeed;
+
 
     protected override void OnValidate()
     {

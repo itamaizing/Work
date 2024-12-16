@@ -684,6 +684,7 @@ MonoBehaviour:
   - {fileID: 4534754468497973439, guid: 61bdf690f5f8e144aba9494df44f0657, type: 3}
   - {fileID: 4374618947117916461, guid: f7c4989fc7d96e64e898c577137242d1, type: 3}
   - {fileID: 4534754468497973439, guid: 952e07a142342914da338d08e1041c34, type: 3}
+  - {fileID: 2483674839823445686, guid: 4c3c788ff06ea9f48abda93ece76c4e3, type: 3}
   _menuEnv: {fileID: 228420900}
 --- !u!114 &572863236
 MonoBehaviour:

@@ -103,6 +103,12 @@ public abstract class Resource : NetworkBehaviour
         RpcResetValueUpdate();
     }
 
+    public void ChangedMaxValue(float value)
+    {
+        _maxValue += value;
+
+    }
+
     private IEnumerator RegenerateJob()
     {
         while (true)

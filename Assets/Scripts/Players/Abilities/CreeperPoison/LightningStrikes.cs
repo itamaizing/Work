@@ -1,86 +1,132 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class LightningStrikes : AutoAttackAbility
+public class LightningStrikes : AutoAttackSkill
 {
-    [SerializeField] CreeperStrike creeperStrike;
+    [Header("Talents")]
+    [SerializeField] private HeatedGlands _heatedGlands;
+    [SerializeField] private KillersStamina _killersStamina; 
+    
+    [Header("Abillity Components")]
+    [SerializeField] private ColdBlood _coldBlood;
+    [SerializeField] private LightningMovement _lightningMovement;
+    [SerializeField] private CreeperStrike _creeperStrike;
+    [SerializeField] private Character _player;
 
-    private float _attackSpeedDeacrease = 10f;
-    private float _attackSpeedStrikes;
-    private float originalAttackSpeed;
-    private float _cooldownStrikes;
-    private int _countStrikes = 2;
+    private Character _currentTarget;
 
-    private bool _enabled = false;
-    private bool _canCast = true;
-    private bool _enemyInRadius = false;
-    public bool _isUsing = false;
+    private float _animTime;
+    private float _cooldownMultiplier = 2f;
+    private float _heatedGlandsDuration = 4f;
+    private float _baseCooldownTime;
 
-    private new void Start()
+    private bool _isUsedLightningStrikes = false;
+    private bool _isIncreaseCooldownTime = false;
+    private bool _isCanDamageDeal = false;
+
+    public float BaseCooldownTime { get => _baseCooldownTime; }
+    public bool IsUsedLightningStrikes { get => _isUsedLightningStrikes; set => _isUsedLightningStrikes = value; }
+    public bool IsCanDamageDeal { get => _isCanDamageDeal; set => _isCanDamageDeal = value; }
+
+    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerAutoAttack => Animator.StringToHash("LightningStrikesAttacking");
+
+    protected override void Awake()
     {
-        creeperStrike = GetComponent<CreeperStrike>();
+        base.Awake();
+
+        _baseCooldownTime = CooldownTime;
     }
 
-    private void Update()
+    public void AnimLightningStrikesCast()
     {
-        Timer();
+        AnimCastAction();
+    }
 
-        if (_cooldownStrikes <= 0 && _isUsing)
+    public void AnimLightningStrikesEnd()
+    {
+        AnimCastEnded();
+    }
+
+    protected override IEnumerator PrepareJob()
+    {
+        if (_lightningMovement.IsInMovement)
         {
-            CastAction();
+            _animTime = GetClipLength();
+            IncreaseAnimSpeed();
+
+            Debug.Log("LightningStrikes / PrepareJob");
+
+            _target = _lightningMovement.Target;
         }
-        
-        if (Input.GetMouseButtonDown(1))
-        {
-            Cancel();
-        }
+        return base.PrepareJob();
     }
 
     protected override void CastAction()
     {
-        _isUsing = true;
-        _enabled = true;
-        DecreaseAttackSpeed(_attackSpeedStrikes);
-    }
-    protected override void Cancel()
-    {
-        _enabled = false;
-    }
-
-    public void DecreaseAttackSpeed(float _attackSpeedStrikes)
-    {
-        if (creeperStrike.CurrentTarget != null)
+        if (_lightningMovement.IsInMovement)
         {
-            _enemyInRadius = true;
-            if (_enemyInRadius)
+            _animTime = GetClipLength();
+            IncreaseAnimSpeed();
+        }
+
+        Debug.Log("LightningStrikes / CastAction");
+
+        if (_coldBlood.IsCanCritLightningStrikes && _isIncreaseCooldownTime == false)
+        {
+            float newCooldownTime = _baseCooldownTime * _cooldownMultiplier;
+            CooldownTime = newCooldownTime;
+
+            _isIncreaseCooldownTime = true;
+        }
+        else
+        {
+            CooldownTime = _baseCooldownTime;
+        }
+
+        if (_currentTarget == null)
+            _currentTarget = _target;
+
+        DamageDeal();
+    }
+
+    private float GetClipLength()
+    {
+        RuntimeAnimatorController animController = _player.Animator.runtimeAnimatorController;
+        foreach (var clip in animController.animationClips)
+        {
+            if (clip.name == "LightningStrikesAttack")
             {
-                creeperStrike.OriginalAttackSpeed = creeperStrike.AttackSpeed;
-                _attackSpeedStrikes = creeperStrike.CurrentAttackSpeed / _attackSpeedDeacrease;
-
-                creeperStrike.ModifyAttackSpeed(_attackSpeedStrikes);
-
-                for (int i = 0; i < _countStrikes; i++)
-                {
-                    StartCoroutine(creeperStrike.UseAbilityCoroutine());
-                }
+                return clip.length;
             }
         }
-        creeperStrike.ResetAttackSpeed();
-        _canCast = false;
-        _isUsing = false;
-        _enemyInRadius = false;
-        Cancel();
+        return -1f;
     }
 
-    private void Timer()
+    private void IncreaseAnimSpeed()
     {
-        _cooldownStrikes = _cooldown;
-        _cooldownStrikes -= Time.deltaTime;
-        if (_cooldownStrikes <= 0)
+        if (_animTime > 0)
         {
-            _canCast = true;
+            float multiplier = _lightningMovement.DurationLeap - 0.1f;
+            float animTimeMultiplier = _animTime / multiplier;
+            Debug.Log("LightningStrikes / multiplier = " + animTimeMultiplier);
+            _player.Animator.SetFloat("LightningStrikesMultiplierSpeedAnimation", animTimeMultiplier);
+        }
+    }
+
+    private void DamageDeal()
+    {
+        Debug.Log("LightningStrikes / DamageDeal");
+        _creeperStrike.DamageDeal(_currentTarget, true);
+
+       _isCanDamageDeal = false;
+
+        if (_heatedGlands.Data.IsOpen)
+            _player.CharacterState.CmdAddState(States.HeatedGlands, _heatedGlandsDuration, 0, _player.gameObject, null);
+
+        if (_coldBlood.IsCanCritLightningStrikes && _isIncreaseCooldownTime == true)
+        {
+            _isIncreaseCooldownTime = false;
         }
     }
 }
