@@ -72,7 +72,7 @@ public class AssasinPoison : Talent
 
                     float newCooldownTime = 0f;
 
-                    _poisonBall.ReductionCooldownTimeCharge(newCooldownTime);
+                    //_poisonBall.ReductionCooldownTimeCharge(newCooldownTime);
 
                     break;
                 }

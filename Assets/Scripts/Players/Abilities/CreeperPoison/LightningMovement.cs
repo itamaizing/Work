@@ -853,7 +853,7 @@ public class LightningMovement : Skill
 
         _player.Animator.rootRotation = targetRotation;
 
-        playerCharacter.Rb.DOMove(firstLeapPoint, durationLeap * rangeLeap / GlobalVariable.cellSize).SetEase(Ease.OutSine);
+        playerCharacter.Rigidbody.DOMove(firstLeapPoint, durationLeap * rangeLeap / GlobalVariable.cellSize).SetEase(Ease.OutSine);
 
         if (_timerForEndCastCoroutine == null)
             _timerForEndCastCoroutine = StartCoroutine(TimerForEndCast(durationLeap + multiplierDistanceLeap));
@@ -882,7 +882,7 @@ public class LightningMovement : Skill
 
             playerCharacter.transform.LookAt(firstLeapPoint);
 
-            playerCharacter.Rb.DOMove(firstLeapPoint, (durationLeap * rangeLeap / GlobalVariable.cellSize)).SetEase(Ease.OutSine);
+            playerCharacter.Rigidbody.DOMove(firstLeapPoint, (durationLeap * rangeLeap / GlobalVariable.cellSize)).SetEase(Ease.OutSine);
             
         }).AppendInterval(interval);
 
@@ -895,7 +895,7 @@ public class LightningMovement : Skill
 
             playerCharacter.transform.LookAt(secondLeapPoint);
 
-            playerCharacter.Rb.DOMove(secondLeapPoint, (durationLeap * rangeLeap / GlobalVariable.cellSize)).SetEase(Ease.OutSine);
+            playerCharacter.Rigidbody.DOMove(secondLeapPoint, (durationLeap * rangeLeap / GlobalVariable.cellSize)).SetEase(Ease.OutSine);
 
             if (_timerForEndCastCoroutine == null)
                 _timerForEndCastCoroutine = StartCoroutine(TimerForEndCast(durationLeap + multiplierDistanceLeap));
