@@ -37,7 +37,7 @@ public class IcePuddle : Skill
 
     protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => 0;
+    protected override int AnimTriggerCast => Animator.StringToHash("IcePuddle");
 
     private bool CheckCanCast()
 	{
@@ -364,5 +364,21 @@ public class IcePuddle : Skill
 	public void SetTalentEvadeDadBoost(bool value)
 	{
 		_talentEvadeDadBoost = value;
+	}
+
+	public void IcePuddleCast()
+	{
+		AnimStartCastCoroutine();
+	}
+
+	public void IcePuddleEnd()
+	{
+		AnimCastEnded();
+		_move.CanMove = true;
+	}
+
+	public void StopMoveIcePuddle()
+	{
+		_move.CanMove = false;
 	}
 }
