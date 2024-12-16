@@ -8,11 +8,11 @@ public class MagicDefenseTalent : Talent
 	[SerializeField] private SkillManager _ability;
 	public override void Enter()
 	{
-		_ability.ActivateSkill(_magicDefense);
+		//_ability.ActivateSkill(_magicDefense);
 	}
 
 	public override void Exit()
 	{
-		_ability.DeactivateSkill(_magicDefense);
+		//_ability.DeactivateSkill(_magicDefense);
 	}
 }

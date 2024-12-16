@@ -1,70 +1,89 @@
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public abstract class GameRules : NetworkBehaviour
 {
+    [SerializeField] private int _expValuePerPlayer = 10;
+    [SerializeField] private float _baseTimeForRevival = 5;
+    [SerializeField] private float _AddTimeForRevival = 1;
+
     protected readonly SyncList<GameObject> _playersSyncList = new SyncList<GameObject>();
     protected List<Character> _players = new List<Character>();
-    protected NetworkRoom _room;
-    protected List<Transform> _spawnPoints;
 
-    [SyncVar(hook = nameof(GameStatusHook))] private bool _isStarted;
+    protected NetworkRoom _room;
+
+    [SyncVar]protected string _roomName;
+
+    protected HeroSpawnManager _spawnPoints;
+    protected GameManager _gameManager;
+
+    [SyncVar] private bool _isStarted;
+    private float _disconnectDelayClient = 6f;
+    private float _disconnectDelayServer = 5f;
     public bool IsStarted { get => _isStarted; set => _isStarted = value; }
 
     public SyncList<GameObject> Players => _playersSyncList;
-    public List<Transform> SpawnPoints => _spawnPoints;
+    public HeroSpawnManager SpawnPoints => _spawnPoints;
 
-    public abstract void GameStartServer(List<Transform> spawnPoints);
+    public abstract void GameStartServer(HeroSpawnManager spawnPoints);
     protected abstract void UnsubscribeFromAllEvents();
     protected abstract void GameStartClient();
+    protected abstract void OnPlayerDied(Character character);
 
     public void Init(NetworkRoom room)
     {
         _room = room;
+        _roomName = _room.SceneName;
 
-        foreach (var item in _room.Players)
-        {
-            _playersSyncList.Add(item);
-            var playerSettings = item.GetComponent<Character>();
-            if (playerSettings != null)
-            {
-                _players.Add(playerSettings);
-            }
-        }
+        AddAllPlayersInList();
+        SubscribingOnPlayerEvents();
 
-        StartCoroutine(WaitForSceneAndFindSpawnPoints());
+        StartCoroutine(FindServerGameManager());
     }
 
-    protected virtual void GameStatusHook(bool oldValue, bool newValue)
+    public override void OnStartClient()
     {
-        if (newValue)
-        {
-            GameStartClient();
-        }
+        base.OnStartClient();
+        StartCoroutine(FoundGameManagerCorounite());
     }
 
-    protected virtual IEnumerator WaitForSceneAndFindSpawnPoints()
+    public void CloseRoomOnClient()
+    {
+        ServerManager.Instance.EnableMenu();
+        SceneManager.UnloadSceneAsync(_roomName);
+        Destroy(gameObject);
+    }
+
+    protected virtual void EndGame()
+    {
+        StartCoroutine(CloseRoomJob());
+    }
+
+    protected virtual IEnumerator FindServerGameManager()
     {
         while (!_room.IsLoaded)
         {
             yield return null;
         }
 
-        FindSpawnPoints();
+        FindGameManager();
     }
 
-    protected void FindSpawnPoints()
+    protected void FindGameManager()
     {
-        var spawnPointContainer = FindObjectOfType<SpawnPointsContainer>();
-        if (spawnPointContainer != null)
+        var gameManager = FindObjectOfType<GameManager>();
+        if (gameManager != null)
         {
-            _spawnPoints = spawnPointContainer.GetSpawnPoints();
+            _gameManager = gameManager;
+            _spawnPoints = _gameManager.HeroSpawnManager;
         }
     }
 
-    protected virtual IEnumerator SplitTeams(List<Transform> spawnPoints)
+    protected virtual IEnumerator SplitTeams(HeroSpawnManager spawnPoints)
     {
         int team1Count = 0;
         int team2Count = 0;
@@ -75,22 +94,23 @@ public abstract class GameRules : NetworkBehaviour
             byte teamIndex = (byte)(team1Count <= team2Count ? 1 : 2);
             playerSettings.NetworkSettings.TeamIndex = teamIndex;
 
-            Transform spawnPoint = spawnPoints[i % spawnPoints.Count];
-            if (spawnPoint != null)
+            foreach (var player in _players)
             {
-                foreach (var player in _players)
-                {
-                    playerSettings.NetworkSettings.Players.Add(player.gameObject);
-                }
-
-                playerSettings.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
-                playerSettings.NetworkSettings.SetSpawnPosition(spawnPoint.position);
+                playerSettings.NetworkSettings.Players.Add(player.gameObject);
             }
 
+            playerSettings.transform.SetPositionAndRotation(spawnPoints.GetRandomPoint(teamIndex-1), spawnPoints.GetRotate(teamIndex-1));
+            playerSettings.NetworkSettings.SetSpawnPosition(spawnPoints.GetRandomPoint(teamIndex-1));
+
             if (teamIndex == 1)
+            {
                 team1Count++;
+            }   
             else
+            {
                 team2Count++;
+            }
+                
         }
 
         yield return null;
@@ -113,12 +133,157 @@ public abstract class GameRules : NetworkBehaviour
     protected IEnumerator CloseRoomJob()
     {
         UnsubscribeFromAllEvents();
+        UnsubscribingOnPlayerEvents();
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSecondsRealtime(_disconnectDelayClient);
 
-        if (_room != null)
+        RpcCloseRoomOnClients();
+
+        yield return new WaitForSecondsRealtime(_disconnectDelayServer);
+
+        yield return _room.UnloadRoomJob();
+    }
+
+    protected virtual void AddExpForAllEnemy(Character character)
+    {
+        if(character is HeroComponent)
         {
-            yield return _room.UnloadRoomJob();
+            foreach (var player in _players)
+            {
+                if (character.NetworkSettings.TeamIndex != player.NetworkSettings.TeamIndex)
+                {
+                    player.LVL.AddEXP(_expValuePerPlayer);
+                }
+            }
         }
+        else if(character is MinionComponent minion)
+        {
+            foreach (var player in _players)
+            {
+                if (character.NetworkSettings.TeamIndex != player.NetworkSettings.TeamIndex)
+                {
+                    player.LVL.AddEXP(minion.ExpForDieKill);
+                }
+            }
+        }
+    }
+
+    protected virtual void ResetAllPlayers()
+    {
+        foreach (var player in _players)
+        {
+            player.ServerResetAll();
+        }
+    }
+
+    protected virtual void MoveAllPlayersInSpawnPoint()
+    {
+        foreach (var player in _players)
+        {
+            MovePlayerInSpawn(player);
+        }
+    }
+
+    protected void MovePlayerInSpawn(Character player)
+    {
+        RpcTeleportPlayer(player.gameObject, _spawnPoints.GetRandomPoint(player.NetworkSettings.TeamIndex - 1), _spawnPoints.GetRotate(player.NetworkSettings.TeamIndex - 1));
+    }
+
+    protected IEnumerator RevivalPlayerCoroutine(Character player)
+    {
+        float time = _baseTimeForRevival + _AddTimeForRevival * player.LVL.Value;
+        RpcStartReviveTimer(player.gameObject, time);
+        yield return new WaitForSecondsRealtime(time);
+        player.ServerResetAll();
+        MovePlayerInSpawn(player);
+    }
+
+    private void AddAllPlayersInList()
+    {
+        foreach (var item in _room.Players)
+        {
+            _playersSyncList.Add(item);
+            var playerSettings = item.GetComponent<Character>();
+            if (playerSettings != null)
+            {
+                _players.Add(playerSettings);
+            }
+        }
+    }
+
+    private void SubscribingOnPlayerEvents()
+    {
+        foreach (var item in _players)
+        {
+            item.Died += OnPlayerDied;
+        }
+    }
+    
+    private void UnsubscribingOnPlayerEvents()
+    {
+        foreach (var item in _players)
+        {
+            item.Died -= OnPlayerDied;
+        }
+    }
+
+    private IEnumerator FoundGameManagerCorounite()
+    {
+        while(_gameManager == null)
+        {
+            yield return new WaitForSecondsRealtime(0.5f);
+            FindGameManager();
+        }
+
+        foreach (var item in _playersSyncList)
+        {
+            var playerSettings = item.GetComponent<Character>();
+            if (playerSettings != null)
+            {
+                _players.Add(playerSettings);
+            }
+        }
+        foreach (var playerSettings in _players)
+        {
+            if (playerSettings.NetworkSettings.TeamIndex == 1)
+            {
+                _gameManager.TeamsPanel.AddInFirstTeam(playerSettings);
+            }
+            else
+            {
+                _gameManager.TeamsPanel.AddInSecondTeam(playerSettings);
+            }
+        }
+        GameStartClient();
+    }
+
+    [ClientRpc]
+    protected void RpcTeleportPlayer(GameObject player, Vector3 position, Quaternion rotation)
+    {
+        player.transform.SetPositionAndRotation(position, rotation);
+    }
+
+    [ClientRpc]
+    protected void RpcStartReviveTimer(GameObject character, float time)
+    {
+        _gameManager.TeamsPanel.StartReviveTimer(character.GetComponent<Character>(), time);
+    }
+
+    [ClientRpc]
+    protected virtual void RpcSetSource(int teamIndex, int source)
+    {
+        _gameManager.SourceUI.SetSource(teamIndex, source);
+    }
+
+    [ClientRpc]
+    protected virtual void RpcShowWinner(int teamIndex)
+    {
+        _gameManager.SourceUI.ShowWinner(teamIndex);
+    }
+
+    [ClientRpc]
+    protected void RpcCloseRoomOnClients()
+    {
+        CloseRoomOnClient();
     }
 }

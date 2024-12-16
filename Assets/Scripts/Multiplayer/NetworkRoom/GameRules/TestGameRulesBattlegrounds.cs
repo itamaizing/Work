@@ -17,7 +17,7 @@ public class TestGameRulesBattlegrounds : GameRules
 
     [SerializeField] private bool isRemoveRoom = true;
 
-    public override void GameStartServer(List<Transform> spawnPoints)
+    public override void GameStartServer(HeroSpawnManager spawnPoints)
     {
         StartCoroutine(HandleTeamsAndSpawns(spawnPoints));
         FindTeamTowers();
@@ -135,10 +135,9 @@ public class TestGameRulesBattlegrounds : GameRules
     private void RespawnPlayer(Character playerSettings)
     {
         int spawnIndex = playerSettings.NetworkSettings.TeamIndex - 1;
-        if (_spawnPoints != null && spawnIndex >= 0 && spawnIndex < _spawnPoints.Count)
+        if (_spawnPoints != null)
         {
-            Transform spawnPoint = _spawnPoints[spawnIndex];
-            RpcTeleportPlayer(playerSettings.gameObject, spawnPoint.position, spawnPoint.rotation);
+            RpcTeleportPlayer(playerSettings.gameObject, _spawnPoints.GetRandomPoint(spawnIndex), _spawnPoints.GetRotate(spawnIndex));
         }
     }
 
@@ -233,16 +232,15 @@ public class TestGameRulesBattlegrounds : GameRules
         SceneManager.LoadScene("MainMenu");
     }
 
-    private IEnumerator HandleTeamsAndSpawns(List<Transform> spawnPoints)
+    private IEnumerator HandleTeamsAndSpawns(HeroSpawnManager spawnPoints)
     {
         yield return StartCoroutine(SplitTeams(spawnPoints));
         foreach (var playerSettings in _players)
         {
             int spawnIndex = playerSettings.NetworkSettings.TeamIndex - 1;
-            if (_spawnPoints != null && spawnIndex >= 0 && spawnIndex < _spawnPoints.Count)
+            if (_spawnPoints != null)
             {
-                Transform spawnPoint = _spawnPoints[spawnIndex];
-                playerSettings.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
+                playerSettings.transform.SetPositionAndRotation(_spawnPoints.GetRandomPoint(spawnIndex), _spawnPoints.GetRotate(spawnIndex));
             }
         }
 
@@ -258,5 +256,10 @@ public class TestGameRulesBattlegrounds : GameRules
         }
 
         StartCoroutine(CloseRoomJob());
+    }
+
+    protected override void OnPlayerDied(Character character)
+    {
+        throw new System.NotImplementedException();
     }
 }

@@ -243,7 +243,7 @@ MonoBehaviour:
   syncInterval: 0
   _playerData: {fileID: 11400000, guid: 6d4bdd627c946744396722e0bd4dd7d5, type: 2}
   _networkSettings: {fileID: 8415053888924651187}
-  rb: {fileID: 5333065205538383447}
+  _rigidbody: {fileID: 5333065205538383447}
   _collider: {fileID: 4687739072136256028}
   _lvl: {fileID: 3451587424398751894}
   _animator: {fileID: 3218874933856675809}
@@ -260,6 +260,8 @@ MonoBehaviour:
   - {fileID: 8550944225159128354}
   _selectedCircle: {fileID: 4163371236763689060}
   _spawnComponent: {fileID: 5963193180723515438}
+  _expForDieKill: 5
+  _navMeshAgent: {fileID: 1780925315992858912}
 --- !u!195 &1780925315992858912
 NavMeshAgent:
   m_ObjectHideFlags: 0

@@ -36,6 +36,7 @@ public class User : NetworkBehaviour
             if (Instance == null)
             {
                 Instance = this;
+                _id = MPNetworkManager.Instance.UserID;
                 InitializeManagers();
             }
 
