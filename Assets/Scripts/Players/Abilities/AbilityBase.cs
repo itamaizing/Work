@@ -397,7 +397,8 @@ public abstract class AbilityBase : MonoBehaviour
 			_cursorIsActive = true;
 		}
 
-		if (DrawCircle.lineRenderer && DrawCircle.lineRenderer.positionCount > 0 && CanDrawCircle == false)
+		//if (DrawCircle.lineRenderer && DrawCircle.lineRenderer.positionCount > 0 && CanDrawCircle == false)
+		if (DrawCircle.isActive && CanDrawCircle == false)
 		{
 			DrawCircle.Clear();
 		}
@@ -795,10 +796,12 @@ public abstract class AbilityBase : MonoBehaviour
 				newSelectColor.a = alpha;
 				CircleSelect.GetComponent<SpriteRenderer>().color = newSelectColor;
 
-				DrawCircle.lineRenderer.startColor = new Color(DrawCircle.lineColor.r, DrawCircle.lineColor.g,
+				/*DrawCircle.lineRenderer.startColor = new Color(DrawCircle.lineColor.r, DrawCircle.lineColor.g,
 					DrawCircle.lineColor.b, alpha);
 				DrawCircle.lineRenderer.endColor = new Color(DrawCircle.lineColor.r, DrawCircle.lineColor.g,
-					DrawCircle.lineColor.b, alpha);
+					DrawCircle.lineColor.b, alpha);*/
+				DrawCircle.SetColor(new Color(DrawCircle.lineColor.r, DrawCircle.lineColor.g,
+					DrawCircle.lineColor.b, alpha));
 				yield return null;
 			}
 		}

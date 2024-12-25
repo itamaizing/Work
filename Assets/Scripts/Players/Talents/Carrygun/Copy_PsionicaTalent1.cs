@@ -169,7 +169,8 @@ public class Copy_PsionicaTalent1 : MonoBehaviour
             _cursorIsActive = true;
         }
 
-        if (_drawCircle.lineRenderer && _drawCircle.lineRenderer.positionCount > 0 && _canDrawCircle == false)
+        //if (_drawCircle.lineRenderer && _drawCircle.lineRenderer.positionCount > 0 && _canDrawCircle == false)
+        if (_drawCircle.isActive && _canDrawCircle == false)
         {
             _drawCircle.Clear();
 

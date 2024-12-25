@@ -698,8 +698,15 @@ public abstract class Skill : NetworkBehaviour
                 target.isCharater = true;
 				break; 
             case SkillType.Projectile:
-				target.character = closerTarget;
-				target.isCharater = true;
+				/*target.character = closerTarget;
+				target.isCharater = true;*/
+				if (Physics.Raycast(ray, out hit))
+				{
+					Debug.Log(hit.point);
+				}
+				if (Vector3.Distance(hit.point, transform.position) <= Radius)
+					target.Position = hit.point;
+				target.isCharater = false;
 				break;
 			case SkillType.Zone:
 				if (Physics.Raycast(ray, out hit))
