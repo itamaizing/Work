@@ -17,6 +17,7 @@ public class IceShadow : Skill
 	//private RuneComponent _rune;
 	private bool _lastHit = false;
 	private bool _talentEvade = false;
+	private bool _talentDamage = false;
 	private bool _evaded = false;
 	private float _evadedTimer = 2f;
 	private float _manaUsed = 0;
@@ -93,11 +94,11 @@ public class IceShadow : Skill
 
 		_manaUsed = _energy.CurrentValue;
 		_energy.CmdUse(_manaUsed);
-		CmdCreateProjecttile(0, _manaUsed, _lastHit);
+		CmdCreateProjecttile(0, _manaUsed, _lastHit, _talentDamage);
 	}
 
 	[Command]
-	private void CmdCreateProjecttile(float angle, float manaValue, bool lastHit)
+	private void CmdCreateProjecttile(float angle, float manaValue, bool lastHit, bool damage)
 	{
 		IceShadowObject projectile = Instantiate(_shadow, gameObject.transform.position, Quaternion.identity);
 		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
@@ -105,21 +106,28 @@ public class IceShadow : Skill
 		//SceneManager.MoveGameObjectToScene(projectile.gameObject, userSettings.MyRoom);
 
 		projectile.Init(_playerLinks, manaValue, lastHit, this);
+		projectile.TalentDamage(damage);
 
 		NetworkServer.Spawn(projectile.gameObject);
 
-		RpcInit(projectile.gameObject, manaValue, lastHit);
+		RpcInit(projectile.gameObject, manaValue, lastHit, damage);
 	}
 
 	[ClientRpc]
-	private void RpcInit(GameObject obj, float manaValue, bool lastHit)
+	private void RpcInit(GameObject obj, float manaValue, bool lastHit, bool damage)
 	{
 		obj.GetComponent<IceShadowObject>().Init(_playerLinks, manaValue, lastHit, this);
+		obj.GetComponent<IceShadowObject>().TalentDamage(damage);
 	}
 
 	public void TalentEvade(bool value)
 	{
 		_talentEvade = value;
+	}
+
+	public void TalentDamage(bool value)
+	{
+		_talentDamage = value;
 	}
 
 	public void Evaded()

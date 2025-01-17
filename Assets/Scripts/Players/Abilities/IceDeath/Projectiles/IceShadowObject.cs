@@ -1,5 +1,7 @@
 using Mirror;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class IceShadowObject : Projectiles
@@ -9,7 +11,9 @@ public class IceShadowObject : Projectiles
 	[HideInInspector] public float timeToDestroyAlive = 30;
 
 	private Health _healthPlayer;
-
+	private Damage _damage;
+	private bool _talentDamage = false;
+	private float _damageTimer = 1f;
 	/*
 	 * timer to destroy
 	 * buff player
@@ -25,6 +29,20 @@ public class IceShadowObject : Projectiles
 
 		float timeToAdd = energy / 20;
 		timeToDestroy += timeToAdd;
+
+		_damage = new Damage
+		{
+			Value = 2,
+			Type = DamageType.Magical,
+		};
+	}
+
+	private void Update()
+	{
+		if(_talentDamage)
+		{
+			MakeDamage();
+		}
 	}
 
 	private void OnTriggerExit(Collider collision)
@@ -88,11 +106,56 @@ public class IceShadowObject : Projectiles
 		Destroy(gameObject);
 	}
 
+	public void TalentDamage(bool value)
+	{
+		_talentDamage = value;
+	}
+
 	private IEnumerator DestroyShadow()
 	{
 		yield return new WaitForSeconds(timeToDestroy);
 		Destroy(gameObject);
 		//turn off energy boost
 		//destroy	
+	}
+
+	private void MakeDamage()
+	{
+		_damageTimer -= Time.deltaTime;
+		if(_damageTimer < 0 )
+		{
+			List<Character> _listToDamage;
+			_listToDamage = GetCloserTargets(transform.position, 4);
+			if(_listToDamage !=  null)
+			for (int i = 0; i < _listToDamage.Count; i++) 
+			{
+				_listToDamage[i].Health.CmdTryTakeDamage( _damage, null);
+			}
+			_damageTimer = 1;
+		}
+	}
+
+	public List<Character> GetCloserTargets(Vector3 position, float radius)
+	{
+		List<Character> targets = new List<Character>();
+		Collider[] collider = Physics.OverlapSphere(position, radius);
+
+		foreach (var item in collider)
+		{
+			if (collider.Length > 0 && item.transform.TryGetComponent<Character>(out Character enemy))
+			{
+				if (enemy.transform == _dad.Health.transform)
+				{
+					continue;
+				}
+				targets.Add(enemy);
+			}
+		}
+		targets = targets.OrderBy(character => Vector3.Distance(character.transform.position, gameObject.transform.position)).ToList();
+
+		if (targets.Count <= 0)
+			return null;
+
+		return targets;
 	}
 }

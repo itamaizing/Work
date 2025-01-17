@@ -2150,6 +2150,75 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1536403845
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6086019476776207292, guid: cbb082e504b5cd74595d9455cfe3971e, type: 3}
+      propertyPath: m_RootOrder
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 6086019476776207292, guid: cbb082e504b5cd74595d9455cfe3971e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6086019476776207292, guid: cbb082e504b5cd74595d9455cfe3971e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6086019476776207292, guid: cbb082e504b5cd74595d9455cfe3971e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6086019476776207292, guid: cbb082e504b5cd74595d9455cfe3971e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6086019476776207292, guid: cbb082e504b5cd74595d9455cfe3971e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6086019476776207292, guid: cbb082e504b5cd74595d9455cfe3971e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6086019476776207292, guid: cbb082e504b5cd74595d9455cfe3971e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6086019476776207292, guid: cbb082e504b5cd74595d9455cfe3971e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6086019476776207292, guid: cbb082e504b5cd74595d9455cfe3971e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6086019476776207292, guid: cbb082e504b5cd74595d9455cfe3971e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6086019476776207293, guid: cbb082e504b5cd74595d9455cfe3971e, type: 3}
+      propertyPath: m_VisionDissapear
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6086019476776207293, guid: cbb082e504b5cd74595d9455cfe3971e, type: 3}
+      propertyPath: m_ShaderReferencesObject
+      value: 
+      objectReference: {fileID: 11400000, guid: 79202bc8abcb86c43a00cbb89869742e, type: 2}
+    - target: {fileID: 6086019476776207295, guid: cbb082e504b5cd74595d9455cfe3971e, type: 3}
+      propertyPath: m_Name
+      value: FogOfWar
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cbb082e504b5cd74595d9455cfe3971e, type: 3}
 --- !u!224 &1597151260 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1419970850613455640, guid: 1806d4d8d16bc814fb3618c65bcbb488, type: 3}
@@ -2293,9 +2362,21 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4749562299505610498, guid: ff1c8ecb71d19674e8778e3d04716b40, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4749562299505610498, guid: ff1c8ecb71d19674e8778e3d04716b40, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5768758082338775183, guid: ff1c8ecb71d19674e8778e3d04716b40, type: 3}
       propertyPath: sceneId
       value: 3186859394
+      objectReference: {fileID: 0}
+    - target: {fileID: 6900160720258213664, guid: ff1c8ecb71d19674e8778e3d04716b40, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7903002151615022421, guid: ff1c8ecb71d19674e8778e3d04716b40, type: 3}
       propertyPath: m_AnchorMax.x

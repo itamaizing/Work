@@ -9,7 +9,7 @@ public class Energy : Resource
 
 	private float _timer = 0;
 	private bool _canRegen = true;
-
+	private float _regenValue = 1;
 	private void Update()
 	{
 		if (_canRegen && _regenCoroutine == null)
@@ -82,8 +82,13 @@ public class Energy : Resource
 		_sumDamageGiven += damage;
 		while(_sumDamageGiven >= 10 ) 
 		{
-			CmdAdd(1);
+			CmdAdd(_regenValue);
 			_sumDamageGiven -= 10;
 		}
+	}
+
+	public void TalentRegenEnergy(float value)
+	{
+		_regenValue = value;
 	}
 }

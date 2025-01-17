@@ -12,6 +12,7 @@ public class IceRolling : Skill
 	[Header("Ability properties")]
 
 	[SerializeField] private Character _playerLinks;
+	[SerializeField] private PhysicalAttack _physicalAttack;
 	[SerializeField] private float _jumprange = 5f;
 	[SerializeField] private float _durationOfJump = 0.3f;
 
@@ -19,6 +20,10 @@ public class IceRolling : Skill
 	private Vector3 _jumpPos;
 	private Vector3 _lookDir;
 	private Energy _energy;
+	private bool _rollingPhysTalent = false;
+	private float _jumpCount = 0;
+	private bool _afterJump;
+	private float _afterJumpDelay = 1;
 	//private float TEMPFLOAT = 1;
 
 	protected override bool IsCanCast => true;
@@ -37,6 +42,14 @@ public class IceRolling : Skill
 			}
 		}
 
+	}
+
+	private void Update()
+	{
+		if(_afterJump)
+		{
+			TimerDelay();
+		}
 	}
 
 	private float GetJumpRange() 
@@ -127,6 +140,7 @@ public class IceRolling : Skill
 		Vector3 jumpPos = _lookDir * actualJumpRange + _playerLinks.transform.position;
 		if (CheckObstacleBetween(_playerLinks.transform.position, jumpPos))
 		{
+			_jumpCount = 5;
 			CmdPush(_jumpPos);
 			//прыгать до препятствия
 		}
@@ -134,6 +148,7 @@ public class IceRolling : Skill
 		{
 			for (int i = 0; i < 10; i++)
 			{
+				_jumpCount += 0.2f;
 				actualJumpRange += 0.2f;
 				Vector3 jumpPos2 = _lookDir * actualJumpRange + _playerLinks.transform.position;
 				if (_energy.CurrentValue >= 5 && !CheckObstacleBetween(_playerLinks.transform.position, jumpPos2))
@@ -143,6 +158,12 @@ public class IceRolling : Skill
 				}
 			}
 			CmdPush(jumpPos);
+
+			if (_rollingPhysTalent)
+			{
+				_physicalAttack.TalentRollingPhys(_afterJump, _jumpCount);
+				_afterJump = true;
+			}
 		}
 	}
 
@@ -206,5 +227,20 @@ public class IceRolling : Skill
 	private void CmdPush(Vector3 force)
 	{
 		_playerLinks.Move.TargetRpcDoMove(force, _durationOfJump);
+	}
+
+	public void TalentRollingPhys(bool value)
+	{
+		_rollingPhysTalent = value;
+	}
+
+	private void TimerDelay()
+	{
+		_afterJumpDelay -= Time.deltaTime;
+		if( _afterJumpDelay < 0 )
+		{
+			_afterJump = false;
+			_physicalAttack.TalentRollingPhys(_afterJump, 0);
+		}
 	}
 }
