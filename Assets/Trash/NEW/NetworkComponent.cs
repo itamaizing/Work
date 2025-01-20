@@ -34,7 +34,7 @@ public class NetworkComponent : NetworkBehaviour
 
     private void ServerHandleUnitDelete(Character character)
     {
-        if (character == null || controllableUnits == null)
+        if (character == null || controllableUnits == null || character.isClient == false)
             return;
 
         if (character.connectionToClient != null &&

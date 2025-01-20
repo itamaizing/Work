@@ -10,8 +10,10 @@ public class MinionComponent : Character
     [SerializeField] protected NavMeshAgent _navMeshAgent;
 
     protected HeroComponent _myHeroParent;
+    [SyncVar] private bool _isIntercepted = false;
 
     public int ExpForDieKill { get => _expForDieKill; }
+    public bool IsIntercepted { get => _isIntercepted; }
 
     public event Action<MinionComponent> Destroyed;
     public event Action<MinionComponent> Intercepted;
@@ -22,6 +24,7 @@ public class MinionComponent : Character
         temp.RemoveClientAuthority();
         temp.AssignClientAuthority(con);
 
+        _isIntercepted = true;
         Intercepted?.Invoke(this);
     }
 

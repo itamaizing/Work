@@ -92,6 +92,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8388980576940739991, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _character
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Name
       value: BaseMinion
@@ -330,7 +334,7 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _cooldownTime: 1
   _castDeley: 0
-  _damageValue: 0
+  _damageValue: 5
   _abilitySchool: 8
   _abilityForm: 0
   _damageType: 5
@@ -338,7 +342,7 @@ MonoBehaviour:
   _skillType: 2
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -349,7 +353,7 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 0
+  _radius: 2
   _area: 0
   _castLength: 0
   _castWidth: 0
@@ -358,6 +362,11 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _agent: {fileID: 1780925315992858912}
+  _enemyCheckRadius: 6
+  _enemyLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
+  _damageDeley: 1
 --- !u!114 &3097324644064452792 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 9112797239584284270, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
