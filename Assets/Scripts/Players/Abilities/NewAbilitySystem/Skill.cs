@@ -1178,7 +1178,6 @@ public abstract class Skill : NetworkBehaviour
     public void ApplyDamage(Damage damage, GameObject target)
     {
         target.GetComponent<IDamageable>().TryTakeDamage(ref damage, this);
-        Hero.DamageTracker.AddDamage(damage, isServerRequest: isServer);
     }
 
     [Command]

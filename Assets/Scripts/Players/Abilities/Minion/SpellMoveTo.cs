@@ -6,7 +6,14 @@ using UnityEngine.AI;
 public class SpellMoveTo : Skill
 {
     [SerializeField] private NavMeshAgent _agent;
+    [SerializeField] private float _enemyCheckRadius = 6;
+    [SerializeField] private LayerMask _enemyLayerMask;
+    [SerializeField] private float _damageDeley = 0.5f;
+
     private Vector3 _targetPoint = Vector3.positiveInfinity;
+    private Character _target = null;
+    private Character _enemyTarget = null;
+    private float _currentDamageDeley;
 
     protected override int AnimTriggerCastDelay => 0;
 
@@ -14,26 +21,90 @@ public class SpellMoveTo : Skill
 
     protected override bool IsCanCast => true;
 
+    protected virtual void DealDamage()
+    {
+        Damage damage = new Damage
+        {
+            Value = Buff.Damage.GetBuffedValue(_damageValue),
+            Type = DamageType,
+            PhysicAttackType = AttackRangeType,
+        };
+        CmdApplyDamage(damage, _enemyTarget.gameObject);
+    }
+
     protected override IEnumerator CastJob()
     {
-        _agent.SetDestination(_targetPoint);
+        while (_targetPoint != Vector3.positiveInfinity)
+        {
+            if(_target != null)
+                _targetPoint = _target.transform.position;
+
+            _enemyTarget = CheckEnemy(_enemyCheckRadius);
+
+            if(_enemyTarget != null)
+            {
+                _agent.SetDestination(_enemyTarget.transform.position);
+
+                if(Vector3.Distance(transform.position, _enemyTarget.transform.position) <= Radius)
+                {
+                    _currentDamageDeley += Time.deltaTime;
+
+                    if (_currentDamageDeley >= _damageDeley)
+                    {
+                        DealDamage();
+                        _currentDamageDeley = 0;
+                    }
+                }
+            }
+            else
+            {
+                _currentDamageDeley = 0;
+                _agent.SetDestination(_targetPoint);
+            }
+            yield return null;
+        }
         yield return null;
     }
 
     protected override void ClearData()
     {
+        _agent.SetDestination(transform.position);
         _targetPoint = Vector3.positiveInfinity;
+        _target = null;
     }
 
     protected override IEnumerator PrepareJob()
     {
-        while (float.IsPositiveInfinity(_targetPoint.x))
+        while (float.IsPositiveInfinity(_targetPoint.x) && _target == null)
         {
             if (GetMouseButton)
             {
-                _targetPoint = GetMousePoint();
+                _target = GetRaycastTarget();
+
+                if (_target == null)
+                {
+                    _targetPoint = GetMousePoint();
+                }
+                else
+                {
+                    _targetPoint = _target.transform.position;
+                }
             }
             yield return null;
         }
+    }
+
+    private Character CheckEnemy(float radius)
+    {
+        Collider[] coliders = Physics.OverlapSphere(_targetPoint, radius, _enemyLayerMask);
+        Character enemy = null;
+
+        if(coliders.Length > 0)
+        {
+            Debug.Log(coliders[0].name);
+            coliders[0].TryGetComponent<Character>(out enemy);
+        }
+
+        return enemy;
     }
 }

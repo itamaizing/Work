@@ -60,7 +60,24 @@ public class SelectManager : MonoBehaviour
             _dragBox.StopDraw();
         }
 
-       /* if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            if (SelectedControllableUnits.Count <= 0) return;
+
+            foreach (var unit in SelectedControllableUnits)
+            {
+                unit.SelectComponent.IsCurrentPlayer = false;
+            }
+
+            _currentUnitNumber++;
+
+            if(_currentUnitNumber >= _canContollUnits.Count)
+                _currentUnitNumber = 0;
+
+            SelectInArea(_canContollUnits[_currentUnitNumber]);
+        }
+        /*
+        if (Input.GetKeyDown(KeyCode.Tab))
         {
             if (SelectedControllableUnits.Count <= 0) return;
 
@@ -72,22 +89,22 @@ public class SelectManager : MonoBehaviour
             _currentUnitNumber = (_currentUnitNumber + 1) % SelectedControllableUnits.Count;
             SelectedControllableUnits[_currentUnitNumber].SelectComponent.IsCurrentPlayer = true;
         }
+        /*
+         if (Input.GetKeyDown(KeyCode.Mouse0))
+         {
+             if (SelectedControllableUnits.Count <= 1) return;
 
-        if (Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            if (SelectedControllableUnits.Count <= 1) return;
+             var center = CalculateCenterPoint();
+             bool[] sectorOccupied = new bool[SelectedControllableUnits.Count];
 
-            var center = CalculateCenterPoint();
-            bool[] sectorOccupied = new bool[SelectedControllableUnits.Count];
-
-            foreach (var character in SelectedControllableUnits)
-            {
-                int sector = DetermineOffset(character.transform.position, center, sectorOccupied, out Vector3 offset);
-                sectorOccupied[sector] = true;
-                character.Move.SetOffset(offset);
-            }
-        }
-        */
+             foreach (var character in SelectedControllableUnits)
+             {
+                 int sector = DetermineOffset(character.transform.position, center, sectorOccupied, out Vector3 offset);
+                 sectorOccupied[sector] = true;
+                 character.Move.SetOffset(offset);
+             }
+         }
+         */
     }
 
     public void SelectOnClick(Character character)
@@ -102,6 +119,7 @@ public class SelectManager : MonoBehaviour
 
     public void SelectInArea(Character character)
     {
+        DeselectAll();
         Debug.Log("Select " + character.name);
         if (!_canContollUnits.Contains(character)) return;
         
@@ -119,7 +137,6 @@ public class SelectManager : MonoBehaviour
         }
 
         SelectedControllableUnits.FirstOrDefault()!.SelectComponent.IsCurrentPlayer = true;
-        _currentUnitNumber = 0;
     }
 
     public void Deselect(Character character)
