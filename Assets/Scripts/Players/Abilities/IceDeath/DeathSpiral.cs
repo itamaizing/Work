@@ -37,7 +37,18 @@ public class DeathSpiral : Skill
 	private void Update()
 	{
 		Timer();
+
+		if(Input.GetKeyDown(KeyCode.P))
+		{
+			AddCharge();
+		}
 	}
+
+	protected override void Awake()
+	{
+		Chargers = 0;
+	}
+
 	protected override IEnumerator PrepareJob()
 	{
 		while (_target == null)
@@ -143,31 +154,31 @@ public class DeathSpiral : Skill
 	}*/
 
 	[Command]
-	private void Shoot(float angle, bool inTheRow, GameObject target)
+	private void Shoot(float angle, bool inTheRow, GameObject target, bool talentBoostHpBody, bool talentHitState, bool talentPlague, bool talentChargesPlague, bool superCharge, bool corpseDeath, bool corpseBoostExplode)
 	{
 		Debug.Log(target + " target name ");
 		DeathSpiralProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, -angle, 0));
 		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
 		projectile.Init(_playerLinks, 0, false, this);
 		projectile.SetTarget(target);
-		projectile.Talents(_talentBoostHPBOdy, _talentHitState, inTheRow, _talentPlague, _talentChragesPlague, _superCharge);
-		projectile.Talents(_talentCorpseDeath, _talentCorpseBoostExplode);
+		projectile.Talents(talentBoostHpBody, talentHitState, inTheRow, talentPlague, talentChargesPlague, superCharge);
+		projectile.Talents(corpseDeath, corpseBoostExplode);
 
 		NetworkServer.Spawn(projectile.gameObject);
 
-		RpcInit(projectile.gameObject, target);
+		RpcInit(projectile.gameObject, target, talentBoostHpBody, talentHitState, inTheRow, talentPlague, talentChargesPlague, superCharge, corpseDeath, corpseBoostExplode);
 		_superCharge = false;
 	}
 
 	[ClientRpc]
-	private void RpcInit(GameObject obj, GameObject target)
+	private void RpcInit(GameObject obj, GameObject target, bool talentBoostHpBody, bool talentHitState, bool inTheRow, bool talentPlague, bool talentChargesPlague, bool superCharge, bool corpseDeath, bool corpseBoostExplode)
 	{
 		Debug.Log(target + " target name ");
 		DeathSpiralProjectile projectile = obj.GetComponent<DeathSpiralProjectile>();
 		projectile.Init(_playerLinks, 0, false, this);
 		projectile.SetTarget(target);
-		projectile.Talents(_talentBoostHPBOdy, _talentHitState, _inTheRow, _talentPlague, _talentChragesPlague, _superCharge);
-		projectile.Talents(_talentCorpseDeath, _talentCorpseBoostExplode);
+		projectile.Talents(talentBoostHpBody, talentHitState, inTheRow, talentPlague, talentChargesPlague, superCharge);
+		projectile.Talents(corpseDeath, corpseBoostExplode);
 		_superCharge = false;
 	}
 
@@ -205,6 +216,7 @@ public class DeathSpiral : Skill
 
 	private void PlagueAbsorptionCharge()
 	{
+		Debug.Log("PLAGUE Absorption ATTACK");
 		_superCharge = true;
 		_inTheRow = true;
 
@@ -234,27 +246,31 @@ public class DeathSpiral : Skill
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
 		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0, 0);
-		Shoot(angle, _inTheRow, _target);
+
+
+		Shoot(angle, _inTheRow, _target, _talentBoostHPBOdy, _talentHitState, _talentPlague, _talentChragesPlague, _superCharge, _talentCorpseDeath, _talentCorpseBoostExplode);
 	}
 
 	private void BasicShoot()
 	{
+		Debug.Log("FIRST ATTACK");
 		_firstShot = false;
 		_superCharge = false;
 		_inTheRow = true;
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
 		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0, 0);
-		Shoot(angle, _inTheRow, _target);
+		Shoot(angle, _inTheRow, _target, _talentBoostHPBOdy, _talentHitState, _talentPlague, _talentChragesPlague, _superCharge, _talentCorpseDeath, _talentCorpseBoostExplode);
 	}
 
 	private void SecondAttact()
 	{
+		Debug.Log("SECOND ATTACK");
 		_superCharge = false;
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
 		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0, 0);
-		Shoot(angle, _inTheRow, _target);
+		Shoot(angle, _inTheRow, _target, _talentBoostHPBOdy, _talentHitState, _talentPlague, _talentChragesPlague, _superCharge, _talentCorpseDeath, _talentCorpseBoostExplode);
 	}
 
 	public void AddCharge()
@@ -263,6 +279,7 @@ public class DeathSpiral : Skill
 		{
 			Chargers = Chargers + 1;
 		}
+		Debug.Log(Chargers + " curNum " + _maxCharges + " Max");
 	}
 
 	private void Timer()
@@ -309,6 +326,7 @@ public class DeathSpiral : Skill
 
 	public void TalentMaxCharges(int maxChargesValue)
 	{
+		//if()
 		_maxCharges = maxChargesValue;
 	}
 

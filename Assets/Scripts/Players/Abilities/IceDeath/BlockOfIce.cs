@@ -41,6 +41,7 @@ public class BlockOfIce : Skill
 		Debug.Log("shot");
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
+		Debug.Log(angle + " angle");
 		CmdCreateProjecttile(angle);
 		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0, 0);
 	}
@@ -73,18 +74,22 @@ public class BlockOfIce : Skill
 
 				if (GetTarget().isCharater)
 				{
-					if (GetTarget().character == null)
+					Debug.Log("Character try");
+					if (GetTarget().character != null)
 					{
-						//_mousePos = GetTarget().Position;
-					}
-					else
-					{
+						//Debug.Log("Character");
 						_mousePos = GetTarget().character.transform.position;
+						Debug.Log(Vector3.Distance(_mousePos, transform.position) + " Distance");
+						if(Vector3.Distance(_mousePos, transform.position) < 0.2f)
+						{
+							_mousePos = Vector2.positiveInfinity;
+						}
 					}
 				}
 				else
 				{
-					_mousePos = GetTarget().Position;
+					Debug.Log("Position");
+					_mousePos = GetMousePoint();
 				}
 			}
 			yield return null;

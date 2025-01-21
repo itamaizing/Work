@@ -104,9 +104,9 @@ public abstract class Skill : NetworkBehaviour
     protected IDamageable _tempForDamage;
     protected IHealingable _tempForHealing;
     protected bool _isPlayCastAnim;
+    protected int _currentChargers;
 
     private Character _tempTargetbase;
-    private int _currentChargers;
     private float _remainingCooldownTime;
     private StatsBuff _statsBuff = new StatsBuff();
     private Coroutine _actionWrapperForPreparingCoroutine;
@@ -828,6 +828,7 @@ public abstract class Skill : NetworkBehaviour
 		}*/
         target.Position = transform.position;
         target.character = _hero;
+		target.isCharater = true;
 
         return target;
     }

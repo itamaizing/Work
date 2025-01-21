@@ -58,6 +58,7 @@ public class IceShardProjectile : Projectiles
 				target.CharacterState.AddState(States.Frozen, duration, 30, _dad.gameObject, _skill.name);
 				if (_talentPlague)
 				{
+					Debug.Log("ADD PLAGUE");
 					target.CharacterState.AddState(States.Plague, 5, 0, _dad.gameObject, _skill.name);
 				}
 				if (_talentChragesPlague)

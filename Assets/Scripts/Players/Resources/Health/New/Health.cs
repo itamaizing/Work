@@ -111,7 +111,8 @@ public class Health : Resource, IDamageable, IHealingable
 
     public void SetEvadeAll(float value)
     {
-        _defPhysDamage += value;
+		//Debug.Log("EVADEBOOST " + value);
+		_defPhysDamage += value;
         _defMagDamage += value;
         _resistMagDamage += value;
         _evadeMeleeDamage += value;

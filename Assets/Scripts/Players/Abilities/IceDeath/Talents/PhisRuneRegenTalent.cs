@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PhisAndDeadBodyTalent : Talent
+public class PhisRuneRegenTalent : Talent
 {
 	[SerializeField] private PhysicalAttack _physicalAttack;
 	

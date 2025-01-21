@@ -10,12 +10,14 @@ public class PhysicalAttack : AutoAttackSkill
 
 	private Character _curTarget;
 	private Vector2 _jumpPos;
-	private bool _talentActive = false;
 	private Energy _energy;
 	private RuneComponent _rune;
 	private float _multiplier = 1;
+	private bool _talentActive = false;
+	private bool _rollingPhysTalent = false;
+	private float _stunCount = 0;
 
-    protected override int AnimTriggerCastDelay => 0;
+	protected override int AnimTriggerCastDelay => 0;
 
 	protected override int AnimTriggerAutoAttack => 0;
     private void Start()
@@ -73,6 +75,11 @@ public class PhysicalAttack : AutoAttackSkill
 			_rune.SumDamageMake(curDamage);
 			_energy.CmdUse(5);
 			CmdApplyDamage(damage, enemy.gameObject);
+
+			if(_rollingPhysTalent)
+			{
+				CmdState(_curTarget.gameObject, 0.7f*_stunCount);
+			}
 		}
 		else
 		{			
@@ -101,9 +108,10 @@ public class PhysicalAttack : AutoAttackSkill
 			CmdApplyDamage(damage, enemy.gameObject);
 		}
 
-		if (Random.Range(0, 100) <2 && _talentActive)
+		if (Random.Range(0, 100) < 2 && _talentActive)
 		{
 			_rune.CmdAdd(1);
+			//Debug.Log(_rune.CurrentValue + " REGEN Current value");
 		}
 	}
 	private void LastHit()
@@ -122,7 +130,7 @@ public class PhysicalAttack : AutoAttackSkill
 			_energy.SumDamageMake(curDamage);
 			_rune.SumDamageMake(curDamage);
 			//_curTarget.CharacterState.CmdAddState(States.Stun, 1.5f, 0, _playerLinks.gameObject, name);
-			CmdState(_curTarget.gameObject);
+			CmdState(_curTarget.gameObject, 1.5f);
 			PushBackEnemy(_curTarget);
 			//отбрасывание 			
 		}
@@ -131,10 +139,10 @@ public class PhysicalAttack : AutoAttackSkill
 	}
 
 	[Command]
-	private void CmdState(GameObject enemy)
+	private void CmdState(GameObject enemy, float time)
 	{
 		Character enemyChar = enemy.GetComponent<Character>();
-		enemyChar.CharacterState.AddState(States.Stun, 1.5f, 0, _playerLinks.gameObject, name);
+		enemyChar.CharacterState.AddState(States.Stun, time, 0, _playerLinks.gameObject, name);
 		Debug.Log("added state");
 	}
 
@@ -181,5 +189,11 @@ public class PhysicalAttack : AutoAttackSkill
 	public void SetTalentActive(bool active)
 	{
 		_talentActive = active;
+	}
+
+	public void TalentRollingPhys(bool value, float count)
+	{
+		_rollingPhysTalent = value;
+		_stunCount = count;
 	}
 }

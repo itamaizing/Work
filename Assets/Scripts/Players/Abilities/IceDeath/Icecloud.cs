@@ -22,9 +22,9 @@ public class IceCloud : Skill
 
     protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => 0;
+    protected override int AnimTriggerCast => Animator.StringToHash("IceCloud");
 
-    private bool IsCanCastCheck()
+	private bool IsCanCastCheck()
 	{
 		return true;
 		/*if (_rune.CurrentValue >= 1)
@@ -136,5 +136,20 @@ public class IceCloud : Skill
 	{
 		_mousePos = Vector2.positiveInfinity;
 		//_enabled = false;
+	}
+
+	public void IceCloudsCast()
+	{
+		AnimStartCastCoroutine();
+	}
+
+	public void IceCloudsEnd()
+	{
+		AnimCastEnded();		
+	}
+
+	public void StopMove()
+	{
+		//_move.CanMove = false;
 	}
 }

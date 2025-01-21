@@ -47,7 +47,7 @@ public class BoxArea : MonoBehaviour
         }
 		if (collision.TryGetComponent<Health>(out var hpEnemy) && collision.transform != transform.parent)
 		{
-			Debug.Log("ENTER " + collision.name +"  / " + _damage.Value);
+			//Debug.Log("ENTER " + collision.name +"  / " + _damage.Value);
             _enemies.Add(hpEnemy);
 			hpEnemy.ShowPhantomValue(_damage);
 		}
@@ -63,7 +63,7 @@ public class BoxArea : MonoBehaviour
 		{
 			Damage damage = _damage;
             damage.Value = 0;
-			Debug.Log("Exit " + collision.name + "  / " + damage.Value);
+			//Debug.Log("Exit " + collision.name + "  / " + damage.Value);
 			hpEnemy.ShowPhantomValue(damage);
 			_enemies.Remove(hpEnemy);
 		}

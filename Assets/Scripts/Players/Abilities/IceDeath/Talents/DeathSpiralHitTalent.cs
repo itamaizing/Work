@@ -15,6 +15,4 @@ public class DeathSpiralHitTalent : Talent
 	{
 		_deathSpiral.TalentHitState(false);
 	}
-
-
 }

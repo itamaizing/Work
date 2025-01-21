@@ -17,7 +17,7 @@ public class IceSword : Skill
 	private float _duration = 3;
 	private Energy _energy;
 	private RuneComponent _rune;
-
+	private bool _critDmg = false;
 	protected override bool IsCanCast => IsCanCastCheck();
 
     protected override int AnimTriggerCastDelay => 0;
@@ -101,6 +101,16 @@ public class IceSword : Skill
 			PhysicAttackType = AttackRangeType.RangeAttack,
 		};
 		//_skill.CmdApplyDamage(damage, target.gameObject);
+		if(_critDmg)
+		{
+			if(_target.CharacterState.CheckForState(States.Frozen))
+			{
+				if (Random.Range(0, 100) < 15)
+					damage2.Value *= 1.8f;
+				else
+					damage2.Value *= 1.1f;
+			}
+		}
 		CmdApplyDamage(damage2, _target.gameObject);
 
 		_energy.SumDamageMake(_damage);
@@ -114,5 +124,10 @@ public class IceSword : Skill
 	{
 		Character enemyCharacter = enemy.GetComponent<Character>();
 		enemyCharacter.CharacterState.AddState(States.Cooling, _duration, 0, _playerLinks.gameObject, name);
+	}
+
+	public void TalentCritDmg(bool value)
+	{
+		_critDmg = value;
 	}
 }

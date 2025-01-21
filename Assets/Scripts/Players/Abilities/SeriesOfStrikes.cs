@@ -17,8 +17,9 @@ public class SeriesOfStrikes : MonoBehaviour
 	private float _speedMultiplier = 5;
 
 	private static List<AbilityForm> _formList = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical };
-	private static List<AbilityForm> _formList2 = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Magic };
-	private static List<AbilityForm> _formList3 = new List<AbilityForm> { AbilityForm.Physical, AbilityForm.Magic, AbilityForm.Physical };
+	private static List<AbilityForm> _formList2 = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Magic };
+	private static List<AbilityForm> _formList3 = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Magic, AbilityForm.Physical, AbilityForm.Magic, AbilityForm.Physical, AbilityForm.Magic };
+	//private static List<AbilityForm> _formList3 = new List<AbilityForm> { AbilityForm.Physical, AbilityForm.Magic, AbilityForm.Physical };
 
 	private List<Series> _seriesOfStrikes = new List<Series>()
 	{
@@ -60,6 +61,8 @@ public class SeriesOfStrikes : MonoBehaviour
 	}
 	public bool MakeHit(Character target, AbilityForm form, float usedRuneValue, float usedEnergy, float damage)
 	{
+		_energy.ChangeBarColor(new Color(255, 165, 0));
+
 		if (target != null)
 		{
 			//target.CharacterState.personWhoShoted = _player;
@@ -165,6 +168,7 @@ public class SeriesOfStrikes : MonoBehaviour
 			_timer -= Time.deltaTime;
 			if (_timer <= 0)
 			{
+				_energy.ChangeBarColor(Color.cyan);
 				_curTarget = null;
 				Debug.Log("lose streak");
 				_timer = _baseTimer;
@@ -201,6 +205,7 @@ public class SeriesOfStrikes : MonoBehaviour
 
 	public void TalentBoostMultiplier(float multiplier)
 	{
+		
 		_speedMultiplier = multiplier;
 	}
 
