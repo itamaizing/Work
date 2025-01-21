@@ -52,6 +52,26 @@ public class SkillManager : MonoBehaviour
         }
     }
 
+    public void CancleAllSkills()
+    {
+        while(_selectedSkill != null && _selectedSkill.IsPreparing)
+        {
+            CancelSkillCast();
+        }
+        while (SkillQueue.IsBusy)
+        {
+            CancelSkillCast();
+        }
+        while (_autoAttackQueue.IsBusy)
+        {
+            CancelSkillCast();
+        }
+        while (SkillQueue.IsEmpty == false)
+        {
+            CancelSkillCast();
+        }
+    }
+
 	private void ScrollMouse(float value)
 	{
         if (_selectedSkill == null) return;
@@ -272,7 +292,12 @@ public class SkillManager : MonoBehaviour
 
     private void DeselectSkill()
     {
-        SkillDeselected?.Invoke(Array.IndexOf(_selectedSkills, _selectedSkill));
+        int index = Array.IndexOf(_selectedSkills, _selectedSkill);
+
+        if (index == -1)
+            return;
+
+        SkillDeselected?.Invoke(index);
         UnsubscribingSkillOnEvents(_selectedSkill);
         _selectedSkill = null;
     }

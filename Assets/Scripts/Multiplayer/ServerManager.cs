@@ -38,6 +38,11 @@ public class ServerManager : NetworkBehaviour
         AddPlayer(User.Instance.gameObject, _currentHeroIndex, _currentGameMode);
     }
 
+    public void EnableMenu()
+    {
+        _menuEnv.gameObject.SetActive(true);
+    }
+
     [Command(requiresAuthority = false)]
     private void AddPlayer(GameObject user, int characterIndex, GameMode gameMode)
     {
@@ -65,7 +70,7 @@ public class ServerManager : NetworkBehaviour
         yield return StartCoroutine(_managers[index].AddPlayerJob(player));
 
         user.GetComponent<User>().connectionToClient.Send(new SceneMessage { sceneName = _managers[index].Scene, sceneOperation = SceneOperation.LoadAdditive });
-        SceneManager.MoveGameObjectToScene(user, SceneManager.GetSceneAt(SceneManager.sceneCount - 1));
+        //SceneManager.MoveGameObjectToScene(user, SceneManager.GetSceneAt(SceneManager.sceneCount - 1));
     }
     
     public void SetPlayer(HeroComponent hero)

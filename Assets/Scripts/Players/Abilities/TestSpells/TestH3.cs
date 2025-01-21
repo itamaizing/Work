@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class TestH3 : Skill
 {
     [SerializeField] private Projectile _projectile;
+    [SerializeField] private float _animSpeed = 1;
 
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private Character _target;
@@ -56,6 +57,8 @@ public class TestH3 : Skill
 
     protected override IEnumerator PrepareJob()
     {
+        Buff.CastSpeed.IncreasePercentage(_animSpeed);
+
         while (float.IsPositiveInfinity(_targetPoint.x) && _target == null)
         {
             if (GetMouseButton)

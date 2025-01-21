@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -9,6 +10,9 @@ public class MoveComponent : NetworkBehaviour
 	[SerializeField, Range(0, 0.5f)] private float _smoothTime = 0.15f;
 	[SerializeField] protected float _currentSpeed = 5;
 	[SerializeField] protected Animator _anim;
+	[SerializeField] protected FlyChecker _flyChecker;
+
+	protected float _animMultiplier;
 
 	public Vector3 MoveDirection = Vector3.zero;
 	
@@ -31,6 +35,21 @@ public class MoveComponent : NetworkBehaviour
 	private Vector3 _currentVelocityTemp;
 	private Coroutine _lookAtTransformJob;
 
+	private bool _isFly;
+
+	public bool IsFly => _isFly;
+	public float DefaultSpeed => _defaultSpeed;
+	public float CurrentSpeed => _currentSpeed;
+
+
+    protected override void OnValidate()
+    {
+        base.OnValidate();
+
+		if(_flyChecker == null)
+			_flyChecker = GetComponentInChildren<FlyChecker>();
+	}
+
     public void SetOffset(Vector2 offset)
 	{
 		_offset = offset;
@@ -50,11 +69,15 @@ public class MoveComponent : NetworkBehaviour
 		_isHero = isHero;
 
 		InputHandler.OnPlayerMove += OnMove;
+		_flyChecker.OffedGround += OnOffedGround;
+		_flyChecker.ReachGround += OnReachGround;
 	}
 
     private void OnDestroy()
     {
 		InputHandler.OnPlayerMove -= OnMove;
+		_flyChecker.OffedGround -= OnOffedGround;
+		_flyChecker.ReachGround -= OnReachGround;
 	}
 
 	public void LookAtPosition(Vector3 position)
@@ -96,8 +119,18 @@ public class MoveComponent : NetworkBehaviour
 	{
 		_currentSpeed = _defaultSpeed;
 	}
-	
-	[Client]
+
+	private void OnReachGround()
+	{
+		_isFly = false;
+	}
+
+	private void OnOffedGround()
+	{
+		_isFly = true;
+	}
+
+	[ClientCallback]
 	void Update()
 	{
 		if (isOwned == false)
@@ -134,8 +167,9 @@ public class MoveComponent : NetworkBehaviour
 		_rigidbody.velocity = new Vector3(camDir.x * _currentSpeed, _rigidbody.velocity.y, camDir.z * _currentSpeed);
 
 		var animDir = transform.InverseTransformPoint(transform.position + camDir);
-		_anim.SetFloat(HashAnimPlayer.VelocityZ, animDir.z);
-		_anim.SetFloat(HashAnimPlayer.VelocityX, animDir.x);
+		_animMultiplier = 0.1f * _rigidbody.velocity.magnitude + 0.5f;
+		_anim.SetFloat(HashAnimPlayer.VelocityZ, animDir.z * _animMultiplier);
+		_anim.SetFloat(HashAnimPlayer.VelocityX, animDir.x * _animMultiplier);
 	}
 
 	protected virtual void RotateAtCursor()

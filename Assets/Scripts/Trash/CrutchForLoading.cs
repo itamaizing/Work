@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class CrutchForLoading : MonoBehaviour
 {
+	[SerializeField] private Character _character;
+
 	[Client]
 	private void Awake()
 	{
@@ -27,10 +29,12 @@ public class CrutchForLoading : MonoBehaviour
 	private IEnumerator LoadedJob()
     {
 		yield return new WaitForFixedUpdate();
-
 		if (this != null && transform != null)
 		{
-			transform.position = Vector3.up;
+			transform.position = transform.position + Vector3.up;
+			_character.Rigidbody.isKinematic = false;
+			SceneManager.sceneLoaded -= OnLoaded;
 		}
+		yield return null;
 	}
 }

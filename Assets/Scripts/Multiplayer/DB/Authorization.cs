@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Authorization : MonoBehaviour
 {
-    [SerializeField] private NetworkManager _networkManager;
+    [SerializeField] private MPNetworkManager _networkManager;
 
     private const string LOGIN = "login";
     private const string PASSWORD = "password";
@@ -56,6 +56,7 @@ public class Authorization : MonoBehaviour
             Debug.Log(id);
             _id = id;
             Successed?.Invoke(id);
+            _networkManager.UserID = id;
             _networkManager.StartClient();
         }
         else

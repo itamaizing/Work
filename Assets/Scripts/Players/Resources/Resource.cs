@@ -40,7 +40,17 @@ public abstract class Resource : NetworkBehaviour
 		ClientStartRegenirateJob();
 	}
 
-	public virtual void Initialize(float maxValue, float regenValue, float regenDelay, CharacterData data)
+    private void OnEnable()
+    {
+        ClientStartRegenirateJob();
+    }
+
+    private void OnDisable()
+    {
+        ClientStopRegenerateJob();
+    }
+
+    public virtual void Initialize(float maxValue, float regenValue, float regenDelay, CharacterData data)
     {
         _currentValue = maxValue;
         _maxValue = maxValue;
@@ -96,6 +106,13 @@ public abstract class Resource : NetworkBehaviour
     public void ResetValue()
     {
         _currentValue = _maxValue;
+        RpcResetValueUpdate();
+    }
+
+    public void ChangedMaxValue(float value)
+    {
+        _maxValue += value;
+
     }
 
     private IEnumerator RegenerateJob()
@@ -134,7 +151,8 @@ public abstract class Resource : NetworkBehaviour
     [ClientCallback]
     protected void ClientStartRegenirateJob()
     {
-        _regenCoroutine = StartCoroutine(RegenerateJob());
+        if(_regenCoroutine == null)
+            _regenCoroutine = StartCoroutine(RegenerateJob());
     }
 
     [Client]
@@ -142,7 +160,7 @@ public abstract class Resource : NetworkBehaviour
     {
         if (_regenCoroutine != null)
         {
-            StopCoroutine(RegenerateJob());
+            StopCoroutine(_regenCoroutine);
         }
     }
 
@@ -150,5 +168,11 @@ public abstract class Resource : NetworkBehaviour
     protected void CmdRegen()
     {
         Add(_regenerationValue);
+    }
+
+    [ClientRpc]
+    private void RpcResetValueUpdate()
+    {
+        HookValueChanged(0, _currentValue);
     }
 }

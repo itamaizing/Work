@@ -225,7 +225,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 228420900}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.4699993, y: 1.5619493, z: 14.419999}
+  m_LocalPosition: {x: 9999, y: 9999, z: 9999}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -680,10 +680,11 @@ MonoBehaviour:
   - {fileID: 572863233}
   - {fileID: 572863238}
   _heroList:
-  - {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  - {fileID: 4534754468497973439, guid: ff1c8ecb71d19674e8778e3d04716b40, type: 3}
   - {fileID: 4534754468497973439, guid: 61bdf690f5f8e144aba9494df44f0657, type: 3}
   - {fileID: 4374618947117916461, guid: f7c4989fc7d96e64e898c577137242d1, type: 3}
   - {fileID: 4534754468497973439, guid: 952e07a142342914da338d08e1041c34, type: 3}
+  - {fileID: 2483674839823445686, guid: 4c3c788ff06ea9f48abda93ece76c4e3, type: 3}
   _menuEnv: {fileID: 228420900}
 --- !u!114 &572863236
 MonoBehaviour:
