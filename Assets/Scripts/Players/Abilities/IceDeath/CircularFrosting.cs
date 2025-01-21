@@ -14,6 +14,7 @@ public class CircularFrosting : Skill
 	private float _baseDuration = 2;
 	private float _duration = 2;
 	private Energy _energy;
+	private bool _talentFrostingFrozen;
 
 	protected override bool IsCanCast => true;
 
@@ -95,6 +96,16 @@ public class CircularFrosting : Skill
 	private void CmdAdd(GameObject enemy)
 	{
 		Character enemyCharacter = enemy.GetComponent<Character>();
+		if (_talentFrostingFrozen && enemyCharacter.CharacterState.CheckForState(States.Frosting))
+		{
+			enemyCharacter.CharacterState.AddState(States.Frozen, _duration, 0, _playerLinks.gameObject, name);
+		}
+
 		enemyCharacter.CharacterState.AddState(States.Frosting, _duration, 0, _playerLinks.gameObject, name);
+	}
+
+	public void SetTalentFrostingFrozen(bool value)
+	{
+		_talentFrostingFrozen = value;
 	}
 }

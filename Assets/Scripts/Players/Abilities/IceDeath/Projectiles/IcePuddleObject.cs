@@ -120,7 +120,7 @@ public class IcePuddleObject : Projectiles
 			enemy.enemy = target;
 			enemy.duration = duration;
 
-			if (_talentFrostingFrozen)
+			if (_talentFrostingFrozen && target.CharacterState.CheckForState(States.Frosting))
 			{
 				target.CharacterState.AddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
 			}
