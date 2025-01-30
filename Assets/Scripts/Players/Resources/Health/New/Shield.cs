@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using UnityEngine;
 
 public class Shield : Resource, IDamageable
 {
@@ -25,7 +27,7 @@ public class Shield : Resource, IDamageable
 
     public void ShowPhantomValue(Damage phantomValue)
     {
-        throw new NotImplementedException();
+        
     }
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
@@ -64,7 +66,7 @@ public class Shield : Resource, IDamageable
                 DamageTaken?.Invoke(tempDamage, skill);
                 damage.Value = remainingDamage;
 
-                if (_isBreaksDown)
+                if (_isBreaksDown && this != null)
                     Destroy(this.gameObject);
 
                 return true;
@@ -73,6 +75,20 @@ public class Shield : Resource, IDamageable
         else
         {
             return false;
+        }
+    }
+
+    public void FollowTo(Transform target)
+    {
+        StartCoroutine(FollowToJob(target));
+    }
+
+    private IEnumerator FollowToJob(Transform target)
+    {
+        while (true)
+        {
+            transform.position = target.position;
+            yield return null;
         }
     }
 }

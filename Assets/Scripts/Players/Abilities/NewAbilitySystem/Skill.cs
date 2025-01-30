@@ -73,7 +73,7 @@ public abstract class Skill : NetworkBehaviour
     [Header("Streaming settings")]
     [SerializeField] protected float _castDuration;
     [SerializeField] protected float _manaCostRate;
-    [SerializeField] protected float _manaCostPerTick;
+    [SerializeField] protected List<SkillEnergyCost> _manaCostPerTick;
     [Header("Charge settings")]
     [SerializeField] private bool _isUseCharges;
     [SerializeField] protected bool _chargesHaveSeparateCooldown;
@@ -1041,7 +1041,21 @@ public abstract class Skill : NetworkBehaviour
         while (time < CastStreamDuration)
         {
             time += _manaCostRate;
-            if (!TryPayCost()) TryCancel();
+
+            foreach (var skillCost in _manaCostPerTick)
+            {
+                var currentResourceValue = _hero.Resources.Where(r => r.Type == skillCost.resourceType).Sum(r => r.CurrentValue);
+
+                if (currentResourceValue < Buff.ManaCost.GetBuffedValue(skillCost.resourceCost))
+                {
+                    TryCancel(true);
+                }
+                else
+                {
+                    var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
+                    resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
+                }
+            }
             yield return new WaitForSeconds(_manaCostRate);
         }
         _castStreamCoroutine = null;

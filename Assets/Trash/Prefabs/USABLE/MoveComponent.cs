@@ -120,6 +120,11 @@ public class MoveComponent : NetworkBehaviour
 		_currentSpeed = _defaultSpeed;
 	}
 
+	public void DoMove(Vector3 vector3, float duration)
+	{
+		_rigidbody.DOMove(vector3, duration);
+	}
+
 	private void OnReachGround()
 	{
 		_isFly = false;
@@ -225,5 +230,4 @@ public class MoveComponent : NetworkBehaviour
 	{
 		_rigidbody.DOMove(vector3, duration);
 	}
-	
 }

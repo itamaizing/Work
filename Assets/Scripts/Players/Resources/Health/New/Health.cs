@@ -227,11 +227,11 @@ public class Health : Resource, IDamageable, IHealingable
     {
         if (damage.Type == DamageType.Physical)
         {
-            damage.Value *= 1 - _defPhysDamage;
+            damage.Value *= 1 - (_defPhysDamage / 100.0f);
         }
         else if (damage.Type == DamageType.Magical)
         {
-            damage.Value *= 1 - _defMagDamage;
+            damage.Value *= 1 - (_defMagDamage / 100.0f);
         }
     }
 
@@ -295,11 +295,11 @@ public class Health : Resource, IDamageable, IHealingable
         float curDamage = phantomValue.Value;
         if(phantomValue.Type == DamageType.Physical)
         {
-            curDamage *= 1 -_defPhysDamage;
+            curDamage *= 1 - (_defPhysDamage / 100.0f);
         }
         if(phantomValue.Type == DamageType.Magical)
         {
-            curDamage *= 1 -_defMagDamage;
+            curDamage *= 1 - (_defMagDamage / 100.0f);
         }
 
 		PhantomValueShow(curDamage);
