@@ -5,6 +5,8 @@ using UnityEngine;
 public class FrozenState : AbstractCharacterState
 {
 	//public bool turnOff = false;
+	private GameObject _frozenEffectInstance;
+
 	private float _duration;
 	private float _baseDuration;
 	private float _damageToExit;
@@ -39,14 +41,20 @@ public class FrozenState : AbstractCharacterState
 		{
 			_abilities = ability.Abilities;
 			_abilities.SetAbilitiesDisabled();
-		}
-		else
+		} 
+		else Debug.Log("no ability at " + character.gameObject.name);
+
+		if (_characterState.StateEffects.FrozenStateEffect != null)
 		{
-			Debug.Log("no ability at " + character.gameObject.name);
+			_frozenEffectInstance = _characterState.StateEffects.FrozenStateEffect;
+			_frozenEffectInstance.SetActive(true);
 		}
 
+		if (_characterState.StateEffects.MaterialCharacter != null)
+		{
+			_characterState.StateEffects.MaterialCharacter.color = Color.cyan;
+		}
 		//_characterState.Health.sumDamageTaken = 0;
-
 	}
 
 	public override void UpdateState()
@@ -68,10 +76,10 @@ public class FrozenState : AbstractCharacterState
 			_characterState.Character.Move.CanMove = true;
 			_characterState.Character.Move.StopLookAt();
 		}
-		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null)
-		{
-			_abilities.SetAbilitiesEnabled();
-		}
+		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null) _abilities.SetAbilitiesEnabled();
+
+		if (_frozenEffectInstance != null) _frozenEffectInstance.SetActive(false);
+		if (_characterState.StateEffects.MaterialCharacter != null) _characterState.StateEffects.MaterialCharacter.color = Color.white;
 	}
 
 	public override bool Stack(float time)

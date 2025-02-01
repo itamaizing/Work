@@ -8,7 +8,7 @@ using UnityEngine.Serialization;
 
 public class IcePuddleObject : Projectiles
 {
-	[FormerlySerializedAs("healthPlayer")]  private Health _healthComponent;
+	[FormerlySerializedAs("healthPlayer")] private Health _healthComponent;
 
 	private float _timeToDestroy = 0;
 	private float _curEvade = 0;
@@ -27,7 +27,7 @@ public class IcePuddleObject : Projectiles
 		_lastHit = lastHit;
 		_healthComponent = _dad.Health;
 		_timeToDestroy += timeToDestroy;
-		if(_lastHit)
+		if (_lastHit)
 		{
 			transform.localScale = Vector3.one * 1.7f;
 		}
@@ -45,17 +45,17 @@ public class IcePuddleObject : Projectiles
 	private void Update()
 	{
 		_timeToDestroy -= Time.deltaTime;
-		if(_timeToDestroy < 0) 
+		if (_timeToDestroy < 0)
 		{
 			Explode();
 		}
 
 		if (_targets.Count <= 0) return;
 
-		for(int i = 0; i < _targets.Count; i++)
+		for (int i = 0; i < _targets.Count; i++)
 		{
 			_targets[i].time -= Time.deltaTime;
-			if (_targets[i].time < 0 )
+			if (_targets[i].time < 0)
 			{
 				_targets[i].enemy.CharacterState.AddState(States.Frosting, _timeToDestroy, 0, _dad.gameObject, _skill.name);
 				_targets.Remove(_targets[i]);
@@ -65,8 +65,8 @@ public class IcePuddleObject : Projectiles
 
 	public void SetTalents(bool talentEvadeDadBoost, bool talentFrostingFrozen)
 	{
-		_talentEvadeDadBoost= talentEvadeDadBoost;
-		_talentFrostingFrozen= talentFrostingFrozen;
+		_talentEvadeDadBoost = talentEvadeDadBoost;
+		_talentFrostingFrozen = talentFrostingFrozen;
 	}
 
 	private void Start()
@@ -84,7 +84,7 @@ public class IcePuddleObject : Projectiles
 		}
 		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject != _dad.gameObject)
 		{
-			for(int i = 0; i < _targets.Count; i++) 
+			for (int i = 0; i < _targets.Count; i++)
 			{
 				if (_targets[i].enemy == target)
 				{
@@ -104,7 +104,7 @@ public class IcePuddleObject : Projectiles
 	[Server]
 	private void OnTriggerEnter(Collider collision)
 	{
-		if(!_initialized) return;
+		if (!_initialized) return;
 
 		if (collision.gameObject == _dad.gameObject)
 		{
@@ -147,7 +147,7 @@ public class IcePuddleObject : Projectiles
 		SetEvade(_dad.gameObject, -_curEvade);
 		_curEvade = 0;
 		//_dad.Health.SetEvadeAll(-_curEvade);
-		for (int i = _targets.Count - 1; i >= 0; i--) 
+		for (int i = _targets.Count - 1; i >= 0; i--)
 		{
 			_targets[i].enemy.CharacterState.CmdRemoveState(States.Frosting);
 			_targets.Remove(_targets[i]);
@@ -166,7 +166,7 @@ public class IcePuddleObject : Projectiles
 
 	private IEnumerator StartFade()
 	{
-		yield return new WaitForSeconds(_timeToDestroy-2);
+		yield return new WaitForSeconds(_timeToDestroy - 2);
 		//_spriteRenderer.DOFade(0, 2);
 		//turn off energy boost
 		//destroy

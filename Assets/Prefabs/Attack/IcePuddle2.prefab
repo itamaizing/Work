@@ -224,6 +224,7 @@ MonoBehaviour:
   _rb: {fileID: 8400426652099311835}
   _force: 0
   _distance: 5
+  icePrefab: {fileID: 8665444820770999939, guid: 53bde1d707d23f3449ca1661ed36e318, type: 3}
 --- !u!114 &3771171484307784901
 MonoBehaviour:
   m_ObjectHideFlags: 0

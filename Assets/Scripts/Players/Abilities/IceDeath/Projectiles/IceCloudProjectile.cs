@@ -47,7 +47,7 @@ public class IceCloudProjectile : Projectiles
 				
 				//target.CharacterState.AddState(States.Plague, 40, 0, _dad.gameObject, _skill.Name);
 
-				float duration = 100+ _energyDad / 20;
+				//float duration = 100+ _energyDad / 20;
 
 				if (target.CharacterState.CheckForState(States.Frozen) && _boostDmg)
 				{
@@ -78,7 +78,7 @@ public class IceCloudProjectile : Projectiles
 				//_energy.TryUse(_energyDad);
 				_energy.UseAllEnergy();
 				ClientUse(_energyDad, _energy.gameObject);
-				target.CharacterState.AddState(States.Frozen, duration, target.Health.SumDamageTaken + _damageToExit, _dad.gameObject, _skill.name);
+				target.CharacterState.AddState(States.Frozen, 5, target.Health.SumDamageTaken + _damageToExit, _dad.gameObject, _skill.name);
 				//damage
 				GetComponent<Collider>().enabled = false;
 				Explode();

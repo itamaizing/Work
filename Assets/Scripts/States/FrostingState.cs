@@ -5,6 +5,8 @@ using UnityEngine;
 public class FrostingState : AbstractCharacterState
 {
 	public bool turnOff = false;
+
+	private GameObject _ice;
 	private float _duration;
 	private float _baseDuration;
 	private float _damageOnStart;
@@ -53,6 +55,11 @@ public class FrostingState : AbstractCharacterState
 			Debug.Log("no ability at " + character.gameObject.name);
 		}
 
+		if (_characterState.StateEffects.Ice != null)
+		{
+			_ice = _characterState.StateEffects.Ice;
+			_ice.SetActive(true);
+		}
 		//_characterState.Health.sumDamageTaken=0;
 	}
 
@@ -83,6 +90,7 @@ public class FrostingState : AbstractCharacterState
 				}
 			}
 		}
+		if (_characterState.StateEffects.Ice != null) _ice.SetActive(false);
 	}
 
 	public override bool Stack(float time)
