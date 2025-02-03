@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,8 +29,11 @@ namespace Gangdollarff
 
         protected override IEnumerator CastJob()
         {
+            DisableMove();
+
             float time = 0;
-            _firework.gameObject.SetActive(true);
+            //_firework.gameObject.SetActive(true);
+            CmdSetActiveParticle(true);
 
             while (time < CastStreamDuration)
             {
@@ -64,7 +68,9 @@ namespace Gangdollarff
 
         protected override void ClearData()
         {
-            _firework.gameObject.SetActive(false);
+            EnableMove();
+            //_firework.gameObject.SetActive(false);
+            CmdSetActiveParticle(false);
             _target = null;
             _targetPoint = Vector3.positiveInfinity;
         }
@@ -84,6 +90,28 @@ namespace Gangdollarff
                 yield return null;
             }
             yield return null;
+        }
+
+        private void EnableMove()
+        {
+            Hero.Move.IsMoveBlocked = false;
+        }
+
+        private void DisableMove()
+        {
+            Hero.Move.IsMoveBlocked = true;
+        }
+
+        [Command]
+        private void CmdSetActiveParticle(bool status)
+        {
+            ClientRpcSetActiveParticle(status);
+        }
+
+        [ClientRpc]
+        private void ClientRpcSetActiveParticle(bool status)
+        {
+            _firework.gameObject.SetActive(status);
         }
     }
 }

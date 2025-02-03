@@ -28,12 +28,15 @@ namespace Gangdollarff
 
         protected override IEnumerator CastJob()
         {
+            DisableMove();
+
             CmdMoveTaget(_target.gameObject, new Vector3(_target.transform.position.x, _target.transform.position.y + _amountOfLift, _target.transform.position.z), _deleyTelekines);
             yield return new WaitForSeconds(_deleyTelekines);
             CmdMoveTaget(_target.gameObject, _point, CastStreamDuration - _deleyTelekines);
         }
         protected override void ClearData()
         {
+            EnableMove();
             _target = null;
             _point = Vector3.zero;
         }
@@ -56,6 +59,16 @@ namespace Gangdollarff
 
                 yield return null;
             }
+        }
+
+        private void EnableMove()
+        {
+            Hero.Move.IsMoveBlocked = false;
+        }
+
+        private void DisableMove()
+        {
+            Hero.Move.IsMoveBlocked = true;
         }
 
         [Command]
