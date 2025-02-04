@@ -26,6 +26,8 @@ public class SpitPoison : Skill, IAltAbility
     [SerializeField] private Character _player;
     [SerializeField] private GameObject _spawnPoint;
 
+    [SerializeField] private AudioClip audioClip;
+
     #region PoisonCloud
 
     [SerializeField] private PoisonDamagingCloudPrefab _poisonDamagingCloudPrefab;
@@ -35,6 +37,8 @@ public class SpitPoison : Skill, IAltAbility
     private float _durationPoisonCloud = 6f;
 
     #endregion
+
+    private AudioSource _audioSource;
 
     private SpitPoisonSpawnPointInfo _spawnPointInfo = new SpitPoisonSpawnPointInfo();
 
@@ -80,6 +84,7 @@ public class SpitPoison : Skill, IAltAbility
 
     protected void Start()
     {
+        _audioSource = GetComponent<AudioSource>();
         _originalCooldown = _cooldownTime;
     }
 
@@ -292,6 +297,7 @@ public class SpitPoison : Skill, IAltAbility
 
         projectile.MoveBallToTarget(target.transform.position);
 
+        RpcPlayShotSound();
         NetworkServer.Spawn(item);
     }
 
@@ -314,6 +320,7 @@ public class SpitPoison : Skill, IAltAbility
 
         projectile.MoveBallOnMaxDistance(point);
 
+        RpcPlayShotSound();
         NetworkServer.Spawn(item);
     }
 
@@ -388,6 +395,12 @@ public class SpitPoison : Skill, IAltAbility
             poisonHealingCloud.InitializationProjectile(_player, duration);
             poisonHealingCloud.AddStack();
         }
+    }
+
+    [ClientRpc]
+    private void RpcPlayShotSound()
+    {
+        if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
     }
 
     #endregion

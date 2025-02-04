@@ -7,6 +7,7 @@ public class FrostingState : AbstractCharacterState
 	public bool turnOff = false;
 
 	private GameObject _ice;
+	private AudioSource _audioSource;
 	private float _duration;
 	private float _baseDuration;
 	private float _damageOnStart;
@@ -23,16 +24,12 @@ public class FrostingState : AbstractCharacterState
 		Debug.Log("Entering Frosting State");
 		_characterState = character;
 
-		if (damageToExit == 0)
-		{
-			_damageToExit = 10000;
-		}
-		else
-		{
-			_damageToExit = damageToExit;
-		}
+		if (damageToExit == 0) _damageToExit = 10000;
+		else _damageToExit = damageToExit;
+
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
+		_audioSource = character.GetComponent<AudioSource>();
 
 		_damageOnStart = _characterState.Character.Health.SumDamageTaken;
 		_characterState.Character.Move.CanMove = false;
@@ -60,6 +57,8 @@ public class FrostingState : AbstractCharacterState
 			_ice = _characterState.StateEffects.Ice;
 			_ice.SetActive(true);
 		}
+
+		if (_characterState.StateEffects.FrostingAudio != null) _audioSource.PlayOneShot(_characterState.StateEffects.FrostingAudio);
 		//_characterState.Health.sumDamageTaken=0;
 	}
 

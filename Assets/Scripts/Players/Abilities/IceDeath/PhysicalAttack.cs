@@ -7,7 +7,9 @@ public class PhysicalAttack : AutoAttackSkill
 	//[SerializeField] private float _damage = 8f;
 	[SerializeField] private HeroComponent _playerLinks;
 	[SerializeField] private SeriesOfStrikes _combo;
+	[SerializeField] private AudioClip[] Hits;
 
+	private AudioSource _audioSource;
 	private Character _curTarget;
 	private Vector2 _jumpPos;
 	private Energy _energy;
@@ -22,6 +24,8 @@ public class PhysicalAttack : AutoAttackSkill
 	protected override int AnimTriggerAutoAttack => 0;
     private void Start()
 	{
+		_audioSource = GetComponent<AudioSource>();
+
 		for (int i = 0; i < _playerLinks.Resources.Count; i++)
 		{
 			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
@@ -39,7 +43,9 @@ public class PhysicalAttack : AutoAttackSkill
 	{
 		if(_target != null) 
 		Hit(_target);
+		CmdPlayShotSound();
 	}
+
 	private void Hit(Character enemy)
 	{
 		Debug.Log(_energy.CurrentValue + " Current value");
@@ -165,6 +171,22 @@ public class PhysicalAttack : AutoAttackSkill
 		MoveComponent tempTargetMove = gameObject.GetComponent<MoveComponent>();
 		
 		tempTargetMove.TargetRpcDoMove(force, 0.5f);
+	}
+
+	[Command]
+	private void CmdPlayShotSound()
+    {
+		RpcPlayShotSound();
+	}
+
+	[ClientRpc]
+	private void RpcPlayShotSound()
+	{
+		if (_audioSource != null && Hits != null)
+        {
+			int index = Random.Range(0, Hits.Length);
+			_audioSource.PlayOneShot(Hits[index]);
+		}
 	}
 
 	private bool CheckObstacleBetween(Vector3 start, Vector3 end)

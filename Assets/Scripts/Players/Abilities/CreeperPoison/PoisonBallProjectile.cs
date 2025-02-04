@@ -15,6 +15,8 @@ public class PoisonBallProjectile : Test_Projectile
     [SerializeField] private float _fastMovementSpeed;
     [SerializeField] private float _slowMovementSpeed;
 
+    [SerializeField] private AudioSource audioSource;
+
     private PoisonBall _poisonBall;
     private Skill _skill;
 
@@ -71,7 +73,7 @@ public class PoisonBallProjectile : Test_Projectile
                         _player.CharacterState.AddState(States.InstantHealingPoison, 0, 0, _player.gameObject, _skill.Name);
                     }
 
-                    DestroyProjectile();
+                    RpcPlayShotSound();
                 }
             }
             else if (_isAllies)
@@ -89,7 +91,7 @@ public class PoisonBallProjectile : Test_Projectile
                             alliesHealth.CharacterState.AddState(States.InstantHealingPoison, 0, 0, _player.gameObject, _skill.Name);
                         }
 
-                        DestroyProjectile();
+                        RpcPlayShotSound();
                     }
                 }
                 else if (!_isEnemy && collision.transform != _player.transform)
@@ -158,6 +160,29 @@ public class PoisonBallProjectile : Test_Projectile
                 }
             }
         }
+    }
+
+    private void DisableProjectileVisuals()
+    {
+        if (TryGetComponent<Collider>(out var collider)) collider.enabled = false;
+        if (TryGetComponent<MeshRenderer>(out var meshRenderer)) meshRenderer.enabled = false;
+    }
+
+    [ClientRpc]
+    private void RpcPlayShotSound()
+    {
+        if (audioSource == null || audioSource.clip == null)
+        {
+            DestroyProjectile();
+            return;
+        }
+
+        float clipLength = audioSource.clip.length;
+        audioSource.PlayOneShot(audioSource.clip);
+
+        DisableProjectileVisuals();
+
+        Invoke(nameof(DestroyProjectile), clipLength);
     }
 
     #endregion

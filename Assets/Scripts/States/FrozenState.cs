@@ -6,7 +6,7 @@ public class FrozenState : AbstractCharacterState
 {
 	//public bool turnOff = false;
 	private GameObject _frozenEffectInstance;
-
+	private AudioSource _audioSource;
 	private float _duration;
 	private float _baseDuration;
 	private float _damageToExit;
@@ -25,17 +25,14 @@ public class FrozenState : AbstractCharacterState
 		_characterState = character;
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
-		if (damageToExit == 0)
-		{
-			_damageToExit = 10000;
-		}
-		else
-		{
-			_damageToExit = damageToExit;
-		}
+
+		if (damageToExit == 0) _damageToExit = 10000;
+		else _damageToExit = damageToExit;
+
 		_damageOnStart = _characterState.Character.Health.SumDamageTaken;
 		_characterState.Character.Move.CanMove = false;
 		_characterState.Character.Move.LookAtTransform(_characterState.gameObject.transform);
+		_audioSource = character.GetComponent<AudioSource>();
 
 		if (character.TryGetComponent<Character>(out var ability))
 		{
@@ -50,10 +47,8 @@ public class FrozenState : AbstractCharacterState
 			_frozenEffectInstance.SetActive(true);
 		}
 
-		if (_characterState.StateEffects.MaterialCharacter != null)
-		{
-			_characterState.StateEffects.MaterialCharacter.color = Color.cyan;
-		}
+		if (_characterState.StateEffects.MaterialCharacter != null) _characterState.StateEffects.MaterialCharacter.color = Color.cyan;
+		if (_characterState.StateEffects.FrostingAudio != null) _audioSource.PlayOneShot(_characterState.StateEffects.FrozenAudio);
 		//_characterState.Health.sumDamageTaken = 0;
 	}
 

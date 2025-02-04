@@ -8,10 +8,12 @@ public class IceCloud : Skill
 	[SerializeField] private IceCloudProjectile _projectile;
 	[SerializeField] private HeroComponent _playerLinks;
 	[SerializeField] private SeriesOfStrikes _combo;
+	[SerializeField] private AudioClip audioClip;
 
 	private Vector3 _mousePos = Vector3.positiveInfinity;
-	
+
 	//private bool _enabled;
+	private AudioSource _audioSource;
 	private bool _boostDmg;
 	private Energy _energy;
 	private bool _frozwenTalent;
@@ -39,6 +41,8 @@ public class IceCloud : Skill
 	}
 	private void Start()
 	{
+		_audioSource = GetComponent<AudioSource>();
+
 		for (int i = 0; i < _playerLinks.Resources.Count; i++)
 		{
 			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
@@ -80,6 +84,7 @@ public class IceCloud : Skill
 
 		NetworkServer.Spawn(projectile.gameObject);
 
+		RpcPlayShotSound();
 		RpcInit(projectile.gameObject, manaValue);
 	}
 
@@ -87,6 +92,12 @@ public class IceCloud : Skill
 	private void RpcInit(GameObject obj, float manaValue)
 	{
 		obj.GetComponent<IceCloudProjectile>().Init(_playerLinks, manaValue, false, this);
+	}
+
+	[ClientRpc]
+	private void RpcPlayShotSound()
+	{
+		if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
 	}
 
 	public void TalentBoostDmg(bool value)

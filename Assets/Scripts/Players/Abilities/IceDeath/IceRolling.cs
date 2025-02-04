@@ -15,7 +15,9 @@ public class IceRolling : Skill
 	[SerializeField] private PhysicalAttack _physicalAttack;
 	[SerializeField] private float _jumprange = 5f;
 	[SerializeField] private float _durationOfJump = 0.3f;
+	[SerializeField] private AudioClip audioClip;
 
+	private AudioSource _audioSource;
 	private Vector3 _mousePos = Vector2.positiveInfinity;
 	private Vector3 _jumpPos;
 	private Vector3 _lookDir;
@@ -34,6 +36,8 @@ public class IceRolling : Skill
 
     private void Start()
 	{
+		_audioSource = GetComponent<AudioSource>();
+
 		for (int i = 0; i < _playerLinks.Resources.Count; i++)
 		{
 			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
@@ -226,6 +230,7 @@ public class IceRolling : Skill
 	[Command]
 	private void CmdPush(Vector3 force)
 	{
+		RpcPlayShotSound();
 		_playerLinks.Move.TargetRpcDoMove(force, _durationOfJump);
 	}
 
@@ -242,5 +247,11 @@ public class IceRolling : Skill
 			_afterJump = false;
 			_physicalAttack.TalentRollingPhys(_afterJump, 0);
 		}
+	}
+
+	[ClientRpc]
+	private void RpcPlayShotSound()
+	{
+		if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
 	}
 }
