@@ -11,8 +11,10 @@ public class FootstepSound : NetworkBehaviour
         if (!isOwned) enabled = false;
     }
 
+    [Client]
     public void PlayFootstep()
     {
+        if (!isOwned) return;
         if (footstepClips.Length == 0 || footstepAudioSource == null) return;
 
         int index = Random.Range(0, footstepClips.Length);

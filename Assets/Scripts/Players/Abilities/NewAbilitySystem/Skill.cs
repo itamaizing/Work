@@ -45,7 +45,8 @@ public enum SkillType
 {
     Target,
     Projectile,
-    Zone
+    Zone,
+    NonTarget
 }
 
 public abstract class Skill : NetworkBehaviour
@@ -779,14 +780,17 @@ public abstract class Skill : NetworkBehaviour
         switch (_skillType)
         {
             case SkillType.Target:
+                Debug.Log("SkillType Target");
                 target.character = closerTarget;
                 target.isCharater = true;
                 break;
             case SkillType.Projectile:
+                Debug.Log("SkillType Projectile");
                 target.character = closerTarget;
                 target.isCharater = true;
                 break;
             case SkillType.Zone:
+                Debug.Log("SkillType Zone");
                 if (Physics.Raycast(ray, out hit))
                 {
                     Debug.Log(hit.point);
@@ -794,6 +798,9 @@ public abstract class Skill : NetworkBehaviour
                 if (Vector3.Distance(hit.point, transform.position) <= Radius)
                     target.Position = hit.point;
                 target.isCharater = false;
+                break;
+            case SkillType.NonTarget:
+                Debug.Log("SkillType NonTarget");
                 break;
             default:
                 if (Physics.Raycast(ray, out hit))
