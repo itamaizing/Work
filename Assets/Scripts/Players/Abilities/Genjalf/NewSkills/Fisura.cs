@@ -16,15 +16,25 @@ namespace Gangdollarff
         private Vector3 _endPoint = Vector3.zero;
         private FisuraTile _fisuraTail;
 
-        protected override int AnimTriggerCastDelay => 0;
+        protected override int AnimTriggerCastDelay => Animator.StringToHash("FisuraCast");
 
-        protected override int AnimTriggerCast => 0;
+        protected override int AnimTriggerCast => Animator.StringToHash("Fisura");
 
         protected override bool IsCanCast => CheckCanCast();
 
         private bool CheckCanCast()
         {
             return Vector3.Distance(_startPoint, transform.position) <= Radius;
+        }
+
+        public void AnimCastFisura()
+        {
+            AnimStartCastCoroutine();
+        }
+
+        public void AnimFisuraEnd()
+        {
+            AnimCastEnded();
         }
 
         protected override IEnumerator CastJob()

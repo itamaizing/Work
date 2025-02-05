@@ -94,11 +94,13 @@ namespace Gangdollarff
 
         private void EnableMove()
         {
+            Hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
             Hero.Move.IsMoveBlocked = false;
         }
 
         private void DisableMove()
         {
+            Hero.Animator.SetTrigger("Fire");
             Hero.Move.IsMoveBlocked = true;
         }
 

@@ -16,7 +16,7 @@ namespace Gangdollarff
 
         protected override int AnimTriggerCastDelay => 0;
 
-        protected override int AnimTriggerCast => 0;
+        protected override int AnimTriggerCast => Animator.StringToHash("Telekinesis");
 
         protected override bool IsCanCast => CheckCanCast();
 
@@ -24,6 +24,16 @@ namespace Gangdollarff
         {
             return Vector3.Distance(_point, transform.position) <= Radius &&
                    Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+        }
+
+        public void AnimCastTelekinesis()
+        {
+            AnimStartCastCoroutine();
+        }
+
+        public void AnimTelekinesisEnd()
+        {
+            AnimCastEnded();
         }
 
         protected override IEnumerator CastJob()

@@ -1121,6 +1121,8 @@ public abstract class Skill : NetworkBehaviour
 
             yield return _castCoroutine = StartCoroutine(CastJob());
         }
+        _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
+        _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
 
         CastEnded?.Invoke();
         _isCasting = false;
