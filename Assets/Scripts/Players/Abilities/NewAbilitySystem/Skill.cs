@@ -769,31 +769,40 @@ public abstract class Skill : NetworkBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
-        var closerTargets = GetCloserTargets(transform.position, 1000);
-        Character closerTarget = null;
-
-        if (closerTargets != null && closerTargets.Count > 0)
-        {
-            closerTarget = GetCloserTargets(transform.position, 1000)[0];
-        }
-
         switch (_skillType)
         {
             case SkillType.Target:
                 Debug.Log("SkillType Target");
-                target.character = closerTarget;
+                target.character = ClosedTarget();
                 target.isCharater = true;
                 break;
             case SkillType.Projectile:
                 Debug.Log("SkillType Projectile");
-                target.character = closerTarget;
-                target.isCharater = true;
+
+                if (Physics.Raycast(ray, out hit))
+                {
+                    if (hit.collider.TryGetComponent<Character>(out Character character))
+                    {
+                        if (character != null)
+                        {
+                            target.character = character;
+                            target.isCharater = true;
+                        }
+                    }
+                    else
+                    {
+                        var distance = Vector3.Distance(hit.point, transform.position);
+                        if (distance <= Radius || distance > Radius) target.Position = hit.point;
+                        target.isCharater = false;
+                    }
+                }
                 break;
             case SkillType.Zone:
                 Debug.Log("SkillType Zone");
+
                 if (Physics.Raycast(ray, out hit))
                 {
-                    Debug.Log(hit.point);
+                    Debug.Log(hit);
                 }
                 if (Vector3.Distance(hit.point, transform.position) <= Radius)
                     target.Position = hit.point;
@@ -813,6 +822,20 @@ public abstract class Skill : NetworkBehaviour
         }
         return target;
     }
+
+    private Character ClosedTarget()
+    {
+        var closerTargets = GetCloserTargets(transform.position, 1000);
+        Character closerTarget = null;
+
+        if (closerTargets != null && closerTargets.Count > 0)
+        {
+            closerTarget = GetCloserTargets(transform.position, 1000)[0];
+            return closerTarget;
+        }
+
+        return closerTarget;
+    }    
 
     protected TargetToShot ShiftLeftClick()
     {
@@ -846,17 +869,10 @@ public abstract class Skill : NetworkBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
-        var closerTargets = GetCloserTargets(transform.position, 1000);
-        Character closerTarget = null;
-
-        if (closerTargets != null && closerTargets.Count > 0)
-        {
-            closerTarget = GetCloserTargets(transform.position, 1000)[0];
-        }
         switch (_skillType)
         {
             case SkillType.Target:
-                target.character = closerTarget;
+                target.character = ClosedTarget();
                 target.isCharater = true;
                 break;
             case SkillType.Projectile:

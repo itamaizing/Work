@@ -3606,7 +3606,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
   - resourceType: 3
-    resourceCost: 1
+    resourceCost: 0
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
@@ -3614,7 +3614,7 @@ MonoBehaviour:
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
-  _skillType: 0
+  _skillType: 1
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -3628,10 +3628,10 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 0
+  _radius: 2
   _area: 0
-  _castLength: 5
-  _castWidth: 1
+  _castLength: 0
+  _castWidth: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
@@ -4073,7 +4073,7 @@ MonoBehaviour:
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
-  _projectile: {fileID: 0}
+  _projectile: {fileID: 6346210437348289638, guid: 795c930bd55158742a432f093fa0c89e, type: 3}
   _skillRenderer: {fileID: 2643045369493803655}
   _playerLinks: {fileID: 4374618947117916461}
   _combo: {fileID: 161199462986225237}

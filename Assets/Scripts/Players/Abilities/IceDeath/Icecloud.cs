@@ -17,28 +17,23 @@ public class IceCloud : Skill
 	private bool _boostDmg;
 	private Energy _energy;
 	private bool _frozwenTalent;
+	private Character _target;
 
 	//private RuneComponent _rune;
-
-	protected override bool IsCanCast => IsCanCastCheck();
-
-    protected override int AnimTriggerCastDelay => 0;
-
-    protected override int AnimTriggerCast => Animator.StringToHash("IceCloud");
-
-	private bool IsCanCastCheck()
+	protected override bool IsCanCast
 	{
-		return true;
-		/*if (_rune.CurrentValue >= 1)
+		get
 		{
-			_rune.CmdUse(1);
-			return true;
+			if (_target != null) return Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+
+			else return true;
 		}
-		else
-		{
-			return false;
-		}*/
 	}
+
+	protected override int AnimTriggerCastDelay => 0;
+
+	protected override int AnimTriggerCast => Animator.StringToHash("IceCloud");
+
 	private void Start()
 	{
 		_audioSource = GetComponent<AudioSource>();
@@ -62,7 +57,7 @@ public class IceCloud : Skill
 
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
-		if( _combo.MakeHit(null, AbilityForm.Magic, 1, 0, 0))
+		if (_combo.MakeHit(null, AbilityForm.Magic, 1, 0, 0))
 		{
 			Debug.LogError("some talents i guess in ice cloud");
 			//_playerLinks.RuneComponent.IceCloudBonus();
@@ -71,6 +66,8 @@ public class IceCloud : Skill
 		Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);
 
 		CmdCreateProjecttile(angle, _energy.CurrentValue);
+		_target = null;
+		_mousePos = Vector2.positiveInfinity;
 		ClearData();
 	}
 
@@ -119,19 +116,18 @@ public class IceCloud : Skill
 				//if(GetTarget()  == null) yield return null;
 				if (GetTarget().isCharater)
 				{
-					if (GetTarget().character == null)
-					{
-						//_mousePos = GetTarget().Position;
-					}
+					float distance = Vector3.Distance(_hero.transform.position, _mousePos);
+
+					if (distance <= Radius) _mousePos = GetTarget().character.transform.position;
+
 					else
-					{
-						_mousePos = GetTarget().character.transform.position;
+                    {
+						_target = GetTarget().character;
+						_mousePos = _target.transform.position;
 					}
 				}
-				else
-				{
-					_mousePos = GetTarget().Position;
-				}
+
+				else _mousePos = GetTarget().Position;
 			}
 			yield return null;
 		}
@@ -145,7 +141,6 @@ public class IceCloud : Skill
 
 	protected override void ClearData()
 	{
-		_mousePos = Vector2.positiveInfinity;
 		//_enabled = false;
 	}
 
@@ -156,7 +151,7 @@ public class IceCloud : Skill
 
 	public void IceCloudsEnd()
 	{
-		AnimCastEnded();		
+		AnimCastEnded();
 	}
 
 	public void StopMove()
