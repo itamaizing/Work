@@ -1,0 +1,77 @@
+using Mirror;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace Gangdollarff
+{
+    public class ClapOfLight : Skill
+    {
+        [SerializeField] private ParticleSystem _particle;
+        [SerializeField] private float _pushRange = 1;
+        [SerializeField] private float _pushDuration = 0.33f;
+
+        protected override int AnimTriggerCastDelay => 0;
+
+        protected override int AnimTriggerCast => 0;
+
+        protected override bool IsCanCast => true;
+
+        protected override IEnumerator CastJob()
+        {
+            var colliders = Physics.OverlapSphere(transform.position, Radius, TargetsLayers);
+
+            Damage damage = new Damage
+            {
+                Value = Buff.Damage.GetBuffedValue(Damage),
+                Type = DamageType,
+                PhysicAttackType = AttackRangeType,
+            };
+
+            CmdSetActiveParticle(true);
+
+            foreach (var item in colliders)
+            {
+                if(item.TryGetComponent(out Character enemy))
+                {
+                    CmdApplyDamage(damage, enemy.gameObject);
+
+                    Vector3 dirForPush = (enemy.transform.position - transform.position).normalized;
+                    Vector3 pointForPush = enemy.transform.position + (dirForPush * _pushRange);
+
+                    CmdMoveTaget(enemy.gameObject, pointForPush, _pushDuration);
+                }
+            }
+            yield return null;
+        }
+
+        protected override void ClearData()
+        {
+            
+        }
+
+        protected override IEnumerator PrepareJob()
+        {
+            yield return null;
+        }
+
+        [Command]
+        private void CmdMoveTaget(GameObject target, Vector3 point, float time)
+        {
+            var enemyMove = target.GetComponent<MoveComponent>();
+            enemyMove.TargetRpcDoMove(point, time);
+        }
+
+        [Command]
+        private void CmdSetActiveParticle(bool status)
+        {
+            ClientRpcSetActiveParticle(status);
+        }
+
+        [ClientRpc]
+        private void ClientRpcSetActiveParticle(bool status)
+        {
+            _particle.gameObject.SetActive(status);
+        }
+    }
+}

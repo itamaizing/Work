@@ -21,7 +21,7 @@ public class MoveComponent : NetworkBehaviour
 	public bool IsSelect = false;
 	
 	private Rigidbody _rigidbody;
-
+	private bool _isMoveBlocked = false;
 	private Vector3 _offset = Vector3.zero;
 
 	private bool _isHero = false;
@@ -41,6 +41,7 @@ public class MoveComponent : NetworkBehaviour
 	public float DefaultSpeed => _defaultSpeed;
 	public float CurrentSpeed => _currentSpeed;
 
+    public bool IsMoveBlocked { get => _isMoveBlocked; set => _isMoveBlocked = value; }
 
     protected override void OnValidate()
     {
@@ -120,6 +121,11 @@ public class MoveComponent : NetworkBehaviour
 		_currentSpeed = _defaultSpeed;
 	}
 
+	public void DoMove(Vector3 vector3, float duration)
+	{
+		_rigidbody.DOMove(vector3, duration);
+	}
+
 	private void OnReachGround()
 	{
 		_isFly = false;
@@ -145,7 +151,7 @@ public class MoveComponent : NetworkBehaviour
 
 	protected virtual void Move()
     {
-		if (!CanMove || _rigidbody == null)
+		if (!CanMove || _rigidbody == null || IsMoveBlocked == true)
 		{
 			return;
 		}
@@ -225,5 +231,4 @@ public class MoveComponent : NetworkBehaviour
 	{
 		_rigidbody.DOMove(vector3, duration);
 	}
-	
 }
