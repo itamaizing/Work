@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: IceDeath
   _description: b b b
-  _icon: {fileID: 21300000, guid: 48c94a024989bf74d9081978b98b6040, type: 3}
+  _icon: {fileID: 21300000, guid: 9c9ffc51ae97a4241adfb8ac69dd0e7b, type: 3}
   _iconSize: 0
   _attributes:
     attributesGroup:

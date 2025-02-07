@@ -15,7 +15,9 @@ public class IceRolling : Skill
 	[SerializeField] private PhysicalAttack _physicalAttack;
 	[SerializeField] private float _jumprange = 5f;
 	[SerializeField] private float _durationOfJump = 0.3f;
+	[SerializeField] private AudioClip audioClip;
 
+	private AudioSource _audioSource;
 	private Vector3 _mousePos = Vector2.positiveInfinity;
 	private Vector3 _jumpPos;
 	private Vector3 _lookDir;
@@ -24,9 +26,17 @@ public class IceRolling : Skill
 	private float _jumpCount = 0;
 	private bool _afterJump;
 	private float _afterJumpDelay = 1;
+	private Character _target;
 	//private float TEMPFLOAT = 1;
 
-	protected override bool IsCanCast => true;
+	protected override bool IsCanCast
+	{
+		get
+		{
+			if (_target != null) return Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+			else return true;
+		}
+	}
 
 	protected override int AnimTriggerCastDelay => 0;
 
@@ -34,6 +44,8 @@ public class IceRolling : Skill
 
     private void Start()
 	{
+		_audioSource = GetComponent<AudioSource>();
+
 		for (int i = 0; i < _playerLinks.Resources.Count; i++)
 		{
 			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
@@ -106,13 +118,13 @@ public class IceRolling : Skill
 	}
 	//делим на cell size что бы считалось время не за одну единицу юнити, а за наши, клетки
 	*/
-	private void AfterJump()
-	{
-		//_jumpCount = 4;
-		_mousePos = Vector3.positiveInfinity;
-		_lookDir = Vector3.zero;
-		_jumpPos = Vector3.zero;
-	}
+	//private void AfterJump()
+	//{
+	//	//_jumpCount = 4;
+	//	_mousePos = Vector3.positiveInfinity;
+	//	_lookDir = Vector3.zero;
+	//	_jumpPos = Vector3.zero;
+	//}
 
 	private bool CheckObstacleBetween(Vector3 start, Vector3 end)
 	{
@@ -165,6 +177,12 @@ public class IceRolling : Skill
 				_afterJump = true;
 			}
 		}
+
+		_target = null;
+
+		_mousePos = Vector3.positiveInfinity;
+		_lookDir = Vector3.zero;
+		_jumpPos = Vector3.zero;
 	}
 
 	/*private void NextJump()
@@ -197,11 +215,25 @@ public class IceRolling : Skill
 		{
 			if (GetMouseButton)
 			{
-				_mousePos = GetMousePoint();
+				if (GetTarget().isCharater)
+				{
+					float distance = Vector3.Distance(_hero.transform.position, _mousePos);
+
+					if (distance <= Radius) _mousePos = GetTarget().character.transform.position;
+
+					else
+					{
+						_target = GetTarget().character;
+						_mousePos = _target.transform.position;
+					}
+				}
+
+				else _mousePos = GetTarget().Position;
 			}
 			yield return null;
 		}
 	}
+
 	protected override IEnumerator DynamicRendererJob(float time = 0.2f)
 	{
 		while (true)
@@ -220,12 +252,13 @@ public class IceRolling : Skill
 
 	protected override void ClearData()
 	{
-		AfterJump();
+		//AfterJump();
 	}
 
 	[Command]
 	private void CmdPush(Vector3 force)
 	{
+		RpcPlayShotSound();
 		_playerLinks.Move.TargetRpcDoMove(force, _durationOfJump);
 	}
 
@@ -242,5 +275,11 @@ public class IceRolling : Skill
 			_afterJump = false;
 			_physicalAttack.TalentRollingPhys(_afterJump, 0);
 		}
+	}
+
+	[ClientRpc]
+	private void RpcPlayShotSound()
+	{
+		if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
 	}
 }
