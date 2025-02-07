@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d8548505a2c5104980a6fa13739ca3d, type: 3}
+  m_Name: ShotDarkness
+  m_EditorClassIdentifier: 
+  _name: Shot by darkness
+  _description: Terafine charges the arrow with dark energy before firing, which
+    causes an additional 5-8 points of damage with "Darkness" magic, the speed of
+    the shot is reduced by 30%. The magic effect "Inner Darkness" is applied to the
+    victim for 13 seconds, with each new overlay, the duration of the effect decreases,
+    it is applied up to 13 times. When the victim has accumulated 13 units of "Inner
+    Darkness", she succumbs to the magical effect of "Fear"  "Inner Darkness" - Extends
+    the time of magical effects applied by Terafine and ghosts by 30% Each subsequent
+    overlay increases the time by an additional 2%.  "Fear" - "The darkness that
+    has entered the soul begins to violently torment it and each time this rage increases,
+    but the stronger the inner darkness, the faster the victim will be able to free
+    himself from it"
+  _icon: {fileID: 21300000, guid: 938620e654f6d2d47a71a99689361b9c, type: 3}

@@ -13,5 +13,10 @@ MonoBehaviour:
   m_Name: ShotIntoSky
   m_EditorClassIdentifier: 
   _name: ShotIntoSky
-  _description: 
-  _icon: {fileID: 21300000, guid: 9e1bdf14d6813344298bed1a97162c3f, type: 3}
+  _description: Terafine launches an arrow into the sky, which, when falling, creates
+    an explosive wave that causes 12 to 18 physical damage to everyone who meets
+    in its path. At the same time, the victim has a 30% chance of receiving 2.4 times
+    more damage, as well as a 30% chance of being stunned for 2 seconds   "The people
+    of the elves are famous for their accuracy, it is not for nothing that they say
+    "The Elven arrow is a punishment from heaven""
+  _icon: {fileID: 21300000, guid: e66d853c62ebcdd47a77a4812ea72e51, type: 3}
