@@ -8,37 +8,51 @@ public class IceCloud : Skill
 	[SerializeField] private IceCloudProjectile _projectile;
 	[SerializeField] private HeroComponent _playerLinks;
 	[SerializeField] private SeriesOfStrikes _combo;
+	[SerializeField] private AudioClip audioClip;
 
 	private Vector3 _mousePos = Vector3.positiveInfinity;
-	
+
 	//private bool _enabled;
+	private AudioSource _audioSource;
 	private bool _boostDmg;
 	private Energy _energy;
 	private bool _frozwenTalent;
+	private Character _target;
 
 	//private RuneComponent _rune;
 
-	protected override bool IsCanCast => IsCanCastCheck();
+	protected override bool IsCanCast
+	{
+		get
+		{
+			if (_target != null) return Vector3.Distance(_target.transform.position, transform.position) <= Radius;
 
-    protected override int AnimTriggerCastDelay => 0;
+			else return true;
+		}
+	}
+
+	protected override int AnimTriggerCastDelay => 0;
 
     protected override int AnimTriggerCast => Animator.StringToHash("IceCloud");
 
-	private bool IsCanCastCheck()
-	{
-		return true;
-		/*if (_rune.CurrentValue >= 1)
-		{
-			_rune.CmdUse(1);
-			return true;
-		}
-		else
-		{
-			return false;
-		}*/
-	}
+	//private bool IsCanCastCheck()
+	//{
+	//	return true;
+	//	/*if (_rune.CurrentValue >= 1)
+	//	{
+	//		_rune.CmdUse(1);
+	//		return true;
+	//	}
+	//	else
+	//	{
+	//		return false;
+	//	}*/
+	//}
+
 	private void Start()
 	{
+		_audioSource = GetComponent<AudioSource>();
+
 		for (int i = 0; i < _playerLinks.Resources.Count; i++)
 		{
 			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
@@ -67,6 +81,8 @@ public class IceCloud : Skill
 		Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);
 
 		CmdCreateProjecttile(angle, _energy.CurrentValue);
+		_target = null;
+		_mousePos = Vector2.positiveInfinity;
 		ClearData();
 	}
 
@@ -80,6 +96,7 @@ public class IceCloud : Skill
 
 		NetworkServer.Spawn(projectile.gameObject);
 
+		RpcPlayShotSound();
 		RpcInit(projectile.gameObject, manaValue);
 	}
 
@@ -87,6 +104,12 @@ public class IceCloud : Skill
 	private void RpcInit(GameObject obj, float manaValue)
 	{
 		obj.GetComponent<IceCloudProjectile>().Init(_playerLinks, manaValue, false, this);
+	}
+
+	[ClientRpc]
+	private void RpcPlayShotSound()
+	{
+		if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
 	}
 
 	public void TalentBoostDmg(bool value)
@@ -108,19 +131,18 @@ public class IceCloud : Skill
 				//if(GetTarget()  == null) yield return null;
 				if (GetTarget().isCharater)
 				{
-					if (GetTarget().character == null)
-					{
-						//_mousePos = GetTarget().Position;
-					}
+					float distance = Vector3.Distance(_hero.transform.position, _mousePos);
+
+					if (distance <= Radius) _mousePos = GetTarget().character.transform.position;
+
 					else
 					{
-						_mousePos = GetTarget().character.transform.position;
+						_target = GetTarget().character;
+						_mousePos = _target.transform.position;
 					}
 				}
-				else
-				{
-					_mousePos = GetTarget().Position;
-				}
+
+				else _mousePos = GetTarget().Position;
 			}
 			yield return null;
 		}
@@ -134,7 +156,7 @@ public class IceCloud : Skill
 
 	protected override void ClearData()
 	{
-		_mousePos = Vector2.positiveInfinity;
+		//_mousePos = Vector2.positiveInfinity;
 		//_enabled = false;
 	}
 

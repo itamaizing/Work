@@ -12,7 +12,9 @@ public class IceShadow : Skill
 	[SerializeField] private IceShadowObject _shadow;
 	[SerializeField] private HeroComponent _playerLinks; 
 	[SerializeField] private SeriesOfStrikes _combo;
+	[SerializeField] private AudioClip audioClip;
 
+	private AudioSource _audioSource;
 	private Energy _energy;
 	//private RuneComponent _rune;
 	private bool _lastHit = false;
@@ -43,6 +45,8 @@ public class IceShadow : Skill
 	}
 	private void Start()
 	{
+		_audioSource = GetComponent<AudioSource>();
+
 		for (int i = 0; i < _playerLinks.Resources.Count; i++)
 		{
 			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
@@ -111,6 +115,7 @@ public class IceShadow : Skill
 		NetworkServer.Spawn(projectile.gameObject);
 
 		RpcInit(projectile.gameObject, manaValue, lastHit, damage);
+		RpcPlayShotSound();
 	}
 
 	[ClientRpc]
@@ -118,6 +123,12 @@ public class IceShadow : Skill
 	{
 		obj.GetComponent<IceShadowObject>().Init(_playerLinks, manaValue, lastHit, this);
 		obj.GetComponent<IceShadowObject>().TalentDamage(damage);
+	}
+
+	[ClientRpc]
+	private void RpcPlayShotSound()
+	{
+		if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
 	}
 
 	public void TalentEvade(bool value)
