@@ -3406,7 +3406,7 @@ MonoBehaviour:
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
-  _projectile: {fileID: 748218918613675416, guid: f44e1a220c732a64f9af10c37bf5aed0, type: 3}
+  _projectile: {fileID: 3779490377558770127, guid: 911d5f174dbe7ac4b8da163e8aaf32a1, type: 3}
   _playerLinks: {fileID: 4374618947117916461}
   _combo: {fileID: 161199462986225237}
   audioClip: {fileID: 8300000, guid: f609f46a7f40ad84b9b010044a07b747, type: 3}
@@ -3546,7 +3546,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
   - resourceType: 3
-    resourceCost: 1
+    resourceCost: 0
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0

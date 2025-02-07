@@ -126,35 +126,45 @@ public class IceRolling : Skill
 	//	_jumpPos = Vector3.zero;
 	//}
 
-	private bool CheckObstacleBetween(Vector3 start, Vector3 end)
+	private bool CheckObstacleBetween(Vector3 start, Vector3 end, out Vector3 stopPosition)
 	{
 		Vector3 direction = (end - start).normalized;
 		float distance = Vector3.Distance(start, end);
 
-		RaycastHit[] hits =
-			Physics.BoxCastAll(start, new Vector2(2f, 2f), direction, Quaternion.identity, distance, _obstacle);
+		RaycastHit[] hits = Physics.BoxCastAll(start, new Vector3(0.5f, 0.5f, 0.5f), direction, Quaternion.identity, distance);
 
 		foreach (RaycastHit hit in hits)
 		{
-			_jumpPos = hits[0].point - direction*1.2f;
-			return true;
+			Character hitCharacter = hit.collider.GetComponent<Character>();
+			if (hitCharacter != null && hitCharacter != _playerLinks)
+			{
+				stopPosition = hit.point - direction;
+				return true;
+			}
+
+			if (((1 << hit.collider.gameObject.layer) & _obstacle) != 0)
+			{
+				Debug.Log("Остановка перед припятствиями");
+				stopPosition = hit.point - direction;
+				return true;
+			}
 		}
 
+		stopPosition = end;
 		return false;
 	}
+
 
 	private void Jump()
 	{
 		float actualJumpRange = _jumprange;
 
 		_lookDir = (_mousePos - _playerLinks.transform.position).normalized;
-		//_lookDir = gameObject.transform.rotation.eulerAngles.normalized;
 		Vector3 jumpPos = _lookDir * actualJumpRange + _playerLinks.transform.position;
-		if (CheckObstacleBetween(_playerLinks.transform.position, jumpPos))
+
+		if (CheckObstacleBetween(_playerLinks.transform.position, jumpPos, out Vector3 stopPosition))
 		{
-			_jumpCount = 5;
-			CmdPush(_jumpPos);
-			//прыгать до препятствия
+			CmdPush(stopPosition);
 		}
 		else
 		{
@@ -163,7 +173,7 @@ public class IceRolling : Skill
 				_jumpCount += 0.2f;
 				actualJumpRange += 0.2f;
 				Vector3 jumpPos2 = _lookDir * actualJumpRange + _playerLinks.transform.position;
-				if (_energy.CurrentValue >= 5 && !CheckObstacleBetween(_playerLinks.transform.position, jumpPos2))
+				if (_energy.CurrentValue >= 5 && !CheckObstacleBetween(_playerLinks.transform.position, jumpPos2, out stopPosition))
 				{
 					_energy.CmdUse(1);
 					jumpPos = jumpPos2;
@@ -179,7 +189,6 @@ public class IceRolling : Skill
 		}
 
 		_target = null;
-
 		_mousePos = Vector3.positiveInfinity;
 		_lookDir = Vector3.zero;
 		_jumpPos = Vector3.zero;
