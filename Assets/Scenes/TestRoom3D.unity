@@ -3068,7 +3068,7 @@ GameObject:
   - component: {fileID: 5395750260639757147}
   - component: {fileID: 1988059745070605334}
   - component: {fileID: 8560660883484059453}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Statue3 (9)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3465,7 +3465,7 @@ GameObject:
   - component: {fileID: 8183200631447184102}
   - component: {fileID: 1509966358867535744}
   - component: {fileID: 6461302983363614073}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Statue3 (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -26557,7 +26557,7 @@ GameObject:
   - component: {fileID: 8343096815062878123}
   - component: {fileID: 855376272688665174}
   - component: {fileID: 4836903554066432904}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Statue3 (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -26987,7 +26987,7 @@ GameObject:
   - component: {fileID: 5121316288006956784}
   - component: {fileID: 7266269624411695341}
   - component: {fileID: 794692259218690167}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Statue3 (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44801,7 +44801,7 @@ GameObject:
   - component: {fileID: 5043826147463991117}
   - component: {fileID: 5735288398189001453}
   - component: {fileID: 3114320788339997253}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Statue3 (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -62906,7 +62906,7 @@ GameObject:
   - component: {fileID: 3914211750556709908}
   - component: {fileID: 2982593462839616235}
   - component: {fileID: 1824544647961759368}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Statue3 (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -78199,7 +78199,7 @@ GameObject:
   - component: {fileID: 1064598773794232194}
   - component: {fileID: 4557353280253785459}
   - component: {fileID: 1771552691795812695}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Statue3 (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -126037,7 +126037,7 @@ GameObject:
   - component: {fileID: 5999713808445128704}
   - component: {fileID: 1417280439738676998}
   - component: {fileID: 7475664799276660660}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Terrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -136973,7 +136973,7 @@ GameObject:
   - component: {fileID: 6079716206059146192}
   - component: {fileID: 6137313156498996493}
   - component: {fileID: 3409438158066256036}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Statue3 (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
