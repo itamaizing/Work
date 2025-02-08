@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEditor;
 
 public class ChangingTheFont : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class ChangingTheFont : MonoBehaviour
 
         foreach (var item in tempFonts)
         {
+            Undo.RecordObject(item, "font");
             item.font = _newFont;
         }
     }

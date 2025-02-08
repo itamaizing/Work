@@ -1768,12 +1768,12 @@ MonoBehaviour:
   syncInterval: 0
   _isTalentSpell: 0
   _isSkillActive: 1
-  _abilityInfo: {fileID: 11400000, guid: 1f2a5a037601fdd438b17c4c4917caaa, type: 2}
+  _abilityInfo: {fileID: 11400000, guid: 6d79d5ad27a130248b2172b0a53f285c, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 20
-  _cooldownTime: 0.5
+  _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
   _abilitySchool: 0
@@ -1822,7 +1822,7 @@ MonoBehaviour:
   syncInterval: 0
   _isTalentSpell: 0
   _isSkillActive: 1
-  _abilityInfo: {fileID: 11400000, guid: d225c810085a24647a426dd4b47a9983, type: 2}
+  _abilityInfo: {fileID: 11400000, guid: 9828da93c7afe35429aff023cf82efe0, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
   _cooldownTime: 0
@@ -1874,10 +1874,10 @@ MonoBehaviour:
   syncInterval: 0
   _isTalentSpell: 0
   _isSkillActive: 1
-  _abilityInfo: {fileID: 11400000, guid: 44ef9f5c61bd03a4a9d02045a6dfb776, type: 2}
+  _abilityInfo: {fileID: 11400000, guid: b95f67b7aed6e464292ebf37483ccc21, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
-  _cooldownTime: 0.5
+  _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
   _abilitySchool: 0
@@ -1927,10 +1927,10 @@ MonoBehaviour:
   syncInterval: 0
   _isTalentSpell: 0
   _isSkillActive: 1
-  _abilityInfo: {fileID: 11400000, guid: 1f2a5a037601fdd438b17c4c4917caaa, type: 2}
+  _abilityInfo: {fileID: 11400000, guid: 57976c6e6411fa84cac503c8e00a1787, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
-  _cooldownTime: 0.5
+  _cooldownTime: 0
   _castDeley: 0
   _damageValue: 10
   _abilitySchool: 0
@@ -1979,12 +1979,12 @@ MonoBehaviour:
   syncInterval: 0
   _isTalentSpell: 0
   _isSkillActive: 1
-  _abilityInfo: {fileID: 11400000, guid: 83e21c29a8358a84c98e9e3409e72dce, type: 2}
+  _abilityInfo: {fileID: 11400000, guid: 9949c19f999c6534b80d47630f324f75, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 30
-  _cooldownTime: 0.5
+  _cooldownTime: 0
   _castDeley: 1.6
   _damageValue: 0
   _abilitySchool: 0

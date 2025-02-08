@@ -11,6 +11,9 @@ namespace Gangdollarff
         [SerializeField] private float _pushRange = 1;
         [SerializeField] private float _pushDuration = 0.33f;
 
+        public override string AdditionalDescription =>
+            $"Расстояние толчка: {AbilityNameBox.ColorOpen}{_pushRange}{AbilityNameBox.ColorEnd}";
+
         protected override int AnimTriggerCastDelay => 0;
 
         protected override int AnimTriggerCast => 0;
