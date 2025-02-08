@@ -9,10 +9,13 @@ public class ObjectData : ScriptableObject
     [SerializeField] private float regenerationRate;
 
     [Header("Endurance")]
-    [SerializeField] private bool endurance = true;
+    [SerializeField] private bool maxEndurance = true;
+    [SerializeField] private bool minEndurance = false;
 
-    public float MaxHealth => maxHealth;
+    public float MaxHealth { get => maxHealth; set => maxHealth = value; }
     public float RegenerationRate => regenerationRate;
 
-    public bool Endurance => endurance;
+    public bool MaxEndurance => maxEndurance;
+    public bool MinEndurance => minEndurance;
+
 }

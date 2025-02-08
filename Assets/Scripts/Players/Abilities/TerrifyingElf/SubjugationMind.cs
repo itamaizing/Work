@@ -1,0 +1,86 @@
+using Mirror;
+using System.Collections;
+using UnityEngine;
+
+public class SubjugationMind : Skill
+{
+    private Character _target;
+
+    protected override bool IsCanCast => true;
+
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("PullingHealthCastDelay");
+    protected override int AnimTriggerCast => 0;
+
+    protected override IEnumerator CastJob()
+    {
+        CmdIntercept(_target);
+        yield return null;
+    }
+
+    protected override void ClearData()
+    {
+        _target = null;
+    }
+
+    protected override IEnumerator PrepareJob()
+    {
+        while (_target == null)
+        {
+            if (GetMouseButton)
+            {
+                var temp = GetRaycastTarget();
+
+                if (temp is MinionComponent minion) _target = minion;
+                else if (temp is HeroComponent heroComponent) _target = heroComponent;
+            }
+            yield return null;
+        }
+    }
+
+    [Command]
+    private void CmdIntercept(Character character)
+    {
+        if (character == null) return;
+
+        if (character is MinionComponent minion)
+        {
+            minion.SetAuthority(connectionToClient);
+
+            if (Hero is HeroComponent hero)
+            {
+                hero.SpawnComponent.AddUnit(minion);
+            }
+        }
+        else if (character is HeroComponent heroTarget)
+        {
+            var networkIdentity = heroTarget.GetComponent<NetworkIdentity>();
+            if (networkIdentity == null) return;
+
+            networkIdentity.RemoveClientAuthority();
+            networkIdentity.AssignClientAuthority(connectionToClient);
+
+            if (Hero is HeroComponent currentHero)
+            {
+                currentHero.SpawnComponent.AddUnit(heroTarget);
+            }
+
+            StartCoroutine(ReturnHeroControlAfterDelay(heroTarget, networkIdentity));
+        }
+    }
+
+    private IEnumerator ReturnHeroControlAfterDelay(HeroComponent heroTarget, NetworkIdentity networkIdentity)
+    {
+        yield return new WaitForSeconds(4);
+
+        if (networkIdentity != null)
+        {
+            networkIdentity.RemoveClientAuthority();
+            networkIdentity.AssignClientAuthority(heroTarget.connectionToClient);
+
+            if (Hero is HeroComponent currentHero)
+            {
+                currentHero.SpawnComponent.CmdRemoveUnit(heroTarget);
+            }
+        }
+    }
+}

@@ -99,6 +99,11 @@ public class Health : Resource, IDamageable, IHealingable
         _resistMagDamage = value;
     }
 
+    public void SetEvadeMagicDecrease(float value)
+    {
+        _resistMagDamage *= 1 - (value / 100);
+    }
+
     public void SetPhysicDef(float value)
     {
         _defPhysDamage = value;
@@ -117,6 +122,12 @@ public class Health : Resource, IDamageable, IHealingable
         _resistMagDamage += value;
         _evadeMeleeDamage += value;
         _evadeRangeDamage += value;
+    }
+
+    public void SetEvadePhys(float value)
+    {
+        _evadeMeleeDamage = value;
+        _evadeRangeDamage = value;
     }
 
     public void SetHp(float current, float max)

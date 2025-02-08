@@ -15,7 +15,8 @@ public class MoveComponent : NetworkBehaviour
 	protected float _animMultiplier;
 
 	public Vector3 MoveDirection = Vector3.zero;
-	
+	public Vector3 ExternalMoveDirection = Vector3.zero;
+
 	public bool CanMove = false;
 	public bool IsMoving = false;
 	public bool IsSelect = false;
@@ -41,7 +42,9 @@ public class MoveComponent : NetworkBehaviour
 	public float DefaultSpeed => _defaultSpeed;
 	public float CurrentSpeed => _currentSpeed;
 
-    public bool IsMoveBlocked { get => _isMoveBlocked; set => _isMoveBlocked = value; }
+	public Rigidbody Rigidbody => _rigidbody;
+
+	public bool IsMoveBlocked { get => _isMoveBlocked; set => _isMoveBlocked = value; }
 
     protected override void OnValidate()
     {
@@ -153,6 +156,7 @@ public class MoveComponent : NetworkBehaviour
     {
 		if (!CanMove || _rigidbody == null || IsMoveBlocked == true)
 		{
+			_rigidbody.velocity = Vector3.zero;
 			return;
 		}
 
@@ -194,10 +198,34 @@ public class MoveComponent : NetworkBehaviour
 		}
 	}
 
+	public void SetAnimationMovement(Vector3 direction)
+	{
+		Vector3 localDir = transform.InverseTransformDirection(direction);
+
+		_anim.SetFloat(HashAnimPlayer.VelocityZ, localDir.z);
+		_anim.SetFloat(HashAnimPlayer.VelocityX, localDir.x);
+	}
+
 	private void OnMove(Vector2 dir)
     {
 		if (IsSelect)
 			_dir = new Vector3(dir.x, 0, dir.y);
+	}
+
+	public void TeleportToPositionSmooth(Vector3 position, float duration)
+	{
+		if (isOwned)
+		{
+			CanMove = false;
+			_rigidbody.DOMove(position, duration).OnComplete(() =>
+			{
+				CanMove = true;
+			});
+		}
+		else if (isServer)
+		{
+			TargetRpcTeleportToPositionSmooth(connectionToClient, position, duration);
+		}
 	}
 
 	private IEnumerator LookAtTransformCoroutine(Transform transform)
@@ -208,6 +236,25 @@ public class MoveComponent : NetworkBehaviour
 			yield return null;
 		}
     }
+
+	private IEnumerator MoveTowardsCoroutine(Vector3 targetPosition, float speed, Action onComplete = null)
+	{
+		while (Vector3.Distance(transform.position, targetPosition) > 0.1f)
+		{
+			Vector3 direction = (targetPosition - transform.position).normalized;
+			transform.position += direction * speed * Time.deltaTime;
+			yield return null;
+		}
+
+		onComplete?.Invoke();
+	}
+
+	public void MoveTowards(Vector3 targetPosition, float speed, Action onComplete = null)
+	{
+		if (!isServer) return;
+
+		TargetRpcMoveTowards(connectionToClient, targetPosition, speed);
+	}
 
 	[TargetRpc]
 	public void TargetRpcAddForce(Vector3 vector3)
@@ -230,5 +277,21 @@ public class MoveComponent : NetworkBehaviour
 	public void TargetRpcDoMove(Vector3 vector3, float duration)
 	{
 		_rigidbody.DOMove(vector3, duration);
+	}
+
+	[TargetRpc]
+	private void TargetRpcTeleportToPositionSmooth(NetworkConnection target, Vector3 position, float duration)
+	{
+		CanMove = false;
+		_rigidbody.DOMove(position, duration).OnComplete(() =>
+		{
+			CanMove = true;
+		});
+	}
+
+	[TargetRpc]
+	private void TargetRpcMoveTowards(NetworkConnection target, Vector3 targetPosition, float speed)
+	{
+		StartCoroutine(MoveTowardsCoroutine(targetPosition, speed));
 	}
 }

@@ -163,7 +163,7 @@ public class PoisonBoneState : AbstractCharacterState
         };
 
         _characterState.Character.Health.TryTakeDamage(ref damage, _creeperStrike);
-        _characterState.Character.DamageTracker.AddDamage(damage, true);
+        _characterState.Character.DamageTracker.AddDamage(damage, null, true);
     }
 
     private void ResetValues()

@@ -11,6 +11,16 @@ public class SkillEnergyCost
 {
     public ResourceType resourceType;
     public float resourceCost;
+
+    public void ModifyResourceCost(float multiplier)
+    {
+        resourceCost *= multiplier;
+    }
+
+    public void ResetResourceCost(float baseCost)
+    {
+        resourceCost = baseCost;
+    }
 }
 
 public class TargetToShot
@@ -90,6 +100,8 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] protected bool _isAutoAreaRender = true;
     [SerializeField] protected bool _isAutoLineRender = true;
     [SerializeField] protected bool _isDynamicRenderer = false;
+    [Header("Availability")]
+    [SerializeField] protected bool _disactive = false;
 
     protected SkillRenderer _skillRender;
     protected Character _hero;
@@ -106,6 +118,7 @@ public abstract class Skill : NetworkBehaviour
     protected IHealingable _tempForHealing;
     protected bool _isPlayCastAnim;
     protected int _currentChargers;
+    protected float _baseCooldownTime;
 
     private Character _tempTargetbase;
     private float _remainingCooldownTime;
@@ -128,6 +141,8 @@ public abstract class Skill : NetworkBehaviour
         set => _isSkillActive = value;
     }
 
+    public Transform TempTargetForDamage => _tempTargetForDamage;
+    public List<SkillEnergyCost> SkillEnergyCosts => _skillEnergyCosts;
     public bool GetMouseButton { get => _isClick || _isShiftClick || _isCtrlClick || _isSpaceClick; }
     public bool IsSubjectToGlobalCooldownTime { get => _isSubjectToGlobalCooldownTime; }
     public Character Hero { get => _hero; }
@@ -146,14 +161,14 @@ public abstract class Skill : NetworkBehaviour
     public bool IsHaveResources { get => IsHaveResourceOnSkill && IsCooldowned && IsHaveCharge; }
     public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); protected set => _cooldownTime = value; }
     public float RemainingCooldownTime { get => _remainingCooldownTime; }
-    public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); protected set => _castDeley = value; }
+    public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); set => _castDeley = value; }
     public bool IsCasting { get => _isCasting; }
-    public float CastStreamDuration { get => _castDuration; }
+    public float CastStreamDuration { get => _castDuration; set => _castDuration = value; }
     public float Radius { get => Buff.Radius.GetBuffedValue(_radius); protected set => _radius = value; }
     public float Area { get => Buff.Area.GetBuffedValue(_area); protected set => _area = value; }
     public float CastLength { get => Buff.Area.GetBuffedValue(_castLength); protected set => _castLength = value; }
     public float CastWidth { get => Buff.Area.GetBuffedValue(_castWidth); protected set => _castWidth = value; }
-    public virtual float Damage { get => Buff.Damage.GetBuffedValue(_damageValue); protected set => _damageValue = value; }
+    public virtual float Damage { get => _damageValue; set => _damageValue = value; }
     public bool IsUseCharges { get => _isUseCharges; }
     public LayerMask TargetsLayers { get => _targetsLayers; protected set => _targetsLayers = value; }
     public Schools School { get => _abilitySchool; protected set => _abilitySchool = value; }
@@ -162,6 +177,20 @@ public abstract class Skill : NetworkBehaviour
     public AttackRangeType AttackRangeType => _attackRangeType;
     public SkillType SkillType => _skillType;
 
+    public bool Disactive
+    {
+        get => _disactive;
+        set
+        {
+            if (_disactive != value)
+            {
+                _disactive = value;
+                OnSkillStateChanged?.Invoke(_disactive);
+            }
+        }
+    }
+
+    public event Action<bool> OnSkillStateChanged;
     public event Action<int> CurrentChargeChanged;
     public event Action<float> CooldownStarted;
     public event Action CooldownEnded;
@@ -178,6 +207,8 @@ public abstract class Skill : NetworkBehaviour
     public event Action<float> MassageHaventMana;
     public event Action MassageHaventCharge;
     public event Action<float> MassageNotCooldowned;
+    public event Action OnSkillCanceled;
+    public event Action CastSuccess;
 
     protected abstract int AnimTriggerCastDelay { get; }
     protected abstract int AnimTriggerCast { get; }
@@ -203,6 +234,11 @@ public abstract class Skill : NetworkBehaviour
         }
         else
             _currentChargers = 1;
+    }
+
+    public void InvokeCastStreamStarted(float duration)
+    {
+        CastStreamStarted?.Invoke(duration);
     }
 
     public bool TryPreparing()
@@ -278,6 +314,8 @@ public abstract class Skill : NetworkBehaviour
 
             _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
             _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
+
+            OnSkillCanceled?.Invoke();
 
             return true;
         }
@@ -1147,6 +1185,7 @@ public abstract class Skill : NetworkBehaviour
         _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
         _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
 
+        CastSuccess?.Invoke();
         CastEnded?.Invoke();
         _isCasting = false;
 

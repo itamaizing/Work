@@ -69,7 +69,7 @@ public class ShieldBaff : AbstractCharacterState, IDamageable
             Value = damageToAbsorb,
         };
 
-        _characterState.GetComponent<Character>().DamageTracker.AddDamage(damage);
+        _characterState.GetComponent<Character>().DamageTracker.AddDamage(damage, null);
         DamageTaken?.Invoke(tempDamage, skill);
 
         _characterState.Character.Health.ClientRpcInvokeShieldDamageTaken(damageToAbsorb, damage.Type, skill);

@@ -13,32 +13,29 @@ public class DamageTracker : NetworkBehaviour
 
     public List<DamageEntry> GetLocalDamageEntries => _localDamageEntries;
     public List<HealEntry> GetLocalHealEntries => _localHealEntries;
-    
-    public void AddDamage(Damage damage, bool isServerRequest = false)
+
+    public event System.Action<Damage, GameObject> OnDamageTracked;
+
+    public void AddDamage(Damage damage, GameObject targetObject, bool isServerRequest = false)
     {
-        if (!isServerRequest)
-        {
-            CmdAddDamage(damage);
-        }
-        
+        if (!isServerRequest) CmdAddDamage(damage, targetObject);
+
         _damageEntries.Add(new DamageEntry(damage, Time.time));
         RemoveOldServerEntries();
         Debug.Log($"[DamageTracker] Damage added: {damage.Value}, Time: {Time.time}, School: {damage.School}");
+
+        OnDamageTracked?.Invoke(damage, targetObject);
     }
-    
+
     [Command]
-    private void CmdAddDamage(Damage damage)
+    private void CmdAddDamage(Damage damage, GameObject targetObject)
     {
-        AddDamage(damage, true);
-        Debug.Log($"[DamageTracker] Damage added: {damage.Value}, Time: {Time.time}, School: {damage.School}");
+        AddDamage(damage, targetObject, true);
     }
 
     public void AddHeal(Heal heal, bool isServerRequest = false)
     {
-        if (!isServerRequest)
-        {
-            CmdAddHeal(heal);
-        }
+        if (!isServerRequest) CmdAddHeal(heal);
         
         _healEntries.Add(new HealEntry(heal, Time.time));
         RemoveOldServerEntries();

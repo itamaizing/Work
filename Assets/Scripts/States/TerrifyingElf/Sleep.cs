@@ -1,0 +1,97 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Sleep : AbstractCharacterState
+{
+    private float _duration;
+    private float _baseDuration;
+    private Character _source;
+    private bool _previousIsSelect;
+    private Coroutine _sleepCoroutine;
+    private SkillManager _skillManager;
+    private List<Skill> _disabledSkills = new List<Skill>();
+
+    public override States State => States.Sleep;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
+    public override StateType Type => StateType.Immaterial;
+    public override List<StatusEffect> Effects => new List<StatusEffect>();
+
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        Debug.Log("Жертва погружена в сон");
+
+        _characterState = character;
+        _source = personWhoMadeBuff;
+        _duration = durationToExit;
+        _baseDuration = durationToExit;
+
+        MoveComponent moveComponent = _characterState.Character.Move;
+        _skillManager = _characterState.Character.Abilities;
+
+        if (moveComponent != null)
+        {
+            _previousIsSelect = moveComponent.IsSelect;
+            moveComponent.StopLookAt();
+            moveComponent.IsSelect = false;
+            moveComponent.IsMoving = false;
+            moveComponent.Rigidbody.velocity = Vector3.zero;
+            moveComponent.SetAnimationMovement(Vector3.zero);
+        }
+
+        if (_skillManager != null)
+        {
+            foreach (var skill in _skillManager.Abilities)
+            {
+                if (!skill.Disactive)
+                {
+                    skill.Disactive = true;
+                    _disabledSkills.Add(skill);
+                }
+            }
+        }
+    }
+
+    public override void UpdateState()
+    {
+        _duration -= Time.deltaTime;
+
+        if (_duration <= 0) ExitState();
+    }
+
+    public override void ExitState()
+    {
+        Debug.Log("Эффект сна закончился");
+
+        if (_sleepCoroutine != null)
+        {
+            _characterState.StopCoroutine(_sleepCoroutine);
+            _sleepCoroutine = null;
+        }
+
+        MoveComponent moveComp = _characterState.Character.Move;
+        if (moveComp != null)
+        {
+            moveComp.IsSelect = _previousIsSelect;
+            moveComp.IsMoving = false;
+            moveComp.Rigidbody.velocity = Vector3.zero;
+            moveComp.SetAnimationMovement(Vector3.zero);
+        }
+
+        foreach (var skill in _disabledSkills)
+        {
+            skill.Disactive = false;
+        }
+        _disabledSkills.Clear();
+
+        _characterState.RemoveState(this);
+
+        for (int i = 0; i < 6; i++) _characterState.CmdAddState(States.InnerDarkness, 13, 0, _source?.gameObject, "SleepExit");
+    }
+
+    public override bool Stack(float time)
+    {
+        _duration = _baseDuration;
+        return true;
+    }
+}

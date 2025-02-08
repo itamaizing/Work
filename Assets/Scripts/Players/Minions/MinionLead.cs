@@ -11,7 +11,10 @@ public class MinionLead : MinionComponent
 
         foreach (var item in SpawnComponent.Units)
         {
-            item.SetAuthority(con);
+            if (item is MinionComponent minion)
+            {
+                minion.SetAuthority(con);
+            }
         }
     }
 }

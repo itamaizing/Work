@@ -65,7 +65,7 @@ public class LightShield : AbstractCharacterState, IDamageable
         _damageAbsorbed += damageToAbsorb;
         damage.Value -= damageToAbsorb;
 
-        _characterState.GetComponent<Character>().DamageTracker.AddDamage(damage);
+        _characterState.GetComponent<Character>().DamageTracker.AddDamage(damage, null);
 
         var tempDamage = new Damage
         {
@@ -105,7 +105,7 @@ public class LightShield : AbstractCharacterState, IDamageable
             };
 
             enemy.Health.TryTakeDamage(ref tempDamage, null);
-            enemy.DamageTracker.AddDamage(tempDamage);
+            enemy.DamageTracker.AddDamage(tempDamage, null);
         }
     }
 

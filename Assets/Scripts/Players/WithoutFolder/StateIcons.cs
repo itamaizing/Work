@@ -41,7 +41,7 @@ public class StateIcons : MonoBehaviour
 			ActivateIco(States.Frosting, 2, 6);
 		}
 	}*/
-    public void ActivateIco(States state, float timeToDecrease, int stack, bool canStack)
+    public void ActivateIco(States state, float timeToDecrease, int stack, bool canStack, int maxStackValue = 1)
     {
         if (canStack)
         {
@@ -50,7 +50,9 @@ public class StateIcons : MonoBehaviour
                 var ico = _activeEffects[i];
                 if (ico.state == state)
                 {
-                    ico.count += stack;
+                    ico.maxStack = maxStackValue;
+
+                    if (ico.count < ico.maxStack) ico.count += stack;
                     ico.time.Add(timeToDecrease);
                     if (ico.count > 0)
                     {
@@ -70,6 +72,7 @@ public class StateIcons : MonoBehaviour
                 var newIco = Instantiate(ico, _spawnPos.transform);
                 newIco.time.Add(timeToDecrease);
                 newIco.count = stack;
+                newIco.maxStack = maxStackValue;
                 _activeEffects.Add(newIco);
                 if (timeToDecrease < 0)
                 {

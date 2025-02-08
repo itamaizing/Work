@@ -365,6 +365,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3329101817c67e24fb70ba97b6168054, type: 3}
+--- !u!1 &1545470976515082280 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1777591198242490, guid: 3329101817c67e24fb70ba97b6168054, type: 3}
+  m_PrefabInstance: {fileID: 1546086107374345874}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1547967953852722722 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4417530817065136, guid: 3329101817c67e24fb70ba97b6168054, type: 3}
@@ -2960,6 +2965,10 @@ PrefabInstance:
       propertyPath: m_WarningMessage
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 8770370089772824140, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8788399700865532087, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.00000009714812
@@ -3297,7 +3306,9 @@ MonoBehaviour:
   frozenAudio: {fileID: 8300000, guid: 31b511e2b17449247af7cb680a519a2c, type: 3}
   ice: {fileID: 171678586620690968}
   frostingAudio: {fileID: 8300000, guid: 7110e38f35444df44b3c0846220ee56b, type: 3}
+  materialGhost: {fileID: 2100000, guid: af5afac1d13fa7844a98b01089b0690d, type: 2}
   materialCharacter: {fileID: 2100000, guid: c62fa7bca9cdae0409c0344f10eb4d78, type: 2}
+  weapon: {fileID: 1545470976515082280}
 --- !u!114 &7407653808177717906
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3347,6 +3358,7 @@ MonoBehaviour:
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
+  _disactive: 0
   _attackZoneSize: 0
   _attackDelay: 1.4
   _chargeAttackDelay: 0
@@ -3406,6 +3418,7 @@ MonoBehaviour:
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
+  _disactive: 0
   _projectile: {fileID: 3779490377558770127, guid: 911d5f174dbe7ac4b8da163e8aaf32a1, type: 3}
   _playerLinks: {fileID: 4374618947117916461}
   _combo: {fileID: 161199462986225237}
@@ -3461,6 +3474,7 @@ MonoBehaviour:
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
+  _disactive: 0
   _shadow: {fileID: 7237307863484890914, guid: 8dea5af4c60165d45af4522b1a596998, type: 3}
   _playerLinks: {fileID: 4374618947117916461}
   _combo: {fileID: 161199462986225237}
@@ -3516,6 +3530,7 @@ MonoBehaviour:
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
+  _disactive: 0
   _puddle: {fileID: -4751265457872843896, guid: 49b94ed23b9d6a447b459769dcbb348d, type: 3}
   _preViewPuddle: {fileID: 5135469058462379726}
   _lowePoint: {fileID: 7012153009348031768}
@@ -3576,6 +3591,7 @@ MonoBehaviour:
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _isDynamicRenderer: 1
+  _disactive: 0
   _playerLinks: {fileID: 4374618947117916461}
   _physicalAttack: {fileID: 7407653808177717906}
   _jumprange: 2
@@ -3632,6 +3648,7 @@ MonoBehaviour:
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
+  _disactive: 0
   _projectile: {fileID: 5633596165386628248, guid: 13d29f15dbe0e9c40bac53fe5ff49f89, type: 3}
   _playerLinks: {fileID: 4374618947117916461}
   _seriesOfStrikes: {fileID: 161199462986225237}
@@ -3690,6 +3707,7 @@ MonoBehaviour:
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
+  _disactive: 0
   _deathSpiral: {fileID: 5605713643324713456}
   _playerLinks: {fileID: 4374618947117916461}
 --- !u!114 &1852313743646574494
@@ -3743,6 +3761,7 @@ MonoBehaviour:
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
+  _disactive: 0
   _iceArrow: {fileID: -4716538455152202873, guid: 2b98bf57809a2ea488381e132571282f, type: 3}
   _playerLinks: {fileID: 4374618947117916461}
   _seriesOfStrikes: {fileID: 161199462986225237}
@@ -3795,6 +3814,7 @@ MonoBehaviour:
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
+  _disactive: 0
   _projectile: {fileID: -5318331524605723407, guid: 972ffc3bac4d76048b18c6e9bbdcfb98, type: 3}
   _playerLinks: {fileID: 4374618947117916461}
   _seriesOfStrikes: {fileID: 161199462986225237}
@@ -3851,6 +3871,7 @@ MonoBehaviour:
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
+  _disactive: 0
   _damage: 15
   _playerLinks: {fileID: 4374618947117916461}
   _deathSpiral: {fileID: 5605713643324713456}
@@ -3906,6 +3927,7 @@ MonoBehaviour:
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
+  _disactive: 0
   _projectile: {fileID: 4270127104199351435}
   _playerLinks: {fileID: 4374618947117916461}
   _seriesOfStrikes: {fileID: 161199462986225237}
@@ -3960,6 +3982,7 @@ MonoBehaviour:
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
+  _disactive: 0
   _playerLinks: {fileID: 4374618947117916461}
   _seriesOfStrikes: {fileID: 161199462986225237}
 --- !u!114 &2036370849879020904
@@ -4013,6 +4036,7 @@ MonoBehaviour:
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
+  _disactive: 0
   _projectile: {fileID: 6346210437348289638, guid: 795c930bd55158742a432f093fa0c89e, type: 3}
   _skillRenderer: {fileID: 2643045369493803655}
   _playerLinks: {fileID: 4374618947117916461}
@@ -4066,6 +4090,7 @@ MonoBehaviour:
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
+  _disactive: 0
   _playerLinks: {fileID: 4374618947117916461}
 --- !u!114 &5771022705536535529
 MonoBehaviour:

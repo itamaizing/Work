@@ -9,11 +9,13 @@ public class CharacterData : ScriptableObject
 {
     [SerializeField] private string _name;
     [SerializeField] private string _description;
+    [SerializeField] private string type;
     [SerializeField] private Sprite _icon;
     [SerializeField] private float _iconSize;
     [SerializeField] private AttributeGroup _attributes;
 
     public string Name => _name;
+    public string Type => type;
     public string Description => _description;
     public Sprite Icon => _icon;
     public float IconSize => _iconSize;
