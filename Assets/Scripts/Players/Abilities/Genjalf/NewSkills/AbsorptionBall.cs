@@ -14,6 +14,10 @@ namespace Gangdollarff
 
         private Shield _shield;
 
+        public override string AdditionalDescription =>
+            $"Ёффективность: {AbilityNameBox.ColorOpen}{_shieldValue} ед.{AbilityNameBox.ColorEnd}" +
+            $"\nƒлительность: {AbilityNameBox.ColorOpen}{_shieldDuration} сек{AbilityNameBox.ColorEnd}";
+
         protected override int AnimTriggerCastDelay => 0;
 
         protected override int AnimTriggerCast => 0;

@@ -138,6 +138,7 @@ public abstract class Skill : NetworkBehaviour
     public bool IsCooldowned { get => _remainingCooldownTime <= 0; }
     public virtual bool IsPayCostStartCooldown { get => true; }
     public int Chargers { get => _currentChargers; protected set { _currentChargers = value; CurrentChargeChanged?.Invoke(_currentChargers); } }
+    public int MaxChargers { get => _maxCharges; }
     public bool IsHaveCharge => (_currentChargers > 0);
     public float ChargeCooldown => _chargeCooldown;
     public List<float> RemainingCooldownTimeCharge { get => _remainingCooldownTimeChargers; }
@@ -161,6 +162,9 @@ public abstract class Skill : NetworkBehaviour
     public DamageType DamageType => _damageType;
     public AttackRangeType AttackRangeType => _attackRangeType;
     public SkillType SkillType => _skillType;
+    public List<SkillEnergyCost> SkillEnergyCosts { get => _skillEnergyCosts; }
+    public List<SkillEnergyCost> ManaCostPerTick { get => _manaCostPerTick; }
+    public float ManaCostRate { get => _manaCostRate; }
 
     public event Action<int> CurrentChargeChanged;
     public event Action<float> CooldownStarted;
@@ -179,6 +183,11 @@ public abstract class Skill : NetworkBehaviour
     public event Action MassageHaventCharge;
     public event Action<float> MassageNotCooldowned;
 
+
+    /// <summary>
+    /// There may be a description that will be shown in the AbillityNameBox.
+    /// </summary>
+    public virtual string AdditionalDescription { get; }
     protected abstract int AnimTriggerCastDelay { get; }
     protected abstract int AnimTriggerCast { get; }
     protected abstract bool IsCanCast { get; }

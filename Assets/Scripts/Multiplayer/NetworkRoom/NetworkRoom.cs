@@ -12,9 +12,28 @@ public class NetworkRoom
     private List<GameObject> _players;
     private Scene _currentRoom;
     private bool _isLoaded;
+    private bool _isGameStarted = false;
 
-    public bool IsHaveSlot { get => _maxNumPlayers > _players.Count; }
-    public int NumOfFreeSlots { get => _maxNumPlayers - _players.Count; }
+    public bool IsHaveSlot
+    {
+        get
+        {
+            if(_isGameStarted == false)
+                _players.RemoveAll(player => player == null);
+
+            return _maxNumPlayers > _players.Count;
+        }
+    }
+    public int NumOfFreeSlots
+    {
+        get
+        {
+            if (_isGameStarted == false)
+                _players.RemoveAll(player => player == null);
+
+            return _maxNumPlayers - _players.Count;
+        }
+    }
     public List<GameObject> Players => _players;
     public Scene Scene => _currentRoom;
     public string SceneName => _scene;
@@ -63,8 +82,10 @@ public class NetworkRoom
             playerSettings.MyRoom = Scene;
 
             if (!IsHaveSlot)
+            {
                 SlotsEnded?.Invoke(this);
-
+                _isGameStarted = true;
+            }
             return true;
         }
         else
