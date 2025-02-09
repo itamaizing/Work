@@ -13,8 +13,24 @@ public class NetworkRoom
     private Scene _currentRoom;
     private bool _isLoaded;
 
-    public bool IsHaveSlot { get => _maxNumPlayers > _players.Count; }
-    public int NumOfFreeSlots { get => _maxNumPlayers - _players.Count; }
+    public bool IsHaveSlot
+    {
+        get
+        {
+            _players.RemoveAll(player => player == null);
+
+            return _maxNumPlayers > _players.Count;
+        }
+    }
+    public int NumOfFreeSlots
+    {
+        get
+        {
+            _players.RemoveAll(player => player == null);
+
+            return _maxNumPlayers - _players.Count;
+        }
+    }
     public List<GameObject> Players => _players;
     public Scene Scene => _currentRoom;
     public string SceneName => _scene;
