@@ -36,7 +36,7 @@ public class Sleep : AbstractCharacterState
             moveComponent.IsSelect = false;
             moveComponent.IsMoving = false;
             moveComponent.Rigidbody.velocity = Vector3.zero;
-            moveComponent.SetAnimationMovement(Vector3.zero);
+            //moveComponent.SetAnimationMovement(Vector3.zero);
         }
 
         if (_skillManager != null)
@@ -75,7 +75,7 @@ public class Sleep : AbstractCharacterState
             moveComp.IsSelect = _previousIsSelect;
             moveComp.IsMoving = false;
             moveComp.Rigidbody.velocity = Vector3.zero;
-            moveComp.SetAnimationMovement(Vector3.zero);
+            //moveComp.SetAnimationMovement(Vector3.zero);
         }
 
         foreach (var skill in _disabledSkills)

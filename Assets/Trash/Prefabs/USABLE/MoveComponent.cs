@@ -11,6 +11,8 @@ public class MoveComponent : NetworkBehaviour
 	[SerializeField] protected float _currentSpeed = 5;
 	[SerializeField] protected Animator _anim;
 	[SerializeField] protected FlyChecker _flyChecker;
+	[SerializeField] private AudioSource moveAudioSource;
+	[SerializeField] private AudioClip[] moveClips;
 
 	protected float _animMultiplier;
 
@@ -198,13 +200,13 @@ public class MoveComponent : NetworkBehaviour
 		}
 	}
 
-	public void SetAnimationMovement(Vector3 direction)
-	{
-		Vector3 localDir = transform.InverseTransformDirection(direction);
+	//public void SetAnimationMovement(Vector3 direction)
+	//{
+	//	Vector3 localDir = transform.InverseTransformDirection(direction);
 
-		_anim.SetFloat(HashAnimPlayer.VelocityZ, localDir.z);
-		_anim.SetFloat(HashAnimPlayer.VelocityX, localDir.x);
-	}
+	//	_anim.SetFloat(HashAnimPlayer.VelocityZ, localDir.z);
+	//	_anim.SetFloat(HashAnimPlayer.VelocityX, localDir.x);
+	//}
 
 	private void OnMove(Vector2 dir)
     {
@@ -293,5 +295,15 @@ public class MoveComponent : NetworkBehaviour
 	private void TargetRpcMoveTowards(NetworkConnection target, Vector3 targetPosition, float speed)
 	{
 		StartCoroutine(MoveTowardsCoroutine(targetPosition, speed));
+	}
+
+	[TargetRpc]
+	public void TargetRpcPlayFootstep()
+	{
+		if (!isOwned) return;
+		if (moveClips.Length == 0 ||moveAudioSource == null) return;
+
+		int index = UnityEngine.Random.Range(0, moveClips.Length);
+		moveAudioSource.PlayOneShot(moveClips[index]);
 	}
 }

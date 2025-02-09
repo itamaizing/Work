@@ -86,7 +86,7 @@ public class Fear : AbstractCharacterState
             moveComp.SetDefaultSpeed();
             moveComp.StopLookAt();
             moveComp.Rigidbody.velocity = Vector3.zero;
-            moveComp.SetAnimationMovement(Vector3.zero);
+            //moveComp.SetAnimationMovement(Vector3.zero);
         }
 
         foreach (var skill in _disabledSkills)
@@ -132,7 +132,7 @@ public class Fear : AbstractCharacterState
             //    yield break;
             //}
 
-            moveComp.SetAnimationMovement(Vector3.zero);
+            //moveComp.SetAnimationMovement(Vector3.zero);
             moveComp.Rigidbody.velocity = Vector3.zero;
 
             if (Random.value <= 0.2f)
@@ -143,7 +143,7 @@ public class Fear : AbstractCharacterState
 
             moveComp.transform.DORotateQuaternion(Quaternion.LookRotation(fleeDirection), 0.2f);
             rb.velocity = fleeDirection * moveComp.CurrentSpeed;
-            moveComp.SetAnimationMovement(rb.velocity);
+            //moveComp.SetAnimationMovement(rb.velocity);
         }
     }
 }
