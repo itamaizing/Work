@@ -258,6 +258,15 @@ public class MoveComponent : NetworkBehaviour
 		TargetRpcMoveTowards(connectionToClient, targetPosition, speed);
 	}
 
+	public void PlayMove()
+	{
+		if (!isOwned) return;
+		if (moveClips.Length == 0 || moveAudioSource == null) return;
+
+		int index = UnityEngine.Random.Range(0, moveClips.Length);
+		moveAudioSource.PlayOneShot(moveClips[index]);
+	}
+
 	[TargetRpc]
 	public void TargetRpcAddForce(Vector3 vector3)
     {
@@ -295,15 +304,5 @@ public class MoveComponent : NetworkBehaviour
 	private void TargetRpcMoveTowards(NetworkConnection target, Vector3 targetPosition, float speed)
 	{
 		StartCoroutine(MoveTowardsCoroutine(targetPosition, speed));
-	}
-
-	[TargetRpc]
-	public void TargetRpcPlayFootstep()
-	{
-		if (!isOwned) return;
-		if (moveClips.Length == 0 ||moveAudioSource == null) return;
-
-		int index = UnityEngine.Random.Range(0, moveClips.Length);
-		moveAudioSource.PlayOneShot(moveClips[index]);
 	}
 }

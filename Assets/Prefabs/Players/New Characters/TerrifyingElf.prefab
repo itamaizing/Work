@@ -710,6 +710,7 @@ Transform:
   - {fileID: 5561557800781888382}
   - {fileID: 3911650691065121}
   - {fileID: 6903532438009913050}
+  - {fileID: 9003930165204359413}
   m_Father: {fileID: 1110070738435946966}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1427,7 +1428,6 @@ GameObject:
   - component: {fileID: 9003930165204359413}
   - component: {fileID: 3519926972483688660}
   - component: {fileID: 4686403949401957099}
-  - component: {fileID: 892778140985279453}
   m_Layer: 0
   m_Name: way
   m_TagString: Untagged
@@ -1442,12 +1442,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5194879064547813366}
-  m_LocalRotation: {x: -0.7071067, y: 0.000000014901158, z: -0.000000024912874, w: 0.7071068}
-  m_LocalPosition: {x: 0.05, y: 0.399, z: -0.04}
+  m_LocalRotation: {x: -0.70708144, y: 0.005976285, z: 0.0059762443, w: 0.70708156}
+  m_LocalPosition: {x: 0.049316753, y: 0.399, z: -0.040839434}
   m_LocalScale: {x: 6, y: 6, z: 6}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6903532438009913050}
+  m_Father: {fileID: 6249225453874773334}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!198 &3519926972483688660
@@ -6194,7 +6194,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 76a2a3a3ede9d7c46860d647350534a7, type: 2}
+  - {fileID: 2100000, guid: 3e296f6d0a3d3c14d992c8424c0acc00, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6245,24 +6245,6 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!114 &892778140985279453
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5194879064547813366}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2582e71aa31bd5408104dbd068ed7a6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  particleSpeed: 20
-  particleCount: 200
-  waveFrequency: 2.1
-  waveAmplitude: 0.3
-  point1: {fileID: 0}
-  point2: {fileID: 0}
 --- !u!1 &5268196000120375678
 GameObject:
   m_ObjectHideFlags: 0
@@ -7749,6 +7731,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: FlyChecker
       objectReference: {fileID: 0}
+    - target: {fileID: 2258005987987123644, guid: ef34d8ef179403a4faf1dbfd8e8b5187, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5851851832670087865, guid: ef34d8ef179403a4faf1dbfd8e8b5187, type: 3}
       propertyPath: m_RootOrder
       value: -1
@@ -7795,10 +7781,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 5851851832670087865, guid: ef34d8ef179403a4faf1dbfd8e8b5187, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 9003930165204359413}
+    m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ef34d8ef179403a4faf1dbfd8e8b5187, type: 3}
 --- !u!114 &6214288719765569613 stripped
@@ -9275,31 +9258,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.19471788
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.00000047683716
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.5522227
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.99996436
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.008451721
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -9322,6 +9305,9 @@ PrefabInstance:
     - {fileID: 5263749372223534569, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: 0
+      addedObject: {fileID: 6249225453874773334}
+    - targetCorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2170747098340940518}
     - targetCorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -9330,9 +9316,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3865189708711686287}
-    - targetCorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6249225453874773334}
     - targetCorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 367806001659117675}
@@ -10371,9 +10354,9 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
-  _abilityInfo: {fileID: 0}
+  _isTalentSpell: 1
+  _isSkillActive: 0
+  _abilityInfo: {fileID: 11400000, guid: 6bd80f86cccf26344927ccf5c8e1b83e, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
   _cooldownTime: 0

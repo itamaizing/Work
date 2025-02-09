@@ -10336,7 +10336,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 76a2a3a3ede9d7c46860d647350534a7, type: 2}
+  - {fileID: 2100000, guid: 3e296f6d0a3d3c14d992c8424c0acc00, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -16932,7 +16932,7 @@ PrefabInstance:
       objectReference: {fileID: 3545852164369826336, guid: 02af94b4c6c8a84478c604ff0cc69958, type: 3}
     - target: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalScale.x
@@ -17129,6 +17129,8 @@ MonoBehaviour:
   _currentSpeed: 5
   _anim: {fileID: 3218874933856675809}
   _flyChecker: {fileID: 481437110747682589}
+  moveAudioSource: {fileID: 0}
+  moveClips: []
   MoveDirection: {x: 0, y: 0, z: 0}
   ExternalMoveDirection: {x: 0, y: 0, z: 0}
   CanMove: 0
@@ -17171,7 +17173,7 @@ MonoBehaviour:
     m_Bits: 0
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _manaCostPerTick: []
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -17186,6 +17188,11 @@ MonoBehaviour:
   _isDynamicRenderer: 0
   _disactive: 0
   _agent: {fileID: 1780925315992858912}
+  _enemyCheckRadius: 6
+  _enemyLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  _damageDeley: 0.5
 --- !u!114 &-1021338090593152454
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17222,7 +17229,7 @@ MonoBehaviour:
     m_Bits: 0
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _manaCostPerTick: []
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0

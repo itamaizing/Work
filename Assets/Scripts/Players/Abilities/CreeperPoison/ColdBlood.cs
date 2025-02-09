@@ -18,7 +18,6 @@ public class ColdBlood : Skill
     private Vector3 _mousePosition = Vector3.positiveInfinity;
 
     private float _cooldownTimeWithTalent = 4f;
-    private float _baseCooldownTime;
 
     private bool _isPlayer = false;
     private bool _isCanCritCreeperStrike;

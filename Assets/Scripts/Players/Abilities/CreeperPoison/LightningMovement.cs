@@ -76,7 +76,6 @@ public class LightningMovement : Skill
     private float _multiplierDistanceForTwoLeaps;
     private float _heatedGlandsDuration = 4f;
     private float _radiusChecking = 1.5f;
-    private float _baseCooldownTime;
     private float _reducingCooldownMultiplier = 2f;
 
     #region BoolVariables

@@ -18,7 +18,6 @@ public class LightningStrikes : AutoAttackSkill
     private float _animTime;
     private float _cooldownMultiplier = 2f;
     private float _heatedGlandsDuration = 4f;
-    private float _baseCooldownTime;
 
     private bool _isUsedLightningStrikes = false;
     private bool _isIncreaseCooldownTime = false;
