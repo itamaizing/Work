@@ -31,12 +31,15 @@ public class AbilityNameBox : MonoBehaviour
             _descriptionWithNumbers.text += $"\nУрон: {ColorOpen}{skill.Damage}{ColorEnd}";
             WriteTypeDamage(skill);
         }
-        _descriptionWithNumbers.text += $"\nПодготовка: {ColorOpen}{skill.CastDeley} сек{ColorEnd}";
+
+        if (skill.CastDeley > 0)
+            _descriptionWithNumbers.text += $"\nПодготовка: {ColorOpen}{skill.CastDeley} сек{ColorEnd}";
 
         if(skill.CastStreamDuration > 0)
             _descriptionWithNumbers.text += $"\nВыполнение: {ColorOpen}{skill.CastStreamDuration} сек{ColorEnd}";
 
-        _descriptionWithNumbers.text += $"\nПерезарядка: {ColorOpen}{skill.CooldownTime} сек{ColorEnd}";
+        if (skill.CooldownTime > 0)
+            _descriptionWithNumbers.text += $"\nПерезарядка: {ColorOpen}{skill.CooldownTime} сек{ColorEnd}";
 
         if (skill.ChargeCooldown > 0)
             _descriptionWithNumbers.text += $"\nКол-во Зарядов: {ColorOpen}{skill.MaxChargers}/{skill.ChargeCooldown} сек{ColorEnd}";
