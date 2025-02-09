@@ -1,7 +1,10 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using Telepathy;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class DisconnectButtonUI : MonoBehaviour
@@ -20,6 +23,19 @@ public class DisconnectButtonUI : MonoBehaviour
 
     private void OnClick()
     {
-        FindObjectOfType<GameRules>().CloseRoomOnClient();
+        var gameRules = FindObjectOfType<GameRules>();
+
+        if (gameRules != null)
+        {
+            gameRules.CloseRoomOnClient();
+        }
+        else
+        {
+            HeroComponent hero = FindObjectOfType<HeroComponent>();
+            var roomName = hero.NetworkSettings.RoomName;
+            hero.DestroySelf();
+            ServerManager.Instance.EnableMenu();
+            SceneManager.UnloadSceneAsync(roomName);
+        }
     }
 }
