@@ -12,6 +12,9 @@ public class FrozenState : AbstractCharacterState
 	private float _damageToExit;
 	private float _damageOnStart = 0;
 
+	private Animator _animator;
+	private AnimatorStateInfo _currentState;
+
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.Ability };
 	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 	public override States State => States.Frozen;
@@ -37,6 +40,17 @@ public class FrozenState : AbstractCharacterState
 		_characterState.Character.Move.CanMove = false;
 		_characterState.Character.Move.LookAtTransform(_characterState.gameObject.transform);
 		_audioSource = character.GetComponent<AudioSource>();
+
+		_animator = _characterState.GetComponent<Animator>();
+
+		if (_animator != null)
+		{
+			_currentState = _animator.GetCurrentAnimatorStateInfo(0);
+			float normalizedTime = _currentState.normalizedTime % 1f;
+			_animator.Play(_currentState.fullPathHash, 0, normalizedTime);
+			_animator.Update(0);
+			_animator.enabled = false;
+		}
 
 		if (character.TryGetComponent<Character>(out var ability))
 		{
@@ -83,6 +97,12 @@ public class FrozenState : AbstractCharacterState
 		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null)
 		{
 			_abilities.SetAbilitiesEnabled();
+		}
+
+		if (_animator != null)
+		{
+			_animator.enabled = true;
+			_animator.speed = 1;
 		}
 
 		if (_frozenEffectInstance != null) _frozenEffectInstance.SetActive(false);

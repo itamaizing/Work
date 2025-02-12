@@ -56,7 +56,9 @@ public class Shot : AutoAttackSkill
                     TryGetDamageableAtPoint(clickedPoint, out var damageable))
                 {
                     _targetPoint = clickedPoint;
-                    Hero.Move.LookAtPosition(_targetPoint);
+
+                    if (damageable is Component component) Hero.Move.LookAtTransform(component.transform);
+                    else Hero.Move.LookAtPosition(_targetPoint);
                     Hero.Move.CanMove = false;
                     yield break;
                 }

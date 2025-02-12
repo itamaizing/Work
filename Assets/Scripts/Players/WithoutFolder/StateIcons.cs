@@ -129,8 +129,8 @@ public class StateIcons : MonoBehaviour
             icoItem.Text.gameObject.SetActive(false);
             icoItem.count--;
             ico.DOFillAmount(1, icoItem.time[0]).SetEase(Ease.Linear);
-			icoItem.time.Remove(icoItem.time[0]);
-		}
+            icoItem.time.Remove(icoItem.time[0]);
+        }
         else
         {
             icoItem.Text.gameObject.SetActive(true);
@@ -154,54 +154,54 @@ public class StateIcons : MonoBehaviour
     }
 
     //removing item before it ends
-	public void RemoveItemByState(States state)
-	{
-        if(_activeEffects.Count > 0)
-        for(int i = _activeEffects.Count - 1; i >= 0; i--)
+    public void RemoveItemByState(States state)
+    {
+        if (_activeEffects.Count > 0)
+            for (int i = _activeEffects.Count - 1; i >= 0; i--)
+            {
+                if (_activeEffects[i].state == state)
+                {
+                    StateIcoItem icoItem = _activeEffects[i];
+                    _activeEffects.Remove(icoItem);
+                    Destroy(icoItem.gameObject);
+                }
+            }
+    }
+
+    public void RemoveIconCount()
+    {
+        for (int i = _activeEffects.Count - 1; i >= 0; i--)
         {
-			if (_activeEffects[i].state == state)
-			{
-                StateIcoItem icoItem = _activeEffects[i];
-				_activeEffects.Remove(icoItem);
-				Destroy(icoItem.gameObject);
-			}
-		}
-	}
+            if (_activeEffects[i].count > 0)
+            {
+                _activeEffects[i].count -= 1;
+                _activeEffects[i].Text.text = _activeEffects[i].count.ToString();
+                break;
+            }
+        }
+    }
 
-	public void RemoveIconCount()
-	{
-		for (int i = _activeEffects.Count - 1; i >= 0; i--)
-		{
-			if (_activeEffects[i].count > 0)
-			{
-				_activeEffects[i].count -= 1;
-				_activeEffects[i].Text.text = _activeEffects[i].count.ToString();
-				break;
-			}
-		}
-	}
+    public void DeactivateIcon()
+    {
+        for (int i = _activeEffects.Count - 1; i >= 0; i--)
+        {
+            _activeEffects[i].FadeFront.fillAmount = 0;
+            Destroy(_activeEffects[i].gameObject);
+            _activeEffects.RemoveAt(i);
+            break;
+        }
+    }
+    private void MoveIcoToEnd(int index)
+    {
+        if (index < 0 || index >= _activeEffects.Count) return;
 
-	public void DeactivateIcon()
-	{
-		for (int i = _activeEffects.Count - 1; i >= 0; i--)
-		{
-			_activeEffects[i].FadeFront.fillAmount = 0;
-			Destroy(_activeEffects[i].gameObject);
-			_activeEffects.RemoveAt(i);
-			break;
-		}
-	}
-	private void MoveIcoToEnd(int index)
-	{
-		if (index < 0 || index >= _activeEffects.Count) return;
+        var ico = _activeEffects[index];
+        _activeEffects.RemoveAt(index);
+        _activeEffects.Add(ico);
 
-		var ico = _activeEffects[index];
-		_activeEffects.RemoveAt(index);
-		_activeEffects.Add(ico);
-
-		// ��������� ������� �����������
-		ico.transform.SetAsLastSibling();
-	}
+        // ��������� ������� �����������
+        ico.transform.SetAsLastSibling();
+    }
 }
 /*
     public void RemoveIconCount()

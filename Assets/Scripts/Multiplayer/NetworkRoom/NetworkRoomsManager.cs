@@ -24,7 +24,7 @@ public class NetworkRoomsManager : NetworkBehaviour
 		switch (_gameMode)
 		{
 			case GameMode.GM1vs1:
-				_maxPlayers = 2;
+				_maxPlayers = 1;
 				break;
 
 			case GameMode.GM2vs2:

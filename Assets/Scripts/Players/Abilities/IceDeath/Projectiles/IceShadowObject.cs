@@ -10,6 +10,9 @@ public class IceShadowObject : Projectiles
 	[HideInInspector] public float timeToDestroy = 30;
 	[HideInInspector] public float timeToDestroyAlive = 30;
 
+	[SerializeField] private bool enemyShadow;
+	[SerializeField] private Animator anim;
+
 	private Health _healthPlayer;
 	private Damage _damage;
 	private bool _talentDamage = false;
@@ -35,6 +38,31 @@ public class IceShadowObject : Projectiles
 			Value = 2,
 			Type = DamageType.Magical,
 		};
+	}
+
+	public void SetAnimationState(int animationHash, float normalizedTime, float velocityX, float velocityZ, Quaternion rotation)
+	{
+		if (anim != null)
+		{
+			anim.Play(animationHash, 0, normalizedTime);
+			anim.Update(0);
+
+			anim.SetFloat(HashAnimPlayer.VelocityX, velocityX);
+			anim.SetFloat(HashAnimPlayer.VelocityZ, velocityZ);
+
+			StartCoroutine(StopAnimationAfterFrame());
+		}
+
+		transform.rotation = rotation;
+	}
+
+	private IEnumerator StopAnimationAfterFrame()
+	{
+		yield return null;
+		if (anim != null)
+		{
+			anim.speed = 0;
+		}
 	}
 
 	private void Update()
@@ -69,7 +97,7 @@ public class IceShadowObject : Projectiles
 		{
 			//attact speed increase
 		}*/
-		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject !=_dad.gameObject)
+		if (collision.TryGetComponent<Character>(out var target) && enemyShadow)
 		{
 			float duration = 2 + _energyDad / 20;
 

@@ -104,18 +104,37 @@ public class IceShadow : Skill
 	[Command]
 	private void CmdCreateProjecttile(float angle, float manaValue, bool lastHit, bool damage)
 	{
-		IceShadowObject projectile = Instantiate(_shadow, gameObject.transform.position, Quaternion.identity);
-		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
+		AnimatorStateInfo stateInfo = _playerLinks.Animator.GetCurrentAnimatorStateInfo(0);
+		int animationHash = stateInfo.fullPathHash;
+		float normalizedTime = stateInfo.normalizedTime % 1f;
+
+		float velocityX = _playerLinks.Animator.GetFloat(HashAnimPlayer.VelocityX);
+		float velocityZ = _playerLinks.Animator.GetFloat(HashAnimPlayer.VelocityZ);
+
+		Quaternion playerRotation = _playerLinks.transform.rotation;
+
+		IceShadowObject shadow = Instantiate(_shadow, _playerLinks.transform.position, Quaternion.identity);
+		SceneManager.MoveGameObjectToScene(shadow.gameObject, _hero.NetworkSettings.MyRoom);
 		//var userSettings = gameObject.GetComponentInParent<UserNetworkSettings>();
 		//SceneManager.MoveGameObjectToScene(projectile.gameObject, userSettings.MyRoom);
 
-		projectile.Init(_playerLinks, manaValue, lastHit, this);
-		projectile.TalentDamage(damage);
+		shadow.Init(_playerLinks, manaValue, lastHit, this);
+		shadow.TalentDamage(damage);
 
-		NetworkServer.Spawn(projectile.gameObject);
+		NetworkServer.Spawn(shadow.gameObject);
+		RpcSetShadowAnimation(shadow.gameObject, animationHash, normalizedTime, velocityX, velocityZ, playerRotation);
 
-		RpcInit(projectile.gameObject, manaValue, lastHit, damage);
+		RpcInit(shadow.gameObject, manaValue, lastHit, damage);
 		RpcPlayShotSound();
+	}
+
+	[ClientRpc]
+	private void RpcSetShadowAnimation(GameObject shadowObj, int animationHash, float normalizedTime, float velocityX, float velocityZ, Quaternion rotation)
+	{
+		if (shadowObj.TryGetComponent(out IceShadowObject shadow))
+		{
+			shadow.SetAnimationState(animationHash, normalizedTime, velocityX, velocityZ, rotation);
+		}
 	}
 
 	[ClientRpc]

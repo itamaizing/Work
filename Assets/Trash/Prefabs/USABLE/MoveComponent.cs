@@ -200,15 +200,15 @@ public class MoveComponent : NetworkBehaviour
 		}
 	}
 
-	//public void SetAnimationMovement(Vector3 direction)
-	//{
-	//	Vector3 localDir = transform.InverseTransformDirection(direction);
+    public void SetAnimationMovement(Vector3 direction)
+    {
+        Vector3 localDir = transform.InverseTransformDirection(direction);
 
-	//	_anim.SetFloat(HashAnimPlayer.VelocityZ, localDir.z);
-	//	_anim.SetFloat(HashAnimPlayer.VelocityX, localDir.x);
-	//}
+        _anim.SetFloat(HashAnimPlayer.VelocityZ, localDir.z);
+        _anim.SetFloat(HashAnimPlayer.VelocityX, localDir.x);
+    }
 
-	private void OnMove(Vector2 dir)
+    private void OnMove(Vector2 dir)
     {
 		if (IsSelect)
 			_dir = new Vector3(dir.x, 0, dir.y);
@@ -287,7 +287,10 @@ public class MoveComponent : NetworkBehaviour
 	[TargetRpc]
 	public void TargetRpcDoMove(Vector3 vector3, float duration)
 	{
-		_rigidbody.DOMove(vector3, duration);
+		_rigidbody.DOMove(vector3, duration).OnComplete(() =>
+		{
+			CanMove = true;
+		});
 	}
 
 	[TargetRpc]

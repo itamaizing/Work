@@ -739,7 +739,6 @@ GameObject:
   - component: {fileID: 648305351321736700}
   - component: {fileID: 7598972414644618830}
   - component: {fileID: 1846186005660198174}
-  - component: {fileID: 5683280928708963975}
   m_Layer: 0
   m_Name: Eyes
   m_TagString: Untagged
@@ -754,12 +753,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3039667668874100131}
-  m_LocalRotation: {x: 0.00000008940697, y: 0.000000028152773, z: -0.000000007079353, w: 1}
-  m_LocalPosition: {x: -0.1260001, y: -0.4376707, z: -0.12097749}
-  m_LocalScale: {x: 0.10000001, y: 0.099999994, z: 0.09999998}
+  m_LocalRotation: {x: 0.7070804, y: 0.006170711, z: -0.70707935, w: 0.0061696707}
+  m_LocalPosition: {x: -0.32169613, y: 0.5193451, z: 0.12599674}
+  m_LocalScale: {x: 0.10000001, y: 0.09999998, z: 0.09999998}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1216046622224795314}
+  m_Father: {fileID: 1189182751908968874}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!198 &7598972414644618830
@@ -5506,7 +5505,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: bbf08d0bc44b61b4aaa319d784b8ebcd, type: 2}
+  - {fileID: 2100000, guid: 8cb042e88bc986640a50bcdbf195d26e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5557,24 +5556,6 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!114 &5683280928708963975
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3039667668874100131}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2582e71aa31bd5408104dbd068ed7a6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  particleSpeed: 20
-  particleCount: 200
-  waveFrequency: 2.1
-  waveAmplitude: 0.3
-  point1: {fileID: 0}
-  point2: {fileID: 0}
 --- !u!1 &3071286336407098808
 GameObject:
   m_ObjectHideFlags: 0
@@ -10647,9 +10628,7 @@ Transform:
   m_LocalPosition: {x: -0.00000014305115, y: 5.9579453, z: 0.10438511}
   m_LocalScale: {x: 0.99999994, y: 0.99999994, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 8839314442072429498}
-  - {fileID: 648305351321736700}
+  m_Children: []
   m_Father: {fileID: 5341133050556120274}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -11153,6 +11132,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 334581736108885511}
+  - {fileID: 8839314442072429498}
+  - {fileID: 648305351321736700}
   m_Father: {fileID: 4431775116996846137}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -11538,7 +11519,6 @@ GameObject:
   - component: {fileID: 8839314442072429498}
   - component: {fileID: 65055393839641778}
   - component: {fileID: 2191142719498840069}
-  - component: {fileID: 1101748199516305945}
   m_Layer: 0
   m_Name: Eyes
   m_TagString: Untagged
@@ -11553,12 +11533,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7614759973988824075}
-  m_LocalRotation: {x: 0.00000008940697, y: 0.000000028152773, z: -0.000000007079353, w: 1}
-  m_LocalPosition: {x: 0.15800014, y: -0.37061462, z: -0.11974102}
-  m_LocalScale: {x: 0.10000001, y: 0.099999994, z: 0.09999998}
+  m_LocalRotation: {x: 0.7070804, y: 0.006170711, z: -0.70707935, w: 0.0061696707}
+  m_LocalPosition: {x: -0.32176194, y: 0.45227817, z: -0.1580023}
+  m_LocalScale: {x: 0.10000001, y: 0.09999998, z: 0.09999998}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1216046622224795314}
+  m_Father: {fileID: 1189182751908968874}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!198 &65055393839641778
@@ -16305,7 +16285,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: bbf08d0bc44b61b4aaa319d784b8ebcd, type: 2}
+  - {fileID: 2100000, guid: 8cb042e88bc986640a50bcdbf195d26e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -16356,24 +16336,6 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!114 &1101748199516305945
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7614759973988824075}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2582e71aa31bd5408104dbd068ed7a6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  particleSpeed: 20
-  particleCount: 200
-  waveFrequency: 2.1
-  waveAmplitude: 0.3
-  point1: {fileID: 0}
-  point2: {fileID: 0}
 --- !u!1 &7634025676494905653
 GameObject:
   m_ObjectHideFlags: 0
@@ -16845,7 +16807,7 @@ PrefabInstance:
     - target: {fileID: 8388980576940739991, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _character
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1871163040516354185}
     - target: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Name
       value: GhostAura
@@ -16869,11 +16831,11 @@ PrefabInstance:
     - target: {fileID: 8658026411023210807, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Avatar
       value: 
-      objectReference: {fileID: 9000000, guid: 7ac21b8b2c2f82d4ead31c42ece5d861, type: 3}
+      objectReference: {fileID: 9000000, guid: d49c65de9fce66146b5d0e164b1f9d2d, type: 3}
     - target: {fileID: 8658026411023210807, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: da57d53f19097d54492c88a12cf518f3, type: 2}
+      objectReference: {fileID: 9100000, guid: 7f1199f20a366d64886c00f7a2a805e1, type: 2}
     - target: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _icons.Array.size
       value: 38
@@ -17025,6 +16987,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04a32c9096d066945864c8dff3c0ab74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!82 &1079191697634045219 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 6518625887667459061, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 6092456140968476374}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1808229507172449395 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5590339039165547173, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -17129,8 +17096,14 @@ MonoBehaviour:
   _currentSpeed: 5
   _anim: {fileID: 3218874933856675809}
   _flyChecker: {fileID: 481437110747682589}
-  moveAudioSource: {fileID: 0}
-  moveClips: []
+  moveAudioSource: {fileID: 1079191697634045219}
+  moveClips:
+  - {fileID: 8300000, guid: e82a29cd799f19f40a13453e7e454c4c, type: 3}
+  - {fileID: 8300000, guid: 728010f2c7649b8419142d228e8f092a, type: 3}
+  - {fileID: 8300000, guid: c3162788ec2b04b48aeaa1d032bb7cfa, type: 3}
+  - {fileID: 8300000, guid: ec57ce53604717245aa74a6f49d53c82, type: 3}
+  - {fileID: 8300000, guid: ad27652293ff1d047b11e5b5f38b7eec, type: 3}
+  - {fileID: 8300000, guid: 7672f560c9603a94f8985ebe5157f8f2, type: 3}
   MoveDirection: {x: 0, y: 0, z: 0}
   ExternalMoveDirection: {x: 0, y: 0, z: 0}
   CanMove: 0

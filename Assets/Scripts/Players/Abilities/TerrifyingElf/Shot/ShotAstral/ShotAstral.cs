@@ -78,6 +78,7 @@ public class ShotAstral : Skill
                     NoObstacles(clickedPoint, transform.position, _obstacle))
                 {
                     _targetPoint = clickedPoint;
+                    Hero.Move.LookAtPosition(_targetPoint);
                     Hero.Move.CanMove = false;
                 }
             }

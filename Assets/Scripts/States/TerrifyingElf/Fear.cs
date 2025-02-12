@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
@@ -20,7 +20,7 @@ public class Fear : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        Debug.Log("×óâñòâî ñòðàõà íàëîæåíî");
+        Debug.Log("Ã—Ã³Ã¢Ã±Ã²Ã¢Ã® Ã±Ã²Ã°Ã ÃµÃ  Ã­Ã Ã«Ã®Ã¦Ã¥Ã­Ã®");
 
         _characterState = character;
         _source = personWhoMadeBuff;
@@ -69,7 +69,7 @@ public class Fear : AbstractCharacterState
 
     public override void ExitState()
     {
-        Debug.Log("Ýôôåêò ñòðàõà çàêàí÷èâàåòñÿ");
+        Debug.Log("ÃÃ´Ã´Ã¥ÃªÃ² Ã±Ã²Ã°Ã ÃµÃ  Ã§Ã ÃªÃ Ã­Ã·Ã¨Ã¢Ã Ã¥Ã²Ã±Ã¿");
 
         if (_moveCoroutine != null)
         {
@@ -86,7 +86,7 @@ public class Fear : AbstractCharacterState
             moveComp.SetDefaultSpeed();
             moveComp.StopLookAt();
             moveComp.Rigidbody.velocity = Vector3.zero;
-            //moveComp.SetAnimationMovement(Vector3.zero);
+            moveComp.SetAnimationMovement(Vector3.zero);
         }
 
         foreach (var skill in _disabledSkills)
@@ -115,7 +115,6 @@ public class Fear : AbstractCharacterState
         Rigidbody rb = moveComp.Rigidbody;
         if (rb == null) yield break;
 
-        //float targetDistance = 5f;
         Vector3 fleeDirection = (moveComp.transform.position - _source.transform.position).normalized;
         fleeDirection = Quaternion.Euler(0, Random.Range(-45f, 45f), 0) * fleeDirection;
 
@@ -123,27 +122,12 @@ public class Fear : AbstractCharacterState
         {
             yield return new WaitForSeconds(0.1f);
 
-            //float distance = Vector3.Distance(_source.transform.position, moveComp.transform.position);
+            moveComp.SetAnimationMovement(Vector3.zero);
 
-            //if (distance >= targetDistance)
-            //{
-            //    moveComp.SetAnimationMovement(Vector3.zero);
-            //    moveComp.Rigidbody.velocity = Vector3.zero;
-            //    yield break;
-            //}
-
-            //moveComp.SetAnimationMovement(Vector3.zero);
-            moveComp.Rigidbody.velocity = Vector3.zero;
-
-            if (Random.value <= 0.2f)
-            {
-                fleeDirection = (moveComp.transform.position - _source.transform.position).normalized;
-                fleeDirection = Quaternion.Euler(0, Random.Range(-45f, 45f), 0) * fleeDirection;
-            }
+            rb.velocity = fleeDirection * moveComp.CurrentSpeed;
 
             moveComp.transform.DORotateQuaternion(Quaternion.LookRotation(fleeDirection), 0.2f);
-            rb.velocity = fleeDirection * moveComp.CurrentSpeed;
-            //moveComp.SetAnimationMovement(rb.velocity);
+            moveComp.SetAnimationMovement(rb.velocity);
         }
     }
 }
