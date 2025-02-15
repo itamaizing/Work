@@ -1,3 +1,4 @@
+using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -19,6 +20,9 @@ public class Restoration : Skill
     [SerializeField] private float damageInterval = 3f;
     [SerializeField] private float darkCastTime = 1.2f;
 
+    [SerializeField] private AudioClip audioClip;
+
+    private AudioSource _audioSource;
     public bool isLightMode = true;
     private float _accumulatedEffectiveness = 1f;
     private float _totalHealedInInterval = 0f;
@@ -28,8 +32,13 @@ public class Restoration : Skill
     
     protected override bool IsCanCast => IsCanCastCheck();
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("Cast");
     protected override int AnimTriggerCast => 0;
+
+    private void Start()
+    {
+        _audioSource = GetComponent<AudioSource>();
+    }
 
     private bool IsCanCastCheck()
     {
@@ -171,6 +180,7 @@ public class Restoration : Skill
             if (Input.GetMouseButton(0))
             {
                 _target = GetRaycastTarget();
+                CmdPlayShootSound();
             }
             yield return null;
         }
@@ -199,5 +209,17 @@ public class Restoration : Skill
     private void ResetAccumulatedEffectiveness()
     {
         _accumulatedEffectiveness = 1f;
+    }
+
+    [Command]
+    private void CmdPlayShootSound()
+    {
+      RpcPlayShotSound();
+    }
+
+    [ClientRpc]
+    private void RpcPlayShotSound()
+    {
+        if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
     }
 }

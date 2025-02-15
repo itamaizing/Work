@@ -1,3 +1,4 @@
+using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -12,11 +13,14 @@ public class FlashOfLight : Skill
     [SerializeField] private float _damageAmount = 35f;
     [SerializeField] private float _darkRange = 6f;
 
+    [SerializeField] private AudioClip audioClip;
+
     public bool isLightMode = true;
 
     private Character _target;
     private Character _previousTarget;
 
+    private AudioSource _audioSource;
     private bool _isСooldownTalentActive = false;
     private float _talentCooldown = 5f;
     private float _lastTalentTime = -5f;
@@ -26,7 +30,7 @@ public class FlashOfLight : Skill
     
     protected override bool IsCanCast => IsCanCastCheck();
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("Cast");
     protected override int AnimTriggerCast => 0;
     
     private bool IsCanCastCheck()
@@ -41,7 +45,12 @@ public class FlashOfLight : Skill
     {
         _isСooldownTalentActive = value;
     }
-    
+
+    private void Start()
+    {
+        _audioSource = GetComponent<AudioSource>();
+    }
+
     private void OnEnable()
     {
         OnModeChange += HandleModeChange;
@@ -144,6 +153,8 @@ public class FlashOfLight : Skill
     {
         if (_target == null) yield break;
 
+        CmdPlayShootSound();
+
         if (isLightMode)
         {
             HandleFlashOfLight();
@@ -154,6 +165,18 @@ public class FlashOfLight : Skill
         }
 
         yield return null;
+    }
+
+    [Command]
+    private void CmdPlayShootSound()
+    {
+        RpcPlayShotSound();
+    }
+
+    [ClientRpc]
+    private void RpcPlayShotSound()
+    {
+        if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
     }
 
     protected override void ClearData()

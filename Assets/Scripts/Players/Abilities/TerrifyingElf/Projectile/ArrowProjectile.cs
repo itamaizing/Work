@@ -37,8 +37,9 @@ public class ArrowProjectile : Projectiles
                 if (other.gameObject.TryGetComponent<ObjectHealth>(out ObjectHealth objectHealth)) if (objectHealth.ResistMagicDamage >= 100 && _arrowDark) return;
 
                 ApplyEnemy(other);
-                Destroy(gameObject);
             }
+
+            Destroy(gameObject);
         }
     }
 

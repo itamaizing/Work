@@ -10,25 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c4db219e2a0b6a648befa165334af915, type: 3}
-  m_Name: TerrifyingElfGhost
+  m_Name: TerrifyingElfNPC
   m_EditorClassIdentifier: 
   _name: TerrifyingElf
   _description: 
   type: 
-  _icon: {fileID: 21300000, guid: 78f8f756b7891df42ac8137101c3ff17, type: 3}
+  _icon: {fileID: 21300000, guid: 2f99567c6f719bd44a5126e0152ab989, type: 3}
   _iconSize: 0
   _attributes:
     attributesGroup:
     - Id: 1001
       Name: Health
       Points: 5
-      DefaultValue: 6666
+      DefaultValue: 9999
       Icon: {fileID: 0}
       IsVisible: 1
     - Id: 1002
       Name: Mana
       Points: 0
-      DefaultValue: 6666
+      DefaultValue: 9999
       Icon: {fileID: 0}
       IsVisible: 1
     - Id: 1003

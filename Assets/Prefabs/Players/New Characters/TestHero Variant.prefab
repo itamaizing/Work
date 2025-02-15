@@ -1211,7 +1211,7 @@ MonoBehaviour:
     m_Bits: 128
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _manaCostPerTick: []
   _isUseCharges: 1
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 3
@@ -1224,6 +1224,7 @@ MonoBehaviour:
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
+  _disactive: 0
   _projectile: {fileID: 3436609779166928419, guid: d490c899d604d2c4dbb3f72e61cacb6e, type: 3}
   _animSpeed: 1
 --- !u!114 &7470037727588752420
@@ -1264,7 +1265,7 @@ MonoBehaviour:
     m_Bits: 128
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _manaCostPerTick: []
   _isUseCharges: 1
   _chargesHaveSeparateCooldown: 1
   _maxCharges: 3
@@ -1277,6 +1278,7 @@ MonoBehaviour:
   _isAutoAreaRender: 1
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
+  _disactive: 0
   _projectile: {fileID: 3436609779166928419, guid: d490c899d604d2c4dbb3f72e61cacb6e, type: 3}
   _damage: 9999
   _projectileCount: 8
@@ -1317,7 +1319,7 @@ MonoBehaviour:
     m_Bits: 128
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _manaCostPerTick: []
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1330,6 +1332,7 @@ MonoBehaviour:
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
+  _disactive: 0
 --- !u!114 &7442031059852679175
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1366,7 +1369,7 @@ MonoBehaviour:
     m_Bits: 128
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _manaCostPerTick: []
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1379,6 +1382,7 @@ MonoBehaviour:
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
+  _disactive: 0
   _attackZoneSize: 1
   _attackDelay: 0
   _chargeAttackDelay: 0
@@ -1420,7 +1424,7 @@ MonoBehaviour:
     m_Bits: 0
   _castDuration: 1
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _manaCostPerTick: []
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1433,3 +1437,4 @@ MonoBehaviour:
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
+  _disactive: 0

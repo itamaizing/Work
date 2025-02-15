@@ -6,6 +6,7 @@ using UnityEngine;
 public class LightShield : AbstractCharacterState, IDamageable
 {
     private BladeMailPriestTalent _bladeMailPriestTalent;
+    private GameObject _lightShield;
 
     private float _damageAbsorbed;
     private float _maxAbsorption;
@@ -29,6 +30,12 @@ public class LightShield : AbstractCharacterState, IDamageable
         _maxAbsorption = maxDamageAbsorbed;
         _skillName = skillName;
 
+        if (_characterState.StateEffects.LightShield != null)
+        {
+            _lightShield = _characterState.StateEffects.LightShield;
+            _lightShield.SetActive(true);
+        }
+
         SearchTalent();
 
         Debug.Log("Shield HP - " + _maxAbsorption);
@@ -50,6 +57,8 @@ public class LightShield : AbstractCharacterState, IDamageable
         Debug.Log("LightShield state exited.");
         DamageTaken -= DamageEnemiesInRadius;
         _characterState.RemoveState(this);
+
+        if (_lightShield != null) _lightShield.SetActive(false);
     }
 
     public override bool Stack(float time)

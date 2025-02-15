@@ -8,8 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: RGBRecolor_Objects_cosmic
-  m_Shader: {fileID: -6465566751694194690, guid: 45b2c1cdfa01be147bb172856196fc17,
-    type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 45b2c1cdfa01be147bb172856196fc17, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
@@ -127,12 +126,12 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Color1: {r: 0.26254904, g: 0.22215687, b: 0.40392157, a: 1}
-    - _Color2: {r: 0.7049743, g: 0.5111836, b: 0.4366488, a: 1}
-    - _Color3: {r: 0.63529414, g: 0.31129414, b: 0.5772642, a: 1}
-    - _CorneaColor: {r: 0.20392157, g: 0.87058824, b: 0.9490196, a: 1}
+    - _Color1: {r: 0.8802663, g: 1, b: 0, a: 1}
+    - _Color2: {r: 1, g: 0.7741164, b: 0, a: 1}
+    - _Color3: {r: 1, g: 0.81717384, b: 0, a: 1}
+    - _CorneaColor: {r: 1, g: 0.9050342, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _EyeWhiteColor: {r: 0.8, g: 0.8, b: 0.8, a: 0}
+    - _EyeWhiteColor: {r: 0.06794524, g: 1, b: 0, a: 0}
     - _Flash: {r: 1, g: 1, b: 1, a: 0}
     - _FlashColor: {r: 4, g: 4, b: 4, a: 0}
     - _LipColor: {r: 0.80784315, g: 0.023529412, b: 0.16078432, a: 1}

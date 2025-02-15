@@ -9,9 +9,18 @@ public class ReversePolarity : Skill
     [SerializeField] private Restoration restoration;
     [SerializeField] private PriestShield priestShield;
 
-    protected override int AnimTriggerCastDelay => 0;
+    [SerializeField] private AudioClip audioClip;
+
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("Cast");
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => true;
+
+    private AudioSource _audioSource;
+
+    private void Start()
+    {
+        _audioSource = GetComponent<AudioSource>();
+    }
 
     private void OnEnable()
     {
@@ -41,6 +50,8 @@ public class ReversePolarity : Skill
     if (Hero == null || Hero.CharacterState == null || !IsCanCast) yield break;
 
     if (!TryPayCost()) yield break;
+
+    CmdPlayShootSound();
 
     yield return new WaitForSeconds(CastDeley);
 
@@ -78,6 +89,18 @@ public class ReversePolarity : Skill
     {
     var characterState = target.GetComponent<CharacterState>();
     characterState.RemoveState(state);
+    }
+
+    [Command]
+    private void CmdPlayShootSound()
+    {
+        RpcPlayShotSound();
+    }
+
+    [ClientRpc]
+    private void RpcPlayShotSound()
+    {
+        if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
     }
 
     private void SwitchSpells()

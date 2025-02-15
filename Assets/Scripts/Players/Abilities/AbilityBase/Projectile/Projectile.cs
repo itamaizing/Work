@@ -9,7 +9,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] protected float _speed = 10;
     [SerializeField] private bool _selfDestroyInEndPoint = true;
     [SerializeField] private float _lifeTime = 10;
-
+    
     private Transform _target;
 
     public Transform Target => _target;

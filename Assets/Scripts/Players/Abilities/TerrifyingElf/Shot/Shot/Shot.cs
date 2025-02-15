@@ -30,6 +30,11 @@ public class Shot : AutoAttackSkill
         OnSkillCanceled -= HandleSkillCanceled;
     }
 
+    private void OnEnable()
+    {
+        OnSkillCanceled += HandleSkillCanceled;
+    }
+
     private void Start()
     {
         _audioSource = GetComponent<AudioSource>();
@@ -42,7 +47,6 @@ public class Shot : AutoAttackSkill
 
     protected override IEnumerator PrepareJob()
     {
-        OnSkillCanceled += HandleSkillCanceled;
         Hero.Animator.speed = Hero.Animator.speed / AttackDelay;
 
         while (float.IsPositiveInfinity(_targetPoint.x) && !Disactive)
