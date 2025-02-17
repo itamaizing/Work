@@ -165,7 +165,7 @@ public class Shot : AutoAttackSkill
 
     private void ProcessGhostCooldownReduction()
     {
-        if (!ghostSkill.CooldownGhostShotActive) return;
+        if (!ghostSkill || !ghostSkill.CooldownGhostShotActive) return;
 
         _consecutiveShots++;
 

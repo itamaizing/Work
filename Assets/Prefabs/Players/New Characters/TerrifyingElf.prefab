@@ -9036,7 +9036,7 @@ PrefabInstance:
     - target: {fileID: 8569747795464636412, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: moveAudioSource
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 3079556812460152053}
     - target: {fileID: 8569747795464636412, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: moveClips.Array.size
       value: 6
@@ -10455,6 +10455,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22ad95934c7e55b4b8afeb7c627a8f71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!82 &3079556812460152053 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 6518625887667459061, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 8127316380187346688}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &4092227064955680494 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

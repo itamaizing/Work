@@ -4,7 +4,6 @@ using UnityEngine;
 public class InnerDarkness : AbstractCharacterState
 {
     private float _baseDuration;
-    private const int _maxStack = 13;
     private float _duration;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
@@ -19,7 +18,7 @@ public class InnerDarkness : AbstractCharacterState
         _characterState = character;
         _personWhoMadeBuff = personWhoMadeBuff;
         _baseDuration = durationToExit;
-        MaxStacksCount = _maxStack;
+        MaxStacksCount = 13;
         _duration = durationToExit;
     }
 

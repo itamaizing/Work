@@ -204,8 +204,10 @@ public class MoveComponent : NetworkBehaviour
     {
         Vector3 localDir = transform.InverseTransformDirection(direction);
 
-        _anim.SetFloat(HashAnimPlayer.VelocityZ, localDir.z);
-        _anim.SetFloat(HashAnimPlayer.VelocityX, localDir.x);
+		_animMultiplier = 0.1f * _rigidbody.velocity.magnitude + 0.5f;
+
+		_anim.SetFloat(HashAnimPlayer.VelocityZ, localDir.z * _animMultiplier);
+        _anim.SetFloat(HashAnimPlayer.VelocityX, localDir.x * _animMultiplier);
     }
 
     private void OnMove(Vector2 dir)

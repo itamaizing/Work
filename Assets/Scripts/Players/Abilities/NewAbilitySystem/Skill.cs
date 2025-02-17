@@ -572,10 +572,10 @@ public abstract class Skill : NetworkBehaviour
             {
                 target = enemy;
 
-                if (isCanTargetHimself == false && target.transform == _hero.transform)
-                {
-                    target = null;
-                }
+                //if (isCanTargetHimself == false && target.transform == _hero.transform)
+                //{
+                //    target = null;
+                //}
             }
         }
         _tempTargetbase = target;

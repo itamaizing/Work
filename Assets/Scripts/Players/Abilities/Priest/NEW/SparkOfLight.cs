@@ -9,7 +9,7 @@ public class SparkOfLight : AutoAttackSkill
     [Header("Spark Of Light Settings")]
     [SerializeField] private float _buffDuration = 9f;
     [SerializeField] private float _healAmount = 2f;
-    [SerializeField] private float _damageAmount = 20f;
+    [SerializeField] private float _damageAmount = 2f;
     [SerializeField] private float _castTime = 0.8f;
     [SerializeField] private float _range = 4f;
     [SerializeField] private List<SkillEnergyCost> _manaCostHeal;
@@ -29,7 +29,7 @@ public class SparkOfLight : AutoAttackSkill
 
     private AudioSource _audioSource;
 
-    public bool IsLightMode = true;
+    [SyncVar(hook = nameof(OnLightModeChanged))] public bool IsLightMode = true;
 
     private bool _healthBoostActive = false;
     private bool _lowHealthTalentActive = false;
@@ -61,6 +61,11 @@ public class SparkOfLight : AutoAttackSkill
 
     public event Action OnModeChange;
 
+    private void Start()
+    {
+        _audioSource = GetComponent<AudioSource>();
+    }
+
     private void OnEnable()
     {
         _flashOfLight.CastEnded += HandleLastTimeFlashOfLightCast;
@@ -76,8 +81,19 @@ public class SparkOfLight : AutoAttackSkill
 
     public void SwitchMode()
     {
+        CmdSwitchMode();
+    }
+
+    [Command]
+    private void CmdSwitchMode()
+    {
         IsLightMode = !IsLightMode;
+    }
+
+    private void OnLightModeChanged(bool oldValue, bool newValue)
+    {
         OnModeChange?.Invoke();
+        UpdateMode();
     }
 
     private void HandleModeChange()
@@ -98,6 +114,20 @@ public class SparkOfLight : AutoAttackSkill
     protected override void CastAction()
     {
         if (_target == null) return;
+
+        if (IsAllyTarget(_target))
+        {
+            TryPayCost(_manaCostHeal);
+
+            if (_target == playerLinks)
+            {
+                CmdHandleDefaultMode(playerLinks);
+                return;
+            }
+        }
+
+        else if (IsEnemyTarget(_target)) TryPayCost(_manaCostDamage);
+
         CmdSpawnProjectile(_target.transform.position);
     }
 
@@ -113,15 +143,22 @@ public class SparkOfLight : AutoAttackSkill
         return healthComponent != null && healthComponent.CurrentValue <= healthComponent.MaxValue * LowHealthThreshold;
     }
 
+    [Command]
+    private void CmdHandleDefaultMode(Character target)
+    {
+        HandleDefaultMode(playerLinks);
+        RpcPlayShotSound();
+    }
+
     private void HandleDefaultMode(Character target)
     {
-        if (IsAllyTarget(target) && TryPayCost(_manaCostHeal))
+        if (IsAllyTarget(target))
         {
             Heal(target);
             ApplySpiritEnergyBuff(target);
             //ApplyHealthBuff(_target);
         }
-        else if (IsEnemyTarget(target) && TryPayCost(_manaCostDamage))
+        else if (IsEnemyTarget(target))
         {
             DamageCast(target);
         }
@@ -129,7 +166,7 @@ public class SparkOfLight : AutoAttackSkill
 
     private void HandleAlternativeMode(Character target)
     {
-        if (IsEnemyTarget(target) && TryPayCost(_altManaCostDamage))
+        if (IsEnemyTarget(target))
         {
             ApplyDamageInAltMode(target);
             ApplySpiritHealthBuff(target);
@@ -139,6 +176,8 @@ public class SparkOfLight : AutoAttackSkill
                 ApplyDefenseDebuff(target);
             }
         }
+
+        Debug.Log("HandleAlternativeMode");
     }
 
     private void Heal(Character target)

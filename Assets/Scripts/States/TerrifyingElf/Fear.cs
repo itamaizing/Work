@@ -20,12 +20,11 @@ public class Fear : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        Debug.Log("×óâñòâî ñòðàõà íàëîæåíî");
-
         _characterState = character;
         _source = personWhoMadeBuff;
         _duration = durationToExit;
         _baseDuration = durationToExit;
+        MaxStacksCount = 1;
 
         MoveComponent moveComponent = _characterState.Character.Move;
         _skillManager = _characterState.Character.Abilities;
@@ -69,8 +68,6 @@ public class Fear : AbstractCharacterState
 
     public override void ExitState()
     {
-        Debug.Log("Ýôôåêò ñòðàõà çàêàí÷èâàåòñÿ");
-
         if (_moveCoroutine != null)
         {
             _characterState.StopCoroutine(_moveCoroutine);
@@ -102,10 +99,16 @@ public class Fear : AbstractCharacterState
     {
         if (CurrentStacksCount == MaxStacksCount)
         {
-            _duration = _baseDuration;
+            InitializeFirstStack();
             return false;
         }
         return false;
+    }
+
+    private void InitializeFirstStack()
+    {
+        _duration = _baseDuration;
+        CurrentStacksCount++;
     }
 
     private IEnumerator MoveAwayCoroutine(MoveComponent moveComp)

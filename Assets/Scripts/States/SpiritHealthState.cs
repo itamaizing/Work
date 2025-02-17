@@ -10,7 +10,7 @@ public class SpiritHealthState : AbstractCharacterState
     private const float ManaRestorePerStack = 0.09f;
     private const float BuffedManaRestorePerStack = 0.18f;
 
-    private List<StatusEffect> _effects = new ();
+    private List<StatusEffect> _effects = new();
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.SpiritHealth;
     public override StateType Type => StateType.Magic;
@@ -30,7 +30,7 @@ public class SpiritHealthState : AbstractCharacterState
     public override void UpdateState()
     {
         _duration -= Time.deltaTime;
-        
+
         if (_duration <= _baseDuration * (CurrentStacksCount - 1) && CurrentStacksCount > 0)
         {
             CurrentStacksCount--;
@@ -64,6 +64,6 @@ public class SpiritHealthState : AbstractCharacterState
     private void ApplyManaRestore()
     {
         var manaRestoreValue = _isTalentActive ? BuffedManaRestorePerStack : ManaRestorePerStack;
-        _characterState.Character.Resources.FirstOrDefault(o=>o.Type == ResourceType.Mana)?.Add(manaRestoreValue * CurrentStacksCount);
+        _characterState.Character.Resources.FirstOrDefault(o => o.Type == ResourceType.Mana)?.Add(manaRestoreValue * CurrentStacksCount);
     }
 }
