@@ -3193,6 +3193,9 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 300637093874885484, guid: 40044d92dc9a52a44b73b5569f957a7a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 932667128}
     - targetCorrespondingSourceObject: {fileID: 1789129032609799444, guid: 40044d92dc9a52a44b73b5569f957a7a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 0}
@@ -3200,6 +3203,84 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: 40044d92dc9a52a44b73b5569f957a7a, type: 3}
+--- !u!1 &932667125 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 300637093874885484, guid: 40044d92dc9a52a44b73b5569f957a7a, type: 3}
+  m_PrefabInstance: {fileID: 932667124}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &932667126 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2170747098340940518, guid: 40044d92dc9a52a44b73b5569f957a7a, type: 3}
+  m_PrefabInstance: {fileID: 932667124}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &932667127 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4534754468497973439, guid: 40044d92dc9a52a44b73b5569f957a7a, type: 3}
+  m_PrefabInstance: {fileID: 932667124}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 932667125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22d89e8fc912e73459ee8ef407455b14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &932667128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 932667125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d2283c3390275f499481c9e797cd89e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
+  _abilityInfo: {fileID: 11400000, guid: 4149308b91515334c801b1f26c6c99ba, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
+  _cooldownTime: 0
+  _castDeley: 0
+  _damageValue: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
+  _skillType: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _isUseCharges: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 1
+  _isDynamicRenderer: 0
+  _disactive: 0
+  _attackZoneSize: 5
+  _attackDelay: 1
+  _chargeAttackDelay: 0
+  projectile: {fileID: 727437498118149735, guid: e444badf466360e41a896340462c6a62, type: 3}
+  playerLinks: {fileID: 932667127}
+  spawnPoint: {fileID: 932667126}
+  audioClip: {fileID: 8300000, guid: ba78f434c86f1ec4d92aa393ca60ca17, type: 3}
 --- !u!1 &1018475215
 GameObject:
   m_ObjectHideFlags: 0
