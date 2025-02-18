@@ -199,6 +199,7 @@ public class IceRolling : Skill
 		_mousePos = Vector3.positiveInfinity;
 		_lookDir = Vector3.zero;
 		_jumpPos = Vector3.zero;
+		Hero.Move.CanMove = true;
 	}
 
 	/*private void NextJump()
