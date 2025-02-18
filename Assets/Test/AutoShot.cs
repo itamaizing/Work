@@ -6,12 +6,10 @@ using Mirror;
 public class AutoShot : AutoAttackSkill
 {
     [SerializeField] private ArrowProjectile projectile;
-    [SerializeField] private HeroComponent playerLinks;
     [SerializeField] private Transform spawnPoint;
-    [SerializeField] private AudioClip audioClip;
 
-    private AudioSource _audioSource;
-    private bool _isAttacking;
+    private bool _isDelayActive = false;
+    private Coroutine _autoAttackCoroutine;
 
     protected override int AnimTriggerAutoAttack => 0;
     protected override int AnimTriggerCastDelay => 0;
@@ -19,79 +17,68 @@ public class AutoShot : AutoAttackSkill
 
     private void Start()
     {
-        _audioSource = GetComponent<AudioSource>();
-        StartCoroutine(AutoAttackCoroutine());
+        if (isOwned) _autoAttackCoroutine = StartCoroutine(AutoAttackRoutine());
     }
 
-    private IEnumerator AutoAttackCoroutine()
+    private void OnDestroy()
+    {
+        if (_autoAttackCoroutine != null)
+        {
+            StopCoroutine(_autoAttackCoroutine);
+        }
+    }
+
+    private IEnumerator AutoAttackRoutine()
     {
         while (true)
         {
-            Character target = FindNearestTarget();
+            if (IsAutoattackMode && !_isDelayActive)
+            {
+                if (TryGetClosestTarget(out var target))
+                {
+                    CmdCreateProjectileAtTarget(target);
+                    _isDelayActive = true;
 
-            if (target != null)
-            {
-                AttackTarget(target);
-                yield return new WaitForSeconds(AttackDelay);
+                    yield return new WaitForSeconds(AttackDelay);
+                    _isDelayActive = false;
+                }
             }
-            else
-            {
-                yield return null;
-            }
+            yield return null;
         }
     }
 
-    private Character FindNearestTarget()
+    private bool TryGetClosestTarget(out Character target)
     {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, Radius, TargetsLayers);
-        Character nearestTarget = null;
-        float closestDistance = float.MaxValue;
+        Collider[] hits = Physics.OverlapSphere(transform.position, Radius, TargetsLayers);
+        target = null;
+        float minDistance = Mathf.Infinity;
 
-        foreach (var collider in colliders)
+        foreach (var hit in hits)
         {
-            if (collider.TryGetComponent<Character>(out Character character))
+            if (hit.TryGetComponent(out Character character))
             {
                 float distance = Vector3.Distance(transform.position, character.transform.position);
-                if (distance < closestDistance)
+                if (distance < minDistance)
                 {
-                    closestDistance = distance;
-                    nearestTarget = character;
+                    minDistance = distance;
+                    target = character;
                 }
             }
         }
-
-        return nearestTarget;
-    }
-
-    private void AttackTarget(Character target)
-    {
-        if (!IsTargetInRadius(Radius, target.transform)) return;
-
-        Vector3 direction = (target.transform.position - spawnPoint.position).normalized;
-        _hero.Move.LookAtTransform(target.transform);
-
-        CmdCreateProjectile(target.transform.position);
+        return target != null;
     }
 
     [Command]
-    private void CmdCreateProjectile(Vector3 targetPosition)
+    private void CmdCreateProjectileAtTarget(Character target)
     {
-        Vector3 spawnPosition = spawnPoint.position;
-        Vector3 direction = (targetPosition - spawnPosition).normalized;
+        if (target == null) return;
 
-        ArrowProjectile newProjectile = Instantiate(projectile, spawnPosition, Quaternion.LookRotation(direction));
-        newProjectile.Init(playerLinks, 0, false, this);
-        NetworkServer.Spawn(newProjectile.gameObject);
-        newProjectile.StartFly(direction);
+        Vector3 spawnPosition = spawnPoint != null ? spawnPoint.position : transform.position;
+        Vector3 direction = (target.transform.position - spawnPosition).normalized;
 
-        RpcPlayShotSound();
-    }
-
-    [ClientRpc]
-    private void RpcPlayShotSound()
-    {
-        if (_audioSource != null && audioClip != null)
-            _audioSource.PlayOneShot(audioClip);
+        ArrowProjectile arrow = Instantiate(projectile, spawnPosition, Quaternion.LookRotation(direction));
+        NetworkServer.Spawn(arrow.gameObject);
+        arrow.StartFly(direction);
     }
 
     protected override void CastAction()

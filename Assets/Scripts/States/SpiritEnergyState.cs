@@ -1,68 +1,67 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Mirror;
 
 public class SpiritEnergyState : AbstractCharacterState
 {
-    private Skill _skill;
+    private const float DamageManaRestorePercent = 0.05f;
+    private const int _baseMaxStacks = 2;
 
     private float _baseDuration;
     private float _duration;
-    private bool _isTalentActive = false;
+    private float _regenAmount;
 
-    private const float ManaRestorePerStack = 0.09f;
-    private const float BuffedManaRestorePerStack = 0.18f;
-    private const float BonusManaRestore = 0.05f;
-    private const float BuffedBonusManaRestore = 1f;
-    private const float HealthBonusPerStack = 1f;
-    private const float DamageManaRestorePercent = 0.05f;
+    private Health _healthComponent;
+    private Resource _manaResource;
+    private Character _character;
 
-    private List<StatusEffect> _effects = new();
+    private List<StatusEffect> _effects = new() { StatusEffect.Healing };
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.SpiritEnergy;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
-    private Health _healthComponent;
-    private Resource _manaResource;
-
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _skill = personWhoMadeBuff?.Abilities?.Abilities?.FirstOrDefault(o => o.Name == skillName);
         _characterState = character;
+        _character = character.Character;
         _duration = durationToExit;
         _baseDuration = durationToExit;
-        CurrentStacksCount++;
-        MaxStacksCount = 2;
-        _isTalentActive = damageToExit > 0;
+        CurrentStacksCount = 1;
+        MaxStacksCount = _baseMaxStacks;
 
-        _healthComponent = character.GetComponent<Health>();
-        _manaResource = character.Character.TryGetResource(ResourceType.Mana);
+        _healthComponent = _character.GetComponent<Health>();
+        _manaResource = _character.TryGetResource(ResourceType.Mana);
 
         if (_healthComponent != null)
         {
             _healthComponent.DamageTaken += OnDamageTaken;
         }
 
-        var manaRestoreValue = _isTalentActive ? BuffedManaRestorePerStack : ManaRestorePerStack;
-        ApplyManaRestore(manaRestoreValue * CurrentStacksCount);
+        RecalcRegenAmount();
     }
 
     public override void UpdateState()
     {
         _duration -= Time.deltaTime;
 
-        if (_duration <= _baseDuration * (CurrentStacksCount - 1) && CurrentStacksCount > 0)
+        if (_duration <= 0)
         {
-            CurrentStacksCount--;
-            _duration = _baseDuration * CurrentStacksCount;
-
-            if (CurrentStacksCount == 0)
-            {
-                ExitState();
-            }
+            ExitState();
         }
+    }
+
+    public override bool Stack(float time)
+    {
+        _duration = Mathf.Max(_duration, time);
+
+        if (CurrentStacksCount < MaxStacksCount)
+        {
+            CurrentStacksCount++;
+        }
+
+        RecalcRegenAmount();
+        return true;
     }
 
     public override void ExitState()
@@ -75,48 +74,25 @@ public class SpiritEnergyState : AbstractCharacterState
         _characterState.RemoveState(this);
     }
 
-    public override bool Stack(float time)
-    {
-        if (CurrentStacksCount < MaxStacksCount)
-        {
-            CurrentStacksCount++;
-            _duration += time;
-            _duration = Mathf.Min(_duration, _baseDuration * CurrentStacksCount);
-            var manaRestoreValue = _isTalentActive ? BuffedManaRestorePerStack : ManaRestorePerStack;
-            ApplyManaRestore(manaRestoreValue * CurrentStacksCount);
-        }
-
-        return true;
-    }
-
-    private void ApplyManaRestore(float restoreValue)
-    {
-        if (_manaResource != null)
-        {
-            CmdApplyManaRestore(restoreValue, _characterState.Character.connectionToClient);
-        }
-    }
-
     private void OnDamageTaken(Damage damage, Skill skill)
     {
-        if (_characterState?.Character == null) return;
+        if (_character == null) return;
 
         float manaRestoreValue = damage.Value * DamageManaRestorePercent * CurrentStacksCount;
-        ApplyManaRestore(manaRestoreValue);
+
+        ApplyRegen(manaRestoreValue);
     }
 
-    [Command]
-    private void CmdApplyManaRestore(float restoreValue, NetworkConnectionToClient targetConnection)
+    public void ApplyRegen(float manaRestoreValue)
     {
-        TargetApplyManaRestore(targetConnection, restoreValue);
+        if (_manaResource != null && manaRestoreValue > 0) _manaResource.CmdAdd(manaRestoreValue);
     }
 
-    [TargetRpc]
-    private void TargetApplyManaRestore(NetworkConnectionToClient target, float restoreValue)
+    private void RecalcRegenAmount()
     {
         if (_manaResource != null)
         {
-            _manaResource.Add(restoreValue);
+            _regenAmount = _manaResource.MaxValue * DamageManaRestorePercent * CurrentStacksCount;
         }
     }
 }

@@ -4950,7 +4950,6 @@ GameObject:
   - component: {fileID: -3212360757595074768}
   - component: {fileID: 2748478463639029592}
   - component: {fileID: -2617313149288009738}
-  - component: {fileID: -2594234472292204818}
   - component: {fileID: 727437498118149735}
   m_Layer: 0
   m_Name: ArrowProjectile
@@ -5056,42 +5055,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  target: {fileID: 4950891372864796863}
-  syncPosition: 1
-  syncRotation: 1
-  syncScale: 0
-  onlySyncOnChange: 1
-  compressRotation: 1
-  interpolatePosition: 1
-  interpolateRotation: 1
-  interpolateScale: 1
-  coordinateSpace: 0
-  sendIntervalMultiplier: 1
-  timelineOffset: 0
-  showGizmos: 0
-  showOverlay: 0
-  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
-  bufferResetMultiplier: 3
-  changedDetection: 1
-  positionSensitivity: 0.01
-  rotationSensitivity: 0.01
-  scaleSensitivity: 0.01
---- !u!114 &-2594234472292204818
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8859527807384012395}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b20dc110904e47f8a154cdcf6433eae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  target: {fileID: 4950891372864796863}
+  target: {fileID: 3270493855239363353, guid: d490c899d604d2c4dbb3f72e61cacb6e, type: 3}
   syncPosition: 1
   syncRotation: 1
   syncScale: 0
