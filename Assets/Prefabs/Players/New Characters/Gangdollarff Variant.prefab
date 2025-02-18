@@ -1591,6 +1591,10 @@ PrefabInstance:
       propertyPath: _assetId
       value: 265740785
       objectReference: {fileID: 0}
+    - target: {fileID: 3405671967090184702, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: materialCharacter
+      value: 
+      objectReference: {fileID: 2100000, guid: bfb0835dcb5653d40956a4576b667f2d, type: 2}
     - target: {fileID: 3540905251162376194, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0

@@ -9,6 +9,7 @@ public class PhysicalAttack : AutoAttackSkill
 	[SerializeField] private SeriesOfStrikes _combo;
 	[SerializeField] private AudioClip[] Hits;
 
+	private Animator _animator;
 	private AudioSource _audioSource;
 	private Character _curTarget;
 	private Vector2 _jumpPos;
@@ -17,13 +18,18 @@ public class PhysicalAttack : AutoAttackSkill
 	private float _multiplier = 1;
 	private bool _talentActive = false;
 	private bool _rollingPhysTalent = false;
+	private bool _isRightKick = true;
 	private float _stunCount = 0;
+
+	private static readonly int RightKickTrigger = Animator.StringToHash("RightKick");
+	private static readonly int LeftKickTrigger = Animator.StringToHash("LeftKick");
 
 	protected override int AnimTriggerCastDelay => 0;
 
 	protected override int AnimTriggerAutoAttack => 0;
     private void Start()
 	{
+		_animator = GetComponent<Animator>();
 		_audioSource = GetComponent<AudioSource>();
 
 		for (int i = 0; i < _playerLinks.Resources.Count; i++)
@@ -41,10 +47,22 @@ public class PhysicalAttack : AutoAttackSkill
 
 	protected override void CastAction()
 	{
-		if(_target != null) 
+		if (_animator == null) return;
+
+		_isRightKick = !_isRightKick;
+
+		if (_isRightKick) _animator.SetTrigger(RightKickTrigger);
+		else _animator.SetTrigger(LeftKickTrigger);
+	}
+
+	public void ApplyAttackDamage()
+	{
+		if (_target == null) return;
+
 		Hit(_target);
 		CmdPlayShotSound();
 	}
+
 	private void Hit(Character enemy)
 	{
 		Debug.Log(_energy.CurrentValue + " Current value");
