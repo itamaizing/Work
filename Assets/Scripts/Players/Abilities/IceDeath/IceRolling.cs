@@ -17,6 +17,10 @@ public class IceRolling : Skill
 	[SerializeField] private float _durationOfJump = 0.3f;
 	[SerializeField] private AudioClip audioClip;
 
+	private static readonly int iceRollingStart = Animator.StringToHash("IceRollingStart");
+	private static readonly int iceRollingEnd = Animator.StringToHash("IceRollingEnd");
+
+	private Animator _animator;
 	private AudioSource _audioSource;
 	private Vector3 _mousePos = Vector2.positiveInfinity;
 	private Vector3 _jumpPos;
@@ -40,10 +44,11 @@ public class IceRolling : Skill
 
 	protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => 0;
+    protected override int AnimTriggerCast => iceRollingStart;
 
     private void Start()
 	{
+		_animator = GetComponent<Animator>();
 		_audioSource = GetComponent<AudioSource>();
 
 		for (int i = 0; i < _playerLinks.Resources.Count; i++)
@@ -139,13 +144,14 @@ public class IceRolling : Skill
 			if (hitCharacter != null && hitCharacter != _playerLinks)
 			{
 				stopPosition = hit.point - direction;
+				HandleJumpEnd();
 				return true;
 			}
 
 			if (((1 << hit.collider.gameObject.layer) & _obstacle) != 0)
 			{
-				Debug.Log("Остановка перед припятствиями");
 				stopPosition = hit.point - direction;
+				HandleJumpEnd();
 				return true;
 			}
 		}
@@ -157,6 +163,7 @@ public class IceRolling : Skill
 
 	private void Jump()
 	{
+		Hero.Move.CanMove = false;
 		float actualJumpRange = _jumprange;
 
 		_lookDir = (_mousePos - _playerLinks.transform.position).normalized;
@@ -269,11 +276,31 @@ public class IceRolling : Skill
 	{
 		RpcPlayShotSound();
 		_playerLinks.Move.TargetRpcDoMove(force, _durationOfJump);
+		StartCoroutine(WaitForJumpEnd());
+	}
+
+	public void IceRollingCast()
+	{
+		AnimStartCastCoroutine();
+	}
+
+	public void IceRollingEnd()
+	{
+		AnimCastEnded();
 	}
 
 	public void TalentRollingPhys(bool value)
 	{
 		_rollingPhysTalent = value;
+	}
+
+	private void HandleJumpEnd()
+	{
+		if (_animator != null)
+		{
+			_animator.ResetTrigger(iceRollingStart);
+			_animator.SetTrigger(iceRollingEnd);
+		}
 	}
 
 	private void TimerDelay()
@@ -286,9 +313,21 @@ public class IceRolling : Skill
 		}
 	}
 
+	private IEnumerator WaitForJumpEnd()
+	{
+		yield return new WaitForSeconds(_durationOfJump);
+		RpcOnJumpEnd();
+	}
+
 	[ClientRpc]
 	private void RpcPlayShotSound()
 	{
 		if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
+	}
+
+	[ClientRpc]
+	private void RpcOnJumpEnd()
+	{
+		HandleJumpEnd();
 	}
 }

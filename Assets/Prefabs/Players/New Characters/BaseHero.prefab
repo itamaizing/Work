@@ -5923,6 +5923,8 @@ MonoBehaviour:
   _currentSpeed: 7
   _anim: {fileID: 8658026411023210807}
   _flyChecker: {fileID: 6102323606527726944}
+  moveAudioSource: {fileID: 0}
+  moveClips: []
   MoveDirection: {x: 0, y: 0, z: 0}
   CanMove: 1
   IsMoving: 0
