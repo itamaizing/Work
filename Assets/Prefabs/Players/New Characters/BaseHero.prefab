@@ -5709,6 +5709,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _stateIcons: {fileID: 8723564878656041165}
+  stateEffects: {fileID: 0}
   invinsible: 0
 --- !u!114 &5834951345091717418
 MonoBehaviour:
