@@ -218,7 +218,7 @@ public class MoveComponent : NetworkBehaviour
 		if (moveClips.Length == 0 || moveAudioSource == null) return;
 
 		int index = UnityEngine.Random.Range(0, moveClips.Length);
-		moveAudioSource.PlayOneShot(moveClips[index]);
+	    moveAudioSource.PlayOneShot(moveClips[index]);
 	}
 
 	[TargetRpc]

@@ -659,6 +659,7 @@ MonoBehaviour:
   _distance: 5
   timeToDestroy: 2
   timeToDestroyAlive: 10
+  anim: {fileID: 1649954383467101740}
 --- !u!114 &-195080186154571951
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1412,6 +1413,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4613370545929086038}
   - component: {fileID: 1649954383467101740}
+  - component: {fileID: 356499163482415119}
   m_Layer: 0
   m_Name: Shadow
   m_TagString: Untagged
@@ -1457,6 +1459,31 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &356499163482415119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5426323791387705068}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 279100e0cb4b40f42b64a3ac1d1502fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _smoothTime: 0.15
+  _currentSpeed: 5
+  _anim: {fileID: 1649954383467101740}
+  _flyChecker: {fileID: 0}
+  moveAudioSource: {fileID: 0}
+  moveClips: []
+  MoveDirection: {x: 0, y: 0, z: 0}
+  CanMove: 0
+  IsMoving: 0
+  IsSelect: 0
 --- !u!1 &5751324879934868099
 GameObject:
   m_ObjectHideFlags: 0

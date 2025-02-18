@@ -5745,7 +5745,7 @@ MonoBehaviour:
   frozenAudio: {fileID: 8300000, guid: 31de8a38992e98543854e17366db5744, type: 3}
   ice: {fileID: 4651846135703796156}
   frostingAudio: {fileID: 8300000, guid: 1c1719b7759f8244dbf8b0a2689a2709, type: 3}
-  materialCharacter: {fileID: 0}
+  materialCharacter: {fileID: 2100000, guid: acfa2dc1ef192cb4391aecaaff8e192f, type: 2}
 --- !u!114 &5590339039165547173
 MonoBehaviour:
   m_ObjectHideFlags: 0
