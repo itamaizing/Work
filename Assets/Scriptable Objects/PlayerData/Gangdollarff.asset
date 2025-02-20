@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Gangdollarff
   _description: Mage
-  _icon: {fileID: 21300000, guid: 7fef3134086136c46a8653cbc1e564e4, type: 3}
+  type: 
+  _icon: {fileID: 21300000, guid: 16405efa12360244cac7d75e550555d9, type: 3}
   _iconSize: 0
   _attributes:
     attributesGroup:
