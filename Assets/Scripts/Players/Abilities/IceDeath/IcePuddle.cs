@@ -16,7 +16,9 @@ public class IcePuddle : Skill
 	[SerializeField] private float _timeToDestroy = 3f;
 	[SerializeField] private HeroComponent _playerLinks;
 	[SerializeField] private MoveComponent _move;
+	[SerializeField] private AudioClip audioClip;
 
+	private AudioSource _audioSource;
 	private Vector3 _mousePos;
 	private float _angle;
 	private float _angle2;
@@ -58,6 +60,8 @@ public class IcePuddle : Skill
 
 	private void Start()
 	{
+		_audioSource = GetComponent<AudioSource>();
+
 		for (int i = 0; i < _playerLinks.Resources.Count; i++)
 		{
 			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
@@ -207,6 +211,7 @@ public class IcePuddle : Skill
 		projectile.SetTalents(talentEvade, talentFrostingFrozen);
 		NetworkServer.Spawn(projectile.gameObject);
 
+		RpcPlayShotSound();
 		RpcInit(projectile.gameObject, manaValue, lastHit);
 	}
 
@@ -380,5 +385,11 @@ public class IcePuddle : Skill
 	public void StopMoveIcePuddle()
 	{
 		_move.CanMove = false;
+	}
+
+	[ClientRpc]
+	private void RpcPlayShotSound()
+	{
+		if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
 	}
 }

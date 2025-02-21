@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: IceCloud
   _description: 
-  _icon: {fileID: 21300000, guid: 680d27ceee8f74048b436184fe24db69, type: 3}
+  _icon: {fileID: 21300000, guid: 065515d67444a0f43a053540c5f49c8c, type: 3}
