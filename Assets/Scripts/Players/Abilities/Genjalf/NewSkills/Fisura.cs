@@ -16,6 +16,9 @@ namespace Gangdollarff
         private Vector3 _endPoint = Vector3.zero;
         private FisuraTile _fisuraTail;
 
+        public override string AdditionalDescription =>
+            $"Длительность: {AbilityNameBox.ColorOpen}{_fisuraDuration} сек{AbilityNameBox.ColorEnd}";
+
         protected override int AnimTriggerCastDelay => Animator.StringToHash("FisuraCast");
 
         protected override int AnimTriggerCast => Animator.StringToHash("Fisura");
