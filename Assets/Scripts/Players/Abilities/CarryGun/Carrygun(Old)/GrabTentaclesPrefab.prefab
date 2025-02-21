@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4914460681328680527}
   - component: {fileID: 2924926716782697954}
-  - component: {fileID: 4903900167096769343}
   - component: {fileID: 5498020304601734549}
   - component: {fileID: -4590738229167978871}
   m_Layer: 0
@@ -139,25 +138,6 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
---- !u!114 &4903900167096769343
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7929939097525754646}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2284e7d8da9b5724f9d60cbf5459086e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _lineRenderer: {fileID: 2924926716782697954}
-  _player: {fileID: 0}
-  _psionicEnergy: {fileID: 0}
-  _lifetime: 1.2
 --- !u!114 &5498020304601734549
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -7,7 +7,6 @@ public class GrabTentaclesPrefab : NetworkBehaviour
 {
     [SerializeField] private LineRenderer _lineRenderer;
     [SerializeField] private Character _player;
-    [SerializeField] private BasePsionicEnergy _psionicEnergy;
     [SerializeField] private float _lifetime;
     private Character _target;
     private Vector3 _pointInstantiate;
