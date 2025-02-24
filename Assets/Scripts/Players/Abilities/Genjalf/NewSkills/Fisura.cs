@@ -8,6 +8,7 @@ namespace Gangdollarff
 {
     public class Fisura : Skill
     {
+        [SerializeField] private LineRenderer _lineRenderer;
         [SerializeField] private FisuraTile _fisuraPref;
         [SerializeField] private float _fisuraDuration = 6;
         [SerializeField, Range(1, 7)] private int _fisuraMaxLenght;
@@ -54,6 +55,9 @@ namespace Gangdollarff
 
         protected override IEnumerator PrepareJob()
         {
+            _lineRenderer.transform.parent = null;
+            _lineRenderer.positionCount = 2;
+
             while (_startPoint == Vector3.zero)
             {
                 if (GetMouseButton)
@@ -61,6 +65,7 @@ namespace Gangdollarff
 
                 yield return null;
             }
+            _lineRenderer.SetPosition(0, _startPoint);
             yield return new WaitForSeconds(0.1f);
 
             while (_endPoint == Vector3.zero)
@@ -68,9 +73,11 @@ namespace Gangdollarff
                 if (Input.GetMouseButton(0))
                     _endPoint = GetMousePoint();
 
+                _lineRenderer.SetPosition(1, GetMousePoint());
                 yield return null;
             }
 
+            _lineRenderer.positionCount = 0;
             yield return null;
         }
 

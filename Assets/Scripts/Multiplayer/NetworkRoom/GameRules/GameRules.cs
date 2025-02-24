@@ -248,10 +248,12 @@ public abstract class GameRules : NetworkBehaviour
             if (playerSettings.NetworkSettings.TeamIndex == 1)
             {
                 _gameManager.TeamsPanel.AddInFirstTeam(playerSettings);
+                _gameManager.Source.AddInFirstTeam(playerSettings);
             }
             else
             {
                 _gameManager.TeamsPanel.AddInSecondTeam(playerSettings);
+                _gameManager.Source.AddInSecondTeam(playerSettings);
             }
         }
         GameStartClient();

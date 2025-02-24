@@ -26,6 +26,11 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
 	[SerializeField] private SelectedCircle _selectedCircle;
 	[SerializeField] private SpawnComponent _spawnComponent;
 
+	[SyncVar] private int _killCounter;
+	[SyncVar] private float _damageTakeCounter;
+	[SyncVar] private int _assystCounter;
+	[SyncVar] private int _deadsCounter;
+	[SyncVar] private float _damageGetCounter;
 	private bool _isInvisible;
 	private bool _isDead = false;
 
@@ -65,6 +70,12 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
         }
     }
     public bool IsDead => _isDead;
+
+    public int KillCounter { get => _killCounter; set => _killCounter = value; }
+    public int AssystCounter { get => _assystCounter; set => _assystCounter = value; }
+    public int DeadsCounter { get => _deadsCounter; set => _deadsCounter = value; }
+    public float DamageTakeCounter { get => _damageTakeCounter; set => _damageTakeCounter = value; }
+    public float DamageGetCounter { get => _damageGetCounter; set => _damageGetCounter = value; }
 
     public static event Action<Character> ServerOnUnitSpawned;
 	public static event Action<Character> ServerOnUnitDeleted; 
@@ -128,6 +139,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
 			}
 		}
 		Health.Died += CmdOnDied;
+		Health.Died += AddDeadCounter;
 	}
 	
 	private void Start()
@@ -186,7 +198,9 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
-		return Health.TryTakeDamage(ref damage, skill);
+		bool b = Health.TryTakeDamage(ref damage, skill);
+		_damageTakeCounter += damage.Value;
+		return b;
     }
 
     public void ShowPhantomValue(Damage phantomValue)
@@ -243,6 +257,11 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
 			_characterState.RemoveState(state.State);
 		}
 	}
+
+	private void AddDeadCounter()
+    {
+		_deadsCounter++;
+    }
 
 	[Command]
 	private void CmdOnDied()
