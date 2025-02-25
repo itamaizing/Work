@@ -25,6 +25,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
 	[SerializeField] private List<Resource> _resources;
 	[SerializeField] private SelectedCircle _selectedCircle;
 	[SerializeField] private SpawnComponent _spawnComponent;
+	[SerializeField] private VisionComponent _visionComponent;
 
 	[SyncVar] private int _killCounter;
 	[SyncVar] private float _damageTakeCounter;
@@ -71,11 +72,12 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
     }
     public bool IsDead => _isDead;
 
-    public int KillCounter { get => _killCounter; set => _killCounter = value; }
+    public int KillCounter { get => _killCounter; set { _killCounter = value; Killed?.Invoke(); } }
     public int AssystCounter { get => _assystCounter; set => _assystCounter = value; }
     public int DeadsCounter { get => _deadsCounter; set => _deadsCounter = value; }
     public float DamageTakeCounter { get => _damageTakeCounter; set => _damageTakeCounter = value; }
     public float DamageGetCounter { get => _damageGetCounter; set => _damageGetCounter = value; }
+    public VisionComponent VisionComponent { get => _visionComponent; }
 
     public static event Action<Character> ServerOnUnitSpawned;
 	public static event Action<Character> ServerOnUnitDeleted; 
@@ -86,6 +88,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
     public event Action<Damage, Skill> DamageTaken;
     public event Action<float, Skill, string> HealTaked;
 	public event Action<Character> Died;
+	public event Action Killed;
 
     protected override void OnValidate()
     {
@@ -102,7 +105,8 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
 		Move.Initialize(Data.GetAttributeValue(AttributeNames.Speed), Rigidbody , true);
 		CharacterState.Initialize(this);
 		SelectComponent.Initialize(Move,Abilities,UIComponent);
-		
+		//_visionComponent.VisionRange = Data.GetAttributeValue(AttributeNames.VisionRadius);
+
 		foreach (var resource in Resources)
 		{
 			if (resource.Type == ResourceType.Health)
@@ -145,6 +149,21 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
 	private void Start()
 	{
 		Initialize();
+	}
+
+	public void ResuceVisionRange(float value)
+    {
+		TargetRpcResuceVisionRange(value);
+	}
+
+	public void IncraseVisionRange(float value)
+    {
+		TargetRpcIncraseVisionRange(value);
+	}
+
+	public void AddVisionRange(float value)
+	{
+		TargetRpcAddVisionRange(value);
 	}
 
 	[Server]
@@ -280,5 +299,23 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
 	private void RpcResetAll()
 	{
 		ResetAll();
+	}
+
+	[TargetRpc]
+	private void TargetRpcResuceVisionRange(float value)
+	{
+		_visionComponent.VisionRange /= value;
+	}
+
+	[TargetRpc]
+	private void TargetRpcIncraseVisionRange(float value)
+	{
+		_visionComponent.VisionRange *= value;
+	}
+
+	[TargetRpc]
+	private void TargetRpcAddVisionRange(float value)
+	{
+		_visionComponent.VisionRange += value;
 	}
 }

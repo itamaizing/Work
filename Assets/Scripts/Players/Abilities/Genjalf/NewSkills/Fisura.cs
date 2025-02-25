@@ -49,6 +49,7 @@ namespace Gangdollarff
 
         protected override void ClearData()
         {
+            _lineRenderer.positionCount = 0;
             _startPoint = Vector3.zero;
             _endPoint = Vector3.zero;
         }
@@ -65,7 +66,7 @@ namespace Gangdollarff
 
                 yield return null;
             }
-            _lineRenderer.SetPosition(0, _startPoint);
+            _lineRenderer.SetPosition(0, _startPoint + Vector3.up / 10);
             yield return new WaitForSeconds(0.1f);
 
             while (_endPoint == Vector3.zero)
@@ -73,7 +74,7 @@ namespace Gangdollarff
                 if (Input.GetMouseButton(0))
                     _endPoint = GetMousePoint();
 
-                _lineRenderer.SetPosition(1, GetMousePoint());
+                _lineRenderer.SetPosition(1, GetMousePoint() + Vector3.up / 10);
                 yield return null;
             }
 

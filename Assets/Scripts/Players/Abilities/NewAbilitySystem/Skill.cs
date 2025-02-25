@@ -1012,6 +1012,11 @@ public abstract class Skill : NetworkBehaviour
         Hero.AssystCounter++;
     }
     
+    private void AddAssist()
+    {
+        Hero.AssystCounter++;
+    }
+    
     private void AddKill(Character character)
     {
         Hero.KillCounter++;
@@ -1161,11 +1166,19 @@ public abstract class Skill : NetworkBehaviour
     private IEnumerator AssistTimerJob(Character player)
     {
         player.Died += AddKill;
-        yield return new WaitForSecondsRealtime(0.5f);
+        yield return null;
+        yield return null;
         player.Died -= AddKill;
         player.Died += AddAssist;
         yield return new WaitForSecondsRealtime(_assistTimer);
         player.Died -= AddAssist;
+    }
+    
+    private IEnumerator HealAssistTimerJob(Character player)
+    {
+        player.Killed += AddAssist;
+        yield return new WaitForSecondsRealtime(_assistTimer);
+        player.Killed -= AddAssist;
     }
 
     [ClientRpc]
@@ -1252,8 +1265,21 @@ public abstract class Skill : NetworkBehaviour
 
     public void ApplyHeal(Heal heal, GameObject hp, Skill skill, string sourceName)
     {
-        hp.GetComponent<IHealingable>().Heal(ref heal, sourceName, skill);
-        Hero.DamageTracker.AddHeal(heal, isServerRequest: isServer);
+        if (_tempTargetForDamage != hp.transform)
+        {
+            _tempTargetForDamage = hp.transform;
+            _tempForHealing = hp.GetComponent<IHealingable>();
+        }
+
+        _tempForHealing.Heal(ref heal, sourceName, skill);
+
+        if (hp.TryGetComponent<Character>(out Character player))
+        {
+            if (_assistCoroutine != null)
+                StopCoroutine(_assistCoroutine);
+
+            _assistCoroutine = StartCoroutine(HealAssistTimerJob(player));
+        }
     }
 
     [Command]
