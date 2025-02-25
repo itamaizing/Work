@@ -41,22 +41,20 @@ public class FrozenState : AbstractCharacterState
 		_characterState.Character.Move.LookAtTransform(_characterState.gameObject.transform);
 		_audioSource = character.GetComponent<AudioSource>();
 
-		_animator = _characterState.GetComponent<Animator>();
-
-		if (_animator != null)
-		{
-			_currentState = _animator.GetCurrentAnimatorStateInfo(0);
-			float normalizedTime = _currentState.normalizedTime % 1f;
-			_animator.Play(_currentState.fullPathHash, 0, normalizedTime);
-			_animator.Update(0);
-			_animator.enabled = false;
-		}
-
 		if (character.TryGetComponent<Character>(out var ability))
 		{
 			_abilities = ability.Abilities;
-			_abilities.SetAbilitiesDisabled();
+
+			foreach (var abil in _abilities.Abilities)
+			{
+				abil.Disactive = true;
+				if (abil.AbilityForm == AbilityForm.Physical)
+				{
+					abil.Buff.CastSpeed.ReductionPercentage(.5f);
+				}
+			}
 		}
+
 		else
 		{
 			Debug.Log("no ability at " + character.gameObject.name);
@@ -71,8 +69,18 @@ public class FrozenState : AbstractCharacterState
 		if (_characterState.StateEffects.MaterialCharacter != null) _characterState.StateEffects.MaterialCharacter.color = Color.cyan;
 		if (_characterState.StateEffects.FrostingAudio != null) _audioSource.PlayOneShot(_characterState.StateEffects.FrozenAudio);
 
-		//_characterState.Health.sumDamageTaken = 0;
+		_animator = _characterState.GetComponent<Animator>();
 
+		if (_animator != null)
+		{
+			_currentState = _animator.GetCurrentAnimatorStateInfo(0);
+			float normalizedTime = _currentState.normalizedTime % 1f;
+			_animator.Play(_currentState.fullPathHash, 0, normalizedTime);
+			_animator.Update(0);
+			_animator.enabled = false;
+		}
+
+		//_characterState.Health.sumDamageTaken = 0;
 	}
 
 	public override void UpdateState()
@@ -96,17 +104,20 @@ public class FrozenState : AbstractCharacterState
 		}
 		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null)
 		{
-			_abilities.SetAbilitiesEnabled();
+			foreach (var abil in _abilities.Abilities)
+			{
+				abil.Disactive = false;
+			}
 		}
+
+		if (_frozenEffectInstance != null) _frozenEffectInstance.SetActive(false);
+		if (_characterState.StateEffects.MaterialCharacter != null) _characterState.StateEffects.MaterialCharacter.color = Color.white;
 
 		if (_animator != null)
 		{
 			_animator.enabled = true;
 			_animator.speed = 1;
 		}
-
-		if (_frozenEffectInstance != null) _frozenEffectInstance.SetActive(false);
-		if (_characterState.StateEffects.MaterialCharacter != null) _characterState.StateEffects.MaterialCharacter.color = Color.white;
 	}
 
 	public override bool Stack(float time)

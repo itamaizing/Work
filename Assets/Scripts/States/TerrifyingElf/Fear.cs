@@ -121,16 +121,29 @@ public class Fear : AbstractCharacterState
         Vector3 fleeDirection = (moveComp.transform.position - _source.transform.position).normalized;
         fleeDirection = Quaternion.Euler(0, Random.Range(-45f, 45f), 0) * fleeDirection;
 
+        moveComp.SetAnimationMovement(Vector3.zero);
+
         while (_duration > 0f)
         {
-            yield return new WaitForSeconds(0.1f);
+            _duration -= Time.deltaTime;
 
-            moveComp.SetAnimationMovement(Vector3.zero);
+            rb.velocity = Vector3.Lerp(rb.velocity, fleeDirection * moveComp.CurrentSpeed, Time.deltaTime * 5f);
 
-            rb.velocity = fleeDirection * moveComp.CurrentSpeed;
+            if (rb.velocity.magnitude > 0.1f)
+            {
+                moveComp.transform.rotation = Quaternion.Slerp(
+                    moveComp.transform.rotation,
+                    Quaternion.LookRotation(rb.velocity.normalized),
+                    Time.deltaTime * 5f
+                );
+            }
 
-            moveComp.transform.DORotateQuaternion(Quaternion.LookRotation(fleeDirection), 0.2f);
             moveComp.SetAnimationMovement(rb.velocity);
+
+            yield return null;
         }
+
+        moveComp.SetAnimationMovement(Vector3.zero);
+        rb.velocity = Vector3.zero;
     }
 }

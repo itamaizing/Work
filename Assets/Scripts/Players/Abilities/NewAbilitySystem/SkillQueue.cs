@@ -22,7 +22,7 @@ public class SkillQueue : MonoBehaviour
 
         if(_skills.TryPeek(out Skill skill))
         {
-            if (skill.TryCast())
+            if (!skill.Disactive && skill.TryCast())
             {
                 RemoveFromQueue();
                 _currentSkill = skill;

@@ -179,7 +179,7 @@ public class IceRolling : Skill
 				Vector3 jumpPos2 = _lookDir * actualJumpRange + _playerLinks.transform.position;
 				if (_energy.CurrentValue >= 5 && !CheckObstacleBetween(_playerLinks.transform.position, jumpPos2, out stopPosition))
 				{
-					_energy.CmdUse(1);
+					_energy.CmdUse(5);
 					jumpPos = jumpPos2;
 				}
 			}

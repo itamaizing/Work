@@ -81,9 +81,13 @@ public class MoveComponent : NetworkBehaviour
 
     private void OnDestroy()
     {
-		InputHandler.OnPlayerMove -= OnMove;
-		_flyChecker.OffedGround -= OnOffedGround;
-		_flyChecker.ReachGround -= OnReachGround;
+		if (InputHandler.OnPlayerMove != null) InputHandler.OnPlayerMove -= OnMove;
+
+		if (_flyChecker != null)
+		{
+			_flyChecker.OffedGround -= OnOffedGround;
+			_flyChecker.ReachGround -= OnReachGround;
+		}
 	}
 
 	public void LookAtPosition(Vector3 position)
@@ -158,7 +162,7 @@ public class MoveComponent : NetworkBehaviour
     {
 		if (!CanMove || _rigidbody == null || IsMoveBlocked == true)
 		{
-			_rigidbody.velocity = Vector3.zero;
+			if (_rigidbody != null) _rigidbody.velocity = Vector3.zero;
 			return;
 		}
 
@@ -178,10 +182,15 @@ public class MoveComponent : NetworkBehaviour
 
 		_rigidbody.velocity = new Vector3(camDir.x * _currentSpeed, _rigidbody.velocity.y, camDir.z * _currentSpeed);
 
-		var animDir = transform.InverseTransformPoint(transform.position + camDir);
-		_animMultiplier = 0.1f * _rigidbody.velocity.magnitude + 0.5f;
-		_anim.SetFloat(HashAnimPlayer.VelocityZ, animDir.z * _animMultiplier);
-		_anim.SetFloat(HashAnimPlayer.VelocityX, animDir.x * _animMultiplier);
+		if (_rigidbody.velocity.magnitude > 0.2f && moveAudioSource != null && !moveAudioSource.isPlaying) PlayMove();
+
+		if (_anim != null)
+		{
+			var animDir = transform.InverseTransformPoint(transform.position + camDir);
+			_animMultiplier = 0.1f * _rigidbody.velocity.magnitude + 0.5f;
+			_anim.SetFloat(HashAnimPlayer.VelocityZ, animDir.z * _animMultiplier);
+			_anim.SetFloat(HashAnimPlayer.VelocityX, animDir.x * _animMultiplier);
+		}
 	}
 
 	protected virtual void RotateAtCursor()
@@ -200,7 +209,7 @@ public class MoveComponent : NetworkBehaviour
 		}
 	}
 
-    public void SetAnimationMovement(Vector3 direction)
+	public void SetAnimationMovement(Vector3 direction)
     {
         Vector3 localDir = transform.InverseTransformDirection(direction);
 

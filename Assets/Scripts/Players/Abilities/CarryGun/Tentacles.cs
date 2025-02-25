@@ -34,7 +34,7 @@ public class Tentacles : Skill
         Vector3 mousePositionStart = GetMousePoint();
         _previewInstance = Instantiate(tentaclesPreview, mousePositionStart, Quaternion.identity);
 
-        while (float.IsPositiveInfinity(_spawnPoint.x) && !_disactive)
+        while (true && !Disactive)
         {
             Vector3 mousePosition = GetMousePoint();
             float distance = Vector3.Distance(mousePosition, transform.position);
@@ -43,7 +43,7 @@ public class Tentacles : Skill
 
             if (GetMouseButton && distance <= Radius)
             {
-                _spawnPoint = GetMousePoint();
+                _spawnPoint = _previewInstance.transform.position;
                 Hero.Move.CanMove = false;
                 break;
             }
@@ -55,18 +55,14 @@ public class Tentacles : Skill
         {
             if (GetMouseButton)
             {
-                Vector3 clickPosition = GetMousePoint();
-                float distanceTarget = Vector3.Distance(clickPosition, _spawnPoint);
-
-                if (distanceTarget <= 3f)
+                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hitTarget))
                 {
-                    if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hitTarget))
+                    float distanceTarget = Vector3.Distance(hitTarget.transform.position, _spawnPoint);
+
+                    if (hitTarget.collider.TryGetComponent<Character>(out Character character) && distanceTarget <= 3f)
                     {
-                        if (hitTarget.collider.TryGetComponent<Character>(out Character character))
-                        {
-                            _target = character;
-                            break;
-                        }
+                        _target = character;
+                        break;
                     }
                 }
             }
@@ -95,12 +91,12 @@ public class Tentacles : Skill
         tentacles.Init(_player.gameObject, target, position, target.transform.position, true, 0);
 
         NetworkServer.Spawn(tentacles.gameObject);
-        RpcInitTentacles(tentacles.gameObject, target);
+        RpcInitTentacles(tentacles.gameObject, target, position);
     }
 
     [ClientRpc]
-    private void RpcInitTentacles(GameObject tentacleObject, GameObject target)
+    private void RpcInitTentacles(GameObject tentacleObject, GameObject target, Vector3 position)
     {
-        tentacleObject.GetComponent<TentacleProjectile>().Init(_player.gameObject, target, _spawnPoint, target.transform.position, true, 0);
+        tentacleObject.GetComponent<TentacleProjectile>().Init(_player.gameObject, target, position, target.transform.position, true, 0);
     }
 }

@@ -31,10 +31,9 @@ Transform:
   m_GameObject: {fileID: 52505351587200989}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 866525898299250550}
   - {fileID: 8998793437426643700}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -192,9 +191,15 @@ MonoBehaviour:
   _hitEffect: {fileID: 0}
   _spriteRenderer: {fileID: 0}
   _rb: {fileID: 6209878637309318745}
-  _force: 4
+  _force: 10
   _distance: 4
   _lifeTime: 4
+  waveAmplitudeMin: 0.2
+  waveAmplitudeMax: 0.5
+  waveFrequencyMin: 1
+  waveFrequencyMax: 3
+  _speed: 5
+  particleSystem: {fileID: 2763925455538773284}
 --- !u!1 &2360127251309233203
 GameObject:
   m_ObjectHideFlags: 0
@@ -222,11 +227,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2360127251309233203}
   m_LocalRotation: {x: -0, y: -0.7071068, z: -0.7071068, w: 0}
-  m_LocalPosition: {x: 0, y: -0, z: 0.02}
+  m_LocalPosition: {x: 0, y: -0, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 965256017086974764}
+  - {fileID: 866525898299250550}
   m_Father: {fileID: 7833736005979195589}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
@@ -5075,12 +5081,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5187240712126620855}
-  m_LocalRotation: {x: -1, y: 0, z: 0, w: 0}
+  m_LocalRotation: {x: -0, y: -0.7071068, z: 0.7071068, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 7833736005979195589}
+  m_Father: {fileID: 8998793437426643700}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: -180, y: 0, z: 0}
 --- !u!198 &373534135937083039
@@ -5166,7 +5172,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.74
+      scalar: 0.32
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -5920,7 +5926,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 20
+      scalar: 10
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -10006,7 +10012,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.1
+      scalar: 0.5
       minScalar: 5
       maxCurve:
         serializedVersion: 2

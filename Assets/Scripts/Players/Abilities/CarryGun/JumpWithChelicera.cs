@@ -125,12 +125,6 @@ public class JumpWithChelicera : Skill
         _animator.applyRootMotion = true;
     }
 
-    public void ApplyRootFalse()
-    {
-        Hero.Move.CanMove = true;
-        _animator.applyRootMotion = false;
-    }
-
     private void HandleJumpEnd()
     {
         if (_animator != null)
@@ -140,12 +134,10 @@ public class JumpWithChelicera : Skill
         }
     }
 
-    private IEnumerator JumpEndAfterDuration(GameObject player, GameObject target, float additionalDamage)
+    private void InvokejumpEnd()
     {
-        yield return new WaitForSeconds(_durationJump);
-
-        HandleJumpEnd();
-        DamageDeal(target, additionalDamage);
+        Hero.Move.CanMove = true;
+        _animator.applyRootMotion = false;
     }
 
     [Command]
@@ -155,11 +147,19 @@ public class JumpWithChelicera : Skill
         Character targetCharacter = target.GetComponent<Character>();
 
         Vector3 jumpPosition = targetCharacter != null
-            ? Vector3.MoveTowards(targetCharacter.transform.position, player.transform.position, _minDistance)
-            : player.transform.position + direction * (_distanceJump * GlobalVariable.cellSize);
+            ? Vector3.MoveTowards(targetCharacter.transform.position, player.transform.position, _minDistance + 0.5f)
+            : player.transform.position + direction * ((_distanceJump - 0.5f) * GlobalVariable.cellSize);
 
         playerMove.TargetRpcDoMove(jumpPosition, _durationJump);
-        StartCoroutine(JumpEndAfterDuration(player, target, additionalDamage));
+
+        RpcHandleJumpEnd();
+        DamageDeal(target, additionalDamage);
+    }
+
+    [ClientRpc] private void RpcHandleJumpEnd()
+    {
+        HandleJumpEnd();
+        Invoke("InvokejumpEnd", 1f);
     }
 
     [ClientRpc]

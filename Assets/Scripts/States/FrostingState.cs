@@ -19,7 +19,7 @@ public class FrostingState : AbstractCharacterState
 	public override StateType Type => StateType.Magic;
 	public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		Debug.Log("Entering Frosting State");
 		_characterState = character;
@@ -38,8 +38,8 @@ public class FrostingState : AbstractCharacterState
 
 		_damageOnStart = _characterState.Character.Health.SumDamageTaken;
 		_characterState.Character.Move.CanMove = false;
+		_characterState.Character.Move.LookAtTransform(_characterState.gameObject.transform);
 
-		//decrease speed
 		if (character.TryGetComponent<Character>(out var ability))
 		{
 			_abilities = ability.Abilities;
@@ -52,6 +52,7 @@ public class FrostingState : AbstractCharacterState
 				}
 			}
 		}
+
 		else
 		{
 			Debug.Log("no ability at " + character.gameObject.name);
@@ -64,8 +65,6 @@ public class FrostingState : AbstractCharacterState
 		}
 
 		if (_characterState.StateEffects.FrostingAudio != null) _audioSource.PlayOneShot(_characterState.StateEffects.FrostingAudio);
-
-		//_characterState.Health.sumDamageTaken=0;
 	}
 
 	public override void UpdateState()
@@ -81,11 +80,15 @@ public class FrostingState : AbstractCharacterState
 	{
 		Debug.Log("Exiting Frosting State");
 		_characterState.RemoveState(this);
+
 		if (!_characterState.Check(StatusEffect.Move))
 		{
 			_characterState.Character.Move.CanMove = true;
 		}
-		if (!_characterState.Check(StatusEffect.AbilitySpeed))
+
+		_characterState.Character.Move.StopLookAt();
+
+		if (!_characterState.Check(StatusEffect.AbilitySpeed) && _abilities != null)
 		{
 			foreach (var abil in _abilities.Abilities)
 			{
@@ -95,6 +98,7 @@ public class FrostingState : AbstractCharacterState
 				}
 			}
 		}
+
 		if (_characterState.StateEffects.Ice != null) _ice.SetActive(false);
 	}
 

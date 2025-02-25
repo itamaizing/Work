@@ -128,7 +128,7 @@ public class SparkOfLight : AutoAttackSkill
 
         else if (IsEnemyTarget(_target)) TryPayCost(_manaCostDamage);
 
-        CmdSpawnProjectile(_target.transform.position);
+        CmdSpawnProjectile(_target.gameObject);
     }
 
     public void HandleMode(Character target)
@@ -262,8 +262,9 @@ public class SparkOfLight : AutoAttackSkill
     }
 
     [Command]
-    private void CmdSpawnProjectile(Vector3 targetPosition)
+    private void CmdSpawnProjectile(GameObject target)
     {
+        Vector3 targetPosition = target.transform.position + Vector3.up;
         Vector3 direction = (targetPosition - spawnPoint.transform.position).normalized;
         float distance = Vector3.Distance(targetPosition, spawnPoint.transform.position);
 
@@ -271,15 +272,16 @@ public class SparkOfLight : AutoAttackSkill
 
         float attackDelay = _castTime;
 
-        projectile.Init(playerLinks, IsLightMode, this, distance, attackDelay);
+        projectile.Init(playerLinks, IsLightMode, this, distance, attackDelay, target.transform);
 
         SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(projectile.gameObject);
         projectile.StartFly(direction);
 
-        RpcInitProjectile(projectile.gameObject, distance, attackDelay);
+        RpcInitProjectile(projectile.gameObject, distance, attackDelay, target);
         RpcPlayShotSound();
     }
+
 
     private void AddBuff(States state, float duration, float modifier, GameObject target, string skillName)
     {
@@ -288,11 +290,11 @@ public class SparkOfLight : AutoAttackSkill
     }
 
     [ClientRpc]
-    private void RpcInitProjectile(GameObject projectileObject, float distance, float attackDelay)
+    private void RpcInitProjectile(GameObject projectileObject, float distance, float attackDelay, GameObject target)
     {
         if (projectileObject.TryGetComponent(out LightSparkProjectile projectile))
         {
-            projectile.Init(playerLinks, IsLightMode, this, distance, attackDelay);
+            projectile.Init(playerLinks, IsLightMode, this, distance, attackDelay, target.transform);
         }
     }
 
