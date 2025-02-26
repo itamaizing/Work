@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,19 +13,4 @@ public class GameManager : MonoBehaviour
     public SourceUI SourceUI { get => _sourceUI; }
     public TeamsPanel TeamsPanel { get => _teamsPanel; }
     public TeamSource Source { get => _sourceTabl; }
-
-    private void Awake()
-    {
-        InputHandler.ShowSource += OnShowSource;
-    }
-
-    private void OnDestroy()
-    {
-        InputHandler.ShowSource -= OnShowSource;
-    }
-
-    private void OnShowSource()
-    {
-        _sourceTabl.SwitchEnable();
-    }
 }
