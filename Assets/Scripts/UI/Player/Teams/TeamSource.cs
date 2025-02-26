@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TeamSource : MonoBehaviour
@@ -11,17 +9,21 @@ public class TeamSource : MonoBehaviour
         UpdateInfo();
     }
 
+    public void SwitchEnable()
+    {
+        if (gameObject.activeSelf == true)
+            gameObject.SetActive(false);
+        else
+            gameObject.SetActive(true);
+    }
+
     public void AddInFirstTeam(Character character)
     {
-        //icon.Init(character);
-        //_playerIcons.Add(icon);
         _heroInfoUI[0].SetHero(character);
     }
 
     public void AddInSecondTeam(Character character)
     {
-        //icon.Init(character);
-        //_playerIcons.Add(icon);
         _heroInfoUI[1].SetHero(character);
     }
 
