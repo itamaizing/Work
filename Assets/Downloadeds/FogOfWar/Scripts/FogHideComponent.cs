@@ -15,7 +15,11 @@ public class FogHideComponent : MonoBehaviour
         InvokeRepeating("CheckIfInFog", updateinterval, updateinterval);
     }
 
-    void CheckIfInFog() {
+    void CheckIfInFog()
+    {
+        if (FogOfWarManager.INSTANCE == null)
+            return;
+
         bool infog = FogOfWarManager.INSTANCE.IsPositionInFog(transform.position);
 
         foreach (Renderer renderer in m_RenderersToHide)

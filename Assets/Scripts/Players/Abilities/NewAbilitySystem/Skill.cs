@@ -120,6 +120,8 @@ public abstract class Skill : NetworkBehaviour
     private bool _isSpaceClick;
     private List<float> _remainingCooldownTimeChargers;
     private List<Coroutine> _currentChargeCooldownJob;
+    private float _assistTimer = 5f;
+    private Coroutine _assistCoroutine;
 
     public bool IsTalentSpell => _isTalentSpell;
     public bool IsSkillActive
@@ -1028,6 +1030,21 @@ public abstract class Skill : NetworkBehaviour
         _dynamicRendererJob = StartCoroutine(DynamicRendererJob());
     }
 
+    private void AddAssist(Character character)
+    {
+        Hero.AssystCounter++;
+    }
+    
+    private void AddAssist()
+    {
+        Hero.AssystCounter++;
+    }
+    
+    private void AddKill(Character character)
+    {
+        Hero.KillCounter++;
+    }
+
     private IEnumerator CooldownCoroutine(float cooldownTime)
     {
         CooldownStarted?.Invoke(cooldownTime);
@@ -1169,6 +1186,24 @@ public abstract class Skill : NetworkBehaviour
         yield return new WaitForNextFrameUnit();
     }
 
+    private IEnumerator AssistTimerJob(Character player)
+    {
+        player.Died += AddKill;
+        yield return null;
+        yield return null;
+        player.Died -= AddKill;
+        player.Died += AddAssist;
+        yield return new WaitForSecondsRealtime(_assistTimer);
+        player.Died -= AddAssist;
+    }
+    
+    private IEnumerator HealAssistTimerJob(Character player)
+    {
+        player.Killed += AddAssist;
+        yield return new WaitForSecondsRealtime(_assistTimer);
+        player.Killed -= AddAssist;
+    }
+
     [ClientRpc]
     public void RpcResetSkillState()
     {
@@ -1226,25 +1261,48 @@ public abstract class Skill : NetworkBehaviour
 
     public void ApplyDamage(Damage damage, GameObject target)
     {
-        target.GetComponent<IDamageable>().TryTakeDamage(ref damage, this);
-    }
-
-    [Command]
-    public void CmdApplyDamage(Damage damage, GameObject target)
-    {
         if (_tempTargetForDamage != target.transform)
         {
             _tempTargetForDamage = target.transform;
             _tempForDamage = target.GetComponent<IDamageable>();
         }
 
+        target.GetComponent<IDamageable>().TryTakeDamage(ref damage, this);
+
+        if(target.TryGetComponent<Character>(out Character player))
+        {
+            Hero.DamageGetCounter += damage.Value;
+
+            if (_assistCoroutine != null)
+                StopCoroutine(_assistCoroutine);
+
+            StartCoroutine(AssistTimerJob(player));
+        }
+    }
+
+    [Command]
+    public void CmdApplyDamage(Damage damage, GameObject target)
+    {
         ApplyDamage(damage, target);
     }
 
     public void ApplyHeal(Heal heal, GameObject hp, Skill skill, string sourceName)
     {
-        hp.GetComponent<IHealingable>().Heal(ref heal, sourceName, skill);
-        Hero.DamageTracker.AddHeal(heal, isServerRequest: isServer);
+        if (_tempTargetForDamage != hp.transform)
+        {
+            _tempTargetForDamage = hp.transform;
+            _tempForHealing = hp.GetComponent<IHealingable>();
+        }
+
+        _tempForHealing.Heal(ref heal, sourceName, skill);
+
+        if (hp.TryGetComponent<Character>(out Character player))
+        {
+            if (_assistCoroutine != null)
+                StopCoroutine(_assistCoroutine);
+
+            _assistCoroutine = StartCoroutine(HealAssistTimerJob(player));
+        }
     }
 
     [Command]

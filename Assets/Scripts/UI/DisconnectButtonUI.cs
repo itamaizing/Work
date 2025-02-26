@@ -31,11 +31,17 @@ public class DisconnectButtonUI : MonoBehaviour
         }
         else
         {
-            HeroComponent hero = FindObjectOfType<HeroComponent>();
-            var roomName = hero.NetworkSettings.RoomName;
-            hero.DestroySelf();
-            ServerManager.Instance.EnableMenu();
-            SceneManager.UnloadSceneAsync(roomName);
+            HeroComponent[] hero = FindObjectsOfType<HeroComponent>();
+            foreach (var item in hero)
+            {
+                if (item.connectionToClient == NetworkClient.connection)
+                {
+                    var roomName = item.NetworkSettings.RoomName;
+                    item.DestroySelf();
+                    ServerManager.Instance.EnableMenu();
+                    SceneManager.UnloadSceneAsync(roomName);
+                }
+            }
         }
     }
 }
