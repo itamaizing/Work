@@ -151,6 +151,7 @@ public class IceCloud : Skill
 	protected override IEnumerator CastJob()
 	{
 		Shoot();
+		Hero.Move.CanMove = true;
 		yield return null;
 	}
 
@@ -172,6 +173,6 @@ public class IceCloud : Skill
 
 	public void StopMove()
 	{
-		//_move.CanMove = false;
+		Hero.Move.CanMove = false;
 	}
 }

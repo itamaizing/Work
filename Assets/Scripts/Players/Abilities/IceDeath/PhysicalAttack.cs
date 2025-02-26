@@ -187,7 +187,7 @@ public class PhysicalAttack : AutoAttackSkill
 	{
 		MoveComponent tempTargetMove = gameObject.GetComponent<MoveComponent>();
 		
-		tempTargetMove.TargetRpcDoMove(force, 0.5f);
+		//tempTargetMove.TargetRpcDoMove(force, 0.5f);
 	}
 
 	[Command]
@@ -234,5 +234,16 @@ public class PhysicalAttack : AutoAttackSkill
 	{
 		_rollingPhysTalent = value;
 		_stunCount = count;
+	}
+
+	public void ApplyRootTrue()
+	{
+		Hero.Move.CanMove = false;
+		_animator.applyRootMotion = true;
+	}
+
+	public void ApplyRootFalse()
+	{
+		_animator.applyRootMotion = false;
 	}
 }

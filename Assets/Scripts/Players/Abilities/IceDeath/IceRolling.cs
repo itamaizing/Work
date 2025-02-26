@@ -272,7 +272,7 @@ public class IceRolling : Skill
 	private void CmdPush(Vector3 force)
 	{
 		RpcPlayShotSound();
-		_playerLinks.Move.TargetRpcDoMove(force, _durationOfJump);
+		TargetRpcDoMoveWithCollision(force, _durationOfJump);
 		StartCoroutine(WaitForJumpEnd());
 	}
 
@@ -311,10 +311,49 @@ public class IceRolling : Skill
 		}
 	}
 
+	private bool CheckObstacle(Vector3 start, Vector3 end, out Vector3 hitPosition)
+	{
+		Vector3 direction = (end - start).normalized;
+		float distance = Vector3.Distance(start, end);
+
+		if (Physics.Raycast(start, direction, out RaycastHit hit, distance))
+		{
+			hitPosition = hit.point - direction * 0.1f;
+			return true;
+		}
+
+		hitPosition = Vector3.zero;
+		return false;
+	}
+
 	private IEnumerator WaitForJumpEnd()
 	{
 		yield return new WaitForSeconds(_durationOfJump);
 		RpcOnJumpEnd();
+	}
+
+	private IEnumerator DoMoveWithCollisionCoroutine(Vector3 targetPosition, float duration)
+	{
+		Vector3 startPosition = _playerLinks.transform.position;
+		float elapsedTime = 0f;
+
+		Tween moveTween = _playerLinks.Rigidbody.DOMove(targetPosition, duration);
+
+		while (elapsedTime < duration)
+		{
+			elapsedTime += Time.deltaTime;
+
+			if (CheckObstacle(startPosition, targetPosition, out Vector3 hitPosition))
+			{
+				moveTween.Kill(); // Останавливаем текущее DOMove
+				_playerLinks.transform.position = hitPosition;
+				break;
+			}
+
+			yield return null;
+		}
+
+		Hero.Move.CanMove = true;
 	}
 
 	[ClientRpc]
@@ -327,5 +366,11 @@ public class IceRolling : Skill
 	private void RpcOnJumpEnd()
 	{
 		HandleJumpEnd();
+	}
+
+	[TargetRpc]
+	public void TargetRpcDoMoveWithCollision(Vector3 targetPosition, float duration)
+	{
+		StartCoroutine(DoMoveWithCollisionCoroutine(targetPosition, duration));
 	}
 }
