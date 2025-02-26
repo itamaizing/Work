@@ -62,21 +62,21 @@ public class IceRolling : Skill
 
 	private void Update()
 	{
-		if(_afterJump)
+		if (_afterJump)
 		{
 			TimerDelay();
 		}
 	}
 
-	private float GetJumpRange() 
+	private float GetJumpRange()
 	{
 		float range = _jumprange;
-		float energyCost = 1; 
-		for(int i = 0; i < 10; i++)
+		float energyCost = 1;
+		for (int i = 0; i < 10; i++)
 		{
-			if(_energy.CurrentValue >= energyCost)
+			if (_energy.CurrentValue >= energyCost)
 			{
-				range+=0.2F;
+				range += 0.2F;
 				energyCost += 1;
 			}
 		}
@@ -253,13 +253,13 @@ public class IceRolling : Skill
 		{
 			yield return new WaitForSeconds(time);
 
-			_skillRender.SetSizeBox(1, GetJumpRange());			
+			_skillRender.SetSizeBox(1, GetJumpRange());
 		}
 	}
 
 	protected override IEnumerator CastJob()
 	{
-        Jump();
+		Jump();
 		yield return null;
 	}
 
@@ -272,7 +272,7 @@ public class IceRolling : Skill
 	private void CmdPush(Vector3 force)
 	{
 		RpcPlayShotSound();
-		TargetRpcDoMoveWithCollision(force, _durationOfJump);
+		_playerLinks.Move.TargetRpcDoMove(force, _durationOfJump);
 		StartCoroutine(WaitForJumpEnd());
 	}
 
@@ -304,56 +304,17 @@ public class IceRolling : Skill
 	private void TimerDelay()
 	{
 		_afterJumpDelay -= Time.deltaTime;
-		if( _afterJumpDelay < 0 )
+		if (_afterJumpDelay < 0)
 		{
 			_afterJump = false;
 			_physicalAttack.TalentRollingPhys(_afterJump, 0);
 		}
 	}
 
-	private bool CheckObstacle(Vector3 start, Vector3 end, out Vector3 hitPosition)
-	{
-		Vector3 direction = (end - start).normalized;
-		float distance = Vector3.Distance(start, end);
-
-		if (Physics.Raycast(start, direction, out RaycastHit hit, distance))
-		{
-			hitPosition = hit.point - direction * 0.1f;
-			return true;
-		}
-
-		hitPosition = Vector3.zero;
-		return false;
-	}
-
 	private IEnumerator WaitForJumpEnd()
 	{
 		yield return new WaitForSeconds(_durationOfJump);
 		RpcOnJumpEnd();
-	}
-
-	private IEnumerator DoMoveWithCollisionCoroutine(Vector3 targetPosition, float duration)
-	{
-		Vector3 startPosition = _playerLinks.transform.position;
-		float elapsedTime = 0f;
-
-		Tween moveTween = _playerLinks.Rigidbody.DOMove(targetPosition, duration);
-
-		while (elapsedTime < duration)
-		{
-			elapsedTime += Time.deltaTime;
-
-			if (CheckObstacle(startPosition, targetPosition, out Vector3 hitPosition))
-			{
-				moveTween.Kill(); // Останавливаем текущее DOMove
-				_playerLinks.transform.position = hitPosition;
-				break;
-			}
-
-			yield return null;
-		}
-
-		Hero.Move.CanMove = true;
 	}
 
 	[ClientRpc]
@@ -366,11 +327,5 @@ public class IceRolling : Skill
 	private void RpcOnJumpEnd()
 	{
 		HandleJumpEnd();
-	}
-
-	[TargetRpc]
-	public void TargetRpcDoMoveWithCollision(Vector3 targetPosition, float duration)
-	{
-		StartCoroutine(DoMoveWithCollisionCoroutine(targetPosition, duration));
 	}
 }
