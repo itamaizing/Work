@@ -262,6 +262,7 @@ public class SkillManager : MonoBehaviour
 
                 DeselectSkill();
                 SetSelectSkill(_selectedSkills[index]);
+                PrepereSkill();
             }
             return false;
         }
