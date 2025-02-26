@@ -12,7 +12,9 @@ public class IceShadow : Skill
 	[SerializeField] private IceShadowObject _shadow;
 	[SerializeField] private HeroComponent _playerLinks; 
 	[SerializeField] private SeriesOfStrikes _combo;
+	[SerializeField] private AudioClip audioClip;
 
+	private AudioSource _audioSource;
 	private Energy _energy;
 	//private RuneComponent _rune;
 	private bool _lastHit = false;
@@ -43,6 +45,8 @@ public class IceShadow : Skill
 	}
 	private void Start()
 	{
+		_audioSource = GetComponent<AudioSource>();
+
 		for (int i = 0; i < _playerLinks.Resources.Count; i++)
 		{
 			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
@@ -100,6 +104,15 @@ public class IceShadow : Skill
 	[Command]
 	private void CmdCreateProjecttile(float angle, float manaValue, bool lastHit, bool damage)
 	{
+		AnimatorStateInfo stateInfo = _playerLinks.Animator.GetCurrentAnimatorStateInfo(0);
+		int animationHash = stateInfo.fullPathHash;
+		float normalizedTime = stateInfo.normalizedTime % 1f;
+
+		float velocityX = _playerLinks.Animator.GetFloat(HashAnimPlayer.VelocityX);
+		float velocityZ = _playerLinks.Animator.GetFloat(HashAnimPlayer.VelocityZ);
+
+		Quaternion playerRotation = _playerLinks.transform.rotation;
+
 		IceShadowObject projectile = Instantiate(_shadow, gameObject.transform.position, Quaternion.identity);
 		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
 		//var userSettings = gameObject.GetComponentInParent<UserNetworkSettings>();
@@ -109,8 +122,19 @@ public class IceShadow : Skill
 		projectile.TalentDamage(damage);
 
 		NetworkServer.Spawn(projectile.gameObject);
+		RpcSetShadowAnimation(projectile.gameObject, animationHash, normalizedTime, velocityX, velocityZ, playerRotation);
 
 		RpcInit(projectile.gameObject, manaValue, lastHit, damage);
+		RpcPlayShotSound();
+	}
+
+	[ClientRpc]
+	private void RpcSetShadowAnimation(GameObject shadowObj, int animationHash, float normalizedTime, float velocityX, float velocityZ, Quaternion rotation)
+	{
+		if (shadowObj.TryGetComponent(out IceShadowObject shadow))
+		{
+			shadow.SetAnimationState(animationHash, normalizedTime, velocityX, velocityZ, rotation);
+		}
 	}
 
 	[ClientRpc]
@@ -118,6 +142,12 @@ public class IceShadow : Skill
 	{
 		obj.GetComponent<IceShadowObject>().Init(_playerLinks, manaValue, lastHit, this);
 		obj.GetComponent<IceShadowObject>().TalentDamage(damage);
+	}
+
+	[ClientRpc]
+	private void RpcPlayShotSound()
+	{
+		if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
 	}
 
 	public void TalentEvade(bool value)

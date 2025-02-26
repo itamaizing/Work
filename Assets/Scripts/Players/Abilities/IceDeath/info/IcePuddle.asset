@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: IcePuddle
   _description: 
-  _icon: {fileID: 21300000, guid: 680d27ceee8f74048b436184fe24db69, type: 3}
+  _icon: {fileID: 21300000, guid: dbf47c2fa3741ea4e9ea6a139d33204c, type: 3}

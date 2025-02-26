@@ -15,7 +15,13 @@ public class IceRolling : Skill
 	[SerializeField] private PhysicalAttack _physicalAttack;
 	[SerializeField] private float _jumprange = 5f;
 	[SerializeField] private float _durationOfJump = 0.3f;
+	[SerializeField] private AudioClip audioClip;
 
+	private static readonly int iceRollingStart = Animator.StringToHash("IceRollingStart");
+	private static readonly int iceRollingEnd = Animator.StringToHash("IceRollingEnd");
+
+	private Animator _animator;
+	private AudioSource _audioSource;
 	private Vector3 _mousePos = Vector2.positiveInfinity;
 	private Vector3 _jumpPos;
 	private Vector3 _lookDir;
@@ -24,16 +30,27 @@ public class IceRolling : Skill
 	private float _jumpCount = 0;
 	private bool _afterJump;
 	private float _afterJumpDelay = 1;
+	private Character _target;
 	//private float TEMPFLOAT = 1;
 
-	protected override bool IsCanCast => true;
+	protected override bool IsCanCast
+	{
+		get
+		{
+			if (_target != null) return Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+			else return true;
+		}
+	}
 
 	protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => 0;
+    protected override int AnimTriggerCast => iceRollingStart;
 
     private void Start()
 	{
+		_animator = GetComponent<Animator>();
+		_audioSource = GetComponent<AudioSource>();
+
 		for (int i = 0; i < _playerLinks.Resources.Count; i++)
 		{
 			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
@@ -106,43 +123,55 @@ public class IceRolling : Skill
 	}
 	//делим на cell size что бы считалось время не за одну единицу юнити, а за наши, клетки
 	*/
-	private void AfterJump()
-	{
-		//_jumpCount = 4;
-		_mousePos = Vector3.positiveInfinity;
-		_lookDir = Vector3.zero;
-		_jumpPos = Vector3.zero;
-	}
+	//private void AfterJump()
+	//{
+	//	//_jumpCount = 4;
+	//	_mousePos = Vector3.positiveInfinity;
+	//	_lookDir = Vector3.zero;
+	//	_jumpPos = Vector3.zero;
+	//}
 
-	private bool CheckObstacleBetween(Vector3 start, Vector3 end)
+	private bool CheckObstacleBetween(Vector3 start, Vector3 end, out Vector3 stopPosition)
 	{
 		Vector3 direction = (end - start).normalized;
 		float distance = Vector3.Distance(start, end);
 
-		RaycastHit[] hits =
-			Physics.BoxCastAll(start, new Vector2(2f, 2f), direction, Quaternion.identity, distance, _obstacle);
+		RaycastHit[] hits = Physics.BoxCastAll(start, new Vector3(0.5f, 0.5f, 0.5f), direction, Quaternion.identity, distance);
 
 		foreach (RaycastHit hit in hits)
 		{
-			_jumpPos = hits[0].point - direction*1.2f;
-			return true;
+			Character hitCharacter = hit.collider.GetComponent<Character>();
+			if (hitCharacter != null && hitCharacter != _playerLinks)
+			{
+				stopPosition = hit.point - direction;
+				HandleJumpEnd();
+				return true;
+			}
+
+			if (((1 << hit.collider.gameObject.layer) & _obstacle) != 0)
+			{
+				stopPosition = hit.point - direction;
+				HandleJumpEnd();
+				return true;
+			}
 		}
 
+		stopPosition = end;
 		return false;
 	}
 
+
 	private void Jump()
 	{
+		Hero.Move.CanMove = false;
 		float actualJumpRange = _jumprange;
 
 		_lookDir = (_mousePos - _playerLinks.transform.position).normalized;
-		//_lookDir = gameObject.transform.rotation.eulerAngles.normalized;
 		Vector3 jumpPos = _lookDir * actualJumpRange + _playerLinks.transform.position;
-		if (CheckObstacleBetween(_playerLinks.transform.position, jumpPos))
+
+		if (CheckObstacleBetween(_playerLinks.transform.position, jumpPos, out Vector3 stopPosition))
 		{
-			_jumpCount = 5;
-			CmdPush(_jumpPos);
-			//������� �� �����������
+			CmdPush(stopPosition);
 		}
 		else
 		{
@@ -151,7 +180,7 @@ public class IceRolling : Skill
 				_jumpCount += 0.2f;
 				actualJumpRange += 0.2f;
 				Vector3 jumpPos2 = _lookDir * actualJumpRange + _playerLinks.transform.position;
-				if (_energy.CurrentValue >= 5 && !CheckObstacleBetween(_playerLinks.transform.position, jumpPos2))
+				if (_energy.CurrentValue >= 5 && !CheckObstacleBetween(_playerLinks.transform.position, jumpPos2, out stopPosition))
 				{
 					_energy.CmdUse(1);
 					jumpPos = jumpPos2;
@@ -165,6 +194,12 @@ public class IceRolling : Skill
 				_afterJump = true;
 			}
 		}
+
+		_target = null;
+		_mousePos = Vector3.positiveInfinity;
+		_lookDir = Vector3.zero;
+		_jumpPos = Vector3.zero;
+		Hero.Move.CanMove = true;
 	}
 
 	/*private void NextJump()
@@ -197,11 +232,25 @@ public class IceRolling : Skill
 		{
 			if (GetMouseButton)
 			{
-				_mousePos = GetMousePoint();
+				if (GetTarget().isCharater)
+				{
+					float distance = Vector3.Distance(_hero.transform.position, _mousePos);
+
+					if (distance <= Radius) _mousePos = GetTarget().character.transform.position;
+
+					else
+					{
+						_target = GetTarget().character;
+						_mousePos = _target.transform.position;
+					}
+				}
+
+				else _mousePos = GetTarget().Position;
 			}
 			yield return null;
 		}
 	}
+
 	protected override IEnumerator DynamicRendererJob(float time = 0.2f)
 	{
 		while (true)
@@ -220,18 +269,39 @@ public class IceRolling : Skill
 
 	protected override void ClearData()
 	{
-		AfterJump();
+		//AfterJump();
 	}
 
 	[Command]
 	private void CmdPush(Vector3 force)
 	{
+		RpcPlayShotSound();
 		_playerLinks.Move.TargetRpcDoMove(force, _durationOfJump);
+		StartCoroutine(WaitForJumpEnd());
+	}
+
+	public void IceRollingCast()
+	{
+		AnimStartCastCoroutine();
+	}
+
+	public void IceRollingEnd()
+	{
+		AnimCastEnded();
 	}
 
 	public void TalentRollingPhys(bool value)
 	{
 		_rollingPhysTalent = value;
+	}
+
+	private void HandleJumpEnd()
+	{
+		if (_animator != null)
+		{
+			_animator.ResetTrigger(iceRollingStart);
+			_animator.SetTrigger(iceRollingEnd);
+		}
 	}
 
 	private void TimerDelay()
@@ -242,5 +312,23 @@ public class IceRolling : Skill
 			_afterJump = false;
 			_physicalAttack.TalentRollingPhys(_afterJump, 0);
 		}
+	}
+
+	private IEnumerator WaitForJumpEnd()
+	{
+		yield return new WaitForSeconds(_durationOfJump);
+		RpcOnJumpEnd();
+	}
+
+	[ClientRpc]
+	private void RpcPlayShotSound()
+	{
+		if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
+	}
+
+	[ClientRpc]
+	private void RpcOnJumpEnd()
+	{
+		HandleJumpEnd();
 	}
 }

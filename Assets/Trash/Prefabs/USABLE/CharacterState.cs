@@ -64,9 +64,11 @@ public class CharacterState : NetworkBehaviour
 	private Character _hero;
 	private List<AbstractCharacterState> currentStates = new List<AbstractCharacterState>();
 	[SerializeField] private StateIcons _stateIcons;
+	[SerializeField] private StateEffects stateEffects;
 
 	public bool invinsible = false;
 
+	public StateEffects StateEffects => stateEffects;
 	public List<AbstractCharacterState> CurrentStates => currentStates;
 	public Character Character => _hero;
 

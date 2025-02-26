@@ -11,6 +11,8 @@ public class MoveComponent : NetworkBehaviour
 	[SerializeField] protected float _currentSpeed = 5;
 	[SerializeField] protected Animator _anim;
 	[SerializeField] protected FlyChecker _flyChecker;
+	[SerializeField] private AudioSource moveAudioSource;
+	[SerializeField] private AudioClip[] moveClips;
 
 	protected float _animMultiplier;
 
@@ -153,6 +155,7 @@ public class MoveComponent : NetworkBehaviour
     {
 		if (!CanMove || _rigidbody == null || IsMoveBlocked == true)
 		{
+			_rigidbody.velocity = Vector3.zero;
 			return;
 		}
 
@@ -208,6 +211,15 @@ public class MoveComponent : NetworkBehaviour
 			yield return null;
 		}
     }
+
+	public void PlayMove()
+	{
+		if (!isOwned) return;
+		if (moveClips.Length == 0 || moveAudioSource == null) return;
+
+		int index = UnityEngine.Random.Range(0, moveClips.Length);
+	    moveAudioSource.PlayOneShot(moveClips[index]);
+	}
 
 	[TargetRpc]
 	public void TargetRpcAddForce(Vector3 vector3)

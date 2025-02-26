@@ -7,7 +7,10 @@ public class PhysicalAttack : AutoAttackSkill
 	//[SerializeField] private float _damage = 8f;
 	[SerializeField] private HeroComponent _playerLinks;
 	[SerializeField] private SeriesOfStrikes _combo;
+	[SerializeField] private AudioClip[] Hits;
 
+	private Animator _animator;
+	private AudioSource _audioSource;
 	private Character _curTarget;
 	private Vector2 _jumpPos;
 	private Energy _energy;
@@ -15,13 +18,20 @@ public class PhysicalAttack : AutoAttackSkill
 	private float _multiplier = 1;
 	private bool _talentActive = false;
 	private bool _rollingPhysTalent = false;
+	private bool _isRightKick = true;
 	private float _stunCount = 0;
+
+	private static readonly int RightKickTrigger = Animator.StringToHash("RightKick");
+	private static readonly int LeftKickTrigger = Animator.StringToHash("LeftKick");
 
 	protected override int AnimTriggerCastDelay => 0;
 
 	protected override int AnimTriggerAutoAttack => 0;
     private void Start()
 	{
+		_animator = GetComponent<Animator>();
+		_audioSource = GetComponent<AudioSource>();
+
 		for (int i = 0; i < _playerLinks.Resources.Count; i++)
 		{
 			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
@@ -37,9 +47,22 @@ public class PhysicalAttack : AutoAttackSkill
 
 	protected override void CastAction()
 	{
-		if(_target != null) 
-		Hit(_target);
+		if (_animator == null) return;
+
+		_isRightKick = !_isRightKick;
+
+		if (_isRightKick) _animator.SetTrigger(RightKickTrigger);
+		else _animator.SetTrigger(LeftKickTrigger);
 	}
+
+	public void ApplyAttackDamage()
+	{
+		if (_target == null) return;
+
+		Hit(_target);
+		CmdPlayShotSound();
+	}
+
 	private void Hit(Character enemy)
 	{
 		Debug.Log(_energy.CurrentValue + " Current value");
@@ -165,6 +188,22 @@ public class PhysicalAttack : AutoAttackSkill
 		MoveComponent tempTargetMove = gameObject.GetComponent<MoveComponent>();
 		
 		tempTargetMove.TargetRpcDoMove(force, 0.5f);
+	}
+
+	[Command]
+	private void CmdPlayShotSound()
+	{
+		RpcPlayShotSound();
+	}
+
+	[ClientRpc]
+	private void RpcPlayShotSound()
+	{
+		if (_audioSource != null && Hits != null)
+		{
+			int index = Random.Range(0, Hits.Length);
+			_audioSource.PlayOneShot(Hits[index]);
+		}
 	}
 
 	private bool CheckObstacleBetween(Vector3 start, Vector3 end)
