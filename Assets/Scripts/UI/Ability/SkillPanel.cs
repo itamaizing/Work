@@ -11,9 +11,7 @@ public class SkillPanel : MonoBehaviour
     [SerializeField] private DraggableIcon _draggableIconPref;
     [SerializeField] private FillAmountOverTime _castLine;
     [SerializeField] private QueuePanel _queuePanel;
-    [SerializeField] private GameObject _abilityNameBox;
-    [SerializeField] private TextMeshProUGUI _abilityNameBoxNameText;
-    [SerializeField] private TextMeshProUGUI _abilityNameBoxDescriptionText;
+    [SerializeField] private AbilityNameBox _abilityNameBox;
 
     private List<DraggableIcon> _skills = new List<DraggableIcon>();
     private Character _currentCharacter;
@@ -102,14 +100,13 @@ public class SkillPanel : MonoBehaviour
 
     private void OnPointerEnterIcon(DraggableIcon skill)
     {
-        _abilityNameBoxNameText.text = skill.Skill.Name;
-        _abilityNameBoxDescriptionText.text = skill.Skill.Description;
-        _abilityNameBox.SetActive(true);
+        _abilityNameBox.Show(skill.Skill);
+        _abilityNameBox.gameObject.SetActive(true);
     }
 
     private void OnPointerExitIcon(DraggableIcon skill)
     {
-        _abilityNameBox.SetActive(false);
+        _abilityNameBox.gameObject.SetActive(false);
     }
 
     private void OnBeginDrag()

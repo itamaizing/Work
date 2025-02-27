@@ -35,7 +35,7 @@ public class CircleArea : MonoBehaviour
 		_damage = damage;
 
 		gameObject.transform.localScale = new Vector3(size, size, 0);
-		_projector.size = new Vector2(size, size);
+		_projector.size = new Vector3(size, size, 4);
 		//_projector.pivot = new Vector3(0, size / 2, 0.01f);
 	}
 

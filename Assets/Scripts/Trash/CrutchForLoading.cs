@@ -29,7 +29,7 @@ public class CrutchForLoading : MonoBehaviour
 	private IEnumerator LoadedJob()
     {
 		yield return new WaitForFixedUpdate();
-		if (this != null && transform != null)
+		if (this != null && transform != null && _character != null)
 		{
 			transform.position = transform.position + Vector3.up;
 			_character.Rigidbody.isKinematic = false;
