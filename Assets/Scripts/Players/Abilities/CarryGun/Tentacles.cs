@@ -1,6 +1,6 @@
-using Mirror;
 using System.Collections;
 using UnityEngine;
+using Mirror;
 using UnityEngine.SceneManagement;
 
 public class Tentacles : Skill
@@ -13,6 +13,7 @@ public class Tentacles : Skill
     private Vector3 _spawnPoint = Vector3.positiveInfinity;
     private Character _target;
     private TentacleProjectile _previewInstance;
+    private Coroutine _radiusUpdateCoroutine;
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
@@ -26,12 +27,23 @@ public class Tentacles : Skill
         Hero.Move.CanMove = true;
 
         if (_previewInstance != null) Destroy(_previewInstance.gameObject);
+
+        if (_radiusUpdateCoroutine != null)
+        {
+            StopCoroutine(_radiusUpdateCoroutine);
+            _radiusUpdateCoroutine = null;
+        }
     }
 
     protected override IEnumerator PrepareJob()
     {
         Vector3 mousePositionStart = GetMousePoint();
+
         _previewInstance = Instantiate(tentaclesPreview, mousePositionStart, Quaternion.identity);
+        _previewInstance.HeroToTentacle = _player;
+
+        _skillRender.DrawRadius(_radius);
+        _radiusUpdateCoroutine = StartCoroutine(UpdateRadiusColor());
 
         while (_target == null)
         {
@@ -80,27 +92,44 @@ public class Tentacles : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_target != null) CmdSpawnTentacles(_spawnPoint, _target.gameObject);
+        if (_target != null) CmdSpawnTentacles(_spawnPoint, _target);
 
         ClearData();
         yield return null;
     }
 
+    private IEnumerator UpdateRadiusColor()
+    {
+        while (true)
+        {
+            bool isPreviewInsideRadius = false;
+
+            if (_previewInstance != null)
+            {
+                float distanceToPreview = Vector3.Distance(transform.position, _previewInstance.transform.position);
+                isPreviewInsideRadius = distanceToPreview <= _radius;
+            }
+
+            _skillRender.DrawRadiusColor(_radius, isPreviewInsideRadius ? Color.green : Color.red);
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+
     [Command]
-    private void CmdSpawnTentacles(Vector3 position, GameObject target)
+    private void CmdSpawnTentacles(Vector3 position, Character target)
     {
         TentacleProjectile tentacles = Instantiate(tentaclesPrefab, position, Quaternion.identity);
         SceneManager.MoveGameObjectToScene(tentacles.gameObject, _hero.NetworkSettings.MyRoom);
 
-        tentacles.Init(_player.gameObject, target, position, target.transform.position, true, 0);
+        tentacles.Init(_player, target, position, target.transform.position, true, 0);
 
         NetworkServer.Spawn(tentacles.gameObject);
         RpcInitTentacles(tentacles.gameObject, target, position);
     }
 
     [ClientRpc]
-    private void RpcInitTentacles(GameObject tentacleObject, GameObject target, Vector3 position)
+    private void RpcInitTentacles(GameObject tentacleObject, Character target, Vector3 position)
     {
-        tentacleObject.GetComponent<TentacleProjectile>().Init(_player.gameObject, target, position, target.transform.position, true, 0);
+        tentacleObject.GetComponent<TentacleProjectile>().Init(_player, target, position, target.transform.position, true, 0);
     }
 }

@@ -4,8 +4,9 @@ using UnityEngine;
 public class TentacleProjectile : MonoBehaviour
 {
     [SerializeField] private bool _isPreview;
+    [SerializeField] private DrawCircleTentacle _drawCircle;
+    [SerializeField] private Character _heroToTentacle;
 
-    private DrawCircle _drawCircle;
     private Character _player;
     private Character _target;
     private Vector3 _startPosition;
@@ -13,19 +14,25 @@ public class TentacleProjectile : MonoBehaviour
     private bool _isAttackingPsiEnergyActive;
     private float _currentDamage;
     private float _grabDuration = 1.2f;
+    private float _radius = 3f;
 
     private bool _isCollidedWithOtherCharacter = false;
+    private Coroutine _radiusUpdateCoroutine;
+
+    public Character HeroToTentacle { get => _heroToTentacle; set => _heroToTentacle = value; }
 
     private void Awake()
     {
-        _drawCircle = GetComponent<DrawCircle>();
+        _drawCircle = GetComponent<DrawCircleTentacle>();
     }
 
     private void Start()
     {
         if (_drawCircle != null)
         {
-            _drawCircle.Draw(3f);
+            _drawCircle.Draw(_radius);
+            _drawCircle.SetColor(Color.red);
+            _radiusUpdateCoroutine = StartCoroutine(UpdateRadiusColor());
         }
     }
 
@@ -35,13 +42,18 @@ public class TentacleProjectile : MonoBehaviour
         {
             _drawCircle.Clear();
         }
+
+        if (_radiusUpdateCoroutine != null)
+        {
+            StopCoroutine(_radiusUpdateCoroutine);
+        }
     }
 
-    public void Init(GameObject player, GameObject target, Vector3 startPosition, Vector3 endPosition,
+    public void Init(Character player, Character target, Vector3 startPosition, Vector3 endPosition,
         bool isAttackingPsiEnergyActive, float currentDamage)
     {
-        _player = player.GetComponent<Character>();
-        _target = target.GetComponent<Character>();
+        _player = player;
+        _target = target;
         _startPosition = startPosition;
         _endPosition = endPosition;
         _isAttackingPsiEnergyActive = isAttackingPsiEnergyActive;
@@ -116,6 +128,27 @@ public class TentacleProjectile : MonoBehaviour
         if (other.gameObject.TryGetComponent<Character>(out Character character) && character != _target)
         {
             _isCollidedWithOtherCharacter = true;
+        }
+    }
+
+    private IEnumerator UpdateRadiusColor()
+    {
+        while (true)
+        {
+            bool hasOtherCharacterInRadius = false;
+            Collider[] colliders = Physics.OverlapSphere(transform.position, _radius);
+
+            foreach (var collider in colliders)
+            {
+                if (collider.TryGetComponent<Character>(out Character character) && character != HeroToTentacle)
+                {
+                    hasOtherCharacterInRadius = true;
+                    break;
+                }
+            }
+
+            _drawCircle.SetColor(hasOtherCharacterInRadius ? Color.green : Color.red);
+            yield return new WaitForSeconds(0.1f);
         }
     }
 }

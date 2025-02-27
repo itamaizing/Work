@@ -7,6 +7,7 @@ using UnityEngine.UIElements;
 
 public class SkillRenderer : NetworkBehaviour
 {
+    [SerializeField] private Character hero;
     [SerializeField] private DrawCircle _circle;
     [SerializeField] private CircleArea _areaPref;
     [SerializeField] private SphereArea _damageZonePref;
@@ -30,9 +31,10 @@ public class SkillRenderer : NetworkBehaviour
     private Coroutine _drawLineCoroutine;
     private Coroutine _drawAreaCoroutine;
     private Coroutine _drawClosestTargetCoroutine;
+    private Coroutine _drawRadiusCoroutine;
 
-	//public SphereArea TempDamageZone => _tempDamageZone;
-	public CircleArea TempDamageZone => _tempArea;
+    //public SphereArea TempDamageZone => _tempDamageZone;
+    public CircleArea TempDamageZone => _tempArea;
 
 	private Character _tempTarget;
 
@@ -80,11 +82,19 @@ public class SkillRenderer : NetworkBehaviour
     public void DrawRadius(float radius)
     {
         _circle.Draw(radius);
+        if (_drawRadiusCoroutine != null)
+            StopCoroutine(_drawRadiusCoroutine);
+        _drawRadiusCoroutine = StartCoroutine(DrawRadiusJob(radius));
     }
 
     public void StopDrawRadius()
     {
         _circle.Clear();
+        if (_drawRadiusCoroutine != null)
+        {
+            StopCoroutine(_drawRadiusCoroutine);
+            _drawRadiusCoroutine = null;
+        }
     }
 
     public void DrawRadiusColor(float radius, Color color) 
@@ -178,6 +188,28 @@ public class SkillRenderer : NetworkBehaviour
 		Vector3 dir = worldPosition - gameObject.transform.position;
 		float angle = Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(90, - angle + 90, 0);
+    }
+
+    private IEnumerator DrawRadiusJob(float radius)
+    {
+        while (true)
+        {
+            bool hasEnemyInRadius = false;
+
+            Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
+
+            foreach (var collider in colliders)
+            {
+                if (collider.TryGetComponent<Character>(out Character character) && character != hero)
+                {
+                    hasEnemyInRadius = true;
+                    break;
+                }
+            }
+
+            _circle.SetColor(hasEnemyInRadius ? _colorForAllies : _colorForEnemies);
+            yield return new WaitForSeconds(0.1f);
+        }
     }
 
     private IEnumerator DrawLineJob(float length, float width, Damage damage,  LayerMask layerMask, AbilityLineRenderer line)

@@ -3715,6 +3715,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: IceDeath (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 465973236533830398, guid: f7c4989fc7d96e64e898c577137242d1, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 465973236533830398, guid: f7c4989fc7d96e64e898c577137242d1, type: 3}
+      propertyPath: m_TagString
+      value: Enemies
+      objectReference: {fileID: 0}
     - target: {fileID: 526333743906868130, guid: f7c4989fc7d96e64e898c577137242d1, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0

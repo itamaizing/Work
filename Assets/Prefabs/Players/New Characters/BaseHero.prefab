@@ -30707,6 +30707,7 @@ MonoBehaviour:
   _colorForEnemies: {r: 1, g: 0, b: 0, a: 1}
   _colorForEnd: {r: 1, g: 0, b: 0, a: 1}
   _colorForStart: {r: 0, g: 1, b: 0.08237815, a: 1}
+  hero: {fileID: 5630810179120932799}
 --- !u!1 &8770370089772824140
 GameObject:
   m_ObjectHideFlags: 0

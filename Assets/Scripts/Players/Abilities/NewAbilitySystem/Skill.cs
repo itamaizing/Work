@@ -142,7 +142,6 @@ public abstract class Skill : NetworkBehaviour
     }
 
     public Transform TempTargetForDamage => _tempTargetForDamage;
-    public List<SkillEnergyCost> SkillEnergyCosts => _skillEnergyCosts;
     public bool GetMouseButton { get => _isClick || _isShiftClick || _isCtrlClick || _isSpaceClick; }
     public bool IsSubjectToGlobalCooldownTime { get => _isSubjectToGlobalCooldownTime; }
     public Character Hero { get => _hero; }

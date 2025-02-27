@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8386733040786187452}
   - component: {fileID: 3181529269723519325}
   - component: {fileID: 6610701520137683841}
-  - component: {fileID: -167249098257363516}
+  - component: {fileID: 1848640040745967466}
   - component: {fileID: -6260384404529627386}
   - component: {fileID: -4212263465524698925}
   m_Layer: 0
@@ -178,7 +178,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isPreview: 1
---- !u!114 &-167249098257363516
+  _drawCircle: {fileID: 1848640040745967466}
+  _heroToTentacle: {fileID: 0}
+--- !u!114 &1848640040745967466
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -187,12 +189,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 2356317950569320208}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6527aa781683d1643a6540f0c1b1306c, type: 3}
+  m_Script: {fileID: 11500000, guid: 2300149febaca1d4a9a6c7a9c404de01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   isActive: 0
   segments: 64
-  lineColor: {r: 0, g: 1, b: 0.017884493, a: 1}
+  lineColor: {r: 0, g: 1, b: 0.09084773, a: 1}
   _projector: {fileID: 5829922874203666092}
 --- !u!114 &-6260384404529627386
 MonoBehaviour:
@@ -290,7 +292,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: fc9ce4228b8c3f6429f31b1e515750df, type: 2}
+  m_Material: {fileID: 2100000, guid: 7e74ab796f81bbf48bc73104b055ccc9, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 1
   m_StartAngleFade: 180
