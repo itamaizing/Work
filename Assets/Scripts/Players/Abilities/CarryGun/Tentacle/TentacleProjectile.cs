@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class TentacleProjectile : MonoBehaviour
 {
+    [SerializeField] private bool _isPreview;
+
     private DrawCircle _drawCircle;
     private Character _player;
     private Character _target;
@@ -10,7 +12,7 @@ public class TentacleProjectile : MonoBehaviour
     private Vector3 _endPosition;
     private bool _isAttackingPsiEnergyActive;
     private float _currentDamage;
-    private float _grabDuration = 1.2f; 
+    private float _grabDuration = 1.2f;
 
     private bool _isCollidedWithOtherCharacter = false;
 
@@ -52,9 +54,7 @@ public class TentacleProjectile : MonoBehaviour
 
     public void StartTentaclesGrab()
     {
-        Debug.Log("TentacleProjectile: StartTentaclesGrab");
-
-        if (_target != null)
+        if (_target != null && !_isPreview)
         {
             _target.Move.CanMove = false;
             StartCoroutine(PullTarget());
@@ -88,7 +88,6 @@ public class TentacleProjectile : MonoBehaviour
 
     private void HoldTarget()
     {
-        Debug.Log("TentacleProjectile: HoldTarget");
         if (_target != null)
         {
             _target.Move.CanMove = false;

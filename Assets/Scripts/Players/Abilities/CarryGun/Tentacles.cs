@@ -30,11 +30,10 @@ public class Tentacles : Skill
 
     protected override IEnumerator PrepareJob()
     {
-        _isPlacingTentacles = true;
         Vector3 mousePositionStart = GetMousePoint();
         _previewInstance = Instantiate(tentaclesPreview, mousePositionStart, Quaternion.identity);
 
-        while (true && !Disactive)
+        while (_target == null)
         {
             Vector3 mousePosition = GetMousePoint();
             float distance = Vector3.Distance(mousePosition, transform.position);
@@ -43,25 +42,13 @@ public class Tentacles : Skill
 
             if (GetMouseButton && distance <= Radius)
             {
-                _spawnPoint = _previewInstance.transform.position;
-                Hero.Move.CanMove = false;
-                break;
-            }
-
-            yield return null;
-        }
-
-        while (_target == null)
-        {
-            if (GetMouseButton)
-            {
                 if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hitTarget))
                 {
-                    float distanceTarget = Vector3.Distance(hitTarget.transform.position, _spawnPoint);
-
-                    if (hitTarget.collider.TryGetComponent<Character>(out Character character) && distanceTarget <= 3f)
+                    if (hitTarget.collider.TryGetComponent<Character>(out Character character))
                     {
                         _target = character;
+                        _previewInstance.transform.SetParent(_target.transform);
+                        yield return new WaitForSeconds(1f);
                         break;
                     }
                 }
@@ -70,8 +57,25 @@ public class Tentacles : Skill
             yield return null;
         }
 
-        if (_previewInstance != null) Destroy(_previewInstance.gameObject);
+        while (true)
+        {
+            if (GetMouseButton)
+            {
+                Vector3 mousePosition = GetMousePoint();
+                float distanceToTarget = Vector3.Distance(mousePosition, _target.transform.position);
+                float distanceToCaster = Vector3.Distance(mousePosition, transform.position);
 
+                if (distanceToTarget <= 3f && distanceToCaster <= Radius)
+                {
+                    _spawnPoint = mousePosition;
+                    break;
+                }
+            }
+
+            yield return null;
+        }
+
+        if (_previewInstance != null) Destroy(_previewInstance.gameObject);
     }
 
     protected override IEnumerator CastJob()

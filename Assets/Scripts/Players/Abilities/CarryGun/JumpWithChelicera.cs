@@ -8,7 +8,7 @@ public class JumpWithChelicera : Skill
     [SerializeField] private CheliceraStrike _cheliceraeStrike;
 
     [SerializeField] private float _distanceJump;
-    [SerializeField] private float _durationJump;
+    //private float _durationJump;
 
     private Animator _animator;
     private Character _target;
@@ -73,6 +73,19 @@ public class JumpWithChelicera : Skill
         yield return null;
     }
 
+    private IEnumerator WaitForJumpEnd()
+    {
+        float timeDelay = _distanceJump / 20;
+
+        yield return new WaitForSeconds(timeDelay);
+
+        RpcHandleJumpAnimEnd();
+
+        yield return new WaitForSeconds(timeDelay);
+
+        RpcHandleJumpEnd();
+    }
+
     private bool CheckCanCast()
     {
         return _target != null && Vector2.Distance(_mousePosition, transform.position) <= Radius &&
@@ -93,7 +106,6 @@ public class JumpWithChelicera : Skill
         Vector3 direction = (_target.transform.position - transform.position).normalized;
 
         CmdExecuteJump(_player.gameObject, _target.gameObject, direction, _additionalDamageInPercentage);
-
         Invoke(nameof(ResetBool), 1f);
     }
 
@@ -116,7 +128,6 @@ public class JumpWithChelicera : Skill
 
     public void JumpEnd()
     {
-        Hero.Move.CanMove = true;
         AnimCastEnded();
     }
 
@@ -126,18 +137,25 @@ public class JumpWithChelicera : Skill
         _animator.applyRootMotion = true;
     }
 
-    public void ApplyRootFalse()
+    public void JumpEndSpeedAnim()
     {
-        _animator.applyRootMotion = false;
+        float timeDelay = _distanceJump / 10;
+        _player.Animator.SetFloat("JumpEndSpeed", 1f / timeDelay);
     }
 
-    private void HandleJumpEnd()
+    private void HandleJumpAnimEnd()
     {
         if (_animator != null)
         {
             _animator.ResetTrigger(jumpStart);
             _animator.SetTrigger(jumpEnd);
         }
+    }
+
+    private void HandleJumpEnd()
+    {
+        _animator.applyRootMotion = false;
+        Hero.Move.CanMove = true;
     }
 
     [Command]
@@ -148,13 +166,18 @@ public class JumpWithChelicera : Skill
 
         Vector3 jumpPosition = Vector3.MoveTowards(targetCharacter.transform.position, player.transform.position, _minDistance + 0.5f);
 
-        playerMove.TargetRpcDoMove(jumpPosition, _durationJump);
-
-        RpcHandleJumpEnd();
+        playerMove.TargetRpcDoMove(jumpPosition, _distanceJump / 10);
+        StartCoroutine(WaitForJumpEnd());
         DamageDeal(target, additionalDamage);
     }
 
-    [ClientRpc] private void RpcHandleJumpEnd()
+    [ClientRpc] private void RpcHandleJumpAnimEnd()
+    {
+        HandleJumpAnimEnd();
+    }
+
+    [ClientRpc]
+    private void RpcHandleJumpEnd()
     {
         HandleJumpEnd();
     }

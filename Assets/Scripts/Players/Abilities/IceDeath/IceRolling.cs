@@ -134,31 +134,32 @@ public class IceRolling : Skill
 	{
 		Vector3 direction = (end - start).normalized;
 		float distance = Vector3.Distance(start, end);
+		bool obstacleHit = false;
 
-		RaycastHit[] hits = Physics.BoxCastAll(start, new Vector3(0.5f, 0.5f, 0.5f), direction, Quaternion.identity, distance);
+		RaycastHit[] hits = Physics.BoxCastAll(start, new Vector3(0.05f, 0.05f, 0.05f), direction, Quaternion.identity, distance);
+
+		stopPosition = end;
 
 		foreach (RaycastHit hit in hits)
 		{
 			Character hitCharacter = hit.collider.GetComponent<Character>();
 			if (hitCharacter != null && hitCharacter != _playerLinks)
 			{
-				stopPosition = hit.point - direction;
-				HandleJumpEnd();
-				return true;
+				stopPosition = hit.point - direction * 0.5f;
+				obstacleHit = true;
+				break;
 			}
 
 			if (((1 << hit.collider.gameObject.layer) & _obstacle) != 0)
 			{
-				stopPosition = hit.point - direction;
-				HandleJumpEnd();
-				return true;
+				stopPosition = hit.point - direction * 0.5f;
+				obstacleHit = true;
+				break;
 			}
 		}
 
-		stopPosition = end;
-		return false;
+		return obstacleHit;
 	}
-
 
 	private void Jump()
 	{
