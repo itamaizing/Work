@@ -16,7 +16,7 @@ public class InputHandler : MonoBehaviour
 
 	public Vector2 MovementVector => _movementVector;
 
-    public StandardInput InputActions { get => _inputActions; set => _inputActions = value; }
+	public StandardInput InputActions { get => _inputActions; set => _inputActions = value; }
 
 	#region Events
 
@@ -35,6 +35,7 @@ public class InputHandler : MonoBehaviour
 	public static UnityAction OnSpacetLeftMouseCanceled = delegate { };
 	public static UnityAction<float> ScrollMouse = delegate { };
 	public static UnityAction ShowMenu = delegate { };
+	public static UnityAction ShowSource = delegate { };
 
 	public static UnityAction OnFirstAbility = delegate { };
 	public static UnityAction OnSecondAbility = delegate { };
@@ -84,13 +85,14 @@ public class InputHandler : MonoBehaviour
 		_inputActions.GameplayMap.SpaceMouse.canceled += i => OnSpacetLeftMouseCanceled?.Invoke();
 		_inputActions.GameplayMap.ScrollMouse.performed += i => ScrollMouse?.Invoke(i.ReadValue<float>());
 		_inputActions.GameplayMap.ShowMenu.performed += i => ShowMenu?.Invoke();
+		_inputActions.GameplayMap.ShowSource.performed += i => ShowSource?.Invoke();
 
 		// spells 1-2-3-4-5-6-7-8
 		_inputActions.GameplayMap.Spell1.performed += i => OnFirstAbility?.Invoke();
 		_inputActions.GameplayMap.Spell2.performed += i => OnSecondAbility?.Invoke();
 		_inputActions.GameplayMap.Spell3.performed += i => OnThirdAbility?.Invoke();
 		_inputActions.GameplayMap.Spell4.performed += i => OnFourthAbility?.Invoke();
-		_inputActions.GameplayMap.Spell5.performed += i=> OnFifthAbility?.Invoke();
+		_inputActions.GameplayMap.Spell5.performed += i => OnFifthAbility?.Invoke();
 		_inputActions.GameplayMap.Spell6.performed += i => OnSixthAbility?.Invoke();
 		_inputActions.GameplayMap.Spell7.performed += i => OnSeventhAbility?.Invoke();
 		_inputActions.GameplayMap.Spell8.performed += i => OnEighthAbility?.Invoke();

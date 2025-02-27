@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
-public partial class @StandardInput: IInputActionCollection2, IDisposable
+public partial class @StandardInput : IInputActionCollection2, IDisposable
 {
     public InputActionAsset asset { get; }
     public @StandardInput()
@@ -241,6 +241,15 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ShowSource"",
+                    ""type"": ""Button"",
+                    ""id"": ""ae4f2201-2591-45de-afdc-e1c7c5601321"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
                     ""initialStateCheck"": false
                 },
                 {
@@ -660,6 +669,17 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
                     ""action"": ""SpaceMouse"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f76ddb06-977e-4a58-aab6-f69283bda8c6"",
+                    ""path"": ""<Keyboard>/backquote"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShowSource"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -692,6 +712,7 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
         m_GameplayMap_ShiftMouse = m_GameplayMap.FindAction("ShiftMouse", throwIfNotFound: true);
         m_GameplayMap_ScrollMouse = m_GameplayMap.FindAction("ScrollMouse", throwIfNotFound: true);
         m_GameplayMap_ShowMenu = m_GameplayMap.FindAction("ShowMenu", throwIfNotFound: true);
+        m_GameplayMap_ShowSource = m_GameplayMap.FindAction("ShowSource", throwIfNotFound: true);
         m_GameplayMap_SpaceMouse = m_GameplayMap.FindAction("SpaceMouse", throwIfNotFound: true);
     }
 
@@ -778,6 +799,7 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_GameplayMap_ShiftMouse;
     private readonly InputAction m_GameplayMap_ScrollMouse;
     private readonly InputAction m_GameplayMap_ShowMenu;
+    private readonly InputAction m_GameplayMap_ShowSource;
     private readonly InputAction m_GameplayMap_SpaceMouse;
     public struct GameplayMapActions
     {
@@ -807,6 +829,7 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
         public InputAction @ShiftMouse => m_Wrapper.m_GameplayMap_ShiftMouse;
         public InputAction @ScrollMouse => m_Wrapper.m_GameplayMap_ScrollMouse;
         public InputAction @ShowMenu => m_Wrapper.m_GameplayMap_ShowMenu;
+        public InputAction @ShowSource => m_Wrapper.m_GameplayMap_ShowSource;
         public InputAction @SpaceMouse => m_Wrapper.m_GameplayMap_SpaceMouse;
         public InputActionMap Get() { return m_Wrapper.m_GameplayMap; }
         public void Enable() { Get().Enable(); }
@@ -889,6 +912,9 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
             @ShowMenu.started += instance.OnShowMenu;
             @ShowMenu.performed += instance.OnShowMenu;
             @ShowMenu.canceled += instance.OnShowMenu;
+            @ShowSource.started += instance.OnShowSource;
+            @ShowSource.performed += instance.OnShowSource;
+            @ShowSource.canceled += instance.OnShowSource;
             @SpaceMouse.started += instance.OnSpaceMouse;
             @SpaceMouse.performed += instance.OnSpaceMouse;
             @SpaceMouse.canceled += instance.OnSpaceMouse;
@@ -968,6 +994,9 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
             @ShowMenu.started -= instance.OnShowMenu;
             @ShowMenu.performed -= instance.OnShowMenu;
             @ShowMenu.canceled -= instance.OnShowMenu;
+            @ShowSource.started -= instance.OnShowSource;
+            @ShowSource.performed -= instance.OnShowSource;
+            @ShowSource.canceled -= instance.OnShowSource;
             @SpaceMouse.started -= instance.OnSpaceMouse;
             @SpaceMouse.performed -= instance.OnSpaceMouse;
             @SpaceMouse.canceled -= instance.OnSpaceMouse;
@@ -1014,6 +1043,7 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
         void OnShiftMouse(InputAction.CallbackContext context);
         void OnScrollMouse(InputAction.CallbackContext context);
         void OnShowMenu(InputAction.CallbackContext context);
+        void OnShowSource(InputAction.CallbackContext context);
         void OnSpaceMouse(InputAction.CallbackContext context);
     }
 }
