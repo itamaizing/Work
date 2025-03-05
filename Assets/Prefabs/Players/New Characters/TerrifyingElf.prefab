@@ -9905,6 +9905,7 @@ MonoBehaviour:
   extendedRadius: 5
   maxGhosts: 2
   ghostPrefab: {fileID: 1871163040516354185, guid: 4db2764b76e857542a0c6ea889e2db7c, type: 3}
+  ghostPrefabPreview: {fileID: 3154541333273919106, guid: 4bf1bb117fbb59241955bd674f799741, type: 3}
   way: {fileID: 5194879064547813366}
   cooldownGhostShotActive: 0
   aCTeleportToGhost: {fileID: 8300000, guid: 7ec01dc7a3340f84ca423f258f2981f6, type: 3}

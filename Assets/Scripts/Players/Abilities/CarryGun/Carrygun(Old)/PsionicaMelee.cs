@@ -1,94 +1,126 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static HealthComponent;
+using Mirror;
 
-public class PsionicaMelee : MonoBehaviour
+public class PsionicaMelee : Resource
 {
-    public float Psionica;
-    public GameObject ManaBar;
-    public GameObject ManaBar2;
-    public Text text;
+    public Slider basePsionicsSlider;
     public float AbsorptionChance = 0.1f;
+    private HeroComponent _hero;
+
+    private const float BasePsionicaThreshold = 30f;
+    private const float BaseSliderFillPercent = 0.3f;
+    private const float RemainingSliderFillPercent = 0.7f;
 
     private float timer = 0f;
     private bool isTimerActive = false;
+    private const float PsionicaDecayTime = 12f;
+    private const float MaxEnergyThreshold = 100f;
+
+    public float Psionica { get => CurrentValue; set => CurrentValue = value; }
 
     private void Start()
     {
-        Psionica = 0f;
-    }
+        _hero = GetComponent<HeroComponent>();
 
-    private void Update()
-    {
-        UpdateManaBars();
-
-        text.text = "Псионика: " + Psionica.ToString();
-
-        if (isTimerActive)
+        if (_hero != null)
         {
-            timer += Time.deltaTime;
+            MaxValue = _hero.Data.GetAttributeValue(AttributeNames.Health);
 
-            if (timer >= 6f)
+            if (_hero.DamageTracker != null)
             {
-                ResetPsionicaTimer();
+                _hero.DamageTracker.OnDamageTracked += OnDamageDealt;
             }
         }
     }
 
-    private void UpdateManaBars()
+    private void OnDestroy()
     {
-        //float health = GetComponent<HealthComponent>()._currentHealth;
-
-        if (Psionica <= 30f)
+        if (_hero != null && _hero.DamageTracker != null)
         {
-            UpdateManaBar(ManaBar2, 0f);
-            UpdateManaBar(ManaBar, Psionica / 30.0f);
+            _hero.DamageTracker.OnDamageTracked -= OnDamageDealt;
+        }
+    }
+
+    private void Update()
+    {
+        UpdatePsionicaBar();
+
+        if (isTimerActive)
+        {
+            timer += Time.deltaTime;
+            if (timer >= PsionicaDecayTime)
+            {
+                ResetPsionica();
+            }
+        }
+    }
+
+    private void UpdatePsionicaBar()
+    {
+        float normalizedValue = 0f;
+
+        if (CurrentValue <= BasePsionicaThreshold)
+        {
+            normalizedValue = (CurrentValue / BasePsionicaThreshold) * BaseSliderFillPercent;
         }
         else
         {
-            UpdateManaBar(ManaBar, 1.0f);
-            //float newScaleX = Psionica / (health - 30);
-            //UpdateManaBar(ManaBar2, Mathf.Clamp01(newScaleX));
+            float remainingValue = (CurrentValue - BasePsionicaThreshold) / (MaxValue - BasePsionicaThreshold);
+            normalizedValue = BaseSliderFillPercent + (remainingValue * RemainingSliderFillPercent);
+        }
+
+        basePsionicsSlider.value = normalizedValue;
+    }
+
+    private void OnDamageDealt(Damage damage, GameObject target)
+    {
+        if (damage.Type == DamageType.Physical)
+        {
+            Add(damage.Value);
+            CurrentValue = Mathf.Min(CurrentValue, MaxValue);
+
+            if (CurrentValue >= MaxEnergyThreshold)
+            {
+                isTimerActive = true;
+                timer = 0f;
+            }
+
+            UpdatePsionicaBar();
         }
     }
 
-    private void UpdateManaBar(GameObject manaBar, float scaleX)
+    public void UsePsionica(float value)
     {
-        manaBar.transform.localScale = new Vector3(scaleX, 1.0f, 1.0f);
+        TryUse(value);
+        UpdatePsionicaBar();
     }
 
-    private void ResetPsionicaTimer()
+    public void PsionicaAbsorption(ref float modifiedDamage)
     {
-        Psionica = 0f;
-        timer = 0f;
+        if (CurrentValue > 0)
+        {
+            float absorptionAmount = Mathf.Min(CurrentValue, modifiedDamage);
+            UsePsionica(absorptionAmount);
+            modifiedDamage = (modifiedDamage - absorptionAmount) + absorptionAmount - ((modifiedDamage - absorptionAmount) + absorptionAmount) * AbsorptionChance;
+        }
+    }
+
+    private void ResetPsionica()
+    {
+        CurrentValue = 0;
         isTimerActive = false;
+        timer = 0f;
+        UpdatePsionicaBar();
     }
 
+    #region Old
     public void MakePsionica(float damageValue)
     {
-        timer = 0f;
-        isTimerActive = true;
 
         Psionica += damageValue;
         //float health = GetComponent<HealthComponent>()._currentHealth;
         //Psionica = Mathf.Min(Psionica, health);
     }
-
-    public void UsePsionica(float value)
-    {
-        Psionica -= value;
-        Psionica = Mathf.Max(Psionica, 0);
-    }
-
-    public void PsionicaAbsorption(ref float modifiedDamage)
-    {
-        if (Psionica > 0)
-        {
-            float absorptionAmount = Mathf.Min(Psionica, modifiedDamage);
-            UsePsionica(absorptionAmount);
-            modifiedDamage = (modifiedDamage - absorptionAmount) + absorptionAmount - ((modifiedDamage - absorptionAmount) + absorptionAmount) * AbsorptionChance;
-        }
-    }
+    #endregion
 }

@@ -1,85 +1,75 @@
 using Mirror;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AttackingPsionicEnergy : Energy
 {
-    [SerializeField] private BasePsionicEnergy _basePsionicEnergy;
+    [SerializeField] private Slider attackingPsionicsSlider;
 
-    private float _maxAttackingPsiEnergy = 30f;
-    private float _maxValueEnergyBar = 100f;
-    private float _currentAttackingPsiEnergy;
+    private const float _maxAttackingPsiEnergy = 30f;
+    private const float _timeAttackingPsiEnergy = 6f;
 
-    private float _timeAttackingPsiEnergy;
-    private float _startTimeAttackingPsiEnergy = 6f;
+    private float _remainingTime;
+    private bool _isAttackingPsiActive = false;
 
-    private bool _isAttackingPsiClient = false;
-    
     private Coroutine _attackingPsiEnergyCoroutine;
 
-    public float CurrentAttackingPsiEnergy { get => CurrentValue; set => CurrentValue = value; }
-    public float MaxAttackingPsiEnergy { get => _maxAttackingPsiEnergy; set => _maxAttackingPsiEnergy = value; }
-    public bool IsAttackingPsiEnergy { get => _isAttackingPsiClient; set => _isAttackingPsiClient = value; }
+    public float MaxAttackingPsiEnergy => _maxAttackingPsiEnergy;
+    public bool IsAttackingPsiEnergy => _isAttackingPsiActive;
 
-    public void EnabledAttackingPsiEnergy()
+    private void Start()
     {
-        _timeAttackingPsiEnergy = _startTimeAttackingPsiEnergy;
+        MaxValue = _maxAttackingPsiEnergy;
+        UpdateAttackingEnergyBar();
+    }
 
-        _currentAttackingPsiEnergy += _basePsionicEnergy.CurrentPsiEnergy;
+    private void Update()
+    {
+        UpdateAttackingEnergyBar();
+    }
 
-        if (_currentAttackingPsiEnergy > _maxAttackingPsiEnergy)
-        {
-            CurrentValue = _maxAttackingPsiEnergy;
-        }
-        else
-        {
-            CurrentValue = _currentAttackingPsiEnergy;
-        }
+    public void ReceiveAttackingEnergy(float transferAmount)
+    {
+        _remainingTime = _timeAttackingPsiEnergy;
 
-        _basePsionicEnergy.ReducingPsiEnergy(CurrentValue);
+        Add(transferAmount);
+        CurrentValue = Mathf.Min(CurrentValue, _maxAttackingPsiEnergy);
 
         RpcAttackingPsiEnergyChanged(true, CurrentValue);
+        UpdateAttackingEnergyBar();
 
         if (_attackingPsiEnergyCoroutine != null)
         {
             StopCoroutine(_attackingPsiEnergyCoroutine);
-            _attackingPsiEnergyCoroutine = null;
-            _timeAttackingPsiEnergy = _startTimeAttackingPsiEnergy;
         }
-
         _attackingPsiEnergyCoroutine = StartCoroutine(AttackingPsiEnergyJob());
-    }
-
-    private void Start()
-    {
-        MaxValue = _maxValueEnergyBar;
     }
 
     private IEnumerator AttackingPsiEnergyJob()
     {
-        while (_timeAttackingPsiEnergy > 0)
+        while (_remainingTime > 0)
         {
-            _timeAttackingPsiEnergy -= Time.deltaTime;
-            if (_timeAttackingPsiEnergy < 0 || CurrentValue <= 0)
-            {
-                CurrentValue = 0;
-                _currentAttackingPsiEnergy = 0;
-
-                RpcAttackingPsiEnergyChanged(false, 0f);
-
-                yield break;
-            }   
-            yield return null;   
+            _remainingTime -= Time.deltaTime;
+            yield return null;
         }
+
+        CurrentValue = 0;
+        _isAttackingPsiActive = false;
+
+        RpcAttackingPsiEnergyChanged(false, 0f);
+        UpdateAttackingEnergyBar();
+    }
+
+    private void UpdateAttackingEnergyBar()
+    {
+        attackingPsionicsSlider.value = CurrentValue / _maxAttackingPsiEnergy;
     }
 
     [ClientRpc]
-    private void RpcAttackingPsiEnergyChanged(bool isAttackingPsionicEnergy, float currentAttackingPsiEnergy)
+    private void RpcAttackingPsiEnergyChanged(bool isActive, float energyValue)
     {
-        _isAttackingPsiClient = isAttackingPsionicEnergy;
-
-        _currentAttackingPsiEnergy = currentAttackingPsiEnergy;
+        _isAttackingPsiActive = isActive;
+        UpdateAttackingEnergyBar();
     }
-
-    
 }

@@ -18,6 +18,7 @@ public class SkillRenderer : NetworkBehaviour
     [SerializeField] private Color _colorForEnd;
     [SerializeField] private Color _colorForStart;
 
+    private bool _isOverrideClosestTarget = false;
     //private SphereArea _tempDamageZone;
     private CircleArea _tempArea;
     private float _lineStartLength;
@@ -35,8 +36,17 @@ public class SkillRenderer : NetworkBehaviour
 
     //public SphereArea TempDamageZone => _tempDamageZone;
     public CircleArea TempDamageZone => _tempArea;
+    public bool IsOverrideClosestTarget
+    {
+        get => _isOverrideClosestTarget;
+        set
+        {
+            _isOverrideClosestTarget = value;
+            if (_isOverrideClosestTarget) StopDrawClosestTarget();
+        }
+    }
 
-	private Character _tempTarget;
+    private Character _tempTarget;
 
     [Command]
     public void CmdDrawDamageZone(Vector3 position, float radius, Damage damage, GameObject player)
@@ -82,9 +92,6 @@ public class SkillRenderer : NetworkBehaviour
     public void DrawRadius(float radius)
     {
         _circle.Draw(radius);
-        if (_drawRadiusCoroutine != null)
-            StopCoroutine(_drawRadiusCoroutine);
-        _drawRadiusCoroutine = StartCoroutine(DrawRadiusJob(radius));
     }
 
     public void StopDrawRadius()
@@ -149,18 +156,23 @@ public class SkillRenderer : NetworkBehaviour
 
     public void DrawClosestTarget(float radius, LayerMask TargetsLayers, Character player)
     {
-		_drawClosestTargetCoroutine = StartCoroutine(DrawClosestTargetJob(radius, TargetsLayers, player));
+        if (_isOverrideClosestTarget) return;
+        _drawClosestTargetCoroutine = StartCoroutine(DrawClosestTargetJob(radius, TargetsLayers, player));
     }
 
     public void StopDrawClosestTarget()
     {
 		if (_drawClosestTargetCoroutine != null)
-			StopCoroutine(_drawClosestTargetCoroutine);
+        {
+            StopCoroutine(_drawClosestTargetCoroutine);
+            _drawClosestTargetCoroutine = null;
+        }    
 
         if(_tempTarget != null)
         {
             _tempTarget.SelectedCircle.SwitchClostestTarget(false);
-		}
+            _tempTarget = null;
+        }
 	}
 
     public void SetSizeBox(float width, float lenght)
@@ -291,6 +303,8 @@ public class SkillRenderer : NetworkBehaviour
     {
         while (true)
         {
+            if (IsOverrideClosestTarget) yield return null;
+
             List<Character> targets = new List<Character>();
             Collider[] collider = Physics.OverlapSphere(transform.position, radius + 500);
 

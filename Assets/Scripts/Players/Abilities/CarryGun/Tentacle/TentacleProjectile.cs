@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class TentacleProjectile : MonoBehaviour
 {
-    [SerializeField] private bool _isPreview;
+    [SerializeField] private bool _isPreview = true;
     [SerializeField] private DrawCircleTentacle _drawCircle;
-    [SerializeField] private Character _heroToTentacle;
+    [SerializeField] private GameObject tentacle;
 
     private Character _player;
     private Character _target;
@@ -16,10 +16,13 @@ public class TentacleProjectile : MonoBehaviour
     private float _grabDuration = 1.2f;
     private float _radius = 3f;
 
+    private bool _radiusView;
     private bool _isCollidedWithOtherCharacter = false;
     private Coroutine _radiusUpdateCoroutine;
 
-    public Character HeroToTentacle { get => _heroToTentacle; set => _heroToTentacle = value; }
+    public bool IsPreview { get => _isPreview; set => _isPreview = value; }
+    public GameObject Tentacle { get => tentacle; set => tentacle = value; }
+    public float Radius => _radius;
 
     private void Awake()
     {
@@ -28,12 +31,7 @@ public class TentacleProjectile : MonoBehaviour
 
     private void Start()
     {
-        if (_drawCircle != null)
-        {
-            _drawCircle.Draw(_radius);
-            _drawCircle.SetColor(Color.red);
-            _radiusUpdateCoroutine = StartCoroutine(UpdateRadiusColor());
-        }
+        Invoke("drawCircleRadius", 0.1f);
     }
 
     private void OnDestroy()
@@ -70,6 +68,27 @@ public class TentacleProjectile : MonoBehaviour
         {
             _target.Move.CanMove = false;
             StartCoroutine(PullTarget());
+        }
+    }
+
+    private void drawCircleRadius()
+    {
+        if (_drawCircle != null)
+        {
+            if (_isPreview)
+            {
+                _drawCircle.Draw(_radius);
+                _drawCircle.SetColor(Color.red);
+            }
+            else _drawCircle.Clear();
+        }
+    }
+
+    public void SetRadiusColor(Color color)
+    {
+        if (_drawCircle != null)
+        {
+            _drawCircle.SetColor(color);
         }
     }
 
@@ -128,27 +147,6 @@ public class TentacleProjectile : MonoBehaviour
         if (other.gameObject.TryGetComponent<Character>(out Character character) && character != _target)
         {
             _isCollidedWithOtherCharacter = true;
-        }
-    }
-
-    private IEnumerator UpdateRadiusColor()
-    {
-        while (true)
-        {
-            bool hasOtherCharacterInRadius = false;
-            Collider[] colliders = Physics.OverlapSphere(transform.position, _radius);
-
-            foreach (var collider in colliders)
-            {
-                if (collider.TryGetComponent<Character>(out Character character) && character != HeroToTentacle)
-                {
-                    hasOtherCharacterInRadius = true;
-                    break;
-                }
-            }
-
-            _drawCircle.SetColor(hasOtherCharacterInRadius ? Color.green : Color.red);
-            yield return new WaitForSeconds(0.1f);
         }
     }
 }

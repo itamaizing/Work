@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6668267283902337230}
-  - component: {fileID: 8386733040786187452}
+  - component: {fileID: 8554996345412695326}
   - component: {fileID: 3181529269723519325}
   - component: {fileID: 6610701520137683841}
   - component: {fileID: 1848640040745967466}
@@ -40,7 +40,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &8386733040786187452
+--- !u!95 &8554996345412695326
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0
@@ -179,7 +179,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _isPreview: 1
   _drawCircle: {fileID: 1848640040745967466}
-  _heroToTentacle: {fileID: 0}
+  tentacle: {fileID: 8635730615369303596}
 --- !u!114 &1848640040745967466
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -607,7 +607,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1196205639389228123
 Transform:
   m_ObjectHideFlags: 0

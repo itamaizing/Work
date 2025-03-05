@@ -118,7 +118,7 @@ public class CheliceraStrike : AutoAttackSkill
 
         #region DealDamageVariables
         float radiusAttack = 5.0f; // Then make it 1.0f
-        float additionalDamage = _attackingPsionicEnergy.CurrentAttackingPsiEnergy;
+        float additionalDamage = 0f;//_attackingPsionicEnergy.CurrentAttackingPsiEnergy;
         float multiplierDamageByMainTarget = 0.3f;
         float percentageDamageToNearestEnemies = 0.5f;
         #endregion
@@ -205,7 +205,7 @@ public class CheliceraStrike : AutoAttackSkill
     [Command]
     private void CmdIncreaseEnergy(float value)
     {
-        _basePsionicEnergy.IncreasePsiEnergy(value);
+       //_basePsionicEnergy.IncreasePsiEnergy(value);
     }
 
     [Command]
@@ -221,7 +221,7 @@ public class CheliceraStrike : AutoAttackSkill
     [Command]
     private void CmdUseAttackingEnergy(float value)
     {
-        _attackingPsionicEnergy.CurrentAttackingPsiEnergy -= value;
+        //_attackingPsionicEnergy.CurrentAttackingPsiEnergy -= value;
     }
 
     #endregion

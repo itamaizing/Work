@@ -245,7 +245,7 @@ public class GrabTentacles : Skill
     private void InstantiateTentacles()
     {
         _isAttackingPsiEnergyActive = _attackingPsionicEnergy.IsAttackingPsiEnergy;
-        _baseDamage = _attackingPsionicEnergy.CurrentAttackingPsiEnergy;        
+        //_baseDamage = _attackingPsionicEnergy.CurrentAttackingPsiEnergy;        
         
         if (_isFirstPointTarget)
         {
@@ -320,7 +320,7 @@ public class GrabTentacles : Skill
 
     private void UseAttackingEnergy(float value)
     {
-        _attackingPsionicEnergy.CurrentAttackingPsiEnergy -= value;
+        //_attackingPsionicEnergy.CurrentAttackingPsiEnergy -= value;
     }
 
     [ClientRpc]

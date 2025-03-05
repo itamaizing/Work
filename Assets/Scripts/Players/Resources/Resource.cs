@@ -8,7 +8,8 @@ public enum ResourceType
     Health, 
     Mana, 
     Energy, 
-    Rune
+    Rune,
+    Psionic
 }
 
 public abstract class Resource : NetworkBehaviour

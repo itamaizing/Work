@@ -33,7 +33,6 @@ public class FiveConversion : MonoBehaviour
         {
             ButtonAbility.onClick.Invoke();
         }
-        _psionica = _player.GetComponent<PsionicaMelee>().Psionica;
         text.text = "Активная пси: " + PsionicaActive.ToString();
 
         float newScaleX = PsionicaActive / 30.0f;

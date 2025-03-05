@@ -2,111 +2,153 @@ using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class BasePsionicEnergy : Energy, IDamageable
+public class BasePsionicEnergy : Resource, IDamageable
 {
     [SerializeField] private Character _player;
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
+    [SerializeField] private Slider basePsionicsSlider;
 
-    private float _maxPsiEnergy;
-
-    private float _reductionDamageMultiplier = 0.1f;
-
-    private float _timeAbsorptionDamage;
-    private float _startTimeAbsorptionDamage = 12f;
+    private const float BasePsionicaThreshold = 30f;
+    private const float BaseSliderFillPercent = 0.3f;
+    private const float RemainingSliderFillPercent = 0.7f;
+    private const float PsionicaDecayTime = 12f;
+    private const float MaxEnergyThreshold = 100f;
+    private const float DamageToPsiConversionRate = 1f;
 
     private bool _isInternalPsiEnergy = false;
+    private Coroutine _energyDecayCoroutine;
 
-    private Coroutine _absorptionTimeCoroutine;
-
-    public float CurrentPsiEnergy { get => CurrentValue; set => CurrentValue = value; }
-    public bool IsAttackingPsiEnergyActive { get => _attackingPsionicEnergy.IsAttackingPsiEnergy; }
+    public bool IsAttackingPsiEnergyActive => _attackingPsionicEnergy.IsAttackingPsiEnergy;
 
     public event Action<Damage, Skill> DamageTaken;
+
+    private void Start()
+    {
+        if (_player != null)
+        {
+            MaxValue = _player.Data.GetAttributeValue(AttributeNames.Health);
+            _player.Health.Shields.Add(this);
+
+            if (_player.DamageTracker != null)
+            {
+                _player.DamageTracker.OnDamageTracked += OnDamageDealt;
+            }
+        }
+    }
+
+    private void Update()
+    {
+        UpdatePsionicaBar();
+    }
+
+    private void OnDestroy()
+    {
+        if (_player != null && _player.DamageTracker != null)
+        {
+            _player.DamageTracker.OnDamageTracked -= OnDamageDealt;
+        }
+    }
+
+    private void OnDamageDealt(Damage damage, GameObject target)
+    {
+        if (damage.Type == DamageType.Physical)
+        {
+            float energyGain = damage.Value * DamageToPsiConversionRate;
+            Add(energyGain);
+            CurrentValue = Mathf.Min(CurrentValue, MaxEnergyThreshold); // Ограничиваем макс. значение
+
+            if (CurrentValue >= MaxEnergyThreshold)
+            {
+                _isInternalPsiEnergy = true;
+                RpcInternalPsiEnergyChanged(_isInternalPsiEnergy);
+            }
+
+            if (_energyDecayCoroutine != null)
+            {
+                StopCoroutine(_energyDecayCoroutine);
+            }
+            _energyDecayCoroutine = StartCoroutine(EnergyDecayCoroutine());
+
+            UpdatePsionicaBar();
+        }
+    }
+
+    public void UsePsiEnergy(float value)
+    {
+        TryUse(value);
+        UpdatePsionicaBar();
+    }
+
+    public void PsiAbsorption(ref float modifiedDamage)
+    {
+        if (CurrentValue > 0)
+        {
+            float absorptionAmount = Mathf.Min(CurrentValue, modifiedDamage);
+            UsePsiEnergy(absorptionAmount);
+            modifiedDamage -= absorptionAmount * 0.1f;
+        }
+    }
+
+    private void UpdatePsionicaBar()
+    {
+        float normalizedValue = 0f;
+
+        if (CurrentValue <= BasePsionicaThreshold)
+        {
+            normalizedValue = (CurrentValue / BasePsionicaThreshold) * BaseSliderFillPercent;
+        }
+        else
+        {
+            float remainingValue = (CurrentValue - BasePsionicaThreshold) / (MaxValue - BasePsionicaThreshold);
+            normalizedValue = BaseSliderFillPercent + (remainingValue * RemainingSliderFillPercent);
+        }
+
+        basePsionicsSlider.value = normalizedValue;
+    }
+
+    private IEnumerator EnergyDecayCoroutine()
+    {
+        yield return new WaitForSeconds(PsionicaDecayTime);
+        CurrentValue = 0;
+        _isInternalPsiEnergy = false;
+        UpdatePsionicaBar();
+        RpcInternalPsiEnergyChanged(_isInternalPsiEnergy);
+    }
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
         if (damage.Value == 0)
             return true;
 
-        if (CurrentValue > 0)
+        if (CurrentValue >= MaxEnergyThreshold)
         {
-            float reducingDamage = damage.Value * _reductionDamageMultiplier;
+            float absorbingDamage = Mathf.Min(CurrentValue, damage.Value);
+            damage.Value -= absorbingDamage * 0.1f;
+            CurrentValue -= absorbingDamage;
 
-            if (CurrentValue < reducingDamage)
+            if (CurrentValue < MaxEnergyThreshold)
             {
-                reducingDamage = CurrentValue;
+                _isInternalPsiEnergy = false;
+                RpcInternalPsiEnergyChanged(_isInternalPsiEnergy);
             }
-            
-            damage.Value -= reducingDamage;
-            CurrentValue -= damage.Value;
+
+            UpdatePsionicaBar();
             return true;
         }
-        else
+        return false;
+    }
+
+    public void ConvertToAttackingEnergy(float amount)
+    {
+        float transferAmount = Mathf.Min(CurrentValue, amount);
+        if (transferAmount > 0)
         {
-            return false;
+            UsePsiEnergy(transferAmount);
+            _attackingPsionicEnergy.ReceiveAttackingEnergy(transferAmount);
         }
     }
-
-    public void ShowPhantomValue(Damage damage)
-    {
-    }
-
-    public void ActivateAttackingEnergy()
-    {
-        _attackingPsionicEnergy.EnabledAttackingPsiEnergy();
-    }
-
-    public void IncreasePsiEnergy(float damageValue)
-    {
-        CurrentValue += damageValue;
-
-        _isInternalPsiEnergy = true;
-        RpcInternalPsiEnergyChanged(_isInternalPsiEnergy);
-
-        if (_absorptionTimeCoroutine != null)
-        {
-            StopCoroutine(_absorptionTimeCoroutine);
-            _absorptionTimeCoroutine = null;
-            _timeAbsorptionDamage = _startTimeAbsorptionDamage;
-        }
-
-        _absorptionTimeCoroutine = StartCoroutine(AbsorptionTimeJob());
-    }
-
-    public void ReducingPsiEnergy(float reducingValue)
-    {
-        CurrentValue -= reducingValue;
-    }
-
-    private void Start()
-    {
-        _maxPsiEnergy = _player.Health.MaxValue;
-        MaxValue = _maxPsiEnergy;
-
-        _timeAbsorptionDamage = _startTimeAbsorptionDamage;
-
-        _player.Health.Shields.Add(this);
-    }
-
-    private IEnumerator AbsorptionTimeJob()
-    {
-        while (_timeAbsorptionDamage > 0)
-        {
-            _timeAbsorptionDamage -= Time.deltaTime;
-            if (_timeAbsorptionDamage < 0 || CurrentValue <= 0)
-            {
-                CurrentValue = 0;
-                _isInternalPsiEnergy = false;
-
-                RpcInternalPsiEnergyChanged(_isInternalPsiEnergy);
-                yield break;
-            }
-            yield return null;
-        }
-    }
-
-    #region ClientRpcMethods
 
     [ClientRpc]
     private void RpcInternalPsiEnergyChanged(bool value)
@@ -114,5 +156,8 @@ public class BasePsionicEnergy : Energy, IDamageable
         _isInternalPsiEnergy = value;
     }
 
-    #endregion
+    public void ShowPhantomValue(Damage phantomValue)
+    {
+        throw new NotImplementedException();
+    }
 }

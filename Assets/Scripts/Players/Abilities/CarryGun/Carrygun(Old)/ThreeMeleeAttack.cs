@@ -293,7 +293,6 @@ public class ThreeMeleeAttack : AbilityBase
                 else
                 {
                     TargetParent.GetComponent<HealthComponent>().TryTakeDamage(damage + (damage * 0.2f), DamageType, AttackRangeType);
-                    _player.GetComponent<PsionicaMelee>().MakePsionica(damage + (damage * 0.2f));
                     _damageDealt = true;
                     ThirdAbilityEvent?.Invoke(damage + (damage * 0.2f));
                 }
@@ -306,8 +305,6 @@ public class ThreeMeleeAttack : AbilityBase
                 {
                     float numberOfBody = distanceToTarget / 1.9f;
                     _shield.DamageInShield(damage + (damage * 0.005f * (numberOfBody / 0.1f)));
-                    _player.GetComponent<PsionicaMelee>()
-                        .MakePsionica(damage + (damage * 0.005f * (numberOfBody / 0.1f)));
                     _damageDealt = true;
                     ThirdAbilityEvent?.Invoke(damage + (damage * 0.005f * (numberOfBody / 0.1f)));
                 }
@@ -316,8 +313,6 @@ public class ThreeMeleeAttack : AbilityBase
                     float numberOfBody = distanceToTarget / 1.9f;
                     TargetParent.GetComponent<HealthComponent>()
                         .TryTakeDamage(damage + (damage * 0.005f * (numberOfBody / 0.1f)), DamageType, AttackRangeType);
-                    _player.GetComponent<PsionicaMelee>()
-                        .MakePsionica(damage + (damage * 0.005f * (numberOfBody / 0.1f)));
                     _damageDealt = true;
                     ThirdAbilityEvent?.Invoke(damage + (damage * 0.005f * (numberOfBody / 0.1f)));
                 }
@@ -345,7 +340,6 @@ public class ThreeMeleeAttack : AbilityBase
             else
             {
                 TargetParent.GetComponent<HealthComponent>().TryTakeDamage(damage + (damage * 0.1f), DamageType, AttackRangeType);
-                _player.GetComponent<PsionicaMelee>().MakePsionica(damage + (damage * 0.1f));
                 _damageDealt = true;
                 ThirdAbilityEvent?.Invoke(damage + (damage * 0.1f));
             }

@@ -35,7 +35,7 @@ public class ClawStrike : AutoAttackSkill
     {
         if (_attackingPsionicEnergy.IsAttackingPsiEnergy)
         {
-            _additionalDamage = _attackingPsionicEnergy.CurrentAttackingPsiEnergy;
+            //_additionalDamage = _attackingPsionicEnergy.CurrentAttackingPsiEnergy;
 
             if (_additionalDamage > 10 && _additionalDamage < 20)
             {
@@ -107,13 +107,13 @@ public class ClawStrike : AutoAttackSkill
     [Command]
     private void CmdIncreaseEnergy(float value)
     {
-        _basePsionicEnergy.IncreasePsiEnergy(value);
+        //_basePsionicEnergy.IncreasePsiEnergy(value);
     }
 
     [Command]
     private void CmdUseAttackingEnergy(float value)
     {
-        _attackingPsionicEnergy.CurrentAttackingPsiEnergy -= value;
+        //_attackingPsionicEnergy.CurrentAttackingPsiEnergy -= value;
     }
 
     protected override void ClearData()

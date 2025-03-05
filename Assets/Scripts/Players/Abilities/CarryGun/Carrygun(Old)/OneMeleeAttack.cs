@@ -236,7 +236,6 @@ public class OneMeleeAttack : AbilityBase
 		if (_shield != null)
         {
             _shield.DamageInShield(_damageValue);
-            _player.GetComponent<PsionicaMelee>().MakePsionica(_damageValue);
             HandleActivePsionica();
             CanMakeDamage = false;
 
@@ -248,7 +247,6 @@ public class OneMeleeAttack : AbilityBase
         else
         {
             _targetHealth.TryTakeDamage(_damageValue, DamageType, AttackRangeType);
-            _player.GetComponent<PsionicaMelee>().MakePsionica(_damageValue);
             //HandleActivePsionica();
             CanMakeDamage = false;
 

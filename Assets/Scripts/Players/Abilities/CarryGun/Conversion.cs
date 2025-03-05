@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Conversion : Skill
 {
-    [SerializeField] private Character _player;
     [SerializeField] private BasePsionicEnergy _psionicEnergy;
+    [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
+
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
     protected override bool IsCanCast => _psionicEnergy.CurrentValue > 0;
@@ -21,20 +22,19 @@ public class Conversion : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_psionicEnergy != null)
+        if (_psionicEnergy != null && _attackingPsionicEnergy != null)
         {
             if (_psionicEnergy.CurrentValue > 0)
             {
-                CmdEnabled();
+                CmdConvertEnergy();
             }
         }
         yield return null;
     }
 
     [Command]
-    private void CmdEnabled()
+    private void CmdConvertEnergy()
     {
-        _psionicEnergy.ActivateAttackingEnergy();
+        _psionicEnergy.ConvertToAttackingEnergy(_attackingPsionicEnergy.MaxAttackingPsiEnergy);
     }
-
 }

@@ -231,6 +231,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _isPreview: 0
   _drawCircle: {fileID: 6961409168004119619}
+  tentacle: {fileID: 8635730615369303596}
 --- !u!114 &6961409168004119619
 MonoBehaviour:
   m_ObjectHideFlags: 0

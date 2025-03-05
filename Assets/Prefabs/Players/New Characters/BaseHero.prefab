@@ -30696,6 +30696,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  hero: {fileID: 5630810179120932799}
   _circle: {fileID: 1629212415153807048}
   _areaPref: {fileID: 1574982521674352815, guid: 790fb3857b30c2b4fad4375343a84fad, type: 3}
   _damageZonePref: {fileID: 6076937102363889602, guid: 586443d303441854fbd96bcd57e8ccc6, type: 3}
@@ -30707,7 +30708,6 @@ MonoBehaviour:
   _colorForEnemies: {r: 1, g: 0, b: 0, a: 1}
   _colorForEnd: {r: 1, g: 0, b: 0, a: 1}
   _colorForStart: {r: 0, g: 1, b: 0.08237815, a: 1}
-  hero: {fileID: 5630810179120932799}
 --- !u!1 &8770370089772824140
 GameObject:
   m_ObjectHideFlags: 0

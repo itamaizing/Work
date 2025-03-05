@@ -10,14 +10,17 @@ public class Ghost : Skill
     [Header("Ghost Settings")]
     [SerializeField] private float defaultRadius = 3f;
     [SerializeField] private float extendedRadius = 5f;
+    [SerializeField] private float teleportManaUse = 6f;
     [SerializeField] private int maxGhosts = 2;
     [SerializeField] private MinionComponent ghostPrefab;
+    [SerializeField] private GameObject ghostPrefabPreview;
     [SerializeField] private GameObject way;
     [SerializeField] private bool cooldownGhostShotActive;
     [SerializeField] private AudioClip aCTeleportToGhost;
     [SerializeField] private AudioClip aCÑontrolGhostToTarget;
     [SerializeField] private AudioClip aCSummoningGhost;
 
+    private GameObject _ghostPrefabPreview;
     private AudioSource _audioSource;
     private List<Character> _ghosts;
     private SpawnComponent _spawnComponent;
@@ -57,11 +60,12 @@ public class Ghost : Skill
         _baseCastDelay = CastDeley;
         _ghosts = new List<Character>();
         _spawnComponent = GetComponent<SpawnComponent>();
+    }
 
-        if (_spawnComponent == null)
-        {
-            Debug.LogError("SpawnComponent not found on character.");
-        }
+    private void SetRadius(float radius)
+    {
+        Radius = radius;
+        _skillRender.DrawRadius(Radius);
     }
 
     private void RegisterSpawnEvents()
@@ -82,8 +86,15 @@ public class Ghost : Skill
 
     protected override IEnumerator PrepareJob()
     {
+        Vector3 mousePositionStart = GetMousePoint();
+
+        _ghostPrefabPreview = Instantiate(ghostPrefabPreview, mousePositionStart, Quaternion.identity);
+
         while (!_disactive)
         {
+            Vector3 mousePosition = GetMousePoint();
+            _ghostPrefabPreview.transform.position = mousePosition;
+
             if (_sendingGhostTargetTalentActive && IsMouseOverTarget(out Character character) && character.CharacterState.CheckForState(States.InnerDarkness))
             {
                 if (Input.GetMouseButtonDown(0) && IsWithinRadius(character.transform.position, defaultRadius) && !GetComponent<GhostAura>())
@@ -101,19 +112,20 @@ public class Ghost : Skill
 
            else if (IsMouseOverGhost(out Character ghost) && ghost.GetComponent<GhostAura>())
             {
-                Radius = extendedRadius;
+                SetRadius(extendedRadius);
 
                 if (Input.GetMouseButtonDown(0) && IsWithinRadius(ghost.transform.position, extendedRadius))
                 {
                     _ghostToTeleport = ghost;
                     _teleportGhost = true;
-                    yield break;
+                    TeleportToGhost(_ghostToTeleport);
+                    continue;
                 }
             }
 
             else
             {
-                Radius = defaultRadius;
+                SetRadius(defaultRadius);
 
                 if (Input.GetMouseButtonDown(0) && IsMouseInRadius(Radius))
                 {
@@ -127,6 +139,8 @@ public class Ghost : Skill
 
             yield return null;
         }
+
+        if (_ghostPrefabPreview != null) Destroy(_ghostPrefabPreview);
     }
 
     #region SendingGhostTarget
@@ -148,10 +162,9 @@ public class Ghost : Skill
     private IEnumerator MoveGhostToCharacter(Character ghost, Character target)
     {
         if (ghost == null || target == null) yield break;
-
         if (!(ghost is MinionComponent minion)) yield break;
-
         if (!ghost.TryGetComponent<NavMeshAgent>(out var agent)) yield break;
+        if (!TryConsumeMana(teleportManaUse)) yield break;
 
         agent.stoppingDistance = 1.5f;
         agent.updateRotation = true;
@@ -333,6 +346,18 @@ public class Ghost : Skill
         return Vector3.Distance(transform.position, targetPosition) <= radius;
     }
 
+    private bool TryConsumeMana(float amount)
+    {
+        var manaResource = _hero.Resources.FirstOrDefault(r => r.Type == ResourceType.Mana);
+        if (manaResource != null && manaResource.CurrentValue >= amount)
+        {
+            manaResource.CmdUse(amount);
+            return true;
+        }
+
+        return false;
+    }
+
     private IEnumerator SpawnGhostVisualEffect(Vector3 targetPosition)
     {
         RemoveOldestGhostIfNeeded();
@@ -383,7 +408,6 @@ public class Ghost : Skill
     {
         if (_shouldSpawnGhost && _spawnPosition != Vector3.zero) StartCoroutine(SpawnGhostVisualEffect(_spawnPosition));
         else if (_ghostMoveToTarget && _ghostToMove != null && _targetCharacter != null) StartCoroutine(MoveGhostToCharacter(_ghostToMove, _targetCharacter));
-        else if (_teleportGhost && _ghostToTeleport != null) TeleportToGhost(_ghostToTeleport);
 
         yield break;
     }
@@ -391,6 +415,7 @@ public class Ghost : Skill
     protected override void ClearData()
     {
         Radius = defaultRadius;
+        if (_ghostPrefabPreview != null) Destroy(_ghostPrefabPreview);
     }
 
     [Command]
