@@ -93,6 +93,7 @@ public class Ghost : Skill
         while (!_disactive)
         {
             Vector3 mousePosition = GetMousePoint();
+            _teleportGhost = false;
             _ghostPrefabPreview.transform.position = mousePosition;
 
             if (_sendingGhostTargetTalentActive && IsMouseOverTarget(out Character character) && character.CharacterState.CheckForState(States.InnerDarkness))
@@ -119,6 +120,7 @@ public class Ghost : Skill
                     _ghostToTeleport = ghost;
                     _teleportGhost = true;
                     TeleportToGhost(_ghostToTeleport);
+                    yield return new WaitForSeconds(1f);
                     continue;
                 }
             }
@@ -127,7 +129,7 @@ public class Ghost : Skill
             {
                 SetRadius(defaultRadius);
 
-                if (Input.GetMouseButtonDown(0) && IsMouseInRadius(Radius))
+                if (Input.GetMouseButtonDown(0) && IsMouseInRadius(Radius) && !_teleportGhost)
                 {
                     _spawnPosition = GetMousePoint();
                     _shouldSpawnGhost = true;
@@ -248,8 +250,6 @@ public class Ghost : Skill
         PerformTeleport(ghost.transform.position);
         RemoveGhost(ghost);
         RestoreSkillCosts();
-
-        _teleportGhost = false;
     }
 
     private void ReduceSkillCosts()
