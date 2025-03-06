@@ -658,7 +658,7 @@ MonoBehaviour:
   syncInterval: 0
   _gameMode: 1
   _scene: Assets/Scenes/TestRoom3D.unity
-  _maxPlayers: 2
+  _maxPlayers: 1
   _gameRulesPref: {fileID: 2624942693930062612, guid: 9c3ab8f1c5352c34ea72aeec43bb21be, type: 3}
 --- !u!114 &572863235
 MonoBehaviour:
