@@ -34,9 +34,9 @@ public class FireBreath_Scorpion : Skill, ICanConsumeComboPoints
 
     protected override bool IsCanCast { get { return true; } }
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+    protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+    protected override int AnimTriggerCast => 0;
 
     private void Follow()
     {
@@ -56,20 +56,22 @@ public class FireBreath_Scorpion : Skill, ICanConsumeComboPoints
             yield return null;
         }
     }
+
     [Command]
     private void CmdCreateFireBreath(float angle)
     {
-        var item = Instantiate(_prefab, transform.position, Quaternion.Euler(0, 0, angle - 90));
+        var item = Instantiate(_prefab, transform.position, Quaternion.Euler(0, angle, 0));
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
         item.transform.SetParent(transform);
 
-        NetworkServer.Spawn(item/*, connectionToClient*/);
+        NetworkServer.Spawn(item);
+
+        _fireBreath = item.GetComponent<FireBreath_Prefab>();
 
         SyncFire(item);
-        _fireBreath = item.GetComponent<FireBreath_Prefab>();
-        
-        Destroy(_fireBreath.gameObject, /*_streamingDuration*/ CastStreamDuration);
+
+        Destroy(_fireBreath.gameObject, CastStreamDuration);
     }
 
     [TargetRpc]
@@ -100,15 +102,12 @@ public class FireBreath_Scorpion : Skill, ICanConsumeComboPoints
     private IEnumerator FireBreath()
     {
         Hero.Move.CanMove = false;
-        //PlayerMove.CanMove = false;
+        _isCanCancle = false;
 
         float time = 0;
-        _isCanCancle = false;
-        //IsCanCancle = false;
-        //PayCost();
-        float damageValue = _damage;
         int damageCounter = 1;
-        while (time < /*StreamingDuration*/ CastStreamDuration)
+
+        while (time < CastStreamDuration)
         {
             time += Time.deltaTime;
 
@@ -116,36 +115,40 @@ public class FireBreath_Scorpion : Skill, ICanConsumeComboPoints
             {
                 yield return null;
                 continue;
-
             }
+
             _enemies.Clear();
-            //_enemiesDikt.Clear();
-            Debug.Log(_fireBreath);
-            foreach (var item in _fireBreath._collisions)
+
+            Collider[] hitColliders = Physics.OverlapSphere(_fireBreath.transform.position, Radius, layerMask);
+
+            foreach (var collider in hitColliders)
             {
-                if (item.TryGetComponent<Health>(out Health enemy) && item.transform.CompareTag(tagEnemies))
+                if (collider.TryGetComponent<Health>(out Health enemy) && enemy.CompareTag(tagEnemies))
                 {
-                    _enemies.Add(enemy);
-                    if (!_enemiesDikt.Keys.Contains(enemy))
+                    Vector3 directionToEnemy = (enemy.transform.position - _fireBreath.transform.position).normalized;
+                    if (!Physics.Raycast(_fireBreath.transform.position, directionToEnemy, Vector3.Distance(_fireBreath.transform.position, enemy.transform.position), layerMask))
                     {
-                        _enemiesDikt.Add(enemy, 1);
+                        _enemies.Add(enemy);
+                        if (!_enemiesDikt.ContainsKey(enemy))
+                        {
+                            _enemiesDikt[enemy] = 1;
+                        }
                     }
                 }
             }
 
-            DoDamage(damageValue);
+            DoDamage(_damage);
             damageCounter++;
             yield return null;
         }
 
         Hero.Move.CanMove = true;
-        //PlayerMove.CanMove = true;
         ResetValue();
     }
 
     //protected override void Cancel()
     //{
-        
+
     //}
     private void ResetValue()
     {
@@ -159,28 +162,36 @@ public class FireBreath_Scorpion : Skill, ICanConsumeComboPoints
         _fireBreath = Instantiate(_conePrefab, transform);
     }
 
-    private void DoDamage(float damageValue)
+    private void DoDamage(float baseDamage)
     {
-        for (int i = 0; i < _enemies.Count; i++)
-        {
-            foreach (var flame in _fireBreath._flames)
-            {
-                if (!Physics2D.Raycast(transform.position, flame.transform.TransformDirection(Vector2.up), 4f, layerMask))
-                {
-                    float scale = CompareDistance(_enemies[i].transform);
-                    int damageScale = _enemiesDikt[_enemies[i]];
-                    //_enemies[i].CmdTryTakeDamage(damageValue * scale * damageScale, DamageType.Magical, AttackRangeType.RangeAttack);
+        if (_fireBreath == null || _enemies.Count == 0)
+            return;
 
-                    Damage damage = new Damage
-                    {
-                        Value = Buff.Damage.GetBuffedValue(damageValue * scale * damageScale),
-                        Type = DamageType,
-                    };
-                    CmdApplyDamage(damage, _enemies[i].gameObject);
-                    _enemiesDikt[_enemies[i]] *= 2;
-                    break;
-                }
-            }         
+        foreach (var enemy in _enemies)
+        {
+            if (enemy == null) continue;
+
+            float distanceMultiplier = CompareDistance(enemy.transform);
+            int damageScale = _enemiesDikt.ContainsKey(enemy) ? _enemiesDikt[enemy] : 1;
+
+            float finalDamageValue = Buff.Damage.GetBuffedValue(baseDamage * distanceMultiplier * damageScale);
+
+            Damage damage = new Damage
+            {
+                Value = finalDamageValue,
+                Type = DamageType,
+            };
+
+            CmdApplyDamage(damage, enemy.gameObject);
+
+            if (_enemiesDikt.ContainsKey(enemy))
+            {
+                _enemiesDikt[enemy] *= 2;
+            }
+            else
+            {
+                _enemiesDikt[enemy] = 2;
+            }
         }
     }
 

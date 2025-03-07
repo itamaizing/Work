@@ -114,6 +114,7 @@ public abstract class Skill : NetworkBehaviour
     protected Coroutine _castStreamCoroutine;
     protected Coroutine _dynamicRendererJob;
     protected Transform _tempTargetForDamage;
+    protected Health _tempHPForDamage;
     protected IDamageable _tempForDamage;
     protected IHealingable _tempForHealing;
     protected bool _isPlayCastAnim;

@@ -24,9 +24,9 @@ public class CleavingBlade_Scorpion : Skill
         }
     }
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+    protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+    protected override int AnimTriggerCast => 0;
 
     private void ResetValue()
     {

@@ -39,9 +39,9 @@ public class Teleportation_Scorpion : Skill, ICanConsumeComboPoints
         }
     }
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+    protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+    protected override int AnimTriggerCast => 0;
 
     protected void Start()
     {
@@ -144,7 +144,7 @@ public class Teleportation_Scorpion : Skill, ICanConsumeComboPoints
 
     protected override IEnumerator PrepareJob()
     {
-        while (_target == null)
+        while (true)
         {
             Radius = GetCurrentRadius();
             _drawCircleSelf.Draw(Radius);
@@ -152,9 +152,18 @@ public class Teleportation_Scorpion : Skill, ICanConsumeComboPoints
             if (GetMouseButton)
             {
                 _target = GetRaycastTarget(true);
-                float dist = Vector2.Distance(_target.transform.position, transform.position);
+
+                if (_target == null)
+                {
+                    yield return null;
+                    continue;
+                }
+
+                float dist = Vector3.Distance(_target.transform.position, transform.position);
                 _skillEnergyCosts[0].resourceCost = GetCurrentManaCost(dist);
+                break;
             }
+
             yield return null;
         }
     }

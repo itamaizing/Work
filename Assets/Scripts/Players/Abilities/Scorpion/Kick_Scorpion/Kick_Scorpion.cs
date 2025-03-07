@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
@@ -9,29 +8,40 @@ public class Kick_Scorpion : AutoAttackSkill
     [SerializeField] private Character _playerLinks;
     [SerializeField] private Sub_LavaPool_Scorpion _pool;
     [SerializeField] private PassiveCombo_Scorpion _comboCounter;
-    [SerializeField][Range(0, 100)] private float _minDamage = 10f;
-    [SerializeField][Range(0, 100)] private float _maxDamage = 15f;
+    [SerializeField] [Range(0, 100)] private float _minDamage = 10f;
+    [SerializeField] [Range(0, 100)] private float _maxDamage = 15f;
 
-    [Header("Debug info")] 
-
-    [SerializeField][Range(0f, 1f)] private float _debuffApplyChance = 0.1f;
-    [SerializeField][ReadOnly] private byte _counterRow = 1;
+    [Header("Debug info")]
+    [SerializeField] [Range(0f, 1f)] private float _debuffApplyChance = 0.1f;
+    [SerializeField] [ReadOnly] private byte _counterRow = 1;
 
     private Coroutine _hitsInRowCoroutine;
     private Character _lastTarget = null;
+    private Animator _animator;
+
+    private static readonly int KickTrigger = Animator.StringToHash("KickAA");
+
+    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerAutoAttack => 0;
 
     public float DamageRange => Random.Range(_minDamage, _maxDamage);
 
-    protected override int AnimTriggerCastDelay => 0;
-
-    protected override int AnimTriggerAutoAttack => throw new System.NotImplementedException();
+    private void Start()
+    {
+        _animator = GetComponent<Animator>();
+    }
 
     protected override void CastAction()
     {
-        if (_lastTarget != null && _lastTarget != _target) //пїЅпїЅпїЅпїЅпїЅ
+        if (_target == null)
         {
-            _comboCounter.ResetCounter();
-            //_playerLinks.Combo_Player.RemoveAll();
+            Debug.LogError("[Kick_Scorpion] CastAction: _target is null!");
+            return;
+        }
+
+        if (_lastTarget != null && _lastTarget != _target)
+        {
+            _comboCounter?.ResetCounter();
         }
 
         if (_hitsInRowCoroutine != null)
@@ -40,71 +50,93 @@ public class Kick_Scorpion : AutoAttackSkill
             _hitsInRowCoroutine = null;
         }
 
-        Debug.Log(transform.position);
-        Debug.Log(_target.transform.position);
+        Debug.Log($"[Kick_Scorpion] Preparing attack on {_target.name}");
 
-        if (Vector2.Distance(LastTargetPosition, _target.transform.position) <= 2f)
-        {
-            Damage damage = new Damage
-            {
-                Value = Buff.Damage.GetBuffedValue(DamageRange),
-                Type = DamageType,
-            };
-            CmdAttack(damage, _target.gameObject);
-        }
+        _animator.SetTrigger(KickTrigger);
+
         _lastTarget = _target;
     }
+
+    /// <summary>
+    /// Вызывается из анимации удара.
+    /// </summary>
+    public void ApplyAttackDamageKick()
+    {
+        if (_target == null)
+        {
+            Debug.LogWarning("[Kick_Scorpion] ApplyAttackDamageKick: Target is null!");
+            return;
+        }
+
+        if (Vector2.Distance(LastTargetPosition, _target.transform.position) > 2f)
+        {
+            Debug.LogWarning("[Kick_Scorpion] Target moved too far!");
+            return;
+        }
+
+        Damage damage = new Damage
+        {
+            Value = Buff.Damage.GetBuffedValue(DamageRange),
+            Type = DamageType,
+        };
+
+        CmdApplyDamage(_target.gameObject, damage);
+    }
+
     private void AttackPassed(Transform target)
     {
-        Debug.LogWarning("Kick_Scorpion .AttackPassed - пїЅпїЅпїЅпїЅпїЅ");
+        Debug.LogWarning("[Kick_Scorpion] Attack Passed!");
 
-        _comboCounter.AddAbility(target, ScorpionAbility.Kick);
-
+        _comboCounter?.AddAbility(target, ScorpionAbility.Kick);
         _counterRow *= 2;
         _hitsInRowCoroutine = StartCoroutine(HitsInRowTimer());
 
         if (Random.value <= Mathf.Clamp01(_debuffApplyChance * _counterRow))
         {
-            //CmdApplyDebuff(_target.transform);
-            _target.GetComponent<CharacterState>().CmdAddState(States.Knockdown, 6f, 0, _hero.gameObject, name);
+            target.GetComponent<CharacterState>()?.CmdAddState(States.Knockdown, 6f, 0, _hero.gameObject, name);
             _counterRow = 1;
         }
     }
+
     private void AttackMissed()
     {
-        Debug.LogWarning("Kick_Scorpion .AttackMissed - пїЅпїЅпїЅпїЅпїЅпїЅ");
-
-        _comboCounter.ResetCounter();
+        Debug.LogWarning("[Kick_Scorpion] Attack Missed!");
+        _comboCounter?.ResetCounter();
     }
-
 
     private IEnumerator HitsInRowTimer()
     {
         yield return new WaitForSeconds(CastDeley + 1f);
-
         _counterRow = 1;
-
         _hitsInRowCoroutine = null;
     }
 
     [Command]
-    private void CmdAttack(Damage damage, GameObject hp)
+    private void CmdApplyDamage(GameObject targetObject, Damage damage)
     {
-        if (_tempTargetForDamage != hp.transform)
+        if (targetObject == null)
         {
-            _tempTargetForDamage = hp.transform;
-            _tempForDamage = hp.GetComponent<IDamageable>();
+            Debug.LogError("[Kick_Scorpion] CmdApplyDamage: TargetObject is null!");
+            return;
         }
 
-        bool result = _tempForDamage.TryTakeDamage(ref damage, this);
-        RpcSelfNotifyHitResult(result, _tempTargetForDamage);
+        IDamageable targetHealth = targetObject.GetComponent<IDamageable>();
+        if (targetHealth == null)
+        {
+            Debug.LogError("[Kick_Scorpion] CmdApplyDamage: Target has no IDamageable component!");
+            return;
+        }
 
+        bool isHit = targetHealth.TryTakeDamage(ref damage, this);
+        Hero.DamageTracker.AddDamage(damage, targetObject, isServerRequest: true);
+
+        RpcSelfNotifyHitResult(isHit, targetObject.transform);
     }
 
     [TargetRpc]
-    private void RpcSelfNotifyHitResult(bool state, Transform target)
+    private void RpcSelfNotifyHitResult(bool isHit, Transform target)
     {
-        if (state)
+        if (isHit)
         {
             AttackPassed(target);
         }

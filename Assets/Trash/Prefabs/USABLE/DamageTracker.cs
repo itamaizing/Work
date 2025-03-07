@@ -7,7 +7,7 @@ public class DamageTracker : NetworkBehaviour
 {
     private List<DamageEntry> _localDamageEntries = new List<DamageEntry>();
     private List<HealEntry> _localHealEntries = new List<HealEntry>();
-
+    
     public SyncList<DamageEntry> _damageEntries = new SyncList<DamageEntry>();
     public SyncList<HealEntry> _healEntries = new SyncList<HealEntry>();
 

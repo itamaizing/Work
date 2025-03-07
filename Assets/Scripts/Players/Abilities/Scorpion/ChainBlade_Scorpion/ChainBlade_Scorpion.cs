@@ -42,9 +42,9 @@ public class ChainBlade_Scorpion : Skill
         }
     }
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+    protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+    protected override int AnimTriggerCast => 0;
 
     private IEnumerator PullEnemy(GameObject enemy)
     {
@@ -82,22 +82,21 @@ public class ChainBlade_Scorpion : Skill
     }
 
     [Command]
-    private void CmdCreateProjectile(float maxDistance, Vector2 direction, GameObject parent, ChainbladeType type)
+    private void CmdCreateProjectile(float maxDistance, Vector3 direction, GameObject parent, ChainbladeType type)
     {
-        //blade spawn
-        _projectile = Instantiate(_projectilePrefab, transform.position, Quaternion.identity);
+        Vector3 spawnPosition = transform.position;
+
+        _projectile = Instantiate(_projectilePrefab, spawnPosition, Quaternion.LookRotation(direction));
         SceneManager.MoveGameObjectToScene(_projectile, _hero.NetworkSettings.MyRoom);
 
         _blade = _projectile.GetComponent<BladeProjectile>();
-        _blade.Init(maxDistance, direction, parent, type);
+        _blade.Init(maxDistance, direction.normalized, parent, type);
 
         NetworkServer.Spawn(_projectile);
 
-        //Damage
-        _projectile.GetComponent<BladeProjectile>().OnHit.AddListener(target =>
+        _blade.OnHit.AddListener(target =>
         {
-            if (target == null)
-                return;
+            if (target == null) return;
 
             Damage damage = new Damage
             {
@@ -105,15 +104,13 @@ public class ChainBlade_Scorpion : Skill
                 Type = DamageType,
             };
 
-            //CmdApplyDamage(damage, target.gameObject);
             DealDamage(damage, target.gameObject);
         });
 
-        //Hook
         if (type == ChainbladeType.Hook)
         {
             _hero.Move.CanMove = false;
-            _projectile.GetComponent<BladeProjectile>().OnHit.AddListener(target =>
+            _blade.OnHit.AddListener(target =>
             {
                 if (target != null)
                 {
@@ -129,21 +126,22 @@ public class ChainBlade_Scorpion : Skill
                 bladeDestroyed = true;
             });
 
-            //chain spawn
-            GameObject item = Instantiate(_chainPrefab.gameObject);
-            SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
-            _chain = item.GetComponent<ChainController>();
-            
-            NetworkServer.Spawn(item);
+            GameObject chainObject = Instantiate(_chainPrefab.gameObject, spawnPosition, Quaternion.identity);
+            SceneManager.MoveGameObjectToScene(chainObject, _hero.NetworkSettings.MyRoom);
+            _chain = chainObject.GetComponent<ChainController>();
+
+            NetworkServer.Spawn(chainObject);
             _chain.targetID = _blade.netId;
             _chain.parentID = _playerLinks.GetComponent<NetworkIdentity>().netId;
+
+            _chain.transform.rotation = Quaternion.LookRotation(direction);
         }
     }
 
     [Command]
-    private void CmdThrowBlade(Vector2 direction)
+    private void CmdThrowBlade(Vector3 direction)
     {
-        _projectile.GetComponent<BladeProjectile>().ThrowBlade(direction);
+        _projectile.GetComponent<BladeProjectile>().ThrowBlade(direction.normalized);
     }
 
     private void ResetValue()
@@ -179,11 +177,14 @@ public class ChainBlade_Scorpion : Skill
 
     protected override IEnumerator CastJob()
     {
-        Vector2 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            Vector3 dir = (hit.point - transform.position).normalized;
 
-        CmdCreateProjectile(8f, dir, this.gameObject, _type); // <--- event hit is here
-
-        CmdThrowBlade(dir);
+            CmdCreateProjectile(8f, dir, this.gameObject, _type);
+            CmdThrowBlade(dir);
+        }
 
         yield return null;
     }
