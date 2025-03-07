@@ -74,6 +74,7 @@ public class UserNetworkSettings : NetworkBehaviour
             {
                 item.gameObject.layer = LayerMask.NameToLayer("Enemy");
                 _enemies.Add(item.GetComponent<HeroComponent>());
+                item.gameObject.GetComponent<VisionComponent>().VisionRange = 0;
             }
             else
             {

@@ -222,6 +222,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "ShowSource",
+                    "type": "Button",
+                    "id": "ae4f2201-2591-45de-afdc-e1c7c5601321",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "SpaceMouse",
                     "type": "Button",
                     "id": "b70078f0-91e3-4ada-8895-f72efad55c5a",
@@ -638,6 +647,17 @@
                     "action": "SpaceMouse",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "f76ddb06-977e-4a58-aab6-f69283bda8c6",
+                    "path": "<Keyboard>/backquote",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShowSource",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

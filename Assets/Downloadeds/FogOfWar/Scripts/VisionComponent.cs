@@ -7,8 +7,11 @@ public class VisionComponent : MonoBehaviour
     [SerializeField]
     [Tooltip("The range of this vision component in the fog of war")]
     float m_VisionRange=5;
-
+    
     Vision m_Vision;
+
+    public float VisionRange { get => m_VisionRange; set => m_VisionRange = value; }
+
     void Start()
     {
         m_Vision = new Vision(m_VisionRange);

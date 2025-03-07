@@ -307,7 +307,7 @@ MonoBehaviour:
   border: {fileID: 8016512512855021257}
   Text: {fileID: 7124779414521309969}
   count: 1
-  state: 3
+  state: 19
   time: []
   maxStack: 0
 --- !u!1 &8536294408763002824

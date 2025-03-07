@@ -335,7 +335,7 @@ public class CreeperStrike : AutoAttackSkill
     [Command]
     private void CmdDamageDeal(Damage damage, GameObject target)
     {
-        ApplyDamage(damage, target.gameObject);
+        ApplyDamage(damage, target);
     }
 
     #endregion
