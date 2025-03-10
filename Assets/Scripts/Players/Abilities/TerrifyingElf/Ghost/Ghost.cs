@@ -19,12 +19,15 @@ public class Ghost : Skill
     [SerializeField] private AudioClip aCTeleportToGhost;
     [SerializeField] private AudioClip aCÑontrolGhostToTarget;
     [SerializeField] private AudioClip aCSummoningGhost;
+    [SerializeField] private DrawCircle _extendedRadiusCircle;
+    [SerializeField] private Color extendedRadiusColor = new Color(0.8f, 0.3f, 0f);
 
     private GameObject _ghostPrefabPreview;
     private AudioSource _audioSource;
     private List<Character> _ghosts;
     private SpawnComponent _spawnComponent;
     private float _baseCastDelay;
+    private bool _isPreviewHiddenOverGhost;
     private bool _ghostMoveToTarget;
     private bool _shouldSpawnGhost;
     private bool _teleportGhost;
@@ -33,6 +36,8 @@ public class Ghost : Skill
     private Character _ghostToMove;
     private Character _targetCharacter;
     private Character _ghostToTeleport;
+
+    private Coroutine _teleportAnimationCoroutine;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("GhostCastDelay");
     protected override int AnimTriggerCast => 0;
@@ -47,11 +52,27 @@ public class Ghost : Skill
         base.Awake();
         InitializeFields();
         RegisterSpawnEvents();
+
+        if (_extendedRadiusCircle == null) _extendedRadiusCircle = GetComponentInChildren<DrawCircle>(true);
     }
 
     private void OnDestroy()
     {
         UnregisterSpawnEvents();
+    }
+
+    private void ShowExtendedRadius()
+    {
+        if (_extendedRadiusCircle != null)
+        {
+            _extendedRadiusCircle.SetColor(extendedRadiusColor);
+            _extendedRadiusCircle.Draw(extendedRadius);
+        }
+    }
+
+    private void HideExtendedRadius()
+    {
+        if (_extendedRadiusCircle != null) _extendedRadiusCircle.Clear();
     }
 
     private void InitializeFields()
@@ -60,12 +81,6 @@ public class Ghost : Skill
         _baseCastDelay = CastDeley;
         _ghosts = new List<Character>();
         _spawnComponent = GetComponent<SpawnComponent>();
-    }
-
-    private void SetRadius(float radius)
-    {
-        Radius = radius;
-        _skillRender.DrawRadius(Radius);
     }
 
     private void RegisterSpawnEvents()
@@ -90,11 +105,29 @@ public class Ghost : Skill
 
         _ghostPrefabPreview = Instantiate(ghostPrefabPreview, mousePositionStart, Quaternion.identity);
 
+        ShowExtendedRadius();
+
+        _isPreviewHiddenOverGhost = false;
+
         while (!_disactive)
         {
             Vector3 mousePosition = GetMousePoint();
             _teleportGhost = false;
-            _ghostPrefabPreview.transform.position = mousePosition;
+            bool isHoveringGhost = IsMouseOverGhost(out Character ghostPreview) && ghostPreview.GetComponent<GhostAura>();
+
+            if (isHoveringGhost && !_isPreviewHiddenOverGhost)
+            {
+                _ghostPrefabPreview.SetActive(false);
+                _isPreviewHiddenOverGhost = true;
+            }
+
+            else if (!isHoveringGhost && _isPreviewHiddenOverGhost)
+            {
+                _ghostPrefabPreview.SetActive(true);
+                _isPreviewHiddenOverGhost = false;
+            }
+
+            if (_ghostPrefabPreview.activeSelf) _ghostPrefabPreview.transform.position = mousePosition;
 
             if (_sendingGhostTargetTalentActive && IsMouseOverTarget(out Character character) && character.CharacterState.CheckForState(States.InnerDarkness))
             {
@@ -111,10 +144,8 @@ public class Ghost : Skill
                 }
             }
 
-           else if (IsMouseOverGhost(out Character ghost) && ghost.GetComponent<GhostAura>())
+            else if (IsMouseOverGhost(out Character ghost) && ghost.GetComponent<GhostAura>())
             {
-                SetRadius(extendedRadius);
-
                 if (Input.GetMouseButtonDown(0) && IsWithinRadius(ghost.transform.position, extendedRadius))
                 {
                     _ghostToTeleport = ghost;
@@ -127,9 +158,8 @@ public class Ghost : Skill
 
             else
             {
-                SetRadius(defaultRadius);
 
-                if (Input.GetMouseButtonDown(0) && IsMouseInRadius(Radius) && !_teleportGhost)
+                if (Input.GetMouseButtonDown(0) && IsMouseInRadius(Radius) && !_teleportGhost && !IsMouseOverTarget(out Character characterTarget))
                 {
                     _spawnPosition = GetMousePoint();
                     _shouldSpawnGhost = true;
@@ -277,6 +307,10 @@ public class Ghost : Skill
     {
         var moveComponent = GetComponent<MoveComponent>();
         moveComponent?.TeleportToPositionSmooth(targetPosition, 0.5f);
+
+        if (_teleportAnimationCoroutine != null) StopCoroutine(_teleportAnimationCoroutine);
+        _teleportAnimationCoroutine = StartCoroutine(PlayTeleportMoveAnimation(targetPosition));
+
         StartCoroutine(DisableWayAfterTeleport(moveComponent, targetPosition));
     }
 
@@ -294,6 +328,7 @@ public class Ghost : Skill
         {
             yield return null;
         }
+
         way.SetActive(false);
     }
 
@@ -403,6 +438,28 @@ public class Ghost : Skill
         SpawnGhost(_spawnPosition, ghostVisual.transform.rotation);
     }
 
+    private IEnumerator PlayTeleportMoveAnimation(Vector3 targetPosition)
+    {
+        var moveComponent = GetComponent<MoveComponent>();
+        if (moveComponent == null)
+            yield break;
+
+        Vector3 lastPosition = transform.position;
+
+        while (Vector3.Distance(transform.position, targetPosition) > 0.1f)
+        {
+            Vector3 currentPosition = transform.position;
+            Vector3 fakeVelocity = (currentPosition - lastPosition) / Time.deltaTime;
+            lastPosition = currentPosition;
+
+            moveComponent.SetAnimationMovement(fakeVelocity);
+
+            yield return null;
+        }
+
+        moveComponent.SetAnimationMovement(Vector3.zero);
+        _teleportAnimationCoroutine = null;
+    }
 
     protected override IEnumerator CastJob()
     {
@@ -415,6 +472,7 @@ public class Ghost : Skill
     protected override void ClearData()
     {
         Radius = defaultRadius;
+        HideExtendedRadius();
         if (_ghostPrefabPreview != null) Destroy(_ghostPrefabPreview);
     }
 

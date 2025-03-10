@@ -1496,7 +1496,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
   - resourceType: 2
-    resourceCost: 40
+    resourceCost: 1
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
