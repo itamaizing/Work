@@ -22,6 +22,7 @@ public class ClawStrike : AutoAttackSkill
     protected override void CastAction()
     {
         if (_target == null) return;
+        if (!IsTargetInRange()) return;
         DamageDeal();
     }
 

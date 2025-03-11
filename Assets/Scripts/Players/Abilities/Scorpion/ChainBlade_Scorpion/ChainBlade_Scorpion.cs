@@ -5,16 +5,19 @@ using UnityEngine.SceneManagement;
 
 public class ChainBlade_Scorpion : Skill
 {
-    [Header("BladeProjectile Settings")]
+    [Header("Settings")]
     [SerializeField] private BladeProjectile _projectilePrefab;
+    [SerializeField] private ChainController _chainController;
     [SerializeField] private HeroComponent _playerLinks;
     [SerializeField] private AudioClip _shootSound;
 
+    [Header("Energy Costs")]
+    [SerializeField] private float _chainManaCost = 4f;
+    [SerializeField] private float _bladeManaCost = 1f;
+
     private Vector3 _mousePos = Vector3.positiveInfinity;
     private AudioSource _audioSource;
-
     private Energy _energy;
-    private bool _isBoosted;
 
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
@@ -24,18 +27,10 @@ public class ChainBlade_Scorpion : Skill
     private void Start()
     {
         _audioSource = GetComponent<AudioSource>();
+        _energy = _playerLinks.Resources.Find(r => r.Type == ResourceType.Energy) as Energy;
 
-        for (int i = 0; i < _playerLinks.Resources.Count; i++)
-        {
-            if (_playerLinks.Resources[i].Type == ResourceType.Energy)
-            {
-                _energy = (Energy)_playerLinks.Resources[i];
-                break;
-            }
-        }
+        _chainController.gameObject.SetActive(false);
     }
-
-    #region Cast Methods
 
     protected override IEnumerator PrepareJob()
     {
@@ -43,27 +38,8 @@ public class ChainBlade_Scorpion : Skill
         {
             if (GetMouseButton)
             {
-                var target = GetTarget();
-
-                if (target.isCharater)
-                {
-                    float distance = Vector3.Distance(_hero.transform.position, target.character.transform.position);
-
-                    if (distance <= Radius)
-                    {
-                        _mousePos = target.character.transform.position;
-                    }
-                    else
-                    {
-                        _mousePos = target.Position;
-                    }
-                }
-                else
-                {
-                    _mousePos = target.Position;
-                }
+                _mousePos = GetTarget().Position;
             }
-
             yield return null;
         }
     }
@@ -72,7 +48,6 @@ public class ChainBlade_Scorpion : Skill
     {
         Shoot();
         Hero.Move.CanMove = true;
-
         yield break;
     }
 
@@ -81,62 +56,78 @@ public class ChainBlade_Scorpion : Skill
         _mousePos = Vector3.positiveInfinity;
     }
 
-    #endregion
-
     private void Shoot()
     {
-        Buff.AttackSpeed.ReductionPercentage(1 + Buff.AttackSpeed.Multiplier);
-
         Vector3 lookDir = (_mousePos - _playerLinks.transform.position).normalized;
 
-        Buff.AttackSpeed.IncreasePercentage(1 + Buff.AttackSpeed.Multiplier);
-        CmdCreateProjectile(lookDir, _energy.CurrentValue);
+        if (_energy.CurrentValue >= _chainManaCost)
+        {
+            _energy.CmdUse(_chainManaCost);
+            CmdActivateChainController(lookDir);
+        }
+        else if (_energy.CurrentValue >= _bladeManaCost)
+        {
+            _energy.CmdUse(_bladeManaCost);
+            CmdSpawnBladeProjectile(lookDir);
+        }
 
         ClearData();
     }
 
-    #region Server RPC
-
     [Command]
-    private void CmdCreateProjectile(Vector3 direction, float energyValue)
+    private void CmdSpawnBladeProjectile(Vector3 direction)
     {
-        Vector3 spawnPosition = transform.position;
-        Quaternion spawnRotation = Quaternion.LookRotation(direction);
-
-        BladeProjectile projectile = Instantiate(_projectilePrefab, spawnPosition, spawnRotation);
-
+        var projectile = Instantiate(_projectilePrefab, transform.position, Quaternion.LookRotation(direction));
         SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
 
-        projectile.Init(_playerLinks, energyValue, false, this);
+        projectile.Init(_playerLinks, _energy.CurrentValue, false, this);
         projectile.StartFly(direction);
 
+        RpcPlayShootSound();
         NetworkServer.Spawn(projectile.gameObject);
-        RpcInitProjectile(projectile.gameObject, direction, energyValue);
+    }
+
+    [Command]
+    private void CmdActivateChainController(Vector3 direction)
+    {
+        RpcActivateChainController(direction);
         RpcPlayShootSound();
     }
 
     [ClientRpc]
-    private void RpcInitProjectile(GameObject obj, Vector3 direction, float energyValue)
+    private void RpcActivateChainController(Vector3 direction)
     {
-        obj.GetComponent<BladeProjectile>().Init(_playerLinks, energyValue, false, this);
-        obj.transform.rotation = Quaternion.LookRotation(direction);
+        _chainController.gameObject.SetActive(true);
+        _chainController.transform.position = transform.position;
+        _chainController.Init(transform, direction, this);
     }
 
     [ClientRpc]
     private void RpcPlayShootSound()
     {
         if (_audioSource != null && _shootSound != null)
-        {
             _audioSource.PlayOneShot(_shootSound);
-        }
     }
 
-    #endregion
-
-    #region Optional Talent Support
-    public void TalentBoost(bool value)
+    public void PullTarget(Character target)
     {
-        _isBoosted = value;
+        StartCoroutine(PullRoutine(target));
     }
-    #endregion
+
+    private IEnumerator PullRoutine(Character target)
+    {
+        float speed = 6.66f;
+        float minDistance = 1.5f;
+
+        while (Vector3.Distance(transform.position, target.transform.position) > minDistance)
+        {
+            Vector3 dir = (transform.position - target.transform.position).normalized;
+            target.transform.position += dir * speed * Time.deltaTime;
+
+            _chainController.UpdatePositions();
+            yield return null;
+        }
+
+        _chainController.gameObject.SetActive(false);
+    }
 }
