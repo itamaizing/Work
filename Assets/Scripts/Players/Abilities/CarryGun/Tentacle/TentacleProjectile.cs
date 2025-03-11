@@ -6,6 +6,7 @@ public class TentacleProjectile : MonoBehaviour
     [SerializeField] private bool _isPreview = true;
     [SerializeField] private DrawCircleTentacle _drawCircle;
     [SerializeField] private GameObject tentacle;
+    [SerializeField] private LayerMask obstecls;
 
     private Character _player;
     private Character _target;
@@ -18,6 +19,7 @@ public class TentacleProjectile : MonoBehaviour
 
     private bool _radiusView;
     private bool _isCollidedWithOtherCharacter = false;
+    private bool _isPullTarget = false;
     private Coroutine _radiusUpdateCoroutine;
 
     public bool IsPreview { get => _isPreview; set => _isPreview = value; }
@@ -59,14 +61,22 @@ public class TentacleProjectile : MonoBehaviour
 
         transform.position = startPosition;
 
-        StartTentaclesGrab();
+        Invoke("ReleaseTarget", _grabDuration);
     }
 
     public void StartTentaclesGrab()
     {
         if (_target != null && !_isPreview)
         {
+            Vector3 direction = (_target.transform.position - transform.position).normalized;
+            float distance = Vector3.Distance(transform.position, _target.transform.position);
+
+            float sphereRadius = 0.2f;
+
+            if (Physics.SphereCast(transform.position, sphereRadius, direction, out RaycastHit hit, distance, obstecls)) return;
+
             _target.Move.CanMove = false;
+            _isPullTarget = true;
             StartCoroutine(PullTarget());
         }
     }
@@ -113,40 +123,27 @@ public class TentacleProjectile : MonoBehaviour
             elapsedTime += 0.1f;
             yield return new WaitForSeconds(0.1f);
         }
-
-        HoldTarget();
-    }
-
-    private void HoldTarget()
-    {
-        if (_target != null)
-        {
-            _target.Move.CanMove = false;
-            StartCoroutine(ReleaseTargetAfterDuration());
-        }
-    }
-
-    private IEnumerator ReleaseTargetAfterDuration()
-    {
-        yield return new WaitForSeconds(_grabDuration);
-        ReleaseTarget();
     }
 
     private void ReleaseTarget()
     {
-        Debug.Log("TentacleProjectile: ReleaseTarget");
-        if (_target != null)
-        {
-            _target.Move.CanMove = true;
-            Destroy(gameObject);
-        }
+        if (_target != null) _target.Move.CanMove = true;
+
+        Destroy(gameObject);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.TryGetComponent<Character>(out Character character) && character != _target)
-        {
-            _isCollidedWithOtherCharacter = true;
-        }
+        if (other.gameObject.TryGetComponent<Character>(out Character character) && character != _target) _isCollidedWithOtherCharacter = true;
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (!_isPullTarget) StartTentaclesGrab();
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.TryGetComponent<Character>(out Character character) && character != _target) _isCollidedWithOtherCharacter = false;
     }
 }

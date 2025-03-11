@@ -32,7 +32,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2356317950569320208}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.55, y: 0, z: -0.49}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -78,11 +78,11 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1
+  m_Radius: 6
   m_Height: 3.9870825
   m_Direction: 1
   m_Center: {x: 0, y: 1.7966468, z: 0}
@@ -232,6 +232,9 @@ MonoBehaviour:
   _isPreview: 0
   _drawCircle: {fileID: 6961409168004119619}
   tentacle: {fileID: 8635730615369303596}
+  obstecls:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!114 &6961409168004119619
 MonoBehaviour:
   m_ObjectHideFlags: 0

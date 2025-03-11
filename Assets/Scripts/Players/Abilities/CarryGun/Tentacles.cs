@@ -96,6 +96,7 @@ public class Tentacles : Skill
             if (GetMouseButton && distanceToTarget <= Radius)
             {
                 _spawnPoint = _previewInstancePrefab.transform.position;
+                Hero.Move.CanMove = false;
                 break;
             }
 

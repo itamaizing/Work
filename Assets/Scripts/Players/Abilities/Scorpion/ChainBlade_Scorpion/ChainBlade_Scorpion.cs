@@ -47,13 +47,14 @@ public class ChainBlade_Scorpion : Skill
     protected override IEnumerator CastJob()
     {
         Shoot();
-        Hero.Move.CanMove = true;
+        Hero.Move.CanMove = false;
         yield break;
     }
 
     protected override void ClearData()
     {
         _mousePos = Vector3.positiveInfinity;
+        Hero.Move.CanMove = true;
     }
 
     private void Shoot()
