@@ -9708,13 +9708,13 @@ MonoBehaviour:
   _maxCharges: 0
   _chargeCooldown: 0
   _radius: 7
-  _area: 0.5
+  _area: 0
   _castLength: 7
   _castWidth: 0.5
   _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
+  _isAutoAreaRender: 0
   _isAutoLineRender: 1
-  _isDynamicRenderer: 0
+  _isDynamicRenderer: 1
   _disactive: 0
   _attackZoneSize: 7
   _attackDelay: 1.3
@@ -9830,9 +9830,9 @@ MonoBehaviour:
   _castLength: 7
   _castWidth: 0.5
   _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
+  _isAutoAreaRender: 0
   _isAutoLineRender: 1
-  _isDynamicRenderer: 0
+  _isDynamicRenderer: 1
   _disactive: 0
   _attackZoneSize: 7
   _attackDelay: 1.69

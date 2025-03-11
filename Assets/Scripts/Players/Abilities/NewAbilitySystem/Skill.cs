@@ -508,7 +508,11 @@ public abstract class Skill : NetworkBehaviour
             _skillRender.DrawRadius(Radius);
 
         if (_isAutoAreaRender)
+        {
             _skillRender.DrawArea(Area, damage, TargetsLayers);
+            _skillRender.StartDynamicRadiusColor(Radius);
+        }
+
 
         if (_isAutoLineRender)
             _skillRender.DrawLine(CastLength, CastWidth, damage, TargetsLayers);
@@ -529,6 +533,7 @@ public abstract class Skill : NetworkBehaviour
         _skillRender.StopDrawArea();
         _skillRender.StopDrawLine();
         _skillRender.StopDrawClosestTarget();
+        _skillRender.StopDynamicRadiusColor();
 
         /*if (true)
 		{

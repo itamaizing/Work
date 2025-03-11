@@ -33,6 +33,7 @@ public class SkillRenderer : NetworkBehaviour
     private Coroutine _drawAreaCoroutine;
     private Coroutine _drawClosestTargetCoroutine;
     private Coroutine _drawRadiusCoroutine;
+    private Coroutine _dynamicRadiusColorCoroutine;
 
     //public SphereArea TempDamageZone => _tempDamageZone;
     public CircleArea TempDamageZone => _tempArea;
@@ -185,6 +186,24 @@ public class SkillRenderer : NetworkBehaviour
     {
         _circleRadius = radiusArea;
     }
+
+    public void StartDynamicRadiusColor(float radius)
+    {
+        if (_dynamicRadiusColorCoroutine != null)
+            StopCoroutine(_dynamicRadiusColorCoroutine);
+
+        _dynamicRadiusColorCoroutine = StartCoroutine(DynamicRadiusColorJob(radius));
+    }
+
+    public void StopDynamicRadiusColor()
+    {
+        if (_dynamicRadiusColorCoroutine != null)
+        {
+            StopCoroutine(_dynamicRadiusColorCoroutine);
+            _dynamicRadiusColorCoroutine = null;
+        }
+    }
+
 
     private void RotateAtMouse(Transform transform)
     {
@@ -360,4 +379,28 @@ public class SkillRenderer : NetworkBehaviour
 		}
 		//yield return null;
 	}
+
+    private IEnumerator DynamicRadiusColorJob(float Radius)
+    {
+        while (true)
+        {
+            if (_tempArea != null && _circle != null)
+            {
+                float distance = Vector3.Distance(_tempArea.transform.position, transform.position);
+
+                if (distance <= Radius)
+                {
+                    _circle.SetColor(_colorForAllies);
+                }
+                else
+                {
+                    _circle.SetColor(_colorForEnemies);
+                }
+
+                _circle.Draw(Radius);
+            }
+
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
 }

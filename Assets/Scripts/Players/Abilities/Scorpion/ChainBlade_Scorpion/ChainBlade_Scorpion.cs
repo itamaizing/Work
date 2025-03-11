@@ -1,230 +1,142 @@
 using Mirror;
 using System.Collections;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public enum ChainbladeType
-{
-    Default,
-    Hook
-}
 public class ChainBlade_Scorpion : Skill
 {
-    [Header("Ability settings")]
-    [SerializeField] [Range(0, 100)] private float _minDamage = 3f;
-    [SerializeField] [Range(0, 100)] private float _maxDamage = 5f;
-    [SerializeField] private Character _playerLinks;
-    [SerializeField] private NetworkIdentity _playerIdentity;
+    [Header("BladeProjectile Settings")]
+    [SerializeField] private BladeProjectile _projectilePrefab;
+    [SerializeField] private HeroComponent _playerLinks;
+    [SerializeField] private AudioClip _shootSound;
 
-    [SerializeField] private float _range;
-    [SerializeField] private ChainController _chainPrefab;
-    private ChainController _chain;
+    private Vector3 _mousePos = Vector3.positiveInfinity;
+    private AudioSource _audioSource;
 
-    [SerializeField] private GameObject _projectilePrefab;
-    private GameObject _projectile;
-    private BladeProjectile _blade;
+    private Energy _energy;
+    private bool _isBoosted;
 
-    private GameObject enemy;
-    private bool bladeDestroyed = false;
-    private ChainbladeType _type;
-
-    private GameObject _tempTarget;
-    private MoveComponent _tempTargetMove;
-
-    public float DamageRange => Random.Range(_minDamage, _maxDamage);
-
-    protected override bool IsCanCast
-    {
-        get
-        {
-            return true;
-        }
-    }
-
+    protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => Animator.StringToHash("Cast ChainBlade");
+    protected override bool IsCanCast => true;
 
-    public void AnimCastChainBlade()
+    private void Start()
     {
-        AnimStartCastCoroutine();
-    }
+        _audioSource = GetComponent<AudioSource>();
 
-    public void AnimChainBladeEnd()
-    {
-        AnimCastEnded();
-    }
-    protected override IEnumerator CastJob()
-    {
-        Vector2 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
-        Vector3 direction = /*Camera.main.ScreenToWorldPoint(Input.mousePosition)*/GetMousePoint() - transform.position;
-        direction.y = 0;
-
-        CmdCreateProjectile(8f, direction, this.gameObject, _type); // <--- event hit is here
-
-        CmdThrowBlade(dir);
-
-        yield return null;
-    }
-    private IEnumerator PullEnemy(GameObject enemy)
-    {
-        float distance = Vector2.Distance(transform.position, enemy.transform.position);
-        enemy.GetComponent<MoveComponent>().CanMove = false;
-
-        while (distance >= 2.5f)
+        for (int i = 0; i < _playerLinks.Resources.Count; i++)
         {
-            Debug.Log("Pulling");
-            //enemy.transform.position = Vector2.MoveTowards(enemy.transform.position, transform.position, 10f * Time.deltaTime);
-
-            Pull(enemy, (/*enemy.transform.position - transform.position*/transform.position - enemy.transform.position).normalized * 10f * Time.deltaTime);
-            distance = Vector2.Distance(transform.position, enemy.transform.position);
-
-            yield return null;
-        }
-        enemy.GetComponent<Character>().Move.CanMove = true;
-        Destroy(_chain.gameObject);
-    }
-
-    private IEnumerator ReturnBlade(Transform bladeTransform, GameObject chainGameObject)
-    {
-        _hero.Move.CanMove = true;
-        //_blade._rb.isKinematic = true;
-        //_blade._rb.velocity = (transform.position - _projectile.transform.position).normalized * 20f;
-
-        while (Vector2.Distance(transform.position, bladeTransform.position) > 2.9f)
-        {
-            /*_blade*/
-            bladeTransform.GetComponent<BladeProjectile>()._rb.velocity = (transform.position - bladeTransform.position).normalized * 20f;
-            yield return null;
-        }
-
-        Destroy(chainGameObject);
-        Destroy(bladeTransform.gameObject);
-    }
-
-    [Command]
-    private void CmdCreateProjectile(float maxDistance, Vector3 direction, GameObject parent, ChainbladeType type)
-    {
-        //blade spawn
-        _projectile = Instantiate(_projectilePrefab, transform.position, Quaternion.identity);
-        SceneManager.MoveGameObjectToScene(_projectile, _hero.NetworkSettings.MyRoom);
-
-        _blade = _projectile.GetComponent<BladeProjectile>();
-        _blade.Init(maxDistance, direction, parent, type);
-
-        NetworkServer.Spawn(_projectile);
-
-        //Damage
-        _projectile.GetComponent<BladeProjectile>().OnHit.AddListener(target =>
-        {
-            if (target == null)
-                return;
-
-            Damage damage = new Damage
+            if (_playerLinks.Resources[i].Type == ResourceType.Energy)
             {
-                Value = Buff.Damage.GetBuffedValue(DamageRange),
-                Type = DamageType,
-            };
-
-            //CmdApplyDamage(damage, target.gameObject);
-
-            //DealDamage(damage, target.gameObject);
-
-            ApplyDamage(damage, target.gameObject);
-        });
-
-        //Hook
-        if (type == ChainbladeType.Hook)
-        {
-            _hero.Move.CanMove = false;
-            _projectile.GetComponent<BladeProjectile>().OnHit.AddListener(target =>
-            {
-                if (target != null)
-                {
-                    enemy = target;
-                    _chain.targetID = enemy.GetComponent<NetworkIdentity>().netId;
-                    NetworkServer.Destroy(_blade.gameObject);
-                    StartCoroutine(PullEnemy(enemy));
-                }
-                else
-                {
-                    StartCoroutine(ReturnBlade(_projectile.transform, _chain.gameObject));
-                }
-                bladeDestroyed = true;
-            });
-
-            //chain spawn
-            GameObject item = Instantiate(_chainPrefab.gameObject);
-            SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
-            _chain = item.GetComponent<ChainController>();
-
-            NetworkServer.Spawn(item);
-            _chain.targetID = _blade.netId;
-            _chain.parentID = _playerLinks.GetComponent<NetworkIdentity>().netId;
+                _energy = (Energy)_playerLinks.Resources[i];
+                break;
+            }
         }
     }
 
-    [Command]
-    private void CmdThrowBlade(Vector2 direction)
-    {
-        _projectile.GetComponent<BladeProjectile>().ThrowBlade(direction);
-    }
-
-    private void ResetValue()
-    {
-        bladeDestroyed = false;
-        _hero.Move.CanMove = true;
-    }
+    #region Cast Methods
 
     protected override IEnumerator PrepareJob()
     {
-        while (true)
+        while (float.IsPositiveInfinity(_mousePos.x))
         {
             if (GetMouseButton)
             {
-                break;
+                var target = GetTarget();
+
+                if (target.isCharater)
+                {
+                    float distance = Vector3.Distance(_hero.transform.position, target.character.transform.position);
+
+                    if (distance <= Radius)
+                    {
+                        _mousePos = target.character.transform.position;
+                    }
+                    else
+                    {
+                        _mousePos = target.Position;
+                    }
+                }
+                else
+                {
+                    _mousePos = target.Position;
+                }
             }
+
             yield return null;
         }
+    }
 
-        if (_playerLinks.Resources.First(o => o.Type == ResourceType.Mana || o.Type == ResourceType.Energy).CurrentValue >= 40)
-        {
-            _type = ChainbladeType.Hook;
-            _skillEnergyCosts[0].resourceCost = 1;
-        }
-        else
-        {
-            _type = ChainbladeType.Default;
-            _skillEnergyCosts[0].resourceCost = 0.5f;
-        }
+    protected override IEnumerator CastJob()
+    {
+        Shoot();
+        Hero.Move.CanMove = true;
 
-        yield return null;
+        yield break;
     }
 
     protected override void ClearData()
     {
-
+        _mousePos = Vector3.positiveInfinity;
     }
 
-    private void DealDamage(Damage damage, GameObject hp)
+    #endregion
+
+    private void Shoot()
     {
-        if (_tempTargetForDamage != hp.transform)
-        {
-            _tempTargetForDamage = hp.transform;
-            _tempHPForDamage = hp.GetComponent<Health>();
-        }
-        _tempHPForDamage.TryTakeDamage(ref damage, this);
+        Buff.AttackSpeed.ReductionPercentage(1 + Buff.AttackSpeed.Multiplier);
+
+        Vector3 lookDir = (_mousePos - _playerLinks.transform.position).normalized;
+
+        Buff.AttackSpeed.IncreasePercentage(1 + Buff.AttackSpeed.Multiplier);
+        CmdCreateProjectile(lookDir, _energy.CurrentValue);
+
+        ClearData();
     }
 
+    #region Server RPC
 
-    private void Pull(GameObject gameObject, Vector3 force) // called in [command]
+    [Command]
+    private void CmdCreateProjectile(Vector3 direction, float energyValue)
     {
-        if (_tempTarget != gameObject)
-        {
-            _tempTarget = gameObject;
-            _tempTargetMove = gameObject.GetComponent<MoveComponent>();
-        }
-        _tempTargetMove.TargetRpcAddTransformPosition(force);
+        Vector3 spawnPosition = transform.position;
+        Quaternion spawnRotation = Quaternion.LookRotation(direction);
+
+        BladeProjectile projectile = Instantiate(_projectilePrefab, spawnPosition, spawnRotation);
+
+        SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
+
+        projectile.Init(_playerLinks, energyValue, false, this);
+        projectile.StartFly(direction);
+
+        NetworkServer.Spawn(projectile.gameObject);
+        RpcInitProjectile(projectile.gameObject, direction, energyValue);
+        RpcPlayShootSound();
     }
+
+    [ClientRpc]
+    private void RpcInitProjectile(GameObject obj, Vector3 direction, float energyValue)
+    {
+        obj.GetComponent<BladeProjectile>().Init(_playerLinks, energyValue, false, this);
+        obj.transform.rotation = Quaternion.LookRotation(direction);
+    }
+
+    [ClientRpc]
+    private void RpcPlayShootSound()
+    {
+        if (_audioSource != null && _shootSound != null)
+        {
+            _audioSource.PlayOneShot(_shootSound);
+        }
+    }
+
+    #endregion
+
+    #region Optional Talent Support
+    public void TalentBoost(bool value)
+    {
+        _isBoosted = value;
+    }
+    #endregion
 }

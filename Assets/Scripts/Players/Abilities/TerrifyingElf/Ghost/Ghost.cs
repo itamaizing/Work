@@ -37,6 +37,7 @@ public class Ghost : Skill
     private Character _targetCharacter;
     private Character _ghostToTeleport;
 
+    private Coroutine _checkExtendedRadiusCoroutine;
     private Coroutine _teleportAnimationCoroutine;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("GhostCastDelay");
@@ -59,6 +60,11 @@ public class Ghost : Skill
     private void OnDestroy()
     {
         UnregisterSpawnEvents();
+        if (_checkExtendedRadiusCoroutine != null)
+        {
+            StopCoroutine(_checkExtendedRadiusCoroutine);
+            _checkExtendedRadiusCoroutine = null;
+        }
     }
 
     private void ShowExtendedRadius()
@@ -102,6 +108,9 @@ public class Ghost : Skill
     protected override IEnumerator PrepareJob()
     {
         Vector3 mousePositionStart = GetMousePoint();
+
+        if (_checkExtendedRadiusCoroutine != null) StopCoroutine(_checkExtendedRadiusCoroutine);
+        _checkExtendedRadiusCoroutine = StartCoroutine(CheckExtendedRadiusJob());
 
         _ghostPrefabPreview = Instantiate(ghostPrefabPreview, mousePositionStart, Quaternion.identity);
 
@@ -461,6 +470,26 @@ public class Ghost : Skill
         _teleportAnimationCoroutine = null;
     }
 
+    private IEnumerator CheckExtendedRadiusJob()
+    {
+        while (true)
+        {
+            bool ghostWithAuraInExtendedRadius = _ghosts.Any(ghost =>
+                ghost != null &&
+                ghost.GetComponent<GhostAura>() != null &&
+                IsWithinRadius(ghost.transform.position, extendedRadius));
+
+            if (_extendedRadiusCircle != null)
+            {
+                var color = ghostWithAuraInExtendedRadius ? Color.green : extendedRadiusColor;
+                _extendedRadiusCircle.SetColor(color);
+                _extendedRadiusCircle.Draw(extendedRadius);
+            }
+
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+
     protected override IEnumerator CastJob()
     {
         if (_shouldSpawnGhost && _spawnPosition != Vector3.zero) StartCoroutine(SpawnGhostVisualEffect(_spawnPosition));
@@ -473,6 +502,13 @@ public class Ghost : Skill
     {
         Radius = defaultRadius;
         HideExtendedRadius();
+
+        if (_checkExtendedRadiusCoroutine != null)
+        {
+            StopCoroutine(_checkExtendedRadiusCoroutine);
+            _checkExtendedRadiusCoroutine = null;
+        }
+
         if (_ghostPrefabPreview != null) Destroy(_ghostPrefabPreview);
     }
 

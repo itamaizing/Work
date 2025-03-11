@@ -998,6 +998,7 @@ GameObject:
   - component: {fileID: 7680563901654360788}
   - component: {fileID: 4750899195880634232}
   - component: {fileID: 4761203618455168244}
+  - component: {fileID: 1021803492578447668}
   m_Layer: 0
   m_Name: Blade_Prefab
   m_TagString: Untagged
@@ -1036,15 +1037,14 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _collider: {fileID: 7129273550924171926}
-  _layerMask:
-    serializedVersion: 2
-    m_Bits: 768
-  ChainLinkPoint: {fileID: 4972314062421136095, guid: 94a92e558dfff4041911d68c42de01f8, type: 3}
-  _rb: {fileID: 0}
-  OnHit:
-    m_PersistentCalls:
-      m_Calls: []
+  _hitEffect: {fileID: 0}
+  _spriteRenderer: {fileID: 0}
+  _rb: {fileID: 4761203618455168244}
+  _force: 20
+  _distance: 4
+  _damageMin: 3
+  _damageMax: 5
+  _lifeTime: 1
 --- !u!114 &7680563901654360788
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1124,6 +1124,27 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!65 &1021803492578447668
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3765642479631805782}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.14600638, y: 0.5154826, z: 0.15485615}
+  m_Center: {x: 0.000024333596, y: 0.2422587, z: -0.017776221}
 --- !u!1 &3891715670773671625
 GameObject:
   m_ObjectHideFlags: 0
@@ -1754,7 +1775,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 69838047137026188}
-  - component: {fileID: 7129273550924171926}
   m_Layer: 0
   m_Name: Kunai
   m_TagString: Untagged
@@ -1769,7 +1789,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5627931324840838820}
-  m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 5, y: 5, z: 3}
   m_ConstrainProportionsScale: 0
@@ -1791,28 +1811,7 @@ Transform:
   - {fileID: 822804238647386058}
   m_Father: {fileID: 1540389076765259397}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
---- !u!65 &7129273550924171926
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5627931324840838820}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.02565886, y: 0.10233382, z: 0.045764387}
-  m_Center: {x: 0.0008986488, y: -0.052491885, z: 0.0008667509}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!1 &5708551705727964282
 GameObject:
   m_ObjectHideFlags: 0
@@ -1838,7 +1837,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5708551705727964282}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -6.0876537e-10, y: 0.05167359, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

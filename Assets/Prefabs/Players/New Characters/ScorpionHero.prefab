@@ -1241,17 +1241,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6527aa781683d1643a6540f0c1b1306c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2675348779447106883 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2361216367366023055, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-  m_PrefabInstance: {fileID: 424471191848786636}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8143091671269686944}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &3713062146289152410 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3919103737457224534, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -1527,13 +1516,9 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _disactive: 0
-  _minDamage: 3
-  _maxDamage: 5
+  _projectilePrefab: {fileID: 4389532817277749665, guid: e973d107e3652be4a8430fe523236ae6, type: 3}
   _playerLinks: {fileID: 5458554383432203635}
-  _playerIdentity: {fileID: 2675348779447106883}
-  _range: 7
-  _chainPrefab: {fileID: -8245340431016603970, guid: 94a92e558dfff4041911d68c42de01f8, type: 3}
-  _projectilePrefab: {fileID: 3765642479631805782, guid: e973d107e3652be4a8430fe523236ae6, type: 3}
+  _shootSound: {fileID: 8300000, guid: 17cbdc35f10725443b65eae7779124c6, type: 3}
 --- !u!114 &6267367289068038631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1584,7 +1569,7 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _disactive: 0
-  _conePrefab: {fileID: 0}
+  _conePrefab: {fileID: 6453211931130663927, guid: 45218b2aa635a164aae6b7da7d237666, type: 3}
   _prefab: {fileID: 7932399568012328523, guid: 45218b2aa635a164aae6b7da7d237666, type: 3}
   layerMask:
     serializedVersion: 2
@@ -1595,8 +1580,8 @@ MonoBehaviour:
   _damageScalePerTick: 2
   _damagePercentStart: 100
   _damagePercentEnd: 70
-  _fireBreath: {fileID: 0}
-  _fireObj: {fileID: 0}
+  _fireBreath: {fileID: 6453211931130663927, guid: 45218b2aa635a164aae6b7da7d237666, type: 3}
+  _fireObj: {fileID: 7932399568012328523, guid: 45218b2aa635a164aae6b7da7d237666, type: 3}
 --- !u!114 &3741212121368607163
 MonoBehaviour:
   m_ObjectHideFlags: 0
