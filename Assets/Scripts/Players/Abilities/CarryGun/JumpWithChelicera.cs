@@ -66,10 +66,7 @@ public class JumpWithChelicera : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_isTarget && _target != null)
-        {
-            ExecuteJump();
-        }
+        if (_isTarget && _target != null) ExecuteJump();
         yield return null;
     }
 
@@ -104,6 +101,7 @@ public class JumpWithChelicera : Skill
             : Mathf.Clamp(normalizedDistance * _baseIncreasedDamage, _baseIncreasedDamage, _maxIncreasedDamage);
 
         Vector3 direction = (_target.transform.position - transform.position).normalized;
+        _player.Move.LookAtTransform(_target.transform);
 
         CmdExecuteJump(_player.gameObject, _target.gameObject, direction, _additionalDamageInPercentage);
         Invoke(nameof(ResetBool), 1f);
@@ -155,6 +153,7 @@ public class JumpWithChelicera : Skill
     private void HandleJumpEnd()
     {
         _animator.applyRootMotion = false;
+        _player.Move.StopLookAt();
         Hero.Move.CanMove = true;
     }
 
