@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: ReversePolarity
   _description: 
-  _icon: {fileID: 21300000, guid: e1eafea04aee5fa44b72a54b898c488c, type: 3}
+  _icon: {fileID: 21300000, guid: 81f5ea5c7488e984584b1fc2d15b6d84, type: 3}

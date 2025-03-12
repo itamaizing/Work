@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: FlashOfLight
   _description: 
-  _icon: {fileID: 21300000, guid: b7ba9882ed5f32f40a9cd054221db12c, type: 3}
+  _icon: {fileID: 21300000, guid: 6ee621bc049072e49a439414e31b85e2, type: 3}

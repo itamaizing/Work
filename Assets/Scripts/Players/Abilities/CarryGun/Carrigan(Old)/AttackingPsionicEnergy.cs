@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,6 +19,8 @@ public class AttackingPsionicEnergy : Energy
     public float MaxAttackingPsiEnergy => _maxAttackingPsiEnergy;
     public bool IsAttackingPsiEnergy => _isAttackingPsiActive;
 
+    public event Action<float> OnEnergyChanged;
+
     private void Start()
     {
         MaxValue = _maxAttackingPsiEnergy;
@@ -35,6 +38,8 @@ public class AttackingPsionicEnergy : Energy
 
         Add(transferAmount);
         CurrentValue = Mathf.Min(CurrentValue, _maxAttackingPsiEnergy);
+
+        OnEnergyChanged?.Invoke(CurrentValue);
 
         RpcAttackingPsiEnergyChanged(true, CurrentValue);
         UpdateAttackingEnergyBar();
@@ -56,6 +61,8 @@ public class AttackingPsionicEnergy : Energy
 
         CurrentValue = 0;
         _isAttackingPsiActive = false;
+
+        OnEnergyChanged?.Invoke(CurrentValue);
 
         RpcAttackingPsiEnergyChanged(false, 0f);
         UpdateAttackingEnergyBar();

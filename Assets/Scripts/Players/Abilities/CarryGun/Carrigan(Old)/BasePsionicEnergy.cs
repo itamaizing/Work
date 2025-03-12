@@ -14,7 +14,6 @@ public class BasePsionicEnergy : Resource, IDamageable
     private const float BaseSliderFillPercent = 0.3f;
     private const float RemainingSliderFillPercent = 0.7f;
     private const float PsionicaDecayTime = 12f;
-    private const float MaxEnergyThreshold = 100f;
     private const float DamageToPsiConversionRate = 1f;
 
     private bool _isInternalPsiEnergy = false;
@@ -23,6 +22,7 @@ public class BasePsionicEnergy : Resource, IDamageable
     public bool IsAttackingPsiEnergyActive => _attackingPsionicEnergy.IsAttackingPsiEnergy;
 
     public event Action<Damage, Skill> DamageTaken;
+    public event Action<float> OnEnergyChanged;
 
     private void Start()
     {
@@ -57,11 +57,15 @@ public class BasePsionicEnergy : Resource, IDamageable
         {
             float energyGain = damage.Value * DamageToPsiConversionRate;
             Add(energyGain);
-            CurrentValue = Mathf.Min(CurrentValue, MaxEnergyThreshold); // Ограничиваем макс. значение
+            CurrentValue = Mathf.Min(CurrentValue, MaxValue);
 
-            if (CurrentValue >= MaxEnergyThreshold)
+            OnEnergyChanged?.Invoke(CurrentValue);
+
+            bool wasInternalEnergy = _isInternalPsiEnergy;
+            _isInternalPsiEnergy = CurrentValue > 0;
+
+            if (wasInternalEnergy != _isInternalPsiEnergy)
             {
-                _isInternalPsiEnergy = true;
                 RpcInternalPsiEnergyChanged(_isInternalPsiEnergy);
             }
 
@@ -78,6 +82,7 @@ public class BasePsionicEnergy : Resource, IDamageable
     public void UsePsiEnergy(float value)
     {
         TryUse(value);
+        OnEnergyChanged?.Invoke(CurrentValue);
         UpdatePsionicaBar();
     }
 
@@ -112,6 +117,7 @@ public class BasePsionicEnergy : Resource, IDamageable
     {
         yield return new WaitForSeconds(PsionicaDecayTime);
         CurrentValue = 0;
+        OnEnergyChanged?.Invoke(CurrentValue);
         _isInternalPsiEnergy = false;
         UpdatePsionicaBar();
         RpcInternalPsiEnergyChanged(_isInternalPsiEnergy);
@@ -122,21 +128,19 @@ public class BasePsionicEnergy : Resource, IDamageable
         if (damage.Value == 0)
             return true;
 
-        if (CurrentValue >= MaxEnergyThreshold)
+        if (CurrentValue > 0)
         {
             float absorbingDamage = Mathf.Min(CurrentValue, damage.Value);
-            damage.Value -= absorbingDamage * 0.1f;
-            CurrentValue -= absorbingDamage;
+            damage.Value -= absorbingDamage * 0.1f; 
+            UsePsiEnergy(absorbingDamage);
 
-            if (CurrentValue < MaxEnergyThreshold)
-            {
-                _isInternalPsiEnergy = false;
-                RpcInternalPsiEnergyChanged(_isInternalPsiEnergy);
-            }
+            _isInternalPsiEnergy = CurrentValue > 0;
+            RpcInternalPsiEnergyChanged(_isInternalPsiEnergy);
 
             UpdatePsionicaBar();
             return true;
         }
+
         return false;
     }
 

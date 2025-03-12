@@ -3,70 +3,55 @@ using UnityEngine;
 
 public class ChainController : NetworkBehaviour
 {
-    [SerializeField] private float _speed = 15f;
-    [SerializeField] private float _maxDistance = 4f;
+    [SerializeField] private LineRenderer _line;
 
-    private LineRenderer _line;
+    [SyncVar(hook = nameof(OnPlayerChanged))]
+    private uint _playerNetId;
+
+    [SyncVar(hook = nameof(OnTargetChanged))]
+    private uint _targetNetId;
+
     private Transform _playerTransform;
-    private Vector3 _direction;
-    private Vector3 _startPos;
-    private ChainBlade_Scorpion _skill;
-    private bool _isFlying;
+    private Transform _targetTransform;
 
-    private void Awake()
+    public void InitChain(Transform player, Transform target)
     {
-        _line = GetComponent<LineRenderer>();
-        gameObject.SetActive(false);
+        _playerNetId = player.GetComponent<NetworkIdentity>().netId;
+        _targetNetId = target.GetComponent<NetworkIdentity>().netId;
+
+        SetTransforms(_playerNetId, _targetNetId);
     }
 
-    public void Init(Transform player, Vector3 direction, ChainBlade_Scorpion skill)
+    private void OnPlayerChanged(uint oldId, uint newId)
     {
-        _playerTransform = player;
-        _direction = direction;
-        _startPos = player.position;
-        _skill = skill;
-        _isFlying = true;
+        SetTransforms(newId, _targetNetId);
+    }
 
-        UpdatePositions();
+    private void OnTargetChanged(uint oldId, uint newId)
+    {
+        SetTransforms(_playerNetId, newId);
+    }
+
+    private void SetTransforms(uint playerId, uint targetId)
+    {
+        if (NetworkClient.spawned.TryGetValue(playerId, out var playerIdentity))
+            _playerTransform = playerIdentity.transform;
+
+        if (NetworkClient.spawned.TryGetValue(targetId, out var targetIdentity))
+            _targetTransform = targetIdentity.transform;
+
+        UpdateLinePositions();
     }
 
     private void Update()
     {
-        if (!_isFlying) return;
-
-        transform.position += _direction * _speed * Time.deltaTime;
-
-        if (Vector3.Distance(_startPos, transform.position) >= _maxDistance)
-            DeactivateChain();
-
-        UpdatePositions();
+        if (_playerTransform && _targetTransform)
+            UpdateLinePositions();
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void UpdateLinePositions()
     {
-        if (other.TryGetComponent(out Character target) && target != _playerTransform.GetComponent<Character>())
-        {
-            _isFlying = false;
-            _skill.PullTarget(target);
-        }
-        else if (other.CompareTag("Obstacle"))
-        {
-            DeactivateChain();
-        }
-    }
-
-    public void UpdatePositions()
-    {
-        if (_playerTransform == null || _line == null)
-            return;
-
-        _line.SetPosition(0, _playerTransform.position + Vector3.up);
-        _line.SetPosition(1, transform.position + Vector3.up);
-    }
-
-    private void DeactivateChain()
-    {
-        _isFlying = false;
-        gameObject.SetActive(false);
+        _line.SetPosition(0, _playerTransform.position + Vector3.up * 1.5f);
+        _line.SetPosition(1, _targetTransform.position);
     }
 }

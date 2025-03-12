@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: SparkOfLight
   _description: 
-  _icon: {fileID: 21300000, guid: 428dcd7a870198e46b6ad8210ced5702, type: 3}
+  _icon: {fileID: 21300000, guid: 5947490bf033aa34584f86a37691c7e0, type: 3}

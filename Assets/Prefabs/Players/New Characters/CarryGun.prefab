@@ -241,7 +241,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 0.53
+  m_FillAmount: 0.42
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
@@ -6947,10 +6947,9 @@ Transform:
   m_LocalScale: {x: -0.70000005, y: 0.7, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1270855531654605093}
-  - {fileID: 2923139161392088009}
-  - {fileID: 8814697160927584721}
   - {fileID: 5613304632579208996}
+  - {fileID: 5794954217610378670}
+  - {fileID: 8814697160927584721}
   - {fileID: 2251035120331201189}
   - {fileID: 2648887053032462036}
   m_Father: {fileID: 7572513388100405829}
@@ -7163,7 +7162,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 0
+  m_FillAmount: 0.47
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
@@ -7408,7 +7407,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0
+  m_Value: 0.47
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -7496,69 +7495,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &6053839915497646460
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1270855531654605093}
-  m_Layer: 0
-  m_Name: PsionicaAttack
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1270855531654605093
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6053839915497646460}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.355, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2151017483520686778}
-  m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &7491841787525435929
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2923139161392088009}
-  m_Layer: 0
-  m_Name: Psionica
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2923139161392088009
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7491841787525435929}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.355, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 5794954217610378670}
-  m_Father: {fileID: 2151017483520686778}
-  m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7688519238728722250
 GameObject:
   m_ObjectHideFlags: 0
@@ -7701,18 +7637,18 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7912281051430716653}
-  m_LocalRotation: {x: -0, y: -1, z: -0, w: 0}
+  m_LocalRotation: {x: -0, y: -1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: -1.4285712, y: 1.4285712, z: 0}
+  m_LocalScale: {x: -1.4285712, y: 1.4285711, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4816790541702652532}
-  m_Father: {fileID: 2923139161392088009}
+  m_Father: {fileID: 2151017483520686778}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.013, y: 0}
+  m_AnchoredPosition: {x: -1.368, y: 0}
   m_SizeDelta: {x: 1.94, y: 0.3}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &8327061482150587068
@@ -7762,7 +7698,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0.53
+  m_Value: 0.42
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -9334,6 +9270,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1487487552333656207}
+    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7664291950465520178}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!4 &4827660954718149595 stripped
 Transform:
@@ -9547,7 +9486,7 @@ MonoBehaviour:
     m_Bits: 0
   _obstacle:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
@@ -9567,6 +9506,9 @@ MonoBehaviour:
   _player: {fileID: 8319872899575431858}
   tentaclesPrefab: {fileID: 6610701520137683841, guid: d14badff952bb714c90f1fd43e07201c, type: 3}
   tentaclesPreview: {fileID: 6610701520137683841, guid: e433350a5f6dd4446b1ae7716a074700, type: 3}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8192
 --- !u!114 &1791349742383392303
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9658,6 +9600,22 @@ MonoBehaviour:
   _regenerationDelay: 0
   _sumDamageGiven: 0
   attackingPsionicsSlider: {fileID: 3249209933658034755}
+--- !u!114 &7664291950465520178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5311042088619458913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c24e566af87389043bbfc1b13c86f819, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  basePsionicEnergy: {fileID: 369466722820063190}
+  attackingPsionicEnergy: {fileID: 1487487552333656207}
+  baseEnergySliderTransform: {fileID: 5794954217610378670}
+  attackingEnergySliderTransform: {fileID: 5613304632579208996}
 --- !u!224 &7572513388100405829 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6072102004952575816, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

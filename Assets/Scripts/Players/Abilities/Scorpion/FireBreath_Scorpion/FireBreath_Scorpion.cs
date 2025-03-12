@@ -1,214 +1,179 @@
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class FireBreath_Scorpion : Skill, ICanConsumeComboPoints
 {
-    [Header("Ability settings")]
+    [Header("Ability Settings")]
     [SerializeField] private FireBreath_Prefab _conePrefab;
     [SerializeField] private GameObject _prefab;
-    [SerializeField] private LayerMask layerMask;
-    [SerializeField] private string tagEnemies;
-    [Header("Size")]
+    [SerializeField] private LayerMask enemyLayerMask;
+    [SerializeField] private string enemyTag;
 
-    [Header("Damage")]
-    [SerializeField] private float _damage;
-    [SerializeField] private float _damageRate;
-    [SerializeField] private int _damageScalePerTick = 2;
-    [SerializeField] private float _damagePercentStart;
-    [SerializeField] private float _damagePercentEnd;
+    [Header("Damage Settings")]
+    [SerializeField] private float _damage = 10f;
+    [SerializeField] private float _damageRate = 0.5f;
+    [SerializeField] private float _damageScalePerTick = 2f;
 
-    private List<Health> _enemies = new List<Health>();
-    private Dictionary<Health, int> _enemiesDikt = new Dictionary<Health, int>();
+    [Header("Range Settings")]
+    [SerializeField] private float _maxDistance = 4f;
+    [SerializeField] private float _minDistance = 1f;
+    [SerializeField] private float _coneAngle = 45f;
 
-    
-    [SerializeField] private FireBreath_Prefab _fireBreath;
-    [SerializeField] private GameObject _fireObj;
+    private FireBreath_Prefab _fireBreathInstance;
+    private Dictionary<Health, int> _enemiesDict = new Dictionary<Health, int>();
 
     public ConsumeCombo_Scorpion Notifier { get; set; }
     public int ConsumedAmount { get; set; }
 
-    protected override bool IsCanCast { get { return true; } }
-
+    protected override bool IsCanCast => true;
     protected override int AnimTriggerCastDelay => 0;
-
     protected override int AnimTriggerCast => 0;
 
-    private void Follow()
+    protected override IEnumerator PrepareJob()
     {
-        StartCoroutine(RotCor());
-    }
-    private IEnumerator RotCor()
-    {
-        Vector3 dir;
-        float angle;
-        while (_fireBreath != null)
-        {
-            dir = (Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position)).normalized;
-            angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-
-            if(_fireBreath != null)
-                CmdRotateWithSpeed(angle);
+        while (!GetMouseButton)
             yield return null;
-        }
     }
 
-    [Command]
-    private void CmdCreateFireBreath(float angle)
+    protected override IEnumerator CastJob()
     {
-        var item = Instantiate(_prefab, transform.position, Quaternion.Euler(0, angle, 0));
-        SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
-
-        item.transform.SetParent(transform);
-
-        NetworkServer.Spawn(item);
-
-        _fireBreath = item.GetComponent<FireBreath_Prefab>();
-
-        SyncFire(item);
-
-        Destroy(_fireBreath.gameObject, CastStreamDuration);
+        CmdSpawnFireBreath();
+        yield return StartCoroutine(ApplyFireBreathDamage());
     }
 
-    [TargetRpc]
-    public void SyncFire(GameObject obj)  
-    { 
-        _fireBreath = obj.GetComponent<FireBreath_Prefab>();
-
-        Follow();
-        Debug.Log("FireBreath ��������");
-    }
-
-    [Command]
-    private void CmdRotateWithSpeed(float angle)
+    private IEnumerator ApplyFireBreathDamage()
     {
-        if( _fireBreath != null )
-            _fireBreath.transform.rotation = Quaternion.RotateTowards(_fireBreath.transform.rotation, Quaternion.Euler(0, 0, angle - 90), /*10f **/ 30f * Time.deltaTime);
-        Debug.Log($"angle: {angle}");
-    }
-
-    [Command]
-    private void CmdRotate(float angle)
-    {
-        if (_fireBreath != null)
-        {
-            _fireBreath.transform.rotation = Quaternion.Euler(0, 0, angle - 90);
-        }
-    }
-    private IEnumerator FireBreath()
-    {
+        float elapsed = 0f;
         Hero.Move.CanMove = false;
-        _isCanCancle = false;
 
-        float time = 0;
-        int damageCounter = 1;
-
-        while (time < CastStreamDuration)
+        while (elapsed < CastStreamDuration)
         {
-            time += Time.deltaTime;
-
-            if (time / damageCounter < _damageRate)
-            {
-                yield return null;
-                continue;
-            }
-
-            _enemies.Clear();
-
-            Collider[] hitColliders = Physics.OverlapSphere(_fireBreath.transform.position, Radius, layerMask);
-
-            foreach (var collider in hitColliders)
-            {
-                if (collider.TryGetComponent<Health>(out Health enemy) && enemy.CompareTag(tagEnemies))
-                {
-                    Vector3 directionToEnemy = (enemy.transform.position - _fireBreath.transform.position).normalized;
-                    if (!Physics.Raycast(_fireBreath.transform.position, directionToEnemy, Vector3.Distance(_fireBreath.transform.position, enemy.transform.position), layerMask))
-                    {
-                        _enemies.Add(enemy);
-                        if (!_enemiesDikt.ContainsKey(enemy))
-                        {
-                            _enemiesDikt[enemy] = 1;
-                        }
-                    }
-                }
-            }
-
-            DoDamage(_damage);
-            damageCounter++;
-            yield return null;
+            ApplyDamageToEnemiesInCone();
+            elapsed += _damageRate;
+            yield return new WaitForSeconds(_damageRate);
         }
 
         Hero.Move.CanMove = true;
-        ResetValue();
+        CmdDestroyFireBreath();
     }
 
-    //protected override void Cancel()
-    //{
+    [Command]
+    private void CmdSpawnFireBreath()
+    {
+        Vector3 spawnPosition = transform.position + Vector3.up * 1.5f;
 
-    //}
-    private void ResetValue()
-    {
-        _enemiesDikt.Clear();
-        _fireBreath = null;
-        //if (_fireBreath != null)
-        //    Destroy(_fireBreath.gameObject);
-    }
-    private void CreateFireBreath()
-    {
-        _fireBreath = Instantiate(_conePrefab, transform);
+        var fireObj = Instantiate(_prefab, spawnPosition, Quaternion.identity);
+        SceneManager.MoveGameObjectToScene(fireObj, _hero.NetworkSettings.MyRoom);
+        fireObj.transform.SetParent(transform);
+
+        fireObj.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+        NetworkServer.Spawn(fireObj, connectionToClient);
+        RpcInitializeFireBreath(fireObj);
     }
 
-    private void DoDamage(float baseDamage)
+    [ClientRpc]
+    private void RpcInitializeFireBreath(GameObject fireObj)
     {
-        if (_fireBreath == null || _enemies.Count == 0)
-            return;
+        _fireBreathInstance = fireObj.GetComponent<FireBreath_Prefab>();
+        StartCoroutine(FollowMouseRoutine());
+    }
 
-        foreach (var enemy in _enemies)
+    [Command]
+    private void CmdDestroyFireBreath()
+    {
+        if (_fireBreathInstance != null)
+            NetworkServer.Destroy(_fireBreathInstance.gameObject);
+    }
+
+    private IEnumerator FollowMouseRoutine()
+    {
+        while (_fireBreathInstance != null)
         {
-            if (enemy == null) continue;
+            Vector3 mousePos = GetMouseWorldPosition();
+            Vector3 direction = (mousePos - transform.position);
+            direction.y = 0f;
 
-            float distanceMultiplier = CompareDistance(enemy.transform);
-            int damageScale = _enemiesDikt.ContainsKey(enemy) ? _enemiesDikt[enemy] : 1;
-
-            float finalDamageValue = Buff.Damage.GetBuffedValue(baseDamage * distanceMultiplier * damageScale);
-
-            Damage damage = new Damage
+            if (direction.sqrMagnitude > 0.01f)
             {
-                Value = finalDamageValue,
-                Type = DamageType,
-            };
-
-            CmdApplyDamage(damage, enemy.gameObject);
-
-            if (_enemiesDikt.ContainsKey(enemy))
-            {
-                _enemiesDikt[enemy] *= 2;
+                Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
+                CmdRotateFireBreath(targetRotation);
             }
-            else
+
+            yield return null;
+        }
+    }
+
+    [Command]
+    private void CmdRotateFireBreath(Quaternion rotation)
+    {
+        if (_fireBreathInstance != null)
+            _fireBreathInstance.transform.rotation = rotation;
+    }
+
+    private void ApplyDamageToEnemiesInCone()
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, _maxDistance, enemyLayerMask);
+
+        foreach (Collider collider in hitColliders)
+        {
+            if (!collider.CompareTag(enemyTag))
+                continue;
+
+            if (collider.TryGetComponent<Health>(out Health enemy))
             {
-                _enemiesDikt[enemy] = 2;
+                Vector3 dirToEnemy = (enemy.transform.position - transform.position).normalized;
+                float angle = Vector3.Angle(transform.forward, dirToEnemy);
+
+                if (angle <= _coneAngle / 2 && !Physics.Linecast(transform.position, enemy.transform.position, enemyLayerMask))
+                {
+                    float distanceMultiplier = CalculateDistanceMultiplier(enemy.transform.position);
+                    int damageScale = _enemiesDict.ContainsKey(enemy) ? _enemiesDict[enemy] : 1;
+
+                    float finalDamageValue = Buff.Damage.GetBuffedValue(_damage * distanceMultiplier * damageScale);
+
+                    Damage damage = new Damage
+                    {
+                        Value = finalDamageValue,
+                        Type = DamageType,
+                    };
+
+                    CmdApplyDamage(damage, enemy.gameObject);
+
+                    if (_enemiesDict.ContainsKey(enemy))
+                        _enemiesDict[enemy] *= (int)_damageScalePerTick;
+                    else
+                        _enemiesDict[enemy] = (int)_damageScalePerTick;
+                }
             }
         }
     }
 
-    private float CompareDistance(Transform enemy)
+    private float CalculateDistanceMultiplier(Vector3 enemyPos)
     {
-        float scale;
-        float distance;
-        distance = Vector2.Distance(transform.position, enemy.transform.position);
-        if (distance < 2.1f)
-            return 1f;
-        else
-        {
-            float distanceNormalised = (distance - 2f) / (4f - 2f);
-            scale = Mathf.Lerp(1f, 0.7f, distanceNormalised);
-           
-            return scale;
-        }
+        float distance = Vector3.Distance(transform.position, enemyPos);
+        distance = Mathf.Clamp(distance, _minDistance, _maxDistance);
+
+        float normalized = (distance - _minDistance) / (_maxDistance - _minDistance);
+        return Mathf.Lerp(1f, 0.7f, normalized);
+    }
+
+    protected override void ClearData()
+    {
+        _enemiesDict.Clear();
+        if (_fireBreathInstance != null)
+            Destroy(_fireBreathInstance.gameObject);
+    }
+
+    private Vector3 GetMouseWorldPosition()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~0))
+            return hit.point;
+
+        return transform.position + transform.forward * 5f;
     }
 
     public void TryUpgradeByConsumingCombo(int amount)
@@ -218,36 +183,6 @@ public class FireBreath_Scorpion : Skill, ICanConsumeComboPoints
             ConsumedAmount = 0;
             return;
         }
-
         ConsumedAmount = Notifier.PayComboPoints(Mathf.Clamp(amount, 0, Notifier.AvailablePoints));
-    }
-
-    protected override IEnumerator PrepareJob()
-    {
-        while (true)
-        {
-            if (GetMouseButton)
-            {
-                break;
-            }
-            yield return null;
-        }
-    }
-
-    protected override IEnumerator CastJob()
-    {
-        Vector3 dir = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
-        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-
-        CmdCreateFireBreath(angle);
-        StartCoroutine(FireBreath());
-
-        yield return null;
-    }
-
-    protected override void ClearData()
-    {
-        _enemiesDikt.Clear();
-        //_fireBreath = null;
     }
 }

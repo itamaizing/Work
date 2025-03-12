@@ -194,10 +194,10 @@ MonoBehaviour:
   _force: 10
   _distance: 4
   _lifeTime: 4
-  waveAmplitudeMin: 0.2
-  waveAmplitudeMax: 0.5
-  waveFrequencyMin: 1
-  waveFrequencyMax: 3
+  waveAmplitudeMin: 0.1
+  waveAmplitudeMax: 0.3
+  waveFrequencyMin: 0.1
+  waveFrequencyMax: 0.3
   _speed: 5
   particleSystem: {fileID: 2763925455538773284}
 --- !u!1 &2360127251309233203

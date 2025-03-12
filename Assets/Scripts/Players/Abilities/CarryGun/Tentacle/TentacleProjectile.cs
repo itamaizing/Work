@@ -107,9 +107,15 @@ public class TentacleProjectile : MonoBehaviour
         float elapsedTime = 0f;
         float baseSpeed = 0.05f;
         float speedIncrease = 0.05f;
+        float minDistance = 0.5f;
 
         while (elapsedTime < _grabDuration)
         {
+            Vector3 toTentacle = transform.position - _target.transform.position;
+            float distance = toTentacle.magnitude;
+
+            if (distance <= minDistance) break;
+
             float speed = baseSpeed + (elapsedTime / 0.1f) * speedIncrease;
 
             if (_isCollidedWithOtherCharacter)

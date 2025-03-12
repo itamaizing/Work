@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: PriestShield
   _description: 
-  _icon: {fileID: 21300000, guid: 00cbafab1f11fa740ad8987ca9c19ca6, type: 3}
+  _icon: {fileID: 21300000, guid: 69173c48d46c4714590c13c26a289c33, type: 3}

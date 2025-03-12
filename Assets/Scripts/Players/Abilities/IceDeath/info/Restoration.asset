@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Restoration
   _description: 
-  _icon: {fileID: 21300000, guid: 1471bb6b6ffdbf645bec4d3ad4e0ad1d, type: 3}
+  _icon: {fileID: 21300000, guid: c8385689fc7797c48887fbc6e2d7b256, type: 3}

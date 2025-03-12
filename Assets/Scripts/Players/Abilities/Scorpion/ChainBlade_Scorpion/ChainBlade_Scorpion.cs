@@ -7,7 +7,7 @@ public class ChainBlade_Scorpion : Skill
 {
     [Header("Settings")]
     [SerializeField] private BladeProjectile _projectilePrefab;
-    [SerializeField] private ChainController _chainController;
+    [SerializeField] private ChainController _chainControllerPrefab;
     [SerializeField] private HeroComponent _playerLinks;
     [SerializeField] private AudioClip _shootSound;
 
@@ -28,8 +28,6 @@ public class ChainBlade_Scorpion : Skill
     {
         _audioSource = GetComponent<AudioSource>();
         _energy = _playerLinks.Resources.Find(r => r.Type == ResourceType.Energy) as Energy;
-
-        _chainController.gameObject.SetActive(false);
     }
 
     protected override IEnumerator PrepareJob()
@@ -38,7 +36,11 @@ public class ChainBlade_Scorpion : Skill
         {
             if (GetMouseButton)
             {
-                _mousePos = GetTarget().Position;
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out RaycastHit hit))
+                {
+                    _mousePos = hit.point;
+                }
             }
             yield return null;
         }
@@ -49,6 +51,30 @@ public class ChainBlade_Scorpion : Skill
         Shoot();
         Hero.Move.CanMove = false;
         yield break;
+    }
+
+    public void PullTarget(Character target)
+    {
+        StartCoroutine(PullRoutine(target));
+    }
+
+    private IEnumerator PullRoutine(Character target)
+    {
+        float speed = 6.66f;
+        float minDistance = 1.5f;
+
+        Hero.Move.CanMove = false;
+        target.Move.CanMove = false;
+
+        while (Vector3.Distance(transform.position, target.transform.position) > minDistance)
+        {
+            Vector3 dir = (transform.position - target.transform.position).normalized;
+            target.transform.position += dir * speed * Time.deltaTime;
+            yield return null;
+        }
+
+        Hero.Move.CanMove = true;
+        target.Move.CanMove = true;
     }
 
     protected override void ClearData()
@@ -64,9 +90,9 @@ public class ChainBlade_Scorpion : Skill
         if (_energy.CurrentValue >= _chainManaCost)
         {
             _energy.CmdUse(_chainManaCost);
-            CmdActivateChainController(lookDir);
+            CmdSpawnChainProjectile(lookDir);
         }
-        else if (_energy.CurrentValue >= _bladeManaCost)
+        else if (_energy.CurrentValue >= _bladeManaCost && _energy.CurrentValue < _chainManaCost)
         {
             _energy.CmdUse(_bladeManaCost);
             CmdSpawnBladeProjectile(lookDir);
@@ -78,7 +104,8 @@ public class ChainBlade_Scorpion : Skill
     [Command]
     private void CmdSpawnBladeProjectile(Vector3 direction)
     {
-        var projectile = Instantiate(_projectilePrefab, transform.position, Quaternion.LookRotation(direction));
+        Vector3 spawnPosition = transform.position + Vector3.up * 1.5f;
+        var projectile = Instantiate(_projectilePrefab, spawnPosition, Quaternion.LookRotation(direction));
         SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
 
         projectile.Init(_playerLinks, _energy.CurrentValue, false, this);
@@ -89,18 +116,35 @@ public class ChainBlade_Scorpion : Skill
     }
 
     [Command]
-    private void CmdActivateChainController(Vector3 direction)
+    private void CmdSpawnChainProjectile(Vector3 direction)
     {
-        RpcActivateChainController(direction);
-        RpcPlayShootSound();
-    }
+        Vector3 spawnPosition = transform.position + Vector3.up * 1.5f;
 
-    [ClientRpc]
-    private void RpcActivateChainController(Vector3 direction)
-    {
-        _chainController.gameObject.SetActive(true);
-        _chainController.transform.position = transform.position;
-        _chainController.Init(transform, direction, this);
+        var projectile = Instantiate(_projectilePrefab, spawnPosition, Quaternion.LookRotation(direction));
+        SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
+        projectile.Init(_playerLinks, _energy.CurrentValue, false, this);
+        projectile.StartFly(direction);
+        NetworkServer.Spawn(projectile.gameObject);
+
+        void OnDamageTracked(Damage dmg, GameObject targetObject)
+        {
+            if (targetObject.TryGetComponent<Character>(out Character targetCharacter))
+            {
+                var chainController = Instantiate(_chainControllerPrefab, spawnPosition, Quaternion.identity);
+                SceneManager.MoveGameObjectToScene(chainController.gameObject, _hero.NetworkSettings.MyRoom);
+
+                chainController.InitChain(_playerLinks.transform, targetCharacter.transform);
+                NetworkServer.Spawn(chainController.gameObject);
+
+                PullTarget(targetCharacter);
+
+                _hero.DamageTracker.OnDamageTracked -= OnDamageTracked;
+            }
+        }
+
+        _hero.DamageTracker.OnDamageTracked += OnDamageTracked;
+
+        RpcPlayShootSound();
     }
 
     [ClientRpc]
@@ -108,27 +152,5 @@ public class ChainBlade_Scorpion : Skill
     {
         if (_audioSource != null && _shootSound != null)
             _audioSource.PlayOneShot(_shootSound);
-    }
-
-    public void PullTarget(Character target)
-    {
-        StartCoroutine(PullRoutine(target));
-    }
-
-    private IEnumerator PullRoutine(Character target)
-    {
-        float speed = 6.66f;
-        float minDistance = 1.5f;
-
-        while (Vector3.Distance(transform.position, target.transform.position) > minDistance)
-        {
-            Vector3 dir = (transform.position - target.transform.position).normalized;
-            target.transform.position += dir * speed * Time.deltaTime;
-
-            _chainController.UpdatePositions();
-            yield return null;
-        }
-
-        _chainController.gameObject.SetActive(false);
     }
 }
