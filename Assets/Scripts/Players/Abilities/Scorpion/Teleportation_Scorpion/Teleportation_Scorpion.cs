@@ -14,7 +14,7 @@ public class Teleportation_Scorpion : Skill, ICanConsumeComboPoints
     [SerializeField] private int _manaCostPerTile = 5;
     [SerializeField] private LayerMask _layerMask;
     [Tooltip("��������� ������ ������ ���� ����������, ����� � ��������� �������")]
-    [SerializeField] private float _offset = 2.1f;
+    [SerializeField] private float _offset = 0.5f;
     private Character _target;
 
     //private GameObject _tempTarget;
@@ -67,44 +67,73 @@ public class Teleportation_Scorpion : Skill, ICanConsumeComboPoints
 
     private Vector3 FindPlace(Character target)
     {
-        Vector3 directionToEnemy = target.transform.position - transform.position;
-        directionToEnemy.Normalize();
-        Vector3 offset = directionToEnemy * _offset;
-        Vector3 teleportPosition = target.transform.position + offset;
-        bool touchObstacle = Physics2D.OverlapCircle(teleportPosition, 2f, _layerMask);
-        
+        Vector3 directionToEnemy = (target.transform.position - transform.position).normalized;
 
-        if (touchObstacle)
+        Vector3 initialOffset = directionToEnemy * _offset;
+        Vector3 teleportPosition = target.transform.position + initialOffset;
+
+        if (!IsPositionBlocked(teleportPosition, _offset, target))
+            return teleportPosition;
+
+        float searchRadius = 1.5f;
+        float angleStep = 10f;
+        float maxAngle = 180f;
+        Vector3 foundPoint = Vector3.zero;
+        bool freePointFound = false;
+
+        for (float angle = angleStep; angle <= maxAngle; angle += angleStep)
         {
-            float angle = 0f;
-            Vector3 newPosition;
+            Quaternion rotationCW = Quaternion.AngleAxis(angle, Vector3.up);
+            Vector3 offsetCW = rotationCW * directionToEnemy * searchRadius;
+            Vector3 candidateCW = target.transform.position + offsetCW;
 
-            while (angle != 180) // ������ ����, �� ���� ����� � ��� �������
+            if (!IsPositionBlocked(candidateCW, _offset, target))
             {
-                angle += 5;
+                foundPoint = candidateCW;
+                freePointFound = true;
+                break;
+            }
 
-                newPosition = _target.transform.position + Quaternion.Euler(0, 0, angle) * offset;
-                if (!Physics2D.OverlapCircle(newPosition, _offset /2 , _layerMask))
-                {
-                    Debug.Log($"Place was found with offset angle {angle}�");
-                    teleportPosition = newPosition;
-                    return newPosition;
-                }
-                angle *= -1;
-                newPosition = _target.transform.position + Quaternion.Euler(0, 0, angle) * offset;
-                if (!Physics2D.OverlapCircle(newPosition, _offset / 2, _layerMask))
-                {
-                    Debug.Log($"Place was found with offset angle {angle}�");
-                    teleportPosition = newPosition;
-                    return newPosition;
-                }
-                angle *= -1;
+            Quaternion rotationCCW = Quaternion.AngleAxis(-angle, Vector3.up);
+            Vector3 offsetCCW = rotationCCW * directionToEnemy * searchRadius;
+            Vector3 candidateCCW = target.transform.position + offsetCCW;
 
+            if (!IsPositionBlocked(candidateCCW, _offset, target))
+            {
+                foundPoint = candidateCCW;
+                freePointFound = true;
+                break;
             }
         }
-        Debug.Log($"Place wasn't found or no obstacles at point, using default teleportPosition");
-        return teleportPosition;
+
+        if (freePointFound)
+        {
+            Vector3 dirToTarget = (target.transform.position - foundPoint).normalized;
+            Vector3 closeToTarget = target.transform.position - dirToTarget * _offset;
+
+            if (!IsPositionBlocked(closeToTarget, _offset, target))
+                return closeToTarget;
+
+            return foundPoint;
+        }
+
+        return transform.position;
     }
+
+    private bool IsPositionBlocked(Vector3 position, float radius, Character targetToIgnore)
+    {
+        Collider[] colliders = Physics.OverlapSphere(position, radius, _layerMask);
+
+        foreach (var collider in colliders)
+        {
+            if (collider.transform == targetToIgnore.transform) continue;
+
+            return true;
+        }
+
+        return false;
+    }
+
     private float GetCurrentRadius()
     {
         return _minRadius + 1f * (int)(CalculateCurrentScale() / _manaCostPerTile); // ����������� r + 1 ������ �� 5 ���� (������ �� 0.2 ������ �� 1 ����, ���� ���� ����� ���������, ������ ��������)

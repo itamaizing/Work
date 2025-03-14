@@ -4,7 +4,7 @@ public class SwapTheBarsPsionic : MonoBehaviour
 {
     [SerializeField] private BasePsionicEnergy basePsionicEnergy;
     [SerializeField] private AttackingPsionicEnergy attackingPsionicEnergy;
-
+ 
     [SerializeField] private RectTransform baseEnergySliderTransform;
     [SerializeField] private RectTransform attackingEnergySliderTransform;
 

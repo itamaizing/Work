@@ -59,7 +59,7 @@ public class BasePsionicEnergy : Resource, IDamageable
             Add(energyGain);
             CurrentValue = Mathf.Min(CurrentValue, MaxValue);
 
-            OnEnergyChanged?.Invoke(CurrentValue);
+            RpcOnEnergyChanged(CurrentValue);
 
             bool wasInternalEnergy = _isInternalPsiEnergy;
             _isInternalPsiEnergy = CurrentValue > 0;
@@ -82,7 +82,7 @@ public class BasePsionicEnergy : Resource, IDamageable
     public void UsePsiEnergy(float value)
     {
         TryUse(value);
-        OnEnergyChanged?.Invoke(CurrentValue);
+        RpcOnEnergyChanged(CurrentValue);
         UpdatePsionicaBar();
     }
 
@@ -117,7 +117,7 @@ public class BasePsionicEnergy : Resource, IDamageable
     {
         yield return new WaitForSeconds(PsionicaDecayTime);
         CurrentValue = 0;
-        OnEnergyChanged?.Invoke(CurrentValue);
+        RpcOnEnergyChanged(CurrentValue);
         _isInternalPsiEnergy = false;
         UpdatePsionicaBar();
         RpcInternalPsiEnergyChanged(_isInternalPsiEnergy);
@@ -158,6 +158,13 @@ public class BasePsionicEnergy : Resource, IDamageable
     private void RpcInternalPsiEnergyChanged(bool value)
     {
         _isInternalPsiEnergy = value;
+    }
+
+    [ClientRpc]
+    private void RpcOnEnergyChanged(float value)
+    {
+        CurrentValue = value;
+        OnEnergyChanged?.Invoke(value);
     }
 
     public void ShowPhantomValue(Damage phantomValue)

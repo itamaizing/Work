@@ -8,12 +8,10 @@ public class BladeProjectile : Projectiles
     [SerializeField] private float _damageMax = 5f;
 
     [SerializeField] private float _lifeTime = 3f;
-    private float _currentLifeTime;
+    [SerializeField] private GameObject chain;
 
-    private void Start()
-    {
-        _currentLifeTime = _lifeTime;
-    }
+    private float _currentLifeTime;
+    private bool isChain = false;
 
      public void StartFly(Vector3 direction)
     {

@@ -1,6 +1,7 @@
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,8 +10,7 @@ public class FireBreath_Scorpion : Skill, ICanConsumeComboPoints
     [Header("Ability Settings")]
     [SerializeField] private FireBreath_Prefab _conePrefab;
     [SerializeField] private GameObject _prefab;
-    [SerializeField] private LayerMask enemyLayerMask;
-    [SerializeField] private string enemyTag;
+    [SerializeField] private float duration = 3;
 
     [Header("Damage Settings")]
     [SerializeField] private float _damage = 10f;
@@ -44,22 +44,6 @@ public class FireBreath_Scorpion : Skill, ICanConsumeComboPoints
         yield return StartCoroutine(ApplyFireBreathDamage());
     }
 
-    private IEnumerator ApplyFireBreathDamage()
-    {
-        float elapsed = 0f;
-        Hero.Move.CanMove = false;
-
-        while (elapsed < CastStreamDuration)
-        {
-            ApplyDamageToEnemiesInCone();
-            elapsed += _damageRate;
-            yield return new WaitForSeconds(_damageRate);
-        }
-
-        Hero.Move.CanMove = true;
-        CmdDestroyFireBreath();
-    }
-
     [Command]
     private void CmdSpawnFireBreath()
     {
@@ -88,6 +72,99 @@ public class FireBreath_Scorpion : Skill, ICanConsumeComboPoints
             NetworkServer.Destroy(_fireBreathInstance.gameObject);
     }
 
+    private void TryApplyScorchedSoulDebuff(Health enemy, float elapsedTime)
+    {
+        float baseChance = 10f;
+        int tickIndex = Mathf.FloorToInt(elapsedTime / 0.3f);
+        float currentChance = baseChance * Mathf.Pow(2, tickIndex);
+
+        currentChance = Mathf.Clamp(currentChance, 0f, 100f);
+
+        float roll = Random.Range(0f, 100f);
+        if (roll <= currentChance)
+        {
+            if (enemy.TryGetComponent<CharacterState>(out var stateManager))
+            {
+                CmdApplyScorchedSoulDebuff(stateManager.netIdentity);
+            }
+        }
+    }
+
+    private void ApplyDamageAndDebuff(float elapsedTime, int currentTickDamage)
+    {
+        Collider[] hitColliders = Physics.OverlapCapsule(
+            transform.position,
+            transform.position + transform.forward * _maxDistance,
+            _coneAngle,
+            _targetsLayers); // Тут уже по слоям, ок!
+
+        foreach (Collider collider in hitColliders)
+        {
+            // Проверка по слою вместо CompareTag
+            if ((_targetsLayers.value & (1 << collider.gameObject.layer)) == 0)
+                continue;
+
+            if (collider.TryGetComponent<Health>(out Health enemy))
+            {
+                Vector3 dirToEnemy = (enemy.transform.position - transform.position).normalized;
+                float distance = Vector3.Distance(transform.position, enemy.transform.position);
+
+                if (distance > _maxDistance)
+                    continue;
+
+                float angle = Vector3.Angle(transform.forward, dirToEnemy);
+                if (angle > _coneAngle / 2f)
+                    continue;
+
+                float distanceMultiplier = Mathf.Lerp(1f, 0.7f, (distance / _maxDistance));
+
+                float finalDamageValue = Buff.Damage.GetBuffedValue(currentTickDamage * distanceMultiplier);
+
+                Damage damage = new Damage
+                {
+                    Value = finalDamageValue,
+                    Type = DamageType
+                };
+
+                CmdApplyDamage(damage, enemy.gameObject);
+
+                TryApplyScorchedSoulDebuff(enemy, duration);
+            }
+        }
+    }
+
+    private IEnumerator ApplyFireBreathDamage()
+    {
+        float elapsed = 0f;
+        float tickInterval = 0.3f;
+        int baseDamage = 1;
+
+        Hero.Move.CanMove = false;
+
+        float energyRestoreInterval = CastStreamDuration / 10f;
+        float nextEnergyRestoreTime = energyRestoreInterval;
+
+        while (elapsed < CastStreamDuration)
+        {
+            ApplyDamageAndDebuff(elapsed, baseDamage);
+
+            elapsed += tickInterval;
+
+            if (elapsed >= nextEnergyRestoreTime)
+            {
+                Hero.Resources.First(r => r.Type == ResourceType.Energy).CmdAdd(1);
+                nextEnergyRestoreTime += energyRestoreInterval;
+            }
+
+            yield return new WaitForSeconds(tickInterval);
+
+            baseDamage *= 2;
+        }
+
+        Hero.Move.CanMove = true;
+        CmdDestroyFireBreath();
+    }
+
     private IEnumerator FollowMouseRoutine()
     {
         while (_fireBreathInstance != null)
@@ -107,6 +184,16 @@ public class FireBreath_Scorpion : Skill, ICanConsumeComboPoints
     }
 
     [Command]
+private void CmdApplyScorchedSoulDebuff(NetworkIdentity targetIdentity)
+{
+    if (targetIdentity.TryGetComponent<CharacterState>(out var stateManager))
+    {
+        float duration = 3f;
+        stateManager.AddState(States.ScorchedSoul, duration, 0, _hero.gameObject, Name);
+    }
+}
+
+    [Command]
     private void CmdRotateFireBreath(Quaternion rotation)
     {
         if (_fireBreathInstance != null)
@@ -115,11 +202,11 @@ public class FireBreath_Scorpion : Skill, ICanConsumeComboPoints
 
     private void ApplyDamageToEnemiesInCone()
     {
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, _maxDistance, enemyLayerMask);
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, _maxDistance, _targetsLayers);
 
         foreach (Collider collider in hitColliders)
         {
-            if (!collider.CompareTag(enemyTag))
+            if ((_targetsLayers.value & (1 << collider.gameObject.layer)) == 0)
                 continue;
 
             if (collider.TryGetComponent<Health>(out Health enemy))
@@ -127,7 +214,7 @@ public class FireBreath_Scorpion : Skill, ICanConsumeComboPoints
                 Vector3 dirToEnemy = (enemy.transform.position - transform.position).normalized;
                 float angle = Vector3.Angle(transform.forward, dirToEnemy);
 
-                if (angle <= _coneAngle / 2 && !Physics.Linecast(transform.position, enemy.transform.position, enemyLayerMask))
+                if (angle <= _coneAngle / 2 && !Physics.Linecast(transform.position, enemy.transform.position, _targetsLayers))
                 {
                     float distanceMultiplier = CalculateDistanceMultiplier(enemy.transform.position);
                     int damageScale = _enemiesDict.ContainsKey(enemy) ? _enemiesDict[enemy] : 1;

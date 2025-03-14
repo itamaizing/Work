@@ -10,11 +10,11 @@ public class FireBreath_Prefab : NetworkBehaviour
     public List<Collider> _collisions = new List<Collider>();
     public List<FIreRaycast> _flames = new List<FIreRaycast>();
 
-    private PolygonCollider2D _collider;
+    private Collider _collider;
 
     private void Awake()
     {
-        _collider = GetComponentInChildren<PolygonCollider2D>();
+        _collider = GetComponentInChildren<Collider>();
     }
     private void Start()
     {

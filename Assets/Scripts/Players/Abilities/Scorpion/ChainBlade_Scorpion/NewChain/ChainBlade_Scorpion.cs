@@ -7,7 +7,8 @@ public class ChainBlade_Scorpion : Skill
 {
     [Header("Settings")]
     [SerializeField] private BladeProjectile _projectilePrefab;
-    [SerializeField] private ChainController _chainControllerPrefab;
+    [SerializeField] private BladeProjectile _projectileÑhainPrefab;
+    [SerializeField] private ChainEffect _chainEffectPrefab;
     [SerializeField] private HeroComponent _playerLinks;
     [SerializeField] private AudioClip _shootSound;
 
@@ -90,7 +91,7 @@ public class ChainBlade_Scorpion : Skill
         if (_energy.CurrentValue >= _chainManaCost)
         {
             _energy.CmdUse(_chainManaCost);
-            CmdSpawnChainProjectile(lookDir);
+           
         }
         else if (_energy.CurrentValue >= _bladeManaCost && _energy.CurrentValue < _chainManaCost)
         {
@@ -113,38 +114,6 @@ public class ChainBlade_Scorpion : Skill
 
         RpcPlayShootSound();
         NetworkServer.Spawn(projectile.gameObject);
-    }
-
-    [Command]
-    private void CmdSpawnChainProjectile(Vector3 direction)
-    {
-        Vector3 spawnPosition = transform.position + Vector3.up * 1.5f;
-
-        var projectile = Instantiate(_projectilePrefab, spawnPosition, Quaternion.LookRotation(direction));
-        SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
-        projectile.Init(_playerLinks, _energy.CurrentValue, false, this);
-        projectile.StartFly(direction);
-        NetworkServer.Spawn(projectile.gameObject);
-
-        void OnDamageTracked(Damage dmg, GameObject targetObject)
-        {
-            if (targetObject.TryGetComponent<Character>(out Character targetCharacter))
-            {
-                var chainController = Instantiate(_chainControllerPrefab, spawnPosition, Quaternion.identity);
-                SceneManager.MoveGameObjectToScene(chainController.gameObject, _hero.NetworkSettings.MyRoom);
-
-                chainController.InitChain(_playerLinks.transform, targetCharacter.transform);
-                NetworkServer.Spawn(chainController.gameObject);
-
-                PullTarget(targetCharacter);
-
-                _hero.DamageTracker.OnDamageTracked -= OnDamageTracked;
-            }
-        }
-
-        _hero.DamageTracker.OnDamageTracked += OnDamageTracked;
-
-        RpcPlayShootSound();
     }
 
     [ClientRpc]

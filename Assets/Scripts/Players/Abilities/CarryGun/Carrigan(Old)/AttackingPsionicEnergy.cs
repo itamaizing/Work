@@ -39,7 +39,7 @@ public class AttackingPsionicEnergy : Energy
         Add(transferAmount);
         CurrentValue = Mathf.Min(CurrentValue, _maxAttackingPsiEnergy);
 
-        OnEnergyChanged?.Invoke(CurrentValue);
+        RpcOnEnergyChanged(CurrentValue);
 
         RpcAttackingPsiEnergyChanged(true, CurrentValue);
         UpdateAttackingEnergyBar();
@@ -62,7 +62,7 @@ public class AttackingPsionicEnergy : Energy
         CurrentValue = 0;
         _isAttackingPsiActive = false;
 
-        OnEnergyChanged?.Invoke(CurrentValue);
+        RpcOnEnergyChanged(CurrentValue);
 
         RpcAttackingPsiEnergyChanged(false, 0f);
         UpdateAttackingEnergyBar();
@@ -78,5 +78,12 @@ public class AttackingPsionicEnergy : Energy
     {
         _isAttackingPsiActive = isActive;
         UpdateAttackingEnergyBar();
+    }
+
+    [ClientRpc]
+    private void RpcOnEnergyChanged(float value)
+    {
+        CurrentValue = value;
+        OnEnergyChanged?.Invoke(value);
     }
 }
