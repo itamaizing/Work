@@ -8,7 +8,6 @@ public class JumpWithChelicera : Skill
     [SerializeField] private CheliceraStrike _cheliceraeStrike;
 
     [SerializeField] private float _distanceJump;
-    //private float _durationJump;
 
     private Animator _animator;
     private Character _target;
@@ -26,8 +25,10 @@ public class JumpWithChelicera : Skill
 
     private bool _isTarget = false;
     private bool _isJumpDone = false;
+
     protected override int AnimTriggerCast => jumpStart;
     protected override int AnimTriggerCastDelay => 0;
+
     public bool IsJumpDone { get => _isJumpDone; set => _isJumpDone = value; }
 
     protected override bool IsCanCast => CheckCanCast();
@@ -39,7 +40,7 @@ public class JumpWithChelicera : Skill
 
     protected override void ClearData()
     {
-        _target = null; 
+        _target = null;
         _mousePosition = Vector3.positiveInfinity;
         _isTarget = false;
     }
@@ -60,7 +61,6 @@ public class JumpWithChelicera : Skill
                     _isTarget = true;
                     _player.Move.LookAtTransform(_target.transform);
                 }
-
             }
             yield return null;
         }
@@ -68,27 +68,10 @@ public class JumpWithChelicera : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_isTarget && _target != null) ExecuteJump();
+        if (_isTarget && _target != null)
+            ExecuteJump();
+
         yield return null;
-    }
-
-    private IEnumerator WaitForJumpEnd()
-    {
-        float timeDelay = _distanceJump / 20;
-
-        yield return new WaitForSeconds(timeDelay);
-
-        RpcHandleJumpAnimEnd();
-
-        yield return new WaitForSeconds(timeDelay);
-
-        RpcHandleJumpEnd();
-    }
-
-    private bool CheckCanCast()
-    {
-        return _target != null && Vector2.Distance(_mousePosition, transform.position) <= Radius &&
-               NoObstacles(_mousePosition, _obstacle);
     }
 
     private void ExecuteJump()
@@ -105,6 +88,7 @@ public class JumpWithChelicera : Skill
         Vector3 direction = (_target.transform.position - transform.position).normalized;
 
         CmdExecuteJump(_player.gameObject, _target.gameObject, direction, _additionalDamageInPercentage);
+
         Invoke(nameof(ResetBool), 1f);
     }
 
@@ -113,6 +97,12 @@ public class JumpWithChelicera : Skill
         float minDistance = 2.2f;
         float maxDistance = 8f;
         return Mathf.Clamp((distance - minDistance) / (maxDistance - minDistance) * (_distanceJump - _minDistance) + _minDistance, _minDistance, _distanceJump);
+    }
+
+    private bool CheckCanCast()
+    {
+        return _target != null && Vector2.Distance(_mousePosition, transform.position) <= Radius &&
+               NoObstacles(_mousePosition, _obstacle);
     }
 
     private void ResetBool()
@@ -166,12 +156,97 @@ public class JumpWithChelicera : Skill
 
         Vector3 jumpPosition = Vector3.MoveTowards(targetCharacter.transform.position, player.transform.position, _minDistance + 0.5f);
 
-        playerMove.TargetRpcDoMove(jumpPosition, _distanceJump / 10);
-        StartCoroutine(WaitForJumpEnd());
-        DamageDeal(target, additionalDamage);
+        // Запускаем перемещение + слежение за обоими
+        StartCoroutine(TrackJumpMovementCoroutine(playerMove, targetCharacter, jumpPosition, _distanceJump / 10, additionalDamage));
     }
 
-    [ClientRpc] private void RpcHandleJumpAnimEnd()
+    private IEnumerator TrackJumpMovementCoroutine(MoveComponent playerMove, Character target, Vector3 playerTargetPosition, float speed, float additionalDamage)
+    {
+        Vector3 lastPlayerPos = playerMove.transform.position;
+        Vector3 lastTargetPos = target.transform.position;
+
+        float playerDistanceAccumulator = 0f;
+        float targetDistanceAccumulator = 0f;
+
+        bool playerReached = false;
+
+        while (!playerReached || (target != null && !target.IsDead))
+        {
+            // --- Перемещение героя ---
+            if (!playerReached)
+            {
+                Vector3 directionToTarget = (playerTargetPosition - playerMove.transform.position).normalized;
+                float distance = Vector3.Distance(playerMove.transform.position, playerTargetPosition);
+
+                if (distance > 0.1f)
+                {
+                    playerMove.transform.position += directionToTarget * speed * Time.deltaTime;
+                }
+                else
+                {
+                    playerReached = true;
+                }
+            }
+
+            // --- Проверка перемещения героя ---
+            float playerMoved = Vector3.Distance(lastPlayerPos, playerMove.transform.position);
+            playerDistanceAccumulator += playerMoved;
+
+            if (playerDistanceAccumulator >= 0.1f)
+            {
+                playerDistanceAccumulator -= 0.1f;
+
+                if (_player != null && _player.TryGetComponent<BasePsionicEnergy>(out var psiEnergy))
+                {
+                    psiEnergy.Add(0.3f);
+                }
+            }
+
+            lastPlayerPos = playerMove.transform.position;
+
+            // --- Проверка перемещения цели ---
+            if (target != null && !target.IsDead)
+            {
+                Vector3 currentTargetPos = target.transform.position;
+                float targetMoved = Vector3.Distance(lastTargetPos, currentTargetPos);
+                targetDistanceAccumulator += targetMoved;
+
+                if (targetDistanceAccumulator >= 0.1f)
+                {
+                    targetDistanceAccumulator -= 0.1f;
+
+                    if (_player != null && _player.TryGetComponent<BasePsionicEnergy>(out var psiEnergy))
+                    {
+                        psiEnergy.Add(0.3f);
+                    }
+                }
+
+                lastTargetPos = currentTargetPos;
+            }
+
+            yield return null;
+        }
+
+        // Завершаем прыжок и наносим урон
+        StartCoroutine(WaitForJumpEnd());
+        DamageDeal(target.gameObject, additionalDamage);
+    }
+
+    private IEnumerator WaitForJumpEnd()
+    {
+        float timeDelay = _distanceJump / 20;
+
+        yield return new WaitForSeconds(timeDelay);
+
+        RpcHandleJumpAnimEnd();
+
+        yield return new WaitForSeconds(timeDelay);
+
+        RpcHandleJumpEnd();
+    }
+
+    [ClientRpc]
+    private void RpcHandleJumpAnimEnd()
     {
         HandleJumpAnimEnd();
     }

@@ -109,6 +109,9 @@ public class TentacleProjectile : MonoBehaviour
         float speedIncrease = 0.05f;
         float minDistance = 0.5f;
 
+        Vector3 lastTargetPosition = _target.transform.position;
+        float targetDistanceAccumulator = 0f;
+
         while (elapsedTime < _grabDuration)
         {
             Vector3 toTentacle = transform.position - _target.transform.position;
@@ -123,8 +126,23 @@ public class TentacleProjectile : MonoBehaviour
                 speed /= 2;
             }
 
-            Vector3 direction = (transform.position - _target.transform.position).normalized;
+            Vector3 direction = toTentacle.normalized;
             _target.transform.position += direction * speed;
+
+            float traveled = Vector3.Distance(lastTargetPosition, _target.transform.position);
+            targetDistanceAccumulator += traveled;
+
+            if (targetDistanceAccumulator >= 0.1f)
+            {
+                targetDistanceAccumulator -= 0.1f;
+
+                if (_player != null && _player.TryGetComponent<BasePsionicEnergy>(out var psiEnergy))
+                {
+                    psiEnergy.Add(0.3f);
+                }
+            }
+
+            lastTargetPosition = _target.transform.position;
 
             elapsedTime += 0.1f;
             yield return new WaitForSeconds(0.1f);
