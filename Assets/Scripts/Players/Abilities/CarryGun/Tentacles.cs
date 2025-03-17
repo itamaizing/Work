@@ -19,7 +19,7 @@ public class Tentacles : Skill
     private TentacleProjectile _previewInstancePrefab;
     private Coroutine _radiusUpdateCoroutine;
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("Spell");
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => _spawnPoint != Vector3.positiveInfinity && _target != null;
 
@@ -31,6 +31,7 @@ public class Tentacles : Skill
         _spawnPoint = Vector3.positiveInfinity;
         _target = null;
         Hero.Move.CanMove = true;
+        _player.Move.StopLookAt();
 
         if (_previewInstance != null) Destroy(_previewInstance.gameObject);
         if (_previewInstancePrefab != null) Destroy(_previewInstancePrefab.gameObject);
@@ -115,6 +116,7 @@ public class Tentacles : Skill
                         }
 
                         _spawnPoint = targetPosition;
+                        _player.Move.LookAtTransform(_target.transform);
                         Hero.Move.CanMove = false;
                         break;
                     }
@@ -146,6 +148,7 @@ public class Tentacles : Skill
                         }
 
                         _spawnPoint = potentialSpawnPoint;
+                        _player.Move.LookAtTransform(_target.transform);
                         Hero.Move.CanMove = false;
                         break;
                     }
