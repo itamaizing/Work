@@ -10,11 +10,8 @@ public class ClawStrike : AutoAttackSkill
     [SerializeField] private float _baseDamage;
     [SerializeField] private float animSpeed = 1.2f;
 
-    private Damage _damage = new Damage();
-
     private int _maxCountDispelState;
 
-    private float _additionalDamage;
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerAutoAttack => Animator.StringToHash("ClawStrikeTrigger");
@@ -34,60 +31,47 @@ public class ClawStrike : AutoAttackSkill
 
     private void DamageDeal()
     {
-        if (_attackingPsionicEnergy.IsAttackingPsiEnergy)
+        float attackingPsiValue = _attackingPsionicEnergy.CurrentValue;
+
+        var damage = new Damage
         {
-            //_additionalDamage = _attackingPsionicEnergy.CurrentAttackingPsiEnergy;
+            Value = _baseDamage,
+            Type = DamageType.Physical,
+            PhysicAttackType = AttackRangeType.MeleeAttack,
+        };
 
-            if (_additionalDamage > 10 && _additionalDamage < 20)
+        CmdApplyDamage(damage, _target.gameObject);
+
+        if (attackingPsiValue > 0)
+        {
+            var additionalDamage = attackingPsiValue;
+
+            int dispelCount = 0;
+
+            if (attackingPsiValue >= 30) dispelCount = 3;
+            else if (attackingPsiValue >= 20) dispelCount = 2;
+            else if (attackingPsiValue >= 10) dispelCount = 1;
+
+            if (dispelCount > 0)
             {
-                _target.CharacterState.DispelStates(StateType.Magic, _target.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
-            }
-            else if (_additionalDamage > 20 && _additionalDamage < 30)
-            {
-                _maxCountDispelState = 2;
-                for (int i = 0; i < _maxCountDispelState; i++)
-                {
-                    _target.CharacterState.DispelStates(StateType.Magic, _target.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
-                }
-            }
-            else if (_additionalDamage == 30)
-            {
-                _maxCountDispelState = 3;
-                for (int i = 0; i < _maxCountDispelState; i++)
-                {
-                    _target.CharacterState.DispelStates(StateType.Magic, _target.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
-                }
+                _target.CharacterState.DispelStates(
+                    StateType.Magic,
+                    _target.NetworkSettings.TeamIndex,
+                    _player.NetworkSettings.TeamIndex,
+                    dispelCount > 0);
             }
 
-            _damage = new Damage
+            var damagePsi = new Damage
             {
-                Value = _baseDamage + _additionalDamage,
-                Type = DamageType.Physical,
+                Value = additionalDamage,
+                Type = DamageType.Magical,
                 PhysicAttackType = AttackRangeType.MeleeAttack,
             };
 
-            CmdUseAttackingEnergy(_additionalDamage);
-
-            CmdApplyDamage(_damage, _target.gameObject);
-
-            _additionalDamage = 0;
-            _maxCountDispelState = 0;
-            _damage.Value = 0f;
+            CmdUseAttackingEnergy(attackingPsiValue);
+            CmdApplyDamage(damagePsi, _target.gameObject);
         }
-        else
-        {
-            _damage = new Damage
-            {
-                Value = _baseDamage,
-                Type = DamageType.Physical,
-                PhysicAttackType = AttackRangeType.MeleeAttack,
-            };
-            CmdApplyDamage(_damage, _target.gameObject);
 
-            CmdIncreaseEnergy(_damage.Value);
-
-            _damage.Value = 0f;
-        }
     }
 
     public void ClawStrikeSpeedAnim()
@@ -105,16 +89,16 @@ public class ClawStrike : AutoAttackSkill
         AnimCastEnded();
     }
 
-    [Command]
-    private void CmdIncreaseEnergy(float value)
-    {
-        //_basePsionicEnergy.IncreasePsiEnergy(value);
-    }
+    //[Command]
+    //private void CmdIncreaseEnergy(float value)
+    //{
+    //    _basePsionicEnergy.Add(value);
+    //}
 
     [Command]
     private void CmdUseAttackingEnergy(float value)
     {
-        //_attackingPsionicEnergy.CurrentAttackingPsiEnergy -= value;
+        _attackingPsionicEnergy.CurrentValue -= value;
     }
 
     protected override void ClearData()

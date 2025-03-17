@@ -33,7 +33,6 @@ public class Health : Resource, IDamageable, IHealingable
     public event Action Evaded;
     public event Action<float , Skill , string> HealTaked;
     public event Action<Damage, Skill> DamageTaken;
-    public event Action<float> HealthRegenerated;
     public event Action Died;
     public event Action<float, float> OnShieldValuesChanged;
     public event Action<float> OnShieldAdd;

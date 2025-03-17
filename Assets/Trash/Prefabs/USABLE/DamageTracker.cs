@@ -15,6 +15,7 @@ public class DamageTracker : NetworkBehaviour
     public List<HealEntry> GetLocalHealEntries => _localHealEntries;
 
     public event System.Action<Damage, GameObject> OnDamageTracked;
+    public event System.Action<Heal> OnHealTracked;
 
     public void AddDamage(Damage damage, GameObject targetObject, bool isServerRequest = false)
     {
@@ -40,6 +41,8 @@ public class DamageTracker : NetworkBehaviour
         _healEntries.Add(new HealEntry(heal, Time.time));
         RemoveOldServerEntries();
         Debug.Log($"[DamageTracker] Heal added: {heal.Value}, Time: {Time.time}");
+
+        OnHealTracked?.Invoke(heal);
     }
     
     [Command]

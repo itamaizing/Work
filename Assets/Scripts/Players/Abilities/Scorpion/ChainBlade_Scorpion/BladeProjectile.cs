@@ -8,12 +8,16 @@ public class BladeProjectile : Projectiles
     [SerializeField] private float _damageMax = 5f;
 
     [SerializeField] private float _lifeTime = 3f;
-    [SerializeField] private GameObject chain;
+
+    [Header("Chain Settings")]
+    [SerializeField] private Transform chainLinkPoint;
 
     private float _currentLifeTime;
     private bool isChain = false;
 
-     public void StartFly(Vector3 direction)
+    public Transform ChainLinkPoint => chainLinkPoint != null ? chainLinkPoint : transform;
+
+    public void StartFly(Vector3 direction)
     {
         if (_rb != null) _rb.velocity = direction * _force;
 
@@ -51,5 +55,6 @@ public class BladeProjectile : Projectiles
         base.Init(dad, energy, lastHit, skill);
 
         _rb.velocity = transform.forward * _force;
+        isChain = lastHit;
     }
 }

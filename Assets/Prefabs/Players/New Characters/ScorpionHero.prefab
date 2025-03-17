@@ -1516,7 +1516,7 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _disactive: 0
-  _projectilePrefab: {fileID: 4389532817277749665, guid: e973d107e3652be4a8430fe523236ae6, type: 3}
+  _projectilePrefab: {fileID: 5004545132263793774, guid: c4eb6fd850cb9564aaae69f763caf3a2, type: 3}
   _chainEffectPrefab: {fileID: 4612859595147472226, guid: 553e2653ce083404fb6af72b5ff8bb45, type: 3}
   _playerLinks: {fileID: 5458554383432203635}
   _shootSound: {fileID: 8300000, guid: 17cbdc35f10725443b65eae7779124c6, type: 3}

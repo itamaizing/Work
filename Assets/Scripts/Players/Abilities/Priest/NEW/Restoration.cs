@@ -26,7 +26,7 @@ public class Restoration : Skill
     public bool isLightMode = true;
     private float _accumulatedEffectiveness = 1f;
     private float _totalHealedInInterval = 0f;
-    
+
     private Character _target;
     public Character Target => _target;
     
@@ -105,6 +105,15 @@ public class Restoration : Skill
         }
     }
 
+    private float GetSpiritEnergyBonus(Character target)
+    {
+        var characterState = target?.GetComponent<CharacterState>();
+        if (characterState == null) return 0f;
+
+        var spiritEnergyState = characterState.GetState(States.SpiritEnergy) as SpiritEnergyState;
+        return spiritEnergyState != null ? spiritEnergyState.GetHealBonus() : 0f;
+    }
+
     private void HandleRestorationDark()
     {
         if (_target == null) return;
@@ -131,13 +140,13 @@ public class Restoration : Skill
             float endTime = Time.time + lightDuration;
             while (Time.time < endTime)
             {
-                float effectiveHeal = healPerTick * _accumulatedEffectiveness;
-                
+                float bonusHealFromSpiritEnergy = GetSpiritEnergyBonus(target);
+                float effectiveHeal = healPerTick * _accumulatedEffectiveness + bonusHealFromSpiritEnergy;
+
                 var heal = new Heal { Value = effectiveHeal };
                 CmdApplyHeal(heal, healthComponent.gameObject, this, name);
                 
-                _accumulatedEffectiveness += _totalHealedInInterval * effectivenessIncreasePerHeal;
-                
+                _accumulatedEffectiveness += _totalHealedInInterval * effectivenessIncreasePerHeal;              
                 _totalHealedInInterval = 0f;
 
                 yield return new WaitForSeconds(healInterval);

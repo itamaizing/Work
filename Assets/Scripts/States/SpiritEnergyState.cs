@@ -83,6 +83,11 @@ public class SpiritEnergyState : AbstractCharacterState
         ApplyRegen(manaRestoreValue);
     }
 
+    public float GetHealBonus()
+    {
+        return CurrentStacksCount * 1f;
+    }
+
     public void ApplyRegen(float manaRestoreValue)
     {
         if (_manaResource != null && manaRestoreValue > 0) _manaResource.CmdAdd(manaRestoreValue);

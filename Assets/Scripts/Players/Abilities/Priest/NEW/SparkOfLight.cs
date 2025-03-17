@@ -194,9 +194,19 @@ public class SparkOfLight : AutoAttackSkill
         }
 
         var bonus = isBonusActive ? _tickHealingBonus * _healingBonusStacks : 0;
+        var bonusHealFromSpiritEnergy = GetSpiritEnergyBonus(target);
 
-        var heal = new Heal { Value = _healAmount + bonus };
+        var heal = new Heal { Value = _healAmount + bonus + bonusHealFromSpiritEnergy };
         ApplyHeal(heal, target.gameObject, this, Name);
+    }
+
+    private float GetSpiritEnergyBonus(Character target)
+    {
+        var characterState = target?.GetComponent<CharacterState>();
+        if (characterState == null) return 0f;
+
+        var spiritEnergyState = characterState.GetState(States.SpiritEnergy) as SpiritEnergyState;
+        return spiritEnergyState != null ? spiritEnergyState.GetHealBonus() : 0f;
     }
 
     private void DamageCast(Character target)

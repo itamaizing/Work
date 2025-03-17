@@ -1,57 +1,121 @@
 using Mirror;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ChainController : NetworkBehaviour
 {
-    [SerializeField] private LineRenderer _line;
+    private LineRenderer lineRenderer;
 
-    [SyncVar(hook = nameof(OnPlayerChanged))]
-    private uint _playerNetId;
+    public Transform _startTarget;
+    public Transform target = null;
+
+    [SyncVar]
+    public float num = 0;
 
     [SyncVar(hook = nameof(OnTargetChanged))]
-    private uint _targetNetId;
+    public uint targetID;
 
-    private Transform _playerTransform;
-    private Transform _targetTransform;
+    [SyncVar(hook = nameof(OnTargetChanged2))]
+    public uint parentID;
 
-    public void InitChain(Transform player, Transform target)
+    private void Awake()
     {
-        _playerNetId = player.GetComponent<NetworkIdentity>().netId;
-        _targetNetId = target.GetComponent<NetworkIdentity>().netId;
-
-        SetTransforms(_playerNetId, _targetNetId);
+        lineRenderer = GetComponent<LineRenderer>();
+    }
+    public void Clear(Transform pos)
+    {
+        lineRenderer.SetPosition(0, pos.position);
+        lineRenderer.SetPosition(1, pos.position);
     }
 
-    private void OnPlayerChanged(uint oldId, uint newId)
+    public void AssignTarget(Transform startTarget, Transform newTarget)
     {
-        SetTransforms(newId, _targetNetId);
-    }
-
-    private void OnTargetChanged(uint oldId, uint newId)
-    {
-        SetTransforms(_playerNetId, newId);
-    }
-
-    private void SetTransforms(uint playerId, uint targetId)
-    {
-        if (NetworkClient.spawned.TryGetValue(playerId, out var playerIdentity))
-            _playerTransform = playerIdentity.transform;
-
-        if (NetworkClient.spawned.TryGetValue(targetId, out var targetIdentity))
-            _targetTransform = targetIdentity.transform;
-
-        UpdateLinePositions();
+        lineRenderer.positionCount = 2;
+        _startTarget = startTarget;
+        target = newTarget;
+        lineRenderer.SetPosition(0, target.position);
+        lineRenderer.SetPosition(1, _startTarget.position);
     }
 
     private void Update()
     {
-        if (_playerTransform && _targetTransform)
-            UpdateLinePositions();
+        if (target != null && _startTarget != null)
+        {
+            lineRenderer.SetPosition(0, target.position);
+            lineRenderer.SetPosition(1, _startTarget.position);
+        }
+
+        //CmdUpdatePos();
     }
 
-    private void UpdateLinePositions()
+    private void UpdatePos()
     {
-        _line.SetPosition(0, _playerTransform.position + Vector3.up * 1.5f);
-        _line.SetPosition(1, _targetTransform.position);
+        if (target != null && _startTarget != null)
+        {
+            lineRenderer.SetPosition(0, target.position);
+            lineRenderer.SetPosition(1, _startTarget.position);
+        }
+    }
+
+    private void OnTargetChanged(uint _, uint newValue)
+    {
+        target = null;
+
+        if (NetworkClient.spawned.TryGetValue(targetID, out NetworkIdentity identity))
+        {
+            if (identity.TryGetComponent<BladeProjectile>(out BladeProjectile blade))
+            {
+                target = blade.ChainLinkPoint;
+            }
+            else
+            {
+                target = identity.transform;
+            }
+            Debug.Log(identity.gameObject.name);
+        }
+        else
+            StartCoroutine(SetTarget());
+    }
+
+    private IEnumerator SetTarget()
+    {
+        while (target == null)
+        {
+            yield return null;
+            if (NetworkClient.spawned.TryGetValue(targetID, out NetworkIdentity identity))
+            {
+                if (identity.TryGetComponent<BladeProjectile>(out BladeProjectile blade))
+                {
+                    target = blade.ChainLinkPoint;
+                }
+                else
+                {
+                    target = identity.transform;
+                }
+            }
+            Debug.Log(identity.gameObject.name);
+        }
+    }
+
+    private void OnTargetChanged2(uint _, uint newValue)
+    {
+        _startTarget = null;
+
+        if (NetworkClient.spawned.TryGetValue(parentID, out NetworkIdentity character))
+            _startTarget = character.transform;
+        else
+            StartCoroutine(SetTarget2());
+    }
+
+    private IEnumerator SetTarget2()
+    {
+        while (_startTarget == null)
+        {
+            yield return null;
+            if (NetworkClient.spawned.TryGetValue(parentID, out NetworkIdentity character))
+                _startTarget = character.transform;
+
+        }
     }
 }

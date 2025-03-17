@@ -7,7 +7,6 @@ public class ChainBlade_Scorpion : Skill
 {
     [Header("Settings")]
     [SerializeField] private BladeProjectile _projectilePrefab;
-    [SerializeField] private BladeProjectile _projectileÑhainPrefab;
     [SerializeField] private ChainEffect _chainEffectPrefab;
     [SerializeField] private HeroComponent _playerLinks;
     [SerializeField] private AudioClip _shootSound;
@@ -91,30 +90,46 @@ public class ChainBlade_Scorpion : Skill
         if (_energy.CurrentValue >= _chainManaCost)
         {
             _energy.CmdUse(_chainManaCost);
-           
+            CmdSpawnBladeProjectile(lookDir, true);
+
         }
         else if (_energy.CurrentValue >= _bladeManaCost && _energy.CurrentValue < _chainManaCost)
         {
             _energy.CmdUse(_bladeManaCost);
-            CmdSpawnBladeProjectile(lookDir);
+            CmdSpawnBladeProjectile(lookDir, false);
         }
 
         ClearData();
     }
 
     [Command]
-    private void CmdSpawnBladeProjectile(Vector3 direction)
+    private void CmdSpawnBladeProjectile(Vector3 direction, bool isChain)
     {
         Vector3 spawnPosition = transform.position + Vector3.up * 1.5f;
+
         var projectile = Instantiate(_projectilePrefab, spawnPosition, Quaternion.LookRotation(direction));
         SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
 
-        projectile.Init(_playerLinks, _energy.CurrentValue, false, this);
+        projectile.Init(_playerLinks, _energy.CurrentValue, isChain, this);
         projectile.StartFly(direction);
+
+        if (isChain)
+        {
+            var chainController = projectile.GetComponentInChildren<ChainController>();
+            if (chainController != null)
+            {
+                chainController._startTarget = _playerLinks.transform;
+
+                var parentNetId = _playerLinks.GetComponent<NetworkIdentity>();
+                chainController.parentID = parentNetId.netId;
+
+            }
+        }
 
         RpcPlayShootSound();
         NetworkServer.Spawn(projectile.gameObject);
     }
+
 
     [ClientRpc]
     private void RpcPlayShootSound()

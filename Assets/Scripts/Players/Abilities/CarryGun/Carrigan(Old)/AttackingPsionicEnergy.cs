@@ -10,7 +10,7 @@ public class AttackingPsionicEnergy : Energy
 
     private const float _maxAttackingPsiEnergy = 30f;
     private const float _timeAttackingPsiEnergy = 6f;
-
+    
     private float _remainingTime;
     private bool _isAttackingPsiActive = false;
 
