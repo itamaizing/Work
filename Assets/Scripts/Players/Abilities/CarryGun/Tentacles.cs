@@ -251,7 +251,7 @@ public class Tentacles : Skill
         TentacleProjectile tentacles = Instantiate(tentaclesPrefab, position, Quaternion.identity);
         SceneManager.MoveGameObjectToScene(tentacles.gameObject, _hero.NetworkSettings.MyRoom);
 
-        tentacles.Init(_player, target, position, target.transform.position, true, 0);
+        tentacles.Init(_player, target, position, target.transform.position, true, 0, this);
 
         NetworkServer.Spawn(tentacles.gameObject);
         RpcInitTentacles(tentacles.gameObject, target, position);
@@ -269,6 +269,6 @@ public class Tentacles : Skill
         if (!IsValidVector(position)) return;
         if (tentacleObject == null) return;
 
-        tentacleObject.GetComponent<TentacleProjectile>().Init(_player, target, position, target.transform.position, true, 0);
+        tentacleObject.GetComponent<TentacleProjectile>().Init(_player, target, position, target.transform.position, true, 0, this);
     }
 }

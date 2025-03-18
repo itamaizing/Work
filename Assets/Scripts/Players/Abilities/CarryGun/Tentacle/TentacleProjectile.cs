@@ -1,7 +1,9 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class TentacleProjectile : MonoBehaviour
+public class TentacleProjectile : NetworkBehaviour
 {
     [SerializeField] private bool _isPreview = true;
     [SerializeField] private DrawCircleTentacle _drawCircle;
@@ -12,15 +14,20 @@ public class TentacleProjectile : MonoBehaviour
     private Character _target;
     private Vector3 _startPosition;
     private Vector3 _endPosition;
+
     private bool _isAttackingPsiEnergyActive;
     private float _currentDamage;
+
     private float _grabDuration = 1.2f;
     private float _radius = 3f;
 
     private bool _radiusView;
     private bool _isCollidedWithOtherCharacter = false;
     private bool _isPullTarget = false;
+
     private Coroutine _radiusUpdateCoroutine;
+
+    private Skill _skill;
 
     public bool IsPreview { get => _isPreview; set => _isPreview = value; }
     public GameObject Tentacle { get => tentacle; set => tentacle = value; }
@@ -33,24 +40,20 @@ public class TentacleProjectile : MonoBehaviour
 
     private void Start()
     {
-        Invoke("drawCircleRadius", 0.1f);
+        Invoke(nameof(DrawCircleRadius), 0.1f);
     }
 
     private void OnDestroy()
     {
         if (_drawCircle != null)
-        {
             _drawCircle.Clear();
-        }
 
         if (_radiusUpdateCoroutine != null)
-        {
             StopCoroutine(_radiusUpdateCoroutine);
-        }
     }
 
     public void Init(Character player, Character target, Vector3 startPosition, Vector3 endPosition,
-        bool isAttackingPsiEnergyActive, float currentDamage)
+        bool isAttackingPsiEnergyActive, float currentDamage, Skill skill)
     {
         _player = player;
         _target = target;
@@ -58,10 +61,11 @@ public class TentacleProjectile : MonoBehaviour
         _endPosition = endPosition;
         _isAttackingPsiEnergyActive = isAttackingPsiEnergyActive;
         _currentDamage = currentDamage;
+        _skill = skill;
 
         transform.position = startPosition;
 
-        Invoke("ReleaseTarget", _grabDuration);
+        Invoke(nameof(ReleaseTarget), _grabDuration);
     }
 
     public void StartTentaclesGrab()
@@ -77,11 +81,12 @@ public class TentacleProjectile : MonoBehaviour
 
             _target.Move.CanMove = false;
             _isPullTarget = true;
+            if (isServer) AttackTentacles();
             StartCoroutine(PullTarget());
         }
     }
 
-    private void drawCircleRadius()
+    private void DrawCircleRadius()
     {
         if (_drawCircle != null)
         {
@@ -96,10 +101,7 @@ public class TentacleProjectile : MonoBehaviour
 
     public void SetRadiusColor(Color color)
     {
-        if (_drawCircle != null)
-        {
-            _drawCircle.SetColor(color);
-        }
+        _drawCircle?.SetColor(color);
     }
 
     private IEnumerator PullTarget()
@@ -122,9 +124,7 @@ public class TentacleProjectile : MonoBehaviour
             float speed = baseSpeed + (elapsedTime / 0.1f) * speedIncrease;
 
             if (_isCollidedWithOtherCharacter)
-            {
                 speed /= 2;
-            }
 
             Vector3 direction = toTentacle.normalized;
             _target.transform.position += direction * speed;
@@ -137,9 +137,7 @@ public class TentacleProjectile : MonoBehaviour
                 targetDistanceAccumulator -= 0.1f;
 
                 if (_player != null && _player.TryGetComponent<BasePsionicEnergy>(out var psiEnergy))
-                {
                     psiEnergy.Add(0.3f);
-                }
             }
 
             lastTargetPosition = _target.transform.position;
@@ -149,25 +147,98 @@ public class TentacleProjectile : MonoBehaviour
         }
     }
 
+    private void AttackTentacles()
+    {
+        if (_isAttackingPsiEnergyActive && _player.TryGetComponent<AttackingPsionicEnergy>(out var psiEnergy))
+        {
+            float attackingPsiValue = psiEnergy.CurrentValue;
+
+            if (attackingPsiValue > 0)
+            {
+                DealAttackingPsiDamage(attackingPsiValue);
+                ApplyLowVoltageDebuff(attackingPsiValue);
+                UseAttackingEnergy(attackingPsiValue);
+            }
+        }
+    }
+
     private void ReleaseTarget()
     {
-        if (_target != null) _target.Move.CanMove = true;
+        if (_target != null)
+            _target.Move.CanMove = true;
 
         Destroy(gameObject);
     }
 
+    private void DealAttackingPsiDamage(float attackingPsiValue)
+    {
+        float damagePerPsi = 0.5f;
+        float totalDamage = attackingPsiValue * damagePerPsi;
+
+        var mainDamage = new Damage
+        {
+            Value = totalDamage,
+            Type = DamageType.Magical,
+            PhysicAttackType = AttackRangeType.MeleeAttack
+        };
+
+        _skill.ApplyDamage(mainDamage, _target.gameObject);
+
+        Collider[] nearbyEnemies = Physics.OverlapSphere(_target.transform.position, 1f, _skill.TargetsLayers);
+
+        foreach (var collider in nearbyEnemies)
+        {
+            if (collider.TryGetComponent<Character>(out var enemy) && enemy != _target)
+            {
+                var splashDamage = new Damage
+                {
+                    Value = totalDamage,
+                    Type = DamageType.Magical,
+                    PhysicAttackType = AttackRangeType.MeleeAttack
+                };
+
+                _skill.ApplyDamage(splashDamage, enemy.gameObject);
+            }
+        }
+    }
+
+    private void ApplyLowVoltageDebuff(float attackingPsiValue)
+    {
+        int stacks = 0;
+
+        if (attackingPsiValue >= 30)
+            stacks = 3;
+        else if (attackingPsiValue >= 20)
+            stacks = 2;
+        else if (attackingPsiValue >= 10)
+            stacks = 1;
+
+        if (stacks > 0) for (int i = 0; i < stacks; i++) _target.CharacterState.AddState(States.LowVoltage, 6f, 0f, _player.gameObject, "Tentacles");
+    }
+
+    private void UseAttackingEnergy(float value)
+    {
+        if (_player.TryGetComponent<AttackingPsionicEnergy>(out var psiEnergy))
+        {
+            psiEnergy.CurrentValue -= value;
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.TryGetComponent<Character>(out Character character) && character != _target) _isCollidedWithOtherCharacter = true;
+        if (other.TryGetComponent<Character>(out var character) && character != _target)
+            _isCollidedWithOtherCharacter = true;
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (!_isPullTarget) StartTentaclesGrab();
+        if (!_isPullTarget)
+            StartTentaclesGrab();
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.TryGetComponent<Character>(out Character character) && character != _target) _isCollidedWithOtherCharacter = false;
+        if (other.TryGetComponent<Character>(out var character) && character != _target)
+            _isCollidedWithOtherCharacter = false;
     }
 }

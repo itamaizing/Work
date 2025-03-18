@@ -22,6 +22,11 @@ public class CheliceraStrike : AutoAttackSkill
     private float _durationBleeding = 3.0f;
 
     private Coroutine _dealDamageWithAttackingPsiCoroutine;
+
+    private const float _radiusAttackPsi = 1.0f;
+    private const float _pushDuration = 0.2f;
+    private const float _pushDistance = 1.0f;
+
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerAutoAttack => Animator.StringToHash("CheliceraStrikeTrigger");
@@ -53,10 +58,13 @@ public class CheliceraStrike : AutoAttackSkill
         float chanceCritValue = Random.Range(0f, 1f);
         float chanceBleedingValue = Random.Range(0f, 1f);
 
+        Debug.Log($"Начальный урон: {_baseDamage}");
+
         if (_jumpWithChelicera.IsJumpDone)
         {
             float bonusDamage = _baseDamage * _additionalDamageFromSkill;
             _baseDamage += bonusDamage;
+            Debug.Log($"Бонус.урон: {bonusDamage}");
         }
 
         if (chanceBleedingValue <= _chanceApplyBleeding)
@@ -78,13 +86,10 @@ public class CheliceraStrike : AutoAttackSkill
 
         if (_attackingPsionicEnergy.IsAttackingPsiEnergy && target != null)
         {
-            DamageDealWithAttackingPsionicEnergy(target, _dealDamage.Value);
+            DamageDealWithAttackingPsionicEnergy(targetCharacter, _dealDamage.Value);
         }
-        else
-        {
-            CmdApplyDamage(_dealDamage, target);
-            CmdIncreaseEnergy(_dealDamage.Value);
-        }
+
+        else CmdApplyDamage(_dealDamage, target);
 
         _criticalDamage = 0f;
         _dealDamage.Value = 0f;
@@ -107,83 +112,144 @@ public class CheliceraStrike : AutoAttackSkill
         return criticalDamage;
     }
 
-    private void DamageDealWithAttackingPsionicEnergy(GameObject target, float currentDamage)
+    private void DamageDealWithAttackingPsionicEnergy(Character targetCharacter, float baseDamage)
     {
-        _dealDamageWithAttackingPsiCoroutine = StartCoroutine(SearchingEnemiesAroundTarget(target, currentDamage));
-    }
+        float attackingPsi = _attackingPsionicEnergy.CurrentValue;
 
-    private IEnumerator SearchingEnemiesAroundTarget(GameObject target, float baseDamage)
-    {
-        Character targetCharacter = target.GetComponent<Character>();
+        if (attackingPsi <= 0) return;
 
-        #region DealDamageVariables
-        float radiusAttack = 5.0f; // Then make it 1.0f
-        float additionalDamage = 0f;//_attackingPsionicEnergy.CurrentAttackingPsiEnergy;
-        float multiplierDamageByMainTarget = 0.3f;
-        float percentageDamageToNearestEnemies = 0.5f;
-        #endregion
-
-        if (additionalDamage > 10 && additionalDamage < 20)
+        if (attackingPsi >= 10)
         {
             targetCharacter.CharacterState.DispelStates(StateType.Magic, targetCharacter.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
         }
 
-        while (_attackingPsionicEnergy.IsAttackingPsiEnergy)
+        if (attackingPsi >= 20)
         {
-            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(targetCharacter.transform.position, radiusAttack, _targetsLayers);
-            foreach (var item in hitEnemies)
+            Collider[] nearbyEnemies = Physics.OverlapSphere(targetCharacter.transform.position, _radiusAttackPsi, _targetsLayers);
+            foreach (var enemyCollider in nearbyEnemies)
             {
-                var itemCharacter = item.GetComponent<Character>();
-
-                Vector2 direction = (itemCharacter.transform.position - _player.transform.position).normalized;
-
-                if (item != null && item.gameObject != _player.gameObject)
+                if (enemyCollider.TryGetComponent<Character>(out var enemy) && enemy != targetCharacter)
                 {
-                    if (additionalDamage > 20 && additionalDamage < 30)
-                    {
-                        itemCharacter.CharacterState.DispelStates(StateType.Magic, itemCharacter.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
-                    }
-                    else if (additionalDamage >= 30)
-                    {
-                        itemCharacter.CharacterState.DispelStates(StateType.Magic, itemCharacter.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
-
-                        CmdPushTargets(item.gameObject, direction);
-                    }
-
-                    #region DamageDeal
-                    Damage damageNearestEnemy = new Damage()
-                    {
-                        Value = (baseDamage + additionalDamage) * percentageDamageToNearestEnemies,
-                        Type = DamageType.Physical,
-                        PhysicAttackType = AttackRangeType.MeleeAttack,
-                    };
-                    CmdApplyDamage(damageNearestEnemy, item.gameObject);
-
-                    Damage damageMainTarget = new Damage()
-                    {
-                        Value = baseDamage + (additionalDamage * multiplierDamageByMainTarget),
-                        Type = DamageType.Physical,
-                        PhysicAttackType = AttackRangeType.MeleeAttack,
-                    };
-                    CmdApplyDamage(damageMainTarget, targetCharacter.gameObject);
-                    #endregion
-
-                    CmdUseAttackingEnergy(additionalDamage);
-
+                    enemy.CharacterState.DispelStates(StateType.Magic, enemy.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
                 }
-
-                if (_dealDamageWithAttackingPsiCoroutine != null)
-                {
-                    StopCoroutine(_dealDamageWithAttackingPsiCoroutine);
-                    _dealDamageWithAttackingPsiCoroutine = null;
-                }
-
-                yield break;
             }
-            
-            yield return null;
         }
+
+        if (attackingPsi >= 30)
+        {
+            Collider[] enemiesToPush = Physics.OverlapSphere(targetCharacter.transform.position, _radiusAttackPsi, _targetsLayers);
+            foreach (var enemyCollider in enemiesToPush)
+            {
+                if (enemyCollider.TryGetComponent<Character>(out var enemy))
+                {
+                    Vector2 direction = (enemy.transform.position - _player.transform.position).normalized;
+                    CmdPushTargets(enemy.gameObject, direction);
+                }
+            }
+        }
+
+        var damageMainTarget = new Damage
+        {
+            Value = baseDamage + (attackingPsi * 0.3f),
+            Type = DamageType.Physical,
+            PhysicAttackType = AttackRangeType.MeleeAttack,
+        };
+        CmdApplyDamage(damageMainTarget, targetCharacter.gameObject);
+
+        Collider[] nearbyEnemiesToDamage = Physics.OverlapSphere(targetCharacter.transform.position, _radiusAttackPsi, _targetsLayers);
+        foreach (var enemyCollider in nearbyEnemiesToDamage)
+        {
+            if (enemyCollider.TryGetComponent<Character>(out var enemy) && enemy != targetCharacter)
+            {
+                var damageNearby = new Damage
+                {
+                    Value = (baseDamage + attackingPsi) * 0.5f,
+                    Type = DamageType.Physical,
+                    PhysicAttackType = AttackRangeType.MeleeAttack,
+                };
+
+                CmdApplyDamage(damageNearby, enemy.gameObject);
+            }
+        }
+
+        CmdUseAttackingEnergy(attackingPsi);
     }
+
+    /// <summary>
+    /// Using commands (old)
+    /// </summary>
+    //private IEnumerator SearchingEnemiesAroundTarget(GameObject target, float baseDamage)
+    //{
+    //    Character targetCharacter = target.GetComponent<Character>();
+
+    //    #region DealDamageVariables
+    //    float radiusAttack = 5.0f; // Then make it 1.0f
+    //    float additionalDamage = 0f;//_attackingPsionicEnergy.CurrentAttackingPsiEnergy;
+    //    float multiplierDamageByMainTarget = 0.3f;
+    //    float percentageDamageToNearestEnemies = 0.5f;
+    //    #endregion
+
+    //    if (additionalDamage > 10 && additionalDamage < 20)
+    //    {
+    //        targetCharacter.CharacterState.DispelStates(StateType.Magic, targetCharacter.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
+    //    }
+
+    //    while (_attackingPsionicEnergy.IsAttackingPsiEnergy)
+    //    {
+    //        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(targetCharacter.transform.position, radiusAttack, _targetsLayers);
+    //        foreach (var item in hitEnemies)
+    //        {
+    //            var itemCharacter = item.GetComponent<Character>();
+
+    //            Vector2 direction = (itemCharacter.transform.position - _player.transform.position).normalized;
+
+    //            if (item != null && item.gameObject != _player.gameObject)
+    //            {
+    //                if (additionalDamage > 20 && additionalDamage < 30)
+    //                {
+    //                    itemCharacter.CharacterState.DispelStates(StateType.Magic, itemCharacter.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
+    //                }
+    //                else if (additionalDamage >= 30)
+    //                {
+    //                    itemCharacter.CharacterState.DispelStates(StateType.Magic, itemCharacter.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
+
+    //                    CmdPushTargets(item.gameObject, direction);
+    //                }
+
+    //                #region DamageDeal
+    //                Damage damageNearestEnemy = new Damage()
+    //                {
+    //                    Value = (baseDamage + additionalDamage) * percentageDamageToNearestEnemies,
+    //                    Type = DamageType.Physical,
+    //                    PhysicAttackType = AttackRangeType.MeleeAttack,
+    //                };
+    //                CmdApplyDamage(damageNearestEnemy, item.gameObject);
+
+    //                Damage damageMainTarget = new Damage()
+    //                {
+    //                    Value = baseDamage + (additionalDamage * multiplierDamageByMainTarget),
+    //                    Type = DamageType.Physical,
+    //                    PhysicAttackType = AttackRangeType.MeleeAttack,
+    //                };
+    //                CmdApplyDamage(damageMainTarget, targetCharacter.gameObject);
+    //                #endregion
+
+    //                CmdUseAttackingEnergy(additionalDamage);
+
+    //            }
+
+    //            if (_dealDamageWithAttackingPsiCoroutine != null)
+    //            {
+    //                StopCoroutine(_dealDamageWithAttackingPsiCoroutine);
+    //                _dealDamageWithAttackingPsiCoroutine = null;
+    //            }
+
+    //            yield break;
+    //        }
+
+    //        yield return null;
+    //    }
+    //}
 
     public void CheliceraStrikeSpeedAnim()
     {
@@ -203,25 +269,23 @@ public class CheliceraStrike : AutoAttackSkill
     #region CommandMethods
 
     [Command]
-    private void CmdIncreaseEnergy(float value)
+    private void CmdPushTargets(GameObject target, Vector3 direction)
     {
-       //_basePsionicEnergy.IncreasePsiEnergy(value);
-    }
+        if (target.TryGetComponent<MoveComponent>(out var targetMove))
+        {
+            Vector3 currentPos = targetMove.transform.position;
+            Vector3 pushPos = currentPos + direction.normalized * _pushDistance;
 
-    [Command]
-    private void CmdPushTargets(GameObject target, Vector2 direction)
-    {
-        MoveComponent targetMove = target.gameObject.GetComponent<MoveComponent>();
-        float durationPush = 0.2f;
-        float distancePush = 1.0f * GlobalVariable.cellSize;
-
-        targetMove.TargetRpcDoMove((Vector2)targetMove.transform.position + direction * distancePush, durationPush);
+ 
+            if (targetMove.connectionToClient != null) targetMove.TargetRpcDoPush(pushPos, _pushDuration);
+            else targetMove.RpcDoPush(pushPos, _pushDuration);
+        }
     }
 
     [Command]
     private void CmdUseAttackingEnergy(float value)
     {
-        //_attackingPsionicEnergy.CurrentAttackingPsiEnergy -= value;
+        _attackingPsionicEnergy.CurrentValue -= value;
     }
 
     #endregion

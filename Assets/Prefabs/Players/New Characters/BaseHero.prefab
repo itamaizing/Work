@@ -30017,6 +30017,7 @@ MonoBehaviour:
   - {fileID: 2461163197728234484}
   _selectedCircle: {fileID: 7875534060547890866}
   _spawnComponent: {fileID: 454093965362999032}
+  _visionComponent: {fileID: 0}
   talentManager: {fileID: 5950354320950511597}
 --- !u!114 &5590339039165547173
 MonoBehaviour:
@@ -30145,6 +30146,7 @@ MonoBehaviour:
   CircleSelect: {fileID: 7875534060547890866}
   MarkersSelect: {fileID: 6187515459508436941}
   _castLine: {fileID: 7232052806928420198}
+  _damageTracker: {fileID: 582667559171038809}
   DamageSpawn: {fileID: 8174039513679053064}
   RegenSpawn: {fileID: 4803801221496526016}
   PopupText: {fileID: 3712476584407953316, guid: b8ec9c7fb2a215a418a41efc3aec9187, type: 3}

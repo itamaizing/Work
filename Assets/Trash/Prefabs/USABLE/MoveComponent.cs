@@ -295,6 +295,7 @@ public class MoveComponent : NetworkBehaviour
     {
 		transform.position = vector3;
 	}
+
 	[TargetRpc]
 	public void TargetRpcDoMove(Vector3 vector3, float duration)
 	{
@@ -319,4 +320,31 @@ public class MoveComponent : NetworkBehaviour
 	{
 		StartCoroutine(MoveTowardsCoroutine(targetPosition, speed));
 	}
+
+	[TargetRpc]
+	public void TargetRpcDoPush(Vector3 targetPos, float duration)
+	{
+		CanMove = false;
+
+		_rigidbody.DOKill();
+
+		_rigidbody.DOMove(targetPos, duration)
+			.SetEase(Ease.Linear)
+			.OnComplete(() =>
+			{
+				CanMove = true;
+			});
+	}
+
+	#region Test
+	[ClientRpc]
+	public void RpcDoPush(Vector3 targetPos, float duration)
+	{
+		_rigidbody.DOKill();
+
+		_rigidbody.DOMove(targetPos, duration)
+			.SetEase(Ease.Linear)
+			.OnComplete(() => CanMove = true);
+	}
+    #endregion
 }

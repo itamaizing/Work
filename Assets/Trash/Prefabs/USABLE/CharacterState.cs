@@ -72,6 +72,7 @@ public class CharacterState : NetworkBehaviour
 	public StateIcons StateIcons => _stateIcons;
 	public List<AbstractCharacterState> CurrentStates => currentStates;
 	public Character Character => _hero;
+	public event System.Action<AbstractCharacterState> OnStateAdded;
 
 	public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
 	{
@@ -118,6 +119,7 @@ public class CharacterState : NetworkBehaviour
 		[States.AbsorptionOfPoison] = new AbsorptionOfPoisonsState(),
 		[States.Bleeding] = new BleedingState(),
 		[States.ReducingHealing] = new ReducingHealingState(),
+		[States.LowVoltage] = new LowVoltage(),
 
 		#region TerrifyingElfStates
 
@@ -401,6 +403,8 @@ public class CharacterState : NetworkBehaviour
 
 		CreateState(stateInstance, state, duration, damageToExit, personWhoShooted, skillName, false);
 
+		OnStateAdded?.Invoke(stateInstance);
+
 		if (stateInstance is IDamageable damageableShield)
 		{
 			AddShield(damageableShield);
@@ -614,6 +618,7 @@ public enum States
 	DefenseReduction,
 	SelfHarm,
 	ShieldBaff,
+	LowVoltage,
 
 	#region TerrifyingElf
 

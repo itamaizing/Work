@@ -79,11 +79,8 @@ public class JumpWithChelicera : Skill
         _isJumpDone = true;
 
         float distanceToTarget = Vector2.Distance(_target.transform.position, _player.transform.position);
-        float normalizedDistance = NormalizeDistance(distanceToTarget);
 
-        _additionalDamageInPercentage = normalizedDistance < _minDistance
-            ? _increaseDamageStandingStill
-            : Mathf.Clamp(normalizedDistance * _baseIncreasedDamage, _baseIncreasedDamage, _maxIncreasedDamage);
+        _additionalDamageInPercentage = 0.1f + (distanceToTarget / 0.1f) * 0.005f;
 
         Vector3 direction = (_target.transform.position - transform.position).normalized;
 
@@ -92,12 +89,12 @@ public class JumpWithChelicera : Skill
         Invoke(nameof(ResetBool), 1f);
     }
 
-    private float NormalizeDistance(float distance)
-    {
-        float minDistance = 2.2f;
-        float maxDistance = 8f;
-        return Mathf.Clamp((distance - minDistance) / (maxDistance - minDistance) * (_distanceJump - _minDistance) + _minDistance, _minDistance, _distanceJump);
-    }
+    //private float NormalizeDistance(float distance)
+    //{
+    //    float minDistance = 2.2f;
+    //    float maxDistance = 8f;
+    //    return Mathf.Clamp((distance - minDistance) / (maxDistance - minDistance) * (_distanceJump - _minDistance) + _minDistance, _minDistance, _distanceJump);
+    //}
 
     private bool CheckCanCast()
     {
@@ -156,11 +153,12 @@ public class JumpWithChelicera : Skill
 
         Vector3 jumpPosition = Vector3.MoveTowards(targetCharacter.transform.position, player.transform.position, _minDistance + 0.5f);
 
-        // Запускаем перемещение + слежение за обоими
-        StartCoroutine(TrackJumpMovementCoroutine(playerMove, targetCharacter, jumpPosition, _distanceJump / 10, additionalDamage));
+        playerMove.TargetRpcDoMove(jumpPosition, _distanceJump / 10);
+
+        StartCoroutine(TrackMovementDuringJumpCoroutine(playerMove, targetCharacter, additionalDamage));
     }
 
-    private IEnumerator TrackJumpMovementCoroutine(MoveComponent playerMove, Character target, Vector3 playerTargetPosition, float speed, float additionalDamage)
+    private IEnumerator TrackMovementDuringJumpCoroutine(MoveComponent playerMove, Character target, float additionalDamage)
     {
         Vector3 lastPlayerPos = playerMove.transform.position;
         Vector3 lastTargetPos = target.transform.position;
@@ -168,28 +166,13 @@ public class JumpWithChelicera : Skill
         float playerDistanceAccumulator = 0f;
         float targetDistanceAccumulator = 0f;
 
-        bool playerReached = false;
+        float totalDuration = _distanceJump / 10;
+        float elapsedTime = 0f;
 
-        while (!playerReached || (target != null && !target.IsDead))
+        while (elapsedTime < totalDuration)
         {
-            // --- Перемещение героя ---
-            if (!playerReached)
-            {
-                Vector3 directionToTarget = (playerTargetPosition - playerMove.transform.position).normalized;
-                float distance = Vector3.Distance(playerMove.transform.position, playerTargetPosition);
-
-                if (distance > 0.1f)
-                {
-                    playerMove.transform.position += directionToTarget * speed * Time.deltaTime;
-                }
-                else
-                {
-                    playerReached = true;
-                }
-            }
-
-            // --- Проверка перемещения героя ---
-            float playerMoved = Vector3.Distance(lastPlayerPos, playerMove.transform.position);
+            Vector3 currentPlayerPos = playerMove.transform.position;
+            float playerMoved = Vector3.Distance(lastPlayerPos, currentPlayerPos);
             playerDistanceAccumulator += playerMoved;
 
             if (playerDistanceAccumulator >= 0.1f)
@@ -202,9 +185,8 @@ public class JumpWithChelicera : Skill
                 }
             }
 
-            lastPlayerPos = playerMove.transform.position;
+            lastPlayerPos = currentPlayerPos;
 
-            // --- Проверка перемещения цели ---
             if (target != null && !target.IsDead)
             {
                 Vector3 currentTargetPos = target.transform.position;
@@ -224,11 +206,12 @@ public class JumpWithChelicera : Skill
                 lastTargetPos = currentTargetPos;
             }
 
+            elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        // Завершаем прыжок и наносим урон
         StartCoroutine(WaitForJumpEnd());
+
         DamageDeal(target.gameObject, additionalDamage);
     }
 

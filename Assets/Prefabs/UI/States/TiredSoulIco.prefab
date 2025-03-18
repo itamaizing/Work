@@ -248,8 +248,9 @@ MonoBehaviour:
   border: {fileID: 303272373181814531}
   Text: {fileID: 690565960642161371}
   count: 1
-  state: 20
+  state: 36
   time: []
+  maxStack: 0
 --- !u!1 &6859609466393667985
 GameObject:
   m_ObjectHideFlags: 0

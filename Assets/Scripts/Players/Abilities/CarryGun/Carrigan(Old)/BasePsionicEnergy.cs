@@ -111,6 +111,8 @@ public class BasePsionicEnergy : Resource, IDamageable
         }
 
         basePsionicsSlider.value = normalizedValue;
+
+        Debug.Log($"Текущая пси энергия: {CurrentValue}");
     }
 
     private IEnumerator EnergyDecayCoroutine()
