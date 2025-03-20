@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class FireBreath_Scorpion : Skill, ICanConsumeComboPoints
+public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
 {
     [Header("Ability Settings")]
     [SerializeField] private FireBreath_Prefab _conePrefab;
@@ -263,13 +263,13 @@ private void CmdApplyScorchedSoulDebuff(NetworkIdentity targetIdentity)
         return transform.position + transform.forward * 5f;
     }
 
-    public void TryUpgradeByConsumingCombo(int amount)
-    {
-        if (!Notifier.IsActive)
-        {
-            ConsumedAmount = 0;
-            return;
-        }
-        ConsumedAmount = Notifier.PayComboPoints(Mathf.Clamp(amount, 0, Notifier.AvailablePoints));
-    }
+    //public void TryUpgradeByConsumingCombo(int amount)
+    //{
+    //    if (!Notifier.IsActive)
+    //    {
+    //        ConsumedAmount = 0;
+    //        return;
+    //    }
+    //    ConsumedAmount = Notifier.PayComboPoints(Mathf.Clamp(amount, 0, Notifier.AvailablePoints));
+    //}
 }

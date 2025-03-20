@@ -3,7 +3,7 @@ using System.Collections;
 using System.Linq;
 using UnityEngine;
 
-public class Teleportation_Scorpion : Skill, ICanConsumeComboPoints
+public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 {
     [Header("Ability settings")]
     //[SerializeField] private VisualRender _visualRender;
@@ -158,18 +158,18 @@ public class Teleportation_Scorpion : Skill, ICanConsumeComboPoints
 
     }
 
-    public void TryUpgradeByConsumingCombo(int amount)
-    {
-        if (!Notifier.IsActive)
-        {
-            ConsumedAmount = 0;
-            return;
-        }
+    //public void TryUpgradeByConsumingCombo(int amount)
+    //{
+    //    if (!Notifier.IsActive)
+    //    {
+    //        ConsumedAmount = 0;
+    //        return;
+    //    }
 
-        ConsumedAmount =  Notifier.PayComboPoints(Mathf.Clamp(amount, 0, Notifier.AvailablePoints));
+    //    ConsumedAmount =  Notifier.PayComboPoints(Mathf.Clamp(amount, 0, Notifier.AvailablePoints));
 
-        // Change values
-    }
+    //    // Change values
+    //}
 
     protected override IEnumerator PrepareJob()
     {
@@ -199,7 +199,7 @@ public class Teleportation_Scorpion : Skill, ICanConsumeComboPoints
 
     protected override IEnumerator CastJob()
     {
-        TryUpgradeByConsumingCombo(1);
+        //TryUpgradeByConsumingCombo(1);
         Vector3 tpPos = FindPlace(_target);
 
         //CmdChangePosition(tpPos);

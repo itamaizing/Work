@@ -120,6 +120,7 @@ public class CharacterState : NetworkBehaviour
 		[States.Bleeding] = new BleedingState(),
 		[States.ReducingHealing] = new ReducingHealingState(),
 		[States.LowVoltage] = new LowVoltage(),
+		[States.ComboState] = new ComboState(),
 
 		#region TerrifyingElfStates
 
@@ -135,6 +136,11 @@ public class CharacterState : NetworkBehaviour
 		[States.HuntressMark] = new HuntressMark(),
 		[States.Calmness] = new Calmness(),
 		[States.Sleep] = new Sleep(),
+		#endregion
+
+		#region Test Baff and Debaff
+		[States.BaffState] = new BaffState(),
+		[States.DebaffState] = new DebaffState(),
 		#endregion
 	};
 
@@ -619,6 +625,7 @@ public enum States
 	SelfHarm,
 	ShieldBaff,
 	LowVoltage,
+	ComboState,
 
 	#region TerrifyingElf
 
@@ -633,11 +640,17 @@ public enum States
 	Anxiety,
 	HuntressMark,
 	Calmness,
-	Sleep
-	#endregion
+	Sleep,
+    #endregion
+
+    #region Test Baff and Debaff
+		BaffState,
+		DebaffState,
+    #endregion
 }
 public enum BaffDebaff
 {
 	Baff,
 	Debaff,
+	Null,
 }

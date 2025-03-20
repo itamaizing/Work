@@ -80,10 +80,10 @@ public class Kick_Scorpion : AutoAttackSkill
             Type = DamageType,
         };
 
-        CmdApplyDamage(_target.gameObject, damage);
+        CmdApplyDamage(_target, damage);
     }
 
-    private void AttackPassed(Transform target)
+    private void AttackPassed(Character target)
     {
         Debug.LogWarning("[Kick_Scorpion] Attack Passed!");
 
@@ -112,7 +112,7 @@ public class Kick_Scorpion : AutoAttackSkill
     }
 
     [Command]
-    private void CmdApplyDamage(GameObject targetObject, Damage damage)
+    private void CmdApplyDamage(Character targetObject, Damage damage)
     {
         if (targetObject == null)
         {
@@ -128,13 +128,13 @@ public class Kick_Scorpion : AutoAttackSkill
         }
 
         bool isHit = targetHealth.TryTakeDamage(ref damage, this);
-        Hero.DamageTracker.AddDamage(damage, targetObject, isServerRequest: true);
+        Hero.DamageTracker.AddDamage(damage, targetObject.gameObject, isServerRequest: true);
 
-        RpcSelfNotifyHitResult(isHit, targetObject.transform);
+        RpcSelfNotifyHitResult(isHit, targetObject);
     }
 
     [TargetRpc]
-    private void RpcSelfNotifyHitResult(bool isHit, Transform target)
+    private void RpcSelfNotifyHitResult(bool isHit, Character target)
     {
         if (isHit)
         {

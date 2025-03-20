@@ -701,7 +701,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.size
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.data[0]
@@ -727,6 +727,10 @@ PrefabInstance:
       propertyPath: _skills.Array.data[5]
       value: 
       objectReference: {fileID: 3741212121368607163}
+    - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _skills.Array.data[6]
+      value: 
+      objectReference: {fileID: 8732005787551451527}
     - target: {fileID: 5338308959782739855, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.051383454
@@ -1241,6 +1245,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6527aa781683d1643a6540f0c1b1306c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2675348779447106883 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2361216367366023055, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 424471191848786636}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8143091671269686944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &3713062146289152410 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3919103737457224534, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -1334,9 +1349,9 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
+  _chargesHaveSeparateCooldown: 1
+  _maxCharges: 3
+  _chargeCooldown: 6
   _radius: 1.1
   _area: 0
   _castLength: 0
@@ -1389,9 +1404,9 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
+  _chargesHaveSeparateCooldown: 1
+  _maxCharges: 3
+  _chargeCooldown: 6
   _radius: 1.6
   _area: 0
   _castLength: 0
@@ -1449,9 +1464,9 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
+  _chargesHaveSeparateCooldown: 1
+  _maxCharges: 3
+  _chargeCooldown: 6
   _radius: 1.2
   _area: 0
   _castLength: 0
@@ -1504,9 +1519,9 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
+  _chargesHaveSeparateCooldown: 1
+  _maxCharges: 3
+  _chargeCooldown: 6
   _radius: 4
   _area: 0
   _castLength: 4
@@ -1516,12 +1531,13 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _disactive: 0
-  _projectilePrefab: {fileID: 5004545132263793774, guid: c4eb6fd850cb9564aaae69f763caf3a2, type: 3}
-  _chainEffectPrefab: {fileID: 4612859595147472226, guid: 553e2653ce083404fb6af72b5ff8bb45, type: 3}
+  _minDamage: 3
+  _maxDamage: 5
   _playerLinks: {fileID: 5458554383432203635}
-  _shootSound: {fileID: 8300000, guid: 17cbdc35f10725443b65eae7779124c6, type: 3}
-  _chainManaCost: 2
-  _bladeManaCost: 1
+  _playerIdentity: {fileID: 2675348779447106883}
+  _range: 7
+  _chainPrefab: {fileID: -8245340431016603970, guid: 94a92e558dfff4041911d68c42de01f8, type: 3}
+  _projectilePrefab: {fileID: 3765642479631805782, guid: e973d107e3652be4a8430fe523236ae6, type: 3}
 --- !u!114 &6267367289068038631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1661,7 +1677,7 @@ MonoBehaviour:
   syncInterval: 0
   _isTalentSpell: 0
   _isSkillActive: 1
-  _abilityInfo: {fileID: 0}
+  _abilityInfo: {fileID: 11400000, guid: b328702add621d74aa0b38841fc59c46, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
   _cooldownTime: 0
@@ -1694,10 +1710,6 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _disactive: 0
-  _playerLinks: {fileID: 0}
-  _comboPlayer: {fileID: 0}
-  Count: 0
-  <IsActive>k__BackingField: 0
 --- !u!114 &5883639770937801120
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1716,8 +1728,11 @@ MonoBehaviour:
   _hero: {fileID: 5458554383432203635}
   _comboPlayer: {fileID: 1147250939410812164}
   _poolPrefab: {fileID: 3549120476365869243, guid: 563ef57145301994f9242508a262ae14, type: 3}
-  ChargesCD: 9
-  _usedAbilities: 
+  PunchSkill: {fileID: 6732054044553877427}
+  KickSkill: {fileID: 8920276347339243132}
+  BladeSkill: {fileID: 1485408660127300276}
+  ChainBladeSkill: {fileID: 6713827535781379023}
+  _comboTimeout: 3
   _particlesAddStack: {fileID: 8947148409542421426}
   _particlesNoCharges: {fileID: 7567012663070630889}
   _particlesFullCombo: {fileID: 7712857434436745403}
@@ -1741,19 +1756,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1123303532507769373, guid: 61fccbbb6fb58c7478db99c25bcc4a0f, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1123303532507769373, guid: 61fccbbb6fb58c7478db99c25bcc4a0f, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1123303532507769373, guid: 61fccbbb6fb58c7478db99c25bcc4a0f, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 1123303532507769373, guid: 61fccbbb6fb58c7478db99c25bcc4a0f, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 1688327696223660302, guid: 61fccbbb6fb58c7478db99c25bcc4a0f, type: 3}
       propertyPath: m_Layer
@@ -1891,6 +1906,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 4559768275405324099, guid: 61fccbbb6fb58c7478db99c25bcc4a0f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5036490897875820836, guid: 61fccbbb6fb58c7478db99c25bcc4a0f, type: 3}
       propertyPath: m_Layer
       value: 5
@@ -1901,19 +1920,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5144235390501755623, guid: 61fccbbb6fb58c7478db99c25bcc4a0f, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5144235390501755623, guid: 61fccbbb6fb58c7478db99c25bcc4a0f, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5144235390501755623, guid: 61fccbbb6fb58c7478db99c25bcc4a0f, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 5144235390501755623, guid: 61fccbbb6fb58c7478db99c25bcc4a0f, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 5865993914703329923, guid: 61fccbbb6fb58c7478db99c25bcc4a0f, type: 3}
       propertyPath: m_Layer
@@ -1949,19 +1968,19 @@ PrefabInstance:
       objectReference: {fileID: 5737985345385971605}
     - target: {fileID: 7632343939389966796, guid: 61fccbbb6fb58c7478db99c25bcc4a0f, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7632343939389966796, guid: 61fccbbb6fb58c7478db99c25bcc4a0f, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7632343939389966796, guid: 61fccbbb6fb58c7478db99c25bcc4a0f, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7632343939389966796, guid: 61fccbbb6fb58c7478db99c25bcc4a0f, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 7740917291428622863, guid: 61fccbbb6fb58c7478db99c25bcc4a0f, type: 3}
       propertyPath: m_Layer

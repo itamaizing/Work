@@ -325,7 +325,6 @@ public class MoveComponent : NetworkBehaviour
 	public void TargetRpcDoPush(Vector3 targetPos, float duration)
 	{
 		CanMove = false;
-
 		_rigidbody.DOKill();
 
 		_rigidbody.DOMove(targetPos, duration)
@@ -340,11 +339,21 @@ public class MoveComponent : NetworkBehaviour
 	[ClientRpc]
 	public void RpcDoPush(Vector3 targetPos, float duration)
 	{
+		CanMove = false;
 		_rigidbody.DOKill();
 
 		_rigidbody.DOMove(targetPos, duration)
 			.SetEase(Ease.Linear)
-			.OnComplete(() => CanMove = true);
+			.OnComplete(() =>
+			{
+				CanMove = true;
+			});
 	}
-    #endregion
+
+	[ClientRpc]
+	public void RpcAddTransformPosition(Vector3 vector3)
+	{
+		transform.position += vector3;
+	}
+	#endregion
 }

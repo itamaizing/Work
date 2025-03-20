@@ -6,8 +6,8 @@ using UnityEngine;
 public class ChainController : NetworkBehaviour
 {
     private LineRenderer lineRenderer;
-
-    public Transform _startTarget;
+    
+    public Transform _startTarget = null;
     public Transform target = null;
 
     [SyncVar]

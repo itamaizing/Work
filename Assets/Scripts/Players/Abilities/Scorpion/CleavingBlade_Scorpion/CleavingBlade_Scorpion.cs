@@ -33,7 +33,7 @@ public class CleavingBlade_Scorpion : Skill
 
     }
 
-    private void AttackPassed(bool shouldIncreaseCounter, Transform target)
+    private void AttackPassed(bool shouldIncreaseCounter, Character target)
     {
         Debug.LogWarning("CleavingBlade_Scorpion .AttackPassed - Попал");
         _comboCounter.AddAbility(target, ScorpionAbility.Blade);
@@ -124,12 +124,12 @@ public class CleavingBlade_Scorpion : Skill
         }
 
         bool result = _tempForDamage.TryTakeDamage(ref damage, this);
-        RpcSelfNotifyHitResult(result, shouldIncreaseCounter, _tempTargetForDamage);
+        //RpcSelfNotifyHitResult(result, shouldIncreaseCounter, _tempTargetForDamage);
 
     }
 
     [TargetRpc]
-    private void RpcSelfNotifyHitResult(bool state, bool shouldIncreaseCounter, Transform target)
+    private void RpcSelfNotifyHitResult(bool state, bool shouldIncreaseCounter, Character target)
     {
         if (state)
         {

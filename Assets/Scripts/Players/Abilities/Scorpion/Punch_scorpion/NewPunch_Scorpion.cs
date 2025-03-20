@@ -94,11 +94,11 @@ public class NewPunch_Scorpion : AutoAttackSkill
         bool isHit = _tempForDamage.TryTakeDamage(ref damage, this);
         Hero.DamageTracker.AddDamage(damage, targetObject, isServerRequest: true);
 
-        RpcSelfNotifyHitResult(isHit, targetObject);
+        //RpcSelfNotifyHitResult(isHit, targetObject);
     }
 
     [TargetRpc]
-    private void RpcSelfNotifyHitResult(bool isHit, GameObject targetObject)
+    private void RpcSelfNotifyHitResult(bool isHit, Character targetObject)
     {
         if (targetObject == null)
         {
@@ -108,7 +108,7 @@ public class NewPunch_Scorpion : AutoAttackSkill
 
         if (isHit)
         {
-            AttackPassed(targetObject.transform);
+            AttackPassed(targetObject);
         }
         else
         {
@@ -116,7 +116,7 @@ public class NewPunch_Scorpion : AutoAttackSkill
         }
     }
 
-    private void AttackPassed(Transform target)
+    private void AttackPassed(Character target)
     {
         Debug.Log("[NewPunch_Scorpion] Attack Passed");
         _comboCounter?.AddAbility(target, ScorpionAbility.Punch);

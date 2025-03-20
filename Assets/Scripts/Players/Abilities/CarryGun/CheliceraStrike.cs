@@ -23,7 +23,7 @@ public class CheliceraStrike : AutoAttackSkill
 
     private Coroutine _dealDamageWithAttackingPsiCoroutine;
 
-    private const float _radiusAttackPsi = 1.0f;
+    private const float _radiusAttackPsi = 2.0f;
     private const float _pushDuration = 0.2f;
     private const float _pushDistance = 1.0f;
 
@@ -58,24 +58,15 @@ public class CheliceraStrike : AutoAttackSkill
         float chanceCritValue = Random.Range(0f, 1f);
         float chanceBleedingValue = Random.Range(0f, 1f);
 
-        Debug.Log($"Начальный урон: {_baseDamage}");
-
         if (_jumpWithChelicera.IsJumpDone)
         {
             float bonusDamage = _baseDamage * _additionalDamageFromSkill;
             _baseDamage += bonusDamage;
-            Debug.Log($"Бонус.урон: {bonusDamage}");
         }
 
-        if (chanceBleedingValue <= _chanceApplyBleeding)
-        {
-            CmdAddState(targetCharacter);
-        }
+        if (chanceBleedingValue <= _chanceApplyBleeding) CmdAddState(targetCharacter);
 
-        if (chanceCritValue <= _chanceCritDamage)
-        {
-            _criticalDamage = CriticalDamageDeal(targetCharacter, _baseDamage);
-        }
+        if (chanceCritValue <= _chanceCritDamage) _criticalDamage = CriticalDamageDeal(targetCharacter, _baseDamage);
 
         _dealDamage = new Damage()
         {
@@ -84,12 +75,9 @@ public class CheliceraStrike : AutoAttackSkill
             PhysicAttackType = AttackRangeType.MeleeAttack,
         };
 
-        if (_attackingPsionicEnergy.IsAttackingPsiEnergy && target != null)
-        {
-            DamageDealWithAttackingPsionicEnergy(targetCharacter, _dealDamage.Value);
-        }
+        if (_attackingPsionicEnergy.IsAttackingPsiEnergy && target != null) DamageDealWithAttackingPsionicEnergy(targetCharacter, _dealDamage.Value);
 
-        else CmdApplyDamage(_dealDamage, target);
+        CmdApplyDamage(_dealDamage, target);
 
         _criticalDamage = 0f;
         _dealDamage.Value = 0f;
@@ -125,7 +113,7 @@ public class CheliceraStrike : AutoAttackSkill
 
         if (attackingPsi >= 20)
         {
-            Collider[] nearbyEnemies = Physics.OverlapSphere(targetCharacter.transform.position, _radiusAttackPsi, _targetsLayers);
+            Collider[] nearbyEnemies = Physics.OverlapSphere(transform.position, _radiusAttackPsi, _targetsLayers);
             foreach (var enemyCollider in nearbyEnemies)
             {
                 if (enemyCollider.TryGetComponent<Character>(out var enemy) && enemy != targetCharacter)
@@ -137,7 +125,7 @@ public class CheliceraStrike : AutoAttackSkill
 
         if (attackingPsi >= 30)
         {
-            Collider[] enemiesToPush = Physics.OverlapSphere(targetCharacter.transform.position, _radiusAttackPsi, _targetsLayers);
+            Collider[] enemiesToPush = Physics.OverlapSphere(transform.position, _radiusAttackPsi, _targetsLayers);
             foreach (var enemyCollider in enemiesToPush)
             {
                 if (enemyCollider.TryGetComponent<Character>(out var enemy))
@@ -148,108 +136,42 @@ public class CheliceraStrike : AutoAttackSkill
             }
         }
 
-        var damageMainTarget = new Damage
+        float magicDamagePerPsiMainTarget = 0.3f;
+        float magicDamagePerPsiNearby = 0.5f;
+
+        float totalMagicDamageMainTarget = attackingPsi * magicDamagePerPsiMainTarget;
+
+        var magicDamageMainTarget = new Damage
         {
-            Value = baseDamage + (attackingPsi * 0.3f),
-            Type = DamageType.Physical,
+            Value = totalMagicDamageMainTarget,
+            Type = DamageType.Magical,
             PhysicAttackType = AttackRangeType.MeleeAttack,
         };
-        CmdApplyDamage(damageMainTarget, targetCharacter.gameObject);
 
-        Collider[] nearbyEnemiesToDamage = Physics.OverlapSphere(targetCharacter.transform.position, _radiusAttackPsi, _targetsLayers);
+        CmdApplyDamage(magicDamageMainTarget, targetCharacter.gameObject);
+
+        Collider[] nearbyEnemiesToDamage = Physics.OverlapSphere(transform.position, _radiusAttackPsi, _targetsLayers);
+
         foreach (var enemyCollider in nearbyEnemiesToDamage)
         {
-            if (enemyCollider.TryGetComponent<Character>(out var enemy) && enemy != targetCharacter)
+            if (enemyCollider.TryGetComponent<Character>(out var enemy) &&
+                enemy != targetCharacter && enemy != _player)
             {
-                var damageNearby = new Damage
+                float totalMagicDamageEnemy = attackingPsi * magicDamagePerPsiNearby;
+
+                var magicDamageNearby = new Damage
                 {
-                    Value = (baseDamage + attackingPsi) * 0.5f,
-                    Type = DamageType.Physical,
+                    Value = totalMagicDamageEnemy,
+                    Type = DamageType.Magical,
                     PhysicAttackType = AttackRangeType.MeleeAttack,
                 };
 
-                CmdApplyDamage(damageNearby, enemy.gameObject);
+                CmdApplyDamage(magicDamageNearby, enemy.gameObject);
             }
         }
 
         CmdUseAttackingEnergy(attackingPsi);
     }
-
-    /// <summary>
-    /// Using commands (old)
-    /// </summary>
-    //private IEnumerator SearchingEnemiesAroundTarget(GameObject target, float baseDamage)
-    //{
-    //    Character targetCharacter = target.GetComponent<Character>();
-
-    //    #region DealDamageVariables
-    //    float radiusAttack = 5.0f; // Then make it 1.0f
-    //    float additionalDamage = 0f;//_attackingPsionicEnergy.CurrentAttackingPsiEnergy;
-    //    float multiplierDamageByMainTarget = 0.3f;
-    //    float percentageDamageToNearestEnemies = 0.5f;
-    //    #endregion
-
-    //    if (additionalDamage > 10 && additionalDamage < 20)
-    //    {
-    //        targetCharacter.CharacterState.DispelStates(StateType.Magic, targetCharacter.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
-    //    }
-
-    //    while (_attackingPsionicEnergy.IsAttackingPsiEnergy)
-    //    {
-    //        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(targetCharacter.transform.position, radiusAttack, _targetsLayers);
-    //        foreach (var item in hitEnemies)
-    //        {
-    //            var itemCharacter = item.GetComponent<Character>();
-
-    //            Vector2 direction = (itemCharacter.transform.position - _player.transform.position).normalized;
-
-    //            if (item != null && item.gameObject != _player.gameObject)
-    //            {
-    //                if (additionalDamage > 20 && additionalDamage < 30)
-    //                {
-    //                    itemCharacter.CharacterState.DispelStates(StateType.Magic, itemCharacter.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
-    //                }
-    //                else if (additionalDamage >= 30)
-    //                {
-    //                    itemCharacter.CharacterState.DispelStates(StateType.Magic, itemCharacter.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
-
-    //                    CmdPushTargets(item.gameObject, direction);
-    //                }
-
-    //                #region DamageDeal
-    //                Damage damageNearestEnemy = new Damage()
-    //                {
-    //                    Value = (baseDamage + additionalDamage) * percentageDamageToNearestEnemies,
-    //                    Type = DamageType.Physical,
-    //                    PhysicAttackType = AttackRangeType.MeleeAttack,
-    //                };
-    //                CmdApplyDamage(damageNearestEnemy, item.gameObject);
-
-    //                Damage damageMainTarget = new Damage()
-    //                {
-    //                    Value = baseDamage + (additionalDamage * multiplierDamageByMainTarget),
-    //                    Type = DamageType.Physical,
-    //                    PhysicAttackType = AttackRangeType.MeleeAttack,
-    //                };
-    //                CmdApplyDamage(damageMainTarget, targetCharacter.gameObject);
-    //                #endregion
-
-    //                CmdUseAttackingEnergy(additionalDamage);
-
-    //            }
-
-    //            if (_dealDamageWithAttackingPsiCoroutine != null)
-    //            {
-    //                StopCoroutine(_dealDamageWithAttackingPsiCoroutine);
-    //                _dealDamageWithAttackingPsiCoroutine = null;
-    //            }
-
-    //            yield break;
-    //        }
-
-    //        yield return null;
-    //    }
-    //}
 
     public void CheliceraStrikeSpeedAnim()
     {
@@ -275,7 +197,6 @@ public class CheliceraStrike : AutoAttackSkill
         {
             Vector3 currentPos = targetMove.transform.position;
             Vector3 pushPos = currentPos + direction.normalized * _pushDistance;
-
  
             if (targetMove.connectionToClient != null) targetMove.TargetRpcDoPush(pushPos, _pushDuration);
             else targetMove.RpcDoPush(pushPos, _pushDuration);

@@ -9,31 +9,29 @@ public enum ScorpionAbility
 {
     Punch,
     Kick,
-    Blade
+    Blade,
+    ChainBlade
 }
+
 public class PassiveCombo_Scorpion : NetworkBehaviour
 {
     [Header("Settings")]
     [SerializeField] private HeroComponent _hero;
     [SerializeField] private ComboPoints_Player _comboPlayer;
-    //
+
     [SerializeField] private Sub_LavaPool_Scorpion _poolPrefab;
 
-    [SerializeField] private float ChargesCD = 9f;
+    [Header("Skills Reference")]
+    [SerializeField] private Skill PunchSkill;
+    [SerializeField] private Skill KickSkill;
+    [SerializeField] private Skill BladeSkill;
+    [SerializeField] private Skill ChainBladeSkill;
 
-    public SyncList<ScorpionAbility> _syncList = new SyncList<ScorpionAbility>();
-
-    [SerializeField][ReadOnly] private List<ScorpionAbility> _usedAbilities = new List<ScorpionAbility>(); // само комбо
-
-    public Dictionary<ScorpionAbility, int> _abilityCharges = new Dictionary<ScorpionAbility, int>() // кол-во зарядов
-    {
-        {ScorpionAbility.Punch, 3}, { ScorpionAbility.Kick, 3}, { ScorpionAbility.Blade, 3}
-    };
-
-    private Dictionary<ScorpionAbility, Coroutine> _abilityCooldowns = new Dictionary<ScorpionAbility, Coroutine>() // перезарядки
-    {
-        {ScorpionAbility.Punch, null}, { ScorpionAbility.Kick, null}, { ScorpionAbility.Blade, null}
-    };
+    [Header("Combo Settings")]
+    private List<ScorpionAbility> _usedAbilities = new List<ScorpionAbility>();
+    private Character _currentTarget;
+    [SerializeField] private float _comboTimeout = 1f;
+    private Coroutine _comboTimerCoroutine;
 
     [Header("Visuals")]
     [SerializeField] private ParticleSystem _particlesAddStack;
@@ -41,171 +39,207 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
     [SerializeField] private ParticleSystem _particlesFullCombo;
     [SerializeField] private ParticleSystem _particlesCancelCombo;
 
-    private void Start()
-    {
-        
-    }
+    #region Add Ability (Комбо механика)
 
-    [Command]
-    private void CmdSyncList(ScorpionAbility scorpionAbility)
+    public void AddAbility(Character enemy, ScorpionAbility scorpionAbility)
     {
-        _syncList.Add(scorpionAbility);
-    }
+        if (enemy == null) return;
 
-    public void AddAbility(/*PlayerLinks playerLinks,*/Transform enemy, ScorpionAbility scorpionAbility)
-    {
-        if(TryAddAbility(scorpionAbility) == false) 
+        if (_currentTarget == null)
+            _currentTarget = enemy;
+
+        if (_currentTarget != enemy)
         {
-            Debug.LogWarning($"Не хватило зарядов {scorpionAbility} для добавления в комбо");
-            // можно добавить импакт
-            _particlesNoCharges.Play();
+            Debug.Log("Цель изменилась. Сброс комбо.");
+            ResetCounter();
+            _currentTarget = enemy;
+        }
+
+        if (!TryAddAbility(scorpionAbility))
+        {
+            Debug.LogWarning($"Нет зарядов {scorpionAbility}");
+            _particlesNoCharges?.Play();
             return;
         }
 
-        if(_usedAbilities.Count != 3)
+        if (_usedAbilities.Count != 3)
         {
-            // можно добавить импакт
-            _particlesAddStack.Play();
+            _particlesAddStack?.Play();
+            StartOrRestartComboTimer();
             return;
         }
 
-        if(_usedAbilities.Distinct().Count() <= 1)
+        if (_usedAbilities.Distinct().Count() <= 1)
         {
+            Debug.LogWarning("Комбо из одинаковых способностей — отмена");
             _usedAbilities.Clear();
-            // можно добавить импакт
-            _particlesCancelCombo.Play();
+            _particlesCancelCombo?.Play();
             return;
         }
 
-        Debug.LogWarning("Проверка прошла, комбо не из 3 одинаковых способностей");
+        Debug.Log("Успешное комбо!");
 
         foreach (var ability in _usedAbilities.Distinct().ToList())
         {
-            Debug.LogWarning($"Отнимаю у {ability} {_usedAbilities.Count(n => n == ability)} зарядов");
-            UseCharge(ability, _usedAbilities.Count(n => n == ability));
+            int count = _usedAbilities.Count(n => n == ability);
+            UseCharge(ability, count);
         }
 
-        //CmdAdd();
-        _particlesFullCombo.Play();
+        _particlesFullCombo?.Play();
 
-        CastDebaff(enemy, _usedAbilities[_usedAbilities.Count - 1]);
+        CastDebuff(enemy.transform, _usedAbilities.Last());
+        ApplyComboState(enemy);
 
-        Debug.LogWarning($"Ability: {ScorpionAbility.Punch} - Charges {_abilityCharges[ScorpionAbility.Punch]}");
-        Debug.LogWarning($"Ability: {ScorpionAbility.Kick} - Charges {_abilityCharges[ScorpionAbility.Kick]}");
-        Debug.LogWarning($"Ability: {ScorpionAbility.Blade} - Charges {_abilityCharges[ScorpionAbility.Blade]}");
+        CmdAdd();
 
-        _usedAbilities.Clear();
+        ResetCounter();
     }
+
     private bool TryAddAbility(ScorpionAbility ability)
     {
-        int counter1 = _usedAbilities.Count(n => n == ability);
+        Skill skill = GetSkillByAbility(ability);
+        if (skill == null) return false;
 
-        if (counter1 + 1 <= _abilityCharges[ability])
+        int availableCharges = skill.Chargers;
+        int currentUsage = _usedAbilities.Count(n => n == ability);
+
+        if (currentUsage + 1 <= availableCharges)
         {
             _usedAbilities.Add(ability);
-            CmdSyncList(ability);
+            StartOrRestartComboTimer();
             return true;
         }
 
         return false;
     }
-    private void UseCharge(ScorpionAbility ability, int value)
+
+    private void UseCharge(ScorpionAbility ability, int amount)
     {
-        _abilityCharges[ability] -= value;
-        //StartCoroutine(TimerCD(ability));
-        if (_abilityCooldowns[ability] == null)
+        Skill skill = GetSkillByAbility(ability);
+        if (skill == null) return;
+
+        for (int i = 0; i < amount; i++)
         {
-            Debug.LogWarning($"Начали кд {ability}");
-            _abilityCooldowns[ability] = StartCoroutine(TimerCD(ability));
+            if (!skill.TryUseCharge())
+            {
+                Debug.LogWarning($"Не удалось использовать заряд {ability}");
+                break;
+            }
         }
+    }
+
+    private Skill GetSkillByAbility(ScorpionAbility ability)
+    {
+        return ability switch
+        {
+            ScorpionAbility.Punch => PunchSkill,
+            ScorpionAbility.Kick => KickSkill,
+            ScorpionAbility.Blade => BladeSkill,
+            ScorpionAbility.ChainBlade => ChainBladeSkill,
+            _ => null
+        };
+    }
+
+    #endregion
+
+    #region Combo Timer
+
+    private void StartOrRestartComboTimer()
+    {
+        if (_comboTimerCoroutine != null)
+            StopCoroutine(_comboTimerCoroutine);
+
+        _comboTimerCoroutine = StartCoroutine(ComboTimerCoroutine());
+    }
+
+    private IEnumerator ComboTimerCoroutine()
+    {
+        float timer = _comboTimeout;
+
+        while (timer > 0f)
+        {
+            timer -= Time.deltaTime;
+            yield return null;
+        }
+
+        Debug.Log("Таймаут комбо");
+        ResetCounter();
     }
 
     public void ResetCounter()
     {
+        if (_comboTimerCoroutine != null)
+        {
+            StopCoroutine(_comboTimerCoroutine);
+            _comboTimerCoroutine = null;
+        }
+
         _usedAbilities.Clear();
+        _currentTarget = null;
     }
 
-    private void CastDebaff(Transform enemy, ScorpionAbility scorpionAbility) // поменять потом transform, на просто ссылку на самого игрока
-    {
-        // применяем на врага дебаф 
-        CmdAdd();
+    #endregion
 
-        switch (scorpionAbility) // доп действие в зависимости от способности, которая прокнула дебаф
+    #region Debuff и ComboState
+
+    private void CastDebuff(Transform enemy, ScorpionAbility scorpionAbility)
+    {
+        if (enemy == null) return;
+
+        switch (scorpionAbility)
         {
             case ScorpionAbility.Punch:
-                Debug.Log("punch");
-
-                enemy.GetComponent<HeroComponent>().CharacterState.CmdAddState(States.Stun, 1f, 0, GetComponentInParent<Character>().gameObject, "Punch");
-
+                Debug.Log("Debuff: Stun");
+                enemy.GetComponent<HeroComponent>()?.CharacterState
+                    .CmdAddState(States.Stun, 1f, 0, _hero.gameObject, "Punch");
                 break;
 
             case ScorpionAbility.Kick:
-                Debug.Log("Kick");
+                Debug.Log("Lava Pool");
                 CmdSpawnLavaPool(enemy);
                 break;
 
-            default: 
+            case ScorpionAbility.ChainBlade:
+                Debug.Log("ChainBlade Effect");
                 break;
         }
 
-        //ServerDebuff(enemy);
-        //cmdBuff(enemy);
-        enemy.GetComponent<CharacterState>().CmdAddState(States.ScorchedSoul, 6f, 100f, _hero.gameObject, name);
+        enemy.GetComponent<CharacterState>()
+            ?.CmdAddState(States.ScorchedSoul, 6f, 100f, _hero.gameObject, nameof(PassiveCombo_Scorpion));
     }
-    //[Server]
-    //private void ServerDebuff(Transform enemy)
-    //{
-    //    //transform.parent.parent.GetComponent<CharacterState>().AddState(new ScorchedSoulDebuff(), 6f, 0, States.ScorchedSoul);
-    //    enemy.GetComponent<CharacterState>().CmdAddState(States.ScorchedSoul, 6f, 100f);
-    //}
 
+    private void ApplyComboState(Character enemy)
+    {
+        var consumeCombo = _hero.GetComponent<ConsumeCombo_Scorpion>();
+        if (consumeCombo == null)
+        {
+            Debug.LogWarning("ConsumeCombo_Scorpion не найден!");
+            return;
+        }
 
-    //[Command]
-    //private void cmdBuff(Transform enemy)
-    //{
-    //    enemy.GetComponent<CharacterState>().AddState(new ScorchedSoulDebuff(), 6f, 100f, States.ScorchedSoul);
-    //    RpcBuff(enemy);
-    //}
-    //[ClientRpc]
-    //private void RpcBuff(Transform enemy)
-    //{
-    //    enemy.GetComponent<CharacterState>().AddState(new ScorchedSoulDebuff(), 6f, 0, States.ScorchedSoul);
-    //}
+        consumeCombo.ApplyComboEffect(enemy.transform);
+    }
+
+    #endregion
+
+    #region Network Commands
 
     [Command]
     private void CmdAdd()
     {
         _comboPlayer.Add(1);
-
     }
 
     [Command]
     private void CmdSpawnLavaPool(Transform enemy)
     {
         GameObject pool = Instantiate(_poolPrefab.gameObject, enemy.transform.position, Quaternion.identity);
+        pool.transform.rotation *= Quaternion.Euler(90f, 0f, 0f);
         SceneManager.MoveGameObjectToScene(pool, _hero.NetworkSettings.MyRoom);
 
         pool.GetComponent<Sub_LavaPool_Scorpion>().Init();
-
         NetworkServer.Spawn(pool);
     }
 
-    private IEnumerator TimerCD(ScorpionAbility ability)
-    {   
-        while (_abilityCharges[ability] < 3)
-        {
-            float time = 0f;
-
-            while (time < ChargesCD)
-            {
-                time += Time.deltaTime;
-                yield return null;
-            }
-            _abilityCharges[ability]++;
-            Debug.LogWarning($"1 Заряд {ability} восстановился, сейчас их {_abilityCharges[ability]}");
-            
-        }
-        _abilityCooldowns[ability] = null;
-        Debug.LogWarning($"Таймер {ability} остановился");
-    }
+    #endregion
 }

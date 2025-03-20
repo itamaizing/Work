@@ -719,7 +719,7 @@ public abstract class Skill : NetworkBehaviour
     }
     */
 
-    protected bool TryUseCharge()
+    public bool TryUseCharge()
     {
         if (_isUseCharges == false)
             return true;
