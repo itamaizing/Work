@@ -20,7 +20,7 @@ public class ChainBlade_Scorpion : Skill
     [SerializeField] private PassiveCombo_Scorpion _comboCounter;
     [SerializeField] private float _range;
     [SerializeField] private ChainController _chainPrefab;
-    private ChainController _chain;
+    [SerializeField] private ChainController _chain;
 
     [SerializeField] private GameObject _projectilePrefab;
     private GameObject _projectile;
@@ -68,6 +68,7 @@ public class ChainBlade_Scorpion : Skill
 
         yield return null;
     }
+
     private IEnumerator PullEnemy(Character enemy)
     {
         float distance = Vector3.Distance(transform.position, enemy.transform.position);
@@ -76,13 +77,16 @@ public class ChainBlade_Scorpion : Skill
         while (distance >= 2.5f)
         {
             Debug.Log("Pulling");
-            //enemy.transform.position = Vector2.MoveTowards(enemy.transform.position, transform.position, 10f * Time.deltaTime);
 
-            Pull(enemy, (/*enemy.transform.position - transform.position*/transform.position - enemy.transform.position).normalized * 10f * Time.deltaTime);
-            distance = Vector2.Distance(transform.position, enemy.transform.position);
+            Vector3 pullDirection = (transform.position - enemy.transform.position).normalized;
+            Vector3 pullForce = pullDirection * 10f * Time.deltaTime;
 
+            Pull(enemy, pullForce);
+
+            distance = Vector3.Distance(transform.position, enemy.transform.position);
             yield return null;
         }
+
         enemy.Move.CanMove = true;
         Destroy(_chain.gameObject);
     }
@@ -158,6 +162,7 @@ public class ChainBlade_Scorpion : Skill
 
             //chain spawn
             GameObject item = Instantiate(_chainPrefab.gameObject);
+
             SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
             _chain = item.GetComponent<ChainController>();
             
@@ -220,14 +225,14 @@ public class ChainBlade_Scorpion : Skill
     }
 
 
-    private void Pull(Character target, Vector3 force) // called in [command]
+    private void Pull(Character target, Vector3 force)
     {
-        if (_tempTarget != gameObject)
+        if (_tempTarget != target.gameObject)
         {
-            _tempTarget = gameObject;
-            _tempTargetMove = gameObject.GetComponent<MoveComponent>();
+            _tempTarget = target.gameObject;
+            _tempTargetMove = _tempTarget.GetComponent<MoveComponent>();
         }
-        //_tempTargetMove.TargetRpcAddTransformPosition(force);
+
         _tempTargetMove.RpcAddTransformPosition(force);
         _comboCounter.AddSkill(target, this);
     }
