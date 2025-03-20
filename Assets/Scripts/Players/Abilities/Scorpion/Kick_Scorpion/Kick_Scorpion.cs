@@ -87,22 +87,22 @@ public class Kick_Scorpion : AutoAttackSkill
     {
         Debug.LogWarning("[Kick_Scorpion] Attack Passed!");
 
-        _comboCounter?.AddAbility(target, ScorpionAbility.Kick);
+        _comboCounter.AddSkill(target, this);
         _counterRow *= 2;
         _hitsInRowCoroutine = StartCoroutine(HitsInRowTimer());
 
         if (Random.value <= Mathf.Clamp01(_debuffApplyChance * _counterRow))
         {
-            target.GetComponent<CharacterState>()?.CmdAddState(States.Knockdown, 6f, 0, _hero.gameObject, name);
+            //target.GetComponent<CharacterState>()?.AddState(States.Knockdown, 6f, 0, _hero.gameObject, name);
             _counterRow = 1;
         }
     }
 
-    private void AttackMissed()
-    {
-        Debug.LogWarning("[Kick_Scorpion] Attack Missed!");
-        _comboCounter?.ResetCounter();
-    }
+    //private void AttackMissed()
+    //{
+    //    Debug.LogWarning("[Kick_Scorpion] Attack Missed!");
+    //    _comboCounter?.ResetCounter();
+    //}
 
     private IEnumerator HitsInRowTimer()
     {
@@ -129,20 +129,21 @@ public class Kick_Scorpion : AutoAttackSkill
 
         bool isHit = targetHealth.TryTakeDamage(ref damage, this);
         Hero.DamageTracker.AddDamage(damage, targetObject.gameObject, isServerRequest: true);
+        AttackPassed(targetObject);
 
-        RpcSelfNotifyHitResult(isHit, targetObject);
+        //RpcSelfNotifyHitResult(isHit, targetObject);
     }
 
-    [TargetRpc]
-    private void RpcSelfNotifyHitResult(bool isHit, Character target)
-    {
-        if (isHit)
-        {
-            AttackPassed(target);
-        }
-        else
-        {
-            AttackMissed();
-        }
-    }
+    //[TargetRpc]
+    //private void RpcSelfNotifyHitResult(bool isHit, Character target)
+    //{
+    //    if (isHit)
+    //    {
+    //        AttackPassed(target);
+    //    }
+    //    else
+    //    {
+    //        AttackMissed();
+    //    }
+    //}
 }

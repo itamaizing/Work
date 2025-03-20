@@ -87,6 +87,7 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] protected List<SkillEnergyCost> _manaCostPerTick;
     [Header("Charge settings")]
     [SerializeField] private bool _isUseCharges;
+    [SerializeField] private bool _useChargesAsComboPart = false; // test
     [SerializeField] protected bool _chargesHaveSeparateCooldown;
     [SerializeField] protected int _maxCharges;
     [SerializeField] protected float _chargeCooldown;
@@ -555,7 +556,7 @@ public abstract class Skill : NetworkBehaviour
             if (startCooldown)
                 IncreaseSetCooldown(CooldownTime);
 
-            TryUseCharge();
+            if (!_useChargesAsComboPart) TryUseCharge();
             return true;
         }
         else

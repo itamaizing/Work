@@ -67,11 +67,11 @@ public class NewPunch_Scorpion : AutoAttackSkill
             Type = DamageType,
         };
 
-        CmdApplyDamage(_target.gameObject, damage);
+        CmdApplyDamage(_target, damage);
     }
 
     [Command]
-    private void CmdApplyDamage(GameObject targetObject, Damage damage)
+    private void CmdApplyDamage(Character targetObject, Damage damage)
     {
         if (targetObject == null)
         {
@@ -92,39 +92,40 @@ public class NewPunch_Scorpion : AutoAttackSkill
         }
 
         bool isHit = _tempForDamage.TryTakeDamage(ref damage, this);
-        Hero.DamageTracker.AddDamage(damage, targetObject, isServerRequest: true);
+        Hero.DamageTracker.AddDamage(damage, targetObject.gameObject, isServerRequest: true);
+        AttackPassed(targetObject);
 
         //RpcSelfNotifyHitResult(isHit, targetObject);
     }
 
-    [TargetRpc]
-    private void RpcSelfNotifyHitResult(bool isHit, Character targetObject)
-    {
-        if (targetObject == null)
-        {
-            Debug.LogError("[NewPunch_Scorpion] RpcSelfNotifyHitResult: TargetObject is null!");
-            return;
-        }
+    //[TargetRpc]
+    //private void RpcSelfNotifyHitResult(bool isHit, Character targetObject)
+    //{
+    //    if (targetObject == null)
+    //    {
+    //        Debug.LogError("[NewPunch_Scorpion] RpcSelfNotifyHitResult: TargetObject is null!");
+    //        return;
+    //    }
 
-        if (isHit)
-        {
-            AttackPassed(targetObject);
-        }
-        else
-        {
-            AttackMissed();
-        }
-    }
+    //    if (isHit)
+    //    {
+    //        AttackPassed(targetObject);
+    //    }
+    //    else
+    //    {
+    //        AttackMissed();
+    //    }
+    //}
 
     private void AttackPassed(Character target)
     {
         Debug.Log("[NewPunch_Scorpion] Attack Passed");
-        _comboCounter?.AddAbility(target, ScorpionAbility.Punch);
+        _comboCounter.AddSkill(target, this);
     }
 
-    private void AttackMissed()
-    {
-        Debug.Log("[NewPunch_Scorpion] Attack Missed");
-        _comboCounter?.ResetCounter();
-    }
+    //private void AttackMissed()
+    //{
+    //    Debug.Log("[NewPunch_Scorpion] Attack Missed");
+    //    _comboCounter?.ResetCounter();
+    //}
 }

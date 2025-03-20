@@ -17,6 +17,7 @@ public class ChainBlade_Scorpion : Skill
     [SerializeField] private Character _playerLinks;
     [SerializeField] private NetworkIdentity _playerIdentity;
 
+    [SerializeField] private PassiveCombo_Scorpion _comboCounter;
     [SerializeField] private float _range;
     [SerializeField] private ChainController _chainPrefab;
     private ChainController _chain;
@@ -25,7 +26,7 @@ public class ChainBlade_Scorpion : Skill
     private GameObject _projectile;
     private BladeProjectile _blade;
 
-    private GameObject enemy;
+    private Character enemy;
     private bool bladeDestroyed = false;
     private ChainbladeType _type;
 
@@ -67,7 +68,7 @@ public class ChainBlade_Scorpion : Skill
 
         yield return null;
     }
-    private IEnumerator PullEnemy(GameObject enemy)
+    private IEnumerator PullEnemy(Character enemy)
     {
         float distance = Vector3.Distance(transform.position, enemy.transform.position);
         enemy.GetComponent<MoveComponent>().CanMove = false;
@@ -82,7 +83,7 @@ public class ChainBlade_Scorpion : Skill
 
             yield return null;
         }
-        enemy.GetComponent<Character>().Move.CanMove = true;
+        enemy.Move.CanMove = true;
         Destroy(_chain.gameObject);
     }
 
@@ -141,9 +142,9 @@ public class ChainBlade_Scorpion : Skill
             _hero.Move.CanMove = false;
             _projectile.GetComponent<BladeProjectile>().OnHit.AddListener(target =>
             {
-                if (target != null)
+                if (target != null && target.TryGetComponent<Character>(out Character character))
                 {
-                    enemy = target;
+                    enemy = character;
                     _chain.targetID = enemy.GetComponent<NetworkIdentity>().netId;
                     NetworkServer.Destroy(_blade.gameObject);
                     StartCoroutine(PullEnemy(enemy));
@@ -219,7 +220,7 @@ public class ChainBlade_Scorpion : Skill
     }
 
 
-    private void Pull(GameObject gameObject, Vector3 force) // called in [command]
+    private void Pull(Character target, Vector3 force) // called in [command]
     {
         if (_tempTarget != gameObject)
         {
@@ -228,5 +229,6 @@ public class ChainBlade_Scorpion : Skill
         }
         //_tempTargetMove.TargetRpcAddTransformPosition(force);
         _tempTargetMove.RpcAddTransformPosition(force);
+        _comboCounter.AddSkill(target, this);
     }
 }

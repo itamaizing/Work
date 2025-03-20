@@ -36,7 +36,7 @@ public class CleavingBlade_Scorpion : Skill
     private void AttackPassed(bool shouldIncreaseCounter, Character target)
     {
         Debug.LogWarning("CleavingBlade_Scorpion .AttackPassed - Попал");
-        _comboCounter.AddAbility(target, ScorpionAbility.Blade);
+        _comboCounter.AddSkill(target, this);
 
         if (shouldIncreaseCounter)
         {
@@ -49,7 +49,7 @@ public class CleavingBlade_Scorpion : Skill
                 _counter++;
             }
         }
-        _target.GetComponent<CharacterState>().CmdAddState(States.Bleeding, 6f, 0, _hero.gameObject, name);
+       // _target.GetComponent<CharacterState>().AddState(States.Bleeding, 6f, 0, _hero.gameObject, name);
 
         _target = null;
     }
@@ -109,13 +109,13 @@ public class CleavingBlade_Scorpion : Skill
                 Type = DamageType,
             };
 
-            CmdAttack(damage, _target.gameObject, shouldIncreaseCounter);
+            CmdAttack(damage, _target, shouldIncreaseCounter);
         }
     }
 
 
     [Command]
-    private void CmdAttack(Damage damage, GameObject hp, bool shouldIncreaseCounter)
+    private void CmdAttack(Damage damage, Character hp, bool shouldIncreaseCounter)
     {
         if (_tempTargetForDamage != hp.transform)
         {
@@ -124,20 +124,21 @@ public class CleavingBlade_Scorpion : Skill
         }
 
         bool result = _tempForDamage.TryTakeDamage(ref damage, this);
+        AttackPassed(shouldIncreaseCounter, hp);
         //RpcSelfNotifyHitResult(result, shouldIncreaseCounter, _tempTargetForDamage);
 
     }
 
-    [TargetRpc]
-    private void RpcSelfNotifyHitResult(bool state, bool shouldIncreaseCounter, Character target)
-    {
-        if (state)
-        {
-            AttackPassed(shouldIncreaseCounter, target);
-        }
-        else
-        {
-            AttackMissed();
-        }
-    }
+    //[TargetRpc]
+    //private void RpcSelfNotifyHitResult(bool state, bool shouldIncreaseCounter, Character target)
+    //{
+    //    if (state)
+    //    {
+    //        AttackPassed(shouldIncreaseCounter, target);
+    //    }
+    //    else
+    //    {
+    //        AttackMissed();
+    //    }
+    //}
 }

@@ -48,7 +48,7 @@ public class Punch_Scorpion : AutoAttackSkill
     {
         Debug.LogWarning("Punch_Scorppion .AttackPassed - �����");
 
-        _comboCounter.AddAbility(target, ScorpionAbility.Punch);
+        _comboCounter.AddSkill(target, this);
     }
     private void AttackMissed()
     {

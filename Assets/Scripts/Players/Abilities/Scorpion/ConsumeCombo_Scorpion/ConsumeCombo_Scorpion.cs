@@ -34,9 +34,7 @@ public class ConsumeCombo_Scorpion : Skill
             _comboTargetsQueue.Add(targetCharacter);
         }
 
-        Debug.Log($"Накладываем ComboState на {enemy.name}");
-
-        stateManager.CmdAddState(States.ComboState, 999f, 0f, _hero.gameObject, nameof(ConsumeCombo_Scorpion));
+        stateManager.AddState(States.ComboState, float.PositiveInfinity, 0f, _hero.gameObject, nameof(ConsumeCombo_Scorpion));
     }
 
     public int PayComboPoints(int amount, Character specificTarget = null)
