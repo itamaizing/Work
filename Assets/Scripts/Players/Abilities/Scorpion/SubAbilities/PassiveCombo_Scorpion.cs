@@ -1,4 +1,4 @@
-using System.Collections;
+п»їusing System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
@@ -28,72 +28,88 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
     [SerializeField] private ParticleSystem _particlesFullCombo;
     [SerializeField] private ParticleSystem _particlesCancelCombo;
 
-    #region Add Skill (Комбо механика)
+    #region Add Skill (РљРѕРјР±Рѕ РјРµС…Р°РЅРёРєР°)
 
     public void AddSkill(Character enemy, Skill skill)
     {
-        if (enemy == null || skill == null)
-        {
-            Debug.LogWarning("Цель или скилл пустые");
-            return;
-        }
+        if (enemy == null || skill == null) return;
 
         if (_currentTarget == null)
             _currentTarget = enemy;
 
         if (_currentTarget != enemy)
         {
-            Debug.Log("Цель изменилась. Сброс комбо.");
             ResetCounter();
             _currentTarget = enemy;
         }
 
         if (!TryAddSkill(skill))
         {
-            Debug.LogWarning($"Нет зарядов у {skill.name}");
             _particlesNoCharges?.Play();
             return;
         }
 
-        if (_usedSkills.Count != 3)
+        _particlesAddStack?.Play();
+        StartOrRestartComboTimer();
+
+        if (_usedSkills.Count < 3)
+            return;
+
+        var lastThreeHits = _usedSkills.Skip(Mathf.Max(0, _usedSkills.Count - 3)).ToList();
+
+        var groupedSkills = lastThreeHits
+            .GroupBy(s => s)
+            .OrderByDescending(g => g.Count())
+            .ToList();
+        if (groupedSkills.Count == 1 && groupedSkills[0].Count() == 3) return;
+
+        if (groupedSkills.Count == 2 &&
+            groupedSkills[0].Count() == 2 &&
+            groupedSkills[1].Count() == 1)
         {
-            Debug.Log($"Добавили {skill.name} в связку");
-            _particlesAddStack?.Play();
-            StartOrRestartComboTimer();
+            Skill skillWithTwoHits = groupedSkills[0].Key;
+            Skill skillWithOneHit = groupedSkills[1].Key;
+
+            UseCharges(skillWithTwoHits, 2);
+            UseCharges(skillWithOneHit, 1);
+
+            _particlesFullCombo?.Play();
+
+            CastDebuff(enemy.transform, lastThreeHits.Last());
+            ApplyComboState(enemy);
+            AddComboPoint();
+
+            ResetCounter();
             return;
         }
 
-        if (_usedSkills.Distinct().Count() <= 1)
+        if (groupedSkills.Count == 3 &&
+            groupedSkills.All(g => g.Count() == 1))
         {
-            Debug.LogWarning("Связка из одного типа скиллов! Комбо отменено.");
-            _usedSkills.Clear();
-            _particlesCancelCombo?.Play();
+            foreach (var group in groupedSkills)
+            {
+                Skill uniqueSkill = group.Key;
+                UseCharges(uniqueSkill, 1);
+            }
+
+            _particlesFullCombo?.Play();
+
+            CastDebuff(enemy.transform, lastThreeHits.Last());
+            ApplyComboState(enemy);
+            AddComboPoint();
+
+            ResetCounter();
             return;
         }
-
-        foreach (var uniqueSkill in _usedSkills.Distinct().ToList())
-        {
-            int count = _usedSkills.Count(s => s == uniqueSkill);
-            Debug.Log($"Успешная связка! {uniqueSkill.name} используется {count} раз. Списываем заряды...");
-            UseCharges(uniqueSkill, count);
-        }
-
-        _particlesFullCombo?.Play();
-
-        CastDebuff(enemy.transform, _usedSkills.Last());
-        ApplyComboState(enemy);
-
-        AddComboPoint();
-
-        ResetCounter();
     }
+
 
     private bool TryAddSkill(Skill skill)
     {
         int availableCharges = skill.Chargers;
         int currentUsage = _usedSkills.Count(s => s == skill);
 
-        Debug.Log($"Проверка добавления {skill.name}. Зарядов доступно: {availableCharges}, уже использовано в серии: {currentUsage}");
+        Debug.Log($"РџСЂРѕРІРµСЂРєР° РґРѕР±Р°РІР»РµРЅРёСЏ {skill.name}. Р—Р°СЂСЏРґРѕРІ РґРѕСЃС‚СѓРїРЅРѕ: {availableCharges}, СѓР¶Рµ РёСЃРїРѕР»СЊР·РѕРІР°РЅРѕ РІ СЃРµСЂРёРё: {currentUsage}");
 
         if (currentUsage + 1 <= availableCharges)
         {
@@ -102,7 +118,7 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
             return true;
         }
 
-        Debug.LogWarning($"Нет доступных зарядов для {skill.name}. {currentUsage + 1}/{availableCharges}");
+        Debug.LogWarning($"РќРµС‚ РґРѕСЃС‚СѓРїРЅС‹С… Р·Р°СЂСЏРґРѕРІ РґР»СЏ {skill.name}. {currentUsage + 1}/{availableCharges}");
         return false;
     }
 
@@ -114,7 +130,7 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
         for (int i = 0; i < amount; i++)
         {
             bool success = skill.TryUseCharge();
-            Debug.Log($"Попытка списать заряд {i + 1}/{amount} у {skill.name}. Успех: {success}. Осталось зарядов: {skill.Chargers}");
+            Debug.Log($"РџРѕРїС‹С‚РєР° СЃРїРёСЃР°С‚СЊ Р·Р°СЂСЏРґ {i + 1}/{amount} Сѓ {skill.name}. РЈСЃРїРµС…: {success}. РћСЃС‚Р°Р»РѕСЃСЊ Р·Р°СЂСЏРґРѕРІ: {skill.Chargers}");
         }
     }
 
@@ -140,7 +156,7 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
             yield return null;
         }
 
-        Debug.Log("Таймаут комбо! Сброс связки.");
+        Debug.Log("РўР°Р№РјР°СѓС‚ РєРѕРјР±Рѕ! РЎР±СЂРѕСЃ СЃРІСЏР·РєРё.");
         ResetCounter();
     }
 
@@ -152,14 +168,14 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
             _comboTimerCoroutine = null;
         }
 
-        Debug.Log("Сброс текущей серии комбо");
+        Debug.Log("РЎР±СЂРѕСЃ С‚РµРєСѓС‰РµР№ СЃРµСЂРёРё РєРѕРјР±Рѕ");
         _usedSkills.Clear();
         _currentTarget = null;
     }
 
     #endregion
 
-    #region Debuff и ComboState
+    #region Debuff Рё ComboState
 
     private void CastDebuff(Transform enemy, Skill lastSkillUsed)
     {
@@ -188,11 +204,11 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
         var consumeCombo = _hero.GetComponent<ConsumeCombo_Scorpion>();
         if (consumeCombo == null)
         {
-            Debug.LogWarning("ConsumeCombo_Scorpion не найден!");
+            Debug.LogWarning("ConsumeCombo_Scorpion РЅРµ РЅР°Р№РґРµРЅ!");
             return;
         }
 
-        Debug.Log("Применение состояния ComboState к цели");
+        Debug.Log("РџСЂРёРјРµРЅРµРЅРёРµ СЃРѕСЃС‚РѕСЏРЅРёСЏ ComboState Рє С†РµР»Рё");
         consumeCombo.ApplyComboEffect(enemy.transform);
     }
 
@@ -202,7 +218,7 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
 
     private void AddComboPoint()
     {
-        Debug.Log("Добавлен 1 очко комбо игроку");
+        Debug.Log("Р”РѕР±Р°РІР»РµРЅ 1 РѕС‡РєРѕ РєРѕРјР±Рѕ РёРіСЂРѕРєСѓ");
         _comboPlayer.Add(1);
     }
 
@@ -219,7 +235,7 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
 
     #endregion
 
-    #region Вспомогательные методы
+    #region Р’СЃРїРѕРјРѕРіР°С‚РµР»СЊРЅС‹Рµ РјРµС‚РѕРґС‹
 
     private Skill GetSkillByName(string name)
     {

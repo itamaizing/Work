@@ -3,6 +3,7 @@ using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UIElements;
 
 public class MoveComponent : NetworkBehaviour
@@ -262,6 +263,26 @@ public class MoveComponent : NetworkBehaviour
 		onComplete?.Invoke();
 	}
 
+	private IEnumerator DoPushWithAgent(Vector3 targetPos, float duration)
+	{
+		var agent = GetComponent<NavMeshAgent>();
+
+		if (agent != null && agent.enabled)
+			agent.enabled = false;
+
+		CanMove = false;
+		_rigidbody.DOKill();
+
+		yield return _rigidbody.DOMove(targetPos, duration)
+			.SetEase(Ease.Linear)
+			.WaitForCompletion();
+
+		if (agent != null)
+			agent.enabled = true;
+
+		CanMove = true;
+	}
+
 	public void MoveTowards(Vector3 targetPosition, float speed, Action onComplete = null)
 	{
 		if (!isServer) return;
@@ -324,34 +345,24 @@ public class MoveComponent : NetworkBehaviour
 	[TargetRpc]
 	public void TargetRpcDoPush(Vector3 targetPos, float duration)
 	{
-		CanMove = false;
-		_rigidbody.DOKill();
-
-		_rigidbody.DOMove(targetPos, duration)
-			.SetEase(Ease.Linear)
-			.OnComplete(() =>
-			{
-				CanMove = true;
-			});
+		StartCoroutine(DoPushWithAgent(targetPos, duration));
 	}
 
 	#region Test
-	[ClientRpc]
-	public void RpcDoPush(Vector3 targetPos, float duration)
-	{
-		CanMove = false;
-		_rigidbody.DOKill();
-
-		_rigidbody.DOMove(targetPos, duration)
-			.SetEase(Ease.Linear)
-			.OnComplete(() =>
-			{
-				CanMove = true;
-			});
+	[Command]
+	public void CmdAddTransformPosition(Vector3 vector3)
+    {
+		RpcAddTransformPosition(vector3);
 	}
 
 	[ClientRpc]
-	public void RpcAddTransformPosition(Vector3 vector3)
+	public void RpcDoPush(Vector3 targetPos, float duration)
+	{
+		StartCoroutine(DoPushWithAgent(targetPos, duration));
+	}
+
+	[ClientRpc]
+	private  void RpcAddTransformPosition(Vector3 vector3)
 	{
 		transform.position += vector3;
 	}

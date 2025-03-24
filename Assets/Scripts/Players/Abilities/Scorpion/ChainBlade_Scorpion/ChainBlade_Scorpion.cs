@@ -233,7 +233,7 @@ public class ChainBlade_Scorpion : Skill
             _tempTargetMove = _tempTarget.GetComponent<MoveComponent>();
         }
 
-        _tempTargetMove.RpcAddTransformPosition(force);
+        _tempTargetMove.TargetRpcAddTransformPosition(force);
         _comboCounter.AddSkill(target, this);
     }
 }

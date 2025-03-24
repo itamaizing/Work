@@ -415,6 +415,10 @@ PrefabInstance:
       propertyPath: _showText
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2656578536299376474, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2717681761180984130, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.03831835
@@ -979,6 +983,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0.049495734
       objectReference: {fileID: 0}
+    - target: {fileID: 8314673134874891882, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8363628837774109459, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.y
       value: 2.031
@@ -1542,6 +1550,7 @@ MonoBehaviour:
   _comboCounter: {fileID: 5883639770937801120}
   _range: 7
   _chainPrefab: {fileID: -8245340431016603970, guid: 94a92e558dfff4041911d68c42de01f8, type: 3}
+  _chain: {fileID: 0}
   _projectilePrefab: {fileID: 3765642479631805782, guid: e973d107e3652be4a8430fe523236ae6, type: 3}
 --- !u!114 &6267367289068038631
 MonoBehaviour:

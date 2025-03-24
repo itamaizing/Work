@@ -66,7 +66,7 @@ public class Tentacles : Skill
 
             _previewInstance.transform.position = mousePosition;
 
-            if (GetMouseButton)
+            if (Input.GetMouseButtonDown(0))
             {
                 if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hitTarget))
                 {
@@ -78,8 +78,6 @@ public class Tentacles : Skill
                         _previewInstancePrefab = Instantiate(tentaclesPreview, _previewInstance.transform.position, Quaternion.identity);
                         _previewInstancePrefab.Tentacle.SetActive(true);
                         _previewInstancePrefab.IsPreview = false;
-
-                        yield return new WaitForSeconds(1f);
                         break;
                     }
                 }
