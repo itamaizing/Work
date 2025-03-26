@@ -879,15 +879,11 @@ public abstract class Skill : NetworkBehaviour
     private Character ClosedTarget()
     {
         var closerTargets = GetCloserTargets(transform.position, 1000);
-        Character closerTarget = null;
 
         if (closerTargets != null && closerTargets.Count > 0)
-        {
-            closerTarget = GetCloserTargets(transform.position, 1000)[0];
-            return closerTarget;
-        }
+            return closerTargets[0];
 
-        return closerTarget;
+        return null;
     }
 
     protected TargetToShot ShiftLeftClick()

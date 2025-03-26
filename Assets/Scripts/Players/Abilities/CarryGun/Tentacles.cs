@@ -66,7 +66,7 @@ public class Tentacles : Skill
 
             _previewInstance.transform.position = mousePosition;
 
-            if (Input.GetMouseButtonDown(0))
+            if (GetMouseButton)
             {
                 if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hitTarget))
                 {
@@ -78,6 +78,8 @@ public class Tentacles : Skill
                         _previewInstancePrefab = Instantiate(tentaclesPreview, _previewInstance.transform.position, Quaternion.identity);
                         _previewInstancePrefab.Tentacle.SetActive(true);
                         _previewInstancePrefab.IsPreview = false;
+
+                        yield return new WaitForSeconds(1f);
                         break;
                     }
                 }
@@ -220,14 +222,17 @@ public class Tentacles : Skill
                     }
                 }
 
-                float distanceToPreview = Vector3.Distance(transform.position, _previewInstance.transform.position);
-                isPreviewInsideRadius = distanceToPreview <= _radius;
+                if (_target == null)
+                {
+                    float distanceToPreview = Vector3.Distance(transform.position, _previewInstance.transform.position);
+                    isPreviewInsideRadius = distanceToPreview <= (_radius + _previewInstance.Radius);
+                }
             }
 
-            if (_previewInstancePrefab != null)
+            if (_previewInstancePrefab != null && _target != null)
             {
-                float distanceToPreview = Vector3.Distance(transform.position, _previewInstancePrefab.transform.position);
-                isPreviewInsideRadius = distanceToPreview <= _radius;
+                float distanceToPrefab = Vector3.Distance(transform.position, _previewInstancePrefab.transform.position);
+                isPreviewInsideRadius = distanceToPrefab <= _radius;
             }
 
             _previewInstance.SetRadiusColor(isCharacterInsidePreview ? Color.green : Color.red);

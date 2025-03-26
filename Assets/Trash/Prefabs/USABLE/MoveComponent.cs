@@ -320,6 +320,7 @@ public class MoveComponent : NetworkBehaviour
 	[TargetRpc]
 	public void TargetRpcDoMove(Vector3 vector3, float duration)
 	{
+		CanMove = false;
 		_rigidbody.DOMove(vector3, duration).OnComplete(() =>
 		{
 			CanMove = true;
@@ -361,10 +362,31 @@ public class MoveComponent : NetworkBehaviour
 		StartCoroutine(DoPushWithAgent(targetPos, duration));
 	}
 
-	[ClientRpc]
-	private  void RpcAddTransformPosition(Vector3 vector3)
+	//[ClientRpc]
+	public void RpcAddTransformPosition(Vector3 vector3)
 	{
 		transform.position += vector3;
+	}
+
+	public void TestDoMove(Vector3 targetPosition, float maxDistance)
+	{
+		CanMove = false;
+
+		Tween moveTween = null;
+
+	     moveTween = _rigidbody.DOMove(targetPosition, 1f)
+			.SetEase(Ease.Linear)
+			.OnUpdate(() =>
+			{
+				if (Vector3.Distance(transform.position, targetPosition) <= maxDistance)
+				{
+					moveTween.Kill();
+			}
+			})
+			.OnKill(() =>
+			{
+				CanMove = true;
+			});
 	}
 	#endregion
 }

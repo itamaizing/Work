@@ -35,6 +35,37 @@ Transform:
   m_Father: {fileID: 8811787553151181850}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+--- !u!1 &6129728554081011716
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2586563500404629964}
+  m_Layer: 9
+  m_Name: SpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2586563500404629964
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6129728554081011716}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8811787553151181850}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &424471191848786636
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -718,7 +749,7 @@ PrefabInstance:
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.data[2]
       value: 
-      objectReference: {fileID: 6713827535781379023}
+      objectReference: {fileID: 220446193611464409}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.data[3]
       value: 
@@ -1207,6 +1238,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1067068910885120122}
+    - targetCorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2586563500404629964}
     - targetCorrespondingSourceObject: {fileID: 6532350832654838719, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: 0
       addedObject: {fileID: 7753312870027818422}
@@ -1228,9 +1262,6 @@ PrefabInstance:
       addedObject: {fileID: 1485408660127300276}
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6713827535781379023}
-    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 6267367289068038631}
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
@@ -1241,6 +1272,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5883639770937801120}
+    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 220446193611464409}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!114 &1402913355469849604 stripped
 MonoBehaviour:
@@ -1251,17 +1285,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6527aa781683d1643a6540f0c1b1306c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &2675348779447106883 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2361216367366023055, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-  m_PrefabInstance: {fileID: 424471191848786636}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8143091671269686944}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &3713062146289152410 stripped
@@ -1490,68 +1513,6 @@ MonoBehaviour:
   _comboCounter: {fileID: 5883639770937801120}
   _minDamage: 23
   _maxDamage: 26
---- !u!114 &6713827535781379023
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8143091671269686944}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8bcc26ec105616c40b78e0515b385bed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
-  _abilityInfo: {fileID: 11400000, guid: f954632b892f43143bbee3c9ddaa45aa, type: 2}
-  _isSubjectToGlobalCooldownTime: 1
-  _skillEnergyCosts:
-  - resourceType: 2
-    resourceCost: 0
-  _cooldownTime: 0
-  _castDeley: 0
-  _damageValue: 0
-  _abilitySchool: 6
-  _abilityForm: 0
-  _damageType: 1
-  _attackRangeType: 1
-  _skillType: 1
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 768
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
-  _isUseCharges: 1
-  _useChargesAsComboPart: 1
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 3
-  _chargeCooldown: 6
-  _radius: 4
-  _area: 0
-  _castLength: 4
-  _castWidth: 0.5
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
-  _disactive: 0
-  _minDamage: 3
-  _maxDamage: 5
-  _playerLinks: {fileID: 5458554383432203635}
-  _playerIdentity: {fileID: 2675348779447106883}
-  _comboCounter: {fileID: 5883639770937801120}
-  _range: 7
-  _chainPrefab: {fileID: -8245340431016603970, guid: 94a92e558dfff4041911d68c42de01f8, type: 3}
-  _chain: {fileID: 0}
-  _projectilePrefab: {fileID: 3765642479631805782, guid: e973d107e3652be4a8430fe523236ae6, type: 3}
 --- !u!114 &6267367289068038631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1751,6 +1712,65 @@ MonoBehaviour:
   _particlesNoCharges: {fileID: 7567012663070630889}
   _particlesFullCombo: {fileID: 7712857434436745403}
   _particlesCancelCombo: {fileID: 5695986832514249213}
+--- !u!114 &220446193611464409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8143091671269686944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97a1b3e18c698d94cb63f24396e1d529, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
+  _abilityInfo: {fileID: 11400000, guid: f954632b892f43143bbee3c9ddaa45aa, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts:
+  - resourceType: 2
+    resourceCost: 4
+  _cooldownTime: 2
+  _castDeley: 0
+  _damageValue: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 1
+  _skillType: 1
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _isUseCharges: 1
+  _useChargesAsComboPart: 1
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 3
+  _chargeCooldown: 6
+  _radius: 4
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 1
+  _isDynamicRenderer: 0
+  _disactive: 0
+  _minDamage: 3
+  _maxDamage: 5
+  _comboCounter: {fileID: 0}
+  chainArrowPrefab: {fileID: 7293680978615570491, guid: 9903945e1d35e3f4699a288cf83c9e9c, type: 3}
+  spawnPoint: {fileID: 2586563500404629964}
+  playerLinks: {fileID: 5458554383432203635}
 --- !u!4 &8811787553151181850 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

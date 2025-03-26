@@ -79,6 +79,34 @@ public class BasePsionicEnergy : Resource, IDamageable
         }
     }
 
+    public void AddAndResetDecay(float value)
+    {
+        Add(value);
+        CurrentValue = Mathf.Min(CurrentValue, MaxValue);
+
+        if (isServer)
+        {
+            RpcOnEnergyChanged(CurrentValue);
+
+            bool wasInternalEnergy = _isInternalPsiEnergy;
+            _isInternalPsiEnergy = CurrentValue > 0;
+
+            if (wasInternalEnergy != _isInternalPsiEnergy)
+            {
+                RpcInternalPsiEnergyChanged(_isInternalPsiEnergy);
+            }
+
+            if (_energyDecayCoroutine != null)
+            {
+                StopCoroutine(_energyDecayCoroutine);
+            }
+            _energyDecayCoroutine = StartCoroutine(EnergyDecayCoroutine());
+        }
+
+        UpdatePsionicaBar();
+    }
+
+
     public void UsePsiEnergy(float value)
     {
         TryUse(value);
