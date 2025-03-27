@@ -17,9 +17,7 @@ public class CleavingBlade_Scorpion : Skill
     {
         get
         {
-            if (_target != null)
-                return Vector3.Distance(_target.transform.position, transform.position) <= Radius;
-
+            if (_target != null) return Vector3.Distance(_target.transform.position, transform.position) <= Radius;
             return false;
         }
     }
@@ -49,7 +47,8 @@ public class CleavingBlade_Scorpion : Skill
                 _counter++;
             }
         }
-       // _target.GetComponent<CharacterState>().AddState(States.Bleeding, 6f, 0, _hero.gameObject, name);
+
+       //_target.GetComponent<CharacterState>().AddState(States.Bleeding, 6f, 0, _hero.gameObject, name);
 
         _target = null;
     }
@@ -96,7 +95,7 @@ public class CleavingBlade_Scorpion : Skill
     
     protected override void ClearData()
     {
-        //_target = null;
+        _target = null;
     }
 
     private void TryAttack(bool shouldIncreaseCounter, float damageMultiplier)

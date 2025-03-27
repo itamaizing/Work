@@ -26,7 +26,7 @@ public class ChainBlade : Skill
     {
         while (true)
         {
-            if (Input.GetMouseButtonDown(0))
+            if (GetMouseButton)
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
