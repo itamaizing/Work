@@ -18,6 +18,8 @@ public class Kick_Scorpion : AutoAttackSkill
     private Coroutine _hitsInRowCoroutine;
     private Character _lastTarget = null;
     private Animator _animator;
+    private bool isKick_ScorpionRowTalent;
+    private bool isKick_ScorpionComboTalent;
 
     private static readonly int KickTrigger = Animator.StringToHash("KickAA");
 
@@ -68,7 +70,7 @@ public class Kick_Scorpion : AutoAttackSkill
             return;
         }
 
-        if (Vector2.Distance(LastTargetPosition, _target.transform.position) > 2f)
+        if (Vector2.Distance(LastTargetPosition, _target.transform.position) > Radius)
         {
             Debug.LogWarning("[Kick_Scorpion] Target moved too far!");
             return;
@@ -88,15 +90,43 @@ public class Kick_Scorpion : AutoAttackSkill
         Debug.LogWarning("[Kick_Scorpion] Attack Passed!");
 
         _comboCounter.AddSkill(target, this);
-        _counterRow *= 2;
+
+        if (_hitsInRowCoroutine != null)
+            StopCoroutine(_hitsInRowCoroutine);
         _hitsInRowCoroutine = StartCoroutine(HitsInRowTimer());
 
-        if (Random.value <= Mathf.Clamp01(_debuffApplyChance * _counterRow))
+        float chance = _debuffApplyChance;
+
+        if (isKick_ScorpionRowTalent)
         {
-            //target.GetComponent<CharacterState>()?.AddState(States.Knockdown, 6f, 0, _hero.gameObject, name);
+            chance *= _counterRow;
+        }
+
+        if (Random.value <= Mathf.Clamp01(chance))
+        {
+            var state = target.GetComponent<CharacterState>();
+            state?.AddState(States.Knockdown, 6f, 0, _hero.gameObject, name);
+
+            if (isKick_ScorpionRowTalent)
+            {
+                state?.AddState(States.ReducingHealing, 13f, 0, _hero.gameObject, name);
+            }
+
             _counterRow = 1;
         }
+        else
+        {
+            if (isKick_ScorpionRowTalent)
+            {
+                _counterRow *= 2;
+            }
+            else
+            {
+                _counterRow = 1;
+            }
+        }
     }
+
 
     //private void AttackMissed()
     //{
@@ -146,4 +176,14 @@ public class Kick_Scorpion : AutoAttackSkill
     //        AttackMissed();
     //    }
     //}
+
+    public void Kick_ScorpionRowTalent(bool value)
+    {
+        isKick_ScorpionRowTalent = value;
+    }
+
+    public void Kick_ScorpionComboTalent(bool value)
+    {
+        isKick_ScorpionComboTalent = value;
+    }
 }
