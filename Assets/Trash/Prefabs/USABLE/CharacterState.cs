@@ -121,6 +121,7 @@ public class CharacterState : NetworkBehaviour
 		[States.ReducingHealing] = new ReducingHealingState(),
 		[States.LowVoltage] = new LowVoltage(),
 		[States.ComboState] = new ComboState(),
+		[States.DisappointmentState] = new DisappointmentState(),
 
 		#region TerrifyingElfStates
 
@@ -626,6 +627,7 @@ public enum States
 	ShieldBaff,
 	LowVoltage,
 	ComboState,
+	DisappointmentState,
 
 	#region TerrifyingElf
 

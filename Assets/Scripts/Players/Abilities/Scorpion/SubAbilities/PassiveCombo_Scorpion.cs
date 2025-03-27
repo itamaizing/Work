@@ -30,6 +30,12 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
 
     #region Add Skill (Комбо механика)
 
+    [Command]
+    public void CmdAddSkill(Character enemy, Skill skill)
+    {
+        AddSkill(enemy, skill);
+    }
+
     public void AddSkill(Character enemy, Skill skill)
     {
         if (enemy == null || skill == null) return;
@@ -210,6 +216,24 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
 
         Debug.Log("Применение состояния ComboState к цели");
         consumeCombo.ApplyComboEffect(enemy.transform);
+    }
+
+    public bool IsFinalComboSkill(Character target, Skill skill)
+    {
+        if (_currentTarget != target || _usedSkills.Count < 3)
+            return false;
+
+        var lastThreeHits = _usedSkills.Skip(Mathf.Max(0, _usedSkills.Count - 3)).ToList();
+
+        var groupedSkills = lastThreeHits
+            .GroupBy(s => s)
+            .OrderByDescending(g => g.Count())
+            .ToList();
+
+        if (groupedSkills.Count == 1 && groupedSkills[0].Count() == 3)
+            return false;
+
+        return lastThreeHits.Last() == skill;
     }
 
     #endregion

@@ -35,37 +35,6 @@ Transform:
   m_Father: {fileID: 8811787553151181850}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
---- !u!1 &6129728554081011716
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2586563500404629964}
-  m_Layer: 9
-  m_Name: SpawnPoint
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2586563500404629964
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6129728554081011716}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 8811787553151181850}
-  m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &424471191848786636
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1238,9 +1207,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1067068910885120122}
-    - targetCorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2586563500404629964}
     - targetCorrespondingSourceObject: {fileID: 6532350832654838719, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: 0
       addedObject: {fileID: 7753312870027818422}
@@ -1341,7 +1307,6 @@ MonoBehaviour:
   syncInterval: 0
   _resourceType: 3
   _regenerationDelay: 0
-  _comboBar: {fileID: 0}
 --- !u!114 &6732054044553877427
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1767,9 +1732,8 @@ MonoBehaviour:
   _disactive: 0
   _minDamage: 3
   _maxDamage: 5
-  _comboCounter: {fileID: 0}
+  _comboCounter: {fileID: 5883639770937801120}
   chainArrowPrefab: {fileID: 7293680978615570491, guid: 9903945e1d35e3f4699a288cf83c9e9c, type: 3}
-  spawnPoint: {fileID: 2586563500404629964}
   playerLinks: {fileID: 5458554383432203635}
 --- !u!4 &8811787553151181850 stripped
 Transform:

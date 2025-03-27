@@ -13,7 +13,6 @@ public class ChainArrow : Projectiles
     [SerializeField] private Transform chainPoint;
 
     private Transform _playerTransform;
-    private Transform _spawnPoint;
     private Vector3 _targetPoint;
     private float _maxDistance;
     private float _damage;
@@ -21,7 +20,6 @@ public class ChainArrow : Projectiles
     private Coroutine _flyCoroutine;
     private Coroutine _returnCoroutine;
     private bool _isReturning = false;
-
 
     private Character _hookedTarget;
     private MoveComponent _hookedMove;
@@ -31,11 +29,10 @@ public class ChainArrow : Projectiles
         MoveReset();
     }
 
-    public void InitArrow(Vector3 targetPoint, Transform playerTransform, Transform spawnPoint, float maxDistance, float damage)
+    public void InitArrow(Vector3 targetPoint, Transform playerTransform, float maxDistance, float damage)
     {
         _targetPoint = targetPoint;
         _playerTransform = playerTransform;
-        _spawnPoint = spawnPoint;
         _maxDistance = maxDistance;
         _damage = damage;
 
@@ -69,7 +66,8 @@ public class ChainArrow : Projectiles
                 {
                     speedReturn = speedWithTarget;
                     AttachToTarget(character);
-                    OnChainArrowHit(character);
+                    AddSkillCombo(character);
+                    CmdAddState(character);
                     ApplyDamage(_damage, DamageType.Physical, character.gameObject);
                 }
 
@@ -124,11 +122,11 @@ public class ChainArrow : Projectiles
 
         else
         {
-            Vector3 dir = (_spawnPoint.position - transform.position).normalized;
+            Vector3 dir = (_playerTransform.position - transform.position).normalized;
             _rb.isKinematic = false;
             _rb.AddForce(dir * speed, ForceMode.VelocityChange);
 
-            while (Vector3.Distance(transform.position, _spawnPoint.position) > stopDistance)
+            while (Vector3.Distance(transform.position, _playerTransform.position) > stopDistance)
             {
                 UpdateLine();
                 yield return null;
@@ -152,9 +150,9 @@ public class ChainArrow : Projectiles
 
     private void UpdateLine()
     {
-        if (_spawnPoint == null || chainPoint == null || lineRenderer == null) return;
+        if (_playerTransform == null || chainPoint == null || lineRenderer == null) return;
 
-        lineRenderer.SetPosition(0, _spawnPoint.position);
+        lineRenderer.SetPosition(0, _playerTransform.position);
         lineRenderer.SetPosition(1, chainPoint.position);
     }
 
@@ -181,14 +179,39 @@ public class ChainArrow : Projectiles
         _dad.Move.CanMove = true;
     }
 
-    private void OnChainArrowHit(Character character)
+    private void AddSkillCombo(Character character)
     {
         if (character == null) return;
          
-        if (_skill == _dad.TryGetComponent<ChainBlade>(out ChainBlade skill)) 
+        if (_skill is ChainBlade skill) 
         {
-            skill.ComboCounter.AddSkill(character, skill);
+            skill.ComboCounter.CmdAddSkill(character, skill);
             Debug.Log("[ChainBlade] Attack Passed");
+        }
+    }
+
+    [Command]
+    private void CmdAddState(Character character)
+    {
+        AddState(character);
+    }
+
+    private void AddState(Character character)
+    {
+        if (character == null) return;
+
+        float pullDistance = Vector3.Distance(_playerTransform.position, character.transform.position);
+
+        if (pullDistance > 1f)
+        {
+            float duration = 1f;
+
+            if (_skill is ChainBlade skill) if (skill.ComboCounter.IsFinalComboSkill(character, skill)) duration += 2f;
+
+            int comboStacks = character.CharacterState.CheckStateStacks(States.ComboState);
+            duration += comboStacks;
+
+            character.CharacterState.AddState(States.DisappointmentState, duration, 0f, _dad.gameObject, _skill.name);
         }
     }
 

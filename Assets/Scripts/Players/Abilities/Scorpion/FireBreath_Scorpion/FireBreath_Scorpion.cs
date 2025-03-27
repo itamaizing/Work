@@ -47,7 +47,7 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
     [Command]
     private void CmdSpawnFireBreath()
     {
-        Vector3 spawnPosition = transform.position + Vector3.up * 1.5f;
+        Vector3 spawnPosition = transform.position;
 
         var fireObj = Instantiate(_prefab, spawnPosition, Quaternion.identity);
         SceneManager.MoveGameObjectToScene(fireObj, _hero.NetworkSettings.MyRoom);

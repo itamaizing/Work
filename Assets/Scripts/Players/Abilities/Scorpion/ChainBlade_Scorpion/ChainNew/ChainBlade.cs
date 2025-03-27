@@ -10,7 +10,6 @@ public class ChainBlade : Skill
     [SerializeField] private PassiveCombo_Scorpion _comboCounter;
 
     [SerializeField] private ChainArrow chainArrowPrefab;
-    [SerializeField] private Transform spawnPoint;
     [SerializeField] private HeroComponent playerLinks;
 
     private ChainArrow _chainArrowPrefab;
@@ -63,18 +62,18 @@ public class ChainBlade : Skill
     private void CmdSpawnChainArrow(Vector3 clickPoint)
     {
 
-        Vector3 direction = (clickPoint - spawnPoint.position).normalized;
+        Vector3 direction = (clickPoint - playerLinks.transform.position).normalized;
         Vector3 flatDirection = new Vector3(direction.x, 0, direction.z).normalized;
-        Vector3 targetPoint = spawnPoint.position + flatDirection * Radius;
+        Vector3 targetPoint = playerLinks.transform.position + flatDirection * Radius;
 
-        var arrow = Instantiate(chainArrowPrefab, spawnPoint.position, Quaternion.identity);
+        var arrow = Instantiate(chainArrowPrefab, playerLinks.transform.position, Quaternion.identity);
         _chainArrowPrefab = arrow;
         arrow.Init(playerLinks, 0, false, this);
 
         NetworkServer.Spawn(arrow.gameObject);
         SceneManager.MoveGameObjectToScene(arrow.gameObject, _hero.NetworkSettings.MyRoom);
 
-        arrow.InitArrow(targetPoint, Hero.transform, spawnPoint, Radius, DamageRange);
+        arrow.InitArrow(targetPoint, Hero.transform, Radius, DamageRange);
         RpcInitArrow(arrow.gameObject, targetPoint);
     }
 
@@ -85,6 +84,6 @@ public class ChainBlade : Skill
 
         var arrow = arrowObj.GetComponent<ChainArrow>();
         arrow.Init(playerLinks, 0, false, this);
-        arrow.InitArrow(targetPoint, Hero.transform, spawnPoint, Radius, DamageRange);
+        arrow.InitArrow(targetPoint, Hero.transform, Radius, DamageRange);
     }
 }

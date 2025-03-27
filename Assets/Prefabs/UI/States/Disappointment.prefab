@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6139518733738458441}
   - component: {fileID: 3545852164369826336}
   m_Layer: 5
-  m_Name: PartialBlindness
+  m_Name: Disappointment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -70,7 +70,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 9abaa859cdccc5c41b6c730b64ae3810, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bc00ba83595503d4b96b4ca5ff990eab, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -96,7 +96,7 @@ MonoBehaviour:
   border: {fileID: 50026701696683283}
   Text: {fileID: 5841979573956175552}
   count: 1
-  state: 57
+  state: 49
   time: []
   maxStack: 0
 --- !u!1 &6000399726936491198
