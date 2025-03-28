@@ -17,10 +17,11 @@ public class ConsumeCombo_Scorpion : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
 
+    private bool isConsumeCombo_ScorpionPhysicStateClear;
+
     public void ApplyComboEffect(Transform enemy)
     {
         if (!isServer) return;
-
         if (enemy == null) return;
 
         var targetCharacter = enemy.GetComponent<Character>();
@@ -66,6 +67,11 @@ public class ConsumeCombo_Scorpion : Skill
         for (int i = 0; i < pointsToConsume; i++)
         {
             bool reduced = state.Stack(-1);
+            if (reduced && isConsumeCombo_ScorpionPhysicStateClear)
+            {
+                _hero.CharacterState.DispelStates(StateType.Physical, true, true);
+            }
+
             if (!reduced)
             {
                 target.CharacterState.RemoveState(state);
@@ -96,6 +102,11 @@ public class ConsumeCombo_Scorpion : Skill
             pointsToConsume++;
             amount--;
 
+            if (reduced && isConsumeCombo_ScorpionPhysicStateClear)
+            {
+                _hero.CharacterState.DispelStates(StateType.Physical, true, true);
+            }
+
             if (!reduced)
             {
                 lastTarget.CharacterState.RemoveState(state);
@@ -104,6 +115,41 @@ public class ConsumeCombo_Scorpion : Skill
         }
 
         return pointsToConsume;
+    }
+
+    public void ConsumeCombo_ScorpionPhysicStateClearTalent(bool value)
+    {
+        isConsumeCombo_ScorpionPhysicStateClear = value;
+    }
+
+    public void TryConsumeComboAroundSelf()
+    {
+        if (!isConsumeCombo_ScorpionPhysicStateClear || !isServer) return;
+
+        List<Character> targetsInRadius = Physics.OverlapSphere(transform.position, Radius, TargetsLayers)
+            .Select(c => c.GetComponent<Character>())
+            .Where(c => c != null && c.CharacterState.CheckForState(States.ComboState))
+            .ToList();
+
+        foreach (var target in targetsInRadius)
+        {
+            var state = target.CharacterState.GetState(States.ComboState) as ComboState;
+            if (state == null || state.CurrentStacksCount <= 0) continue;
+
+            bool reduced = state.Stack(-1);
+            if (reduced)
+            {
+                if (isConsumeCombo_ScorpionPhysicStateClear)
+                {
+                    _hero.CharacterState.DispelStates(StateType.Physical, true, true);
+                }
+
+                if (state.CurrentStacksCount <= 0)
+                {
+                    target.CharacterState.RemoveState(state);
+                }
+            }
+        }
     }
 
     protected override IEnumerator PrepareJob() => null;

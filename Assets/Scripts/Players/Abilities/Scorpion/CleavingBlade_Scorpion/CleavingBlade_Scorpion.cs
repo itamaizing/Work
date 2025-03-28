@@ -55,6 +55,7 @@ public class CleavingBlade_Scorpion : Skill
                 Type = DamageType,
             };
 
+            _comboCounter.AddSkill(_target, this);
             CmdAttack(damage, _target, shouldIncreaseCounter);
         }
     }
@@ -74,8 +75,6 @@ public class CleavingBlade_Scorpion : Skill
 
     private void AttackPassed(bool shouldIncreaseCounter, Character target)
     {
-        _comboCounter.AddSkill(target, this);
-
         if (_comboCounter.IsFinalComboSkill(target, this))
         {
             CharacterState state = target.GetComponent<CharacterState>();

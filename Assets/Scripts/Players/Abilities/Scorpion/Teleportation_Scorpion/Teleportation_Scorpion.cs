@@ -15,7 +15,9 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     [SerializeField] private LayerMask _layerMask;
     [Tooltip("��������� ������ ������ ���� ����������, ����� � ��������� �������")]
     [SerializeField] private float _offset = 0.5f;
+
     private Character _target;
+    private bool isTeleportation_ScorpionMagResist;
 
     //private GameObject _tempTarget;
     //private MoveComponent _tempTargetMove;
@@ -199,15 +201,17 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 
     protected override IEnumerator CastJob()
     {
-        //TryUpgradeByConsumingCombo(1);
         Vector3 tpPos = FindPlace(_target);
-
-        //CmdChangePosition(tpPos);
         CmdTeleport(tpPos);
 
-        //CmdApplyBuff(_health.transform);
+        int extraDuration = 0;
+        var targetState = _target.GetComponent<CharacterState>();
 
-        _hero.CharacterState.CmdAddState(States.IdealEvade, 1f + ConsumedAmount, 30f, _hero.gameObject, name);
+        if (isTeleportation_ScorpionMagResist)
+        {
+            if (targetState != null) extraDuration = targetState.CheckStateStacks(States.ComboState);
+            if (Random.value <= 0.3f) _hero.CharacterState.CmdAddState(States.IdealEvade, 1f + extraDuration, 30f, _hero.gameObject, name);
+        }
 
         yield return null;
     }
@@ -234,5 +238,10 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 
         //_tempTargetMove.TargetRpcSetTransformPosition(newPosition);
         _hero.Move.TargetRpcSetTransformPosition(newPosition);
+    }
+
+    public void Teleportation_ScorpionMagResist(bool value)
+    {
+        isTeleportation_ScorpionMagResist = value;
     }
 }
