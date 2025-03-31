@@ -16422,7 +16422,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7890796074641231150}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.2, z: 0}
+  m_LocalPosition: {x: 0, y: -1, z: 0}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -16725,8 +16725,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1550066538247365834, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_Height
+      value: 1.8210204
+      objectReference: {fileID: 0}
+    - target: {fileID: 1550066538247365834, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Radius
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1550066538247365834, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_Center.y
+      value: 0.0777632
       objectReference: {fileID: 0}
     - target: {fileID: 1550066538247365834, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_IsTrigger
@@ -16796,6 +16804,18 @@ PrefabInstance:
       propertyPath: _skills.Array.data[1]
       value: 
       objectReference: {fileID: -1021338090593152454}
+    - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: materialsCharacter.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: materialsCharacter.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b7ce918c50194e646a4579e55b19af86, type: 2}
+    - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: materialsCharacter.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 1ad4378e58356014881c80cd15757bb0, type: 2}
     - target: {fileID: 5653443088679015109, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -16812,6 +16832,10 @@ PrefabInstance:
       propertyPath: _damageZonePref
       value: 
       objectReference: {fileID: 1012274680287050680, guid: 4147e16f95a99db4b9dfd4e71a529053, type: 3}
+    - target: {fileID: 8363628837774109459, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3.132
+      objectReference: {fileID: 0}
     - target: {fileID: 8388980576940739991, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _character
       value: 
@@ -16922,7 +16946,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.z
@@ -17135,6 +17159,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 0
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
@@ -17191,6 +17216,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 0
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
@@ -17206,7 +17232,7 @@ MonoBehaviour:
   fearChanceInRadius: 0.2
   fearChanceInsideCollider: 0.8
   tickInterval: 3
-  GhostState: 48
+  GhostState: 51
   duration: 5
   delayBeforeEffect: 5
 --- !u!195 &8217033100601787470

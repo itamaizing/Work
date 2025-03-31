@@ -3258,6 +3258,26 @@ PrefabInstance:
       propertyPath: _skills.Array.data[6]
       value: 
       objectReference: {fileID: 8732005787551451527}
+    - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: materialsCharacter.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: materialsCharacter.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 0ba30982e7cb63a4390adf2b2685b786, type: 2}
+    - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: materialsCharacter.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: c806a3a6a646dbc40a9fdf11d38d5c80, type: 2}
+    - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: materialsCharacter.Array.data[2]
+      value: 
+      objectReference: {fileID: 2100000, guid: 153cdd0adbd09e04dbd0c2c05f83a319, type: 2}
+    - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: materialsCharacter.Array.data[3]
+      value: 
+      objectReference: {fileID: 2100000, guid: 1049e179acf7ecf43bf769df507a75a2, type: 2}
     - target: {fileID: 5338308959782739855, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.051383454

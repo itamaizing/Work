@@ -9,7 +9,9 @@ public class Silence : Skill
     [SerializeField] private bool _canAttackMinions;
     [SerializeField] private bool _reducedCooldown;
     [SerializeField] private AudioClip audioClip;
+    [SerializeField] private int _maxAdditionalManaUsage = 7;
 
+    private float _baseDuration;
     private AudioSource audioSource;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
 
@@ -20,12 +22,15 @@ public class Silence : Skill
 
     private void Start()
     {
+        _baseDuration = _duration;
         _baseCooldownTime = CooldownTime;
         audioSource = GetComponent<AudioSource>();
     }
 
     protected override IEnumerator PrepareJob()
     {
+        //_duration = _baseDuration;
+
         while (float.IsPositiveInfinity(_targetPoint.x) && !_disactive)
         {
             if (GetMouseButton)
@@ -55,12 +60,14 @@ public class Silence : Skill
     {
         if (_targetPoint != Vector3.positiveInfinity)
         {
-            yield return new WaitForSeconds(0.1f);
-
+            CmdAdditionalMana();
             SpawnEffectAtTargetPoint();
             ApplyStateToEnemiesInZone();
+
+            yield return null;
         }
     }
+
 
     private void SpawnEffectAtTargetPoint()
     {
@@ -169,7 +176,25 @@ public class Silence : Skill
             adjustedDuration *= durationMultiplier;
         }
 
+        Debug.Log(adjustedDuration);
         targetState.AddState(States.Silent, adjustedDuration, 0, Hero.gameObject, this.name);
+    }
+
+    [Command]
+    private void CmdAdditionalMana()
+    {
+        var manaResource = Hero.TryGetResource(ResourceType.Mana);
+
+        if (manaResource != null)
+        {
+
+            int availableMana = Mathf.Min((int)manaResource.CurrentValue - 1, _maxAdditionalManaUsage);
+            if (availableMana > 1)
+            {
+                manaResource.TryUse(availableMana);
+                _duration += 0.5f * availableMana;
+            }
+        }
     }
 
     [ClientRpc]

@@ -14,8 +14,9 @@ public class AstralState : AbstractCharacterState
     private float _originalRegenerationValue;
 
     private StateEffects _stateEffects;
-    private Renderer _characterRenderer;
+    private SkinnedMeshRenderer _characterRenderer;
     private GameObject _weapon;
+    private Material[] _originalMaterials;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability, StatusEffect.Move };
 
@@ -40,12 +41,18 @@ public class AstralState : AbstractCharacterState
             return;
         }
 
-        _characterRenderer = _characterState.GetComponentInChildren<Renderer>();
+        _characterRenderer = _characterState.GetComponentInChildren<SkinnedMeshRenderer>();
         _weapon = _stateEffects.Weapon;
 
         if (_characterRenderer != null)
         {
-            _characterRenderer.material = _stateEffects.MaterialGhost;
+            _originalMaterials = _characterRenderer.materials;
+            Material[] ghostMaterials = new Material[_originalMaterials.Length];
+            for (int i = 0; i < ghostMaterials.Length; i++)
+            {
+                ghostMaterials[i] = _stateEffects.MaterialGhost;
+            }
+            _characterRenderer.materials = ghostMaterials;
         }
 
         if (_weapon != null)
@@ -84,7 +91,7 @@ public class AstralState : AbstractCharacterState
 
         if (_characterRenderer != null)
         {
-            _characterRenderer.material = _stateEffects.MaterialCharacter;
+            _characterRenderer.materials = _originalMaterials;
         }
 
         if (_weapon != null)
@@ -102,25 +109,8 @@ public class AstralState : AbstractCharacterState
         _characterState.Character.Health.ValueChanged -= ConvertRegenToDamage;
     }
 
-    public override bool Stack(float time)
-    {
-        if (_currentStacks < _maxStacks)
-        {
-            _currentStacks++;
-            _duration = _baseDuration;
-            return true;
-        }
-        else
-        {
-            _duration = _baseDuration;
-            return false;
-        }
-    }
-
     private void BlockPhysicalAbilities()
     {
-        if (_characterState.Character.Abilities == null) return;
-
         foreach (var skill in _characterState.Character.Abilities.Abilities)
         {
             if (skill.AbilityForm == AbilityForm.Physical)
@@ -132,8 +122,6 @@ public class AstralState : AbstractCharacterState
 
     private void UnblockPhysicalAbilities()
     {
-        if (_characterState.Character.Abilities == null) return;
-
         foreach (var skill in _characterState.Character.Abilities.Abilities)
         {
             if (skill.AbilityForm == AbilityForm.Physical)
@@ -150,5 +138,10 @@ public class AstralState : AbstractCharacterState
             float regenAmount = newValue - oldValue;
             _characterState.Character.Health.CmdAdd(regenAmount);
         }
+    }
+
+    public override bool Stack(float time)
+    {
+        throw new System.NotImplementedException();
     }
 }

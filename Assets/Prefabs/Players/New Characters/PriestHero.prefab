@@ -3388,8 +3388,8 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f2ee7d2ed1f424a47a67bd0dbe5ceb84, type: 2}
-  - {fileID: 2100000, guid: bfb0835dcb5653d40956a4576b667f2d, type: 2}
+  - {fileID: 2100000, guid: 3d9a85fec7f03f047b5e021ccb2f49e6, type: 2}
+  - {fileID: 2100000, guid: f0e94163c3fad764eab3e361f3697d5a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3512,8 +3512,8 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
+  - {fileID: 2100000, guid: 3d9a85fec7f03f047b5e021ccb2f49e6, type: 2}
   - {fileID: 2100000, guid: f0e94163c3fad764eab3e361f3697d5a, type: 2}
-  - {fileID: 2100000, guid: bfb0835dcb5653d40956a4576b667f2d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5153,6 +5153,18 @@ PrefabInstance:
       propertyPath: weapon
       value: 
       objectReference: {fileID: 8994471981711068377}
+    - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: materialsCharacter.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: materialsCharacter.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 3d9a85fec7f03f047b5e021ccb2f49e6, type: 2}
+    - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: materialsCharacter.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: f0e94163c3fad764eab3e361f3697d5a, type: 2}
     - target: {fileID: 5338308959782739855, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.051383454
@@ -5853,6 +5865,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 0
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
@@ -5908,6 +5921,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 0
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
@@ -5986,6 +6000,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 0
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
@@ -6044,6 +6059,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 0
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
@@ -6107,6 +6123,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 0
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
@@ -6177,6 +6194,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 0
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
@@ -6234,6 +6252,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 0
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
@@ -6285,6 +6304,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 0
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
@@ -6337,6 +6357,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 0
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
@@ -6393,6 +6414,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 0
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0

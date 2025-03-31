@@ -11,7 +11,7 @@ public class RetributiveReckoningAnimationController : MonoBehaviour
     private Rigidbody _rigidbody;
     private NavMeshObstacle _navMeshObstacle;
     private List<GameObject> _elfParts;
-    private List<Material[]> _originalMaterials = new List<Material[]>();
+    private List<List<Material>> _originalMaterials = new List<List<Material>>();
 
     private void Start()
     {
@@ -32,7 +32,8 @@ public class RetributiveReckoningAnimationController : MonoBehaviour
         {
             if (part.TryGetComponent<Renderer>(out var renderer))
             {
-                _originalMaterials.Add(renderer.materials);
+                var originalMats = new List<Material>(renderer.materials);
+                _originalMaterials.Add(originalMats);
             }
             else
             {
@@ -50,12 +51,14 @@ public class RetributiveReckoningAnimationController : MonoBehaviour
         {
             if (part.TryGetComponent<Renderer>(out var renderer))
             {
-                Material[] ghostMaterials = new Material[renderer.materials.Length];
-                for (int j = 0; j < ghostMaterials.Length; j++)
+                List<Material> ghostMaterials = new List<Material>();
+
+                for (int i = 0; i < renderer.materials.Length; i++)
                 {
-                    ghostMaterials[j] = _stateEffects.MaterialGhost;
+                    ghostMaterials.Add(_stateEffects.MaterialGhost);
                 }
-                renderer.materials = ghostMaterials;
+
+                renderer.materials = ghostMaterials.ToArray();
             }
         }
 
@@ -75,7 +78,7 @@ public class RetributiveReckoningAnimationController : MonoBehaviour
         {
             if (_elfParts[i].TryGetComponent<Renderer>(out var renderer) && _originalMaterials[i] != null)
             {
-                renderer.materials = _originalMaterials[i];
+                renderer.materials = _originalMaterials[i].ToArray();
             }
         }
 

@@ -178,6 +178,14 @@ public class PullingHealth : Skill
         float elapsed = 0f;
         float damageTickElapsed = 0f;
         float positionThreshold = 1f;
+        var manaResource = Hero.TryGetResource(ResourceType.Mana);
+
+        if (manaResource == null || manaResource.CurrentValue < 2)
+        {
+            CmdDestroyEffect();
+            TryCancel();
+            yield break;
+        }
 
         Vector3 initialPosition = transform.position;
 
@@ -255,12 +263,15 @@ public class PullingHealth : Skill
                 ApplyDamageToTarget();
                 HealPlayer();
 
-                foreach (var ghost in ghost)
-                {
-                    ApplyDamageThroughGhost(ghost);
-                }
-
+                foreach (var ghost in ghost) ApplyDamageThroughGhost(ghost);
                 damageTickElapsed = 0f;
+            }
+
+            if (manaResource.CurrentValue < 2)
+            {
+                CmdDestroyEffect();
+                TryCancel();
+                yield break;
             }
 
             elapsed += Time.deltaTime;
@@ -270,6 +281,7 @@ public class PullingHealth : Skill
 
         CastStreamDuration = _baseCastStreamDuration;
         tickInterval = _baseTickInterval;
+        TryCancel();
 
         CmdDestroyEffect();
     }

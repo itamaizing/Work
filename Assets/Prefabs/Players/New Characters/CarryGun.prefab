@@ -5119,7 +5119,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1861164196144797469}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -8041,7 +8041,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5851851832670087865, guid: ef34d8ef179403a4faf1dbfd8e8b5187, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.486926
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5851851832670087865, guid: ef34d8ef179403a4faf1dbfd8e8b5187, type: 3}
       propertyPath: m_LocalPosition.y
@@ -8049,7 +8049,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5851851832670087865, guid: ef34d8ef179403a4faf1dbfd8e8b5187, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.3256482
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5851851832670087865, guid: ef34d8ef179403a4faf1dbfd8e8b5187, type: 3}
       propertyPath: m_LocalRotation.w
@@ -8792,6 +8792,18 @@ PrefabInstance:
       propertyPath: _skills.Array.data[5]
       value: 
       objectReference: {fileID: 1586150960787430152}
+    - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: materialsCharacter.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: materialsCharacter.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: a540b7e0771a487438f2e7d3027d8a31, type: 2}
+    - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: materialsCharacter.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: a540b7e0771a487438f2e7d3027d8a31, type: 2}
     - target: {fileID: 5338308959782739855, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.051383454
@@ -9214,15 +9226,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.3349414
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.294208
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.08030139
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalRotation.w
@@ -9352,6 +9364,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 0
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
@@ -9410,6 +9423,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 0
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
@@ -9468,6 +9482,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 0
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
@@ -9521,6 +9536,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 0
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
@@ -9577,6 +9593,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 0
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
@@ -9684,6 +9701,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 0
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0

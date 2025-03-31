@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class StateEffects : MonoBehaviour
@@ -22,7 +23,7 @@ public class StateEffects : MonoBehaviour
     #endregion
 
     [Header("Material Character")]
-    [SerializeField] private Material materialCharacter;
+    [SerializeField] private List<Material> materialsCharacter;
 
     [Header("Weapon Character")]
     [SerializeField] private GameObject weapon;
@@ -32,7 +33,7 @@ public class StateEffects : MonoBehaviour
     public GameObject Weapon { get => weapon; set => weapon = value; }
     public GameObject LightShield { get => lightShield; set => lightShield = value; }
     public GameObject DarkShield { get => darkShield; set => darkShield = value; }
-    public Material MaterialCharacter { get => materialCharacter; set => materialCharacter = value; }
+    public List<Material> MaterialsCharacter { get => materialsCharacter; set => materialsCharacter = value; }
     public Material MaterialGhost { get => materialGhost; set => materialGhost = value; }
     public AudioClip FrostingAudio { get => frostingAudio; set => frostingAudio = value; }
     public AudioClip FrozenAudio { get => frozenAudio; set => frozenAudio = value; }
@@ -40,6 +41,6 @@ public class StateEffects : MonoBehaviour
 
     private void Awake()
     {
-        if (materialCharacter != null) materialCharacter.color = Color.white;
+        if (materialsCharacter != null) foreach (var materialCharacter in materialsCharacter) materialCharacter.color = Color.white;
     }
 }

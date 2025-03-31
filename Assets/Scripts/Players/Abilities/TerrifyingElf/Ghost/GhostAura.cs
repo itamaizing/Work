@@ -33,6 +33,7 @@ public class GhostAura : Skill
         _spawnTime = Time.time;
     }
 
+    [Server]
     private void OnTriggerEnter(Collider other)
     {
         if (((1 << other.gameObject.layer) & TargetsLayers) != 0 && Time.time > _spawnTime + delayBeforeEffect)
@@ -139,7 +140,7 @@ public class GhostAura : Skill
     {
         if (Random.value <= chance)
         {
-            characterState.CmdAddState(GhostState, duration, 0f, gameObject, Name);
+            characterState.AddState(GhostState, duration, 0f, gameObject, Name);
         }
     }
 

@@ -286,8 +286,9 @@ public class Ghost : Skill
         CmdAcTeleportToGhost();
         ReduceSkillCosts();
         ActivateWayIndicator();
-        PerformTeleport(ghost.transform.position);
-        RemoveGhost(ghost);
+
+        if (ghost.TryGetComponent<GhostAura>(out GhostAura ghostAura)) PerformTeleport(ghost.transform.position);
+        if (manaTeleportToGhost()) RemoveGhost(ghost);
         RestoreSkillCosts();
     }
 
@@ -344,8 +345,8 @@ public class Ghost : Skill
     private void SpawnGhost(Vector3 position, Quaternion LookRotation)
     {
         if (_spawnComponent == null) return;
-
-        _spawnComponent.CmdSpawnUnitPoint(position, LookRotation);
+        Vector3 spawnPosition = position + Vector3.up * 1f;
+        _spawnComponent.CmdSpawnUnitPoint(spawnPosition, LookRotation);
     }
 
     private void RemoveOldestGhostIfNeeded()
@@ -427,18 +428,16 @@ public class Ghost : Skill
         float moveDuration = 1.0f;
         float elapsedTime = 0f;
         Vector3 startPosition = ghostVisual.transform.position;
+        Vector3 endPosition = targetPosition + Vector3.up * 1f;
 
-        Vector3 direction = (targetPosition - startPosition).normalized;
-        if (direction != Vector3.zero)
-        {
-            ghostVisual.transform.rotation = Quaternion.LookRotation(direction);
-        }
+        Vector3 direction = (endPosition - startPosition).normalized;
+        if (direction != Vector3.zero) ghostVisual.transform.rotation = Quaternion.LookRotation(direction);
 
         while (elapsedTime < moveDuration)
         {
             elapsedTime += Time.deltaTime;
             float t = elapsedTime / moveDuration;
-            ghostVisual.transform.position = Vector3.Lerp(startPosition, targetPosition, t);
+            ghostVisual.transform.position = Vector3.Lerp(startPosition, targetPosition + Vector3.up * 1f, t);
             yield return null;
         }
 
@@ -492,7 +491,7 @@ public class Ghost : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_shouldSpawnGhost && _spawnPosition != Vector3.zero) StartCoroutine(SpawnGhostVisualEffect(_spawnPosition));
+        if (_shouldSpawnGhost && _spawnPosition != Vector3.zero && TryConsumeMana(12)) StartCoroutine(SpawnGhostVisualEffect(_spawnPosition));
         else if (_ghostMoveToTarget && _ghostToMove != null && _targetCharacter != null) StartCoroutine(MoveGhostToCharacter(_ghostToMove, _targetCharacter));
 
         yield break;
@@ -510,6 +509,12 @@ public class Ghost : Skill
         }
 
         if (_ghostPrefabPreview != null) Destroy(_ghostPrefabPreview);
+    }
+
+    private bool manaTeleportToGhost()
+    {
+        var manaResource = Hero.TryGetResource(ResourceType.Mana);
+        return manaResource.CurrentValue > 0;
     }
 
     [Command]

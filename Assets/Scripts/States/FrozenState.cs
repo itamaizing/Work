@@ -66,7 +66,7 @@ public class FrozenState : AbstractCharacterState
 			_frozenEffectInstance.SetActive(true);
 		}
 
-		if (_characterState.StateEffects.MaterialCharacter != null) _characterState.StateEffects.MaterialCharacter.color = Color.cyan;
+		foreach (var mat in _characterState.StateEffects.MaterialsCharacter) mat.color = Color.cyan;
 		if (_characterState.StateEffects.FrostingAudio != null) _audioSource.PlayOneShot(_characterState.StateEffects.FrozenAudio);
 
 		_animator = _characterState.GetComponent<Animator>();
@@ -111,7 +111,7 @@ public class FrozenState : AbstractCharacterState
 		}
 
 		if (_frozenEffectInstance != null) _frozenEffectInstance.SetActive(false);
-		if (_characterState.StateEffects.MaterialCharacter != null) _characterState.StateEffects.MaterialCharacter.color = Color.white;
+		foreach (var mat in _characterState.StateEffects.MaterialsCharacter) mat.color = Color.white;
 
 		if (_animator != null)
 		{

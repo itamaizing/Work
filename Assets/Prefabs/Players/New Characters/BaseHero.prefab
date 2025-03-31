@@ -30053,10 +30053,11 @@ MonoBehaviour:
   frozenAudio: {fileID: 8300000, guid: 31b511e2b17449247af7cb680a519a2c, type: 3}
   ice: {fileID: 548951138285989099}
   frostingAudio: {fileID: 8300000, guid: 7110e38f35444df44b3c0846220ee56b, type: 3}
-  materialGhost: {fileID: 0}
+  materialGhost: {fileID: 2100000, guid: 7d22b63f17164324bae8937a1b14f05a, type: 2}
   lightShield: {fileID: 7166558338912007374}
   darkShield: {fileID: 6108164464197657691}
-  materialCharacter: {fileID: 0}
+  materialsCharacter:
+  - {fileID: 2100000, guid: acfa2dc1ef192cb4391aecaaff8e192f, type: 2}
   weapon: {fileID: 0}
 --- !u!114 &5834951345091717418
 MonoBehaviour:
