@@ -14,7 +14,7 @@ public class BasePsionicEnergy : Resource, IDamageable
     private const float BaseSliderFillPercent = 0.3f;
     private const float RemainingSliderFillPercent = 0.7f;
     private const float PsionicaDecayTime = 12f;
-    private const float DamageToPsiConversionRate = 1f;
+    private const float DamageToPsiConversionRate = 0.2f;
 
     private bool _isInternalPsiEnergy = false;
     private Coroutine _energyDecayCoroutine;

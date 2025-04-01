@@ -9,6 +9,7 @@ public class TentacleProjectile : NetworkBehaviour
     [SerializeField] private DrawCircleTentacle _drawCircle;
     [SerializeField] private GameObject tentacle;
     [SerializeField] private LayerMask obstecls;
+    [SerializeField] private float basePsi = 0.1f;
 
     private Character _player;
     private Character _target;
@@ -113,10 +114,13 @@ public class TentacleProjectile : NetworkBehaviour
 
         Vector3 lastTargetPosition = _target.transform.position;
         float targetDistanceAccumulator = 0f;
+        SetPhysicalSkillsDisactive(true);
+
+        float heightOffset = _target.transform.position.y - _target.GetComponent<Collider>().bounds.min.y;
 
         while (elapsedTime < _grabDuration)
         {
-            Vector3 toTentacle = transform.position - _target.transform.position;
+            Vector3 toTentacle = transform.position - (_target.transform.position - new Vector3(0, heightOffset, 0));
             float distance = toTentacle.magnitude;
 
             if (distance <= minDistance) break;
@@ -137,7 +141,7 @@ public class TentacleProjectile : NetworkBehaviour
                 targetDistanceAccumulator -= 0.1f;
 
                 if (_player != null && _player.TryGetComponent<BasePsionicEnergy>(out var psiEnergy))
-                    psiEnergy.AddAndResetDecay(0.3f);
+                    psiEnergy.AddAndResetDecay(basePsi);
             }
 
             lastTargetPosition = _target.transform.position;
@@ -145,6 +149,8 @@ public class TentacleProjectile : NetworkBehaviour
             elapsedTime += 0.1f;
             yield return new WaitForSeconds(0.1f);
         }
+
+        SetPhysicalSkillsDisactive(false);
     }
 
     private void AttackTentacles()
@@ -208,10 +214,15 @@ public class TentacleProjectile : NetworkBehaviour
 
         if (attackingPsiValue >= 30)
             stacks = 3;
+
         else if (attackingPsiValue >= 20)
             stacks = 2;
+
         else if (attackingPsiValue >= 10)
+        {
+            _target.CharacterState.DispelStates(StateType.Magic, _target.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
             stacks = 1;
+        }
 
         if (stacks > 0) for (int i = 0; i < stacks; i++) _target.CharacterState.AddState(States.LowVoltage, 6f, 0f, _player.gameObject, "Tentacles");
     }
@@ -240,5 +251,11 @@ public class TentacleProjectile : NetworkBehaviour
     {
         if (other.TryGetComponent<Character>(out var character) && character != _target)
             _isCollidedWithOtherCharacter = false;
+    }
+
+    private void SetPhysicalSkillsDisactive(bool state)
+    {
+        if (_target != null && _target.Abilities != null)
+            foreach (Skill skill in _target.Abilities.Abilities) if (skill.AbilityForm == AbilityForm.Physical) skill.Disactive = state;
     }
 }

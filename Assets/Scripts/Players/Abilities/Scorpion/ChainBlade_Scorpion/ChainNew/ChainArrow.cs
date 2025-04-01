@@ -67,7 +67,7 @@ public class ChainArrow : Projectiles
                     speedReturn = speedWithTarget;
                     AttachToTarget(character);
                     AddSkillCombo(character);
-                    CmdAddState(character);
+                    AddDisappointmentState(character);
                     ApplyDamage(_damage, DamageType.Physical, character.gameObject);
                 }
 
@@ -116,8 +116,7 @@ public class ChainArrow : Projectiles
                 yield return null;
             }
 
-            if (_hookedMove != null) 
-                _hookedMove.CanMove = true;
+            ReleaseTarget();
         }
 
         else
@@ -135,6 +134,16 @@ public class ChainArrow : Projectiles
 
         if (isServer)
             NetworkServer.Destroy(gameObject);
+    }
+
+    private void ReleaseTarget()
+    {
+        if (_hookedMove != null)
+            _hookedMove.CanMove = true;
+
+        _hookedTarget = null;
+        _hookedMove = null;
+        _isReturning = false;
     }
 
     private void StartReturn(float speed)
@@ -190,12 +199,25 @@ public class ChainArrow : Projectiles
         }
     }
 
+    private void AddDisappointmentState(Character character)
+    {
+        if (isServer)
+        {
+            AddState(character);
+        }
+        else
+        {
+            CmdAddState(character);
+        }
+    }
+
     [Command]
     private void CmdAddState(Character character)
     {
         AddState(character);
     }
 
+    [Command]
     private void AddState(Character character)
     {
         if (character == null) return;

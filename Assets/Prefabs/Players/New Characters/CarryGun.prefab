@@ -8876,6 +8876,26 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.16488416
       objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[0]._id
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[0]._name
+      value: TalentsCarry
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[0]
+      value: 
+      objectReference: {fileID: 7928657652816047543}
     - target: {fileID: 6397899444093627911, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.1387713
@@ -9304,6 +9324,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1586150960787430152}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7928657652816047543}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!114 &3838339407395912532 stripped
 MonoBehaviour:
@@ -9316,6 +9339,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f9c63c6a7dd64748ac13474f5a6e770, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &3907305221297154583 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 4418744079295177997}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7928657652816047543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3907305221297154583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddf2d872a8386af41a1775c18f5aaddb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 21300000, guid: b453e03083e173e4b81acdc55b40633f, type: 3}
+  character: {fileID: 8319872899575431858}
+  cheliceraStrike: {fileID: 640134254429411212}
 --- !u!4 &4827660954718149595 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -9444,6 +9490,7 @@ MonoBehaviour:
   _attackingPsionicEnergy: {fileID: 1487487552333656207}
   _jumpWithChelicera: {fileID: 7634851756353439263}
   animSpeed: 1.4
+  isCheliceraStrikeTalent: 0
 --- !u!114 &7634851756353439263
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9464,7 +9511,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: ca5ff545a29724646a72801386834fcd, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
-  _cooldownTime: 0
+  _cooldownTime: 6
   _castDeley: 0
   _damageValue: 0
   _abilitySchool: 0
@@ -9497,6 +9544,7 @@ MonoBehaviour:
   _disactive: 0
   _player: {fileID: 8319872899575431858}
   _cheliceraeStrike: {fileID: 640134254429411212}
+  basePsi: 0.1
   _distanceJump: 4
 --- !u!114 &431818094498011482
 MonoBehaviour:
@@ -9578,8 +9626,8 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
-  _abilitySchool: 0
-  _abilityForm: 0
+  _abilitySchool: 4
+  _abilityForm: 1
   _damageType: 0
   _attackRangeType: 0
   _skillType: 0

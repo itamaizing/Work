@@ -6,6 +6,7 @@ public class JumpWithChelicera : Skill
 {
     [SerializeField] private Character _player;
     [SerializeField] private CheliceraStrike _cheliceraeStrike;
+    [SerializeField] private float basePsi = 0.1f;
 
     [SerializeField] private float _distanceJump;
 
@@ -181,7 +182,7 @@ public class JumpWithChelicera : Skill
 
                 if (_player != null && _player.TryGetComponent<BasePsionicEnergy>(out var psiEnergy))
                 {
-                    psiEnergy.Add(0.3f);
+                    psiEnergy.Add(basePsi);
                 }
             }
 
@@ -199,7 +200,7 @@ public class JumpWithChelicera : Skill
 
                     if (_player != null && _player.TryGetComponent<BasePsionicEnergy>(out var psiEnergy))
                     {
-                        psiEnergy.Add(0.3f);
+                        psiEnergy.Add(basePsi);
                     }
                 }
 

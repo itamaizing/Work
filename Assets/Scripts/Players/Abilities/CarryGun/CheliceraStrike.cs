@@ -9,6 +9,7 @@ public class CheliceraStrike : AutoAttackSkill
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
     [SerializeField] private JumpWithChelicera _jumpWithChelicera;
     [SerializeField] private float animSpeed = 1.4f;
+    [SerializeField] private bool isCheliceraStrikeTalent = false;
 
     private Damage _dealDamage;
 
@@ -16,15 +17,13 @@ public class CheliceraStrike : AutoAttackSkill
     private float _criticalDamage;
     private float _additionalDamageFromSkill;
 
-    private float _chanceCritDamage;
+    private float _chanceCritDamage = 0.05f;
     private float _chanceApplyBleeding = 0.15f;
 
     private float _durationBleeding = 3.0f;
 
     private Coroutine _dealDamageWithAttackingPsiCoroutine;
-
-    private const float _radiusAttackPsi = 2.0f;
-    private const float _pushDuration = 0.2f;
+    //private const float _pushDuration = 0.2f;
     private const float _pushDistance = 1.0f;
 
     protected override int AnimTriggerCast => 0;
@@ -54,9 +53,6 @@ public class CheliceraStrike : AutoAttackSkill
         Character targetCharacter = target.GetComponent<Character>();
 
         _baseDamage = Random.Range(11f, 13f);
-        _chanceCritDamage = Random.Range(0.16f, 0.5f);
-        float chanceCritValue = Random.Range(0f, 1f);
-        float chanceBleedingValue = Random.Range(0f, 1f);
 
         if (_jumpWithChelicera.IsJumpDone)
         {
@@ -64,9 +60,14 @@ public class CheliceraStrike : AutoAttackSkill
             _baseDamage += bonusDamage;
         }
 
-        if (chanceBleedingValue <= _chanceApplyBleeding) CmdAddState(targetCharacter);
+        if (isCheliceraStrikeTalent)
+        {
+            float chanceCritValue = Random.Range(0f, 1f);
+            float chanceBleedingValue = Random.Range(0f, 1f);
 
-        if (chanceCritValue <= _chanceCritDamage) _criticalDamage = CriticalDamageDeal(targetCharacter, _baseDamage);
+            if (chanceBleedingValue <= _chanceApplyBleeding) CmdAddState(targetCharacter);
+            if (chanceCritValue <= _chanceCritDamage) _criticalDamage = CriticalDamageDeal(targetCharacter, _baseDamage);
+        }
 
         _dealDamage = new Damage()
         {
@@ -93,7 +94,7 @@ public class CheliceraStrike : AutoAttackSkill
     private float CalculationCriticalDamage(float baseDamage)
     {
         float criticalDamage = baseDamage;
-        float multiplierCrit = 1.8f;
+        float multiplierCrit = 1.6f;
 
         criticalDamage *= multiplierCrit;
 
@@ -113,8 +114,8 @@ public class CheliceraStrike : AutoAttackSkill
 
         if (attackingPsi >= 20)
         {
-            Collider[] nearbyEnemies = Physics.OverlapSphere(transform.position, _radiusAttackPsi, _targetsLayers);
-            foreach (var enemyCollider in nearbyEnemies)
+            Collider[] nearbyEnemies = Physics.OverlapSphere(transform.position, 2.5f, _targetsLayers); // Radius игрока 1, значит + 1.5 чтоб получить 1.5 клетки от персонажа
+            foreach (var enemyCollider in nearbyEnemies) 
             {
                 if (enemyCollider.TryGetComponent<Character>(out var enemy) && enemy != targetCharacter)
                 {
@@ -125,16 +126,28 @@ public class CheliceraStrike : AutoAttackSkill
 
         if (attackingPsi >= 30)
         {
-            Collider[] enemiesToPush = Physics.OverlapSphere(transform.position, _radiusAttackPsi, _targetsLayers);
-            foreach (var enemyCollider in enemiesToPush)
+            Collider[] nearbyEnemies = Physics.OverlapSphere(transform.position, 3.5f, _targetsLayers); // Radius игрока 1, значит + 2.5 чтоб получить 2.5 клетки от персонажа
+            foreach (var enemyCollider in nearbyEnemies)
             {
-                if (enemyCollider.TryGetComponent<Character>(out var enemy))
+                if (enemyCollider.TryGetComponent<Character>(out var enemy) && enemy != targetCharacter)
                 {
-                    Vector2 direction = (enemy.transform.position - _player.transform.position).normalized;
-                    CmdPushTargets(enemy.gameObject, direction);
+                    enemy.CharacterState.DispelStates(StateType.Magic, enemy.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
                 }
             }
         }
+
+        //if (attackingPsi >= 30)
+        //{
+        //    Collider[] enemiesToPush = Physics.OverlapSphere(transform.position, _radiusAttackPsi, _targetsLayers);
+        //    foreach (var enemyCollider in enemiesToPush)
+        //    {
+        //        if (enemyCollider.TryGetComponent<Character>(out var enemy))
+        //        {
+        //            Vector2 direction = (enemy.transform.position - _player.transform.position).normalized;
+        //            CmdPushTargets(enemy.gameObject, direction);
+        //        }
+        //    }
+        //}
 
         float magicDamagePerPsiMainTarget = 0.3f;
         float magicDamagePerPsiNearby = 0.5f;
@@ -150,7 +163,7 @@ public class CheliceraStrike : AutoAttackSkill
 
         CmdApplyDamage(magicDamageMainTarget, targetCharacter.gameObject);
 
-        Collider[] nearbyEnemiesToDamage = Physics.OverlapSphere(transform.position, _radiusAttackPsi, _targetsLayers);
+        Collider[] nearbyEnemiesToDamage = Physics.OverlapSphere(transform.position, Radius, _targetsLayers);
 
         foreach (var enemyCollider in nearbyEnemiesToDamage)
         {
@@ -188,20 +201,25 @@ public class CheliceraStrike : AutoAttackSkill
         AnimCastEnded();
     }
 
+    public void CheliceraStrikeTalent(bool value)
+    {
+        isCheliceraStrikeTalent = value;   
+    }
+
     #region CommandMethods
 
-    [Command]
-    private void CmdPushTargets(GameObject target, Vector3 direction)
-    {
-        if (target.TryGetComponent<MoveComponent>(out var targetMove))
-        {
-            Vector3 currentPos = targetMove.transform.position;
-            Vector3 pushPos = currentPos + direction.normalized * _pushDistance;
- 
-            if (targetMove.connectionToClient != null) targetMove.TargetRpcDoPush(pushPos, _pushDuration);
-            else targetMove.RpcDoPush(pushPos, _pushDuration);
-        }
-    }
+    //[Command]
+    //private void CmdPushTargets(GameObject target, Vector3 direction)
+    //{
+    //    if (target.TryGetComponent<MoveComponent>(out var targetMove))
+    //    {
+    //        Vector3 currentPos = targetMove.transform.position;
+    //        Vector3 pushPos = currentPos + direction.normalized * _pushDistance;
+
+    //        if (targetMove.connectionToClient != null) targetMove.TargetRpcDoPush(pushPos, _pushDuration);
+    //        else targetMove.RpcDoPush(pushPos, _pushDuration);
+    //    }
+    //}
 
     [Command]
     private void CmdUseAttackingEnergy(float value)
