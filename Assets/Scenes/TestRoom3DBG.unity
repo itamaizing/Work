@@ -504,6 +504,7 @@ MonoBehaviour:
   _resourceType: 0
   _regenerationDelay: 0
   _objectBar: {fileID: 655435996}
+  _objectData: {fileID: 0}
 --- !u!114 &655435998
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2435,6 +2436,7 @@ MonoBehaviour:
   _resourceType: 0
   _regenerationDelay: 0
   _objectBar: {fileID: 1329785586}
+  _objectData: {fileID: 0}
 --- !u!114 &1329785586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33373,6 +33375,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3351236879529727414, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3542567574266670527, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3542567574266670527, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
+      propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3595023697171797097, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
