@@ -201,8 +201,14 @@ public class ChainArrow : Projectiles
 
     private void AddDisappointmentState(Character character)
     {
-        if (isServer) AddState(character);
-        else CmdAddState(character);
+        if (isServer)
+        {
+            AddState(character);
+        }
+        else
+        {
+            CmdAddState(character);
+        }
     }
 
     [Command]
@@ -211,6 +217,7 @@ public class ChainArrow : Projectiles
         AddState(character);
     }
 
+    [Command]
     private void AddState(Character character)
     {
         if (character == null) return;
