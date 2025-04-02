@@ -14,13 +14,23 @@ public class ChainBlade : Skill
 
     private ChainArrow _chainArrowPrefab;
     private Vector3 _clickPoint;
+    private Animator _animator;
+
+    private static readonly int chainBladeStart = Animator.StringToHash("ChainStart");
+    private static readonly int chainBladeEnd = Animator.StringToHash("ChainEnd");
+    private static readonly int chainBladeDestroy = Animator.StringToHash("ChainBladeDestroy");
 
     protected override int AnimTriggerCastDelay => 0;
-    protected override int AnimTriggerCast => 0;
+    protected override int AnimTriggerCast => chainBladeStart;
     protected override bool IsCanCast => _clickPoint != Vector3.zero;
 
     public float DamageRange => Random.Range(_minDamage, _maxDamage);
     public PassiveCombo_Scorpion ComboCounter { get => _comboCounter; set => _comboCounter = value; }
+
+    private void Start()
+    {
+        _animator = GetComponent<Animator>();
+    }
 
     protected override IEnumerator PrepareJob()
     {
@@ -47,16 +57,55 @@ public class ChainBlade : Skill
         }
     }
 
+    public void ChainBladeEnd()
+    {
+        if (_animator != null)
+        {
+            _animator.ResetTrigger(chainBladeStart);
+            _animator.SetTrigger(chainBladeEnd);
+        }
+    }
+
+    private void ChainBladeDestroy()
+    {
+        Hero.Move.StopLookAt();
+
+        if (_animator != null)
+        {
+            _animator.ResetTrigger(chainBladeEnd);
+            _animator.SetTrigger(chainBladeDestroy);
+        }
+    }
+
+
     protected override IEnumerator CastJob()
     {
+        Hero.Move.StopMoveAnimation();
         CmdSpawnChainArrow(_clickPoint);
         yield return null;
     }
 
     protected override void ClearData()
     {
-        _clickPoint = Vector3.zero;
+        //_clickPoint = Vector3.zero;
     }
+
+    public void ChainBladeCast()
+    {
+        AnimStartCastCoroutine();
+    }
+
+    public void ChainBladeCastEnd()
+    {
+        AnimCastEnded();
+        //CmdChainBladeDestroy();
+        ChainBladeDestroy();
+    }
+
+    //public void LookAtPositionChain()
+    //{
+    //    Hero.Move.LookAtPosition(_clickPoint);
+    //}
 
     [Command]
     private void CmdSpawnChainArrow(Vector3 clickPoint)
@@ -77,6 +126,18 @@ public class ChainBlade : Skill
         RpcInitArrow(arrow.gameObject, targetPoint);
     }
 
+    //[Command]
+    //public void CmdChainBladeEnd()
+    //{
+    //    RpcChainBladeEnd();
+    //}
+
+    //[Command]
+    //private void CmdChainBladeDestroy()
+    //{
+    //    ChainBladeDestroy();
+    //}
+
     [ClientRpc]
     private void RpcInitArrow(GameObject arrowObj, Vector3 targetPoint)
     {
@@ -85,5 +146,17 @@ public class ChainBlade : Skill
         var arrow = arrowObj.GetComponent<ChainArrow>();
         arrow.Init(playerLinks, 0, false, this);
         arrow.InitArrow(targetPoint, Hero.transform, Radius, DamageRange);
+    }
+
+    [ClientRpc]
+    private void RpcChainBladeEnd()
+    {
+        ChainBladeEnd();
+    }
+
+    [ClientRpc]
+    private void RpcChainBladeDestroy()
+    {
+        ChainBladeDestroy();
     }
 }

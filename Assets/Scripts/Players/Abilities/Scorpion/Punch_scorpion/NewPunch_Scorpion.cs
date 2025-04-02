@@ -11,8 +11,8 @@ public class NewPunch_Scorpion : AutoAttackSkill
     private Animator _animator;
     private bool _isRightKick = true;
 
-    private static readonly int RightKickTrigger = Animator.StringToHash("RightKick");
-    private static readonly int LeftKickTrigger = Animator.StringToHash("LeftKick");
+    private static readonly int RightPunchTrigger = Animator.StringToHash("RightPunch");
+    private static readonly int LeftPunchTrigger = Animator.StringToHash("LeftPunch");
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerAutoAttack => 0;
@@ -40,9 +40,9 @@ public class NewPunch_Scorpion : AutoAttackSkill
         _isRightKick = !_isRightKick;
 
         if (_isRightKick)
-            _animator.SetTrigger(RightKickTrigger);
+            _animator.SetTrigger(RightPunchTrigger);
         else
-            _animator.SetTrigger(LeftKickTrigger);
+            _animator.SetTrigger(LeftPunchTrigger);
 
         _lastTarget = _target;
     }

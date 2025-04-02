@@ -230,10 +230,14 @@ public abstract class GameRules : NetworkBehaviour
 
     private IEnumerator FoundGameManagerCorounite()
     {
-        while (_gameManager == null || _gameManager.TeamsPanel == null)
+        while (_gameManager == null || _gameManager.TeamsPanel == null || _gameManager.Source == null)
         {
             yield return new WaitForSecondsRealtime(0.5f);
             FindGameManager();
+
+            if (_gameManager == null) continue;
+            if (_gameManager.TeamsPanel == null) continue;
+            if (_gameManager.Source == null) continue;
         }
 
         foreach (var item in _playersSyncList)

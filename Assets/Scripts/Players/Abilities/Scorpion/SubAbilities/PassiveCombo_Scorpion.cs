@@ -40,6 +40,15 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
     {
         if (enemy == null || skill == null) return;
 
+        int currentStacks = enemy.CharacterState.CheckStateStacks(States.ComboState);
+        int maxStacks = enemy.CharacterState.GetState(States.ComboState)?.MaxStacksCount ?? int.MaxValue;
+
+        if (currentStacks >= maxStacks)
+        {
+            _particlesNoCharges?.Play();
+            return;
+        }
+
         if (_currentTarget == null)
             _currentTarget = enemy;
 

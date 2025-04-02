@@ -118,7 +118,16 @@ public class MoveComponent : NetworkBehaviour
 		_isLookAtCursor = true;
 	}
 
-    public void ChangeMoveSpeed(float value)
+	public void StopMoveAnimation()
+	{
+		if (_anim != null)
+		{
+			_anim.SetFloat(HashAnimPlayer.VelocityX, 0);
+			_anim.SetFloat(HashAnimPlayer.VelocityZ, 0);
+		}
+	}
+
+	public void ChangeMoveSpeed(float value)
 	{
 		_currentSpeed *= value;
 	}
