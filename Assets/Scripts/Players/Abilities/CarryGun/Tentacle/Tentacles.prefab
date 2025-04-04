@@ -131,7 +131,7 @@ LineRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 2
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 0}
@@ -229,12 +229,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6dddec6d1110fb040a65767f7eb220d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _isPreview: 0
   _drawCircle: {fileID: 6961409168004119619}
   tentacle: {fileID: 8635730615369303596}
   obstecls:
     serializedVersion: 2
     m_Bits: 128
+  basePsi: 0.1
 --- !u!114 &6961409168004119619
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -354,7 +358,7 @@ MonoBehaviour:
   m_EndAngleFade: 180
   m_UVScale: {x: 1, y: 1}
   m_UVBias: {x: 0, y: 0}
-  m_DecalLayerMask: 1
+  m_DecalLayerMask: 2
   m_ScaleMode: 0
   m_Offset: {x: 0, y: 0, z: 0.3333333}
   m_Size: {x: 1, y: 1, z: 10}

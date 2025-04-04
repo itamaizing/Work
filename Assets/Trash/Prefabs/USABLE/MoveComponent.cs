@@ -336,6 +336,19 @@ public class MoveComponent : NetworkBehaviour
 		});
 	}
 
+	public void TargetRpcDoMoveNavMeshAgent(Vector3 postion)
+    {
+		var agent = GetComponent<NavMeshAgent>();
+		agent.enabled = false;
+
+		CanMove = false;
+		Rigidbody.DOMove(postion, 0.5f).OnComplete(() =>
+		{
+			CanMove = true;
+			agent.enabled = true;
+		});
+	}
+
 	[TargetRpc]
 	private void TargetRpcTeleportToPositionSmooth(NetworkConnection target, Vector3 position, float duration)
 	{

@@ -87377,7 +87377,6 @@ MonoBehaviour:
   _comboCounter: {fileID: 5883639770848571156}
   chainArrowPrefab: {fileID: 7293680978615570491, guid: 9903945e1d35e3f4699a288cf83c9e9c, type: 3}
   playerLinks: {fileID: 5458554384335055815}
-  audioClip: {fileID: 0}
 --- !u!4 &226602147669631628
 Transform:
   m_ObjectHideFlags: 0

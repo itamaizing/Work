@@ -10,7 +10,7 @@ public class BleedingState : AbstractCharacterState
 
     private float _duration;
     private float _baseDuration;
-
+    
     private float _timeBetweenAttack;
     private float _startTimeBetweenAttack = 1.0f;
 

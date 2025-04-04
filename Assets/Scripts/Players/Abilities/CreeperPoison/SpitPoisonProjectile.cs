@@ -150,10 +150,7 @@ public class SpitPoisonProjectile : Test_Projectile
             //ReductionCooldownFromRestorationOfGlands();
         }
 
-        if (numbersForChanceOfBlindness <= chanceOfBlindness)
-        {
-            _target.CharacterState.AddState(States.Blind, 6f, 0, _player.gameObject, _skill.Name);
-        }
+        _target.CharacterState.AddState(States.Blind, 6f, 0, _player.gameObject, _skill.Name);
 
         DestroyProjectile();        
     }

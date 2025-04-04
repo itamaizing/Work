@@ -47,6 +47,11 @@ public class LightningStrikes : AutoAttackSkill
         AnimCastEnded();
     }
 
+    public void SetTarget(Character target)
+    {
+        _target = target;
+    }
+
     protected override IEnumerator PrepareJob()
     {
         if (_lightningMovement.IsInMovement)

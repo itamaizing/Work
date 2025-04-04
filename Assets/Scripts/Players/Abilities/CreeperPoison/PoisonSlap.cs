@@ -38,8 +38,8 @@ public class PoisonSlap : Skill
 
     private int _poisonBoneStack;
 
-    private float _creeperStrikeCastSpeedMultiplier = 0.5f; // Decrease CastTime on 50%
-    private float _lightningStrikesCastSpeedMultiplier = 0.0f;  // Decrease CastTime on 100%
+    private float _creeperStrikeCastSpeedMultiplier = 0.5f;
+    private float _lightningStrikesCastSpeedMultiplier = 0.0f;
     private float _baseTimeCast = 1.6f;
     private float _baseDamage = 30f;
     private float _distancePush = 3.0f;
@@ -54,7 +54,7 @@ public class PoisonSlap : Skill
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
     public int PoisonBoneStack { get => _poisonBoneStack; set => _poisonBoneStack = value; }
-    public bool IsCanDamageDeal { get => _isCanDamageDeal; }
+    public bool IsCanDamageDeal { get => _isCanDamageDeal; set => _isCanDamageDeal = value; }
 
     protected override bool IsCanCast => CheckCanCast();
 
@@ -75,6 +75,11 @@ public class PoisonSlap : Skill
     public void AnimPoisonSlapCastEnded()
     {
 
+    }
+
+    public void SetTarget(Character target)
+    {
+        _currentTarget = target;
     }
 
     public void UsePoisonSlapOfLightningMovement()
