@@ -304,6 +304,12 @@ public class MoveComponent : NetworkBehaviour
 		if (!isOwned) return;
 		if (moveClips.Length == 0 || moveAudioSource == null) return;
 
+		if (_rigidbody.velocity.magnitude <= 0.1f)
+		{
+			if (moveAudioSource.isPlaying) moveAudioSource.Stop();
+			return;
+		}
+
 		int index = UnityEngine.Random.Range(0, moveClips.Length);
 		moveAudioSource.PlayOneShot(moveClips[index]);
 	}
