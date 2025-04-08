@@ -192,7 +192,7 @@ public class MoveComponent : NetworkBehaviour
 
 		_rigidbody.velocity = new Vector3(camDir.x * _currentSpeed, _rigidbody.velocity.y, camDir.z * _currentSpeed);
 
-		if (_rigidbody.velocity.magnitude > 1 && moveAudioSource != null && !moveAudioSource.isPlaying) PlayMove();
+		//if (_rigidbody.velocity.magnitude > 0.2f && moveAudioSource != null && !moveAudioSource.isPlaying) PlayMove();
 
 		if (_anim != null)
 		{
@@ -378,6 +378,13 @@ public class MoveComponent : NetworkBehaviour
 		RpcAddTransformPosition(vector3);
 	}
 
+
+	[Command]
+	public void CmdDoMove(Vector3 vector3, float duration)
+	{
+		RpcDoMove( vector3, duration);
+	}
+
 	[ClientRpc]
 	public void RpcDoPush(Vector3 targetPos, float duration)
 	{
@@ -409,6 +416,16 @@ public class MoveComponent : NetworkBehaviour
 			{
 				CanMove = true;
 			});
+	}
+
+	[ClientRpc]
+	public void RpcDoMove(Vector3 vector3, float duration)
+	{
+		CanMove = false;
+		_rigidbody.DOMove(vector3, duration).OnComplete(() =>
+		{
+			CanMove = true;
+		});
 	}
 	#endregion
 }

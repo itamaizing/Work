@@ -43,8 +43,7 @@ public class LightningMovement : Skill
         float distance = Vector3.Distance(start, end);
 
         RaycastHit hit;
-        if (Physics.SphereCast(start, 1, direction, out hit, distance, _obstacle)) return true;
-        return false;
+        return Physics.SphereCast(start, 1, direction, out hit, distance, _obstacle);
     }
 
     protected override IEnumerator PrepareJob()
@@ -79,7 +78,8 @@ public class LightningMovement : Skill
 
         _player.CharacterState.CmdAddState(States.Immateriality, _durationLeap, 0, _player.gameObject, Name);
 
-        _player.transform.LookAt(_leapPoint);
+        Vector3 direction = (_leapPoint - _player.transform.position).normalized;
+        if (direction.sqrMagnitude > 0.001f) _player.transform.rotation = Quaternion.LookRotation(direction);
 
         _lightningStrikes.IsUsedLightningStrikes = true;
         _poisonSlap.IsCanDamageDeal = true;
@@ -159,19 +159,19 @@ public class LightningMovement : Skill
 
                 if (character && !_damagedCharacters.Contains(character))
                 {
-                    if (_player.Abilities.SelectedSkills.Contains(_lightningStrikes))
+                    if (_player.Abilities.SelectedSkills.Contains(_lightningStrikes) && _lightningStrikes.IsPreparing)
                     {
                         _lightningStrikes.SetTarget(character);
                         _lightningStrikes.TryCast();
                         _damagedCharacters.Add(character);
                     }
 
-                    //if (_player.Abilities.SelectedSkills.Contains(_poisonSlap))
-                    //{
-                    //    _poisonSlap.SetTarget(character);
-                    //    _poisonSlap.TryCast();
-                    //    _damagedCharacters.Add(character);
-                    //}
+                    if (_player.Abilities.SelectedSkills.Contains(_poisonSlap) && _poisonSlap.IsPreparing)
+                    {
+                        _poisonSlap.SetTarget(character);
+                        _poisonSlap.TryCast();
+                        _damagedCharacters.Add(character);
+                    }
 
                     if (_lightningFastPoisonSlap.Data.IsOpen && _poisonSlap.IsCanDamageDeal && _poisonSlap.RemainingCooldownTime <= 0.2f)
                         _poisonSlap.UsePoisonSlapOfLightningMovement();
@@ -179,7 +179,6 @@ public class LightningMovement : Skill
                         _creeperStrike.DamageDeal(character, _lightningStrikes.IsUsedLightningStrikes);
 
                     _damagedCharacters.Add(character);
-
                 }
             }
             yield return new WaitForSeconds(0.05f);

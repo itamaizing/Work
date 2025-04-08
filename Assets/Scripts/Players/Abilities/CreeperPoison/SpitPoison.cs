@@ -64,7 +64,9 @@ public class SpitPoison : Skill, IAltAbility
     public event Action ResetAbilityParameters;
     public event Action AbilityChange;
 
-    protected override int AnimTriggerCast => 0;
+    private static readonly int spitPoisonTrigger = Animator.StringToHash("SpitPoisonCastAnimTrigger");
+
+    protected override int AnimTriggerCast => spitPoisonTrigger;
     protected override int AnimTriggerCastDelay => 0;
     protected override bool IsCanCast => CheckCanCast();
 

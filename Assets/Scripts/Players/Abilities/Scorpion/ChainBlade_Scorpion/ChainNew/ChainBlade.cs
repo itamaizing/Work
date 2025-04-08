@@ -98,14 +98,8 @@ public class ChainBlade : Skill
     public void ChainBladeCastEnd()
     {
         AnimCastEnded();
-        //CmdChainBladeDestroy();
         ChainBladeDestroy();
     }
-
-    //public void LookAtPositionChain()
-    //{
-    //    Hero.Move.LookAtPosition(_clickPoint);
-    //}
 
     [Command]
     private void CmdSpawnChainArrow(Vector3 clickPoint)
@@ -126,18 +120,6 @@ public class ChainBlade : Skill
         RpcInitArrow(arrow.gameObject, targetPoint);
     }
 
-    //[Command]
-    //public void CmdChainBladeEnd()
-    //{
-    //    RpcChainBladeEnd();
-    //}
-
-    //[Command]
-    //private void CmdChainBladeDestroy()
-    //{
-    //    ChainBladeDestroy();
-    //}
-
     [ClientRpc]
     private void RpcInitArrow(GameObject arrowObj, Vector3 targetPoint)
     {
@@ -146,17 +128,5 @@ public class ChainBlade : Skill
         var arrow = arrowObj.GetComponent<ChainArrow>();
         arrow.Init(playerLinks, 0, false, this);
         arrow.InitArrow(targetPoint, Hero.transform, Radius, DamageRange);
-    }
-
-    [ClientRpc]
-    private void RpcChainBladeEnd()
-    {
-        ChainBladeEnd();
-    }
-
-    [ClientRpc]
-    private void RpcChainBladeDestroy()
-    {
-        ChainBladeDestroy();
     }
 }

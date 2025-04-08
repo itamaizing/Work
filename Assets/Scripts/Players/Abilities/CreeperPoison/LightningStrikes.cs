@@ -125,8 +125,8 @@ public class LightningStrikes : AutoAttackSkill
 
        _isCanDamageDeal = false;
 
-        if (_heatedGlands.Data.IsOpen)
-            _player.CharacterState.CmdAddState(States.HeatedGlands, _heatedGlandsDuration, 0, _player.gameObject, null);
+        //if (_heatedGlands.Data.IsOpen)
+        //    _player.CharacterState.CmdAddState(States.HeatedGlands, _heatedGlandsDuration, 0, _player.gameObject, null);
 
         if (_coldBlood.IsCanCritLightningStrikes && _isIncreaseCooldownTime == true)
         {

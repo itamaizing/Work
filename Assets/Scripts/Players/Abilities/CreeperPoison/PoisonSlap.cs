@@ -51,7 +51,11 @@ public class PoisonSlap : Skill
     private bool _firstClickDone = false;
     private bool _secondClickDone;
     private bool _isUsedPoisonBallCharger = true;
-    protected override int AnimTriggerCast => 0;
+
+    private static readonly int poisonSlapTrigger = Animator.StringToHash("PoisonSlapCastAnimTrigger");
+
+
+    protected override int AnimTriggerCast => poisonSlapTrigger;
     protected override int AnimTriggerCastDelay => 0;
     public int PoisonBoneStack { get => _poisonBoneStack; set => _poisonBoneStack = value; }
     public bool IsCanDamageDeal { get => _isCanDamageDeal; set => _isCanDamageDeal = value; }
@@ -69,12 +73,12 @@ public class PoisonSlap : Skill
 
     public void AnimPoisonSlapCast()
     {
-
+        AnimStartCastCoroutine();
     }
 
     public void AnimPoisonSlapCastEnded()
     {
-
+        AnimCastEnded();
     }
 
     public void SetTarget(Character target)
@@ -462,14 +466,19 @@ public class PoisonSlap : Skill
         Vector2 directionPush = (target.transform.position - transform.position);
 
         distancePush = ((distancePush * GlobalVariable.cellSize) * durationPush) / GlobalVariable.cellSize;
-        if (isCanPushTarget)
+
+        if (targetMoveComponent.connectionToClient != null)
         {
-            targetMoveComponent.TargetRpcDoMove((Vector2)target.transform.position + directionPush * distancePush, durationPush);
+            if (isCanPushTarget) targetMoveComponent.TargetRpcDoMove((Vector2)target.transform.position + directionPush * distancePush, durationPush);
+            else targetMoveComponent.TargetRpcDoMove((Vector2)target.transform.position - directionPush * distancePush, durationPush);
         }
+
         else
         {
-            targetMoveComponent.TargetRpcDoMove((Vector2)target.transform.position - directionPush * distancePush, durationPush);
+            if (isCanPushTarget) targetMoveComponent.RpcDoMove((Vector2)target.transform.position + directionPush * distancePush, durationPush);
+            else targetMoveComponent.RpcDoMove((Vector2)target.transform.position - directionPush * distancePush, durationPush);
         }
+
     }
 
     [Command]
@@ -491,7 +500,8 @@ public class PoisonSlap : Skill
 
         distancePush = ((distancePush * GlobalVariable.cellSize) * durationPush) / GlobalVariable.cellSize;
 
-        targetMoveComponent.TargetRpcDoMove(target.transform.position + perpendicularDirection * distancePush, durationPush);
+        if (targetMoveComponent.connectionToClient != null) targetMoveComponent.TargetRpcDoMove(target.transform.position + perpendicularDirection * distancePush, durationPush);
+        else targetMoveComponent.RpcDoMove(target.transform.position + perpendicularDirection * distancePush, durationPush);
     }
 
 
