@@ -192,7 +192,7 @@ public class MoveComponent : NetworkBehaviour
 
 		_rigidbody.velocity = new Vector3(camDir.x * _currentSpeed, _rigidbody.velocity.y, camDir.z * _currentSpeed);
 
-		//if (_rigidbody.velocity.magnitude > 0.2f && moveAudioSource != null && !moveAudioSource.isPlaying) PlayMove();
+		if (_rigidbody.velocity.magnitude > 0.5f && moveAudioSource != null && !moveAudioSource.isPlaying) PlayMove();
 
 		if (_anim != null)
 		{
