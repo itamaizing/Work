@@ -33,12 +33,13 @@ public class CheliceraStrike : AutoAttackSkill
     protected override void CastAction()
     {
         if (_target == null) return;
+        if (!IsTargetInRange()) return;
         DamageDeal(_target.gameObject);
     }
 
     private bool IsTargetInRange()
     {
-        float maxDistance = Radius * 1.1f;
+        float maxDistance = Radius;
         return Vector3.Distance(_player.transform.position, _target.transform.position) <= maxDistance;
     }
 
