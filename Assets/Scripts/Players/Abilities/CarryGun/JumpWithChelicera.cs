@@ -136,8 +136,8 @@ public class JumpWithChelicera : Skill
     {
         if (_animator != null)
         {
-            _animator.ResetTrigger(jumpStart);
-            _animator.SetTrigger(jumpEnd);
+            float transitionDuration = 0.15f;
+            _animator.CrossFade(jumpEnd, transitionDuration);
         }
     }
 

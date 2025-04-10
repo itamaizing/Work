@@ -25,8 +25,7 @@ public class ClawStrike : AutoAttackSkill
 
     private bool IsTargetInRange()
     {
-        float maxDistance = Radius * 1.1f;
-        return Vector3.Distance(_player.transform.position, _target.transform.position) <= maxDistance;
+        return Vector3.Distance(_player.transform.position, _target.transform.position) <= Radius;
     }
 
     private void DamageDeal()
