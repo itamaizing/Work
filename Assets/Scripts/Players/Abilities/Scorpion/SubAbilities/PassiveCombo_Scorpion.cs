@@ -24,7 +24,7 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
 
     [Header("Visuals")]
     [SerializeField] private ParticleSystem _particlesAddStack;
-    [SerializeField] private ParticleSystem _particlesNoCharges;
+    ///[SerializeField] private ParticleSystem _particlesNoCharges;
     [SerializeField] private ParticleSystem _particlesFullCombo;
     [SerializeField] private ParticleSystem _particlesCancelCombo;
 
@@ -45,7 +45,7 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
 
         if (currentStacks >= maxStacks)
         {
-            _particlesNoCharges?.Play();
+            //RpcPlayParticles("NoCharges");
             return;
         }
 
@@ -60,11 +60,11 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
 
         if (!TryAddSkill(skill))
         {
-            _particlesNoCharges?.Play();
+            //RpcPlayParticles("NoCharges");
             return;
         }
 
-        _particlesAddStack?.Play();
+        //RpcPlayParticles("AddStack");
         StartOrRestartComboTimer();
 
         if (_usedSkills.Count < 3)
@@ -88,7 +88,7 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
             UseCharges(skillWithTwoHits, 2);
             UseCharges(skillWithOneHit, 1);
 
-            _particlesFullCombo?.Play();
+            RpcPlayParticles("FullCombo");
 
             CastDebuff(enemy.transform, lastThreeHits.Last());
             ApplyComboState(enemy);
@@ -107,7 +107,7 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
                 UseCharges(uniqueSkill, 1);
             }
 
-            _particlesFullCombo?.Play();
+            RpcPlayParticles("FullCombo");
 
             CastDebuff(enemy.transform, lastThreeHits.Last());
             ApplyComboState(enemy);
@@ -146,6 +146,26 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
         {
             bool success = skill.TryUseCharge();
             Debug.Log($"Попытка списать заряд {i + 1}/{amount} у {skill.name}. Успех: {success}. Осталось зарядов: {skill.Chargers}");
+        }
+    }
+
+    [ClientRpc]
+    private void RpcPlayParticles(string type)
+    {
+        switch (type)
+        {
+            case "AddStack":
+                _particlesAddStack?.Play();
+                break;
+            //case "NoCharges":
+            //    _particlesNoCharges?.Play();
+            //    break;
+            case "FullCombo":
+                _particlesFullCombo?.Play();
+                break;
+            case "Cancel":
+                _particlesCancelCombo?.Play();
+                break;
         }
     }
 
@@ -225,6 +245,8 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
 
         Debug.Log("Применение состояния ComboState к цели");
         consumeCombo.ApplyComboEffect(enemy.transform);
+
+
     }
 
     public bool IsFinalComboSkill(Character target, Skill skill)

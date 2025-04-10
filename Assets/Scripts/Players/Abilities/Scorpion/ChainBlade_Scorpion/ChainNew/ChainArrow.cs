@@ -97,7 +97,7 @@ public class ChainArrow : Projectiles
             _hookedMove.CanMove = false;
 
         transform.SetParent(character.transform);
-        transform.localPosition = Vector3.zero;
+        transform.localPosition = new Vector3(0f, 0.5f, 0f);
         _rb.velocity = Vector3.zero;
         _rb.isKinematic = true;
 
@@ -114,7 +114,7 @@ public class ChainArrow : Projectiles
             _hookedMove.CanMove = false;
 
         transform.SetParent(character.transform);
-        transform.localPosition = Vector3.zero;
+        transform.localPosition = new Vector3(0f, 0.5f, 0f);
         _rb.velocity = Vector3.zero;
         _rb.isKinematic = true;
     }
@@ -129,10 +129,13 @@ public class ChainArrow : Projectiles
             {
                 if (_hookedMove != null)
                 {
+                    Vector3 targetPosition = _playerTransform.position;
+                    targetPosition.y = 1.0f;
+
                     if (_hookedMove.connectionToClient != null)
-                        _hookedMove.TargetRpcDoMove(_playerTransform.position, stopDistance);
+                        _hookedMove.TargetRpcDoMove(targetPosition, stopDistance);
                     else
-                        _hookedMove.TestDoMove(_playerTransform.position, stopDistance); // Метод, для проверки на одном клиенте и Character, не синхронизированных по сети
+                        _hookedMove.TestDoMove(targetPosition, stopDistance); // Метод, для проверки на одном клиенте и Character, не синхронизированных по сети
                 }
 
                 UpdateLine();

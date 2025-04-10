@@ -60,8 +60,6 @@ public class LightningStrikes : AutoAttackSkill
             IncreaseAnimSpeed();
 
             Debug.Log("LightningStrikes / PrepareJob");
-
-            _target = _lightningMovement.Target;
         }
         return base.PrepareJob();
     }
@@ -111,7 +109,7 @@ public class LightningStrikes : AutoAttackSkill
     {
         if (_animTime > 0)
         {
-            float multiplier = _lightningMovement.DurationLeap - 0.1f;
+            float multiplier = _lightningMovement.DurationLeap - 4.9f; // тестовая скорость (изначально - 0.1)
             float animTimeMultiplier = _animTime / multiplier;
             Debug.Log("LightningStrikes / multiplier = " + animTimeMultiplier);
             _player.Animator.SetFloat("LightningStrikesMultiplierSpeedAnimation", animTimeMultiplier);

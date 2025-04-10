@@ -18,7 +18,7 @@ public class JumpWithChelicera : Skill
     private static readonly int jumpEnd = Animator.StringToHash("JumpEnd");
 
     private float _delayBeforeJump = 0.3f;
-    private float _minDistance = 0.1f;
+    private float _minDistance = 0.8f;
     private float _baseIncreasedDamage = 0.05f;
     private float _maxIncreasedDamage = 0.2f;
     private float _increaseDamageStandingStill = 0.1f;
@@ -27,6 +27,7 @@ public class JumpWithChelicera : Skill
     private bool _isTarget = false;
     private bool _isJumpDone = false;
 
+    public override bool IsPayCostStartCooldown => false;
     protected override int AnimTriggerCast => jumpStart;
     protected override int AnimTriggerCastDelay => 0;
 
@@ -61,6 +62,7 @@ public class JumpWithChelicera : Skill
                 {
                     _isTarget = true;
                     _player.Move.LookAtTransform(_target.transform);
+                    _isCanCancle = false;
                 }
             }
             yield return null;
@@ -152,7 +154,7 @@ public class JumpWithChelicera : Skill
         MoveComponent playerMove = player.GetComponent<MoveComponent>();
         Character targetCharacter = target.GetComponent<Character>();
 
-        Vector3 jumpPosition = Vector3.MoveTowards(targetCharacter.transform.position, player.transform.position, _minDistance + 0.5f);
+        Vector3 jumpPosition = Vector3.MoveTowards(targetCharacter.transform.position, player.transform.position, _minDistance);
 
         playerMove.TargetRpcDoMove(jumpPosition, _distanceJump / 10);
 
@@ -167,10 +169,10 @@ public class JumpWithChelicera : Skill
         float playerDistanceAccumulator = 0f;
         float targetDistanceAccumulator = 0f;
 
-        float totalDuration = _distanceJump / 10;
-        float elapsedTime = 0f;
+        bool jumpEndAnimPlayed = false;
+        float stopDistance = _minDistance + 0.5f;
 
-        while (elapsedTime < totalDuration)
+        while (Vector3.Distance(playerMove.transform.position, target.transform.position) > _minDistance)
         {
             Vector3 currentPlayerPos = playerMove.transform.position;
             float playerMoved = Vector3.Distance(lastPlayerPos, currentPlayerPos);
@@ -207,25 +209,25 @@ public class JumpWithChelicera : Skill
                 lastTargetPos = currentTargetPos;
             }
 
-            elapsedTime += Time.deltaTime;
+            float currentDistance = Vector3.Distance(playerMove.transform.position, target.transform.position);
+            if (!jumpEndAnimPlayed && currentDistance <= stopDistance)
+            {
+                jumpEndAnimPlayed = true;
+                RpcHandleJumpAnimEnd();
+            }
+
             yield return null;
         }
 
-        StartCoroutine(WaitForJumpEnd());
-
+        RpcHandleJumpEnd();
         DamageDeal(target.gameObject, additionalDamage);
+        _isCanCancle = true;
     }
 
-    private IEnumerator WaitForJumpEnd()
+    [Command]
+    private void CmdHandleJumpEnd()
     {
-        float timeDelay = _distanceJump / 20;
-
-        yield return new WaitForSeconds(timeDelay);
-
         RpcHandleJumpAnimEnd();
-
-        yield return new WaitForSeconds(timeDelay);
-
         RpcHandleJumpEnd();
     }
 

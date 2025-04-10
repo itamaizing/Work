@@ -103,6 +103,8 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] protected bool _isDynamicRenderer = false;
     [Header("Availability")]
     [SerializeField] protected bool _disactive = false;
+    [SerializeField] protected bool _earlyCooldown = false;
+
 
     protected SkillRenderer _skillRender;
     protected Character _hero;
@@ -152,7 +154,7 @@ public abstract class Skill : NetworkBehaviour
     public string Description => _abilityInfo.Description;
     public Sprite Icon => _abilityInfo.Icon;
     public bool IsCooldowned { get => _remainingCooldownTime <= 0; }
-    public virtual bool IsPayCostStartCooldown { get => true; }
+    public virtual bool IsPayCostStartCooldown { get => true;}
     public int Chargers { get => _currentChargers; protected set { _currentChargers = value; CurrentChargeChanged?.Invoke(_currentChargers); } }
     public int MaxChargers { get => _maxCharges; }
     public bool IsHaveCharge => (_currentChargers > 0);
@@ -268,14 +270,23 @@ public abstract class Skill : NetworkBehaviour
     {
         if (IsHaveResources && IsCanCast && _isCasting == false && NoObstacles() && Hero.IsDead == false)
         {
-            TryPayCost(IsPayCostStartCooldown);
-            _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
+            if (_earlyCooldown)
+            {
+                TryPayCost(false);
+                if (CooldownTime > 0) IncreaseSetCooldown(CooldownTime);
+                _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
+            }
+
+            else
+            {
+                TryPayCost(IsPayCostStartCooldown);
+                _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
+            }
+
             return true;
         }
-        else
-        {
-            return false;
-        }
+
+        else return false;
     }
 
     public bool TryCancel(bool foceCancel = false)

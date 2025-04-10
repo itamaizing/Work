@@ -19,6 +19,7 @@ public class CreeperStrike : AutoAttackSkill
 
     [Header("Abilities")]
     [SerializeField] private LightningStrikes _lightningStrikes;
+    [SerializeField] private LightningMovement _lightningMovement;
     [SerializeField] private PoisonBall _poisonBall;
     [SerializeField] private CreeperInvisible _creeperInvisible;
     [SerializeField] private ColdBlood _coldBlood;
@@ -37,6 +38,7 @@ public class CreeperStrike : AutoAttackSkill
     private int _countCurrentHitForPreparingForFight = 0;
     private int _poisonBoneStack = 0;
 
+    private float _animTime;
     private float _currentDamage;
     private float _lifeTimePoisonBoneStacks = 6.0f;
 
@@ -50,7 +52,6 @@ public class CreeperStrike : AutoAttackSkill
     public int PoisonBoneStack { get => _poisonBoneStack; set => _poisonBoneStack = value; }
     public bool IsTwoHit { get => _isTwoHit; set => _isTwoHit = value; }
     public bool IsHit { get => _isHit; set => _isHit = value; }
-    public Character CurrentTarget { get => _target; set => _target = value; }
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerAutoAttack => Animator.StringToHash("CreeperStrikeAttacking");
@@ -69,9 +70,48 @@ public class CreeperStrike : AutoAttackSkill
         AnimCastEnded();
     }
 
+      protected override IEnumerator PrepareJob()
+    {
+        if (_lightningMovement.IsInMovement)
+        {
+            _animTime = GetClipLength();
+            IncreaseAnimSpeed();
+        }
+        return base.PrepareJob();
+    }
+
     protected override void CastAction()
     {
-        DamageDeal(CurrentTarget, false);
+        DamageDeal(_target, false);
+    }
+
+    public void SetTarget(Character target)
+    {
+        _target = target;
+    }
+
+
+    private void IncreaseAnimSpeed()
+    {
+        if (_animTime > 0)
+        {
+            float multiplier = _lightningMovement.DurationLeap - 4.9f; // тестовая скорость (изначально - 0.1)
+            float animTimeMultiplier = _animTime / multiplier;
+            _player.Animator.SetFloat("CreeperStrikeMultiplierSpeedAnimation", animTimeMultiplier);
+        }
+    }
+
+    private float GetClipLength()
+    {
+        RuntimeAnimatorController animController = _player.Animator.runtimeAnimatorController;
+        foreach (var clip in animController.animationClips)
+        {
+            if (clip.name == "CreeperStrikeAttack")
+            {
+                return clip.length;
+            }
+        }
+        return -1f;
     }
 
     public void DamageDeal(Character target, bool isUsingLightningStrikes = false)

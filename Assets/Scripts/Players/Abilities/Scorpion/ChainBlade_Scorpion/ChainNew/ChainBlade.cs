@@ -10,11 +10,14 @@ public class ChainBlade : Skill
     [SerializeField] private PassiveCombo_Scorpion _comboCounter;
 
     [SerializeField] private ChainArrow chainArrowPrefab;
+    [SerializeField] private GameObject spawnPoint;
     [SerializeField] private HeroComponent playerLinks;
 
+
     private ChainArrow _chainArrowPrefab;
-    private Vector3 _clickPoint;
+    private Vector3 _clickPoint = Vector3.positiveInfinity;
     private Animator _animator;
+    private Character _target;
 
     private static readonly int chainBladeStart = Animator.StringToHash("ChainStart");
     private static readonly int chainBladeEnd = Animator.StringToHash("ChainEnd");
@@ -22,7 +25,16 @@ public class ChainBlade : Skill
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => chainBladeStart;
-    protected override bool IsCanCast => _clickPoint != Vector3.zero;
+
+    protected override bool IsCanCast
+    {
+        get
+        {
+            if (_target != null) return Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+
+            else return true;
+        }
+    }
 
     public float DamageRange => Random.Range(_minDamage, _maxDamage);
     public PassiveCombo_Scorpion ComboCounter { get => _comboCounter; set => _comboCounter = value; }
@@ -34,23 +46,24 @@ public class ChainBlade : Skill
 
     protected override IEnumerator PrepareJob()
     {
-        while (true)
+        while (float.IsPositiveInfinity(_clickPoint.x))
         {
             if (GetMouseButton)
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-                if (Physics.Raycast(ray, out RaycastHit hit))
+                if (GetTarget().isCharater)
                 {
-                    _clickPoint = hit.point;
+                    float distance = Vector3.Distance(_hero.transform.position, _clickPoint);
 
-                    if (IsPointInRadius(Radius, _clickPoint))
+                    if (distance <= Radius) _clickPoint = GetTarget().character.transform.position;
+
+                    else
                     {
-                        Hero.Move.LookAtPosition(_clickPoint);
-                        Hero.Move.CanMove = false;
-                        break;
+                        _target = GetTarget().character;
+                        _clickPoint = _target.transform.position;
                     }
                 }
+
+                else _clickPoint = GetTarget().Position;
             }
 
             yield return null;
@@ -87,12 +100,15 @@ public class ChainBlade : Skill
 
     protected override void ClearData()
     {
-        //_clickPoint = Vector3.zero;
+        _clickPoint = Vector3.positiveInfinity;
+        _target = null;
     }
 
     public void ChainBladeCast()
     {
         AnimStartCastCoroutine();
+        Hero.Move.LookAtPosition(_clickPoint);
+        Hero.Move.CanMove = false;
     }
 
     public void ChainBladeCastEnd()
@@ -105,18 +121,18 @@ public class ChainBlade : Skill
     private void CmdSpawnChainArrow(Vector3 clickPoint)
     {
 
-        Vector3 direction = (clickPoint - playerLinks.transform.position).normalized;
+        Vector3 direction = (clickPoint - spawnPoint.transform.position).normalized;
         Vector3 flatDirection = new Vector3(direction.x, 0, direction.z).normalized;
-        Vector3 targetPoint = playerLinks.transform.position + flatDirection * Radius;
+        Vector3 targetPoint = spawnPoint.transform.position + flatDirection * Radius;
 
-        var arrow = Instantiate(chainArrowPrefab, playerLinks.transform.position, Quaternion.identity);
+        var arrow = Instantiate(chainArrowPrefab, spawnPoint.transform.position, Quaternion.identity);
         _chainArrowPrefab = arrow;
         arrow.Init(playerLinks, 0, false, this);
 
         NetworkServer.Spawn(arrow.gameObject);
         SceneManager.MoveGameObjectToScene(arrow.gameObject, _hero.NetworkSettings.MyRoom);
 
-        arrow.InitArrow(targetPoint, Hero.transform, Radius, DamageRange);
+        arrow.InitArrow(targetPoint, spawnPoint.transform, Radius, DamageRange);
         RpcInitArrow(arrow.gameObject, targetPoint);
     }
 
@@ -127,6 +143,6 @@ public class ChainBlade : Skill
 
         var arrow = arrowObj.GetComponent<ChainArrow>();
         arrow.Init(playerLinks, 0, false, this);
-        arrow.InitArrow(targetPoint, Hero.transform, Radius, DamageRange);
+        arrow.InitArrow(targetPoint, spawnPoint.transform, Radius, DamageRange);
     }
 }

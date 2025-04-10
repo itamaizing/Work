@@ -18,8 +18,6 @@ public class LightningMovement : Skill
     [SerializeField] private PoisonSlap _poisonSlap;
     [SerializeField] private LightningStrikes _lightningStrikes;
 
-    [Header("Settings")]
-    [SerializeField] private float _rangeLeap;
     [SerializeField] private float _durationLeap;
     [SerializeField] private float _radiusAttack;
 
@@ -129,13 +127,13 @@ public class LightningMovement : Skill
     {
         if (!float.IsPositiveInfinity(pointSecond.x))
         {
-            _player.Move.SetAnimationMovement((pointSecond - _player.transform.position).normalized * _player.Move.CurrentSpeed);
+            _player.Move.SetAnimationMovement((pointSecond - _player.transform.position).normalized * (_player.Move.CurrentSpeed / 3)); // тестовое уменьшение скорости на 3 
 
             _player.Rigidbody.DOMove(pointSecond, _durationLeap)
               .SetEase(Ease.OutSine)
               .OnUpdate(() =>
               {
-                  Vector3 velocity = (pointSecond - _player.transform.position).normalized * _player.Move.CurrentSpeed;
+                  Vector3 velocity = (pointSecond - _player.transform.position).normalized * (_player.Move.CurrentSpeed / 3); // тестовое уменьшение скорости на 3 
                   _player.Move.SetAnimationMovement(velocity);
               })
               .OnComplete(() =>
@@ -173,11 +171,8 @@ public class LightningMovement : Skill
                         _damagedCharacters.Add(character);
                     }
 
-                    if (_lightningFastPoisonSlap.Data.IsOpen && _poisonSlap.IsCanDamageDeal && _poisonSlap.RemainingCooldownTime <= 0.2f)
-                        _poisonSlap.UsePoisonSlapOfLightningMovement();
-                    else
-                        _creeperStrike.DamageDeal(character, _lightningStrikes.IsUsedLightningStrikes);
-
+                    _creeperStrike.SetTarget(character);
+                    _creeperStrike.TryCast();
                     _damagedCharacters.Add(character);
                 }
             }
@@ -188,7 +183,7 @@ public class LightningMovement : Skill
     private Vector3 CalculateLeapPoint(Vector3 targetPoint)
     {
         Vector3 direction = (targetPoint - transform.position).normalized;
-        Vector3 leapPoint = transform.position + direction * Mathf.Min(_rangeLeap, Vector3.Distance(transform.position, targetPoint));
+        Vector3 leapPoint = transform.position + direction * Mathf.Min(Radius, Vector3.Distance(transform.position, targetPoint));
         leapPoint.y = 1f;
         return leapPoint;
     }

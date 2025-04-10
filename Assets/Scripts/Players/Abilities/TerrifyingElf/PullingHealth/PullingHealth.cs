@@ -57,10 +57,13 @@ public class PullingHealth : Skill
         OnSkillCanceled -= HandleSkillCanceled;
     }
 
-    protected override IEnumerator PrepareJob()
+    private void OnEnable()
     {
         OnSkillCanceled += HandleSkillCanceled;
+    }
 
+    protected override IEnumerator PrepareJob()
+    {
         while (float.IsPositiveInfinity(_mousePos.x) && !_disactive)
         {
             if (GetMouseButton)

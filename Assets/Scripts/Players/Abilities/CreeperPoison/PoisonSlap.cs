@@ -190,7 +190,7 @@ public class PoisonSlap : Skill
                 else
                 {
                     _isUsedPoisonBallCharger = true;
-                    _castDeley = _baseTimeCast;
+                    //_castDeley = _baseTimeCast;
                 }
                 break;
 
@@ -206,7 +206,7 @@ public class PoisonSlap : Skill
                 else
                 {
                     _isUsedPoisonBallCharger = true;
-                    _castDeley = _baseTimeCast;
+                    //_castDeley = _baseTimeCast;
                 }
                 break;
         }
@@ -349,7 +349,7 @@ public class PoisonSlap : Skill
 
         float _timeCastFromCreeperStrike = _baseTimeCast * _creeperStrikeCastSpeedMultiplier;
 
-        _castDeley = _timeCastFromCreeperStrike;
+        //_castDeley = _timeCastFromCreeperStrike;
         Debug.Log("PoisonSlap / CastSpeedFromCreeperStrike / castDeley = " + _castDeley);
     }
 
@@ -357,7 +357,7 @@ public class PoisonSlap : Skill
     {
         float _timeCastFromLightningStrikes = _baseTimeCast * _lightningStrikesCastSpeedMultiplier;
 
-        _castDeley = _timeCastFromLightningStrikes;
+        //_castDeley = _timeCastFromLightningStrikes;
         Debug.Log("PoisonSlap / CastSpeedFromLightningStrikes / castDeley = " + _castDeley);
     }
 

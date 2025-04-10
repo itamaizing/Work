@@ -92,12 +92,20 @@ public class MoveComponent : NetworkBehaviour
 	}
 
 	public void LookAtPosition(Vector3 position)
-    {
+	{
 		_isLookAtCursor = false;
+
+		if (float.IsNaN(position.x) || float.IsNaN(position.y) || float.IsNaN(position.z) ||
+	  position == Vector3.positiveInfinity || position == Vector3.negativeInfinity ||
+	  Vector3.Distance(transform.position, position) < Mathf.Epsilon) return;
+
+		Vector3 direction = position - transform.position;
+
+		if (direction.sqrMagnitude < Mathf.Epsilon) return;
 
 		var transformRotate = transform.eulerAngles;
 		transform.LookAt(position);
-		transform.eulerAngles = (new Vector3(transformRotate.x, transform.eulerAngles.y, transformRotate.z));
+		transform.eulerAngles = new Vector3(transformRotate.x, transform.eulerAngles.y, transformRotate.z);
 	}
 
 	public void LookAtTransform(Transform transform)
