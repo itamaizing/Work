@@ -39,8 +39,7 @@ public class CheliceraStrike : AutoAttackSkill
 
     private bool IsTargetInRange()
     {
-        float maxDistance = Radius;
-        return Vector3.Distance(_player.transform.position, _target.transform.position) <= maxDistance;
+        return Vector3.Distance(_player.transform.position, _target.transform.position) <= Radius;
     }
 
     public void DealDamage(GameObject target, float additionalDamage)
@@ -108,33 +107,20 @@ public class CheliceraStrike : AutoAttackSkill
 
         if (attackingPsi <= 0) return;
 
-        if (attackingPsi >= 10)
-        {
-            targetCharacter.CharacterState.DispelStates(StateType.Magic, targetCharacter.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
-        }
+        if (attackingPsi >= 10) CmdDispel(targetCharacter);
 
         if (attackingPsi >= 20)
         {
-            Collider[] nearbyEnemies = Physics.OverlapSphere(transform.position, 2.5f, _targetsLayers); // Radius игрока 1, значит + 1.5 чтоб получить 1.5 клетки от персонажа
-            foreach (var enemyCollider in nearbyEnemies) 
-            {
-                if (enemyCollider.TryGetComponent<Character>(out var enemy) && enemy != targetCharacter)
-                {
-                    enemy.CharacterState.DispelStates(StateType.Magic, enemy.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
-                }
-            }
+            Collider[] nearbyEnemies = Physics.OverlapSphere(transform.position, 2.5f, _targetsLayers);
+            foreach (var enemyCollider in nearbyEnemies)
+                if (enemyCollider.TryGetComponent<Character>(out var enemy) && enemy != targetCharacter) CmdDispel(targetCharacter);
         }
 
         if (attackingPsi >= 30)
         {
-            Collider[] nearbyEnemies = Physics.OverlapSphere(transform.position, 3.5f, _targetsLayers); // Radius игрока 1, значит + 2.5 чтоб получить 2.5 клетки от персонажа
+            Collider[] nearbyEnemies = Physics.OverlapSphere(transform.position, 3.5f, _targetsLayers);
             foreach (var enemyCollider in nearbyEnemies)
-            {
-                if (enemyCollider.TryGetComponent<Character>(out var enemy) && enemy != targetCharacter)
-                {
-                    enemy.CharacterState.DispelStates(StateType.Magic, enemy.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
-                }
-            }
+                if (enemyCollider.TryGetComponent<Character>(out var enemy) && enemy != targetCharacter) CmdDispel(targetCharacter);
         }
 
         //if (attackingPsi >= 30)
@@ -234,6 +220,12 @@ public class CheliceraStrike : AutoAttackSkill
     private void CmdAddState(Character character)
     {
         character.CharacterState.AddState(States.Bleeding, _durationBleeding, 0, _player.gameObject, null);
+    }
+
+    [Command]
+    private void CmdDispel(Character targetCharacter)
+    {
+        targetCharacter.CharacterState.DispelStates(StateType.Magic, targetCharacter.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
     }
 
     protected override void ClearData()

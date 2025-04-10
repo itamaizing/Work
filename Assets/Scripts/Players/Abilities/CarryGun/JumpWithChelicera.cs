@@ -6,7 +6,7 @@ public class JumpWithChelicera : Skill
 {
     [SerializeField] private Character _player;
     [SerializeField] private CheliceraStrike _cheliceraeStrike;
-    [SerializeField] private float basePsi = 0.1f;
+    [SerializeField] private float basePsi = 1f;
 
     [SerializeField] private float _distanceJump;
 
@@ -18,14 +18,12 @@ public class JumpWithChelicera : Skill
     private static readonly int jumpEnd = Animator.StringToHash("JumpEnd");
 
     private float _delayBeforeJump = 0.3f;
-    private float _minDistance = 0.8f;
-    private float _baseIncreasedDamage = 0.05f;
-    private float _maxIncreasedDamage = 0.2f;
-    private float _increaseDamageStandingStill = 0.1f;
+    private float _minDistance = 0.6f;
     private float _additionalDamageInPercentage;
 
     private bool _isTarget = false;
     private bool _isJumpDone = false;
+    bool hasDealtDamage = false;
 
     public override bool IsPayCostStartCooldown => false;
     protected override int AnimTriggerCast => jumpStart;
@@ -45,6 +43,7 @@ public class JumpWithChelicera : Skill
         _target = null;
         _mousePosition = Vector3.positiveInfinity;
         _isTarget = false;
+        hasDealtDamage = false;
     }
 
     protected override IEnumerator PrepareJob()
@@ -117,6 +116,8 @@ public class JumpWithChelicera : Skill
 
     public void JumpEnd()
     {
+        HandleJumpEnd();
+        ClearData();
         AnimCastEnded();
     }
 
@@ -141,11 +142,12 @@ public class JumpWithChelicera : Skill
         }
     }
 
-    private void HandleJumpEnd()
+    public void HandleJumpEnd()
     {
         _animator.applyRootMotion = false;
         _player.Move.StopLookAt();
         Hero.Move.CanMove = true;
+        _isCanCancle = true;
     }
 
     [Command]
@@ -172,20 +174,16 @@ public class JumpWithChelicera : Skill
         bool jumpEndAnimPlayed = false;
         float stopDistance = _minDistance + 0.5f;
 
-        while (Vector3.Distance(playerMove.transform.position, target.transform.position) > _minDistance)
+        while (Vector3.Distance(playerMove.transform.position, target.transform.position) > stopDistance)
         {
             Vector3 currentPlayerPos = playerMove.transform.position;
             float playerMoved = Vector3.Distance(lastPlayerPos, currentPlayerPos);
             playerDistanceAccumulator += playerMoved;
 
-            if (playerDistanceAccumulator >= 0.1f)
+            while (playerDistanceAccumulator >= 0.1f)
             {
                 playerDistanceAccumulator -= 0.1f;
-
-                if (_player != null && _player.TryGetComponent<BasePsionicEnergy>(out var psiEnergy))
-                {
-                    psiEnergy.Add(basePsi);
-                }
+                if (_player != null && _player.TryGetComponent<BasePsionicEnergy>(out var psiEnergy)) psiEnergy.AddAndResetDecay(basePsi);
             }
 
             lastPlayerPos = currentPlayerPos;
@@ -196,51 +194,39 @@ public class JumpWithChelicera : Skill
                 float targetMoved = Vector3.Distance(lastTargetPos, currentTargetPos);
                 targetDistanceAccumulator += targetMoved;
 
-                if (targetDistanceAccumulator >= 0.1f)
+                while (targetDistanceAccumulator >= 0.1f)
                 {
                     targetDistanceAccumulator -= 0.1f;
-
-                    if (_player != null && _player.TryGetComponent<BasePsionicEnergy>(out var psiEnergy))
-                    {
-                        psiEnergy.Add(basePsi);
-                    }
+                    if (_player != null && _player.TryGetComponent<BasePsionicEnergy>(out var psiEnergy)) psiEnergy.AddAndResetDecay(basePsi);
                 }
 
                 lastTargetPos = currentTargetPos;
             }
 
             float currentDistance = Vector3.Distance(playerMove.transform.position, target.transform.position);
-            if (!jumpEndAnimPlayed && currentDistance <= stopDistance)
+
+            if (!hasDealtDamage && currentDistance <= _cheliceraeStrike.Radius)
             {
-                jumpEndAnimPlayed = true;
-                RpcHandleJumpAnimEnd();
+                hasDealtDamage = true;
+                DamageDeal(target.gameObject, additionalDamage);
             }
+
+            Debug.Log($"playerMoved: {playerMoved}");
 
             yield return null;
         }
 
-        RpcHandleJumpEnd();
-        DamageDeal(target.gameObject, additionalDamage);
-        _isCanCancle = true;
-    }
-
-    [Command]
-    private void CmdHandleJumpEnd()
-    {
-        RpcHandleJumpAnimEnd();
-        RpcHandleJumpEnd();
+        if (!jumpEndAnimPlayed)
+        {
+            jumpEndAnimPlayed = true;
+            RpcHandleJumpAnimEnd();
+        }
     }
 
     [ClientRpc]
     private void RpcHandleJumpAnimEnd()
     {
         HandleJumpAnimEnd();
-    }
-
-    [ClientRpc]
-    private void RpcHandleJumpEnd()
-    {
-        HandleJumpEnd();
     }
 
     [ClientRpc]

@@ -51,6 +51,7 @@ MonoBehaviour:
   syncInterval: 0
   _startTarget: {fileID: 0}
   target: {fileID: 0}
+  num: 0
   targetID: 0
   parentID: 0
 --- !u!120 &8072426551103348916

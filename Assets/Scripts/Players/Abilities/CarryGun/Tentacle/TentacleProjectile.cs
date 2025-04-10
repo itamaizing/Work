@@ -9,8 +9,12 @@ public class TentacleProjectile : NetworkBehaviour
     [SerializeField] private DrawCircleTentacle _drawCircle;
     [SerializeField] private GameObject tentacle;
     [SerializeField] private LayerMask obstecls;
-    [SerializeField] private float basePsi = 0.1f;
+    [SerializeField] private float basePsi = 1f;
+    [SerializeField] private float grabDuration = 1.2f;
+    [SerializeField] private LineRenderer tentacleLine;
+    [SerializeField] private Transform tentaclePoint;
 
+    private Coroutine _lineCoroutine;
     private Character _player;
     private Character _target;
     private Vector3 _startPosition;
@@ -19,7 +23,6 @@ public class TentacleProjectile : NetworkBehaviour
     private bool _isAttackingPsiEnergyActive;
     private float _currentDamage;
 
-    private float _grabDuration = 1.2f;
     private float _radius = 3f;
 
     private bool _radiusView;
@@ -42,6 +45,11 @@ public class TentacleProjectile : NetworkBehaviour
     private void Start()
     {
         Invoke(nameof(DrawCircleRadius), 0.1f);
+
+        if (tentacleLine != null)
+        {
+            tentacleLine.positionCount = 2;
+        }
     }
 
     private void OnDestroy()
@@ -66,7 +74,7 @@ public class TentacleProjectile : NetworkBehaviour
 
         transform.position = startPosition;
 
-        Invoke(nameof(ReleaseTarget), _grabDuration);
+        Invoke(nameof(ReleaseTarget), grabDuration);
     }
 
     public void StartTentaclesGrab()
@@ -82,6 +90,9 @@ public class TentacleProjectile : NetworkBehaviour
 
             _target.Move.CanMove = false;
             _isPullTarget = true;
+
+            if (tentacleLine != null) _lineCoroutine = StartCoroutine(UpdateTentacleLine());
+
             if (isServer) AttackTentacles();
             StartCoroutine(PullTarget());
         }
@@ -108,7 +119,7 @@ public class TentacleProjectile : NetworkBehaviour
     private IEnumerator PullTarget()
     {
         float elapsedTime = 0f;
-        float baseSpeed = 0.05f;
+        float baseSpeed = 0.25f;
         float speedIncrease = 0.05f;
         float minDistance = 0.5f;
 
@@ -118,7 +129,7 @@ public class TentacleProjectile : NetworkBehaviour
 
         float heightOffset = _target.transform.position.y - _target.GetComponent<Collider>().bounds.min.y;
 
-        while (elapsedTime < _grabDuration)
+        while (elapsedTime < grabDuration)
         {
             Vector3 toTentacle = transform.position - (_target.transform.position - new Vector3(0, heightOffset, 0));
             float distance = toTentacle.magnitude;
@@ -136,18 +147,18 @@ public class TentacleProjectile : NetworkBehaviour
             float traveled = Vector3.Distance(lastTargetPosition, _target.transform.position);
             targetDistanceAccumulator += traveled;
 
-            if (targetDistanceAccumulator >= 0.1f)
+            while (targetDistanceAccumulator >= 0.1f)
             {
                 targetDistanceAccumulator -= 0.1f;
-
-                if (_player != null && _player.TryGetComponent<BasePsionicEnergy>(out var psiEnergy))
-                    psiEnergy.AddAndResetDecay(basePsi);
+                if (_player != null && _player.TryGetComponent<BasePsionicEnergy>(out var psiEnergy)) psiEnergy.AddAndResetDecay(basePsi);
             }
 
             lastTargetPosition = _target.transform.position;
 
             elapsedTime += 0.1f;
             yield return new WaitForSeconds(0.1f);
+
+
         }
 
         SetPhysicalSkillsDisactive(false);
@@ -169,9 +180,10 @@ public class TentacleProjectile : NetworkBehaviour
     }
 
     private void ReleaseTarget()
-    {
-        if (_target != null)
-            _target.Move.CanMove = true;
+    { 
+        if (_target != null) _target.Move.CanMove = true;
+
+        if (tentacleLine != null && _lineCoroutine != null) StopCoroutine(_lineCoroutine);
 
         Destroy(gameObject);
     }
@@ -232,6 +244,16 @@ public class TentacleProjectile : NetworkBehaviour
         if (_player.TryGetComponent<AttackingPsionicEnergy>(out var psiEnergy))
         {
             psiEnergy.CurrentValue -= value;
+        }
+    }
+
+    private IEnumerator UpdateTentacleLine()
+    {
+        while (_isPullTarget && _target != null && tentacleLine != null && tentaclePoint != null)
+        {
+            tentacleLine.SetPosition(0, tentaclePoint.position);
+            tentacleLine.SetPosition(1, _target.transform.position + Vector3.up * 0.5f);
+            yield return null;
         }
     }
 
