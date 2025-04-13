@@ -14,6 +14,7 @@ public class SpellMoveTo : Skill
     private Character _target = null;
     private Character _enemyTarget = null;
     private float _currentDamageDeley;
+    private Coroutine _onClickCoroutine;
 
     protected override int AnimTriggerCastDelay => 0;
 
@@ -34,6 +35,11 @@ public class SpellMoveTo : Skill
 
     protected override IEnumerator CastJob()
     {
+        if (_onClickCoroutine != null)
+            StopCoroutine(_onClickCoroutine);
+
+        _onClickCoroutine = StartCoroutine(OnClickJob());
+
         while (_targetPoint != Vector3.positiveInfinity)
         {
             if(_target != null)
@@ -64,6 +70,9 @@ public class SpellMoveTo : Skill
             yield return null;
         }
         yield return null;
+
+        if (_onClickCoroutine != null)
+            StopCoroutine(_onClickCoroutine);
     }
 
     protected override void ClearData()
@@ -71,6 +80,9 @@ public class SpellMoveTo : Skill
         _agent.SetDestination(transform.position);
         _targetPoint = Vector3.positiveInfinity;
         _target = null;
+        
+        if(_onClickCoroutine != null)
+            StopCoroutine(_onClickCoroutine);
     }
 
     protected override IEnumerator PrepareJob()
@@ -106,5 +118,26 @@ public class SpellMoveTo : Skill
         }
 
         return enemy;
+    }
+
+    private IEnumerator OnClickJob()
+    {
+        while (true)
+        {
+            if (Input.GetMouseButton(0))
+            {
+                _target = GetRaycastTarget();
+
+                if (_target == null)
+                {
+                    _targetPoint = GetMousePoint();
+                }
+                else
+                {
+                    _targetPoint = _target.transform.position;
+                }
+            }
+            yield return null;
+        }
     }
 }
