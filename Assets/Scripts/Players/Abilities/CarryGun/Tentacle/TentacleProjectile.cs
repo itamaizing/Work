@@ -74,7 +74,39 @@ public class TentacleProjectile : NetworkBehaviour
 
         transform.position = startPosition;
 
-        Invoke(nameof(ReleaseTarget), grabDuration);
+        float lifeTentacle = grabDuration * 2;
+        Invoke(nameof(ReleaseTarget), lifeTentacle);
+    }
+
+    private IEnumerator DrawAndPullTarget()
+    {
+        if (_target == null || _isPreview) yield break;
+
+        float elapsedTime = 0f;
+
+        Vector3 startLinePos = tentaclePoint.position;
+        Vector3 targetLinePos = _target.transform.position + Vector3.up * 0.5f;
+
+        tentacleLine.SetPosition(0, startLinePos);
+        tentacleLine.SetPosition(1, startLinePos);
+
+        while (elapsedTime < grabDuration)
+        {
+            float progress = elapsedTime / grabDuration;
+            Vector3 currentPos = Vector3.Lerp(startLinePos, targetLinePos, progress);
+
+            tentacleLine.SetPosition(1, currentPos);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        tentacleLine.SetPosition(1, targetLinePos);
+
+        if (tentacleLine != null) _lineCoroutine = StartCoroutine(UpdateTentacleLine());
+
+        if (isServer) AttackTentacles();
+        StartCoroutine(PullTarget());
     }
 
     public void StartTentaclesGrab()
@@ -91,10 +123,7 @@ public class TentacleProjectile : NetworkBehaviour
             _target.Move.CanMove = false;
             _isPullTarget = true;
 
-            if (tentacleLine != null) _lineCoroutine = StartCoroutine(UpdateTentacleLine());
-
-            if (isServer) AttackTentacles();
-            StartCoroutine(PullTarget());
+            if (tentacleLine != null) _lineCoroutine = StartCoroutine(DrawAndPullTarget());
         }
     }
 
