@@ -25,7 +25,7 @@ public class LightningMovement : Skill
     private Vector3 _secondLeapPoint;
     private bool _hasSecondLeap;
 
-    private HashSet<Character> _damagedCharacters = new HashSet<Character>();
+    private Character _damagedCharacter;
 
     public bool IsInMovement { get; private set; }
     public Character Target { get; private set; }
@@ -66,7 +66,7 @@ public class LightningMovement : Skill
     {
         IsInMovement = true;
         _player.Move.CanMove = false;
-        _damagedCharacters.Clear();
+        _damagedCharacter = null;
 
         if (_superFastScales.Data.IsOpen)
             _superFastScales.IncreasingResistance(Target);
@@ -119,7 +119,7 @@ public class LightningMovement : Skill
             yield return null;
         }
 
-        if (secondLeapRequested && _damagedCharacters.Count > 0) ExecuteLeapSecond(_secondLeapPoint);
+        if (secondLeapRequested && _damagedCharacter != null) ExecuteLeapSecond(_secondLeapPoint);
         else ClearData();
     }
 
@@ -155,25 +155,32 @@ public class LightningMovement : Skill
             {
                 var character = hit.GetComponent<Character>();
 
-                if (character && !_damagedCharacters.Contains(character))
+                if (character && _damagedCharacter != character)
                 {
                     if (_player.Abilities.SelectedSkills.Contains(_lightningStrikes) && _lightningStrikes.IsPreparing)
                     {
+                        _lightningStrikes.OnLightningStrikesEnd += HandleLightningStrikesEnd;
                         _lightningStrikes.SetTarget(character);
                         _lightningStrikes.TryCast();
-                        _damagedCharacters.Add(character);
+                        _creeperStrike.DamageDeal(character);
+                        _damagedCharacter = character;
+                        break;
                     }
 
                     if (_player.Abilities.SelectedSkills.Contains(_poisonSlap) && _poisonSlap.IsPreparing)
                     {
+                        _poisonSlap.OnPoisonSlapEnd += HandlePoisonSlapEnd;
                         _poisonSlap.SetTarget(character);
                         _poisonSlap.TryCast();
-                        _damagedCharacters.Add(character);
+                        _creeperStrike.DamageDeal(character);
+                        _damagedCharacter = character;
+                        break;
                     }
 
+                    _creeperStrike.OnCreeperStrikeEnd += HandleCreeperStrikeEnd;
                     _creeperStrike.SetTarget(character);
                     _creeperStrike.TryCast();
-                    _damagedCharacters.Add(character);
+                    _damagedCharacter = character;
                 }
             }
             yield return new WaitForSeconds(0.05f);
@@ -186,6 +193,24 @@ public class LightningMovement : Skill
         Vector3 leapPoint = transform.position + direction * Mathf.Min(Radius, Vector3.Distance(transform.position, targetPoint));
         leapPoint.y = 1f;
         return leapPoint;
+    }
+
+    private void HandleCreeperStrikeEnd()
+    {
+        _creeperStrike.ClearDataCreeperStrike();
+        _creeperStrike.OnCreeperStrikeEnd -= HandleCreeperStrikeEnd;
+    }
+
+    private void HandlePoisonSlapEnd()
+    {
+        _poisonSlap.ClearDataPoisonSlap();
+        _poisonSlap.OnPoisonSlapEnd -= HandlePoisonSlapEnd;
+    }
+
+    private void HandleLightningStrikesEnd()
+    {
+        _lightningStrikes.ClearDataLightningStrikes();
+        _lightningStrikes.OnLightningStrikesEnd -= HandleLightningStrikesEnd;
     }
 
     protected override void ClearData()

@@ -29,7 +29,7 @@ public abstract class AutoAttackSkill : Skill
     public Character Target { get => _target; }
     public Vector2 LastTargetPosition { get => _lastTargetPosition; }
     public override bool IsPayCostStartCooldown { get => false; }
-    public bool IsAutoattackMode { get => _isAutoattackMode; }
+    public bool IsAutoattackMode { get => _isAutoattackMode; set => _isAutoattackMode = value; }
     protected override bool IsCanCast
     {
         get

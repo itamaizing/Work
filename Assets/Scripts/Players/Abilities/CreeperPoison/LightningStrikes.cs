@@ -12,7 +12,7 @@ public class LightningStrikes : AutoAttackSkill
     [SerializeField] private LightningMovement _lightningMovement;
     [SerializeField] private CreeperStrike _creeperStrike;
     [SerializeField] private Character _player;
-
+    
     private Character _currentTarget;
 
     private float _animTime;
@@ -30,6 +30,8 @@ public class LightningStrikes : AutoAttackSkill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerAutoAttack => Animator.StringToHash("LightningStrikesAttacking");
 
+    public event System.Action OnLightningStrikesEnd;
+
     protected override void Awake()
     {
         base.Awake();
@@ -44,12 +46,19 @@ public class LightningStrikes : AutoAttackSkill
 
     public void AnimLightningStrikesEnd()
     {
+        OnLightningStrikesEnd?.Invoke();
         AnimCastEnded();
     }
 
     public void SetTarget(Character target)
     {
         _target = target;
+    }
+
+    public void ClearDataLightningStrikes()
+    {
+        TryCancel();
+        StopAutoDraw();
     }
 
     protected override IEnumerator PrepareJob()
@@ -126,9 +135,6 @@ public class LightningStrikes : AutoAttackSkill
         //if (_heatedGlands.Data.IsOpen)
         //    _player.CharacterState.CmdAddState(States.HeatedGlands, _heatedGlandsDuration, 0, _player.gameObject, null);
 
-        if (_coldBlood.IsCanCritLightningStrikes && _isIncreaseCooldownTime == true)
-        {
-            _isIncreaseCooldownTime = false;
-        }
+        if (_coldBlood.IsCanCritLightningStrikes && _isIncreaseCooldownTime == true) _isIncreaseCooldownTime = false;
     }
 }

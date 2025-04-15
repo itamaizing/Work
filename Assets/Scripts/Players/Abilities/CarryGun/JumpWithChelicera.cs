@@ -78,6 +78,7 @@ public class JumpWithChelicera : Skill
 
     private void ExecuteJump()
     {
+        _cheliceraeStrike.OnCheliceraStrikeEnd += HandleCheliceraStrikeEnd;
         _isJumpDone = true;
 
         float distanceToTarget = Vector2.Distance(_target.transform.position, _player.transform.position);
@@ -87,6 +88,12 @@ public class JumpWithChelicera : Skill
         Vector3 direction = (_target.transform.position - transform.position).normalized;
 
         CmdExecuteJump(_player.gameObject, _target.gameObject, direction, _additionalDamageInPercentage);
+
+        if (_cheliceraeStrike != null && _cheliceraeStrike.IsCooldowned && !_cheliceraeStrike.Disactive)
+        {
+            _cheliceraeStrike.SetTarget(_target);
+            _cheliceraeStrike.TryCast();
+        }
 
         Invoke(nameof(ResetBool), 1f);
     }
@@ -107,6 +114,12 @@ public class JumpWithChelicera : Skill
     private void ResetBool()
     {
         _isJumpDone = false;
+    }
+
+    private void HandleCheliceraStrikeEnd()
+    {
+        _cheliceraeStrike.ClearDataCheliceraStrike();
+        _cheliceraeStrike.OnCheliceraStrikeEnd -= HandleCheliceraStrikeEnd;
     }
 
     public void JumpCast()
@@ -203,16 +216,6 @@ public class JumpWithChelicera : Skill
                 lastTargetPos = currentTargetPos;
             }
 
-            float currentDistance = Vector3.Distance(playerMove.transform.position, target.transform.position);
-
-            if (!hasDealtDamage && currentDistance <= _cheliceraeStrike.Radius)
-            {
-                hasDealtDamage = true;
-                DamageDeal(target.gameObject, additionalDamage);
-            }
-
-            Debug.Log($"playerMoved: {playerMoved}");
-
             yield return null;
         }
 
@@ -223,15 +226,17 @@ public class JumpWithChelicera : Skill
         }
     }
 
+
     [ClientRpc]
     private void RpcHandleJumpAnimEnd()
     {
         HandleJumpAnimEnd();
     }
 
-    [ClientRpc]
-    private void DamageDeal(GameObject target, float additionalDamage)
-    {
-        _cheliceraeStrike.DealDamage(target, additionalDamage);
-    }
+    //[ClientRpc]
+    //private void RpcCheliceraeStrike(Character target)
+    //{
+    //    _cheliceraeStrike.SetTarget(target);
+    //    _cheliceraeStrike.TryCast();
+    //}
 }

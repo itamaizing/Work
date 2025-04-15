@@ -62,6 +62,8 @@ public class PoisonSlap : Skill
 
     protected override bool IsCanCast => CheckCanCast();
 
+    public event System.Action OnPoisonSlapEnd;
+
     #endregion
 
     #region PrepareAndStartJob
@@ -91,6 +93,12 @@ public class PoisonSlap : Skill
         _currentTarget = _lightningMovement.Target;
         Debug.Log("PoisonSlap / UsePoisonSlapLightning / _currentTarget = " + _currentTarget);
         DamageDealOfLightningMovement();
+    }
+
+    public void ClearDataPoisonSlap()
+    {
+        ClearData();
+        StopAutoDraw();
     }
 
     protected override void ClearData()
@@ -391,6 +399,8 @@ public class PoisonSlap : Skill
 
             PushTarget(target, _distancePush, _durationPush, _isPushTargetAllowed);
         }
+
+        OnPoisonSlapEnd?.Invoke();
     }
 
     public void DamageDealOfLightningMovement()

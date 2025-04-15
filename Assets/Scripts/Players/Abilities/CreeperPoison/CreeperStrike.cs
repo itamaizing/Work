@@ -53,8 +53,11 @@ public class CreeperStrike : AutoAttackSkill
     public bool IsTwoHit { get => _isTwoHit; set => _isTwoHit = value; }
     public bool IsHit { get => _isHit; set => _isHit = value; }
 
+    protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerAutoAttack => Animator.StringToHash("CreeperStrikeAttacking");
+
+    public event System.Action OnCreeperStrikeEnd;
 
     #endregion
 
@@ -67,6 +70,7 @@ public class CreeperStrike : AutoAttackSkill
 
     public void AnimCreeperStrikeEnded()
     {
+        OnCreeperStrikeEnd?.Invoke();
         AnimCastEnded();
     }
 
@@ -90,6 +94,11 @@ public class CreeperStrike : AutoAttackSkill
         _target = target;
     }
 
+    public void ClearDataCreeperStrike()
+    {
+        TryCancel();
+        StopAutoDraw();
+    }
 
     private void IncreaseAnimSpeed()
     {

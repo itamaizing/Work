@@ -21,10 +21,9 @@ public class TentacleProjectile : NetworkBehaviour
     private Vector3 _endPosition;
 
     private bool _isAttackingPsiEnergyActive;
-    private float _currentDamage;
+    private float _spentAttackingPsiEnergy;
 
     private float _radius = 3f;
-
     private bool _radiusView;
     private bool _isCollidedWithOtherCharacter = false;
     private bool _isPullTarget = false;
@@ -69,7 +68,7 @@ public class TentacleProjectile : NetworkBehaviour
         _startPosition = startPosition;
         _endPosition = endPosition;
         _isAttackingPsiEnergyActive = isAttackingPsiEnergyActive;
-        _currentDamage = currentDamage;
+        _spentAttackingPsiEnergy = currentDamage;
         _skill = skill;
 
         transform.position = startPosition;
@@ -195,15 +194,14 @@ public class TentacleProjectile : NetworkBehaviour
 
     private void AttackTentacles()
     {
-        if (_isAttackingPsiEnergyActive && _player.TryGetComponent<AttackingPsionicEnergy>(out var psiEnergy))
+        if (_isAttackingPsiEnergyActive && _spentAttackingPsiEnergy > 0)
         {
-            float attackingPsiValue = psiEnergy.CurrentValue;
+            float attackingPsiValue = _spentAttackingPsiEnergy;
 
             if (attackingPsiValue > 0)
             {
                 DealAttackingPsiDamage(attackingPsiValue);
                 ApplyLowVoltageDebuff(attackingPsiValue);
-                UseAttackingEnergy(attackingPsiValue);
             }
         }
     }
@@ -261,19 +259,10 @@ public class TentacleProjectile : NetworkBehaviour
 
         else if (attackingPsiValue >= 10)
         {
-            _target.CharacterState.DispelStates(StateType.Magic, _target.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
             stacks = 1;
         }
 
         if (stacks > 0) for (int i = 0; i < stacks; i++) _target.CharacterState.AddState(States.LowVoltage, 6f, 0f, _player.gameObject, "Tentacles");
-    }
-
-    private void UseAttackingEnergy(float value)
-    {
-        if (_player.TryGetComponent<AttackingPsionicEnergy>(out var psiEnergy))
-        {
-            psiEnergy.CurrentValue -= value;
-        }
     }
 
     private IEnumerator UpdateTentacleLine()

@@ -10,9 +10,8 @@ public class ClawStrike : AutoAttackSkill
     [SerializeField] private float _baseDamage;
     [SerializeField] private float animSpeed = 1.2f;
 
-    private int _maxCountDispelState;
+    private float _spentAttackingPsiEnergy;
 
-    protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerAutoAttack => Animator.StringToHash("ClawStrikeTrigger");
 
@@ -30,7 +29,7 @@ public class ClawStrike : AutoAttackSkill
 
     private void DamageDeal()
     {
-        float attackingPsiValue = _attackingPsionicEnergy.CurrentValue;
+        float attackingPsiValue = _spentAttackingPsiEnergy;
 
         var damage = new Damage
         {
@@ -51,14 +50,7 @@ public class ClawStrike : AutoAttackSkill
             else if (attackingPsiValue >= 20) dispelCount = 2;
             else if (attackingPsiValue >= 10) dispelCount = 1;
 
-            if (dispelCount > 0)
-            {
-                _target.CharacterState.DispelStates(
-                    StateType.Magic,
-                    _target.NetworkSettings.TeamIndex,
-                    _player.NetworkSettings.TeamIndex,
-                    dispelCount > 0);
-            }
+            if (dispelCount > 0) for (int i = 0; i < dispelCount; i++) CmdDispel(_target, dispelCount);
 
             var damagePsi = new Damage
             {
@@ -67,7 +59,6 @@ public class ClawStrike : AutoAttackSkill
                 PhysicAttackType = AttackRangeType.MeleeAttack,
             };
 
-            CmdUseAttackingEnergy(attackingPsiValue);
             CmdApplyDamage(damagePsi, _target.gameObject);
         }
 
@@ -76,6 +67,8 @@ public class ClawStrike : AutoAttackSkill
     public void ClawStrikeSpeedAnim()
     {
         _player.Animator.SetFloat("ClawStrikeSpeed", 1f / animSpeed);
+        if (_attackingPsionicEnergy.IsAttackingPsiEnergy && _attackingPsionicEnergy.CurrentValue > 0f) TrySpendAttackingPsi();
+        else _spentAttackingPsiEnergy = 0;
     }
 
     public void ClawStrikeCast()
@@ -88,11 +81,11 @@ public class ClawStrike : AutoAttackSkill
         AnimCastEnded();
     }
 
-    //[Command]
-    //private void CmdIncreaseEnergy(float value)
-    //{
-    //    _basePsionicEnergy.Add(value);
-    //}
+    public void TrySpendAttackingPsi()
+    {
+        _spentAttackingPsiEnergy = _attackingPsionicEnergy.CurrentValue;
+        CmdUseAttackingEnergy(_attackingPsionicEnergy.CurrentValue);
+    }
 
     [Command]
     private void CmdUseAttackingEnergy(float value)
@@ -100,8 +93,10 @@ public class ClawStrike : AutoAttackSkill
         _attackingPsionicEnergy.CurrentValue -= value;
     }
 
-    protected override void ClearData()
+
+    [Command]
+    private void CmdDispel(Character targetCharacter, float dispelCount)
     {
-        base.ClearData();
+        targetCharacter.CharacterState.DispelStates(StateType.Magic, targetCharacter.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, dispelCount > 0);
     }
 }

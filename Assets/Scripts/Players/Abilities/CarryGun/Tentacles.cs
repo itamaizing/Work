@@ -9,19 +9,29 @@ public class Tentacles : Skill
     [SerializeField] private Character _player;
     [SerializeField] private TentacleProjectile tentaclesPrefab;
     [SerializeField] private TentacleProjectile tentaclesPreview;
+    [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
     [SerializeField] private LayerMask groundLayer;
 
     private bool _isPlacingTentacles = false;
     private Vector3 _spawnPoint = Vector3.positiveInfinity;
     private HashSet<Character> _charactersInPreview = new HashSet<Character>();
+
     private Character _target;
     private TentacleProjectile _previewInstance;
     private TentacleProjectile _previewInstancePrefab;
     private Coroutine _radiusUpdateCoroutine;
+    private float _spentAttackingPsiEnergy;
+
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("Spell");
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => _spawnPoint != Vector3.positiveInfinity && _target != null;
+
+    private bool IsValidVector(Vector3 vector)
+    {
+        return !(float.IsNaN(vector.x) || float.IsNaN(vector.y) || float.IsNaN(vector.z) ||
+                 float.IsInfinity(vector.x) || float.IsInfinity(vector.y) || float.IsInfinity(vector.z));
+    }
 
     protected override void ClearData()
     {
@@ -30,6 +40,7 @@ public class Tentacles : Skill
         _isPlacingTentacles = false;
         _spawnPoint = Vector3.positiveInfinity;
         _target = null;
+        _spentAttackingPsiEnergy = 0f;
         Hero.Move.CanMove = true;
         _player.Move.StopLookAt();
 
@@ -41,12 +52,6 @@ public class Tentacles : Skill
             StopCoroutine(_radiusUpdateCoroutine);
             _radiusUpdateCoroutine = null;
         }
-    }
-
-    private bool IsValidVector(Vector3 vector)
-    {
-        return !(float.IsNaN(vector.x) || float.IsNaN(vector.y) || float.IsNaN(vector.z) ||
-                 float.IsInfinity(vector.x) || float.IsInfinity(vector.y) || float.IsInfinity(vector.z));
     }
 
     protected override IEnumerator PrepareJob()
@@ -175,13 +180,15 @@ public class Tentacles : Skill
             yield return null;
         }
 
+        TrySpendAttackingPsi();
+
         if (_previewInstance != null) Destroy(_previewInstance.gameObject);
     }
 
     protected override IEnumerator CastJob()
     {
         if (!IsValidVector(_spawnPoint)) yield break;
-        if (_target != null) CmdSpawnTentacles(_spawnPoint, _target);
+        if (_target != null) CmdSpawnTentacles(_spawnPoint, _target, _spentAttackingPsiEnergy);
 
         ClearData();
         _skillRender.StopDrawRadius();
@@ -245,8 +252,17 @@ public class Tentacles : Skill
         }
     }
 
+    private void TrySpendAttackingPsi()
+    {
+        if (_attackingPsionicEnergy.IsAttackingPsiEnergy && _attackingPsionicEnergy.CurrentValue > 0f)
+        {
+            _spentAttackingPsiEnergy = _attackingPsionicEnergy.CurrentValue;
+            CmdUseAttackingEnergy(_attackingPsionicEnergy.CurrentValue);
+        }
+    }
+
     [Command]
-    private void CmdSpawnTentacles(Vector3 position, Character target)
+    private void CmdSpawnTentacles(Vector3 position, Character target, float _spentAttackingPsiEnergy)
     {
         if (!IsValidVector(position)) return;
 
@@ -255,10 +271,10 @@ public class Tentacles : Skill
         TentacleProjectile tentacles = Instantiate(tentaclesPrefab, position, Quaternion.identity);
         SceneManager.MoveGameObjectToScene(tentacles.gameObject, _hero.NetworkSettings.MyRoom);
 
-        tentacles.Init(_player, target, position, target.transform.position, true, 0, this);
+        tentacles.Init(_player, target, position, target.transform.position, true, _spentAttackingPsiEnergy, this);
 
         NetworkServer.Spawn(tentacles.gameObject);
-        RpcInitTentacles(tentacles.gameObject, target, position);
+        RpcInitTentacles(tentacles.gameObject, target, position, _spentAttackingPsiEnergy);
 
         if (_radiusUpdateCoroutine != null)
         {
@@ -267,12 +283,18 @@ public class Tentacles : Skill
         }
     }
 
+    [Command]
+    private void CmdUseAttackingEnergy(float value)
+    {
+        _attackingPsionicEnergy.CurrentValue -= value;
+    }
+
     [ClientRpc]
-    private void RpcInitTentacles(GameObject tentacleObject, Character target, Vector3 position)
+    private void RpcInitTentacles(GameObject tentacleObject, Character target, Vector3 position, float _spentAttackingPsiEnergy)
     {
         if (!IsValidVector(position)) return;
         if (tentacleObject == null) return;
 
-        tentacleObject.GetComponent<TentacleProjectile>().Init(_player, target, position, target.transform.position, true, 0, this);
+        tentacleObject.GetComponent<TentacleProjectile>().Init(_player, target, position, target.transform.position, true, _spentAttackingPsiEnergy, this);
     }
 }

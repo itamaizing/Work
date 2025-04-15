@@ -40,7 +40,7 @@ public class FlashOfLight : Skill
             return _target.gameObject.layer == LayerMask.NameToLayer("Enemy");
     }
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("Cast");
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("Spell");
     protected override int AnimTriggerCast => 0;
 
     public void EnableTalentPhysicalShieldBoost(bool value)

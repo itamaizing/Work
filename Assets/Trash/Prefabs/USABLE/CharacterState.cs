@@ -288,7 +288,7 @@ public class CharacterState : NetworkBehaviour
 		if (currentStates.Contains(newState))
 		{
 			currentStates.Remove(newState);
-			_stateIcons?.DeactivateIcon();
+			_stateIcons?.RemoveItemByState(newState.State);
 		}
 	}
 
