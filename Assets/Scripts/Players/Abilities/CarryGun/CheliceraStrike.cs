@@ -187,6 +187,7 @@ public class CheliceraStrike : AutoAttackSkill
 
     public void CheliceraStrikeSpeedAnim()
     {
+        if (Hero.Move.CanMove == true) Hero.Move.CanMove = false;
         _player.Animator.SetFloat("CheliceraStrikeSpeed", 1f / animSpeed);
         if (_attackingPsionicEnergy.IsAttackingPsiEnergy && _attackingPsionicEnergy.CurrentValue > 0f) TrySpendAttackingPsi();
         else _spentAttackingPsiEnergy = 0;
@@ -219,6 +220,8 @@ public class CheliceraStrike : AutoAttackSkill
         _spentAttackingPsiEnergy = _attackingPsionicEnergy.CurrentValue;
         CmdUseAttackingEnergy(_attackingPsionicEnergy.CurrentValue);
     }
+
+
 
     #region CommandMethods
 

@@ -22,7 +22,7 @@ MonoBehaviour:
     - Id: 1001
       Name: Health
       Points: 0
-      DefaultValue: 3333
+      DefaultValue: 333
       Icon: {fileID: 0}
       IsVisible: 1
     - Id: 1002
@@ -34,13 +34,13 @@ MonoBehaviour:
     - Id: 1003
       Name: Energy
       Points: 0
-      DefaultValue: 100
+      DefaultValue: 0
       Icon: {fileID: 0}
       IsVisible: 1
     - Id: 1004
       Name: Rune
       Points: 0
-      DefaultValue: 10
+      DefaultValue: 0
       Icon: {fileID: 0}
       IsVisible: 1
     - Id: 1005
@@ -52,25 +52,25 @@ MonoBehaviour:
     - Id: 1006
       Name: HPRegen
       Points: 0
-      DefaultValue: 1.7
+      DefaultValue: 1
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1007
       Name: ManaRegen
       Points: 0
-      DefaultValue: 0
+      DefaultValue: 1
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1008
       Name: EnergyRegen
       Points: 0
-      DefaultValue: 2
+      DefaultValue: 0
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1009
       Name: RuneRegen
       Points: 0
-      DefaultValue: 1
+      DefaultValue: 0
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1010
@@ -82,7 +82,7 @@ MonoBehaviour:
     - Id: 1011
       Name: ManaRegenDelay
       Points: 0
-      DefaultValue: 0
+      DefaultValue: 1
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1012
