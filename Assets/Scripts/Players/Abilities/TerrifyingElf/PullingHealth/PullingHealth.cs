@@ -11,7 +11,6 @@ public class PullingHealth : Skill
     [SerializeField] private GameObject _pullingHealthPrefab;
     [SerializeField] private Transform _spawnPoint;
     [SerializeField] private Health health;
-    [SerializeField] private bool pullingHealthGhostTalent;
     [SerializeField] private List<GameObject> ghost = new List<GameObject>();
     [SerializeField] private float tickInterval;
     [SerializeField] private AudioClip audioClip;
@@ -27,6 +26,10 @@ public class PullingHealth : Skill
     private float _baseRadius;
     private float _baseTickInterval;
     private float _baseCastStreamDuration;
+
+    private bool pullingHealthGhostTalent;
+    private bool _effectsDarknessTalent;
+    private bool _pullingHealthSpeedWithSilenceTalent;
 
     private Vector3 _mousePos = Vector3.positiveInfinity;
 
@@ -115,7 +118,7 @@ public class PullingHealth : Skill
         {
             var targetComponentState = targetComponent.GetComponent<CharacterState>();
 
-            if (targetComponentState.CheckForState(States.InnerDarkness))
+            if (_effectsDarknessTalent && targetComponentState.CheckForState(States.InnerDarkness))
             {
                 innerDarknessStacks = targetComponentState.CheckStateStacks(States.InnerDarkness);
 
@@ -150,15 +153,12 @@ public class PullingHealth : Skill
 
                 if (innerDarknessStacks > 0)
                 {
-                    float stackModifier = 1 + 0.4f * innerDarknessStacks;
-                    //adjustedStreamDuration = CastStreamDuration * stackModifier;
-                    //float stackModifier = 2;
-                    CastStreamDuration *= stackModifier;
-                    //InvokeCastStreamStarted(CastStreamDuration);
+                    float durationMultiplier = 1.4f + 0.1f * (innerDarknessStacks - 1);
+                    CastStreamDuration = _baseCastStreamDuration * durationMultiplier;
                 }
             }
 
-            if (targetComponentState.CheckForState(States.Silent))
+            if (_pullingHealthSpeedWithSilenceTalent && targetComponentState.CheckForState(States.Silent))
             {
                 float speedModifier = 0.5f;
                 tickInterval *= speedModifier;
@@ -362,10 +362,24 @@ public class PullingHealth : Skill
         return false;
     }
 
+    #region Talents
+
     public void SetPullingHealthGhostTalentActive(bool value)
     {
         pullingHealthGhostTalent = value;
     }
+
+    public void EffectsInnerDarknessTalentActive(bool value)
+    {
+        _effectsDarknessTalent = value;
+    }
+
+    public void PullingHealthSpeedWithSilenceTalentActive(bool value)
+    {
+        _pullingHealthSpeedWithSilenceTalent = value;
+    }
+
+    #endregion
 
     private void HandleSkillCanceled()
     {

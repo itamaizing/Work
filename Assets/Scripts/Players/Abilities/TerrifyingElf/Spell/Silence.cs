@@ -6,7 +6,6 @@ public class Silence : Skill
 {
     [SerializeField] private float _duration;
     [SerializeField] private GameObject effectPrefab;
-    [SerializeField] private bool _canAttackMinions;
     [SerializeField] private bool _reducedCooldown;
     [SerializeField] private AudioClip audioClip;
     [SerializeField] private int _maxAdditionalManaUsage = 7;
@@ -14,6 +13,9 @@ public class Silence : Skill
     private float _baseDuration;
     private AudioSource audioSource;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
+
+    private bool _effectsDarknessTalent;
+    private bool _canAttackMinions;
 
     protected override bool IsCanCast => !_disactive && IsPointInRadius(Radius, _targetPoint);
 
@@ -143,6 +145,8 @@ public class Silence : Skill
         }
     }
 
+    #region Talents
+
     public void SetCanAttackMinions(bool value)
     {
         _canAttackMinions = value;
@@ -152,6 +156,13 @@ public class Silence : Skill
     {
         _reducedCooldown = value;
     }
+
+    public void EffectsInnerDarknessTalentActive(bool value)
+    {
+        _effectsDarknessTalent = value;
+    }
+
+    #endregion
 
     //[Command]
     //private void CmdApplyDamage(GameObject targetObject, Damage damage, Skill skill)
@@ -165,19 +176,18 @@ public class Silence : Skill
     [Command]
     private void CmdApplySilenceState(CharacterState targetState)
     {
-        float adjustedDuration = _duration;
         RpcPlayShotSound();
 
-        if (targetState.CheckForState(States.InnerDarkness))
+        if (_effectsDarknessTalent && targetState.CheckForState(States.InnerDarkness))
         {
             int innerDarknessStacks = targetState.CheckStateStacks(States.InnerDarkness);
 
-            float durationMultiplier = 1 + 0.4f * innerDarknessStacks;
-            adjustedDuration *= durationMultiplier;
+            float durationMultiplier = 1.4f + 0.1f * (innerDarknessStacks - 1);
+            _duration = durationMultiplier;
         }
 
-        Debug.Log(adjustedDuration);
-        targetState.AddState(States.Silent, adjustedDuration, 0, Hero.gameObject, this.name);
+        Debug.Log(_duration);
+        targetState.AddState(States.Silent, _duration, 0, Hero.gameObject, this.name);
     }
 
     [Command]

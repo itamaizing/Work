@@ -8860,6 +8860,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5321122754133210107}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 598228007251698926}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3596961387553434151}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!1 &300637093874885484 stripped
 GameObject:
@@ -8917,6 +8923,7 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _isDynamicRenderer: 1
   _disactive: 0
+  _earlyCooldown: 0
   _attackZoneSize: 7
   _attackDelay: 1.3
   _chargeAttackDelay: 0
@@ -8976,6 +8983,7 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
+  _earlyCooldown: 0
   skillRenderer: {fileID: 2807589928063243029}
   minDamage: 12
   maxDamage: 18
@@ -9037,6 +9045,7 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _isDynamicRenderer: 1
   _disactive: 0
+  _earlyCooldown: 0
   _attackZoneSize: 7
   _attackDelay: 1.69
   _chargeAttackDelay: 0
@@ -9069,7 +9078,7 @@ MonoBehaviour:
     resourceCost: 1
   _cooldownTime: 13
   _castDeley: 0.1
-  _damageValue: 15
+  _damageValue: 10
   _abilitySchool: 5
   _abilityForm: 0
   _damageType: 0
@@ -9098,9 +9107,9 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
+  _earlyCooldown: 0
   _duration: 0.5
   effectPrefab: {fileID: 4237222475278126921, guid: 2d76beef07956e948946e409a372473d, type: 3}
-  _canAttackMinions: 0
   _reducedCooldown: 0
   audioClip: {fileID: 8300000, guid: 0e697ad5442a11a4990c66e9b6fb2e18, type: 3}
   _maxAdditionalManaUsage: 7
@@ -9157,6 +9166,7 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _disactive: 0
+  _earlyCooldown: 0
   _playerLinks: {fileID: 4534754468497973439}
   duration: 6
 --- !u!114 &826193211731534654
@@ -9212,6 +9222,7 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _disactive: 0
+  _earlyCooldown: 0
   skillRenderer: {fileID: 2807589928063243029}
   silenceTalentActive: 0
   tripleShotTalentActive: 0
@@ -9271,10 +9282,10 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
+  _earlyCooldown: 0
   _pullingHealthPrefab: {fileID: 7744228389031826322, guid: 01d3359ced6c7904e8d18b398f189893, type: 3}
   _spawnPoint: {fileID: 1110070738435946966}
   health: {fileID: 2320460443592093226}
-  pullingHealthGhostTalent: 0
   ghost: []
   tickInterval: 1
   audioClip: {fileID: 8300000, guid: 409e6a4f7b85bff4dacaacb82d4640b7, type: 3}
@@ -9330,6 +9341,7 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
+  _earlyCooldown: 0
   defaultRadius: 3
   extendedRadius: 5
   teleportManaUse: 6
@@ -9337,12 +9349,12 @@ MonoBehaviour:
   ghostPrefab: {fileID: 1871163040516354185, guid: 4db2764b76e857542a0c6ea889e2db7c, type: 3}
   ghostPrefabPreview: {fileID: 3154541333273919106, guid: 4bf1bb117fbb59241955bd674f799741, type: 3}
   way: {fileID: 2648159207329634698}
-  cooldownGhostShotActive: 0
   aCTeleportToGhost: {fileID: 8300000, guid: 7ec01dc7a3340f84ca423f258f2981f6, type: 3}
   "aC\u0421ontrolGhostToTarget": {fileID: 8300000, guid: def2e1cb9b2cb354cb4b3451f2b5f6e2, type: 3}
   aCSummoningGhost: {fileID: 8300000, guid: e22212dd52fe9df4494ceacd0ee0320c, type: 3}
   _extendedRadiusCircle: {fileID: 7454699290023613669}
   extendedRadiusColor: {r: 0.8867924, g: 0.2782094, b: 0, a: 1}
+  _ghosts: []
 --- !u!114 &6004029750635303333
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9394,6 +9406,7 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
+  _earlyCooldown: 0
   _playerLinks: {fileID: 4534754468497973439}
   duration: 5
 --- !u!114 &3491896792666520145
@@ -9449,6 +9462,7 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _disactive: 0
+  _earlyCooldown: 0
   _projectile: {fileID: 2123849334646659443, guid: 8e3073b46604e4040ac3eb03dabfd124, type: 3}
   _spawnPoint: {fileID: 7608591018717630632}
   _playerLinks: {fileID: 4534754468497973439}
@@ -9503,6 +9517,7 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
+  _earlyCooldown: 0
   trap: {fileID: 8854555355593262939, guid: 6a81e52aeaba98147875ba1791e1e4c8, type: 3}
   previewTrap: {fileID: 5004660816757224540}
   heroComponent: {fileID: 4534754468497973439}
@@ -9557,6 +9572,7 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _disactive: 0
+  _earlyCooldown: 0
   _treePrefab: {fileID: 5161695241994661734, guid: 82b70bdb0fc80c343859665623ea7ed8, type: 3}
   moveComponent: {fileID: 443563987953287420}
   _moveDuration: 0.5
@@ -9616,6 +9632,7 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _disactive: 1
+  _earlyCooldown: 0
   _attackZoneSize: 1
   _attackDelay: 1
   _chargeAttackDelay: 0
@@ -9674,6 +9691,7 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
+  _earlyCooldown: 0
   trickShot: {fileID: 5114100793044545941}
   fireAura: {fileID: 8163329122190285983, guid: 57f4b1dca44be5d41bcdf5931936f545, type: 3}
   emitterObject: {fileID: 6218627837131491164}
@@ -9738,6 +9756,7 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
+  _earlyCooldown: 0
   skillManager: {fileID: 4092227064955680494}
   calmnessTalent: 0
   fireWorshipperTalent: 0
@@ -9799,6 +9818,7 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _disactive: 0
+  _earlyCooldown: 0
 --- !u!114 &5245378433989923716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9852,6 +9872,7 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
+  _earlyCooldown: 0
   _playerLinks: {fileID: 4534754468497973439}
   duration: 6
 --- !u!114 &443563987953287420 stripped
@@ -10417,3 +10438,41 @@ MonoBehaviour:
   character: {fileID: 4534754468497973439}
   suppression: {fileID: 6063604074090390129}
   _ability: {fileID: 4092227064955680494}
+--- !u!114 &598228007251698926
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d04641c2f01d4df4ea976a02a4b24bdb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 21300000, guid: 5d33a4519b4de2341b165997ce85b77b, type: 3}
+  character: {fileID: 4534754468497973439}
+  silence: {fileID: 4161291845396503115}
+  pulling: {fileID: 679409545534796012}
+  ghost: {fileID: 1718052129104348959}
+--- !u!114 &3596961387553434151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6c732794b96a6543af82ca55333a889, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 21300000, guid: 0b2e7075df4de194ca26644f6fb3edf0, type: 3}
+  character: {fileID: 4534754468497973439}
+  pullingHealth: {fileID: 679409545534796012}

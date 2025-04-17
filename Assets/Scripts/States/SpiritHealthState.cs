@@ -5,7 +5,7 @@ using Mirror;
 public class SpiritHealthState : AbstractCharacterState
 {
     private const float DamageHealthRestorePercent = 0.05f;
-    private const int _baseMaxStacks = 2;
+    private const int _baseMaxStacks = 3;
 
     private float _baseDuration;
     private float _duration;

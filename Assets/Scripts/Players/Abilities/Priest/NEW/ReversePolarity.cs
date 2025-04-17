@@ -72,7 +72,7 @@ public class ReversePolarity : Skill
     CmdAddBaff(States.ReversePolarity, -1f, 0, transform.gameObject, Name);
     }
 
-    private void RemoveReversePolarityEffect()
+    public void RemoveReversePolarityEffect()
     {
     CmdRemoveBuff(States.ReversePolarity, Hero.gameObject);
     }
@@ -103,12 +103,12 @@ public class ReversePolarity : Skill
         if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
     }
 
-    private void SwitchSpells()
+    public void SwitchSpells()
     {
     sparkOfLight.SwitchMode();
     flashOfLight.SwitchMode();
     restoration.SwitchMode();
-    priestShield.SwitchMode();
+    //priestShield.SwitchMode();
     }
 
     protected override void ClearData()

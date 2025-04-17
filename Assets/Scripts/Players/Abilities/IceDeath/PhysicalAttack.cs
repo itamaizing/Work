@@ -17,6 +17,7 @@ public class PhysicalAttack : AutoAttackSkill
 	private float _multiplier = 1;
 	private bool _talentActive = false;
 	private bool _rollingPhysTalent = false;
+	private bool _seriesPhysicalTalent;
 	private float _stunCount = 0;
 	private bool _isRightKick = true;
 	private Animator _animator;
@@ -59,7 +60,8 @@ public class PhysicalAttack : AutoAttackSkill
 	{
 		if (_target == null) return;
 
-		Hit(_target);
+		if (_seriesPhysicalTalent) Hit(_target);
+		else SingleHit(_target);
 		CmdPlayShotSound();
 	}
 
@@ -161,6 +163,19 @@ public class PhysicalAttack : AutoAttackSkill
 		_curTarget = null;
 	}
 
+	private void SingleHit(Character enemy)
+	{
+		float curDamage = _damageValue + Random.Range(0, 2);
+
+		Damage damage = new Damage
+		{
+			Value = curDamage,
+			Type = DamageType.Physical,
+		};
+
+		CmdApplyDamage(damage, enemy.gameObject);
+	}
+
 	[Command]
 	private void CmdState(GameObject enemy, float time)
 	{
@@ -225,6 +240,13 @@ public class PhysicalAttack : AutoAttackSkill
 		return false;
 	}
 
+    #region Talent
+
+	public void SeriesPhysicalTalentActive(bool value)
+    {
+		_seriesPhysicalTalent = value;
+	}
+
 	public void SetTalentActive(bool active)
 	{
 		_talentActive = active;
@@ -235,6 +257,8 @@ public class PhysicalAttack : AutoAttackSkill
 		_rollingPhysTalent = value;
 		_stunCount = count;
 	}
+
+	#endregion
 
 	public void ApplyRootTrue()
 	{

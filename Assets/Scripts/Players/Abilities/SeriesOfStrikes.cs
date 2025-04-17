@@ -16,6 +16,8 @@ public class SeriesOfStrikes : MonoBehaviour
 	private float _sumPhisDamage = 0;
 	private float _speedMultiplier = 5;
 
+	private bool _seriesCompliteCompoTalent;
+
 	private static List<AbilityForm> _formList = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical };
 	private static List<AbilityForm> _formList2 = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Magic };
 	private static List<AbilityForm> _formList3 = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Magic, AbilityForm.Physical, AbilityForm.Magic, AbilityForm.Physical, AbilityForm.Magic };
@@ -184,7 +186,7 @@ public class SeriesOfStrikes : MonoBehaviour
 
 	private void LastHit(float usedRune, float usedEnergy)
 	{
-		_rune.CmdAdd(usedRune * 2 + 0.5f);
+		if (_seriesCompliteCompoTalent) _rune.CmdAdd(usedRune * 2 + 1);
 		_energy.CmdAdd(usedEnergy * 0.4f);
 
 		for (int i = 0; i < _seriesOfStrikes.Count; i++)
@@ -205,8 +207,12 @@ public class SeriesOfStrikes : MonoBehaviour
 
 	public void TalentBoostMultiplier(float multiplier)
 	{
-		
 		_speedMultiplier = multiplier;
+	}
+
+	public void SeriesCompliteCompoTalentActive(bool value)
+	{
+		_seriesCompliteCompoTalent = value;
 	}
 
 	private void CheckCurse(Character target, float damage)

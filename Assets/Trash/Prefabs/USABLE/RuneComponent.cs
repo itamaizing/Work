@@ -7,6 +7,7 @@ public class RuneComponent : Resource
     private List<AbilityTimer> _abilities = new List<AbilityTimer>();
 	[SerializeField] private float _sumDamageGiven = 0;
 	private bool _disableMultiplier = false;
+    private bool _iceRuneTalent;
 
     /*private void Update()
     {
@@ -86,17 +87,25 @@ public class RuneComponent : Resource
         _disableMultiplier = false;
     }
 
-	public void SumDamageMake(float damage)
-	{
-        Debug.Log("SUM DAMAGE MAKE Rune" + damage);
+    public void SumDamageMake(float damage)
+    {
+        if (_iceRuneTalent)
+        {
+            Debug.Log("SUM DAMAGE MAKE Rune" + damage);
 
-		_sumDamageGiven += damage;
-		while (_sumDamageGiven >= 50)
-		{
-			CmdAdd(1);
-			_sumDamageGiven -= 50;
-		}
+            _sumDamageGiven += damage;
+            while (_sumDamageGiven >= 50)
+            {
+                CmdAdd(1);
+                _sumDamageGiven -= 50;
+            }
+        }
 	}
+
+    public void IceRuneTalentActive(bool value)
+    {
+        _iceRuneTalent = value;
+    }
 }
 
 public class AbilityTimer

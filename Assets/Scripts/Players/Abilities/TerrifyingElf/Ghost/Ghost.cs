@@ -15,36 +15,38 @@ public class Ghost : Skill
     [SerializeField] private MinionComponent ghostPrefab;
     [SerializeField] private GameObject ghostPrefabPreview;
     [SerializeField] private GameObject way;
-    [SerializeField] private bool cooldownGhostShotActive;
     [SerializeField] private AudioClip aCTeleportToGhost;
     [SerializeField] private AudioClip aCÑontrolGhostToTarget;
     [SerializeField] private AudioClip aCSummoningGhost;
     [SerializeField] private DrawCircle _extendedRadiusCircle;
     [SerializeField] private Color extendedRadiusColor = new Color(0.8f, 0.3f, 0f);
+    [SerializeField] private List<Character> _ghosts;
 
     private GameObject _ghostPrefabPreview;
     private AudioSource _audioSource;
-    private List<Character> _ghosts;
     private SpawnComponent _spawnComponent;
     private float _baseCastDelay;
     private bool _isPreviewHiddenOverGhost;
     private bool _ghostMoveToTarget;
     private bool _shouldSpawnGhost;
     private bool _teleportGhost;
-    private bool _sendingGhostTargetTalentActive;
     private Vector3 _spawnPosition;
     private Character _ghostToMove;
     private Character _targetCharacter;
     private Character _ghostToTeleport;
-
     private Coroutine _checkExtendedRadiusCoroutine;
     private Coroutine _teleportAnimationCoroutine;
+
+    private bool _sendingGhostTargetTalentActive;
+    private bool _cooldownGhostShotActive;
+    private bool _effectsInnerDarknessTalent;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("GhostCastDelay");
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => IsCooldowned && IsHaveCharge;
 
-    public bool CooldownGhostShotActive => cooldownGhostShotActive;
+    public bool CooldownGhostShotActive => _cooldownGhostShotActive;
+    public List<Character> GhostTarget { get => _ghosts; set => _ghosts = value; }
 
     protected override void Awake()
     {
@@ -370,6 +372,8 @@ public class Ghost : Skill
     {
         if (ghost == null || _ghosts.Contains(ghost) || !(ghost is MinionComponent)) return;
         _ghosts.Add(ghost);
+
+        if (_effectsInnerDarknessTalent && ghost.TryGetComponent<GhostAura>(out var ghostAura)) ghostAura.effectsInnerDarknessTalent = true;
     }
 
     private bool IsMouseOverGhost(out Character ghost)
@@ -554,17 +558,22 @@ public class Ghost : Skill
         if (_audioSource != null && aCÑontrolGhostToTarget != null) _audioSource.PlayOneShot(aCÑontrolGhostToTarget);
     }
 
-    #region SendingGhostTargetTalentActive
+    #region Talents
+
+    public void EffectsInnerDarknessTalentActive(bool value)
+    {
+        _effectsInnerDarknessTalent = value;
+    }
+
     public void SendingGhostTargetTalentActive(bool value)
     {
         _sendingGhostTargetTalentActive = value;
     }
-    #endregion
 
-    #region CooldownGhostShotActiveTalent
     public void CooldownGhostShotActiveTalent(bool value)
     {
-        cooldownGhostShotActive = value;
+        _cooldownGhostShotActive = value;
     }
+
     #endregion
 }

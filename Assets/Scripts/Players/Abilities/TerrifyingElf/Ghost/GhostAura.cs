@@ -16,10 +16,13 @@ public class GhostAura : Skill
     private Coroutine _zoneEffectCoroutine;
     private Coroutine _colliderEffectCoroutine;
     private float _spawnTime;
+    private bool _effectsDarknessTalent;
 
     protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
     protected override int AnimTriggerCast => throw new System.NotImplementedException();
     protected override bool IsCanCast => throw new System.NotImplementedException();
+
+    public bool effectsInnerDarknessTalent { get => _effectsDarknessTalent; set => _effectsDarknessTalent = value; }
 
     private void Start()
     {
@@ -146,20 +149,20 @@ public class GhostAura : Skill
 
     private float CalculateAdjustedSilentDuration(CharacterState characterState)
     {
-        float adjustedDuration = duration;
-
-        if (characterState.CheckForState(States.InnerDarkness))
+        if (_effectsDarknessTalent && characterState.CheckForState(States.InnerDarkness))
         {
             int innerDarknessStacks = characterState.CheckStateStacks(States.InnerDarkness);
 
-
-
-            float durationMultiplier = 1 + 0.4f * innerDarknessStacks;
-            adjustedDuration *= durationMultiplier;
+            float durationMultiplier = 1.4f + 0.1f * (innerDarknessStacks - 1);
+            duration = durationMultiplier;
         }
 
-        return adjustedDuration;
+        return duration;
     }
+
+    #region Talents
+
+    #endregion
 
     protected override IEnumerator PrepareJob()
     {

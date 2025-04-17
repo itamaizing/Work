@@ -12,6 +12,7 @@ public class Restoration : Skill
     [SerializeField] private float healInterval = 4f;
     [SerializeField] private float lightCastTime = 1.2f;
     [SerializeField] private float effectivenessIncreasePerHeal = 0.1f;
+    [SerializeField] private AbilityInfo lightInfo;
 
     [Header("Restoration (Dark Mode) Settings")]
     [SerializeField] private float damagePerTick = 6f;
@@ -19,17 +20,19 @@ public class Restoration : Skill
     [SerializeField] private float darkDuration = 12.1f;
     [SerializeField] private float damageInterval = 3f;
     [SerializeField] private float darkCastTime = 1.2f;
+    [SerializeField] private AbilityInfo darkInfo;
 
     [SerializeField] private AudioClip audioClip;
 
     private AudioSource _audioSource;
-    public bool isLightMode = true;
     private float _accumulatedEffectiveness = 1f;
     private float _totalHealedInInterval = 0f;
-
+    private bool _spiritEnergyTalent;
     private Character _target;
+
     public Character Target => _target;
-    
+    [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
+
     protected override bool IsCanCast => IsCanCastCheck();
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("Cast");
@@ -50,13 +53,13 @@ public class Restoration : Skill
 
     private void OnEnable()
     {
-        OnModeChange += HandleModeChange;
+        OnModeChange += UpdateMode;
         UpdateMode();
     }
 
     private void OnDisable()
     {
-        OnModeChange -= HandleModeChange;
+        OnModeChange -= UpdateMode;
         if (_target != null)
         {
             var healthComponent = _target.GetComponent<Health>();
@@ -66,17 +69,28 @@ public class Restoration : Skill
             }
         }
     }
-    
+
 
     public void SwitchMode()
     {
+        CmdSwitchMode();
+    }
+
+    [Command]
+    private void CmdSwitchMode()
+    {
         isLightMode = !isLightMode;
+    }
+
+    private void OnModeChanged(bool oldValue, bool newValue)
+    {
+        UpdateMode();
         OnModeChange?.Invoke();
     }
 
-    private void HandleModeChange()
+    public void SpiritEnergyTalentActive(bool value)
     {
-        UpdateMode();
+        _spiritEnergyTalent = value;
     }
 
     private void UpdateMode()
@@ -84,7 +98,9 @@ public class Restoration : Skill
         Radius = isLightMode ? lightRange : darkRange;
         School = isLightMode ? Schools.Light : Schools.Dark;
         CastDeley = isLightMode ? lightCastTime : darkCastTime;
+        AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
         TargetsLayers = isLightMode ? LayerMask.GetMask("Allies") : LayerMask.GetMask("Enemy");
+        Hero.Abilities.SkillPanelUpdate();
     }
 
     private void HandleRestorationLight()
@@ -140,7 +156,8 @@ public class Restoration : Skill
             float endTime = Time.time + lightDuration;
             while (Time.time < endTime)
             {
-                float bonusHealFromSpiritEnergy = GetSpiritEnergyBonus(target);
+                float bonusHealFromSpiritEnergy = 0;
+                if (_spiritEnergyTalent) bonusHealFromSpiritEnergy = GetSpiritEnergyBonus(target);
                 float effectiveHeal = healPerTick * _accumulatedEffectiveness + bonusHealFromSpiritEnergy;
 
                 var heal = new Heal { Value = effectiveHeal };

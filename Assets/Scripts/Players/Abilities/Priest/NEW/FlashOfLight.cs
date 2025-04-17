@@ -8,14 +8,17 @@ public class FlashOfLight : Skill
     [Header("Flash of Light Settings")]
     [SerializeField] private float _healAmount = 35f;
     [SerializeField] private float _lightRange = 4f;
+    [SerializeField] private AbilityInfo lightInfo;
 
     [Header("Flash of Darkness Settings")]
     [SerializeField] private float _damageAmount = 35f;
     [SerializeField] private float _darkRange = 6f;
+    [SerializeField] private AbilityInfo darkInfo;
 
     [SerializeField] private AudioClip audioClip;
+    [SerializeField] private ReversePolarity reversePolarity;
 
-    public bool isLightMode = true;
+    private bool _spiritEnergyTalent;
 
     private Character _target;
     private Character _previousTarget;
@@ -27,6 +30,7 @@ public class FlashOfLight : Skill
     private float _cooldownReduction = 5f;
 
     public event Action OnModeChange;
+    [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
 
     protected override bool IsCanCast => IsCanCastCheck();
 
@@ -66,18 +70,35 @@ public class FlashOfLight : Skill
 
     public void SwitchMode()
     {
+        CmdSwitchMode();
+    }
+
+    [Command]
+    private void CmdSwitchMode()
+    {
         isLightMode = !isLightMode;
+    }
+
+    private void OnModeChanged(bool oldValue, bool newValue)
+    {
         UpdateMode();
         OnModeChange?.Invoke();
+    }
+
+    public void SpiritEnergyTalentActive(bool value)
+    {
+        _spiritEnergyTalent = value;
     }
 
     private void UpdateMode()
     {
         Radius = isLightMode ? _lightRange : _darkRange;
         School = isLightMode ? Schools.Light : Schools.Dark;
+        AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
         TargetsLayers = isLightMode
             ? LayerMask.GetMask("Allies", "Player")
             : LayerMask.GetMask("Enemy");
+        Hero.Abilities.SkillPanelUpdate();
     }
 
     protected override IEnumerator PrepareJob()
@@ -104,10 +125,14 @@ public class FlashOfLight : Skill
         {
             CmdPlayShootSound();
 
-            if (isLightMode)
-                HandleFlashOfLight();
-            else
-                HandleFlashOfDarkness();
+            if (reversePolarity != null && Hero.CharacterState.CheckForState(States.ReversePolarity))
+            {
+                reversePolarity.SwitchSpells();
+                reversePolarity.RemoveReversePolarityEffect();
+            }
+
+                if (isLightMode) HandleFlashOfLight();
+                else HandleFlashOfDarkness();
         }
 
         yield return null;
@@ -137,7 +162,8 @@ public class FlashOfLight : Skill
         var health = target.GetComponent<Health>();
         if (health == null) return;
 
-        float bonusHealFromSpiritEnergy = GetSpiritEnergyBonus(target);
+        float bonusHealFromSpiritEnergy = 0;
+        if (_spiritEnergyTalent) bonusHealFromSpiritEnergy = GetSpiritEnergyBonus(target);
         var heal = new Heal { Value = _healAmount + bonusHealFromSpiritEnergy };
 
         CmdApplyHeal(heal, health.gameObject, this, Name);

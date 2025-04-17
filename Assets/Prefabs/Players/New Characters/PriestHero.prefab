@@ -5251,24 +5251,48 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.size
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._id
       value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._id
+      value: 1001
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[2]._id
+      value: 1002
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._name
-      value: TalentGroup0
+      value: Light
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._name
+      value: Dark
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[2]._name
+      value: Discipline
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.size
-      value: 18
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[2]._talentGroup.Array.size
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[0]
       value: 
-      objectReference: {fileID: 6021452036386971434}
+      objectReference: {fileID: 4198290243822473888}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[1]
       value: 
@@ -5306,35 +5330,107 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7331801944504504144}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[0]
+      value: 
+      objectReference: {fileID: 365569721315414755}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[1]
+      value: 
+      objectReference: {fileID: 3167839979402982636}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[2]
+      value: 
+      objectReference: {fileID: 4123094691184289860}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[3]
+      value: 
+      objectReference: {fileID: 8687145299049863108}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[4]
+      value: 
+      objectReference: {fileID: 447011797231109846}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[5]
+      value: 
+      objectReference: {fileID: 8636649860820061698}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[6]
+      value: 
+      objectReference: {fileID: 4458375989096553484}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[7]
+      value: 
+      objectReference: {fileID: 1914382487903794868}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[8]
+      value: 
+      objectReference: {fileID: 2056303869398073752}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[9]
+      value: 
+      objectReference: {fileID: 7331801944504504144}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[2]._talentGroup.Array.data[0]
+      value: 
+      objectReference: {fileID: 7359924091907643332}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[10]
       value: 
       objectReference: {fileID: 3909138369121926387}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[11]
       value: 
-      objectReference: {fileID: 477570396441443125}
+      objectReference: {fileID: 9021092612902411166}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[12]
       value: 
-      objectReference: {fileID: 9021092612902411166}
+      objectReference: {fileID: 471872757579073010}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[13]
       value: 
-      objectReference: {fileID: 471872757579073010}
+      objectReference: {fileID: 6884934802079251823}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[14]
       value: 
-      objectReference: {fileID: 6884934802079251823}
+      objectReference: {fileID: 7357773734673534914}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[15]
       value: 
-      objectReference: {fileID: 7357773734673534914}
+      objectReference: {fileID: 4487192289763849279}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[16]
       value: 
-      objectReference: {fileID: 4487192289763849279}
+      objectReference: {fileID: 10600401575572123}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[17]
+      value: 
+      objectReference: {fileID: 10600401575572123}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[10]
+      value: 
+      objectReference: {fileID: 3909138369121926387}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[12]
+      value: 
+      objectReference: {fileID: 9021092612902411166}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[13]
+      value: 
+      objectReference: {fileID: 471872757579073010}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[14]
+      value: 
+      objectReference: {fileID: 6884934802079251823}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[15]
+      value: 
+      objectReference: {fileID: 7357773734673534914}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[16]
+      value: 
+      objectReference: {fileID: 4487192289763849279}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[17]
       value: 
       objectReference: {fileID: 10600401575572123}
     - target: {fileID: 6397899444093627911, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -5772,9 +5868,6 @@ PrefabInstance:
       addedObject: {fileID: 504324304728665980}
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8367263716856475010}
-    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 3096350181652607353}
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
@@ -5814,9 +5907,6 @@ PrefabInstance:
       addedObject: {fileID: 3909138369121926387}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 477570396441443125}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 9021092612902411166}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
@@ -5833,6 +5923,18 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 10600401575572123}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3167839979402982636}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 365569721315414755}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4198290243822473888}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7359924091907643332}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!1 &300637093874885484 stripped
 GameObject:
@@ -5911,9 +6013,9 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
-  _abilityInfo: {fileID: 11400000, guid: c70dc6b7754bbd34e8a2ddab54f79ffa, type: 2}
+  _isTalentSpell: 1
+  _isSkillActive: 0
+  _abilityInfo: {fileID: 11400000, guid: 03421708f78eb824ca74806705f86a02, type: 2}
   _isSubjectToGlobalCooldownTime: 0
   _skillEnergyCosts: []
   _cooldownTime: 0
@@ -5951,29 +6053,31 @@ MonoBehaviour:
   _attackZoneSize: 0
   _attackDelay: 1.5
   _chargeAttackDelay: 0
-  _buffDuration: 90
-  _healAmount: 2
-  _damageAmount: 2
+  _buffDuration: 18
+  _healAmount: 6
+  _damageAmount: 6
   _castTime: 1.5
   _range: 4
   _manaCostHeal:
   - resourceType: 1
-    resourceCost: 1
+    resourceCost: 6
   _manaCostDamage:
   - resourceType: 1
-    resourceCost: 2
+    resourceCost: 6
+  lightInfo: {fileID: 11400000, guid: 03421708f78eb824ca74806705f86a02, type: 2}
   _altRange: 6
-  _altBuffDuration: 50
-  _altDamageAmount: 2
+  _altBuffDuration: 18
+  _altDamageAmount: 6
   _altManaCostDamage:
   - resourceType: 1
-    resourceCost: 2
+    resourceCost: 6
   _flashOfLight: {fileID: 2650038749754245899}
+  darkInfo: {fileID: 11400000, guid: 22ca21ac901d29c49a8775abdd2c43ee, type: 2}
   lightSparkProjectile: {fileID: 4789096603887808753, guid: 40ef9625f08a4804fa2a0a8e7bc8cd01, type: 3}
   playerLinks: {fileID: 4534754468497973439}
   spawnPoint: {fileID: 3812818705873013830}
   audioClip: {fileID: 8300000, guid: 8a1e601722ba8fa4c9d5091b783ebe71, type: 3}
-  IsLightMode: 1
+  isLightMode: 1
 --- !u!114 &2650038749754245899
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5989,9 +6093,9 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
-  _abilityInfo: {fileID: 11400000, guid: f28fa17970269584aa1eb1175b7b8c28, type: 2}
+  _isTalentSpell: 1
+  _isSkillActive: 0
+  _abilityInfo: {fileID: 11400000, guid: 048a51707f36a914bb8c9b86717fb736, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
   - resourceType: 1
@@ -6030,9 +6134,12 @@ MonoBehaviour:
   _earlyCooldown: 0
   _healAmount: 35
   _lightRange: 4
+  lightInfo: {fileID: 11400000, guid: 048a51707f36a914bb8c9b86717fb736, type: 2}
   _damageAmount: 35
   _darkRange: 6
+  darkInfo: {fileID: 11400000, guid: 4469c20cf324553438b48ddbcab1541f, type: 2}
   audioClip: {fileID: 8300000, guid: 5531a0cd7bf154f4b9803db442a17de9, type: 3}
+  reversePolarity: {fileID: 4397321495794393293}
   isLightMode: 1
 --- !u!114 &4087625883292875692
 MonoBehaviour:
@@ -6051,13 +6158,13 @@ MonoBehaviour:
   syncInterval: 0
   _isTalentSpell: 0
   _isSkillActive: 1
-  _abilityInfo: {fileID: 11400000, guid: f6a7d9be0e6846549936f5928a34fd16, type: 2}
+  _abilityInfo: {fileID: 11400000, guid: 29f4a097d1fbabf49924792a7b9935d5, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 4
   _cooldownTime: 9
-  _castDeley: 1.2
+  _castDeley: 0
   _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
@@ -6091,14 +6198,16 @@ MonoBehaviour:
   healPerTick: 6
   lightRange: 4
   lightDuration: 12
-  healInterval: 4
-  lightCastTime: 1.2
+  healInterval: 3
+  lightCastTime: 0
   effectivenessIncreasePerHeal: 0.1
+  lightInfo: {fileID: 11400000, guid: 29f4a097d1fbabf49924792a7b9935d5, type: 2}
   damagePerTick: 6
   darkRange: 6
   darkDuration: 12
   damageInterval: 3
-  darkCastTime: 1.2
+  darkCastTime: 0
+  darkInfo: {fileID: 11400000, guid: abe2763e521592e48996e338cc0a5052, type: 2}
   audioClip: {fileID: 8300000, guid: f0ce7ab9666458547a7a505a6b0bbc35, type: 3}
   isLightMode: 1
 --- !u!114 &9090548113051291277
@@ -6116,9 +6225,9 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
-  _abilityInfo: {fileID: 11400000, guid: edabbac3fc8a8b64886323d05a1ad8de, type: 2}
+  _isTalentSpell: 1
+  _isSkillActive: 0
+  _abilityInfo: {fileID: 11400000, guid: fae20c68fbd43a04691d2a18e59c051d, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
   _cooldownTime: 0
@@ -6153,22 +6262,18 @@ MonoBehaviour:
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
-  lightShieldDuration: 18
+  lightShieldDuration: 6
   tiredSoulDuration: 12
-  selfCastTime: 0.6
-  allyCastTime: 1.2
-  absorbAmount: 20
-  manaCostLight:
-  - resourceType: 1
-    resourceCost: 6
+  selfCastTime: 0
+  allyCastTime: 0
+  absorbAmount: 40
+  manaCostLight: []
   cooldownLight: 4
-  darkShieldDuration: 12
-  maxDamagePerTick: 20
-  manaCostDark:
-  - resourceType: 1
-    resourceCost: 20
+  darkShieldDuration: 6
+  maxDamagePerTick: 40
+  manaCostDark: []
   cooldownDark: 4
-  darkCastTime: 1.2
+  darkCastTime: 0
   audioClip: {fileID: 8300000, guid: b98d79eb8d8561741abaf46e6e955fb1, type: 3}
   isLightMode: 1
 --- !u!114 &4397321495794393293
@@ -6188,7 +6293,7 @@ MonoBehaviour:
   syncInterval: 0
   _isTalentSpell: 0
   _isSkillActive: 1
-  _abilityInfo: {fileID: 11400000, guid: f0af27700c8a8434eb05c169391fea3c, type: 2}
+  _abilityInfo: {fileID: 11400000, guid: 4ac9b94a28a62fa4bbd5224c36c79453, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
   - resourceType: 1
@@ -6285,58 +6390,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   _buffDuration: 5
---- !u!114 &8367263716856475010
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 300637093874885484}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4260b13301ab4330b9221a820248bd1e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _isTalentSpell: 1
-  _isSkillActive: 0
-  _abilityInfo: {fileID: 11400000, guid: 6d5bc1eeea1705949b8218605f7d529a, type: 2}
-  _isSubjectToGlobalCooldownTime: 1
-  _skillEnergyCosts: []
-  _cooldownTime: 0
-  _castDeley: 0
-  _damageValue: 0
-  _abilitySchool: 0
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
-  _radius: 0
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
-  _disactive: 0
-  _earlyCooldown: 0
 --- !u!114 &3096350181652607353
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6721,24 +6774,6 @@ MonoBehaviour:
     Icon: {fileID: 21300000, guid: c958be7c2aec0f04f9ee64f294e9848b, type: 3}
   character: {fileID: 4534754468497973439}
   _sparkOfLight: {fileID: 683463177557245195}
---- !u!114 &477570396441443125
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 253526e68ad595449af4ba49d6010ede, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _data:
-    IsOpen: 0
-    Description: 
-    Icon: {fileID: 21300000, guid: f0ccd677cfe30094c8aebaee7b301751, type: 3}
-  character: {fileID: 4534754468497973439}
-  _selfHarm: {fileID: 8367263716856475010}
 --- !u!114 &9021092612902411166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6847,3 +6882,80 @@ MonoBehaviour:
     Icon: {fileID: 0}
   character: {fileID: 4534754468497973439}
   _soulAid: {fileID: 3096350181652607353}
+--- !u!114 &3167839979402982636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff13cc995b6adde43b2d4caf06ad9c98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 21300000, guid: 5947490bf033aa34584f86a37691c7e0, type: 3}
+  character: {fileID: 4534754468497973439}
+  restoration: {fileID: 4087625883292875692}
+  flashOfLight: {fileID: 2650038749754245899}
+  spark: {fileID: 683463177557245195}
+--- !u!114 &365569721315414755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2e3a29a4ed4d82428758925524f6edc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 21300000, guid: 53870fe1f8d490943a9f72d539e0e30b, type: 3}
+  character: {fileID: 4534754468497973439}
+  sparkOfLight: {fileID: 683463177557245195}
+--- !u!114 &4198290243822473888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e348666e1881fb9448ff2a5cb879b2ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 21300000, guid: de2eb585768797b40a4cfa09999d20fe, type: 3}
+  character: {fileID: 4534754468497973439}
+  sparkOfLight: {fileID: 683463177557245195}
+  flashOfLight: {fileID: 2650038749754245899}
+  _ability: {fileID: 4092227064955680494}
+--- !u!114 &7359924091907643332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba7a4fdc88df2b64494d845d37d490fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 21300000, guid: 5f87305361922404b91845905135d326, type: 3}
+  character: {fileID: 4534754468497973439}
+  priestShield: {fileID: 9090548113051291277}
+  _ability: {fileID: 4092227064955680494}

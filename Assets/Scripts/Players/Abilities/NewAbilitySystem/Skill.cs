@@ -153,6 +153,7 @@ public abstract class Skill : NetworkBehaviour
     public string Name => _abilityInfo.Name;
     public string Description => _abilityInfo.Description;
     public Sprite Icon => _abilityInfo.Icon;
+    public AbilityInfo AbilityInfoHero { get => _abilityInfo; set => _abilityInfo = value; }
     public bool IsCooldowned { get => _remainingCooldownTime <= 0; }
     public virtual bool IsPayCostStartCooldown { get => true;}
     public int Chargers { get => _currentChargers; protected set { _currentChargers = value; CurrentChargeChanged?.Invoke(_currentChargers); } }

@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class InnerDarkness : AbstractCharacterState
 {
-    private float _baseDuration;
+    private const float TimeDecreasePerStack = 2f;
+
     private float _duration;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
@@ -17,9 +18,10 @@ public class InnerDarkness : AbstractCharacterState
     {
         _characterState = character;
         _personWhoMadeBuff = personWhoMadeBuff;
-        _baseDuration = durationToExit;
-        MaxStacksCount = 13;
+        MaxStacksCount = 6;
         _duration = durationToExit;
+
+        Debug.Log($"CurrentStacksCount: {CurrentStacksCount}");
     }
 
     public override void UpdateState()
@@ -61,19 +63,18 @@ public class InnerDarkness : AbstractCharacterState
 
     private void InitializeFirstStack()
     {
-        _duration = _baseDuration;
         CurrentStacksCount++;
     }
 
     private void AddNewStack()
     {
         CurrentStacksCount++;
-        _duration = _baseDuration - CurrentStacksCount;
+        _duration = _duration - CurrentStacksCount * TimeDecreasePerStack;
     }
 
     private void UpdateDurationForMaxStacks()
     {
-        _duration = _baseDuration - CurrentStacksCount;
+        _duration = CurrentStacksCount * TimeDecreasePerStack;
 
         _characterState.AddState(States.Fear, Random.Range(0.7f, 1.4f), 0, _personWhoMadeBuff.gameObject, null);
     }
