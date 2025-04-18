@@ -33,8 +33,8 @@ public class SkillQueue : MonoBehaviour
 
     public void Add(Skill skill)
     {
-        if (_skills.Contains(skill))
-            return; 
+        //if (_skills.Contains(skill))
+            //return; 
 
         _skills.Enqueue(skill);
         SkillAdded?.Invoke(skill);
@@ -49,16 +49,17 @@ public class SkillQueue : MonoBehaviour
         }
         else if(IsEmpty == false)
         {
-            RemoveFromQueue();
+            RemoveFromQueue().TargetInfoQueue.Dequeue();
             return true;
         }
         return false;
     }
 
-    private void RemoveFromQueue()
+    private Skill RemoveFromQueue()
     {
         var temp = _skills.Dequeue();
         SkillDeleted?.Invoke(temp);
+        return temp;
     }
 
     private void OnCastEnded()

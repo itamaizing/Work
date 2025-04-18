@@ -1056,6 +1056,14 @@ public abstract class Skill : NetworkBehaviour
         _targetInfoQueue.Enqueue(targetInfo);
     }
 
+    private void LoadTargetDataForCheckCast()
+    {
+        _targetInfoQueue.TryPeek(out TargetInfo temp);
+
+        if (temp != null)
+            LoadTargetData(temp);
+    }
+
     private IEnumerator CooldownCoroutine(float cooldownTime)
     {
         CooldownStarted?.Invoke(cooldownTime);
@@ -1142,6 +1150,8 @@ public abstract class Skill : NetworkBehaviour
 
         OnClickCanceled();
 
+        LoadTargetDataForCheckCast();
+
         PreparingSuccess?.Invoke(this);
         _isPreparing = false;
         StopAutoDraw();
@@ -1188,6 +1198,7 @@ public abstract class Skill : NetworkBehaviour
         _isCasting = false;
 
         ClearData();
+        LoadTargetDataForCheckCast();
 
         _castCoroutine = null;
     }
