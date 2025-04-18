@@ -40,11 +40,11 @@ public class SkillQueue : MonoBehaviour
         SkillAdded?.Invoke(skill);
     }
 
-    public bool TryCancel(bool foceCancel = false)
+    public bool TryCancel(bool isFoceCancel = false)
     {
         if (_currentSkill != null)
         {
-            _currentSkill.TryCancel(foceCancel);
+            _currentSkill.TryCancel(isFoceCancel);
             return true;
         }
         else if(IsEmpty == false)

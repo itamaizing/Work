@@ -122,6 +122,7 @@ public abstract class Skill : NetworkBehaviour
     private List<Coroutine> _currentChargeCooldownJob;
     private float _assistTimer = 5f;
     private Coroutine _assistCoroutine;
+    private Queue<TargetInfo> _targetInfoQueue = new();
 
     public bool IsTalentSpell => _isTalentSpell;
     public bool IsSkillActive
@@ -167,6 +168,7 @@ public abstract class Skill : NetworkBehaviour
     public List<SkillEnergyCost> SkillEnergyCosts { get => _skillEnergyCosts; }
     public List<SkillEnergyCost> ManaCostPerTick { get => _manaCostPerTick; }
     public float ManaCostRate { get => _manaCostRate; }
+    public Queue<TargetInfo> TargetInfoQueue { get => _targetInfoQueue; }
 
     public event Action<int> CurrentChargeChanged;
     public event Action<float> CooldownStarted;
@@ -184,6 +186,7 @@ public abstract class Skill : NetworkBehaviour
     public event Action<float> MassageHaventMana;
     public event Action MassageHaventCharge;
     public event Action<float> MassageNotCooldowned;
+    public event Action<TargetInfo> TargetDataSaved;
 
 
     /// <summary>
@@ -194,7 +197,8 @@ public abstract class Skill : NetworkBehaviour
     protected abstract int AnimTriggerCast { get; }
     protected abstract bool IsCanCast { get; }
 
-    protected abstract IEnumerator PrepareJob();
+    public abstract void LoadTargetData(TargetInfo targetInfo);
+    protected abstract IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback);
     protected abstract IEnumerator CastJob();
     protected abstract void ClearData();
 
@@ -234,6 +238,8 @@ public abstract class Skill : NetworkBehaviour
         if (IsHaveResources && IsCanCast && _isCasting == false && NoObstacles() && Hero.IsDead == false)
         {
             TryPayCost(IsPayCostStartCooldown);
+
+            LoadTargetData(_targetInfoQueue.Dequeue());
             _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
             return true;
         }
@@ -1045,6 +1051,11 @@ public abstract class Skill : NetworkBehaviour
         Hero.KillCounter++;
     }
 
+    private void SaveTargetData(TargetInfo targetInfo)
+    {
+        _targetInfoQueue.Enqueue(targetInfo);
+    }
+
     private IEnumerator CooldownCoroutine(float cooldownTime)
     {
         CooldownStarted?.Invoke(cooldownTime);
@@ -1125,7 +1136,7 @@ public abstract class Skill : NetworkBehaviour
 
         SubscribeClickEvents();
 
-        yield return _prepareCoroutine = StartCoroutine(PrepareJob());
+        yield return _prepareCoroutine = StartCoroutine(PrepareJob(SaveTargetData));
 
         UnSubscribeClickEvents();
 

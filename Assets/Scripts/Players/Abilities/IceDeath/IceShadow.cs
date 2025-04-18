@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,9 +71,14 @@ public class IceShadow : Skill
 	{
 		_playerLinks.Health.Evaded -= Evaded;
 	}
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        
+    }
 
-	protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
+		callbackDataSaved(null);
 		yield return null;
 	}
 

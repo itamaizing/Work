@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using Mirror;
+using System;
 
 public class IceRolling : Skill
 {
@@ -202,7 +203,7 @@ public class IceRolling : Skill
 		Hero.Move.CanMove = true;
 	}
 
-	/*private void NextJump()
+    /*private void NextJump()
 	{
 		if(_jumpCount > 0)
 		{
@@ -226,7 +227,12 @@ public class IceRolling : Skill
 		}
 	}*/
 
-	protected override IEnumerator PrepareJob()
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        Debug.LogError("DataError");
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
 		while (float.IsPositiveInfinity(_mousePos.x))
 		{
@@ -249,7 +255,8 @@ public class IceRolling : Skill
 			}
 			yield return null;
 		}
-	}
+        Debug.LogError("DataError");
+    }
 
 	protected override IEnumerator DynamicRendererJob(float time = 0.2f)
 	{

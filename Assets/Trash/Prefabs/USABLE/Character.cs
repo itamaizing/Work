@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Mirror;
-using Org.BouncyCastle.Pqc.Crypto.Lms;
 
 [RequireComponent(typeof(NetworkIdentity))]
-public abstract class Character : NetworkBehaviour, IDamageable, IHealingable
+public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, ITargetable
 {
 	[SerializeField] private CharacterData _playerData;
 	[SerializeField] private UserNetworkSettings _networkSettings; 

@@ -217,4 +217,9 @@ public class SparkOfLight : AutoAttackSkill
     {
         base.ClearData();
     }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new NotImplementedException();
+    }
 }

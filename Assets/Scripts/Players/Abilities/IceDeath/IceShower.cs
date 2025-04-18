@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
@@ -40,7 +41,12 @@ public class IceShower : Skill
 		
 	}
 
-	protected override IEnumerator PrepareJob()
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _targetPoint = targetInfo.Points[0];
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
 		while (float.IsPositiveInfinity(_targetPoint.x))
 		{
@@ -55,6 +61,9 @@ public class IceShower : Skill
 			}
 			yield return null;
 		}
+		TargetInfo targetInfo = new();
+		targetInfo.Points.Add(_targetPoint);
+		callbackDataSaved(targetInfo);
 	}
 
 	protected override IEnumerator CastJob()

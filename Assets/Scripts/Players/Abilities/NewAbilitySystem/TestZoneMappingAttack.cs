@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,7 +13,12 @@ public class TestZoneMappingAttack : Skill
 
     protected override int AnimTriggerCast => throw new System.NotImplementedException();
 
-    protected override IEnumerator PrepareJob()
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _targetPoint = targetInfo.Points[0];
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while (float.IsPositiveInfinity(_targetPoint.x))
         {
@@ -27,6 +33,9 @@ public class TestZoneMappingAttack : Skill
             }
             yield return null;
         }
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add( _targetPoint );
+        callbackDataSaved( targetInfo );
     }
 
     protected override IEnumerator CastJob()

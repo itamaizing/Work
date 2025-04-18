@@ -235,4 +235,9 @@ public class PhysicalAttack : AutoAttackSkill
 		_rollingPhysTalent = value;
 		_stunCount = count;
 	}
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new System.NotImplementedException();
+    }
 }

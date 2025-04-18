@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -124,6 +125,10 @@ public class LightningMovement : Skill
         _player.Animator.SetTrigger("LightningMovementEndCast");
         AnimCastEnded();
     }
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        Debug.LogError("DataError");
+    }
 
     protected override void ClearData()
     {
@@ -181,7 +186,7 @@ public class LightningMovement : Skill
         }
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         if (_cooldownHasChange)
             ReturnCooldown();
@@ -215,6 +220,8 @@ public class LightningMovement : Skill
         _player.Animator.applyRootMotion = true;
 
         AnimLightningMovementCast();
+
+        Debug.LogError("DataError");
     }
 
     protected override IEnumerator CastJob()

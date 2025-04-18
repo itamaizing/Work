@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -28,6 +29,17 @@ public class JumpWithChelicera : Skill
 
     protected override bool IsCanCast => CheckCanCast();
 
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _target = (Character)targetInfo.Targets[0];
+        _mousePosition = targetInfo.Points[0];
+
+        if (_target != null)
+        {
+            _isTarget = true;
+        }
+    }
+
     protected override void ClearData()
     {
         _target = null;
@@ -35,7 +47,7 @@ public class JumpWithChelicera : Skill
         _isTarget = false;
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
         _castDeley = _delayBeforeJump;
 
@@ -53,6 +65,10 @@ public class JumpWithChelicera : Skill
             }
             yield return null;
         }
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Targets.Add(_target);
+        targetInfo.Points.Add(_mousePosition);
+        targetDataSavedCallback(targetInfo);
     }
 
     protected override IEnumerator CastJob()

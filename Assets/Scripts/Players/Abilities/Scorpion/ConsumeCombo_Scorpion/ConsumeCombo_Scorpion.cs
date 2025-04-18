@@ -1,6 +1,7 @@
 using JetBrains.Annotations;
 using Mirror;
 using Org.BouncyCastle.Asn1.Cmp;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,11 @@ public class ConsumeCombo_Scorpion : Skill
         {
             item.Notifier = this;
         }
+    }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        
     }
 
     [Command]
@@ -128,8 +134,9 @@ public class ConsumeCombo_Scorpion : Skill
     //    _comboPlayer.Use(amount);
     //}
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        callbackDataSaved(null);
         yield return null;
     }
 

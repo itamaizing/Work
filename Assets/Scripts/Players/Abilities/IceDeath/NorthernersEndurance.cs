@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,7 +29,12 @@ public class NorthernersEndurance : Skill
 
 	}
 
-	protected override IEnumerator CastJob()
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _target = (Character)targetInfo.Targets[0];
+    }
+
+    protected override IEnumerator CastJob()
 	{
 		float boostHp = 0.1f + 0.003f * _energy.CurrentValue;
 		_energy.CmdUse(_energy.CurrentValue);
@@ -41,7 +47,7 @@ public class NorthernersEndurance : Skill
 		_target = null;
 	}
 
-	protected override IEnumerator PrepareJob()
+	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
 		while (_target == null)
 		{
@@ -51,6 +57,9 @@ public class NorthernersEndurance : Skill
 			}
 			yield return null;
 		}
+		TargetInfo targetInfo = new();
+		targetInfo.Targets.Add(_target);
+		callbackDataSaved(targetInfo);
 	}
 
 	[Command]

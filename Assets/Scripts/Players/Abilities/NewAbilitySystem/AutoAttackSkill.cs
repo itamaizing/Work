@@ -96,7 +96,7 @@ public abstract class AutoAttackSkill : Skill
         _hero.Move.StopLookAt();
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
         while (Target == null)
         {

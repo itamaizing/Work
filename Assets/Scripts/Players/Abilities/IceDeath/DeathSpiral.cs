@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,7 +50,12 @@ public class DeathSpiral : Skill
 		Chargers = 0;
 	}
 
-	protected override IEnumerator PrepareJob()
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        Debug.LogError("DataError");
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
 		while (_target == null)
 		{
@@ -67,6 +73,7 @@ public class DeathSpiral : Skill
 			}
 			yield return null;
 		}
+		Debug.LogError("DataError");
 	}
 
 	protected override IEnumerator CastJob()

@@ -74,4 +74,9 @@ public class MinionAttack : AutoAttackSkill
 	{
 		_speedBoost /= speed;
 	}
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new System.NotImplementedException();
+    }
 }

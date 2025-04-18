@@ -89,7 +89,13 @@ public class SpitPoison : Skill, IAltAbility
             SetSpawnPoint(_spawnPoint.transform.position.x, _spawnPoint.transform.position.y, _spawnPoint.transform.position.z);
     }
 
-    protected override IEnumerator PrepareJob()
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _currentTarget = (Character)targetInfo.Targets[0];
+        _mousePos = targetInfo.Points[0];
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         _isAbilityActive = true;
 
@@ -112,6 +118,10 @@ public class SpitPoison : Skill, IAltAbility
             }
             yield return null;
         }
+        TargetInfo targetInfo = new();
+        targetInfo.Targets.Add(_currentTarget);
+        targetInfo.Points.Add(_mousePos);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()

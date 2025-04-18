@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +15,11 @@ public class TestSpawn : Skill
 
     protected override int AnimTriggerCast => 0;
 
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _position = targetInfo.Points[0];
+    }
+
     protected override IEnumerator CastJob()
     {
         Hero.SpawnComponent.CmdSpawnUnit(0, _position);
@@ -26,7 +32,7 @@ public class TestSpawn : Skill
         _position = Vector2.zero;
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while(_position == Vector3.zero)
         {
@@ -36,5 +42,8 @@ public class TestSpawn : Skill
             }
             yield return null;
         }
+        TargetInfo targetInfo = new();
+        targetInfo.Points.Add(_position);
+        callbackDataSaved(targetInfo);
     }
 }

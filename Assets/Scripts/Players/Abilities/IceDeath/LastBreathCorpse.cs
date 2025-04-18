@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -26,8 +27,12 @@ public class LastBreathCorpse : Skill
 			Timer();
 		}
 	}
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        
+    }
 
-	private void Timer()
+    private void Timer()
 	{
 		_timer -= Time.deltaTime;
 		if (_timer < 0) 
@@ -37,8 +42,9 @@ public class LastBreathCorpse : Skill
 		}
 	}
 
-	protected override IEnumerator PrepareJob()
+	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
+		callbackDataSaved(null);
 		yield return null;
 	}
 

@@ -16,6 +16,12 @@ public class ClawStrike : AutoAttackSkill
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerAutoAttack => 0;
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new System.NotImplementedException();
+    }
+
     protected override void CastAction()
     {
         DamageDeal();

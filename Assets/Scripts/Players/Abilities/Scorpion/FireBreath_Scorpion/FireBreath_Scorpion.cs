@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -211,7 +212,12 @@ public class FireBreath_Scorpion : Skill, ICanConsumeComboPoints
         ConsumedAmount = Notifier.PayComboPoints(Mathf.Clamp(amount, 0, Notifier.AvailablePoints));
     }
 
-    protected override IEnumerator PrepareJob()
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        Debug.LogError("DataError");
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while (true)
         {
@@ -221,6 +227,7 @@ public class FireBreath_Scorpion : Skill, ICanConsumeComboPoints
             }
             yield return null;
         }
+        callbackDataSaved(null);
     }
 
     protected override IEnumerator CastJob()

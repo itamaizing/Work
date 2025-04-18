@@ -1,7 +1,9 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class ExplosionPoisonCloud : Skill
 {
@@ -23,7 +25,15 @@ public class ExplosionPoisonCloud : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override bool IsCanCast => _player.CharacterState.CheckForState(States.PoisonCloud);
 
-    protected override IEnumerator PrepareJob()
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        foreach (var item in targetInfo.Targets)
+        {
+            _enemies.Add((Character)item);
+        }
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         if (_searchingEnemiesCoroutine == null)
         {
@@ -35,6 +45,9 @@ public class ExplosionPoisonCloud : Skill
         {
             yield return null;
         }
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Targets.AddRange(_enemies);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()

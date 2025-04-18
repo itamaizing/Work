@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
@@ -31,9 +32,15 @@ public class ReversePolarity : Skill
     {
         
     }
-    protected override IEnumerator PrepareJob()
+    public override void LoadTargetData(TargetInfo targetInfo)
     {
-    yield break;
+        Debug.LogError("DataError");
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    {
+        callbackDataSaved(null);
+        yield break;
     }
 
     protected override IEnumerator CastJob()

@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,7 +51,14 @@ public class MagicDefense : Skill
 		}
 
 	}
-	[Command]
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _target = (Character)targetInfo.Targets[0];
+		_position = targetInfo.Points[0];
+    }
+
+    [Command]
 	private void Shoot(GameObject targetGm)
 	{
 		Character target = targetGm.GetComponent<Character>();
@@ -80,7 +88,7 @@ public class MagicDefense : Skill
 		//magArea.Init(_playerLinks, _energy.CurrentValue, false, this);
 	}*/
 
-	protected override IEnumerator PrepareJob()
+	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
 		while(_target == null && Vector2.Distance(_position, transform.position) > Radius)
 		{
@@ -91,7 +99,11 @@ public class MagicDefense : Skill
 				_position = GetMousePoint();
 			}
 			yield return null;
-		}		
+		}
+		TargetInfo targetInfo = new();
+		targetInfo.Targets.Add(_target);
+		targetInfo.Points.Add(_position);
+		callbackDataSaved(targetInfo);
 	}
 
 	protected override IEnumerator CastJob()
