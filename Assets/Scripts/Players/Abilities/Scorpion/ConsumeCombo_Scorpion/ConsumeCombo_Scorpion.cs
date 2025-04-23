@@ -136,6 +136,7 @@ public class ConsumeCombo_Scorpion : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        callbackDataSaved(null);
         yield return null;
     }
 

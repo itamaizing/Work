@@ -53,6 +53,7 @@ public class CircularFrosting : Skill
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
+		callbackDataSaved(null);
 		yield return null;
 	}
 
