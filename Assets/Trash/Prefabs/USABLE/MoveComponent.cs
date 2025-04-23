@@ -150,7 +150,11 @@ public class MoveComponent : NetworkBehaviour
 
 	public void DoMove(Vector3 vector3, float duration)
 	{
-		_rigidbody.DOMove(vector3, duration);
+		CanMove = false;
+		_rigidbody.DOMove(vector3, duration).OnComplete(() =>
+		{
+			CanMove = true;
+		});
 	}
 
 	private void OnReachGround()
@@ -435,11 +439,7 @@ public class MoveComponent : NetworkBehaviour
 	[ClientRpc]
 	public void RpcDoMove(Vector3 vector3, float duration)
 	{
-		CanMove = false;
-		_rigidbody.DOMove(vector3, duration).OnComplete(() =>
-		{
-			CanMove = true;
-		});
+		DoMove(vector3, duration);
 	}
 	#endregion
 }

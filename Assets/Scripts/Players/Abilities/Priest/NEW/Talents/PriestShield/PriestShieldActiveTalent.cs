@@ -14,6 +14,6 @@ public class PriestShieldActiveTalent : Talent
 
     public override void Exit()
     {
-        _ability.ActivateSkill(priestShield);
+        _ability.DeactivateSkill(priestShield);
     }
 }

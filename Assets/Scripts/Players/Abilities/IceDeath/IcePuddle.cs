@@ -13,6 +13,7 @@ public class IcePuddle : Skill
 	[SerializeField] private DecalProjector _puddleProjector;
 	//[SerializeField] private FrostingFrozenTalant _frostingFrozenTalant;
 	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
+	//[SerializeField] private bool isBig = true; //test
 	[SerializeField] private float _timeToDestroy = 3f;
 	[SerializeField] private HeroComponent _playerLinks;
 	[SerializeField] private MoveComponent _move;
@@ -32,6 +33,7 @@ public class IcePuddle : Skill
 	private bool _talentPuddleSize = false;
 	private bool _talentFrostingFrozen = false;
 	private bool _talentEvadeDadBoost = false;
+	private bool _iceDeathInIcePudleTalent;
 	private bool _shooted = false;
 	private Energy _energy;
 
@@ -209,9 +211,13 @@ public class IcePuddle : Skill
 		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
 		projectile.Init(_playerLinks, manaValue, lastHit, this);
 		projectile.SetTalents(talentEvade, talentFrostingFrozen);
+
 		NetworkServer.Spawn(projectile.gameObject);
 
 		RpcPlayShotSound();
+
+		if (lastHit) IcePuddleUpgrade(projectile);
+
 		RpcInit(projectile.gameObject, manaValue, lastHit);
 	}
 
@@ -219,6 +225,7 @@ public class IcePuddle : Skill
 	private void RpcInit(GameObject obj, float manaValue, bool lastHit)
 	{
 		obj.GetComponent<IcePuddleObject>().Init(_playerLinks, manaValue, lastHit, this);
+		obj.GetComponent<IcePuddleObject>().IceDeathInIcePudleTalentActive(_iceDeathInIcePudleTalent);
 	}
 
 	private Vector3 InstantiatePoint()
@@ -371,6 +378,11 @@ public class IcePuddle : Skill
 		_talentEvadeDadBoost = value;
 	}
 
+	public void IceDeathInIcePudleTalentActive(bool value)
+    {
+		_iceDeathInIcePudleTalent = value;
+	}
+
 	public void IcePuddleCast()
 	{
 		AnimStartCastCoroutine();
@@ -387,9 +399,42 @@ public class IcePuddle : Skill
 		_move.CanMove = false;
 	}
 
+	private void IcePuddleUpgrade(IcePuddleObject projectile)
+    {
+		Vector3 newScale = new Vector3(3f, 2f, projectile.transform.localScale.z);
+		projectile.transform.localScale = newScale;
+
+		if (projectile.Decal != null)
+		{
+			Vector2 newSize = projectile.Decal.size;
+			newSize.x += 3f;
+			newSize.y += 2f;
+			projectile.Decal.size = newSize;
+
+			RpcApplyVisuals(projectile.netIdentity, newScale, newSize);
+		}
+	}
+
 	[ClientRpc]
 	private void RpcPlayShotSound()
 	{
 		if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
+	}
+
+	[ClientRpc]
+	private void RpcApplyVisuals(NetworkIdentity target, Vector3 scale, Vector2 decalSize)
+	{
+		if (target != null && target.TryGetComponent<IcePuddleObject>(out var puddle))
+		{
+			puddle.transform.localScale = scale;
+
+			if (puddle.Decal != null)
+			{
+				var newDecalSize = puddle.Decal.size;
+				newDecalSize.x = decalSize.x;
+				newDecalSize.y = decalSize.y;
+				puddle.Decal.size = newDecalSize;
+			}
+		}
 	}
 }

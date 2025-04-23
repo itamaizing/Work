@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class IceRuneTalent : Talent
 {
-    [SerializeField] private RuneComponent runeComponent;
+    [SerializeField] private SeriesOfStrikes runeComponent;
 
     public override void Enter()
     {

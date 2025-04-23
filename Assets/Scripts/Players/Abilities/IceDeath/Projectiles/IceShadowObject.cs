@@ -7,8 +7,7 @@ using UnityEngine;
 public class IceShadowObject : Projectiles
 {
 	//[HideInInspector] public EnergyPlayer energyPlayer;
-	[HideInInspector] public float timeToDestroy = 30;
-	[HideInInspector] public float timeToDestroyAlive = 30;
+	[HideInInspector] public float timeToDestroy = 2;
 
 	[SerializeField] private bool enemyShadow;
 	[SerializeField] private Animator anim;
@@ -16,7 +15,9 @@ public class IceShadowObject : Projectiles
 	private Health _healthPlayer;
 	private Damage _damage;
 	private bool _talentDamage = false;
+	private bool _iceDeathInShadowTalent = false;
 	private float _damageTimer = 1f;
+	private float _modifierRegen;
 	/*
 	 * timer to destroy
 	 * buff player
@@ -30,14 +31,17 @@ public class IceShadowObject : Projectiles
 		_initialized = true;
 		_lastHit = lastHit;
 
-		float timeToAdd = energy / 20;
-		timeToDestroy += timeToAdd;
+		float extraTime = Mathf.Min(energy / 10f, 3f);
+
+		timeToDestroy += extraTime;
 
 		_damage = new Damage
 		{
 			Value = 2,
 			Type = DamageType.Magical,
 		};
+
+		StartCoroutine(DestroyShadow());
 	}
 
 	public void SetAnimationState(int animationHash, float normalizedTime, float velocityX, float velocityZ, Quaternion rotation)
@@ -67,17 +71,18 @@ public class IceShadowObject : Projectiles
 
 	private void Update()
 	{
-		if(_talentDamage)
-		{
-			MakeDamage();
-		}
+		//if(_talentDamage)
+		//{
+		//	MakeDamage();
+		//}
 	}
 
 	private void OnTriggerExit(Collider collision)
 	{
+		if (collision.gameObject.TryGetComponent<IcePuddleObject>(out IcePuddleObject icePuddleObject)) _modifierRegen = 0;
 		if (collision.gameObject == _dad.gameObject)
 		{
-			_dad.Health.DecreaseRegen(1.01f);
+			_dad.Health.DecreaseRegen(1.01f + _modifierRegen);
 			//_healthPlayer.SetBoostRegen(0.01f);
 			//Debug.LogError("setboost in hp has been deleted");
 			return;
@@ -87,9 +92,12 @@ public class IceShadowObject : Projectiles
 	private void OnTriggerEnter(Collider collision)
 	{
 		if(_dad == null) return;
+
+		if (_iceDeathInShadowTalent && collision.gameObject.TryGetComponent<IcePuddleObject>(out IcePuddleObject icePuddleObject)) _modifierRegen = 0.03f;
+
 		if (collision.gameObject == _dad.gameObject)
 		{
-			_dad.Health.IncreaseRegen(1.01f);
+			if (_iceDeathInShadowTalent) _dad.Health.IncreaseRegen(1.01f + _modifierRegen);
 			//_healthPlayer.SetBoostRegen(0.01f);
 			//Debug.LogError("setboost in hp has been deleted");
 		}
@@ -134,12 +142,21 @@ public class IceShadowObject : Projectiles
 		Destroy(gameObject);
 	}
 
+    #region Talent
+
 	public void TalentDamage(bool value)
 	{
 		_talentDamage = value;
 	}
 
-	private IEnumerator DestroyShadow()
+	public void IceDeathInShadow(bool value)
+    {
+		_iceDeathInShadowTalent = value;
+	}
+
+    #endregion
+
+    private IEnumerator DestroyShadow()
 	{
 		yield return new WaitForSeconds(timeToDestroy);
 		Destroy(gameObject);
