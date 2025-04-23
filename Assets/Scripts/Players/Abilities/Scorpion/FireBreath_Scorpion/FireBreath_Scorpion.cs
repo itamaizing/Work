@@ -227,7 +227,6 @@ public class FireBreath_Scorpion : Skill, ICanConsumeComboPoints
             }
             yield return null;
         }
-        callbackDataSaved(null);
     }
 
     protected override IEnumerator CastJob()

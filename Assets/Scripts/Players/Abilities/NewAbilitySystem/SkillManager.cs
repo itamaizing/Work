@@ -19,8 +19,9 @@ public class SkillManager : MonoBehaviour
     private List<Skill> _simpleSkills = new List<Skill>();
     private float _globalCooldownTime = .5f;
     private SkillQueue _skillQueue;
-    private AutoSkillQueue _autoSkillQueue;
-    private AutoAttackQueue _autoAttackQueue;
+    //private AutoSkillQueue _autoSkillQueue;
+    private AutoSkillCast _autoSkillCast;
+    //private AutoAttackQueue _autoAttackQueue;
     private Skill _selectedSkill;
 
     public TalentSystem TalesntSystem => _talentSystem;
@@ -40,10 +41,11 @@ public class SkillManager : MonoBehaviour
         InputHandler.ScrollMouse += ScrollMouse;
 
         _skillQueue = GetComponent<SkillQueue>();
-        _autoAttackQueue = GetComponent<AutoAttackQueue>();
-        _autoSkillQueue = GetComponent<AutoSkillQueue>();
+        _autoSkillCast = new(this);
+        //_autoAttackQueue = GetComponent<AutoAttackQueue>();
+        //_autoSkillQueue = GetComponent<AutoSkillQueue>();
 
-        _autoSkillQueue.SkillActivated += AutoSkillUsed;
+        //_autoSkillQueue.SkillActivated += AutoSkillUsed;
 
         foreach (var item in _skills)
         {
@@ -62,7 +64,7 @@ public class SkillManager : MonoBehaviour
         {
             CancelSkillCast();
         }
-        while (_autoAttackQueue.IsBusy)
+        while (_autoSkillCast.IsBusy)
         {
             CancelSkillCast();
         }
@@ -99,20 +101,8 @@ public class SkillManager : MonoBehaviour
 
     private void AddToSkillLists(Skill skill)
     {
-        if (skill is AutoAttackSkill attackSkill)
-        {
-            _autoAttackSkills.Add(attackSkill);
-        }
-        else if (skill is AutoSkill autoSkill)
-        {
-            _autoSkills.Add(autoSkill);
-            skill.CastStarted += GlobalCooldown;
-        }
-        else
-        {
             _simpleSkills.Add(skill);
             skill.CastStarted += GlobalCooldown;
-        }
     }
 
     private void SkillInit(Skill skill)
@@ -127,7 +117,6 @@ public class SkillManager : MonoBehaviour
                 simpleSkill.CastEnded += autoAttackSkill.Continue;
             }
         }
-        
         ToggleSkillActivation(skill);
     }
 
@@ -227,9 +216,9 @@ public class SkillManager : MonoBehaviour
         {
             SkillQueue.TryCancel();
         }
-        else if (_autoAttackQueue.IsBusy)
+        else if (_autoSkillCast.IsBusy)
         {
-            _autoAttackQueue.TryCancel();
+            _autoSkillCast.DeleteSkill();
         }
         else if (SkillQueue.IsEmpty == false)
         {
@@ -327,10 +316,18 @@ public class SkillManager : MonoBehaviour
 
     private void OnPreperingSuccess(Skill skill)
     {
-        if(_selectedSkill is AutoAttackSkill attackSkill)
+        if(_selectedSkill.IsAutoMode)
         {
-            _autoAttackQueue.Add(attackSkill);
+            _autoSkillCast.SetSkill(skill, skill.TargetInfoQueue.Dequeue());
 
+            foreach (var item in _simpleSkills)
+            {
+                if(_selectedSkill == item)
+                    return;
+
+                item.CastStarted += _autoSkillCast.Pause;
+                item.CastEnded += _autoSkillCast.Continue;
+            }
             DeselectSkill();
         }
         else

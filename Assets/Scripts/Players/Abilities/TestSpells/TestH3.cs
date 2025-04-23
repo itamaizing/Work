@@ -51,7 +51,8 @@ public class TestH3 : Skill
         }
         else
         {
-            CmdCreateProjecttile(_targetPoint);
+            Debug.Log(_targetPoint);
+            CmdCreateProjecttile(new Vector3(_targetPoint.x, _targetPoint.y, _targetPoint.z));
         }
         yield return null;
     }

@@ -166,11 +166,10 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     private void OnClickWithCtrl()
     {
-        if (Skill is AutoAttackSkill autuAttackSkill)
-        {
-            autuAttackSkill.SwitchAutoMode();
-            Debug.Log("AA mode - " + autuAttackSkill.IsAutoattackMode);
-        }
+
+        Skill.IsAutoMode = !Skill.IsAutoMode;
+        Debug.Log("AA mode - " + Skill.IsAutoMode);
+
     }
 
     private void OnCastStarted()
