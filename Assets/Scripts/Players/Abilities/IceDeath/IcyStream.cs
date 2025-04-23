@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -44,7 +45,12 @@ public class IcyStream : Skill
 		}
 	}
 
-	private void Shoot()
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _mousePos = targetInfo.Points[0];
+    }
+
+    private void Shoot()
 	{
 		Debug.Log("shot");
 		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -90,7 +96,7 @@ public class IcyStream : Skill
 		//obj.GetComponent<IcyStreamProjectile>().Init(_playerLinks, manaValue, false, this);
 	}
 
-	protected override IEnumerator PrepareJob()
+	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
 		//while (_target == null)
 		while (float.IsPositiveInfinity(_mousePos.x))
@@ -109,6 +115,9 @@ public class IcyStream : Skill
 			}
 			yield return null;
 		}
+		TargetInfo targetInfo = new TargetInfo();
+		targetInfo.Points.Add(_mousePos);
+		callbackDataSaved(targetInfo);
 	}
 
 	protected override IEnumerator CastJob()

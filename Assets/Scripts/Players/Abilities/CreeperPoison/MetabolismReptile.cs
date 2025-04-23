@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEditor.Tilemaps;
 using UnityEngine;
@@ -28,7 +29,12 @@ public class MetabolismReptile : Skill
         _originalHpRegen = _player.Health.RegenerationValue;
     }
 
-    protected override IEnumerator PrepareJob()
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
         yield return null;
     }

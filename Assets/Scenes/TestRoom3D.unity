@@ -3567,6 +3567,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: FogOfWar
       objectReference: {fileID: 0}
+    - target: {fileID: 6117816893846997319, guid: caf1aa0c2e54cd34e99913b8dc3afc5a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8421550217909888189, guid: caf1aa0c2e54cd34e99913b8dc3afc5a, type: 3}
       propertyPath: m_FogColor.b
       value: 0.3018868

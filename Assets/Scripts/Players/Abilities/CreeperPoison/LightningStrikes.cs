@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -48,7 +49,12 @@ public class LightningStrikes : AutoAttackSkill
         AnimCastEnded();
     }
 
-    protected override IEnumerator PrepareJob()
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
         if (_lightningMovement.IsInMovement)
         {
@@ -59,7 +65,7 @@ public class LightningStrikes : AutoAttackSkill
 
             _target = _lightningMovement.Target;
         }
-        return base.PrepareJob();
+        return base.PrepareJob(targetDataSavedCallback);
     }
 
     protected override void CastAction()

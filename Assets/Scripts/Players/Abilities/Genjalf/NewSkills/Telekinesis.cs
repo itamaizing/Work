@@ -36,6 +36,12 @@ namespace Gangdollarff
             AnimCastEnded();
         }
 
+        public override void LoadTargetData(TargetInfo targetInfo)
+        {
+            _point = targetInfo.Points[0];
+            _target = (Character)targetInfo.Targets[0];
+        }
+
         protected override IEnumerator CastJob()
         {
             DisableMove();
@@ -51,7 +57,7 @@ namespace Gangdollarff
             _point = Vector3.zero;
         }
 
-        protected override IEnumerator PrepareJob()
+        protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
         {
             while (_target == null)
             {
@@ -69,6 +75,10 @@ namespace Gangdollarff
 
                 yield return null;
             }
+            TargetInfo targetInfo = new TargetInfo();
+            targetInfo.Targets.Add( _target );
+            targetInfo.Points.Add( _point );
+            callbackDataSaved(targetInfo);
         }
 
         private void EnableMove()

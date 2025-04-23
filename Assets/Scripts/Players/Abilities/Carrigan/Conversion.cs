@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -10,11 +11,16 @@ public class Conversion : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override bool IsCanCast => _psionicEnergy.CurrentValue > 0;
 
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        
+    }
+
     protected override void ClearData()
     {
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
         yield return null;
     }

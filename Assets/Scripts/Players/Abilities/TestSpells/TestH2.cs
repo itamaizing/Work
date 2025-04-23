@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -29,6 +30,12 @@ public class TestH2 : Skill
     protected override int AnimTriggerCastDelay => Animator.StringToHash("H2CastDelay");
 
     protected override int AnimTriggerCast => 0;
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _targetPoint = targetInfo.Points[0];
+        _target = (Character)targetInfo.Targets[0];
+    }
 
     protected override IEnumerator CastJob()
     {
@@ -62,19 +69,21 @@ public class TestH2 : Skill
         _target = null;
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while (_target == null)
         {
             if (GetMouseButton)
             {
-				//_target = GetTarget().character;
 				_targetPoint = GetTarget().Position;
-                UnityEngine.Debug.Log(_targetPoint);
 				_target = GetRaycastTarget(true);
             }
             yield return null;
         }
+        TargetInfo targetInfo = new();
+        targetInfo.Points.Add(_targetPoint);
+        targetInfo.Targets.Add(_target);
+        callbackDataSaved(targetInfo);
     }
 
     [Command]

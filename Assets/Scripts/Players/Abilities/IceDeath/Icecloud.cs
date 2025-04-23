@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -121,8 +122,12 @@ public class IceCloud : Skill
 	{
 		_frozwenTalent = value;
 	}
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        Debug.LogError("DataError");
+    }
 
-	protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
 		while (float.IsPositiveInfinity(_mousePos.x))
 		{
@@ -146,7 +151,8 @@ public class IceCloud : Skill
 			}
 			yield return null;
 		}
-	}
+        Debug.LogError("DataError");
+    }
 
 	protected override IEnumerator CastJob()
 	{

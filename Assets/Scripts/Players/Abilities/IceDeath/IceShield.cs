@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -57,8 +58,12 @@ public class IceShield : Skill
 
 		}
 	}
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        
+    }
 
-	private void Shoot() 
+    private void Shoot() 
 	{
 		_active = !_active;
 		Debug.Log(_playerLinks.Health.Shields.Count);
@@ -97,7 +102,7 @@ public class IceShield : Skill
 		}
 	}*/
 
-	protected override IEnumerator PrepareJob()
+	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
 		yield return null;
 	}

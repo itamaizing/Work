@@ -1,4 +1,5 @@
 ﻿using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -11,7 +12,12 @@ public class Dispel : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
 
-    protected override IEnumerator PrepareJob()
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _target = (Character)targetInfo.Targets[0];
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while (_target == null)
         {
@@ -21,6 +27,9 @@ public class Dispel : Skill
             }
             yield return null;
         }
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Targets.Add(_target);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()

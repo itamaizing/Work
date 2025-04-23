@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,6 +26,12 @@ namespace Gangdollarff
 
             return Vector3.Distance(_targetPoint, transform.position) <= Radius ||
                    Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+        }
+
+        public override void LoadTargetData(TargetInfo targetInfo)
+        {
+            _target = (Character)targetInfo.Targets[0];
+            _targetPoint = targetInfo.Points[0];
         }
 
         protected override IEnumerator CastJob()
@@ -75,7 +82,7 @@ namespace Gangdollarff
             _targetPoint = Vector3.positiveInfinity;
         }
 
-        protected override IEnumerator PrepareJob()
+        protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
         {
             while (float.IsPositiveInfinity(_targetPoint.x) && _target == null)
             {
@@ -89,7 +96,10 @@ namespace Gangdollarff
                 }
                 yield return null;
             }
-            yield return null;
+            TargetInfo targetInfo = new();
+            targetInfo.Targets.Add(_target);
+            targetInfo.Points.Add(_targetPoint);
+            callbackDataSaved(targetInfo);
         }
 
         private void EnableMove()

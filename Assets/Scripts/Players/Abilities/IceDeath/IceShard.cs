@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -69,8 +70,12 @@ public class IceShard : Skill
 	{
 		_talentChragesPlague = value;
 	}
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _mousePos = targetInfo.Points[0];
+    }
 
-	protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
 		Debug.Log("MOUSE POS " + float.IsPositiveInfinity(_mousePos.x));
 		while (float.IsPositiveInfinity(_mousePos.x))
@@ -88,6 +93,9 @@ public class IceShard : Skill
 			}
 			yield return null;
 		}
+		TargetInfo targetInfo = new();
+		targetInfo.Points.Add( _mousePos );
+		callbackDataSaved( targetInfo );
 	}
 
 	protected override IEnumerator CastJob()

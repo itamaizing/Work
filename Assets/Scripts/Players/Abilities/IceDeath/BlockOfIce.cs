@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -36,7 +37,12 @@ public class BlockOfIce : Skill
 		}
 	}
 
-	private void Shoot()
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+		Debug.LogError("data error");
+    }
+
+    private void Shoot()
 	{
 		Debug.Log("shot");
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
@@ -64,7 +70,7 @@ public class BlockOfIce : Skill
 		obj.GetComponent<BlockOfIceProjectile>().Init(_playerLinks, manaValue, false, this);
 	}
 
-	protected override IEnumerator PrepareJob()
+	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
 		while (float.IsPositiveInfinity(_mousePos.x))
 		{			
@@ -94,6 +100,7 @@ public class BlockOfIce : Skill
 			}
 			yield return null;
 		}
+		Debug.LogError("Error data");
 	}
 
 	protected override IEnumerator CastJob()

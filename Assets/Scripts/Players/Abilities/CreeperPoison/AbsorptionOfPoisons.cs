@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -34,8 +35,14 @@ public class AbsorptionOfPoisons : Skill
     {
     }
 
-    protected override IEnumerator PrepareJob()
+    public override void LoadTargetData(TargetInfo targetInfo)
     {
+        
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    {
+        callbackDataSaved(null);
         yield return null;
     }
 

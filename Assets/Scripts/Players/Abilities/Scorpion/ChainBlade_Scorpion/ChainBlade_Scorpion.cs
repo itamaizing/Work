@@ -1,8 +1,10 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 public enum ChainbladeType
 {
@@ -152,7 +154,7 @@ public class ChainBlade_Scorpion : Skill
         _hero.Move.CanMove = true;
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while(true)
         {
@@ -212,5 +214,10 @@ public class ChainBlade_Scorpion : Skill
             _tempTargetMove = gameObject.GetComponent<MoveComponent>();
         }
         _tempTargetMove.TargetRpcAddTransformPosition(force);
+    }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new NotImplementedException();
     }
 }

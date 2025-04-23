@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -18,8 +19,14 @@ public class SpeedOfReptile : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override bool IsCanCast => _speedOfReptileTalent.Data.IsOpen;
 
-    protected override IEnumerator PrepareJob()
+    public override void LoadTargetData(TargetInfo targetInfo)
     {
+        
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    {
+        callbackDataSaved(null);
         yield return null;
     }
 

@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
@@ -141,7 +142,12 @@ public class IcePuddle : Skill
 		}*/
 	}
 
-	protected override IEnumerator PrepareJob()
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        Debug.LogError("DataError");
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
 		while (!_shooted)
 		{
@@ -169,7 +175,8 @@ public class IcePuddle : Skill
 			}
 			yield return null;
 		}
-	}
+        Debug.LogError("DataError");
+    }
 
 	protected override IEnumerator CastJob()
 	{

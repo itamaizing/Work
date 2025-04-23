@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,6 +25,11 @@ namespace Gangdollarff
 
         protected override bool IsCanCast => true;
 
+        public override void LoadTargetData(TargetInfo targetInfo)
+        {
+            
+        }
+
         protected override IEnumerator CastJob()
         {
             CmdAddShield();
@@ -35,7 +41,7 @@ namespace Gangdollarff
             
         }
 
-        protected override IEnumerator PrepareJob()
+        protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
         {
             yield return null;
         }

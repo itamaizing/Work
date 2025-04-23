@@ -1,7 +1,9 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class CleavingBlade_Scorpion : Skill
 {
@@ -27,6 +29,11 @@ public class CleavingBlade_Scorpion : Skill
     protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
 
     protected override int AnimTriggerCast => throw new System.NotImplementedException();
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _target = (Character)targetInfo.Targets[0];
+    }
 
     private void ResetValue()
     {
@@ -62,7 +69,7 @@ public class CleavingBlade_Scorpion : Skill
         _target = null;
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while (_target == null)
         {
@@ -72,6 +79,9 @@ public class CleavingBlade_Scorpion : Skill
             }
             yield return null;
         }
+        TargetInfo targetInfo = new();
+        targetInfo.Targets.Add(_target);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()

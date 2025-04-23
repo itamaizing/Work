@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,6 +22,13 @@ public class SpellMoveTo : Skill
     protected override int AnimTriggerCast => 0;
 
     protected override bool IsCanCast => true;
+
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _target = (Character)targetInfo.Targets[0];
+        _targetPoint = targetInfo.Points[0];
+    }
 
     protected virtual void DealDamage()
     {
@@ -85,25 +93,34 @@ public class SpellMoveTo : Skill
             StopCoroutine(_onClickCoroutine);
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
+        TargetInfo targetInfo = new TargetInfo();
+
         while (float.IsPositiveInfinity(_targetPoint.x) && _target == null)
         {
             if (GetMouseButton)
             {
                 _target = GetRaycastTarget();
 
+                targetInfo.Targets.Add(_target);
+
                 if (_target == null)
                 {
                     _targetPoint = GetMousePoint();
+
+                    targetInfo.Points.Add( _targetPoint );
                 }
                 else
                 {
                     _targetPoint = _target.transform.position;
+
+                    targetInfo.Points.Add( _targetPoint );
                 }
             }
             yield return null;
         }
+        targetDataSavedCallback(targetInfo);
     }
 
     private Character CheckEnemy(float radius)

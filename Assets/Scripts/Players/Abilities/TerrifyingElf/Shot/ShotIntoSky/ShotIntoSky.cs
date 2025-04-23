@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
@@ -23,10 +24,15 @@ public class ShotIntoSky : Skill
 
     private void Start()
     {
-       Damage = Random.Range(minDamage, maxDamage + 1);
+       Damage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
     }
 
-    protected override IEnumerator PrepareJob()
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _targetPoint = targetInfo.Points[0];
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while (float.IsPositiveInfinity(_targetPoint.x))
         {
@@ -41,6 +47,9 @@ public class ShotIntoSky : Skill
             }
             yield return null;
         }
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(_targetPoint);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
@@ -91,7 +100,7 @@ public class ShotIntoSky : Skill
 
     private float CalculateDamage(float baseDamage)
     {
-        bool isCriticalHit = Random.Range(0f, 100f) <= criticalChance;
+        bool isCriticalHit = UnityEngine.Random.Range(0f, 100f) <= criticalChance;
 
         if (isCriticalHit)
         {

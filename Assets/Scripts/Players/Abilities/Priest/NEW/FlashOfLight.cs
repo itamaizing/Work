@@ -41,7 +41,11 @@ public class FlashOfLight : Skill
     {
         _isСooldownTalentActive = value;
     }
-    
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _target = (Character)targetInfo.Targets[0];
+    }
+
     private void OnEnable()
     {
         OnModeChange += HandleModeChange;
@@ -128,7 +132,7 @@ public class FlashOfLight : Skill
         }
     }
     
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while (_target == null)
         {
@@ -138,6 +142,9 @@ public class FlashOfLight : Skill
             }
             yield return null;
         }
+        TargetInfo targetInfo = new();
+        targetInfo.Targets.Add(_target);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()

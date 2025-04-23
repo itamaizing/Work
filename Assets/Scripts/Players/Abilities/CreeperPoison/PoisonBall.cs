@@ -205,7 +205,7 @@ public class PoisonBall : Skill, IAltAbility
         _firstClickDone = false;
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         _isAbilityActive = true;
 
@@ -256,6 +256,8 @@ public class PoisonBall : Skill, IAltAbility
         yield return _thirdClickCoroutine = StartCoroutine(ThirdClick());
 
         UseAbility();
+
+        // страшна, очень страшна
     }
 
     protected override IEnumerator CastJob()
@@ -1054,5 +1056,10 @@ public class PoisonBall : Skill, IAltAbility
     private void RpcIsCanApplyInvisible(bool isCanApplyInvisible)
     {
         _isCanApplyInvisible = isCanApplyInvisible;
+    }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new NotImplementedException();
     }
 }

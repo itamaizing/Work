@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,7 +61,7 @@ public class PlagueAbsorption : Skill
 		}
 	}
 
-	protected override IEnumerator PrepareJob()
+	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
 		while (_target == null && _charges <= 0)
 		{
@@ -71,7 +72,8 @@ public class PlagueAbsorption : Skill
 			}
 			yield return null;
 		}
-	}
+        Debug.LogError("TargetDataError");
+    }
 
 	protected override IEnumerator CastJob()
 	{
@@ -133,4 +135,9 @@ public class PlagueAbsorption : Skill
 			return false;
 		}
 	}
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        Debug.LogError("TargetDataError");
+    }
 }

@@ -95,7 +95,13 @@ public class PriestShield : Skill
             skill.CastEnded -= AddDisciplineStack;
         }
     }
-    
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _target = (Character)targetInfo.Targets[0];
+        Debug.LogError("error data");
+    }
+
     public void SwitchMode()
     {
         isLightMode = !isLightMode;
@@ -223,7 +229,7 @@ public class PriestShield : Skill
         _talentTiredSoulActive = value;
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while (_target == null)
         {
@@ -239,6 +245,8 @@ public class PriestShield : Skill
             }
             yield return null;
         }
+        TargetInfo targetInfo = new();
+        Debug.LogError("error");
     }
 
     protected override IEnumerator CastJob()

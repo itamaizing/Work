@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -24,7 +25,7 @@ public class Shot : AutoAttackSkill
         }
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
         while (float.IsPositiveInfinity(_targetPoint.x))
         {
@@ -149,5 +150,10 @@ public class Shot : AutoAttackSkill
         base.ClearData();
         _targetPoint = Vector3.positiveInfinity;
         _isDelayActive = false;
+    }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new NotImplementedException();
     }
 }

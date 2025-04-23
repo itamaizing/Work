@@ -29,6 +29,11 @@ public class CheliceraStrike : AutoAttackSkill
         DamageDeal(_target.gameObject);
     }
 
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new System.NotImplementedException();
+    }
+
     public void DealDamage(GameObject target, float additionalDamage)
     {
         _additionalDamageFromSkill = additionalDamage;
@@ -199,6 +204,5 @@ public class CheliceraStrike : AutoAttackSkill
     {
         _attackingPsionicEnergy.CurrentAttackingPsiEnergy -= value;
     }
-
     #endregion
 }

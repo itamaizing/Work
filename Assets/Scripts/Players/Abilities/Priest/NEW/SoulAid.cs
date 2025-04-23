@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
@@ -43,6 +44,11 @@ public class SoulAid : Skill
         }
     }
 
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _target = (Character)targetInfo.Targets[0];
+    }
+
     protected override IEnumerator CastJob()
     {
         if (_target == null || _target == Hero || !IsCanCast) yield break;
@@ -62,7 +68,7 @@ public class SoulAid : Skill
         _target = null;
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while (_target == null)
         {
@@ -74,6 +80,9 @@ public class SoulAid : Skill
             }
             yield return null;
         }
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Targets.Add(_target);
+        callbackDataSaved(targetInfo);
     }
 
     public void EnableTiredSoulDispel(bool isActive)
