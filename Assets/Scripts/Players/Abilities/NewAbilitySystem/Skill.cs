@@ -123,14 +123,28 @@ public abstract class Skill : NetworkBehaviour
     private float _assistTimer = 5f;
     private Coroutine _assistCoroutine;
     private Queue<TargetInfo> _targetInfoQueue = new();
+    private bool _isAutoMode;
 
+    public bool IsAutoMode {
+        get
+        {
+            return _isAutoMode; 
+        }
+        set 
+        {
+            if (_isAutoMode != value)
+            {
+                _isAutoMode = value;
+                AutoModeChanged?.Invoke(_isAutoMode);
+            }
+        } 
+    }
     public bool IsTalentSpell => _isTalentSpell;
     public bool IsSkillActive
     {
         get => _isSkillActive;
         set => _isSkillActive = value;
     }
-
     public bool GetMouseButton { get => _isClick || _isShiftClick || _isCtrlClick || _isSpaceClick; }
     public bool IsSubjectToGlobalCooldownTime { get => _isSubjectToGlobalCooldownTime; }
     public Character Hero { get => _hero; }
@@ -187,6 +201,7 @@ public abstract class Skill : NetworkBehaviour
     public event Action MassageHaventCharge;
     public event Action<float> MassageNotCooldowned;
     public event Action<TargetInfo> TargetDataSaved;
+    public event Action<bool> AutoModeChanged;
 
 
     /// <summary>
@@ -242,6 +257,30 @@ public abstract class Skill : NetworkBehaviour
             LoadTargetData(_targetInfoQueue.Dequeue());
             _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
             return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public bool TryCast(TargetInfo targetInfo)
+    {
+        if (IsHaveResources && _isCasting == false && NoObstacles() && Hero.IsDead == false)
+        {
+            LoadTargetData(targetInfo);
+
+            if (IsCanCast)
+            {
+                TryPayCost(IsPayCostStartCooldown);
+
+                _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
         else
         {
@@ -1058,9 +1097,7 @@ public abstract class Skill : NetworkBehaviour
 
     private void LoadTargetDataForCheckCast()
     {
-        _targetInfoQueue.TryPeek(out TargetInfo temp);
-
-        if (temp != null)
+        if (_targetInfoQueue.TryPeek(out TargetInfo temp))
             LoadTargetData(temp);
     }
 

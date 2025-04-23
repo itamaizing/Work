@@ -22,7 +22,6 @@ public class SelfHarm : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        callbackDataSaved(null);
         yield break;
     }
 

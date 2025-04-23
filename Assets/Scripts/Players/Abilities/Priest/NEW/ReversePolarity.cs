@@ -39,7 +39,6 @@ public class ReversePolarity : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        callbackDataSaved(null);
         yield break;
     }
 
