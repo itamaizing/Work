@@ -115,19 +115,22 @@ public class IceShadow : Skill
 
 		Vector3 basePosition = _playerLinks.transform.position;
 
-		SpawnShadow(basePosition, rotation, manaValue, lastHit, damage, inShadow, animationHash, normalizedTime, velocityX, velocityZ);
-
 		if (lastHit)
 		{
 			Vector3 right = _playerLinks.transform.right;
 			Vector3 left = -_playerLinks.transform.right;
+			Vector3 forward = _playerLinks.transform.forward;
 
 			Vector3 offsetRight = basePosition + right;
 			Vector3 offsetLeft = basePosition + left;
+			Vector3 centerPosition = basePosition + forward;
 
-			SpawnShadow(offsetRight, rotation, manaValue, false, damage, inShadow, animationHash, normalizedTime, velocityX, velocityZ);
-			SpawnShadow(offsetLeft, rotation, manaValue, false, damage, inShadow, animationHash, normalizedTime, velocityX, velocityZ);
+			SpawnShadow(offsetRight, rotation, manaValue, lastHit, damage, inShadow, animationHash, normalizedTime, velocityX, velocityZ);
+			SpawnShadow(offsetLeft, rotation, manaValue, lastHit, damage, inShadow, animationHash, normalizedTime, velocityX, velocityZ);
+			SpawnShadow(centerPosition, rotation, manaValue, lastHit, damage, inShadow, animationHash, normalizedTime, velocityX, velocityZ);
 		}
+
+		else SpawnShadow(basePosition, rotation, manaValue, lastHit, damage, inShadow, animationHash, normalizedTime, velocityX, velocityZ);
 
 		RpcPlayShotSound();
 	}

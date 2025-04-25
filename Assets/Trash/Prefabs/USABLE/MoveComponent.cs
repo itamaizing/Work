@@ -42,6 +42,7 @@ public class MoveComponent : NetworkBehaviour
 	private bool _isFly;
 
 	public bool IsFly => _isFly;
+	public bool IsLookAtCursor { get => _isLookAtCursor; set => _isLookAtCursor = value; }
 	public float DefaultSpeed => _defaultSpeed;
 	public float CurrentSpeed => _currentSpeed;
 

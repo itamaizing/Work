@@ -16,7 +16,7 @@ public class IceRolling : Skill
 	[SerializeField] private PhysicalAttack _physicalAttack;
 	[SerializeField] private SeriesOfStrikes seriesOfStrikes;
 	[SerializeField] private float _jumprange = 5f;
-	[SerializeField] private float _durationOfJump = 0.3f;
+	[SerializeField] private float durationOfJumpPerCell = 0.3f;
 	[SerializeField] private AudioClip audioClip;
 	[SerializeField] private LayerMask _groundLayer;
 
@@ -33,11 +33,14 @@ public class IceRolling : Skill
 	private bool _rollingWithEnemyTalent = false;
 
 	private bool _isLastInSeries = false;
+	private bool _isJump = false;
 
+	private float _durationOfJump;
 	private float _jumpCount = 0;
 	private bool _afterJump;
 	private float _afterJumpDelay = 1;
 	private Character _target;
+	private Character _attachedTarget;
 	private Animator _animator;
 	//private float TEMPFLOAT = 1;
 
@@ -61,14 +64,7 @@ public class IceRolling : Skill
 		_animator = GetComponent<Animator>();
 		_audioSource = GetComponent<AudioSource>();
 
-		for (int i = 0; i < _playerLinks.Resources.Count; i++)
-		{
-			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)_playerLinks.Resources[i];
-			}
-		}
-
+		for (int i = 0; i < _playerLinks.Resources.Count; i++) if (_playerLinks.Resources[i].Type == ResourceType.Energy) _energy = (Energy)_playerLinks.Resources[i];
 	}
 
 	private void Update()
@@ -109,15 +105,9 @@ public class IceRolling : Skill
 		{
 			if (hit.collider.TryGetComponent(out Character character) && character != _playerLinks)
 			{
-				if (!_rollingWithEnemyTalent)
+				if (!_rollingWithEnemyTalent && character != _target)
 				{
 					stopPosition = hit.point - direction;
-					characterHit = character;
-					return true;
-				}
-
-				else if (_rollingWithEnemyTalent && _target != null)
-				{
 					characterHit = character;
 					return true;
 				}
@@ -133,53 +123,64 @@ public class IceRolling : Skill
 		return false;
 	}
 
+	private bool IsTargetInCloseProximity(Vector3 start, Vector3 direction, out Character characterHit)
+	{
+		Ray ray = new Ray(start, direction);
+		RaycastHit[] hits = Physics.RaycastAll(ray, 1);
+
+		characterHit = null;
+
+		foreach (RaycastHit hit in hits)
+		{
+			if (hit.collider.TryGetComponent(out Character character) &&
+				character == characterHit &&
+				character != _playerLinks)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	private void Jump()
 	{
 		Hero.Move.CanMove = false;
-		_lookDir = (_mousePos - _playerLinks.transform.position).normalized;
-		_playerLinks.Move.LookAtPosition(_lookDir);
+		_isJump = true;
 
-		float actualJumpRange = _jumprange;
-		Vector3 jumpPos = _playerLinks.transform.position + _lookDir * actualJumpRange;
+		_lookDir = (_mousePos - _playerLinks.transform.position).normalized;
+
+		float baseRange = _rollingWithEnemyTalent ? 4f : 2f;
+		float maxEnergy = Mathf.Min(_energy.CurrentValue, 10f);
+		int energyBlocks = Mathf.FloorToInt(maxEnergy / 5f);
+		float bonusRange = _rollingWithEnemyTalent ? energyBlocks * 2f : energyBlocks * 1f;
+
+		float finalRange = baseRange + bonusRange;
+
+		Vector3 startPosition = _playerLinks.transform.position;
+		Vector3 jumpPos = startPosition + _lookDir * finalRange;
+
+		float energyUsed = energyBlocks * 5f;
+		if (energyUsed > 0) _energy.CmdUse(energyUsed);
+
 		Vector3 stopPosition;
 		Character characterHit;
-
-		for (int i = 0; i < 10; i++)
-		{
-			float extendedRange = _jumprange + (i + 1) * 0.2f;
-			Vector3 tryPos = _playerLinks.transform.position + _lookDir * extendedRange;
-
-			if (_energy.CurrentValue >= 5 && !CheckObstacleBetween(_playerLinks.transform.position, tryPos, out _, out _))
-			{
-				_energy.CmdUse(5);
-				_jumpCount += 0.2f;
-				actualJumpRange = extendedRange;
-				jumpPos = tryPos;
-			}
-		}
+		Character characterHitTarget;
 
 		bool hit = CheckObstacleBetween(_playerLinks.transform.position, jumpPos, out stopPosition, out characterHit);
+		bool hitTarget = IsTargetInCloseProximity(_playerLinks.transform.position, _lookDir, out characterHitTarget);
 
-		if (hit && characterHit != null)
-		{
-			if (_rollingWithEnemyTalent && characterHit == _target)
-			{
-				CmdPushWithCharacter(stopPosition, characterHit);
-				KnockbackCharactersAlongPath(_playerLinks.transform.position, stopPosition);
-			}
+		Hero.Move.LookAtPosition(jumpPos);
+		float actualDistance = Vector3.Distance(startPosition, stopPosition);
 
-			else CmdPush(stopPosition);
+		if (hit && characterHit != null) CmdPush(stopPosition, actualDistance);
+		else CmdPush(stopPosition, actualDistance);
 
-			return;
-		}
-
-		if (_rollingWithEnemyTalent) KnockbackCharactersAlongPath(_playerLinks.transform.position, jumpPos);
-
-		CmdPush(jumpPos);
+		if (_rollingWithEnemyTalent && _target != null && hitTarget && characterHitTarget != null) CmdPushWithCharacter(stopPosition, characterHitTarget, actualDistance);
 
 		if (_rollingPhysTalent)
 		{
-			_physicalAttack.TalentRollingPhys(_afterJump, _jumpCount);
+			_physicalAttack.TalentRollingPhys(_afterJump, finalRange);
 			_afterJump = true;
 		}
 
@@ -188,37 +189,15 @@ public class IceRolling : Skill
 		_jumpPos = Vector3.zero;
 	}
 
-
-	private void KnockbackCharactersAlongPath(Vector3 start, Vector3 end)
-	{
-		Vector3 direction = (end - start).normalized;
-		float distance = Vector3.Distance(start, end);
-		RaycastHit[] hits = Physics.BoxCastAll(start, new Vector3(0.3f, 0.3f, 0.3f), direction, Quaternion.identity, distance, _targetsLayers);
-
-		foreach (var hit in hits)
-		{
-			if (hit.collider.TryGetComponent(out Character character) && character != _playerLinks && character != _target && ((1 << character.gameObject.layer) & _targetsLayers) != 0)
-			{
-				Vector3 right = Vector3.Cross(direction, Vector3.up);
-				Vector3 pushDir = right * UnityEngine.Random.Range(-1f, 1f);
-				CmdKnockback(character, character.transform.position + pushDir);
-			}
-		}
-	}
-
 	protected override IEnumerator PrepareJob()
 	{
 		while (float.IsPositiveInfinity(_mousePos.x))
-        {
+		{
 			if (GetMouseButton)
 			{
 				_target = GetRaycastTarget();
-
-				if (_target != null) _mousePos = _target.transform.position;
-
-				else _mousePos = GetMousePoint();
+				_mousePos = _target != null ? _target.transform.position : GetMousePoint();
 			}
-
 			yield return null;
 		}
 	}
@@ -234,48 +213,19 @@ public class IceRolling : Skill
 
 	protected override IEnumerator CastJob()
 	{
-		_isLastInSeries = seriesOfStrikes.MakeHit(_target, AbilityForm.Physical, 1, 0, 0);
-		Jump();
-		yield return null;
-	}
-
-	protected override void ClearData() { }
-
-	[Command]
-	private void CmdPush(Vector3 force)
-	{
-		RpcPlayShotSound();
-		force.y = 1;
-		_playerLinks.Move.TargetRpcDoMove(force, _durationOfJump);
-		StartCoroutine(WaitForJumpEnd());
-	}
-
-	[Command]
-	private void CmdPushWithCharacter(Vector3 force, Character target)
-	{
-		RpcPlayShotSound();
-
-		if (target.TryGetComponent(out MoveComponent move))
-		{
-			move.CanMove = false;
-			target.transform.SetParent(_playerLinks.transform);
-			RpcAttachTarget(target);
+		if (!float.IsInfinity(_mousePos.x))
+        {
+			_isLastInSeries = seriesOfStrikes.MakeHit(_target, AbilityForm.Physical, 1, 0, 0);
+			Jump();
+			yield return null;
 		}
-
-		force.y = 1;
-		_playerLinks.Move.TargetRpcDoMove(force, _durationOfJump);
-
-		StartCoroutine(WaitForJumpEnd());
 	}
 
-	[Command]
-	private void CmdKnockback(Character target, Vector3 force)
+	protected override void ClearData()
 	{
-		if (target.TryGetComponent(out MoveComponent move))
-		{
-			if (target.connectionToClient != null) move.TargetRpcDoMove(force, 0.1f);
-			else move.RpcDoMove(force, 0.1f);
-		}
+		_target = null;
+		_isJump = false;
+		Hero.Move.StopLookAt();
 	}
 
 	private void HandleJumpEnd()
@@ -285,10 +235,7 @@ public class IceRolling : Skill
 			_animator.ResetTrigger(iceRollingStart);
 			_animator.SetTrigger(iceRollingEnd);
 		}
-
-		_playerLinks.Move.StopLookAt();
 	}
-
 
 	#region Talent
 	public void TalentRollingPhys(bool value) => _rollingPhysTalent = value;
@@ -305,30 +252,87 @@ public class IceRolling : Skill
 		}
 	}
 
-	[ClientRpc]
-	private void RpcReleaseTarget()
-	{
-		if (_target != null)
-		{
-			_target.Move.CanMove = true;
-			_target.transform.SetParent(null);
-
-			if (_target.TryGetComponent(out NavMeshAgent agent))
-			{
-				agent.enabled = true;
-				agent.Warp(_target.transform.position);
-			}
-
-			if (_target.TryGetComponent(out Rigidbody rigidbody)) rigidbody.isKinematic = false;
-		}
-	}
-
 	private IEnumerator WaitForJumpEnd()
 	{
 		yield return new WaitForSeconds(_durationOfJump);
 		RpcOnJumpEnd();
-		//_target.CharacterState.AddState(States.Frozen, 2f, 0f, _playerLinks.gameObject, Name);
-		RpcReleaseTarget();
+
+		if (_attachedTarget)
+        {
+			_attachedTarget.CharacterState.AddState(States.Frozen, 2f, 0f, _playerLinks.gameObject, Name);
+			_attachedTarget.transform.SetParent(null);
+			RpcReleaseTarget(_attachedTarget);
+			_attachedTarget = null;
+		}
+	}
+
+	private void OnCollisionEnter(Collision collision)
+    {
+		if (_rollingWithEnemyTalent && _isJump && collision.collider.TryGetComponent(out Character character) &&
+		character != _playerLinks &&
+		character != _target &&
+		((1 << character.gameObject.layer) & _targetsLayers) != 0)
+		{
+			Vector3 pushDir = (character.transform.position - _playerLinks.transform.position).normalized;
+			Vector3 pushTarget = character.transform.position + pushDir * 2f;
+			CmdKnockback(character, pushTarget);
+		}
+	}
+
+	[Command]
+	private void CmdPush(Vector3 force, float finalRange)
+	{
+		RpcPlayShotSound();
+		_durationOfJump = finalRange * durationOfJumpPerCell;
+		force.y = 1;
+		_playerLinks.Move.TargetRpcDoMove(force, _durationOfJump);
+		StartCoroutine(WaitForJumpEnd());
+	}
+
+	[Command]
+	private void CmdPushWithCharacter(Vector3 force, Character target, float finalRange)
+	{
+		RpcPlayShotSound();
+		_durationOfJump = finalRange * durationOfJumpPerCell;
+
+		if (target.TryGetComponent(out MoveComponent move))
+		{
+			move.CanMove = false;
+			_attachedTarget = target;
+
+			_attachedTarget.transform.SetParent(_playerLinks.transform);
+			RpcAttachTarget(_attachedTarget);
+		}
+
+		force.y = 1;
+		_playerLinks.Move.TargetRpcDoMove(force, _durationOfJump);
+
+		StartCoroutine(WaitForJumpEnd());
+	}
+
+	[Command]
+	private void CmdKnockback(Character target, Vector3 force)
+	{
+		if (target.TryGetComponent(out MoveComponent move))
+		{
+			if (target.connectionToClient != null) move.TargetRpcDoMove(force, 0.05f);
+			else move.RpcDoMove(force, 0.05f);
+		}
+	}
+
+	[ClientRpc]
+	private void RpcReleaseTarget(Character target)
+	{
+		target.Move.CanMove = true;
+		target.transform.SetParent(null);
+
+		if (target.TryGetComponent(out NavMeshAgent agent))
+		{
+			agent.enabled = true;
+			agent.Warp(_target.transform.position);
+		}
+
+		if (target.TryGetComponent(out Rigidbody rigidbody)) rigidbody.isKinematic = false;
 	}
 
 	[ClientRpc] private void RpcPlayShotSound() => _audioSource?.PlayOneShot(audioClip);

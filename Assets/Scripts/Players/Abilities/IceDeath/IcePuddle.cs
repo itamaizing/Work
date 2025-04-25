@@ -8,12 +8,13 @@ using UnityEngine.UIElements;
 public class IcePuddle : Skill
 {
 	[SerializeField] private IcePuddleObject _puddle;
+	[SerializeField] private IcePuddleObject _puddleBig;
 	[SerializeField] private GameObject _preViewPuddle;
 	[SerializeField] private GameObject _lowePoint;
 	[SerializeField] private DecalProjector _puddleProjector;
 	//[SerializeField] private FrostingFrozenTalant _frostingFrozenTalant;
 	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
-	//[SerializeField] private bool isBig = true; //test
+	[SerializeField] private bool isBig = true; //test
 	[SerializeField] private float _timeToDestroy = 3f;
 	[SerializeField] private HeroComponent _playerLinks;
 	[SerializeField] private MoveComponent _move;
@@ -205,6 +206,22 @@ public class IcePuddle : Skill
 	}*/
 
 	[Command]
+	private void CmdCreateProjecttileBig(float angle, float manaValue, Vector3 position, bool lastHit, bool talentEvade, bool talentFrostingFrozen)
+	{
+		IcePuddleObject projectile = Instantiate(_puddleBig, position, Quaternion.Euler(-90, -angle, 0));
+		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
+		projectile.Init(_playerLinks, manaValue, lastHit, this);
+		projectile.SetTalents(talentEvade, talentFrostingFrozen);
+
+		NetworkServer.Spawn(projectile.gameObject);
+
+		RpcPlayShotSound();
+
+		RpcInit(projectile.gameObject, manaValue, lastHit);
+	}
+
+
+	[Command]
 	private void CmdCreateProjecttile(float angle, float manaValue, Vector3 position, bool lastHit, bool talentEvade, bool talentFrostingFrozen)
 	{
 		IcePuddleObject projectile = Instantiate(_puddle, position, Quaternion.Euler(-90, -angle, 0));
@@ -215,8 +232,6 @@ public class IcePuddle : Skill
 		NetworkServer.Spawn(projectile.gameObject);
 
 		RpcPlayShotSound();
-
-		if (lastHit) IcePuddleUpgrade(projectile);
 
 		RpcInit(projectile.gameObject, manaValue, lastHit);
 	}
@@ -360,7 +375,8 @@ public class IcePuddle : Skill
 
 		Buff.AttackSpeed.IncreasePercentage(1 + _seriesOfStrikes.GetMultipliedSpeed() / 100);
 
-		CmdCreateProjecttile(_angle3, _timeToDestroy, _preViewPuddle.transform.position, _lastHit && _talentPuddleSize, _talentEvadeDadBoost, _talentFrostingFrozen);
+		if (isBig) CmdCreateProjecttileBig(_angle3, _timeToDestroy, _preViewPuddle.transform.position, _lastHit && _talentPuddleSize, _talentEvadeDadBoost, _talentFrostingFrozen);
+		else CmdCreateProjecttile(_angle3, _timeToDestroy, _preViewPuddle.transform.position, _lastHit && _talentPuddleSize, _talentEvadeDadBoost, _talentFrostingFrozen);
 	}
 
 	public void SetTalentPuddleSize(bool active)
@@ -399,42 +415,9 @@ public class IcePuddle : Skill
 		_move.CanMove = false;
 	}
 
-	private void IcePuddleUpgrade(IcePuddleObject projectile)
-    {
-		Vector3 newScale = new Vector3(3f, 2f, projectile.transform.localScale.z);
-		projectile.transform.localScale = newScale;
-
-		if (projectile.Decal != null)
-		{
-			Vector2 newSize = projectile.Decal.size;
-			newSize.x += 3f;
-			newSize.y += 2f;
-			projectile.Decal.size = newSize;
-
-			RpcApplyVisuals(projectile.netIdentity, newScale, newSize);
-		}
-	}
-
 	[ClientRpc]
 	private void RpcPlayShotSound()
 	{
 		if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
-	}
-
-	[ClientRpc]
-	private void RpcApplyVisuals(NetworkIdentity target, Vector3 scale, Vector2 decalSize)
-	{
-		if (target != null && target.TryGetComponent<IcePuddleObject>(out var puddle))
-		{
-			puddle.transform.localScale = scale;
-
-			if (puddle.Decal != null)
-			{
-				var newDecalSize = puddle.Decal.size;
-				newDecalSize.x = decalSize.x;
-				newDecalSize.y = decalSize.y;
-				puddle.Decal.size = newDecalSize;
-			}
-		}
 	}
 }
