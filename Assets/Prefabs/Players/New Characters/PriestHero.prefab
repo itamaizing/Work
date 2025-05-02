@@ -500,6 +500,14 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0.22989105
       objectReference: {fileID: 0}
+    - target: {fileID: 3540905251162376194, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3540905251162376194, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3624054685066338121, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.030096373
@@ -797,11 +805,23 @@ PrefabInstance:
       value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._id
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._name
       value: TalentGroup0
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._name
+      value: TalentGroup0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.size
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.size
       value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -845,6 +865,46 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7331801944504504144}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[0]
+      value: 
+      objectReference: {fileID: 6021452036386971434}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[1]
+      value: 
+      objectReference: {fileID: 7528736666279600872}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[2]
+      value: 
+      objectReference: {fileID: 4123094691184289860}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[3]
+      value: 
+      objectReference: {fileID: 8687145299049863108}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[4]
+      value: 
+      objectReference: {fileID: 447011797231109846}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[5]
+      value: 
+      objectReference: {fileID: 8636649860820061698}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[6]
+      value: 
+      objectReference: {fileID: 4458375989096553484}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[7]
+      value: 
+      objectReference: {fileID: 1914382487903794868}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[8]
+      value: 
+      objectReference: {fileID: 2056303869398073752}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[9]
+      value: 
+      objectReference: {fileID: 7331801944504504144}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[10]
       value: 
       objectReference: {fileID: 3909138369121926387}
@@ -874,6 +934,42 @@ PrefabInstance:
       objectReference: {fileID: 4487192289763849279}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[17]
+      value: 
+      objectReference: {fileID: 10600401575572123}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[18]
+      value: 
+      objectReference: {fileID: 10600401575572123}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[10]
+      value: 
+      objectReference: {fileID: 3909138369121926387}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[11]
+      value: 
+      objectReference: {fileID: 477570396441443125}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[12]
+      value: 
+      objectReference: {fileID: 9021092612902411166}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[13]
+      value: 
+      objectReference: {fileID: 471872757579073010}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[14]
+      value: 
+      objectReference: {fileID: 6884934802079251823}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[15]
+      value: 
+      objectReference: {fileID: 7357773734673534914}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[16]
+      value: 
+      objectReference: {fileID: 4487192289763849279}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[17]
       value: 
       objectReference: {fileID: 10600401575572123}
     - target: {fileID: 6397899444093627911, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -1383,7 +1479,7 @@ MonoBehaviour:
     m_Bits: 128
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _manaCostPerTick: []
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1400,6 +1496,7 @@ MonoBehaviour:
   _attackDelay: 0
   _chargeAttackDelay: 0
   _damage: 5
+  _animSpeed: 1
 --- !u!114 &683463177557245195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1436,7 +1533,7 @@ MonoBehaviour:
     m_Bits: 128
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _manaCostPerTick: []
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1509,7 +1606,7 @@ MonoBehaviour:
     m_Bits: 128
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _manaCostPerTick: []
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1565,7 +1662,7 @@ MonoBehaviour:
     m_Bits: 128
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _manaCostPerTick: []
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1626,7 +1723,7 @@ MonoBehaviour:
     m_Bits: 128
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _manaCostPerTick: []
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1694,7 +1791,7 @@ MonoBehaviour:
     m_Bits: 0
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _manaCostPerTick: []
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1749,7 +1846,7 @@ MonoBehaviour:
     m_Bits: 0
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _manaCostPerTick: []
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1799,7 +1896,7 @@ MonoBehaviour:
     m_Bits: 0
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _manaCostPerTick: []
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1850,7 +1947,7 @@ MonoBehaviour:
     m_Bits: 128
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _manaCostPerTick: []
   _isUseCharges: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
@@ -1942,7 +2039,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    Name: PhyscialDamagePriestShieldTalent
     IsOpen: 0
     Description: a
     Icon: {fileID: 21300000, guid: 09e359aa32a9ff04ea7bbdf596fa2faa, type: 3}
@@ -1961,7 +2057,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    Name: SpellActivatePriestShieldTalent
     IsOpen: 0
     Description: a
     Icon: {fileID: 21300000, guid: ae29ded27bedede4eaa0a76e40eeffe8, type: 3}
@@ -1980,7 +2075,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    Name: HealPriestShieldTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: d98277b1f14b3c84e906db928f1d5fff, type: 3}
@@ -1999,7 +2093,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    Name: DarkMagicDamagePriestShieldTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: e412ffe984e989d42b1b73851bd11bb4, type: 3}
@@ -2018,7 +2111,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    Name: LowHealthSparkOfLightTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: d34409cc09b236d4da56a95d24acd358, type: 3}
@@ -2037,7 +2129,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    Name: HealthBoostSparkOfLightTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: b7ba9882ed5f32f40a9cd054221db12c, type: 3}
@@ -2056,7 +2147,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    Name: EmeraldSkinActiveTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: 0df2be162515e5f45a7803b8871e7725, type: 3}
@@ -2076,7 +2166,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    Name: EmeraldLightMagicBoostTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: 9417efc47083f4a1598c1966a6345cdb, type: 3}
@@ -2095,7 +2184,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    Name: ManaRestoreBoostTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: 18a436a2dc16eb24a9f5c7c559b3906d, type: 3}
@@ -2114,7 +2202,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    Name: CooldownReduceFlashOfLighttalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: 20af4d25b37c89a4ab20f317d1c7cf17, type: 3}
@@ -2133,7 +2220,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    Name: HealingBuffTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: c958be7c2aec0f04f9ee64f294e9848b, type: 3}
@@ -2152,7 +2238,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    Name: SelfHarmTalent
     IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: f0ccd677cfe30094c8aebaee7b301751, type: 3}
@@ -2171,7 +2256,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    Name: BladeMailPriestTalent
     IsOpen: 1
     Description: 
     Icon: {fileID: 0}
@@ -2189,7 +2273,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    Name: TiredSoulPriestTalent
     IsOpen: 1
     Description: 
     Icon: {fileID: 21300000, guid: 9f42d22003c5e8f439093da05407f78f, type: 3}
@@ -2208,7 +2291,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    Name: SoulAidActiveTalent
     IsOpen: 1
     Description: 
     Icon: {fileID: 21300000, guid: 3c709b466f53c0141944292653b6dff8, type: 3}
@@ -2228,7 +2310,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    Name: DispelTiredSoulTalent
     IsOpen: 1
     Description: 
     Icon: {fileID: 21300000, guid: cae2f0cb798243a46842fb23151acbf4, type: 3}
@@ -2247,7 +2328,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    Name: CooldownReduceSoulAidTalent
     IsOpen: 1
     Description: 
     Icon: {fileID: 21300000, guid: 428dcd7a870198e46b6ad8210ced5702, type: 3}
@@ -2266,7 +2346,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    Name: DoubleRangeSoulAid
     IsOpen: 1
     Description: 
     Icon: {fileID: 0}

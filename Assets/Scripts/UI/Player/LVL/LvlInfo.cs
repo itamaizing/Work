@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -46,6 +48,10 @@ public class LvlInfo : MonoBehaviour
     private void OnLVLUped(int obj)
     {
 		_lvlValue = obj;
+		_LvlText.transform.DOKill();
+		_LvlText.transform.localScale = new Vector3(2,2,2);
+		_LvlText.transform.DOScale(1, 1);
+
 		UpdateInfo();
 	}
 	
