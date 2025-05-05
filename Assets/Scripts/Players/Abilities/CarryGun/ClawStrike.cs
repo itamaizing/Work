@@ -99,4 +99,9 @@ public class ClawStrike : AutoAttackSkill
     {
         targetCharacter.CharacterState.DispelStates(StateType.Magic, targetCharacter.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, dispelCount > 0);
     }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new System.NotImplementedException();
+    }
 }

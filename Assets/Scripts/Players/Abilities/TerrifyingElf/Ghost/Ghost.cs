@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,6 +70,11 @@ public class Ghost : Skill
         }
     }
 
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new NotImplementedException();
+    }
+
     private void ShowExtendedRadius()
     {
         if (_extendedRadiusCircle != null)
@@ -107,7 +113,7 @@ public class Ghost : Skill
         }
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         Vector3 mousePositionStart = GetMousePoint();
 
@@ -251,12 +257,12 @@ public class Ghost : Skill
 
             if (innerDarknessStacks > 0)
             {
-                float randomFearDuration = Random.Range(0.4f, 0.6f) * innerDarknessStacks;
+                float randomFearDuration = UnityEngine.Random.Range(0.4f, 0.6f) * innerDarknessStacks;
                 characterState.AddState(States.Fear, randomFearDuration, 0, gameObject, "Ghost");
                 //CmdAddFear(characterState, randomFearDuration);
             }
 
-            else if (innerDarknessStacks == 0) characterState.AddState(States.Fear, Random.Range(0.4f, 0.6f), 0, gameObject, "Ghost");
+            else if (innerDarknessStacks == 0) characterState.AddState(States.Fear, UnityEngine.Random.Range(0.4f, 0.6f), 0, gameObject, "Ghost");
         }
 
         CmdAc—ontrolGhostToTarget();

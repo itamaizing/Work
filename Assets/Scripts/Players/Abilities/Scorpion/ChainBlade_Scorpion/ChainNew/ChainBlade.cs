@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using Mirror;
+using System;
 using UnityEngine.SceneManagement;
 
 public class ChainBlade : Skill
@@ -36,7 +37,7 @@ public class ChainBlade : Skill
         }
     }
 
-    public float DamageRange => Random.Range(_minDamage, _maxDamage);
+    public float DamageRange => UnityEngine.Random.Range(_minDamage, _maxDamage);
     public PassiveCombo_Scorpion ComboCounter { get => _comboCounter; set => _comboCounter = value; }
 
     private void Start()
@@ -44,7 +45,7 @@ public class ChainBlade : Skill
         _animator = GetComponent<Animator>();
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while (float.IsPositiveInfinity(_clickPoint.x))
         {
@@ -68,6 +69,10 @@ public class ChainBlade : Skill
 
             yield return null;
         }
+
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(_clickPoint);
+        callbackDataSaved(targetInfo);
     }
 
     public void ChainBladeEnd()
@@ -144,5 +149,10 @@ public class ChainBlade : Skill
         var arrow = arrowObj.GetComponent<ChainArrow>();
         arrow.Init(playerLinks, 0, false, this);
         arrow.InitArrow(targetPoint, spawnPoint.transform, Radius, DamageRange);
+    }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _clickPoint = targetInfo.Points[0];
     }
 }

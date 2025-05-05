@@ -1,6 +1,3 @@
-using JetBrains.Annotations;
-using Mirror;
-using Org.BouncyCastle.Asn1.Cmp;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -50,69 +47,6 @@ public class ConsumeCombo_Scorpion : Skill
         {
             pointsConsumed = ConsumePointsFromTarget(specificTarget, amount);
         }
-
-        else
-        {
-            pointsConsumed = ConsumePointsFromQueue(amount);
-        }
-
-        return pointsConsumed;
-    }
-
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        
-    }
-
-    [Command]
-    private void cmdtest()
-    {
-        Debug.LogWarning($" Cast speed test before !!!!!: {Buff.CastSpeed.Multiplier}");
-        Buff.CastSpeed.IncreasePercentage(2f);
-        Debug.LogWarning($" Cast speed test after !!!!!: {Buff.CastSpeed.Multiplier}");
-
-        rpctest();
-    }
-    [ClientRpc]
-    private void rpctest()
-    {
-        Debug.LogWarning($" Cast speed test before !!!!!: {Buff.CastSpeed.Multiplier}");
-        Buff.CastSpeed.ReductionPercentage(0.3f);
-        Debug.LogWarning($" Cast speed test after !!!!!: {Buff.CastSpeed.Multiplier}");
-    }
-
-    private void NotifyAbilities(bool State)
-    {
-        RecalculateFreePoints();
-
-        //foreach (var item in _abilitiesToNotify)
-        //{
-        //    item.IsUsingCombo = State;
-        //}
-    }
-    private void ResetValues()
-    {
-        Count = 0;
-        IsActive = false;
-    }
-
-    private bool Consume()
-    {
-        if (_playerLinks == null)
-            return false;
-
-        if (_comboPlayer.CurrentValue == 0)
-        {
-            ResetValues();
-            return false;
-        }
-
-        if (_comboPlayer.CurrentValue > Count)
-        {
-            Count++;
-            IsActive = true;
-        }
-
         else
         {
             pointsConsumed = ConsumePointsFromQueue(amount);
@@ -183,11 +117,6 @@ public class ConsumeCombo_Scorpion : Skill
 
         return pointsToConsume;
     }
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
-    {
-        callbackDataSaved(null);
-        yield return null;
-    }
 
     public void ConsumeCombo_ScorpionPhysicStateClearTalent(bool value)
     {
@@ -223,6 +152,9 @@ public class ConsumeCombo_Scorpion : Skill
             }
         }
     }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved) => null;
     protected override IEnumerator CastJob() => null;
     protected override void ClearData() { }
+    public override void LoadTargetData(TargetInfo targetInfo) => throw new NotImplementedException();
 }

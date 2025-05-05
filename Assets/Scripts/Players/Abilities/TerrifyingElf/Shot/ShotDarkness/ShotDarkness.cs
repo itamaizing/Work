@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -40,7 +41,7 @@ public class ShotDarkness : AutoAttackSkill
         if (_target != null && !_disactive) return;
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         OnSkillCanceled += HandleSkillCanceled;
         Hero.Animator.speed = Hero.Animator.speed / AttackDelay;
@@ -64,6 +65,10 @@ public class ShotDarkness : AutoAttackSkill
             }
             yield return null;
         }
+
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(_targetPoint);
+        callbackDataSaved(targetInfo);
     }
 
 
@@ -281,5 +286,10 @@ public class ShotDarkness : AutoAttackSkill
         _isDelayActive = false;
 
         _consecutiveShots = 0;
+    }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _targetPoint = targetInfo.Points[0];
     }
 }

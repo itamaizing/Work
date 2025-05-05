@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -55,7 +56,7 @@ public class ShotAstral : Skill
         yield return null;
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         OnSkillCanceled += HandleSkillCanceled;
         Hero.Animator.speed = Hero.Animator.speed / CastDeley;
@@ -84,6 +85,10 @@ public class ShotAstral : Skill
             }
             yield return null;
         }
+
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(_targetPoint);
+        callbackDataSaved(targetInfo);
     }
 
     private void HandleSkillCanceled()
@@ -159,5 +164,10 @@ public class ShotAstral : Skill
     {
         _target = null;
         _targetPoint = Vector3.positiveInfinity;
+    }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _targetPoint = targetInfo.Points[0];
     }
 }

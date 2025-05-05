@@ -1,6 +1,7 @@
 using Mirror;
 using UnityEngine;
 using System.Collections;
+using System;
 
 public class TerrifyingElfAura : Skill
 {
@@ -20,7 +21,7 @@ public class TerrifyingElfAura : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => false;
-    protected override IEnumerator PrepareJob() { yield break; }
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved) { yield break; }
     protected override IEnumerator CastJob() { yield break; }
     protected override void ClearData() { }
     #endregion
@@ -74,7 +75,7 @@ public class TerrifyingElfAura : Skill
             var character = currentSkill.Hero;
             if (character != null && character.CharacterState != null)
             {
-                bool isCalmnessChance = Random.Range(0f, 100f) <= calmnessChance;
+                bool isCalmnessChance = UnityEngine.Random.Range(0f, 100f) <= calmnessChance;
 
                 if (isCalmnessChance)
                 {
@@ -116,7 +117,7 @@ public class TerrifyingElfAura : Skill
         {
             if (target != null && target.CharacterState.CheckForState(States.HuntressMark))
             {
-                bool isCalmnessChance = Random.Range(0f, 100f) <= calmnessChance;
+                bool isCalmnessChance = UnityEngine.Random.Range(0f, 100f) <= calmnessChance;
 
                 if (isCalmnessChance)
                 {
@@ -156,7 +157,7 @@ public class TerrifyingElfAura : Skill
 
         if (damage.Type != DamageType.Physical) return;
 
-        bool chance = Random.Range(0f, 100f) <= huntressMarkApplyChance;
+        bool chance = UnityEngine.Random.Range(0f, 100f) <= huntressMarkApplyChance;
         if (!chance) return;
 
         if (target.TryGetComponent<CharacterState>(out var characterState))
@@ -226,5 +227,10 @@ public class TerrifyingElfAura : Skill
                 calmness.UpdateTreesCount(treesCount);
             }
         }
-        #endregion
+    #endregion
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new NotImplementedException();
     }
+}

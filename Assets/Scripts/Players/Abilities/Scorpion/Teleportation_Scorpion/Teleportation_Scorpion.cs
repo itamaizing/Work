@@ -173,9 +173,10 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 
     //    // Change values
     //}
+
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        Debug.LogError("DataError");
+        _target = (Character)targetInfo.Targets[0];
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -202,7 +203,10 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 
             yield return null;
         }
-        Debug.LogError("DataError");
+
+        TargetInfo targetInfo = new();
+        targetInfo.Targets.Add(_target);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
@@ -216,7 +220,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
         if (isTeleportation_ScorpionMagResist)
         {
             if (targetState != null) extraDuration = targetState.CheckStateStacks(States.ComboState);
-            if (Random.value <= 0.3f) _hero.CharacterState.CmdAddState(States.IdealEvade, 1f + extraDuration, 30f, _hero.gameObject, name);
+            if (UnityEngine.Random.value <= 0.3f) _hero.CharacterState.CmdAddState(States.IdealEvade, 1f + extraDuration, 30f, _hero.gameObject, name);
         }
 
         yield return null;

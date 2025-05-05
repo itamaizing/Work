@@ -147,7 +147,7 @@ public class IcePuddle : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        Debug.LogError("DataError");
+		throw new NotImplementedException();
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -178,7 +178,6 @@ public class IcePuddle : Skill
 			}
 			yield return null;
 		}
-        Debug.LogError("DataError");
     }
 
 	protected override IEnumerator CastJob()

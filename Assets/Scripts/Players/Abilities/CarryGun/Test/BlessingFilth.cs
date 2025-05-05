@@ -1,6 +1,7 @@
 using Mirror;
 using System.Collections;
 using UnityEngine;
+using System;
 
 public class BlessingFilth : Skill
 {
@@ -10,7 +11,7 @@ public class BlessingFilth : Skill
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => true;
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         bool targetSelected = false;
 
@@ -53,5 +54,10 @@ public class BlessingFilth : Skill
     protected override void ClearData()
     {
         _tempTargetForDamage = null;
+    }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new NotImplementedException();
     }
 }

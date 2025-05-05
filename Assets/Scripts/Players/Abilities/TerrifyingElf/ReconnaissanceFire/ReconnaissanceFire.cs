@@ -6,6 +6,7 @@ using HeathenEngineering.UnityPhysics.API;
 using Unity.Mathematics;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using System;
 
 public class ReconnaissanceFire : Skill
 {
@@ -54,7 +55,7 @@ public class ReconnaissanceFire : Skill
         currentFireAura = null;
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         Hero.Animator.speed = Hero.Animator.speed/CastDeley;
         OnSkillCanceled += HandleSkillCanceled;
@@ -242,6 +243,11 @@ public class ReconnaissanceFire : Skill
     public void FireWorshipperTalentActive(bool value)
     {
         fireWorshipperTalent = value;
+    }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new NotImplementedException();
     }
     #endregion
 }

@@ -1,15 +1,22 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 
 public class SubjugationMind : Skill
 {
     private Character _target;
+    private Vector3 _targetPoint = Vector3.positiveInfinity;
 
     protected override bool IsCanCast => true;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("PullingHealthCastDelay");
     protected override int AnimTriggerCast => 0;
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new NotImplementedException();
+    }
 
     protected override IEnumerator CastJob()
     {
@@ -22,19 +29,24 @@ public class SubjugationMind : Skill
         _target = null;
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (_target == null)
+        while (float.IsPositiveInfinity(_targetPoint.x) && _target == null)
         {
             if (GetMouseButton)
             {
                 var temp = GetRaycastTarget();
+                _targetPoint = GetMousePoint();
 
                 if (temp is MinionComponent minion) _target = minion;
                 else if (temp is HeroComponent heroComponent) _target = heroComponent;
             }
             yield return null;
         }
+
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(_targetPoint);
+        callbackDataSaved(targetInfo);
     }
 
     [Command]

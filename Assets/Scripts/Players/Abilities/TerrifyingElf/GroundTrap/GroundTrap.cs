@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -20,7 +21,7 @@ public class GroundTrap : Skill
     protected override int AnimTriggerCastDelay => Animator.StringToHash("ShotCastDelayAnimTrigger");
     protected override int AnimTriggerCast => 0;
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         _hero.Animator.speed = CastDeley * 2;
         _isPlacingTrap = true;
@@ -127,5 +128,10 @@ public class GroundTrap : Skill
         _isStartPointPlaced = false;
         previewTrap.SetActive(false);
         Hero.Move.CanMove = true;
+    }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new NotImplementedException();
     }
 }

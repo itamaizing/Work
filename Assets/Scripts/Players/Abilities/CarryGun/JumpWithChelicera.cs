@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ public class JumpWithChelicera : Skill
 
     private Animator _animator;
     private Character _target;
-    private Vector3 _mousePosition = Vector3.positiveInfinity;
+    private Vector3 _targetPosition = Vector3.positiveInfinity;
 
     private static readonly int jumpStart = Animator.StringToHash("JumpStart");
     private static readonly int jumpEnd = Animator.StringToHash("JumpEnd");
@@ -41,21 +42,21 @@ public class JumpWithChelicera : Skill
     protected override void ClearData()
     {
         _target = null;
-        _mousePosition = Vector3.positiveInfinity;
+        _targetPosition = Vector3.positiveInfinity;
         _isTarget = false;
         hasDealtDamage = false;
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         _castDeley = _delayBeforeJump;
 
-        while (_target == null && float.IsPositiveInfinity(_mousePosition.x))
+        while (_target == null && float.IsPositiveInfinity(_targetPosition.x))
         {
             if (GetMouseButton)
             {
                 _target = GetRaycastTarget();
-                _mousePosition = GetMousePoint();
+                _targetPosition = GetMousePoint();
 
                 if (_target != null)
                 {
@@ -66,6 +67,10 @@ public class JumpWithChelicera : Skill
             }
             yield return null;
         }
+
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(_targetPosition);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
@@ -107,8 +112,8 @@ public class JumpWithChelicera : Skill
 
     private bool CheckCanCast()
     {
-        return _target != null && Vector2.Distance(_mousePosition, transform.position) <= Radius &&
-               NoObstacles(_mousePosition, _obstacle);
+        return _target != null && Vector2.Distance(_targetPosition, transform.position) <= Radius &&
+               NoObstacles(_targetPosition, _obstacle);
     }
 
     private void ResetBool()
@@ -231,6 +236,11 @@ public class JumpWithChelicera : Skill
     private void RpcHandleJumpAnimEnd()
     {
         HandleJumpAnimEnd();
+    }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _targetPosition = targetInfo.Points[0];
     }
 
     //[ClientRpc]

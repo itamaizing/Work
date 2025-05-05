@@ -1,26 +1,33 @@
 ﻿using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 
 public class Dispel : Skill
 {
     private Character _target;
+        private Vector3 _targetPoint = Vector3.positiveInfinity;
 
     protected override bool IsCanCast => _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
     protected override int AnimTriggerCast => 0;
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (_target == null && !_disactive)
+        while (float.IsPositiveInfinity(_targetPoint.x) && _target == null)
         {
             if (GetMouseButton)
             {
+                _targetPoint = GetMousePoint();
                 _target = GetNearestTargetInRadius();
             }
             yield return null;
         }
+
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(_targetPoint);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
@@ -105,5 +112,10 @@ public class Dispel : Skill
         bool isAlly = targetState.gameObject.layer == LayerMask.NameToLayer("Allies");
 
         targetState.DispelStates(StateType.Magic, isAlly, true);
+    }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _targetPoint = targetInfo.Points[0];
     }
 }

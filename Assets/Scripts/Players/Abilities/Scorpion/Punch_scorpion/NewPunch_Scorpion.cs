@@ -123,6 +123,11 @@ public class NewPunch_Scorpion : AutoAttackSkill
         _comboCounter.AddSkill(target, this);
     }
 
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _target = (Character)targetInfo.Targets[0];
+    }
+
     //private void AttackMissed()
     //{
     //    Debug.Log("[NewPunch_Scorpion] Attack Missed");

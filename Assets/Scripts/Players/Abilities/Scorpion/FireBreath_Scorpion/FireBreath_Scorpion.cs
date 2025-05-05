@@ -35,7 +35,7 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        Debug.LogError("DataError");
+        throw new NotImplementedException();
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -89,7 +89,7 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
 
         currentChance = Mathf.Clamp(currentChance, 0f, 100f);
 
-        float roll = Random.Range(0f, 100f);
+        float roll = UnityEngine.Random.Range(0f, 100f);
         if (roll <= currentChance)
         {
             if (enemy.TryGetComponent<CharacterState>(out var stateManager))

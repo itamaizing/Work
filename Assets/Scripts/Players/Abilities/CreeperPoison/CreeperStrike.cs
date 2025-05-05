@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -74,14 +75,14 @@ public class CreeperStrike : AutoAttackSkill
         AnimCastEnded();
     }
 
-      protected override IEnumerator PrepareJob()
+      protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         if (_lightningMovement.IsInMovement)
         {
             _animTime = GetClipLength();
             IncreaseAnimSpeed();
         }
-        return base.PrepareJob();
+        return base.PrepareJob(callbackDataSaved);
     }
 
     protected override void CastAction()
@@ -127,8 +128,8 @@ public class CreeperStrike : AutoAttackSkill
     {
         if (target != null)
         {
-            _currentDamage = Random.Range(7.0f, 11.0f);
-            float _currentChanceOfCriticalStrike = Random.Range(0.0f, 1.0f);
+            _currentDamage = UnityEngine.Random.Range(7.0f, 11.0f);
+            float _currentChanceOfCriticalStrike = UnityEngine.Random.Range(0.0f, 1.0f);
 
             _isHit = true;
             _currentCountHit++;
@@ -162,7 +163,7 @@ public class CreeperStrike : AutoAttackSkill
                 float baseChanceOfRestorationOfGlands = 0.9f;
                 float chanceOfRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
 
-                if (Random.Range(0f, 1f) <= chanceOfRestorationOfGlands)
+                if (UnityEngine.Random.Range(0f, 1f) <= chanceOfRestorationOfGlands)
                 {
                     Debug.Log("CreeperStrike / restorationOfGlands");
                     _restorationOfGlands.ReductionCooldown();
@@ -387,11 +388,10 @@ public class CreeperStrike : AutoAttackSkill
         ApplyDamage(damage, target);
     }
 
+    #endregion
+
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         throw new System.NotImplementedException();
     }
-
-    #endregion
-
 }

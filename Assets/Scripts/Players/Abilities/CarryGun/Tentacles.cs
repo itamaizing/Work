@@ -3,6 +3,7 @@ using UnityEngine;
 using Mirror;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using System;
 
 public class Tentacles : Skill
 {
@@ -54,7 +55,7 @@ public class Tentacles : Skill
         }
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         _skillRender.IsOverrideClosestTarget = true;
 
@@ -296,5 +297,10 @@ public class Tentacles : Skill
         if (tentacleObject == null) return;
 
         tentacleObject.GetComponent<TentacleProjectile>().Init(_player, target, position, target.transform.position, true, _spentAttackingPsiEnergy, this);
+    }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new NotImplementedException();
     }
 }

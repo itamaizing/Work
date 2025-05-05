@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -29,7 +30,7 @@ public class Silence : Skill
         audioSource = GetComponent<AudioSource>();
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         //_duration = _baseDuration;
 
@@ -56,6 +57,10 @@ public class Silence : Skill
             }
             yield return null;
         }
+
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(_targetPoint);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
@@ -216,5 +221,10 @@ public class Silence : Skill
     protected override void ClearData()
     {
         _targetPoint = Vector3.positiveInfinity;
+    }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _targetPoint = targetInfo.Points[0];
     }
 }

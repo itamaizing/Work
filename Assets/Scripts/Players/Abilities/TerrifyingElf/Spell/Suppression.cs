@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ public class Suppression : Skill
     [SerializeField] private Character _playerLinks;
     [SerializeField] private float duration;
     private Character _target;
+    private Vector3 _targetPoint = Vector3.positiveInfinity;
 
     protected override bool IsCanCast => IsHaveCharge && _target != null;
 
@@ -14,16 +16,21 @@ public class Suppression : Skill
 
     protected override int AnimTriggerCast => 0;
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (_target == null && !_disactive)
+        while (float.IsPositiveInfinity(_targetPoint.x) && _target == null && !_disactive)
         {
             if (GetMouseButton)
             {
+                _targetPoint = GetMousePoint();
                 _target = GetRaycastTarget(true);
             }
             yield return null;
         }
+
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(_targetPoint);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
@@ -49,5 +56,10 @@ public class Suppression : Skill
         {
             targetCharacter.CharacterState.AddState(States.Suppression, duration, 0, _playerLinks.gameObject, name);
         }
+    }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _targetPoint = targetInfo.Points[0];
     }
 }

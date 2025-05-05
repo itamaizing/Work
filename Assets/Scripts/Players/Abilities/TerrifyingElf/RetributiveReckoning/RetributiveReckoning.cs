@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -53,7 +54,7 @@ public class RetributiveReckoning : AutoAttackSkill
         Disactive = true;
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while (!Disactive)
         {
@@ -151,5 +152,10 @@ public class RetributiveReckoning : AutoAttackSkill
     protected override void ClearData()
     {
         _isTeleporting = false;
+    }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new NotImplementedException();
     }
 }

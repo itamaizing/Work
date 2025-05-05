@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
@@ -16,7 +17,7 @@ public class ShotsIntoSky : Skill
     protected override int AnimTriggerCastDelay => Animator.StringToHash("ShotCastDelayAnimTrigger");
     protected override int AnimTriggerCast => 0;
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         _hero.Animator.speed = CastDeley;
 
@@ -33,6 +34,10 @@ public class ShotsIntoSky : Skill
             }
             yield return null;
         }
+
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(_targetPoint);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
@@ -134,6 +139,11 @@ public class ShotsIntoSky : Skill
     protected override void ClearData()
     {
         _targetPoint = Vector3.positiveInfinity;
+    }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _targetPoint = targetInfo.Points[0];
     }
 
     #region silenceTalent

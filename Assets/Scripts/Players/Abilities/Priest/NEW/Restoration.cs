@@ -92,15 +92,6 @@ public class Restoration : Skill
     {
         _spiritEnergyTalent = value;
     }
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        _target = (Character)targetInfo.Targets[0];
-    }
-
-    private void HandleModeChange()
-    {
-        _spiritEnergyTalent = value;
-    }
 
     private void UpdateMode()
     {
@@ -150,7 +141,7 @@ public class Restoration : Skill
             StartCoroutine(ApplyDamageOverTime(_target));
         }
     }
-    
+
     private void OnHealTaken(float healedAmount, Skill skill, string sourceName)
     {
         _totalHealedInInterval += healedAmount;
@@ -171,8 +162,8 @@ public class Restoration : Skill
 
                 var heal = new Heal { Value = effectiveHeal };
                 CmdApplyHeal(heal, healthComponent.gameObject, this, name);
-                
-                _accumulatedEffectiveness += _totalHealedInInterval * effectivenessIncreasePerHeal;              
+
+                _accumulatedEffectiveness += _totalHealedInInterval * effectivenessIncreasePerHeal;
                 _totalHealedInInterval = 0f;
 
                 yield return new WaitForSeconds(healInterval);
@@ -201,7 +192,7 @@ public class Restoration : Skill
                     School = this.School,
                     //DamageableSkill = this,
                 };
-                
+
                 CmdApplyDamage(damage, target.gameObject);
                 yield return new WaitForSeconds(damageInterval);
             }
@@ -215,10 +206,10 @@ public class Restoration : Skill
             if (Input.GetMouseButton(0))
             {
                 _target = GetRaycastTarget();
-                CmdPlayShootSound();
             }
             yield return null;
         }
+
         TargetInfo targetInfo = new();
         targetInfo.Targets.Add(_target);
         callbackDataSaved(targetInfo);
@@ -227,6 +218,8 @@ public class Restoration : Skill
     protected override IEnumerator CastJob()
     {
         if (_target == null) yield break;
+
+        CmdPlayShootSound();
 
         if (isLightMode)
         {
@@ -242,6 +235,7 @@ public class Restoration : Skill
 
     protected override void ClearData()
     {
+        _target = null;
     }
 
     private void ResetAccumulatedEffectiveness()
@@ -252,7 +246,7 @@ public class Restoration : Skill
     [Command]
     private void CmdPlayShootSound()
     {
-      RpcPlayShotSound();
+        RpcPlayShotSound();
     }
 
     [ClientRpc]
@@ -260,4 +254,9 @@ public class Restoration : Skill
     {
         if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
     }
-}
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _target = (Character)targetInfo.Targets[0];
+    }
+} 

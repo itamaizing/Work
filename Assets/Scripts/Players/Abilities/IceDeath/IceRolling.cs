@@ -190,12 +190,13 @@ public class IceRolling : Skill
 		_jumpPos = Vector3.zero;
 	}
 
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        Debug.LogError("DataError");
-    }
+	public override void LoadTargetData(TargetInfo targetInfo)
+	{
+		if (targetInfo != null && targetInfo.Targets != null && targetInfo.Targets.Count > 0) if (targetInfo.Targets[0] is Character character) _target = character;
+			else _target = ClosedTarget();
+	}
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
 		while (float.IsPositiveInfinity(_mousePos.x))
 		{
@@ -206,7 +207,6 @@ public class IceRolling : Skill
 			}
 			yield return null;
 		}
-        Debug.LogError("DataError");
     }
 
 	protected override IEnumerator DynamicRendererJob(float time = 0.2f)

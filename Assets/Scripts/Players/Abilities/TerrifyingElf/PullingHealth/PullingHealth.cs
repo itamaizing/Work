@@ -26,12 +26,11 @@ public class PullingHealth : Skill
     private float _baseRadius;
     private float _baseTickInterval;
     private float _baseCastStreamDuration;
+    private Vector3 _targetPoint = Vector3.positiveInfinity;
 
     private bool pullingHealthGhostTalent;
     private bool _effectsDarknessTalent;
     private bool _pullingHealthSpeedWithSilenceTalent;
-
-    private Vector3 _mousePos = Vector3.positiveInfinity;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("PullingHealthCastDelay");
     protected override int AnimTriggerCast => 0;
@@ -65,16 +64,16 @@ public class PullingHealth : Skill
         OnSkillCanceled += HandleSkillCanceled;
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (float.IsPositiveInfinity(_mousePos.x) && !_disactive)
+        while (float.IsPositiveInfinity(_targetPoint.x) && !_disactive)
         {
             if (GetMouseButton)
             {
                 if (GetTarget().isCharater)
                 {
                     _target = GetTarget().character;
-                    _mousePos = _target.transform.position;
+                    _targetPoint = _target.transform.position;
                 }
             }
 
@@ -82,6 +81,10 @@ public class PullingHealth : Skill
 
             yield return null;
         }
+
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(_targetPoint);
+        callbackDataSaved(targetInfo);
     }
 
     private void UpdateRadiusBasedOnGhosts()
@@ -390,7 +393,7 @@ public class PullingHealth : Skill
         }
 
         _target = null;
-        _mousePos = Vector2.positiveInfinity;
+        _targetPoint = Vector2.positiveInfinity;
         CmdStopShotSound();
     }
 
@@ -535,5 +538,10 @@ public class PullingHealth : Skill
     protected override void ClearData()
     {
         Radius = _baseRadius;
+    }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _targetPoint = targetInfo.Points[0];
     }
 }

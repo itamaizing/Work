@@ -293,7 +293,7 @@ public abstract class Skill : NetworkBehaviour
         {
             TryPayCost(IsPayCostStartCooldown);
 
-            LoadTargetData(_targetInfoQueue.Dequeue());
+            if (_targetInfoQueue.Count > 0) LoadTargetData(_targetInfoQueue.Dequeue());
             _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
 
             return true;
@@ -924,7 +924,7 @@ public abstract class Skill : NetworkBehaviour
         return target;
     }
 
-    private Character ClosedTarget()
+    protected Character ClosedTarget()
     {
         var closerTargets = GetCloserTargets(transform.position, 1000);
 

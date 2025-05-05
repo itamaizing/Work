@@ -3489,7 +3489,7 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 0.7
+  _radius: 1.7
   _area: 0
   _castLength: 0
   _castWidth: 0

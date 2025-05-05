@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -141,7 +142,7 @@ public class GhostAura : Skill
 
     private void ApplySilent(CharacterState characterState, float chance, float duration)
     {
-        if (Random.value <= chance)
+        if (UnityEngine.Random.value <= chance)
         {
             characterState.AddState(GhostState, duration, 0f, gameObject, Name);
         }
@@ -160,13 +161,18 @@ public class GhostAura : Skill
         return duration;
     }
 
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new NotImplementedException();
+    }
+
     #region Talents
 
     #endregion
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     protected override IEnumerator CastJob()

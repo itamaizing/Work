@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -57,7 +58,7 @@ public class Tentacles_Kerrigan : Skill
         //_tentacle = null;
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         Character target = null;
         Vector3? firstPoint = null;
@@ -169,6 +170,11 @@ public class Tentacles_Kerrigan : Skill
 
 
         //TargetRpcSetTransformPosition(transform, newPos);
+    }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new NotImplementedException();
     }
 
     //[TargetRpc]

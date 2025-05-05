@@ -2,6 +2,7 @@ using UnityEngine.SceneManagement;
 using Mirror;
 using System.Collections;
 using UnityEngine;
+using System;
 
 public class GrowTree : Skill
 {
@@ -41,7 +42,7 @@ public class GrowTree : Skill
         CastSuccess += HandleSkillCanceled;
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         OnSkillCanceled += HandleSkillCanceled;
         CastSuccess += HandleSkillCanceled;
@@ -213,5 +214,10 @@ public class GrowTree : Skill
     protected override void ClearData()
     {
         _targetPoint = Vector3.positiveInfinity;
+    }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new NotImplementedException();
     }
 }

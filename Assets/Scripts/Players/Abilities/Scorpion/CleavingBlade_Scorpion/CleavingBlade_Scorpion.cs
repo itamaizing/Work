@@ -27,7 +27,7 @@ public class CleavingBlade_Scorpion : Skill
         _target = (Character)targetInfo.Targets[0];
     }
 
-     private void AttackPassed(bool shouldIncreaseCounter, Character target)
+    private void AttackPassed(bool shouldIncreaseCounter, Character target)
     {
         if (_comboCounter.IsFinalComboSkill(target, this))
         {
@@ -50,6 +50,7 @@ public class CleavingBlade_Scorpion : Skill
 
         _target = null;
     }
+
     private void AttackMissed()
     {
         Debug.LogWarning("CleavingBlade_Scorpion .AttackMissed - Промах");
@@ -112,37 +113,6 @@ public class CleavingBlade_Scorpion : Skill
 
         bool result = _tempForDamage.TryTakeDamage(ref damage, this);
         AttackPassed(shouldIncreaseCounter, hp);
-    }
-
-    private void AttackPassed(bool shouldIncreaseCounter, Character target)
-    {
-        if (_comboCounter.IsFinalComboSkill(target, this))
-        {
-            CharacterState state = target.GetComponent<CharacterState>();
-
-            if (state != null)
-            {
-                state.AddState(States.Bleeding, 6f, 0, _hero.gameObject, name);
-
-                int comboStacks = state.CheckStateStacks(States.ComboState);
-
-                for (int i = 0; i < comboStacks; i++) state.AddState(States.Bleeding, 6f, 0, _hero.gameObject, name);
-            }
-        }
-
-        if (shouldIncreaseCounter)
-        {
-            _counter = _counter == 3 ? 1 : _counter + 1;
-        }
-
-        _target = null;
-    }
-
-    private void AttackMissed()
-    {
-        _counter = 1;
-        _comboCounter.ResetCounter();
-        _target = null;
     }
 
     protected override void ClearData()

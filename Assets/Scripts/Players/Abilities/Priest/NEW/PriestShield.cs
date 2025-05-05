@@ -108,7 +108,6 @@ public class PriestShield : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         _target = (Character)targetInfo.Targets[0];
-        Debug.LogError("error data");
     }
 
     public void SwitchMode()
@@ -231,8 +230,6 @@ public class PriestShield : Skill
         Debug.Log($"Healing boost applied. Healing: {healingAmount}, Boost: {boostAmount}");
     }
     
-    //---------------- Talent 5 Logic: Healing Boost ----------------
-    
     public void EnableTiredSoulEvade(bool value)
     {
         _talentTiredSoulActive = value;
@@ -254,8 +251,10 @@ public class PriestShield : Skill
             }
             yield return null;
         }
+
         TargetInfo targetInfo = new();
-        Debug.LogError("error");
+        targetInfo.Targets.Add(_target);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()

@@ -229,14 +229,4 @@ public class LightningMovement : Skill
         _lightningStrikes.ClearDataLightningStrikes();
         _lightningStrikes.OnLightningStrikesEnd -= HandleLightningStrikesEnd;
     }
-
-    protected override void ClearData()
-    {
-        IsInMovement = false;
-        _player.Move.CanMove = true;
-        Target = null;
-        _hasSecondLeap = false;
-        _secondLeapPoint = Vector3.positiveInfinity;
-        _leapPoint = Vector3.positiveInfinity;
-    }
 }

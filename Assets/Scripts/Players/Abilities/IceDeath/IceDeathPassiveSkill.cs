@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -9,7 +10,8 @@ public class IceDeathPassiveSkill : Skill
     protected override bool IsCanCast => false;
     protected override IEnumerator CastJob() => null;
     protected override void ClearData() { }
-    protected override IEnumerator PrepareJob() => null;
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved) => null;
 
     private bool _isIceRuneTalent;
 
@@ -41,5 +43,10 @@ public class IceDeathPassiveSkill : Skill
     public void EnergyToRestore(bool value)
     {
         _isIceRuneTalent = value;
+    }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new NotImplementedException();
     }
 }

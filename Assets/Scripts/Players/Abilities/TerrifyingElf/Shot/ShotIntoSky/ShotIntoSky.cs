@@ -57,7 +57,7 @@ public class ShotIntoSky : Skill
     protected override IEnumerator CastJob()
     {
         DrawDamageZone(_targetPoint);
-        Damage = Random.Range(minDamage, maxDamage + 1);
+        Damage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
 
         yield return new WaitForSeconds(0.1f);
 
@@ -89,7 +89,7 @@ public class ShotIntoSky : Skill
                         {
                             if (shotAstralManaActive && targetState.CheckForState(States.Astral)) RestoreMana();
                             if (targetState.CheckForState(States.Silent) && silenceTalentActive) CmdAddWeakeningSilence(targetState);
-                            if (Random.Range(0f, 100f) <= stunChance) CmdAddState(targetState);
+                            if (UnityEngine.Random.Range(0f, 100f) <= stunChance) CmdAddState(targetState);
                         }
                     }
                 }
@@ -200,7 +200,7 @@ public class ShotIntoSky : Skill
                         {
                             if (shotAstralManaActive && targetState.CheckForState(States.Astral)) RestoreMana();
                             if (targetState.CheckForState(States.Silent) && silenceTalentActive) CmdAddWeakeningSilence(targetState);
-                            if (Random.Range(0f, 100f) <= stunChance) CmdAddState(targetState);
+                            if (UnityEngine.Random.Range(0f, 100f) <= stunChance) CmdAddState(targetState);
                         }
                     }
                 }

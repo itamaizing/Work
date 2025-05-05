@@ -244,4 +244,9 @@ public class CheliceraStrike : AutoAttackSkill
     {
         targetCharacter.CharacterState.DispelStates(StateType.Magic, targetCharacter.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
     }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new System.NotImplementedException();
+    }
 }
