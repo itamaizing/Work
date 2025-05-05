@@ -129,4 +129,8 @@ public class Kick_Scorpion : AutoAttackSkill
     {
         isKick_ScorpionComboTalent = value;
     }
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new System.NotImplementedException();
+    }
 }

@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -14,7 +15,12 @@ public class SongOfSleep : Skill
 
     protected override int AnimTriggerCast => 0;
 
-    protected override IEnumerator PrepareJob()
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _target = (Character)targetInfo.Targets[0];
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while (_target == null && !_disactive)
         {
@@ -24,6 +30,9 @@ public class SongOfSleep : Skill
             }
             yield return null;
         }
+        TargetInfo targetInfo = new();
+        targetInfo.Targets.Add(_target);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()

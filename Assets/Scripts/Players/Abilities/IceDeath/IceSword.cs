@@ -1,6 +1,8 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class IceSword : Skill
 {
@@ -51,7 +53,12 @@ public class IceSword : Skill
 
 	}
 
-	protected override IEnumerator PrepareJob()
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _target = (Character)targetInfo.Targets[0];
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
 		while (_target == null)
 		{
@@ -61,6 +68,9 @@ public class IceSword : Skill
 			}
 			yield return null;
 		}
+		TargetInfo targetInfo = new TargetInfo();
+		targetInfo.Targets.Add(_target);
+		callbackDataSaved(targetInfo);
 	}
 
 	protected override IEnumerator CastJob()

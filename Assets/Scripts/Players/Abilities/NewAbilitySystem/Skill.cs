@@ -137,14 +137,31 @@ public abstract class Skill : NetworkBehaviour
     private bool _isSpaceClick;
     private List<float> _remainingCooldownTimeChargers;
     private List<Coroutine> _currentChargeCooldownJob;
+    private float _assistTimer = 5f;
+    private Coroutine _assistCoroutine;
+    private Queue<TargetInfo> _targetInfoQueue = new();
+    private bool _isAutoMode;
 
+    public bool IsAutoMode {
+        get
+        {
+            return _isAutoMode; 
+        }
+        set 
+        {
+            if (_isAutoMode != value)
+            {
+                _isAutoMode = value;
+                AutoModeChanged?.Invoke(_isAutoMode);
+            }
+        } 
+    }
     public bool IsTalentSpell => _isTalentSpell;
     public bool IsSkillActive
     {
         get => _isSkillActive;
         set => _isSkillActive = value;
     }
-
     public Transform TempTargetForDamage => _tempTargetForDamage;
     public bool GetMouseButton { get => _isClick || _isShiftClick || _isCtrlClick || _isSpaceClick; }
     public bool IsSubjectToGlobalCooldownTime { get => _isSubjectToGlobalCooldownTime; }
@@ -184,6 +201,7 @@ public abstract class Skill : NetworkBehaviour
     public List<SkillEnergyCost> SkillEnergyCosts { get => _skillEnergyCosts; }
     public List<SkillEnergyCost> ManaCostPerTick { get => _manaCostPerTick; }
     public float ManaCostRate { get => _manaCostRate; }
+    public Queue<TargetInfo> TargetInfoQueue { get => _targetInfoQueue; }
 
     public bool Disactive
     {
@@ -217,7 +235,8 @@ public abstract class Skill : NetworkBehaviour
     public event Action<float> MassageNotCooldowned;
     public event Action OnSkillCanceled;
     public event Action CastSuccess;
-
+    public event Action<TargetInfo> TargetDataSaved;
+    public event Action<bool> AutoModeChanged;
 
     /// <summary>
     /// There may be a description that will be shown in the AbillityNameBox.
@@ -227,7 +246,8 @@ public abstract class Skill : NetworkBehaviour
     protected abstract int AnimTriggerCast { get; }
     protected abstract bool IsCanCast { get; }
 
-    protected abstract IEnumerator PrepareJob();
+    public abstract void LoadTargetData(TargetInfo targetInfo);
+    protected abstract IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback);
     protected abstract IEnumerator CastJob();
     protected abstract void ClearData();
 
@@ -271,23 +291,39 @@ public abstract class Skill : NetworkBehaviour
     {
         if (IsHaveResources && IsCanCast && _isCasting == false && NoObstacles() && Hero.IsDead == false)
         {
-            if (_earlyCooldown)
-            {
-                TryPayCost(false);
-                if (CooldownTime > 0) IncreaseSetCooldown(CooldownTime);
-                _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
-            }
+            TryPayCost(IsPayCostStartCooldown);
 
-            else
-            {
-                TryPayCost(IsPayCostStartCooldown);
-                _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
-            }
+            LoadTargetData(_targetInfoQueue.Dequeue());
+            _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
 
             return true;
         }
 
         else return false;
+    }
+
+    public bool TryCast(TargetInfo targetInfo)
+    {
+        if (IsHaveResources && _isCasting == false && NoObstacles() && Hero.IsDead == false)
+        {
+            LoadTargetData(targetInfo);
+
+            if (IsCanCast)
+            {
+                TryPayCost(IsPayCostStartCooldown);
+
+                _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public bool TryCancel(bool foceCancel = false)
@@ -1079,6 +1115,31 @@ public abstract class Skill : NetworkBehaviour
     {
         _dynamicRendererJob = StartCoroutine(DynamicRendererJob());
     }
+    private void AddAssist(Character character)
+    {
+        Hero.AssystCounter++;
+    }
+    
+    private void AddAssist()
+    {
+        Hero.AssystCounter++;
+    }
+    
+    private void AddKill(Character character)
+    {
+        Hero.KillCounter++;
+    }
+
+    private void SaveTargetData(TargetInfo targetInfo)
+    {
+        _targetInfoQueue.Enqueue(targetInfo);
+    }
+
+    private void LoadTargetDataForCheckCast()
+    {
+        if (_targetInfoQueue.TryPeek(out TargetInfo temp))
+            LoadTargetData(temp);
+    }
 
     private IEnumerator CooldownCoroutine(float cooldownTime)
     {
@@ -1160,11 +1221,13 @@ public abstract class Skill : NetworkBehaviour
 
         SubscribeClickEvents();
 
-        yield return _prepareCoroutine = StartCoroutine(PrepareJob());
+        yield return _prepareCoroutine = StartCoroutine(PrepareJob(SaveTargetData));
 
         UnSubscribeClickEvents();
 
         OnClickCanceled();
+
+        LoadTargetDataForCheckCast();
 
         PreparingSuccess?.Invoke(this);
         _isPreparing = false;
@@ -1213,6 +1276,7 @@ public abstract class Skill : NetworkBehaviour
         _isCasting = false;
 
         ClearData();
+        LoadTargetDataForCheckCast();
 
         _castCoroutine = null;
     }

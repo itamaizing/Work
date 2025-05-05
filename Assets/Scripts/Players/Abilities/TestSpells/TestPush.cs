@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -25,6 +26,11 @@ public class TestPush : Skill
 
     protected override int AnimTriggerCast => throw new System.NotImplementedException();
 
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _target = (Character)targetInfo.Targets[0];
+    }
+
     protected override IEnumerator CastJob()
     {
         float time = 3;
@@ -42,7 +48,7 @@ public class TestPush : Skill
         _target = null;
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while(_target == null)
         {
@@ -52,6 +58,9 @@ public class TestPush : Skill
             }
             yield return null;
         }
+        TargetInfo targetInfo = new();
+        targetInfo.Targets.Add(_target);
+        callbackDataSaved(targetInfo);
     }
 
     [Command]

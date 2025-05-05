@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -42,6 +43,11 @@ public class ColdBlood : Skill
         _baseCooldownTime = CooldownTime;    
     }
 
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        Debug.LogError("DataError");
+    }
+
     protected override void ClearData()
     {
         Debug.Log("ColdBlood / ClearData");
@@ -61,7 +67,7 @@ public class ColdBlood : Skill
         }
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         if (_indomitable.Data.IsOpen)
         {
@@ -95,6 +101,8 @@ public class ColdBlood : Skill
         {
             yield break;
         }
+
+        Debug.LogError("DataError");
     }
 
     protected override IEnumerator CastJob()

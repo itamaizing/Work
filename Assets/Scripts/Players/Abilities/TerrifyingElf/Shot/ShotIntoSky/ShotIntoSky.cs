@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
@@ -21,8 +22,17 @@ public class ShotIntoSky : Skill
     protected override int AnimTriggerCastDelay => Animator.StringToHash("ShotCastDelayAnimTrigger");
 
     protected override int AnimTriggerCast => 0;
+    private void Start()
+    {
+       Damage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
+    }
 
-    protected override IEnumerator PrepareJob()
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _targetPoint = targetInfo.Points[0];
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         _hero.Animator.speed = CastDeley;
 
@@ -39,6 +49,9 @@ public class ShotIntoSky : Skill
             }
             yield return null;
         }
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(_targetPoint);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
@@ -101,7 +114,7 @@ public class ShotIntoSky : Skill
 
     private float CalculateDamage(float baseDamage)
     {
-        bool isCriticalHit = Random.Range(0f, 100f) <= criticalChance;
+        bool isCriticalHit = UnityEngine.Random.Range(0f, 100f) <= criticalChance;
 
         if (isCriticalHit)
         {

@@ -92,6 +92,15 @@ public class Restoration : Skill
     {
         _spiritEnergyTalent = value;
     }
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _target = (Character)targetInfo.Targets[0];
+    }
+
+    private void HandleModeChange()
+    {
+        _spiritEnergyTalent = value;
+    }
 
     private void UpdateMode()
     {
@@ -199,7 +208,7 @@ public class Restoration : Skill
         }
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while (_target == null)
         {
@@ -210,6 +219,9 @@ public class Restoration : Skill
             }
             yield return null;
         }
+        TargetInfo targetInfo = new();
+        targetInfo.Targets.Add(_target);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()

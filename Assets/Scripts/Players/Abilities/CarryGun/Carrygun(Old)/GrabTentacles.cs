@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -45,6 +46,11 @@ public class GrabTentacles : Skill
     #region PrepareAndCastJob
     protected override bool IsCanCast => CheckCanCast();
 
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new System.NotImplementedException();
+    }
+
     protected override void ClearData()
     {
         _isAttackingPsiEnergyActive = false;
@@ -71,7 +77,7 @@ public class GrabTentacles : Skill
         }
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
         _playerLayer = _player.gameObject.layer;
 
@@ -91,6 +97,9 @@ public class GrabTentacles : Skill
 
             yield return null;
         }
+
+        throw new System.NotImplementedException();
+        // targetDataSavedCallback(Data) 
     }
 
     protected override IEnumerator CastJob()

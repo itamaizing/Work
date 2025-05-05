@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,9 +43,25 @@ public class LightningMovement : Skill
 
         RaycastHit hit;
         return Physics.SphereCast(start, 1, direction, out hit, distance, _obstacle);
+
     }
 
-    protected override IEnumerator PrepareJob()
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        Debug.LogError("DataError");
+    }
+
+    protected override void ClearData()
+    {
+        IsInMovement = false;
+        _player.Move.CanMove = true;
+        Target = null;
+        _hasSecondLeap = false;
+        _secondLeapPoint = Vector3.positiveInfinity;
+        _leapPoint = Vector3.positiveInfinity;
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while (float.IsPositiveInfinity(_leapPoint.x) && !Disactive)
         {
@@ -97,7 +114,7 @@ public class LightningMovement : Skill
             })
             .OnComplete(() =>
             {
-                Debug.Log($"Первый прыжок выполнен успешно");
+                Debug.Log($"пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
                 _lightningStrikes.IsUsedLightningStrikes = false;
                 _poisonSlap.IsCanDamageDeal = false;
                 _player.Move.StopMoveAnimation();
@@ -127,18 +144,18 @@ public class LightningMovement : Skill
     {
         if (!float.IsPositiveInfinity(pointSecond.x))
         {
-            _player.Move.SetAnimationMovement((pointSecond - _player.transform.position).normalized * (_player.Move.CurrentSpeed / 3)); // тестовое уменьшение скорости на 3 
+            _player.Move.SetAnimationMovement((pointSecond - _player.transform.position).normalized * (_player.Move.CurrentSpeed / 3)); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ 3 
 
             _player.Rigidbody.DOMove(pointSecond, _durationLeap)
               .SetEase(Ease.OutSine)
               .OnUpdate(() =>
               {
-                  Vector3 velocity = (pointSecond - _player.transform.position).normalized * (_player.Move.CurrentSpeed / 3); // тестовое уменьшение скорости на 3 
+                  Vector3 velocity = (pointSecond - _player.transform.position).normalized * (_player.Move.CurrentSpeed / 3); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ 3 
                   _player.Move.SetAnimationMovement(velocity);
               })
               .OnComplete(() =>
               {
-                  Debug.Log($"Второй прыжок выполнен успешно");
+                  Debug.Log($"пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
                   _player.Move.StopMoveAnimation(); 
               ClearData();
               });

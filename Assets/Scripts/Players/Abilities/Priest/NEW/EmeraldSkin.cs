@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
@@ -15,12 +16,17 @@ public class EmeraldSkin : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
 
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+
+    }
+
     private bool CanCastCheck()
     {
         return !Hero.CharacterState.CheckForState(States.ReversePolarity);
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         yield return null;
     }

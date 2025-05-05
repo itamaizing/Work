@@ -147,7 +147,7 @@ public abstract class GameRules : NetworkBehaviour
 
     protected virtual void AddExpForAllEnemy(Character character)
     {
-        if(character is HeroComponent)
+        if (character is HeroComponent)
         {
             foreach (var player in _players)
             {
@@ -157,7 +157,7 @@ public abstract class GameRules : NetworkBehaviour
                 }
             }
         }
-        else if(character is MinionComponent minion)
+        else if (character is MinionComponent minion)
         {
             foreach (var player in _players)
             {

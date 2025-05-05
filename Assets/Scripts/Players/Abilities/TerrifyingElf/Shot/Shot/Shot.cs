@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -45,7 +46,7 @@ public class Shot : AutoAttackSkill
         if (_target != null && !_disactive) return;
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
         Hero.Animator.speed = Hero.Animator.speed / AttackDelay;
 
@@ -286,5 +287,9 @@ public class Shot : AutoAttackSkill
         _isDelayActive = false;
 
         _consecutiveShots = 0;
+    }
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new NotImplementedException();
     }
 }

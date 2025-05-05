@@ -19,7 +19,12 @@ public class StandartAutoAttack : AutoAttackSkill
         AnimCastEnded();
     }
 
-protected override void CastAction()
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    protected override void CastAction()
     {
         if (_target == null)
             return;

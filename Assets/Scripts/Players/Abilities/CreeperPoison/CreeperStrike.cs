@@ -387,6 +387,11 @@ public class CreeperStrike : AutoAttackSkill
         ApplyDamage(damage, target);
     }
 
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new System.NotImplementedException();
+    }
+
     #endregion
 
 }

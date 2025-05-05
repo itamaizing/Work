@@ -83,4 +83,9 @@ public class Punch_Scorpion : AutoAttackSkill
             AttackMissed();
         }
     }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new System.NotImplementedException();
+    }
 }

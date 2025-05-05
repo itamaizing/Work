@@ -60,6 +60,12 @@ public class Level : NetworkBehaviour
         RpcUpdateInfo(_value, _experience, _experienceForNextLVL);
     }
 
+    [Command]
+    public void CMDAddEXP(int value)
+    {
+        AddEXP(value);
+    }
+
     [ClientRpc]
     private void RpcUpdateInfo(int value, int experience, int experienceForNextLVL)
     {

@@ -11,6 +11,8 @@ public class NetworkRoomsManager : NetworkBehaviour
 	[SerializeField] private int _maxPlayers;
 	[SerializeField] private GameRules _gameRulesPref;
 
+	private GameRules _gameRules;
+
 	private readonly List<NetworkRoom> _rooms = new();
 
     public string Scene => _scene;
@@ -55,15 +57,15 @@ public class NetworkRoomsManager : NetworkBehaviour
 			_rooms[^1].RoomClosed += OnRoomClosed;
 
 			yield return StartCoroutine(_rooms[^1].LoadRoomJob());
-		}
+            _gameRules = Instantiate(_gameRulesPref);
+        }
 
 		_rooms[^1].TryAddPlayerInRoom(player);
 	}
 
 	private void OnRoomSlotsEnded(NetworkRoom room)
     {
-		GameRules rules = Instantiate(_gameRulesPref);
-		room.GameStart(rules);
+		room.GameStart(_gameRules);
     }
 	
 	private void OnRoomClosed(NetworkRoom room)

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -49,7 +50,6 @@ public class LightningStrikes : AutoAttackSkill
         OnLightningStrikesEnd?.Invoke();
         AnimCastEnded();
     }
-
     public void SetTarget(Character target)
     {
         _target = target;
@@ -61,7 +61,12 @@ public class LightningStrikes : AutoAttackSkill
         StopAutoDraw();
     }
 
-    protected override IEnumerator PrepareJob()
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
         if (_lightningMovement.IsInMovement)
         {
@@ -70,7 +75,7 @@ public class LightningStrikes : AutoAttackSkill
 
             Debug.Log("LightningStrikes / PrepareJob");
         }
-        return base.PrepareJob();
+        return base.PrepareJob(targetDataSavedCallback);
     }
 
     protected override void CastAction()
@@ -118,7 +123,7 @@ public class LightningStrikes : AutoAttackSkill
     {
         if (_animTime > 0)
         {
-            float multiplier = _lightningMovement.DurationLeap - 4.9f; // тестовая скорость (изначально - 0.1)
+            float multiplier = _lightningMovement.DurationLeap - 4.9f; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ - 0.1)
             float animTimeMultiplier = _animTime / multiplier;
             Debug.Log("LightningStrikes / multiplier = " + animTimeMultiplier);
             _player.Animator.SetFloat("LightningStrikesMultiplierSpeedAnimation", animTimeMultiplier);

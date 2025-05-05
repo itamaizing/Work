@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
@@ -172,8 +173,12 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 
     //    // Change values
     //}
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        Debug.LogError("DataError");
+    }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while (true)
         {
@@ -197,6 +202,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 
             yield return null;
         }
+        Debug.LogError("DataError");
     }
 
     protected override IEnumerator CastJob()

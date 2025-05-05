@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -22,6 +23,11 @@ public class GrabTongue : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override bool IsCanCast => CheckCanCast();
 
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        Debug.LogError("DataError");
+    }
+
     protected override void ClearData()
     {
         _target = null;
@@ -30,7 +36,7 @@ public class GrabTongue : Skill
         _endPosition = Vector3.zero;
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         if (_transparentPoisons.Data.IsOpen && _player.IsInvisible)
         {
@@ -61,6 +67,7 @@ public class GrabTongue : Skill
             //}
             yield return null;
         }
+        Debug.LogError("DataError");
     }
 
     protected override IEnumerator CastJob()

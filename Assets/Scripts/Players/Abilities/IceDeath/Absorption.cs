@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -53,7 +54,12 @@ public class Absorption : Skill
 		}
 	}
 
-	[Command]
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _target = (IcyCorpse)targetInfo.Targets[0];
+    }
+
+    [Command]
 	private void CmdAction(GameObject bodyObj)
 	{
 		Debug.Log(bodyObj.name);
@@ -80,7 +86,7 @@ public class Absorption : Skill
 
 	}
 
-	protected override IEnumerator PrepareJob()
+	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
 		while (_target == null)
 		{
@@ -90,6 +96,9 @@ public class Absorption : Skill
 			}
 			yield return null;
 		}
+		TargetInfo targetInfo = new();
+		targetInfo.Targets.Add(_target);
+		callbackDataSaved(targetInfo);
 	}
 
 	protected override IEnumerator CastJob()

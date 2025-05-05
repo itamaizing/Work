@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,7 +16,13 @@ public class Blindness : Skill
 
     protected override int AnimTriggerCast => 0;
 
-    protected override IEnumerator PrepareJob()
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
         while (_target == null && !_disactive)
         {
@@ -25,6 +32,10 @@ public class Blindness : Skill
             }
             yield return null;
         }
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Targets.Add(_target);
+
+        targetDataSavedCallback(targetInfo);
     }
 
     protected override IEnumerator CastJob()

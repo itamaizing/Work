@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -36,6 +37,12 @@ public class TestH3 : Skill
         AnimCastEnded();
     }
 
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _target = (Character)targetInfo.Targets[0];
+        _targetPoint = targetInfo.Points[0];
+    }
+
     protected override IEnumerator CastJob()
     {
         if (_target != null)
@@ -44,7 +51,8 @@ public class TestH3 : Skill
         }
         else
         {
-            CmdCreateProjecttile(_targetPoint);
+            Debug.Log(_targetPoint);
+            CmdCreateProjecttile(new Vector3(_targetPoint.x, _targetPoint.y, _targetPoint.z));
         }
         yield return null;
     }
@@ -55,7 +63,7 @@ public class TestH3 : Skill
         _targetPoint = Vector3.positiveInfinity;
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         Buff.CastSpeed.IncreasePercentage(_animSpeed);
 
@@ -71,6 +79,10 @@ public class TestH3 : Skill
             }
             yield return null;
         }
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Targets.Add(_target);
+        targetInfo.Points.Add(_targetPoint);
+        callbackDataSaved(targetInfo);
     }
 
     [Command]

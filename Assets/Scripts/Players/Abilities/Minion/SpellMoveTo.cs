@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,12 +15,20 @@ public class SpellMoveTo : Skill
     private Character _target = null;
     private Character _enemyTarget = null;
     private float _currentDamageDeley;
+    private Coroutine _onClickCoroutine;
 
     protected override int AnimTriggerCastDelay => 0;
 
     protected override int AnimTriggerCast => 0;
 
     protected override bool IsCanCast => true;
+
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _target = (Character)targetInfo.Targets[0];
+        _targetPoint = targetInfo.Points[0];
+    }
 
     protected virtual void DealDamage()
     {
@@ -34,6 +43,11 @@ public class SpellMoveTo : Skill
 
     protected override IEnumerator CastJob()
     {
+        if (_onClickCoroutine != null)
+            StopCoroutine(_onClickCoroutine);
+
+        _onClickCoroutine = StartCoroutine(OnClickJob());
+
         while (_targetPoint != Vector3.positiveInfinity)
         {
             if(_target != null)
@@ -64,6 +78,9 @@ public class SpellMoveTo : Skill
             yield return null;
         }
         yield return null;
+
+        if (_onClickCoroutine != null)
+            StopCoroutine(_onClickCoroutine);
     }
 
     protected override void ClearData()
@@ -71,27 +88,39 @@ public class SpellMoveTo : Skill
         _agent.SetDestination(transform.position);
         _targetPoint = Vector3.positiveInfinity;
         _target = null;
+        
+        if(_onClickCoroutine != null)
+            StopCoroutine(_onClickCoroutine);
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
+        TargetInfo targetInfo = new TargetInfo();
+
         while (float.IsPositiveInfinity(_targetPoint.x) && _target == null)
         {
             if (GetMouseButton)
             {
                 _target = GetRaycastTarget();
 
+                targetInfo.Targets.Add(_target);
+
                 if (_target == null)
                 {
                     _targetPoint = GetMousePoint();
+
+                    targetInfo.Points.Add( _targetPoint );
                 }
                 else
                 {
                     _targetPoint = _target.transform.position;
+
+                    targetInfo.Points.Add( _targetPoint );
                 }
             }
             yield return null;
         }
+        targetDataSavedCallback(targetInfo);
     }
 
     private Character CheckEnemy(float radius)
@@ -106,5 +135,26 @@ public class SpellMoveTo : Skill
         }
 
         return enemy;
+    }
+
+    private IEnumerator OnClickJob()
+    {
+        while (true)
+        {
+            if (Input.GetMouseButton(0))
+            {
+                _target = GetRaycastTarget();
+
+                if (_target == null)
+                {
+                    _targetPoint = GetMousePoint();
+                }
+                else
+                {
+                    _targetPoint = _target.transform.position;
+                }
+            }
+            yield return null;
+        }
     }
 }

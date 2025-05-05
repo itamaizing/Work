@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +35,12 @@ public class CircularFrosting : Skill
 
 	}
 
-	protected override IEnumerator CastJob()
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+
+    }
+
+    protected override IEnumerator CastJob()
 	{
 		CreateSmoke();
 		yield return null;
@@ -45,8 +51,9 @@ public class CircularFrosting : Skill
 		
 	}
 
-	protected override IEnumerator PrepareJob()
+	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
+		callbackDataSaved(null);
 		yield return null;
 	}
 

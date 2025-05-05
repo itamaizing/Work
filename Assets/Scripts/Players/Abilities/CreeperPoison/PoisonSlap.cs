@@ -1,6 +1,8 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class PoisonSlap : Skill
 {
@@ -100,6 +102,10 @@ public class PoisonSlap : Skill
         ClearData();
         StopAutoDraw();
     }
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        Debug.LogError("TargetDataError");
+    }
 
     protected override void ClearData()
     {
@@ -123,7 +129,7 @@ public class PoisonSlap : Skill
         }
     }
 
-    protected override IEnumerator PrepareJob()
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         if (_lightningMovement.IsInMovement)
         {
@@ -164,6 +170,7 @@ public class PoisonSlap : Skill
 
             yield return _secondMouseClickCoroutine = StartCoroutine(SecondClick());
         }
+        Debug.LogError("TargetDataError");
     }
 
     protected override IEnumerator CastJob()

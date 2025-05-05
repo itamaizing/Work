@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using Mirror;
 using UnityEngine.AI;
+using System;
 
 public class IceRolling : Skill
 {
@@ -189,7 +190,12 @@ public class IceRolling : Skill
 		_jumpPos = Vector3.zero;
 	}
 
-	protected override IEnumerator PrepareJob()
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        Debug.LogError("DataError");
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
 		while (float.IsPositiveInfinity(_mousePos.x))
 		{
@@ -200,7 +206,8 @@ public class IceRolling : Skill
 			}
 			yield return null;
 		}
-	}
+        Debug.LogError("DataError");
+    }
 
 	protected override IEnumerator DynamicRendererJob(float time = 0.2f)
 	{

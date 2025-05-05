@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -41,6 +42,11 @@ namespace Gangdollarff
             AnimCastEnded();
         }
 
+        public override void LoadTargetData(TargetInfo targetInfo)
+        {
+            Debug.LogError("errorData");
+        }
+
         protected override IEnumerator CastJob()
         {
             CmdUse(_startPoint, _endPoint);
@@ -54,7 +60,7 @@ namespace Gangdollarff
             _endPoint = Vector3.zero;
         }
 
-        protected override IEnumerator PrepareJob()
+        protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
         {
             _lineRenderer.transform.parent = null;
             _lineRenderer.positionCount = 2;
@@ -80,6 +86,8 @@ namespace Gangdollarff
 
             _lineRenderer.positionCount = 0;
             yield return null;
+
+            Debug.LogError("error data");
         }
 
         [Command]

@@ -1,3 +1,4 @@
+using System;
 //using System.Collections;
 //using Mirror;
 //using UnityEngine;
@@ -14,10 +15,15 @@
 //    protected override int AnimTriggerCast => 0;
 //    protected override bool IsCanCast => false;
 
-//    protected override IEnumerator PrepareJob()
-//    {
-//        yield break;
-//    }
+    // public override void LoadTargetData(TargetInfo targetInfo)
+    // {
+    //     Debug.LogError("DataError");
+    // }
+
+    // protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    // {
+    //     yield break;
+    // }
 
 //    protected override IEnumerator CastJob()
 //    {

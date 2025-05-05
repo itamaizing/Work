@@ -113,6 +113,8 @@ public class Projectile : MonoBehaviour
     {
         while (true)
         {
+            Debug.Log(direction);
+            Debug.Log(transform.position);
             transform.position += _speed * direction * Time.deltaTime;
             yield return null;
         }

@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -64,7 +65,12 @@ public class CreeperInvisible : Skill
     {
     }
 
-    protected override IEnumerator PrepareJob()
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        Debug.LogError("DataError");
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         ResetAltAbility();
 
@@ -85,6 +91,7 @@ public class CreeperInvisible : Skill
 
             default:
         }
+        Debug.LogError("DataError");
     }
 
     protected override IEnumerator CastJob()

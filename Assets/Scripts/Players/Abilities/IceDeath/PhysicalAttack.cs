@@ -270,4 +270,9 @@ public class PhysicalAttack : AutoAttackSkill
 	{
 		_animator.applyRootMotion = false;
 	}
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new System.NotImplementedException();
+    }
+
 }

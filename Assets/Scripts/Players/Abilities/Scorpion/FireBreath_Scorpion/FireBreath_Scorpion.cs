@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,10 +33,18 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
 
-    protected override IEnumerator PrepareJob()
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        Debug.LogError("DataError");
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while (!GetMouseButton)
+        {
+            callbackDataSaved(null);
             yield return null;
+        }
     }
 
     protected override IEnumerator CastJob()
@@ -96,11 +105,11 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
             transform.position,
             transform.position + transform.forward * _maxDistance,
             _coneAngle,
-            _targetsLayers); // Тут уже по слоям, ок!
+            _targetsLayers); // пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ!
 
         foreach (Collider collider in hitColliders)
         {
-            // Проверка по слою вместо CompareTag
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ CompareTag
             if ((_targetsLayers.value & (1 << collider.gameObject.layer)) == 0)
                 continue;
 
