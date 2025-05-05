@@ -30,10 +30,7 @@ public class NewPunch_Scorpion : AutoAttackSkill
             return;
         }
 
-        if (_lastTarget != null && _lastTarget != _target)
-        {
-            _comboCounter.ResetCounter();
-        }
+        if (_lastTarget != null && _lastTarget != _target)  _comboCounter.ResetCounter();
 
         Debug.Log($"[NewPunch_Scorpion] Starting attack on {_target.name}");
 

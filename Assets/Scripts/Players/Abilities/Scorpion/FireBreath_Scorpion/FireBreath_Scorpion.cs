@@ -35,7 +35,7 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        throw new NotImplementedException();
+        return;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)

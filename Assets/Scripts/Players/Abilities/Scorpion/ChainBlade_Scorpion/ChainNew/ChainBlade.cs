@@ -112,7 +112,7 @@ public class ChainBlade : Skill
     public void ChainBladeCast()
     {
         AnimStartCastCoroutine();
-        Hero.Move.LookAtPosition(_clickPoint);
+        if ((Hero.transform.position - _clickPoint).sqrMagnitude > 0.001f)  Hero.Move.LookAtPosition(_clickPoint);
         Hero.Move.CanMove = false;
     }
 

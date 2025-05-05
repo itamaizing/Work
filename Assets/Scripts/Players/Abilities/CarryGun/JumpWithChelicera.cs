@@ -13,7 +13,7 @@ public class JumpWithChelicera : Skill
 
     private Animator _animator;
     private Character _target;
-    private Vector3 _targetPosition = Vector3.positiveInfinity;
+    private Vector3 _mousePosition = Vector3.positiveInfinity;
 
     private static readonly int jumpStart = Animator.StringToHash("JumpStart");
     private static readonly int jumpEnd = Animator.StringToHash("JumpEnd");
@@ -42,7 +42,7 @@ public class JumpWithChelicera : Skill
     protected override void ClearData()
     {
         _target = null;
-        _targetPosition = Vector3.positiveInfinity;
+        _mousePosition = Vector3.positiveInfinity;
         _isTarget = false;
         hasDealtDamage = false;
     }
@@ -51,12 +51,12 @@ public class JumpWithChelicera : Skill
     {
         _castDeley = _delayBeforeJump;
 
-        while (_target == null && float.IsPositiveInfinity(_targetPosition.x))
+        while (_target == null && float.IsPositiveInfinity(_mousePosition.x))
         {
             if (GetMouseButton)
             {
                 _target = GetRaycastTarget();
-                _targetPosition = GetMousePoint();
+                _mousePosition = GetMousePoint();
 
                 if (_target != null)
                 {
@@ -68,8 +68,8 @@ public class JumpWithChelicera : Skill
             yield return null;
         }
 
-        TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(_targetPosition);
+        TargetInfo targetInfo = new();
+        targetInfo.Targets.Add(_target);
         callbackDataSaved(targetInfo);
     }
 
@@ -112,8 +112,8 @@ public class JumpWithChelicera : Skill
 
     private bool CheckCanCast()
     {
-        return _target != null && Vector2.Distance(_targetPosition, transform.position) <= Radius &&
-               NoObstacles(_targetPosition, _obstacle);
+        return _target != null && Vector2.Distance(_mousePosition, transform.position) <= Radius &&
+               NoObstacles(_mousePosition, _obstacle);
     }
 
     private void ResetBool()
@@ -240,7 +240,7 @@ public class JumpWithChelicera : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _targetPosition = targetInfo.Points[0];
+        if (_target != null && !_disactive) return;
     }
 
     //[ClientRpc]
