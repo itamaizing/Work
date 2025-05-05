@@ -11,7 +11,7 @@ public class MinionCamp : NetworkBehaviour
     [SerializeField] private MinionComponent _minionLeadPref;
     [SerializeField] private List<MinionComponent> _minionPrefs;
     [SerializeField, Range(0, 1)] private float _percentageHPForSurrender;
-    [SerializeField, Range(0, 1)] private float _distance = 5;
+    [SerializeField, Range(0, 10)] private float _distance = 5;
 
     private float _spawnDelayMinions = 3;
     private float _spawnDelayForLead = 6;
