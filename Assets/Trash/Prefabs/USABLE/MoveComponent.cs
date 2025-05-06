@@ -229,7 +229,11 @@ public class MoveComponent : NetworkBehaviour
 				transform.LookAt(hit.point);
 				transform.eulerAngles = (new Vector3(transformRotate.x, transform.eulerAngles.y, transformRotate.z));
 			}
+
+			Debug.Log("поворот");
 		}
+
+		Debug.Log("поворот невозможен");
 	}
 
 	public void SetAnimationMovement(Vector3 direction)
