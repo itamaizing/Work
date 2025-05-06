@@ -24,19 +24,13 @@ public class SourceUI : MonoBehaviour
 
     public void SetSource(int teamIndex, int source)
     {
-        //Debug.LogError(teamIndex);
-        //Debug.LogError(source);
         switch (teamIndex)
         {
             case 1:
-                //Debug.LogError(_teamName1 + source);
                 _teamText1.text = _teamName1 + ": " + source;
-                //Debug.LogError(_teamText1.text);
                 break;
             case 2:
-                //Debug.LogError(_teamName2 + source);
                 _teamText2.text = _teamName2 + ": " + source;
-                //Debug.LogError(_teamText2.text);
                 break;
 
             default:
@@ -44,6 +38,25 @@ public class SourceUI : MonoBehaviour
                 break;
         }
     }
+
+    /*
+    public void SetSource(int teamIndex, int source)
+    {
+        switch (teamIndex)
+        {
+            case 1:
+                _teamText1.text = _teamName1 + ": " + source;
+                break;
+            case 2:
+                _teamText2.text = _teamName2 + ": " + source;
+                break;
+
+            default:
+                Debug.LogError("team not founded");
+                break;
+        }
+    }
+    */
 
     public void ShowWinner(int teamIndex)
     {

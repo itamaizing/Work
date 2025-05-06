@@ -1,39 +1,16 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Progress;
 
-public class MinimapMarker : MonoBehaviour
+public class MinimapMark : MonoBehaviour
 {
     [SerializeField] UserNetworkSettings _userNetworkSettings;
     [SerializeField] SpriteRenderer _markForMinimap;
-    [SerializeField] SpriteRenderer _selectMarkForMinimap;
-
-    private bool _isActive;
-
-    public bool IsActive
-    {
-        get
-        {
-            return _isActive;
-        }
-        set
-        {
-            _isActive = value;
-            _selectMarkForMinimap.gameObject.SetActive(_isActive);
-        }
-    }
-
-    private void Start()
-    {
-        OnLayerMaskChanged(_userNetworkSettings.gameObject.layer);
-    }
 
     private void OnEnable()
     {
         _userNetworkSettings.LayerMaskChanged += OnLayerMaskChanged;
-
-        OnLayerMaskChanged(_userNetworkSettings.gameObject.layer);
     }
 
     private void OnDisable()
@@ -52,5 +29,4 @@ public class MinimapMarker : MonoBehaviour
             _markForMinimap.color = Color.green;
         }
     }
-
 }
