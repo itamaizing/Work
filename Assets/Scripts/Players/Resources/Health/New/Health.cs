@@ -33,7 +33,6 @@ public class Health : Resource, IDamageable, IHealingable
     public event Action Evaded;
     public event Action<float , Skill , string> HealTaked;
     public event Action<Damage, Skill> DamageTaken;
-    public event Action<float> HealthRegenerated;
     public event Action Died;
     public event Action<float, float> OnShieldValuesChanged;
     public event Action<float> OnShieldAdd;
@@ -99,6 +98,11 @@ public class Health : Resource, IDamageable, IHealingable
         _resistMagDamage = value;
     }
 
+    public void SetEvadeMagicDecrease(float value)
+    {
+        _resistMagDamage *= 1 - (value / 100);
+    }
+
     public void SetPhysicDef(float value)
     {
         _defPhysDamage = value;
@@ -117,6 +121,12 @@ public class Health : Resource, IDamageable, IHealingable
         _resistMagDamage += value;
         _evadeMeleeDamage += value;
         _evadeRangeDamage += value;
+    }
+
+    public void SetEvadePhys(float value)
+    {
+        _evadeMeleeDamage = value;
+        _evadeRangeDamage = value;
     }
 
     public void SetHp(float current, float max)

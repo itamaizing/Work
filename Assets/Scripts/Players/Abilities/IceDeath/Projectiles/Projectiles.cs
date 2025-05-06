@@ -19,6 +19,8 @@ public class Projectiles : NetworkBehaviour
 	protected float _energyDad = 0;
 	protected bool _lastHit = false;
 
+	public Rigidbody Rigidbody {get => _rb; set => _rb = value;}
+
 	public virtual void Init(HeroComponent dad, float energy, bool lastHit, Skill skill)
 	{
 		_dad = dad;

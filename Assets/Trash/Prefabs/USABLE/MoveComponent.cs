@@ -3,6 +3,7 @@ using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UIElements;
 
 public class MoveComponent : NetworkBehaviour
@@ -17,7 +18,8 @@ public class MoveComponent : NetworkBehaviour
 	protected float _animMultiplier;
 
 	public Vector3 MoveDirection = Vector3.zero;
-	
+	public Vector3 ExternalMoveDirection = Vector3.zero;
+
 	public bool CanMove = false;
 	public bool IsMoving = false;
 	public bool IsSelect = false;
@@ -40,10 +42,13 @@ public class MoveComponent : NetworkBehaviour
 	private bool _isFly;
 
 	public bool IsFly => _isFly;
+	public bool IsLookAtCursor { get => _isLookAtCursor; set => _isLookAtCursor = value; }
 	public float DefaultSpeed => _defaultSpeed;
 	public float CurrentSpeed => _currentSpeed;
 
-    public bool IsMoveBlocked { get => _isMoveBlocked; set => _isMoveBlocked = value; }
+	public Rigidbody Rigidbody => _rigidbody;
+
+	public bool IsMoveBlocked { get => _isMoveBlocked; set => _isMoveBlocked = value; }
 
     protected override void OnValidate()
     {
@@ -78,18 +83,30 @@ public class MoveComponent : NetworkBehaviour
 
     private void OnDestroy()
     {
-		InputHandler.OnPlayerMove -= OnMove;
-		_flyChecker.OffedGround -= OnOffedGround;
-		_flyChecker.ReachGround -= OnReachGround;
+		if (InputHandler.OnPlayerMove != null) InputHandler.OnPlayerMove -= OnMove;
+
+		if (_flyChecker != null)
+		{
+			_flyChecker.OffedGround -= OnOffedGround;
+			_flyChecker.ReachGround -= OnReachGround;
+		}
 	}
 
 	public void LookAtPosition(Vector3 position)
-    {
+	{
 		_isLookAtCursor = false;
+
+		if (float.IsNaN(position.x) || float.IsNaN(position.y) || float.IsNaN(position.z) ||
+	  position == Vector3.positiveInfinity || position == Vector3.negativeInfinity ||
+	  Vector3.Distance(transform.position, position) < Mathf.Epsilon) return;
+
+		Vector3 direction = position - transform.position;
+
+		if (direction.sqrMagnitude < Mathf.Epsilon) return;
 
 		var transformRotate = transform.eulerAngles;
 		transform.LookAt(position);
-		transform.eulerAngles = (new Vector3(transformRotate.x, transform.eulerAngles.y, transformRotate.z));
+		transform.eulerAngles = new Vector3(transformRotate.x, transform.eulerAngles.y, transformRotate.z);
 	}
 
 	public void LookAtTransform(Transform transform)
@@ -110,7 +127,16 @@ public class MoveComponent : NetworkBehaviour
 		_isLookAtCursor = true;
 	}
 
-    public void ChangeMoveSpeed(float value)
+	public void StopMoveAnimation()
+	{
+		if (_anim != null)
+		{
+			_anim.SetFloat(HashAnimPlayer.VelocityX, 0);
+			_anim.SetFloat(HashAnimPlayer.VelocityZ, 0);
+		}
+	}
+
+	public void ChangeMoveSpeed(float value)
 	{
 		_currentSpeed *= value;
 	}
@@ -125,7 +151,11 @@ public class MoveComponent : NetworkBehaviour
 
 	public void DoMove(Vector3 vector3, float duration)
 	{
-		_rigidbody.DOMove(vector3, duration);
+		CanMove = false;
+		_rigidbody.DOMove(vector3, duration).OnComplete(() =>
+		{
+			CanMove = true;
+		});
 	}
 
 	private void OnReachGround()
@@ -155,7 +185,7 @@ public class MoveComponent : NetworkBehaviour
     {
 		if (!CanMove || _rigidbody == null || IsMoveBlocked == true)
 		{
-			_rigidbody.velocity = Vector3.zero;
+			if (_rigidbody != null) _rigidbody.velocity = Vector3.zero;
 			return;
 		}
 
@@ -175,10 +205,15 @@ public class MoveComponent : NetworkBehaviour
 
 		_rigidbody.velocity = new Vector3(camDir.x * _currentSpeed, _rigidbody.velocity.y, camDir.z * _currentSpeed);
 
-		var animDir = transform.InverseTransformPoint(transform.position + camDir);
-		_animMultiplier = 0.1f * _rigidbody.velocity.magnitude + 0.5f;
-		_anim.SetFloat(HashAnimPlayer.VelocityZ, animDir.z * _animMultiplier);
-		_anim.SetFloat(HashAnimPlayer.VelocityX, animDir.x * _animMultiplier);
+		if (_rigidbody.velocity.magnitude > 0.5f && moveAudioSource != null && !moveAudioSource.isPlaying) PlayMove();
+
+		if (_anim != null)
+		{
+			var animDir = transform.InverseTransformPoint(transform.position + camDir);
+			_animMultiplier = 0.1f * _rigidbody.velocity.magnitude + 0.5f;
+			_anim.SetFloat(HashAnimPlayer.VelocityZ, animDir.z * _animMultiplier);
+			_anim.SetFloat(HashAnimPlayer.VelocityX, animDir.x * _animMultiplier);
+		}
 	}
 
 	protected virtual void RotateAtCursor()
@@ -194,13 +229,43 @@ public class MoveComponent : NetworkBehaviour
 				transform.LookAt(hit.point);
 				transform.eulerAngles = (new Vector3(transformRotate.x, transform.eulerAngles.y, transformRotate.z));
 			}
+
+			Debug.Log("поворот");
 		}
+
+		Debug.Log("поворот невозможен");
 	}
 
-	private void OnMove(Vector2 dir)
+	public void SetAnimationMovement(Vector3 direction)
+    {
+        Vector3 localDir = transform.InverseTransformDirection(direction);
+
+		_animMultiplier = 0.1f * _rigidbody.velocity.magnitude + 0.5f;
+
+		_anim.SetFloat(HashAnimPlayer.VelocityZ, localDir.z * _animMultiplier);
+        _anim.SetFloat(HashAnimPlayer.VelocityX, localDir.x * _animMultiplier);
+    }
+
+    private void OnMove(Vector2 dir)
     {
 		if (IsSelect)
 			_dir = new Vector3(dir.x, 0, dir.y);
+	}
+
+	public void TeleportToPositionSmooth(Vector3 position, float duration)
+	{
+		if (isOwned)
+		{
+			CanMove = false;
+			_rigidbody.DOMove(position, duration).OnComplete(() =>
+			{
+				CanMove = true;
+			});
+		}
+		else if (isServer)
+		{
+			TargetRpcTeleportToPositionSmooth(connectionToClient, position, duration);
+		}
 	}
 
 	private IEnumerator LookAtTransformCoroutine(Transform transform)
@@ -212,13 +277,58 @@ public class MoveComponent : NetworkBehaviour
 		}
     }
 
+	private IEnumerator MoveTowardsCoroutine(Vector3 targetPosition, float speed, Action onComplete = null)
+	{
+		while (Vector3.Distance(transform.position, targetPosition) > 0.1f)
+		{
+			Vector3 direction = (targetPosition - transform.position).normalized;
+			transform.position += direction * speed * Time.deltaTime;
+			yield return null;
+		}
+
+		onComplete?.Invoke();
+	}
+
+	private IEnumerator DoPushWithAgent(Vector3 targetPos, float duration)
+	{
+		var agent = GetComponent<NavMeshAgent>();
+
+		if (agent != null && agent.enabled)
+			agent.enabled = false;
+
+		CanMove = false;
+		_rigidbody.DOKill();
+
+		yield return _rigidbody.DOMove(targetPos, duration)
+			.SetEase(Ease.Linear)
+			.WaitForCompletion();
+
+		if (agent != null)
+			agent.enabled = true;
+
+		CanMove = true;
+	}
+
+	public void MoveTowards(Vector3 targetPosition, float speed, Action onComplete = null)
+	{
+		if (!isServer) return;
+
+		TargetRpcMoveTowards(connectionToClient, targetPosition, speed);
+	}
+
 	public void PlayMove()
 	{
 		if (!isOwned) return;
 		if (moveClips.Length == 0 || moveAudioSource == null) return;
 
+		if (_rigidbody.velocity.magnitude <= 0.1f)
+		{
+			if (moveAudioSource.isPlaying) moveAudioSource.Stop();
+			return;
+		}
+
 		int index = UnityEngine.Random.Range(0, moveClips.Length);
-	    moveAudioSource.PlayOneShot(moveClips[index]);
+		moveAudioSource.PlayOneShot(moveClips[index]);
 	}
 
 	[TargetRpc]
@@ -238,9 +348,103 @@ public class MoveComponent : NetworkBehaviour
     {
 		transform.position = vector3;
 	}
+
 	[TargetRpc]
 	public void TargetRpcDoMove(Vector3 vector3, float duration)
 	{
-		_rigidbody.DOMove(vector3, duration);
+		CanMove = false;
+		_rigidbody.DOMove(vector3, duration).OnComplete(() =>
+		{
+			CanMove = true;
+		});
 	}
+
+	public void TargetRpcDoMoveNavMeshAgent(Vector3 postion)
+    {
+		var agent = GetComponent<NavMeshAgent>();
+		agent.enabled = false;
+
+		CanMove = false;
+		Rigidbody.DOMove(postion, 0.5f).OnComplete(() =>
+		{
+			CanMove = true;
+			agent.enabled = true;
+		});
+	}
+
+	[TargetRpc]
+	private void TargetRpcTeleportToPositionSmooth(NetworkConnection target, Vector3 position, float duration)
+	{
+		CanMove = false;
+		_rigidbody.DOMove(position, duration).OnComplete(() =>
+		{
+			CanMove = true;
+		});
+	}
+
+	[TargetRpc]
+	private void TargetRpcMoveTowards(NetworkConnection target, Vector3 targetPosition, float speed)
+	{
+		StartCoroutine(MoveTowardsCoroutine(targetPosition, speed));
+	}
+
+	[TargetRpc]
+	public void TargetRpcDoPush(Vector3 targetPos, float duration)
+	{
+		StartCoroutine(DoPushWithAgent(targetPos, duration));
+	}
+
+	#region Test
+	[Command]
+	public void CmdAddTransformPosition(Vector3 vector3)
+    {
+		RpcAddTransformPosition(vector3);
+	}
+
+
+	[Command]
+	public void CmdDoMove(Vector3 vector3, float duration)
+	{
+		RpcDoMove( vector3, duration);
+	}
+
+	[ClientRpc]
+	public void RpcDoPush(Vector3 targetPos, float duration)
+	{
+		StartCoroutine(DoPushWithAgent(targetPos, duration));
+	}
+
+	//[ClientRpc]
+	public void RpcAddTransformPosition(Vector3 vector3)
+	{
+		transform.position += vector3;
+	}
+
+	public void TestDoMove(Vector3 targetPosition, float maxDistance)
+	{
+		CanMove = false;
+
+		Tween moveTween = null;
+
+	     moveTween = _rigidbody.DOMove(targetPosition, 1f)
+			.SetEase(Ease.Linear)
+			.OnUpdate(() =>
+			{
+				if (Vector3.Distance(transform.position, targetPosition) <= maxDistance)
+				{
+					moveTween.Kill();
+			}
+			})
+			.OnKill(() =>
+			{
+				CanMove = true;
+			});
+	}
+
+	[ClientRpc]
+	public void RpcDoMove(Vector3 vector3, float duration)
+	{
+		DoMove(vector3, duration);
+	}
+	#endregion
 }

@@ -35,7 +35,7 @@ public class TestGameRules : GameRules
 
     protected override void OnPlayerDied(Character player)
     {
-        AddExpForAllEnemy(player);
+        //AddExpForAllEnemy(player);
         StartCoroutine(RevivalPlayerCoroutine(player));
         AddScorePoint(player.NetworkSettings.TeamIndex);
 

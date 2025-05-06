@@ -641,7 +641,7 @@ public abstract class AbilityBase : MonoBehaviour
 
 			if (Vector3.Distance(previousPosition, currentPosition) >= 0.19f && GetComponent<PsionicaMelee>())
 			{
-				GetComponent<PsionicaMelee>().MakePsionica(0.3f);
+				//GetComponent<PsionicaMelee>().MakePsionica(0.3f);
 			}
 
 			elapsedTime = 0f;

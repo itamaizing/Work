@@ -19,15 +19,16 @@ public class ChainBlade_Scorpion : Skill
     [SerializeField] private Character _playerLinks;
     [SerializeField] private NetworkIdentity _playerIdentity;
 
+    [SerializeField] private PassiveCombo_Scorpion _comboCounter;
     [SerializeField] private float _range;
     [SerializeField] private ChainController _chainPrefab;
-    private ChainController _chain;
+    [SerializeField] private ChainController _chain;
 
     [SerializeField] private GameObject _projectilePrefab;
     private GameObject _projectile;
     private BladeProjectile _blade;
 
-    private GameObject enemy;
+    private Character enemy;
     private bool bladeDestroyed = false;
     private ChainbladeType _type;
 
@@ -44,26 +45,51 @@ public class ChainBlade_Scorpion : Skill
         }
     }
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+    protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+    protected override int AnimTriggerCast => Animator.StringToHash("Cast ChainBlade");
 
-    private IEnumerator PullEnemy(GameObject enemy)
+    public void AnimCastChainBlade()
     {
-        float distance = Vector2.Distance(transform.position, enemy.transform.position);
+        AnimStartCastCoroutine();
+    }
+
+    public void AnimChainBladeEnd()
+    {
+        AnimCastEnded();
+    }
+    protected override IEnumerator CastJob()
+    {
+        Vector3 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+        Vector3 direction = /*Camera.main.ScreenToWorldPoint(Input.mousePosition)*/GetMousePoint()  - transform.position;
+        direction.y = 0;
+
+        CmdCreateProjectile(8f, direction, this.gameObject, _type); // <--- event hit is here
+
+        CmdThrowBlade(dir);
+
+        yield return null;
+    }
+
+    private IEnumerator PullEnemy(Character enemy)
+    {
+        float distance = Vector3.Distance(transform.position, enemy.transform.position);
         enemy.GetComponent<MoveComponent>().CanMove = false;
 
         while (distance >= 2.5f)
         {
             Debug.Log("Pulling");
-            //enemy.transform.position = Vector2.MoveTowards(enemy.transform.position, transform.position, 10f * Time.deltaTime);
 
-            Pull(enemy, (/*enemy.transform.position - transform.position*/transform.position - enemy.transform.position).normalized * 10f * Time.deltaTime);
-            distance = Vector2.Distance(transform.position, enemy.transform.position);
+            Vector3 pullDirection = (transform.position - enemy.transform.position).normalized;
+            Vector3 pullForce = pullDirection * 10f * Time.deltaTime;
 
+            Pull(enemy, pullForce);
+
+            distance = Vector3.Distance(transform.position, enemy.transform.position);
             yield return null;
         }
-        enemy.GetComponent<Character>().Move.CanMove = true;
+
+        enemy.Move.CanMove = true;
         Destroy(_chain.gameObject);
     }
 
@@ -84,9 +110,11 @@ public class ChainBlade_Scorpion : Skill
     }
 
     [Command]
-    private void CmdCreateProjectile(float maxDistance, Vector2 direction, GameObject parent, ChainbladeType type)
+    private void CmdCreateProjectile(float maxDistance, Vector3 direction, GameObject parent, ChainbladeType type)
     {
         //blade spawn
+        Vector3 spawnPosition = transform.position + Vector3.up * 2f;
+
         _projectile = Instantiate(_projectilePrefab, transform.position, Quaternion.identity);
         SceneManager.MoveGameObjectToScene(_projectile, _hero.NetworkSettings.MyRoom);
 
@@ -108,7 +136,10 @@ public class ChainBlade_Scorpion : Skill
             };
 
             //CmdApplyDamage(damage, target.gameObject);
-            DealDamage(damage, target.gameObject);
+
+            //DealDamage(damage, target.gameObject);
+
+            ApplyDamage(damage,target.gameObject);
         });
 
         //Hook
@@ -117,9 +148,9 @@ public class ChainBlade_Scorpion : Skill
             _hero.Move.CanMove = false;
             _projectile.GetComponent<BladeProjectile>().OnHit.AddListener(target =>
             {
-                if (target != null)
+                if (target != null && target.TryGetComponent<Character>(out Character character))
                 {
-                    enemy = target;
+                    enemy = character;
                     _chain.targetID = enemy.GetComponent<NetworkIdentity>().netId;
                     NetworkServer.Destroy(_blade.gameObject);
                     StartCoroutine(PullEnemy(enemy));
@@ -133,6 +164,7 @@ public class ChainBlade_Scorpion : Skill
 
             //chain spawn
             GameObject item = Instantiate(_chainPrefab.gameObject);
+
             SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
             _chain = item.GetComponent<ChainController>();
             
@@ -143,7 +175,7 @@ public class ChainBlade_Scorpion : Skill
     }
 
     [Command]
-    private void CmdThrowBlade(Vector2 direction)
+    private void CmdThrowBlade(Vector3 direction)
     {
         _projectile.GetComponent<BladeProjectile>().ThrowBlade(direction);
     }
@@ -165,27 +197,16 @@ public class ChainBlade_Scorpion : Skill
             yield return null;
         }
 
-        if (_playerLinks.Resources.First(o=>o.Type == ResourceType.Mana || o.Type == ResourceType.Energy).CurrentValue >= 40)
+        if (_playerLinks.Resources.First(o=>o.Type == ResourceType.Mana || o.Type == ResourceType.Energy).CurrentValue >= 1)
         {
             _type = ChainbladeType.Hook;
-            _skillEnergyCosts[0].resourceCost = 40;
+            _skillEnergyCosts[0].resourceCost = 1;
         }
         else
         {
             _type = ChainbladeType.Default;
-            _skillEnergyCosts[0].resourceCost = 10;
+            _skillEnergyCosts[0].resourceCost = 1;
         }
-
-        yield return null;
-    }
-
-    protected override IEnumerator CastJob()
-    {
-        Vector2 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
-
-        CmdCreateProjectile(8f, dir, this.gameObject, _type); // <--- event hit is here
-
-        CmdThrowBlade(dir);
 
         yield return null;
     }
@@ -200,20 +221,22 @@ public class ChainBlade_Scorpion : Skill
         if (_tempTargetForDamage != hp.transform)
         {
             _tempTargetForDamage = hp.transform;
-            _tempForDamage = hp.GetComponent<IDamageable>();
+            _tempHPForDamage = hp.GetComponent<Health>();
         }
-        _tempForDamage.TryTakeDamage(ref damage, this);
+        _tempHPForDamage.TryTakeDamage(ref damage, this);
     }
 
 
-    private void Pull(GameObject gameObject, Vector2 force) // called in [command]
+    private void Pull(Character target, Vector3 force)
     {
-        if (_tempTarget != gameObject)
+        if (_tempTarget != target.gameObject)
         {
-            _tempTarget = gameObject;
-            _tempTargetMove = gameObject.GetComponent<MoveComponent>();
+            _tempTarget = target.gameObject;
+            _tempTargetMove = _tempTarget.GetComponent<MoveComponent>();
         }
+
         _tempTargetMove.TargetRpcAddTransformPosition(force);
+        _comboCounter.AddSkill(target, this);
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)

@@ -75,12 +75,13 @@ public abstract class GameRules : NetworkBehaviour
 
     protected void FindGameManager()
     {
-        var gameManager = FindObjectOfType<GameManager>();
-        if (gameManager != null)
-        {
-            _gameManager = gameManager;
-            _spawnPoints = _gameManager.HeroSpawnManager;
-        }
+        _gameManager = FindObjectOfType<GameManager>();
+
+        if (_gameManager == null) return;
+
+        _spawnPoints = _gameManager.HeroSpawnManager;
+
+        if (_gameManager.TeamsPanel == null) return;
     }
 
     protected virtual IEnumerator SplitTeams(HeroSpawnManager spawnPoints)
@@ -229,10 +230,14 @@ public abstract class GameRules : NetworkBehaviour
 
     private IEnumerator FoundGameManagerCorounite()
     {
-        while(_gameManager == null)
+        while (_gameManager == null || _gameManager.TeamsPanel == null || _gameManager.Source == null)
         {
             yield return new WaitForSecondsRealtime(0.5f);
             FindGameManager();
+
+            if (_gameManager == null) continue;
+            if (_gameManager.TeamsPanel == null) continue;
+            if (_gameManager.Source == null) continue;
         }
 
         foreach (var item in _playersSyncList)
@@ -243,6 +248,7 @@ public abstract class GameRules : NetworkBehaviour
                 _players.Add(playerSettings);
             }
         }
+
         foreach (var playerSettings in _players)
         {
             if (playerSettings.NetworkSettings.TeamIndex == 1)
@@ -256,6 +262,7 @@ public abstract class GameRules : NetworkBehaviour
                 _gameManager.Source.AddInSecondTeam(playerSettings);
             }
         }
+
         GameStartClient();
     }
 

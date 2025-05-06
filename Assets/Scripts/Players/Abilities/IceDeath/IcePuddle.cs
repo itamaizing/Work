@@ -9,11 +9,13 @@ using UnityEngine.UIElements;
 public class IcePuddle : Skill
 {
 	[SerializeField] private IcePuddleObject _puddle;
+	[SerializeField] private IcePuddleObject _puddleBig;
 	[SerializeField] private GameObject _preViewPuddle;
 	[SerializeField] private GameObject _lowePoint;
 	[SerializeField] private DecalProjector _puddleProjector;
 	//[SerializeField] private FrostingFrozenTalant _frostingFrozenTalant;
 	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
+	[SerializeField] private bool isBig = true; //test
 	[SerializeField] private float _timeToDestroy = 3f;
 	[SerializeField] private HeroComponent _playerLinks;
 	[SerializeField] private MoveComponent _move;
@@ -33,6 +35,7 @@ public class IcePuddle : Skill
 	private bool _talentPuddleSize = false;
 	private bool _talentFrostingFrozen = false;
 	private bool _talentEvadeDadBoost = false;
+	private bool _iceDeathInIcePudleTalent;
 	private bool _shooted = false;
 	private Energy _energy;
 
@@ -144,7 +147,7 @@ public class IcePuddle : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        Debug.LogError("DataError");
+		throw new NotImplementedException();
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -175,7 +178,6 @@ public class IcePuddle : Skill
 			}
 			yield return null;
 		}
-        Debug.LogError("DataError");
     }
 
 	protected override IEnumerator CastJob()
@@ -210,15 +212,33 @@ public class IcePuddle : Skill
 	}*/
 
 	[Command]
+	private void CmdCreateProjecttileBig(float angle, float manaValue, Vector3 position, bool lastHit, bool talentEvade, bool talentFrostingFrozen)
+	{
+		IcePuddleObject projectile = Instantiate(_puddleBig, position, Quaternion.Euler(-90, -angle, 0));
+		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
+		projectile.Init(_playerLinks, manaValue, lastHit, this);
+		projectile.SetTalents(talentEvade, talentFrostingFrozen);
+
+		NetworkServer.Spawn(projectile.gameObject);
+
+		RpcPlayShotSound();
+
+		RpcInit(projectile.gameObject, manaValue, lastHit);
+	}
+
+
+	[Command]
 	private void CmdCreateProjecttile(float angle, float manaValue, Vector3 position, bool lastHit, bool talentEvade, bool talentFrostingFrozen)
 	{
 		IcePuddleObject projectile = Instantiate(_puddle, position, Quaternion.Euler(-90, -angle, 0));
 		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
 		projectile.Init(_playerLinks, manaValue, lastHit, this);
 		projectile.SetTalents(talentEvade, talentFrostingFrozen);
+
 		NetworkServer.Spawn(projectile.gameObject);
 
 		RpcPlayShotSound();
+
 		RpcInit(projectile.gameObject, manaValue, lastHit);
 	}
 
@@ -226,6 +246,7 @@ public class IcePuddle : Skill
 	private void RpcInit(GameObject obj, float manaValue, bool lastHit)
 	{
 		obj.GetComponent<IcePuddleObject>().Init(_playerLinks, manaValue, lastHit, this);
+		obj.GetComponent<IcePuddleObject>().IceDeathInIcePudleTalentActive(_iceDeathInIcePudleTalent);
 	}
 
 	private Vector3 InstantiatePoint()
@@ -360,7 +381,8 @@ public class IcePuddle : Skill
 
 		Buff.AttackSpeed.IncreasePercentage(1 + _seriesOfStrikes.GetMultipliedSpeed() / 100);
 
-		CmdCreateProjecttile(_angle3, _timeToDestroy, _preViewPuddle.transform.position, _lastHit && _talentPuddleSize, _talentEvadeDadBoost, _talentFrostingFrozen);
+		if (isBig) CmdCreateProjecttileBig(_angle3, _timeToDestroy, _preViewPuddle.transform.position, _lastHit && _talentPuddleSize, _talentEvadeDadBoost, _talentFrostingFrozen);
+		else CmdCreateProjecttile(_angle3, _timeToDestroy, _preViewPuddle.transform.position, _lastHit && _talentPuddleSize, _talentEvadeDadBoost, _talentFrostingFrozen);
 	}
 
 	public void SetTalentPuddleSize(bool active)
@@ -376,6 +398,11 @@ public class IcePuddle : Skill
 	public void SetTalentEvadeDadBoost(bool value)
 	{
 		_talentEvadeDadBoost = value;
+	}
+
+	public void IceDeathInIcePudleTalentActive(bool value)
+    {
+		_iceDeathInIcePudleTalent = value;
 	}
 
 	public void IcePuddleCast()

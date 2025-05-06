@@ -11,6 +11,16 @@ public class SkillEnergyCost
 {
     public ResourceType resourceType;
     public float resourceCost;
+
+    public void ModifyResourceCost(float multiplier)
+    {
+        resourceCost *= multiplier;
+    }
+
+    public void ResetResourceCost(float baseCost)
+    {
+        resourceCost = baseCost;
+    }
 }
 
 public class TargetToShot
@@ -77,6 +87,7 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] protected List<SkillEnergyCost> _manaCostPerTick;
     [Header("Charge settings")]
     [SerializeField] private bool _isUseCharges;
+    [SerializeField] private bool _useChargesAsComboPart = false; // test
     [SerializeField] protected bool _chargesHaveSeparateCooldown;
     [SerializeField] protected int _maxCharges;
     [SerializeField] protected float _chargeCooldown;
@@ -90,6 +101,10 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] protected bool _isAutoAreaRender = true;
     [SerializeField] protected bool _isAutoLineRender = true;
     [SerializeField] protected bool _isDynamicRenderer = false;
+    [Header("Availability")]
+    [SerializeField] protected bool _disactive = false;
+    [SerializeField] protected bool _earlyCooldown = false;
+
 
     protected SkillRenderer _skillRender;
     protected Character _hero;
@@ -102,10 +117,12 @@ public abstract class Skill : NetworkBehaviour
     protected Coroutine _castStreamCoroutine;
     protected Coroutine _dynamicRendererJob;
     protected Transform _tempTargetForDamage;
+    protected Health _tempHPForDamage;
     protected IDamageable _tempForDamage;
     protected IHealingable _tempForHealing;
     protected bool _isPlayCastAnim;
     protected int _currentChargers;
+    protected float _baseCooldownTime;
 
     private Character _tempTargetbase;
     private float _remainingCooldownTime;
@@ -145,6 +162,7 @@ public abstract class Skill : NetworkBehaviour
         get => _isSkillActive;
         set => _isSkillActive = value;
     }
+    public Transform TempTargetForDamage => _tempTargetForDamage;
     public bool GetMouseButton { get => _isClick || _isShiftClick || _isCtrlClick || _isSpaceClick; }
     public bool IsSubjectToGlobalCooldownTime { get => _isSubjectToGlobalCooldownTime; }
     public Character Hero { get => _hero; }
@@ -152,8 +170,9 @@ public abstract class Skill : NetworkBehaviour
     public string Name => _abilityInfo.Name;
     public string Description => _abilityInfo.Description;
     public Sprite Icon => _abilityInfo.Icon;
+    public AbilityInfo AbilityInfoHero { get => _abilityInfo; set => _abilityInfo = value; }
     public bool IsCooldowned { get => _remainingCooldownTime <= 0; }
-    public virtual bool IsPayCostStartCooldown { get => true; }
+    public virtual bool IsPayCostStartCooldown { get => true;}
     public int Chargers { get => _currentChargers; protected set { _currentChargers = value; CurrentChargeChanged?.Invoke(_currentChargers); } }
     public int MaxChargers { get => _maxCharges; }
     public bool IsHaveCharge => (_currentChargers > 0);
@@ -164,14 +183,14 @@ public abstract class Skill : NetworkBehaviour
     public bool IsHaveResources { get => IsHaveResourceOnSkill && IsCooldowned && IsHaveCharge; }
     public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); protected set => _cooldownTime = value; }
     public float RemainingCooldownTime { get => _remainingCooldownTime; }
-    public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); protected set => _castDeley = value; }
+    public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); set => _castDeley = value; }
     public bool IsCasting { get => _isCasting; }
-    public float CastStreamDuration { get => _castDuration; }
+    public float CastStreamDuration { get => _castDuration; set => _castDuration = value; }
     public float Radius { get => Buff.Radius.GetBuffedValue(_radius); protected set => _radius = value; }
     public float Area { get => Buff.Area.GetBuffedValue(_area); protected set => _area = value; }
     public float CastLength { get => Buff.Area.GetBuffedValue(_castLength); protected set => _castLength = value; }
     public float CastWidth { get => Buff.Area.GetBuffedValue(_castWidth); protected set => _castWidth = value; }
-    public virtual float Damage { get => Buff.Damage.GetBuffedValue(_damageValue); protected set => _damageValue = value; }
+    public virtual float Damage { get => _damageValue; set => _damageValue = value; }
     public bool IsUseCharges { get => _isUseCharges; }
     public LayerMask TargetsLayers { get => _targetsLayers; protected set => _targetsLayers = value; }
     public Schools School { get => _abilitySchool; protected set => _abilitySchool = value; }
@@ -184,6 +203,20 @@ public abstract class Skill : NetworkBehaviour
     public float ManaCostRate { get => _manaCostRate; }
     public Queue<TargetInfo> TargetInfoQueue { get => _targetInfoQueue; }
 
+    public bool Disactive
+    {
+        get => _disactive;
+        set
+        {
+            if (_disactive != value)
+            {
+                _disactive = value;
+                OnSkillStateChanged?.Invoke(_disactive);
+            }
+        }
+    }
+
+    public event Action<bool> OnSkillStateChanged;
     public event Action<int> CurrentChargeChanged;
     public event Action<float> CooldownStarted;
     public event Action CooldownEnded;
@@ -200,9 +233,10 @@ public abstract class Skill : NetworkBehaviour
     public event Action<float> MassageHaventMana;
     public event Action MassageHaventCharge;
     public event Action<float> MassageNotCooldowned;
+    public event Action OnSkillCanceled;
+    public event Action CastSuccess;
     public event Action<TargetInfo> TargetDataSaved;
     public event Action<bool> AutoModeChanged;
-
 
     /// <summary>
     /// There may be a description that will be shown in the AbillityNameBox.
@@ -235,6 +269,11 @@ public abstract class Skill : NetworkBehaviour
             _currentChargers = 1;
     }
 
+    public void InvokeCastStreamStarted(float duration)
+    {
+        CastStreamStarted?.Invoke(duration);
+    }
+
     public bool TryPreparing()
     {
         if (_isPreparing == false && _isCasting == false)
@@ -254,14 +293,13 @@ public abstract class Skill : NetworkBehaviour
         {
             TryPayCost(IsPayCostStartCooldown);
 
-            LoadTargetData(_targetInfoQueue.Dequeue());
+            if (_targetInfoQueue.Count > 0) LoadTargetData(_targetInfoQueue.Dequeue());
             _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
+
             return true;
         }
-        else
-        {
-            return false;
-        }
+
+        else return false;
     }
 
     public bool TryCast(TargetInfo targetInfo)
@@ -334,6 +372,8 @@ public abstract class Skill : NetworkBehaviour
 
             _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
             _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
+
+            OnSkillCanceled?.Invoke();
 
             return true;
         }
@@ -517,7 +557,11 @@ public abstract class Skill : NetworkBehaviour
             _skillRender.DrawRadius(Radius);
 
         if (_isAutoAreaRender)
+        {
             _skillRender.DrawArea(Area, damage, TargetsLayers);
+            _skillRender.StartDynamicRadiusColor(Radius);
+        }
+
 
         if (_isAutoLineRender)
             _skillRender.DrawLine(CastLength, CastWidth, damage, TargetsLayers);
@@ -538,6 +582,7 @@ public abstract class Skill : NetworkBehaviour
         _skillRender.StopDrawArea();
         _skillRender.StopDrawLine();
         _skillRender.StopDrawClosestTarget();
+        _skillRender.StopDynamicRadiusColor();
 
         /*if (true)
 		{
@@ -559,7 +604,7 @@ public abstract class Skill : NetworkBehaviour
             if (startCooldown)
                 IncreaseSetCooldown(CooldownTime);
 
-            TryUseCharge();
+            if (!_useChargesAsComboPart) TryUseCharge();
             return true;
         }
         else
@@ -590,10 +635,10 @@ public abstract class Skill : NetworkBehaviour
             {
                 target = enemy;
 
-                if (isCanTargetHimself == false && target.transform == _hero.transform)
-                {
-                    target = null;
-                }
+                //if (isCanTargetHimself == false && target.transform == _hero.transform)
+                //{
+                //    target = null;
+                //}
             }
         }
         _tempTargetbase = target;
@@ -723,7 +768,7 @@ public abstract class Skill : NetworkBehaviour
     }
     */
 
-    protected bool TryUseCharge()
+    public bool TryUseCharge()
     {
         if (_isUseCharges == false)
             return true;
@@ -879,18 +924,14 @@ public abstract class Skill : NetworkBehaviour
         return target;
     }
 
-    private Character ClosedTarget()
+    protected Character ClosedTarget()
     {
         var closerTargets = GetCloserTargets(transform.position, 1000);
-        Character closerTarget = null;
 
         if (closerTargets != null && closerTargets.Count > 0)
-        {
-            closerTarget = GetCloserTargets(transform.position, 1000)[0];
-            return closerTarget;
-        }
+            return closerTargets[0];
 
-        return closerTarget;
+        return null;
     }
 
     protected TargetToShot ShiftLeftClick()
@@ -1074,7 +1115,6 @@ public abstract class Skill : NetworkBehaviour
     {
         _dynamicRendererJob = StartCoroutine(DynamicRendererJob());
     }
-
     private void AddAssist(Character character)
     {
         Hero.AssystCounter++;
@@ -1231,6 +1271,7 @@ public abstract class Skill : NetworkBehaviour
         _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
         _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
 
+        CastSuccess?.Invoke();
         CastEnded?.Invoke();
         _isCasting = false;
 
@@ -1243,24 +1284,6 @@ public abstract class Skill : NetworkBehaviour
     private IEnumerator CancelCoroutine()
     {
         yield return new WaitForNextFrameUnit();
-    }
-
-    private IEnumerator AssistTimerJob(Character player)
-    {
-        player.Died += AddKill;
-        yield return null;
-        yield return null;
-        player.Died -= AddKill;
-        player.Died += AddAssist;
-        yield return new WaitForSecondsRealtime(_assistTimer);
-        player.Died -= AddAssist;
-    }
-    
-    private IEnumerator HealAssistTimerJob(Character player)
-    {
-        player.Killed += AddAssist;
-        yield return new WaitForSecondsRealtime(_assistTimer);
-        player.Killed -= AddAssist;
     }
 
     [ClientRpc]
@@ -1320,48 +1343,26 @@ public abstract class Skill : NetworkBehaviour
 
     public void ApplyDamage(Damage damage, GameObject target)
     {
+        target.GetComponent<IDamageable>().TryTakeDamage(ref damage, this);
+        _hero.DamageTracker.AddDamage(damage, target, isServerRequest: isServer);
+    }
+
+    [Command]
+    public void CmdApplyDamage(Damage damage, GameObject target)
+    {
         if (_tempTargetForDamage != target.transform)
         {
             _tempTargetForDamage = target.transform;
             _tempForDamage = target.GetComponent<IDamageable>();
         }
 
-        target.GetComponent<IDamageable>().TryTakeDamage(ref damage, this);
-
-        if(target.TryGetComponent<Character>(out Character player))
-        {
-            Hero.DamageGetCounter += damage.Value;
-
-            if (_assistCoroutine != null)
-                StopCoroutine(_assistCoroutine);
-
-            StartCoroutine(AssistTimerJob(player));
-        }
-    }
-
-    [Command]
-    public void CmdApplyDamage(Damage damage, GameObject target)
-    {
         ApplyDamage(damage, target);
     }
 
     public void ApplyHeal(Heal heal, GameObject hp, Skill skill, string sourceName)
     {
-        if (_tempTargetForDamage != hp.transform)
-        {
-            _tempTargetForDamage = hp.transform;
-            _tempForHealing = hp.GetComponent<IHealingable>();
-        }
-
-        _tempForHealing.Heal(ref heal, sourceName, skill);
-
-        if (hp.TryGetComponent<Character>(out Character player))
-        {
-            if (_assistCoroutine != null)
-                StopCoroutine(_assistCoroutine);
-
-            _assistCoroutine = StartCoroutine(HealAssistTimerJob(player));
-        }
+        hp.GetComponent<IHealingable>().Heal(ref heal, sourceName, skill);
+        Hero.DamageTracker.AddHeal(heal, isServerRequest: isServer);
     }
 
     [Command]

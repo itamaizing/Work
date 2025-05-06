@@ -7,181 +7,203 @@ using UnityEngine.SceneManagement;
 public class SpawnComponent : NetworkBehaviour
 {
     [SerializeField] private Character _hero;
-    [SerializeField] private List<MinionComponent> _minionPrefs;
+    [SerializeField] private List<Character> _characterPrefabs;
 
-    private readonly List<MinionComponent> _units = new();
+    private readonly List<Character> _units = new();
 
-    public List<MinionComponent> Units => _units;
+    public List<Character> Units => _units;
 
-    public event Action<MinionComponent> UnitAdded;
+    public event Action<Character> UnitAdded;
     public event Action UnitRemoved;
 
-    #region test
-    [SerializeField] private MinionComponent _enemy;
-    [SerializeField] private MinionComponent _alies;
+    #region Test Methods
+    [SerializeField] private Character _enemyPrefab;
+    [SerializeField] private Character _allyPrefab;
 
     [Command]
     public void CmdSpawnUnitEnemy()
     {
-        var controllableMinion = Instantiate(_enemy, Vector3.back, Quaternion.identity);
-        controllableMinion.Initialize();
-        SceneManager.MoveGameObjectToScene(controllableMinion.gameObject, _hero.NetworkSettings.MyRoom);
-        NetworkServer.Spawn(controllableMinion.gameObject, connectionToClient);
-        AddUnit(controllableMinion);
+        SpawnCharacter(_enemyPrefab, Vector3.back, Quaternion.identity);
     }
+
     [Command]
     public void CmdSpawnUnitAlies()
     {
-        var temp = _alies;
-        var controllableMinion = Instantiate(temp, Vector3.forward, Quaternion.identity);
-        controllableMinion.Initialize();
-        SceneManager.MoveGameObjectToScene(controllableMinion.gameObject, _hero.NetworkSettings.MyRoom);
-        NetworkServer.Spawn(controllableMinion.gameObject, connectionToClient);
-        AddUnit(controllableMinion);
+        SpawnCharacter(_allyPrefab, Vector3.forward, Quaternion.identity);
+    }
+
+    [Command]
+    public void CmdSpawnUnitPoint(Vector3 position, Quaternion rotation)
+    {
+        SpawnCharacter(_allyPrefab, position, rotation);
     }
     #endregion
 
     public void SpawnUnit(int index, Vector3 position)
     {
-        if (index < 0 || index >= _minionPrefs.Count)
+        if (index < 0 || index >= _characterPrefabs.Count)
         {
             Debug.LogError($"Index {index} is out of bounds for spawning units.");
             return;
         }
 
-        var temp = _minionPrefs[index];
+        var prefab = _characterPrefabs[index];
+        SpawnCharacter(prefab, position, Quaternion.identity);
+    }
 
-        if (temp == null)
+    private void SpawnCharacter(Character prefab, Vector3 position, Quaternion rotation)
+    {
+        if (prefab == null)
         {
-            Debug.LogError("Minion prefab is null.");
+            Debug.LogError("Character prefab is null.");
             return;
         }
 
-        var controllableMinion = Instantiate(temp, position, Quaternion.identity);
-        controllableMinion.Initialize();
+        var spawnedCharacter = Instantiate(prefab, position, rotation);
+        spawnedCharacter.Initialize();
 
         if (_hero == null || _hero.NetworkSettings == null)
         {
-            Debug.LogError("Hero or NetworkSettings is null. Cannot move unit to scene.");
+            Debug.LogError("Hero or NetworkSettings is null. Cannot move character to scene.");
+            Destroy(spawnedCharacter.gameObject);
             return;
         }
 
-        SceneManager.MoveGameObjectToScene(controllableMinion.gameObject, _hero.NetworkSettings.MyRoom);
+        SceneManager.MoveGameObjectToScene(spawnedCharacter.gameObject, _hero.NetworkSettings.MyRoom);
 
         if (connectionToClient == null)
         {
-            Debug.LogError("Connection to client is null. Cannot spawn unit.");
-            Destroy(controllableMinion.gameObject);
+            Debug.LogError("Connection to client is null. Cannot spawn character.");
+            Destroy(spawnedCharacter.gameObject);
             return;
         }
 
-        NetworkServer.Spawn(controllableMinion.gameObject, connectionToClient);
+        NetworkServer.Spawn(spawnedCharacter.gameObject, connectionToClient);
 
-        AddUnit(controllableMinion);
+        AddUnit(spawnedCharacter);
     }
 
-    public void AddUnit(MinionComponent minion)
+    public void AddUnit(Character character)
     {
-        if (minion == null)
+        if (character == null)
         {
-            Debug.LogError("Attempted to add a null minion to the units list.");
+            Debug.LogError("Attempted to add a null character to the units list.");
             return;
         }
 
-        _units.Add(minion);
-        UnitAdded?.Invoke(minion);
+        _units.Add(character);
+        UnitAdded?.Invoke(character);
 
-        Debug.Log($"Unit {minion.name} added. Total units: {_units.Count}");
+        Debug.Log($"Character {character.name} added. Total units: {_units.Count}");
 
-        minion.Destroyed += OnUnitDestroyed;
-        minion.Intercepted += OnUnitDestroyed;
+        if (character is MinionComponent minion)
+        {
+            minion.Destroyed += OnUnitDestroyed;
+            minion.Intercepted += OnUnitDestroyed;
+        }
 
-        ClientRpcUnitAdded(minion.gameObject);
+        else if (character is HeroComponent hero)
+        {
+            hero.Died += OnUnitDestroyed;
+        }
+
+        ClientRpcUnitAdded(character.gameObject);
     }
 
-    private void OnUnitDestroyed(MinionComponent minion)
+    private void OnUnitDestroyed(Character character)
     {
-        if (minion == null)
+        if (character == null)
         {
-            Debug.LogWarning("Minion is null in OnUnitDestroyed.");
+            Debug.LogWarning("Character is null in OnUnitDestroyed.");
             return;
         }
 
-        if (_units.Contains(minion))
+        if (_units.Contains(character))
         {
-            _units.Remove(minion);
+            _units.Remove(character);
             UnitRemoved?.Invoke();
 
-            minion.Destroyed -= OnUnitDestroyed;
-            minion.Intercepted -= OnUnitDestroyed;
+            if (character is MinionComponent minion)
+            {
+                minion.Destroyed -= OnUnitDestroyed;
+                minion.Intercepted -= OnUnitDestroyed;
+            }
+            else if (character is HeroComponent hero)
+            {
+                hero.Died -= OnUnitDestroyed;
+            }
 
-            Debug.Log($"Unit {minion.name} destroyed. Total units left: {_units.Count}");
+            Debug.Log($"Character {character.name} destroyed. Total units left: {_units.Count}");
 
-            ClientRpcOnUnitDestroyed(minion.gameObject);
+            if (character.gameObject != null)
+            {
+                NetworkServer.Destroy(character.gameObject);
+            }
+
+            ClientRpcOnUnitDestroyed(character.gameObject);
         }
         else
         {
-            Debug.LogWarning("Minion not found in units list.");
+            Debug.LogWarning("Character not found in units list.");
         }
     }
 
     [Command]
-    public void CmdSpawnUnit(int index, Vector3 position)
+    public void CmdRemoveUnit(Character character)
     {
-        SpawnUnit(index, position);
-    }
-
-    [ClientRpc]
-    private void ClientRpcUnitAdded(GameObject minion)
-    {
-        if (minion == null)
+        if (character != null && _units.Contains(character))
         {
-            Debug.LogWarning("Minion is null in ClientRpcUnitAdded.");
-            return;
-        }
+            _units.Remove(character);
 
-        var minionTemp = minion.GetComponent<MinionComponent>();
-        if (minionTemp == null)
-        {
-            Debug.LogError("MinionComponent is missing on spawned object.");
-            return;
-        }
-
-        _units.Add(minionTemp);
-        UnitAdded?.Invoke(minionTemp);
-
-        Debug.Log($"Unit {minionTemp.name} added on client. Total units: {_units.Count}");
-    }
-
-    [ClientRpc]
-    private void ClientRpcOnUnitDestroyed(GameObject minion)
-    {
-        if (minion != null)
-        {
-            var minionComponent = minion.GetComponent<MinionComponent>();
-            if (minionComponent != null)
+            if (character.gameObject != null)
             {
-                _units.Remove(minionComponent);
-                Debug.Log($"Unit {minionComponent.name} removed on client. Total units left: {_units.Count}");
+                NetworkServer.Destroy(character.gameObject);
+            }
+            UnitRemoved?.Invoke();
+        }
+    }
+
+    [ClientRpc]
+    private void ClientRpcUnitAdded(GameObject characterObject)
+    {
+        if (characterObject == null)
+        {
+            Debug.LogWarning("Character is null in ClientRpcUnitAdded.");
+            return;
+        }
+
+        var character = characterObject.GetComponent<Character>();
+        if (character == null)
+        {
+            Debug.LogError("Character component is missing on spawned object.");
+            return;
+        }
+
+        _units.Add(character);
+        _units.RemoveAll(unit => unit == null);
+        UnitAdded?.Invoke(character);
+
+        Debug.Log($"Character {character.name} added on client. Total units: {_units.Count}");
+    }
+
+    [ClientRpc]
+    private void ClientRpcOnUnitDestroyed(GameObject characterObject)
+    {
+        if (characterObject != null)
+        {
+            var character = characterObject.GetComponent<Character>();
+            if (character != null)
+            {
+                _units.Remove(character);
+                Debug.Log($"Character {character.name} removed on client. Total units left: {_units.Count}");
             }
             else
             {
-                Debug.LogWarning("MinionComponent is null on destroyed object.");
-            }
-        }
-        else
-        {
-            Debug.LogWarning("Minion is null in ClientRpcOnUnitDestroyed, cleaning up null units.");
-            for (int i = 0; i < _units.Count; i++)
-            {
-                if (_units[i] == null)
-                {
-                    _units.RemoveAt(i);
-                    i--;
-                }
+                Debug.LogWarning("Character component is null on destroyed object.");
             }
         }
 
+        _units.RemoveAll(unit => unit == null);
         UnitRemoved?.Invoke();
     }
 }

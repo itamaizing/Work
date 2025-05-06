@@ -22,7 +22,7 @@ public class AutoAttackQueue : MonoBehaviour
         {
             foreach (var item in _autoAttacksJob)
             {
-                StopCoroutine(item);
+                if (item != null) StopCoroutine(item);
             }
             _autoAttacksJob.Clear();
 

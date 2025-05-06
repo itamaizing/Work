@@ -69,8 +69,10 @@ public class CharacterState : NetworkBehaviour
 	public bool invinsible = false;
 
 	public StateEffects StateEffects => stateEffects;
+	public StateIcons StateIcons => _stateIcons;
 	public List<AbstractCharacterState> CurrentStates => currentStates;
 	public Character Character => _hero;
+	public event System.Action<AbstractCharacterState> OnStateAdded;
 
 	public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
 	{
@@ -117,6 +119,30 @@ public class CharacterState : NetworkBehaviour
 		[States.AbsorptionOfPoison] = new AbsorptionOfPoisonsState(),
 		[States.Bleeding] = new BleedingState(),
 		[States.ReducingHealing] = new ReducingHealingState(),
+		[States.LowVoltage] = new LowVoltage(),
+		[States.ComboState] = new ComboState(),
+		[States.DisappointmentState] = new DisappointmentState(),
+
+		#region TerrifyingElfStates
+
+		[States.InnerDarkness] = new InnerDarkness(),
+		[States.Fear] = new Fear(),
+		[States.Astral] = new AstralState(),
+		[States.Silent] = new Silent(),
+		[States.Irradiation] = new IrradiationState(),
+		[States.Suppression] = new SuppressionState(),
+		[States.WeakeningSilence] = new WeakeningSilence(),
+		[States.PartialBlindness] = new PartialBlindness(),
+		[States.Anxiety] = new Anxiety(),
+		[States.HuntressMark] = new HuntressMark(),
+		[States.Calmness] = new Calmness(),
+		[States.Sleep] = new Sleep(),
+		#endregion
+
+		#region Test Baff and Debaff
+		[States.BaffState] = new BaffState(),
+		[States.DebaffState] = new DebaffState(),
+		#endregion
 	};
 
 	public void Initialize(Character hero)
@@ -258,26 +284,34 @@ public class CharacterState : NetworkBehaviour
 		{
 			RemoveShield(damageableShield);
 		}
-		_stateIcons.RemoveItemByState(newState.State);
-		currentStates.Remove(newState);
+
+		if (currentStates.Contains(newState))
+		{
+			currentStates.Remove(newState);
+			_stateIcons?.RemoveItemByState(newState.State);
+		}
 	}
 
 	private void RemoveStateLogic(States stateName)
 	{
 		if (currentStates.Count <= 0) return;
 
-		_stateIcons.RemoveItemByState(stateName);
-		for (int i = currentStates.Count - 1; i >= 0; i--)
+		var statesCopy = new List<AbstractCharacterState>(currentStates);
+
+		foreach (var state in statesCopy)
 		{
-			if (currentStates[i].State == stateName)
+			if (state.State == stateName)
 			{
-				if (currentStates[i] is IDamageable damageableShield)
+				if (state is IDamageable damageableShield)
 				{
 					RemoveShield(damageableShield);
 				}
-				currentStates[i].ExitState();
-				currentStates.Remove(currentStates[i]);
 
+				state.ExitState();
+				currentStates.Remove(state);
+
+				_stateIcons?.RemoveItemByState(stateName);
+				break;
 			}
 		}
 	}
@@ -347,34 +381,26 @@ public class CharacterState : NetworkBehaviour
 	{
 		if (invinsible) return;
 
-		// Если состояние уже есть, добавляем стаки и перемещаем в конец списка
 		for (int i = 0; i < currentStates.Count; i++)
 		{
 			if (currentStates[i].State == state)
 			{
-				if (currentStates[i].CurrentStacksCount < currentStates[i].MaxStacksCount)
-				{
-					var canStack = currentStates[i].Stack(duration);
-					_stateIcons.ActivateIco(state, duration, 1, canStack);
-				}
-				else if (currentStates[i].MaxStacksCount == 0 || currentStates[i].CurrentStacksCount == currentStates[i].MaxStacksCount)
-				{
-					var canStack = currentStates[i].Stack(duration);
-					_stateIcons.ActivateIco(state, duration, 0, canStack);
-				}
+				currentStates[i].Stack(duration);
+				int newMaxStack = currentStates[i].MaxStacksCount;
+
+				_stateIcons.ActivateIco(state, duration, 1, true, newMaxStack);
+
 				MoveStateToEnd(i);
 				return;
 			}
 		}
 
-		// Если состояние отсутствует, создаем новое
 		AbstractCharacterState stateInstance = enumToState[state];
 		Health characterHealth = _hero.Health;
 		float chanceDodgeMagDamage = Random.Range(0f, 100f);
 
 		if (!isCanDodgeMagState)
 		{
-			// Проверка на сопротивление магическому урону
 			if (stateInstance.Type == StateType.Magic && chanceDodgeMagDamage <= characterHealth.ResistMagDamage)
 			{
 				Debug.Log("CharacterState / DodgeMagDamage");
@@ -382,16 +408,15 @@ public class CharacterState : NetworkBehaviour
 			}
 		}
 
-		// Создаем новое состояние и добавляем в конец списка
 		CreateState(stateInstance, state, duration, damageToExit, personWhoShooted, skillName, false);
 
-		// Если состояние — щит, добавляем его в Health
+		OnStateAdded?.Invoke(stateInstance);
+
 		if (stateInstance is IDamageable damageableShield)
 		{
 			AddShield(damageableShield);
 		}
 
-		// Если нужно указать школу заклинаний, обновляем контрспелл
 		if (school != Schools.None)
 		{
 			var counterSpell = (AbilitySchoolDebuff)stateInstance;
@@ -401,7 +426,6 @@ public class CharacterState : NetworkBehaviour
 
 	private void CreateState(AbstractCharacterState state, States stateName, float duration, float damageToExit, GameObject personWhoShooted, string skillName, bool stack)
 	{
-		_stateIcons.ActivateIco(stateName, duration, 1, stack);
 		currentStates.Add(state);
 		if (personWhoShooted.TryGetComponent<Character>(out var character))
 		{
@@ -411,6 +435,9 @@ public class CharacterState : NetworkBehaviour
 		{
 			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit, null, skillName);
 		}
+
+		int maxStacksCount = state.MaxStacksCount;
+		_stateIcons.ActivateIco(stateName, duration, 1, stack, maxStacksCount);
 	}
 
 	private void AddShield(IDamageable shield)
@@ -435,7 +462,6 @@ public class CharacterState : NetworkBehaviour
 
 	public void DispelStates(StateType type, int targetTeamIndex, int playerTeamIndex, bool isDispelOneState = false)
 	{
-
 		if (currentStates.Count == 0) return;
 
 		List<AbstractCharacterState> statesToRemove = new List<AbstractCharacterState>();
@@ -458,22 +484,49 @@ public class CharacterState : NetworkBehaviour
 					statesToRemove.Add(state);
 					if (isDispelOneState) break;
 				}
-
-				break;
 			}
 		}
 
 		foreach (var state in statesToRemove)
 		{
-			CmdRemoveState(state.State);
-			//state.ExitState();
-			//currentStates.Remove(state);
-			//RemoveStateLogic(state.State);
+			RemoveState(state.State);
+			_stateIcons.RemoveItemByState(state.State);
 		}
-
-		//RemoveStateLogic(statesToRemove.Select(s => s.State).ToList());
 	}
 
+	public void DispelStates(StateType type, bool isAlly, bool isDispelOneState = false)
+	{
+		if (currentStates.Count == 0) return;
+
+		List<AbstractCharacterState> statesToRemove = new List<AbstractCharacterState>();
+
+		for (int i = currentStates.Count - 1; i >= 0; i--)
+		{
+			AbstractCharacterState state = currentStates[i];
+
+			if (state.Type == type &&
+				((isAlly && state.BaffDebaff == BaffDebaff.Baff) ||
+				 (!isAlly && state.BaffDebaff == BaffDebaff.Debaff)))
+			{
+				if (state.CurrentStacksCount > 1)
+				{
+					state.CurrentStacksCount--;
+					ClientRpcRemoveIconCount();
+				}
+				else
+				{
+					statesToRemove.Add(state);
+					if (isDispelOneState) break;
+				}
+			}
+		}
+
+		foreach (var state in statesToRemove)
+		{
+			RemoveState(state.State);
+			_stateIcons.RemoveItemByState(state.State);
+		}
+	}
 
 	[ClientRpc]
 	private void ClientRpcRemoveIconCount()
@@ -571,10 +624,35 @@ public enum States
 	SparkTalentHealthBuff,
 	DefenseReduction,
 	SelfHarm,
-	ShieldBaff
+	ShieldBaff,
+	LowVoltage,
+	ComboState,
+	DisappointmentState,
+
+	#region TerrifyingElf
+
+	InnerDarkness,
+	Fear,
+	Astral,
+	Silent,
+	Irradiation,
+	Suppression,
+	WeakeningSilence,
+	PartialBlindness,
+	Anxiety,
+	HuntressMark,
+	Calmness,
+	Sleep,
+    #endregion
+
+    #region Test Baff and Debaff
+		BaffState,
+		DebaffState,
+    #endregion
 }
 public enum BaffDebaff
 {
 	Baff,
 	Debaff,
+	Null,
 }

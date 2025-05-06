@@ -86,17 +86,17 @@ public class RuneComponent : Resource
         _disableMultiplier = false;
     }
 
-	public void SumDamageMake(float damage)
-	{
+    public void SumDamageMake(float damage)
+    {
         Debug.Log("SUM DAMAGE MAKE Rune" + damage);
 
-		_sumDamageGiven += damage;
-		while (_sumDamageGiven >= 50)
-		{
-			CmdAdd(1);
-			_sumDamageGiven -= 50;
-		}
-	}
+        _sumDamageGiven += damage;
+        while (_sumDamageGiven >= 50)
+        {
+            CmdAdd(1);
+            _sumDamageGiven -= 50;
+        }
+    }
 }
 
 public class AbilityTimer

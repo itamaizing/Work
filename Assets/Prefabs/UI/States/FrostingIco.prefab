@@ -309,6 +309,7 @@ MonoBehaviour:
   count: 1
   state: 19
   time: []
+  maxStack: 0
 --- !u!1 &8536294408763002824
 GameObject:
   m_ObjectHideFlags: 0

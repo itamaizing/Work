@@ -1,45 +1,59 @@
+using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
 
 public class FlashOfLight : Skill
 {
-    [Header("Flash of Light Settings")] 
+    [Header("Flash of Light Settings")]
     [SerializeField] private float _healAmount = 35f;
     [SerializeField] private float _lightRange = 4f;
-    
-    [Header("Flash of Darkness Settings")] 
+    [SerializeField] private AbilityInfo lightInfo;
+
+    [Header("Flash of Darkness Settings")]
     [SerializeField] private float _damageAmount = 35f;
     [SerializeField] private float _darkRange = 6f;
+    [SerializeField] private AbilityInfo darkInfo;
 
-    public bool isLightMode = true;
+    [SerializeField] private AudioClip audioClip;
+    [SerializeField] private ReversePolarity reversePolarity;
+
+    private bool _spiritEnergyTalent;
 
     private Character _target;
     private Character _previousTarget;
 
-    private bool _isСooldownTalentActive = false;
+    private AudioSource _audioSource;
+    private bool _isCooldownTalentActive = false;
     private float _talentCooldown = 5f;
     private float _lastTalentTime = -5f;
     private float _cooldownReduction = 5f;
-    
+
     public event Action OnModeChange;
-    
+    [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
+
     protected override bool IsCanCast => IsCanCastCheck();
 
-    protected override int AnimTriggerCastDelay => 0;
-    protected override int AnimTriggerCast => 0;
-    
     private bool IsCanCastCheck()
     {
         if (_target == null) return false;
-        return Vector3.Distance(transform.position, _target.transform.position) <= Radius;
+
+        if (isLightMode)
+            return _target == Hero || _target.gameObject.layer == LayerMask.NameToLayer("Allies");
+        else
+            return _target.gameObject.layer == LayerMask.NameToLayer("Enemy");
     }
-    
-    private bool IsNewTarget => _previousTarget != _target;
-    
+
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("Spell");
+    protected override int AnimTriggerCast => 0;
+
     public void EnableTalentPhysicalShieldBoost(bool value)
     {
-        _isСooldownTalentActive = value;
+        _isCooldownTalentActive = value;
+    }
+    private void Start()
+    {
+        _audioSource = GetComponent<AudioSource>();
     }
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -48,97 +62,58 @@ public class FlashOfLight : Skill
 
     private void OnEnable()
     {
-        OnModeChange += HandleModeChange;
+        OnModeChange += UpdateMode;
         UpdateMode();
     }
 
     private void OnDisable()
     {
-        OnModeChange -= HandleModeChange;
+        OnModeChange -= UpdateMode;
     }
 
     public void SwitchMode()
     {
-        isLightMode = !isLightMode;
-        OnModeChange?.Invoke();
+        CmdSwitchMode();
     }
-    
-    private void HandleModeChange()
+
+    [Command]
+    private void CmdSwitchMode()
+    {
+        isLightMode = !isLightMode;
+    }
+
+    private void OnModeChanged(bool oldValue, bool newValue)
     {
         UpdateMode();
+        OnModeChange?.Invoke();
     }
-    
+
+    public void SpiritEnergyTalentActive(bool value)
+    {
+        _spiritEnergyTalent = value;
+    }
+
     private void UpdateMode()
     {
         Radius = isLightMode ? _lightRange : _darkRange;
         School = isLightMode ? Schools.Light : Schools.Dark;
-        TargetsLayers = isLightMode ? LayerMask.GetMask("Allies") : LayerMask.GetMask("Enemy");
+        AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
+        TargetsLayers = isLightMode
+            ? LayerMask.GetMask("Allies", "Player")
+            : LayerMask.GetMask("Enemy");
+        Hero.Abilities.SkillPanelUpdate();
     }
-    
-    private void HandleFlashOfLight()
-    {
-        if (IsNewTarget && _isСooldownTalentActive && Time.time - _lastTalentTime >= _talentCooldown)
-        {
-            ReduceCooldowns();
-            _lastTalentTime = Time.time;
-        }
-        
-
-        if (!IsNewTarget || TryPayCost())
-        {
-            Heal(_target);
-        }
-
-        _previousTarget = _target;
-    }
-    
-    private void HandleFlashOfDarkness()
-    {
-        if (TryPayCost())
-        {
-            Damage(_target);
-        }
-    }
-    
-    private void Heal(Character target)
-    {
-        var healthComponent = target.GetComponent<Health>();
-        if (healthComponent != null)
-        {
-            var heal = new Heal { Value = _healAmount };
-            CmdApplyHeal(heal, healthComponent.gameObject, this, name);
-        }
-    }
-    
-    private void Damage(Character target)
-    {
-        Damage damage = new Damage
-        {
-            Value = Buff.Damage.GetBuffedValue(_damageAmount),
-            Type = DamageType.Physical,
-            PhysicAttackType = AttackRangeType.RangeAttack,
-            School = this.School,
-            //DamageableSkill = this,
-        };
-
-        CmdApplyDamage(damage, target.gameObject);
-    }
-    
-    private void ReduceCooldowns()
-    {
-        foreach (var ability in Hero.Abilities.Abilities)
-        {
-            ability.DecreaseSetCooldown(_cooldownReduction);
-        }
-    }
-    
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while (_target == null)
         {
             if (Input.GetMouseButton(0))
             {
-                _target = GetTarget().character;
+                var clickedTarget = GetRaycastTarget(true);
+
+                if (clickedTarget != null && IsValidTarget(clickedTarget)) _target = clickedTarget;
+                else _target = null;
+
             }
             yield return null;
         }
@@ -149,18 +124,107 @@ public class FlashOfLight : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_target == null) yield break;
+        if (_target == null || !IsCanCast) yield break;
 
-        if (isLightMode)
+        if (TryPayCost())
         {
-            HandleFlashOfLight();
-        }
-        else if (!isLightMode)
-        {
-            HandleFlashOfDarkness();
+            CmdPlayShootSound();
+
+            if (reversePolarity != null && Hero.CharacterState.CheckForState(States.ReversePolarity))
+            {
+                reversePolarity.SwitchSpells();
+                reversePolarity.RemoveReversePolarityEffect();
+            }
+
+                if (isLightMode) HandleFlashOfLight();
+                else HandleFlashOfDarkness();
         }
 
         yield return null;
+    }
+
+    private void HandleFlashOfLight()
+    {
+        if (IsNewTarget && _isCooldownTalentActive && Time.time - _lastTalentTime >= _talentCooldown)
+        {
+            ReduceCooldowns();
+            _lastTalentTime = Time.time;
+        }
+
+        Heal(_target);
+        _previousTarget = _target;
+    }
+
+    private void HandleFlashOfDarkness()
+    {
+        Damage(_target);
+    }
+
+    private bool IsNewTarget => _previousTarget != _target;
+
+    private void Heal(Character target)
+    {
+        var health = target.GetComponent<Health>();
+        if (health == null) return;
+
+        float bonusHealFromSpiritEnergy = 0;
+        if (_spiritEnergyTalent) bonusHealFromSpiritEnergy = GetSpiritEnergyBonus(target);
+        var heal = new Heal { Value = _healAmount + bonusHealFromSpiritEnergy };
+
+        CmdApplyHeal(heal, health.gameObject, this, Name);
+    }
+
+    private float GetSpiritEnergyBonus(Character target)
+    {
+        if (target == null) return 0f;
+
+        var characterState = target.GetComponent<CharacterState>();
+        if (characterState == null) return 0f;
+
+        var spiritEnergyState = characterState.GetState(States.SpiritEnergy) as SpiritEnergyState;
+        if (spiritEnergyState == null) return 0f;
+
+        return spiritEnergyState.GetHealBonus();
+    }
+
+    private void Damage(Character target)
+    {
+        var damage = new Damage
+        {
+            Value = Buff.Damage.GetBuffedValue(_damageAmount),
+            Type = DamageType.Physical,
+            PhysicAttackType = AttackRangeType.RangeAttack,
+            School = this.School,
+        };
+
+        CmdApplyDamage(damage, target.gameObject);
+    }
+
+    private bool IsValidTarget(Character target)
+    {
+        if (target == null) return false;
+
+        if (isLightMode) return target == Hero || target.gameObject.layer == LayerMask.NameToLayer("Allies");
+        else return target.gameObject.layer == LayerMask.NameToLayer("Enemy");
+    }
+
+    private void ReduceCooldowns()
+    {
+        foreach (var ability in Hero.Abilities.Abilities)
+            ability.DecreaseSetCooldown(_cooldownReduction);
+    }
+
+    [Command]
+    private void CmdPlayShootSound()
+    {
+        RpcPlayShotSound();
+    }
+
+    [ClientRpc]
+    private void RpcPlayShotSound()
+    {
+        if (_audioSource && audioClip)
+            _audioSource.PlayOneShot(audioClip);
     }
 
     protected override void ClearData()

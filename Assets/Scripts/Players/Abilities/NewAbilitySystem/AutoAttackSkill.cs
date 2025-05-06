@@ -29,7 +29,7 @@ public abstract class AutoAttackSkill : Skill
     public Character Target { get => _target; }
     public Vector2 LastTargetPosition { get => _lastTargetPosition; }
     public override bool IsPayCostStartCooldown { get => false; }
-    public bool IsAutoattackMode { get => _isAutoattackMode; }
+    public bool IsAutoattackMode { get => _isAutoattackMode; set => _isAutoattackMode = value; }
     protected override bool IsCanCast
     {
         get
@@ -91,8 +91,10 @@ public abstract class AutoAttackSkill : Skill
             StopCoroutine(_autoAttackCoroutine);
             _autoAttackCoroutine = null;
         }
+
         _isAttacking = false;
         _target = null;
+        if (Hero.Move.CanMove == false) Hero.Move.CanMove = true;
         _hero.Move.StopLookAt();
     }
 

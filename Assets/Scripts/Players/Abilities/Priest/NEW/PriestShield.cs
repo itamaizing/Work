@@ -25,6 +25,10 @@ public class PriestShield : Skill
     [SerializeField] private float cooldownDark = 4f;
     [SerializeField] private float darkCastTime = 1.2f;
 
+    [SerializeField] private AudioClip audioClip;
+
+    private AudioSource _audioSource;
+
     //---------------- Talent 1 (Physical Damage Boost)
     private bool _talentPhysicalShieldBoostActive = false;
     private float _physicalDamageAccumulated = 0;
@@ -61,7 +65,7 @@ public class PriestShield : Skill
 
     protected override bool IsCanCast => IsCanCastCheck();
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("PriestShield");
     protected override int AnimTriggerCast => 0;
 
     private bool IsCanCastCheck()
@@ -71,6 +75,11 @@ public class PriestShield : Skill
     }
 
     public event Action OnModeChange;
+
+    private void Start()
+    {
+        _audioSource = GetComponent<AudioSource>();
+    }
 
     private void OnEnable()
     {
@@ -99,7 +108,6 @@ public class PriestShield : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         _target = (Character)targetInfo.Targets[0];
-        Debug.LogError("error data");
     }
 
     public void SwitchMode()
@@ -222,8 +230,6 @@ public class PriestShield : Skill
         Debug.Log($"Healing boost applied. Healing: {healingAmount}, Boost: {boostAmount}");
     }
     
-    //---------------- Talent 5 Logic: Healing Boost ----------------
-    
     public void EnableTiredSoulEvade(bool value)
     {
         _talentTiredSoulActive = value;
@@ -245,16 +251,26 @@ public class PriestShield : Skill
             }
             yield return null;
         }
+
         TargetInfo targetInfo = new();
-        Debug.LogError("error");
+        targetInfo.Targets.Add(_target);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
         if (_target == null || !IsCanCast) yield break;
+        Cast();
 
+        yield return null;
+    }
+
+    private void Cast()
+    {
         _nextAvailableTime = Time.time + CooldownTime;
-        
+
+        CmdPlayShootSound();
+
         if (isLightMode)
         {
             HandleLightShield();
@@ -263,8 +279,6 @@ public class PriestShield : Skill
         {
             HandleDarkShield();
         }
-
-        yield return null;
     }
 
     private void HandleLightShield()
@@ -298,6 +312,16 @@ public class PriestShield : Skill
 
         CmdAddBaff(States.DarkShield, darkShieldDuration, maxDamagePerTick + _damagePerTickBonus, _target.gameObject, Name);
         Debug.Log("Dark Shield applied to " + _target.name);
+    }
+
+    public void PriestShieldCast()
+    {
+        AnimStartCastCoroutine();
+    }
+
+    public void PriestShieldEnd()
+    {
+        AnimCastEnded();
     }
 
     [Command]
@@ -351,7 +375,20 @@ public class PriestShield : Skill
         var characterState = target.GetComponent<CharacterState>();
         characterState.AddState(darkState, duration, damagePerTick, target, skillName);
     }
-    
+
+
+    [Command]
+    private void CmdPlayShootSound()
+    {
+        RpcPlayShotSound();
+    }
+
+    [ClientRpc]
+    private void RpcPlayShotSound()
+    {
+        if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
+    }
+
     protected override void ClearData()
     {
         _target = null;

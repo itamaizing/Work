@@ -5,49 +5,135 @@ using UnityEngine;
 
 public class ObjectHealth : Resource, IDamageable
 {
+    [Header("UI / Visual")]
     [SerializeField] private ObjectBar _objectBar;
 
+    [Header("Data")]
+    [SerializeField] private ObjectData _objectData;
+
     public event Action OnDeath;
+
     public event Action<Damage, Skill> DamageTaken;
-    public event Action<float, DamageType, Skill> DamageTakenType;
+    //public event Action<float, DamageType, Skill> DamageTakenType;
 
     [SyncVar(hook = nameof(OnHealthChanged))]
     private float _currentHealth;
+
+    [SyncVar] private float _resistMagicDamage = 0f;
+
     private Coroutine _hideBarCoroutine;
     private Coroutine _regenerationCoroutine;
     private Coroutine _regenerationDelayCoroutine;
-    private ObjectData _objectData;
+
+    public ObjectData ObjectData => _objectData;
+    public float ResistMagicDamage => _resistMagicDamage;
+
+    public float CurrentHealth
+    {
+        get => _currentHealth;
+        set => _currentHealth = value;
+    }
+
+    #region regeneration
+
+    private Coroutine _fillCoroutine;
+
+    [Server]
+    public void ServerStartFillHP(float targetValue, float duration)
+    {
+        if (_fillCoroutine != null)
+        {
+            StopCoroutine(_fillCoroutine);
+        }
+        _fillCoroutine = StartCoroutine(FillHPCoroutine(targetValue, duration));
+    }
+
+    [Server]
+    public void ServerStopFillHP()
+    {
+        if (_fillCoroutine != null)
+        {
+            StopCoroutine(_fillCoroutine);
+            _fillCoroutine = null;
+        }
+    }
+
+    private IEnumerator FillHPCoroutine(float targetValue, float duration)
+    {
+        float startValue = _currentHealth;
+        float time = 0f;
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            float t = Mathf.Clamp01(time / duration);
+
+            float newHP = Mathf.Lerp(startValue, targetValue, t);
+            _currentHealth = newHP;
+
+            OnHealthChanged(_currentHealth, _currentHealth);
+
+            yield return null;
+        }
+
+        _currentHealth = targetValue;
+        OnHealthChanged(_currentHealth, _currentHealth);
+
+        _fillCoroutine = null;
+    }
+
+    #endregion
+
+    #region Initialization
 
     public void InitializeObject(ObjectData objectData)
     {
+        _objectData = objectData;
+
         Initialize(objectData.MaxHealth, objectData.RegenerationRate, 0, null);
 
+        if (objectData.MaxEndurance)
+        {
+            _currentHealth = objectData.MaxHealth;
+            ValuesObjectData(objectData);
+        }
+
+        else if (objectData.MinEndurance)
+        {
+            _currentHealth = 0;
+            ValuesObjectData(objectData);
+        }
+    }
+
+    private void ValuesObjectData(ObjectData objectData)
+    {
         if (_objectBar != null)
         {
             _objectBar.SetMaxHealth(objectData.MaxHealth);
-        }
-
-        if (objectData.Endurance)
-        {
-            _currentHealth = objectData.MaxHealth;
             _objectBar.SetHealth(_currentHealth);
             _objectBar.HideHealthBar();
-            _objectData = objectData;
         }
     }
 
-    public void ShowPhantomValue(Damage phantomValue)
-    {
-    }
+    #endregion
+
+    #region Take Damage
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
+        if (TryEvade(damage.Type))
+        {
+            return false;
+        }
+
         float damageValue = damage.Value;
 
         if (_currentHealth > 0)
         {
             _currentHealth -= damageValue;
-            DamageTakenType?.Invoke(damageValue, damage.Type, skill);
+
+            DamageTaken?.Invoke(damage, skill);
+            //DamageTakenType?.Invoke(damageValue, damage.Type, skill);
 
             if (_objectBar != null)
             {
@@ -61,22 +147,24 @@ public class ObjectHealth : Resource, IDamageable
                 Destroy(gameObject);
             }
 
-            if (_regenerationCoroutine != null)
-            {
-                StopCoroutine(_regenerationCoroutine);
-                _regenerationCoroutine = null;
-            }
-
-            if (_regenerationDelayCoroutine != null)
-            {
-                StopCoroutine(_regenerationDelayCoroutine);
-            }
-            _regenerationDelayCoroutine = StartCoroutine(StartRegenerationWithDelay(2f));
-
             return true;
         }
         return false;
     }
+
+    private bool TryEvade(DamageType damageType)
+    {
+        if (damageType == DamageType.Magical)
+        {
+            float roll = UnityEngine.Random.Range(0, 100);
+            if (roll < _resistMagicDamage) return true;
+        }
+        return false;
+    }
+
+    #endregion
+
+    #region UI / Visual
 
     private void OnHealthChanged(float oldHealth, float newHealth)
     {
@@ -89,61 +177,40 @@ public class ObjectHealth : Resource, IDamageable
 
     private void ShowAndAutoHideBar()
     {
-        if (_objectBar != null)
-        {
-            _objectBar.ShowHealthBar();
+        if (_objectBar == null) return;
 
-            if (_hideBarCoroutine != null)
-            {
-                StopCoroutine(_hideBarCoroutine);
-            }
+        _objectBar.ShowHealthBar();
 
-            _hideBarCoroutine = StartCoroutine(HideHealthBarAfterDelay(2f));
-        }
-    }
+        if (_hideBarCoroutine != null)
+            StopCoroutine(_hideBarCoroutine);
 
-    public void SetCurrentHealth(float value)
-    {
-        _currentHealth += value;
-        _currentHealth = Mathf.Clamp(_currentHealth, 0, MaxValue);
-        UpdateHealthBar();
-    }
-
-    private void UpdateHealthBar()
-    {
-        if (_objectBar != null)
-        {
-            ShowAndAutoHideBar();
-            _objectBar.SetHealth(_currentHealth);
-        }
+        _hideBarCoroutine = StartCoroutine(HideHealthBarAfterDelay(2f));
     }
 
     private IEnumerator HideHealthBarAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        _objectBar.HideHealthBar();
+
+        if (_fillCoroutine == null)
+            _objectBar.HideHealthBar();
     }
 
-    private IEnumerator StartRegenerationWithDelay(float delay)
+    public void SetMagicEvade(float value)
     {
-        yield return new WaitForSeconds(delay);
-
-        _regenerationCoroutine = StartCoroutine(RegenerateHealth());
+        _resistMagicDamage = Mathf.Clamp(value, 0f, 100f);
     }
 
-    private IEnumerator RegenerateHealth()
+    #endregion
+
+    [Command]
+    public void CmdSetCurrentHealth(float newValue)
     {
-        while (_currentHealth < MaxValue)
-        {
-            _currentHealth += _objectData.RegenerationRate * Time.deltaTime;
-            _currentHealth = Mathf.Clamp(_currentHealth, 0, MaxValue);
+        _currentHealth = Mathf.Clamp(newValue, 0, MaxValue);
+        OnHealthChanged(_currentHealth, _currentHealth);
+    }
 
-            if (_objectBar != null)
-            {
-                _objectBar.SetHealth(_currentHealth);
-            }
-
-            yield return null;
-        }
+    public void ShowPhantomValue(Damage phantomValue)
+    {
+        throw new NotImplementedException();
     }
 }

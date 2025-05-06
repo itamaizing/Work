@@ -135,6 +135,11 @@ public class SkillManager : MonoBehaviour
         SkillAdded?.Invoke(skill);
     }
 
+    public void SkillPanelUpdate()
+    {
+        SkillAdded?.Invoke(null);
+    }
+
     public void DeactivateSkill(Skill skill)
     {
         for (int i = 0; i < _selectedSkills.Length; i++)

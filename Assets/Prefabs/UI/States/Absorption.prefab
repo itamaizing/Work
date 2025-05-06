@@ -70,7 +70,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -1436393006, guid: f9ea880ea649f354180df2d001164022, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bb8ccd8b0e67e4c4b95fe511875e03dd, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -98,6 +98,7 @@ MonoBehaviour:
   count: 1
   state: 41
   time: []
+  maxStack: 0
 --- !u!1 &6000399726936491198
 GameObject:
   m_ObjectHideFlags: 0

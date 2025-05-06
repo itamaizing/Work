@@ -4,18 +4,23 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.Serialization;
 
 public class IcePuddleObject : Projectiles
 {
 	[FormerlySerializedAs("healthPlayer")]  private Health _healthComponent;
 
+	[SerializeField] private DecalProjector decalProjector;
 	private float _timeToDestroy = 0;
 	private float _curEvade = 0;
 	private bool _talentEvadeDadBoost = false;
 	private bool _talentFrostingFrozen = false;
+	private bool _iceDeathInIcePudleTalent = false;
 	//private List<CharacterState> _enemies = new List<CharacterState>();
 	private List<EnemyToState> _targets = new List<EnemyToState>();
+
+	public DecalProjector Decal { get => decalProjector; set => decalProjector = value; }
 	/*
 	 * buff player
 	 * */
@@ -108,7 +113,7 @@ public class IcePuddleObject : Projectiles
 
 		if (collision.gameObject == _dad.gameObject)
 		{
-			_dad.Health.DecreaseRegen(1.01f);
+			if (_iceDeathInIcePudleTalent) _dad.Health.IncreaseRegen(1.01f);
 			return;
 		}
 		if (collision.TryGetComponent<Character>(out var target) && _energy != null)
@@ -193,6 +198,11 @@ public class IcePuddleObject : Projectiles
 
 		ClientRpcSetEvade(player, value);
 	}
+
+	public void IceDeathInIcePudleTalentActive(bool value)
+    {
+		_iceDeathInIcePudleTalent = value;
+    }
 }
 
 public class EnemyToState

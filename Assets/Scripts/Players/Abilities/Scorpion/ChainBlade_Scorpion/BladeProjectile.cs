@@ -8,27 +8,31 @@ using UnityEngine.Events;
 
 public class BladeProjectile : NetworkBehaviour
 {
-    [SerializeField] private BoxCollider2D _collider;
+    //[SerializeField] private BoxCollider2D _collider;
+    [SerializeField] private BoxCollider _collider;
     [SerializeField] private LayerMask _layerMask;
+    [SerializeField] private LayerMask _obstacleLayers;
     public Transform ChainLinkPoint;
     private float throwForce = 20f;
-    public Rigidbody2D _rb;
+    public /*Rigidbody2D*/ Rigidbody _rb;
     private float _maxDistance;
-    private Vector2 startPosition;
-    private Vector2 _direction;
+    private Vector3 startPosition;
+    private Vector3 _direction;
     private GameObject _player;
     [SyncVar] private bool _canPull = true;
     private ChainbladeType _type;
 
     public UnityEvent<GameObject> OnHit;
 
-    public void Init(float maxDistance, Vector2 direction, GameObject player, ChainbladeType type)
+    public void Init(float maxDistance, Vector3 direction, GameObject player, ChainbladeType type)
     {
+        Debug.Log("Im spawned");
+
         startPosition = transform.position;
         _maxDistance = maxDistance;
         _type = type;
         _direction = direction.normalized;
-        float angle = Mathf.Atan2(_direction.y, _direction.x) * Mathf.Rad2Deg;
+        float angle = Mathf.Atan2(_direction.z, _direction.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, 0, angle - 90);
         _player = player;
 
@@ -40,23 +44,29 @@ public class BladeProjectile : NetworkBehaviour
         //StartCoroutine(DieOnDistance());
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter(Collider collision)
     {
         Debug.LogWarning("BladeProjectile. TriggerEnter()!!");
         if (!_canPull)
             return;
-        if(collision.gameObject.CompareTag("Obstacle"))
+
+        if (((1 << collision.gameObject.layer) & _obstacleLayers.value) != 0)
         {
-            if (_type == default)
+            Debug.Log($"BladeProjectile hit OBSTACLE: {collision.gameObject.name}");
+
+            if (_type == ChainbladeType.Default)
+            {
                 Destroy(gameObject);
+            }
+
             SendInfo(null);
             _canPull = false;
-
-
+            return;
         }
-        if(/*collision.gameObject.layer == _layerMask*/  collision.gameObject.CompareTag("Enemies") && collision.TryGetComponent<Health>(out Health enemyhealth))
+
+        if (((1 << collision.gameObject.layer) & _layerMask.value) != 0)
         {
-            //enemyhealth.TryTakeDamage(10, DamageType.Physical, AttackRangeType.RangeAttack);
+            Debug.Log("HIT LAYER MASK");
             SendInfo(collision.gameObject);
             HitPerfomed();
             _canPull = false;
@@ -67,10 +77,10 @@ public class BladeProjectile : NetworkBehaviour
     {
         OnHit?.Invoke(target);
     }
-    public void ThrowBlade(Vector2 endPoint)
+    public void ThrowBlade(Vector3 endPoint)
     {
-        _rb = GetComponent<Rigidbody2D>();
-        _rb.AddForce(_direction  * throwForce, ForceMode2D.Impulse);
+        _rb = GetComponent<Rigidbody>();
+        _rb.AddForce(/*_direction * */new Vector3(_direction.x, 0, _direction.z) * throwForce, /*ForceMode2D.Impulse*/ ForceMode.Impulse);
     }
 
     private void HitPerfomed() 
@@ -104,10 +114,10 @@ public class BladeProjectile : NetworkBehaviour
     }
     private IEnumerator DieOnDistance()
     {
-        float distance = Vector2.Distance(transform.position, startPosition);
+        float distance = Vector3.Distance(transform.position, startPosition);
         while(distance < _maxDistance)
         {
-            distance = Vector2.Distance(transform.position, startPosition);
+            distance = Vector3.Distance(transform.position, startPosition);
             yield return null;
         }
         if (_type == ChainbladeType.Hook)

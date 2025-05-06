@@ -69,7 +69,7 @@ public class AbilityPanel : MonoBehaviour
         _playerAbilities.SkillRemoved += OnSkillRemoved;
     }
 
-    private void UpdatePanel()
+    public void UpdatePanel()
     {
         ClearPanel();
         Fill(_currentCharacter.Abilities);

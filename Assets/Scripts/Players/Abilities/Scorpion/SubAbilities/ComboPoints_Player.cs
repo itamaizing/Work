@@ -11,7 +11,6 @@ public class ComboPoints_Player : Resource
 
     //[SerializeField] protected int _value;
     //[SerializeField] protected int _maxValue;
-    [SerializeField] private ComboBar_Prefab _comboBar;
     //[SyncVar(hook = nameof(HookMaxValueChanged))]
     //new protected float _maxValue = 3;
     public int ComboAbilities {  get; private set; }
@@ -26,7 +25,6 @@ public class ComboPoints_Player : Resource
         _currentValue = 0;
 
         //visualize
-        _comboBar.Clear();
     }
     public override void Add(float value)
     {

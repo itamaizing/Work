@@ -8,6 +8,7 @@ public class DarkShield : AbstractCharacterState
     private float _maxDamagePerTick;
     private float _duration;
     private Health _healthComponent;
+    private GameObject _darkShield;
 
     private Coroutine _damageCoroutine;
 
@@ -27,6 +28,12 @@ public class DarkShield : AbstractCharacterState
         {
             _healthComponent.DamageTaken += HandleDamageTaken;
         }
+
+        if (_characterState.StateEffects.DarkShield != null)
+        {
+            _darkShield = _characterState.StateEffects.DarkShield;
+            _darkShield.SetActive(true);
+        }
     }
 
     public override void ExitState()
@@ -42,6 +49,7 @@ public class DarkShield : AbstractCharacterState
             _healthComponent.DamageTaken -= HandleDamageTaken;
         }
 
+        if (_darkShield != null) _darkShield.SetActive(false);
         _characterState.RemoveState(this);
     }
 
@@ -66,7 +74,7 @@ public class DarkShield : AbstractCharacterState
         var damageToTake = new Damage { Value = damageToApply };
 
         _healthComponent.CmdTryTakeDamage(damageToTake, null);
-        _healthComponent.GetComponent<Character>().DamageTracker.AddDamage(damageToTake, isServerRequest: true);
+        _healthComponent.GetComponent<Character>().DamageTracker.AddDamage(damageToTake, null, isServerRequest: true);
     }
 
     public override bool Stack(float time)

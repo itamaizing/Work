@@ -16,7 +16,7 @@ public class InputHandler : MonoBehaviour
 
 	public Vector2 MovementVector => _movementVector;
 
-    public StandardInput InputActions { get => _inputActions; set => _inputActions = value; }
+	public StandardInput InputActions { get => _inputActions; set => _inputActions = value; }
 
 	#region Events
 
@@ -92,7 +92,7 @@ public class InputHandler : MonoBehaviour
 		_inputActions.GameplayMap.Spell2.performed += i => OnSecondAbility?.Invoke();
 		_inputActions.GameplayMap.Spell3.performed += i => OnThirdAbility?.Invoke();
 		_inputActions.GameplayMap.Spell4.performed += i => OnFourthAbility?.Invoke();
-		_inputActions.GameplayMap.Spell5.performed += i=> OnFifthAbility?.Invoke();
+		_inputActions.GameplayMap.Spell5.performed += i => OnFifthAbility?.Invoke();
 		_inputActions.GameplayMap.Spell6.performed += i => OnSixthAbility?.Invoke();
 		_inputActions.GameplayMap.Spell7.performed += i => OnSeventhAbility?.Invoke();
 		_inputActions.GameplayMap.Spell8.performed += i => OnEighthAbility?.Invoke();

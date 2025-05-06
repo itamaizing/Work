@@ -40,8 +40,8 @@ public class PoisonSlap : Skill
 
     private int _poisonBoneStack;
 
-    private float _creeperStrikeCastSpeedMultiplier = 0.5f; // Decrease CastTime on 50%
-    private float _lightningStrikesCastSpeedMultiplier = 0.0f;  // Decrease CastTime on 100%
+    private float _creeperStrikeCastSpeedMultiplier = 0.5f;
+    private float _lightningStrikesCastSpeedMultiplier = 0.0f;
     private float _baseTimeCast = 1.6f;
     private float _baseDamage = 30f;
     private float _distancePush = 3.0f;
@@ -53,12 +53,18 @@ public class PoisonSlap : Skill
     private bool _firstClickDone = false;
     private bool _secondClickDone;
     private bool _isUsedPoisonBallCharger = true;
-    protected override int AnimTriggerCast => 0;
+
+    private static readonly int poisonSlapTrigger = Animator.StringToHash("PoisonSlapCastAnimTrigger");
+
+
+    protected override int AnimTriggerCast => poisonSlapTrigger;
     protected override int AnimTriggerCastDelay => 0;
     public int PoisonBoneStack { get => _poisonBoneStack; set => _poisonBoneStack = value; }
-    public bool IsCanDamageDeal { get => _isCanDamageDeal; }
+    public bool IsCanDamageDeal { get => _isCanDamageDeal; set => _isCanDamageDeal = value; }
 
     protected override bool IsCanCast => CheckCanCast();
+
+    public event System.Action OnPoisonSlapEnd;
 
     #endregion
 
@@ -71,12 +77,17 @@ public class PoisonSlap : Skill
 
     public void AnimPoisonSlapCast()
     {
-
+        AnimStartCastCoroutine();
     }
 
     public void AnimPoisonSlapCastEnded()
     {
+        AnimCastEnded();
+    }
 
+    public void SetTarget(Character target)
+    {
+        _currentTarget = target;
     }
 
     public void UsePoisonSlapOfLightningMovement()
@@ -86,6 +97,11 @@ public class PoisonSlap : Skill
         DamageDealOfLightningMovement();
     }
 
+    public void ClearDataPoisonSlap()
+    {
+        ClearData();
+        StopAutoDraw();
+    }
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         Debug.LogError("TargetDataError");
@@ -189,7 +205,7 @@ public class PoisonSlap : Skill
                 else
                 {
                     _isUsedPoisonBallCharger = true;
-                    _castDeley = _baseTimeCast;
+                    //_castDeley = _baseTimeCast;
                 }
                 break;
 
@@ -205,7 +221,7 @@ public class PoisonSlap : Skill
                 else
                 {
                     _isUsedPoisonBallCharger = true;
-                    _castDeley = _baseTimeCast;
+                    //_castDeley = _baseTimeCast;
                 }
                 break;
         }
@@ -348,7 +364,7 @@ public class PoisonSlap : Skill
 
         float _timeCastFromCreeperStrike = _baseTimeCast * _creeperStrikeCastSpeedMultiplier;
 
-        _castDeley = _timeCastFromCreeperStrike;
+        //_castDeley = _timeCastFromCreeperStrike;
         Debug.Log("PoisonSlap / CastSpeedFromCreeperStrike / castDeley = " + _castDeley);
     }
 
@@ -356,7 +372,7 @@ public class PoisonSlap : Skill
     {
         float _timeCastFromLightningStrikes = _baseTimeCast * _lightningStrikesCastSpeedMultiplier;
 
-        _castDeley = _timeCastFromLightningStrikes;
+        //_castDeley = _timeCastFromLightningStrikes;
         Debug.Log("PoisonSlap / CastSpeedFromLightningStrikes / castDeley = " + _castDeley);
     }
 
@@ -390,6 +406,8 @@ public class PoisonSlap : Skill
 
             PushTarget(target, _distancePush, _durationPush, _isPushTargetAllowed);
         }
+
+        OnPoisonSlapEnd?.Invoke();
     }
 
     public void DamageDealOfLightningMovement()
@@ -465,14 +483,19 @@ public class PoisonSlap : Skill
         Vector2 directionPush = (target.transform.position - transform.position);
 
         distancePush = ((distancePush * GlobalVariable.cellSize) * durationPush) / GlobalVariable.cellSize;
-        if (isCanPushTarget)
+
+        if (targetMoveComponent.connectionToClient != null)
         {
-            targetMoveComponent.TargetRpcDoMove((Vector2)target.transform.position + directionPush * distancePush, durationPush);
+            if (isCanPushTarget) targetMoveComponent.TargetRpcDoMove((Vector2)target.transform.position + directionPush * distancePush, durationPush);
+            else targetMoveComponent.TargetRpcDoMove((Vector2)target.transform.position - directionPush * distancePush, durationPush);
         }
+
         else
         {
-            targetMoveComponent.TargetRpcDoMove((Vector2)target.transform.position - directionPush * distancePush, durationPush);
+            if (isCanPushTarget) targetMoveComponent.RpcDoMove((Vector2)target.transform.position + directionPush * distancePush, durationPush);
+            else targetMoveComponent.RpcDoMove((Vector2)target.transform.position - directionPush * distancePush, durationPush);
         }
+
     }
 
     [Command]
@@ -494,7 +517,8 @@ public class PoisonSlap : Skill
 
         distancePush = ((distancePush * GlobalVariable.cellSize) * durationPush) / GlobalVariable.cellSize;
 
-        targetMoveComponent.TargetRpcDoMove(target.transform.position + perpendicularDirection * distancePush, durationPush);
+        if (targetMoveComponent.connectionToClient != null) targetMoveComponent.TargetRpcDoMove(target.transform.position + perpendicularDirection * distancePush, durationPush);
+        else targetMoveComponent.RpcDoMove(target.transform.position + perpendicularDirection * distancePush, durationPush);
     }
 
 

@@ -16,6 +16,7 @@ public class IceCloud : Skill
 	//private bool _enabled;
 	private AudioSource _audioSource;
 	private bool _boostDmg;
+	private bool _lastHit;
 	private Energy _energy;
 	private bool _frozwenTalent;
 	private Character _target;
@@ -34,7 +35,7 @@ public class IceCloud : Skill
 
 	protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => Animator.StringToHash("IceCloud");
+	protected override int AnimTriggerCast => Animator.StringToHash("IceCloud");
 
 	//private bool IsCanCastCheck()
 	//{
@@ -73,11 +74,7 @@ public class IceCloud : Skill
 
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
-		if( _combo.MakeHit(null, AbilityForm.Magic, 1, 0, 0))
-		{
-			Debug.LogError("some talents i guess in ice cloud");
-			//_playerLinks.RuneComponent.IceCloudBonus();
-		}
+		if (_combo.MakeHit(null, AbilityForm.Magic, 1, 0, 0)) _lastHit = true;
 
 		Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);
 
@@ -93,7 +90,7 @@ public class IceCloud : Skill
 		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, -angle, 0));
 		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
 		projectile.Init(_playerLinks, manaValue, false, this);
-		projectile.Talent(_boostDmg, _frozwenTalent);
+		projectile.Talent(_boostDmg, _frozwenTalent, _lastHit);
 
 		NetworkServer.Spawn(projectile.gameObject);
 
@@ -157,6 +154,7 @@ public class IceCloud : Skill
 	protected override IEnumerator CastJob()
 	{
 		Shoot();
+		Hero.Move.CanMove = true;
 		yield return null;
 	}
 
@@ -173,11 +171,11 @@ public class IceCloud : Skill
 
 	public void IceCloudsEnd()
 	{
-		AnimCastEnded();		
+		AnimCastEnded();
 	}
 
 	public void StopMove()
 	{
-		//_move.CanMove = false;
+		Hero.Move.CanMove = false;
 	}
 }

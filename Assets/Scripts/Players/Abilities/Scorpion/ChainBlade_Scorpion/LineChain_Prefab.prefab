@@ -52,7 +52,6 @@ MonoBehaviour:
   _startTarget: {fileID: 0}
   target: {fileID: 0}
   num: 0
-  me: {fileID: 0}
   targetID: 0
   parentID: 0
 --- !u!120 &8072426551103348916
@@ -156,7 +155,7 @@ LineRenderer:
     shadowBias: 0.5
     generateLightingData: 0
   m_MaskInteraction: 0
-  m_UseWorldSpace: 1
+  m_UseWorldSpace: 0
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
 --- !u!114 &7721353371233044629
