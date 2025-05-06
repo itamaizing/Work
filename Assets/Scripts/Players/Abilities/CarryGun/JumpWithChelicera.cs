@@ -94,12 +94,6 @@ public class JumpWithChelicera : Skill
 
         CmdExecuteJump(_player.gameObject, _target.gameObject, direction, _additionalDamageInPercentage);
 
-        if (_cheliceraeStrike != null && _cheliceraeStrike.IsCooldowned && !_cheliceraeStrike.Disactive)
-        {
-            _cheliceraeStrike.SetTarget(_target);
-            _cheliceraeStrike.TryCast();
-        }
-
         Invoke(nameof(ResetBool), 1f);
     }
 
@@ -228,6 +222,8 @@ public class JumpWithChelicera : Skill
         {
             jumpEndAnimPlayed = true;
             RpcHandleJumpAnimEnd();
+
+            if (target != null && !target.IsDead && _cheliceraeStrike != null && _cheliceraeStrike.IsCooldowned && !_cheliceraeStrike.Disactive) RpcCheliceraeStrike(target);
         }
     }
 
@@ -243,10 +239,10 @@ public class JumpWithChelicera : Skill
         if (_target != null && !_disactive) return;
     }
 
-    //[ClientRpc]
-    //private void RpcCheliceraeStrike(Character target)
-    //{
-    //    _cheliceraeStrike.SetTarget(target);
-    //    _cheliceraeStrike.TryCast();
-    //}
+    [ClientRpc]
+    private void RpcCheliceraeStrike(Character target)
+    {
+        _cheliceraeStrike.SetTarget(target);
+        _cheliceraeStrike.CheliceraStrikeCast();
+    }
 }
