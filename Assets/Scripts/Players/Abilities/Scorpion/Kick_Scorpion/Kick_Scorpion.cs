@@ -133,4 +133,9 @@ public class Kick_Scorpion : AutoAttackSkill
     {
         throw new System.NotImplementedException();
     }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        throw new System.NotImplementedException();
+    }
 }

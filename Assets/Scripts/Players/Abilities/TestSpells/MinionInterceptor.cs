@@ -45,6 +45,7 @@ public class MinionInterceptor : Skill
         }
         TargetInfo targetInfo = new();
         targetInfo.Targets.Add(_target);
+        callbackDataSaved?.Invoke(targetInfo);
     }
 
     [Command]

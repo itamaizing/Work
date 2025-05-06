@@ -86,9 +86,8 @@ public class TalentsGroup
                 activeCount++;
             }
         }
-        //Debug.Log(activeCount);
+        
         activeCount = isDecrease ? activeCount - 1 : activeCount;
-
         bonus += row switch
         {
             0 => activeCount == 0 ? 0 : activeCount == 1 ? 1 : activeCount == 2 ? 2 : 0,
@@ -96,7 +95,6 @@ public class TalentsGroup
             2 => activeCount == 0 ? 0 : activeCount == 1 ? 0 : activeCount == 2 ? 1 : 0,
             _ => 0
         };
-
         return bonus;
     }
     
