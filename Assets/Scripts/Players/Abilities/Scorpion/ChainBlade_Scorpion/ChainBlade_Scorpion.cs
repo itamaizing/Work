@@ -243,9 +243,4 @@ public class ChainBlade_Scorpion : Skill
     {
         throw new NotImplementedException();
     }
-
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        throw new NotImplementedException();
-    }
 }
