@@ -658,7 +658,7 @@ MonoBehaviour:
   syncInterval: 0
   _gameMode: 1
   _scene: Assets/Scenes/TestRoom3D(Test).unity
-  _maxPlayers: 1
+  _maxPlayers: 2
   _gameRulesPref: {fileID: 2624942693930062612, guid: 9c3ab8f1c5352c34ea72aeec43bb21be, type: 3}
 --- !u!114 &572863235
 MonoBehaviour:
@@ -687,6 +687,7 @@ MonoBehaviour:
   - {fileID: 2483674839823445686, guid: 4c3c788ff06ea9f48abda93ece76c4e3, type: 3}
   - {fileID: 8782633265950416607, guid: 66af4295160d8ef47ac761be1372ec59, type: 3}
   - {fileID: 5458554383432203635, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+  - {fileID: 4534754468497973439, guid: ff1c8ecb71d19674e8778e3d04716b40, type: 3}
   _menuEnv: {fileID: 228420900}
 --- !u!114 &572863236
 MonoBehaviour:
