@@ -43,14 +43,9 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
         int currentStacks = enemy.CharacterState.CheckStateStacks(States.ComboState);
         int maxStacks = enemy.CharacterState.GetState(States.ComboState)?.MaxStacksCount ?? int.MaxValue;
 
-        if (currentStacks >= maxStacks)
-        {
-            //RpcPlayParticles("NoCharges");
-            return;
-        }
+        if (currentStacks >= maxStacks) return;
 
-        if (_currentTarget == null)
-            _currentTarget = enemy;
+        if (_currentTarget == null) _currentTarget = enemy;
 
         if (_currentTarget != enemy)
         {
@@ -58,64 +53,35 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
             _currentTarget = enemy;
         }
 
-        if (!TryAddSkill(skill))
-        {
-            //RpcPlayParticles("NoCharges");
-            return;
-        }
-
-        //RpcPlayParticles("AddStack");
+        _usedSkills.Add(skill);
         StartOrRestartComboTimer();
 
-        if (_usedSkills.Count < 3)
-            return;
+        if (_usedSkills.Count < 3) return;
 
         var lastThreeHits = _usedSkills.Skip(Mathf.Max(0, _usedSkills.Count - 3)).ToList();
 
-        var groupedSkills = lastThreeHits
-            .GroupBy(s => s)
-            .OrderByDescending(g => g.Count())
-            .ToList();
-        if (groupedSkills.Count == 1 && groupedSkills[0].Count() == 3) return;
+        if (lastThreeHits.All(s => s == lastThreeHits[0])) return;
 
-        if (groupedSkills.Count == 2 &&
-            groupedSkills[0].Count() == 2 &&
-            groupedSkills[1].Count() == 1)
+        var grouped = lastThreeHits.GroupBy(s => s).ToDictionary(g => g.Key, g => g.Count());
+
+        foreach (var pair in grouped)
         {
-            Skill skillWithTwoHits = groupedSkills[0].Key;
-            Skill skillWithOneHit = groupedSkills[1].Key;
+            Skill usedSkill = pair.Key;
+            int requiredCharges = pair.Value;
 
-            UseCharges(skillWithTwoHits, 2);
-            UseCharges(skillWithOneHit, 1);
-
-            RpcPlayParticles("FullCombo");
-
-            CastDebuff(enemy.transform, lastThreeHits.Last());
-            ApplyComboState(enemy);
-            AddComboPoint();
-
-            ResetCounter();
-            return;
+            if (usedSkill.Chargers < requiredCharges) return;
         }
 
-        if (groupedSkills.Count == 3 &&
-            groupedSkills.All(g => g.Count() == 1))
+        foreach (var pair in grouped)
         {
-            foreach (var group in groupedSkills)
-            {
-                Skill uniqueSkill = group.Key;
-                UseCharges(uniqueSkill, 1);
-            }
-
-            RpcPlayParticles("FullCombo");
-
-            CastDebuff(enemy.transform, lastThreeHits.Last());
-            ApplyComboState(enemy);
-            AddComboPoint();
-
-            ResetCounter();
-            return;
+            UseCharges(pair.Key, pair.Value);
         }
+
+        RpcPlayParticles("FullCombo");
+        CastDebuff(enemy.transform, lastThreeHits.Last());
+        ApplyComboState(enemy);
+        AddComboPoint();
+        ResetCounter();
     }
 
 
@@ -219,7 +185,7 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
         if (lastSkillUsed == GetSkillByName("Punch"))
         {
             Debug.Log("Debuff: Stun");
-            //enemy.GetComponent<CharacterState>()?.AddState(States.Stun, 1f, 0, _hero.gameObject, "Punch");
+            enemy.GetComponent<CharacterState>()?.AddState(States.Stun, 1f, 0, _hero.gameObject, "Punch");
         }
         else if (lastSkillUsed == GetSkillByName("Kick"))
         {
@@ -231,7 +197,7 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
             Debug.Log("ChainBlade Effect");
         }
 
-        //enemy.GetComponent<CharacterState>()?.AddState(States.ScorchedSoul, 6f, 100f, _hero.gameObject, nameof(PassiveCombo_Scorpion));
+        enemy.GetComponent<CharacterState>()?.AddState(States.ScorchedSoul, 6f, 100f, _hero.gameObject, nameof(PassiveCombo_Scorpion));
     }
 
     private void ApplyComboState(Character enemy)
