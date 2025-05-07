@@ -3886,7 +3886,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     IsOpen: 0
-    Description: 
+    Description: Kick_scorpion Talent
     Icon: {fileID: 21300000, guid: 4544b6e08fc609244b20d914b4f319db, type: 3}
   character: {fileID: 5458554383432203635}
   kick_Scorpion: {fileID: 8920276347339243132}
@@ -3904,7 +3904,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     IsOpen: 0
-    Description: 
+    Description: Kick_scorpionCombo Talent
     Icon: {fileID: 21300000, guid: b4598f5c0e01ded42b804ca9cfad5607, type: 3}
   character: {fileID: 5458554383432203635}
   kick_Scorpion: {fileID: 8920276347339243132}
@@ -3922,7 +3922,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     IsOpen: 0
-    Description: 
+    Description: CleavingBlade_Scorpion Talent
     Icon: {fileID: 21300000, guid: 11f1db086077e5948b297f6fc7bc9134, type: 3}
   character: {fileID: 5458554383432203635}
   cleavingBlade_Scorpion: {fileID: 1485408660127300276}
@@ -3940,7 +3940,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     IsOpen: 0
-    Description: 
+    Description: Teleportation_Scorpion Mag Resist
     Icon: {fileID: 21300000, guid: 697d19f58497c2c42834a105e64550ae, type: 3}
   character: {fileID: 5458554383432203635}
   teleportation_Scorpion: {fileID: 3741212121368607163}
@@ -3958,7 +3958,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     IsOpen: 0
-    Description: 
+    Description: ConsumeCombo_Scorpion Physic State Clear Talent
     Icon: {fileID: 21300000, guid: 8c770b12fbc302442b33015919bd02a0, type: 3}
   character: {fileID: 5458554383432203635}
   consume: {fileID: 8732005787551451527}

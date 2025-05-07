@@ -31,9 +31,11 @@ public class ConsumeCombo_Scorpion : Skill
         var stateManager = targetCharacter.CharacterState;
         if (stateManager == null) return;
 
-        if (!stateManager.CheckForState(States.ComboState))
+        var comboState = stateManager.GetState(States.ComboState) as ComboState;
+        if (comboState == null || comboState.CurrentStacksCount <= 0)
         {
-            _comboTargetsQueue.Add(targetCharacter);
+            if (!_comboTargetsQueue.Contains(targetCharacter))
+                _comboTargetsQueue.Add(targetCharacter);
         }
 
         stateManager.AddState(States.ComboState, float.PositiveInfinity, 0f, _hero.gameObject, nameof(ConsumeCombo_Scorpion));

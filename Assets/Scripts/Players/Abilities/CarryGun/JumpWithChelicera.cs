@@ -83,7 +83,6 @@ public class JumpWithChelicera : Skill
 
     private void ExecuteJump()
     {
-        _cheliceraeStrike.OnCheliceraStrikeEnd += HandleCheliceraStrikeEnd;
         _isJumpDone = true;
 
         float distanceToTarget = Vector2.Distance(_target.transform.position, _player.transform.position);
@@ -113,12 +112,6 @@ public class JumpWithChelicera : Skill
     private void ResetBool()
     {
         _isJumpDone = false;
-    }
-
-    private void HandleCheliceraStrikeEnd()
-    {
-        _cheliceraeStrike.ClearDataCheliceraStrike();
-        _cheliceraeStrike.OnCheliceraStrikeEnd -= HandleCheliceraStrikeEnd;
     }
 
     public void JumpCast()
@@ -244,5 +237,6 @@ public class JumpWithChelicera : Skill
     {
         _cheliceraeStrike.SetTarget(target);
         _cheliceraeStrike.CheliceraStrikeCast();
+        _cheliceraeStrike.ClearDataCheliceraStrike();
     }
 }
