@@ -70,6 +70,7 @@ public class JumpWithChelicera : Skill
 
         TargetInfo targetInfo = new();
         targetInfo.Targets.Add(_target);
+        targetInfo.Points.Add(_mousePosition);
         callbackDataSaved(targetInfo);
     }
 
@@ -229,7 +230,8 @@ public class JumpWithChelicera : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (_target != null && !_disactive) return;
+        _target = (Character)targetInfo.Targets[0];
+        _mousePosition = targetInfo.Points[0];
     }
 
     [ClientRpc]
