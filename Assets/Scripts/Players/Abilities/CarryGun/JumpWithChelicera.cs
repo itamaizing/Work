@@ -105,8 +105,8 @@ public class JumpWithChelicera : Skill
 
     private bool CheckCanCast()
     {
-        return _target != null && Vector2.Distance(_mousePosition, transform.position) <= Radius &&
-               NoObstacles(_mousePosition, _obstacle);
+        return _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius &&
+               NoObstacles(_target.transform.position, _obstacle);
     }
 
     private void ResetBool()
