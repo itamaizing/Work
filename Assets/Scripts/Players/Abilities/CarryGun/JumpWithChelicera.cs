@@ -51,6 +51,15 @@ public class JumpWithChelicera : Skill
     {
         _castDeley = _delayBeforeJump;
 
+        if (_target != null)
+        {
+            TargetInfo targetInfo = new();
+            targetInfo.Targets.Add(_target);
+            targetInfo.Points.Add(_mousePosition);
+            callbackDataSaved(targetInfo);
+            yield break;
+        }
+
         while (_target == null && float.IsPositiveInfinity(_mousePosition.x))
         {
             if (GetMouseButton)
@@ -68,10 +77,10 @@ public class JumpWithChelicera : Skill
             yield return null;
         }
 
-        TargetInfo targetInfo = new();
-        targetInfo.Targets.Add(_target);
-        targetInfo.Points.Add(_mousePosition);
-        callbackDataSaved(targetInfo);
+        TargetInfo info = new();
+        info.Targets.Add(_target);
+        info.Points.Add(_mousePosition);
+        callbackDataSaved(info);
     }
 
     protected override IEnumerator CastJob()
@@ -230,8 +239,13 @@ public class JumpWithChelicera : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
+        if (targetInfo == null || targetInfo.Targets == null || targetInfo.Targets.Count == 0 || targetInfo.Targets[0] == null) return;
+
         _target = (Character)targetInfo.Targets[0];
         _mousePosition = targetInfo.Points[0];
+        _isTarget = true;
+        _player.Move.LookAtTransform(_target.transform);
+        _isCanCancle = false;
     }
 
     [ClientRpc]

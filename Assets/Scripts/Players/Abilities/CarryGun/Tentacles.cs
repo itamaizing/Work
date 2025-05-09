@@ -104,6 +104,12 @@ public class Tentacles : Skill
 
             if (GetMouseButton)
             {
+                if (!IsCooldowned)
+                {
+                    yield return null;
+                    continue;
+                }
+
                 if (Physics.SphereCast(ray, sphereRadius, out hit, maxDistance, _obstacle))
                 {
                     yield return null;

@@ -35,7 +35,7 @@ public class UIPlayerComponents : MonoBehaviour
         _character.Health.DamageTaken += OnDamageTaken;
         _character.Health.ShieldDamageTaken += OnShieldDamageTaken;
         _character.Health.OnShieldAdd += OnShieldAdded;
-        _damageTracker.OnHealTracked += OnHealTracked;
+        _character.Health.HealTaked += OnHealTaked;
 
         foreach (var ability in _character.Abilities.Abilities)
         {
@@ -52,7 +52,7 @@ public class UIPlayerComponents : MonoBehaviour
         _character.Health.DamageTaken -= OnDamageTaken;
         _character.Health.ShieldDamageTaken -= OnShieldDamageTaken;
         _character.Health.OnShieldAdd -= OnShieldAdded;
-        _damageTracker.OnHealTracked -= OnHealTracked;
+        _character.Health.HealTaked -= OnHealTaked;
 
         foreach (var ability in _character.Abilities.Abilities)
         {

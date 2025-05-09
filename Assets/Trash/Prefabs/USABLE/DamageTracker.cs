@@ -40,8 +40,14 @@ public class DamageTracker : NetworkBehaviour
         
         _healEntries.Add(new HealEntry(heal, Time.time));
         RemoveOldServerEntries();
-        Debug.Log($"[DamageTracker] Heal added: {heal.Value}, Time: {Time.time}");
+        Debug.Log($"[DamageTracker] Heal added: {heal.Value}, Time: {Time.time},  name: {this.name}");
 
+        RpcOnHealTracked(heal);
+    }
+
+    [ClientRpc]
+    private void RpcOnHealTracked(Heal heal)
+    {
         OnHealTracked?.Invoke(heal);
     }
     
@@ -49,7 +55,7 @@ public class DamageTracker : NetworkBehaviour
     private void CmdAddHeal(Heal heal)
     {
         AddHeal(heal, true);
-        Debug.Log($"[DamageTracker] Heal added: {heal.Value}, Time: {Time.time}");
+        Debug.Log($"[DamageTracker] Heal added: {heal.Value}, Time: {Time.time},  name: {this.name}");
     }
     
     public float GetLocalDamageInTime(Schools school, float time)

@@ -88,9 +88,8 @@ public class Health : Resource, IDamageable, IHealingable
 
     public void Heal(ref Heal heal, string sourceName, Skill skill = null)
     {
-        //ClientRpcHealTaked(heal.Value, skill, sourceName);
+        ClientRpcHealTaked(heal.Value, skill, sourceName);
         Add(heal.Value);
-        HealTaked?.Invoke(heal.Value, skill, sourceName);
     }
 
     public void SetEvadeMagic(float value)
