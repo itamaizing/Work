@@ -305,8 +305,5 @@ public class Tentacles : Skill
         tentacleObject.GetComponent<TentacleProjectile>().Init(_player, target, position, target.transform.position, true, _spentAttackingPsiEnergy, this);
     }
 
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        throw new NotImplementedException();
-    }
+    public override void LoadTargetData(TargetInfo targetInfo) => throw new NotImplementedException();
 }

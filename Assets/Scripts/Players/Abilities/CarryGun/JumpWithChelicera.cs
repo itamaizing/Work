@@ -85,13 +85,10 @@ public class JumpWithChelicera : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_isTarget && _target != null)
-            ExecuteJump();
-
         yield return null;
     }
 
-    private void ExecuteJump()
+    public void ExecuteJump()
     {
         _isJumpDone = true;
 
@@ -102,8 +99,6 @@ public class JumpWithChelicera : Skill
         Vector3 direction = (_target.transform.position - transform.position).normalized;
 
         CmdExecuteJump(_player.gameObject, _target.gameObject, direction, _additionalDamageInPercentage);
-
-        Invoke(nameof(ResetBool), 1f);
     }
 
     //private float NormalizeDistance(float distance)
@@ -131,6 +126,7 @@ public class JumpWithChelicera : Skill
 
     public void JumpEnd()
     {
+        Invoke(nameof(ResetBool), 1f);
         HandleJumpEnd();
         ClearData();
         AnimCastEnded();
@@ -138,6 +134,7 @@ public class JumpWithChelicera : Skill
 
     public void ApplyRootTrue()
     {
+        IncreaseSetCooldown(CooldownTime);
         Hero.Move.CanMove = false;
         _animator.applyRootMotion = true;
     }

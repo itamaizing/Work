@@ -9108,7 +9108,7 @@ MonoBehaviour:
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
-  _duration: 0.5
+  _duration: 5
   effectPrefab: {fileID: 4237222475278126921, guid: 2d76beef07956e948946e409a372473d, type: 3}
   _reducedCooldown: 0
   audioClip: {fileID: 8300000, guid: 0e697ad5442a11a4990c66e9b6fb2e18, type: 3}

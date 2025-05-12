@@ -192,7 +192,7 @@ public class Silence : Skill
         }
 
         Debug.Log(_duration);
-        targetState.AddState(States.Silent, _duration, 0, Hero.gameObject, this.name);
+        targetState.AddState(States.LightShield, _duration, 125, Hero.gameObject, this.name);
     }
 
     [Command]
