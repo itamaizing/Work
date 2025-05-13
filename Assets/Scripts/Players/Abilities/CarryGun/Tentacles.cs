@@ -9,6 +9,7 @@ public class Tentacles : Skill
 {
     [SerializeField] private Character _player;
     [SerializeField] private TentacleProjectile tentaclesPrefab;
+    [SerializeField] private ÑocoonProjectile cocoonPrefab;
     [SerializeField] private TentacleProjectile tentaclesPreview;
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
     [SerializeField] private LayerMask groundLayer;
@@ -87,8 +88,22 @@ public class Tentacles : Skill
                         _previewInstancePrefab.IsPreview = false;
 
                         yield return new WaitForSeconds(0.1f);
-                        break;
                     }
+                }
+
+                else
+                {
+                    _spawnPoint = hitTarget.point;
+
+                    TargetInfo groundInfo = new TargetInfo();
+                    groundInfo.Points.Add(_spawnPoint);
+                    callbackDataSaved(groundInfo);
+
+                    TrySpendAttackingPsi();
+                    if (_previewInstance != null) Destroy(_previewInstance.gameObject);
+                    if (_previewInstancePrefab != null) Destroy(_previewInstancePrefab.gameObject);
+                    _skillRender.StopDrawRadius();
+                    yield break;
                 }
             }
 
@@ -195,7 +210,9 @@ public class Tentacles : Skill
     protected override IEnumerator CastJob()
     {
         if (!IsValidVector(_spawnPoint)) yield break;
+
         if (_target != null) CmdSpawnTentacles(_spawnPoint, _target, _spentAttackingPsiEnergy);
+        else CmdSpawnCocoon(_spawnPoint);
 
         ClearData();
         _skillRender.StopDrawRadius();
@@ -266,6 +283,18 @@ public class Tentacles : Skill
             _spentAttackingPsiEnergy = _attackingPsionicEnergy.CurrentValue;
             CmdUseAttackingEnergy(_attackingPsionicEnergy.CurrentValue);
         }
+    }
+
+    [Command]
+    private void CmdSpawnCocoon(Vector3 position)
+    {
+        if (!IsValidVector(position)) return;
+
+        ÑocoonProjectile cocoon = Instantiate(cocoonPrefab, position, Quaternion.identity);
+        SceneManager.MoveGameObjectToScene(cocoon.gameObject, _hero.NetworkSettings.MyRoom);
+
+        cocoon.Init(_player, position, this);
+        NetworkServer.Spawn(cocoon.gameObject);
     }
 
     [Command]

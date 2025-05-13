@@ -8095,6 +8095,7 @@ MonoBehaviour:
   _earlyCooldown: 0
   _player: {fileID: 8319872899575431858}
   tentaclesPrefab: {fileID: 6610701520137683841, guid: d14badff952bb714c90f1fd43e07201c, type: 3}
+  cocoonPrefab: {fileID: 8346047905158623037, guid: 9c6763b6e0ea3964e94b039be4fc97b5, type: 3}
   tentaclesPreview: {fileID: 6610701520137683841, guid: e433350a5f6dd4446b1ae7716a074700, type: 3}
   _attackingPsionicEnergy: {fileID: 1487487552333656207}
   groundLayer:
