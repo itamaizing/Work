@@ -6645,6 +6645,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0.042003796
       objectReference: {fileID: 0}
+    - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _allyPrefab
+      value: 
+      objectReference: {fileID: 6271332717105215193, guid: 8ff2c2f4f50e6834ebff05e5a40c88be, type: 3}
     - target: {fileID: 556128977287844779, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.0404512
@@ -7854,6 +7858,17 @@ MonoBehaviour:
     Icon: {fileID: 21300000, guid: b453e03083e173e4b81acdc55b40633f, type: 3}
   character: {fileID: 8319872899575431858}
   cheliceraStrike: {fileID: 640134254429411212}
+--- !u!114 &4260348460032838645 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 4418744079295177997}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5311042088619458913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25397801c5beb30488b57202e0ad634f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &4827660954718149595 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -8095,12 +8110,12 @@ MonoBehaviour:
   _earlyCooldown: 0
   _player: {fileID: 8319872899575431858}
   tentaclesPrefab: {fileID: 6610701520137683841, guid: d14badff952bb714c90f1fd43e07201c, type: 3}
-  cocoonPrefab: {fileID: 8346047905158623037, guid: 9c6763b6e0ea3964e94b039be4fc97b5, type: 3}
   tentaclesPreview: {fileID: 6610701520137683841, guid: e433350a5f6dd4446b1ae7716a074700, type: 3}
   _attackingPsionicEnergy: {fileID: 1487487552333656207}
   groundLayer:
     serializedVersion: 2
     m_Bits: 8192
+  _spawnComponent: {fileID: 4260348460032838645}
 --- !u!114 &1791349742383392303
 MonoBehaviour:
   m_ObjectHideFlags: 0
