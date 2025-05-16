@@ -210,13 +210,12 @@ public class SkillManager : MonoBehaviour
 
     private void CancelSkillCast()
     {
-        if (_selectedSkill != null && _selectedSkill.IsPreparing)
+        if (_selectedSkill != null && (_selectedSkill.IsPreparing || _selectedSkill.IsCasting))
         {
-            _selectedSkill.TryCancel();
-
-            if(_selectedSkill is AutoAttackSkill aa)
-                DeselectSkill();
+            _selectedSkill.TryCancel(true);
+            DeselectSkill();
         }
+
         else if (SkillQueue.IsBusy)
         {
             SkillQueue.TryCancel();
@@ -229,10 +228,11 @@ public class SkillManager : MonoBehaviour
         {
             SkillQueue.TryCancel();
         }
-        /*else if(_selectedSkill != null)
+
+        else if(_selectedSkill != null)
         {
             DeselectSkill();
-        }*/ // not need now, but not deleted
+        }
     }
 
     private void OnCastSelect(int index)

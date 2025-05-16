@@ -1752,11 +1752,11 @@ PrefabInstance:
     - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _allyPrefab
       value: 
-      objectReference: {fileID: 1871163040516354185, guid: 4db2764b76e857542a0c6ea889e2db7c, type: 3}
+      objectReference: {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
     - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _enemyPrefab
       value: 
-      objectReference: {fileID: 1871163040516354185, guid: 4db2764b76e857542a0c6ea889e2db7c, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _minionPrefs.Array.size
       value: 1
@@ -1767,7 +1767,7 @@ PrefabInstance:
       objectReference: {fileID: 5098791485279102217, guid: d2460f9c7d78d8145801d5b3ad0d5d20, type: 3}
     - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _characterPrefabs.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _characterPrefabs.Array.data[0]
@@ -2299,7 +2299,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3919103737457224534, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _regenerationDelay
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4095624577324364781, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2956,6 +2956,10 @@ PrefabInstance:
     - target: {fileID: 7495667346702932211, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalRotation.z
       value: -0.37106436
+      objectReference: {fileID: 0}
+    - target: {fileID: 7849522353126173969, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_text
+      value: 99999
       objectReference: {fileID: 0}
     - target: {fileID: 7960456781485226568, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3724,7 +3728,7 @@ MonoBehaviour:
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
-  _skillType: 1
+  _skillType: 3
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256

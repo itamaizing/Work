@@ -129,9 +129,13 @@ public class SkillRenderer : NetworkBehaviour
     {
         if (_drawAreaCoroutine != null)
             StopCoroutine(_drawAreaCoroutine);
+        _drawAreaCoroutine = null;
 
-        if(_tempArea != null)
+        if (_tempArea != null)
+        {
             Destroy(_tempArea.gameObject);
+            _tempArea = null;
+        }
     }
 
     public void DrawLine(float length, float width, Damage damage, LayerMask layerMask, AbilityLineRenderer line = null)
@@ -146,13 +150,16 @@ public class SkillRenderer : NetworkBehaviour
     public void StopDrawLine()
     {
         if (_drawLineCoroutine != null)
+        {
             StopCoroutine(_drawLineCoroutine);
+            _drawLineCoroutine = null;
+        }
 
         if (_lineStartImage != null)
+        {
             Destroy(_lineStartImage.gameObject);
-
-     /*   if (_lineEndImage != null)
-            Destroy(_lineEndImage.gameObject);*/
+            _lineStartImage = null;
+        }
     }
 
     public void DrawClosestTarget(float radius, LayerMask TargetsLayers, Character player)
@@ -256,34 +263,10 @@ public class SkillRenderer : NetworkBehaviour
 
         while (true)
         {
+            if (_lineStartImage == null) yield break;
+
             RotateAtMouse(_lineStartImage.transform);
-            //RotateAtMouse(_lineEndImage.transform);
-
-			//_lineStartImage.SetSize(width, length, damage);
-			_lineStartImage.SetSize(_boxWidth, _boxLength, damage);
-			//_lineEndImage.SetSize(width, length, damage);
-		//	_lineEndImage.SetSize(_boxWidth, _boxLength, damage);
-
-			/*Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, 0, Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
-            var vector = (mouse - transform.position);
-            var dir = vector.normalized;
-
-
-
-            RaycastHit2D rayHit = Physics2D.Raycast(transform.position, dir, length * 2, layerMask);
-
-            if (rayHit)
-            {
-                float distance = Vector2.Distance(transform.position, rayHit.transform.position);
-
-                _lineStartImage.SetSize(width, distance / 2 + 0.3f, damage);
-                _lineEndImage.SetSize(width, length, damage);
-            }
-            else
-            {
-                _lineStartImage.SetSize(width, length, damage);
-                _lineEndImage.SetSize(width, length, damage);
-            }*/
+            _lineStartImage.SetSize(_boxWidth, _boxLength, damage);
             yield return null;
         }
     }
@@ -306,6 +289,7 @@ public class SkillRenderer : NetworkBehaviour
 
         while (true)
         {
+            if (_tempArea == null) yield break;
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			if (Physics.Raycast(ray, out hit, _layerMask))
 			{

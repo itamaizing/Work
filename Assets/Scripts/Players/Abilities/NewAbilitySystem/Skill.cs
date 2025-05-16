@@ -1279,6 +1279,13 @@ public abstract class Skill : NetworkBehaviour
         LoadTargetDataForCheckCast();
 
         _castCoroutine = null;
+
+        if (_hero.Abilities != null && _hero.Abilities.SelectedSkills.Contains(this))
+        {
+            StartAutoDraw();
+
+            _actionWrapperForPreparingCoroutine = StartCoroutine(ActionWrapperForPreparingJob());
+        }
     }
 
     private IEnumerator CancelCoroutine()

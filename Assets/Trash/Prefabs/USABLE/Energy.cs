@@ -10,26 +10,23 @@ public class Energy : Resource
 	private float _timer = 0;
 	private bool _canRegen = true;
 	private float _regenValue = 1;
+
 	private void Update()
 	{
-		if (_canRegen && _regenCoroutine == null)
-		{
-			ClientStartRegenirateJob();
-			return;
-		}
-        else
-        {
-			ClientStopRegenerateJob();
-        }
 		_timer += Time.deltaTime;
 
-		if(_timer > _regenerationPeriod)
+		if (_timer > _regenerationPeriod)
 		{
 			_timer = 0;
 			_canRegen = true;
 		}
+
+		if (_regenCoroutine == null)
+		{
+			ClientStartRegenirateJob();
+		}
 	}
-	// ReSharper disable Unity.PerformanceAnalysis
+
 	public override void Add(float EnergyValue)
 	{
 		CurrentValue += EnergyValue;
