@@ -12339,7 +12339,7 @@ MonoBehaviour:
   _hero: {fileID: 6271332717105215193}
   _characterPrefabs: []
   _enemyPrefab: {fileID: 0}
-  _allyPrefab: {fileID: 5830977165762126247, guid: ffa34bf0b8e63f140af24f180875a670, type: 3}
+  _allyPrefab: {fileID: 0}
 --- !u!195 &4697272463135853912
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -12618,9 +12618,10 @@ MonoBehaviour:
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
-  _spawnComponent: {fileID: 7099943676139532891}
-  _scraderPrefab: {fileID: 5830977165762126247, guid: ffa34bf0b8e63f140af24f180875a670, type: 3}
-  _thisMinion: {fileID: 6271332717105215193}
+  spawnComponent: {fileID: 7099943676139532891}
+  minionMove: {fileID: 321651727084008340}
+  minion: {fileID: 6271332717105215193}
+  tentacle: {fileID: 0}
 --- !u!1 &4028508627336737555
 GameObject:
   m_ObjectHideFlags: 0

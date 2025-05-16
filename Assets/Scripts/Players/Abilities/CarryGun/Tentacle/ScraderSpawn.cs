@@ -5,19 +5,22 @@ using UnityEngine;
 public class ScraderSpawn : Skill
 {
     private Vector3 _spawnPoint = Vector3.positiveInfinity;
-    private Character _target = null;
 
-    private SpawnComponent _carryGunSpawnComponent;
-    private CarryGunAura _carryGunAura;
+    [SerializeField] private SpawnComponent spawnComponent;
+    [SerializeField] private MinionMove minionMove;
+    [SerializeField] private MinionComponent minion;
+    [SerializeField] private Tentacles tentacle;
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => _spawnPoint != Vector3.positiveInfinity;
 
-    public void Setup(SpawnComponent carryGunSpawnComponent, CarryGunAura carryGunAura)
+    public Tentacles Tentacle { get => tentacle; set => tentacle = value; }
+
+    protected override void Awake()
     {
-        _carryGunSpawnComponent = carryGunSpawnComponent;
-        _carryGunAura = carryGunAura;
+        base.Awake();
+        minionMove.CanMove = false;
     }
 
     protected override IEnumerator PrepareJob(System.Action<TargetInfo> callback)
@@ -32,31 +35,33 @@ public class ScraderSpawn : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.Points.Count > 0) _spawnPoint = targetInfo.Points[0];
-        if (targetInfo.Targets.Count > 0 && targetInfo.Targets[0] is Character character) _target = character;
+        if (targetInfo.Points.Count > 0)
+            _spawnPoint = targetInfo.Points[0];
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_carryGunSpawnComponent != null && isServer)
+        if (minion.TryGetComponent<Character>(out var character))
         {
-            _carryGunSpawnComponent.CmdSpawnUnitPoint(_spawnPoint, Quaternion.identity);
+            if (character.SelectComponent != null)
+                character.SelectComponent.Deselect();
 
-            yield return new WaitForSeconds(0.1f);
+            if (character.SelectedCircle != null)
+                character.SelectedCircle.IsActive = false;
 
-            if (_carryGunSpawnComponent.Units.Count > 0)
-            {
-                var spawnedCharacter = _carryGunSpawnComponent.Units[^1];
-
-                if (spawnedCharacter is MinionComponent spawnedMinion)
-                {
-                    _carryGunAura.AddToSwarm(spawnedMinion);
-                }
-            }
-
-            _carryGunAura.UnsubscribeScraderSpawn(this);
-            NetworkServer.Destroy(gameObject);
+            if (character.TryGetComponent<MinimapMarker>(out var minimap) && minimap != null)
+                minimap.IsActive = false;
         }
+
+        Hero.Abilities.DeactivateSkill(this);
+
+        if (tentacle.TryGetComponent<SpawnComponent>(out SpawnComponent spawnComponent))
+        {
+            spawnComponent.CmdSpawnUnitPoint(_spawnPoint, Quaternion.identity);
+            spawnComponent.CmdRemoveUnit(minion);
+        }
+
+        Destroy(gameObject);
         yield return null;
     }
 

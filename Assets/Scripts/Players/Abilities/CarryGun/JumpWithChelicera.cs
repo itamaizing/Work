@@ -90,15 +90,16 @@ public class JumpWithChelicera : Skill
 
     public void ExecuteJump()
     {
+        if (_target == null) return;
+
         _isJumpDone = true;
 
         float distanceToTarget = Vector2.Distance(_target.transform.position, _player.transform.position);
-
         _additionalDamageInPercentage = 0.1f + (distanceToTarget / 0.1f) * 0.005f;
 
         Vector3 direction = (_target.transform.position - transform.position).normalized;
 
-        CmdExecuteJump(_player.gameObject, _target.gameObject, direction, _additionalDamageInPercentage);
+        CmdExecuteJump(_player.gameObject, _target.netId, direction, _additionalDamageInPercentage);
     }
 
     //private float NormalizeDistance(float distance)
@@ -163,17 +164,21 @@ public class JumpWithChelicera : Skill
     }
 
     [Command]
-    private void CmdExecuteJump(GameObject player, GameObject target, Vector3 direction, float additionalDamage)
+    private void CmdExecuteJump(GameObject player, uint targetNetId, Vector3 direction, float additionalDamage)
     {
+        if (!NetworkServer.spawned.TryGetValue(targetNetId, out NetworkIdentity identity)) return;
+
+        Character targetCharacter = identity.GetComponent<Character>(); 
+        if (targetCharacter == null) return;
+
         MoveComponent playerMove = player.GetComponent<MoveComponent>();
-        Character targetCharacter = target.GetComponent<Character>();
 
         Vector3 jumpPosition = Vector3.MoveTowards(targetCharacter.transform.position, player.transform.position, _minDistance);
-
         playerMove.TargetRpcDoMove(jumpPosition, _distanceJump / 10);
 
         StartCoroutine(TrackMovementDuringJumpCoroutine(playerMove, targetCharacter, additionalDamage));
     }
+
 
     private IEnumerator TrackMovementDuringJumpCoroutine(MoveComponent playerMove, Character target, float additionalDamage)
     {

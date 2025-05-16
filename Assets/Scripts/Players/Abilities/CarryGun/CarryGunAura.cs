@@ -25,15 +25,6 @@ public class CarryGunAura : Skill
         if (!_swarm.Contains(minion)) _swarm.Add(minion);
     }
 
-    public void SubscribeScraderSpawn(ScraderSpawn scraderSpawn)
-    {
-        if (!_activeScraderSpawns.Contains(scraderSpawn))
-        {
-            _activeScraderSpawns.Add(scraderSpawn);
-            scraderSpawn.Setup(_spawnComponent, this);
-        }
-    }
-
     public void UnsubscribeScraderSpawn(ScraderSpawn scraderSpawn)
     {
         if (_activeScraderSpawns.Contains(scraderSpawn))

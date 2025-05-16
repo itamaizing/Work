@@ -119,12 +119,14 @@ public class IceCloud : Skill
 	{
 		_frozwenTalent = value;
 	}
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        Debug.LogError("DataError");
-    }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+	public override void LoadTargetData(TargetInfo targetInfo)
+	{
+		if (targetInfo.Points.Count > 0) _mousePos = targetInfo.Points[0];
+		if (targetInfo.Targets.Count > 0 && targetInfo.Targets[0] is Character character) _target = character;
+	}
+
+	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
 		while (float.IsPositiveInfinity(_mousePos.x))
 		{
@@ -148,7 +150,6 @@ public class IceCloud : Skill
 			}
 			yield return null;
 		}
-        Debug.LogError("DataError");
     }
 
 	protected override IEnumerator CastJob()

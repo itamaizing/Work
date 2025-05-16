@@ -18,12 +18,19 @@ public class SelectedCircle : MonoBehaviour
         set
         {
             _isActive = value;
-			_selectProjector.gameObject.SetActive(_isActive);
-			//gameObject.SetActive(_isActive);
+            if (_selectProjector != null) _selectProjector.gameObject.SetActive(_isActive);
+            //gameObject.SetActive(_isActive);
         }
     }
 
-	private void Start()
+    private void OnDestroy()
+    {
+        _isActive = false;
+        if (_selectProjector != null) _selectProjector.gameObject.SetActive(false);
+        if (_stroke != null) _stroke.gameObject.SetActive(false);
+    }
+
+    private void Start()
 	{
 		_mat = Instantiate(_selectProjector.material);
 		_selectProjector.material = _mat;

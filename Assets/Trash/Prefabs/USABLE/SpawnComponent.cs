@@ -37,11 +37,17 @@ public class SpawnComponent : NetworkBehaviour
     {
         SpawnCharacter(_allyPrefab, position, rotation);
     }
+
+    [Command]
+    public void CmdSpawnEnemyPoint(Vector3 position, Quaternion rotation)
+    {
+        SpawnCharacter(_enemyPrefab, position, rotation);
+    }
     #endregion
 
     public void SpawnUnit(int index, Vector3 position)
     {
-        if (index < 0 || index >= _characterPrefabs.Count)
+        if (index < 0 || index >= _characterPrefabs.Count) 
         {
             Debug.LogError($"Index {index} is out of bounds for spawning units.");
             return;

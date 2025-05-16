@@ -293,15 +293,15 @@ public class Tentacles : Skill
     private void SpawnCocoon(Vector3 position)
     {
         if (!IsValidVector(position)) return;
+        _spawnComponent.CmdSpawnEnemyPoint(position, Quaternion.identity);
 
-        _spawnComponent.CmdSpawnUnitPoint(position, Quaternion.identity);
+        CmdTentacleCocoon();
     }
 
     [Command]
     private void CmdSpawnTentacles(Vector3 position, Character target, float _spentAttackingPsiEnergy)
     {
         if (!IsValidVector(position)) return;
-
         if (target == null) return;
 
         TentacleProjectile tentacles = Instantiate(tentaclesPrefab, position, Quaternion.identity);
@@ -325,6 +325,12 @@ public class Tentacles : Skill
         _attackingPsionicEnergy.CurrentValue -= value;
     }
 
+    [Command]
+    private void CmdTentacleCocoon()
+    {
+        RpcTentacleCocoon();
+    }
+
     [ClientRpc]
     private void RpcInitTentacles(GameObject tentacleObject, Character target, Vector3 position, float _spentAttackingPsiEnergy)
     {
@@ -332,6 +338,12 @@ public class Tentacles : Skill
         if (tentacleObject == null) return;
 
         tentacleObject.GetComponent<TentacleProjectile>().Init(_player, target, position, target.transform.position, true, _spentAttackingPsiEnergy, this);
+    }
+
+    [ClientRpc]
+    private void RpcTentacleCocoon()
+    {
+        foreach (var cocoon in _spawnComponent.Units) if (cocoon.TryGetComponent<ScraderSpawn>(out ScraderSpawn scraderSpawn)) scraderSpawn.Tentacle = this;
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
