@@ -17,6 +17,7 @@ public class CreeperStrike : AutoAttackSkill
     [SerializeField] private FirstStrike _firstStrike;
     [SerializeField] private FeelingOfContinuation _feelingOfContinuation;
     [SerializeField] private PreparingForFight _preparingForFight;
+    [SerializeField] private bool isGeneticsTalentOne; 
 
     [Header("Abilities")]
     [SerializeField] private LightningStrikes _lightningStrikes;
@@ -334,7 +335,7 @@ public class CreeperStrike : AutoAttackSkill
         {
             criticalDamage = CalculateCriticalDamage(currentTarget, criticalDamage);
         }
-        else if (currentTarget.CharacterState.CheckForState(States.PoisonBone))
+        else if (isGeneticsTalentOne && currentTarget.CharacterState.CheckForState(States.PoisonBone))
         {
             criticalDamage = CalculateCriticalDamage(currentTarget, criticalDamage);
         }
@@ -375,14 +376,6 @@ public class CreeperStrike : AutoAttackSkill
     }
 
     [Command]
-    private void CmdApplyPoisonBone(GameObject target)
-    {
-        Character targetCharacter = target.GetComponent<Character>();
-
-        targetCharacter.CharacterState.AddState(States.PoisonBone, _lifeTimePoisonBoneStacks, 0, _player.gameObject, null);
-    }
-
-    [Command]
     private void CmdDamageDeal(Damage damage, GameObject target)
     {
         ApplyDamage(damage, target);
@@ -394,4 +387,13 @@ public class CreeperStrike : AutoAttackSkill
     {
         throw new System.NotImplementedException();
     }
+
+    #region Talents
+
+    public void GeneticsTalentOne(bool value)
+    {
+        isGeneticsTalentOne = value;
+    }    
+
+    #endregion
 }

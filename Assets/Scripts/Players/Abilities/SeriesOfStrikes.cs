@@ -177,10 +177,7 @@ public class SeriesOfStrikes : MonoBehaviour
 				_timer = _baseTimer;
 				_isInTheRow = false;
 
-				for(int i = 0; i < _seriesOfStrikes.Count; i++) 
-				{
-					_seriesOfStrikes[i].Reset();
-				}
+				for(int i = 0; i < _seriesOfStrikes.Count; i++) _seriesOfStrikes[i].Reset();
 			}
 		}
 	}
@@ -189,11 +186,9 @@ public class SeriesOfStrikes : MonoBehaviour
 	{
 		if (_seriesCompliteCompoTalent) _rune.CmdAdd(usedRune * 2 + 1);
 		_energy.CmdAdd(usedEnergy * 0.4f);
+		_energy.ForceRegenNow();
 
-		for (int i = 0; i < _seriesOfStrikes.Count; i++)
-		{
-			_seriesOfStrikes[i].Reset();
-		}
+		for (int i = 0; i < _seriesOfStrikes.Count; i++) _seriesOfStrikes[i].Reset();
 	}
 
 	private void BonusRuneForDamage(float damage)

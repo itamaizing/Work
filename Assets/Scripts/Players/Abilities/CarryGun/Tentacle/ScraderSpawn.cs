@@ -1,5 +1,6 @@
 using Mirror;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ScraderSpawn : Skill
@@ -43,25 +44,24 @@ public class ScraderSpawn : Skill
     {
         if (minion.TryGetComponent<Character>(out var character))
         {
-            if (character.SelectComponent != null)
-                character.SelectComponent.Deselect();
+            character.SelectComponent?.Deselect();
+            character.SelectedCircle?.SwitchClostestTarget(false);
+            character.SelectedCircle.gameObject.SetActive(false);
 
-            if (character.SelectedCircle != null)
-                character.SelectedCircle.IsActive = false;
+            if (character.TryGetComponent<MinimapMarker>(out var minimap)) minimap.IsActive = false;
 
-            if (character.TryGetComponent<MinimapMarker>(out var minimap) && minimap != null)
-                minimap.IsActive = false;
+            var states = new List<AbstractCharacterState>(character.CharacterState.CurrentStates);
+            foreach (var state in states) character.CharacterState.RemoveState(state.State);
         }
 
         Hero.Abilities.DeactivateSkill(this);
 
-        if (tentacle.TryGetComponent<SpawnComponent>(out SpawnComponent spawnComponent))
+        if (tentacle.TryGetComponent<SpawnComponent>(out var spawnComponent))
         {
             spawnComponent.CmdSpawnUnitPoint(_spawnPoint, Quaternion.identity);
             spawnComponent.CmdRemoveUnit(minion);
         }
 
-        Destroy(gameObject);
         yield return null;
     }
 

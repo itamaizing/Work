@@ -84,6 +84,14 @@ public class Energy : Resource
 		}
 	}
 
+	public void ForceRegenNow()
+	{
+		if (_regenCoroutine == null)
+		{
+			_regenCoroutine = StartCoroutine(RegenerateJob());
+		}
+	}
+
 	public void TalentRegenEnergy(float value)
 	{
 		_regenValue = value;

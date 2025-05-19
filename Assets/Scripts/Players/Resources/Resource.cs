@@ -116,7 +116,7 @@ public abstract class Resource : NetworkBehaviour
 
     }
 
-    private IEnumerator RegenerateJob()
+    public IEnumerator RegenerateJob()
     {
         while (true)
         {
