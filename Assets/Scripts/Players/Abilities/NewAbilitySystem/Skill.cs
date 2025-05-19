@@ -174,7 +174,7 @@ public abstract class Skill : NetworkBehaviour
     public bool IsCooldowned { get => _remainingCooldownTime <= 0; }
     public virtual bool IsPayCostStartCooldown { get => true;}
     public int Chargers { get => _currentChargers; protected set { _currentChargers = value; CurrentChargeChanged?.Invoke(_currentChargers); } }
-    public int MaxChargers { get => _maxCharges; }
+    public int MaxChargers { get => _maxCharges; set => _maxCharges = value; }
     public bool IsHaveCharge => (_currentChargers > 0);
     public float ChargeCooldown => _chargeCooldown;
     public List<float> RemainingCooldownTimeCharge { get => _remainingCooldownTimeChargers; }

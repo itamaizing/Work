@@ -7,10 +7,10 @@ public class ClawStrike : AutoAttackSkill
     [SerializeField] private Character _player;
     [SerializeField] private BasePsionicEnergy _basePsionicEnergy;
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
-    [SerializeField] private float _baseDamage;
-    [SerializeField] private float animSpeed = 1.2f;
+    [SerializeField] private float animSpeed = 0.8f;
 
     private float _spentAttackingPsiEnergy;
+    private float _baseDamage;
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerAutoAttack => Animator.StringToHash("ClawStrikeTrigger");
@@ -30,6 +30,7 @@ public class ClawStrike : AutoAttackSkill
     private void DamageDeal()
     {
         float attackingPsiValue = _spentAttackingPsiEnergy;
+        _baseDamage = Random.Range(5f, 7.01f);
 
         var damage = new Damage
         {

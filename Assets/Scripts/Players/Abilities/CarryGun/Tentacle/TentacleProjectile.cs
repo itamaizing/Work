@@ -28,6 +28,8 @@ public class TentacleProjectile : NetworkBehaviour
     private bool _isCollidedWithOtherCharacter = false;
     private bool _isPullTarget = false;
 
+    private bool _isPsionicsTalentThree = false;
+
     private Coroutine _radiusUpdateCoroutine;
 
     private Skill _skill;
@@ -201,7 +203,7 @@ public class TentacleProjectile : NetworkBehaviour
             if (attackingPsiValue > 0)
             {
                 DealAttackingPsiDamage(attackingPsiValue);
-                ApplyLowVoltageDebuff(attackingPsiValue);
+                if (_isPsionicsTalentThree) ApplyLowVoltageDebuff(attackingPsiValue);
             }
         }
     }
@@ -298,4 +300,13 @@ public class TentacleProjectile : NetworkBehaviour
         if (_target != null && _target.Abilities != null)
             foreach (Skill skill in _target.Abilities.Abilities) if (skill.AbilityForm == AbilityForm.Physical) skill.Disactive = state;
     }
+
+    #region Talents
+
+    public void PsionicsTalentThree(bool value)
+    {
+        _isPsionicsTalentThree = value;
+    }
+
+    #endregion
 }

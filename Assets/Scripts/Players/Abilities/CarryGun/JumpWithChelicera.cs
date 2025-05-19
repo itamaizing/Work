@@ -8,7 +8,6 @@ public class JumpWithChelicera : Skill
     [SerializeField] private Character _player;
     [SerializeField] private CheliceraStrike _cheliceraeStrike;
     [SerializeField] private float basePsi = 1f;
-
     [SerializeField] private float _distanceJump;
 
     private Animator _animator;
@@ -85,10 +84,12 @@ public class JumpWithChelicera : Skill
 
     protected override IEnumerator CastJob()
     {
+        if (_isTarget && _target != null) ExecuteJump();
+
         yield return null;
     }
 
-    public void ExecuteJump()
+    private void ExecuteJump()
     {
         if (_target == null) return;
 
@@ -162,6 +163,15 @@ public class JumpWithChelicera : Skill
         Hero.Move.CanMove = true;
         _isCanCancle = true;
     }
+
+    #region Talents
+
+    public void EvolutionTalentOne(bool value)
+    {
+        MaxChargers = value ? 2 : 1;
+    }
+
+    #endregion 
 
     [Command]
     private void CmdExecuteJump(GameObject player, uint targetNetId, Vector3 direction, float additionalDamage)

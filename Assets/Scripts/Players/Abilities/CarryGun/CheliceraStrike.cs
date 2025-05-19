@@ -9,7 +9,8 @@ public class CheliceraStrike : AutoAttackSkill
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
     [SerializeField] private JumpWithChelicera _jumpWithChelicera;
     [SerializeField] private float animSpeed = 1.4f;
-    [SerializeField] private bool isCheliceraStrikeTalent = false;
+    [SerializeField] private bool isEvolutionTalentTwo = false;
+    [SerializeField] private bool isPsionicsTalentTwo = false;
 
     private Damage _dealDamage;
     private Animator _animator;
@@ -72,7 +73,7 @@ public class CheliceraStrike : AutoAttackSkill
             _baseDamage += bonusDamage;
         }
 
-        if (isCheliceraStrikeTalent)
+        if (isEvolutionTalentTwo)
         {
             float chanceCritValue = Random.Range(0f, 1f);
             float chanceBleedingValue = Random.Range(0f, 1f);
@@ -120,7 +121,7 @@ public class CheliceraStrike : AutoAttackSkill
         float magicDamagePerPsiMainTarget = 0.3f;
         float magicDamagePerPsiNearby = 0.5f;
 
-        if (attackingPsi <= 0) return;
+        if (!isPsionicsTalentTwo && attackingPsi <= 0) return;
 
         else if (attackingPsi >= 10)
         {
@@ -210,18 +211,25 @@ public class CheliceraStrike : AutoAttackSkill
         StopAutoDraw();
     }
 
-    public void CheliceraStrikeTalent(bool value)
-    {
-        isCheliceraStrikeTalent = value;   
-    }
-
     public void TrySpendAttackingPsi()
     {
         _spentAttackingPsiEnergy = _attackingPsionicEnergy.CurrentValue;
         CmdUseAttackingEnergy(_attackingPsionicEnergy.CurrentValue);
     }
 
+    #region Talens
 
+    public void EvolutionTalentTwo(bool value)
+    {
+        isEvolutionTalentTwo = value;   
+    }
+
+    public void PsionicsTalentTwo(bool value)
+    {
+        isPsionicsTalentTwo = value;
+    }
+
+    #endregion
 
     #region CommandMethods
 

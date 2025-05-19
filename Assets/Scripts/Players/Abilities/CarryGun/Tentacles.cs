@@ -23,10 +23,12 @@ public class Tentacles : Skill
     private Character _target;
     private TentacleProjectile _previewInstance;
     private TentacleProjectile _previewInstancePrefab;
+    private TentacleProjectile _currentTentacle;
     private Coroutine _radiusUpdateCoroutine;
     private MinionComponent _currentMinion;
     private float _spentAttackingPsiEnergy;
 
+    public TentacleProjectile CurrentTentacle { get => _currentTentacle; set => _currentTentacle = value; }
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("Spell");
     protected override int AnimTriggerCast => 0;
@@ -304,13 +306,13 @@ public class Tentacles : Skill
         if (!IsValidVector(position)) return;
         if (target == null) return;
 
-        TentacleProjectile tentacles = Instantiate(tentaclesPrefab, position, Quaternion.identity);
-        SceneManager.MoveGameObjectToScene(tentacles.gameObject, _hero.NetworkSettings.MyRoom);
+        _currentTentacle = Instantiate(tentaclesPrefab, position, Quaternion.identity);
+        SceneManager.MoveGameObjectToScene(_currentTentacle.gameObject, _hero.NetworkSettings.MyRoom);
 
-        tentacles.Init(_player, target, position, target.transform.position, true, _spentAttackingPsiEnergy, this);
+        _currentTentacle.Init(_player, target, position, target.transform.position, true, _spentAttackingPsiEnergy, this);
 
-        NetworkServer.Spawn(tentacles.gameObject);
-        RpcInitTentacles(tentacles.gameObject, target, position, _spentAttackingPsiEnergy);
+        NetworkServer.Spawn(_currentTentacle.gameObject);
+        RpcInitTentacles(_currentTentacle.gameObject, target, position, _spentAttackingPsiEnergy);
 
         if (_radiusUpdateCoroutine != null)
         {

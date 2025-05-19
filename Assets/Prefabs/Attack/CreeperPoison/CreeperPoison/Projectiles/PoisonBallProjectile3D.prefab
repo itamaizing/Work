@@ -159,7 +159,7 @@ MonoBehaviour:
   _maxDistanceFlying: 5
   _transformBall: {fileID: 2044339756111756067}
   _baseSizeBall: 0.6
-  _damage: 35
+  _damage: 25
   _baseDistancePush: 1.2
   _baseDurationPush: 1
   _durationInAir: 1
