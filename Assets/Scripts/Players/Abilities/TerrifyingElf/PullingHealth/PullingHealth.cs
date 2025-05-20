@@ -15,8 +15,8 @@ public class PullingHealth : Skill
     [SerializeField] private float tickInterval;
     [SerializeField] private AudioClip audioClip;
 
-    [Header("Pulling Ghost")]
-    [SerializeField] private float radiusGhost;
+    //[Header("Pulling Ghost")]
+    //[SerializeField] private float radiusGhost;
 
     private AudioSource _audioSource;
     private GameObject _activeEffect;
@@ -127,9 +127,9 @@ public class PullingHealth : Skill
 
                 if (pullingHealthGhostTalent)
                 {
-                    float radiusGhost = this.radiusGhost + Mathf.FloorToInt(innerDarknessStacks / 3f);
+                    //float radiusGhost = this.radiusGhost + Mathf.FloorToInt(innerDarknessStacks / 3f);
 
-                    Collider[] nearbyObjects = Physics.OverlapSphere(transform.position, radiusGhost);
+                    Collider[] nearbyObjects = Physics.OverlapSphere(transform.position, Radius);
 
                     int ghostsToAdd = innerDarknessStacks == 2 ? 1 : innerDarknessStacks == 4 ? 2 : 0;
                     int addedGhosts = 0;
@@ -142,7 +142,7 @@ public class PullingHealth : Skill
                         if (obj.TryGetComponent<GhostAura>(out GhostAura ghostAura))
                         {
                             float distanceToTarget = Vector3.Distance(obj.transform.position, GetTargetTransform(_target).position);
-                            if (distanceToTarget <= radiusGhost && !ghost.Contains(obj.gameObject))
+                            if (distanceToTarget <= Radius && !ghost.Contains(obj.gameObject))
                             {
                                 ghost.Add(obj.gameObject);
                                 CmdSyncGhosts(obj.gameObject);
@@ -163,7 +163,7 @@ public class PullingHealth : Skill
 
             if (_pullingHealthSpeedWithSilenceTalent && targetComponentState.CheckForState(States.Silent))
             {
-                float speedModifier = 0.5f;
+                float speedModifier = 0.7f;
                 tickInterval *= speedModifier;
             }
         }
@@ -296,6 +296,8 @@ public class PullingHealth : Skill
     {
         if (ghost.TryGetComponent<Health>(out Health ghostHealth))
         {
+            //float ghostBaseDamage = Damage * 0.3f;
+
             Damage damage = new Damage
             {
                 Value = Damage,

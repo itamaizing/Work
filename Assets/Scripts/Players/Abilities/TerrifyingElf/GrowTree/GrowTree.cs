@@ -22,6 +22,8 @@ public class GrowTree : Skill
     private float baseHealth;
     private float baseCastStreamDuration;
 
+    private Coroutine _treeHealthCoroutine;
+
     protected override bool IsCanCast =>
         !float.IsPositiveInfinity(_targetPoint.x) &&
         IsPointInRadius(Radius, _targetPoint);
@@ -184,21 +186,38 @@ public class GrowTree : Skill
 
     private void TreeHealthTalentEnter()
     {
-        if (treeHealthTalent)
-        {
-            treeData.MaxHealth *= 2;
-            CastStreamDuration *= 2;
-
-            CmdSetMaxHealth(treeData.MaxHealth);
-        }
+        if (treeHealthTalent && _currentTree != null) _treeHealthCoroutine = StartCoroutine(IncreaseTreeMaxHealthOverTime());
     }
 
     private void TreeHealthTalentExit()
     {
+        if (_treeHealthCoroutine != null)
+        {
+            StopCoroutine(_treeHealthCoroutine);
+            _treeHealthCoroutine = null;
+        }
+
         treeData.MaxHealth = baseHealth;
         CastStreamDuration = baseCastStreamDuration;
 
         CmdSetMaxHealth(treeData.MaxHealth);
+    }
+
+    private IEnumerator IncreaseTreeMaxHealthOverTime()
+    {
+        float increaseDuration = 60f;
+        float interval = 0.3f;
+        int steps = Mathf.FloorToInt(increaseDuration / interval);
+
+        for (int i = 0; i < steps; i++)
+        {
+            treeData.MaxHealth += 1;
+            CmdSetMaxHealth(treeData.MaxHealth);
+
+            if (_healthTree != null) _healthTree.ObjectData.MaxHealth = treeData.MaxHealth;
+
+            yield return new WaitForSeconds(interval);
+        }
     }
     #endregion
 

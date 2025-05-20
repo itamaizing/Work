@@ -86,7 +86,7 @@ public class ShotsIntoSky : Skill
             {
                 if (objectCollider.TryGetComponent<ReconnaissanceFireAura>(out ReconnaissanceFireAura aura) && tripleShotTalentActive)
                 {
-                    if (FindObjectOfType<ReconnaissanceFireArrowIntoSkyTalent>() != null && !_tripleShot)
+                    if (FindObjectOfType<NatureTalent_6>() != null && !_tripleShot)
                     {
                         _tripleShot = true;
                         StartCoroutine(SpawnAdditionalDamageZones(aura));
@@ -193,7 +193,7 @@ public class ShotsIntoSky : Skill
             {
                 if (objectCollider.TryGetComponent<ReconnaissanceFireAura>(out ReconnaissanceFireAura aura) && tripleShotTalentActive)
                 {
-                    if (FindObjectOfType<ReconnaissanceFireArrowIntoSkyTalent>() != null && !_tripleShot)
+                    if (FindObjectOfType<NatureTalent_6>() != null && !_tripleShot)
                     {
                         StartCoroutine(SpawnAdditionalDamageZones(aura));
                     }

@@ -2,17 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PullingHealthSpeedWithSilenceTalent : Talent
+public class DarknessTalent_3 : Talent
 {
-    [SerializeField] private PullingHealth pullingHealth;
-
     public override void Enter()
     {
-
+        throw new System.NotImplementedException();
     }
 
     public override void Exit()
     {
-
+        throw new System.NotImplementedException();
     }
 }

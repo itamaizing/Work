@@ -12,7 +12,7 @@ public class TerrifyingElfAura : Skill
     [SerializeField] private bool huntressMarkPhysicsTalent;
     [SerializeField] private bool manaAbsorptionPhysicalTalent;
     [SerializeField, Range(0f, 100f)] private float calmnessChance = 10f;
-    [SerializeField, Range(0f, 100f)] private float huntressMarkApplyChance = 10f;
+    [SerializeField, Range(0f, 100f)] private float huntressMarkApplyChance = 5f;
     [SerializeField] private float durationCalmess;
     [SerializeField] private float durationHuntressMark;
 
