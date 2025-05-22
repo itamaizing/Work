@@ -5,15 +5,18 @@ using UnityEngine;
 public class DarknessTalent_7 : Talent
 {
     [SerializeField] private SubjugationMind subjugationMind;
-    [SerializeField] private SkillManager _ability;
+    [SerializeField] private SkillManager ability;
+    [SerializeField] private Ghost ghost;
 
     public override void Enter()
     {
-        _ability.ActivateSkill(subjugationMind);
+        ghost.PassingThroughGhost(true);
+        ability.ActivateSkill(subjugationMind);
     }
 
     public override void Exit()
     {
-        _ability.DeactivateSkill(subjugationMind);
+        ghost.PassingThroughGhost(false);
+        ability.DeactivateSkill(subjugationMind);
     }
 }

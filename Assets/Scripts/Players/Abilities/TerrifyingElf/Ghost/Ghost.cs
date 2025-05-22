@@ -41,6 +41,8 @@ public class Ghost : Skill
     private bool _sendingGhostTargetTalentActive;
     private bool _cooldownGhostShotActive;
     private bool _effectsInnerDarknessTalent;
+    private bool _movingToGhostWithZeroMana;
+    private bool _passingThroughGhost;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("GhostCastDelay");
     protected override int AnimTriggerCast => 0;
@@ -48,6 +50,16 @@ public class Ghost : Skill
 
     public bool CooldownGhostShotActive => _cooldownGhostShotActive;
     public List<Character> GhostTarget { get => _ghosts; set => _ghosts = value; }
+
+    #region Talents
+
+    public void EffectsInnerDarknessTalentActive(bool value) => _effectsInnerDarknessTalent = value;
+    public void SendingGhostTargetTalentActive(bool value) => _sendingGhostTargetTalentActive = value;
+    public void CooldownGhostShotActiveTalent(bool value) => _cooldownGhostShotActive = value;
+    public void MovingToGhostWithZeroMana(bool value) => _movingToGhostWithZeroMana = value;
+    public void PassingThroughGhost(bool value) => _passingThroughGhost = value;
+
+    #endregion
 
     protected override void Awake()
     {
@@ -99,18 +111,12 @@ public class Ghost : Skill
 
     private void RegisterSpawnEvents()
     {
-        if (_spawnComponent != null)
-        {
-            _spawnComponent.UnitAdded += OnGhostSpawned;
-        }
+        if (_spawnComponent != null) _spawnComponent.UnitAdded += OnGhostSpawned;
     }
 
     private void UnregisterSpawnEvents()
     {
-        if (_spawnComponent != null)
-        {
-            _spawnComponent.UnitAdded -= OnGhostSpawned;
-        }
+        if (_spawnComponent != null) _spawnComponent.UnitAdded -= OnGhostSpawned;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -296,7 +302,7 @@ public class Ghost : Skill
         ActivateWayIndicator();
 
         if (ghost.TryGetComponent<GhostAura>(out GhostAura ghostAura)) PerformTeleport(ghost.transform.position);
-        if (manaTeleportToGhost()) RemoveGhost(ghost);
+        if (manaTeleportToGhost() || !_movingToGhostWithZeroMana) RemoveGhost(ghost);
         RestoreSkillCosts();
     }
 
@@ -379,7 +385,12 @@ public class Ghost : Skill
         if (ghost == null || _ghosts.Contains(ghost) || !(ghost is MinionComponent)) return;
         _ghosts.Add(ghost);
 
-        if (_effectsInnerDarknessTalent && ghost.TryGetComponent<GhostAura>(out var ghostAura)) ghostAura.effectsInnerDarknessTalent = true;
+        if (ghost.TryGetComponent<GhostAura>(out var ghostAura))
+        {
+            if (_effectsInnerDarknessTalent) ghostAura.EffectsInnerDarknessTalent = true;
+            if (_passingThroughGhost) ghostAura.PassingThroughGhost = true;
+        }
+
     }
 
     private bool IsMouseOverGhost(out Character ghost)
@@ -563,23 +574,4 @@ public class Ghost : Skill
     {
         if (_audioSource != null && aCÑontrolGhostToTarget != null) _audioSource.PlayOneShot(aCÑontrolGhostToTarget);
     }
-
-    #region Talents
-
-    public void EffectsInnerDarknessTalentActive(bool value)
-    {
-        _effectsInnerDarknessTalent = value;
-    }
-
-    public void SendingGhostTargetTalentActive(bool value)
-    {
-        _sendingGhostTargetTalentActive = value;
-    }
-
-    public void CooldownGhostShotActiveTalent(bool value)
-    {
-        _cooldownGhostShotActive = value;
-    }
-
-    #endregion
 }

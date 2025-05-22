@@ -17,13 +17,16 @@ public class GhostAura : Skill
     private Coroutine _zoneEffectCoroutine;
     private Coroutine _colliderEffectCoroutine;
     private float _spawnTime;
+
     private bool _effectsDarknessTalent;
+    private bool _passingThroughGhost;
 
     protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
     protected override int AnimTriggerCast => throw new System.NotImplementedException();
     protected override bool IsCanCast => throw new System.NotImplementedException();
 
-    public bool effectsInnerDarknessTalent { get => _effectsDarknessTalent; set => _effectsDarknessTalent = value; }
+    public bool EffectsInnerDarknessTalent { get => _effectsDarknessTalent; set => _effectsDarknessTalent = value; }
+    public bool PassingThroughGhost { get => _passingThroughGhost; set => _passingThroughGhost = value; }
 
     private void Start()
     {
@@ -47,10 +50,7 @@ public class GhostAura : Skill
                 float adjustedDuration = CalculateAdjustedSilentDuration(characterState);
                 ApplySilent(characterState, fearChanceInsideCollider, adjustedDuration);
 
-                if (_colliderEffectCoroutine == null)
-                {
-                    _colliderEffectCoroutine = StartCoroutine(ApplyEffectsInCollider());
-                }
+                if (_colliderEffectCoroutine == null && _passingThroughGhost) _colliderEffectCoroutine = StartCoroutine(ApplyEffectsInCollider());
             }
         }
     }
@@ -64,12 +64,9 @@ public class GhostAura : Skill
         }
     }
 
-    private void Update()
+     protected override void Awake()
     {
-        if (_zoneEffectCoroutine == null)
-        {
-            _zoneEffectCoroutine = StartCoroutine(ApplyEffectsInZone());
-        }
+        if (_zoneEffectCoroutine == null && _passingThroughGhost) _zoneEffectCoroutine = StartCoroutine(ApplyEffectsInZone());
     }
 
     private IEnumerator ApplyEffectsInZone()

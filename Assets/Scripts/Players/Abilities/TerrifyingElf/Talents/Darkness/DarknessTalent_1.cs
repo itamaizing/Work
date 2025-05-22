@@ -6,15 +6,20 @@ public class DarknessTalent_1 : Talent
 {
     [SerializeField] private Ghost ghost;
     [SerializeField] private PullingHealth pullingHealth;
+    [SerializeField] private SkillManager ability;
 
     public override void Enter()
     {
+        ability.ActivateSkill(pullingHealth);
+        ability.ActivateSkill(ghost);
         ghost.CooldownGhostShotActiveTalent(true);
         pullingHealth.PullingHealthSpeedWithSilenceTalentActive(true);
     }
 
     public override void Exit()
     {
+        ability.DeactivateSkill(pullingHealth);
+        ability.DeactivateSkill(ghost);
         ghost.CooldownGhostShotActiveTalent(false);
         pullingHealth.PullingHealthSpeedWithSilenceTalentActive(true);
     }

@@ -5,15 +5,18 @@ using UnityEngine;
 public class HuntressTalent_1 : Talent
 {
     [SerializeField] private ReconnaissanceFire reconnaissanceFire;
-    [SerializeField] private SkillManager _ability;
+    [SerializeField] private SkillManager ability;
+	[SerializeField] private Ghost ghost;
 
 	public override void Enter()
 	{
-		_ability.ActivateSkill(reconnaissanceFire);
+		ability.ActivateSkill(reconnaissanceFire);
+		ghost.MovingToGhostWithZeroMana(true);
 	}
 
 	public override void Exit()
 	{
-		_ability.DeactivateSkill(reconnaissanceFire);
+		ability.DeactivateSkill(reconnaissanceFire);
+		ghost.MovingToGhostWithZeroMana(false);
 	}
 }

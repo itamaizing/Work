@@ -31,6 +31,7 @@ public class PullingHealth : Skill
     private bool pullingHealthGhostTalent;
     private bool _effectsDarknessTalent;
     private bool _pullingHealthSpeedWithSilenceTalent;
+    private bool _pullingHealthThroughGhosts;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("PullingHealthCastDelay");
     protected override int AnimTriggerCast => 0;
@@ -197,45 +198,43 @@ public class PullingHealth : Skill
 
         CmdPlayShotSound();
 
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, Radius);
-        List<GhostAura> ghostsInZone = new List<GhostAura>();
-
-        foreach (var collider in hitColliders)
-        {
-            if (collider.TryGetComponent<GhostAura>(out var ghostAura))
-            {
-                ghostsInZone.Add(ghostAura);
-            }
-        }
-
         #region Pulling through Ghosts (Length)
-
-        ghostsInZone.Sort((a, b) => Vector3.Distance(transform.position, a.transform.position)
-                                 .CompareTo(Vector3.Distance(transform.position, b.transform.position)));
-
-        float targetDistance = Vector3.Distance(transform.position, GetTargetTransform(_target).position);
-
-        if (targetDistance <= _baseRadius) CmdSpawnPullingHealthEffect(gameObject, GetTargetTransform(_target).gameObject);
-
-        else if (targetDistance <= _baseRadius + 2 && ghostsInZone.Count > 0)
+        if (_pullingHealthThroughGhosts)
         {
-            GameObject nearestGhost = ghostsInZone[0].gameObject;
-            CmdSpawnPullingHealthEffect(gameObject, nearestGhost);
-            CmdSpawnPullingHealthEffect(nearestGhost, GetTargetTransform(_target).gameObject);
-        }
-        else if (targetDistance <= _baseRadius + 4 && ghostsInZone.Count > 1)
-        {
-            GameObject ghost1 = ghostsInZone[0].gameObject;
-            GameObject ghost2 = ghostsInZone[1].gameObject;
+            Collider[] hitColliders = Physics.OverlapSphere(transform.position, Radius);
+            List<GhostAura> ghostsInZone = new List<GhostAura>();
 
-            CmdSpawnPullingHealthEffect(gameObject, ghost1);
-            CmdSpawnPullingHealthEffect(ghost1, ghost2);
-            CmdSpawnPullingHealthEffect(ghost2, GetTargetTransform(_target).gameObject);
-        }
-        else
-        {
-            TryCancel();
-            yield break;
+            foreach (var collider in hitColliders)
+                if (collider.TryGetComponent<GhostAura>(out var ghostAura)) ghostsInZone.Add(ghostAura);
+
+            ghostsInZone.Sort((a, b) => Vector3.Distance(transform.position, a.transform.position)
+                                .CompareTo(Vector3.Distance(transform.position, b.transform.position)));
+
+            float targetDistance = Vector3.Distance(transform.position, GetTargetTransform(_target).position);
+
+            if (targetDistance <= _baseRadius) CmdSpawnPullingHealthEffect(gameObject, GetTargetTransform(_target).gameObject);
+
+            else if (targetDistance <= _baseRadius + 3 && ghostsInZone.Count == 1)
+            {
+                GameObject nearestGhost = ghostsInZone[0].gameObject;
+                CmdSpawnPullingHealthEffect(gameObject, nearestGhost);
+                CmdSpawnPullingHealthEffect(nearestGhost, GetTargetTransform(_target).gameObject);
+            }
+
+            else if (targetDistance <= _baseRadius + 6 && ghostsInZone.Count == 2)
+            {
+                GameObject ghost1 = ghostsInZone[0].gameObject;
+                GameObject ghost2 = ghostsInZone[1].gameObject;
+
+                CmdSpawnPullingHealthEffect(gameObject, ghost1);
+                CmdSpawnPullingHealthEffect(ghost1, ghost2);
+                CmdSpawnPullingHealthEffect(ghost2, GetTargetTransform(_target).gameObject);
+            }
+            else
+            {
+                TryCancel();
+                yield break;
+            }
         }
         #endregion
 
@@ -382,6 +381,11 @@ public class PullingHealth : Skill
     public void PullingHealthSpeedWithSilenceTalentActive(bool value)
     {
         _pullingHealthSpeedWithSilenceTalent = value;
+    }
+
+    public void PullingHealthThroughGhosts(bool value)
+    {
+        _pullingHealthThroughGhosts = value;
     }
 
     #endregion

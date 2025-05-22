@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class TestShootAuto : Skill
 {
+    [SerializeField] private Character shoter;
+
     private Coroutine _damageCoroutine;
     private readonly List<Character> _targetsInRange = new();
 
@@ -14,8 +16,7 @@ public class TestShootAuto : Skill
 
     private void OnEnable()
     {
-        if (isServer)
-            _damageCoroutine = StartCoroutine(DamageTickRoutine());
+      _damageCoroutine = StartCoroutine(DamageTickRoutine());
     }
 
     private void OnDisable()
@@ -39,7 +40,8 @@ public class TestShootAuto : Skill
                         Value = Damage,
                         Type = DamageType.Physical
                     };
-                    target.TryTakeDamage(ref damage, this);
+
+                    CmdApplyDamage(damage, target.gameObject);
                 }
             }
             yield return wait;
@@ -52,7 +54,7 @@ public class TestShootAuto : Skill
         Collider[] colliders = Physics.OverlapSphere(transform.position, Radius);
         foreach (var collider in colliders)
         {
-            if (collider.TryGetComponent<Character>(out var character) && character != null && character.isOwned)
+            if (collider.TryGetComponent<Character>(out var character) && character != null && character != shoter)
             {
                 _targetsInRange.Add(character);
             }

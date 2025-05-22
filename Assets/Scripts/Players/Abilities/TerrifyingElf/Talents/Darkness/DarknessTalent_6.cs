@@ -5,15 +5,18 @@ using UnityEngine;
 public class DarknessTalent_6 : Talent
 {
     [SerializeField] private RetributiveReckoning retributiveReckoning;
-    [SerializeField] private SkillManager _ability;
+    [SerializeField] private PullingHealth pulling;
+    [SerializeField] private SkillManager ability;
 
     public override void Enter()
     {
-        _ability.ActivateSkill(retributiveReckoning);
+        ability.ActivateSkill(retributiveReckoning);
+        pulling.PullingHealthThroughGhosts(true);
     }
 
     public override void Exit()
     {
-        _ability.DeactivateSkill(retributiveReckoning);
+        ability.DeactivateSkill(retributiveReckoning);
+        pulling.PullingHealthThroughGhosts(false);
     }
 }

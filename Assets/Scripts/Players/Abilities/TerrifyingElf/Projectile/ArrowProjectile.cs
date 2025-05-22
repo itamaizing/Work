@@ -1,4 +1,5 @@
 using Mirror;
+using System.Linq;
 using UnityEngine;
 
 public class ArrowProjectile : Projectiles
@@ -7,11 +8,12 @@ public class ArrowProjectile : Projectiles
     [SerializeField] private float _lifeTime = 5f;
     [SerializeField] private bool _arrowDark;
     [SerializeField] private float physicDamage;
-    [SerializeField] private float magDamage;
     [SerializeField] private float minDamage;
     [SerializeField] private float maxDamage;
     [SerializeField] private float duration;
     [SerializeField] private DamageType damageTypePhysics;
+
+    private float magDamage;
 
     public bool ArrowDark { get => _arrowDark; set => _arrowDark = value; }
 
@@ -71,8 +73,32 @@ public class ArrowProjectile : Projectiles
             bool physicalDamageApplied = TryApplyDamage(damageTypePhysics, _skill.AttackRangeType, collider.gameObject);
             if (physicalDamageApplied) return;
 
-            _skill.Damage = magDamage;
-            ApplyDamage(magDamage, _skill.DamageType, collider.gameObject);
+            float availableMana = 0f;
+            if (_dad != null)
+            {
+                availableMana = _dad.Resources
+                    .Where(r => r.Type == ResourceType.Mana)
+                    .Sum(r => r.CurrentValue);
+            }
+
+            float bonusMagDamage = Mathf.Min(6f, Mathf.Floor(availableMana));
+            float totalMagDamage = magDamage + bonusMagDamage;
+
+            _skill.Damage = totalMagDamage;
+            ApplyDamage(totalMagDamage, _skill.DamageType, collider.gameObject);
+
+            if (_dad != null && bonusMagDamage > 0)
+            {
+                float manaToUse = bonusMagDamage;
+                foreach (var manaResource in _dad.Resources.Where(r => r.Type == ResourceType.Mana))
+                {
+                    if (manaToUse <= 0) break;
+
+                    float amountToUse = Mathf.Min(manaResource.CurrentValue, manaToUse);
+                    if (isServer) manaResource.CurrentValue -= amountToUse;
+                    manaToUse -= amountToUse;
+                }
+            }
 
             if (collider.TryGetComponent<Character>(out Character character)) character.CharacterState.AddState(States.InnerDarkness, duration, 0, _skill.Hero.gameObject, _skill.name);
         }
