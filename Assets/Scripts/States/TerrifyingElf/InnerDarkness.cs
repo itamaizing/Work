@@ -76,6 +76,6 @@ public class InnerDarkness : AbstractCharacterState
     {
         _duration = CurrentStacksCount * TimeDecreasePerStack;
 
-        _characterState.AddState(States.Fear, Random.Range(0.7f, 1.4f), 0, _personWhoMadeBuff.gameObject, null);
+        _characterState.CmdAddState(States.Fear, Random.Range(0.7f, 1.4f), 0, _personWhoMadeBuff.gameObject, null);
     }
 }

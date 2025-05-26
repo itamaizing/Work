@@ -23,13 +23,13 @@ public class SpawnComponent : NetworkBehaviour
     [Command]
     public void CmdSpawnUnitEnemy()
     {
-        SpawnCharacter(_enemyPrefab, Vector3.back, Quaternion.identity);
+        SpawnCharacter(_enemyPrefab, Vector3.back + Vector3.up, Quaternion.identity);
     }
 
     [Command]
     public void CmdSpawnUnitAlies()
     {
-        SpawnCharacter(_allyPrefab, Vector3.forward, Quaternion.identity);
+        SpawnCharacter(_allyPrefab, Vector3.forward + Vector3.up, Quaternion.identity);
     }
 
     [Command]

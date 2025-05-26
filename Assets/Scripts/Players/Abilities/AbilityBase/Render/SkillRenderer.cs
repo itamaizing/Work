@@ -128,8 +128,10 @@ public class SkillRenderer : NetworkBehaviour
     public void StopDrawArea()
     {
         if (_drawAreaCoroutine != null)
+        {
             StopCoroutine(_drawAreaCoroutine);
-        _drawAreaCoroutine = null;
+            _drawAreaCoroutine = null;
+        }
 
         if (_tempArea != null)
         {

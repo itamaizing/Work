@@ -41,14 +41,8 @@ public class ShotAstral : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_target != null)
-        {
-            CmdCreateProjectile(_target.transform);
-        }
-        else
-        {
-            CmdCreateProjectileAtPosition(_targetPoint);
-        }
+        if (_target != null) CmdCreateProjectile(_target.transform);
+        else CmdCreateProjectileAtPosition(_targetPoint);
 
         WorkAnimator(_startAnimTrigger, _endAnimTrigger);
         Hero.Move.CanMove = true;
@@ -68,7 +62,7 @@ public class ShotAstral : Skill
                 Vector3 clickedPoint = GetMousePoint();
                 _target = GetRaycastTarget(true);
 
-                if (_target == _playerLinks)
+                if (_target != null && _target == _playerLinks)
                 {
                     _playerLinks.CharacterState.CmdAddState(States.Astral, _projectile.Duration, 0, gameObject, "ShotAstral");
                     ClearData();

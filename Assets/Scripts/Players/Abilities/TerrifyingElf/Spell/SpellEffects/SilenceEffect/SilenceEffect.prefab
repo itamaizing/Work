@@ -25,14 +25,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4237222475278126921}
-  m_LocalRotation: {x: -0.7071068, y: -0, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!198 &2730190180732284361
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -1366,25 +1366,25 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 1, g: 1, b: 1, a: 1}
-        key1: {r: 1, g: 1, b: 1, a: 0}
-        key2: {r: 1, g: 0.39275518, b: 0.11764705, a: 0}
-        key3: {r: 1, g: 0.03424205, b: 0, a: 0.039215688}
+        key0: {r: 0.94117653, g: 10.348547, b: 15.121571, a: 0}
+        key1: {r: 5.3333335, g: 4.2611785, b: 0.34509787, a: 1}
+        key2: {r: 7.4039216, g: 2.1002526, b: 0.50196064, a: 1}
+        key3: {r: 0, g: 0, b: 0, a: 0}
         key4: {r: 1, g: 0.017601715, b: 0, a: 0.039215688}
         key5: {r: 1, g: 1, b: 1, a: 0.039215688}
         key6: {r: 1, g: 1, b: 1, a: 0}
         key7: {r: 0, g: 0, b: 0, a: 0}
-        ctime0: 0
-        ctime1: 65535
-        ctime2: 45875
-        ctime3: 65343
+        ctime0: 4395
+        ctime1: 20123
+        ctime2: 38165
+        ctime3: 65535
         ctime4: 45875
         ctime5: 65535
         ctime6: 65535
         ctime7: 0
         atime0: 0
-        atime1: 65535
-        atime2: 65535
+        atime1: 4086
+        atime2: 47417
         atime3: 65535
         atime4: 65535
         atime5: 65535
@@ -1392,8 +1392,8 @@ ParticleSystem:
         atime7: 0
         m_Mode: 0
         m_ColorSpace: -1
-        m_NumColorKeys: 2
-        m_NumAlphaKeys: 2
+        m_NumColorKeys: 4
+        m_NumAlphaKeys: 4
       minGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -4848,15 +4848,15 @@ ParticleSystemRenderer:
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
-  m_MotionVectors: 1
+  m_MotionVectors: 0
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 2
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c12227a2de3f76b448b3af32949c646c, type: 2}
+  - {fileID: 2100000, guid: 17d285b7f1c600144a6a324b702ddffb, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4888,7 +4888,7 @@ ParticleSystemRenderer:
   m_SortingFudge: 1.5
   m_NormalDirection: 1
   m_ShadowBias: -0.5
-  m_RenderAlignment: 2
+  m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
   m_UseCustomVertexStreams: 1
@@ -4898,7 +4898,7 @@ ParticleSystemRenderer:
   m_FreeformStretching: 0
   m_RotateWithStretchDirection: 1
   m_VertexStreams: 000103040522250c
-  m_Mesh: {fileID: 4300000, guid: 72b4aba81b7370a4e966fe9b365b8b19, type: 2}
+  m_Mesh: {fileID: -8803937527578110353, guid: f4a169970834a6745be4c33312905df1, type: 3}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}

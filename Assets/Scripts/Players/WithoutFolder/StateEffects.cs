@@ -20,6 +20,9 @@ public class StateEffects : MonoBehaviour
 
     [Header("Effect DarkShield")]
     [SerializeField] private GameObject darkShield;
+
+    [Header("Effect Suppression")]
+    [SerializeField] private GameObject suppression;
     #endregion
 
     [Header("Material Character")]
@@ -33,6 +36,7 @@ public class StateEffects : MonoBehaviour
     public GameObject Weapon { get => weapon; set => weapon = value; }
     public GameObject LightShield { get => lightShield; set => lightShield = value; }
     public GameObject DarkShield { get => darkShield; set => darkShield = value; }
+    public GameObject Suppression { get => suppression; set => suppression = value; }
     public List<Material> MaterialsCharacter { get => materialsCharacter; set => materialsCharacter = value; }
     public Material MaterialGhost { get => materialGhost; set => materialGhost = value; }
     public AudioClip FrostingAudio { get => frostingAudio; set => frostingAudio = value; }

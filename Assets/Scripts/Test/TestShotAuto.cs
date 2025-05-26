@@ -16,7 +16,7 @@ public class TestShootAuto : Skill
 
     private void OnEnable()
     {
-      _damageCoroutine = StartCoroutine(DamageTickRoutine());
+       _damageCoroutine = StartCoroutine(DamageTickRoutine());
     }
 
     private void OnDisable()

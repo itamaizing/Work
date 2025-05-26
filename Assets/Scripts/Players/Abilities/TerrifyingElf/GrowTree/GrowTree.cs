@@ -3,6 +3,7 @@ using Mirror;
 using System.Collections;
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 public class GrowTree : Skill
 {
@@ -23,6 +24,8 @@ public class GrowTree : Skill
     private float baseCastStreamDuration;
 
     private Coroutine _treeHealthCoroutine;
+
+    [SerializeField] private List<Tree> _activeTrees;
 
     protected override bool IsCanCast =>
         !float.IsPositiveInfinity(_targetPoint.x) &&
@@ -50,6 +53,13 @@ public class GrowTree : Skill
         CastSuccess += HandleSkillCanceled;
 
         TreeHealthTalentEnter();
+
+        _activeTrees.RemoveAll(t => t == null);
+
+        int treeCount = _activeTrees.Count;
+        CastStreamDuration = treeCount == 0
+            ? baseCastStreamDuration
+            : baseCastStreamDuration * Mathf.Pow(2, treeCount);
 
         Hero.Animator.speed = Hero.Animator.speed / CastStreamDuration;
 
@@ -144,12 +154,16 @@ public class GrowTree : Skill
 
             if (treeMagicEvadeTalent) _healthTree.SetMagicEvade(100);
         }
+
+        _activeTrees.Add(tree);
     }
 
     [Command]
     private void CmdSpawnTreeAndTeleport(Vector3 position)
     {
-        var tree = Instantiate(_treePrefab, position, Quaternion.identity);
+        Vector3 spawnPosition = position + Vector3.down;
+
+        var tree = Instantiate(_treePrefab, spawnPosition, Quaternion.identity);
         _currentTree = tree;
         NetworkServer.Spawn(_currentTree.gameObject);
         SceneManager.MoveGameObjectToScene(_currentTree.gameObject, Hero.NetworkSettings.MyRoom);
@@ -165,6 +179,8 @@ public class GrowTree : Skill
 
             if (treeMagicEvadeTalent) _healthTree.SetMagicEvade(100);
         }
+
+        _activeTrees.Add(tree);
     }
 
     [ClientRpc]
@@ -233,6 +249,7 @@ public class GrowTree : Skill
     protected override void ClearData()
     {
         _targetPoint = Vector3.positiveInfinity;
+        CastStreamDuration = baseCastStreamDuration;
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)

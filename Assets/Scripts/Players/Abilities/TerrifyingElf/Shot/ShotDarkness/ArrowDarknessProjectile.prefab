@@ -9881,7 +9881,6 @@ MonoBehaviour:
   _lifeTime: 2
   _arrowDark: 1
   physicDamage: 0
-  magDamage: 4
   minDamage: 12
   maxDamage: 16
   duration: 50

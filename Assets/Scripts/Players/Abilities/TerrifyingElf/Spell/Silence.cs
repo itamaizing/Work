@@ -52,6 +52,8 @@ public class Silence : Skill
 
                     if (minionCount > 0 && _reducedCooldown) _cooldownTime = _cooldownTime - minionCount;
 
+                    StopDamageZone();
+
                     yield break;
                 }
             }
@@ -70,7 +72,7 @@ public class Silence : Skill
             CmdAdditionalMana();
             SpawnEffectAtTargetPoint();
             ApplyStateToEnemiesInZone();
-
+            StopDamageZone();
             yield return null;
         }
     }
@@ -192,7 +194,7 @@ public class Silence : Skill
         }
 
         Debug.Log(_duration);
-        targetState.AddState(States.LightShield, _duration, 125, Hero.gameObject, this.name);
+        targetState.AddState(States.Silent, _duration, 0, Hero.gameObject, this.name);
     }
 
     [Command]

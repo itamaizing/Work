@@ -1,37 +1,48 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class SuppressionState : AbstractCharacterState
 {
+    private const int MaxStacks = 1;
+    private const float CellLength = 0.1f;
+    private const float ManaLossPerCellPct = 0.001f;
+
+    private GameObject _suppressionEffectInstance;
     private float _baseDuration;
     private float _duration;
     private int _currentStacks = 1;
-    private const int _maxStacks = 1;
-    private Vector3 _lastPosition;
-    private const float ManaLossPerMeter = 0.01f;
+    private Vector3 _lastPos; 
+    private float _distBuffer;
 
-    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move };
+    private static readonly List<StatusEffect> _effects = new() { StatusEffect.Move };
+
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override States State => States.Suppression;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
     {
-        Debug.Log("Entering Suppression State");
         _characterState = character;
-        _personWhoMadeBuff = personWhoMadeBuff;
+        _personWhoMadeBuff = caster;
+
         _baseDuration = durationToExit;
         _duration = _baseDuration;
 
-        _lastPosition = character.Character.transform.position;
+        _lastPos = character.Character.transform.position;
+        _distBuffer = 0f;
+
+        if (_characterState.StateEffects.Suppression != null)
+        {
+            _suppressionEffectInstance = _characterState.StateEffects.Suppression;
+            _suppressionEffectInstance.SetActive(true);
+        }
     }
 
     public override void UpdateState()
     {
         _duration -= Time.deltaTime;
-        if (_duration <= 0)
+        if (_duration <= 0f)
         {
             ExitState();
             return;
@@ -42,42 +53,37 @@ public class SuppressionState : AbstractCharacterState
 
     public override void ExitState()
     {
-        Debug.Log("Exiting Suppression State");
+        if (_suppressionEffectInstance != null) _suppressionEffectInstance.SetActive(false);
         _characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        if (_currentStacks < _maxStacks)
-        {
-            _currentStacks++;
-            _duration = _baseDuration;
-            Debug.Log($"Stacking Suppression. Current stacks: {_currentStacks}, New duration: {_duration}s");
-            return true;
-        }
-        else
-        {
-            _duration = _baseDuration;
-            Debug.Log($"Max stacks reached. Refreshing Suppression duration: {_duration}s");
-            return false;
-        }
+        if (_currentStacks < MaxStacks) _currentStacks++;
+
+        _duration = _baseDuration;
+        return true;
     }
 
     private void TrackMovementAndDrainMana()
     {
-        Vector3 currentPosition = _characterState.Character.transform.position;
-        float distanceMoved = Vector3.Distance(_lastPosition, currentPosition);
+        Vector3 curPos = _characterState.Character.transform.position;
+        float delta = Vector3.Distance(_lastPos, curPos);
 
-        if (distanceMoved > 0)
+        if (delta <= 0f) return;
+
+        _distBuffer += delta;
+        _lastPos = curPos;
+
+        int cellsPassed = Mathf.FloorToInt(_distBuffer / CellLength);
+        if (cellsPassed <= 0) return;
+
+        _distBuffer -= cellsPassed * CellLength;
+
+        if (_characterState.Character.TryGetResource(ResourceType.Mana) is Mana mana)
         {
-            Resource manaResource = _characterState.Character.TryGetResource(ResourceType.Mana);
-            if (manaResource != null)
-            {
-                float manaLoss = manaResource.CurrentValue * ManaLossPerMeter * distanceMoved;
-                manaResource.TryUse(manaLoss);
-                Debug.Log($"Mana drained: {manaLoss}. Current mana: {manaResource.CurrentValue}");
-            }
-            _lastPosition = currentPosition;
+            float manaLoss = cellsPassed * mana.MaxValue * ManaLossPerCellPct;
+            mana.TryUse(manaLoss);
         }
     }
 }

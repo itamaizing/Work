@@ -32,18 +32,19 @@ public class ArrowProjectile : Projectiles
     [Server]
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject != _dad.gameObject)
-        {
-            if (((1 << other.gameObject.layer) & _skill.TargetsLayers.value) != 0)
-            {
-                if (other.gameObject.TryGetComponent<ObjectHealth>(out ObjectHealth objectHealth)) if (objectHealth.ResistMagicDamage >= 100 && _arrowDark) return;
+        if (other.gameObject == _dad?.gameObject) return;
+        if (!other.TryGetComponent<IDamageable>(out _)) return;
 
-                ApplyEnemy(other);
-            }
+        if (((1 << other.gameObject.layer) & _skill.TargetsLayers.value) == 0) return;
 
-            Destroy(gameObject);
-        }
+        if (other.TryGetComponent<ObjectHealth>(out ObjectHealth objectHealth) &&
+            objectHealth.ResistMagicDamage >= 100 && _arrowDark)
+            return;
+
+        ApplyEnemy(other);
+        Destroy(gameObject);
     }
+
 
     //private void TargetApply(Collider other)
     //{
@@ -111,15 +112,10 @@ public class ArrowProjectile : Projectiles
     }
     #endregion
 
-    private void ApplyDamage(float damage, DamageType damageType, GameObject target)
+    private void ApplyDamage(float value, DamageType type, GameObject target)
     {
-        Damage _damage = new Damage
-        {
-            Value = damage,
-            Type = damageType
-        };
-
-        _skill.ApplyDamage(_damage, target);
+        var damage = new Damage { Value = value, Type = type };
+        _skill.ApplyDamage(damage, target);
     }
 
     private bool TryApplyDamage(DamageType damageType, AttackRangeType attackRangeType, GameObject target)
