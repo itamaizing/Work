@@ -55,6 +55,10 @@ public class ShotIntoSky : Skill
             }
             yield return null;
         }
+
+        Hero.Move.LookAtPosition(_targetPoint);
+        Hero.Move.CanMove = false;
+
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(_targetPoint);
         callbackDataSaved(targetInfo);
@@ -78,6 +82,8 @@ public class ShotIntoSky : Skill
         _hero.NetworkAnimator.SetTrigger(Animator.StringToHash(_endAnimTrigger));
 
         _hero.Animator.ResetTrigger(_endAnimTrigger);
+
+        ClearData();
     }
 
     private void SetInitialVelocity(GameObject arrow, Vector3 targetPoint, float speed)
@@ -235,6 +241,8 @@ public class ShotIntoSky : Skill
     protected override void ClearData()
     {
         _targetPoint = Vector3.positiveInfinity;
+        Hero.Move.CanMove = true;
+        Hero.Move.StopLookAt();
     }
 
     public void SetSilenceTalentActive(bool value) => silenceTalentActive = value;

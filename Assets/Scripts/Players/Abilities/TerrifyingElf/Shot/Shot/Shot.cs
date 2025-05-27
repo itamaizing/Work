@@ -70,8 +70,9 @@ public class Shot : Skill
     {
         if (!IsCanCast)
         {
-            ClearData();
             Hero.Move.CanMove = true;
+            Hero.Move.StopLookAt();
+            ClearData();
             yield break;
         }
 
@@ -79,7 +80,7 @@ public class Shot : Skill
         ProcessGhostCooldownReduction();
 
         WorkAnimator(_startAnimTrigger, _endAnimTrigger);
-        //HandleSkillCanceled();
+        HandleSkillCanceled();
         ClearData();
     }
 

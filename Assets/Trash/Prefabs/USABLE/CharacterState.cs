@@ -137,6 +137,7 @@ public class CharacterState : NetworkBehaviour
 		[States.HuntressMark] = new HuntressMark(),
 		[States.Calmness] = new Calmness(),
 		[States.Sleep] = new Sleep(),
+		[States.ElvenSkill] = new ElvenSkill(),
 		#endregion
 
 		#region Test Baff and Debaff
@@ -643,10 +644,11 @@ public enum States
 	HuntressMark,
 	Calmness,
 	Sleep,
-    #endregion
+	ElvenSkill,
+	#endregion
 
-    #region Test Baff and Debaff
-		BaffState,
+	#region Test Baff and Debaff
+	BaffState,
 		DebaffState,
     #endregion
 }

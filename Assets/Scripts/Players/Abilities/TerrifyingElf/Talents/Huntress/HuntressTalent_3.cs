@@ -8,13 +8,17 @@ public class HuntressTalent_3 : Talent
 
     public override void Enter()
     {
-        terrifyingElfAura.HuntressMarkPhysicsTalentActive(true);
+        //terrifyingElfAura.HuntressMarkPhysicsTalentActive(true);
+        terrifyingElfAura.ElvenSkillPhysicsTalent(true);
+
         reconnaissanceFire.ReconnaissanceFireHealthTalentActive(true);
     }
 
     public override void Exit()
     {
-        terrifyingElfAura.HuntressMarkPhysicsTalentActive(false);
+        //terrifyingElfAura.HuntressMarkPhysicsTalentActive(false);
+        terrifyingElfAura.ElvenSkillPhysicsTalent(false);
+
         reconnaissanceFire.ReconnaissanceFireHealthTalentActive(false);
     }
 }

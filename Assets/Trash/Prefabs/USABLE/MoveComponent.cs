@@ -21,6 +21,10 @@ public class MoveComponent : NetworkBehaviour
 	public Vector3 ExternalMoveDirection = Vector3.zero;
 
 	public bool CanMove = false;
+	/// <summary>
+	/// Временный вариант, движение, при касте физ.способностей, может быть заблокированно, но некоторые состояния могут на время снимать этот блокиратор
+	/// </summary>
+	public bool CanMoveState = false;
 	public bool IsMoving = false;
 	public bool IsSelect = false;
 	
@@ -183,7 +187,7 @@ public class MoveComponent : NetworkBehaviour
 
 	protected virtual void Move()
     {
-		if (!CanMove || _rigidbody == null || IsMoveBlocked == true)
+		if ((!CanMove && !CanMoveState) || _rigidbody == null || IsMoveBlocked == true)
 		{
 			if (_rigidbody != null) _rigidbody.velocity = Vector3.zero;
 			return;

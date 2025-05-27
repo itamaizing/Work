@@ -17172,7 +17172,8 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
-  _agent: {fileID: 0}
+  _earlyCooldown: 0
+  _agent: {fileID: 8217033100601787470}
   _enemyCheckRadius: 6
   _enemyLayerMask:
     serializedVersion: 2
@@ -17229,6 +17230,7 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
+  _earlyCooldown: 0
   fearChanceInRadius: 0.2
   fearChanceInsideCollider: 0.8
   tickInterval: 3

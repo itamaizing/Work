@@ -5,15 +5,18 @@ using UnityEngine;
 public class HuntressTalent_4 : Talent
 {
     [SerializeField] private ShotIntoSky shotIntoSky;
-    [SerializeField] private SkillManager _ability;
+    [SerializeField] private TerrifyingElfAura terrifyingElfAura;
+    [SerializeField] private SkillManager ability;
 
     public override void Enter()
     {
-        _ability.ActivateSkill(shotIntoSky);
+        ability.ActivateSkill(shotIntoSky);
+        terrifyingElfAura.ElvenSkillTalent(true);
     }
 
     public override void Exit()
     {
-        _ability.DeactivateSkill(shotIntoSky);
+        ability.DeactivateSkill(shotIntoSky);
+        terrifyingElfAura.ElvenSkillTalent(false);
     }
 }
