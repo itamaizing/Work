@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 9190584076468880538}
   - component: {fileID: 2284718608985779421}
   m_Layer: 0
-  m_Name: SuppressionEfect
+  m_Name: SuppressionIdleEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

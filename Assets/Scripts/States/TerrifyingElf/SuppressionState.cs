@@ -7,7 +7,8 @@ public class SuppressionState : AbstractCharacterState
     private const float CellLength = 0.1f;
     private const float ManaLossPerCellPct = 0.001f;
 
-    private GameObject _suppressionEffectInstance;
+    private GameObject _suppressionEffectIdle;
+    private GameObject _suppressionEffectMove;
     private float _baseDuration;
     private float _duration;
     private int _currentStacks = 1;
@@ -32,10 +33,11 @@ public class SuppressionState : AbstractCharacterState
         _lastPos = character.Character.transform.position;
         _distBuffer = 0f;
 
-        if (_characterState.StateEffects.Suppression != null)
+        if (_characterState.StateEffects.SuppressionIdle != null && _characterState.StateEffects.SuppressionMove != null)
         {
-            _suppressionEffectInstance = _characterState.StateEffects.Suppression;
-            _suppressionEffectInstance.SetActive(true);
+            _suppressionEffectIdle = _characterState.StateEffects.SuppressionIdle;
+            _suppressionEffectMove = _characterState.StateEffects.SuppressionMove;
+            _suppressionEffectIdle.SetActive(true);
         }
     }
 
@@ -53,7 +55,8 @@ public class SuppressionState : AbstractCharacterState
 
     public override void ExitState()
     {
-        if (_suppressionEffectInstance != null) _suppressionEffectInstance.SetActive(false);
+        if (_suppressionEffectIdle != null) _suppressionEffectIdle.SetActive(false);
+        if (_suppressionEffectMove != null) _suppressionEffectMove.SetActive(false);
         _characterState.RemoveState(this);
     }
 

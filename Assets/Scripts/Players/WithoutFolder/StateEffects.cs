@@ -22,25 +22,30 @@ public class StateEffects : MonoBehaviour
     [SerializeField] private GameObject darkShield;
 
     [Header("Effect Suppression")]
-    [SerializeField] private GameObject suppression;
+    [SerializeField] private GameObject suppressionIdle;
+    [SerializeField] private GameObject suppressionMove;
     #endregion
 
+    #region Hero
     [Header("Material Character")]
     [SerializeField] private List<Material> materialsCharacter;
-
     [Header("Weapon Character")]
     [SerializeField] private GameObject weapon;
+    #endregion
 
+    #region Property
     public GameObject FrozenStateEffect { get => frozenStateEffect; set => frozenStateEffect = value; }
     public GameObject Ice { get => ice; set => ice = value; }
     public GameObject Weapon { get => weapon; set => weapon = value; }
     public GameObject LightShield { get => lightShield; set => lightShield = value; }
     public GameObject DarkShield { get => darkShield; set => darkShield = value; }
-    public GameObject Suppression { get => suppression; set => suppression = value; }
+    public GameObject SuppressionIdle { get => suppressionIdle; set => suppressionIdle = value; }
+    public GameObject SuppressionMove { get => suppressionMove; set => suppressionMove = value; }
     public List<Material> MaterialsCharacter { get => materialsCharacter; set => materialsCharacter = value; }
     public Material MaterialGhost { get => materialGhost; set => materialGhost = value; }
     public AudioClip FrostingAudio { get => frostingAudio; set => frostingAudio = value; }
     public AudioClip FrozenAudio { get => frozenAudio; set => frozenAudio = value; }
+    #endregion
 
 
     private void Awake()
