@@ -18,7 +18,7 @@ public class GroundTrap : Skill
 
     protected override bool IsCanCast => !_isPlacingTrap || (_isPlacingTrap && _isStartPointPlaced);
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("ShotCastDelayAnimTrigger");
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
     protected override int AnimTriggerCast => 0;
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)

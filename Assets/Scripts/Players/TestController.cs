@@ -1,8 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
-using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 
 public class TestController : MonoBehaviour

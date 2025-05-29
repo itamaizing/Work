@@ -14,6 +14,11 @@ public class TerrifyingElfAura : Skill
     [SerializeField] private float durationHuntressMark;
     [SerializeField] private float durationElvenSkill;
 
+    [Header("Effects")]
+    [SerializeField] private GameObject elvenSkillEffect;
+
+    public GameObject ElvenSkillEffect { get => elvenSkillEffect; set => elvenSkillEffect = value; }
+
     #region boolTalent
 
     private bool calmnessTalent;

@@ -31,8 +31,7 @@ public class GrowTree : Skill
         !float.IsPositiveInfinity(_targetPoint.x) &&
         IsPointInRadius(Radius, _targetPoint);
 
-    protected override int AnimTriggerCastDelay =>
-        Animator.StringToHash("SpellCastDelayAnimTrigger");
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
     protected override int AnimTriggerCast => 0;
 
     private void Start()

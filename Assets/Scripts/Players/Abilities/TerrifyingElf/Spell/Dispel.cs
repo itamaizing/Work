@@ -10,7 +10,7 @@ public class Dispel : Skill
 
     protected override bool IsCanCast => _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius;
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("Dispel");
     protected override int AnimTriggerCast => 0;
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)

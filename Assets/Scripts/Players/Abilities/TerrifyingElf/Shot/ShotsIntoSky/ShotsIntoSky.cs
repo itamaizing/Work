@@ -18,7 +18,7 @@ public class ShotsIntoSky : Skill
     private bool _tripleShot;
 
     protected override bool IsCanCast => true;
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("ShotCastDelayAnimTrigger");
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("ShotSkyCastDelay");
     protected override int AnimTriggerCast => 0;
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -39,6 +39,8 @@ public class ShotsIntoSky : Skill
             yield return null;
         }
 
+        DrawDamageZone(_targetPoint);
+
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(_targetPoint);
         callbackDataSaved(targetInfo);
@@ -46,6 +48,7 @@ public class ShotsIntoSky : Skill
 
     protected override IEnumerator CastJob()
     {
+        CmdSpawnImpact(_targetPoint);
         yield return new WaitForSeconds(0.6f);
 
         ApplyDamageToEnemiesInZone();

@@ -7,6 +7,8 @@ public class ElvenSkill : AbstractCharacterState
 {
     private float _duration;
     private MoveComponent _move;
+    private GameObject _elvenSkillEffect;
+    private TerrifyingElfAura _aura;
 
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.ElvenSkill;
@@ -31,6 +33,13 @@ public class ElvenSkill : AbstractCharacterState
                 skillPhysics.Canceled += OnPhysCastFinished;
             }
         }
+
+        _aura = character.GetComponent<TerrifyingElfAura>();
+        if (_aura != null && _aura.ElvenSkillEffect != null)
+        {
+            _elvenSkillEffect = _aura.ElvenSkillEffect;
+            _elvenSkillEffect.SetActive(true);
+        }
     }
 
     public override void ExitState()
@@ -46,6 +55,8 @@ public class ElvenSkill : AbstractCharacterState
                 skillPhysics.Canceled -= OnPhysCastFinished;
             }
         }
+
+        if (_elvenSkillEffect != null) _elvenSkillEffect.SetActive(false);
 
         _characterState.StateIcons.RemoveItemByState(State);
         _characterState.RemoveState(this);
