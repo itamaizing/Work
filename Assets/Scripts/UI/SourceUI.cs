@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SourceUI : MonoBehaviour
+public class SourceUI : MonoBehaviour, IGameSourceUI
 {
     [SerializeField] private TMP_Text _teamText1;
     [SerializeField] private TMP_Text _teamText2;

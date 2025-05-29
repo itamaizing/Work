@@ -15,7 +15,7 @@ public class ChangingTheFont : MonoBehaviour
 
         foreach (var item in tempFonts)
         {
-            Undo.RecordObject(item, "font");
+            //Undo.RecordObject(item, "font"); build errors
             item.font = _newFont;
         }
     }
