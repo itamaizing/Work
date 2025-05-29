@@ -122,9 +122,7 @@ public class CharacterState : NetworkBehaviour
 		[States.LowVoltage] = new LowVoltage(),
 		[States.ComboState] = new ComboState(),
 		[States.DisappointmentState] = new DisappointmentState(),
-
-		#region TerrifyingElfStates
-
+		[States.ManaRegen] = new ManaRegen(),
 		[States.InnerDarkness] = new InnerDarkness(),
 		[States.Fear] = new Fear(),
 		[States.Astral] = new AstralState(),
@@ -138,7 +136,6 @@ public class CharacterState : NetworkBehaviour
 		[States.Calmness] = new Calmness(),
 		[States.Sleep] = new Sleep(),
 		[States.ElvenSkill] = new ElvenSkill(),
-		#endregion
 
 		#region Test Baff and Debaff
 		[States.BaffState] = new BaffState(),
@@ -629,6 +626,7 @@ public enum States
 	LowVoltage,
 	ComboState,
 	DisappointmentState,
+	ManaRegen,
 
 	#region TerrifyingElf
 

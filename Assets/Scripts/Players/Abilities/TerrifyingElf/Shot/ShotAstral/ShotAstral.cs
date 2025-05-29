@@ -44,9 +44,8 @@ public class ShotAstral : Skill
         if (_target != null) CmdCreateProjectile(_target.transform);
         else CmdCreateProjectileAtPosition(_targetPoint);
 
-        WorkAnimator(_startAnimTrigger, _endAnimTrigger);
-        Hero.Move.CanMove = true;
-        Hero.Animator.speed = 1f;
+        HandleSkillCanceled();
+        ClearData();
         yield return null;
     }
 
@@ -59,8 +58,8 @@ public class ShotAstral : Skill
         {
             if (GetMouseButton)
             {
-                Vector3 clickedPoint = GetMousePoint();
-                _target = GetRaycastTarget(true);
+                _targetPoint = GetMousePoint();
+                _target = GetRaycastTarget(false);
 
                 if (_target != null && _target == _playerLinks)
                 {
@@ -69,12 +68,21 @@ public class ShotAstral : Skill
                     yield break;
                 }
 
-                if (IsPointInRadius(Radius, clickedPoint) &&
-                    NoObstacles(clickedPoint, transform.position, _obstacle))
+                if (IsPointInRadius(Radius, _targetPoint) &&
+                    NoObstacles(_targetPoint, transform.position, _obstacle))
                 {
-                    _targetPoint = clickedPoint;
-                    Hero.Move.LookAtPosition(_targetPoint);
-                    Hero.Move.CanMove = false;
+                    if (_target != null && _target != _playerLinks)
+                    {
+                        _targetPoint = _target.transform.position;
+                        Hero.Move.LookAtTransform(_target.transform);
+                        Hero.Move.CanMove = false;
+                    }
+
+                    else
+                    {
+                        Hero.Move.LookAtPosition(_targetPoint);
+                        Hero.Move.CanMove = false;
+                    }
                 }
             }
             yield return null;

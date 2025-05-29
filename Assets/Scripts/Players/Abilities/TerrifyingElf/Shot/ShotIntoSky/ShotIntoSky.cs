@@ -312,6 +312,7 @@ public class ShotIntoSky : Skill
         {
             float manaToRestore = manaResource.MaxValue * 0.03f;
             manaResource.Add(manaToRestore);
+            Hero.CharacterState.CmdAddState(States.ManaRegen, 1, 0, Hero.gameObject, this.name);
         }
     }
 

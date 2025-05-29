@@ -47,19 +47,25 @@ public class SkillQueue : MonoBehaviour
             _currentSkill.TryCancel(isFoceCancel);
             return true;
         }
-        else if(IsEmpty == false)
+
+        if (_skills.Count > 0)
         {
-            RemoveFromQueue().TargetInfoQueue.Dequeue();
+            var skill = RemoveFromQueue();
+            skill?.TargetInfoQueue.Clear();
             return true;
         }
+
         return false;
     }
 
     private Skill RemoveFromQueue()
     {
-        var temp = _skills.Dequeue();
-        SkillDeleted?.Invoke(temp);
-        return temp;
+        if (_skills.Count == 0)
+            return null;
+
+        var skill = _skills.Dequeue();
+        SkillDeleted?.Invoke(skill);
+        return skill;
     }
 
     private void OnCastEnded()

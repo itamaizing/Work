@@ -24,6 +24,9 @@ public class StateEffects : MonoBehaviour
     [Header("Effect Suppression")]
     [SerializeField] private GameObject suppressionIdle;
     [SerializeField] private GameObject suppressionMove;
+
+    [Header("Effect ManaRegen")]
+    [SerializeField] private GameObject manaRegen;
     #endregion
 
     #region Hero
@@ -41,6 +44,7 @@ public class StateEffects : MonoBehaviour
     public GameObject DarkShield { get => darkShield; set => darkShield = value; }
     public GameObject SuppressionIdle { get => suppressionIdle; set => suppressionIdle = value; }
     public GameObject SuppressionMove { get => suppressionMove; set => suppressionMove = value; }
+    public GameObject ManaRegen { get => manaRegen; set => manaRegen = value; }
     public List<Material> MaterialsCharacter { get => materialsCharacter; set => materialsCharacter = value; }
     public Material MaterialGhost { get => materialGhost; set => materialGhost = value; }
     public AudioClip FrostingAudio { get => frostingAudio; set => frostingAudio = value; }

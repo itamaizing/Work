@@ -70,6 +70,7 @@ public class SuppressionState : AbstractCharacterState
         if (_suppressionIdle) _suppressionIdle.SetActive(false);
         if (_suppressionMove) _suppressionMove.SetActive(false);
 
+        _characterState.StateIcons.RemoveItemByState(State);
         _characterState.RemoveState(this);
     }
 

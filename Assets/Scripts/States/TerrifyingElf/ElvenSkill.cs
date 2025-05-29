@@ -8,7 +8,7 @@ public class ElvenSkill : AbstractCharacterState
     private float _duration;
     private MoveComponent _move;
 
-    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.ElvenSkill;
     public override StateType Type => StateType.Physical;
     public override List<StatusEffect> Effects => _effects;

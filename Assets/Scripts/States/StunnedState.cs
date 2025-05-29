@@ -31,7 +31,6 @@ public class StunnedState : AbstractCharacterState
 		{
 			Debug.Log("no ability at " + character.gameObject.name);
 		}
-		_characterState.Character.Move.CanMove = false;
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
 	}
@@ -40,6 +39,7 @@ public class StunnedState : AbstractCharacterState
 	{
 		Debug.Log("Updating Stunned State");
 		_duration -= Time.deltaTime;
+		_characterState.Character.Move.CanMove = false; // временное решение
 		if (_duration < 0 || turnOff)
 		{
 			ExitState();

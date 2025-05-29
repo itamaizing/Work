@@ -10,6 +10,10 @@ public class ShotsIntoSky : Skill
     [SerializeField] private bool tripleShotTalentActive;
     [SerializeField] private bool shotAstralManaActive;
 
+    [Header("Arrows Effects Settings")]
+    [SerializeField] private GameObject impactPrefab;
+    [SerializeField] private float impactLifeTime = 2;
+
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private bool _tripleShot;
 
@@ -42,9 +46,7 @@ public class ShotsIntoSky : Skill
 
     protected override IEnumerator CastJob()
     {
-        DrawDamageZone(_targetPoint);
-
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.6f);
 
         ApplyDamageToEnemiesInZone();
         _hero.Animator.speed = 1f;
@@ -116,6 +118,17 @@ public class ShotsIntoSky : Skill
     }
 
     [Command]
+    private void CmdSpawnImpact(Vector3 position)
+    {
+        if (!impactPrefab) return;
+
+        GameObject impact = Instantiate(impactPrefab, position, Quaternion.identity);
+        NetworkServer.Spawn(impact);
+
+        RpcScheduleDestroy(impact, impactLifeTime);
+    }
+
+    [Command]
     private void CmdAddState(CharacterState targetState)
     {
         targetState.AddState(States.Irradiation, 9, 0, Hero.gameObject, this.name);
@@ -125,6 +138,13 @@ public class ShotsIntoSky : Skill
     private void CmdAddWeakeningSilence(CharacterState targetState)
     {
         targetState.AddState(States.WeakeningSilence, 4, 4, Hero.gameObject, this.name);
+    }
+
+    [ClientRpc]
+    private void RpcScheduleDestroy(GameObject impact, float lifeTime)
+    {
+        if (impact == null) return;
+        Destroy(impact, lifeTime);
     }
 
     //[Command]
@@ -234,6 +254,7 @@ public class ShotsIntoSky : Skill
         {
             float manaToRestore = manaResource.MaxValue * 0.03f;
             manaResource.Add(manaToRestore);
+            Hero.CharacterState.CmdAddState(States.ManaRegen, 1, 0, Hero.gameObject, this.name);
         }
     }
     #endregion

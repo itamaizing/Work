@@ -22,7 +22,7 @@ public class AstralState : AbstractCharacterState
 
     public override States State => States.Astral;
     public override StateType Type => StateType.Magic;
-    public override BaffDebaff BaffDebaff => BaffDebaff;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
@@ -142,6 +142,10 @@ public class AstralState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        throw new System.NotImplementedException();
+        if (_currentStacks < _maxStacks)
+            _currentStacks++;
+
+        _duration = _baseDuration;
+        return true;
     }
 }
