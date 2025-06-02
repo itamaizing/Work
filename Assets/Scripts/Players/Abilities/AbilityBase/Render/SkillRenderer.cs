@@ -10,7 +10,7 @@ public class SkillRenderer : NetworkBehaviour
     [SerializeField] private Character hero;
     [SerializeField] private DrawCircle _circle;
     [SerializeField] private CircleArea _areaPref;
-    [SerializeField] private SphereArea _damageZonePref;
+    [SerializeField] private CircleArea _damageZonePref;
     [SerializeField] private AbilityLineRenderer _line;
     [SerializeField] private LayerMask _layerMask;
     [SerializeField] private Color _colorForAllies = Color.green;
@@ -64,7 +64,7 @@ public class SkillRenderer : NetworkBehaviour
 		 Color zoneColor = player.layer == LayerMask.NameToLayer("Allies") ? _colorForAllies : _colorForEnemies;
 		 _tempDamageZone.SetColor(zoneColor);*/
 
-		_tempArea = Instantiate(_areaPref, position, Quaternion.identity);
+		_tempArea = Instantiate(_damageZonePref, position, Quaternion.identity);
 		_tempArea.SetSize(radius, damage);
 
 		Color zoneColor = player.layer == LayerMask.NameToLayer("Allies") ? _colorForAllies : _colorForEnemies;

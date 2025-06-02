@@ -16,6 +16,7 @@ public class Tentacles : Skill
 
     private bool _isPlacingTentacles = false;
     private bool _isClickedOnGround = false;
+    private bool _isPsionicsTalentThree = false;
 
     private Vector3 _spawnPoint = Vector3.positiveInfinity;
     private HashSet<Character> _charactersInPreview = new HashSet<Character>();
@@ -309,7 +310,7 @@ public class Tentacles : Skill
         _currentTentacle = Instantiate(tentaclesPrefab, position, Quaternion.identity);
         SceneManager.MoveGameObjectToScene(_currentTentacle.gameObject, _hero.NetworkSettings.MyRoom);
 
-        _currentTentacle.Init(_player, target, position, target.transform.position, true, _spentAttackingPsiEnergy, this);
+        _currentTentacle.Init(_player, target, position, target.transform.position, true, _isPsionicsTalentThree, _spentAttackingPsiEnergy, this);
 
         NetworkServer.Spawn(_currentTentacle.gameObject);
         RpcInitTentacles(_currentTentacle.gameObject, target, position, _spentAttackingPsiEnergy);
@@ -339,7 +340,7 @@ public class Tentacles : Skill
         if (!IsValidVector(position)) return;
         if (tentacleObject == null) return;
 
-        tentacleObject.GetComponent<TentacleProjectile>().Init(_player, target, position, target.transform.position, true, _spentAttackingPsiEnergy, this);
+        tentacleObject.GetComponent<TentacleProjectile>().Init(_player, target, position, target.transform.position, true, _isPsionicsTalentThree, _spentAttackingPsiEnergy, this);
     }
 
     [ClientRpc]
@@ -358,4 +359,13 @@ public class Tentacles : Skill
     {
         _currentMinion = newMinion;
     }
+
+    #region Talent
+
+    public void PsionicsTalentThree(bool value)
+    {
+        _isPsionicsTalentThree = value;
+    }
+
+    #endregion
 }

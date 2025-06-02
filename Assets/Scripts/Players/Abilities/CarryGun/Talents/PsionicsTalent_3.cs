@@ -8,11 +8,11 @@ public class PsionicsTalent_3 : Talent
 
     public override void Enter()
     {
-        tentacles.CurrentTentacle.PsionicsTalentThree(true);
+        tentacles.PsionicsTalentThree(true);
     }
 
     public override void Exit()
     {
-        tentacles.CurrentTentacle.PsionicsTalentThree(false);
+        tentacles.PsionicsTalentThree(false);
     }
 }

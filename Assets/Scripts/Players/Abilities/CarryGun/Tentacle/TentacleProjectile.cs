@@ -63,14 +63,16 @@ public class TentacleProjectile : NetworkBehaviour
     }
 
     public void Init(Character player, Character target, Vector3 startPosition, Vector3 endPosition,
-        bool isAttackingPsiEnergyActive, float currentDamage, Skill skill)
+        bool isAttackingPsiEnergyActive, bool isPsionicsTalentThree, float currentDamage, Skill skill)
     {
+        _isPsionicsTalentThree = isPsionicsTalentThree;
         _player = player;
         _target = target;
         _startPosition = startPosition;
         _endPosition = endPosition;
         _isAttackingPsiEnergyActive = isAttackingPsiEnergyActive;
         _spentAttackingPsiEnergy = currentDamage;
+        _isPsionicsTalentThree = 
         _skill = skill;
 
         transform.position = startPosition;
@@ -300,13 +302,4 @@ public class TentacleProjectile : NetworkBehaviour
         if (_target != null && _target.Abilities != null)
             foreach (Skill skill in _target.Abilities.Abilities) if (skill.AbilityForm == AbilityForm.Physical) skill.Disactive = state;
     }
-
-    #region Talents
-
-    public void PsionicsTalentThree(bool value)
-    {
-        _isPsionicsTalentThree = value;
-    }
-
-    #endregion
 }

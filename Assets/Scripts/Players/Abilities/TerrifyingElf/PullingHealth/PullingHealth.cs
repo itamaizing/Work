@@ -198,6 +198,10 @@ public class PullingHealth : Skill
 
         CmdPlayShotSound();
 
+
+        float targetDistance = Vector3.Distance(transform.position, GetTargetTransform(_target).position);
+        if (targetDistance <= _baseRadius) CmdSpawnPullingHealthEffect(gameObject, GetTargetTransform(_target).gameObject);
+
         #region Pulling through Ghosts (Length)
         if (_pullingHealthThroughGhosts)
         {
@@ -210,11 +214,7 @@ public class PullingHealth : Skill
             ghostsInZone.Sort((a, b) => Vector3.Distance(transform.position, a.transform.position)
                                 .CompareTo(Vector3.Distance(transform.position, b.transform.position)));
 
-            float targetDistance = Vector3.Distance(transform.position, GetTargetTransform(_target).position);
-
-            if (targetDistance <= _baseRadius) CmdSpawnPullingHealthEffect(gameObject, GetTargetTransform(_target).gameObject);
-
-            else if (targetDistance <= _baseRadius + 3 && ghostsInZone.Count == 1)
+            if (targetDistance <= _baseRadius + 3 && ghostsInZone.Count == 1)
             {
                 GameObject nearestGhost = ghostsInZone[0].gameObject;
                 CmdSpawnPullingHealthEffect(gameObject, nearestGhost);
@@ -229,11 +229,6 @@ public class PullingHealth : Skill
                 CmdSpawnPullingHealthEffect(gameObject, ghost1);
                 CmdSpawnPullingHealthEffect(ghost1, ghost2);
                 CmdSpawnPullingHealthEffect(ghost2, GetTargetTransform(_target).gameObject);
-            }
-            else
-            {
-                TryCancel();
-                yield break;
             }
         }
         #endregion

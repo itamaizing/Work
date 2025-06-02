@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using Mirror;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ public class ShotsIntoSky : Skill
     [SerializeField] private bool silenceTalentActive;
     [SerializeField] private bool tripleShotTalentActive;
     [SerializeField] private bool shotAstralManaActive;
+    [SerializeField] private LayerMask groundLayer;
 
     [Header("Arrows Effects Settings")]
     [SerializeField] private GameObject impactPrefab;
@@ -29,12 +31,7 @@ public class ShotsIntoSky : Skill
         {
             if (GetMouseButton && IsCanCast)
             {
-                Vector3 clickedPoint = GetMousePoint();
-
-                if (IsPointInRadius(Radius, clickedPoint))
-                {
-                    _targetPoint = clickedPoint;
-                }
+                if (TryGetGroundPoint(out Vector3 ground) && IsPointInRadius(Radius, ground)) _targetPoint = ground;
             }
             yield return null;
         }
@@ -119,6 +116,27 @@ public class ShotsIntoSky : Skill
             //CmdApplyDamage(targetComponent.gameObject, _damage, null);
         }
     }
+
+    private bool TryGetGroundPoint(out Vector3 groundPoint)
+    {
+        groundPoint = Vector3.zero;
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        var hits = Physics.RaycastAll(ray, 100f, ~0).OrderBy(hit => hit.distance);
+
+
+        foreach (var hit in hits)
+        {
+            if (hit.collider.GetComponent<Character>() != null) continue;
+            if ((groundLayer.value & (1 << hit.collider.gameObject.layer)) == 0) continue;
+
+            groundPoint = hit.point;
+            return true;
+        }
+
+        return false;
+    }
+
 
     [Command]
     private void CmdSpawnImpact(Vector3 position)
