@@ -142,19 +142,20 @@ public abstract class Skill : NetworkBehaviour
     private Queue<TargetInfo> _targetInfoQueue = new();
     private bool _isAutoMode;
 
-    public bool IsAutoMode {
+    public bool IsAutoMode
+    {
         get
         {
-            return _isAutoMode; 
+            return _isAutoMode;
         }
-        set 
+        set
         {
             if (_isAutoMode != value)
             {
                 _isAutoMode = value;
                 AutoModeChanged?.Invoke(_isAutoMode);
             }
-        } 
+        }
     }
     public bool IsTalentSpell => _isTalentSpell;
     public bool IsSkillActive
@@ -172,7 +173,7 @@ public abstract class Skill : NetworkBehaviour
     public Sprite Icon => _abilityInfo.Icon;
     public AbilityInfo AbilityInfoHero { get => _abilityInfo; set => _abilityInfo = value; }
     public bool IsCooldowned { get => _remainingCooldownTime <= 0; }
-    public virtual bool IsPayCostStartCooldown { get => true;}
+    public virtual bool IsPayCostStartCooldown { get => true; }
     public int Chargers { get => _currentChargers; protected set { _currentChargers = value; CurrentChargeChanged?.Invoke(_currentChargers); } }
     public int MaxChargers { get => _maxCharges; set => _maxCharges = value; }
     public bool IsHaveCharge => (_currentChargers > 0);
@@ -485,7 +486,7 @@ public abstract class Skill : NetworkBehaviour
         {
             time = _remainingCooldownTimeChargers[i] - reductionTime;
 
-            if(time <= 0)
+            if (time <= 0)
             {
                 ReductionCooldownForCharge(i, reductionTime);
                 reductionTime = reductionTime - _remainingCooldownTimeChargers[i];
@@ -635,7 +636,10 @@ public abstract class Skill : NetworkBehaviour
             {
                 target = enemy;
 
-                if (isCanTargetHimself == false && target.transform == _hero.transform) target = null;
+                //if (isCanTargetHimself == false && target.transform == _hero.transform)
+                //{
+                //    target = null;
+                //}
             }
         }
         _tempTargetbase = target;
@@ -952,7 +956,7 @@ public abstract class Skill : NetworkBehaviour
 		}*/
         target.Position = transform.position;
         target.character = _hero;
-		target.isCharater = true;
+        target.isCharater = true;
 
         return target;
     }
@@ -1116,12 +1120,12 @@ public abstract class Skill : NetworkBehaviour
     {
         Hero.AssystCounter++;
     }
-    
+
     private void AddAssist()
     {
         Hero.AssystCounter++;
     }
-    
+
     private void AddKill(Character character)
     {
         Hero.KillCounter++;
@@ -1276,13 +1280,6 @@ public abstract class Skill : NetworkBehaviour
         LoadTargetDataForCheckCast();
 
         _castCoroutine = null;
-
-        if (_hero.Abilities != null && _hero.Abilities.SelectedSkills.Contains(this))
-        {
-            StartAutoDraw();
-
-            _actionWrapperForPreparingCoroutine = StartCoroutine(ActionWrapperForPreparingJob());
-        }
     }
 
     private IEnumerator CancelCoroutine()

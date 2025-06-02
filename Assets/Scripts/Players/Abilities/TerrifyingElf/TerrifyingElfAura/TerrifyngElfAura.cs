@@ -198,6 +198,12 @@ public class TerrifyingElfAura : Skill
     public void CalmnessOnElvenSkillTalent(bool value) => calmnessOnElvenSkillTalent = value;
     public void InnerDarknessmanaAbsorption(bool value) => innerDarknessManaAbsorptionTalent = value;
 
+    [Command]
+    private void CmdOnDamageTracked(Damage damage, GameObject target)
+    {
+        OnDamageTracked(damage, target);
+    }
+
     private void OnDamageTracked(Damage damage, GameObject target)
     {
         if (damage.Type == DamageType.Physical && Hero != null && Hero.CharacterState != null)
@@ -205,10 +211,10 @@ public class TerrifyingElfAura : Skill
             CharacterState selfState = Hero.CharacterState;
 
             if (elvenSkillPhysicsTalent && UnityEngine.Random.Range(0f, 100f) <= elvenSkillFromPhysChance) 
-                selfState.CmdAddState(States.ElvenSkill, durationElvenSkill, 0f, gameObject, "TerrifyingElfAura");
+                selfState.AddState(States.ElvenSkill, durationElvenSkill, 0f, gameObject, "TerrifyingElfAura");
 
             if (calmnessOnElvenSkillTalent && selfState.CheckForState(States.ElvenSkill) && UnityEngine.Random.Range(0f, 100f) <= calmnessOnElvenSkillChance)
-                selfState.CmdAddState(States.Calmness, durationCalmess, 0f, gameObject, "TerrifyingElfAura");
+                selfState.AddState(States.Calmness, durationCalmess, 0f, gameObject, "TerrifyingElfAura");
 
             //if (huntressMarkPhysicsTalent && UnityEngine.Random.Range(0f, 100f) <= huntressMarkApplyChance && target != null && target.TryGetComponent<CharacterState>(out var victimState))
             //    victimState.AddState(States.HuntressMark, durationHuntressMark, 0f, gameObject, "HuntressMark");

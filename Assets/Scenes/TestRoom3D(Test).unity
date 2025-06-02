@@ -238217,6 +238217,7 @@ MonoBehaviour:
   darkShield: {fileID: 5845823479714829182}
   suppressionIdle: {fileID: 1137579476}
   suppressionMove: {fileID: 8089686263850939596}
+  manaRegen: {fileID: 0}
   materialsCharacter:
   - {fileID: 2100000, guid: 0ba30982e7cb63a4390adf2b2685b786, type: 2}
   - {fileID: 2100000, guid: c806a3a6a646dbc40a9fdf11d38d5c80, type: 2}
@@ -318390,6 +318391,7 @@ MonoBehaviour:
   MoveDirection: {x: 0, y: 0, z: 0}
   ExternalMoveDirection: {x: 0, y: 0, z: 0}
   CanMove: 1
+  CanMoveState: 0
   IsMoving: 0
   IsSelect: 0
 --- !u!33 &8290470600569329042
