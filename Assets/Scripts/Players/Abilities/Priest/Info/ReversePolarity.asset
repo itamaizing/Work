@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d8548505a2c5104980a6fa13739ca3d, type: 3}
   m_Name: ReversePolarity
   m_EditorClassIdentifier: 
-  _name: ReversePolarity
+  _name: "\u041E\u0431\u0440\u0430\u0442\u043D\u0430\u044F \u043F\u043E\u043B\u044F\u0440\u043D\u043E\u0441\u0442\u044C"
   _description: 
   _icon: {fileID: 21300000, guid: 81f5ea5c7488e984584b1fc2d15b6d84, type: 3}

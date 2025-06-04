@@ -187,7 +187,7 @@ public class GrowTree : Skill
     {
         if (tree != null)
         {
-            Vector3 topOfTree = tree.transform.position + Vector3.up * 2f;
+            Vector3 topOfTree = tree.transform.position + Vector3.up * 5f;
             moveComponent.TeleportToPositionSmooth(topOfTree, _moveDuration);
         }
     }

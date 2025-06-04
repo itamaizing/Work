@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -82,10 +83,15 @@ public class Sleep : AbstractCharacterState
         {
             skill.Disactive = false;
         }
+
+        //AddStateInnerDarkness();
+
         _disabledSkills.Clear();
-
         _characterState.RemoveState(this);
+    }
 
+    private void AddStateInnerDarkness()
+    {
         for (int i = 0; i < 6; i++) _characterState.CmdAddState(States.InnerDarkness, 13, 0, _source?.gameObject, "SleepExit");
     }
 

@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d8548505a2c5104980a6fa13739ca3d, type: 3}
   m_Name: CreeperStrike
   m_EditorClassIdentifier: 
-  _name: Strike
+  _name: "\u0423\u0434\u0430\u0440"
   _description: 
   _icon: {fileID: 21300000, guid: b7ba9882ed5f32f40a9cd054221db12c, type: 3}

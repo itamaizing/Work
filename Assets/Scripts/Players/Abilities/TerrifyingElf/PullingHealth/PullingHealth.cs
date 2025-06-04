@@ -17,6 +17,9 @@ public class PullingHealth : Skill
 
     //[Header("Pulling Ghost")]
     //[SerializeField] private float radiusGhost;
+    [SerializeField] private bool _pullingHealthThroughGhosts;
+    [SerializeField] private bool pullingHealthGhostTalent;
+    [SerializeField] private bool _pullingHealthSpeedWithSilenceTalent;
 
     private AudioSource _audioSource;
     private GameObject _activeEffect;
@@ -27,11 +30,6 @@ public class PullingHealth : Skill
     private float _baseTickInterval;
     private float _baseCastStreamDuration;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
-
-    private bool pullingHealthGhostTalent;
-    private bool _effectsDarknessTalent;
-    private bool _pullingHealthSpeedWithSilenceTalent;
-    private bool _pullingHealthThroughGhosts;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("PullingHealthCastDelay");
     protected override int AnimTriggerCast => 0;
@@ -78,7 +76,7 @@ public class PullingHealth : Skill
                 }
             }
 
-            UpdateRadiusBasedOnGhosts();
+            if (_pullingHealthThroughGhosts) UpdateRadiusBasedOnGhosts();
 
             yield return null;
         }
@@ -122,38 +120,32 @@ public class PullingHealth : Skill
         {
             var targetComponentState = targetComponent.GetComponent<CharacterState>();
 
-            if (_effectsDarknessTalent && targetComponentState.CheckForState(States.InnerDarkness))
+            if (pullingHealthGhostTalent && targetComponentState.CheckForState(States.InnerDarkness))
             {
                 innerDarknessStacks = targetComponentState.CheckStateStacks(States.InnerDarkness);
+                Collider[] nearbyObjects = Physics.OverlapSphere(transform.position, Radius);
 
-                if (pullingHealthGhostTalent)
+                int ghostsToAdd = innerDarknessStacks == 2 ? 1 : innerDarknessStacks == 4 ? 2 : 0;
+                int addedGhosts = 0;
+
+                foreach (var obj in nearbyObjects)
                 {
-                    //float radiusGhost = this.radiusGhost + Mathf.FloorToInt(innerDarknessStacks / 3f);
+                    if (addedGhosts >= ghostsToAdd)
+                        break;
 
-                    Collider[] nearbyObjects = Physics.OverlapSphere(transform.position, Radius);
-
-                    int ghostsToAdd = innerDarknessStacks == 2 ? 1 : innerDarknessStacks == 4 ? 2 : 0;
-                    int addedGhosts = 0;
-
-                    foreach (var obj in nearbyObjects)
+                    if (obj.TryGetComponent<GhostAura>(out GhostAura ghostAura))
                     {
-                        if (addedGhosts >= ghostsToAdd)
-                            break;
-
-                        if (obj.TryGetComponent<GhostAura>(out GhostAura ghostAura))
+                        float distanceToTarget = Vector3.Distance(obj.transform.position, GetTargetTransform(_target).position);
+                        if (distanceToTarget <= Radius && !ghost.Contains(obj.gameObject))
                         {
-                            float distanceToTarget = Vector3.Distance(obj.transform.position, GetTargetTransform(_target).position);
-                            if (distanceToTarget <= Radius && !ghost.Contains(obj.gameObject))
-                            {
-                                ghost.Add(obj.gameObject);
-                                CmdSyncGhosts(obj.gameObject);
-                                addedGhosts++;
-                            }
+                            ghost.Add(obj.gameObject);
+                            CmdSyncGhosts(obj.gameObject);
+                            addedGhosts++;
                         }
                     }
-
-                    CmdSpawnPullingHealthEffectGhost(GetTargetTransform(_target)?.gameObject);
                 }
+
+                CmdSpawnPullingHealthEffectGhost(GetTargetTransform(_target)?.gameObject);
 
                 if (innerDarknessStacks > 0)
                 {
@@ -198,10 +190,6 @@ public class PullingHealth : Skill
 
         CmdPlayShotSound();
 
-
-        float targetDistance = Vector3.Distance(transform.position, GetTargetTransform(_target).position);
-        if (targetDistance <= _baseRadius) CmdSpawnPullingHealthEffect(gameObject, GetTargetTransform(_target).gameObject);
-
         #region Pulling through Ghosts (Length)
         if (_pullingHealthThroughGhosts)
         {
@@ -213,6 +201,9 @@ public class PullingHealth : Skill
 
             ghostsInZone.Sort((a, b) => Vector3.Distance(transform.position, a.transform.position)
                                 .CompareTo(Vector3.Distance(transform.position, b.transform.position)));
+
+            float targetDistance = Vector3.Distance(transform.position, GetTargetTransform(_target).position);
+            if (targetDistance <= _baseRadius) CmdSpawnPullingHealthEffect(gameObject, GetTargetTransform(_target).gameObject);
 
             if (targetDistance <= _baseRadius + 3 && ghostsInZone.Count == 1)
             {
@@ -232,6 +223,12 @@ public class PullingHealth : Skill
             }
         }
         #endregion
+
+        else
+        {
+            float targetDistance = Vector3.Distance(transform.position, GetTargetTransform(_target).position);
+            if (targetDistance <= _baseRadius) CmdSpawnPullingHealthEffect(gameObject, GetTargetTransform(_target).gameObject);
+        }
 
         while (elapsed < CastStreamDuration)
         {
@@ -366,11 +363,6 @@ public class PullingHealth : Skill
     public void SetPullingHealthGhostTalentActive(bool value)
     {
         pullingHealthGhostTalent = value;
-    }
-
-    public void EffectsInnerDarknessTalentActive(bool value)
-    {
-        _effectsDarknessTalent = value;
     }
 
     public void PullingHealthSpeedWithSilenceTalentActive(bool value)

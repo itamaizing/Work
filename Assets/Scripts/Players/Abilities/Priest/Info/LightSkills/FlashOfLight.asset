@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d8548505a2c5104980a6fa13739ca3d, type: 3}
   m_Name: FlashOfLight
   m_EditorClassIdentifier: 
-  _name: FlashOfLight
+  _name: "\u0412\u0441\u043F\u044B\u0448\u043A\u0430 \u0441\u0432\u0435\u0442\u0430"
   _description: 
   _icon: {fileID: 21300000, guid: 6ee621bc049072e49a439414e31b85e2, type: 3}

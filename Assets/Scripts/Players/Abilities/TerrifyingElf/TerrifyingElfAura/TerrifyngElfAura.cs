@@ -47,6 +47,8 @@ public class TerrifyingElfAura : Skill
 
     private void OnEnable()
     {
+        Debug.Log($"TerrifyingElfAura: {Radius}");
+
         CacheHeroMana();
         if (skillManager != null && skillManager.SkillQueue != null) skillManager.SkillQueue.SkillAdded += OnSkillAdded;
         if (Hero != null && Hero.DamageTracker != null) Hero.DamageTracker.OnDamageTracked += OnDamageTracked;

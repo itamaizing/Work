@@ -11,7 +11,7 @@ public class EffectsInnerDarknessTalent : Talent
     public override void Enter()
     {
         silence.EffectsInnerDarknessTalentActive(true);
-        pulling.EffectsInnerDarknessTalentActive(true);
+        //pulling.EffectsInnerDarknessTalentActive(true);
 
         ghost.EffectsInnerDarknessTalentActive(true);
 
@@ -21,7 +21,7 @@ public class EffectsInnerDarknessTalent : Talent
     public override void Exit()
     {
         silence.EffectsInnerDarknessTalentActive(false);
-        pulling.EffectsInnerDarknessTalentActive(false);
+        //pulling.EffectsInnerDarknessTalentActive(false);
         ghost.EffectsInnerDarknessTalentActive(false);
 
         foreach (var ghost in ghost.GhostTarget) if (ghost.TryGetComponent<GhostAura>(out var aura)) aura.EffectsInnerDarknessTalent = false; // убрать в будущем

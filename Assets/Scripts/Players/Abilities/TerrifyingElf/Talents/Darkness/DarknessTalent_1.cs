@@ -21,6 +21,6 @@ public class DarknessTalent_1 : Talent
         ability.DeactivateSkill(pullingHealth);
         ability.DeactivateSkill(ghost);
         ghost.CooldownGhostShotActiveTalent(false);
-        pullingHealth.PullingHealthSpeedWithSilenceTalentActive(true);
+        pullingHealth.PullingHealthSpeedWithSilenceTalentActive(false);
     }
 }

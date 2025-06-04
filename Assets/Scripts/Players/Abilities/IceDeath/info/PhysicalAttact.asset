@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d8548505a2c5104980a6fa13739ca3d, type: 3}
   m_Name: PhysicalAttact
   m_EditorClassIdentifier: 
-  _name: PhysicalAttact
+  _name: "\u0424\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u043E\u0435 \u0432\u043E\u0437\u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0435"
   _description: 
   _icon: {fileID: 21300000, guid: 3c3e6d241aa0f644f911b5c1a63f77bb, type: 3}

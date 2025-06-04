@@ -12,7 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d8548505a2c5104980a6fa13739ca3d, type: 3}
   m_Name: ReconnaissanceFire
   m_EditorClassIdentifier: 
-  _name: ReconnaissanceFire
-  _description: An elf is thrown to the ground by fire, within the radius of the
-    light of the fire, creatures with under invisibility become visible
+  _name: "\u0420\u0430\u0437\u0432\u0435\u0434\u044B\u0432\u0430\u0442\u0435\u043B\u044C\u043D\u044B\u0439
+    \u043E\u0433\u043E\u043D\u044C"
+  _description: "\u042D\u043B\u044C\u0444\u0430 \u0448\u0432\u044B\u0440\u044F\u0435\u0442
+    \u043E\u0433\u043D\u044C \u043D\u0430 \u0437\u0435\u043C\u043B\u044E, \u0432
+    \u0440\u0430\u0434\u0438\u0443\u0441\u0435 \u0441\u0432\u0435\u0442\u0430 \u043E\u0442
+    \u043E\u0433\u043D\u044F \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u0430, \u043D\u0430\u0445\u043E\u0434\u044F\u0449\u0438\u0435\u0441\u044F
+    \u043F\u043E\u0434 \u043D\u0435\u0432\u0438\u0434\u0438\u043C\u043E\u0441\u0442\u044C\u044E,
+    \u0441\u0442\u0430\u043D\u043E\u0432\u044F\u0442\u0441\u044F \u0432\u0438\u0434\u0438\u043C\u044B\u043C\u0438"
   _icon: {fileID: 21300000, guid: 7764d8d6cfaf60840af322c247c9896b, type: 3}

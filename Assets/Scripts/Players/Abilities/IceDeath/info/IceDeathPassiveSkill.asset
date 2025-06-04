@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d8548505a2c5104980a6fa13739ca3d, type: 3}
   m_Name: IceDeathPassiveSkill
   m_EditorClassIdentifier: 
-  _name: Ice Death Passive
-  _description: 'IceDeath''s Passive Ability '
+  _name: 
+  _description: 
   _icon: {fileID: 21300000, guid: ba741e0a405245447ae2ba2fee7fd82a, type: 3}

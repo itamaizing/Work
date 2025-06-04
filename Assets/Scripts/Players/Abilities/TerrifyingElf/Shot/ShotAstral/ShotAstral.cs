@@ -16,73 +16,44 @@ public class ShotAstral : Skill
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private Character _target;
 
-    protected override bool IsCanCast => CheckCanCast();
-
     protected override int AnimTriggerCastDelay => Animator.StringToHash(_startAnimTrigger);
-
     protected override int AnimTriggerCast => 0;
+    protected override bool IsCanCast =>
+        Vector3.Distance(_targetPoint, transform.position) <= Radius &&
+        NoObstacles(_targetPoint, transform.position, _obstacle);
 
-    private void OnDestroy()
-    {
-        OnSkillCanceled -= HandleSkillCanceled;
-    }
+    private void OnDestroy() => OnSkillCanceled -= HandleSkillCanceled;
 
-    private bool CheckCanCast()
-    {
-        if (_target == null)
-            return Vector3.Distance(_targetPoint, transform.position) <= Radius &&
-                   NoObstacles(_targetPoint, transform.position, _obstacle);
-
-        return Vector3.Distance(_targetPoint, transform.position) <= Radius &&
-               NoObstacles(_targetPoint, transform.position, _obstacle) ||
-               Vector3.Distance(_target.transform.position, transform.position) <= Radius &&
-               NoObstacles(_target.transform.position, transform.position, _obstacle);
-    }
-
-    protected override IEnumerator CastJob()
-    {
-        if (_target != null) CmdCreateProjectile(_target.transform);
-        else CmdCreateProjectileAtPosition(_targetPoint);
-
-        HandleSkillCanceled();
-        ClearData();
-        yield return null;
-    }
-
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callback)
     {
         OnSkillCanceled += HandleSkillCanceled;
-        Hero.Animator.speed = Hero.Animator.speed / CastDeley;
+        Hero.Animator.speed /= CastDeley;
 
-        while (float.IsPositiveInfinity(_targetPoint.x) && _target == null)
+        while (float.IsPositiveInfinity(_targetPoint.x))
         {
             if (GetMouseButton)
             {
-                _targetPoint = GetMousePoint();
-                _target = GetRaycastTarget(false);
+                Vector3 click = GetMousePoint();
 
-                if (_target != null && _target == _playerLinks)
+                if (IsPointInRadius(Radius, click) && NoObstacles(click, transform.position, _obstacle) && TryGetDamageableAtPoint(click, out var damageable))
                 {
-                    _playerLinks.CharacterState.CmdAddState(States.Astral, _projectile.Duration, 0, gameObject, "ShotAstral");
-                    ClearData();
-                    yield break;
-                }
+                    _targetPoint = click;
 
-                if (IsPointInRadius(Radius, _targetPoint) &&
-                    NoObstacles(_targetPoint, transform.position, _obstacle))
-                {
-                    if (_target != null && _target != _playerLinks)
+                    if (damageable is Character player && player == _playerLinks)
                     {
-                        _targetPoint = _target.transform.position;
-                        Hero.Move.LookAtTransform(_target.transform);
-                        Hero.Move.CanMove = false;
+                        _playerLinks.CharacterState.CmdAddState(States.Astral, _projectile.Duration, 0, gameObject, "ShotAstral");
+                        TryCancel(true);
+                        yield break;
                     }
 
-                    else
+                    if (damageable is Character character)
                     {
-                        Hero.Move.LookAtPosition(_targetPoint);
-                        Hero.Move.CanMove = false;
+                        _target = character;
+                        Hero.Move.LookAtTransform(character.transform);
                     }
+
+                    else Hero.Move.LookAtPosition(_targetPoint);
+                    Hero.Move.CanMove = false;
                 }
             }
             yield return null;
@@ -90,39 +61,59 @@ public class ShotAstral : Skill
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(_targetPoint);
-        callbackDataSaved(targetInfo);
+        callback(targetInfo);
+    }
+
+    protected override IEnumerator CastJob()
+    {
+        if (!IsCanCast)
+        {
+            HandleSkillCanceled();
+            ClearData();
+            yield break;
+        }
+
+        CmdCreateProjectileAtPosition(_targetPoint);
+        WorkAnimator(_startAnimTrigger, _endAnimTrigger);
+
+        HandleSkillCanceled();
+        ClearData();
     }
 
     private void HandleSkillCanceled()
     {
-        if (_hero != null && _hero.Move != null)
+        if (Hero?.Move != null)
         {
             Hero.Move.CanMove = true;
             Hero.Animator.speed = 1;
             Hero.Move.StopLookAt();
         }
-
-        WorkAnimator(_startAnimTrigger, _endAnimTrigger);
     }
 
-    private void WorkAnimator(string oldAnim, string newAnim)
+    private void WorkAnimator(string oldTrigger, string newTrigger)
     {
-        _hero.Animator.ResetTrigger(Animator.StringToHash(oldAnim));
-        _hero.NetworkAnimator.ResetTrigger(Animator.StringToHash(oldAnim));
+        _hero.Animator.ResetTrigger(Animator.StringToHash(oldTrigger));
+        _hero.NetworkAnimator.ResetTrigger(Animator.StringToHash(oldTrigger));
+        _hero.Animator.CrossFade(newTrigger, 0.1f);
+        CmdCrossFade(newTrigger);
+    }
 
-        _hero.Animator.CrossFade(newAnim, 0.1f);
-        CmdCrossFade(newAnim);
+    private bool TryGetDamageableAtPoint(Vector3 point, out IDamageable damageable)
+    {
+        damageable = null;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out var hit, Mathf.Infinity, _targetsLayers)) return hit.collider.TryGetComponent(out damageable);
+        return false;
     }
 
     [Command]
-    protected void CmdCreateProjectile(Transform target)
+    private void CmdCreateProjectileAtPosition(Vector3 position)
     {
-        if (target == null) return;
+        Vector3 spawnPoition = _spawnPoint ? _spawnPoint.position : transform.position;
+        Vector3 direction = (position - spawnPoition).normalized;
+        if (direction == Vector3.zero) return;
 
-        Vector3 spawnPosition = _spawnPoint != null ? _spawnPoint.position : transform.position;
-        Vector3 direction = (target.position - spawnPosition).normalized;
-
-        ArrowAstralProjectile projectile = Instantiate(_projectile, spawnPosition, Quaternion.LookRotation(direction));
+        var projectile = Instantiate(_projectile, spawnPoition, Quaternion.LookRotation(direction));
         projectile.Init(_playerLinks, 0, false, this);
         SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(projectile.gameObject);
@@ -130,36 +121,12 @@ public class ShotAstral : Skill
         RpcInit(projectile.gameObject);
     }
 
-    [Command]
-    protected void CmdCreateProjectileAtPosition(Vector3 position)
-    {
-        Vector3 spawnPosition = _spawnPoint != null ? _spawnPoint.position : transform.position;
-        Vector3 direction = (position - spawnPosition).normalized;
-
-        ArrowAstralProjectile projectile = Instantiate(_projectile, spawnPosition, Quaternion.LookRotation(direction));
-        projectile.Init(_playerLinks, 0, false, this);
-        SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
-        NetworkServer.Spawn(projectile.gameObject);
-        projectile.StartFly(direction);
-        RpcInit(projectile.gameObject);
-    }
-
-    [Command]
-    private void CmdCrossFade(string newAnim)
-    {
-        _hero.Animator.CrossFade(newAnim, 0.1f);
-    }
+    [Command] private void CmdCrossFade(string trigger) => _hero.Animator.CrossFade(trigger, 0.1f);
 
     [ClientRpc]
-    protected void RpcInit(GameObject gameObject)
+    private void RpcInit(GameObject gameObject)
     {
-        if (gameObject == null) return;
-
-        ArrowProjectile projectile = gameObject.GetComponent<ArrowProjectile>();
-        if (projectile != null)
-        {
-            projectile.Init(_playerLinks, 0, false, this);
-        }
+        if (gameObject && gameObject.TryGetComponent(out ArrowAstralProjectile arrowAstralProjectile)) arrowAstralProjectile.Init(_playerLinks, 0, false, this);
     }
 
     protected override void ClearData()
@@ -168,8 +135,5 @@ public class ShotAstral : Skill
         _targetPoint = Vector3.positiveInfinity;
     }
 
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        _targetPoint = targetInfo.Points[0];
-    }
+    public override void LoadTargetData(TargetInfo targetInfo) => _targetPoint = targetInfo.Points[0];
 }
