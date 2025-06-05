@@ -1,26 +1,20 @@
-using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SourceUI : MonoBehaviour, IGameSourceUI
+public class SourceWithImage : MonoBehaviour, IGameSourceUI
 {
-    [SerializeField] private TMP_Text _teamText1;
-    [SerializeField] private TMP_Text _teamText2;
+    [SerializeField] private List<Image> _imagesTeam1 = new List<Image>();
+    [SerializeField] private List<Image> _imagesTeam2 = new List<Image>();
+
     [SerializeField] private Image _winImage;
     [SerializeField] private TMP_Text _winText;
 
 
     private string _teamName1 = "Light";
     private string _teamName2 = "Dark";
-
-    private void Start()
-    {
-        _teamText1.text = _teamName1 + ": " + 0;
-        _teamText2.text = _teamName2 + ": " + 0;
-    }
 
     public void SetSource(int teamIndex, int source)
     {
@@ -29,10 +23,10 @@ public class SourceUI : MonoBehaviour, IGameSourceUI
         switch (teamIndex)
         {
             case 0:
-                _teamText1.text = _teamName1 + ": " + source;
+                _imagesTeam1[--source].color = Color.white;
                 break;
             case 1:
-                _teamText2.text = _teamName2 + ": " + source;
+                _imagesTeam2[--source].color = Color.white;
                 break;
 
             default:
@@ -40,25 +34,6 @@ public class SourceUI : MonoBehaviour, IGameSourceUI
                 break;
         }
     }
-
-    /*
-    public void SetSource(int teamIndex, int source)
-    {
-        switch (teamIndex)
-        {
-            case 1:
-                _teamText1.text = _teamName1 + ": " + source;
-                break;
-            case 2:
-                _teamText2.text = _teamName2 + ": " + source;
-                break;
-
-            default:
-                Debug.LogError("team not founded");
-                break;
-        }
-    }
-    */
 
     public void ShowWinner(int teamIndex)
     {

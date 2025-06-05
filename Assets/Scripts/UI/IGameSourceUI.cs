@@ -4,5 +4,6 @@ using UnityEngine;
 
 public interface IGameSourceUI
 {
-
+    public void SetSource(int teamIndex, int source);
+    public void ShowWinner(int teamIndex);
 }
