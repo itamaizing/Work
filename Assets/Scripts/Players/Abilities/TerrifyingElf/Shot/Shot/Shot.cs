@@ -30,6 +30,11 @@ public class Shot : Skill
         OnSkillCanceled -= HandleSkillCanceled;
     }
 
+    private void OnEnable()
+    {
+        OnSkillCanceled += HandleSkillCanceled;
+    }
+
     private void Start()
     {
         _audioSource = GetComponent<AudioSource>();
@@ -37,7 +42,6 @@ public class Shot : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        OnSkillCanceled += HandleSkillCanceled;
         Hero.Animator.speed = Hero.Animator.speed / CastDeley;
 
         while (float.IsPositiveInfinity(_targetPoint.x))

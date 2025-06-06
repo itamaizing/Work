@@ -10086,29 +10086,8 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8192
-  impactPrefab: {fileID: 2102560157480070522, guid: d8aef2d7788484b45a62c1cb9ff2627a, type: 3}
-  impactLifeTime: 2
-  _zones:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  playerLinks: {fileID: 4534754468497973439}
+  impactPrefab: {fileID: -5983841691116529863, guid: d8aef2d7788484b45a62c1cb9ff2627a, type: 3}
 --- !u!114 &679409545534796012
 MonoBehaviour:
   m_ObjectHideFlags: 0

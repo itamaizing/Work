@@ -56,7 +56,7 @@ public class SkillManager : MonoBehaviour
 
     public void CancleAllSkills()
     {
-        while(_selectedSkill != null && _selectedSkill.IsPreparing)
+        while (_selectedSkill != null && _selectedSkill.IsPreparing)
         {
             CancelSkillCast();
         }
@@ -74,35 +74,35 @@ public class SkillManager : MonoBehaviour
         }
     }
 
-	private void ScrollMouse(float value)
-	{
+    private void ScrollMouse(float value)
+    {
         if (_selectedSkill == null) return;
-        
-		var index = Array.IndexOf(_selectedSkills, _selectedSkill);
 
-		if (value > 0)
-        {            
-            if(index - 1 < 0)
+        var index = Array.IndexOf(_selectedSkills, _selectedSkill);
+
+        if (value > 0)
+        {
+            if (index - 1 < 0)
             {
                 index = _skills.Count;
-			}
-			SelectSkill(index - 1);
-		}
-        if(value < 0)
+            }
+            SelectSkill(index - 1);
+        }
+        if (value < 0)
         {
-			if (index >= _skills.Count)
-			{
+            if (index >= _skills.Count)
+            {
                 index = 0;
-			}
-			SelectSkill(index + 1);
-		}
-       
-	}
+            }
+            SelectSkill(index + 1);
+        }
+
+    }
 
     private void AddToSkillLists(Skill skill)
     {
-            _simpleSkills.Add(skill);
-            skill.CastStarted += GlobalCooldown;
+        _simpleSkills.Add(skill);
+        skill.CastStarted += GlobalCooldown;
     }
 
     private void SkillInit(Skill skill)
@@ -130,7 +130,7 @@ public class SkillManager : MonoBehaviour
                 break;
             }
         }
-        
+
         skill.IsSkillActive = true;
         SkillAdded?.Invoke(skill);
     }
@@ -150,7 +150,7 @@ public class SkillManager : MonoBehaviour
                 break;
             }
         }
-        
+
         skill.IsSkillActive = false;
         SkillRemoved?.Invoke(skill);
     }
@@ -202,7 +202,7 @@ public class SkillManager : MonoBehaviour
 
     private void PrepereSkill()
     {
-        if(_selectedSkill != null)
+        if (_selectedSkill != null)
         {
             _selectedSkill.TryPreparing();
         }
@@ -229,7 +229,7 @@ public class SkillManager : MonoBehaviour
             SkillQueue.TryCancel();
         }
 
-        else if(_selectedSkill != null)
+        else if (_selectedSkill != null)
         {
             DeselectSkill();
         }
@@ -241,7 +241,7 @@ public class SkillManager : MonoBehaviour
         {
             PrepereSkill();
         }
-	}
+    }
 
     private bool SelectSkill(int index)
     {
@@ -301,7 +301,7 @@ public class SkillManager : MonoBehaviour
     {
         foreach (var item in _skills)
         {
-            if(item.IsSubjectToGlobalCooldownTime)
+            if (item.IsSubjectToGlobalCooldownTime)
                 item.IncreaseSetCooldown(_globalCooldownTime);
         }
     }
@@ -321,13 +321,13 @@ public class SkillManager : MonoBehaviour
 
     private void OnPreperingSuccess(Skill skill)
     {
-        if(_selectedSkill.IsAutoMode)
+        if (_selectedSkill.IsAutoMode)
         {
             _autoSkillCast.SetSkill(skill, skill.TargetInfoQueue.Dequeue());
 
             foreach (var item in _simpleSkills)
             {
-                if(_selectedSkill == item)
+                if (_selectedSkill == item)
                     return;
 
                 item.CastStarted += _autoSkillCast.Pause;
@@ -338,14 +338,14 @@ public class SkillManager : MonoBehaviour
         else
         {
             SkillQueue.Add(_selectedSkill);
-        }     
+        }
     }
 
     private void AutoSkillUsed(Skill skill)
     {
         foreach (var item in _skills)
         {
-            if(item != skill)
+            if (item != skill)
             {
                 item.TryCancel(true);
             }

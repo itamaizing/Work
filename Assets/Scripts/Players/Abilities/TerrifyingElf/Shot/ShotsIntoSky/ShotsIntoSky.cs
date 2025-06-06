@@ -11,24 +11,12 @@ public class ShotsIntoSky : Skill
     [SerializeField] private bool tripleShotTalentActive;
     [SerializeField] private bool shotAstralManaActive;
     [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private HeroComponent playerLinks;
 
     [Header("Arrows Effects Settings")]
-    [SerializeField] private GameObject impactPrefab;
-    [SerializeField] private float impactLifeTime = 2;
+    [SerializeField] private ArrowsIntoSkyProjectile impactPrefab;
 
-    private const int ZONE_BUFFER_SIZE = 20;
-
-    /// <remarks>
-    ///   _head  Ц индекс самой старой (будет использована первой при CastJob).  
-    ///   _tail  Ц куда писать новую.  
-    ///   _count Ц сколько реально €чеек зан€то.
-    /// </remarks>
-    [SerializeField] private CircleArea[] _zones = new CircleArea[ZONE_BUFFER_SIZE];
-    private int _head;
-    private int _tail;
-    private int _count;
-
-
+    private readonly SyncList<uint> _arrowsIntoSkyProjectileIds = new SyncList<uint>();
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private bool _tripleShot;
 
@@ -36,124 +24,80 @@ public class ShotsIntoSky : Skill
     protected override int AnimTriggerCastDelay => Animator.StringToHash("ShotSkyCastDelay");
     protected override int AnimTriggerCast => 0;
 
+    private void OnDestroy()
+    {
+        //Canceled -= HandleManualCancel;
+    }
+
+    private void OnEnable()
+    {
+        //Canceled += HandleManualCancel;
+    }
+
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         _hero.Animator.speed = CastDeley;
 
         while (float.IsPositiveInfinity(_targetPoint.x) && !_disactive)
         {
-            if (GetMouseButton && IsCanCast) if (TryGetGroundPoint(out Vector3 ground) && IsPointInRadius(Radius, ground)) _targetPoint = ground;
+            if (GetMouseButton && IsCanCast)
+            {
+                if (TryGetGroundPoint(out Vector3 ground) && IsPointInRadius(Radius, ground)) _targetPoint = ground;
+            }
             yield return null;
         }
 
-        DrawDamageZone(_targetPoint);
-        var damageZone = DrawDamageZone(_targetPoint);
-        AddZone(damageZone);
+        CmdSpawnImpact(_targetPoint);
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(_targetPoint);
         callbackDataSaved(targetInfo);
     }
 
-    private void RemoveNewestZone()
-    {
-        if (_count == 0) return;
-
-        int newestIdx = (_tail - 1 + ZONE_BUFFER_SIZE) % ZONE_BUFFER_SIZE;
-        if (IsZoneValid(_zones[newestIdx])) Destroy(_zones[newestIdx].gameObject);
-
-        _zones[newestIdx] = null;
-        _tail = newestIdx;
-        _count--;
-    }
-
-    private static bool IsZoneValid(CircleArea damageZone) => damageZone != null;
-
     protected override IEnumerator CastJob()
     {
-        CmdSpawnImpact(_targetPoint);
-        yield return new WaitForSeconds(0.6f);
-
-        var damageZone = ConsumeOldestZone();
-        if (damageZone) ApplyDamageToEnemiesInZone(damageZone);
+        CmdExecuteCast();
+        yield return null;
+        _hero.Animator.speed = 1f;
     }
 
     #region ApplyDamageToEnemiesInZone
-    private void ApplyDamageToEnemiesInZone(CircleArea damageZone)
+    [Server]
+    private void ApplyDamageToEnemiesInZone(SphereCollider damageZone)
     {
-        if (damageZone != null)
+        if (damageZone == null) return;
+
+        float radius = damageZone.radius * damageZone.transform.lossyScale.x;
+
+        Collider[] hits = Physics.OverlapSphere(damageZone.transform.position, radius, TargetsLayers);
+
+        foreach (var hit in hits)
         {
-            Collider[] enemyColliders = Physics.OverlapSphere(damageZone.transform.position, Area, TargetsLayers);
-            Collider[] objectColliders = Physics.OverlapSphere(damageZone.transform.position, Area);
+            if (hit.gameObject == Hero.gameObject) continue;
 
-            foreach (var enemyCollider in enemyColliders)
+            if (hit.TryGetComponent<IDamageable>(out var target))
             {
-                if (enemyCollider.TryGetComponent<IDamageable>(out IDamageable target) && enemyCollider != Hero.gameObject)
+                ApplyDamage(Damage, DamageType.Magical, target);
+
+                if (hit.TryGetComponent<Character>(out var character))
                 {
-                    ApplyDamage(Damage, DamageType.Magical, target);
+                    var state = character.CharacterState;
+                    if (state == null) continue;
 
-                    if (enemyCollider.TryGetComponent<Character>(out Character character))
-                    {
-                        var targetState = character.CharacterState;
+                    CmdAddState(state);
 
-                        if (targetState != null)
-                        {
-                            CmdAddState(targetState);
+                    if (shotAstralManaActive && state.CheckForState(States.Astral))
+                        RestoreMana();
 
-                            if (shotAstralManaActive && targetState.CheckForState(States.Astral)) RestoreMana();
-
-                            if (targetState.CheckForState(States.Silent) && silenceTalentActive) CmdAddWeakeningSilence(targetState);
-                        }
-                    }
+                    if (silenceTalentActive &&
+                        state.CheckForState(States.Silent))
+                        CmdAddWeakeningSilence(state);
                 }
             }
-
-            foreach (var objectCollider in objectColliders)
-            {
-                if (objectCollider.TryGetComponent<ReconnaissanceFireAura>(out ReconnaissanceFireAura aura) && tripleShotTalentActive)
-                {
-                    if (FindObjectOfType<NatureTalent_6>() != null && !_tripleShot)
-                    {
-                        _tripleShot = true;
-                        StartCoroutine(SpawnAdditionalDamageZones(aura));
-                    }
-                }
-            }
-
-            if (!_tripleShot) StopDamageZone();
         }
     }
     #endregion
-
-    private void AddZone(CircleArea zone)
-    {
-        if (!zone) return;
-
-        if (_count == ZONE_BUFFER_SIZE)
-        {
-            if (_zones[_head]) Destroy(_zones[_head].gameObject);
-            _head = (_head + 1) % ZONE_BUFFER_SIZE;
-            _count--;
-        }
-
-        _zones[_tail] = zone;
-        _tail = (_tail + 1) % ZONE_BUFFER_SIZE;
-        _count++;
-    }
-
-    private CircleArea ConsumeOldestZone()
-    {
-        if (_count == 0) return null;
-
-        var zone = _zones[_head];
-        _zones[_head] = null;
-        _head = (_head + 1) % ZONE_BUFFER_SIZE;
-        _count--;
-
-        if (zone) Destroy(zone.gameObject);
-
-        return zone;
-    }
 
     private void ApplyDamage(float damage, DamageType damageType, IDamageable target)
     {
@@ -170,6 +114,14 @@ public class ShotsIntoSky : Skill
             //CmdApplyDamage(targetComponent.gameObject, _damage, null);
         }
     }
+
+    //private void HandleManualCancel()
+    //{
+    //    if (_arrowsIntoSkyProjectileIds.Count == 0) return;
+
+    //    if (isServer) CancelPendingProjectile();
+    //    else CmdCancelPendingProjectile();
+    //}
 
     private bool TryGetGroundPoint(out Vector3 groundPoint)
     {
@@ -197,10 +149,13 @@ public class ShotsIntoSky : Skill
     {
         if (!impactPrefab) return;
 
-        GameObject impact = Instantiate(impactPrefab, position, Quaternion.identity);
-        NetworkServer.Spawn(impact);
+        ArrowsIntoSkyProjectile impact = Instantiate(impactPrefab, position, Quaternion.identity);
+        impact.Init(playerLinks, this);
+        NetworkServer.Spawn(impact.gameObject);
 
-        RpcScheduleDestroy(impact, impactLifeTime);
+        _arrowsIntoSkyProjectileIds.Add(impact.GetComponent<NetworkIdentity>().netId);
+
+        RpcInit(impact.gameObject);
     }
 
     [Command]
@@ -215,11 +170,54 @@ public class ShotsIntoSky : Skill
         targetState.AddState(States.WeakeningSilence, 4, 4, Hero.gameObject, this.name);
     }
 
-    [ClientRpc]
-    private void RpcScheduleDestroy(GameObject impact, float lifeTime)
+    [Command]
+    private void CmdExecuteCast()
     {
-        if (impact == null) return;
-        Destroy(impact, lifeTime);
+        CleanupProjectileList();
+
+        if (_arrowsIntoSkyProjectileIds.Count == 0) return;
+
+        uint id = _arrowsIntoSkyProjectileIds[0];
+        _arrowsIntoSkyProjectileIds.RemoveAt(0);
+
+        if (!NetworkServer.spawned.TryGetValue(id, out var networkIdentity)) return;
+
+        var projectile = networkIdentity.GetComponent<ArrowsIntoSkyProjectile>();
+        projectile.Activate();
+        RpcActivate(projectile);
+
+        ApplyDamageToEnemiesInZone(projectile.DamageCollider);
+    }
+
+    //[Command]
+    //private void CmdCancelPendingProjectile()
+    //{
+    //    CancelPendingProjectile();
+    //}
+
+    //[Server]
+    //private void CancelPendingProjectile()
+    //{
+    //    uint id = _arrowsIntoSkyProjectileIds[0];
+    //    _arrowsIntoSkyProjectileIds.RemoveAt(0);
+
+    //    if (NetworkServer.spawned.TryGetValue(id, out var ni) && ni != null)
+    //        NetworkServer.Destroy(ni.gameObject);
+    //}
+
+    [ClientRpc]
+    protected void RpcInit(GameObject gameObject)
+    {
+        if (gameObject == null) return;
+
+        ArrowsIntoSkyProjectile impact = gameObject.GetComponent<ArrowsIntoSkyProjectile>();
+        if (impact != null) impact.Init(playerLinks, this);
+    }
+
+    [ClientRpc]
+    private void RpcActivate(ArrowsIntoSkyProjectile projectile)
+    {
+        projectile.Activate();
     }
 
     //[Command]
@@ -231,10 +229,16 @@ public class ShotsIntoSky : Skill
     //    }
     //}
 
+    [Server]
+    private void CleanupProjectileList()
+    {
+        for (int i = _arrowsIntoSkyProjectileIds.Count - 1; i >= 0; i--)
+            if (!NetworkServer.spawned.TryGetValue(_arrowsIntoSkyProjectileIds[i], out var ni) || ni == null) _arrowsIntoSkyProjectileIds.RemoveAt(i);
+    }
+
     protected override void ClearData()
     {
         _targetPoint = Vector3.positiveInfinity;
-        RemoveNewestZone();
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
