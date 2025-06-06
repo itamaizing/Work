@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class TalentInfoPanel : MonoBehaviour
 {
     [SerializeField] private TalentInfoCell _cellPref;
+    [SerializeField] private TMP_Text _name;
 
     private List<TalentInfoCell> _cells = new();
 
@@ -20,11 +22,13 @@ public class TalentInfoPanel : MonoBehaviour
 
             cell.ShowDividingLine();
 
-            cell.Text.text = text;
+            cell.TextDescription.text = text;
         }
 
         if(_cells != null && _cells.Count > 0)
             _cells[^1].HideDividingLine();
+
+        _name.text = data.Name;
     }
 
     public void Hide()
