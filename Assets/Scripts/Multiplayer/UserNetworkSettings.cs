@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -41,8 +42,9 @@ public class UserNetworkSettings : NetworkBehaviour
             return _cachedHealth;
         }
     }
-
     public string RoomName { get => _roomName; }
+
+    public event Action<int> LayerMaskChanged;
 
     public void SetSpawnPosition(Vector3 position)
     {
@@ -69,7 +71,6 @@ public class UserNetworkSettings : NetworkBehaviour
     {
         foreach (var item in Players)
         {
-
             if (item.GetComponent<UserNetworkSettings>().TeamIndex != _teamIndex)
             {
                 item.gameObject.layer = LayerMask.NameToLayer("Enemy");
@@ -81,6 +82,7 @@ public class UserNetworkSettings : NetworkBehaviour
                 item.gameObject.layer = LayerMask.NameToLayer("Allies");
                 _allies.Add(item.GetComponent<HeroComponent>());
             }
+            LayerMaskChanged?.Invoke(item.gameObject.layer);
         }
     }
 }

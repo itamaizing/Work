@@ -64,6 +64,6 @@ public class LvlInfo : MonoBehaviour
     private void UpdateInfo()
     {
 		_lvlBar.value = (float)_expValue / _maxExpValue;
-		_LvlText.text = "LVL: " + _lvlValue;
+		_LvlText.text = _lvlValue.ToString();
 	}
 }

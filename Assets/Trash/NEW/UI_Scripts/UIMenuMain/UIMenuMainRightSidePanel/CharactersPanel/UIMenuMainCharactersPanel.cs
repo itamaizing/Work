@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -16,6 +18,12 @@ public class UIMenuMainCharactersPanel : MonoBehaviour
     
     public void Show()
     {
+        if (ServerManager.Instance == null || ServerManager.Instance.HeroList == null)
+        {
+            StartCoroutine(ShowJob());
+            return;
+        }
+           
         var charactersGroup = ServerManager.Instance.HeroList;
 
         foreach (var item in charactersGroup)
@@ -30,6 +38,15 @@ public class UIMenuMainCharactersPanel : MonoBehaviour
         {
             _characters[0].Select();   
         }
+    }
+
+    private IEnumerator ShowJob()
+    {
+        while (ServerManager.Instance == null || ServerManager.Instance.HeroList == null)
+        {
+            yield return null;
+        }
+        Show();
     }
 
     void OnPlayerSelected(HeroComponent hero)

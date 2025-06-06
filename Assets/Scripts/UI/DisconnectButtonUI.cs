@@ -25,7 +25,7 @@ public class DisconnectButtonUI : MonoBehaviour
     {
         var gameRules = FindObjectOfType<GameRules>();
 
-        if (gameRules != null)
+        if (gameRules != null && gameRules.IsStarted)
         {
             gameRules.CloseRoomOnClient();
         }
@@ -34,7 +34,7 @@ public class DisconnectButtonUI : MonoBehaviour
             HeroComponent[] hero = FindObjectsOfType<HeroComponent>();
             foreach (var item in hero)
             {
-                if (item.connectionToClient == NetworkClient.connection)
+                if (item.isOwned == true)
                 {
                     var roomName = item.NetworkSettings.RoomName;
                     item.DestroySelf();

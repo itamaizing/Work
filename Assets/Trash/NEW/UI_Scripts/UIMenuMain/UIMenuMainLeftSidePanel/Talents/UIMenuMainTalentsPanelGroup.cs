@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -17,6 +19,9 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
 
     private TalentsGroup _talentsGroup;
     private UIMenuMainAttributesPanel _attributesPanel;
+
+    public event Action<TalentData> PointerEnteredOnTalentIcon;
+    public event Action<TalentData> PointerExitedOnTalentIcon;
 
     public void SetPanel(TalentsGroup talentsGroup, UIMenuMainAttributesPanel attributesPanel, bool isGameUI)
     {
@@ -36,7 +41,10 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
             talent.Fill(item.Data);
             
             talent.Selected += OnTalentSelected;
-            
+            talent.PointerEntered += OnPointerEnteredOnTalentIcon;
+            talent.PointerExited += OnPointerExitedOnTalentIcon;
+
+
             _talents.Add(talent);
         }
     }
@@ -46,6 +54,8 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
         foreach (var talent in _talents)
         {
             talent.Selected -= OnTalentSelected;
+            talent.PointerEntered -= OnPointerEnteredOnTalentIcon;
+            talent.PointerExited -= OnPointerExitedOnTalentIcon;
         }
     }
 
@@ -86,5 +96,15 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
     public void Destroy()
     {
         Destroy(gameObject);
+    }
+
+    private void OnPointerEnteredOnTalentIcon(TalentData talent)
+    {
+        PointerEnteredOnTalentIcon?.Invoke(talent);
+    }
+
+    private void OnPointerExitedOnTalentIcon(TalentData talent)
+    {
+        PointerExitedOnTalentIcon?.Invoke(talent);
     }
 }
