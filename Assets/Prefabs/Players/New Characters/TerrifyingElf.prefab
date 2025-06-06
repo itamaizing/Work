@@ -9816,7 +9816,7 @@ MonoBehaviour:
   _abilityForm: 2
   _damageType: 1
   _attackRangeType: 1
-  _skillType: 0
+  _skillType: 2
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -10054,7 +10054,7 @@ MonoBehaviour:
   _abilityForm: 1
   _damageType: 0
   _attackRangeType: 1
-  _skillType: 0
+  _skillType: 2
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -10088,6 +10088,27 @@ MonoBehaviour:
     m_Bits: 8192
   impactPrefab: {fileID: 2102560157480070522, guid: d8aef2d7788484b45a62c1cb9ff2627a, type: 3}
   impactLifeTime: 2
+  _zones:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &679409545534796012
 MonoBehaviour:
   m_ObjectHideFlags: 0

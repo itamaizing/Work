@@ -16,6 +16,19 @@ public class ShotsIntoSky : Skill
     [SerializeField] private GameObject impactPrefab;
     [SerializeField] private float impactLifeTime = 2;
 
+    private const int ZONE_BUFFER_SIZE = 20;
+
+    /// <remarks>
+    ///   _head  Ц индекс самой старой (будет использована первой при CastJob).  
+    ///   _tail  Ц куда писать новую.  
+    ///   _count Ц сколько реально €чеек зан€то.
+    /// </remarks>
+    [SerializeField] private CircleArea[] _zones = new CircleArea[ZONE_BUFFER_SIZE];
+    private int _head;
+    private int _tail;
+    private int _count;
+
+
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private bool _tripleShot;
 
@@ -29,34 +42,45 @@ public class ShotsIntoSky : Skill
 
         while (float.IsPositiveInfinity(_targetPoint.x) && !_disactive)
         {
-            if (GetMouseButton && IsCanCast)
-            {
-                if (TryGetGroundPoint(out Vector3 ground) && IsPointInRadius(Radius, ground)) _targetPoint = ground;
-            }
+            if (GetMouseButton && IsCanCast) if (TryGetGroundPoint(out Vector3 ground) && IsPointInRadius(Radius, ground)) _targetPoint = ground;
             yield return null;
         }
 
         DrawDamageZone(_targetPoint);
+        var damageZone = DrawDamageZone(_targetPoint);
+        AddZone(damageZone);
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(_targetPoint);
         callbackDataSaved(targetInfo);
     }
 
+    private void RemoveNewestZone()
+    {
+        if (_count == 0) return;
+
+        int newestIdx = (_tail - 1 + ZONE_BUFFER_SIZE) % ZONE_BUFFER_SIZE;
+        if (IsZoneValid(_zones[newestIdx])) Destroy(_zones[newestIdx].gameObject);
+
+        _zones[newestIdx] = null;
+        _tail = newestIdx;
+        _count--;
+    }
+
+    private static bool IsZoneValid(CircleArea damageZone) => damageZone != null;
+
     protected override IEnumerator CastJob()
     {
         CmdSpawnImpact(_targetPoint);
         yield return new WaitForSeconds(0.6f);
 
-        ApplyDamageToEnemiesInZone();
-        _hero.Animator.speed = 1f;
+        var damageZone = ConsumeOldestZone();
+        if (damageZone) ApplyDamageToEnemiesInZone(damageZone);
     }
 
     #region ApplyDamageToEnemiesInZone
-    private void ApplyDamageToEnemiesInZone()
+    private void ApplyDamageToEnemiesInZone(CircleArea damageZone)
     {
-        CircleArea damageZone = skillRenderer.TempDamageZone;
-
         if (damageZone != null)
         {
             Collider[] enemyColliders = Physics.OverlapSphere(damageZone.transform.position, Area, TargetsLayers);
@@ -100,6 +124,36 @@ public class ShotsIntoSky : Skill
         }
     }
     #endregion
+
+    private void AddZone(CircleArea zone)
+    {
+        if (!zone) return;
+
+        if (_count == ZONE_BUFFER_SIZE)
+        {
+            if (_zones[_head]) Destroy(_zones[_head].gameObject);
+            _head = (_head + 1) % ZONE_BUFFER_SIZE;
+            _count--;
+        }
+
+        _zones[_tail] = zone;
+        _tail = (_tail + 1) % ZONE_BUFFER_SIZE;
+        _count++;
+    }
+
+    private CircleArea ConsumeOldestZone()
+    {
+        if (_count == 0) return null;
+
+        var zone = _zones[_head];
+        _zones[_head] = null;
+        _head = (_head + 1) % ZONE_BUFFER_SIZE;
+        _count--;
+
+        if (zone) Destroy(zone.gameObject);
+
+        return zone;
+    }
 
     private void ApplyDamage(float damage, DamageType damageType, IDamageable target)
     {
@@ -180,6 +234,7 @@ public class ShotsIntoSky : Skill
     protected override void ClearData()
     {
         _targetPoint = Vector3.positiveInfinity;
+        RemoveNewestZone();
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)

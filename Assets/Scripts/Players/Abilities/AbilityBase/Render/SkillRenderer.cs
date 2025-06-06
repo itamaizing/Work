@@ -58,17 +58,17 @@ public class SkillRenderer : NetworkBehaviour
     [ClientRpc]
     public void RpcDrawDamageZone(Vector3 position, float radius, Damage damage, GameObject player)
     {
-		/* _tempDamageZone = Instantiate(_damageZonePref, position, Quaternion.identity);
+        /* _tempDamageZone = Instantiate(_damageZonePref, position, Quaternion.identity);
 		 _tempDamageZone.SetSize(radius, damage);
 
 		 Color zoneColor = player.layer == LayerMask.NameToLayer("Allies") ? _colorForAllies : _colorForEnemies;
 		 _tempDamageZone.SetColor(zoneColor);*/
 
-		_tempArea = Instantiate(_damageZonePref, position, Quaternion.identity);
-		_tempArea.SetSize(radius, damage);
+        _tempArea = Instantiate(_damageZonePref, position, Quaternion.identity);
+        _tempArea.SetSize(radius, damage);
 
 		Color zoneColor = player.layer == LayerMask.NameToLayer("Allies") ? _colorForAllies : _colorForEnemies;
-		_tempArea.SetColor(zoneColor);
+        _tempArea.SetColor(zoneColor);
 	}
 
     [Command]
@@ -89,6 +89,17 @@ public class SkillRenderer : NetworkBehaviour
 			Destroy(_tempArea.gameObject);
 		}
 	}
+
+    public CircleArea SpawnDamageZoneLocal(Vector3 pos, float radius, Damage damage, GameObject owner)
+    {
+        var zone = Instantiate(_damageZonePref, pos, Quaternion.identity);
+        zone.SetSize(radius, damage);
+
+        var collider = owner.layer == LayerMask.NameToLayer("Allies") ? _colorForAllies : _colorForEnemies;
+        zone.SetColor(collider);
+
+        return zone;
+    }
 
     public void DrawRadius(float radius)
     {

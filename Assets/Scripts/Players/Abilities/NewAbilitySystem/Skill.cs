@@ -515,14 +515,14 @@ public abstract class Skill : NetworkBehaviour
         }
     }
 
-    public void DrawDamageZone(Vector3 position)
+    public CircleArea DrawDamageZone(Vector3 position)
     {
-        Damage damage = new Damage
-        {
-            Value = Damage,
-            Type = DamageType,
-        };
-        _skillRender.CmdDrawDamageZone(position, Area, damage, _hero.gameObject);
+        var damageZone = new Damage { Value = Damage, Type = DamageType };
+
+        var zone = _skillRender.SpawnDamageZoneLocal(position, Area, damageZone, _hero.gameObject);
+        _skillRender.CmdDrawDamageZone(position, Area, damageZone, _hero.gameObject);
+
+        return zone;
     }
 
     public void StopDamageZone()
