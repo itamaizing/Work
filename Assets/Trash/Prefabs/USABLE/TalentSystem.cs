@@ -32,6 +32,8 @@ public abstract class Talent : MonoBehaviour
 [Serializable]
 public class TalentData
 {
+    [SerializeField] private List<string> _descriptionsForInfoPanel;
+
     private string _name;
     public bool IsOpen;
 
@@ -47,6 +49,9 @@ public class TalentData
             _name = value;
         }
     }
+
+    public List<string> DescriptionsForInfoPanel { get => _descriptionsForInfoPanel; }
+
     public TalentData(string name, bool isOpen)
     {
        // Name = name;

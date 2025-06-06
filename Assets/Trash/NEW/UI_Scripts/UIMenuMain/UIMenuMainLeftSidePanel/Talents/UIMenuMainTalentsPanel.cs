@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public class UIMenuMainTalentsPanel : MonoBehaviour
 {
     [SerializeField] private UIMenuMainAttributesPanel _attributesPanel;
     [SerializeField] private UIMenuMainTalentsPanelGroup _talentsPanelGroup;
     [SerializeField] private RectTransform _itemsParent;
+    [SerializeField] private TalentInfoPanel _talentInfoPanel;
     
     private List<UIMenuMainTalentsPanelGroup> ItemsPool = new();
     
@@ -22,8 +24,12 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
             var panel = Instantiate(_talentsPanelGroup, _itemsParent);
             
             panel.SetPanel(data, _attributesPanel, isGameUI);
+
             panel.OnShowPanelGroup += HidePanels;
-            
+            panel.PointerEnteredOnTalentIcon += ShowTalentInfo;
+            panel.PointerExitedOnTalentIcon += HideTalentInfo;
+
+
             ItemsPool.Add(panel);
         }
     }
@@ -33,6 +39,8 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
         foreach (var item in ItemsPool)
         {
             item.OnShowPanelGroup -= HidePanels;
+            item.PointerEnteredOnTalentIcon -= ShowTalentInfo;
+            item.PointerExitedOnTalentIcon -= HideTalentInfo;
         }
     }
 
@@ -53,5 +61,15 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
         {
             item.Hide();
         }
+    }
+
+    private void ShowTalentInfo(TalentData data)
+    {
+        _talentInfoPanel.Show(data);
+    }
+
+    private void HideTalentInfo(TalentData data)
+    {
+        _talentInfoPanel.Hide();
     }
 }
