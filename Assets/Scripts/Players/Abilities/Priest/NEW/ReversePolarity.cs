@@ -10,9 +10,18 @@ public class ReversePolarity : Skill
     [SerializeField] private Restoration restoration;
     [SerializeField] private PriestShield priestShield;
 
-    protected override int AnimTriggerCastDelay => 0;
+    [SerializeField] private AudioClip audioClip;
+
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("Cast");
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => true;
+
+    private AudioSource _audioSource;
+
+    private void Start()
+    {
+        _audioSource = GetComponent<AudioSource>();
+    }
 
     private void OnEnable()
     {
@@ -48,6 +57,8 @@ public class ReversePolarity : Skill
 
     if (!TryPayCost()) yield break;
 
+    CmdPlayShootSound();
+
     yield return new WaitForSeconds(CastDeley);
 
     SwitchSpells();
@@ -67,7 +78,7 @@ public class ReversePolarity : Skill
     CmdAddBaff(States.ReversePolarity, -1f, 0, transform.gameObject, Name);
     }
 
-    private void RemoveReversePolarityEffect()
+    public void RemoveReversePolarityEffect()
     {
     CmdRemoveBuff(States.ReversePolarity, Hero.gameObject);
     }
@@ -86,12 +97,24 @@ public class ReversePolarity : Skill
     characterState.RemoveState(state);
     }
 
-    private void SwitchSpells()
+    [Command]
+    private void CmdPlayShootSound()
+    {
+        RpcPlayShotSound();
+    }
+
+    [ClientRpc]
+    private void RpcPlayShotSound()
+    {
+        if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
+    }
+
+    public void SwitchSpells()
     {
     sparkOfLight.SwitchMode();
     flashOfLight.SwitchMode();
     restoration.SwitchMode();
-    priestShield.SwitchMode();
+    //priestShield.SwitchMode();
     }
 
     protected override void ClearData()

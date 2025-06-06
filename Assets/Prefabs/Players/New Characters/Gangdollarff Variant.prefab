@@ -6609,6 +6609,18 @@ PrefabInstance:
       propertyPath: _skills.Array.data[4]
       value: 
       objectReference: {fileID: 4513784415459898283}
+    - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: materialsCharacter.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: materialsCharacter.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f2ee7d2ed1f424a47a67bd0dbe5ceb84, type: 2}
+    - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: materialsCharacter.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: bfb0835dcb5653d40956a4576b667f2d, type: 2}
     - target: {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _playerData
       value: 
@@ -6780,6 +6792,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 1
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 1
   _maxCharges: 3
   _chargeCooldown: 24
@@ -6791,6 +6804,7 @@ MonoBehaviour:
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
+  _disactive: 0
   _shieldPref: {fileID: 1158249924082485831, guid: 13647bb6f83d1b34c8c511be314fb9d3, type: 3}
   _shieldValue: 40
   _shieldDuration: 2
@@ -6834,6 +6848,7 @@ MonoBehaviour:
   - resourceType: 1
     resourceCost: 3
   _isUseCharges: 0
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
@@ -6845,6 +6860,7 @@ MonoBehaviour:
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
+  _disactive: 0
   _firework: {fileID: 3150633468305956490}
 --- !u!114 &7914139750777672279
 MonoBehaviour:
@@ -6886,6 +6902,7 @@ MonoBehaviour:
   - resourceType: 1
     resourceCost: 3
   _isUseCharges: 1
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 2
   _chargeCooldown: 18
@@ -6897,6 +6914,7 @@ MonoBehaviour:
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
+  _disactive: 0
   _deleyTelekines: 0.5
   _amountOfLift: 1.5
 --- !u!114 &4651608391275017639
@@ -6937,6 +6955,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 1
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 3
   _chargeCooldown: 15
@@ -6948,6 +6967,7 @@ MonoBehaviour:
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
+  _disactive: 0
   _particle: {fileID: 3994345256487826021}
   _pushRange: 1
   _pushDuration: 0.33
@@ -6991,6 +7011,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 1
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 2
   _chargeCooldown: 16
@@ -7002,6 +7023,7 @@ MonoBehaviour:
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
+  _disactive: 0
   _lineRenderer: {fileID: 3792777773710482975}
   _fisuraPref: {fileID: 3452147409339536588, guid: ffab2755e011e1947ba5197ed189e92b, type: 3}
   _fisuraDuration: 6

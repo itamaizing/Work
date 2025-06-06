@@ -13,13 +13,12 @@ public class LightningStrikes : AutoAttackSkill
     [SerializeField] private LightningMovement _lightningMovement;
     [SerializeField] private CreeperStrike _creeperStrike;
     [SerializeField] private Character _player;
-
+    
     private Character _currentTarget;
 
     private float _animTime;
     private float _cooldownMultiplier = 2f;
     private float _heatedGlandsDuration = 4f;
-    private float _baseCooldownTime;
 
     private bool _isUsedLightningStrikes = false;
     private bool _isIncreaseCooldownTime = false;
@@ -31,6 +30,8 @@ public class LightningStrikes : AutoAttackSkill
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerAutoAttack => Animator.StringToHash("LightningStrikesAttacking");
+
+    public event System.Action OnLightningStrikesEnd;
 
     protected override void Awake()
     {
@@ -46,7 +47,18 @@ public class LightningStrikes : AutoAttackSkill
 
     public void AnimLightningStrikesEnd()
     {
+        OnLightningStrikesEnd?.Invoke();
         AnimCastEnded();
+    }
+    public void SetTarget(Character target)
+    {
+        _target = target;
+    }
+
+    public void ClearDataLightningStrikes()
+    {
+        TryCancel();
+        StopAutoDraw();
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -62,8 +74,6 @@ public class LightningStrikes : AutoAttackSkill
             IncreaseAnimSpeed();
 
             Debug.Log("LightningStrikes / PrepareJob");
-
-            _target = _lightningMovement.Target;
         }
         return base.PrepareJob(targetDataSavedCallback);
     }
@@ -113,7 +123,7 @@ public class LightningStrikes : AutoAttackSkill
     {
         if (_animTime > 0)
         {
-            float multiplier = _lightningMovement.DurationLeap - 0.1f;
+            float multiplier = _lightningMovement.DurationLeap - 4.9f; // �������� �������� (���������� - 0.1)
             float animTimeMultiplier = _animTime / multiplier;
             Debug.Log("LightningStrikes / multiplier = " + animTimeMultiplier);
             _player.Animator.SetFloat("LightningStrikesMultiplierSpeedAnimation", animTimeMultiplier);
@@ -127,12 +137,9 @@ public class LightningStrikes : AutoAttackSkill
 
        _isCanDamageDeal = false;
 
-        if (_heatedGlands.Data.IsOpen)
-            _player.CharacterState.CmdAddState(States.HeatedGlands, _heatedGlandsDuration, 0, _player.gameObject, null);
+        //if (_heatedGlands.Data.IsOpen)
+        //    _player.CharacterState.CmdAddState(States.HeatedGlands, _heatedGlandsDuration, 0, _player.gameObject, null);
 
-        if (_coldBlood.IsCanCritLightningStrikes && _isIncreaseCooldownTime == true)
-        {
-            _isIncreaseCooldownTime = false;
-        }
+        if (_coldBlood.IsCanCritLightningStrikes && _isIncreaseCooldownTime == true) _isIncreaseCooldownTime = false;
     }
 }

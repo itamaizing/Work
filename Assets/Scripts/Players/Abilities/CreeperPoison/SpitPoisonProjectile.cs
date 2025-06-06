@@ -141,7 +141,7 @@ public class SpitPoisonProjectile : Test_Projectile
         };
         
         _target.Health.TryTakeDamage(ref _baseDamage, _skill);
-        _target.DamageTracker.AddDamage(_baseDamage, isServerRequest: isServer);
+        _target.DamageTracker.AddDamage(_baseDamage, null, isServerRequest: isServer);
 
         _target.CharacterState.AddState(States.PoisonBone, _lifeTimePoisonBoneStacks, 0, _player.gameObject, _skill.Name);
 
@@ -150,10 +150,7 @@ public class SpitPoisonProjectile : Test_Projectile
             //ReductionCooldownFromRestorationOfGlands();
         }
 
-        if (numbersForChanceOfBlindness <= chanceOfBlindness)
-        {
-            _target.CharacterState.AddState(States.Blind, 6f, 0, _player.gameObject, _skill.Name);
-        }
+        _target.CharacterState.AddState(States.Blind, 6f, 0, _player.gameObject, _skill.Name);
 
         DestroyProjectile();        
     }

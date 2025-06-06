@@ -9,7 +9,6 @@ public class PhysicalAttack : AutoAttackSkill
 	[SerializeField] private SeriesOfStrikes _combo;
 	[SerializeField] private AudioClip[] Hits;
 
-	private Animator _animator;
 	private AudioSource _audioSource;
 	private Character _curTarget;
 	private Vector2 _jumpPos;
@@ -18,19 +17,21 @@ public class PhysicalAttack : AutoAttackSkill
 	private float _multiplier = 1;
 	private bool _talentActive = false;
 	private bool _rollingPhysTalent = false;
-	private bool _isRightKick = true;
+	private bool _seriesPhysicalTalent;
 	private float _stunCount = 0;
+	private bool _isRightKick = true;
+	private Animator _animator;
 
 	private static readonly int RightKickTrigger = Animator.StringToHash("RightKick");
 	private static readonly int LeftKickTrigger = Animator.StringToHash("LeftKick");
 
 	protected override int AnimTriggerCastDelay => 0;
-
 	protected override int AnimTriggerAutoAttack => 0;
+
     private void Start()
 	{
-		_animator = GetComponent<Animator>();
 		_audioSource = GetComponent<AudioSource>();
+		_animator = GetComponent<Animator>();
 
 		for (int i = 0; i < _playerLinks.Resources.Count; i++)
 		{
@@ -59,7 +60,8 @@ public class PhysicalAttack : AutoAttackSkill
 	{
 		if (_target == null) return;
 
-		Hit(_target);
+		if (_seriesPhysicalTalent) Hit(_target);
+		else SingleHit(_target);
 		CmdPlayShotSound();
 	}
 
@@ -161,6 +163,19 @@ public class PhysicalAttack : AutoAttackSkill
 		_curTarget = null;
 	}
 
+	private void SingleHit(Character enemy)
+	{
+		float curDamage = _damageValue + Random.Range(0, 2);
+
+		Damage damage = new Damage
+		{
+			Value = curDamage,
+			Type = DamageType.Physical,
+		};
+
+		CmdApplyDamage(damage, enemy.gameObject);
+	}
+
 	[Command]
 	private void CmdState(GameObject enemy, float time)
 	{
@@ -187,7 +202,7 @@ public class PhysicalAttack : AutoAttackSkill
 	{
 		MoveComponent tempTargetMove = gameObject.GetComponent<MoveComponent>();
 		
-		tempTargetMove.TargetRpcDoMove(force, 0.5f);
+		//tempTargetMove.TargetRpcDoMove(force, 0.5f);
 	}
 
 	[Command]
@@ -225,6 +240,13 @@ public class PhysicalAttack : AutoAttackSkill
 		return false;
 	}
 
+    #region Talent
+
+	public void SeriesPhysicalTalentActive(bool value)
+    {
+		_seriesPhysicalTalent = value;
+	}
+
 	public void SetTalentActive(bool active)
 	{
 		_talentActive = active;
@@ -236,8 +258,21 @@ public class PhysicalAttack : AutoAttackSkill
 		_stunCount = count;
 	}
 
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        throw new System.NotImplementedException();
-    }
+	#endregion
+
+	public void ApplyRootTrue()
+	{
+		Hero.Move.CanMove = false;
+		_animator.applyRootMotion = true;
+	}
+
+	public void ApplyRootFalse()
+	{
+		_animator.applyRootMotion = false;
+	}
+
+	public override void LoadTargetData(TargetInfo targetInfo)
+	{
+		_target = (Character)targetInfo.Targets[0];
+	}
 }

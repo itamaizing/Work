@@ -37,11 +37,11 @@ public class MinionPanel : MonoBehaviour
         _minionIcons.Clear();
     }
 
-    private void OnUnitAdded(MinionComponent minion)
+    private void OnUnitAdded(Character minion)
     {
         UpdatePanel();
     }
-    
+
     private void OnUnitRemoved()
     {
         UpdatePanel();

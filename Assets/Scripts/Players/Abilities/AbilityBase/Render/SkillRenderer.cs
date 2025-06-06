@@ -7,6 +7,7 @@ using UnityEngine.UIElements;
 
 public class SkillRenderer : NetworkBehaviour
 {
+    [SerializeField] private Character hero;
     [SerializeField] private DrawCircle _circle;
     [SerializeField] private CircleArea _areaPref;
     [SerializeField] private SphereArea _damageZonePref;
@@ -17,6 +18,7 @@ public class SkillRenderer : NetworkBehaviour
     [SerializeField] private Color _colorForEnd;
     [SerializeField] private Color _colorForStart;
 
+    private bool _isOverrideClosestTarget = false;
     //private SphereArea _tempDamageZone;
     private CircleArea _tempArea;
     private float _lineStartLength;
@@ -30,11 +32,22 @@ public class SkillRenderer : NetworkBehaviour
     private Coroutine _drawLineCoroutine;
     private Coroutine _drawAreaCoroutine;
     private Coroutine _drawClosestTargetCoroutine;
+    private Coroutine _drawRadiusCoroutine;
+    private Coroutine _dynamicRadiusColorCoroutine;
 
-	//public SphereArea TempDamageZone => _tempDamageZone;
-	public CircleArea TempDamageZone => _tempArea;
+    //public SphereArea TempDamageZone => _tempDamageZone;
+    public CircleArea TempDamageZone => _tempArea;
+    public bool IsOverrideClosestTarget
+    {
+        get => _isOverrideClosestTarget;
+        set
+        {
+            _isOverrideClosestTarget = value;
+            if (_isOverrideClosestTarget) StopDrawClosestTarget();
+        }
+    }
 
-	private Character _tempTarget;
+    private Character _tempTarget;
 
     [Command]
     public void CmdDrawDamageZone(Vector3 position, float radius, Damage damage, GameObject player)
@@ -85,6 +98,11 @@ public class SkillRenderer : NetworkBehaviour
     public void StopDrawRadius()
     {
         _circle.Clear();
+        if (_drawRadiusCoroutine != null)
+        {
+            StopCoroutine(_drawRadiusCoroutine);
+            _drawRadiusCoroutine = null;
+        }
     }
 
     public void DrawRadiusColor(float radius, Color color) 
@@ -139,18 +157,23 @@ public class SkillRenderer : NetworkBehaviour
 
     public void DrawClosestTarget(float radius, LayerMask TargetsLayers, Character player)
     {
-		_drawClosestTargetCoroutine = StartCoroutine(DrawClosestTargetJob(radius, TargetsLayers, player));
+        if (_isOverrideClosestTarget) return;
+        _drawClosestTargetCoroutine = StartCoroutine(DrawClosestTargetJob(radius, TargetsLayers, player));
     }
 
     public void StopDrawClosestTarget()
     {
 		if (_drawClosestTargetCoroutine != null)
-			StopCoroutine(_drawClosestTargetCoroutine);
+        {
+            StopCoroutine(_drawClosestTargetCoroutine);
+            _drawClosestTargetCoroutine = null;
+        }    
 
         if(_tempTarget != null)
         {
             _tempTarget.SelectedCircle.SwitchClostestTarget(false);
-		}
+            _tempTarget = null;
+        }
 	}
 
     public void SetSizeBox(float width, float lenght)
@@ -163,6 +186,24 @@ public class SkillRenderer : NetworkBehaviour
     {
         _circleRadius = radiusArea;
     }
+
+    public void StartDynamicRadiusColor(float radius)
+    {
+        if (_dynamicRadiusColorCoroutine != null)
+            StopCoroutine(_dynamicRadiusColorCoroutine);
+
+        _dynamicRadiusColorCoroutine = StartCoroutine(DynamicRadiusColorJob(radius));
+    }
+
+    public void StopDynamicRadiusColor()
+    {
+        if (_dynamicRadiusColorCoroutine != null)
+        {
+            StopCoroutine(_dynamicRadiusColorCoroutine);
+            _dynamicRadiusColorCoroutine = null;
+        }
+    }
+
 
     private void RotateAtMouse(Transform transform)
     {
@@ -178,6 +219,28 @@ public class SkillRenderer : NetworkBehaviour
 		Vector3 dir = worldPosition - gameObject.transform.position;
 		float angle = Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(90, - angle + 90, 0);
+    }
+
+    private IEnumerator DrawRadiusJob(float radius)
+    {
+        while (true)
+        {
+            bool hasEnemyInRadius = false;
+
+            Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
+
+            foreach (var collider in colliders)
+            {
+                if (collider.TryGetComponent<Character>(out Character character) && character != hero)
+                {
+                    hasEnemyInRadius = true;
+                    break;
+                }
+            }
+
+            _circle.SetColor(hasEnemyInRadius ? _colorForAllies : _colorForEnemies);
+            yield return new WaitForSeconds(0.1f);
+        }
     }
 
     private IEnumerator DrawLineJob(float length, float width, Damage damage,  LayerMask layerMask, AbilityLineRenderer line)
@@ -259,6 +322,8 @@ public class SkillRenderer : NetworkBehaviour
     {
         while (true)
         {
+            if (IsOverrideClosestTarget) yield return null;
+
             List<Character> targets = new List<Character>();
             Collider[] collider = Physics.OverlapSphere(transform.position, radius + 500);
 
@@ -314,4 +379,28 @@ public class SkillRenderer : NetworkBehaviour
 		}
 		//yield return null;
 	}
+
+    private IEnumerator DynamicRadiusColorJob(float Radius)
+    {
+        while (true)
+        {
+            if (_tempArea != null && _circle != null)
+            {
+                float distance = Vector3.Distance(_tempArea.transform.position, transform.position);
+
+                if (distance <= Radius)
+                {
+                    _circle.SetColor(_colorForAllies);
+                }
+                else
+                {
+                    _circle.SetColor(_colorForEnemies);
+                }
+
+                _circle.Draw(Radius);
+            }
+
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
 }

@@ -32,8 +32,12 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         _skill = skill;
         _image.sprite = _skill.Icon;
         PatentAfterDrag = parent;
+        _skill.OnSkillStateChanged += UpdateIconState;
 
-        if(_skill.IsUseCharges == true)
+        UpdateIconState(_skill.Disactive);
+
+
+        if (_skill.IsUseCharges == true)
         {
             _chargeCounter.gameObject.SetActive(true);
             OnCurrentChargeChanged(_skill.Chargers);
@@ -50,6 +54,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     private void OnDestroy()
     {
         UnsubscribingSkillOnEvents(_skill);
+        _skill.OnSkillStateChanged -= UpdateIconState;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -92,6 +97,11 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         PointerExit?.Invoke(this);
     }
 
+    public void UpdateIconState(bool disactive)
+    {
+        _image.color = new Color(_image.color.r, _image.color.g, _image.color.b, disactive ? 0.5f : 1f);
+    }
+
     private void OnStartAutoAttack()
     {
         _autoCastEffect.gameObject.SetActive(true);
@@ -125,9 +135,9 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         if (ability is AutoAttackSkill autoAttackSkill)
         {
             autoAttackSkill.Canceled += OnEndAutoAttack;
-           // autoAttackSkill.CastPaused += OnEndAutoAttack;
+            // autoAttackSkill.CastPaused += OnEndAutoAttack;
             autoAttackSkill.CastStarted += OnStartAutoAttack;
-           // autoAttackSkill.CastContinued += OnStartAutoAttack;
+            // autoAttackSkill.CastContinued += OnStartAutoAttack;
             //autoAttackSkill.AutoCastEnded +=
         }
     }
@@ -152,9 +162,9 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         if (ability is AutoAttackSkill autoAttackSkill)
         {
             autoAttackSkill.Canceled -= OnEndAutoAttack;
-           // autoAttackSkill.CastPaused -= OnEndAutoAttack;
+            // autoAttackSkill.CastPaused -= OnEndAutoAttack;
             autoAttackSkill.CastStarted -= OnStartAutoAttack;
-           // autoAttackSkill.CastContinued -= OnStartAutoAttack;
+            // autoAttackSkill.CastContinued -= OnStartAutoAttack;
             //autoAttackSkill.AutoCastEnded -=
         }
     }

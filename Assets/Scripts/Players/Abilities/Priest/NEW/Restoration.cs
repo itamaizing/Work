@@ -1,3 +1,4 @@
+using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -11,6 +12,7 @@ public class Restoration : Skill
     [SerializeField] private float healInterval = 4f;
     [SerializeField] private float lightCastTime = 1.2f;
     [SerializeField] private float effectivenessIncreasePerHeal = 0.1f;
+    [SerializeField] private AbilityInfo lightInfo;
 
     [Header("Restoration (Dark Mode) Settings")]
     [SerializeField] private float damagePerTick = 6f;
@@ -18,18 +20,28 @@ public class Restoration : Skill
     [SerializeField] private float darkDuration = 12.1f;
     [SerializeField] private float damageInterval = 3f;
     [SerializeField] private float darkCastTime = 1.2f;
+    [SerializeField] private AbilityInfo darkInfo;
 
-    public bool isLightMode = true;
+    [SerializeField] private AudioClip audioClip;
+
+    private AudioSource _audioSource;
     private float _accumulatedEffectiveness = 1f;
     private float _totalHealedInInterval = 0f;
-    
+    private bool _spiritEnergyTalent;
     private Character _target;
+
     public Character Target => _target;
-    
+    [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
+
     protected override bool IsCanCast => IsCanCastCheck();
 
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("Cast");
     protected override int AnimTriggerCast => 0;
+
+    private void Start()
+    {
+        _audioSource = GetComponent<AudioSource>();
+    }
 
     private bool IsCanCastCheck()
     {
@@ -41,13 +53,13 @@ public class Restoration : Skill
 
     private void OnEnable()
     {
-        OnModeChange += HandleModeChange;
+        OnModeChange += UpdateMode;
         UpdateMode();
     }
 
     private void OnDisable()
     {
-        OnModeChange -= HandleModeChange;
+        OnModeChange -= UpdateMode;
         if (_target != null)
         {
             var healthComponent = _target.GetComponent<Health>();
@@ -57,22 +69,28 @@ public class Restoration : Skill
             }
         }
     }
-    
+
 
     public void SwitchMode()
     {
+        CmdSwitchMode();
+    }
+
+    [Command]
+    private void CmdSwitchMode()
+    {
         isLightMode = !isLightMode;
+    }
+
+    private void OnModeChanged(bool oldValue, bool newValue)
+    {
+        UpdateMode();
         OnModeChange?.Invoke();
     }
 
-    public override void LoadTargetData(TargetInfo targetInfo)
+    public void SpiritEnergyTalentActive(bool value)
     {
-        _target = (Character)targetInfo.Targets[0];
-    }
-
-    private void HandleModeChange()
-    {
-        UpdateMode();
+        _spiritEnergyTalent = value;
     }
 
     private void UpdateMode()
@@ -80,7 +98,9 @@ public class Restoration : Skill
         Radius = isLightMode ? lightRange : darkRange;
         School = isLightMode ? Schools.Light : Schools.Dark;
         CastDeley = isLightMode ? lightCastTime : darkCastTime;
+        AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
         TargetsLayers = isLightMode ? LayerMask.GetMask("Allies") : LayerMask.GetMask("Enemy");
+        Hero.Abilities.SkillPanelUpdate();
     }
 
     private void HandleRestorationLight()
@@ -101,6 +121,15 @@ public class Restoration : Skill
         }
     }
 
+    private float GetSpiritEnergyBonus(Character target)
+    {
+        var characterState = target?.GetComponent<CharacterState>();
+        if (characterState == null) return 0f;
+
+        var spiritEnergyState = characterState.GetState(States.SpiritEnergy) as SpiritEnergyState;
+        return spiritEnergyState != null ? spiritEnergyState.GetHealBonus() : 0f;
+    }
+
     private void HandleRestorationDark()
     {
         if (_target == null) return;
@@ -112,7 +141,7 @@ public class Restoration : Skill
             StartCoroutine(ApplyDamageOverTime(_target));
         }
     }
-    
+
     private void OnHealTaken(float healedAmount, Skill skill, string sourceName)
     {
         _totalHealedInInterval += healedAmount;
@@ -127,13 +156,14 @@ public class Restoration : Skill
             float endTime = Time.time + lightDuration;
             while (Time.time < endTime)
             {
-                float effectiveHeal = healPerTick * _accumulatedEffectiveness;
-                
+                float bonusHealFromSpiritEnergy = 0;
+                if (_spiritEnergyTalent) bonusHealFromSpiritEnergy = GetSpiritEnergyBonus(target);
+                float effectiveHeal = healPerTick * _accumulatedEffectiveness + bonusHealFromSpiritEnergy;
+
                 var heal = new Heal { Value = effectiveHeal };
                 CmdApplyHeal(heal, healthComponent.gameObject, this, name);
-                
+
                 _accumulatedEffectiveness += _totalHealedInInterval * effectivenessIncreasePerHeal;
-                
                 _totalHealedInInterval = 0f;
 
                 yield return new WaitForSeconds(healInterval);
@@ -162,7 +192,7 @@ public class Restoration : Skill
                     School = this.School,
                     //DamageableSkill = this,
                 };
-                
+
                 CmdApplyDamage(damage, target.gameObject);
                 yield return new WaitForSeconds(damageInterval);
             }
@@ -179,6 +209,7 @@ public class Restoration : Skill
             }
             yield return null;
         }
+
         TargetInfo targetInfo = new();
         targetInfo.Targets.Add(_target);
         callbackDataSaved(targetInfo);
@@ -187,6 +218,8 @@ public class Restoration : Skill
     protected override IEnumerator CastJob()
     {
         if (_target == null) yield break;
+
+        CmdPlayShootSound();
 
         if (isLightMode)
         {
@@ -202,10 +235,28 @@ public class Restoration : Skill
 
     protected override void ClearData()
     {
+        _target = null;
     }
 
     private void ResetAccumulatedEffectiveness()
     {
         _accumulatedEffectiveness = 1f;
     }
-}
+
+    [Command]
+    private void CmdPlayShootSound()
+    {
+        RpcPlayShotSound();
+    }
+
+    [ClientRpc]
+    private void RpcPlayShotSound()
+    {
+        if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
+    }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _target = (Character)targetInfo.Targets[0];
+    }
+} 

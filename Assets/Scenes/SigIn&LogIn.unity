@@ -1158,6 +1158,32 @@ MonoBehaviour:
   - {fileID: 4656379208741956616, guid: 13647bb6f83d1b34c8c511be314fb9d3, type: 3}
   - {fileID: 8493071214933416540, guid: ffab2755e011e1947ba5197ed189e92b, type: 3}
   - {fileID: 116690888756795483, guid: 911d5f174dbe7ac4b8da163e8aaf32a1, type: 3}
+  - {fileID: 300637093874885484, guid: 40044d92dc9a52a44b73b5569f957a7a, type: 3}
+  - {fileID: 2335912879836011194, guid: 4db2764b76e857542a0c6ea889e2db7c, type: 3}
+  - {fileID: 8859527807384012395, guid: 1dd1e9aff4bce914b9e91277d46a71e3, type: 3}
+  - {fileID: 7460133517014728669, guid: 6a81e52aeaba98147875ba1791e1e4c8, type: 3}
+  - {fileID: 7460133517014728669, guid: f28d626b569e7ab419ae82e8f75c4a7c, type: 3}
+  - {fileID: 2058911381882631605, guid: 82b70bdb0fc80c343859665623ea7ed8, type: 3}
+  - {fileID: 7744228389031826322, guid: a2a1cf39c04d96146ae87b0e745f2624, type: 3}
+  - {fileID: 7744228389031826322, guid: 01d3359ced6c7904e8d18b398f189893, type: 3}
+  - {fileID: 7744228389031826322, guid: 71ca07389a97bf847bf4ebf021a338ba, type: 3}
+  - {fileID: 9075096416490859393, guid: 25ced05e8e27cec46bee956e4622103e, type: 3}
+  - {fileID: 9075096416490859393, guid: 57f4b1dca44be5d41bcdf5931936f545, type: 3}
+  - {fileID: 8859527807384012395, guid: 8e3073b46604e4040ac3eb03dabfd124, type: 3}
+  - {fileID: 8859527807384012395, guid: 8e56a73e4e78d7841ac2f37176fe2356, type: 3}
+  - {fileID: 8859527807384012395, guid: 1e1a2e7651885a64594f9b0255681fe8, type: 3}
+  - {fileID: 52505351587200989, guid: 40ef9625f08a4804fa2a0a8e7bc8cd01, type: 3}
+  - {fileID: 5311042088619458913, guid: e8f214e8238220749bbf66c7cca6a334, type: 3}
+  - {fileID: 3931649106778136727, guid: a353c7ece0de9f3448557521016bbfce, type: 3}
+  - {fileID: 4371443321967966874, guid: 49c315f5147bcf249bb2a0c082ad0c98, type: 3}
+  - {fileID: 2356317950569320208, guid: d14badff952bb714c90f1fd43e07201c, type: 3}
+  - {fileID: 2356317950569320208, guid: e433350a5f6dd4446b1ae7716a074700, type: 3}
+  - {fileID: 4342702718005923716, guid: 4812c8b9678ac6747a349eeb911e32fd, type: 3}
+  - {fileID: 3154541333273919106, guid: 4bf1bb117fbb59241955bd674f799741, type: 3}
+  - {fileID: 8143091671269686944, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+  - {fileID: 5338357177018324924, guid: 9903945e1d35e3f4699a288cf83c9e9c, type: 3}
+  - {fileID: 3166524110619427554, guid: 26b16165068b4244e8a8a270a5b85899, type: 3}
+  - {fileID: 8842404529923409551, guid: 846556c08d21ee240b3671a600246389, type: 3}
   - {fileID: 8763643763125113918, guid: 7ca7e11552419974da01f50646019b88, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
@@ -3808,8 +3834,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Enter LOGIN
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 38e60f68452a1bf4d9bfec064cc24b4b, type: 2}
-  m_sharedMaterial: {fileID: -6287820731735844053, guid: 38e60f68452a1bf4d9bfec064cc24b4b, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4592,7 +4618,7 @@ MonoBehaviour:
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
   m_TextStyleHashCode: -1183493901
-  m_overrideHtmlColors: 1
+  m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295

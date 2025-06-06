@@ -4,7 +4,7 @@ using System.Collections;
 using System.Linq;
 using UnityEngine;
 
-public class Teleportation_Scorpion : Skill, ICanConsumeComboPoints
+public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 {
     [Header("Ability settings")]
     //[SerializeField] private VisualRender _visualRender;
@@ -15,8 +15,10 @@ public class Teleportation_Scorpion : Skill, ICanConsumeComboPoints
     [SerializeField] private int _manaCostPerTile = 5;
     [SerializeField] private LayerMask _layerMask;
     [Tooltip("��������� ������ ������ ���� ����������, ����� � ��������� �������")]
-    [SerializeField] private float _offset = 2.1f;
+    [SerializeField] private float _offset = 0.5f;
+
     private Character _target;
+    private bool isTeleportation_ScorpionMagResist;
 
     //private GameObject _tempTarget;
     //private MoveComponent _tempTargetMove;
@@ -40,9 +42,9 @@ public class Teleportation_Scorpion : Skill, ICanConsumeComboPoints
         }
     }
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+    protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+    protected override int AnimTriggerCast => 0;
 
     protected void Start()
     {
@@ -68,44 +70,73 @@ public class Teleportation_Scorpion : Skill, ICanConsumeComboPoints
 
     private Vector3 FindPlace(Character target)
     {
-        Vector3 directionToEnemy = target.transform.position - transform.position;
-        directionToEnemy.Normalize();
-        Vector3 offset = directionToEnemy * _offset;
-        Vector3 teleportPosition = target.transform.position + offset;
-        bool touchObstacle = Physics2D.OverlapCircle(teleportPosition, 2f, _layerMask);
-        
+        Vector3 directionToEnemy = (target.transform.position - transform.position).normalized;
 
-        if (touchObstacle)
+        Vector3 initialOffset = directionToEnemy * _offset;
+        Vector3 teleportPosition = target.transform.position + initialOffset;
+
+        if (!IsPositionBlocked(teleportPosition, _offset, target))
+            return teleportPosition;
+
+        float searchRadius = 1.5f;
+        float angleStep = 10f;
+        float maxAngle = 180f;
+        Vector3 foundPoint = Vector3.zero;
+        bool freePointFound = false;
+
+        for (float angle = angleStep; angle <= maxAngle; angle += angleStep)
         {
-            float angle = 0f;
-            Vector3 newPosition;
+            Quaternion rotationCW = Quaternion.AngleAxis(angle, Vector3.up);
+            Vector3 offsetCW = rotationCW * directionToEnemy * searchRadius;
+            Vector3 candidateCW = target.transform.position + offsetCW;
 
-            while (angle != 180) // ������ ����, �� ���� ����� � ��� �������
+            if (!IsPositionBlocked(candidateCW, _offset, target))
             {
-                angle += 5;
+                foundPoint = candidateCW;
+                freePointFound = true;
+                break;
+            }
 
-                newPosition = _target.transform.position + Quaternion.Euler(0, 0, angle) * offset;
-                if (!Physics2D.OverlapCircle(newPosition, _offset /2 , _layerMask))
-                {
-                    Debug.Log($"Place was found with offset angle {angle}�");
-                    teleportPosition = newPosition;
-                    return newPosition;
-                }
-                angle *= -1;
-                newPosition = _target.transform.position + Quaternion.Euler(0, 0, angle) * offset;
-                if (!Physics2D.OverlapCircle(newPosition, _offset / 2, _layerMask))
-                {
-                    Debug.Log($"Place was found with offset angle {angle}�");
-                    teleportPosition = newPosition;
-                    return newPosition;
-                }
-                angle *= -1;
+            Quaternion rotationCCW = Quaternion.AngleAxis(-angle, Vector3.up);
+            Vector3 offsetCCW = rotationCCW * directionToEnemy * searchRadius;
+            Vector3 candidateCCW = target.transform.position + offsetCCW;
 
+            if (!IsPositionBlocked(candidateCCW, _offset, target))
+            {
+                foundPoint = candidateCCW;
+                freePointFound = true;
+                break;
             }
         }
-        Debug.Log($"Place wasn't found or no obstacles at point, using default teleportPosition");
-        return teleportPosition;
+
+        if (freePointFound)
+        {
+            Vector3 dirToTarget = (target.transform.position - foundPoint).normalized;
+            Vector3 closeToTarget = target.transform.position - dirToTarget * _offset;
+
+            if (!IsPositionBlocked(closeToTarget, _offset, target))
+                return closeToTarget;
+
+            return foundPoint;
+        }
+
+        return transform.position;
     }
+
+    private bool IsPositionBlocked(Vector3 position, float radius, Character targetToIgnore)
+    {
+        Collider[] colliders = Physics.OverlapSphere(position, radius, _layerMask);
+
+        foreach (var collider in colliders)
+        {
+            if (collider.transform == targetToIgnore.transform) continue;
+
+            return true;
+        }
+
+        return false;
+    }
+
     private float GetCurrentRadius()
     {
         return _minRadius + 1f * (int)(CalculateCurrentScale() / _manaCostPerTile); // ����������� r + 1 ������ �� 5 ���� (������ �� 0.2 ������ �� 1 ����, ���� ���� ����� ���������, ������ ��������)
@@ -130,26 +161,27 @@ public class Teleportation_Scorpion : Skill, ICanConsumeComboPoints
 
     }
 
-    public void TryUpgradeByConsumingCombo(int amount)
-    {
-        if (!Notifier.IsActive)
-        {
-            ConsumedAmount = 0;
-            return;
-        }
+    //public void TryUpgradeByConsumingCombo(int amount)
+    //{
+    //    if (!Notifier.IsActive)
+    //    {
+    //        ConsumedAmount = 0;
+    //        return;
+    //    }
 
-        ConsumedAmount =  Notifier.PayComboPoints(Mathf.Clamp(amount, 0, Notifier.AvailablePoints));
+    //    ConsumedAmount =  Notifier.PayComboPoints(Mathf.Clamp(amount, 0, Notifier.AvailablePoints));
 
-        // Change values
-    }
+    //    // Change values
+    //}
+
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        Debug.LogError("DataError");
+        _target = (Character)targetInfo.Targets[0];
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (_target == null)
+        while (true)
         {
             Radius = GetCurrentRadius();
             _drawCircleSelf.Draw(Radius);
@@ -157,25 +189,39 @@ public class Teleportation_Scorpion : Skill, ICanConsumeComboPoints
             if (GetMouseButton)
             {
                 _target = GetRaycastTarget(true);
-                float dist = Vector2.Distance(_target.transform.position, transform.position);
+
+                if (_target == null)
+                {
+                    yield return null;
+                    continue;
+                }
+
+                float dist = Vector3.Distance(_target.transform.position, transform.position);
                 _skillEnergyCosts[0].resourceCost = GetCurrentManaCost(dist);
+                break;
             }
+
             yield return null;
         }
-        Debug.LogError("DataError");
+
+        TargetInfo targetInfo = new();
+        targetInfo.Targets.Add(_target);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        TryUpgradeByConsumingCombo(1);
         Vector3 tpPos = FindPlace(_target);
-
-        //CmdChangePosition(tpPos);
         CmdTeleport(tpPos);
 
-        //CmdApplyBuff(_health.transform);
+        int extraDuration = 0;
+        var targetState = _target.GetComponent<CharacterState>();
 
-        _hero.CharacterState.CmdAddState(States.IdealEvade, 1f + ConsumedAmount, 30f, _hero.gameObject, name);
+        if (isTeleportation_ScorpionMagResist)
+        {
+            if (targetState != null) extraDuration = targetState.CheckStateStacks(States.ComboState);
+            if (UnityEngine.Random.value <= 0.3f) _hero.CharacterState.CmdAddState(States.IdealEvade, 1f + extraDuration, 30f, _hero.gameObject, name);
+        }
 
         yield return null;
     }
@@ -202,5 +248,10 @@ public class Teleportation_Scorpion : Skill, ICanConsumeComboPoints
 
         //_tempTargetMove.TargetRpcSetTransformPosition(newPosition);
         _hero.Move.TargetRpcSetTransformPosition(newPosition);
+    }
+
+    public void Teleportation_ScorpionMagResist(bool value)
+    {
+        isTeleportation_ScorpionMagResist = value;
     }
 }

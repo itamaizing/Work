@@ -213,19 +213,6 @@ public class TestGameRulesBattlegrounds : GameRules
         }
     }
 
-
-    [ClientRpc]
-    private void RpcTeleportPlayer(GameObject player, Vector3 position, Quaternion rotation)
-    {
-        player.transform.SetPositionAndRotation(position, rotation);
-    }
-
-    [ClientRpc]
-    private void RpcCloseRoomOnClients()
-    {
-        StartCoroutine(CloseRoomOnClientAndLoadMainMenu());
-    }
-
     private IEnumerator CloseRoomOnClientAndLoadMainMenu()
     {
         yield return StartCoroutine(CloseRoomJob());

@@ -7,14 +7,14 @@ public class FireBreath_Prefab : NetworkBehaviour
 {
     [SerializeField] private SpriteRenderer _triangleSprite;
 
-    public List<Collider2D> _collisions = new List<Collider2D>();
+    public List<Collider> _collisions = new List<Collider>();
     public List<FIreRaycast> _flames = new List<FIreRaycast>();
 
-    private PolygonCollider2D _collider;
+    private Collider _collider;
 
     private void Awake()
     {
-        _collider = GetComponentInChildren<PolygonCollider2D>();
+        _collider = GetComponentInChildren<Collider>();
     }
     private void Start()
     {
@@ -53,7 +53,6 @@ public class FireBreath_Prefab : NetworkBehaviour
             Debug.Log("Rotate");
             Vector3 dir = (Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position)).normalized;
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-            float rotationSpeed = 30f;
             //transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, 0, angle - 90), rotationSpeed * Time.deltaTime);
             transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, 0, angle - 90), 30f * Time.deltaTime);
             CmdSyncRotation(angle);
@@ -66,13 +65,13 @@ public class FireBreath_Prefab : NetworkBehaviour
         transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, 0, angle - 90), 30f * Time.deltaTime);
         Debug.Log(angle);
     }
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter(Collider other)
     {
-        _collisions.Add(collision);
+        _collisions.Add(other);
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    private void OnTriggerExit(Collider other)
     {
-        _collisions.Remove(collision);
+        _collisions.Remove(other);
     }
 }

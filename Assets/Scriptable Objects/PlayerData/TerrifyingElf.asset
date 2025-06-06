@@ -14,20 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: TerrifyingElf
   _description: 
-  _icon: {fileID: 21300000, guid: 7abe8a8f83338c547bfb3b5afff7f1e7, type: 3}
+  type: 
+  _icon: {fileID: 21300000, guid: 2f99567c6f719bd44a5126e0152ab989, type: 3}
   _iconSize: 0
   _attributes:
     attributesGroup:
     - Id: 1001
       Name: Health
-      Points: 0
-      DefaultValue: 1000
+      Points: 5
+      DefaultValue: 666
       Icon: {fileID: 0}
       IsVisible: 1
     - Id: 1002
       Name: Mana
       Points: 0
-      DefaultValue: 300
+      DefaultValue: 666
       Icon: {fileID: 0}
       IsVisible: 1
     - Id: 1003
@@ -51,13 +52,13 @@ MonoBehaviour:
     - Id: 1006
       Name: HPRegen
       Points: 0
-      DefaultValue: 2
+      DefaultValue: 0.6
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1007
       Name: ManaRegen
       Points: 0
-      DefaultValue: 1
+      DefaultValue: 0.6
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1008
@@ -105,25 +106,25 @@ MonoBehaviour:
     - Id: 1015
       Name: PhysicResist
       Points: 0
-      DefaultValue: 0
+      DefaultValue: 2
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1016
       Name: MagicResist
       Points: 0
-      DefaultValue: 0
+      DefaultValue: 2
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1017
       Name: MeleeEvade
       Points: 0
-      DefaultValue: 0
+      DefaultValue: 6
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1018
       Name: RangeEvade
       Points: 0
-      DefaultValue: 0
+      DefaultValue: 8
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1019
@@ -141,6 +142,6 @@ MonoBehaviour:
     - Id: 1021
       Name: MagicAbsorb
       Points: 0
-      DefaultValue: 0
+      DefaultValue: 7
       Icon: {fileID: 0}
       IsVisible: 0

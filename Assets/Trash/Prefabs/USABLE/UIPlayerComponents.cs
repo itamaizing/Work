@@ -1,5 +1,6 @@
 using Mirror;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class UIPlayerComponents : MonoBehaviour
@@ -9,24 +10,32 @@ public class UIPlayerComponents : MonoBehaviour
     [SerializeField] private MinimapMarker MarkersSelect;
     [SerializeField] private FillAmountOverTime _castLine;
 
+    [SerializeField] private DamageTracker _damageTracker;
+
     public Transform DamageSpawn;
     public Transform RegenSpawn;
     public PopupTextPrefab PopupText;
-    private PopupTextPrefab popupTextPrefab;
 
     private Color _shieldColor = Color.blue;
     private Color _physDamageColor = Color.red;
     private Color _regenColor = Color.green;
 
     private float popupSpawnDelay = 0.2f;
-    private bool canSpawnPopup = true;
+
+    private Queue<PopupRequest> popupQueue = new Queue<PopupRequest>();
+    private bool isProcessingQueue = false;
 
     private void Awake()
     {
+        _damageTracker = _character.DamageTracker;
+    }
+
+    private void OnEnable()
+    {
         _character.Health.DamageTaken += OnDamageTaken;
         _character.Health.ShieldDamageTaken += OnShieldDamageTaken;
-        _character.Health.HealthRegenerated += OnHealthRegenerated;
         _character.Health.OnShieldAdd += OnShieldAdded;
+        _damageTracker.OnHealTracked += OnHealTracked;
 
         foreach (var ability in _character.Abilities.Abilities)
         {
@@ -38,83 +47,96 @@ public class UIPlayerComponents : MonoBehaviour
         }
     }
 
+    private void OnDisable()
+    {
+        _character.Health.DamageTaken -= OnDamageTaken;
+        _character.Health.ShieldDamageTaken -= OnShieldDamageTaken;
+        _character.Health.OnShieldAdd -= OnShieldAdded;
+        _damageTracker.OnHealTracked -= OnHealTracked;
+
+        foreach (var ability in _character.Abilities.Abilities)
+        {
+            ability.CastStreamStarted -= OnStartStreaming;
+            ability.Canceled -= OnStopStreaming;
+
+            ability.CastDeleyStarted -= OnStartCastDeley;
+            ability.Canceled -= OnStopCastDeley;
+        }
+    }
+
     public void ChangeSelection(bool isSelect)
     {
         CircleSelect.IsActive = isSelect;
         CircleSelect.SetColorTarget(Color.green);
         MarkersSelect.IsActive = isSelect;
-
     }
 
     public void ShowPopupValue(float value, Color startColor, Color endColor)
     {
         int intValue = value > 0 ? Mathf.CeilToInt(value) : Mathf.FloorToInt(value);
         if (intValue == 0 && value != 0)
-        {
             intValue = value > 0 ? 1 : -1;
-        }
-        if (canSpawnPopup)
-        {
-            StartCoroutine(SpawnPopupWithDelay((intValue > 0 ? "+" : "") + intValue, startColor, endColor));
-        }
+
+        string text = (intValue > 0 ? "+" : "") + intValue;
+        popupQueue.Enqueue(new PopupRequest(text, startColor, endColor, DamageSpawn));
+        TryStartQueueProcessing();
     }
 
     public void ShowPopupText(string text, Color startColor, Color endColor)
     {
-        if (canSpawnPopup)
-        {
-            StartCoroutine(SpawnPopupWithDelay(text, startColor, endColor));
-        }
-    }
-
-    private IEnumerator SpawnPopupWithDelay(string text, Color startColor, Color endColor)
-    {
-        canSpawnPopup = false;
-        popupTextPrefab = Instantiate(PopupText, DamageSpawn.position, Quaternion.identity, transform);
-        popupTextPrefab.PopupText.text = text;
-        popupTextPrefab.StartColor = startColor;
-        popupTextPrefab.EndColor = endColor;
-
-        yield return new WaitForSeconds(popupSpawnDelay);
-        canSpawnPopup = true;
+        popupQueue.Enqueue(new PopupRequest(text, startColor, endColor, DamageSpawn));
+        TryStartQueueProcessing();
     }
 
     public void ShowPopupValueRegen(float value, Color startColor, Color endColor)
     {
         int intValue = value > 0 ? Mathf.CeilToInt(value) : Mathf.FloorToInt(value);
         if (intValue == 0 && value != 0)
-        {
             intValue = value > 0 ? 1 : -1;
-        }
-        if (canSpawnPopup)
-        {
-            StartCoroutine(SpawnPopupWithDelayRegen((intValue > 0 ? "+" : "-") + intValue, startColor, endColor));
-        }
+
+        string text = (intValue > 0 ? "+" : "-") + intValue;
+        popupQueue.Enqueue(new PopupRequest(text, startColor, endColor, RegenSpawn));
+        TryStartQueueProcessing();
     }
 
     public void ShowPopupTextRegen(string text, Color startColor, Color endColor)
     {
-        if (canSpawnPopup)
+        popupQueue.Enqueue(new PopupRequest(text, startColor, endColor, RegenSpawn));
+        TryStartQueueProcessing();
+    }
+
+    private void TryStartQueueProcessing()
+    {
+        if (!isProcessingQueue)
+            StartCoroutine(ProcessPopupQueue());
+    }
+
+    private IEnumerator ProcessPopupQueue()
+    {
+        isProcessingQueue = true;
+
+        while (popupQueue.Count > 0)
         {
-            StartCoroutine(SpawnPopupWithDelayRegen(text, startColor, endColor));
+            var popupData = popupQueue.Dequeue();
+            SpawnPopup(popupData);
+
+            yield return new WaitForSeconds(popupSpawnDelay);
         }
+
+        isProcessingQueue = false;
     }
 
-    private IEnumerator SpawnPopupWithDelayRegen(string text, Color startColor, Color endColor)
+    private void SpawnPopup(PopupRequest request)
     {
-        canSpawnPopup = false;
-        popupTextPrefab = Instantiate(PopupText, RegenSpawn.position, Quaternion.identity, transform);
-        popupTextPrefab.PopupText.text = text;
-        popupTextPrefab.StartColor = startColor;
-        popupTextPrefab.EndColor = endColor;
-
-        yield return new WaitForSeconds(popupSpawnDelay);
-        canSpawnPopup = true;
+        var popup = Instantiate(PopupText, request.SpawnPoint.position, Quaternion.identity, transform);
+        popup.PopupText.text = request.Text;
+        popup.StartColor = request.StartColor;
+        popup.EndColor = request.EndColor;
     }
 
-    private void OnHealthRegenerated(float regenAmount)
+    private void OnHealTaked(float healValue, Skill skill, string sourceName)
     {
-        ShowPopupValueRegen(regenAmount, _regenColor, _regenColor);
+        ShowPopupValueRegen(healValue, _regenColor, _regenColor);
     }
 
     private void OnDamageTaken(Damage damage, Skill skill)
@@ -154,5 +176,26 @@ public class UIPlayerComponents : MonoBehaviour
     {
         _castLine.gameObject.SetActive(false);
         _castLine.Stop();
+    }
+
+    private void OnHealTracked(Heal heal)
+    {
+        ShowPopupValueRegen(heal.Value, _regenColor, _regenColor);
+    }
+
+    private struct PopupRequest
+    {
+        public string Text;
+        public Color StartColor;
+        public Color EndColor;
+        public Transform SpawnPoint;
+
+        public PopupRequest(string text, Color startColor, Color endColor, Transform spawnPoint)
+        {
+            Text = text;
+            StartColor = startColor;
+            EndColor = endColor;
+            SpawnPoint = spawnPoint;
+        }
     }
 }

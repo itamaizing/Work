@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d8548505a2c5104980a6fa13739ca3d, type: 3}
+  m_Name: Silence
+  m_EditorClassIdentifier: 
+  _name: Silence
+  _description: Thermafine casts a magical effect on the area, trapped creatures
+    cannot cast a spell for 4 seconds. If magical creatures fall under the debuff,
+    then for each creature Terafine receives 10 mana units.   "Silence is the most
+    piercing scream. Do you hear him too? - Terafine"
+  _icon: {fileID: 21300000, guid: 28ac766020ba79d41b1e77139a03a2e1, type: 3}

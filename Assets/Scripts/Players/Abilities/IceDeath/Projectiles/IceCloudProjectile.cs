@@ -14,7 +14,7 @@ public class IceCloudProjectile : Projectiles
 	private void Start()
 	{
 		_startPos = transform.position;
-		_curDamage = 10 + _energyDad / 4;
+		_curDamage = 10 + _energyDad / 5;
 		_damage = new Damage
 		{
 			Value = _curDamage,
@@ -120,12 +120,13 @@ public class IceCloudProjectile : Projectiles
 		Destroy(gameObject);
 	}
 
-	public void Talent(bool value, bool frozenState)
+	public void Talent(bool value, bool frozenState, bool lastHit)
 	{
 		_boostDmg = value;
-		if(frozenState)
+		if(lastHit)
 		{
-			_damageToExit = 30;
+			if (frozenState) _damageToExit = 60;
+			else _damageToExit = 30;
 		}
 		else
 		{

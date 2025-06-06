@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
@@ -7,111 +6,128 @@ public class Kick_Scorpion : AutoAttackSkill
 {
     [Header("Ability settings")]
     [SerializeField] private Character _playerLinks;
-    [SerializeField] private Sub_LavaPool_Scorpion _pool;
     [SerializeField] private PassiveCombo_Scorpion _comboCounter;
-    [SerializeField][Range(0, 100)] private float _minDamage = 10f;
-    [SerializeField][Range(0, 100)] private float _maxDamage = 15f;
+    [SerializeField] [Range(0, 100)] private float _minDamage = 10f;
+    [SerializeField] [Range(0, 100)] private float _maxDamage = 15f;
 
-    [Header("Debug info")] 
+    [Header("Talent Flags")]
+    private bool isKick_ScorpionRowTalent;
+    private bool isKick_ScorpionComboTalent;
 
-    [SerializeField][Range(0f, 1f)] private float _debuffApplyChance = 0.1f;
-    [SerializeField][ReadOnly] private byte _counterRow = 1;
+    [Header("Internal State")]
+    [SerializeField] [Range(0f, 1f)] private float _baseDebuffChance = 0.2f;
+    [SerializeField] [ReadOnly] private byte _hitsInRow = 1;
 
     private Coroutine _hitsInRowCoroutine;
     private Character _lastTarget = null;
+    private Animator _animator;
+
+    private static readonly int KickTrigger = Animator.StringToHash("KickAA");
+
+    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerAutoAttack => 0;
 
     public float DamageRange => Random.Range(_minDamage, _maxDamage);
 
-    protected override int AnimTriggerCastDelay => 0;
-
-    protected override int AnimTriggerAutoAttack => throw new System.NotImplementedException();
+    private void Start()
+    {
+        _animator = GetComponent<Animator>();
+    }
 
     protected override void CastAction()
     {
-        if (_lastTarget != null && _lastTarget != _target) //�����
-        {
-            _comboCounter.ResetCounter();
-            //_playerLinks.Combo_Player.RemoveAll();
-        }
+        if (_target == null) return;
+
+        if (_lastTarget != null && _lastTarget != _target)
+            _comboCounter?.ResetCounter();
 
         if (_hitsInRowCoroutine != null)
-        {
             StopCoroutine(_hitsInRowCoroutine);
-            _hitsInRowCoroutine = null;
-        }
 
-        Debug.Log(transform.position);
-        Debug.Log(_target.transform.position);
-
-        if (Vector2.Distance(LastTargetPosition, _target.transform.position) <= 2f)
-        {
-            Damage damage = new Damage
-            {
-                Value = Buff.Damage.GetBuffedValue(DamageRange),
-                Type = DamageType,
-            };
-            CmdAttack(damage, _target.gameObject);
-        }
+        _animator.SetTrigger(KickTrigger);
         _lastTarget = _target;
     }
-    private void AttackPassed(Transform target)
+
+    public void ApplyAttackDamageKick()
     {
-        Debug.LogWarning("Kick_Scorpion .AttackPassed - �����");
+        if (_target == null) return;
 
-        _comboCounter.AddAbility(target, ScorpionAbility.Kick);
+        if (Vector2.Distance(LastTargetPosition, _target.transform.position) > Radius)
+            return;
 
-        _counterRow *= 2;
-        _hitsInRowCoroutine = StartCoroutine(HitsInRowTimer());
-
-        if (Random.value <= Mathf.Clamp01(_debuffApplyChance * _counterRow))
+        Damage damage = new Damage
         {
-            //CmdApplyDebuff(_target.transform);
-            _target.GetComponent<CharacterState>().CmdAddState(States.Knockdown, 6f, 0, _hero.gameObject, name);
-            _counterRow = 1;
-        }
-    }
-    private void AttackMissed()
-    {
-        Debug.LogWarning("Kick_Scorpion .AttackMissed - ������");
+            Value = Buff.Damage.GetBuffedValue(DamageRange),
+            Type = DamageType,
+        };
 
-        _comboCounter.ResetCounter();
+        CmdApplyDamage(_target, damage);
     }
-
 
     private IEnumerator HitsInRowTimer()
     {
-        yield return new WaitForSeconds(CastDeley + 1f);
-
-        _counterRow = 1;
-
+        yield return new WaitForSeconds(2f);
+        _hitsInRow = 1;
         _hitsInRowCoroutine = null;
     }
 
-    [Command]
-    private void CmdAttack(Damage damage, GameObject hp)
+    private void AttackPassed(Character target)
     {
-        if (_tempTargetForDamage != hp.transform)
+        _comboCounter.AddSkill(target, this);
+
+        if (_hitsInRowCoroutine != null)
+            StopCoroutine(_hitsInRowCoroutine);
+
+        _hitsInRowCoroutine = StartCoroutine(HitsInRowTimer());
+
+        var state = target.GetComponent<CharacterState>();
+        float chance = 0f;
+
+        if (isKick_ScorpionRowTalent)
         {
-            _tempTargetForDamage = hp.transform;
-            _tempForDamage = hp.GetComponent<IDamageable>();
+            chance = _baseDebuffChance * Mathf.Pow(2, _hitsInRow - 1);
+
+            if (Random.value <= Mathf.Clamp01(chance))
+            {
+                state?.AddState(States.Knockdown, 6f, 0, _hero.gameObject, name);
+                _hitsInRow = 1;
+            }
+            else _hitsInRow = (byte)Mathf.Min(_hitsInRow + 1, 4);
         }
+        else _hitsInRow = 1;
 
-        bool result = _tempForDamage.TryTakeDamage(ref damage, this);
-        RpcSelfNotifyHitResult(result, _tempTargetForDamage);
-
+        if (isKick_ScorpionComboTalent && state != null)
+        {
+            int comboStacks = state.CheckStateStacks(States.ComboState);
+            for (int i = 0; i < comboStacks; i++)
+            {
+                state.AddState(States.Knockdown, 6f, 0, _hero.gameObject, name);
+            }
+        }
     }
 
-    [TargetRpc]
-    private void RpcSelfNotifyHitResult(bool state, Transform target)
+    [Command]
+    private void CmdApplyDamage(Character targetObject, Damage damage)
     {
-        if (state)
-        {
-            AttackPassed(target);
-        }
-        else
-        {
-            AttackMissed();
-        }
+        if (targetObject == null) return;
+
+        IDamageable targetHealth = targetObject.GetComponent<IDamageable>();
+        if (targetHealth == null) return;
+
+        bool isHit = targetHealth.TryTakeDamage(ref damage, this);
+        Hero.DamageTracker.AddDamage(damage, targetObject.gameObject, isServerRequest: true);
+
+        if (isHit) AttackPassed(targetObject);
+    }
+
+    public void Kick_ScorpionRowTalent(bool value)
+    {
+        isKick_ScorpionRowTalent = value;
+    }
+
+    public void Kick_ScorpionComboTalent(bool value)
+    {
+        isKick_ScorpionComboTalent = value;
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)

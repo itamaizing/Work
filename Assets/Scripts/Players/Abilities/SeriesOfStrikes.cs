@@ -16,6 +16,9 @@ public class SeriesOfStrikes : MonoBehaviour
 	private float _sumPhisDamage = 0;
 	private float _speedMultiplier = 5;
 
+	private bool _seriesCompliteCompoTalent;
+	private bool _iceRuneTalent;
+
 	private static List<AbilityForm> _formList = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical };
 	private static List<AbilityForm> _formList2 = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Magic };
 	private static List<AbilityForm> _formList3 = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Magic, AbilityForm.Physical, AbilityForm.Magic, AbilityForm.Physical, AbilityForm.Magic };
@@ -68,7 +71,7 @@ public class SeriesOfStrikes : MonoBehaviour
 			//target.CharacterState.personWhoShoted = _player;
 		}
 		CheckCurse(target, damage);
-		BonusRuneForDamage(damage);
+		if (_iceRuneTalent) BonusRuneForDamage(damage);
 		//float usedEnergy = 0;
 		for(int i=0; i< _seriesOfStrikes.Count; i++)
 		{
@@ -184,7 +187,7 @@ public class SeriesOfStrikes : MonoBehaviour
 
 	private void LastHit(float usedRune, float usedEnergy)
 	{
-		_rune.CmdAdd(usedRune * 2 + 0.5f);
+		if (_seriesCompliteCompoTalent) _rune.CmdAdd(usedRune * 2 + 1);
 		_energy.CmdAdd(usedEnergy * 0.4f);
 
 		for (int i = 0; i < _seriesOfStrikes.Count; i++)
@@ -196,20 +199,33 @@ public class SeriesOfStrikes : MonoBehaviour
 	private void BonusRuneForDamage(float damage)
 	{
 		_sumPhisDamage += damage;
-		while( _sumPhisDamage >= 50 ) 
+		while( _sumPhisDamage >= 100 ) 
 		{
-			_rune.CmdAdd(0.5f);
-			_sumPhisDamage -= 50;
+			_rune.CmdAdd(1f);
+			_sumPhisDamage -= 100;
 		}
 	}
 
 	public void TalentBoostMultiplier(float multiplier)
 	{
-		
 		_speedMultiplier = multiplier;
 	}
 
-	private void CheckCurse(Character target, float damage)
+    #region Talent
+
+    public void SeriesCompliteCompoTalentActive(bool value)
+	{
+		_seriesCompliteCompoTalent = value;
+	}
+
+	public void IceRuneTalentActive(bool value)
+	{
+		_iceRuneTalent = value;
+	}
+
+    #endregion
+
+    private void CheckCurse(Character target, float damage)
 	{
 		if(target == null) return;
 		if(target.CharacterState.CheckForState(States.Curse))

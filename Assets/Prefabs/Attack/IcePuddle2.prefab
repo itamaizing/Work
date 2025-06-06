@@ -72,7 +72,7 @@ SpriteRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6857165054064679936}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -82,7 +82,7 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 2
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
@@ -220,10 +220,11 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _hitEffect: {fileID: 0}
-  _spriteRenderer: {fileID: 3227142297256296569}
+  _spriteRenderer: {fileID: 0}
   _rb: {fileID: 8400426652099311835}
   _force: 0
   _distance: 5
+  decalProjector: {fileID: 5190617138190012837}
 --- !u!114 &3771171484307784901
 MonoBehaviour:
   m_ObjectHideFlags: 0

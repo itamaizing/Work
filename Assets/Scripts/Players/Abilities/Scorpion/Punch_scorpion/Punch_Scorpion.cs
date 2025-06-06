@@ -44,11 +44,11 @@ public class Punch_Scorpion : AutoAttackSkill
         _lastTarget = _target;
 
     }
-    private void AttackPassed(Transform target)
+    private void AttackPassed(Character target)
     {
         Debug.LogWarning("Punch_Scorppion .AttackPassed - �����");
 
-        _comboCounter.AddAbility(target, ScorpionAbility.Punch);
+        _comboCounter.AddSkill(target, this);
     }
     private void AttackMissed()
     {
@@ -67,12 +67,12 @@ public class Punch_Scorpion : AutoAttackSkill
         }
 
         bool result = _tempForDamage.TryTakeDamage(ref damage, this);
-        RpcSelfNotifyHitResult(result, _tempTargetForDamage);
+       //RpcSelfNotifyHitResult(result, _tempTargetForDamage);
 
     }
 
     [TargetRpc]
-    private void RpcSelfNotifyHitResult(bool state,Transform target)
+    private void RpcSelfNotifyHitResult(bool state,Character target)
     {
         if (state)
         {

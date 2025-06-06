@@ -1,6 +1,3 @@
-using JetBrains.Annotations;
-using Mirror;
-using Org.BouncyCastle.Asn1.Cmp;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,152 +6,157 @@ using UnityEngine;
 
 public class ConsumeCombo_Scorpion : Skill
 {
-    [SerializeField] private Character _playerLinks;
-    [SerializeField] private ComboPoints_Player _comboPlayer;
-    [SerializeField] private List<ICanConsumeComboPoints> _abilitiesToNotify = new List<ICanConsumeComboPoints>();
-    private int _availablePoints;
-    public int AvailablePoints { get { return RecalculateFreePoints(); } }
+    private List<Character> _comboTargetsQueue = new List<Character>();
 
-    public int Count = 0;
-    [field: SerializeField] public bool IsActive { get; private set; }
+    public int AvailablePoints => _comboTargetsQueue.Sum(target =>
+    {
+        var state = target.CharacterState.GetState(States.ComboState) as ComboState;
+        return state?.CurrentStacksCount ?? 0;
+    });
 
-    protected override bool IsCanCast { get { return true; } }
+    protected override bool IsCanCast => true;
+    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCast => 0;
 
-    protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
+    private bool isConsumeCombo_ScorpionPhysicStateClear;
 
-    protected override int AnimTriggerCast => throw new System.NotImplementedException();
+    public void ApplyComboEffect(Transform enemy)
+    {
+        if (!isServer) return;
+        if (enemy == null) return;
 
-    protected override void Awake()
-    { 
-        base.Awake();
+        var targetCharacter = enemy.GetComponent<Character>();
+        if (targetCharacter == null) return;
 
-        var newList = GetComponent<SkillManager>().Abilities/*.Where(x => x is ICanConsumeComboPoints).ToList()*/;
+        var stateManager = targetCharacter.CharacterState;
+        if (stateManager == null) return;
 
-        foreach (var item in newList)
+        var comboState = stateManager.GetState(States.ComboState) as ComboState;
+        if (comboState == null || comboState.CurrentStacksCount <= 0)
         {
-            if (item is ICanConsumeComboPoints)
-            {
-                _abilitiesToNotify.Add(item as ICanConsumeComboPoints);
-            }
+            if (!_comboTargetsQueue.Contains(targetCharacter))
+                _comboTargetsQueue.Add(targetCharacter);
         }
 
-        foreach (var item in _abilitiesToNotify)
+        stateManager.AddState(States.ComboState, float.PositiveInfinity, 0f, _hero.gameObject, nameof(ConsumeCombo_Scorpion));
+    }
+
+    public int PayComboPoints(int amount, Character specificTarget = null)
+    {
+        int pointsConsumed = 0;
+
+        if (specificTarget != null)
         {
-            item.Notifier = this;
-        }
-    }
-
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        
-    }
-
-    [Command]
-    private void cmdtest()
-    {
-        Debug.LogWarning($" Cast speed test before !!!!!: {Buff.CastSpeed.Multiplier}");
-        Buff.CastSpeed.IncreasePercentage(2f);
-        Debug.LogWarning($" Cast speed test after !!!!!: {Buff.CastSpeed.Multiplier}");
-
-        rpctest();
-    }
-    [ClientRpc]
-    private void rpctest()
-    {
-        Debug.LogWarning($" Cast speed test before !!!!!: {Buff.CastSpeed.Multiplier}");
-        Buff.CastSpeed.ReductionPercentage(0.3f);
-        Debug.LogWarning($" Cast speed test after !!!!!: {Buff.CastSpeed.Multiplier}");
-    }
-
-    private void NotifyAbilities(bool State)
-    {
-        RecalculateFreePoints();
-
-        //foreach (var item in _abilitiesToNotify)
-        //{
-        //    item.IsUsingCombo = State;
-        //}
-    }
-    private void ResetValues()
-    {
-        Count = 0;
-        IsActive = false;
-    }
-
-    private bool Consume()
-    {
-        if (_playerLinks == null)
-            return false;
-
-        if (_comboPlayer.CurrentValue == 0)
-        {
-            ResetValues();
-            return false;
-        }
-
-        if (_comboPlayer.CurrentValue > Count)
-        {
-            Count++;
-            IsActive = true;
+            pointsConsumed = ConsumePointsFromTarget(specificTarget, amount);
         }
         else
         {
-            Count = 1;
-            IsActive = true;
+            pointsConsumed = ConsumePointsFromQueue(amount);
         }
 
-
-        //if (_playerLinks.Combo_Player.Use(1))
-        //{
-        //    return true;
-        //}
-
-        return false;
+        return pointsConsumed;
     }
 
-    private int RecalculateFreePoints()
+    private int ConsumePointsFromTarget(Character target, int amount)
     {
-        return (int) _comboPlayer.CurrentValue;
+        if (target == null) return 0;
+
+        var state = target.CharacterState.GetState(States.ComboState) as ComboState;
+        if (state == null) return 0;
+
+        int availablePoints = state.CurrentStacksCount;
+        int pointsToConsume = Mathf.Clamp(amount, 0, availablePoints);
+
+        for (int i = 0; i < pointsToConsume; i++)
+        {
+            bool reduced = state.Stack(-1);
+            if (reduced && isConsumeCombo_ScorpionPhysicStateClear)
+            {
+                _hero.CharacterState.DispelStates(StateType.Physical, true, true);
+            }
+
+            if (!reduced)
+            {
+                target.CharacterState.RemoveState(state);
+                _comboTargetsQueue.Remove(target);
+                break;
+            }
+        }
+
+        return pointsToConsume;
     }
 
-    public int PayComboPoints(int amount)
+    private int ConsumePointsFromQueue(int amount)
     {
-        int usedPoints = Mathf.Clamp(amount, 0, (int)_comboPlayer.CurrentValue);
-        Debug.LogWarning($"Used Combo: {usedPoints}");
-        if (usedPoints <= 0)
-            return 0;
-        //CmdUse(usedPoints);
-        _comboPlayer.CmdUse(usedPoints);
-        //_comboPlayer.Use(1);
-        return usedPoints;
-    }
-    //[Command]
-    //private void CmdUse(int amount)
-    //{
-    //    _comboPlayer.Use(amount);
-    //}
+        int pointsToConsume = 0;
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+        while (amount > 0 && _comboTargetsQueue.Count > 0)
+        {
+            var lastTarget = _comboTargetsQueue[_comboTargetsQueue.Count - 1];
+            var state = lastTarget.CharacterState.GetState(States.ComboState) as ComboState;
+
+            if (state == null)
+            {
+                _comboTargetsQueue.RemoveAt(_comboTargetsQueue.Count - 1);
+                continue;
+            }
+
+            bool reduced = state.Stack(-1);
+            pointsToConsume++;
+            amount--;
+
+            if (reduced && isConsumeCombo_ScorpionPhysicStateClear)
+            {
+                _hero.CharacterState.DispelStates(StateType.Physical, true, true);
+            }
+
+            if (!reduced)
+            {
+                lastTarget.CharacterState.RemoveState(state);
+                _comboTargetsQueue.RemoveAt(_comboTargetsQueue.Count - 1);
+            }
+        }
+
+        return pointsToConsume;
+    }
+
+    public void ConsumeCombo_ScorpionPhysicStateClearTalent(bool value)
     {
-        callbackDataSaved(null);
-        yield return null;
+        isConsumeCombo_ScorpionPhysicStateClear = value;
     }
 
-    protected override IEnumerator CastJob()
+    public void TryConsumeComboAroundSelf()
     {
-        IsActive = !IsActive;
-        yield return null;
+        if (!isConsumeCombo_ScorpionPhysicStateClear || !isServer) return;
+
+        List<Character> targetsInRadius = Physics.OverlapSphere(transform.position, Radius, TargetsLayers)
+            .Select(c => c.GetComponent<Character>())
+            .Where(c => c != null && c.CharacterState.CheckForState(States.ComboState))
+            .ToList();
+
+        foreach (var target in targetsInRadius)
+        {
+            var state = target.CharacterState.GetState(States.ComboState) as ComboState;
+            if (state == null || state.CurrentStacksCount <= 0) continue;
+
+            bool reduced = state.Stack(-1);
+            if (reduced)
+            {
+                if (isConsumeCombo_ScorpionPhysicStateClear)
+                {
+                    _hero.CharacterState.DispelStates(StateType.Physical, true, true);
+                }
+
+                if (state.CurrentStacksCount <= 0)
+                {
+                    target.CharacterState.RemoveState(state);
+                }
+            }
+        }
     }
 
-    protected override void ClearData()
-    {
-        
-    }
-}
-
-public interface ICanConsumeComboPoints
-{
-    public ConsumeCombo_Scorpion Notifier { get; set; }
-    public int ConsumedAmount { get; set; }
-    public void TryUpgradeByConsumingCombo(int amount);
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved) => null;
+    protected override IEnumerator CastJob() => null;
+    protected override void ClearData() { }
+    public override void LoadTargetData(TargetInfo targetInfo) => throw new NotImplementedException();
 }

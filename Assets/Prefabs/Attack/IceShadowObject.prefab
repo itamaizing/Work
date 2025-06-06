@@ -179,7 +179,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 48b6f6128a36baa4eb19194fb49de771, type: 2}
+  - {fileID: 2100000, guid: d4f4979b8e7a68e43bc8503069373983, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -659,6 +659,7 @@ MonoBehaviour:
   _distance: 5
   timeToDestroy: 2
   timeToDestroyAlive: 10
+  enemyShadow: 0
   anim: {fileID: 1649954383467101740}
 --- !u!114 &-195080186154571951
 MonoBehaviour:
@@ -1413,7 +1414,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4613370545929086038}
   - component: {fileID: 1649954383467101740}
-  - component: {fileID: 356499163482415119}
+  - component: {fileID: 8738383160362157278}
   m_Layer: 0
   m_Name: Shadow
   m_TagString: Untagged
@@ -1448,7 +1449,7 @@ Animator:
   m_GameObject: {fileID: 5426323791387705068}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 2b64f44e58a16834a9f0185e6b8759b3, type: 3}
-  m_Controller: {fileID: 9100000, guid: 3b3af740df304814ab2b0d1cb5d0219f, type: 2}
+  m_Controller: {fileID: 9100000, guid: 3716ca0620e0bd249a3ca1e75e58c7ad, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1459,7 +1460,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &356499163482415119
+--- !u!114 &8738383160362157278
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1481,6 +1482,7 @@ MonoBehaviour:
   moveAudioSource: {fileID: 0}
   moveClips: []
   MoveDirection: {x: 0, y: 0, z: 0}
+  ExternalMoveDirection: {x: 0, y: 0, z: 0}
   CanMove: 0
   IsMoving: 0
   IsSelect: 0
