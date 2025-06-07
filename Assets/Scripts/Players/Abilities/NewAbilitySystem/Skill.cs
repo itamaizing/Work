@@ -1245,7 +1245,7 @@ public abstract class Skill : NetworkBehaviour
             yield return StartCastDeleyCoroutine();
 
         if (_castDuration > 0)
-            StartCoroutine(CastStreamJob());
+            _castStreamCoroutine = StartCoroutine(CastStreamJob());
 
         if (AnimTriggerCast != 0)
         {

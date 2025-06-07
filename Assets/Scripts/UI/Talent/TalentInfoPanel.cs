@@ -28,7 +28,7 @@ public class TalentInfoPanel : MonoBehaviour
         if(_cells != null && _cells.Count > 0)
             _cells[^1].HideDividingLine();
 
-        _name.text = data.Name;
+        _name.text = data.Description;
     }
 
     public void Hide()

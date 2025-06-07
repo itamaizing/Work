@@ -9,6 +9,10 @@ namespace Gangdollarff
     public class FireworkDsplay : Skill
     {
         [SerializeField] private Firework _firework;
+        [SerializeField] private float _damageRangeMin = -2;
+        [SerializeField] private float _damageRangeMax = 1;
+
+        private List<float> _damageForTarget = new List<float>() { 1, .75f, .50f, .25f };
 
         private Vector3 _targetPoint = Vector3.positiveInfinity;
         private Character _target;
@@ -47,18 +51,20 @@ namespace Gangdollarff
                 yield return new WaitForSeconds(_manaCostRate);
 
                 int count = 0;
+                _firework.SortDamageablesByDistance(transform.position);
 
                 foreach (var item in _firework.Damageables)
                 {
                     if (((1 << item.gameObject.layer) & TargetsLayers) != 0)
                     {
-                        if (item.TryGetComponent<IDamageable>(out IDamageable enemy) && count < 3)
+                        if (item.TryGetComponent<IDamageable>(out IDamageable enemy) && count < 4)
                         {
-
+                            float currentDamage = UnityEngine.Random.Range(Damage + _damageRangeMin, Damage + _damageRangeMax) * _damageForTarget[count];
                             count++;
+
                             Damage damage = new Damage
                             {
-                                Value = Buff.Damage.GetBuffedValue(Damage),
+                                Value = Buff.Damage.GetBuffedValue(currentDamage),
                                 Type = DamageType,
                                 PhysicAttackType = AttackRangeType,
                             };

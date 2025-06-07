@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Gangdollarff
@@ -9,6 +10,13 @@ namespace Gangdollarff
         private List<Collider> _damageables = new();
 
         public List<Collider> Damageables { get => _damageables; protected set => _damageables = value; }
+
+        public void SortDamageablesByDistance(Vector3 position)
+        {
+            _damageables = _damageables
+                .OrderBy(collider => Vector3.Distance(collider.transform.position, position))
+                .ToList();
+        }
 
         private void OnDisable()
         {
