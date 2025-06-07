@@ -45,6 +45,7 @@ namespace Gangdollarff
             float time = 0;
             //_firework.gameObject.SetActive(true);
             CmdSetActiveParticle(true);
+            Hero.Move.RotateModifier = -700;
 
             while (time < CastStreamDuration)
             {
@@ -81,6 +82,7 @@ namespace Gangdollarff
 
         protected override void ClearData()
         {
+            Hero.Move.RotateModifier = 0;
             EnableMove();
             //_firework.gameObject.SetActive(false);
             CmdSetActiveParticle(false);
