@@ -1,10 +1,15 @@
 using Mirror;
 using UnityEngine;
 
-public class ArrowsIntoSkyProjectile : NetworkBehaviour
+public class ArrowIntoSkyProjectile : NetworkBehaviour
 {
-    [SerializeField] private float impactLifeTime = 2;
-    [SerializeField] private double nextDamageTime = 1;
+    [SerializeField] private float impactLifeTime = 1;
+    [SerializeField, Range(0f, 100f)] private float criticalChance = 30f;
+    [SerializeField] private float criticalMultiplier = 2.4f;
+    [SerializeField] private float minDamage;
+    [SerializeField] private float maxDamage;
+
+    [SerializeField] private double nextDamageTime = 0.5;
 
     [SerializeField] private GameObject arrow;
     [SerializeField] private GameObject circle;
@@ -18,22 +23,19 @@ public class ArrowsIntoSkyProjectile : NetworkBehaviour
     private HeroComponent _dad;
     private Skill _skill;
     private Character _character;
-    private float _damage;
-
-
 
     public GameObject Arrow { get => arrow; set => arrow = value; }
     public GameObject Circle { get => circle; set => circle = value; }
 
-    public virtual void Init(HeroComponent dad, Skill skill, float damage, bool silenceTalentActive, bool tripleShotTalentActive, bool shotAstralManaActive)
+    public virtual void Init(HeroComponent dad, Skill skill, bool silenceTalentActive, bool tripleShotTalentActive, bool shotAstralManaActive)
     {
         this.silenceTalentActive = silenceTalentActive;
         this.tripleShotTalentActive = tripleShotTalentActive;
         this.shotAstralManaActive = shotAstralManaActive;
-
         _dad = dad;
         _skill = skill;
-        _damage = damage;
+
+        _skill.Damage = Random.Range(minDamage, maxDamage + 1);
 
         if (_dad != null && _dad.TryGetComponent<Character>(out Character character)) _character = character;
     }
@@ -54,7 +56,11 @@ public class ArrowsIntoSkyProjectile : NetworkBehaviour
         if (NetworkTime.time < nextDamageTime) return;
         if (other.gameObject == _dad.gameObject) return;
         if (((1 << other.gameObject.layer) & _skill.TargetsLayers.value) == 0) return;
-        if (other.TryGetComponent<IDamageable>(out var damageable)) ApplyDamage(_damage, DamageType.Magical, damageable);
+
+        float damageToDeal = _skill.Damage;
+        if (Random.value * 100f < criticalChance) damageToDeal *= criticalMultiplier;
+
+        if (other.TryGetComponent<IDamageable>(out var damageable)) ApplyDamage(damageToDeal, DamageType.Physical, damageable);
         if (other.TryGetComponent<Character>(out var character))
         {
             var characterState = character.CharacterState;

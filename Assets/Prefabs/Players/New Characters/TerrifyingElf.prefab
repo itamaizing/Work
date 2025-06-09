@@ -9842,15 +9842,14 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   skillRenderer: {fileID: 2807589928063243029}
-  minDamage: 12
-  maxDamage: 18
   silenceTalentActive: 0
   tripleShotTalentActive: 0
   shotAstralManaActive: 0
-  criticalChance: 30
-  arrowPrefab: {fileID: 8859527807384012395, guid: 50647cffb53973d4fb5c0f4f23fa57e5, type: 3}
-  fallSpeed: 12
-  spawnHeight: 10
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8192
+  playerLinks: {fileID: 4534754468497973439}
+  impactPrefab: {fileID: 2350920691492312483, guid: cac1bddd67383cf44b63154f1d1cea37, type: 3}
 --- !u!114 &3150488009405324217
 MonoBehaviour:
   m_ObjectHideFlags: 0
