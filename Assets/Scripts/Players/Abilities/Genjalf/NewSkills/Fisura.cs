@@ -86,8 +86,6 @@ namespace Gangdollarff
 
             _lineRenderer.positionCount = 0;
             yield return null;
-
-            Debug.LogError("error data");
         }
 
         [Command]
