@@ -19,7 +19,7 @@ public class Blindness : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        throw new NotImplementedException();
+        _target.transform.position = targetInfo.Points[0];
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)

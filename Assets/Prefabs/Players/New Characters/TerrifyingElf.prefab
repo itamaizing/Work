@@ -5211,7 +5211,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6218627837131491164}
-  m_LocalRotation: {x: -0, y: -0.92387956, z: -0, w: 0.38268343}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -5227,7 +5227,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6218627837131491164}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -5237,7 +5237,7 @@ LineRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 2
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
@@ -5343,10 +5343,10 @@ MonoBehaviour:
   distance: 25
   collisionLayers:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 8192
   bounces: 0
   bounceDamping: 0
-  distanceIsTotalLength: 0
+  distanceIsTotalLength: 1
 --- !u!114 &1573813942100474538
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5362,6 +5362,10 @@ MonoBehaviour:
   globalConstants:
   - {x: 0, y: -9.81, z: 0}
   localConstants: []
+  minDrawDistance: 0
+  maxDrawDistance: 50
+  minSpeed: 0
+  maxSpeed: 50
 --- !u!114 &2350710443634720294
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10563,9 +10567,9 @@ MonoBehaviour:
   fireData: {fileID: 11400000, guid: 67c31e48e164c944a90e72fd98b08a37, type: 2}
   duration: 10
   globalConstants:
-  - {x: 0, y: -9.81, z: 0}
+  - {x: 0, y: 0, z: 0}
   localConstants: []
-  speed: 8
+  speed: 0
 --- !u!114 &6686568037796463366
 MonoBehaviour:
   m_ObjectHideFlags: 0
