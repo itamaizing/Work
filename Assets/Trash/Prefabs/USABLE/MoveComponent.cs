@@ -10,7 +10,8 @@ public class MoveComponent : NetworkBehaviour
 {
 	[SerializeField, Range(0, 0.5f)] private float _smoothTime = 0.15f;
 	[SerializeField] protected float _currentSpeed = 5;
-	[SerializeField] protected Animator _anim;
+    [SerializeField] protected float _rotationDefaultSpeed = 1000;
+    [SerializeField] protected Animator _anim;
 	[SerializeField] protected FlyChecker _flyChecker;
 	[SerializeField] private AudioSource moveAudioSource;
 	[SerializeField] private AudioClip[] moveClips;
@@ -53,6 +54,8 @@ public class MoveComponent : NetworkBehaviour
 	public Rigidbody Rigidbody => _rigidbody;
 
 	public bool IsMoveBlocked { get => _isMoveBlocked; set => _isMoveBlocked = value; }
+    public float CurrentRotationSpeed { get => _rotationDefaultSpeed + RotateModifier; }
+    public float RotateModifier { get; set; }
 
     protected override void OnValidate()
     {
@@ -229,10 +232,22 @@ public class MoveComponent : NetworkBehaviour
 
 			if (Physics.Raycast(ray, out hit))
 			{
+                /*
 				var transformRotate = transform.eulerAngles;
 				transform.LookAt(hit.point);
 				transform.eulerAngles = (new Vector3(transformRotate.x, transform.eulerAngles.y, transformRotate.z));
-			}
+				*/
+
+                Vector3 targetPosition = hit.point;
+                Vector3 direction = targetPosition - transform.position;
+                direction.y = 0;
+
+                if (direction.sqrMagnitude > 0.001f)
+                {
+                    Quaternion targetRotation = Quaternion.LookRotation(direction);
+					transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, CurrentRotationSpeed * Time.deltaTime);
+                }
+            }
 		}
 	}
 

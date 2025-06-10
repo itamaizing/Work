@@ -6805,6 +6805,7 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
+  _earlyCooldown: 0
   _shieldPref: {fileID: 1158249924082485831, guid: 13647bb6f83d1b34c8c511be314fb9d3, type: 3}
   _shieldValue: 40
   _shieldDuration: 2
@@ -6842,7 +6843,7 @@ MonoBehaviour:
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
-  _castDuration: 1.5
+  _castDuration: 99999
   _manaCostRate: 0.1
   _manaCostPerTick:
   - resourceType: 1
@@ -6861,6 +6862,7 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
+  _earlyCooldown: 0
   _firework: {fileID: 3150633468305956490}
 --- !u!114 &7914139750777672279
 MonoBehaviour:
@@ -6915,6 +6917,7 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
+  _earlyCooldown: 0
   _deleyTelekines: 0.5
   _amountOfLift: 1.5
 --- !u!114 &4651608391275017639
@@ -6968,6 +6971,7 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
+  _earlyCooldown: 0
   _particle: {fileID: 3994345256487826021}
   _pushRange: 1
   _pushDuration: 0.33
@@ -7024,6 +7028,7 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
+  _earlyCooldown: 0
   _lineRenderer: {fileID: 3792777773710482975}
   _fisuraPref: {fileID: 3452147409339536588, guid: ffab2755e011e1947ba5197ed189e92b, type: 3}
   _fisuraDuration: 6

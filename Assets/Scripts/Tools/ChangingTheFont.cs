@@ -1,27 +1,22 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-
-#if UNITY_EDITOR
 using UnityEditor;
-#endif
 
 public class ChangingTheFont : MonoBehaviour
 {
     [SerializeField] private TMP_FontAsset _newFont;
 
-#if UNITY_EDITOR
-    [ContextMenu("Change TMP Font")]
-    private void ChangeAll()
+    [ContextMenu("ChangingTheFont")]
+    private void ChangAll()
     {
-        var labels = GetComponentsInChildren<TextMeshProUGUI>(true);
+        TextMeshProUGUI[] tempFonts = GetComponentsInChildren<TextMeshProUGUI>();
 
-        foreach (var label in labels)
+        foreach (var item in tempFonts)
         {
-            Undo.RecordObject(label, "Change TMP Font");
-            label.font = _newFont;
-
-            EditorUtility.SetDirty(label);
+            //Undo.RecordObject(item, "font"); build errors
+            item.font = _newFont;
         }
     }
-#endif
 }

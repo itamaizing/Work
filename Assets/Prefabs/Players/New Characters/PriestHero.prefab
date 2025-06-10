@@ -6588,6 +6588,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
+    _descriptionsForInfoPanel: []
     IsOpen: 0
     Description: a
     Icon: {fileID: 21300000, guid: 09e359aa32a9ff04ea7bbdf596fa2faa, type: 3}
@@ -6606,6 +6607,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
+    _descriptionsForInfoPanel: []
     IsOpen: 0
     Description: a
     Icon: {fileID: 21300000, guid: ae29ded27bedede4eaa0a76e40eeffe8, type: 3}
@@ -6624,6 +6626,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
+    _descriptionsForInfoPanel: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: d98277b1f14b3c84e906db928f1d5fff, type: 3}
@@ -6642,6 +6645,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
+    _descriptionsForInfoPanel: []
     IsOpen: 1
     Description: 
     Icon: {fileID: 21300000, guid: e412ffe984e989d42b1b73851bd11bb4, type: 3}
@@ -6660,6 +6664,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
+    _descriptionsForInfoPanel: []
     IsOpen: 1
     Description: 
     Icon: {fileID: 21300000, guid: d34409cc09b236d4da56a95d24acd358, type: 3}
@@ -6678,6 +6683,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
+    _descriptionsForInfoPanel: []
     IsOpen: 1
     Description: 
     Icon: {fileID: 21300000, guid: b7ba9882ed5f32f40a9cd054221db12c, type: 3}
@@ -6696,6 +6702,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
+    _descriptionsForInfoPanel: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: 0df2be162515e5f45a7803b8871e7725, type: 3}
@@ -6715,6 +6722,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
+    _descriptionsForInfoPanel: []
     IsOpen: 1
     Description: 
     Icon: {fileID: 21300000, guid: 9417efc47083f4a1598c1966a6345cdb, type: 3}
@@ -6733,6 +6741,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
+    _descriptionsForInfoPanel: []
     IsOpen: 1
     Description: 
     Icon: {fileID: 21300000, guid: 18a436a2dc16eb24a9f5c7c559b3906d, type: 3}
@@ -6751,6 +6760,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
+    _descriptionsForInfoPanel: []
     IsOpen: 1
     Description: 
     Icon: {fileID: 21300000, guid: 20af4d25b37c89a4ab20f317d1c7cf17, type: 3}
@@ -6769,6 +6779,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
+    _descriptionsForInfoPanel: []
     IsOpen: 1
     Description: 
     Icon: {fileID: 21300000, guid: c958be7c2aec0f04f9ee64f294e9848b, type: 3}
@@ -6787,6 +6798,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
+    _descriptionsForInfoPanel: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -6804,6 +6816,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
+    _descriptionsForInfoPanel: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: 9f42d22003c5e8f439093da05407f78f, type: 3}
@@ -6822,6 +6835,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
+    _descriptionsForInfoPanel: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: 3c709b466f53c0141944292653b6dff8, type: 3}
@@ -6841,6 +6855,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
+    _descriptionsForInfoPanel: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: cae2f0cb798243a46842fb23151acbf4, type: 3}
@@ -6859,6 +6874,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
+    _descriptionsForInfoPanel: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: 428dcd7a870198e46b6ad8210ced5702, type: 3}
@@ -6877,6 +6893,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
+    _descriptionsForInfoPanel: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -6895,6 +6912,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
+    _descriptionsForInfoPanel: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: 5947490bf033aa34584f86a37691c7e0, type: 3}
@@ -6915,6 +6933,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
+    _descriptionsForInfoPanel: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: 53870fe1f8d490943a9f72d539e0e30b, type: 3}
@@ -6933,6 +6952,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
+    _descriptionsForInfoPanel: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: de2eb585768797b40a4cfa09999d20fe, type: 3}
@@ -6953,6 +6973,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
+    _descriptionsForInfoPanel: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: 5f87305361922404b91845905135d326, type: 3}

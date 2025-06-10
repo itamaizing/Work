@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class UIGameWindowPopup : MonoBehaviour
@@ -8,9 +9,27 @@ public class UIGameWindowPopup : MonoBehaviour
     [SerializeField] private MinionPanel _minionPanel;
     [SerializeField] private SkillPanel _skillPanel;
     [SerializeField] private SelectManager _selectManager;
+    [SerializeField] private GameObject _settings;
 
     private HeroComponent _currentHero;
     private Character _currentCharacter;
+
+    private void Awake()
+    {
+        InputHandler.ShowMenu += ShowSettings;
+    }
+
+    private void ShowSettings()
+    {
+        if (_settings.activeSelf)
+        {
+            _settings.SetActive(false);
+        }
+        else
+        {
+            _settings.SetActive(true);
+        }
+    }
 
     private void OnEnable()
     {
