@@ -61,6 +61,8 @@ public class GrowTree : Skill
             : baseCastStreamDuration * Mathf.Pow(2, treeCount);
 
         Hero.Animator.speed = Hero.Animator.speed / CastStreamDuration;
+        Hero.Animator.SetTrigger(AnimTriggerCastDelay);
+        _hero.NetworkAnimator.SetTrigger(AnimTriggerCastDelay);
 
         while (float.IsPositiveInfinity(_targetPoint.x) && !_disactive)
         {
