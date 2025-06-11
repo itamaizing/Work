@@ -381,6 +381,7 @@ GameObject:
   - component: {fileID: 7494791652124082300}
   - component: {fileID: 7995266060163823287}
   - component: {fileID: 8534025555590041727}
+  - component: {fileID: 1555059839938612127}
   m_Layer: 8
   m_Name: GrowTree
   m_TagString: Enemies
@@ -616,6 +617,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfb4a106016f7944db805ad0572ebf6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1555059839938612127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2058911381882631605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecf32e0aadfc5644aa4e7eb739ccc477, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_VisionRange: 2
 --- !u!1 &2824801518732379573
 GameObject:
   m_ObjectHideFlags: 0

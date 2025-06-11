@@ -75,6 +75,11 @@ public class GroundTrap : Skill
 
             yield return null;
         }
+
+        TargetInfo info = new TargetInfo();
+        info.Points.Add(_startPosition);
+        info.Points.Add(_endPosition);
+        callbackDataSaved?.Invoke(info);
     }
 
 
@@ -130,6 +135,13 @@ public class GroundTrap : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        throw new NotImplementedException();
+        if (targetInfo.Points.Count >= 2)
+        {
+            _startPosition = targetInfo.Points[0];
+            _endPosition = targetInfo.Points[1];
+
+            Vector3 dir = _endPosition - _startPosition;
+            _trapAngle = Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg + 90;
+        }
     }
 }

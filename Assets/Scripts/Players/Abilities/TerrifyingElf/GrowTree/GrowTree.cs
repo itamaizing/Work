@@ -74,6 +74,10 @@ public class GrowTree : Skill
             }
             yield return null;
         }
+
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(_targetPoint);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
@@ -154,6 +158,7 @@ public class GrowTree : Skill
         }
 
         _activeTrees.Add(tree);
+        RpcClientAddTree(tree.GetComponent<NetworkIdentity>().netId);
     }
 
     [Command]
@@ -179,6 +184,13 @@ public class GrowTree : Skill
         }
 
         _activeTrees.Add(tree);
+        RpcClientAddTree(tree.GetComponent<NetworkIdentity>().netId);
+    }
+
+    [ClientRpc]
+    void RpcClientAddTree(uint netId)
+    {
+        if (NetworkClient.spawned.TryGetValue(netId, out var networkIdentity)) _activeTrees.Add(networkIdentity.GetComponent<Tree>());
     }
 
     [ClientRpc]
@@ -252,6 +264,6 @@ public class GrowTree : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        throw new NotImplementedException();
+        _targetPoint = targetInfo.Points[0];
     }
 }
