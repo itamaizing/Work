@@ -70,6 +70,8 @@ public class JumpWithChelicera : Skill
                 {
                     _isTarget = true;
                     _player.Move.LookAtTransform(_target.transform);
+                    Hero.Move.CanMove = false;
+                    Hero.Move.StopMoveAnimation();
                     _isCanCancle = false;
                 }
             }
@@ -137,7 +139,6 @@ public class JumpWithChelicera : Skill
     public void ApplyRootTrue()
     {
         IncreaseSetCooldown(CooldownTime);
-        Hero.Move.CanMove = false;
         _animator.applyRootMotion = true;
     }
 

@@ -31,6 +31,10 @@ public class StunnedState : AbstractCharacterState
 		{
 			Debug.Log("no ability at " + character.gameObject.name);
 		}
+
+		_characterState.Character.Move.IsMoveBlocked = true;
+		_characterState.Character.Move.StopMoveAnimation();
+
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
 	}
@@ -39,7 +43,6 @@ public class StunnedState : AbstractCharacterState
 	{
 		Debug.Log("Updating Stunned State");
 		_duration -= Time.deltaTime;
-		_characterState.Character.Move.CanMove = false; // временное решение
 		if (_duration < 0 || turnOff)
 		{
 			ExitState();
@@ -50,10 +53,7 @@ public class StunnedState : AbstractCharacterState
 	{
 		Debug.Log("Exiting Stunned State");
 		_characterState.RemoveState(this);
-		if (!_characterState.Check(StatusEffect.Move))
-		{
-			_characterState.Character.Move.CanMove = true;
-		}
+		if (!_characterState.Check(StatusEffect.Move)) _characterState.Character.Move.IsMoveBlocked = false;
 		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null)
 		{
 			_abilities.SetAbilitiesEnabled();

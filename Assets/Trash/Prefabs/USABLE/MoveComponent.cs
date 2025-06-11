@@ -28,9 +28,9 @@ public class MoveComponent : NetworkBehaviour
 	public bool CanMoveState = false;
 	public bool IsMoving = false;
 	public bool IsSelect = false;
-	
+	public bool IsMoveBlocked = false;
+
 	private Rigidbody _rigidbody;
-	private bool _isMoveBlocked = false;
 	private Vector3 _offset = Vector3.zero;
 
 	private bool _isHero = false;
@@ -53,7 +53,6 @@ public class MoveComponent : NetworkBehaviour
 
 	public Rigidbody Rigidbody => _rigidbody;
 
-	public bool IsMoveBlocked { get => _isMoveBlocked; set => _isMoveBlocked = value; }
     public float CurrentRotationSpeed { get => _rotationDefaultSpeed + RotateModifier; }
     public float RotateModifier { get; set; }
 
@@ -141,6 +140,8 @@ public class MoveComponent : NetworkBehaviour
 			_anim.SetFloat(HashAnimPlayer.VelocityX, 0);
 			_anim.SetFloat(HashAnimPlayer.VelocityZ, 0);
 		}
+
+		_rigidbody.velocity = Vector3.zero;
 	}
 
 	public void ChangeMoveSpeed(float value)

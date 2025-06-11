@@ -23,11 +23,11 @@ public class GroundTrap : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        _hero.Animator.speed = CastDeley * 2;
         _isPlacingTrap = true;
         _isStartPointPlaced = false;
         previewTrap.SetActive(true);
         Hero.Move.CanMove = false;
+        Hero.Move.StopMoveAnimation();
 
         while (!_isStartPointPlaced)
         {
@@ -41,16 +41,14 @@ public class GroundTrap : Skill
                 Vector3 directionToHero = mousePosition - transform.position;
                 _trapAngle = Mathf.Atan2(directionToHero.x, directionToHero.z) * Mathf.Rad2Deg;
 
-                previewTrap.transform.rotation = Quaternion.Euler(-90, _trapAngle, 0);
+                previewTrap.transform.rotation = Quaternion.Euler(0, _trapAngle, 0);
 
                 if (GetMouseButton)
                 {
                     _startPosition = mousePosition;
                     PlaceStartPoint();
 
-                    _hero.Animator.SetTrigger("ShotCastDelayAnimTrigger");
-                    _hero.NetworkAnimator.SetTrigger("ShotCastDelayAnimTrigger");
-                    yield return new WaitForSeconds(CastDeley);
+                    yield return new WaitForSeconds(0.1f);
                 }
             }
 
@@ -65,7 +63,7 @@ public class GroundTrap : Skill
             Vector3 direction = _endPosition - _startPosition;
             _trapAngle = Mathf.Atan2(direction.z, direction.x) * Mathf.Rad2Deg + 90;
 
-            previewTrap.transform.rotation = Quaternion.Euler(-90, -_trapAngle, 0);
+            previewTrap.transform.rotation = Quaternion.Euler(0, -_trapAngle, 0);
 
             float distanceBetweenPoints = Vector3.Distance(_endPosition, _startPosition);
 
@@ -83,7 +81,6 @@ public class GroundTrap : Skill
     protected override IEnumerator CastJob()
     {
         PlaceTrap();
-        _hero.Animator.speed = 1;
         yield return null;
     }
 
@@ -108,7 +105,7 @@ public class GroundTrap : Skill
     [Command]
     private void CmdSpawnTrap(float angle, Vector3 startPosition, Vector3 endPosition)
     {
-        Trap trapInstance = Instantiate(trap, startPosition, Quaternion.Euler(-90, -angle, 0));
+        Trap trapInstance = Instantiate(trap, startPosition, Quaternion.Euler(90, angle, 0));
         SceneManager.MoveGameObjectToScene(trapInstance.gameObject, Hero.NetworkSettings.MyRoom);
         trapInstance.Init(heroComponent, this, startPosition, endPosition);
         NetworkServer.Spawn(trapInstance.gameObject);
@@ -127,6 +124,7 @@ public class GroundTrap : Skill
         _isPlacingTrap = false;
         _isStartPointPlaced = false;
         previewTrap.SetActive(false);
+        Hero.Move.StopLookAt();
         Hero.Move.CanMove = true;
     }
 

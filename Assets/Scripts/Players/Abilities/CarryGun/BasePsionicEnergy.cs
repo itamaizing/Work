@@ -9,7 +9,6 @@ public class BasePsionicEnergy : Resource, IDamageable
     [SerializeField] private Character _player;
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
     [SerializeField] private Slider basePsionicsSlider;
-    [SerializeField] private bool isPsionicsTalentOne = false;
 
     private const float BasePsionicaThreshold = 30f;
     private const float BaseSliderFillPercent = 0.3f;
@@ -50,8 +49,6 @@ public class BasePsionicEnergy : Resource, IDamageable
 
     private void OnDamageDealt(Damage damage, GameObject target)
     {
-        if (!isPsionicsTalentOne) return;
-
         if (damage.Type == DamageType.Physical)
         {
             float energyGain = damage.Value * DamageToPsiConversionRate;
@@ -80,8 +77,6 @@ public class BasePsionicEnergy : Resource, IDamageable
 
     public void AddAndResetDecay(float value)
     {
-        if (!isPsionicsTalentOne) return;
-
         Add(value);
         CurrentValue = Mathf.Min(CurrentValue, MaxValue);
 
@@ -205,13 +200,4 @@ public class BasePsionicEnergy : Resource, IDamageable
     {
         throw new NotImplementedException();
     }
-
-    #region Talents
-
-    public void PsionicsTalentOne(bool value)
-    {
-        isPsionicsTalentOne = value;
-    }
-
-    #endregion
 }

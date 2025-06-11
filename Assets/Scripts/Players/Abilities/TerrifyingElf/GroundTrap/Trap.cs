@@ -23,11 +23,13 @@ public class Trap : Projectiles
 
     private void SetupTrapShape()
     {
-        Vector3 direction = _endPosition - _startPosition;
-        float distance = direction.magnitude;
+        Vector3 dir = _endPosition - _startPosition;
+        float len = dir.magnitude;
 
-        transform.position = _startPosition + direction;
-        transform.localScale = new Vector3(1, 1, distance);
+        transform.position = _startPosition + dir * 0.5f;
+
+        Vector3 scale = transform.localScale;
+        transform.localScale = new Vector3(scale.x, len, scale.z);
     }
 
     [Server]

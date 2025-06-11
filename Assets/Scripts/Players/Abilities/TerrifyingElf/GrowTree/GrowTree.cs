@@ -58,8 +58,6 @@ public class GrowTree : Skill
             ? baseCastStreamDuration
             : baseCastStreamDuration * Mathf.Pow(2, treeCount);
 
-        Hero.Animator.speed = Hero.Animator.speed / CastStreamDuration;
-
         while (float.IsPositiveInfinity(_targetPoint.x) && !_disactive)
         {
             if (GetMouseButton)
