@@ -11,6 +11,7 @@ public class GrowTree : Skill
     [SerializeField] private Tree _treePrefab;
     [SerializeField] private MoveComponent moveComponent;
     [SerializeField] private float _moveDuration = 0.5f;
+    [SerializeField] private List<Tree> _activeTrees;
 
     [Header("Talents")]
     [SerializeField] private bool treeHealthTalent;
@@ -22,10 +23,7 @@ public class GrowTree : Skill
     private ObjectHealth _healthTree;
     private float baseHealth;
     private float baseCastStreamDuration;
-
     private Coroutine _treeHealthCoroutine;
-
-    [SerializeField] private List<Tree> _activeTrees;
 
     protected override bool IsCanCast =>
         !float.IsPositiveInfinity(_targetPoint.x) &&
@@ -78,9 +76,6 @@ public class GrowTree : Skill
             }
             yield return null;
         }
-
-        Hero.Animator.SetTrigger(AnimTriggerCastDelay);
-        _hero.NetworkAnimator.SetTrigger(AnimTriggerCastDelay);
     }
 
     protected override IEnumerator CastJob()
@@ -88,6 +83,9 @@ public class GrowTree : Skill
         if (_treePrefab == null) yield break;
 
         moveComponent.CanMove = false;
+
+        _hero.Animator.SetTrigger(AnimTriggerCastDelay);
+        _hero.NetworkAnimator.SetTrigger(AnimTriggerCastDelay);
 
         yield return new WaitForSeconds(CastStreamDuration / 3);
 
