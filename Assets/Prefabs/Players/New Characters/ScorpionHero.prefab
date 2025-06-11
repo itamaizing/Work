@@ -4251,7 +4251,7 @@ MonoBehaviour:
   _abilityForm: 1
   _damageType: 0
   _attackRangeType: 1
-  _skillType: 2
+  _skillType: 1
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
