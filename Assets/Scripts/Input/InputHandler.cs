@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class InputHandler : MonoBehaviour
@@ -73,7 +74,22 @@ public class InputHandler : MonoBehaviour
 		#region Events Listeners
 
 		_inputActions.GameplayMap.Move.performed += i => OnPlayerMove?.Invoke(i.ReadValue<Vector2>());
-		_inputActions.GameplayMap.Click.performed += i => OnClick?.Invoke();
+		_inputActions.GameplayMap.Click.performed += i => 
+		{
+            PointerEventData eventData = new(EventSystem.current)
+            {
+                position = Input.mousePosition
+            };
+
+            List<RaycastResult> results = new();
+
+            EventSystem.current.RaycastAll(eventData, results);
+
+            if (results.Count > 0)
+                return;
+
+            OnClick?.Invoke(); 
+		};
 		_inputActions.GameplayMap.Click.canceled += i => OnClickCanceled?.Invoke();
 		_inputActions.GameplayMap.AltClick.performed += i => OnAltClick?.Invoke();
 		_inputActions.GameplayMap.AltDoubleClick.performed += i => OnDoubleAltClick?.Invoke();
