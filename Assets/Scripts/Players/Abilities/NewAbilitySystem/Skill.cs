@@ -1345,10 +1345,18 @@ public abstract class Skill : NetworkBehaviour
     {
         target.GetComponent<IDamageable>().TryTakeDamage(ref damage, this);
         _hero.DamageTracker.AddDamage(damage, target, isServerRequest: isServer);
+        _hero.DamageGet(damage.Value);
+
+    }
+
+    public void CmdApplyDamage(Damage damage, GameObject target)
+    {
+        _hero.DamageGet(damage.Value);
+        CmdApplyDamageLogic(damage, target);
     }
 
     [Command]
-    public void CmdApplyDamage(Damage damage, GameObject target)
+    private void CmdApplyDamageLogic(Damage damage, GameObject target)
     {
         if (_tempTargetForDamage != target.transform)
         {
