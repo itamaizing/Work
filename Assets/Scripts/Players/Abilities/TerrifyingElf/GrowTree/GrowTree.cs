@@ -54,9 +54,9 @@ public class GrowTree : Skill
         _activeTrees.RemoveAll(t => t == null);
 
         int treeCount = _activeTrees.Count;
-        CastStreamDuration = treeCount == 0
-            ? baseCastStreamDuration
-            : baseCastStreamDuration * Mathf.Pow(2, treeCount);
+        CastStreamDuration = treeCount == 0 ? baseCastStreamDuration : baseCastStreamDuration * Mathf.Pow(2, treeCount);
+
+        CmdCastStreamDurationWithTree();
 
         while (float.IsPositiveInfinity(_targetPoint.x) && !_disactive)
         {
@@ -150,9 +150,11 @@ public class GrowTree : Skill
         _healthTree = tree.GetComponent<ObjectHealth>();
         if (_healthTree != null)
         {
-            _healthTree.InitializeObject(treeData);
+            float regenDuration = CastStreamDuration - CastStreamDuration / 3f;
+            Debug.Log($"regenDuration {regenDuration}");
 
-            if (treeData.MinEndurance) _healthTree.ServerStartFillHP(_healthTree.ObjectData.MaxHealth, 1f);
+            _healthTree.InitializeObject(treeData);
+            if (treeData.MinEndurance) _healthTree.ServerStartFillHP(_healthTree.ObjectData.MaxHealth, regenDuration);
 
             if (treeMagicEvadeTalent) _healthTree.SetMagicEvade(100);
         }
@@ -178,7 +180,10 @@ public class GrowTree : Skill
         {
             _healthTree.InitializeObject(treeData);
 
-            if (treeData.MinEndurance) _healthTree.ServerStartFillHP(_healthTree.ObjectData.MaxHealth, 1f);
+            float regenDuration = CastStreamDuration - CastStreamDuration / 3f;
+            Debug.Log($"regenDuration {regenDuration}");
+
+            if (treeData.MinEndurance) _healthTree.ServerStartFillHP(_healthTree.ObjectData.MaxHealth, regenDuration);
 
             if (treeMagicEvadeTalent) _healthTree.SetMagicEvade(100);
         }
@@ -187,8 +192,21 @@ public class GrowTree : Skill
         RpcClientAddTree(tree.GetComponent<NetworkIdentity>().netId);
     }
 
+    [Command]
+    private void CmdCastStreamDurationWithTree()
+    {
+        int treeCount = _activeTrees.Count;
+        CastStreamDuration = treeCount == 0 ? baseCastStreamDuration : baseCastStreamDuration * Mathf.Pow(2, treeCount);
+    }
+
+    [Command]
+    private void CmdCastStreamDurationWithTreeClear()
+    {
+        CastStreamDuration = baseCastStreamDuration;
+    }
+
     [ClientRpc]
-    void RpcClientAddTree(uint netId)
+    private void RpcClientAddTree(uint netId)
     {
         if (NetworkClient.spawned.TryGetValue(netId, out var networkIdentity)) _activeTrees.Add(networkIdentity.GetComponent<Tree>());
     }
@@ -260,6 +278,7 @@ public class GrowTree : Skill
     {
         _targetPoint = Vector3.positiveInfinity;
         CastStreamDuration = baseCastStreamDuration;
+        CmdCastStreamDurationWithTreeClear();
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
