@@ -27,8 +27,8 @@ public class BoxArea : MonoBehaviour
         /*_sprite.size = new Vector2(width, length);
         _colider.size = new Vector2(width, length);
         _colider.offset = new Vector2(0, length / 2);*/
-        gameObject.transform.localScale = new Vector3(width, length, 1);
-        _projector.size = new Vector2(width, length);
+        //gameObject.transform.localScale = new Vector3(width, length, 1);
+        _projector.size = new Vector3(width, length, 5);
         _projector.pivot = new Vector3(0, length/2, 0.01f);
         _damage = damage;
     }
