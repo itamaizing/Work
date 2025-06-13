@@ -5,17 +5,6 @@ using UnityEngine;
 
 public class PhysicalAttack : Skill
 {
-    [Header("Auto-Attack settings")]
-    [SerializeField] private float _attackZoneSize = .2f;
-    [SerializeField] private float _attackDelay = .4f;
-    [SerializeField] private float _chargeAttackDelay = 0f;
-
-    public float AttackDelay => Buff.AttackSpeed.GetBuffedValue(_attackDelay);
-    public Character Target => _target;
-    public Vector2 LastTargetPosition => _lastTargetPosition;
-    public bool IsAutoattackMode => _isAutoattackMode;
-    public override bool IsPayCostStartCooldown => false;
-
     [Header("Damage / Combo")]
     [SerializeField] private HeroComponent _playerLinks;
     [SerializeField] private SeriesOfStrikes _combo;
@@ -28,8 +17,6 @@ public class PhysicalAttack : Skill
 
     private Character _target;
     private Character _curTarget;
-    private bool _isAutoattackMode = true;
-    private Coroutine _autoAttackJob;
     private bool _isAttacking;
     private Vector2 _lastTargetPosition;
 
@@ -41,6 +28,9 @@ public class PhysicalAttack : Skill
     private float _stunCount = 0f;
 
     private bool _rightKick = true;
+
+    public Character Target => _target;
+    public Vector2 LastTargetPosition => _lastTargetPosition;
 
     private static readonly int RightKickTrigger = Animator.StringToHash("RightKick");
     private static readonly int LeftKickTrigger = Animator.StringToHash("LeftKick");
@@ -264,7 +254,6 @@ public class PhysicalAttack : Skill
         if (_target) _target.SelectedCircle.IsActive = false;
         _skillRender.SetColor(Color.green);
 
-        if (_autoAttackJob != null) { StopCoroutine(_autoAttackJob); _autoAttackJob = null; }
         _isAttacking = false;
         _target = null;
         Hero.Move.CanMove = true;

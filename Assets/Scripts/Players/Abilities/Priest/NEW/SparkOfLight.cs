@@ -1,10 +1,11 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SparkOfLight : AutoAttackSkill
+public class SparkOfLight : Skill
 {
     [Header("Spark Of Light Settings")]
     [SerializeField] private float _buffDuration = 9f;
@@ -52,6 +53,8 @@ public class SparkOfLight : AutoAttackSkill
     private int _healingBonusStacks = 0;
     private float _lastFlashOfLightCastTime = 0f;
 
+    protected Character _target;
+
     public void EnableTalentPhysicalShieldBoost(bool value) => _healthBoostActive = value;
     public void EnableLowHealthTalent(bool value) => _lowHealthTalentActive = value;
     public void EnableManaRestoreBoostTalent(bool value) => _manaRestoreBoostTalent = value;
@@ -60,8 +63,10 @@ public class SparkOfLight : AutoAttackSkill
     private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
     private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
-    protected override int AnimTriggerCastDelay => 0;
-    protected override int AnimTriggerAutoAttack => Animator.StringToHash("SparkOfLights");
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("SparkOfLights");
+    protected override int AnimTriggerCast => 0;
+
+    protected override bool IsCanCast => Vector3.Distance(_target.transform.position, transform.position) <= Radius && NoObstacles(_target.transform.position, transform.position, _obstacle);
 
     public event Action OnModeChange;
 
@@ -123,30 +128,62 @@ public class SparkOfLight : AutoAttackSkill
         isLightMode = !isLightMode;
     }
 
-    protected override void CastAction()
+    public void HandleMode(Character target)
     {
-        if (_target == null) return;
+        if (isLightMode) HandleDefaultMode(target);
+        else HandleAlternativeMode(target);
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    {
+
+        _hero.Move.LookAtTransform(_target.transform);
+
+        while (_target == null)
+        {
+            if (GetMouseButton)
+            {
+                _target = GetRaycastTarget();
+
+                if (_target != null)
+                    _target.SelectedCircle.IsActive = true;
+            }
+            yield return null;
+        }
+
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(_target.transform.position);
+        callbackDataSaved(targetInfo);
+    }
+
+    protected override IEnumerator CastJob()
+    {
+        if (_target == null) { ClearData(); yield break; }
+
+        if (!IsCanCast)
+        {
+            TryPayCost(_manaCostHeal);
+            CmdHandleDefaultMode(playerLinks);
+            ClearData();
+            yield break;
+        }
 
         if (IsAllyTarget(_target))
         {
             TryPayCost(_manaCostHeal);
-
             if (_target == playerLinks)
             {
                 CmdHandleDefaultMode(playerLinks);
-                return;
+                ClearData();
+                yield break;
             }
         }
 
         else if (IsEnemyTarget(_target)) TryPayCost(_manaCostDamage);
 
         CmdSpawnProjectile(_target.gameObject);
-    }
-
-    public void HandleMode(Character target)
-    {
-        if (isLightMode) HandleDefaultMode(target);
-        else HandleAlternativeMode(target);
+        ClearData();
+        yield break;
     }
 
     private bool IsTargetBelowHealthThreshold(Character target)
@@ -276,7 +313,7 @@ public class SparkOfLight : AutoAttackSkill
 
     public void SparkOfLightCast()
     {
-        AnimCastAction();
+        AnimStartCastCoroutine();
     }
 
     public void SparkOfLightEnded()
@@ -342,11 +379,11 @@ public class SparkOfLight : AutoAttackSkill
 
     protected override void ClearData()
     {
-        base.ClearData();
+        _target = null;
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        throw new NotImplementedException();
+        if (targetInfo.Targets.Count > 0) _target = (Character)targetInfo.Targets[0];
     }
 }
