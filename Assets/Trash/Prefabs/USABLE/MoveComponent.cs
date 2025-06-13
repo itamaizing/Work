@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 
 public class MoveComponent : NetworkBehaviour
 {
-	[SerializeField, Range(0, 0.5f)] private float _smoothTime = 0.15f;
+    [SerializeField, Range(0, 0.5f)] private float _smoothTime = 0.15f;
 	[SerializeField] protected float _currentSpeed = 5;
     [SerializeField] protected float _rotationDefaultSpeed = 1000;
     [SerializeField] protected Animator _anim;
@@ -240,22 +240,26 @@ public class MoveComponent : NetworkBehaviour
 
 			if (Physics.Raycast(ray, out hit))
 			{
-                /*
-				var transformRotate = transform.eulerAngles;
-				transform.LookAt(hit.point);
-				transform.eulerAngles = (new Vector3(transformRotate.x, transform.eulerAngles.y, transformRotate.z));
-				*/
+				Vector3 targetPosition = hit.point;
+				Vector3 direction = targetPosition - transform.position;
+				direction.y = 0;
 
-                Vector3 targetPosition = hit.point;
-                Vector3 direction = targetPosition - transform.position;
-                direction.y = 0;
+				if (direction.sqrMagnitude > 0.001f)
+				{
+					Quaternion targetRotation = Quaternion.LookRotation(direction);
+					float angleToTarget = Quaternion.Angle(transform.rotation, targetRotation);
 
-                if (direction.sqrMagnitude > 0.001f)
-                {
-                    Quaternion targetRotation = Quaternion.LookRotation(direction);
-					transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, CurrentRotationSpeed * Time.deltaTime);
-                }
-            }
+					if (angleToTarget < 0.1f)
+					{
+						_rigidbody.MoveRotation(targetRotation);
+					}
+					else
+					{
+                        Quaternion newRotation = Quaternion.RotateTowards(transform.rotation, targetRotation, CurrentRotationSpeed * Time.deltaTime);
+                        _rigidbody.MoveRotation(newRotation);
+                    }
+				}
+			}
 		}
 	}
 
