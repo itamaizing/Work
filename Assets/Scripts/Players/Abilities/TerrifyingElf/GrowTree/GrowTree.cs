@@ -52,6 +52,7 @@ public class GrowTree : Skill
         TreeHealthTalentEnter();
 
         _activeTrees.RemoveAll(t => t == null);
+        CmdRemoveTree();
 
         int treeCount = _activeTrees.Count;
         CastStreamDuration = treeCount == 0 ? baseCastStreamDuration : baseCastStreamDuration * Mathf.Pow(2, treeCount);
@@ -132,11 +133,8 @@ public class GrowTree : Skill
     #endregion
 
     #region [Command] / Spawn
-    [Command]
-    private void CmdSetMaxHealth(float maxHealth)
-    {
-        treeData.MaxHealth = maxHealth;
-    }
+    [Command] private void CmdSetMaxHealth(float maxHealth) => treeData.MaxHealth = maxHealth;
+    [Command] private void CmdRemoveTree() => _activeTrees.RemoveAll(t => t == null);
 
     [Command]
     private void CmdSpawnTree(Vector3 position)
@@ -151,7 +149,6 @@ public class GrowTree : Skill
         if (_healthTree != null)
         {
             float regenDuration = CastStreamDuration - CastStreamDuration / 3f;
-            Debug.Log($"regenDuration {regenDuration}");
 
             _healthTree.InitializeObject(treeData);
             if (treeData.MinEndurance) _healthTree.ServerStartFillHP(_healthTree.ObjectData.MaxHealth, regenDuration);
@@ -181,7 +178,6 @@ public class GrowTree : Skill
             _healthTree.InitializeObject(treeData);
 
             float regenDuration = CastStreamDuration - CastStreamDuration / 3f;
-            Debug.Log($"regenDuration {regenDuration}");
 
             if (treeData.MinEndurance) _healthTree.ServerStartFillHP(_healthTree.ObjectData.MaxHealth, regenDuration);
 
@@ -197,12 +193,6 @@ public class GrowTree : Skill
     {
         int treeCount = _activeTrees.Count;
         CastStreamDuration = treeCount == 0 ? baseCastStreamDuration : baseCastStreamDuration * Mathf.Pow(2, treeCount);
-    }
-
-    [Command]
-    private void CmdCastStreamDurationWithTreeClear()
-    {
-        CastStreamDuration = baseCastStreamDuration;
     }
 
     [ClientRpc]
@@ -274,15 +264,6 @@ public class GrowTree : Skill
 
     #endregion
 
-    protected override void ClearData()
-    {
-        _targetPoint = Vector3.positiveInfinity;
-        CastStreamDuration = baseCastStreamDuration;
-        CmdCastStreamDurationWithTreeClear();
-    }
-
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        _targetPoint = targetInfo.Points[0];
-    }
+    protected override void ClearData() => _targetPoint = Vector3.positiveInfinity;
+    public override void LoadTargetData(TargetInfo targetInfo) => _targetPoint = targetInfo.Points[0];
 }

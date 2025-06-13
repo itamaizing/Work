@@ -41314,6 +41314,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6086019476776207293, guid: cbb082e504b5cd74595d9455cfe3971e, type: 3}
+      propertyPath: m_VisionDissapear
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6086019476776207293, guid: cbb082e504b5cd74595d9455cfe3971e, type: 3}
       propertyPath: m_ShaderReferencesObject
       value: 
       objectReference: {fileID: 11400000, guid: 79202bc8abcb86c43a00cbb89869742e, type: 2}
