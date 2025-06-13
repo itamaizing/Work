@@ -49,7 +49,14 @@ public class MoveComponent : NetworkBehaviour
 
 	public Rigidbody Rigidbody => _rigidbody;
 
-	public bool IsMoveBlocked { get => _isMoveBlocked; set => _isMoveBlocked = value; }
+	public bool IsMoveBlocked
+	{ 
+		get => _isMoveBlocked;
+		set 
+		{
+            _isMoveBlocked = value;
+        } 
+	}
     public float CurrentRotationSpeed { get => _rotationDefaultSpeed + RotateModifier; }
     public float RotateModifier { get; set; }
 
@@ -188,7 +195,12 @@ public class MoveComponent : NetworkBehaviour
     {
 		if (!CanMove || _rigidbody == null || IsMoveBlocked == true)
 		{
-			if (_rigidbody != null) _rigidbody.velocity = Vector3.zero;
+			if (_rigidbody != null)
+			{
+                _rigidbody.velocity = Vector3.zero;
+                _currentVelocityTemp = Vector3.zero;
+                _currentVelocity = Vector3.zero;
+            } 
 			return;
 		}
 
