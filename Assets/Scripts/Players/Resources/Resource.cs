@@ -1,6 +1,7 @@
 using Mirror;
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public enum ResourceType 
@@ -134,6 +135,18 @@ public abstract class Resource : NetworkBehaviour
             }
             yield return null;
         }
+    }
+
+    [Command]
+    public void ReduceRegenerationPeriod(float value)
+    {
+        _regenerationPeriod *= value;
+    }
+
+    [Command]
+    public void IncreaseRegenerationPeriod(float value)
+    {
+        _regenerationPeriod /= value;
     }
 
     [Command]
