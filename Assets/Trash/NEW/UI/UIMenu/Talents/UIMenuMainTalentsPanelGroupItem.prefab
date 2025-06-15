@@ -61,6 +61,8 @@ MonoBehaviour:
   activeState: {fileID: 7248445105479305742}
   activeImage: {fileID: 3576641446465918596}
   nonActiveImage: {fileID: 4682888643923926741}
+  _iconState: {fileID: 11400000, guid: 4f0b009eee4330e4a86057cc813b6637, type: 2}
+  _frameImage: {fileID: 5399446654852480821}
 --- !u!114 &7248445105479305742
 MonoBehaviour:
   m_ObjectHideFlags: 0
