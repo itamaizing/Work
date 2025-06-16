@@ -76,7 +76,13 @@ public class InputHandler : MonoBehaviour
 		_inputActions.GameplayMap.Move.performed += i => OnPlayerMove?.Invoke(i.ReadValue<Vector2>());
 		_inputActions.GameplayMap.Click.performed += i => 
 		{
-            PointerEventData eventData = new(EventSystem.current)
+			if (EventSystem.current == null)
+			{
+				OnClick?.Invoke();
+				return;
+			}
+
+			PointerEventData eventData = new(EventSystem.current)
             {
                 position = Input.mousePosition
             };

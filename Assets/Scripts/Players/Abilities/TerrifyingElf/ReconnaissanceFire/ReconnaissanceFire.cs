@@ -29,6 +29,7 @@ public class ReconnaissanceFire : Skill
     private ReconnaissanceFireAura currentFireAura;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private float _baseDuration;
+    private float _baseAnimSpeed;
 
     public ReconnaissanceFireAura CurrentFireAura => currentFireAura;
 
@@ -38,6 +39,7 @@ public class ReconnaissanceFire : Skill
 
     private void Start()
     {
+        _baseAnimSpeed = Hero.Animator.speed;
         trickShot.speed = speed;
         _baseDuration = duration;
     }
@@ -66,7 +68,7 @@ public class ReconnaissanceFire : Skill
         if (emitterObject) emitterObject.SetActive(true);
         ReconnaissanceFireHealthTalentEnter();
 
-        while (float.IsPositiveInfinity(_targetPoint.x) && !_disactive)
+        while (float.IsPositiveInfinity(_targetPoint.x))
         {
             if (GetMouseButton)
             {
@@ -92,7 +94,7 @@ public class ReconnaissanceFire : Skill
 
         trickShot.Shoot();
 
-        Hero.Animator.speed = 1;
+        Hero.Animator.speed = _baseAnimSpeed;
         Hero.Move.StopLookAt();
     }
 
@@ -133,6 +135,9 @@ public class ReconnaissanceFire : Skill
     private void HandleSkillCanceled()
     {
         if (_hero != null && _hero.Move != null) ReconnaissanceFireHealthTalentExit();
+        Hero.Animator.speed = _baseAnimSpeed;
+        Hero.Move.StopLookAt();
+        _targetPoint = Vector3.positiveInfinity;
     }
 
     [Command]

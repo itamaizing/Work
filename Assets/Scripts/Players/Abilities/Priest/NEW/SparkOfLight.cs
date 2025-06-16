@@ -66,7 +66,7 @@ public class SparkOfLight : Skill
     protected override int AnimTriggerCastDelay => Animator.StringToHash("SparkOfLights");
     protected override int AnimTriggerCast => 0;
 
-    protected override bool IsCanCast => Vector3.Distance(_target.transform.position, transform.position) <= Radius && NoObstacles(_target.transform.position, transform.position, _obstacle);
+    protected override bool IsCanCast => _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius && NoObstacles(_target.transform.position, transform.position, _obstacle);
 
     public event Action OnModeChange;
 
@@ -136,9 +136,6 @@ public class SparkOfLight : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-
-        _hero.Move.LookAtTransform(_target.transform);
-
         while (_target == null)
         {
             if (GetMouseButton)
@@ -151,6 +148,10 @@ public class SparkOfLight : Skill
             yield return null;
         }
 
+        _hero.Move.LookAtTransform(_target.transform);
+        _hero.Animator.SetTrigger(AnimTriggerCastDelay);
+        _hero.NetworkAnimator.SetTrigger(AnimTriggerCastDelay);
+
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(_target.transform.position);
         callbackDataSaved(targetInfo);
@@ -158,23 +159,22 @@ public class SparkOfLight : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_target == null) { ClearData(); yield break; }
+        if (_target == null) yield break;
 
         if (!IsCanCast)
         {
             TryPayCost(_manaCostHeal);
             CmdHandleDefaultMode(playerLinks);
-            ClearData();
             yield break;
         }
 
         if (IsAllyTarget(_target))
         {
             TryPayCost(_manaCostHeal);
+
             if (_target == playerLinks)
             {
                 CmdHandleDefaultMode(playerLinks);
-                ClearData();
                 yield break;
             }
         }
@@ -182,7 +182,6 @@ public class SparkOfLight : Skill
         else if (IsEnemyTarget(_target)) TryPayCost(_manaCostDamage);
 
         CmdSpawnProjectile(_target.gameObject);
-        ClearData();
         yield break;
     }
 
@@ -380,6 +379,7 @@ public class SparkOfLight : Skill
     protected override void ClearData()
     {
         _target = null;
+        _hero.Move.StopLookAt();
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)

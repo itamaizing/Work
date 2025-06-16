@@ -34,7 +34,7 @@ public class Silence : Skill
     {
         //_duration = _baseDuration;
 
-        while (float.IsPositiveInfinity(_targetPoint.x) && !_disactive)
+        while (float.IsPositiveInfinity(_targetPoint.x))
         {
             if (GetMouseButton)
             {

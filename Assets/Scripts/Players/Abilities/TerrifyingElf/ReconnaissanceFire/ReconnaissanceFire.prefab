@@ -10860,6 +10860,7 @@ GameObject:
   - component: {fileID: 8501378266717497744}
   - component: {fileID: 1513064725446289218}
   - component: {fileID: 4753565472337933368}
+  - component: {fileID: 732501578659559874}
   m_Layer: 9
   m_Name: ReconnaissanceFire
   m_TagString: Allies
@@ -10952,7 +10953,7 @@ MonoBehaviour:
   flameLight: {fileID: 1513064725446289218}
   reconnaissanceFireAura: {fileID: 8163329122190285983}
   pulseSpeed: 1
-  minIntensity: 20
+  minIntensity: 50
   maxIntensity: 100
 --- !u!114 &2205651950121639594
 MonoBehaviour:
@@ -11122,7 +11123,7 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 2
+  m_Lightmapping: 1
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
@@ -11156,6 +11157,19 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!114 &732501578659559874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9075096416490859393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecf32e0aadfc5644aa4e7eb739ccc477, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_VisionRange: 3
 --- !u!1 &9111231575585891813
 GameObject:
   m_ObjectHideFlags: 0
