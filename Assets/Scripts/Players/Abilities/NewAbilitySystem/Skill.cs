@@ -966,6 +966,11 @@ public abstract class Skill : NetworkBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
+
+        _isAutoMode = true;
+        AutoModeChanged?.Invoke(true);
+
+
         switch (_skillType)
         {
             case SkillType.Target:
