@@ -566,7 +566,7 @@ public abstract class Skill : NetworkBehaviour
         if (_isAutoLineRender)
             _skillRender.DrawLine(CastLength, CastWidth, damage, TargetsLayers);
 
-        if (true)
+        if (_skillType == SkillType.Target || _skillType == SkillType.Projectile)
         {
             /* Debug.Log("DRAAAAAAAAAAW");
              Character enemy = GetCloserTargets(transform.position, Radius)[0];

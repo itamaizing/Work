@@ -6991,7 +6991,7 @@ MonoBehaviour:
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
-  _skillType: 1
+  _skillType: 2
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -7012,7 +7012,7 @@ MonoBehaviour:
   _area: 0
   _castLength: 5
   _castWidth: 1
-  _isAutoRadiusRender: 1
+  _isAutoRadiusRender: 0
   _isAutoAreaRender: 0
   _isAutoLineRender: 1
   _isDynamicRenderer: 0

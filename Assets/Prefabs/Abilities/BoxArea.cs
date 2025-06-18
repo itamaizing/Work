@@ -9,6 +9,7 @@ public class BoxArea : MonoBehaviour
     [SerializeField] private DecalProjector  _projector;
 
     private List<Health> _enemies = new List<Health>();
+    private List<Character> _targets = new List<Character>();
     private Damage _damage;
 	/*private Damage _zeroDamage;
 
@@ -25,9 +26,11 @@ public class BoxArea : MonoBehaviour
 	public void SetSize(float width, float length, Damage damage)
     {
         /*_sprite.size = new Vector2(width, length);
-        _colider.size = new Vector2(width, length);
-        _colider.offset = new Vector2(0, length / 2);*/
+        
+        */
         //gameObject.transform.localScale = new Vector3(width, length, 1);
+        _colider.center = new Vector3(0, length / 2, 0);
+        _colider.size = new Vector3(width, length, 5);
         _projector.size = new Vector3(width, length, 5);
         _projector.pivot = new Vector3(0, length/2, 0.01f);
         _damage = damage;
@@ -44,8 +47,10 @@ public class BoxArea : MonoBehaviour
         if(collision.transform != transform.parent && collision.transform.TryGetComponent(out Character enemy))
         {
             // deistvie s enemy
+            _targets.Add(enemy);
+			enemy.SelectedCircle.SwitchClostestTarget(true);
         }
-		if (collision.TryGetComponent<Health>(out var hpEnemy) && collision.transform != transform.parent)
+        if (collision.TryGetComponent<Health>(out var hpEnemy) && collision.transform != transform.parent)
 		{
 			//Debug.Log("ENTER " + collision.name +"  / " + _damage.Value);
             _enemies.Add(hpEnemy);
@@ -58,6 +63,8 @@ public class BoxArea : MonoBehaviour
         if (collision.transform != transform.parent && collision.transform.TryGetComponent(out Character enemy))
         {
             // bezdeistvie s enemy
+			_targets.Remove(enemy);
+            enemy.SelectedCircle.SwitchClostestTarget(false);
         }
 		if (collision.TryGetComponent<Health>(out var hpEnemy) && collision.transform != transform.parent)
 		{
@@ -71,25 +78,28 @@ public class BoxArea : MonoBehaviour
 
 	private void OnDestroy()
 	{
-		if (_enemies.Count > 0)
-			for (int i = _enemies.Count - 1; i >= 0; i--)
-			{
-				Damage damage = _damage;
-				damage.Value = 0;
-				_enemies[i].ShowPhantomValue(damage);
-				_enemies.Remove(_enemies[i]);
-			}
-	}
+        OnExit();
+    }
 
 	private void OnDisable()
 	{
-		if (_enemies.Count > 0)
-			for (int i = _enemies.Count - 1; i >= 0; i--)
-			{
-				Damage damage = _damage;
-				damage.Value = 0;
-				_enemies[i].ShowPhantomValue(damage);
-				_enemies.Remove(_enemies[i]);
-			}
-	}
+        OnExit();
+    }
+
+	private void OnExit()
+	{
+        if (_enemies.Count > 0)
+            for (int i = _enemies.Count - 1; i >= 0; i--)
+            {
+                Damage damage = _damage;
+                damage.Value = 0;
+                _enemies[i].ShowPhantomValue(damage);
+                _enemies.Remove(_enemies[i]);
+            }
+
+        foreach (var enemy in _targets)
+        {
+            enemy.SelectedCircle.SwitchClostestTarget(false);
+        }
+    }
 }
