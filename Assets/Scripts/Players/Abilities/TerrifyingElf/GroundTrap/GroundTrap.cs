@@ -6,142 +6,168 @@ using UnityEngine.SceneManagement;
 
 public class GroundTrap : Skill
 {
-    [SerializeField] private Trap trap;
-    [SerializeField] private GameObject previewTrap;
-    [SerializeField] private HeroComponent heroComponent;
+    [SerializeField] private Trap trapPrefab;
+    [SerializeField] private HeroComponent owner;
+    [SerializeField] private DrawCircleAlternative minDistanceRadiusCircle;
+    [SerializeField] private float minDistanceRadius = 2f;
+    [SerializeField] private float distanceforTrap = 2.1f;
 
-    private bool _isPlacingTrap = false;
-    private Vector3 _startPosition;
-    private Vector3 _endPosition;
-    private bool _isStartPointPlaced = false;
-    private float _trapAngle = 0f;
+    private Color minDistanceGreenColor = Color.green;
+    private Color minDistanceRedColor = Color.red;
 
-    protected override bool IsCanCast => !_isPlacingTrap || (_isPlacingTrap && _isStartPointPlaced);
+    private Trap _preview;
+    private bool _isStartPointPlaced;
+    private Vector3 _startPosition, _endPosition;
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
+    protected override bool IsCanCast => !_isStartPointPlaced ||
+                                         Vector3.Distance(transform.position, _endPosition) <= Radius &&
+                                         Vector3.Distance(transform.position, _endPosition) >= minDistanceRadius &&
+                                         Vector3.Distance(_startPosition, _endPosition) <= distanceforTrap;
+
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("ShotCastDelayAnimTrigger");
     protected override int AnimTriggerCast => 0;
+
+
+    private void OnDestroy() => OnSkillCanceled -= HandleSkillCanceled;
+    private void OnEnable() => OnSkillCanceled += HandleSkillCanceled;
+
+    private void HandleSkillCanceled()
+    {
+        if (_hero?.Move != null) Hero.Move.CanMove = true;
+
+        if (_preview != null)
+        {
+            Destroy(_preview.gameObject);
+            _preview = null;
+        }
+
+        minDistanceRadiusCircle?.Clear();
+    }
+
+    private void UpdateMinRadiusCircle(Vector3 mousePos)
+    {
+        bool inside = Vector3.Distance(transform.position, mousePos) < minDistanceRadius;
+        var color = inside ? minDistanceRedColor : minDistanceGreenColor;
+
+        if (minDistanceRadiusCircle != null)
+        {
+            minDistanceRadiusCircle.SetColor(color);
+            minDistanceRadiusCircle.Draw(minDistanceRadius);
+        }
+    }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        _isPlacingTrap = true;
-        _isStartPointPlaced = false;
-        previewTrap.SetActive(true);
         Hero.Move.CanMove = false;
         Hero.Move.StopMoveAnimation();
 
+        CmdGroundTrapInstantiate();
+        _preview.ResetPreview();
+
+        minDistanceRadiusCircle?.SetColor(minDistanceGreenColor);
+        minDistanceRadiusCircle?.Draw(minDistanceRadius);
+
         while (!_isStartPointPlaced)
         {
-            Vector3 mousePosition = GetMousePoint();
-            float distance = Vector3.Distance(mousePosition, transform.position);
+            Vector3 position = GetMousePoint();
+            _preview.transform.position = position;
+            UpdateMinRadiusCircle(position);
 
-            if (distance >= 2 && distance <= Radius)
+            if (InsideRadius(position) && GetMouseButton)
             {
-                previewTrap.transform.position = mousePosition;
-
-                Vector3 directionToHero = mousePosition - transform.position;
-                _trapAngle = Mathf.Atan2(directionToHero.x, directionToHero.z) * Mathf.Rad2Deg;
-
-                previewTrap.transform.rotation = Quaternion.Euler(0, _trapAngle, 0);
-
-                if (GetMouseButton)
-                {
-                    _startPosition = mousePosition;
-                    PlaceStartPoint();
-
-                    yield return new WaitForSeconds(0.1f);
-                }
+                _startPosition = position;
+                _preview.transform.position = _startPosition;
+                _isStartPointPlaced = true;
+                _preview.gameObject.SetActive(true);
+                continue;
             }
-
+            _preview.transform.position = position;
             yield return null;
         }
+
+        _preview.transform.GetChild(1).gameObject.SetActive(true);
+
+        yield return new WaitUntil(() => !GetMouseButton);
+        yield return new WaitForSeconds(0.1f);
 
         while (true)
         {
-            Vector3 mousePositionSecond = GetMousePoint();
-            _endPosition = mousePositionSecond;
+            Vector3 position = GetMousePoint();
+            _preview.UpdateSecondPoint(position);
+            UpdateMinRadiusCircle(position);
 
-            Vector3 direction = _endPosition - _startPosition;
-            _trapAngle = Mathf.Atan2(direction.z, direction.x) * Mathf.Rad2Deg + 90;
+         bool posIsValid = Vector3.Distance(transform.position, position) >= minDistanceRadius && Vector3.Distance(transform.position, position) <= Radius &&
+         Vector3.Distance(_startPosition, position) <= distanceforTrap;
 
-            previewTrap.transform.rotation = Quaternion.Euler(0, -_trapAngle, 0);
-
-            float distanceBetweenPoints = Vector3.Distance(_endPosition, _startPosition);
-
-            if (distanceBetweenPoints <= 2 && GetMouseButton)
+            if (posIsValid && GetMouseButton)
             {
-                _endPosition = mousePositionSecond;
+                _endPosition = position;
                 break;
             }
-
             yield return null;
         }
 
-        TargetInfo info = new TargetInfo();
-        info.Points.Add(_startPosition);
-        info.Points.Add(_endPosition);
-        callbackDataSaved?.Invoke(info);
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(_startPosition); targetInfo.Points.Add(_endPosition);
+        callbackDataSaved.Invoke(targetInfo);
     }
-
 
     protected override IEnumerator CastJob()
     {
-        PlaceTrap();
-        yield return null;
+        _preview.FixSecondPoint();
+        CmdSpawnGroundTrap();
+        _preview = null;
+
+        ClearData();
+        yield break;
     }
 
-    private void PlaceStartPoint()
+    private bool InsideRadius(Vector3 position)
     {
-        _isStartPointPlaced = true;
-        Hero.Move.LookAtTransform(previewTrap.transform);
-        previewTrap.transform.position = _startPosition;
-    }
-
-    private void PlaceTrap()
-    {
-        _isPlacingTrap = false;
-        _isStartPointPlaced = false;
-        previewTrap.SetActive(false);
-        Hero.Move.StopLookAt();
-        Hero.Move.CanMove = true;
-
-        CmdSpawnTrap(_trapAngle, _startPosition, _endPosition);
-    }
-
-    [Command]
-    private void CmdSpawnTrap(float angle, Vector3 startPosition, Vector3 endPosition)
-    {
-        Trap trapInstance = Instantiate(trap, startPosition, Quaternion.Euler(90, angle, 0));
-        SceneManager.MoveGameObjectToScene(trapInstance.gameObject, Hero.NetworkSettings.MyRoom);
-        trapInstance.Init(heroComponent, this, startPosition, endPosition);
-        NetworkServer.Spawn(trapInstance.gameObject);
-
-        RpcInitTrap(trapInstance.gameObject, startPosition, endPosition);
-    }
-
-    [ClientRpc]
-    private void RpcInitTrap(GameObject trapObject, Vector3 startPosition, Vector3 endPosition)
-    {
-        trapObject.GetComponent<Trap>().Init(heroComponent, this, startPosition, endPosition);
+        float direction = Vector3.Distance(transform.position, position);
+        return direction >= minDistanceRadius && direction <= Radius;
     }
 
     protected override void ClearData()
     {
-        _isPlacingTrap = false;
-        _isStartPointPlaced = false;
-        previewTrap.SetActive(false);
-        Hero.Move.StopLookAt();
         Hero.Move.CanMove = true;
+        _isStartPointPlaced = false;
+
+        minDistanceRadiusCircle?.Clear();
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.Points.Count >= 2)
-        {
-            _startPosition = targetInfo.Points[0];
-            _endPosition = targetInfo.Points[1];
+        if (targetInfo.Points.Count < 2) return;
 
-            Vector3 dir = _endPosition - _startPosition;
-            _trapAngle = Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg + 90;
-        }
+        _startPosition = targetInfo.Points[0];
+        _endPosition = targetInfo.Points[1];
+
+        if (_preview == null) { _preview = Instantiate(trapPrefab); }
+        _preview.transform.position = _startPosition;
+        _preview.transform.GetChild(1).gameObject.SetActive(true);
+        _preview.UpdateSecondPoint(_endPosition);
+    }
+
+    [Command] private void CmdGroundTrapInstantiate() => RpcGroundTrapInstantiate();
+
+    [Command]
+    private void CmdSpawnGroundTrap()
+    {
+        _preview.Init(owner, this, _startPosition, _endPosition);
+        SceneManager.MoveGameObjectToScene(_preview.gameObject, Hero.NetworkSettings.MyRoom);
+        NetworkServer.Spawn(_preview.gameObject);
+        RpcInit(_preview.gameObject);
+    }
+
+    [ClientRpc] private void RpcGroundTrapInstantiate() => _preview = Instantiate(trapPrefab);
+
+    [ClientRpc]
+    protected void RpcInit(GameObject gameObject)
+    {
+        if (gameObject == null) return;
+
+        Trap trap = gameObject.GetComponent<Trap>();
+        if (trap != null) trap.Init(owner, this, _startPosition, _endPosition);
     }
 }

@@ -71,6 +71,7 @@ public class CheliceraStrike : Skill
 
         _target = null;
         _hero.Move.StopLookAt();
+        Hero.Move.CanMove = true;
 
         yield return null;
     }
@@ -78,6 +79,7 @@ public class CheliceraStrike : Skill
     private void HandleSkillCanceled()
     {
         _target = null;
+        Hero.Move.CanMove = true;
         Hero.Move.StopLookAt();
     }
 
