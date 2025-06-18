@@ -61,7 +61,7 @@ public class GroundTrap : Skill
         Hero.Move.CanMove = false;
         Hero.Move.StopMoveAnimation();
 
-        CmdGroundTrapInstantiate();
+        _preview = Instantiate(trapPrefab);
         _preview.ResetPreview();
 
         minDistanceRadiusCircle?.SetColor(minDistanceGreenColor);
@@ -92,20 +92,29 @@ public class GroundTrap : Skill
 
         while (true)
         {
-            Vector3 position = GetMousePoint();
-            _preview.UpdateSecondPoint(position);
-            UpdateMinRadiusCircle(position);
+            Vector3 rawPos = GetMousePoint();
 
-         bool posIsValid = Vector3.Distance(transform.position, position) >= minDistanceRadius && Vector3.Distance(transform.position, position) <= Radius &&
-         Vector3.Distance(_startPosition, position) <= distanceforTrap;
+            Vector3 dir = rawPos - _startPosition;
+            float dist = dir.magnitude;
 
-            if (posIsValid && GetMouseButton)
+            if (dist > distanceforTrap) rawPos = _startPosition + dir.normalized * distanceforTrap;
+
+            _preview.UpdateSecondPoint(rawPos);
+            UpdateMinRadiusCircle(rawPos);
+
+            bool inOuterRadius = Vector3.Distance(transform.position, rawPos) <= Radius;
+            bool outOfInnerRing = Vector3.Distance(transform.position, rawPos) >= minDistanceRadius;
+
+            if (GetMouseButton && inOuterRadius && outOfInnerRing)
             {
-                _endPosition = position;
+                _endPosition = rawPos;
                 break;
             }
+
             yield return null;
         }
+
+        minDistanceRadiusCircle?.Clear();
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(_startPosition); targetInfo.Points.Add(_endPosition);
@@ -114,9 +123,8 @@ public class GroundTrap : Skill
 
     protected override IEnumerator CastJob()
     {
-        _preview.FixSecondPoint();
-        CmdSpawnGroundTrap();
-        _preview = null;
+        if (_preview) Destroy(_preview.gameObject);
+        CmdSpawnGroundTrap(_startPosition, _endPosition);
 
         ClearData();
         yield break;
@@ -132,8 +140,6 @@ public class GroundTrap : Skill
     {
         Hero.Move.CanMove = true;
         _isStartPointPlaced = false;
-
-        minDistanceRadiusCircle?.Clear();
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -149,25 +155,25 @@ public class GroundTrap : Skill
         _preview.UpdateSecondPoint(_endPosition);
     }
 
-    [Command] private void CmdGroundTrapInstantiate() => RpcGroundTrapInstantiate();
-
     [Command]
-    private void CmdSpawnGroundTrap()
+    private void CmdSpawnGroundTrap(Vector3 startPosition, Vector3 endPosition)
     {
-        _preview.Init(owner, this, _startPosition, _endPosition);
-        SceneManager.MoveGameObjectToScene(_preview.gameObject, Hero.NetworkSettings.MyRoom);
-        NetworkServer.Spawn(_preview.gameObject);
-        RpcInit(_preview.gameObject);
+        Trap trap = Instantiate(trapPrefab, startPosition, Quaternion.identity);
+        trap.Init(owner, this, startPosition, endPosition);
+        trap.Finalise(startPosition, endPosition);
+        SceneManager.MoveGameObjectToScene(trap.gameObject, Hero.NetworkSettings.MyRoom);
+        NetworkServer.Spawn(trap.gameObject);
+        RpcInit(trap.netIdentity, startPosition, endPosition);
     }
 
-    [ClientRpc] private void RpcGroundTrapInstantiate() => _preview = Instantiate(trapPrefab);
-
     [ClientRpc]
-    protected void RpcInit(GameObject gameObject)
+    protected void RpcInit(NetworkIdentity groundTrap, Vector3 startPosition, Vector3 endPositionb)
     {
-        if (gameObject == null) return;
-
-        Trap trap = gameObject.GetComponent<Trap>();
-        if (trap != null) trap.Init(owner, this, _startPosition, _endPosition);
+        if (groundTrap && groundTrap.TryGetComponent(out Trap trap))
+        {
+            trap.Init(owner, this, startPosition, endPositionb);
+            trap.Finalise(startPosition, endPositionb);
+            trap.FixSecondPoint();
+        }
     }
 }

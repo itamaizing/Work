@@ -1,4 +1,5 @@
 using Mirror;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ArrowIntoSkyProjectile : NetworkBehaviour
@@ -23,6 +24,8 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
     private HeroComponent _dad;
     private Skill _skill;
     private Character _character;
+
+    private readonly HashSet<Collider> _damagedThisTick = new();
 
     public GameObject Arrow { get => arrow; set => arrow = value; }
     public GameObject Circle { get => circle; set => circle = value; }
@@ -57,23 +60,15 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
         if (other.gameObject == _dad.gameObject) return;
         if (((1 << other.gameObject.layer) & _skill.TargetsLayers.value) == 0) return;
 
+        if (!_damagedThisTick.Add(other)) return;
+
         float damageToDeal = _skill.Damage;
         if (Random.value * 100f < criticalChance) damageToDeal *= criticalMultiplier;
 
-        if (other.TryGetComponent<IDamageable>(out var damageable)) ApplyDamage(damageToDeal, DamageType.Physical, damageable);
-        if (other.TryGetComponent<Character>(out var character))
-        {
-            var characterState = character.CharacterState;
-            if (characterState == null) return;
+        if (other.TryGetComponent<IDamageable>(out var damageTarget))
+            ApplyDamage(damageToDeal, DamageType.Physical, damageTarget);
 
-            characterState.AddState(States.Irradiation, 9, 0, _character.gameObject, name);
-
-            if (shotAstralManaActive && characterState.CheckForState(States.Astral)) RestoreMana();
-
-            if (characterState.CheckForState(States.Silent) && silenceTalentActive) characterState.AddState(States.WeakeningSilence, 4, 4, _character.gameObject, name);
-        }
-
-        nextDamageTime = NetworkTime.time + impactLifeTime;
+        if (other.TryGetComponent<Character>(out var victim)) ApplyStatesAndTalents(victim);
     }
 
     #region ApplyAdditionalDamage
@@ -148,6 +143,18 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
     //    //if (!_tripleShot) StopDamageZone();
     //}
     #endregion
+
+    private void ApplyStatesAndTalents(Character character)
+    {
+        CharacterState characterState = character.CharacterState;
+        if (characterState == null) return;
+
+        characterState.AddState(States.Irradiation, 9, 0, _character.gameObject, name);
+
+        if (shotAstralManaActive && characterState.CheckForState(States.Astral)) RestoreMana();
+
+        if (silenceTalentActive && characterState.CheckForState(States.Silent)) characterState.AddState(States.WeakeningSilence, 4, 4, _character.gameObject, name);
+    }
 
     private void ApplyDamage(float damage, DamageType damageType, IDamageable target)
     {

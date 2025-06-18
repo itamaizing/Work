@@ -1393,7 +1393,7 @@ public abstract class Skill : NetworkBehaviour
         InputHandler.OnSpacetLeftMouseCanceled += OnClickCanceled;
 
     }
-
+    
     private void UnSubscribeClickEvents()
     {
         InputHandler.OnClick -= OnClick;

@@ -1,4 +1,5 @@
 using Mirror;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ArrowsIntoSkyProjectile : NetworkBehaviour
@@ -20,7 +21,7 @@ public class ArrowsIntoSkyProjectile : NetworkBehaviour
     private Character _character;
     private float _damage;
 
-
+    private readonly HashSet<Collider> _damagedThisTick = new();
 
     public GameObject Arrow { get => arrow; set => arrow = value; }
     public GameObject Circle { get => circle; set => circle = value; }
@@ -54,23 +55,12 @@ public class ArrowsIntoSkyProjectile : NetworkBehaviour
         if (NetworkTime.time < nextDamageTime) return;
         if (other.gameObject == _dad.gameObject) return;
         if (((1 << other.gameObject.layer) & _skill.TargetsLayers.value) == 0) return;
-        if (other.TryGetComponent<IDamageable>(out var damageable)) ApplyDamage(_damage, DamageType.Magical, damageable);
-        if (other.TryGetComponent<Character>(out var character))
-        {
-            var characterState = character.CharacterState;
-            if (characterState == null) return;
+        if (!_damagedThisTick.Add(other)) return;
 
-            characterState.AddState(States.Irradiation, 9, 0, _character.gameObject, name);
-
-            if (shotAstralManaActive && characterState.CheckForState(States.Astral)) RestoreMana();
-
-            if (characterState.CheckForState(States.Silent) && silenceTalentActive) characterState.AddState(States.WeakeningSilence, 4, 4, _character.gameObject, name);
-        }
-
-        nextDamageTime = NetworkTime.time + impactLifeTime;
+        TryApplyDamageAndEffects(other);
     }
 
-    #region ApplyAdditionalDamage
+    #region ApplyAdditionalDamage(Old)
     //private void ApplyAdditionalDamage(float damageValue)
     //{
     //    foreach (var enemyCollider in enemyColliders)
@@ -102,7 +92,7 @@ public class ArrowsIntoSkyProjectile : NetworkBehaviour
     //}
     #endregion
 
-    #region ApplyDamageToEnemiesInZone
+    #region ApplyDamageToEnemiesInZone(Old)
     //private void ApplyDamageToEnemiesInZone(Collider collider)
     //{
     //    foreach (var enemyCollider in enemyColliders)
@@ -142,6 +132,28 @@ public class ArrowsIntoSkyProjectile : NetworkBehaviour
     //    //if (!_tripleShot) StopDamageZone();
     //}
     #endregion
+
+    private void TryApplyDamageAndEffects(Collider colldier)
+    {
+        if (colldier.TryGetComponent<IDamageable>(out var dmgTarget))
+            ApplyDamage(_damage, DamageType.Magical, dmgTarget);
+
+        if (colldier.TryGetComponent<Character>(out var victim))
+            ApplyStatesAndTalents(victim);
+    }
+
+    private void ApplyStatesAndTalents(Character character)
+    {
+        CharacterState characterState = character.CharacterState;
+        if (characterState == null) return;
+
+        characterState.AddState(States.Irradiation, 9, 0, _character.gameObject, name);
+
+        if (shotAstralManaActive && characterState.CheckForState(States.Astral))
+            RestoreMana();
+
+        if (silenceTalentActive && characterState.CheckForState(States.Silent)) characterState.AddState(States.WeakeningSilence, 4, 4, _character.gameObject, name);
+    }
 
     private void ApplyDamage(float damage, DamageType damageType, IDamageable target)
     {

@@ -10151,7 +10151,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
   _cooldownTime: 6
-  _castDeley: 1.4
+  _castDeley: 2.8
   _damageValue: 0
   _abilitySchool: 6
   _abilityForm: 2
@@ -10172,10 +10172,10 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 5
-  _area: 0.5
-  _castLength: 5
-  _castWidth: 0.5
+  _radius: 4
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
@@ -10186,7 +10186,7 @@ MonoBehaviour:
   owner: {fileID: 4534754468497973439}
   minDistanceRadiusCircle: {fileID: 6586971803846960611}
   minDistanceRadius: 2
-  DistanceforTrap: 2.1
+  distanceforTrap: 2.1
 --- !u!114 &2248569995468415066
 MonoBehaviour:
   m_ObjectHideFlags: 0

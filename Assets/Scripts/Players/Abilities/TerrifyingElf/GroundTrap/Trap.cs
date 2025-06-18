@@ -7,7 +7,10 @@ public class Trap : Projectiles
     [SerializeField] private LineRenderer lineRenderer;
     [SerializeField] private Transform pointTrapRight;
     [SerializeField] private Transform pointTrapLeft;
-    [SerializeField] private BoxCollider boxColliderTrap;
+    [SerializeField] private List<GameObject> hitBoxes;
+
+    private readonly List<BoxCollider> _boxes = new();
+    private readonly List<Vector3> _baseSizes = new();
 
     private HeroComponent _owner;
     private Vector3 _startPosition;
@@ -17,6 +20,22 @@ public class Trap : Projectiles
     private const float YFix = 0.2f;
 
     private List<Character> _charactersInTrigger = new List<Character>();
+
+    private void Awake()
+    {
+        foreach (var hitBox in hitBoxes)
+        {
+            if (hitBox == null) continue;
+            if (hitBox.TryGetComponent(out BoxCollider boxCollider))
+            {
+                _boxes.Add(boxCollider);
+                _baseSizes.Add(boxCollider.size);
+            }
+
+            hitBox.SetActive(false);
+        }
+    }
+
 
     public void Init(HeroComponent owner, Skill skill, Vector3 startPosition, Vector3 endPosition)
     {
@@ -33,9 +52,20 @@ public class Trap : Projectiles
     {
         lineRenderer.positionCount = 2;
         SetLine(pointTrapRight.position, pointTrapRight.position);
-        boxColliderTrap.enabled = false;
+
         pointTrapLeft.gameObject.SetActive(false);
         _secondFixed = false;
+
+        for (int i = 0; i < hitBoxes.Count; i++)
+        {
+            if (hitBoxes[i] == null) continue;
+            hitBoxes[i].SetActive(false);
+            if (_boxes.Count > i)
+            {
+                _boxes[i].size = _baseSizes[i];
+                _boxes[i].center = new Vector3(_boxes[i].center.x, _boxes[i].center.y, 0f);
+            }
+        }
     }
 
     public void UpdateSecondPoint(Vector3 worldPos)
@@ -50,7 +80,7 @@ public class Trap : Projectiles
     public void FixSecondPoint()
     {
         _secondFixed = true;
-        boxColliderTrap.enabled = true;
+        foreach (var hitBox in hitBoxes) hitBox?.SetActive(true);
     }
 
     private void SetLine(Vector3 a, Vector3 b)
@@ -63,44 +93,64 @@ public class Trap : Projectiles
     private void SetupTrapShape()
     {
         Vector3 dir = _endPosition - _startPosition;
-        float len = dir.magnitude;
-
         transform.position = _startPosition + dir * 0.5f;
-
-        Vector3 scale = transform.localScale;
-        transform.localScale = new Vector3(scale.x, len, scale.z);
     }
 
-    [Server]
-    private void OnTriggerEnter(Collider other)
+    public void Finalise(Vector3 start, Vector3 end)
+    {
+        if (!pointTrapLeft.gameObject.activeSelf)
+            pointTrapLeft.gameObject.SetActive(true);
+
+        _startPosition = start;
+        _endPosition = end;
+
+        transform.position = start;
+        pointTrapLeft.position = end;
+
+        SetLine(pointTrapRight.position, pointTrapLeft.position);
+
+        StretchHitBoxes(start, end);
+        FixSecondPoint();
+    }
+
+    private void StretchHitBoxes(Vector3 start, Vector3 end)
+    {
+        Vector3 direction = end - start;
+        float length = Mathf.Max(0.01f, direction.magnitude);
+        Vector3 forward = direction.normalized;
+
+        Quaternion rotation = Quaternion.LookRotation(forward, Vector3.up);
+
+        for (int i = 0; i < hitBoxes.Count; ++i)
+        {
+            if (hitBoxes[i] == null || _boxes.Count <= i) continue;
+
+            hitBoxes[i].transform.position = start + direction * 0.5f;
+            hitBoxes[i].transform.rotation = rotation;
+
+            var box = _boxes[i];
+            var baseSize = _baseSizes[i];
+
+            box.size = new Vector3(baseSize.x, baseSize.y, length);
+
+            box.center = new Vector3(box.center.x, box.center.y, 0f);
+        }
+    }
+
+
+    public void HandleHit(Collider other)
     {
         if (!_initialized) return;
 
-        if (other.TryGetComponent<Character>(out Character target))
+        if (other.TryGetComponent<Character>(out var target) &&
+            !_charactersInTrigger.Contains(target))
         {
-            if (!_charactersInTrigger.Contains(target))
-            {
-                _charactersInTrigger.Add(target);
+            _charactersInTrigger.Add(target);
 
-                if (target.TryGetComponent<CharacterState>(out CharacterState characterState))
-                {
-                    characterState.AddState(States.Stun, 999f, 0, _owner.gameObject, _skill.name);
-                }
-            }
-        }
-    }
-
-    [Server]
-    private void OnDestroy()
-    {
-        foreach (var character in _charactersInTrigger)
-        {
-            if (character.TryGetComponent<CharacterState>(out CharacterState characterState))
-            {
-                characterState.RemoveState(States.Stun);
-            }
+            if (target.TryGetComponent<CharacterState>(out var state))
+                state.AddState(States.Stun, 9f, 0, _owner.gameObject, _skill.name);
         }
 
-        _charactersInTrigger.Clear();
+        Destroy(gameObject);
     }
 }
