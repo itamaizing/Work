@@ -10,6 +10,7 @@ public class UIGameWindowPopup : MonoBehaviour
     [SerializeField] private SkillPanel _skillPanel;
     [SerializeField] private SelectManager _selectManager;
     [SerializeField] private GameObject _settings;
+    [SerializeField] private GameObject[] _forHide;
 
     private HeroComponent _currentHero;
     private Character _currentCharacter;
@@ -17,6 +18,16 @@ public class UIGameWindowPopup : MonoBehaviour
     private void Awake()
     {
         InputHandler.ShowMenu += ShowSettings;
+    }
+
+    public void SwichAll(bool value)
+    {
+        if (value == false)
+            foreach (var item in _forHide)
+                item.SetActive(false);
+        else
+            foreach (var item in _forHide)
+                item.SetActive(true);
     }
 
     private void ShowSettings()
