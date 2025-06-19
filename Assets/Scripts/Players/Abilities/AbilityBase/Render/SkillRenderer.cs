@@ -12,6 +12,7 @@ public class SkillRenderer : NetworkBehaviour
     [SerializeField] private CircleArea _areaPref;
     [SerializeField] private SphereArea _damageZonePref;
     [SerializeField] private AbilityLineRenderer _line;
+    [SerializeField] private LineZoneRender _lineZoneRender;
     [SerializeField] private LayerMask _layerMask;
     [SerializeField] private Color _colorForAllies = Color.green;
     [SerializeField] private Color _colorForEnemies = Color.red;
@@ -89,6 +90,16 @@ public class SkillRenderer : NetworkBehaviour
 			Destroy(_tempArea.gameObject);
 		}
 	}
+
+    public void StartDrawLineForZone(Skill skill)
+    {
+        _lineZoneRender.StartDraw(skill);
+    }
+
+    public void StopDrawLineForZone()
+    {
+        _lineZoneRender.StopDraw();
+    }
 
     public void DrawRadius(float radius)
     {
