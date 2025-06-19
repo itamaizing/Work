@@ -13,7 +13,7 @@ public class SkillRenderer : NetworkBehaviour
     [SerializeField] private SphereArea _damageZonePref;
     [SerializeField] private AbilityLineRenderer _line;
     [SerializeField] private LineZoneRender _lineZoneRender;
-    [SerializeField] private LineZoneRender _lineZoneRenderPref;
+    [SerializeField] private LineZoneRender _lineZoneRenderForQueue;
     [SerializeField] private LayerMask _layerMask;
     [SerializeField] private Color _colorForAllies = Color.green;
     [SerializeField] private Color _colorForEnemies = Color.red;
@@ -100,8 +100,7 @@ public class SkillRenderer : NetworkBehaviour
 
     public void StartDrawAllLineForZone(Vector3[] vector3s)
     {
-        _lineZoneRenders.Add(Instantiate(_lineZoneRenderPref, transform.position, _lineZoneRenderPref.transform.rotation, null));
-        _lineZoneRenders[^1].StartDraw(vector3s);
+        _lineZoneRenderForQueue.StartDraw(vector3s);
     }
 
     public void StopDrawLineForZone()
@@ -111,8 +110,7 @@ public class SkillRenderer : NetworkBehaviour
 
     public void StopDrawAllLineForZone()
     {
-        if ( _lineZoneRenders.Count > 0 )
-            Destroy(_lineZoneRenders[^1].gameObject);
+        _lineZoneRenderForQueue.StopDraw();
     }
 
     public void DrawRadius(float radius)

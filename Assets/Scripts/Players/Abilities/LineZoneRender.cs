@@ -27,7 +27,7 @@ public class LineZoneRender : MonoBehaviour
 
     public void StopDraw()
     {
-        if(_skill != null)
+        if (_skill != null)
         {
             _skill.StopCoroutine(_lineDrawCoroutine);
 
@@ -36,6 +36,12 @@ public class LineZoneRender : MonoBehaviour
             _skill.ClickPoint -= SetPoint;
             _skill = null;
         }
+        else
+        {
+            _lineRenderer.positionCount = 0;
+            _lineRenderer.SetPositions(new Vector3[0]);
+        }
+            
     }
 
     private void SetPoint(Vector3 point)

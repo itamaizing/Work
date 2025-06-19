@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class SkillQueue : MonoBehaviour
@@ -24,6 +25,9 @@ public class SkillQueue : MonoBehaviour
 
         if(_skills.TryPeek(out Skill skill))
         {
+            if (skill.SkillType == SkillType.Zone)
+                Draw(skill);
+
             if (!skill.Disactive && skill.TryCast())
             {
                 RemoveFromQueue();
@@ -40,16 +44,6 @@ public class SkillQueue : MonoBehaviour
 
         _skills.Enqueue(skill);
         SkillAdded?.Invoke(skill);
-
-        var info = skill.TargetInfoQueue.Peek().Points;
-
-        Vector3[] vector3s = new Vector3[info.Count];
-
-        for (int i = 0; i < info.Count; i++)
-            vector3s[i] = new Vector3(info[i].x, info[i].y + 0.1f, info[i].z);
-
-        Debug.Log(_skillRenderer);
-        _skillRenderer.StartDrawAllLineForZone(vector3s); 
     }
 
     public bool TryCancel(bool isFoceCancel = false)
@@ -67,11 +61,30 @@ public class SkillQueue : MonoBehaviour
         return false;
     }
 
+    private void Draw(Skill skill)
+    {
+        var info = skill.TargetInfoQueue.Peek().Points;
+
+        Vector3[] vector3s = new Vector3[info.Count];
+
+        for (int i = 0; i < info.Count; i++)
+            vector3s[i] = new Vector3(info[i].x, info[i].y + 0.1f, info[i].z);
+
+        _skillRenderer.StartDrawAllLineForZone(vector3s);
+        _skillRenderer.DrawRadius(skill.Radius);
+    }
+
     private Skill RemoveFromQueue()
     {
         var temp = _skills.Dequeue();
         SkillDeleted?.Invoke(temp);
-        _skillRenderer.StopDrawAllLineForZone();
+
+        if (temp.SkillType == SkillType.Zone)
+        {
+            _skillRenderer.StopDrawRadius();
+            _skillRenderer.StopDrawAllLineForZone();
+        }
+
         return temp;
     }
 
