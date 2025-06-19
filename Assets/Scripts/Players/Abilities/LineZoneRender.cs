@@ -19,6 +19,12 @@ public class LineZoneRender : MonoBehaviour
         _lineDrawCoroutine = _skill.StartCoroutine(DrawJob());
     }
 
+    public void StartDraw(Vector3[] vector3s)
+    {
+        _lineRenderer.positionCount = vector3s.Length;
+        _lineRenderer.SetPositions(vector3s);
+    }
+
     public void StopDraw()
     {
         if(_skill != null)

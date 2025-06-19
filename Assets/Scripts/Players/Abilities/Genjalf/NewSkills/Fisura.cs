@@ -44,7 +44,8 @@ namespace Gangdollarff
 
         public override void LoadTargetData(TargetInfo targetInfo)
         {
-            Debug.LogError("errorData");
+            _startPoint = targetInfo.Points[0];
+            _endPoint = targetInfo.Points[1];
         }
 
         protected override IEnumerator CastJob()
@@ -62,7 +63,7 @@ namespace Gangdollarff
 
         protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
         {
-
+            TargetInfo targetInfo = new();
             //_lineRenderer.transform.parent = null;
             //_lineRenderer.positionCount = 2;
 
@@ -84,7 +85,9 @@ namespace Gangdollarff
                 //_lineRenderer.SetPosition(1, GetMousePoint() + Vector3.up / 10);
                 yield return null;
             }
-
+            targetInfo.Points.Add( _startPoint );
+            targetInfo.Points.Add( _endPoint );
+            callbackDataSaved.Invoke(targetInfo);
             _lineRenderer.positionCount = 0;
             yield return null;
         }

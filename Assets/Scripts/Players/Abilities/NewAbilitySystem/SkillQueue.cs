@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class SkillQueue : MonoBehaviour
 {
+    [SerializeField] private SkillRenderer _skillRenderer;
+
     private Queue<Skill> _skills = new Queue<Skill>();
     private Skill _currentSkill = null;
 
@@ -38,6 +40,16 @@ public class SkillQueue : MonoBehaviour
 
         _skills.Enqueue(skill);
         SkillAdded?.Invoke(skill);
+
+        var info = skill.TargetInfoQueue.Peek().Points;
+
+        Vector3[] vector3s = new Vector3[info.Count];
+
+        for (int i = 0; i < info.Count; i++)
+            vector3s[i] = new Vector3(info[i].x, info[i].y + 0.1f, info[i].z);
+
+        Debug.Log(_skillRenderer);
+        _skillRenderer.StartDrawAllLineForZone(vector3s); 
     }
 
     public bool TryCancel(bool isFoceCancel = false)
@@ -59,6 +71,7 @@ public class SkillQueue : MonoBehaviour
     {
         var temp = _skills.Dequeue();
         SkillDeleted?.Invoke(temp);
+        _skillRenderer.StopDrawAllLineForZone();
         return temp;
     }
 

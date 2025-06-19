@@ -30398,6 +30398,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5f4a2549f1d1594693ec217b7147344, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _skillRenderer: {fileID: 6214007637544752149}
 --- !u!114 &971057160995198890
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30839,6 +30840,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5f4a2549f1d1594693ec217b7147344, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _skillRenderer: {fileID: 6214007637544752149}
 --- !u!114 &7358395382092138440
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30872,6 +30874,7 @@ MonoBehaviour:
   _damageZonePref: {fileID: 6076937102363889602, guid: 586443d303441854fbd96bcd57e8ccc6, type: 3}
   _line: {fileID: 11400000, guid: 7faf4d32cfcc4f54d967e4d01a0c4b65, type: 2}
   _lineZoneRender: {fileID: 3353706721240492799}
+  _lineZoneRenderPref: {fileID: 509067598547524304, guid: 283857ee746ac244486cf89e7119169e, type: 3}
   _layerMask:
     serializedVersion: 2
     m_Bits: 8336
