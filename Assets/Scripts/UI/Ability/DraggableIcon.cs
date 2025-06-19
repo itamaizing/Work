@@ -1,5 +1,6 @@
 using System;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -11,12 +12,13 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     [SerializeField] private FillAmountOverTime _cooldown;
     [SerializeField] private TextMeshProUGUI _chargeCounter;
     [SerializeField] private Blink _blinkBoxFrame;
-    [SerializeField] private AutoCastParticles _autoCastEffectPrefab;
+    [SerializeField] private AutoCastParticles _autoCastEffect;
 
     private Transform _patentAfterDrag;
     private Skill _skill;
     private bool _selected;
-    private AutoCastParticles _autoCastEffect;
+    private Camera _camera;
+    private float _distance;
 
     public Transform PatentAfterDrag { get => _patentAfterDrag; set => _patentAfterDrag = value; }
     public Skill Skill { get => _skill; set => _skill = value; }
@@ -27,25 +29,22 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public event Action<DraggableIcon> PointerEnter;
     public event Action<DraggableIcon> PointerExit;
 
-    public void Init(Skill skill, Transform parent)
+    public void Init(Skill skill, Transform parent, Camera camera, float distance)
     {
         _skill = skill;
         _image.sprite = _skill.Icon;
         PatentAfterDrag = parent;
+        _camera = camera;
+        _distance = distance;
+
         _skill.OnSkillStateChanged += UpdateIconState;
 
         UpdateIconState(_skill.Disactive);
-
 
         if (_skill.IsUseCharges == true)
         {
             _chargeCounter.gameObject.SetActive(true);
             OnCurrentChargeChanged(_skill.Chargers);
-        }
-
-        if (skill is AutoAttackSkill)
-        {
-            _autoCastEffect = Instantiate(_autoCastEffectPrefab, transform);
         }
 
         SubscribingSkillOnEvents(_skill);
@@ -70,7 +69,11 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnDrag(PointerEventData eventData)
     {
-        transform.position = Input.mousePosition;
+        Vector2 mousePosition = Input.mousePosition;
+        Vector3 screenPos = new Vector3(mousePosition.x, mousePosition.y, _distance);
+        Vector3 worldPos = _camera.ScreenToWorldPoint(screenPos);
+
+        transform.position = worldPos;
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -102,17 +105,24 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         _image.color = new Color(_image.color.r, _image.color.g, _image.color.b, disactive ? 0.5f : 1f);
     }
 
+    private void OnAutoModeChanged(bool value)
+    {
+        if(value)
+            OnStartAutoAttack();
+        else
+            OnEndAutoAttack();
+    }
+
     private void OnStartAutoAttack()
     {
         _autoCastEffect.gameObject.SetActive(true);
         _autoCastEffect.Play();
-        Debug.LogWarning("OnStartAuto!");
     }
 
     private void OnEndAutoAttack()
     {
         _autoCastEffect.gameObject.SetActive(false);
-        Debug.LogWarning("OnEndAuto!!!!!!!!!!!!!!!");
+        _autoCastEffect.Stop();
     }
 
     private void SubscribingSkillOnEvents(Skill ability)
@@ -132,14 +142,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         ability.CooldownEnded += OnStopCooldown;
 
-        if (ability is AutoAttackSkill autoAttackSkill)
-        {
-            autoAttackSkill.Canceled += OnEndAutoAttack;
-            // autoAttackSkill.CastPaused += OnEndAutoAttack;
-            autoAttackSkill.CastStarted += OnStartAutoAttack;
-            // autoAttackSkill.CastContinued += OnStartAutoAttack;
-            //autoAttackSkill.AutoCastEnded +=
-        }
+        ability.AutoModeChanged += OnAutoModeChanged;
     }
 
     private void UnsubscribingSkillOnEvents(Skill ability)
@@ -159,14 +162,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         ability.CooldownEnded -= OnStopCooldown;
 
-        if (ability is AutoAttackSkill autoAttackSkill)
-        {
-            autoAttackSkill.Canceled -= OnEndAutoAttack;
-            // autoAttackSkill.CastPaused -= OnEndAutoAttack;
-            autoAttackSkill.CastStarted -= OnStartAutoAttack;
-            // autoAttackSkill.CastContinued -= OnStartAutoAttack;
-            //autoAttackSkill.AutoCastEnded -=
-        }
+        ability.AutoModeChanged += OnAutoModeChanged;
     }
 
     private void OnStopCooldown()

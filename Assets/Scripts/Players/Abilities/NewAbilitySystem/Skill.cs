@@ -237,6 +237,7 @@ public abstract class Skill : NetworkBehaviour
     public event Action CastSuccess;
     public event Action<TargetInfo> TargetDataSaved;
     public event Action<bool> AutoModeChanged;
+    public event Action<Vector3> ClickPoint;
 
     /// <summary>
     /// There may be a description that will be shown in the AbillityNameBox.
@@ -566,13 +567,18 @@ public abstract class Skill : NetworkBehaviour
         if (_isAutoLineRender)
             _skillRender.DrawLine(CastLength, CastWidth, damage, TargetsLayers);
 
-        if (true)
+        if (_skillType == SkillType.Target)
         {
             /* Debug.Log("DRAAAAAAAAAAW");
              Character enemy = GetCloserTargets(transform.position, Radius)[0];
              Debug.Log(enemy.name);
              enemy.SelectedCircle.IsActive = true;*/
             _skillRender.DrawClosestTarget(Radius, TargetsLayers, _hero);
+        }
+
+        if (_skillType == SkillType.Zone)
+        {
+            _skillRender.StartDrawLineForZone(this);
         }
     }
 
@@ -583,6 +589,12 @@ public abstract class Skill : NetworkBehaviour
         _skillRender.StopDrawLine();
         _skillRender.StopDrawClosestTarget();
         _skillRender.StopDynamicRadiusColor();
+
+        if (_skillType == SkillType.Zone)
+        {
+            _skillRender.StopDrawLineForZone();
+        }
+        
 
         /*if (true)
 		{
@@ -741,7 +753,7 @@ public abstract class Skill : NetworkBehaviour
         return distance <= radius;
     }
 
-    protected Vector3 GetMousePoint()
+    public Vector3 GetMousePoint()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
@@ -846,19 +858,27 @@ public abstract class Skill : NetworkBehaviour
 
         if (_isClick)
         {
-            return LeftClick();
+            target = LeftClick();
+            ClickPoint?.Invoke(target.Position);
+            return target;
         }
         if (_isShiftClick)
         {
-            return ShiftLeftClick();
+            target = ShiftLeftClick();
+            ClickPoint?.Invoke(target.Position);
+            return target;
         }
         if (_isCtrlClick)
         {
-            return CtrlLeftClick();
+            target = CtrlLeftClick();
+            ClickPoint?.Invoke(target.Position);
+            return target;
         }
         if (_isSpaceClick)
         {
-            return SpaceLeftClick();
+            target = SpaceLeftClick();
+            ClickPoint?.Invoke(target.Position);
+            return target;
         }
 
         return null;
@@ -965,6 +985,11 @@ public abstract class Skill : NetworkBehaviour
         TargetToShot target = new TargetToShot();
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
+
+
+        _isAutoMode = true;
+        AutoModeChanged?.Invoke(true);
+
 
         switch (_skillType)
         {

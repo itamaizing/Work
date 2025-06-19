@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 
 public class SkillPanel : MonoBehaviour
 {
+    [SerializeField] private Camera _uiCamera;
+    [SerializeField] private float _cameraCanvasDistance = 100;
     [SerializeField] private bool _hideUnusedButtons = true;
     [SerializeField] private List<RebindUI> _rebindsUI;
     [SerializeField] private SkillIcon[] _skillIcons;
@@ -59,7 +61,7 @@ public class SkillPanel : MonoBehaviour
                 
 
             var icon = Instantiate(_draggableIconPref, _skillIcons[i].transform);
-            icon.Init(_playerAbilities.SelectedSkills[i], _skillIcons[i].transform);
+            icon.Init(_playerAbilities.SelectedSkills[i], _skillIcons[i].transform, _uiCamera, _cameraCanvasDistance);
             _skillIcons[i].CurrentIcon = icon;
             icon.transform.SetAsFirstSibling();
             _skills.Add(icon);
