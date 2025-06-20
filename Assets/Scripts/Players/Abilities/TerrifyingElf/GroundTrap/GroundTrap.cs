@@ -24,7 +24,7 @@ public class GroundTrap : Skill
                                          Vector3.Distance(transform.position, _endPosition) >= minDistanceRadius &&
                                          Vector3.Distance(_startPosition, _endPosition) <= distanceforTrap;
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("ShotCastDelayAnimTrigger");
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
     protected override int AnimTriggerCast => 0;
 
 
@@ -41,6 +41,7 @@ public class GroundTrap : Skill
             _preview = null;
         }
 
+        Hero.Animator.speed = 1;
         minDistanceRadiusCircle?.Clear();
     }
 
@@ -58,6 +59,8 @@ public class GroundTrap : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        Hero.Animator.speed = Hero.Animator.speed / CastDeley;
+
         Hero.Move.CanMove = false;
         Hero.Move.StopMoveAnimation();
 
@@ -138,6 +141,7 @@ public class GroundTrap : Skill
 
     protected override void ClearData()
     {
+        Hero.Animator.speed = 1;
         Hero.Move.CanMove = true;
         _isStartPointPlaced = false;
     }

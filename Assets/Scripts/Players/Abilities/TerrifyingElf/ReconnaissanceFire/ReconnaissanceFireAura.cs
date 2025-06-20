@@ -23,6 +23,7 @@ public class ReconnaissanceFireAura : NetworkBehaviour
     public bool PartialBlindnessTalent { get => partialBlindnessTalent; set => partialBlindnessTalent = value; }
     public bool StateDark { get => stateDark; set => stateDark = value; }
 
+    [Server]
     private void OnTriggerEnter(Collider other)
     {
         if (other.TryGetComponent<Character>(out Character character) && !charactersInZone.Contains(character))
@@ -46,7 +47,8 @@ public class ReconnaissanceFireAura : NetworkBehaviour
         }
     }
 
-        private void OnTriggerExit(Collider other)
+    [Server]
+    private void OnTriggerExit(Collider other)
     {
         if (other.TryGetComponent<Character>(out Character character))
         {
@@ -68,10 +70,10 @@ public class ReconnaissanceFireAura : NetworkBehaviour
             {
                 if (character != null && character.TryGetComponent<CharacterState>(out var characterState))
                 {
-                    if (stateDark && fireDarkTalent) characterState.CmdAddState(States.Anxiety, anxietyDuration, 0f, gameObject, "ReconnaissanceFireAuraDark");
+                    if (stateDark && fireDarkTalent) characterState.AddState(States.Anxiety, anxietyDuration, 0f, gameObject, "ReconnaissanceFireAuraDark");
 
-                    if (partialBlindnessTalent) characterState.CmdAddState(States.PartialBlindness, partialBlindnessDuration, 0f, gameObject, "partialBlindnessTalent");
-                    else characterState.CmdAddState(States.PartialBlindness, partialBlindnessDuration, 0f, gameObject, "ReconnaissanceFireAura");
+                    if (partialBlindnessTalent) characterState.AddState(States.PartialBlindness, partialBlindnessDuration, 0f, gameObject, "partialBlindnessTalent");
+                    else characterState.AddState(States.PartialBlindness, partialBlindnessDuration, 0f, gameObject, "ReconnaissanceFireAura");
                 }
             }
 

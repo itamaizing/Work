@@ -142,13 +142,10 @@ public class Trap : Projectiles
     {
         if (!_initialized) return;
 
-        if (other.TryGetComponent<Character>(out var target) &&
-            !_charactersInTrigger.Contains(target))
+        if (other.TryGetComponent<Character>(out var target) && !_charactersInTrigger.Contains(target))
         {
             _charactersInTrigger.Add(target);
-
-            if (target.TryGetComponent<CharacterState>(out var state))
-                state.AddState(States.Stun, 9f, 0, _owner.gameObject, _skill.name);
+            if (target.TryGetComponent<CharacterState>(out CharacterState state)) state.AddState(States.Bound, 9f, 0, _owner.gameObject, _skill.name);
         }
 
         Destroy(gameObject);

@@ -194,6 +194,10 @@ public class MoveComponent : NetworkBehaviour
 		if ((!CanMove && !CanMoveState) || _rigidbody == null || IsMoveBlocked == true)
 		{
 			if (_rigidbody != null) _rigidbody.velocity = Vector3.zero;
+
+			_currentVelocity = Vector3.zero;
+			_currentVelocityTemp = Vector3.zero;
+			_dir = Vector3.zero;
 			return;
 		}
 

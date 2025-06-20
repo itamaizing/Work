@@ -9,7 +9,6 @@ using UnityEngine.AI;
 public class Ghost : Skill
 {
     [Header("Ghost Settings")]
-    [SerializeField] private float defaultRadius = 3f;
     [SerializeField] private float extendedRadius = 5f;
     [SerializeField] private float teleportManaUse = 6f;
     [SerializeField] private int maxGhosts = 2;
@@ -130,7 +129,6 @@ public class Ghost : Skill
 
     private void InitializeFields()
     {
-        Radius = defaultRadius;
         _baseCastDelay = CastDeley;
         _ghosts = new List<Character>();
         _spawnComponent = GetComponent<SpawnComponent>();
@@ -185,7 +183,7 @@ public class Ghost : Skill
 
             if (_sendingGhostTargetTalentActive && IsMouseOverTarget(out Character character) && character.CharacterState.CheckForState(States.InnerDarkness))
             {
-                if (Input.GetMouseButtonDown(0) && IsWithinRadius(character.transform.position, defaultRadius) && !GetComponent<GhostAura>())
+                if (Input.GetMouseButtonDown(0) && IsWithinRadius(character.transform.position, Radius) && !GetComponent<GhostAura>())
                 {
                     if (_ghosts.Count > 0)
                     {
@@ -588,8 +586,6 @@ public class Ghost : Skill
     {
         _teleportQueue.Clear();
         _isWaitingTeleport = false;
-
-        Radius = defaultRadius;
         HideExtendedRadius();
 
         if (_checkExtendedRadiusCoroutine != null)

@@ -47,7 +47,7 @@ public class ShotIntoSky : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        _hero.Animator.speed = CastDeley;
+        Hero.Animator.speed = Hero.Animator.speed / CastDeley;
 
         while (float.IsPositiveInfinity(_targetPoint.x) && !_disactive)
         {

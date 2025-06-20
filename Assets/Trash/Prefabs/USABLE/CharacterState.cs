@@ -136,6 +136,7 @@ public class CharacterState : NetworkBehaviour
 		[States.Calmness] = new Calmness(),
 		[States.Sleep] = new Sleep(),
 		[States.ElvenSkill] = new ElvenSkill(),
+		[States.Bound] = new Bound(),
 
 		#region Test Baff and Debaff
 		[States.BaffState] = new BaffState(),
@@ -627,9 +628,6 @@ public enum States
 	ComboState,
 	DisappointmentState,
 	ManaRegen,
-
-	#region TerrifyingElf
-
 	InnerDarkness,
 	Fear,
 	Astral,
@@ -643,12 +641,9 @@ public enum States
 	Calmness,
 	Sleep,
 	ElvenSkill,
-	#endregion
-
-	#region Test Baff and Debaff
 	BaffState,
-		DebaffState,
-    #endregion
+    DebaffState,
+	Bound,
 }
 public enum BaffDebaff
 {

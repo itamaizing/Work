@@ -27,6 +27,9 @@ public class StateEffects : MonoBehaviour
 
     [Header("Effect ManaRegen")]
     [SerializeField] private GameObject manaRegen;
+
+    [Header("Effect Trap")]
+    [SerializeField] private GameObject ropeTrap;
     #endregion
 
     #region Hero
@@ -37,6 +40,7 @@ public class StateEffects : MonoBehaviour
     #endregion
 
     #region Property
+    public GameObject RopeTrap { get => ropeTrap; set => ropeTrap = value; }
     public GameObject FrozenStateEffect { get => frozenStateEffect; set => frozenStateEffect = value; }
     public GameObject Ice { get => ice; set => ice = value; }
     public GameObject Weapon { get => weapon; set => weapon = value; }
