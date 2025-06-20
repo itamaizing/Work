@@ -18,6 +18,7 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
     [SerializeField] private Image nonActiveImage;
     [SerializeField] private IconState _iconState;
     [SerializeField] private Image _frameImage;
+    [SerializeField] private Image _lightingFrameImage;
     
     private TalentData _talent;
 
@@ -46,13 +47,16 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
     {
         PointerEntered?.Invoke(_talent);
         _frameImage.sprite = _iconState.On;
+        _lightingFrameImage.gameObject.SetActive(true);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         PointerExited?.Invoke(_talent);
 
-        if(_talent.IsOpen == false)
+        _lightingFrameImage.gameObject.SetActive(false);
+
+        if (_talent.IsOpen == false)
             _frameImage.sprite = _iconState.Off;
     }
 }
