@@ -239,7 +239,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             else
                 _cooldownNum.gameObject.SetActive(false);
 
-            _cooldownNum.text = dutarion.ToString("0.0");
+            _cooldownNum.text = dutarion.ToString("0");
             yield return null;
             dutarion -= Time.deltaTime;
         }
