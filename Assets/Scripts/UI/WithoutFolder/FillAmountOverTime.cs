@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Analytics;
 using UnityEngine.UI;
 
 public class FillAmountOverTime : MonoBehaviour
@@ -11,6 +13,8 @@ public class FillAmountOverTime : MonoBehaviour
     private float _currentTime;
     private float _duration;
     private Coroutine _fillJob;
+
+    public event Action<FillAmountOverTime> Ended;
 
     private void Awake()
     {
@@ -74,6 +78,7 @@ public class FillAmountOverTime : MonoBehaviour
         }
         _fillJob = null;
         _image.fillAmount = endValue;
+        Ended?.Invoke(this);
         gameObject.SetActive(false);
     }
 }

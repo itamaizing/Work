@@ -124917,6 +124917,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UIGameWindow
       objectReference: {fileID: 0}
+    - target: {fileID: 2463899945451330821, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2797939023055081253, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
       propertyPath: m_fontSize
       value: 17.95
@@ -124944,6 +124948,22 @@ PrefabInstance:
     - target: {fileID: 2972663197597184949, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3280359476435219152, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3280359476435219152, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3280359476435219152, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 12.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3280359476435219152, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -67.8
       objectReference: {fileID: 0}
     - target: {fileID: 3323471891376011346, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
       propertyPath: m_SizeDelta.y

@@ -10,6 +10,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 {
     [SerializeField] Image _image;
 
+    [SerializeField] private ChargeCDUI _chargeCD;
     [SerializeField] private FillAmountOverTime _cooldown;
     [SerializeField] private TMP_Text _cooldownNum;
     [SerializeField] private TextMeshProUGUI _chargeCounter;
@@ -138,6 +139,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         ability.CooldownStarted += OnStartCooldown;
         ability.CurrentChargeChanged += OnCurrentChargeChanged;
+        ability.ChargeStartCooldown += OnChargeStartCooldown;
 
         ability.CastStarted += OnCastStarted;
         ability.CastEnded += OnCastEnded;
@@ -158,6 +160,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         ability.CooldownStarted -= OnStartCooldown;
         ability.CurrentChargeChanged -= OnCurrentChargeChanged;
+        ability.ChargeStartCooldown -= OnChargeStartCooldown;
 
         ability.CastStarted -= OnCastStarted;
         ability.CastEnded -= OnCastEnded;
@@ -219,6 +222,11 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             StopCoroutine(_cooldownCoroutine);
 
         _cooldownNum.gameObject.SetActive(false);
+    }
+
+    private void OnChargeStartCooldown(float value)
+    {
+        _chargeCD.AddChargeCD(value);
     }
 
     private IEnumerator CooldownCounterJob(float dutarion)

@@ -219,6 +219,7 @@ public abstract class Skill : NetworkBehaviour
     public event Action<bool> OnSkillStateChanged;
     public event Action<int> CurrentChargeChanged;
     public event Action<float> CooldownStarted;
+    public event Action<float> ChargeStartCooldown;
     public event Action CooldownEnded;
     public event Action<Skill> PreparingStarted;
     public event Action<Skill> PreparingSuccess;
@@ -466,6 +467,8 @@ public abstract class Skill : NetworkBehaviour
         _remainingCooldownTimeChargers.Add(0);
 
         _currentChargers += 1;
+
+        _currentChargeCooldownJob.Add(null);
 
         CurrentChargeChanged?.Invoke(_currentChargers);
     }
@@ -801,6 +804,8 @@ public abstract class Skill : NetworkBehaviour
                     if (_remainingCooldownTimeChargers[i] <= 0)
                     {
                         _currentChargeCooldownJob[i] = StartCoroutine(RechargeOneChargeCoroutine(i, ChargeCooldown));
+
+                        ChargeStartCooldown?.Invoke(ChargeCooldown);
                         break;
                     }
                 }
@@ -837,6 +842,7 @@ public abstract class Skill : NetworkBehaviour
     {
         while (_currentChargers < _maxCharges)
         {
+            ChargeStartCooldown?.Invoke(ChargeCooldown);
             float time = 0;
             while (time < ChargeCooldown)
             {
