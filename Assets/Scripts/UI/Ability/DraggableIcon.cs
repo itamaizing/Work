@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -10,6 +11,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     [SerializeField] Image _image;
 
     [SerializeField] private FillAmountOverTime _cooldown;
+    [SerializeField] private TMP_Text _cooldownNum;
     [SerializeField] private TextMeshProUGUI _chargeCounter;
     [SerializeField] private Blink _blinkBoxFrame;
     [SerializeField] private AutoCastParticles _autoCastEffect;
@@ -19,6 +21,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     private bool _selected;
     private Camera _camera;
     private float _distance;
+    private Coroutine _cooldownCoroutine;
 
     public Transform PatentAfterDrag { get => _patentAfterDrag; set => _patentAfterDrag = value; }
     public Skill Skill { get => _skill; set => _skill = value; }
@@ -165,11 +168,6 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         ability.AutoModeChanged += OnAutoModeChanged;
     }
 
-    private void OnStopCooldown()
-    {
-        _cooldown.Stop();
-    }
-
     private void OnClickWithCtrl()
     {
 
@@ -193,10 +191,15 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     private void OnCurrentChargeChanged(int value)
     {
         if (value > 0)
+        {
+            _chargeCounter.gameObject.SetActive(true);
             _chargeCounter.color = Color.green;
+        }
         else
+        {
+            _chargeCounter.gameObject.SetActive(false);
             _chargeCounter.color = Color.red;
-
+        }
         _chargeCounter.text = value.ToString();
     }
 
@@ -204,5 +207,34 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         _cooldown.gameObject.SetActive(true);
         _cooldown.StartFill(dutarion, 1, 0, false);
+
+        _cooldownCoroutine = StartCoroutine(CooldownCounterJob(dutarion));
+    }
+
+    private void OnStopCooldown()
+    {
+        _cooldown.Stop();
+
+        if (_cooldownCoroutine != null)
+            StopCoroutine(_cooldownCoroutine);
+
+        _cooldownNum.gameObject.SetActive(false);
+    }
+
+    private IEnumerator CooldownCounterJob(float dutarion)
+    {
+        float time = dutarion;
+        while (dutarion > 0)
+        {
+            if (_skill.IsUseCharges == false || _skill.Chargers <= 0)
+                _cooldownNum.gameObject.SetActive(true);
+            else
+                _cooldownNum.gameObject.SetActive(false);
+
+            _cooldownNum.text = dutarion.ToString("0.0");
+            yield return null;
+            dutarion -= Time.deltaTime;
+        }
+        _cooldownCoroutine = null;
     }
 }
