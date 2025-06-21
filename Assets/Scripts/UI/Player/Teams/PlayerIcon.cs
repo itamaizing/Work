@@ -22,14 +22,14 @@ public class PlayerIcon : MonoBehaviour
 
     public void OnCharacterSelected(Character character)
     {
-        _icon.SetActive(true);
+        gameObject.SetActive(true);
 
         UpdateInfo(character);
     }
 
     public void OnCharacterDeselected(Character character)
     {
-        _icon.SetActive(false);
+        gameObject.SetActive(false);
     }
 
     public void StartReviveTimer(float time)

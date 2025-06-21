@@ -36736,6 +36736,38 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 9200225510825688790}
     m_Modifications:
+    - target: {fileID: 2800056024819669516, guid: 283857ee746ac244486cf89e7119169e, type: 3}
+      propertyPath: m_Parameters.colorGradient.key0.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2800056024819669516, guid: 283857ee746ac244486cf89e7119169e, type: 3}
+      propertyPath: m_Parameters.colorGradient.key0.g
+      value: 0.6037736
+      objectReference: {fileID: 0}
+    - target: {fileID: 2800056024819669516, guid: 283857ee746ac244486cf89e7119169e, type: 3}
+      propertyPath: m_Parameters.colorGradient.key0.r
+      value: 0.0057100262
+      objectReference: {fileID: 0}
+    - target: {fileID: 2800056024819669516, guid: 283857ee746ac244486cf89e7119169e, type: 3}
+      propertyPath: m_Parameters.colorGradient.key1.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2800056024819669516, guid: 283857ee746ac244486cf89e7119169e, type: 3}
+      propertyPath: m_Parameters.colorGradient.key1.g
+      value: 0.6037736
+      objectReference: {fileID: 0}
+    - target: {fileID: 2800056024819669516, guid: 283857ee746ac244486cf89e7119169e, type: 3}
+      propertyPath: m_Parameters.colorGradient.key1.r
+      value: 0.0057100262
+      objectReference: {fileID: 0}
+    - target: {fileID: 2800056024819669516, guid: 283857ee746ac244486cf89e7119169e, type: 3}
+      propertyPath: m_Parameters.colorGradient.m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2800056024819669516, guid: 283857ee746ac244486cf89e7119169e, type: 3}
+      propertyPath: m_Parameters.colorGradient.m_ColorSpace
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6919047326007600321, guid: 283857ee746ac244486cf89e7119169e, type: 3}
       propertyPath: m_Name
       value: LineRander1
@@ -36888,6 +36920,38 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 9200225510825688790}
     m_Modifications:
+    - target: {fileID: 2800056024819669516, guid: 283857ee746ac244486cf89e7119169e, type: 3}
+      propertyPath: m_Parameters.colorGradient.key0.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2800056024819669516, guid: 283857ee746ac244486cf89e7119169e, type: 3}
+      propertyPath: m_Parameters.colorGradient.key0.g
+      value: 0.6037736
+      objectReference: {fileID: 0}
+    - target: {fileID: 2800056024819669516, guid: 283857ee746ac244486cf89e7119169e, type: 3}
+      propertyPath: m_Parameters.colorGradient.key0.r
+      value: 0.0057100262
+      objectReference: {fileID: 0}
+    - target: {fileID: 2800056024819669516, guid: 283857ee746ac244486cf89e7119169e, type: 3}
+      propertyPath: m_Parameters.colorGradient.key1.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2800056024819669516, guid: 283857ee746ac244486cf89e7119169e, type: 3}
+      propertyPath: m_Parameters.colorGradient.key1.g
+      value: 0.6037736
+      objectReference: {fileID: 0}
+    - target: {fileID: 2800056024819669516, guid: 283857ee746ac244486cf89e7119169e, type: 3}
+      propertyPath: m_Parameters.colorGradient.key1.r
+      value: 0.0057100262
+      objectReference: {fileID: 0}
+    - target: {fileID: 2800056024819669516, guid: 283857ee746ac244486cf89e7119169e, type: 3}
+      propertyPath: m_Parameters.colorGradient.m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2800056024819669516, guid: 283857ee746ac244486cf89e7119169e, type: 3}
+      propertyPath: m_Parameters.colorGradient.m_ColorSpace
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6919047326007600321, guid: 283857ee746ac244486cf89e7119169e, type: 3}
       propertyPath: m_Name
       value: LineRander1 (1)

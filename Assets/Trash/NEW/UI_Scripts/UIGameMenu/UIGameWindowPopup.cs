@@ -75,7 +75,9 @@ public class UIGameWindowPopup : MonoBehaviour
         _minionPanel.OnCharacterDeselected(character);
         _skillPanel.OnCharacterDeselected(character);
         _attributesPanel.ShowHide(false);
+        _attributesPanel.gameObject.SetActive(false);
         _talentsPanel.HidePanels();
+        _talentsPanel.gameObject.SetActive(false);
     }
     
     private void UpdateCharacterPanels()
@@ -86,7 +88,12 @@ public class UIGameWindowPopup : MonoBehaviour
         _playerIcon.OnCharacterSelected(_currentHero);
         _minionPanel.OnCharacterSelected(_currentHero);
         _skillPanel.OnCharacterSelected(_currentCharacter);
+
+        _attributesPanel.gameObject.SetActive(true);
         _attributesPanel.Show(_currentHero.Data.Attributes);
+        
+        _talentsPanel.gameObject.SetActive(true);
         _talentsPanel.Show(_currentHero.TalentManager, true);
+
     }
 }
