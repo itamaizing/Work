@@ -4074,6 +4074,7 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 0
   _skillType: 0
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -4098,9 +4099,6 @@ MonoBehaviour:
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
-  _attackZoneSize: 2
-  _attackDelay: 1
-  _chargeAttackDelay: 0
   _playerLinks: {fileID: 5458554383432203635}
   _comboCounter: {fileID: 5883639770937801120}
 --- !u!114 &8920276347339243132
@@ -4133,6 +4131,7 @@ MonoBehaviour:
   _damageType: 1
   _attackRangeType: 0
   _skillType: 0
+  _moving: 1
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -4157,9 +4156,6 @@ MonoBehaviour:
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
-  _attackZoneSize: 2
-  _attackDelay: 1.2
-  _chargeAttackDelay: 0
   _playerLinks: {fileID: 5458554383432203635}
   _comboCounter: {fileID: 5883639770937801120}
   _minDamage: 10
@@ -4196,6 +4192,7 @@ MonoBehaviour:
   _damageType: 1
   _attackRangeType: 0
   _skillType: 0
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -4252,6 +4249,7 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 1
   _skillType: 1
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -4315,6 +4313,7 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 0
   _skillType: 0
+  _moving: 1
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -4378,6 +4377,7 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 0
   _skillType: 0
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -4455,6 +4455,7 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 1
   _skillType: 1
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 4294967295

@@ -197,7 +197,7 @@ public class Ghost : Skill
                 }
             }
 
-            else if (isHoveringGhost)
+            else if (isHoveringGhost && !Hero.CharacterState.CheckForState(States.Bound))
             {
                 if (Input.GetMouseButtonDown(0))
                 {

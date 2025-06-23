@@ -6633,6 +6633,18 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6108164464197657691, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6165687671332635193, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8314673134874891882, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Name
       value: Gangdollarff Variant
@@ -6782,6 +6794,7 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 1
   _skillType: 0
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -6837,6 +6850,7 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 0
   _skillType: 0
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -6864,6 +6878,8 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   _firework: {fileID: 3150633468305956490}
+  _damageRangeMin: -2
+  _damageRangeMax: 1
 --- !u!114 &7914139750777672279
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6892,6 +6908,7 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 0
   _skillType: 0
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -6948,6 +6965,7 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 0
   _skillType: 0
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -7005,6 +7023,7 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 0
   _skillType: 0
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0

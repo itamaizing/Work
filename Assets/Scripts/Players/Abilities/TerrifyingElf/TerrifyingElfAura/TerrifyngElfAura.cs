@@ -3,19 +3,28 @@ using UnityEngine;
 using System.Collections;
 using System;
 
-public class TerrifyingElfAura : Skill
+public class TerrifyingElfAura : NetworkBehaviour
 {
+    [Header("Main fields")]
     [SerializeField] private SkillManager skillManager;
+    [SerializeField] private HeroComponent hero;
+
+    [Header("Chances")]
     [SerializeField, Range(0f, 100f)] private float calmnessChance = 10f;
     [SerializeField, Range(0, 100)] private float elvenSkillFromPhysChance = 10f;
     [SerializeField, Range(0,100)] private float calmnessOnElvenSkillChance = 30f;
     [SerializeField, Range(0f, 100f)] private float huntressMarkApplyChance = 5f;
+
+    [Header("Durations")]
     [SerializeField] private float durationCalmess;
     [SerializeField] private float durationHuntressMark;
     [SerializeField] private float durationElvenSkill;
 
     [Header("Effects")]
     [SerializeField] private GameObject elvenSkillEffect;
+
+    [Header("Radius")]
+    [SerializeField] private float radiusTreeCalmess = 12f;
 
     public GameObject ElvenSkillEffect { get => elvenSkillEffect; set => elvenSkillEffect = value; }
 
@@ -36,23 +45,12 @@ public class TerrifyingElfAura : Skill
     private Skill currentSkill;
     private Mana _heroMana;
 
-    #region Skill
-    protected override int AnimTriggerCastDelay => 0;
-    protected override int AnimTriggerCast => 0;
-    protected override bool IsCanCast => false;
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved) { yield break; }
-    protected override IEnumerator CastJob() { yield break; }
-    protected override void ClearData() { }
-    #endregion
-
     private void OnEnable()
     {
-        Debug.Log($"TerrifyingElfAura: {Radius}");
-
         CacheHeroMana();
         if (skillManager != null && skillManager.SkillQueue != null) skillManager.SkillQueue.SkillAdded += OnSkillAdded;
-        if (Hero != null && Hero.DamageTracker != null) Hero.DamageTracker.OnDamageTracked += OnDamageTracked;
-        if (manaAbsorptionPhysicalTalent) Hero.DamageTracker.OnDamageTracked += OnDamageDealt;
+        if (hero != null && hero.DamageTracker != null) hero.DamageTracker.OnDamageTracked += OnDamageTracked;
+        if (manaAbsorptionPhysicalTalent) hero.DamageTracker.OnDamageTracked += OnDamageDealt;
         if (_heroMana != null) _heroMana.ValueChanged += OnManaChanged;
     }
 
@@ -65,8 +63,8 @@ public class TerrifyingElfAura : Skill
         }
 
         if (_heroMana != null) _heroMana.ValueChanged -= OnManaChanged;
-        Hero.DamageTracker.OnDamageTracked -= OnDamageDealt;
-        if (Hero != null && Hero.DamageTracker != null) Hero.DamageTracker.OnDamageTracked -= OnDamageTracked;
+        hero.DamageTracker.OnDamageTracked -= OnDamageDealt;
+        if (hero != null && hero.DamageTracker != null) hero.DamageTracker.OnDamageTracked -= OnDamageTracked;
     }
 
     private void OnSkillAdded(Skill skill)
@@ -83,10 +81,10 @@ public class TerrifyingElfAura : Skill
 
     private void CacheHeroMana()
     {
-        if (Hero == null) return;
+        if (hero == null) return;
         if (_heroMana != null) return;
 
-        _heroMana = Hero.TryGetResource(ResourceType.Mana) as Mana;
+        _heroMana = hero.TryGetResource(ResourceType.Mana) as Mana;
     }
 
     private void OnManaChanged(float oldValue, float newValue)
@@ -132,7 +130,7 @@ public class TerrifyingElfAura : Skill
 
                     if (treeRadiusCalmessTalent)
                     {
-                        int treesCount = GetTreesCountInRadius(Radius);
+                        int treesCount = GetTreesCountInRadius(radiusTreeCalmess);
                         StartCoroutine(DelayAndUpdateCalmness(character.CharacterState, treesCount));
                     }
                 }
@@ -174,7 +172,7 @@ public class TerrifyingElfAura : Skill
 
                     if (treeRadiusCalmessTalent)
                     {
-                        int treesCount = GetTreesCountInRadius(Radius);
+                        int treesCount = GetTreesCountInRadius(radiusTreeCalmess);
                         StartCoroutine(DelayAndUpdateCalmness(character.CharacterState, treesCount));
                     }
                 }
@@ -208,9 +206,9 @@ public class TerrifyingElfAura : Skill
 
     private void OnDamageTracked(Damage damage, GameObject target)
     {
-        if (damage.Type == DamageType.Physical && Hero != null && Hero.CharacterState != null)
+        if (damage.Type == DamageType.Physical && hero != null && hero.CharacterState != null)
         {
-            CharacterState selfState = Hero.CharacterState;
+            CharacterState selfState = hero.CharacterState;
 
             if (elvenSkillPhysicsTalent && UnityEngine.Random.Range(0f, 100f) <= elvenSkillFromPhysChance) 
                 selfState.AddState(States.ElvenSkill, durationElvenSkill, 0f, gameObject, "TerrifyingElfAura");
@@ -221,7 +219,7 @@ public class TerrifyingElfAura : Skill
             //if (huntressMarkPhysicsTalent && UnityEngine.Random.Range(0f, 100f) <= huntressMarkApplyChance && target != null && target.TryGetComponent<CharacterState>(out var victimState))
             //    victimState.AddState(States.HuntressMark, durationHuntressMark, 0f, gameObject, "HuntressMark");
 
-            if (innerDarknessManaAbsorptionTalent && selfState.GetState(States.InnerDarkness) is InnerDarkness innerDarkness && innerDarkness.CurrentStacksCount > 0 && Hero.TryGetResource(ResourceType.Mana) is Mana mana)
+            if (innerDarknessManaAbsorptionTalent && selfState.GetState(States.InnerDarkness) is InnerDarkness innerDarkness && innerDarkness.CurrentStacksCount > 0 && hero.TryGetResource(ResourceType.Mana) is Mana mana)
                 mana.Add(damage.Value * 0.05f * innerDarkness.CurrentStacksCount);
 
             if (manaAbsorptionPhysicalTalent) OnDamageDealt(damage, target);
@@ -240,7 +238,7 @@ public class TerrifyingElfAura : Skill
 
     private void OnDamageDealt(Damage damage, GameObject target)
     {
-        if (damage.Type == DamageType.Physical && Hero != null)
+        if (damage.Type == DamageType.Physical && hero != null)
         {
             float manaToRestore = damage.Value * 0.3f;
             RestoreMana(manaToRestore, target);
@@ -260,7 +258,7 @@ public class TerrifyingElfAura : Skill
             }
         }
 
-        if (Hero.TryGetResource(ResourceType.Mana) is Mana manaResource) manaResource.Add(amount);
+        if (hero.TryGetResource(ResourceType.Mana) is Mana manaResource) manaResource.Add(amount);
     }
 
     #endregion
@@ -269,9 +267,9 @@ public class TerrifyingElfAura : Skill
 
     private void ApplyElvenSkill()
     {
-        if (elvenSkillTalent && Hero == null && Hero.CharacterState == null) return;
-        
-        Hero.CharacterState.CmdAddState(States.ElvenSkill, durationElvenSkill, 0f, gameObject, "TerrifyingElfAura");
+        if (elvenSkillTalent && hero == null && hero.CharacterState == null) return;
+
+        hero.CharacterState.CmdAddState(States.ElvenSkill, durationElvenSkill, 0f, gameObject, "TerrifyingElfAura");
     }
 
     public void ElvenSkillTalent(bool value)
@@ -309,9 +307,4 @@ public class TerrifyingElfAura : Skill
             }
         }
     #endregion
-
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        throw new NotImplementedException();
-    }
 }

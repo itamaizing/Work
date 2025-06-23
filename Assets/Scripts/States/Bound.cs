@@ -24,7 +24,8 @@ public class Bound : AbstractCharacterState
 		if (character.TryGetComponent<Character>(out var ability))
 		{
 			_abilities = ability.Abilities;
-			_abilities.SetAbilitiesDisabled();
+
+			foreach (var skill in _abilities.Abilities) if (skill.Moving == Moving.NonStatic) skill.Disactive = true;
 		}
 
 		_characterState.Character.Move.IsMoveBlocked = true;
@@ -55,6 +56,8 @@ public class Bound : AbstractCharacterState
 		_characterState.Character.NetworkAnimator.ResetTrigger(_stunTrigger);
 		_characterState.Character.Animator.SetTrigger(_stunTriggerExit);
 		_characterState.Character.NetworkAnimator.SetTrigger(_stunTriggerExit);
+
+		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null) foreach (var skill in _abilities.Abilities) skill.Disactive = false;
 	}
 
 	public override bool Stack(float time)

@@ -4,6 +4,7 @@ using System.Collections;
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class GrowTree : Skill
 {
@@ -12,11 +13,12 @@ public class GrowTree : Skill
     [SerializeField] private MoveComponent moveComponent;
     [SerializeField] private float _moveDuration = 0.5f;
     [SerializeField] private List<Tree> _activeTrees;
+    [SerializeField] private ObjectData treeData;
 
     [Header("Talents")]
     [SerializeField] private bool treeHealthTalent;
     [SerializeField] private bool treeMagicEvadeTalent;
-    [SerializeField] private ObjectData treeData;
+    [SerializeField] private bool treeShotCooldownTalent;
 
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private Tree _currentTree;
@@ -24,6 +26,9 @@ public class GrowTree : Skill
     private float baseHealth;
     private float baseCastStreamDuration;
     private Coroutine _treeHealthCoroutine;
+
+    private ShotsIntoSky _shotsIntoSky;
+    private ShotIntoSky _shotIntoSky;
 
     protected override bool IsCanCast =>
         !float.IsPositiveInfinity(_targetPoint.x) &&
@@ -34,21 +39,29 @@ public class GrowTree : Skill
 
     private void Start()
     {
+        SkillManager skillManager = Hero.Abilities;
+
+        if (_shotsIntoSky == null) _shotsIntoSky = skillManager.Abilities.OfType<ShotsIntoSky>().FirstOrDefault();
+        if (_shotIntoSky == null) _shotIntoSky = skillManager.Abilities.OfType<ShotIntoSky>().FirstOrDefault();
+
         baseHealth = treeData.MaxHealth;
         baseCastStreamDuration = CastStreamDuration;
+    }
+
+    private void OnEnable()
+    {
+        OnSkillCanceled += HandleSkillCanceled;
+        CastSuccess += HandleSkillCanceled;
     }
 
     private void OnDestroy()
     {
         OnSkillCanceled -= HandleSkillCanceled;
-        CastSuccess += HandleSkillCanceled;
+        CastSuccess -= HandleSkillCanceled;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        OnSkillCanceled += HandleSkillCanceled;
-        CastSuccess += HandleSkillCanceled;
-
         TreeHealthTalentEnter();
 
         _activeTrees.RemoveAll(t => t == null);
@@ -111,6 +124,7 @@ public class GrowTree : Skill
 
         if (_healthTree != null)
         {
+            _healthTree.FullyRegenerated -= OnTreeFullyRegenerated;
             _healthTree.ServerStopFillHP();
             _healthTree = null;
         }
@@ -131,6 +145,27 @@ public class GrowTree : Skill
         return null;
     }
     #endregion
+
+    [Server]
+    private void OnTreeFullyRegenerated()
+    {
+        if (!treeShotCooldownTalent) return;
+
+        ResetShotCooldown(_shotsIntoSky);
+        ResetShotCooldown(_shotIntoSky);
+    }
+
+    private void ResetShotCooldown(Skill shotSkill)
+    {
+        if (shotSkill == null || shotSkill.IsCooldowned) return;
+
+        float reset = shotSkill.RemainingCooldownTime;
+
+        shotSkill.ReductionSetCooldown(reset);
+
+        if (shotSkill is ShotsIntoSky shots) shots.TargetResetCooldown(reset);
+        if (shotSkill is ShotIntoSky shot) shot.TargetResetCooldown(reset);
+    }
 
     #region [Command] / Spawn
     [Command] private void CmdSetMaxHealth(float maxHealth) => treeData.MaxHealth = maxHealth;
@@ -154,6 +189,8 @@ public class GrowTree : Skill
             if (treeData.MinEndurance) _healthTree.ServerStartFillHP(_healthTree.ObjectData.MaxHealth, regenDuration);
 
             if (treeMagicEvadeTalent) _healthTree.SetMagicEvade(100);
+
+            _healthTree.FullyRegenerated += OnTreeFullyRegenerated;
         }
 
         _activeTrees.Add(tree);
@@ -182,6 +219,8 @@ public class GrowTree : Skill
             if (treeData.MinEndurance) _healthTree.ServerStartFillHP(_healthTree.ObjectData.MaxHealth, regenDuration);
 
             if (treeMagicEvadeTalent) _healthTree.SetMagicEvade(100);
+
+            _healthTree.FullyRegenerated += OnTreeFullyRegenerated;
         }
 
         _activeTrees.Add(tree);
@@ -210,6 +249,10 @@ public class GrowTree : Skill
             moveComponent.TeleportToPositionSmooth(topOfTree, _moveDuration);
         }
     }
+    #endregion
+
+    #region Shot Tree Cooldown Talent
+    public void ShotTreeCooldownTalent(bool value) => treeShotCooldownTalent = value;
     #endregion
 
     #region Talent for doubling HP

@@ -13,7 +13,7 @@ public class Shot : Skill
     [SerializeField] private AudioClip audioClip;
 
     private const string _startAnimTrigger = "ShotCastDelayStartAnimTrigger";
-    private const string _endAnimTrigger = "ShotCastDelayEndAnimTrigger"; // убрать в дальнейшем две анимации, остаток от автоатаки
+    private const string _endAnimTrigger = "ShotCastDelayEndAnimTrigger"; // remove two animations later, the remainder of the auto-attack
 
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private AudioSource _audioSource;
@@ -151,11 +151,7 @@ public class Shot : Skill
         RpcPlayShotSound();
     }
 
-    [Command]
-    private void CmdCrossFade(string newAnim)
-    {
-        _hero.Animator.CrossFade(newAnim, 0.1f);
-    }
+    [Command] private void CmdCrossFade(string newAnim) => _hero.Animator.CrossFade(newAnim, 0.1f);
 
     [ClientRpc]
     protected void RpcInit(GameObject gameObject)
@@ -179,9 +175,6 @@ public class Shot : Skill
         _consecutiveShots = 0;
     }
 
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        _targetPoint = targetInfo.Points[0];
-    }
+    public override void LoadTargetData(TargetInfo targetInfo) => _targetPoint = targetInfo.Points[0];
 }
 

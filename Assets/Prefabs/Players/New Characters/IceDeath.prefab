@@ -3487,6 +3487,7 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 0
   _skillType: 0
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -3546,6 +3547,7 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 0
   _skillType: 1
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -3604,6 +3606,7 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 0
   _skillType: 0
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -3662,6 +3665,7 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 0
   _skillType: 0
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -3726,6 +3730,7 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 0
   _skillType: 3
+  _moving: 1
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -3789,6 +3794,7 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 0
   _skillType: 0
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -3850,6 +3856,7 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 1
   _skillType: 0
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -3906,6 +3913,7 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 0
   _skillType: 1
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -3961,6 +3969,7 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 1
   _skillType: 1
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -4020,6 +4029,7 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 0
   _skillType: 0
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -4078,6 +4088,7 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 0
   _skillType: 0
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -4135,6 +4146,7 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 0
   _skillType: 0
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -4191,6 +4203,7 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 0
   _skillType: 0
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -4247,6 +4260,7 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 0
   _skillType: 0
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -4300,6 +4314,7 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 0
   _skillType: 0
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0

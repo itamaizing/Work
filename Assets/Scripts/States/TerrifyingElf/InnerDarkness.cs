@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,6 +6,7 @@ public class InnerDarkness : AbstractCharacterState
 {
     private const float TimeDecreasePerStack = 2f;
 
+    private float _baseDuration;
     private float _duration;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
@@ -19,7 +21,8 @@ public class InnerDarkness : AbstractCharacterState
         _characterState = character;
         _personWhoMadeBuff = personWhoMadeBuff;
         MaxStacksCount = 6;
-        _duration = durationToExit;
+        _baseDuration = durationToExit;
+        _duration = _baseDuration;
 
         Debug.Log($"CurrentStacksCount: {CurrentStacksCount}");
     }
@@ -27,7 +30,6 @@ public class InnerDarkness : AbstractCharacterState
     public override void UpdateState()
     {
         _duration -= Time.deltaTime;
-
         if (_duration <= 0) ExitState();
     }
 
@@ -52,30 +54,26 @@ public class InnerDarkness : AbstractCharacterState
             return true;
         }
 
-        if (CurrentStacksCount == MaxStacksCount)
-        {
-            UpdateDurationForMaxStacks();
-            return false;
-        }
-
         return false;
     }
 
-    private void InitializeFirstStack()
-    {
-        CurrentStacksCount++;
-    }
+    private void InitializeFirstStack() => CurrentStacksCount++;
 
     private void AddNewStack()
     {
         CurrentStacksCount++;
-        _duration = _duration - CurrentStacksCount * TimeDecreasePerStack;
+
+        _duration = Mathf.Max(0f, _baseDuration - (CurrentStacksCount - 1) * TimeDecreasePerStack);
+
+        if (CurrentStacksCount == MaxStacksCount) UpdateDurationForMaxStacks();
     }
 
     private void UpdateDurationForMaxStacks()
     {
-        _duration = CurrentStacksCount * TimeDecreasePerStack;
-
-        _characterState.CmdAddState(States.Fear, Random.Range(0.7f, 1.4f), 0, _personWhoMadeBuff.gameObject, null);
+        _duration = TimeDecreasePerStack;
+        CmdStateFear();
     }
+
+    [Command] private void CmdStateFear() => ClientRpcStateFear();
+    [ClientRpc] private void ClientRpcStateFear() { _characterState.AddStateLogic(States.Fear, Random.Range(0.7f, 1.4f), 0f, Schools.None, _personWhoMadeBuff.gameObject, null); }
 }

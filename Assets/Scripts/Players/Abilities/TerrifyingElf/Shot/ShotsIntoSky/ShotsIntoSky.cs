@@ -20,19 +20,19 @@ public class ShotsIntoSky : Skill
     private readonly SyncList<uint> _arrowsIntoSkyProjectileIds = new SyncList<uint>();
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private bool _tripleShot;
-
-    protected override bool IsCanCast => true;
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("ShotSkyCastDelay");
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("ShotsSkyCastDelay");
     protected override int AnimTriggerCast => 0;
 
-    private void OnDestroy()
-    {
-        OnSkillCanceled -= HandleSkillCanceled;
-    }
+    protected override bool IsCanCast => !_disactive && IsPointInRadius(Radius, _targetPoint);
 
-    private void OnEnable()
+    private void OnDestroy() => Canceled -= HandleSkillCanceled;
+    private void OnEnable() => Canceled += HandleSkillCanceled;
+
+    public void ShotsAnimationMove()
     {
-        OnSkillCanceled += HandleSkillCanceled;
+        _hero.Move.StopMoveAnimation();
+        _hero.Move.CanMove = false;
+        _hero.Move.LookAtPosition(_targetPoint);
     }
 
     private void HandleSkillCanceled()
@@ -42,6 +42,9 @@ public class ShotsIntoSky : Skill
             Hero.Move.CanMove = true;
             Hero.Animator.speed = 1;
             Hero.Move.StopLookAt();
+
+            if (isServer) ServerDestroyPendingImpacts();
+            else CmdDestroyPendingImpacts();
         }
     }
 
@@ -51,28 +54,11 @@ public class ShotsIntoSky : Skill
 
         while (float.IsPositiveInfinity(_targetPoint.x) && !_disactive)
         {
-            if (GetMouseButton && IsCanCast)
-            {
-                if (TryGetGroundPoint(out Vector3 ground) && IsPointInRadius(Radius, ground))
-                {
-                    _targetPoint = ground;
-
-                    if (CooldownTime <= 0f)
-                    {
-                        _hero.Move.StopMoveAnimation();
-                        _hero.Move.CanMove = false;
-                        _hero.Move.LookAtPosition(_targetPoint);
-                    }
-                }
-            }
+            if (GetMouseButton) if (TryGetGroundPoint(out Vector3 ground) && IsPointInRadius(Radius, ground)) _targetPoint = ground;
             yield return null;
         }
 
         CmdSpawnImpact(_targetPoint);
-
-        _hero.Move.StopMoveAnimation();
-        _hero.Move.CanMove = false;
-        _hero.Move.LookAtPosition(_targetPoint);
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(_targetPoint);
@@ -141,6 +127,8 @@ public class ShotsIntoSky : Skill
         RpcActivate(projectile);
     }
 
+    [Command] private void CmdDestroyPendingImpacts() => ServerDestroyPendingImpacts();
+
     [ClientRpc]
     protected void RpcInit(GameObject gameObject)
     {
@@ -150,17 +138,27 @@ public class ShotsIntoSky : Skill
         if (impact != null) impact.Init(playerLinks, this, Damage, silenceTalentActive, tripleShotTalentActive, shotAstralManaActive);
     }
 
-    [ClientRpc]
-    private void RpcActivate(ArrowsIntoSkyProjectile projectile)
-    {
-        projectile.Activate();
-    }
+    [ClientRpc] private void RpcActivate(ArrowsIntoSkyProjectile projectile) => projectile.Activate();
+    [ClientRpc] public void TargetResetCooldown(float reset) => ReductionSetCooldown(reset);
 
     [Server]
     private void CleanupProjectileList()
     {
         for (int i = _arrowsIntoSkyProjectileIds.Count - 1; i >= 0; i--)
             if (!NetworkServer.spawned.TryGetValue(_arrowsIntoSkyProjectileIds[i], out var ni) || ni == null) _arrowsIntoSkyProjectileIds.RemoveAt(i);
+    }
+
+    [Server]
+    private void ServerDestroyPendingImpacts(int count = 1)
+    {
+        while (count-- > 0 && _arrowsIntoSkyProjectileIds.Count > 0)
+        {
+            uint id = _arrowsIntoSkyProjectileIds[0];
+            _arrowsIntoSkyProjectileIds.RemoveAt(0);
+
+            if (NetworkServer.spawned.TryGetValue(id, out NetworkIdentity networkIdentity) && networkIdentity != null)
+                NetworkServer.Destroy(networkIdentity.gameObject);
+        }
     }
 
     protected override void ClearData()
@@ -190,9 +188,6 @@ public class ShotsIntoSky : Skill
     #endregion
 
     #region ShotsIntoSkyAstralTalent
-    public void ShotsIntoSkyAstralTalentActive(bool value)
-    {
-        shotAstralManaActive = value;
-    }
+    public void ShotsIntoSkyAstralTalentActive(bool value) => shotAstralManaActive = value;
     #endregion
 }

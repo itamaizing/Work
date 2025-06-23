@@ -12,6 +12,7 @@ public class ObjectHealth : Resource, IDamageable
     [SerializeField] private ObjectData _objectData;
 
     public event Action OnDeath;
+    public event Action FullyRegenerated;
 
     public event Action<Damage, Skill> DamageTaken;
     //public event Action<float, DamageType, Skill> DamageTakenType;
@@ -80,6 +81,7 @@ public class ObjectHealth : Resource, IDamageable
         OnHealthChanged(_currentHealth, _currentHealth);
 
         _fillCoroutine = null;
+        if (Mathf.Approximately(_currentHealth, ObjectData.MaxHealth)) FullyRegenerated?.Invoke();
     }
 
     #endregion
@@ -131,13 +133,13 @@ public class ObjectHealth : Resource, IDamageable
         if (_currentHealth > 0)
         {
             _currentHealth -= damageValue;
-
+             
             DamageTaken?.Invoke(damage, skill);
             //DamageTakenType?.Invoke(damageValue, damage.Type, skill);
 
             if (_objectBar != null)
             {
-                ShowAndAutoHideBar();
+                _objectBar.ShowHealthBar();
                 _objectBar.SetHealth(_currentHealth);
             }
 
@@ -168,32 +170,51 @@ public class ObjectHealth : Resource, IDamageable
 
     private void OnHealthChanged(float oldHealth, float newHealth)
     {
-        if (_objectBar != null)
+        if (_objectBar == null) return;
+
+        _objectBar.SetHealth(newHealth);
+
+        if (!Mathf.Approximately(newHealth, ObjectData.MaxHealth))
         {
-            ShowAndAutoHideBar();
-            _objectBar.SetHealth(newHealth);
+            _objectBar.ShowHealthBar();
+
+            if (_hideBarCoroutine != null)
+            {
+                StopCoroutine(_hideBarCoroutine);
+                _hideBarCoroutine = null;
+            }
+        }
+        else
+        {
+            if (_hideBarCoroutine != null)
+            {
+                StopCoroutine(_hideBarCoroutine);
+                _hideBarCoroutine = null;
+            }
+
+            _objectBar.HideHealthBar();
         }
     }
 
-    private void ShowAndAutoHideBar()
-    {
-        if (_objectBar == null) return;
+    //private void ShowAndAutoHideBar()
+    //{
+    //    if (_objectBar == null) return;
 
-        _objectBar.ShowHealthBar();
+    //    _objectBar.ShowHealthBar();
 
-        if (_hideBarCoroutine != null)
-            StopCoroutine(_hideBarCoroutine);
+    //    if (_hideBarCoroutine != null)
+    //        StopCoroutine(_hideBarCoroutine);
 
-        _hideBarCoroutine = StartCoroutine(HideHealthBarAfterDelay(2f));
-    }
+    //    _hideBarCoroutine = StartCoroutine(HideHealthBarAfterDelay(2f));
+    //}
 
-    private IEnumerator HideHealthBarAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
+    //private IEnumerator HideHealthBarAfterDelay(float delay)
+    //{
+    //    yield return new WaitForSeconds(delay);
 
-        if (_fillCoroutine == null)
-            _objectBar.HideHealthBar();
-    }
+    //    if (_fillCoroutine == null)
+    //        _objectBar.HideHealthBar();
+    //}
 
     public void SetMagicEvade(float value)
     {

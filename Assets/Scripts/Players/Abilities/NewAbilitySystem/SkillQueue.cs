@@ -40,24 +40,30 @@ public class SkillQueue : MonoBehaviour
         SkillAdded?.Invoke(skill);
     }
 
-    public bool TryCancel(bool isFoceCancel = false)
+    public bool TryCancel(bool isForceCancel = false)
     {
         if (_currentSkill != null)
         {
-            _currentSkill.TryCancel(isFoceCancel);
+            _currentSkill.TryCancel(isForceCancel);
             return true;
         }
 
-        else if (IsEmpty == false)
+        var queuedSkill = RemoveFromQueue();
+        if (queuedSkill != null)
         {
-            RemoveFromQueue().TargetInfoQueue.Dequeue();
+            if (queuedSkill.TargetInfoQueue.Count > 0) queuedSkill.TargetInfoQueue.Dequeue();
+
+            queuedSkill.TryCancel(isForceCancel);
             return true;
         }
+
         return false;
     }
 
     private Skill RemoveFromQueue()
     {
+        if (_skills.Count == 0) return null;
+
         var temp = _skills.Dequeue();
         SkillDeleted?.Invoke(temp);
         return temp;

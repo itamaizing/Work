@@ -59,6 +59,14 @@ public enum SkillType
     NonTarget
 }
 
+public enum Moving
+{
+    Static,
+    NonStatic
+}
+
+
+
 public abstract class Skill : NetworkBehaviour
 {
     [Header("Talent State")]
@@ -79,6 +87,7 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] private DamageType _damageType;
     [SerializeField] private AttackRangeType _attackRangeType;
     [SerializeField] private SkillType _skillType;
+    [SerializeField] private Moving _moving;
     [SerializeField] protected LayerMask _targetsLayers;
     [SerializeField] protected LayerMask _obstacle;
     [Header("Streaming settings")]
@@ -199,6 +208,7 @@ public abstract class Skill : NetworkBehaviour
     public DamageType DamageType => _damageType;
     public AttackRangeType AttackRangeType => _attackRangeType;
     public SkillType SkillType => _skillType;
+    public Moving Moving => _moving;
     public List<SkillEnergyCost> SkillEnergyCosts { get => _skillEnergyCosts; }
     public List<SkillEnergyCost> ManaCostPerTick { get => _manaCostPerTick; }
     public float ManaCostRate { get => _manaCostRate; }

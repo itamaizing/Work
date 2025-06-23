@@ -67,6 +67,9 @@ public class Tentacles : Skill
     {
         _skillRender.IsOverrideClosestTarget = true;
 
+        Hero.Move.CanMove = false;
+        Hero.Move.StopMoveAnimation();
+
         Vector3 mousePositionStart = GetMousePoint();
 
         _previewInstance = Instantiate(tentaclesPreview, mousePositionStart, Quaternion.identity);
@@ -84,7 +87,7 @@ public class Tentacles : Skill
             {
                 if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hitTarget))
                 {
-                    if (hitTarget.collider.TryGetComponent<Character>(out Character character))
+                    if (hitTarget.collider.TryGetComponent<Character>(out Character character) && ((1 << character.gameObject.layer) & TargetsLayers.value) == 1)
                     {
                         _isPlacingTentacles = true;
                         _target = character;
@@ -153,7 +156,6 @@ public class Tentacles : Skill
 
                         _spawnPoint = targetPosition;
                         _player.Move.LookAtTransform(_target.transform);
-                        Hero.Move.CanMove = false;
                         break;
                     }
                 }
@@ -185,7 +187,6 @@ public class Tentacles : Skill
 
                         _spawnPoint = potentialSpawnPoint;
                         _player.Move.LookAtTransform(_target.transform);
-                        Hero.Move.CanMove = false;
                         break;
                     }
                 }

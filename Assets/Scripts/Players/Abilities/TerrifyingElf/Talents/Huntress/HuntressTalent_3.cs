@@ -10,7 +10,6 @@ public class HuntressTalent_3 : Talent
     {
         //terrifyingElfAura.HuntressMarkPhysicsTalentActive(true);
         terrifyingElfAura.ElvenSkillPhysicsTalent(true);
-
         reconnaissanceFire.ReconnaissanceFireHealthTalentActive(true);
     }
 
@@ -18,7 +17,6 @@ public class HuntressTalent_3 : Talent
     {
         //terrifyingElfAura.HuntressMarkPhysicsTalentActive(false);
         terrifyingElfAura.ElvenSkillPhysicsTalent(false);
-
         reconnaissanceFire.ReconnaissanceFireHealthTalentActive(false);
     }
 }

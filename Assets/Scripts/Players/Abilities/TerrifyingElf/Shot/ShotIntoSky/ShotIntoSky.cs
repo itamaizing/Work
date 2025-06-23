@@ -21,18 +21,20 @@ public class ShotIntoSky : Skill
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private bool _tripleShot;
 
-    protected override bool IsCanCast => true;
     protected override int AnimTriggerCastDelay => Animator.StringToHash("ShotSkyCastDelay");
     protected override int AnimTriggerCast => 0;
 
-    private void OnDestroy()
-    {
-        Canceled -= HandleSkillCanceled;
-    }
+    private void OnDestroy() => Canceled -= HandleSkillCanceled;
+    private void OnEnable() => Canceled += HandleSkillCanceled;
 
-    private void OnEnable()
+    protected override bool IsCanCast => !_disactive && IsPointInRadius(Radius, _targetPoint);
+
+
+    public void ShotAnimationMove()
     {
-        Canceled += HandleSkillCanceled;
+        _hero.Move.StopMoveAnimation();
+        _hero.Move.CanMove = false;
+        _hero.Move.LookAtPosition(_targetPoint);
     }
 
     private void HandleSkillCanceled()
@@ -42,6 +44,9 @@ public class ShotIntoSky : Skill
             Hero.Move.CanMove = true;
             Hero.Animator.speed = 1;
             Hero.Move.StopLookAt();
+
+            if (isServer) ServerDestroyPendingImpacts();
+            else CmdDestroyPendingImpacts();
         }
     }
 
@@ -51,20 +56,7 @@ public class ShotIntoSky : Skill
 
         while (float.IsPositiveInfinity(_targetPoint.x) && !_disactive)
         {
-            if (GetMouseButton && IsCanCast)
-            {
-                if (TryGetGroundPoint(out Vector3 ground) && IsPointInRadius(Radius, ground))
-                {
-                    _targetPoint = ground;
-
-                    if (CooldownTime <= 0f)
-                    {
-                        _hero.Move.StopMoveAnimation();
-                        _hero.Move.CanMove = false;
-                        _hero.Move.LookAtPosition(_targetPoint);
-                    }
-                }
-            }
+            if (GetMouseButton) if (TryGetGroundPoint(out Vector3 ground) && IsPointInRadius(Radius, ground)) _targetPoint = ground;
             yield return null;
         }
 
@@ -136,6 +128,8 @@ public class ShotIntoSky : Skill
         RpcActivate(projectile);
     }
 
+    [Command] private void CmdDestroyPendingImpacts() => ServerDestroyPendingImpacts();
+
     [ClientRpc]
     protected void RpcInit(GameObject gameObject)
     {
@@ -144,18 +138,28 @@ public class ShotIntoSky : Skill
         ArrowIntoSkyProjectile impact = gameObject.GetComponent<ArrowIntoSkyProjectile>();
         if (impact != null) impact.Init(playerLinks, this, silenceTalentActive, tripleShotTalentActive, shotAstralManaActive);
     }
-
-    [ClientRpc]
-    private void RpcActivate(ArrowIntoSkyProjectile projectile)
-    {
-        projectile.Activate();
-    }
+ 
+    [ClientRpc] private void RpcActivate(ArrowIntoSkyProjectile projectile) => projectile.Activate();
+    [ClientRpc] public void TargetResetCooldown(float reset) => ReductionSetCooldown(reset);
 
     [Server]
     private void CleanupProjectileList()
     {
         for (int i = _arrowIntoSkyProjectileIds.Count - 1; i >= 0; i--)
             if (!NetworkServer.spawned.TryGetValue(_arrowIntoSkyProjectileIds[i], out var ni) || ni == null) _arrowIntoSkyProjectileIds.RemoveAt(i);
+    }
+
+    [Server]
+    private void ServerDestroyPendingImpacts(int count = 1)
+    {
+        while (count-- > 0 && _arrowIntoSkyProjectileIds.Count > 0)
+        {
+            uint id = _arrowIntoSkyProjectileIds[0];
+            _arrowIntoSkyProjectileIds.RemoveAt(0);
+
+            if (NetworkServer.spawned.TryGetValue(id, out NetworkIdentity networkIdentity) && networkIdentity != null)
+                NetworkServer.Destroy(networkIdentity.gameObject);
+        }
     }
 
     protected override void ClearData()
