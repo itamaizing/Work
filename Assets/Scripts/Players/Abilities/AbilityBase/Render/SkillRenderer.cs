@@ -11,6 +11,7 @@ public class SkillRenderer : NetworkBehaviour
     [SerializeField] private DrawCircle _circle;
     [SerializeField] private CircleArea _areaPref;
     [SerializeField] private SphereArea _damageZonePref;
+    [SerializeField] private SkillCircleRanderer _skillCircleRandererPref;
     [SerializeField] private AbilityLineRenderer _line;
     [SerializeField] private LineZoneRender _lineZoneRender;
     [SerializeField] private LineZoneRender _lineZoneRenderForQueue;
@@ -49,6 +50,8 @@ public class SkillRenderer : NetworkBehaviour
             if (_isOverrideClosestTarget) StopDrawClosestTarget();
         }
     }
+
+    public SkillCircleRanderer SkillCircleRandererPref { get => _skillCircleRandererPref; }
 
     private Character _tempTarget;
 
