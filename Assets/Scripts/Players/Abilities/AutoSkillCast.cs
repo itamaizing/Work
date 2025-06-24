@@ -22,7 +22,6 @@ public class AutoSkillCast
         _targetInfo = new();
         _targetInfo.Targets = new(targetInfo.Targets);
         _targetInfo.Points = new(targetInfo.Points);
-        Debug.Log(_targetInfo.Points[0]);
         _tryCastCoroutine = _parentForCoroutine.StartCoroutine(TryCastJob());
     }
 
