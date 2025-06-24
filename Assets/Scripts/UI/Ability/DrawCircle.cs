@@ -23,6 +23,9 @@ public class DrawCircle : MonoBehaviour
 
     public void Draw(float radius)
     {
+        if (isActive)
+            return;
+
         isActive = true;
         _projector.size = new Vector3(radius*2, radius*2, 10);
 		_projector.gameObject.SetActive(true);

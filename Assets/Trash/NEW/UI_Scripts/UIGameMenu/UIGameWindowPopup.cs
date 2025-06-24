@@ -10,6 +10,7 @@ public class UIGameWindowPopup : MonoBehaviour
     [SerializeField] private SkillPanel _skillPanel;
     [SerializeField] private SelectManager _selectManager;
     [SerializeField] private GameObject _settings;
+    [SerializeField] private GameObject[] _forHide;
 
     private HeroComponent _currentHero;
     private Character _currentCharacter;
@@ -17,6 +18,16 @@ public class UIGameWindowPopup : MonoBehaviour
     private void Awake()
     {
         InputHandler.ShowMenu += ShowSettings;
+    }
+
+    public void SwichAll(bool value)
+    {
+        if (value == false)
+            foreach (var item in _forHide)
+                item.SetActive(false);
+        else
+            foreach (var item in _forHide)
+                item.SetActive(true);
     }
 
     private void ShowSettings()
@@ -64,7 +75,9 @@ public class UIGameWindowPopup : MonoBehaviour
         _minionPanel.OnCharacterDeselected(character);
         _skillPanel.OnCharacterDeselected(character);
         _attributesPanel.ShowHide(false);
+        _attributesPanel.gameObject.SetActive(false);
         _talentsPanel.HidePanels();
+        _talentsPanel.gameObject.SetActive(false);
     }
     
     private void UpdateCharacterPanels()
@@ -75,7 +88,12 @@ public class UIGameWindowPopup : MonoBehaviour
         _playerIcon.OnCharacterSelected(_currentHero);
         _minionPanel.OnCharacterSelected(_currentHero);
         _skillPanel.OnCharacterSelected(_currentCharacter);
+
+        _attributesPanel.gameObject.SetActive(true);
         _attributesPanel.Show(_currentHero.Data.Attributes);
+        
+        _talentsPanel.gameObject.SetActive(true);
         _talentsPanel.Show(_currentHero.TalentManager, true);
+
     }
 }

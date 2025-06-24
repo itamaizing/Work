@@ -1,10 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class SkillQueue : MonoBehaviour
 {
+    [SerializeField] private SkillRenderer _skillRenderer;
+
     private Queue<Skill> _skills = new Queue<Skill>();
     private Skill _currentSkill = null;
 
@@ -22,6 +25,9 @@ public class SkillQueue : MonoBehaviour
 
         if(_skills.TryPeek(out Skill skill))
         {
+            if (skill.SkillType == SkillType.Zone)
+                Draw(skill);
+
             if (!skill.Disactive && skill.TryCast())
             {
                 RemoveFromQueue();
@@ -60,12 +66,32 @@ public class SkillQueue : MonoBehaviour
         return false;
     }
 
+    private void Draw(Skill skill)
+    {
+        var info = skill.TargetInfoQueue.Peek().Points;
+
+        Vector3[] vector3s = new Vector3[info.Count];
+
+        for (int i = 0; i < info.Count; i++)
+            vector3s[i] = new Vector3(info[i].x, info[i].y + 0.1f, info[i].z);
+
+        _skillRenderer.StartDrawAllLineForZone(vector3s);
+        _skillRenderer.DrawRadius(skill.Radius);
+    }
+
     private Skill RemoveFromQueue()
     {
         if (_skills.Count == 0) return null;
 
         var temp = _skills.Dequeue();
         SkillDeleted?.Invoke(temp);
+
+        if (temp.SkillType == SkillType.Zone)
+        {
+            _skillRenderer.StopDrawRadius();
+            _skillRenderer.StopDrawAllLineForZone();
+        }
+
         return temp;
     }
 

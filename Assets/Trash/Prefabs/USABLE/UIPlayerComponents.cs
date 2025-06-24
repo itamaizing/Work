@@ -21,6 +21,7 @@ public class UIPlayerComponents : MonoBehaviour
     private Color _regenColor = Color.green;
 
     private float popupSpawnDelay = 0.2f;
+    private float _fixDuration = 0.1f;
 
     private Queue<PopupRequest> popupQueue = new Queue<PopupRequest>();
     private bool isProcessingQueue = false;
@@ -157,7 +158,7 @@ public class UIPlayerComponents : MonoBehaviour
     private void OnStartStreaming(float time)
     {
         _castLine.gameObject.SetActive(true);
-        _castLine.StartFill(time, 1, 0);
+        _castLine.StartFill(time + _fixDuration, 1, 0);
     }
 
     private void OnStopStreaming()

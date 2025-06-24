@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -8,15 +10,19 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 {
     [SerializeField] Image _image;
 
+    [SerializeField] private ChargeCDUI _chargeCD;
     [SerializeField] private FillAmountOverTime _cooldown;
+    [SerializeField] private TMP_Text _cooldownNum;
     [SerializeField] private TextMeshProUGUI _chargeCounter;
     [SerializeField] private Blink _blinkBoxFrame;
-    [SerializeField] private AutoCastParticles _autoCastEffectPrefab;
+    [SerializeField] private AutoCastParticles _autoCastEffect;
 
     private Transform _patentAfterDrag;
     private Skill _skill;
     private bool _selected;
-    private AutoCastParticles _autoCastEffect;
+    private Camera _camera;
+    private float _distance;
+    private Coroutine _cooldownCoroutine;
 
     public Transform PatentAfterDrag { get => _patentAfterDrag; set => _patentAfterDrag = value; }
     public Skill Skill { get => _skill; set => _skill = value; }
@@ -27,25 +33,22 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public event Action<DraggableIcon> PointerEnter;
     public event Action<DraggableIcon> PointerExit;
 
-    public void Init(Skill skill, Transform parent)
+    public void Init(Skill skill, Transform parent, Camera camera, float distance)
     {
         _skill = skill;
         _image.sprite = _skill.Icon;
         PatentAfterDrag = parent;
+        _camera = camera;
+        _distance = distance;
+
         _skill.OnSkillStateChanged += UpdateIconState;
 
         UpdateIconState(_skill.Disactive);
-
 
         if (_skill.IsUseCharges == true)
         {
             _chargeCounter.gameObject.SetActive(true);
             OnCurrentChargeChanged(_skill.Chargers);
-        }
-
-        if (skill is AutoAttackSkill)
-        {
-            _autoCastEffect = Instantiate(_autoCastEffectPrefab, transform);
         }
 
         SubscribingSkillOnEvents(_skill);
@@ -70,7 +73,11 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnDrag(PointerEventData eventData)
     {
-        transform.position = Input.mousePosition;
+        Vector2 mousePosition = Input.mousePosition;
+        Vector3 screenPos = new Vector3(mousePosition.x, mousePosition.y, _distance);
+        Vector3 worldPos = _camera.ScreenToWorldPoint(screenPos);
+
+        transform.position = worldPos;
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -102,17 +109,24 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         _image.color = new Color(_image.color.r, _image.color.g, _image.color.b, disactive ? 0.5f : 1f);
     }
 
+    private void OnAutoModeChanged(bool value)
+    {
+        if(value)
+            OnStartAutoAttack();
+        else
+            OnEndAutoAttack();
+    }
+
     private void OnStartAutoAttack()
     {
         _autoCastEffect.gameObject.SetActive(true);
         _autoCastEffect.Play();
-        Debug.LogWarning("OnStartAuto!");
     }
 
     private void OnEndAutoAttack()
     {
         _autoCastEffect.gameObject.SetActive(false);
-        Debug.LogWarning("OnEndAuto!!!!!!!!!!!!!!!");
+        _autoCastEffect.Stop();
     }
 
     private void SubscribingSkillOnEvents(Skill ability)
@@ -125,6 +139,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         ability.CooldownStarted += OnStartCooldown;
         ability.CurrentChargeChanged += OnCurrentChargeChanged;
+        ability.ChargeStartCooldown += OnChargeStartCooldown;
 
         ability.CastStarted += OnCastStarted;
         ability.CastEnded += OnCastEnded;
@@ -132,14 +147,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         ability.CooldownEnded += OnStopCooldown;
 
-        if (ability is AutoAttackSkill autoAttackSkill)
-        {
-            autoAttackSkill.Canceled += OnEndAutoAttack;
-            // autoAttackSkill.CastPaused += OnEndAutoAttack;
-            autoAttackSkill.CastStarted += OnStartAutoAttack;
-            // autoAttackSkill.CastContinued += OnStartAutoAttack;
-            //autoAttackSkill.AutoCastEnded +=
-        }
+        ability.AutoModeChanged += OnAutoModeChanged;
     }
 
     private void UnsubscribingSkillOnEvents(Skill ability)
@@ -152,6 +160,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         ability.CooldownStarted -= OnStartCooldown;
         ability.CurrentChargeChanged -= OnCurrentChargeChanged;
+        ability.ChargeStartCooldown -= OnChargeStartCooldown;
 
         ability.CastStarted -= OnCastStarted;
         ability.CastEnded -= OnCastEnded;
@@ -159,19 +168,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         ability.CooldownEnded -= OnStopCooldown;
 
-        if (ability is AutoAttackSkill autoAttackSkill)
-        {
-            autoAttackSkill.Canceled -= OnEndAutoAttack;
-            // autoAttackSkill.CastPaused -= OnEndAutoAttack;
-            autoAttackSkill.CastStarted -= OnStartAutoAttack;
-            // autoAttackSkill.CastContinued -= OnStartAutoAttack;
-            //autoAttackSkill.AutoCastEnded -=
-        }
-    }
-
-    private void OnStopCooldown()
-    {
-        _cooldown.Stop();
+        ability.AutoModeChanged += OnAutoModeChanged;
     }
 
     private void OnClickWithCtrl()
@@ -197,10 +194,15 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     private void OnCurrentChargeChanged(int value)
     {
         if (value > 0)
+        {
+            _chargeCounter.gameObject.SetActive(true);
             _chargeCounter.color = Color.green;
+        }
         else
+        {
+            _chargeCounter.gameObject.SetActive(false);
             _chargeCounter.color = Color.red;
-
+        }
         _chargeCounter.text = value.ToString();
     }
 
@@ -208,5 +210,39 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         _cooldown.gameObject.SetActive(true);
         _cooldown.StartFill(dutarion, 1, 0, false);
+
+        _cooldownCoroutine = StartCoroutine(CooldownCounterJob(dutarion));
+    }
+
+    private void OnStopCooldown()
+    {
+        _cooldown.Stop();
+
+        if (_cooldownCoroutine != null)
+            StopCoroutine(_cooldownCoroutine);
+
+        _cooldownNum.gameObject.SetActive(false);
+    }
+
+    private void OnChargeStartCooldown(float value)
+    {
+        _chargeCD.AddChargeCD(value);
+    }
+
+    private IEnumerator CooldownCounterJob(float dutarion)
+    {
+        float time = dutarion;
+        while (dutarion > 0)
+        {
+            if (_skill.IsUseCharges == false || _skill.Chargers <= 0)
+                _cooldownNum.gameObject.SetActive(true);
+            else
+                _cooldownNum.gameObject.SetActive(false);
+
+            _cooldownNum.text = dutarion.ToString("0");
+            yield return null;
+            dutarion -= Time.deltaTime;
+        }
+        _cooldownCoroutine = null;
     }
 }

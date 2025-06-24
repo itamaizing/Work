@@ -25,11 +25,7 @@ namespace Gangdollarff
 
         private bool CheckCanCast()
         {
-            if (_target == null)
-                return Vector3.Distance(_targetPoint, transform.position) <= Radius;
-
-            return Vector3.Distance(_targetPoint, transform.position) <= Radius ||
-                   Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+            return true;
         }
 
         public override void LoadTargetData(TargetInfo targetInfo)

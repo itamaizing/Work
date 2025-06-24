@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 namespace Gangdollarff
 {
@@ -10,6 +11,7 @@ namespace Gangdollarff
     {
         [SerializeField] private float _deleyTelekines = 0.5f;
         [SerializeField] private float _amountOfLift = 1.5f;
+        [SerializeField] private DecalProjector _radiusEnemy;
 
         private Character _target;
         private Vector3 _point = Vector3.zero;
@@ -23,7 +25,7 @@ namespace Gangdollarff
         private bool CheckCanCast()
         {
             return Vector3.Distance(_point, transform.position) <= Radius &&
-                   Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+                   Vector3.Distance(_target.transform.position, _point) <= Radius;
         }
 
         public void AnimCastTelekinesis()
@@ -55,6 +57,7 @@ namespace Gangdollarff
             EnableMove();
             _target = null;
             _point = Vector3.zero;
+            _radiusEnemy.gameObject.SetActive(false);
         }
 
         protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -68,6 +71,10 @@ namespace Gangdollarff
             }
             yield return new WaitForSeconds(0.1f);
 
+            _radiusEnemy.gameObject.SetActive(true);
+            _radiusEnemy.transform.parent = _target.transform;
+            _radiusEnemy.transform.localPosition = Vector3.zero;
+
             while (_point == Vector3.zero)
             {
                 if (Input.GetMouseButton(0))
@@ -79,6 +86,7 @@ namespace Gangdollarff
             targetInfo.Targets.Add( _target );
             targetInfo.Points.Add( _point );
             callbackDataSaved(targetInfo);
+            _radiusEnemy.gameObject.SetActive(false);
         }
 
         private void EnableMove()
