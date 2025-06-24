@@ -25,7 +25,7 @@ public class MoveComponent : NetworkBehaviour
 	public bool CanMoveState = false;
 	public bool IsMoving = false;
 	public bool IsSelect = false;
-	public bool IsMoveBlocked = false;
+	public bool _isMoveBlocked = false;
 
 	private Rigidbody _rigidbody;
 	private Vector3 _offset = Vector3.zero;

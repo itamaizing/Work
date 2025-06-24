@@ -143,6 +143,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   impactLifeTime: 2
+  nextDamageTime: 1
   arrow: {fileID: 9103092950671096227}
   circle: {fileID: 3986887220995087752}
   silenceTalentActive: 0
@@ -241,7 +242,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 8ae904e91c5b84d4bb6ab7629630f8b3, type: 2}
+  m_Material: {fileID: 2100000, guid: 794e845f80e764f44a2f6afccc1b824a, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 1
   m_StartAngleFade: 180
