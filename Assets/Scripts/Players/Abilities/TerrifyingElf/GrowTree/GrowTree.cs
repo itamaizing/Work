@@ -124,7 +124,6 @@ public class GrowTree : Skill
 
         if (_healthTree != null)
         {
-            _healthTree.FullyRegenerated -= OnTreeFullyRegenerated;
             _healthTree.ServerStopFillHP();
             _healthTree = null;
         }
@@ -190,7 +189,6 @@ public class GrowTree : Skill
 
             if (treeMagicEvadeTalent) _healthTree.SetMagicEvade(100);
 
-            _healthTree.FullyRegenerated += OnTreeFullyRegenerated;
         }
 
         _activeTrees.Add(tree);
@@ -219,8 +217,6 @@ public class GrowTree : Skill
             if (treeData.MinEndurance) _healthTree.ServerStartFillHP(_healthTree.ObjectData.MaxHealth, regenDuration);
 
             if (treeMagicEvadeTalent) _healthTree.SetMagicEvade(100);
-
-            _healthTree.FullyRegenerated += OnTreeFullyRegenerated;
         }
 
         _activeTrees.Add(tree);

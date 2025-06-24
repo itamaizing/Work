@@ -12,7 +12,6 @@ public class ObjectHealth : Resource, IDamageable
     [SerializeField] private ObjectData _objectData;
 
     public event Action OnDeath;
-    public event Action FullyRegenerated;
 
     public event Action<Damage, Skill> DamageTaken;
     //public event Action<float, DamageType, Skill> DamageTakenType;
@@ -81,7 +80,6 @@ public class ObjectHealth : Resource, IDamageable
         OnHealthChanged(_currentHealth, _currentHealth);
 
         _fillCoroutine = null;
-        if (Mathf.Approximately(_currentHealth, ObjectData.MaxHealth)) FullyRegenerated?.Invoke();
     }
 
     #endregion
