@@ -32,10 +32,33 @@ public class ShotIntoSky : Skill
 
     public void ShotAnimationMove()
     {
+        if (_hero == null || _hero.Move == null) return;
+
         _hero.Move.StopMoveAnimation();
         _hero.Move.CanMove = false;
+
+        Vector3 direction = _targetPoint - _hero.transform.position;
+        bool badDirection = float.IsInfinity(_targetPoint.x) || direction.sqrMagnitude < 0.0001f;
+
+        if (badDirection)
+        {
+            _hero.Move.StopLookAt();
+            return;
+        }
+
         _hero.Move.LookAtPosition(_targetPoint);
     }
+
+
+    public void ForceCooldownEnd()
+    {
+        if (_cooldownJob != null)
+            StopCoroutine(_cooldownJob);
+
+        RemainingCooldownTime = 0f;
+        RaiseCooldownEnded();
+    }
+
 
     private void HandleSkillCanceled()
     {
@@ -140,7 +163,6 @@ public class ShotIntoSky : Skill
     }
  
     [ClientRpc] private void RpcActivate(ArrowIntoSkyProjectile projectile) => projectile.Activate();
-    [ClientRpc] public void TargetResetCooldown(float reset) => ReductionSetCooldown(reset);
 
     [Server]
     private void CleanupProjectileList()
@@ -169,10 +191,7 @@ public class ShotIntoSky : Skill
         _hero.Move.CanMove = true;
     }
 
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        _targetPoint = targetInfo.Points[0];
-    }
+    public override void LoadTargetData(TargetInfo targetInfo) => _targetPoint = targetInfo.Points[0];
 
     #region ReconnaissanceFireArrowIntoSkyTalent
     public void SetTripleShotTalentActive(bool value)

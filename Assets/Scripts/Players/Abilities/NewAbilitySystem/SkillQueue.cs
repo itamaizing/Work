@@ -68,10 +68,11 @@ public class SkillQueue : MonoBehaviour
 
     private void Draw(Skill skill)
     {
+        if (skill.TargetInfoQueue.Count == 0) return;
+
         var info = skill.TargetInfoQueue.Peek().Points;
 
         Vector3[] vector3s = new Vector3[info.Count];
-
         for (int i = 0; i < info.Count; i++)
             vector3s[i] = new Vector3(info[i].x, info[i].y + 0.1f, info[i].z);
 

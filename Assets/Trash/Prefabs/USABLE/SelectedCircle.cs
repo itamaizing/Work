@@ -39,10 +39,10 @@ public class SelectedCircle : MonoBehaviour
 		//_closestTargetProjector.material
 	}
 
-	public void SwitchClostestTarget(bool value)
+    public void SwitchClostestTarget(bool value)
     {
         _selectProjector.gameObject.SetActive(value);
-		//_stroke.gameObject.SetActive(value);
+        //_stroke.gameObject.SetActive(value);
     }
 
     public void SwitchStroke(bool value) 

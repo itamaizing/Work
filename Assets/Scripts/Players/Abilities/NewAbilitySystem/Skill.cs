@@ -192,7 +192,7 @@ public abstract class Skill : NetworkBehaviour
     public bool IsHaveResourceOnSkill { get => CheckResourcesOnSkill(); }
     public bool IsHaveResources { get => IsHaveResourceOnSkill && IsCooldowned && IsHaveCharge; }
     public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); protected set => _cooldownTime = value; }
-    public float RemainingCooldownTime { get => _remainingCooldownTime; }
+    public float RemainingCooldownTime { get => _remainingCooldownTime; set => _remainingCooldownTime = value; }
     public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); set => _castDeley = value; }
     public bool IsCasting { get => _isCasting; }
     public float CastStreamDuration { get => _castDuration; set => _castDuration = value; }
@@ -258,6 +258,7 @@ public abstract class Skill : NetworkBehaviour
     protected abstract int AnimTriggerCastDelay { get; }
     protected abstract int AnimTriggerCast { get; }
     protected abstract bool IsCanCast { get; }
+    protected void RaiseCooldownEnded() => CooldownEnded?.Invoke();
 
     public abstract void LoadTargetData(TargetInfo targetInfo);
     protected abstract IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback);

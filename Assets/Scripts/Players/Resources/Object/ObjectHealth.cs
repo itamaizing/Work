@@ -41,21 +41,26 @@ public class ObjectHealth : Resource, IDamageable
     [Server]
     public void ServerStartFillHP(float targetValue, float duration)
     {
-        if (_fillCoroutine != null)
-        {
-            StopCoroutine(_fillCoroutine);
-        }
+        if (_fillCoroutine != null) StopCoroutine(_fillCoroutine);
         _fillCoroutine = StartCoroutine(FillHPCoroutine(targetValue, duration));
     }
 
     [Server]
-    public void ServerStopFillHP()
+    public void ServerInterruptFillHP()
     {
-        if (_fillCoroutine != null)
-        {
-            StopCoroutine(_fillCoroutine);
-            _fillCoroutine = null;
-        }
+        if (_fillCoroutine == null) return;
+
+        StopCoroutine(_fillCoroutine);
+        _fillCoroutine = null;
+
+        RpcSyncHP(_currentHealth);
+    }
+
+    [ClientRpc]
+    private void RpcSyncHP(float value)
+    {
+     _currentHealth = value;
+     OnHealthChanged(_currentHealth, _currentHealth);
     }
 
     private IEnumerator FillHPCoroutine(float targetValue, float duration)

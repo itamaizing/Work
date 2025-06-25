@@ -30,11 +30,13 @@ public class GrowTree : Skill
     private ShotsIntoSky _shotsIntoSky;
     private ShotIntoSky _shotIntoSky;
 
+    private Coroutine _rangeWatcher;
+
     protected override bool IsCanCast =>
         !float.IsPositiveInfinity(_targetPoint.x) &&
         IsPointInRadius(Radius, _targetPoint);
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("GrowTreeCastDelay");
     protected override int AnimTriggerCast => 0;
 
     private void Start()
@@ -51,13 +53,26 @@ public class GrowTree : Skill
     private void OnEnable()
     {
         OnSkillCanceled += HandleSkillCanceled;
-        CastSuccess += HandleSkillCanceled;
     }
 
     private void OnDestroy()
     {
         OnSkillCanceled -= HandleSkillCanceled;
-        CastSuccess -= HandleSkillCanceled;
+    }
+
+    private IEnumerator WatchRangeCoroutine()
+    {
+        while (_currentTree == null) yield return null;
+
+        while (IsCasting && _currentTree != null)
+        {
+            if (Vector3.Distance(transform.position, _currentTree.transform.position) > Radius)
+            {
+                TryCancel(true);
+                yield break;
+            }
+            yield return null; 
+        }
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -81,8 +96,6 @@ public class GrowTree : Skill
                 else
                 {
                     _targetPoint = GetMousePoint();
-                    Hero.Move.CanMove = false;
-                    Hero.Move.LookAtPosition(_targetPoint);
                     if (!IsPointInRadius(Radius, _targetPoint)) _targetPoint = Vector3.positiveInfinity;
                 }
             }
@@ -98,8 +111,6 @@ public class GrowTree : Skill
     {
         if (_treePrefab == null) yield break;
 
-        moveComponent.CanMove = false;
-
         _hero.Animator.SetTrigger(AnimTriggerCastDelay);
         _hero.NetworkAnimator.SetTrigger(AnimTriggerCastDelay);
 
@@ -108,25 +119,30 @@ public class GrowTree : Skill
         var clickedCharacter = GetClickedCharacter();
         if (clickedCharacter != null && clickedCharacter == _hero) CmdSpawnTreeAndTeleport(_hero.transform.position);
         else CmdSpawnTree(_targetPoint);
+
+        yield return new WaitForSeconds(CastStreamDuration / 1.5f);
+
+        _hero.Animator.ResetTrigger(Animator.StringToHash("GrowTreeCastDelay"));
+        _hero.NetworkAnimator.ResetTrigger(Animator.StringToHash("GrowTreeCastDelay"));
+
+        CmdCrossFade();
+        _hero.Animator.CrossFade("GrowTreeCastDelayExit", 0.1f);
     }
 
     #region Canceling a skill
     private void HandleSkillCanceled()
     {
-        if (_hero != null && _hero.Move != null)
+        if (_rangeWatcher != null)
         {
-            Hero.Animator.speed = 1;
-            Hero.Move.CanMove = true;
-            Hero.Move.StopLookAt();
+            StopCoroutine(_rangeWatcher);
+            _rangeWatcher = null;
         }
+
+        if (_hero != null && _hero.Move != null) Hero.Animator.speed = 1;
 
         TreeHealthTalentExit();
 
-        if (_healthTree != null)
-        {
-            _healthTree.ServerStopFillHP();
-            _healthTree = null;
-        }
+        CmdRequestInterruptTree(_currentTree.netId);
     }
     #endregion
 
@@ -145,27 +161,6 @@ public class GrowTree : Skill
     }
     #endregion
 
-    [Server]
-    private void OnTreeFullyRegenerated()
-    {
-        if (!treeShotCooldownTalent) return;
-
-        ResetShotCooldown(_shotsIntoSky);
-        ResetShotCooldown(_shotIntoSky);
-    }
-
-    private void ResetShotCooldown(Skill shotSkill)
-    {
-        if (shotSkill == null || shotSkill.IsCooldowned) return;
-
-        float reset = shotSkill.RemainingCooldownTime;
-
-        shotSkill.ReductionSetCooldown(reset);
-
-        if (shotSkill is ShotsIntoSky shots) shots.TargetResetCooldown(reset);
-        if (shotSkill is ShotIntoSky shot) shot.TargetResetCooldown(reset);
-    }
-
     #region [Command] / Spawn
     [Command] private void CmdSetMaxHealth(float maxHealth) => treeData.MaxHealth = maxHealth;
     [Command] private void CmdRemoveTree() => _activeTrees.RemoveAll(t => t == null);
@@ -179,6 +174,9 @@ public class GrowTree : Skill
         NetworkServer.Spawn(_currentTree.gameObject);
         SceneManager.MoveGameObjectToScene(_currentTree.gameObject, Hero.NetworkSettings.MyRoom);
 
+        if (_rangeWatcher != null) StopCoroutine(_rangeWatcher);
+        _rangeWatcher = StartCoroutine(WatchRangeCoroutine());
+
         _healthTree = tree.GetComponent<ObjectHealth>();
         if (_healthTree != null)
         {
@@ -190,9 +188,10 @@ public class GrowTree : Skill
             if (treeMagicEvadeTalent) _healthTree.SetMagicEvade(100);
 
         }
+        ResetShotCooldowns();
 
         _activeTrees.Add(tree);
-        RpcClientAddTree(tree.GetComponent<NetworkIdentity>().netId);
+        RpcClientAddTree(tree.GetComponent<NetworkIdentity>().netId, _currentTree);
     }
 
     [Command]
@@ -204,6 +203,9 @@ public class GrowTree : Skill
         _currentTree = tree;
         NetworkServer.Spawn(_currentTree.gameObject);
         SceneManager.MoveGameObjectToScene(_currentTree.gameObject, Hero.NetworkSettings.MyRoom);
+
+        if (_rangeWatcher != null) StopCoroutine(_rangeWatcher);
+        _rangeWatcher = StartCoroutine(WatchRangeCoroutine());
 
         RpcTeleportToTree(_currentTree.gameObject);
 
@@ -218,9 +220,10 @@ public class GrowTree : Skill
 
             if (treeMagicEvadeTalent) _healthTree.SetMagicEvade(100);
         }
+        ResetShotCooldowns();
 
         _activeTrees.Add(tree);
-        RpcClientAddTree(tree.GetComponent<NetworkIdentity>().netId);
+        RpcClientAddTree(tree.GetComponent<NetworkIdentity>().netId, _currentTree);
     }
 
     [Command]
@@ -230,9 +233,24 @@ public class GrowTree : Skill
         CastStreamDuration = treeCount == 0 ? baseCastStreamDuration : baseCastStreamDuration * Mathf.Pow(2, treeCount);
     }
 
-    [ClientRpc]
-    private void RpcClientAddTree(uint netId)
+    [Command]
+    private void CmdRequestInterruptTree(uint treeNetId)
     {
+        if (NetworkServer.spawned.TryGetValue(treeNetId, out NetworkIdentity networkIdentity) &&
+            networkIdentity.TryGetComponent(out ObjectHealth objectHealth))
+            objectHealth.ServerInterruptFillHP();
+    }
+
+    [Command]
+    private void CmdCrossFade()
+    {
+        _hero.Animator.CrossFade("GrowTreeCastDelayExit", 0.1f);
+    }
+
+    [ClientRpc]
+    private void RpcClientAddTree(uint netId, Tree currentTree)
+    {
+        _currentTree = currentTree;
         if (NetworkClient.spawned.TryGetValue(netId, out var networkIdentity)) _activeTrees.Add(networkIdentity.GetComponent<Tree>());
     }
 
@@ -244,6 +262,15 @@ public class GrowTree : Skill
             Vector3 topOfTree = tree.transform.position + Vector3.up * 5f;
             moveComponent.TeleportToPositionSmooth(topOfTree, _moveDuration);
         }
+    }
+
+    [ClientRpc]
+    private void ResetShotCooldowns()
+    {
+        if (!treeShotCooldownTalent) return;
+
+        if (_shotsIntoSky != null && !_shotsIntoSky.IsCooldowned) _shotsIntoSky.ForceCooldownEnd();
+        if (_shotIntoSky != null && !_shotIntoSky.IsCooldowned) _shotsIntoSky.ForceCooldownEnd();
     }
     #endregion
 

@@ -5391,7 +5391,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 8ae904e91c5b84d4bb6ab7629630f8b3, type: 2}
+  m_Material: {fileID: 2100000, guid: 794e845f80e764f44a2f6afccc1b824a, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 1
   m_StartAngleFade: 180
@@ -9918,7 +9918,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
   - resourceType: 1
-    resourceCost: 40
+    resourceCost: 2
   _cooldownTime: 8
   _castDeley: 1
   _damageValue: 30
@@ -11129,6 +11129,7 @@ MonoBehaviour:
     Icon: {fileID: 21300000, guid: 5f3cf76348a150a4fac45482942b1000, type: 3}
   character: {fileID: 4534754468497973439}
   terrifyingElfAura: {fileID: 6686568037796463366}
+  growTree: {fileID: 2248569995468415066}
 --- !u!114 &4364652774099563755
 MonoBehaviour:
   m_ObjectHideFlags: 0

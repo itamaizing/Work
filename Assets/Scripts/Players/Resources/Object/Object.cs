@@ -4,24 +4,31 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(NetworkIdentity))]
-public class Object : NetworkBehaviour
+public class Object : NetworkBehaviour, ITargetable
 {
+    [Header("UI")]
+    [SerializeField] private SelectedCircle _selectedCircle;
+    [SerializeField] private MinimapMarker _minimapMarker;
+
     [SerializeField] private ObjectData _objectData;
     [SerializeField] private ObjectHealth _objectHealth;
     [SerializeField] private List<Resource> _resources;
     [SerializeField] private int _indexTeam;
-
+    [SerializeField] private UIObjectComponents uiComponent;
 
     private bool _isDeath;
 
+    public UIObjectComponents UIComponent => uiComponent;
     public ObjectData ObjectData => _objectData;
     public ObjectHealth ObjectHealth => _objectHealth;
     public List<Resource> Resources => _resources;
+    public SelectedCircle SelectedCircle => _selectedCircle;
+    public Transform TargetTransform => transform;
     public bool IsDeath => _isDeath;
 
     public int IndexTeam { get => _indexTeam; set => _indexTeam = value; }
 
-    private void OnDestroy() => _objectHealth.OnDeath -= CmdOnDeath;
+    private void OnDestroy() => _objectHealth.OnDeath -= ServerOnDeath;
 
     public void Initialize()
     {
@@ -29,7 +36,8 @@ public class Object : NetworkBehaviour
             if (resource.Type == ResourceType.Health) resource.Initialize(_objectData.MaxHealth, _objectData.RegenerationRate, 0, null);
 
         _objectHealth.InitializeObject(_objectData);
-        _objectHealth.OnDeath += CmdOnDeath;
+        _objectHealth.OnDeath += ServerOnDeath;
+        if (_minimapMarker != null) _minimapMarker.IsActive = true;
     }
 
     private void OnDied() => _isDeath = true;
@@ -37,6 +45,6 @@ public class Object : NetworkBehaviour
     public override void OnStartServer() => base.OnStartServer();
     public override void OnStopServer() => base.OnStopServer();
 
-    [Command] private void CmdOnDeath() => RpcClientOnDied();
+    [Server] private void ServerOnDeath() => RpcClientOnDied();
     [ClientRpc] private void RpcClientOnDied() => OnDied();
 }

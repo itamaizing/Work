@@ -64,6 +64,8 @@ public class Sleep : AbstractCharacterState
     {
         Debug.Log("Ёффект сна закончилс€");
 
+        for (int i = 0; i < 6; i++) _characterState.AddStateLogic(States.InnerDarkness, 13, 0f, Schools.None, _source.gameObject, null);
+
         if (_sleepCoroutine != null)
         {
             _characterState.StopCoroutine(_sleepCoroutine);
@@ -84,15 +86,8 @@ public class Sleep : AbstractCharacterState
             skill.Disactive = false;
         }
 
-        //AddStateInnerDarkness();
-
         _disabledSkills.Clear();
         _characterState.RemoveState(this);
-    }
-
-    private void AddStateInnerDarkness()
-    {
-        for (int i = 0; i < 6; i++) _characterState.CmdAddState(States.InnerDarkness, 13, 0, _source?.gameObject, "SleepExit");
     }
 
     public override bool Stack(float time)

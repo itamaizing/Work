@@ -44,12 +44,35 @@ public class ReconnaissanceFire : Skill
         _baseDuration = duration;
     }
 
-    private void OnEnable() => ArrowFireProjectile.OnProjectilePathEnd += HandleProjectilePathEnd;
-    private void OnDisable() => ArrowFireProjectile.OnProjectilePathEnd -= HandleProjectilePathEnd;
-
-    private void OnDestroy()
+    private void OnEnable()
     {
+        ArrowFireProjectile.OnProjectilePathEnd += HandleProjectilePathEnd;
+        OnSkillCanceled += HandleSkillCanceled;
+    }
+
+    private void OnDisable()
+    {
+        ArrowFireProjectile.OnProjectilePathEnd -= HandleProjectilePathEnd;
         OnSkillCanceled -= HandleSkillCanceled;
+    }
+
+    public void AnimationFireMove()
+    {
+        if (_hero == null || _hero.Move == null) return;
+
+        _hero.Move.StopMoveAnimation();
+        _hero.Move.CanMove = false;
+
+        Vector3 direction = _targetPoint - _hero.transform.position;
+        bool badDirection = float.IsInfinity(_targetPoint.x) || direction.sqrMagnitude < 0.0001f;
+
+        if (badDirection)
+        {
+            _hero.Move.StopLookAt();
+            return;
+        }
+
+        _hero.Move.LookAtPosition(_targetPoint);
     }
 
     [Command]
@@ -63,7 +86,6 @@ public class ReconnaissanceFire : Skill
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         Hero.Animator.speed = Hero.Animator.speed/CastDeley;
-        OnSkillCanceled += HandleSkillCanceled;
 
         if (emitterObject) emitterObject.SetActive(true);
         ReconnaissanceFireHealthTalentEnter();
@@ -96,6 +118,8 @@ public class ReconnaissanceFire : Skill
 
         Hero.Animator.speed = _baseAnimSpeed;
         Hero.Move.StopLookAt();
+        Hero.Animator.speed = _baseAnimSpeed;
+        Hero.Move.CanMove = true;
     }
 
     private void HandleProjectilePathEnd(Vector3 position)
@@ -136,6 +160,7 @@ public class ReconnaissanceFire : Skill
     {
         if (_hero != null && _hero.Move != null) ReconnaissanceFireHealthTalentExit();
         Hero.Animator.speed = _baseAnimSpeed;
+        Hero.Move.CanMove = true;
         Hero.Move.StopLookAt();
         _targetPoint = Vector3.positiveInfinity;
     }
