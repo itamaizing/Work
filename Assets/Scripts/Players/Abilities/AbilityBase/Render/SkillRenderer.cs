@@ -67,7 +67,8 @@ public class SkillRenderer : NetworkBehaviour
 		 Color zoneColor = player.layer == LayerMask.NameToLayer("Allies") ? _colorForAllies : _colorForEnemies;
 		 _tempDamageZone.SetColor(zoneColor);*/
 
-        _tempArea = Instantiate(_damageZonePref, position, Quaternion.identity);
+          Quaternion flatRotation = Quaternion.Euler(90f, 0f, 0f);
+        _tempArea = Instantiate(_damageZonePref, position, flatRotation);
         _tempArea.SetSize(radius, damage);
 
         Color zoneColor = player.layer == LayerMask.NameToLayer("Allies") ? _colorForAllies : _colorForEnemies;
@@ -79,7 +80,7 @@ public class SkillRenderer : NetworkBehaviour
     {
         RpsStopDrawDamageZone();
     }
-
+    
     [ClientRpc]
     public void RpsStopDrawDamageZone()
     {

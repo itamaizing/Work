@@ -52,7 +52,7 @@ public class Silence : Skill
 
                     if (minionCount > 0 && _reducedCooldown) _cooldownTime = _cooldownTime - minionCount;
 
-                    StopDamageZone();
+                    DrawDamageZone(_targetPoint);
 
                     yield break;
                 }

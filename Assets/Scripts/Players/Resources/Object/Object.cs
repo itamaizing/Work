@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(NetworkIdentity))]
-public class Object : NetworkBehaviour, ITargetable
+public class Object : Character
 {
     [Header("UI")]
     [SerializeField] private SelectedCircle _selectedCircle;
@@ -16,21 +16,15 @@ public class Object : NetworkBehaviour, ITargetable
     [SerializeField] private int _indexTeam;
     [SerializeField] private UIObjectComponents uiComponent;
 
-    private bool _isDeath;
-
-    public UIObjectComponents UIComponent => uiComponent;
     public ObjectData ObjectData => _objectData;
     public ObjectHealth ObjectHealth => _objectHealth;
-    public List<Resource> Resources => _resources;
-    public SelectedCircle SelectedCircle => _selectedCircle;
     public Transform TargetTransform => transform;
-    public bool IsDeath => _isDeath;
 
     public int IndexTeam { get => _indexTeam; set => _indexTeam = value; }
 
     private void OnDestroy() => _objectHealth.OnDeath -= ServerOnDeath;
 
-    public void Initialize()
+    public override void Initialize()
     {
         foreach (var resource in Resources)
             if (resource.Type == ResourceType.Health) resource.Initialize(_objectData.MaxHealth, _objectData.RegenerationRate, 0, null);
@@ -40,7 +34,6 @@ public class Object : NetworkBehaviour, ITargetable
         if (_minimapMarker != null) _minimapMarker.IsActive = true;
     }
 
-    private void OnDied() => _isDeath = true;
     private void Start() => Initialize();
     public override void OnStartServer() => base.OnStartServer();
     public override void OnStopServer() => base.OnStopServer();
