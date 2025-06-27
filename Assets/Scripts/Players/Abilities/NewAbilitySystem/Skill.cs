@@ -246,7 +246,80 @@ public abstract class Skill : NetworkBehaviour
     public virtual string AdditionalDescription { get; }
     protected abstract int AnimTriggerCastDelay { get; }
     protected abstract int AnimTriggerCast { get; }
-    protected abstract bool IsCanCast { get; }
+    protected virtual bool IsCanCast
+    {
+        get
+        {
+            _targetInfoQueue.TryPeek(out TargetInfo temp);
+
+            if (temp == null)
+                return true;
+
+            switch (SkillType)
+            {
+                case SkillType.Target:
+
+                    if (temp.Targets.Count > 0)
+                    {
+                        foreach (var target in temp.Targets)
+                            if (Vector3.Distance(target.Position, transform.position) > Radius)
+                                return false;
+
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+                case SkillType.Projectile:
+
+                    if (temp.Targets.Count > 0)
+                    {
+                        foreach (var target in temp.Targets)
+                            if (Vector3.Distance(target.Position, transform.position) > Radius)
+                                return false;
+
+                        return true;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+
+                case SkillType.Zone:
+
+                    if (temp.Points.Count > 0)
+                    {
+                        foreach (var point in temp.Points)
+                            if (Vector3.Distance(point, transform.position) > Radius)
+                                return false;
+
+                        return true;
+                    }
+                    else if (temp.Targets.Count > 0)
+                    {
+                        foreach (var target in temp.Targets)
+                            if (Vector3.Distance(target.Position, transform.position) > Radius)
+                                return false;
+
+                        return true;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+
+                case SkillType.NonTarget:
+
+                    return true;
+
+                default:
+
+                    return true;
+            }
+        }
+    }
 
     public abstract void LoadTargetData(TargetInfo targetInfo);
     protected abstract IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback);
@@ -295,7 +368,9 @@ public abstract class Skill : NetworkBehaviour
         {
             TryPayCost(IsPayCostStartCooldown);
 
-            if (_targetInfoQueue.Count > 0) LoadTargetData(_targetInfoQueue.Dequeue());
+            if (_targetInfoQueue.Count > 0)
+                LoadTargetData(_targetInfoQueue.Dequeue());
+
             _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
 
             return true;

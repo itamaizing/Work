@@ -78,6 +78,8 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
     public float DamageGetCounter { get => _damageGetCounter; set => _damageGetCounter = value; }
     public VisionComponent VisionComponent { get => _visionComponent; }
 
+    public Vector3 Position => transform.position;
+
     public static event Action<Character> ServerOnUnitSpawned;
 	public static event Action<Character> ServerOnUnitDeleted; 
 	public static event Action<Character> AuthorityOnUnitSpawned;
