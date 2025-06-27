@@ -147,6 +147,7 @@ public class GrowTree : Skill
         yield return new WaitForSeconds(CastStreamDuration / 3);
 
         StopDamageZone();
+
         var clickedCharacter = GetClickedCharacter();
         if (clickedCharacter != null && clickedCharacter == _hero) CmdSpawnTreeAndTeleport(_hero.transform.position);
         else CmdSpawnTree(spawnPos);
@@ -172,7 +173,7 @@ public class GrowTree : Skill
 
         TreeHealthTalentExit();
 
-        CmdRequestInterruptTree(_currentTree.netId);
+        if (_currentTree != null) CmdRequestInterruptTree(_currentTree.netId);
     }
     #endregion
 

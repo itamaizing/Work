@@ -24,7 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 627156916684284543}
-  m_LocalRotation: {x: -0, y: 0.98158884, z: -0, w: -0.19100624}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 9.47, z: 0}
   m_LocalScale: {x: 3.3333328, y: 3.333333, z: 3.3333328}
   m_ConstrainProportionsScale: 0
@@ -457,10 +457,8 @@ GameObject:
   - component: {fileID: 3553033850970622170}
   - component: {fileID: 3185755518719753282}
   - component: {fileID: 3060019596757309067}
-  - component: {fileID: 139909926566426164}
   - component: {fileID: 335391500185127836}
   - component: {fileID: 5464942232932519542}
-  - component: {fileID: 3425618451190502756}
   - component: {fileID: 8678674039354576897}
   - component: {fileID: 3791903686076037881}
   - component: {fileID: 1819593606891407311}
@@ -548,33 +546,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!54 &139909926566426164
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2058911381882631605}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!65 &335391500185127836
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -617,23 +588,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 5.5749884, z: 1}
   m_Center: {x: 0, y: 2.2125082, z: 0}
---- !u!114 &3425618451190502756
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2058911381882631605}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f6f3bf89aa97405989c802ba270f815, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 1
-  syncMode: 0
-  syncInterval: 0
-  clientAuthority: 0
-  animator: {fileID: 0}
 --- !u!114 &8678674039354576897
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -701,25 +655,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _playerData: {fileID: 11400000, guid: 6a1d2f2594cfad44da2f83de469b07c3, type: 2}
-  _networkSettings: {fileID: 7849411657799056817}
-  _rigidbody: {fileID: 139909926566426164}
-  _collider: {fileID: 335391500185127836}
-  _lvl: {fileID: 0}
-  _animator: {fileID: 7995266060163823287}
-  _networkAnimator: {fileID: 3425618451190502756}
-  _healthComponent: {fileID: 0}
-  _playerMove: {fileID: 0}
-  _abilities: {fileID: 0}
-  _characterState: {fileID: 0}
-  uiComponent: {fileID: 0}
-  _selectComponent: {fileID: 2042335225482926251}
-  _damageTracker: {fileID: 0}
-  _resources:
-  - {fileID: 7494791652124082300}
-  _selectedCircle: {fileID: 9115519821676638475}
-  _spawnComponent: {fileID: 0}
-  _visionComponent: {fileID: 0}
   _selectedCircle: {fileID: 9115519821676638475}
   _minimapMarker: {fileID: 7500440178365392226}
   _objectData: {fileID: 11400000, guid: 7ee4128bb430f07458a639f23fc41069, type: 2}
@@ -728,6 +663,7 @@ MonoBehaviour:
   - {fileID: 7494791652124082300}
   _indexTeam: 0
   uiComponent: {fileID: 2097685094144883168}
+  live: 1
 --- !u!114 &7413096228921928745
 MonoBehaviour:
   m_ObjectHideFlags: 0

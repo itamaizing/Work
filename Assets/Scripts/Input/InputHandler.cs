@@ -97,7 +97,7 @@ public class InputHandler : MonoBehaviour
             OnClick?.Invoke(); 
 		};
 		_inputActions.GameplayMap.Click.canceled += i => OnClickCanceled?.Invoke();
-		_inputActions.GameplayMap.AltClick.performed += OnAltClickPerformed;
+		_inputActions.GameplayMap.AltClick.performed += i => OnAltClick?.Invoke();
 		_inputActions.GameplayMap.AltDoubleClick.performed += i => OnDoubleAltClick?.Invoke();
 		_inputActions.GameplayMap.SwitchAutoMode.performed += i => OnSwitchAutoMode?.Invoke();
 		_inputActions.GameplayMap.SwitchAutoMode.canceled += i => OnSwitchAutoModeCanceled?.Invoke();
@@ -151,19 +151,6 @@ public class InputHandler : MonoBehaviour
 		OnClickCanceled += SetClickFalse;
 	}
 
-	private void OnAltClickPerformed(InputAction.CallbackContext ctx)
-	{
-		if (EventSystem.current != null)
-		{
-			var data = new PointerEventData(EventSystem.current) { position = Input.mousePosition };
-			var results = new List<RaycastResult>();
-			EventSystem.current.RaycastAll(data, results);
-			if (results.Count > 0) return;
-		}
-
-		OnAltClick?.Invoke();
-	}
-
 	private void OnEnable()
 	{
 		_inputActions.Enable();
@@ -171,7 +158,6 @@ public class InputHandler : MonoBehaviour
 
 	private void OnDisable()
 	{
-		_inputActions.GameplayMap.AltClick.performed -= OnAltClickPerformed;
 		_inputActions.Disable();
 	}
 
