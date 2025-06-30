@@ -116,11 +116,11 @@ public class GrowTree : Skill
                     _targetPoint = GetMousePoint();
                     if (!IsPointInRadius(Radius, _targetPoint)) _targetPoint = Vector3.positiveInfinity;
                 }
-
-                DrawDamageZone(_targetPoint);
             }
             yield return null;
         }
+
+        DrawDamageZone(_targetPoint);
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(_targetPoint);

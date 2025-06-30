@@ -30985,7 +30985,7 @@ MonoBehaviour:
   _lineZoneRenderForQueue: {fileID: 6230188382127775273}
   _layerMask:
     serializedVersion: 2
-    m_Bits: 8336
+    m_Bits: 8208
   _colorForAllies: {r: 0, g: 1, b: 0, a: 1}
   _colorForEnemies: {r: 1, g: 0, b: 0, a: 1}
   _colorForEnd: {r: 1, g: 0, b: 0, a: 1}

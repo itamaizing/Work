@@ -8863,6 +8863,10 @@ PrefabInstance:
       propertyPath: _damageZonePref
       value: 
       objectReference: {fileID: 1574982521674352815, guid: 3411b2c05fce3f8438e9012853825aa2, type: 3}
+    - target: {fileID: 6214007637544752149, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _layerMask.m_Bits
+      value: 8208
+      objectReference: {fileID: 0}
     - target: {fileID: 6397899444093627911, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.1387713
@@ -9283,6 +9287,10 @@ PrefabInstance:
       propertyPath: _icons.Array.data[44]
       value: 
       objectReference: {fileID: 3545852164369826336, guid: 4707a164dd4c8b0429b0a12c2299f6a5, type: 3}
+    - target: {fileID: 8739993138692873955, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8788399700865532087, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.00000009714812
@@ -10281,7 +10289,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: e616953e4fb63fe4ba9860ceec006bdf, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
-  _cooldownTime: 0
+  _cooldownTime: 12
   _castDeley: 0
   _damageValue: 0
   _abilitySchool: 5

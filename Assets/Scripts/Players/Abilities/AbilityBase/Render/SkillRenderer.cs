@@ -75,23 +75,31 @@ public class SkillRenderer : NetworkBehaviour
         _tempArea.SetColor(zoneColor);
     }
 
-    [Command]
-    public void CmdStopDrawDamageZone()
+    [Command] public void CmdStopDrawDamageZone() => RpsStopDrawDamageZone();
+    [ClientRpc] public void RpsStopDrawDamageZone() => StopDrawDamageZone();
+
+    public void StopDrawDamageZone()
     {
-        RpsStopDrawDamageZone();
+        if (_tempArea != null) Destroy(_tempArea.gameObject);
     }
-    
-    [ClientRpc]
-    public void RpsStopDrawDamageZone()
+
+    private bool TryGetMousePoint(out Vector3 point)
     {
-        /* if (_tempDamageZone != null)
-		 {
-			 Destroy(_tempDamageZone.gameObject);
-		 }*/
-        if (_tempArea != null)
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        var hits = Physics.RaycastAll(ray, Mathf.Infinity, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore).OrderBy(h => h.distance);
+
+        foreach (var hit in hits)
         {
-            Destroy(_tempArea.gameObject);
+            if ((_layerMask.value & (1 << hit.collider.gameObject.layer)) != 0)
+            {
+                point = hit.point;
+                return true;
+            }
         }
+
+        point = Vector3.zero;
+        return false;
     }
 
     public void StartDrawLineForZone(Skill skill)
@@ -240,18 +248,12 @@ public class SkillRenderer : NetworkBehaviour
 
     private void RotateAtMouse(Transform transform)
     {
-        Vector3 worldPosition = Vector3.zero;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, _layerMask))
+        if (TryGetMousePoint(out var worldPosition))
         {
-            worldPosition = hit.point;
+            Vector3 direction = worldPosition - gameObject.transform.position;
+            float angle = Mathf.Atan2(direction.z, direction.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(90, -angle + 90, 0);
         }
-
-        //Vector3 dir = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
-        Vector3 dir = worldPosition - gameObject.transform.position;
-        float angle = Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(90, -angle + 90, 0);
     }
 
     private IEnumerator DrawRadiusJob(float radius)
@@ -299,31 +301,35 @@ public class SkillRenderer : NetworkBehaviour
 
     private IEnumerator DrawAreaJob(float radius, Damage damage, LayerMask layerMask, CircleArea areaPref)
     {
-        Vector3 worldPosition = Vector3.zero;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
-        {
-            worldPosition = hit.point;
-        }
+        //Vector3 worldPosition = Vector3.zero;
+        //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //RaycastHit hit;
+        //if (Physics.Raycast(ray, out hit))
+        //{
+        //    worldPosition = hit.point;
+        //}
+
+        Vector3 worldPosition = transform.position;
+        TryGetMousePoint(out worldPosition);
 
         //Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x,0 , Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
-        Vector3 mouse = new Vector3(worldPosition.x, 0, worldPosition.z);
+        //Vector3 mouse = new Vector3(worldPosition.x, 0, worldPosition.z);
 
-        _tempArea = Instantiate(areaPref, mouse, Quaternion.Euler(90, 0, 0));
+        _tempArea = Instantiate(areaPref, worldPosition, Quaternion.Euler(90, 0, 0));
         _tempArea.SetSize(_circleRadius, damage);
 
         while (true)
         {
             if (_tempArea == null) yield break;
-            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, _layerMask))
-            {
-                worldPosition = hit.point;
-            }
+            //ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            //if (Physics.Raycast(ray, out hit, _layerMask))
+            //{
+            //    worldPosition = hit.point;
+            //}
             // mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x,0 , Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
-            mouse = new Vector3(worldPosition.x, 0, worldPosition.z);
-            _tempArea.transform.position = mouse;
+            //mouse = new Vector3(worldPosition.x, 0, worldPosition.z);
+            TryGetMousePoint(out worldPosition);
+            _tempArea.transform.position = new Vector3(worldPosition.x, 0, worldPosition.z);
             yield return null;
         }
     }
