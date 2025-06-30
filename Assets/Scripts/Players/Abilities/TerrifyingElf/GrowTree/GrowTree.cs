@@ -61,6 +61,12 @@ public class GrowTree : Skill
         }
     }
 
+    private bool IsHeroInArea(Vector3 clickPoint)
+    {
+        float sqrDistantoin = (_hero.transform.position - clickPoint).sqrMagnitude;
+        return sqrDistantoin <= Area * Area;
+    }
+
     private IEnumerator CastDistanceWatcher()
     {
         const float checkInterval = 0.1f;
@@ -73,7 +79,7 @@ public class GrowTree : Skill
                 {
                     if (Vector3.Distance(_hero.transform.position, _targetPoint) > Radius)
                     {
-                        TryCancel(true);
+                        TryCancel();
                         break;
                     }
                 }
@@ -81,7 +87,7 @@ public class GrowTree : Skill
                 {
                     if (Vector3.Distance(_hero.transform.position, _currentTree.transform.position) > Radius)
                     {
-                        TryCancel(true);
+                        TryCancel();
                         break;
                     }
                 }
@@ -160,6 +166,7 @@ public class GrowTree : Skill
         CmdCrossFade();
         _hero.Animator.CrossFade("GrowTreeCastDelayExit", 0.1f);
 
+        _currentTree = null;
         StopRangeWatch();   
     }
 
@@ -174,6 +181,7 @@ public class GrowTree : Skill
         TreeHealthTalentExit();
 
         if (_currentTree != null) CmdRequestInterruptTree(_currentTree.netId);
+        _currentTree = null;
     }
     #endregion
 
