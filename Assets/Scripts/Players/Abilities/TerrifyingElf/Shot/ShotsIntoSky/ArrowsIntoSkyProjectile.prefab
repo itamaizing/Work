@@ -143,7 +143,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   impactLifeTime: 2
-  nextDamageTime: 1
+  nextDamageTime: 2
   arrow: {fileID: 9103092950671096227}
   circle: {fileID: 3986887220995087752}
   silenceTalentActive: 0

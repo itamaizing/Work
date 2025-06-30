@@ -115,7 +115,7 @@ public class GrowTree : Skill
         {
             if (GetMouseButton)
             {
-                var clickedCharacter = GetClickedCharacter();
+                var clickedCharacter = GetClickedCharacter(Hero);
                 if (clickedCharacter != null && clickedCharacter == _hero) _targetPoint = _hero.transform.position;
                 else
                 {
@@ -154,7 +154,7 @@ public class GrowTree : Skill
 
         StopDamageZone();
 
-        var clickedCharacter = GetClickedCharacter();
+        var clickedCharacter = GetClickedCharacter(Hero);
         if (clickedCharacter != null && clickedCharacter == _hero) CmdSpawnTreeAndTeleport(_hero.transform.position);
         else CmdSpawnTree(spawnPos);
 
@@ -186,18 +186,22 @@ public class GrowTree : Skill
     #endregion
 
     #region Auxiliary methods
-    private Character GetClickedCharacter()
+    private Character GetClickedCharacter(Character hero)
     {
+        LayerMask charMask = TargetsLayers;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit))
+        if (Physics.Raycast(ray, out RaycastHit hit, 1000f))
         {
-            if (hit.collider.TryGetComponent(out Character character))
-            {
-                return character;
-            }
+            Vector3 clickPoint = hit.point;
+            Collider[] hits = Physics.OverlapSphere(clickPoint, Area, charMask);
+            if (hits.Length == 0) return null;
+
+            foreach (Collider target in hits) if (target.TryGetComponent(out Character character) && character == hero) return character;
         }
+
         return null;
     }
+
     #endregion
 
     #region [Command] / Spawn

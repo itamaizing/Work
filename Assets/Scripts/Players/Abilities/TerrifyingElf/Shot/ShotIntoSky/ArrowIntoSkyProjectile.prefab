@@ -147,7 +147,7 @@ MonoBehaviour:
   criticalMultiplier: 2.4
   minDamage: 12
   maxDamage: 18
-  nextDamageTime: 0.5
+  nextDamageTime: 1
   arrow: {fileID: 9103092950671096227}
   circle: {fileID: 3986887220995087752}
   silenceTalentActive: 0

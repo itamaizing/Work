@@ -56,7 +56,7 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
     private void OnTriggerStay(Collider other)
     {
         if (!isDamage) return;
-        if (NetworkTime.time < nextDamageTime) return;
+        //if (NetworkTime.time < nextDamageTime) return;
         if (other.gameObject == _dad.gameObject) return;
         if (((1 << other.gameObject.layer) & _skill.TargetsLayers.value) == 0) return;
 
