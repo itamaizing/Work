@@ -80,6 +80,8 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 
     public Vector3 Position => transform.position;
 
+    public Transform Transform => transform;
+
     public static event Action<Character> ServerOnUnitSpawned;
 	public static event Action<Character> ServerOnUnitDeleted; 
 	public static event Action<Character> AuthorityOnUnitSpawned;

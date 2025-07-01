@@ -23,6 +23,26 @@ public class SkillCircleRanderer : MonoBehaviour
         var size = new Vector3 (_radius, _radius, 8);
         _projector.size = size;
 
+        _drawCoroutine = StartCoroutine(DrawJob(_layerMask));
+    }
+
+    public void StartDraw(float radius, Transform target)
+    {
+        _radius = radius;
+
+        var size = new Vector3(_radius, _radius, 8);
+        _projector.size = size;
+
+        _drawCoroutine = StartCoroutine(DrawJob(target));
+    }
+
+    public void StartDraw(float radius)
+    {
+        _radius = radius;
+
+        var size = new Vector3(_radius, _radius, 8);
+        _projector.size = size;
+
         _drawCoroutine = StartCoroutine(DrawJob());
     }
 
@@ -61,16 +81,40 @@ public class SkillCircleRanderer : MonoBehaviour
         }
     }
 
-    private IEnumerator DrawJob()
+    private IEnumerator DrawJob(LayerMask layerMask)
     {
         while (true)
         {
-            Collider[] colliders = Physics.OverlapSphere(transform.position, _radius, _layerMask);
+            Collider[] colliders = Physics.OverlapSphere(transform.position, _radius, layerMask);
 
             if (colliders.Length == 0)
                 _projector.material = _deactiveMaterial;
             else
                 _projector.material = _activeMaterial;
+
+            yield return null;
+        }
+    }
+
+    private IEnumerator DrawJob(Transform target)
+    {
+        while (true)
+        {
+            var distance = Vector3.Distance(transform.position, target.position);
+
+            if (distance > _radius)
+                _projector.material = _deactiveMaterial;
+            else
+                _projector.material = _activeMaterial;
+
+            yield return null;
+        }
+    }
+
+    private IEnumerator DrawJob()
+    {
+        while (true)
+        {
 
             yield return null;
         }

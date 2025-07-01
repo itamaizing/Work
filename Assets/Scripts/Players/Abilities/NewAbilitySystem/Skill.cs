@@ -179,6 +179,7 @@ public abstract class Skill : NetworkBehaviour
     public float ChargeCooldown => _chargeCooldown;
     public List<float> RemainingCooldownTimeCharge { get => _remainingCooldownTimeChargers; }
     public bool IsPreparing => _isPreparing;
+    public SkillRenderer SkillRender => SkillRender;
     public bool IsHaveResourceOnSkill { get => CheckResourcesOnSkill(); }
     public bool IsHaveResources { get => IsHaveResourceOnSkill && IsCooldowned && IsHaveCharge; }
     public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); protected set => _cooldownTime = value; }
