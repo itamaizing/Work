@@ -1,19 +1,20 @@
 using Mirror;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ArrowIntoSkyProjectile : NetworkBehaviour
 {
     [SerializeField] private float impactLifeTime = 1;
+    [SerializeField] private float nextDamageTime = 0.5f;
     [SerializeField, Range(0f, 100f)] private float criticalChance = 30f;
     [SerializeField] private float criticalMultiplier = 2.4f;
     [SerializeField] private float minDamage;
     [SerializeField] private float maxDamage;
 
-    [SerializeField] private double nextDamageTime = 0.5;
-
     [SerializeField] private GameObject arrow;
     [SerializeField] private GameObject circle;
+    [SerializeField] private SphereCollider sphereCollider;
 
     [SerializeField] private bool silenceTalentActive;
     [SerializeField] private bool tripleShotTalentActive;
@@ -47,16 +48,15 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
     {
         Arrow.SetActive(true);
         circle.SetActive(true);
-        isDamage = true;
-
+        Invoke("ActiveCollider", nextDamageTime);       
         Destroy(gameObject, impactLifeTime);
     }
+
+    private void ActiveCollider() => sphereCollider.enabled = true;
 
     [Server]
     private void OnTriggerStay(Collider other)
     {
-        if (!isDamage) return;
-        //if (NetworkTime.time < nextDamageTime) return;
         if (other.gameObject == _dad.gameObject) return;
         if (((1 << other.gameObject.layer) & _skill.TargetsLayers.value) == 0) return;
 

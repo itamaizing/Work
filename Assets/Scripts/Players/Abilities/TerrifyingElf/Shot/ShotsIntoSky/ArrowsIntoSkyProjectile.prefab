@@ -143,9 +143,10 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   impactLifeTime: 2
-  nextDamageTime: 2
+  nextDamageTime: 1.3
   arrow: {fileID: 9103092950671096227}
   circle: {fileID: 3986887220995087752}
+  sphereCollider: {fileID: 3585261139813630317}
   silenceTalentActive: 0
   tripleShotTalentActive: 0
   shotAstralManaActive: 0
@@ -167,7 +168,7 @@ SphereCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Radius: 2
   m_Center: {x: 0, y: 0, z: 0}

@@ -130,6 +130,7 @@ public class GroundTrap : Skill
         CmdSpawnGroundTrap(_startPosition, _endPosition);
 
         ClearData();
+        _preview = null;
         yield break;
     }
 

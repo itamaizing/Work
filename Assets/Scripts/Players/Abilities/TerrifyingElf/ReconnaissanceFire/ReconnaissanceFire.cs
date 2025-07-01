@@ -26,10 +26,14 @@ public class ReconnaissanceFire : Skill
     [SerializeField] private List<Vector3> localConstants = new();
     [SerializeField] private float speed;
 
+    [Header("Raycast settings")]
+    [SerializeField] private LayerMask groundLayer;
+
     private ReconnaissanceFireAura currentFireAura;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private float _baseDuration;
     private float _baseAnimSpeed;
+    private Coroutine _auraLifeCoroutine;
 
     public ReconnaissanceFireAura CurrentFireAura => currentFireAura;
 
@@ -75,14 +79,6 @@ public class ReconnaissanceFire : Skill
         _hero.Move.LookAtPosition(_targetPoint);
     }
 
-    [Command]
-    private void CmdDestroyCurrentFireAura()
-    {
-        if (currentFireAura != null) NetworkServer.Destroy(currentFireAura.gameObject);
-
-        currentFireAura = null;
-    }
-
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         Hero.Animator.speed = Hero.Animator.speed/CastDeley;
@@ -116,43 +112,27 @@ public class ReconnaissanceFire : Skill
 
         trickShot.Shoot();
 
+        _targetPoint = Vector3.positiveInfinity;
+
         Hero.Animator.speed = _baseAnimSpeed;
         Hero.Move.StopLookAt();
         Hero.Animator.speed = _baseAnimSpeed;
         Hero.Move.CanMove = true;
     }
 
-    private void HandleProjectilePathEnd(Vector3 position)
+    private void HandleProjectilePathEnd(Vector3 position) => CmdSpawnFireAura(position);
+
+    void UpdateTrickShotTrajectory()
     {
-        float auraDuration = _baseDuration + (fireWorshipperTalent ? 4f : 0f);
+        // Е ускорение Е
 
-        CmdSpawnFireAura(_targetPoint);
-        Invoke("CmdDestroyCurrentFireAura", auraDuration);
-        _targetPoint = Vector3.positiveInfinity;
-    }
-
-    private void UpdateTrickShotTrajectory()
-    {
-        Vector3 accelerationSum = Vector3.zero;
-        foreach (var constant in globalConstants)
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition),
+                            out var hit, 200f, groundLayer))
         {
-            accelerationSum += constant;
-        }
-        foreach (var constant in localConstants)
-        {
-            accelerationSum += trickShot.transform.rotation * constant;
-        }
+            float s = Vector3.Distance(trickShot.transform.position, hit.point);
+            trickShot.distance = s + 1f;
 
-        trickShot.constantAcceleration = accelerationSum;
-
-        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out var hit))
-        {
-            int solutions = Ballistics.Solution(trickShot.transform.position, trickShot.speed, hit.point, trickShot.constantAcceleration, out Quaternion low, out Quaternion _);
-            if (solutions > 0)
-            {
-                trickShot.transform.rotation = low;
-            }
+            if (Ballistics.Solution(trickShot.transform.position, trickShot.speed, hit.point, trickShot.constantAcceleration, out Quaternion low, out _) > 0) trickShot.transform.rotation = low;
         }
     }
 
@@ -174,17 +154,37 @@ public class ReconnaissanceFire : Skill
     [Command]
     private void CmdSpawnFireAura(Vector3 position)
     {
-        if (currentFireAura != null) NetworkServer.Destroy(currentFireAura.gameObject);
+        if (float.IsInfinity(position.x) || float.IsNaN(position.x))
+            return;
+
+        if (_auraLifeCoroutine != null)
+            StopCoroutine(_auraLifeCoroutine);
+        if (currentFireAura != null)
+            NetworkServer.Destroy(currentFireAura.gameObject);
 
         position.y += 0.1f;
+        var aura = Instantiate(fireAura, position, Quaternion.identity);
+        NetworkServer.Spawn(aura.gameObject);
+        SceneManager.MoveGameObjectToScene(aura.gameObject, Hero.NetworkSettings.MyRoom);
 
-        ReconnaissanceFireAura fireAura = Instantiate(this.fireAura, position, Quaternion.identity);
-
-        NetworkServer.Spawn(fireAura.gameObject);
-        SceneManager.MoveGameObjectToScene(fireAura.gameObject, Hero.NetworkSettings.MyRoom);
-        currentFireAura = fireAura;
+        currentFireAura = aura;
         currentFireAura.FireDarkTalent = fireDarkTalent;
-        RpcSetCurrentFireAura(fireAura);
+        RpcSetCurrentFireAura(aura);
+
+        float life = _baseDuration + (fireWorshipperTalent ? 4f : 0f);
+        _auraLifeCoroutine = StartCoroutine(DestroyAuraAfter(life, aura));
+    }
+
+    [Server]
+    private IEnumerator DestroyAuraAfter(float seconds, ReconnaissanceFireAura aura)
+    {
+        yield return new WaitForSeconds(seconds);
+
+        if (aura != null && aura == currentFireAura)
+            NetworkServer.Destroy(aura.gameObject);
+
+        currentFireAura = null;
+        _auraLifeCoroutine = null;
     }
 
     [ClientRpc]
@@ -249,6 +249,7 @@ public class ReconnaissanceFire : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         _targetPoint = targetInfo.Points[0];
+        _targetPoint = Vector3.positiveInfinity;
     }
     #endregion
 }

@@ -9777,9 +9777,10 @@ MonoBehaviour:
   _rb: {fileID: -3212360757595074768}
   _force: 0
   _distance: 5
-  _speed: 2
+  _speed: 4
   duration: 4
   durationMinion: 30
+  _lifeTime: 5
 --- !u!114 &2748478463639029592
 MonoBehaviour:
   m_ObjectHideFlags: 0

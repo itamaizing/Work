@@ -27,6 +27,7 @@ public class GrowTree : Skill
     private float baseCastStreamDuration;
     private Coroutine _treeHealthCoroutine;
     private Coroutine _rangeWatch;
+    private bool _isSpawnHero;
 
     private ShotsIntoSky _shotsIntoSky;
     private ShotIntoSky _shotIntoSky;
@@ -61,10 +62,10 @@ public class GrowTree : Skill
         }
     }
 
-    private bool IsHeroInArea(Vector3 clickPoint)
+    private void ResetData()
     {
-        float sqrDistantoin = (_hero.transform.position - clickPoint).sqrMagnitude;
-        return sqrDistantoin <= Area * Area;
+        _isSpawnHero = false;
+        _currentTree = null;
     }
 
     private IEnumerator CastDistanceWatcher()
@@ -80,6 +81,7 @@ public class GrowTree : Skill
                     if (Vector3.Distance(_hero.transform.position, _targetPoint) > Radius)
                     {
                         TryCancel();
+                        ResetData();
                         break;
                     }
                 }
@@ -88,6 +90,7 @@ public class GrowTree : Skill
                     if (Vector3.Distance(_hero.transform.position, _currentTree.transform.position) > Radius)
                     {
                         TryCancel();
+                        ResetData();
                         break;
                     }
                 }
@@ -116,7 +119,13 @@ public class GrowTree : Skill
             if (GetMouseButton)
             {
                 var clickedCharacter = GetClickedCharacter(Hero);
-                if (clickedCharacter != null && clickedCharacter == _hero) _targetPoint = _hero.transform.position;
+
+                if (clickedCharacter != null && clickedCharacter == _hero)
+                {
+                    _targetPoint = _hero.transform.position;
+                    _isSpawnHero = true;
+                }
+
                 else
                 {
                     _targetPoint = GetMousePoint();
@@ -154,8 +163,7 @@ public class GrowTree : Skill
 
         StopDamageZone();
 
-        var clickedCharacter = GetClickedCharacter(Hero);
-        if (clickedCharacter != null && clickedCharacter == _hero) CmdSpawnTreeAndTeleport(_hero.transform.position);
+        if (_isSpawnHero) CmdSpawnTreeAndTeleport(_hero.transform.position);
         else CmdSpawnTree(spawnPos);
 
         yield return new WaitForSeconds(CastStreamDuration / 1.5f);
@@ -166,7 +174,7 @@ public class GrowTree : Skill
         CmdCrossFade();
         _hero.Animator.CrossFade("GrowTreeCastDelayExit", 0.1f);
 
-        _currentTree = null;
+        ResetData();
         StopRangeWatch();   
     }
 
@@ -177,31 +185,29 @@ public class GrowTree : Skill
         StopRangeWatch();
 
         if (_hero != null && _hero.Move != null) Hero.Animator.speed = 1;
-
         TreeHealthTalentExit();
 
         if (_currentTree != null) CmdRequestInterruptTree(_currentTree.netId);
-        _currentTree = null;
+
+        ResetData();
     }
     #endregion
 
     #region Auxiliary methods
     private Character GetClickedCharacter(Character hero)
     {
-        LayerMask charMask = TargetsLayers;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
         if (Physics.Raycast(ray, out RaycastHit hit, 1000f))
         {
             Vector3 clickPoint = hit.point;
-            Collider[] hits = Physics.OverlapSphere(clickPoint, Area, charMask);
+            Collider[] hits = Physics.OverlapSphere(clickPoint, Area, TargetsLayers);
             if (hits.Length == 0) return null;
-
             foreach (Collider target in hits) if (target.TryGetComponent(out Character character) && character == hero) return character;
         }
 
         return null;
     }
-
     #endregion
 
     #region [Command] / Spawn

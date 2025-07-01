@@ -16,6 +16,8 @@ public class AstralState : AbstractCharacterState
     private StateEffects _stateEffects;
     private SkinnedMeshRenderer _characterRenderer;
     private GameObject _weapon;
+    private Renderer _weaponRenderer;
+    private Material _originalWeaponMaterial;
     private Material[] _originalMaterials;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability, StatusEffect.Move };
@@ -55,9 +57,10 @@ public class AstralState : AbstractCharacterState
             _characterRenderer.materials = ghostMaterials;
         }
 
-        if (_weapon != null)
+        if (_weapon != null && (_weaponRenderer = _weapon.GetComponent<Renderer>()) != null)
         {
-            _weapon.SetActive(false);
+            _originalWeaponMaterial = _weaponRenderer.material;
+            _weaponRenderer.material = _stateEffects.MaterialGhost;
         }
 
         _originalEvadeMelee = _characterState.Character.Health.EvadeMeleeDamage;
@@ -89,15 +92,8 @@ public class AstralState : AbstractCharacterState
 
         _characterState.RemoveState(this);
 
-        if (_characterRenderer != null)
-        {
-            _characterRenderer.materials = _originalMaterials;
-        }
-
-        if (_weapon != null)
-        {
-            _weapon.SetActive(true);
-        }
+        if (_characterRenderer != null) _characterRenderer.materials = _originalMaterials;
+        if (_weapon != null) _weaponRenderer.material = _originalWeaponMaterial;
 
         _characterState.Character.Health.EvadeMeleeDamage = _originalEvadeMelee;
         _characterState.Character.Health.EvadeRangeDamage = _originalEvadeRange;
@@ -112,23 +108,13 @@ public class AstralState : AbstractCharacterState
     private void BlockPhysicalAbilities()
     {
         foreach (var skill in _characterState.Character.Abilities.Abilities)
-        {
-            if (skill.AbilityForm == AbilityForm.Physical)
-            {
-                skill.Disactive = true;
-            }
-        }
+            if (skill.AbilityForm == AbilityForm.Physical) skill.Disactive = true;
     }
 
     private void UnblockPhysicalAbilities()
     {
         foreach (var skill in _characterState.Character.Abilities.Abilities)
-        {
-            if (skill.AbilityForm == AbilityForm.Physical)
-            {
-                skill.Disactive = false;
-            }
-        }
+            if (skill.AbilityForm == AbilityForm.Physical) skill.Disactive = false;
     }
 
     private void ConvertRegenToDamage(float oldValue, float newValue)
@@ -142,8 +128,7 @@ public class AstralState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        if (_currentStacks < _maxStacks)
-            _currentStacks++;
+        if (_currentStacks < _maxStacks) _currentStacks++;
 
         _duration = _baseDuration;
         return true;

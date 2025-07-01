@@ -7408,6 +7408,10 @@ PrefabInstance:
       value: -0.007814102
       objectReference: {fileID: 0}
     - target: {fileID: 6218145857718725424, guid: 251fcb627a004ba4c87f7752c1c6829b, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6218145857718725424, guid: 251fcb627a004ba4c87f7752c1c6829b, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 005659fa302f04844a7dc56225b711f0, type: 2}
@@ -7423,6 +7427,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[4]
       value: 
       objectReference: {fileID: 2100000, guid: 73fffb737d151ae4c97c94602325ee18, type: 2}
+    - target: {fileID: 6218145857718725424, guid: 251fcb627a004ba4c87f7752c1c6829b, type: 3}
+      propertyPath: m_Materials.Array.data[5]
+      value: 
+      objectReference: {fileID: 2100000, guid: c25280d911a62b4458cecc1d9defa1e3, type: 2}
     - target: {fileID: 6341119541397085964, guid: 251fcb627a004ba4c87f7752c1c6829b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.00022219121
@@ -8060,6 +8068,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2201725961568704641, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_Drag
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2201725961568704641, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_Mass
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2201725961568704641, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_IsKinematic
       value: 1
       objectReference: {fileID: 0}
@@ -8575,6 +8591,10 @@ PrefabInstance:
       propertyPath: materialsCharacter.Array.data[3]
       value: 
       objectReference: {fileID: 2100000, guid: 73fffb737d151ae4c97c94602325ee18, type: 2}
+    - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: materialsCharacter.Array.data[4]
+      value: 
+      objectReference: {fileID: 2100000, guid: c25280d911a62b4458cecc1d9defa1e3, type: 2}
     - target: {fileID: 5338308959782739855, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.051383454
@@ -10458,6 +10478,9 @@ MonoBehaviour:
   - {x: 0, y: 0, z: 0}
   localConstants: []
   speed: 0
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8192
 --- !u!114 &6686568037796463366
 MonoBehaviour:
   m_ObjectHideFlags: 0

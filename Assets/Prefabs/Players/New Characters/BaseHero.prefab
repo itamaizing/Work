@@ -29929,6 +29929,7 @@ GameObject:
   - component: {fileID: 8388980576940739991}
   - component: {fileID: 2642994550808720876}
   - component: {fileID: 8658026411023210807}
+  - component: {fileID: 6314118239737374108}
   - component: {fileID: 2201725961568704641}
   - component: {fileID: 1550066538247365834}
   - component: {fileID: 2361216367366023055}
@@ -30037,6 +30038,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!75 &6314118239737374108
+ConstantForce:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8423443208040621164}
+  m_Enabled: 1
+  m_Force: {x: 0, y: -30, z: 0}
+  m_RelativeForce: {x: 0, y: 0, z: 0}
+  m_Torque: {x: 0, y: 0, z: 0}
+  m_RelativeTorque: {x: 0, y: 0, z: 0}
 --- !u!54 &2201725961568704641
 Rigidbody:
   m_ObjectHideFlags: 0
