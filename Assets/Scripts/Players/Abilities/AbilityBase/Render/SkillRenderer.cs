@@ -236,6 +236,7 @@ public class SkillRenderer : NetworkBehaviour
     {
         _drawAutoAttackRadius = Instantiate(_skillCircleRandererPref, transform);
         _drawAutoAttackRadius.StartDraw(radius);
+        _drawAutoAttackRadius.StartBlink(1);
     }
 
     public void StopDrawAutoAttackRadius()

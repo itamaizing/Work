@@ -14,6 +14,7 @@ public class SkillCircleRanderer : MonoBehaviour
     private Transform _targetForFollow;
     private Coroutine _drawCoroutine;
     private Coroutine _followCoroutine;
+    private Coroutine _blinkCoroutine;
 
     public void StartDraw(float radius, LayerMask layerMask)
     {
@@ -46,6 +47,11 @@ public class SkillCircleRanderer : MonoBehaviour
         _drawCoroutine = StartCoroutine(DrawJob());
     }
 
+    public void StartBlink(float duration)
+    {
+        _blinkCoroutine = StartCoroutine(BlinkJob(duration));
+    }
+
     public void SetTargetFollow(Transform targetForFollow)
     {
         transform.parent = targetForFollow;
@@ -64,6 +70,37 @@ public class SkillCircleRanderer : MonoBehaviour
             _followCoroutine = null;
         }
 
+    }
+
+    public void StopBlink()
+    {
+        if (_blinkCoroutine != null)
+        {
+            StopCoroutine(_blinkCoroutine);
+            _blinkCoroutine = null;
+        }
+    }
+
+    private IEnumerator BlinkJob(float duration)
+    {
+        bool isFadingIn = false;
+
+        while (true)
+        {
+            float targetAlpha = isFadingIn ? 1f : 0f;
+            float startAlpha = _projector.fadeFactor;
+            float elapsedTime = 0f;
+
+            while (elapsedTime < duration)
+            {
+                elapsedTime += Time.deltaTime;
+                float t = Mathf.Clamp01(elapsedTime / duration);
+                _projector.fadeFactor = Mathf.Lerp(startAlpha, targetAlpha, t);
+                yield return null;
+            }
+
+            isFadingIn = !isFadingIn; // Меняем направление
+        }
     }
 
     private IEnumerator FollowToMouseJob()
