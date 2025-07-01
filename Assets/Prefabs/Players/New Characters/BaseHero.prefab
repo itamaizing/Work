@@ -30873,6 +30873,7 @@ MonoBehaviour:
   _circle: {fileID: 1629212415153807048}
   _areaPref: {fileID: 1574982521674352815, guid: 790fb3857b30c2b4fad4375343a84fad, type: 3}
   _damageZonePref: {fileID: 6076937102363889602, guid: 586443d303441854fbd96bcd57e8ccc6, type: 3}
+  _skillCircleRandererPref: {fileID: 1372870560080565805, guid: 3bf5408269b30a941bb338dfd0133f87, type: 3}
   _line: {fileID: 11400000, guid: 7faf4d32cfcc4f54d967e4d01a0c4b65, type: 2}
   _lineZoneRender: {fileID: 3353706721240492799}
   _lineZoneRenderForQueue: {fileID: 6230188382127775273}

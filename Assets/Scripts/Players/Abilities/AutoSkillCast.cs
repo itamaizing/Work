@@ -31,14 +31,14 @@ public class AutoSkillCast
     {
         _currentSkill.TryCancel(true);
 
+        _currentSkill.SkillRender.StopDrawAutoAttackRadius();
+
         _currentSkill = null;
 
         if (_tryCastCoroutine != null)
         {
             _parentForCoroutine.StopCoroutine(_tryCastCoroutine);
             _tryCastCoroutine = null;
-
-            _currentSkill.SkillRender.StopDrawAutoAttackRadius();
         }
     }
 

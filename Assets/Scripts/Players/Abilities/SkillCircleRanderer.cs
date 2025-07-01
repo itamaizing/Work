@@ -20,7 +20,7 @@ public class SkillCircleRanderer : MonoBehaviour
         _radius = radius;
         _layerMask = layerMask;
 
-        var size = new Vector3 (_radius, _radius, 8);
+        var size = new Vector3 (_radius * 2, _radius * 2, 8);
         _projector.size = size;
 
         _drawCoroutine = StartCoroutine(DrawJob(_layerMask));
@@ -30,7 +30,7 @@ public class SkillCircleRanderer : MonoBehaviour
     {
         _radius = radius;
 
-        var size = new Vector3(_radius, _radius, 8);
+        var size = new Vector3(_radius * 2, _radius * 2, 8);
         _projector.size = size;
 
         _drawCoroutine = StartCoroutine(DrawJob(target));
@@ -40,7 +40,7 @@ public class SkillCircleRanderer : MonoBehaviour
     {
         _radius = radius;
 
-        var size = new Vector3(_radius, _radius, 8);
+        var size = new Vector3(_radius * 2, _radius * 2, 8);
         _projector.size = size;
 
         _drawCoroutine = StartCoroutine(DrawJob());
