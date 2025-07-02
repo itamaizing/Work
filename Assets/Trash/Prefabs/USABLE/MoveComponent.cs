@@ -205,7 +205,6 @@ public class MoveComponent : NetworkBehaviour
                 _rigidbody.velocity = Vector3.zero;
                 _currentVelocityTemp = Vector3.zero;
                 _currentVelocity = Vector3.zero;
-			    _dir = Vector3.zero;
             } 
 
 			return;

@@ -4,13 +4,11 @@ using UnityEngine;
 public class IrradiationState : AbstractCharacterState
 {
     private float _baseDuration;
-    private int _currentStacks = 1;
-    private const int _maxStacks = 3;
     private const float _magicDefenseReduction = 0.03f;
     private const float _durationIncrease = 1.0f;
     private float _duration;
 
-    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability, StatusEffect.AbilitySchool };
+    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability};
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override States State => States.Irradiation;
     public override StateType Type => StateType.Magic;
@@ -23,6 +21,8 @@ public class IrradiationState : AbstractCharacterState
         _personWhoMadeBuff = personWhoMadeBuff;
         _baseDuration = durationToExit;
         _duration = _baseDuration;
+
+        MaxStacksCount = 3;
 
         ApplyMagicDefenseReduction();
         ExtendNegativeMagicEffectsDuration();
@@ -47,14 +47,14 @@ public class IrradiationState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        if (_currentStacks < _maxStacks)
+        if (CurrentStacksCount < MaxStacksCount)
         {
-            _currentStacks++;
+            CurrentStacksCount++;
             _duration = _baseDuration;
             ApplyMagicDefenseReduction();
             ExtendNegativeMagicEffectsDuration();
 
-            Debug.Log($"Stacking Irradiation. Current stacks: {_currentStacks}, New duration: {_duration}s");
+            Debug.Log($"Stacking Irradiation. Current stacks: {CurrentStacksCount}, New duration: {_duration}s");
             return true;
         }
         else
@@ -72,7 +72,7 @@ public class IrradiationState : AbstractCharacterState
 
     private void RestoreMagicDefense()
     {
-        _characterState.Character.Health.DefMagDamage += _magicDefenseReduction * _currentStacks;
+        _characterState.Character.Health.DefMagDamage += _magicDefenseReduction * CurrentStacksCount;
     }
 
     private void ExtendNegativeMagicEffectsDuration()

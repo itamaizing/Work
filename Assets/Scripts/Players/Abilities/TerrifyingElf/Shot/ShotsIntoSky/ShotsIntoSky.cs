@@ -165,7 +165,7 @@ public class ShotsIntoSky : Skill
     private void CleanupProjectileList()
     {
         for (int i = _arrowsIntoSkyProjectileIds.Count - 1; i >= 0; i--)
-            if (!NetworkServer.spawned.TryGetValue(_arrowsIntoSkyProjectileIds[i], out var ni) || ni == null) _arrowsIntoSkyProjectileIds.RemoveAt(i);
+            if (!NetworkServer.spawned.TryGetValue(_arrowsIntoSkyProjectileIds[i], out NetworkIdentity networkIdentity) || networkIdentity == null) _arrowsIntoSkyProjectileIds.RemoveAt(i);
     }
 
     [Server]

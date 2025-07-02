@@ -306,7 +306,7 @@ MonoBehaviour:
   FadeFront: {fileID: 8840733699316396103}
   border: {fileID: 8198237863679495113}
   Text: {fileID: 4155404359644864402}
-  count: 1
+  count: 0
   state: 33
   time: []
   maxStack: 0
