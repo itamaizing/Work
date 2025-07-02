@@ -1,6 +1,8 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Bound : AbstractCharacterState
 {
@@ -9,6 +11,8 @@ public class Bound : AbstractCharacterState
 	private float _duration;
 	private static readonly int _stunTrigger = Animator.StringToHash("Rope");
 	private static readonly int _stunTriggerExit = Animator.StringToHash("RopeExit");
+	private GameObject _spawnedTrap;
+	private bool _stateClosing;
 
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.Ability };
 	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
@@ -36,8 +40,21 @@ public class Bound : AbstractCharacterState
 		_characterState.Character.Animator.SetTrigger(_stunTrigger);
 		_characterState.Character.NetworkAnimator.SetTrigger(_stunTrigger);
 
+		if (character.StateEffects.TrapPrefab)
+		{
+			_spawnedTrap = GameObject.Instantiate(character.StateEffects.TrapPrefab, character.transform.position, Quaternion.identity, character.transform);
+			_spawnedTrap.AddComponent<TrapStateLife>().Init(this);
+		}
+
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
+	}
+
+	public void NotifyTrapDestroyed()
+	{
+		if (_stateClosing) return;
+		_stateClosing = true;
+		ExitState();
 	}
 
 	public override void UpdateState()
@@ -48,6 +65,8 @@ public class Bound : AbstractCharacterState
 
 	public override void ExitState()
 	{
+		_stateClosing = true;
+		GameObject.Destroy(_spawnedTrap);
 		_characterState.RemoveState(this);
 		if (!_characterState.Check(StatusEffect.Move)) _characterState.Character.Move.IsMoveBlocked = false;
 		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null) _abilities.SetAbilitiesEnabled();

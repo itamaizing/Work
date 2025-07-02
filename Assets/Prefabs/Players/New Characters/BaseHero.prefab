@@ -30328,6 +30328,7 @@ MonoBehaviour:
   suppressionMove: {fileID: 3995062756968997314}
   manaRegen: {fileID: 4923373841811288580}
   ropeTrap: {fileID: 4104177574983377935}
+  trapPrefab: {fileID: 7460133517014728669, guid: 6fb2c64c6de91b348a2fca1cc340de43, type: 3}
   materialsCharacter:
   - {fileID: 2100000, guid: acfa2dc1ef192cb4391aecaaff8e192f, type: 2}
   weapon: {fileID: 0}
