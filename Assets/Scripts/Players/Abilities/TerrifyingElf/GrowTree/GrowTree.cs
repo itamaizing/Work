@@ -20,6 +20,9 @@ public class GrowTree : Skill
     [SerializeField] private bool treeMagicEvadeTalent;
     [SerializeField] private bool treeShotCooldownTalent;
 
+    [Header("Raycast masks")]
+    [SerializeField] private LayerMask groundLayer;
+
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private Tree _currentTree;
     private ObjectHealth _healthTree;
@@ -128,8 +131,8 @@ public class GrowTree : Skill
 
                 else
                 {
-                    _targetPoint = GetMousePoint();
-                    if (!IsPointInRadius(Radius, _targetPoint)) _targetPoint = Vector3.positiveInfinity;
+                    _targetPoint = GetMousePointOnLayer(groundLayer);
+                    if (float.IsPositiveInfinity(_targetPoint.x) || !IsPointInRadius(Radius, _targetPoint)) _targetPoint = Vector3.positiveInfinity;
                 }
             }
             yield return null;
@@ -176,6 +179,20 @@ public class GrowTree : Skill
 
         ResetData();
         StopRangeWatch();   
+    }
+
+    protected Vector3 GetMousePointOnLayer(LayerMask layer, float y = 0f)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, 1000f, layer))
+        {
+            Vector3 point = hit.point;
+            point.y = y;
+            return point;
+        }
+
+        return Vector3.positiveInfinity;
     }
 
     #region Canceling a skill

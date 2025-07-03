@@ -10265,7 +10265,7 @@ MonoBehaviour:
     m_Bits: 0
   _obstacle:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
@@ -10287,8 +10287,13 @@ MonoBehaviour:
   trapPrefab: {fileID: 8854555355593262939, guid: 6a81e52aeaba98147875ba1791e1e4c8, type: 3}
   owner: {fileID: 4534754468497973439}
   minDistanceRadiusCircle: {fileID: 6586971803846960611}
+  arrowTrapProjectile: {fileID: 8210468906149221731, guid: 1f4d53244aee70742bb830f397fd8636, type: 3}
+  spawnPoint: {fileID: 7608591018717630632}
   minDistanceRadius: 2
   distanceforTrap: 2.1
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8192
 --- !u!114 &2248569995468415066
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10323,7 +10328,7 @@ MonoBehaviour:
     m_Bits: 512
   _obstacle:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   _castDuration: 1.5
   _manaCostRate: 0
   _manaCostPerTick: []
@@ -10350,6 +10355,9 @@ MonoBehaviour:
   treeHealthTalent: 0
   treeMagicEvadeTalent: 0
   treeShotCooldownTalent: 0
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8192
 --- !u!114 &1612167112411553268
 MonoBehaviour:
   m_ObjectHideFlags: 0

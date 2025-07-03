@@ -24,6 +24,9 @@ public class Bound : AbstractCharacterState
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		_characterState = character;
+		_stateClosing = false;
+		turnOff = false;
+		_spawnedTrap = null;
 
 		if (character.TryGetComponent<Character>(out var ability))
 		{
@@ -35,15 +38,15 @@ public class Bound : AbstractCharacterState
 		_characterState.Character.Move.IsMoveBlocked = true;
 		_characterState.Character.Move.StopMoveAnimation();
 
-		if(_characterState.TryGetComponent<StateEffects>(out StateEffects stateEffects)) stateEffects.RopeTrap.SetActive(true);
-
-		_characterState.Character.Animator.SetTrigger(_stunTrigger);
-		_characterState.Character.NetworkAnimator.SetTrigger(_stunTrigger);
-
-		if (character.StateEffects.TrapPrefab)
+		if (character.isServer && character.StateEffects.TrapPrefab)
 		{
-			_spawnedTrap = GameObject.Instantiate(character.StateEffects.TrapPrefab, character.transform.position, Quaternion.identity, character.transform);
-			_spawnedTrap.AddComponent<TrapStateLife>().Init(this);
+			_spawnedTrap = GameObject.Instantiate(character.StateEffects.TrapPrefab, character.transform.position,Quaternion.identity);
+
+			var life = _spawnedTrap.GetComponent<TrapStateLife>();
+			life.Init(character.gameObject);
+
+			NetworkServer.Spawn(_spawnedTrap);
+			_spawnedTrap.transform.SetParent(character.transform, true);
 		}
 
 		_duration = durationToExit;
@@ -66,15 +69,22 @@ public class Bound : AbstractCharacterState
 	public override void ExitState()
 	{
 		_stateClosing = true;
-		GameObject.Destroy(_spawnedTrap);
+		if (_spawnedTrap) NetworkServer.Destroy(_spawnedTrap);
 		_characterState.RemoveState(this);
 		if (!_characterState.Check(StatusEffect.Move)) _characterState.Character.Move.IsMoveBlocked = false;
 		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null) _abilities.SetAbilitiesEnabled();
 		if (_characterState.TryGetComponent<StateEffects>(out StateEffects stateEffects)) stateEffects.RopeTrap.SetActive(false);
-		_characterState.Character.Animator.ResetTrigger(_stunTrigger);
-		_characterState.Character.NetworkAnimator.ResetTrigger(_stunTrigger);
-		_characterState.Character.Animator.SetTrigger(_stunTriggerExit);
-		_characterState.Character.NetworkAnimator.SetTrigger(_stunTriggerExit);
+
+		var animator = _characterState.Character.Animator;
+		var netAnimator = _characterState.Character.NetworkAnimator;
+
+		animator.ResetTrigger(_stunTrigger);
+		animator.SetTrigger(_stunTriggerExit);
+		if (netAnimator && netAnimator.isOwned)
+        {
+			_characterState.Character.Animator.SetTrigger(_stunTriggerExit);
+			_characterState.Character.NetworkAnimator.SetTrigger(_stunTriggerExit);
+		}
 
 		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null) foreach (var skill in _abilities.Abilities) skill.Disactive = false;
 	}
