@@ -64,7 +64,7 @@ public class Sleep : AbstractCharacterState
     {
         Debug.Log("Ёффект сна закончилс€");
 
-        for (int i = 0; i < 6; i++) _characterState.AddStateLogic(States.InnerDarkness, 13, 0f, Schools.None, _source.gameObject, null);
+        for (int i = 0; i < 3; i++) _characterState.AddStateLogic(States.InnerDarkness, 13, 0f, Schools.None, _source.gameObject, null);
 
         if (_sleepCoroutine != null)
         {

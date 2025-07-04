@@ -21,6 +21,25 @@ public class SongOfSleep : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo) => _target = (Character)targetInfo.Targets[0];
 
+    private void OnDestroy()
+    {
+        OnSkillCanceled -= HandleSkillCanceled;
+    }
+
+    private void OnEnable()
+    {
+        OnSkillCanceled += HandleSkillCanceled;
+    }
+
+    private void HandleSkillCanceled()
+    {
+        if (_hero?.Move != null)
+        {
+            Hero.Move.CanMove = true;
+            Hero.Move.StopLookAt();
+        }
+    }
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         StartRadiusRender();
@@ -38,6 +57,9 @@ public class SongOfSleep : Skill
             yield break;
         }
 
+        Hero.Move.LookAtPosition(_target.transform.position);
+        Hero.Move.CanMove = false;
+
         TargetInfo targetInfo = new();
         targetInfo.Targets.Add(_target);
         callbackDataSaved(targetInfo);
@@ -51,6 +73,8 @@ public class SongOfSleep : Skill
             TryUseCharge();
         }
 
+        Hero.Move.CanMove = true;
+        Hero.Move.StopLookAt();
         ClearData();
         yield return null;
     }

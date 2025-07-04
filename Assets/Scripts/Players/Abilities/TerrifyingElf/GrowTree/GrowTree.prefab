@@ -25,8 +25,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 627156916684284543}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 9.47, z: 0}
-  m_LocalScale: {x: 3.3333328, y: 3.333333, z: 3.3333328}
+  m_LocalPosition: {x: 0, y: 8.61, z: 0}
+  m_LocalScale: {x: 3, y: 3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 902331969552395258}
@@ -256,7 +256,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.14043403, g: 1, b: 0, a: 1}
+  m_Color: {r: 0.2871185, g: 0.85490197, b: 0.23529412, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -470,6 +470,8 @@ GameObject:
   - component: {fileID: 7849411657799056817}
   - component: {fileID: 2097685094144883168}
   - component: {fileID: 2042335225482926251}
+  - component: {fileID: 4447215290270786159}
+  - component: {fileID: 7689718569036556876}
   m_Layer: 8
   m_Name: GrowTree
   m_TagString: Enemies
@@ -565,8 +567,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 6.284306, y: 2.0370262, z: 5.8503428}
-  m_Center: {x: 0.041549504, y: 6.0232716, z: -0.08184075}
+  m_Size: {x: 4.5904493, y: 2.0370262, z: 3.7867296}
+  m_Center: {x: 0.16133875, y: 6.0232716, z: 0.30386427}
 --- !u!65 &5464942232932519542
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -775,9 +777,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61223552b5399ec4cb555068de37de05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _object: {fileID: 1819593606891407311}
-  CircleSelect: {fileID: 9115519821676638475}
-  MarkersSelect: {fileID: 7500440178365392226}
+  objectHealth: {fileID: 7494791652124082300}
+  circleSelect: {fileID: 9115519821676638475}
+  minimapMarker: {fileID: 7500440178365392226}
+  damageSpawn: {fileID: 5087257125756015543}
+  regenSpawn: {fileID: 5943163962993724100}
+  popupPrefab: {fileID: 3712476584407953316, guid: b8ec9c7fb2a215a418a41efc3aec9187, type: 3}
+  popupSpawnDelay: 0.2
 --- !u!114 &2042335225482926251
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -793,6 +799,42 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+--- !u!114 &4447215290270786159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2058911381882631605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f9c63c6a7dd64748ac13474f5a6e770, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+--- !u!65 &7689718569036556876
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2058911381882631605}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 4.3450894, y: 0.11179183, z: 3.602282}
+  m_Center: {x: 0.18185237, y: 7.433134, z: 0.28462636}
 --- !u!1 &2412534617357909401
 GameObject:
   m_ObjectHideFlags: 0
@@ -1116,12 +1158,13 @@ RectTransform:
   m_GameObject: {fileID: 4515297356190806916}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 0.35, y: 0.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8160367107108660469}
   - {fileID: 7230302880253720330}
   - {fileID: 5087257125756015543}
+  - {fileID: 5943163962993724100}
   - {fileID: 9159012417430660027}
   m_Father: {fileID: 7769555048547996800}
   m_RootOrder: -1
@@ -1305,7 +1348,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.021900177, y: 0}
+  m_AnchoredPosition: {x: -0.021900296, y: 0}
   m_SizeDelta: {x: -0.0438, y: -0.366}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &5328451558564162870
@@ -1605,6 +1648,42 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &5248701061481125220
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5943163962993724100}
+  m_Layer: 5
+  m_Name: RegenSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &5943163962993724100
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5248701061481125220}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 902331969552395258}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &6177051487593769283
 GameObject:
   m_ObjectHideFlags: 0

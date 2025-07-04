@@ -54,7 +54,7 @@ public class ArrowsIntoSkyProjectile : NetworkBehaviour
     [Server]
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject == _dad.gameObject) return;
+        //if (other.gameObject == _dad.gameObject) return;
         if (((1 << other.gameObject.layer) & _skill.TargetsLayers.value) == 0) return;
         if (!_damagedThisTick.Add(other)) return;
 

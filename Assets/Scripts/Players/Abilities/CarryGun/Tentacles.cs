@@ -109,10 +109,6 @@ public class Tentacles : Skill
 
                         _isClickedOnGround = true;
 
-                        TargetInfo targetInfo = new TargetInfo();
-                        targetInfo.Points.Add(_spawnPoint);
-                        callbackDataSaved(targetInfo);
-
                         yield break;
                     }
                 }
@@ -214,6 +210,10 @@ public class Tentacles : Skill
         TrySpendAttackingPsi();
 
         if (_previewInstance != null) Destroy(_previewInstance.gameObject);
+
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(_spawnPoint);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()

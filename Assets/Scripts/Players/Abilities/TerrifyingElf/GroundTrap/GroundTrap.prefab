@@ -584,7 +584,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 1, b: 0.03467822, a: 1}
+  m_Color: {r: 0.28627452, g: 0.854902, b: 0.23529413, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1356,6 +1356,42 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &6626340286168501825
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3270168903113003944}
+  m_Layer: 5
+  m_Name: RegenSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &3270168903113003944
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6626340286168501825}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3929026501980782795}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &7022838640507987714
 GameObject:
   m_ObjectHideFlags: 0
@@ -1784,9 +1820,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61223552b5399ec4cb555068de37de05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _object: {fileID: 6127363919028890537}
-  CircleSelect: {fileID: 6574103860510413342}
-  MarkersSelect: {fileID: 7478293961085099732}
+  objectHealth: {fileID: 2327976221635376660}
+  circleSelect: {fileID: 0}
+  minimapMarker: {fileID: 0}
+  damageSpawn: {fileID: 5700782681630915770}
+  regenSpawn: {fileID: 3270168903113003944}
+  popupPrefab: {fileID: 3712476584407953316, guid: b8ec9c7fb2a215a418a41efc3aec9187, type: 3}
+  popupSpawnDelay: 0.2
 --- !u!1 &8274721181475435267
 GameObject:
   m_ObjectHideFlags: 0
@@ -1897,6 +1937,7 @@ RectTransform:
   - {fileID: 2559404545600801610}
   - {fileID: 3963527185994403313}
   - {fileID: 5700782681630915770}
+  - {fileID: 3270168903113003944}
   - {fileID: 1914356522271021005}
   m_Father: {fileID: 7273058446324706484}
   m_RootOrder: -1
@@ -2007,7 +2048,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -4, y: 0.6999998}
+  m_SizeDelta: {x: -5, y: 0.6999998}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &8881106091632000010
 GameObject:

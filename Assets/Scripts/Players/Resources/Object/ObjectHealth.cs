@@ -152,6 +152,7 @@ public class ObjectHealth : Resource, IDamageable
                 Destroy(gameObject);
             }
 
+            if (isServer) RpcPopupDamage(damage.Value);
             return true;
         }
         return false;
@@ -231,6 +232,13 @@ public class ObjectHealth : Resource, IDamageable
     {
         _currentHealth = Mathf.Clamp(newValue, 0, MaxValue);
         OnHealthChanged(_currentHealth, _currentHealth);
+    }
+
+    [ClientRpc]
+    private void RpcPopupDamage(float value)
+    {
+        Damage damage = new Damage { Value = value, Type = DamageType.Physical };
+        DamageTaken?.Invoke(damage, null);          // skill можно не передавать
     }
 
     public void ShowPhantomValue(Damage phantomValue)

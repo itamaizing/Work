@@ -29,8 +29,9 @@ public class AbilityNameBox : MonoBehaviour
         if (skill.Damage > 0)
         {
             _descriptionWithNumbers.text += $"\nУрон: {ColorOpen}{skill.Damage}{ColorEnd}";
-            WriteTypeDamage(skill);
         }
+
+        WriteTypeDamage(skill);
 
         if (skill.CastDeley > 0)
             _descriptionWithNumbers.text += $"\nПодготовка: {ColorOpen}{skill.CastDeley} сек{ColorEnd}";
@@ -53,7 +54,7 @@ public class AbilityNameBox : MonoBehaviour
         switch (skill.DamageType)
         {
             case DamageType.Magical:
-                _descriptionWithNumbers.text += " магия";
+                _descriptionWithNumbers.text += " \nмагия";
                 switch (skill.School)
                 {
                     case Schools.Light:
