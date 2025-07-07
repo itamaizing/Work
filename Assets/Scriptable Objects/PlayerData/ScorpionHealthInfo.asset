@@ -17,5 +17,3 @@ MonoBehaviour:
   _evadeMeleeDamage: 5
   _evadeRangeDamage: 5
   _evadeMagDamage: 5
-  _absorbPhysDamage: 0
-  _absorbMagDamage: 0

@@ -12,6 +12,7 @@ public abstract class AbstractCharacterState
 
 	public int CurrentStacksCount = 0;
 	public int MaxStacksCount = 0;
+	public float duration;
 
 	public abstract States State { get; }
 	public abstract StateType Type { get; }

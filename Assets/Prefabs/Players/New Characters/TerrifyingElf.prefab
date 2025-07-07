@@ -8375,6 +8375,22 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4236290764060667860, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_fontColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4236290764060667860, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_fontColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4236290764060667860, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_fontColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4236290764060667860, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 4323459146265591484, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.14642458
@@ -9977,7 +9993,7 @@ MonoBehaviour:
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 0
-  _isDynamicRenderer: 0
+  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   skillRenderer: {fileID: 2807589928063243029}

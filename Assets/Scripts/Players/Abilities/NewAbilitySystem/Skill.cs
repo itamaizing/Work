@@ -30,7 +30,6 @@ public class TargetToShot
     public bool isCharater = false;
 }
 
-
 public enum Schools
 {
     Light,
@@ -179,6 +178,8 @@ public abstract class Skill : NetworkBehaviour
     public StatsBuff Buff => _statsBuff;
     public string Name => _abilityInfo.Name;
     public string Description => _abilityInfo.Description;
+    public string State => _abilityInfo.State; // test: we output the name of the state
+    public string DescriptionState => _abilityInfo.DescriptionState; // test: we output a description of the state
     public Sprite Icon => _abilityInfo.Icon;
     public AbilityInfo AbilityInfoHero { get => _abilityInfo; set => _abilityInfo = value; }
     public bool IsCooldowned { get => _remainingCooldownTime <= 0; }

@@ -1,3 +1,5 @@
+using Mirror;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,6 +21,8 @@ public class AstralState : AbstractCharacterState
     private Renderer _weaponRenderer;
     private Material _originalWeaponMaterial;
     private Material[] _originalMaterials;
+
+    private Coroutine _dotJob;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability, StatusEffect.Move };
 
@@ -70,11 +74,12 @@ public class AstralState : AbstractCharacterState
 
         _characterState.Character.Health.SetEvadePhys(100);
         _characterState.Character.Health.SetEvadeMagicDecrease(10);
-        _characterState.Character.Health.RegenerationValue = -Mathf.Abs(_characterState.Character.Health.RegenerationValue);
+        _characterState.Character.Health.RegenerationValue = 0;
         _characterState.Character.Move.ChangeMoveSpeed(0.5f);
 
         BlockPhysicalAbilities();
-        _characterState.Character.Health.ValueChanged += ConvertRegenToDamage;
+
+        if (_characterState.isServer) _dotJob = _characterState.StartCoroutine(DotJob());
     }
 
     public override void UpdateState()
@@ -98,11 +103,13 @@ public class AstralState : AbstractCharacterState
         _characterState.Character.Health.EvadeMeleeDamage = _originalEvadeMelee;
         _characterState.Character.Health.EvadeRangeDamage = _originalEvadeRange;
         _characterState.Character.Health.SetEvadeMagic(_originalEvadeMagical);
-        _characterState.Character.Health.RegenerationValue = _originalRegenerationValue;
         _characterState.Character.Move.ChangeMoveSpeed(2);
 
+        if (_dotJob != null) _characterState.StopCoroutine(_dotJob);
+        _characterState.Character.Health.RegenerationValue = _originalRegenerationValue;
         UnblockPhysicalAbilities();
-        _characterState.Character.Health.ValueChanged -= ConvertRegenToDamage;
+
+        _characterState.RemoveState(this);
     }
 
     private void BlockPhysicalAbilities()
@@ -117,20 +124,25 @@ public class AstralState : AbstractCharacterState
             if (skill.AbilityForm == AbilityForm.Physical) skill.Disactive = false;
     }
 
-    private void ConvertRegenToDamage(float oldValue, float newValue)
-    {
-        if (newValue > oldValue)
-        {
-            float regenAmount = newValue - oldValue;
-            _characterState.Character.Health.CmdAdd(regenAmount);
-        }
-    }
-
     public override bool Stack(float time)
     {
         if (_currentStacks < _maxStacks) _currentStacks++;
 
         _duration = _baseDuration;
         return true;
+    }
+
+    private IEnumerator DotJob()
+    {
+        float period = _characterState.Character.Health.RegenerationDelay;
+        if (period <= 0) period = 1f;
+
+        while (true)
+        {
+            yield return new WaitForSeconds(period);
+
+            float damage = _originalRegenerationValue;
+            if (damage > 0) _characterState.Character.Health.TryUse(damage);
+        }
     }
 }

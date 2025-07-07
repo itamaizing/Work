@@ -4,9 +4,8 @@ using UnityEngine;
 public class IrradiationState : AbstractCharacterState
 {
     private float _baseDuration;
+    private float _durationIncrease = 1;
     private const float _magicDefenseReduction = 0.03f;
-    private const float _durationIncrease = 1.0f;
-    private float _duration;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability};
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
@@ -16,31 +15,30 @@ public class IrradiationState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
+
         Debug.Log("Entering Irradiation State");
         _characterState = character;
         _personWhoMadeBuff = personWhoMadeBuff;
         _baseDuration = durationToExit;
-        _duration = _baseDuration;
+        duration = _baseDuration;
 
+        _characterState.OnStateAdded += OnNewStateAdded;
         MaxStacksCount = 3;
 
+        ExtendExistingNegativeMagic();
         ApplyMagicDefenseReduction();
-        ExtendNegativeMagicEffectsDuration();
     }
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-        if (_duration <= 0)
-        {
-            ExitState();
-        }
+        duration -= Time.deltaTime;
+        if (duration <= 0) ExitState();
     }
 
     public override void ExitState()
     {
-        Debug.Log("Exiting Irradiation State");
         _characterState.RemoveState(this);
+        _characterState.OnStateAdded -= OnNewStateAdded;
 
         RestoreMagicDefense();
     }
@@ -50,17 +48,16 @@ public class IrradiationState : AbstractCharacterState
         if (CurrentStacksCount < MaxStacksCount)
         {
             CurrentStacksCount++;
-            _duration = _baseDuration;
+            duration = _baseDuration;
             ApplyMagicDefenseReduction();
-            ExtendNegativeMagicEffectsDuration();
 
-            Debug.Log($"Stacking Irradiation. Current stacks: {CurrentStacksCount}, New duration: {_duration}s");
+            Debug.Log($"Stacking Irradiation. Current stacks: {CurrentStacksCount}, New duration: {duration}s");
             return true;
         }
         else
         {
-            _duration = _baseDuration;
-            Debug.Log($"Max stacks reached. Refreshing Irradiation duration: {_duration}s");
+            duration = _baseDuration;
+            Debug.Log($"Max stacks reached. Refreshing Irradiation duration: {duration}s");
             return false;
         }
     }
@@ -75,13 +72,21 @@ public class IrradiationState : AbstractCharacterState
         _characterState.Character.Health.DefMagDamage += _magicDefenseReduction * CurrentStacksCount;
     }
 
-    private void ExtendNegativeMagicEffectsDuration()
+    private void OnNewStateAdded(AbstractCharacterState newState)
+    {
+        if (newState == this) return;
+        if (newState.Type == StateType.Magic && newState.BaffDebaff == BaffDebaff.Debaff) newState.duration += _durationIncrease;
+    }
+
+    private void ExtendExistingNegativeMagic()
     {
         foreach (var state in _characterState.CurrentStates)
         {
-            if (state != this && state.Type == StateType.Magic)
+            if (state == this) continue;
+            if (state.Type == StateType.Magic &&
+                state.BaffDebaff == BaffDebaff.Debaff)
             {
-                state.Stack(_baseDuration + _durationIncrease);
+                state.duration += _durationIncrease;
             }
         }
     }
