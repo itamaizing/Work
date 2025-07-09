@@ -43,6 +43,76 @@ public abstract class AbstractCharacterState
 	public abstract bool Stack(float time);
 }
 
+public abstract class AuraState : AbstractCharacterState
+{
+    private Character _self;
+    private Transform _auraCentre;
+    private float _distance;
+    private LayerMask _layerMask;
+    private List<Character> _charactersInRadius;
+    private List<Collider> _collidersInRadius;
+
+    protected AuraState(Character self, Transform auraCentre, float distance, LayerMask layerMask, List<Character> charactersInRadius, List<Collider> collidersInRadius)
+    {
+        _self = self;
+        _auraCentre = auraCentre;
+        _distance = distance;
+        _layerMask = layerMask;
+        _charactersInRadius = charactersInRadius;
+        _collidersInRadius = collidersInRadius;
+    }
+    public abstract void EffectOnEnter(Character character);
+    public abstract void EffectOnExit(Character character);
+    public abstract void EffectOnStay(List<Character> characters);
+
+    public override StateType Type => StateType.Aura;
+
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        _characterState = character;
+    }
+
+    public override void UpdateState()
+    {
+        if (NetworkServer.active == false)
+        {
+            var colliders = Physics.OverlapSphere(_auraCentre.position, _distance, _layerMask);
+
+            foreach (Collider collider in colliders)
+            {
+                if (_collidersInRadius.Contains(collider) == false && collider.TryGetComponent(out Character character))
+                {
+                    EffectOnExit(character);
+                }
+            }
+            _collidersInRadius.Clear();
+            _charactersInRadius.Clear();
+
+            foreach (Collider collider in colliders)
+            {
+                _collidersInRadius.Add(collider);
+
+                if (collider.TryGetComponent(out Character character) && _charactersInRadius.Contains(character) == false)
+                {
+                    _charactersInRadius.Add(character);
+                    EffectOnEnter(character);
+                }
+            }
+            EffectOnStay(_charactersInRadius);
+        }
+    }
+
+    public override void ExitState()
+    {
+        _characterState.RemoveState(this);
+    }
+
+    public override bool Stack(float time)
+    {
+        return false;
+    }
+}
+
 public class DefaultState : AbstractCharacterState
 {
 	private List<StatusEffect> _effects = new List<StatusEffect>();
