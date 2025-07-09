@@ -25,6 +25,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 	[SerializeField] private SelectedCircle _selectedCircle;
 	[SerializeField] private SpawnComponent _spawnComponent;
 	[SerializeField] private VisionComponent _visionComponent;
+	[SerializeField] private Auras _auras;
 
 	[SyncVar] private int _killCounter;
 	[SyncVar] private float _damageTakeCounter;
@@ -77,10 +78,9 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
     public float DamageTakeCounter { get => _damageTakeCounter; set => _damageTakeCounter = value; }
     public float DamageGetCounter { get => _damageGetCounter; set => _damageGetCounter = value; }
     public VisionComponent VisionComponent { get => _visionComponent; }
-
     public Vector3 Position => transform.position;
-
     public Transform Transform => transform;
+    public Auras Auras { get => _auras; }
 
     public static event Action<Character> ServerOnUnitSpawned;
 	public static event Action<Character> ServerOnUnitDeleted; 

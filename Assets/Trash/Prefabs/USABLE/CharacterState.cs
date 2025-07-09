@@ -3,6 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+public class StateInfo
+{
+    public States State;
+    public float Duration;
+    public float DamageToExit;
+    public GameObject PersonWhoShooted;
+    public string SkillName;
+
+    public StateInfo(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
+    {
+        State = state;
+        Duration = duration;
+        DamageToExit = damageToExit;
+        PersonWhoShooted = personWhoShooted;
+        SkillName = skillName;
+    }
+}
+
 public abstract class AbstractCharacterState
 {
 	protected CharacterState _characterState;
@@ -554,7 +572,8 @@ public enum StateType
 {
 	Physical,
 	Magic,
-	Immaterial
+	Immaterial,
+	Aura
 }
 
 public enum StatusEffect
