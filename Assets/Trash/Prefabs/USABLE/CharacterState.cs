@@ -49,7 +49,8 @@ public abstract class AuraState : AbstractCharacterState
 	private Character _self;
     private Transform _auraCentre;
     private List<Character> _charactersInRadius = new();
-    private List<Collider> _collidersInRadius = new();
+    private List<Collider> _collidersKeysForRemove = new();
+	private Dictionary<Collider, Character> _colliderToCharacter = new();
 
     public abstract float Distance { get; }
     public abstract LayerMask LayerMask { get; }
@@ -73,30 +74,29 @@ public abstract class AuraState : AbstractCharacterState
         {
             var colliders = Physics.OverlapSphere(_auraCentre.position, Distance, LayerMask);
 
-            foreach (Collider collider in _collidersInRadius)
-            {
-                if (colliders.Contains(collider) == false && collider.TryGetComponent(out Character character))
-                {
-					if (_charactersInRadius.Contains(character))
-					{
-						_charactersInRadius.Remove(character);
-                        EffectOnExit(character);
-                    }
-                }
-            }
-            _collidersInRadius.Clear();
+            foreach (KeyValuePair<Collider, Character> collider in _colliderToCharacter)
+			{
+				if (colliders.Contains(collider.Key) == false)
+				{
+                    EffectOnExit(collider.Value);
+					_collidersKeysForRemove.Add(collider.Key);
+				}
+			}
+			foreach (var item in _collidersKeysForRemove)
+			{
+				_colliderToCharacter.Remove(item);
+			}
+			_collidersKeysForRemove.Clear();
 
-            foreach (Collider collider in colliders)
-            {
-                _collidersInRadius.Add(collider);
-
-                if (collider.TryGetComponent(out Character character) && _charactersInRadius.Contains(character) == false)
-                {
-                    _charactersInRadius.Add(character);
-                    EffectOnEnter(character);
-                }
-            }
-            EffectOnStay(_charactersInRadius);
+            foreach (var collider in colliders)
+			{
+				if (_colliderToCharacter.ContainsKey(collider) == false && collider.TryGetComponent(out Character character))
+				{
+					_colliderToCharacter.Add(collider, character);
+					_charactersInRadius.Add(character);
+					EffectOnEnter(character);
+				}
+			}
         }
     }
 
