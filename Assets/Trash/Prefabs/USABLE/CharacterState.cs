@@ -1,6 +1,7 @@
 using Mirror;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class StateInfo
@@ -45,22 +46,14 @@ public abstract class AbstractCharacterState
 
 public abstract class AuraState : AbstractCharacterState
 {
-    private Character _self;
+	private Character _self;
     private Transform _auraCentre;
-    private float _distance;
-    private LayerMask _layerMask;
-    private List<Character> _charactersInRadius;
-    private List<Collider> _collidersInRadius;
+    private List<Character> _charactersInRadius = new();
+    private List<Collider> _collidersInRadius = new();
 
-    protected AuraState(Character self, Transform auraCentre, float distance, LayerMask layerMask, List<Character> charactersInRadius, List<Collider> collidersInRadius)
-    {
-        _self = self;
-        _auraCentre = auraCentre;
-        _distance = distance;
-        _layerMask = layerMask;
-        _charactersInRadius = charactersInRadius;
-        _collidersInRadius = collidersInRadius;
-    }
+    public abstract float Distance { get; }
+    public abstract LayerMask LayerMask { get; }
+
     public abstract void EffectOnEnter(Character character);
     public abstract void EffectOnExit(Character character);
     public abstract void EffectOnStay(List<Character> characters);
@@ -70,23 +63,28 @@ public abstract class AuraState : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _characterState = character;
+		_auraCentre = character.transform;
+		_self = character.Character;
     }
 
     public override void UpdateState()
     {
         if (NetworkServer.active == false)
         {
-            var colliders = Physics.OverlapSphere(_auraCentre.position, _distance, _layerMask);
+            var colliders = Physics.OverlapSphere(_auraCentre.position, Distance, LayerMask);
 
-            foreach (Collider collider in colliders)
+            foreach (Collider collider in _collidersInRadius)
             {
-                if (_collidersInRadius.Contains(collider) == false && collider.TryGetComponent(out Character character))
+                if (colliders.Contains(collider) == false && collider.TryGetComponent(out Character character))
                 {
-                    EffectOnExit(character);
+					if (_charactersInRadius.Contains(character))
+					{
+						_charactersInRadius.Remove(character);
+                        EffectOnExit(character);
+                    }
                 }
             }
             _collidersInRadius.Clear();
-            _charactersInRadius.Clear();
 
             foreach (Collider collider in colliders)
             {
@@ -230,8 +228,12 @@ public class CharacterState : NetworkBehaviour
 		#region Test Baff and Debaff
 		[States.BaffState] = new BaffState(),
 		[States.DebaffState] = new DebaffState(),
-		#endregion
-	};
+        #endregion
+
+        #region Test
+        [States.TestAuraState] = new TestAuraState(),
+        #endregion
+    };
 
 	public void Initialize(Character hero)
 	{
@@ -738,6 +740,10 @@ public enum States
 		BaffState,
 		DebaffState,
     #endregion
+
+    #region Test
+    TestAuraState,
+    #endregion		
 }
 public enum BaffDebaff
 {
