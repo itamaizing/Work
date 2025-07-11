@@ -13,7 +13,8 @@ public class TalantAndAttributs : MonoBehaviour
         _attributesPanel.gameObject.SetActive(true);
         _talentsPanel.gameObject.SetActive(true);
 
+        SaveManager.Instance.SetHero(character);
         _attributesPanel.Show(character.Data.Attributes);
-        _talentsPanel.Show(character.TalentManager, true);
+        _talentsPanel.Show(character.TalentManager, true, false);
     }
 }

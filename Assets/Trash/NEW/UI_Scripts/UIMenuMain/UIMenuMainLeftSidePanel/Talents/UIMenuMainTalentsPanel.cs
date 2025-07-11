@@ -13,7 +13,7 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
     
     private TalentSystem _talentSystem;
 
-    public void Show(TalentSystem talentSystem, bool isGameUI)
+    public void Show(TalentSystem talentSystem, bool isGameUI, bool isInteractable = true)
     {
         ResetPanel();
         
@@ -23,7 +23,7 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
         {
             var panel = Instantiate(_talentsPanelGroup, _itemsParent);
             
-            panel.SetPanel(data, _attributesPanel, isGameUI);
+            panel.SetPanel(data, _attributesPanel, isGameUI, isInteractable);
 
             panel.OnShowPanelGroup += HidePanels;
             panel.PointerEnteredOnTalentIcon += ShowTalentInfo;

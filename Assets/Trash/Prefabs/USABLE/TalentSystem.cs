@@ -205,14 +205,17 @@ public class TalentSystem : NetworkBehaviour
 
     public void SwitchTalent(int id, string talentName, bool isActive)
     {
-        Debug.Log("ENTER TALETNS");
 		var talentGroup = Talents.FirstOrDefault(o => o.ID == id);
 		var talent = talentGroup?.TalentsData.FirstOrDefault(o => o.Data.Name == talentName);
 
         if (isActive)
+        {
             talent.Enter();
+        }
         else
+        {
             talent.Exit();
+        } 
 	}
 
     [Command]
