@@ -89,7 +89,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
     public event Action OnDisappeared;
     public event Action OnAppeared;
     public event Action<Damage, Skill> DamageTaken;
-    public event Action<float> DamageGeted;
+    public event Action<Damage, GameObject> DamageGeted;
     public event Action<float, Skill, string> HealTaked;
 	public event Action<Character> Died;
 	public event Action Killed;
@@ -236,9 +236,9 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 		Health.Heal(ref value, sourceName, skill);
 	}
 
-	public void DamageGet(float damage)
+	public void DamageGet(Damage damage, GameObject target)
 	{
-		DamageGeted?.Invoke(damage);
+		DamageGeted?.Invoke(damage, target);
 	}
 
 	protected virtual void OnDied()
