@@ -51,8 +51,10 @@ public abstract class AuraState : AbstractCharacterState
     private List<Character> _charactersInRadius = new();
     private List<Collider> _collidersKeysForRemove = new();
 	private Dictionary<Collider, Character> _colliderToCharacter = new();
+	private float _timeAfterLastEffect = 0;
 
     public abstract float Distance { get; }
+    public abstract float EffectRate { get; }
     public abstract LayerMask LayerMask { get; }
 
     public abstract void EffectOnEnter(Character character);
@@ -72,6 +74,13 @@ public abstract class AuraState : AbstractCharacterState
     {
         if (NetworkServer.active == false)
         {
+            _timeAfterLastEffect += Time.deltaTime;
+
+            if (EffectRate > _timeAfterLastEffect)
+				return;
+
+			_timeAfterLastEffect = 0;
+
             var colliders = Physics.OverlapSphere(_auraCentre.position, Distance, LayerMask);
 
             foreach (KeyValuePair<Collider, Character> collider in _colliderToCharacter)
@@ -79,6 +88,7 @@ public abstract class AuraState : AbstractCharacterState
 				if (colliders.Contains(collider.Key) == false)
 				{
                     EffectOnExit(collider.Value);
+					_charactersInRadius.Remove(collider.Value);
 					_collidersKeysForRemove.Add(collider.Key);
 				}
 			}
@@ -97,6 +107,8 @@ public abstract class AuraState : AbstractCharacterState
 					EffectOnEnter(character);
 				}
 			}
+
+            EffectOnStay(_charactersInRadius);
         }
     }
 

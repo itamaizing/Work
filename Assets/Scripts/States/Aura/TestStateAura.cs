@@ -24,15 +24,12 @@ public class TestAuraState : AuraState
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move };
 
     public override States State => States.TestAuraState;
-
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
-
     public override List<StatusEffect> Effects => _effects;
-
     public override float Distance => 10;
-
     //public override LayerMask LayerMask => LayerMask.GetMask("Allies");
     public override LayerMask LayerMask => LayerMask.GetMask("Enemy");
+    public override float EffectRate => 1f; //раз в секунду
 
     public override void EffectOnEnter(Character character)
     {
