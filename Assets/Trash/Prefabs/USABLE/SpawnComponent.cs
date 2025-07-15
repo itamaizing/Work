@@ -33,9 +33,9 @@ public class SpawnComponent : NetworkBehaviour
     }
 
     [Command]
-    public void CmdSpawnUnitPoint(Vector3 position, Quaternion rotation)
+    public void CmdSpawnUnitInPoint(Vector3 position, int index)
     {
-        SpawnCharacter(_allyPrefab, position, rotation);
+        SpawnUnit(index, position);
     }
     #endregion
 

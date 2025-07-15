@@ -76,6 +76,14 @@ PrefabInstance:
       propertyPath: _minionPrefs.Array.data[0]
       value: 
       objectReference: {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+    - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _characterPrefabs.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _characterPrefabs.Array.data[0]
+      value: 
+      objectReference: {fileID: 3082828067594610963, guid: 137d9729a4a22a6419fff4f67971e1bf, type: 3}
     - target: {fileID: 556128977287844779, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.0404512
