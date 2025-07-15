@@ -114,10 +114,11 @@ public abstract class Resource : NetworkBehaviour
     public void ChangedMaxValue(float value)
     {
         _maxValue += value;
-
     }
 
-    public IEnumerator RegenerateJob()
+    public void Regenerate(Coroutine coroutine) => StartCoroutine(RegenerateJob());
+
+    private IEnumerator RegenerateJob()
     {
         while (true)
         {

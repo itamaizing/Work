@@ -65,25 +65,25 @@ public class ArrowProjectile : Projectiles
     #region ApplyEnemy
     private void ApplyEnemy(Collider collider)
     {
+        bool inAstral = _dad != null && _dad.CharacterState.CheckForState(States.Astral);
+
         if (_arrowDark)
         {
-            _skill.Damage = physicDamage;
+            if (!inAstral)
+            {
+                _skill.Damage = physicDamage;
+                ApplyDamage(physicDamage, damageTypePhysics, collider.gameObject);
 
-            ApplyDamage(physicDamage, damageTypePhysics, collider.gameObject);
-
-            bool physicalDamageApplied = TryApplyDamage(damageTypePhysics, _skill.AttackRangeType, collider.gameObject);
-            if (physicalDamageApplied) return;
+                if (TryApplyDamage(damageTypePhysics, _skill.AttackRangeType, collider.gameObject)) return;
+            }
 
             float availableMana = 0f;
-            if (_dad != null)
-            {
-                availableMana = _dad.Resources
-                    .Where(r => r.Type == ResourceType.Mana)
-                    .Sum(r => r.CurrentValue);
-            }
+            if (_dad != null) availableMana = _dad.Resources.Where(resourse => resourse.Type == ResourceType.Mana).Sum(resourse => resourse.CurrentValue);
 
             float bonusMagDamage = Mathf.Min(6f, Mathf.Floor(availableMana));
             float totalMagDamage = magDamage + bonusMagDamage;
+
+            if (inAstral) totalMagDamage *= 1.5f;
 
             _skill.Damage = totalMagDamage;
             ApplyDamage(totalMagDamage, _skill.DamageType, collider.gameObject);
@@ -91,7 +91,7 @@ public class ArrowProjectile : Projectiles
             if (_dad != null && bonusMagDamage > 0)
             {
                 float manaToUse = bonusMagDamage;
-                foreach (var manaResource in _dad.Resources.Where(r => r.Type == ResourceType.Mana))
+                foreach (var manaResource in _dad.Resources.Where(resourse => resourse.Type == ResourceType.Mana))
                 {
                     if (manaToUse <= 0) break;
 

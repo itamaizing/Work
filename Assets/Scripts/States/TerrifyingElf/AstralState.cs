@@ -10,10 +10,9 @@ public class AstralState : AbstractCharacterState
     private int _currentStacks = 1;
     private const int _maxStacks = 1;
 
-    private float _originalEvadeMelee;
-    private float _originalEvadeRange;
-    private float _originalEvadeMagical;
+    private float _defMagDamageMod = 50f;
     private float _originalRegenerationValue;
+    private float _originalDefPhysDamage;
 
     private StateEffects _stateEffects;
     private SkinnedMeshRenderer _characterRenderer;
@@ -25,6 +24,7 @@ public class AstralState : AbstractCharacterState
     private Coroutine _dotJob;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability, StatusEffect.Move };
+    private readonly Dictionary<Skill, float> _modifiedSkills = new();
 
     public override States State => States.Astral;
     public override StateType Type => StateType.Magic;
@@ -67,17 +67,26 @@ public class AstralState : AbstractCharacterState
             _weaponRenderer.material = _stateEffects.MaterialGhost;
         }
 
-        _originalEvadeMelee = _characterState.Character.Health.EvadeMeleeDamage;
-        _originalEvadeRange = _characterState.Character.Health.EvadeRangeDamage;
-        _originalEvadeMagical = _characterState.Character.Health.ResistMagDamage;
-        _originalRegenerationValue = _characterState.Character.Health.RegenerationValue;
+        var characterHealth = _characterState.Character.Health;
 
-        _characterState.Character.Health.SetEvadePhys(100);
-        _characterState.Character.Health.SetEvadeMagicDecrease(10);
+        _originalDefPhysDamage = characterHealth.DefPhysDamage;
+        _originalRegenerationValue = characterHealth.RegenerationValue;
+        characterHealth.DefMagDamage -= _defMagDamageMod;
+        characterHealth.DefPhysDamage = 100;
+
         _characterState.Character.Health.RegenerationValue = 0;
         _characterState.Character.Move.ChangeMoveSpeed(0.5f);
 
         BlockPhysicalAbilities();
+
+        foreach (var skill in _characterState.Character.Abilities.Abilities)
+        {
+            if (skill.AbilityForm == AbilityForm.Magic || skill.AbilityForm == AbilityForm.Spell)
+            {
+                _modifiedSkills[skill] = skill.Damage;
+                skill.Damage *= 1.5f;
+            }
+        }
 
         if (_characterState.isServer) _dotJob = _characterState.StartCoroutine(DotJob());
     }
@@ -100,14 +109,18 @@ public class AstralState : AbstractCharacterState
         if (_characterRenderer != null) _characterRenderer.materials = _originalMaterials;
         if (_weapon != null) _weaponRenderer.material = _originalWeaponMaterial;
 
-        _characterState.Character.Health.EvadeMeleeDamage = _originalEvadeMelee;
-        _characterState.Character.Health.EvadeRangeDamage = _originalEvadeRange;
-        _characterState.Character.Health.SetEvadeMagic(_originalEvadeMagical);
+        var characterHealth = _characterState.Character.Health;
+
+        characterHealth.DefMagDamage += _defMagDamageMod;
+        characterHealth.DefPhysDamage = _originalDefPhysDamage;
         _characterState.Character.Move.ChangeMoveSpeed(2);
 
         if (_dotJob != null) _characterState.StopCoroutine(_dotJob);
-        _characterState.Character.Health.RegenerationValue = _originalRegenerationValue;
+        characterHealth.RegenerationValue = _originalRegenerationValue;
         UnblockPhysicalAbilities();
+
+        foreach (var (skill, baseDamage) in _modifiedSkills) skill.Damage = baseDamage;
+        _modifiedSkills.Clear();
 
         _characterState.RemoveState(this);
     }

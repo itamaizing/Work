@@ -86,10 +86,7 @@ public class Energy : Resource
 
 	public void ForceRegenNow()
 	{
-		if (_regenCoroutine == null)
-		{
-			_regenCoroutine = StartCoroutine(RegenerateJob());
-		}
+		if (_regenCoroutine == null) Regenerate(_regenCoroutine);
 	}
 
 	public void TalentRegenEnergy(float value)

@@ -91,7 +91,7 @@ public class Fear : AbstractCharacterState
             skill.Disactive = false;
         }
         _disabledSkills.Clear();
-
+        CurrentStacksCount = 0;
         _characterState.RemoveState(this);
     }
 

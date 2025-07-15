@@ -5,7 +5,8 @@ public class IrradiationState : AbstractCharacterState
 {
     private float _baseDuration;
     private float _durationIncrease = 1;
-    private const float _magicDefenseReduction = 0.03f;
+    private const float _magicDefenseReduction = 3;
+    private float _totalAppliedReduction = 0f;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability};
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
@@ -22,8 +23,9 @@ public class IrradiationState : AbstractCharacterState
         _baseDuration = durationToExit;
         duration = _baseDuration;
 
-        _characterState.OnStateAdded += OnNewStateAdded;
         MaxStacksCount = 3;
+
+        _characterState.OnStateAdded += OnNewStateAdded;
 
         ExtendExistingNegativeMagic();
         ApplyMagicDefenseReduction();
@@ -37,10 +39,9 @@ public class IrradiationState : AbstractCharacterState
 
     public override void ExitState()
     {
+        RestoreMagicDefense();
         _characterState.RemoveState(this);
         _characterState.OnStateAdded -= OnNewStateAdded;
-
-        RestoreMagicDefense();
     }
 
     public override bool Stack(float time)
@@ -65,11 +66,13 @@ public class IrradiationState : AbstractCharacterState
     private void ApplyMagicDefenseReduction()
     {
         _characterState.Character.Health.DefMagDamage -= _magicDefenseReduction;
+        _totalAppliedReduction += _magicDefenseReduction;
     }
 
     private void RestoreMagicDefense()
     {
-        _characterState.Character.Health.DefMagDamage += _magicDefenseReduction * CurrentStacksCount;
+        _characterState.Character.Health.DefMagDamage += _totalAppliedReduction;
+        _totalAppliedReduction = 0f;
     }
 
     private void OnNewStateAdded(AbstractCharacterState newState)

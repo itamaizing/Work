@@ -23,7 +23,7 @@ public class DamageTracker : NetworkBehaviour
 
         _damageEntries.Add(new DamageEntry(damage, Time.time));
         RemoveOldServerEntries();
-        Debug.Log($"[DamageTracker] Damage added: {damage.Value}, Time: {Time.time}, School: {damage.School}");
+        Debug.Log($"[DamageTracker] Damage added: {damage.Value}, Time: {Time.time}, School: {damage.School}, DamageType: {damage.Type}");
 
         OnDamageTracked?.Invoke(damage, targetObject);
     }

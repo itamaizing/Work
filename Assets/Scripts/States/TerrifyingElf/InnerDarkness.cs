@@ -34,7 +34,6 @@ public class InnerDarkness : AbstractCharacterState
 
     public override void ExitState()
     {
-        CurrentStacksCount = 0;
         _characterState.StateIcons.RemoveItemByState(State);
         _characterState.RemoveState(this);
     }

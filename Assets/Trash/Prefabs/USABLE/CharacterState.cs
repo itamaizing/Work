@@ -280,6 +280,8 @@ public class CharacterState : NetworkBehaviour
 	{
 		if (!currentStates.Contains(newState)) return;
 
+		foreach (AbstractCharacterState state in currentStates) state.CurrentStacksCount = 0;
+
 		if (newState is IDamageable damageableShield)
 		{
 			RemoveShield(damageableShield);
