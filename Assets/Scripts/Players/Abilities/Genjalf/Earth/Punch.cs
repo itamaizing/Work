@@ -31,7 +31,20 @@ namespace Gangdollarff.EarthElemental
 
         protected override IEnumerator CastJob()
         {
-            throw new NotImplementedException();
+            Hero.Move.LookAtPosition(_target.Position);
+
+            Damage damage = new Damage
+            {
+                Value = Buff.Damage.GetBuffedValue(Damage),
+                Type = DamageType,
+                PhysicAttackType = AttackRangeType,
+                School = School,
+                Form = AbilityForm,
+             };
+
+            CmdApplyDamage(damage, _target.gameObject);
+
+            yield return null;
         }
 
         protected override void ClearData()
@@ -53,6 +66,7 @@ namespace Gangdollarff.EarthElemental
                 yield return null;
             }
 
+            Hero.Move.LookAtPosition(target.Position);
             targetInfo.Targets.Add(target);
             targetDataSavedCallback.Invoke(targetInfo);
             yield return null;

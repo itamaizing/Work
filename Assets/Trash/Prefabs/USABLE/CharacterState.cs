@@ -1,3 +1,4 @@
+using Gangdollarff.EarthElemental;
 using Mirror;
 using System.Collections.Generic;
 using System.Linq;
@@ -235,10 +236,15 @@ public class CharacterState : NetworkBehaviour
 		[States.HuntressMark] = new HuntressMark(),
 		[States.Calmness] = new Calmness(),
 		[States.Sleep] = new Sleep(),
-		#endregion
+        #endregion
 
-		#region Test Baff and Debaff
-		[States.BaffState] = new BaffState(),
+        #region Gangdollarf
+        [States.PowerOfEarth] = new PowerOfEarth(),
+        [States.EarthsHealth] = new EarthsHealth(),
+        #endregion
+
+        #region Test Baff and Debaff
+        [States.BaffState] = new BaffState(),
 		[States.DebaffState] = new DebaffState(),
         #endregion
 
@@ -748,14 +754,19 @@ public enum States
 	Sleep,
     #endregion
 
+    #region Gangdollarf
+    PowerOfEarth,
+    EarthsHealth,
+    #endregion
+
     #region Test Baff and Debaff
-		BaffState,
+    BaffState,
 		DebaffState,
     #endregion
 
     #region Test
     TestAuraState,
-    #endregion		
+    #endregion	
 }
 public enum BaffDebaff
 {
