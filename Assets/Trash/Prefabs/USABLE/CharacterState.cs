@@ -1,4 +1,5 @@
 using Gangdollarff.EarthElemental;
+using Gangdollarff.WaterElemental;
 using Mirror;
 using System.Collections.Generic;
 using System.Linq;
@@ -241,6 +242,7 @@ public class CharacterState : NetworkBehaviour
         #region Gangdollarf
         [States.PowerOfEarth] = new PowerOfEarth(),
         [States.EarthsHealth] = new EarthsHealth(),
+        [States.MagicWater] = new MagicWater(),
         #endregion
 
         #region Test Baff and Debaff
@@ -757,6 +759,7 @@ public enum States
     #region Gangdollarf
     PowerOfEarth,
     EarthsHealth,
+    MagicWater,
     #endregion
 
     #region Test Baff and Debaff
