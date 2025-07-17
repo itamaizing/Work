@@ -17,6 +17,7 @@ public class StateIcoItem : MonoBehaviour
     public States state;
     public List<float> time = new List<float>();
     public int maxStack;
+    public float currentDuration;
     /*private void AnimateIco(Image ico, float time, int stack)
     {
         ico.gameObject.SetActive(true);

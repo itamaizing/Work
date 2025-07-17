@@ -52,13 +52,10 @@ public class StateIcons : MonoBehaviour
                 {
                     ico.maxStack = maxStackValue;
 
-                    if (ico.count < ico.maxStack) ico.count += stack;
-                    ico.time.Add(timeToDecrease);
-                    if (ico.count > 0)
-                    {
-                        ico.Text.text = ico.count.ToString();
-                        ico.Text.gameObject.SetActive(true);
-                    }
+                    ico.count = Mathf.Min(ico.count + stack, ico.maxStack);
+
+                    StartProgress(ico, timeToDecrease);
+                    RefreshText(ico);
                     MoveIcoToEnd(i);
                     return;
                 }
@@ -70,20 +67,13 @@ public class StateIcons : MonoBehaviour
             if (ico.state == state)
             {
                 var newIco = Instantiate(ico, _spawnPos.transform);
-                newIco.time.Add(timeToDecrease);
                 newIco.count = stack;
                 newIco.maxStack = maxStackValue;
-                _activeEffects.Add(newIco);
-                if (timeToDecrease < 0)
-                {
-                    AnimateIco(newIco, true);
-                }
-                else
-                {
-                    AnimateIco(newIco);
-                }
 
-                _added = true;
+                StartProgress(newIco, timeToDecrease);
+                RefreshText(newIco);
+
+                _activeEffects.Add(newIco);
             }
         }
         if (!_added)
@@ -116,6 +106,39 @@ public class StateIcons : MonoBehaviour
              default:
                  break;
          }*/
+    }
+
+    private void StartProgress(StateIcoItem ico, float duration)
+    {
+        ico.currentDuration = duration;
+        ico.FadeFront.DOKill();
+        ico.FadeFront.fillAmount = 0f;
+
+        ico.FadeFront.DOFillAmount(1f, duration).SetEase(Ease.Linear).OnComplete(() => RemoveOrRestart(ico));
+    }
+
+    private void RemoveOrRestart(StateIcoItem ico)
+    {
+        if (--ico.count > 0)
+        {
+            RefreshText(ico);
+            StartProgress(ico, ico.currentDuration);
+        }
+        else
+        {
+            _activeEffects.Remove(ico);
+            Destroy(ico.gameObject);
+        }
+    }
+
+    private void RefreshText(StateIcoItem ico)
+    {
+        if (ico.count > 1)
+        {
+            ico.Text.text = ico.count.ToString();
+            ico.Text.gameObject.SetActive(true);
+        }
+        else ico.Text.gameObject.SetActive(false);
     }
 
     private void AnimateIco(StateIcoItem icoItem, bool isAnimationNotNeed = false)

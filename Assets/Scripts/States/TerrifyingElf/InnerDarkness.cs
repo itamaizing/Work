@@ -52,6 +52,12 @@ public class InnerDarkness : AbstractCharacterState
             return true;
         }
 
+        if (CurrentStacksCount == MaxStacksCount)
+        {
+            UpdateDurationForMaxStacks();
+            return true;
+        }
+
         return false;
     }
 
@@ -62,8 +68,6 @@ public class InnerDarkness : AbstractCharacterState
         CurrentStacksCount++;
 
         duration = Mathf.Max(0f, _baseDuration - (CurrentStacksCount - 1) * TimeDecreasePerStack);
-
-        if (CurrentStacksCount == MaxStacksCount) UpdateDurationForMaxStacks();
     }
 
     private void UpdateDurationForMaxStacks()

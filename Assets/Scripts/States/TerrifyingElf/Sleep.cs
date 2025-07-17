@@ -92,7 +92,6 @@ public class Sleep : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        _duration = _baseDuration;
-        return true;
+        return false;
     }
 }

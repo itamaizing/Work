@@ -34,8 +34,8 @@ public class PullingHealth : Skill
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private Transform _targetTransform;
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("PullingHealthCastDelay");
-    protected override int AnimTriggerCast => 0;
+    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCast => Animator.StringToHash("PullingHealthCastDelay");
 
     protected override bool IsCanCast
     {
@@ -48,6 +48,9 @@ public class PullingHealth : Skill
     }
 
     public event Action<Transform, IDamageable, int> OnInnerDarknessTriggered;
+
+    public void PullingHealthCast() => AnimStartCastCoroutine();
+    public void PullingHealthEnd() => AnimCastEnded();
 
     private void Start()
     {
@@ -138,7 +141,7 @@ public class PullingHealth : Skill
     {
         int innerDarknessStacks;
         Hero.Move.CanMove = false;
-
+         
         #region Work with InnerDarkness
         if (_targetCharacter is Component targetComponent)
         {

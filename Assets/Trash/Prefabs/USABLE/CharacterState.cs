@@ -390,7 +390,7 @@ public class CharacterState : NetworkBehaviour
 				currentStates[i].Stack(duration);
 				int newMaxStack = currentStates[i].MaxStacksCount;
 
-				_stateIcons.ActivateIco(state, duration, 1, true, newMaxStack);
+				_stateIcons.ActivateIco(state, currentStates[i].duration, 1, true, newMaxStack);
 
 				MoveStateToEnd(i);
 				return;

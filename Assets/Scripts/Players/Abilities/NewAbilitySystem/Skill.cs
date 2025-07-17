@@ -550,6 +550,7 @@ public abstract class Skill : NetworkBehaviour
     protected void AnimStartCastCoroutine()
     {
         _castCoroutine = StartCoroutine(CastJob());
+        if (_castDuration > 0) _castStreamCoroutine = StartCoroutine(CastStreamJob());
     }
 
     protected virtual void AnimCastEnded()
@@ -1288,9 +1289,6 @@ public abstract class Skill : NetworkBehaviour
         if (CastDeley > 0)
             yield return StartCastDeleyCoroutine();
 
-        if (_castDuration > 0)
-            _castStreamCoroutine = StartCoroutine(CastStreamJob());
-
         if (AnimTriggerCast != 0)
         {
 
@@ -1310,8 +1308,11 @@ public abstract class Skill : NetworkBehaviour
             _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
             _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
 
-            yield return _castCoroutine = StartCoroutine(CastJob());
+            _castCoroutine = StartCoroutine(CastJob());
+            if (_castDuration > 0) _castStreamCoroutine = StartCoroutine(CastStreamJob());
+            yield return _castCoroutine;
         }
+
         _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
         _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
 

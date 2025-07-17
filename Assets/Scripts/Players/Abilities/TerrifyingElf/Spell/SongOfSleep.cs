@@ -7,19 +7,25 @@ using UnityEngine.Rendering.Universal;
 
 public class SongOfSleep : Skill
 {
-    [SerializeField] private Character _playerLinks;
+    [SerializeField] private Character playerLinks;
     [SerializeField] private DrawCircleAlternative drawCircle;
     [SerializeField] private float duration;
 
     private Coroutine _radiusJob;
-    private Character _target;
+    private Vector3 _centerPoint = Vector3.positiveInfinity;
 
-    protected override bool IsCanCast => IsHaveCharge && _target != null && IsTargetInRadius(Radius, _target.transform);
+    protected override bool IsCanCast => !IsCasting;
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("SongSpellCastDelayAnimTrigger");
     protected override int AnimTriggerCast => 0;
 
-    public override void LoadTargetData(TargetInfo targetInfo) => _target = (Character)targetInfo.Targets[0];
+    public override void LoadTargetData(TargetInfo targetInfo) => _centerPoint = targetInfo.Points.Count > 0 ? targetInfo.Points[0] : playerLinks.transform.position;
+
+    public void SongOfSleepMove()
+    {
+        _hero.Move.StopMoveAnimation();
+        Hero.Move.CanMove = false;
+    }
 
     private void OnDestroy()
     {
@@ -44,44 +50,38 @@ public class SongOfSleep : Skill
     {
         StartRadiusRender();
 
-        while (!GetMouseButton && !_disactive) yield return null;
-
-        _target = Physics.OverlapSphere(transform.position, Radius, TargetsLayers).Select(character => character.GetComponent<Character>())
-                  .Where(ch => ch != null && ch != _playerLinks).OrderBy(ch => Vector3.Distance(transform.position, ch.transform.position)).FirstOrDefault();
-
-        StopRadiusRender();
-
-        if (_target == null)
+        while (float.IsPositiveInfinity(_centerPoint.x))
         {
-            TryCancel(true);
-            yield break;
+            if (GetMouseButton)
+            {
+                StopRadiusRender();
+                _centerPoint = playerLinks.transform.position;
+
+                yield break;
+            }
+
+            yield return null;
         }
 
-        Hero.Move.LookAtPosition(_target.transform.position);
-        Hero.Move.CanMove = false;
-
-        TargetInfo targetInfo = new();
-        targetInfo.Targets.Add(_target);
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(_centerPoint);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_target != null)
+        if (_centerPoint != Vector3.positiveInfinity)
         {
-            _target.CharacterState.CmdAddState(States.Sleep, duration, 0, _playerLinks.gameObject, name);
-            TryUseCharge();
+            ApplyStateEnemiesInZone();
+            Hero.Move.CanMove = true;
+            ClearData();
+            yield return null;
         }
-
-        Hero.Move.CanMove = true;
-        Hero.Move.StopLookAt();
-        ClearData();
-        yield return null;
     }
 
     protected override void ClearData()
     {
-        _target = null;
+        _centerPoint = Vector3.positiveInfinity;
         StopRadiusRender();
     }
 
@@ -103,12 +103,30 @@ public class SongOfSleep : Skill
         drawCircle?.Clear();
     }
 
+    private void ApplyStateEnemiesInZone()
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(_centerPoint, Radius, TargetsLayers);
+        foreach (var hitCollider in hitColliders) if (hitCollider.gameObject != Hero.gameObject) ApplyEnemiesZone(hitCollider);
+    }
+
+    private void ApplyEnemiesZone(Collider hitCollider)
+    {
+        if (hitCollider.TryGetComponent<HeroComponent>(out HeroComponent enemy))
+        {
+            var targetState = enemy.GetComponent<CharacterState>();
+            if (targetState != null) CmdSongOfSleep(targetState);
+        }
+    }
+
+    [Command] private void CmdSongOfSleep(CharacterState targetState) => targetState.AddState(States.Sleep, duration, 0, Hero.gameObject, this.name);
+
     private IEnumerator RadiusColorJob()
     {
         var wait = new WaitForSeconds(0.1f);
         while (true)
         {
-            bool enemyInside = Physics.OverlapSphere(transform.position, Radius, TargetsLayers).Any(col => col.TryGetComponent<Character>(out var ch) && ch != _playerLinks);
+            bool enemyInside = Physics.OverlapSphere(transform.position, Radius, TargetsLayers).Any(collider => collider.TryGetComponent<Character>(out var character)
+            && character != playerLinks);
 
             drawCircle.SetColor(enemyInside ? Color.green : Color.red);
             yield return wait;

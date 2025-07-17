@@ -8304,7 +8304,7 @@ MonoBehaviour:
     m_Bits: 256
   _obstacle:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 0
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []

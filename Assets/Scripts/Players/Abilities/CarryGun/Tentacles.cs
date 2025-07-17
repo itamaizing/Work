@@ -101,16 +101,16 @@ public class Tentacles : Skill
                         break;
                     }
 
-                    else
-                    {
-                        _spawnPoint = hitTarget.point;
+                    //else
+                    //{
+                    //    _spawnPoint = hitTarget.point;
 
-                        if (!IsValidVector(_spawnPoint)) yield break;
+                    //    if (!IsValidVector(_spawnPoint)) yield break;
 
-                        _isClickedOnGround = true;
+                    //    _isClickedOnGround = true;
 
-                        yield break;
-                    }
+                    //    yield break;
+                    //}
                 }
             }
 
@@ -138,23 +138,23 @@ public class Tentacles : Skill
                     continue;
                 }
 
-                if (Physics.Raycast(ray, out hit, Mathf.Infinity, TargetsLayers))
-                {
-                    if (hit.collider.TryGetComponent<Character>(out Character clickedCharacter))
-                    {
-                        Vector3 targetPosition = clickedCharacter.transform.position;
+                //if (Physics.Raycast(ray, out hit, Mathf.Infinity, TargetsLayers))
+                //{
+                //    if (hit.collider.TryGetComponent<Character>(out Character clickedCharacter))
+                //    {
+                //        Vector3 targetPosition = clickedCharacter.transform.position;
 
-                        if (!IsValidVector(targetPosition))
-                        {
-                            yield return null;
-                            continue;
-                        }
+                //        if (!IsValidVector(targetPosition))
+                //        {
+                //            yield return null;
+                //            continue;
+                //        }
 
-                        _spawnPoint = targetPosition;
-                        _player.Move.LookAtTransform(_target.transform);
-                        break;
-                    }
-                }
+                //        _spawnPoint = targetPosition;
+                //        _player.Move.LookAtTransform(_target.transform);
+                //        break;
+                //    }
+                //}
 
                 if (Physics.Raycast(ray, out hit, Mathf.Infinity, groundLayer))
                 {
@@ -218,7 +218,7 @@ public class Tentacles : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (!IsValidVector(_spawnPoint)) yield break;
+        //if (!IsValidVector(_spawnPoint)) yield break;
 
         if (_target != null) CmdSpawnTentacles(_spawnPoint, _target, _spentAttackingPsiEnergy);
         else SpawnCocoon(_spawnPoint);
