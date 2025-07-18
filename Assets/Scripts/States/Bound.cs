@@ -38,6 +38,17 @@ public class Bound : AbstractCharacterState
 		_characterState.Character.Move.IsMoveBlocked = true;
 		_characterState.Character.Move.StopMoveAnimation();
 
+		var animation = _characterState.Character.Animator;
+		var networkAnimation = _characterState.Character.NetworkAnimator;
+		animation.ResetTrigger(_stunTriggerExit);
+		animation.SetTrigger(_stunTrigger);
+
+		if (networkAnimation && networkAnimation.isOwned)
+        {
+			networkAnimation.ResetTrigger(_stunTriggerExit);
+			networkAnimation.SetTrigger(_stunTrigger);
+		}
+
 		if (character.isServer && character.StateEffects.TrapPrefab)
 		{
 			_spawnedTrap = GameObject.Instantiate(character.StateEffects.TrapPrefab, character.transform.position,Quaternion.identity);
@@ -48,6 +59,8 @@ public class Bound : AbstractCharacterState
 			NetworkServer.Spawn(_spawnedTrap);
 			_spawnedTrap.transform.SetParent(character.transform, true);
 		}
+
+		if (_characterState.TryGetComponent<StateEffects>(out StateEffects stateEffects)) stateEffects.RopeTrap.SetActive(true);
 
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
