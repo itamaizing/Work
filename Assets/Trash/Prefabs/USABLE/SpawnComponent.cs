@@ -61,6 +61,7 @@ public class SpawnComponent : NetworkBehaviour
 
         var spawnedCharacter = Instantiate(prefab, position, rotation);
         spawnedCharacter.Initialize();
+        spawnedCharacter.NetworkSettings.MyRoom = _hero.NetworkSettings.MyRoom;
 
         if (_hero == null || _hero.NetworkSettings == null)
         {

@@ -63081,6 +63081,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 9018833610281953243}
     m_Modifications:
+    - target: {fileID: 4534327415406865340, guid: 3f48633abc1849a49a5ed18cb8f65a33, type: 3}
+      propertyPath: _assetId
+      value: 2278668202
+      objectReference: {fileID: 0}
     - target: {fileID: 4835193604285269591, guid: 3f48633abc1849a49a5ed18cb8f65a33, type: 3}
       propertyPath: m_Name
       value: FireBlast

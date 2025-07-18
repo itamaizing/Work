@@ -48,7 +48,7 @@ public abstract class AbstractCharacterState
 
 public abstract class AuraState : AbstractCharacterState
 {
-	private Character _self;
+	protected Character _self;
     private Transform _auraCentre;
     private List<Character> _charactersInRadius = new();
     private List<Collider> _collidersKeysForRemove = new();
@@ -69,7 +69,7 @@ public abstract class AuraState : AbstractCharacterState
     {
         _characterState = character;
 		_auraCentre = character.transform;
-		_self = character.Character;
+		_self = personWhoMadeBuff;
     }
 
     public override void UpdateState()
@@ -243,6 +243,8 @@ public class CharacterState : NetworkBehaviour
         [States.PowerOfEarth] = new PowerOfEarth(),
         [States.EarthsHealth] = new EarthsHealth(),
         [States.MagicWater] = new MagicWater(),
+        [States.Burning] = new Burning(),
+        [States.Burn] = new Burn(),
         #endregion
 
         #region Test Baff and Debaff
@@ -390,17 +392,16 @@ public class CharacterState : NetworkBehaviour
 	{
 		if (!currentStates.Contains(newState)) return;
 
-		if (newState is IDamageable damageableShield)
+        if (newState is IDamageable damageableShield)
 		{
 			RemoveShield(damageableShield);
 		}
-
-		if (currentStates.Contains(newState))
+        if (currentStates.Contains(newState))
 		{
-			currentStates.Remove(newState);
+            currentStates.Remove(newState);
 			_stateIcons?.RemoveItemByState(newState.State);
 		}
-	}
+    }
 
 	private void RemoveStateLogic(States stateName)
 	{
@@ -760,6 +761,8 @@ public enum States
     PowerOfEarth,
     EarthsHealth,
     MagicWater,
+    Burning,
+    Burn,
     #endregion
 
     #region Test Baff and Debaff

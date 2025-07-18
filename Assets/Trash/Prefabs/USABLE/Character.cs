@@ -226,6 +226,12 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 		return b;
     }
 
+	[Command (requiresAuthority = false)]
+	public void CmdTryTakeDamage(Damage damage, Skill skill)
+    {
+        TryTakeDamage(ref damage, skill);
+    }
+
     public void ShowPhantomValue(Damage phantomValue)
     {
 		Health.ShowPhantomValue(phantomValue);

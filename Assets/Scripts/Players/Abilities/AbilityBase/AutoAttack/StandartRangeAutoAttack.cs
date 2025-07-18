@@ -22,7 +22,7 @@ public class StandartRangeAutoAttack : AutoAttackAbility
         CmdCreateProjecttile(Target.transform);
     }
 
-    protected virtual void OnEndPointReached(Projectile projectile)
+    protected virtual void OnEndPointReached(Projectile projectile, GameObject t)
     {
         if (projectile.GetDistanceToTarget() <= _damageRadius)
         {
