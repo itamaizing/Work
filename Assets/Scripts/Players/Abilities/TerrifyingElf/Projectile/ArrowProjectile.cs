@@ -7,26 +7,25 @@ public class ArrowProjectile : Projectiles
     [SerializeField] private float _speed = 10f;
     [SerializeField] private float _lifeTime = 5f;
     [SerializeField] private bool _arrowDark;
-    [SerializeField] private float physicDamage;
-    [SerializeField] private float minDamage;
-    [SerializeField] private float maxDamage;
     [SerializeField] private float duration;
     [SerializeField] private DamageType damageTypePhysics;
 
     private float magDamage;
+    private float _damage;
 
     public bool ArrowDark { get => _arrowDark; set => _arrowDark = value; }
-
-    private void Start()
-    {
-        physicDamage = Random.Range(minDamage, maxDamage + 1);
-    }
 
     public void StartFly(Vector3 direction)
     {
         if (_rb != null) _rb.velocity = direction * _speed;
 
         Destroy(gameObject, _lifeTime);
+    }
+
+    public void Init(HeroComponent dad, float energy, bool lastHit, Skill skill, float damage)
+    {
+        base.Init(dad, energy, lastHit, skill);
+        _damage = damage;
     }
 
     [Server]
@@ -71,9 +70,7 @@ public class ArrowProjectile : Projectiles
         {
             if (!inAstral)
             {
-                _skill.Damage = physicDamage;
-                ApplyDamage(physicDamage, damageTypePhysics, collider.gameObject);
-
+                ApplyDamage(_damage, damageTypePhysics, collider.gameObject);
                 if (TryApplyDamage(damageTypePhysics, _skill.AttackRangeType, collider.gameObject)) return;
             }
 
@@ -85,7 +82,6 @@ public class ArrowProjectile : Projectiles
 
             if (inAstral) totalMagDamage *= 1.5f;
 
-            _skill.Damage = totalMagDamage;
             ApplyDamage(totalMagDamage, _skill.DamageType, collider.gameObject);
 
             if (_dad != null && bonusMagDamage > 0)
@@ -104,11 +100,7 @@ public class ArrowProjectile : Projectiles
             if (collider.TryGetComponent<Character>(out Character character)) character.CharacterState.AddState(States.InnerDarkness, duration, 0, _skill.Hero.gameObject, _skill.name);
         }
 
-        else
-        {
-            _skill.Damage = physicDamage;
-            ApplyDamage(physicDamage, damageTypePhysics, collider.gameObject);
-        }
+        else ApplyDamage(_damage, damageTypePhysics, collider.gameObject);
     }
     #endregion
 

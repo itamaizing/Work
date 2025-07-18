@@ -61,7 +61,7 @@ public class Health : Resource, IDamageable, IHealingable
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
         OnBeforeTakeDamage?.Invoke(damage, skill);
-
+        
         if (TryEvade(damage.Type, damage.PhysicAttackType))
         {
             Evaded?.Invoke();

@@ -11,6 +11,8 @@ public class Shot : Skill
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private Ghost ghostSkill;
     [SerializeField] private AudioClip audioClip;
+    [SerializeField] private float minDamage;
+    [SerializeField] private float maxDamage;
 
     private const string _startAnimTrigger = "ShotCastDelayStartAnimTrigger";
     private const string _endAnimTrigger = "ShotCastDelayEndAnimTrigger"; // remove two animations later, the remainder of the auto-attack
@@ -43,6 +45,7 @@ public class Shot : Skill
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         Hero.Animator.speed = Hero.Animator.speed / CastDeley;
+        Damage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
 
         while (float.IsPositiveInfinity(_targetPoint.x))
         {
@@ -80,7 +83,7 @@ public class Shot : Skill
             yield break;
         }
 
-        CmdCreateProjectileAtPosition(_targetPoint);
+        CmdCreateProjectileAtPosition(_targetPoint, Damage);
         ProcessGhostCooldownReduction();
 
         WorkAnimator(_startAnimTrigger, _endAnimTrigger);
@@ -135,7 +138,7 @@ public class Shot : Skill
     }
 
     [Command]
-    protected void CmdCreateProjectileAtPosition(Vector3 position)
+    protected void CmdCreateProjectileAtPosition(Vector3 position, float damage)
     {
         Vector3 spawnPosition = spawnPoint != null ? spawnPoint.position : transform.position;
         Vector3 direction = (position - spawnPosition).normalized;
@@ -143,23 +146,23 @@ public class Shot : Skill
         if (direction == Vector3.zero) return;
 
         ArrowProjectile proj = Instantiate(projectile, spawnPosition, Quaternion.LookRotation(direction));
-        proj.Init(playerLinks, 0, false, this);
+        proj.Init(playerLinks, 0, false, this, damage);
         SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(proj.gameObject);
         proj.StartFly(direction);
-        RpcInit(proj.gameObject);
+        RpcInit(proj.gameObject, damage);
         RpcPlayShotSound();
     }
 
     [Command] private void CmdCrossFade(string newAnim) => _hero.Animator.CrossFade(newAnim, 0.1f);
 
     [ClientRpc]
-    protected void RpcInit(GameObject gameObject)
+    protected void RpcInit(GameObject gameObject, float damage)
     {
         if (gameObject == null) return;
 
         ArrowProjectile proj = gameObject.GetComponent<ArrowProjectile>();
-        if (proj != null) proj.Init(playerLinks, 0, false, this);
+        if (proj != null) proj.Init(playerLinks, 0, false, this, damage);
     }
 
     [ClientRpc]

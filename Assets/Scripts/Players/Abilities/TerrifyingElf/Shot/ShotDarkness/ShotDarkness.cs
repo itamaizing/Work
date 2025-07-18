@@ -11,6 +11,8 @@ public class ShotDarkness : Skill
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private Ghost ghostSkill;
     [SerializeField] private AudioClip audioClip;
+    [SerializeField] private float minDamage;
+    [SerializeField] private float maxDamage;
 
     private const string _startAnimTrigger = "ShotCastDelayStartAnimTrigger";
     private const string _endAnimTrigger = "ShotCastDelayEndAnimTrigger"; // убрать в дальнейшем две анимации, остаток от автоатаки
@@ -39,6 +41,7 @@ public class ShotDarkness : Skill
     {
         OnSkillCanceled += HandleSkillCanceled;
         Hero.Animator.speed = Hero.Animator.speed / CastDeley;
+        Damage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
 
         while (float.IsPositiveInfinity(_targetPoint.x))
         {
@@ -76,7 +79,7 @@ public class ShotDarkness : Skill
             yield break;
         }
 
-        CmdCreateProjectileAtPosition(_targetPoint);
+        CmdCreateProjectileAtPosition(_targetPoint, Damage);
         ProcessGhostCooldownReduction();
 
         WorkAnimator(_startAnimTrigger, _endAnimTrigger);
@@ -131,7 +134,7 @@ public class ShotDarkness : Skill
     }
 
     [Command]
-    protected void CmdCreateProjectileAtPosition(Vector3 position)
+    protected void CmdCreateProjectileAtPosition(Vector3 position, float damage)
     {
         Vector3 spawnPosition = spawnPoint != null ? spawnPoint.position : transform.position;
         Vector3 direction = (position - spawnPosition).normalized;
@@ -139,11 +142,11 @@ public class ShotDarkness : Skill
         if (direction == Vector3.zero) return;
 
         ArrowProjectile proj = Instantiate(projectile, spawnPosition, Quaternion.LookRotation(direction));
-        proj.Init(playerLinks, 0, false, this);
+        proj.Init(playerLinks, 0, false, this, damage);
         SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(proj.gameObject);
         proj.StartFly(direction);
-        RpcInit(proj.gameObject);
+        RpcInit(proj.gameObject, damage);
         RpcPlayShotSound();
     }
 
@@ -154,12 +157,12 @@ public class ShotDarkness : Skill
     }
 
     [ClientRpc]
-    protected void RpcInit(GameObject gameObject)
+    protected void RpcInit(GameObject gameObject, float damage)
     {
         if (gameObject == null) return;
 
         ArrowProjectile proj = gameObject.GetComponent<ArrowProjectile>();
-        if (proj != null) proj.Init(playerLinks, 0, false, this);
+        if (proj != null) proj.Init(playerLinks, 0, false, this, damage);
     }
 
     [ClientRpc]

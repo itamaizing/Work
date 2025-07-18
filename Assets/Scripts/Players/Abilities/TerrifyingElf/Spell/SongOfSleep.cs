@@ -39,6 +39,8 @@ public class SongOfSleep : Skill
 
     private void HandleSkillCanceled()
     {
+        Hero.Animator.speed = 1;
+
         if (_hero?.Move != null)
         {
             Hero.Move.CanMove = true;
@@ -48,6 +50,7 @@ public class SongOfSleep : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        Hero.Animator.speed = Hero.Animator.speed / CastDeley;
         StartRadiusRender();
 
         while (float.IsPositiveInfinity(_centerPoint.x))
@@ -73,7 +76,7 @@ public class SongOfSleep : Skill
         if (_centerPoint != Vector3.positiveInfinity)
         {
             ApplyStateEnemiesInZone();
-            Hero.Move.CanMove = true;
+            HandleSkillCanceled();
             ClearData();
             yield return null;
         }

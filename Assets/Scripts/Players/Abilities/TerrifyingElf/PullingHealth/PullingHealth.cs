@@ -52,6 +52,12 @@ public class PullingHealth : Skill
     public void PullingHealthCast() => AnimStartCastCoroutine();
     public void PullingHealthEnd() => AnimCastEnded();
 
+    public void MovePullingHealth()
+    {
+        _hero.Move.CanMove = false;
+        _hero.Move.StopMoveAnimation();
+    }
+
     private void Start()
     {
         _audioSource = GetComponent<AudioSource>();
@@ -140,8 +146,7 @@ public class PullingHealth : Skill
     protected override IEnumerator CastJob()
     {
         int innerDarknessStacks;
-        Hero.Move.CanMove = false;
-         
+
         #region Work with InnerDarkness
         if (_targetCharacter is Component targetComponent)
         {

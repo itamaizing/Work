@@ -3563,13 +3563,13 @@ MonoBehaviour:
   _maxCharges: 0
   _chargeCooldown: 0
   _radius: 5
-  _area: 0
+  _area: 1
   _castLength: 5
   _castWidth: 1
   _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
+  _isAutoAreaRender: 0
   _isAutoLineRender: 1
-  _isDynamicRenderer: 0
+  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   _projectile: {fileID: 3779490377558770127, guid: 911d5f174dbe7ac4b8da163e8aaf32a1, type: 3}
