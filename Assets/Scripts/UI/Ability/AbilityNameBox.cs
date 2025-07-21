@@ -16,7 +16,8 @@ public class AbilityNameBox : MonoBehaviour
     public void Show(Skill skill)
     {
         _name.text = skill.Name;
-        _text.text = $"{skill.Description} \n'{ColorState}{skill.State}{ColorEnd}' - {skill.DescriptionState}";
+        _text.text = $"{skill.Description}";
+        if (!string.IsNullOrEmpty(skill.State)) _text.text = $"\n'{ColorState}{skill.State}{ColorEnd}' - {skill.DescriptionState}";
         _descriptionWithNumbers.text = "";
 
         if (skill.SkillEnergyCosts.Count > 0)

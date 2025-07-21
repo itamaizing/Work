@@ -13,6 +13,11 @@ public class GroundTrap : Skill
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private float minDistanceRadius = 2f;
     [SerializeField] private float distanceforTrap = 2.1f;
+    [SerializeField] private float newHealth = 80;
+    [SerializeField] private ObjectData groundData;
+
+    [Header("Talents")]
+    [SerializeField] private bool isGroundHealthTalent;
 
     [Header("Raycast masks")]
     [SerializeField] private LayerMask groundLayer;
@@ -23,6 +28,7 @@ public class GroundTrap : Skill
     private Trap _preview;
     private bool _isStartPointPlaced;
     private Vector3 _startPosition, _endPosition;
+    private float baseHealth = 23;
 
     protected override bool IsCanCast => _isStartPointPlaced ||
                                          Vector3.Distance(transform.position, _endPosition) <= Radius &&
@@ -35,13 +41,6 @@ public class GroundTrap : Skill
 
     private void OnDestroy() => OnSkillCanceled -= HandleSkillCanceled;
     private void OnEnable() => OnSkillCanceled += HandleSkillCanceled;
-
-    public void AnimSpawnTrapProjectile()
-    {
-        if (!isClient || !owner) return;
-
-        CmdSpawnArrowProjectile(_endPosition);
-    }
 
     private Vector3 GetMousePointOnGround(float y = 0f)
     {
@@ -70,6 +69,7 @@ public class GroundTrap : Skill
         Hero.Animator.speed = 1;
         minDistanceRadiusCircle?.Clear();
     }
+    
 
     private void UpdateMinRadiusCircle(Vector3 mousePos)
     {
@@ -83,8 +83,31 @@ public class GroundTrap : Skill
         }
     }
 
+    private bool InsideRadius(Vector3 position)
+    {
+        float direction = Vector3.Distance(transform.position, position);
+        return direction >= minDistanceRadius && direction <= Radius;
+    }
+
+    private void SetGroundNewHealth()
+    {
+        groundData.MaxHealth = newHealth;
+        CmdSetGorundNewHealth();
+    }
+
+    private void SetGroundBaseHealth()
+    {
+        groundData.MaxHealth = baseHealth;
+        CmdSetGorundBaseHealth();
+    }
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        if (isGroundHealthTalent) SetGroundNewHealth();
+        else SetGroundBaseHealth();
+
+        Debug.Log($"GroundTrapHealth: {groundData.MaxHealth}");
+
         Hero.Animator.speed = Hero.Animator.speed / CastDeley;
 
         Hero.Move.CanMove = false;
@@ -161,14 +184,9 @@ public class GroundTrap : Skill
         CmdSpawnGroundTrap(_startPosition, _endPosition);
 
         ClearData();
+        HandleSkillCanceled();
         _preview = null;
         yield break;
-    }
-
-    private bool InsideRadius(Vector3 position)
-    {
-        float direction = Vector3.Distance(transform.position, position);
-        return direction >= minDistanceRadius && direction <= Radius;
     }
 
     protected override void ClearData()
@@ -176,6 +194,13 @@ public class GroundTrap : Skill
         Hero.Animator.speed = 1;
         Hero.Move.CanMove = true;
         _isStartPointPlaced = false;
+    }
+
+    public void AnimSpawnTrapProjectile()
+    {
+        if (!isClient || !owner) return;
+
+        CmdSpawnArrowProjectile(_endPosition);
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -190,6 +215,11 @@ public class GroundTrap : Skill
         _preview.transform.GetChild(1).gameObject.SetActive(true);
         _preview.UpdateSecondPoint(_endPosition);
     }
+
+
+    
+    [Command] private void CmdSetGorundNewHealth() => groundData.MaxHealth = newHealth;
+    [Command] private void CmdSetGorundBaseHealth() => groundData.MaxHealth = baseHealth;
 
     [Command]
     private void CmdSpawnGroundTrap(Vector3 startPosition, Vector3 endPosition)
@@ -238,4 +268,8 @@ public class GroundTrap : Skill
             trap.FixSecondPoint();
         }
     }
+
+    #region Talent
+    public void GroundTrapHealthActiveTalent(bool value) => isGroundHealthTalent = value;
+    #endregion
 }

@@ -2,17 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HuntressTalent_7 : MonoBehaviour
+public class HuntressTalent_7 : Talent
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private GroundTrap groundTrap;
+    [SerializeField] private SkillManager _ability;
+
+    public override void Enter()
     {
-        
+        _ability.ActivateSkill(groundTrap);
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void Exit()
     {
-        
+        _ability.DeactivateSkill(groundTrap);
     }
 }

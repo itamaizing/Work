@@ -16,7 +16,9 @@ public class SongOfSleep : Skill
 
     protected override bool IsCanCast => !IsCasting;
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("SongSpellCastDelayAnimTrigger");
+    private static readonly int _animTrigger = Animator.StringToHash("SongSpellCastDelayAnimTrigger");
+
+    protected override int AnimTriggerCastDelay => _animTrigger;
     protected override int AnimTriggerCast => 0;
 
     public override void LoadTargetData(TargetInfo targetInfo) => _centerPoint = targetInfo.Points.Count > 0 ? targetInfo.Points[0] : playerLinks.transform.position;
@@ -39,8 +41,6 @@ public class SongOfSleep : Skill
 
     private void HandleSkillCanceled()
     {
-        Hero.Animator.speed = 1;
-
         if (_hero?.Move != null)
         {
             Hero.Move.CanMove = true;
@@ -50,7 +50,6 @@ public class SongOfSleep : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        Hero.Animator.speed = Hero.Animator.speed / CastDeley;
         StartRadiusRender();
 
         while (float.IsPositiveInfinity(_centerPoint.x))
@@ -76,7 +75,7 @@ public class SongOfSleep : Skill
         if (_centerPoint != Vector3.positiveInfinity)
         {
             ApplyStateEnemiesInZone();
-            HandleSkillCanceled();
+            Hero.Move.CanMove = true;
             ClearData();
             yield return null;
         }

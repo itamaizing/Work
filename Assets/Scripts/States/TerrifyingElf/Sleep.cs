@@ -9,7 +9,6 @@ public class Sleep : AbstractCharacterState
     private float _baseDuration;
     private Character _source;
     private bool _previousIsSelect;
-    private Coroutine _sleepCoroutine;
     private SkillManager _skillManager;
     private List<Skill> _disabledSkills = new List<Skill>();
 
@@ -66,12 +65,6 @@ public class Sleep : AbstractCharacterState
 
         for (int i = 0; i < 3; i++) _characterState.AddStateLogic(States.InnerDarkness, 13, 0f, Schools.None, _source.gameObject, null);
 
-        if (_sleepCoroutine != null)
-        {
-            _characterState.StopCoroutine(_sleepCoroutine);
-            _sleepCoroutine = null;
-        }
-
         MoveComponent moveComp = _characterState.Character.Move;
         if (moveComp != null)
         {
@@ -81,17 +74,16 @@ public class Sleep : AbstractCharacterState
             //moveComp.SetAnimationMovement(Vector3.zero);
         }
 
-        foreach (var skill in _disabledSkills)
-        {
-            skill.Disactive = false;
-        }
+        foreach (var skill in _disabledSkills) skill.Disactive = false;
 
         _disabledSkills.Clear();
+        _characterState.StateIcons.RemoveItemByState(State);
         _characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
+        _duration = _baseDuration;
         return false;
     }
 }

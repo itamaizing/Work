@@ -387,10 +387,12 @@ public class CharacterState : NetworkBehaviour
 		{
 			if (currentStates[i].State == state)
 			{
-				currentStates[i].Stack(duration);
-				int newMaxStack = currentStates[i].MaxStacksCount;
+				bool canStack = currentStates[i].Stack(duration);
 
-				_stateIcons.ActivateIco(state, currentStates[i].duration, 1, true, newMaxStack);
+				int stackToAdd = canStack ? 1 : 0;
+				int maxStack = currentStates[i].MaxStacksCount;
+
+				_stateIcons.ActivateIco(state, currentStates[i].duration, 1, true, maxStack);
 
 				MoveStateToEnd(i);
 				return;

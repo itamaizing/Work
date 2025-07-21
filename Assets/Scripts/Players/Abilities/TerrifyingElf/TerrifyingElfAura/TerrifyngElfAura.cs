@@ -184,10 +184,7 @@ public class TerrifyingElfAura : NetworkBehaviour
 
     #region treeRadiusCalmessTalent
 
-    public void TreeRadiusCalmessTalentActive(bool value)
-    {
-        treeRadiusCalmessTalent = value;
-    }
+    public void TreeRadiusCalmessTalentActive(bool value) => treeRadiusCalmessTalent = value;
 
     #endregion
 
