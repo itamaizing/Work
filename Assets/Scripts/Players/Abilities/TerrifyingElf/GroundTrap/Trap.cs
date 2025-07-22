@@ -8,6 +8,8 @@ public class Trap : Projectiles
     [SerializeField] private Transform pointTrapRight;
     [SerializeField] private Transform pointTrapLeft;
     [SerializeField] private List<GameObject> hitBoxes;
+    [SerializeField] private Material ropeMaterial;
+    [SerializeField] private List<GameObject> ropes;
 
     private readonly List<BoxCollider> _boxes = new();
     private readonly List<Vector3> _baseSizes = new();
@@ -94,6 +96,8 @@ public class Trap : Projectiles
     {
         Vector3 dir = _endPosition - _startPosition;
         transform.position = _startPosition + dir * 0.5f;
+
+        foreach (GameObject rope in ropes) if (rope.TryGetComponent<MeshRenderer>(out MeshRenderer meshRenderer)) meshRenderer.material = ropeMaterial;
     }
 
     public void Finalise(Vector3 start, Vector3 end)

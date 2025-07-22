@@ -1995,7 +1995,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2548040587000351657
 Transform:
   m_ObjectHideFlags: 0
@@ -2005,7 +2005,7 @@ Transform:
   m_GameObject: {fileID: 2428905390882137522}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 2, z: 0}
-  m_LocalScale: {x: 0.4, y: 0.4, z: 1}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2312830480127995558}
@@ -2053,7 +2053,7 @@ SpriteRenderer:
   m_SortingLayerID: -1231077787
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 05d1feecc31470d488b7d2844ff7d6eb, type: 3}
+  m_Sprite: {fileID: -2413806693520163455, guid: bc8facbe16f6df049b0f9da1b7da272d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0.7529412}
   m_FlipX: 0
   m_FlipY: 0
@@ -2076,6 +2076,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22aca3966e1bfbc469f072742e7b35e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _userNetworkSettings: {fileID: 4352968657823446686}
+  _markForMinimap: {fileID: 9157683646521805432}
+  _selectMarkForMinimap: {fileID: 4530972991827551454}
 --- !u!1 &2489779923529859184
 GameObject:
   m_ObjectHideFlags: 0
@@ -7409,14 +7412,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.20784315, g: 0.19215688, b: 0.7176471, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: d4fb8ffea3a2f524f9431a2033084bde, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8f3199ba858e23f47a09eccf6ac83172, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7492,7 +7495,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8f3199ba858e23f47a09eccf6ac83172, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -13306,6 +13309,11 @@ MonoBehaviour:
   materialGhost: {fileID: 2100000, guid: 7d22b63f17164324bae8937a1b14f05a, type: 2}
   lightShield: {fileID: 7520541677676451614}
   darkShield: {fileID: 2489779923529859184}
+  suppressionIdle: {fileID: 0}
+  suppressionMove: {fileID: 0}
+  manaRegen: {fileID: 0}
+  ropeTrap: {fileID: 0}
+  trapPrefab: {fileID: 0}
   materialsCharacter:
   - {fileID: 2100000, guid: acfa2dc1ef192cb4391aecaaff8e192f, type: 2}
   weapon: {fileID: 0}
@@ -13474,6 +13482,7 @@ MonoBehaviour:
   syncInterval: 0
   _smoothTime: 0.15
   _currentSpeed: 5
+  _rotationDefaultSpeed: 1000
   _anim: {fileID: 4853408415625794062}
   _flyChecker: {fileID: 2036623601641642670}
   moveAudioSource: {fileID: 5970206098610166088}
@@ -13481,8 +13490,10 @@ MonoBehaviour:
   MoveDirection: {x: 0, y: 0, z: 0}
   ExternalMoveDirection: {x: 0, y: 0, z: 0}
   CanMove: 0
+  CanMoveState: 0
   IsMoving: 0
   IsSelect: 0
+  _isMoveBlocked: 0
   _agent: {fileID: 6350168282755984019}
 --- !u!114 &2486038140440756892
 MonoBehaviour:
@@ -13511,6 +13522,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5f4a2549f1d1594693ec217b7147344, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _skillRenderer: {fileID: 0}
 --- !u!114 &6795151795875073132
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13689,6 +13701,7 @@ MonoBehaviour:
   _damageType: 5
   _attackRangeType: 0
   _skillType: 2
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 512
@@ -13732,7 +13745,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 0}
-  _minionMove: {fileID: 0}
+  _minionMove: {fileID: 6937205302842417626}
 --- !u!1 &4348563488435226753
 GameObject:
   m_ObjectHideFlags: 0
@@ -18968,7 +18981,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8f3199ba858e23f47a09eccf6ac83172, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -19146,6 +19159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5f4a2549f1d1594693ec217b7147344, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _skillRenderer: {fileID: 0}
 --- !u!114 &7156643955012966110
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19176,8 +19190,10 @@ MonoBehaviour:
   hero: {fileID: 0}
   _circle: {fileID: 7585645203122775784}
   _areaPref: {fileID: 1574982521674352815, guid: 790fb3857b30c2b4fad4375343a84fad, type: 3}
-  _damageZonePref: {fileID: 6076937102363889602, guid: 586443d303441854fbd96bcd57e8ccc6, type: 3}
+  _damageZonePref: {fileID: 0}
   _line: {fileID: 11400000, guid: 7faf4d32cfcc4f54d967e4d01a0c4b65, type: 2}
+  _lineZoneRender: {fileID: 0}
+  _lineZoneRenderForQueue: {fileID: 0}
   _layerMask:
     serializedVersion: 2
     m_Bits: 8336
@@ -20753,7 +20769,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2312830480127995558
 Transform:
   m_ObjectHideFlags: 0
@@ -36689,14 +36705,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.28627452, g: 0.854902, b: 0.23529413, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 81ae7f2d3f41215438a238ecf172e068, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8f3199ba858e23f47a09eccf6ac83172, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -41899,7 +41915,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b281b91a70a624a0da1c43adc1c30c7b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8f3199ba858e23f47a09eccf6ac83172, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1

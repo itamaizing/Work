@@ -30,10 +30,7 @@ public class ReconnaissanceFireAura : NetworkBehaviour
         {
             charactersInZone.Add(character);
 
-            if (effectCoroutine == null)
-            {
-                effectCoroutine = StartCoroutine(ApplyPartialBlindnessPeriodically());
-            }
+            if (effectCoroutine == null) effectCoroutine = StartCoroutine(ApplyPartialBlindnessPeriodically());
         }
 
         if (other.TryGetComponent<ArrowProjectile>(out ArrowProjectile arrow) && stateDark == false)
