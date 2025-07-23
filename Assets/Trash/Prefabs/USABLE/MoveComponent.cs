@@ -141,13 +141,19 @@ public class MoveComponent : NetworkBehaviour
 
 	public void StopMoveAnimation()
 	{
+		if (_rigidbody == null) return;
+
+		_rigidbody.velocity = Vector3.zero;
+		_rigidbody.angularVelocity = Vector3.zero;
+
+		var agent = GetComponent<NavMeshAgent>();
+		if (agent && agent.enabled) agent.ResetPath();
+
 		if (_anim != null)
 		{
 			_anim.SetFloat(HashAnimPlayer.VelocityX, 0);
 			_anim.SetFloat(HashAnimPlayer.VelocityZ, 0);
 		}
-
-		_rigidbody.velocity = Vector3.zero;
 	}
 
 	public void ChangeMoveSpeed(float value)

@@ -10,7 +10,7 @@ public class ShotAstral : Skill
     [SerializeField] private Transform _spawnPoint;
     [SerializeField] private HeroComponent _playerLinks;
 
-    private const string _startAnimTrigger = "ShotCastDelayStartAnimTrigger";
+    private const string _startAnimTrigger = "ShotAstralCastDelayTrigger";
     private const string _endAnimTrigger = "ShotCastDelayEndAnimTrigger";
 
     private Vector3 _targetPoint = Vector3.positiveInfinity;

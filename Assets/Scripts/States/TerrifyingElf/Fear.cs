@@ -97,11 +97,6 @@ public class Fear : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        if (CurrentStacksCount == MaxStacksCount)
-        {
-            InitializeFirstStack();
-            return false;
-        }
         return false;
     }
 

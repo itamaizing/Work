@@ -30,7 +30,8 @@ public class AbilityNameBox : MonoBehaviour
 
         if (skill.Damage > 0)
         {
-            _descriptionWithNumbers.text += $"\n׃נמם: {ColorOpen}{skill.Damage}{ColorEnd}";
+            int damage = Mathf.RoundToInt(skill.Damage);
+            _descriptionWithNumbers.text += $"\n׃נמם: {ColorOpen}{damage}{ColorEnd}";
         }
 
         WriteTypeDamage(skill);

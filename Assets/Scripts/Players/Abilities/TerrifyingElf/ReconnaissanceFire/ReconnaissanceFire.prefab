@@ -10923,7 +10923,7 @@ GameObject:
   - component: {fileID: 6007977284767293147}
   - component: {fileID: 8501378266717497744}
   - component: {fileID: 732501578659559874}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: ReconnaissanceFire
   m_TagString: Allies
   m_Icon: {fileID: 0}

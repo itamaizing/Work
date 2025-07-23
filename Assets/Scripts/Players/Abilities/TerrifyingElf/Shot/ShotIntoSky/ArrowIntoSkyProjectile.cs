@@ -9,8 +9,6 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
     [SerializeField] private float nextDamageTime = 0.5f;
     [SerializeField, Range(0f, 100f)] private float criticalChance = 30f;
     [SerializeField] private float criticalMultiplier = 2.4f;
-    [SerializeField] private float minDamage;
-    [SerializeField] private float maxDamage;
 
     [SerializeField] private GameObject arrow;
     [SerializeField] private GameObject circle;
@@ -25,21 +23,21 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
     private HeroComponent _dad;
     private Skill _skill;
     private Character _character;
+    private float _damage;
 
     private readonly HashSet<Collider> _damagedThisTick = new();
 
     public GameObject Arrow { get => arrow; set => arrow = value; }
     public GameObject Circle { get => circle; set => circle = value; }
 
-    public virtual void Init(HeroComponent dad, Skill skill, bool silenceTalentActive, bool tripleShotTalentActive, bool shotAstralManaActive)
+    public virtual void Init(HeroComponent dad, Skill skill, float damage, bool silenceTalentActive, bool tripleShotTalentActive, bool shotAstralManaActive)
     {
         this.silenceTalentActive = silenceTalentActive;
         this.tripleShotTalentActive = tripleShotTalentActive;
         this.shotAstralManaActive = shotAstralManaActive;
         _dad = dad;
         _skill = skill;
-
-        _skill.Damage = Random.Range(minDamage, maxDamage + 1);
+        _damage = damage;
 
         if (_dad != null && _dad.TryGetComponent<Character>(out Character character)) _character = character;
     }
@@ -62,11 +60,7 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
 
         if (!_damagedThisTick.Add(other)) return;
 
-        float damageToDeal = _skill.Damage;
-        if (Random.value * 100f < criticalChance) damageToDeal *= criticalMultiplier;
-
-        if (other.TryGetComponent<IDamageable>(out var damageTarget))
-            ApplyDamage(damageToDeal, DamageType.Physical, damageTarget);
+        ApplyDamageEnemy(other);
 
         if (other.TryGetComponent<Character>(out var victim)) ApplyStatesAndTalents(victim);
     }
@@ -144,12 +138,21 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
     //}
     #endregion
 
+    private void ApplyDamageEnemy(Collider other)
+    {
+        float damageToDeal = _damage;
+        if (Random.value * 100f < criticalChance) damageToDeal *= criticalMultiplier;
+
+        if (other.TryGetComponent<IDamageable>(out var damageTarget))
+            ApplyDamage(damageToDeal, DamageType.Physical, damageTarget);
+    }
+
     private void ApplyStatesAndTalents(Character character)
     {
         CharacterState characterState = character.CharacterState;
         if (characterState == null) return;
 
-        characterState.AddState(States.Irradiation, 9, 0, _character.gameObject, name);
+        //characterState.AddState(States.Irradiation, 9, 0, _character.gameObject, name);
 
         if (shotAstralManaActive && characterState.CheckForState(States.Astral)) RestoreMana();
 

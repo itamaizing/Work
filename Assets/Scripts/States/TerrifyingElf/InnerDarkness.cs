@@ -7,6 +7,7 @@ public class InnerDarkness : AbstractCharacterState
     private const float TimeDecreasePerStack = 2f;
 
     private float _baseDuration;
+    private float _changedDuration;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
 
@@ -22,8 +23,7 @@ public class InnerDarkness : AbstractCharacterState
         MaxStacksCount = 6;
         _baseDuration = durationToExit;
         duration = _baseDuration;
-
-        Debug.Log($"CurrentStacksCount: {CurrentStacksCount}");
+        CurrentStacksCount = 0;
     }
 
     public override void UpdateState()
@@ -40,39 +40,31 @@ public class InnerDarkness : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        if (CurrentStacksCount <= 0)
-        {
-            InitializeFirstStack();
-            return true;
-        }
-
         if (CurrentStacksCount < MaxStacksCount)
         {
             AddNewStack();
             return true;
         }
 
-        if (CurrentStacksCount == MaxStacksCount)
+        else if (CurrentStacksCount == MaxStacksCount)
         {
             UpdateDurationForMaxStacks();
-            return true;
+            Debug.Log($"duration: {duration}");
+            return false;
         }
 
         return false;
     }
 
-    private void InitializeFirstStack() => CurrentStacksCount++;
-
     private void AddNewStack()
     {
-        CurrentStacksCount++;
-
+        //CurrentStacksCount++;
         duration = Mathf.Max(0f, _baseDuration - (CurrentStacksCount - 1) * TimeDecreasePerStack);
     }
 
     private void UpdateDurationForMaxStacks()
     {
-        duration = TimeDecreasePerStack;
+        duration = Mathf.Max(0f, _baseDuration - (CurrentStacksCount - 1) * TimeDecreasePerStack);
         CmdStateFear();
     }
 

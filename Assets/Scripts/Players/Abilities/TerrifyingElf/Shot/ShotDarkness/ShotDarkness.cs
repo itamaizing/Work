@@ -14,7 +14,7 @@ public class ShotDarkness : Skill
     [SerializeField] private float minDamage;
     [SerializeField] private float maxDamage;
 
-    private const string _startAnimTrigger = "ShotCastDelayStartAnimTrigger";
+    private const string _startAnimTrigger = "ShotDarkCastDelayTrigger";
     private const string _endAnimTrigger = "ShotCastDelayEndAnimTrigger"; // убрать в дальнейшем две анимации, остаток от автоатаки
 
     private Vector3 _targetPoint = Vector3.positiveInfinity;
@@ -37,6 +37,25 @@ public class ShotDarkness : Skill
         _audioSource = GetComponent<AudioSource>();
     }
 
+    public void ShotDarknessAnimationMove()
+    {
+        if (_hero == null || _hero.Move == null) return;
+
+        _hero.Move.StopMoveAnimation();
+        _hero.Move.CanMove = false;
+
+        Vector3 direction = _targetPoint - _hero.transform.position;
+        bool badDirection = float.IsInfinity(_targetPoint.x) || direction.sqrMagnitude < 0.0001f;
+
+        if (badDirection)
+        {
+            _hero.Move.StopLookAt();
+            return;
+        }
+
+        else Hero.Move.LookAtPosition(_targetPoint);
+    }
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         OnSkillCanceled += HandleSkillCanceled;
@@ -49,17 +68,8 @@ public class ShotDarkness : Skill
             {
                 Vector3 clickedPoint = GetMousePoint();
 
-                if (IsPointInRadius(Radius, clickedPoint) &&
-                    NoObstacles(clickedPoint, transform.position, _obstacle) &&
-                    TryGetDamageableAtPoint(clickedPoint, out var damageable))
-                {
+                if (NoObstacles(clickedPoint, transform.position, _obstacle) && TryGetDamageableAtPoint(clickedPoint, out var damageable))
                     _targetPoint = clickedPoint;
-
-                    if (damageable is Component component) Hero.Move.LookAtTransform(component.transform);
-                    else Hero.Move.LookAtPosition(_targetPoint);
-
-                    Hero.Move.CanMove = false;
-                }
             }
             yield return null;
         }

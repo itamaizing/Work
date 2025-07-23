@@ -14,7 +14,7 @@ public class Shot : Skill
     [SerializeField] private float minDamage;
     [SerializeField] private float maxDamage;
 
-    private const string _startAnimTrigger = "ShotCastDelayStartAnimTrigger";
+    private const string _startAnimTrigger = "ShotCastDelayTrigger";
     private const string _endAnimTrigger = "ShotCastDelayEndAnimTrigger"; // remove two animations later, the remainder of the auto-attack
 
     private Vector3 _targetPoint = Vector3.positiveInfinity;
@@ -42,6 +42,25 @@ public class Shot : Skill
         _audioSource = GetComponent<AudioSource>();
     }
 
+    public void ShotAnimationMove()
+    {
+        if (_hero == null || _hero.Move == null) return;
+
+        _hero.Move.StopMoveAnimation();
+        _hero.Move.CanMove = false;
+
+        Vector3 direction = _targetPoint - _hero.transform.position;
+        bool badDirection = float.IsInfinity(_targetPoint.x) || direction.sqrMagnitude < 0.0001f;
+
+        if (badDirection)
+        {
+            _hero.Move.StopLookAt();
+            return;
+        }
+
+        else Hero.Move.LookAtPosition(_targetPoint);
+    }
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         Hero.Animator.speed = Hero.Animator.speed / CastDeley;
@@ -53,17 +72,8 @@ public class Shot : Skill
             {
                 Vector3 clickedPoint = GetMousePoint();
 
-                if (IsPointInRadius(Radius, clickedPoint) &&
-                    NoObstacles(clickedPoint, transform.position, _obstacle) &&
-                    TryGetDamageableAtPoint(clickedPoint, out var damageable))
-                {
+                if (NoObstacles(clickedPoint, transform.position, _obstacle) && TryGetDamageableAtPoint(clickedPoint, out var damageable))
                     _targetPoint = clickedPoint;
-
-                    if (damageable is Component component) Hero.Move.LookAtTransform(component.transform);
-                    else Hero.Move.LookAtPosition(_targetPoint);
-
-                    Hero.Move.CanMove = false;
-                }
             }
             yield return null;
         }

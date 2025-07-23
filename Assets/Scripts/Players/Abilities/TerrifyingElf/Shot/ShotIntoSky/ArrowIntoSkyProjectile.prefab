@@ -146,8 +146,6 @@ MonoBehaviour:
   nextDamageTime: 0.8
   criticalChance: 30
   criticalMultiplier: 2.4
-  minDamage: 12
-  maxDamage: 18
   arrow: {fileID: 9103092950671096227}
   circle: {fileID: 3986887220995087752}
   sphereCollider: {fileID: 3585261139813630317}

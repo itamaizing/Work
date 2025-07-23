@@ -13,15 +13,19 @@ public class ShotsIntoSky : Skill
     [SerializeField] private bool shotAstralManaActive;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private HeroComponent playerLinks;
+    [SerializeField] private float _dropDelayTime = 1f;
 
     [Header("Arrows Effects Settings")]
     [SerializeField] private ArrowsIntoSkyProjectile impactPrefab;
+    [SerializeField] private ParticleSystem arrowsIntoSkyEffect;
 
     private readonly SyncList<uint> _arrowsIntoSkyProjectileIds = new SyncList<uint>();
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private bool _tripleShot;
+
     protected override int AnimTriggerCastDelay => Animator.StringToHash("ShotsSkyCastDelay");
     protected override int AnimTriggerCast => 0;
+
 
     protected override bool IsCanCast => !_disactive && IsPointInRadius(Radius, _targetPoint);
 
@@ -46,6 +50,8 @@ public class ShotsIntoSky : Skill
 
         _hero.Move.LookAtPosition(_targetPoint);
     }
+
+    public void ArrowsIntoSkyEffectPlay() => arrowsIntoSkyEffect.Play();
 
     public void ForceCooldownEnd()
     {
@@ -141,11 +147,7 @@ public class ShotsIntoSky : Skill
         uint id = _arrowsIntoSkyProjectileIds[0];
         _arrowsIntoSkyProjectileIds.RemoveAt(0);
 
-        if (!NetworkServer.spawned.TryGetValue(id, out var networkIdentity)) return;
-
-        var projectile = networkIdentity.GetComponent<ArrowsIntoSkyProjectile>();
-        projectile.Activate();
-        RpcActivate(projectile);
+        StartCoroutine(ActivateAfterDelay(id));
     }
 
     [Command] private void CmdDestroyPendingImpacts() => ServerDestroyPendingImpacts();
@@ -179,6 +181,21 @@ public class ShotsIntoSky : Skill
             if (NetworkServer.spawned.TryGetValue(id, out NetworkIdentity networkIdentity) && networkIdentity != null)
                 NetworkServer.Destroy(networkIdentity.gameObject);
         }
+    }
+
+    [Server]
+    private IEnumerator ActivateAfterDelay(uint projectileNetId)
+    {
+        yield return new WaitForSeconds(_dropDelayTime);
+
+        if (!NetworkServer.spawned.TryGetValue(projectileNetId, out var netIdentity) || netIdentity == null)
+            yield break;
+
+        var projectile = netIdentity.GetComponent<ArrowsIntoSkyProjectile>();
+        if (projectile == null) yield break;
+
+        projectile.Activate();
+        RpcActivate(projectile);
     }
 
     protected override void ClearData()
