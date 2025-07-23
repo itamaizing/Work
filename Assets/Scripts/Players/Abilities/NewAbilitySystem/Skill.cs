@@ -352,7 +352,7 @@ public abstract class Skill : NetworkBehaviour
 
     public bool TryPreparing()
     {
-        if (_isPreparing == false && _isCasting == false)
+        if (_isPreparing == false)
         {
             _actionWrapperForPreparingCoroutine = StartCoroutine(ActionWrapperForPreparingJob());
             return true;
