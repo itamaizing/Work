@@ -132,7 +132,7 @@ public class GrowTree : Skill
                 else
                 {
                     _targetPoint = GetMousePointOnLayer(groundLayer);
-                    if (float.IsPositiveInfinity(_targetPoint.x) || !IsPointInRadius(Radius, _targetPoint)) _targetPoint = Vector3.positiveInfinity;
+                    if (float.IsPositiveInfinity(_targetPoint.x)) _targetPoint = Vector3.positiveInfinity;
                 }
             }
             yield return null;

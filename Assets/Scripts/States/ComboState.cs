@@ -9,7 +9,7 @@ public class ComboState : AbstractCharacterState
 
     public override States State => States.ComboState;
     public override StateType Type => StateType.Magic;
-    public override BaffDebaff BaffDebaff => BaffDebaff.Null;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 
     public override List<StatusEffect> Effects => new List<StatusEffect>() { StatusEffect.Strengthening };
 

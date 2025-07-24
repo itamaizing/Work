@@ -13,20 +13,27 @@ public class TalentInfoPanel : MonoBehaviour
     public void Show(TalentData data)
     {
         gameObject.SetActive(true);
+        bool hasStateInfos = data.StateInfos.Count > 0;
 
         foreach (var text in data.DescriptionsForInfoPanel)
         {
             var cell = Instantiate(_cellPref, transform);
-
             _cells.Add(cell);
 
             cell.ShowDividingLine();
-
             cell.TextDescription.text = text;
         }
 
-        if(_cells != null && _cells.Count > 0)
-            _cells[^1].HideDividingLine();
+        if (!hasStateInfos && _cells.Count > 0) _cells[^1].HideDividingLine();
+
+        foreach (var st in data.StateInfos)
+        {
+            var cell = Instantiate(_cellPref, transform);
+            _cells.Add(cell);
+
+            cell.HideDividingLine();
+            cell.TextDescription.text = $"<color=#FFFF00>{st.StateName}</color> - {st.Description}";
+        }
 
         _name.text = data.Description;
     }

@@ -1,6 +1,7 @@
 using Mirror;
 using System;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -20,6 +21,7 @@ public class ShotDarkness : Skill
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private AudioSource _audioSource;
     private int _consecutiveShots;
+    private float _magicDamage;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash(_startAnimTrigger);
     protected override int AnimTriggerCast => 0;
@@ -54,13 +56,19 @@ public class ShotDarkness : Skill
         }
 
         else Hero.Move.LookAtPosition(_targetPoint);
+
+        float manaDamage = playerLinks.Resources.Where(resource => resource.Type == ResourceType.Mana).Sum(resource => resource.CurrentValue);
+        _magicDamage = Mathf.Min(6f, Mathf.Floor(manaDamage));
+
+        Damage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
+
+        if (_magicDamage > 0) CmdSpendBonusMana(_magicDamage);
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         OnSkillCanceled += HandleSkillCanceled;
         Hero.Animator.speed = Hero.Animator.speed / CastDeley;
-        Damage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
 
         while (float.IsPositiveInfinity(_targetPoint.x))
         {
@@ -152,27 +160,38 @@ public class ShotDarkness : Skill
         if (direction == Vector3.zero) return;
 
         ArrowProjectile proj = Instantiate(projectile, spawnPosition, Quaternion.LookRotation(direction));
-        proj.Init(playerLinks, 0, false, this, damage);
+        proj.Init(playerLinks, _magicDamage, false, this, damage);
         SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(proj.gameObject);
         proj.StartFly(direction);
-        RpcInit(proj.gameObject, damage);
+        RpcInit(proj.gameObject, _magicDamage, damage);
         RpcPlayShotSound();
     }
 
+    [Command] private void CmdCrossFade(string newAnim) => _hero.Animator.CrossFade(newAnim, 0.1f);
+
     [Command]
-    private void CmdCrossFade(string newAnim)
+    private void CmdSpendBonusMana(float amount)
     {
-        _hero.Animator.CrossFade(newAnim, 0.1f);
+       float left = amount;
+       foreach (var resource in playerLinks.Resources.Where(resource => resource.Type == ResourceType.Mana))
+       {
+            if (left <= 0) break;
+            float spend = Math.Min(resource.CurrentValue, left);
+            resource.CurrentValue -= spend;
+            left -= spend;
+       }
+
+        _magicDamage = amount - left;
     }
 
     [ClientRpc]
-    protected void RpcInit(GameObject gameObject, float damage)
+    protected void RpcInit(GameObject gameObject, float magicDamage, float damage)
     {
         if (gameObject == null) return;
 
         ArrowProjectile proj = gameObject.GetComponent<ArrowProjectile>();
-        if (proj != null) proj.Init(playerLinks, 0, false, this, damage);
+        if (proj != null) proj.Init(playerLinks, magicDamage, false, this, damage);
     }
 
     [ClientRpc]

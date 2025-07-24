@@ -11,10 +11,21 @@ public class StateIcons : MonoBehaviour
      [SerializeField] private StateIcoItem _frosting;
      [SerializeField] private StateIcoItem _blind;*/
     [SerializeField] private GameObject _spawnPos;
-
     [SerializeField] private List<StateIcoItem> _icons;
+
+    [Header("Border colors")]
+    [SerializeField] private Color _baffColor = new(0.23f, 0.9f, 0.23f);
+    [SerializeField] private Color _debaffColor = new(0.9f, 0.15f, 0.15f);
+    [SerializeField] private Color _neutralColor = Color.gray;
+
+    private CharacterState _characterState;
     private List<StateIcoItem> _activeEffects = new List<StateIcoItem>();
     private bool _added = false;
+
+    private void Awake()
+    {
+        _characterState = GetComponentInParent<CharacterState>();
+    }
 
     /*private void Update()
 	{
@@ -60,6 +71,8 @@ public class StateIcons : MonoBehaviour
                 StartProgress(ico, timeToDecrease);
                 RefreshText(ico);
                 MoveIcoToEnd(i);
+
+                ico.border.color = GetBorderColor(state);
                 return;
             }
         }
@@ -77,6 +90,8 @@ public class StateIcons : MonoBehaviour
 
                 _activeEffects.Add(newIco);
                 MoveIcoToEnd(_activeEffects.Count - 1);
+
+                newIco.border.color = GetBorderColor(state);
                 return;
             }
         }
@@ -110,6 +125,22 @@ public class StateIcons : MonoBehaviour
              default:
                  break;
          }*/
+    }
+
+    private Color GetBorderColor(States state)
+    {
+        if (_characterState == null) return _neutralColor;
+
+        if (_characterState.enumToState.TryGetValue(state, out var stateObj))
+        {
+            return stateObj.BaffDebaff switch
+            {
+                BaffDebaff.Baff => _baffColor,
+                BaffDebaff.Debaff => _debaffColor,
+                _ => _neutralColor
+            };
+        }
+        return _neutralColor;
     }
 
     private void StartProgress(StateIcoItem ico, float duration)

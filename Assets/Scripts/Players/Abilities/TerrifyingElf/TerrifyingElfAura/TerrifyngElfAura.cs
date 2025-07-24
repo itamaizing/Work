@@ -91,7 +91,7 @@ public class TerrifyingElfAura : NetworkBehaviour
     {
         if (newValue > 0f) return;
 
-        if (_heroMana != null) _heroMana.ValueChanged -= OnManaChanged;
+        Debug.Log("Маны нет");
         ApplyElvenSkill();
         StartCoroutine(ReSubscribeAfterDelay());
     }

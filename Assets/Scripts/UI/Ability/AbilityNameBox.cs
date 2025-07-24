@@ -8,6 +8,7 @@ public class AbilityNameBox : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _name;
     [SerializeField] private TextMeshProUGUI _descriptionWithNumbers;
     [SerializeField] private TextMeshProUGUI _text;
+    [SerializeField] private TextMeshProUGUI _textState;
 
     public static readonly string ColorState= "<color=#FFFF00>"; // test: state color
     public static readonly string ColorOpen = "<color=#53935E>";
@@ -17,7 +18,7 @@ public class AbilityNameBox : MonoBehaviour
     {
         _name.text = skill.Name;
         _text.text = $"{skill.Description}";
-        if (!string.IsNullOrEmpty(skill.State)) _text.text = $"\n'{ColorState}{skill.State}{ColorEnd}' - {skill.DescriptionState}";
+        if (!string.IsNullOrEmpty(skill.State)) _text.text += $"\n'{ColorState}{skill.State}{ColorEnd}' - {skill.DescriptionState}";
         _descriptionWithNumbers.text = "";
 
         if (skill.SkillEnergyCosts.Count > 0)
@@ -119,7 +120,7 @@ public class AbilityNameBox : MonoBehaviour
             case DamageType.DOTMag:
                 break;
             case DamageType.Both:
-                _descriptionWithNumbers.text += " смешанный(мы вообще его используем?)";
+                _descriptionWithNumbers.text += "смешанный";
                 break;
             case DamageType.None:
                 break;

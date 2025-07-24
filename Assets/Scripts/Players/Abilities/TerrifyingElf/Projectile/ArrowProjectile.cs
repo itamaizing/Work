@@ -10,7 +10,7 @@ public class ArrowProjectile : Projectiles
     [SerializeField] private float duration;
     [SerializeField] private DamageType damageTypePhysics;
 
-    private float magDamage;
+    private float _magDamage;
     private float _damage;
 
     public bool ArrowDark { get => _arrowDark; set => _arrowDark = value; }
@@ -26,6 +26,7 @@ public class ArrowProjectile : Projectiles
     {
         base.Init(dad, energy, lastHit, skill);
         _damage = damage;
+        _magDamage = energy;
     }
 
     [Server]
@@ -74,28 +75,10 @@ public class ArrowProjectile : Projectiles
                 if (TryApplyDamage(damageTypePhysics, _skill.AttackRangeType, collider.gameObject)) return;
             }
 
-            float availableMana = 0f;
-            if (_dad != null) availableMana = _dad.Resources.Where(resourse => resourse.Type == ResourceType.Mana).Sum(resourse => resourse.CurrentValue);
-
-            float bonusMagDamage = Mathf.Min(6f, Mathf.Floor(availableMana));
-            float totalMagDamage = magDamage + bonusMagDamage;
-
+            float totalMagDamage = _magDamage;
             if (inAstral) totalMagDamage *= 1.5f;
 
             ApplyDamage(totalMagDamage, _skill.DamageType, collider.gameObject);
-
-            if (_dad != null && bonusMagDamage > 0)
-            {
-                float manaToUse = bonusMagDamage;
-                foreach (var manaResource in _dad.Resources.Where(resourse => resourse.Type == ResourceType.Mana))
-                {
-                    if (manaToUse <= 0) break;
-
-                    float amountToUse = Mathf.Min(manaResource.CurrentValue, manaToUse);
-                    if (isServer) manaResource.CurrentValue -= amountToUse;
-                    manaToUse -= amountToUse;
-                }
-            }
 
             if (collider.TryGetComponent<Character>(out Character character)) character.CharacterState.AddState(States.InnerDarkness, duration, 0, _skill.Hero.gameObject, _skill.name);
         }

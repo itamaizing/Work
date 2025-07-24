@@ -52,6 +52,8 @@ public class Shot : Skill
         Vector3 direction = _targetPoint - _hero.transform.position;
         bool badDirection = float.IsInfinity(_targetPoint.x) || direction.sqrMagnitude < 0.0001f;
 
+        Damage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
+
         if (badDirection)
         {
             _hero.Move.StopLookAt();
@@ -64,7 +66,6 @@ public class Shot : Skill
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         Hero.Animator.speed = Hero.Animator.speed / CastDeley;
-        Damage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
 
         while (float.IsPositiveInfinity(_targetPoint.x))
         {
