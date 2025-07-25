@@ -198,7 +198,7 @@ public abstract class Skill : NetworkBehaviour
     public bool IsCasting { get => _isCasting; }
     public float CastStreamDuration { get => _castDuration; set => _castDuration = value; }
     public float Radius { get => Buff.Radius.GetBuffedValue(_radius); set => _radius = value; }
-    public float Area { get => Buff.Area.GetBuffedValue(_area); protected set => _area = value; }
+    public float Area { get => Buff.Area.GetBuffedValue(_area); set => _area = value; }
     public float CastLength { get => Buff.Area.GetBuffedValue(_castLength); protected set => _castLength = value; }
     public float CastWidth { get => Buff.Area.GetBuffedValue(_castWidth); protected set => _castWidth = value; }
     public virtual float Damage { get => _damageValue; set => _damageValue = value; }

@@ -11097,6 +11097,7 @@ MonoBehaviour:
   fireEffectDark: {fileID: 582552535353679993}
   fireDarkTalent: 0
   partialBlindnessTalent: 0
+  flameLightPulse: {fileID: 8635874584311858127}
 --- !u!65 &6007977284767293147
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -50,7 +50,7 @@ public class ComboState : AbstractCharacterState
             CurrentStacksCount++;
             _durationRemaining = time;
 
-            return true;
+            return false;
         }
 
         return false;

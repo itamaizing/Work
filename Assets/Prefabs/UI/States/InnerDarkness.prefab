@@ -95,10 +95,10 @@ MonoBehaviour:
   FadeFront: {fileID: 4288492732758460470}
   border: {fileID: 50026701696683283}
   Text: {fileID: 5841979573956175552}
-  count: 0
+  count: 1
   state: 51
   time: []
-  maxStack: 6
+  maxStack: 0
   currentDuration: 0
 --- !u!1 &6000399726936491198
 GameObject:

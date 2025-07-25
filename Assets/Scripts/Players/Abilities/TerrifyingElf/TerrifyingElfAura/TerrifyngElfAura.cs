@@ -26,6 +26,9 @@ public class TerrifyingElfAura : NetworkBehaviour
     [Header("Radius")]
     [SerializeField] private float radiusTreeCalmess = 12f;
 
+    [Header("Skills")]
+    [SerializeField] private ReconnaissanceFire reconnaissanceFire;
+
     public GameObject ElvenSkillEffect { get => elvenSkillEffect; set => elvenSkillEffect = value; }
 
     #region boolTalent
@@ -44,6 +47,7 @@ public class TerrifyingElfAura : NetworkBehaviour
 
     private Skill currentSkill;
     private Mana _heroMana;
+    private float _baseAreaReconnaissanceFire;
 
     private void OnEnable()
     {
@@ -52,6 +56,7 @@ public class TerrifyingElfAura : NetworkBehaviour
         if (hero != null && hero.DamageTracker != null) hero.DamageTracker.OnDamageTracked += OnDamageTracked;
         if (manaAbsorptionPhysicalTalent) hero.DamageTracker.OnDamageTracked += OnDamageDealt;
         if (_heroMana != null) _heroMana.ValueChanged += OnManaChanged;
+        _baseAreaReconnaissanceFire = reconnaissanceFire.BaseArea;
     }
 
     private void OnDisable()
@@ -147,6 +152,8 @@ public class TerrifyingElfAura : NetworkBehaviour
     public void FireWorshipperTalentActive(bool value)
     {
         fireWorshipperTalent = value;
+        if (!fireWorshipperTalent) reconnaissanceFire.Area = _baseAreaReconnaissanceFire;
+        else reconnaissanceFire.Area += 1;
     }
 
     private void ApplyFireWorshipperTalent()

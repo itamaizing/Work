@@ -280,7 +280,7 @@ public class CharacterState : NetworkBehaviour
 	{
 		if (!currentStates.Contains(newState)) return;
 
-		foreach (AbstractCharacterState state in currentStates) state.CurrentStacksCount = 0;
+		newState.CurrentStacksCount = 0;
 
 		if (newState is IDamageable damageableShield)
 		{
@@ -386,11 +386,11 @@ public class CharacterState : NetworkBehaviour
 		for (int i = 0; i < currentStates.Count; i++)
 		{
 			if (currentStates[i].State == state)
-			{
-				bool canStack = currentStates[i].Stack(duration);
+			{	
 
 				if (currentStates[i].MaxStacksCount == 0)
                 {
+					bool canStack = currentStates[i].Stack(duration);
 					int newMaxStack = currentStates[i].MaxStacksCount;
 
 					_stateIcons.ActivateIco(state, duration, 1, canStack, newMaxStack);
@@ -400,9 +400,11 @@ public class CharacterState : NetworkBehaviour
 
 				else
                 {
-					float remaining = currentStates[i].duration;
-					int maxStack = currentStates[i].MaxStacksCount;
-					_stateIcons.ActivateIco(state, remaining, canStack ? 1 : 0, canStack, maxStack);
+					currentStates[i].Stack(duration);
+					float remaining = currentStates[i] is IHaveDynamicDuration dynamicDuration ? dynamicDuration.RemainingDuration : duration;
+					int newMaxStack = currentStates[i].MaxStacksCount;
+
+					_stateIcons.ActivateIco(state, remaining, 1, true, newMaxStack);
 
 					MoveStateToEnd(i);
 				}
@@ -443,6 +445,7 @@ public class CharacterState : NetworkBehaviour
 	private void CreateState(AbstractCharacterState state, States stateName, float duration, float damageToExit, GameObject personWhoShooted, string skillName, bool stack)
 	{
 		currentStates.Add(state);
+
 		if (personWhoShooted.TryGetComponent<Character>(out var character))
 		{
 			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit, character, skillName);
@@ -452,8 +455,9 @@ public class CharacterState : NetworkBehaviour
 			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit, null, skillName);
 		}
 
+		float remaining = state is IHaveDynamicDuration dynamicDuration ? dynamicDuration.RemainingDuration : duration;
 		int maxStacksCount = state.MaxStacksCount;
-		_stateIcons.ActivateIco(stateName, duration, 1, stack, maxStacksCount);
+		_stateIcons.ActivateIco(stateName, remaining, 1, stack, maxStacksCount);
 	}
 
 	private void AddShield(IDamageable shield)
@@ -667,4 +671,9 @@ public enum BaffDebaff
 	Baff,
 	Debaff,
 	Null,
+}
+
+public interface IHaveDynamicDuration
+{
+	float RemainingDuration { get; }
 }

@@ -11,6 +11,8 @@ public class FlameLightPulse : MonoBehaviour
 
     private Coroutine _pulseCoroutine;
 
+    public Light FlameLight { get => flameLight; set => flameLight = value; }
+
     private void OnEnable()
     {
         if (reconnaissanceFireAura != null)

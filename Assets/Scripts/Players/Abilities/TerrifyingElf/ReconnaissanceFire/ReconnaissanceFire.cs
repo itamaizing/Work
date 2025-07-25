@@ -20,6 +20,7 @@ public class ReconnaissanceFire : Skill
     [SerializeField] private bool fireWorshipperTalent;
     [SerializeField] private ObjectData fireData;
     [SerializeField] private float duration = 10;
+    [SerializeField] private float baseArea = 3f;
 
     [Header("TrickShot Settings")]
     [SerializeField] private List<Vector3> globalConstants = new(new Vector3[] { new(0, -9.81f, 0) });
@@ -36,6 +37,7 @@ public class ReconnaissanceFire : Skill
     private Coroutine _auraLifeCoroutine;
 
     public ReconnaissanceFireAura CurrentFireAura => currentFireAura;
+    public float BaseArea { get => baseArea; set => baseArea = value; }
 
     protected override bool IsCanCast => !float.IsPositiveInfinity(_targetPoint.x) && IsPointInRadius(Radius, _targetPoint);
     protected override int AnimTriggerCastDelay => Animator.StringToHash("ThrowCastDelay");
@@ -171,7 +173,7 @@ public class ReconnaissanceFire : Skill
         currentFireAura.FireDarkTalent = fireDarkTalent;
         RpcSetCurrentFireAura(aura);
 
-        float life = _baseDuration + (fireWorshipperTalent ? 4f : 0f);
+        float life = _baseDuration + (fireWorshipperTalent ? 6f : 0f);
         _auraLifeCoroutine = StartCoroutine(DestroyAuraAfter(life, aura));
     }
 

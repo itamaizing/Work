@@ -12,6 +12,7 @@ public class ReconnaissanceFireAura : NetworkBehaviour
     [SerializeField] private GameObject fireEffectDark;
     [SerializeField] private bool fireDarkTalent;
     [SerializeField] private bool partialBlindnessTalent;
+    [SerializeField] private FlameLightPulse flameLightPulse;
 
     public event Action<bool> OnStateDarkTalentChanged;
 
@@ -85,10 +86,17 @@ public class ReconnaissanceFireAura : NetworkBehaviour
         if (isActive)
         {
             transform.localScale += Vector3.one;
-
             if (fireEffect != null) fireEffect.transform.localScale += Vector3.one;
-
             if (fireEffectDark != null) fireEffectDark.transform.localScale += Vector3.one;
+            if (this.TryGetComponent<VisionComponent>(out VisionComponent vision)) vision.VisionRange += 1;
+
+            if (flameLightPulse != null)
+            {
+                flameLightPulse.FlameLight.range += 1;
+                Vector3 position = flameLightPulse.transform.position;
+                position.y -= 1f;
+                flameLightPulse.transform.position = position;
+            }
         }
     }
 
