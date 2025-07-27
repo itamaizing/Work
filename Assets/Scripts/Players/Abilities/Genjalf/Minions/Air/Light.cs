@@ -13,7 +13,7 @@ namespace Gangdollarff.AirElemental
 
         public override void LoadTargetData(TargetInfo targetInfo)
         {
-            throw new NotImplementedException();
+            
         }
 
         protected override IEnumerator CastJob()
