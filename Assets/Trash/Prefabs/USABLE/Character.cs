@@ -25,6 +25,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 	[SerializeField] private SelectedCircle _selectedCircle;
 	[SerializeField] private SpawnComponent _spawnComponent;
 	[SerializeField] private VisionComponent _visionComponent;
+	[SerializeField] private Auras _auras;
 
 	[SyncVar] private int _killCounter;
 	[SyncVar] private float _damageTakeCounter;
@@ -77,6 +78,9 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
     public float DamageTakeCounter { get => _damageTakeCounter; set => _damageTakeCounter = value; }
     public float DamageGetCounter { get => _damageGetCounter; set => _damageGetCounter = value; }
     public VisionComponent VisionComponent { get => _visionComponent; }
+    public Vector3 Position => transform.position;
+    public Transform Transform => transform;
+    public Auras Auras { get => _auras; }
 
     public static event Action<Character> ServerOnUnitSpawned;
 	public static event Action<Character> ServerOnUnitDeleted; 
@@ -85,7 +89,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
     public event Action OnDisappeared;
     public event Action OnAppeared;
     public event Action<Damage, Skill> DamageTaken;
-    public event Action<float> DamageGeted;
+    public event Action<Damage, GameObject> DamageGeted;
     public event Action<float, Skill, string> HealTaked;
 	public event Action<Character> Died;
 	public event Action Killed;
@@ -222,6 +226,12 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 		return b;
     }
 
+	[Command (requiresAuthority = false)]
+	public void CmdTryTakeDamage(Damage damage, Skill skill)
+    {
+        TryTakeDamage(ref damage, skill);
+    }
+
     public void ShowPhantomValue(Damage phantomValue)
     {
 		Health.ShowPhantomValue(phantomValue);
@@ -232,9 +242,9 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 		Health.Heal(ref value, sourceName, skill);
 	}
 
-	public void DamageGet(float damage)
+	public void DamageGet(Damage damage, GameObject target)
 	{
-		DamageGeted?.Invoke(damage);
+		DamageGeted?.Invoke(damage, target);
 	}
 
 	protected virtual void OnDied()

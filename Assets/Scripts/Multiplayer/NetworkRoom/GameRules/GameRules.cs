@@ -230,6 +230,7 @@ public abstract class GameRules : NetworkBehaviour
 
     private IEnumerator FoundGameManagerCorounite()
     {
+        UnityEngine.Debug.Log("FoundGameManagerCorounite");
         while (_gameManager == null || _gameManager.TeamsPanel == null || _gameManager.Source == null)
         {
             yield return new WaitForSecondsRealtime(0.5f);
@@ -248,9 +249,10 @@ public abstract class GameRules : NetworkBehaviour
                 _players.Add(playerSettings);
             }
         }
-
+        UnityEngine.Debug.Log("this");
         foreach (var playerSettings in _players)
         {
+            UnityEngine.Debug.Log("123123123");
             if (playerSettings.NetworkSettings.TeamIndex == 1)
             {
                 _gameManager.TeamsPanel.AddInFirstTeam(playerSettings);

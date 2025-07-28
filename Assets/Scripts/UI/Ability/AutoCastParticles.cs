@@ -17,14 +17,11 @@ public class AutoCastParticles : MonoBehaviour
     private Vector3[] _path1;
     private Vector3[] _path2;
 
-    private void Start()
-    {
-        gameObject.SetActive(false);
-
-    }
-
     public void Play()
     {
+        _particle1.gameObject.SetActive(true);
+        _particle2.gameObject.SetActive(true);
+
         _path1 = new Vector3[(_transformpath1.Length)];
         _path2 = new Vector3[(_transformpath2.Length)];
         _particle1.transform.position = _transformpath1[0].position;
@@ -52,6 +49,9 @@ public class AutoCastParticles : MonoBehaviour
 
     public void Stop()
     {
+        _particle1.gameObject.SetActive(false);
+        _particle2.gameObject.SetActive(false);
+
         _particle1.transform.DOKill();
         _particle2.transform.DOKill();
 

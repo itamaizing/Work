@@ -3,22 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TestCall : MonoBehaviour, IDamageable
+public class TestCall : MonoBehaviour
 {
-    public event Action<Damage, Skill> DamageTaken;
-
-    public void ShowPhantomValue(Damage phantomValue)
+    private void OnTriggerEnter(Collider other)
     {
-        throw new NotImplementedException();
+        Call();
     }
 
-    public bool TryTakeDamage(ref Damage damage, Skill skill)
+    public void Call()
     {
-        throw new NotImplementedException();
-    }
-
-    public void Call(int i)
-    {
-        Debug.Log(i);
+        Debug.Log(123123123);
     }
 }

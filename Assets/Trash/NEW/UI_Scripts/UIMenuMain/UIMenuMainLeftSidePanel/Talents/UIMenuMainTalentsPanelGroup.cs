@@ -23,7 +23,7 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
     public event Action<TalentData> PointerEnteredOnTalentIcon;
     public event Action<TalentData> PointerExitedOnTalentIcon;
 
-    public void SetPanel(TalentsGroup talentsGroup, UIMenuMainAttributesPanel attributesPanel, bool isGameUI)
+    public void SetPanel(TalentsGroup talentsGroup, UIMenuMainAttributesPanel attributesPanel, bool isGameUI, bool isInteractable = true)
     {
         _isGameUI = isGameUI;
         
@@ -39,6 +39,8 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
             
             talent.Owner = this;
             talent.Fill(item.Data);
+
+            talent.Button.interactable = isInteractable;
             
             talent.Selected += OnTalentSelected;
             talent.PointerEntered += OnPointerEnteredOnTalentIcon;

@@ -26,6 +26,23 @@ public class AbilityNameBox : MonoBehaviour
         if (skill.ManaCostPerTick.Count > 0)
             _descriptionWithNumbers.text += $" и {ColorOpen}{skill.ManaCostPerTick[0].resourceCost} ед. маны/{skill.ManaCostRate} сек{ColorEnd}";
 
+        switch (skill.AbilityForm)
+        {
+            case AbilityForm.Spell:
+                _descriptionWithNumbers.text += $" заклинание {GetSchoolName(skill)}";
+                break;
+
+            case AbilityForm.Magic:
+                _descriptionWithNumbers.text += $" магия {GetSchoolName(skill)}";
+                break;
+
+            case AbilityForm.Physical:
+                break;
+
+            default:
+                break;
+        }
+
         if (skill.Damage > 0)
         {
             _descriptionWithNumbers.text += $"\nУрон: {ColorOpen}{skill.Damage}{ColorEnd}";
@@ -99,6 +116,45 @@ public class AbilityNameBox : MonoBehaviour
             case DamageType.None:
                 break;
             default:
+                break;
+        }
+    }
+
+    private string GetSchoolName(Skill skill)
+    {
+        switch (skill.School)
+        {
+            case Schools.Light:
+                return "света";
+                break;
+            case Schools.Dark:
+                return "тьмы";
+                break;
+            case Schools.Fire:
+                return "огня";
+                break;
+            case Schools.Water:
+                return "воды";
+                break;
+            case Schools.Air:
+                return "воздуха";
+                break;
+            case Schools.Earth:
+                return "земли";
+                break;
+            case Schools.Physical:
+                return "";
+                // ---
+                break;
+            case Schools.Discipline:
+                return "";
+                // ????
+                break;
+            case Schools.None:
+                return "";
+                break;
+            default:
+                return "";
                 break;
         }
     }

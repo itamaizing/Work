@@ -11,6 +11,7 @@ public class SkillRenderer : NetworkBehaviour
     [SerializeField] private DrawCircle _circle;
     [SerializeField] private CircleArea _areaPref;
     [SerializeField] private SphereArea _damageZonePref;
+    [SerializeField] private SkillCircleRanderer _skillCircleRandererPref;
     [SerializeField] private AbilityLineRenderer _line;
     [SerializeField] private LineZoneRender _lineZoneRender;
     [SerializeField] private LineZoneRender _lineZoneRenderForQueue;
@@ -31,11 +32,13 @@ public class SkillRenderer : NetworkBehaviour
     private float _circleRadius;
     private BoxArea _lineStartImage;
     //private BoxArea _lineEndImage;
+    private SkillCircleRanderer _drawAutoAttackRadius;
 
     private Coroutine _drawLineCoroutine;
     private Coroutine _drawAreaCoroutine;
     private Coroutine _drawClosestTargetCoroutine;
     private Coroutine _drawRadiusCoroutine;
+    private Coroutine _drawAutoAttackRadiusCoroutine;
     private Coroutine _dynamicRadiusColorCoroutine;
 
     //public SphereArea TempDamageZone => _tempDamageZone;
@@ -49,6 +52,8 @@ public class SkillRenderer : NetworkBehaviour
             if (_isOverrideClosestTarget) StopDrawClosestTarget();
         }
     }
+
+    public SkillCircleRanderer SkillCircleRandererPref { get => _skillCircleRandererPref; }
 
     private Character _tempTarget;
 
@@ -227,6 +232,21 @@ public class SkillRenderer : NetworkBehaviour
         }
     }
 
+    public void StartDrawAutoAttackRadius(float radius)
+    {
+        _drawAutoAttackRadius = Instantiate(_skillCircleRandererPref, transform);
+        _drawAutoAttackRadius.StartDraw(radius);
+        _drawAutoAttackRadius.StartBlink(1);
+    }
+
+    public void StopDrawAutoAttackRadius()
+    {
+        if (_drawAutoAttackRadius != null)
+        {
+            Destroy(_drawAutoAttackRadius.gameObject);
+            _drawAutoAttackRadius = null;
+        }
+    }
 
     private void RotateAtMouse(Transform transform)
     {
@@ -242,6 +262,11 @@ public class SkillRenderer : NetworkBehaviour
 		Vector3 dir = worldPosition - gameObject.transform.position;
 		float angle = Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(90, - angle + 90, 0);
+    }
+
+    private IEnumerator DrawAutoAttackRadiusJob(float radius, Transform target)
+    {
+        yield return null;
     }
 
     private IEnumerator DrawRadiusJob(float radius)

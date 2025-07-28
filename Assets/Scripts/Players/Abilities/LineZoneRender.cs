@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class LineZoneRender : MonoBehaviour 
@@ -53,16 +54,33 @@ public class LineZoneRender : MonoBehaviour
 
     private IEnumerator DrawJob()
     {
+        Vector3 mouse;
+        Vector3 lastPoint = transform.position;
+
         _lineRenderer.positionCount = _lineRenderer.positionCount + 1;
         yield return null;
 
         while (true)
         {
-            if (Input.GetMouseButtonDown(0))
-                SetPoint(_skill.GetMousePoint() + Vector3.up / 10);
-
-            _lineRenderer.SetPosition(_lineRenderer.positionCount - 1, _skill.GetMousePoint() + Vector3.up / 10);
             yield return null;
+
+            mouse = _skill.GetMousePoint() + Vector3.up / 10;
+
+            if (_lineRenderer.positionCount > 1)
+                lastPoint = _lineRenderer.GetPosition(_lineRenderer.positionCount - 2);
+            else
+                lastPoint = mouse;
+
+            if (_lineRenderer.positionCount > 1 && Vector3.Distance(lastPoint, mouse) > _skill.CastLength)
+            {
+                _lineRenderer.SetPosition(_lineRenderer.positionCount - 1, lastPoint + (mouse - lastPoint).normalized * _skill.CastLength);
+                continue;
+            }
+
+            if (Input.GetMouseButtonDown(0))
+                SetPoint(mouse);
+
+            _lineRenderer.SetPosition(_lineRenderer.positionCount - 1, mouse);
         }
     }
 }

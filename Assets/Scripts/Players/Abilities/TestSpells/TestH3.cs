@@ -37,6 +37,18 @@ public class TestH3 : Skill
         AnimCastEnded();
     }
 
+    public void Update()
+    {
+        if(Input.GetKeyUp(KeyCode.U))
+        {
+            EnableSkillBoost();
+        }
+        if(Input.GetKeyUp(KeyCode.I))
+        {
+            DisableSkillBoost();
+        }
+    }
+
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         _target = (Character)targetInfo.Targets[0];
