@@ -16,6 +16,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     [SerializeField] private TextMeshProUGUI _chargeCounter;
     [SerializeField] private Blink _blinkBoxFrame;
     [SerializeField] private AutoCastParticles _autoCastEffect;
+    [SerializeField] private ParticleSystem _boostEffect;
 
     private Transform _patentAfterDrag;
     private Skill _skill;
@@ -154,6 +155,9 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         ability.CooldownEnded += OnStopCooldown;
 
         ability.AutoModeChanged += OnAutoModeChanged;
+
+        ability.BoostEnabled += OnBoostEnabled;
+        ability.BoostDisabled += OnBoostDisabled;
     }
 
     private void UnsubscribingSkillOnEvents(Skill ability)
@@ -175,6 +179,19 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         ability.CooldownEnded -= OnStopCooldown;
 
         ability.AutoModeChanged -= OnAutoModeChanged;
+
+        ability.BoostEnabled -= OnBoostEnabled;
+        ability.BoostDisabled -= OnBoostDisabled;
+    }
+
+    private void OnBoostDisabled()
+    {
+        _boostEffect.gameObject.SetActive(false);
+    }
+
+    private void OnBoostEnabled()
+    {
+        _boostEffect?.gameObject.SetActive(true);
     }
 
     private void OnClickWithCtrl()

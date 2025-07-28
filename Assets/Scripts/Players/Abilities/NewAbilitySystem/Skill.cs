@@ -240,6 +240,8 @@ public abstract class Skill : NetworkBehaviour
     public event Action<TargetInfo> TargetDataSaved;
     public event Action<bool> AutoModeChanged;
     public event Action<Vector3> ClickPoint;
+    public event Action BoostEnabled;
+    public event Action BoostDisabled;
 
     /// <summary>
     /// There may be a description that will be shown in the AbillityNameBox.
@@ -327,6 +329,10 @@ public abstract class Skill : NetworkBehaviour
     protected abstract IEnumerator CastJob();
     protected abstract void ClearData();
 
+    protected virtual void SkillEnableBoostLogic() { }
+    
+    protected virtual void SkillDisableBoostLogic() { }
+
     public void Init(SkillRenderer render, Character hero)
     {
         _hero = hero;
@@ -343,6 +349,18 @@ public abstract class Skill : NetworkBehaviour
         }
         else
             _currentChargers = 1;
+    }
+
+    public void EnableSkillBoost()
+    {
+        SkillEnableBoostLogic();
+        BoostEnabled?.Invoke();
+    }
+
+    public void DisableSkillBoost()
+    {
+        SkillDisableBoostLogic();
+        BoostDisabled?.Invoke();
     }
 
     public void InvokeCastStreamStarted(float duration)

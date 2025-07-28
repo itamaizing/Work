@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6448489560752681841}
   - component: {fileID: 3633603309506734223}
   - component: {fileID: 1505349855385017726}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Item_FX_41
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4841,7 +4841,7 @@ GameObject:
   - component: {fileID: 9047242940255347279}
   - component: {fileID: 8786541150899780580}
   - component: {fileID: 6343797875951788823}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Item_FX_6_Yellow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9790,7 +9790,7 @@ GameObject:
   - component: {fileID: 5500110166852344906}
   - component: {fileID: 1703747981440202148}
   - component: {fileID: 673305265010355366}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Spark_Yellow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
