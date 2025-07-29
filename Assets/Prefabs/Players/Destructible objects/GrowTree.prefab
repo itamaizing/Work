@@ -472,6 +472,7 @@ GameObject:
   - component: {fileID: 2042335225482926251}
   - component: {fileID: 4447215290270786159}
   - component: {fileID: 7689718569036556876}
+  - component: {fileID: 5108004075575563715}
   m_Layer: 8
   m_Name: GrowTree
   m_TagString: Enemies
@@ -736,7 +737,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  controllableUnits: []
 --- !u!114 &1555059839938612127
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -835,6 +835,26 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 4.3450894, y: 0.11179183, z: 3.602282}
   m_Center: {x: 0.18185237, y: 7.433134, z: 0.28462636}
+--- !u!114 &5108004075575563715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2058911381882631605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51426300b115624498d917fa4e3598cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _tick: 1
+  zoneRadius: 6
+  characterLayer:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!1 &2412534617357909401
 GameObject:
   m_ObjectHideFlags: 0

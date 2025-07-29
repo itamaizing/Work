@@ -13,6 +13,7 @@ public class SongOfSleep : Skill
 
     private Coroutine _radiusJob;
     private Vector3 _centerPoint = Vector3.positiveInfinity;
+    private bool _isSleepInnerDarknessTalentActive = false;
 
     protected override bool IsCanCast => !IsCasting;
 
@@ -20,6 +21,8 @@ public class SongOfSleep : Skill
 
     protected override int AnimTriggerCastDelay => _animTrigger;
     protected override int AnimTriggerCast => 0;
+
+    public bool IsSleepInnerDarknessTalentActive { get => _isSleepInnerDarknessTalentActive; set => _isSleepInnerDarknessTalentActive = value; }
 
     public override void LoadTargetData(TargetInfo targetInfo) => _centerPoint = targetInfo.Points.Count > 0 ? targetInfo.Points[0] : playerLinks.transform.position;
 
@@ -134,4 +137,10 @@ public class SongOfSleep : Skill
             yield return wait;
         }
     }
+
+    #region Talent
+
+    public void SleepInnerDarknessTalent(bool value) => _isSleepInnerDarknessTalentActive = value;
+
+    #endregion
 }

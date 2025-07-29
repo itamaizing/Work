@@ -36731,6 +36731,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: StateIcons
       objectReference: {fileID: 0}
+    - target: {fileID: 7875684509955136938, guid: e5b733c903c6d9143af357e086455e86, type: 3}
+      propertyPath: _icons.Array.size
+      value: 46
+      objectReference: {fileID: 0}
+    - target: {fileID: 7875684509955136938, guid: e5b733c903c6d9143af357e086455e86, type: 3}
+      propertyPath: _icons.Array.data[46]
+      value: 
+      objectReference: {fileID: 1859721338676053526, guid: b393a93c514f1334f8856653f90b6cb6, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

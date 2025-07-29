@@ -138,11 +138,9 @@ public class CharacterState : NetworkBehaviour
 		[States.Sleep] = new Sleep(),
 		[States.ElvenSkill] = new ElvenSkill(),
 		[States.Bound] = new Bound(),
-
-		#region Test Baff and Debaff
 		[States.BaffState] = new BaffState(),
 		[States.DebaffState] = new DebaffState(),
-		#endregion
+		[States.ShadowTree] = new ShadowTree(),		
 	};
 
 	public void Initialize(Character hero)
@@ -665,6 +663,7 @@ public enum States
 	BaffState,
     DebaffState,
 	Bound,
+	ShadowTree
 }
 public enum BaffDebaff
 {

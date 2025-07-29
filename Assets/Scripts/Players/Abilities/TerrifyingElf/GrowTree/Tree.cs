@@ -1,10 +1,20 @@
+using Mirror;
 using UnityEngine;
 
-public class Tree : NetworkComponent
+public class Tree : NetworkBehaviour
 {
     private float baseVision;
     private float VisionMultiplier = 3f;
     private float RadiusMultiplier = 2f;
+
+    private void OnDestroy() => RemoveAuthority();
+
+    [Server]
+    private void RemoveAuthority()
+    {
+        var id = netIdentity;
+        if (id.connectionToClient != null) id.RemoveClientAuthority();
+    }
 
     private void OnTriggerEnter(Collider other)
     {

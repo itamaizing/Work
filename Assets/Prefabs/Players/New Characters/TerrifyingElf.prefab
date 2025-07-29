@@ -19105,7 +19105,7 @@ PrefabInstance:
       objectReference: {fileID: 3990805733231088528}
     - target: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _icons.Array.size
-      value: 45
+      value: 46
       objectReference: {fileID: 0}
     - target: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _icons.Array.data[25]
@@ -19187,6 +19187,10 @@ PrefabInstance:
       propertyPath: _icons.Array.data[44]
       value: 
       objectReference: {fileID: 3545852164369826336, guid: 4707a164dd4c8b0429b0a12c2299f6a5, type: 3}
+    - target: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _icons.Array.data[45]
+      value: 
+      objectReference: {fileID: 1859721338676053526, guid: b393a93c514f1334f8856653f90b6cb6, type: 3}
     - target: {fileID: 8739993138692873955, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Layer
       value: 2
@@ -20174,22 +20178,21 @@ MonoBehaviour:
   _maxCharges: 0
   _chargeCooldown: 0
   _radius: 4
-  _area: 0
+  _area: 0.1
   _castLength: 0
   _castWidth: 0
   _isAutoRadiusRender: 1
-  _isAutoAreaRender: 0
+  _isAutoAreaRender: 1
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
-  trapPrefab: {fileID: 8854555355593262939, guid: 6a81e52aeaba98147875ba1791e1e4c8, type: 3}
+  trapPrefab: {fileID: 4405999295883627067, guid: 634880f733438024cbf14d239d494d86, type: 3}
   owner: {fileID: 4534754468497973439}
   minDistanceRadiusCircle: {fileID: 6586971803846960611}
   arrowTrapProjectile: {fileID: 8210468906149221731, guid: 1f4d53244aee70742bb830f397fd8636, type: 3}
   spawnPoint: {fileID: 7608591018717630632}
   minDistanceRadius: 2
-  distanceforTrap: 2.1
   newHealth: 80
   groundData: {fileID: 11400000, guid: a946fba021bc52f4c94cefbea6b2b5c7, type: 2}
   isGroundHealthTalent: 0
@@ -20507,7 +20510,7 @@ MonoBehaviour:
   _moving: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 512
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -21631,12 +21634,17 @@ MonoBehaviour:
       \u0442\u043E \u0440\u0430\u0437 \u0432 3 \u0441\u0435\u043A\u0443\u043D\u0434\u044B
       \u0438\u043C\u0435\u0435\u0442 20% \u0448\u0430\u043D\u0441 \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u044C
       \u0441\u0442\u0440\u0430\u0445  "
+    - "\u041F\u0440\u0438 \u0432\u044B\u0445\u043E\u0434\u0435 \u0438\u0437 \u0441\u043E\u0441\u0442\u043E\u044F\u043D\u0438\u044F
+      \xAB\u0421\u043E\u043D\xBB \u043D\u0430 \u0446\u0435\u043B\u044C \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442\u0441\u044F
+      \_ 3 \u0448\u0442\_\u201C\u0432\u043D\u0443\u0442\u0440\u0435\u043D\u044F\u044F
+      \u0442\u044C\u043C\u0430\u201D "
     _stateInfos: []
     IsOpen: 0
     Description: "\u041C\u0440\u0430\u043A 7"
     Icon: {fileID: 21300000, guid: 0781d116f11adaa42980c0fc45bc6912, type: 3}
   character: {fileID: 4534754468497973439}
   subjugationMind: {fileID: 6728227519922462803}
+  songOfSleep: {fileID: 5245378433989923716}
   ability: {fileID: 4092227064955680494}
   ghost: {fileID: 1718052129104348959}
 --- !u!114 &5559473107499519230

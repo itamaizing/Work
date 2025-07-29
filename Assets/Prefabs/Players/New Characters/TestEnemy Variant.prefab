@@ -90,7 +90,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Layer
-      value: 8
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_TagString
@@ -225,9 +225,10 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 0
   _skillType: 0
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -278,6 +279,7 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 0
   _skillType: 0
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
