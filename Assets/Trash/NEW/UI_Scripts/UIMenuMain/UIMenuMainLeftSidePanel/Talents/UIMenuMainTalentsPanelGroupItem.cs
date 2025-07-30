@@ -19,8 +19,22 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
     [SerializeField] private IconState _iconState;
     [SerializeField] private Image _frameImage;
     [SerializeField] private Image _lightingFrameImage;
+
+    [SerializeField] private Button _button;
     
     private TalentData _talent;
+
+    public Button Button { get => _button; }
+
+    private void Start()
+    {
+        _button.onClick.AddListener(Select);
+    }
+
+    private void OnDestroy()
+    {
+        _button.onClick.RemoveListener(Select);
+    }
 
     public void Fill(TalentData talent)
     {

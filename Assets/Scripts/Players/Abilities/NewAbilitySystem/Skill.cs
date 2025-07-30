@@ -190,6 +190,7 @@ public abstract class Skill : NetworkBehaviour
     public float ChargeCooldown => _chargeCooldown;
     public List<float> RemainingCooldownTimeCharge { get => _remainingCooldownTimeChargers; }
     public bool IsPreparing => _isPreparing;
+    public SkillRenderer SkillRender => _skillRender;
     public bool IsHaveResourceOnSkill { get => CheckResourcesOnSkill(); }
     public bool IsHaveResources { get => IsHaveResourceOnSkill && IsCooldowned && IsHaveCharge; }
     public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); protected set => _cooldownTime = value; }
@@ -251,6 +252,8 @@ public abstract class Skill : NetworkBehaviour
     public event Action<TargetInfo> TargetDataSaved;
     public event Action<bool> AutoModeChanged;
     public event Action<Vector3> ClickPoint;
+    public event Action BoostEnabled;
+    public event Action BoostDisabled;
 
     /// <summary>
     /// There may be a description that will be shown in the AbillityNameBox.
@@ -258,13 +261,90 @@ public abstract class Skill : NetworkBehaviour
     public virtual string AdditionalDescription { get; }
     protected abstract int AnimTriggerCastDelay { get; }
     protected abstract int AnimTriggerCast { get; }
-    protected abstract bool IsCanCast { get; }
     protected void RaiseCooldownEnded() => CooldownEnded?.Invoke();
+    protected virtual bool IsCanCast
+    {
+        get
+        {
+            _targetInfoQueue.TryPeek(out TargetInfo temp);
+
+            if (temp == null)
+                return true;
+
+            switch (SkillType)
+            {
+                case SkillType.Target:
+
+                    if (temp.Targets.Count > 0)
+                    {
+                        foreach (var target in temp.Targets)
+                            if (Vector3.Distance(target.Position, transform.position) > Radius)
+                                return false;
+
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+                case SkillType.Projectile:
+
+                    if (temp.Targets.Count > 0)
+                    {
+                        foreach (var target in temp.Targets)
+                            if (Vector3.Distance(target.Position, transform.position) > Radius)
+                                return false;
+
+                        return true;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+
+                case SkillType.Zone:
+
+                    if (temp.Points.Count > 0)
+                    {
+                        foreach (var point in temp.Points)
+                            if (Vector3.Distance(point, transform.position) > Radius)
+                                return false;
+
+                        return true;
+                    }
+                    else if (temp.Targets.Count > 0)
+                    {
+                        foreach (var target in temp.Targets)
+                            if (Vector3.Distance(target.Position, transform.position) > Radius)
+                                return false;
+
+                        return true;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+
+                case SkillType.NonTarget:
+
+                    return true;
+
+                default:
+
+                    return true;
+            }
+        }
+    }
 
     public abstract void LoadTargetData(TargetInfo targetInfo);
     protected abstract IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback);
     protected abstract IEnumerator CastJob();
     protected abstract void ClearData();
+
+    protected virtual void SkillEnableBoostLogic() { }
+    
+    protected virtual void SkillDisableBoostLogic() { }
 
     public void Init(SkillRenderer render, Character hero)
     {
@@ -282,6 +362,18 @@ public abstract class Skill : NetworkBehaviour
         }
         else
             _currentChargers = 1;
+    }
+
+    public void EnableSkillBoost()
+    {
+        SkillEnableBoostLogic();
+        BoostEnabled?.Invoke();
+    }
+
+    public void DisableSkillBoost()
+    {
+        SkillDisableBoostLogic();
+        BoostDisabled?.Invoke();
     }
 
     public void InvokeCastStreamStarted(float duration)
@@ -308,7 +400,9 @@ public abstract class Skill : NetworkBehaviour
         {
             TryPayCost(IsPayCostStartCooldown);
 
-            if (_targetInfoQueue.Count > 0) LoadTargetData(_targetInfoQueue.Dequeue());
+            if (_targetInfoQueue.Count > 0)
+                LoadTargetData(_targetInfoQueue.Dequeue());
+
             _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
 
             return true;
@@ -1393,13 +1487,13 @@ public abstract class Skill : NetworkBehaviour
     {
         target.GetComponent<IDamageable>().TryTakeDamage(ref damage, this);
         _hero.DamageTracker.AddDamage(damage, target, isServerRequest: isServer);
-        _hero.DamageGet(damage.Value);
+        _hero.DamageGet(damage, target);
 
     }
 
     public void CmdApplyDamage(Damage damage, GameObject target)
     {
-        _hero.DamageGet(damage.Value);
+        _hero.DamageGet(damage, target);
         CmdApplyDamageLogic(damage, target);
     }
 

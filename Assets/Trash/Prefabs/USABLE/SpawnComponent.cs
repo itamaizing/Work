@@ -33,9 +33,9 @@ public class SpawnComponent : NetworkBehaviour
     }
 
     [Command]
-    public void CmdSpawnUnitPoint(Vector3 position, Quaternion rotation)
+    public void CmdSpawnUnitInPoint(Vector3 position, int index)
     {
-        SpawnCharacter(_allyPrefab, position, rotation);
+        SpawnUnit(index, position);
     }
 
     [Command]
@@ -67,6 +67,7 @@ public class SpawnComponent : NetworkBehaviour
 
         var spawnedCharacter = Instantiate(prefab, position, rotation);
         spawnedCharacter.Initialize();
+        spawnedCharacter.NetworkSettings.MyRoom = _hero.NetworkSettings.MyRoom;
 
         if (_hero == null || _hero.NetworkSettings == null)
         {

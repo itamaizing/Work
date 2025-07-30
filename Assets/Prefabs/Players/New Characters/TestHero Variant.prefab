@@ -76,6 +76,14 @@ PrefabInstance:
       propertyPath: _minionPrefs.Array.data[0]
       value: 
       objectReference: {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+    - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _characterPrefabs.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _characterPrefabs.Array.data[0]
+      value: 
+      objectReference: {fileID: 6270067163818579670, guid: b9361abbea62d324688cafe08eac97d9, type: 3}
     - target: {fileID: 556128977287844779, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.0404512
@@ -1167,6 +1175,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3967981366499090309}
+    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 424354014363260230}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!1 &300637093874885484 stripped
 GameObject:
@@ -1213,6 +1224,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 1
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 3
   _chargeCooldown: 3
@@ -1225,6 +1237,7 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _disactive: 0
+  _earlyCooldown: 0
   _projectile: {fileID: 3436609779166928419, guid: d490c899d604d2c4dbb3f72e61cacb6e, type: 3}
   _animSpeed: 1
 --- !u!114 &7470037727588752420
@@ -1267,6 +1280,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 1
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 1
   _maxCharges: 3
   _chargeCooldown: 5
@@ -1279,6 +1293,7 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
+  _earlyCooldown: 0
   _projectile: {fileID: 3436609779166928419, guid: d490c899d604d2c4dbb3f72e61cacb6e, type: 3}
   _damage: 9999
   _projectileCount: 8
@@ -1321,6 +1336,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 0
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
@@ -1333,6 +1349,7 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
+  _earlyCooldown: 0
 --- !u!114 &7442031059852679175
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1371,6 +1388,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 0
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
@@ -1383,6 +1401,7 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
+  _earlyCooldown: 0
   _attackZoneSize: 1
   _attackDelay: 0
   _chargeAttackDelay: 0
@@ -1426,6 +1445,7 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _isUseCharges: 0
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
@@ -1438,3 +1458,28 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _disactive: 0
+  _earlyCooldown: 0
+--- !u!114 &424354014363260230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 300637093874885484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8353a0f8440f673458b2175529d60cbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _characterState: {fileID: 4422210011089978789}
+--- !u!114 &4422210011089978789 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5590339039165547173, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 8127316380187346688}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 300637093874885484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7f243771c2613d40a4aecc719336ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

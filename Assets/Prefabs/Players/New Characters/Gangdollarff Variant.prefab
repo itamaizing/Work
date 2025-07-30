@@ -7299,7 +7299,7 @@ MonoBehaviour:
   _chargeCooldown: 16
   _radius: 5
   _area: 0
-  _castLength: 0
+  _castLength: 7
   _castWidth: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 0
@@ -7310,7 +7310,7 @@ MonoBehaviour:
   _lineRenderer: {fileID: 3792777773710482975}
   _fisuraPref: {fileID: 3452147409339536588, guid: 68a5df5d1ae4ea54486b316ec8d2a89c, type: 3}
   _fisuraDuration: 6
-  _fisuraMaxLenght: 5
+  _fisuraMaxLenght: 7
 --- !u!4 &5218337373471410102 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

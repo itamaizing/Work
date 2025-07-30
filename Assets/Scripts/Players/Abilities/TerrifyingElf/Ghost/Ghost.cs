@@ -406,7 +406,9 @@ public class Ghost : Skill
     {
         if (_spawnComponent == null) return;
         Vector3 spawnPosition = position + Vector3.up * 1f;
-        _spawnComponent.CmdSpawnUnitPoint(spawnPosition, LookRotation);
+
+        Debug.LogError("CmdSpawnUnitInPiunts need index");
+        //_spawnComponent.CmdSpawnUnitInPoint(spawnPosition, LookRotation);
     }
 
     private void RemoveOldestGhostIfNeeded()

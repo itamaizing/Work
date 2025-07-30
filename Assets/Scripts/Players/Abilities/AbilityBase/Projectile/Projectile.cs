@@ -14,7 +14,7 @@ public class Projectile : MonoBehaviour
 
     public Transform Target => _target;
 
-    public event UnityAction<Projectile> EndPointReached;
+    public event UnityAction<Projectile, GameObject> EndPointReached;
 
     private void Start()
     {
@@ -88,7 +88,7 @@ public class Projectile : MonoBehaviour
             transform.position = Vector2.MoveTowards(transform.position, position, _speed * Time.deltaTime);
             yield return null;
         }
-        EndPointReached?.Invoke(this);
+        EndPointReached?.Invoke(this, null);
 
         if (_selfDestroyInEndPoint)
             Destroy(gameObject);
@@ -103,7 +103,7 @@ public class Projectile : MonoBehaviour
             transform.position = Vector2.MoveTowards(transform.position, _target.position, _speed * Time.deltaTime);
             yield return null;
         }
-        EndPointReached?.Invoke(this);
+        EndPointReached?.Invoke(this, _target.gameObject);
 
         if (_selfDestroyInEndPoint)
             Destroy(gameObject);

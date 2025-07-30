@@ -24,7 +24,7 @@ public class MagicalExcitementTalent : Talent
         character.DamageGeted -= OnDamageTaked;
     }
 
-    private void OnDamageTaked(float damage)
+    private void OnDamageTaked(Damage damage, GameObject target)
     {
         StartCoroutine(IncreaseManaRegeneration());
     }

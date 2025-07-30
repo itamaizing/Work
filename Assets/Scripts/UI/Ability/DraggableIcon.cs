@@ -16,6 +16,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     [SerializeField] private TextMeshProUGUI _chargeCounter;
     [SerializeField] private Blink _blinkBoxFrame;
     [SerializeField] private AutoCastParticles _autoCastEffect;
+    [SerializeField] private ParticleSystem _boostEffect;
 
     private Transform _patentAfterDrag;
     private Skill _skill;
@@ -52,6 +53,8 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
 
         SubscribingSkillOnEvents(_skill);
+
+        UpdateAllInfo();
     }
 
     private void OnDestroy()
@@ -109,9 +112,15 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         _image.color = new Color(_image.color.r, _image.color.g, _image.color.b, disactive ? 0.5f : 1f);
     }
 
+    private void UpdateAllInfo()
+    {
+        OnStartCooldown(_skill.RemainingCooldownTime);
+        OnAutoModeChanged(_skill.IsAutoMode);
+    }
+
     private void OnAutoModeChanged(bool value)
     {
-        if(value)
+        if (value)
             OnStartAutoAttack();
         else
             OnEndAutoAttack();
@@ -119,13 +128,11 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     private void OnStartAutoAttack()
     {
-        _autoCastEffect.gameObject.SetActive(true);
         _autoCastEffect.Play();
     }
 
     private void OnEndAutoAttack()
     {
-        _autoCastEffect.gameObject.SetActive(false);
         _autoCastEffect.Stop();
     }
 
@@ -148,6 +155,9 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         ability.CooldownEnded += OnStopCooldown;
 
         ability.AutoModeChanged += OnAutoModeChanged;
+
+        ability.BoostEnabled += OnBoostEnabled;
+        ability.BoostDisabled += OnBoostDisabled;
     }
 
     private void UnsubscribingSkillOnEvents(Skill ability)
@@ -168,7 +178,20 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         ability.CooldownEnded -= OnStopCooldown;
 
-        ability.AutoModeChanged += OnAutoModeChanged;
+        ability.AutoModeChanged -= OnAutoModeChanged;
+
+        ability.BoostEnabled -= OnBoostEnabled;
+        ability.BoostDisabled -= OnBoostDisabled;
+    }
+
+    private void OnBoostDisabled()
+    {
+        _boostEffect.gameObject.SetActive(false);
+    }
+
+    private void OnBoostEnabled()
+    {
+        _boostEffect?.gameObject.SetActive(true);
     }
 
     private void OnClickWithCtrl()

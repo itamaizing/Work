@@ -1,7 +1,28 @@
+using Gangdollarff.EarthElemental;
+using Gangdollarff.WaterElemental;
 using Mirror;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
+
+public class StateInfo
+{
+    public States State;
+    public float Duration;
+    public float DamageToExit;
+    public GameObject PersonWhoShooted;
+    public string SkillName;
+
+    public StateInfo(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
+    {
+        State = state;
+        Duration = duration;
+        DamageToExit = damageToExit;
+        PersonWhoShooted = personWhoShooted;
+        SkillName = skillName;
+    }
+}
 
 public abstract class AbstractCharacterState
 {
@@ -24,6 +45,85 @@ public abstract class AbstractCharacterState
 	public abstract void UpdateState();
 	public abstract void ExitState();
 	public abstract bool Stack(float time);
+}
+
+public abstract class AuraState : AbstractCharacterState
+{
+	protected Character _self;
+    private Transform _auraCentre;
+    private List<Character> _charactersInRadius = new();
+    private List<Collider> _collidersKeysForRemove = new();
+	private Dictionary<Collider, Character> _colliderToCharacter = new();
+	private float _timeAfterLastEffect = 0;
+
+    public abstract float Distance { get; }
+    public abstract float EffectRate { get; }
+    public abstract LayerMask LayerMask { get; }
+
+    public abstract void EffectOnEnter(Character character);
+    public abstract void EffectOnExit(Character character);
+    public abstract void EffectOnStay(List<Character> characters);
+
+    public override StateType Type => StateType.Aura;
+
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        _characterState = character;
+		_auraCentre = character.transform;
+		_self = personWhoMadeBuff;
+    }
+
+    public override void UpdateState()
+    {
+        if (NetworkServer.active == false)
+        {
+            _timeAfterLastEffect += Time.deltaTime;
+
+            if (EffectRate > _timeAfterLastEffect)
+				return;
+
+			_timeAfterLastEffect = 0;
+
+            var colliders = Physics.OverlapSphere(_auraCentre.position, Distance, LayerMask);
+
+            foreach (KeyValuePair<Collider, Character> collider in _colliderToCharacter)
+			{
+				if (colliders.Contains(collider.Key) == false)
+				{
+                    EffectOnExit(collider.Value);
+					_charactersInRadius.Remove(collider.Value);
+					_collidersKeysForRemove.Add(collider.Key);
+				}
+			}
+			foreach (var item in _collidersKeysForRemove)
+			{
+				_colliderToCharacter.Remove(item);
+			}
+			_collidersKeysForRemove.Clear();
+
+            foreach (var collider in colliders)
+			{
+				if (_colliderToCharacter.ContainsKey(collider) == false && collider.TryGetComponent(out Character character))
+				{
+					_colliderToCharacter.Add(collider, character);
+					_charactersInRadius.Add(character);
+					EffectOnEnter(character);
+				}
+			}
+
+            EffectOnStay(_charactersInRadius);
+        }
+    }
+
+    public override void ExitState()
+    {
+        _characterState.RemoveState(this);
+    }
+
+    public override bool Stack(float time)
+    {
+        return false;
+    }
 }
 
 public class DefaultState : AbstractCharacterState
@@ -141,7 +241,15 @@ public class CharacterState : NetworkBehaviour
 		[States.BaffState] = new BaffState(),
 		[States.DebaffState] = new DebaffState(),
 		[States.ShadowTree] = new ShadowTree(),		
-	};
+        [States.PowerOfEarth] = new PowerOfEarth(),
+        [States.EarthsHealth] = new EarthsHealth(),
+        [States.MagicWater] = new MagicWater(),
+        [States.Burning] = new Burning(),
+        [States.Burn] = new Burn(),
+        [States.BaffState] = new BaffState(),
+		[States.DebaffState] = new DebaffState(),
+        [States.TestAuraState] = new TestAuraState(),
+    };
 
 	public void Initialize(Character hero)
 	{
@@ -284,13 +392,12 @@ public class CharacterState : NetworkBehaviour
 		{
 			RemoveShield(damageableShield);
 		}
-
-		if (currentStates.Contains(newState))
+        if (currentStates.Contains(newState))
 		{
-			currentStates.Remove(newState);
+            currentStates.Remove(newState);
 			_stateIcons?.RemoveItemByState(newState.State);
 		}
-	}
+    }
 
 	private void RemoveStateLogic(States stateName)
 	{
@@ -572,7 +679,8 @@ public enum StateType
 {
 	Physical,
 	Magic,
-	Immaterial
+	Immaterial,
+	Aura
 }
 
 public enum StatusEffect
@@ -664,6 +772,23 @@ public enum States
     DebaffState,
 	Bound,
 	ShadowTree
+	
+    #region Gangdollarf
+    PowerOfEarth,
+    EarthsHealth,
+    MagicWater,
+    Burning,
+    Burn,
+    #endregion
+
+    #region Test Baff and Debaff
+    BaffState,
+		DebaffState,
+    #endregion
+
+    #region Test
+    TestAuraState,
+    #endregion	
 }
 public enum BaffDebaff
 {

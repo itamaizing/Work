@@ -22,7 +22,7 @@ public class TestSpawn : Skill
 
     protected override IEnumerator CastJob()
     {
-        Hero.SpawnComponent.CmdSpawnUnitPoint(_position, Quaternion.identity);
+        Hero.SpawnComponent.CmdSpawnUnitInPoint(_position, 0);
 
         yield return null;
     }
