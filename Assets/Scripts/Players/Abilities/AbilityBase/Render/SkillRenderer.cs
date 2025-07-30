@@ -424,7 +424,7 @@ public class SkillRenderer : NetworkBehaviour
 		//Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x,0 , Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
 		Vector3 mouse = new Vector3(worldPosition.x, 0 , worldPosition.z);
 
-        _tempArea = Instantiate(areaPref, mouse, Quaternion.Euler(90, 0, 0));
+        _tempArea = Instantiate(areaPref, mouse, Quaternion.Euler(0, 0, 0));
         _tempArea.SetSize(_circleRadius, damage);
 
         while (true)

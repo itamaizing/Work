@@ -30,10 +30,17 @@ public abstract class Talent : MonoBehaviour
 }
 
 [Serializable]
+public struct TalentStateInfo
+{
+    public string StateName;
+    [TextArea] public string Description;
+}
+
+[Serializable]
 public class TalentData
 {
     [SerializeField] private List<string> _descriptionsForInfoPanel;
-    [SerializeField] private List<StateInfo> _stateInfos = new();
+    [SerializeField] private List<TalentStateInfo> _stateInfos = new();
 
     private string _name;
     public bool IsOpen;
@@ -52,7 +59,7 @@ public class TalentData
     }
 
     public List<string> DescriptionsForInfoPanel { get => _descriptionsForInfoPanel; }
-    public List<StateInfo> StateInfos => _stateInfos;
+    public List<TalentStateInfo> StateInfos => _stateInfos;
 
     public TalentData(string name, bool isOpen)
     {

@@ -13,8 +13,6 @@ public class StateInfo
     public float DamageToExit;
     public GameObject PersonWhoShooted;
     public string SkillName;
-	public string StateName;
-	[TextArea] public string Description;
 
 	public StateInfo(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
     {

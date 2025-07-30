@@ -197,7 +197,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 3d9268be8d31aae43be379006e8277ef, type: 2}
+  m_Material: {fileID: 2100000, guid: c29b847768bc80840a7937c041fb76f1, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 1
   m_StartAngleFade: 180
@@ -18758,7 +18758,7 @@ PrefabInstance:
     - target: {fileID: 6214007637544752149, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _damageZonePref
       value: 
-      objectReference: {fileID: 1574982521674352815, guid: 3411b2c05fce3f8438e9012853825aa2, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 6214007637544752149, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _layerMask.m_Bits
       value: 8208
@@ -20178,7 +20178,7 @@ MonoBehaviour:
   _maxCharges: 0
   _chargeCooldown: 0
   _radius: 4
-  _area: 0.1
+  _area: 0.01
   _castLength: 0
   _castWidth: 0
   _isAutoRadiusRender: 1
@@ -20510,7 +20510,7 @@ MonoBehaviour:
   _moving: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
