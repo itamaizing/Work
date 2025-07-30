@@ -68,7 +68,7 @@ public class Tentacles : Skill
         _skillRender.IsOverrideClosestTarget = true;
 
         Hero.Move.CanMove = false;
-        Hero.Move.StopMoveAnimation();
+        Hero.Move.StopMoveAndAnimationMove();
 
         Vector3 mousePositionStart = GetMousePoint();
 

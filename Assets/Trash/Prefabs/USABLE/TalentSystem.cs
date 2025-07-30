@@ -30,13 +30,6 @@ public abstract class Talent : MonoBehaviour
 }
 
 [Serializable]
-public struct StateInfo
-{
-    public string StateName;
-    [TextArea] public string Description;
-}
-
-[Serializable]
 public class TalentData
 {
     [SerializeField] private List<string> _descriptionsForInfoPanel;

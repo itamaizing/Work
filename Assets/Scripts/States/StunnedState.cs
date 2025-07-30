@@ -33,7 +33,7 @@ public class StunnedState : AbstractCharacterState
 		}
 
 		_characterState.Character.Move.IsMoveBlocked = true;
-		_characterState.Character.Move.StopMoveAnimation();
+		_characterState.Character.Move.StopMoveAndAnimationMove();
 
 		_duration = durationToExit;
 		_baseDuration = durationToExit;

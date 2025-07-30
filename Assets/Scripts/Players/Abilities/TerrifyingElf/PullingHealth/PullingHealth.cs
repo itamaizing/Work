@@ -55,7 +55,7 @@ public class PullingHealth : Skill
     public void MovePullingHealth()
     {
         _hero.Move.CanMove = false;
-        _hero.Move.StopMoveAnimation();
+        _hero.Move.StopMoveAndAnimationMove();
     }
 
     private void Start()

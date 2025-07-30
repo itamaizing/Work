@@ -25,12 +25,12 @@ public class MoveComponent : NetworkBehaviour
 	public bool CanMoveState = false;
 	public bool IsMoving = false;
 	public bool IsSelect = false;
-	public bool _isMoveBlocked = false;
 
 	private Rigidbody _rigidbody;
 	private Vector3 _offset = Vector3.zero;
 
 	private bool _isHero = false;
+	private bool _isMoveBlocked = false;
 
 	private float _defaultSpeed = 5;
 	private Camera _camera;
@@ -50,15 +50,7 @@ public class MoveComponent : NetworkBehaviour
 
 	public Rigidbody Rigidbody => _rigidbody;
 
-	public bool IsMoveBlocked
-	{ 
-		get => _isMoveBlocked;
-		set 
-		{
-            _isMoveBlocked = value;
-        } 
-	}
-
+	public bool IsMoveBlocked { get => _isMoveBlocked; set => _isMoveBlocked = value; }
     public float CurrentRotationSpeed { get => _rotationDefaultSpeed + RotateModifier; }
     public float RotateModifier { get; set; }
 
@@ -139,7 +131,7 @@ public class MoveComponent : NetworkBehaviour
 		_isLookAtCursor = true;
 	}
 
-	public void StopMoveAnimation()
+	public void StopMoveAndAnimationMove()
 	{
 		if (_rigidbody == null) return;
 

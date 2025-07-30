@@ -34,13 +34,13 @@ public class TalentInfoPanel : MonoBehaviour
 
             if (i < stateCnt)
             {
-                var st = data.StateInfos[i];
+                var state = data.StateInfos[i];
 
                 var stateCell = Instantiate(_cellPref, transform);
                 _cells.Add(stateCell);
 
                 stateCell.TextDescription.text =
-                    $"<color=#FFFF00>{st.StateName}</color> - {st.Description}";
+                    $"<color=#FFFF00>{state.StateName}</color> - {state.Description}";
 
                 if (i < pairCnt - 1) stateCell.ShowDividingLine();
                 else stateCell.HideDividingLine();

@@ -46,7 +46,7 @@ public class Shot : Skill
     {
         if (_hero == null || _hero.Move == null) return;
 
-        _hero.Move.StopMoveAnimation();
+        _hero.Move.StopMoveAndAnimationMove();
         _hero.Move.CanMove = false;
 
         Vector3 direction = _targetPoint - _hero.transform.position;

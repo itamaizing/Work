@@ -31,6 +31,9 @@ public class Object : NetworkBehaviour, ITargetable
 
     public int IndexTeam { get => _indexTeam; set => _indexTeam = value; }
 
+    public Vector3 Position => throw new System.NotImplementedException();
+    public Transform Transform => throw new System.NotImplementedException();
+
     private void OnDestroy() => _objectHealth.OnDeath -= ServerOnDeath;
 
     public void Initialize()

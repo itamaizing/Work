@@ -71,7 +71,7 @@ public class JumpWithChelicera : Skill
                     _isTarget = true;
                     _player.Move.LookAtTransform(_target.transform);
                     Hero.Move.CanMove = false;
-                    Hero.Move.StopMoveAnimation();
+                    Hero.Move.StopMoveAndAnimationMove();
                     _isCanCancle = false;
                 }
             }

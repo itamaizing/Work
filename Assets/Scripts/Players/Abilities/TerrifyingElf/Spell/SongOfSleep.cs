@@ -28,7 +28,7 @@ public class SongOfSleep : Skill
 
     public void SongOfSleepMove()
     {
-        _hero.Move.StopMoveAnimation();
+        _hero.Move.StopMoveAndAnimationMove();
         Hero.Move.CanMove = false;
     }
 

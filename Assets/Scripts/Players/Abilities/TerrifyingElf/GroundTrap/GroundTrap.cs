@@ -96,7 +96,7 @@ public class GroundTrap : Skill
 
         Hero.Animator.speed = Hero.Animator.speed / CastDeley;
         Hero.Move.CanMove = false;
-        Hero.Move.StopMoveAnimation();
+        Hero.Move.StopMoveAndAnimationMove();
 
         _preview = Instantiate(trapPrefab);
         _preview.ResetPreview();

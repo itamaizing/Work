@@ -36,7 +36,7 @@ public class Bound : AbstractCharacterState
 		}
 
 		_characterState.Character.Move.IsMoveBlocked = true;
-		_characterState.Character.Move.StopMoveAnimation();
+		_characterState.Character.Move.StopMoveAndAnimationMove();
 
 		var animation = _characterState.Character.Animator;
 		var networkAnimation = _characterState.Character.NetworkAnimator;

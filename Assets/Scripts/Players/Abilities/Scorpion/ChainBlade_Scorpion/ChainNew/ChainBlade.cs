@@ -98,7 +98,7 @@ public class ChainBlade : Skill
 
     protected override IEnumerator CastJob()
     {
-        Hero.Move.StopMoveAnimation();
+        Hero.Move.StopMoveAndAnimationMove();
         CmdSpawnChainArrow(_clickPoint);
         yield return null;
     }

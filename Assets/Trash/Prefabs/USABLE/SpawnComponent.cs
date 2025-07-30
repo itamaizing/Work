@@ -32,10 +32,16 @@ public class SpawnComponent : NetworkBehaviour
         SpawnCharacter(_allyPrefab, Vector3.forward + Vector3.up, Quaternion.identity);
     }
 
-    [Command]
+    [Command] // не стал убирать метод с мейна, хотя мой ниже такой же, но сохраняет вращение и спавнит не по индексу, а напрямую берет префаб
     public void CmdSpawnUnitInPoint(Vector3 position, int index)
     {
         SpawnUnit(index, position);
+    }
+
+    [Command]
+    public void CmdSpawnUnitPoint(Vector3 position, Quaternion rotation)
+    {
+        SpawnCharacter(_allyPrefab, position, rotation);
     }
 
     [Command]

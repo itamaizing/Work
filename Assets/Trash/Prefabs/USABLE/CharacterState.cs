@@ -13,8 +13,10 @@ public class StateInfo
     public float DamageToExit;
     public GameObject PersonWhoShooted;
     public string SkillName;
+	public string StateName;
+	[TextArea] public string Description;
 
-    public StateInfo(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
+	public StateInfo(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
     {
         State = state;
         Duration = duration;
@@ -246,8 +248,6 @@ public class CharacterState : NetworkBehaviour
         [States.MagicWater] = new MagicWater(),
         [States.Burning] = new Burning(),
         [States.Burn] = new Burn(),
-        [States.BaffState] = new BaffState(),
-		[States.DebaffState] = new DebaffState(),
         [States.TestAuraState] = new TestAuraState(),
     };
 
@@ -771,7 +771,7 @@ public enum States
 	BaffState,
     DebaffState,
 	Bound,
-	ShadowTree
+	ShadowTree,
 	
     #region Gangdollarf
     PowerOfEarth,
@@ -779,11 +779,6 @@ public enum States
     MagicWater,
     Burning,
     Burn,
-    #endregion
-
-    #region Test Baff and Debaff
-    BaffState,
-		DebaffState,
     #endregion
 
     #region Test
