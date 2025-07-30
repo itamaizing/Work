@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InnerDarkness : AbstractCharacterState, IHaveDynamicDuration
+public class InnerDarkness : AbstractCharacterState
 {
     private const float TimeDecreasePerStack = 2f;
     private float _durationRemaining;
@@ -13,7 +13,7 @@ public class InnerDarkness : AbstractCharacterState, IHaveDynamicDuration
     public override States State => States.InnerDarkness;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
-    public float RemainingDuration => _durationRemaining;
+    public override float RemainingDuration => _durationRemaining;
 
     public InnerDarkness()
     {
@@ -62,6 +62,9 @@ public class InnerDarkness : AbstractCharacterState, IHaveDynamicDuration
     private void AddNewStack(float time)
     {
         CurrentStacksCount++;
+
+        if (CurrentStacksCount == MaxStacksCount) CmdStateFear();
+
         _durationRemaining = time - (CurrentStacksCount - 1) * TimeDecreasePerStack;
     }
 

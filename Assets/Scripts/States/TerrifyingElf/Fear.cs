@@ -43,6 +43,8 @@ public class Fear : AbstractCharacterState
             }
             _moveCoroutine = _characterState.StartCoroutine(MoveAwayCoroutine(moveComponent));
         }
+
+        Debug.Log("Страх");
     }
 
     public override void UpdateState()

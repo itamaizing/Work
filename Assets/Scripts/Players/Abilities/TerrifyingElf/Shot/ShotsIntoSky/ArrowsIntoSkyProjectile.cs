@@ -148,12 +148,12 @@ public class ArrowsIntoSkyProjectile : NetworkBehaviour
         CharacterState characterState = character.CharacterState;
         if (characterState == null) return;
 
-        characterState.AddState(States.Irradiation, 9, 0, _character.gameObject, name);
+        characterState.AddState(States.Irradiation, 100, 0, _character.gameObject, name); // длительность 9
 
         if (shotAstralManaActive && characterState.CheckForState(States.Astral))
             RestoreMana();
 
-        if (silenceTalentActive && characterState.CheckForState(States.Silent)) characterState.AddState(States.WeakeningSilence, 4, 4, _character.gameObject, name);
+        if (silenceTalentActive && characterState.CheckForState(States.Silent)) characterState.AddState(States.WeakeningSilence, 4, 3, _character.gameObject, name);
     }
 
     private void ApplyDamage(float damage, DamageType damageType, IDamageable target)

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Calmness : AbstractCharacterState
 {
-    private const float _manaRegenPercent = 0.005f;
+    private const float _manaRegenPercent = 10;
     private const int _baseMaxStacks = 2;
     private int _lastTreesCount;
     private float _duration;

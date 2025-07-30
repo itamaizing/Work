@@ -77,20 +77,18 @@ public class IrradiationState : AbstractCharacterState
 
     private void OnNewStateAdded(AbstractCharacterState newState)
     {
-        if (newState == this) return;
-        if (newState.Type == StateType.Magic && newState.BaffDebaff == BaffDebaff.Debaff) newState.duration += _durationIncrease;
+        if (newState != this && newState.Type == StateType.Magic && newState.BaffDebaff == BaffDebaff.Debaff) ExtendState(newState);
     }
 
     private void ExtendExistingNegativeMagic()
     {
-        foreach (var state in _characterState.CurrentStates)
-        {
-            if (state == this) continue;
-            if (state.Type == StateType.Magic &&
-                state.BaffDebaff == BaffDebaff.Debaff)
-            {
-                state.duration += _durationIncrease;
-            }
-        }
+        foreach (var state in _characterState.CurrentStates) if (state != this && state.Type == StateType.Magic && state.BaffDebaff == BaffDebaff.Debaff) ExtendState(state);
+    }
+
+    private void ExtendState(AbstractCharacterState state)
+    {
+        state.duration += _durationIncrease;
+        state.RemainingDuration += _durationIncrease;
+        _characterState.StateIcons?.ActivateIco(state.State, state.RemainingDuration, 0, false, state.MaxStacksCount);
     }
 }

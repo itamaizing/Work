@@ -35,6 +35,12 @@ public abstract class AbstractCharacterState
 	public int MaxStacksCount = 0;
 	public float duration;
 
+	public virtual float RemainingDuration
+	{
+		get => duration;
+		set => duration = value;
+	}
+
 	public abstract States State { get; }
 	public abstract StateType Type { get; }
 	public abstract BaffDebaff BaffDebaff { get; }
@@ -71,7 +77,7 @@ public abstract class AuraState : AbstractCharacterState
         _characterState = character;
 		_auraCentre = character.transform;
 		_self = personWhoMadeBuff;
-    }
+	}
 
     public override void UpdateState()
     {
@@ -504,7 +510,8 @@ public class CharacterState : NetworkBehaviour
 				else
                 {
 					currentStates[i].Stack(duration);
-					float remaining = currentStates[i] is IHaveDynamicDuration dynamicDuration ? dynamicDuration.RemainingDuration : duration;
+					currentStates[i].duration = Mathf.Max(currentStates[i].RemainingDuration, duration);
+					float remaining = currentStates[i].RemainingDuration > 0f ? currentStates[i].RemainingDuration : duration;
 					int newMaxStack = currentStates[i].MaxStacksCount;
 
 					_stateIcons.ActivateIco(state, remaining, 1, true, newMaxStack);
@@ -549,6 +556,8 @@ public class CharacterState : NetworkBehaviour
 	{
 		currentStates.Add(state);
 
+		state.duration = duration;
+
 		if (personWhoShooted.TryGetComponent<Character>(out var character))
 		{
 			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit, character, skillName);
@@ -558,7 +567,7 @@ public class CharacterState : NetworkBehaviour
 			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit, null, skillName);
 		}
 
-		float remaining = state is IHaveDynamicDuration dynamicDuration ? dynamicDuration.RemainingDuration : duration;
+		float remaining = state.RemainingDuration;
 		int maxStacksCount = state.MaxStacksCount;
 		_stateIcons.ActivateIco(stateName, remaining, 1, stack, maxStacksCount);
 	}
@@ -788,9 +797,4 @@ public enum BaffDebaff
 	Baff,
 	Debaff,
 	Null,
-}
-
-public interface IHaveDynamicDuration
-{
-	float RemainingDuration { get; }
 }

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShadowTree : AbstractCharacterState, IHaveDynamicDuration
+public class ShadowTree : AbstractCharacterState
 {
     public override States State => States.ShadowTree;
     public override StateType Type => StateType.Physical;
@@ -17,7 +17,7 @@ public class ShadowTree : AbstractCharacterState, IHaveDynamicDuration
     private float _remaining;
     private bool _infinite;
 
-    public float RemainingDuration => _infinite ? 9999 : _remaining;
+    public override float RemainingDuration => _infinite ? 9999 : _remaining;
 
     public ShadowTree()
     {
