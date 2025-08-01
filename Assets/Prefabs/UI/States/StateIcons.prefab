@@ -259,6 +259,8 @@ MonoBehaviour:
   - {fileID: 3545852164369826336, guid: 798ceaf5eedfa694aa9f10129f4f2530, type: 3}
   - {fileID: 3545852164369826336, guid: 4707a164dd4c8b0429b0a12c2299f6a5, type: 3}
   - {fileID: 1859721338676053526, guid: b393a93c514f1334f8856653f90b6cb6, type: 3}
+  - {fileID: 943178309112352084, guid: 6c7589fd464b3c34fabb1dfbe2349852, type: 3}
+  - {fileID: 943178309112352084, guid: 0164d1eba62aace4dae8bb4f57b787f5, type: 3}
   _baffColor: {r: 0.23, g: 0.9, b: 0.23, a: 1}
   _debaffColor: {r: 0.9, g: 0.15, b: 0.15, a: 1}
   _neutralColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}

@@ -18321,7 +18321,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.size
-      value: 17
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.data[0]
@@ -18394,7 +18394,7 @@ PrefabInstance:
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.data[17]
       value: 
-      objectReference: {fileID: 6686568037796463366}
+      objectReference: {fileID: 1094805825435644166}
     - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: ice
       value: 
@@ -19105,7 +19105,7 @@ PrefabInstance:
       objectReference: {fileID: 3990805733231088528}
     - target: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _icons.Array.size
-      value: 46
+      value: 48
       objectReference: {fileID: 0}
     - target: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _icons.Array.data[25]
@@ -19191,6 +19191,14 @@ PrefabInstance:
       propertyPath: _icons.Array.data[45]
       value: 
       objectReference: {fileID: 1859721338676053526, guid: b393a93c514f1334f8856653f90b6cb6, type: 3}
+    - target: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _icons.Array.data[46]
+      value: 
+      objectReference: {fileID: 943178309112352084, guid: 6c7589fd464b3c34fabb1dfbe2349852, type: 3}
+    - target: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _icons.Array.data[47]
+      value: 
+      objectReference: {fileID: 943178309112352084, guid: 0164d1eba62aace4dae8bb4f57b787f5, type: 3}
     - target: {fileID: 8739993138692873955, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Layer
       value: 2
@@ -19434,6 +19442,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5726345171651809113}
+    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1094805825435644166}
     - targetCorrespondingSourceObject: {fileID: 8739993138692873955, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: 2
       addedObject: {fileID: 6586971803846960611}
@@ -19645,6 +19656,7 @@ MonoBehaviour:
   minDamage: 12
   maxDamage: 18
   _dropDelayTime: 3
+  reconnaissanceFire: {fileID: 2750012758126725032}
   impactPrefab: {fileID: 2350920691492312483, guid: cac1bddd67383cf44b63154f1d1cea37, type: 3}
   arrowIntoSkyEffect: {fileID: 215749735526849689}
 --- !u!114 &3150488009405324217
@@ -19890,6 +19902,7 @@ MonoBehaviour:
     m_Bits: 8192
   playerLinks: {fileID: 4534754468497973439}
   _dropDelayTime: 1
+  reconnaissanceFire: {fileID: 2750012758126725032}
   impactPrefab: {fileID: -5983841691116529863, guid: d8aef2d7788484b45a62c1cb9ff2627a, type: 3}
   arrowsIntoSkyEffect: {fileID: 7120892110168633769}
 --- !u!114 &679409545534796012
@@ -20587,6 +20600,61 @@ MonoBehaviour:
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 0
+  _isDynamicRenderer: 0
+  _disactive: 0
+  _earlyCooldown: 0
+--- !u!114 &1094805825435644166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 300637093874885484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37548c2d456fdaa40b9e908f4a8dcd3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _isTalentSpell: 1
+  _isSkillActive: 0
+  _abilityInfo: {fileID: 11400000, guid: 0dadb43cae00bf64ea1fe2c0dfd800c8, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts:
+  - resourceType: 1
+    resourceCost: 80
+  _cooldownTime: 36
+  _castDeley: 0
+  _damageValue: 0
+  _abilitySchool: 3
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 1
+  _skillType: 0
+  _moving: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
@@ -21298,7 +21366,7 @@ MonoBehaviour:
       \u0432\u043E \u0432\u0440\u0435\u043C\u044F \u043A\u0430\u0441\u0442\u0430 "
     _stateInfos: []
     IsOpen: 1
-    Description: "\u041F\u0440\u0438\u0440\u043E\u0434\u0430 7"
+    Description: "\u041F\u0435\u0441\u043D\u044C \u0441\u043D\u0430"
     Icon: {fileID: 21300000, guid: 3850a1a2b3a10fa4a8e069aa286444ac, type: 3}
   character: {fileID: 4534754468497973439}
   songOfSleep: {fileID: 5245378433989923716}
@@ -21350,12 +21418,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - '-'
-    _stateInfos: []
+    - "\u041D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442 \u043D\u0430
+      \u0422\u044D\u0440\u0440\u0430\u0444\u0430\u0439\u043D \u0432\u043D\u0435\u043C\u0430\u0442\u0435\u0440\u0438\u0430\u043B\u044C\u043D\u044B\u0439
+      \u0431\u0430\u0444"
+    _stateInfos:
+    - StateName: "\u041C\u0443\u043B\u044C\u0442\u0438\u043C\u0430\u0433\u0438\u044F"
+      Description: "\u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0435\u0435 \u0446\u0435\u043B\u0435\u0432\u043E\u0435
+        \u0437\u0430\u043A\u043B\u0438\u043D\u0430\u043D\u0438\u0435 \u0431\u0443\u0434\u0435\u0442
+        \u043D\u0430\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u043E \u043D\u0430
+        \u0432\u0441\u0435 \u0446\u0435\u043B\u0438 \u0432 \u0440\u0430\u0434\u0438\u0443\u0441\u0435
+        \u0435\u0433\u043E \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F, \u043D\u0430
+        \u043A\u0430\u0436\u0434\u0443\u044E \u0446\u0435\u043B\u044C \u0431\u0443\u0434\u0435\u0442
+        \u0437\u0430\u0442\u0440\u0430\u0447\u0435\u043D\u0430 \u043F\u043E\u043B\u043D\u0430\u044F
+        \u0441\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u043C\u0430\u043D\u043D\u044B."
     IsOpen: 0
-    Description: "\u041F\u0440\u0438\u0440\u043E\u0434\u0430 9"
-    Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
+    Description: "\u041C\u0443\u043B\u044C\u0442\u0438\u043C\u0430\u0433\u0438\u044F"
+    Icon: {fileID: 21300000, guid: d3e6b040a00655545a641c803d557e0f, type: 3}
   character: {fileID: 4534754468497973439}
+  abilities: {fileID: 4092227064955680494}
+  multiMagicSpell: {fileID: 1094805825435644166}
 --- !u!114 &4990467896875758726
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,15 +1,17 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Calmness : AbstractCharacterState
 {
-    private const float _manaRegenPercent = 10;
+    private const float _manaRegenPercent = 0.005f;
     private const int _baseMaxStacks = 2;
     private int _lastTreesCount;
     private float _duration;
     private float _regenAmount;
 
     private Resource manaResource;
+    private Coroutine _regenRoutine;
 
     private List<StatusEffect> _effects = new List<StatusEffect> { StatusEffect.Healing };
     public override States State => States.Calmness;
@@ -24,10 +26,11 @@ public class Calmness : AbstractCharacterState
         manaResource = character.Character.TryGetResource(ResourceType.Mana);
         _personWhoMadeBuff = personWhoMadeBuff;
         MaxStacksCount = _baseMaxStacks;
-
+        CurrentStacksCount = 1;
         _duration = durationToExit;
 
         RecalcRegenAmount();
+        if (character.isServer) _regenRoutine = character.StartCoroutine(RegenTick());
     }
 
     public override void UpdateState()
@@ -42,6 +45,7 @@ public class Calmness : AbstractCharacterState
     public override void ExitState()
     {
         CurrentStacksCount = 0;
+        if (_regenRoutine != null) _characterState.StopCoroutine(_regenRoutine);
         _characterState.StateIcons.RemoveItemByState(State);
         _characterState.RemoveState(this);
     }
@@ -70,12 +74,31 @@ public class Calmness : AbstractCharacterState
 
     public void ApplyRegen()
     {
-        if (manaResource != null && _regenAmount > 0) manaResource.CmdAdd(_regenAmount);
+        if (manaResource != null && _regenAmount > 0) manaResource.Add(_regenAmount);
     }
 
     private void RecalcRegenAmount()
     {
         if (manaResource != null) _regenAmount = manaResource.MaxValue * _manaRegenPercent * CurrentStacksCount;
+    }
+
+    private IEnumerator RegenTick()
+    {
+        var wait = new WaitForSeconds(1f);
+
+        while (_duration > 0)
+        {
+            yield return wait;
+
+            if (manaResource == null) continue;
+            if (!_characterState.isServer) continue;
+
+            float missing = manaResource.MaxValue - manaResource.CurrentValue;
+            if (missing <= 0f) continue;
+
+            float amount = Mathf.Min(_regenAmount, missing);
+            manaResource.Add(amount);
+        }
     }
 
 }

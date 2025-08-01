@@ -237,8 +237,8 @@ public class GrowTree : Skill
         var tree = Instantiate(_treePrefab, position, Quaternion.identity);
         _currentTree = tree;
 
-        NetworkServer.Spawn(_currentTree.gameObject, connectionToClient);
         SceneManager.MoveGameObjectToScene(_currentTree.gameObject, Hero.NetworkSettings.MyRoom);
+        NetworkServer.Spawn(_currentTree.gameObject, connectionToClient);
 
         _healthTree = tree.GetComponent<ObjectHealth>();
         if (_healthTree != null)

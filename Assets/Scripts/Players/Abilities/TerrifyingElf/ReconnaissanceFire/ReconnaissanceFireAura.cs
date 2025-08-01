@@ -2,21 +2,24 @@ using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ReconnaissanceFireAura : NetworkBehaviour
 {
     [SerializeField] private float partialBlindnessDuration = 5f;
-    [SerializeField] private float anxietyDuration = 5f;
+    [SerializeField] private float innerDarknessDuration = 13;
     [SerializeField] private GameObject fireEffect;
     [SerializeField] private GameObject fireEffectDark;
     [SerializeField] private bool fireDarkTalent;
     [SerializeField] private bool partialBlindnessTalent;
     [SerializeField] private FlameLightPulse flameLightPulse;
+    [SerializeField] private BoxCollider colliderFire;
 
     public event Action<bool> OnStateDarkTalentChanged;
 
-    private List<Character> charactersInZone = new List<Character>();
+    private readonly List<Character> charactersInZone = new();
+    private readonly HashSet<uint> clientIds = new();
     private Coroutine effectCoroutine;
 
     [SyncVar(hook = nameof(OnStateDarkChanged))]
@@ -26,31 +29,57 @@ public class ReconnaissanceFireAura : NetworkBehaviour
     public bool PartialBlindnessTalent { get => partialBlindnessTalent; set => partialBlindnessTalent = value; }
     public bool StateDark { get => stateDark; set => stateDark = value; }
 
+    [Server]
+    private void RemoveAuthority()
+    {
+        var id = netIdentity;
+        if (id.connectionToClient != null) id.RemoveClientAuthority();
+    }
+
+    private void OnDestroy()
+    {
+        if (effectCoroutine != null) StopCoroutine(effectCoroutine);
+
+
+        foreach (var character in charactersInZone) ForceExit(character);
+        foreach (var id in clientIds.ToArray()) RemoveCharacter(id);
+
+        charactersInZone.Clear();
+        clientIds.Clear();
+    }
+
+    private void ForceExit(Character character)
+    {
+        if (character == null) return;
+        if (character.TryGetComponent<CharacterState>(out var state) && state.GetState(States.FireFlash) is FireFlash flash) flash.SwitchToFinite();
+    }
+
     private void OnStateDarkChanged(bool oldValue, bool newValue)
     {
         SwitchEffectFire();
         OnStateDarkTalentChanged?.Invoke(newValue);
     }
 
-    [Server]
+    [ServerCallback]
     private void OnTriggerEnter(Collider other)
     {
         if (other.TryGetComponent<Character>(out Character character) && !charactersInZone.Contains(character))
         {
             charactersInZone.Add(character);
+            RpcAddCharacter(character.netId);
             if (effectCoroutine == null) effectCoroutine = StartCoroutine(ApplyPartialBlindnessPeriodically());
         }
-
-        if (other.TryGetComponent<ArrowProjectile>(out ArrowProjectile arrow) && stateDark == false)
-            if (arrow.ArrowDark && fireDarkTalent) stateDark = true;
     }
 
-    [Server]
+    [ServerCallback]
     private void OnTriggerExit(Collider other)
     {
         if (other.TryGetComponent<Character>(out Character character))
         {
             charactersInZone.Remove(character);
+            ForceExit(character);
+            RpcRemoveCharacter(character.netId);
+
 
             if (charactersInZone.Count == 0 && effectCoroutine != null)
             {
@@ -62,19 +91,32 @@ public class ReconnaissanceFireAura : NetworkBehaviour
 
     private IEnumerator ApplyPartialBlindnessPeriodically()
     {
+        var wait = new WaitForSeconds(1f);
+
         while (charactersInZone.Count > 0)
         {
             foreach (Character character in charactersInZone)
             {
-                if (character != null && character.TryGetComponent<CharacterState>(out var characterState))
+                if (character == null || !character.TryGetComponent(out CharacterState state)) continue;
+
+                if (stateDark && fireDarkTalent)
                 {
-                    if (stateDark && fireDarkTalent) characterState.AddState(States.Anxiety, anxietyDuration, 0f, gameObject, "ReconnaissanceFireAuraDark");
-                    else if (partialBlindnessTalent) characterState.AddState(States.PartialBlindness, partialBlindnessDuration, 0f, gameObject, "partialBlindnessTalent");
-                    else characterState.AddState(States.PartialBlindness, partialBlindnessDuration, 0f, gameObject, "ReconnaissanceFireAura");
+                    state.AddState(States.FireFlash, 9999, 0f, gameObject, name);
+                    var flash = state.GetState(States.FireFlash) as FireFlash;
+
+                    if (UnityEngine.Random.Range(0, 100) < flash.Chance)
+                    {
+                        Debug.Log($"Chance: {flash.Chance}");
+                        state.AddState(States.InnerDarkness, innerDarknessDuration, 0f, gameObject, "ReconnaissanceFireAuraDark");
+                    }
+                    continue;
                 }
+
+                if (partialBlindnessTalent) state.AddState(States.PartialBlindness, partialBlindnessDuration, 0f, gameObject, "partialBlindnessTalent");
+                else state.AddState(States.PartialBlindness, partialBlindnessDuration, 0f, gameObject, "ReconnaissanceFireAura");
             }
 
-            yield return new WaitForSeconds(1f);
+            yield return wait;
         }
 
         effectCoroutine = null;
@@ -105,8 +147,23 @@ public class ReconnaissanceFireAura : NetworkBehaviour
         fireEffectDark.SetActive(true);
     }
 
-    internal bool TryGetComponent<T>(out T @object, object v)
+    [ClientRpc]
+    private void RpcAddCharacter(uint netId)
     {
-        throw new NotImplementedException();
+        if (!NetworkClient.spawned.TryGetValue(netId, out var id)) return;
+        if (!clientIds.Add(netId)) return;
+    }
+
+    [ClientRpc] private void RpcRemoveCharacter(uint netId) => RemoveCharacter(netId);
+
+    private void RemoveCharacter(uint netId)
+    {
+        if (!clientIds.Remove(netId)) return;
+
+        if (NetworkClient.spawned.TryGetValue(netId, out var id) &&
+            id.TryGetComponent(out CharacterState state))
+        {
+            (state.GetState(States.FireFlash) as FireFlash)?.SwitchToFinite();
+        }
     }
 }

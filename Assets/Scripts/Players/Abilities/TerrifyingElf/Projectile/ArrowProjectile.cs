@@ -35,6 +35,12 @@ public class ArrowProjectile : Projectiles
         if (other.gameObject == _dad?.gameObject) return;
         if (!other.TryGetComponent<IDamageable>(out _)) return;
 
+        if (_arrowDark && other.GetComponentInParent<ReconnaissanceFireAura>() != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         if (((1 << other.gameObject.layer) & _skill.TargetsLayers.value) == 0) return;
 
         if (other.TryGetComponent<ObjectHealth>(out ObjectHealth objectHealth) &&

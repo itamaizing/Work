@@ -126,13 +126,9 @@ public class ReconnaissanceFire : Skill
 
     void UpdateTrickShotTrajectory()
     {
-        // Е ускорение Е
-
-        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition),
-                            out var hit, 200f, groundLayer))
+         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out var hit, 200f, groundLayer))
         {
-            float s = Vector3.Distance(trickShot.transform.position, hit.point);
-            trickShot.distance = s + 1f;
+            float s = Vector3.Distance(trickShot.transform.position, hit.point); trickShot.distance = s + 1f;
 
             if (Ballistics.Solution(trickShot.transform.position, trickShot.speed, hit.point, trickShot.constantAcceleration, out Quaternion low, out _) > 0) trickShot.transform.rotation = low;
         }
@@ -166,8 +162,8 @@ public class ReconnaissanceFire : Skill
 
         position.y += 0.1f;
         var aura = Instantiate(fireAura, position, Quaternion.identity);
-        NetworkServer.Spawn(aura.gameObject);
         SceneManager.MoveGameObjectToScene(aura.gameObject, Hero.NetworkSettings.MyRoom);
+        NetworkServer.Spawn(aura.gameObject, connectionToClient);
 
         currentFireAura = aura;
         currentFireAura.FireDarkTalent = fireDarkTalent;

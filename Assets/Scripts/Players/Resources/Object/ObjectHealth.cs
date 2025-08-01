@@ -149,7 +149,9 @@ public class ObjectHealth : Resource, IDamageable
             if (_currentHealth <= 0)
             {
                 OnDeath?.Invoke();
-                Destroy(gameObject);
+
+                GameObject target = transform.parent != null ? transform.parent.gameObject : gameObject;
+                Destroy(target);
             }
 
             if (isServer) RpcPopupDamage(damage.Value);

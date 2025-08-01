@@ -16,6 +16,7 @@ public class ShotIntoSky : Skill
     [SerializeField] private float minDamage;
     [SerializeField] private float maxDamage;
     [SerializeField] private float _dropDelayTime = 3f;
+    [SerializeField] private ReconnaissanceFire reconnaissanceFire;
 
     [Header("Arrow Effects Settings")]
     [SerializeField] private ArrowIntoSkyProjectile impactPrefab;
@@ -23,7 +24,8 @@ public class ShotIntoSky : Skill
 
     private readonly SyncList<uint> _arrowIntoSkyProjectileIds = new SyncList<uint>();
     private Vector3 _targetPoint = Vector3.positiveInfinity;
-    private bool _tripleShot;
+    private bool _secondShotPlanned;
+    private const float _extraShotDelay = 1f;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("ShotSkyCastDelay");
     protected override int AnimTriggerCast => 0;
@@ -91,6 +93,19 @@ public class ShotIntoSky : Skill
 
         CmdSpawnImpact(_targetPoint, Damage);
 
+        if (tripleShotTalentActive && reconnaissanceFire != null && reconnaissanceFire.CurrentFireAura != null)
+        {
+            Vector3 auraCenter = reconnaissanceFire.CurrentFireAura.transform.position;
+            float combinedRadius = Area + reconnaissanceFire.Area;
+            float distantion = Vector3.Distance(_targetPoint, auraCenter);
+
+            if (distantion <= combinedRadius / 2)
+            {
+                CmdSpawnImpact(_targetPoint, Damage / 2);
+                _secondShotPlanned = true;
+            }
+        }
+
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(_targetPoint);
         callbackDataSaved(targetInfo);
@@ -99,6 +114,14 @@ public class ShotIntoSky : Skill
     protected override IEnumerator CastJob()
     {
         CmdExecuteCast();
+
+        if (_secondShotPlanned)
+        {
+            yield return new WaitForSeconds(_extraShotDelay);
+            CmdExecuteCast();
+            _secondShotPlanned = false;
+        }
+
         yield return null;
         _hero.Animator.speed = 1f;
         ClearData();

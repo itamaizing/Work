@@ -230,6 +230,8 @@ public class CharacterState : NetworkBehaviour
 		[States.ComboState] = new ComboState(),
 		[States.DisappointmentState] = new DisappointmentState(),
 		[States.ManaRegen] = new ManaRegen(),
+
+		#region TerrifyingElfStates
 		[States.InnerDarkness] = new InnerDarkness(),
 		[States.Fear] = new Fear(),
 		[States.Astral] = new AstralState(),
@@ -244,15 +246,27 @@ public class CharacterState : NetworkBehaviour
 		[States.Sleep] = new Sleep(),
 		[States.ElvenSkill] = new ElvenSkill(),
 		[States.Bound] = new Bound(),
-		[States.BaffState] = new BaffState(),
-		[States.DebaffState] = new DebaffState(),
-		[States.ShadowTree] = new ShadowTree(),		
-        [States.PowerOfEarth] = new PowerOfEarth(),
+		[States.ShadowTree] = new ShadowTree(),
+		[States.MultiMagic] = new MultiMagic(),
+		[States.FireFlash] = new FireFlash(),
+		#endregion
+
+		#region Gandollarf	
+		[States.PowerOfEarth] = new PowerOfEarth(),
         [States.EarthsHealth] = new EarthsHealth(),
         [States.MagicWater] = new MagicWater(),
         [States.Burning] = new Burning(),
         [States.Burn] = new Burn(),
+		#endregion
+
+		#region Test Baff and Debaff
+		[States.BaffState] = new BaffState(),
+		[States.DebaffState] = new DebaffState(),
+        #endregion
+
+        #region Test
         [States.TestAuraState] = new TestAuraState(),
+        #endregion
     };
 
 	public void Initialize(Character hero)
@@ -779,18 +793,14 @@ public enum States
     DebaffState,
 	Bound,
 	ShadowTree,
-	
-    #region Gangdollarf
     PowerOfEarth,
     EarthsHealth,
     MagicWater,
     Burning,
     Burn,
-    #endregion
-
-    #region Test
     TestAuraState,
-    #endregion	
+	MultiMagic,
+	FireFlash,
 }
 public enum BaffDebaff
 {

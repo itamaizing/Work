@@ -14,6 +14,7 @@ public class ShotsIntoSky : Skill
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private HeroComponent playerLinks;
     [SerializeField] private float _dropDelayTime = 1f;
+    [SerializeField] private ReconnaissanceFire reconnaissanceFire;
 
     [Header("Arrows Effects Settings")]
     [SerializeField] private ArrowsIntoSkyProjectile impactPrefab;
@@ -21,7 +22,8 @@ public class ShotsIntoSky : Skill
 
     private readonly SyncList<uint> _arrowsIntoSkyProjectileIds = new SyncList<uint>();
     private Vector3 _targetPoint = Vector3.positiveInfinity;
-    private bool _tripleShot;
+    private bool _secondShotPlanned;
+    private const float _extraShotDelay = 1f;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("ShotsSkyCastDelay");
     protected override int AnimTriggerCast => 0;
@@ -85,7 +87,20 @@ public class ShotsIntoSky : Skill
             yield return null;
         }
 
-        CmdSpawnImpact(_targetPoint);
+        CmdSpawnImpact(_targetPoint, Damage);
+
+        if (tripleShotTalentActive && reconnaissanceFire != null && reconnaissanceFire.CurrentFireAura != null)
+        {
+            Vector3 auraCenter = reconnaissanceFire.CurrentFireAura.transform.position;
+            float combinedRadius = Area + reconnaissanceFire.Area;
+            float distantion = Vector3.Distance(_targetPoint, auraCenter);
+
+            if (distantion <= combinedRadius / 2)
+            {
+                CmdSpawnImpact(_targetPoint, Damage / 2);
+                _secondShotPlanned = true;
+            }
+        }
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(_targetPoint);
@@ -95,6 +110,14 @@ public class ShotsIntoSky : Skill
     protected override IEnumerator CastJob()
     {
         CmdExecuteCast();
+
+        if (_secondShotPlanned)
+        {
+            yield return new WaitForSeconds(_extraShotDelay);
+            CmdExecuteCast();
+            _secondShotPlanned = false;
+        }
+
         yield return null;
 
         _hero.Animator.speed = 1f;
@@ -123,18 +146,18 @@ public class ShotsIntoSky : Skill
 
 
     [Command]
-    private void CmdSpawnImpact(Vector3 position)
+    private void CmdSpawnImpact(Vector3 position, float damage)
     {
         if (!impactPrefab) return;
 
         ArrowsIntoSkyProjectile impact = Instantiate(impactPrefab, position, Quaternion.identity);
         SceneManager.MoveGameObjectToScene(impact.gameObject, _hero.NetworkSettings.MyRoom);
-        impact.Init(playerLinks, this, Damage, silenceTalentActive, tripleShotTalentActive, shotAstralManaActive);
+        impact.Init(playerLinks, this, damage, silenceTalentActive, tripleShotTalentActive, shotAstralManaActive);
         NetworkServer.Spawn(impact.gameObject);
 
         _arrowsIntoSkyProjectileIds.Add(impact.GetComponent<NetworkIdentity>().netId);
 
-        RpcInit(impact.gameObject);
+        RpcInit(impact.gameObject, damage);
     }
 
     [Command]
@@ -153,12 +176,12 @@ public class ShotsIntoSky : Skill
     [Command] private void CmdDestroyPendingImpacts() => ServerDestroyPendingImpacts();
 
     [ClientRpc]
-    protected void RpcInit(GameObject gameObject)
+    protected void RpcInit(GameObject gameObject, float damage)
     {
         if (gameObject == null) return;
 
         ArrowsIntoSkyProjectile impact = gameObject.GetComponent<ArrowsIntoSkyProjectile>();
-        if (impact != null) impact.Init(playerLinks, this, Damage, silenceTalentActive, tripleShotTalentActive, shotAstralManaActive);
+        if (impact != null) impact.Init(playerLinks, this, damage, silenceTalentActive, tripleShotTalentActive, shotAstralManaActive);
     }
 
     [ClientRpc] private void RpcActivate(ArrowsIntoSkyProjectile projectile) => projectile.Activate();

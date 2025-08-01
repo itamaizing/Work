@@ -3,7 +3,7 @@ using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
-public class Hitbox : NetworkBehaviour, IDamageable
+public class HitBoxTrap : NetworkBehaviour, IDamageable
 {
     [SerializeField] private ObjectHealth owner;
     [SerializeField] private bool isHit;
