@@ -77,7 +77,8 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
     public int DeadsCounter { get => _deadsCounter; set => _deadsCounter = value; }
     public float DamageTakeCounter { get => _damageTakeCounter; set => _damageTakeCounter = value; }
     public float DamageGetCounter { get => _damageGetCounter; set => _damageGetCounter = value; }
-    public VisionComponent VisionComponent { get => _visionComponent; }
+
+    public VisionComponent VisionComponent { get => _visionComponent; set => _visionComponent = value; }
     public Vector3 Position => transform.position;
     public Transform Transform => transform;
     public Auras Auras { get => _auras; }
