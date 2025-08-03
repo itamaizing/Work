@@ -26,6 +26,8 @@ public class UIPlayerComponents : MonoBehaviour
     private Queue<PopupRequest> popupQueue = new Queue<PopupRequest>();
     private bool isProcessingQueue = false;
 
+    public SelectedCircle CircleSelect1 { get => CircleSelect; set => CircleSelect = value; }
+
     private void Awake()
     {
         _damageTracker = _character.DamageTracker;

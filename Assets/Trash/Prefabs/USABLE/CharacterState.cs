@@ -135,7 +135,7 @@ public class DefaultState : AbstractCharacterState
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-
+		
 	}
 
 	public override void UpdateState()

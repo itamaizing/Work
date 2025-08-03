@@ -8,6 +8,7 @@ public class SkillQueue : MonoBehaviour
 
     private Queue<Skill> _skills = new Queue<Skill>();
     private Skill _currentSkill = null;
+    private TargetInfo _targetInfo;
 
     public bool IsBusy { get => _currentSkill != null; }
     public bool IsEmpty { get => _skills.Count == 0; }
@@ -26,10 +27,38 @@ public class SkillQueue : MonoBehaviour
             if (skill.SkillType == SkillType.Zone)
                 Draw(skill);
 
+            if (!skill.Disactive)
+            {
+                if (skill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
+                {
+                    _targetInfo = targetInfo;
+                    foreach (var item in _targetInfo.Targets)
+                    {
+                        if (item is Character character)
+                        {
+                            character.SelectedCircle.SwitchSelectCircle(true);
+                        }
+                    }
+                }
+            }
+
             if (!skill.Disactive && skill.TryCast())
             {
                 RemoveFromQueue();
                 _currentSkill = skill;
+
+                if(_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
+                {
+                    _targetInfo = targetInfo;
+                    foreach (var item in _targetInfo.Targets)
+                    {
+                        if (item is Character character)
+                        {
+                            character.SelectedCircle.SwitchSelectCircle(true);
+                        }
+                    }
+                }
+
                 _currentSkill.CastEnded += OnCastEnded;
             }
         }
@@ -49,11 +78,34 @@ public class SkillQueue : MonoBehaviour
         if (_currentSkill != null)
         {
             _currentSkill.TryCancel(isFoceCancel);
+
+
+            if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
+            {
+                _targetInfo = targetInfo;
+                foreach (var item in _targetInfo.Targets)
+                {
+                    if (item is Character character)
+                    {
+                        character.SelectedCircle.SwitchSelectCircle(false);
+                    }
+                }
+            }
+
             return true;
         }
         else if(IsEmpty == false)
         {
-            RemoveFromQueue().TargetInfoQueue.Dequeue();
+            var temp = RemoveFromQueue().TargetInfoQueue.Dequeue();
+
+            foreach (var item in temp.Targets)
+            {
+                if (item is Character character)
+                {
+                    character.SelectedCircle.SwitchSelectCircle(false);
+                }
+            }
+
             return true;
         }
         return false;
@@ -90,5 +142,17 @@ public class SkillQueue : MonoBehaviour
     {
         _currentSkill.CastEnded -= OnCastEnded;
         _currentSkill = null;
+
+        if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
+        {
+            _targetInfo = targetInfo;
+            foreach (var item in _targetInfo.Targets)
+            {
+                if (item is Character character)
+                {
+                    character.SelectedCircle.SwitchSelectCircle(false);
+                }
+            }
+        }
     }
 }

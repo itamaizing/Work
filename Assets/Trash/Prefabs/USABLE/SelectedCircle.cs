@@ -4,6 +4,7 @@ using UnityEngine.Rendering.Universal;
 public class SelectedCircle : MonoBehaviour
 {
     [SerializeField] private DecalProjector _selectProjector;
+    [SerializeField] private DecalProjector _selectProjectorTargetVariant;
     [SerializeField] private DecalProjector _stroke;
 
     private bool _isActive;
@@ -34,7 +35,7 @@ public class SelectedCircle : MonoBehaviour
 
 	public void SwitchClostestTarget(bool value)
     {
-        _selectProjector.gameObject.SetActive(value);
+        _selectProjectorTargetVariant.gameObject.SetActive(value);
 		//_stroke.gameObject.SetActive(value);
     }
 
@@ -42,6 +43,12 @@ public class SelectedCircle : MonoBehaviour
     {
 		_stroke.gameObject.SetActive(value);
 	}
+
+    public void SwitchSelectCircle(bool value)
+    {
+        Debug.Log(12312132123132);
+        _selectProjector.gameObject.SetActive(value);
+    }
 
     public void SetColorTarget(Color value) 
     {
