@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class TestZoneMappingAttack : Skill
 {
+    [SerializeField] private SkillRenderer skillRenderer;
+
     private Vector3 _targetPoint = Vector3.positiveInfinity;
 
     protected override bool IsCanCast => true;
-
     protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
-
     protected override int AnimTriggerCast => throw new System.NotImplementedException();
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -43,7 +43,7 @@ public class TestZoneMappingAttack : Skill
         DrawDamageZone(_targetPoint);
 
         yield return new WaitForSeconds(2f);
-        StopDamageZone();
+        skillRenderer.CmdStopDrawDamageZone();
     }
 
     protected override void ClearData()

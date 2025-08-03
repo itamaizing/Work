@@ -1,11 +1,11 @@
+using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class InnerDarkness : AbstractCharacterState
 {
     private const float TimeDecreasePerStack = 2f;
-
-    private float _duration;
+    private float _durationRemaining;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
 
@@ -13,69 +13,68 @@ public class InnerDarkness : AbstractCharacterState
     public override States State => States.InnerDarkness;
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
+    public override float RemainingDuration => _durationRemaining;
+
+    public InnerDarkness()
+    {
+        MaxStacksCount = 6;
+        CurrentStacksCount = 1;
+    }
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _characterState = character;
         _personWhoMadeBuff = personWhoMadeBuff;
-        MaxStacksCount = 6;
-        _duration = durationToExit;
-
-        Debug.Log($"CurrentStacksCount: {CurrentStacksCount}");
+        _durationRemaining = durationToExit;
     }
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-
-        if (_duration <= 0) ExitState();
+        _durationRemaining -= Time.deltaTime;
+        if (_durationRemaining <= 0) ExitState();
     }
 
     public override void ExitState()
     {
-        CurrentStacksCount = 0;
-        _characterState.StateIcons.RemoveItemByState(State);
         _characterState.RemoveState(this);
+        CurrentStacksCount = 1;
     }
 
     public override bool Stack(float time)
     {
-        if (CurrentStacksCount <= 0)
+        Debug.Log($"CurrentStacksCount: {CurrentStacksCount}");
+
+        if(CurrentStacksCount < MaxStacksCount)
         {
-            InitializeFirstStack();
+            AddNewStack(time);
             return true;
         }
 
-        if (CurrentStacksCount < MaxStacksCount)
+        else if (CurrentStacksCount == MaxStacksCount)
         {
-            AddNewStack();
-            return true;
-        }
-
-        if (CurrentStacksCount == MaxStacksCount)
-        {
-            UpdateDurationForMaxStacks();
+            UpdateDurationForMaxStacks(time);
             return false;
         }
 
         return false;
     }
 
-    private void InitializeFirstStack()
+    private void AddNewStack(float time)
     {
         CurrentStacksCount++;
+
+        if (CurrentStacksCount == MaxStacksCount) CmdStateFear();
+
+        _durationRemaining = time - (CurrentStacksCount - 1) * TimeDecreasePerStack;
     }
 
-    private void AddNewStack()
+    private void UpdateDurationForMaxStacks(float time)
     {
-        CurrentStacksCount++;
-        _duration = _duration - CurrentStacksCount * TimeDecreasePerStack;
+        _durationRemaining = time - (CurrentStacksCount - 1) * TimeDecreasePerStack;
+        CmdStateFear();
+        Debug.Log("обновление при максимальном стаке");
     }
 
-    private void UpdateDurationForMaxStacks()
-    {
-        _duration = CurrentStacksCount * TimeDecreasePerStack;
-
-        _characterState.AddState(States.Fear, Random.Range(0.7f, 1.4f), 0, _personWhoMadeBuff.gameObject, null);
-    }
+    [Command] private void CmdStateFear() => ClientRpcStateFear();
+    [ClientRpc] private void ClientRpcStateFear() { _characterState.AddStateLogic(States.Fear, Random.Range(0.7f, 1.4f), 0f, Schools.None, _personWhoMadeBuff.gameObject, null); }
 }

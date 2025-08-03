@@ -37,7 +37,10 @@ public class Health : Resource, IDamageable, IHealingable
     public event Action<float, float> OnShieldValuesChanged;
     public event Action<float> OnShieldAdd;
     public event Action ShieldDeactivated;
+
     public event Action<float, DamageType, Skill> ShieldDamageTaken;
+    public event Action<Damage, Skill> OnBeforeTakeDamage;
+
     public event Action<float, float> EvadeMeleeDamageChanged;
     public event Action<float, float> EvadeRangeDamageChanged;
     public event Action<float, float> EvadeMagDamageChanged;
@@ -57,6 +60,8 @@ public class Health : Resource, IDamageable, IHealingable
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
+        OnBeforeTakeDamage?.Invoke(damage, skill);
+        
         if (TryEvade(damage.Type, damage.PhysicAttackType))
         {
             Evaded?.Invoke();
@@ -88,9 +93,8 @@ public class Health : Resource, IDamageable, IHealingable
 
     public void Heal(ref Heal heal, string sourceName, Skill skill = null)
     {
-        //ClientRpcHealTaked(heal.Value, skill, sourceName);
+        ClientRpcHealTaked(heal.Value, skill, sourceName);
         Add(heal.Value);
-        HealTaked?.Invoke(heal.Value, skill, sourceName);
     }
 
     public void SetEvadeMagic(float value)

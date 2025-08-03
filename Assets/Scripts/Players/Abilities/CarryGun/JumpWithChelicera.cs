@@ -8,7 +8,6 @@ public class JumpWithChelicera : Skill
     [SerializeField] private Character _player;
     [SerializeField] private CheliceraStrike _cheliceraeStrike;
     [SerializeField] private float basePsi = 1f;
-
     [SerializeField] private float _distanceJump;
 
     private Animator _animator;
@@ -51,6 +50,15 @@ public class JumpWithChelicera : Skill
     {
         _castDeley = _delayBeforeJump;
 
+        if (_target != null)
+        {
+            TargetInfo targetInfo = new();
+            targetInfo.Targets.Add(_target);
+            targetInfo.Points.Add(_mousePosition);
+            callbackDataSaved(targetInfo);
+            yield break;
+        }
+
         while (_target == null && float.IsPositiveInfinity(_mousePosition.x))
         {
             if (GetMouseButton)
@@ -62,39 +70,39 @@ public class JumpWithChelicera : Skill
                 {
                     _isTarget = true;
                     _player.Move.LookAtTransform(_target.transform);
+                    Hero.Move.CanMove = false;
+                    Hero.Move.StopMoveAndAnimationMove();
                     _isCanCancle = false;
                 }
             }
             yield return null;
         }
 
-        TargetInfo targetInfo = new();
-        targetInfo.Targets.Add(_target);
-        targetInfo.Points.Add(_mousePosition);
-        callbackDataSaved(targetInfo);
+        TargetInfo info = new();
+        info.Targets.Add(_target);
+        info.Points.Add(_mousePosition);
+        callbackDataSaved(info);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_isTarget && _target != null)
-            ExecuteJump();
+        if (_isTarget && _target != null) ExecuteJump();
 
         yield return null;
     }
 
     private void ExecuteJump()
     {
+        if (_target == null) return;
+
         _isJumpDone = true;
 
         float distanceToTarget = Vector2.Distance(_target.transform.position, _player.transform.position);
-
         _additionalDamageInPercentage = 0.1f + (distanceToTarget / 0.1f) * 0.005f;
 
         Vector3 direction = (_target.transform.position - transform.position).normalized;
 
-        CmdExecuteJump(_player.gameObject, _target.gameObject, direction, _additionalDamageInPercentage);
-
-        Invoke(nameof(ResetBool), 1f);
+        CmdExecuteJump(_player.gameObject, _target.netId, direction, _additionalDamageInPercentage);
     }
 
     //private float NormalizeDistance(float distance)
@@ -106,8 +114,8 @@ public class JumpWithChelicera : Skill
 
     private bool CheckCanCast()
     {
-        return _target != null && Vector2.Distance(_mousePosition, transform.position) <= Radius &&
-               NoObstacles(_mousePosition, _obstacle);
+        return _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius &&
+               NoObstacles(_target.transform.position, _obstacle);
     }
 
     private void ResetBool()
@@ -122,6 +130,7 @@ public class JumpWithChelicera : Skill
 
     public void JumpEnd()
     {
+        Invoke(nameof(ResetBool), 1f);
         HandleJumpEnd();
         ClearData();
         AnimCastEnded();
@@ -129,7 +138,7 @@ public class JumpWithChelicera : Skill
 
     public void ApplyRootTrue()
     {
-        Hero.Move.CanMove = false;
+        IncreaseSetCooldown(CooldownTime);
         _animator.applyRootMotion = true;
     }
 
@@ -156,18 +165,31 @@ public class JumpWithChelicera : Skill
         _isCanCancle = true;
     }
 
-    [Command]
-    private void CmdExecuteJump(GameObject player, GameObject target, Vector3 direction, float additionalDamage)
+    #region Talents
+
+    public void EvolutionTalentOne(bool value)
     {
+        MaxChargers = value ? 2 : 1;
+    }
+
+    #endregion 
+
+    [Command]
+    private void CmdExecuteJump(GameObject player, uint targetNetId, Vector3 direction, float additionalDamage)
+    {
+        if (!NetworkServer.spawned.TryGetValue(targetNetId, out NetworkIdentity identity)) return;
+
+        Character targetCharacter = identity.GetComponent<Character>(); 
+        if (targetCharacter == null) return;
+
         MoveComponent playerMove = player.GetComponent<MoveComponent>();
-        Character targetCharacter = target.GetComponent<Character>();
 
         Vector3 jumpPosition = Vector3.MoveTowards(targetCharacter.transform.position, player.transform.position, _minDistance);
-
         playerMove.TargetRpcDoMove(jumpPosition, _distanceJump / 10);
 
         StartCoroutine(TrackMovementDuringJumpCoroutine(playerMove, targetCharacter, additionalDamage));
     }
+
 
     private IEnumerator TrackMovementDuringJumpCoroutine(MoveComponent playerMove, Character target, float additionalDamage)
     {
@@ -230,8 +252,13 @@ public class JumpWithChelicera : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
+        if (targetInfo == null || targetInfo.Targets == null || targetInfo.Targets.Count == 0 || targetInfo.Targets[0] == null) return;
+
         _target = (Character)targetInfo.Targets[0];
         _mousePosition = targetInfo.Points[0];
+        _isTarget = true;
+        _player.Move.LookAtTransform(_target.transform);
+        _isCanCancle = false;
     }
 
     [ClientRpc]

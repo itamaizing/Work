@@ -30,7 +30,6 @@ public class TargetToShot
     public bool isCharater = false;
 }
 
-
 public enum Schools
 {
     Light,
@@ -59,6 +58,14 @@ public enum SkillType
     NonTarget
 }
 
+public enum Moving
+{
+    Static,
+    NonStatic
+}
+
+
+
 public abstract class Skill : NetworkBehaviour
 {
     [Header("Talent State")]
@@ -79,6 +86,7 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] private DamageType _damageType;
     [SerializeField] private AttackRangeType _attackRangeType;
     [SerializeField] private SkillType _skillType;
+    [SerializeField] private Moving _moving;
     [SerializeField] protected LayerMask _targetsLayers;
     [SerializeField] protected LayerMask _obstacle;
     [Header("Streaming settings")]
@@ -142,19 +150,20 @@ public abstract class Skill : NetworkBehaviour
     private Queue<TargetInfo> _targetInfoQueue = new();
     private bool _isAutoMode;
 
-    public bool IsAutoMode {
+    public bool IsAutoMode
+    {
         get
         {
-            return _isAutoMode; 
+            return _isAutoMode;
         }
-        set 
+        set
         {
             if (_isAutoMode != value)
             {
                 _isAutoMode = value;
                 AutoModeChanged?.Invoke(_isAutoMode);
             }
-        } 
+        }
     }
     public bool IsTalentSpell => _isTalentSpell;
     public bool IsSkillActive
@@ -169,12 +178,14 @@ public abstract class Skill : NetworkBehaviour
     public StatsBuff Buff => _statsBuff;
     public string Name => _abilityInfo.Name;
     public string Description => _abilityInfo.Description;
+    public string State => _abilityInfo.State; // test: we output the name of the state
+    public string DescriptionState => _abilityInfo.DescriptionState; // test: we output a description of the state
     public Sprite Icon => _abilityInfo.Icon;
     public AbilityInfo AbilityInfoHero { get => _abilityInfo; set => _abilityInfo = value; }
     public bool IsCooldowned { get => _remainingCooldownTime <= 0; }
-    public virtual bool IsPayCostStartCooldown { get => true;}
+    public virtual bool IsPayCostStartCooldown { get => true; }
     public int Chargers { get => _currentChargers; protected set { _currentChargers = value; CurrentChargeChanged?.Invoke(_currentChargers); } }
-    public int MaxChargers { get => _maxCharges; }
+    public int MaxChargers { get => _maxCharges; set => _maxCharges = value; }
     public bool IsHaveCharge => (_currentChargers > 0);
     public float ChargeCooldown => _chargeCooldown;
     public List<float> RemainingCooldownTimeCharge { get => _remainingCooldownTimeChargers; }
@@ -183,12 +194,12 @@ public abstract class Skill : NetworkBehaviour
     public bool IsHaveResourceOnSkill { get => CheckResourcesOnSkill(); }
     public bool IsHaveResources { get => IsHaveResourceOnSkill && IsCooldowned && IsHaveCharge; }
     public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); protected set => _cooldownTime = value; }
-    public float RemainingCooldownTime { get => _remainingCooldownTime; }
+    public float RemainingCooldownTime { get => _remainingCooldownTime; set => _remainingCooldownTime = value; }
     public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); set => _castDeley = value; }
     public bool IsCasting { get => _isCasting; }
     public float CastStreamDuration { get => _castDuration; set => _castDuration = value; }
-    public float Radius { get => Buff.Radius.GetBuffedValue(_radius); protected set => _radius = value; }
-    public float Area { get => Buff.Area.GetBuffedValue(_area); protected set => _area = value; }
+    public float Radius { get => Buff.Radius.GetBuffedValue(_radius); set => _radius = value; }
+    public float Area { get => Buff.Area.GetBuffedValue(_area); set => _area = value; }
     public float CastLength { get => Buff.Area.GetBuffedValue(_castLength); protected set => _castLength = value; }
     public float CastWidth { get => Buff.Area.GetBuffedValue(_castWidth); protected set => _castWidth = value; }
     public virtual float Damage { get => _damageValue; set => _damageValue = value; }
@@ -199,6 +210,7 @@ public abstract class Skill : NetworkBehaviour
     public DamageType DamageType => _damageType;
     public AttackRangeType AttackRangeType => _attackRangeType;
     public SkillType SkillType => _skillType;
+    public Moving Moving => _moving;
     public List<SkillEnergyCost> SkillEnergyCosts { get => _skillEnergyCosts; }
     public List<SkillEnergyCost> ManaCostPerTick { get => _manaCostPerTick; }
     public float ManaCostRate { get => _manaCostRate; }
@@ -249,6 +261,9 @@ public abstract class Skill : NetworkBehaviour
     public virtual string AdditionalDescription { get; }
     protected abstract int AnimTriggerCastDelay { get; }
     protected abstract int AnimTriggerCast { get; }
+
+    protected void RaiseCooldownEnded() => CooldownEnded?.Invoke();
+
     protected virtual bool IsCanCast
     {
         get
@@ -371,6 +386,7 @@ public abstract class Skill : NetworkBehaviour
     public bool TryPreparing()
     {
         if (_isPreparing == false)
+
         {
             _actionWrapperForPreparingCoroutine = StartCoroutine(ActionWrapperForPreparingJob());
             return true;
@@ -583,7 +599,7 @@ public abstract class Skill : NetworkBehaviour
         {
             time = _remainingCooldownTimeChargers[i] - reductionTime;
 
-            if(time <= 0)
+            if (time <= 0)
             {
                 ReductionCooldownForCharge(i, reductionTime);
                 reductionTime = reductionTime - _remainingCooldownTimeChargers[i];
@@ -631,6 +647,7 @@ public abstract class Skill : NetworkBehaviour
     protected void AnimStartCastCoroutine()
     {
         _castCoroutine = StartCoroutine(CastJob());
+        if (_castDuration > 0) _castStreamCoroutine = StartCoroutine(CastStreamJob());
     }
 
     protected virtual void AnimCastEnded()
@@ -660,6 +677,7 @@ public abstract class Skill : NetworkBehaviour
             _skillRender.StartDynamicRadiusColor(Radius);
         }
 
+        _skillRender.StartPreview(Area, damage, TargetsLayers);
 
         if (_isAutoLineRender)
             _skillRender.DrawLine(CastLength, CastWidth, damage, TargetsLayers);
@@ -686,6 +704,8 @@ public abstract class Skill : NetworkBehaviour
         _skillRender.StopDrawLine();
         _skillRender.StopDrawClosestTarget();
         _skillRender.StopDynamicRadiusColor();
+
+        _skillRender.StopPreview();
 
         if (_skillType == SkillType.Zone)
         {
@@ -1075,7 +1095,7 @@ public abstract class Skill : NetworkBehaviour
 		}*/
         target.Position = transform.position;
         target.character = _hero;
-		target.isCharater = true;
+        target.isCharater = true;
 
         return target;
     }
@@ -1244,12 +1264,12 @@ public abstract class Skill : NetworkBehaviour
     {
         Hero.AssystCounter++;
     }
-    
+
     private void AddAssist()
     {
         Hero.AssystCounter++;
     }
-    
+
     private void AddKill(Character character)
     {
         Hero.KillCounter++;
@@ -1369,9 +1389,6 @@ public abstract class Skill : NetworkBehaviour
         if (CastDeley > 0)
             yield return StartCastDeleyCoroutine();
 
-        if (_castDuration > 0)
-            _castStreamCoroutine = StartCoroutine(CastStreamJob());
-
         if (AnimTriggerCast != 0)
         {
 
@@ -1391,8 +1408,11 @@ public abstract class Skill : NetworkBehaviour
             _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
             _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
 
-            yield return _castCoroutine = StartCoroutine(CastJob());
+            _castCoroutine = StartCoroutine(CastJob());
+            if (_castDuration > 0) _castStreamCoroutine = StartCoroutine(CastStreamJob());
+            yield return _castCoroutine;
         }
+
         _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
         _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
 
@@ -1525,7 +1545,7 @@ public abstract class Skill : NetworkBehaviour
         InputHandler.OnSpacetLeftMouseCanceled += OnClickCanceled;
 
     }
-
+    
     private void UnSubscribeClickEvents()
     {
         InputHandler.OnClick -= OnClick;

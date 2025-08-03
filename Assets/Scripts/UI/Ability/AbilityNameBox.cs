@@ -8,14 +8,17 @@ public class AbilityNameBox : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _name;
     [SerializeField] private TextMeshProUGUI _descriptionWithNumbers;
     [SerializeField] private TextMeshProUGUI _text;
+    [SerializeField] private TextMeshProUGUI _textState;
 
+    public static readonly string ColorState= "<color=#FFFF00>"; // test: state color
     public static readonly string ColorOpen = "<color=#53935E>";
     public static readonly string ColorEnd = "</color>";
 
     public void Show(Skill skill)
     {
         _name.text = skill.Name;
-        _text.text = skill.Description;
+        _text.text = $"{skill.Description}";
+        if (!string.IsNullOrEmpty(skill.State)) _text.text += $"\n'{ColorState}{skill.State}{ColorEnd}' - {skill.DescriptionState}";
         _descriptionWithNumbers.text = "";
 
         if (skill.SkillEnergyCosts.Count > 0)
@@ -45,9 +48,12 @@ public class AbilityNameBox : MonoBehaviour
 
         if (skill.Damage > 0)
         {
-            _descriptionWithNumbers.text += $"\nУрон: {ColorOpen}{skill.Damage}{ColorEnd}";
-            WriteTypeDamage(skill);
+            int damage = Mathf.RoundToInt(skill.Damage);
+            _descriptionWithNumbers.text += $"\nУрон: {ColorOpen}{damage}{ColorEnd}";
         }
+
+        WriteTypeDamage(skill);
+        WriteTypeAbityForm(skill);
 
         if (skill.CastDeley > 0)
             _descriptionWithNumbers.text += $"\nПодготовка: {ColorOpen}{skill.CastDeley} сек{ColorEnd}";
@@ -61,8 +67,28 @@ public class AbilityNameBox : MonoBehaviour
         if (skill.ChargeCooldown > 0)
             _descriptionWithNumbers.text += $"\nКол-во Зарядов: {ColorOpen}{skill.MaxChargers}/{skill.ChargeCooldown} сек{ColorEnd}";
 
-        if (skill.AdditionalDescription != string.Empty)
-            _descriptionWithNumbers.text += $"\n{skill.AdditionalDescription}";
+        //if (skill.AdditionalDescription != string.Empty)
+        //    _descriptionWithNumbers.text += $"\n{skill.AdditionalDescription}";
+    }
+
+    private void WriteTypeAbityForm(Skill skill)
+    {
+        _descriptionWithNumbers.text += "\n Форма способности:";
+
+        switch (skill.AbilityForm)
+        {
+            case AbilityForm.Magic:
+                _descriptionWithNumbers.text += " магия";
+                break;
+            case AbilityForm.Physical:
+                _descriptionWithNumbers.text += " физика";
+                break;
+            case AbilityForm.Spell:
+                _descriptionWithNumbers.text += " заклинания";
+                break;
+            default:
+                break;
+        }
     }
 
     private void WriteTypeDamage(Skill skill)
@@ -70,7 +96,7 @@ public class AbilityNameBox : MonoBehaviour
         switch (skill.DamageType)
         {
             case DamageType.Magical:
-                _descriptionWithNumbers.text += " магия";
+                _descriptionWithNumbers.text += " \nмагия";
                 switch (skill.School)
                 {
                     case Schools.Light:
@@ -111,7 +137,7 @@ public class AbilityNameBox : MonoBehaviour
             case DamageType.DOTMag:
                 break;
             case DamageType.Both:
-                _descriptionWithNumbers.text += " смешанный(мы вообще его используем?)";
+                _descriptionWithNumbers.text += "смешанный";
                 break;
             case DamageType.None:
                 break;

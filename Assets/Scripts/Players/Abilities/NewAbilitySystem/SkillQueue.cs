@@ -73,7 +73,7 @@ public class SkillQueue : MonoBehaviour
         SkillAdded?.Invoke(skill);
     }
 
-    public bool TryCancel(bool isFoceCancel = false)
+    public bool TryCancel(bool isForceCancel = false)
     {
         if (_currentSkill != null)
         {
@@ -91,32 +91,40 @@ public class SkillQueue : MonoBehaviour
                     }
                 }
             }
-
             return true;
         }
-        else if(IsEmpty == false)
+
+        var queuedSkill = RemoveFromQueue();
+        
+        if (queuedSkill != null)
         {
-            var temp = RemoveFromQueue().TargetInfoQueue.Dequeue();
-
-            foreach (var item in temp.Targets)
+            if (queuedSkill.TargetInfoQueue.Count > 0)
             {
-                if (item is Character character)
-                {
-                    character.SelectedCircle.SwitchSelectCircle(false);
-                }
-            }
+                var temp = queuedSkill.TargetInfoQueue.Dequeue();
 
-            return true;
+                foreach (var item in temp.Targets)
+                {
+                    if (item is Character character)
+                    {
+                        character.SelectedCircle.SwitchSelectCircle(false);
+                    }
+                }
+
+                queuedSkill.TryCancel(isForceCancel);
+                return true;
+            }
         }
+
         return false;
     }
 
     private void Draw(Skill skill)
     {
+        if (skill.TargetInfoQueue.Count == 0) return;
+
         var info = skill.TargetInfoQueue.Peek().Points;
 
         Vector3[] vector3s = new Vector3[info.Count];
-
         for (int i = 0; i < info.Count; i++)
             vector3s[i] = new Vector3(info[i].x, info[i].y + 0.1f, info[i].z);
 
@@ -126,6 +134,8 @@ public class SkillQueue : MonoBehaviour
 
     private Skill RemoveFromQueue()
     {
+        if (_skills.Count == 0) return null;
+
         var temp = _skills.Dequeue();
         SkillDeleted?.Invoke(temp);
 
@@ -137,6 +147,7 @@ public class SkillQueue : MonoBehaviour
 
         return temp;
     }
+
 
     private void OnCastEnded()
     {

@@ -35,6 +35,9 @@ public class SkillRenderer : NetworkBehaviour
     //private BoxArea _lineEndImage;
     private SkillCircleRanderer _drawAutoAttackRadius;
 
+    private Coroutine _previewDamageCoroutine;
+    private readonly HashSet<Health> _previewSet = new();
+
     private Coroutine _drawLineCoroutine;
     private Coroutine _drawAreaCoroutine;
     private Coroutine _drawClosestTargetCoroutine;
@@ -62,6 +65,13 @@ public class SkillRenderer : NetworkBehaviour
     public void CmdDrawDamageZone(Vector3 position, float radius, Damage damage, GameObject player)
     {
         RpcDrawDamageZone(position, radius, damage, player);
+    }
+
+    public void StartPreview(float radius, Damage damage, LayerMask layerMask)
+    {
+        if (_previewDamageCoroutine != null) StopCoroutine(_previewDamageCoroutine);
+        _previewSet.Clear();
+        _previewDamageCoroutine = StartCoroutine(PreviewDamageJob(radius, damage, layerMask));
     }
 
     [ClientRpc]
@@ -98,6 +108,71 @@ public class SkillRenderer : NetworkBehaviour
 			Destroy(_tempArea.gameObject);
 		}
 	}
+
+    #region ������ ��� ������������ ����� �� �����
+    public void StopPreview()
+    {
+        if (_previewDamageCoroutine != null)
+        {
+            StopCoroutine(_previewDamageCoroutine);
+            _previewDamageCoroutine = null;
+        }
+
+        foreach (var health in _previewSet) if (health != null) health.ShowPhantomValue(new Damage { Value = 0, Type = DamageType.Physical });
+
+        _previewSet.Clear();
+    }
+
+    private IEnumerator PreviewDamageJob(float radius, Damage damage, LayerMask layerMask)
+    {
+        while (true)
+        {
+            if (!TryGetMousePoint(out Vector3 position))
+            {
+                yield return null;
+                continue;
+            }
+
+            Collider[] colliders = Physics.OverlapSphere(position, radius, layerMask);
+            HashSet<Health> current = new HashSet<Health>();
+
+            foreach (var collider in colliders)
+            {
+                if (collider.TryGetComponent(out Health hp))
+                {
+                    current.Add(hp);
+                    hp.ShowPhantomValue(damage);
+                }
+            }
+
+            foreach (var health in _previewSet.Except(current)) if (health != null) health.ShowPhantomValue(new Damage { Value = 0, Type = DamageType.Physical });
+
+            _previewSet.Clear();
+            foreach (var health in current) _previewSet.Add(health);
+
+            yield return null;
+        }
+    }
+
+    private bool TryGetMousePoint(out Vector3 point)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        var hits = Physics.RaycastAll(ray, Mathf.Infinity, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore).OrderBy(h => h.distance);
+
+        foreach (var hit in hits)
+        {
+            if ((_layerMask.value & (1 << hit.collider.gameObject.layer)) != 0)
+            {
+                point = hit.point;
+                return true;
+            }
+        }
+
+        point = Vector3.zero;
+        return false;
+    }
+    #endregion
 
     public void StartDrawLineForZone(Skill skill)
     {
@@ -355,7 +430,7 @@ public class SkillRenderer : NetworkBehaviour
 		//Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x,0 , Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
 		Vector3 mouse = new Vector3(worldPosition.x, 0 , worldPosition.z);
 
-        _tempArea = Instantiate(areaPref, mouse, Quaternion.Euler(90, 0, 0));
+        _tempArea = Instantiate(areaPref, mouse, Quaternion.Euler(0, 0, 0));
         _tempArea.SetSize(_circleRadius, damage);
 
         while (true)

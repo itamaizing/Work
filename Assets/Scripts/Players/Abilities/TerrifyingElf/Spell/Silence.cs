@@ -34,7 +34,7 @@ public class Silence : Skill
     {
         //_duration = _baseDuration;
 
-        while (float.IsPositiveInfinity(_targetPoint.x) && !_disactive)
+        while (float.IsPositiveInfinity(_targetPoint.x))
         {
             if (GetMouseButton)
             {
@@ -51,6 +51,8 @@ public class Silence : Skill
                         if (hitCollider.TryGetComponent<MinionComponent>(out _)) minionCount++;
 
                     if (minionCount > 0 && _reducedCooldown) _cooldownTime = _cooldownTime - minionCount;
+
+                    DrawDamageZone(_targetPoint);
 
                     yield break;
                 }
@@ -70,7 +72,7 @@ public class Silence : Skill
             CmdAdditionalMana();
             SpawnEffectAtTargetPoint();
             ApplyStateToEnemiesInZone();
-
+            StopDamageZone();
             yield return null;
         }
     }

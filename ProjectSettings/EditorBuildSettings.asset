@@ -14,17 +14,17 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TestMPGame.unity
     guid: 20710af1ca07b5d42b865560f9c480e1
-  - enabled: 1
-    path: Assets/Scenes/TestRoom.unity
+  - enabled: 0
+    path: Assets/Scenes/Old/TestRoom.unity
     guid: 9bd2d787582525d47a5d723a6f395ab0
-  - enabled: 1
-    path: Assets/Scenes/TestRoom3D.unity
+  - enabled: 0
+    path: Assets/Scenes/Old/TestRoom3D.unity
     guid: 5841babc680b68c42a0e6fd33f6c37d6
-  - enabled: 1
-    path: Assets/Scenes/TestRoom3DBG.unity
+  - enabled: 0
+    path: Assets/Scenes/Old/TestRoom3DBG.unity
     guid: 20d956c7c560b7248b973188ce8865b1
   - enabled: 1
-    path: Assets/Scenes/TestRoom3D(Test).unity
+    path: Assets/Scenes/TestRoom3DNew.unity
     guid: 21add78d8cb999042a3e0188927f0f9a
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 090476ef967ff524e9b4551ad60f9de7, type: 2}

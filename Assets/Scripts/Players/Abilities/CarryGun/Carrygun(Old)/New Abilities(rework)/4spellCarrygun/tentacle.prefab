@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7156042952665849202}
   - component: {fileID: 682589392192676635}
-  - component: {fileID: 5079220997574158705}
   - component: {fileID: -4459893061943146148}
   m_Layer: 0
   m_Name: tentacle
@@ -69,21 +68,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 1.1
---- !u!114 &5079220997574158705
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8151927987355272331}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5df4ecc68708d974b9d4d21aabcf3101, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _layer:
-    serializedVersion: 2
-    m_Bits: 512
 --- !u!50 &-4459893061943146148
 Rigidbody2D:
   serializedVersion: 4

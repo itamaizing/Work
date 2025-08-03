@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d8548505a2c5104980a6fa13739ca3d, type: 3}
   m_Name: Blindness
   m_EditorClassIdentifier: 
-  _name: Blindness
+  _name: "\u0421\u043B\u0435\u043F\u043E\u0442\u0430"
   _description: 
   _icon: {fileID: 21300000, guid: 4559b7897bdf41140a06f0d9117f0558, type: 3}

@@ -93,7 +93,7 @@ public class RetributiveReckoning : AutoAttackSkill
 
         yield return new WaitForSeconds(AttackDelay / 2);
 
-        if (_lastAttacker != null && _lastAttacker.TryGetComponent<CharacterState>(out var state)) state.AddState(States.Fear, durationState, 0, gameObject, "RetributiveReckoning");
+        if (_lastAttacker != null && _lastAttacker.TryGetComponent<CharacterState>(out var state)) state.CmdAddState(States.Fear, durationState, 0, gameObject, "RetributiveReckoning");
 
         yield return new WaitForSeconds(AttackDelay / 2);
 

@@ -10,7 +10,7 @@ public abstract class AutoAttackSkill : Skill
     [SerializeField] private float _attackZoneSize;
     [SerializeField] protected float _attackDelay = 0f;
     [SerializeField] protected float _chargeAttackDelay;
-
+    
     protected Character _target;
     private bool _isAutoattackMode = true;
     private Coroutine _autoAttackCoroutine;

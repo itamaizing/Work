@@ -4,51 +4,53 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(NetworkIdentity))]
-public class Object : NetworkBehaviour
+public class Object : NetworkBehaviour, ITargetable
 {
+    [Header("UI")]
+    [SerializeField] private SelectedCircle _selectedCircle;
+    [SerializeField] private MinimapMarker _minimapMarker;
+
     [SerializeField] private ObjectData _objectData;
     [SerializeField] private ObjectHealth _objectHealth;
     [SerializeField] private List<Resource> _resources;
     [SerializeField] private int _indexTeam;
+    [SerializeField] private UIObjectComponents uiComponent;
 
+    [SerializeField] private bool live = false;
+
+    private bool _isDeath;
+
+    public bool Live { get => live; set => live = value; }
+    public UIObjectComponents UIComponent => uiComponent;
     public ObjectData ObjectData => _objectData;
     public ObjectHealth ObjectHealth => _objectHealth;
     public List<Resource> Resources => _resources;
+    public SelectedCircle SelectedCircle => _selectedCircle;
+    public Transform TargetTransform => transform;
+    public bool IsDeath => _isDeath;
 
     public int IndexTeam { get => _indexTeam; set => _indexTeam = value; }
+
+    public Vector3 Position => throw new System.NotImplementedException();
+    public Transform Transform => throw new System.NotImplementedException();
+
+    private void OnDestroy() => _objectHealth.OnDeath -= ServerOnDeath;
 
     public void Initialize()
     {
         foreach (var resource in Resources)
-        {
-            if (resource.Type == ResourceType.Health)
-            {
-                resource.Initialize(
-                    _objectData.MaxHealth,
-                    _objectData.RegenerationRate,
-                    0,
-                    null);
-            }
-        }
+            if (resource.Type == ResourceType.Health) resource.Initialize(_objectData.MaxHealth, _objectData.RegenerationRate, 0, null);
 
-        if (_objectHealth != null)
-        {
-            _objectHealth.InitializeObject(_objectData);
-        }
+        _objectHealth.InitializeObject(_objectData);
+        _objectHealth.OnDeath += ServerOnDeath;
+        if (_minimapMarker != null) _minimapMarker.IsActive = true;
     }
 
-    private void Start()
-    {
-        Initialize();
-    }
+    private void OnDied() => _isDeath = true;
+    private void Start() => Initialize();
+    public override void OnStartServer() => base.OnStartServer();
+    public override void OnStopServer() => base.OnStopServer();
 
-    public override void OnStartServer()
-    {
-        base.OnStartServer();
-    }
-
-    public override void OnStopServer()
-    {
-        base.OnStopServer();
-    }
+    [Server] private void ServerOnDeath() => RpcClientOnDied();
+    [ClientRpc] private void RpcClientOnDied() => OnDied();
 }

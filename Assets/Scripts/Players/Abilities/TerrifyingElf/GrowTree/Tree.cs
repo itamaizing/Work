@@ -1,18 +1,42 @@
-using System.Collections;
-using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
-public class Tree : MonoBehaviour
+public class Tree : NetworkBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private float baseVision;
+    private float VisionMultiplier = 3f;
+    private float RadiusMultiplier = 2f;
+
+    private void OnDestroy() => RemoveAuthority();
+
+    [Server]
+    private void RemoveAuthority()
     {
-        
+        var id = netIdentity;
+        if (id.connectionToClient != null) id.RemoveClientAuthority();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnTriggerEnter(Collider other)
     {
-        
+        if (other.TryGetComponent<Character>(out Character character))
+        {
+            VisionComponent visionComponent = character.GetComponent<VisionComponent>();
+            baseVision = visionComponent.VisionRange;
+            visionComponent.VisionRange += VisionMultiplier;
+
+            foreach (var skill in character.Abilities.Abilities) if (skill.AbilityForm == AbilityForm.Physical) skill.Radius *= RadiusMultiplier;
+
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.TryGetComponent<Character>(out Character character))
+        {
+            VisionComponent visionComponent = character.GetComponent<VisionComponent>();
+            visionComponent.VisionRange = baseVision;
+
+            foreach (var skill in character.Abilities.Abilities) if (skill.AbilityForm == AbilityForm.Physical) skill.Radius /= RadiusMultiplier;
+        }
     }
 }

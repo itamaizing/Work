@@ -29,7 +29,7 @@ public class Suppression : Skill
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(_targetPoint);
+        targetInfo.Targets.Add(_target);
         callbackDataSaved(targetInfo);
     }
 
@@ -45,6 +45,7 @@ public class Suppression : Skill
 
     protected override void ClearData()
     {
+        _targetPoint = Vector3.positiveInfinity;
         _target = null;
     }
 
@@ -60,6 +61,6 @@ public class Suppression : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _targetPoint = targetInfo.Points[0];
+        if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as Character;
     }
 }

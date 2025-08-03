@@ -1,14 +1,19 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Sleep : AbstractCharacterState
 {
     private float _duration;
     private float _baseDuration;
-    private Character _source;
     private bool _previousIsSelect;
-    private Coroutine _sleepCoroutine;
+    private int _initialLayer;
+    private bool _giveInnerDarkness;
+    private const string _enemyLayerName = "Enemy";
+
+    private Character _source;
     private SkillManager _skillManager;
     private List<Skill> _disabledSkills = new List<Skill>();
 
@@ -25,6 +30,12 @@ public class Sleep : AbstractCharacterState
         _source = personWhoMadeBuff;
         _duration = durationToExit;
         _baseDuration = durationToExit;
+        _giveInnerDarkness = false;
+
+        _initialLayer = character.gameObject.layer;
+        character.gameObject.layer = LayerMask.NameToLayer(_enemyLayerName);
+
+        character.Character.Health.DamageTaken += OnAnyDamage;
 
         MoveComponent moveComponent = _characterState.Character.Move;
         _skillManager = _characterState.Character.Abilities;
@@ -50,6 +61,12 @@ public class Sleep : AbstractCharacterState
                 }
             }
         }
+
+        if (_source != null && _source.Abilities != null)
+        {
+            var song = _source.Abilities.Abilities.OfType<SongOfSleep>().FirstOrDefault();
+            if (song != null) _giveInnerDarkness = song.IsSleepInnerDarknessTalentActive;
+        }
     }
 
     public override void UpdateState()
@@ -63,11 +80,9 @@ public class Sleep : AbstractCharacterState
     {
         Debug.Log("Ёффект сна закончилс€");
 
-        if (_sleepCoroutine != null)
-        {
-            _characterState.StopCoroutine(_sleepCoroutine);
-            _sleepCoroutine = null;
-        }
+        _characterState.gameObject.layer = _initialLayer;
+
+        if (_giveInnerDarkness) for (int i = 0; i < 3; i++) CmdStateInnerDarkness();
 
         MoveComponent moveComp = _characterState.Character.Move;
         if (moveComp != null)
@@ -78,20 +93,33 @@ public class Sleep : AbstractCharacterState
             //moveComp.SetAnimationMovement(Vector3.zero);
         }
 
-        foreach (var skill in _disabledSkills)
-        {
-            skill.Disactive = false;
-        }
-        _disabledSkills.Clear();
+        foreach (var skill in _disabledSkills) skill.Disactive = false;
 
+        _characterState.Character.Health.DamageTaken -= OnAnyDamage;
+
+        _disabledSkills.Clear();
+        _characterState.StateIcons.RemoveItemByState(State);
         _characterState.RemoveState(this);
 
-        for (int i = 0; i < 6; i++) _characterState.CmdAddState(States.InnerDarkness, 13, 0, _source?.gameObject, "SleepExit");
     }
 
     public override bool Stack(float time)
     {
         _duration = _baseDuration;
-        return true;
+        return false;
+    }
+
+    private void OnAnyDamage(Damage damage, Skill fromSkill) => ExitState();
+
+    [Command] private void CmdStateInnerDarkness() => ClientRpcStateInnerDarkness();
+    [ClientRpc] private void ClientRpcStateInnerDarkness() { _characterState.AddStateLogic(States.InnerDarkness, 13, 0f, Schools.None, _source.gameObject, null); }
+
+
+    private bool ShouldApplyInnerDarkness()
+    {
+        if (_personWhoMadeBuff == null || _personWhoMadeBuff.Abilities == null) return false;
+
+        var song = _personWhoMadeBuff.Abilities.Abilities.OfType<SongOfSleep>().FirstOrDefault();
+        return song != null && song.IsSleepInnerDarknessTalentActive;
     }
 }

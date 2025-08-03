@@ -1,4 +1,5 @@
 using Mirror;
+using System.Linq;
 using UnityEngine;
 
 public class ArrowProjectile : Projectiles
@@ -6,19 +7,13 @@ public class ArrowProjectile : Projectiles
     [SerializeField] private float _speed = 10f;
     [SerializeField] private float _lifeTime = 5f;
     [SerializeField] private bool _arrowDark;
-    [SerializeField] private float physicDamage;
-    [SerializeField] private float magDamage;
-    [SerializeField] private float minDamage;
-    [SerializeField] private float maxDamage;
     [SerializeField] private float duration;
     [SerializeField] private DamageType damageTypePhysics;
 
-    public bool ArrowDark { get => _arrowDark; set => _arrowDark = value; }
+    private float _magDamage;
+    private float _damage;
 
-    private void Start()
-    {
-        physicDamage = Random.Range(minDamage, maxDamage + 1);
-    }
+    public bool ArrowDark { get => _arrowDark; set => _arrowDark = value; }
 
     public void StartFly(Vector3 direction)
     {
@@ -27,21 +22,35 @@ public class ArrowProjectile : Projectiles
         Destroy(gameObject, _lifeTime);
     }
 
+    public void Init(HeroComponent dad, float energy, bool lastHit, Skill skill, float damage)
+    {
+        base.Init(dad, energy, lastHit, skill);
+        _damage = damage;
+        _magDamage = energy;
+    }
+
     [Server]
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject != _dad.gameObject)
+        if (other.gameObject == _dad?.gameObject) return;
+        if (!other.TryGetComponent<IDamageable>(out _)) return;
+
+        if (_arrowDark && other.GetComponentInParent<ReconnaissanceFireAura>() != null)
         {
-            if (((1 << other.gameObject.layer) & _skill.TargetsLayers.value) != 0)
-            {
-                if (other.gameObject.TryGetComponent<ObjectHealth>(out ObjectHealth objectHealth)) if (objectHealth.ResistMagicDamage >= 100 && _arrowDark) return;
-
-                ApplyEnemy(other);
-            }
-
             Destroy(gameObject);
+            return;
         }
+
+        if (((1 << other.gameObject.layer) & _skill.TargetsLayers.value) == 0) return;
+
+        if (other.TryGetComponent<ObjectHealth>(out ObjectHealth objectHealth) &&
+            objectHealth.ResistMagicDamage >= 100 && _arrowDark)
+            return;
+
+        ApplyEnemy(other);
+        Destroy(gameObject);
     }
+
 
     //private void TargetApply(Collider other)
     //{
@@ -62,38 +71,32 @@ public class ArrowProjectile : Projectiles
     #region ApplyEnemy
     private void ApplyEnemy(Collider collider)
     {
+        bool inAstral = _dad != null && _dad.CharacterState.CheckForState(States.Astral);
+
         if (_arrowDark)
         {
-            _skill.Damage = physicDamage;
+            if (!inAstral)
+            {
+                ApplyDamage(_damage, damageTypePhysics, collider.gameObject);
+                if (TryApplyDamage(damageTypePhysics, _skill.AttackRangeType, collider.gameObject)) return;
+            }
 
-            ApplyDamage(physicDamage, damageTypePhysics, collider.gameObject);
+            float totalMagDamage = _magDamage;
+            if (inAstral) totalMagDamage *= 1.5f;
 
-            bool physicalDamageApplied = TryApplyDamage(damageTypePhysics, _skill.AttackRangeType, collider.gameObject);
-            if (physicalDamageApplied) return;
-
-            _skill.Damage = magDamage;
-            ApplyDamage(magDamage, _skill.DamageType, collider.gameObject);
+            ApplyDamage(totalMagDamage, _skill.DamageType, collider.gameObject);
 
             if (collider.TryGetComponent<Character>(out Character character)) character.CharacterState.AddState(States.InnerDarkness, duration, 0, _skill.Hero.gameObject, _skill.name);
         }
 
-        else
-        {
-            _skill.Damage = physicDamage;
-            ApplyDamage(physicDamage, damageTypePhysics, collider.gameObject);
-        }
+        else ApplyDamage(_damage, damageTypePhysics, collider.gameObject);
     }
     #endregion
 
-    private void ApplyDamage(float damage, DamageType damageType, GameObject target)
+    private void ApplyDamage(float value, DamageType type, GameObject target)
     {
-        Damage _damage = new Damage
-        {
-            Value = damage,
-            Type = damageType
-        };
-
-        _skill.ApplyDamage(_damage, target);
+        var damage = new Damage { Value = value, Type = type };
+        _skill.ApplyDamage(damage, target);
     }
 
     private bool TryApplyDamage(DamageType damageType, AttackRangeType attackRangeType, GameObject target)

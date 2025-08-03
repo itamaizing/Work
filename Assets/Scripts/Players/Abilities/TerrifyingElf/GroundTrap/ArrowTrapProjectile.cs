@@ -1,22 +1,36 @@
 using Mirror;
-using System.Collections;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class ArrowTrapProjectile : Projectiles
 {
-    [SerializeField] private float _speed = 10f;
-    [SerializeField] private float _lifeTime = 10f;
-    [SerializeField] private bool _selfDestroyInEndPoint = true;
-    
-    private Vector3 _targetPosition;
-    private bool _isFlyingToTarget = false;
+    [SerializeField] float _speed = 10f;
+    [SerializeField] float _lifeTime = 10f;
+    [SerializeField] bool _selfDestroyInEndPoint = true;
 
-    private void Update()
+    [Header("Trap anchors")]
+    [SerializeField] GameObject trapLeft;
+    [SerializeField] GameObject trapRight;
+
+    [Header("Visual")]
+    [SerializeField] LineRenderer lineRenderer;
+
+    Vector3 _targetPosition;
+    bool _isFlyingToTarget;
+
+    void Awake()
     {
-        if (_isFlyingToTarget)
+        if (lineRenderer) lineRenderer.positionCount = 2;
+        if (!trapRight) trapRight = gameObject;
+    }
+
+    void Update()
+    {
+        if (_isFlyingToTarget) FlyTowardsTarget();
+
+        if (lineRenderer)
         {
-            FlyTowardsTarget();
+            lineRenderer.SetPosition(0, trapLeft.transform.position);
+            lineRenderer.SetPosition(1, trapRight.transform.position);
         }
     }
 
@@ -27,26 +41,19 @@ public class ArrowTrapProjectile : Projectiles
         Destroy(gameObject, _lifeTime);
     }
 
-    private void FlyTowardsTarget()
+    void FlyTowardsTarget()
     {
         Vector3 direction = (_targetPosition - transform.position).normalized;
-        float distanceThisFrame = _speed * Time.deltaTime;
+        float step = _speed * Time.deltaTime;
 
-        if (Vector3.Distance(transform.position, _targetPosition) <= distanceThisFrame)
+        if (Vector3.Distance(transform.position, _targetPosition) <= step)
         {
             transform.position = _targetPosition;
             _isFlyingToTarget = false;
-            CmdOnEndPointReached();
-        }
-        else
-        {
-            transform.position += direction * distanceThisFrame;
-        }
-    }
+            if (isServer) NetworkServer.Destroy(gameObject);
 
-    [Command]
-    private void CmdOnEndPointReached()
-    {
-        if (_selfDestroyInEndPoint) Destroy(gameObject);
+        }
+
+        else transform.position += direction * step;
     }
 }

@@ -147,15 +147,30 @@ public class SelectManager : MonoBehaviour
             CharacterDeselected?.Invoke(character);
         }
     }
+
     public void DeselectAll()
     {
-        foreach (var character in SelectedControllableUnits)
+        SelectedControllableUnits.RemoveAll(c => c == null);
+
+        var snapshot = new List<Character>(SelectedControllableUnits);
+
+        foreach (var character in snapshot)
         {
-            character.SelectComponent.Deselect();
-            Debug.Log("Deselect " + character.name);
-            CharacterDeselected?.Invoke(character);
+            if (character == null)
+            {
+                SelectedControllableUnits.Remove(character);
+                continue;
+            }
+
+            var selectComponent = character.SelectComponent;
+            if (selectComponent != null)
+            {
+                selectComponent.Deselect();
+                CharacterDeselected?.Invoke(character);
+            }
+
+            SelectedControllableUnits.Remove(character);
         }
-        SelectedControllableUnits.Clear();
     }
 
     private Vector3 CalculateCenterPoint()

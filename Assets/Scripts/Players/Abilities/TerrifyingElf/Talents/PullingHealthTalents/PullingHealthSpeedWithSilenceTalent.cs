@@ -8,11 +8,11 @@ public class PullingHealthSpeedWithSilenceTalent : Talent
 
     public override void Enter()
     {
-        pullingHealth.PullingHealthSpeedWithSilenceTalentActive(true);
+
     }
 
     public override void Exit()
     {
-        pullingHealth.PullingHealthSpeedWithSilenceTalentActive(false);
+
     }
 }

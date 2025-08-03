@@ -1,3 +1,5 @@
+using Mirror;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,21 +10,25 @@ public class AstralState : AbstractCharacterState
     private int _currentStacks = 1;
     private const int _maxStacks = 1;
 
-    private float _originalEvadeMelee;
-    private float _originalEvadeRange;
-    private float _originalEvadeMagical;
+    private float _defMagDamageMod = 50f;
     private float _originalRegenerationValue;
+    private float _originalDefPhysDamage;
 
     private StateEffects _stateEffects;
     private SkinnedMeshRenderer _characterRenderer;
     private GameObject _weapon;
+    private Renderer _weaponRenderer;
+    private Material _originalWeaponMaterial;
     private Material[] _originalMaterials;
 
+    private Coroutine _dotJob;
+
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability, StatusEffect.Move };
+    private readonly Dictionary<Skill, float> _modifiedSkills = new();
 
     public override States State => States.Astral;
     public override StateType Type => StateType.Magic;
-    public override BaffDebaff BaffDebaff => BaffDebaff;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
@@ -55,23 +61,34 @@ public class AstralState : AbstractCharacterState
             _characterRenderer.materials = ghostMaterials;
         }
 
-        if (_weapon != null)
+        if (_weapon != null && (_weaponRenderer = _weapon.GetComponent<Renderer>()) != null)
         {
-            _weapon.SetActive(false);
+            _originalWeaponMaterial = _weaponRenderer.material;
+            _weaponRenderer.material = _stateEffects.MaterialGhost;
         }
 
-        _originalEvadeMelee = _characterState.Character.Health.EvadeMeleeDamage;
-        _originalEvadeRange = _characterState.Character.Health.EvadeRangeDamage;
-        _originalEvadeMagical = _characterState.Character.Health.ResistMagDamage;
-        _originalRegenerationValue = _characterState.Character.Health.RegenerationValue;
+        var characterHealth = _characterState.Character.Health;
 
-        _characterState.Character.Health.SetEvadePhys(100);
-        _characterState.Character.Health.SetEvadeMagicDecrease(10);
-        _characterState.Character.Health.RegenerationValue = -Mathf.Abs(_characterState.Character.Health.RegenerationValue);
+        _originalDefPhysDamage = characterHealth.DefPhysDamage;
+        _originalRegenerationValue = characterHealth.RegenerationValue;
+        characterHealth.DefMagDamage -= _defMagDamageMod;
+        characterHealth.DefPhysDamage = 100;
+
+        _characterState.Character.Health.RegenerationValue = 0;
         _characterState.Character.Move.ChangeMoveSpeed(0.5f);
 
         BlockPhysicalAbilities();
-        _characterState.Character.Health.ValueChanged += ConvertRegenToDamage;
+
+        foreach (var skill in _characterState.Character.Abilities.Abilities)
+        {
+            if (skill.AbilityForm == AbilityForm.Magic || skill.AbilityForm == AbilityForm.Spell)
+            {
+                _modifiedSkills[skill] = skill.Damage;
+                skill.Damage *= 1.5f;
+            }
+        }
+
+        if (_characterState.isServer) _dotJob = _characterState.StartCoroutine(DotJob());
     }
 
     public override void UpdateState()
@@ -89,59 +106,56 @@ public class AstralState : AbstractCharacterState
 
         _characterState.RemoveState(this);
 
-        if (_characterRenderer != null)
-        {
-            _characterRenderer.materials = _originalMaterials;
-        }
+        if (_characterRenderer != null) _characterRenderer.materials = _originalMaterials;
+        if (_weapon != null) _weaponRenderer.material = _originalWeaponMaterial;
 
-        if (_weapon != null)
-        {
-            _weapon.SetActive(true);
-        }
+        var characterHealth = _characterState.Character.Health;
 
-        _characterState.Character.Health.EvadeMeleeDamage = _originalEvadeMelee;
-        _characterState.Character.Health.EvadeRangeDamage = _originalEvadeRange;
-        _characterState.Character.Health.SetEvadeMagic(_originalEvadeMagical);
-        _characterState.Character.Health.RegenerationValue = _originalRegenerationValue;
+        characterHealth.DefMagDamage += _defMagDamageMod;
+        characterHealth.DefPhysDamage = _originalDefPhysDamage;
         _characterState.Character.Move.ChangeMoveSpeed(2);
 
+        if (_dotJob != null) _characterState.StopCoroutine(_dotJob);
+        characterHealth.RegenerationValue = _originalRegenerationValue;
         UnblockPhysicalAbilities();
-        _characterState.Character.Health.ValueChanged -= ConvertRegenToDamage;
+
+        foreach (var (skill, baseDamage) in _modifiedSkills) skill.Damage = baseDamage;
+        _modifiedSkills.Clear();
+
+        _characterState.RemoveState(this);
     }
 
     private void BlockPhysicalAbilities()
     {
         foreach (var skill in _characterState.Character.Abilities.Abilities)
-        {
-            if (skill.AbilityForm == AbilityForm.Physical)
-            {
-                skill.Disactive = true;
-            }
-        }
+            if (skill.AbilityForm == AbilityForm.Physical) skill.Disactive = true;
     }
 
     private void UnblockPhysicalAbilities()
     {
         foreach (var skill in _characterState.Character.Abilities.Abilities)
-        {
-            if (skill.AbilityForm == AbilityForm.Physical)
-            {
-                skill.Disactive = false;
-            }
-        }
-    }
-
-    private void ConvertRegenToDamage(float oldValue, float newValue)
-    {
-        if (newValue > oldValue)
-        {
-            float regenAmount = newValue - oldValue;
-            _characterState.Character.Health.CmdAdd(regenAmount);
-        }
+            if (skill.AbilityForm == AbilityForm.Physical) skill.Disactive = false;
     }
 
     public override bool Stack(float time)
     {
-        throw new System.NotImplementedException();
+        if (_currentStacks < _maxStacks) _currentStacks++;
+
+        _duration = _baseDuration;
+        return true;
+    }
+
+    private IEnumerator DotJob()
+    {
+        float period = _characterState.Character.Health.RegenerationDelay;
+        if (period <= 0) period = 1f;
+
+        while (true)
+        {
+            yield return new WaitForSeconds(period);
+
+            float damage = _originalRegenerationValue;
+            if (damage > 0) _characterState.Character.Health.TryUse(damage);
+        }
     }
 }

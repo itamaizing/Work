@@ -117,7 +117,7 @@ public class LightningMovement : Skill
                 Debug.Log($"������ ������ �������� �������");
                 _lightningStrikes.IsUsedLightningStrikes = false;
                 _poisonSlap.IsCanDamageDeal = false;
-                _player.Move.StopMoveAnimation();
+                _player.Move.StopMoveAndAnimationMove();
         });
 
 
@@ -156,7 +156,7 @@ public class LightningMovement : Skill
               .OnComplete(() =>
               {
                   Debug.Log($"������ ������ �������� �������");
-                  _player.Move.StopMoveAnimation(); 
+                  _player.Move.StopMoveAndAnimationMove(); 
               ClearData();
               });
         }

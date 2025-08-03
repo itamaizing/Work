@@ -10,12 +10,10 @@ public class MinimapMarker : MonoBehaviour
 
     public bool IsActive
     {
-        get
-        {
-            return _isActive;
-        }
+        get => _isActive;
         set
         {
+            if (this == null || gameObject == null) return;
             _isActive = value;
             _selectMarkForMinimap.gameObject.SetActive(_isActive);
         }

@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d8548505a2c5104980a6fa13739ca3d, type: 3}
   m_Name: PoisonBall
   m_EditorClassIdentifier: 
-  _name: PoisonBall
+  _name: "\u042F\u0434\u043E\u0432\u0438\u0442\u044B\u0439 \u0448\u0430\u0440"
   _description: 
   _icon: {fileID: 21300000, guid: ed1972ce01824b542b0ae1113bc01a7e, type: 3}

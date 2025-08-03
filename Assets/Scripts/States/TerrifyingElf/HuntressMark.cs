@@ -6,7 +6,7 @@ public class HuntressMark : AbstractCharacterState
 {
     private float _duration;
 
-    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.HuntressMark;
     public override StateType Type => StateType.Physical;
     public override List<StatusEffect> Effects => _effects;

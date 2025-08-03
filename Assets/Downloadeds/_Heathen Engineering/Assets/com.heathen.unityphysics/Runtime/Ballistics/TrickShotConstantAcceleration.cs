@@ -5,61 +5,50 @@ using UnityEngine;
 namespace HeathenEngineering.UnityPhysics
 {
     [RequireComponent(typeof(TrickShot))]
+    [RequireComponent(typeof(TrickShot))]
     public class TrickShotConstantAcceleration : MonoBehaviour
     {
+        [Header("Базовая «гравитация»")]
         public List<Vector3> globalConstants = new(new Vector3[] { new(0, -9.81f, 0) });
         public List<Vector3> localConstants = new();
 
-        private TrickShot ts;
+        [Header("Диапазон длины траектории")]
+        [SerializeField, Min(0f)] float minDrawDistance = 5f;
+        [SerializeField, Min(0f)] float maxDrawDistance = 50f;
 
-        private void Start()
+        [Header("Диапазон скорости, синхронный расстоянию")]
+        [SerializeField, Min(0f)] float minSpeed = 5f;
+        [SerializeField, Min(0f)] float maxSpeed = 40f;
+
+        TrickShot ts;
+
+        void Start() => ts = GetComponent<TrickShot>();
+
+        void LateUpdate()
         {
-            ts = GetComponent<TrickShot>();
+            Vector3 acc = Vector3.zero;
+            foreach (var g in globalConstants) acc += g;
+            foreach (var l in localConstants) acc += ts.transform.rotation * l;
+            ts.constantAcceleration = acc;
+
+            SyncByMouse();
+            ts.Predict();
         }
 
-        private void LateUpdate()
-        {
-            Vector3 sum = Vector3.zero;
-            foreach (var v in globalConstants)
-                sum += v;
-            foreach (var v in localConstants)
-                sum += ts.transform.rotation * v;
-
-            ts.constantAcceleration = sum;
-
-            AdjustLengthBasedOnMouse();
-        }
-
-        private void AdjustLengthBasedOnMouse()
+        void SyncByMouse()
         {
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out var hit))
-            {
-                Vector3 directionToMouse = (hit.point - ts.transform.position).normalized;
+            if (!Physics.Raycast(ray, out var hit)) return;
 
-                float distanceToMouse = Vector3.Distance(ts.transform.position, hit.point);
+            float rawDist = Vector3.Distance(ts.transform.position, hit.point);
+            float dist = Mathf.Clamp(rawDist, minDrawDistance, maxDrawDistance);
 
-                float scaleFactor = Mathf.Log10(distanceToMouse + 1f);
+            ts.distance = dist;
 
-                Vector3 scaledAcceleration = Vector3.zero;
-                foreach (var constant in globalConstants)
-                {
-                    scaledAcceleration += constant * scaleFactor;
-                }
-
-                ts.constantAcceleration = scaledAcceleration + CalculateLocalAcceleration();
-            }
-        }
-
-        private Vector3 CalculateLocalAcceleration()
-        {
-            Vector3 localAcceleration = Vector3.zero;
-            foreach (var constant in localConstants)
-            {
-                localAcceleration += ts.transform.rotation * constant;
-            }
-            return localAcceleration;
+            float t = Mathf.InverseLerp(minDrawDistance, maxDrawDistance, dist);
+            ts.speed = Mathf.Lerp(minSpeed, maxSpeed, t);
         }
     }
 }
+
 #endif

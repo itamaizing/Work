@@ -24,6 +24,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     private Camera _camera;
     private float _distance;
     private Coroutine _cooldownCoroutine;
+    private float _pendingCooldown = -1f;
 
     public Transform PatentAfterDrag { get => _patentAfterDrag; set => _patentAfterDrag = value; }
     public Skill Skill { get => _skill; set => _skill = value; }
@@ -33,6 +34,15 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public event Action EndDrag;
     public event Action<DraggableIcon> PointerEnter;
     public event Action<DraggableIcon> PointerExit;
+
+    private void OnEnable()
+    {
+        if (_pendingCooldown > 0f)
+        {
+            OnStartCooldown(_pendingCooldown);
+            _pendingCooldown = -1f;
+        }
+    }
 
     public void Init(Skill skill, Transform parent, Camera camera, float distance)
     {
@@ -231,6 +241,14 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     private void OnStartCooldown(float dutarion)
     {
+        if (!gameObject.activeInHierarchy)
+        {
+            _pendingCooldown = dutarion;
+            return;
+        }
+
+        if (_cooldownCoroutine != null) StopCoroutine(_cooldownCoroutine);
+
         _cooldown.gameObject.SetActive(true);
         _cooldown.StartFill(dutarion, 1, 0, false);
 
@@ -245,6 +263,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             StopCoroutine(_cooldownCoroutine);
 
         _cooldownNum.gameObject.SetActive(false);
+        _pendingCooldown = -1f;
     }
 
     private void OnChargeStartCooldown(float value)

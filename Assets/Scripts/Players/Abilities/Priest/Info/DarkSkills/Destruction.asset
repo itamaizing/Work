@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d8548505a2c5104980a6fa13739ca3d, type: 3}
   m_Name: Destruction
   m_EditorClassIdentifier: 
-  _name: Destruction
+  _name: "\u0420\u0430\u0437\u0440\u0443\u0448\u0435\u043D\u0438\u0435"
   _description: 
   _icon: {fileID: 21300000, guid: 90a9ed443be63484cb2aa7626543d34f, type: 3}

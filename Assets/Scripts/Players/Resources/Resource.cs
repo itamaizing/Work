@@ -22,7 +22,6 @@ public abstract class Resource : NetworkBehaviour
     [SyncVar] protected float _regenerationValue;
     [SyncVar] protected float _regenerationPeriod;
     
-    
     protected Coroutine _regenCoroutine;
 
     public float CurrentValue { get => _currentValue; set { _currentValue = value; } }
@@ -54,7 +53,7 @@ public abstract class Resource : NetworkBehaviour
 
     public virtual void Initialize(float maxValue, float regenValue, float regenDelay, CharacterData data)
     {
-        _currentValue = maxValue/2;
+        _currentValue = maxValue;
         _maxValue = maxValue;
         _regenerationValue = regenValue;
         _regenerationPeriod = regenDelay;
@@ -95,7 +94,36 @@ public abstract class Resource : NetworkBehaviour
         ChangedBarColor?.Invoke(color);
     }
 
-	protected virtual void HookValueChanged(float oldValue, float newValue)
+    public void AddMax(float delta, bool keepPercent = false)
+    {
+        bool regenWasRunning = _regenCoroutine != null;
+        if (regenWasRunning) StopCoroutine(_regenCoroutine);
+
+        float oldMax = _maxValue;
+        float oldCurrent = _currentValue;
+
+        _maxValue += delta;
+
+        if (delta > 0f)
+        {
+            if (keepPercent) _currentValue = _maxValue * (oldCurrent / oldMax);
+            else _currentValue += delta;
+        }
+
+        else
+        {
+            if (keepPercent) _currentValue = _maxValue * (oldCurrent / oldMax);
+            if (_currentValue > _maxValue) _currentValue = _maxValue;
+        }
+
+        if (!Mathf.Approximately(oldMax, _maxValue)) HookMaxValueChanged(oldMax, _maxValue);
+        if (!Mathf.Approximately(oldCurrent, _currentValue)) HookValueChanged(oldCurrent, _currentValue);
+
+        if (regenWasRunning && _currentValue < _maxValue) _regenCoroutine = StartCoroutine(RegenerateJob());
+    }
+
+
+    protected virtual void HookValueChanged(float oldValue, float newValue)
     {
         ValueChanged?.Invoke(oldValue, newValue);
     }
@@ -114,8 +142,9 @@ public abstract class Resource : NetworkBehaviour
     public void ChangedMaxValue(float value)
     {
         _maxValue += value;
-
     }
+
+    public void Regenerate(Coroutine coroutine) => StartCoroutine(RegenerateJob());
 
     private IEnumerator RegenerateJob()
     {
