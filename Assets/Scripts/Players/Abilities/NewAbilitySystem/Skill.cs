@@ -261,7 +261,9 @@ public abstract class Skill : NetworkBehaviour
     public virtual string AdditionalDescription { get; }
     protected abstract int AnimTriggerCastDelay { get; }
     protected abstract int AnimTriggerCast { get; }
+
     protected void RaiseCooldownEnded() => CooldownEnded?.Invoke();
+
     protected virtual bool IsCanCast
     {
         get
@@ -383,7 +385,8 @@ public abstract class Skill : NetworkBehaviour
 
     public bool TryPreparing()
     {
-        if (_isPreparing == false && _isCasting == false && _disactive == false)
+        if (_isPreparing == false)
+
         {
             _actionWrapperForPreparingCoroutine = StartCoroutine(ActionWrapperForPreparingJob());
             return true;
