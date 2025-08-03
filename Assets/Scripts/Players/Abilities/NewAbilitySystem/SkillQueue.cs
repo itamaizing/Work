@@ -152,7 +152,7 @@ public class SkillQueue : MonoBehaviour
     private void OnCastEnded()
     {
         _currentSkill.CastEnded -= OnCastEnded;
-        _currentSkill = null;
+
 
         if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
         {
@@ -165,5 +165,7 @@ public class SkillQueue : MonoBehaviour
                 }
             }
         }
+
+        _currentSkill = null;
     }
 }
