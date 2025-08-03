@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Models/Scrader/Scrader.png.meta
+guid: 9c3482722b783f54ab6215585d9211e8
+========
 guid: 5d07abc77b678c7428214af9afc24ee3
+>>>>>>>> main:Assets/Downloadeds/Прерывистая_подстветка_ближайшей_цели.png.meta
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
