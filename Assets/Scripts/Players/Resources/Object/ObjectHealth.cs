@@ -41,21 +41,26 @@ public class ObjectHealth : Resource, IDamageable
     [Server]
     public void ServerStartFillHP(float targetValue, float duration)
     {
-        if (_fillCoroutine != null)
-        {
-            StopCoroutine(_fillCoroutine);
-        }
+        if (_fillCoroutine != null) StopCoroutine(_fillCoroutine);
         _fillCoroutine = StartCoroutine(FillHPCoroutine(targetValue, duration));
     }
 
     [Server]
-    public void ServerStopFillHP()
+    public void ServerInterruptFillHP()
     {
-        if (_fillCoroutine != null)
-        {
-            StopCoroutine(_fillCoroutine);
-            _fillCoroutine = null;
-        }
+        if (_fillCoroutine == null) return;
+
+        StopCoroutine(_fillCoroutine);
+        _fillCoroutine = null;
+
+        RpcSyncHP(_currentHealth);
+    }
+
+    [ClientRpc]
+    private void RpcSyncHP(float value)
+    {
+     _currentHealth = value;
+     OnHealthChanged(_currentHealth, _currentHealth);
     }
 
     private IEnumerator FillHPCoroutine(float targetValue, float duration)
@@ -131,22 +136,25 @@ public class ObjectHealth : Resource, IDamageable
         if (_currentHealth > 0)
         {
             _currentHealth -= damageValue;
-
+             
             DamageTaken?.Invoke(damage, skill);
             //DamageTakenType?.Invoke(damageValue, damage.Type, skill);
 
             if (_objectBar != null)
             {
-                ShowAndAutoHideBar();
+                _objectBar.ShowHealthBar();
                 _objectBar.SetHealth(_currentHealth);
             }
 
             if (_currentHealth <= 0)
             {
                 OnDeath?.Invoke();
-                Destroy(gameObject);
+
+                GameObject target = transform.parent != null ? transform.parent.gameObject : gameObject;
+                Destroy(target);
             }
 
+            if (isServer) RpcPopupDamage(damage.Value);
             return true;
         }
         return false;
@@ -168,32 +176,51 @@ public class ObjectHealth : Resource, IDamageable
 
     private void OnHealthChanged(float oldHealth, float newHealth)
     {
-        if (_objectBar != null)
+        if (_objectBar == null) return;
+
+        _objectBar.SetHealth(newHealth);
+
+        if (!Mathf.Approximately(newHealth, ObjectData.MaxHealth))
         {
-            ShowAndAutoHideBar();
-            _objectBar.SetHealth(newHealth);
+            _objectBar.ShowHealthBar();
+
+            if (_hideBarCoroutine != null)
+            {
+                StopCoroutine(_hideBarCoroutine);
+                _hideBarCoroutine = null;
+            }
+        }
+        else
+        {
+            if (_hideBarCoroutine != null)
+            {
+                StopCoroutine(_hideBarCoroutine);
+                _hideBarCoroutine = null;
+            }
+
+            _objectBar.HideHealthBar();
         }
     }
 
-    private void ShowAndAutoHideBar()
-    {
-        if (_objectBar == null) return;
+    //private void ShowAndAutoHideBar()
+    //{
+    //    if (_objectBar == null) return;
 
-        _objectBar.ShowHealthBar();
+    //    _objectBar.ShowHealthBar();
 
-        if (_hideBarCoroutine != null)
-            StopCoroutine(_hideBarCoroutine);
+    //    if (_hideBarCoroutine != null)
+    //        StopCoroutine(_hideBarCoroutine);
 
-        _hideBarCoroutine = StartCoroutine(HideHealthBarAfterDelay(2f));
-    }
+    //    _hideBarCoroutine = StartCoroutine(HideHealthBarAfterDelay(2f));
+    //}
 
-    private IEnumerator HideHealthBarAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
+    //private IEnumerator HideHealthBarAfterDelay(float delay)
+    //{
+    //    yield return new WaitForSeconds(delay);
 
-        if (_fillCoroutine == null)
-            _objectBar.HideHealthBar();
-    }
+    //    if (_fillCoroutine == null)
+    //        _objectBar.HideHealthBar();
+    //}
 
     public void SetMagicEvade(float value)
     {
@@ -207,6 +234,13 @@ public class ObjectHealth : Resource, IDamageable
     {
         _currentHealth = Mathf.Clamp(newValue, 0, MaxValue);
         OnHealthChanged(_currentHealth, _currentHealth);
+    }
+
+    [ClientRpc]
+    private void RpcPopupDamage(float value)
+    {
+        Damage damage = new Damage { Value = value, Type = DamageType.Physical };
+        DamageTaken?.Invoke(damage, null);          // skill можно не передавать
     }
 
     public void ShowPhantomValue(Damage phantomValue)

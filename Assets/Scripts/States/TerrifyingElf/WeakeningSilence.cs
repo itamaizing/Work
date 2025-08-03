@@ -6,6 +6,7 @@ using UnityEngine;
 public class WeakeningSilence : AbstractCharacterState
 {
     private float _damagePerTick;
+    private float _currentDamage;
     private float _tickInterval = 1f;
     private float _duration;
 
@@ -16,12 +17,15 @@ public class WeakeningSilence : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => new List<StatusEffect> { StatusEffect.Poison };
 
+    public WeakeningSilence() => MaxStacksCount = 6;
+
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _characterState = character;
         _health = character.Character.Health;
         _damagePerTick = damageToExit;
         damageTick = true;
+        _currentDamage = _damagePerTick;
         _duration = durationToExit;
 
         if (_health == null)
@@ -43,15 +47,17 @@ public class WeakeningSilence : AbstractCharacterState
     public override void UpdateState()
     {
         _duration -= Time.deltaTime;
-
-        if (_duration <= 0)
-        {
-            ExitState();
-        }
+        if (_duration <= 0) ExitState();
     }
 
-    public override bool Stack(float time)
+    public override bool Stack(float addDuration)
     {
+        if (CurrentStacksCount >= MaxStacksCount) return false;
+
+        CurrentStacksCount++;
+        _currentDamage += _damagePerTick;
+        duration = Mathf.Max(duration, addDuration);
+
         return true;
     }
 
@@ -71,7 +77,7 @@ public class WeakeningSilence : AbstractCharacterState
         {
             Damage damage = new Damage
             {
-                Value = _damagePerTick,
+                Value = _currentDamage,
                 Type = DamageType.Magical
             };
             if (_health != null)

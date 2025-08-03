@@ -1,8 +1,9 @@
 using System.Collections;
 using UnityEngine;
 using Mirror;
+using System;
 
-public class Kick_Scorpion : AutoAttackSkill
+public class Kick_Scorpion : Skill
 {
     [Header("Ability settings")]
     [SerializeField] private Character _playerLinks;
@@ -22,21 +23,57 @@ public class Kick_Scorpion : AutoAttackSkill
     private Character _lastTarget = null;
     private Animator _animator;
 
+    private Character _target;
+
     private static readonly int KickTrigger = Animator.StringToHash("KickAA");
 
     protected override int AnimTriggerCastDelay => 0;
-    protected override int AnimTriggerAutoAttack => 0;
+    protected override int AnimTriggerCast => 0;
 
-    public float DamageRange => Random.Range(_minDamage, _maxDamage);
+    protected override bool IsCanCast => _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius && NoObstacles(_target.transform.position, transform.position, _obstacle);
 
-    private void Start()
+    public float DamageRange => UnityEngine.Random.Range(_minDamage, _maxDamage);
+
+    private void Start() => _animator = GetComponent<Animator>();
+    private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
+    private void OnEnable() => OnSkillCanceled += HandleSkillCanceled;
+
+    private void HandleSkillCanceled()
     {
-        _animator = GetComponent<Animator>();
+        _target = null;
+        Hero.Move.StopLookAt();
     }
 
-    protected override void CastAction()
+    private bool IsTargetInRange()
     {
-        if (_target == null) return;
+        return Vector3.Distance(_playerLinks.transform.position, _target.transform.position) <= Radius;
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    {
+        while (_target == null)
+        {
+            if (GetMouseButton)
+            {
+                _target = GetRaycastTarget();
+
+                if (_target != null)
+                    _target.SelectedCircle.IsActive = true;
+            }
+            yield return null;
+        }
+
+        _hero.Move.LookAtTransform(_target.transform);
+
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(_target.transform.position);
+        callbackDataSaved(targetInfo);
+    }
+
+    protected override IEnumerator CastJob()
+    {
+        if (_target == null) yield return null;
+        if (!IsTargetInRange()) yield return null;
 
         if (_lastTarget != null && _lastTarget != _target)
             _comboCounter?.ResetCounter();
@@ -52,7 +89,7 @@ public class Kick_Scorpion : AutoAttackSkill
     {
         if (_target == null) return;
 
-        if (Vector2.Distance(LastTargetPosition, _target.transform.position) > Radius)
+        if (Vector2.Distance(_lastTarget.transform.position, _target.transform.position) > Radius)
             return;
 
         Damage damage = new Damage
@@ -87,7 +124,7 @@ public class Kick_Scorpion : AutoAttackSkill
         {
             chance = _baseDebuffChance * Mathf.Pow(2, _hitsInRow - 1);
 
-            if (Random.value <= Mathf.Clamp01(chance))
+            if (UnityEngine.Random.value <= Mathf.Clamp01(chance))
             {
                 state?.AddState(States.Knockdown, 6f, 0, _hero.gameObject, name);
                 _hitsInRow = 1;
@@ -132,6 +169,11 @@ public class Kick_Scorpion : AutoAttackSkill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        throw new System.NotImplementedException();
+        if (targetInfo.Targets.Count > 0) _target = (Character)targetInfo.Targets[0];
+    }
+
+    protected override void ClearData()
+    {
+
     }
 }

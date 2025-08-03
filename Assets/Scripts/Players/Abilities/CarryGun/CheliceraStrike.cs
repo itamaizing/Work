@@ -1,19 +1,21 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 
-public class CheliceraStrike : AutoAttackSkill
+public class CheliceraStrike : Skill
 {
     [SerializeField] private Character _player;
     [SerializeField] private BasePsionicEnergy _basePsionicEnergy;
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
     [SerializeField] private JumpWithChelicera _jumpWithChelicera;
     [SerializeField] private float animSpeed = 1.4f;
-    [SerializeField] private bool isCheliceraStrikeTalent = false;
+    [SerializeField] private bool isEvolutionTalentTwo = false;
+    [SerializeField] private bool isPsionicsTalentTwo = false;
 
     private Damage _dealDamage;
     private Animator _animator;
-    private Character target;
+    private Character _target;
     private float _baseDamage;
     private float _criticalDamage;
     private float _additionalDamageFromSkill;
@@ -27,25 +29,58 @@ public class CheliceraStrike : AutoAttackSkill
     private static readonly int RightClawStrikeTrigger = Animator.StringToHash("CheliceraStrikeTrigger_Right");
     private static readonly int LeftClawStrikeTrigger = Animator.StringToHash("CheliceraStrikeTrigger_Left");
 
-    protected override int AnimTriggerCast => 0;
+    protected override int AnimTriggerCast => _isClawStrike_Right ? RightClawStrikeTrigger : LeftClawStrikeTrigger;
     protected override int AnimTriggerCastDelay => 0;
-    protected override int AnimTriggerAutoAttack => _isClawStrike_Right ? RightClawStrikeTrigger : LeftClawStrikeTrigger;
+
+    protected override bool IsCanCast => _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius && NoObstacles(_target.transform.position, transform.position, _obstacle);
 
     public event System.Action OnCheliceraStrikeEnd;
 
-    private void Start()
+    private void Start() => _animator = GetComponent<Animator>();
+    private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
+    private void OnEnable() => OnSkillCanceled += HandleSkillCanceled;
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        _animator = GetComponent<Animator>();
+        while (_target == null)
+        {
+            if (GetMouseButton)
+            {
+                _target = GetRaycastTarget();
+
+                if (_target != null)
+                    _target.SelectedCircle.IsActive = true;
+            }
+            yield return null;
+        }
+
+        _hero.Move.LookAtTransform(_target.transform);
+
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(_target.transform.position);
+        callbackDataSaved(targetInfo);
     }
 
-    protected override void CastAction()
+    protected override IEnumerator CastJob()
     {
-        if (_target == null) return;
-        if (!IsTargetInRange()) return;
+        if (_target == null) yield return null;
+        if (!IsTargetInRange()) yield return null;
 
         DamageDealChelicera(_target.gameObject);
-
         _isClawStrike_Right = !_isClawStrike_Right;
+
+        _target = null;
+        _hero.Move.StopLookAt();
+        Hero.Move.CanMove = true;
+
+        yield return null;
+    }
+
+    private void HandleSkillCanceled()
+    {
+        _target = null;
+        Hero.Move.CanMove = true;
+        Hero.Move.StopLookAt();
     }
 
     private bool IsTargetInRange()
@@ -64,7 +99,7 @@ public class CheliceraStrike : AutoAttackSkill
 
         Character targetCharacter = target.GetComponent<Character>();
 
-        _baseDamage = Random.Range(11f, 13f);
+        _baseDamage = UnityEngine.Random.Range(11f, 13f);
 
         if (_jumpWithChelicera.IsJumpDone)
         {
@@ -72,10 +107,10 @@ public class CheliceraStrike : AutoAttackSkill
             _baseDamage += bonusDamage;
         }
 
-        if (isCheliceraStrikeTalent)
+        if (isEvolutionTalentTwo)
         {
-            float chanceCritValue = Random.Range(0f, 1f);
-            float chanceBleedingValue = Random.Range(0f, 1f);
+            float chanceCritValue = UnityEngine.Random.Range(0f, 1f);
+            float chanceBleedingValue = UnityEngine.Random.Range(0f, 1f);
 
             if (chanceBleedingValue <= _chanceApplyBleeding) CmdAddState(targetCharacter);
             if (chanceCritValue <= _chanceCritDamage) _criticalDamage = CriticalDamageDeal(targetCharacter, _baseDamage);
@@ -120,7 +155,7 @@ public class CheliceraStrike : AutoAttackSkill
         float magicDamagePerPsiMainTarget = 0.3f;
         float magicDamagePerPsiNearby = 0.5f;
 
-        if (attackingPsi <= 0) return;
+        if (!isPsionicsTalentTwo && attackingPsi <= 0) return;
 
         else if (attackingPsi >= 10)
         {
@@ -195,7 +230,7 @@ public class CheliceraStrike : AutoAttackSkill
 
     public void CheliceraStrikeCast()
     {
-        AnimCastAction();
+        AnimStartCastCoroutine();
     }
 
     public void CheliceraStrikeEnded()
@@ -210,18 +245,25 @@ public class CheliceraStrike : AutoAttackSkill
         StopAutoDraw();
     }
 
-    public void CheliceraStrikeTalent(bool value)
-    {
-        isCheliceraStrikeTalent = value;   
-    }
-
     public void TrySpendAttackingPsi()
     {
         _spentAttackingPsiEnergy = _attackingPsionicEnergy.CurrentValue;
         CmdUseAttackingEnergy(_attackingPsionicEnergy.CurrentValue);
     }
 
+    #region Talens
 
+    public void EvolutionTalentTwo(bool value)
+    {
+        isEvolutionTalentTwo = value;   
+    }
+
+    public void PsionicsTalentTwo(bool value)
+    {
+        isPsionicsTalentTwo = value;
+    }
+
+    #endregion
 
     #region CommandMethods
 
@@ -247,6 +289,11 @@ public class CheliceraStrike : AutoAttackSkill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        throw new System.NotImplementedException();
+        if (targetInfo.Targets.Count > 0) _target = (Character)targetInfo.Targets[0];
+    }
+
+    protected override void ClearData()
+    {
+      
     }
 }

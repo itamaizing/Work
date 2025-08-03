@@ -43,6 +43,8 @@ public class Fear : AbstractCharacterState
             }
             _moveCoroutine = _characterState.StartCoroutine(MoveAwayCoroutine(moveComponent));
         }
+
+        Debug.Log("Страх");
     }
 
     public override void UpdateState()
@@ -91,17 +93,11 @@ public class Fear : AbstractCharacterState
             skill.Disactive = false;
         }
         _disabledSkills.Clear();
-
         _characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        if (CurrentStacksCount == MaxStacksCount)
-        {
-            InitializeFirstStack();
-            return false;
-        }
         return false;
     }
 

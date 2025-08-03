@@ -52,7 +52,7 @@ LineRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 2
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 0}
@@ -150,9 +150,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6527aa781683d1643a6540f0c1b1306c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isActive: 0
   segments: 64
   lineColor: {r: 0.27835703, g: 1, b: 0, a: 0.6117647}
-  lineRenderer: {fileID: 0}
+  _projector: {fileID: 0}
 --- !u!114 &1852969872335065214
 MonoBehaviour:
   m_ObjectHideFlags: 0

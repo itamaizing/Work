@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d8548505a2c5104980a6fa13739ca3d, type: 3}
   m_Name: SpeedOfReptile
   m_EditorClassIdentifier: 
-  _name: SpeedOfReptile
+  _name: "\u0421\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0420\u0435\u043F\u0442\u0438\u043B\u0438\u0438"
   _description: 
   _icon: {fileID: -2413806693520163455, guid: 4adeaf2d2b1c7417e89f026626d8264f, type: 3}

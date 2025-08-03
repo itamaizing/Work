@@ -12,6 +12,7 @@ public class PoisonBallProjectile : Test_Projectile
     [SerializeField] private float _baseDistancePush;
     [SerializeField] private float _baseDurationPush;
     [SerializeField] private float _durationInAir;
+    [SerializeField] private float poisonBone;
     [SerializeField] private float _fastMovementSpeed;
     [SerializeField] private float _slowMovementSpeed;
 
@@ -212,6 +213,7 @@ public class PoisonBallProjectile : Test_Projectile
         //}
 
         _target.CharacterState.AddState(States.InAir, _durationInAir, 0, _player.gameObject, _skill.Name);
+        _target.CharacterState.AddState(States.PoisonBone, poisonBone, 0, _player.gameObject, _skill.Name);
 
         PushEnemyDependingOnCountProjectile(_target, _baseDurationPush);
         

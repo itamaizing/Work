@@ -8,6 +8,7 @@ public class SkillQueue : MonoBehaviour
 
     private Queue<Skill> _skills = new Queue<Skill>();
     private Skill _currentSkill = null;
+    private TargetInfo _targetInfo;
 
     public bool IsBusy { get => _currentSkill != null; }
     public bool IsEmpty { get => _skills.Count == 0; }
@@ -26,10 +27,38 @@ public class SkillQueue : MonoBehaviour
             if (skill.SkillType == SkillType.Zone)
                 Draw(skill);
 
+            if (!skill.Disactive)
+            {
+                if (skill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
+                {
+                    _targetInfo = targetInfo;
+                    foreach (var item in _targetInfo.Targets)
+                    {
+                        if (item is Character character)
+                        {
+                            character.SelectedCircle.SwitchSelectCircle(true);
+                        }
+                    }
+                }
+            }
+
             if (!skill.Disactive && skill.TryCast())
             {
                 RemoveFromQueue();
                 _currentSkill = skill;
+
+                if(_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
+                {
+                    _targetInfo = targetInfo;
+                    foreach (var item in _targetInfo.Targets)
+                    {
+                        if (item is Character character)
+                        {
+                            character.SelectedCircle.SwitchSelectCircle(true);
+                        }
+                    }
+                }
+
                 _currentSkill.CastEnded += OnCastEnded;
             }
         }
@@ -44,27 +73,58 @@ public class SkillQueue : MonoBehaviour
         SkillAdded?.Invoke(skill);
     }
 
-    public bool TryCancel(bool isFoceCancel = false)
+    public bool TryCancel(bool isForceCancel = false)
     {
         if (_currentSkill != null)
         {
-            _currentSkill.TryCancel(isFoceCancel);
+            _currentSkill.TryCancel(isForceCancel);
+
+
+            if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
+            {
+                _targetInfo = targetInfo;
+                foreach (var item in _targetInfo.Targets)
+                {
+                    if (item is Character character)
+                    {
+                        character.SelectedCircle.SwitchSelectCircle(false);
+                    }
+                }
+            }
             return true;
         }
-        else if(IsEmpty == false)
+
+        var queuedSkill = RemoveFromQueue();
+        
+        if (queuedSkill != null)
         {
-            RemoveFromQueue().TargetInfoQueue.Dequeue();
-            return true;
+            if (queuedSkill.TargetInfoQueue.Count > 0)
+            {
+                var temp = queuedSkill.TargetInfoQueue.Dequeue();
+
+                foreach (var item in temp.Targets)
+                {
+                    if (item is Character character)
+                    {
+                        character.SelectedCircle.SwitchSelectCircle(false);
+                    }
+                }
+
+                queuedSkill.TryCancel(isForceCancel);
+                return true;
+            }
         }
+
         return false;
     }
 
     private void Draw(Skill skill)
     {
+        if (skill.TargetInfoQueue.Count == 0) return;
+
         var info = skill.TargetInfoQueue.Peek().Points;
 
         Vector3[] vector3s = new Vector3[info.Count];
-
         for (int i = 0; i < info.Count; i++)
             vector3s[i] = new Vector3(info[i].x, info[i].y + 0.1f, info[i].z);
 
@@ -74,6 +134,8 @@ public class SkillQueue : MonoBehaviour
 
     private Skill RemoveFromQueue()
     {
+        if (_skills.Count == 0) return null;
+
         var temp = _skills.Dequeue();
         SkillDeleted?.Invoke(temp);
 
@@ -86,9 +148,22 @@ public class SkillQueue : MonoBehaviour
         return temp;
     }
 
+
     private void OnCastEnded()
     {
         _currentSkill.CastEnded -= OnCastEnded;
         _currentSkill = null;
+
+        if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
+        {
+            _targetInfo = targetInfo;
+            foreach (var item in _targetInfo.Targets)
+            {
+                if (item is Character character)
+                {
+                    character.SelectedCircle.SwitchSelectCircle(false);
+                }
+            }
+        }
     }
 }

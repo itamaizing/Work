@@ -35,24 +35,14 @@ public class AutoSkillCast
 
         _currentSkill = null;
 
-        if (_tryCastCoroutine != null)
-        {
-            _parentForCoroutine.StopCoroutine(_tryCastCoroutine);
-            _tryCastCoroutine = null;
-        }
+        StopTryCastCoroutine();
     }
 
     public void Pause()
     {
         _currentSkill.TryCancel(true);
 
-        if (_tryCastCoroutine != null)
-        {
-            _parentForCoroutine.StopCoroutine(_tryCastCoroutine);
-            _tryCastCoroutine = null;
-
-            _currentSkill.SkillRender.StopDrawAutoAttackRadius();
-        }
+        StopTryCastCoroutine();
     }
 
     public void Continue()
@@ -65,8 +55,34 @@ public class AutoSkillCast
         }
     }
 
+    private void StopTryCastCoroutine()
+    {
+        if (_tryCastCoroutine != null)
+        {
+            _parentForCoroutine.StopCoroutine(_tryCastCoroutine);
+            _tryCastCoroutine = null;
+
+            _currentSkill.SkillRender.StopDrawAutoAttackRadius();
+
+            foreach (var item in _targetInfo.Targets)
+            {
+                if (item is Character character)
+                {
+                    character.SelectedCircle.SwitchSelectCircle(false);
+                }
+            }
+        }
+    }
+
     private IEnumerator TryCastJob()
     {
+        foreach (var item in _targetInfo.Targets)
+        {
+            if (item is Character character)
+            {
+                character.SelectedCircle.SwitchSelectCircle(true);
+            }
+        }
         while (true)
         {
             _currentSkill.TryCast(_targetInfo);

@@ -1,8 +1,10 @@
 using DG.Tweening;
 using Mirror;
+using System;
+using System.Collections;
 using UnityEngine;
 
-public class PhysicalAttack : AutoAttackSkill
+public class PhysicalAttack : Skill
 {
 	//[SerializeField] private float _damage = 8f;
 	[SerializeField] private HeroComponent _playerLinks;
@@ -22,13 +24,17 @@ public class PhysicalAttack : AutoAttackSkill
 	private bool _isRightKick = true;
 	private Animator _animator;
 
+	protected Character _target;
+
 	private static readonly int RightKickTrigger = Animator.StringToHash("RightKick");
 	private static readonly int LeftKickTrigger = Animator.StringToHash("LeftKick");
 
 	protected override int AnimTriggerCastDelay => 0;
-	protected override int AnimTriggerAutoAttack => 0;
+	protected override int AnimTriggerCast => 0;
 
-    private void Start()
+	protected override bool IsCanCast => _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius && NoObstacles(_target.transform.position, transform.position, _obstacle);
+
+	private void Start()
 	{
 		_audioSource = GetComponent<AudioSource>();
 		_animator = GetComponent<Animator>();
@@ -46,14 +52,38 @@ public class PhysicalAttack : AutoAttackSkill
 		}
 	}
 
-	protected override void CastAction()
+	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		if (_animator == null) return;
+		while (_target == null)
+		{
+			if (GetMouseButton)
+			{
+				_target = GetRaycastTarget();
+
+				if (_target != null)
+					_target.SelectedCircle.IsActive = true;
+			}
+			yield return null;
+		}
+
+
+		_hero.Move.LookAtTransform(_target.transform);
+
+		TargetInfo targetInfo = new TargetInfo();
+		targetInfo.Points.Add(_target.transform.position);
+		callbackDataSaved(targetInfo);
+	}
+
+	protected override IEnumerator CastJob()
+	{
+		if (_target == null || _animator == null) yield break;
 
 		_isRightKick = !_isRightKick;
 
 		if (_isRightKick) _animator.SetTrigger(RightKickTrigger);
 		else _animator.SetTrigger(LeftKickTrigger);
+
+		yield break;
 	}
 
 	public void ApplyAttackDamage()
@@ -62,6 +92,8 @@ public class PhysicalAttack : AutoAttackSkill
 
 		if (_seriesPhysicalTalent) Hit(_target);
 		else SingleHit(_target);
+
+		_target = null;
 		CmdPlayShotSound();
 	}
 
@@ -72,9 +104,9 @@ public class PhysicalAttack : AutoAttackSkill
 		{
 			//_energy.CmdUse(5);
 			Buff.AttackSpeed.IncreasePercentage(_multiplier);
-			float curDamage = _damageValue + Random.Range(0, 2);
+			float curDamage = _damageValue + UnityEngine.Random.Range(0, 2);
 
-			if ( _energy.CurrentValue >= 5)
+			if (_energy.CurrentValue >= 5)
 			{
 				if (_combo.MakeHit(enemy, AbilityForm.Physical, 0, 5, curDamage))
 				{
@@ -82,7 +114,7 @@ public class PhysicalAttack : AutoAttackSkill
 					LastHit();
 				}
 			}
-			_multiplier = 1 + _combo.GetMultipliedSpeed() / 100;			
+			_multiplier = 1 + _combo.GetMultipliedSpeed() / 100;
 			Buff.AttackSpeed.ReductionPercentage(_multiplier);
 
 			Damage damage = new Damage
@@ -101,24 +133,24 @@ public class PhysicalAttack : AutoAttackSkill
 			_energy.CmdUse(5);
 			CmdApplyDamage(damage, enemy.gameObject);
 
-			if(_rollingPhysTalent)
+			if (_rollingPhysTalent)
 			{
-				CmdState(_curTarget.gameObject, 0.7f*_stunCount);
+				CmdState(_curTarget.gameObject, 0.7f * _stunCount);
 			}
 		}
 		else
-		{			
+		{
 			Buff.AttackSpeed.IncreasePercentage(_multiplier);
 			_multiplier = 1;
 			Debug.Log("lose streak to another enemy or no energy");
 			_curTarget = enemy;
 
-			float curDamage = _damageValue + Random.Range(0, 2);
+			float curDamage = _damageValue + UnityEngine.Random.Range(0, 2);
 			_energy.SumDamageMake(curDamage);
 			_rune.SumDamageMake(curDamage);
 
 			_combo.MakeHit(enemy, AbilityForm.Physical, 0, 0, curDamage);
-			
+
 			if (_energy.CurrentValue >= 5)
 			{
 				_energy.CmdUse(5);
@@ -133,7 +165,7 @@ public class PhysicalAttack : AutoAttackSkill
 			CmdApplyDamage(damage, enemy.gameObject);
 		}
 
-		if (Random.Range(0, 100) < 2 && _talentActive)
+		if (UnityEngine.Random.Range(0, 100) < 2 && _talentActive)
 		{
 			_rune.CmdAdd(1);
 			//Debug.Log(_rune.CurrentValue + " REGEN Current value");
@@ -165,7 +197,7 @@ public class PhysicalAttack : AutoAttackSkill
 
 	private void SingleHit(Character enemy)
 	{
-		float curDamage = _damageValue + Random.Range(0, 2);
+		float curDamage = _damageValue + UnityEngine.Random.Range(0, 2);
 
 		Damage damage = new Damage
 		{
@@ -201,7 +233,7 @@ public class PhysicalAttack : AutoAttackSkill
 	private void CmdPush(GameObject gameObject, Vector2 force)
 	{
 		MoveComponent tempTargetMove = gameObject.GetComponent<MoveComponent>();
-		
+
 		//tempTargetMove.TargetRpcDoMove(force, 0.5f);
 	}
 
@@ -216,7 +248,7 @@ public class PhysicalAttack : AutoAttackSkill
 	{
 		if (_audioSource != null && Hits != null)
 		{
-			int index = Random.Range(0, Hits.Length);
+			int index = UnityEngine.Random.Range(0, Hits.Length);
 			_audioSource.PlayOneShot(Hits[index]);
 		}
 	}
@@ -240,10 +272,10 @@ public class PhysicalAttack : AutoAttackSkill
 		return false;
 	}
 
-    #region Talent
+	#region Talent
 
 	public void SeriesPhysicalTalentActive(bool value)
-    {
+	{
 		_seriesPhysicalTalent = value;
 	}
 
@@ -273,6 +305,11 @@ public class PhysicalAttack : AutoAttackSkill
 
 	public override void LoadTargetData(TargetInfo targetInfo)
 	{
-		_target = (Character)targetInfo.Targets[0];
+		if (targetInfo.Targets.Count > 0) _target = (Character)targetInfo.Targets[0];
+	}
+
+    protected override void ClearData()
+    {
+		_hero.Move.StopLookAt();
 	}
 }

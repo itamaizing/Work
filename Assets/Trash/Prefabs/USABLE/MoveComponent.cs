@@ -22,14 +22,15 @@ public class MoveComponent : NetworkBehaviour
 	public Vector3 ExternalMoveDirection = Vector3.zero;
 
 	public bool CanMove = false;
+	public bool CanMoveState = false;
 	public bool IsMoving = false;
 	public bool IsSelect = false;
-	
+
 	private Rigidbody _rigidbody;
-	private bool _isMoveBlocked = false;
 	private Vector3 _offset = Vector3.zero;
 
 	private bool _isHero = false;
+	private bool _isMoveBlocked = false;
 
 	private float _defaultSpeed = 5;
 	private Camera _camera;
@@ -49,14 +50,7 @@ public class MoveComponent : NetworkBehaviour
 
 	public Rigidbody Rigidbody => _rigidbody;
 
-	public bool IsMoveBlocked
-	{ 
-		get => _isMoveBlocked;
-		set 
-		{
-            _isMoveBlocked = value;
-        } 
-	}
+	public bool IsMoveBlocked { get => _isMoveBlocked; set => _isMoveBlocked = value; }
     public float CurrentRotationSpeed { get => _rotationDefaultSpeed + RotateModifier; }
     public float RotateModifier { get; set; }
 
@@ -137,8 +131,16 @@ public class MoveComponent : NetworkBehaviour
 		_isLookAtCursor = true;
 	}
 
-	public void StopMoveAnimation()
+	public void StopMoveAndAnimationMove()
 	{
+		if (_rigidbody == null) return;
+
+		_rigidbody.velocity = Vector3.zero;
+		_rigidbody.angularVelocity = Vector3.zero;
+
+		var agent = GetComponent<NavMeshAgent>();
+		if (agent && agent.enabled) agent.ResetPath();
+
 		if (_anim != null)
 		{
 			_anim.SetFloat(HashAnimPlayer.VelocityX, 0);
@@ -193,14 +195,16 @@ public class MoveComponent : NetworkBehaviour
 
 	protected virtual void Move()
     {
-		if (!CanMove || _rigidbody == null || IsMoveBlocked == true)
+		if ((!CanMove && !CanMoveState) || _rigidbody == null || IsMoveBlocked == true)
 		{
+
 			if (_rigidbody != null)
 			{
                 _rigidbody.velocity = Vector3.zero;
                 _currentVelocityTemp = Vector3.zero;
                 _currentVelocity = Vector3.zero;
             } 
+
 			return;
 		}
 

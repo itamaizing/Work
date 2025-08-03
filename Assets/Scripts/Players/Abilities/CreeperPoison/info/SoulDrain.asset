@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d8548505a2c5104980a6fa13739ca3d, type: 3}
   m_Name: SoulDrain
   m_EditorClassIdentifier: 
-  _name: SoulDrain
+  _name: "\u0423\u0442\u0435\u0447\u043A\u0430 \u0434\u0443\u0448\u0438"
   _description: 
   _icon: {fileID: 21300000, guid: 565a8620a1fca7a44821ab70e5229676, type: 3}

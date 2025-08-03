@@ -15,7 +15,6 @@ public class IcePuddle : Skill
 	[SerializeField] private DecalProjector _puddleProjector;
 	//[SerializeField] private FrostingFrozenTalant _frostingFrozenTalant;
 	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
-	[SerializeField] private bool isBig = true; //test
 	[SerializeField] private float _timeToDestroy = 3f;
 	[SerializeField] private HeroComponent _playerLinks;
 	[SerializeField] private MoveComponent _move;
@@ -381,7 +380,7 @@ public class IcePuddle : Skill
 
 		Buff.AttackSpeed.IncreasePercentage(1 + _seriesOfStrikes.GetMultipliedSpeed() / 100);
 
-		if (isBig) CmdCreateProjecttileBig(_angle3, _timeToDestroy, _preViewPuddle.transform.position, _lastHit && _talentPuddleSize, _talentEvadeDadBoost, _talentFrostingFrozen);
+		if (_lastHit) CmdCreateProjecttileBig(_angle3, _timeToDestroy, _preViewPuddle.transform.position, _lastHit && _talentPuddleSize, _talentEvadeDadBoost, _talentFrostingFrozen);
 		else CmdCreateProjecttile(_angle3, _timeToDestroy, _preViewPuddle.transform.position, _lastHit && _talentPuddleSize, _talentEvadeDadBoost, _talentFrostingFrozen);
 	}
 

@@ -910,7 +910,7 @@ MonoBehaviour:
   obstecls:
     serializedVersion: 2
     m_Bits: 128
-  basePsi: 1
+  basePsi: 0.1
   grabDuration: 1.2
   tentacleLine: {fileID: 3181529269723519325}
   tentaclePoint: {fileID: 7592468510556066527}

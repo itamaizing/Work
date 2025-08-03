@@ -21,6 +21,7 @@ public class SkillRenderer : NetworkBehaviour
     [SerializeField] private Color _colorForEnd;
     [SerializeField] private Color _colorForStart;
 
+    private List<Character> _targets = new List<Character>();
     private List<LineZoneRender> _lineZoneRenders = new();
     private bool _isOverrideClosestTarget = false;
     //private SphereArea _tempDamageZone;
@@ -33,6 +34,9 @@ public class SkillRenderer : NetworkBehaviour
     private BoxArea _lineStartImage;
     //private BoxArea _lineEndImage;
     private SkillCircleRanderer _drawAutoAttackRadius;
+
+    private Coroutine _previewDamageCoroutine;
+    private readonly HashSet<Health> _previewSet = new();
 
     private Coroutine _drawLineCoroutine;
     private Coroutine _drawAreaCoroutine;
@@ -61,6 +65,13 @@ public class SkillRenderer : NetworkBehaviour
     public void CmdDrawDamageZone(Vector3 position, float radius, Damage damage, GameObject player)
     {
         RpcDrawDamageZone(position, radius, damage, player);
+    }
+
+    public void StartPreview(float radius, Damage damage, LayerMask layerMask)
+    {
+        if (_previewDamageCoroutine != null) StopCoroutine(_previewDamageCoroutine);
+        _previewSet.Clear();
+        _previewDamageCoroutine = StartCoroutine(PreviewDamageJob(radius, damage, layerMask));
     }
 
     [ClientRpc]
@@ -97,6 +108,71 @@ public class SkillRenderer : NetworkBehaviour
 			Destroy(_tempArea.gameObject);
 		}
 	}
+
+    #region ������ ��� ������������ ����� �� �����
+    public void StopPreview()
+    {
+        if (_previewDamageCoroutine != null)
+        {
+            StopCoroutine(_previewDamageCoroutine);
+            _previewDamageCoroutine = null;
+        }
+
+        foreach (var health in _previewSet) if (health != null) health.ShowPhantomValue(new Damage { Value = 0, Type = DamageType.Physical });
+
+        _previewSet.Clear();
+    }
+
+    private IEnumerator PreviewDamageJob(float radius, Damage damage, LayerMask layerMask)
+    {
+        while (true)
+        {
+            if (!TryGetMousePoint(out Vector3 position))
+            {
+                yield return null;
+                continue;
+            }
+
+            Collider[] colliders = Physics.OverlapSphere(position, radius, layerMask);
+            HashSet<Health> current = new HashSet<Health>();
+
+            foreach (var collider in colliders)
+            {
+                if (collider.TryGetComponent(out Health hp))
+                {
+                    current.Add(hp);
+                    hp.ShowPhantomValue(damage);
+                }
+            }
+
+            foreach (var health in _previewSet.Except(current)) if (health != null) health.ShowPhantomValue(new Damage { Value = 0, Type = DamageType.Physical });
+
+            _previewSet.Clear();
+            foreach (var health in current) _previewSet.Add(health);
+
+            yield return null;
+        }
+    }
+
+    private bool TryGetMousePoint(out Vector3 point)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        var hits = Physics.RaycastAll(ray, Mathf.Infinity, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore).OrderBy(h => h.distance);
+
+        foreach (var hit in hits)
+        {
+            if ((_layerMask.value & (1 << hit.collider.gameObject.layer)) != 0)
+            {
+                point = hit.point;
+                return true;
+            }
+        }
+
+        point = Vector3.zero;
+        return false;
+    }
+    #endregion
 
     public void StartDrawLineForZone(Skill skill)
     {
@@ -195,6 +271,11 @@ public class SkillRenderer : NetworkBehaviour
         {
             StopCoroutine(_drawClosestTargetCoroutine);
             _drawClosestTargetCoroutine = null;
+
+            foreach (var target in _targets)
+            {
+                target.SelectedCircle.SwitchStroke(false);
+            }
         }    
 
         if(_tempTarget != null)
@@ -349,7 +430,7 @@ public class SkillRenderer : NetworkBehaviour
 		//Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x,0 , Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
 		Vector3 mouse = new Vector3(worldPosition.x, 0 , worldPosition.z);
 
-        _tempArea = Instantiate(areaPref, mouse, Quaternion.Euler(90, 0, 0));
+        _tempArea = Instantiate(areaPref, mouse, Quaternion.Euler(0, 0, 0));
         _tempArea.SetSize(_circleRadius, damage);
 
         while (true)
@@ -372,7 +453,6 @@ public class SkillRenderer : NetworkBehaviour
         {
             if (IsOverrideClosestTarget) yield return null;
 
-            List<Character> targets = new List<Character>();
             Collider[] collider = Physics.OverlapSphere(transform.position, radius + 500);
 
             foreach (var item in collider)
@@ -383,13 +463,15 @@ public class SkillRenderer : NetworkBehaviour
                     {
                         continue;
                     }
-                    targets.Add(enemy);
+
+                    if(_targets.Contains(enemy) == false)
+                        _targets.Add(enemy);
                 }
             }
-            targets = targets.OrderBy(character => Vector3.Distance(character.transform.position, gameObject.transform.position)).ToList();
-            if (targets.Count > 0)
+            _targets = _targets.OrderBy(character => Vector3.Distance(character.transform.position, gameObject.transform.position)).ToList();
+            if (_targets.Count > 0)
             {
-				foreach (var target in targets)
+				foreach (var target in _targets)
 				{
 					if (Vector3.Distance(target.transform.position, transform.position) <= radius)
 					{
@@ -404,14 +486,14 @@ public class SkillRenderer : NetworkBehaviour
 
 				if (_tempTarget != null)
                 {
-                    if (Vector3.Distance(_tempTarget.transform.position, transform.position) > Vector3.Distance(targets[0].transform.position, transform.position))
+                    if (Vector3.Distance(_tempTarget.transform.position, transform.position) > Vector3.Distance(_targets[0].transform.position, transform.position))
                     {
                         _tempTarget.SelectedCircle.SwitchClostestTarget(false);
-                        _tempTarget = targets[0];
+                        _tempTarget = _targets[0];
                     }
                 }
 
-                _tempTarget = targets[0];
+                _tempTarget = _targets[0];
                 _tempTarget.SelectedCircle.SwitchClostestTarget(true);
 
                 if (Vector3.Distance(_tempTarget.transform.position, transform.position) <= radius)

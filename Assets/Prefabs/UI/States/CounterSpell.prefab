@@ -306,9 +306,10 @@ MonoBehaviour:
   FadeFront: {fileID: 8466618702311743017}
   border: {fileID: 8016512512855021257}
   Text: {fileID: 7124779414521309969}
-  count: 1
+  count: 0
   state: 22
   time: []
+  maxStack: 0
 --- !u!1 &8536294408763002824
 GameObject:
   m_ObjectHideFlags: 0

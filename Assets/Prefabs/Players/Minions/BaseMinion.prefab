@@ -84,6 +84,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5183486696276567118, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _hero
       value: 
@@ -103,6 +107,10 @@ PrefabInstance:
     - target: {fileID: 5653443088679015109, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6214007637544752149, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: hero
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 8388980576940739991, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _character
@@ -276,6 +284,7 @@ MonoBehaviour:
   - {fileID: 8550944225159128354}
   _selectedCircle: {fileID: 4163371236763689060}
   _spawnComponent: {fileID: 5963193180723515438}
+  _visionComponent: {fileID: 0}
   _expForDieKill: 5
   _navMeshAgent: {fileID: 1780925315992858912}
 --- !u!195 &1780925315992858912
@@ -317,12 +326,18 @@ MonoBehaviour:
   syncInterval: 0
   _smoothTime: 0.15
   _currentSpeed: 5
+  _rotationDefaultSpeed: 1000
   _anim: {fileID: 3218874933856675809}
   _flyChecker: {fileID: 9867471196679094}
+  moveAudioSource: {fileID: 0}
+  moveClips: []
   MoveDirection: {x: 0, y: 0, z: 0}
+  ExternalMoveDirection: {x: 0, y: 0, z: 0}
   CanMove: 0
+  CanMoveState: 0
   IsMoving: 0
   IsSelect: 0
+  _isMoveBlocked: 0
   _agent: {fileID: 1780925315992858912}
 --- !u!114 &3939151455996886053
 MonoBehaviour:
@@ -352,6 +367,7 @@ MonoBehaviour:
   _damageType: 5
   _attackRangeType: 0
   _skillType: 2
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 512
@@ -360,8 +376,9 @@ MonoBehaviour:
     m_Bits: 0
   _castDuration: 0
   _manaCostRate: 0
-  _manaCostPerTick: 0
+  _manaCostPerTick: []
   _isUseCharges: 0
+  _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
@@ -373,6 +390,8 @@ MonoBehaviour:
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
+  _disactive: 0
+  _earlyCooldown: 0
   _agent: {fileID: 1780925315992858912}
   _enemyCheckRadius: 6
   _enemyLayerMask:

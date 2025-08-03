@@ -14,7 +14,7 @@ public class StateInfo
     public GameObject PersonWhoShooted;
     public string SkillName;
 
-    public StateInfo(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
+	public StateInfo(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
     {
         State = state;
         Duration = duration;
@@ -33,6 +33,13 @@ public abstract class AbstractCharacterState
 
 	public int CurrentStacksCount = 0;
 	public int MaxStacksCount = 0;
+	public float duration;
+
+	public virtual float RemainingDuration
+	{
+		get => duration;
+		set => duration = value;
+	}
 
 	public abstract States State { get; }
 	public abstract StateType Type { get; }
@@ -70,7 +77,7 @@ public abstract class AuraState : AbstractCharacterState
         _characterState = character;
 		_auraCentre = character.transform;
 		_self = personWhoMadeBuff;
-    }
+	}
 
     public override void UpdateState()
     {
@@ -222,9 +229,9 @@ public class CharacterState : NetworkBehaviour
 		[States.LowVoltage] = new LowVoltage(),
 		[States.ComboState] = new ComboState(),
 		[States.DisappointmentState] = new DisappointmentState(),
+		[States.ManaRegen] = new ManaRegen(),
 
 		#region TerrifyingElfStates
-
 		[States.InnerDarkness] = new InnerDarkness(),
 		[States.Fear] = new Fear(),
 		[States.Astral] = new AstralState(),
@@ -237,18 +244,23 @@ public class CharacterState : NetworkBehaviour
 		[States.HuntressMark] = new HuntressMark(),
 		[States.Calmness] = new Calmness(),
 		[States.Sleep] = new Sleep(),
-        #endregion
+		[States.ElvenSkill] = new ElvenSkill(),
+		[States.Bound] = new Bound(),
+		[States.ShadowTree] = new ShadowTree(),
+		[States.MultiMagic] = new MultiMagic(),
+		[States.FireFlash] = new FireFlash(),
+		#endregion
 
-        #region Gangdollarf
-        [States.PowerOfEarth] = new PowerOfEarth(),
+		#region Gandollarf	
+		[States.PowerOfEarth] = new PowerOfEarth(),
         [States.EarthsHealth] = new EarthsHealth(),
         [States.MagicWater] = new MagicWater(),
         [States.Burning] = new Burning(),
         [States.Burn] = new Burn(),
-        #endregion
+		#endregion
 
-        #region Test Baff and Debaff
-        [States.BaffState] = new BaffState(),
+		#region Test Baff and Debaff
+		[States.BaffState] = new BaffState(),
 		[States.DebaffState] = new DebaffState(),
         #endregion
 
@@ -392,7 +404,9 @@ public class CharacterState : NetworkBehaviour
 	{
 		if (!currentStates.Contains(newState)) return;
 
-        if (newState is IDamageable damageableShield)
+		newState.CurrentStacksCount = 0;
+
+		if (newState is IDamageable damageableShield)
 		{
 			RemoveShield(damageableShield);
 		}
@@ -488,20 +502,37 @@ public class CharacterState : NetworkBehaviour
 	}*/
 
 
-	private void AddStateLogic(States state, float duration, float damageToExit, Schools school, GameObject personWhoShooted, string skillName, bool isCanDodgeMagState = false)
+	public void AddStateLogic(States state, float duration, float damageToExit, Schools school, GameObject personWhoShooted, string skillName, bool isCanDodgeMagState = false)
 	{
 		if (invinsible) return;
 
 		for (int i = 0; i < currentStates.Count; i++)
 		{
 			if (currentStates[i].State == state)
-			{
-				currentStates[i].Stack(duration);
-				int newMaxStack = currentStates[i].MaxStacksCount;
+			{	
 
-				_stateIcons.ActivateIco(state, duration, 1, true, newMaxStack);
+				if (currentStates[i].MaxStacksCount == 0)
+                {
+					bool canStack = currentStates[i].Stack(duration);
+					int newMaxStack = currentStates[i].MaxStacksCount;
 
-				MoveStateToEnd(i);
+					_stateIcons.ActivateIco(state, duration, 1, canStack, newMaxStack);
+
+					MoveStateToEnd(i);
+				}
+
+				else
+                {
+					currentStates[i].Stack(duration);
+					currentStates[i].duration = Mathf.Max(currentStates[i].RemainingDuration, duration);
+					float remaining = currentStates[i].RemainingDuration > 0f ? currentStates[i].RemainingDuration : duration;
+					int newMaxStack = currentStates[i].MaxStacksCount;
+
+					_stateIcons.ActivateIco(state, remaining, 1, true, newMaxStack);
+
+					MoveStateToEnd(i);
+				}
+
 				return;
 			}
 		}
@@ -538,6 +569,9 @@ public class CharacterState : NetworkBehaviour
 	private void CreateState(AbstractCharacterState state, States stateName, float duration, float damageToExit, GameObject personWhoShooted, string skillName, bool stack)
 	{
 		currentStates.Add(state);
+
+		state.duration = duration;
+
 		if (personWhoShooted.TryGetComponent<Character>(out var character))
 		{
 			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit, character, skillName);
@@ -547,8 +581,9 @@ public class CharacterState : NetworkBehaviour
 			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit, null, skillName);
 		}
 
+		float remaining = state.RemainingDuration;
 		int maxStacksCount = state.MaxStacksCount;
-		_stateIcons.ActivateIco(stateName, duration, 1, stack, maxStacksCount);
+		_stateIcons.ActivateIco(stateName, remaining, 1, stack, maxStacksCount);
 	}
 
 	private void AddShield(IDamageable shield)
@@ -740,9 +775,7 @@ public enum States
 	LowVoltage,
 	ComboState,
 	DisappointmentState,
-
-	#region TerrifyingElf
-
+	ManaRegen,
 	InnerDarkness,
 	Fear,
 	Astral,
@@ -755,24 +788,19 @@ public enum States
 	HuntressMark,
 	Calmness,
 	Sleep,
-    #endregion
-
-    #region Gangdollarf
+	ElvenSkill,
+	BaffState,
+    DebaffState,
+	Bound,
+	ShadowTree,
     PowerOfEarth,
     EarthsHealth,
     MagicWater,
     Burning,
     Burn,
-    #endregion
-
-    #region Test Baff and Debaff
-    BaffState,
-		DebaffState,
-    #endregion
-
-    #region Test
     TestAuraState,
-    #endregion	
+	MultiMagic,
+	FireFlash,
 }
 public enum BaffDebaff
 {

@@ -11,7 +11,8 @@ public class CircleArea : MonoBehaviour
 	[SerializeField] SpriteRenderer _sprite;
 	[SerializeField] private DecalProjector _projector;
 
-	private List<Health> _enemies = new List<Health>();
+	private List<Health> _enemiesHP = new List<Health>();
+	private List<UIPlayerComponents> _enemiesUIPlayerComponents = new List<UIPlayerComponents>();
 	private bool _isConcernsEnemy;
     private Damage _damage;
     /*private Damage _zeroDamage;
@@ -49,12 +50,13 @@ public class CircleArea : MonoBehaviour
         if (_sprite.size != Vector2.zero && collision.transform != transform.parent && collision.transform.TryGetComponent(out UIPlayerComponents enemy))
         {
             _isConcernsEnemy = true;
-            enemy.ChangeSelection(true);
+            enemy.CircleSelect1.SwitchClostestTarget(true);
+            _enemiesUIPlayerComponents.Add(enemy);
         }
         if(collision.TryGetComponent<Health>(out var hpEnemy) && collision.transform != transform.parent)
         {
             hpEnemy.ShowPhantomValue(_damage);
-			_enemies.Add(hpEnemy);
+			_enemiesHP.Add(hpEnemy);
         }
     }
 
@@ -63,38 +65,44 @@ public class CircleArea : MonoBehaviour
         if (_sprite.size != Vector2.zero && collision.transform != transform.parent && collision.transform.TryGetComponent(out UIPlayerComponents enemy))
         {
             _isConcernsEnemy = false;
-            enemy.ChangeSelection(false);
+            enemy.CircleSelect1.SwitchClostestTarget(false);
+            _enemiesUIPlayerComponents.Remove(enemy);
         }
 		if (collision.TryGetComponent<Health>(out var hpEnemy) && collision.transform != transform.parent)
 		{
 			Damage damage = _damage;
 			damage.Value = 0;
 			hpEnemy.ShowPhantomValue(damage);
-			_enemies.Remove(hpEnemy);
+			_enemiesHP.Remove(hpEnemy);
 		}
 	}
 
 	private void OnDestroy()
 	{
-		if (_enemies.Count > 0)
-			for (int i = _enemies.Count - 1; i >= 0; i--)
+		foreach (var item in _enemiesUIPlayerComponents)
+		{
+			item.CircleSelect1.SwitchClostestTarget(false);
+        }
+
+		if (_enemiesHP.Count > 0)
+			for (int i = _enemiesHP.Count - 1; i >= 0; i--)
 			{
 				Damage damage = _damage;
 				damage.Value = 0;
-				_enemies[i].ShowPhantomValue(damage);
-				_enemies.Remove(_enemies[i]);
+				_enemiesHP[i].ShowPhantomValue(damage);
+				_enemiesHP.Remove(_enemiesHP[i]);
 			}
 	}
 
 	private void OnDisable()
 	{
-		if (_enemies.Count > 0)
-			for (int i = _enemies.Count - 1; i >= 0; i--)
+		if (_enemiesHP.Count > 0)
+			for (int i = _enemiesHP.Count - 1; i >= 0; i--)
 			{
 				Damage damage = _damage;
 				damage.Value = 0;
-				_enemies[i].ShowPhantomValue(damage);
-				_enemies.Remove(_enemies[i]);
+				_enemiesHP[i].ShowPhantomValue(damage);
+				_enemiesHP.Remove(_enemiesHP[i]);
 			}
 	}
 }

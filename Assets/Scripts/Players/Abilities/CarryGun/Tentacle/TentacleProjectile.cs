@@ -28,6 +28,8 @@ public class TentacleProjectile : NetworkBehaviour
     private bool _isCollidedWithOtherCharacter = false;
     private bool _isPullTarget = false;
 
+    private bool _isPsionicsTalentThree = false;
+
     private Coroutine _radiusUpdateCoroutine;
 
     private Skill _skill;
@@ -61,14 +63,16 @@ public class TentacleProjectile : NetworkBehaviour
     }
 
     public void Init(Character player, Character target, Vector3 startPosition, Vector3 endPosition,
-        bool isAttackingPsiEnergyActive, float currentDamage, Skill skill)
+        bool isAttackingPsiEnergyActive, bool isPsionicsTalentThree, float currentDamage, Skill skill)
     {
+        _isPsionicsTalentThree = isPsionicsTalentThree;
         _player = player;
         _target = target;
         _startPosition = startPosition;
         _endPosition = endPosition;
         _isAttackingPsiEnergyActive = isAttackingPsiEnergyActive;
         _spentAttackingPsiEnergy = currentDamage;
+        _isPsionicsTalentThree = 
         _skill = skill;
 
         transform.position = startPosition;
@@ -201,7 +205,7 @@ public class TentacleProjectile : NetworkBehaviour
             if (attackingPsiValue > 0)
             {
                 DealAttackingPsiDamage(attackingPsiValue);
-                ApplyLowVoltageDebuff(attackingPsiValue);
+                if (_isPsionicsTalentThree) ApplyLowVoltageDebuff(attackingPsiValue);
             }
         }
     }

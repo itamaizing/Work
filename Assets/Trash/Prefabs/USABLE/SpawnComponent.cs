@@ -23,25 +23,31 @@ public class SpawnComponent : NetworkBehaviour
     [Command]
     public void CmdSpawnUnitEnemy()
     {
-        SpawnCharacter(_enemyPrefab, Vector3.back, Quaternion.identity);
+        SpawnCharacter(_enemyPrefab, Vector3.back + Vector3.up, Quaternion.identity);
     }
 
     [Command]
     public void CmdSpawnUnitAlies()
     {
-        SpawnCharacter(_allyPrefab, Vector3.forward, Quaternion.identity);
+        SpawnCharacter(_allyPrefab, Vector3.forward + Vector3.up, Quaternion.identity);
     }
 
-    [Command]
+    [Command] // не стал убирать метод с мейна, хотя мой ниже такой же, но сохраняет вращение и спавнит не по индексу, а напрямую берет префаб
     public void CmdSpawnUnitInPoint(Vector3 position, int index)
     {
         SpawnUnit(index, position);
+    }
+
+    [Command]
+    public void CmdSpawnEnemyPoint(Vector3 position, Quaternion rotation)
+    {
+        SpawnCharacter(_enemyPrefab, position, rotation);
     }
     #endregion
 
     public void SpawnUnit(int index, Vector3 position)
     {
-        if (index < 0 || index >= _characterPrefabs.Count)
+        if (index < 0 || index >= _characterPrefabs.Count) 
         {
             Debug.LogError($"Index {index} is out of bounds for spawning units.");
             return;

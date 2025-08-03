@@ -51,6 +51,8 @@ public class BoxSelector : MonoBehaviour
 
         foreach (SelectComponent unit in SelectComponent.Units)
         {
+            if (unit == null) continue;
+
             Vector2 positionInScreen = Camera.main.WorldToScreenPoint(unit.transform.position);
 
             if (rect.Contains(positionInScreen))

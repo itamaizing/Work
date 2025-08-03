@@ -1,35 +1,67 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 
-public class ClawStrike : AutoAttackSkill
+public class ClawStrike : Skill
 {
     [SerializeField] private Character _player;
     [SerializeField] private BasePsionicEnergy _basePsionicEnergy;
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
-    [SerializeField] private float _baseDamage;
-    [SerializeField] private float animSpeed = 1.2f;
+    [SerializeField] private float animSpeed = 0.8f;
 
     private float _spentAttackingPsiEnergy;
+    private float _baseDamage;
+
+    protected Character _target;
 
     protected override int AnimTriggerCastDelay => 0;
-    protected override int AnimTriggerAutoAttack => Animator.StringToHash("ClawStrikeTrigger");
+    protected override int AnimTriggerCast => Animator.StringToHash("ClawStrikeTrigger");
 
-    protected override void CastAction()
+    protected override bool IsCanCast => _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius && NoObstacles(_target.transform.position, transform.position, _obstacle);
+
+    private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
+    private void OnEnable() => OnSkillCanceled += HandleSkillCanceled;
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        if (_target == null) return;
-        if (!IsTargetInRange()) return;
+        while (_target == null)
+        {
+            if (GetMouseButton)
+            {
+                _target = GetRaycastTarget();
+
+                if (_target != null)
+                    _target.SelectedCircle.IsActive = true;
+            }
+            yield return null;
+        }
+
+        _hero.Move.LookAtTransform(_target.transform);
+
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(_target.transform.position);
+        callbackDataSaved(targetInfo);
+    }
+
+    protected override IEnumerator CastJob()
+    {
+        if (_target == null) yield return null;
+        if (!IsTargetInRange()) yield return null;
+
         DamageDeal();
+
+        _target = null;
+        _hero.Move.StopLookAt();
+        yield return null;
     }
 
-    private bool IsTargetInRange()
-    {
-        return Vector3.Distance(_player.transform.position, _target.transform.position) <= Radius;
-    }
+    private bool IsTargetInRange() { return _target != null && Vector3.Distance(_player.transform.position, _target.transform.position) <= Radius; }
 
     private void DamageDeal()
     {
         float attackingPsiValue = _spentAttackingPsiEnergy;
+        _baseDamage = UnityEngine.Random.Range(5f, 7.01f);
 
         var damage = new Damage
         {
@@ -73,12 +105,18 @@ public class ClawStrike : AutoAttackSkill
 
     public void ClawStrikeCast()
     {
-        AnimCastAction();
+        AnimStartCastCoroutine();
     }
 
     public void ClawStrikeEnded()
     {
         AnimCastEnded();
+    }
+
+    private void HandleSkillCanceled()
+    {
+        _target = null;
+        Hero.Move.StopLookAt();
     }
 
     public void TrySpendAttackingPsi()
@@ -102,6 +140,11 @@ public class ClawStrike : AutoAttackSkill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        throw new System.NotImplementedException();
+        if (targetInfo.Targets.Count > 0) _target = (Character)targetInfo.Targets[0];
+    }
+
+    protected override void ClearData()
+    {
+
     }
 }

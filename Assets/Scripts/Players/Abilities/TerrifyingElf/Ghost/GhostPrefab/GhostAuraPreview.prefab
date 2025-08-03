@@ -10507,7 +10507,7 @@ GameObject:
   - component: {fileID: 7501836629005797666}
   - component: {fileID: 7328743835800996596}
   - component: {fileID: 8290327245680166663}
-  m_Layer: 9
+  m_Layer: 16
   m_Name: GhostAuraPreview
   m_TagString: Allies
   m_Icon: {fileID: 0}

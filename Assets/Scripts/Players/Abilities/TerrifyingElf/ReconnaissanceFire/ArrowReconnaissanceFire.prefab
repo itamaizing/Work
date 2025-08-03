@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 8635874584311858127}
   - component: {fileID: 2545325199570042187}
   - component: {fileID: 3952774432532937183}
+  - component: {fileID: 1023382893908356152}
   m_Layer: 0
   m_Name: ArrowReconnaissanceFire
   m_TagString: Untagged
@@ -5071,8 +5072,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   flameLight: {fileID: 918004673584531194}
-  flameDark: {fileID: 0}
-  flame: {fileID: 9075096416490859393}
+  reconnaissanceFireAura: {fileID: 0}
   pulseSpeed: 1
   minIntensity: 20
   maxIntensity: 100
@@ -5126,3 +5126,16 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1023382893908356152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9075096416490859393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecf32e0aadfc5644aa4e7eb739ccc477, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_VisionRange: 3

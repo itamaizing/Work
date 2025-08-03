@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d8548505a2c5104980a6fa13739ca3d, type: 3}
   m_Name: CreeperInvisible
   m_EditorClassIdentifier: 
-  _name: Invisible
+  _name: "\u041D\u0435\u0432\u0438\u0434\u0438\u043C\u044B\u0439"
   _description: 
   _icon: {fileID: 21300000, guid: 4d204b10aa40d5b428155fa7dcba983f, type: 3}

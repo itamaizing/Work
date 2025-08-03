@@ -1,54 +1,111 @@
 using System;
 using System.Collections;
+using System.Linq;
 using Mirror;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ShotIntoSky : Skill
 {
     [SerializeField] private SkillRenderer skillRenderer;
-    [SerializeField] private float minDamage;
-    [SerializeField] private float maxDamage;
     [SerializeField] private bool silenceTalentActive;
     [SerializeField] private bool tripleShotTalentActive;
     [SerializeField] private bool shotAstralManaActive;
-    [SerializeField, Range(0f, 100f)] private float criticalChance = 30f;
-    [SerializeField, Range(0f, 100f)] private float stunChance = 30f;
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private HeroComponent playerLinks;
+    [SerializeField] private float minDamage;
+    [SerializeField] private float maxDamage;
+    [SerializeField] private float _dropDelayTime = 3f;
+    [SerializeField] private ReconnaissanceFire reconnaissanceFire;
 
+    [Header("Arrow Effects Settings")]
+    [SerializeField] private ArrowIntoSkyProjectile impactPrefab;
+    [SerializeField] private ParticleSystem arrowIntoSkyEffect;
+
+    private readonly SyncList<uint> _arrowIntoSkyProjectileIds = new SyncList<uint>();
     private Vector3 _targetPoint = Vector3.positiveInfinity;
-    private bool _tripleShot;
-    private const float CriticalMultiplier = 2.4f;
+    private bool _secondShotPlanned;
+    private const float _extraShotDelay = 1f;
 
-    protected override bool IsCanCast => true;
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("ShotCastDelayAnimTrigger");
-
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("ShotSkyCastDelay");
     protected override int AnimTriggerCast => 0;
-    private void Start()
+
+    private void OnDestroy() => Canceled -= HandleSkillCanceled;
+    private void OnEnable() => Canceled += HandleSkillCanceled;
+
+    protected override bool IsCanCast => !_disactive && IsPointInRadius(Radius, _targetPoint);
+
+
+    public void ShotAnimationMove()
     {
-       Damage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
+        if (_hero == null || _hero.Move == null) return;
+
+        _hero.Move.StopMoveAndAnimationMove();
+        _hero.Move.CanMove = false;
+
+        Vector3 direction = _targetPoint - _hero.transform.position;
+        bool badDirection = float.IsInfinity(_targetPoint.x) || direction.sqrMagnitude < 0.0001f;
+
+        if (badDirection)
+        {
+            _hero.Move.StopLookAt();
+            return;
+        }
+
+        _hero.Move.LookAtPosition(_targetPoint);
     }
 
-    public override void LoadTargetData(TargetInfo targetInfo)
+    public void ArrowIntoSkyEffectPlay() => arrowIntoSkyEffect.Play();
+
+    public void ForceCooldownEnd()
     {
-        _targetPoint = targetInfo.Points[0];
+        if (_cooldownJob != null)
+            StopCoroutine(_cooldownJob);
+
+        RemainingCooldownTime = 0f;
+        RaiseCooldownEnded();
+    }
+
+
+    private void HandleSkillCanceled()
+    {
+        if (_hero?.Move != null)
+        {
+            Hero.Move.CanMove = true;
+            Hero.Animator.speed = 1;
+            Hero.Move.StopLookAt();
+
+            if (isServer) ServerDestroyPendingImpacts();
+            else CmdDestroyPendingImpacts();
+        }
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        _hero.Animator.speed = CastDeley;
+        Hero.Animator.speed = Hero.Animator.speed / CastDeley;
+        Damage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
 
-        while (float.IsPositiveInfinity(_targetPoint.x) && !Disactive)
+        while (float.IsPositiveInfinity(_targetPoint.x) && !_disactive)
         {
-            if (GetMouseButton && IsCanCast)
-            {
-                Vector3 clickedPoint = GetMousePoint();
-
-                if (IsPointInRadius(Radius, clickedPoint))
-                {
-                    _targetPoint = clickedPoint;
-                }
-            }
+            if (GetMouseButton) if (TryGetGroundPoint(out Vector3 ground) && IsPointInRadius(Radius, ground)) _targetPoint = ground;
             yield return null;
         }
+
+        CmdSpawnImpact(_targetPoint, Damage);
+
+        if (tripleShotTalentActive && reconnaissanceFire != null && reconnaissanceFire.CurrentFireAura != null)
+        {
+            Vector3 auraCenter = reconnaissanceFire.CurrentFireAura.transform.position;
+            float combinedRadius = Area + reconnaissanceFire.Area;
+            float distantion = Vector3.Distance(_targetPoint, auraCenter);
+
+            if (distantion <= combinedRadius / 2)
+            {
+                CmdSpawnImpact(_targetPoint, Damage / 2);
+                _secondShotPlanned = true;
+            }
+        }
+
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(_targetPoint);
         callbackDataSaved(targetInfo);
@@ -56,114 +113,132 @@ public class ShotIntoSky : Skill
 
     protected override IEnumerator CastJob()
     {
-        DrawDamageZone(_targetPoint);
-        Damage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
+        CmdExecuteCast();
 
-        yield return new WaitForSeconds(0.1f);
+        if (_secondShotPlanned)
+        {
+            yield return new WaitForSeconds(_extraShotDelay);
+            CmdExecuteCast();
+            _secondShotPlanned = false;
+        }
 
-        ApplyDamageToEnemiesInZone();
+        yield return null;
         _hero.Animator.speed = 1f;
+        ClearData();
     }
 
-    #region ApplyDamageToEnemiesInZone
-    private void ApplyDamageToEnemiesInZone()
+    private bool TryGetGroundPoint(out Vector3 groundPoint)
     {
-        CircleArea damageZone = skillRenderer.TempDamageZone;
+        groundPoint = Vector3.zero;
 
-        if (damageZone != null)
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        var hits = Physics.RaycastAll(ray, 100f, ~0).OrderBy(hit => hit.distance);
+
+
+        foreach (var hit in hits)
         {
-            Collider[] hitColliders = Physics.OverlapSphere(damageZone.transform.position, Area, TargetsLayers);
-            Collider[] objectColliders = Physics.OverlapSphere(damageZone.transform.position, Area);
+            if (hit.collider.GetComponent<Character>() != null) continue;
+            if ((groundLayer.value & (1 << hit.collider.gameObject.layer)) == 0) continue;
 
-            foreach (var hitCollider in hitColliders)
-            {
-                if (hitCollider.TryGetComponent<IDamageable>(out IDamageable target) && hitCollider != Hero.gameObject)
-                {
-                    float finalDamage = CalculateDamage(Damage);
-                    ApplyDamage(finalDamage, DamageType.Physical, target);
-
-                    if (hitCollider.TryGetComponent<Character>(out Character character))
-                    {
-                        var targetState = character.CharacterState;
-                        if (targetState != null)
-                        {
-                            if (shotAstralManaActive && targetState.CheckForState(States.Astral)) RestoreMana();
-                            if (targetState.CheckForState(States.Silent) && silenceTalentActive) CmdAddWeakeningSilence(targetState);
-                            if (UnityEngine.Random.Range(0f, 100f) <= stunChance) CmdAddState(targetState);
-                        }
-                    }
-                }
-            }
-
-            foreach (var objectCollider in objectColliders)
-            {
-                if (objectCollider.TryGetComponent<ReconnaissanceFireAura>(out ReconnaissanceFireAura aura) && tripleShotTalentActive)
-                {
-                    if (FindObjectOfType<ReconnaissanceFireArrowIntoSkyTalent>() != null && !_tripleShot)
-                    {
-                        _tripleShot = true;
-                        StartCoroutine(SpawnAdditionalDamageZones(aura));
-                    }
-                }
-            }
-
-            if (!_tripleShot) StopDamageZone();
-        }
-    }
-    #endregion
-
-    private float CalculateDamage(float baseDamage)
-    {
-        bool isCriticalHit = UnityEngine.Random.Range(0f, 100f) <= criticalChance;
-
-        if (isCriticalHit)
-        {
-            return baseDamage * CriticalMultiplier;
+            groundPoint = hit.point;
+            return true;
         }
 
-        return baseDamage;
+        return false;
     }
 
-    private void ApplyDamage(float damage, DamageType damageType, IDamageable target)
-    {
-        Damage _damage = new Damage
-        {
-            Value = damage,
-            Type = damageType,
-            PhysicAttackType = AttackRangeType.RangeAttack,
-        };
 
-        if (target is Character targetComponent)
-        {
-            CmdApplyDamage(_damage, targetComponent.gameObject);
-        }
+    [Command]
+    private void CmdSpawnImpact(Vector3 position, float damage)
+    {
+        if (!impactPrefab) return;
+
+        ArrowIntoSkyProjectile impact = Instantiate(impactPrefab, position, Quaternion.identity);
+        SceneManager.MoveGameObjectToScene(impact.gameObject, _hero.NetworkSettings.MyRoom);
+        impact.Init(playerLinks, this, damage, silenceTalentActive, tripleShotTalentActive, shotAstralManaActive);
+        NetworkServer.Spawn(impact.gameObject);
+
+        _arrowIntoSkyProjectileIds.Add(impact.GetComponent<NetworkIdentity>().netId);
+
+        RpcInit(impact.gameObject, damage);
     }
 
     [Command]
-    private void CmdAddState(CharacterState targetState)
+    private void CmdExecuteCast()
     {
-        targetState.AddState(States.Stun, 2, 0, Hero.gameObject, this.name);
+        CleanupProjectileList();
+
+        if (_arrowIntoSkyProjectileIds.Count == 0) return;
+
+        uint id = _arrowIntoSkyProjectileIds[0];
+        _arrowIntoSkyProjectileIds.RemoveAt(0);
+
+        StartCoroutine(ActivateAfterDelay(id));
     }
 
-    [Command]
-    private void CmdAddWeakeningSilence(CharacterState targetState)
+    [Command] private void CmdDestroyPendingImpacts() => ServerDestroyPendingImpacts();
+
+    [ClientRpc]
+    protected void RpcInit(GameObject gameObject, float damage)
     {
-        targetState.AddState(States.WeakeningSilence, 4, 4, Hero.gameObject, this.name);
+        if (gameObject == null) return;
+
+        ArrowIntoSkyProjectile impact = gameObject.GetComponent<ArrowIntoSkyProjectile>();
+        if (impact != null) impact.Init(playerLinks, this, damage, silenceTalentActive, tripleShotTalentActive, shotAstralManaActive);
+    }
+ 
+    [ClientRpc] private void RpcActivate(ArrowIntoSkyProjectile projectile) => projectile.Activate();
+
+    [Server]
+    private void CleanupProjectileList()
+    {
+        for (int i = _arrowIntoSkyProjectileIds.Count - 1; i >= 0; i--)
+            if (!NetworkServer.spawned.TryGetValue(_arrowIntoSkyProjectileIds[i], out var ni) || ni == null) _arrowIntoSkyProjectileIds.RemoveAt(i);
     }
 
-    //[Command]
-    //private void CmdApplyDamage(GameObject targetObject, Damage damage, Skill skill)
-    //{
-    //    if (targetObject != null && targetObject.TryGetComponent<IDamageable>(out IDamageable target))
-    //    {
-    //        target.TryTakeDamage(ref damage, skill);
-    //    }
-    //}
+    [Server]
+    private void ServerDestroyPendingImpacts(int count = 1)
+    {
+        while (count-- > 0 && _arrowIntoSkyProjectileIds.Count > 0)
+        {
+            uint id = _arrowIntoSkyProjectileIds[0];
+            _arrowIntoSkyProjectileIds.RemoveAt(0);
+
+            if (NetworkServer.spawned.TryGetValue(id, out NetworkIdentity networkIdentity) && networkIdentity != null)
+                NetworkServer.Destroy(networkIdentity.gameObject);
+        }
+    }
+
+    [Server]
+    private IEnumerator ActivateAfterDelay(uint projectileNetId)
+    {
+        yield return new WaitForSeconds(_dropDelayTime);
+
+        if (!NetworkServer.spawned.TryGetValue(projectileNetId, out var netIdentity) || netIdentity == null)
+            yield break;
+
+        var projectile = netIdentity.GetComponent<ArrowIntoSkyProjectile>();
+        if (projectile == null) yield break;
+
+        projectile.Activate();
+        RpcActivate(projectile);
+    }
 
     protected override void ClearData()
     {
         _targetPoint = Vector3.positiveInfinity;
+        _hero.Move.StopLookAt();
+        _hero.Move.CanMove = true;
     }
+
+    public override void LoadTargetData(TargetInfo targetInfo) => _targetPoint = targetInfo.Points[0];
+
+    #region ReconnaissanceFireArrowIntoSkyTalent
+    public void SetTripleShotTalentActive(bool value)
+    {
+        tripleShotTalentActive = value;
+    }
+    #endregion
 
     #region silenceTalent
     public void SetSilenceTalentActive(bool value)
@@ -172,83 +247,10 @@ public class ShotIntoSky : Skill
     }
     #endregion
 
-    #region ReconnaissanceFireArrowIntoSkyTalent
-    public void SetTripleShotTalentActive(bool value)
-    {
-        tripleShotTalentActive = value;
-    }
-
-    private void ApplyAdditionalDamage(float damageValue)
-    {
-        CircleArea damageZone = skillRenderer.TempDamageZone;
-
-        if (damageZone != null)
-        {
-            Collider[] hitColliders = Physics.OverlapSphere(damageZone.transform.position, Area, TargetsLayers);
-
-            foreach (var hitCollider in hitColliders)
-            {
-                if (hitCollider.TryGetComponent<IDamageable>(out IDamageable target) && hitCollider != Hero.gameObject)
-                {
-                    float finalDamage = CalculateDamage(damageValue);
-                    ApplyDamage(finalDamage, DamageType.Physical, target);
-
-                    if (hitCollider.TryGetComponent<Character>(out Character character))
-                    {
-                        var targetState = character.CharacterState;
-                        if (targetState != null)
-                        {
-                            if (shotAstralManaActive && targetState.CheckForState(States.Astral)) RestoreMana();
-                            if (targetState.CheckForState(States.Silent) && silenceTalentActive) CmdAddWeakeningSilence(targetState);
-                            if (UnityEngine.Random.Range(0f, 100f) <= stunChance) CmdAddState(targetState);
-                        }
-                    }
-                }
-
-                if (hitCollider.TryGetComponent<ReconnaissanceFireAura>(out ReconnaissanceFireAura aura) && tripleShotTalentActive)
-                {
-                    if (FindObjectOfType<ReconnaissanceFireArrowIntoSkyTalent>() != null && !_tripleShot)
-                    {
-                        StartCoroutine(SpawnAdditionalDamageZones(aura));
-                    }
-                }
-            }
-        }
-    }
-
-    private IEnumerator SpawnAdditionalDamageZones(ReconnaissanceFireAura aura)
-    {
-        yield return new WaitForSeconds(1f);
-        ApplyAdditionalDamage(Damage / 2);
-
-        if (aura.StateDark)
-        {
-            yield return new WaitForSeconds(1f);
-            ApplyAdditionalDamage(Damage / 4);
-            _tripleShot = false;
-            StopDamageZone();
-            yield break;
-        }
-
-        _tripleShot = false;
-        StopDamageZone();
-        yield break;
-    }
-    #endregion
-
     #region ShotsIntoSkyAstralTalent
     public void ShotsIntoSkyAstralTalentActive(bool value)
     {
         shotAstralManaActive = value;
-    }
-
-    private void RestoreMana()
-    {
-        if (Hero.TryGetResource(ResourceType.Mana) is Mana manaResource)
-        {
-            float manaToRestore = manaResource.MaxValue * 0.03f;
-            manaResource.Add(manaToRestore);
-        }
     }
     #endregion
 }

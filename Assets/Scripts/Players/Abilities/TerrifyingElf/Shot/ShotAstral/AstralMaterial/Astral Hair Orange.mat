@@ -93,7 +93,7 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _AlphaToMask: 0
-    - _Blend: 0
+    - _Blend: 2
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
     - _ClearCoatMask: 0
@@ -102,13 +102,13 @@ Material:
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _DstBlend: 10
-    - _DstBlendAlpha: 10
+    - _DstBlend: 1
+    - _DstBlendAlpha: 1
     - _EnvironmentReflections: 1
     - _GlossMapScale: 1
     - _Glossiness: 0
     - _GlossyReflections: 1
-    - _Metallic: 0
+    - _Metallic: 1
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
@@ -126,12 +126,12 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 0
     m_Colors:
-    - _BaseColor: {r: 0.5562258, g: 0, b: 1, a: 0.39215687}
-    - _Color: {r: 0.5562258, g: 0, b: 1, a: 0.39215687}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _BaseColor: {r: 0.11320752, g: 0.09975078, b: 0.09975078, a: 0}
+    - _Color: {r: 0.1132075, g: 0.09975075, b: 0.09975075, a: 0}
+    - _EmissionColor: {r: 811.4717, g: 811.4717, b: 811.4717, a: 1}
     - _HColor: {r: 0.785, g: 0.785, b: 0.785, a: 1}
     - _SColor: {r: 0.19499996, g: 0.19499996, b: 0.19499996, a: 1}
-    - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _SpecColor: {r: 0.05660379, g: 0.044001438, b: 0.044001438, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &8116932616047203682
 MonoBehaviour:

@@ -17105,6 +17105,7 @@ MonoBehaviour:
   syncInterval: 0
   _smoothTime: 0.15
   _currentSpeed: 5
+  _rotationDefaultSpeed: 1000
   _anim: {fileID: 3218874933856675809}
   _flyChecker: {fileID: 481437110747682589}
   moveAudioSource: {fileID: 1079191697634045219}
@@ -17118,8 +17119,10 @@ MonoBehaviour:
   MoveDirection: {x: 0, y: 0, z: 0}
   ExternalMoveDirection: {x: 0, y: 0, z: 0}
   CanMove: 0
+  CanMoveState: 0
   IsMoving: 0
   IsSelect: 0
+  IsMoveBlocked: 0
   _agent: {fileID: 8217033100601787470}
 --- !u!114 &3939151455996886053
 MonoBehaviour:
@@ -17172,7 +17175,8 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
-  _agent: {fileID: 0}
+  _earlyCooldown: 0
+  _agent: {fileID: 8217033100601787470}
   _enemyCheckRadius: 6
   _enemyLayerMask:
     serializedVersion: 2
@@ -17229,10 +17233,11 @@ MonoBehaviour:
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
+  _earlyCooldown: 0
   fearChanceInRadius: 0.2
   fearChanceInsideCollider: 0.8
   tickInterval: 3
-  GhostState: 51
+  GhostState: 52
   duration: 5
   delayBeforeEffect: 5
 --- !u!195 &8217033100601787470

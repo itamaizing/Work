@@ -39,6 +39,7 @@ public class SelectComponent : NetworkBehaviour
     private void OnDestroy()
     {
         Units.Remove(this);
+        if (isOwned) FindObjectOfType<SelectManager>()?.Deselect(GetComponent<Character>());
     }
 
     public void Initialize(MoveComponent move, SkillManager abilitiesComponent,UIPlayerComponents uiComponent)

@@ -6050,9 +6050,6 @@ MonoBehaviour:
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
-  _attackZoneSize: 0
-  _attackDelay: 1.5
-  _chargeAttackDelay: 0
   _buffDuration: 18
   _healAmount: 6
   _damageAmount: 6
@@ -6502,9 +6499,6 @@ MonoBehaviour:
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
-  _attackZoneSize: 5
-  _attackDelay: 1
-  _chargeAttackDelay: 0
   projectile: {fileID: 7795660894077134963, guid: 8e56a73e4e78d7841ac2f37176fe2356, type: 3}
   playerLinks: {fileID: 4534754468497973439}
   spawnPoint: {fileID: 7912234591130548331}

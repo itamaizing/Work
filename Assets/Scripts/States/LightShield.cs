@@ -40,6 +40,12 @@ public class LightShield : AbstractCharacterState, IDamageable
 
         Debug.Log("Shield HP - " + _maxAbsorption);
         DamageTaken += DamageEnemiesInRadius;
+
+        if (_characterState.TryGetComponent<Health>(out var health))
+        {
+            health.AddShieldValues(_maxAbsorption);
+            health.UpdateShieldValues(_damageAbsorbed, _maxAbsorption);
+        }
     }
 
     public override void UpdateState()
@@ -56,15 +62,29 @@ public class LightShield : AbstractCharacterState, IDamageable
     {
         Debug.Log("LightShield state exited.");
         DamageTaken -= DamageEnemiesInRadius;
+
+        if (_characterState.TryGetComponent<Health>(out var health))
+        {
+            health.ResetShieldValues();
+        }
+
         _characterState.RemoveState(this);
 
-        if (_lightShield != null) _lightShield.SetActive(false);
+        if (_lightShield != null)
+            _lightShield.SetActive(false);
     }
 
     public override bool Stack(float time)
     {
         _duration = time;
         _damageAbsorbed = 0;
+
+        if (_characterState.TryGetComponent<Health>(out var health))
+        {
+            health.AddShieldValues(_maxAbsorption);
+            health.UpdateShieldValues(_damageAbsorbed, _maxAbsorption);
+        }
+
         return false;
     }
 
@@ -87,8 +107,14 @@ public class LightShield : AbstractCharacterState, IDamageable
 
         DamageTaken?.Invoke(tempDamage, skill);
 
+        if (_characterState.TryGetComponent<Health>(out var health))
+        {
+            health.UpdateShieldValues(_damageAbsorbed, _maxAbsorption);
+        }
+
         if (_damageAbsorbed >= _maxAbsorption)
         {
+            ExitState();
             return true;
         }
 

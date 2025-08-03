@@ -19,7 +19,7 @@ public class Blindness : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        throw new NotImplementedException();
+        if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as Character;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)

@@ -11,10 +11,21 @@ public class StateIcons : MonoBehaviour
      [SerializeField] private StateIcoItem _frosting;
      [SerializeField] private StateIcoItem _blind;*/
     [SerializeField] private GameObject _spawnPos;
-
     [SerializeField] private List<StateIcoItem> _icons;
+
+    [Header("Border colors")]
+    [SerializeField] private Color _baffColor = new(0.23f, 0.9f, 0.23f);
+    [SerializeField] private Color _debaffColor = new(0.9f, 0.15f, 0.15f);
+    [SerializeField] private Color _neutralColor = Color.gray;
+
+    private CharacterState _characterState;
     private List<StateIcoItem> _activeEffects = new List<StateIcoItem>();
     private bool _added = false;
+
+    private void Awake()
+    {
+        _characterState = GetComponentInParent<CharacterState>();
+    }
 
     /*private void Update()
 	{
@@ -43,25 +54,26 @@ public class StateIcons : MonoBehaviour
 	}*/
     public void ActivateIco(States state, float timeToDecrease, int stack, bool canStack, int maxStackValue = 1)
     {
-        if (canStack)
+        for (int i = 0; i < _activeEffects.Count; i++)
         {
-            for (int i = 0; i < _activeEffects.Count; i++)
+            var ico = _activeEffects[i];
+            if (ico.state == state)
             {
-                var ico = _activeEffects[i];
-                if (ico.state == state)
+                ico.FadeFront.DOKill();
+
+                if (canStack)
                 {
                     ico.maxStack = maxStackValue;
-
-                    if (ico.count < ico.maxStack) ico.count += stack;
-                    ico.time.Add(timeToDecrease);
-                    if (ico.count > 0)
-                    {
-                        ico.Text.text = ico.count.ToString();
-                        ico.Text.gameObject.SetActive(true);
-                    }
-                    MoveIcoToEnd(i);
-                    return;
+                    ico.count = Mathf.Min(ico.count + stack, ico.maxStack);
                 }
+                else ico.count = 1;
+
+                StartProgress(ico, timeToDecrease);
+                RefreshText(ico);
+                MoveIcoToEnd(i);
+
+                ico.border.color = GetBorderColor(state);
+                return;
             }
         }
 
@@ -70,20 +82,17 @@ public class StateIcons : MonoBehaviour
             if (ico.state == state)
             {
                 var newIco = Instantiate(ico, _spawnPos.transform);
-                newIco.time.Add(timeToDecrease);
                 newIco.count = stack;
                 newIco.maxStack = maxStackValue;
-                _activeEffects.Add(newIco);
-                if (timeToDecrease < 0)
-                {
-                    AnimateIco(newIco, true);
-                }
-                else
-                {
-                    AnimateIco(newIco);
-                }
 
-                _added = true;
+                StartProgress(newIco, timeToDecrease);
+                RefreshText(newIco);
+
+                _activeEffects.Add(newIco);
+                MoveIcoToEnd(_activeEffects.Count - 1);
+
+                newIco.border.color = GetBorderColor(state);
+                return;
             }
         }
         if (!_added)
@@ -116,6 +125,55 @@ public class StateIcons : MonoBehaviour
              default:
                  break;
          }*/
+    }
+
+    private Color GetBorderColor(States state)
+    {
+        if (_characterState == null) return _neutralColor;
+
+        if (_characterState.enumToState.TryGetValue(state, out var stateObj))
+        {
+            return stateObj.BaffDebaff switch
+            {
+                BaffDebaff.Baff => _baffColor,
+                BaffDebaff.Debaff => _debaffColor,
+                _ => _neutralColor
+            };
+        }
+        return _neutralColor;
+    }
+
+    private void StartProgress(StateIcoItem ico, float duration)
+    {
+        ico.currentDuration = duration;
+        ico.FadeFront.DOKill();
+        ico.FadeFront.fillAmount = 0f;
+
+        ico.FadeFront.DOFillAmount(1f, duration).SetEase(Ease.Linear).OnComplete(() => RemoveOrRestart(ico));
+    }
+
+    private void RemoveOrRestart(StateIcoItem ico)
+    {
+        if (--ico.count > 0)
+        {
+            RefreshText(ico);
+            StartProgress(ico, ico.currentDuration);
+        }
+        else
+        {
+            _activeEffects.Remove(ico);
+            Destroy(ico.gameObject);
+        }
+    }
+
+    private void RefreshText(StateIcoItem ico)
+    {
+        if (ico.count > 1)
+        {
+            ico.Text.text = ico.count.ToString();
+            ico.Text.gameObject.SetActive(true);
+        }
+        else ico.Text.gameObject.SetActive(false);
     }
 
     private void AnimateIco(StateIcoItem icoItem, bool isAnimationNotNeed = false)
