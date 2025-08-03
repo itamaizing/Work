@@ -77,7 +77,7 @@ public class SkillQueue : MonoBehaviour
     {
         if (_currentSkill != null)
         {
-            _currentSkill.TryCancel(isFoceCancel);
+            _currentSkill.TryCancel(isForceCancel);
 
 
             if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))

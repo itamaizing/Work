@@ -39,12 +39,6 @@ public class SpawnComponent : NetworkBehaviour
     }
 
     [Command]
-    public void CmdSpawnUnitInPoint(Vector3 position, int index)
-    {
-        SpawnUnit(index, position);
-    }
-
-    [Command]
     public void CmdSpawnEnemyPoint(Vector3 position, Quaternion rotation)
     {
         SpawnCharacter(_enemyPrefab, position, rotation);
