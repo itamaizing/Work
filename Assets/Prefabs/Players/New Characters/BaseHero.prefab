@@ -6560,7 +6560,7 @@ MonoBehaviour:
   m_DecalLayerMask: 4294967294
   m_ScaleMode: 0
   m_Offset: {x: 0, y: 0, z: 2}
-  m_Size: {x: 1, y: 1, z: 4}
+  m_Size: {x: 0.91, y: 0.91, z: 4}
   m_FadeFactor: 0.944
 --- !u!1 &4427805520474980634
 GameObject:
@@ -22612,7 +22612,7 @@ MonoBehaviour:
   m_DecalLayerMask: 4294967294
   m_ScaleMode: 0
   m_Offset: {x: 0, y: 0, z: 2}
-  m_Size: {x: 2, y: 2, z: 4}
+  m_Size: {x: 1.4, y: 1.4, z: 4}
   m_FadeFactor: 0.944
 --- !u!1 &6327942781302870463
 GameObject:
