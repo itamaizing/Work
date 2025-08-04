@@ -18761,7 +18761,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6214007637544752149, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _layerMask.m_Bits
-      value: 8208
+      value: 8192
       objectReference: {fileID: 0}
     - target: {fileID: 6226204041481316500, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_IsActive
@@ -19658,7 +19658,7 @@ MonoBehaviour:
   playerLinks: {fileID: 4534754468497973439}
   minDamage: 12
   maxDamage: 18
-  _dropDelayTime: 3
+  _dropDelayTime: 2
   reconnaissanceFire: {fileID: 2750012758126725032}
   impactPrefab: {fileID: 2350920691492312483, guid: cac1bddd67383cf44b63154f1d1cea37, type: 3}
   arrowIntoSkyEffect: {fileID: 215749735526849689}

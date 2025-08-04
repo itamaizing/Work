@@ -25,6 +25,7 @@ public class ShotIntoSky : Skill
     private readonly SyncList<uint> _arrowIntoSkyProjectileIds = new SyncList<uint>();
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private bool _secondShotPlanned;
+    private bool _tripleShootPlanned;
     private const float _extraShotDelay = 1f;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("ShotSkyCastDelay");
@@ -102,8 +103,13 @@ public class ShotIntoSky : Skill
             if (distantion <= combinedRadius / 2)
             {
                 CmdSpawnImpact(_targetPoint, Damage / 2);
-                if (reconnaissanceFire.CurrentFireAura.StateDark) CmdSpawnImpact(_targetPoint, Damage / 4);
                 _secondShotPlanned = true;
+
+                if (reconnaissanceFire.CurrentFireAura.StateDark)
+                {
+                    CmdSpawnImpact(_targetPoint, Damage / 4);
+                    _tripleShootPlanned = true;
+                }
             }
         }
 
@@ -121,6 +127,14 @@ public class ShotIntoSky : Skill
             yield return new WaitForSeconds(_extraShotDelay);
             CmdExecuteCast();
             _secondShotPlanned = false;
+
+            if (_tripleShootPlanned)
+            {
+                yield return new WaitForSeconds(_extraShotDelay);
+                CmdExecuteCast();
+
+                _tripleShootPlanned = false;
+            }
         }
 
         yield return null;

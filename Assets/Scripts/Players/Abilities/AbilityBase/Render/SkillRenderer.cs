@@ -334,11 +334,7 @@ public class SkillRenderer : NetworkBehaviour
 		Vector3 worldPosition = Vector3.zero;
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit;
-		if (Physics.Raycast(ray, out hit, _layerMask))
-		{
-			worldPosition = hit.point;
-		}
-
+		if (Physics.Raycast(ray, out hit,  Mathf.Infinity,  _layerMask, QueryTriggerInteraction.Ignore)) worldPosition = hit.point;
 		//Vector3 dir = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
 		Vector3 dir = worldPosition - gameObject.transform.position;
 		float angle = Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg;
@@ -422,10 +418,7 @@ public class SkillRenderer : NetworkBehaviour
 		Vector3 worldPosition = Vector3.zero;
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit;
-		if (Physics.Raycast(ray, out hit))
-		{
-			worldPosition = hit.point;
-		}
+		if (Physics.Raycast(ray, out hit, Mathf.Infinity, _layerMask, QueryTriggerInteraction.Ignore)) worldPosition = hit.point;
 
 		//Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x,0 , Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
 		Vector3 mouse = new Vector3(worldPosition.x, 0 , worldPosition.z);
@@ -436,7 +429,7 @@ public class SkillRenderer : NetworkBehaviour
         while (true)
         {
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			if (Physics.Raycast(ray, out hit, _layerMask))
+			if (Physics.Raycast(ray, out hit, Mathf.Infinity, _layerMask, QueryTriggerInteraction.Ignore))
 			{
 				worldPosition = hit.point;
 			}

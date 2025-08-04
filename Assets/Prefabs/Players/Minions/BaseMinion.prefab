@@ -112,6 +112,10 @@ PrefabInstance:
       propertyPath: hero
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 6214007637544752149, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _layerMask.m_Bits
+      value: 8192
+      objectReference: {fileID: 0}
     - target: {fileID: 8388980576940739991, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _character
       value: 
@@ -285,6 +289,7 @@ MonoBehaviour:
   _selectedCircle: {fileID: 4163371236763689060}
   _spawnComponent: {fileID: 5963193180723515438}
   _visionComponent: {fileID: 0}
+  _auras: {fileID: 0}
   _expForDieKill: 5
   _navMeshAgent: {fileID: 1780925315992858912}
 --- !u!195 &1780925315992858912
@@ -337,7 +342,6 @@ MonoBehaviour:
   CanMoveState: 0
   IsMoving: 0
   IsSelect: 0
-  _isMoveBlocked: 0
   _agent: {fileID: 1780925315992858912}
 --- !u!114 &3939151455996886053
 MonoBehaviour:
