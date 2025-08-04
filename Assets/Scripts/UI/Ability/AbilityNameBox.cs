@@ -49,11 +49,11 @@ public class AbilityNameBox : MonoBehaviour
         if (skill.Damage > 0)
         {
             int damage = Mathf.RoundToInt(skill.Damage);
-            _descriptionWithNumbers.text += $"\nУрон: {ColorOpen}{damage}{ColorEnd}";
+            _descriptionWithNumbers.text += $"\nУрон: {ColorOpen}{damage}{ColorEnd} ед. {GetShoolNameForDamage(skill)}";
         }
 
-        WriteTypeDamage(skill);
-        WriteTypeAbityForm(skill);
+        //WriteTypeDamage(skill);
+        //WriteTypeAbityForm(skill);
 
         if (skill.CastDeley > 0)
             _descriptionWithNumbers.text += $"\nПодготовка: {ColorOpen}{skill.CastDeley} сек{ColorEnd}";
@@ -71,9 +71,55 @@ public class AbilityNameBox : MonoBehaviour
         //    _descriptionWithNumbers.text += $"\n{skill.AdditionalDescription}";
     }
 
+    private string GetShoolNameForDamage(Skill skill)
+    {
+        switch (skill.School)
+        {
+            case Schools.Light:
+                return "светом";
+                break;
+
+            case Schools.Dark:
+                return "тьмой";
+                break;
+
+            case Schools.Fire:
+                return "огнем";
+                break;
+
+            case Schools.Water:
+                return "водой";
+                break;
+
+            case Schools.Air:
+                return "воздухом";
+                break;
+
+            case Schools.Earth:
+                return "землей";
+                break;
+
+            case Schools.Physical:
+                return "";
+                break;
+
+            case Schools.Discipline:
+                return "";
+                break;
+
+            case Schools.None:
+                return "";
+                break;
+
+            default:
+                return "";
+                break;
+        }
+    }
+
     private void WriteTypeAbityForm(Skill skill)
     {
-        _descriptionWithNumbers.text += "\n Форма способности:";
+        _descriptionWithNumbers.text += "\nФорма способности:";
 
         switch (skill.AbilityForm)
         {
