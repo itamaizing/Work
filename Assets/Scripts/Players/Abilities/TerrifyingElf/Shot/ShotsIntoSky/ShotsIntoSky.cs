@@ -98,6 +98,7 @@ public class ShotsIntoSky : Skill
             if (distantion <= combinedRadius / 2)
             {
                 CmdSpawnImpact(_targetPoint, Damage / 2);
+                if (reconnaissanceFire.CurrentFireAura.StateDark) CmdSpawnImpact(_targetPoint, Damage / 4);
                 _secondShotPlanned = true;
             }
         }
