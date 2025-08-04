@@ -20267,7 +20267,7 @@ MonoBehaviour:
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
-  _treePrefab: {fileID: 8534025555590041727, guid: 82b70bdb0fc80c343859665623ea7ed8, type: 3}
+  _treePrefab: {fileID: 5108004075575563715, guid: 82b70bdb0fc80c343859665623ea7ed8, type: 3}
   moveComponent: {fileID: 443563987953287420}
   _moveDuration: 0.5
   _activeTrees: []

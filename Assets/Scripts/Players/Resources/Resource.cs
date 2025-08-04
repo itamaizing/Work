@@ -96,9 +96,6 @@ public abstract class Resource : NetworkBehaviour
 
     public void AddMax(float delta, bool keepPercent = false)
     {
-        bool regenWasRunning = _regenCoroutine != null;
-        if (regenWasRunning) StopCoroutine(_regenCoroutine);
-
         float oldMax = _maxValue;
         float oldCurrent = _currentValue;
 
@@ -118,8 +115,6 @@ public abstract class Resource : NetworkBehaviour
 
         if (!Mathf.Approximately(oldMax, _maxValue)) HookMaxValueChanged(oldMax, _maxValue);
         if (!Mathf.Approximately(oldCurrent, _currentValue)) HookValueChanged(oldCurrent, _currentValue);
-
-        if (regenWasRunning && _currentValue < _maxValue) _regenCoroutine = StartCoroutine(RegenerateJob());
     }
 
 

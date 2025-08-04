@@ -9,10 +9,10 @@ using System.Linq;
 public class GrowTree : Skill
 {
     [Header("GrowTree Settings")]
-    [SerializeField] private Tree _treePrefab;
+    [SerializeField] private GrowTreeAura _treePrefab;
     [SerializeField] private MoveComponent moveComponent;
     [SerializeField] private float _moveDuration = 0.5f;
-    [SerializeField] private List<Tree> _activeTrees;
+    [SerializeField] private List<GrowTreeAura> _activeTrees;
     [SerializeField] private ObjectData treeData;
 
     [Header("Talents")]
@@ -24,7 +24,7 @@ public class GrowTree : Skill
     [SerializeField] private LayerMask groundLayer;
 
     private Vector3 _targetPoint = Vector3.positiveInfinity;
-    private Tree _currentTree;
+    private GrowTreeAura _currentTree;
     private ObjectHealth _healthTree;
     private float baseHealth;
     private float baseCastStreamDuration;
@@ -240,7 +240,7 @@ public class GrowTree : Skill
         SceneManager.MoveGameObjectToScene(_currentTree.gameObject, Hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(_currentTree.gameObject, connectionToClient);
 
-        _healthTree = tree.GetComponent<ObjectHealth>();
+        _healthTree = tree.GetComponentInChildren<ObjectHealth>();
         if (_healthTree != null)
         {
             float regenDuration = CastStreamDuration - CastStreamDuration / 3f;
@@ -270,7 +270,7 @@ public class GrowTree : Skill
 
         RpcTeleportToTree(_currentTree.gameObject);
 
-        _healthTree = _currentTree.GetComponent<ObjectHealth>();
+        _healthTree = _currentTree.GetComponentInChildren<ObjectHealth>();
         if (_healthTree != null)
         {
             _healthTree.InitializeObject(treeData);
@@ -297,9 +297,11 @@ public class GrowTree : Skill
     [Command]
     private void CmdRequestInterruptTree(uint treeNetId)
     {
-        if (NetworkServer.spawned.TryGetValue(treeNetId, out NetworkIdentity networkIdentity) &&
-            networkIdentity.TryGetComponent(out ObjectHealth objectHealth))
-            objectHealth.ServerInterruptFillHP();
+        if (NetworkServer.spawned.TryGetValue(treeNetId, out NetworkIdentity networkIdentity))
+        {
+            var health = networkIdentity.GetComponentInChildren<ObjectHealth>();
+            health.ServerInterruptFillHP();
+        }
     }
 
     [Command]
@@ -309,10 +311,10 @@ public class GrowTree : Skill
     }
 
     [ClientRpc]
-    private void RpcClientAddTree(uint netId, Tree currentTree)
+    private void RpcClientAddTree(uint netId, GrowTreeAura currentTree)
     {
         _currentTree = currentTree;
-        if (NetworkClient.spawned.TryGetValue(netId, out var networkIdentity)) _activeTrees.Add(networkIdentity.GetComponent<Tree>());
+        if (NetworkClient.spawned.TryGetValue(netId, out var networkIdentity)) _activeTrees.Add(networkIdentity.GetComponent<GrowTreeAura>());
     }
 
     [ClientRpc]

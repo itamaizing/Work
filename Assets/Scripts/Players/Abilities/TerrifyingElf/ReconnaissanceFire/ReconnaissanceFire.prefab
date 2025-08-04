@@ -11169,7 +11169,9 @@ MonoBehaviour:
   fireDarkTalent: 0
   partialBlindnessTalent: 0
   flameLightPulse: {fileID: 8635874584311858127}
-  colliderFire: {fileID: 0}
+  characterLayer:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!114 &732501578659559874
 MonoBehaviour:
   m_ObjectHideFlags: 0

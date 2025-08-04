@@ -14,7 +14,7 @@ public class ReconnaissanceFireAura : NetworkBehaviour
     [SerializeField] private bool fireDarkTalent;
     [SerializeField] private bool partialBlindnessTalent;
     [SerializeField] private FlameLightPulse flameLightPulse;
-    [SerializeField] private BoxCollider colliderFire;
+    [SerializeField] private LayerMask characterLayer;
 
     public event Action<bool> OnStateDarkTalentChanged;
 
@@ -63,6 +63,8 @@ public class ReconnaissanceFireAura : NetworkBehaviour
     [ServerCallback]
     private void OnTriggerEnter(Collider other)
     {
+        if (((1 << other.gameObject.layer) & characterLayer.value) == 0) return;
+
         if (other.TryGetComponent<Character>(out Character character) && !charactersInZone.Contains(character))
         {
             charactersInZone.Add(character);
@@ -74,6 +76,8 @@ public class ReconnaissanceFireAura : NetworkBehaviour
     [ServerCallback]
     private void OnTriggerExit(Collider other)
     {
+        if (((1 << other.gameObject.layer) & characterLayer.value) == 0) return;
+
         if (other.TryGetComponent<Character>(out Character character))
         {
             charactersInZone.Remove(character);
