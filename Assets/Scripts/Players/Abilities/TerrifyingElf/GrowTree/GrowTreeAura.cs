@@ -14,6 +14,11 @@ public class GrowTreeAura : NetworkBehaviour
     private readonly HashSet<uint> clientIds = new();
     private Coroutine _routine;
 
+    [Header("Talent")]
+    private bool _growTreeIncreasesMaxHealth;
+
+    public bool GrowTreeIncreasesMaxHealth { get => _growTreeIncreasesMaxHealth; set => _growTreeIncreasesMaxHealth = value; }
+
     [Server]
     private void RemoveAuthority()
     {
@@ -43,6 +48,7 @@ public class GrowTreeAura : NetworkBehaviour
     [ServerCallback]
     private void OnTriggerEnter(Collider other)
     {
+        if (!_growTreeIncreasesMaxHealth) return;
         if (((1 << other.gameObject.layer) & characterLayer.value) == 0) return;
 
         if (other.TryGetComponent<Character>(out Character character) && !charactersInZone.Contains(character))
@@ -56,6 +62,7 @@ public class GrowTreeAura : NetworkBehaviour
     [ServerCallback]
     private void OnTriggerExit(Collider other)
     {
+        if (!_growTreeIncreasesMaxHealth) return;
         if (((1 << other.gameObject.layer) & characterLayer.value) == 0) return;
 
         if (other.TryGetComponent<Character>(out Character character))

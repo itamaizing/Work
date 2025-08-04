@@ -122,7 +122,7 @@ public class TerrifyingElfAura : NetworkBehaviour
     {
         if (!calmnessTalent || currentSkill == null) return;
 
-        if (currentSkill.AbilityForm == AbilityForm.Spell)
+        if (currentSkill.AbilityForm == AbilityForm.Spell || currentSkill.AbilityForm == AbilityForm.Magic)
         {
             var character = currentSkill.Hero;
             if (character != null && character.CharacterState != null)

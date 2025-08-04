@@ -6,7 +6,7 @@ public class PartialBlindness : AbstractCharacterState
 {
     private float _baseDuration;
     private float _duration;
-    private int _maxStack = 6;
+    private int _maxStack = 3;
     private float _currentMissChance = 10f;
     private float _currentEffectiveness = 1f;
     private const float _missChanceReductionPerSecond = 0.04f;

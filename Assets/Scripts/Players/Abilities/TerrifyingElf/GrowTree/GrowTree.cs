@@ -16,7 +16,8 @@ public class GrowTree : Skill
     [SerializeField] private ObjectData treeData;
 
     [Header("Talents")]
-    [SerializeField] private bool treeHealthTalent;
+    //[SerializeField] private bool treeHealthTalent; // Созданное дерево каждые 0,3 сек увеличивает максималньый запас здоровья на 1 ед. Вплоть до 60 сек.
+    [SerializeField] private bool growTreeIncreasesMaxHealth;
     [SerializeField] private bool treeMagicEvadeTalent;
     [SerializeField] private bool treeShotCooldownTalent;
 
@@ -254,6 +255,7 @@ public class GrowTree : Skill
         ResetShotCooldowns();
 
         _activeTrees.Add(tree);
+        _currentTree.GrowTreeIncreasesMaxHealth = growTreeIncreasesMaxHealth;
         RpcClientAddTree(tree.GetComponent<NetworkIdentity>().netId, _currentTree);
     }
 
@@ -284,6 +286,7 @@ public class GrowTree : Skill
         ResetShotCooldowns();
 
         _activeTrees.Add(tree);
+        _currentTree.GrowTreeIncreasesMaxHealth = growTreeIncreasesMaxHealth;
         RpcClientAddTree(tree.GetComponent<NetworkIdentity>().netId, _currentTree);
     }
 
@@ -314,6 +317,7 @@ public class GrowTree : Skill
     private void RpcClientAddTree(uint netId, GrowTreeAura currentTree)
     {
         _currentTree = currentTree;
+        _currentTree.GrowTreeIncreasesMaxHealth = growTreeIncreasesMaxHealth;
         if (NetworkClient.spawned.TryGetValue(netId, out var networkIdentity)) _activeTrees.Add(networkIdentity.GetComponent<GrowTreeAura>());
     }
 
@@ -344,12 +348,13 @@ public class GrowTree : Skill
     #region Talent for doubling HP
     public void treeHealthTalentActive(bool value)
     {
-        treeHealthTalent = value;
+        //treeHealthTalent = value;
+        growTreeIncreasesMaxHealth = value;
     }
 
     private void TreeHealthTalentEnter()
     {
-        if (treeHealthTalent && _currentTree != null) _treeHealthCoroutine = StartCoroutine(IncreaseTreeMaxHealthOverTime());
+        //if (treeHealthTalent && _currentTree != null) _treeHealthCoroutine = StartCoroutine(IncreaseTreeMaxHealthOverTime());
     }
 
     private void TreeHealthTalentExit()

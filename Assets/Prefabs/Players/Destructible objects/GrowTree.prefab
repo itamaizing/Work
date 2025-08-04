@@ -952,6 +952,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _selectProjector: {fileID: 2347595417492451061}
+  _selectProjectorTargetVariant: {fileID: 0}
   _stroke: {fileID: 6939952135723294615}
 --- !u!1 &3963474318237979773
 GameObject:
