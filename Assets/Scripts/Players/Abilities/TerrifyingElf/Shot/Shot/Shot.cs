@@ -95,6 +95,10 @@ public class Shot : Skill
         }
 
         CmdCreateProjectileAtPosition(_targetPoint, Damage);
+
+        var mmState = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
+        if (mmState != null) foreach (var pos in mmState.PopPendingTargets()) CmdCreateProjectileAtPosition(pos, Damage);
+
         ProcessGhostCooldownReduction();
 
         WorkAnimator(_startAnimTrigger, _endAnimTrigger);
@@ -149,7 +153,7 @@ public class Shot : Skill
     }
 
     [Command]
-    protected void CmdCreateProjectileAtPosition(Vector3 position, float damage)
+    public void CmdCreateProjectileAtPosition(Vector3 position, float damage)
     {
         Vector3 spawnPosition = spawnPoint != null ? spawnPoint.position : transform.position;
         Vector3 direction = (position - spawnPosition).normalized;

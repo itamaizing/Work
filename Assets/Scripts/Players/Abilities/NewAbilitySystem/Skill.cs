@@ -249,6 +249,7 @@ public abstract class Skill : NetworkBehaviour
     public event Action<float> MassageNotCooldowned;
     public event Action OnSkillCanceled;
     public event Action CastSuccess;
+    public event Action<Skill> CastSuccessSkill;
     public event Action<TargetInfo> TargetDataSaved;
     public event Action<bool> AutoModeChanged;
     public event Action<Vector3> ClickPoint;
@@ -382,6 +383,8 @@ public abstract class Skill : NetworkBehaviour
     {
         CastStreamStarted?.Invoke(duration);
     }
+
+    public void TryCastPay(bool pay) => TryPayCost(pay);
 
     public bool TryPreparing()
     {
@@ -1417,6 +1420,7 @@ public abstract class Skill : NetworkBehaviour
         _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
 
         CastSuccess?.Invoke();
+        CastSuccessSkill?.Invoke(this);
         CastEnded?.Invoke();
         _isCasting = false;
 
