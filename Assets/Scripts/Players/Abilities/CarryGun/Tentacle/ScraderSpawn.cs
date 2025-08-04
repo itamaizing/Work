@@ -58,7 +58,7 @@ public class ScraderSpawn : Skill
 
         if (tentacle.TryGetComponent<SpawnComponent>(out var spawnComponent))
         {
-            spawnComponent.CmdSpawnUnitPoint(_spawnPoint, Quaternion.identity);
+            spawnComponent.CmdSpawnUnitInPoint(_spawnPoint, 0);
             spawnComponent.CmdRemoveUnit(minion);
         }
 

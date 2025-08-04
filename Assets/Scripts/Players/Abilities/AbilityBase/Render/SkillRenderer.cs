@@ -21,6 +21,7 @@ public class SkillRenderer : NetworkBehaviour
     [SerializeField] private Color _colorForEnd;
     [SerializeField] private Color _colorForStart;
 
+    private List<Character> _targets = new List<Character>();
     private List<LineZoneRender> _lineZoneRenders = new();
     private bool _isOverrideClosestTarget = false;
     //private SphereArea _tempDamageZone;
@@ -108,7 +109,7 @@ public class SkillRenderer : NetworkBehaviour
 		}
 	}
 
-    #region Логика для предпоказана урона от скила
+    #region пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     public void StopPreview()
     {
         if (_previewDamageCoroutine != null)
@@ -270,6 +271,11 @@ public class SkillRenderer : NetworkBehaviour
         {
             StopCoroutine(_drawClosestTargetCoroutine);
             _drawClosestTargetCoroutine = null;
+
+            foreach (var target in _targets)
+            {
+                target.SelectedCircle.SwitchStroke(false);
+            }
         }    
 
         if(_tempTarget != null)
@@ -447,7 +453,6 @@ public class SkillRenderer : NetworkBehaviour
         {
             if (IsOverrideClosestTarget) yield return null;
 
-            List<Character> targets = new List<Character>();
             Collider[] collider = Physics.OverlapSphere(transform.position, radius + 500);
 
             foreach (var item in collider)
@@ -458,13 +463,15 @@ public class SkillRenderer : NetworkBehaviour
                     {
                         continue;
                     }
-                    targets.Add(enemy);
+
+                    if(_targets.Contains(enemy) == false)
+                        _targets.Add(enemy);
                 }
             }
-            targets = targets.OrderBy(character => Vector3.Distance(character.transform.position, gameObject.transform.position)).ToList();
-            if (targets.Count > 0)
+            _targets = _targets.OrderBy(character => Vector3.Distance(character.transform.position, gameObject.transform.position)).ToList();
+            if (_targets.Count > 0)
             {
-				foreach (var target in targets)
+				foreach (var target in _targets)
 				{
 					if (Vector3.Distance(target.transform.position, transform.position) <= radius)
 					{
@@ -479,14 +486,14 @@ public class SkillRenderer : NetworkBehaviour
 
 				if (_tempTarget != null)
                 {
-                    if (Vector3.Distance(_tempTarget.transform.position, transform.position) > Vector3.Distance(targets[0].transform.position, transform.position))
+                    if (Vector3.Distance(_tempTarget.transform.position, transform.position) > Vector3.Distance(_targets[0].transform.position, transform.position))
                     {
                         _tempTarget.SelectedCircle.SwitchClostestTarget(false);
-                        _tempTarget = targets[0];
+                        _tempTarget = _targets[0];
                     }
                 }
 
-                _tempTarget = targets[0];
+                _tempTarget = _targets[0];
                 _tempTarget.SelectedCircle.SwitchClostestTarget(true);
 
                 if (Vector3.Distance(_tempTarget.transform.position, transform.position) <= radius)
