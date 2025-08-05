@@ -20,6 +20,7 @@ public class Shot : Skill
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private AudioSource _audioSource;
     private int _consecutiveShots;
+    private Character _lastTarget;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash(_startAnimTrigger);
     protected override int AnimTriggerCast => 0;
@@ -66,6 +67,7 @@ public class Shot : Skill
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         Hero.Animator.speed = Hero.Animator.speed / CastDeley;
+        var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
         while (float.IsPositiveInfinity(_targetPoint.x))
         {
@@ -74,7 +76,11 @@ public class Shot : Skill
                 Vector3 clickedPoint = GetMousePoint();
 
                 if (NoObstacles(clickedPoint, transform.position, _obstacle) && TryGetDamageableAtPoint(clickedPoint, out var damageable))
+                {
+                    if (_lastTarget == null) _lastTarget = (damageable as Component)?.GetComponent<Character>();
+                    if (multiMagic != null) multiMagic.LastTarget = _lastTarget;
                     _targetPoint = clickedPoint;
+                }
             }
             yield return null;
         }
@@ -96,11 +102,17 @@ public class Shot : Skill
 
         CmdCreateProjectileAtPosition(_targetPoint, Damage);
 
-        var mmState = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
-        if (mmState != null) foreach (var pos in mmState.PopPendingTargets()) CmdCreateProjectileAtPosition(pos, Damage);
+        var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
+        if (multiMagic != null)
+        {
+            foreach (var position in multiMagic.PopPendingTargets())
+            {
+                if (position == _targetPoint) continue;
+                CmdCreateProjectileAtPosition(position, Damage);
+            }
+        }
 
         ProcessGhostCooldownReduction();
-
         WorkAnimator(_startAnimTrigger, _endAnimTrigger);
         HandleSkillCanceled();
         ClearData();
@@ -124,6 +136,7 @@ public class Shot : Skill
         {
             Hero.Move.CanMove = true;
             Hero.Animator.speed = 1;
+            _lastTarget = null;
             Hero.Move.StopLookAt();
         }
     }

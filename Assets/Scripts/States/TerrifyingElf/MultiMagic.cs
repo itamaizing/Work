@@ -6,23 +6,25 @@ public class MultiMagic : AuraState
 {
     private readonly List<StatusEffect> _effects = new() { StatusEffect.Ability };
 
+    private SkillManager _skills;
+    private Skill _pendingSkill;
+    private Character _lastTarget;
+    private readonly List<Vector3> _pending = new();
+
+    private float _distance;
+    private LayerMask _targetsMask;
+
     public override States State => States.MultiMagic;
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
-
-    private float _distance;
-    private LayerMask _targetsMask;
 
     public override float Distance => _distance;
     public override float EffectRate => 1f;
     public override LayerMask LayerMask => _targetsMask;
     public override float RemainingDuration => duration;
 
-    private SkillManager _skills;
-    private Skill _pendingSkill;
-    private readonly HashSet<Character> _alreadyHit = new();
-    private readonly List<Vector3> _pending = new();
+    public Character LastTarget { get => _lastTarget; set => _lastTarget = value; }  
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
     {
@@ -30,7 +32,7 @@ public class MultiMagic : AuraState
         _skills = caster.GetComponent<SkillManager>();
         duration = durationToExit;
 
-        foreach (var s in _skills.Abilities.Where(a => a.SkillType == SkillType.Target)) s.CastSuccessSkill += OnTargetSkillCast;
+        foreach (var skill in _skills.Abilities.Where(ability => ability.SkillType == SkillType.Target)) skill.CastSuccessSkill += OnTargetSkillCast;
     }
 
     public override void UpdateState()
@@ -41,28 +43,24 @@ public class MultiMagic : AuraState
 
     public override void ExitState()
     {
-        foreach (var s in _skills.Abilities.Where(a => a.SkillType == SkillType.Target)) s.CastSuccessSkill -= OnTargetSkillCast;
+        foreach (var skill in _skills.Abilities.Where(ability => ability.SkillType == SkillType.Target)) skill.CastSuccessSkill -= OnTargetSkillCast;
         Debug.Log("выход из мульти");
         _characterState.RemoveState(this);
     }
 
     public override bool Stack(float time) => false;
-    public override void EffectOnEnter(Character _) { }
-    public override void EffectOnExit(Character c) => _alreadyHit.Remove(c);
+    public override void EffectOnEnter(Character character) { }
+    public override void EffectOnExit(Character character) { }
 
-    public override void EffectOnStay(List<Character> chars)
+    public override void EffectOnStay(List<Character> characters)
     {
         if (_pendingSkill == null) return;
 
-        _alreadyHit.IntersectWith(chars);
-
-        foreach (var ch in chars)
+        foreach (var character in characters)
         {
-            if (ch == _characterState.Character) continue;
-            if (_alreadyHit.Contains(ch)) continue;
+            if (character == _characterState.Character) continue;
 
-            _pending.Add(ch.transform.position);
-            _alreadyHit.Add(ch);
+            _pending.Add(character.transform.position);
         }
 
         _pendingSkill = null;
@@ -77,21 +75,17 @@ public class MultiMagic : AuraState
 
     private void OnTargetSkillCast(Skill skill)
     {
-        if (!_characterState.isServer) return;
+         Debug.Log("вызов CastSuccessSkill");
 
         _pending.Clear();
-        _alreadyHit.Clear();
 
         _distance = skill.Radius;
         _targetsMask = skill.TargetsLayers;
 
-        var cols = Physics.OverlapSphere(_characterState.transform.position, _distance, _targetsMask);
+        var colliders = Physics.OverlapSphere(_characterState.transform.position, _distance, _targetsMask);
 
-        foreach (var col in cols) if (col.TryGetComponent(out Character ch) && ch != _characterState.Character)
-            {
-                _pending.Add(ch.transform.position);
-                _alreadyHit.Add(ch);
-            }
+        foreach (var collider in colliders) if (collider.TryGetComponent(out Character character) && character != _characterState.Character && character != _lastTarget)
+                _pending.Add(character.transform.position);
     }
 
 }

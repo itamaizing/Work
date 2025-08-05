@@ -1381,6 +1381,7 @@ public abstract class Skill : NetworkBehaviour
         _isPreparing = false;
         StopAutoDraw();
 
+        CastSuccessSkill?.Invoke(this);
         _prepareCoroutine = null;
     }
 
@@ -1420,7 +1421,6 @@ public abstract class Skill : NetworkBehaviour
         _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
 
         CastSuccess?.Invoke();
-        CastSuccessSkill?.Invoke(this);
         CastEnded?.Invoke();
         _isCasting = false;
 
