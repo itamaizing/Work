@@ -18,18 +18,19 @@ public class TalentInfoPanel : MonoBehaviour
         int descCnt = data.DescriptionsForInfoPanel.Count;
         int stateCnt = data.StateInfos.Count;
         int pairCnt = Mathf.Max(descCnt, stateCnt);
+        TalentInfoCell cell = null;
 
         for (int i = 0; i < pairCnt; i++)
         {
             if (i < descCnt)
             {
                 var descCell = Instantiate(_cellPref, transform);
+                cell = descCell;
                 _cells.Add(descCell);
 
                 descCell.TextDescription.text = data.DescriptionsForInfoPanel[i];
-
-                if (i == 0) descCell.HideDividingLine();
-                else descCell.ShowDividingLine();
+                descCell.ShowDividingLine();
+                if (i == pairCnt - 1) descCell.HideDividingLine();
             }
 
             if (i < stateCnt)
@@ -42,8 +43,9 @@ public class TalentInfoPanel : MonoBehaviour
                 stateCell.TextDescription.text =
                     $"<color=#FFFF00>{st.StateName}</color> - {st.Description}";
 
-                if (i < pairCnt - 1) stateCell.ShowDividingLine();
-                else stateCell.HideDividingLine();
+                cell.HideDividingLine();
+                stateCell.ShowDividingLine();
+                if (i == pairCnt - 1) stateCell.HideDividingLine();
             }
         }
     }
