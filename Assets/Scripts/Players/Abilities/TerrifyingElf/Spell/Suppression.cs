@@ -18,12 +18,15 @@ public class Suppression : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
+
         while (float.IsPositiveInfinity(_targetPoint.x) && _target == null && !_disactive)
         {
             if (GetMouseButton)
             {
                 _targetPoint = GetMousePoint();
                 _target = GetRaycastTarget(true);
+                if (multiMagic != null) multiMagic.LastTarget = _target;
             }
             yield return null;
         }
@@ -38,7 +41,17 @@ public class Suppression : Skill
         if (_target != null)
         {
             CmdApplyAbsorptionState(_target.gameObject);
-            TryUseCharge();
+
+            var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
+
+            if (multiMagic != null)
+            {
+                foreach (var character in multiMagic.PopPendingTargets())
+                {
+                    TryPayCost();
+                    CmdApplyAbsorptionState(character.gameObject);
+                }
+            }
         }
         yield return null;
     }

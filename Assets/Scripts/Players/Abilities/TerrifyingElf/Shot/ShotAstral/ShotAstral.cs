@@ -28,6 +28,7 @@ public class ShotAstral : Skill
     {
         OnSkillCanceled += HandleSkillCanceled;
         Hero.Animator.speed /= CastDeley;
+        var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
         while (float.IsPositiveInfinity(_targetPoint.x))
         {
@@ -49,6 +50,7 @@ public class ShotAstral : Skill
                     if (damageable is Character character)
                     {
                         _target = character;
+                        if (multiMagic != null) multiMagic.LastTarget = _target;
                         Hero.Move.LookAtTransform(character.transform);
                     }
 
@@ -74,6 +76,18 @@ public class ShotAstral : Skill
         }
 
         CmdCreateProjectileAtPosition(_targetPoint);
+
+        var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
+
+        if (multiMagic != null)
+        {
+            foreach (var character in multiMagic.PopPendingTargets())
+            {
+                TryPayCost();
+                CmdCreateProjectileAtPosition(character.transform.position);
+            }
+        }
+
         WorkAnimator(_startAnimTrigger, _endAnimTrigger);
 
         HandleSkillCanceled();

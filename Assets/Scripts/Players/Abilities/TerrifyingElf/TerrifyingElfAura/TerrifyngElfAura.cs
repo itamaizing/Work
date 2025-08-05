@@ -41,7 +41,7 @@ public class TerrifyingElfAura : NetworkBehaviour
     private bool elvenSkillTalent;
     private bool elvenSkillPhysicsTalent;
     private bool calmnessOnElvenSkillTalent;
-    private bool innerDarknessManaAbsorptionTalent;
+    private bool suppressionManaAbsorptionTalent;
 
     #endregion
 
@@ -200,7 +200,7 @@ public class TerrifyingElfAura : NetworkBehaviour
     public void HuntressMarkPhysicsTalentActive(bool value) => huntressMarkPhysicsTalent = value;
     public void ElvenSkillPhysicsTalent(bool value) => elvenSkillPhysicsTalent = value;
     public void CalmnessOnElvenSkillTalent(bool value) => calmnessOnElvenSkillTalent = value;
-    public void InnerDarknessmanaAbsorption(bool value) => innerDarknessManaAbsorptionTalent = value;
+    public void SuppressionManaAbsorption(bool value) => suppressionManaAbsorptionTalent = value;
 
     [Command]
     private void CmdOnDamageTracked(Damage damage, GameObject target)
@@ -223,8 +223,8 @@ public class TerrifyingElfAura : NetworkBehaviour
             //if (huntressMarkPhysicsTalent && UnityEngine.Random.Range(0f, 100f) <= huntressMarkApplyChance && target != null && target.TryGetComponent<CharacterState>(out var victimState))
             //    victimState.AddState(States.HuntressMark, durationHuntressMark, 0f, gameObject, "HuntressMark");
 
-            if (innerDarknessManaAbsorptionTalent && selfState.GetState(States.InnerDarkness) is InnerDarkness innerDarkness && innerDarkness.CurrentStacksCount > 0 && hero.TryGetResource(ResourceType.Mana) is Mana mana)
-                mana.Add(damage.Value * 0.05f * innerDarkness.CurrentStacksCount);
+            if (suppressionManaAbsorptionTalent && selfState.GetState(States.Suppression) is SuppressionState suppression && suppression.CurrentStacksCount > 0 && hero.TryGetResource(ResourceType.Mana) is Mana mana)
+                mana.Add(damage.Value * 0.05f * suppression.CurrentStacksCount);
 
             if (manaAbsorptionPhysicalTalent) OnDamageDealt(damage, target);
         }

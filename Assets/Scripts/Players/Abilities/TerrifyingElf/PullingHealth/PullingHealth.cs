@@ -19,7 +19,7 @@ public class PullingHealth : Skill
     //[SerializeField] private float radiusGhost;
     [SerializeField] private bool _pullingHealthThroughGhosts;
     [SerializeField] private bool pullingHealthGhostTalent;
-    [SerializeField] private bool _pullingHealthSpeedWithSilenceTalent;
+    [SerializeField] private bool _pullingHealthSpeedWithFearTalent;
 
     private AudioSource _audioSource;
     private GameObject _activeEffect;
@@ -33,6 +33,9 @@ public class PullingHealth : Skill
     private float _baseCastStreamDuration;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private Transform _targetTransform;
+
+    private readonly List<IDamageable> _extraTargets = new();
+    private readonly List<GameObject> _extraEffects = new();
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("PullingHealthCastDelay");
@@ -186,9 +189,9 @@ public class PullingHealth : Skill
                 }
             }
 
-            if (_pullingHealthSpeedWithSilenceTalent && targetComponentState.CheckForState(States.Silent))
+            if (_pullingHealthSpeedWithFearTalent && targetComponentState.CheckForState(States.Fear))
             {
-                float speedModifier = 0.7f;
+                float speedModifier = 0.5f;
                 tickInterval *= speedModifier;
             }
         }
@@ -196,6 +199,21 @@ public class PullingHealth : Skill
 
         _hero.Animator.SetTrigger(AnimTriggerCastDelay);
         _hero.NetworkAnimator.SetTrigger(AnimTriggerCastDelay);
+
+        var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
+        if (multiMagic != null)
+        {
+            foreach (var character in multiMagic.PopPendingTargets())
+            {
+                if (character == _targetCharacter) continue;
+                _extraTargets.Add(character);
+
+                TryPayCost();
+                CmdSpawnExtraPullingEffect(gameObject, character.gameObject);
+            }
+
+            multiMagic.LastTarget = _targetCharacter;
+        }
 
         yield return StartCoroutine(StreamDuration());
 
@@ -359,6 +377,8 @@ public class PullingHealth : Skill
 
         if (_targetCharacter != null) CmdApplyDamage(damage, _targetCharacter.gameObject);
         else if (_targetObject != null) CmdApplyDamage(damage, _targetObject.gameObject);
+
+        foreach (var damageble in _extraTargets) if (damageble is Component component && component != null) CmdApplyDamage(damage, component.gameObject);
     }
 
     private void HealPlayer()
@@ -400,9 +420,9 @@ public class PullingHealth : Skill
         pullingHealthGhostTalent = value;
     }
 
-    public void PullingHealthSpeedWithSilenceTalentActive(bool value)
+    public void PullingHealthSpeedWithFearTalentActive(bool value)
     {
-        _pullingHealthSpeedWithSilenceTalent = value;
+        _pullingHealthSpeedWithFearTalent = value;
     }
 
     public void PullingHealthThroughGhosts(bool value)
@@ -423,6 +443,8 @@ public class PullingHealth : Skill
         _targetCharacter = null;
         _targetObject = null;
         _targetPoint = Vector2.positiveInfinity;
+        _extraTargets.Clear();
+        _extraEffects.Clear();
         CmdStopShotSound();
     }
 
@@ -471,6 +493,18 @@ public class PullingHealth : Skill
     }
 
     [Command]
+    private void CmdSpawnExtraPullingEffect(GameObject start, GameObject target)
+    {
+        if (_pullingHealthPrefab == null || start == null || target == null) return;
+
+        var effect = Instantiate(_pullingHealthPrefab, start.transform.position, Quaternion.identity);
+        _extraEffects.Add(effect);
+        SceneManager.MoveGameObjectToScene(effect, _hero.NetworkSettings.MyRoom);
+        NetworkServer.Spawn(effect);
+        RpcInitEffects(effect, start, target);
+    }
+
+    [Command]
     private void CmdDestroyEffect()
     {
         if (_activeEffect != null)
@@ -489,6 +523,8 @@ public class PullingHealth : Skill
                 RpcDestroyClientEffect(_activeGhostEffects[i]);
             }
         }
+
+        foreach (var effect in _extraEffects) if (effect != null) NetworkServer.Destroy(effect);
 
         _activeGhostEffects.Clear();
 
@@ -566,6 +602,8 @@ public class PullingHealth : Skill
 
     protected override void ClearData()
     {
+        _extraTargets.Clear();
+        _extraEffects.Clear();
         Radius = _baseRadius;
     }
 

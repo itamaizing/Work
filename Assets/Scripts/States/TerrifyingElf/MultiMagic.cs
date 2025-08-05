@@ -9,7 +9,7 @@ public class MultiMagic : AuraState
     private SkillManager _skills;
     private Skill _pendingSkill;
     private Character _lastTarget;
-    private readonly List<Vector3> _pending = new();
+    private readonly List<Character> _characters = new();
 
     private float _distance;
     private LayerMask _targetsMask;
@@ -61,16 +61,16 @@ public class MultiMagic : AuraState
         {
             if (character == _characterState.Character) continue;
 
-            _pending.Add(character.transform.position);
+            _characters.Add(character);
         }
 
         _pendingSkill = null;
     }
 
-    public List<Vector3> PopPendingTargets()
+    public List<Character> PopPendingTargets()
     {
-        var list = new List<Vector3>(_pending);
-        _pending.Clear();
+        var list = new List<Character>(_characters);
+        _characters.Clear();
         return list;
     }
 
@@ -78,7 +78,7 @@ public class MultiMagic : AuraState
     {
          Debug.Log("גûחמג CastSuccessSkill");
 
-        _pending.Clear();
+        _characters.Clear();
 
         _distance = skill.Radius;
         _targetsMask = skill.TargetsLayers;
@@ -86,7 +86,7 @@ public class MultiMagic : AuraState
         var colliders = Physics.OverlapSphere(_characterState.transform.position, _distance, _targetsMask);
 
         foreach (var collider in colliders) if (collider.TryGetComponent(out Character character) && character != _characterState.Character && character != _lastTarget)
-                _pending.Add(character.transform.position);
+                _characters.Add(character);
     }
 
 }

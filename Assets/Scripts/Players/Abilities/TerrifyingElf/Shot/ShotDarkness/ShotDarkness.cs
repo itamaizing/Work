@@ -103,12 +103,11 @@ public class ShotDarkness : Skill
 
         if (multiMagic != null)
         {
-            foreach (var position in multiMagic.PopPendingTargets())
+            foreach (var character in multiMagic.PopPendingTargets())
             {
-                if (position == _targetPoint) continue;
                 TryPayCost();
                 CmdUseMana(_magicDamage);
-                CmdCreateProjectileAtPosition(position, Damage);
+                CmdCreateProjectileAtPosition(character.transform.position, Damage);
             }
         }
 

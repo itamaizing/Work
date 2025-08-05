@@ -18,12 +18,15 @@ public class SleepSpell : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
+
         while (float.IsPositiveInfinity(_targetPoint.x) && _target == null && !_disactive)
         {
             if (GetMouseButton)
             {
                 _targetPoint = GetMousePoint();
                 _target = GetRaycastTarget(true);
+                if (multiMagic != null) multiMagic.LastTarget = _target;
             }
             yield return null;
         }
@@ -35,11 +38,19 @@ public class SleepSpell : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_target != null)
+        if (_target != null) CmdApplyAbsorptionState(_target.gameObject);
+
+        var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
+
+        if (multiMagic != null)
         {
-            CmdApplyAbsorptionState(_target.gameObject);
-            TryUseCharge();
+            foreach (var character in multiMagic.PopPendingTargets())
+            {
+                TryPayCost();
+                CmdApplyAbsorptionState(character.gameObject);
+            }
         }
+
         yield return null;
     }
 

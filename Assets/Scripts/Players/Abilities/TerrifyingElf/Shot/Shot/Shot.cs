@@ -105,11 +105,10 @@ public class Shot : Skill
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
         if (multiMagic != null)
         {
-            foreach (var position in multiMagic.PopPendingTargets())
+            foreach (var character in multiMagic.PopPendingTargets())
             {
-                if (position == _targetPoint) continue;
                 TryPayCost();
-                CmdCreateProjectileAtPosition(position, Damage);
+                CmdCreateProjectileAtPosition(character.transform.position, Damage);
             }
         }
 
