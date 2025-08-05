@@ -32,7 +32,8 @@ public class MultiMagic : AuraState
         _skills = caster.GetComponent<SkillManager>();
         duration = durationToExit;
 
-        foreach (var skill in _skills.Abilities.Where(ability => ability.SkillType == SkillType.Target)) skill.CastSuccessSkill += OnTargetSkillCast;
+        foreach (var skill in _skills.Abilities.Where(ability => ability.SkillType == SkillType.Target && (ability.AbilityForm == AbilityForm.Magic || ability.AbilityForm == AbilityForm.Spell))) 
+            skill.CastSuccessSkill += OnTargetSkillCast;
     }
 
     public override void UpdateState()

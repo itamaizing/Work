@@ -108,6 +108,7 @@ public class Shot : Skill
             foreach (var position in multiMagic.PopPendingTargets())
             {
                 if (position == _targetPoint) continue;
+                TryPayCost();
                 CmdCreateProjectileAtPosition(position, Damage);
             }
         }

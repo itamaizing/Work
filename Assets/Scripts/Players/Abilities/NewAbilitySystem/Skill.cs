@@ -384,8 +384,6 @@ public abstract class Skill : NetworkBehaviour
         CastStreamStarted?.Invoke(duration);
     }
 
-    public void TryCastPay(bool pay) => TryPayCost(pay);
-
     public bool TryPreparing()
     {
         if (_isPreparing == false)

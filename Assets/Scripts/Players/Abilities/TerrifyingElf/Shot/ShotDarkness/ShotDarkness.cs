@@ -106,6 +106,8 @@ public class ShotDarkness : Skill
             foreach (var position in multiMagic.PopPendingTargets())
             {
                 if (position == _targetPoint) continue;
+                TryPayCost();
+                CmdUseMana(_magicDamage);
                 CmdCreateProjectileAtPosition(position, Damage);
             }
         }
@@ -163,6 +165,18 @@ public class ShotDarkness : Skill
         CmdCrossFade(newAnim);
     }
 
+    private void UseMana(float amount)
+    {
+        float mana = amount;
+        foreach (var resource in playerLinks.Resources.Where(resource => resource.Type == ResourceType.Mana))
+        {
+            if (mana <= 0) break;
+            float spend = Math.Min(resource.CurrentValue, mana);
+            resource.CurrentValue -= spend;
+            mana -= spend;
+        }
+    }
+
     [Command]
     protected void CmdCreateProjectileAtPosition(Vector3 position, float damage)
     {
@@ -182,19 +196,21 @@ public class ShotDarkness : Skill
 
     [Command] private void CmdCrossFade(string newAnim) => _hero.Animator.CrossFade(newAnim, 0.1f);
 
+    [Command] private void CmdUseMana(float amount) => UseMana(amount);
+
     [Command]
     private void CmdSpendBonusMana(float amount)
     {
-       float left = amount;
+       float mana = amount;
        foreach (var resource in playerLinks.Resources.Where(resource => resource.Type == ResourceType.Mana))
        {
-            if (left <= 0) break;
-            float spend = Math.Min(resource.CurrentValue, left);
+            if (mana <= 0) break;
+            float spend = Math.Min(resource.CurrentValue, mana);
             resource.CurrentValue -= spend;
-            left -= spend;
+            mana -= spend;
        }
 
-        _magicDamage = amount - left;
+        _magicDamage = amount - mana;
     }
 
     [ClientRpc]
