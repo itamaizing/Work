@@ -81,6 +81,8 @@ public class PullingHealth : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
+
         while (float.IsPositiveInfinity(_targetPoint.x) && !_disactive)
         {
             if (GetMouseButton)
@@ -100,6 +102,8 @@ public class PullingHealth : Skill
                     _target = _targetCharacter;
                     _targetTransform = targetCharacter.transform;
                     _targetPoint = _targetCharacter.transform.position;
+
+                    if (multiMagic != null) multiMagic.LastTarget = targetCharacter;
                 }
 
                 else if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out var hitObject, Mathf.Infinity, _targetsLayers)
@@ -211,14 +215,16 @@ public class PullingHealth : Skill
                 TryPayCost();
                 CmdSpawnExtraPullingEffect(gameObject, character.gameObject);
             }
-
-            multiMagic.LastTarget = _targetCharacter;
         }
 
+        AfterCastJob();
         yield return StartCoroutine(StreamDuration());
 
-        _hero.Animator.SetTrigger(Animator.StringToHash("PullingHealthCastDelayExit"));
-        _hero.NetworkAnimator.SetTrigger(Animator.StringToHash("PullingHealthCastDelayExit"));
+        //Debug.Log("Конец каста");
+        //_hero.Animator.SetTrigger(Animator.StringToHash("PullingHealthCastDelayExit"));
+        //_hero.NetworkAnimator.SetTrigger(Animator.StringToHash("PullingHealthCastDelayExit"));
+
+        //multiMagic.ExitState();
     }
 
 
@@ -343,11 +349,11 @@ public class PullingHealth : Skill
     {
         if (ghost.TryGetComponent<Health>(out Health ghostHealth))
         {
-            //float ghostBaseDamage = Damage * 0.3f;
+            float ghostBaseDamage = Damage * 0.3f;
 
             Damage damage = new Damage
             {
-                Value = Damage,
+                Value = ghostBaseDamage,
                 Type = DamageType,
             };
 
@@ -357,13 +363,12 @@ public class PullingHealth : Skill
                 CmdApplyDamage(damage, targetComponent.gameObject);
             }
 
-            float healValue = Damage * 0.25f;
-            health.CmdAdd(healValue);
+            //float healValue = Damage * 0.25f;
+            //health.CmdAdd(healValue);
 
-            float ghostHealValue = Damage * 0.75f;
+            float ghostHealValue = Damage * 0.70f;
             ghostHealth.CmdAdd(ghostHealValue);
 
-            Debug.Log($"GhostAura {ghost.name}: Healed for {ghostHealValue}, Player healed for {healValue}");
         }
     }
 
@@ -445,14 +450,11 @@ public class PullingHealth : Skill
         _targetPoint = Vector2.positiveInfinity;
         _extraTargets.Clear();
         _extraEffects.Clear();
+        AfterCastJob();
         CmdStopShotSound();
     }
 
-    [Command]
-    private void CmdSyncGhosts(GameObject ghostObj)
-    {
-        ghost.Add(ghostObj);
-    }
+    [Command] private void CmdSyncGhosts(GameObject ghostObj) => ghost.Add(ghostObj);
 
     //[Command]
     //private void CmdApplyDamage(GameObject targetObject, Damage damage, Skill skill)
@@ -542,11 +544,7 @@ public class PullingHealth : Skill
         _allActiveEffects.Clear();
     }
 
-    [Command] 
-    private void CmdCrossFade()
-    {
-        _hero.Animator.CrossFade("PullingHealthCastDelayExit", 0.1f);
-    }
+    [Command] private void CmdCrossFade() => _hero.Animator.CrossFade("PullingHealthCastDelayExit", 0.1f);
 
     [ClientRpc]
     private void RpcInitEffects(GameObject effectGameObject, GameObject startPoint, GameObject targetPoint)

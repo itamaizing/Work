@@ -58,6 +58,9 @@ public class Blindness : Skill
                 }
             }
         }
+
+        AfterCastJob();
+
         yield return null;
     }
 

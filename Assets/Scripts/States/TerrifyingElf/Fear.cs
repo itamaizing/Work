@@ -37,10 +37,8 @@ public class Fear : AbstractCharacterState
             moveComponent.IsSelect = false;
             moveComponent.IsMoving = true;
 
-            if (_moveCoroutine != null)
-            {
-                _characterState.StopCoroutine(_moveCoroutine);
-            }
+            if (_moveCoroutine != null) _characterState.StopCoroutine(_moveCoroutine);
+
             _moveCoroutine = _characterState.StartCoroutine(MoveAwayCoroutine(moveComponent));
         }
 

@@ -100,6 +100,7 @@ public class ShotAstral : Skill
         {
             Hero.Move.CanMove = true;
             Hero.Animator.speed = 1;
+            AfterCastJob();
             Hero.Move.StopLookAt();
         }
     }

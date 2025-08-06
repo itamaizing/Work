@@ -48,6 +48,7 @@ public enum AbilityForm
     Spell,
     Magic,
     Physical,
+    Both,
 }
 
 public enum SkillType
@@ -249,12 +250,12 @@ public abstract class Skill : NetworkBehaviour
     public event Action<float> MassageNotCooldowned;
     public event Action OnSkillCanceled;
     public event Action CastSuccess;
-    public event Action<Skill> CastSuccessSkill;
     public event Action<TargetInfo> TargetDataSaved;
     public event Action<bool> AutoModeChanged;
     public event Action<Vector3> ClickPoint;
     public event Action BoostEnabled;
     public event Action BoostDisabled;
+    public event Action AfterCast;
 
     /// <summary>
     /// There may be a description that will be shown in the AbillityNameBox.
@@ -264,6 +265,7 @@ public abstract class Skill : NetworkBehaviour
     protected abstract int AnimTriggerCast { get; }
 
     protected void RaiseCooldownEnded() => CooldownEnded?.Invoke();
+    protected void SkillAfterCastJob() => AfterCast?.Invoke();
 
     protected virtual bool IsCanCast
     {
@@ -1379,7 +1381,6 @@ public abstract class Skill : NetworkBehaviour
         _isPreparing = false;
         StopAutoDraw();
 
-        CastSuccessSkill?.Invoke(this);
         _prepareCoroutine = null;
     }
 
@@ -1531,6 +1532,14 @@ public abstract class Skill : NetworkBehaviour
 
         ApplyHeal(heal, hp, skill, sourceName);
     }
+
+    public void AfterCastJob()
+    {
+        CmdSkillAfterCastJob();
+        SkillAfterCastJob();
+    }
+
+    [Command] private void CmdSkillAfterCastJob() => SkillAfterCastJob();
 
     private void SubscribeClickEvents()
     {

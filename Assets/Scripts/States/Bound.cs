@@ -70,6 +70,7 @@ public class Bound : AbstractCharacterState
 	{
 		if (_stateClosing) return;
 		_stateClosing = true;
+		_spawnedTrap = null;
 		ExitState();
 	}
 

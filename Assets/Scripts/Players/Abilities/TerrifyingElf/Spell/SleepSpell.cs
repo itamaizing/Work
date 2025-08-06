@@ -7,14 +7,16 @@ public class SleepSpell : Skill
 {
     [SerializeField] private Character _playerLinks;
     [SerializeField] private float duration;
+
     private Character _target;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
+    private bool _isSleepInnerDarknessTalentActive = false;
 
     protected override bool IsCanCast => IsHaveCharge && _target != null;
-
     protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
-
     protected override int AnimTriggerCast => 0;
+
+    public bool IsSleepInnerDarknessTalentActive { get => _isSleepInnerDarknessTalentActive; set => _isSleepInnerDarknessTalentActive = value; }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
@@ -51,6 +53,8 @@ public class SleepSpell : Skill
             }
         }
 
+        AfterCastJob();
+
         yield return null;
     }
 
@@ -74,4 +78,10 @@ public class SleepSpell : Skill
     {
         if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as Character;
     }
+
+    #region Talent
+
+    public void SleepInnerDarknessTalent(bool value) => _isSleepInnerDarknessTalentActive = value;
+
+    #endregion
 }

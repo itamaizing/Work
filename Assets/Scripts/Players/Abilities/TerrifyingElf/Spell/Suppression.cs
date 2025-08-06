@@ -53,6 +53,9 @@ public class Suppression : Skill
                 }
             }
         }
+
+        AfterCastJob();
+
         yield return null;
     }
 

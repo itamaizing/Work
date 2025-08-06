@@ -67,7 +67,7 @@ public class Shot : Skill
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         Hero.Animator.speed = Hero.Animator.speed / CastDeley;
-        var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
+        //var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
         while (float.IsPositiveInfinity(_targetPoint.x))
         {
@@ -78,7 +78,7 @@ public class Shot : Skill
                 if (NoObstacles(clickedPoint, transform.position, _obstacle) && TryGetDamageableAtPoint(clickedPoint, out var damageable))
                 {
                     if (_lastTarget == null) _lastTarget = (damageable as Component)?.GetComponent<Character>();
-                    if (multiMagic != null) multiMagic.LastTarget = _lastTarget;
+                    //if (multiMagic != null) multiMagic.LastTarget = _lastTarget;
                     _targetPoint = clickedPoint;
                 }
             }
@@ -102,15 +102,15 @@ public class Shot : Skill
 
         CmdCreateProjectileAtPosition(_targetPoint, Damage);
 
-        var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
-        if (multiMagic != null)
-        {
-            foreach (var character in multiMagic.PopPendingTargets())
-            {
-                TryPayCost();
-                CmdCreateProjectileAtPosition(character.transform.position, Damage);
-            }
-        }
+        //var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
+        //if (multiMagic != null)
+        //{
+        //    foreach (var character in multiMagic.PopPendingTargets())
+        //    {
+        //        TryPayCost();
+        //        CmdCreateProjectileAtPosition(character.transform.position, Damage);
+        //    }
+        //}
 
         ProcessGhostCooldownReduction();
         WorkAnimator(_startAnimTrigger, _endAnimTrigger);

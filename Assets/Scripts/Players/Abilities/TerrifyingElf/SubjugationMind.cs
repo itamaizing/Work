@@ -33,6 +33,8 @@ public class SubjugationMind : Skill
             }
         }
 
+        AfterCastJob();
+
         yield return null;
     }
 

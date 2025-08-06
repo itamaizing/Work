@@ -32,8 +32,12 @@ public class MultiMagic : AuraState
         _skills = caster.GetComponent<SkillManager>();
         duration = durationToExit;
 
-        foreach (var skill in _skills.Abilities.Where(ability => ability.SkillType == SkillType.Target && (ability.AbilityForm == AbilityForm.Magic || ability.AbilityForm == AbilityForm.Spell))) 
-            skill.CastSuccessSkill += OnTargetSkillCast;
+        foreach (var skill in _skills.Abilities.Where
+            (ability => ability.SkillType == SkillType.Target && (ability.AbilityForm == AbilityForm.Magic || ability.AbilityForm == AbilityForm.Spell || ability.AbilityForm == AbilityForm.Both)))
+        {
+            skill.PreparingSuccess += OnTargetSkillCast;
+            skill.AfterCast += ExitState;
+        }
     }
 
     public override void UpdateState()
@@ -44,7 +48,11 @@ public class MultiMagic : AuraState
 
     public override void ExitState()
     {
-        foreach (var skill in _skills.Abilities.Where(ability => ability.SkillType == SkillType.Target)) skill.CastSuccessSkill -= OnTargetSkillCast;
+        foreach (var skill in _skills.Abilities.Where(ability => ability.SkillType == SkillType.Target))
+        {
+            skill.PreparingSuccess -= OnTargetSkillCast;
+            skill.AfterCast -= ExitState;
+        }
         Debug.Log("выход из мульти");
         _characterState.RemoveState(this);
     }
@@ -76,7 +84,7 @@ public class MultiMagic : AuraState
 
     private void OnTargetSkillCast(Skill skill)
     {
-         Debug.Log("вызов CastSuccessSkill");
+        Debug.Log("вызов CastSuccessSkill");
 
         _characters.Clear();
 

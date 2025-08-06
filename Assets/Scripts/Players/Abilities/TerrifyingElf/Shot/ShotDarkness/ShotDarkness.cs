@@ -11,6 +11,7 @@ public class ShotDarkness : Skill
     [SerializeField] private HeroComponent playerLinks;
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private Ghost ghostSkill;
+    [SerializeField] private MultiMagicSpell multiMagicSpell;
     [SerializeField] private AudioClip audioClip;
     [SerializeField] private float minDamage;
     [SerializeField] private float maxDamage;
@@ -109,6 +110,9 @@ public class ShotDarkness : Skill
                 CmdUseMana(_magicDamage);
                 CmdCreateProjectileAtPosition(character.transform.position, Damage);
             }
+
+            float reduce = multiMagicSpell.RemainingCooldownTime * 0.75f;
+            multiMagicSpell.DecreaseSetCooldown(reduce);
         }
 
         ProcessGhostCooldownReduction();
@@ -138,6 +142,8 @@ public class ShotDarkness : Skill
             Hero.Animator.speed = 1;
             Hero.Move.StopLookAt();
         }
+
+        AfterCastJob();
     }
 
     private bool TryGetDamageableAtPoint(Vector3 point, out IDamageable damageable)
