@@ -9,6 +9,7 @@ public class ElvenSkill : AbstractCharacterState
     private MoveComponent _move;
     private GameObject _elvenSkillEffect;
     private TerrifyingElfAura _aura;
+    private SkillManager _skillManager;
 
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.ElvenSkill;
@@ -23,14 +24,20 @@ public class ElvenSkill : AbstractCharacterState
         _characterState = character;
         _personWhoMadeBuff = personWhoMadeBuff;
         _move = character.GetComponent<MoveComponent>();
+        _skillManager = _characterState.Character.Abilities;
 
         if (_characterState.TryGetComponent<Character>(out var ability))
         {
-            foreach (var skillPhysics in ability.Abilities.Abilities.Where(skillPhysics => skillPhysics.DamageType == DamageType.Physical))
+            foreach (var skill in _skillManager.Abilities)
             {
-                skillPhysics.CastStarted += OnPhysCastStarted;
-                skillPhysics.CastEnded += OnPhysCastFinished;
-                skillPhysics.Canceled += OnPhysCastFinished;
+                if (skill.DamageType == DamageType.Physical)
+                {
+                    skill.CastStarted += OnPhysCastStarted;
+                    skill.CastEnded += OnPhysCastFinished;
+                    skill.Canceled += OnPhysCastFinished;
+                }
+
+                if (skill is ReconnaissanceFire reconnaissanceFire) reconnaissanceFire.TryStartElvenBoostWindow();
             }
         }
 

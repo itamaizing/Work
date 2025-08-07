@@ -8,9 +8,6 @@ using UnityEngine.SceneManagement;
 public class ShotIntoSky : Skill
 {
     [SerializeField] private SkillRenderer skillRenderer;
-    [SerializeField] private bool silenceTalentActive;
-    [SerializeField] private bool tripleShotTalentActive;
-    [SerializeField] private bool shotAstralManaActive;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private HeroComponent playerLinks;
     [SerializeField] private float minDamage;
@@ -26,13 +23,26 @@ public class ShotIntoSky : Skill
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private bool _secondShotPlanned;
     private bool _tripleShootPlanned;
+    private float _baseRadius;
     private const float _extraShotDelay = 1f;
+
+    #region Talent
+    private bool silenceTalentActive;
+    private bool tripleShotTalentActive;
+    private bool shotAstralManaActive;
+    private bool _isShotRadiusUpgradeActive;
+    #endregion
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("ShotSkyCastDelay");
     protected override int AnimTriggerCast => 0;
 
     private void OnDestroy() => Canceled -= HandleSkillCanceled;
-    private void OnEnable() => Canceled += HandleSkillCanceled;
+
+    private void OnEnable()
+    {
+        _baseRadius = Radius;
+        Canceled += HandleSkillCanceled;
+    }
 
     protected override bool IsCanCast => !_disactive && IsPointInRadius(Radius, _targetPoint);
 
@@ -92,7 +102,7 @@ public class ShotIntoSky : Skill
             yield return null;
         }
 
-        CmdSpawnImpact(_targetPoint, Damage);
+        CmdSpawnImpact(_targetPoint, Damage, false);
 
         if (tripleShotTalentActive && reconnaissanceFire != null && reconnaissanceFire.CurrentFireAura != null)
         {
@@ -102,13 +112,19 @@ public class ShotIntoSky : Skill
 
             if (distantion <= combinedRadius / 2)
             {
-                CmdSpawnImpact(_targetPoint, Damage / 2);
-                _secondShotPlanned = true;
-
                 if (reconnaissanceFire.CurrentFireAura.StateDark)
                 {
-                    CmdSpawnImpact(_targetPoint, Damage / 4);
+                    CmdSpawnImpact(_targetPoint, Damage / 2, false);
+                    _secondShotPlanned = true;
+
+                    CmdSpawnImpact(_targetPoint, Damage / 4, true);
                     _tripleShootPlanned = true;
+                }
+
+                else
+                {
+                    CmdSpawnImpact(_targetPoint, Damage / 2, true);
+                    _secondShotPlanned = true;
                 }
             }
         }
@@ -164,18 +180,18 @@ public class ShotIntoSky : Skill
 
 
     [Command]
-    private void CmdSpawnImpact(Vector3 position, float damage)
+    private void CmdSpawnImpact(Vector3 position, float damage, bool lastStreamTalent)
     {
         if (!impactPrefab) return;
 
         ArrowIntoSkyProjectile impact = Instantiate(impactPrefab, position, Quaternion.identity);
         SceneManager.MoveGameObjectToScene(impact.gameObject, _hero.NetworkSettings.MyRoom);
-        impact.Init(playerLinks, this, damage, silenceTalentActive, tripleShotTalentActive, shotAstralManaActive);
+        impact.Init(playerLinks, this, damage, silenceTalentActive, lastStreamTalent, shotAstralManaActive);
         NetworkServer.Spawn(impact.gameObject);
 
         _arrowIntoSkyProjectileIds.Add(impact.GetComponent<NetworkIdentity>().netId);
 
-        RpcInit(impact.gameObject, damage);
+        RpcInit(impact.gameObject, damage, lastStreamTalent);
     }
 
     [Command]
@@ -194,12 +210,12 @@ public class ShotIntoSky : Skill
     [Command] private void CmdDestroyPendingImpacts() => ServerDestroyPendingImpacts();
 
     [ClientRpc]
-    protected void RpcInit(GameObject gameObject, float damage)
+    protected void RpcInit(GameObject gameObject, float damage, bool lastStreamTalent)
     {
         if (gameObject == null) return;
 
         ArrowIntoSkyProjectile impact = gameObject.GetComponent<ArrowIntoSkyProjectile>();
-        if (impact != null) impact.Init(playerLinks, this, damage, silenceTalentActive, tripleShotTalentActive, shotAstralManaActive);
+        if (impact != null) impact.Init(playerLinks, this, damage, silenceTalentActive, lastStreamTalent, shotAstralManaActive);
     }
  
     [ClientRpc] private void RpcActivate(ArrowIntoSkyProjectile projectile) => projectile.Activate();
@@ -248,24 +264,16 @@ public class ShotIntoSky : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo) => _targetPoint = targetInfo.Points[0];
 
-    #region ReconnaissanceFireArrowIntoSkyTalent
-    public void SetTripleShotTalentActive(bool value)
+    #region Talent
+    public void ShotsIntoSkyAstralTalentActive(bool value) => shotAstralManaActive = value;
+    public void SetSilenceTalentActive(bool value) => silenceTalentActive = value;
+    public void SetTripleShotTalentActive(bool value) => tripleShotTalentActive = value;
+    public void ShotRadiusUpgradeActive(bool value)
     {
-        tripleShotTalentActive = value;
-    }
-    #endregion
+        _isShotRadiusUpgradeActive = value;
 
-    #region silenceTalent
-    public void SetSilenceTalentActive(bool value)
-    {
-        silenceTalentActive = value;
-    }
-    #endregion
-
-    #region ShotsIntoSkyAstralTalent
-    public void ShotsIntoSkyAstralTalentActive(bool value)
-    {
-        shotAstralManaActive = value;
+        if (_isShotRadiusUpgradeActive) Radius *= 3;
+        else Radius = _baseRadius;
     }
     #endregion
 }

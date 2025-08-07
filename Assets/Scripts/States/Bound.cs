@@ -56,8 +56,9 @@ public class Bound : AbstractCharacterState
 			var life = _spawnedTrap.GetComponent<TrapStateLife>();
 			life.Init(character.gameObject);
 
+			SceneManager.MoveGameObjectToScene(_spawnedTrap.gameObject, character.GetComponent<Character>().NetworkSettings.MyRoom);
 			NetworkServer.Spawn(_spawnedTrap);
-			_spawnedTrap.transform.SetParent(character.transform, true);
+			//_spawnedTrap.transform.SetParent(character.transform, true);
 		}
 
 		if (_characterState.TryGetComponent<StateEffects>(out StateEffects stateEffects)) stateEffects.RopeTrap.SetActive(true);
