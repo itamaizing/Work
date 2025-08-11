@@ -42,13 +42,18 @@ public class Ghost : Skill
     private readonly Queue<Vector3> _pendingSpawn = new();
     private readonly Queue<Character> _teleportQueue = new();
 
-
+    #region Talent
     private bool _sendingGhostTargetTalentActive;
     private bool _cooldownGhostShotActive;
     private bool _effectsInnerDarknessTalent;
     private bool _movingToGhostWithZeroMana;
     private bool _passingThroughGhost;
+    private bool _isPullingHealthGostTeleport;
+    #endregion
+
     private bool _isWaitingTeleport;
+
+    public event Action<Character, Vector3> Teleported;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("GhostCastDelay");
     protected override int AnimTriggerCast => 0;
@@ -80,6 +85,7 @@ public class Ghost : Skill
     public void CooldownGhostShotActiveTalent(bool value) => _cooldownGhostShotActive = value;
     public void MovingToGhostWithZeroMana(bool value) => _movingToGhostWithZeroMana = value;
     public void PassingThroughGhost(bool value) => _passingThroughGhost = value;
+    public void PullingHealthGostTeleport(bool value) => _isPullingHealthGostTeleport = value;
 
     #endregion
 
@@ -378,6 +384,8 @@ public class Ghost : Skill
         var moveComponent = GetComponent<MoveComponent>();
         moveComponent?.TeleportToPositionSmooth(targetPosition, 0.5f);
 
+        if (_isPullingHealthGostTeleport) Teleported?.Invoke(Hero, targetPosition);
+
         if (_teleportAnimationCoroutine != null) StopCoroutine(_teleportAnimationCoroutine);
         _teleportAnimationCoroutine = StartCoroutine(PlayTeleportMoveAnimation(targetPosition));
 
@@ -406,7 +414,7 @@ public class Ghost : Skill
     {
         if (_spawnComponent == null) return;
         Vector3 spawnPosition = position + Vector3.up * 1f;
-        _spawnComponent.CmdSpawnEnemyPoint(spawnPosition, LookRotation);
+        _spawnComponent.CmdSpawnAliesPoint(spawnPosition, LookRotation);
     }
 
     private void RemoveOldestGhostIfNeeded()

@@ -26,6 +26,24 @@ public class InnerDarkness : AbstractCharacterState
         _characterState = character;
         _personWhoMadeBuff = personWhoMadeBuff;
         _durationRemaining = durationToExit;
+        var terrifyingElfAura = personWhoMadeBuff.GetComponent<TerrifyingElfAura>();
+
+
+        if (personWhoMadeBuff != null && terrifyingElfAura.IsReductionRecharge)
+        {
+            SkillManager caster = personWhoMadeBuff.Abilities;
+            foreach (Skill skill in caster.Abilities)
+            {
+                bool isDark = skill.School == Schools.Dark;
+                bool isSpellish = skill.AbilityForm == AbilityForm.Magic || skill.AbilityForm == AbilityForm.Spell || skill.AbilityForm == AbilityForm.Both;
+
+                if (isDark && isSpellish && !skill.IsCooldowned)
+                {
+                    float duration = skill.RemainingCooldownTime * 0.5f;
+                    skill.DecreaseSetCooldown(duration);
+                }
+            }
+        }
     }
 
     public override void UpdateState()

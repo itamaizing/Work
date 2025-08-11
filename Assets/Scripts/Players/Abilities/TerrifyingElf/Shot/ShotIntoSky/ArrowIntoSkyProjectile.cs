@@ -7,6 +7,8 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
 {
     [SerializeField] private float impactLifeTime = 1;
     [SerializeField] private float nextDamageTime = 0.5f;
+    [SerializeField] private float minDamage;
+    [SerializeField] private float maxDamage;
     [SerializeField, Range(0f, 100f)] private float criticalChance = 30f;
     [SerializeField] private float criticalMultiplier = 2.4f;
 
@@ -140,11 +142,26 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
 
     private void ApplyDamageEnemy(Collider other)
     {
-        float damageToDeal = _damage;
+        float damageToDeal = UnityEngine.Random.Range(minDamage, maxDamage + 1);
         if (Random.value * 100f < criticalChance) damageToDeal *= criticalMultiplier;
 
-        if (other.TryGetComponent<IDamageable>(out var damageTarget))
-            ApplyDamage(damageToDeal, DamageType.Physical, damageTarget);
+        bool isElvenSkill = _dad != null && _dad.CharacterState.GetState(States.ElvenSkill) != null;
+
+        if (isElvenSkill && other.TryGetComponent<Character>(out var targetCharacter))
+        {
+            var health = targetCharacter.Health;
+            if (health.CurrentValue >= health.MaxValue * 0.8f)
+            {
+                damageToDeal += UnityEngine.Random.Range(minDamage, maxDamage + 1) * 0.3f;
+
+                if (UnityEngine.Random.value < 0.20f) damageToDeal *= 3.2f;
+            }
+        }
+
+        if (Random.value * 100f < criticalChance) damageToDeal *= criticalMultiplier;
+        if (other.TryGetComponent<IDamageable>(out var damageTarget)) ApplyDamage(damageToDeal, DamageType.Physical, damageTarget);
+
+        _skill.Damage = damageToDeal;
     }
 
     private void ApplyStatesAndTalents(Character character)

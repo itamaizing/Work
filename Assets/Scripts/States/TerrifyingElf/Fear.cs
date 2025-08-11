@@ -112,6 +112,10 @@ public class Fear : AbstractCharacterState
         Rigidbody rb = moveComp.Rigidbody;
         if (rb == null) yield break;
 
+        Vector3 fleeDir = _source ? (moveComp.transform.position - _source.transform.position).normalized : Random.insideUnitSphere.normalized;
+
+        fleeDir.y = 0;
+
         Vector3 fleeDirection = (moveComp.transform.position - _source.transform.position).normalized;
         fleeDirection = Quaternion.Euler(0, Random.Range(-45f, 45f), 0) * fleeDirection;
 
@@ -124,6 +128,8 @@ public class Fear : AbstractCharacterState
         {
             _duration -= Time.deltaTime;
             timeSinceLastChange += Time.deltaTime;
+
+            if (_source) fleeDir = (moveComp.transform.position - _source.transform.position).normalized;
 
             if (timeSinceLastChange >= changeDirectionInterval)
             {

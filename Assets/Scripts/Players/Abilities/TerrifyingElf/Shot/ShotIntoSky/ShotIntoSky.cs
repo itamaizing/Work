@@ -10,8 +10,6 @@ public class ShotIntoSky : Skill
     [SerializeField] private SkillRenderer skillRenderer;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private HeroComponent playerLinks;
-    [SerializeField] private float minDamage;
-    [SerializeField] private float maxDamage;
     [SerializeField] private float _dropDelayTime = 3f;
     [SerializeField] private ReconnaissanceFire reconnaissanceFire;
 
@@ -94,7 +92,6 @@ public class ShotIntoSky : Skill
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         Hero.Animator.speed = Hero.Animator.speed / CastDeley;
-        Damage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
 
         while (float.IsPositiveInfinity(_targetPoint.x) && !_disactive)
         {

@@ -42,12 +42,17 @@ public class TerrifyingElfAura : NetworkBehaviour
     private bool elvenSkillPhysicsTalent;
     private bool calmnessOnElvenSkillTalent;
     private bool suppressionManaAbsorptionTalent;
+    private bool _isReductionRecharge;
+    private bool _isElvenSkillPhysDamageHealthChance;
 
     #endregion
 
     private Skill currentSkill;
     private Mana _heroMana;
     private float _baseAreaReconnaissanceFire;
+
+    public bool IsReductionRecharge { get => _isReductionRecharge; }
+    public bool IsElvenSkillPhysDamageHealthChance { get => _isElvenSkillPhysDamageHealthChance; }
 
     private void OnEnable()
     {
@@ -111,12 +116,14 @@ public class TerrifyingElfAura : NetworkBehaviour
 
     #endregion
 
+    #region Talent
+    public void ReductionRecharge(bool value) => _isReductionRecharge = value;
+    public void CalmnessTalentActive(bool value) => calmnessTalent = value;
+    public void ElvenSkillPhysDamageHealthChance(bool value) => _isElvenSkillPhysDamageHealthChance = value;
+    #endregion
+
     #region CalmnessTalent
 
-    public void CalmnessTalentActive(bool value)
-    {
-        calmnessTalent = value;
-    }
 
     private void ApplyCalmnessTalent()
     {

@@ -11,6 +11,7 @@ public class Shot : Skill
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private Ghost ghostSkill;
     [SerializeField] private AudioClip audioClip;
+    [SerializeField] private TerrifyingElfAura terrifyingElfAura;
     [SerializeField] private float minDamage;
     [SerializeField] private float maxDamage;
 
@@ -21,12 +22,11 @@ public class Shot : Skill
     private AudioSource _audioSource;
     private int _consecutiveShots;
     private Character _lastTarget;
+    private bool _isHealthAboveThreshold;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash(_startAnimTrigger);
     protected override int AnimTriggerCast => 0;
-    protected override bool IsCanCast =>
-        Vector3.Distance(_targetPoint, transform.position) <= Radius &&
-        NoObstacles(_targetPoint, transform.position, _obstacle);
+    protected override bool IsCanCast => Vector3.Distance(_targetPoint, transform.position) <= Radius && NoObstacles(_targetPoint, transform.position, _obstacle);
 
     private void OnDestroy()
     {
@@ -47,21 +47,47 @@ public class Shot : Skill
     {
         if (_hero == null || _hero.Move == null) return;
 
+        _isHealthAboveThreshold = false;
+        if (_lastTarget != null)
+        {
+            var health = _lastTarget.Health;
+            _isHealthAboveThreshold = health.CurrentValue >= health.MaxValue * 0.8f;
+        }
+
         _hero.Move.StopMoveAndAnimationMove();
         _hero.Move.CanMove = false;
 
         Vector3 direction = _targetPoint - _hero.transform.position;
         bool badDirection = float.IsInfinity(_targetPoint.x) || direction.sqrMagnitude < 0.0001f;
 
-        Damage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
-
-        if (badDirection)
-        {
-            _hero.Move.StopLookAt();
-            return;
-        }
+        if (badDirection) _hero.Move.StopLookAt();
 
         else Hero.Move.LookAtPosition(_targetPoint);
+
+        if (!terrifyingElfAura) Damage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
+        else
+        {
+            if (!_isHealthAboveThreshold) Damage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
+
+            else
+            {
+                var elvenSkill = playerLinks.CharacterState.GetState(States.ElvenSkill) as ElvenSkill;
+
+                if (elvenSkill == null) Damage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
+
+                else
+                {
+                    float baseDamage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
+                    float extraDamage = UnityEngine.Random.Range(minDamage, maxDamage + 1) * 0.3f;
+                    float total = baseDamage + extraDamage;
+
+                    bool isCrit = UnityEngine.Random.value < 0.20f;
+                    if (isCrit) total *= 3.2f;
+
+                    Damage = total;
+                }
+            }
+        }
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -79,6 +105,7 @@ public class Shot : Skill
                 {
                     if (_lastTarget == null) _lastTarget = (damageable as Component)?.GetComponent<Character>();
                     //if (multiMagic != null) multiMagic.LastTarget = _lastTarget;
+
                     _targetPoint = clickedPoint;
                 }
             }

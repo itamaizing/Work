@@ -2,17 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DarknessTalent_8 : MonoBehaviour
+public class DarknessTalent_8 : Talent
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private TerrifyingElfAura terrifyingElfAura;
+    [SerializeField] private Ghost ghost;
+
+    public override void Enter()
     {
-        
+        ghost.PullingHealthGostTeleport(true);
+        terrifyingElfAura.ReductionRecharge(true);
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void Exit()
     {
-        
+        ghost.PullingHealthGostTeleport(false);
+        terrifyingElfAura.ReductionRecharge(false);
     }
 }

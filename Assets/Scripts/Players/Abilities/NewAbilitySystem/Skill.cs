@@ -1549,7 +1549,7 @@ public abstract class Skill : NetworkBehaviour
         InputHandler.OnSpacetLeftMouse += OnSpaceClick;
 
         //cancelled
-
+        
         InputHandler.OnClickCanceled += OnClickCanceled;
         InputHandler.OnShiftLeftMouseCanceled += OnClickCanceled;
         InputHandler.OnSwitchAutoModeCanceled += OnClickCanceled;

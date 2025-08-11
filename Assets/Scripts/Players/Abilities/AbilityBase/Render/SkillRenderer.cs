@@ -272,10 +272,7 @@ public class SkillRenderer : NetworkBehaviour
             StopCoroutine(_drawClosestTargetCoroutine);
             _drawClosestTargetCoroutine = null;
 
-            foreach (var target in _targets)
-            {
-                target.SelectedCircle.SwitchStroke(false);
-            }
+            foreach (var target in _targets) if (target != null) target.SelectedCircle.SwitchStroke(false);
         }    
 
         if(_tempTarget != null)
@@ -283,7 +280,9 @@ public class SkillRenderer : NetworkBehaviour
             _tempTarget.SelectedCircle.SwitchClostestTarget(false);
             _tempTarget = null;
         }
-	}
+
+        _targets.Clear();
+    }
 
     public void SetSizeBox(float width, float lenght)
     {
@@ -446,6 +445,8 @@ public class SkillRenderer : NetworkBehaviour
         {
             if (IsOverrideClosestTarget) yield return null;
 
+            _targets.RemoveAll(character => character == null);
+
             Collider[] collider = Physics.OverlapSphere(transform.position, radius + 500);
 
             foreach (var item in collider)
@@ -461,12 +462,27 @@ public class SkillRenderer : NetworkBehaviour
                         _targets.Add(enemy);
                 }
             }
-            _targets = _targets.OrderBy(character => Vector3.Distance(character.transform.position, gameObject.transform.position)).ToList();
+
+            if (_targets.Count == 0)
+            {
+                if (_tempTarget != null)
+                {
+                    _tempTarget.SelectedCircle.SwitchClostestTarget(false);
+                    _tempTarget = null;
+                }
+                yield return null;
+                continue;
+            }
+
+            _targets = _targets.Where(character => character != null).OrderBy(character => Vector3.Distance(character.transform.position, transform.position)).ToList();
+
             if (_targets.Count > 0)
             {
 				foreach (var target in _targets)
 				{
-					if (Vector3.Distance(target.transform.position, transform.position) <= radius)
+                    if (target == null) continue;
+
+                    if (Vector3.Distance(target.transform.position, transform.position) <= radius)
 					{
 						target.SelectedCircle.SwitchStroke(true);
 						target.SelectedCircle.SetColorTarget(Color.green);
@@ -511,14 +527,8 @@ public class SkillRenderer : NetworkBehaviour
             {
                 float distance = Vector3.Distance(_tempArea.transform.position, transform.position);
 
-                if (distance <= Radius)
-                {
-                    _circle.SetColor(_colorForAllies);
-                }
-                else
-                {
-                    _circle.SetColor(_colorForEnemies);
-                }
+                if (distance <= Radius) _circle.SetColor(_colorForAllies);
+                else _circle.SetColor(_colorForEnemies);
 
                 _circle.Draw(Radius);
             }

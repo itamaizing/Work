@@ -14,6 +14,7 @@ public class PullingHealth : Skill
     [SerializeField] private List<GameObject> ghost = new List<GameObject>();
     [SerializeField] private float tickInterval;
     [SerializeField] private AudioClip audioClip;
+    [SerializeField] private Ghost ghostSkill;
 
     //[Header("Pulling Ghost")]
     //[SerializeField] private float radiusGhost;
@@ -33,6 +34,10 @@ public class PullingHealth : Skill
     private float _baseCastStreamDuration;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private Transform _targetTransform;
+    private bool _ignoreMoveCheck;
+    private float _ignoreMoveTimeLeft;
+
+    private const float _teleportTime = 0.3f;
 
     private readonly List<IDamageable> _extraTargets = new();
     private readonly List<GameObject> _extraEffects = new();
@@ -71,12 +76,23 @@ public class PullingHealth : Skill
 
     private void OnDestroy()
     {
+        ghostSkill.Teleported -= OnGhostTeleport;
         OnSkillCanceled -= HandleSkillCanceled;
     }
 
     private void OnEnable()
     {
         OnSkillCanceled += HandleSkillCanceled;
+        ghostSkill.Teleported += OnGhostTeleport;
+    }
+
+    private void OnGhostTeleport(Character character, Vector3 _)
+    {
+        if (character == Hero)
+        {
+            _ignoreMoveCheck = true;
+            _ignoreMoveTimeLeft = _teleportTime;
+        }
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -295,8 +311,15 @@ public class PullingHealth : Skill
                 yield break;
             }
 
+            if (_ignoreMoveCheck)
+            {
+                initialPosition = transform.position;
+                _ignoreMoveTimeLeft -= Time.deltaTime;
+                if (_ignoreMoveTimeLeft <= 0f) _ignoreMoveCheck = false;
+            }
+
             if (Input.GetMouseButtonDown(1) || (_targetCharacter != null && Vector3.Distance(transform.position, _targetTransform.position) > Radius) 
-            || Vector3.Distance(initialPosition, transform.position) > positionThreshold)
+            || Vector3.Distance(initialPosition, transform.position) > positionThreshold && !_ignoreMoveCheck)
             {
                 _hero.Animator.ResetTrigger(Animator.StringToHash("PullingHealthCastDelay"));
                 _hero.NetworkAnimator.ResetTrigger(Animator.StringToHash("PullingHealthCastDelay"));

@@ -42,6 +42,7 @@ public class TestShootAuto : Skill
                     };
 
                     CmdApplyDamage(damage, target.gameObject);
+                    target.CharacterState.CmdAddState(States.Frozen, 5, 0, shoter.gameObject, name);
                 }
             }
             yield return wait;
