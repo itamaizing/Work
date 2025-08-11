@@ -78,6 +78,7 @@ public class SkillQueue : MonoBehaviour
         if (_currentSkill != null)
         {
             _currentSkill.TryCancel(isForceCancel);
+            if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo target)) ToggleSelectCircles(target, false);
 
 
             if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
@@ -120,13 +121,14 @@ public class SkillQueue : MonoBehaviour
 
     private void Draw(Skill skill)
     {
+        if (_skillRenderer == null) return;
         if (skill.TargetInfoQueue.Count == 0) return;
 
         var info = skill.TargetInfoQueue.Peek().Points;
+        if (info == null || info.Count == 0) return;
 
         Vector3[] vector3s = new Vector3[info.Count];
-        for (int i = 0; i < info.Count; i++)
-            vector3s[i] = new Vector3(info[i].x, info[i].y + 0.1f, info[i].z);
+        for (int i = 0; i < info.Count; i++) vector3s[i] = new Vector3(info[i].x, info[i].y + 0.1f, info[i].z);
 
         _skillRenderer.StartDrawAllLineForZone(vector3s);
         _skillRenderer.DrawRadius(skill.Radius);
@@ -157,15 +159,15 @@ public class SkillQueue : MonoBehaviour
         if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
         {
             _targetInfo = targetInfo;
-            foreach (var item in _targetInfo.Targets)
-            {
-                if (item is Character character)
-                {
-                    character.SelectedCircle.SwitchSelectCircle(false);
-                }
-            }
+            foreach (var item in _targetInfo.Targets) if (item is Character character) character.SelectedCircle.SwitchSelectCircle(false);
         }
 
         _currentSkill = null;
+    }
+
+    private static void ToggleSelectCircles(TargetInfo info, bool isOn)
+    {
+        if (info?.Targets == null) return;
+        foreach (var target in info.Targets) if (target is Character character && character?.SelectedCircle != null) character.SelectedCircle.SwitchSelectCircle(isOn);
     }
 }

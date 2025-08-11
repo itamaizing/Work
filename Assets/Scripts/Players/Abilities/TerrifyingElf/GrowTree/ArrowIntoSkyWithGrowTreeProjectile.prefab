@@ -9,9 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7333088797524508288}
-  - component: {fileID: -4963437126250705673}
-  - component: {fileID: 5415153733237602979}
-  - component: {fileID: 1449513992230922718}
+  - component: {fileID: 2816247860070146645}
+  - component: {fileID: 5879172333009183753}
   m_Layer: 0
   m_Name: ArrowIntoSkyWithGrowTreeProjectile
   m_TagString: Untagged
@@ -36,42 +35,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-4963437126250705673
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2102560157480070522}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b20dc110904e47f8a154cdcf6433eae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  target: {fileID: 7333088797524508288}
-  syncPosition: 1
-  syncRotation: 0
-  syncScale: 0
-  onlySyncOnChange: 1
-  compressRotation: 0
-  interpolatePosition: 1
-  interpolateRotation: 0
-  interpolateScale: 0
-  coordinateSpace: 0
-  sendIntervalMultiplier: 1
-  timelineOffset: 0
-  showGizmos: 0
-  showOverlay: 0
-  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
-  bufferResetMultiplier: 3
-  changedDetection: 1
-  positionSensitivity: 0.01
-  rotationSensitivity: 0.01
-  scaleSensitivity: 0.01
---- !u!114 &5415153733237602979
+--- !u!114 &2816247860070146645
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -88,7 +52,7 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
---- !u!114 &1449513992230922718
+--- !u!114 &5879172333009183753
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -105,7 +69,7 @@ MonoBehaviour:
   syncInterval: 0
   target: {fileID: 7333088797524508288}
   syncPosition: 1
-  syncRotation: 0
+  syncRotation: 1
   syncScale: 0
   onlySyncOnChange: 1
   compressRotation: 1

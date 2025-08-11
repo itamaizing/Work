@@ -144,13 +144,15 @@ MonoBehaviour:
   syncInterval: 0
   impactLifeTime: 1
   nextDamageTime: 0.8
+  minDamage: 12
+  maxDamage: 18
   criticalChance: 30
   criticalMultiplier: 2.4
   arrow: {fileID: 9103092950671096227}
   circle: {fileID: 3986887220995087752}
   sphereCollider: {fileID: 3585261139813630317}
   silenceTalentActive: 0
-  tripleShotTalentActive: 0
+  lastStreamTalent: 0
   shotAstralManaActive: 0
   isDamage: 0
 --- !u!135 &3585261139813630317

@@ -19644,8 +19644,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8192
   playerLinks: {fileID: 4534754468497973439}
-  minDamage: 12
-  maxDamage: 18
   _dropDelayTime: 2
   reconnaissanceFire: {fileID: 2750012758126725032}
   impactPrefab: {fileID: 2350920691492312483, guid: cac1bddd67383cf44b63154f1d1cea37, type: 3}
@@ -19710,6 +19708,7 @@ MonoBehaviour:
   spawnPoint: {fileID: 7608591018717630632}
   ghostSkill: {fileID: 1718052129104348959}
   multiMagicSpell: {fileID: 1094805825435644166}
+  terrifyingElfAura: {fileID: 0}
   audioClip: {fileID: 8300000, guid: 96717b50b5c475d459267db8e67203c5, type: 3}
   minDamage: 8
   maxDamage: 12
@@ -20260,14 +20259,19 @@ MonoBehaviour:
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
+  extendedRadius: 8
+  _moveDuration: 0.5
+  arrowEffectLifetime: 2
   _treePrefab: {fileID: 5108004075575563715, guid: 82b70bdb0fc80c343859665623ea7ed8, type: 3}
   moveComponent: {fileID: 443563987953287420}
-  _moveDuration: 0.5
   _activeTrees: []
   treeData: {fileID: 11400000, guid: 7ee4128bb430f07458a639f23fc41069, type: 2}
-  growTreeIncreasesMaxHealth: 0
-  treeMagicEvadeTalent: 0
-  treeShotCooldownTalent: 0
+  _extendedRadiusCircle: {fileID: 7454699290023613669}
+  extendedRadiusColor: {r: 1, g: 0.14226681, b: 0, a: 1}
+  shotsIntoSky: {fileID: 826193211731534654}
+  shotIntoSky: {fileID: 6009180366675701932}
+  arrowWithTreeEffect: {fileID: 2102560157480070522, guid: aedf6de1982891348890e277ff5488fa, type: 3}
+  arrowIntoSkyEffect: {fileID: 215749735526849689}
   groundLayer:
     serializedVersion: 2
     m_Bits: 8192
@@ -21225,6 +21229,14 @@ MonoBehaviour:
       \u0434\u0435\u0440\u0435\u0432\u0430 \u043E\u0431\u043D\u0443\u043B\u044F\u0435\u0442\u0441\u044F
       \u043A\u0443\u043B\u0434\u0430\u0443\u043D \xAB\u0421\u0442\u0440\u0435\u043B
       \u0441 \u043D\u0435\u0431\u0430\xBB.\_"
+    - "\xAB\u0412\u0437\u0440\u0430\u0441\u0442\u0438\u0442\u044C \u0434\u0435\u0440\u0435\u0432\u043E\xBB
+      \u043C\u043E\u0436\u043D\u043E \u0432\u044B\u043F\u043E\u043B\u043D\u0438\u0442\u044C
+      \u043D\u0430 \u0434\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C \xAB\u0421\u0442\u0440\u0435\u043B\u044B
+      \u0432 \u043D\u0435\u0431\u043E\xBB, \u0441\u0442\u0440\u0435\u043B\u0430 \u0437\u0430\u043F\u0443\u0441\u043A\u0430\u0435\u0442\u0441\u044F
+      \u0432\u043C\u0435\u0441\u0442\u0435 \u0441 \u0437\u0435\u0440\u043D\u043E\u043C
+      \u0434\u0435\u0440\u0435\u0432\u0430, \u0432 \u043C\u0435\u0441\u0442\u043E
+      \u043A\u0443\u0434\u0430 \u0443\u043F\u0430\u0434\u0451\u0442 \u0441\u0442\u0440\u0435\u043B\u0430
+      \u0432\u044B\u0440\u0430\u0441\u0442\u0435\u0442 \u0434\u0435\u0440\u0435\u0432\u043E."
     _stateInfos:
     - StateName: "\u0421\u043F\u043E\u043A\u043E\u0439\u0441\u0442\u0432\u0438\u0435 "
       Description: "\u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442
