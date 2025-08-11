@@ -228,11 +228,10 @@ public class ShotDarkness : Skill
     }
 
     [Command] private void CmdCrossFade(string newAnim) => _hero.Animator.CrossFade(newAnim, 0.1f);
-
     [Command] private void CmdUseMana(float amount) => UseMana(amount);
+    [Command] private void CmdSpendBonusMana(float amount) => SpendBonusMana(amount);
 
-    [Command]
-    private void CmdSpendBonusMana(float amount)
+    private void SpendBonusMana(float amount)
     {
         float mana = amount;
         foreach (var resource in playerLinks.Resources.Where(resource => resource.Type == ResourceType.Mana))

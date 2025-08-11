@@ -95,8 +95,6 @@ public class GroundTrap : Skill
         Debug.Log($"GroundTrapHealth: {groundData.MaxHealth}");
 
         Hero.Animator.speed = Hero.Animator.speed / CastDeley;
-        Hero.Move.CanMove = false;
-        Hero.Move.StopMoveAndAnimationMove();
 
         _preview = Instantiate(trapPrefab);
         _preview.ResetPreview();
@@ -109,19 +107,15 @@ public class GroundTrap : Skill
             Vector3 mousePos = GetMousePointOnGround();
             if (float.IsPositiveInfinity(mousePos.x)) { yield return null; continue; }
 
-            bool inOuterRadius = Vector3.Distance(transform.position, mousePos) <= Radius;
-            bool outOfInnerRing = Vector3.Distance(transform.position, mousePos) >= minDistanceRadius;
+            float dist = Vector3.Distance(transform.position, mousePos);
+            bool inOuterRadius = dist <= Radius;
+            bool outOfInnerRing = dist >= minDistanceRadius;
+            bool validPlacement = inOuterRadius && outOfInnerRing;
 
             UpdateMinRadiusCircle(mousePos);
 
-            if (!inOuterRadius || !outOfInnerRing)
-            {
-                _preview.gameObject.SetActive(false);
-                yield return null;
-                continue;
-            }
+            if (!_preview.gameObject.activeSelf) _preview.gameObject.SetActive(true);
 
-            _preview.gameObject.SetActive(true);
             _preview.transform.position = mousePos;
 
             Vector3 direction = (transform.position - mousePos).normalized;
@@ -135,8 +129,13 @@ public class GroundTrap : Skill
 
             if (GetMouseButton)
             {
-                _startPosition = mousePos;
-                break;
+                if (validPlacement)
+                {
+                    _startPosition = mousePos;
+                    Hero.Move.CanMove = false;
+                    Hero.Move.StopMoveAndAnimationMove();
+                    break;
+                }
             }
 
             yield return null;

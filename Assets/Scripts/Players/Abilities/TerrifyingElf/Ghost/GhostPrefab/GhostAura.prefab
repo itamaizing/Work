@@ -16788,6 +16788,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4406279120107032920, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_VisionRange
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _hero
       value: 
@@ -17086,6 +17090,7 @@ MonoBehaviour:
   _selectedCircle: {fileID: 4163371236763689060}
   _spawnComponent: {fileID: 5963193180723515438}
   _visionComponent: {fileID: 0}
+  _auras: {fileID: 0}
   _expForDieKill: 5
   _navMeshAgent: {fileID: 0}
 --- !u!114 &2054057519776599919
@@ -17122,7 +17127,6 @@ MonoBehaviour:
   CanMoveState: 0
   IsMoving: 0
   IsSelect: 0
-  IsMoveBlocked: 0
   _agent: {fileID: 8217033100601787470}
 --- !u!114 &3939151455996886053
 MonoBehaviour:
@@ -17152,6 +17156,7 @@ MonoBehaviour:
   _damageType: 5
   _attackRangeType: 0
   _skillType: 2
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -17210,6 +17215,7 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 1
   _skillType: 0
+  _moving: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 4294967295

@@ -56,6 +56,7 @@ public class ReconnaissanceFire : Skill
     {
         CastDeley = 0;
         isSkillEnableBoostLogic = true;
+        Debug.Log("SkillEnableBoostLogic");
     }
     protected override void SkillDisableBoostLogic()
     {

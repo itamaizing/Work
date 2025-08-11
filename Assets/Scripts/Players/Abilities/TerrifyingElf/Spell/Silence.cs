@@ -10,6 +10,7 @@ public class Silence : Skill
     [SerializeField] private bool _reducedCooldown;
     [SerializeField] private AudioClip audioClip;
     [SerializeField] private int _maxAdditionalManaUsage = 7;
+    [SerializeField] private Ghost ghost;
 
     private float _baseDuration;
     private AudioSource audioSource;
@@ -17,6 +18,8 @@ public class Silence : Skill
 
     private bool _effectsDarknessTalent;
     private bool _canAttackMinions;
+    private bool _isSilenceEffectsOnMinionMagic;
+    private bool _isSilenceEffectGhostCast;
 
     protected override bool IsCanCast => !_disactive && IsPointInRadius(Radius, _targetPoint);
 
@@ -47,10 +50,7 @@ public class Silence : Skill
                     Collider[] hitColliders = Physics.OverlapSphere(_targetPoint, Area, TargetsLayers);
                     int minionCount = 0;
 
-                    foreach (var hitCollider in hitColliders) 
-                        if (hitCollider.TryGetComponent<MinionComponent>(out _)) minionCount++;
-
-                    if (minionCount > 0 && _reducedCooldown) _cooldownTime = _cooldownTime - minionCount;
+                    foreach (var hitCollider in hitColliders) if (hitCollider.TryGetComponent<MinionComponent>(out _)) minionCount++;
 
                     DrawDamageZone(_targetPoint);
 
@@ -67,14 +67,11 @@ public class Silence : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_targetPoint != Vector3.positiveInfinity)
-        {
-            CmdAdditionalMana();
-            SpawnEffectAtTargetPoint();
-            ApplyStateToEnemiesInZone();
-            StopDamageZone();
-            yield return null;
-        }
+        CmdAdditionalMana();
+        SpawnEffectAtTargetPoint();
+        ApplyStateToEnemiesInZone();
+        StopDamageZone();
+        yield return null;
     }
 
 
@@ -88,15 +85,19 @@ public class Silence : Skill
         Collider[] hitColliders = Physics.OverlapSphere(_targetPoint, Area, TargetsLayers);
 
         int minionHitCount = 0;
+        int ghostAuraMinionHitCount = 0;
 
         foreach (var hitCollider in hitColliders)
         {
             if (hitCollider.gameObject != Hero.gameObject)
-                ApplyEnemiesZone(hitCollider, ref minionHitCount);
+                ApplyEnemiesZone(hitCollider, ref minionHitCount, ref ghostAuraMinionHitCount);
         }
+
+        if (minionHitCount > 0 && _isSilenceEffectsOnMinionMagic) DecreaseSetCooldown(4f * minionHitCount);
+        if (ghostAuraMinionHitCount >= 2 && _isSilenceEffectGhostCast) CmdTriggerGhostFreeWindow();
     }
 
-    private void ApplyEnemiesZone(Collider hitCollider, ref int minionHitCount)
+    private void ApplyEnemiesZone(Collider hitCollider, ref int minionHitCount, ref int ghostAuraMinionHitCount)
     {
         if (hitCollider.TryGetComponent<HeroComponent>(out HeroComponent enemy))
         {
@@ -116,6 +117,8 @@ public class Silence : Skill
                 CmdApplySilenceState(targetState);
                 minionHitCount++;
             }
+
+            if (minion.TryGetComponent<GhostAura>(out GhostAura ghostAura)) ghostAuraMinionHitCount++;
 
             if (_canAttackMinions) MinionDamage(minion);
         }
@@ -154,20 +157,11 @@ public class Silence : Skill
 
     #region Talents
 
-    public void SetCanAttackMinions(bool value)
-    {
-        _canAttackMinions = value;
-    }
-
-    public void SetReducedCooldown(bool value)
-    {
-        _reducedCooldown = value;
-    }
-
-    public void EffectsInnerDarknessTalentActive(bool value)
-    {
-        _effectsDarknessTalent = value;
-    }
+    public void SetCanAttackMinions(bool value) => _canAttackMinions = value;
+    public void SetReducedCooldown(bool value) => _reducedCooldown = value;
+    public void EffectsInnerDarknessTalentActive(bool value) => _effectsDarknessTalent = value;
+    public void SilenceEffectsOnMinionMagic(bool value) => _isSilenceEffectsOnMinionMagic = value;
+    public void SilenceEffectGhostCast(bool value) => _isSilenceEffectGhostCast = value;
 
     #endregion
 
@@ -179,6 +173,8 @@ public class Silence : Skill
     //        target.TryTakeDamage(ref damage, skill);
     //    }
     //}
+
+    [Command] private void CmdTriggerGhostFreeWindow() => RpcTriggerGhostFreeWindow();
 
     [Command]
     private void CmdApplySilenceState(CharacterState targetState)
@@ -220,13 +216,16 @@ public class Silence : Skill
         if (audioSource != null && audioClip != null) audioSource.PlayOneShot(audioClip);
     }
 
+    [ClientRpc]
+    private void RpcTriggerGhostFreeWindow()
+    {
+        if (ghost != null) ghost.TryStartGhostBoostWindow();
+    }
+
     protected override void ClearData()
     {
         _targetPoint = Vector3.positiveInfinity;
     }
 
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        _targetPoint = targetInfo.Points[0];
-    }
+    public override void LoadTargetData(TargetInfo targetInfo) => _targetPoint = targetInfo.Points[0];
 }

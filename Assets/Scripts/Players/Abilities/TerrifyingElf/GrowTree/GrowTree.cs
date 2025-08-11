@@ -11,7 +11,7 @@ public class GrowTree : Skill
     [Header("GrowTree Settings")]
     [SerializeField] private float extendedRadius = 8f;
     [SerializeField] private float _moveDuration = 0.5f;
-    [SerializeField] private float arrowEffectLifetime = 2f;
+    [SerializeField] private float arrowEffectLifetime = 2;
     [SerializeField] private GrowTreeAura _treePrefab;
     [SerializeField] private MoveComponent moveComponent;
     [SerializeField] private List<GrowTreeAura> _activeTrees;
@@ -43,6 +43,7 @@ public class GrowTree : Skill
     private Coroutine _treeHealthCoroutine;
     private Coroutine _rangeWatch;
     private Coroutine _checkExtendedRadiusCoroutine;
+    private Coroutine _arrowFxRoutine;
     private bool _isSpawnHero;
     private bool _arrowFxPressLatch;
     private bool _castFromExtendedRadius;
@@ -106,13 +107,18 @@ public class GrowTree : Skill
         _castFromExtendedRadius = false;
         CastDeley = _baseCastDelay;
         point = Vector3.positiveInfinity;
-        StopCoroutine(ISpawnArrowWithTreeEffect(Vector3.positiveInfinity));
+
+        if (_arrowFxRoutine != null)
+        {
+            StopCoroutine(_arrowFxRoutine);
+            _arrowFxRoutine = null;
+        }
     }
 
-    private IEnumerator ISpawnArrowWithTreeEffect(Vector3 spawnPos)
+    private IEnumerator ISpawnArrowWithTreeEffect()
     {
-        yield return new WaitForSeconds(1f);
-        CmdSpawnTree(spawnPos);
+        yield return new WaitForSeconds(CastStreamDuration / 5);
+        if (_castFromExtendedRadius) SpawnArrowWithTreeEffect(point);
     }
 
     private IEnumerator CheckExtendedRadiusJob()
@@ -229,6 +235,7 @@ public class GrowTree : Skill
                             _targetPoint = point;
                             _castFromExtendedRadius = true;
                             CastDeley += arrowEffectLifetime;
+                            if (_castFromExtendedRadius) SpawnArrowWithTreeEffect(point);
                         }
                     }
                 }
@@ -279,25 +286,17 @@ public class GrowTree : Skill
         {
             _hero.Animator.SetTrigger(_growHash);
             _hero.NetworkAnimator.SetTrigger(_growHash);
-        }
 
-        yield return new WaitForSeconds(CastStreamDuration / 3);
+            yield return new WaitForSeconds(CastStreamDuration / 3);
+        }
 
         StopDamageZone();
 
-        if (_castFromExtendedRadius)
-        {
-            SpawnArrowWithTreeEffect(point);
-            StartCoroutine(ISpawnArrowWithTreeEffect(spawnPos));
-        }
+        if (_isSpawnHero) CmdSpawnTreeAndTeleport(_hero.transform.position);
+        else CmdSpawnTree(spawnPos, _castFromExtendedRadius);
 
-        else
-        {
-            if (_isSpawnHero) CmdSpawnTreeAndTeleport(_hero.transform.position);
-            else CmdSpawnTree(spawnPos);
-        }
-
-        yield return new WaitForSeconds(CastStreamDuration / 1.5f);
+        if (!_castFromExtendedRadius) yield return new WaitForSeconds(CastStreamDuration / 1.5f);
+        else yield return new WaitForSeconds(CastStreamDuration);
 
         if (_castFromExtendedRadius)
         {
@@ -375,7 +374,7 @@ public class GrowTree : Skill
     [Command] private void CmdRemoveTree() => _activeTrees.RemoveAll(tree => tree == null);
 
     [Command]
-    private void CmdSpawnTree(Vector3 position)
+    private void CmdSpawnTree(Vector3 position, bool castFromExtendedRadius)
     {
         var tree = Instantiate(_treePrefab, position, Quaternion.identity);
         _currentTree = tree;
@@ -386,7 +385,9 @@ public class GrowTree : Skill
         _healthTree = tree.GetComponentInChildren<ObjectHealth>();
         if (_healthTree != null)
         {
-            float regenDuration = CastStreamDuration - CastStreamDuration / 3f;
+            float regenDuration = 0;
+            if (!castFromExtendedRadius) regenDuration = CastStreamDuration - CastStreamDuration / 3f;
+            else regenDuration = CastStreamDuration;
 
             _healthTree.InitializeObject(treeData);
             if (treeData.MinEndurance) _healthTree.ServerStartFillHP(_healthTree.ObjectData.MaxHealth, regenDuration);

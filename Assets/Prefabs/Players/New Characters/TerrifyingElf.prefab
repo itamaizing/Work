@@ -18597,7 +18597,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentGroup.Array.size
-      value: 8
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[3]._talentGroup.Array.size
@@ -18703,6 +18703,10 @@ PrefabInstance:
       propertyPath: _talents.Array.data[2]._talentGroup.Array.data[7]
       value: 
       objectReference: {fileID: 6150019603701913108}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[2]._talentGroup.Array.data[8]
+      value: 
+      objectReference: {fileID: 6329989501365168688}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[3]._talentGroup.Array.data[0]
       value: 
@@ -19519,6 +19523,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6150019603701913108}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6329989501365168688}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!1 &300637093874885484 stripped
 GameObject:
@@ -19745,7 +19752,7 @@ MonoBehaviour:
   _moving: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 768
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -19772,6 +19779,7 @@ MonoBehaviour:
   _reducedCooldown: 0
   audioClip: {fileID: 8300000, guid: 0e697ad5442a11a4990c66e9b6fb2e18, type: 3}
   _maxAdditionalManaUsage: 7
+  ghost: {fileID: 1718052129104348959}
 --- !u!114 &6063604074090390129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20023,8 +20031,6 @@ MonoBehaviour:
   aCTeleportToGhost: {fileID: 8300000, guid: 7ec01dc7a3340f84ca423f258f2981f6, type: 3}
   "aC\u0421ontrolGhostToTarget": {fileID: 8300000, guid: def2e1cb9b2cb354cb4b3451f2b5f6e2, type: 3}
   aCSummoningGhost: {fileID: 8300000, guid: e22212dd52fe9df4494ceacd0ee0320c, type: 3}
-  _extendedRadiusCircle: {fileID: 7454699290023613669}
-  extendedRadiusColor: {r: 0.8867924, g: 0.2782094, b: 0, a: 1}
   _ghosts: []
 --- !u!114 &6004029750635303333
 MonoBehaviour:
@@ -21176,13 +21182,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u043F\u043E\u043F\u0430\u0434\u0430\u044F \xAB\u041D\u0435\u0431\u0435\u0441\u043D\u044B\u043C\u0438
+    - "\u041F\u043E\u043F\u0430\u0434\u0430\u044F \xAB\u041D\u0435\u0431\u0435\u0441\u043D\u044B\u043C\u0438
       \u0441\u0442\u0440\u0435\u043B\u0430\u043C\u0438\xBB \u043F\u043E \u0446\u0435\u043B\u0438
       \u0441 \xAB\u0411\u0435\u0437\u043C\u043E\u043B\u0432\u0438\u0435\u043C\xBB
       \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442\u0441\u044F
       \u0434\u043E\u0442\u0430 \"\u0423\u0431\u0438\u0432\u0430\u044E\u0449\u0430\u044F
       \u0442\u0438\u0448\u0438\u043D\u0430\" \u043D\u0430 4 \u0441\u0435\u043A\u0443\u043D\u0434\u044B."
-    - "\u043A\u0430\u0436\u0434\u043E\u0435 \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u0443\u044E\u0449\u0435\u0435
+    - "\u041A\u0430\u0436\u0434\u043E\u0435 \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u0443\u044E\u0449\u0435\u0435
       \u0434\u0435\u0440\u0435\u0432\u043E \u0432 \u0440\u0430\u0434\u0438\u0443\u0441\u0435
       12 \u043A\u043B\u0435\u0442\u043E\u043A, \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442
       \u043C\u0430\u043A\u0441\u0438\u043C\u0430\u043B\u044C\u043D\u043E\u0435 \u0441\u0443\u043C\u043C\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435
@@ -21224,7 +21230,7 @@ MonoBehaviour:
       \"\u0441\u043F\u043E\u043A\u043E\u0439\u0441\u0442\u0432\u0438\u0435\" - \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442
       0.5% \u043E\u0442 \u043E\u0431\u0449\u0435\u0433\u043E \u0437\u0430\u043F\u0430\u0441\u0430
       \u043C\u0430\u043D\u043D\u044B \u043A\u0430\u0436\u0434\u0443\u044E \u0441\u0435\u043A\u0443\u043D\u0434\u0443"
-    - "\u043F\u043E\u0441\u043B\u0435 \u043A\u0430\u0436\u0434\u043E\u0433\u043E
+    - "\u041F\u043E\u0441\u043B\u0435 \u043A\u0430\u0436\u0434\u043E\u0433\u043E
       \u0443\u0441\u043F\u0435\u0448\u043D\u043E\u0433\u043E \u043A\u0430\u0441\u0442\u0430
       \u0434\u0435\u0440\u0435\u0432\u0430 \u043E\u0431\u043D\u0443\u043B\u044F\u0435\u0442\u0441\u044F
       \u043A\u0443\u043B\u0434\u0430\u0443\u043D \xAB\u0421\u0442\u0440\u0435\u043B
@@ -21266,7 +21272,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\xAB\u043D\u0435\u0431\u0435\u0441\u043D\u044B\u0435 \u0441\u0442\u0440\u0435\u043B\u044B\xBB
+    - "\xAB\u041D\u0435\u0431\u0435\u0441\u043D\u044B\u0435 \u0441\u0442\u0440\u0435\u043B\u044B\xBB
       - \u0447\u0435\u0440\u0435\u0437 \u0441\u0435\u043A\u0443\u043D\u0434\u0443
       \u0432 \u0443\u043A\u0430\u0437\u0430\u043D\u043D\u0443\u044E \u043E\u0431\u043B\u0430\u0441\u0442\u044C
       \u043F\u0430\u0434\u0430\u044E\u0442 \u0441\u0442\u0440\u0435\u043B\u044B \u0441
@@ -21399,7 +21405,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u043F\u043E\u0433\u0440\u0443\u0436\u0430\u0435\u0442 \u0432 \u0441\u043E\u043D
+    - "\u041F\u043E\u0433\u0440\u0443\u0436\u0430\u0435\u0442 \u0432 \u0441\u043E\u043D
       \u043F\u0435\u0440\u0441\u043E\u043D\u0430\u0436\u0435\u0439 \u043D\u0430 6
       \u0441\u0435\u043A\u0443\u043D\u0434, \u0441\u0443\u0449\u0435\u0441\u0442\u0432
       \u043D\u0430 40 \u0441\u0435\u043A\u0443\u043D\u0434."
@@ -21560,12 +21566,19 @@ MonoBehaviour:
       \u0436\u0438\u0437\u043D\u0438\xBB \u043D\u0430\u043D\u043E\u0441\u044F\u0449\u0438\u0439
       30% \u0443\u0440\u043E\u043D\u0430 \u0438 \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u0435
       \u0436\u0438\u0437\u043D\u0438 \u041F\u0440\u0438\u0437\u0440\u0430\u043A\u0443."
+    - "\u0417\u0430 \u043A\u0430\u0436\u0434\u043E\u0435 \u043F\u043E\u043F\u0430\u0432\u0448\u0435\u0435
+      \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u043E\u0435 \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u043E
+      \u043F\u043E\u0434 \xAB\u0411\u0435\u0437\u043C\u043E\u043B\u0432\u0438\u0435\xBB
+      \u0443\u043C\u0435\u043D\u044C\u0448\u0430\u0435\u0442\u0441\u044F \u043A\u0443\u043B\u0434\u0430\u0443\u043D
+      \xAB\u0411\u0435\u0437\u043C\u043E\u043B\u0432\u0438\u044F\xBB \u043D\u0430
+      4 \u0441\u0435\u043A\u0443\u043D\u0434\u044B."
     _stateInfos: []
     IsOpen: 0
     Description: "\u041C\u043E\u0441\u0442\u044B \u0442\u044C\u043C\u044B"
     Icon: {fileID: 21300000, guid: 7e54ca6d5c90b8c49852d97e3388f583, type: 3}
   character: {fileID: 4534754468497973439}
   pullingHealth: {fileID: 679409545534796012}
+  silence: {fileID: 4161291845396503115}
 --- !u!114 &3161208881145151031
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21662,6 +21675,13 @@ MonoBehaviour:
       \u0437\u0430\u0431\u0438\u0440\u0430\u0435\u0442  25% \u043C\u0430\u043D\u043D\u044B
       \u043E\u0442 \u0440\u0430\u0437\u043C\u0435\u0440\u0430 \u043D\u0430\u043D\u0435\u0441\u0451\u043D\u043D\u043E\u0433\u043E
       \u0443\u0440\u043E\u043D\u0430 "
+    - " \u0415\u0441\u043B\u0438 \xAB\u0411\u0435\u0437\u043C\u043E\u043B\u0432\u0438\u0435\xBB
+      \u043F\u043E\u043F\u0430\u0434\u0430\u0435\u0442 \u043D\u0430 2 \u043F\u0440\u0438\u0437\u0440\u0430\u043A\u043E\u0432
+      \u043E\u0434\u043D\u043E\u0432\u0440\u0435\u043C\u0435\u043D\u043D\u043E, \u0442\u043E
+      \u0432 \u0442\u0435\u0447\u0435\u043D\u0438\u0435 3 \u0441\u0435\u043A\u0443\u043D\u0434
+      \u043C\u043E\u0436\u043D\u043E \u043C\u0433\u043D\u043E\u0432\u0435\u043D\u043D\u043E
+      \u0438 \u0431\u0435\u0437 \u043A\u0443\u043B\u0434\u0430\u0443\u043D\u0430
+      \u0440\u0430\u0437\u043C\u0435\u0441\u0442\u0438\u0442\u044C \u041F\u0440\u0438\u0437\u0440\u0430\u043A\u0430.  "
     - "\u0415\u0441\u043B\u0438 \xAB\u041C\u0443\u043B\u044C\u0442\u0438\u043C\u0430\u0433\u0438\u044E\xBB
       \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u043B\u0438 \u043D\u0430
       \u0432\u044B\u0441\u0442\u0440\u0435\u043B \u0441 \u0442\u044C\u043C\u043E\u0439,
@@ -21673,6 +21693,7 @@ MonoBehaviour:
     Icon: {fileID: 21300000, guid: e3060f30537df69499130dddb9c90843, type: 3}
   character: {fileID: 4534754468497973439}
   terrifyingElfAura: {fileID: 6686568037796463366}
+  silence: {fileID: 4161291845396503115}
 --- !u!114 &3154349677268371443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21687,7 +21708,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "  \u041F\u0440\u0438 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u0435
+    - " \u041F\u0440\u0438 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u0435
       \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E \u0443\u0440\u043E\u043D\u0430
       \u0432\u043F\u043B\u043E\u0442\u043D\u0443\u044E \u0441\u0437\u0430\u0434\u0438  
       \u0432 \u0442\u0435\u0447\u0435\u043D\u0438\u0435 1 \u0441\u0435\u043A \u0422\u044D\u0440\u0440\u0430\u0444\u0430\u0439\u043D\_
@@ -21697,8 +21718,8 @@ MonoBehaviour:
       \u043F\u0435\u0440\u0435\u043C\u0435\u0449\u0435\u043D\u0438\u044F \u043D\u0430
       \u0446\u0435\u043B\u044C \u0431\u0443\u0434\u0435\u0442 \u043D\u0430\u043B\u043E\u0436\u0435\u043D
       \xAB\u0421\u0442\u0440\u0430\u0445\xBB \u043D\u0430 2-3 \u0441\u0435\u043A\u0443\u043D\u0434\u044B."
-    - "\_ \xAB\u0412\u044B\u0442\u044F\u0433\u0438\u0432\u0430\u043D\u0438\u0435
-      \u0436\u0438\u0437\u043D\u0438\xBB \u043C\u043E\u0436\u043D\u043E \u0440\u0430\u0437\u043C\u0435\u0449\u0430\u0442\u044C\u0441\u044F
+    - " \xAB\u0412\u044B\u0442\u044F\u0433\u0438\u0432\u0430\u043D\u0438\u0435 \u0436\u0438\u0437\u043D\u0438\xBB
+      \u043C\u043E\u0436\u043D\u043E \u0440\u0430\u0437\u043C\u0435\u0449\u0430\u0442\u044C\u0441\u044F
       \u0447\u0435\u0440\u0435\u0437 \u043F\u0440\u0438\u0437\u0440\u0430\u043A\u043E\u0432,
       \u043A\u0430\u0436\u0434\u044B\u0439 \u043F\u0440\u0438\u0437\u0440\u0430\u043A
       \u0434\u0430\u0451\u0442 +3 \u043A\u043B\u0435\u0442\u043A\u0438 \u0434\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u0438
@@ -21725,7 +21746,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u043F\u043E\u0436\u0447\u0438\u043D\u0435\u043D\u0438\u0435 \u0440\u0430\u0437\u0443\u043C\u0430
+    - "\u041F\u043E\u0436\u0447\u0438\u043D\u0435\u043D\u0438\u0435 \u0440\u0430\u0437\u0443\u043C\u0430
       \u2013 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C 4
       \u0441\u0435\u043A\u0443\u043D\u0434\u044B \u043A\u043E\u043D\u0442\u0440\u043B\u044C
       \u043D\u0430\u0434 \u0432\u0440\u0430\u0436\u0435\u0441\u043A\u0438\u043C \u043F\u0435\u0440\u0441\u043E\u043D\u0430\u0436\u0435\u043C
@@ -21734,7 +21755,7 @@ MonoBehaviour:
       \u043C\u0430\u0433\u0438\u044F, \u043C\u0430\u0433\u0438\u044F \u0442\u044C\u043C\u044B,
       40 \u043C\u0430\u043D\u044B, 40 \u0441\u0435\u043A \u043A\u0434.\_ \u0414\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C
       4 \u043A\u043B\u0435\u0442\u043A\u0438 "
-    - "\u043A\u043E\u0433\u0434\u0430 \u0432\u0440\u0430\u0433 \u043F\u0440\u043E\u0445\u043E\u0434\u0438\u0442
+    - "\u041A\u043E\u0433\u0434\u0430 \u0432\u0440\u0430\u0433 \u043F\u0440\u043E\u0445\u043E\u0434\u0438\u0442
       \u0447\u0435\u0440\u0435\u0437 \u043F\u0440\u0438\u0437\u0440\u0430\u043A\u0430
       \u0438\u043B\u0438 \u043D\u0430\u0445\u043E\u0434\u0438\u0442\u0441\u044F \u0432
       \u043D\u0451\u043C \u0442\u043E \u0440\u0430\u0437 \u0432 3 \u0441\u0435\u043A\u0443\u043D\u0434\u044B
@@ -21772,7 +21793,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\"\u0432\u044B\u0442\u044F\u0433\u0438\u0432\u0430\u043D\u0438\u0435 \u0436\u0438\u0437\u043D\u0438\"
+    - "\"\u0412\u044B\u0442\u044F\u0433\u0438\u0432\u0430\u043D\u0438\u0435 \u0436\u0438\u0437\u043D\u0438\"
       \u043D\u0435 \u043F\u0440\u0435\u0440\u044B\u0432\u0430\u0435\u0442\u0441\u044F
       \u043A\u043E\u0433\u0434\u0430 \u043F\u0435\u0440\u0435\u043C\u0435\u0449\u0430\u0435\u0442\u0441\u044F
       \u0432 \u043F\u0440\u0438\u0437\u0440\u0430\u043A\u043E\u0432  "
@@ -21790,4 +21811,29 @@ MonoBehaviour:
     Icon: {fileID: 21300000, guid: 023bfa63b10b75b4d92ae6e8b7ddaa34, type: 3}
   character: {fileID: 4534754468497973439}
   terrifyingElfAura: {fileID: 6686568037796463366}
+  ghost: {fileID: 1718052129104348959}
+--- !u!114 &6329989501365168688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fc82bacd34f53a4091f374cb98cc4a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u041F\u0440\u0438\u0437\u0440\u0430\u043A\u0430 \u043C\u043E\u0436\u043D\u043E
+      \u0440\u0430\u0437\u043C\u0435\u0441\u0442\u0438\u0442\u044C  \u0438 \u043F\u0435\u0440\u0435\u043C\u0435\u0441\u0442\u0438\u0442\u044C\u0441\u044F
+      \u0432 \u043D\u0435\u0433\u043E \u043D\u0430 \u0440\u0430\u0441\u0441\u0442\u043E\u044F\u043D\u0438\u0438
+      \u0432\u0438\u0434\u0438\u043C\u043E\u0441\u0442\u0438 \u0422\u044D\u0440\u0440\u0430\u0444\u0430\u0439\u043D
+      \u0438 \u0414\u0435\u0440\u0435\u0432\u044C\u0435\u0432."
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u0412\u0438\u0434\u0438\u043C\u043E\u0441\u0442\u044C \u0441\u0435\u0441\u0442\u0451\u0440"
+    Icon: {fileID: 21300000, guid: 15aae0ddb3e0d704fb9c58091ac1a553, type: 3}
+  character: {fileID: 4534754468497973439}
   ghost: {fileID: 1718052129104348959}
