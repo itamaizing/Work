@@ -13,6 +13,7 @@ TagManager:
   - Baff
   - TentaclePrefab
   - Ability
+  - Hide
   layers:
   - Default
   - TransparentFX
@@ -31,8 +32,8 @@ TagManager:
   - LightningMovement
   - Attack
   - Preview
-  - 
-  - 
+  - HideObj
+  - DissolveObj
   - 
   - 
   - 
