@@ -79,6 +79,7 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] protected bool _isSubjectToGlobalCooldownTime = true;
 
     [SerializeField] protected List<SkillEnergyCost> _skillEnergyCosts;
+    [SerializeField] protected List<SkillEnergyCost> _additionalSkillEnergyCosts;
     [SerializeField] protected float _cooldownTime;
     [SerializeField] protected float _castDeley;
     [SerializeField] protected float _damageValue;
@@ -213,6 +214,7 @@ public abstract class Skill : NetworkBehaviour
     public SkillType SkillType => _skillType;
     public Moving Moving => _moving;
     public List<SkillEnergyCost> SkillEnergyCosts { get => _skillEnergyCosts; }
+    public List<SkillEnergyCost> AdditionalSkillEnergyCosts { get => _additionalSkillEnergyCosts; }
     public List<SkillEnergyCost> ManaCostPerTick { get => _manaCostPerTick; }
     public float ManaCostRate { get => _manaCostRate; }
     public Queue<TargetInfo> TargetInfoQueue { get => _targetInfoQueue; }

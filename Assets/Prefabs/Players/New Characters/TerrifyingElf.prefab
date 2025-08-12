@@ -19552,9 +19552,10 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 1234a0457cd7d68489fcc887f4e41225, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 1
-  _damageValue: 0
+  _damageValue: 6
   _abilitySchool: 6
   _abilityForm: 2
   _damageType: 1
@@ -19591,8 +19592,8 @@ MonoBehaviour:
   ghostSkill: {fileID: 1718052129104348959}
   audioClip: {fileID: 8300000, guid: ba78f434c86f1ec4d92aa393ca60ca17, type: 3}
   terrifyingElfAura: {fileID: 6686568037796463366}
-  minDamage: 8
-  maxDamage: 12
+  minDamage: 6
+  maxDamage: 10
 --- !u!114 &6009180366675701932
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19613,9 +19614,10 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 88969341e9a4bb444bc7ca1d18082b91, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 8
   _castDeley: 1.4
-  _damageValue: 0
+  _damageValue: 12
   _abilitySchool: 6
   _abilityForm: 2
   _damageType: 1
@@ -19677,9 +19679,12 @@ MonoBehaviour:
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 4
+  _additionalSkillEnergyCosts:
+  - resourceType: 1
+    resourceCost: 6
   _cooldownTime: 0
   _castDeley: 1
-  _damageValue: 0
+  _damageValue: 6
   _abilitySchool: 1
   _abilityForm: 3
   _damageType: 4
@@ -19717,8 +19722,8 @@ MonoBehaviour:
   multiMagicSpell: {fileID: 1094805825435644166}
   terrifyingElfAura: {fileID: 0}
   audioClip: {fileID: 8300000, guid: 96717b50b5c475d459267db8e67203c5, type: 3}
-  minDamage: 8
-  maxDamage: 12
+  minDamage: 6
+  maxDamage: 10
 --- !u!114 &4161291845396503115
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19741,6 +19746,7 @@ MonoBehaviour:
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 1
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 13
   _castDeley: 0.1
   _damageValue: 10
@@ -19802,6 +19808,7 @@ MonoBehaviour:
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 30
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 10
   _castDeley: 0
   _damageValue: 0
@@ -19859,6 +19866,7 @@ MonoBehaviour:
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 2
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 8
   _castDeley: 1
   _damageValue: 30
@@ -19924,6 +19932,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 49a816b3ef4f3194191a8cc4430f75e1, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 10
@@ -19989,6 +19998,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 613823284f8e627408f8c11ca13d4b8a, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 1.2
   _damageValue: 0
@@ -20052,6 +20062,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: c0be93563e0ed9e4593dd029b0a8eab4, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
@@ -20109,6 +20120,7 @@ MonoBehaviour:
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 8
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 13
   _castDeley: 1.8
   _damageValue: 0
@@ -20165,6 +20177,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 814ce04994c45f942a7480c3c6c0fcdb, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 6
   _castDeley: 2.8
   _damageValue: 0
@@ -20232,6 +20245,7 @@ MonoBehaviour:
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 15
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
@@ -20303,6 +20317,7 @@ MonoBehaviour:
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 12
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 6
   _castDeley: 0
   _damageValue: 0
@@ -20363,6 +20378,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: ff45a428b2382e34393ac58749a92a3d, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 1.8
   _damageValue: 0
@@ -20456,6 +20472,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 6bd80f86cccf26344927ccf5c8e1b83e, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
@@ -20511,6 +20528,7 @@ MonoBehaviour:
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 80
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 1.5
   _damageValue: 0
@@ -20569,6 +20587,7 @@ MonoBehaviour:
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 40
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 6
   _castDeley: 0
   _damageValue: 0
@@ -20624,6 +20643,7 @@ MonoBehaviour:
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 80
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 36
   _castDeley: 0
   _damageValue: 0
@@ -20679,6 +20699,7 @@ MonoBehaviour:
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 8
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 8
   _castDeley: 1.5
   _damageValue: 0

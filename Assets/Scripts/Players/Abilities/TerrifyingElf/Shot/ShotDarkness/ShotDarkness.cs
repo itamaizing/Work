@@ -86,7 +86,7 @@ public class ShotDarkness : Skill
         float manaDamage = playerLinks.Resources.Where(resource => resource.Type == ResourceType.Mana).Sum(resource => resource.CurrentValue);
         _magicDamage = Mathf.Min(6f, Mathf.Floor(manaDamage));
 
-        if (_magicDamage > 0) CmdSpendBonusMana(_magicDamage);
+        if (_magicDamage > 0) SpendBonusMana(_magicDamage);
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
