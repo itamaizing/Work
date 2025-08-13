@@ -5,10 +5,13 @@ using UnityEngine;
 
 public class ElementalSpawn : Skill
 {
+    private int _indexElemental = -1;
     private Vector3 _position;
     private int _prefIndex;
     private bool _isSpawned;
     private Character _elemental;
+
+    public int IndexElemental { get { return _indexElemental; } set { _indexElemental = value; } }
 
     protected override bool IsCanCast => Vector3.Distance(_position, transform.position) <= Radius;
 
@@ -23,7 +26,12 @@ public class ElementalSpawn : Skill
 
     protected override IEnumerator CastJob()
     {
-        Hero.SpawnComponent.CmdSpawnUnitInPoint(_position, 0);
+        while (_indexElemental == -1)
+        {
+            yield return null;
+        }
+
+        Hero.SpawnComponent.CmdSpawnUnitInPoint(_position, IndexElemental);
 
         yield return null;
     }
@@ -31,6 +39,7 @@ public class ElementalSpawn : Skill
     protected override void ClearData()
     {
         _position = Vector2.zero;
+        _indexElemental = -1;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
