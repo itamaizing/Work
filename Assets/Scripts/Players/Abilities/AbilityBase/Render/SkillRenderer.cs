@@ -47,6 +47,8 @@ public class SkillRenderer : NetworkBehaviour
 
     //public SphereArea TempDamageZone => _tempDamageZone;
     public CircleArea TempDamageZone => _tempArea;
+    private readonly Queue<CircleArea> _drawnZonesQueue = new();
+
     public bool IsOverrideClosestTarget
     {
         get => _isOverrideClosestTarget;
@@ -88,12 +90,30 @@ public class SkillRenderer : NetworkBehaviour
 
 		Color zoneColor = player.layer == LayerMask.NameToLayer("Allies") ? _colorForAllies : _colorForEnemies;
 		_tempArea.SetColor(zoneColor);
-	}
+
+        _drawnZonesQueue.Enqueue(_tempArea);
+    }
 
     [Command]
     public void CmdStopDrawDamageZone()
     {
         RpsStopDrawDamageZone();
+    }
+
+    [Command]
+    public void CmdRemoveNextDamageZone()
+    {
+        RpcRemoveNextDamageZone();
+    }
+
+    [ClientRpc]
+    public void RpcRemoveNextDamageZone()
+    {
+        if (_drawnZonesQueue.Count > 0)
+        {
+            var zone = _drawnZonesQueue.Dequeue();
+            if (zone != null) Destroy(zone.gameObject);
+        }
     }
 
     [ClientRpc]

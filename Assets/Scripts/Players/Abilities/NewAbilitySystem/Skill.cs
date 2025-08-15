@@ -645,7 +645,7 @@ public abstract class Skill : NetworkBehaviour
 
     public void StopDamageZone()
     {
-        _skillRender.CmdStopDrawDamageZone();
+        _skillRender.CmdRemoveNextDamageZone();
     }
 
     [ClientCallback]

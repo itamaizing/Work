@@ -1,6 +1,7 @@
 using Mirror;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Silence : Skill
@@ -20,6 +21,21 @@ public class Silence : Skill
     private bool _canAttackMinions;
     private bool _isSilenceEffectsOnMinionMagic;
     private bool _isSilenceEffectGhostCast;
+    private bool _isSilenceAddAllCharacterWithDeabaffElf;
+
+    public bool IsSilenceAddAllCharacterWithDeabaffElf { get => _isSilenceAddAllCharacterWithDeabaffElf; }
+
+    //private void OnDestroy()
+    //{
+    //    OnSkillCanceled -= HandleSkillCanceled;
+    //}
+
+    //private void OnEnable()
+    //{
+    //    OnSkillCanceled += HandleSkillCanceled;
+    //}
+
+    //private void HandleSkillCanceled() => StopDamageZone();
 
     protected override bool IsCanCast
     {
@@ -195,6 +211,7 @@ public class Silence : Skill
     public void EffectsInnerDarknessTalentActive(bool value) => _effectsDarknessTalent = value;
     public void SilenceEffectsOnMinionMagic(bool value) => _isSilenceEffectsOnMinionMagic = value;
     public void SilenceEffectGhostCast(bool value) => _isSilenceEffectGhostCast = value;
+    public void SilenceAddAllCharacterWithDeabaffElf(bool value) => _isSilenceAddAllCharacterWithDeabaffElf = value;
 
     #endregion
 
@@ -223,7 +240,6 @@ public class Silence : Skill
             _duration = durationMultiplier;
         }
 
-        Debug.Log(_duration);
         targetState.AddState(States.Silent, _duration, 0, Hero.gameObject, this.name);
     }
 
