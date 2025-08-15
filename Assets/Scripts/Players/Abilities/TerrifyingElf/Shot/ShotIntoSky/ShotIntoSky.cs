@@ -42,7 +42,22 @@ public class ShotIntoSky : Skill
         Canceled += HandleSkillCanceled;
     }
 
-    protected override bool IsCanCast => !_disactive && IsPointInRadius(Radius, _targetPoint);
+        protected override bool IsCanCast
+    {
+        get
+        {
+            if (_disactive) return false;
+
+            if (TargetInfoQueue.Count > 0 && TargetInfoQueue.TryPeek(out var target) && target != null && target.Points.Count > 0)
+            {
+                var point = target.Points[0];
+                if (float.IsInfinity(point.x)) return false;
+                return IsPointInRadius(Radius, point);
+            }
+
+            return IsPointInRadius(Radius, _targetPoint);
+        }
+    }
 
 
     public void ShotAnimationMove()

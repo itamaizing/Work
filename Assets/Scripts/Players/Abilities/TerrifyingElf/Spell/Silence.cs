@@ -21,7 +21,22 @@ public class Silence : Skill
     private bool _isSilenceEffectsOnMinionMagic;
     private bool _isSilenceEffectGhostCast;
 
-    protected override bool IsCanCast => !_disactive && IsPointInRadius(Radius, _targetPoint);
+    protected override bool IsCanCast
+    {
+        get
+        {
+            if (_disactive) return false;
+
+            if (TargetInfoQueue.Count > 0 && TargetInfoQueue.TryPeek(out var target) && target != null && target.Points.Count > 0)
+            {
+                var point = target.Points[0];
+                if (float.IsInfinity(point.x)) return false;
+                return IsPointInRadius(Radius, point);
+            }
+
+            return IsPointInRadius(Radius, _targetPoint);
+        }
+    }
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
     protected override int AnimTriggerCast => 0;
@@ -54,7 +69,7 @@ public class Silence : Skill
 
                     DrawDamageZone(_targetPoint);
 
-                    yield break;
+                    break;
                 }
             }
             yield return null;
@@ -68,21 +83,22 @@ public class Silence : Skill
     protected override IEnumerator CastJob()
     {
         CmdAdditionalMana();
-        SpawnEffectAtTargetPoint();
-        ApplyStateToEnemiesInZone();
+        SpawnEffectAtTargetPoint(_targetPoint);
+        ApplyStateToEnemiesInZone(_targetPoint);
         StopDamageZone();
         yield return null;
     }
 
 
-    private void SpawnEffectAtTargetPoint()
+    private void SpawnEffectAtTargetPoint(Vector3 target)
     {
-        if (effectPrefab != null) Instantiate(effectPrefab, _targetPoint, Quaternion.identity);
+        if (effectPrefab != null) Instantiate(effectPrefab, target, Quaternion.identity);
+        if (effectPrefab != null) Instantiate(effectPrefab, target, Quaternion.identity);
     }
 
-    private void ApplyStateToEnemiesInZone()
+    private void ApplyStateToEnemiesInZone(Vector3 target)
     {
-        Collider[] hitColliders = Physics.OverlapSphere(_targetPoint, Area, TargetsLayers);
+        Collider[] hitColliders = Physics.OverlapSphere(target, Area, TargetsLayers);
 
         int minionHitCount = 0;
         int ghostAuraMinionHitCount = 0;
@@ -152,8 +168,25 @@ public class Silence : Skill
         {
             //CmdApplyDamage(targetComponent.gameObject, _damage, null);
             CmdApplyDamage(_damage, targetComponent.gameObject);
+            CmdReduceGhostCharge(target);
+            StartCoroutine(IGhostHealthCheck(target));
         }
     }
+
+    private IEnumerator IGhostHealthCheck(MinionComponent target)
+    {
+        yield return new WaitForSeconds(0.1f);
+        if (target.TryGetComponent<GhostAura>(out var ghostAura))
+        {
+            if (ghostAura.TryGetComponent<Health>(out var health))
+            {
+                if (health.CurrentValue <= 0) Debug.Log("Сброс перезарядки зарядов призрака");
+            }
+        }
+
+    }
+
+    [Server] private void ServerGhostHealthCheck(MinionComponent target) => StartCoroutine(IGhostHealthCheck(target));
 
     #region Talents
 
@@ -175,6 +208,7 @@ public class Silence : Skill
     //}
 
     [Command] private void CmdTriggerGhostFreeWindow() => RpcTriggerGhostFreeWindow();
+    [Command] private void CmdReduceGhostCharge(MinionComponent target) => ServerGhostHealthCheck(target);
 
     [Command]
     private void CmdApplySilenceState(CharacterState targetState)

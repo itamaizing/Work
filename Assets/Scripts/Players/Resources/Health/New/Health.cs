@@ -75,10 +75,14 @@ public class Health : Resource, IDamageable, IHealingable
         if (damage.Value == 0)
             return true;
 
-        if (TryUse(damage.Value) == false)
+        if (!TryUse(damage.Value))
         {
-            ClientRpcDied();
-            Died?.Invoke();
+            if (isServer)
+            {
+                Died?.Invoke();
+                ClientRpcDied();
+            }
+            return true;
         }
         ClientRpcDamage(damage, skill);
         _sumDamageTaken += damage.Value;
@@ -300,7 +304,7 @@ public class Health : Resource, IDamageable, IHealingable
     [ClientRpc]
     private void ClientRpcDied()
     {
-        Died?.Invoke();
+        //Died?.Invoke();
         _animator.SetBool(HashAnimPlayer.IsDead, true);
     }
 

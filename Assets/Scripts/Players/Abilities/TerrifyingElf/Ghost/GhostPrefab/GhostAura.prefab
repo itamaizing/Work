@@ -17092,7 +17092,7 @@ MonoBehaviour:
   _visionComponent: {fileID: 0}
   _auras: {fileID: 0}
   _expForDieKill: 5
-  _navMeshAgent: {fileID: 0}
+  _navMeshAgent: {fileID: 8217033100601787470}
 --- !u!114 &2054057519776599919
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17148,6 +17148,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: afbef8fac9ee74141abb2a1c1443d316, type: 2}
   _isSubjectToGlobalCooldownTime: 0
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 1
   _castDeley: 0
   _damageValue: 0
@@ -17207,6 +17208,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 9df0aeafa082be448991a3c567f58ddc, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0

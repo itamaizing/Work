@@ -43,7 +43,7 @@ public class TestZoneMappingAttack : Skill
         DrawDamageZone(_targetPoint);
 
         yield return new WaitForSeconds(2f);
-        skillRenderer.CmdStopDrawDamageZone();
+        //skillRenderer.CmdStopDrawDamageZone();
     }
 
     protected override void ClearData()

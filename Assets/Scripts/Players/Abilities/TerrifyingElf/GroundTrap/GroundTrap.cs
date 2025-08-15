@@ -24,17 +24,70 @@ public class GroundTrap : Skill
     private Color minDistanceGreenColor = Color.green;
     private Color minDistanceRedColor = Color.red;
 
+    private readonly System.Collections.Generic.List<Trap> _queuedPreviews = new();
     private Trap _preview;
+    private Quaternion _startRotation = Quaternion.identity;
     private Vector3 _startPosition;
 
     private float baseHealth = 23;
 
-    protected override bool IsCanCast => true;
+    protected override bool IsCanCast
+    {
+        get
+        {
+            if (_disactive) return false;
+
+            if (TargetInfoQueue.Count > 0 && TargetInfoQueue.TryPeek(out var target) && target != null && target.Points.Count > 0)
+            {
+                Vector3 point = target.Points[0];
+                if (float.IsPositiveInfinity(point.x)) return false;
+
+                float distantion = Vector3.Distance(transform.position, point);
+                return distantion <= Radius && distantion >= minDistanceRadius;
+            }
+
+            if (!float.IsPositiveInfinity(_startPosition.x))
+            {
+                float distantion = Vector3.Distance(transform.position, _startPosition);
+                return distantion <= Radius && distantion >= minDistanceRadius;
+            }
+
+            return true;
+        }
+    }
+
     protected override int AnimTriggerCastDelay => Animator.StringToHash("Shot");
     protected override int AnimTriggerCast => 0;
 
     private void OnDestroy() => OnSkillCanceled -= HandleSkillCanceled;
     private void OnEnable() => OnSkillCanceled += HandleSkillCanceled;
+
+    public void AnimationTrapMove()
+    {
+        if (_hero == null || _hero.Move == null) return;
+
+        Hero.Move.CanMove = false;
+        Hero.Move.StopMoveAndAnimationMove();
+    }
+
+    private void QueueCurrentPreview()
+    {
+        if (_preview == null) return;
+
+        try { _preview.UpdateLinePreview(); } catch { }
+        _queuedPreviews.Add(_preview);
+        _preview = null;
+    }
+
+    private void KillFirstQueuedPreview()
+    {
+        if (_queuedPreviews.Count == 0) return;
+
+        var first = _queuedPreviews[0];
+        _queuedPreviews.RemoveAt(0);
+
+        if (first != null) Destroy(first.gameObject);
+    }
 
     private Vector3 GetMousePointOnGround(float y = 0f)
     {
@@ -48,18 +101,27 @@ public class GroundTrap : Skill
         return Vector3.positiveInfinity;
     }
 
-    private void HandleSkillCanceled()
+    private void SkillCastEnd()
     {
         if (_hero?.Move != null) Hero.Move.CanMove = true;
+        Hero.Animator.speed = 1;
+        minDistanceRadiusCircle?.Clear();
 
+        _startPosition = Vector3.positiveInfinity;
+        _startRotation = Quaternion.identity;
+    }
+
+    private void HandleSkillCanceled()
+    {
         if (_preview != null)
         {
             Destroy(_preview.gameObject);
             _preview = null;
         }
 
-        Hero.Animator.speed = 1;
-        minDistanceRadiusCircle?.Clear();
+        else KillFirstQueuedPreview();
+
+        SkillCastEnd();
     }
 
     private void UpdateMinRadiusCircle(Vector3 mousePos)
@@ -110,7 +172,7 @@ public class GroundTrap : Skill
             float dist = Vector3.Distance(transform.position, mousePos);
             bool inOuterRadius = dist <= Radius;
             bool outOfInnerRing = dist >= minDistanceRadius;
-            bool validPlacement = inOuterRadius && outOfInnerRing;
+            //bool validPlacement = inOuterRadius && outOfInnerRing;
 
             UpdateMinRadiusCircle(mousePos);
 
@@ -129,13 +191,11 @@ public class GroundTrap : Skill
 
             if (GetMouseButton)
             {
-                if (validPlacement)
-                {
-                    _startPosition = mousePos;
-                    Hero.Move.CanMove = false;
-                    Hero.Move.StopMoveAndAnimationMove();
-                    break;
-                }
+                _startPosition = mousePos;
+                _startRotation = _preview.transform.rotation;
+
+                QueueCurrentPreview();
+                break;
             }
 
             yield return null;
@@ -145,16 +205,16 @@ public class GroundTrap : Skill
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(_startPosition);
+        targetInfo.Roation.Add(_startRotation);
         callbackDataSaved?.Invoke(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_preview) Destroy(_preview.gameObject);
-        CmdSpawnGroundTrap(_startPosition, _preview.transform.rotation);
+        KillFirstQueuedPreview();
+        CmdSpawnGroundTrap(_startPosition, _startRotation);
 
-        ClearData();
-        HandleSkillCanceled();
+        SkillCastEnd();
         _preview = null;
         yield break;
     }
@@ -162,7 +222,8 @@ public class GroundTrap : Skill
     protected override void ClearData()
     {
         Hero.Animator.speed = 1;
-        Hero.Move.CanMove = true;
+        _startPosition = Vector3.positiveInfinity;
+        _startRotation = Quaternion.identity;
     }
 
     public void AnimSpawnTrapProjectile()
@@ -176,10 +237,7 @@ public class GroundTrap : Skill
         if (targetInfo.Points.Count == 0) return;
 
         _startPosition = targetInfo.Points[0];
-
-        if (_preview == null) _preview = Instantiate(trapPrefab);
-        _preview.transform.position = _startPosition;
-        _preview.transform.rotation = _preview.transform.rotation;
+        if (targetInfo.Roation.Count > 0) _startRotation = targetInfo.Roation[0];
     }
 
     [Command] private void CmdSetGorundNewHealth() => groundData.MaxHealth = newHealth;
