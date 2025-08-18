@@ -17,9 +17,9 @@ namespace Gangdollarff.AirElemental
 
         protected override bool IsCanCast { get => CheckCanCast(); }
 
-        protected override int AnimTriggerCastDelay => Animator.StringToHash("LightSpellDaley");
+        protected override int AnimTriggerCastDelay => 0;
 
-        protected override int AnimTriggerCast => Animator.StringToHash("LightAttack04");
+        protected override int AnimTriggerCast => Animator.StringToHash("AttackLight");
 
         private bool CheckCanCast()
         {
@@ -46,6 +46,7 @@ namespace Gangdollarff.AirElemental
         {
             if (_target != null)
             {
+                Debug.Log(123121213);
                 Damage damage = new Damage
                 {
                     Value = Buff.Damage.GetBuffedValue(Damage),

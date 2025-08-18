@@ -40,6 +40,14 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2057095471850671928, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+      propertyPath: _skills.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2057095471850671928, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+      propertyPath: _skills.Array.data[1]
+      value: 
+      objectReference: {fileID: 7943001291695985560}
     - target: {fileID: 2335912879836011194, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       propertyPath: m_Name
       value: Minion Air Elemental Variant
@@ -213,9 +221,9 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 83e21c29a8358a84c98e9e3409e72dce, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
-  _cooldownTime: 0
+  _cooldownTime: 5
   _castDeley: 0
-  _damageValue: 0
+  _damageValue: 5
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -236,17 +244,17 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 0
+  _radius: 5
   _area: 0
   _castLength: 0
   _castWidth: 0
   _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
+  _isAutoAreaRender: 0
+  _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
-  _particlePref: {fileID: 0}
+  _particlePref: {fileID: 8634428716550452945, guid: 7291e60055d363e4f8faae9c7d00d8b0, type: 3}
   _debuffChance: 15
 --- !u!4 &3591010202385703913 stripped
 Transform:

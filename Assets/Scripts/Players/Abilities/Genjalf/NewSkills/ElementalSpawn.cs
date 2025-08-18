@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 public class ElementalSpawn : Skill
@@ -31,6 +32,12 @@ public class ElementalSpawn : Skill
             yield return null;
         }
 
+        if (Hero.SpawnComponent.Units.Count > 0)
+        {
+            CmdDestroyUnit(0);
+            Hero.SpawnComponent.Units.RemoveAt(0);
+        }
+
         Hero.SpawnComponent.CmdSpawnUnitInPoint(_position, IndexElemental);
 
         yield return null;
@@ -55,5 +62,12 @@ public class ElementalSpawn : Skill
         TargetInfo targetInfo = new();
         targetInfo.Points.Add(_position);
         callbackDataSaved(targetInfo);
+    }
+
+    private void CmdDestroyUnit(int index)
+    {
+        NetworkServer.Destroy(Hero.SpawnComponent.Units[index].gameObject);
+
+        Hero.SpawnComponent.Units.RemoveAt(index);
     }
 }
