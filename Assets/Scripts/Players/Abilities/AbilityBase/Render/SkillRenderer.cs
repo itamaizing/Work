@@ -47,6 +47,8 @@ public class SkillRenderer : NetworkBehaviour
 
     //public SphereArea TempDamageZone => _tempDamageZone;
     public CircleArea TempDamageZone => _tempArea;
+    private readonly Queue<CircleArea> _drawnZonesQueue = new();
+
     public bool IsOverrideClosestTarget
     {
         get => _isOverrideClosestTarget;
@@ -88,12 +90,30 @@ public class SkillRenderer : NetworkBehaviour
 
 		Color zoneColor = player.layer == LayerMask.NameToLayer("Allies") ? _colorForAllies : _colorForEnemies;
 		_tempArea.SetColor(zoneColor);
-	}
+
+        _drawnZonesQueue.Enqueue(_tempArea);
+    }
 
     [Command]
     public void CmdStopDrawDamageZone()
     {
         RpsStopDrawDamageZone();
+    }
+
+    [Command]
+    public void CmdRemoveNextDamageZone()
+    {
+        RpcRemoveNextDamageZone();
+    }
+
+    [ClientRpc]
+    public void RpcRemoveNextDamageZone()
+    {
+        if (_drawnZonesQueue.Count > 0)
+        {
+            var zone = _drawnZonesQueue.Dequeue();
+            if (zone != null) Destroy(zone.gameObject);
+        }
     }
 
     [ClientRpc]
@@ -272,10 +292,7 @@ public class SkillRenderer : NetworkBehaviour
             StopCoroutine(_drawClosestTargetCoroutine);
             _drawClosestTargetCoroutine = null;
 
-            foreach (var target in _targets)
-            {
-                target.SelectedCircle.SwitchStroke(false);
-            }
+            foreach (var target in _targets) if (target != null) target.SelectedCircle.SwitchStroke(false);
         }    
 
         if(_tempTarget != null)
@@ -283,7 +300,9 @@ public class SkillRenderer : NetworkBehaviour
             _tempTarget.SelectedCircle.SwitchClostestTarget(false);
             _tempTarget = null;
         }
-	}
+
+        _targets.Clear();
+    }
 
     public void SetSizeBox(float width, float lenght)
     {
@@ -334,11 +353,7 @@ public class SkillRenderer : NetworkBehaviour
 		Vector3 worldPosition = Vector3.zero;
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit;
-		if (Physics.Raycast(ray, out hit, _layerMask))
-		{
-			worldPosition = hit.point;
-		}
-
+		if (Physics.Raycast(ray, out hit,  Mathf.Infinity,  _layerMask, QueryTriggerInteraction.Ignore)) worldPosition = hit.point;
 		//Vector3 dir = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
 		Vector3 dir = worldPosition - gameObject.transform.position;
 		float angle = Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg;
@@ -422,10 +437,7 @@ public class SkillRenderer : NetworkBehaviour
 		Vector3 worldPosition = Vector3.zero;
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit;
-		if (Physics.Raycast(ray, out hit))
-		{
-			worldPosition = hit.point;
-		}
+		if (Physics.Raycast(ray, out hit, Mathf.Infinity, _layerMask, QueryTriggerInteraction.Ignore)) worldPosition = hit.point;
 
 		//Vector3 mouse = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x,0 , Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
 		Vector3 mouse = new Vector3(worldPosition.x, 0 , worldPosition.z);
@@ -436,7 +448,7 @@ public class SkillRenderer : NetworkBehaviour
         while (true)
         {
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			if (Physics.Raycast(ray, out hit, _layerMask))
+			if (Physics.Raycast(ray, out hit, Mathf.Infinity, _layerMask, QueryTriggerInteraction.Ignore))
 			{
 				worldPosition = hit.point;
 			}
@@ -453,6 +465,8 @@ public class SkillRenderer : NetworkBehaviour
         {
             if (IsOverrideClosestTarget) yield return null;
 
+            _targets.RemoveAll(character => character == null);
+
             Collider[] collider = Physics.OverlapSphere(transform.position, radius + 500);
 
             foreach (var item in collider)
@@ -468,12 +482,27 @@ public class SkillRenderer : NetworkBehaviour
                         _targets.Add(enemy);
                 }
             }
-            _targets = _targets.OrderBy(character => Vector3.Distance(character.transform.position, gameObject.transform.position)).ToList();
+
+            if (_targets.Count == 0)
+            {
+                if (_tempTarget != null)
+                {
+                    _tempTarget.SelectedCircle.SwitchClostestTarget(false);
+                    _tempTarget = null;
+                }
+                yield return null;
+                continue;
+            }
+
+            _targets = _targets.Where(character => character != null).OrderBy(character => Vector3.Distance(character.transform.position, transform.position)).ToList();
+
             if (_targets.Count > 0)
             {
 				foreach (var target in _targets)
 				{
-					if (Vector3.Distance(target.transform.position, transform.position) <= radius)
+                    if (target == null) continue;
+
+                    if (Vector3.Distance(target.transform.position, transform.position) <= radius)
 					{
 						target.SelectedCircle.SwitchStroke(true);
 						target.SelectedCircle.SetColorTarget(Color.green);
@@ -518,14 +547,8 @@ public class SkillRenderer : NetworkBehaviour
             {
                 float distance = Vector3.Distance(_tempArea.transform.position, transform.position);
 
-                if (distance <= Radius)
-                {
-                    _circle.SetColor(_colorForAllies);
-                }
-                else
-                {
-                    _circle.SetColor(_colorForEnemies);
-                }
+                if (distance <= Radius) _circle.SetColor(_colorForAllies);
+                else _circle.SetColor(_colorForEnemies);
 
                 _circle.Draw(Radius);
             }

@@ -6,7 +6,7 @@ public class BleedingState : AbstractCharacterState
 {
     private Character _target;
 
-    private float _baseDamage = 6.0f;
+    private float _baseDamage;
 
     private float _duration;
     private float _baseDuration;
@@ -27,8 +27,11 @@ public class BleedingState : AbstractCharacterState
 
         _duration = durationToExit;
         _baseDuration = durationToExit;
+        _baseDamage = damageToExit;
 
         _timeBetweenAttack = _startTimeBetweenAttack;
+
+        _target.Health.IsDot = true;
     }
 
     public override void UpdateState()
@@ -43,12 +46,14 @@ public class BleedingState : AbstractCharacterState
         if (_timeBetweenAttack <= 0)
         {
             BleedingDamage();
+            _characterState.Character.Health.barCharacter.PreviewDoTTick(_baseDamage);
             _timeBetweenAttack = _startTimeBetweenAttack;
         }
     }
 
     public override void ExitState()
     {
+        _target.Health.IsDot = false;
         _characterState.RemoveState(this);
     }
 

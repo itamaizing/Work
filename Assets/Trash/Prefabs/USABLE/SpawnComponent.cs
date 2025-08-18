@@ -43,6 +43,12 @@ public class SpawnComponent : NetworkBehaviour
     {
         SpawnCharacter(_enemyPrefab, position, rotation);
     }
+
+    [Command]
+    public void CmdSpawnAliesPoint(Vector3 position, Quaternion rotation)
+    {
+        SpawnCharacter(_allyPrefab, position, rotation);
+    }
     #endregion
 
     public void SpawnUnit(int index, Vector3 position)

@@ -14,10 +14,6 @@ public class ReconnaissanceFire : Skill
     [SerializeField] private TrickShot trickShot;
     [SerializeField] private ReconnaissanceFireAura fireAura;
     [SerializeField] private GameObject emitterObject;
-    [SerializeField] private bool fireDarkTalent;
-    [SerializeField] private bool fireHealthTalent;
-    [SerializeField] private bool partialBlindnessTalent;
-    [SerializeField] private bool fireWorshipperTalent;
     [SerializeField] private ObjectData fireData;
     [SerializeField] private float duration = 10;
     [SerializeField] private float baseArea = 3f;
@@ -34,7 +30,20 @@ public class ReconnaissanceFire : Skill
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private float _baseDuration;
     private float _baseAnimSpeed;
+    private float _baseCastDelay;
     private Coroutine _auraLifeCoroutine;
+    private Coroutine _boostWindow;
+    private bool isSkillEnableBoostLogic;
+
+    #region Talent
+
+    private bool fireDarkTalent;
+    private bool fireHealthTalent;
+    private bool partialBlindnessTalent;
+    private bool fireWorshipperTalent;
+    private bool isSkillEnableBoostLogicActiveTalent;
+
+    #endregion
 
     public ReconnaissanceFireAura CurrentFireAura => currentFireAura;
     public float BaseArea { get => baseArea; set => baseArea = value; }
@@ -42,6 +51,18 @@ public class ReconnaissanceFire : Skill
     protected override bool IsCanCast => !float.IsPositiveInfinity(_targetPoint.x) && IsPointInRadius(Radius, _targetPoint);
     protected override int AnimTriggerCastDelay => Animator.StringToHash("ThrowCastDelay");
     protected override int AnimTriggerCast => 0;
+
+    protected override void SkillEnableBoostLogic()
+    {
+        CastDeley = 0;
+        isSkillEnableBoostLogic = true;
+        Debug.Log("SkillEnableBoostLogic");
+    }
+    protected override void SkillDisableBoostLogic()
+    {
+        CastDeley = _baseCastDelay;
+        isSkillEnableBoostLogic = false;
+    }
 
     private void Start()
     {
@@ -54,6 +75,8 @@ public class ReconnaissanceFire : Skill
     {
         ArrowFireProjectile.OnProjectilePathEnd += HandleProjectilePathEnd;
         OnSkillCanceled += HandleSkillCanceled;
+
+        _baseCastDelay = CastDeley;
     }
 
     private void OnDisable()
@@ -79,6 +102,15 @@ public class ReconnaissanceFire : Skill
         }
 
         _hero.Move.LookAtPosition(_targetPoint);
+    }
+
+    public void TryStartElvenBoostWindow()
+    {
+        if (!isSkillEnableBoostLogicActiveTalent) return;
+        if (_boostWindow != null) return;
+        if (UnityEngine.Random.value > 0.30f) return;
+
+        _boostWindow = StartCoroutine(ElvenBoostWindow());
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -122,6 +154,14 @@ public class ReconnaissanceFire : Skill
         Hero.Move.CanMove = true;
     }
 
+    private IEnumerator ElvenBoostWindow()
+    {
+        EnableSkillBoost();
+        yield return new WaitForSeconds(2f);
+        DisableSkillBoost();
+        _boostWindow = null;
+    }
+
     private void HandleProjectilePathEnd(Vector3 position) => CmdSpawnFireAura(position);
 
     void UpdateTrickShotTrajectory()
@@ -152,13 +192,13 @@ public class ReconnaissanceFire : Skill
     [Command]
     private void CmdSpawnFireAura(Vector3 position)
     {
-        if (float.IsInfinity(position.x) || float.IsNaN(position.x))
-            return;
+        if (float.IsInfinity(position.x) || float.IsNaN(position.x)) return;
 
-        if (_auraLifeCoroutine != null)
-            StopCoroutine(_auraLifeCoroutine);
-        if (currentFireAura != null)
-            NetworkServer.Destroy(currentFireAura.gameObject);
+        if (!isSkillEnableBoostLogic)
+        {
+            if (_auraLifeCoroutine != null) StopCoroutine(_auraLifeCoroutine);
+            if (currentFireAura != null) NetworkServer.Destroy(currentFireAura.gameObject);
+        }
 
         position.y += 0.1f;
         var aura = Instantiate(fireAura, position, Quaternion.identity);
@@ -177,12 +217,7 @@ public class ReconnaissanceFire : Skill
     private IEnumerator DestroyAuraAfter(float seconds, ReconnaissanceFireAura aura)
     {
         yield return new WaitForSeconds(seconds);
-
-        if (aura != null && aura == currentFireAura)
-            NetworkServer.Destroy(aura.gameObject);
-
-        currentFireAura = null;
-        _auraLifeCoroutine = null;
+        if (aura != null) NetworkServer.Destroy(aura.gameObject);
     }
 
     [ClientRpc]
@@ -249,5 +284,11 @@ public class ReconnaissanceFire : Skill
         _targetPoint = targetInfo.Points[0];
         _targetPoint = Vector3.positiveInfinity;
     }
+    #endregion
+
+    #region SkillEnableBoostLogicActiveTalent
+
+    public void SkillEnableBoostLogicActiveTalent(bool value) => isSkillEnableBoostLogicActiveTalent = value;
+
     #endregion
 }

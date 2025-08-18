@@ -29,7 +29,7 @@ public abstract class AbstractCharacterState
 	protected CharacterState _characterState;
 	protected SkillManager _abilities;
 	protected Health _health;
-	protected Character _personWhoMadeBuff;
+	public Character _personWhoMadeBuff;
 
 	public int CurrentStacksCount = 0;
 	public int MaxStacksCount = 0;

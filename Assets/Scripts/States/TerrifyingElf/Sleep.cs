@@ -11,6 +11,8 @@ public class Sleep : AbstractCharacterState
     private bool _previousIsSelect;
     private int _initialLayer;
     private bool _giveInnerDarkness;
+    private float _tickTimer;
+    private const float _tickInterval = 1f;
     private const string _enemyLayerName = "Enemy";
 
     private Character _source;
@@ -31,6 +33,8 @@ public class Sleep : AbstractCharacterState
         _duration = durationToExit;
         _baseDuration = durationToExit;
         _giveInnerDarkness = false;
+
+        _tickTimer = 0f;
 
         _initialLayer = character.gameObject.layer;
         character.gameObject.layer = LayerMask.NameToLayer(_enemyLayerName);
@@ -64,8 +68,8 @@ public class Sleep : AbstractCharacterState
 
         if (_source != null && _source.Abilities != null)
         {
-            var song = _source.Abilities.Abilities.OfType<SongOfSleep>().FirstOrDefault();
-            if (song != null) _giveInnerDarkness = song.IsSleepInnerDarknessTalentActive;
+            var sleep = _source.Abilities.Abilities.OfType<SleepSpell>().FirstOrDefault();
+            if (sleep != null) _giveInnerDarkness = sleep.IsSleepInnerDarknessTalentActive;
         }
     }
 
@@ -73,7 +77,22 @@ public class Sleep : AbstractCharacterState
     {
         _duration -= Time.deltaTime;
 
-        if (_duration <= 0) ExitState();
+        if (_duration <= 0f)
+        {
+            ExitState();
+            return;
+        }
+
+        if (_giveInnerDarkness)
+        {
+            _tickTimer += Time.deltaTime;
+            if (_tickTimer >= _tickInterval)
+            {
+                _tickTimer = 0f;
+                CmdStateInnerDarkness();
+            }
+        }
+
     }
 
     public override void ExitState()
@@ -82,7 +101,7 @@ public class Sleep : AbstractCharacterState
 
         _characterState.gameObject.layer = _initialLayer;
 
-        if (_giveInnerDarkness) for (int i = 0; i < 3; i++) CmdStateInnerDarkness();
+        //if (_giveInnerDarkness) for (int i = 0; i < 3; i++) CmdStateInnerDarkness();
 
         MoveComponent moveComp = _characterState.Character.Move;
         if (moveComp != null)

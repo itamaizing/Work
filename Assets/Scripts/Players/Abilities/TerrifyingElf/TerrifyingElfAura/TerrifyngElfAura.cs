@@ -41,13 +41,18 @@ public class TerrifyingElfAura : NetworkBehaviour
     private bool elvenSkillTalent;
     private bool elvenSkillPhysicsTalent;
     private bool calmnessOnElvenSkillTalent;
-    private bool innerDarknessManaAbsorptionTalent;
+    private bool suppressionManaAbsorptionTalent;
+    private bool _isReductionRecharge;
+    private bool _isElvenSkillPhysDamageHealthChance;
 
     #endregion
 
     private Skill currentSkill;
     private Mana _heroMana;
     private float _baseAreaReconnaissanceFire;
+
+    public bool IsReductionRecharge { get => _isReductionRecharge; }
+    public bool IsElvenSkillPhysDamageHealthChance { get => _isElvenSkillPhysDamageHealthChance; }
 
     private void OnEnable()
     {
@@ -111,18 +116,20 @@ public class TerrifyingElfAura : NetworkBehaviour
 
     #endregion
 
+    #region Talent
+    public void ReductionRecharge(bool value) => _isReductionRecharge = value;
+    public void CalmnessTalentActive(bool value) => calmnessTalent = value;
+    public void ElvenSkillPhysDamageHealthChance(bool value) => _isElvenSkillPhysDamageHealthChance = value;
+    #endregion
+
     #region CalmnessTalent
 
-    public void CalmnessTalentActive(bool value)
-    {
-        calmnessTalent = value;
-    }
 
     private void ApplyCalmnessTalent()
     {
         if (!calmnessTalent || currentSkill == null) return;
 
-        if (currentSkill.AbilityForm == AbilityForm.Spell)
+        if (currentSkill.AbilityForm == AbilityForm.Spell || currentSkill.AbilityForm == AbilityForm.Magic)
         {
             var character = currentSkill.Hero;
             if (character != null && character.CharacterState != null)
@@ -200,7 +207,7 @@ public class TerrifyingElfAura : NetworkBehaviour
     public void HuntressMarkPhysicsTalentActive(bool value) => huntressMarkPhysicsTalent = value;
     public void ElvenSkillPhysicsTalent(bool value) => elvenSkillPhysicsTalent = value;
     public void CalmnessOnElvenSkillTalent(bool value) => calmnessOnElvenSkillTalent = value;
-    public void InnerDarknessmanaAbsorption(bool value) => innerDarknessManaAbsorptionTalent = value;
+    public void SuppressionManaAbsorption(bool value) => suppressionManaAbsorptionTalent = value;
 
     [Command]
     private void CmdOnDamageTracked(Damage damage, GameObject target)
@@ -217,14 +224,14 @@ public class TerrifyingElfAura : NetworkBehaviour
             if (elvenSkillPhysicsTalent && UnityEngine.Random.Range(0f, 100f) <= elvenSkillFromPhysChance) 
                 selfState.AddState(States.ElvenSkill, durationElvenSkill, 0f, gameObject, "TerrifyingElfAura");
 
-            if (calmnessOnElvenSkillTalent && selfState.CheckForState(States.ElvenSkill) && UnityEngine.Random.Range(0f, 100f) <= calmnessOnElvenSkillChance)
+            else if (calmnessOnElvenSkillTalent && selfState.CheckForState(States.ElvenSkill) && UnityEngine.Random.Range(0f, 100f) <= calmnessOnElvenSkillChance)
                 selfState.AddState(States.Calmness, durationCalmess, 0f, gameObject, "TerrifyingElfAura");
 
             //if (huntressMarkPhysicsTalent && UnityEngine.Random.Range(0f, 100f) <= huntressMarkApplyChance && target != null && target.TryGetComponent<CharacterState>(out var victimState))
             //    victimState.AddState(States.HuntressMark, durationHuntressMark, 0f, gameObject, "HuntressMark");
 
-            if (innerDarknessManaAbsorptionTalent && selfState.GetState(States.InnerDarkness) is InnerDarkness innerDarkness && innerDarkness.CurrentStacksCount > 0 && hero.TryGetResource(ResourceType.Mana) is Mana mana)
-                mana.Add(damage.Value * 0.05f * innerDarkness.CurrentStacksCount);
+            if (suppressionManaAbsorptionTalent && selfState.GetState(States.Suppression) is SuppressionState suppression && suppression.CurrentStacksCount > 0 && hero.TryGetResource(ResourceType.Mana) is Mana mana)
+                mana.Add(damage.Value * 0.05f * suppression.CurrentStacksCount);
 
             if (manaAbsorptionPhysicalTalent) OnDamageDealt(damage, target);
         }

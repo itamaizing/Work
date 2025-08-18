@@ -18,8 +18,8 @@ public class Ghost : Skill
     [SerializeField] private AudioClip aCTeleportToGhost;
     [SerializeField] private AudioClip aCÑontrolGhostToTarget;
     [SerializeField] private AudioClip aCSummoningGhost;
-    [SerializeField] private DrawCircle _extendedRadiusCircle;
-    [SerializeField] private Color extendedRadiusColor = new Color(0.8f, 0.3f, 0f);
+    //[SerializeField] private DrawCircle _extendedRadiusCircle;
+    //[SerializeField] private Color extendedRadiusColor = new Color(0.8f, 0.3f, 0f);
     [SerializeField] private List<Character> _ghosts;
 
     private GameObject _ghostPrefabPreview;
@@ -38,17 +38,25 @@ public class Ghost : Skill
     private Coroutine _checkExtendedRadiusCoroutine;
     private Coroutine _teleportAnimationCoroutine;
     private Coroutine _waitTeleportJob;
+    private Coroutine _boostWindow;
 
     private readonly Queue<Vector3> _pendingSpawn = new();
     private readonly Queue<Character> _teleportQueue = new();
 
-
+    #region Talent
     private bool _sendingGhostTargetTalentActive;
     private bool _cooldownGhostShotActive;
     private bool _effectsInnerDarknessTalent;
     private bool _movingToGhostWithZeroMana;
     private bool _passingThroughGhost;
+    private bool _isPullingHealthGostTeleport;
+    private bool _isGhostSpawnInRadiusTree;
+    #endregion
+
     private bool _isWaitingTeleport;
+    private bool isSkillEnableBoostLogic;
+
+    public event Action<Character, Vector3> Teleported;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("GhostCastDelay");
     protected override int AnimTriggerCast => 0;
@@ -62,9 +70,6 @@ public class Ghost : Skill
 
             if (_ghostMoveToTarget)
                 return true;
-
-            if (_teleportGhost && _ghostToTeleport != null)
-                return IsWithinRadius(_ghostToTeleport.transform.position, extendedRadius);
 
             return false;
         }
@@ -80,6 +85,8 @@ public class Ghost : Skill
     public void CooldownGhostShotActiveTalent(bool value) => _cooldownGhostShotActive = value;
     public void MovingToGhostWithZeroMana(bool value) => _movingToGhostWithZeroMana = value;
     public void PassingThroughGhost(bool value) => _passingThroughGhost = value;
+    public void PullingHealthGostTeleport(bool value) => _isPullingHealthGostTeleport = value;
+    public void GhostSpawnInRadiusTree(bool value) => _isGhostSpawnInRadiusTree = value;
 
     #endregion
 
@@ -91,7 +98,16 @@ public class Ghost : Skill
         InitializeFields();
         RegisterSpawnEvents();
 
-        if (_extendedRadiusCircle == null) _extendedRadiusCircle = GetComponentInChildren<DrawCircle>(true);
+        //if (_extendedRadiusCircle == null) _extendedRadiusCircle = GetComponentInChildren<DrawCircle>(true);
+    }
+
+    protected override void SkillEnableBoostLogic()
+    {
+        isSkillEnableBoostLogic = true;
+    }
+    protected override void SkillDisableBoostLogic()
+    {
+        isSkillEnableBoostLogic = false;
     }
 
     private void OnDestroy()
@@ -113,25 +129,34 @@ public class Ghost : Skill
         }
     }
 
-    private void ShowExtendedRadius()
-    {
-        if (_extendedRadiusCircle != null)
-        {
-            _extendedRadiusCircle.SetColor(extendedRadiusColor);
-            _extendedRadiusCircle.Draw(extendedRadius);
-        }
-    }
+    public void TryStartGhostBoostWindow() => _boostWindow = StartCoroutine(GhostBoostWindow());
 
-    private void HideExtendedRadius()
-    {
-        if (_extendedRadiusCircle != null) _extendedRadiusCircle.Clear();
-    }
+    //private void ShowExtendedRadius()
+    //{
+    //    if (_extendedRadiusCircle != null)
+    //    {
+    //        _extendedRadiusCircle.SetColor(extendedRadiusColor);
+    //        _extendedRadiusCircle.Draw(extendedRadius);
+    //    }
+    //}
+
+    //private void HideExtendedRadius()
+    //{
+    //    if (_extendedRadiusCircle != null) _extendedRadiusCircle.Clear();
+    //}
 
     private void InitializeFields()
     {
         _baseCastDelay = CastDeley;
         _ghosts = new List<Character>();
         _spawnComponent = GetComponent<SpawnComponent>();
+    }
+
+    private bool IsNearGrowTree(Vector3 point, float radius = 1f)
+    {
+        var hits = Physics.OverlapSphere(point, radius);
+        for (int i = 0; i < hits.Length; i++) if (hits[i].GetComponentInParent<GrowTreeAura>() != null) return true;
+        return false;
     }
 
     private void RegisterSpawnEvents()
@@ -144,6 +169,14 @@ public class Ghost : Skill
         if (_spawnComponent != null) _spawnComponent.UnitAdded -= OnGhostSpawned;
     }
 
+    private IEnumerator GhostBoostWindow()
+    {
+        EnableSkillBoost();
+        yield return new WaitForSeconds(3f);
+        DisableSkillBoost();
+        _boostWindow = null;
+    }
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         Vector3 mousePositionStart = GetMousePoint();
@@ -153,7 +186,7 @@ public class Ghost : Skill
 
         _ghostPrefabPreview = Instantiate(ghostPrefabPreview, mousePositionStart, Quaternion.identity);
 
-        ShowExtendedRadius();
+        //ShowExtendedRadius();
 
         _isPreviewHiddenOverGhost = false;
 
@@ -218,15 +251,28 @@ public class Ghost : Skill
 
             else
             {
-
-                if (Input.GetMouseButtonDown(0) && IsMouseInRadius(Radius) && !_teleportGhost && !IsMouseOverTarget(out _))
+                if (Input.GetMouseButtonDown(0) && !_teleportGhost && !IsMouseOverTarget(out _))
                 {
-                    if (IsHaveCharge && (_chargesHaveSeparateCooldown || IsCooldowned))
+                    var point = GetMousePoint();
+                    if (point == Vector3.zero) { yield return null; continue; }
+
+                    bool canSpawnHere = IsMouseInRadius(Radius) || (IsNearGrowTree(point, 1f) && _isGhostSpawnInRadiusTree);
+
+                    if (!canSpawnHere) { yield return null; continue; }
+
+                    if (isSkillEnableBoostLogic)
                     {
-                        var point = GetMousePoint();
-
                         if (_isSpawningGhostVisual) _pendingSpawn.Enqueue(point);
+                        else StartCoroutine(SpawnGhostVisualEffect(point));
 
+                        yield return new WaitForSeconds(0.1f);
+
+                        yield return null;
+                    }
+
+                    else if (IsHaveCharge && (_chargesHaveSeparateCooldown || IsCooldowned))
+                    {
+                        if (_isSpawningGhostVisual) _pendingSpawn.Enqueue(point);
                         else
                         {
                             _spawnPosition = point;
@@ -378,6 +424,8 @@ public class Ghost : Skill
         var moveComponent = GetComponent<MoveComponent>();
         moveComponent?.TeleportToPositionSmooth(targetPosition, 0.5f);
 
+        if (_isPullingHealthGostTeleport) Teleported?.Invoke(Hero, targetPosition);
+
         if (_teleportAnimationCoroutine != null) StopCoroutine(_teleportAnimationCoroutine);
         _teleportAnimationCoroutine = StartCoroutine(PlayTeleportMoveAnimation(targetPosition));
 
@@ -406,9 +454,7 @@ public class Ghost : Skill
     {
         if (_spawnComponent == null) return;
         Vector3 spawnPosition = position + Vector3.up * 1f;
-
-        Debug.LogError("CmdSpawnUnitInPiunts need index");
-        //_spawnComponent.CmdSpawnUnitInPoint(spawnPosition, LookRotation);
+        _spawnComponent.CmdSpawnAliesPoint(spawnPosition, LookRotation);
     }
 
     private void RemoveOldestGhostIfNeeded()
@@ -490,7 +536,7 @@ public class Ghost : Skill
 
         _shouldSpawnGhost = false;
 
-        if (_pendingSpawn.Count > 0 && IsHaveCharge && (_chargesHaveSeparateCooldown || IsCooldowned)) StartCoroutine(SpawnGhostVisualEffect(_pendingSpawn.Dequeue()));
+        if (_pendingSpawn.Count > 0 && IsHaveCharge && (isSkillEnableBoostLogic || _chargesHaveSeparateCooldown || IsCooldowned)) StartCoroutine(SpawnGhostVisualEffect(_pendingSpawn.Dequeue()));
         else _isSpawningGhostVisual = false;
     }
 
@@ -541,12 +587,12 @@ public class Ghost : Skill
                 ghost.GetComponent<GhostAura>() != null &&
                 IsWithinRadius(ghost.transform.position, extendedRadius));
 
-            if (_extendedRadiusCircle != null)
-            {
-                var color = ghostWithAuraInExtendedRadius ? Color.green : extendedRadiusColor;
-                _extendedRadiusCircle.SetColor(color);
-                _extendedRadiusCircle.Draw(extendedRadius);
-            }
+            //if (_extendedRadiusCircle != null)
+            //{
+            //    var color = ghostWithAuraInExtendedRadius ? Color.green : extendedRadiusColor;
+            //    _extendedRadiusCircle.SetColor(color);
+            //    _extendedRadiusCircle.Draw(extendedRadius);
+            //}
 
             yield return new WaitForSeconds(0.1f);
         }
@@ -588,7 +634,7 @@ public class Ghost : Skill
     {
         _teleportQueue.Clear();
         _isWaitingTeleport = false;
-        HideExtendedRadius();
+        //HideExtendedRadius();
 
         if (_checkExtendedRadiusCoroutine != null)
         {
