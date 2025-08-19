@@ -13,7 +13,7 @@ public class DarknessTalent_1 : Talent
         ability.ActivateSkill(pullingHealth);
         ability.ActivateSkill(ghost);
         ghost.CooldownGhostShotActiveTalent(true);
-        pullingHealth.PullingHealthSpeedWithSilenceTalentActive(true);
+        pullingHealth.PullingHealthSpeedWithFearTalentActive(true);
     }
 
     public override void Exit()
@@ -21,6 +21,6 @@ public class DarknessTalent_1 : Talent
         ability.DeactivateSkill(pullingHealth);
         ability.DeactivateSkill(ghost);
         ghost.CooldownGhostShotActiveTalent(false);
-        pullingHealth.PullingHealthSpeedWithSilenceTalentActive(false);
+        pullingHealth.PullingHealthSpeedWithFearTalentActive(false);
     }
 }

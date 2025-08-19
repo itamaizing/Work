@@ -14,7 +14,7 @@ public class SongOfSleep : Skill
     private Coroutine _radiusJob;
     private Vector3 _centerPoint = Vector3.positiveInfinity;
     private bool _isSleepInnerDarknessTalentActive = false;
-
+    
     protected override bool IsCanCast => !IsCasting;
 
     private static readonly int _animTrigger = Animator.StringToHash("SongSpellCastDelayAnimTrigger");

@@ -10,8 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5d8548505a2c5104980a6fa13739ca3d, type: 3}
-  m_Name: TerrifyingElfAura
+  m_Name: BleedingSpell
   m_EditorClassIdentifier: 
-  _name: 
+  _name: "\u041A\u0440\u043E\u0432\u043E\u0442\u0435\u0447\u0435\u043D\u0438\u0435"
   _description: 
-  _icon: {fileID: 21300000, guid: 2f99567c6f719bd44a5126e0152ab989, type: 3}
+  _state: 
+  _descriptionState: 
+  _icon: {fileID: 21300000, guid: b453e03083e173e4b81acdc55b40633f, type: 3}

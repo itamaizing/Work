@@ -147,7 +147,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 					Data);
 			}
 		}
-		Health.Died += CmdOnDied;
+
 		Health.Died += AddDeadCounter;
 	}
 	
@@ -178,6 +178,13 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 		RpcResetAll();
 	}
 
+	[Server]
+	private void ServerOnDied()
+	{
+		OnDied();
+		RpcOnDied();
+	}
+
 #if UNITY_EDITOR
 	[ContextMenu(nameof(ResetAll))]
 	private void ServerResetAllTest()
@@ -190,11 +197,13 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 	public override void OnStartServer()
 	{
 		ServerOnUnitSpawned?.Invoke(this);
+		Health.Died += ServerOnDied;
 	}
 
 	public override void OnStopServer()
 	{
 		ServerOnUnitDeleted?.Invoke(this);
+		Health.Died -= ServerOnDied;
 	}
 
 	public override void OnStartClient()
@@ -298,23 +307,29 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 		_deadsCounter++;
     }
 
-	[Command]
-	private void CmdOnDied()
-    {
-		OnDied();
-		ClientRpcOnDied();
-	}
+	//[Command]
+	//private void CmdOnDied()
+ //   {
+	//	OnDied();
+	//	ClientRpcOnDied();
+	//}
 
-	[ClientRpc]
-	private void ClientRpcOnDied()
-    {
-		OnDied();
-	}
+	//[ClientRpc]
+	//private void ClientRpcOnDied()
+ //   {
+	//	OnDied();
+	//}
 
 	[ClientRpc]
 	private void RpcResetAll()
 	{
 		ResetAll();
+	}
+
+	[ClientRpc]
+	private void RpcOnDied()
+	{
+		OnDied();
 	}
 
 	[TargetRpc]

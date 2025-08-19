@@ -8,6 +8,7 @@ public class Health : Resource, IDamageable, IHealingable
 {
     [SerializeField] private Animator _animator;
     [SerializeField] private NetworkAnimator _netAnimator;
+    [SerializeField] private Bar bar;
 
     [SyncVar(hook = nameof(HookEvadeMeleeDamageChanged))] protected float _evadeMeleeDamage;
     [SyncVar(hook = nameof(HookEvadeRangeDamageChanged))] protected float _evadeRangeDamage;
@@ -20,7 +21,9 @@ public class Health : Resource, IDamageable, IHealingable
     private Coroutine _dOTDamageAnimJob;
     private float _dOTDamageAnimDuration = 0.1f;
     private float _totalMaxAbsorption = 0;
+    private bool _isDot = false;
 
+    public Bar barCharacter { get => bar; }
     public float SumDamageTaken { get => _sumDamageTaken; }
     public float EvadeMeleeDamage { get => _evadeMeleeDamage; set => _evadeMeleeDamage = value; }
     public float EvadeRangeDamage { get => _evadeRangeDamage; set => _evadeRangeDamage = value; }
@@ -46,6 +49,8 @@ public class Health : Resource, IDamageable, IHealingable
     public event Action<float, float> EvadeMagDamageChanged;
     public event Action<float, float> DefPhysDamageChanged;
     public event Action<float, float> DefMagDamageChanged;
+
+    public bool IsDot { get => _isDot; set => _isDot = value; }
 
     public override void Initialize(float health, float hpRegen, float hpRegenDelay, CharacterData data)
     {
@@ -75,10 +80,14 @@ public class Health : Resource, IDamageable, IHealingable
         if (damage.Value == 0)
             return true;
 
-        if (TryUse(damage.Value) == false)
+        if (!TryUse(damage.Value))
         {
-            ClientRpcDied();
-            Died?.Invoke();
+            if (isServer)
+            {
+                Died?.Invoke();
+                ClientRpcDied();
+            }
+            return true;
         }
         ClientRpcDamage(damage, skill);
         _sumDamageTaken += damage.Value;
@@ -300,7 +309,7 @@ public class Health : Resource, IDamageable, IHealingable
     [ClientRpc]
     private void ClientRpcDied()
     {
-        Died?.Invoke();
+        //Died?.Invoke();
         _animator.SetBool(HashAnimPlayer.IsDead, true);
     }
 

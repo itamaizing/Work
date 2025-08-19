@@ -51,13 +51,8 @@ public class Bound : AbstractCharacterState
 
 		if (character.isServer && character.StateEffects.TrapPrefab)
 		{
-			_spawnedTrap = GameObject.Instantiate(character.StateEffects.TrapPrefab, character.transform.position,Quaternion.identity);
-
-			var life = _spawnedTrap.GetComponent<TrapStateLife>();
-			life.Init(character.gameObject);
-
-			NetworkServer.Spawn(_spawnedTrap);
-			_spawnedTrap.transform.SetParent(character.transform, true);
+			_characterState = character;
+			character.StartCoroutine(ServerSpawnTrapNextFrame());
 		}
 
 		if (_characterState.TryGetComponent<StateEffects>(out StateEffects stateEffects)) stateEffects.RopeTrap.SetActive(true);
@@ -70,6 +65,7 @@ public class Bound : AbstractCharacterState
 	{
 		if (_stateClosing) return;
 		_stateClosing = true;
+		_spawnedTrap = null;
 		ExitState();
 	}
 
@@ -110,6 +106,29 @@ public class Bound : AbstractCharacterState
 			_duration = time;
 			return true;
 		}
+	}
+
+	[Server]
+	private IEnumerator ServerSpawnTrapNextFrame()
+	{
+		yield return null;
+
+		var character = _characterState.Character;
+
+		Vector3 position = character.transform.position;
+
+		if (Physics.Raycast(position + Vector3.up * 2f, Vector3.down, out var hit, 5f))
+			position = hit.point;
+
+		Quaternion rot = Quaternion.LookRotation(character.transform.forward, Vector3.up);
+
+		_spawnedTrap = GameObject.Instantiate(_characterState.StateEffects.TrapPrefab, position, rot);
+
+		var life = _spawnedTrap.GetComponent<TrapStateLife>();
+		life.Init(character.gameObject);
+
+		SceneManager.MoveGameObjectToScene(_spawnedTrap.gameObject, character.NetworkSettings.MyRoom);
+		NetworkServer.Spawn(_spawnedTrap);
 	}
 }
 

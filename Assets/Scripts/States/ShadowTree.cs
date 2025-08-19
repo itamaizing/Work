@@ -63,7 +63,7 @@ public class ShadowTree : AbstractCharacterState
                 _characterState.Character.Health.AddMax(-BonusPerStack);
                 _characterState.StateIcons.RemoveIconCount();
             }
-
+            
             _remaining -= 1f;
             if (_remaining <= 0f || CurrentStacksCount <= 0) ExitState();
         }

@@ -14,12 +14,13 @@ public class PullingHealth : Skill
     [SerializeField] private List<GameObject> ghost = new List<GameObject>();
     [SerializeField] private float tickInterval;
     [SerializeField] private AudioClip audioClip;
+    [SerializeField] private Ghost ghostSkill;
 
     //[Header("Pulling Ghost")]
     //[SerializeField] private float radiusGhost;
     [SerializeField] private bool _pullingHealthThroughGhosts;
     [SerializeField] private bool pullingHealthGhostTalent;
-    [SerializeField] private bool _pullingHealthSpeedWithSilenceTalent;
+    [SerializeField] private bool _pullingHealthSpeedWithFearTalent;
 
     private AudioSource _audioSource;
     private GameObject _activeEffect;
@@ -33,6 +34,13 @@ public class PullingHealth : Skill
     private float _baseCastStreamDuration;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private Transform _targetTransform;
+    private bool _ignoreMoveCheck;
+    private float _ignoreMoveTimeLeft;
+
+    private const float _teleportTime = 0.3f;
+
+    private readonly List<IDamageable> _extraTargets = new();
+    private readonly List<GameObject> _extraEffects = new();
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("PullingHealthCastDelay");
@@ -68,16 +76,29 @@ public class PullingHealth : Skill
 
     private void OnDestroy()
     {
+        ghostSkill.Teleported -= OnGhostTeleport;
         OnSkillCanceled -= HandleSkillCanceled;
     }
 
     private void OnEnable()
     {
         OnSkillCanceled += HandleSkillCanceled;
+        ghostSkill.Teleported += OnGhostTeleport;
+    }
+
+    private void OnGhostTeleport(Character character, Vector3 _)
+    {
+        if (character == Hero)
+        {
+            _ignoreMoveCheck = true;
+            _ignoreMoveTimeLeft = _teleportTime;
+        }
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
+
         while (float.IsPositiveInfinity(_targetPoint.x) && !_disactive)
         {
             if (GetMouseButton)
@@ -97,6 +118,8 @@ public class PullingHealth : Skill
                     _target = _targetCharacter;
                     _targetTransform = targetCharacter.transform;
                     _targetPoint = _targetCharacter.transform.position;
+
+                    if (multiMagic != null) multiMagic.LastTarget = targetCharacter;
                 }
 
                 else if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out var hitObject, Mathf.Infinity, _targetsLayers)
@@ -186,9 +209,9 @@ public class PullingHealth : Skill
                 }
             }
 
-            if (_pullingHealthSpeedWithSilenceTalent && targetComponentState.CheckForState(States.Silent))
+            if (_pullingHealthSpeedWithFearTalent && targetComponentState.CheckForState(States.Fear))
             {
-                float speedModifier = 0.7f;
+                float speedModifier = 0.5f;
                 tickInterval *= speedModifier;
             }
         }
@@ -197,10 +220,27 @@ public class PullingHealth : Skill
         _hero.Animator.SetTrigger(AnimTriggerCastDelay);
         _hero.NetworkAnimator.SetTrigger(AnimTriggerCastDelay);
 
+        var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
+        if (multiMagic != null)
+        {
+            foreach (var character in multiMagic.PopPendingTargets())
+            {
+                if (character == _targetCharacter) continue;
+                _extraTargets.Add(character);
+
+                TryPayCost();
+                CmdSpawnExtraPullingEffect(gameObject, character.gameObject);
+            }
+        }
+
+        AfterCastJob();
         yield return StartCoroutine(StreamDuration());
 
-        _hero.Animator.SetTrigger(Animator.StringToHash("PullingHealthCastDelayExit"));
-        _hero.NetworkAnimator.SetTrigger(Animator.StringToHash("PullingHealthCastDelayExit"));
+        //Debug.Log("Конец каста");
+        //_hero.Animator.SetTrigger(Animator.StringToHash("PullingHealthCastDelayExit"));
+        //_hero.NetworkAnimator.SetTrigger(Animator.StringToHash("PullingHealthCastDelayExit"));
+
+        //multiMagic.ExitState();
     }
 
 
@@ -271,8 +311,15 @@ public class PullingHealth : Skill
                 yield break;
             }
 
+            if (_ignoreMoveCheck)
+            {
+                initialPosition = transform.position;
+                _ignoreMoveTimeLeft -= Time.deltaTime;
+                if (_ignoreMoveTimeLeft <= 0f) _ignoreMoveCheck = false;
+            }
+
             if (Input.GetMouseButtonDown(1) || (_targetCharacter != null && Vector3.Distance(transform.position, _targetTransform.position) > Radius) 
-            || Vector3.Distance(initialPosition, transform.position) > positionThreshold)
+            || Vector3.Distance(initialPosition, transform.position) > positionThreshold && !_ignoreMoveCheck)
             {
                 _hero.Animator.ResetTrigger(Animator.StringToHash("PullingHealthCastDelay"));
                 _hero.NetworkAnimator.ResetTrigger(Animator.StringToHash("PullingHealthCastDelay"));
@@ -325,11 +372,11 @@ public class PullingHealth : Skill
     {
         if (ghost.TryGetComponent<Health>(out Health ghostHealth))
         {
-            //float ghostBaseDamage = Damage * 0.3f;
+            float ghostBaseDamage = Damage * 0.3f;
 
             Damage damage = new Damage
             {
-                Value = Damage,
+                Value = ghostBaseDamage,
                 Type = DamageType,
             };
 
@@ -339,13 +386,12 @@ public class PullingHealth : Skill
                 CmdApplyDamage(damage, targetComponent.gameObject);
             }
 
-            float healValue = Damage * 0.25f;
-            health.CmdAdd(healValue);
+            //float healValue = Damage * 0.25f;
+            //health.CmdAdd(healValue);
 
-            float ghostHealValue = Damage * 0.75f;
+            float ghostHealValue = Damage * 0.70f;
             ghostHealth.CmdAdd(ghostHealValue);
 
-            Debug.Log($"GhostAura {ghost.name}: Healed for {ghostHealValue}, Player healed for {healValue}");
         }
     }
 
@@ -359,6 +405,8 @@ public class PullingHealth : Skill
 
         if (_targetCharacter != null) CmdApplyDamage(damage, _targetCharacter.gameObject);
         else if (_targetObject != null) CmdApplyDamage(damage, _targetObject.gameObject);
+
+        foreach (var damageble in _extraTargets) if (damageble is Component component && component != null) CmdApplyDamage(damage, component.gameObject);
     }
 
     private void HealPlayer()
@@ -400,9 +448,9 @@ public class PullingHealth : Skill
         pullingHealthGhostTalent = value;
     }
 
-    public void PullingHealthSpeedWithSilenceTalentActive(bool value)
+    public void PullingHealthSpeedWithFearTalentActive(bool value)
     {
-        _pullingHealthSpeedWithSilenceTalent = value;
+        _pullingHealthSpeedWithFearTalent = value;
     }
 
     public void PullingHealthThroughGhosts(bool value)
@@ -423,14 +471,13 @@ public class PullingHealth : Skill
         _targetCharacter = null;
         _targetObject = null;
         _targetPoint = Vector2.positiveInfinity;
+        _extraTargets.Clear();
+        _extraEffects.Clear();
+        AfterCastJob();
         CmdStopShotSound();
     }
 
-    [Command]
-    private void CmdSyncGhosts(GameObject ghostObj)
-    {
-        ghost.Add(ghostObj);
-    }
+    [Command] private void CmdSyncGhosts(GameObject ghostObj) => ghost.Add(ghostObj);
 
     //[Command]
     //private void CmdApplyDamage(GameObject targetObject, Damage damage, Skill skill)
@@ -471,6 +518,18 @@ public class PullingHealth : Skill
     }
 
     [Command]
+    private void CmdSpawnExtraPullingEffect(GameObject start, GameObject target)
+    {
+        if (_pullingHealthPrefab == null || start == null || target == null) return;
+
+        var effect = Instantiate(_pullingHealthPrefab, start.transform.position, Quaternion.identity);
+        _extraEffects.Add(effect);
+        SceneManager.MoveGameObjectToScene(effect, _hero.NetworkSettings.MyRoom);
+        NetworkServer.Spawn(effect);
+        RpcInitEffects(effect, start, target);
+    }
+
+    [Command]
     private void CmdDestroyEffect()
     {
         if (_activeEffect != null)
@@ -490,6 +549,8 @@ public class PullingHealth : Skill
             }
         }
 
+        foreach (var effect in _extraEffects) if (effect != null) NetworkServer.Destroy(effect);
+
         _activeGhostEffects.Clear();
 
         ghost.Clear();
@@ -506,11 +567,7 @@ public class PullingHealth : Skill
         _allActiveEffects.Clear();
     }
 
-    [Command] 
-    private void CmdCrossFade()
-    {
-        _hero.Animator.CrossFade("PullingHealthCastDelayExit", 0.1f);
-    }
+    [Command] private void CmdCrossFade() => _hero.Animator.CrossFade("PullingHealthCastDelayExit", 0.1f);
 
     [ClientRpc]
     private void RpcInitEffects(GameObject effectGameObject, GameObject startPoint, GameObject targetPoint)
@@ -566,6 +623,8 @@ public class PullingHealth : Skill
 
     protected override void ClearData()
     {
+        _extraTargets.Clear();
+        _extraEffects.Clear();
         Radius = _baseRadius;
     }
 

@@ -53,6 +53,7 @@ public enum AbilityForm
     Spell,
     Magic,
     Physical,
+    Both,
 }
 
 public enum SkillType
@@ -83,6 +84,7 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] protected bool _isSubjectToGlobalCooldownTime = true;
 
     [SerializeField] protected List<SkillEnergyCost> _skillEnergyCosts;
+    [SerializeField] protected List<SkillEnergyCost> _additionalSkillEnergyCosts;
     [SerializeField] protected float _cooldownTime;
     [SerializeField] protected float _castDeley;
     [SerializeField] protected float _damageValue;
@@ -217,6 +219,7 @@ public abstract class Skill : NetworkBehaviour
     public SkillType SkillType => _skillType;
     public Moving Moving => _moving;
     public List<SkillEnergyCost> SkillEnergyCosts { get => _skillEnergyCosts; }
+    public List<SkillEnergyCost> AdditionalSkillEnergyCosts { get => _additionalSkillEnergyCosts; }
     public List<SkillEnergyCost> ManaCostPerTick { get => _manaCostPerTick; }
     public float ManaCostRate { get => _manaCostRate; }
     public Queue<TargetInfo> TargetInfoQueue { get => _targetInfoQueue; }
@@ -259,6 +262,7 @@ public abstract class Skill : NetworkBehaviour
     public event Action<Vector3> ClickPoint;
     public event Action BoostEnabled;
     public event Action BoostDisabled;
+    public event Action AfterCast;
 
     /// <summary>
     /// There may be a description that will be shown in the AbillityNameBox.
@@ -268,6 +272,7 @@ public abstract class Skill : NetworkBehaviour
     protected abstract int AnimTriggerCast { get; }
 
     protected void RaiseCooldownEnded() => CooldownEnded?.Invoke();
+    protected void SkillAfterCastJob() => AfterCast?.Invoke();
 
     protected virtual bool IsCanCast
     {
@@ -645,7 +650,7 @@ public abstract class Skill : NetworkBehaviour
 
     public void StopDamageZone()
     {
-        _skillRender.CmdStopDrawDamageZone();
+        _skillRender.CmdRemoveNextDamageZone();
     }
 
     [ClientCallback]
@@ -1535,6 +1540,14 @@ public abstract class Skill : NetworkBehaviour
         ApplyHeal(heal, hp, skill, sourceName);
     }
 
+    public void AfterCastJob()
+    {
+        CmdSkillAfterCastJob();
+        SkillAfterCastJob();
+    }
+
+    [Command] private void CmdSkillAfterCastJob() => SkillAfterCastJob();
+
     private void SubscribeClickEvents()
     {
         InputHandler.OnClick += OnClick;
@@ -1543,7 +1556,7 @@ public abstract class Skill : NetworkBehaviour
         InputHandler.OnSpacetLeftMouse += OnSpaceClick;
 
         //cancelled
-
+        
         InputHandler.OnClickCanceled += OnClickCanceled;
         InputHandler.OnShiftLeftMouseCanceled += OnClickCanceled;
         InputHandler.OnSwitchAutoModeCanceled += OnClickCanceled;
