@@ -257,10 +257,12 @@ public class CharacterState : NetworkBehaviour
         [States.MagicWater] = new MagicWater(),
         [States.Burning] = new Burning(),
         [States.Burn] = new Burn(),
-		#endregion
+		[States.Discharge] = new Gangdollarff.AirElemental.Discharge(),
+		[States.CoolingAura] = new CoolingAura(),
+        #endregion
 
-		#region Test Baff and Debaff
-		[States.BaffState] = new BaffState(),
+        #region Test Baff and Debaff
+        [States.BaffState] = new BaffState(),
 		[States.DebaffState] = new DebaffState(),
         #endregion
 
@@ -801,6 +803,8 @@ public enum States
     TestAuraState,
 	MultiMagic,
 	FireFlash,
+    Discharge,
+    CoolingAura,
 }
 public enum BaffDebaff
 {

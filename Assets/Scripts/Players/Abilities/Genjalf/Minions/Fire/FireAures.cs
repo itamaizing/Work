@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Mirror;
 using Unity.Collections;
 using UnityEngine;
@@ -74,7 +75,7 @@ public class Burning : AbstractCharacterState
         _character = character.Character;
         Damage damage = new Damage
         {
-            Value = 1,
+            Value = _damage,
         };
         character.Character.TryTakeDamage(ref damage, null);
     }
@@ -105,7 +106,7 @@ public class Burning : AbstractCharacterState
 
         Damage damage = new Damage
         {
-            Value = 1,
+            Value = _damage,
         };
         _character.TryTakeDamage(ref damage, null);
 

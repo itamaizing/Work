@@ -46,7 +46,6 @@ public class SelectedCircle : MonoBehaviour
 
     public void SwitchSelectCircle(bool value)
     {
-        Debug.Log(12312132123132);
         _selectProjector.gameObject.SetActive(value);
     }
 
