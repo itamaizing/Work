@@ -10,8 +10,15 @@ public class ElementalSpawn : Skill
     private Vector3 _position;
     private int _prefIndex;
     private bool _isSpawned;
-    private Character _elemental;
+    private Character _airElement;
+    private Character _waterElement;
+    private Character _earthElement;
+    private Character _fireElement;
 
+    public Character AirElement => _airElement;
+    public Character WaterElement => _waterElement;
+    public Character EarthElement => _earthElement;
+    public Character FireElement => _fireElement;
     public int IndexElemental { get { return _indexElemental; } set { _indexElemental = value; } }
 
     protected override bool IsCanCast => Vector3.Distance(_position, transform.position) <= Radius;
@@ -37,7 +44,7 @@ public class ElementalSpawn : Skill
             CmdDestroyUnit(0);
             Hero.SpawnComponent.Units.RemoveAt(0);
         }
-
+        //Hero.SpawnComponent.UnitAdded += OnUnitAdded;
         Hero.SpawnComponent.CmdSpawnUnitInPoint(_position, IndexElemental);
 
         yield return null;

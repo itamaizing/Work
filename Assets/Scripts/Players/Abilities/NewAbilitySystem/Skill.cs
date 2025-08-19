@@ -16,6 +16,11 @@ public class SkillEnergyCost
     {
         resourceCost *= multiplier;
     }
+    
+    public void ModifyResourceCost1(float multiplier)
+    {
+        resourceCost /= multiplier;
+    }
 
     public void ResetResourceCost(float baseCost)
     {

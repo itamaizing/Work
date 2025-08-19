@@ -12,6 +12,8 @@ namespace Gangdollarff
         [SerializeField] private float _pushRange = 1;
         [SerializeField] private float _pushDuration = 0.33f;
 
+        public bool IsBaffed = false;
+
         public override string AdditionalDescription =>
             $"Расстояние толчка: {AbilityNameBox.ColorOpen}{_pushRange}{AbilityNameBox.ColorEnd}";
 
@@ -43,6 +45,9 @@ namespace Gangdollarff
             {
                 if(item.TryGetComponent(out Character enemy))
                 {
+                    if (IsBaffed)
+                        CooldownTime = CooldownTime - 2;
+
                     CmdApplyDamage(damage, enemy.gameObject);
 
                     Vector3 dirForPush = (enemy.transform.position - transform.position).normalized;

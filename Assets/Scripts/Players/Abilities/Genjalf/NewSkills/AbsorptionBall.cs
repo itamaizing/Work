@@ -25,6 +25,8 @@ namespace Gangdollarff
 
         protected override bool IsCanCast => true;
 
+        public float ShieldDuration { get => _shieldDuration; set => _shieldDuration = value; }
+
         public override void LoadTargetData(TargetInfo targetInfo)
         {
             
