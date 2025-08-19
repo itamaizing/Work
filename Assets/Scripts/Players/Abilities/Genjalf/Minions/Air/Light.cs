@@ -46,7 +46,6 @@ namespace Gangdollarff.AirElemental
         {
             if (_target != null)
             {
-                Debug.Log(123121213);
                 Damage damage = new Damage
                 {
                     Value = Buff.Damage.GetBuffedValue(Damage),

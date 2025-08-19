@@ -64,8 +64,10 @@ public class ElementalSpawn : Skill
         callbackDataSaved(targetInfo);
     }
 
+    [Command]
     private void CmdDestroyUnit(int index)
     {
+        Debug.Log(Hero.SpawnComponent.Units[index].gameObject.name);
         NetworkServer.Destroy(Hero.SpawnComponent.Units[index].gameObject);
 
         Hero.SpawnComponent.Units.RemoveAt(index);
