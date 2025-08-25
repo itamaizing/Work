@@ -268,6 +268,7 @@ public abstract class Skill : NetworkBehaviour
 
     protected void RaiseCooldownEnded() => CooldownEnded?.Invoke();
     protected void SkillAfterCastJob() => AfterCast?.Invoke();
+    protected void CastEndedJob() => CastEnded?.Invoke();
 
     protected virtual bool IsCanCast
     {
@@ -701,6 +702,7 @@ public abstract class Skill : NetworkBehaviour
             _skillRender.StartDrawLineForZone(this);
         }
     }
+    protected virtual void StopAutoDrawRadius() => _skillRender.StopDrawRadius();
 
     protected virtual void StopAutoDraw()
     {

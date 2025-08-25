@@ -88,6 +88,9 @@ MonoBehaviour:
   - {fileID: 3545852164369826336, guid: a9c9f461b2da1124c8147af729a93ea3, type: 3}
   - {fileID: 3545852164369826336, guid: 6cbb7405efe85c6409a55809aa00def2, type: 3}
   - {fileID: 3545852164369826336, guid: a124624cc2322e644a921c631896ba45, type: 3}
+  _baffColor: {r: 0.23, g: 0.9, b: 0.23, a: 1}
+  _debaffColor: {r: 0.9, g: 0.15, b: 0.15, a: 1}
+  _neutralColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
 --- !u!1 &119956460787868539
 GameObject:
   m_ObjectHideFlags: 0
@@ -1637,6 +1640,62 @@ Transform:
   m_Father: {fileID: 7000052912111734666}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2098423750635503402
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9210593926850371395}
+  - component: {fileID: 682821854798448305}
+  m_Layer: 0
+  m_Name: SelectProjector (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &9210593926850371395
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2098423750635503402}
+  m_LocalRotation: {x: 1, y: -0, z: -0, w: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 1.1545459}
+  m_LocalScale: {x: 0.45454547, y: 0.45454547, z: 0.45454547}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6314068343631383060}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &682821854798448305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2098423750635503402}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 2100000, guid: f81bf325412d2cd419b495e2e683dfa0, type: 2}
+  m_DrawDistance: 1000
+  m_FadeScale: 1
+  m_StartAngleFade: 180
+  m_EndAngleFade: 180
+  m_UVScale: {x: 1, y: 1}
+  m_UVBias: {x: 0, y: 0}
+  m_DecalLayerMask: 4294967294
+  m_ScaleMode: 0
+  m_Offset: {x: 0, y: 0, z: 2}
+  m_Size: {x: 1.4, y: 1.4, z: 4}
+  m_FadeFactor: 0.944
 --- !u!1 &2100548822225704089
 GameObject:
   m_ObjectHideFlags: 0
@@ -1784,6 +1843,7 @@ MonoBehaviour:
   _shieldBar: {fileID: 0}
   _bar: {fileID: 4870465272962357970}
   _barMinus: {fileID: 5351479044800936432}
+  _barMinusPrewiew: {fileID: 0}
   _barPlus: {fileID: 2993498463815414414}
   _timeToDisapear: 0.2
   _disapearSpeed: 0.5
@@ -13224,6 +13284,7 @@ MonoBehaviour:
   _selectedCircle: {fileID: 3552332020641030606}
   _spawnComponent: {fileID: 2769373615330125278}
   _visionComponent: {fileID: 0}
+  _auras: {fileID: 0}
   _expForDieKill: 5
   _navMeshAgent: {fileID: 6350168282755984019}
 --- !u!114 &245123127051599623
@@ -13336,6 +13397,7 @@ MonoBehaviour:
   _regenerationDelay: 0
   _animator: {fileID: 4853408415625794062}
   _netAnimator: {fileID: 6676246011477726785}
+  bar: {fileID: 0}
 --- !u!114 &970667073185307683
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13493,7 +13555,6 @@ MonoBehaviour:
   CanMoveState: 0
   IsMoving: 0
   IsSelect: 0
-  _isMoveBlocked: 0
   _agent: {fileID: 6350168282755984019}
 --- !u!114 &2486038140440756892
 MonoBehaviour:
@@ -13693,6 +13754,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: afbef8fac9ee74141abb2a1c1443d316, type: 2}
   _isSubjectToGlobalCooldownTime: 0
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 1
   _castDeley: 0
   _damageValue: 5
@@ -19191,6 +19253,7 @@ MonoBehaviour:
   _circle: {fileID: 7585645203122775784}
   _areaPref: {fileID: 1574982521674352815, guid: 790fb3857b30c2b4fad4375343a84fad, type: 3}
   _damageZonePref: {fileID: 0}
+  _skillCircleRandererPref: {fileID: 0}
   _line: {fileID: 11400000, guid: 7faf4d32cfcc4f54d967e4d01a0c4b65, type: 2}
   _lineZoneRender: {fileID: 0}
   _lineZoneRenderForQueue: {fileID: 0}
@@ -19260,6 +19323,7 @@ MonoBehaviour:
   _shieldBar: {fileID: 633562923116390951}
   _bar: {fileID: 5111548517481305401}
   _barMinus: {fileID: 4491317835460633429}
+  _barMinusPrewiew: {fileID: 0}
   _barPlus: {fileID: 7587915618729910684}
   _timeToDisapear: 0.2
   _disapearSpeed: 0.5
@@ -19974,6 +20038,7 @@ Transform:
   m_Children:
   - {fileID: 6663426691470356922}
   - {fileID: 8233931304694962201}
+  - {fileID: 9210593926850371395}
   m_Father: {fileID: 2643454510848344631}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
@@ -20042,6 +20107,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _selectProjector: {fileID: 2610934614524459152}
+  _selectProjectorTargetVariant: {fileID: 682821854798448305}
   _stroke: {fileID: 7946094867744241441}
 --- !u!1 &5954605085518422633
 GameObject:
@@ -20637,6 +20703,7 @@ MonoBehaviour:
   _shieldBar: {fileID: 0}
   _bar: {fileID: 2927658482295125885}
   _barMinus: {fileID: 2247513721277296509}
+  _barMinusPrewiew: {fileID: 0}
   _barPlus: {fileID: 0}
   _timeToDisapear: 0.2
   _disapearSpeed: 0.5

@@ -12,6 +12,7 @@ public class Silence : Skill
     [SerializeField] private AudioClip audioClip;
     [SerializeField] private int _maxAdditionalManaUsage = 7;
     [SerializeField] private Ghost ghost;
+    [SerializeField] private float damageMinoin = 60;
 
     private float _baseDuration;
     private AudioSource audioSource;
@@ -158,7 +159,7 @@ public class Silence : Skill
 
     private void MinionDamage(MinionComponent minion)
     {
-        ApplyDamage(Damage, DamageType.Magical, minion);
+        ApplyDamage(damageMinoin, DamageType.Magical, minion);
         RewardMana();
     }
 
@@ -166,7 +167,7 @@ public class Silence : Skill
     {
         if (Hero.TryGetResource(ResourceType.Mana) is Mana manaResource)
         {
-            manaResource.CmdAdd(Damage);
+            manaResource.CmdAdd(damageMinoin);
             Debug.Log("Restored mana for hitting a magical creature.");
         }
     }
