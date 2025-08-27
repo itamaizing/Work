@@ -33,10 +33,9 @@ public class JumpWithChelicera : Skill
 
     protected override bool IsCanCast => CheckCanCast();
 
-    private void Start()
-    {
-        _animator = GetComponent<Animator>();
-    }
+    private void Start() => _animator = GetComponent<Animator>();
+    private void OnDestroy() => Canceled -= HandleJumpEnd;
+    private void OnEnable() => Canceled += HandleJumpEnd;
 
     protected override void ClearData()
     {
@@ -44,6 +43,25 @@ public class JumpWithChelicera : Skill
         _mousePosition = Vector3.positiveInfinity;
         _isTarget = false;
         hasDealtDamage = false;
+    }
+
+    public void JumpWithCheliceraAnimationMove()
+    {
+        if (_hero == null || _hero.Move == null) return;
+
+        _hero.Move.StopMoveAndAnimationMove();
+        _hero.Move.CanMove = false;
+
+        Vector3 direction = _mousePosition - _hero.transform.position;
+        bool badDirection = float.IsInfinity(_mousePosition.x) || direction.sqrMagnitude < 0.0001f;
+
+        if (badDirection)
+        {
+            _hero.Move.StopLookAt();
+            return;
+        }
+
+        _hero.Move.LookAtPosition(_mousePosition);
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -69,9 +87,6 @@ public class JumpWithChelicera : Skill
                 if (_target != null)
                 {
                     _isTarget = true;
-                    _player.Move.LookAtTransform(_target.transform);
-                    Hero.Move.CanMove = false;
-                    Hero.Move.StopMoveAndAnimationMove();
                     _isCanCancle = false;
                 }
             }
@@ -114,8 +129,11 @@ public class JumpWithChelicera : Skill
 
     private bool CheckCanCast()
     {
-        return _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius &&
-               NoObstacles(_target.transform.position, _obstacle);
+        if (!TargetInfoQueue.TryPeek(out TargetInfo info) || info.Targets == null || info.Targets.Count == 0) return false;
+        var target = info.Targets[0] as Character;
+        if (target == null) return false;
+
+        return Vector3.Distance(target.transform.position, transform.position) <= Radius && NoObstacles(target.transform.position, transform.position, _obstacle);
     }
 
     private void ResetBool()
@@ -139,6 +157,7 @@ public class JumpWithChelicera : Skill
     public void ApplyRootTrue()
     {
         IncreaseSetCooldown(CooldownTime);
+        JumpWithCheliceraAnimationMove();
         _animator.applyRootMotion = true;
     }
 

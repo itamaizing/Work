@@ -4,7 +4,7 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class CreeperStrike : AutoAttackSkill
+public class CreeperStrike : Skill
 {
     #region Variables
 
@@ -32,6 +32,7 @@ public class CreeperStrike : AutoAttackSkill
     [SerializeField] private float _multiplyCritDamage = 1.5f;
     [SerializeField ]private float _chanceOfCriticalStrike = 0.05f;
 
+    private Character _target;
     private Character _lastTarget;
 
     private int _currentCountHit = 0;
@@ -55,9 +56,8 @@ public class CreeperStrike : AutoAttackSkill
     public bool IsTwoHit { get => _isTwoHit; set => _isTwoHit = value; }
     public bool IsHit { get => _isHit; set => _isHit = value; }
 
-    protected override int AnimTriggerCast => 0;
+    protected override int AnimTriggerCast => Animator.StringToHash("CreeperStrikeAttacking");
     protected override int AnimTriggerCastDelay => 0;
-    protected override int AnimTriggerAutoAttack => Animator.StringToHash("CreeperStrikeAttacking");
 
     public event System.Action OnCreeperStrikeEnd;
 
@@ -67,7 +67,7 @@ public class CreeperStrike : AutoAttackSkill
 
     public void AnimCreeperStrikeCast()
     {
-        AnimCastAction();
+        AnimStartCastCoroutine();
     }
 
     public void AnimCreeperStrikeEnded()
@@ -76,19 +76,41 @@ public class CreeperStrike : AutoAttackSkill
         AnimCastEnded();
     }
 
-      protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        if (_lightningMovement.IsInMovement)
+        TargetInfo info = new TargetInfo();
+
+
+        while (_target == null)
         {
-            _animTime = GetClipLength();
-            IncreaseAnimSpeed();
+            if (GetMouseButton)
+            {
+                _target = GetRaycastTarget();
+                if (_target != null)
+                {
+                    _target.SelectedCircle.IsActive = true;
+                    _hero.Move.LookAtTransform(_target.transform);
+                    break;
+                }
+            }
+            yield return null;
         }
-        return base.PrepareJob(callbackDataSaved);
+
+
+        info.Targets.Add(_target);
+        info.Points.Add(_target.transform.position);
+        callbackDataSaved?.Invoke(info);
     }
 
-    protected override void CastAction()
+    protected override IEnumerator CastJob()
     {
-        DamageDeal(_target, false);
+        if (_target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius)
+        {
+            _hero.Move.StopLookAt();
+            DamageDeal(_target);
+        }
+        _target = null;
+        yield return null;
     }
 
     public void SetTarget(Character target)
@@ -385,7 +407,7 @@ public class CreeperStrike : AutoAttackSkill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        throw new System.NotImplementedException();
+        if (targetInfo?.Targets?.Count > 0) _target = targetInfo.Targets[0] as Character;
     }
 
     #region Talents
@@ -393,7 +415,13 @@ public class CreeperStrike : AutoAttackSkill
     public void GeneticsTalentOne(bool value)
     {
         isGeneticsTalentOne = value;
-    }    
+    }
+
+    protected override void ClearData()
+    {
+        _target = null;
+        _hero.Move.StopLookAt();
+    }
 
     #endregion
 }

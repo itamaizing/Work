@@ -122,13 +122,14 @@ public class SkillQueue : MonoBehaviour
     private void Draw(Skill skill)
     {
         if (_skillRenderer == null) return;
-        if (skill.TargetInfoQueue.Count == 0) return;
+        if (skill.TargetInfoQueue == null || skill.TargetInfoQueue.Count == 0) return;
 
-        var info = skill.TargetInfoQueue.Peek().Points;
-        if (info == null || info.Count == 0) return;
+        var info = skill.TargetInfoQueue.Peek();
+        if (info == null || info.Points == null || info.Points.Count == 0) return;
 
-        Vector3[] vector3s = new Vector3[info.Count];
-        for (int i = 0; i < info.Count; i++) vector3s[i] = new Vector3(info[i].x, info[i].y + 0.1f, info[i].z);
+        Vector3[] vector3s = new Vector3[info.Points.Count];
+        for (int i = 0; i < info.Points.Count; i++)
+            vector3s[i] = new Vector3(info.Points[i].x, info.Points[i].y + 0.1f, info.Points[i].z);
 
         _skillRenderer.StartDrawAllLineForZone(vector3s);
         _skillRenderer.DrawRadius(skill.Radius);

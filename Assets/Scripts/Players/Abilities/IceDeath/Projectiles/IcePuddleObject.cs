@@ -149,7 +149,8 @@ public class IcePuddleObject : Projectiles
 			GameObject hitEffect = Instantiate(_hitEffect, transform.position, Quaternion.identity);
 			Destroy(hitEffect, 5f);
 		}
-		SetEvade(_dad.gameObject, -_curEvade);
+
+		if (isServer) ClientRpcSetEvade(_dad.gameObject, -_curEvade);
 		_curEvade = 0;
 		//_dad.Health.SetEvadeAll(-_curEvade);
 		for (int i = _targets.Count - 1; i >= 0; i--) 

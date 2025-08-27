@@ -2657,6 +2657,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.53201103
       objectReference: {fileID: 0}
+    - target: {fileID: 548951138285989099, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 556128977287844779, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.0404512
@@ -2684,6 +2688,14 @@ PrefabInstance:
     - target: {fileID: 556128977287844779, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalRotation.z
       value: -0.16270535
+      objectReference: {fileID: 0}
+    - target: {fileID: 680587800667431627, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 680587800667431627, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 711794928314451879, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3001,6 +3013,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.351243
       objectReference: {fileID: 0}
+    - target: {fileID: 2918417462852515336, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2969015498639003753, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.20291324
@@ -3145,6 +3161,14 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.14288509
       objectReference: {fileID: 0}
+    - target: {fileID: 3990202884877433989, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3995062756968997314, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4095624577324364781, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.061012432
@@ -3172,6 +3196,10 @@ PrefabInstance:
     - target: {fileID: 4095624577324364781, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalRotation.z
       value: -0.145088
+      objectReference: {fileID: 0}
+    - target: {fileID: 4204213669759075396, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4323459146265591484, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3229,6 +3257,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.3448263
       objectReference: {fileID: 0}
+    - target: {fileID: 4923373841811288580, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5074329234666365015, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.053491242
@@ -3256,6 +3288,10 @@ PrefabInstance:
     - target: {fileID: 5074329234666365015, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalRotation.z
       value: -0.05054906
+      objectReference: {fileID: 0}
+    - target: {fileID: 5183486696276567118, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.size
@@ -3336,6 +3372,10 @@ PrefabInstance:
     - target: {fileID: 5338308959782739855, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalRotation.z
       value: -0.007233312
+      objectReference: {fileID: 0}
+    - target: {fileID: 5522716078514863860, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _playerData
@@ -3887,6 +3927,7 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel:
     - Kick_scorpion Talent
+    _stateInfos: []
     IsOpen: 0
     Description: Kick_scorpion Talent
     Icon: {fileID: 21300000, guid: 4544b6e08fc609244b20d914b4f319db, type: 3}
@@ -3908,6 +3949,7 @@ MonoBehaviour:
     _descriptionsForInfoPanel:
     - Kick_scorpionCombo Talent
     - Kick_scorpionCombo TalentKick_scorpionCombo Talent
+    _stateInfos: []
     IsOpen: 0
     Description: Kick_scorpionCombo Talent
     Icon: {fileID: 21300000, guid: b4598f5c0e01ded42b804ca9cfad5607, type: 3}
@@ -3931,6 +3973,7 @@ MonoBehaviour:
     - Kick_scorpionCombo TalentKick_scorpionCombo Talent
     - Kick_scorpionCombo TalentKick_scorpionCombo TalentKick_scorpionCombo TalentKick_scorpionCombo
       Talent
+    _stateInfos: []
     IsOpen: 0
     Description: CleavingBlade_Scorpion Talent
     Icon: {fileID: 21300000, guid: 11f1db086077e5948b297f6fc7bc9134, type: 3}
@@ -3951,6 +3994,7 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel:
     - Kick_scorpionCombo Talent
+    _stateInfos: []
     IsOpen: 0
     Description: Teleportation_Scorpion Mag Resist
     Icon: {fileID: 21300000, guid: 697d19f58497c2c42834a105e64550ae, type: 3}
@@ -3976,6 +4020,7 @@ MonoBehaviour:
     - Kick_scorpionCombo Talent
     - Kick_scorpionCombo Talent
     - Kick_scorpionCombo Talent
+    _stateInfos: []
     IsOpen: 0
     Description: ConsumeCombo_Scorpion Physic State Clear Talent
     Icon: {fileID: 21300000, guid: 8c770b12fbc302442b33015919bd02a0, type: 3}
@@ -4066,6 +4111,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: c41e05ae8c15c48499aa896fb305ad06, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 9
@@ -4123,6 +4169,7 @@ MonoBehaviour:
   _skillEnergyCosts:
   - resourceType: 2
     resourceCost: 6
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 12
@@ -4184,6 +4231,7 @@ MonoBehaviour:
   _skillEnergyCosts:
   - resourceType: 2
     resourceCost: 20
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
@@ -4241,6 +4289,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: dfeae01f5016d594abbb890b8c058c58, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
@@ -4305,6 +4354,7 @@ MonoBehaviour:
   _skillEnergyCosts:
   - resourceType: 2
     resourceCost: 0
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
@@ -4369,6 +4419,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: b328702add621d74aa0b38841fc59c46, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
@@ -4447,6 +4498,7 @@ MonoBehaviour:
   _skillEnergyCosts:
   - resourceType: 2
     resourceCost: 4
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 2
   _castDeley: 0
   _damageValue: 0

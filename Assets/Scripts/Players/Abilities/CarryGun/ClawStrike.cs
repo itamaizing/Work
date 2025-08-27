@@ -25,23 +25,35 @@ public class ClawStrike : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        TargetInfo targetInfo = new TargetInfo();
+
+        if (_target != null)
+        {
+            _hero.Move.LookAtTransform(_target.transform);
+            targetInfo.Targets.Add(_target);
+            targetInfo.Points.Add(_target.transform.position);
+            callbackDataSaved?.Invoke(targetInfo);
+            yield break;
+        }
+
         while (_target == null)
         {
             if (GetMouseButton)
             {
                 _target = GetRaycastTarget();
-
                 if (_target != null)
+                {
                     _target.SelectedCircle.IsActive = true;
+                    _hero.Move.LookAtTransform(_target.transform);
+                    break;
+                }
             }
             yield return null;
         }
 
-        _hero.Move.LookAtTransform(_target.transform);
-
-        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Targets.Add(_target);
         targetInfo.Points.Add(_target.transform.position);
-        callbackDataSaved(targetInfo);
+        callbackDataSaved?.Invoke(targetInfo);
     }
 
     protected override IEnumerator CastJob()
@@ -140,7 +152,9 @@ public class ClawStrike : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.Targets.Count > 0) _target = (Character)targetInfo.Targets[0];
+        if (targetInfo == null || targetInfo.Targets == null || targetInfo.Targets.Count == 0) return;
+
+        _target = targetInfo.Targets[0] as Character;
     }
 
     protected override void ClearData()
