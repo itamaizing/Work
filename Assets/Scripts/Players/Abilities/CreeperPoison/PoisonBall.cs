@@ -71,8 +71,9 @@ public class PoisonBall : Skill, IAltAbility
     [SerializeField] private SpitPoison _spitPoison;
     [SerializeField] private PoisonBallProjectile _projectile;
     [SerializeField] private Character _player;
-    [SerializeField] private GameObject _arrowPrefab;
+    [SerializeField] private ArrowRender _arrowPrefab;
     [SerializeField] private GameObject _spawnPoint;
+    [SerializeField] private GameObject pointArrowRender;
 
     #region PoisonCloud
     [SerializeField] private PoisonDamagingCloudPrefab _poisonDamagingCloudPrefab;
@@ -86,8 +87,9 @@ public class PoisonBall : Skill, IAltAbility
     private PoisonBallSpawnPointInfo _spawnPointInfo = new PoisonBallSpawnPointInfo();
     private PoisonBallActiveTalentsInfo _activeTalentsInfo = new PoisonBallActiveTalentsInfo();
 
-    private GameObject[] _arrowRenderers = new GameObject[4];
+    private ArrowRender[] _arrowRenderers = new ArrowRender[4];
     private Character _currentTarget;
+    private GameObject _pointArrowInstance;
 
     private Vector3 _firstMousePosition = Vector3.positiveInfinity;
     private Vector3 _secondMousePosition;
@@ -215,7 +217,7 @@ public class PoisonBall : Skill, IAltAbility
 
         while (_currentTarget == null && float.IsPositiveInfinity(_firstMousePosition.x))
         {
-            if (Input.GetMouseButtonDown(0))
+            if (GetMouseButton)
             {
                 _currentTarget = GetRaycastTarget(true);
 
@@ -237,10 +239,10 @@ public class PoisonBall : Skill, IAltAbility
                     CreateArrowsParallelToPlayer();
                 }
 
-                _arrowRenderers[0]?.SetActive(true);
-                _arrowRenderers[1]?.SetActive(true);
-                _arrowRenderers[2]?.SetActive(false);
-                _arrowRenderers[3]?.SetActive(false);
+                _arrowRenderers[0]?.gameObject.SetActive(true);
+                _arrowRenderers[1]?.gameObject.SetActive(true);
+                _arrowRenderers[2]?.gameObject.SetActive(false);
+                _arrowRenderers[3]?.gameObject.SetActive(false);
 
                 _firstClickDone = true;
             }
@@ -634,40 +636,40 @@ public class PoisonBall : Skill, IAltAbility
 
     private void CreateArrowsParallelToPlayer()
     {
-        if (_arrowPrefab == null)
-        {
-            Debug.LogError("Arrow Prefab is not assigned!");
-            return;
-        }
+        if (_arrowPrefab == null || pointArrowRender == null) return;
+        Quaternion rotation = Quaternion.identity;
+        Vector3 center = _currentTarget != null ? _currentTarget.transform.position : _firstMousePosition;
+        center.y = 0.8f;
 
-        Vector3 targetPosition = _currentTarget != null ? _currentTarget.transform.position : _firstMousePosition;
+        _pointArrowInstance = Instantiate(pointArrowRender, center, Quaternion.identity);
+
         Vector3 playerPosition = _player.transform.position;
+        playerPosition.y = 0.8f;
 
-        targetPosition.y = playerPosition.y = 0.8f;
+        Vector3 directionPoint = _player.transform.position - _pointArrowInstance.transform.position;
+        directionPoint.y = 0f;
+        if (directionPoint != Vector3.zero) _pointArrowInstance.transform.rotation = Quaternion.LookRotation(directionPoint);
 
-        Vector3 directionToTarget = (targetPosition - playerPosition).normalized;
+        Vector3 directionToTarget = (center - playerPosition).normalized;
 
-        Vector3[] spawnPositions = new Vector3[4]
+        Vector3[] spawnOffsets = new Vector3[4]
         {
-        targetPosition + directionToTarget,
-        targetPosition - directionToTarget,
-        targetPosition + directionToTarget * 1.5f,
-        targetPosition - directionToTarget * 1.5f
-        };
-
-        Quaternion[] rotations = new Quaternion[4]
-        {
-        Quaternion.LookRotation(playerPosition - spawnPositions[0]),
-        Quaternion.LookRotation(spawnPositions[1] - playerPosition),
-        Quaternion.LookRotation(playerPosition - spawnPositions[2]),
-        Quaternion.LookRotation(spawnPositions[3] - playerPosition)
+        directionToTarget,
+        -directionToTarget,
+        directionToTarget * 1.5f,
+        -directionToTarget * 1.5f
         };
 
         for (int i = 0; i < _arrowRenderers.Length; i++)
         {
-            _arrowRenderers[i] = Instantiate(_arrowPrefab, spawnPositions[i], rotations[i]);
-            RotateArrowChild(_arrowRenderers[i], -90);
-            _arrowRenderers[i]?.SetActive(false);
+            Vector3 spawnPos = center + spawnOffsets[i];
+
+            if (i % 2 != 0) rotation = Quaternion.LookRotation(spawnPos - playerPosition);
+            else rotation = Quaternion.LookRotation(playerPosition - spawnPos);
+
+            _arrowRenderers[i] = Instantiate(_arrowPrefab, spawnPos, rotation, _pointArrowInstance.transform);
+            RotateArrowChild(_arrowRenderers[i].gameObject, -90);
+            _arrowRenderers[i].gameObject.SetActive(false);
         }
     }
 
@@ -686,7 +688,7 @@ public class PoisonBall : Skill, IAltAbility
     {
         if (arrowIndex >= 0 && arrowIndex < _arrowRenderers.Length && _arrowRenderers[arrowIndex] != null)
         {
-            _arrowRenderers[arrowIndex].SetActive(isVisible);
+            _arrowRenderers[arrowIndex].gameObject.SetActive(isVisible);
         }
     }
 
@@ -696,7 +698,13 @@ public class PoisonBall : Skill, IAltAbility
         {
             if (arrow != null)
             {
-                Destroy(arrow);
+                Destroy(arrow.gameObject);
+            }
+
+            if (_pointArrowInstance != null)
+            {
+                Destroy(_pointArrowInstance);
+                _pointArrowInstance = null;
             }
         }
         Debug.Log("Arrows cleared.");
@@ -713,6 +721,10 @@ public class PoisonBall : Skill, IAltAbility
             if (Input.GetMouseButtonDown(0))
             {
                 _secondClickDone = true;
+
+                _arrowRenderers[0].SetTransparentMaterial();
+                _arrowRenderers[1].SetTransparentMaterial();
+
                 _secondMousePosition = GetMousePoint();
 
                 if (_currentTarget != null)
@@ -740,6 +752,9 @@ public class PoisonBall : Skill, IAltAbility
         {
             if (Input.GetMouseButtonDown(0))
             {
+                _arrowRenderers[0].SetDeafaultMaterail();
+                _arrowRenderers[1].SetDeafaultMaterail();
+
                 _thirdClickDone = true;
                 _thirdMousePosition = GetMousePoint();
             }
@@ -755,6 +770,12 @@ public class PoisonBall : Skill, IAltAbility
     {
         while (_thirdClickDone == false)
         {
+            if (_pointArrowInstance != null)
+            {
+                Vector3 dir = _player.transform.position - _pointArrowInstance.transform.position;
+                dir.y = 0f;
+                if (dir != Vector3.zero) _pointArrowInstance.transform.rotation = Quaternion.LookRotation(dir);
+            }
 
             Vector3 currentMousePosition = GetMousePoint();
 

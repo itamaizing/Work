@@ -4135,8 +4135,9 @@ MonoBehaviour:
   _spitPoison: {fileID: 4992365342693795224}
   _projectile: {fileID: 4167531903339531822, guid: 093409daf5f183d4493788550d4c1998, type: 3}
   _player: {fileID: 2483674839823445686}
-  _arrowPrefab: {fileID: 7504653704119560997, guid: bc01ef0a119629945958526e596df4ec, type: 3}
+  _arrowPrefab: {fileID: 9064051009418913030, guid: bc01ef0a119629945958526e596df4ec, type: 3}
   _spawnPoint: {fileID: 6943497228995655184}
+  pointArrowRender: {fileID: 3442255630167083756, guid: 8bef7db12cb9d0a4ab39fc04ec97740b, type: 3}
   _poisonDamagingCloudPrefab: {fileID: 8376359178360537337, guid: 6684174cfea68c84b9bd06aa086faa01, type: 3}
   _poisonHealingCloudPrefab: {fileID: -4967518069141830548, guid: 835486046afaafa48885a183fcb94bd6, type: 3}
 --- !u!114 &7013613396998518356
@@ -4736,7 +4737,7 @@ MonoBehaviour:
     Icon: {fileID: 21300000, guid: 6fa6c3f6d5eb01a4cb43016c18d8b73b, type: 3}
   character: {fileID: 2483674839823445686}
   skillManager: {fileID: 2617687491934927079}
-  spitPoison: {fileID: 0}
+  spitPoison: {fileID: 4992365342693795224}
 --- !u!114 &1734068584079679132
 MonoBehaviour:
   m_ObjectHideFlags: 0

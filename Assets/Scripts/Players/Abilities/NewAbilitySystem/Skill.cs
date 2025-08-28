@@ -49,6 +49,7 @@ public enum AbilityForm
     Magic,
     Physical,
     Both,
+    Passiv,
 }
 
 public enum SkillType
@@ -266,6 +267,7 @@ public abstract class Skill : NetworkBehaviour
     protected abstract int AnimTriggerCastDelay { get; }
     protected abstract int AnimTriggerCast { get; }
 
+    protected void RaiseCooldownStarted(float cooldownTime) => CooldownStarted?.Invoke(cooldownTime);
     protected void RaiseCooldownEnded() => CooldownEnded?.Invoke();
     protected void SkillAfterCastJob() => AfterCast?.Invoke();
     protected void CastEndedJob() => CastEnded?.Invoke();
@@ -509,6 +511,12 @@ public abstract class Skill : NetworkBehaviour
         if (_cooldownJob != null)
             StopCoroutine(_cooldownJob);
 
+        _cooldownJob = StartCoroutine(CooldownCoroutine(time));
+    }
+
+    public void IncreaseSetCooldownPassive(float time)
+    {
+        if (_cooldownJob != null) StopCoroutine(_cooldownJob);
         _cooldownJob = StartCoroutine(CooldownCoroutine(time));
     }
 

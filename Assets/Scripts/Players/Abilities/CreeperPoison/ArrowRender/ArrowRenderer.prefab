@@ -68,6 +68,7 @@ GameObject:
   - component: {fileID: -6739889603175940304}
   - component: {fileID: 1464875192584066992}
   - component: {fileID: 2076292608763250685}
+  - component: {fileID: 9064051009418913030}
   m_Layer: 0
   m_Name: ArrowRenderer
   m_TagString: Untagged
@@ -195,3 +196,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &9064051009418913030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7504653704119560997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0dae7abcfb877144c8fadbbfa12bc0e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  arrowMaterial: {fileID: 2100000, guid: a11df345e27a73448ad223c753601fac, type: 2}
+  arrowMaterialTransparent: {fileID: 2100000, guid: 004478d74c3f3374b9ef9119afa292d4, type: 2}
+  decalProjector: {fileID: 532537621553032147}
