@@ -67,7 +67,8 @@ public class SkillQueue : MonoBehaviour
     public void Add(Skill skill)
     {
         //if (_skills.Contains(skill))
-            //return; 
+        //return; 
+        if (skill is IPassiveSkill) return;
 
         _skills.Enqueue(skill);
         SkillAdded?.Invoke(skill);

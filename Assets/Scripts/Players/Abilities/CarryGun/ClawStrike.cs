@@ -8,7 +8,13 @@ public class ClawStrike : Skill
     [SerializeField] private Character _player;
     [SerializeField] private BasePsionicEnergy _basePsionicEnergy;
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
+    [SerializeField] private JumpWithChelicera jumpWithChelicera;
     [SerializeField] private float animSpeed = 0.8f;
+    [SerializeField] private float chanceApplyBleeding = 0.15f;
+    [SerializeField] private float chanceApplyBleedingWithJump = 0.4f;
+    [SerializeField] private float durationBleeding = 7f;
+    [SerializeField] private float bleedingBuffTimer = 0f;
+    [SerializeField] private float buffDurationAfterJump = 1f;
 
     private float _spentAttackingPsiEnergy;
     private float _baseDamage;
@@ -22,6 +28,13 @@ public class ClawStrike : Skill
 
     private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
     private void OnEnable() => OnSkillCanceled += HandleSkillCanceled;
+
+    #region Talent
+    private bool _isBleedingClawStrike  = false;
+
+    public void ClawStrikeSpeed(bool value) => Hero.Animator.speed = value ? 1.4f : 1f;
+    public void BleedingClawStrike(bool value) => _isBleedingClawStrike = value;
+    #endregion
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
@@ -84,6 +97,8 @@ public class ClawStrike : Skill
 
         CmdApplyDamage(damage, _target.gameObject);
 
+        TryApplyBleeding();
+
         if (attackingPsiValue > 0)
         {
             var additionalDamage = attackingPsiValue;
@@ -107,6 +122,24 @@ public class ClawStrike : Skill
         }
 
     }
+
+    private void TryApplyBleeding()
+    {
+        if (!_isBleedingClawStrike) return;
+
+
+        float chance = chanceApplyBleeding;
+        if (JumpWithChelicera.CanUseClawStrikeWithoutReset && Time.time - bleedingBuffTimer <= buffDurationAfterJump) chance = chanceApplyBleedingWithJump;
+
+
+        float rand = UnityEngine.Random.Range(0f, 1f);
+        if (rand <= chance) CmdAddBleeding(_target);
+
+        bleedingBuffTimer = 0;
+        JumpWithChelicera.CanUseClawStrikeWithoutReset = false;
+    }
+
+    public void NotifyJumpPerformed() => bleedingBuffTimer = Time.time;
 
     public void ClawStrikeSpeedAnim()
     {
@@ -135,6 +168,12 @@ public class ClawStrike : Skill
     {
         _spentAttackingPsiEnergy = _attackingPsionicEnergy.CurrentValue;
         CmdUseAttackingEnergy(_attackingPsionicEnergy.CurrentValue);
+    }
+
+    [Command]
+    private void CmdAddBleeding(Character target)
+    {
+        target.CharacterState.AddState(States.Bleeding, durationBleeding, 0, _player.gameObject, null);
     }
 
     [Command]

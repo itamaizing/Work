@@ -182,7 +182,11 @@ public class TentacleProjectile : NetworkBehaviour
             while (targetDistanceAccumulator >= 0.1f)
             {
                 targetDistanceAccumulator -= 0.1f;
-                if (_player != null && _player.TryGetComponent<BasePsionicEnergy>(out var psiEnergy)) psiEnergy.AddAndResetDecay(basePsi);
+                if (_player != null && _player.TryGetComponent<BasePsionicEnergy>(out var psiEnergy))
+                {
+                    psiEnergy.AddAndResetDecayCoolDownPsionicEnegry(basePsi);
+                    psiEnergy.PsionicEnergySkill.IncreaseSetCooldownPassive(psiEnergy.PsionicaDecayTime);
+                }
             }
 
             lastTargetPosition = _target.transform.position;

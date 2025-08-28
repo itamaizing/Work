@@ -4144,6 +4144,7 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _disactive: 0
+  _passiv: 0
   _earlyCooldown: 0
   _playerLinks: {fileID: 5458554383432203635}
   _comboCounter: {fileID: 5883639770937801120}
@@ -4202,6 +4203,7 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _disactive: 0
+  _passiv: 0
   _earlyCooldown: 0
   _playerLinks: {fileID: 5458554383432203635}
   _comboCounter: {fileID: 5883639770937801120}
@@ -4264,6 +4266,7 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _disactive: 0
+  _passiv: 0
   _earlyCooldown: 0
   _comboCounter: {fileID: 5883639770937801120}
   _minDamage: 18
@@ -4322,6 +4325,7 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _disactive: 0
+  _passiv: 0
   _earlyCooldown: 0
   _conePrefab: {fileID: 6453211931130663927, guid: 45218b2aa635a164aae6b7da7d237666, type: 3}
   _prefab: {fileID: 7932399568012328523, guid: 45218b2aa635a164aae6b7da7d237666, type: 3}
@@ -4387,6 +4391,7 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _disactive: 0
+  _passiv: 0
   _earlyCooldown: 0
   _playerLinks: {fileID: 5458554383432203635}
   _drawCircleSelf: {fileID: 1402913355469849604}
@@ -4452,6 +4457,7 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _disactive: 0
+  _passiv: 0
   _earlyCooldown: 0
 --- !u!114 &5883639770937801120
 MonoBehaviour:
@@ -4531,6 +4537,7 @@ MonoBehaviour:
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _disactive: 0
+  _passiv: 0
   _earlyCooldown: 0
   _minDamage: 3
   _maxDamage: 5

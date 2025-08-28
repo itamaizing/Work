@@ -245,8 +245,8 @@ public class SkillManager : MonoBehaviour
 
     private bool SelectSkill(int index)
     {
-        if (_selectedSkills[index] == null)
-            return false;
+        if (_selectedSkills[index] == null) return false;
+        if (_selectedSkills[index] is IPassiveSkill) return false;
 
         if (_selectedSkill != null && _selectedSkill.IsPreparing == true)
         {
@@ -321,6 +321,8 @@ public class SkillManager : MonoBehaviour
 
     private void OnPreperingSuccess(Skill skill)
     {
+        if (skill is IPassiveSkill) return;
+
         if (_selectedSkill.IsAutoMode)
         {
             _autoSkillCast.SetSkill(skill, skill.TargetInfoQueue.Dequeue());
