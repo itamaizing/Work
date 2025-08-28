@@ -154,11 +154,13 @@ public class SparkOfLight : Skill
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(_target.transform.position);
+        targetInfo.Targets.Add(_target);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
+
         if (_target == null) yield break;
 
         if (!IsCanCast)
@@ -384,6 +386,7 @@ public class SparkOfLight : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.Targets.Count > 0) _target = (Character)targetInfo.Targets[0];
+        if (targetInfo.Targets.Count > 0)
+            _target = (Character)targetInfo.Targets[0];
     }
 }

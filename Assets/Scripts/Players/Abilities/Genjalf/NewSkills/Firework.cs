@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Playables;
+using UnityEngine.Timeline;
 
 namespace Gangdollarff
 {
@@ -26,7 +28,7 @@ namespace Gangdollarff
         private void OnTriggerEnter(Collider other)
         {
             if (other.transform != transform.parent.parent.transform)
-                _damageables.Add(other);
+                _damageables.Add(other); 
         }
 
         private void OnTriggerExit(Collider other)
