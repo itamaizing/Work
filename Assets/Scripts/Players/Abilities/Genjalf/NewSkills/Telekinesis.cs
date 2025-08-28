@@ -7,7 +7,7 @@ using UnityEngine.Rendering.Universal;
 
 namespace Gangdollarff
 {
-    public class Telekinesis : Skill
+    public class Telekinesis : Skill, IGodLightSpell
     {
         [SerializeField] private float _deleyTelekines = 0.5f;
         [SerializeField] private float _amountOfLift = 1.5f;
@@ -15,12 +15,15 @@ namespace Gangdollarff
 
         private Character _target;
         private Vector3 _point = Vector3.zero;
+        private float _tempCastDeley = 1;
 
         protected override int AnimTriggerCastDelay => 0;
 
         protected override int AnimTriggerCast => Animator.StringToHash("Telekinesis");
 
         protected override bool IsCanCast => CheckCanCast();
+
+        public bool IsEnabled { get; private set; }
 
         private bool CheckCanCast()
         {
@@ -36,6 +39,23 @@ namespace Gangdollarff
         public void AnimTelekinesisEnd()
         {
             AnimCastEnded();
+        }
+
+        public void ChangeMode()
+        {
+            if (IsEnabled)
+            {
+                IsEnabled = false;
+
+                _castDeley = _tempCastDeley;
+            }
+            else
+            {
+                IsEnabled = true;
+
+                _tempCastDeley = _cooldownTime;
+                _cooldownTime = 0;
+            }
         }
 
         public override void LoadTargetData(TargetInfo targetInfo)

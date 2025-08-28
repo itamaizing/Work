@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 namespace Gangdollarff
 {
-    public class Fisura : Skill
+    public class Fisura : Skill, IGodLightSpell
     {
         [SerializeField] private LineRenderer _lineRenderer;
         [SerializeField] private FisuraTile _fisuraPref;
@@ -17,6 +17,7 @@ namespace Gangdollarff
         private Vector3 _startPoint = Vector3.zero;
         private Vector3 _endPoint = Vector3.zero;
         private FisuraTile _fisuraTail;
+        private float _tempCastDeley = 1;
 
         public override string AdditionalDescription =>
             $"Длительность: {AbilityNameBox.ColorOpen}{_fisuraDuration} сек{AbilityNameBox.ColorEnd}";
@@ -26,6 +27,8 @@ namespace Gangdollarff
         protected override int AnimTriggerCast => Animator.StringToHash("Fisura");
 
         protected override bool IsCanCast => CheckCanCast();
+
+        public bool IsEnabled { get; set; }
 
         private bool CheckCanCast()
         {
@@ -46,6 +49,23 @@ namespace Gangdollarff
         {
             _startPoint = targetInfo.Points[0];
             _endPoint = targetInfo.Points[1];
+        }
+
+        public void ChangeMode()
+        {
+            if (IsEnabled)
+            {
+                IsEnabled = false;
+
+                _castDeley = _tempCastDeley;
+            }
+            else
+            {
+                IsEnabled = true;
+
+                _tempCastDeley = _cooldownTime;
+                _cooldownTime = 0;
+            }
         }
 
         protected override IEnumerator CastJob()

@@ -42,7 +42,7 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
     {
         while (!GetMouseButton)
         {
-            callbackDataSaved(null);
+            callbackDataSaved(new TargetInfo());
             yield return null;
         }
     }
