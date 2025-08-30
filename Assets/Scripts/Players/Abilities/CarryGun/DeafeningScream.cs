@@ -13,8 +13,19 @@ public class DeafeningScream : Skill
     private Vector3 _targetPoint = Vector3.positiveInfinity;
 
     protected override bool IsCanCast => IsHaveCharge && _target != null;
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
-    protected override int AnimTriggerCast => 0;
+    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCast => Animator.StringToHash("DeafeningScreamAnimation");
+
+    private void OnDestroy() => Canceled -= HandleJumpEnd;
+    private void OnEnable() => Canceled += HandleJumpEnd;
+
+    public void HandleJumpEnd()
+    {
+        Hero.Animator.applyRootMotion = false;
+        _playerLinks.Move.StopLookAt();
+        Hero.Move.CanMove = true;
+        _isCanCancle = true;
+    }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
@@ -38,6 +49,8 @@ public class DeafeningScream : Skill
         if (_target != null) CmdApplyState(_target.gameObject);
 
         AfterCastJob();
+        HandleJumpEnd();
+        ClearData();
 
         yield return null;
     }
@@ -57,6 +70,34 @@ public class DeafeningScream : Skill
             targetCharacter.CharacterState.AddState(States.Stupefaction, duration, 0, _playerLinks.gameObject, name);
         }
     }
+
+    public void DeafeningScreamAnimationMove()
+    {
+        if (_hero == null || _hero.Move == null) return;
+
+        _hero.Move.StopMoveAndAnimationMove();
+        _hero.Move.CanMove = false;
+
+        Vector3 direction = _targetPoint - _hero.transform.position;
+        bool badDirection = float.IsInfinity(_targetPoint.x) || direction.sqrMagnitude < 0.0001f;
+
+        if (badDirection)
+        {
+            _hero.Move.StopLookAt();
+            return;
+        }
+
+        _hero.Move.LookAtPosition(_targetPoint);
+    }
+
+    public void DeafeningScreamCast()
+    {
+        AnimStartCastCoroutine();
+        DeafeningScreamAnimationMove();
+        Hero.Animator.applyRootMotion = true;
+    }
+
+    public void DeafeningScreamEnd() => AnimCastEnded();
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
