@@ -55,11 +55,8 @@ public class TentacleProjectile : NetworkBehaviour
 
     private void OnDestroy()
     {
-        if (_drawCircle != null)
-            _drawCircle.Clear();
-
-        if (_radiusUpdateCoroutine != null)
-            StopCoroutine(_radiusUpdateCoroutine);
+        if (_drawCircle != null) _drawCircle.Clear();
+        if (_radiusUpdateCoroutine != null) StopCoroutine(_radiusUpdateCoroutine);
     }
 
     public void Init(Character player, Character target, Vector3 startPosition, Vector3 endPosition,

@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class Sleep : AbstractCharacterState
 {
+    public bool turnOff = false;
     private float _duration;
     private float _baseDuration;
     private bool _previousIsSelect;
@@ -77,7 +78,7 @@ public class Sleep : AbstractCharacterState
     {
         _duration -= Time.deltaTime;
 
-        if (_duration <= 0f)
+        if (_duration <= 0f || turnOff)
         {
             ExitState();
             return;
@@ -128,17 +129,17 @@ public class Sleep : AbstractCharacterState
         return false;
     }
 
-    private void OnAnyDamage(Damage damage, Skill fromSkill) => ExitState();
+    private void OnAnyDamage(Damage damage, Skill fromSkill) => turnOff = true;
 
     [Command] private void CmdStateInnerDarkness() => ClientRpcStateInnerDarkness();
     [ClientRpc] private void ClientRpcStateInnerDarkness() { _characterState.AddStateLogic(States.InnerDarkness, 13, 0f, Schools.None, _source.gameObject, null); }
 
 
-    private bool ShouldApplyInnerDarkness()
-    {
-        if (_personWhoMadeBuff == null || _personWhoMadeBuff.Abilities == null) return false;
+    //private bool ShouldApplyInnerDarkness()
+    //{
+    //    if (_personWhoMadeBuff == null || _personWhoMadeBuff.Abilities == null) return false;
 
-        var song = _personWhoMadeBuff.Abilities.Abilities.OfType<SongOfSleep>().FirstOrDefault();
-        return song != null && song.IsSleepInnerDarknessTalentActive;
-    }
+    //    var song = _personWhoMadeBuff.Abilities.Abilities.OfType<SongOfSleep>().FirstOrDefault();
+    //    return song != null && song.IsSleepInnerDarknessTalentActive;
+    //}
 }

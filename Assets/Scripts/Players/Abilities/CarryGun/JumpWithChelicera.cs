@@ -26,8 +26,6 @@ public class JumpWithChelicera : Skill
     private bool _isJumpDone = false;
     bool hasDealtDamage = false;
 
-    public static bool CanUseClawStrikeWithoutReset = false;
-
     public override bool IsPayCostStartCooldown => false;
     protected override int AnimTriggerCast => jumpStart;
     protected override int AnimTriggerCastDelay => 0;
@@ -131,10 +129,8 @@ public class JumpWithChelicera : Skill
         if (_cheliceraeStrike != null) _cheliceraeStrike.IncreaseSetCooldown(ChargeCooldown);
         //if (_player != null && _player.TryGetComponent<BasePsionicEnergy>(out var psiEnergy)) psiEnergy.CoolDownPsionicEnegry();
 
-        if (_player != null && _player.TryGetComponent<ClawStrike>(out var clawStrike)) clawStrike.NotifyJumpPerformed();
+        clawStrike.DurationChanceApplyBleedingWithJump();
         CmdExecuteJump(_player.gameObject, _target.netId, direction, _additionalDamageInPercentage);
-
-        CanUseClawStrikeWithoutReset = true;
     }
 
     //private float NormalizeDistance(float distance)

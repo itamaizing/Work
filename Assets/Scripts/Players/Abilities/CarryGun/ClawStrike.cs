@@ -13,11 +13,12 @@ public class ClawStrike : Skill
     [SerializeField] private float chanceApplyBleeding = 0.15f;
     [SerializeField] private float chanceApplyBleedingWithJump = 0.4f;
     [SerializeField] private float durationBleeding = 7f;
-    [SerializeField] private float bleedingBuffTimer = 0f;
     [SerializeField] private float buffDurationAfterJump = 1f;
 
+    private bool _isDurationChanceApplyBleedingWithJump = false;
     private float _spentAttackingPsiEnergy;
     private float _baseDamage;
+    private Coroutine coroutineDurationChanceApplyBleedingWithJump;
 
     protected Character _target;
 
@@ -129,17 +130,15 @@ public class ClawStrike : Skill
 
 
         float chance = chanceApplyBleeding;
-        if (JumpWithChelicera.CanUseClawStrikeWithoutReset && Time.time - bleedingBuffTimer <= buffDurationAfterJump) chance = chanceApplyBleedingWithJump;
+        if (_isDurationChanceApplyBleedingWithJump) chance = chanceApplyBleedingWithJump;
 
 
         float rand = UnityEngine.Random.Range(0f, 1f);
         if (rand <= chance) CmdAddBleeding(_target);
 
-        bleedingBuffTimer = 0;
-        JumpWithChelicera.CanUseClawStrikeWithoutReset = false;
+        if (coroutineDurationChanceApplyBleedingWithJump != null) StopCoroutine(IDurationChanceApplyBleedingWithJump());
+        _isDurationChanceApplyBleedingWithJump = false;
     }
-
-    public void NotifyJumpPerformed() => bleedingBuffTimer = Time.time;
 
     public void ClawStrikeSpeedAnim()
     {
@@ -168,6 +167,18 @@ public class ClawStrike : Skill
     {
         _spentAttackingPsiEnergy = _attackingPsionicEnergy.CurrentValue;
         CmdUseAttackingEnergy(_attackingPsionicEnergy.CurrentValue);
+    }
+
+    public void DurationChanceApplyBleedingWithJump()
+    {
+        if (coroutineDurationChanceApplyBleedingWithJump != null) StopCoroutine(IDurationChanceApplyBleedingWithJump());
+        coroutineDurationChanceApplyBleedingWithJump = StartCoroutine(IDurationChanceApplyBleedingWithJump());
+    }
+
+    private IEnumerator IDurationChanceApplyBleedingWithJump()
+    {
+        yield return new WaitForSeconds(buffDurationAfterJump);
+        _isDurationChanceApplyBleedingWithJump = true;
     }
 
     [Command]

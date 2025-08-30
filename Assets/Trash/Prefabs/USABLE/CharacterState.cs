@@ -230,6 +230,7 @@ public class CharacterState : NetworkBehaviour
 		[States.ComboState] = new ComboState(),
 		[States.DisappointmentState] = new DisappointmentState(),
 		[States.ManaRegen] = new ManaRegen(),
+		[States.Stupefaction] = new Stupefaction(),
 
 		#region TerrifyingElfStates
 		[States.InnerDarkness] = new InnerDarkness(),
@@ -801,6 +802,7 @@ public enum States
     TestAuraState,
 	MultiMagic,
 	FireFlash,
+	Stupefaction,
 }
 public enum BaffDebaff
 {
