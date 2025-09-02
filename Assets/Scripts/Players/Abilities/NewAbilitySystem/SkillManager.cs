@@ -24,7 +24,10 @@ public class SkillManager : MonoBehaviour
     //private AutoAttackQueue _autoAttackQueue;
     private Skill _selectedSkill;
 
+    private Dictionary<Skill, Action> _castEndedHandlers = new();
+
     public TalentSystem TalesntSystem => _talentSystem;
+    public Skill LastCastedSkill { get; private set; }
     public SkillQueue SkillQueue { get => _skillQueue; }
     public Skill[] SelectedSkills { get => _selectedSkills; }
     public IEnumerable<Skill> DefaultSkills => _skills.Where(o => o.IsTalentSpell == false);
@@ -35,6 +38,29 @@ public class SkillManager : MonoBehaviour
     public event Action<int> SkillDeselected;
     public event Action<Skill> SkillAdded;
     public event Action<Skill> SkillRemoved;
+    public event Action LastSkill;
+
+    private void OnEnable()
+    {
+        foreach (var skill in _skills)
+        {
+            void Handler() => OnSkillCastEnded(skill);
+            _castEndedHandlers[skill] = Handler;
+            skill.CastEnded += Handler;
+        }
+    }
+
+    private void OnDisable()
+    {
+        foreach (var skill in _skills)
+        {
+            if (_castEndedHandlers.TryGetValue(skill, out var handler))
+            {
+                skill.CastEnded -= handler;
+            }
+        }
+        _castEndedHandlers.Clear();
+    }
 
     private void Awake()
     {
@@ -51,6 +77,15 @@ public class SkillManager : MonoBehaviour
         {
             AddToSkillLists(item);
             SkillInit(item);
+        }
+    }
+
+    private void OnSkillCastEnded(Skill skill)
+    {
+        if (!(skill is IPassiveSkill))
+        {
+            LastCastedSkill = skill;
+            LastSkill?.Invoke();
         }
     }
 

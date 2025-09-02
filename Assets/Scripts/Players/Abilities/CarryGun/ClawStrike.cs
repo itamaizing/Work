@@ -9,6 +9,7 @@ public class ClawStrike : Skill
     [SerializeField] private BasePsionicEnergy _basePsionicEnergy;
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
     [SerializeField] private JumpWithChelicera jumpWithChelicera;
+    [SerializeField] private JumpBack jumpBack;
     [SerializeField] private float animSpeed = 0.8f;
     [SerializeField] private float chanceApplyBleeding = 0.15f;
     [SerializeField] private float chanceApplyBleedingWithJump = 0.4f;
@@ -18,7 +19,10 @@ public class ClawStrike : Skill
     private bool _isDurationChanceApplyBleedingWithJump = false;
     private float _spentAttackingPsiEnergy;
     private float _baseDamage;
+    private float _castWindowDuration = 1f;
     private Coroutine coroutineDurationChanceApplyBleedingWithJump;
+    private Coroutine _castDelayResetCoroutine;
+    private Skill _previousLastCastedSkill;
 
     protected Character _target;
 
@@ -27,8 +31,20 @@ public class ClawStrike : Skill
 
     protected override bool IsCanCast => _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius && NoObstacles(_target.transform.position, transform.position, _obstacle);
 
-    private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
-    private void OnEnable() => OnSkillCanceled += HandleSkillCanceled;
+    public float CastWindowDuration { get => _castWindowDuration; set => _castWindowDuration = value; }
+    public Skill PreviousLastCastedSkill { get => _previousLastCastedSkill; set => _previousLastCastedSkill = value; }
+
+    private void OnDisable()
+    {
+        OnSkillCanceled -= HandleSkillCanceled;
+        _player.Abilities.LastSkill -= () => HandleSkillCastStarted();
+    }
+
+    private void OnEnable()
+    {
+        OnSkillCanceled += HandleSkillCanceled;
+        _player.Abilities.LastSkill += () => HandleSkillCastStarted();
+    }
 
     #region Talent
     private bool _isBleedingClawStrike  = false;
@@ -75,11 +91,25 @@ public class ClawStrike : Skill
         if (_target == null) yield return null;
         if (!IsTargetInRange()) yield return null;
 
+        JumpBackClawStrike();
         DamageDeal();
 
         _target = null;
         _hero.Move.StopLookAt();
         yield return null;
+    }
+
+    private void HandleSkillCastStarted()
+    {
+        var lastSkill = _player.Abilities.LastCastedSkill;
+
+        if (lastSkill is CheliceraStrike || lastSkill is ClawStrike)
+        {
+            _previousLastCastedSkill = lastSkill;
+
+            if (_castDelayResetCoroutine != null) StopCoroutine(_castDelayResetCoroutine);
+            _castDelayResetCoroutine = StartCoroutine(CastWindowResetCoroutine());
+        }
     }
 
     private bool IsTargetInRange() { return _target != null && Vector3.Distance(_player.transform.position, _target.transform.position) <= Radius; }
@@ -124,20 +154,27 @@ public class ClawStrike : Skill
 
     }
 
+    private void JumpBackClawStrike()
+    {
+        if (jumpBack != null && (_previousLastCastedSkill is CheliceraStrike || _previousLastCastedSkill is ClawStrike)) jumpBack.EnableJumpBack();
+    }
+
     private void TryApplyBleeding()
     {
         if (!_isBleedingClawStrike) return;
 
-
         float chance = chanceApplyBleeding;
-        if (_isDurationChanceApplyBleedingWithJump) chance = chanceApplyBleedingWithJump;
 
+        var lastSkill = _player.Abilities.LastCastedSkill;
+
+        if (_isDurationChanceApplyBleedingWithJump && jumpWithChelicera.IsCheliceraStrikeCast && lastSkill is CheliceraStrike) chance = chanceApplyBleedingWithJump;
 
         float rand = UnityEngine.Random.Range(0f, 1f);
         if (rand <= chance) CmdAddBleeding(_target);
 
-        if (coroutineDurationChanceApplyBleedingWithJump != null) StopCoroutine(IDurationChanceApplyBleedingWithJump());
+        jumpWithChelicera.IsCheliceraStrikeCast = false;
         _isDurationChanceApplyBleedingWithJump = false;
+        if (coroutineDurationChanceApplyBleedingWithJump != null) StopCoroutine(IDurationChanceApplyBleedingWithJump());
     }
 
     public void ClawStrikeSpeedAnim()
@@ -177,8 +214,15 @@ public class ClawStrike : Skill
 
     private IEnumerator IDurationChanceApplyBleedingWithJump()
     {
-        yield return new WaitForSeconds(buffDurationAfterJump);
         _isDurationChanceApplyBleedingWithJump = true;
+        yield return new WaitForSeconds(buffDurationAfterJump);
+        _isDurationChanceApplyBleedingWithJump = false;
+    }
+
+    private IEnumerator CastWindowResetCoroutine()
+    {
+        yield return new WaitForSeconds(_castWindowDuration);
+        _previousLastCastedSkill = null;
     }
 
     [Command]

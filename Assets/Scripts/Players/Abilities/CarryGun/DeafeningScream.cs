@@ -49,7 +49,6 @@ public class DeafeningScream : Skill
         if (_target != null) CmdApplyState(_target.gameObject);
 
         AfterCastJob();
-        HandleJumpEnd();
         ClearData();
 
         yield return null;
@@ -97,7 +96,11 @@ public class DeafeningScream : Skill
         Hero.Animator.applyRootMotion = true;
     }
 
-    public void DeafeningScreamEnd() => AnimCastEnded();
+    public void DeafeningScreamEnd()
+    {
+        AnimCastEnded();
+        HandleJumpEnd();
+    }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {

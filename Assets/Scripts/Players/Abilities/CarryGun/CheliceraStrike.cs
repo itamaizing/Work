@@ -9,6 +9,7 @@ public class CheliceraStrike : Skill
     [SerializeField] private BasePsionicEnergy _basePsionicEnergy;
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
     [SerializeField] private JumpWithChelicera _jumpWithChelicera;
+    [SerializeField] private ClawStrike clawStrike;
     [SerializeField] private float animSpeed = 1.4f;
     [SerializeField] private float chanceCritDamageEvolutionTwo = 0.05f;
     [SerializeField] private float chanceCritDamageEvolutionFour = 0.15f;
@@ -23,6 +24,7 @@ public class CheliceraStrike : Skill
     private float _additionalDamageFromSkill;
     private float _spentAttackingPsiEnergy;
     private bool _isClawStrike_Right = true;
+    private Coroutine _castDelayResetCoroutine;
 
     private static readonly int RightClawStrikeTrigger = Animator.StringToHash("CheliceraStrikeTrigger_Right");
     private static readonly int LeftClawStrikeTrigger = Animator.StringToHash("CheliceraStrikeTrigger_Left");
@@ -37,8 +39,15 @@ public class CheliceraStrike : Skill
     public event System.Action OnCheliceraStrikeEnd;
 
     private void Start() => _animator = GetComponent<Animator>();
-    private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
-    private void OnEnable() => OnSkillCanceled += HandleSkillCanceled;
+
+    private void OnDisable()
+    {
+        OnSkillCanceled -= HandleSkillCanceled;
+    }
+    private void OnEnable()
+    {
+        OnSkillCanceled += HandleSkillCanceled;
+    }
 
     #region Talens
     private bool isCheliceraStrikeChanceDamageCrit = false;

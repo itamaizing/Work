@@ -9,7 +9,7 @@ public class JumpWithChelicera : Skill
     [SerializeField] private CheliceraStrike _cheliceraeStrike;
     [SerializeField] private ClawStrike clawStrike;
     [SerializeField] private float basePsi = 1f;
-    [SerializeField] private float _distanceJump;
+    [SerializeField] private float distanceJump;
 
     private Animator _animator;
     private Character _target;
@@ -24,13 +24,16 @@ public class JumpWithChelicera : Skill
 
     private bool _isTarget = false;
     private bool _isJumpDone = false;
-    bool hasDealtDamage = false;
+    private bool _hasDealtDamage = false;
+    private bool _isCheliceraStrikeCast = false;
+
 
     public override bool IsPayCostStartCooldown => false;
     protected override int AnimTriggerCast => jumpStart;
     protected override int AnimTriggerCastDelay => 0;
 
     public bool IsJumpDone { get => _isJumpDone; set => _isJumpDone = value; }
+    public bool IsCheliceraStrikeCast { get => _isCheliceraStrikeCast; set => _isCheliceraStrikeCast = value; }
 
     protected override bool IsCanCast => CheckCanCast();
 
@@ -49,7 +52,7 @@ public class JumpWithChelicera : Skill
         _target = null;
         _mousePosition = Vector3.positiveInfinity;
         _isTarget = false;
-        hasDealtDamage = false;
+        _hasDealtDamage = false;
     }
 
     public void JumpWithCheliceraAnimationMove()
@@ -129,6 +132,7 @@ public class JumpWithChelicera : Skill
         if (_cheliceraeStrike != null) _cheliceraeStrike.IncreaseSetCooldown(ChargeCooldown);
         //if (_player != null && _player.TryGetComponent<BasePsionicEnergy>(out var psiEnergy)) psiEnergy.CoolDownPsionicEnegry();
 
+        _isCheliceraStrikeCast = true;
         clawStrike.DurationChanceApplyBleedingWithJump();
         CmdExecuteJump(_player.gameObject, _target.netId, direction, _additionalDamageInPercentage);
     }
@@ -176,7 +180,7 @@ public class JumpWithChelicera : Skill
 
     public void JumpEndSpeedAnim()
     {
-        float timeDelay = _distanceJump / 10;
+        float timeDelay = distanceJump / 10;
         _player.Animator.SetFloat("JumpEndSpeed", 1f / timeDelay);
     }
 
@@ -217,7 +221,7 @@ public class JumpWithChelicera : Skill
         MoveComponent playerMove = player.GetComponent<MoveComponent>();
 
         Vector3 jumpPosition = Vector3.MoveTowards(targetCharacter.transform.position, player.transform.position, _minDistance);
-        playerMove.TargetRpcDoMove(jumpPosition, _distanceJump / 10);
+        playerMove.TargetRpcDoMove(jumpPosition, distanceJump / 10);
 
         StartCoroutine(TrackMovementDuringJumpCoroutine(playerMove, targetCharacter, additionalDamage));
     }
