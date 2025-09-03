@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -23,6 +24,7 @@ public class SkillManager : MonoBehaviour
     private AutoSkillCast _autoSkillCast;
     //private AutoAttackQueue _autoAttackQueue;
     private Skill _selectedSkill;
+    private Coroutine _lastCastResetCoroutine;
 
     private Dictionary<Skill, Action> _castEndedHandlers = new();
 
@@ -38,7 +40,6 @@ public class SkillManager : MonoBehaviour
     public event Action<int> SkillDeselected;
     public event Action<Skill> SkillAdded;
     public event Action<Skill> SkillRemoved;
-    public event Action LastSkill;
 
     private void OnEnable()
     {
@@ -80,14 +81,24 @@ public class SkillManager : MonoBehaviour
         }
     }
 
+    #region Test
     private void OnSkillCastEnded(Skill skill)
     {
         if (!(skill is IPassiveSkill))
         {
             LastCastedSkill = skill;
-            LastSkill?.Invoke();
+
+            if (_lastCastResetCoroutine != null) StopCoroutine(_lastCastResetCoroutine);
+            _lastCastResetCoroutine = StartCoroutine(CastWindowResetCoroutine());
         }
     }
+
+    private IEnumerator CastWindowResetCoroutine()
+    {
+        yield return new WaitForSeconds(1.5f);
+        LastCastedSkill = null;
+    }
+    #endregion
 
     public void CancleAllSkills()
     {
@@ -432,14 +443,16 @@ public class SkillManager : MonoBehaviour
         AbilitiesManager.Instance.ActiveCurrentPanel(_abilityPanel);
         */
     }
-    public void SetAbilitiesDisabled()
+    public void SetAbilitiesDisactive(bool value)
     {
-        //_isAbilitiesDisabled = true;
+        foreach (var ability in Abilities) ability.Disactive = value;
     }
-    public void SetAbilitiesEnabled()
+
+    public void SetPhysicalAbilitiesDisactive(bool state)
     {
-        //_isAbilitiesDisabled = false;
+        foreach (Skill skill in Abilities) if (skill.AbilityForm == AbilityForm.Physical) skill.Disactive = state;
     }
+
     public void SwitchAvaliable(Schools school, bool value)
     {
         /*

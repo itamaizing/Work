@@ -1,6 +1,7 @@
 using Mirror;
 using System;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 public class CheliceraStrike : Skill
@@ -19,7 +20,7 @@ public class CheliceraStrike : Skill
     private Damage _dealDamage;
     private Animator _animator;
     private Character _target;
-    private float _baseDamage;
+    private float _totalChanceApplyBleeding;
     private float _criticalDamage;
     private float _additionalDamageFromSkill;
     private float _spentAttackingPsiEnergy;
@@ -46,6 +47,7 @@ public class CheliceraStrike : Skill
     }
     private void OnEnable()
     {
+        Damage = UnityEngine.Random.Range(11f, 13f);
         OnSkillCanceled += HandleSkillCanceled;
     }
 
@@ -53,15 +55,19 @@ public class CheliceraStrike : Skill
     private bool isCheliceraStrikeChanceDamageCrit = false;
     private bool isEvolutionTalentTwo = false;
     private bool isPsionicsTalentTwo = false;
+    private bool _isChanceApplyBleedingIncrease = false;
 
     public void CheliceraStrikeChanceDamageCrit(bool value) => isCheliceraStrikeChanceDamageCrit = value;
     public void CheliceraStrikeSpeed(bool value) => Hero.Animator.speed = value ? 1.4f : 1f;
     public void EvolutionTalentTwo(bool value) => isEvolutionTalentTwo = value;
     public void PsionicsTalentTwo(bool value) => isPsionicsTalentTwo = value;
+    public void ChanceApplyBleedingIncrease(bool value) => _isChanceApplyBleedingIncrease = value;
     #endregion
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        Damage = UnityEngine.Random.Range(11f, 13f);
+
         while (_target == null)
         {
             if (GetMouseButton)
@@ -119,20 +125,23 @@ public class CheliceraStrike : Skill
 
         Character targetCharacter = target.GetComponent<Character>();
 
-        _baseDamage = UnityEngine.Random.Range(11f, 13f);
-
         if (_jumpWithChelicera.IsJumpDone)
         {
-            float bonusDamage = _baseDamage * _additionalDamageFromSkill;
-            _baseDamage += bonusDamage;
+            float bonusDamage = Damage * _additionalDamageFromSkill;
+            Damage += bonusDamage;
         }
 
         if (isEvolutionTalentTwo)
         {
             float chanceBleedingValue = UnityEngine.Random.Range(0f, 1f);
             float chanceCritValue = UnityEngine.Random.Range(0f, 1f);
-            if (chanceCritValue <= chanceCritDamageEvolutionTwo) _criticalDamage = CriticalDamageDeal(targetCharacter, _baseDamage, 1.6f);
-            if (chanceBleedingValue <= chanceApplyBleeding) CmdAddState(targetCharacter);
+
+            if (chanceCritValue <= chanceCritDamageEvolutionTwo) _criticalDamage = CriticalDamageDeal(targetCharacter, Damage, 1.6f);
+
+            if (_isChanceApplyBleedingIncrease && CheckStateForBleeding()) _totalChanceApplyBleeding = chanceApplyBleeding + 1f;
+            else _totalChanceApplyBleeding = chanceApplyBleeding;
+
+            if (chanceBleedingValue <= _totalChanceApplyBleeding) CmdAddState(targetCharacter);
         }
 
         if (isCheliceraStrikeChanceDamageCrit)
@@ -140,12 +149,12 @@ public class CheliceraStrike : Skill
             float chanceCritValue = UnityEngine.Random.Range(0f, 1f);
             float chanceCritDamageValue = UnityEngine.Random.Range(1.8f, 2.7f);
 
-            if (chanceCritValue <= chanceCritDamageEvolutionFour) _criticalDamage = CriticalDamageDeal(targetCharacter, _baseDamage, chanceCritDamageValue);
+            if (chanceCritValue <= chanceCritDamageEvolutionFour) _criticalDamage = CriticalDamageDeal(targetCharacter, Damage, chanceCritDamageValue);
         }
 
         _dealDamage = new Damage()
         {
-            Value = _baseDamage + _criticalDamage,
+            Value = Damage + _criticalDamage,
             Type = DamageType.Physical,
             PhysicAttackType = AttackRangeType.MeleeAttack,
         };
@@ -171,6 +180,13 @@ public class CheliceraStrike : Skill
         criticalDamage *= multiplierCrit;
 
         return criticalDamage;
+    }
+
+    private bool CheckStateForBleeding()
+    {
+        States[] blockingStates = { States.Stun, States.Stupefaction, States.TentacleGrip };
+        if (blockingStates.Any(state => _target.CharacterState.CheckForState(state))) return true;
+        else return false;
     }
 
     private void DamageDealWithAttackingPsionicEnergy(Character targetCharacter)

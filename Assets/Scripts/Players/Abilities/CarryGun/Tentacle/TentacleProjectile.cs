@@ -57,6 +57,8 @@ public class TentacleProjectile : NetworkBehaviour
     {
         if (_drawCircle != null) _drawCircle.Clear();
         if (_radiusUpdateCoroutine != null) StopCoroutine(_radiusUpdateCoroutine);
+        if (isServer && _target.CharacterState.CheckForState(States.TentacleGrip)) _target.CharacterState.RemoveState(States.TentacleGrip);
+
     }
 
     public void Init(Character player, Character target, Vector3 startPosition, Vector3 endPosition,
@@ -120,7 +122,7 @@ public class TentacleProjectile : NetworkBehaviour
 
             if (Physics.SphereCast(transform.position, sphereRadius, direction, out RaycastHit hit, distance, obstecls)) return;
 
-            _target.Move.CanMove = false;
+            //_target.Move.CanMove = false;
             _isPullTarget = true;
 
             if (tentacleLine != null) _lineCoroutine = StartCoroutine(DrawAndPullTarget());
@@ -154,7 +156,8 @@ public class TentacleProjectile : NetworkBehaviour
 
         Vector3 lastTargetPosition = _target.transform.position;
         float targetDistanceAccumulator = 0f;
-        SetPhysicalSkillsDisactive(true);
+        //SetPhysicalSkillsDisactive(true);
+        if (isServer) AddStateTentacleGrip();
 
         float heightOffset = _target.transform.position.y - _target.GetComponent<Collider>().bounds.min.y;
 
@@ -194,7 +197,7 @@ public class TentacleProjectile : NetworkBehaviour
 
         }
 
-        SetPhysicalSkillsDisactive(false);
+        //SetPhysicalSkillsDisactive(false);
     }
 
     private void AttackTentacles()
@@ -213,7 +216,7 @@ public class TentacleProjectile : NetworkBehaviour
 
     private void ReleaseTarget()
     { 
-        if (_target != null) _target.Move.CanMove = true;
+        //if (_target != null) _target.Move.CanMove = true;
 
         if (tentacleLine != null && _lineCoroutine != null) StopCoroutine(_lineCoroutine);
 
@@ -298,9 +301,11 @@ public class TentacleProjectile : NetworkBehaviour
             _isCollidedWithOtherCharacter = false;
     }
 
-    private void SetPhysicalSkillsDisactive(bool state)
-    {
-        if (_target != null && _target.Abilities != null)
-            foreach (Skill skill in _target.Abilities.Abilities) if (skill.AbilityForm == AbilityForm.Physical) skill.Disactive = state;
-    }
+    private void AddStateTentacleGrip() => _target.CharacterState.AddState(States.TentacleGrip, 999f, 0f, _player.gameObject, "Tentacles");
+
+    //private void SetPhysicalSkillsDisactive(bool state)
+    //{
+    //    if (_target != null && _target.Abilities != null)
+    //        foreach (Skill skill in _target.Abilities.Abilities) if (skill.AbilityForm == AbilityForm.Physical) skill.Disactive = state;
+    //}
 }

@@ -23,11 +23,7 @@ public class Stupefaction : AbstractCharacterState
 		if (character.TryGetComponent<Character>(out var ability))
 		{
 			_abilities = ability.Abilities;
-
-			foreach (var abil in _abilities.Abilities)
-			{
-				abil.Disactive = true;
-			}
+			_abilities.SetAbilitiesDisactive(true);
 		}
 
 		_characterState.Character.Move.IsMoveBlocked = true;
@@ -53,13 +49,8 @@ public class Stupefaction : AbstractCharacterState
 		_characterState.Character.Health.DamageTaken -= OnAnyDamage;
 		_characterState.RemoveState(this);
 		if (!_characterState.Check(StatusEffect.Move)) _characterState.Character.Move.IsMoveBlocked = false;
-		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null)
-		{
-			foreach (var abil in _abilities.Abilities)
-			{
-				abil.Disactive = false;
-			}
-		}
+		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null) _abilities.SetAbilitiesDisactive(false);
+		turnOff = false;
 	}
 
 	public override bool Stack(float time)

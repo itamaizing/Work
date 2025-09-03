@@ -49,7 +49,6 @@ public class DeafeningScream : Skill
         if (_target != null) CmdApplyState(_target.gameObject);
 
         AfterCastJob();
-        ClearData();
 
         yield return null;
     }
