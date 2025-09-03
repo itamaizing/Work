@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class JumpBack : Skill
 {
+    [SerializeField] private CooldownEnergy cooldownEnergy;
     [SerializeField] private float jumpDistance = 1.2f;
     [SerializeField] private float jumpWindow = 1f;
 
@@ -28,8 +29,8 @@ public class JumpBack : Skill
         targetInfo.Targets.Add(Hero);
     }
 
-    private void OnDestroy() => Canceled -= HandleJumpEnd;
-    private void OnEnable() => Canceled += HandleJumpEnd;
+    private void OnDestroy() => Canceled -= HandleJumpBackEnd;
+    private void OnEnable() => Canceled += HandleJumpBackEnd;
 
     public void JumpBackaAnimationMove()
     {
@@ -50,7 +51,7 @@ public class JumpBack : Skill
         //_hero.Move.LookAtPosition(_hero.transform.forward);
     }
 
-    public void HandleJumpEnd()
+    public void HandleJumpBackEnd()
     {
         //Hero.Animator.applyRootMotion = false;
         //Hero.Move.StopLookAt();
@@ -58,12 +59,12 @@ public class JumpBack : Skill
         _isCanCancle = true;
     }
 
-    public void JumpCast()
+    public void JumpBackCast()
     {
         AnimStartCastCoroutine();
     }
 
-    //public void JumpEnd()
+    //public void JumpBackEnd()
     //{
     //    HandleJumpEnd();
     //    ClearData();
@@ -114,6 +115,8 @@ public class JumpBack : Skill
 
     protected override IEnumerator CastJob()
     {
+        Debug.Log("1");
+        cooldownEnergy.CastCooldownEnergySkill(CooldownTime, this);
         Vector3 jumpDir = -_hero.transform.forward;
         Vector3 targetPos = _hero.transform.position + jumpDir * jumpDistance;
 

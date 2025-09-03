@@ -6,6 +6,7 @@ public class DoubleCheliceraStrike : Skill
 {
     [SerializeField] private Character _target;
     [SerializeField] private CheliceraStrike cheliceraStrike;
+    [SerializeField] private CooldownEnergy cooldownEnergy;
     [SerializeField] private float _cheliceraStrikeBaseDamage;
     [SerializeField] private float _damageMultiplier = 0.75f * 2f;
     [SerializeField] private float _stunDuration = 1f;
@@ -45,7 +46,7 @@ public class DoubleCheliceraStrike : Skill
     protected override IEnumerator CastJob()
     {
         DealDoubleCheliceraStrikeDamage(_target);
-
+        cooldownEnergy.CastCooldownEnergySkill(CooldownTime, this);
         _target = null;
         _hero.Move.StopLookAt();
         _hero.Move.CanMove = true;

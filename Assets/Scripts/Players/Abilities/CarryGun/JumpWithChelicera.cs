@@ -8,6 +8,7 @@ public class JumpWithChelicera : Skill
     [SerializeField] private Character _player;
     [SerializeField] private CheliceraStrike _cheliceraeStrike;
     [SerializeField] private ClawStrike clawStrike;
+    [SerializeField] private CooldownEnergy cooldownEnergy;
     [SerializeField] private float basePsi = 1f;
     [SerializeField] private float distanceJump;
 
@@ -44,8 +45,8 @@ public class JumpWithChelicera : Skill
     #endregion
 
     private void Start() => _animator = GetComponent<Animator>();
-    private void OnDestroy() => Canceled -= HandleJumpEnd;
-    private void OnEnable() => Canceled += HandleJumpEnd;
+    private void OnDestroy() => Canceled -= HandleJumpWithCheliceraEnd;
+    private void OnEnable() => Canceled += HandleJumpWithCheliceraEnd;
 
     protected override void ClearData()
     {
@@ -111,7 +112,11 @@ public class JumpWithChelicera : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_isTarget && _target != null) ExecuteJump();
+        if (_isTarget && _target != null)
+        {
+            cooldownEnergy.CastCooldownEnergySkill(CooldownTime, this);
+            ExecuteJump();
+        }
 
         yield return null;
     }
@@ -129,7 +134,6 @@ public class JumpWithChelicera : Skill
 
         Vector3 direction = (_target.transform.position - transform.position).normalized;
 
-        if (_cheliceraeStrike != null) _cheliceraeStrike.IncreaseSetCooldown(ChargeCooldown);
         //if (_player != null && _player.TryGetComponent<BasePsionicEnergy>(out var psiEnergy)) psiEnergy.CoolDownPsionicEnegry();
 
         _isCheliceraStrikeCast = true;
@@ -158,15 +162,15 @@ public class JumpWithChelicera : Skill
         _isJumpDone = false;
     }
 
-    public void JumpCast()
+    public void JumpWithCheliceraCast()
     {
         AnimStartCastCoroutine();
     }
 
-    public void JumpEnd()
+    public void JumpWithCheliceraEnd()
     {
         Invoke(nameof(ResetBool), 1f);
-        HandleJumpEnd();
+        HandleJumpWithCheliceraEnd();
         ClearData();
         AnimCastEnded();
     }
@@ -193,7 +197,7 @@ public class JumpWithChelicera : Skill
         }
     }
 
-    public void HandleJumpEnd()
+    public void HandleJumpWithCheliceraEnd()
     {
         _animator.applyRootMotion = false;
         _player.Move.StopLookAt();

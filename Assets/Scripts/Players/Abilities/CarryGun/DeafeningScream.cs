@@ -7,6 +7,7 @@ using UnityEngine;
 public class DeafeningScream : Skill
 {
     [SerializeField] private Character _playerLinks;
+    [SerializeField] private CooldownEnergy cooldownEnergy;
     [SerializeField] private float duration = 2f;
 
     private Character _target;
@@ -48,6 +49,7 @@ public class DeafeningScream : Skill
     {
         if (_target != null) CmdApplyState(_target.gameObject);
 
+        cooldownEnergy.CastCooldownEnergySkill(CooldownTime, this);
         AfterCastJob();
 
         yield return null;

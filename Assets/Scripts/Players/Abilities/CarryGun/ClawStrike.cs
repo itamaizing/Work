@@ -16,6 +16,7 @@ public class ClawStrike : Skill
     [SerializeField] private float chanceApplyBleedingWithJump = 0.4f;
     [SerializeField] private float durationBleeding = 7f;
     [SerializeField] private float buffDurationAfterJump = 1f;
+    [SerializeField] private float chanceApplyBleedingIncrease = 0.4f;
 
     private bool _isDurationChanceApplyBleedingWithJump = false;
     private float _spentAttackingPsiEnergy;
@@ -155,7 +156,7 @@ public class ClawStrike : Skill
 
         if (_isDurationChanceApplyBleedingWithJump && jumpWithChelicera.IsCheliceraStrikeCast && lastSkill is CheliceraStrike) _totalChanceApplyBleeding = chanceApplyBleedingWithJump;
 
-        if (_isChanceApplyBleedingIncrease && CheckStateForBleeding()) _totalChanceApplyBleeding += 1f;
+        if (_isChanceApplyBleedingIncrease && CheckStateForBleeding()) _totalChanceApplyBleeding += chanceApplyBleedingIncrease;
 
         float rand = UnityEngine.Random.Range(0f, 1f);
         if (rand <= _totalChanceApplyBleeding) CmdAddBleeding(_target);

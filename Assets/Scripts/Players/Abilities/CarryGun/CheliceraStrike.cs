@@ -11,16 +11,20 @@ public class CheliceraStrike : Skill
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
     [SerializeField] private JumpWithChelicera _jumpWithChelicera;
     [SerializeField] private ClawStrike clawStrike;
+    [SerializeField] private CooldownEnergy cooldownEnergy;
     [SerializeField] private float animSpeed = 1.4f;
     [SerializeField] private float chanceCritDamageEvolutionTwo = 0.05f;
     [SerializeField] private float chanceCritDamageEvolutionFour = 0.15f;
     [SerializeField] private float chanceApplyBleeding = 0.15f;
     [SerializeField] private float durationBleeding = 3.0f;
+    [SerializeField] private float chanceApplyBleedingIncrease = 0.4f;
+    [SerializeField] private float chanceCritDamageIncrease = 0.3f;
 
     private Damage _dealDamage;
     private Animator _animator;
     private Character _target;
     private float _totalChanceApplyBleeding;
+    private float _totalchanceCritDamage;
     private float _criticalDamage;
     private float _additionalDamageFromSkill;
     private float _spentAttackingPsiEnergy;
@@ -56,12 +60,14 @@ public class CheliceraStrike : Skill
     private bool isEvolutionTalentTwo = false;
     private bool isPsionicsTalentTwo = false;
     private bool _isChanceApplyBleedingIncrease = false;
+    private bool _isChanceCritDamageIncrease = false;
 
     public void CheliceraStrikeChanceDamageCrit(bool value) => isCheliceraStrikeChanceDamageCrit = value;
     public void CheliceraStrikeSpeed(bool value) => Hero.Animator.speed = value ? 1.4f : 1f;
     public void EvolutionTalentTwo(bool value) => isEvolutionTalentTwo = value;
     public void PsionicsTalentTwo(bool value) => isPsionicsTalentTwo = value;
     public void ChanceApplyBleedingIncrease(bool value) => _isChanceApplyBleedingIncrease = value;
+    public void ChanceCritDamageIncrease(bool value) => _isChanceCritDamageIncrease = value;
     #endregion
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -92,6 +98,7 @@ public class CheliceraStrike : Skill
         if (_target == null) yield return null;
         if (!IsTargetInRange()) yield return null;
 
+        cooldownEnergy.CastCooldownEnergySkill(CooldownTime, this);
         DamageDealChelicera(_target.gameObject);
         _isClawStrike_Right = !_isClawStrike_Right;
 
@@ -136,10 +143,13 @@ public class CheliceraStrike : Skill
             float chanceBleedingValue = UnityEngine.Random.Range(0f, 1f);
             float chanceCritValue = UnityEngine.Random.Range(0f, 1f);
 
-            if (chanceCritValue <= chanceCritDamageEvolutionTwo) _criticalDamage = CriticalDamageDeal(targetCharacter, Damage, 1.6f);
+            _totalChanceApplyBleeding = chanceApplyBleeding;
+            _totalchanceCritDamage = chanceCritDamageEvolutionTwo;
 
-            if (_isChanceApplyBleedingIncrease && CheckStateForBleeding()) _totalChanceApplyBleeding = chanceApplyBleeding + 1f;
-            else _totalChanceApplyBleeding = chanceApplyBleeding;
+            if (_isChanceApplyBleedingIncrease && CheckStateForBleeding()) _totalChanceApplyBleeding += chanceApplyBleedingIncrease;
+            if (_isChanceCritDamageIncrease && CheckStateForBleeding()) _totalchanceCritDamage += chanceCritDamageIncrease;
+
+            if (chanceCritValue <= _totalchanceCritDamage) _criticalDamage = CriticalDamageDeal(targetCharacter, Damage, 1.6f);
 
             if (chanceBleedingValue <= _totalChanceApplyBleeding) CmdAddState(targetCharacter);
         }
@@ -148,6 +158,10 @@ public class CheliceraStrike : Skill
         {
             float chanceCritValue = UnityEngine.Random.Range(0f, 1f);
             float chanceCritDamageValue = UnityEngine.Random.Range(1.8f, 2.7f);
+
+            _totalchanceCritDamage = chanceCritDamageEvolutionFour;
+
+            if (_isChanceCritDamageIncrease && CheckStateForBleeding()) _totalchanceCritDamage += chanceCritDamageIncrease;
 
             if (chanceCritValue <= chanceCritDamageEvolutionFour) _criticalDamage = CriticalDamageDeal(targetCharacter, Damage, chanceCritDamageValue);
         }
