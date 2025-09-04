@@ -112,11 +112,7 @@ public class JumpWithChelicera : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_isTarget && _target != null)
-        {
-            cooldownEnergy.CastCooldownEnergySkill(CooldownTime, this);
-            ExecuteJump();
-        }
+        if (_isTarget && _target != null) ExecuteJump();
 
         yield return null;
     }
@@ -157,10 +153,10 @@ public class JumpWithChelicera : Skill
         return Vector3.Distance(target.transform.position, transform.position) <= Radius && NoObstacles(target.transform.position, transform.position, _obstacle);
     }
 
-    private void ResetBool()
-    {
-        _isJumpDone = false;
-    }
+    //private void ResetBool()
+    //{
+    //    _isJumpDone = false;
+    //}
 
     public void JumpWithCheliceraCast()
     {
@@ -169,7 +165,7 @@ public class JumpWithChelicera : Skill
 
     public void JumpWithCheliceraEnd()
     {
-        Invoke(nameof(ResetBool), 1f);
+        //Invoke(nameof(ResetBool), 1f);
         HandleJumpWithCheliceraEnd();
         ClearData();
         AnimCastEnded();

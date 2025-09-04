@@ -26,6 +26,7 @@ public class CheliceraStrike : Skill
     private float _totalChanceApplyBleeding;
     private float _totalchanceCritDamage;
     private float _criticalDamage;
+    private float _baseDamage;
     private float _additionalDamageFromSkill;
     private float _spentAttackingPsiEnergy;
     private bool _isClawStrike_Right = true;
@@ -51,7 +52,8 @@ public class CheliceraStrike : Skill
     }
     private void OnEnable()
     {
-        Damage = UnityEngine.Random.Range(11f, 13f);
+        _baseDamage = UnityEngine.Random.Range(11f, 13f);
+        Damage = _baseDamage;
         OnSkillCanceled += HandleSkillCanceled;
     }
 
@@ -72,8 +74,6 @@ public class CheliceraStrike : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        Damage = UnityEngine.Random.Range(11f, 13f);
-
         while (_target == null)
         {
             if (GetMouseButton)
@@ -98,7 +98,17 @@ public class CheliceraStrike : Skill
         if (_target == null) yield return null;
         if (!IsTargetInRange()) yield return null;
 
-        cooldownEnergy.CastCooldownEnergySkill(CooldownTime, this);
+        _baseDamage = UnityEngine.Random.Range(11f, 13f);
+        Damage = _baseDamage;
+
+        if (_jumpWithChelicera.IsJumpDone)
+        {
+            cooldownEnergy.CastCooldownEnergySkill(_jumpWithChelicera.ChargeCooldown, _jumpWithChelicera);
+            _jumpWithChelicera.IsJumpDone = false;
+        }
+
+        else cooldownEnergy.CastCooldownEnergySkill(CooldownTime, this);
+
         DamageDealChelicera(_target.gameObject);
         _isClawStrike_Right = !_isClawStrike_Right;
 
@@ -134,9 +144,11 @@ public class CheliceraStrike : Skill
 
         if (_jumpWithChelicera.IsJumpDone)
         {
-            float bonusDamage = Damage * _additionalDamageFromSkill;
-            Damage += bonusDamage;
+            float bonusDamage = _baseDamage * _additionalDamageFromSkill;
+            Damage = _baseDamage + bonusDamage;
         }
+
+        else Damage = _baseDamage;
 
         if (isEvolutionTalentTwo)
         {
@@ -179,6 +191,7 @@ public class CheliceraStrike : Skill
 
         _criticalDamage = 0f;
         _dealDamage.Value = 0f;
+        Damage = _baseDamage;
     }
 
     private float CriticalDamageDeal(Character target, float criticalDamage, float multiplierCrit)

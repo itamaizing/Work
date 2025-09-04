@@ -12,12 +12,11 @@ public class JumpBack : Skill
 
     private Coroutine _jumpWindowCoroutine;
 
-    //private static readonly int jumpStart = Animator.StringToHash("JumpStart");
-    //private static readonly int jumpEnd = Animator.StringToHash("JumpEnd");
+    private static readonly int jumpStart = Animator.StringToHash("JumpStart");
+    private static readonly int jumpEnd = Animator.StringToHash("JumpEnd");
 
-    //protected override int AnimTriggerCastDelay => jumpStart;
     protected override int AnimTriggerCastDelay => 0;
-    protected override int AnimTriggerCast => 0;
+    protected override int AnimTriggerCast => jumpStart;
     private Vector3 _mousePosition = Vector3.positiveInfinity;
 
     protected override bool IsCanCast => true;
@@ -39,22 +38,22 @@ public class JumpBack : Skill
         _hero.Move.StopMoveAndAnimationMove();
         _hero.Move.CanMove = false;
 
-        //Vector3 direction = _hero.transform.forward;
-        //bool badDirection = float.IsInfinity(_hero.transform.forward.x) || direction.sqrMagnitude < 0.0001f;
+        Vector3 direction = _hero.transform.forward;
+        bool badDirection = float.IsInfinity(_hero.transform.forward.x) || direction.sqrMagnitude < 0.0001f;
 
-        //if (badDirection)
-        //{
-        //    _hero.Move.StopLookAt();
-        //    return;
-        //}
+        if (badDirection)
+        {
+            _hero.Move.StopLookAt();
+            return;
+        }
 
-        //_hero.Move.LookAtPosition(_hero.transform.forward);
+        _hero.Move.LookAtPosition(_hero.transform.forward);
     }
 
     public void HandleJumpBackEnd()
     {
-        //Hero.Animator.applyRootMotion = false;
-        //Hero.Move.StopLookAt();
+        Hero.Animator.applyRootMotion = false;
+        Hero.Move.StopLookAt();
         Hero.Move.CanMove = true;
         _isCanCancle = true;
     }
@@ -64,33 +63,11 @@ public class JumpBack : Skill
         AnimStartCastCoroutine();
     }
 
-    //public void JumpBackEnd()
-    //{
-    //    HandleJumpEnd();
-    //    ClearData();
-    //    AnimCastEnded();
-    //}
-
     public void ApplyRootJumpBackTrue()
     {
         JumpBackaAnimationMove();
         Hero.Animator.applyRootMotion = true;
     }
-
-    //public void JumpEndSpeedAnim()
-    //{
-    //    float timeDelay = _jumpDistance / 10;
-    //    Hero.Animator.SetFloat("JumpEndSpeed", 1f / timeDelay);
-    //}
-
-    //public void HandleJumpAnimEnd()
-    //{
-    //    if (Hero.Animator != null)
-    //    {
-    //        float transitionDuration = 0.15f;
-    //        Hero.Animator.CrossFade(jumpEnd, transitionDuration);
-    //    }
-    //}
 
     public void EnableJumpBack()
     {
@@ -115,7 +92,6 @@ public class JumpBack : Skill
 
     protected override IEnumerator CastJob()
     {
-        Debug.Log("1");
         cooldownEnergy.CastCooldownEnergySkill(CooldownTime, this);
         Vector3 jumpDir = -_hero.transform.forward;
         Vector3 targetPos = _hero.transform.position + jumpDir * jumpDistance;
