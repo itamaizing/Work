@@ -1,8 +1,9 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Projectile : MonoBehaviour
+public class Projectile : MonoBehaviour, IProjectile
 {
     [SerializeField] protected ParticleSystem _trailParticle;
     [SerializeField] protected ParticleSystem _destroyParticle;
@@ -11,8 +12,15 @@ public class Projectile : MonoBehaviour
     [SerializeField] private float _lifeTime = 10;
     
     private Transform _target;
+    private TargetInfo _targetInfo;
 
     public Transform Target => _target;
+
+    public float Speed => _speed;
+
+    public TargetInfo TargetInfo => _targetInfo;
+
+    public Action<Projectile, GameObject> TargetReached { get; set; }
 
     public event UnityAction<Projectile, GameObject> EndPointReached;
 
@@ -39,6 +47,21 @@ public class Projectile : MonoBehaviour
         {
             _trailParticle.Stop();
         }
+    }
+
+    public void SetTarget(TargetInfo targetInfo)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SetSpeed(float speed)
+    {
+        _speed = speed;
+    }
+
+    public void StartFly()
+    {
+        throw new NotImplementedException();
     }
 
     public float GetDistanceToTarget()

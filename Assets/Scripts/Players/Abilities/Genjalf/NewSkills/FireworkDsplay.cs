@@ -80,7 +80,7 @@ namespace Gangdollarff
         {
             Hero.Move.RotateModifier = 0;
             EnableMove();
-            //_firework.gameObject.SetActive(false);
+            _firework.gameObject.SetActive(false);
             CmdSetActiveParticle(false);
             _target = null;
             _targetPoint = Vector3.positiveInfinity;

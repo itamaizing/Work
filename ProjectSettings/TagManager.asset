@@ -13,11 +13,12 @@ TagManager:
   - Baff
   - TentaclePrefab
   - Ability
+  - Hide
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Mask
   - Water
   - UI
   - Markers
@@ -31,10 +32,10 @@ TagManager:
   - LightningMovement
   - Attack
   - Preview
-  - 
-  - 
-  - 
-  - 
+  - World1
+  - World2
+  - World3
+  - World4
   - 
   - 
   - 

@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class URLLibrary
 {
-    private const string _mainServer = "http://147.45.246.50/game/";
+    //private const string _mainServer = "http://147.45.246.50/game/";
+    private const string _mainServer = "89.169.1.90";
     private const string _localHost = "localhost";
     private const string _authorization = "authorization.php";
     private const string _registration = "registration.php";

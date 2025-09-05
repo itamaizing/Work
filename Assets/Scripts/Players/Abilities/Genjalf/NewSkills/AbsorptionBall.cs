@@ -7,11 +7,13 @@ using UnityEngine.SceneManagement;
 
 namespace Gangdollarff
 {
-    public class AbsorptionBall : Skill
+    public class AbsorptionBall : Skill, IGodLightSpell
     {
         [SerializeField] private Shield _shieldPref;
         [SerializeField] private float _shieldValue = 40;
         [SerializeField] private float _shieldDuration = 2;
+
+        private float _tempCooldownTime = 5f;
 
         private Shield _shield;
 
@@ -25,9 +27,30 @@ namespace Gangdollarff
 
         protected override bool IsCanCast => true;
 
+        public float ShieldDuration { get => _shieldDuration; set => _shieldDuration = value; }
+
+        public bool IsEnabled { get; protected set; }
+
         public override void LoadTargetData(TargetInfo targetInfo)
         {
             
+        }
+
+        public void ChangeMode()
+        {
+            if (IsEnabled)
+            {
+                IsEnabled = false;
+
+                _cooldownTime = _tempCooldownTime;
+            }
+            else
+            {
+                IsEnabled = true;
+
+                _tempCooldownTime = _cooldownTime;
+                _cooldownTime = 0;
+            }
         }
 
         protected override IEnumerator CastJob()

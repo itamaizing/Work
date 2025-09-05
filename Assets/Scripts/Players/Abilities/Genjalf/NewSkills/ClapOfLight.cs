@@ -6,11 +6,13 @@ using UnityEngine;
 
 namespace Gangdollarff
 {
-    public class ClapOfLight : Skill
+    public class ClapOfLight : Skill, IGodLightSpell
     {
         [SerializeField] private ParticleSystem _particle;
         [SerializeField] private float _pushRange = 1;
         [SerializeField] private float _pushDuration = 0.33f;
+
+        public bool IsBaffed = false;
 
         public override string AdditionalDescription =>
             $"Расстояние толчка: {AbilityNameBox.ColorOpen}{_pushRange}{AbilityNameBox.ColorEnd}";
@@ -21,9 +23,16 @@ namespace Gangdollarff
 
         protected override bool IsCanCast => true;
 
+        public bool IsEnabled { get; protected set; }
+
         public override void LoadTargetData(TargetInfo targetInfo)
         {
             
+        }
+
+        public void ChangeMode()
+        {
+            IsEnabled = !IsEnabled;
         }
 
         protected override IEnumerator CastJob()
@@ -43,10 +52,24 @@ namespace Gangdollarff
             {
                 if(item.TryGetComponent(out Character enemy))
                 {
+                    if (IsBaffed)
+                        CooldownTime = CooldownTime - 2;
+
                     CmdApplyDamage(damage, enemy.gameObject);
 
-                    Vector3 dirForPush = (enemy.transform.position - transform.position).normalized;
-                    Vector3 pointForPush = enemy.transform.position + (dirForPush * _pushRange);
+                    Vector3 dirForPush;
+                    Vector3 pointForPush;
+
+                    if (IsEnabled)
+                    {
+                        dirForPush = (transform.position - enemy.transform.position).normalized;
+                        pointForPush = enemy.transform.position + (dirForPush * _pushRange);
+                    }
+                    else
+                    {
+                        dirForPush = (enemy.transform.position - transform.position).normalized;
+                        pointForPush = enemy.transform.position + (dirForPush * _pushRange);
+                    }
 
                     CmdMoveTaget(enemy.gameObject, pointForPush, _pushDuration);
                 }
