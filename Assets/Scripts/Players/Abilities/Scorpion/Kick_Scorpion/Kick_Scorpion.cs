@@ -24,11 +24,12 @@ public class Kick_Scorpion : Skill
     private Animator _animator;
 
     private Character _target;
+    private Character _runtimeTarget;
 
     private static readonly int KickTrigger = Animator.StringToHash("KickAA");
 
     protected override int AnimTriggerCastDelay => 0;
-    protected override int AnimTriggerCast => 0;
+    protected override int AnimTriggerCast => KickTrigger;
 
     protected override bool IsCanCast => _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius && NoObstacles(_target.transform.position, transform.position, _obstacle);
 
@@ -41,6 +42,40 @@ public class Kick_Scorpion : Skill
     private void HandleSkillCanceled()
     {
         _target = null;
+        Hero.Move.StopLookAt();
+        _hero.Move.CanMove = true;
+    }
+
+    public void Kick_ScorpionMoveFalse()
+    {
+        if (_hero == null || _hero.Move == null) return;
+
+        var target = _target != null ? _target : _lastTarget;
+        if (target == null)
+        {
+            _hero.Move.StopLookAt();
+            return;
+        }
+
+
+        _hero.Move.StopMoveAndAnimationMove();
+        _hero.Move.CanMove = false;
+
+        Vector3 direction = target.transform.position - _hero.transform.position;
+        bool badDirection = float.IsInfinity(target.transform.position.x) || direction.sqrMagnitude < 0.0001f;
+
+        if (badDirection)
+        {
+            _hero.Move.StopLookAt();
+            return;
+        }
+
+        _hero.Move.LookAtPosition(_target.transform.position);
+    }
+
+    public void Kick_ScorpionMoveTrue()
+    {
+        _hero.Move.CanMove = true;
         Hero.Move.StopLookAt();
     }
 
@@ -75,21 +110,24 @@ public class Kick_Scorpion : Skill
         if (_target == null) yield return null;
         if (!IsTargetInRange()) yield return null;
 
+        _runtimeTarget = _target;
+
         if (_lastTarget != null && _lastTarget != _target)
             _comboCounter?.ResetCounter();
 
         if (_hitsInRowCoroutine != null)
             StopCoroutine(_hitsInRowCoroutine);
 
-        _animator.SetTrigger(KickTrigger);
-        _lastTarget = _target;
+        _lastTarget = _runtimeTarget;
+
+        ApplyAttackDamageKick();
     }
 
-    public void ApplyAttackDamageKick()
+    private void ApplyAttackDamageKick()
     {
-        if (_target == null) return;
+        if (_runtimeTarget == null) return;
 
-        if (Vector2.Distance(_lastTarget.transform.position, _target.transform.position) > Radius)
+        if (Vector2.Distance(_lastTarget.transform.position, _runtimeTarget.transform.position) > Radius)
             return;
 
         Damage damage = new Damage
@@ -98,7 +136,9 @@ public class Kick_Scorpion : Skill
             Type = DamageType,
         };
 
-        CmdApplyDamage(_target, damage);
+        CmdApplyDamage(_runtimeTarget, damage);
+
+        _runtimeTarget = null;
     }
 
     private IEnumerator HitsInRowTimer()
@@ -165,6 +205,16 @@ public class Kick_Scorpion : Skill
     public void Kick_ScorpionComboTalent(bool value)
     {
         isKick_ScorpionComboTalent = value;
+    }
+
+    public void Kick_ScorpionCast()
+    {
+        AnimStartCastCoroutine();
+    }
+
+    public void Kick_ScorpionEnded()
+    {
+        AnimCastEnded();
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)

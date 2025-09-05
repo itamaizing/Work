@@ -12,8 +12,8 @@ public class JumpBack : Skill
 
     private Coroutine _jumpWindowCoroutine;
 
-    private static readonly int jumpStart = Animator.StringToHash("JumpStart");
-    private static readonly int jumpEnd = Animator.StringToHash("JumpEnd");
+    private static readonly int jumpStart = Animator.StringToHash("JumpBackStart");
+    private static readonly int jumpEnd = Animator.StringToHash("JumpBackEnd");
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => jumpStart;
@@ -28,10 +28,7 @@ public class JumpBack : Skill
         targetInfo.Targets.Add(Hero);
     }
 
-    private void OnDestroy() => Canceled -= HandleJumpBackEnd;
-    private void OnEnable() => Canceled += HandleJumpBackEnd;
-
-    public void JumpBackaAnimationMove()
+    public void JumpBackAnimationMove()
     {
         if (_hero == null || _hero.Move == null) return;
 
@@ -58,14 +55,16 @@ public class JumpBack : Skill
         _isCanCancle = true;
     }
 
-    public void JumpBackCast()
+    public void JumpBackCast() => AnimStartCastCoroutine();
+    public void JumpBackEnd()
     {
-        AnimStartCastCoroutine();
+        HandleJumpBackEnd();
+        AnimCastEnded();
     }
 
     public void ApplyRootJumpBackTrue()
     {
-        JumpBackaAnimationMove();
+        JumpBackAnimationMove();
         Hero.Animator.applyRootMotion = true;
     }
 
@@ -123,5 +122,23 @@ public class JumpBack : Skill
         float duration = Mathf.Max(0.01f, distance / speed);
 
         _hero.Move.TargetRpcDoMove(targetPos, duration);
+        StartCoroutine(JumpBackEndServerCoroutine(duration));
+    }
+
+    private IEnumerator JumpBackEndServerCoroutine(float duration)
+    {
+        yield return new WaitForSeconds(duration + 0.03f);
+        RpcPlayJumpEnd();
+    }
+
+    [ClientRpc]
+    private void RpcPlayJumpEnd()
+    {
+        if (Hero == null || Hero.Animator == null) return;
+
+        Hero.Animator.SetTrigger(jumpEnd);
+        Hero.NetworkAnimator.SetTrigger(jumpEnd);
+
+        HandleJumpBackEnd();
     }
 }

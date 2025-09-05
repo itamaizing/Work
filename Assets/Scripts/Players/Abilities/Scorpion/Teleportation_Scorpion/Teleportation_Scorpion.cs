@@ -1,6 +1,7 @@
 using Mirror;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -10,7 +11,6 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     //[SerializeField] private VisualRender _visualRender;
     [SerializeField] private Character _playerLinks;
     [SerializeField] private DrawCircle _drawCircleSelf;
-    [SerializeField] private float _minRadius;
     [SerializeField] private int _baseManaCost;
     [SerializeField] private int _manaCostPerTile = 5;
     [SerializeField] private LayerMask _layerMask;
@@ -46,11 +46,6 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 
     protected override int AnimTriggerCast => 0;
 
-    protected void Start()
-    {
-        _minRadius = Radius;
-    }
-
     private void ResetValue()
     {
         //IsCanCancle = true;
@@ -72,8 +67,12 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     {
         Vector3 directionToEnemy = (target.transform.position - transform.position).normalized;
 
+        float distanceToTarget = Vector3.Distance(transform.position, target.transform.position);
+        float clampedDistance = Mathf.Min(distanceToTarget, Radius);
+
+        Vector3 teleportBasePosition = transform.position + directionToEnemy * clampedDistance;
         Vector3 initialOffset = directionToEnemy * _offset;
-        Vector3 teleportPosition = target.transform.position + initialOffset;
+        Vector3 teleportPosition = teleportBasePosition + initialOffset;
 
         if (!IsPositionBlocked(teleportPosition, _offset, target))
             return teleportPosition;
@@ -139,28 +138,38 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 
     private float GetCurrentRadius()
     {
-        return _minRadius + 1f * (int)(CalculateCurrentScale() / _manaCostPerTile); // ����������� r + 1 ������ �� 5 ���� (������ �� 0.2 ������ �� 1 ����, ���� ���� ����� ���������, ������ ��������)
+        var mana = _hero.Resources.FirstOrDefault(o => o.Type == ResourceType.Mana);
+        if (mana == null) return 0f;
+
+        float currentMana = mana.CurrentValue;
+
+        float maxReachableTiles = Mathf.Floor(currentMana / _manaCostPerTile);
+
+        if (currentMana < _baseManaCost)
+            return 0f;
+
+        float availableDistance = (currentMana - _baseManaCost) / _manaCostPerTile;
+
+        return Mathf.Min(availableDistance, Radius);
     }
+
     private int CalculateCurrentScale() // ��������� ���� ��� ����� ����������� ���������
     {
         //_hero.Stamina.Value
         //_mana.value;
-        if(_hero.Resources.First(o=>o.Type == ResourceType.Mana || o.Type == ResourceType.Energy).CurrentValue >= _baseManaCost)
+        if(_hero.Resources.First(o=>o.Type == ResourceType.Mana).CurrentValue >= _baseManaCost)
         {
-            return (int)((_hero.Resources.First(o=>o.Type == ResourceType.Mana || o.Type == ResourceType.Energy).CurrentValue - _baseManaCost) / 1);
+            return (int)((_hero.Resources.First(o=>o.Type == ResourceType.Mana).CurrentValue - _baseManaCost) / 1);
         }
 
         return 0;
     }
+
     private int GetCurrentManaCost(float distance)
     {
-        int dist = (int)Mathf.Ceil(distance);
-
-        if (dist <= 2) return _baseManaCost;
-        else return (int)Mathf.Clamp(_baseManaCost + (dist - 2) * _manaCostPerTile, 0, _playerLinks.Resources.First(o=>o.Type == ResourceType.Mana || o.Type == ResourceType.Energy).MaxValue);
-
+        int dist = Mathf.CeilToInt(distance);
+        return _baseManaCost + dist * _manaCostPerTile;
     }
-
     //public void TryUpgradeByConsumingCombo(int amount)
     //{
     //    if (!Notifier.IsActive)
@@ -211,6 +220,27 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 
     protected override IEnumerator CastJob()
     {
+        if (_target == null)
+            yield break;
+
+        float distance = Vector3.Distance(_target.transform.position, transform.position);
+        int manaToSpend = GetCurrentManaCost(distance);
+
+        List<SkillEnergyCost> tempCosts = new()
+        {
+            new SkillEnergyCost
+            {
+                resourceType = _skillEnergyCosts[0].resourceType,
+                resourceCost = manaToSpend
+            }
+        };
+
+        if (!TryPayCost(tempCosts))
+        {
+            Debug.LogWarning("[Teleportation_Scorpion] Not enough mana!");
+            yield break;
+        }
+
         Vector3 tpPos = FindPlace(_target);
         CmdTeleport(tpPos);
 

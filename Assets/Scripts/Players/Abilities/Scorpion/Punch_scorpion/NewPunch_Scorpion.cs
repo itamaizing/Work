@@ -14,12 +14,13 @@ public class NewPunch_Scorpion : Skill
     private bool _isRightKick = true;
 
     private Character _target;
+    private Character _runtimeTarget;
 
     private static readonly int RightPunchTrigger = Animator.StringToHash("RightPunch");
     private static readonly int LeftPunchTrigger = Animator.StringToHash("LeftPunch");
 
     protected override int AnimTriggerCastDelay => 0;
-    protected override int AnimTriggerCast => 0;
+    protected override int AnimTriggerCast => _isRightKick ? RightPunchTrigger : LeftPunchTrigger;
 
     protected override bool IsCanCast => _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius && NoObstacles(_target.transform.position, transform.position, _obstacle);
 
@@ -36,7 +37,42 @@ public class NewPunch_Scorpion : Skill
     {
         _target = null;
         Hero.Move.StopLookAt();
+        _hero.Move.CanMove = true;
     }
+
+    public void NewPunch_ScorpionMoveFalse()
+    {
+        if (_hero == null || _hero.Move == null) return;
+
+        var target = _target != null ? _target : _lastTarget;
+        if (target == null)
+        {
+            _hero.Move.StopLookAt();
+            return;
+        }
+
+
+        _hero.Move.StopMoveAndAnimationMove();
+        _hero.Move.CanMove = false;
+
+        Vector3 direction = target.transform.position - _hero.transform.position;
+        bool badDirection = float.IsInfinity(target.transform.position.x) || direction.sqrMagnitude < 0.0001f;
+
+        if (badDirection)
+        {
+            _hero.Move.StopLookAt();
+            return;
+        }
+
+        _hero.Move.LookAtPosition(_target.transform.position);
+    }
+
+    public void NewPunch_ScorpionMoveTrue()
+    {
+        _hero.Move.CanMove = true;
+        Hero.Move.StopLookAt();
+    }
+
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
@@ -46,8 +82,7 @@ public class NewPunch_Scorpion : Skill
             {
                 _target = GetRaycastTarget();
 
-                if (_target != null)
-                    _target.SelectedCircle.IsActive = true;
+                if (_target != null) _target.SelectedCircle.IsActive = true;
             }
             yield return null;
         }
@@ -64,31 +99,20 @@ public class NewPunch_Scorpion : Skill
         if (_target == null) yield return null;
         if (!IsTargetInRange()) yield return null;
 
-        if (_lastTarget != null && _lastTarget != _target)  _comboCounter.ResetCounter();
+        _runtimeTarget = _target;
+
+        if (_lastTarget != null && _lastTarget != _runtimeTarget)  _comboCounter.ResetCounter();
 
         _isRightKick = !_isRightKick;
+        _lastTarget = _runtimeTarget;
 
-        if (_isRightKick) _animator.SetTrigger(RightPunchTrigger);
-        else _animator.SetTrigger(LeftPunchTrigger);
-
-        _lastTarget = _target;
-
-        yield return null;
+        ApplyAttackDamage();
     }
 
-    public void ApplyAttackDamage()
+    private void ApplyAttackDamage()
     {
-        if (_target == null)
-        {
-            Debug.LogWarning("[NewPunch_Scorpion] ApplyAttackDamage: Target is null!");
-            return;
-        }
-
-        if (Vector2.Distance(_lastTarget.transform.position, _target.transform.position) > 2f)
-        {
-            Debug.LogWarning("[NewPunch_Scorpion] Target moved too far!");
-            return;
-        }
+        if (_runtimeTarget == null) return;
+        if (Vector2.Distance(_lastTarget.transform.position, _runtimeTarget.transform.position) > Radius) return;
 
         Damage damage = new Damage
         {
@@ -96,9 +120,9 @@ public class NewPunch_Scorpion : Skill
             Type = DamageType,
         };
 
-        CmdApplyDamage(_target, damage);
+        CmdApplyDamage(_runtimeTarget, damage);
 
-        _target = null;
+        _runtimeTarget = null;
     }
 
     [Command]
@@ -152,6 +176,16 @@ public class NewPunch_Scorpion : Skill
     {
         Debug.Log("[NewPunch_Scorpion] Attack Passed");
         _comboCounter.AddSkill(target, this);
+    }
+
+    public void NewPunch_ScorpionCast()
+    {
+        AnimStartCastCoroutine();
+    }
+
+    public void NewPunch_ScorpionEnded()
+    {
+        AnimCastEnded();
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
