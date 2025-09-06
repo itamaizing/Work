@@ -24,7 +24,7 @@ public class Desiccuration : AbstractCharacterState
 		if (character.TryGetComponent<Character>(out var ability))
 		{
 			_abilities = ability.Abilities;
-			_abilities.SetAbilitiesDisabled();
+			_abilities.SetAbilitiesDisactive(true);
 		}
 		else
 		{
@@ -51,14 +51,8 @@ public class Desiccuration : AbstractCharacterState
 	{
 		Debug.Log("Exiting Desiccuration State");
 		_characterState.RemoveState(this);
-		if (!_characterState.Check(StatusEffect.Move))
-		{
-			_characterState.Character.Move.CanMove = true;
-		}
-		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null)
-		{
-			_abilities.SetAbilitiesEnabled();
-		}
+		if (!_characterState.Check(StatusEffect.Move)) _characterState.Character.Move.CanMove = true;
+		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null) _abilities.SetAbilitiesDisactive(false);
 	}
 
 	public override bool Stack(float time)

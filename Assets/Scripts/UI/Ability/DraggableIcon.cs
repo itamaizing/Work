@@ -252,6 +252,8 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         _cooldown.gameObject.SetActive(true);
         _cooldown.StartFill(dutarion, 1, 0, false);
 
+        _cooldownNum.color = (_skill is IPassiveSkill) ? Color.green : Color.red;
+
         _cooldownCoroutine = StartCoroutine(CooldownCounterJob(dutarion));
     }
 

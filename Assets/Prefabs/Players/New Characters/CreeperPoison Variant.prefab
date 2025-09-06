@@ -3199,6 +3199,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 680587800667431627, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 680587800667431627, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 891583693850145175, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -3877,8 +3885,9 @@ MonoBehaviour:
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 4
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
-  _castDeley: 0
+  _castDeley: 1
   _damageValue: 0
   _abilitySchool: 6
   _abilityForm: 2
@@ -3910,9 +3919,6 @@ MonoBehaviour:
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
-  _attackZoneSize: 1
-  _attackDelay: 1
-  _chargeAttackDelay: 0
   _restorationOfGlands: {fileID: 4842090196846643040}
   _releaseFromSecrecy: {fileID: 8956422096455632753}
   _strokesOfAspiration: {fileID: 669497223903059834}
@@ -3950,6 +3956,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 1af7963ead8875042bc84e9fa3cf58e1, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 4
   _castDeley: 0
   _damageValue: 0
@@ -4014,6 +4021,7 @@ MonoBehaviour:
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 50
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
@@ -4076,6 +4084,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 5e12a4e98f6c3dd42ad804c36ea87337, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
@@ -4126,8 +4135,9 @@ MonoBehaviour:
   _spitPoison: {fileID: 4992365342693795224}
   _projectile: {fileID: 4167531903339531822, guid: 093409daf5f183d4493788550d4c1998, type: 3}
   _player: {fileID: 2483674839823445686}
-  _arrowPrefab: {fileID: 7504653704119560997, guid: bc01ef0a119629945958526e596df4ec, type: 3}
+  _arrowPrefab: {fileID: 9064051009418913030, guid: bc01ef0a119629945958526e596df4ec, type: 3}
   _spawnPoint: {fileID: 6943497228995655184}
+  pointArrowRender: {fileID: 3442255630167083756, guid: 8bef7db12cb9d0a4ab39fc04ec97740b, type: 3}
   _poisonDamagingCloudPrefab: {fileID: 8376359178360537337, guid: 6684174cfea68c84b9bd06aa086faa01, type: 3}
   _poisonHealingCloudPrefab: {fileID: -4967518069141830548, guid: 835486046afaafa48885a183fcb94bd6, type: 3}
 --- !u!114 &7013613396998518356
@@ -4152,6 +4162,7 @@ MonoBehaviour:
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 4
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 8
   _castDeley: 0
   _damageValue: 0
@@ -4214,6 +4225,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: a81ffcd04ca1cad479f49a2f56016a70, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
@@ -4281,6 +4293,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 99ddb513034121044845fa2d5c1fd25a, type: 2}
   _isSubjectToGlobalCooldownTime: 0
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
@@ -4344,6 +4357,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 65739a9ef35d180498531bc3c7cff2e8, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
@@ -4399,6 +4413,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: b01cdda0a8d49e24a8cd5c7190f8483b, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
@@ -4459,6 +4474,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 5dd2210736bee3d4197798d0dd5f05e3, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
@@ -4513,6 +4529,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: ebeca0253d3207d4cb39a4e352e99b11, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
@@ -4570,6 +4587,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: e0a694047bc706b4fb4d88da4b0399dc, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
@@ -4676,6 +4694,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: '1) '
     Icon: {fileID: 21300000, guid: 15a6d004456bc1c47897f234d7bc77ac, type: 3}
@@ -4698,6 +4717,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: "1) \xAB\u043F\u043B\u0435\u0432\u043E\u043A \u043A\u0438\u0441\u043B\u043E\u0442\u043E\u0439\xBB
       \u2013 \u043F\u043B\u044E\u0451\u0442 \u0432 \u0443\u043A\u0430\u0437\u0430\u043D\u043D\u0443\u044E
@@ -4717,7 +4737,7 @@ MonoBehaviour:
     Icon: {fileID: 21300000, guid: 6fa6c3f6d5eb01a4cb43016c18d8b73b, type: 3}
   character: {fileID: 2483674839823445686}
   skillManager: {fileID: 2617687491934927079}
-  spitPoison: {fileID: 0}
+  spitPoison: {fileID: 4992365342693795224}
 --- !u!114 &1734068584079679132
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4732,6 +4752,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: "1)  \u0434\u0435\u0431\u0430\u0444 \xAB\u044F\u0434 \u043A\u043E\u0441\u0442\u0435\u0439\xBB
       \u0434\u0430\u0451\u0442 5% \u0448\u0430\u043D\u0441 \u043D\u0430\u043D\u0435\u0441\u0442\u0438
@@ -4760,6 +4781,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -4780,6 +4802,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -4800,6 +4823,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 1
     Description: 
     Icon: {fileID: 0}
@@ -4824,6 +4848,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -4842,6 +4867,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -4860,6 +4886,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 1
     Description: 
     Icon: {fileID: 0}
@@ -4878,6 +4905,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -4896,6 +4924,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -4914,6 +4943,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -4932,6 +4962,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 1
     Description: 
     Icon: {fileID: 0}
@@ -4950,6 +4981,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 1
     Description: 
     Icon: {fileID: 0}
@@ -4968,6 +5000,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -4986,6 +5019,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -5004,6 +5038,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -5023,6 +5058,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 1
     Description: 
     Icon: {fileID: 0}
@@ -5044,6 +5080,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -5062,6 +5099,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 1
     Description: 
     Icon: {fileID: 0}
@@ -5081,6 +5119,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -5099,6 +5138,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 1
     Description: 
     Icon: {fileID: 0}
@@ -5117,6 +5157,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -5135,6 +5176,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 1
     Description: 
     Icon: {fileID: 0}
@@ -5153,6 +5195,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -5171,6 +5214,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 1
     Description: 
     Icon: {fileID: 0}
@@ -5189,6 +5233,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -5207,6 +5252,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -5225,6 +5271,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -5249,6 +5296,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -5267,6 +5315,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -5285,6 +5334,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -5304,6 +5354,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -5325,6 +5376,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -5347,6 +5399,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 1
     Description: 
     Icon: {fileID: 0}
@@ -5368,6 +5421,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -5386,6 +5440,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -5404,6 +5459,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -5422,6 +5478,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -5440,6 +5497,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -5460,6 +5518,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 1
     Description: 
     Icon: {fileID: 0}
@@ -5478,6 +5537,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -5499,6 +5559,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 0
     Description: 
     Icon: {fileID: 0}
@@ -5517,6 +5578,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 1
     Description: 
     Icon: {fileID: 0}
@@ -5537,6 +5599,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel: []
+    _stateInfos: []
     IsOpen: 1
     Description: 
     Icon: {fileID: 0}

@@ -1200,6 +1200,9 @@ MonoBehaviour:
   - {fileID: 1393027867669365536, guid: 137d9729a4a22a6419fff4f67971e1bf, type: 3}
   - {fileID: 5665284927246484895, guid: 0b5e7e50988911349b6cd72ac7343494, type: 3}
   - {fileID: 7970984732438363365, guid: b9361abbea62d324688cafe08eac97d9, type: 3}
+  - {fileID: 2102560157480070522, guid: aedf6de1982891348890e277ff5488fa, type: 3}
+  - {fileID: 8842404529923409551, guid: c543d7786e879d14cb91ce31839db008, type: 3}
+  - {fileID: 3442255630167083756, guid: 8bef7db12cb9d0a4ab39fc04ec97740b, type: 3}
   - {fileID: 8763643763125113918, guid: 7ca7e11552419974da01f50646019b88, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:

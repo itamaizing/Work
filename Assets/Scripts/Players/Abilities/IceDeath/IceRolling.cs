@@ -156,9 +156,12 @@ public class IceRolling : Skill
 		int energyBlocks = Mathf.FloorToInt(maxEnergy / 5f);
 		float bonusRange = _rollingWithEnemyTalent ? energyBlocks * 2f : energyBlocks * 1f;
 
-		float finalRange = baseRange + bonusRange;
-
 		Vector3 startPosition = _playerLinks.transform.position;
+		Vector3 rawTargetPos = _mousePos;
+
+		float distanceToClick = Vector3.Distance(startPosition, rawTargetPos);
+		float finalRange = Mathf.Min(distanceToClick, GetJumpRange());
+
 		Vector3 jumpPos = startPosition + _lookDir * finalRange;
 
 		float energyUsed = energyBlocks * 5f;

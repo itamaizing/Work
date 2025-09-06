@@ -16,7 +16,7 @@ public class SkillEnergyCost
     {
         resourceCost *= multiplier;
     }
-    
+
     public void ModifyResourceCost1(float multiplier)
     {
         resourceCost /= multiplier;
@@ -54,6 +54,7 @@ public enum AbilityForm
     Magic,
     Physical,
     Both,
+    Passiv,
 }
 
 public enum SkillType
@@ -271,8 +272,10 @@ public abstract class Skill : NetworkBehaviour
     protected abstract int AnimTriggerCastDelay { get; }
     protected abstract int AnimTriggerCast { get; }
 
+    protected void RaiseCooldownStarted(float cooldownTime) => CooldownStarted?.Invoke(cooldownTime);
     protected void RaiseCooldownEnded() => CooldownEnded?.Invoke();
     protected void SkillAfterCastJob() => AfterCast?.Invoke();
+    protected void CastEndedJob() => CastEnded?.Invoke();
 
     protected virtual bool IsCanCast
     {
@@ -516,6 +519,12 @@ public abstract class Skill : NetworkBehaviour
         _cooldownJob = StartCoroutine(CooldownCoroutine(time));
     }
 
+    public void IncreaseSetCooldownPassive(float time)
+    {
+        if (_cooldownJob != null) StopCoroutine(_cooldownJob);
+        _cooldownJob = StartCoroutine(CooldownCoroutine(time));
+    }
+
     public void DecreaseSetCooldown(float time)
     {
         var timeToSet = _remainingCooldownTime - time > 0 ? _remainingCooldownTime - time : 0;
@@ -706,6 +715,7 @@ public abstract class Skill : NetworkBehaviour
             _skillRender.StartDrawLineForZone(this);
         }
     }
+    protected virtual void StopAutoDrawRadius() => _skillRender.StopDrawRadius();
 
     protected virtual void StopAutoDraw()
     {

@@ -21,16 +21,19 @@ public class PhysicalAttack : Skill
 	private bool _rollingPhysTalent = false;
 	private bool _seriesPhysicalTalent;
 	private float _stunCount = 0;
+	private int _animTriggerToUse = 0;
 	private bool _isRightKick = true;
 	private Animator _animator;
 
 	protected Character _target;
 
+
 	private static readonly int RightKickTrigger = Animator.StringToHash("RightKick");
 	private static readonly int LeftKickTrigger = Animator.StringToHash("LeftKick");
 
 	protected override int AnimTriggerCastDelay => 0;
-	protected override int AnimTriggerCast => 0;
+
+	protected override int AnimTriggerCast => _animTriggerToUse = UnityEngine.Random.value > 0.5f ? RightKickTrigger : LeftKickTrigger;
 
 	protected override bool IsCanCast => _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius && NoObstacles(_target.transform.position, transform.position, _obstacle);
 
@@ -54,36 +57,51 @@ public class PhysicalAttack : Skill
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
+		TargetInfo targetInfo = new TargetInfo();
+
+		if (_target != null)
+		{
+			_hero.Move.LookAtTransform(_target.transform);
+			targetInfo.Targets.Add(_target);
+			targetInfo.Points.Add(_target.transform.position);
+			callbackDataSaved?.Invoke(targetInfo);
+			yield break;
+		}
+
 		while (_target == null)
 		{
 			if (GetMouseButton)
 			{
 				_target = GetRaycastTarget();
-
 				if (_target != null)
+				{
 					_target.SelectedCircle.IsActive = true;
+					_hero.Move.LookAtTransform(_target.transform);
+					break;
+				}
 			}
 			yield return null;
 		}
 
-
-		_hero.Move.LookAtTransform(_target.transform);
-
-		TargetInfo targetInfo = new TargetInfo();
+		targetInfo.Targets.Add(_target);
 		targetInfo.Points.Add(_target.transform.position);
-		callbackDataSaved(targetInfo);
+		callbackDataSaved?.Invoke(targetInfo);
 	}
 
 	protected override IEnumerator CastJob()
 	{
 		if (_target == null || _animator == null) yield break;
-
-		_isRightKick = !_isRightKick;
-
-		if (_isRightKick) _animator.SetTrigger(RightKickTrigger);
-		else _animator.SetTrigger(LeftKickTrigger);
-
 		yield break;
+	}
+
+	public void PhysicalAttackCast()
+	{
+		AnimStartCastCoroutine();
+	}
+
+	public void PhysicalAttackEnded()
+	{
+		AnimCastEnded();
 	}
 
 	public void ApplyAttackDamage()

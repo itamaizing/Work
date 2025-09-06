@@ -30,7 +30,7 @@ public class AbilityNameBox : MonoBehaviour
         else _descriptionWithNumbers.text = $"«атрата: {ColorOpen}0 ед. маны{ColorEnd}";
 
         if (skill.ManaCostPerTick.Count > 0)
-            _descriptionWithNumbers.text += $" и {ColorOpen}{skill.ManaCostPerTick[0].resourceCost} ед. маны/{skill.ManaCostRate} сек{ColorEnd}";
+            _descriptionWithNumbers.text += $" + {ColorOpen}{skill.ManaCostPerTick[0].resourceCost} ед. маны/{skill.ManaCostRate} сек{ColorEnd}";
 
         switch (skill.AbilityForm)
         {

@@ -75,12 +75,16 @@ public class IceShadow : Skill
 	}
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        
-    }
+		if (targetInfo == null) return;
+		if (targetInfo.Targets.Contains(Hero)) return;
+		targetInfo.Targets.Add(Hero);
+	}
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		callbackDataSaved(null);
+		TargetInfo targetInfo = new TargetInfo();
+		targetInfo.Targets.Add(Hero);
+		callbackDataSaved(targetInfo);
 		yield return null;
 	}
 

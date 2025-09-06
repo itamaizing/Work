@@ -14,6 +14,7 @@ public class CleavingBlade_Scorpion : Skill
 
     [SyncVar] private int _counter = 1;
     private Character _target;
+    private Character _runtimeTarget;
 
     private bool isCleavingBlade_ScorpionSecondTalent;
 
@@ -22,6 +23,12 @@ public class CleavingBlade_Scorpion : Skill
     protected override bool IsCanCast => _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius;
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("Cast Blade");
+
+    private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
+    private void OnEnable() => OnSkillCanceled += HandleSkillCanceled;
+
+    private void HandleSkillCanceled() => _target = null;
+
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         _target = (Character)targetInfo.Targets[0];
@@ -73,11 +80,6 @@ public class CleavingBlade_Scorpion : Skill
             yield return null;
         }
 
-        float speed = 1f;
-
-        if (isCleavingBlade_ScorpionSecondTalent && _counter == 2) speed = 0.8f;
-
-        _hero.Animator.SetFloat("CastChainBladeSpeed", speed);
         TargetInfo targetInfo = new();
         targetInfo.Targets.Add(_target);
         callbackDataSaved(targetInfo);
@@ -85,13 +87,23 @@ public class CleavingBlade_Scorpion : Skill
 
     protected override IEnumerator CastJob()
     {
+        _runtimeTarget = _target;
         TryAttack(true, 1f);
         yield return null;
     }
 
+    private void SpeedAnimBlade_Scorpion()
+    {
+        float speed = 1f;
+
+        if (isCleavingBlade_ScorpionSecondTalent && _counter == 2) speed = 0.8f;
+
+        _hero.Animator.SetFloat("CastChainBladeSpeed", speed);
+    }
+
     private void TryAttack(bool shouldIncreaseCounter, float damageMultiplier)
     {
-        if (_target != null && Vector2.Distance(transform.position, _target.transform.position) <= Radius)
+        if (_runtimeTarget != null && Vector2.Distance(transform.position, _runtimeTarget.transform.position) <= Radius)
         {
             Damage damage = new Damage
             {
@@ -99,7 +111,9 @@ public class CleavingBlade_Scorpion : Skill
                 Type = DamageType,
             };
 
-            CmdAttack(damage, _target, shouldIncreaseCounter);
+            CmdAttack(damage, _runtimeTarget, shouldIncreaseCounter);
+
+            _runtimeTarget = null;
         }
     }
 
@@ -118,12 +132,13 @@ public class CleavingBlade_Scorpion : Skill
 
     protected override void ClearData()
     {
-        _target = null;
+
     }
 
     public void BladeActive()
     {
         blade.SetActive(true);
+        SpeedAnimBlade_Scorpion();
     }
 
     public void CleavingBlade_ScorpionCast()

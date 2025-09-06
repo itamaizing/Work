@@ -28,13 +28,13 @@ MonoBehaviour:
     - Id: 1002
       Name: Mana
       Points: 0
-      DefaultValue: 0
+      DefaultValue: 100
       Icon: {fileID: 0}
       IsVisible: 1
     - Id: 1003
       Name: Energy
       Points: 0
-      DefaultValue: 1000
+      DefaultValue: 0
       Icon: {fileID: 0}
       IsVisible: 1
     - Id: 1004
@@ -58,13 +58,13 @@ MonoBehaviour:
     - Id: 1007
       Name: ManaRegen
       Points: 0
-      DefaultValue: 0
+      DefaultValue: 1
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1008
       Name: EnergyRegen
       Points: 0
-      DefaultValue: 1
+      DefaultValue: 0
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1009
@@ -82,13 +82,13 @@ MonoBehaviour:
     - Id: 1011
       Name: ManaRegenDelay
       Points: 0
-      DefaultValue: 0
+      DefaultValue: 0.1
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1012
       Name: EnergyRegenDelay
       Points: 0
-      DefaultValue: 0.1
+      DefaultValue: 0
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1013

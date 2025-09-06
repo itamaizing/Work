@@ -9,13 +9,14 @@ public class BasePsionicEnergy : Resource, IDamageable
     [SerializeField] private Character _player;
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
     [SerializeField] private Slider basePsionicsSlider;
+    [SerializeField] private PsionicEnergySkill psionicEnergySkill;
 
     private const float BasePsionicaThreshold = 30f;
     private const float BaseSliderFillPercent = 0.3f;
     private const float RemainingSliderFillPercent = 0.7f;
-    private const float PsionicaDecayTime = 12f;
     private const float DamageToPsiConversionRate = 0.2f;
 
+    private float _psionicaDecayTime;
     private bool _isInternalPsiEnergy = false;
     private Coroutine _energyDecayCoroutine;
 
@@ -24,15 +25,19 @@ public class BasePsionicEnergy : Resource, IDamageable
     public event Action<Damage, Skill> DamageTaken;
     public event Action<float> OnEnergyChanged;
 
+    public PsionicEnergySkill PsionicEnergySkill { get => psionicEnergySkill; set => psionicEnergySkill = value; }
+    public float PsionicaDecayTime { get => _psionicaDecayTime; set => _psionicaDecayTime = value; }
+
     private void Start()
     {
+        _psionicaDecayTime = psionicEnergySkill.CooldownTime;
         if (_player != null)
         {
             MaxValue = _player.Data.GetAttributeValue(AttributeNames.Health);
             _player.Health.Shields.Add(this);
 
             if (_player.DamageTracker != null) _player.DamageTracker.OnDamageTracked += OnDamageDealt;
-            if (_player.Health != null) _player.Health.OnBeforeTakeDamage += HandleIncomingDamage;
+            if (_player.Health != null) _player.Health.OnBeforeTakeDamage += psionicEnergySkill.HandleIncomingDamage;
         }
     }
 
@@ -44,7 +49,7 @@ public class BasePsionicEnergy : Resource, IDamageable
     private void OnDestroy()
     {
         if (_player != null && _player.DamageTracker != null) _player.DamageTracker.OnDamageTracked -= OnDamageDealt;
-        if (_player.Health != null) _player.Health.OnBeforeTakeDamage -= HandleIncomingDamage;
+        if (_player.Health != null) _player.Health.OnBeforeTakeDamage -= psionicEnergySkill.HandleIncomingDamage;
     }
 
     private void OnDamageDealt(Damage damage, GameObject target)
@@ -54,6 +59,7 @@ public class BasePsionicEnergy : Resource, IDamageable
             float energyGain = damage.Value * DamageToPsiConversionRate;
             Add(energyGain);
             CurrentValue = Mathf.Min(CurrentValue, MaxValue);
+            RpcCoolDownPsionicEnegry();
 
             RpcOnEnergyChanged(CurrentValue);
 
@@ -75,7 +81,8 @@ public class BasePsionicEnergy : Resource, IDamageable
         }
     }
 
-    public void AddAndResetDecay(float value)
+    #region Test
+    public void AddAndResetDecayCoolDownPsionicEnegry(float value)
     {
         Add(value);
         CurrentValue = Mathf.Min(CurrentValue, MaxValue);
@@ -101,26 +108,45 @@ public class BasePsionicEnergy : Resource, IDamageable
 
         UpdatePsionicaBar();
     }
+    #endregion
 
+    public void AddAndResetDecay(float value)
+    {
+        Add(value);
+        CurrentValue = Mathf.Min(CurrentValue, MaxValue);
+        RpcCoolDownPsionicEnegry();
+
+        if (isServer)
+        {
+            RpcOnEnergyChanged(CurrentValue);
+
+            bool wasInternalEnergy = _isInternalPsiEnergy;
+            _isInternalPsiEnergy = CurrentValue > 0;
+
+            if (wasInternalEnergy != _isInternalPsiEnergy)
+            {
+                RpcInternalPsiEnergyChanged(_isInternalPsiEnergy);
+            }
+
+            if (_energyDecayCoroutine != null)
+            {
+                StopCoroutine(_energyDecayCoroutine);
+            }
+            _energyDecayCoroutine = StartCoroutine(EnergyDecayCoroutine());
+        }
+
+        UpdatePsionicaBar();
+    }
+
+    [ClientRpc] public void RpcCoolDownPsionicEnegry() => CoolDownPsionicEnegry();
+
+    public void CoolDownPsionicEnegry() => psionicEnergySkill.IncreaseSetCooldownPassive(_psionicaDecayTime);
 
     public void UsePsiEnergy(float value)
     {
         TryUse(value);
         RpcOnEnergyChanged(CurrentValue);
         UpdatePsionicaBar();
-    }
-
-    private void HandleIncomingDamage(Damage damage, Skill skill)
-    {
-        if (damage.Value <= 0 || CurrentValue <= 0) return;
-
-        float absorptionAmount = Mathf.Min(CurrentValue, damage.Value);
-        UsePsiEnergy(absorptionAmount);
-
-        float reduced = absorptionAmount * 0.5f;
-        damage.Value -= reduced;
-
-        damage.Value = Mathf.Max(damage.Value, 0f);
     }
 
     private void UpdatePsionicaBar()
@@ -139,12 +165,12 @@ public class BasePsionicEnergy : Resource, IDamageable
 
         basePsionicsSlider.value = normalizedValue;
 
-        Debug.Log($"Текущая пси энергия: {CurrentValue}");
+        Debug.Log($"??????? ??? ???????: {CurrentValue}");
     }
 
     private IEnumerator EnergyDecayCoroutine()
     {
-        yield return new WaitForSeconds(PsionicaDecayTime);
+        yield return new WaitForSeconds(_psionicaDecayTime);
         CurrentValue = 0;
         RpcOnEnergyChanged(CurrentValue);
         _isInternalPsiEnergy = false;
@@ -160,7 +186,7 @@ public class BasePsionicEnergy : Resource, IDamageable
         if (CurrentValue > 0)
         {
             float absorbingDamage = Mathf.Min(CurrentValue, damage.Value);
-            damage.Value -= absorbingDamage * 0.5f; 
+            damage.Value -= absorbingDamage * 0.5f;
             UsePsiEnergy(absorbingDamage);
 
             _isInternalPsiEnergy = CurrentValue > 0;

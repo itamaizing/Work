@@ -1,4 +1,5 @@
 using Mirror;
+using System.Collections;
 using UnityEngine;
 
 public class PoisonBallProjectile : Test_Projectile
@@ -242,19 +243,14 @@ public class PoisonBallProjectile : Test_Projectile
 
         newDistancePush = (newDistancePush * durationPush) / GlobalVariable.cellSize;
 
-        if (_isPushTarget)
-        {
-            Vector3 finalPoint = targetMove.transform.position - directionPush * newDistancePush;
-            finalPoint.y = 0;
+        Vector3 finalPoint = targetMove.transform.position + (_isPushTarget ? -directionPush : directionPush) * newDistancePush;
+        finalPoint.y = 0;
 
-            targetMove.TargetRpcDoMove(finalPoint, durationPush);
-        }
+        if (targetMove.connectionToClient != null) targetMove.TargetRpcDoMove(finalPoint, durationPush);
+
         else
         {
-            Vector3 finalPoint = targetMove.transform.position + directionPush * newDistancePush;
-            finalPoint.y = 0;
-
-            targetMove.TargetRpcDoMove(finalPoint, durationPush);
+            StartCoroutine(ServerMove(targetMove, finalPoint, durationPush));
         }
 
         target.Move.CanMove = true;
@@ -263,6 +259,22 @@ public class PoisonBallProjectile : Test_Projectile
     private void ReductionCooldownFromRestorationOfGlands()
     {
         RpcReductionCooldownFromRestorationOfGlands(_player.gameObject);
+    }
+
+    private IEnumerator ServerMove(MoveComponent targetMove, Vector3 finalPoint, float duration)
+    {
+        float elapsed = 0f;
+        Vector3 start = targetMove.transform.position;
+
+        while (elapsed < duration)
+        {
+            float time = elapsed / duration;
+            targetMove.transform.position = Vector3.Lerp(start, finalPoint, time);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        targetMove.transform.position = finalPoint;
     }
 
     #endregion

@@ -35,6 +35,7 @@ public class SpawnComponent : NetworkBehaviour
     [Command] // не стал убирать метод с мейна, хотя мой ниже такой же, но сохраняет вращение и спавнит не по индексу, а напрямую берет префаб
     public void CmdSpawnUnitInPoint(Vector3 position, int index)
     {
+        if (_characterPrefabs == null || _characterPrefabs.Count == 0) return;
         SpawnUnit(index, position);
     }
 

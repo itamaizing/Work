@@ -29,13 +29,15 @@ public class AutoSkillCast
 
     public void DeleteSkill()
     {
+        if (_currentSkill == null) return;
+
         _currentSkill.TryCancel(true);
 
         _currentSkill.SkillRender.StopDrawAutoAttackRadius();
 
-        _currentSkill = null;
-
         StopTryCastCoroutine();
+
+        _currentSkill = null;
     }
 
     public void Pause()
@@ -61,18 +63,25 @@ public class AutoSkillCast
         {
             _parentForCoroutine.StopCoroutine(_tryCastCoroutine);
             _tryCastCoroutine = null;
+        }
 
+        if (_currentSkill != null && _currentSkill.SkillRender != null)
+        {
             _currentSkill.SkillRender.StopDrawAutoAttackRadius();
+        }
 
+        if (_targetInfo?.Targets != null)
+        {
             foreach (var item in _targetInfo.Targets)
             {
-                if (item is Character character)
+                if (item is Character character && character?.SelectedCircle != null)
                 {
                     character.SelectedCircle.SwitchSelectCircle(false);
                 }
             }
         }
     }
+
 
     private IEnumerator TryCastJob()
     {

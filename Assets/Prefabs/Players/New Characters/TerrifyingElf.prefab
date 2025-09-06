@@ -19161,7 +19161,7 @@ PrefabInstance:
       objectReference: {fileID: 3990805733231088528}
     - target: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _icons.Array.size
-      value: 48
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _icons.Array.data[25]
@@ -19255,6 +19255,14 @@ PrefabInstance:
       propertyPath: _icons.Array.data[47]
       value: 
       objectReference: {fileID: 943178309112352084, guid: 0164d1eba62aace4dae8bb4f57b787f5, type: 3}
+    - target: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _icons.Array.data[48]
+      value: 
+      objectReference: {fileID: 3545852164369826336, guid: 00af781c3893a1d418fa36075d26c855, type: 3}
+    - target: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _icons.Array.data[49]
+      value: 
+      objectReference: {fileID: 3545852164369826336, guid: 809ea93db3d02c949a43c0843d257aca, type: 3}
     - target: {fileID: 8739993138692873955, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Layer
       value: 2
@@ -19807,11 +19815,11 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
   - resourceType: 1
-    resourceCost: 1
+    resourceCost: 8
   _additionalSkillEnergyCosts: []
   _cooldownTime: 13
   _castDeley: 0.1
-  _damageValue: 60
+  _damageValue: 0
   _abilitySchool: 5
   _abilityForm: 0
   _damageType: 0
@@ -19825,8 +19833,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
+  _manaCostRate: 0.5
+  _manaCostPerTick:
+  - resourceType: 1
+    resourceCost: 1
   _isUseCharges: 0
   _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
@@ -19848,6 +19858,7 @@ MonoBehaviour:
   audioClip: {fileID: 8300000, guid: 0e697ad5442a11a4990c66e9b6fb2e18, type: 3}
   _maxAdditionalManaUsage: 7
   ghost: {fileID: 1718052129104348959}
+  damageMinoin: 60
 --- !u!114 &6063604074090390129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20095,6 +20106,7 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   extendedRadius: 5
+  baseRadius: 3
   teleportManaUse: 6
   maxGhosts: 2
   ghostPrefab: {fileID: 1871163040516354185, guid: 4db2764b76e857542a0c6ea889e2db7c, type: 3}
@@ -20103,7 +20115,12 @@ MonoBehaviour:
   aCTeleportToGhost: {fileID: 8300000, guid: 7ec01dc7a3340f84ca423f258f2981f6, type: 3}
   "aC\u0421ontrolGhostToTarget": {fileID: 8300000, guid: def2e1cb9b2cb354cb4b3451f2b5f6e2, type: 3}
   aCSummoningGhost: {fileID: 8300000, guid: e22212dd52fe9df4494ceacd0ee0320c, type: 3}
+  _extendedRadiusCircle: {fileID: 7454699290023613669}
+  extendedRadiusColor: {r: 0.8, g: 0.3, b: 0, a: 1}
   _ghosts: []
+  treeVisionComponent: {fileID: 1555059839938612127, guid: 82b70bdb0fc80c343859665623ea7ed8, type: 3}
+  heroVisionComponent: {fileID: 5614925148377618008}
+  skillQueue: {fileID: 4490336970382221666}
 --- !u!114 &6004029750635303333
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20942,6 +20959,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 73c845a97d0479341a34f6e1275e1107, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4490336970382221666 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5664092922881533538, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 8127316380187346688}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 300637093874885484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5f4a2549f1d1594693ec217b7147344, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &4534754468497973439 stripped

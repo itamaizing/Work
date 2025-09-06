@@ -230,6 +230,8 @@ public class CharacterState : NetworkBehaviour
 		[States.ComboState] = new ComboState(),
 		[States.DisappointmentState] = new DisappointmentState(),
 		[States.ManaRegen] = new ManaRegen(),
+		[States.Stupefaction] = new Stupefaction(),
+		[States.TentacleGrip] = new TentacleGrip(),
 
 		#region TerrifyingElfStates
 		[States.InnerDarkness] = new InnerDarkness(),
@@ -803,6 +805,8 @@ public enum States
     TestAuraState,
 	MultiMagic,
 	FireFlash,
+	Stupefaction,
+	TentacleGrip,
     Discharge,
     CoolingAura,
 }

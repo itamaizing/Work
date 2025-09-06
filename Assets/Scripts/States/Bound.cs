@@ -81,7 +81,7 @@ public class Bound : AbstractCharacterState
 		if (_spawnedTrap) NetworkServer.Destroy(_spawnedTrap);
 		_characterState.RemoveState(this);
 		if (!_characterState.Check(StatusEffect.Move)) _characterState.Character.Move.IsMoveBlocked = false;
-		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null) _abilities.SetAbilitiesEnabled();
+		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null) foreach (var skill in _abilities.Abilities) if (skill.Moving == Moving.NonStatic) skill.Disactive = false;
 		if (_characterState.TryGetComponent<StateEffects>(out StateEffects stateEffects)) stateEffects.RopeTrap.SetActive(false);
 
 		var animator = _characterState.Character.Animator;

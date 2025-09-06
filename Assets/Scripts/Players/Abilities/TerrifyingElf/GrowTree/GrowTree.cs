@@ -232,10 +232,19 @@ public class GrowTree : Skill
 
                         else if (dist <= extendedRadius && _isGrowTreeArrowIntoSkyRadiusTalent)
                         {
+                            if (shotIntoSky != null && !shotIntoSky.IsCooldowned && !shotIntoSky.Disactive)
+                            {
+                                yield return null;
+                                continue;
+                            }
+
                             _targetPoint = point;
                             _castFromExtendedRadius = true;
                             CastDeley += arrowEffectLifetime;
-                            if (_castFromExtendedRadius) SpawnArrowWithTreeEffect(point);
+                            SpawnArrowWithTreeEffect(point);
+
+                            if (shotIntoSky != null && shotIntoSky.IsUseCharges) shotIntoSky.TryUseCharge();
+                            else if (shotIntoSky != null) shotIntoSky.IncreaseSetCooldown(shotIntoSky.CooldownTime);
                         }
                     }
                 }

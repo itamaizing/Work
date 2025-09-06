@@ -1,6 +1,7 @@
 using Mirror;
 using System;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 public class CheliceraStrike : Skill
@@ -9,22 +10,27 @@ public class CheliceraStrike : Skill
     [SerializeField] private BasePsionicEnergy _basePsionicEnergy;
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
     [SerializeField] private JumpWithChelicera _jumpWithChelicera;
+    [SerializeField] private ClawStrike clawStrike;
+    [SerializeField] private CooldownEnergy cooldownEnergy;
     [SerializeField] private float animSpeed = 1.4f;
-    [SerializeField] private bool isEvolutionTalentTwo = false;
-    [SerializeField] private bool isPsionicsTalentTwo = false;
+    [SerializeField] private float chanceCritDamageEvolutionTwo = 0.05f;
+    [SerializeField] private float chanceCritDamageEvolutionFour = 0.15f;
+    [SerializeField] private float chanceApplyBleeding = 0.15f;
+    [SerializeField] private float durationBleeding = 3.0f;
+    [SerializeField] private float chanceApplyBleedingIncrease = 0.4f;
+    [SerializeField] private float chanceCritDamageIncrease = 0.3f;
 
     private Damage _dealDamage;
     private Animator _animator;
     private Character _target;
-    private float _baseDamage;
+    private float _totalChanceApplyBleeding;
+    private float _totalchanceCritDamage;
     private float _criticalDamage;
+    private float _baseDamage;
     private float _additionalDamageFromSkill;
     private float _spentAttackingPsiEnergy;
-
-    private float _chanceCritDamage = 0.05f;
-    private float _chanceApplyBleeding = 0.15f;
-    private float _durationBleeding = 3.0f;
     private bool _isClawStrike_Right = true;
+    private Coroutine _castDelayResetCoroutine;
 
     private static readonly int RightClawStrikeTrigger = Animator.StringToHash("CheliceraStrikeTrigger_Right");
     private static readonly int LeftClawStrikeTrigger = Animator.StringToHash("CheliceraStrikeTrigger_Left");
@@ -34,11 +40,37 @@ public class CheliceraStrike : Skill
 
     protected override bool IsCanCast => _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius && NoObstacles(_target.transform.position, transform.position, _obstacle);
 
+    public float ChanceCritDamageEvolutionFour { get => chanceCritDamageEvolutionFour; set => chanceCritDamageEvolutionFour = value; }
+
     public event System.Action OnCheliceraStrikeEnd;
 
     private void Start() => _animator = GetComponent<Animator>();
-    private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
-    private void OnEnable() => OnSkillCanceled += HandleSkillCanceled;
+
+    private void OnDisable()
+    {
+        OnSkillCanceled -= HandleSkillCanceled;
+    }
+    private void OnEnable()
+    {
+        _baseDamage = UnityEngine.Random.Range(11f, 13f);
+        Damage = _baseDamage;
+        OnSkillCanceled += HandleSkillCanceled;
+    }
+
+    #region Talens
+    private bool isCheliceraStrikeChanceDamageCrit = false;
+    private bool isEvolutionTalentTwo = false;
+    private bool isPsionicsTalentTwo = false;
+    private bool _isChanceApplyBleedingIncrease = false;
+    private bool _isChanceCritDamageIncrease = false;
+
+    public void CheliceraStrikeChanceDamageCrit(bool value) => isCheliceraStrikeChanceDamageCrit = value;
+    public void CheliceraStrikeSpeed(bool value) => Hero.Animator.speed = value ? 1.4f : 1f;
+    public void EvolutionTalentTwo(bool value) => isEvolutionTalentTwo = value;
+    public void PsionicsTalentTwo(bool value) => isPsionicsTalentTwo = value;
+    public void ChanceApplyBleedingIncrease(bool value) => _isChanceApplyBleedingIncrease = value;
+    public void ChanceCritDamageIncrease(bool value) => _isChanceCritDamageIncrease = value;
+    #endregion
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
@@ -65,6 +97,17 @@ public class CheliceraStrike : Skill
     {
         if (_target == null) yield return null;
         if (!IsTargetInRange()) yield return null;
+
+        _baseDamage = UnityEngine.Random.Range(11f, 13f);
+        Damage = _baseDamage;
+
+        if (_jumpWithChelicera.IsJumpDone)
+        {
+            cooldownEnergy.CastCooldownEnergySkill(_jumpWithChelicera.ChargeCooldown, _jumpWithChelicera);
+            _jumpWithChelicera.IsJumpDone = false;
+        }
+
+        else cooldownEnergy.CastCooldownEnergySkill(CooldownTime, this);
 
         DamageDealChelicera(_target.gameObject);
         _isClawStrike_Right = !_isClawStrike_Right;
@@ -99,26 +142,45 @@ public class CheliceraStrike : Skill
 
         Character targetCharacter = target.GetComponent<Character>();
 
-        _baseDamage = UnityEngine.Random.Range(11f, 13f);
-
         if (_jumpWithChelicera.IsJumpDone)
         {
             float bonusDamage = _baseDamage * _additionalDamageFromSkill;
-            _baseDamage += bonusDamage;
+            Damage = _baseDamage + bonusDamage;
         }
+
+        else Damage = _baseDamage;
 
         if (isEvolutionTalentTwo)
         {
-            float chanceCritValue = UnityEngine.Random.Range(0f, 1f);
             float chanceBleedingValue = UnityEngine.Random.Range(0f, 1f);
+            float chanceCritValue = UnityEngine.Random.Range(0f, 1f);
 
-            if (chanceBleedingValue <= _chanceApplyBleeding) CmdAddState(targetCharacter);
-            if (chanceCritValue <= _chanceCritDamage) _criticalDamage = CriticalDamageDeal(targetCharacter, _baseDamage);
+            _totalChanceApplyBleeding = chanceApplyBleeding;
+            _totalchanceCritDamage = chanceCritDamageEvolutionTwo;
+
+            if (_isChanceApplyBleedingIncrease && CheckStateForBleeding()) _totalChanceApplyBleeding += chanceApplyBleedingIncrease;
+            if (_isChanceCritDamageIncrease && CheckStateForBleeding()) _totalchanceCritDamage += chanceCritDamageIncrease;
+
+            if (chanceCritValue <= _totalchanceCritDamage) _criticalDamage = CriticalDamageDeal(targetCharacter, Damage, 1.6f);
+
+            if (chanceBleedingValue <= _totalChanceApplyBleeding) CmdAddState(targetCharacter);
+        }
+
+        if (isCheliceraStrikeChanceDamageCrit)
+        {
+            float chanceCritValue = UnityEngine.Random.Range(0f, 1f);
+            float chanceCritDamageValue = UnityEngine.Random.Range(1.8f, 2.7f);
+
+            _totalchanceCritDamage = chanceCritDamageEvolutionFour;
+
+            if (_isChanceCritDamageIncrease && CheckStateForBleeding()) _totalchanceCritDamage += chanceCritDamageIncrease;
+
+            if (chanceCritValue <= chanceCritDamageEvolutionFour) _criticalDamage = CriticalDamageDeal(targetCharacter, Damage, chanceCritDamageValue);
         }
 
         _dealDamage = new Damage()
         {
-            Value = _baseDamage + _criticalDamage,
+            Value = Damage + _criticalDamage,
             Type = DamageType.Physical,
             PhysicAttackType = AttackRangeType.MeleeAttack,
         };
@@ -129,23 +191,29 @@ public class CheliceraStrike : Skill
 
         _criticalDamage = 0f;
         _dealDamage.Value = 0f;
+        Damage = _baseDamage;
     }
 
-    private float CriticalDamageDeal(Character target, float criticalDamage)
+    private float CriticalDamageDeal(Character target, float criticalDamage, float multiplierCrit)
     {
-        criticalDamage = CalculationCriticalDamage(criticalDamage);
+        criticalDamage = CalculationCriticalDamage(criticalDamage, multiplierCrit);
 
         return criticalDamage;
     }
 
-    private float CalculationCriticalDamage(float baseDamage)
+    private float CalculationCriticalDamage(float baseDamage, float multiplierCrit)
     {
         float criticalDamage = baseDamage;
-        float multiplierCrit = 1.6f;
-
         criticalDamage *= multiplierCrit;
 
         return criticalDamage;
+    }
+
+    private bool CheckStateForBleeding()
+    {
+        States[] blockingStates = { States.Stun, States.Stupefaction, States.TentacleGrip };
+        if (blockingStates.Any(state => _target.CharacterState.CheckForState(state))) return true;
+        else return false;
     }
 
     private void DamageDealWithAttackingPsionicEnergy(Character targetCharacter)
@@ -228,6 +296,11 @@ public class CheliceraStrike : Skill
         else _spentAttackingPsiEnergy = 0;
     }
 
+    public void SetAdditionalDamage(float value)
+    {
+        _additionalDamageFromSkill = value;
+    }
+
     public void CheliceraStrikeCast()
     {
         AnimStartCastCoroutine();
@@ -251,20 +324,6 @@ public class CheliceraStrike : Skill
         CmdUseAttackingEnergy(_attackingPsionicEnergy.CurrentValue);
     }
 
-    #region Talens
-
-    public void EvolutionTalentTwo(bool value)
-    {
-        isEvolutionTalentTwo = value;   
-    }
-
-    public void PsionicsTalentTwo(bool value)
-    {
-        isPsionicsTalentTwo = value;
-    }
-
-    #endregion
-
     #region CommandMethods
 
     [Command]
@@ -278,7 +337,7 @@ public class CheliceraStrike : Skill
     [Command]
     private void CmdAddState(Character character)
     {
-        character.CharacterState.AddState(States.Bleeding, _durationBleeding, 0, _player.gameObject, null);
+        character.CharacterState.AddState(States.Bleeding, durationBleeding, 0, _player.gameObject, null);
     }
 
     [Command]

@@ -13,6 +13,7 @@ public class Tentacles : Skill
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private SpawnComponent _spawnComponent;
+    [SerializeField] private float _radiusTarget = 0.5f;
 
     private bool _isPlacingTentacles = false;
     private bool _isClickedOnGround = false;
@@ -105,11 +106,31 @@ public class Tentacles : Skill
                     {
                         _spawnPoint = hitTarget.point;
 
-                        if (!IsValidVector(_spawnPoint)) yield break;
+                        Collider[] colliders = Physics.OverlapSphere(_spawnPoint, _radiusTarget);
+                        foreach (var collider in colliders)
+                        {
+                            if (collider.TryGetComponent<Character>(out Character target))
+                            {
+                                _isPlacingTentacles = true;
+                                _target = target;
+                                _previewInstance.transform.SetParent(_target.transform);
 
-                        _isClickedOnGround = true;
+                                _previewInstancePrefab = Instantiate(tentaclesPreview, _previewInstance.transform.position, Quaternion.identity);
+                                _previewInstancePrefab.Tentacle.SetActive(true);
+                                _previewInstancePrefab.IsPreview = false;
 
-                        yield break;
+                                yield return new WaitForSeconds(0.1f);
+                                break;
+                            }
+                        }
+
+                        if (_target == null)
+                        {
+                            if (!IsValidVector(_spawnPoint)) yield break;
+
+                            _isClickedOnGround = true;
+                            yield break;
+                        }
                     }
                 }
             }
@@ -119,6 +140,7 @@ public class Tentacles : Skill
 
         while (true)
         {
+            Debug.Log("2");
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             float sphereRadius = 0.1f;

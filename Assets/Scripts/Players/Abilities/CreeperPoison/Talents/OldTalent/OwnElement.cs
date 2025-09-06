@@ -30,7 +30,7 @@ public class OwnElement : Talent
     {
         SetActive(true);
 
-        _baseAttackSpeed = _creeperStrike.AttackDelay;
+        _baseAttackSpeed = _creeperStrike.CastDeley;
 
         StartSearchingEnemies();
     }
@@ -102,7 +102,7 @@ public class OwnElement : Talent
                 {
                     while (_currentStacksAtckSpeed < _currentAllStacks)
                     {
-                        if (_currentAllStacks > 0 && _creeperStrike.AttackDelay > _maxMinimumAttackSpeed)
+                        if (_currentAllStacks > 0 && _creeperStrike.CastDeley > _maxMinimumAttackSpeed)
                         {
                             IncreaseAttackSpeed();
                             _previousAllStacks = _currentAllStacks;
@@ -130,15 +130,15 @@ public class OwnElement : Talent
         _increasedAttackSpeed = _baseAttackSpeed - _baseIncreaseAttackSpeed;
 
         _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_increasedAttackSpeed);
-        Debug.Log("OwnElement / IncreaseAttackSpeed / CurrentAttackSpeed = " + _creeperStrike.AttackDelay);
+        Debug.Log("OwnElement / IncreaseAttackSpeed / CurrentAttackSpeed = " + _creeperStrike.CastDeley);
     }
 
     private void ResetAttackSpeed()
     {
-        if (_creeperStrike.AttackDelay < _baseAttackSpeed)
+        if (_creeperStrike.CastDeley < _baseAttackSpeed)
         {
             _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_increasedAttackSpeed);
-            Debug.Log("OwnElement / ResetAttackSpeed / CurrentAttackSpeed = " + _creeperStrike.AttackDelay);
+            Debug.Log("OwnElement / ResetAttackSpeed / CurrentAttackSpeed = " + _creeperStrike.CastDeley);
             _currentStacksAtckSpeed--;
         }
     }

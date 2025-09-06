@@ -6119,6 +6119,9 @@ MonoBehaviour:
   - {fileID: 3545852164369826336, guid: a9c9f461b2da1124c8147af729a93ea3, type: 3}
   - {fileID: 3545852164369826336, guid: 6cbb7405efe85c6409a55809aa00def2, type: 3}
   - {fileID: 3545852164369826336, guid: a124624cc2322e644a921c631896ba45, type: 3}
+  _baffColor: {r: 0.23, g: 0.9, b: 0.23, a: 1}
+  _debaffColor: {r: 0.9, g: 0.15, b: 0.15, a: 1}
+  _neutralColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
 --- !u!1 &2209214673714213496
 GameObject:
   m_ObjectHideFlags: 0
@@ -11281,6 +11284,62 @@ MonoBehaviour:
   m_RenderersToHide: []
   m_GameObjectsToHide:
   - {fileID: 3906734254346883187}
+--- !u!1 &3013632921358580266
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1943902652943205339}
+  - component: {fileID: 6910816883082627050}
+  m_Layer: 0
+  m_Name: SelectProjector (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1943902652943205339
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3013632921358580266}
+  m_LocalRotation: {x: 1, y: -0, z: -0, w: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 1.1545457}
+  m_LocalScale: {x: 0.45454547, y: 0.45454547, z: 0.45454547}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2767604973955014062}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &6910816883082627050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3013632921358580266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 2100000, guid: f81bf325412d2cd419b495e2e683dfa0, type: 2}
+  m_DrawDistance: 1000
+  m_FadeScale: 1
+  m_StartAngleFade: 180
+  m_EndAngleFade: 180
+  m_UVScale: {x: 1, y: 1}
+  m_UVBias: {x: 0, y: 0}
+  m_DecalLayerMask: 4294967294
+  m_ScaleMode: 0
+  m_Offset: {x: 0, y: 0, z: 2}
+  m_Size: {x: 1.4, y: 1.4, z: 4}
+  m_FadeFactor: 0.944
 --- !u!1 &3067262888569148362
 GameObject:
   m_ObjectHideFlags: 0
@@ -12125,7 +12184,8 @@ MonoBehaviour:
   - {fileID: 7632328406153099084}
   _selectedCircle: {fileID: 603041326956613622}
   _spawnComponent: {fileID: 7099943676139532891}
-  _visionComponent: {fileID: 0}
+  _visionComponent: {fileID: 430165030280571863}
+  _auras: {fileID: 0}
   _expForDieKill: 5
   _navMeshAgent: {fileID: 4697272463135853912}
 --- !u!114 &8102436864039870552
@@ -12238,6 +12298,7 @@ MonoBehaviour:
   _regenerationDelay: 0
   _animator: {fileID: 7330930160410084482}
   _netAnimator: {fileID: 7562276694809356217}
+  bar: {fileID: 0}
 --- !u!114 &1198109357281203987
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12343,7 +12404,7 @@ MonoBehaviour:
   syncInterval: 0
   _hero: {fileID: 6271332717105215193}
   _characterPrefabs: []
-  _enemyPrefab: {fileID: 0}
+  _enemyPrefab: {fileID: 5830977165762126247, guid: ffa34bf0b8e63f140af24f180875a670, type: 3}
   _allyPrefab: {fileID: 0}
 --- !u!195 &4697272463135853912
 NavMeshAgent:
@@ -12395,7 +12456,6 @@ MonoBehaviour:
   CanMoveState: 0
   IsMoving: 0
   IsSelect: 0
-  _isMoveBlocked: 0
   _agent: {fileID: 4697272463135853912}
 --- !u!114 &7790970521576675334
 MonoBehaviour:
@@ -12595,6 +12655,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: e9fd2f3f8408d6a43bd1fc836484952b, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
@@ -18090,6 +18151,7 @@ MonoBehaviour:
   _circle: {fileID: 3605756216020674225}
   _areaPref: {fileID: 1574982521674352815, guid: 790fb3857b30c2b4fad4375343a84fad, type: 3}
   _damageZonePref: {fileID: 0}
+  _skillCircleRandererPref: {fileID: 0}
   _line: {fileID: 11400000, guid: 7faf4d32cfcc4f54d967e4d01a0c4b65, type: 2}
   _lineZoneRender: {fileID: 0}
   _lineZoneRenderForQueue: {fileID: 0}
@@ -23246,6 +23308,7 @@ Transform:
   m_Children:
   - {fileID: 1419421705929914996}
   - {fileID: 7214978052577847901}
+  - {fileID: 1943902652943205339}
   m_Father: {fileID: 2707143735750808927}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
@@ -23314,6 +23377,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _selectProjector: {fileID: 4660803869417445926}
+  _selectProjectorTargetVariant: {fileID: 6910816883082627050}
   _stroke: {fileID: 7989034325233207187}
 --- !u!1 &6047809480369425102
 GameObject:
@@ -29107,6 +29171,7 @@ MonoBehaviour:
   _shieldBar: {fileID: 4788200924867193125}
   _bar: {fileID: 5787471954614534251}
   _barMinus: {fileID: 1786516621749211883}
+  _barMinusPrewiew: {fileID: 0}
   _barPlus: {fileID: 1293073687236213584}
   _timeToDisapear: 0.2
   _disapearSpeed: 0.5
@@ -34009,6 +34074,7 @@ MonoBehaviour:
   _shieldBar: {fileID: 0}
   _bar: {fileID: 3980644699831919488}
   _barMinus: {fileID: 4252179331609357489}
+  _barMinusPrewiew: {fileID: 0}
   _barPlus: {fileID: 0}
   _timeToDisapear: 0.2
   _disapearSpeed: 0.5
@@ -34407,6 +34473,7 @@ MonoBehaviour:
   _shieldBar: {fileID: 0}
   _bar: {fileID: 9144032259530104016}
   _barMinus: {fileID: 1190094139937472337}
+  _barMinusPrewiew: {fileID: 0}
   _barPlus: {fileID: 4807780307234132665}
   _timeToDisapear: 0.2
   _disapearSpeed: 0.5

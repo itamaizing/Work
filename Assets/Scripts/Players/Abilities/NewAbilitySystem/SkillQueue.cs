@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class SkillQueue : MonoBehaviour
@@ -67,7 +68,8 @@ public class SkillQueue : MonoBehaviour
     public void Add(Skill skill)
     {
         //if (_skills.Contains(skill))
-            //return; 
+        //return; 
+        if (skill is IPassiveSkill) return;
 
         _skills.Enqueue(skill);
         SkillAdded?.Invoke(skill);
@@ -122,7 +124,7 @@ public class SkillQueue : MonoBehaviour
     private void Draw(Skill skill)
     {
         if (_skillRenderer == null) return;
-        if (skill.TargetInfoQueue.Count == 0) return;
+        if (skill.TargetInfoQueue == null || skill.TargetInfoQueue.Count == 0) return;
 
         var info = skill.TargetInfoQueue.Peek().Points;
         if (info == null || info.Count == 0) return;
