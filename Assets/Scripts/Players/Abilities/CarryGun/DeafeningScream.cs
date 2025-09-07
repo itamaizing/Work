@@ -13,7 +13,7 @@ public class DeafeningScream : Skill
     private Character _target;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
 
-    protected override bool IsCanCast => IsHaveCharge && _target != null;
+    protected override bool IsCanCast => IsHaveCharge && _target != null && cooldownEnergy.CurrentValue >= CooldownTime;
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("DeafeningScreamAnimation");
 
@@ -49,7 +49,7 @@ public class DeafeningScream : Skill
     {
         if (_target != null) CmdApplyState(_target.gameObject);
 
-        cooldownEnergy.CastCooldownEnergySkill(CooldownTime, this);
+        cooldownEnergy.CastCooldownEnergySkill(13, this);
         AfterCastJob();
 
         yield return null;

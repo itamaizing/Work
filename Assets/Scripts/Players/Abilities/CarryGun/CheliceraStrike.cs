@@ -23,6 +23,7 @@ public class CheliceraStrike : Skill
     private Damage _dealDamage;
     private Animator _animator;
     private Character _target;
+    private Character _runtimeTarget;
     private float _totalChanceApplyBleeding;
     private float _totalchanceCritDamage;
     private float _criticalDamage;
@@ -38,7 +39,7 @@ public class CheliceraStrike : Skill
     protected override int AnimTriggerCast => _isClawStrike_Right ? RightClawStrikeTrigger : LeftClawStrikeTrigger;
     protected override int AnimTriggerCastDelay => 0;
 
-    protected override bool IsCanCast => _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius && NoObstacles(_target.transform.position, transform.position, _obstacle);
+    protected override bool IsCanCast => _target != null && CheckIsCanCast() && cooldownEnergy.CurrentValue >= CooldownTime;
 
     public float ChanceCritDamageEvolutionFour { get => chanceCritDamageEvolutionFour; set => chanceCritDamageEvolutionFour = value; }
 
@@ -72,8 +73,26 @@ public class CheliceraStrike : Skill
     public void ChanceCritDamageIncrease(bool value) => _isChanceCritDamageIncrease = value;
     #endregion
 
+    private bool CheckIsCanCast()
+    {
+        return _target != null &&
+            Vector3.Distance(_target.transform.position, transform.position) <= Radius && 
+            NoObstacles(_target.transform.position, transform.position, _obstacle);
+    }
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        TargetInfo targetInfo = new TargetInfo();
+
+        if (_target != null)
+        {
+            _hero.Move.LookAtTransform(_target.transform);
+            targetInfo.Targets.Add(_target);
+            targetInfo.Points.Add(_target.transform.position);
+            callbackDataSaved?.Invoke(targetInfo);
+            yield break;
+        }
+
         while (_target == null)
         {
             if (GetMouseButton)
@@ -81,15 +100,17 @@ public class CheliceraStrike : Skill
                 _target = GetRaycastTarget();
 
                 if (_target != null)
+                {
+                    _hero.Move.LookAtTransform(_target.transform);
                     _target.SelectedCircle.IsActive = true;
+                }
+
+                break;
             }
             yield return null;
         }
 
-        _hero.Move.LookAtTransform(_target.transform);
-
-        TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(_target.transform.position);
+        targetInfo.Targets.Add(_target);
         callbackDataSaved(targetInfo);
     }
 
@@ -101,18 +122,19 @@ public class CheliceraStrike : Skill
         _baseDamage = UnityEngine.Random.Range(11f, 13f);
         Damage = _baseDamage;
 
+        _runtimeTarget = _target;
+
         if (_jumpWithChelicera.IsJumpDone)
         {
             cooldownEnergy.CastCooldownEnergySkill(_jumpWithChelicera.ChargeCooldown, _jumpWithChelicera);
             _jumpWithChelicera.IsJumpDone = false;
         }
 
-        else cooldownEnergy.CastCooldownEnergySkill(CooldownTime, this);
+        else cooldownEnergy.CastCooldownEnergySkill(2, this);
 
-        DamageDealChelicera(_target.gameObject);
+        DamageDealChelicera(_runtimeTarget.gameObject);
         _isClawStrike_Right = !_isClawStrike_Right;
 
-        _target = null;
         _hero.Move.StopLookAt();
         Hero.Move.CanMove = true;
 
@@ -188,6 +210,7 @@ public class CheliceraStrike : Skill
         if (_attackingPsionicEnergy.IsAttackingPsiEnergy && targetCharacter != null) DamageDealWithAttackingPsionicEnergy(targetCharacter);
 
         CmdApplyDamage(_dealDamage, target);
+        _runtimeTarget = null;
 
         _criticalDamage = 0f;
         _dealDamage.Value = 0f;

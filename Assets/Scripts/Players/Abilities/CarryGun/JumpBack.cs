@@ -19,7 +19,7 @@ public class JumpBack : Skill
     protected override int AnimTriggerCast => jumpStart;
     private Vector3 _mousePosition = Vector3.positiveInfinity;
 
-    protected override bool IsCanCast => true;
+    protected override bool IsCanCast => true && cooldownEnergy.CurrentValue >= CooldownTime;
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -91,7 +91,7 @@ public class JumpBack : Skill
 
     protected override IEnumerator CastJob()
     {
-        cooldownEnergy.CastCooldownEnergySkill(CooldownTime, this);
+        cooldownEnergy.CastCooldownEnergySkill(4, this);
         Vector3 jumpDir = -_hero.transform.forward;
         Vector3 targetPos = _hero.transform.position + jumpDir * jumpDistance;
 

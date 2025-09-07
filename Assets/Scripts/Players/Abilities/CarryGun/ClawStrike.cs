@@ -26,6 +26,7 @@ public class ClawStrike : Skill
     private Coroutine coroutineDurationChanceApplyBleedingWithJump;
 
     protected Character _target;
+    private Character _runtimeTarget;
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("ClawStrikeTrigger");
@@ -91,10 +92,11 @@ public class ClawStrike : Skill
         if (_target == null) yield return null;
         if (!IsTargetInRange()) yield return null;
 
+        _runtimeTarget = _target;
+
         JumpBackClawStrike();
         DamageDeal();
 
-        _target = null;
         _hero.Move.StopLookAt();
         yield return null;
     }
@@ -113,7 +115,7 @@ public class ClawStrike : Skill
             PhysicAttackType = AttackRangeType.MeleeAttack,
         };
 
-        CmdApplyDamage(damage, _target.gameObject);
+        CmdApplyDamage(damage, _runtimeTarget.gameObject);
 
         TryApplyBleeding();
 
@@ -127,7 +129,7 @@ public class ClawStrike : Skill
             else if (attackingPsiValue >= 20) dispelCount = 2;
             else if (attackingPsiValue >= 10) dispelCount = 1;
 
-            if (dispelCount > 0) for (int i = 0; i < dispelCount; i++) CmdDispel(_target, dispelCount);
+            if (dispelCount > 0) for (int i = 0; i < dispelCount; i++) CmdDispel(_runtimeTarget, dispelCount);
 
             var damagePsi = new Damage
             {
@@ -136,7 +138,9 @@ public class ClawStrike : Skill
                 PhysicAttackType = AttackRangeType.MeleeAttack,
             };
 
-            CmdApplyDamage(damagePsi, _target.gameObject);
+            CmdApplyDamage(damagePsi, _runtimeTarget.gameObject);
+
+            _runtimeTarget = null;
         }
 
     }

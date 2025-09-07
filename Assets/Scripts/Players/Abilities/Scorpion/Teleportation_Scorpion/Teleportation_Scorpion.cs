@@ -60,7 +60,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
             transform.position
             );
 
-        return distance <= GetCurrentRadius() /*Radius*/;
+        return distance <= Radius;
     }
 
     private Vector3 FindPlace(Character target)
@@ -136,23 +136,6 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
         return false;
     }
 
-    private float GetCurrentRadius()
-    {
-        var mana = _hero.Resources.FirstOrDefault(o => o.Type == ResourceType.Mana);
-        if (mana == null) return 0f;
-
-        float currentMana = mana.CurrentValue;
-
-        float maxReachableTiles = Mathf.Floor(currentMana / _manaCostPerTile);
-
-        if (currentMana < _baseManaCost)
-            return 0f;
-
-        float availableDistance = (currentMana - _baseManaCost) / _manaCostPerTile;
-
-        return Mathf.Min(availableDistance, Radius);
-    }
-
     private int CalculateCurrentScale() // ��������� ���� ��� ����� ����������� ���������
     {
         //_hero.Stamina.Value
@@ -192,7 +175,6 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     {
         while (true)
         {
-            Radius = GetCurrentRadius();
             _drawCircleSelf.Draw(Radius);
 
             if (GetMouseButton)
@@ -206,7 +188,22 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
                 }
 
                 float dist = Vector3.Distance(_target.transform.position, transform.position);
-                _skillEnergyCosts[0].resourceCost = GetCurrentManaCost(dist);
+
+                if (dist > Radius)
+                {
+                    Debug.Log("[Teleportation] Цель вне зоны действия");
+                    yield break;
+                }
+
+                int manaCost = GetCurrentManaCost(dist);
+                var mana = _hero.Resources.FirstOrDefault(r => r.Type == ResourceType.Mana);
+                if (mana == null || mana.CurrentValue < manaCost)
+                {
+                    Debug.Log("[Teleportation] Недостаточно маны");
+                    yield break;
+                }
+
+                _skillEnergyCosts[0].resourceCost = manaCost;
                 break;
             }
 

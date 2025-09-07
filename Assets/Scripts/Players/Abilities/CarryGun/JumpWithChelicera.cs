@@ -36,7 +36,7 @@ public class JumpWithChelicera : Skill
     public bool IsJumpDone { get => _isJumpDone; set => _isJumpDone = value; }
     public bool IsCheliceraStrikeCast { get => _isCheliceraStrikeCast; set => _isCheliceraStrikeCast = value; }
 
-    protected override bool IsCanCast => CheckCanCast();
+    protected override bool IsCanCast => CheckCanCast() && cooldownEnergy.CurrentValue >= CooldownTime;
 
     #region Talent
     private bool isJumpWithCheliceraChanceDamageCrit = false;

@@ -161,7 +161,7 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
 
             if (elapsed >= nextEnergyRestoreTime)
             {
-                Hero.Resources.First(r => r.Type == ResourceType.Energy).CmdAdd(1);
+                Hero.Resources.First(r => r.Type == ResourceType.Mana).CmdAdd(1);
                 nextEnergyRestoreTime += energyRestoreInterval;
             }
 

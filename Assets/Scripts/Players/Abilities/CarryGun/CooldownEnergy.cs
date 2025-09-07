@@ -39,11 +39,7 @@ public class CooldownEnergy : Resource
 
     private void InitCooldownEnergyFromJumpSkill()
     {
-        if (jumpWithChelicera == null)
-        {
-            Debug.LogError("JumpWithChelicera не задан в CooldownEnergy");
-            return;
-        }
+        if (jumpWithChelicera == null) return;
 
         float totalCooldown = jumpWithChelicera.ChargeCooldown * jumpWithChelicera.MaxChargers;
 
@@ -77,27 +73,24 @@ public class CooldownEnergy : Resource
 
     private void CooldownEnergySliderMinus(float time, Skill skill)
     {
-        if (_currentValue < time)
-        {
-            Debug.LogWarning($"[CooldownEnergy] Недостаточно энергии: нужно {time}, есть {_currentValue}");
-            return;
-        }
+
+        if (_currentValue < time) return;
 
         float oldValue = _currentValue;
         _currentValue -= time;
         UpdateSlider();
         HookValueChanged(oldValue, _currentValue);
 
-        List<Skill> skillsToCooldown = new()
-        {
-            jumpWithChelicera,
-            cheliceraStrike,
-            deafeningScream,
-            doubleCheliceraStrike,
-            jumpBack
-        };
+        //List<Skill> skillsToCooldown = new()
+        //{
+        //    jumpWithChelicera,
+        //    cheliceraStrike,
+        //    deafeningScream,
+        //    doubleCheliceraStrike,
+        //    jumpBack
+        //};
 
-        foreach (var skillToCooldown in skillsToCooldown) if (skillToCooldown != null && skillToCooldown != skill) skillToCooldown.IncreaseSetCooldown(time);
+        //foreach (var skillToCooldown in skillsToCooldown) if (skillToCooldown != null && skillToCooldown != skill) skillToCooldown.IncreaseSetCooldown(time);
     }
 
     private void UpdateSlider()
