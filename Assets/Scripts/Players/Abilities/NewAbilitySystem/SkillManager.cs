@@ -372,6 +372,7 @@ public class SkillManager : MonoBehaviour
         if (_selectedSkill.IsAutoMode)
         {
             _autoSkillCast.SetSkill(skill, skill.TargetInfoQueue.Dequeue());
+            _autoSkillCast.CurrentSkill.AutoModeChanged += OnSwichAAMode;
 
             foreach (var item in _simpleSkills)
             {
@@ -388,6 +389,15 @@ public class SkillManager : MonoBehaviour
             SkillQueue.Add(_selectedSkill);
         }
     }
+    private void OnSwichAAMode(bool enable)
+    {
+        if (enable == false)
+        {
+            _autoSkillCast.CurrentSkill.AutoModeChanged += OnSwichAAMode;
+            _autoSkillCast.DeleteSkill();
+        }
+    }
+
 
     private void AutoSkillUsed(Skill skill)
     {

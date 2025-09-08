@@ -10,6 +10,7 @@ public class AutoSkillCast
     private MonoBehaviour _parentForCoroutine;
 
     public bool IsBusy { get { return _currentSkill != null; } }
+    public Skill CurrentSkill { get => _currentSkill; }
 
     public AutoSkillCast(MonoBehaviour parentForCoroutine)
     {
