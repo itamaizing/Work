@@ -59,7 +59,7 @@ public class ReversePolarity : Skill
 
     CmdPlayShootSound();
 
-    yield return new WaitForSeconds(CastDeley);
+    //yield return new WaitForSeconds(CastDeley);
 
     SwitchSpells();
 

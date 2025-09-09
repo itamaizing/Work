@@ -29,11 +29,14 @@ public class PriestShield : Skill
 
     private AudioSource _audioSource;
 
-    //---------------- Talent 1 (Physical Damage Boost)
+    //DisciplineTalent_4
     private bool _talentPhysicalShieldBoostActive = false;
     private float _physicalDamageAccumulated = 0;
     private const float MaxPhysicalBoostPercentage = 0.5f;
     private const float PhysicalBoostPerDamageUnit = 0.1f;
+    private float _physDamageAccumulator = 0f;
+    private float _lastPhysDamageTime = -999f;
+    private const float PhysBoostTimeWindow = 5f;
 
     //---------------- Talent 2 (Discipline Shield Boost)
     private bool _disciplineShieldBoostActive = false;
@@ -129,7 +132,7 @@ public class PriestShield : Skill
         TargetsLayers = isLightMode ? LayerMask.GetMask("Allies") : LayerMask.GetMask("Enemy");
     }
 
-    //---------------- Talent 1 Logic: Physical Shield Boost ----------------
+    //DisciplineTalent_4
     public void EnableTalentPhysicalShieldBoost(bool value)
     {
         _talentPhysicalShieldBoostActive = value;
@@ -143,11 +146,8 @@ public class PriestShield : Skill
     {
         if (!_talentPhysicalShieldBoostActive || damage.Type != DamageType.Physical) return;
 
-        float boostUnits = Mathf.Floor(damage.Value * DisciplineBoostPercentage);
-        float boostAmount = Mathf.Min(absorbAmount + boostUnits, absorbAmount * MaxDarkMagicBoostPercentage);
-
-        _absorbBonus += boostAmount;
-        Debug.Log($"Physical boost applied. Damage: {boostAmount}, Boost: {boostAmount}");
+        _physDamageAccumulator += damage.Value;
+        _lastPhysDamageTime = Time.time;
     }
 
     private void UpdatePhysicalDamageAccumulation()
@@ -291,7 +291,19 @@ public class PriestShield : Skill
         
         ApplyDarkMagicBoost();
         ApplyHealingBoost();
-        
+
+        float physicalBoost = 0;
+
+        if (_talentPhysicalShieldBoostActive && Time.time - _lastPhysDamageTime <= PhysBoostTimeWindow)
+        {
+            float bonusUnits = Mathf.Floor(_physDamageAccumulator / 10f);
+            physicalBoost = Mathf.Min(bonusUnits, absorbAmount * MaxPhysicalBoostPercentage);
+        }
+
+        _absorbBonus += physicalBoost;
+        _physDamageAccumulator = 0;
+        _lastPhysDamageTime = -999f;
+
         var characterState = _target.GetComponent<CharacterState>();
         var duration = _talentTiredSoulActive && characterState.CheckForState(States.TiredSoul) ? lightShieldDuration * TiredSoulEffectPercentage : lightShieldDuration;
         var absorbDamage = _talentTiredSoulActive && characterState.CheckForState(States.TiredSoul)

@@ -117,6 +117,7 @@ public class Restoration : Skill
                 healthComponent.HealTaked += OnHealTaken;
             }
 
+            _target.CharacterState.CmdAddState(States.Restoration, lightDuration, 0, Hero.gameObject, name);
             StartCoroutine(ApplyHealOverTime(_target));
         }
     }
@@ -138,6 +139,7 @@ public class Restoration : Skill
 
         if (isEnemy && TryPayCost())
         {
+            _target.CharacterState.CmdAddState(States.Destruction, darkDuration, 0, Hero.gameObject, name);
             StartCoroutine(ApplyDamageOverTime(_target));
         }
     }

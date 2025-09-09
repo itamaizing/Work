@@ -26,6 +26,7 @@ public class SparkOfLight : Skill
     [SerializeField] private AbilityInfo darkInfo;
 
     [SerializeField] private LightSparkProjectile lightSparkProjectile;
+    [SerializeField] private LightSparkProjectile darkSparkProjectile;
     [SerializeField] private HeroComponent playerLinks;
     [SerializeField] private GameObject spawnPoint;
     [SerializeField] private AudioClip audioClip;
@@ -63,8 +64,8 @@ public class SparkOfLight : Skill
     private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
     private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("SparkOfLights");
-    protected override int AnimTriggerCast => 0;
+    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCast => Animator.StringToHash("SparkOfLights");
 
     protected override bool IsCanCast => _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius && NoObstacles(_target.transform.position, transform.position, _obstacle);
 
@@ -93,12 +94,6 @@ public class SparkOfLight : Skill
         CmdSwitchMode();
     }
 
-    [Command]
-    private void CmdSwitchMode()
-    {
-        isLightMode = !isLightMode;
-    }
-
     private void OnModeChanged(bool oldValue, bool newValue)
     {
         UpdateMode();
@@ -116,18 +111,6 @@ public class SparkOfLight : Skill
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
     }
 
-    [Command]
-    private void CmdLightMode()
-    {
-        RpcLightMode();
-    }
-
-    [ClientRpc]
-    private void RpcLightMode()
-    {
-        isLightMode = !isLightMode;
-    }
-
     public void HandleMode(Character target)
     {
         if (isLightMode) HandleDefaultMode(target);
@@ -142,15 +125,18 @@ public class SparkOfLight : Skill
             {
                 _target = GetRaycastTarget();
 
+                if (_target != null && (IsAllyTarget(_target) || _target == Hero) && !isLightMode)
+                {
+                    _target = null;
+                    yield break;
+                }
+
                 if (_target != null)
                     _target.SelectedCircle.IsActive = true;
             }
+
             yield return null;
         }
-
-        _hero.Move.LookAtTransform(_target.transform);
-        _hero.Animator.SetTrigger(AnimTriggerCastDelay);
-        _hero.NetworkAnimator.SetTrigger(AnimTriggerCastDelay);
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(_target.transform.position);
@@ -160,7 +146,6 @@ public class SparkOfLight : Skill
 
     protected override IEnumerator CastJob()
     {
-
         if (_target == null) yield break;
 
         if (!IsCanCast)
@@ -174,30 +159,25 @@ public class SparkOfLight : Skill
         {
             TryPayCost(_manaCostHeal);
 
-            if (_target == playerLinks)
-            {
-                CmdHandleDefaultMode(playerLinks);
-                yield break;
-            }
+            if (_target == playerLinks) CmdHandleDefaultMode(playerLinks);
+            else CmdSpawnProjectile(_target);
+
+            yield break;
         }
 
-        else if (IsEnemyTarget(_target)) TryPayCost(_manaCostDamage);
+        if (IsEnemyTarget(_target))
+        {
+            TryPayCost(isLightMode ? _manaCostDamage : _altManaCostDamage);
 
-        CmdSpawnProjectile(_target.gameObject);
-        yield break;
+            if (isLightMode) CmdSpawnProjectile(_target);
+            else CmdSpawnProjectileDark(_target);
+        }
     }
 
     private bool IsTargetBelowHealthThreshold(Character target)
     {
         var healthComponent = target.GetComponent<Health>();
         return healthComponent != null && healthComponent.CurrentValue <= healthComponent.MaxValue * LowHealthThreshold;
-    }
-
-    [Command]
-    private void CmdHandleDefaultMode(Character target)
-    {
-        HandleDefaultMode(playerLinks);
-        RpcPlayShotSound();
     }
 
     private void HandleDefaultMode(Character target)
@@ -222,32 +202,27 @@ public class SparkOfLight : Skill
             ApplySpiritHealthBuff(target);
 
             if (_lowHealthTalentActive && IsTargetBelowHealthThreshold(target))
-            {
                 ApplyDefenseDebuff(target);
-            }
         }
+
+        else if (IsAllyTarget(target)) return;
 
         Debug.Log("HandleAlternativeMode");
     }
 
     private void Heal(Character target)
     {
-        var isBonusActive = _healingBuffTalentActive && Time.time < _lastFlashOfLightCastTime + _healingBuffDuration;
+        bool isBonusActive = _healingBuffTalentActive && Time.time < _lastFlashOfLightCastTime + _healingBuffDuration;
 
-        if (isBonusActive)
-        {
-            _healingBonusStacks++;
-        }
-        else
-        {
-            _healingBonusStacks = 0;
-        }
+        if (isBonusActive) _healingBonusStacks = Mathf.Min(_healingBonusStacks + 1, 4);
+        else _healingBonusStacks = 0;
 
-        var bonus = isBonusActive ? _tickHealingBonus * _healingBonusStacks : 0;
-        float bonusHealFromSpiritEnergy = 0;
+        float doublingBonus = (_healingBonusStacks > 0) ? Mathf.Pow(2f, _healingBonusStacks) : 0f;
+
+        float bonusHealFromSpiritEnergy = 0f;
         if (_spiritEnergyTalent) bonusHealFromSpiritEnergy = GetSpiritEnergyBonus(target);
 
-        var heal = new Heal { Value = _healAmount + bonus + bonusHealFromSpiritEnergy };
+        var heal = new Heal { Value = _healAmount + doublingBonus + bonusHealFromSpiritEnergy };
         ApplyHeal(heal, target.gameObject, this, Name);
     }
 
@@ -343,7 +318,21 @@ public class SparkOfLight : Skill
     }
 
     [Command]
-    private void CmdSpawnProjectile(GameObject target)
+    private void CmdHandleDefaultMode(Character target)
+    {
+        HandleDefaultMode(playerLinks);
+        RpcPlayShotSound();
+    }
+
+    [Command]
+    private void CmdHandleAlternativeMode(Character target)
+    {
+        HandleAlternativeMode(target);
+        RpcPlayShotSound();
+    }
+
+    [Command]
+    private void CmdSpawnProjectile(Character target)
     {
         Vector3 targetPosition = target.transform.position + Vector3.up;
         Vector3 direction = (targetPosition - spawnPoint.transform.position).normalized;
@@ -353,7 +342,7 @@ public class SparkOfLight : Skill
 
         float attackDelay = _castTime;
 
-        projectile.Init(playerLinks, isLightMode, this, distance, attackDelay, target.transform);
+        projectile.Init(playerLinks, isLightMode, this, distance, attackDelay, target);
 
         SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(projectile.gameObject);
@@ -363,12 +352,52 @@ public class SparkOfLight : Skill
         RpcPlayShotSound();
     }
 
+    [Command]
+    private void CmdSpawnProjectileDark(Character target)
+    {
+        Vector3 targetPosition = target.transform.position + Vector3.up;
+        Vector3 direction = (targetPosition - spawnPoint.transform.position).normalized;
+        float distance = Vector3.Distance(targetPosition, spawnPoint.transform.position);
+
+        LightSparkProjectile projectile = Instantiate(darkSparkProjectile, spawnPoint.transform.position, Quaternion.LookRotation(direction));
+
+        float attackDelay = _castTime;
+
+        projectile.Init(playerLinks, isLightMode, this, distance, attackDelay, target);
+
+        SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
+        NetworkServer.Spawn(projectile.gameObject);
+        projectile.StartFly(direction);
+
+        RpcInitProjectile(projectile.gameObject, distance, attackDelay, target);
+        RpcPlayShotSound();
+    }
+
+    [Command]
+    private void CmdLightMode()
+    {
+        RpcLightMode();
+    }
+
     [ClientRpc]
-    private void RpcInitProjectile(GameObject projectileObject, float distance, float attackDelay, GameObject target)
+    private void RpcLightMode()
+    {
+        isLightMode = !isLightMode;
+    }
+
+
+    [Command]
+    private void CmdSwitchMode()
+    {
+        isLightMode = !isLightMode;
+    }
+
+    [ClientRpc]
+    private void RpcInitProjectile(GameObject projectileObject, float distance, float attackDelay, Character target)
     {
         if (projectileObject.TryGetComponent(out LightSparkProjectile projectile))
         {
-            projectile.Init(playerLinks, isLightMode, this, distance, attackDelay, target.transform);
+            projectile.Init(playerLinks, isLightMode, this, distance, attackDelay, target);
         }
     }
 

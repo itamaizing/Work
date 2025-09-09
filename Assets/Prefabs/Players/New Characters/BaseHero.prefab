@@ -36999,7 +36999,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7875684509955136938, guid: e5b733c903c6d9143af357e086455e86, type: 3}
       propertyPath: _icons.Array.size
-      value: 50
+      value: 52
       objectReference: {fileID: 0}
     - target: {fileID: 7875684509955136938, guid: e5b733c903c6d9143af357e086455e86, type: 3}
       propertyPath: _icons.Array.data[46]
@@ -37017,6 +37017,14 @@ PrefabInstance:
       propertyPath: _icons.Array.data[49]
       value: 
       objectReference: {fileID: 3545852164369826336, guid: 809ea93db3d02c949a43c0843d257aca, type: 3}
+    - target: {fileID: 7875684509955136938, guid: e5b733c903c6d9143af357e086455e86, type: 3}
+      propertyPath: _icons.Array.data[50]
+      value: 
+      objectReference: {fileID: 3545852164369826336, guid: fab2bcdc75777b941bad5e491622fde9, type: 3}
+    - target: {fileID: 7875684509955136938, guid: e5b733c903c6d9143af357e086455e86, type: 3}
+      propertyPath: _icons.Array.data[51]
+      value: 
+      objectReference: {fileID: 3545852164369826336, guid: 7fd26c1cdaa08df41949cab0479581cd, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

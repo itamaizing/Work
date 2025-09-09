@@ -19161,7 +19161,7 @@ PrefabInstance:
       objectReference: {fileID: 3990805733231088528}
     - target: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _icons.Array.size
-      value: 50
+      value: 52
       objectReference: {fileID: 0}
     - target: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _icons.Array.data[25]
@@ -19263,6 +19263,14 @@ PrefabInstance:
       propertyPath: _icons.Array.data[49]
       value: 
       objectReference: {fileID: 3545852164369826336, guid: 809ea93db3d02c949a43c0843d257aca, type: 3}
+    - target: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _icons.Array.data[50]
+      value: 
+      objectReference: {fileID: 3545852164369826336, guid: fab2bcdc75777b941bad5e491622fde9, type: 3}
+    - target: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _icons.Array.data[51]
+      value: 
+      objectReference: {fileID: 3545852164369826336, guid: 7fd26c1cdaa08df41949cab0479581cd, type: 3}
     - target: {fileID: 8739993138692873955, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Layer
       value: 2

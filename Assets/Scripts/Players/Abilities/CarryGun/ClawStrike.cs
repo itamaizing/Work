@@ -56,17 +56,6 @@ public class ClawStrike : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        TargetInfo targetInfo = new TargetInfo();
-
-        if (_target != null)
-        {
-            _hero.Move.LookAtTransform(_target.transform);
-            targetInfo.Targets.Add(_target);
-            targetInfo.Points.Add(_target.transform.position);
-            callbackDataSaved?.Invoke(targetInfo);
-            yield break;
-        }
-
         while (_target == null)
         {
             if (GetMouseButton)
@@ -76,14 +65,15 @@ public class ClawStrike : Skill
                 {
                     _target.SelectedCircle.IsActive = true;
                     _hero.Move.LookAtTransform(_target.transform);
+                    _runtimeTarget = _target;
                     break;
                 }
             }
             yield return null;
         }
 
-        targetInfo.Targets.Add(_target);
-        targetInfo.Points.Add(_target.transform.position);
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Targets.Add(_runtimeTarget);
         callbackDataSaved?.Invoke(targetInfo);
     }
 
@@ -91,8 +81,6 @@ public class ClawStrike : Skill
     {
         if (_target == null) yield return null;
         if (!IsTargetInRange()) yield return null;
-
-        _runtimeTarget = _target;
 
         JumpBackClawStrike();
         DamageDeal();
@@ -115,7 +103,7 @@ public class ClawStrike : Skill
             PhysicAttackType = AttackRangeType.MeleeAttack,
         };
 
-        CmdApplyDamage(damage, _runtimeTarget.gameObject);
+        CmdApplyDamage(damage, _target.gameObject);
 
         TryApplyBleeding();
 
@@ -129,7 +117,7 @@ public class ClawStrike : Skill
             else if (attackingPsiValue >= 20) dispelCount = 2;
             else if (attackingPsiValue >= 10) dispelCount = 1;
 
-            if (dispelCount > 0) for (int i = 0; i < dispelCount; i++) CmdDispel(_runtimeTarget, dispelCount);
+            if (dispelCount > 0) for (int i = 0; i < dispelCount; i++) CmdDispel(_target, dispelCount);
 
             var damagePsi = new Damage
             {
@@ -138,9 +126,7 @@ public class ClawStrike : Skill
                 PhysicAttackType = AttackRangeType.MeleeAttack,
             };
 
-            CmdApplyDamage(damagePsi, _runtimeTarget.gameObject);
-
-            _runtimeTarget = null;
+            CmdApplyDamage(damagePsi, _target.gameObject);
         }
 
     }
@@ -189,7 +175,6 @@ public class ClawStrike : Skill
 
     private void HandleSkillCanceled()
     {
-        _target = null;
         Hero.Move.StopLookAt();
     }
 
@@ -240,13 +225,11 @@ public class ClawStrike : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo == null || targetInfo.Targets == null || targetInfo.Targets.Count == 0) return;
-
-        _target = targetInfo.Targets[0] as Character;
+        if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as Character;
     }
 
     protected override void ClearData()
     {
-
+        _target = null;
     }
 }

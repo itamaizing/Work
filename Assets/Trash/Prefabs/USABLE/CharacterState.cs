@@ -232,6 +232,8 @@ public class CharacterState : NetworkBehaviour
 		[States.ManaRegen] = new ManaRegen(),
 		[States.Stupefaction] = new Stupefaction(),
 		[States.TentacleGrip] = new TentacleGrip(),
+		[States.Restoration] = new RestorationState(),
+		[States.Destruction] = new DestructionState(),
 
 		#region TerrifyingElfStates
 		[States.InnerDarkness] = new InnerDarkness(),
@@ -725,6 +727,8 @@ public enum StatusEffect
 	Strengthening, // For all State increasing/reduction Health/Mana/other values
 	Immateriality,
 	ReducingEfficiency,
+	Restoration,
+	Destruction,
 }
 
 public enum States
@@ -809,6 +813,8 @@ public enum States
 	TentacleGrip,
     Discharge,
     CoolingAura,
+	Restoration,
+	Destruction,
 }
 public enum BaffDebaff
 {
