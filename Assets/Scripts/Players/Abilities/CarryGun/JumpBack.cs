@@ -9,6 +9,7 @@ public class JumpBack : Skill
     [SerializeField] private CooldownEnergy cooldownEnergy;
     [SerializeField] private float jumpDistance = 1.2f;
     [SerializeField] private float jumpWindow = 1f;
+    [SerializeField] private float cooldownEnergyCost = 4;
 
     private Coroutine _jumpWindowCoroutine;
 
@@ -19,7 +20,7 @@ public class JumpBack : Skill
     protected override int AnimTriggerCast => jumpStart;
     private Vector3 _mousePosition = Vector3.positiveInfinity;
 
-    protected override bool IsCanCast => true && cooldownEnergy.CurrentValue >= CooldownTime;
+    protected override bool IsCanCast => true && cooldownEnergy.CurrentValue >= cooldownEnergyCost;
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -91,7 +92,7 @@ public class JumpBack : Skill
 
     protected override IEnumerator CastJob()
     {
-        cooldownEnergy.CastCooldownEnergySkill(4, this);
+        cooldownEnergy.CastCooldownEnergySkill(cooldownEnergyCost, this);
         Vector3 jumpDir = -_hero.transform.forward;
         Vector3 targetPos = _hero.transform.position + jumpDir * jumpDistance;
 

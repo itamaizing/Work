@@ -19,6 +19,7 @@ public class CheliceraStrike : Skill
     [SerializeField] private float durationBleeding = 3.0f;
     [SerializeField] private float chanceApplyBleedingIncrease = 0.4f;
     [SerializeField] private float chanceCritDamageIncrease = 0.3f;
+    [SerializeField] private float cooldownEnergyCost = 2;
 
     private Damage _dealDamage;
     private Animator _animator;
@@ -39,7 +40,7 @@ public class CheliceraStrike : Skill
     protected override int AnimTriggerCast => _isClawStrike_Right ? RightClawStrikeTrigger : LeftClawStrikeTrigger;
     protected override int AnimTriggerCastDelay => 0;
 
-    protected override bool IsCanCast => _target != null && CheckIsCanCast() && cooldownEnergy.CurrentValue >= CooldownTime;
+    protected override bool IsCanCast => _target != null && CheckIsCanCast() && cooldownEnergy.CurrentValue >= cooldownEnergyCost;
 
     public float ChanceCritDamageEvolutionFour { get => chanceCritDamageEvolutionFour; set => chanceCritDamageEvolutionFour = value; }
 
@@ -82,17 +83,6 @@ public class CheliceraStrike : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        TargetInfo targetInfo = new TargetInfo();
-
-        if (_target != null)
-        {
-            _hero.Move.LookAtTransform(_target.transform);
-            targetInfo.Targets.Add(_target);
-            targetInfo.Points.Add(_target.transform.position);
-            callbackDataSaved?.Invoke(targetInfo);
-            yield break;
-        }
-
         while (_target == null)
         {
             if (GetMouseButton)
@@ -101,8 +91,9 @@ public class CheliceraStrike : Skill
 
                 if (_target != null)
                 {
-                    _hero.Move.LookAtTransform(_target.transform);
+                    _runtimeTarget = _target;
                     _target.SelectedCircle.IsActive = true;
+                    _isCanCancle = false;
                 }
 
                 break;
@@ -110,7 +101,8 @@ public class CheliceraStrike : Skill
             yield return null;
         }
 
-        targetInfo.Targets.Add(_target);
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Targets.Add(_runtimeTarget);
         callbackDataSaved(targetInfo);
     }
 
@@ -122,17 +114,15 @@ public class CheliceraStrike : Skill
         _baseDamage = UnityEngine.Random.Range(11f, 13f);
         Damage = _baseDamage;
 
-        _runtimeTarget = _target;
-
         if (_jumpWithChelicera.IsJumpDone)
         {
             cooldownEnergy.CastCooldownEnergySkill(_jumpWithChelicera.ChargeCooldown, _jumpWithChelicera);
             _jumpWithChelicera.IsJumpDone = false;
         }
 
-        else cooldownEnergy.CastCooldownEnergySkill(2, this);
+        else cooldownEnergy.CastCooldownEnergySkill(cooldownEnergyCost, this);
 
-        DamageDealChelicera(_runtimeTarget.gameObject);
+        DamageDealChelicera(_target.gameObject);
         _isClawStrike_Right = !_isClawStrike_Right;
 
         _hero.Move.StopLookAt();
@@ -210,7 +200,6 @@ public class CheliceraStrike : Skill
         if (_attackingPsionicEnergy.IsAttackingPsiEnergy && targetCharacter != null) DamageDealWithAttackingPsionicEnergy(targetCharacter);
 
         CmdApplyDamage(_dealDamage, target);
-        _runtimeTarget = null;
 
         _criticalDamage = 0f;
         _dealDamage.Value = 0f;
@@ -332,6 +321,7 @@ public class CheliceraStrike : Skill
     public void CheliceraStrikeEnded()
     {
         OnCheliceraStrikeEnd?.Invoke();
+        _isCanCancle = true;
         AnimCastEnded();
     }
 
@@ -372,10 +362,12 @@ public class CheliceraStrike : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.Targets.Count > 0) _target = (Character)targetInfo.Targets[0];
+        _hero.Move.LookAtTransform(_target.transform);
+        _isCanCancle = false;
     }
 
     protected override void ClearData()
     {
-      
+        _target = null;
     }
 }

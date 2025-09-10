@@ -65,6 +65,7 @@ public class ClawStrike : Skill
                 {
                     _target.SelectedCircle.IsActive = true;
                     _hero.Move.LookAtTransform(_target.transform);
+                    _isCanCancle = false;
                     _runtimeTarget = _target;
                     break;
                 }
@@ -93,6 +94,8 @@ public class ClawStrike : Skill
 
     private void DamageDeal()
     {
+        if (_target == null) return;
+
         float attackingPsiValue = _spentAttackingPsiEnergy;
         _baseDamage = UnityEngine.Random.Range(5f, 7.01f);
 
@@ -171,6 +174,7 @@ public class ClawStrike : Skill
     public void ClawStrikeEnded()
     {
         AnimCastEnded();
+        _isCanCancle = true;
     }
 
     private void HandleSkillCanceled()
@@ -226,6 +230,7 @@ public class ClawStrike : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as Character;
+        _isCanCancle = false;
     }
 
     protected override void ClearData()

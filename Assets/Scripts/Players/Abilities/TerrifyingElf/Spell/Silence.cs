@@ -17,6 +17,7 @@ public class Silence : Skill
     private float _baseDuration;
     private AudioSource audioSource;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
+    private Vector3 _runtimeTargetPoint = Vector3.positiveInfinity;
 
     private bool _effectsDarknessTalent;
     private bool _canAttackMinions;
@@ -78,13 +79,14 @@ public class Silence : Skill
                 if (IsPointInRadius(Radius, clickedPoint))
                 {
                     _targetPoint = clickedPoint;
+                    _runtimeTargetPoint = _targetPoint;
 
                     Collider[] hitColliders = Physics.OverlapSphere(_targetPoint, Area, TargetsLayers);
                     int minionCount = 0;
 
                     foreach (var hitCollider in hitColliders) if (hitCollider.TryGetComponent<MinionComponent>(out _)) minionCount++;
 
-                    DrawDamageZone(_targetPoint);
+                    DrawDamageZone(_runtimeTargetPoint);
 
                     break;
                 }
@@ -93,15 +95,15 @@ public class Silence : Skill
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(_targetPoint);
+        targetInfo.Points.Add(_runtimeTargetPoint);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
         CmdAdditionalMana();
-        SpawnEffectAtTargetPoint(_targetPoint);
-        ApplyStateToEnemiesInZone(_targetPoint);
+        SpawnEffectAtTargetPoint(_runtimeTargetPoint);
+        ApplyStateToEnemiesInZone(_runtimeTargetPoint);
         StopDamageZone();
         yield return null;
     }

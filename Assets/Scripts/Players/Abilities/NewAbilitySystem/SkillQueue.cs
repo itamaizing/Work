@@ -23,7 +23,7 @@ public class SkillQueue : MonoBehaviour
         if (IsBusy)
             return;
 
-        if(_skills.TryPeek(out Skill skill))
+        if (_skills.TryPeek(out Skill skill))
         {
             if (skill.SkillType == SkillType.Zone)
                 Draw(skill);
@@ -48,7 +48,7 @@ public class SkillQueue : MonoBehaviour
                 RemoveFromQueue();
                 _currentSkill = skill;
 
-                if(_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
+                if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
                 {
                     _targetInfo = targetInfo;
                     foreach (var item in _targetInfo.Targets)
@@ -98,7 +98,7 @@ public class SkillQueue : MonoBehaviour
         }
 
         var queuedSkill = RemoveFromQueue();
-        
+
         if (queuedSkill != null)
         {
             if (queuedSkill.TargetInfoQueue.Count > 0)

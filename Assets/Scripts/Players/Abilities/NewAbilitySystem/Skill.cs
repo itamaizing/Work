@@ -151,6 +151,7 @@ public abstract class Skill : NetworkBehaviour
     private bool _isShiftClick;
     private bool _isCtrlClick;
     private bool _isSpaceClick;
+    private bool _isWaitingForCastCoroutine = false;
     private List<float> _remainingCooldownTimeChargers;
     private List<Coroutine> _currentChargeCooldownJob;
     private float _assistTimer = 5f;
@@ -1411,8 +1412,8 @@ public abstract class Skill : NetworkBehaviour
 
         if (AnimTriggerCast != 0)
         {
-
             _isPlayCastAnim = true;
+            _isWaitingForCastCoroutine = true;
 
             Hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, Buff.CastSpeed.Multiplier);
             _hero.Animator.SetTrigger(AnimTriggerCast);
@@ -1420,9 +1421,18 @@ public abstract class Skill : NetworkBehaviour
 
             while (_isPlayCastAnim)
             {
+                if (!IsCanCast)
+                {
+                    TryCancel(true);
+                    yield break;
+                }
+
                 yield return null;
             }
+
+            _isWaitingForCastCoroutine = false;
         }
+
         else
         {
             _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);

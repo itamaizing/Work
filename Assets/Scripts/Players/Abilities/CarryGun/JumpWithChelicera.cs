@@ -14,6 +14,7 @@ public class JumpWithChelicera : Skill
 
     private Animator _animator;
     private Character _target;
+    private Character _runtimeTarget;
     private Vector3 _mousePosition = Vector3.positiveInfinity;
 
     private static readonly int jumpStart = Animator.StringToHash("JumpStart");
@@ -36,7 +37,7 @@ public class JumpWithChelicera : Skill
     public bool IsJumpDone { get => _isJumpDone; set => _isJumpDone = value; }
     public bool IsCheliceraStrikeCast { get => _isCheliceraStrikeCast; set => _isCheliceraStrikeCast = value; }
 
-    protected override bool IsCanCast => CheckCanCast() && cooldownEnergy.CurrentValue >= CooldownTime;
+    protected override bool IsCanCast => CheckCanCast() && cooldownEnergy.CurrentValue >= ChargeCooldown;
 
     #region Talent
     private bool isJumpWithCheliceraChanceDamageCrit = false;
@@ -62,41 +63,21 @@ public class JumpWithChelicera : Skill
 
         _hero.Move.StopMoveAndAnimationMove();
         _hero.Move.CanMove = false;
-
-        Vector3 direction = _mousePosition - _hero.transform.position;
-        bool badDirection = float.IsInfinity(_mousePosition.x) || direction.sqrMagnitude < 0.0001f;
-
-        if (badDirection)
-        {
-            _hero.Move.StopLookAt();
-            return;
-        }
-
-        _hero.Move.LookAtPosition(_mousePosition);
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         _castDeley = _delayBeforeJump;
 
-        if (_target != null)
-        {
-            TargetInfo targetInfo = new();
-            targetInfo.Targets.Add(_target);
-            targetInfo.Points.Add(_mousePosition);
-            callbackDataSaved(targetInfo);
-            yield break;
-        }
-
-        while (_target == null && float.IsPositiveInfinity(_mousePosition.x))
+        while (_target == null)
         {
             if (GetMouseButton)
             {
                 _target = GetRaycastTarget();
-                _mousePosition = GetMousePoint();
 
                 if (_target != null)
                 {
+                    _runtimeTarget = _target;
                     _isTarget = true;
                     _isCanCancle = false;
                 }
@@ -105,8 +86,7 @@ public class JumpWithChelicera : Skill
         }
 
         TargetInfo info = new();
-        info.Targets.Add(_target);
-        info.Points.Add(_mousePosition);
+        info.Targets.Add(_runtimeTarget);
         callbackDataSaved(info);
     }
 
@@ -291,7 +271,6 @@ public class JumpWithChelicera : Skill
         if (targetInfo == null || targetInfo.Targets == null || targetInfo.Targets.Count == 0 || targetInfo.Targets[0] == null) return;
 
         _target = (Character)targetInfo.Targets[0];
-        _mousePosition = targetInfo.Points[0];
         _isTarget = true;
         _player.Move.LookAtTransform(_target.transform);
         _isCanCancle = false;
