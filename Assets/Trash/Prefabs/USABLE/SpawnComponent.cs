@@ -151,6 +151,7 @@ public class SpawnComponent : NetworkBehaviour
 
             if (character.gameObject != null)
             {
+                ClientRpcOnUnitDestroyed(character.gameObject);
                 NetworkServer.Destroy(character.gameObject);
             }
 
@@ -218,6 +219,6 @@ public class SpawnComponent : NetworkBehaviour
         }
 
         _units.RemoveAll(unit => unit == null);
-        UnitRemoved?.Invoke();
+        if (UnitRemoved != null) UnitRemoved.Invoke();
     }
 }

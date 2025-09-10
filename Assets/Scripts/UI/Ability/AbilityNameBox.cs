@@ -21,57 +21,63 @@ public class AbilityNameBox : MonoBehaviour
         if (!string.IsNullOrEmpty(skill.State)) _text.text += $"\n'{ColorState}{skill.State}{ColorEnd}' - {skill.DescriptionState}";
         _descriptionWithNumbers.text = "";
 
-        if (skill.SkillEnergyCosts.Count > 0)
+        if (!(skill is ICounterSkill))
         {
-            _descriptionWithNumbers.text = $"Затрата: {ColorOpen}{skill.SkillEnergyCosts[0].resourceCost} ед. маны{ColorEnd}";
+            if (skill.SkillEnergyCosts.Count > 0)
+            {
+                _descriptionWithNumbers.text = $"Затрата: {ColorOpen}{skill.SkillEnergyCosts[0].resourceCost} ед. маны{ColorEnd}";
 
-            if (skill.AdditionalSkillEnergyCosts.Count > 0) _descriptionWithNumbers.text += $"{ColorOpen} + {skill.AdditionalSkillEnergyCosts[0].resourceCost} ед. маны{ColorEnd}";
+                if (skill.AdditionalSkillEnergyCosts.Count > 0) _descriptionWithNumbers.text += $"{ColorOpen} + {skill.AdditionalSkillEnergyCosts[0].resourceCost} ед. маны{ColorEnd}";
+            }
+            else _descriptionWithNumbers.text = $"Затрата: {ColorOpen}0 ед. маны{ColorEnd}";
+
+            if (skill.ManaCostPerTick.Count > 0)
+                _descriptionWithNumbers.text += $" + {ColorOpen}{skill.ManaCostPerTick[0].resourceCost} ед. маны/{skill.ManaCostRate} сек{ColorEnd}";
+
+            switch (skill.AbilityForm)
+            {
+                case AbilityForm.Spell:
+                    _descriptionWithNumbers.text += $" заклинание {GetSchoolName(skill)}";
+                    break;
+
+                case AbilityForm.Magic:
+                    _descriptionWithNumbers.text += $" магия {GetSchoolName(skill)}";
+                    break;
+
+                case AbilityForm.Physical:
+                    break;
+
+                default:
+                    break;
+            }
+
+            if (skill.Damage > 0)
+            {
+                int damage = Mathf.RoundToInt(skill.Damage);
+                _descriptionWithNumbers.text += $"\nУрон: {ColorOpen}{damage}{ColorEnd} ед. {GetShoolNameForDamage(skill)}";
+            }
+
+            //WriteTypeDamage(skill);
+            //WriteTypeAbityForm(skill);
+
+            if (skill.CastDeley > 0)
+                _descriptionWithNumbers.text += $"\nПодготовка: {ColorOpen}{skill.CastDeley} сек{ColorEnd}";
+
+            if (skill.CastStreamDuration > 0)
+                _descriptionWithNumbers.text += $"\nВыполнение: {ColorOpen}{skill.CastStreamDuration} сек{ColorEnd}";
+
+            if (skill.CooldownTime > 0)
+                _descriptionWithNumbers.text += $"\nПерезарядка: {ColorOpen}{skill.CooldownTime} сек{ColorEnd}";
+
+            if (skill.ChargeCooldown > 0)
+                _descriptionWithNumbers.text += $"\nКол-во Зарядов: {ColorOpen}{skill.MaxChargers}/{skill.ChargeCooldown} сек{ColorEnd}";
+
+            //if (skill.AdditionalDescription != string.Empty)
+            //    _descriptionWithNumbers.text += $"\n{skill.AdditionalDescription}";
+
         }
-        else _descriptionWithNumbers.text = $"Затрата: {ColorOpen}0 ед. маны{ColorEnd}";
 
-        if (skill.ManaCostPerTick.Count > 0)
-            _descriptionWithNumbers.text += $" + {ColorOpen}{skill.ManaCostPerTick[0].resourceCost} ед. маны/{skill.ManaCostRate} сек{ColorEnd}";
-
-        switch (skill.AbilityForm)
-        {
-            case AbilityForm.Spell:
-                _descriptionWithNumbers.text += $" заклинание {GetSchoolName(skill)}";
-                break;
-
-            case AbilityForm.Magic:
-                _descriptionWithNumbers.text += $" магия {GetSchoolName(skill)}";
-                break;
-
-            case AbilityForm.Physical:
-                break;
-
-            default:
-                break;
-        }
-
-        if (skill.Damage > 0)
-        {
-            int damage = Mathf.RoundToInt(skill.Damage);
-            _descriptionWithNumbers.text += $"\nУрон: {ColorOpen}{damage}{ColorEnd} ед. {GetShoolNameForDamage(skill)}";
-        }
-
-        //WriteTypeDamage(skill);
-        //WriteTypeAbityForm(skill);
-
-        if (skill.CastDeley > 0)
-            _descriptionWithNumbers.text += $"\nПодготовка: {ColorOpen}{skill.CastDeley} сек{ColorEnd}";
-
-        if(skill.CastStreamDuration > 0)
-            _descriptionWithNumbers.text += $"\nВыполнение: {ColorOpen}{skill.CastStreamDuration} сек{ColorEnd}";
-
-        if (skill.CooldownTime > 0)
-            _descriptionWithNumbers.text += $"\nПерезарядка: {ColorOpen}{skill.CooldownTime} сек{ColorEnd}";
-
-        if (skill.ChargeCooldown > 0)
-            _descriptionWithNumbers.text += $"\nКол-во Зарядов: {ColorOpen}{skill.MaxChargers}/{skill.ChargeCooldown} сек{ColorEnd}";
-
-        //if (skill.AdditionalDescription != string.Empty)
-        //    _descriptionWithNumbers.text += $"\n{skill.AdditionalDescription}";
+        else _descriptionWithNumbers.text += $"\n{skill.CounterSkill}: {ColorOpen}{skill.MaxCounter}/{skill.CurrentCounter}{ColorEnd}";
     }
 
     private string GetShoolNameForDamage(Skill skill)

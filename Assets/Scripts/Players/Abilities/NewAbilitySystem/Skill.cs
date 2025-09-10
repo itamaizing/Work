@@ -120,6 +120,8 @@ public abstract class Skill : NetworkBehaviour
     [Header("Availability")]
     [SerializeField] protected bool _disactive = false;
     [SerializeField] protected bool _earlyCooldown = false;
+    [Header("Counter settings")]
+    [SerializeField] protected float maxCounter;
 
 
     protected SkillRenderer _skillRender;
@@ -139,6 +141,8 @@ public abstract class Skill : NetworkBehaviour
     protected bool _isPlayCastAnim;
     protected int _currentChargers;
     protected float _baseCooldownTime;
+    //test counter
+    protected float _currentCounter;
 
     private Character _tempTargetbase;
     private float _remainingCooldownTime;
@@ -189,6 +193,7 @@ public abstract class Skill : NetworkBehaviour
     public string Description => _abilityInfo.Description;
     public string State => _abilityInfo.State; // test: we output the name of the state
     public string DescriptionState => _abilityInfo.DescriptionState; // test: we output a description of the state
+    public string CounterSkill => _abilityInfo.Counter; // test: the counter is in the ability
     public Sprite Icon => _abilityInfo.Icon;
     public AbilityInfo AbilityInfoHero { get => _abilityInfo; set => _abilityInfo = value; }
     public bool IsCooldowned { get => _remainingCooldownTime <= 0; }
@@ -211,6 +216,10 @@ public abstract class Skill : NetworkBehaviour
     public float Area { get => Buff.Area.GetBuffedValue(_area); set => _area = value; }
     public float CastLength { get => Buff.Area.GetBuffedValue(_castLength); protected set => _castLength = value; }
     public float CastWidth { get => Buff.Area.GetBuffedValue(_castWidth); protected set => _castWidth = value; }
+    #region test: the counter is in the ability
+    public float MaxCounter { get => maxCounter; set => maxCounter = value; }
+    public float CurrentCounter { get => _currentCounter; set => _currentCounter = value; }
+    #endregion
     public virtual float Damage { get => _damageValue; set => _damageValue = value; }
     public bool IsUseCharges { get => _isUseCharges; }
     public LayerMask TargetsLayers { get => _targetsLayers; protected set => _targetsLayers = value; }

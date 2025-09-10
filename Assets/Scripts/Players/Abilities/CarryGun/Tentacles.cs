@@ -68,9 +68,6 @@ public class Tentacles : Skill
     {
         _skillRender.IsOverrideClosestTarget = true;
 
-        Hero.Move.CanMove = false;
-        Hero.Move.StopMoveAndAnimationMove();
-
         Vector3 mousePositionStart = GetMousePoint();
 
         _previewInstance = Instantiate(tentaclesPreview, mousePositionStart, Quaternion.identity);
@@ -230,7 +227,8 @@ public class Tentacles : Skill
         }
 
         TrySpendAttackingPsi();
-
+        Hero.Move.CanMove = false;
+        Hero.Move.StopMoveAndAnimationMove();
         if (_previewInstance != null) Destroy(_previewInstance.gameObject);
 
         TargetInfo targetInfo = new TargetInfo();
