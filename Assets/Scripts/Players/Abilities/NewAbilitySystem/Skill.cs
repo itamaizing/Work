@@ -734,6 +734,7 @@ public abstract class Skill : NetworkBehaviour
         _skillRender.StopDrawLine();
         _skillRender.StopDrawClosestTarget();
         _skillRender.StopDynamicRadiusColor();
+        _skillRender.ResetCursor();
 
         _skillRender.StopPreview();
 
@@ -1395,6 +1396,7 @@ public abstract class Skill : NetworkBehaviour
         }
 
         SubscribeClickEvents();
+        _skillRender.SetPrepareCursor();
 
         yield return _prepareCoroutine = StartCoroutine(PrepareJob(SaveTargetData));
 

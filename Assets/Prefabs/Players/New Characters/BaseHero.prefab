@@ -31081,6 +31081,8 @@ MonoBehaviour:
   _colorForEnemies: {r: 1, g: 0, b: 0, a: 1}
   _colorForEnd: {r: 1, g: 0, b: 0, a: 1}
   _colorForStart: {r: 0, g: 1, b: 0.08237815, a: 1}
+  _cursorPrepareTexture: {fileID: 2800000, guid: 16188af37cc97c84e8c105aa99c71a1c, type: 3}
+  _cursorDefaultTexture: {fileID: 2800000, guid: 177e9214fe839c641b100e52e7032b0c, type: 3}
 --- !u!1 &8770370089772824140
 GameObject:
   m_ObjectHideFlags: 0

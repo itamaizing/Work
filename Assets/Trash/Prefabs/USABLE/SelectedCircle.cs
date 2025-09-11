@@ -47,6 +47,11 @@ public class SelectedCircle : MonoBehaviour
     public void SwitchSelectCircle(bool value)
     {
         _selectProjector.gameObject.SetActive(value);
+
+        if (value && _mat != null)
+        {
+            _mat.color = Color.green;
+        }
     }
 
     public void SetColorTarget(Color value) 

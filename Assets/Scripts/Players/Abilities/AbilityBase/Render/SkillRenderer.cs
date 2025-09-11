@@ -49,6 +49,28 @@ public class SkillRenderer : NetworkBehaviour
     public CircleArea TempDamageZone => _tempArea;
     private readonly Queue<CircleArea> _drawnZonesQueue = new();
 
+    [Header("Cursor Target")]
+    [SerializeField] private Texture2D _cursorPrepareTexture;
+    [SerializeField] private Texture2D _cursorDefaultTexture;
+
+    private Vector2 _cursorPrepareHotspot = Vector2.zero;
+    private Vector2 _cursorDefaultHotspot = Vector2.zero;
+
+    private void Awake()
+    {
+        if (_cursorPrepareTexture != null) _cursorPrepareHotspot = new Vector2(_cursorPrepareTexture.width / 2f, _cursorPrepareTexture.height / 2f);
+    }
+
+    public void SetPrepareCursor()
+    {
+        UnityEngine.Cursor.SetCursor(_cursorPrepareTexture, _cursorPrepareHotspot, CursorMode.Auto);
+    }
+
+    public void ResetCursor()
+    {
+        UnityEngine.Cursor.SetCursor(_cursorDefaultTexture, _cursorDefaultHotspot, CursorMode.Auto);
+    }
+
     public bool IsOverrideClosestTarget
     {
         get => _isOverrideClosestTarget;
@@ -464,6 +486,8 @@ public class SkillRenderer : NetworkBehaviour
 
     private IEnumerator DrawClosestTargetJob(float radius, LayerMask TargetsLayers, Character player)
     {
+        Character _hoveredTarget = null;
+
         while (true)
         {
             if (IsOverrideClosestTarget) yield return null;
@@ -476,13 +500,8 @@ public class SkillRenderer : NetworkBehaviour
             {
                 if (collider.Length > 0 && item.transform.TryGetComponent<Character>(out Character enemy))
                 {
-                    if (enemy == player)
-                    {
-                        continue;
-                    }
-
-                    if(_targets.Contains(enemy) == false)
-                        _targets.Add(enemy);
+                    if (enemy == player) continue;
+                    if(_targets.Contains(enemy) == false) _targets.Add(enemy);
                 }
             }
 
@@ -537,10 +556,42 @@ public class SkillRenderer : NetworkBehaviour
                     _tempTarget.SelectedCircle.SetColorTarget(Color.red);
                 }
             }
-			yield return null;
-		}
-		//yield return null;
-	}
+
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit, 100f, TargetsLayers))
+            {
+                if (hit.transform.TryGetComponent<Character>(out Character hoveredChar))
+                {
+                    if (hoveredChar != player && _targets.Contains(hoveredChar))
+                    {
+                        if (_hoveredTarget != null && _hoveredTarget != hoveredChar)
+                            _hoveredTarget.SelectedCircle.SwitchSelectCircle(false);
+
+                        _hoveredTarget = hoveredChar;
+                        _hoveredTarget.SelectedCircle.SwitchSelectCircle(true);
+                    }
+                    else if (_hoveredTarget != null)
+                    {
+                        _hoveredTarget.SelectedCircle.SwitchSelectCircle(false);
+                        _hoveredTarget = null;
+                    }
+                }
+                else if (_hoveredTarget != null)
+                {
+                    _hoveredTarget.SelectedCircle.SwitchSelectCircle(false);
+                    _hoveredTarget = null;
+                }
+            }
+            else if (_hoveredTarget != null)
+            {
+                _hoveredTarget.SelectedCircle.SwitchSelectCircle(false);
+                _hoveredTarget = null;
+            }
+
+            yield return null;
+        }
+        //yield return null;
+    }
 
     private IEnumerator DynamicRadiusColorJob(float Radius)
     {
