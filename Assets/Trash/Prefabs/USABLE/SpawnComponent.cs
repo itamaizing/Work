@@ -50,6 +50,17 @@ public class SpawnComponent : NetworkBehaviour
     {
         SpawnCharacter(_allyPrefab, position, rotation);
     }
+
+    [Command]
+    public void CmdSpawnAliesPoint(Vector3 position, Quaternion rotation, Character toReplace)
+    {
+        var spawned = SpawnCharacterTransfer(_allyPrefab, position, rotation);
+
+        if (toReplace != null)
+        {
+            RemoveUnitServer(toReplace);
+        }
+    }
     #endregion
 
     public void SpawnUnit(int index, Vector3 position)
@@ -96,6 +107,62 @@ public class SpawnComponent : NetworkBehaviour
 
         AddUnit(spawnedCharacter);
     }
+
+    #region Test
+    private Character SpawnCharacterTransfer(Character prefab, Vector3 position, Quaternion rotation)
+    {
+        if (prefab == null) return null;
+
+        var spawnedCharacter = Instantiate(prefab, position, rotation);
+        spawnedCharacter.Initialize();
+        spawnedCharacter.NetworkSettings.MyRoom = _hero.NetworkSettings.MyRoom;
+
+        if (_hero == null || _hero.NetworkSettings == null)
+        {
+            Destroy(spawnedCharacter.gameObject);
+            return null;
+        }
+
+        SceneManager.MoveGameObjectToScene(spawnedCharacter.gameObject, _hero.NetworkSettings.MyRoom);
+
+        if (connectionToClient == null)
+        {
+            Destroy(spawnedCharacter.gameObject);
+            return null;
+        }
+
+        NetworkServer.Spawn(spawnedCharacter.gameObject, connectionToClient);
+        AddUnit(spawnedCharacter);
+
+        return spawnedCharacter;
+    }
+
+    public void RemoveUnitServer(Character character)
+    {
+        if (character != null && _units.Contains(character))
+        {
+            _units.Remove(character);
+
+            if (character is MinionComponent minion)
+            {
+                minion.Destroyed -= OnUnitDestroyed;
+                minion.Intercepted -= OnUnitDestroyed;
+            }
+            else if (character is HeroComponent hero)
+            {
+                hero.Died -= OnUnitDestroyed;
+            }
+
+            if (character.gameObject != null)
+            {
+                ClientRpcOnUnitDestroyed(character.gameObject);
+                NetworkServer.Destroy(character.gameObject);
+            }
+
+            UnitRemoved?.Invoke();
+        }
+    }
+    #endregion
 
     public void AddUnit(Character character)
     {
@@ -154,8 +221,6 @@ public class SpawnComponent : NetworkBehaviour
                 ClientRpcOnUnitDestroyed(character.gameObject);
                 NetworkServer.Destroy(character.gameObject);
             }
-
-            ClientRpcOnUnitDestroyed(character.gameObject);
         }
         else
         {

@@ -37,6 +37,8 @@ public class MinionComponent : Character
     {
         base.OnDied();
         _navMeshAgent.enabled = false;
+
+        if (isServer) Destroyed?.Invoke(this);
     }
 
     protected override void ResetAll()

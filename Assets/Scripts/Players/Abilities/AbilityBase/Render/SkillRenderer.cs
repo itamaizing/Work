@@ -51,7 +51,9 @@ public class SkillRenderer : NetworkBehaviour
 
     [Header("Cursor Target")]
     [SerializeField] private Texture2D _cursorPrepareTexture;
+    [SerializeField] private Texture2D _cursorPrepareLightTexture;
     [SerializeField] private Texture2D _cursorDefaultTexture;
+
 
     private Vector2 _cursorPrepareHotspot = Vector2.zero;
     private Vector2 _cursorDefaultHotspot = Vector2.zero;
@@ -61,15 +63,9 @@ public class SkillRenderer : NetworkBehaviour
         if (_cursorPrepareTexture != null) _cursorPrepareHotspot = new Vector2(_cursorPrepareTexture.width / 2f, _cursorPrepareTexture.height / 2f);
     }
 
-    public void SetPrepareCursor()
-    {
-        UnityEngine.Cursor.SetCursor(_cursorPrepareTexture, _cursorPrepareHotspot, CursorMode.Auto);
-    }
-
-    public void ResetCursor()
-    {
-        UnityEngine.Cursor.SetCursor(_cursorDefaultTexture, _cursorDefaultHotspot, CursorMode.Auto);
-    }
+    public void SetPrepareCursorLight() => UnityEngine.Cursor.SetCursor(_cursorPrepareLightTexture, _cursorPrepareHotspot, CursorMode.Auto);
+    public void SetPrepareCursor() => UnityEngine.Cursor.SetCursor(_cursorPrepareTexture, _cursorPrepareHotspot, CursorMode.Auto);
+    public void ResetCursor() => UnityEngine.Cursor.SetCursor(_cursorDefaultTexture, _cursorDefaultHotspot, CursorMode.Auto);
 
     public bool IsOverrideClosestTarget
     {
@@ -564,28 +560,46 @@ public class SkillRenderer : NetworkBehaviour
                 {
                     if (hoveredChar != player && _targets.Contains(hoveredChar))
                     {
-                        if (_hoveredTarget != null && _hoveredTarget != hoveredChar)
-                            _hoveredTarget.SelectedCircle.SwitchSelectCircle(false);
+                        if (_hoveredTarget != hoveredChar)
+                        {
+                            if (_hoveredTarget != null)
+                            {
+                                _hoveredTarget.SelectedCircle.SwitchSelectCircle(false);
+                            }
 
-                        _hoveredTarget = hoveredChar;
-                        _hoveredTarget.SelectedCircle.SwitchSelectCircle(true);
+                            _hoveredTarget = hoveredChar;
+                            _hoveredTarget.SelectedCircle.SwitchSelectCircle(true);
+                            SetPrepareCursorLight();
+                        }
                     }
-                    else if (_hoveredTarget != null)
+                    else
+                    {
+                        if (_hoveredTarget != null)
+                        {
+                            _hoveredTarget.SelectedCircle.SwitchSelectCircle(false);
+                            _hoveredTarget = null;
+                            SetPrepareCursor();
+                        }
+                    }
+                }
+                else
+                {
+                    if (_hoveredTarget != null)
                     {
                         _hoveredTarget.SelectedCircle.SwitchSelectCircle(false);
                         _hoveredTarget = null;
+                        SetPrepareCursor();
                     }
                 }
-                else if (_hoveredTarget != null)
+            }
+            else
+            {
+                if (_hoveredTarget != null)
                 {
                     _hoveredTarget.SelectedCircle.SwitchSelectCircle(false);
                     _hoveredTarget = null;
+                    SetPrepareCursor();
                 }
-            }
-            else if (_hoveredTarget != null)
-            {
-                _hoveredTarget.SelectedCircle.SwitchSelectCircle(false);
-                _hoveredTarget = null;
             }
 
             yield return null;

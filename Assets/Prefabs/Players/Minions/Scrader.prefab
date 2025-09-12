@@ -13030,6 +13030,7 @@ GameObject:
   - component: {fileID: 1027874424821115294}
   - component: {fileID: 401553106488474872}
   - component: {fileID: 2383359178136862689}
+  - component: {fileID: 8405114131144170013}
   m_Layer: 9
   m_Name: Scrader
   m_TagString: Allies
@@ -13610,6 +13611,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skills:
   - {fileID: 401553106488474872}
+  - {fileID: 8405114131144170013}
   _hero: {fileID: 5830977165762126247}
   _talentSystem: {fileID: 5224625938796084017}
   _skillRenderer: {fileID: 5133789345881183399}
@@ -13788,6 +13790,7 @@ MonoBehaviour:
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
   _agent: {fileID: 6350168282755984019}
   _enemyCheckRadius: 6
   _enemyLayerMask:
@@ -13808,6 +13811,64 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _animator: {fileID: 0}
   _minionMove: {fileID: 6937205302842417626}
+--- !u!114 &8405114131144170013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4305573293433524190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 677f96234b35a52479d11fc4709625ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
+  _abilityInfo: {fileID: 11400000, guid: 1c95279a57cf6f5419e5f68c427ea9b0, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
+  _castDeley: 0
+  _damageValue: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
+  _skillType: 0
+  _moving: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 1
+  _isDynamicRenderer: 0
+  _disactive: 0
+  _earlyCooldown: 0
+  maxCounter: 3
+  _playerLinks: {fileID: 5830977165762126247}
+  duration: 9
+  _baseDamage: 10
 --- !u!1 &4348563488435226753
 GameObject:
   m_ObjectHideFlags: 0
@@ -19264,6 +19325,9 @@ MonoBehaviour:
   _colorForEnemies: {r: 1, g: 0, b: 0, a: 1}
   _colorForEnd: {r: 1, g: 0, b: 0, a: 1}
   _colorForStart: {r: 0, g: 1, b: 0.08237815, a: 1}
+  _cursorPrepareTexture: {fileID: 0}
+  _cursorPrepareLightTexture: {fileID: 0}
+  _cursorDefaultTexture: {fileID: 0}
 --- !u!1 &5212089423994370004
 GameObject:
   m_ObjectHideFlags: 0

@@ -64,7 +64,6 @@ public class ClawStrike : Skill
                 if (_target != null)
                 {
                     _target.SelectedCircle.IsActive = true;
-                    _hero.Move.LookAtTransform(_target.transform);
                     _isCanCancle = false;
                     _runtimeTarget = _target;
                     break;
@@ -86,7 +85,6 @@ public class ClawStrike : Skill
         JumpBackClawStrike();
         DamageDeal();
 
-        _hero.Move.StopLookAt();
         yield return null;
     }
 
@@ -179,7 +177,8 @@ public class ClawStrike : Skill
 
     private void HandleSkillCanceled()
     {
-        Hero.Move.StopLookAt();
+        _isCanCancle = true;
+
     }
 
     public void TrySpendAttackingPsi()

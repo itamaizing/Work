@@ -34,6 +34,7 @@ public class AutoSkillCast
         _currentSkill.TryCancel(true);
 
         _currentSkill.SkillRender.StopDrawAutoAttackRadius();
+        _currentSkill.Hero.Move.StopLookAt();
 
         StopTryCastCoroutine();
 
@@ -43,7 +44,7 @@ public class AutoSkillCast
     public void Pause()
     {
         _currentSkill.TryCancel(true);
-
+        _currentSkill.Hero.Move.StopLookAt();
         StopTryCastCoroutine();
     }
 
@@ -92,10 +93,23 @@ public class AutoSkillCast
                 character.SelectedCircle.SwitchSelectCircle(true);
             }
         }
+
         while (true)
         {
+            if (_targetInfo.Targets.Count > 0 && _targetInfo.Targets[0] is Character character)
+            {
+                _currentSkill.Hero.Move.LookAtTransform(character.transform);
+                _currentSkill.Hero.Move.IsLookAtCursor = false;
+            }
+            else if (_targetInfo.Points.Count > 0)
+            {
+                _currentSkill.Hero.Move.LookAtPosition(_targetInfo.Points[0]);
+                _currentSkill.Hero.Move.IsLookAtCursor = false;
+            }
+
             _currentSkill.TryCast(_targetInfo);
             yield return null;
         }
     }
+
 }

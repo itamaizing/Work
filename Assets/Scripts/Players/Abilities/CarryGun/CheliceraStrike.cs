@@ -124,8 +124,6 @@ public class CheliceraStrike : Skill
 
         DamageDealChelicera(_target.gameObject);
         _isClawStrike_Right = !_isClawStrike_Right;
-
-        _hero.Move.StopLookAt();
         Hero.Move.CanMove = true;
 
         yield return null;
@@ -135,7 +133,7 @@ public class CheliceraStrike : Skill
     {
         _target = null;
         Hero.Move.CanMove = true;
-        Hero.Move.StopLookAt();
+        _isCanCancle = true;
     }
 
     private bool IsTargetInRange()
@@ -302,7 +300,7 @@ public class CheliceraStrike : Skill
 
     public void CheliceraStrikeSpeedAnim()
     {
-        if (Hero.Move.CanMove == true) Hero.Move.CanMove = false;
+        Hero.Move.CanMove = false;
         _player.Animator.SetFloat("CheliceraStrikeSpeed", 1f / animSpeed);
         if (_attackingPsionicEnergy.IsAttackingPsiEnergy && _attackingPsionicEnergy.CurrentValue > 0f) TrySpendAttackingPsi();
         else _spentAttackingPsiEnergy = 0;
@@ -362,7 +360,6 @@ public class CheliceraStrike : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.Targets.Count > 0) _target = (Character)targetInfo.Targets[0];
-        _hero.Move.LookAtTransform(_target.transform);
         _isCanCancle = false;
     }
 

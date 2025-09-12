@@ -427,7 +427,24 @@ public abstract class Skill : NetworkBehaviour
             TryPayCost(IsPayCostStartCooldown);
 
             if (_targetInfoQueue.Count > 0)
-                LoadTargetData(_targetInfoQueue.Dequeue());
+            {
+                var targetInfo = _targetInfoQueue.Dequeue();
+
+                LoadTargetData(targetInfo);
+
+                if (targetInfo.Targets.Count > 0)
+                {
+                    var target = (Character)targetInfo.Targets[0];
+                    _hero.Move.LookAtTransform(target.transform);
+                }
+
+                if (targetInfo.Points.Count > 0)
+                {
+                    var point = (Vector3)targetInfo.Points[0];
+                    _hero.Move.LookAtPosition(point);
+                }
+            }
+
 
             _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
 
@@ -448,6 +465,22 @@ public abstract class Skill : NetworkBehaviour
                 TryPayCost(IsPayCostStartCooldown);
 
                 _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
+
+                if (_targetInfoQueue.Count > 0)
+                {
+                   if (targetInfo.Targets.Count > 0)
+                    {
+                        var target = (Character)targetInfo.Targets[0];
+                        _hero.Move.LookAtTransform(target.transform);
+                    }
+
+                    if (targetInfo.Points.Count > 0)
+                    {
+                        var point = (Vector3)targetInfo.Points[0];
+                        _hero.Move.LookAtPosition(point);
+                    }
+                }
+
                 return true;
             }
             else
@@ -507,7 +540,6 @@ public abstract class Skill : NetworkBehaviour
 
             _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
             _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
-
             OnSkillCanceled?.Invoke();
 
             return true;
@@ -729,12 +761,12 @@ public abstract class Skill : NetworkBehaviour
 
     protected virtual void StopAutoDraw()
     {
+        _skillRender.ResetCursor();
         _skillRender.StopDrawRadius();
         _skillRender.StopDrawArea();
         _skillRender.StopDrawLine();
         _skillRender.StopDrawClosestTarget();
         _skillRender.StopDynamicRadiusColor();
-        _skillRender.ResetCursor();
 
         _skillRender.StopPreview();
 
@@ -1463,6 +1495,8 @@ public abstract class Skill : NetworkBehaviour
 
         ClearData();
         LoadTargetDataForCheckCast();
+
+        _hero.Move.StopLookAt();
 
         _castCoroutine = null;
     }
