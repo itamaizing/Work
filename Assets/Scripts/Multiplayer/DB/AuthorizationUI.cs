@@ -24,6 +24,13 @@ public class AuthorizationUI : MonoBehaviour
         _signIn.onClick.AddListener(OnSignIn);
 
         _authorization.Error += OnError;
+        OnPressButton.OnSpacePressed += OnSpaceKeyPressed;
+    }
+
+    private void OnDestroy()
+    {
+        _authorization.Error -= OnError;
+        OnPressButton.OnSpacePressed -= OnSpaceKeyPressed;
     }
 
     private void OnSignIn()
@@ -38,5 +45,10 @@ public class AuthorizationUI : MonoBehaviour
         _signIn.interactable = true;
         _signUp.interactable = true;
         _error.text = data;
+    }
+
+    private void OnSpaceKeyPressed()
+    {
+        if (_signIn.interactable) OnSignIn();
     }
 }

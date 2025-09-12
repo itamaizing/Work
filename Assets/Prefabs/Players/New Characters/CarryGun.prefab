@@ -11641,7 +11641,7 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 1.8
+  _radius: 1.3
   _area: 0
   _castLength: 0
   _castWidth: 0
@@ -12243,7 +12243,7 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 1.2
+  _radius: 1.7
   _area: 0
   _castLength: 0
   _castWidth: 0
@@ -12254,6 +12254,7 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _player: {fileID: 8319872899575431858}
   cheliceraStrike: {fileID: 640134254429411212}
   cooldownEnergy: {fileID: 5998867522025010555}
   _cheliceraStrikeBaseDamage: 0

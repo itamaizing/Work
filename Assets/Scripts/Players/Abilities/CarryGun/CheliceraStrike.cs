@@ -40,7 +40,7 @@ public class CheliceraStrike : Skill
     protected override int AnimTriggerCast => _isClawStrike_Right ? RightClawStrikeTrigger : LeftClawStrikeTrigger;
     protected override int AnimTriggerCastDelay => 0;
 
-    protected override bool IsCanCast => _target != null && CheckIsCanCast() && cooldownEnergy.CurrentValue >= cooldownEnergyCost;
+    protected override bool IsCanCast => CheckIsCanCast() && cooldownEnergy.CurrentValue >= cooldownEnergyCost;
 
     public float ChanceCritDamageEvolutionFour { get => chanceCritDamageEvolutionFour; set => chanceCritDamageEvolutionFour = value; }
 
@@ -67,7 +67,7 @@ public class CheliceraStrike : Skill
     private bool _isChanceCritDamageIncrease = false;
 
     public void CheliceraStrikeChanceDamageCrit(bool value) => isCheliceraStrikeChanceDamageCrit = value;
-    public void CheliceraStrikeSpeed(bool value) => Hero.Animator.speed = value ? 1.4f : 1f;
+    public void CheliceraStrikeSpeed(bool value) => _player.Animator.speed = value ? 1.4f : 1f;
     public void EvolutionTalentTwo(bool value) => isEvolutionTalentTwo = value;
     public void PsionicsTalentTwo(bool value) => isPsionicsTalentTwo = value;
     public void ChanceApplyBleedingIncrease(bool value) => _isChanceApplyBleedingIncrease = value;
@@ -101,6 +101,7 @@ public class CheliceraStrike : Skill
             yield return null;
         }
 
+        _player.Move.CanMove = false;
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Targets.Add(_runtimeTarget);
         callbackDataSaved(targetInfo);
@@ -108,8 +109,7 @@ public class CheliceraStrike : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_target == null) yield return null;
-        if (!IsTargetInRange()) yield return null;
+        if (_runtimeTarget == null) yield return null;
 
         _baseDamage = UnityEngine.Random.Range(11f, 13f);
         Damage = _baseDamage;
@@ -122,9 +122,8 @@ public class CheliceraStrike : Skill
 
         else cooldownEnergy.CastCooldownEnergySkill(cooldownEnergyCost, this);
 
-        DamageDealChelicera(_target.gameObject);
+        DamageDealChelicera(_runtimeTarget.gameObject);
         _isClawStrike_Right = !_isClawStrike_Right;
-        Hero.Move.CanMove = true;
 
         yield return null;
     }
@@ -132,13 +131,7 @@ public class CheliceraStrike : Skill
     private void HandleSkillCanceled()
     {
         _target = null;
-        Hero.Move.CanMove = true;
         _isCanCancle = true;
-    }
-
-    private bool IsTargetInRange()
-    {
-        return Vector3.Distance(_player.transform.position, _target.transform.position) <= Radius;
     }
 
     public void SetTarget(Character target)
@@ -300,7 +293,6 @@ public class CheliceraStrike : Skill
 
     public void CheliceraStrikeSpeedAnim()
     {
-        Hero.Move.CanMove = false;
         _player.Animator.SetFloat("CheliceraStrikeSpeed", 1f / animSpeed);
         if (_attackingPsionicEnergy.IsAttackingPsiEnergy && _attackingPsionicEnergy.CurrentValue > 0f) TrySpendAttackingPsi();
         else _spentAttackingPsiEnergy = 0;

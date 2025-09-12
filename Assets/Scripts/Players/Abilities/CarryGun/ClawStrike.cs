@@ -178,7 +178,6 @@ public class ClawStrike : Skill
     private void HandleSkillCanceled()
     {
         _isCanCancle = true;
-
     }
 
     public void TrySpendAttackingPsi()

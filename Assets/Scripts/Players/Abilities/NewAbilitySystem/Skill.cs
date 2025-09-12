@@ -499,6 +499,7 @@ public abstract class Skill : NetworkBehaviour
         if (foceCancel || _isCanCancle)
         {
             Canceled?.Invoke();
+            if (_isAutoMode) _hero.Move.CanMove = true;
             ClearData();
             _isPlayCastAnim = false;
 
@@ -1497,6 +1498,7 @@ public abstract class Skill : NetworkBehaviour
         LoadTargetDataForCheckCast();
 
         _hero.Move.StopLookAt();
+        if (!_isAutoMode) _hero.Move.CanMove = true;
 
         _castCoroutine = null;
     }

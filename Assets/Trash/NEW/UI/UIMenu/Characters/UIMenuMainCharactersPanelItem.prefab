@@ -273,9 +273,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4330988965491832466}
-        m_TargetAssemblyTypeName: UIMenuMainCharactersPanelItem, Assembly-CSharp
-        m_MethodName: Select
+      - m_Target: {fileID: 7143142666101184631}
+        m_TargetAssemblyTypeName: LoadGamePressCharacter, Assembly-CSharp
+        m_MethodName: SelectAndStart
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -295,6 +295,7 @@ GameObject:
   m_Component:
   - component: {fileID: 447785718254072194}
   - component: {fileID: 4330988965491832466}
+  - component: {fileID: 7143142666101184631}
   m_Layer: 5
   m_Name: UIMenuMainCharactersPanelItem
   m_TagString: Untagged
@@ -337,5 +338,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6189bc1f0a93e64895929d9ec88336b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Owner: {fileID: 0}
   _icon: {fileID: 753184503591901727}
+  CurrentHero: {fileID: 0}
+--- !u!114 &7143142666101184631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6674395192312934261}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: baabe754526401a47837dd0dd7a72d9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uIMenuMainCharactersPanelItem: {fileID: 4330988965491832466}

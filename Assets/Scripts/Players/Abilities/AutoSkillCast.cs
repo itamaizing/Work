@@ -30,11 +30,11 @@ public class AutoSkillCast
     public void DeleteSkill()
     {
         if (_currentSkill == null) return;
-
         _currentSkill.TryCancel(true);
 
         _currentSkill.SkillRender.StopDrawAutoAttackRadius();
-        _currentSkill.Hero.Move.StopLookAt();
+
+        if (_currentSkill.Hero != null && _currentSkill.Hero.Move != null)  _currentSkill.Hero.Move.StopLookAt();
 
         StopTryCastCoroutine();
 
@@ -43,9 +43,13 @@ public class AutoSkillCast
 
     public void Pause()
     {
+        if (_currentSkill == null) return;
+
         _currentSkill.TryCancel(true);
-        _currentSkill.Hero.Move.StopLookAt();
-        StopTryCastCoroutine();
+
+        if (_currentSkill.Hero != null && _currentSkill.Hero.Move != null)
+            _currentSkill.Hero.Move.StopLookAt();
+
     }
 
     public void Continue()

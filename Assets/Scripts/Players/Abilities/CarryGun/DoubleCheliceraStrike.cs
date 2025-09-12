@@ -1,9 +1,11 @@
 using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 
 public class DoubleCheliceraStrike : Skill
 {
+    [SerializeField] private Character _player;
     [SerializeField] private CheliceraStrike cheliceraStrike;
     [SerializeField] private CooldownEnergy cooldownEnergy;
     [SerializeField] private float _cheliceraStrikeBaseDamage;
@@ -20,7 +22,7 @@ public class DoubleCheliceraStrike : Skill
     protected override int AnimTriggerCast => DoubleCheliceraStrikeAnimTrigger;
     protected override int AnimTriggerCastDelay => 0;
 
-    protected override bool IsCanCast => IsTargetInRange() &&  _target != null && cooldownEnergy.CurrentValue >= cooldownEnergyCost;
+    protected override bool IsCanCast => IsTargetInRange() && cooldownEnergy.CurrentValue >= cooldownEnergyCost;
 
     private void OnEnable()
     {
@@ -30,7 +32,7 @@ public class DoubleCheliceraStrike : Skill
 
     private void OnDestroy() => OnSkillCanceled -= HandleSkillCanceled;
 
-    protected override IEnumerator PrepareJob(System.Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while (_target == null)
         {
@@ -51,6 +53,7 @@ public class DoubleCheliceraStrike : Skill
             yield return null;
         }
 
+        _player.Move.CanMove = false;
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Targets.Add(_runtimeTarget);
         callbackDataSaved(targetInfo);
@@ -58,27 +61,26 @@ public class DoubleCheliceraStrike : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_target == null) yield return null;
+        if (_runtimeTarget == null) yield return null;
 
-        DealDoubleCheliceraStrikeDamage(_target);
+        DealDoubleCheliceraStrikeDamage(_runtimeTarget);
 
         cooldownEnergy.CastCooldownEnergySkill(cooldownEnergyCost, this);
-        _hero.Move.StopLookAt();
-        _hero.Move.CanMove = true;
 
         yield return null;
     }
 
     private bool IsTargetInRange()
     {
-        return _target != null && Vector3.Distance(_hero.transform.position, _target.transform.position) <= Radius;
+        return _target != null &&
+            Vector3.Distance(_target.transform.position, transform.position) <= Radius &&
+            NoObstacles(_target.transform.position, transform.position, _obstacle);
     }
 
     private void HandleSkillCanceled()
     {
         _target = null;
-        Hero.Move.StopLookAt();
-        _hero.Move.CanMove = true;
+        _isCanCancle = true;
     }
 
     private void DealDoubleCheliceraStrikeDamage(Character targetCharacter)
@@ -96,40 +98,13 @@ public class DoubleCheliceraStrike : Skill
         CmdApplyStun(targetCharacter);
     }
 
-    public void DoubleCheliceraStrikeAnimationMove()
-    {
-        if (_hero == null || _hero.Move == null) return;
-
-        if (_target == null)
-        {
-            _hero.Move.StopLookAt();
-            return;
-        }
-
-        _hero.Move.StopMoveAndAnimationMove();
-        _hero.Move.CanMove = false;
-
-        Vector3 direction = _target.transform.position - _hero.transform.position;
-        bool badDirection = float.IsInfinity(_target.transform.position.x) || direction.sqrMagnitude < 0.0001f;
-
-        if (badDirection)
-        {
-            _hero.Move.StopLookAt();
-            return;
-        }
-
-        _hero.Move.LookAtPosition(_target.transform.position);
-    }
-
     public void DoubleCheliceraStrikeCast()
     {
-        Hero.Animator.speed = Hero.Animator.speed / 1.6f;
         AnimStartCastCoroutine();
     }
 
     public void DoubleCheliceraStrikeEnded()
     {
-        Hero.Animator.speed = 1;
         _isCanCancle = true;
         AnimCastEnded();
     }
@@ -137,16 +112,16 @@ public class DoubleCheliceraStrike : Skill
     [Command]
     private void CmdApplyStun(Character target)
     {
-        var lastSkill = Hero.Abilities.LastCastedSkill;
+        var lastSkill = _player.Abilities.LastCastedSkill;
 
-        if ((lastSkill is JumpBack))  target.CharacterState.AddState(States.Stun, _stunDurationWithJumpBack, 0, _hero.gameObject, null);
-        else target.CharacterState.AddState(States.Stun, _stunDuration, 0, _hero.gameObject, null);
+        if ((lastSkill is JumpBack))  target.CharacterState.AddState(States.Stun, _stunDurationWithJumpBack, 0, _player.gameObject, null);
+        else target.CharacterState.AddState(States.Stun, _stunDuration, 0, _player.gameObject, null);
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.Targets.Count > 0) _target = (Character)targetInfo.Targets[0];
-        _hero.Move.LookAtTransform(_target.transform);
+        _isCanCancle = false;
     }
 
     protected override void ClearData()
