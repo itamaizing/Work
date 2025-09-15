@@ -33,6 +33,7 @@ public class CheliceraStrike : Skill
     private float _spentAttackingPsiEnergy;
     private bool _isClawStrike_Right = true;
     private Coroutine _castDelayResetCoroutine;
+    private string _baseDescription;
 
     private static readonly int RightClawStrikeTrigger = Animator.StringToHash("CheliceraStrikeTrigger_Right");
     private static readonly int LeftClawStrikeTrigger = Animator.StringToHash("CheliceraStrikeTrigger_Left");
@@ -46,7 +47,10 @@ public class CheliceraStrike : Skill
 
     public event System.Action OnCheliceraStrikeEnd;
 
-    private void Start() => _animator = GetComponent<Animator>();
+    private void Start()
+    {
+        _animator = GetComponent<Animator>();
+    }
 
     private void OnDisable()
     {
@@ -69,7 +73,13 @@ public class CheliceraStrike : Skill
     public void CheliceraStrikeChanceDamageCrit(bool value) => isCheliceraStrikeChanceDamageCrit = value;
     public void CheliceraStrikeSpeed(bool value) => _player.Animator.speed = value ? 1.4f : 1f;
     public void EvolutionTalentTwo(bool value) => isEvolutionTalentTwo = value;
-    public void PsionicsTalentTwo(bool value) => isPsionicsTalentTwo = value;
+
+    public void PsionicsTalentTwo(bool value, string text)
+    {
+        isPsionicsTalentTwo = value;
+        AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
+    }
+
     public void ChanceApplyBleedingIncrease(bool value) => _isChanceApplyBleedingIncrease = value;
     public void ChanceCritDamageIncrease(bool value) => _isChanceCritDamageIncrease = value;
     #endregion
@@ -101,7 +111,6 @@ public class CheliceraStrike : Skill
             yield return null;
         }
 
-        _player.Move.CanMove = false;
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Targets.Add(_runtimeTarget);
         callbackDataSaved(targetInfo);
@@ -293,6 +302,7 @@ public class CheliceraStrike : Skill
 
     public void CheliceraStrikeSpeedAnim()
     {
+        _player.Move.CanMove = false;
         _player.Animator.SetFloat("CheliceraStrikeSpeed", 1f / animSpeed);
         if (_attackingPsionicEnergy.IsAttackingPsiEnergy && _attackingPsionicEnergy.CurrentValue > 0f) TrySpendAttackingPsi();
         else _spentAttackingPsiEnergy = 0;
@@ -312,6 +322,7 @@ public class CheliceraStrike : Skill
     {
         OnCheliceraStrikeEnd?.Invoke();
         _isCanCancle = true;
+        _player.Move.CanMove = true;
         AnimCastEnded();
     }
 

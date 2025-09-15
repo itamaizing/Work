@@ -112,6 +112,8 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] protected float _area;
     [SerializeField] protected float _castLength;
     [SerializeField] protected float _castWidth;
+    [Header("Area settings")]
+    [SerializeField] protected float _autoAttackDelay;
     [Header("Render settings")]
     [SerializeField] protected bool _isAutoRadiusRender = true;
     [SerializeField] protected bool _isAutoAreaRender = true;
@@ -190,7 +192,7 @@ public abstract class Skill : NetworkBehaviour
     public Character Hero { get => _hero; }
     public StatsBuff Buff => _statsBuff;
     public string Name => _abilityInfo.Name;
-    public string Description => _abilityInfo.Description;
+    public string Description { get => _abilityInfo.FinalDescription; set => _abilityInfo.FinalDescription = value; }
     public string State => _abilityInfo.State; // test: we output the name of the state
     public string DescriptionState => _abilityInfo.DescriptionState; // test: we output a description of the state
     public string CounterSkill => _abilityInfo.Counter; // test: the counter is in the ability
@@ -216,10 +218,8 @@ public abstract class Skill : NetworkBehaviour
     public float Area { get => Buff.Area.GetBuffedValue(_area); set => _area = value; }
     public float CastLength { get => Buff.Area.GetBuffedValue(_castLength); protected set => _castLength = value; }
     public float CastWidth { get => Buff.Area.GetBuffedValue(_castWidth); protected set => _castWidth = value; }
-    #region test: the counter is in the ability
     public float MaxCounter { get => maxCounter; set => maxCounter = value; }
     public float CurrentCounter { get => _currentCounter; set => _currentCounter = value; }
-    #endregion
     public virtual float Damage { get => _damageValue; set => _damageValue = value; }
     public bool IsUseCharges { get => _isUseCharges; }
     public LayerMask TargetsLayers { get => _targetsLayers; protected set => _targetsLayers = value; }
@@ -233,6 +233,7 @@ public abstract class Skill : NetworkBehaviour
     public List<SkillEnergyCost> AdditionalSkillEnergyCosts { get => _additionalSkillEnergyCosts; }
     public List<SkillEnergyCost> ManaCostPerTick { get => _manaCostPerTick; }
     public float ManaCostRate { get => _manaCostRate; }
+    public float AutoAttackDelay { get => _autoAttackDelay; }
     public Queue<TargetInfo> TargetInfoQueue { get => _targetInfoQueue; }
 
     public bool Disactive

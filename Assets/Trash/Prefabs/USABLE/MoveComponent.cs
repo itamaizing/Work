@@ -226,7 +226,7 @@ public class MoveComponent : NetworkBehaviour
 
 		if (_rigidbody.velocity.magnitude > 0.5f && moveAudioSource != null && !moveAudioSource.isPlaying) PlayMove();
 
-		if (_anim != null)
+		if (_anim != null && CanMove)
 		{
 			var animDir = transform.InverseTransformPoint(transform.position + camDir);
 			_animMultiplier = 0.1f * _rigidbody.velocity.magnitude + 0.5f;

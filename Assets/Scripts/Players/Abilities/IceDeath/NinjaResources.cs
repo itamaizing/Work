@@ -3,15 +3,17 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class IceDeathPassiveSkill : Skill
+public class NinjaResources : Skill, IPassiveSkill
 {
+    #region Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => false;
     protected override IEnumerator CastJob() => null;
     protected override void ClearData() { }
-
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved) => null;
+    public override void LoadTargetData(TargetInfo targetInfo) => throw new NotImplementedException();
+    #endregion
 
     private bool _isIceRuneTalent;
 
@@ -40,13 +42,9 @@ public class IceDeathPassiveSkill : Skill
         }
     }
 
-    public void EnergyToRestore(bool value)
+    public void EnergyToRestore(bool value, string text)
     {
         _isIceRuneTalent = value;
-    }
-
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        throw new NotImplementedException();
+        AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
     }
 }

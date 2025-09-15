@@ -112,7 +112,8 @@ public class AutoSkillCast
             }
 
             _currentSkill.TryCast(_targetInfo);
-            yield return null;
+
+            yield return new WaitForSeconds(_currentSkill.AutoAttackDelay);
         }
     }
 

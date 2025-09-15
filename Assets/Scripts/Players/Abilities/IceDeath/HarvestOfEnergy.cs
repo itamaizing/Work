@@ -1,10 +1,13 @@
 using System;
 using System.Collections;
-using Mirror;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class MultiMagicSpell : Skill
+public class HarvestOfEnergy : Skill
 {
+    [SerializeField] private float rune = 1;
+    [SerializeField] private HarvestOfRunes harvestOfRunes;
+
     protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => true;
@@ -16,7 +19,7 @@ public class MultiMagicSpell : Skill
         targetInfo.Targets.Add(Hero);
     }
 
-    protected override void ClearData() { }                
+    protected override void ClearData() { }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
@@ -30,7 +33,12 @@ public class MultiMagicSpell : Skill
     protected override IEnumerator CastJob()
     {
         if (Hero == null || Hero.CharacterState == null) yield break;
-        if (Hero.CharacterState.CheckForState(States.MultiMagic)) Hero.CharacterState.CmdRemoveState(States.MultiMagic);
-        else Hero.CharacterState.CmdAddState(States.MultiMagic, 9999, 0f, Hero.gameObject, name);
+        AddRune();
+    }
+
+    private void AddRune()
+    {
+        if (Hero.TryGetResource(ResourceType.Rune) is RuneComponent runeAdd) runeAdd.CmdAdd(rune);
+        if (harvestOfRunes != null) harvestOfRunes.IncreaseSetCooldown(harvestOfRunes.CooldownTime);
     }
 }

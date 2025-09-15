@@ -815,6 +815,7 @@ public enum States
     CoolingAura,
 	Restoration,
 	Destruction,
+
 }
 public enum BaffDebaff
 {
