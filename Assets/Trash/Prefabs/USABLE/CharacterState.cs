@@ -234,6 +234,7 @@ public class CharacterState : NetworkBehaviour
 		[States.TentacleGrip] = new TentacleGrip(),
 		[States.Restoration] = new RestorationState(),
 		[States.Destruction] = new DestructionState(),
+		[States.HardenedFlesh] = new HardenedFlesh(),
 
 		#region TerrifyingElfStates
 		[States.InnerDarkness] = new InnerDarkness(),
@@ -815,7 +816,7 @@ public enum States
     CoolingAura,
 	Restoration,
 	Destruction,
-
+	HardenedFlesh,
 }
 public enum BaffDebaff
 {

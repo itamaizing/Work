@@ -4,13 +4,16 @@ using UnityEngine;
 
 public class DisciplineTalent_2 : Talent
 {
+    [SerializeField] private PriestShield priestShield;
+    [SerializeField] private SkillManager ability;
+
     public override void Enter()
     {
-        throw new System.NotImplementedException();
+        ability.ActivateSkill(priestShield);
     }
 
     public override void Exit()
     {
-        throw new System.NotImplementedException();
+        ability.DeactivateSkill(priestShield);
     }
 }

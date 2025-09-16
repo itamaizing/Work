@@ -162,6 +162,8 @@ public class IceRolling : Skill
 		float distanceToClick = Vector3.Distance(startPosition, rawTargetPos);
 		float finalRange = Mathf.Min(distanceToClick, GetJumpRange());
 
+		if (_isLastInSeries && _target == null && _rollingWithEnemyTalent) finalRange *= 1.5f;
+
 		Vector3 jumpPos = startPosition + _lookDir * finalRange;
 
 		float energyUsed = energyBlocks * 5f;

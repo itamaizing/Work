@@ -117,7 +117,7 @@ public class Restoration : Skill
                 healthComponent.HealTaked += OnHealTaken;
             }
 
-            _target.CharacterState.CmdAddState(States.Restoration, lightDuration, 0, Hero.gameObject, name);
+            CmdAddState(_target, States.Restoration, lightDuration);
             StartCoroutine(ApplyHealOverTime(_target));
         }
     }
@@ -139,7 +139,7 @@ public class Restoration : Skill
 
         if (isEnemy && TryPayCost())
         {
-            _target.CharacterState.CmdAddState(States.Destruction, darkDuration, 0, Hero.gameObject, name);
+            CmdAddState(_target, States.Destruction, darkDuration);
             StartCoroutine(ApplyDamageOverTime(_target));
         }
     }
@@ -250,6 +250,9 @@ public class Restoration : Skill
     {
         RpcPlayShotSound();
     }
+
+    [Command]
+    private void CmdAddState(Character character, States states, float duration) => character.CharacterState.AddState(states, duration, 0, Hero.gameObject, name);
 
     [ClientRpc]
     private void RpcPlayShotSound()

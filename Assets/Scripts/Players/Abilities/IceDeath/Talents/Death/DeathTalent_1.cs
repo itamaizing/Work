@@ -11,8 +11,6 @@ public class DeathTalent_1 : Talent
     {
         runeComponent.IceRuneTalentActive(true);
         ninjaResources.EnergyToRestore(true, Data.DescriptionsForInfoPanel[0]);
-
-
     }
 
     public override void Exit()

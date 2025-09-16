@@ -81,7 +81,7 @@ public class DamageTracker : NetworkBehaviour
         
         Debug.Log("[DamageTracker] Local Entries Removed");
     }
-
+    
     public void RemoveOldServerEntries(float timeLimit = 10f)
     {
         _damageEntries.RemoveAll(o => Time.time - o.Time > timeLimit);

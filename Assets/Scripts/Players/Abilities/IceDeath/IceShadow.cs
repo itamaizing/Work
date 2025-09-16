@@ -193,10 +193,12 @@ public class IceShadow : Skill
 		_talentDamage = value;
 	}
 
-	public void IceDeathInShadowTalentActive(bool value)
+	public void IceDeathInShadowTalentActive(bool value, string text)
     {
 		_iceDeathInShadowTalent = value;
-    }
+		AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
+
+	}
 
     #endregion
 

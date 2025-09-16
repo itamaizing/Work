@@ -19161,7 +19161,7 @@ PrefabInstance:
       objectReference: {fileID: 3990805733231088528}
     - target: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _icons.Array.size
-      value: 52
+      value: 53
       objectReference: {fileID: 0}
     - target: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _icons.Array.data[25]
@@ -19271,6 +19271,10 @@ PrefabInstance:
       propertyPath: _icons.Array.data[51]
       value: 
       objectReference: {fileID: 3545852164369826336, guid: 7fd26c1cdaa08df41949cab0479581cd, type: 3}
+    - target: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _icons.Array.data[52]
+      value: 
+      objectReference: {fileID: 3545852164369826336, guid: c1422ee69ba691c4990ac65ab2978b01, type: 3}
     - target: {fileID: 8739993138692873955, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Layer
       value: 2
@@ -19658,12 +19662,14 @@ MonoBehaviour:
   _area: 1
   _castLength: 0
   _castWidth: 0.5
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
   _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
   projectile: {fileID: 727437498118149735, guid: e444badf466360e41a896340462c6a62, type: 3}
   playerLinks: {fileID: 4534754468497973439}
   spawnPoint: {fileID: 7608591018717630632}
@@ -19720,12 +19726,14 @@ MonoBehaviour:
   _area: 0.5
   _castLength: 0
   _castWidth: 0
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 0
   _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
   skillRenderer: {fileID: 2807589928063243029}
   groundLayer:
     serializedVersion: 2
@@ -19787,12 +19795,14 @@ MonoBehaviour:
   _area: 1
   _castLength: 7
   _castWidth: 0.1
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 0
   _isAutoAreaRender: 0
   _isAutoLineRender: 1
   _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
   projectile: {fileID: 7795660894077134963, guid: 8e56a73e4e78d7841ac2f37176fe2356, type: 3}
   playerLinks: {fileID: 4534754468497973439}
   spawnPoint: {fileID: 7608591018717630632}
@@ -19854,12 +19864,14 @@ MonoBehaviour:
   _area: 3
   _castLength: 0
   _castWidth: 0
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 0
   _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
   _duration: 5
   effectPrefab: {fileID: 4195082103051815756, guid: 2d76beef07956e948946e409a372473d, type: 3}
   _reducedCooldown: 0
@@ -19917,12 +19929,14 @@ MonoBehaviour:
   _area: 0.01
   _castLength: 0
   _castWidth: 0
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 0
   _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
   _playerLinks: {fileID: 4534754468497973439}
   duration: 6
 --- !u!114 &826193211731534654
@@ -19975,12 +19989,14 @@ MonoBehaviour:
   _area: 4
   _castLength: 0
   _castWidth: 0
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 0
   _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
   skillRenderer: {fileID: 2807589928063243029}
   silenceTalentActive: 0
   tripleShotTalentActive: 0
@@ -20043,12 +20059,14 @@ MonoBehaviour:
   _area: 0.5
   _castLength: 0
   _castWidth: 0
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
   _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
   _pullingHealthPrefab: {fileID: 7744228389031826322, guid: 01d3359ced6c7904e8d18b398f189893, type: 3}
   _spawnPoint: {fileID: 1110070738435946966}
   health: {fileID: 2320460443592093226}
@@ -20107,12 +20125,14 @@ MonoBehaviour:
   _area: 1
   _castLength: 0
   _castWidth: 0
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 0
   _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
   extendedRadius: 5
   baseRadius: 3
   teleportManaUse: 6
@@ -20177,12 +20197,14 @@ MonoBehaviour:
   _area: 0.01
   _castLength: 0
   _castWidth: 0
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
   _playerLinks: {fileID: 4534754468497973439}
   duration: 5
 --- !u!114 &3491896792666520145
@@ -20235,12 +20257,14 @@ MonoBehaviour:
   _area: 0
   _castLength: 0
   _castWidth: 0
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 0
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
   _projectile: {fileID: 2123849334646659443, guid: 8e3073b46604e4040ac3eb03dabfd124, type: 3}
   _spawnPoint: {fileID: 7608591018717630632}
   _playerLinks: {fileID: 4534754468497973439}
@@ -20292,12 +20316,14 @@ MonoBehaviour:
   _area: 0.01
   _castLength: 0
   _castWidth: 0
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
   trapPrefab: {fileID: 4405999295883627067, guid: 634880f733438024cbf14d239d494d86, type: 3}
   owner: {fileID: 4534754468497973439}
   minDistanceRadiusCircle: {fileID: 6586971803846960611}
@@ -20360,12 +20386,14 @@ MonoBehaviour:
   _area: 0.5
   _castLength: 0
   _castWidth: 0
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
   extendedRadius: 8
   _moveDuration: 0.5
   arrowEffectLifetime: 2
@@ -20432,12 +20460,14 @@ MonoBehaviour:
   _area: 0
   _castLength: 0
   _castWidth: 0
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 0
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _disactive: 1
   _earlyCooldown: 0
+  maxCounter: 0
   _attackZoneSize: 1
   _attackDelay: 1
   _chargeAttackDelay: 0
@@ -20493,12 +20523,14 @@ MonoBehaviour:
   _area: 3
   _castLength: 0
   _castWidth: 0
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
   trickShot: {fileID: 5114100793044545941}
   fireAura: {fileID: 8163329122190285983, guid: 57f4b1dca44be5d41bcdf5931936f545, type: 3}
   emitterObject: {fileID: 6218627837131491164}
@@ -20587,12 +20619,14 @@ MonoBehaviour:
   _area: 0
   _castLength: 0
   _castWidth: 0
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 0
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
 --- !u!114 &5245378433989923716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20643,12 +20677,14 @@ MonoBehaviour:
   _area: 0.01
   _castLength: 0
   _castWidth: 0
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 0
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
   playerLinks: {fileID: 4534754468497973439}
   drawCircle: {fileID: 6586971803846960611}
   duration: 6
@@ -20702,12 +20738,14 @@ MonoBehaviour:
   _area: 0.01
   _castLength: 0
   _castWidth: 0
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
 --- !u!114 &1094805825435644166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20758,12 +20796,14 @@ MonoBehaviour:
   _area: 0
   _castLength: 0
   _castWidth: 0
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
 --- !u!114 &127445238161157264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20814,12 +20854,14 @@ MonoBehaviour:
   _area: 1
   _castLength: 0
   _castWidth: 0
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
   _playerLinks: {fileID: 4534754468497973439}
   duration: 6
 --- !u!114 &1457342243689941384
@@ -20870,12 +20912,14 @@ MonoBehaviour:
   _area: 1
   _castLength: 0
   _castWidth: 0
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
   _playerLinks: {fileID: 4534754468497973439}
   duration: 30
   _baseDamage: 10

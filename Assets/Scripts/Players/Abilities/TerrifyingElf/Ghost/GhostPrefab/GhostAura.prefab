@@ -16879,7 +16879,7 @@ PrefabInstance:
     - target: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _icons.Array.data[25]
       value: 
-      objectReference: {fileID: 3545852164369826336, guid: c683a8c57bbc87d4dbe340dfb4c93bc4, type: 3}
+      objectReference: {fileID: 3545852164369826336, guid: 7fd26c1cdaa08df41949cab0479581cd, type: 3}
     - target: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _icons.Array.data[26]
       value: 
@@ -17176,12 +17176,14 @@ MonoBehaviour:
   _area: 0
   _castLength: 0
   _castWidth: 0
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 0
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
   _agent: {fileID: 8217033100601787470}
   _enemyCheckRadius: 6
   _enemyLayerMask:
@@ -17236,12 +17238,14 @@ MonoBehaviour:
   _area: 0
   _castLength: 0
   _castWidth: 0
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
   fearChanceInRadius: 0.2
   fearChanceInsideCollider: 0.8
   tickInterval: 3

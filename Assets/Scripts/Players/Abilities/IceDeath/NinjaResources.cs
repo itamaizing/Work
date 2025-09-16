@@ -15,22 +15,33 @@ public class NinjaResources : Skill, IPassiveSkill
     public override void LoadTargetData(TargetInfo targetInfo) => throw new NotImplementedException();
     #endregion
 
+    #region Talent
     private bool _isIceRuneTalent;
+    private bool _isHardenedFleshTalent;
+
+    public void EnergyToRestore(bool value, string text)
+    {
+        _isIceRuneTalent = value;
+        AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
+    }
+
+    public void HardenedFleshTalent(bool value, string text)
+    {
+        _isHardenedFleshTalent = value;
+        AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
+    }
+    #endregion
 
     private void OnEnable()
     {
-        if (Hero != null && Hero.DamageTracker != null)
-        {
-            Hero.DamageTracker.OnDamageTracked += OnDamageTaken;
-        }
+        Hero.DamageTracker.OnDamageTracked += OnDamageTaken;
+        Hero.Health.DamageTaken += HandleDamageTaken;
     }
 
     private void OnDisable()
     {
-        if (Hero != null && Hero.DamageTracker != null)
-        {
-            Hero.DamageTracker.OnDamageTracked -= OnDamageTaken;
-        }
+        Hero.DamageTracker.OnDamageTracked -= OnDamageTaken;
+        Hero.Health.DamageTaken -= HandleDamageTaken;
     }
 
     private void OnDamageTaken(Damage damage, GameObject attacker)
@@ -42,9 +53,19 @@ public class NinjaResources : Skill, IPassiveSkill
         }
     }
 
-    public void EnergyToRestore(bool value, string text)
+    private void HandleDamageTaken(Damage damage, Skill skill)
     {
-        _isIceRuneTalent = value;
-        AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
+        if (_isHardenedFleshTalent && damage.Type == DamageType.Physical && damage.Value > 0)
+        {
+            for (int i = 0; i < damage.Value; i++)
+            {
+                float roll = UnityEngine.Random.Range(0f, 1f);
+                if (roll <= 0.01f)
+                {
+                    Hero.CharacterState.CmdAddState(States.HardenedFlesh, 9f, 0, Hero.gameObject, this.Name);
+                    break;
+                }
+            }
+        }
     }
 }

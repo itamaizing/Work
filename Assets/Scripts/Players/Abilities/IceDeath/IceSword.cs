@@ -104,29 +104,27 @@ public class IceSword : Skill
 
 	private void ApplyDamage()
 	{
+		float energyBonus = Mathf.Min(_energy.CurrentValue, 10);
+		_energy.CmdUse(energyBonus);
+
+		float totalDamage = _damage + energyBonus;
+
 		Damage damage2 = new Damage
 		{
-			Value = _damage,
+			Value = totalDamage,
 			Type = DamageType.Physical,
 			PhysicAttackType = AttackRangeType.RangeAttack,
 		};
-		//_skill.CmdApplyDamage(damage, target.gameObject);
-		if(_critDmg)
+
+		if (_critDmg && _target.CharacterState.CheckForState(States.Frozen))
 		{
-			if(_target.CharacterState.CheckForState(States.Frozen))
-			{
-				if (Random.Range(0, 100) < 15)
-					damage2.Value *= 1.8f;
-				else
-					damage2.Value *= 1.1f;
-			}
+			damage2.Value *= (Random.Range(0, 100) < 15) ? 1.8f : 1.1f;
 		}
+
 		CmdApplyDamage(damage2, _target.gameObject);
 
-		_energy.SumDamageMake(_damage);
-		_rune.SumDamageMake(_damage);
-		//_target.CharacterState.CmdAddState(States.Cooling, _duration, 0, _playerLinks.gameObject, name);
-		//_target.Health.TryTakeDamage(ref damage2, this);
+		_energy.SumDamageMake(damage2.Value);
+		_rune.SumDamageMake(damage2.Value);
 	}
 
 	[Command]

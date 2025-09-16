@@ -8,11 +8,11 @@ public class IceDeathInIcePuddleTalent : Talent
 
     public override void Enter()
     {
-        icePuddle.IceDeathInIcePudleTalentActive(true);
+        //icePuddle.IceDeathInIcePudleTalentActive(true);
     }
 
     public override void Exit()
     {
-        icePuddle.IceDeathInIcePudleTalentActive(false);
+        //icePuddle.IceDeathInIcePudleTalentActive(false);
     }
 }

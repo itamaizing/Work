@@ -2344,7 +2344,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.size
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.data[0]
@@ -2409,11 +2409,11 @@ PrefabInstance:
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.data[15]
       value: 
-      objectReference: {fileID: 3296930317622393649}
+      objectReference: {fileID: 2935799894972768155}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.data[16]
       value: 
-      objectReference: {fileID: 3296930317622393649}
+      objectReference: {fileID: 5679546152039556976}
     - target: {fileID: 5230403314913317377, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: -0.021900177
@@ -2576,15 +2576,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.size
-      value: 0
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.size
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentGroup.Array.size
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[3]._talentGroup.Array.size
@@ -2594,6 +2594,46 @@ PrefabInstance:
       propertyPath: _talents.Array.data[4]._talentGroup.Array.size
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[0]
+      value: 
+      objectReference: {fileID: 8581182762776661264}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[1]
+      value: 
+      objectReference: {fileID: 7758366791900145808}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[2]
+      value: 
+      objectReference: {fileID: 1789533417509439406}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[3]
+      value: 
+      objectReference: {fileID: 4703517711497613664}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[0]
+      value: 
+      objectReference: {fileID: 3308416631096017029}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[1]
+      value: 
+      objectReference: {fileID: 6142297959774152765}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[2]
+      value: 
+      objectReference: {fileID: 2242834627366772860}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[2]._talentGroup.Array.data[0]
+      value: 
+      objectReference: {fileID: 6580995585041578627}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[2]._talentGroup.Array.data[1]
+      value: 
+      objectReference: {fileID: 7185321803913916173}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[2]._talentGroup.Array.data[2]
+      value: 
+      objectReference: {fileID: 1090044804548443068}
     - target: {fileID: 6214007637544752149, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _damageZonePref
       value: 
@@ -2850,6 +2890,14 @@ PrefabInstance:
       propertyPath: m_ApplyRootMotion
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _icons.Array.size
+      value: 53
+      objectReference: {fileID: 0}
+    - target: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _icons.Array.data[52]
+      value: 
+      objectReference: {fileID: 3545852164369826336, guid: c1422ee69ba691c4990ac65ab2978b01, type: 3}
     - target: {fileID: 8770370089772824140, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -3066,6 +3114,45 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5945422429078664588}
+    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2935799894972768155}
+    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5679546152039556976}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8581182762776661264}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7758366791900145808}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1789533417509439406}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4703517711497613664}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3308416631096017029}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6142297959774152765}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2242834627366772860}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6580995585041578627}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7185321803913916173}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1090044804548443068}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3083348233968490285}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!114 &323327819542905198 stripped
 MonoBehaviour:
@@ -3669,10 +3756,8 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 735131f592de46b408a7ae44e2bfe1c6, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
-  - resourceType: 3
-    resourceCost: 0.5
   - resourceType: 2
-    resourceCost: 10
+    resourceCost: 40
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
@@ -4009,6 +4094,126 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+--- !u!114 &2935799894972768155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 465973236533830398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 224a2744aeda51f4399198053d96a729, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _isTalentSpell: 1
+  _isSkillActive: 0
+  _abilityInfo: {fileID: 11400000, guid: e0554087bcefc43428ac3a68d7224791, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts:
+  - resourceType: 2
+    resourceCost: 70
+  _additionalSkillEnergyCosts: []
+  _cooldownTime: 14
+  _castDeley: 0
+  _damageValue: 0
+  _abilitySchool: 6
+  _abilityForm: 2
+  _damageType: 5
+  _attackRangeType: 0
+  _skillType: 0
+  _moving: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _autoAttackDelay: 0
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 1
+  _isDynamicRenderer: 0
+  _disactive: 0
+  _earlyCooldown: 0
+  maxCounter: 0
+  rune: 1
+  harvestOfRunes: {fileID: 5679546152039556976}
+--- !u!114 &5679546152039556976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 465973236533830398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ecfa12e7e0a5c54c88438b1bdeb4e23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _isTalentSpell: 1
+  _isSkillActive: 0
+  _abilityInfo: {fileID: 11400000, guid: 8c54b05e7403c48458029b60de5724d7, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts:
+  - resourceType: 3
+    resourceCost: 1
+  _additionalSkillEnergyCosts: []
+  _cooldownTime: 14
+  _castDeley: 0
+  _damageValue: 0
+  _abilitySchool: 0
+  _abilityForm: 2
+  _damageType: 5
+  _attackRangeType: 0
+  _skillType: 0
+  _moving: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _autoAttackDelay: 0
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 1
+  _isDynamicRenderer: 0
+  _disactive: 0
+  _earlyCooldown: 0
+  maxCounter: 0
+  enegry: 70
+  harvestOfEnergy: {fileID: 2935799894972768155}
 --- !u!114 &829006267482502751 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -4050,6 +4255,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1bd22fe231e3f2e41b5e309172c34d13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4220410774128686972 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 8255499196023441042}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 465973236533830398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73c845a97d0479341a34f6e1275e1107, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &4374618947117916461 stripped
@@ -4101,3 +4317,385 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 548951138285989099, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
   m_PrefabInstance: {fileID: 8255499196023441042}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8789458529339427208 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 8255499196023441042}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8581182762776661264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9c19e9a1f504c84a9315f33439b3af7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u041B\u0435\u0434\u044F\u043D\u043E\u0439  \u043F\u043E\u0434\u043A\u0430\u0442
+      \u2013 \u0443\u0435\u0437\u0436\u0430\u0435\u0442 \u0432 \u0432\u044B\u0431\u0440\u0430\u043D\u043D\u0443\u044E
+      \u0441\u0442\u043E\u0440\u043E\u043D\u0443 \u043D\u0430 2 \u043C\u0435\u0442\u0440\u0430
+      + 1 \u043C\u0435\u0442\u0440 \u0437\u0430 \u043A\u0430\u0436\u0434\u044B\u0435
+      5 \u044D\u043D\u0435\u0440\u0433\u0438\u0438, \u043C\u0430\u043A\u0441\u0438\u043C\u0443\u043C
+      10 \u044D\u043D\u0435\u0440\u0433\u0438\u0438.  \u0412 \u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0438
+      \u0441\u0435\u0440\u0438\u0438: \u0443\u0435\u0437\u0436\u0430\u0435\u0442
+      \u0432\u043C\u0435\u0441\u0442\u0435 \u0441 \u0446\u0435\u043B\u044C\u044E
+      \u0438\u043B\u0438 \u0443\u0435\u0437\u0436\u0430\u0435\u0442 \u0431\u0435\u0437
+      \u0446\u0435\u043B\u0438 \u043D\u0430 50% \u0434\u0430\u043B\u044C\u0448\u0435."
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u041B\u0435\u0434\u044F\u043D\u043E\u0439 \u043F\u043E\u0434\u043A\u0430\u0442"
+    Icon: {fileID: 21300000, guid: 9499c35003f5fb14387943ad17f06e37, type: 3}
+  character: {fileID: 4374618947117916461}
+  iceRolling: {fileID: 8918194537379249446}
+  manager: {fileID: 4220410774128686972}
+--- !u!114 &7758366791900145808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2e9cdbbb1287d84da9991b4b1499621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0421\u0435\u0440\u0438\u0438 \u043D\u0438\u043D\u0434\u0437\u0438 \u0410\u0439\u0441
+      \u0414\u044D\u0437 \u043C\u043E\u0436\u0435\u0442 \u0430\u0442\u0430\u043A\u043E\u0432\u0430\u0442\u044C
+      \u0441\u0435\u0440\u0438\u044F\u043C\u0438, \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u044F
+      \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0435 \u0438 \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0435
+      \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438 \u043F\u043E\u0434\u0440\u044F\u0434
+      \u043F\u043E \u043E\u0434\u043D\u043E\u0439 \u0446\u0435\u043B\u0438 \u0432
+      \u043D\u0443\u0436\u043D\u043E\u0439 \u043F\u043E\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u0438,
+      \u0441\u043E 2\u0433\u043E \u0443\u0434\u0430\u0440\u0430 \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C
+      \u0432\u044B\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u044F \u043F\u043E\u0432\u044B\u0448\u0430\u0435\u0442\u0441\u044F
+      \u043D\u0430 +30% \u0438 \u0441\u0443\u043C\u043C\u0438\u0440\u0443\u0435\u0442\u0441\u044F
+      \u0441 \u043F\u043E\u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0438\u043C,
+      \u0434\u043E\u043F\u043E\u043B\u043D\u0438\u0442\u0435\u043B\u044C\u043D\u043E
+      \u0437\u0430\u0442\u0440\u0430\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
+      5 \u044D\u043D\u0435\u0440\u0433\u0438\u0438. \u041F\u0440\u0438 \u0443\u0441\u043F\u0435\u0448\u043D\u043E\u043C
+      \u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0438 \u0441\u0435\u0440\u0438\u0438,
+      \u043F\u043E\u0441\u043B\u0435\u0434\u043D\u0438\u0439 \u0443\u0434\u0430\u0440
+      \u0438\u043C\u0435\u0435\u0442 \u0431\u043E\u043D\u0443\u0441\u043D\u044B\u0439
+      \u044D\u0444\u0444\u0435\u043A\u0442. \u0421\u0435\u0440\u0438\u0438: \u0424\u0424\u0424\u0424\u0424\u0424
+      - 6 \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0445 \u0443\u0434\u0430\u0440\u043E\u0432 
+      \u0424\u0424\u0424\u0424\u0424\u041C - 6 \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0445
+      1 \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0443\u0434\u0430\u0440"
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u0421\u0435\u0440\u0438\u0438 \u043D\u0438\u043D\u0434\u0437\u0438"
+    Icon: {fileID: 21300000, guid: 167c36e4613aae345aae37dec1c098ed, type: 3}
+  character: {fileID: 4374618947117916461}
+  seriesOfStrikes: {fileID: 3083348233968490285}
+--- !u!114 &1789533417509439406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d51bd6cc77bc6143a3d8e79b1458215, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0417\u0430\u043C\u043E\u0440\u0430\u0436\u0438\u0432\u0430\u044E\u0449\u0430\u044F
+      \u0442\u0435\u043D\u044C \u2013 \u043E\u0441\u0442\u0430\u0432\u043B\u044F\u0435\u0442
+      \u0442\u0435\u043D\u044C \u043D\u0430 2 \u0441\u0435\u043A \u0438 + 1 \u0441\u0435\u043A.
+      \u0437\u0430 \u043A\u0430\u0436\u0434\u044B\u0435 10 \u0435\u0434. \u044D\u043D\u0435\u0440\u0433\u0438\u0438
+      \u043C\u0430\u043A\u0441\u0438\u043C\u0443\u043C 30 \u044D\u043D\u0435\u0440\u0433\u0438\u0438,
+      \u043F\u0440\u0438 \u043F\u043E\u043F\u0430\u0434\u0430\u043D\u0438\u0438 \u0432\u0440\u0430\u0433\u0430
+      \u0432 \u0442\u0435\u043D\u044C \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442\u0441\u044F
+      \u0434\u0435\u0431\u0430\u0444 \u201C\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430\u201D. 
+      \u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430 - \u0446\u0435\u043B\u044C
+      \u043D\u0435 \u043C\u043E\u0436\u0435\u0442 \u043F\u0435\u0440\u0435\u0434\u0432\u0438\u0433\u0430\u0442\u044C\u0441\u044F
+      \u0438 \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u0442\u044C \u043B\u044E\u0431\u044B\u0435
+      \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438, \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u0435
+      \u0443\u0440\u043E\u043D\u0430 \u0441\u043D\u0438\u043C\u0430\u0435\u0442 \u0434\u043B\u0435\u0431\u0430\u0444,
+      \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0434\u0435\u0431\u0430\u0444,
+      \u0448\u043A\u043E\u043B\u0430 \u0432\u043E\u0434\u044B.  \u0411\u043E\u043D\u0443\u0441
+      \u0432 \u043A\u043E\u043D\u0446\u0435 \u0441\u0435\u0440\u0438\u0438 \u0441\u043E\u0437\u0434\u0430\u0451\u0442
+      3 \u0442\u0435\u043D\u0438."
+    - "\u041C\u0435\u0447 \u043B\u044C\u0434\u0430 - \u0431\u044C\u0451\u0442 \u043C\u0435\u0447\u043E\u043C
+      \u0438\u0437 \u043B\u044C\u0434\u0430, \u043D\u0430\u043D\u043E\u0441\u0438\u0442
+      15 \u0443\u0440\u043E\u043D\u0430 \u0438  +1 \u0435\u0434\u0438\u043D\u0438\u0446\u0443
+      \u0443\u0440\u043E\u043D\u0430 \u0437\u0430 1 \u0435\u0434\u0438\u043D\u0438\u0446\u0443 
+      \u044D\u043D\u0435\u0440\u0433\u0438\u0438 \u043C\u0430\u043A\u0441\u0438\u043C\u0443\u043C
+      10 \u044D\u043D\u0435\u0440\u0433\u0438\u0438, \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442
+      \u041E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435 - \u0437\u0430\u043C\u0435\u0434\u043B\u044F\u0435\u0442
+      \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u043F\u0435\u0440\u0435\u0434\u0432\u0438\u0436\u0435\u043D\u0438\u044F
+      \u043D\u0430 5% \u0438 \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0445
+      \u0430\u0442\u0430\u043A \u043D\u0430 10% \u043D\u0430 12 \u0441\u0435\u043A\u0443\u043D\u0434, 
+      \u0441\u0443\u043C\u0438\u0440\u0443\u0435\u0442\u0441\u044F \u0434\u043E 5
+      \u0440\u0430\u0437, \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439
+      \u0434\u0435\u0431\u0430\u0444."
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u0417\u0430\u043C\u043E\u0440\u0430\u0436\u0438\u0432\u0430\u044E\u0449\u0430\u044F
+      \u0442\u0435\u043D\u044C"
+    Icon: {fileID: 21300000, guid: 03a6c3f41c3356f428ba170ba3af9be5, type: 3}
+  character: {fileID: 4374618947117916461}
+  iceShadow: {fileID: 3068634069238352843}
+  iceSword: {fileID: 5084671336121015661}
+  manager: {fileID: 4220410774128686972}
+--- !u!114 &4703517711497613664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb2770d926f525448bb50b5c4a92429d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u041F\u0440\u0438 \u043D\u0430\u0445\u043E\u0436\u0434\u0435\u043D\u0438\u0438
+      \u043D\u0438\u043D\u0434\u0437\u044F \u0432 \u043B\u0435\u0434\u044F\u043D\u043E\u0439
+      \u0442\u0435\u043D\u0438 \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
+      \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F
+      \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F \u043D\u0430 1% \u043E\u0442
+      \u043E\u0431\u0449\u0435\u0433\u043E \u0437\u0430\u043F\u0430\u0441\u0430 \u0432
+      \u0441\u0435\u043A\u0443\u043D\u0434\u0443. \u041F\u0440\u0438 \u043D\u0430\u0445\u043E\u0436\u0434\u0435\u043D\u0438\u0435
+      \u043E\u0434\u043D\u043E\u0432\u0440\u0435\u043C\u0435\u043D\u043D\u043E \u0432
+      \u0442\u0435\u043D\u0438 \u0438  \u0432 \u043B\u0443\u0436\u0435 \u043B\u044C\u0434\u0430
+      \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u0434\u043E\u043F\u043E\u043B\u043D\u0438\u0442\u0435\u043B\u044C\u043D\u043E
+      \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F
+      +3% \u0438\u0442\u043E\u0433\u043E 4%."
+    - "\u041F\u0440\u0438 \u043D\u0430\u0445\u043E\u0436\u0434\u0435\u043D\u0438\u0438
+      \u043D\u0438\u043D\u0434\u0437\u044F \u0432 \u043B\u0443\u0436\u0435 \u043B\u044C\u0434\u0430
+      \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
+      \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F
+      \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F \u043D\u0430 1% \u043E\u0442
+      \u043E\u0431\u0449\u0435\u0433\u043E \u0437\u0430\u043F\u0430\u0441\u0430 \u0432
+      \u0441\u0435\u043A\u0443\u043D\u0434\u0443."
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u041D\u0438\u043D\u0434\u0437\u044F 4"
+    Icon: {fileID: 21300000, guid: 3a4185520579a514291190bd487ed03e, type: 3}
+  character: {fileID: 4374618947117916461}
+  iceShadow: {fileID: 3068634069238352843}
+  icePuddle: {fileID: 4310610476984543593}
+--- !u!114 &3308416631096017029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e11d90e1ac4bd7c43b6ba8494a46950e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0417\u0430\u043C\u043E\u0440\u0430\u0436\u0438\u0432\u0430\u044E\u0449\u0435\u0435
+      \u043E\u0431\u043B\u0430\u043A\u043E - \u043A\u0438\u0434\u0430\u0435\u0442
+      \u043B\u0435\u0434\u044F\u043D\u043E\u0435 \u043E\u0431\u043B\u0430\u043A\u043E,
+      \u043F\u043E\u043F\u0430\u0432\u0448\u0430\u044F \u0432\u0440\u0430\u0436\u0435\u0441\u043A\u0430\u044F
+      \u0446\u0435\u043B\u044C \u0437\u0430\u043C\u0435\u0440\u0437\u0430\u0435\u0442,
+      \u043D\u0430\u043D\u043E\u0441\u0438\u0442 10 \u0435\u0434\u0438\u043D\u0438\u0446
+      \u0443\u0440\u043E\u043D\u0430 + 1 \u0435\u0434\u0438\u043D\u0438\u0446\u0430
+      \u0437\u0430 \u043A\u0430\u0436\u0434\u044B\u0435 5 \u044D\u043D\u0435\u0440\u0433\u0438\u0438,
+      \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442 \u0434\u0435\u0431\u0430\u0444
+      \xAB\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430\xBB \u043D\u0430
+      1 \u0441\u0435\u043A\u0443\u043D\u0434\u0443 + 1 \u0441\u0435\u043A\u0443\u043D\u0434\u0430
+      \u0437\u0430 \u043A\u0430\u0436\u0434\u044B\u0435 20 \u0435\u0434 \u044D\u043D\u0435\u0440\u0433\u0438\u0438."
+    _stateInfos:
+    - StateName: "\u0417\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430"
+      Description: "\u0446\u0435\u043B\u044C \u043D\u0435 \u043C\u043E\u0436\u0435\u0442
+        \u043F\u0435\u0440\u0435\u0434\u0432\u0438\u0433\u0430\u0442\u044C\u0441\u044F
+        \u0438 \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u0442\u044C \u043B\u044E\u0431\u044B\u0435
+        \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438, \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u0435
+        \u0443\u0440\u043E\u043D\u0430 \u0441\u043D\u0438\u043C\u0430\u0435\u0442
+        \u0434\u043B\u0435\u0431\u0430\u0444, \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439
+        \u0434\u0435\u0431\u0430\u0444, \u0448\u043A\u043E\u043B\u0430 \u0432\u043E\u0434\u044B."
+    IsOpen: 0
+    Description: "\u0417\u0430\u043C\u043E\u0440\u0430\u0436\u0438\u0432\u0430\u044E\u0449\u0435\u0435
+      \u043E\u0431\u043B\u0430\u043A\u043E"
+    Icon: {fileID: 21300000, guid: 86525d715f89f3c449729556c8557842, type: 3}
+  character: {fileID: 4374618947117916461}
+  iceCloud: {fileID: 752221787785051408}
+  skillManager: {fileID: 4220410774128686972}
+--- !u!114 &6142297959774152765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 831a6883cec0e3a4f810f52ae1ae547f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u041B\u0443\u0436\u0430 \u043F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u044F
+      \u2013 \u043D\u0430 \u0437\u0435\u043C\u043B\u0435 \u0440\u0430\u0437\u043C\u0435\u0449\u0430\u0435\u0442
+      \u043B\u0443\u0436\u0443 \u043D\u0430 3 \u0441\u0435\u043A\u0443\u043D\u0434
+      + 1 \u0441\u0435\u043A\u0443\u043D\u0434\u0430 \u0437\u0430 \u043A\u0430\u0436\u0434\u044B\u0435
+      5 \u044D\u043D\u0435\u0440\u0433\u0438\u0438, \u043C\u0430\u043A\u0441\u0438\u043C\u0443\u043C
+      20 \u044D\u043D\u0435\u0440\u0433\u0438\u0438, \u043F\u0440\u0438 \u043F\u043E\u043F\u0430\u0434\u0430\u043D\u0438\u0438
+      \u0432\u0440\u0430\u0433\u0430 \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442\u0441\u044F
+      \u0434\u0435\u0431\u0430\u0432 \u043F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435
+      \u043D\u0430 \u043E\u0441\u0442\u0430\u0432\u0448\u0435\u0435\u0441\u044F \u0432\u0440\u0435\u043C\u044F
+      \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F \u043B\u0443\u0436\u044B.
+      \u041F\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u044F \u2013 \u0446\u0435\u043B\u044C "
+    - "\u041F\u0440\u0438 \u043D\u0430\u0445\u043E\u0436\u0434\u0435\u043D\u0438\u0438
+      \u043D\u0438\u043D\u0434\u0437\u044F \u0432 \u043B\u0443\u0436\u0435 \u043B\u044C\u0434\u0430
+      \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
+      \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F
+      \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F \u043D\u0430 1% \u043E\u0442
+      \u043E\u0431\u0449\u0435\u0433\u043E \u0437\u0430\u043F\u0430\u0441\u0430 \u0432
+      \u0441\u0435\u043A\u0443\u043D\u0434\u0443."
+    _stateInfos:
+    - StateName: "\u041F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u044F"
+      Description: "\u0446\u0435\u043B\u044C \u043D\u0435 \u043C\u043E\u0436\u0435\u0442
+        \u043F\u0435\u0440\u0435\u0434\u0432\u0438\u0433\u0430\u0442\u044C\u0441\u044F,
+        \u0443\u043C\u0435\u043D\u044C\u0448\u0430\u0435\u0442 \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C
+        \u0444\u0438\u0437\u0438\u0447\u0435\u043A\u0438\u0445 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439
+        \u043D\u0430 50% \u043F\u0440\u0438 \u043D\u0430\u043D\u0435\u0441\u0435\u043D\u0438\u0438
+        \u0431\u043E\u043B\u0435\u0435 \u0447\u0435\u043C 30 \u0435\u0434\u0438\u043D\u0438\u0446
+        \u0444\u0438\u0437\u0447\u0435\u0441\u043A\u043E\u0433\u043E \u0443\u0440\u043E\u043D\u0430
+        \u0432 \u0441\u0443\u043C\u043C\u0435 \u043F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435
+        \u0441\u043F\u0430\u0434\u0430\u0435\u0442, \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439
+        \u0434\u0435\u0431\u0430\u0444."
+    IsOpen: 0
+    Description: "\u041B\u0443\u0436\u0430 \u043F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u044F"
+    Icon: {fileID: 21300000, guid: 060880a1a872c9d41895f9e89e58cd3a, type: 3}
+  character: {fileID: 4374618947117916461}
+  icePuddle: {fileID: 4310610476984543593}
+  skillManager: {fileID: 4220410774128686972}
+--- !u!114 &2242834627366772860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b63e91c1e9b3be489f6564274779b8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _descriptionsForInfoPanel: []
+    _stateInfos: []
+    IsOpen: 0
+    Description: '-'
+    Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
+  character: {fileID: 4374618947117916461}
+--- !u!114 &6580995585041578627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efe35275f30121443a63fbe630477950, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _descriptionsForInfoPanel:
+    - "20% \u043E\u0442 \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E
+      \u043D\u0430\u043D\u0435\u0441\u0451\u043D\u043D\u043E\u0433\u043E \u0443\u0440\u043E\u043D\u0430
+      \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442\u0441\u044F
+      \u0432 \u0432\u0438\u0434\u0435 \u044D\u043D\u0435\u0440\u0433\u0438\u0438,
+      100 \u0435\u0434\u0438\u043D\u0438\u0446 \u0441\u0443\u043C\u0430\u0440\u043D\u043E\u0433\u043E
+      \u043D\u0430\u043D\u0435\u0441\u0451\u043D\u043D\u043E\u0433\u043E \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E
+      \u0443\u0440\u043E\u043D\u0430 \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u044E\u0442
+      1  \u0440\u0443\u043D\u0443"
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u0412\u0430\u043C\u043F\u0438\u0440\u0438\u0437\u043C \u0441\u0438\u043B"
+    Icon: {fileID: 21300000, guid: 3e6d7c097245f3a48b5d0c1a985c8f0e, type: 3}
+  character: {fileID: 4374618947117916461}
+  runeComponent: {fileID: 3083348233968490285}
+  ninjaResources: {fileID: 5945422429078664588}
+--- !u!114 &7185321803913916173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4cd4cd6dc410ad4189ded83ff113ee4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0416\u0430\u0442\u0432\u0430 \u0440\u0443\u043D - \u0437\u0430\u0442\u0440\u0430\u0447\u0438\u0432\u0430\u0435\u0442
+      \u043E\u0434\u043D\u0443 \u0440\u0443\u043D\u0443 \u0438 \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442
+      70  \u044D\u043D\u0435\u0440\u0433\u0438\u0438. "
+    - "\u0416\u0430\u0442\u0432\u0430 \u044D\u043D\u0435\u0440\u0433\u0438\u0438
+      - \u0437\u0430\u0442\u0440\u0430\u0447\u0438\u0432\u0430\u0435\u0442 70 \u044D\u043D\u0435\u0440\u0433\u0438\u0438
+      \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442
+      1 \u0440\u0443\u043D\u0443."
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u0416\u0430\u0442\u0432\u0430"
+    Icon: {fileID: 21300000, guid: ba741e0a405245447ae2ba2fee7fd82a, type: 3}
+  character: {fileID: 4374618947117916461}
+  energy: {fileID: 2935799894972768155}
+  runes: {fileID: 5679546152039556976}
+  skillManager: {fileID: 4220410774128686972}
+--- !u!114 &1090044804548443068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bdab3553b8108643b1b0ad4bdc2f295, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u041A\u0430\u0436\u0434\u0430\u044F 1 \u0435\u0434\u0438\u043D\u0438\u0446\u0430
+      \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u043D\u043E\u0433\u043E \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E
+      \u0443\u0440\u043E\u043D\u0430 \u0438\u043C\u0435\u0435\u0442 1% \u0432\u0435\u0440\u043E\u044F\u0442\u043D\u043E\u0441\u0442\u0438
+      \u043D\u0430\u043B\u043E\u0436\u0438\u0442\u044C \u043D\u0430 9 \u0441\u0435\u043A\u0443\u043D\u0434
+      \u0423\u043F\u0440\u043E\u0447\u043D\u0451\u043D\u043D\u0430\u044F \u043F\u043B\u043E\u0442\u044C,
+      \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u0438\u043C\u0435\u044E\u0449\u0443\u044E\u0441\u044F
+      \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0443\u044E \u0437\u0430\u0449\u0438\u0442\u0443
+      \u043D\u0430 20%, \u0441\u0443\u043C\u0438\u0440\u0443\u0435\u0442\u0441\u044F
+      \u0434\u043E 5 \u0440\u0430\u0437."
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u0423\u043F\u0440\u043E\u0447\u043D\u0435\u043D\u0438\u0435 \u043C\u0451\u0440\u0442\u0432\u043E\u0439
+      \u043F\u043B\u043E\u0442\u0438"
+    Icon: {fileID: 21300000, guid: e372d60187227324ba3c5de47777b41e, type: 3}
+  character: {fileID: 4374618947117916461}
+  ninjaResources: {fileID: 5945422429078664588}
+--- !u!114 &3083348233968490285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fcf2694bddcb1d409a326e23057b996, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerLinks: {fileID: 4374618947117916461}

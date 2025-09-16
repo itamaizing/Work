@@ -9,11 +9,11 @@ public class IceDeathInShadow : Talent
 
     public override void Enter()
     {
-        iceShadow.IceDeathInShadowTalentActive(true);
+        //iceShadow.IceDeathInShadowTalentActive(true);
     }
 
     public override void Exit()
     {
-        iceShadow.IceDeathInShadowTalentActive(true);
+        //iceShadow.IceDeathInShadowTalentActive(true);
     }
 }
