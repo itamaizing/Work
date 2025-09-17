@@ -49,6 +49,9 @@ public class PriestShield : Skill
     private const float MaxDarkMagicBoostPercentage = 0.5f;
     private const float DarkMagicBoostPerUnit = 1f;
     private const float DarkMagicUnit = 10f;
+    private float _accumulatedDarkDamage = 0f;
+    private float _lastDarkDamageTime = -999f;
+    private const float DarkDamageResetTime = 5f;
 
     //---------------- Talent 4 (Healing Boost)
     private bool _talentHealingBoostActive = false;
@@ -87,6 +90,7 @@ public class PriestShield : Skill
     private void OnEnable()
     {
         OnModeChange += HandleModeChange;
+        Hero.DamageTracker.OnDamageTracked += TrackDarkDamage;
         UpdateMode();
 
         Hero.Health.DamageTaken += HandleDamageTaken;
@@ -100,6 +104,7 @@ public class PriestShield : Skill
     private void OnDisable()
     {
         OnModeChange -= HandleModeChange;
+        Hero.DamageTracker.OnDamageTracked -= TrackDarkDamage;
         Hero.Health.DamageTaken -= HandleDamageTaken;
 
         foreach (var skill in Hero.Abilities.Abilities.Where(skill => skill.School == Schools.Discipline))
@@ -122,6 +127,19 @@ public class PriestShield : Skill
     private void HandleModeChange()
     {
         UpdateMode();
+    }
+
+    private void TrackDarkDamage(Damage damage, GameObject target)
+    {
+        if (damage.School != Schools.Dark) return;
+
+        if (Time.time - _lastDarkDamageTime > DarkDamageResetTime)
+        {
+            _accumulatedDarkDamage = 0f;
+        }
+
+        _accumulatedDarkDamage += damage.Value;
+        _lastDarkDamageTime = Time.time;
     }
 
     private void UpdateMode()
@@ -175,17 +193,6 @@ public class PriestShield : Skill
         }
     }
 
-    private void ApplyDisciplineBoost()
-    {
-        if (_disciplineShieldBoostActive && _disciplineStacks > 0)
-        {
-            var boostPercentage = DisciplineBoostPercentage * _disciplineStacks;
-            _absorbBonus += absorbAmount * boostPercentage;
-            Debug.Log($"Applied discipline boost. Boost percentage: {boostPercentage * 100}%");
-            _disciplineStacks = 0;
-        }
-    }
-
     //---------------- Talent 3 Logic: Dark Magic Damage Boost ----------------
     public void EnableDarkMagicBoost(bool value)
     {
@@ -194,18 +201,6 @@ public class PriestShield : Skill
         if (_talentDarkMagicBoostActive) return;
         
         _damagePerTickBonus = 0;
-    }
-
-    private void ApplyDarkMagicBoost()
-    {
-        if (!_talentDarkMagicBoostActive) return;
-
-        float darkMagicDamage = Hero.DamageTracker.GetLocalDamageInTime(Schools.Dark, 5f);
-        float boostUnits = Mathf.Floor(darkMagicDamage / DarkMagicUnit);
-        float boostAmount = Mathf.Min(boostUnits * DarkMagicBoostPerUnit, absorbAmount * MaxDarkMagicBoostPercentage);
-
-        _absorbBonus += boostAmount;
-        Debug.Log($"Dark Magic boost applied. Damage: {darkMagicDamage}, Boost: {boostAmount}");
     }
 
     //---------------- Talent 4 Logic: Healing Boost ----------------
@@ -218,18 +213,6 @@ public class PriestShield : Skill
         Hero.DamageTracker.RemoveOldLocalEntries();
     }
 
-    private void ApplyHealingBoost()
-    {
-        if (!_talentHealingBoostActive) return;
-
-        float healingAmount = Hero.DamageTracker.GetLocalHealInTime(5f);
-        float boostUnits = Mathf.Floor(healingAmount / HealingUnit);
-        float boostAmount = Mathf.Min(boostUnits * HealingBoostPerUnit, absorbAmount * MaxHealingBoostPercentage);
-
-        _absorbBonus += boostAmount;
-        Debug.Log($"Healing boost applied. Healing: {healingAmount}, Boost: {boostAmount}");
-    }
-    
     public void EnableTiredSoulEvade(bool value)
     {
         _talentTiredSoulActive = value;
@@ -284,36 +267,28 @@ public class PriestShield : Skill
     private void HandleLightShield()
     {
         if (_target == null) return;
-
         if (!TryPayCost(manaCostLight)) return;
-        
-        ApplyDisciplineBoost(); // todo ??
-        
-        ApplyDarkMagicBoost();
-        ApplyHealingBoost();
 
-        float physicalBoost = 0;
-
-        if (_talentPhysicalShieldBoostActive && Time.time - _lastPhysDamageTime <= PhysBoostTimeWindow)
-        {
-            float bonusUnits = Mathf.Floor(_physDamageAccumulator / 10f);
-            physicalBoost = Mathf.Min(bonusUnits, absorbAmount * MaxPhysicalBoostPercentage);
-        }
-
-        _absorbBonus += physicalBoost;
-        _physDamageAccumulator = 0;
-        _lastPhysDamageTime = -999f;
+        _absorbBonus = CalculateTotalAbsorbBonus();
 
         var characterState = _target.GetComponent<CharacterState>();
-        var duration = _talentTiredSoulActive && characterState.CheckForState(States.TiredSoul) ? lightShieldDuration * TiredSoulEffectPercentage : lightShieldDuration;
+        var duration = _talentTiredSoulActive && characterState.CheckForState(States.TiredSoul)
+            ? lightShieldDuration * TiredSoulEffectPercentage
+            : lightShieldDuration;
+
         var absorbDamage = _talentTiredSoulActive && characterState.CheckForState(States.TiredSoul)
             ? (absorbAmount + _absorbBonus) * TiredSoulEffectPercentage
             : absorbAmount + _absorbBonus;
-        
-        Debug.Log(_absorbBonus);
 
         CmdAddDebaff(States.LightShield, States.TiredSoul, duration, tiredSoulDuration, absorbDamage, _target.gameObject, Name);
-        Debug.Log("Light Shield applied to " + _target.name);
+
+        Debug.Log($"[PriestShield] Final Absorb = {absorbDamage} (Base: {absorbAmount}, Bonus: {_absorbBonus})");
+
+        if (_talentDarkMagicBoostActive)
+        {
+            _accumulatedDarkDamage = 0f;
+            _lastDarkDamageTime = -999f;
+        }
     }
 
     private void HandleDarkShield()
@@ -325,6 +300,50 @@ public class PriestShield : Skill
         CmdAddBaff(States.DarkShield, darkShieldDuration, maxDamagePerTick + _damagePerTickBonus, _target.gameObject, Name);
         Debug.Log("Dark Shield applied to " + _target.name);
     }
+
+    private float GetAccumulatedDarkDamage()
+    {
+        if (Time.time - _lastDarkDamageTime > DarkDamageResetTime)
+        {
+            _accumulatedDarkDamage = 0f;
+        }
+
+        return _accumulatedDarkDamage;
+    }
+
+    private float CalculateTotalAbsorbBonus()
+    {
+        float bonus = 0f;
+
+        if (_disciplineShieldBoostActive && _disciplineStacks > 0)
+        {
+            float disciplineBonus = absorbAmount * DisciplineBoostPercentage * _disciplineStacks;
+            bonus += disciplineBonus;
+            Debug.Log($"[ShieldBonus] Discipline: +{disciplineBonus}");
+            _disciplineStacks = 0;
+        }
+
+        if (_talentPhysicalShieldBoostActive && Time.time - _lastPhysDamageTime <= PhysBoostTimeWindow)
+        {
+            float physicalBonus = Mathf.Min(_physDamageAccumulator * PhysicalBoostPerDamageUnit, absorbAmount * MaxPhysicalBoostPercentage);
+            bonus += physicalBonus;
+            Debug.Log($"[ShieldBonus] Physical: +{physicalBonus}");
+        }
+        _physDamageAccumulator = 0f;
+        _lastPhysDamageTime = -999f;
+
+        if (_talentHealingBoostActive)
+        {
+            float healingAmount = Hero.DamageTracker.GetLocalHealInTime(5f);
+            float healingUnits = Mathf.Floor(healingAmount / HealingUnit);
+            float healingBonus = Mathf.Min(healingUnits * HealingBoostPerUnit, absorbAmount * MaxHealingBoostPercentage);
+            bonus += healingBonus;
+            Debug.Log($"[ShieldBonus] Healing: +{healingBonus}");
+        }
+
+        return bonus;
+    }
+
 
     public void PriestShieldCast()
     {
@@ -338,9 +357,13 @@ public class PriestShield : Skill
 
     [Command]
     private void CmdAddDebaff(States lightState, States tiredState, float duration, float tiredDuration,
-        float damageToExit, GameObject target, string skillName)
+     float damageToExit, GameObject target, string skillName)
     {
         var characterState = target.GetComponent<CharacterState>();
+        float finalAbsorb = damageToExit;
+        float darkDamage = GetAccumulatedDarkDamage();
+        float darkBoost = Mathf.Min(Mathf.Floor(darkDamage / DarkMagicUnit) * DarkMagicBoostPerUnit, absorbAmount * MaxDarkMagicBoostPercentage);
+        finalAbsorb += darkBoost;
 
         if (!_talentTiredSoulActive)
         {
@@ -349,25 +372,25 @@ public class PriestShield : Skill
                 Debug.Log("Cannot apply Light Shield, target already has TiredSoul and talent is inactive.");
                 return;
             }
-            
+
             Debug.Log("Talent is inactive, applying LightShield and TiredSoul.");
-            characterState.AddState(lightState, duration, damageToExit, target, skillName);
-            characterState.AddState(tiredState, tiredDuration, damageToExit, target, skillName);
+            characterState.AddState(lightState, duration, finalAbsorb, target, skillName);
+            characterState.AddState(tiredState, tiredDuration, finalAbsorb, target, skillName);
         }
         else
         {
             if (characterState.CheckForState(tiredState))
             {
                 int tiredSoulStacks = characterState.CheckStateStacks(tiredState);
-                
+
                 Debug.Log($"Talent is active. TiredSoul stacks: {tiredSoulStacks}");
-                
+
                 if (tiredSoulStacks >= 2)
                 {
                     Debug.Log("TiredSoul has 2 or more stacks, exiting without applying LightShield.");
                     return;
                 }
-                
+
                 Debug.Log("TiredSoul has less than 2 stacks, applying LightShield and TiredSoul.");
                 characterState.AddState(lightState, duration, damageToExit, target, skillName);
                 characterState.AddState(tiredState, tiredDuration, damageToExit, target, skillName);

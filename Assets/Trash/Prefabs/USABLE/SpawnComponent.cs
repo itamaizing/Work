@@ -23,13 +23,13 @@ public class SpawnComponent : NetworkBehaviour
     [Command]
     public void CmdSpawnUnitEnemy()
     {
-        SpawnCharacter(_enemyPrefab, Vector3.back + Vector3.up, Quaternion.identity);
+        SpawnCharacter(_enemyPrefab, Vector3.back + Vector3.zero, Quaternion.identity);
     }
 
     [Command]
     public void CmdSpawnUnitAlies()
     {
-        SpawnCharacter(_allyPrefab, Vector3.forward + Vector3.up, Quaternion.identity);
+        SpawnCharacter(_allyPrefab, Vector3.forward + Vector3.zero, Quaternion.identity);
     }
 
     [Command] // не стал убирать метод с мейна, хотя мой ниже такой же, но сохраняет вращение и спавнит не по индексу, а напрямую берет префаб

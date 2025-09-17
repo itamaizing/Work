@@ -248,7 +248,8 @@ public class SparkOfLight : Skill
             damageAmount *= BonusDamageMultiplier;
         }
 
-        ApplyDamage(CreateDamage(damageAmount), target.gameObject);
+        Damage damage = CreateDamage(damageAmount);
+        ApplyDamage(damage, target.gameObject);
     }
 
     private Damage CreateDamage(float amount)
@@ -390,6 +391,7 @@ public class SparkOfLight : Skill
     private void CmdSwitchMode()
     {
         isLightMode = !isLightMode;
+        UpdateMode();
     }
 
     [ClientRpc]

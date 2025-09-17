@@ -11,15 +11,15 @@ public class DisciplineTalent_1 : Talent
 
     public override void Enter()
     {
-        priestShield.EnableDisciplineShieldBoost(true);
-        ability.ActivateSkill(reversePolarity);
+        ability.ActivateSkill(priestShield);
         ability.ActivateSkill(emeraldSkin);
+        priestShield.EnableDisciplineShieldBoost(true);
     }
 
     public override void Exit()
     {
-        priestShield.EnableDisciplineShieldBoost(false);
-        ability.DeactivateSkill(reversePolarity);
+        ability.DeactivateSkill(priestShield);
         ability.DeactivateSkill(emeraldSkin);
+        priestShield.EnableDisciplineShieldBoost(false);
     }
 }

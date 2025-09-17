@@ -4,15 +4,19 @@ using UnityEngine;
 
 public class LightTalent_2 : Talent
 {
-    [SerializeField] private EmeraldSkin _emeraldSkin;
+    [SerializeField] private EmeraldSkin emeraldSkin;
+    [SerializeField] private Restoration restoration;
+    [SerializeField] private SkillManager ability;
 
     public override void Enter()
     {
-        _emeraldSkin.EnableTalentLightMagicBoost(true);
+        ability.ActivateSkill(restoration);
+        emeraldSkin.EnableTalentLightMagicBoost(true);
     }
 
     public override void Exit()
     {
-        _emeraldSkin.EnableTalentLightMagicBoost(false);
+        ability.DeactivateSkill(restoration);
+        emeraldSkin.EnableTalentLightMagicBoost(false);
     }
 }

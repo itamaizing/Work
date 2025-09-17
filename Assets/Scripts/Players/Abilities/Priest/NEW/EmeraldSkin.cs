@@ -42,7 +42,7 @@ public class EmeraldSkin : Skill
 
         yield return null;
     }
-
+    
     //---------------- Talent 1 Logic: Physical Shield Boost ----------------
     public void EnableTalentLightMagicBoost(bool value)
     {

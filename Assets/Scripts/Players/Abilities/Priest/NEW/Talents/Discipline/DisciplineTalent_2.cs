@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class DisciplineTalent_2 : Talent
 {
-    [SerializeField] private PriestShield priestShield;
+    [SerializeField] private ReversePolarity reversePolarity;
     [SerializeField] private SkillManager ability;
 
     public override void Enter()
     {
-        ability.ActivateSkill(priestShield);
+        ability.ActivateSkill(reversePolarity);
     }
 
     public override void Exit()
     {
-        ability.DeactivateSkill(priestShield);
+        ability.DeactivateSkill(reversePolarity);
     }
 }

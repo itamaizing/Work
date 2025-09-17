@@ -21,8 +21,14 @@ public class DamageTracker : NetworkBehaviour
     {
         if (!isServerRequest) CmdAddDamage(damage, targetObject);
 
-        _damageEntries.Add(new DamageEntry(damage, Time.time));
+        var entry = new DamageEntry(damage, Time.time);
+
+        _damageEntries.Add(entry);
+        _localDamageEntries.Add(entry);
+
         RemoveOldServerEntries();
+        RemoveOldLocalEntries();
+
         Debug.Log($"[DamageTracker] Damage added: {damage.Value}, Time: {Time.time}, School: {damage.School}, DamageType: {damage.Type}");
 
         OnDamageTracked?.Invoke(damage, targetObject);
@@ -57,15 +63,16 @@ public class DamageTracker : NetworkBehaviour
         AddHeal(heal, true);
         Debug.Log($"[DamageTracker] Heal added: {heal.Value}, Time: {Time.time},  name: {this.name}");
     }
-    
+
     public float GetLocalDamageInTime(Schools school, float time)
     {
         RemoveOldLocalEntries();
-        return _damageEntries.Where(o => o.Damage.School == school)
+        return _localDamageEntries
+            .Where(o => o.Damage.School == school)
             .Where(o => o.Time >= Time.time - time)
             .Sum(o => o.Damage.Value);
     }
-    
+
     public float GetLocalHealInTime(float time)
     {
         RemoveOldLocalEntries();

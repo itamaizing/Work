@@ -9,7 +9,7 @@ public class EmeraldSkinState : AbstractCharacterState
     private float _magDefenseIncrease = 0f;
 
     private float _flashBuffDuration = 1f;
-    private float _lightMagicBuffDuration = 5f;
+    private float _lightMagicBuffDuration = 1f;
     private float _shieldBuffDuration = 2f;
 
     private bool _isTalentActive = false;
@@ -79,7 +79,8 @@ public class EmeraldSkinState : AbstractCharacterState
                     continue;
             }
         }
-        
+
+        Debug.Log("Emerald Skin state Exit");
         RemoveBuff();
         _characterState.RemoveState(this);
     }
@@ -94,18 +95,24 @@ public class EmeraldSkinState : AbstractCharacterState
     {
         Debug.Log("Add time by flash - " + _flashBuffDuration);
         _buffDuration += _flashBuffDuration;
+
+        _characterState.StateIcons?.ActivateIco(State, _buffDuration, 1, false);
     }
 
     private void AddTimeByShield()
     {
         Debug.Log("Add time by shield - " + _shieldBuffDuration);
         _buffDuration += _shieldBuffDuration;
+
+        _characterState.StateIcons?.ActivateIco(State, _buffDuration, 1, false);
     }
     
     private void AddTimeByLightMagic()
     {
         Debug.Log("Add time by light - " + _lightMagicBuffDuration);
         _buffDuration += _lightMagicBuffDuration;
+
+        _characterState.StateIcons?.ActivateIco(State, _buffDuration, 1, false);
     }
 
     private void ApplyBuff()

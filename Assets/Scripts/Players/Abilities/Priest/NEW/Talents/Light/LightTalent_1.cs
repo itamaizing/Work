@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class LightTalent_1 : Talent
 {
-    [SerializeField] private Restoration restoration;
+    [SerializeField] private FlashOfLight flashOfLight;
     [SerializeField] private SkillManager ability;
 
     public override void Enter()
     {
-        ability.ActivateSkill(restoration);
+        ability.ActivateSkill(flashOfLight);
     }
 
     public override void Exit()
     {
-        ability.DeactivateSkill(restoration);
+        ability.DeactivateSkill(flashOfLight);
     }
 }

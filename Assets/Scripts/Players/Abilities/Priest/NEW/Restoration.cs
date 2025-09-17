@@ -79,6 +79,7 @@ public class Restoration : Skill
     [Command]
     private void CmdSwitchMode()
     {
+        UpdateMode();
         isLightMode = !isLightMode;
     }
 
