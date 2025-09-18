@@ -169,7 +169,11 @@ public class FlashOfLight : Skill
 
         float bonusHealFromSpiritEnergy = 0;
         if (_spiritEnergyTalent) bonusHealFromSpiritEnergy = GetSpiritEnergyBonus(target);
-        var heal = new Heal { Value = _healAmount + bonusHealFromSpiritEnergy };
+        var heal = new Heal 
+        {
+            Value = _healAmount + bonusHealFromSpiritEnergy,
+            DamageableSkill = this
+        };
 
         CmdApplyHeal(heal, health.gameObject, this, Name);
     }

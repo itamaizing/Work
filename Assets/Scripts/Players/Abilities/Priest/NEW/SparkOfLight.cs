@@ -222,7 +222,12 @@ public class SparkOfLight : Skill
         float bonusHealFromSpiritEnergy = 0f;
         if (_spiritEnergyTalent) bonusHealFromSpiritEnergy = GetSpiritEnergyBonus(target);
 
-        var heal = new Heal { Value = _healAmount + doublingBonus + bonusHealFromSpiritEnergy };
+        var heal = new Heal
+        {
+            Value = _healAmount + doublingBonus + bonusHealFromSpiritEnergy,
+            DamageableSkill = this
+        };
+
         ApplyHeal(heal, target.gameObject, this, Name);
     }
 

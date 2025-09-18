@@ -163,7 +163,11 @@ public class Restoration : Skill
                 if (_spiritEnergyTalent) bonusHealFromSpiritEnergy = GetSpiritEnergyBonus(target);
                 float effectiveHeal = healPerTick * _accumulatedEffectiveness + bonusHealFromSpiritEnergy;
 
-                var heal = new Heal { Value = effectiveHeal };
+                var heal = new Heal 
+                { 
+                    Value = effectiveHeal,
+                    DamageableSkill = this
+                };
                 CmdApplyHeal(heal, healthComponent.gameObject, this, name);
 
                 _accumulatedEffectiveness += _totalHealedInInterval * effectivenessIncreasePerHeal;
