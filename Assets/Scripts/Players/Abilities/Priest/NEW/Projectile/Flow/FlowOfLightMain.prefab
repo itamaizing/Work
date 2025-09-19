@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3069977664380926246}
   - component: {fileID: 5671390575983711695}
   m_Layer: 0
-  m_Name: FlowOfDark
+  m_Name: FlowOfLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4778,8 +4778,8 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c7bed6ab944c0e849b207b7c9cf0d51f, type: 2}
-  - {fileID: 2100000, guid: ddd46a18ac1c3a4449ce85401ffa79ff, type: 2}
+  - {fileID: 2100000, guid: fdbf119409c0dd048a52e515d3ddae7b, type: 2}
+  - {fileID: 2100000, guid: 83233813a60b2c04d9dfe71ffcfc5294, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4867,7 +4867,7 @@ GameObject:
   - component: {fileID: 7536039143761595117}
   - component: {fileID: 8343811611514240506}
   m_Layer: 0
-  m_Name: FlowOfDarkSpreed_1
+  m_Name: FlowOfLightSpreed_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9632,7 +9632,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ddd46a18ac1c3a4449ce85401ffa79ff, type: 2}
+  - {fileID: 2100000, guid: b83ec09da71b42648809f62de20a043d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -9719,7 +9719,7 @@ GameObject:
   - component: {fileID: 1621763244509989143}
   - component: {fileID: 5696344441181280233}
   m_Layer: 0
-  m_Name: FlowOfDarkMain
+  m_Name: FlowOfLightMain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9760,7 +9760,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneId: 0
-  _assetId: 3139381048
+  _assetId: 1631935400
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
@@ -14577,7 +14577,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 01446338803cc8f4ba8cafd6c98707c6, type: 2}
+  - {fileID: 2100000, guid: a4fda291a72d350409c4d2221e7fd4ae, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -14665,7 +14665,7 @@ GameObject:
   - component: {fileID: 3901832475108878223}
   - component: {fileID: 2749102476628662243}
   m_Layer: 0
-  m_Name: FlowOfDarkSpreed
+  m_Name: FlowOfLightSpreed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19430,7 +19430,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ddd46a18ac1c3a4449ce85401ffa79ff, type: 2}
+  - {fileID: 2100000, guid: b83ec09da71b42648809f62de20a043d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -24283,8 +24283,8 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c7bed6ab944c0e849b207b7c9cf0d51f, type: 2}
-  - {fileID: 2100000, guid: ddd46a18ac1c3a4449ce85401ffa79ff, type: 2}
+  - {fileID: 2100000, guid: fdbf119409c0dd048a52e515d3ddae7b, type: 2}
+  - {fileID: 2100000, guid: 01446338803cc8f4ba8cafd6c98707c6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -29137,7 +29137,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 01446338803cc8f4ba8cafd6c98707c6, type: 2}
+  - {fileID: 2100000, guid: a4fda291a72d350409c4d2221e7fd4ae, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -29225,7 +29225,7 @@ GameObject:
   - component: {fileID: 7147285604373620578}
   - component: {fileID: 3318202232256917045}
   m_Layer: 0
-  m_Name: FlowOfDark
+  m_Name: FlowOfLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33990,8 +33990,8 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ddd46a18ac1c3a4449ce85401ffa79ff, type: 2}
   - {fileID: 2100000, guid: b83ec09da71b42648809f62de20a043d, type: 2}
+  - {fileID: 2100000, guid: a4fda291a72d350409c4d2221e7fd4ae, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

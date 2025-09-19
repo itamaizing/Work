@@ -1,29 +1,34 @@
+using System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
 public class FlowOfLight : Skill
 {
     [Header("Flow Settings")]
-    [SerializeField] private GameObject _effectPrefab;
-    [SerializeField] private Transform _spawnPoint;
+    [SerializeField] private GameObject _effectPrefabDark;
+    [SerializeField] private GameObject _effectPrefabLight;
+    [SerializeField] private GameObject _spawnPoint;
 
     [Header("Ability Info")]
     [SerializeField] private AbilityInfo lightInfo;
     [SerializeField] private AbilityInfo darkInfo;
 
     [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
-    public event System.Action OnModeChange;
+    public event Action OnModeChange;
 
     private GameObject _activeEffect;
     private Character _target;
+
+    private bool _isFillingDestruction = false;
 
     private bool IsAllyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Allies");
     private bool IsEnemyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
     protected override int AnimTriggerCastDelay => 0;
-    protected override int AnimTriggerCast => 0;
+    protected override int AnimTriggerCast => Animator.StringToHash("FlowSpellStart");
+
+    public void FillingDestruction(bool value) => _isFillingDestruction = value;
 
     protected override bool IsCanCast =>
         _target != null &&
@@ -34,12 +39,23 @@ public class FlowOfLight : Skill
     private void OnEnable()
     {
         OnModeChange += UpdateMode;
+        OnSkillCanceled += HandleSkillCanceled;
         UpdateMode();
     }
 
     private void OnDisable()
     {
         OnModeChange -= UpdateMode;
+        OnSkillCanceled -= HandleSkillCanceled;
+    }
+
+    public void FlowLightCast() => AnimStartCastCoroutine();
+    public void FlowLightthEnd() => AnimCastEnded();
+
+    public void MoveFlowLight()
+    {
+        _hero.Move.CanMove = false;
+        _hero.Move.StopMoveAndAnimationMove();
     }
 
     public void SwitchMode()
@@ -47,9 +63,17 @@ public class FlowOfLight : Skill
         CmdSwitchMode();
     }
 
+    private void HandleSkillCanceled()
+    {
+        if (_hero != null && _hero.Move != null)
+        {
+            Hero.Move.CanMove = true;
+        }
+    }
+
     private void OnModeChanged(bool oldValue, bool newValue)
     {
-        UpdateMode();
+        //UpdateMode();
         OnModeChange?.Invoke();
     }
 
@@ -59,7 +83,34 @@ public class FlowOfLight : Skill
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
     }
 
-    protected override IEnumerator PrepareJob(System.Action<TargetInfo> callbackDataSaved)
+    private void TryApplyExtraState(Character target)
+    {
+        if (!_isFillingDestruction || target == null) return;
+
+        var stateComponent = target.GetComponent<CharacterState>();
+        if (stateComponent == null) return;
+
+        if (isLightMode)
+        {
+            if (UnityEngine.Random.value <= 0.2f)
+            {
+                if (stateComponent.CheckForState(States.Restoration)) stateComponent.AddState(States.Restoration, 3f, 0, gameObject, Name);
+                else stateComponent.AddState(States.Restoration, 3f, 0, gameObject, Name);
+            }
+        }
+        else
+        {
+            if (UnityEngine.Random.value <= 0.2f)
+            {
+                if (stateComponent.CheckForState(States.Destruction))
+                    stateComponent.AddState(States.Destruction, 3f, 0, gameObject, Name);
+                else
+                    stateComponent.AddState(States.Destruction, 3f, 0, gameObject, Name);
+            }
+        }
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while (_target == null)
         {
@@ -111,6 +162,13 @@ public class FlowOfLight : Skill
                 Vector3.Distance(transform.position, initialPosition) > maxMoveDistance ||
                 (manaResource != null && manaResource.CurrentValue < 1f))
             {
+
+                _hero.Animator.ResetTrigger(AnimTriggerCast);
+                _hero.NetworkAnimator.ResetTrigger(AnimTriggerCast);
+
+                CmdCrossFade();
+                _hero.Animator.CrossFade("FlowSpellEnd", 0.1f);
+
                 TryCancel();
                 CmdDestroyEffect();
                 yield break;
@@ -122,6 +180,7 @@ public class FlowOfLight : Skill
                 {
                     Heal heal = new Heal { Value = tickValue };
                     CmdApplyHeal(heal, _target.gameObject, this, Name);
+                    TryApplyExtraState(_target);
                 }
                 else if (!isLightMode && IsEnemyTarget(_target))
                 {
@@ -132,6 +191,7 @@ public class FlowOfLight : Skill
                         School = School
                     };
                     CmdApplyDamage(damage, _target.gameObject);
+                    TryApplyExtraState(_target);
                 }
             }
 
@@ -139,6 +199,11 @@ public class FlowOfLight : Skill
             yield return null;
         }
 
+        _hero.Animator.ResetTrigger(AnimTriggerCast);
+        _hero.NetworkAnimator.ResetTrigger(AnimTriggerCast);
+
+        CmdCrossFade();
+        _hero.Animator.CrossFade("FlowSpellEnd", 0.1f);
         CmdDestroyEffect();
     }
 
@@ -155,19 +220,25 @@ public class FlowOfLight : Skill
             _target = (Character)targetInfo.Targets[0];
     }
 
+    [Command] private void CmdCrossFade() => _hero.Animator.CrossFade("FlowSpellEnd", 0.1f);
+
     [Command]
     private void CmdSwitchMode()
     {
-        isLightMode = !isLightMode;
         UpdateMode();
+        isLightMode = !isLightMode;
     }
 
     [Command]
     private void CmdSpawnEffect(GameObject start, GameObject end)
     {
-        if (_effectPrefab == null || start == null || end == null) return;
+        if (_effectPrefabDark == null || _effectPrefabLight == null || start == null || end == null) return;
 
-        GameObject effectInstance = Instantiate(_effectPrefab, start.transform.position, Quaternion.identity);
+        GameObject effectInstance = null;
+
+        if (!isLightMode) effectInstance = Instantiate(_effectPrefabDark, start.transform.position, Quaternion.identity);
+        else effectInstance = Instantiate(_effectPrefabLight, start.transform.position, Quaternion.identity);
+
         SceneManager.MoveGameObjectToScene(effectInstance, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(effectInstance);
 

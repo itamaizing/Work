@@ -11,6 +11,7 @@ public class FlowLightEffect : MonoBehaviour
 
     [Header("Spread Settings")]
     [SerializeField] private bool _isSpreadParticles = false;
+    [SerializeField] private bool _isReverse = false;
     [SerializeField] private float spreadMinTime = 0.2f;
     [SerializeField] private float spreadMaxTime = 0.8f;
     [SerializeField] private float spreadMinPower = 1f;
@@ -125,19 +126,30 @@ public class FlowLightEffect : MonoBehaviour
                 _particles[i].position = basePosition + waveOffsetVector;
             }
 
-            else if (_isSpreadParticles)
+            if (_isSpreadParticles)
             {
-                //из потока
-               float timeSinceSplit = (normalizedAge - _splitTime[i]) * lifetime;
-                Vector3 splitStartPos = _splitStartPosition[i];
-                _particles[i].position = splitStartPos + _splitDirections[i] * (timeSinceSplit * particleSpeed);
+                bool isSplitNow = normalizedAge >= _splitTime[i] || _isReverse;
 
-                // В поток
-                //float timeSinceSplit = (progress - _splitTime[i]) * lifetime;
+                if (!isSplitNow)
+                {
+                    basePosition = Vector3.Lerp(endPosition, startPosition, progress);
 
-                //Vector3 splitStartPos = _splitStartPosition[i];
-                //_particles[i].position = splitStartPos + _splitDirections[i] * (timeSinceSplit * particleSpeed);
+                    float waveOffset = Mathf.Sin((progress + Time.time * waveFrequency) * Mathf.PI * 2) * waveAmplitude;
+                    Vector3 waveOffsetVector = CalculateWaveOffset(waveOffset, currentDirection);
+
+                    _particles[i].position = basePosition + waveOffsetVector;
+                }
+
+                else
+                {
+                    float timeSinceSplit = (normalizedAge - _splitTime[i]) * lifetime;
+                    if (_isReverse) timeSinceSplit = normalizedAge * lifetime;
+
+                    Vector3 splitStartPos = _splitStartPosition[i];
+                    _particles[i].position = splitStartPos + _splitDirections[i] * (timeSinceSplit * particleSpeed);
+                }
             }
+
             else
             {
                 basePosition = Vector3.Lerp(endPosition, startPosition, progress);
@@ -162,7 +174,10 @@ public class FlowLightEffect : MonoBehaviour
     private Vector3 GetRandomSplitDirection(Vector3 baseDirection)
     {
         Vector3 random = Random.onUnitSphere;
-        Vector3 perp = Vector3.Cross(baseDirection, random).normalized;
-        return perp * Random.Range(spreadMinPower, spreadMaxPower);
+        Vector3 perpendicular = Vector3.Cross(baseDirection, random).normalized;
+        Vector3 direction = perpendicular * Random.Range(spreadMinPower, spreadMaxPower);
+
+        if (_isReverse) direction *= -1f;
+        return direction;
     }
 }

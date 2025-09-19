@@ -40,6 +40,7 @@ public class SparkOfLight : Skill
     private bool _lowHealthTalentActive = false;
     private bool _manaRestoreBoostTalent = false;
     private bool _healingBuffTalentActive = false;
+    private bool _isFillingDestruction = false;
     private bool _spiritEnergyTalent;
 
     private const float LowHealthThreshold = 0.25f;
@@ -60,6 +61,8 @@ public class SparkOfLight : Skill
     public void EnableLowHealthTalent(bool value) => _lowHealthTalentActive = value;
     public void EnableManaRestoreBoostTalent(bool value) => _manaRestoreBoostTalent = value;
     public void EnableHealingBuffTalent(bool value) => _healingBuffTalentActive = value;
+    public void FillingDestruction(bool value) => _isFillingDestruction = value;
+
 
     private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
     private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
@@ -180,6 +183,33 @@ public class SparkOfLight : Skill
         return healthComponent != null && healthComponent.CurrentValue <= healthComponent.MaxValue * LowHealthThreshold;
     }
 
+    private void TryApplyExtraState(Character target)
+    {
+        if (!_isFillingDestruction || target == null) return;
+
+        var stateComponent = target.GetComponent<CharacterState>();
+        if (stateComponent == null) return;
+
+        if (isLightMode)
+        {
+            if (UnityEngine.Random.value <= 0.2f)
+            {
+                if (stateComponent.CheckForState(States.Restoration)) stateComponent.AddState(States.Restoration, 3f, 0, gameObject, Name);
+                else stateComponent.AddState(States.Restoration, 3f, 0, gameObject, Name);
+            }
+        }
+        else
+        {
+            if (UnityEngine.Random.value <= 0.2f)
+            {
+                if (stateComponent.CheckForState(States.Destruction))
+                    stateComponent.AddState(States.Destruction, 3f, 0, gameObject, Name);
+                else
+                    stateComponent.AddState(States.Destruction, 3f, 0, gameObject, Name);
+            }
+        }
+    }
+
     private void HandleDefaultMode(Character target)
     {
         if (IsAllyTarget(target))
@@ -229,6 +259,7 @@ public class SparkOfLight : Skill
         };
 
         ApplyHeal(heal, target.gameObject, this, Name);
+        TryApplyExtraState(target);
     }
 
     private float GetSpiritEnergyBonus(Character target)
@@ -243,6 +274,7 @@ public class SparkOfLight : Skill
     private void DamageCast(Character target)
     {
         ApplyDamage(CreateDamage(_damageAmount), target.gameObject);
+        TryApplyExtraState(target);
     }
 
     private void ApplyDamageInAltMode(Character target)
@@ -255,6 +287,7 @@ public class SparkOfLight : Skill
 
         Damage damage = CreateDamage(damageAmount);
         ApplyDamage(damage, target.gameObject);
+        TryApplyExtraState(target);
     }
 
     private Damage CreateDamage(float amount)
