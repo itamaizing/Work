@@ -235,6 +235,7 @@ public class CharacterState : NetworkBehaviour
 		[States.Restoration] = new RestorationState(),
 		[States.Destruction] = new DestructionState(),
 		[States.HardenedFlesh] = new HardenedFlesh(),
+		[States.FocusingOnReflexesState] = new FocusingOnReflexesState(),
 
 		#region TerrifyingElfStates
 		[States.InnerDarkness] = new InnerDarkness(),
@@ -730,6 +731,7 @@ public enum StatusEffect
 	ReducingEfficiency,
 	Restoration,
 	Destruction,
+	Evade,
 }
 
 public enum States
@@ -817,6 +819,7 @@ public enum States
 	Restoration,
 	Destruction,
 	HardenedFlesh,
+	FocusingOnReflexesState,
 }
 public enum BaffDebaff
 {
