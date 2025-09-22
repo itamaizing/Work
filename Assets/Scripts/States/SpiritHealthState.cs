@@ -9,8 +9,10 @@ public class SpiritHealthState : AbstractCharacterState
 
     private float _baseDuration;
     private float _duration;
+    private float _regenAmount;
 
     private Health _healthComponent;
+    private Resource _manaResource;
     private Character _character;
 
     private List<StatusEffect> _effects = new() { StatusEffect.Healing };
@@ -34,6 +36,8 @@ public class SpiritHealthState : AbstractCharacterState
         {
             _healthComponent.DamageTaken += OnDamageTaken;
         }
+
+        RecalcRegenAmount();
     }
 
     public override void UpdateState()
@@ -55,6 +59,7 @@ public class SpiritHealthState : AbstractCharacterState
             CurrentStacksCount++;
         }
 
+        RecalcRegenAmount();
         return true;
     }
 
@@ -72,16 +77,23 @@ public class SpiritHealthState : AbstractCharacterState
     {
         if (_character == null || skill == null) return;
 
-        float healthRestoreValue = damage.Value * DamageHealthRestorePercent * CurrentStacksCount;
+        if (_manaResource == null && skill.Hero != null) _manaResource = skill.Hero.TryGetResource(ResourceType.Mana);
 
-        ApplyHealth(skill.Hero, healthRestoreValue);
+        float manaRestoreValue = damage.Value * DamageHealthRestorePercent * CurrentStacksCount;
+
+        ApplyRegen(manaRestoreValue);
     }
 
-    public void ApplyHealth(Character attacker, float manaRestoreValue)
+    public void ApplyRegen(float manaRestoreValue)
     {
-        var attackerHealth = attacker.GetComponent<Health>();
-
-        if (attackerHealth != null && manaRestoreValue > 0) attackerHealth.CmdAdd(manaRestoreValue);
+        if (_manaResource != null && manaRestoreValue > 0) _manaResource.CmdAdd(manaRestoreValue);
     }
 
+    private void RecalcRegenAmount()
+    {
+        if (_manaResource != null)
+        {
+            _regenAmount = _manaResource.MaxValue * DamageHealthRestorePercent * CurrentStacksCount;
+        }
+    }
 }

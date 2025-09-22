@@ -48,12 +48,6 @@ public class DamageTracker : NetworkBehaviour
         RemoveOldServerEntries();
         Debug.Log($"[DamageTracker] Heal added: {heal.Value}, Time: {Time.time},  name: {this.name}");
 
-        RpcOnHealTracked(heal);
-    }
-
-    [ClientRpc]
-    private void RpcOnHealTracked(Heal heal)
-    {
         OnHealTracked?.Invoke(heal);
     }
     

@@ -6597,10 +6597,11 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _effectPrefabDark: {fileID: 2152374494346322251, guid: f4c655cda711ee04982ae4767cff39d7, type: 3}
-  _effectPrefabLight: {fileID: 2152374494346322251, guid: e3f8b1d07bf91a843899c3d8b908fa40, type: 3}
-  _spawnPoint: {fileID: 3812818705873013830}
+  buffDuration: 18
+  effectPrefabLight: {fileID: 2152374494346322251, guid: e3f8b1d07bf91a843899c3d8b908fa40, type: 3}
   lightInfo: {fileID: 11400000, guid: a01ecc5cf4d4ac04ba96007c73bc07cb, type: 2}
+  debuffDuration: 18
+  effectPrefabDark: {fileID: 2152374494346322251, guid: f4c655cda711ee04982ae4767cff39d7, type: 3}
   darkInfo: {fileID: 11400000, guid: c626ed317560d3f4bb5f06fb98c74135, type: 2}
   isLightMode: 1
 --- !u!4 &3057263923131165887 stripped
@@ -7112,6 +7113,7 @@ MonoBehaviour:
     Icon: {fileID: 21300000, guid: eeaba97299ac21b449cff68f55aa72de, type: 3}
   character: {fileID: 4534754468497973439}
   spark: {fileID: 683463177557245195}
+  flowOfLight: {fileID: 744928704386096395}
 --- !u!114 &324435905908284838
 MonoBehaviour:
   m_ObjectHideFlags: 0
