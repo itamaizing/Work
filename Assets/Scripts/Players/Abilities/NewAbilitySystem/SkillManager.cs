@@ -25,11 +25,13 @@ public class SkillManager : MonoBehaviour
     //private AutoAttackQueue _autoAttackQueue;
     private Skill _selectedSkill;
     private Coroutine _lastCastResetCoroutine;
+    private int _castWindowId = 0;
 
     private Dictionary<Skill, Action> _castEndedHandlers = new();
 
     public TalentSystem TalesntSystem => _talentSystem;
     public Skill LastCastedSkill { get; private set; }
+    public Skill PreviewCastedSkill { get; private set; }
     public SkillQueue SkillQueue { get => _skillQueue; }
     public Skill[] SelectedSkills { get => _selectedSkills; }
     public IEnumerable<Skill> DefaultSkills => _skills.Where(o => o.IsTalentSpell == false);
@@ -86,17 +88,27 @@ public class SkillManager : MonoBehaviour
     {
         if (!(skill is IPassiveSkill))
         {
+            PreviewCastedSkill = LastCastedSkill;
             LastCastedSkill = skill;
+            _castWindowId++;
 
             if (_lastCastResetCoroutine != null) StopCoroutine(_lastCastResetCoroutine);
-            _lastCastResetCoroutine = StartCoroutine(CastWindowResetCoroutine());
+            _lastCastResetCoroutine = StartCoroutine(CastWindowResetCoroutine(_castWindowId));
+
+            Debug.Log($"PreviewCastedSkill: {PreviewCastedSkill}");
+            Debug.Log($"LastCastedSkill: {LastCastedSkill}");
         }
     }
 
-    private IEnumerator CastWindowResetCoroutine()
+    private IEnumerator CastWindowResetCoroutine(int id)
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(3f);
+
+        if (_castWindowId != id)
+            yield break;
+        PreviewCastedSkill = null;
         LastCastedSkill = null;
+
     }
     #endregion
 

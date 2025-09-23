@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FocusingOnReflexes : Skill
@@ -30,7 +29,7 @@ public class FocusingOnReflexes : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (Hero == null || Hero.CharacterState == null) yield break;
-        else Hero.CharacterState.CmdAddState(States.FocusingOnReflexesState, duration, 0f, Hero.gameObject, name);
+        Hero.CharacterState.CmdAddState(States.FocusingOnReflexesState, duration, 0f, Hero.gameObject, name);
+        yield break;
     }
 }

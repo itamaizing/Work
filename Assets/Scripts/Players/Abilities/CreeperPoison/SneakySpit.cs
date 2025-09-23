@@ -11,49 +11,43 @@ public class SneakySpit : Skill
 
     private Character _target;
     private Character _runtimeTarget;
+    private Coroutine _boostWindow;
 
     protected override bool IsCanCast => CheckCanCast();
 
     protected override int AnimTriggerCastDelay => 0;
-    protected override int AnimTriggerCast => Animator.StringToHash("DeafeningScreamAnimation");
+    protected override int AnimTriggerCast => 0;
 
-    private void OnDestroy() => Canceled -= HandleJumpEnd;
-    private void OnEnable() => Canceled += HandleJumpEnd;
-
-    public void HandleJumpEnd()
+    protected override void SkillEnableBoostLogic()
     {
-        Hero.Animator.applyRootMotion = false;
-        _playerLinks.Move.StopLookAt();
-        Hero.Move.CanMove = true;
-        _isCanCancle = true;
+        _runtimeTarget = _target;
+        Disactive = false;
+    }
+    protected override void SkillDisableBoostLogic()
+    {
+        _runtimeTarget = null;
+        Disactive = true;
     }
 
-    public void SneakySpitAnimationMove()
+    private void OnEnable() 
     {
-        if (_hero == null || _hero.Move == null) return;
-
-        _hero.Move.StopMoveAndAnimationMove();
-        _hero.Move.CanMove = false;
+        Hero.Health.Evaded += OnHeroEvade;
     }
 
-    public void SneakySpitCast()
+    private void OnDisable()
     {
-        AnimStartCastCoroutine();
-        SneakySpitAnimationMove();
-        Hero.Animator.applyRootMotion = true;
+        Hero.Health.Evaded -= OnHeroEvade;
     }
 
-    public void SneakySpitEnd()
-    {
-        AnimCastEnded();
-        HandleJumpEnd();
-        _isCanCancle = true;
-    }
+    public void TryStartSneakySpitBoostWindow(Character target) => _boostWindow = StartCoroutine(SneakySpitBoostWindow(target));
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as Character;
-        Hero.Move.LookAtTransform(_target.transform);
+        if (targetInfo?.Targets?.Count > 0)
+        {
+            _target = targetInfo.Targets[0] as Character;
+            if (_target != null) Hero.Move.LookAtTransform(_target.transform);
+        }
         _isCanCancle = false;
     }
 
@@ -64,22 +58,19 @@ public class SneakySpit : Skill
         NoObstacles(_target.transform.position, transform.position, _obstacle);
     }
 
+    private void OnHeroEvade()
+    {
+        if (_target == null || _boostWindow != null) return;
+
+        TryStartSneakySpitBoostWindow(_target);
+    }
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (_target == null)
-        {
-            if (GetMouseButton)
-            {
-                _target = GetRaycastTarget();
+        while (Disactive && _target == null) yield return null;
 
-                if (_target != null)
-                {
-                    _runtimeTarget = _target;
-                    _isCanCancle = false;
-                }
-            }
-            yield return null;
-        }
+        _hero.NetworkAnimator.SetTrigger(Animator.StringToHash("SneakySpitTrigger"));
+        _hero.Animator.SetTrigger(Animator.StringToHash("SneakySpitTrigger"));
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Targets.Add(_runtimeTarget);
@@ -88,11 +79,17 @@ public class SneakySpit : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_target != null) CmdApplyStateAndDamage(_target.gameObject);
-
-        AfterCastJob();
-
         yield return null;
+    }
+
+    private IEnumerator SneakySpitBoostWindow(Character target)
+    {
+        _target = target;
+        if (_boostWindow != null) StopCoroutine(_boostWindow);
+        EnableSkillBoost();
+        yield return new WaitForSeconds(2f);
+        DisableSkillBoost();
+        _boostWindow = null;
     }
 
     protected override void ClearData()
@@ -100,13 +97,11 @@ public class SneakySpit : Skill
         _target = null;
     }
 
-    [Command]
-    private void CmdApplyStateAndDamage(GameObject targetGameObject)
+    public void ApplyStateAndDamage()
     {
-        var targetCharacter = targetGameObject.GetComponent<Character>();
-        if (targetCharacter != null)
+        if (_runtimeTarget != null)
         {
-            targetCharacter.CharacterState.AddState(States.Blind, duration, 0, _playerLinks.gameObject, name);
+            CmdAddState(_runtimeTarget);
 
             Damage damage = new Damage
             {
@@ -115,7 +110,10 @@ public class SneakySpit : Skill
                 Type = DamageType,
             };
 
-            CmdApplyDamage(damage, targetGameObject);
+            CmdApplyDamage(damage, _runtimeTarget.gameObject);
+            ClearData();
         }
     }
+
+    [Command] private void CmdAddState(Character target) => target.CharacterState.AddState(States.Blind, duration, 0, _playerLinks.gameObject, name);
 }

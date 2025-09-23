@@ -25,6 +25,7 @@ public class CreeperStrike : Skill
     [SerializeField] private PoisonBall _poisonBall;
     [SerializeField] private CreeperInvisible _creeperInvisible;
     [SerializeField] private ColdBlood _coldBlood;
+    [SerializeField] private SneakySpit sneakySpit;
     //[SerializeField] private AbsorptionOfPoisons _absorptionOfPoisons;
 
     [Header("Ability properties")]
@@ -47,6 +48,9 @@ public class CreeperStrike : Skill
 
     private bool _isTwoHit = false;
     private bool _isHit = false;
+
+    private Character _lastTargetFirst = null;
+    private Character _lastTargetSecond = null;
 
     private Coroutine _timerForTwoHitVariableCoroutine;
 
@@ -149,6 +153,9 @@ public class CreeperStrike : Skill
 
     public void DamageDeal(Character target, bool isUsingLightningStrikes = false)
     {
+        var last—ast = _player.Abilities.LastCastedSkill;
+        var previewCast = _player.Abilities.PreviewCastedSkill;
+
         if (target != null)
         {
             _currentDamage = UnityEngine.Random.Range(7.0f, 11.0f);
@@ -277,6 +284,22 @@ public class CreeperStrike : Skill
 
             _isHit = false;
         }
+
+        TryTriggerSneakySpitWindow(target);
+    }
+
+    private void TryTriggerSneakySpitWindow(Character target)
+    {
+        _lastTargetSecond = _lastTargetFirst;
+        _lastTargetFirst = target;
+
+        var lastCast = _player.Abilities.LastCastedSkill;
+        var previewCast = _player.Abilities.PreviewCastedSkill;
+
+        bool isSameTarget = _lastTargetFirst == target && _lastTargetSecond == target;
+        bool isSameSkills = lastCast is CreeperStrike && previewCast is CreeperStrike;
+
+        if (isSameTarget && isSameSkills) —mdriggerSneakySpitFreeWindow(target);
     }
 
     private IEnumerator TimerForTwoHit(float duration, bool isUsingLightningStrikes)
@@ -371,10 +394,7 @@ public class CreeperStrike : Skill
 
         CmdApplyDamage(critDamage, currentTarget.gameObject);
 
-        if (_feelingOfContinuation.Data.IsOpen)
-        {
-            CmdFeelingOfContinuation(_player.gameObject, critDamage.Value);
-        }
+        if (_feelingOfContinuation.Data.IsOpen) CmdFeelingOfContinuation(_player.gameObject, critDamage.Value);
     }
 
     #endregion
@@ -385,7 +405,6 @@ public class CreeperStrike : Skill
     private void CmdFeelingOfContinuation(GameObject player, float criticalDamage)
     {
         Character playerCharacter = player.GetComponent<Character>();
-
         _feelingOfContinuation.IncreaseRegenerationMana(playerCharacter, criticalDamage);
     }
 
@@ -393,14 +412,17 @@ public class CreeperStrike : Skill
     private void CmdPreparingForFight(GameObject player)
     {
         Character playerCharacter = player.GetComponent<Character>();
-
         _preparingForFight.IncreaseManaRegeneration(playerCharacter);
     }
 
-    [Command]
-    private void CmdDamageDeal(Damage damage, GameObject target)
+    [Command] private void CmdDamageDeal(Damage damage, GameObject target) => ApplyDamage(damage, target);
+
+    [Command] private void —mdriggerSneakySpitFreeWindow(Character target) => RpcTriggerGhostFreeWindow(target);
+
+    [ClientRpc]
+    private void RpcTriggerGhostFreeWindow(Character target)
     {
-        ApplyDamage(damage, target);
+        if (sneakySpit != null) sneakySpit.TryStartSneakySpitBoostWindow(target);
     }
 
     #endregion
